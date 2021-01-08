@@ -1,0 +1,90 @@
+{{>partial_header}}
+package v2
+
+import (
+    "context"
+    "github.com/hashicorp/terraform-plugin-sdk/v2/diag"
+    "github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+    "github.com/twilio/terraform-provider-twilio/client"
+    "github.com/twilio/terraform-provider-twilio/util"
+    types "github.com/twilio/twilio-go/{{clientPath}}"
+)
+
+{{#resources}}
+func Resource{{name}}() *schema.Resource {
+    return &schema.Resource{
+        CreateContext: resource{{name}}Create,
+        ReadContext:   resource{{name}}Read,
+        UpdateContext: resource{{name}}Update,
+        DeleteContext: resource{{name}}Delete,
+        Schema: map[string]*schema.Schema{
+            {{#schema}}
+            "{{vendorExtensions.x-name-in-snake-case}}": {
+                Type:     schema.TypeString,
+                {{#required}}
+                Required: true,
+                {{/required}}
+                {{^required}}
+                Optional: true,
+                {{/required}}
+            },
+            {{/schema}}
+        },
+    }
+}
+
+{{#operations}}
+{{#operation}}
+func resource{{nickname}}(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+    {{#hasOptionalParams}}
+    params := &types.{{nickname}}Params{
+        {{#allParams}}
+        {{#required}}{{^isPathParam}}{{baseName}}: util.{{vendorExtensions.x-util-name}}(d.Get("{{vendorExtensions.x-name-in-snake-case}}").({{dataType}})),{{/isPathParam}}{{/required}}
+        {{/allParams}}
+    }
+    {{#allParams}}{{^required}}
+    if v, ok := d.GetOk("{{vendorExtensions.x-name-in-snake-case}}"); ok {
+        params.{{baseName}} = util.{{vendorExtensions.x-util-name}}(v.({{dataType}}))
+    }
+    {{/required}}{{/allParams}}
+    {{/hasOptionalParams}}
+    {{#vendorExtensions.x-is-create-operation}}
+    r, err := m.(*client.Config).Client.{{productVersion}}.{{nickname}}(params)
+    {{/vendorExtensions.x-is-create-operation}}
+    {{#vendorExtensions.x-is-delete-operation}}
+    err := m.(*client.Config).Client.{{productVersion}}.{{nickname}}(d.Id())
+    {{/vendorExtensions.x-is-delete-operation}}
+    {{#vendorExtensions.x-is-read-operation}}
+    r, err := m.(*client.Config).Client.{{productVersion}}.{{nickname}}(d.Id(){{#hasOptionalParams}}, params{{/hasOptionalParams}})
+    {{/vendorExtensions.x-is-read-operation}}
+    {{#vendorExtensions.x-is-update-operation}}
+    _, err := m.(*client.Config).Client.{{productVersion}}.{{nickname}}(d.Id(){{#hasOptionalParams}}, params{{/hasOptionalParams}})
+    {{/vendorExtensions.x-is-update-operation}}
+
+    if err != nil {
+        return diag.FromErr(err)
+    }
+
+    {{#vendorExtensions.x-is-create-operation}}
+    d.SetId(r.Sid)
+
+    return resource{{name}}Read(ctx, d, m)
+    {{/vendorExtensions.x-is-create-operation}}
+    {{#vendorExtensions.x-is-read-operation}}
+    {{#schema}}
+    d.Set("{{vendorExtensions.x-name-in-snake-case}}", r.{{baseName}})
+    {{/schema}}
+
+    return nil
+    {{/vendorExtensions.x-is-read-operation}}
+    {{#vendorExtensions.x-is-update-operation}}
+    return resource{{name}}Read(ctx, d, m)
+    {{/vendorExtensions.x-is-update-operation}}
+    {{#vendorExtensions.x-is-delete-operation}}
+    return nil
+    {{/vendorExtensions.x-is-delete-operation}}
+}
+
+{{/operation}}
+{{/operations}}
+{{/resources}}

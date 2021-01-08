@@ -1,0 +1,120 @@
+{{>partial_header}}
+package {{packageName}}
+
+{{#operations}}
+import (
+	"encoding/json"
+	"fmt"
+    twilio "github.com/twilio/twilio-go/client"
+    "net/url"
+    {{#imports}}
+    "{{import}}"
+    {{/imports}}
+)
+
+type {{classname}}Service struct {
+    baseURL string
+    client  *twilio.Client
+}
+
+func New{{classname}}Service(client *twilio.Client) *{{classname}}Service {
+    return &{{classname}}Service{
+        client: client,
+        baseURL: fmt.Sprintf("https://studio.%s", client.BaseURL),
+    }
+}
+{{#operation}}
+{{#hasOptionalParams}}
+// {{{nickname}}}Params Optional parameters for the method '{{{nickname}}}'
+type {{{nickname}}}Params struct {
+{{#optionalParams}}
+    {{baseName}} *{{{dataType}}} `json:"{{baseName}}{{^required}},omitempty{{/required}}"{{#withXml}} xml:"{{baseName}}{{#isXmlAttribute}},attr{{/isXmlAttribute}}"{{/withXml}}{{#vendorExtensions.x-go-custom-tag}} {{{.}}}{{/vendorExtensions.x-go-custom-tag}}`
+{{/optionalParams}}
+}
+{{/hasOptionalParams}}
+
+/*
+{{operationId}}{{#summary}} {{{.}}}{{/summary}}{{^summary}} Method for {{operationId}}{{/summary}}
+{{#notes}}
+{{notes}}
+{{/notes}}
+{{#allParams}}
+{{#required}}
+ * @param {{paramName}}{{#description}} {{{.}}}{{/description}}
+{{/required}}
+{{/allParams}}
+{{#hasOptionalParams}}
+ * @param optional nil or *{{{nickname}}}Opts - Optional Parameters:
+{{#optionalParams}}
+ * @param "{{baseName}}" ({{#isNullable}}*{{/isNullable}}{{{dataType}}}) - {{#description}}{{{.}}}{{/description}}
+{{/optionalParams}}
+{{/hasOptionalParams}}
+{{#returnType}}
+@return {{{returnType}}}
+{{/returnType}}
+*/
+func (c *{{{classname}}}Service) {{{nickname}}}({{#allParams}}{{#required}}{{paramName}} {{{dataType}}}{{#hasMore}}, {{/hasMore}}{{/required}}{{/allParams}}{{#hasOptionalParams}}params *{{{nickname}}}Params{{/hasOptionalParams}}) ({{#returnType}}*{{{returnType}}}, {{/returnType}}error) {
+    path := "{{{path}}}"
+    {{#pathParams}}
+    path = strings.Replace(path, "{"+"{{baseName}}"+"}", {{paramName}}, -1)
+    {{/pathParams}}
+
+    data := {{#hasOptionalParams}}url.Values{}{{/hasOptionalParams}}{{^hasOptionalParams}}0{{/hasOptionalParams}}
+    headers := {{#hasHeaderParams}}make(map[string]interface{}){{/hasHeaderParams}}{{^hasHeaderParams}}0{{/hasHeaderParams}}
+
+    {{#hasOptionalParams}}
+    {{#optionalParams}}
+    {{^isHeaderParam}}
+    if params != nil && params.{{baseName}} != nil {
+        {{#isFreeFormObject}}
+        v, err := json.Marshal(params.{{baseName}})
+
+        if err != nil {
+            return nil, err
+        }
+
+        data.Set("{{baseName}}", string(v))
+        {{/isFreeFormObject}}
+        {{^isFreeFormObject}}
+        data.Set("{{baseName}}", {{^isString}}string({{/isString}}*params.{{baseName}}{{^isString}}){{/isString}})
+        {{/isFreeFormObject}}
+    }
+    {{/isHeaderParam}}
+    {{/optionalParams}}
+    {{/hasOptionalParams}}
+
+    {{#hasHeaderParams}}
+    {{#headerParams}}
+    if params != nil && params.{{baseName}} != nil {
+        headers["{{baseName}}"] = *params.{{baseName}}
+    }
+    {{/headerParams}}
+    {{/hasHeaderParams}}
+
+    resp, err := c.client.{{httpMethod}}(c.baseURL+path, data, headers)
+    {{#returnType}}
+    if err != nil {
+        return nil, err
+    }
+
+    defer resp.Body.Close()
+
+    ps := &{{{returnType}}}{}
+    if err := json.NewDecoder(resp.Body).Decode(ps); err != nil {
+        return nil, err
+    }
+
+    return ps, err
+    {{/returnType}}
+    {{^returnType}}
+    if err != nil {
+        return err
+    }
+
+    defer resp.Body.Close()
+
+    return nil
+    {{/returnType}}
+}
+{{/operation}}
+{{/operations}}
