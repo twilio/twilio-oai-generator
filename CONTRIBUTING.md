@@ -140,6 +140,6 @@ you are working:
 * All classes and methods **must be documented**.
 
 
-[docs-link]: https://www.twilio.com/docs/libraries/oai-generator
+[docs-link]: https://github.com/twilio/twilio-oai-generator/README.md
 [issue-link]: https://github.com/twilio/twilio-oai-generator/issues/new
 [github]: https://github.com/twilio/twilio-oai-generator
