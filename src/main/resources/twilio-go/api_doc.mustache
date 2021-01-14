@@ -32,6 +32,7 @@ Name | Type | Description  | Notes
 ### Optional Parameters
 
 Optional parameters are passed through a pointer to a {{{nickname}}}Opts struct{{#allParams}}{{#-last}}
+
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------{{/-last}}{{/allParams}}{{#allParams}}
 {{^required}} **{{paramName}}** | {{#isFile}}**optional.Interface of {{dataType}}**{{/isFile}}{{#isPrimitiveType}}**optional.{{vendorExtensions.x-optional-data-type}}**{{/isPrimitiveType}}{{^isPrimitiveType}}{{^isFile}}[**optional.Interface of {{dataType}}**]({{baseType}}.md){{/isFile}}{{/isPrimitiveType}}| {{description}} | {{#defaultValue}}[default to {{defaultValue}}]{{/defaultValue}}{{/required}}{{/allParams}}{{/hasOptionalParams}}
