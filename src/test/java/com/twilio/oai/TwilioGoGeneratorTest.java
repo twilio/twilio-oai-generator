@@ -25,8 +25,8 @@ public class TwilioGoGeneratorTest {
     // https://github.com/OpenAPITools/openapi-generator/blob/master/modules/openapi-generator-cli/src/main/java/org/openapitools/codegen/cmd/Generate.java 
     final CodegenConfigurator configurator = new CodegenConfigurator()
               .setGeneratorName("twilio-go") // use this codegen library
-              .setInputSpec("../../../modules/openapi-generator/src/test/resources/2_0/petstore.yaml") // sample OpenAPI file
-              // .setInputSpec("https://raw.githubusercontent.com/openapitools/openapi-generator/master/modules/openapi-generator/src/test/resources/2_0/petstore.yaml") // or from the server
+//              .setInputSpec("../../../modules/openapi-generator/src/test/resources/2_0/petstore.yaml") // sample OpenAPI file
+               .setInputSpec("https://raw.githubusercontent.com/openapitools/openapi-generator/master/modules/openapi-generator/src/test/resources/2_0/petstore.yaml") // or from the server
               .setOutputDir("out/twilio-go"); // output directory
 
     final ClientOptInput clientOptInput = configurator.toClientOptInput();

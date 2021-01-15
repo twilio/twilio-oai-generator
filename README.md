@@ -1,19 +1,19 @@
-# OpenAPI Generator for the twilio-go library
+# OpenAPI Generator for the [twilio-go](https://github.com/twilio/twilio-go/) library
 
 ## Overview
 This is a boiler-plate project to generate your own project derived from an OpenAPI specification.
-Its goal is to get you started with the basic plumbing so you can put in your own logic.
-It won't work without your changes applied.
+
+Its goal is to get you started with the basic plumbing, so you can put in your own logic. It won't work without your changes applied. Continue reading this doc to get more details on how to do that.
 
 ## What's OpenAPI
 The goal of OpenAPI is to define a standard, language-agnostic interface to REST APIs which allows both humans and computers to discover and understand the capabilities of the service without access to source code, documentation, or through network traffic inspection.
-When properly described with OpenAPI, a consumer can understand and interact with the remote service with a minimal amount of implementation logic.
-Similar to what interfaces have done for lower-level programming, OpenAPI removes the guesswork in calling the service.
+
+When properly described with OpenAPI, a consumer can understand and interact with the remote service with a minimal amount of implementation logic. Similar to what interfaces have done for lower-level programming, OpenAPI removes the guesswork in calling the service.
 
 Check out [OpenAPI-Spec](https://github.com/OAI/OpenAPI-Specification) for additional information about the OpenAPI project, including additional libraries with support for other languages and more. 
 
 ## How do I use this?
-At this point, you've likely generated a client setup.  It will include something along these lines:
+Clone this repo into your local machine. It will include:
 
 ```
 .
@@ -50,6 +50,7 @@ For mac/linux:
 ```
 java -cp /path/to/openapi-generator-cli.jar:/path/to/your.jar org.openapitools.codegen.OpenAPIGenerator generate -g twilio-go -i /path/to/openapi.yaml -o ./test
 ```
+
 (Do not forget to replace the values `/path/to/openapi-generator-cli.jar`, `/path/to/your.jar` and `/path/to/openapi.yaml` in the previous command)
 
 For Windows users, you will need to use `;` instead of `:` in the classpath, e.g.
@@ -57,19 +58,14 @@ For Windows users, you will need to use `;` instead of `:` in the classpath, e.g
 java -cp /path/to/openapi-generator-cli.jar;/path/to/your.jar org.openapitools.codegen.OpenAPIGenerator generate -g twilio-go -i /path/to/openapi.yaml -o ./test
 ```
 
-Now your templates are available to the client generator and you can write output values
+Now your templates are available to the client generator, and you can write output values.
 
 ## But how do I modify this?
-The `TwilioGoGenerator.java` has comments in it--lots of comments.  There is no good substitute
-for reading the code more, though.  See how the `TwilioGoGenerator` implements `CodegenConfig`.
-That class has the signature of all values that can be overridden.
+The `TwilioGoGenerator.java` has comments in it--lots of comments.  There is no good substitute for reading the code more, though.  See how the `TwilioGoGenerator` implements `CodegenConfig`. That class has the signature of all values that can be overridden.
 
-You can also step through TwilioGoGenerator.java in a debugger.  Just debug the JUnit
-test in DebugCodegenLauncher.  That runs the command line tool and lets you inspect what the code is doing.  
+You can also step through TwilioGoGenerator.java in a debugger.  Just debug the JUnit test in DebugCodegenLauncher. That runs the command line tool and lets you inspect what the code is doing.  
 
-For the templates themselves, you have a number of values available to you for generation.
-You can execute the `java` command from above while passing different debug flags to show
-the object you have available during client generation:
+For the templates themselves, you have a number of values available to you for generation. You can execute the `java` command from above while passing different debug flags to show the object you have available during client generation:
 
 ```
 # The following additional debug options are available for all codegen targets:
