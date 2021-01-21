@@ -7,8 +7,8 @@ import (
 	"fmt"
 	twilio "github.com/twilio/twilio-go/client"
 	"net/url"
+	"strings"
 	{{#imports}}
-	"{{import}}"
 	{{/imports}}
 )
 
@@ -28,7 +28,9 @@ func New{{classname}}Service(client *twilio.Client) *{{classname}}Service {
 // {{{nickname}}}Params Optional parameters for the method '{{{nickname}}}'
 type {{{nickname}}}Params struct {
 {{#optionalParams}}
-	{{baseName}} *{{{dataType}}} `json:"{{baseName}}{{^required}},omitempty{{/required}}"{{#withXml}} xml:"{{baseName}}{{#isXmlAttribute}},attr{{/isXmlAttribute}}"{{/withXml}}{{#vendorExtensions.x-go-custom-tag}} {{{.}}}{{/vendorExtensions.x-go-custom-tag}}`
+    {{^isHeaderParam}}
+	{{baseName}} *{{{dataType}}} `json:"{{baseName}}{{^required}},omitempty{{/required}}"{{#withXml}} xml:"{{baseName}}{{#isXmlAttribute}},attr{{/isXmlAttribute}}"{{/withXml}}{{#vendorExtensions.x-go-custom-tag}}{{/vendorExtensions.x-go-custom-tag}}`
+    {{/isHeaderParam}}
 {{/optionalParams}}
 }
 {{/hasOptionalParams}}
@@ -59,7 +61,7 @@ func (c *{{{classname}}}Service) {{{nickname}}}({{#allParams}}{{#required}}{{par
 	path = strings.Replace(path, "{"+"{{baseName}}"+"}", {{paramName}}, -1)
 	{{/pathParams}}
 
-	data := {{#hasOptionalParams}}url.Values{}{{/hasOptionalParams}}{{^hasOptionalParams}}0{{/hasOptionalParams}}
+	data := {{#hasOptionalParams}}url.Values{}{{/hasOptionalParams}}{{^hasOptionalParams}}""{{/hasOptionalParams}}
 	headers := {{#hasHeaderParams}}make(map[string]interface{}){{/hasHeaderParams}}{{^hasHeaderParams}}0{{/hasHeaderParams}}
 
 	{{#hasOptionalParams}}
@@ -73,10 +75,10 @@ func (c *{{{classname}}}Service) {{{nickname}}}({{#allParams}}{{#required}}{{par
 			return nil, err
 		}
 
-		data.Set("{{baseName}}", string(v))
+		data.Set("{{baseName}}", fmt.Sprint(v))
 		{{/isFreeFormObject}}
 		{{^isFreeFormObject}}
-		data.Set("{{baseName}}", {{^isString}}string({{/isString}}*params.{{baseName}}{{^isString}}){{/isString}})
+		data.Set("{{baseName}}", {{^isString}}fmt.Sprint({{/isString}}*params.{{baseName}}{{^isString}}){{/isString}})
 		{{/isFreeFormObject}}
 	}
 	{{/isHeaderParam}}

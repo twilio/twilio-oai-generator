@@ -62,4 +62,5 @@ public class TwilioGoGenerator extends AbstractTwilioGoGenerator {
     public String getHelp() {
         return "Generates a Go client library (beta).";
     }
+
 }
