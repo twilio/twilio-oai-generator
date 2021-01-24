@@ -61,15 +61,6 @@ public abstract class AbstractTwilioGoGenerator extends GoClientCodegen {
 		return name;
 	}
 
-
-	@Override
-	public CodegenProperty fromProperty(String name, Schema p) {
-		name = toVarName(name);
-		CodegenProperty prop = super.fromProperty(name, p);
-		prop.baseName = toVarName(prop.baseName);
-		return prop;
-	}
-
 	@Override
 	public String toParamName(String name) {
 		name = toVarName(name);
@@ -84,7 +75,6 @@ public abstract class AbstractTwilioGoGenerator extends GoClientCodegen {
 		List<CodegenOperation> operationList = (List<CodegenOperation>) operations.get("operation");
 		for (CodegenOperation op : operationList) {
 			for (CodegenParameter p : op.allParams) {
-				p.baseName = toVarName(p.baseName);
 				p.paramName = toVarName(p.paramName);
 			}
 		}
