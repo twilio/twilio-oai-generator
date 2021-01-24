@@ -45,7 +45,7 @@ type {{{nickname}}}Params struct {
 {{#hasOptionalParams}}
  * @param optional nil or *{{{nickname}}}Opts - Optional Parameters:
 {{#optionalParams}}
- * @param "{{baseName}}" ({{#isNullable}}*{{/isNullable}}{{{dataType}}}) - {{#description}}{{{.}}}{{/description}}
+ * @param "{{paramName}}" ({{#isNullable}}*{{/isNullable}}{{{dataType}}}) - {{#description}}{{{.}}}{{/description}}
 {{/optionalParams}}
 {{/hasOptionalParams}}
 {{#returnType}}
@@ -55,7 +55,7 @@ type {{{nickname}}}Params struct {
 func (c *{{{classname}}}Service) {{{nickname}}}({{#allParams}}{{#required}}{{paramName}} {{{dataType}}}{{#hasMore}}, {{/hasMore}}{{/required}}{{/allParams}}{{#hasOptionalParams}}params *{{{nickname}}}Params{{/hasOptionalParams}}) ({{#returnType}}*{{{returnType}}}, {{/returnType}}error) {
 	path := "{{{path}}}"
 	{{#pathParams}}
-	path = strings.Replace(path, "{"+"{{baseName}}"+"}", {{^isString}}fmt.Sprint({{/isString}}{{paramName}}{{^isString}}){{/isString}}, -1)
+	path = strings.Replace(path, "{"+"{{paramName}}"+"}", {{^isString}}fmt.Sprint({{/isString}}{{paramName}}{{^isString}}){{/isString}}, -1)
 	{{/pathParams}}
 
 
@@ -73,7 +73,7 @@ func (c *{{{classname}}}Service) {{{nickname}}}({{#allParams}}{{#required}}{{par
 			return nil, err
 		}
 
-		data.Set("{{baseName}}", fmt.Sprint(v))
+		data.Set("{{paramName}}", fmt.Sprint(v))
 		{{/isFreeFormObject}}
 		{{^isFreeFormObject}}
 		data.Set("{{paramName}}", {{^isListContainer}}{{^isString}}fmt.Sprint({{/isString}}*params.{{paramName}}{{^isString}}){{/isString}}){{/isListContainer}} {{#isListContainer}}strings.Join(*params.{{paramName}}, ",")){{/isListContainer}}
