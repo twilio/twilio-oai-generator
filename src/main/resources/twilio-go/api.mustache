@@ -19,7 +19,7 @@ type {{classname}}Service struct {
 func New{{classname}}Service(client *twilio.Client) *{{classname}}Service {
 	return &{{classname}}Service {
 		client: client,
-		baseURL: fmt.Sprintf("https://studio.%s", client.BaseURL),
+		baseURL: fmt.Sprintf("{{#operation}}{{#-first}}{{#servers}}{{url}}{{/servers}}{{/-first}}{{/operation}}"),
 	}
 }
 {{#operation}}
