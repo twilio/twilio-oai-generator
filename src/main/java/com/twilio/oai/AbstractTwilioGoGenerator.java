@@ -55,8 +55,8 @@ public abstract class AbstractTwilioGoGenerator extends GoClientCodegen {
 	@Override
 	public String toVarName(String name) {
 		name = name.replaceAll("[-+.^:,]","");
-		name = name.replace("<","lesserThan");
-		name = name.replace(">","greaterThan");
+		name = name.replace("<","Before");
+		name = name.replace(">","After");
 		name = super.toVarName(name);
 		return name;
 	}
