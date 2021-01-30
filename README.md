@@ -46,14 +46,17 @@ mvn package
 
 In your generator project. A single jar file will be produced in `target`. You can now use that with [OpenAPI Generator](https://openapi-generator.tech):
 
-For mac/linux:
+### For mac/linux:
 ```
 java -cp /path/to/openapi-generator-cli.jar:/path/to/your.jar org.openapitools.codegen.OpenAPIGenerator generate -g twilio-go -i /path/to/openapi.yaml -o ./test
 ```
 
 (Do not forget to replace the values `/path/to/openapi-generator-cli.jar`, `/path/to/your.jar` and `/path/to/openapi.yaml` in the previous command)
 
-For Windows users, you will need to use `;` instead of `:` in the classpath, e.g.
+Here is an example script to generate [twilio-go](https://github.com/twilio/twilio-go) from our [OpenAPI specification](https://github.com/twilio/twilio-oai): [build-twilio-go.sh](./examples/build-twilio-go.sh).
+
+### For Windows
+You will need to use `;` instead of `:` in the classpath, e.g.
 ```
 java -cp /path/to/openapi-generator-cli.jar;/path/to/your.jar org.openapitools.codegen.OpenAPIGenerator generate -g twilio-go -i /path/to/openapi.yaml -o ./test
 ```
