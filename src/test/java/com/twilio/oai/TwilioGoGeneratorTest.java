@@ -11,8 +11,7 @@ import org.openapitools.codegen.config.CodegenConfigurator;
  * and then see the results in the out directory. 
  *
  * To experiment with debugging your code generator:
- * 1) Set a break point in TwilioGoGenerator.java in the postProcessOperationsWithModels() method.
- * 2) To launch this test in Eclipse: right-click | Debug As | JUnit Test
+ * 1) To launch this test in Eclipse: right-click | Debug As | JUnit Test
  *
  */
 public class TwilioGoGeneratorTest {
