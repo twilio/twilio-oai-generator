@@ -52,34 +52,13 @@ public abstract class AbstractTwilioGoGenerator extends GoClientCodegen {
 		}
 	}
 
+
 	@Override
-	public String toVarName(String name) {
+	public String toParamName(String name) {
 		name = name.replaceAll("[-+.^:,]","");
 		name = name.replace("<","Before");
 		name = name.replace(">","After");
 		name = super.toVarName(name);
 		return name;
 	}
-
-	@Override
-	public String toParamName(String name) {
-		name = toVarName(name);
-		String name_sanitized = super.toParamName(name);
-		return name;
-	}
-
-	@Override
-	public Map<String, Object> postProcessOperationsWithModels(Map<String, Object> objs, List<Object> allModels) {
-		objs = super.postProcessOperationsWithModels(objs, allModels);
-		Map<String, Object> operations = (Map<String, Object>) objs.get("operations");
-		List<CodegenOperation> operationList = (List<CodegenOperation>) operations.get("operation");
-		for (CodegenOperation op : operationList) {
-			for (CodegenParameter p : op.allParams) {
-				p.paramName = toVarName(p.paramName);
-			}
-		}
-
-		return objs;
-	}
-
 }

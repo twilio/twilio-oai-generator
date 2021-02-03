@@ -18,23 +18,6 @@ public class TwilioGoGenerator extends AbstractTwilioGoGenerator {
         supportingFiles.add(new SupportingFile("response.mustache", "response.go"));
     }
 
-    @SuppressWarnings("unchecked")
-    @Override
-    public Map<String, Object> postProcessOperationsWithModels(final Map<String, Object> objs, final List<Object> allModels) {
-        final Map<String, Object> results = super.postProcessOperationsWithModels(objs, allModels);
-
-        final Map<String, Object> ops = (Map<String, Object>) results.get("operations");
-        final ArrayList<CodegenOperation> opList = (ArrayList<CodegenOperation>) ops.get("operation");
-
-        // iterate over the operation and perhaps modify something
-        for (final CodegenOperation co : opList) {
-            co.vendorExtensions.put("x-is-delete-operation", "DELETE".equalsIgnoreCase(co.httpMethod));
-            System.out.println(co);
-        }
-
-        return results;
-    }
-
     @Override
     public void postProcessParameter(final CodegenParameter parameter) {
         // Make sure required non-path params get into the options block.
