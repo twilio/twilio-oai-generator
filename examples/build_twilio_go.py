@@ -17,5 +17,5 @@ for domain in os.listdir(openapi_spec_path):
 
     command = f"java -cp ./openapi-generator-cli.jar:target/twilio-go-openapi-generator-1.0.0.jar " \
               f"org.openapitools.codegen.OpenAPIGenerator generate -g twilio-go -i {full_path} -o " \
-              f"path/to/twilio-go/twilio/rest/{domain_name}/{version} --ignore-file-override=./.openapi-generator "
+              f"path/to/twilio-go/rest/{domain_name}/{version} --ignore-file-override=./.openapi-generator "
     os.system(command)
