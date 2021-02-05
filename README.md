@@ -53,7 +53,7 @@ java -cp /path/to/openapi-generator-cli.jar:/path/to/your.jar org.openapitools.c
 
 (Do not forget to replace the values `/path/to/openapi-generator-cli.jar`, `/path/to/your.jar` and `/path/to/openapi.yaml` in the previous command)
 
-Here is an example script to generate [twilio-go](https://github.com/twilio/twilio-go) from our [OpenAPI specification](https://github.com/twilio/twilio-oai): [build-twilio-go.sh](./examples/build-twilio-go.sh).
+Here is an example script to generate [twilio-go](https://github.com/twilio/twilio-go) from our [OpenAPI specification](https://github.com/twilio/twilio-oai): [build_twilio_go.py](./examples/build_twilio_go.py).
 
 ### For Windows
 You will need to use `;` instead of `:` in the classpath, e.g.
