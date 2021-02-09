@@ -1,4 +1,4 @@
-.PHONY: generate
+.PHONY: install
 
 OPENAPI_GENERATOR_VERSION=4.3.1
 
