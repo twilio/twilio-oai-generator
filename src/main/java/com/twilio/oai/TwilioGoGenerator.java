@@ -16,7 +16,6 @@ public class TwilioGoGenerator extends AbstractTwilioGoGenerator {
 
         supportingFiles.add(new SupportingFile("README.mustache", "README.md"));
         supportingFiles.add(new SupportingFile("response.mustache", "response.go"));
-        supportingFiles.add(new SupportingFile("singleclient.mustache", "client.go"));
     }
 
     @Override
