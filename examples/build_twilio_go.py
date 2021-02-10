@@ -4,6 +4,7 @@ import sys
 
 regex = ".+?(?=_v[0-9]+)"
 
+
 def build(openapi_spec_path, go_path):
     for domain in os.listdir(openapi_spec_path):
         full_path = os.path.join(openapi_spec_path, domain)
@@ -19,6 +20,7 @@ def build(openapi_spec_path, go_path):
                   f"org.openapitools.codegen.OpenAPIGenerator generate -g twilio-go -i {full_path} -o " \
                   f"{go_path}/twilio/rest/{domain_name}/{version} --ignore-file-override=./.openapi-generator "
         os.system(command)
+
 
 if __name__ == "__main__":
     if len(sys.argv) < 3:
