@@ -8,7 +8,12 @@ import (
 	twilio "github.com/twilio/twilio-go/client"
 	"net/url"
 	{{#imports}}
-	{{/imports}}
+    {{#-first}}
+    {{/-first}}
+    "{{import}}"
+    {{#-last}}
+    {{/-last}}
+    {{/imports}}
 )
 
 type {{classname}}Service struct {
