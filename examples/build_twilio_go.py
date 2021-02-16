@@ -2,23 +2,35 @@ import os
 import re
 import sys
 
-regex = ".+?(?=_v[0-9]+)"
+
+def get_domain_info(domain, oai_spec_location):
+    full_path = os.path.join(oai_spec_location, domain)
+    fullname = os.path.splitext(domain)[0]
+    regex_splits = re.split(r'(.+?(?=_v[0-9]+))', fullname, flags=re.IGNORECASE)
+    splits = list(filter(None, regex_splits))
+    domain_name = splits[0].replace('twilio_', "")
+    api_version = (splits[1]).replace('_', '') if len(splits) > 1 else ''
+    return domain_name, full_path, api_version
+
+
+def get_project_version():
+    from xml.etree import ElementTree as etree
+    tree = etree.ElementTree()
+    tree.parse("pom.xml")
+    namespace = "{http://maven.apache.org/POM/4.0.0}"
+    version = tree.getroot().findtext(f"{namespace}version")
+    return version
 
 
 def build(openapi_spec_path, go_path):
+    project_version = get_project_version()
+
     for domain in os.listdir(openapi_spec_path):
-        full_path = os.path.join(openapi_spec_path, domain)
-        fullname = os.path.splitext(domain)[0]
+        domain_name, full_path, api_version = get_domain_info(domain, openapi_spec_path)
 
-        regex_splits = re.split(r'(.+?(?=_v[0-9]+))', fullname, flags=re.IGNORECASE)
-        splits = list(filter(None, regex_splits))
-
-        domain_name = splits[0].replace('twilio_', "")
-        version = (splits[1]).replace('_', '') if len(splits) > 1 else ''
-
-        command = f"java -cp ./openapi-generator-cli.jar:target/twilio-go-openapi-generator-1.0.0.jar " \
+        command = f"java -cp ./openapi-generator-cli.jar:target/twilio-go-openapi-generator-{project_version}.jar " \
                   f"org.openapitools.codegen.OpenAPIGenerator generate -g twilio-go -i {full_path} -o " \
-                  f"{go_path}/twilio/rest/{domain_name}/{version} --ignore-file-override=./.openapi-generator "
+                  f"{go_path}/twilio/rest/{domain_name}/{api_version}"
         os.system(command)
 
 
