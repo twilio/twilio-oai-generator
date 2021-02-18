@@ -1,7 +1,7 @@
 import os
 import re
 import sys
-
+from pathlib import Path
 
 def get_domain_info(domain, oai_spec_location):
     full_path = os.path.join(oai_spec_location, domain)
@@ -16,7 +16,9 @@ def get_domain_info(domain, oai_spec_location):
 def get_project_version():
     from xml.etree import ElementTree as etree
     tree = etree.ElementTree()
-    tree.parse("pom.xml")
+    parent_dir = Path(__file__).parent.parent
+    pom = f"{parent_dir}/pom.xml"
+    tree.parse(pom)
     namespace = "{http://maven.apache.org/POM/4.0.0}"
     version = tree.getroot().findtext(f"{namespace}version")
     return version
@@ -24,11 +26,11 @@ def get_project_version():
 
 def build(openapi_spec_path, go_path):
     project_version = get_project_version()
-
     for domain in os.listdir(openapi_spec_path):
         domain_name, full_path, api_version = get_domain_info(domain, openapi_spec_path)
+        parent_dir = Path(__file__).parent.parent
 
-        command = f"java -cp ./openapi-generator-cli.jar:target/twilio-go-openapi-generator-{project_version}.jar " \
+        command = f"cd {parent_dir} && java -cp ./openapi-generator-cli.jar:target/twilio-go-openapi-generator-{project_version}.jar " \
                   f"org.openapitools.codegen.OpenAPIGenerator generate -g twilio-go -i {full_path} -o " \
                   f"{go_path}/twilio/rest/{domain_name}/{api_version}"
         os.system(command)
