@@ -3,7 +3,7 @@
 {{^isEnum}}## Properties
 Name | Type | Notes
 ------------ | ------------- | -------------
-{{#allVars}}**{{name}}** | {{#isNullable}}Pointer to {{/isNullable}}{{#isPrimitiveType}}**{{{dataType}}}**{{/isPrimitiveType}}{{^isPrimitiveType}}[**{{{dataType}}}**]({{complexType}}.md){{/isPrimitiveType}} | {{^required}}[optional] {{/required}}{{#isReadOnly}}[readonly] {{/isReadOnly}}{{#defaultValue}}[default to {{{.}}}]{{/defaultValue}}
+{{#allVars}}**{{name}}** | {{#isNullable}}Pointer to {{/isNullable}}{{#isPrimitiveType}}**{{{dataType}}}**{{/isPrimitiveType}}{{^isPrimitiveType}}[**{{{dataType}}}**]({{complexType}}.md){{/isPrimitiveType}} | {{^required}}{{^isNullable}}[optional] {{/isNullable}}{{/required}}{{#isReadOnly}}[readonly] {{/isReadOnly}}{{#defaultValue}}[default to {{{.}}}]{{/defaultValue}}
 {{/allVars}}
 {{/isEnum}}
 {{#isEnum}}## Enum
