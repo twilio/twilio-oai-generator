@@ -25,6 +25,7 @@ public abstract class AbstractTwilioGoGenerator extends GoClientCodegen {
 		super.processOpts();
 
 		additionalProperties.put(CodegenConstants.IS_GO_SUBMODULE, true);
+		additionalProperties.put(CodegenConstants.ENUM_CLASS_PREFIX, true);
 
 		supportingFiles.clear();
 	}
