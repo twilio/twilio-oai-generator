@@ -1,4 +1,4 @@
-# {{invokerPackage}}\{{classname}}{{#description}}
+# {{invokerPackage}}{{classname}}{{#description}}
 
 {{description}}{{/description}}
 
@@ -26,7 +26,7 @@ Method | HTTP request | Description
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
 **ctx** | **context.Context** | context for authentication, logging, cancellation, deadlines, tracing, etc.{{/-last}}{{/allParams}}{{#allParams}}{{#required}}
-**{{paramName}}** | {{#isFile}}**{{dataType}}**{{/isFile}}{{#isPrimitiveType}}**{{dataType}}**{{/isPrimitiveType}}{{^isPrimitiveType}}{{^isFile}}[**{{dataType}}**]({{baseType}}.md){{/isFile}}{{/isPrimitiveType}}| {{description}} | {{#defaultValue}}[default to {{defaultValue}}]{{/defaultValue}}{{/required}}{{/allParams}}{{#hasOptionalParams}}
+**{{paramName}}** | {{#isFile}}**{{dataType}}**{{/isFile}}{{#isPrimitiveType}}**{{dataType}}**{{/isPrimitiveType}}{{^isPrimitiveType}}{{^isFile}}[**{{dataType}}**]({{dataType}}.md){{/isFile}}{{/isPrimitiveType}}| {{description}} | {{#defaultValue}}[default to {{defaultValue}}]{{/defaultValue}}{{/required}}{{/allParams}}{{#hasOptionalParams}}
  **optional** | ***{{{nickname}}}Request** | optional parameters | nil if no parameters
 
 ### Optional Parameters
@@ -40,7 +40,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-{{#returnType}}{{#returnTypeIsPrimitive}}**{{{returnType}}}**{{/returnTypeIsPrimitive}}{{^returnTypeIsPrimitive}}[**{{{returnType}}}**]({{returnBaseType}}.md){{/returnTypeIsPrimitive}}{{/returnType}}{{^returnType}} (empty response body){{/returnType}}
+{{#returnType}}{{#returnTypeIsPrimitive}}**{{{returnType}}}**{{/returnTypeIsPrimitive}}{{^returnTypeIsPrimitive}}[**{{{returnType}}}**]({{returnType}}.md){{/returnTypeIsPrimitive}}{{/returnType}}{{^returnType}} (empty response body){{/returnType}}
 
 ### Authorization
 
