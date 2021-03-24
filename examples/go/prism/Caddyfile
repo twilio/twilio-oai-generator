@@ -1,0 +1,6 @@
+http://localhost
+
+route /twilio_accounts_v1/* {
+	uri strip_prefix /twilio_accounts_v1
+	reverse_proxy prism_twilio_accounts_v1:4010
+}
