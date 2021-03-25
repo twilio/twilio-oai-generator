@@ -1,19 +1,10 @@
 version: '3'
 services:
-  proxy:
-    image: caddy
-    volumes:
-      - ./Caddyfile:/etc/caddy/Caddyfile
-    ports:
-      - '80:80'
-    depends_on:
-      - prism_twilio_accounts_v1
-
   golang-test:
     build:
       context: ../../../
     depends_on:
-      - proxy
+      - prism_twilio_accounts_v1
 
   prism_twilio_accounts_v1:
     image: stoplight/prism:4
