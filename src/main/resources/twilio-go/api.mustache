@@ -17,14 +17,14 @@ import (
 )
 
 type {{classname}}Service struct {
-	baseURL string
+	BaseURL string
 	client  *twilio.Client
 }
 
 func New{{classname}}Service(client *twilio.Client) *{{classname}}Service {
 	return &{{classname}}Service {
 		client: client,
-		baseURL: "{{#operation}}{{#-first}}{{#servers}}{{url}}{{/servers}}{{/-first}}{{/operation}}",
+		BaseURL: "{{#operation}}{{#-first}}{{#servers}}{{url}}{{/servers}}{{/-first}}{{/operation}}",
 	}
 }
 
@@ -96,7 +96,7 @@ func (c *{{{classname}}}Service) {{{nickname}}}({{#allParams}}{{#required}}{{par
 {{/headerParams}}
 {{/hasHeaderParams}}
 
-    resp, err := c.client.{{httpMethod}}(c.baseURL+path, data, headers)
+    resp, err := c.client.{{httpMethod}}(c.BaseURL+path, data, headers)
 {{#returnType}}
     if err != nil {
         return nil, err

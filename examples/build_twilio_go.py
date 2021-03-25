@@ -11,8 +11,6 @@ def get_domain_info(domain, oai_spec_location, is_file):
     splits = list(filter(None, regex_splits))
     domain_name = splits[0].replace('twilio_', "")
     api_version = (splits[1]).replace('_', '') if len(splits) > 1 else ''
-    print(
-        f'domain_name: {domain_name}, full_path: {full_path}, api_version: {api_version}')
     return domain_name, full_path, api_version
 
 

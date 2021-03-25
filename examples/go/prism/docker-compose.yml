@@ -4,9 +4,9 @@ services:
     build:
       context: ../../../
     depends_on:
-      - prism_twilio_accounts_v1
+      - prism_twilio
 
-  prism_twilio_accounts_v1:
+  prism_twilio:
     image: stoplight/prism:4
     volumes:
       - ../../../examples/go/oai.yaml:/tmp/oai.yaml
