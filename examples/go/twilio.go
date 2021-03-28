@@ -8,7 +8,7 @@ import (
 // Twilio provides access to Twilio services.
 type Twilio struct {
 	*client.Credentials
-	*client.Client
+	*client.TestClient
 	common  service
 	OpenApi *openapi.DefaultApiService
 }
@@ -17,21 +17,25 @@ type service struct {
 	client *Twilio
 }
 
-// NewClient provides an initialized Twilio client.
-func NewClient(accountSID string, authToken string, baseurl string) *Twilio {
+func NewClient(accountSID string, authToken string) *Twilio {
 	credentials := &client.Credentials{AccountSID: accountSID, AuthToken: authToken}
+
+	baseClient := client.Client{
+		Credentials: credentials,
+		BaseURL:     "twilio.com",
+	}
 
 	c := &Twilio{
 		Credentials: credentials,
-		Client: &client.Client{
+		TestClient: &client.TestClient{
 			Credentials: credentials,
-			BaseURL:     baseurl,
+			BaseURL:     "twilio.com",
+			Client: baseClient,
 		},
 	}
 
 	c.common.client = c
-	c.OpenApi = openapi.NewDefaultApiService(c.Client)
-	c.OpenApi.BaseURL = baseurl
+	c.OpenApi = openapi.NewDefaultApiService(c.TestClient)
 
 	return c
 }

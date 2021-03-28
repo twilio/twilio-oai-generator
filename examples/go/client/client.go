@@ -3,18 +3,17 @@ package client
 
 import (
 	"encoding/json"
+	"github.com/pkg/errors"
+	twilioError "github.com/twilio/twilio-go/framework/error"
 	"net/http"
 	"net/url"
 	"regexp"
 	"strconv"
 	"strings"
 	"time"
-
-	"github.com/pkg/errors"
-	twilioError "github.com/twilio/twilio-go/framework/error"
 )
 
-// Credentials store user authentication credentials.
+//Credentials store user authentication credentials.
 type Credentials struct {
 	AccountSID string
 	AuthToken  string
@@ -28,23 +27,13 @@ type Client struct {
 }
 
 // default http Client should not follow redirects and return the most recent response
-func defaultHTTPClient() *http.Client {
+func (c *Client) defaultHTTPClient() *http.Client {
 	return &http.Client{
 		CheckRedirect: func(req *http.Request, via []*http.Request) error {
 			return http.ErrUseLastResponse
 		},
 		Timeout: time.Second * 10,
 	}
-}
-
-// NewClient initializes a new Client with the given credentials
-func NewClient(accountSid string, authToken string) *Client {
-	c := &Client{
-		HTTPClient: defaultHTTPClient(),
-	}
-	creds := &Credentials{AccountSID: accountSid, AuthToken: authToken}
-	c.Credentials = creds
-	return c
 }
 
 func (c *Client) basicAuth() (string, string) {
@@ -62,9 +51,9 @@ const (
 	escapee   = '\\'
 )
 
-func doWithErr(req *http.Request, client *http.Client) (*http.Response, error) {
+func (c *Client) doWithErr(req *http.Request, client *http.Client) (*http.Response, error) {
 	if client == nil {
-		client = defaultHTTPClient()
+		client = c.defaultHTTPClient()
 	}
 
 	res, err := client.Do(req)
@@ -117,7 +106,7 @@ func (c Client) SendRequest(method string, rawURL string, queryParams interface{
 		req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
 	}
 
-	return doWithErr(req, c.HTTPClient)
+	return c.doWithErr(req, c.HTTPClient)
 }
 
 // Post performs a POST request on the object at the provided URI in the context of the Request's BaseURL
