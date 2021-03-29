@@ -18,10 +18,10 @@ import (
 
 type {{classname}}Service struct {
 	baseURL string
-	client  *twilio.Client
+	client  twilio.BaseClient
 }
 
-func New{{classname}}Service(client *twilio.Client) *{{classname}}Service {
+func New{{classname}}Service(client twilio.BaseClient) *{{classname}}Service {
 	return &{{classname}}Service {
 		client: client,
 		baseURL: "{{#operation}}{{#-first}}{{#servers}}{{url}}{{/servers}}{{/-first}}{{/operation}}",

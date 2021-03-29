@@ -1,0 +1,15 @@
+version: '3'
+services:
+  golang-test:
+    build:
+      context: ../../../
+    depends_on:
+      - prism_twilio
+
+  prism_twilio:
+    image: stoplight/prism:4
+    volumes:
+      - ../../../examples/go/oai.yaml:/tmp/oai.yaml
+    command: >
+      mock -p 4010 --host 0.0.0.0
+      /tmp/oai.yaml
