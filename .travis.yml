@@ -1,0 +1,13 @@
+language: java
+install:
+- make install
+script:
+- make test-docker
+notifications:
+  slack:
+    if: branch = main
+    on_pull_requests: false
+    on_success: never
+    on_failure: change
+    rooms:
+      secure: dUUQik141L7lTWpkvKXt0BUSh0GzrwTqBMJU5jhrC3kd6veOf4IyW2P1Rykpvvn/1pjvlLk8oUIUXS0Ca8W0C+p/zk8B2o1kWVFO4IMqrVis7WEuh8B1lgC6a6Wn0wIi/NFLBOw7aNc7sYUWEVNAwmShfAAkEGpoGKNHB9VWuF8CJx4FNiJnqZqbSrvg+lHg1pMl2gaUSjDnMst7yjqaeGTI5aRdm+Z1RmIfSBwpEkGHVkjloAamZ2J9rqyYvKjZX26g1ML+x6YiZ7MNllx2i0M68sc/OIOJC74qcMEUElkX4if+I87kz/JfYlYdRH+54V3URnJKmIbA/RErqlFGeNXjAB4yjy3wyOBTjz7C8u9/aRnG/Lz4Rt9DKJ2n3tYP1xd4yzNOjSG81UsVFJ/H0Y5NJCbNkivD3hoTZQzwvHq/RRoJ8E1+ww1g4/SjAgtaKTIRxKVMARXtWBMCmDIcpg/odGQM4tOd/xS7045yGma0AKYGMQrHZbtfEKWDGhkDBGSu6Kzuv9iEdGxHbC+2D1SpwyK/URXyk4QZyKHXtqqZVaCpkgbK0SpzOkvtEwklOrsUZfCVqMf/XCUXOSjQTMLCNaLr4IhdhP1wkB4Y2KTKB00KWoKkrMZFTMzPiuXRrNzoxsf0pmUsqQAwv8zRt5NM0f+LntYrtSsXwttnT1g=
