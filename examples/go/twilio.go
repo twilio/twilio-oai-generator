@@ -30,7 +30,7 @@ func NewClient(accountSID string, authToken string) *Twilio {
 		TestClient: &client.TestClient{
 			Credentials: credentials,
 			BaseURL:     "twilio.com",
-			Client: baseClient,
+			Client:      baseClient,
 		},
 	}
 
