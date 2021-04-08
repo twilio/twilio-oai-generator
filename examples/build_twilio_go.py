@@ -4,7 +4,7 @@ import sys
 from pathlib import Path
 
 
-def get_domain_info(domain, oai_spec_location, is_file):
+def get_domain_info(domain, oai_spec_location, is_file=False):
     full_path = os.path.join(oai_spec_location, domain) if not is_file else oai_spec_location
     fullname = os.path.splitext(domain)[0]
     regex_splits = re.split(r'(.+?(?=_v[0-9]+))', fullname, flags=re.IGNORECASE)

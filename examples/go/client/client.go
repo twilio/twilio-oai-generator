@@ -3,14 +3,16 @@ package client
 
 import (
 	"encoding/json"
-	"github.com/pkg/errors"
-	twilioError "github.com/twilio/twilio-go/framework/error"
+	"fmt"
 	"net/http"
 	"net/url"
 	"regexp"
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/pkg/errors"
+	twilioError "github.com/twilio/twilio-go/framework/error"
 )
 
 //Credentials store user authentication credentials.
@@ -27,7 +29,7 @@ type Client struct {
 }
 
 // default http Client should not follow redirects and return the most recent response
-func (c *Client) defaultHTTPClient() *http.Client {
+func defaultHTTPClient() *http.Client {
 	return &http.Client{
 		CheckRedirect: func(req *http.Request, via []*http.Request) error {
 			return http.ErrUseLastResponse
@@ -51,9 +53,11 @@ const (
 	escapee   = '\\'
 )
 
-func (c *Client) doWithErr(req *http.Request, client *http.Client) (*http.Response, error) {
+func (c *Client) doWithErr(req *http.Request) (*http.Response, error) {
+	client := c.HTTPClient
+
 	if client == nil {
-		client = c.defaultHTTPClient()
+		client = defaultHTTPClient()
 	}
 
 	res, err := client.Do(req)
@@ -75,7 +79,7 @@ func (c *Client) doWithErr(req *http.Request, client *http.Client) (*http.Respon
 }
 
 // SendRequest verifies, constructs, and authorizes an HTTP request.
-func (c Client) SendRequest(method string, rawURL string, queryParams interface{}, formData url.Values) (*http.Response, error) {
+func (c Client) SendRequest(method string, rawURL string, queryParams interface{}, formData url.Values, headers map[string]interface{}) (*http.Response, error) {
 	u, err := url.Parse(rawURL)
 	if err != nil {
 		return nil, err
@@ -106,23 +110,30 @@ func (c Client) SendRequest(method string, rawURL string, queryParams interface{
 		req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
 	}
 
-	return c.doWithErr(req, c.HTTPClient)
+	if headers != nil {
+		for k, v := range headers {
+			req.Header.Add(k, fmt.Sprint(v))
+		}
+	}
+
+	return c.doWithErr(req)
+
 }
 
 // Post performs a POST request on the object at the provided URI in the context of the Request's BaseURL
 // with the provided data as parameters.
-func (c Client) Post(path string, bodyData url.Values, headers interface{}) (*http.Response, error) {
-	return c.SendRequest(http.MethodPost, path, nil, bodyData)
+func (c Client) Post(path string, bodyData url.Values, headers map[string]interface{}) (*http.Response, error) {
+	return c.SendRequest(http.MethodPost, path, nil, bodyData, headers)
 }
 
 // Get performs a GET request on the object at the provided URI in the context of the Request's BaseURL
 // with the provided data as parameters.
-func (c Client) Get(path string, queryData interface{}, headers interface{}) (*http.Response, error) {
-	return c.SendRequest(http.MethodGet, path, queryData, nil)
+func (c Client) Get(path string, queryData interface{}, headers map[string]interface{}) (*http.Response, error) {
+	return c.SendRequest(http.MethodGet, path, queryData, nil, headers)
 }
 
 // Delete performs a DELETE request on the object at the provided URI in the context of the Request's BaseURL
 // with the provided data as parameters.
-func (c Client) Delete(path string, nothing interface{}, headers interface{}) (*http.Response, error) {
-	return c.SendRequest(http.MethodDelete, path, nil, nil)
+func (c Client) Delete(path string, nothing interface{}, headers map[string]interface{}) (*http.Response, error) {
+	return c.SendRequest(http.MethodDelete, path, nil, nil, headers)
 }
