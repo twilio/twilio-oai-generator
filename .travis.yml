@@ -1,8 +1,18 @@
-language: java
-install:
-- make install
-script:
-- make test-docker
+jobs:
+  include:
+    - language: java
+      install:
+        - make install
+      script:
+        - make test-docker
+
+    - language: go
+      go:
+      - "1.15"
+      - "1.16"
+      script:
+        - make test
+
 notifications:
   slack:
     if: branch = main
