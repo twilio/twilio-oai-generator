@@ -1,9 +1,8 @@
 language: java
 install:
-  - make install
+- make install
 script:
-  - make test-docker
-
+- make test-docker
 notifications:
   slack:
     if: branch = main
