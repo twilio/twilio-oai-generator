@@ -1,11 +1,12 @@
 package twilio
 
 import (
-	"github.com/stretchr/testify/assert"
-	openapi "github.com/twilio/twilio-go/twilio/rest/oai"
 	"os"
 	"testing"
 	"time"
+
+	"github.com/stretchr/testify/assert"
+	openapi "github.com/twilio/twilio-go/twilio/rest/oai"
 )
 
 var accountSid string

@@ -8,6 +8,3 @@ install:
 
 test-docker:
 	bash ./prism.sh
-
-test:
-	cd examples/go; go test unit_test.go
