@@ -28,7 +28,6 @@ func TestMain(m *testing.M) {
 
 func TestPathIsCorrect(t *testing.T) {
 	mockCtrl := gomock.NewController(t)
-	defer mockCtrl.Finish()
 	testClient := NewMockBaseClient(mockCtrl)
 	testClient.EXPECT().Get(
 		gomock.Any(),
@@ -51,7 +50,6 @@ func TestAddingHeader(t *testing.T) {
 	params.XTwilioWebhookEnabled = &testHeader
 	params.RecordingStatusCallback = &testUri
 	mockCtrl := gomock.NewController(t)
-	defer mockCtrl.Finish()
 
 	expectedHeader := make(map[string]interface{})
 	expectedHeader["XTwilioWebhookEnabled"] = "Custom Header"
@@ -92,7 +90,6 @@ func TestQueryParams(t *testing.T) {
 		PageSize:          &pageSize,
 	}
 	mockCtrl := gomock.NewController(t)
-	defer mockCtrl.Finish()
 	testClient := NewMockBaseClient(mockCtrl)
 	testClient.EXPECT().Get(
 		gomock.Any(),
