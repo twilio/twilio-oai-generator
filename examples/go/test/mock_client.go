@@ -5,7 +5,7 @@
 package test
 
 import (
-    http "net/http"
+	http "net/http"
 	url "net/url"
 	reflect "reflect"
 
