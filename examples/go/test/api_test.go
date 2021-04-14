@@ -1,4 +1,4 @@
-package twilio
+package test
 
 import (
 	"os"
@@ -6,18 +6,19 @@ import (
 	"time"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/twilio/twilio-go"
 	openapi "github.com/twilio/twilio-go/twilio/rest/oai"
 )
 
 var accountSid string
 var authToken string
-var testClient *Twilio
+var testClient *twilio.Twilio
 
 func TestMain(m *testing.M) {
 	// Do setup before the tests are run
 	accountSid = "AC12345678123456781234567812345678"
 	authToken = "CR12345678123456781234567812345678"
-	testClient = NewClient(accountSid, authToken)
+	testClient = twilio.NewClient(accountSid, authToken)
 	testClient.BaseURL = "http://prism_twilio:4010"
 
 	ret := m.Run()

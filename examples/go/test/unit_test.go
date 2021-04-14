@@ -10,21 +10,9 @@ import (
 	openapi "github.com/twilio/twilio-go/twilio/rest/oai"
 	"io/ioutil"
 	"net/http"
-	"os"
 	"testing"
 	"time"
 )
-
-var accountSid string
-var authToken string
-
-func TestMain(m *testing.M) {
-	accountSid = "AC12345678123456781234567812345678"
-	authToken = "CR12345678123456781234567812345678"
-
-	ret := m.Run()
-	os.Exit(ret)
-}
 
 func TestPathIsCorrect(t *testing.T) {
 	mockCtrl := gomock.NewController(t)
@@ -38,7 +26,6 @@ func TestPathIsCorrect(t *testing.T) {
 			return &http.Response{Body: ioutil.NopCloser(bytes.NewReader(nil))}, nil
 		},
 		)
-
 	twilio := openapi.NewDefaultApiService(testClient)
 	twilio.FetchIncomingPhoneNumber(accountSid, "PNXXXXY")
 }
@@ -49,12 +36,12 @@ func TestAddingHeader(t *testing.T) {
 	params := &openapi.CreateCallRecordingParams{}
 	params.XTwilioWebhookEnabled = &testHeader
 	params.RecordingStatusCallback = &testUri
-	mockCtrl := gomock.NewController(t)
 
 	expectedHeader := make(map[string]interface{})
 	expectedHeader["XTwilioWebhookEnabled"] = "Custom Header"
-	testClient := NewMockBaseClient(mockCtrl)
 
+	mockCtrl := gomock.NewController(t)
+	testClient := NewMockBaseClient(mockCtrl)
 	testClient.EXPECT().Post(
 		gomock.Any(),
 		gomock.Any(),
@@ -74,6 +61,13 @@ func TestQueryParams(t *testing.T) {
 	dateCreatedAfter := time.Date(2000, 1, 4, 1, 0, 0, 0, time.UTC)
 	dateTest := "2021-03-31"
 	pageSize := int32(4)
+	params := openapi.ListCallRecordingParams{
+		DateCreated:       &dateCreated,
+		DateCreatedBefore: &dateCreatedBefore,
+		DateCreatedAfter:  &dateCreatedAfter,
+		DateTest:          &dateTest,
+		PageSize:          &pageSize,
+	}
 
 	expectedData := url.Values{}
 	expectedData.Set("DateCreated", fmt.Sprint(dateCreated.Format(time.RFC3339)))
@@ -82,13 +76,6 @@ func TestQueryParams(t *testing.T) {
 	expectedData.Set("DateCreatedAfter", fmt.Sprint(dateCreatedAfter.Format(time.RFC3339)))
 	expectedData.Set("PageSize", fmt.Sprint(pageSize))
 
-	params := openapi.ListCallRecordingParams{
-		DateCreated:       &dateCreated,
-		DateCreatedBefore: &dateCreatedBefore,
-		DateCreatedAfter:  &dateCreatedAfter,
-		DateTest:          &dateTest,
-		PageSize:          &pageSize,
-	}
 	mockCtrl := gomock.NewController(t)
 	testClient := NewMockBaseClient(mockCtrl)
 	testClient.EXPECT().Get(
@@ -100,7 +87,6 @@ func TestQueryParams(t *testing.T) {
 			return &http.Response{Body: ioutil.NopCloser(bytes.NewReader(nil))}, nil
 		},
 		)
-
 	twilio := openapi.NewDefaultApiService(testClient)
 	twilio.ListCallRecording(accountSid, "CA1234", &params)
 }
