@@ -112,7 +112,7 @@ func TestDateInPath(t *testing.T) {
 }
 
 func TestCustomHeaders(t *testing.T) {
-	testHeader := "Test Header"
+	testHeader := "true"
 	testUri := "https://validurl.com"
 	params := &openapi.CreateCallRecordingParams{}
 	params.XTwilioWebhookEnabled = &testHeader

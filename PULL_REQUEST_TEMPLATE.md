@@ -20,6 +20,12 @@ A short description of what this PR does.
 
 ### Checklist
 - [x] I acknowledge that all my contributions will be made under the project's license
+- [ ] Run `make test-docker`
+- [ ] Verify affected language:
+    - [ ] Generate [twilio-go](https://github.com/twilio/twilio-go) from our [OpenAPI specification](https://github.com/twilio/twilio-oai) using the [build_twilio_go.py](./examples/build_twilio_go.py) using `python examples/build_twilio_go.py path/to/twilio-oai/spec/yaml path/to/twilio-go` and inspect the diff
+    - [ ] Run `make test` in `twilio-go`
+    - [ ] Create a pull request in `twilio-go`
+    - [ ] Provide a link below to the pull request
 - [ ] I have made a material change to the repo (functionality, testing, spelling, grammar)
 - [ ] I have read the [Contribution Guidelines](https://github.com/twilio/twilio-oai-generator/blob/main/CONTRIBUTING.md) and my PR follows them
 - [ ] I have titled the PR appropriately
