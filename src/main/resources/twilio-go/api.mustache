@@ -78,7 +78,7 @@ func (c *{{{classname}}}Service) {{{nickname}}}({{#allParams}}{{#required}}{{par
 	    return nil, err
 	}
 
-	data.Set("{{baseName}}", string(v))
+	data.Set("{{baseName}}", string(v)) {{!--  the `baseName` is the value specified in the OpenAPI template and not the mutated `paramName` --}}
 {{/isFreeFormObject}}
 {{^isFreeFormObject}}
     data.Set("{{baseName}}", {{^isArray}}{{^isString}}fmt.Sprint({{/isString}}{{#isDateTime}}({{/isDateTime}}*params.{{paramName}}{{^isString}}{{#isDateTime}}).Format(time.RFC3339){{/isDateTime}}){{/isString}}){{/isArray}} {{#isArray}}strings.Join(*params.{{paramName}}, ",")){{/isArray}}
