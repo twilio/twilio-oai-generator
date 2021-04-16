@@ -7,7 +7,6 @@ import (
 	"fmt"
 	twilio "github.com/twilio/twilio-go/client"
 	"net/url"
-    "html"
 	{{#imports}}
     {{#-first}}
     {{/-first}}
@@ -79,10 +78,10 @@ func (c *{{{classname}}}Service) {{{nickname}}}({{#allParams}}{{#required}}{{par
 	    return nil, err
 	}
 
-	data.Set(html.UnescapeString("{{baseName}}"), string(v))
+	data.Set("{{{baseName}}}", string(v))
 {{/isFreeFormObject}}
 {{^isFreeFormObject}}
-    data.Set(html.UnescapeString("{{baseName}}"), {{^isArray}}{{^isString}}fmt.Sprint({{/isString}}{{#isDateTime}}({{/isDateTime}}*params.{{paramName}}{{^isString}}{{#isDateTime}}).Format(time.RFC3339){{/isDateTime}}){{/isString}}){{/isArray}} {{#isArray}}strings.Join(*params.{{paramName}}, ",")){{/isArray}}
+    data.Set("{{{baseName}}}", {{^isArray}}{{^isString}}fmt.Sprint({{/isString}}{{#isDateTime}}({{/isDateTime}}*params.{{paramName}}{{^isString}}{{#isDateTime}}).Format(time.RFC3339){{/isDateTime}}){{/isString}}){{/isArray}} {{#isArray}}strings.Join(*params.{{paramName}}, ",")){{/isArray}}
 {{/isFreeFormObject}}
 }
 {{/isHeaderParam}}
@@ -92,7 +91,7 @@ func (c *{{{classname}}}Service) {{{nickname}}}({{#allParams}}{{#required}}{{par
 {{#hasHeaderParams}}
 {{#headerParams}}
 	if params != nil && params.{{paramName}} != nil {
-		headers["{{baseName}}"] = *params.{{paramName}}
+		headers["{{{baseName}}}"] = *params.{{paramName}}
 	}
 {{/headerParams}}
 {{/hasHeaderParams}}
