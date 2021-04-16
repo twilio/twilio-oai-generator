@@ -31,14 +31,14 @@ func TestPathIsCorrect(t *testing.T) {
 }
 
 func TestAddingHeader(t *testing.T) {
-	testHeader := "Custom Header"
+	testHeader := "true"
 	testUri := "https://validurl.com"
 	params := &openapi.CreateCallRecordingParams{}
 	params.XTwilioWebhookEnabled = &testHeader
 	params.RecordingStatusCallback = &testUri
 
 	expectedHeader := make(map[string]interface{})
-	expectedHeader["XTwilioWebhookEnabled"] = "Custom Header"
+	expectedHeader["X-Twilio-Webhook-Enabled"] = "true"
 
 	mockCtrl := gomock.NewController(t)
 	testClient := NewMockBaseClient(mockCtrl)
@@ -71,9 +71,9 @@ func TestQueryParams(t *testing.T) {
 
 	expectedData := url.Values{}
 	expectedData.Set("DateCreated", fmt.Sprint(dateCreated.Format(time.RFC3339)))
-	expectedData.Set("DateTest", fmt.Sprint(dateTest))
-	expectedData.Set("DateCreatedBefore", fmt.Sprint(dateCreatedBefore.Format(time.RFC3339)))
-	expectedData.Set("DateCreatedAfter", fmt.Sprint(dateCreatedAfter.Format(time.RFC3339)))
+	expectedData.Set("Date.Test", fmt.Sprint(dateTest))
+	expectedData.Set("DateCreated<", fmt.Sprint(dateCreatedBefore.Format(time.RFC3339)))
+	expectedData.Set("DateCreated>", fmt.Sprint(dateCreatedAfter.Format(time.RFC3339)))
 	expectedData.Set("PageSize", fmt.Sprint(pageSize))
 
 	mockCtrl := gomock.NewController(t)
