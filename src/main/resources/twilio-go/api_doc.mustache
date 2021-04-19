@@ -14,66 +14,32 @@ Method | HTTP request | Description
 
 ## {{{operationId}}}
 
-> {{#returnType}}{{{.}}} {{/returnType}}{{{operationId}}}(ctx{{#pathParams}}, {{paramName}}{{/pathParams}}){{#allParams}}{{^isPathParam}}.{{vendorExtensions.x-export-param-name}}({{paramName}}){{/isPathParam}}{{/allParams}}.Execute()
+> {{#returnType}}{{{returnType}}} {{/returnType}}{{{operationId}}}(ctx, {{#allParams}}{{#required}}{{paramName}}{{#hasMore}}, {{/hasMore}}{{/required}}{{/allParams}}{{#hasOptionalParams}}optional{{/hasOptionalParams}})
 
 {{{summary}}}{{#notes}}
 
-{{{unespacedNotes}}}{{/notes}}
-
-### Example
-
-```go
-package main
-
-import (
-    "context"
-    "fmt"
-    "os"
-{{#vendorExtensions.x-go-import}}
-{{{vendorExtensions.x-go-import}}}
-{{/vendorExtensions.x-go-import}}
-    {{goImportAlias}} "./openapi"
-)
-
-func main() {
-    {{#allParams}}
-    {{paramName}} := {{{vendorExtensions.x-go-example}}} // {{{dataType}}} | {{{description}}}{{^required}} (optional){{/required}}{{#defaultValue}} (default to {{{.}}}){{/defaultValue}}
-    {{/allParams}}
-
-    configuration := {{goImportAlias}}.NewConfiguration()
-    api_client := {{goImportAlias}}.NewAPIClient(configuration)
-    resp, r, err := api_client.{{classname}}.{{operationId}}(context.Background(){{#pathParams}}, {{paramName}}{{/pathParams}}){{#allParams}}{{^isPathParam}}.{{vendorExtensions.x-export-param-name}}({{paramName}}){{/isPathParam}}{{/allParams}}.Execute()
-    if err != nil {
-        fmt.Fprintf(os.Stderr, "Error when calling `{{classname}}.{{operationId}}``: %v\n", err)
-        fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
-    }
-    {{#returnType}}
-    // response from `{{operationId}}`: {{{.}}}
-    fmt.Fprintf(os.Stdout, "Response from `{{classname}}.{{operationId}}`: %v\n", resp)
-    {{/returnType}}
-}
-```
+{{{notes}}}{{/notes}}
 
 ### Path Parameters
 
-{{^allParams}}This endpoint does not need any parameter.{{/allParams}}{{#pathParams}}{{#-last}}
+{{^pathParams}}This endpoint does not need any path parameter.{{/pathParams}}{{#pathParams}}{{#-last}}
 Name | Type | Description
 ------------- | ------------- | -------------
 **ctx** | **context.Context** | context for authentication, logging, cancellation, deadlines, tracing, etc.{{/-last}}{{/pathParams}}{{#pathParams}}
-**{{paramName}}** | {{^isPrimitiveType}}{{^isFile}}[{{/isFile}}{{/isPrimitiveType}}**{{dataType}}**{{^isPrimitiveType}}{{^isFile}}]({{baseType}}.md){{/isFile}}{{/isPrimitiveType}} | {{description}}]{{/defaultValue}}{{/pathParams}}
+**{{paramName}}** | {{^isPrimitiveType}}{{^isFile}}[{{/isFile}}{{/isPrimitiveType}}**{{dataType}}**{{^isPrimitiveType}}{{^isFile}}]({{dataType}}.md){{/isFile}}{{/isPrimitiveType}} | {{description}}{{/pathParams}}
 
 ### Other Parameters
 
-Other parameters are passed through a pointer to a {{{nickname}}}Params struct via the builder pattern
+Other parameters are passed through a pointer to a {{{nickname}}}Params struct
 {{#allParams}}{{#-last}}
 
 Name | Type | Description
-------------- | ------------- | -------------{{/-last}}{{/allParams}}{{#allParams}}
-{{^isPathParam}} **{{paramName}}** | {{#isContainer}}{{#isArray}}{{#items}}{{^isPrimitiveType}}{{^isFile}}[{{/isFile}}{{/isPrimitiveType}}**[]{{dataType}}**{{^isPrimitiveType}}{{^isFile}}]({{^baseType}}{{dataType}}{{/baseType}}{{baseType}}.md){{/isFile}}{{/isPrimitiveType}}{{/items}}{{/isArray}}{{#isMap}}{{#items}}{{^isPrimitiveType}}{{^isFile}}[{{/isFile}}{{/isPrimitiveType}}**map[string]{{dataType}}**{{^isPrimitiveType}}{{^isFile}}]({{^baseType}}{{dataType}}{{/baseType}}{{baseType}}.md){{/isFile}}{{/isPrimitiveType}}{{/items}}{{/isMap}}{{/isContainer}}{{^isContainer}}{{^isPrimitiveType}}{{^isFile}}[{{/isFile}}{{/isPrimitiveType}}**{{dataType}}**{{^isPrimitiveType}}{{^isFile}}]({{^baseType}}{{dataType}}{{/baseType}}{{baseType}}.md){{/isFile}}{{/isPrimitiveType}}{{/isContainer}} | {{description}}]{{/defaultValue}}{{/isPathParam}}{{/allParams}}
+------------- | ------------- | -------------{{/-last}}{{/allParams}}{{#allParams}}{{^isPathParam}}
+**{{paramName}}** | {{#isContainer}}{{#isArray}}{{#items}}{{^isPrimitiveType}}{{^isFile}}[{{/isFile}}{{/isPrimitiveType}}**[]{{dataType}}**{{^isPrimitiveType}}{{^isFile}}]({{^baseType}}{{dataType}}{{/baseType}}{{dataType}}.md){{/isFile}}{{/isPrimitiveType}}{{/items}}{{/isArray}}{{#isMap}}{{#items}}{{^isPrimitiveType}}{{^isFile}}[{{/isFile}}{{/isPrimitiveType}}**map[string]{{dataType}}**{{^isPrimitiveType}}{{^isFile}}]({{^baseType}}{{dataType}}{{/baseType}}{{dataType}}.md){{/isFile}}{{/isPrimitiveType}}{{/items}}{{/isMap}}{{/isContainer}}{{^isContainer}}{{^isPrimitiveType}}{{^isFile}}[{{/isFile}}{{/isPrimitiveType}}**{{dataType}}**{{^isPrimitiveType}}{{^isFile}}]({{^baseType}}{{dataType}}{{/baseType}}{{dataType}}.md){{/isFile}}{{/isPrimitiveType}}{{/isContainer}} | {{description}}{{/isPathParam}}{{/allParams}}
 
 ### Return type
 
-{{#returnType}}{{#returnTypeIsPrimitive}}**{{{returnType}}}**{{/returnTypeIsPrimitive}}{{^returnTypeIsPrimitive}}[**{{{returnType}}}**]({{returnBaseType}}.md){{/returnTypeIsPrimitive}}{{/returnType}}{{^returnType}} (empty response body){{/returnType}}
+{{#returnType}}{{#returnTypeIsPrimitive}}**{{{returnType}}}**{{/returnTypeIsPrimitive}}{{^returnTypeIsPrimitive}}[**{{{returnType}}}**]({{returnType}}.md){{/returnTypeIsPrimitive}}{{/returnType}}{{^returnType}} (empty response body){{/returnType}}
 
 ### Authorization
 
@@ -81,8 +47,8 @@ Name | Type | Description
 
 ### HTTP request headers
 
-- **Content-Type**: {{#consumes}}{{{mediaType}}}{{^-last}}, {{/-last}}{{/consumes}}{{^consumes}}Not defined{{/consumes}}
-- **Accept**: {{#produces}}{{{mediaType}}}{{^-last}}, {{/-last}}{{/produces}}{{^produces}}Not defined{{/produces}}
+- **Content-Type**: {{#consumes}}{{{mediaType}}}{{^last}}, {{/last}}{{/consumes}}{{^consumes}}Not defined{{/consumes}}
+- **Accept**: {{#produces}}{{{mediaType}}}{{^last}}, {{/last}}{{/produces}}{{^produces}}Not defined{{/produces}}
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints)
 [[Back to Model list]](../README.md#documentation-for-models)
