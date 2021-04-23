@@ -1,5 +1,5 @@
 {{>partial_header}}
-package v2
+package {{packageName}}
 
 import (
     "context"
@@ -11,10 +11,11 @@ import (
 )
 
 {{#resources}}
+{{#hasAllCrudOps}}
 func Resource{{name}}() *schema.Resource {
     return &schema.Resource{
         CreateContext: create{{name}},
-        ReadContext:   read{{name}},
+        ReadContext: read{{name}},
         UpdateContext: update{{name}},
         DeleteContext: delete{{name}},
         Schema: map[string]*schema.Schema{
@@ -31,12 +32,12 @@ func Resource{{name}}() *schema.Resource {
 {{#operations}}
 {{#operation}}
 func {{#vendorExtensions.x-is-create-operation}}create{{/vendorExtensions.x-is-create-operation}}{{#vendorExtensions.x-is-read-operation}}read{{/vendorExtensions.x-is-read-operation}}{{#vendorExtensions.x-is-update-operation}}update{{/vendorExtensions.x-is-update-operation}}{{#vendorExtensions.x-is-delete-operation}}delete{{/vendorExtensions.x-is-delete-operation}}{{name}}(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-    {{#hasOptionalParams}}
+    {{#vendorExtensions.x-has-form-params}}
     params := {{nickname}}Params{}
     if err := UnmarshalSchema(&params, d); err != nil {
         return diag.FromErr(err)
     }
-    {{/hasOptionalParams}}
+    {{/vendorExtensions.x-has-form-params}}
 
     {{#allParams}}
     {{#isPathParam}}
@@ -45,7 +46,7 @@ func {{#vendorExtensions.x-is-create-operation}}create{{/vendorExtensions.x-is-c
     {{/allParams}}
 
     {{#vendorExtensions.x-is-create-operation}}
-    r, err := m.(*client.Config).Client.{{productVersion}}.{{nickname}}({{#allParams}}{{#isPathParam}}{{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^-last}}, {{/-last}}{{/isPathParam}}{{/allParams}}{{#hasOptionalParams}}&params{{/hasOptionalParams}});
+    r, err := m.(*client.Config).Client.{{productVersion}}.{{nickname}}({{#allParams}}{{#isPathParam}}{{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^-last}}, {{/-last}}{{/isPathParam}}{{/allParams}}{{#vendorExtensions.x-has-form-params}}&params{{/vendorExtensions.x-has-form-params}});
     if err != nil {
         return diag.FromErr(err)
     }
@@ -54,7 +55,7 @@ func {{#vendorExtensions.x-is-create-operation}}create{{/vendorExtensions.x-is-c
     err = MarshalSchema(d, r)
     {{/vendorExtensions.x-is-create-operation}}
     {{#vendorExtensions.x-is-read-operation}}
-        r, err := m.(*client.Config).Client.{{productVersion}}.{{nickname}}({{#allParams}}{{#isPathParam}}{{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^last}}, {{/last}}{{/isPathParam}}{{/allParams}}{{#hasOptionalParams}}&params{{/hasOptionalParams}})
+        r, err := m.(*client.Config).Client.{{productVersion}}.{{nickname}}({{#allParams}}{{#isPathParam}}{{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^-last}}, {{/-last}}{{/isPathParam}}{{/allParams}}{{#vendorExtensions.x-has-form-params}}&params{{/vendorExtensions.x-has-form-params}})
         if err != nil {
             return diag.FromErr(err)
         }
@@ -62,7 +63,7 @@ func {{#vendorExtensions.x-is-create-operation}}create{{/vendorExtensions.x-is-c
         err = MarshalSchema(d, r)
     {{/vendorExtensions.x-is-read-operation}}
     {{#vendorExtensions.x-is-update-operation}}
-        r, err := m.(*client.Config).Client.{{productVersion}}.{{nickname}}({{#allParams}}{{#isPathParam}}{{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^last}}, {{/last}}{{/isPathParam}}{{/allParams}}{{#hasOptionalParams}}&params{{/hasOptionalParams}})
+        r, err := m.(*client.Config).Client.{{productVersion}}.{{nickname}}({{#allParams}}{{#isPathParam}}{{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^-last}}, {{/-last}}{{/isPathParam}}{{/allParams}}{{#vendorExtensions.x-has-form-params}}&params{{/vendorExtensions.x-has-form-params}})
         if err != nil {
             return diag.FromErr(err)
         }
@@ -71,7 +72,7 @@ func {{#vendorExtensions.x-is-create-operation}}create{{/vendorExtensions.x-is-c
     {{/vendorExtensions.x-is-update-operation}}
 
     {{#vendorExtensions.x-is-delete-operation}}
-        err := m.(*client.Config).Client.{{productVersion}}.{{nickname}}({{#allParams}}{{#isPathParam}}{{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^last}}, {{/last}}{{/isPathParam}}{{/allParams}}{{#hasOptionalParams}}&params{{/hasOptionalParams}})
+        err := m.(*client.Config).Client.{{productVersion}}.{{nickname}}({{#allParams}}{{#isPathParam}}{{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^-last}}, {{/-last}}{{/isPathParam}}{{/allParams}}{{#vendorExtensions.x-has-form-params}}&params{{/vendorExtensions.x-has-form-params}})
         d.SetId("")
     {{/vendorExtensions.x-is-delete-operation}}
 
@@ -84,4 +85,5 @@ func {{#vendorExtensions.x-is-create-operation}}create{{/vendorExtensions.x-is-c
 
 {{/operation}}
 {{/operations}}
+{{/hasAllCrudOps}}
 {{/resources}}

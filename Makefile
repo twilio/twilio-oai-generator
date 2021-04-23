@@ -1,6 +1,6 @@
 .PHONY: build install test-docker
 
-OPENAPI_GENERATOR_VERSION=5.1.0
+OPENAPI_GENERATOR_VERSION=5.0.1
 
 build:
 	mvn clean package -DskipTests
