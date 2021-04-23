@@ -84,3 +84,17 @@ java -DdebugOperations -cp /path/to/openapi-generator-cli.jar:/path/to/your.jar 
 
 Will, for example, output the debug info for operations.
 You can use this info in the `api.mustache` file.
+
+## Generating twilio-go
+
+To generate [`twilio-go`](https://github.com/twilio/twilio-go) from [`twilio-oai`](https://github.com/twilio/twilio-oai), execute the following from the root of this repo:
+
+# Setup
+
+`make install`
+
+# Code Generation
+
+First, please update `<path to>`, then execute:
+
+`mvn clean package -DskipTests && python3 examples/build_twilio_go.py <path to>/twilio-oai/spec/yaml <path to>/twilio-go`

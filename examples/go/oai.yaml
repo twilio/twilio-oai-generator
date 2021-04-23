@@ -664,7 +664,7 @@
           - description: 'The `date_test` value, specified as `YYYY-MM-DD`, of the
             resources to read.'
             in: query
-            name: DateTest
+            name: Date.Test
             schema:
               format: date
               type: string
