@@ -1,0 +1,87 @@
+{{>partial_header}}
+package v2
+
+import (
+    "context"
+    "github.com/hashicorp/terraform-plugin-sdk/v2/diag"
+    "github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+    "github.com/twilio/terraform-provider-twilio/client"
+    . "github.com/twilio/twilio-go/{{clientPath}}"
+    . "github.com/twilio/terraform-provider-twilio/twilio/common"
+)
+
+{{#resources}}
+func Resource{{name}}() *schema.Resource {
+    return &schema.Resource{
+        CreateContext: create{{name}},
+        ReadContext:   read{{name}},
+        UpdateContext: update{{name}},
+        DeleteContext: delete{{name}},
+        Schema: map[string]*schema.Schema{
+            {{#schema}}
+            "{{vendorExtensions.x-name-in-snake-case}}": AsString({{#required}}SchemaRequired{{/required}}{{^required}}SchemaOptional{{/required}}),
+            {{/schema}}
+            {{#responseSchema}}
+            "{{.}}": AsString(SchemaComputed),
+            {{/responseSchema}}
+        },
+    }
+}
+
+{{#operations}}
+{{#operation}}
+func {{#vendorExtensions.x-is-create-operation}}create{{/vendorExtensions.x-is-create-operation}}{{#vendorExtensions.x-is-read-operation}}read{{/vendorExtensions.x-is-read-operation}}{{#vendorExtensions.x-is-update-operation}}update{{/vendorExtensions.x-is-update-operation}}{{#vendorExtensions.x-is-delete-operation}}delete{{/vendorExtensions.x-is-delete-operation}}{{name}}(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+    {{#hasOptionalParams}}
+    params := {{nickname}}Params{}
+    if err := UnmarshalSchema(&params, d); err != nil {
+        return diag.FromErr(err)
+    }
+    {{/hasOptionalParams}}
+
+    {{#allParams}}
+    {{#isPathParam}}
+    {{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}} := d.Get("{{vendorExtensions.x-name-in-snake-case}}").(string)
+    {{/isPathParam}}
+    {{/allParams}}
+
+    {{#vendorExtensions.x-is-create-operation}}
+    r, err := m.(*client.Config).Client.{{productVersion}}.{{nickname}}({{#allParams}}{{#isPathParam}}{{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^-last}}, {{/-last}}{{/isPathParam}}{{/allParams}}{{#hasOptionalParams}}&params{{/hasOptionalParams}});
+    if err != nil {
+        return diag.FromErr(err)
+    }
+
+    d.SetId(*r.Sid)
+    err = MarshalSchema(d, r)
+    {{/vendorExtensions.x-is-create-operation}}
+    {{#vendorExtensions.x-is-read-operation}}
+        r, err := m.(*client.Config).Client.{{productVersion}}.{{nickname}}({{#allParams}}{{#isPathParam}}{{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^last}}, {{/last}}{{/isPathParam}}{{/allParams}}{{#hasOptionalParams}}&params{{/hasOptionalParams}})
+        if err != nil {
+            return diag.FromErr(err)
+        }
+
+        err = MarshalSchema(d, r)
+    {{/vendorExtensions.x-is-read-operation}}
+    {{#vendorExtensions.x-is-update-operation}}
+        r, err := m.(*client.Config).Client.{{productVersion}}.{{nickname}}({{#allParams}}{{#isPathParam}}{{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^last}}, {{/last}}{{/isPathParam}}{{/allParams}}{{#hasOptionalParams}}&params{{/hasOptionalParams}})
+        if err != nil {
+            return diag.FromErr(err)
+        }
+
+        err = MarshalSchema(d, r)
+    {{/vendorExtensions.x-is-update-operation}}
+
+    {{#vendorExtensions.x-is-delete-operation}}
+        err := m.(*client.Config).Client.{{productVersion}}.{{nickname}}({{#allParams}}{{#isPathParam}}{{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^last}}, {{/last}}{{/isPathParam}}{{/allParams}}{{#hasOptionalParams}}&params{{/hasOptionalParams}})
+        d.SetId("")
+    {{/vendorExtensions.x-is-delete-operation}}
+
+
+    if err != nil {
+        return diag.FromErr(err)
+    }
+    return nil
+}
+
+{{/operation}}
+{{/operations}}
+{{/resources}}
