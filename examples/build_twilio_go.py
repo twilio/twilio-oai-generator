@@ -1,6 +1,6 @@
+import argparse
 import os
 import re
-import sys
 from pathlib import Path
 
 
@@ -25,27 +25,40 @@ def get_project_version():
     return version
 
 
-def build(openapi_spec_path, go_path):
+def build(openapi_spec_path, go_path, terraform=False):
     project_version = get_project_version()
     if os.path.isfile(openapi_spec_path):
         folder, domain = os.path.split(openapi_spec_path)
-        generate(openapi_spec_path, go_path, project_version, domain, True)
+        generate(openapi_spec_path, go_path, project_version, domain, True, terraform)
     else:
         for domain in os.listdir(openapi_spec_path):
-            generate(openapi_spec_path, go_path, project_version, domain)
+            generate(openapi_spec_path, go_path, project_version, domain, False, terraform)
 
 
-def generate(openapi_spec_path, go_path, project_version, domain, is_file=False):
+def generate(openapi_spec_path, go_path, project_version, domain, is_file=False, terraform=False):
     domain_name, full_path, api_version = get_domain_info(domain, openapi_spec_path, is_file)
     parent_dir = Path(__file__).parent.parent
+    to_generate = "terraform-provider-twilio" if terraform else "twilio-go"
+    sub_dir = "resources" if terraform else "rest"
     command = f"cd {parent_dir} && java -cp ./openapi-generator-cli.jar:target/twilio-go-openapi-generator-{project_version}.jar " \
-              f"org.openapitools.codegen.OpenAPIGenerator generate -g twilio-go -i {full_path} -o " \
-              f"{go_path}/twilio/rest/{domain_name}/{api_version}"
+              f"org.openapitools.codegen.OpenAPIGenerator generate -g {to_generate} -i {full_path} -o " \
+              f"{go_path}/twilio/{sub_dir}/{domain_name}/{api_version}"
     os.system(command)
 
 
 if __name__ == "__main__":
-    if len(sys.argv) < 3:
-        raise Exception(
-            f'Usage: python {sys.argv[0]} path/to/apis/yaml path/to/twilio-go')
-    build(sys.argv[1], sys.argv[2])
+    example_text = '''example:
+    
+     python3 examples/build_twilio_go.py /path/to/twilio-oai/spec/yaml /path/to/twilio-go
+     python3 examples/build_twilio_go.py /path/to/twilio-oai/spec/yaml/twilio_accounts_v1.yaml /path/to/twilio-go
+     python3 examples/build_twilio_go.py /path/to/twilio-oai/spec/yaml/twilio_accounts_v1.yaml /path/to/terraform-provider-twilio --terraform
+     python3 examples/build_twilio_go.py /path/to/twilio-oai/spec/yaml/twilio_accounts_v1.yaml /path/to/terraform-provider-twilio -t
+     python3 examples/build_twilio_go.py /path/to/twilio-oai/spec/yaml /path/to/terraform-provider-twilio --terraform'''
+
+    parser = argparse.ArgumentParser(description='Generate code from twilio-oai-generator', epilog=example_text,
+                                     formatter_class=argparse.RawTextHelpFormatter)
+    parser.add_argument("spec_path", type=str, help="path to open api specs")
+    parser.add_argument("output_path", type=str, help="path to output the generated code")
+    parser.add_argument("-t", "--terraform", help="generate twilio terraform provider", action="store_true")
+    args = parser.parse_args()
+    build(args.spec_path, args.output_path, args.terraform)
