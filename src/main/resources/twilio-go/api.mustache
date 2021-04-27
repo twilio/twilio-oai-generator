@@ -38,9 +38,11 @@ type {{{nickname}}}Params struct {
 }
 {{/hasOptionalParams}}
 
-* {{operationId}}{{#summary}} {{{.}}}{{/summary}}{{^summary}} Method for {{operationId}}{{/summary}}
+// {{operationId}}{{#summary}} {{{.}}}{{/summary}}{{^summary}} Method for {{operationId}}{{/summary}}
+//
 {{#notes}}
-* {{notes}}
+// {{notes}}
+//
 {{/notes}}
 {{#allParams}}
 {{#required}}
