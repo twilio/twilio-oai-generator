@@ -6,8 +6,8 @@ import (
 	"time"
 
 	"github.com/stretchr/testify/assert"
-	"github.com/twilio/twilio-go"
-	openapi "github.com/twilio/twilio-go/twilio/rest/oai"
+	"github.com/twilio/twilio-oai-generator"
+	openapi "github.com/twilio/twilio-oai-generator/twilio/rest/oai"
 )
 
 var accountSid string

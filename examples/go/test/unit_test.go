@@ -3,15 +3,15 @@ package test
 import (
 	"bytes"
 	"fmt"
+	"io/ioutil"
+	"net/http"
 	"net/url"
+	"testing"
+	"time"
 
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
-	openapi "github.com/twilio/twilio-go/twilio/rest/oai"
-	"io/ioutil"
-	"net/http"
-	"testing"
-	"time"
+	openapi "github.com/twilio/twilio-oai-generator/twilio/rest/oai"
 )
 
 func TestPathIsCorrect(t *testing.T) {
