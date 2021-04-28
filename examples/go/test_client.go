@@ -1,15 +1,17 @@
-package client
+package twilio
 
 import (
 	"net/http"
 	"net/url"
+
+	"github.com/twilio/twilio-go/client"
 )
 
 type TestClient struct {
-	*Credentials
+	*client.Credentials
 	HTTPClient *http.Client
 	BaseURL    string
-	Client
+	client.Client
 }
 
 func (testClient TestClient) getParsedUrl(path string) *url.URL {

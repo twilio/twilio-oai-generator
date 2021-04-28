@@ -85,6 +85,17 @@ java -DdebugOperations -cp /path/to/openapi-generator-cli.jar:/path/to/your.jar 
 Will, for example, output the debug info for operations.
 You can use this info in the `api.mustache` file.
 
+## Local Test Setup for twilio-go
+To run the unit tests or integration tests locally you need complete the following steps:
+1. Copy the generated code in the `codegen/twilio` directory and move it into the `examples/go` package. This should resolve any import errors in the tests files. If you are missing the codegen directory you can skip moving any files and run `make install` then run the command below:
+```
+java -cp ./openapi-generator-cli.jar:target/twilio-go-openapi-generator-1.0.0.jar org.openapitools.codegen.OpenAPIGenerator generate -g twilio-go -i examples/go/oai.yaml -o examples/go/twilio/rest/oai
+```
+2. You need to [install the prism CLI](https://meta.stoplight.io/docs/prism/docs/getting-started/01-installation.md) to run the integration tests locally.
+3. Navigate to the `oai.yaml` located in `examples/go` and run the command `prism mock oai.yaml` in a new terminal tab.
+4. In `api_test.go` TestMain function change `testClient.BaseURL = "http://prism_twilio:4010"` to `testClient.BaseURL = "http://localhost:4010"`.
+5. Run the tests locally in your terminal with the command `go test ./... -v` while inside `examples/go`.
+
 ## Generating twilio-go
 
 To generate [`twilio-go`](https://github.com/twilio/twilio-go) from [`twilio-oai`](https://github.com/twilio/twilio-oai)
