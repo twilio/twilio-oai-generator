@@ -38,26 +38,29 @@ type {{{nickname}}}Params struct {
 }
 {{/hasOptionalParams}}
 
-/*
-* {{operationId}}{{#summary}} {{{.}}}{{/summary}}{{^summary}} Method for {{operationId}}{{/summary}}
+// {{operationId}}{{#summary}} {{{.}}}{{/summary}}{{^summary}} Method for {{operationId}}{{/summary}}
+//
 {{#notes}}
-* {{notes}}
+// {{notes}}
+//
 {{/notes}}
 {{#allParams}}
 {{#required}}
-* @param {{paramName}}{{#description}} {{{.}}}{{/description}}
+// param: {{paramName}}{{#description}} {{{.}}}{{/description}}
+//
 {{/required}}
 {{/allParams}}
 {{#hasOptionalParams}}
-* @param optional nil or *{{{nickname}}}Params - Optional Parameters:
+// param: optional nil or *{{{nickname}}}Params - Optional Parameters:
+//
 {{#optionalParams}}
-* @param "{{paramName}}" ({{#isNullable}}*{{/isNullable}}{{{dataType}}}) - {{#description}}{{{.}}}{{/description}}
+// param: "{{paramName}}" ({{#isNullable}}*{{/isNullable}}{{{dataType}}}) - {{#description}}{{{.}}}{{/description}}
+//
 {{/optionalParams}}
 {{/hasOptionalParams}}
 {{#returnType}}
-* @return {{{returnType}}}
+// return: {{{returnType}}}
 {{/returnType}}
-*/
 func (c *{{{classname}}}Service) {{{nickname}}}({{#allParams}}{{#required}}{{paramName}} {{{dataType}}}{{^last}}, {{/last}}{{/required}}{{/allParams}}{{#hasOptionalParams}}params *{{{nickname}}}Params{{/hasOptionalParams}}) ({{#returnType}}*{{{returnType}}}, {{/returnType}}error) {
     path := "{{{path}}}"
 {{#pathParams}}
