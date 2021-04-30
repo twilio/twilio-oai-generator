@@ -17,7 +17,7 @@ import (
 
 //Credentials store user authentication credentials.
 type Credentials struct {
-	AccountSID string
+	Username string
 	AuthToken  string
 }
 
@@ -26,6 +26,7 @@ type Client struct {
 	*Credentials
 	HTTPClient *http.Client
 	BaseURL    string
+	AccountSid string
 }
 
 // default http Client should not follow redirects and return the most recent response
@@ -39,7 +40,7 @@ func defaultHTTPClient() *http.Client {
 }
 
 func (c *Client) basicAuth() (string, string) {
-	return c.Credentials.AccountSID, c.Credentials.AuthToken
+	return c.Credentials.Username, c.Credentials.AuthToken
 }
 
 // SetTimeout sets the Timeout for HTTP requests.
@@ -136,4 +137,8 @@ func (c Client) Get(path string, queryData interface{}, headers map[string]inter
 // with the provided data as parameters.
 func (c Client) Delete(path string, nothing interface{}, headers map[string]interface{}) (*http.Response, error) {
 	return c.SendRequest(http.MethodDelete, path, nil, nil, headers)
+}
+
+func (c Client) GetAccountSid() string {
+	return c.AccountSid
 }

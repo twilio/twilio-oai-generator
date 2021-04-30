@@ -17,17 +17,21 @@ import (
 func TestPathIsCorrect(t *testing.T) {
 	mockCtrl := gomock.NewController(t)
 	testClient := NewMockBaseClient(mockCtrl)
+	testClient.EXPECT().GetAccountSid().DoAndReturn(func() string {
+		return "AC222222222222222222222222222222"
+	})
 	testClient.EXPECT().Get(
 		gomock.Any(),
 		gomock.Any(),
 		gomock.Any()).
 		DoAndReturn(func(path string, query interface{}, headers map[string]interface{}) (*http.Response, error) {
-			assert.Equal(t, path, "https://autopilot.twilio.com/2010-04-01/Accounts/AC12345678123456781234567812345678/IncomingPhoneNumbers/PNXXXXY.json")
+			assert.Equal(t, path, "https://autopilot.twilio.com/2010-04-01/Accounts/AC222222222222222222222222222222/IncomingPhoneNumbers/PNXXXXY.json")
 			return &http.Response{Body: ioutil.NopCloser(bytes.NewReader(nil))}, nil
 		},
 		)
+
 	twilio := openapi.NewDefaultApiService(testClient)
-	twilio.FetchIncomingPhoneNumber(accountSid, "PNXXXXY")
+	twilio.FetchIncomingPhoneNumber("PNXXXXY")
 }
 
 func TestAddingHeader(t *testing.T) {
@@ -42,6 +46,9 @@ func TestAddingHeader(t *testing.T) {
 
 	mockCtrl := gomock.NewController(t)
 	testClient := NewMockBaseClient(mockCtrl)
+	testClient.EXPECT().GetAccountSid().DoAndReturn(func() string {
+		return accountSid
+	})
 	testClient.EXPECT().Post(
 		gomock.Any(),
 		gomock.Any(),
@@ -52,7 +59,7 @@ func TestAddingHeader(t *testing.T) {
 		},
 		)
 	twilio := openapi.NewDefaultApiService(testClient)
-	twilio.CreateCallRecording(accountSid, "CA1234", params)
+	twilio.CreateCallRecording("CA1234", params)
 }
 
 func TestQueryParams(t *testing.T) {
@@ -78,6 +85,9 @@ func TestQueryParams(t *testing.T) {
 
 	mockCtrl := gomock.NewController(t)
 	testClient := NewMockBaseClient(mockCtrl)
+	testClient.EXPECT().GetAccountSid().DoAndReturn(func() string {
+		return accountSid
+	})
 	testClient.EXPECT().Get(
 		gomock.Any(),
 		gomock.Any(),
@@ -88,5 +98,5 @@ func TestQueryParams(t *testing.T) {
 		},
 		)
 	twilio := openapi.NewDefaultApiService(testClient)
-	twilio.ListCallRecording(accountSid, "CA1234", &params)
+	twilio.ListCallRecording("CA1234", &params)
 }

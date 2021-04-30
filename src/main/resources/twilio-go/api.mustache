@@ -39,32 +39,39 @@ type {{{nickname}}}Params struct {
 {{/hasOptionalParams}}
 
 // {{operationId}}{{#summary}} {{{.}}}{{/summary}}{{^summary}} Method for {{operationId}}{{/summary}}
-//
 {{#notes}}
-// {{notes}}
 //
+// * {{notes}}
 {{/notes}}
 {{#allParams}}
+{{^vendorExtensions.x-is-account-sid}}
 {{#required}}
-// param: {{paramName}}{{#description}} {{{.}}}{{/description}}
 //
+// * @param: {{paramName}}{{#description}} {{{.}}}{{/description}}
 {{/required}}
+{{/vendorExtensions.x-is-account-sid}}
 {{/allParams}}
 {{#hasOptionalParams}}
-// param: optional nil or *{{{nickname}}}Params - Optional Parameters:
 //
+// * @param: optional nil or *{{{nickname}}}Params - Optional Parameters:
 {{#optionalParams}}
-// param: "{{paramName}}" ({{#isNullable}}*{{/isNullable}}{{{dataType}}}) - {{#description}}{{{.}}}{{/description}}
 //
+// * @param: "{{paramName}}" ({{#isNullable}}*{{/isNullable}}{{{dataType}}}) - {{#description}}{{{.}}}{{/description}}
 {{/optionalParams}}
 {{/hasOptionalParams}}
 {{#returnType}}
-// return: {{{returnType}}}
+//
+// * @return: {{{returnType}}}
 {{/returnType}}
-func (c *{{{classname}}}Service) {{{nickname}}}({{#allParams}}{{#required}}{{paramName}} {{{dataType}}}{{^last}}, {{/last}}{{/required}}{{/allParams}}{{#hasOptionalParams}}params *{{{nickname}}}Params{{/hasOptionalParams}}) ({{#returnType}}*{{{returnType}}}, {{/returnType}}error) {
+func (c *{{{classname}}}Service) {{{nickname}}}({{#allParams}}{{#required}}{{^vendorExtensions.x-is-account-sid}}{{paramName}} {{{dataType}}}{{^last}}, {{/last}}{{/vendorExtensions.x-is-account-sid}}{{/required}}{{/allParams}}{{#hasOptionalParams}}params *{{{nickname}}}Params{{/hasOptionalParams}}) ({{#returnType}}*{{{returnType}}}, {{/returnType}}error) {
     path := "{{{path}}}"
 {{#pathParams}}
+{{^vendorExtensions.x-is-account-sid}}
 	path = strings.Replace(path, "{"+"{{paramName}}"+"}", {{^isString}}fmt.Sprint({{/isString}}{{paramName}}{{^isString}}){{/isString}}, -1)
+{{/vendorExtensions.x-is-account-sid}}
+{{#vendorExtensions.x-is-account-sid}}
+    path = strings.Replace(path, "{"+"{{paramName}}"+"}", c.client.GetAccountSid(), -1)
+{{/vendorExtensions.x-is-account-sid}}
 {{/pathParams}}
 
     data := url.Values{}

@@ -21,6 +21,13 @@ public class TwilioGoGenerator extends AbstractTwilioGoGenerator {
     public void postProcessParameter(final CodegenParameter parameter) {
         // Make sure required non-path params get into the options block.
         parameter.required = parameter.isPathParam;
+        parameter.vendorExtensions.put("x-is-account-sid", this.toLowerCase(parameter.baseName).equals("accountsid"));
+    }
+
+    private String toLowerCase(String paramName) {
+        // pre-process name
+        paramName = paramName.replaceAll("[^a-zA-Z]", "");
+        return paramName.toLowerCase();
     }
 
     /**

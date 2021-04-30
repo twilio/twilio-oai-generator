@@ -93,7 +93,7 @@ func TestDateTimeQueryParams(t *testing.T) {
 		PageSize:          &pageSize,
 	}
 
-	resp, err := testClient.OpenApi.ListCallRecording(accountSid, "CA12345678123456781234567812345678", &params)
+	resp, err := testClient.OpenApi.ListCallRecording("CA12345678123456781234567812345678", &params)
 
 	expectedTrack := "DialVerb"
 	expectedStatus := "completed"
@@ -118,7 +118,7 @@ func TestCustomHeaders(t *testing.T) {
 	params.XTwilioWebhookEnabled = &testHeader
 	params.RecordingStatusCallback = &testUri
 
-	resp, err := testClient.OpenApi.CreateCallRecording(accountSid, "CA12345678123456781234567812345678", params)
+	resp, err := testClient.OpenApi.CreateCallRecording("CA12345678123456781234567812345678", params)
 
 	expectedSource := "Trunking"
 	expectedPrice := float32(100.22)
@@ -139,11 +139,11 @@ func TestRequiredParameters(t *testing.T) {
 	}
 
 	// StartDate and EndDate are required parameters
-	resp, err := testClient.OpenApi.CreateCallFeedbackSummary(accountSid, nil)
+	resp, err := testClient.OpenApi.CreateCallFeedbackSummary(nil)
 	assert.NotNil(t, err)
 	assert.Nil(t, resp)
 
-	resp, err = testClient.OpenApi.CreateCallFeedbackSummary(accountSid, params)
+	resp, err = testClient.OpenApi.CreateCallFeedbackSummary(params)
 
 	expectedCount := float32(4)
 
@@ -154,7 +154,7 @@ func TestRequiredParameters(t *testing.T) {
 }
 
 func TestCustomType(t *testing.T) {
-	resp, err := testClient.OpenApi.FetchIncomingPhoneNumber(accountSid, "PNFB2fe4c709Af4C1c658b25cE7DDCEbC7")
+	resp, err := testClient.OpenApi.FetchIncomingPhoneNumber("PNFB2fe4c709Af4C1c658b25cE7DDCEbC7")
 	assert.Nil(t, err)
 	assert.NotNil(t, resp)
 	assert.Equal(t, resp.Capabilities.Fax, false)

@@ -9,6 +9,7 @@ type TestClient struct {
 	*Credentials
 	HTTPClient *http.Client
 	BaseURL    string
+	AccountSid string
 	Client
 }
 

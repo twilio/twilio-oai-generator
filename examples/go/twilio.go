@@ -17,12 +17,13 @@ type service struct {
 	client *Twilio
 }
 
-func NewClient(accountSID string, authToken string) *Twilio {
-	credentials := &client.Credentials{AccountSID: accountSID, AuthToken: authToken}
+func NewClientWithAccountSid(userName string, authToken string, accountSid string) *Twilio {
+	credentials := &client.Credentials{Username: userName, AuthToken: authToken}
 
 	baseClient := client.Client{
 		Credentials: credentials,
 		BaseURL:     "twilio.com",
+		AccountSid:  accountSid,
 	}
 
 	c := &Twilio{
@@ -38,4 +39,9 @@ func NewClient(accountSID string, authToken string) *Twilio {
 	c.OpenApi = openapi.NewDefaultApiService(c.TestClient)
 
 	return c
+}
+
+// NewClient provides an initialized Twilio client.
+func NewClient(userName string, authToken string) *Twilio {
+	return NewClientWithAccountSid(userName, authToken, userName)
 }
