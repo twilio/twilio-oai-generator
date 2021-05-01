@@ -12,7 +12,7 @@ The goal of OpenAPI is to define a standard, language-agnostic interface to REST
 
 When properly described with OpenAPI, a consumer can understand and interact with the remote service with a minimal amount of implementation logic. Similar to what interfaces have done for lower-level programming, OpenAPI removes the guesswork in calling the service.
 
-Check out [OpenAPI-Spec](https://github.com/OAI/OpenAPI-Specification) for additional information about the OpenAPI project, including additional libraries with support for other languages and more. 
+Check out [OpenAPI-Spec](https://github.com/OAI/OpenAPI-Specification) for additional information about the OpenAPI project, including additional libraries with support for other languages and more.
 
 ## How do I use this?
 Clone this repo into your local machine. It will include:
@@ -68,7 +68,7 @@ Now your templates are available to the client generator, and you can write outp
 ## But how do I modify this?
 The `TwilioGoGenerator.java` has comments in it--lots of comments.  There is no good substitute for reading the code more, though.  See how the `TwilioGoGenerator` implements `CodegenConfig`. That class has the signature of all values that can be overridden.
 
-You can also step through TwilioGoGenerator.java in a debugger.  Just debug the JUnit test in DebugCodegenLauncher. That runs the command line tool and lets you inspect what the code is doing.  
+You can also step through TwilioGoGenerator.java in a debugger.  Just debug the JUnit test in DebugCodegenLauncher. That runs the command line tool and lets you inspect what the code is doing.
 
 For the templates themselves, you have a number of values available to you for generation. You can execute the `java` command from above while passing different debug flags to show the object you have available during client generation:
 
@@ -87,10 +87,10 @@ You can use this info in the `api.mustache` file.
 
 ## Local Test Setup for twilio-go
 To run the unit tests or integration tests locally you need complete the following steps:
-1. Run `./prism`
-2. You need to [install the prism CLI](https://meta.stoplight.io/docs/prism/docs/getting-started/01-installation.md) to run the integration tests locally.
+1. You need to [install the prism CLI](https://meta.stoplight.io/docs/prism/docs/getting-started/01-installation.md) to run the integration tests locally.
+2. Run `./prism.sh` from the root directory
 3. Navigate to the `oai.yaml` located in `examples/go` and run the command `prism mock oai.yaml` in a new terminal tab.
-4. In `api_test.go` TestMain function change `testClient.BaseURL = "http://prism_twilio:4010"` to `testClient.BaseURL = "http://localhost:4010"`.
+4. In `examples/go/test/api_test.go` TestMain function change `testClient.BaseURL = "http://prism_twilio:4010"` to `testClient.BaseURL = "http://localhost:4010"`.
 5. Run the tests locally in your terminal with the command `go test ./... -v` while inside `examples/go`.
 
 ## Generating twilio-go
