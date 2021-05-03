@@ -2,6 +2,7 @@
 set -e
 
 rm -rf codegen && mkdir -p codegen
+docker system prune -af
 make install
 java -cp ./openapi-generator-cli.jar:target/twilio-go-openapi-generator-1.0.0.jar \
   org.openapitools.codegen.OpenAPIGenerator \
