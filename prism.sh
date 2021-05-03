@@ -2,7 +2,6 @@
 set -e
 
 rm -rf codegen && mkdir -p codegen
-docker system prune -af
 make install
 java -cp ./openapi-generator-cli.jar:target/twilio-openapi-generator-1.0.0.jar \
   org.openapitools.codegen.OpenAPIGenerator \
@@ -10,6 +9,9 @@ java -cp ./openapi-generator-cli.jar:target/twilio-openapi-generator-1.0.0.jar \
   -i examples/go/oai.yaml \
   -o codegen/twilio/rest/oai/
 cp -R codegen/ examples/go
+FILE="examples/go/twilio/rest/oai/api_default.go"
+echo "*** File - $FILE contents ***"
+cat $FILE
 cd examples/go/prism
 docker-compose build
 docker-compose up --force-recreate --abort-on-container-exit --remove-orphans
