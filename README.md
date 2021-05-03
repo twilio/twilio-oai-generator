@@ -87,9 +87,9 @@ You can use this info in the `api.mustache` file.
 
 ## Local Test Setup for twilio-go
 To run the unit tests or integration tests locally you need complete the following steps:
-1. You need to [install the prism CLI](https://meta.stoplight.io/docs/prism/docs/getting-started/01-installation.md) to run the integration tests locally.
-2. Run `./prism.sh` from the root directory
-3. Navigate to the `oai.yaml` located in `examples/go` and run the command `prism mock oai.yaml` in a new terminal tab.
+1. Install the [prism CLI](https://meta.stoplight.io/docs/prism/docs/getting-started/01-installation.md) to run the integration tests locally.
+2. Run `./prism.sh` from the root directory.
+3. Navigate to the `oai.yaml` located in `examples/go` and in a new terminal tab run the command `prism mock oai.yaml`.
 4. In `examples/go/test/api_test.go` TestMain function change `testClient.BaseURL = "http://prism_twilio:4010"` to `testClient.BaseURL = "http://localhost:4010"`.
 5. Run the tests locally in your terminal with the command `go test ./... -v` while inside `examples/go`.
 
