@@ -63,15 +63,10 @@ type {{{nickname}}}Params struct {
 //
 // * @return: {{{returnType}}}
 {{/returnType}}
-func (c *{{{classname}}}Service) {{{nickname}}}({{#allParams}}{{#required}}{{^vendorExtensions.x-is-account-sid}}{{paramName}} {{{dataType}}}{{^last}}, {{/last}}{{/vendorExtensions.x-is-account-sid}}{{/required}}{{/allParams}}{{#hasOptionalParams}}params *{{{nickname}}}Params{{/hasOptionalParams}}) ({{#returnType}}*{{{returnType}}}, {{/returnType}}error) {
+func (c *{{{classname}}}Service) {{{nickname}}}({{#allParams}}{{#required}}{{paramName}} {{{dataType}}}{{^last}}, {{/last}}{{/required}}{{/allParams}}{{#hasOptionalParams}}params *{{{nickname}}}Params{{/hasOptionalParams}}) ({{#returnType}}*{{{returnType}}}, {{/returnType}}error) {
     path := "{{{path}}}"
 {{#pathParams}}
-{{^vendorExtensions.x-is-account-sid}}
 	path = strings.Replace(path, "{"+"{{paramName}}"+"}", {{^isString}}fmt.Sprint({{/isString}}{{paramName}}{{^isString}}){{/isString}}, -1)
-{{/vendorExtensions.x-is-account-sid}}
-{{#vendorExtensions.x-is-account-sid}}
-    path = strings.Replace(path, "{"+"{{paramName}}"+"}", c.client.GetAccountSid(), -1)
-{{/vendorExtensions.x-is-account-sid}}
 {{/pathParams}}
 
     data := url.Values{}
