@@ -89,11 +89,11 @@ You can use this info in the `api.mustache` file.
 
 To generate [`twilio-go`](https://github.com/twilio/twilio-go) from [`twilio-oai`](https://github.com/twilio/twilio-oai), execute the following from the root of this repo:
 
-# Setup
+### Setup
 
 `make install`
 
-# Code Generation
+### Code Generation
 
 First, please update `<path to>`, then execute:
 
