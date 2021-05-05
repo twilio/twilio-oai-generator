@@ -7,6 +7,8 @@ import org.openapitools.codegen.SupportingFile;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.HashSet;
+import java.util.stream.Collectors;
 
 public class TwilioGoGenerator extends AbstractTwilioGoGenerator {
 
@@ -21,13 +23,32 @@ public class TwilioGoGenerator extends AbstractTwilioGoGenerator {
     public void postProcessParameter(final CodegenParameter parameter) {
         // Make sure required non-path params get into the options block.
         parameter.required = parameter.isPathParam;
-        parameter.vendorExtensions.put("x-is-account-sid", this.toLowerCase(parameter.baseName).equals("accountsid"));
+
+        if (parameter.paramName.equals("AccountSid")) {
+            parameter.required = false;
+            parameter.vendorExtensions.put("x-is-account-sid", parameter.paramName.equals("AccountSid"));
+        }
     }
 
-    private String toLowerCase(String paramName) {
-        // pre-process name
-        paramName = paramName.replaceAll("[^a-zA-Z]", "");
-        return paramName.toLowerCase();
+    @Override
+    public Map<String, Object> postProcessOperationsWithModels(final Map<String, Object> objs, final List<Object> allModels) {
+        final Map<String, Object> results = super.postProcessOperationsWithModels(objs, allModels);
+        final Map<String, Object> ops = (Map<String, Object>) results.get("operations");
+        final ArrayList<CodegenOperation> opList = (ArrayList<CodegenOperation>) ops.get("operation");
+        // iterate over the operation and perhaps modify something
+        for (final CodegenOperation co : opList) {
+            if (!co.path.startsWith("/2010-04-01/")) {
+                continue;
+            }
+
+            // handle case where the AccountSid exists as both a path parameter that's marked optional and a form parameter (optional)
+            HashSet<Object> seen = new HashSet<>();
+            co.optionalParams = co.optionalParams.stream()
+                        .filter(e -> seen.add(e.baseName))
+                        .collect(Collectors.toList());
+        }
+
+        return results;
     }
 
     /**

@@ -154,7 +154,7 @@ func TestRequiredParameters(t *testing.T) {
 }
 
 func TestCustomType(t *testing.T) {
-	resp, err := testClient.OpenApi.FetchIncomingPhoneNumber("PNFB2fe4c709Af4C1c658b25cE7DDCEbC7")
+	resp, err := testClient.OpenApi.FetchIncomingPhoneNumber("PNFB2fe4c709Af4C1c658b25cE7DDCEbC7", nil)
 	assert.Nil(t, err)
 	assert.NotNil(t, resp)
 	assert.Equal(t, resp.Capabilities.Fax, false)

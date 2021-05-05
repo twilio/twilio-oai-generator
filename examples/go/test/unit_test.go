@@ -31,7 +31,30 @@ func TestPathIsCorrect(t *testing.T) {
 		)
 
 	twilio := openapi.NewDefaultApiService(testClient)
-	twilio.FetchIncomingPhoneNumber("PNXXXXY")
+	params := &openapi.FetchIncomingPhoneNumberParams{}
+	twilio.FetchIncomingPhoneNumber("PNXXXXY", params)
+}
+
+func TestAccountSidAsOptionalParam(t *testing.T) {
+	mockCtrl := gomock.NewController(t)
+	testClient := NewMockBaseClient(mockCtrl)
+	testClient.EXPECT().GetAccountSid().DoAndReturn(func() string {
+		return "AC222222222222222222222222222222"
+	})
+	testClient.EXPECT().Get(
+		gomock.Any(),
+		gomock.Any(),
+		gomock.Any()).
+		DoAndReturn(func(path string, query interface{}, headers map[string]interface{}) (*http.Response, error) {
+			assert.Equal(t, path, "https://autopilot.twilio.com/2010-04-01/Accounts/AC444444444444444444444444444444/IncomingPhoneNumbers/PNXXXXY.json")
+			return &http.Response{Body: ioutil.NopCloser(bytes.NewReader(nil))}, nil
+		},
+		)
+
+	twilio := openapi.NewDefaultApiService(testClient)
+	subAccountSid := "AC444444444444444444444444444444"
+	params := &openapi.FetchIncomingPhoneNumberParams{AccountSid: &subAccountSid}
+	twilio.FetchIncomingPhoneNumber("PNXXXXY", params)
 }
 
 func TestAddingHeader(t *testing.T) {
