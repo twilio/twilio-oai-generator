@@ -538,6 +538,8 @@ github.com/twilio/twilio-go v0.6.0 h1:CB8rC6Ml6fWvSW4Yd/w6xu4WRu+lWd2tXdHcO/XQe/
 github.com/twilio/twilio-go v0.6.0/go.mod h1:8wd/x7DdvJZV5ONjJp0jLEHU0cDK5Bkr2uLSZJWM9rM=
 github.com/twilio/twilio-go v0.6.1-0.20210429175106-96325ea767f1 h1:+ffCX95Md4B8H4wZRgc7HMY3NuaQDAulNfaCM72GJmQ=
 github.com/twilio/twilio-go v0.6.1-0.20210429175106-96325ea767f1/go.mod h1:8wd/x7DdvJZV5ONjJp0jLEHU0cDK5Bkr2uLSZJWM9rM=
+github.com/twilio/twilio-go v0.7.0 h1:3vPGH6azu4I+e92Hb+8YvKFsbyzjgow4muG+lEQlE7k=
+github.com/twilio/twilio-go v0.7.0/go.mod h1:8wd/x7DdvJZV5ONjJp0jLEHU0cDK5Bkr2uLSZJWM9rM=
 github.com/ugorji/go/codec v0.0.0-20181204163529-d75b2dcb6bc8/go.mod h1:VFNgLljTbGfSG7qAOspJ7OScBnGdDN/yBr0sguwnwf0=
 github.com/ultraware/funlen v0.0.3/go.mod h1:Dp4UiAus7Wdb9KUZsYWZEWiRzGuM2kXM1lPbfaF6xhA=
 github.com/ultraware/whitespace v0.0.4/go.mod h1:aVMh/gQve5Maj9hQ/hg+F75lr/X5A89uZnzAmWSineA=
