@@ -2,7 +2,7 @@ package twilio // Package twilio provides bindings for Twilio's REST APIs.
 
 import (
 	"github.com/twilio/twilio-go/client"
-	openapi "github.com/twilio/twilio-oai-generator/twilio/rest/oai"
+	openapi "twilio-oai-generator/go/twilio/rest/oai"
 )
 
 // Twilio provides access to Twilio services.

@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-cd examples/go && rm -rf twilio && mkdir -p twilio && cd ../../
+cd examples/go && rm -rf twilio && mkdir twilio && cd ../../
 make install
 java -cp ./openapi-generator-cli.jar:target/twilio-openapi-generator-1.0.0.jar \
   org.openapitools.codegen.OpenAPIGenerator \

@@ -1,4 +1,4 @@
-module github.com/twilio/twilio-oai-generator
+module twilio-oai-generator/go
 
 go 1.16
 
