@@ -1,4 +1,4 @@
 .idea
-codegen/
+examples/go/twilio/
 *.jar
 target/
