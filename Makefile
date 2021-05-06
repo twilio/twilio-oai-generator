@@ -1,9 +1,6 @@
-.PHONY: build install test-docker
+.PHONY: install test-docker
 
 OPENAPI_GENERATOR_VERSION=5.0.1
-
-build:
-	mvn clean package -DskipTests
 
 install:
 	cd examples/go && go get github.com/twilio/twilio-go@main
