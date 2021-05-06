@@ -1,13 +1,12 @@
 package com.twilio.oai;
 
+import java.util.List;
+
+import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.parameters.Parameter;
+import org.openapitools.codegen.CodegenOperation;
 import org.openapitools.codegen.CodegenParameter;
 import org.openapitools.codegen.SupportingFile;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.HashSet;
-import java.util.stream.Collectors;
 
 public class TwilioGoGenerator extends AbstractTwilioGoGenerator {
 
@@ -23,31 +22,26 @@ public class TwilioGoGenerator extends AbstractTwilioGoGenerator {
         // Make sure required non-path params get into the options block.
         parameter.required = parameter.isPathParam;
 
-        if (parameter.paramName.equals("AccountSid")) {
+        if (parameter.paramName.equals("PathAccountSid")) {
             parameter.required = false;
-            parameter.vendorExtensions.put("x-is-account-sid", parameter.paramName.equals("AccountSid"));
+            parameter.vendorExtensions.put("x-is-account-sid", parameter.paramName.equals("PathAccountSid"));
         }
     }
 
     @Override
-    public Map<String, Object> postProcessOperationsWithModels(final Map<String, Object> objs, final List<Object> allModels) {
-        final Map<String, Object> results = super.postProcessOperationsWithModels(objs, allModels);
-        final Map<String, Object> ops = (Map<String, Object>) results.get("operations");
-        final ArrayList<CodegenOperation> opList = (ArrayList<CodegenOperation>) ops.get("operation");
-        // iterate over the operation and perhaps modify something
-        for (final CodegenOperation co : opList) {
-            if (!co.path.startsWith("/2010-04-01/")) {
-                continue;
+    public void processOpenAPI(final OpenAPI openAPI) {
+        openAPI.getPaths().forEach((name, path) -> path.readOperations().forEach(operation -> {
+            List<Parameter> parameters = operation.getParameters();
+            if (parameters != null) {
+                for (Parameter p : parameters) {
+                    String in = p.getIn();
+                    String paramName = p.getName();
+                    if (in.equals("path") && paramName.equals("AccountSid")) {
+                        p.setName("PathAccountSid");
+                    }
+                }
             }
-
-            // handle case where the AccountSid exists as both a path parameter that's marked optional and a form parameter (optional)
-            HashSet<Object> seen = new HashSet<>();
-            co.optionalParams = co.optionalParams.stream()
-                        .filter(e -> seen.add(e.baseName))
-                        .collect(Collectors.toList());
-        }
-
-        return results;
+        }));
     }
 
     /**

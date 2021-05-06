@@ -40,7 +40,7 @@ func TestAccountSidAsOptionalParam(t *testing.T) {
 	testClient := NewMockBaseClient(mockCtrl)
 	testClient.EXPECT().GetAccountSid().DoAndReturn(func() string {
 		return "AC222222222222222222222222222222"
-	})
+	}).AnyTimes()
 	testClient.EXPECT().Get(
 		gomock.Any(),
 		gomock.Any(),
@@ -53,7 +53,7 @@ func TestAccountSidAsOptionalParam(t *testing.T) {
 
 	twilio := openapi.NewDefaultApiService(testClient)
 	subAccountSid := "AC444444444444444444444444444444"
-	params := &openapi.FetchIncomingPhoneNumberParams{AccountSid: &subAccountSid}
+	params := &openapi.FetchIncomingPhoneNumberParams{PathAccountSid: &subAccountSid}
 	twilio.FetchIncomingPhoneNumber("PNXXXXY", params)
 }
 

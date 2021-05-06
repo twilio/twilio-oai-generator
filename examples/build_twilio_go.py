@@ -41,7 +41,7 @@ def generate(openapi_spec_path, go_path, project_version, domain, is_file=False,
 
     to_generate = "terraform-provider-twilio" if language=="terraform" else "twilio-go"
     sub_dir = "resources" if language=="terraform" else "rest"
-    command = f"cd {parent_dir} && java -cp ./openapi-generator-cli.jar:target/twilio-go-openapi-generator-{project_version}.jar " \
+    command = f"cd {parent_dir} && java -cp ./openapi-generator-cli.jar:target/twilio-openapi-generator-{project_version}.jar " \
               f"org.openapitools.codegen.OpenAPIGenerator generate -g {to_generate} -i {full_path} -o " \
               f"{go_path}/twilio/{sub_dir}/{domain_name}/{api_version}"
     os.system(command)

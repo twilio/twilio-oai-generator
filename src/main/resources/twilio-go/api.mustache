@@ -37,28 +37,29 @@ type {{{nickname}}}Params struct {
 {{/optionalParams}}
 }
 {{/hasOptionalParams}}
+
 // {{operationId}}{{#summary}} {{{.}}}{{/summary}}{{^summary}} Method for {{operationId}}{{/summary}}
-{{#notes}}
 //
-// * {{notes}}
+{{#notes}}
+// {{notes}}
+//
 {{/notes}}
 {{#allParams}}
 {{#required}}
+// param: {{paramName}}{{#description}} {{{.}}}{{/description}}
 //
-// * @param: {{paramName}}{{#description}} {{{.}}}{{/description}}
 {{/required}}
 {{/allParams}}
 {{#hasOptionalParams}}
+// param: optional nil or *{{{nickname}}}Params - Optional Parameters:
 //
-// * @param: optional nil or *{{{nickname}}}Params - Optional Parameters:
 {{#optionalParams}}
+// param: "{{paramName}}" ({{#isNullable}}*{{/isNullable}}{{{dataType}}}) - {{#description}}{{{.}}}{{/description}}
 //
-// * @param: "{{paramName}}" ({{#isNullable}}*{{/isNullable}}{{{dataType}}}) - {{#description}}{{{.}}}{{/description}}
 {{/optionalParams}}
 {{/hasOptionalParams}}
 {{#returnType}}
-//
-// * @return: {{{returnType}}}
+// return: {{{returnType}}}
 {{/returnType}}
 func (c *{{{classname}}}Service) {{{nickname}}}({{#allParams}}{{#required}}{{paramName}} {{{dataType}}}{{^last}}, {{/last}}{{/required}}{{/allParams}}{{#hasOptionalParams}}params *{{{nickname}}}Params{{/hasOptionalParams}}) ({{#returnType}}*{{{returnType}}}, {{/returnType}}error) {
     path := "{{{path}}}"
@@ -67,11 +68,11 @@ func (c *{{{classname}}}Service) {{{nickname}}}({{#allParams}}{{#required}}{{par
 	path = strings.Replace(path, "{"+"{{paramName}}"+"}", {{^isString}}fmt.Sprint({{/isString}}{{paramName}}{{^isString}}){{/isString}}, -1)
 {{/vendorExtensions.x-is-account-sid}}
 {{#vendorExtensions.x-is-account-sid}}
-    accountSid := c.client.GetAccountSid()
-    if params != nil && params.AccountSid != nil {
-        accountSid = *params.AccountSid
+    if params != nil && params.PathAccountSid != nil {
+        path = strings.Replace(path, "{"+"AccountSid"+"}", *params.PathAccountSid, -1)
+    } else {
+        path = strings.Replace(path, "{"+"AccountSid"+"}", c.client.GetAccountSid(), -1)
     }
-    path = strings.Replace(path, "{"+"{{paramName}}"+"}", accountSid, -1)
 {{/vendorExtensions.x-is-account-sid}}
 {{/pathParams}}
 
@@ -80,6 +81,7 @@ func (c *{{{classname}}}Service) {{{nickname}}}({{#allParams}}{{#required}}{{par
 
 {{#hasOptionalParams}}
 {{#optionalParams}}
+{{^vendorExtensions.x-is-account-sid}}
 {{^isHeaderParam}}
     if params != nil && params.{{paramName}} != nil {
 {{#isFreeFormObject}}
@@ -96,6 +98,7 @@ func (c *{{{classname}}}Service) {{{nickname}}}({{#allParams}}{{#required}}{{par
 {{/isFreeFormObject}}
 }
 {{/isHeaderParam}}
+{{/vendorExtensions.x-is-account-sid}}
 {{/optionalParams}}
 {{/hasOptionalParams}}
 
