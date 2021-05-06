@@ -1,12 +1,7 @@
 package com.twilio.oai;
 
-import org.openapitools.codegen.CodegenOperation;
 import org.openapitools.codegen.CodegenParameter;
 import org.openapitools.codegen.SupportingFile;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 public class TwilioGoGenerator extends AbstractTwilioGoGenerator {
 
@@ -24,8 +19,8 @@ public class TwilioGoGenerator extends AbstractTwilioGoGenerator {
     }
 
     /**
-     * Configures a friendly name for the generator.  This will be used by the generator
-     * to select the library with the -g flag.
+     * Configures a friendly name for the generator. This will be used by the generator to select the library with the
+     * -g flag.
      *
      * @return the friendly name for the generator
      */
@@ -35,8 +30,7 @@ public class TwilioGoGenerator extends AbstractTwilioGoGenerator {
     }
 
     /**
-     * Returns human-friendly help for the generator.  Provide the consumer with help
-     * tips, parameters here
+     * Returns human-friendly help for the generator. Provide the consumer with help tips, parameters here
      *
      * @return A string value for the help message
      */
@@ -44,5 +38,4 @@ public class TwilioGoGenerator extends AbstractTwilioGoGenerator {
     public String getHelp() {
         return "Generates a Go client library (beta).";
     }
-
 }
