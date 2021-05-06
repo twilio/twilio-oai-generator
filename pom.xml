@@ -2,9 +2,9 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.openapitools</groupId>
-    <artifactId>twilio-go-openapi-generator</artifactId>
+    <artifactId>twilio-openapi-generator</artifactId>
     <packaging>jar</packaging>
-    <name>twilio-go-openapi-generator</name>
+    <name>twilio-openapi-generator</name>
     <version>1.0.0</version>
     <build>
         <plugins>
@@ -76,7 +76,8 @@
                         <configuration>
                             <sources>
                                 <source>
-                                src/main/java</source>
+                                    src/main/java
+                                </source>
                             </sources>
                         </configuration>
                     </execution>
@@ -89,7 +90,8 @@
                         <configuration>
                             <sources>
                                 <source>
-                                src/test/java</source>
+                                    src/test/java
+                                </source>
                             </sources>
                         </configuration>
                     </execution>
@@ -121,7 +123,7 @@
     </dependencies>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <openapi-generator-version>5.0.0-beta2</openapi-generator-version>
+        <openapi-generator-version>5.0.1</openapi-generator-version>
         <maven-plugin-version>1.0.0</maven-plugin-version>
         <junit-version>4.13.1</junit-version>
     </properties>

@@ -1,6 +1,6 @@
 # OpenAPI Generator for the [twilio-go](https://github.com/twilio/twilio-go/) library
 
-**Note: Please ignore items related to Terraform as it is not yet supported. Thanks!**
+**:warning: Note: Please ignore items related to Terraform as it is not yet supported. Thanks!**
 
 ## Overview
 This is a boiler-plate project to generate your own project derived from an OpenAPI specification.
@@ -87,14 +87,35 @@ You can use this info in the `api.mustache` file.
 
 ## Generating twilio-go
 
-To generate [`twilio-go`](https://github.com/twilio/twilio-go) from [`twilio-oai`](https://github.com/twilio/twilio-oai), execute the following from the root of this repo:
+To generate [`twilio-go`](https://github.com/twilio/twilio-go) from [`twilio-oai`](https://github.com/twilio/twilio-oai)
 
-# Setup
+### Setup
 
-`make install`
+1. Clone this repo
+2. Clone [twilio-oai](https://github.com/twilio/twilio-oai)
+3. Clone [twilio-go](https://github.com/twilio/twilio-go)
+4. Navigate to your local `twilio-oai-generator` and run `make install`
 
-# Code Generation
+### Code Generation
 
-First, please update `<path to>`, then execute:
+Update `<path to>` and execute the following from the root of this repo:
 
-`mvn clean package -DskipTests && python3 examples/build_twilio_go.py <path to>/twilio-oai/spec/yaml <path to>/twilio-go`
+* To generate the entire suite, run `make build && python3 examples/build_twilio_go.py <path to>/twilio-oai/spec/yaml <path to>/twilio-go`
+* To generate the provider for a single domain such as studio, run `make build && python3 examples/build_twilio_go.py <path to>/twilio-oai/spec/yaml/twilio_studio_v2.yaml <path to>/twilio-go`
+
+## Generating terraform-provider-twilio
+
+### Setup
+
+1. Clone this repo
+2. Clone [twilio-oai](https://github.com/twilio/twilio-oai)
+3. Clone [terraform-provider-twilio](https://github.com/twilio/terraform-provider-twilio)
+4. Navigate to your local `twilio-oai-generator` and run `make install`
+
+### Code Generation
+
+Update `<path to>` and execute the following from the root of this repo:
+
+* To generate the entire suite, run `make build && python3 examples/build_twilio_go.py <path to>/twilio-oai/spec/yaml <path to>/terraform-provider-twilio -l terraform`
+* To generate the provider for a single domain such as studio, run `make build && python3 examples/build_twilio_go.py <path to>/twilio-oai/spec/yaml/twilio_studio_v2.yaml <path to>/terraform-provider-twilio -l terraform`
+* Run `python3 examples/build_twilio_go.py -h` to see more details
