@@ -2,13 +2,13 @@ package twilio // Package twilio provides bindings for Twilio's REST APIs.
 
 import (
 	"github.com/twilio/twilio-go/client"
-	openapi "github.com/twilio/twilio-go/twilio/rest/oai"
+	openapi "twilio-oai-generator/go/twilio/rest/oai"
 )
 
 // Twilio provides access to Twilio services.
 type Twilio struct {
 	*client.Credentials
-	*client.TestClient
+	*TestClient
 	common  service
 	OpenApi *openapi.DefaultApiService
 }
@@ -17,9 +17,8 @@ type service struct {
 	client *Twilio
 }
 
-func NewClientWithAccountSid(userName string, authToken string, accountSid string) *Twilio {
-	credentials := &client.Credentials{Username: userName, AuthToken: authToken}
-
+func NewClient(accountSID string, authToken string) *Twilio {
+	credentials := &client.Credentials{AccountSID: accountSID, AuthToken: authToken}
 	baseClient := client.Client{
 		Credentials: credentials,
 		BaseURL:     "twilio.com",
@@ -28,7 +27,7 @@ func NewClientWithAccountSid(userName string, authToken string, accountSid strin
 
 	c := &Twilio{
 		Credentials: credentials,
-		TestClient: &client.TestClient{
+		TestClient: &TestClient{
 			Credentials: credentials,
 			BaseURL:     "twilio.com",
 			Client:      baseClient,
