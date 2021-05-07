@@ -2,7 +2,7 @@ package twilio // Package twilio provides bindings for Twilio's REST APIs.
 
 import (
 	"github.com/twilio/twilio-go/client"
-	openapi "twilio-oai-generator/go/twilio/rest/oai"
+	openapi "twilio-oai-generator/go/rest/oai"
 )
 
 // Twilio provides access to Twilio services.
@@ -35,7 +35,6 @@ func NewRestClientWithParams(username string, password string, params RestClient
 			Credentials: credentials,
 			BaseURL:     "twilio.com",
 			Client:      baseClient,
-
 		},
 	}
 
