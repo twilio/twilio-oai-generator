@@ -12,13 +12,13 @@ import (
 
 var accountSid string
 var authToken string
-var testClient *twilio.Twilio
+var testClient *twilio.RestClient
 
 func TestMain(m *testing.M) {
 	// Do setup before the tests are run
 	accountSid = "AC12345678123456781234567812345678"
 	authToken = "CR12345678123456781234567812345678"
-	testClient = twilio.NewClient(accountSid, authToken)
+	testClient = twilio.NewRestClient(accountSid, authToken)
 	testClient.BaseURL = "http://prism_twilio:4010"
 
 	ret := m.Run()
@@ -93,7 +93,7 @@ func TestDateTimeQueryParams(t *testing.T) {
 		PageSize:          &pageSize,
 	}
 
-	resp, err := testClient.OpenApi.ListCallRecording(accountSid, "CA12345678123456781234567812345678", &params)
+	resp, err := testClient.OpenApi.ListCallRecording("CA12345678123456781234567812345678", &params)
 
 	expectedTrack := "DialVerb"
 	expectedStatus := "completed"
@@ -118,7 +118,7 @@ func TestCustomHeaders(t *testing.T) {
 	params.XTwilioWebhookEnabled = &testHeader
 	params.RecordingStatusCallback = &testUri
 
-	resp, err := testClient.OpenApi.CreateCallRecording(accountSid, "CA12345678123456781234567812345678", params)
+	resp, err := testClient.OpenApi.CreateCallRecording("CA12345678123456781234567812345678", params)
 
 	expectedSource := "Trunking"
 	expectedPrice := float32(100.22)
@@ -139,11 +139,11 @@ func TestRequiredParameters(t *testing.T) {
 	}
 
 	// StartDate and EndDate are required parameters
-	resp, err := testClient.OpenApi.CreateCallFeedbackSummary(accountSid, nil)
+	resp, err := testClient.OpenApi.CreateCallFeedbackSummary(nil)
 	assert.NotNil(t, err)
 	assert.Nil(t, resp)
 
-	resp, err = testClient.OpenApi.CreateCallFeedbackSummary(accountSid, params)
+	resp, err = testClient.OpenApi.CreateCallFeedbackSummary(params)
 
 	expectedCount := float32(4)
 
@@ -154,7 +154,7 @@ func TestRequiredParameters(t *testing.T) {
 }
 
 func TestCustomType(t *testing.T) {
-	resp, err := testClient.OpenApi.FetchIncomingPhoneNumber(accountSid, "PNFB2fe4c709Af4C1c658b25cE7DDCEbC7")
+	resp, err := testClient.OpenApi.FetchIncomingPhoneNumber("PNFB2fe4c709Af4C1c658b25cE7DDCEbC7", nil)
 	assert.Nil(t, err)
 	assert.NotNil(t, resp)
 	assert.Equal(t, resp.Capabilities.Fax, false)

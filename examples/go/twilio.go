@@ -6,7 +6,7 @@ import (
 )
 
 // Twilio provides access to Twilio services.
-type Twilio struct {
+type RestClient struct {
 	*client.Credentials
 	*TestClient
 	common  service
@@ -14,22 +14,28 @@ type Twilio struct {
 }
 
 type service struct {
-	client *Twilio
+	client *RestClient
 }
 
-func NewClient(accountSID string, authToken string) *Twilio {
-	credentials := &client.Credentials{AccountSID: accountSID, AuthToken: authToken}
+type RestClientParams struct {
+	AccountSid string
+}
+
+func NewRestClientWithParams(username string, password string, params RestClientParams) *RestClient {
+	credentials := &client.Credentials{Username: username, Password: password}
 	baseClient := client.Client{
 		Credentials: credentials,
 		BaseURL:     "twilio.com",
+		AccountSid:  params.AccountSid,
 	}
 
-	c := &Twilio{
+	c := &RestClient{
 		Credentials: credentials,
 		TestClient: &TestClient{
 			Credentials: credentials,
 			BaseURL:     "twilio.com",
 			Client:      baseClient,
+
 		},
 	}
 
@@ -37,4 +43,11 @@ func NewClient(accountSID string, authToken string) *Twilio {
 	c.OpenApi = openapi.NewDefaultApiService(c.TestClient)
 
 	return c
+}
+
+// NewRestClient provides an initialized Twilio RestClient.
+func NewRestClient(username string, password string) *RestClient {
+	return NewRestClientWithParams(username, password, RestClientParams{
+		AccountSid: username,
+	})
 }
