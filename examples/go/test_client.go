@@ -22,6 +22,10 @@ func (testClient TestClient) getParsedUrl(path string) *url.URL {
 	return parsedUrl
 }
 
+func (testClient TestClient) GetAccountSid() string {
+	return testClient.AccountSid
+}
+
 // Post performs a POST request on the object at the provided URI in the context of the Request's BaseURL
 // with the provided data as parameters.
 func (testClient TestClient) Post(path string, bodyData url.Values, headers map[string]interface{}) (*http.Response, error) {
