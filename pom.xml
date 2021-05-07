@@ -7,6 +7,7 @@
     <name>twilio-openapi-generator</name>
     <version>1.0.0</version>
     <build>
+        <finalName>${project.artifactId}</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
