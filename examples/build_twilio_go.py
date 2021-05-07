@@ -14,36 +14,24 @@ def get_domain_info(domain, oai_spec_location, is_file=False):
     return domain_name, full_path, api_version
 
 
-def get_project_version():
-    from xml.etree import ElementTree as etree
-    tree = etree.ElementTree()
-    parent_dir = Path(__file__).parent.parent
-    pom = f"{parent_dir}/pom.xml"
-    tree.parse(pom)
-    namespace = "{http://maven.apache.org/POM/4.0.0}"
-    version = tree.getroot().findtext(f"{namespace}version")
-    return version
-
-
 def build(openapi_spec_path, go_path, language='go'):
-    project_version = get_project_version()
     if os.path.isfile(openapi_spec_path):
         folder, domain = os.path.split(openapi_spec_path)
-        generate(openapi_spec_path, go_path, project_version, domain, True, language)
+        generate(openapi_spec_path, go_path, domain, True, language)
     else:
         for domain in os.listdir(openapi_spec_path):
-            generate(openapi_spec_path, go_path, project_version, domain, False, language)
+            generate(openapi_spec_path, go_path, domain, False, language)
 
 
-def generate(openapi_spec_path, go_path, project_version, domain, is_file=False, language='go'):
+def generate(openapi_spec_path, go_path, domain, is_file=False, language='go'):
     domain_name, full_path, api_version = get_domain_info(domain, openapi_spec_path, is_file)
     parent_dir = Path(__file__).parent.parent
 
-    to_generate = "terraform-provider-twilio" if language=="terraform" else "twilio-go"
-    sub_dir = "resources" if language=="terraform" else "rest"
-    command = f"cd {parent_dir} && java -cp ./openapi-generator-cli.jar:target/twilio-openapi-generator-{project_version}.jar " \
+    to_generate = "terraform-provider-twilio" if language == "terraform" else "twilio-go"
+    sub_dir = "twilio/resources" if language == "terraform" else "rest"
+    command = f"cd {parent_dir} && java -cp ./openapi-generator-cli.jar:target/twilio-openapi-generator.jar " \
               f"org.openapitools.codegen.OpenAPIGenerator generate -g {to_generate} -i {full_path} -o " \
-              f"{go_path}/twilio/{sub_dir}/{domain_name}/{api_version}"
+              f"{go_path}/{sub_dir}/{domain_name}/{api_version}"
     os.system(command)
 
 
@@ -60,6 +48,7 @@ if __name__ == "__main__":
                                      formatter_class=argparse.RawTextHelpFormatter)
     parser.add_argument("spec_path", type=str, help="path to open api specs")
     parser.add_argument("output_path", type=str, help="path to output the generated code")
-    parser.add_argument("-l", "--lang", type=str, choices=['go', 'terraform'], help="generate twilio-go/terraform-provider from twilio-oai")
+    parser.add_argument("-l", "--lang", type=str, choices=['go', 'terraform'],
+                        help="generate twilio-go/terraform-provider from twilio-oai")
     args = parser.parse_args()
     build(args.spec_path, args.output_path, args.lang)
