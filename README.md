@@ -108,8 +108,8 @@ To generate [`twilio-go`](https://github.com/twilio/twilio-go) from [`twilio-oai
 
 Update `<path to>` and execute the following from the root of this repo:
 
-* To generate the entire suite, run `make build && python3 examples/build_twilio_go.py <path to>/twilio-oai/spec/yaml <path to>/twilio-go`
-* To generate the provider for a single domain such as studio, run `make build && python3 examples/build_twilio_go.py <path to>/twilio-oai/spec/yaml/twilio_studio_v2.yaml <path to>/twilio-go`
+* To generate the entire suite, run `make install && python3 examples/build_twilio_go.py <path to>/twilio-oai/spec/yaml <path to>/twilio-go`
+* To generate the provider for a single domain such as studio, run `make install && python3 examples/build_twilio_go.py <path to>/twilio-oai/spec/yaml/twilio_studio_v2.yaml <path to>/twilio-go`
 
 ## Generating terraform-provider-twilio
 
@@ -124,6 +124,6 @@ Update `<path to>` and execute the following from the root of this repo:
 
 Update `<path to>` and execute the following from the root of this repo:
 
-* To generate the entire suite, run `make build && python3 examples/build_twilio_go.py <path to>/twilio-oai/spec/yaml <path to>/terraform-provider-twilio -l terraform`
-* To generate the provider for a single domain such as studio, run `make build && python3 examples/build_twilio_go.py <path to>/twilio-oai/spec/yaml/twilio_studio_v2.yaml <path to>/terraform-provider-twilio -l terraform`
+* To generate the entire suite, run `make install && python3 examples/build_twilio_go.py <path to>/twilio-oai/spec/yaml <path to>/terraform-provider-twilio -l terraform`
+* To generate the provider for a single domain such as studio, run `make install && python3 examples/build_twilio_go.py <path to>/twilio-oai/spec/yaml/twilio_studio_v2.yaml <path to>/terraform-provider-twilio -l terraform`
 * Run `python3 examples/build_twilio_go.py -h` to see more details
