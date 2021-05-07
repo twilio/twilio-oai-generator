@@ -36,6 +36,13 @@ type {{{nickname}}}Params struct {
 	{{paramName}} *{{{dataType}}} `json:"{{baseName}}{{^required}},omitempty{{/required}}"{{#withXml}} xml:"{{baseName}}{{#isXmlAttribute}},attr{{/isXmlAttribute}}"{{/withXml}}{{#vendorExtensions.x-go-custom-tag}}{{/vendorExtensions.x-go-custom-tag}}`
 {{/optionalParams}}
 }
+
+{{#optionalParams}}
+func (params *{{{nickname}}}Params) Set{{paramName}}({{paramName}} {{{dataType}}}) (*{{{nickname}}}Params){
+    params.{{paramName}} = &{{paramName}}
+    return params
+}
+{{/optionalParams}}
 {{/hasOptionalParams}}
 
 // {{operationId}}{{#summary}} {{{.}}}{{/summary}}{{^summary}} Method for {{operationId}}{{/summary}}
