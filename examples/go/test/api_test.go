@@ -7,7 +7,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"twilio-oai-generator/go"
-	openapi "twilio-oai-generator/go/twilio/rest/oai"
+	openapi "twilio-oai-generator/go/rest/oai"
 )
 
 var accountSid string

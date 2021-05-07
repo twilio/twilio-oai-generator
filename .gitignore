@@ -1,5 +1,5 @@
 .idea
 *.jar
 codegen/
-examples/go/twilio/
+examples/go/rest/
 target/

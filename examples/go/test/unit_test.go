@@ -11,7 +11,7 @@ import (
 
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
-	openapi "twilio-oai-generator/go/twilio/rest/oai"
+	openapi "twilio-oai-generator/go/rest/oai"
 )
 
 func TestPathIsCorrect(t *testing.T) {
