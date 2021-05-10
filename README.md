@@ -1,6 +1,6 @@
 # OpenAPI Generator for the [twilio-go](https://github.com/twilio/twilio-go/) library
 
-**Note: Please ignore items related to Terraform as it is not yet supported. Thanks!**
+**:warning: Note: Please ignore items related to Terraform as it is not yet supported. Thanks!**
 
 ## Overview
 This is a boiler-plate project to generate your own project derived from an OpenAPI specification.
@@ -12,7 +12,7 @@ The goal of OpenAPI is to define a standard, language-agnostic interface to REST
 
 When properly described with OpenAPI, a consumer can understand and interact with the remote service with a minimal amount of implementation logic. Similar to what interfaces have done for lower-level programming, OpenAPI removes the guesswork in calling the service.
 
-Check out [OpenAPI-Spec](https://github.com/OAI/OpenAPI-Specification) for additional information about the OpenAPI project, including additional libraries with support for other languages and more. 
+Check out [OpenAPI-Spec](https://github.com/OAI/OpenAPI-Specification) for additional information about the OpenAPI project, including additional libraries with support for other languages and more.
 
 ## How do I use this?
 Clone this repo into your local machine. It will include:
@@ -68,7 +68,7 @@ Now your templates are available to the client generator, and you can write outp
 ## But how do I modify this?
 The `TwilioGoGenerator.java` has comments in it--lots of comments.  There is no good substitute for reading the code more, though.  See how the `TwilioGoGenerator` implements `CodegenConfig`. That class has the signature of all values that can be overridden.
 
-You can also step through TwilioGoGenerator.java in a debugger.  Just debug the JUnit test in DebugCodegenLauncher. That runs the command line tool and lets you inspect what the code is doing.  
+You can also step through TwilioGoGenerator.java in a debugger.  Just debug the JUnit test in DebugCodegenLauncher. That runs the command line tool and lets you inspect what the code is doing.
 
 For the templates themselves, you have a number of values available to you for generation. You can execute the `java` command from above while passing different debug flags to show the object you have available during client generation:
 
@@ -85,16 +85,45 @@ java -DdebugOperations -cp /path/to/openapi-generator-cli.jar:/path/to/your.jar 
 Will, for example, output the debug info for operations.
 You can use this info in the `api.mustache` file.
 
+## Local Test Setup for twilio-go
+To run the unit tests or integration tests locally you need complete the following steps:
+1. Install the [prism CLI](https://meta.stoplight.io/docs/prism/docs/getting-started/01-installation.md) to run the integration tests locally.
+2. Run `make test-docker` from the root directory.
+3. Navigate to the `oai.yaml` located in `examples/go` and in a new terminal tab run the command `prism mock oai.yaml`.
+4. In `examples/go/test/api_test.go` TestMain function change `testClient.BaseURL = "http://prism_twilio:4010"` to `testClient.BaseURL = "http://localhost:4010"`.
+5. Run the tests locally in your terminal with the command `go test ./... -v` while inside `examples/go`.
+
 ## Generating twilio-go
 
-To generate [`twilio-go`](https://github.com/twilio/twilio-go) from [`twilio-oai`](https://github.com/twilio/twilio-oai), execute the following from the root of this repo:
+To generate [`twilio-go`](https://github.com/twilio/twilio-go) from [`twilio-oai`](https://github.com/twilio/twilio-oai)
 
 ### Setup
 
-`make install`
+1. Clone this repo
+2. Clone [twilio-oai](https://github.com/twilio/twilio-oai)
+3. Clone [twilio-go](https://github.com/twilio/twilio-go)
+4. Navigate to your local `twilio-oai-generator` and run `make install`
 
 ### Code Generation
 
-First, please update `<path to>`, then execute:
+Update `<path to>` and execute the following from the root of this repo:
 
-`mvn clean package -DskipTests && python3 examples/build_twilio_go.py <path to>/twilio-oai/spec/yaml <path to>/twilio-go`
+* To generate the entire suite, run `make install && python3 examples/build_twilio_go.py <path to>/twilio-oai/spec/yaml <path to>/twilio-go`
+* To generate the provider for a single domain such as studio, run `make install && python3 examples/build_twilio_go.py <path to>/twilio-oai/spec/yaml/twilio_studio_v2.yaml <path to>/twilio-go`
+
+## Generating terraform-provider-twilio
+
+### Setup
+
+1. Clone this repo
+2. Clone [twilio-oai](https://github.com/twilio/twilio-oai)
+3. Clone [terraform-provider-twilio](https://github.com/twilio/terraform-provider-twilio)
+4. Navigate to your local `twilio-oai-generator` and run `make install`
+
+### Code Generation
+
+Update `<path to>` and execute the following from the root of this repo:
+
+* To generate the entire suite, run `make install && python3 examples/build_twilio_go.py <path to>/twilio-oai/spec/yaml <path to>/terraform-provider-twilio -l terraform`
+* To generate the provider for a single domain such as studio, run `make install && python3 examples/build_twilio_go.py <path to>/twilio-oai/spec/yaml/twilio_studio_v2.yaml <path to>/terraform-provider-twilio -l terraform`
+* Run `python3 examples/build_twilio_go.py -h` to see more details

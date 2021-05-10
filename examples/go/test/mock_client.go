@@ -65,6 +65,20 @@ func (mr *MockBaseClientMockRecorder) Get(path, queryData, headers interface{}) 
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockBaseClient)(nil).Get), path, queryData, headers)
 }
 
+// GetAccountSid mocks base method.
+func (m *MockBaseClient) GetAccountSid() string {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetAccountSid")
+	ret0, _ := ret[0].(string)
+	return ret0
+}
+
+// GetAccountSid indicates an expected call of GetAccountSid.
+func (mr *MockBaseClientMockRecorder) GetAccountSid() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAccountSid", reflect.TypeOf((*MockBaseClient)(nil).GetAccountSid))
+}
+
 // Post mocks base method.
 func (m *MockBaseClient) Post(path string, bodyData url.Values, headers map[string]interface{}) (*http.Response, error) {
 	m.ctrl.T.Helper()
