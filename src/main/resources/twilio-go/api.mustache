@@ -33,36 +33,16 @@ func New{{classname}}Service(client twilio.BaseClient) *{{classname}}Service {
 // {{{nickname}}}Params Optional parameters for the method '{{{nickname}}}'
 type {{{nickname}}}Params struct {
 {{#optionalParams}}
-	{{paramName}} *{{{dataType}}} `json:"{{baseName}}{{^required}},omitempty{{/required}}"{{#withXml}} xml:"{{baseName}}{{#isXmlAttribute}},attr{{/isXmlAttribute}}"{{/withXml}}{{#vendorExtensions.x-go-custom-tag}}{{/vendorExtensions.x-go-custom-tag}}`
+	// {{#description}}{{{.}}}{{/description}}
+    {{paramName}} *{{{dataType}}} `json:"{{baseName}}{{^required}},omitempty{{/required}}"{{#withXml}} xml:"{{baseName}}{{#isXmlAttribute}},attr{{/isXmlAttribute}}"{{/withXml}}{{#vendorExtensions.x-go-custom-tag}}{{/vendorExtensions.x-go-custom-tag}}`
 {{/optionalParams}}
 }
 {{/hasOptionalParams}}
 
 // {{operationId}}{{#summary}} {{{.}}}{{/summary}}{{^summary}} Method for {{operationId}}{{/summary}}
 {{#notes}}
-//
-// **{{notes}}**
+// {{notes}}
 {{/notes}}
-{{#allParams}}
-{{^vendorExtensions.x-is-account-sid}}
-{{#required}}
-//
-// @param: {{paramName}}{{#description}} {{{.}}}{{/description}}
-{{/required}}
-{{/vendorExtensions.x-is-account-sid}}
-{{/allParams}}
-{{#hasOptionalParams}}
-//
-// @param: optional nil or *{{{nickname}}}Params - Optional Parameters:
-{{#optionalParams}}
-//
-// @param: "{{paramName}}" ({{#isNullable}}*{{/isNullable}}{{{dataType}}}) - {{#description}}{{{.}}}{{/description}}
-{{/optionalParams}}
-{{/hasOptionalParams}}
-{{#returnType}}
-//
-// @return: {{{returnType}}}
-{{/returnType}}
 func (c *{{{classname}}}Service) {{{nickname}}}({{#allParams}}{{#required}}{{paramName}} {{{dataType}}}{{^last}}, {{/last}}{{/required}}{{/allParams}}{{#hasOptionalParams}}params *{{{nickname}}}Params{{/hasOptionalParams}}) ({{#returnType}}*{{{returnType}}}, {{/returnType}}error) {
     path := "{{{path}}}"
 {{#pathParams}}
