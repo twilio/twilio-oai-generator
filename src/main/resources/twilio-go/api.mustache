@@ -34,7 +34,7 @@ func New{{classname}}Service(client twilio.BaseClient) *{{classname}}Service {
 // Optional parameters for the method '{{{nickname}}}'
 type {{{nickname}}}Params struct {
 {{#optionalParams}}
-    // {{#description}}{{{.}}}{{/description}}
+    // {{description}}
     {{paramName}} *{{{dataType}}} `json:"{{baseName}}{{^required}},omitempty{{/required}}"{{#withXml}} xml:"{{baseName}}{{#isXmlAttribute}},attr{{/isXmlAttribute}}"{{/withXml}}{{#vendorExtensions.x-go-custom-tag}}{{/vendorExtensions.x-go-custom-tag}}`
 {{/optionalParams}}
 }
