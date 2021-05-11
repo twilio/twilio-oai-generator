@@ -1,19 +1,19 @@
 package com.twilio.oai;
 
-import org.openapitools.codegen.CodegenConstants;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import io.swagger.v3.oas.models.media.Schema;
+import io.swagger.v3.oas.models.responses.ApiResponse;
 import org.openapitools.codegen.CodegenOperation;
 import org.openapitools.codegen.CodegenParameter;
 import org.openapitools.codegen.CodegenResponse;
-import org.openapitools.codegen.CodegenProperty;
-import org.openapitools.codegen.utils.StringUtils;
-import io.swagger.v3.oas.models.media.Schema;
-
-import io.swagger.v3.oas.models.OpenAPI;
-import io.swagger.v3.oas.models.media.*;
-import io.swagger.v3.oas.models.responses.ApiResponse;
 import org.openapitools.codegen.utils.ModelUtils;
-
-import java.util.*;
+import org.openapitools.codegen.utils.StringUtils;
 
 public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
 
@@ -64,12 +64,12 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
             this.addParamVendorExtensions(co.bodyParams);
 
 
-            Set<String> requestParams = new HashSet<String>();
+            Set<String> requestParams = new HashSet<>();
             for(CodegenParameter param: co.allParams) {
                 requestParams.add(this.toSnakeCase(param.baseName));
             }
 
-            if (co.formParams.size() > 0){
+            if (!co.formParams.isEmpty()){
                 co.vendorExtensions.put("x-has-form-params", true);
             }
 
@@ -77,7 +77,7 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
             if (co.nickname.startsWith("Create")) {
                 resource.put("schema", co.allParams);
                 for (CodegenResponse resp: co.responses) {
-                    if (resp.is2xx == true) {
+                    if (resp.is2xx) {
                         ArrayList<Object> properties = getResponseProperties(co.path, resp.code, requestParams);
                         resource.put("responseSchema", properties);
                         break;
@@ -126,7 +126,7 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
         Map<String, ApiResponse> responses = this.openAPI.getPaths().get(coPath).getPost().getResponses();
         ApiResponse response = responses.get(statusCode);
         Schema schema = response.getContent().get("application/json").getSchema();
-        ArrayList<Object> properties = new ArrayList<Object>();
+        ArrayList<Object> properties = new ArrayList<>();
         ModelUtils.getReferencedSchema(this.openAPI, schema).getProperties().forEach((k,v) -> {
             if (!requestParams.contains(k)) {
                 properties.add(k);

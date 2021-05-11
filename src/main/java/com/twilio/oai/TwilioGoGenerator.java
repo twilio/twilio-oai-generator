@@ -4,7 +4,6 @@ import java.util.List;
 
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.parameters.Parameter;
-import org.openapitools.codegen.CodegenOperation;
 import org.openapitools.codegen.CodegenParameter;
 import org.openapitools.codegen.SupportingFile;
 
@@ -24,7 +23,7 @@ public class TwilioGoGenerator extends AbstractTwilioGoGenerator {
 
         if (parameter.paramName.equals("PathAccountSid")) {
             parameter.required = false;
-            parameter.vendorExtensions.put("x-is-account-sid", parameter.paramName.equals("PathAccountSid"));
+            parameter.vendorExtensions.put("x-is-account-sid", true);
         }
     }
 
