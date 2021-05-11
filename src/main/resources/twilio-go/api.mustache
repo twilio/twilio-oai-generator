@@ -30,7 +30,8 @@ func New{{classname}}Service(client twilio.BaseClient) *{{classname}}Service {
 
 {{#operation}}
 {{#hasOptionalParams}}
-// {{{nickname}}}Params Optional parameters for the method '{{{nickname}}}'
+
+// Optional parameters for the method '{{{nickname}}}'
 type {{{nickname}}}Params struct {
 {{#optionalParams}}
     // {{#description}}{{{.}}}{{/description}}
