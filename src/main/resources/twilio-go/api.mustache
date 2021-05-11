@@ -37,6 +37,13 @@ type {{{nickname}}}Params struct {
     {{paramName}} *{{{dataType}}} `json:"{{baseName}}{{^required}},omitempty{{/required}}"{{#withXml}} xml:"{{baseName}}{{#isXmlAttribute}},attr{{/isXmlAttribute}}"{{/withXml}}{{#vendorExtensions.x-go-custom-tag}}{{/vendorExtensions.x-go-custom-tag}}`
 {{/optionalParams}}
 }
+
+{{#optionalParams}}
+func (params *{{{nickname}}}Params) Set{{paramName}}({{paramName}} {{{dataType}}}) (*{{{nickname}}}Params){
+    params.{{paramName}} = &{{paramName}}
+    return params
+}
+{{/optionalParams}}
 {{/hasOptionalParams}}
 
 // {{operationId}}{{#summary}} {{{.}}}{{/summary}}{{^summary}} Method for {{operationId}}{{/summary}}
@@ -46,7 +53,16 @@ type {{{nickname}}}Params struct {
 func (c *{{{classname}}}Service) {{{nickname}}}({{#allParams}}{{#required}}{{paramName}} {{{dataType}}}{{^last}}, {{/last}}{{/required}}{{/allParams}}{{#hasOptionalParams}}params *{{{nickname}}}Params{{/hasOptionalParams}}) ({{#returnType}}*{{{returnType}}}, {{/returnType}}error) {
     path := "{{{path}}}"
 {{#pathParams}}
+{{^vendorExtensions.x-is-account-sid}}
 	path = strings.Replace(path, "{"+"{{paramName}}"+"}", {{^isString}}fmt.Sprint({{/isString}}{{paramName}}{{^isString}}){{/isString}}, -1)
+{{/vendorExtensions.x-is-account-sid}}
+{{#vendorExtensions.x-is-account-sid}}
+    if params != nil && params.PathAccountSid != nil {
+        path = strings.Replace(path, "{"+"AccountSid"+"}", *params.PathAccountSid, -1)
+    } else {
+        path = strings.Replace(path, "{"+"AccountSid"+"}", c.client.GetAccountSid(), -1)
+    }
+{{/vendorExtensions.x-is-account-sid}}
 {{/pathParams}}
 
     data := url.Values{}
@@ -54,6 +70,7 @@ func (c *{{{classname}}}Service) {{{nickname}}}({{#allParams}}{{#required}}{{par
 
 {{#hasOptionalParams}}
 {{#optionalParams}}
+{{^vendorExtensions.x-is-account-sid}}
 {{^isHeaderParam}}
     if params != nil && params.{{paramName}} != nil {
 {{#isFreeFormObject}}
@@ -70,6 +87,7 @@ func (c *{{{classname}}}Service) {{{nickname}}}({{#allParams}}{{#required}}{{par
 {{/isFreeFormObject}}
 }
 {{/isHeaderParam}}
+{{/vendorExtensions.x-is-account-sid}}
 {{/optionalParams}}
 {{/hasOptionalParams}}
 

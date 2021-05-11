@@ -1,15 +1,17 @@
-package client
+package twilio
 
 import (
 	"net/http"
 	"net/url"
+
+	"github.com/twilio/twilio-go/client"
 )
 
 type TestClient struct {
-	*Credentials
+	*client.Credentials
 	HTTPClient *http.Client
 	BaseURL    string
-	Client
+	client.Client
 }
 
 func (testClient TestClient) getParsedUrl(path string) *url.URL {
@@ -18,6 +20,10 @@ func (testClient TestClient) getParsedUrl(path string) *url.URL {
 	parsedUrl.Scheme = baseUrl.Scheme
 	parsedUrl.Host = baseUrl.Host
 	return parsedUrl
+}
+
+func (testClient TestClient) GetAccountSid() string {
+	return testClient.AccountSid
 }
 
 // Post performs a POST request on the object at the provided URI in the context of the Request's BaseURL
