@@ -6,8 +6,8 @@ import (
     "github.com/hashicorp/terraform-plugin-sdk/v2/diag"
     "github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
     "github.com/twilio/terraform-provider-twilio/client"
-    . "github.com/twilio/twilio-go/{{clientPath}}"
     . "github.com/twilio/terraform-provider-twilio/twilio/common"
+    . "github.com/twilio/twilio-go/{{clientPath}}"
 )
 
 {{#resources}}
@@ -32,21 +32,23 @@ func Resource{{name}}() *schema.Resource {
 {{#operations}}
 {{#operation}}
 func {{#vendorExtensions.x-is-create-operation}}create{{/vendorExtensions.x-is-create-operation}}{{#vendorExtensions.x-is-read-operation}}read{{/vendorExtensions.x-is-read-operation}}{{#vendorExtensions.x-is-update-operation}}update{{/vendorExtensions.x-is-update-operation}}{{#vendorExtensions.x-is-delete-operation}}delete{{/vendorExtensions.x-is-delete-operation}}{{name}}(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-    {{#vendorExtensions.x-has-form-params}}
+    {{#vendorExtensions.x-has-optional-params}}
     params := {{nickname}}Params{}
     if err := UnmarshalSchema(&params, d); err != nil {
         return diag.FromErr(err)
     }
-    {{/vendorExtensions.x-has-form-params}}
+    {{/vendorExtensions.x-has-optional-params}}
 
     {{#allParams}}
     {{#isPathParam}}
+    {{#required}}
     {{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}} := d.Get("{{vendorExtensions.x-name-in-snake-case}}").(string)
+    {{/required}}
     {{/isPathParam}}
     {{/allParams}}
 
     {{#vendorExtensions.x-is-create-operation}}
-    r, err := m.(*client.Config).Client.{{productVersion}}.{{nickname}}({{#allParams}}{{#isPathParam}}{{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^-last}}, {{/-last}}{{/isPathParam}}{{/allParams}}{{#vendorExtensions.x-has-form-params}}&params{{/vendorExtensions.x-has-form-params}});
+    r, err := m.(*client.Config).Client.{{productVersion}}.{{nickname}}({{#allParams}}{{#required}}{{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^-last}}, {{/-last}}{{/required}}{{/allParams}}{{#vendorExtensions.x-has-optional-params}}&params{{/vendorExtensions.x-has-optional-params}});
     if err != nil {
         return diag.FromErr(err)
     }
@@ -55,7 +57,7 @@ func {{#vendorExtensions.x-is-create-operation}}create{{/vendorExtensions.x-is-c
     err = MarshalSchema(d, r)
     {{/vendorExtensions.x-is-create-operation}}
     {{#vendorExtensions.x-is-read-operation}}
-        r, err := m.(*client.Config).Client.{{productVersion}}.{{nickname}}({{#allParams}}{{#isPathParam}}{{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^-last}}, {{/-last}}{{/isPathParam}}{{/allParams}}{{#vendorExtensions.x-has-form-params}}&params{{/vendorExtensions.x-has-form-params}})
+        r, err := m.(*client.Config).Client.{{productVersion}}.{{nickname}}({{#allParams}}{{#required}}{{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^-last}}, {{/-last}}{{/required}}{{/allParams}}{{#vendorExtensions.x-has-optional-params}}&params{{/vendorExtensions.x-has-optional-params}})
         if err != nil {
             return diag.FromErr(err)
         }
@@ -63,7 +65,7 @@ func {{#vendorExtensions.x-is-create-operation}}create{{/vendorExtensions.x-is-c
         err = MarshalSchema(d, r)
     {{/vendorExtensions.x-is-read-operation}}
     {{#vendorExtensions.x-is-update-operation}}
-        r, err := m.(*client.Config).Client.{{productVersion}}.{{nickname}}({{#allParams}}{{#isPathParam}}{{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^-last}}, {{/-last}}{{/isPathParam}}{{/allParams}}{{#vendorExtensions.x-has-form-params}}&params{{/vendorExtensions.x-has-form-params}})
+        r, err := m.(*client.Config).Client.{{productVersion}}.{{nickname}}({{#allParams}}{{#required}}{{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^-last}}, {{/-last}}{{/required}}{{/allParams}}{{#vendorExtensions.x-has-optional-params}}&params{{/vendorExtensions.x-has-optional-params}})
         if err != nil {
             return diag.FromErr(err)
         }
@@ -72,7 +74,7 @@ func {{#vendorExtensions.x-is-create-operation}}create{{/vendorExtensions.x-is-c
     {{/vendorExtensions.x-is-update-operation}}
 
     {{#vendorExtensions.x-is-delete-operation}}
-        err := m.(*client.Config).Client.{{productVersion}}.{{nickname}}({{#allParams}}{{#isPathParam}}{{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^-last}}, {{/-last}}{{/isPathParam}}{{/allParams}}{{#vendorExtensions.x-has-form-params}}&params{{/vendorExtensions.x-has-form-params}})
+        err := m.(*client.Config).Client.{{productVersion}}.{{nickname}}({{#allParams}}{{#required}}{{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^-last}}, {{/-last}}{{/required}}{{/allParams}}{{#vendorExtensions.x-has-optional-params}}&params{{/vendorExtensions.x-has-optional-params}})
         d.SetId("")
     {{/vendorExtensions.x-is-delete-operation}}
 
