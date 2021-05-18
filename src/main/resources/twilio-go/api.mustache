@@ -5,23 +5,28 @@ package {{packageName}}
 import (
 	"encoding/json"
 	"fmt"
-	twilio "github.com/twilio/twilio-go/client"
 	"net/url"
+
+    twilio "github.com/twilio/twilio-go/client"
 	{{#imports}}
     "{{import}}"
     {{/imports}}
 )
 
 type {{classname}}Service struct {
-	baseURL string
-	client  twilio.BaseClient
+	baseURL         string
+	requestHandler  *twilio.RequestHandler
 }
 
-func New{{classname}}Service(client twilio.BaseClient) *{{classname}}Service {
+func New{{classname}}Service(requestHandler *twilio.RequestHandler) *{{classname}}Service {
 	return &{{classname}}Service {
-		client: client,
-		baseURL: "{{#operation}}{{#-first}}{{#servers}}{{url}}{{/servers}}{{/-first}}{{/operation}}",
+		requestHandler: requestHandler,
+		baseURL:        "{{#operation}}{{#-first}}{{#servers}}{{url}}{{/servers}}{{/-first}}{{/operation}}",
 	}
+}
+
+func New{{classname}}ServiceWithClient(client twilio.BaseClient) *{{classname}}Service {
+    return New{{classname}}Service(twilio.NewRequestHandler(client))
 }
 
 {{#operation}}
@@ -56,7 +61,7 @@ func (c *{{{classname}}}Service) {{{nickname}}}({{#allParams}}{{#required}}{{par
     if params != nil && params.PathAccountSid != nil {
         path = strings.Replace(path, "{"+"AccountSid"+"}", *params.PathAccountSid, -1)
     } else {
-        path = strings.Replace(path, "{"+"AccountSid"+"}", c.client.GetAccountSid(), -1)
+        path = strings.Replace(path, "{"+"AccountSid"+"}", c.requestHandler.Client.AccountSid(), -1)
     }
 {{/vendorExtensions.x-is-account-sid}}
 {{/pathParams}}
@@ -95,7 +100,7 @@ func (c *{{{classname}}}Service) {{{nickname}}}({{#allParams}}{{#required}}{{par
 {{/headerParams}}
 {{/hasHeaderParams}}
 
-    resp, err := c.client.{{httpMethod}}(c.baseURL+path, data, headers)
+    resp, err := c.requestHandler.{{httpMethod}}(c.baseURL+path, data, headers)
 {{#returnType}}
     if err != nil {
         return nil, err

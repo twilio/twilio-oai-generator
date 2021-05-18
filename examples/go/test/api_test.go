@@ -12,21 +12,22 @@ import (
 
 var accountSid string
 var authToken string
-var testClient *twilio.RestClient
+var testApiService *openapi.NewDefaultApiService
 
 func TestMain(m *testing.M) {
 	// Do setup before the tests are run
 	accountSid = "AC12345678123456781234567812345678"
 	authToken = "CR12345678123456781234567812345678"
-	testClient = twilio.NewRestClient(accountSid, authToken)
+	testClient = test_client.NewTestClient(accountSid, authToken)
 	testClient.BaseURL = "http://prism_twilio:4010"
+	testApiService = openapi.NewDefaultServiceWithClient(testClient)
 
 	ret := m.Run()
 	os.Exit(ret)
 }
 
 func TestGet(t *testing.T) {
-	resp, err := testClient.OpenApi.ListCredentialAws(nil)
+	resp, err := testApiService.ListCredentialAws(nil)
 	assert.Nil(t, err)
 	assert.NotNil(t, resp)
 	assert.Equal(t, resp.Credentials[0].AccountSid, &accountSid, "AccountSid mismatch")
