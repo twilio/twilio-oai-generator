@@ -8,8 +8,6 @@ import java.util.Map;
 import java.util.Set;
 
 import io.swagger.v3.oas.models.media.Schema;
-import io.swagger.v3.oas.models.OpenAPI;
-import io.swagger.v3.oas.models.parameters.Parameter;
 import io.swagger.v3.oas.models.responses.ApiResponse;
 import org.openapitools.codegen.CodegenOperation;
 import org.openapitools.codegen.CodegenParameter;
@@ -105,33 +103,6 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
         results.put("resources", resources.values());
 
         return results;
-    }
-
-    @Override
-    public void postProcessParameter(final CodegenParameter parameter) {
-        // Make sure required non-path params get into the options block.
-        parameter.required = parameter.isPathParam;
-
-        if (parameter.paramName.equals("PathAccountSid")) {
-            parameter.required = false;
-            parameter.vendorExtensions.put("x-is-account-sid", true);
-        }
-    }
-
-    @Override
-    public void processOpenAPI(final OpenAPI openAPI) {
-        openAPI.getPaths().forEach((name, path) -> path.readOperations().forEach(operation -> {
-            List<Parameter> parameters = operation.getParameters();
-            if (parameters != null) {
-                for (Parameter p : parameters) {
-                    String in = p.getIn();
-                    String paramName = p.getName();
-                    if (in.equals("path") && paramName.equals("AccountSid")) {
-                        p.setName("PathAccountSid");
-                    }
-                }
-            }
-        }));
     }
 
     private void populateCrudOperations(Map<String, Object> resource, String operationName) {
