@@ -17,20 +17,22 @@ import (
 func TestPathIsCorrect(t *testing.T) {
 	mockCtrl := gomock.NewController(t)
 	testClient := NewMockBaseClient(mockCtrl)
-	testClient.EXPECT().GetAccountSid().DoAndReturn(func() string {
+	testClient.EXPECT().AccountSid().DoAndReturn(func() string {
 		return "AC222222222222222222222222222222"
 	})
-	testClient.EXPECT().Get(
+	testClient.EXPECT().SendRequest(
+		gomock.Any(),
 		gomock.Any(),
 		gomock.Any(),
 		gomock.Any()).
-		DoAndReturn(func(path string, query interface{}, headers map[string]interface{}) (*http.Response, error) {
-			assert.Equal(t, path, "https://autopilot.twilio.com/2010-04-01/Accounts/AC222222222222222222222222222222/IncomingPhoneNumbers/PNXXXXY.json")
+		DoAndReturn(func(method string, rawURL string, data url.Values,
+		headers map[string]interface{}) (*http.Response, error) {
+			assert.Equal(t, rawURL, "https://autopilot.twilio.com/2010-04-01/Accounts/AC222222222222222222222222222222/IncomingPhoneNumbers/PNXXXXY.json")
 			return &http.Response{Body: ioutil.NopCloser(bytes.NewReader(nil))}, nil
 		},
 		)
 
-	twilio := openapi.NewDefaultApiService(testClient)
+	twilio := openapi.NewDefaultApiServiceWithClient(testClient)
 	params := &openapi.FetchIncomingPhoneNumberParams{}
 	twilio.FetchIncomingPhoneNumber("PNXXXXY", params)
 }
@@ -38,20 +40,22 @@ func TestPathIsCorrect(t *testing.T) {
 func TestAccountSidAsOptionalParam(t *testing.T) {
 	mockCtrl := gomock.NewController(t)
 	testClient := NewMockBaseClient(mockCtrl)
-	testClient.EXPECT().GetAccountSid().DoAndReturn(func() string {
+	testClient.EXPECT().AccountSid().DoAndReturn(func() string {
 		return "AC222222222222222222222222222222"
 	}).AnyTimes()
-	testClient.EXPECT().Get(
+	testClient.EXPECT().SendRequest(
+		gomock.Any(),
 		gomock.Any(),
 		gomock.Any(),
 		gomock.Any()).
-		DoAndReturn(func(path string, query interface{}, headers map[string]interface{}) (*http.Response, error) {
-			assert.Equal(t, path, "https://autopilot.twilio.com/2010-04-01/Accounts/AC444444444444444444444444444444/IncomingPhoneNumbers/PNXXXXY.json")
+		DoAndReturn(func(method string, rawURL string, data url.Values,
+		headers map[string]interface{}) (*http.Response, error) {
+			assert.Equal(t, rawURL, "https://autopilot.twilio.com/2010-04-01/Accounts/AC444444444444444444444444444444/IncomingPhoneNumbers/PNXXXXY.json")
 			return &http.Response{Body: ioutil.NopCloser(bytes.NewReader(nil))}, nil
 		},
 		)
 
-	twilio := openapi.NewDefaultApiService(testClient)
+	twilio := openapi.NewDefaultApiServiceWithClient(testClient)
 	subAccountSid := "AC444444444444444444444444444444"
 	params := &openapi.FetchIncomingPhoneNumberParams{PathAccountSid: &subAccountSid}
 	twilio.FetchIncomingPhoneNumber("PNXXXXY", params)
@@ -69,19 +73,21 @@ func TestAddingHeader(t *testing.T) {
 
 	mockCtrl := gomock.NewController(t)
 	testClient := NewMockBaseClient(mockCtrl)
-	testClient.EXPECT().GetAccountSid().DoAndReturn(func() string {
+	testClient.EXPECT().AccountSid().DoAndReturn(func() string {
 		return accountSid
 	})
-	testClient.EXPECT().Post(
+	testClient.EXPECT().SendRequest(
+		gomock.Any(),
 		gomock.Any(),
 		gomock.Any(),
 		gomock.Any()).
-		DoAndReturn(func(path string, query interface{}, headers map[string]interface{}) (*http.Response, error) {
+		DoAndReturn(func(method string, rawURL string, data url.Values,
+		headers map[string]interface{}) (*http.Response, error) {
 			assert.Equal(t, headers, expectedHeader)
 			return &http.Response{Body: ioutil.NopCloser(bytes.NewReader(nil))}, nil
 		},
 		)
-	twilio := openapi.NewDefaultApiService(testClient)
+	twilio := openapi.NewDefaultApiServiceWithClient(testClient)
 	twilio.CreateCallRecording("CA1234", params)
 }
 
@@ -108,18 +114,20 @@ func TestQueryParams(t *testing.T) {
 
 	mockCtrl := gomock.NewController(t)
 	testClient := NewMockBaseClient(mockCtrl)
-	testClient.EXPECT().GetAccountSid().DoAndReturn(func() string {
+	testClient.EXPECT().AccountSid().DoAndReturn(func() string {
 		return accountSid
 	})
-	testClient.EXPECT().Get(
+	testClient.EXPECT().SendRequest(
+		gomock.Any(),
 		gomock.Any(),
 		gomock.Any(),
 		gomock.Any()).
-		DoAndReturn(func(path string, query interface{}, headers map[string]interface{}) (*http.Response, error) {
-			assert.Equal(t, query, expectedData)
+		DoAndReturn(func(method string, rawURL string, data url.Values,
+		headers map[string]interface{}) (*http.Response, error) {
+			assert.Equal(t, data, expectedData)
 			return &http.Response{Body: ioutil.NopCloser(bytes.NewReader(nil))}, nil
 		},
 		)
-	twilio := openapi.NewDefaultApiService(testClient)
+	twilio := openapi.NewDefaultApiServiceWithClient(testClient)
 	twilio.ListCallRecording("CA1234", &params)
 }

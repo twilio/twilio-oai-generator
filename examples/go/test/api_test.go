@@ -12,21 +12,22 @@ import (
 
 var accountSid string
 var authToken string
-var testClient *twilio.RestClient
+var testApiService *openapi.DefaultApiService
 
 func TestMain(m *testing.M) {
 	// Do setup before the tests are run
 	accountSid = "AC12345678123456781234567812345678"
 	authToken = "CR12345678123456781234567812345678"
-	testClient = twilio.NewRestClient(accountSid, authToken)
+	testClient := test_client.NewTestClient(accountSid, authToken)
 	testClient.BaseURL = "http://prism_twilio:4010"
+	testApiService = openapi.NewDefaultApiServiceWithClient(testClient)
 
 	ret := m.Run()
 	os.Exit(ret)
 }
 
 func TestGet(t *testing.T) {
-	resp, err := testClient.OpenApi.ListCredentialAws(nil)
+	resp, err := testApiService.ListCredentialAws(nil)
 	assert.Nil(t, err)
 	assert.NotNil(t, resp)
 	assert.Equal(t, resp.Credentials[0].AccountSid, &accountSid, "AccountSid mismatch")
@@ -43,13 +44,13 @@ func TestPost(t *testing.T) {
 	params.FriendlyName = &friendlyName
 	params.Credentials = &credentials
 
-	resp, err := testClient.OpenApi.CreateCredentialAws(params)
+	resp, err := testApiService.CreateCredentialAws(params)
 	assert.Nil(t, err)
 	assert.NotNil(t, resp)
 }
 
 func TestDelete(t *testing.T) {
-	err := testClient.OpenApi.DeleteCredentialAws("CR12345678123456781234567812345678")
+	err := testApiService.DeleteCredentialAws("CR12345678123456781234567812345678")
 	assert.Nil(t, err)
 }
 
@@ -58,7 +59,7 @@ func TestFetch(t *testing.T) {
 	expectedAWSSid := "CR12345678123456781234567812345678"
 	expectedUrl := "http://example.com"
 
-	resp, err := testClient.OpenApi.FetchCredentialAws("CR12345678123456781234567812345678")
+	resp, err := testApiService.FetchCredentialAws("CR12345678123456781234567812345678")
 	assert.Nil(t, err)
 	assert.NotNil(t, resp)
 	assert.Equal(t, resp.AccountSid, &accountSid)
@@ -72,7 +73,7 @@ func TestUpdate(t *testing.T) {
 	friendlyName := "MockCreds"
 	params.FriendlyName = &friendlyName
 
-	resp, err := testClient.OpenApi.UpdateCredentialAws(authToken, params)
+	resp, err := testApiService.UpdateCredentialAws(authToken, params)
 	assert.Nil(t, err)
 	assert.NotNil(t, resp)
 }
@@ -93,7 +94,7 @@ func TestDateTimeQueryParams(t *testing.T) {
 		PageSize:          &pageSize,
 	}
 
-	resp, err := testClient.OpenApi.ListCallRecording("CA12345678123456781234567812345678", &params)
+	resp, err := testApiService.ListCallRecording("CA12345678123456781234567812345678", &params)
 
 	expectedTrack := "DialVerb"
 	expectedStatus := "completed"
@@ -107,7 +108,7 @@ func TestDateTimeQueryParams(t *testing.T) {
 
 func TestDateInPath(t *testing.T) {
 	date := "2021-01-04"
-	err := testClient.OpenApi.DeleteArchivedCall(date, "CA12345678123456781234567812345678")
+	err := testApiService.DeleteArchivedCall(date, "CA12345678123456781234567812345678")
 	assert.Nil(t, err)
 }
 
@@ -118,7 +119,7 @@ func TestCustomHeaders(t *testing.T) {
 	params.XTwilioWebhookEnabled = &testHeader
 	params.RecordingStatusCallback = &testUri
 
-	resp, err := testClient.OpenApi.CreateCallRecording("CA12345678123456781234567812345678", params)
+	resp, err := testApiService.CreateCallRecording("CA12345678123456781234567812345678", params)
 
 	expectedSource := "Trunking"
 	expectedPrice := float32(100.22)
@@ -139,11 +140,11 @@ func TestRequiredParameters(t *testing.T) {
 	}
 
 	// StartDate and EndDate are required parameters
-	resp, err := testClient.OpenApi.CreateCallFeedbackSummary(nil)
+	resp, err := testApiService.CreateCallFeedbackSummary(nil)
 	assert.NotNil(t, err)
 	assert.Nil(t, resp)
 
-	resp, err = testClient.OpenApi.CreateCallFeedbackSummary(params)
+	resp, err = testApiService.CreateCallFeedbackSummary(params)
 
 	expectedCount := float32(4)
 
@@ -154,7 +155,7 @@ func TestRequiredParameters(t *testing.T) {
 }
 
 func TestCustomType(t *testing.T) {
-	resp, err := testClient.OpenApi.FetchIncomingPhoneNumber("PNFB2fe4c709Af4C1c658b25cE7DDCEbC7", nil)
+	resp, err := testApiService.FetchIncomingPhoneNumber("PNFB2fe4c709Af4C1c658b25cE7DDCEbC7", nil)
 	assert.Nil(t, err)
 	assert.NotNil(t, resp)
 	assert.Equal(t, resp.Capabilities.Fax, false)
