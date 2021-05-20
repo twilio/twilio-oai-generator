@@ -39,12 +39,12 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
         // iterate over the operation and perhaps modify something
         for (final CodegenOperation co : opList) {
 
-             // Group operations by resource.
+            // Group operations by resource.
             final String resourceName = co.path
-                .replaceFirst("/[^/]+", "") // Drop the version
-                .replaceAll("/\\{.+?}", "") // Drop every path parameter
-                .replace(".json", "") // Drop the JSON extension
-                .replace("/", ""); // Drop the path separators
+                    .replaceFirst("/[^/]+", "") // Drop the version
+                    .replaceAll("/\\{.+?}", "") // Drop every path parameter
+                    .replace(".json", "") // Drop the JSON extension
+                    .replace("/", ""); // Drop the path separators
 
             final Map<String, Object> resource = resources.computeIfAbsent(resourceName, k -> new HashMap<>());
             final Map<String, Object> resourceOperations = (Map<String, Object>) resource.computeIfAbsent("operations", k -> new HashMap<>());
@@ -65,18 +65,18 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
 
 
             Set<String> requestParams = new HashSet<>();
-            for(CodegenParameter param: co.allParams) {
+            for (CodegenParameter param : co.allParams) {
                 requestParams.add(this.toSnakeCase(param.baseName));
             }
 
-            if (!co.formParams.isEmpty()){
-                co.vendorExtensions.put("x-has-form-params", true);
+            if (!co.optionalParams.isEmpty() || co.path.contains("/2010-04-01/")) {
+                co.vendorExtensions.put("x-has-optional-params", true);
             }
 
             // Use the parameters for creating the resource as the resource schema.
             if (co.nickname.startsWith("Create")) {
                 resource.put("schema", co.allParams);
-                for (CodegenResponse resp: co.responses) {
+                for (CodegenResponse resp : co.responses) {
                     if (resp.is2xx) {
                         ArrayList<Object> properties = getResponseProperties(co.path, resp.code, requestParams);
                         resource.put("responseSchema", properties);
@@ -86,17 +86,17 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
             }
         }
 
-        final String inputSpecPattern = ".+?_(.+?)_(.+?)\\.(.+)";
+        final String inputSpecPattern = ".+?_(.+?)_(v[0-9]+)\\.(.+)";
         final String inputSpecOriginal = getInputSpec();
         // /path/to/spec/twilio_api_v2010.yaml -> twilio_api_v2010
-        final String inputSpec = inputSpecOriginal.substring(inputSpecOriginal.lastIndexOf("/")+1);
+        final String inputSpec = inputSpecOriginal.substring(inputSpecOriginal.lastIndexOf("/") + 1);
 
         // twilio_api_v2010 -> api_v2010 -> apiV2010
         final String productVersion = StringUtils.camelize(inputSpec
-            .replaceAll(inputSpecPattern, "$1_$2"));
-        // twilio_api_v2010 -> twilio/rest/api/v2010
+                .replaceAll(inputSpecPattern, "$1_$2"));
+        // twilio_api_v2010 -> rest/api/v2010
         final String clientPath = inputSpec
-            .replaceAll(inputSpecPattern, "twilio/rest/$1/$2");
+                .replaceAll(inputSpecPattern, "rest/$1/$2");
 
         results.put("productVersion", productVersion);
         results.put("clientPath", clientPath);
@@ -105,7 +105,7 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
         return results;
     }
 
-    private void populateCrudOperations(Map<String, Object> resource, String operationName){
+    private void populateCrudOperations(Map<String, Object> resource, String operationName) {
         if (operationName.startsWith("Create")) {
             resource.put("hasCreate", true);
         }
@@ -127,7 +127,7 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
         ApiResponse response = responses.get(statusCode);
         Schema schema = response.getContent().get("application/json").getSchema();
         ArrayList<Object> properties = new ArrayList<>();
-        ModelUtils.getReferencedSchema(this.openAPI, schema).getProperties().forEach((k,v) -> {
+        ModelUtils.getReferencedSchema(this.openAPI, schema).getProperties().forEach((k, v) -> {
             if (!requestParams.contains(k)) {
                 properties.add(k);
             }
