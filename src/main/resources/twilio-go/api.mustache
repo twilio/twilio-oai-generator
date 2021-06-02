@@ -85,13 +85,13 @@ func (c *{{{classname}}}Service) {{{nickname}}}({{#allParams}}{{#required}}{{par
 {{/isFreeFormObject}}
 {{^isFreeFormObject}}
     {{#isArray}}
-    	for _, item  := range *params.{{paramName}}{
-    		data.Add("{{{baseName}}}", item)
-    	}
+        for _, item  := range *params.{{paramName}} {
+            data.Add("{{{baseName}}}", item)
+        }
     {{/isArray}}
     {{^isArray}}
         data.Set("{{{baseName}}}", {{^isString}}fmt.Sprint({{/isString}}{{#isDateTime}}({{/isDateTime}}*params.{{paramName}}{{^isString}}{{#isDateTime}}).Format(time.RFC3339){{/isDateTime}}){{/isString}})
-        {{/isArray}}
+    {{/isArray}}
 
 {{/isFreeFormObject}}
 }
