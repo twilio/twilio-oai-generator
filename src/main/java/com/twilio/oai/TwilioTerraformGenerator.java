@@ -106,9 +106,9 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
     }
 
     private void populateCrudOperations(Map<String, Object> resource, String operationName) {
-        resource.put("readOnly", true);
         if (operationName.startsWith("Create")) {
             resource.put("hasCreate", true);
+            resource.put("readOnly", true);
         }
         if (operationName.startsWith("Fetch")) {
             resource.put("hasRead", true);
