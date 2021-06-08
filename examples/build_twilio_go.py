@@ -1,4 +1,5 @@
 import argparse
+import glob
 import os
 import re
 from pathlib import Path
@@ -33,6 +34,13 @@ def generate(openapi_spec_path, go_path, domain, is_file=False, language='go'):
               f"org.openapitools.codegen.OpenAPIGenerator generate -g {to_generate} -i {full_path} -o " \
               f"{go_path}/{sub_dir}/{domain_name}/{api_version}"
     os.system(command)
+
+    # Find files that only have read-only operations
+    files = glob.glob(f"{go_path}/{sub_dir}/**/*.*", recursive=True)
+    for file in files:
+        with open(file) as f:
+            if 'func ' not in f.read(): # no functions were generated because there were only read-only operations
+                os.remove(file)
 
 
 if __name__ == "__main__":

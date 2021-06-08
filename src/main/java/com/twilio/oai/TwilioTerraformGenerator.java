@@ -106,28 +106,28 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
     }
 
     private void populateCrudOperations(Map<String, Object> resource, String operationName) {
+        resource.put("readOnly", true);
         if (operationName.startsWith("Create")) {
             resource.put("hasCreate", true);
         }
         if (operationName.startsWith("Fetch")) {
             resource.put("hasRead", true);
+            resource.put("readOnly", false);
         }
         if (operationName.startsWith("Update")) {
             resource.put("hasUpdate", true);
+            resource.put("readOnly", false);
         }
         if (operationName.startsWith("Delete")) {
             resource.put("hasDelete", true);
+            resource.put("readOnly", false);
         }
 
         resource.put("hasAllCrudOps",
-                        (Boolean) resource.getOrDefault("hasCreate", false) &&
-                        (Boolean) resource.getOrDefault("hasRead", false) &&
-                        (Boolean) resource.getOrDefault("hasUpdate", false) &&
-                        (Boolean) resource.getOrDefault("hasDelete", false));
-        resource.put("readOnly",
-                        (!((Boolean) resource.getOrDefault("hasCreate", false)) &&
-                         !((Boolean) resource.getOrDefault("hasUpdate", false)) &&
-                         !((Boolean) resource.getOrDefault("hasDelete", false))));
+            (Boolean) resource.getOrDefault("hasCreate", false) &&
+            (Boolean) resource.getOrDefault("hasRead", false) &&
+            (Boolean) resource.getOrDefault("hasUpdate", false) &&
+            (Boolean) resource.getOrDefault("hasDelete", false));
     }
 
     private ArrayList<Object> getResponseProperties(String coPath, String statusCode, Set<String> requestParams) {
