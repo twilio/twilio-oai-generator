@@ -118,6 +118,7 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
         if (operationName.startsWith("Delete")) {
             resource.put("hasDelete", true);
         }
+
         resource.put("hasAllCrudOps", (Boolean) resource.getOrDefault("hasCreate", false) && (Boolean) resource.getOrDefault("hasRead", false) && (Boolean) resource.getOrDefault("hasUpdate", false) && (Boolean) resource.getOrDefault("hasDelete", false));
         resource.put("readOnly", (!((Boolean) resource.getOrDefault("hasCreate", false)) && !((Boolean) resource.getOrDefault("hasUpdate", false)) && !((Boolean) resource.getOrDefault("hasDelete", false))));
     }
