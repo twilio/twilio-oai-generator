@@ -11,6 +11,7 @@ import (
 )
 
 {{#resources}}
+{{^readOnly}}
 {{#hasAllCrudOps}}
 func Resource{{name}}() *schema.Resource {
     return &schema.Resource{
@@ -88,4 +89,5 @@ func {{#vendorExtensions.x-is-create-operation}}create{{/vendorExtensions.x-is-c
 {{/operation}}
 {{/operations}}
 {{/hasAllCrudOps}}
+{{/readOnly}}
 {{/resources}}
