@@ -135,7 +135,7 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
                 String key = pair.getKey();
                 Schema value = pair.getValue();
                 CodegenProperty codegenProperty = fromProperty(key, value);
-                String schemaType = BuildSchemaType(value, codegenProperty.baseType, "SchemaComputed", codegenProperty, null);
+                String schemaType = BuildSchemaType(value, codegenProperty.openApiType, "SchemaComputed", codegenProperty, null);
 
                 codegenProperty.vendorExtensions.put("x-terraform-schema-type", schemaType);
                 codegenProperty.vendorExtensions.put("x-name-in-snake-case", this.toSnakeCase(codegenProperty.baseName));
@@ -151,22 +151,14 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
 
     private String BuildSchemaType(Schema schema, String itemsType, String schemaType, CodegenProperty codegenProperty, CodegenParameter codegenParameter) {
         String terraformProviderType = "";
-
         switch (itemsType) {
-            case "string":
-            case "time.Time":
-                terraformProviderType = String.format("AsString(%s)", schemaType);
-                break;
             case "number":
-            case "float32":
-            case "float64":
                 terraformProviderType = String.format("AsFloat(%s)", schemaType);
                 break;
-            case "int32":
-            case "int64":
+            case "integer":
                 terraformProviderType = String.format("AsInt(%s)", schemaType);
                 break;
-            case "bool":
+            case "boolean":
                 terraformProviderType = String.format("AsBool(%s)", schemaType);
                 break;
             case "array":
@@ -176,36 +168,19 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
                 if (codegenProperty != null) {
                     CodegenProperty innerCodegenProperty = fromProperty(codegenProperty.name, innerSchema);
                     if (innerSchema != null) {
-                        terraformProviderType += BuildSchemaType(innerSchema, innerCodegenProperty.baseType, schemaType, innerCodegenProperty, null) + ", " + schemaType + ")";
+                        terraformProviderType += String.format("%s, %s)", BuildSchemaType(innerSchema, innerCodegenProperty.openApiType, schemaType, innerCodegenProperty, null), schemaType);
                     }
                 }
                 break;
+            case "string":
+            case "object":
             default:
-                if ((codegenProperty != null && !codegenProperty.isModel) || (codegenParameter != null && !codegenParameter.isModel)) {
-                    terraformProviderType += String.format("AsString(%s)", schemaType); //default to String type
-                    break;
-                }
-                // is object type
-                String schemaTypeToReturn = "AsList(map[string]*schema.Schema{";
-                if (schema != null && codegenProperty != null) {
-                    Schema refSchema = ModelUtils.getSchema(this.openAPI, codegenProperty.baseType);
-                    if (refSchema == null) {
-                        break;
-                    }
-                    Map<String, Schema> objectProps = refSchema.getProperties();
-                    if (objectProps != null) {
-                        for (Map.Entry<String, Schema> pair : objectProps.entrySet()) {
-                            String k = pair.getKey();
-                            Schema v = pair.getValue();
-                            CodegenProperty cProp = fromProperty(k, v);
-
-                            String sType = BuildSchemaType(v, cProp.baseType, schemaType, cProp, null);
-                            schemaTypeToReturn += String.format("\"%s\": %s, ", k, sType);
-                        }
-                    }
-                }
-
-                terraformProviderType = String.format("%s }, %s)", schemaTypeToReturn, schemaType);
+                // At the time of writing terraform SDK doesn't support dynamic types and this is incovenient since
+                // some properties of type "object" can be array or a map. (Eg: errors and links in the studio flows)
+                // Letting the type objects be as Strings in the terraform provider and then json encoding in the provider
+                // is the current workaround
+                terraformProviderType = String.format("AsString(%s)", schemaType);
+                break;
         }
 
         return terraformProviderType;
@@ -246,7 +221,7 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
     public CodegenProperty fromProperty(String name, Schema p) {
         CodegenProperty property = super.fromProperty(name, p);
         String schemaType = property.required ? "SchemaRequired": "SchemaOptional";
-        String terraformProviderType = BuildSchemaType(p, property.baseType, schemaType, property, null);
+        String terraformProviderType = BuildSchemaType(p, property.openApiType, schemaType, property, null);
         property.vendorExtensions.put("x-terraform-schema-type", terraformProviderType);
         return property;
     }

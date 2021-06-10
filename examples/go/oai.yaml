@@ -618,6 +618,12 @@ paths:
                   items:
                     type: string
                   type: array
+                TestEnum:
+                  description: Test enum
+                  enum:
+                    - consumer-checking
+                    - consumer-savings
+                    - commercial-checking
               required:
                 - Credentials
               title: CreateCredentialAwsRequest
