@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.media.Schema;
 import io.swagger.v3.oas.models.responses.ApiResponse;
 import org.openapitools.codegen.CodegenOperation;
@@ -15,12 +16,31 @@ import org.openapitools.codegen.CodegenResponse;
 import org.openapitools.codegen.utils.ModelUtils;
 import org.openapitools.codegen.utils.StringUtils;
 
+
 public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
 
     public TwilioTerraformGenerator() {
         super();
 
         typeMapping.put("object", "string");
+    }
+
+    @Override
+    public void processOpenAPI(final OpenAPI openAPI) {
+        super.processOpenAPI(openAPI);
+
+        openAPI.getPaths().forEach((name, path) -> path.readOperations().forEach(operation -> {
+            if (operation.getOperationId().startsWith("Create")) {
+                // We need to find which property is the sid_key for use after this resource gets created. We'll do
+                // that by finding the matching instance path (just like our path, but ends with something like
+                // "/{Sid}") and then extracting out the name of the last path param.
+                PathUtils
+                    .getInstancePath(name, openAPI.getPaths().keySet())
+                    .map(PathUtils::getLastPathPart)
+                    .map(PathUtils::removeBraces)
+                    .ifPresent(param -> operation.addExtension("x-sid-key", param));
+            }
+        }));
     }
 
     @SuppressWarnings("unchecked")
