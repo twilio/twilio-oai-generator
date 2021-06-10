@@ -131,3 +131,34 @@ func TestQueryParams(t *testing.T) {
 	twilio := openapi.NewDefaultApiServiceWithClient(testClient)
 	twilio.ListCallRecording("CA1234", &params)
 }
+
+func TestArrayTypeParam(t *testing.T) {
+	callbackEvents := []string{"http://test1.com/", "http://test2.com"}
+	params := openapi.CreateCallRecordingParams{
+		RecordingStatusCallbackEvent: &callbackEvents,
+	}
+
+	expectedData := url.Values{}
+	for _, item := range callbackEvents {
+		expectedData.Add("RecordingStatusCallbackEvent", item)
+	}
+
+	mockCtrl := gomock.NewController(t)
+	testClient := NewMockBaseClient(mockCtrl)
+	testClient.EXPECT().AccountSid().DoAndReturn(func() string {
+		return accountSid
+	})
+	testClient.EXPECT().SendRequest(
+		gomock.Any(),
+		gomock.Any(),
+		gomock.Any(),
+		gomock.Any()).
+		DoAndReturn(func(method string, rawURL string, data url.Values,
+			headers map[string]interface{}) (*http.Response, error) {
+			assert.Equal(t, data, expectedData)
+			return &http.Response{Body: ioutil.NopCloser(bytes.NewReader(nil))}, nil
+		},
+		)
+	twilio := openapi.NewDefaultApiServiceWithClient(testClient)
+	twilio.CreateCallRecording("CA1234", &params)
+}
