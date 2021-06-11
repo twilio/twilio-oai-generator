@@ -82,7 +82,7 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
                 resource.put("schema", co.allParams);
                 for (CodegenResponse resp : co.responses) {
                     if (resp.is2xx) {
-                        ArrayList<CodegenProperty> properties = getResponseProperties((Schema)resp.schema, requestParams);
+                        ArrayList<CodegenProperty> properties = getResponseProperties((Schema) resp.schema, requestParams);
                         resource.put("responseSchema", properties);
                         break;
                     }
@@ -220,7 +220,7 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
     @Override
     public CodegenProperty fromProperty(String name, Schema p) {
         CodegenProperty property = super.fromProperty(name, p);
-        String schemaType = property.required ? "SchemaRequired": "SchemaOptional";
+        String schemaType = property.required ? "SchemaRequired" : "SchemaOptional";
         String terraformProviderType = BuildSchemaType(p, property.openApiType, schemaType, property, null);
         property.vendorExtensions.put("x-terraform-schema-type", terraformProviderType);
         return property;
@@ -230,8 +230,8 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
     public CodegenParameter fromParameter(Parameter param, Set<String> imports) {
         CodegenParameter parameter = super.fromParameter(param, imports);
         Schema parameterSchema = param.getSchema();
-        String schemaType = parameter.required ? "SchemaRequired": "SchemaOptional";
-        String terraformProviderType = BuildSchemaType(parameterSchema, parameter.dataType, schemaType, null, parameter);
+        String schemaType = parameter.required ? "SchemaRequired" : "SchemaOptional";
+        String terraformProviderType = BuildSchemaType(parameterSchema, parameterSchema.getType(), schemaType, null, parameter);
         parameter.vendorExtensions.put("x-terraform-schema-type", terraformProviderType);
         return parameter;
     }
