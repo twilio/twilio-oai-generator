@@ -206,7 +206,7 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
                 String key = pair.getKey();
                 Schema value = pair.getValue();
                 CodegenProperty codegenProperty = fromProperty(key, value);
-                String schemaType = BuildSchemaType(value, codegenProperty.openApiType, "SchemaComputed", codegenProperty, null);
+                String schemaType = BuildSchemaType(value, codegenProperty.openApiType, "SchemaOptional", codegenProperty, null);
 
                 codegenProperty.vendorExtensions.put("x-terraform-schema-type", schemaType);
                 codegenProperty.vendorExtensions.put("x-name-in-snake-case", this.toSnakeCase(codegenProperty.baseName));
