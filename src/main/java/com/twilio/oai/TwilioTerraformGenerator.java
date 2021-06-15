@@ -176,7 +176,7 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
     }
 
     private void addParamVendorExtensions(final List<CodegenParameter> params) {
-        params.forEach(p -> p.vendorExtensions.put("x-name-in-snake-case", this.toSnakeCase(p.baseName)));
+        params.forEach(p -> p.vendorExtensions.put("x-name-in-snake-case", this.toSnakeCase(p.paramName)));
         params.forEach(p -> p.vendorExtensions.put("x-util-name", p.isFreeFormObject ? "Object" : "String"));
     }
 
