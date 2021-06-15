@@ -48,16 +48,16 @@ func {{#vendorExtensions.x-is-create-operation}}create{{/vendorExtensions.x-is-c
     {{/allParams}}
 
     {{#vendorExtensions.x-is-create-operation}}
-    r, err := m.(*client.Config).Client.{{productVersion}}.{{nickname}}({{#allParams}}{{#required}}{{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^-last}}, {{/-last}}{{/required}}{{/allParams}}{{#vendorExtensions.x-has-optional-params}}&params{{/vendorExtensions.x-has-optional-params}});
+    r, err := m.(*client.Config).Client.{{productVersion}}.{{nickname}}({{#requiredParams}}{{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^-last}}, {{/-last}}{{/requiredParams}}{{#vendorExtensions.x-has-optional-params}}{{#hasRequiredParams}}, {{/hasRequiredParams}}&params{{/vendorExtensions.x-has-optional-params}});
     if err != nil {
         return diag.FromErr(err)
     }
 
-    d.SetId(*r.Sid)
+    d.SetId(*r.{{vendorExtensions.x-sid-key}})
     err = MarshalSchema(d, r)
     {{/vendorExtensions.x-is-create-operation}}
     {{#vendorExtensions.x-is-read-operation}}
-        r, err := m.(*client.Config).Client.{{productVersion}}.{{nickname}}({{#allParams}}{{#required}}{{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^-last}}, {{/-last}}{{/required}}{{/allParams}}{{#vendorExtensions.x-has-optional-params}}&params{{/vendorExtensions.x-has-optional-params}})
+        r, err := m.(*client.Config).Client.{{productVersion}}.{{nickname}}({{#requiredParams}}{{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^-last}}, {{/-last}}{{/requiredParams}}{{#vendorExtensions.x-has-optional-params}}{{#hasRequiredParams}}, {{/hasRequiredParams}}&params{{/vendorExtensions.x-has-optional-params}})
         if err != nil {
             return diag.FromErr(err)
         }
@@ -65,7 +65,7 @@ func {{#vendorExtensions.x-is-create-operation}}create{{/vendorExtensions.x-is-c
         err = MarshalSchema(d, r)
     {{/vendorExtensions.x-is-read-operation}}
     {{#vendorExtensions.x-is-update-operation}}
-        r, err := m.(*client.Config).Client.{{productVersion}}.{{nickname}}({{#allParams}}{{#required}}{{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^-last}}, {{/-last}}{{/required}}{{/allParams}}{{#vendorExtensions.x-has-optional-params}}&params{{/vendorExtensions.x-has-optional-params}})
+        r, err := m.(*client.Config).Client.{{productVersion}}.{{nickname}}({{#requiredParams}}{{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^-last}}, {{/-last}}{{/requiredParams}}{{#vendorExtensions.x-has-optional-params}}{{#hasRequiredParams}}, {{/hasRequiredParams}}&params{{/vendorExtensions.x-has-optional-params}})
         if err != nil {
             return diag.FromErr(err)
         }
@@ -74,7 +74,7 @@ func {{#vendorExtensions.x-is-create-operation}}create{{/vendorExtensions.x-is-c
     {{/vendorExtensions.x-is-update-operation}}
 
     {{#vendorExtensions.x-is-delete-operation}}
-        err := m.(*client.Config).Client.{{productVersion}}.{{nickname}}({{#allParams}}{{#required}}{{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^-last}}, {{/-last}}{{/required}}{{/allParams}}{{#vendorExtensions.x-has-optional-params}}&params{{/vendorExtensions.x-has-optional-params}})
+        err := m.(*client.Config).Client.{{productVersion}}.{{nickname}}({{#requiredParams}}{{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^-last}}, {{/-last}}{{/requiredParams}}{{#vendorExtensions.x-has-optional-params}}{{#hasRequiredParams}}, {{/hasRequiredParams}}&params{{/vendorExtensions.x-has-optional-params}})
         d.SetId("")
     {{/vendorExtensions.x-is-delete-operation}}
 
