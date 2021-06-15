@@ -40,32 +40,26 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
                     .getInstancePath(name, openAPI.getPaths().keySet())
                     .map(PathUtils::getLastPathPart)
                     .map(PathUtils::removeBraces)
-                    .filter(param -> containsResponseProperty(openAPI, operation, param))
+                    .filter(param -> containsResponseProperty(operation, param))
                     .ifPresentOrElse(param -> operation.addExtension("x-sid-key", param), () -> path.setPost(null));
             }
         }));
     }
 
-    private boolean containsResponseProperty(final OpenAPI openAPI, final Operation operation, final String propertyName) {
+    private boolean containsResponseProperty(final Operation operation, final String propertyName) {
         return operation
             .getResponses()
             .values()
             .stream()
-            .anyMatch(response -> containsProperty(openAPI, response, propertyName));
-    }
-
-    private boolean containsProperty(final OpenAPI openAPI, final ApiResponse response, final String propertyName) {
-        return response
-            .getContent()
-            .values()
-            .stream()
-            .map(MediaType::getSchema)
-            .map(Schema::get$ref)
-            .map(PathUtils::getLastPathPart)
-            .map(ref -> openAPI.getComponents().getSchemas().get(ref))
-            .map(Schema::getProperties)
-            .map(Map::keySet)
-            .anyMatch(properties -> properties.contains(StringUtils.underscore(propertyName)));
+            .anyMatch(response -> response
+                .getContent()
+                .values()
+                .stream()
+                .map(MediaType::getSchema)
+                .map(schema -> ModelUtils.getReferencedSchema(this.openAPI, schema))
+                .map(Schema::getProperties)
+                .map(Map::keySet)
+                .anyMatch(properties -> properties.contains(StringUtils.underscore(propertyName))));
     }
 
     @SuppressWarnings("unchecked")
