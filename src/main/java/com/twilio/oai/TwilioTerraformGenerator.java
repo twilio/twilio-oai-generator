@@ -7,6 +7,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.Operation;
+import io.swagger.v3.oas.models.media.MediaType;
 import io.swagger.v3.oas.models.media.Schema;
 import io.swagger.v3.oas.models.responses.ApiResponse;
 import org.openapitools.codegen.CodegenOperation;
@@ -21,6 +24,42 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
         super();
 
         typeMapping.put("object", "string");
+    }
+
+    @Override
+    public void processOpenAPI(final OpenAPI openAPI) {
+        super.processOpenAPI(openAPI);
+
+        openAPI.getPaths().forEach((name, path) -> path.readOperations().forEach(operation -> {
+            if (operation.getOperationId().startsWith("Create")) {
+                // We need to find which property is the sid_key for use after this resource gets created. We'll do
+                // that by finding the matching instance path (just like our path, but ends with something like
+                // "/{Sid}") and then extracting out the name of the last path param. If the sid_key we find is not
+                // part of the operation response body, remove the operation so the resource doesn't get added.
+                PathUtils
+                    .getInstancePath(name, openAPI.getPaths().keySet())
+                    .map(PathUtils::getLastPathPart)
+                    .map(PathUtils::removeBraces)
+                    .filter(param -> containsResponseProperty(operation, param))
+                    .ifPresentOrElse(param -> operation.addExtension("x-sid-key", param), () -> path.setPost(null));
+            }
+        }));
+    }
+
+    private boolean containsResponseProperty(final Operation operation, final String propertyName) {
+        return operation
+            .getResponses()
+            .values()
+            .stream()
+            .anyMatch(response -> response
+                .getContent()
+                .values()
+                .stream()
+                .map(MediaType::getSchema)
+                .map(schema -> ModelUtils.getReferencedSchema(this.openAPI, schema))
+                .map(Schema::getProperties)
+                .map(Map::keySet)
+                .anyMatch(properties -> properties.contains(StringUtils.underscore(propertyName))));
     }
 
     @SuppressWarnings("unchecked")
