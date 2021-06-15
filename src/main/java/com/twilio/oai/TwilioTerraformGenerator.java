@@ -6,8 +6,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import io.swagger.v3.oas.models.media.Schema;
+import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.responses.ApiResponse;
 import org.openapitools.codegen.CodegenOperation;
 import org.openapitools.codegen.CodegenParameter;
@@ -21,6 +23,21 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
         super();
 
         typeMapping.put("object", "string");
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public void processOpenAPI(OpenAPI openAPI) {
+        super.processOpenAPI(openAPI);
+        AtomicBoolean allCrudAvailable = new AtomicBoolean(false);
+        openAPI.getPaths().forEach((name, path) -> path.readOperations().forEach(operation -> {
+            if((path.getDelete() != null) && (path.getPost() != null) && (path.getGet() != null)) {
+                allCrudAvailable.set(true);
+            }
+        }));
+        if(allCrudAvailable.get() != true){
+            System.exit(0);
+        }
     }
 
     @SuppressWarnings("unchecked")

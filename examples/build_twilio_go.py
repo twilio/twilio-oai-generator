@@ -35,14 +35,6 @@ def generate(openapi_spec_path, go_path, domain, is_file=False, language='go'):
               f"{go_path}/{sub_dir}/{domain_name}/{api_version}"
     os.system(command)
 
-    if language == "terraform":
-        # Find files that do not have all CRUD operations defined
-        files = glob.glob(f"{go_path}/{sub_dir}/**/*.*", recursive=True)
-        for file in files:
-            with open(file) as f:
-                if 'func ' not in f.read(): # no functions were generated because there were only read-only operations
-                    os.remove(file)
-
 
 if __name__ == "__main__":
     example_text = '''example:
