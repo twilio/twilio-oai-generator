@@ -6,6 +6,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.Operation;
@@ -13,6 +14,7 @@ import io.swagger.v3.oas.models.media.MediaType;
 import io.swagger.v3.oas.models.media.ArraySchema;
 import io.swagger.v3.oas.models.media.Schema;
 import io.swagger.v3.oas.models.parameters.Parameter;
+import io.swagger.v3.oas.models.responses.ApiResponse;
 import org.openapitools.codegen.CodegenOperation;
 import org.openapitools.codegen.CodegenParameter;
 import org.openapitools.codegen.CodegenProperty;
@@ -32,7 +34,13 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
     public void processOpenAPI(final OpenAPI openAPI) {
         super.processOpenAPI(openAPI);
 
+        AtomicBoolean allCrudAvailable = new AtomicBoolean(false);
         openAPI.getPaths().forEach((name, path) -> path.readOperations().forEach(operation -> {
+            // We only need to create resources with full CRUD capabilities
+            if((path.getDelete() != null) && (path.getPost() != null) && (path.getGet() != null)) {
+                allCrudAvailable.set(true);
+            }
+
             if (operation.getOperationId().startsWith("Create")) {
                 // We need to find which property is the sid_key for use after this resource gets created. We'll do
                 // that by finding the matching instance path (just like our path, but ends with something like
@@ -46,6 +54,11 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
                     .ifPresentOrElse(param -> operation.addExtension("x-sid-key", param), () -> path.setPost(null));
             }
         }));
+
+        if(allCrudAvailable.get() != true){
+            // Since all CRUD operations are not available, do not create the resource
+            System.exit(0);
+        }
     }
 
     private boolean containsResponseProperty(final Operation operation, final String propertyName) {
@@ -160,7 +173,11 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
             resource.put("hasDelete", true);
         }
 
-        resource.put("hasAllCrudOps", (Boolean) resource.getOrDefault("hasCreate", false) && (Boolean) resource.getOrDefault("hasRead", false) && (Boolean) resource.getOrDefault("hasUpdate", false) && (Boolean) resource.getOrDefault("hasDelete", false));
+        resource.put("hasAllCrudOps",
+            (Boolean) resource.getOrDefault("hasCreate", false) &&
+            (Boolean) resource.getOrDefault("hasRead", false) &&
+            (Boolean) resource.getOrDefault("hasUpdate", false) &&
+            (Boolean) resource.getOrDefault("hasDelete", false));
     }
 
     private ArrayList<CodegenProperty> getResponseProperties(Schema schema, Set<String> requestParams) {
