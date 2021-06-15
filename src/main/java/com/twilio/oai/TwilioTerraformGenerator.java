@@ -30,11 +30,11 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
     public void processOpenAPI(OpenAPI openAPI) {
         super.processOpenAPI(openAPI);
         AtomicBoolean allCrudAvailable = new AtomicBoolean(false);
-        openAPI.getPaths().forEach((name, path) -> path.readOperations().forEach(operation -> {
+        openAPI.getPaths().forEach((name, path) -> {
             if((path.getDelete() != null) && (path.getPost() != null) && (path.getGet() != null)) {
                 allCrudAvailable.set(true);
             }
-        }));
+        });
         if(allCrudAvailable.get() != true){
             System.exit(0);
         }
