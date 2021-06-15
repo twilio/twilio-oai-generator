@@ -32,7 +32,13 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
     public void processOpenAPI(final OpenAPI openAPI) {
         super.processOpenAPI(openAPI);
 
+        AtomicBoolean allCrudAvailable = new AtomicBoolean(false);
         openAPI.getPaths().forEach((name, path) -> path.readOperations().forEach(operation -> {
+            // We only need to create resources with full CRUD capabilities
+            if((path.getDelete() != null) && (path.getPost() != null) && (path.getGet() != null)) {
+                allCrudAvailable.set(true);
+            }
+
             if (operation.getOperationId().startsWith("Create")) {
                 // We need to find which property is the sid_key for use after this resource gets created. We'll do
                 // that by finding the matching instance path (just like our path, but ends with something like
@@ -46,6 +52,11 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
                     .ifPresentOrElse(param -> operation.addExtension("x-sid-key", param), () -> path.setPost(null));
             }
         }));
+
+        if(allCrudAvailable.get() != true){
+            // Since all CRUD operations are not available, do not create the resource
+            System.exit(0);
+        }
     }
 
     private boolean containsResponseProperty(final Operation operation, final String propertyName) {
@@ -62,21 +73,6 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
                 .map(Schema::getProperties)
                 .map(Map::keySet)
                 .anyMatch(properties -> properties.contains(StringUtils.underscore(propertyName))));
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public void processOpenAPI(OpenAPI openAPI) {
-        super.processOpenAPI(openAPI);
-        AtomicBoolean allCrudAvailable = new AtomicBoolean(false);
-        openAPI.getPaths().forEach((name, path) -> {
-            if((path.getDelete() != null) && (path.getPost() != null) && (path.getGet() != null)) {
-                allCrudAvailable.set(true);
-            }
-        });
-        if(allCrudAvailable.get() != true){
-            System.exit(0);
-        }
     }
 
     @SuppressWarnings("unchecked")
