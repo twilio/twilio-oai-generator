@@ -20,10 +20,10 @@ func Resource{{name}}() *schema.Resource {
         DeleteContext: delete{{name}},
         Schema: map[string]*schema.Schema{
             {{#schema}}
-            "{{vendorExtensions.x-name-in-snake-case}}": AsString({{#required}}SchemaRequired{{/required}}{{^required}}SchemaOptional{{/required}}),
+            "{{{vendorExtensions.x-name-in-snake-case}}}": {{{vendorExtensions.x-terraform-schema-type}}},
             {{/schema}}
             {{#responseSchema}}
-            "{{.}}": AsString(SchemaComputed),
+            "{{{vendorExtensions.x-name-in-snake-case}}}": {{{vendorExtensions.x-terraform-schema-type}}},
             {{/responseSchema}}
         },
     }
@@ -42,7 +42,7 @@ func {{#vendorExtensions.x-is-create-operation}}create{{/vendorExtensions.x-is-c
     {{#allParams}}
     {{#isPathParam}}
     {{#required}}
-    {{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}} := d.Get("{{vendorExtensions.x-name-in-snake-case}}").(string)
+    {{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}} := d.Get("{{vendorExtensions.x-name-in-snake-case}}").({{dataType}})
     {{/required}}
     {{/isPathParam}}
     {{/allParams}}
