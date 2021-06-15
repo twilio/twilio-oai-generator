@@ -1,8 +1,8 @@
 package com.twilio.oai;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -32,7 +32,7 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
     public Map<String, Object> postProcessOperationsWithModels(final Map<String, Object> objs, final List<Object> allModels) {
         final Map<String, Object> results = super.postProcessOperationsWithModels(objs, allModels);
 
-        final Map<String, Map<String, Object>> resources = new HashMap<>();
+        final Map<String, Map<String, Object>> resources = new LinkedHashMap<>();
 
         final Map<String, Object> ops = (Map<String, Object>) results.get("operations");
         final ArrayList<CodegenOperation> opList = (ArrayList<CodegenOperation>) ops.get("operation");
@@ -50,8 +50,8 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
                     .replace(".json", "") // Drop the JSON extension
                     .replace("/", ""); // Drop the path separators
 
-            final Map<String, Object> resource = resources.computeIfAbsent(resourceName, k -> new HashMap<>());
-            final Map<String, Object> resourceOperations = (Map<String, Object>) resource.computeIfAbsent("operations", k -> new HashMap<>());
+            final Map<String, Object> resource = resources.computeIfAbsent(resourceName, k -> new LinkedHashMap<>());
+            final Map<String, Object> resourceOperations = (Map<String, Object>) resource.computeIfAbsent("operations", k -> new LinkedHashMap<>());
             final ArrayList<CodegenOperation> resourceOperationList = (ArrayList<CodegenOperation>) resourceOperations.computeIfAbsent("operation", k -> new ArrayList<>());
 
             resource.put("name", resourceName);
@@ -68,7 +68,7 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
             this.addParamVendorExtensions(co.bodyParams);
 
 
-            Set<String> requestParams = new HashSet<>();
+            final Set<String> requestParams = new LinkedHashSet<>();
             for (CodegenParameter param : co.allParams) {
                 requestParams.add(this.toSnakeCase(param.baseName));
             }
@@ -187,7 +187,7 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
     }
 
     private void addParamVendorExtensions(final List<CodegenParameter> params) {
-        params.forEach(p -> p.vendorExtensions.put("x-name-in-snake-case", this.toSnakeCase(p.baseName)));
+        params.forEach(p -> p.vendorExtensions.put("x-name-in-snake-case", this.toSnakeCase(p.paramName)));
         params.forEach(p -> p.vendorExtensions.put("x-util-name", p.isFreeFormObject ? "Object" : "String"));
     }
 
