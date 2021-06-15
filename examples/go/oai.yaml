@@ -39,6 +39,63 @@ components:
           format: uri
           nullable: true
           type: string
+        response_object:
+          description: Test response object type
+          nullable: true
+          type: object
+        response_array:
+          description: Test array
+          items:
+            type: integer
+            properties:
+              id:
+                type: integer
+          type: array
+        response_nested_array:
+          description: Test nested array
+          type: array
+          items:
+            type: array
+            items:
+              type: integer
+              properties:
+                nested_prop_1:
+                  type: integer
+                nested_prop_2:
+                  type: integer
+        capabilities:
+          description: Whether a phone number can receive calls or messages
+          nullable: true
+          properties:
+            fax:
+              type: boolean
+            mms:
+              type: boolean
+            sms:
+              type: boolean
+            voice:
+              type: boolean
+            nested_capabilities:
+              description: Whether a phone number can receive calls or messages
+              nullable: true
+              properties:
+                nested_fax:
+                  type: boolean
+                nested_mms:
+                  type: boolean
+                nested_sms:
+                  type: boolean
+                nested_voice:
+                  type: boolean
+              type: object
+          type: object
+        webhook_filters:
+          description: The list of webhook events that are enabled for this Service
+            instance
+          items:
+            type: boolean
+          nullable: true
+          type: array
       type: object
     api.v2010.account.call.call_recording:
       properties:
@@ -100,6 +157,7 @@ components:
           description: The one-time cost of creating the recording.
           nullable: true
           type: number
+          format: float
         price_unit:
           description: The currency used in the price property.
           nullable: true
@@ -148,6 +206,14 @@ components:
           format: uri
           nullable: true
           type: string
+        response_nested_array:
+          description: Test nested array response
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: boolean
       type: object
     voice.v1.archived_call:
       properties:
@@ -346,7 +412,7 @@ components:
           nullable: true
           type: string
         capabilities:
-          description: Indicate if a phone can receive calls or messages
+          description: Whether a phone number can receive calls or messages
           nullable: true
           properties:
             fax:
@@ -357,6 +423,19 @@ components:
               type: boolean
             voice:
               type: boolean
+            nested_capabilities:
+              description: Whether a phone number can receive calls or messages
+              nullable: true
+              properties:
+                nested_fax:
+                  type: boolean
+                nested_mms:
+                  type: boolean
+                nested_sms:
+                  type: boolean
+                nested_voice:
+                  type: boolean
+              type: object
           type: object
         emergency_status:
           description: Whether the phone number is enabled for emergency calling
@@ -501,6 +580,50 @@ paths:
                   description: A descriptive string that you create to describe the
                     resource. It can be up to 64 characters long.
                   type: string
+                TestNumber:
+                  description: test number type transformation
+                  type: number
+                TestNumberFloat:
+                  description: test number/float transformation
+                  type: number
+                  format: float
+                TestNumberDouble:
+                  description: test number/double transformation
+                  type: number
+                  format: double
+                TestNumberInt32:
+                  description: test number/int32 transformation
+                  type: number
+                  format: int32
+                TestNumberInt64:
+                  description: test integer/int64 transformation
+                  type: integer
+                  format: int64
+                TestObject:
+                  description: test object type transformation
+                  type: object
+                TestDateTime:
+                  description: test date-time type transformation
+                  type: string
+                  format: date-time
+                TestDate:
+                  description: test date format transformation
+                  type: string
+                  format: date
+                TestStringArray:
+                  description: 'The recording status events on which we should call
+                                    the `recording_status_callback` URL. Can be: `in-progress`, `completed`
+                                    and `absent` and the default is `completed`. Separate multiple
+                                    event values with a space.'
+                  items:
+                    type: string
+                  type: array
+                TestEnum:
+                  description: Test enum
+                  enum:
+                    - consumer-checking
+                    - consumer-savings
+                    - commercial-checking
               required:
                 - Credentials
               title: CreateCredentialAwsRequest
@@ -726,6 +849,14 @@ paths:
                   uri:
                     format: uri
                     type: string
+                  response_nested_array:
+                    description: Test nested array response
+                    type: array
+                    items:
+                      type: integer
+                      properties:
+                        id:
+                          type: integer
                 title: ListCallRecordingResponse
                 type: object
               examples:
@@ -781,7 +912,8 @@ paths:
                       }
                     ],
                     "start": 0,
-                    "uri": "http://example.com"
+                    "uri": "http://example.com",
+                    "response_nested_array": [1,2,3]
                   }
           description: OK
       security:
@@ -1142,11 +1274,11 @@ paths:
                     "date_updated": "2021-03-26T10:30:00Z",
                     "end_date": "2021-03-26T10:30:00Z",
                     "include_subaccounts": false,
-                    "issues": [{
+                    "issues": [ {
                       "count": 4,
                       "description": "issue description",
                       "percentage_of_total_calls": "50",
-                    }],
+                    } ],
                     "quality_score_average": 1.22,
                     "quality_score_median": 1.45,
                     "quality_score_standard_deviation": 1.1,
