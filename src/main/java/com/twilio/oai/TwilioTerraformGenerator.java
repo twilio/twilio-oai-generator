@@ -5,16 +5,18 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.Operation;
-import io.swagger.v3.oas.models.media.MediaType;
 import io.swagger.v3.oas.models.media.ArraySchema;
+import io.swagger.v3.oas.models.media.MediaType;
 import io.swagger.v3.oas.models.media.Schema;
 import io.swagger.v3.oas.models.parameters.Parameter;
-import io.swagger.v3.oas.models.responses.ApiResponse;
+import lombok.Value;
 import org.openapitools.codegen.CodegenOperation;
 import org.openapitools.codegen.CodegenParameter;
 import org.openapitools.codegen.CodegenProperty;
@@ -50,8 +52,14 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
                     .getInstancePath(name, openAPI.getPaths().keySet())
                     .map(PathUtils::getLastPathPart)
                     .map(PathUtils::removeBraces)
-                    .filter(param -> containsResponseProperty(operation, param))
-                    .ifPresentOrElse(param -> operation.addExtension("x-sid-key", param), () -> path.setPost(null));
+                    .flatMap(param -> getResponsePropertySchema(operation, param))
+                    .ifPresentOrElse(propertySchema -> {
+                        operation.addExtension("x-sid-key", propertySchema.getPropertyName());
+
+                        if ("integer".equals(propertySchema.getSchema().getType())) {
+                            operation.addExtension("x-sid-key-conversion-func", "Int32ToString");
+                        }
+                    }, () -> path.setPost(null));
             }
         }));
 
@@ -61,20 +69,29 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
         }
     }
 
-    private boolean containsResponseProperty(final Operation operation, final String propertyName) {
+    private Optional<PropertySchema> getResponsePropertySchema(final Operation operation, final String propertyName) {
         return operation
             .getResponses()
             .values()
             .stream()
-            .anyMatch(response -> response
+            .flatMap(response -> response
                 .getContent()
                 .values()
                 .stream()
                 .map(MediaType::getSchema)
                 .map(schema -> ModelUtils.getReferencedSchema(this.openAPI, schema))
                 .map(Schema::getProperties)
-                .map(Map::keySet)
-                .anyMatch(properties -> properties.contains(StringUtils.underscore(propertyName))));
+                .map(properties -> properties.get(StringUtils.underscore(propertyName)))
+                .filter(Objects::nonNull)
+                .map(Schema.class::cast)
+                .map(schema -> new PropertySchema(propertyName, schema)))
+            .findFirst();
+    }
+
+    @Value
+    private static class PropertySchema {
+        String propertyName;
+        Schema schema;
     }
 
     @SuppressWarnings("unchecked")

@@ -53,7 +53,7 @@ func {{#vendorExtensions.x-is-create-operation}}create{{/vendorExtensions.x-is-c
         return diag.FromErr(err)
     }
 
-    d.SetId(*r.{{vendorExtensions.x-sid-key}})
+    d.SetId({{vendorExtensions.x-sid-key-conversion-func}}(*r.{{vendorExtensions.x-sid-key}}))
     err = MarshalSchema(d, r)
     {{/vendorExtensions.x-is-create-operation}}
     {{#vendorExtensions.x-is-read-operation}}
