@@ -36,34 +36,36 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
     public void processOpenAPI(final OpenAPI openAPI) {
         super.processOpenAPI(openAPI);
 
-        AtomicBoolean allCrudAvailable = new AtomicBoolean(false);
-        openAPI.getPaths().forEach((name, path) -> path.readOperations().forEach(operation -> {
+        final AtomicBoolean allCrudAvailable = new AtomicBoolean(false);
+        openAPI.getPaths().forEach((name, path) -> {
             // We only need to create resources with full CRUD capabilities
-            if((path.getDelete() != null) && (path.getPost() != null) && (path.getGet() != null)) {
+            if (path.getDelete() != null && path.getPost() != null && path.getGet() != null) {
                 allCrudAvailable.set(true);
             }
 
-            if (operation.getOperationId().startsWith("Create")) {
-                // We need to find which property is the sid_key for use after this resource gets created. We'll do
-                // that by finding the matching instance path (just like our path, but ends with something like
-                // "/{Sid}") and then extracting out the name of the last path param. If the sid_key we find is not
-                // part of the operation response body, remove the operation so the resource doesn't get added.
-                PathUtils
-                    .getInstancePath(name, openAPI.getPaths().keySet())
-                    .map(PathUtils::getLastPathPart)
-                    .map(PathUtils::removeBraces)
-                    .flatMap(param -> getResponsePropertySchema(operation, param))
-                    .ifPresentOrElse(propertySchema -> {
-                        operation.addExtension("x-sid-key", propertySchema.getPropertyName());
+            path.readOperations().forEach(operation -> {
+                if (operation.getOperationId().startsWith("Create")) {
+                    // We need to find which property is the sid_key for use after this resource gets created. We'll do
+                    // that by finding the matching instance path (just like our path, but ends with something like
+                    // "/{Sid}") and then extracting out the name of the last path param. If the sid_key we find is not
+                    // part of the operation response body, remove the operation so the resource doesn't get added.
+                    PathUtils
+                        .getInstancePath(name, openAPI.getPaths().keySet())
+                        .map(PathUtils::getLastPathPart)
+                        .map(PathUtils::removeBraces)
+                        .flatMap(param -> getResponsePropertySchema(operation, param))
+                        .ifPresentOrElse(propertySchema -> {
+                            operation.addExtension("x-sid-key", propertySchema.getPropertyName());
 
-                        if ("integer".equals(propertySchema.getSchema().getType())) {
-                            operation.addExtension("x-sid-key-conversion-func", "Int32ToString");
-                        }
-                    }, () -> path.setPost(null));
-            }
-        }));
+                            if ("integer".equals(propertySchema.getSchema().getType())) {
+                                operation.addExtension("x-sid-key-conversion-func", "Int32ToString");
+                            }
+                        }, () -> path.setPost(null));
+                }
+            });
+        });
 
-        if(allCrudAvailable.get() != true){
+        if (!allCrudAvailable.get()) {
             // Since all CRUD operations are not available, do not create the resource
             System.exit(0);
         }
@@ -91,12 +93,13 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
     @Value
     private static class PropertySchema {
         String propertyName;
-        Schema schema;
+        Schema<?> schema;
     }
 
     @SuppressWarnings("unchecked")
     @Override
-    public Map<String, Object> postProcessOperationsWithModels(final Map<String, Object> objs, final List<Object> allModels) {
+    public Map<String, Object> postProcessOperationsWithModels(final Map<String, Object> objs,
+                                                               final List<Object> allModels) {
         final Map<String, Object> results = super.postProcessOperationsWithModels(objs, allModels);
 
         final Map<String, Map<String, Object>> resources = new LinkedHashMap<>();
@@ -109,17 +112,19 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
 
         // iterate over the operation and perhaps modify something
         for (final CodegenOperation co : opList) {
-
             // Group operations by resource.
-            final String resourceName = co.path
-                    .replaceFirst("/[^/]+", "") // Drop the version
-                    .replaceAll("/\\{.+?}", "") // Drop every path parameter
-                    .replace(".json", "") // Drop the JSON extension
-                    .replace("/", ""); // Drop the path separators
+            final String resourceName = co.path.replaceFirst("/[^/]+", "") // Drop the version
+                .replaceAll("/\\{[^}]+?}", "") // Drop every path parameter
+                .replace(".json", "") // Drop the JSON extension
+                .replace("/", ""); // Drop the path separators
 
             final Map<String, Object> resource = resources.computeIfAbsent(resourceName, k -> new LinkedHashMap<>());
-            final Map<String, Object> resourceOperations = (Map<String, Object>) resource.computeIfAbsent("operations", k -> new LinkedHashMap<>());
-            final ArrayList<CodegenOperation> resourceOperationList = (ArrayList<CodegenOperation>) resourceOperations.computeIfAbsent("operation", k -> new ArrayList<>());
+            final Map<String, Object> resourceOperations = (Map<String, Object>) resource.computeIfAbsent("operations",
+                                                                                                          k -> new LinkedHashMap<>());
+            final ArrayList<CodegenOperation> resourceOperationList =
+                (ArrayList<CodegenOperation>) resourceOperations.computeIfAbsent(
+                "operation",
+                k -> new ArrayList<>());
 
             resource.put("name", resourceName);
             resourceOperationList.add(co);
@@ -134,7 +139,6 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
             this.addParamVendorExtensions(co.optionalParams);
             this.addParamVendorExtensions(co.bodyParams);
 
-
             final Set<String> requestParams = new LinkedHashSet<>();
             for (CodegenParameter param : co.allParams) {
                 requestParams.add(this.toSnakeCase(param.baseName));
@@ -147,9 +151,10 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
             // Use the parameters for creating the resource as the resource schema.
             if (co.nickname.startsWith("Create")) {
                 resource.put("schema", co.allParams);
-                for (CodegenResponse resp : co.responses) {
+                for (final CodegenResponse resp : co.responses) {
                     if (resp.is2xx) {
-                        ArrayList<CodegenProperty> properties = getResponseProperties((Schema) resp.schema, requestParams);
+                        final ArrayList<CodegenProperty> properties = getResponseProperties((Schema<?>) resp.schema,
+                                                                                            requestParams);
                         resource.put("responseSchema", properties);
                         break;
                     }
@@ -163,11 +168,9 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
         final String inputSpec = inputSpecOriginal.substring(inputSpecOriginal.lastIndexOf("/") + 1);
 
         // twilio_api_v2010 -> api_v2010 -> apiV2010
-        final String productVersion = StringUtils.camelize(inputSpec
-                .replaceAll(inputSpecPattern, "$1_$2"));
+        final String productVersion = StringUtils.camelize(inputSpec.replaceAll(inputSpecPattern, "$1_$2"));
         // twilio_api_v2010 -> rest/api/v2010
-        final String clientPath = inputSpec
-                .replaceAll(inputSpecPattern, "rest/$1/$2");
+        final String clientPath = inputSpec.replaceAll(inputSpecPattern, "rest/$1/$2");
 
         results.put("productVersion", productVersion);
         results.put("clientPath", clientPath);
@@ -176,7 +179,7 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
         return results;
     }
 
-    private void populateCrudOperations(Map<String, Object> resource, String operationName) {
+    private void populateCrudOperations(final Map<String, Object> resource, final String operationName) {
         if (operationName.startsWith("Create")) {
             resource.put("hasCreate", true);
         }
@@ -191,25 +194,29 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
         }
 
         resource.put("hasAllCrudOps",
-            (Boolean) resource.getOrDefault("hasCreate", false) &&
-            (Boolean) resource.getOrDefault("hasRead", false) &&
-            (Boolean) resource.getOrDefault("hasUpdate", false) &&
-            (Boolean) resource.getOrDefault("hasDelete", false));
+                     (Boolean) resource.getOrDefault("hasCreate", false) &&
+                         (Boolean) resource.getOrDefault("hasRead", false) &&
+                         (Boolean) resource.getOrDefault("hasUpdate", false) &&
+                         (Boolean) resource.getOrDefault("hasDelete", false));
     }
 
-    private ArrayList<CodegenProperty> getResponseProperties(Schema schema, Set<String> requestParams) {
-        ArrayList<CodegenProperty> properties = new ArrayList<CodegenProperty>();
+    private ArrayList<CodegenProperty> getResponseProperties(final Schema<?> schema, final Set<String> requestParams) {
+        final ArrayList<CodegenProperty> properties = new ArrayList<>();
 
-        Map<String, Schema> props = ModelUtils.getReferencedSchema(this.openAPI, schema).getProperties();
+        final Map<String, Schema<?>> props = ModelUtils.getReferencedSchema(this.openAPI, schema).getProperties();
         if (props != null) {
-            for (Map.Entry<String, Schema> pair : props.entrySet()) {
-                String key = pair.getKey();
-                Schema value = pair.getValue();
-                CodegenProperty codegenProperty = fromProperty(key, value);
-                String schemaType = BuildSchemaType(value, codegenProperty.openApiType, "SchemaOptional", codegenProperty, null);
+            for (final Map.Entry<String, Schema<?>> pair : props.entrySet()) {
+                final String key = pair.getKey();
+                final Schema<?> value = pair.getValue();
+                final CodegenProperty codegenProperty = fromProperty(key, value);
+                final String schemaType = BuildSchemaType(value,
+                                                          codegenProperty.openApiType,
+                                                          "SchemaOptional",
+                                                          codegenProperty);
 
                 codegenProperty.vendorExtensions.put("x-terraform-schema-type", schemaType);
-                codegenProperty.vendorExtensions.put("x-name-in-snake-case", this.toSnakeCase(codegenProperty.baseName));
+                codegenProperty.vendorExtensions.put("x-name-in-snake-case",
+                                                     this.toSnakeCase(codegenProperty.baseName));
 
                 if (!requestParams.contains(key)) {
                     properties.add(codegenProperty);
@@ -220,8 +227,11 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
         return properties;
     }
 
-    private String BuildSchemaType(Schema schema, String itemsType, String schemaType, CodegenProperty codegenProperty, CodegenParameter codegenParameter) {
-        String terraformProviderType = "";
+    private String BuildSchemaType(final Schema<?> schema,
+                                   final String itemsType,
+                                   final String schemaType,
+                                   final CodegenProperty codegenProperty) {
+        String terraformProviderType;
         switch (itemsType) {
             case "number":
                 terraformProviderType = String.format("AsFloat(%s)", schemaType);
@@ -234,22 +244,27 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
                 break;
             case "array":
                 terraformProviderType = "AsList(";
-                ArraySchema arraySchema = (ArraySchema) schema;
-                Schema innerSchema = unaliasSchema(getSchemaItems(arraySchema), importMapping);
+                final ArraySchema arraySchema = (ArraySchema) schema;
+                final Schema<?> innerSchema = unaliasSchema(getSchemaItems(arraySchema), importMapping);
                 if (codegenProperty != null) {
-                    CodegenProperty innerCodegenProperty = fromProperty(codegenProperty.name, innerSchema);
+                    final CodegenProperty innerCodegenProperty = fromProperty(codegenProperty.name, innerSchema);
                     if (innerSchema != null) {
-                        terraformProviderType += String.format("%s, %s)", BuildSchemaType(innerSchema, innerCodegenProperty.openApiType, schemaType, innerCodegenProperty, null), schemaType);
+                        terraformProviderType += String.format("%s, %s)",
+                                                               BuildSchemaType(innerSchema,
+                                                                               innerCodegenProperty.openApiType,
+                                                                               schemaType,
+                                                                               innerCodegenProperty),
+                                                               schemaType);
                     }
                 }
                 break;
             case "string":
             case "object":
             default:
-                // At the time of writing terraform SDK doesn't support dynamic types and this is incovenient since
+                // At the time of writing terraform SDK doesn't support dynamic types and this is inconvenient since
                 // some properties of type "object" can be array or a map. (Eg: errors and links in the studio flows)
-                // Letting the type objects be as Strings in the terraform provider and then json encoding in the provider
-                // is the current workaround
+                // Letting the type objects be as Strings in the terraform provider and then json encoding in the
+                // provider is the current workaround.
                 terraformProviderType = String.format("AsString(%s)", schemaType);
                 break;
         }
@@ -267,8 +282,8 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
     }
 
     /**
-     * Configures a friendly name for the generator.  This will be used by the generator
-     * to select the library with the -g flag.
+     * Configures a friendly name for the generator.  This will be used by the generator to select the library with the
+     * -g flag.
      *
      * @return the friendly name for the generator
      */
@@ -278,8 +293,7 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
     }
 
     /**
-     * Returns human-friendly help for the generator.  Provide the consumer with help
-     * tips, parameters here
+     * Returns human-friendly help for the generator.  Provide the consumer with help tips, parameters here
      *
      * @return A string value for the help message
      */
@@ -289,20 +303,23 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
     }
 
     @Override
-    public CodegenProperty fromProperty(String name, Schema p) {
-        CodegenProperty property = super.fromProperty(name, p);
-        String schemaType = property.required ? "SchemaRequired" : "SchemaOptional";
-        String terraformProviderType = BuildSchemaType(p, property.openApiType, schemaType, property, null);
+    public CodegenProperty fromProperty(final String name, final Schema p) {
+        final CodegenProperty property = super.fromProperty(name, p);
+        final String schemaType = property.required ? "SchemaRequired" : "SchemaOptional";
+        final String terraformProviderType = BuildSchemaType(p, property.openApiType, schemaType, property);
         property.vendorExtensions.put("x-terraform-schema-type", terraformProviderType);
         return property;
     }
 
     @Override
-    public CodegenParameter fromParameter(Parameter param, Set<String> imports) {
-        CodegenParameter parameter = super.fromParameter(param, imports);
-        Schema parameterSchema = param.getSchema();
-        String schemaType = parameter.required ? "SchemaRequired" : "SchemaOptional";
-        String terraformProviderType = BuildSchemaType(parameterSchema, parameterSchema.getType(), schemaType, null, parameter);
+    public CodegenParameter fromParameter(final Parameter param, final Set<String> imports) {
+        final CodegenParameter parameter = super.fromParameter(param, imports);
+        final Schema<?> parameterSchema = param.getSchema();
+        final String schemaType = parameter.required ? "SchemaRequired" : "SchemaOptional";
+        final String terraformProviderType = BuildSchemaType(parameterSchema,
+                                                             parameterSchema.getType(),
+                                                             schemaType,
+                                                             null);
         parameter.vendorExtensions.put("x-terraform-schema-type", terraformProviderType);
         return parameter;
     }
