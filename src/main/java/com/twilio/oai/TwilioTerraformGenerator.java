@@ -27,6 +27,12 @@ import org.openapitools.codegen.utils.StringUtils;
 
 public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
 
+    private static final String SCHEMA_COMPUTED = "SchemaComputed";
+    // We assume all optional properties may also be computed in the backend. E.g., unique_name is typically optional
+    // but it will be populated if omitted.
+    private static final String SCHEMA_OPTIONAL = "SchemaComputedOptional";
+    private static final String SCHEMA_REQUIRED = "SchemaRequired";
+
     @Value
     private static class PropertySchema {
         String propertyName;
@@ -154,13 +160,15 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
 
         resources.values().forEach(resource -> {
             final CodegenOperation createOperation = getCodegenOperation(resource, ResourceOperation.CREATE);
+            final CodegenOperation updateOperation = getCodegenOperation(resource, ResourceOperation.UPDATE);
 
             // Use the parameters for creating the resource as the resource schema.
             resource.put("schema", createOperation.allParams);
             for (final CodegenResponse resp : createOperation.responses) {
                 if (resp.is2xx) {
                     final ArrayList<CodegenProperty> properties = getResponseProperties((Schema<?>) resp.schema,
-                                                                                        getParamNames(createOperation.allParams));
+                                                                                        getParamNames(createOperation.allParams),
+                                                                                        getParamNames(updateOperation.formParams));
                     resource.put("responseSchema", properties);
                     break;
                 }
@@ -218,7 +226,9 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
     }
 
     @SuppressWarnings("unchecked")
-    private ArrayList<CodegenProperty> getResponseProperties(final Schema<?> schema, final Set<String> createParams) {
+    private ArrayList<CodegenProperty> getResponseProperties(final Schema<?> schema,
+                                                             final Set<String> createParams,
+                                                             final Set<String> updateParams) {
         final ArrayList<CodegenProperty> properties = new ArrayList<>();
 
         final Map<String, Schema<?>> props = ModelUtils.getReferencedSchema(this.openAPI, schema).getProperties();
@@ -227,12 +237,13 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
                 final String key = pair.getKey();
                 final Schema<?> value = pair.getValue();
                 final CodegenProperty codegenProperty = fromProperty(key, value);
-                final String schemaType = buildSchemaType(value,
-                                                          codegenProperty.openApiType,
-                                                          "SchemaOptional",
-                                                          codegenProperty);
+                final String schemaType = updateParams.contains(key) ? SCHEMA_OPTIONAL : SCHEMA_COMPUTED;
+                final String terraformSchemaType = buildSchemaType(value,
+                                                                   codegenProperty.openApiType,
+                                                                   schemaType,
+                                                                   codegenProperty);
 
-                codegenProperty.vendorExtensions.put("x-terraform-schema-type", schemaType);
+                codegenProperty.vendorExtensions.put("x-terraform-schema-type", terraformSchemaType);
                 codegenProperty.vendorExtensions.put("x-name-in-snake-case",
                                                      this.toSnakeCase(codegenProperty.baseName));
 
@@ -249,7 +260,7 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
     public CodegenProperty fromProperty(final String name, final Schema schema) {
         final CodegenProperty property = super.fromProperty(name, schema);
 
-        final String schemaType = property.required ? "SchemaRequired" : "SchemaOptional";
+        final String schemaType = property.required ? SCHEMA_REQUIRED : SCHEMA_OPTIONAL;
         final String terraformProviderType = buildSchemaType(schema, property.openApiType, schemaType, property);
         property.vendorExtensions.put("x-terraform-schema-type", terraformProviderType);
 
@@ -261,7 +272,7 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
         final CodegenParameter parameter = super.fromParameter(param, imports);
 
         final Schema<?> parameterSchema = param.getSchema();
-        final String schemaType = parameter.required ? "SchemaRequired" : "SchemaOptional";
+        final String schemaType = parameter.required ? SCHEMA_REQUIRED : SCHEMA_OPTIONAL;
         final String terraformProviderType = buildSchemaType(parameterSchema,
                                                              parameterSchema.getType(),
                                                              schemaType,
