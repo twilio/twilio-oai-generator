@@ -8,7 +8,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.Operation;
@@ -26,6 +25,12 @@ import org.openapitools.codegen.utils.StringUtils;
 
 public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
 
+    @Value
+    private static class PropertySchema {
+        String propertyName;
+        Schema<?> schema;
+    }
+
     public TwilioTerraformGenerator() {
         super();
 
@@ -36,39 +41,38 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
     public void processOpenAPI(final OpenAPI openAPI) {
         super.processOpenAPI(openAPI);
 
-        final AtomicBoolean allCrudAvailable = new AtomicBoolean(false);
-        openAPI.getPaths().forEach((name, path) -> {
-            // We only need to create resources with full CRUD capabilities
-            if (path.getDelete() != null && path.getPost() != null && path.getGet() != null) {
-                allCrudAvailable.set(true);
-            }
+        // We only need to create resources with full CRUD capabilities.
+        final boolean allCrudAvailable = openAPI
+            .getPaths()
+            .values()
+            .stream()
+            .anyMatch(path -> path.getDelete() != null && path.getPost() != null && path.getGet() != null);
 
-            path.readOperations().forEach(operation -> {
-                if (operation.getOperationId().startsWith("Create")) {
-                    // We need to find which property is the sid_key for use after this resource gets created. We'll do
-                    // that by finding the matching instance path (just like our path, but ends with something like
-                    // "/{Sid}") and then extracting out the name of the last path param. If the sid_key we find is not
-                    // part of the operation response body, remove the operation so the resource doesn't get added.
-                    PathUtils
-                        .getInstancePath(name, openAPI.getPaths().keySet())
-                        .map(PathUtils::getLastPathPart)
-                        .map(PathUtils::removeBraces)
-                        .flatMap(param -> getResponsePropertySchema(operation, param))
-                        .ifPresentOrElse(propertySchema -> {
-                            operation.addExtension("x-sid-key", propertySchema.getPropertyName());
-
-                            if ("integer".equals(propertySchema.getSchema().getType())) {
-                                operation.addExtension("x-sid-key-conversion-func", "Int32ToString");
-                            }
-                        }, () -> path.setPost(null));
-                }
-            });
-        });
-
-        if (!allCrudAvailable.get()) {
-            // Since all CRUD operations are not available, do not create the resource
+        // If all CRUD operations are not available, do not create the resource.
+        if (!allCrudAvailable) {
             System.exit(0);
         }
+
+        openAPI.getPaths().forEach((name, path) -> path.readOperations().forEach(operation -> {
+            if (operation.getOperationId().startsWith("Create")) {
+                // We need to find which property is the sid_key for use after this resource gets created. We'll do
+                // that by finding the matching instance path (just like our path, but ends with something like
+                // "/{Sid}") and then extracting out the name of the last path param. If the sid_key we find is not
+                // part of the operation response body, remove the operation so the resource doesn't get added.
+                PathUtils
+                    .getInstancePath(name, openAPI.getPaths().keySet())
+                    .map(PathUtils::getLastPathPart)
+                    .map(PathUtils::removeBraces)
+                    .flatMap(param -> getResponsePropertySchema(operation, param))
+                    .ifPresentOrElse(propertySchema -> {
+                        operation.addExtension("x-sid-key", propertySchema.getPropertyName());
+
+                        if ("integer".equals(propertySchema.getSchema().getType())) {
+                            operation.addExtension("x-sid-key-conversion-func", "Int32ToString");
+                        }
+                    }, () -> path.setPost(null));
+            }
+        }));
     }
 
     private Optional<PropertySchema> getResponsePropertySchema(final Operation operation, final String propertyName) {
@@ -88,12 +92,6 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
                 .map(Schema.class::cast)
                 .map(schema -> new PropertySchema(propertyName, schema)))
             .findFirst();
-    }
-
-    @Value
-    private static class PropertySchema {
-        String propertyName;
-        Schema<?> schema;
     }
 
     @SuppressWarnings("unchecked")
@@ -129,11 +127,7 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
             resource.put("name", resourceName);
             resourceOperationList.add(co);
 
-            populateCrudOperations(resource, co.nickname);
-            co.vendorExtensions.put("x-is-create-operation", co.nickname.startsWith("Create"));
-            co.vendorExtensions.put("x-is-read-operation", co.nickname.startsWith("Fetch"));
-            co.vendorExtensions.put("x-is-update-operation", co.nickname.startsWith("Update"));
-            co.vendorExtensions.put("x-is-delete-operation", co.nickname.startsWith("Delete"));
+            populateCrudOperations(resource, co);
 
             this.addParamVendorExtensions(co.allParams);
             this.addParamVendorExtensions(co.optionalParams);
@@ -179,27 +173,29 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
         return results;
     }
 
-    private void populateCrudOperations(final Map<String, Object> resource, final String operationName) {
-        if (operationName.startsWith("Create")) {
+    private void populateCrudOperations(final Map<String, Object> resource, final CodegenOperation operation) {
+        if (operation.nickname.startsWith("Create")) {
+            operation.vendorExtensions.put("x-is-create-operation", true);
             resource.put("hasCreate", true);
-        }
-        if (operationName.startsWith("Fetch")) {
+        } else if (operation.nickname.startsWith("Fetch")) {
+            operation.vendorExtensions.put("x-is-read-operation", true);
             resource.put("hasRead", true);
-        }
-        if (operationName.startsWith("Update")) {
+        } else if (operation.nickname.startsWith("Update")) {
+            operation.vendorExtensions.put("x-is-update-operation", true);
             resource.put("hasUpdate", true);
-        }
-        if (operationName.startsWith("Delete")) {
+        } else if (operation.nickname.startsWith("Delete")) {
+            operation.vendorExtensions.put("x-is-delete-operation", true);
             resource.put("hasDelete", true);
         }
 
         resource.put("hasAllCrudOps",
-                     (Boolean) resource.getOrDefault("hasCreate", false) &&
-                         (Boolean) resource.getOrDefault("hasRead", false) &&
-                         (Boolean) resource.getOrDefault("hasUpdate", false) &&
-                         (Boolean) resource.getOrDefault("hasDelete", false));
+                     (boolean) resource.getOrDefault("hasCreate", false) &&
+                         (boolean) resource.getOrDefault("hasRead", false) &&
+                         (boolean) resource.getOrDefault("hasUpdate", false) &&
+                         (boolean) resource.getOrDefault("hasDelete", false));
     }
 
+    @SuppressWarnings("unchecked")
     private ArrayList<CodegenProperty> getResponseProperties(final Schema<?> schema, final Set<String> requestParams) {
         final ArrayList<CodegenProperty> properties = new ArrayList<>();
 
@@ -209,7 +205,7 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
                 final String key = pair.getKey();
                 final Schema<?> value = pair.getValue();
                 final CodegenProperty codegenProperty = fromProperty(key, value);
-                final String schemaType = BuildSchemaType(value,
+                final String schemaType = buildSchemaType(value,
                                                           codegenProperty.openApiType,
                                                           "SchemaOptional",
                                                           codegenProperty);
@@ -227,7 +223,29 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
         return properties;
     }
 
-    private String BuildSchemaType(final Schema<?> schema,
+    @Override
+    public CodegenProperty fromProperty(final String name, final Schema schema) {
+        final CodegenProperty property = super.fromProperty(name, schema);
+        final String schemaType = property.required ? "SchemaRequired" : "SchemaOptional";
+        final String terraformProviderType = buildSchemaType(schema, property.openApiType, schemaType, property);
+        property.vendorExtensions.put("x-terraform-schema-type", terraformProviderType);
+        return property;
+    }
+
+    @Override
+    public CodegenParameter fromParameter(final Parameter param, final Set<String> imports) {
+        final CodegenParameter parameter = super.fromParameter(param, imports);
+        final Schema<?> parameterSchema = param.getSchema();
+        final String schemaType = parameter.required ? "SchemaRequired" : "SchemaOptional";
+        final String terraformProviderType = buildSchemaType(parameterSchema,
+                                                             parameterSchema.getType(),
+                                                             schemaType,
+                                                             null);
+        parameter.vendorExtensions.put("x-terraform-schema-type", terraformProviderType);
+        return parameter;
+    }
+
+    private String buildSchemaType(final Schema<?> schema,
                                    final String itemsType,
                                    final String schemaType,
                                    final CodegenProperty codegenProperty) {
@@ -250,7 +268,7 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
                     final CodegenProperty innerCodegenProperty = fromProperty(codegenProperty.name, innerSchema);
                     if (innerSchema != null) {
                         terraformProviderType += String.format("%s, %s)",
-                                                               BuildSchemaType(innerSchema,
+                                                               buildSchemaType(innerSchema,
                                                                                innerCodegenProperty.openApiType,
                                                                                schemaType,
                                                                                innerCodegenProperty),
@@ -282,7 +300,7 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
     }
 
     /**
-     * Configures a friendly name for the generator.  This will be used by the generator to select the library with the
+     * Configures a friendly name for the generator. This will be used by the generator to select the library with the
      * -g flag.
      *
      * @return the friendly name for the generator
@@ -293,34 +311,12 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
     }
 
     /**
-     * Returns human-friendly help for the generator.  Provide the consumer with help tips, parameters here
+     * Returns human-friendly help for the generator. Provide the consumer with help tips, parameters here
      *
      * @return A string value for the help message
      */
     @Override
     public String getHelp() {
-        return "Generates a Terraform provider (beta).";
-    }
-
-    @Override
-    public CodegenProperty fromProperty(final String name, final Schema p) {
-        final CodegenProperty property = super.fromProperty(name, p);
-        final String schemaType = property.required ? "SchemaRequired" : "SchemaOptional";
-        final String terraformProviderType = BuildSchemaType(p, property.openApiType, schemaType, property);
-        property.vendorExtensions.put("x-terraform-schema-type", terraformProviderType);
-        return property;
-    }
-
-    @Override
-    public CodegenParameter fromParameter(final Parameter param, final Set<String> imports) {
-        final CodegenParameter parameter = super.fromParameter(param, imports);
-        final Schema<?> parameterSchema = param.getSchema();
-        final String schemaType = parameter.required ? "SchemaRequired" : "SchemaOptional";
-        final String terraformProviderType = BuildSchemaType(parameterSchema,
-                                                             parameterSchema.getType(),
-                                                             schemaType,
-                                                             null);
-        parameter.vendorExtensions.put("x-terraform-schema-type", terraformProviderType);
-        return parameter;
+        return "Generates a Terraform provider (pilot).";
     }
 }
