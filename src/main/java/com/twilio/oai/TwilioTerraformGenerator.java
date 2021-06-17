@@ -1,13 +1,14 @@
 package com.twilio.oai;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.Operation;
@@ -15,6 +16,7 @@ import io.swagger.v3.oas.models.media.ArraySchema;
 import io.swagger.v3.oas.models.media.MediaType;
 import io.swagger.v3.oas.models.media.Schema;
 import io.swagger.v3.oas.models.parameters.Parameter;
+import lombok.AllArgsConstructor;
 import lombok.Value;
 import org.openapitools.codegen.CodegenOperation;
 import org.openapitools.codegen.CodegenParameter;
@@ -29,6 +31,16 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
     private static class PropertySchema {
         String propertyName;
         Schema<?> schema;
+    }
+
+    @AllArgsConstructor
+    private enum ResourceOperation {
+        CREATE("Create"),
+        FETCH("Fetch"),
+        UPDATE("Update"),
+        DELETE("Delete");
+
+        private final String prefix;
     }
 
     public TwilioTerraformGenerator() {
@@ -54,7 +66,7 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
         }
 
         openAPI.getPaths().forEach((name, path) -> path.readOperations().forEach(operation -> {
-            if (operation.getOperationId().startsWith("Create")) {
+            if (operation.getOperationId().startsWith(ResourceOperation.CREATE.prefix)) {
                 // We need to find which property is the sid_key for use after this resource gets created. We'll do
                 // that by finding the matching instance path (just like our path, but ends with something like
                 // "/{Sid}") and then extracting out the name of the last path param. If the sid_key we find is not
@@ -133,28 +145,27 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
             this.addParamVendorExtensions(co.optionalParams);
             this.addParamVendorExtensions(co.bodyParams);
 
-            final Set<String> requestParams = new LinkedHashSet<>();
-            for (CodegenParameter param : co.allParams) {
-                requestParams.add(this.toSnakeCase(param.baseName));
-            }
-
             if (!co.optionalParams.isEmpty() || co.path.contains("/2010-04-01/")) {
                 co.vendorExtensions.put("x-has-optional-params", true);
             }
+        }
+
+        removeNonCrudResources(resources);
+
+        resources.values().forEach(resource -> {
+            final CodegenOperation createOperation = getCodegenOperation(resource, ResourceOperation.CREATE);
 
             // Use the parameters for creating the resource as the resource schema.
-            if (co.nickname.startsWith("Create")) {
-                resource.put("schema", co.allParams);
-                for (final CodegenResponse resp : co.responses) {
-                    if (resp.is2xx) {
-                        final ArrayList<CodegenProperty> properties = getResponseProperties((Schema<?>) resp.schema,
-                                                                                            requestParams);
-                        resource.put("responseSchema", properties);
-                        break;
-                    }
+            resource.put("schema", createOperation.allParams);
+            for (final CodegenResponse resp : createOperation.responses) {
+                if (resp.is2xx) {
+                    final ArrayList<CodegenProperty> properties = getResponseProperties((Schema<?>) resp.schema,
+                                                                                        getParamNames(createOperation.allParams));
+                    resource.put("responseSchema", properties);
+                    break;
                 }
             }
-        }
+        });
 
         final String inputSpecPattern = ".+?_(.+?)_(v[0-9]+)\\.(.+)";
         final String inputSpecOriginal = getInputSpec();
@@ -174,29 +185,40 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
     }
 
     private void populateCrudOperations(final Map<String, Object> resource, final CodegenOperation operation) {
-        if (operation.nickname.startsWith("Create")) {
+        if (operation.nickname.startsWith(ResourceOperation.CREATE.prefix)) {
             operation.vendorExtensions.put("x-is-create-operation", true);
-            resource.put("hasCreate", true);
-        } else if (operation.nickname.startsWith("Fetch")) {
+            resource.put(ResourceOperation.CREATE.name(), operation);
+        } else if (operation.nickname.startsWith(ResourceOperation.FETCH.prefix)) {
             operation.vendorExtensions.put("x-is-read-operation", true);
-            resource.put("hasRead", true);
-        } else if (operation.nickname.startsWith("Update")) {
+            resource.put(ResourceOperation.FETCH.name(), operation);
+        } else if (operation.nickname.startsWith(ResourceOperation.UPDATE.prefix)) {
             operation.vendorExtensions.put("x-is-update-operation", true);
-            resource.put("hasUpdate", true);
-        } else if (operation.nickname.startsWith("Delete")) {
+            resource.put(ResourceOperation.UPDATE.name(), operation);
+        } else if (operation.nickname.startsWith(ResourceOperation.DELETE.prefix)) {
             operation.vendorExtensions.put("x-is-delete-operation", true);
-            resource.put("hasDelete", true);
+            resource.put(ResourceOperation.DELETE.name(), operation);
         }
+    }
 
-        resource.put("hasAllCrudOps",
-                     (boolean) resource.getOrDefault("hasCreate", false) &&
-                         (boolean) resource.getOrDefault("hasRead", false) &&
-                         (boolean) resource.getOrDefault("hasUpdate", false) &&
-                         (boolean) resource.getOrDefault("hasDelete", false));
+    private void removeNonCrudResources(final Map<String, Map<String, Object>> resources) {
+        resources
+            .entrySet()
+            .removeIf(resource -> Arrays
+                .stream(ResourceOperation.values())
+                .anyMatch(resourceOperation -> !resource.getValue().containsKey(resourceOperation.name())));
+    }
+
+    private CodegenOperation getCodegenOperation(final Map<String, Object> resources,
+                                                 final ResourceOperation resourceOperation) {
+        return (CodegenOperation) resources.get(resourceOperation.name());
+    }
+
+    private Set<String> getParamNames(final List<CodegenParameter> parameters) {
+        return parameters.stream().map(param -> param.baseName).map(this::toSnakeCase).collect(Collectors.toSet());
     }
 
     @SuppressWarnings("unchecked")
-    private ArrayList<CodegenProperty> getResponseProperties(final Schema<?> schema, final Set<String> requestParams) {
+    private ArrayList<CodegenProperty> getResponseProperties(final Schema<?> schema, final Set<String> createParams) {
         final ArrayList<CodegenProperty> properties = new ArrayList<>();
 
         final Map<String, Schema<?>> props = ModelUtils.getReferencedSchema(this.openAPI, schema).getProperties();
@@ -214,7 +236,7 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
                 codegenProperty.vendorExtensions.put("x-name-in-snake-case",
                                                      this.toSnakeCase(codegenProperty.baseName));
 
-                if (!requestParams.contains(key)) {
+                if (!createParams.contains(key)) {
                     properties.add(codegenProperty);
                 }
             }
@@ -226,15 +248,18 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
     @Override
     public CodegenProperty fromProperty(final String name, final Schema schema) {
         final CodegenProperty property = super.fromProperty(name, schema);
+
         final String schemaType = property.required ? "SchemaRequired" : "SchemaOptional";
         final String terraformProviderType = buildSchemaType(schema, property.openApiType, schemaType, property);
         property.vendorExtensions.put("x-terraform-schema-type", terraformProviderType);
+
         return property;
     }
 
     @Override
     public CodegenParameter fromParameter(final Parameter param, final Set<String> imports) {
         final CodegenParameter parameter = super.fromParameter(param, imports);
+
         final Schema<?> parameterSchema = param.getSchema();
         final String schemaType = parameter.required ? "SchemaRequired" : "SchemaOptional";
         final String terraformProviderType = buildSchemaType(parameterSchema,
@@ -242,6 +267,7 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
                                                              schemaType,
                                                              null);
         parameter.vendorExtensions.put("x-terraform-schema-type", terraformProviderType);
+
         return parameter;
     }
 
