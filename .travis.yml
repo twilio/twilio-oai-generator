@@ -1,5 +1,6 @@
 language: java
 script:
+- echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
 - make test-docker
 notifications:
   slack:
