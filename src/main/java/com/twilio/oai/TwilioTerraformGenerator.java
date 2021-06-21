@@ -8,9 +8,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import io.swagger.v3.oas.models.media.Schema;
-import io.swagger.v3.oas.models.parameters.Parameter;
 import lombok.AllArgsConstructor;
 import org.openapitools.codegen.CodegenOperation;
 import org.openapitools.codegen.CodegenParameter;
@@ -97,7 +97,13 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
             final CodegenOperation updateOperation = getCodegenOperation(resource, ResourceOperation.UPDATE);
 
             // Use the parameters for creating the resource as the resource schema.
-            resource.put("schema", createOperation.allParams);
+            resource.put("schema", getResourceSchema(createOperation.allParams, updateOperation.allParams));
+
+            // We need to update te resource after creating it if there are any params which can only be set during
+            // the update operation.
+            final Set<String> createParams = getParamNames(createOperation.allParams);
+            final Set<String> updateParams = getParamNames(updateOperation.formParams);
+            createOperation.vendorExtensions.put("x-update-after-create", !createParams.containsAll(updateParams));
 
             createOperation.responses
                 .stream()
@@ -109,16 +115,6 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
                     final Map<String, Schema<?>> properties = ModelUtils
                         .getReferencedSchema(this.openAPI, schema)
                         .getProperties();
-
-                    final Set<String> createParams = getParamNames(createOperation.allParams);
-                    final Set<String> updateParams = getParamNames(updateOperation.formParams);
-
-                    resource.put("responseSchema", getResponseProperties(properties, createParams, updateParams));
-
-                    // We need to update te resource after creating it if there are any params which can only be set
-                    // during the update operation.
-                    createOperation.vendorExtensions.put("x-update-after-create",
-                                                         !createParams.containsAll(updateParams));
 
                     // We need to find the parameter to be used as the Terraform resource ID (as it's not always the
                     // 'sid'). We assume it's the last path parameter for the fetch/update/delete operation.
@@ -191,56 +187,30 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
         return (CodegenOperation) resource.get(resourceOperation.name());
     }
 
+    private List<CodegenParameter> getResourceSchema(final List<CodegenParameter> createParams,
+                                                     final List<CodegenParameter> updateParams) {
+        createParams.forEach(param -> addSchemaVendorExtensions(param,
+                                                                param.required ? SCHEMA_REQUIRED : SCHEMA_OPTIONAL));
+        updateParams.forEach(param -> addSchemaVendorExtensions(param,
+                                                                param.isPathParam ? SCHEMA_COMPUTED : SCHEMA_OPTIONAL));
+
+        final Set<String> createParamName = getParamNames(createParams);
+        final Stream<CodegenParameter> updateStream = updateParams
+            .stream()
+            .filter(param -> !createParamName.contains(param.paramName));
+
+        return Stream.concat(createParams.stream(), updateStream).collect(Collectors.toList());
+    }
+
+    private void addSchemaVendorExtensions(final CodegenParameter codegenParameter, final String schemaType) {
+        final String terraformSchemaType = buildSchemaType(codegenParameter, schemaType);
+
+        codegenParameter.vendorExtensions.put("x-terraform-schema-type", terraformSchemaType);
+        codegenParameter.vendorExtensions.put("x-name-in-snake-case", this.toSnakeCase(codegenParameter.baseName));
+    }
+
     private Set<String> getParamNames(final List<CodegenParameter> parameters) {
-        return parameters.stream().map(param -> param.paramName).map(this::toSnakeCase).collect(Collectors.toSet());
-    }
-
-    private ArrayList<CodegenProperty> getResponseProperties(final Map<String, Schema<?>> props,
-                                                             final Set<String> createParams,
-                                                             final Set<String> updateParams) {
-        final ArrayList<CodegenProperty> properties = new ArrayList<>();
-
-        if (props != null) {
-            for (final Map.Entry<String, Schema<?>> pair : props.entrySet()) {
-                final String key = pair.getKey();
-                final Schema<?> value = pair.getValue();
-                final CodegenProperty codegenProperty = fromProperty(key, value);
-                final String schemaType = updateParams.contains(key) ? SCHEMA_OPTIONAL : SCHEMA_COMPUTED;
-                final String terraformSchemaType = buildSchemaType(codegenProperty, schemaType);
-
-                codegenProperty.vendorExtensions.put("x-terraform-schema-type", terraformSchemaType);
-                codegenProperty.vendorExtensions.put("x-name-in-snake-case",
-                                                     this.toSnakeCase(codegenProperty.baseName));
-
-                if (!createParams.contains(key)) {
-                    properties.add(codegenProperty);
-                }
-            }
-        }
-
-        return properties;
-    }
-
-    @Override
-    public CodegenProperty fromProperty(final String name, final Schema schema) {
-        final CodegenProperty property = super.fromProperty(name, schema);
-
-        final String schemaType = property.required ? SCHEMA_REQUIRED : SCHEMA_OPTIONAL;
-        final String terraformProviderType = buildSchemaType(property, schemaType);
-        property.vendorExtensions.put("x-terraform-schema-type", terraformProviderType);
-
-        return property;
-    }
-
-    @Override
-    public CodegenParameter fromParameter(final Parameter param, final Set<String> imports) {
-        final CodegenParameter parameter = super.fromParameter(param, imports);
-
-        final String schemaType = parameter.required ? SCHEMA_REQUIRED : SCHEMA_OPTIONAL;
-        final String terraformProviderType = buildSchemaType(parameter, schemaType);
-        parameter.vendorExtensions.put("x-terraform-schema-type", terraformProviderType);
-
-        return parameter;
+        return parameters.stream().map(param -> param.paramName).collect(Collectors.toSet());
     }
 
     private String buildSchemaType(final CodegenParameter codegenParameter, final String schemaType) {
@@ -278,7 +248,7 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
     }
 
     private String toSnakeCase(final String string) {
-        return string.replaceAll("([a-z\\d])([A-Z])", "$1_$2").toLowerCase();
+        return string.replaceAll("[^a-zA-Z0-9]+", "_").replaceAll("([a-z\\d])([A-Z])", "$1_$2").toLowerCase();
     }
 
     /**
