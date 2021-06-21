@@ -9,7 +9,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import io.swagger.v3.oas.models.media.ArraySchema;
 import io.swagger.v3.oas.models.media.Schema;
 import io.swagger.v3.oas.models.parameters.Parameter;
 import lombok.AllArgsConstructor;
@@ -207,10 +206,7 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
                 final Schema<?> value = pair.getValue();
                 final CodegenProperty codegenProperty = fromProperty(key, value);
                 final String schemaType = updateParams.contains(key) ? SCHEMA_OPTIONAL : SCHEMA_COMPUTED;
-                final String terraformSchemaType = buildSchemaType(value,
-                                                                   codegenProperty.openApiType,
-                                                                   schemaType,
-                                                                   codegenProperty);
+                final String terraformSchemaType = buildSchemaType(codegenProperty, schemaType);
 
                 codegenProperty.vendorExtensions.put("x-terraform-schema-type", terraformSchemaType);
                 codegenProperty.vendorExtensions.put("x-name-in-snake-case",
@@ -230,7 +226,7 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
         final CodegenProperty property = super.fromProperty(name, schema);
 
         final String schemaType = property.required ? SCHEMA_REQUIRED : SCHEMA_OPTIONAL;
-        final String terraformProviderType = buildSchemaType(schema, property.openApiType, schemaType, property);
+        final String terraformProviderType = buildSchemaType(property, schemaType);
         property.vendorExtensions.put("x-terraform-schema-type", terraformProviderType);
 
         return property;
@@ -240,60 +236,40 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
     public CodegenParameter fromParameter(final Parameter param, final Set<String> imports) {
         final CodegenParameter parameter = super.fromParameter(param, imports);
 
-        final Schema<?> parameterSchema = param.getSchema();
         final String schemaType = parameter.required ? SCHEMA_REQUIRED : SCHEMA_OPTIONAL;
-        final String terraformProviderType = buildSchemaType(parameterSchema,
-                                                             parameterSchema.getType(),
-                                                             schemaType,
-                                                             null);
+        final String terraformProviderType = buildSchemaType(parameter, schemaType);
         parameter.vendorExtensions.put("x-terraform-schema-type", terraformProviderType);
 
         return parameter;
     }
 
-    private String buildSchemaType(final Schema<?> schema,
-                                   final String itemsType,
-                                   final String schemaType,
-                                   final CodegenProperty codegenProperty) {
-        String terraformProviderType;
-        switch (itemsType) {
-            case "number":
-                terraformProviderType = String.format("AsFloat(%s)", schemaType);
-                break;
-            case "integer":
-                terraformProviderType = String.format("AsInt(%s)", schemaType);
-                break;
-            case "boolean":
-                terraformProviderType = String.format("AsBool(%s)", schemaType);
-                break;
-            case "array":
-                terraformProviderType = "AsList(";
-                final ArraySchema arraySchema = (ArraySchema) schema;
-                final Schema<?> innerSchema = unaliasSchema(getSchemaItems(arraySchema), importMapping);
-                if (codegenProperty != null) {
-                    final CodegenProperty innerCodegenProperty = fromProperty(codegenProperty.name, innerSchema);
-                    if (innerSchema != null) {
-                        terraformProviderType += String.format("%s, %s)",
-                                                               buildSchemaType(innerSchema,
-                                                                               innerCodegenProperty.openApiType,
-                                                                               schemaType,
-                                                                               innerCodegenProperty),
-                                                               schemaType);
-                    }
-                }
-                break;
-            case "string":
-            case "object":
+    private String buildSchemaType(final CodegenParameter codegenParameter, final String schemaType) {
+        return buildSchemaType(codegenParameter.dataType, schemaType, codegenParameter.items);
+    }
+
+    private String buildSchemaType(final CodegenProperty codegenProperty, final String schemaType) {
+        return buildSchemaType(codegenProperty.dataType, schemaType, codegenProperty.items);
+    }
+
+    private String buildSchemaType(final String dataType, final String schemaType, final CodegenProperty items) {
+        if (dataType.startsWith("[]")) {
+            return String.format("AsList(%s, %s)", buildSchemaType(items, schemaType), schemaType);
+        }
+
+        switch (dataType) {
+            case "float32":
+                return String.format("AsFloat(%s)", schemaType);
+            case "int32":
+                return String.format("AsInt(%s)", schemaType);
+            case "bool":
+                return String.format("AsBool(%s)", schemaType);
             default:
                 // At the time of writing terraform SDK doesn't support dynamic types and this is inconvenient since
                 // some properties of type "object" can be array or a map. (Eg: errors and links in the studio flows)
                 // Letting the type objects be as Strings in the terraform provider and then json encoding in the
                 // provider is the current workaround.
-                terraformProviderType = String.format("AsString(%s)", schemaType);
-                break;
+                return String.format("AsString(%s)", schemaType);
         }
-
-        return terraformProviderType;
     }
 
     private void addParamVendorExtensions(final List<CodegenParameter> params) {
