@@ -47,13 +47,19 @@ func {{#vendorExtensions.x-is-create-operation}}create{{/vendorExtensions.x-is-c
     {{/allParams}}
 
     {{#vendorExtensions.x-is-create-operation}}
-    r, err := m.(*client.Config).Client.{{productVersion}}.{{nickname}}({{#requiredParams}}{{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^-last}}, {{/-last}}{{/requiredParams}}{{#vendorExtensions.x-has-optional-params}}{{#hasRequiredParams}}, {{/hasRequiredParams}}&params{{/vendorExtensions.x-has-optional-params}});
-    if err != nil {
-        return diag.FromErr(err)
-    }
+        r, err := m.(*client.Config).Client.{{productVersion}}.{{nickname}}({{#requiredParams}}{{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^-last}}, {{/-last}}{{/requiredParams}}{{#vendorExtensions.x-has-optional-params}}{{#hasRequiredParams}}, {{/hasRequiredParams}}&params{{/vendorExtensions.x-has-optional-params}});
+        if err != nil {
+            return diag.FromErr(err)
+        }
 
-    d.SetId({{vendorExtensions.x-sid-key-conversion-func}}(*r.{{vendorExtensions.x-sid-key}}))
-    err = MarshalSchema(d, r)
+        d.SetId({{vendorExtensions.x-resource-id-conversion-func}}(*r.{{vendorExtensions.x-resource-id}}))
+
+        err = MarshalSchema(d, r)
+        if err != nil {
+            return diag.FromErr(err)
+        }
+
+        return nil
     {{/vendorExtensions.x-is-create-operation}}
     {{#vendorExtensions.x-is-read-operation}}
         r, err := m.(*client.Config).Client.{{productVersion}}.{{nickname}}({{#requiredParams}}{{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^-last}}, {{/-last}}{{/requiredParams}}{{#vendorExtensions.x-has-optional-params}}{{#hasRequiredParams}}, {{/hasRequiredParams}}&params{{/vendorExtensions.x-has-optional-params}})
@@ -62,6 +68,11 @@ func {{#vendorExtensions.x-is-create-operation}}create{{/vendorExtensions.x-is-c
         }
 
         err = MarshalSchema(d, r)
+        if err != nil {
+            return diag.FromErr(err)
+        }
+
+        return nil
     {{/vendorExtensions.x-is-read-operation}}
     {{#vendorExtensions.x-is-update-operation}}
         r, err := m.(*client.Config).Client.{{productVersion}}.{{nickname}}({{#requiredParams}}{{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^-last}}, {{/-last}}{{/requiredParams}}{{#vendorExtensions.x-has-optional-params}}{{#hasRequiredParams}}, {{/hasRequiredParams}}&params{{/vendorExtensions.x-has-optional-params}})
@@ -70,18 +81,22 @@ func {{#vendorExtensions.x-is-create-operation}}create{{/vendorExtensions.x-is-c
         }
 
         err = MarshalSchema(d, r)
-    {{/vendorExtensions.x-is-update-operation}}
+        if err != nil {
+            return diag.FromErr(err)
+        }
 
+        return nil
+    {{/vendorExtensions.x-is-update-operation}}
     {{#vendorExtensions.x-is-delete-operation}}
         err := m.(*client.Config).Client.{{productVersion}}.{{nickname}}({{#requiredParams}}{{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^-last}}, {{/-last}}{{/requiredParams}}{{#vendorExtensions.x-has-optional-params}}{{#hasRequiredParams}}, {{/hasRequiredParams}}&params{{/vendorExtensions.x-has-optional-params}})
+        if err != nil {
+            return diag.FromErr(err)
+        }
+
         d.SetId("")
+
+        return nil
     {{/vendorExtensions.x-is-delete-operation}}
-
-
-    if err != nil {
-        return diag.FromErr(err)
-    }
-    return nil
 }
 
 {{/operation}}

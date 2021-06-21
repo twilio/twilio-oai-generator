@@ -2,26 +2,20 @@ package com.twilio.oai;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import io.swagger.v3.oas.models.OpenAPI;
-import io.swagger.v3.oas.models.Operation;
 import io.swagger.v3.oas.models.media.ArraySchema;
-import io.swagger.v3.oas.models.media.MediaType;
 import io.swagger.v3.oas.models.media.Schema;
 import io.swagger.v3.oas.models.parameters.Parameter;
 import lombok.AllArgsConstructor;
-import lombok.Value;
 import org.openapitools.codegen.CodegenOperation;
 import org.openapitools.codegen.CodegenParameter;
 import org.openapitools.codegen.CodegenProperty;
-import org.openapitools.codegen.CodegenResponse;
 import org.openapitools.codegen.utils.ModelUtils;
 import org.openapitools.codegen.utils.StringUtils;
 
@@ -32,12 +26,6 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
     // but it will be populated if omitted.
     private static final String SCHEMA_OPTIONAL = "SchemaComputedOptional";
     private static final String SCHEMA_REQUIRED = "SchemaRequired";
-
-    @Value
-    private static class PropertySchema {
-        String propertyName;
-        Schema<?> schema;
-    }
 
     @AllArgsConstructor
     private enum ResourceOperation {
@@ -53,63 +41,6 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
         super();
 
         typeMapping.put("object", "string");
-    }
-
-    @Override
-    public void processOpenAPI(final OpenAPI openAPI) {
-        super.processOpenAPI(openAPI);
-
-        // We only need to create resources with full CRUD capabilities.
-        final boolean allCrudAvailable = openAPI
-            .getPaths()
-            .values()
-            .stream()
-            .anyMatch(path -> path.getDelete() != null && path.getPost() != null && path.getGet() != null);
-
-        // If all CRUD operations are not available, do not create the resource.
-        if (!allCrudAvailable) {
-            System.exit(0);
-        }
-
-        openAPI.getPaths().forEach((name, path) -> path.readOperations().forEach(operation -> {
-            if (operation.getOperationId().startsWith(ResourceOperation.CREATE.prefix)) {
-                // We need to find which property is the sid_key for use after this resource gets created. We'll do
-                // that by finding the matching instance path (just like our path, but ends with something like
-                // "/{Sid}") and then extracting out the name of the last path param. If the sid_key we find is not
-                // part of the operation response body, remove the operation so the resource doesn't get added.
-                PathUtils
-                    .getInstancePath(name, openAPI.getPaths().keySet())
-                    .map(PathUtils::getLastPathPart)
-                    .map(PathUtils::removeBraces)
-                    .flatMap(param -> getResponsePropertySchema(operation, param))
-                    .ifPresentOrElse(propertySchema -> {
-                        operation.addExtension("x-sid-key", propertySchema.getPropertyName());
-
-                        if ("integer".equals(propertySchema.getSchema().getType())) {
-                            operation.addExtension("x-sid-key-conversion-func", "Int32ToString");
-                        }
-                    }, () -> path.setPost(null));
-            }
-        }));
-    }
-
-    private Optional<PropertySchema> getResponsePropertySchema(final Operation operation, final String propertyName) {
-        return operation
-            .getResponses()
-            .values()
-            .stream()
-            .flatMap(response -> response
-                .getContent()
-                .values()
-                .stream()
-                .map(MediaType::getSchema)
-                .map(schema -> ModelUtils.getReferencedSchema(this.openAPI, schema))
-                .map(Schema::getProperties)
-                .map(properties -> properties.get(StringUtils.underscore(propertyName)))
-                .filter(Objects::nonNull)
-                .map(Schema.class::cast)
-                .map(schema -> new PropertySchema(propertyName, schema)))
-            .findFirst();
     }
 
     @SuppressWarnings("unchecked")
@@ -156,24 +87,58 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
             }
         }
 
+        // We only need to create resources with full CRUD capabilities.
         removeNonCrudResources(resources);
 
-        resources.values().forEach(resource -> {
+        for (final Iterator<Map.Entry<String, Map<String, Object>>> i = resources.entrySet().iterator();
+            i.hasNext(); ) {
+            final Map<String, Object> resource = i.next().getValue();
+
             final CodegenOperation createOperation = getCodegenOperation(resource, ResourceOperation.CREATE);
             final CodegenOperation updateOperation = getCodegenOperation(resource, ResourceOperation.UPDATE);
 
             // Use the parameters for creating the resource as the resource schema.
             resource.put("schema", createOperation.allParams);
-            for (final CodegenResponse resp : createOperation.responses) {
-                if (resp.is2xx) {
-                    final ArrayList<CodegenProperty> properties = getResponseProperties((Schema<?>) resp.schema,
-                                                                                        getParamNames(createOperation.allParams),
-                                                                                        getParamNames(updateOperation.formParams));
-                    resource.put("responseSchema", properties);
-                    break;
-                }
-            }
-        });
+            createOperation.responses
+                .stream()
+                .filter(r -> r.is2xx)
+                .map(r -> r.schema)
+                .map(Schema.class::cast)
+                .findFirst()
+                .ifPresent(schema -> {
+                    final Map<String, Schema<?>> properties = ModelUtils
+                        .getReferencedSchema(this.openAPI, schema)
+                        .getProperties();
+
+                    final List<CodegenProperty> responseProperties = getResponseProperties(properties,
+                                                                                           getParamNames(createOperation.allParams),
+                                                                                           getParamNames(updateOperation.formParams));
+                    resource.put("responseSchema", responseProperties);
+
+                    // We need to find the parameter to be used as the Terraform resource ID (as it's not always the
+                    // 'sid'). We assume it's the last path parameter for the fetch/update/delete operation.
+                    final CodegenParameter idParameter = updateOperation.pathParams.get(
+                        updateOperation.pathParams.size() - 1);
+                    final String idParameterSnakeCase = toSnakeCase(idParameter.baseName);
+
+                    // If the resource ID parameter is not part of the operation response body, remove the resource.
+                    if (!properties.containsKey(idParameterSnakeCase)) {
+                        i.remove();
+                    }
+
+                    createOperation.vendorExtensions.put("x-resource-id", idParameter.baseName);
+                    createOperation.vendorExtensions.put("x-resource-id-in-snake-case", idParameterSnakeCase);
+
+                    if ("int32".equals(idParameter.dataType)) {
+                        createOperation.vendorExtensions.put("x-resource-id-conversion-func", "Int32ToString");
+                    }
+                });
+        }
+
+        // Exit if there are no resources to generate.
+        if (resources.isEmpty()) {
+            System.exit(0);
+        }
 
         final String inputSpecPattern = ".+?_(.+?)_(v[0-9]+)\\.(.+)";
         final String inputSpecOriginal = getInputSpec();
@@ -216,22 +181,20 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
                 .anyMatch(resourceOperation -> !resource.getValue().containsKey(resourceOperation.name())));
     }
 
-    private CodegenOperation getCodegenOperation(final Map<String, Object> resources,
+    private CodegenOperation getCodegenOperation(final Map<String, Object> resource,
                                                  final ResourceOperation resourceOperation) {
-        return (CodegenOperation) resources.get(resourceOperation.name());
+        return (CodegenOperation) resource.get(resourceOperation.name());
     }
 
     private Set<String> getParamNames(final List<CodegenParameter> parameters) {
         return parameters.stream().map(param -> param.baseName).map(this::toSnakeCase).collect(Collectors.toSet());
     }
 
-    @SuppressWarnings("unchecked")
-    private ArrayList<CodegenProperty> getResponseProperties(final Schema<?> schema,
+    private ArrayList<CodegenProperty> getResponseProperties(final Map<String, Schema<?>> props,
                                                              final Set<String> createParams,
                                                              final Set<String> updateParams) {
         final ArrayList<CodegenProperty> properties = new ArrayList<>();
 
-        final Map<String, Schema<?>> props = ModelUtils.getReferencedSchema(this.openAPI, schema).getProperties();
         if (props != null) {
             for (final Map.Entry<String, Schema<?>> pair : props.entrySet()) {
                 final String key = pair.getKey();
