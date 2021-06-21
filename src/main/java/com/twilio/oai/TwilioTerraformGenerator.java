@@ -119,14 +119,14 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
                     // 'sid'). We assume it's the last path parameter for the fetch/update/delete operation.
                     final CodegenParameter idParameter = updateOperation.pathParams.get(
                         updateOperation.pathParams.size() - 1);
-                    final String idParameterSnakeCase = toSnakeCase(idParameter.baseName);
+                    final String idParameterSnakeCase = toSnakeCase(idParameter.paramName);
 
                     // If the resource ID parameter is not part of the operation response body, remove the resource.
                     if (!properties.containsKey(idParameterSnakeCase)) {
                         i.remove();
                     }
 
-                    createOperation.vendorExtensions.put("x-resource-id", idParameter.baseName);
+                    createOperation.vendorExtensions.put("x-resource-id", idParameter.paramName);
                     createOperation.vendorExtensions.put("x-resource-id-in-snake-case", idParameterSnakeCase);
 
                     if ("int32".equals(idParameter.dataType)) {
@@ -187,7 +187,7 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
     }
 
     private Set<String> getParamNames(final List<CodegenParameter> parameters) {
-        return parameters.stream().map(param -> param.baseName).map(this::toSnakeCase).collect(Collectors.toSet());
+        return parameters.stream().map(param -> param.paramName).map(this::toSnakeCase).collect(Collectors.toSet());
     }
 
     private ArrayList<CodegenProperty> getResponseProperties(final Map<String, Schema<?>> props,
