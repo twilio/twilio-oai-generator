@@ -99,6 +99,7 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
 
             // Use the parameters for creating the resource as the resource schema.
             resource.put("schema", createOperation.allParams);
+
             createOperation.responses
                 .stream()
                 .filter(r -> r.is2xx)
@@ -110,10 +111,15 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
                         .getReferencedSchema(this.openAPI, schema)
                         .getProperties();
 
-                    final List<CodegenProperty> responseProperties = getResponseProperties(properties,
-                                                                                           getParamNames(createOperation.allParams),
-                                                                                           getParamNames(updateOperation.formParams));
-                    resource.put("responseSchema", responseProperties);
+                    final Set<String> createParams = getParamNames(createOperation.allParams);
+                    final Set<String> updateParams = getParamNames(updateOperation.formParams);
+
+                    resource.put("responseSchema", getResponseProperties(properties, createParams, updateParams));
+
+                    // We need to update te resource after creating it if there are any params which can only be set
+                    // during the update operation.
+                    createOperation.vendorExtensions.put("x-update-after-create",
+                                                         !createParams.containsAll(updateParams));
 
                     // We need to find the parameter to be used as the Terraform resource ID (as it's not always the
                     // 'sid'). We assume it's the last path parameter for the fetch/update/delete operation.

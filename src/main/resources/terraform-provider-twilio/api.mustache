@@ -53,13 +53,20 @@ func {{#vendorExtensions.x-is-create-operation}}create{{/vendorExtensions.x-is-c
         }
 
         d.SetId({{vendorExtensions.x-resource-id-conversion-func}}(*r.{{vendorExtensions.x-resource-id}}))
+        {{#vendorExtensions.x-update-after-create}}
+            d.Set("{{vendorExtensions.x-resource-id-in-snake-case}}", *r.{{vendorExtensions.x-resource-id}})
 
-        err = MarshalSchema(d, r)
-        if err != nil {
-            return diag.FromErr(err)
-        }
+            return update{{name}}(ctx, d, m)
+        {{/vendorExtensions.x-update-after-create}}
+        {{^vendorExtensions.x-update-after-create}}
 
-        return nil
+            err = MarshalSchema(d, r)
+            if err != nil {
+                return diag.FromErr(err)
+            }
+
+            return nil
+        {{/vendorExtensions.x-update-after-create}}
     {{/vendorExtensions.x-is-create-operation}}
     {{#vendorExtensions.x-is-read-operation}}
         r, err := m.(*client.Config).Client.{{productVersion}}.{{nickname}}({{#requiredParams}}{{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^-last}}, {{/-last}}{{/requiredParams}}{{#vendorExtensions.x-has-optional-params}}{{#hasRequiredParams}}, {{/hasRequiredParams}}&params{{/vendorExtensions.x-has-optional-params}})
