@@ -21,9 +21,6 @@ func Resource{{name}}() *schema.Resource {
             {{#schema}}
             "{{{vendorExtensions.x-name-in-snake-case}}}": {{{vendorExtensions.x-terraform-schema-type}}},
             {{/schema}}
-            {{#responseSchema}}
-            "{{{vendorExtensions.x-name-in-snake-case}}}": {{{vendorExtensions.x-terraform-schema-type}}},
-            {{/responseSchema}}
         },
     }
 }
