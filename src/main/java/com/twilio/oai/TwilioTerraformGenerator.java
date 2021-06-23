@@ -81,7 +81,8 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
             this.addParamVendorExtensions(co.optionalParams);
             this.addParamVendorExtensions(co.bodyParams);
 
-            if (!co.optionalParams.isEmpty() || co.path.contains("/2010-04-01/")) {
+            if (!co.optionalParams.isEmpty() || co.requiredParams.stream().anyMatch(p -> !p.isPathParam) ||
+                co.path.contains("/2010-04-01/")) {
                 co.vendorExtensions.put("x-has-optional-params", true);
             }
         }
