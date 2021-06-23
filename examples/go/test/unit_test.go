@@ -96,7 +96,7 @@ func TestQueryParams(t *testing.T) {
 	dateCreatedBefore := time.Date(2000, 1, 2, 1, 0, 0, 0, time.UTC)
 	dateCreatedAfter := time.Date(2000, 1, 4, 1, 0, 0, 0, time.UTC)
 	dateTest := "2021-03-31"
-	pageSize := int32(4)
+	pageSize := 4
 	params := openapi.ListCallRecordingParams{
 		DateCreated:       &dateCreated,
 		DateCreatedBefore: &dateCreatedBefore,
