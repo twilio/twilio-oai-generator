@@ -130,8 +130,8 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
                     createOperation.vendorExtensions.put("x-resource-id", idParameter.paramName);
                     createOperation.vendorExtensions.put("x-resource-id-in-snake-case", idParameterSnakeCase);
 
-                    if ("int32".equals(idParameter.dataType)) {
-                        createOperation.vendorExtensions.put("x-resource-id-conversion-func", "Int32ToString");
+                    if ("int".equals(idParameter.dataType)) {
+                        createOperation.vendorExtensions.put("x-resource-id-conversion-func", "IntToString");
                     }
                 });
         }
@@ -229,7 +229,7 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
         switch (dataType) {
             case "float32":
                 return String.format("AsFloat(%s)", schemaType);
-            case "int32":
+            case "int":
                 return String.format("AsInt(%s)", schemaType);
             case "bool":
                 return String.format("AsBool(%s)", schemaType);
