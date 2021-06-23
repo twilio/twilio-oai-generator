@@ -2,6 +2,7 @@ package com.twilio.oai;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -40,6 +41,14 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
         super();
 
         typeMapping.put("object", "string");
+    }
+
+    @Override
+    public Map<String, Object> postProcessAllModels(final Map<String, Object> allModels) {
+        super.postProcessAllModels(allModels);
+
+        // Return an empty collection so no model files get generated.
+        return new HashMap<>();
     }
 
     @SuppressWarnings("unchecked")
