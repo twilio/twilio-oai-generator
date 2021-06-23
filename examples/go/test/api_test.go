@@ -84,7 +84,7 @@ func TestDateTimeQueryParams(t *testing.T) {
 	dateCreatedAfter := time.Now().Add(2)
 	dateTest := "2021-03-31"
 
-	pageSize := int32(4)
+	pageSize := 4
 
 	params := openapi.ListCallRecordingParams{
 		DateCreated:       &dateCreated,
