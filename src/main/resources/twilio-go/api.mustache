@@ -53,17 +53,17 @@ func (params *{{{nickname}}}Params) Set{{paramName}}({{paramName}} {{{dataType}}
 {{/notes}}
 func (c *{{{classname}}}Service) {{{nickname}}}({{#allParams}}{{#required}}{{paramName}} {{{dataType}}}{{^last}}, {{/last}}{{/required}}{{/allParams}}{{#hasOptionalParams}}params *{{{nickname}}}Params{{/hasOptionalParams}}) ({{#returnType}}*{{{returnType}}}, {{/returnType}}error) {
     path := "{{{path}}}"
-{{#pathParams}}
-{{^vendorExtensions.x-is-account-sid}}
-	path = strings.Replace(path, "{"+"{{paramName}}"+"}", {{^isString}}fmt.Sprint({{/isString}}{{paramName}}{{^isString}}){{/isString}}, -1)
-{{/vendorExtensions.x-is-account-sid}}
-{{#vendorExtensions.x-is-account-sid}}
-    if params != nil && params.PathAccountSid != nil {
+{{#queryParams}}
+    {{#vendorExtensions.x-is-account-sid}}
+        if params != nil && params.PathAccountSid != nil {
         path = strings.Replace(path, "{"+"AccountSid"+"}", *params.PathAccountSid, -1)
-    } else {
+        } else {
         path = strings.Replace(path, "{"+"AccountSid"+"}", c.requestHandler.Client.AccountSid(), -1)
-    }
-{{/vendorExtensions.x-is-account-sid}}
+        }
+    {{/vendorExtensions.x-is-account-sid}}
+{{/queryParams}}
+{{#pathParams}}
+    path = strings.Replace(path, "{"+"{{paramName}}"+"}", {{^isString}}fmt.Sprint({{/isString}}{{paramName}}{{^isString}}){{/isString}}, -1)
 {{/pathParams}}
 
     data := url.Values{}

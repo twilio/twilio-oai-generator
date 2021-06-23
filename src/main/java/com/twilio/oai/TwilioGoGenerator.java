@@ -1,7 +1,6 @@
 package com.twilio.oai;
 
-import java.util.List;
-
+import org.openapitools.codegen.CodegenParameter;
 import org.openapitools.codegen.SupportingFile;
 
 public class TwilioGoGenerator extends AbstractTwilioGoGenerator {
@@ -11,6 +10,14 @@ public class TwilioGoGenerator extends AbstractTwilioGoGenerator {
         super.processOpts();
 
         supportingFiles.add(new SupportingFile("README.mustache", "README.md"));
+    }
+
+    @Override
+    public void postProcessParameter(final CodegenParameter parameter) {
+        super.postProcessParameter(parameter);
+
+        // Make sure required non-path params get into the options block.
+        parameter.required = parameter.isPathParam;
     }
 
     /**
