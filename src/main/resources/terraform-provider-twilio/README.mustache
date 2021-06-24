@@ -1,0 +1,11 @@
+{{#apiInfo}}{{#apis}}{{#resources}}
+## twilio_{{product}}_{{nameInSnakeCase}}_{{productVersion}}
+
+### Parameters
+
+Name | Type | Requirement | Description
+--- | --- | --- | ---
+{{#schema}}
+**{{{vendorExtensions.x-name-in-snake-case}}}** | {{{vendorExtensions.x-terraform-schema.fullType}}} | {{{vendorExtensions.x-terraform-schema.options.requirement}}} | {{description}}
+{{/schema}}
+{{/resources}}{{/apis}}{{/apiInfo}}

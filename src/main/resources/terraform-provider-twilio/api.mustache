@@ -19,7 +19,7 @@ func Resource{{name}}() *schema.Resource {
         DeleteContext: delete{{name}},
         Schema: map[string]*schema.Schema{
             {{#schema}}
-            "{{{vendorExtensions.x-name-in-snake-case}}}": {{{vendorExtensions.x-terraform-schema-type}}},
+            "{{{vendorExtensions.x-name-in-snake-case}}}": {{{vendorExtensions.x-terraform-schema.func}}},
             {{/schema}}
         },
     }
@@ -44,7 +44,7 @@ func {{#vendorExtensions.x-is-create-operation}}create{{/vendorExtensions.x-is-c
     {{/allParams}}
 
     {{#vendorExtensions.x-is-create-operation}}
-        r, err := m.(*client.Config).Client.{{productVersion}}.{{nickname}}({{#pathParams}}{{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^-last}}, {{/-last}}{{/pathParams}}{{#vendorExtensions.x-has-optional-params}}{{#hasPathParams}}, {{/hasPathParams}}&params{{/vendorExtensions.x-has-optional-params}});
+        r, err := m.(*client.Config).Client.{{clientService}}.{{nickname}}({{#pathParams}}{{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^-last}}, {{/-last}}{{/pathParams}}{{#vendorExtensions.x-has-optional-params}}{{#hasPathParams}}, {{/hasPathParams}}&params{{/vendorExtensions.x-has-optional-params}});
         if err != nil {
             return diag.FromErr(err)
         }
@@ -66,7 +66,7 @@ func {{#vendorExtensions.x-is-create-operation}}create{{/vendorExtensions.x-is-c
         {{/vendorExtensions.x-update-after-create}}
     {{/vendorExtensions.x-is-create-operation}}
     {{#vendorExtensions.x-is-read-operation}}
-        r, err := m.(*client.Config).Client.{{productVersion}}.{{nickname}}({{#pathParams}}{{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^-last}}, {{/-last}}{{/pathParams}}{{#vendorExtensions.x-has-optional-params}}{{#hasPathParams}}, {{/hasPathParams}}&params{{/vendorExtensions.x-has-optional-params}})
+        r, err := m.(*client.Config).Client.{{clientService}}.{{nickname}}({{#pathParams}}{{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^-last}}, {{/-last}}{{/pathParams}}{{#vendorExtensions.x-has-optional-params}}{{#hasPathParams}}, {{/hasPathParams}}&params{{/vendorExtensions.x-has-optional-params}})
         if err != nil {
             return diag.FromErr(err)
         }
@@ -79,7 +79,7 @@ func {{#vendorExtensions.x-is-create-operation}}create{{/vendorExtensions.x-is-c
         return nil
     {{/vendorExtensions.x-is-read-operation}}
     {{#vendorExtensions.x-is-update-operation}}
-        r, err := m.(*client.Config).Client.{{productVersion}}.{{nickname}}({{#pathParams}}{{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^-last}}, {{/-last}}{{/pathParams}}{{#vendorExtensions.x-has-optional-params}}{{#hasPathParams}}, {{/hasPathParams}}&params{{/vendorExtensions.x-has-optional-params}})
+        r, err := m.(*client.Config).Client.{{clientService}}.{{nickname}}({{#pathParams}}{{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^-last}}, {{/-last}}{{/pathParams}}{{#vendorExtensions.x-has-optional-params}}{{#hasPathParams}}, {{/hasPathParams}}&params{{/vendorExtensions.x-has-optional-params}})
         if err != nil {
             return diag.FromErr(err)
         }
@@ -92,7 +92,7 @@ func {{#vendorExtensions.x-is-create-operation}}create{{/vendorExtensions.x-is-c
         return nil
     {{/vendorExtensions.x-is-update-operation}}
     {{#vendorExtensions.x-is-delete-operation}}
-        err := m.(*client.Config).Client.{{productVersion}}.{{nickname}}({{#pathParams}}{{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^-last}}, {{/-last}}{{/pathParams}}{{#vendorExtensions.x-has-optional-params}}{{#hasPathParams}}, {{/hasPathParams}}&params{{/vendorExtensions.x-has-optional-params}})
+        err := m.(*client.Config).Client.{{clientService}}.{{nickname}}({{#pathParams}}{{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^-last}}, {{/-last}}{{/pathParams}}{{#vendorExtensions.x-has-optional-params}}{{#hasPathParams}}, {{/hasPathParams}}&params{{/vendorExtensions.x-has-optional-params}})
         if err != nil {
             return diag.FromErr(err)
         }
