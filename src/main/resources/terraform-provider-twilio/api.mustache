@@ -22,6 +22,16 @@ func Resource{{name}}() *schema.Resource {
             "{{{vendorExtensions.x-name-in-snake-case}}}": {{{vendorExtensions.x-terraform-schema.func}}},
             {{/schema}}
         },
+        Importer: &schema.ResourceImporter{
+            StateContext: func(ctx context.Context, d *schema.ResourceData, m interface{}) ([]*schema.ResourceData, error) {
+                err := parse{{name}}ImportId(d.Id(), d)
+                if err != nil {
+                    return nil, err
+                }
+
+                return []*schema.ResourceData{d}, nil
+            },
+        },
     }
 }
 
@@ -49,7 +59,9 @@ func {{#vendorExtensions.x-is-create-operation}}create{{/vendorExtensions.x-is-c
             return diag.FromErr(err)
         }
 
-        d.SetId({{vendorExtensions.x-resource-id-conversion-func}}(*r.{{vendorExtensions.x-resource-id}}))
+        idParts := []string{ {{#requiredParams}}{{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^-last}}, {{/-last}}{{/requiredParams}} }
+        idParts = append(idParts, {{vendorExtensions.x-resource-id-conversion-func}}(*r.{{vendorExtensions.x-resource-id}}))
+        d.SetId(strings.Join(idParts, "/"))
         {{#vendorExtensions.x-update-after-create}}
             d.Set("{{vendorExtensions.x-resource-id-in-snake-case}}", *r.{{vendorExtensions.x-resource-id}})
 
@@ -103,6 +115,26 @@ func {{#vendorExtensions.x-is-create-operation}}create{{/vendorExtensions.x-is-c
     {{/vendorExtensions.x-is-delete-operation}}
 }
 
+{{#vendorExtensions.x-is-read-operation}}
+func parse{{name}}ImportId(importId string, d *schema.ResourceData) error {
+    importParts := strings.Split(importId, "/")
+    errStr := "invalid import ID (%q), expected {{#requiredParams}}{{#lambda.uppercase}}{{paramName}}{{/lambda.uppercase}}{{^-last}}/{{/-last}}{{/requiredParams}}"
+
+    if len(importParts) != {{#requiredParams}}{{#-last}}{{-index}}{{/-last}}{{/requiredParams}} {
+        return fmt.Errorf(errStr, importId)
+    }
+
+    {{#allParams}}
+    {{#isPathParam}}
+    {{#required}}
+    d.Set("{{vendorExtensions.x-name-in-snake-case}}", importParts[{{-index}} - 1])
+    {{/required}}
+    {{/isPathParam}}
+    {{/allParams}}
+
+    return nil
+}
+{{/vendorExtensions.x-is-read-operation}}
 {{/operation}}
 {{/operations}}
 {{/resources}}
