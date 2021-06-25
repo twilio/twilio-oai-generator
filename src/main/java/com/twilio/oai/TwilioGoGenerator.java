@@ -1,11 +1,6 @@
 package com.twilio.oai;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
 import io.swagger.v3.oas.models.OpenAPI;
-import org.openapitools.codegen.CodegenOperation;
 import org.openapitools.codegen.CodegenParameter;
 import org.openapitools.codegen.SupportingFile;
 
