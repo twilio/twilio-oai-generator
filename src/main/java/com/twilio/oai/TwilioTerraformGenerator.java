@@ -13,19 +13,53 @@ import java.util.stream.Stream;
 
 import io.swagger.v3.oas.models.media.Schema;
 import lombok.AllArgsConstructor;
+import lombok.Value;
 import org.openapitools.codegen.CodegenOperation;
 import org.openapitools.codegen.CodegenParameter;
 import org.openapitools.codegen.CodegenProperty;
+import org.openapitools.codegen.SupportingFile;
 import org.openapitools.codegen.utils.ModelUtils;
 import org.openapitools.codegen.utils.StringUtils;
 
 public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
 
-    private static final String SCHEMA_COMPUTED = "SchemaComputed";
-    // We assume all optional properties may also be computed in the backend. E.g., unique_name is typically optional
-    // but it will be populated if omitted.
-    private static final String SCHEMA_OPTIONAL = "SchemaComputedOptional";
-    private static final String SCHEMA_REQUIRED = "SchemaRequired";
+    @Value
+    private static class TerraformSchema {
+        String dataType;
+        TerraformSchemaOptions options;
+        TerraformSchema innerSchema;
+
+        public String getFullType() {
+            if (innerSchema != null) {
+                return String.format("%s(%s)", dataType, innerSchema.getFullType());
+            }
+
+            return dataType;
+        }
+
+        public String getFunc() {
+            if (innerSchema != null) {
+                return String.format("As%s(%s, %s)",
+                                     StringUtils.camelize(dataType),
+                                     innerSchema.getFunc(),
+                                     options.name);
+            }
+
+            return String.format("As%s(%s)", StringUtils.camelize(dataType), options.name);
+        }
+    }
+
+    @AllArgsConstructor
+    private enum TerraformSchemaOptions {
+        COMPUTED("SchemaComputed", "*Computed*"),
+        // We assume all optional properties may also be computed in the backend. E.g., unique_name is typically
+        // optional but it will be populated if omitted.
+        OPTIONAL("SchemaComputedOptional", "Optional"),
+        REQUIRED("SchemaRequired", "**Required**");
+
+        private final String name;
+        private final String requirement;
+    }
 
     @AllArgsConstructor
     private enum ResourceOperation {
@@ -41,6 +75,13 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
         super();
 
         typeMapping.put("object", "string");
+    }
+
+    @Override
+    public void processOpts() {
+        super.processOpts();
+
+        supportingFiles.add(new SupportingFile("README.mustache", "README.md"));
     }
 
     @Override
@@ -82,6 +123,7 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
                 k -> new ArrayList<>());
 
             resource.put("name", resourceName);
+            resource.put("nameInSnakeCase", toSnakeCase(resourceName));
             resourceOperationList.add(co);
 
             populateCrudOperations(resource, co);
@@ -153,15 +195,16 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
 
         final String inputSpecPattern = ".+?_(.+?)_(v[0-9]+)\\.(.+)";
         final String inputSpecOriginal = getInputSpec();
-        // /path/to/spec/twilio_api_v2010.yaml -> twilio_api_v2010
+        // /path/to/spec/twilio_api_v2010.yaml -> twilio_api_v2010.yaml
         final String inputSpec = inputSpecOriginal.substring(inputSpecOriginal.lastIndexOf("/") + 1);
 
-        // twilio_api_v2010 -> api_v2010 -> apiV2010
-        final String productVersion = StringUtils.camelize(inputSpec.replaceAll(inputSpecPattern, "$1_$2"));
-        // twilio_api_v2010 -> rest/api/v2010
-        final String clientPath = inputSpec.replaceAll(inputSpecPattern, "rest/$1/$2");
+        final String product = inputSpec.replaceAll(inputSpecPattern, "$1");
+        final String productVersion = inputSpec.replaceAll(inputSpecPattern, "$2");
+        final String clientPath = String.format("rest/%s/%s", product, productVersion);
 
+        results.put("product", product);
         results.put("productVersion", productVersion);
+        results.put("clientService", StringUtils.camelize(product + "_" + productVersion));
         results.put("clientPath", clientPath);
         results.put("resources", resources.values());
 
@@ -200,9 +243,13 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
     private List<CodegenParameter> getResourceSchema(final List<CodegenParameter> createParams,
                                                      final List<CodegenParameter> updateParams) {
         createParams.forEach(param -> addSchemaVendorExtensions(param,
-                                                                param.required ? SCHEMA_REQUIRED : SCHEMA_OPTIONAL));
+                                                                param.required
+                                                                    ? TerraformSchemaOptions.REQUIRED
+                                                                    : TerraformSchemaOptions.OPTIONAL));
         updateParams.forEach(param -> addSchemaVendorExtensions(param,
-                                                                param.isPathParam ? SCHEMA_COMPUTED : SCHEMA_OPTIONAL));
+                                                                param.isPathParam
+                                                                    ? TerraformSchemaOptions.COMPUTED
+                                                                    : TerraformSchemaOptions.OPTIONAL));
 
         final Set<String> createParamName = getParamNames(createParams);
         final Stream<CodegenParameter> updateStream = updateParams
@@ -212,10 +259,11 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
         return Stream.concat(createParams.stream(), updateStream).collect(Collectors.toList());
     }
 
-    private void addSchemaVendorExtensions(final CodegenParameter codegenParameter, final String schemaType) {
-        final String terraformSchemaType = buildSchemaType(codegenParameter, schemaType);
+    private void addSchemaVendorExtensions(final CodegenParameter codegenParameter,
+                                           final TerraformSchemaOptions schemaOptions) {
+        final TerraformSchema terraformSchema = buildTerraformSchema(codegenParameter, schemaOptions);
 
-        codegenParameter.vendorExtensions.put("x-terraform-schema-type", terraformSchemaType);
+        codegenParameter.vendorExtensions.put("x-terraform-schema", terraformSchema);
         codegenParameter.vendorExtensions.put("x-name-in-snake-case", this.toSnakeCase(codegenParameter.baseName));
     }
 
@@ -223,32 +271,35 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
         return parameters.stream().map(param -> param.paramName).collect(Collectors.toSet());
     }
 
-    private String buildSchemaType(final CodegenParameter codegenParameter, final String schemaType) {
-        return buildSchemaType(codegenParameter.dataType, schemaType, codegenParameter.items);
+    private TerraformSchema buildTerraformSchema(final CodegenParameter codegenParameter,
+                                                 final TerraformSchemaOptions schemaOptions) {
+        return buildTerraformSchema(codegenParameter.dataType, schemaOptions, codegenParameter.items);
     }
 
-    private String buildSchemaType(final CodegenProperty codegenProperty, final String schemaType) {
-        return buildSchemaType(codegenProperty.dataType, schemaType, codegenProperty.items);
+    private TerraformSchema buildTerraformSchema(final CodegenProperty codegenProperty,
+                                                 final TerraformSchemaOptions schemaOptions) {
+        return buildTerraformSchema(codegenProperty.dataType, schemaOptions, codegenProperty.items);
     }
 
-    private String buildSchemaType(final String dataType, final String schemaType, final CodegenProperty items) {
+    private TerraformSchema buildTerraformSchema(final String dataType,
+                                                 final TerraformSchemaOptions schemaOptions,
+                                                 final CodegenProperty items) {
         if (dataType.startsWith("[]")) {
-            return String.format("AsList(%s, %s)", buildSchemaType(items, schemaType), schemaType);
+            return new TerraformSchema("list", schemaOptions, buildTerraformSchema(items, schemaOptions));
         }
 
         switch (dataType) {
             case "float32":
-                return String.format("AsFloat(%s)", schemaType);
+                return new TerraformSchema("float", schemaOptions, null);
             case "int":
-                return String.format("AsInt(%s)", schemaType);
             case "bool":
-                return String.format("AsBool(%s)", schemaType);
+                return new TerraformSchema(dataType, schemaOptions, null);
             default:
                 // At the time of writing terraform SDK doesn't support dynamic types and this is inconvenient since
                 // some properties of type "object" can be array or a map. (Eg: errors and links in the studio flows)
                 // Letting the type objects be as Strings in the terraform provider and then json encoding in the
                 // provider is the current workaround.
-                return String.format("AsString(%s)", schemaType);
+                return new TerraformSchema("string", schemaOptions, null);
         }
     }
 
