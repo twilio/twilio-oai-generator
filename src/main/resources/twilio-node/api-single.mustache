@@ -1,0 +1,123 @@
+{{>licenseInfo}}
+import { inspect } from 'util';
+{{#resources}}
+{{#dependents}}
+import { {{name}}ListInstance } from './{{apiFilename}}/{{filename}}';
+{{/dependents}}
+{{/resources}}
+
+{{#resources}}
+{{>model}}
+{{#operations}}
+{{#hasParams}}
+{{^bodyParam}}
+/**
+ * Options to pass to {{vendorExtensions.x-name-lower}} a {{instanceName}}
+ *
+ {{#allParams}}
+ * @property { {{{dataType}}} } {{^required}}[{{/required}}{{paramName}}{{^required}}]{{/required}} {{description}}
+ {{/allParams}}
+ */
+export interface {{instanceName}}{{vendorExtensions.x-name}}Options {
+    {{#allParams}}
+    {{paramName}}{{^required}}?{{/required}}: {{{dataType}}};
+    {{/allParams}}
+}
+{{/bodyParam}}
+{{/hasParams}}
+{{/operations}}
+{{/resources}}
+{{#resources}}
+
+export class {{resourceName}} {
+    protected _solution: any;
+    protected _uri: string;
+
+    {{#dependents}}
+    protected _{{mountName}}?: {{name}}ListInstance;
+    {{/dependents}}
+
+    constructor(protected _version: Version{{#resourcePathParams}}, {{paramName}}: {{{dataType}}}{{/resourcePathParams}}) {
+        this._solution = { {{#resourcePathParams}}{{paramName}}{{^-last}}, {{/-last}}{{/resourcePathParams}} };
+        this._uri = `{{path}}`;
+    }
+
+    {{#dependents}}
+    get {{mountName}}(): {{name}}ListInstance {
+        this._{{mountName}} = this._{{mountName}} || new {{name}}ListInstance(this._version{{#resourcePathParams}}, this._solution.{{paramName}}{{/resourcePathParams}});
+        return this._{{mountName}};
+    }
+
+    {{/dependents}}
+{{#operations}}
+{{>operationSignature}}
+        {{#hasParams}}
+        {{#hasRequiredParams}}
+        if (params === null || params === undefined) {
+            throw new Error('Required parameter "params" missing.');
+        }
+
+        {{#requiredParams}}
+        {{^isBodyParam}}
+        if (params.{{paramName}} === null || params.{{paramName}} === undefined) {
+            throw new Error('Required parameter "params.{{paramName}}" missing.');
+        }
+
+        {{/isBodyParam}}
+        {{/requiredParams}}
+        {{/hasRequiredParams}}
+        {{^hasRequiredParams}}
+        if (typeof params === 'function') {
+            callback = params;
+            params = {};
+        } else {
+            params = params || {};
+        }
+
+        {{/hasRequiredParams}}
+        {{^bodyParam}}
+        const data: any = {};
+
+        {{#formParams}}
+        {{^required}}if (params.{{paramName}} !== undefined) {{/required}}data['{{{baseName}}}'] = params.{{paramName}};
+        {{/formParams}}
+        {{/bodyParam}}
+
+        const headers: any = {
+            'Content-Type': {{#consumes}}{{#-first}}'{{{mediaType}}}'{{/-first}}{{/consumes}}
+        };
+
+        {{#headerParams}}
+        if (params.{{paramName}} !== undefined) headers['{{{baseName}}}'] = params.{{paramName}};
+        {{/headerParams}}
+        {{/hasParams}}
+
+        let promise = this._version.{{vendorExtensions.x-name-lower}}({ uri: this._uri, method: '{{httpMethod}}'{{#hasParams}}{{#bodyParam}}, body: params{{/bodyParam}}{{^bodyParam}}, data{{/bodyParam}}, headers{{/hasParams}} });
+
+        promise = promise.then(payload => new {{instanceName}}(this._version, payload{{#resourcePathParams}}, this._solution.{{paramName}}{{/resourcePathParams}}));
+
+        if (typeof callback === 'function') {
+            promise = promise
+                .then(value => callback(null, value))
+                .catch(error => callback(error));
+        }
+
+        return promise;
+    }
+
+{{/operations}}
+    /**
+     * Provide a user-friendly representation
+     *
+     * @returns Object
+     */
+    toJSON() {
+        return this._solution;
+    }
+
+    [inspect.custom](depth, options) {
+        return inspect(this.toJSON(), options);
+    }
+}
+{{>responseModel}}
+{{/resources}}

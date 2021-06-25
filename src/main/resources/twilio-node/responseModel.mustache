@@ -1,0 +1,73 @@
+{{#responseModel}}
+{{#hasEnums}}
+{{#vars}}
+{{#isEnum}}
+export type {{enumName}}Type = {{#allowableValues}}{{#enumVars}}{{{value}}}{{^-last}}|{{/-last}}{{/enumVars}}{{/allowableValues}};
+{{/isEnum}}
+{{/vars}}
+{{/hasEnums}}
+
+{{#description}}
+/**
+ * {{{description}}}
+ */
+{{/description}}
+export class {{name}} {
+    protected _solution: any;
+    protected _context?: {{resourceName}};
+
+    constructor(protected _version: Version, payload{{#resourcePathParams}}, {{paramName}}{{#-last}}?{{/-last}}: {{{dataType}}}{{/resourcePathParams}}) {
+        {{#vars}}
+        this.{{name}} = payload.{{baseName}};
+        {{/vars}}
+
+        this._solution = { {{#resourcePathParams}}{{paramName}}{{#-last}}: {{paramName}} || this.{{paramName}}{{/-last}}{{^-last}}, {{/-last}}{{/resourcePathParams}} };
+    }
+
+    private get _proxy(): {{resourceName}} {
+        this._context = this._context || new {{resourceName}}(this._version{{#resourcePathParams}}, this._solution.{{paramName}}{{/resourcePathParams}});
+        return this._context;
+    }
+
+    {{#vars}}
+    {{#description}}
+    /**
+     * {{{description}}}
+     */
+    {{/description}}
+    {{name}}{{^required}}?{{/required}}: {{#isEnum}}{{{datatypeWithEnum}}}{{/isEnum}}{{^isEnum}}{{{dataType}}}{{#isNullable}} | null{{/isNullable}}{{/isEnum}};
+    {{/vars}}
+    {{#operations}}
+
+{{>operationSignature}}
+        return this._proxy.{{vendorExtensions.x-name-lower}}({{#hasParams}}params, {{/hasParams}}callback);
+    }
+    {{/operations}}
+    {{#dependents}}
+
+    /**
+     * Access the {{mountName}}.
+     */
+    {{mountName}}(): {{name}}ListInstance {
+        return this._proxy.{{mountName}};
+    }
+    {{/dependents}}
+
+    /**
+     * Provide a user-friendly representation
+     *
+     * @returns Object
+     */
+    toJSON() {
+        return {
+            {{#vars}}
+            {{name}}: this.{{name}}{{^-last}}, {{/-last}}
+            {{/vars}}
+        }
+    }
+
+    [inspect.custom](depth, options) {
+        return inspect(this.toJSON(), options);
+    }
+}
+{{/responseModel}}
