@@ -129,6 +129,7 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
             populateCrudOperations(resource, co);
 
             this.addParamVendorExtensions(co.allParams);
+            this.addParamVendorExtensions(co.pathParams);
             this.addParamVendorExtensions(co.optionalParams);
             this.addParamVendorExtensions(co.bodyParams);
 
