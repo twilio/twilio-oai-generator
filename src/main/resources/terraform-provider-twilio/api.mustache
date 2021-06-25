@@ -118,14 +118,14 @@ func {{#vendorExtensions.x-is-create-operation}}create{{/vendorExtensions.x-is-c
 {{#vendorExtensions.x-is-read-operation}}
 func parse{{name}}ImportId(importId string, d *schema.ResourceData) error {
     importParts := strings.Split(importId, "/")
-    errStr := "invalid import ID (%q), expected {{#pathParams}}{{#lambda.uppercase}}{{paramName}}{{/lambda.uppercase}}{{^-last}}/{{/-last}}{{/pathParams}}"
+    errStr := "invalid import ID (%q), expected {{#pathParams}}{{vendorExtensions.x-name-in-snake-case}}{{^-last}}/{{/-last}}{{/pathParams}}"
 
     if len(importParts) != {{#pathParams}}{{#-last}}{{-index}}{{/-last}}{{/pathParams}} {
         return fmt.Errorf(errStr, importId)
     }
 
     {{#pathParams}}
-    d.Set("{{vendorExtensions.x-name-in-snake-case}}", importParts[{{-index}} - 1])
+    d.Set("{{vendorExtensions.x-name-in-snake-case}}", importParts[{{vendorExtensions.x-index}}])
     {{/pathParams}}
 
     return nil
