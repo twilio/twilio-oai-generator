@@ -109,10 +109,7 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
         // iterate over the operation and perhaps modify something
         for (final CodegenOperation co : opList) {
             // Group operations by resource.
-            final String resourceName = co.path.replaceFirst("/[^/]+", "") // Drop the version
-                .replaceAll("/\\{[^}]+?}", "") // Drop every path parameter
-                .replace(".json", "") // Drop the JSON extension
-                .replace("/", ""); // Drop the path separators
+            final String resourceName = PathUtils.cleanPath(co.path).replace("/", ""); // Drop the path separators
 
             final Map<String, Object> resource = resources.computeIfAbsent(resourceName, k -> new LinkedHashMap<>());
             final Map<String, Object> resourceOperations = (Map<String, Object>) resource.computeIfAbsent("operations",

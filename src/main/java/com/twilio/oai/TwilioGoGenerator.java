@@ -1,5 +1,11 @@
 package com.twilio.oai;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import io.swagger.v3.oas.models.OpenAPI;
+import org.openapitools.codegen.CodegenOperation;
 import org.openapitools.codegen.CodegenParameter;
 import org.openapitools.codegen.SupportingFile;
 
@@ -9,7 +15,14 @@ public class TwilioGoGenerator extends AbstractTwilioGoGenerator {
     public void processOpts() {
         super.processOpts();
 
+        supportingFiles.add(new SupportingFile("api_service.mustache", "api_service.go"));
         supportingFiles.add(new SupportingFile("README.mustache", "README.md"));
+    }
+
+    @Override
+    public String toApiFilename(String name) {
+        // Drop the "api_" prefix.
+        return super.toApiFilename(name).replaceAll("^api_", "");
     }
 
     @Override
@@ -18,6 +31,18 @@ public class TwilioGoGenerator extends AbstractTwilioGoGenerator {
 
         // Make sure required non-path params get into the options block.
         parameter.required = parameter.isPathParam;
+    }
+
+    @Override
+    public void processOpenAPI(final OpenAPI openAPI) {
+        super.processOpenAPI(openAPI);
+
+        // Group operations together by tag. This gives us one file/post-process per resource.
+        openAPI
+            .getPaths()
+            .forEach((name, path) -> path
+                .readOperations()
+                .forEach(operation -> operation.addTagsItem(PathUtils.cleanPath(name))));
     }
 
     /**

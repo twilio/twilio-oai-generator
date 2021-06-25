@@ -19,6 +19,11 @@ public class PathUtils {
         return pathParts[pathParts.length - 1];
     }
 
+    public static String cleanPath(final String path) {
+        return removeExtension(path).replaceFirst("/[^/]+/", "") // Drop the version
+            .replaceAll("/\\{[^}]+}", ""); // Drop every path parameter.
+    }
+
     public static String removeBraces(final String path) {
         return path.replaceAll("\\{|}", "");
     }
