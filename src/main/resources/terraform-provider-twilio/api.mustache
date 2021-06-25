@@ -59,7 +59,7 @@ func {{#vendorExtensions.x-is-create-operation}}create{{/vendorExtensions.x-is-c
             return diag.FromErr(err)
         }
 
-        idParts := []string{ {{#requiredParams}}{{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^-last}}, {{/-last}}{{/requiredParams}} }
+        idParts := []string{ {{#allParams}}{{#isPathParam}}{{#required}}{{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^-last}}, {{/-last}}{{/required}}{{/isPathParam}}{{/allParams}} }
         idParts = append(idParts, {{vendorExtensions.x-resource-id-conversion-func}}(*r.{{vendorExtensions.x-resource-id}}))
         d.SetId(strings.Join(idParts, "/"))
         {{#vendorExtensions.x-update-after-create}}
