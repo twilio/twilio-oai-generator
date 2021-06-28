@@ -1,26 +1,9 @@
 components:
   schemas:
-    accounts.v1.credential:
-      properties: { }
-      type: object
     accounts.v1.credential.credential_aws:
       properties:
         account_sid:
           description: The SID of the Account that created the resource
-          maxLength: 34
-          minLength: 34
-          nullable: true
-          pattern: ^AC[0-9a-fA-F]{32}$
-          type: string
-        date_created:
-          description: The RFC 2822 date and time in GMT when the resource was created
-          format: date-time
-          nullable: true
-          type: string
-        date_updated:
-          description: The RFC 2822 date and time in GMT when the resource was last
-            updated
-          format: date-time
           nullable: true
           type: string
         friendly_name:
@@ -29,10 +12,7 @@ components:
           type: string
         sid:
           description: The unique string that identifies the resource
-          maxLength: 34
-          minLength: 34
           nullable: true
-          pattern: ^CR[0-9a-fA-F]{32}$
           type: string
         url:
           description: The URI for this resource, relative to `https://accounts.twilio.com`
@@ -63,147 +43,27 @@ components:
                   type: integer
                 nested_prop_2:
                   type: integer
-        capabilities:
-          description: Whether a phone number can receive calls or messages
-          nullable: true
-          properties:
-            fax:
-              type: boolean
-            mms:
-              type: boolean
-            sms:
-              type: boolean
-            voice:
-              type: boolean
-            nested_capabilities:
-              description: Whether a phone number can receive calls or messages
-              nullable: true
-              properties:
-                nested_fax:
-                  type: boolean
-                nested_mms:
-                  type: boolean
-                nested_sms:
-                  type: boolean
-                nested_voice:
-                  type: boolean
-              type: object
-          type: object
-        webhook_filters:
-          description: The list of webhook events that are enabled for this Service
-            instance
-          items:
-            type: boolean
-          nullable: true
-          type: array
       type: object
     api.v2010.account.call.call_recording:
       properties:
-        account_sid:
-          description: The SID of the Account that created the resource
-          maxLength: 34
-          minLength: 34
-          nullable: true
-          pattern: ^AC[0-9a-fA-F]{32}$
-          type: string
-        api_version:
-          description: The API version used to make the recording
-          nullable: true
-          type: string
-        call_sid:
-          description: The SID of the Call the resource is associated with
-          maxLength: 34
-          minLength: 34
-          nullable: true
-          pattern: ^CA[0-9a-fA-F]{32}$
-          type: string
-        channels:
-          description: The number of channels in the final recording file
-          nullable: true
-          type: integer
-        conference_sid:
-          description: The Conference SID that identifies the conference associated
-            with the recording
-          maxLength: 34
-          minLength: 34
-          nullable: true
-          pattern: ^CF[0-9a-fA-F]{32}$
-          type: string
-        date_created:
-          description: The RFC 2822 date and time in GMT that the resource was created
-          format: date-time-rfc-2822
-          nullable: true
-          type: string
-        date_updated:
-          description: The RFC 2822 date and time in GMT that the resource was last
-            updated
-          format: date-time-rfc-2822
-          nullable: true
-          type: string
-        duration:
-          description: The length of the recording in seconds
-          nullable: true
-          type: string
-        encryption_details:
-          description: How to decrypt the recording.
-          nullable: true
-          type: object
-        error_code:
-          description: More information about why the recording is missing, if status
-            is `absent`.
-          nullable: true
-          type: integer
         price:
           description: The one-time cost of creating the recording.
           nullable: true
           type: number
           format: float
-        price_unit:
-          description: The currency used in the price property.
-          nullable: true
-          type: string
-        sid:
-          description: The unique string that identifies the resource
-          maxLength: 34
-          minLength: 34
-          nullable: true
-          pattern: ^RE[0-9a-fA-F]{32}$
-          type: string
         source:
           description: How the recording was created
           enum:
             - DialVerb
-            - Conference
-            - OutboundAPI
             - Trunking
-            - RecordVerb
-            - StartCallRecordingAPI
-            - StartConferenceRecordingAPI
-          nullable: true
-          type: string
-        start_time:
-          description: The start time of the recording, given in RFC 2822 format
-          format: date-time-rfc-2822
           nullable: true
           type: string
         status:
           description: The status of the recording
           enum:
             - in-progress
-            - paused
-            - stopped
             - processing
             - completed
-            - absent
-          nullable: true
-          type: string
-        track:
-          description: 'The recorded track. Can be: `inbound`, `outbound`, or `both`.'
-          nullable: true
-          type: string
-        uri:
-          description: The URI of the resource, relative to `https://api.twilio.com`
-          format: uri
           nullable: true
           type: string
         response_nested_array:
@@ -215,136 +75,8 @@ components:
               id:
                 type: boolean
       type: object
-    voice.v1.archived_call:
-      properties:
-        date:
-          description: date
-          format: date-time
-          nullable: true
-          type: string
-        sid:
-          description: sid
-          maxLength: 34
-          minLength: 34
-          nullable: true
-          pattern: ^CA[0-9a-fA-F]{32}$
-          type: string
-        url:
-          description: The absolute URL of the resource
-          format: uri
-          nullable: true
-          type: string
-      type: object
-    autopilot.v1.assistant:
-      properties:
-        account_sid:
-          description: The SID of the Account that created the resource
-          maxLength: 34
-          minLength: 34
-          nullable: true
-          pattern: ^AC[0-9a-fA-F]{32}$
-          type: string
-        callback_events:
-          description: Reserved
-          nullable: true
-          type: string
-        callback_url:
-          description: Reserved
-          format: uri
-          nullable: true
-          type: string
-        date_created:
-          description: The RFC 2822 date and time in GMT when the resource was created
-          format: date-time
-          nullable: true
-          type: string
-        date_updated:
-          description: The RFC 2822 date and time in GMT when the resource was last
-            updated
-          format: date-time
-          nullable: true
-          type: string
-        development_stage:
-          description: A string describing the state of the assistant.
-          nullable: true
-          type: string
-        friendly_name:
-          description: The string that you assigned to describe the resource
-          nullable: true
-          type: string
-        latest_model_build_sid:
-          description: Reserved
-          maxLength: 34
-          minLength: 34
-          nullable: true
-          pattern: ^UG[0-9a-fA-F]{32}$
-          type: string
-        links:
-          description: A list of the URLs of the Assistant's related resources
-          nullable: true
-          type: object
-        log_queries:
-          description: Whether queries should be logged and kept after training
-          nullable: true
-          type: boolean
-        needs_model_build:
-          description: Whether model needs to be rebuilt
-          nullable: true
-          type: boolean
-        sid:
-          description: The unique string that identifies the resource
-          maxLength: 34
-          minLength: 34
-          nullable: true
-          pattern: ^UA[0-9a-fA-F]{32}$
-          type: string
-        unique_name:
-          description: An application-defined string that uniquely identifies the
-            resource
-          nullable: true
-          type: string
-        url:
-          description: The absolute URL of the Assistant resource
-          format: uri
-          nullable: true
-          type: string
-      type: object
     api.v2010.account.call.call_feedback_summary:
       properties:
-        account_sid:
-          description: The unique sid that identifies this account
-          maxLength: 34
-          minLength: 34
-          nullable: true
-          pattern: ^AC[0-9a-fA-F]{32}$
-          type: string
-        call_count:
-          description: The total number of calls
-          nullable: true
-          type: integer
-        call_feedback_count:
-          description: The total number of calls with a feedback entry
-          nullable: true
-          type: integer
-        date_created:
-          description: The date this resource was created
-          format: date-time-rfc-2822
-          nullable: true
-          type: string
-        date_updated:
-          description: The date this resource was last updated
-          format: date-time-rfc-2822
-          nullable: true
-          type: string
-        end_date:
-          description: The latest feedback entry date in the summary
-          format: date-time
-          nullable: true
-          type: string
-        include_subaccounts:
-          description: Whether the feedback summary includes subaccounts
-          nullable: true
-          type: boolean
         issues:
           description: Issues experienced during the call
           items:
@@ -358,59 +90,9 @@ components:
             type: object
           nullable: true
           type: array
-        quality_score_average:
-          description: The average QualityScore of the feedback entries
-          nullable: true
-          type: number
-        quality_score_median:
-          description: The median QualityScore of the feedback entries
-          nullable: true
-          type: number
-        quality_score_standard_deviation:
-          description: The standard deviation of the quality scores
-          nullable: true
-          type: number
-        sid:
-          description: A string that uniquely identifies this feedback entry
-          maxLength: 34
-          minLength: 34
-          nullable: true
-          pattern: ^FS[0-9a-fA-F]{32}$
-          type: string
-        start_date:
-          description: The earliest feedback entry date in the summary
-          format: date-time
-          nullable: true
-          type: string
-        status:
-          description: The status of the feedback summary
-          enum:
-            - queued
-            - in-progress
-            - completed
-            - failed
-          nullable: true
-          type: string
       type: object
     api.v2010.account.incoming_phone_number:
       properties:
-        account_sid:
-          description: The SID of the Account that created the resource
-          maxLength: 34
-          minLength: 34
-          nullable: true
-          pattern: ^AC[0-9a-fA-F]{32}$
-          type: string
-        address_requirements:
-          description: Whether the phone number requires an Address registered with
-            Twilio.
-          enum:
-            - none
-            - any
-            - local
-            - foreign
-          nullable: true
-          type: string
         capabilities:
           description: Whether a phone number can receive calls or messages
           nullable: true
@@ -437,30 +119,6 @@ components:
                   type: boolean
               type: object
           type: object
-        emergency_status:
-          description: Whether the phone number is enabled for emergency calling
-          enum:
-            - Active
-            - Inactive
-          nullable: true
-          type: string
-        sms_fallback_method:
-          description: The HTTP method used with sms_fallback_url
-          enum:
-            - HEAD
-            - GET
-            - POST
-            - PATCH
-            - PUT
-            - DELETE
-          nullable: true
-          type: string
-        voice_receive_mode:
-          enum:
-            - voice
-            - fax
-          nullable: true
-          type: string
       type: object
   securitySchemes:
     accountSid_authToken:
@@ -553,8 +211,6 @@ paths:
           description: OK
       security:
         - accountSid_authToken: [ ]
-      x-maturity:
-        - GA
     post:
       description: Create a new AWS Credential
       operationId: CreateCredentialAws
@@ -637,15 +293,8 @@ paths:
           description: Created
       security:
         - accountSid_authToken: [ ]
-      x-maturity:
-        - GA
     servers:
       - url: https://api.twilio.com
-    x-default-output-properties: &id001
-      - sid
-      - friendly_name
-      - date_created
-    x-path-type: list
   /v1/Credentials/AWS/{Sid}:
     delete:
       description: Delete a Credential from your account
@@ -666,8 +315,6 @@ paths:
           description: The resource was deleted successfully.
       security:
         - accountSid_authToken: [ ]
-      x-maturity:
-        - GA
     description: User provided AWS keys
     get:
       description: Fetch the AWS credentials specified by the provided Credential
@@ -704,8 +351,6 @@ paths:
           description: OK
       security:
         - accountSid_authToken: [ ]
-      x-maturity:
-        - GA
     post:
       description: Modify the properties of a given Account
       operationId: UpdateCredentialAws
@@ -740,12 +385,8 @@ paths:
           description: OK
       security:
         - accountSid_authToken: [ ]
-      x-maturity:
-        - GA
     servers:
       - url: https://api.twilio.com
-    x-default-output-properties: *id001
-    x-path-type: instance
   /2010-04-01/Accounts/{AccountSid}/Calls/{CallSid}/Recordings.json:
     description: A Recording resource represents the recording associated with a voice
       call, conference, or SIP Trunk.
@@ -918,8 +559,6 @@ paths:
           description: OK
       security:
         - accountSid_authToken: [ ]
-      x-maturity:
-        - GA
     post:
       description: Create a recording for the call
       operationId: CreateCallRecording
@@ -957,12 +596,6 @@ paths:
           application/x-www-form-urlencoded:
             schema:
               properties:
-                RecordingChannels:
-                  description: 'The number of channels used in the recording. Can
-                      be: `mono` or `dual` and the default is `mono`. `mono` records
-                      all parties of the call into one channel. `dual` records each
-                      party of a 2-party call into separate channels.'
-                  type: string
                 RecordingStatusCallback:
                   description: The URL we should call using the `recording_status_callback_method`
                     on each recording event specified in  `recording_status_callback_event`.
@@ -977,31 +610,6 @@ paths:
                   items:
                     type: string
                   type: array
-                RecordingStatusCallbackMethod:
-                  description: 'The HTTP method we should use to call `recording_status_callback`.
-                      Can be: `GET` or `POST` and the default is `POST`.'
-                  enum:
-                    - HEAD
-                    - GET
-                    - POST
-                    - PATCH
-                    - PUT
-                    - DELETE
-                  type: string
-                RecordingTrack:
-                  description: 'The audio track to record for the call. Can be: `inbound`,
-                      `outbound` or `both`. The default is `both`. `inbound` records
-                      the audio that is received by Twilio. `outbound` records the audio
-                      that is generated from Twilio. `both` records the audio that is
-                      received and generated by Twilio.'
-                  type: string
-                Trim:
-                  description: 'Whether to trim any leading and trailing silence in
-                      the recording. Can be: `trim-silence` or `do-not-trim` and the
-                      default is `do-not-trim`. `trim-silence` trims the silence from
-                      the beginning and end of the recording and `do-not-trim` does
-                      not.'
-                  type: string
               title: CreateCallRecordingRequest
               type: object
       responses:
@@ -1035,17 +643,8 @@ paths:
           description: Created
       security:
         - accountSid_authToken: [ ]
-      x-maturity:
-        - GA
     servers:
       - url: https://api.twilio.com
-    x-default-output-properties: &id008
-      - sid
-      - call_sid
-      - status
-      - start_time
-      - duration
-    x-path-type: list
   /v1/Archives/{Date}/Calls/{Sid}:
     delete:
       description: Delete an Archived Call record from your account. This removes
@@ -1075,127 +674,11 @@ paths:
           description: The resource was deleted successfully.
       security:
         - accountSid_authToken: [ ]
-      x-maturity:
-        - Beta
     description: 'TODO: Resource-level docs'
     servers:
       - url: https://api.twilio.com
     x-default-output-properties: [ ]
     x-path-type: instance
-  /v1/Assistants:
-    description: 'TODO: Resource-level docs'
-    get:
-      description: ''
-      operationId: ListAssistant
-      parameters:
-        - description: How many resources to return in each list page. The default is
-            50, and the maximum is 1000.
-          in: query
-          name: PageSize
-          schema:
-            maximum: 1000
-            minimum: 1
-            type: integer
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                properties:
-                  assistants:
-                    items:
-                      $ref: '#/components/schemas/autopilot.v1.assistant'
-                    type: array
-                  meta:
-                    properties:
-                      first_page_url:
-                        format: uri
-                        type: string
-                      key:
-                        type: string
-                      next_page_url:
-                        format: uri
-                        type: string
-                      page:
-                        type: integer
-                      page_size:
-                        type: integer
-                      previous_page_url:
-                        format: uri
-                        type: string
-                      url:
-                        format: uri
-                        type: string
-                    type: object
-                title: ListAssistantResponse
-                type: object
-          description: OK
-      security:
-        - accountSid_authToken: [ ]
-      x-maturity:
-        - Preview
-    post:
-      description: ''
-      operationId: CreateAssistant
-      requestBody:
-        content:
-          application/x-www-form-urlencoded:
-            schema:
-              properties:
-                CallbackEvents:
-                  description: Reserved.
-                  type: string
-                CallbackUrl:
-                  description: Reserved.
-                  format: uri
-                  type: string
-                Defaults:
-                  description: A JSON object that defines the Assistant's [default
-                    tasks](https://www.twilio.com/docs/autopilot/api/assistant/defaults)
-                    for various scenarios, including initiation actions and fallback
-                    tasks.
-                  type: object
-                FriendlyName:
-                  description: A descriptive string that you create to describe the
-                    new resource. It is not unique and can be up to 255 characters
-                    long.
-                  type: string
-                LogQueries:
-                  description: 'Whether queries should be logged and kept after training.
-                        Can be: `true` or `false` and defaults to `true`. If `true`, queries
-                        are stored for 30 days, and then deleted. If `false`, no queries
-                        are stored.'
-                  type: boolean
-                StyleSheet:
-                  description: The JSON string that defines the Assistant's [style
-                    sheet](https://www.twilio.com/docs/autopilot/api/assistant/stylesheet)
-                  type: object
-                UniqueName:
-                  description: An application-defined string that uniquely identifies
-                    the new resource. It can be used as an alternative to the `sid`
-                    in the URL path to address the resource. The first 64 characters
-                    must be unique.
-                  type: string
-              title: CreateAssistantRequest
-              type: object
-      responses:
-        '201':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/autopilot.v1.assistant'
-          description: Created
-      security:
-        - accountSid_authToken: [ ]
-      x-maturity:
-        - Preview
-    servers:
-      - url: https://api.twilio.com
-    x-default-output-properties:
-      - sid
-      - unique_name
-      - friendly_name
-    x-path-type: list
   /2010-04-01/Accounts/{AccountSid}/Calls/FeedbackSummary.json:
     description: "Call FeedbackSummary resources provide an idea of how your end user\xE2\
           \u20AC\u2122s perceive the quality of their calls and the most common issues\
@@ -1225,32 +708,10 @@ paths:
                     Format is `YYYY-MM-DD` and specified in UTC.
                   format: date
                   type: string
-                IncludeSubaccounts:
-                  description: Whether to also include Feedback resources from all
-                    subaccounts. `true` includes feedback from all subaccounts and
-                    `false`, the default, includes feedback from only the specified
-                    account.
-                  type: boolean
                 StartDate:
                   description: Only include feedback given on or after this date.
                     Format is `YYYY-MM-DD` and specified in UTC.
                   format: date
-                  type: string
-                StatusCallback:
-                  description: The URL that we will request when the feedback summary
-                    is complete.
-                  format: uri
-                  type: string
-                StatusCallbackMethod:
-                  description: The HTTP method (`GET` or `POST`) we use to make the
-                    request to the `StatusCallback` URL.
-                  enum:
-                    - HEAD
-                    - GET
-                    - POST
-                    - PATCH
-                    - PUT
-                    - DELETE
                   type: string
               required:
                 - StartDate
@@ -1289,49 +750,9 @@ paths:
           description: Created
       security:
         - accountSid_authToken: [ ]
-      x-maturity:
-        - GA
     servers:
       - url: https://api.twilio.com
-    x-default-output-properties:
-      - sid
-      - call_feedback_count
-      - quality_score_average
-      - start_date
-    x-path-type: list
   /2010-04-01/Accounts/{AccountSid}/IncomingPhoneNumbers/{Sid}.json:
-    delete:
-      description: Delete a phone-numbers belonging to the account used to make the
-        request.
-      operationId: DeleteIncomingPhoneNumber
-      parameters:
-        - description: The SID of the [Account](https://www.twilio.com/docs/iam/api/account)
-            that created the IncomingPhoneNumber resources to delete.
-          in: path
-          name: AccountSid
-          required: true
-          schema:
-            maxLength: 34
-            minLength: 34
-            pattern: ^AC[0-9a-fA-F]{32}$
-            type: string
-        - description: The Twilio-provided string that uniquely identifies the IncomingPhoneNumber
-            resource to delete.
-          in: path
-          name: Sid
-          required: true
-          schema:
-            maxLength: 34
-            minLength: 34
-            pattern: ^PN[0-9a-fA-F]{32}$
-            type: string
-      responses:
-        '204':
-          description: The resource was deleted successfully.
-      security:
-        - accountSid_authToken: [ ]
-      x-maturity:
-        - GA
     description: Incoming phone numbers on a Twilio account/project
     get:
       description: Fetch an incoming-phone-number belonging to the account used to
@@ -1383,235 +804,3 @@ paths:
           description: OK
       security:
         - accountSid_authToken: [ ]
-      x-maturity:
-        - GA
-    post:
-      description: Update an incoming-phone-number instance.
-      operationId: UpdateIncomingPhoneNumber
-      parameters:
-        - description: The SID of the [Account](https://www.twilio.com/docs/iam/api/account)
-            that created the IncomingPhoneNumber resource to update.  For more information,
-            see [Exchanging Numbers Between Subaccounts](https://www.twilio.com/docs/iam/api/subaccounts#exchanging-numbers).
-          in: path
-          name: AccountSid
-          required: true
-          schema:
-            maxLength: 34
-            minLength: 34
-            pattern: ^AC[0-9a-fA-F]{32}$
-            type: string
-        - description: The Twilio-provided string that uniquely identifies the IncomingPhoneNumber
-            resource to update.
-          in: path
-          name: Sid
-          required: true
-          schema:
-            maxLength: 34
-            minLength: 34
-            pattern: ^PN[0-9a-fA-F]{32}$
-            type: string
-      requestBody:
-        content:
-          application/x-www-form-urlencoded:
-            schema:
-              properties:
-                AccountSid:
-                  description: The SID of the [Account](https://www.twilio.com/docs/iam/api/account)
-                    that created the IncomingPhoneNumber resource to update.  For
-                    more information, see [Exchanging Numbers Between Subaccounts](https://www.twilio.com/docs/iam/api/subaccounts#exchanging-numbers).
-                  maxLength: 34
-                  minLength: 34
-                  pattern: ^AC[0-9a-fA-F]{32}$
-                  type: string
-                AddressSid:
-                  description: The SID of the Address resource we should associate
-                    with the phone number. Some regions require addresses to meet
-                    local regulations.
-                  maxLength: 34
-                  minLength: 34
-                  pattern: ^AD[0-9a-fA-F]{32}$
-                  type: string
-                ApiVersion:
-                  description: The API version to use for incoming calls made to the
-                    phone number. The default is `2010-04-01`.
-                  type: string
-                BundleSid:
-                  description: The SID of the Bundle resource that you associate with
-                    the phone number. Some regions require a Bundle to meet local
-                    Regulations.
-                  maxLength: 34
-                  minLength: 34
-                  pattern: ^BU[0-9a-fA-F]{32}$
-                  type: string
-                EmergencyAddressSid:
-                  description: The SID of the emergency address configuration to use
-                    for emergency calling from this phone number.
-                  maxLength: 34
-                  minLength: 34
-                  pattern: ^AD[0-9a-fA-F]{32}$
-                  type: string
-                EmergencyStatus:
-                  description: The configuration status parameter that determines
-                    whether the phone number is enabled for emergency calling.
-                  enum:
-                    - Active
-                    - Inactive
-                  type: string
-                FriendlyName:
-                  description: A descriptive string that you created to describe this
-                    phone number. It can be up to 64 characters long. By default,
-                    this is a formatted version of the phone number.
-                  type: string
-                IdentitySid:
-                  description: The SID of the Identity resource that we should associate
-                    with the phone number. Some regions require an identity to meet
-                    local regulations.
-                  maxLength: 34
-                  minLength: 34
-                  pattern: ^RI[0-9a-fA-F]{32}$
-                  type: string
-                SmsApplicationSid:
-                  description: The SID of the application that should handle SMS messages
-                    sent to the number. If an `sms_application_sid` is present, we
-                    ignore all of the `sms_*_url` urls and use those set on the application.
-                  maxLength: 34
-                  minLength: 34
-                  pattern: ^AP[0-9a-fA-F]{32}$
-                  type: string
-                SmsFallbackMethod:
-                  description: 'The HTTP method that we should use to call `sms_fallback_url`.
-                        Can be: `GET` or `POST` and defaults to `POST`.'
-                  enum:
-                    - HEAD
-                    - GET
-                    - POST
-                    - PATCH
-                    - PUT
-                    - DELETE
-                  type: string
-                SmsFallbackUrl:
-                  description: The URL that we should call when an error occurs while
-                    requesting or executing the TwiML defined by `sms_url`.
-                  format: uri
-                  type: string
-                SmsMethod:
-                  description: 'The HTTP method that we should use to call `sms_url`.
-                        Can be: `GET` or `POST` and defaults to `POST`.'
-                  enum:
-                    - HEAD
-                    - GET
-                    - POST
-                    - PATCH
-                    - PUT
-                    - DELETE
-                  type: string
-                SmsUrl:
-                  description: The URL we should call when the phone number receives
-                    an incoming SMS message.
-                  format: uri
-                  type: string
-                StatusCallback:
-                  description: The URL we should call using the `status_callback_method`
-                    to send status information to your application.
-                  format: uri
-                  type: string
-                StatusCallbackMethod:
-                  description: 'The HTTP method we should use to call `status_callback`.
-                        Can be: `GET` or `POST` and defaults to `POST`.'
-                  enum:
-                    - HEAD
-                    - GET
-                    - POST
-                    - PATCH
-                    - PUT
-                    - DELETE
-                  type: string
-                TrunkSid:
-                  description: The SID of the Trunk we should use to handle phone
-                    calls to the phone number. If a `trunk_sid` is present, we ignore
-                    all of the voice urls and voice applications and use only those
-                    set on the Trunk. Setting a `trunk_sid` will automatically delete
-                    your `voice_application_sid` and vice versa.
-                  maxLength: 34
-                  minLength: 34
-                  pattern: ^TK[0-9a-fA-F]{32}$
-                  type: string
-                VoiceApplicationSid:
-                  description: The SID of the application we should use to handle
-                    phone calls to the phone number. If a `voice_application_sid`
-                    is present, we ignore all of the voice urls and use only those
-                    set on the application. Setting a `voice_application_sid` will
-                    automatically delete your `trunk_sid` and vice versa.
-                  maxLength: 34
-                  minLength: 34
-                  pattern: ^AP[0-9a-fA-F]{32}$
-                  type: string
-                VoiceCallerIdLookup:
-                  description: 'Whether to lookup the caller''s name from the CNAM
-                        database and post it to your app. Can be: `true` or `false` and
-                        defaults to `false`.'
-                  type: boolean
-                VoiceFallbackMethod:
-                  description: 'The HTTP method that we should use to call `voice_fallback_url`.
-                        Can be: `GET` or `POST` and defaults to `POST`.'
-                  enum:
-                    - HEAD
-                    - GET
-                    - POST
-                    - PATCH
-                    - PUT
-                    - DELETE
-                  type: string
-                VoiceFallbackUrl:
-                  description: The URL that we should call when an error occurs retrieving
-                    or executing the TwiML requested by `url`.
-                  format: uri
-                  type: string
-                VoiceMethod:
-                  description: 'The HTTP method that we should use to call `voice_url`.
-                        Can be: `GET` or `POST` and defaults to `POST`.'
-                  enum:
-                    - HEAD
-                    - GET
-                    - POST
-                    - PATCH
-                    - PUT
-                    - DELETE
-                  type: string
-                VoiceReceiveMode:
-                  description: 'The configuration parameter for the phone number to
-                        receive incoming voice calls or faxes. Can be: `fax` or `voice`
-                        and defaults to `voice`.'
-                  enum:
-                    - voice
-                    - fax
-                  type: string
-                VoiceUrl:
-                  description: The URL that we should call to answer a call to the
-                    phone number. The `voice_url` will not be called if a `voice_application_sid`
-                    or a `trunk_sid` is set.
-                  format: uri
-                  type: string
-              title: UpdateIncomingPhoneNumberRequest
-              type: object
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/api.v2010.account.incoming_phone_number'
-          description: OK
-      security:
-        - accountSid_authToken: [ ]
-      x-maturity:
-        - GA
-    servers:
-      - url: https://api.twilio.com
-    x-default-output-properties:
-      - sid
-      - phone_number
-      - friendly_name
-    x-path-type: instance
-x-maturity:
-  - description: This product is Generally Available.
-    name: GA
