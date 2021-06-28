@@ -58,7 +58,7 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
 
         openAPI.getPaths().forEach((name, path) -> path.readOperations().forEach(operation -> {
             // Group operations together by tag. This gives us one file/post-process per resource.
-            final String tag = cleanPath(name).replace("/", PATH_SEPARATOR_PLACEHOLDER);
+            final String tag = PathUtils.cleanPath(name).replace("/", PATH_SEPARATOR_PLACEHOLDER);
             operation.addTagsItem(tag);
 
             if (!tag.contains(PATH_SEPARATOR_PLACEHOLDER)) {
@@ -235,7 +235,7 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
     }
 
     private String getResourceName(final String path) {
-        return PathUtils.getLastPathPart(cleanPath(path));
+        return PathUtils.getLastPathPart(PathUtils.cleanPath(path));
     }
 
     private String singularize(final String plural) {
@@ -245,11 +245,6 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
     private void addOperationName(final CodegenOperation operation, final String name) {
         operation.vendorExtensions.put("x-name", name);
         operation.vendorExtensions.put("x-name-lower", name.toLowerCase());
-    }
-
-    private String cleanPath(final String path) {
-        return path.replaceFirst("/[^/]+/", "") // Drop the version
-            .replaceAll("/\\{[^}]+}", ""); // Drop every path parameter.
     }
 
     @Override

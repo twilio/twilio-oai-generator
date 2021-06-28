@@ -640,7 +640,7 @@ paths:
       x-maturity:
         - GA
     servers:
-      - url: https://accounts.twilio.com
+      - url: https://api.twilio.com
     x-default-output-properties: &id001
       - sid
       - friendly_name
@@ -743,7 +743,7 @@ paths:
       x-maturity:
         - GA
     servers:
-      - url: https://accounts.twilio.com
+      - url: https://api.twilio.com
     x-default-output-properties: *id001
     x-path-type: instance
   /2010-04-01/Accounts/{AccountSid}/Calls/{CallSid}/Recordings.json:
@@ -1079,7 +1079,7 @@ paths:
         - Beta
     description: 'TODO: Resource-level docs'
     servers:
-      - url: https://voice.twilio.com
+      - url: https://api.twilio.com
     x-default-output-properties: [ ]
     x-path-type: instance
   /v1/Assistants:
@@ -1190,7 +1190,7 @@ paths:
       x-maturity:
         - Preview
     servers:
-      - url: https://autopilot.twilio.com
+      - url: https://api.twilio.com
     x-default-output-properties:
       - sid
       - unique_name

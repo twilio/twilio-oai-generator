@@ -7,27 +7,10 @@ import (
 	"fmt"
 	"net/url"
 
-    twilio "github.com/twilio/twilio-go/client"
 	{{#imports}}
     "{{import}}"
     {{/imports}}
 )
-
-type {{classname}}Service struct {
-	baseURL         string
-	requestHandler  *twilio.RequestHandler
-}
-
-func New{{classname}}Service(requestHandler *twilio.RequestHandler) *{{classname}}Service {
-	return &{{classname}}Service {
-		requestHandler: requestHandler,
-		baseURL:        "{{#operation}}{{#-first}}{{#servers}}{{url}}{{/servers}}{{/-first}}{{/operation}}",
-	}
-}
-
-func New{{classname}}ServiceWithClient(client twilio.BaseClient) *{{classname}}Service {
-    return New{{classname}}Service(twilio.NewRequestHandler(client))
-}
 
 {{#operation}}
 {{#hasOptionalParams}}
@@ -51,7 +34,7 @@ func (params *{{{nickname}}}Params) Set{{paramName}}({{paramName}} {{{dataType}}
 {{#notes}}
 // {{notes}}
 {{/notes}}
-func (c *{{{classname}}}Service) {{{nickname}}}({{#allParams}}{{#required}}{{paramName}} {{{dataType}}}{{^last}}, {{/last}}{{/required}}{{/allParams}}{{#hasOptionalParams}}params *{{{nickname}}}Params{{/hasOptionalParams}}) ({{#returnType}}*{{{returnType}}}, {{/returnType}}error) {
+func (c *ApiService) {{{nickname}}}({{#allParams}}{{#required}}{{paramName}} {{{dataType}}}{{^last}}, {{/last}}{{/required}}{{/allParams}}{{#hasOptionalParams}}params *{{{nickname}}}Params{{/hasOptionalParams}}) ({{#returnType}}*{{{returnType}}}, {{/returnType}}error) {
     path := "{{{path}}}"
 {{#queryParams}}
     {{#vendorExtensions.x-is-account-sid}}

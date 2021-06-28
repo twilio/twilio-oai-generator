@@ -12,7 +12,7 @@ import (
 
 var accountSid string
 var authToken string
-var testApiService *openapi.DefaultApiService
+var testApiService *openapi.ApiService
 
 func TestMain(m *testing.M) {
 	// Do setup before the tests are run
@@ -20,7 +20,7 @@ func TestMain(m *testing.M) {
 	authToken = "CR12345678123456781234567812345678"
 	testClient := test_client.NewTestClient(accountSid, authToken)
 	testClient.BaseURL = "http://prism_twilio:4010"
-	testApiService = openapi.NewDefaultApiServiceWithClient(testClient)
+	testApiService = openapi.NewApiServiceWithClient(testClient)
 
 	ret := m.Run()
 	os.Exit(ret)
