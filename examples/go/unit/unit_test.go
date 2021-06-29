@@ -9,7 +9,7 @@ import (
 	"testing"
 	"time"
 
-	openapi "twilio-oai-generator/go/rest/oai"
+	openapi "twilio-oai-generator/go/rest/api/v2010"
 
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"

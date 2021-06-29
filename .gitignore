@@ -1,5 +1,6 @@
 .idea
 *.jar
 codegen/
-examples/go/rest/
 target/
+
+examples/go/rest/

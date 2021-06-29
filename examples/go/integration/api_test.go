@@ -6,7 +6,7 @@ import (
 	"time"
 
 	test_client "twilio-oai-generator/go"
-	openapi "twilio-oai-generator/go/rest/oai"
+	openapi "twilio-oai-generator/go/rest/api/v2010"
 
 	"github.com/stretchr/testify/assert"
 )
