@@ -17,7 +17,7 @@ type BaseClient interface {
 
 type TestClient struct {
 	client.Client
-	BaseURL    string
+	BaseURL string
 }
 
 func NewTestClient(username string, password string) *TestClient {
