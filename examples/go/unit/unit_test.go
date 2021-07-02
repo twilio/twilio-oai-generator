@@ -1,4 +1,4 @@
-package test
+package unit
 
 import (
 	"bytes"
@@ -9,9 +9,10 @@ import (
 	"testing"
 	"time"
 
+	openapi "twilio-oai-generator/go/rest/api/v2010"
+
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
-	openapi "twilio-oai-generator/go/rest/oai"
 )
 
 func TestPathIsCorrect(t *testing.T) {
@@ -27,7 +28,7 @@ func TestPathIsCorrect(t *testing.T) {
 		gomock.Any()).
 		DoAndReturn(func(method string, rawURL string, data url.Values,
 			headers map[string]interface{}) (*http.Response, error) {
-			assert.Equal(t, rawURL, "https://api.twilio.com/2010-04-01/Accounts/AC222222222222222222222222222222/IncomingPhoneNumbers/PNXXXXY.json")
+			assert.Equal(t, "https://api.twilio.com/2010-04-01/Accounts/AC222222222222222222222222222222/IncomingPhoneNumbers/PNXXXXY.json", rawURL)
 			return &http.Response{Body: ioutil.NopCloser(bytes.NewReader(nil))}, nil
 		},
 		)
@@ -50,7 +51,7 @@ func TestAccountSidAsOptionalParam(t *testing.T) {
 		gomock.Any()).
 		DoAndReturn(func(method string, rawURL string, data url.Values,
 			headers map[string]interface{}) (*http.Response, error) {
-			assert.Equal(t, rawURL, "https://api.twilio.com/2010-04-01/Accounts/AC444444444444444444444444444444/IncomingPhoneNumbers/PNXXXXY.json")
+			assert.Equal(t, "https://api.twilio.com/2010-04-01/Accounts/AC444444444444444444444444444444/IncomingPhoneNumbers/PNXXXXY.json", rawURL)
 			return &http.Response{Body: ioutil.NopCloser(bytes.NewReader(nil))}, nil
 		},
 		)
@@ -74,7 +75,7 @@ func TestAddingHeader(t *testing.T) {
 	mockCtrl := gomock.NewController(t)
 	testClient := NewMockBaseClient(mockCtrl)
 	testClient.EXPECT().AccountSid().DoAndReturn(func() string {
-		return accountSid
+		return "AC123"
 	})
 	testClient.EXPECT().SendRequest(
 		gomock.Any(),
@@ -83,7 +84,7 @@ func TestAddingHeader(t *testing.T) {
 		gomock.Any()).
 		DoAndReturn(func(method string, rawURL string, data url.Values,
 			headers map[string]interface{}) (*http.Response, error) {
-			assert.Equal(t, headers, expectedHeader)
+			assert.Equal(t, expectedHeader, headers)
 			return &http.Response{Body: ioutil.NopCloser(bytes.NewReader(nil))}, nil
 		},
 		)
@@ -115,7 +116,7 @@ func TestQueryParams(t *testing.T) {
 	mockCtrl := gomock.NewController(t)
 	testClient := NewMockBaseClient(mockCtrl)
 	testClient.EXPECT().AccountSid().DoAndReturn(func() string {
-		return accountSid
+		return "AC123"
 	})
 	testClient.EXPECT().SendRequest(
 		gomock.Any(),
@@ -124,7 +125,7 @@ func TestQueryParams(t *testing.T) {
 		gomock.Any()).
 		DoAndReturn(func(method string, rawURL string, data url.Values,
 			headers map[string]interface{}) (*http.Response, error) {
-			assert.Equal(t, data, expectedData)
+			assert.Equal(t, expectedData, data)
 			return &http.Response{Body: ioutil.NopCloser(bytes.NewReader(nil))}, nil
 		},
 		)
@@ -146,7 +147,7 @@ func TestArrayTypeParam(t *testing.T) {
 	mockCtrl := gomock.NewController(t)
 	testClient := NewMockBaseClient(mockCtrl)
 	testClient.EXPECT().AccountSid().DoAndReturn(func() string {
-		return accountSid
+		return "AC123"
 	})
 	testClient.EXPECT().SendRequest(
 		gomock.Any(),
@@ -155,7 +156,7 @@ func TestArrayTypeParam(t *testing.T) {
 		gomock.Any()).
 		DoAndReturn(func(method string, rawURL string, data url.Values,
 			headers map[string]interface{}) (*http.Response, error) {
-			assert.Equal(t, data, expectedData)
+			assert.Equal(t, expectedData, data)
 			return &http.Response{Body: ioutil.NopCloser(bytes.NewReader(nil))}, nil
 		},
 		)

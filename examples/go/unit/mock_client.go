@@ -2,7 +2,7 @@
 // Source: test_client.go
 
 // Package test is a generated GoMock package.
-package test
+package unit
 
 import (
 	http "net/http"

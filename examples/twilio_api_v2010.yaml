@@ -1,0 +1,806 @@
+components:
+  schemas:
+    accounts.v1.credential.credential_aws:
+      properties:
+        account_sid:
+          description: The SID of the Account that created the resource
+          nullable: true
+          type: string
+        friendly_name:
+          description: The string that you assigned to describe the resource
+          nullable: true
+          type: string
+        sid:
+          description: The unique string that identifies the resource
+          nullable: true
+          type: string
+        url:
+          description: The URI for this resource, relative to `https://accounts.twilio.com`
+          format: uri
+          nullable: true
+          type: string
+        response_object:
+          description: Test response object type
+          nullable: true
+          type: object
+        response_array:
+          description: Test array
+          items:
+            type: integer
+            properties:
+              id:
+                type: integer
+          type: array
+        response_nested_array:
+          description: Test nested array
+          type: array
+          items:
+            type: array
+            items:
+              type: integer
+              properties:
+                nested_prop_1:
+                  type: integer
+                nested_prop_2:
+                  type: integer
+      type: object
+    api.v2010.account.call.call_recording:
+      properties:
+        price:
+          description: The one-time cost of creating the recording.
+          nullable: true
+          type: number
+          format: float
+        source:
+          description: How the recording was created
+          enum:
+            - DialVerb
+            - Trunking
+          nullable: true
+          type: string
+        status:
+          description: The status of the recording
+          enum:
+            - in-progress
+            - processing
+            - completed
+          nullable: true
+          type: string
+        response_nested_array:
+          description: Test nested array response
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: boolean
+      type: object
+    api.v2010.account.call.call_feedback_summary:
+      properties:
+        issues:
+          description: Issues experienced during the call
+          items:
+            properties:
+              count:
+                type: number
+              description:
+                type: string
+              percentage_of_total_calls:
+                type: string
+            type: object
+          nullable: true
+          type: array
+      type: object
+    api.v2010.account.incoming_phone_number:
+      properties:
+        capabilities:
+          description: Whether a phone number can receive calls or messages
+          nullable: true
+          properties:
+            fax:
+              type: boolean
+            mms:
+              type: boolean
+            sms:
+              type: boolean
+            voice:
+              type: boolean
+            nested_capabilities:
+              description: Whether a phone number can receive calls or messages
+              nullable: true
+              properties:
+                nested_fax:
+                  type: boolean
+                nested_mms:
+                  type: boolean
+                nested_sms:
+                  type: boolean
+                nested_voice:
+                  type: boolean
+              type: object
+          type: object
+      type: object
+  securitySchemes:
+    accountSid_authToken:
+      scheme: basic
+      type: http
+info:
+  contact:
+    email: support@twilio.com
+    name: Twilio Support
+    url: https://support.twilio.com
+  description: This is the public Twilio REST API.
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: https://www.twilio.com/legal/tos
+  title: Twilio - Accounts
+  version: 1.11.0
+openapi: 3.0.1
+paths:
+  /v1/Credentials/AWS:
+    description: User provided AWS keys
+    get:
+      description: Retrieves a collection of AWS Credentials belonging to the account
+        used to make the request
+      operationId: ListCredentialAws
+      parameters:
+        - description: How many resources to return in each list page. The default is
+            50, and the maximum is 1000.
+          in: query
+          name: PageSize
+          schema:
+            maximum: 1000
+            minimum: 1
+            type: integer
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  credentials:
+                    items:
+                      $ref: '#/components/schemas/accounts.v1.credential.credential_aws'
+                    type: array
+                  meta:
+                    properties:
+                      first_page_url:
+                        format: uri
+                        type: string
+                      key:
+                        type: string
+                      next_page_url:
+                        format: uri
+                        type: string
+                      page:
+                        type: integer
+                      page_size:
+                        type: integer
+                      previous_page_url:
+                        format: uri
+                        type: string
+                      url:
+                        format: uri
+                        type: string
+                    type: object
+                title: ListCredentialAwsResponse
+                type: object
+              examples:
+                creds_response_example:
+                  summary: Example of a Credential
+                  value:
+                    credentials: [
+                      {
+                        "account_sid": "AC12345678123456781234567812345678",
+                        "date_created": "2021-03-23T08:30:00Z",
+                        "date_updated": "2021-03-26T10:30:00Z",
+                        "friendly_name": "Ahoy",
+                        "sid": "CR12345678123456781234567812345678",
+                        "url": "http://example.com"
+                      }
+                    ]
+                    meta: {
+                      first_page_url: "http://example.com/page1",
+                      next_page_url: "http://example.com/page2",
+                      page: 1,
+                      page_size: 3,
+                      previous_page_url: "http://example.com/page0",
+                      url: "http://example.com"
+                    }
+          description: OK
+      security:
+        - accountSid_authToken: [ ]
+    post:
+      description: Create a new AWS Credential
+      operationId: CreateCredentialAws
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              properties:
+                AccountSid:
+                  description: The SID of the Subaccount that this Credential should
+                    be associated with. Must be a valid Subaccount of the account
+                    issuing the request.
+                  maxLength: 34
+                  minLength: 34
+                  pattern: ^AC[0-9a-fA-F]{32}$
+                  type: string
+                Credentials:
+                  description: A string that contains the AWS access credentials in
+                    the format `<AWS_ACCESS_KEY_ID>:<AWS_SECRET_ACCESS_KEY>`. For
+                    example, `AKIAIOSFODNN7EXAMPLE:wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY`
+                  type: string
+                FriendlyName:
+                  description: A descriptive string that you create to describe the
+                    resource. It can be up to 64 characters long.
+                  type: string
+                TestNumber:
+                  description: test number type transformation
+                  type: number
+                TestNumberFloat:
+                  description: test number/float transformation
+                  type: number
+                  format: float
+                TestNumberDouble:
+                  description: test number/double transformation
+                  type: number
+                  format: double
+                TestNumberInt32:
+                  description: test number/int32 transformation
+                  type: number
+                  format: int32
+                TestNumberInt64:
+                  description: test integer/int64 transformation
+                  type: integer
+                  format: int64
+                TestObject:
+                  description: test object type transformation
+                  type: object
+                TestDateTime:
+                  description: test date-time type transformation
+                  type: string
+                  format: date-time
+                TestDate:
+                  description: test date format transformation
+                  type: string
+                  format: date
+                TestStringArray:
+                  description: 'The recording status events on which we should call
+                                    the `recording_status_callback` URL. Can be: `in-progress`, `completed`
+                                    and `absent` and the default is `completed`. Separate multiple
+                                    event values with a space.'
+                  items:
+                    type: string
+                  type: array
+                TestEnum:
+                  description: Test enum
+                  enum:
+                    - consumer-checking
+                    - consumer-savings
+                    - commercial-checking
+              required:
+                - Credentials
+              title: CreateCredentialAwsRequest
+              type: object
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/accounts.v1.credential.credential_aws'
+          description: Created
+      security:
+        - accountSid_authToken: [ ]
+    servers:
+      - url: https://api.twilio.com
+  /v1/Credentials/AWS/{Sid}:
+    delete:
+      description: Delete a Credential from your account
+      operationId: DeleteCredentialAws
+      parameters:
+        - description: The Twilio-provided string that uniquely identifies the AWS resource
+            to delete.
+          in: path
+          name: Sid
+          required: true
+          schema:
+            maxLength: 34
+            minLength: 34
+            pattern: ^CR[0-9a-fA-F]{32}$
+            type: string
+      responses:
+        '204':
+          description: The resource was deleted successfully.
+      security:
+        - accountSid_authToken: [ ]
+    description: User provided AWS keys
+    get:
+      description: Fetch the AWS credentials specified by the provided Credential
+        Sid
+      operationId: FetchCredentialAws
+      parameters:
+        - description: The Twilio-provided string that uniquely identifies the AWS resource
+            to fetch.
+          in: path
+          name: Sid
+          required: true
+          schema:
+            maxLength: 34
+            minLength: 34
+            pattern: ^CR[0-9a-fA-F]{32}$
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/accounts.v1.credential.credential_aws'
+              examples:
+                fetch_creds_response_example:
+                  summary: Example of a Credential
+                  value: {
+                    "account_sid": "AC12345678123456781234567812345678",
+                    "date_created": "2021-03-23T08:30:00Z",
+                    "date_updated": "2021-03-26T10:30:00Z",
+                    "friendly_name": "Ahoy",
+                    "sid": "CR12345678123456781234567812345678",
+                    "url": "http://example.com"
+                  }
+          description: OK
+      security:
+        - accountSid_authToken: [ ]
+    post:
+      description: Modify the properties of a given Account
+      operationId: UpdateCredentialAws
+      parameters:
+        - description: The Twilio-provided string that uniquely identifies the AWS resource
+            to update.
+          in: path
+          name: Sid
+          required: true
+          schema:
+            maxLength: 34
+            minLength: 34
+            pattern: ^CR[0-9a-fA-F]{32}$
+            type: string
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              properties:
+                FriendlyName:
+                  description: A descriptive string that you create to describe the
+                    resource. It can be up to 64 characters long.
+                  type: string
+              title: UpdateCredentialAwsRequest
+              type: object
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/accounts.v1.credential.credential_aws'
+          description: OK
+      security:
+        - accountSid_authToken: [ ]
+    servers:
+      - url: https://api.twilio.com
+  /2010-04-01/Accounts/{AccountSid}/Calls/{CallSid}/Recordings.json:
+    description: A Recording resource represents the recording associated with a voice
+      call, conference, or SIP Trunk.
+    get:
+      description: Retrieve a list of recordings belonging to the call used to make
+        the request
+      operationId: ListCallRecording
+      parameters:
+        - description: The SID of the [Account](https://www.twilio.com/docs/iam/api/account)
+            that created the Recording resources to read.
+          in: path
+          name: AccountSid
+          required: true
+          schema:
+            maxLength: 34
+            minLength: 34
+            pattern: ^AC[0-9a-fA-F]{32}$
+            type: string
+        - description: The [Call](https://www.twilio.com/docs/voice/api/call-resource)
+            SID of the resources to read.
+          in: path
+          name: CallSid
+          required: true
+          schema:
+            maxLength: 34
+            minLength: 34
+            pattern: ^CA[0-9a-fA-F]{32}$
+            type: string
+        - description: 'The `date_created` value, specified as `YYYY-MM-DD`, of the
+            resources to read. You can also specify inequality: `DateCreated<=YYYY-MM-DD`
+            will return recordings generated at or before midnight on a given date,
+            and `DateCreated>=YYYY-MM-DD` returns recordings generated at or after midnight
+            on a date.'
+          in: query
+          name: DateCreated
+          schema:
+            format: date-time
+            type: string
+        - description: 'The `date_test` value, specified as `YYYY-MM-DD`, of the
+            resources to read.'
+          in: query
+          name: Date.Test
+          schema:
+            format: date
+            type: string
+        - description: 'The `date_created` value, specified as `YYYY-MM-DD`, of the
+            resources to read. You can also specify inequality: `DateCreated<=YYYY-MM-DD`
+            will return recordings generated at or before midnight on a given date,
+            and `DateCreated>=YYYY-MM-DD` returns recordings generated at or after midnight
+            on a date.'
+          in: query
+          name: DateCreated<
+          schema:
+            format: date-time
+            type: string
+        - description: 'The `date_created` value, specified as `YYYY-MM-DD`, of the
+            resources to read. You can also specify inequality: `DateCreated<=YYYY-MM-DD`
+            will return recordings generated at or before midnight on a given date,
+            and `DateCreated>=YYYY-MM-DD` returns recordings generated at or after midnight
+            on a date.'
+          in: query
+          name: DateCreated>
+          schema:
+            format: date-time
+            type: string
+        - description: How many resources to return in each list page. The default is
+            50, and the maximum is 1000.
+          in: query
+          name: PageSize
+          schema:
+            maximum: 1000
+            minimum: 1
+            type: integer
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  end:
+                    type: integer
+                  first_page_uri:
+                    format: uri
+                    type: string
+                  next_page_uri:
+                    format: uri
+                    type: string
+                  page:
+                    type: integer
+                  page_size:
+                    type: integer
+                  previous_page_uri:
+                    format: uri
+                    type: string
+                  recordings:
+                    items:
+                      $ref: '#/components/schemas/api.v2010.account.call.call_recording'
+                    type: array
+                  start:
+                    type: integer
+                  uri:
+                    format: uri
+                    type: string
+                  response_nested_array:
+                    description: Test nested array response
+                    type: array
+                    items:
+                      type: integer
+                      properties:
+                        id:
+                          type: integer
+                title: ListCallRecordingResponse
+                type: object
+              examples:
+                call_recording_response:
+                  summary: Example of Call Recodings
+                  value: {
+                    "end": 5,
+                    "first_page_uri": "http://example.com/page1",
+                    "next_page_uri": "http://example.com/page2",
+                    "page": 1,
+                    "page_size": 4,
+                    "previous_page_uri": "http://example.com/page0",
+                    "recordings": [
+                      {
+                        "account_sid": "AC12345678123456781234567812345678",
+                        "api_version": "1",
+                        "call_sid": "CA12345678123456781234567812345678",
+                        "channels": 2,
+                        "conference_sid": "CF12345678123456781234567812345678",
+                        "date_created": "2021-03-31T08:30:00Z",
+                        "date_updated": "2021-03-23T10:30:00Z",
+                        "duration": "60",
+                        "encryption_details": null,
+                        "error_code": 2,
+                        "price": 5,
+                        "price_unit": "USD",
+                        "sid": "RE12345678123456781234567812345678",
+                        "source": "DialVerb",
+                        "start_time": "2021-03-31T08:30:00Z",
+                        "status": "in-progress",
+                        "track": "both",
+                        "uri": "https://myrecoding1.example.com"
+                      },
+                      {
+                        "account_sid": "AC87654321876543218765432187654321",
+                        "api_version": "2",
+                        "call_sid": "CA87654321876543218765432187654321",
+                        "channels": 1,
+                        "conference_sid": "CF87654321876543218765432187654321",
+                        "date_created": "2020-03-31T08:30:00Z",
+                        "date_updated": "2020-03-23T10:30:00Z",
+                        "duration": "90",
+                        "encryption_details": null,
+                        "error_code": 1,
+                        "price": 10,
+                        "price_unit": "USD",
+                        "sid": "RE87654321876543218765432187654321",
+                        "source": "Trunking",
+                        "start_time": "2020-03-31T08:30:00Z",
+                        "status": "completed",
+                        "track": "outbound",
+                        "uri": "https://myrecoding2.example.com"
+                      }
+                    ],
+                    "start": 0,
+                    "uri": "http://example.com",
+                    "response_nested_array": [1,2,3]
+                  }
+          description: OK
+      security:
+        - accountSid_authToken: [ ]
+    post:
+      description: Create a recording for the call
+      operationId: CreateCallRecording
+      parameters:
+        - description: The X-Twilio-Webhook-Enabled HTTP request header
+          in: header
+          name: X-Twilio-Webhook-Enabled
+          schema:
+            enum:
+              - 'true'
+              - 'false'
+            type: string
+        - description: The SID of the [Account](https://www.twilio.com/docs/iam/api/account)
+            that will create the resource.
+          in: path
+          name: AccountSid
+          required: true
+          schema:
+            maxLength: 34
+            minLength: 34
+            pattern: ^AC[0-9a-fA-F]{32}$
+            type: string
+        - description: The SID of the [Call](https://www.twilio.com/docs/voice/api/call-resource)
+            to associate the resource with.
+          in: path
+          name: CallSid
+          required: true
+          schema:
+            maxLength: 34
+            minLength: 34
+            pattern: ^CA[0-9a-fA-F]{32}$
+            type: string
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              properties:
+                RecordingStatusCallback:
+                  description: The URL we should call using the `recording_status_callback_method`
+                    on each recording event specified in  `recording_status_callback_event`.
+                    For more information, see [RecordingStatusCallback parameters](https://www.twilio.com/docs/voice/api/recording#recordingstatuscallback).
+                  format: uri
+                  type: string
+                RecordingStatusCallbackEvent:
+                  description: 'The recording status events on which we should call
+                      the `recording_status_callback` URL. Can be: `in-progress`, `completed`
+                      and `absent` and the default is `completed`. Separate multiple
+                      event values with a space.'
+                  items:
+                    type: string
+                  type: array
+              title: CreateCallRecordingRequest
+              type: object
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/api.v2010.account.call.call_recording'
+              examples:
+                craete_call_recording_response_example:
+                  summary: Example of a CreateCallRecording
+                  value: {
+                    "account_sid": "AC12345678123456781234567812345678",
+                    "api_version": "v1",
+                    "call_sid": "CA12345678123456781234567812345678",
+                    "channels": 4,
+                    "conference_sid": "CF12345678123456781234567812345678",
+                    "date_created": "2021-03-23T08:30:00Z",
+                    "date_updated": "2021-03-26T10:30:00Z",
+                    "duration": "60",
+                    "error_code": 2,
+                    "price": 100.22,
+                    "price_unit": "USD",
+                    "sid": "RE12345678123456781234567812345678",
+                    "source": "Trunking",
+                    "start_time": "2021-03-26T8:30:00Z",
+                    "status": "completed",
+                    "track": "both",
+                    "url": "http://example.com"
+                  }
+          description: Created
+      security:
+        - accountSid_authToken: [ ]
+    servers:
+      - url: https://api.twilio.com
+  /v1/Archives/{Date}/Calls/{Sid}:
+    delete:
+      description: Delete an Archived Call record from your account. This removes
+        the record from your Bulk Export results, but not from API or Account Portal
+        logs.
+      operationId: DeleteArchivedCall
+      parameters:
+        - description: The date of the Call in UTC.
+          in: path
+          name: Date
+          required: true
+          schema:
+            format: date
+            type: string
+        - description: The Twilio-provided Call SID that uniquely identifies the Call
+            resource to delete
+          in: path
+          name: Sid
+          required: true
+          schema:
+            maxLength: 34
+            minLength: 34
+            pattern: ^CA[0-9a-fA-F]{32}$
+            type: string
+      responses:
+        '204':
+          description: The resource was deleted successfully.
+      security:
+        - accountSid_authToken: [ ]
+    description: 'TODO: Resource-level docs'
+    servers:
+      - url: https://api.twilio.com
+    x-default-output-properties: [ ]
+    x-path-type: instance
+  /2010-04-01/Accounts/{AccountSid}/Calls/FeedbackSummary.json:
+    description: "Call FeedbackSummary resources provide an idea of how your end user\xE2\
+          \u20AC\u2122s perceive the quality of their calls and the most common issues\
+          \ they have encountered in the context of all your voice traffic during a specific\
+          \ time frame."
+    post:
+      description: Create a FeedbackSummary resource for a call
+      operationId: CreateCallFeedbackSummary
+      parameters:
+        - description: The unique id of the [Account](https://www.twilio.com/docs/iam/api/account)
+            responsible for this resource.
+          in: path
+          name: AccountSid
+          required: true
+          schema:
+            maxLength: 34
+            minLength: 34
+            pattern: ^AC[0-9a-fA-F]{32}$
+            type: string
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              properties:
+                EndDate:
+                  description: Only include feedback given on or before this date.
+                    Format is `YYYY-MM-DD` and specified in UTC.
+                  format: date
+                  type: string
+                StartDate:
+                  description: Only include feedback given on or after this date.
+                    Format is `YYYY-MM-DD` and specified in UTC.
+                  format: date
+                  type: string
+              required:
+                - StartDate
+                - EndDate
+              title: CreateCallFeedbackSummaryRequest
+              type: object
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/api.v2010.account.call.call_feedback_summary'
+              examples:
+                custom_type_response_example:
+                  summary: Example of a Feedback Summary
+                  value: {
+                    "account_sid": "AC12345678123456781234567812345678",
+                    "call_count": 2,
+                    "call_feedback_count": 2,
+                    "date_created": "2021-03-23T08:30:00Z",
+                    "date_updated": "2021-03-26T10:30:00Z",
+                    "end_date": "2021-03-26T10:30:00Z",
+                    "include_subaccounts": false,
+                    "issues": [ {
+                      "count": 4,
+                      "description": "issue description",
+                      "percentage_of_total_calls": "50",
+                    } ],
+                    "quality_score_average": 1.22,
+                    "quality_score_median": 1.45,
+                    "quality_score_standard_deviation": 1.1,
+                    "sid": "FS12345678123456781234567812345678",
+                    "start_date": "2021-03-23T08:30:00Z",
+                    "status": "completed",
+                  }
+          description: Created
+      security:
+        - accountSid_authToken: [ ]
+    servers:
+      - url: https://api.twilio.com
+  /2010-04-01/Accounts/{AccountSid}/IncomingPhoneNumbers/{Sid}.json:
+    description: Incoming phone numbers on a Twilio account/project
+    get:
+      description: Fetch an incoming-phone-number belonging to the account used to
+        make the request.
+      operationId: FetchIncomingPhoneNumber
+      parameters:
+        - description: The SID of the [Account](https://www.twilio.com/docs/iam/api/account)
+            that created the IncomingPhoneNumber resource to fetch.
+          in: path
+          name: AccountSid
+          required: true
+          schema:
+            maxLength: 34
+            minLength: 34
+            pattern: ^AC[0-9a-fA-F]{32}$
+            type: string
+        - description: The Twilio-provided string that uniquely identifies the IncomingPhoneNumber
+            resource to fetch.
+          in: path
+          name: Sid
+          required: true
+          schema:
+            maxLength: 34
+            minLength: 34
+            pattern: ^PN[0-9a-fA-F]{32}$
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/api.v2010.account.incoming_phone_number'
+              examples:
+                fetch_creds_response_example:
+                  summary: Example of a Incoming Phone Number
+                  value: {
+                    "account_sid": "AC12345678123456781234567812345678",
+                    "address_requirements": "foreign",
+                    "emergency_status": "Active",
+                    "sms_fallback_method": "PUT",
+                    "voice_receive_mode": "voice",
+                    "capabilities": {
+                      "fax": false,
+                      "mms": false,
+                      "sms": true,
+                      "voice": true
+                    }
+                  }
+          description: OK
+      security:
+        - accountSid_authToken: [ ]
