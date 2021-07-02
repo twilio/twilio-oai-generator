@@ -4,17 +4,12 @@ import (
 	"fmt"
 	"testing"
 	. "twilio-oai-generator/go/rest/api/v2010"
-	. "twilio-oai-generator/terraform/client"
-	. "twilio-oai-generator/terraform/resources"
-
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/golang/mock/gomock"
+	. "twilio-oai-generator/terraform/resources"
 )
 
-var accountSid = "AC111"
 var credentialsSid = "CR123"
 var friendlyName = "house-keys"
 var credential = &AccountsV1CredentialCredentialAws{
@@ -23,32 +18,24 @@ var credential = &AccountsV1CredentialCredentialAws{
 	FriendlyName: &friendlyName,
 }
 
-var testClient *MockApiV2010
-var config *Config
-var resource *schema.Resource
-var resourceData *schema.ResourceData
-
-func setup(t *testing.T) {
-	testClient = NewMockApiV2010(gomock.NewController(t))
-	config = &Config{Client: &RestClient{ApiV2010: testClient}}
+func setupCredential(t *testing.T) {
+	setup(t)
 	resource = ResourceCredentialsAWS()
 	resourceData = resource.TestResourceData()
 }
 
-func TestCreate(t *testing.T) {
-	setup(t)
+func TestCreateCredentialAws(t *testing.T) {
+	setupCredential(t)
 
 	// Set required and optional params.
 	_ = resourceData.Set("sid", credentialsSid)
 	_ = resourceData.Set("friendly_name", friendlyName)
 
-	testClient.EXPECT().CreateCredentialAws(gomock.Any()).DoAndReturn(
-		func(params *CreateCredentialAwsParams) (*AccountsV1CredentialCredentialAws, error) {
-			// Assert on the params that we're expecting.
-			assert.Equal(t, &friendlyName, params.FriendlyName)
-
-			return credential, nil
-		})
+	testClient.EXPECT().CreateCredentialAws(
+		&CreateCredentialAwsParams{
+			FriendlyName: &friendlyName,
+		},
+	).Return(credential, nil)
 
 	resource.CreateContext(nil, resourceData, config)
 
@@ -59,8 +46,8 @@ func TestCreate(t *testing.T) {
 	assert.Equal(t, friendlyName, resourceData.Get("friendly_name"))
 }
 
-func TestRead(t *testing.T) {
-	setup(t)
+func TestFetchCredentialAws(t *testing.T) {
+	setupCredential(t)
 
 	// Set required params.
 	_ = resourceData.Set("sid", credentialsSid)
@@ -75,20 +62,19 @@ func TestRead(t *testing.T) {
 	assert.Equal(t, friendlyName, resourceData.Get("friendly_name"))
 }
 
-func TestUpdate(t *testing.T) {
-	setup(t)
+func TestUpdateCredentialAws(t *testing.T) {
+	setupCredential(t)
 
 	// Set required and optional params.
 	_ = resourceData.Set("sid", credentialsSid)
 	_ = resourceData.Set("friendly_name", friendlyName)
 
-	testClient.EXPECT().UpdateCredentialAws(credentialsSid, gomock.Any()).DoAndReturn(
-		func(sid string, params *UpdateCredentialAwsParams) (*AccountsV1CredentialCredentialAws, error) {
-			// Assert on the params that we're expecting.
-			assert.Equal(t, &friendlyName, params.FriendlyName)
-
-			return credential, nil
-		})
+	testClient.EXPECT().UpdateCredentialAws(
+		credentialsSid,
+		&UpdateCredentialAwsParams{
+			FriendlyName: &friendlyName,
+		},
+	).Return(credential, nil)
 
 	resource.UpdateContext(nil, resourceData, config)
 
@@ -98,8 +84,8 @@ func TestUpdate(t *testing.T) {
 	assert.Equal(t, friendlyName, resourceData.Get("friendly_name"))
 }
 
-func TestDelete(t *testing.T) {
-	setup(t)
+func TestDeleteCredentialAws(t *testing.T) {
+	setupCredential(t)
 
 	// Set required params.
 	_ = resourceData.Set("sid", credentialsSid)
@@ -112,16 +98,21 @@ func TestDelete(t *testing.T) {
 	assert.Empty(t, resourceData.Id())
 }
 
-func TestImport(t *testing.T) {
+func TestImportCredentialAws(t *testing.T) {
+	setupCredential(t)
+
 	resourceData.SetId(credentialsSid)
 
 	_, err := resource.Importer.StateContext(nil, resourceData, nil)
 
-	// Assert no errors parsing the ID.
+	// Assert no errors and the ID was properly parsed.
 	assert.Nil(t, err)
+	assert.Equal(t, credentialsSid, resourceData.Get("sid"))
 }
 
-func TestImportInvalid(t *testing.T) {
+func TestImportInvalidCredentialAws(t *testing.T) {
+	setupCredential(t)
+
 	resourceData.SetId(accountSid + "/" + credentialsSid)
 
 	_, err := resource.Importer.StateContext(nil, resourceData, nil)
@@ -131,7 +122,7 @@ func TestImportInvalid(t *testing.T) {
 	assert.Regexp(t, "invalid", err.Error())
 }
 
-func TestSchema(t *testing.T) {
+func TestSchemaCredentialAws(t *testing.T) {
 	for paramName, paramSchema := range resource.Schema {
 		required := paramName == "credentials"
 		computed := paramName != "credentials"
