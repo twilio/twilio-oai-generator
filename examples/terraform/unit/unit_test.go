@@ -1,6 +1,9 @@
 package unit
 
 import (
+	"fmt"
+	"io/ioutil"
+	"strings"
 	"testing"
 	. "twilio-oai-generator/go/rest/api/v2010"
 	. "twilio-oai-generator/terraform/client"
@@ -128,4 +131,21 @@ func TestImportInvalid(t *testing.T) {
 	// Assert invalid error is present.
 	assert.NotNil(t, err)
 	assert.Regexp(t, "invalid", err.Error())
+}
+
+func TestSchema(t *testing.T) {
+	for paramName, paramSchema := range resource.Schema {
+		required := paramName == "credentials"
+		computed := paramName != "credentials"
+		optional := paramName != "sid" && paramName != "credentials"
+
+		assert.Equal(t, required, paramSchema.Required, fmt.Sprintf("schema.Required iff credentials: %s", paramName))
+		assert.Equal(t, computed, paramSchema.Computed, fmt.Sprintf("schema.Computed iff not credentials: %s", paramName))
+		assert.Equal(t, optional, paramSchema.Optional, fmt.Sprintf("schema.Optional iff not sid or credentials: %s", paramName))
+	}
+}
+
+func TestSingleResource(t *testing.T) {
+	resourceFile, _ := ioutil.ReadFile("../resources/api_default.go")
+	assert.Equal(t, 1, strings.Count(string(resourceFile), "func Resource"))
 }
