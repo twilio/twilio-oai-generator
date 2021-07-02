@@ -2,8 +2,6 @@ package unit
 
 import (
 	"fmt"
-	"io/ioutil"
-	"strings"
 	"testing"
 	. "twilio-oai-generator/go/rest/api/v2010"
 	. "twilio-oai-generator/terraform/client"
@@ -143,9 +141,4 @@ func TestSchema(t *testing.T) {
 		assert.Equal(t, computed, paramSchema.Computed, fmt.Sprintf("schema.Computed iff not credentials: %s", paramName))
 		assert.Equal(t, optional, paramSchema.Optional, fmt.Sprintf("schema.Optional iff not sid or credentials: %s", paramName))
 	}
-}
-
-func TestSingleResource(t *testing.T) {
-	resourceFile, _ := ioutil.ReadFile("../resources/api_default.go")
-	assert.Equal(t, 1, strings.Count(string(resourceFile), "func Resource"))
 }
