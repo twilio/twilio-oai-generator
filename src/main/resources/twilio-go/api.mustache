@@ -58,13 +58,26 @@ func (c *ApiService) {{{nickname}}}({{#allParams}}{{#required}}{{paramName}} {{{
 {{^isHeaderParam}}
     if params != nil && params.{{paramName}} != nil {
 {{#isFreeFormObject}}
-	v, err := json.Marshal(params.{{paramName}})
+    {{#isArray}}
+        for _, item  := range *params.{{paramName}} {
+            v, err := json.Marshal(item)
 
-	if err != nil {
-	    return nil, err
-	}
+            if err != nil {
+                return nil, err
+            }
 
-	data.Set("{{{baseName}}}", string(v))
+            data.Add("{{{baseName}}}", string(v))
+        }
+    {{/isArray}}
+    {{^isArray}}
+        v, err := json.Marshal(params.{{paramName}})
+
+        if err != nil {
+            return nil, err
+        }
+
+        data.Set("{{{baseName}}}", string(v))
+    {{/isArray}}
 {{/isFreeFormObject}}
 {{^isFreeFormObject}}
     {{#isArray}}
