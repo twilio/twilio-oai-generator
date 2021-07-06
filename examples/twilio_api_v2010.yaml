@@ -287,6 +287,11 @@ paths:
                     - consumer-checking
                     - consumer-savings
                     - commercial-checking
+                TestObjectArray:
+                  description: test array of object transformation
+                  items:
+                    type: object
+                  type: array
               required:
                 - Credentials
               title: CreateCredentialAwsRequest

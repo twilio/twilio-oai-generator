@@ -163,3 +163,39 @@ func TestArrayTypeParam(t *testing.T) {
 	twilio := openapi.NewApiServiceWithClient(testClient)
 	twilio.CreateCallRecording("CA1234", &params)
 }
+
+func TestObjectArrayTypeParam(t *testing.T) {
+	item1 := map[string]interface{}{
+		"key1": "value1",
+		"key2": 2,
+	}
+	item2 := map[string]interface{}{
+		"key1": "value3",
+		"key2": 4,
+	}
+	testObjectArrayParam := []map[string]interface{}{item1, item2}
+	params := openapi.CreateCredentialAwsParams{}
+	params.SetTestObjectArray(testObjectArrayParam)
+
+	expectedData := url.Values{}
+	for _, item := range testObjectArrayParam {
+		obj, _ := json.Marshal(item)
+		expectedData.Add("TestObjectArray", string(obj))
+	}
+
+	mockCtrl := gomock.NewController(t)
+	testClient := NewMockBaseClient(mockCtrl)
+	testClient.EXPECT().SendRequest(
+		gomock.Any(),
+		gomock.Any(),
+		gomock.Any(),
+		gomock.Any()).
+		DoAndReturn(func(method string, rawURL string, data url.Values,
+			headers map[string]interface{}) (*http.Response, error) {
+			assert.Equal(t, expectedData, data)
+			return &http.Response{Body: ioutil.NopCloser(bytes.NewReader(nil))}, nil
+		},
+		)
+	twilio := openapi.NewApiServiceWithClient(testClient)
+	twilio.CreateCredentialAws(&params)
+}
