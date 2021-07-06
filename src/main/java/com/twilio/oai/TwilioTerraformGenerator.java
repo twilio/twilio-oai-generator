@@ -145,6 +145,7 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
 
             final CodegenOperation createOperation = getCodegenOperation(resource, ResourceOperation.CREATE);
             final CodegenOperation updateOperation = getCodegenOperation(resource, ResourceOperation.UPDATE);
+            final CodegenOperation fetchOperation = getCodegenOperation(resource, ResourceOperation.FETCH);
 
             // Use the parameters for creating the resource as the resource schema.
             resource.put("schema", getResourceSchema(createOperation.allParams, updateOperation.allParams));
@@ -184,6 +185,13 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
                         createOperation.vendorExtensions.put("x-resource-id-conversion-func", "IntToString");
                     }
                 });
+
+            fetchOperation.pathParams.forEach(param -> {
+                // Ensure we're able to properly convert the Terraform resource ID parts to the correct type.
+                if ("int".equals(param.dataType)) {
+                    param.vendorExtensions.put("x-conversion-func", "StringToInt");
+                }
+            });
         }
 
         // Exit if there are no resources to generate.
