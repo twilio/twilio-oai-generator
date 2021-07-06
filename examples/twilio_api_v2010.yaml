@@ -46,11 +46,18 @@ components:
       type: object
     api.v2010.account.call.call_recording:
       properties:
+        call_sid:
+          nullable: true
+          type: string
         price:
           description: The one-time cost of creating the recording.
           nullable: true
           type: number
           format: float
+        sid:
+          description: INTEGER SID!!!
+          nullable: true
+          type: integer
         source:
           description: How the recording was created
           enum:
@@ -388,73 +395,40 @@ paths:
     servers:
       - url: https://api.twilio.com
   /2010-04-01/Accounts/{AccountSid}/Calls/{CallSid}/Recordings.json:
-    description: A Recording resource represents the recording associated with a voice
-      call, conference, or SIP Trunk.
     get:
-      description: Retrieve a list of recordings belonging to the call used to make
-        the request
       operationId: ListCallRecording
       parameters:
-        - description: The SID of the [Account](https://www.twilio.com/docs/iam/api/account)
-            that created the Recording resources to read.
-          in: path
+        - in: path
           name: AccountSid
           required: true
           schema:
-            maxLength: 34
-            minLength: 34
-            pattern: ^AC[0-9a-fA-F]{32}$
             type: string
-        - description: The [Call](https://www.twilio.com/docs/voice/api/call-resource)
-            SID of the resources to read.
-          in: path
+        - in: path
           name: CallSid
           required: true
           schema:
-            maxLength: 34
-            minLength: 34
-            pattern: ^CA[0-9a-fA-F]{32}$
             type: string
-        - description: 'The `date_created` value, specified as `YYYY-MM-DD`, of the
-            resources to read. You can also specify inequality: `DateCreated<=YYYY-MM-DD`
-            will return recordings generated at or before midnight on a given date,
-            and `DateCreated>=YYYY-MM-DD` returns recordings generated at or after midnight
-            on a date.'
-          in: query
+        - in: query
           name: DateCreated
           schema:
             format: date-time
             type: string
-        - description: 'The `date_test` value, specified as `YYYY-MM-DD`, of the
-            resources to read.'
-          in: query
+        - in: query
           name: Date.Test
           schema:
             format: date
             type: string
-        - description: 'The `date_created` value, specified as `YYYY-MM-DD`, of the
-            resources to read. You can also specify inequality: `DateCreated<=YYYY-MM-DD`
-            will return recordings generated at or before midnight on a given date,
-            and `DateCreated>=YYYY-MM-DD` returns recordings generated at or after midnight
-            on a date.'
-          in: query
+        - in: query
           name: DateCreated<
           schema:
             format: date-time
             type: string
-        - description: 'The `date_created` value, specified as `YYYY-MM-DD`, of the
-            resources to read. You can also specify inequality: `DateCreated<=YYYY-MM-DD`
-            will return recordings generated at or before midnight on a given date,
-            and `DateCreated>=YYYY-MM-DD` returns recordings generated at or after midnight
-            on a date.'
-          in: query
+        - in: query
           name: DateCreated>
           schema:
             format: date-time
             type: string
-        - description: How many resources to return in each list page. The default is
-            50, and the maximum is 1000.
-          in: query
+        - in: query
           name: PageSize
           schema:
             maximum: 1000
@@ -524,7 +498,7 @@ paths:
                         "error_code": 2,
                         "price": 5,
                         "price_unit": "USD",
-                        "sid": "RE12345678123456781234567812345678",
+                        "sid": 87654321,
                         "source": "DialVerb",
                         "start_time": "2021-03-31T08:30:00Z",
                         "status": "in-progress",
@@ -544,7 +518,7 @@ paths:
                         "error_code": 1,
                         "price": 10,
                         "price_unit": "USD",
-                        "sid": "RE87654321876543218765432187654321",
+                        "sid": 87654321,
                         "source": "Trunking",
                         "start_time": "2020-03-31T08:30:00Z",
                         "status": "completed",
@@ -560,36 +534,24 @@ paths:
       security:
         - accountSid_authToken: [ ]
     post:
-      description: Create a recording for the call
       operationId: CreateCallRecording
       parameters:
-        - description: The X-Twilio-Webhook-Enabled HTTP request header
-          in: header
+        - in: header
           name: X-Twilio-Webhook-Enabled
           schema:
             enum:
               - 'true'
               - 'false'
             type: string
-        - description: The SID of the [Account](https://www.twilio.com/docs/iam/api/account)
-            that will create the resource.
-          in: path
+        - in: path
           name: AccountSid
           required: true
           schema:
-            maxLength: 34
-            minLength: 34
-            pattern: ^AC[0-9a-fA-F]{32}$
             type: string
-        - description: The SID of the [Call](https://www.twilio.com/docs/voice/api/call-resource)
-            to associate the resource with.
-          in: path
+        - in: path
           name: CallSid
           required: true
           schema:
-            maxLength: 34
-            minLength: 34
-            pattern: ^CA[0-9a-fA-F]{32}$
             type: string
       requestBody:
         content:
@@ -597,16 +559,9 @@ paths:
             schema:
               properties:
                 RecordingStatusCallback:
-                  description: The URL we should call using the `recording_status_callback_method`
-                    on each recording event specified in  `recording_status_callback_event`.
-                    For more information, see [RecordingStatusCallback parameters](https://www.twilio.com/docs/voice/api/recording#recordingstatuscallback).
                   format: uri
                   type: string
                 RecordingStatusCallbackEvent:
-                  description: 'The recording status events on which we should call
-                      the `recording_status_callback` URL. Can be: `in-progress`, `completed`
-                      and `absent` and the default is `completed`. Separate multiple
-                      event values with a space.'
                   items:
                     type: string
                   type: array
@@ -633,7 +588,7 @@ paths:
                     "error_code": 2,
                     "price": 100.22,
                     "price_unit": "USD",
-                    "sid": "RE12345678123456781234567812345678",
+                    "sid": 12345678,
                     "source": "Trunking",
                     "start_time": "2021-03-26T8:30:00Z",
                     "status": "completed",
@@ -643,6 +598,109 @@ paths:
           description: Created
       security:
         - accountSid_authToken: [ ]
+    servers:
+      - url: https://api.twilio.com
+  /2010-04-01/Accounts/{AccountSid}/Calls/{CallSid}/Recordings/{Sid}.json:
+    delete:
+      operationId: DeleteCallRecording
+      parameters:
+        - in: path
+          name: AccountSid
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: CallSid
+          required: true
+          schema:
+            type: string
+        - description: INTEGER SID!!!
+          in: path
+          name: Sid
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: The resource was deleted successfully.
+      security:
+        - accountSid_authToken: []
+    get:
+      operationId: FetchCallRecording
+      parameters:
+        - in: path
+          name: AccountSid
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: CallSid
+          required: true
+          schema:
+            type: string
+        - description: INTEGER SID!!!
+          in: path
+          name: Sid
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/api.v2010.account.call.call_recording'
+          description: OK
+      security:
+        - accountSid_authToken: []
+    post:
+      operationId: UpdateCallRecording
+      parameters:
+        - in: path
+          name: AccountSid
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: CallSid
+          required: true
+          schema:
+            type: string
+        - description: INTEGER SID!!!
+          in: path
+          name: Sid
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              properties:
+                PauseBehavior:
+                  type: string
+                Status:
+                  enum:
+                    - in-progress
+                    - paused
+                    - stopped
+                    - processing
+                    - completed
+                    - absent
+                  type: string
+              required:
+                - Status
+              title: UpdateCallRecordingRequest
+              type: object
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/api.v2010.account.call.call_recording'
+          description: OK
+      security:
+        - accountSid_authToken: []
     servers:
       - url: https://api.twilio.com
   /v1/Archives/{Date}/Calls/{Sid}:
