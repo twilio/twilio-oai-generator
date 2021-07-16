@@ -1,0 +1,45 @@
+{{#queryParams}}
+{{#vendorExtensions.x-is-account-sid}}
+if params != nil && params.PathAccountSid != nil {
+    path = strings.Replace(path, "{"+"AccountSid"+"}", *params.PathAccountSid, -1)
+} else {
+    path = strings.Replace(path, "{"+"AccountSid"+"}", c.requestHandler.Client.AccountSid(), -1)
+}
+{{/vendorExtensions.x-is-account-sid}}
+{{/queryParams}}
+{{#pathParams}}
+    path = strings.Replace(path, "{"+"{{paramName}}"+"}", {{^isString}}fmt.Sprint({{/isString}}{{paramName}}{{^isString}}){{/isString}}, -1)
+{{/pathParams}}
+
+data := url.Values{}
+headers := make(map[string]interface{})
+
+{{#hasOptionalParams}}
+{{#optionalParams}}
+{{^vendorExtensions.x-is-account-sid}}
+{{^isHeaderParam}}
+if params != nil && params.{{paramName}} != nil {
+{{#isFreeFormObject}}
+    v, err := json.Marshal(params.{{paramName}})
+
+    if err != nil {
+        return nil, err
+    }
+
+    data.Set("{{{baseName}}}", string(v))
+{{/isFreeFormObject}}
+{{^isFreeFormObject}}
+{{#isArray}}
+    for _, item  := range *params.{{paramName}} {
+        data.Add("{{{baseName}}}", item)
+    }
+{{/isArray}}
+{{^isArray}}
+    data.Set("{{{baseName}}}", {{^isString}}fmt.Sprint({{/isString}}{{#isDateTime}}({{/isDateTime}}*params.{{paramName}}{{^isString}}{{#isDateTime}}).Format(time.RFC3339){{/isDateTime}}){{/isString}})
+{{/isArray}}
+{{/isFreeFormObject}}
+}
+{{/isHeaderParam}}
+{{/vendorExtensions.x-is-account-sid}}
+{{/optionalParams}}
+{{/hasOptionalParams}}

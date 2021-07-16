@@ -46,14 +46,70 @@ components:
       type: object
     api.v2010.account.call.call_recording:
       properties:
-        call_sid:
+        account_sid:
+          description: The SID of the Account that created the resource
+          maxLength: 34
+          minLength: 34
+          nullable: true
+          pattern: ^AC[0-9a-fA-F]{32}$
+          type: string
+        api_version:
+          description: The API version used to make the recording
           nullable: true
           type: string
+        call_sid:
+          description: The SID of the Call the resource is associated with
+          nullable: true
+          type: string
+        channels:
+          description: The number of channels in the final recording file
+          nullable: true
+          type: integer
+        conference_sid:
+          description: The Conference SID that identifies the conference associated
+            with the recording
+          maxLength: 34
+          minLength: 34
+          nullable: true
+          pattern: ^CF[0-9a-fA-F]{32}$
+          type: string
+        date_created:
+          description: The RFC 2822 date and time in GMT that the resource was created
+          format: date-time-rfc-2822
+          nullable: true
+          type: string
+        date_created_test:
+          description: The RFC 2822 date and time in GMT that the resource was created
+          format: date-time-rfc-2822
+          nullable: true
+          type: string
+        date_updated:
+          description: The RFC 2822 date and time in GMT that the resource was last
+            updated
+          format: date-time-rfc-2822
+          nullable: true
+          type: string
+        duration:
+          description: The length of the recording in seconds
+          nullable: true
+          type: string
+        encryption_details:
+          description: How to decrypt the recording.
+          nullable: true
+          type: object
+        error_code:
+          description: More information about why the recording is missing, if status
+            is `absent`.
+          nullable: true
+          type: integer
         price:
           description: The one-time cost of creating the recording.
           nullable: true
           type: number
-          format: float
+        price_unit:
+          description: The currency used in the price property.
+          nullable: true
+          type: string
         sid:
           description: INTEGER SID!!!
           nullable: true
@@ -73,14 +129,15 @@ components:
             - completed
           nullable: true
           type: string
-        response_nested_array:
-          description: Test nested array response
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: boolean
+        track:
+          description: 'The recorded track. Can be: `inbound`, `outbound`, or `both`.'
+          nullable: true
+          type: string
+        uri:
+          description: The URI of the resource, relative to `https://api.twilio.com`
+          format: uri
+          nullable: true
+          type: string
       type: object
     api.v2010.account.call.call_feedback_summary:
       properties:
@@ -126,6 +183,121 @@ components:
                   type: boolean
               type: object
           type: object
+      type: object
+    api.v2010.account.message:
+      properties:
+        account_sid:
+          description: The SID of the Account that created the resource
+          maxLength: 34
+          minLength: 34
+          nullable: true
+          pattern: ^AC[0-9a-fA-F]{32}$
+          type: string
+        api_version:
+          description: The API version used to process the message
+          nullable: true
+          type: string
+        body:
+          description: The message text
+          nullable: true
+          type: string
+        date_created:
+          description: The RFC 2822 date and time in GMT that the resource was created
+          format: date-time-rfc-2822
+          nullable: true
+          type: string
+        date_sent:
+          description: The RFC 2822 date and time in GMT when the message was sent
+          format: date-time-rfc-2822
+          nullable: true
+          type: string
+        date_updated:
+          description: The RFC 2822 date and time in GMT that the resource was last
+            updated
+          format: date-time-rfc-2822
+          nullable: true
+          type: string
+        direction:
+          description: The direction of the message
+          enum:
+            - inbound
+            - outbound-api
+            - outbound-call
+            - outbound-reply
+          nullable: true
+          type: string
+        error_code:
+          description: The error code associated with the message
+          nullable: true
+          type: integer
+        error_message:
+          description: The description of the error_code
+          nullable: true
+          type: string
+        from:
+          description: The phone number that initiated the message
+          nullable: true
+          type: string
+        messaging_service_sid:
+          description: The SID of the Messaging Service used with the message.
+          maxLength: 34
+          minLength: 34
+          nullable: true
+          pattern: ^MG[0-9a-fA-F]{32}$
+          type: string
+        num_media:
+          description: The number of media files associated with the message
+          nullable: true
+          type: string
+        num_segments:
+          description: The number of messages used to deliver the message body
+          nullable: true
+          type: string
+        price:
+          description: The amount billed for the message
+          nullable: true
+          type: string
+        price_unit:
+          description: The currency in which price is measured
+          nullable: true
+          type: string
+        sid:
+          description: The unique string that identifies the resource
+          maxLength: 34
+          minLength: 34
+          nullable: true
+          pattern: ^(SM|MM)[0-9a-fA-F]{32}$
+          type: string
+        status:
+          description: The status of the message
+          enum:
+            - queued
+            - sending
+            - sent
+            - failed
+            - delivered
+            - undelivered
+            - receiving
+            - received
+            - accepted
+            - scheduled
+            - read
+            - partially_delivered
+            - canceled
+          nullable: true
+          type: string
+        subresource_uris:
+          description: A list of related resources identified by their relative URIs
+          nullable: true
+          type: object
+        to:
+          description: The phone number that received the message
+          nullable: true
+          type: string
+        uri:
+          description: The URI of the resource, relative to `https://api.twilio.com`
+          nullable: true
+          type: string
       type: object
   securitySchemes:
     accountSid_authToken:
@@ -469,14 +641,6 @@ paths:
                   uri:
                     format: uri
                     type: string
-                  response_nested_array:
-                    description: Test nested array response
-                    type: array
-                    items:
-                      type: integer
-                      properties:
-                        id:
-                          type: integer
                 title: ListCallRecordingResponse
                 type: object
               examples:
@@ -533,12 +697,13 @@ paths:
                     ],
                     "start": 0,
                     "uri": "http://example.com",
-                    "response_nested_array": [1,2,3]
+                    "response_nested_array": [ 1,2,3 ]
                   }
           description: OK
       security:
         - accountSid_authToken: [ ]
     post:
+      description: Create a recording for the call
       operationId: CreateCallRecording
       parameters:
         - in: header
@@ -579,7 +744,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/api.v2010.account.call.call_recording'
               examples:
-                craete_call_recording_response_example:
+                create_call_recording_response_example:
                   summary: Example of a CreateCallRecording
                   value: {
                     "account_sid": "AC12345678123456781234567812345678",
@@ -603,6 +768,38 @@ paths:
           description: Created
       security:
         - accountSid_authToken: [ ]
+    servers:
+      - url: https://api.twilio.com
+  /v1/Archives/{Date}/Calls/{Sid}:
+    delete:
+      description: Delete an Archived Call record from your account. This removes
+        the record from your Bulk Export results, but not from API or Account Portal
+        logs.
+      operationId: DeleteArchivedCall
+      parameters:
+        - description: The date of the Call in UTC.
+          in: path
+          name: Date
+          required: true
+          schema:
+            format: date
+            type: string
+        - description: The Twilio-provided Call SID that uniquely identifies the Call
+            resource to delete
+          in: path
+          name: Sid
+          required: true
+          schema:
+            maxLength: 34
+            minLength: 34
+            pattern: ^CA[0-9a-fA-F]{32}$
+            type: string
+      responses:
+        '204':
+          description: The resource was deleted successfully.
+      security:
+        - accountSid_authToken: [ ]
+    description: 'TODO: Resource-level docs'
     servers:
       - url: https://api.twilio.com
   /2010-04-01/Accounts/{AccountSid}/Calls/{CallSid}/Recordings/{Sid}.json:
@@ -629,7 +826,7 @@ paths:
         '204':
           description: The resource was deleted successfully.
       security:
-        - accountSid_authToken: []
+        - accountSid_authToken: [ ]
     get:
       operationId: FetchCallRecording
       parameters:
@@ -657,7 +854,7 @@ paths:
                 $ref: '#/components/schemas/api.v2010.account.call.call_recording'
           description: OK
       security:
-        - accountSid_authToken: []
+        - accountSid_authToken: [ ]
     post:
       operationId: UpdateCallRecording
       parameters:
@@ -705,48 +902,10 @@ paths:
                 $ref: '#/components/schemas/api.v2010.account.call.call_recording'
           description: OK
       security:
-        - accountSid_authToken: []
-    servers:
-      - url: https://api.twilio.com
-  /v1/Archives/{Date}/Calls/{Sid}:
-    delete:
-      description: Delete an Archived Call record from your account. This removes
-        the record from your Bulk Export results, but not from API or Account Portal
-        logs.
-      operationId: DeleteArchivedCall
-      parameters:
-        - description: The date of the Call in UTC.
-          in: path
-          name: Date
-          required: true
-          schema:
-            format: date
-            type: string
-        - description: The Twilio-provided Call SID that uniquely identifies the Call
-            resource to delete
-          in: path
-          name: Sid
-          required: true
-          schema:
-            maxLength: 34
-            minLength: 34
-            pattern: ^CA[0-9a-fA-F]{32}$
-            type: string
-      responses:
-        '204':
-          description: The resource was deleted successfully.
-      security:
         - accountSid_authToken: [ ]
-    description: 'TODO: Resource-level docs'
     servers:
       - url: https://api.twilio.com
-    x-default-output-properties: [ ]
-    x-path-type: instance
   /2010-04-01/Accounts/{AccountSid}/Calls/FeedbackSummary.json:
-    description: "Call FeedbackSummary resources provide an idea of how your end user\xE2\
-          \u20AC\u2122s perceive the quality of their calls and the most common issues\
-          \ they have encountered in the context of all your voice traffic during a specific\
-          \ time frame."
     post:
       description: Create a FeedbackSummary resource for a call
       operationId: CreateCallFeedbackSummary
@@ -867,3 +1026,265 @@ paths:
           description: OK
       security:
         - accountSid_authToken: [ ]
+  /2010-04-01/Accounts/{AccountSid}/Messages/{Sid}.json:
+    delete:
+      description: Deletes a message record from your account
+      operationId: DeleteMessage
+      parameters:
+        - in: path
+          name: AccountSid
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: Sid
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: The resource was deleted successfully.
+      security:
+        - accountSid_authToken: [ ]
+      x-maturity:
+        - GA
+    description: A Message resource represents an inbound or outbound message.
+    get:
+      description: Fetch a message belonging to the account used to make the request
+      operationId: FetchMessage
+      parameters:
+        - in: path
+          name: AccountSid
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: Sid
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/api.v2010.account.message'
+          description: OK
+      security:
+        - accountSid_authToken: [ ]
+      x-maturity:
+        - GA
+    post:
+      operationId: UpdateMessage
+      parameters:
+        - in: path
+          name: AccountSid
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: Sid
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              properties:
+                Body:
+                  description: The text of the message you want to send. Can be up
+                    to 1,600 characters long.
+                  type: string
+              title: UpdateMessageRequest
+              type: object
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/api.v2010.account.message'
+          description: OK
+      security:
+        - accountSid_authToken: [ ]
+      x-maturity:
+        - GA
+    servers:
+      - url: https://api.twilio.com
+    x-twilio:
+      defaultOutputProperties:
+        - sid
+        - from
+        - to
+        - status
+        - direction
+        - date_sent
+      pathType: instance
+  /2010-04-01/Accounts/{AccountSid}/Messages.json:
+    description: A Message resource represents an inbound or outbound message.
+    get:
+      description: Retrieve a list of messages belonging to the account used to make
+        the request
+      operationId: ListMessage
+      parameters:
+        - in: path
+          name: AccountSid
+          required: true
+          schema:
+            type: string
+        - description: Read messages sent to only this phone number.
+          in: query
+          name: To
+          schema:
+            type: string
+        - in: query
+          name: From
+          schema:
+            type: string
+        - in: query
+          name: DateSent
+          schema:
+            format: date-time
+            type: string
+        - in: query
+          name: DateSent<
+          schema:
+            format: date-time
+            type: string
+        - in: query
+          name: DateSent>
+          schema:
+            format: date-time
+            type: string
+        - in: query
+          name: PageSize
+          schema:
+            maximum: 1000
+            minimum: 1
+            type: integer
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  end:
+                    type: integer
+                  first_page_uri:
+                    format: uri
+                    type: string
+                  messages:
+                    items:
+                      $ref: '#/components/schemas/api.v2010.account.message'
+                    type: array
+                  next_page_uri:
+                    format: uri
+                    type: string
+                  page:
+                    type: integer
+                  page_size:
+                    type: integer
+                  previous_page_uri:
+                    format: uri
+                    type: string
+                  start:
+                    type: integer
+                  uri:
+                    format: uri
+                    type: string
+                title: ListMessageResponse
+                type: object
+          description: OK
+      security:
+        - accountSid_authToken: [ ]
+      x-maturity:
+        - GA
+    post:
+      description: Send a message from the account used to make the request
+      operationId: CreateMessage
+      parameters:
+        - in: path
+          name: AccountSid
+          required: true
+          schema:
+            maxLength: 34
+            minLength: 34
+            pattern: ^AC[0-9a-fA-F]{32}$
+            type: string
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              properties:
+                AddressRetention:
+                  description: Determines if the address can be stored or obfuscated
+                    based on privacy settings
+                  enum:
+                    - retain
+                  type: string
+                ApplicationSid:
+                  type: string
+                Attempt:
+                  type: integer
+                Body:
+                  type: string
+                ContentRetention:
+                  enum:
+                    - retain
+                  type: string
+                ForceDelivery:
+                  description: Reserved
+                  type: boolean
+                From:
+                  type: string
+                MaxPrice:
+                  type: number
+                MediaUrl:
+                  items:
+                    format: uri
+                    type: string
+                  type: array
+                MessagingServiceSid:
+                  type: string
+                PersistentAction:
+                  description: Rich actions for Channels Messages.
+                  items:
+                    type: string
+                  type: array
+                ProvideFeedback:
+                  type: boolean
+                SmartEncoded:
+                  type: boolean
+                StatusCallback:
+                  format: uri
+                  type: string
+                To:
+                  type: string
+                ValidityPeriod:
+                  type: integer
+              required:
+                - To
+              title: CreateMessageRequest
+              type: object
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/api.v2010.account.message'
+          description: Created
+      security:
+        - accountSid_authToken: [ ]
+      x-maturity:
+        - GA
+    servers:
+      - url: https://api.twilio.com
+    x-twilio:
+      defaultOutputProperties:
+        - sid
+        - from
+        - to
+        - status
+        - direction
+        - date_sent
+      pathType: list

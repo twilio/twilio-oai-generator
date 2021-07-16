@@ -10,6 +10,7 @@ import (
 	{{#imports}}
     "{{import}}"
     {{/imports}}
+    "github.com/twilio/twilio-go/client"
 )
 
 {{#operation}}
@@ -31,69 +32,13 @@ func (params *{{{nickname}}}Params) Set{{paramName}}({{paramName}} {{{dataType}}
 {{/optionalParams}}
 {{/hasOptionalParams}}
 
+{{^vendorExtensions.x-is-list-operation}}
 {{#notes}}
 // {{notes}}
 {{/notes}}
 func (c *ApiService) {{{nickname}}}({{#allParams}}{{#required}}{{paramName}} {{{dataType}}}{{^last}}, {{/last}}{{/required}}{{/allParams}}{{#hasOptionalParams}}params *{{{nickname}}}Params{{/hasOptionalParams}}) ({{#returnType}}*{{{returnType}}}, {{/returnType}}error) {
     path := "{{{path}}}"
-{{#queryParams}}
-    {{#vendorExtensions.x-is-account-sid}}
-        if params != nil && params.PathAccountSid != nil {
-        path = strings.Replace(path, "{"+"AccountSid"+"}", *params.PathAccountSid, -1)
-        } else {
-        path = strings.Replace(path, "{"+"AccountSid"+"}", c.requestHandler.Client.AccountSid(), -1)
-        }
-    {{/vendorExtensions.x-is-account-sid}}
-{{/queryParams}}
-{{#pathParams}}
-    path = strings.Replace(path, "{"+"{{paramName}}"+"}", {{^isString}}fmt.Sprint({{/isString}}{{paramName}}{{^isString}}){{/isString}}, -1)
-{{/pathParams}}
-
-    data := url.Values{}
-    headers := make(map[string]interface{})
-
-{{#hasOptionalParams}}
-{{#optionalParams}}
-{{^vendorExtensions.x-is-account-sid}}
-{{^isHeaderParam}}
-    if params != nil && params.{{paramName}} != nil {
-{{#isFreeFormObject}}
-    {{#isArray}}
-        for _, item  := range *params.{{paramName}} {
-            v, err := json.Marshal(item)
-
-            if err != nil {
-                return nil, err
-            }
-
-            data.Add("{{{baseName}}}", string(v))
-        }
-    {{/isArray}}
-    {{^isArray}}
-        v, err := json.Marshal(params.{{paramName}})
-
-        if err != nil {
-            return nil, err
-        }
-
-        data.Set("{{{baseName}}}", string(v))
-    {{/isArray}}
-{{/isFreeFormObject}}
-{{^isFreeFormObject}}
-    {{#isArray}}
-        for _, item  := range *params.{{paramName}} {
-            data.Add("{{{baseName}}}", item)
-        }
-    {{/isArray}}
-    {{^isArray}}
-        data.Set("{{{baseName}}}", {{^isString}}fmt.Sprint({{/isString}}{{#isDateTime}}({{/isDateTime}}*params.{{paramName}}{{^isString}}{{#isDateTime}}).Format(time.RFC3339){{/isDateTime}}){{/isString}})
-    {{/isArray}}
-{{/isFreeFormObject}}
-}
-{{/isHeaderParam}}
-{{/vendorExtensions.x-is-account-sid}}
-{{/optionalParams}}
-{{/hasOptionalParams}}
+    {{>partial_serialization}}
 
 {{#hasHeaderParams}}
 {{#headerParams}}
@@ -128,5 +73,113 @@ func (c *ApiService) {{{nickname}}}({{#allParams}}{{#required}}{{paramName}} {{{
     return nil
 {{/returnType}}
 }
+{{/vendorExtensions.x-is-list-operation}}
+{{#vendorExtensions.x-is-list-operation}}
+// Retrieve a single page of {{{vendorExtensions.x-domain-name}}} records from the API. Request is executed immediately.
+func (c *ApiService) Page{{{vendorExtensions.x-domain-name}}}({{#allParams}}{{#required}}{{paramName}} {{{dataType}}}{{^last}}, {{/last}}{{/required}}{{/allParams}}params *{{{nickname}}}Params, pageToken string, pageNumber string) (*{{{returnType}}}, error) {
+    path := "{{{path}}}"
+
+    {{>partial_serialization}}
+    if pageToken != "" {
+        data.Set("PageToken", pageToken)
+    }
+    if pageToken != "" {
+        data.Set("Page", pageNumber)
+    }
+
+    resp, err := c.requestHandler.Get(c.baseURL+path, data, headers)
+    if err != nil {
+        return nil, err
+    }
+
+    defer resp.Body.Close()
+
+    ps := &{{{returnType}}}{}
+    if err := json.NewDecoder(resp.Body).Decode(ps); err != nil {
+        return nil, err
+    }
+
+    return ps, err
+}
+
+// Lists {{{vendorExtensions.x-domain-name}}} records from the API as a list. Unlike stream, this operation is eager and loads 'limit' records into memory before returning.
+func (c *ApiService) List{{{vendorExtensions.x-domain-name}}}({{#allParams}}{{#required}}{{paramName}} {{{dataType}}}{{^last}}, {{/last}}{{/required}}{{/allParams}}params *{{{nickname}}}Params, limit int) ([]{{{vendorExtensions.x-payload-model-name}}}, error) {
+    params.SetPageSize(client.ReadLimits(params.PageSize, limit))
+
+    response, err := c.Page{{{vendorExtensions.x-domain-name}}}({{#allParams}}{{#required}}{{paramName}}{{^last}}, {{/last}}{{/required}}{{/allParams}}params, "", "")
+    if err != nil {
+        return nil, err
+    }
+
+    curRecord := 0
+    var records []{{{vendorExtensions.x-payload-model-name}}}
+
+    for response != nil {
+        records = append(records, response.{{{vendorExtensions.x-payload-field-name}}}...)
+
+        var record interface{}
+        if record, err = client.GetNext(response, &curRecord, limit, c.getNext{{{returnType}}}); record == nil || err != nil {
+            return records, err
+        }
+
+        response = record.(*{{{returnType}}})
+    }
+
+    return records, err
+}
+
+// Streams {{{vendorExtensions.x-domain-name}}} records from the API as a channel stream. This operation lazily loads records as efficiently as possible until the limit is reached.
+func (c *ApiService) Stream{{{vendorExtensions.x-domain-name}}}({{#allParams}}{{#required}}{{paramName}} {{{dataType}}}{{^last}}, {{/last}}{{/required}}{{/allParams}}params *{{{nickname}}}Params, limit int) (chan {{{vendorExtensions.x-payload-model-name}}}, error) {
+    params.SetPageSize(client.ReadLimits(params.PageSize, limit))
+
+    response, err := c.Page{{{vendorExtensions.x-domain-name}}}({{#allParams}}{{#required}}{{paramName}}{{^last}}, {{/last}}{{/required}}{{/allParams}}params, "", "")
+    if err != nil {
+        return nil, err
+    }
+
+    curRecord := 0
+    //set buffer size of the channel to 1
+    channel := make(chan {{{vendorExtensions.x-payload-model-name}}}, 1)
+
+    go func() {
+        for response != nil {
+            for item := range response.{{{vendorExtensions.x-payload-field-name}}} {
+                channel <- response.{{{vendorExtensions.x-payload-field-name}}}[item]
+            }
+
+
+            var record interface{}
+            if record, err = client.GetNext(response, &curRecord, limit, c.getNext{{{returnType}}}); record == nil || err != nil {
+                close(channel)
+                return
+            }
+
+            response = record.(*{{{returnType}}})
+        }
+        close(channel)
+    }()
+
+    return channel, err
+}
+
+func (c *ApiService) getNext{{{returnType}}}(nextPageUri string) (interface{}, error) {
+    if nextPageUri == "" {
+        return nil, nil
+    }
+    resp, err := c.requestHandler.Get(c.baseURL+nextPageUri, nil, nil)
+    if err != nil {
+        return nil, err
+    }
+
+    defer resp.Body.Close()
+
+    ps := &{{{returnType}}}{}
+    if err := json.NewDecoder(resp.Body).Decode(ps); err != nil {
+        return nil, err
+    }
+    return ps, nil
+}
+
+{{/vendorExtensions.x-is-list-operation}}
 {{/operation}}
 {{/operations}}
