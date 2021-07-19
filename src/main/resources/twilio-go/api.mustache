@@ -104,6 +104,9 @@ func (c *ApiService) Page{{{vendorExtensions.x-domain-name}}}({{#allParams}}{{#r
 
 // Lists {{{vendorExtensions.x-domain-name}}} records from the API as a list. Unlike stream, this operation is eager and loads 'limit' records into memory before returning.
 func (c *ApiService) List{{{vendorExtensions.x-domain-name}}}({{#allParams}}{{#required}}{{paramName}} {{{dataType}}}{{^last}}, {{/last}}{{/required}}{{/allParams}}params *{{{nickname}}}Params, limit int) ([]{{{vendorExtensions.x-payload-model-name}}}, error) {
+    if params == nil {
+        params = &{{{nickname}}}Params{}
+    }
     params.SetPageSize(client.ReadLimits(params.PageSize, limit))
 
     response, err := c.Page{{{vendorExtensions.x-domain-name}}}({{#allParams}}{{#required}}{{paramName}}{{^last}}, {{/last}}{{/required}}{{/allParams}}params, "", "")
@@ -130,6 +133,9 @@ func (c *ApiService) List{{{vendorExtensions.x-domain-name}}}({{#allParams}}{{#r
 
 // Streams {{{vendorExtensions.x-domain-name}}} records from the API as a channel stream. This operation lazily loads records as efficiently as possible until the limit is reached.
 func (c *ApiService) Stream{{{vendorExtensions.x-domain-name}}}({{#allParams}}{{#required}}{{paramName}} {{{dataType}}}{{^last}}, {{/last}}{{/required}}{{/allParams}}params *{{{nickname}}}Params, limit int) (chan {{{vendorExtensions.x-payload-model-name}}}, error) {
+    if params == nil {
+        params = &{{{nickname}}}Params{}
+    }
     params.SetPageSize(client.ReadLimits(params.PageSize, limit))
 
     response, err := c.Page{{{vendorExtensions.x-domain-name}}}({{#allParams}}{{#required}}{{paramName}}{{^last}}, {{/last}}{{/required}}{{/allParams}}params, "", "")
