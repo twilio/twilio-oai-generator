@@ -103,11 +103,11 @@ func (c *ApiService) Page{{{vendorExtensions.x-domain-name}}}({{#allParams}}{{#r
 }
 
 // Lists {{{vendorExtensions.x-domain-name}}} records from the API as a list. Unlike stream, this operation is eager and loads 'limit' records into memory before returning.
-func (c *ApiService) List{{{vendorExtensions.x-domain-name}}}({{#allParams}}{{#required}}{{paramName}} {{{dataType}}}{{^last}}, {{/last}}{{/required}}{{/allParams}}params *{{{nickname}}}Params, limit int) ([]{{{vendorExtensions.x-payload-model-name}}}, error) {
+func (c *ApiService) List{{{vendorExtensions.x-domain-name}}}({{#allParams}}{{#required}}{{paramName}} {{{dataType}}}{{^last}}, {{/last}}{{/required}}{{/allParams}}params *{{{nickname}}}Params) ([]{{{vendorExtensions.x-payload-model-name}}}, error) {
     if params == nil {
         params = &{{{nickname}}}Params{}
     }
-    params.SetPageSize(client.ReadLimits(params.PageSize, limit))
+    params.SetPageSize(client.ReadLimits(params.PageSize, params.Limit))
 
     response, err := c.Page{{{vendorExtensions.x-domain-name}}}({{#allParams}}{{#required}}{{paramName}}{{^last}}, {{/last}}{{/required}}{{/allParams}}params, "", "")
     if err != nil {
@@ -121,7 +121,7 @@ func (c *ApiService) List{{{vendorExtensions.x-domain-name}}}({{#allParams}}{{#r
         records = append(records, response.{{{vendorExtensions.x-payload-field-name}}}...)
 
         var record interface{}
-        if record, err = client.GetNext(response, &curRecord, limit, c.getNext{{{returnType}}}); record == nil || err != nil {
+        if record, err = client.GetNext(response, &curRecord, params.Limit, c.getNext{{{returnType}}}); record == nil || err != nil {
             return records, err
         }
 
@@ -132,11 +132,11 @@ func (c *ApiService) List{{{vendorExtensions.x-domain-name}}}({{#allParams}}{{#r
 }
 
 // Streams {{{vendorExtensions.x-domain-name}}} records from the API as a channel stream. This operation lazily loads records as efficiently as possible until the limit is reached.
-func (c *ApiService) Stream{{{vendorExtensions.x-domain-name}}}({{#allParams}}{{#required}}{{paramName}} {{{dataType}}}{{^last}}, {{/last}}{{/required}}{{/allParams}}params *{{{nickname}}}Params, limit int) (chan {{{vendorExtensions.x-payload-model-name}}}, error) {
+func (c *ApiService) Stream{{{vendorExtensions.x-domain-name}}}({{#allParams}}{{#required}}{{paramName}} {{{dataType}}}{{^last}}, {{/last}}{{/required}}{{/allParams}}params *{{{nickname}}}Params) (chan {{{vendorExtensions.x-payload-model-name}}}, error) {
     if params == nil {
         params = &{{{nickname}}}Params{}
     }
-    params.SetPageSize(client.ReadLimits(params.PageSize, limit))
+    params.SetPageSize(client.ReadLimits(params.PageSize, params.Limit))
 
     response, err := c.Page{{{vendorExtensions.x-domain-name}}}({{#allParams}}{{#required}}{{paramName}}{{^last}}, {{/last}}{{/required}}{{/allParams}}params, "", "")
     if err != nil {
@@ -155,7 +155,7 @@ func (c *ApiService) Stream{{{vendorExtensions.x-domain-name}}}({{#allParams}}{{
 
 
             var record interface{}
-            if record, err = client.GetNext(response, &curRecord, limit, c.getNext{{{returnType}}}); record == nil || err != nil {
+            if record, err = client.GetNext(response, &curRecord, params.Limit, c.getNext{{{returnType}}}); record == nil || err != nil {
                 close(channel)
                 return
             }

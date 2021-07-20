@@ -8,6 +8,8 @@ import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.media.IntegerSchema;
+import io.swagger.v3.oas.models.parameters.Parameter;
 import org.openapitools.codegen.*;
 
 public class TwilioGoGenerator extends AbstractTwilioGoGenerator {
@@ -90,6 +92,7 @@ public class TwilioGoGenerator extends AbstractTwilioGoGenerator {
 
         // Make sure required non-path params get into the options block.
         parameter.required = parameter.isPathParam;
+        parameter.vendorExtensions.put("x-custom", parameter.baseName.equals("limit"));
     }
 
     @Override
@@ -101,7 +104,12 @@ public class TwilioGoGenerator extends AbstractTwilioGoGenerator {
                 .getPaths()
                 .forEach((name, path) -> path
                         .readOperations()
-                        .forEach(operation -> operation.addTagsItem(PathUtils.cleanPath(name))));
+                        .forEach(operation -> {
+                            operation.addTagsItem(PathUtils.cleanPath(name));
+                            if (operation.getOperationId().startsWith("List")) {
+                                operation.addParametersItem(new Parameter().name("limit").description("Max number of records to return.").required(false).schema(new IntegerSchema()));
+                            }
+                        }));
     }
 
     /**

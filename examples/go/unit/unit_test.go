@@ -132,7 +132,7 @@ func TestQueryParams(t *testing.T) {
 		},
 		)
 	twilio := openapi.NewApiServiceWithClient(testClient)
-	_, _ = twilio.ListCallRecording("12345678", &params, 0)
+	_, _ = twilio.ListCallRecording("12345678", &params)
 }
 
 func TestArrayTypeParam(t *testing.T) {
@@ -166,16 +166,11 @@ func TestArrayTypeParam(t *testing.T) {
 	_, _ = twilio.CreateCallRecording("CA1234", &params)
 }
 
-func setPageSize(pageSize int) *int {
-	PageSize := &pageSize
-	return PageSize
-}
-
-func getStreamCount(twilio *openapi.ApiService, params *openapi.ListMessageParams, limit int) int {
+func getStreamCount(twilio *openapi.ApiService, params *openapi.ListMessageParams) int {
 	messageCount := 0
 
 	for {
-		channel, _ := twilio.StreamMessage(params, limit)
+		channel, _ := twilio.StreamMessage(params)
 		for range channel {
 			messageCount += 1
 		}
@@ -263,8 +258,9 @@ func TestList(t *testing.T) {
 	params.SetFrom("4444444444")
 	params.SetTo("9999999999")
 	params.SetPageSize(5)
+	params.SetLimit(5)
 
-	resp, err := twilio.ListMessage(params, 5)
+	resp, err := twilio.ListMessage(params)
 	assert.Equal(t, "outbound-api", *resp[0].Direction)
 	assert.Equal(t, "4444444444", *resp[0].From)
 	assert.Equal(t, "inbound", *resp[1].Direction)
@@ -272,10 +268,11 @@ func TestList(t *testing.T) {
 	assert.Equal(t, 5, len(resp))
 	assert.Nil(t, err)
 
-	resp, _ = twilio.ListMessage(params, 5)
+	resp, _ = twilio.ListMessage(params)
 	assert.Equal(t, 5, len(resp))
 
-	resp, _ = twilio.ListMessage(params, 10)
+	params.SetLimit(10)
+	resp, _ = twilio.ListMessage(params)
 	assert.Equal(t, 10, len(resp))
 }
 
@@ -428,8 +425,9 @@ func TestListPaging(t *testing.T) {
 	params.SetFrom("from")
 	params.SetTo("to")
 	params.SetPageSize(5)
+	params.SetLimit(10)
 
-	resp, _ := twilio.ListMessage(params, 10)
+	resp, _ := twilio.ListMessage(params)
 	assert.Equal(t, "delivered", *resp[0].Status)
 	assert.Equal(t, "Hi!", *resp[1].Body)
 	assert.Equal(t, 9, len(resp))
@@ -485,8 +483,9 @@ func TestListError(t *testing.T) {
 	params.SetFrom("from")
 	params.SetTo("to")
 	params.SetPageSize(5)
+	params.SetLimit(5)
 
-	resp, err := twilio.ListMessage(params, 5)
+	resp, err := twilio.ListMessage(params)
 	assert.Len(t, resp, 0)
 	assert.NotNil(t, err)
 	assert.Equal(t, "Listing error", err.Error())
@@ -565,14 +564,17 @@ func TestStream(t *testing.T) {
 
 	params := &openapi.ListMessageParams{}
 	params.SetPageSize(5)
+	params.SetLimit(10)
 
-	messageCount := getStreamCount(twilio, params, 10)
+	messageCount := getStreamCount(twilio, params)
 	assert.Equal(t, 10, messageCount)
 
-	messageCount = getStreamCount(twilio, params, 15)
+	params.SetLimit(15)
+	messageCount = getStreamCount(twilio, params)
 	assert.Equal(t, 15, messageCount)
 
-	 messageCount = getStreamCount(twilio, params, 40)
+	params.SetLimit(40)
+	messageCount = getStreamCount(twilio, params)
 	assert.Equal(t, 40, messageCount)
 }
 
@@ -704,11 +706,12 @@ func TestStreamPaging(t *testing.T) {
 	params.SetFrom("4444444444")
 	params.SetTo("9999999999")
 	params.SetPageSize(5)
+	params.SetLimit(8)
 
 	messageCount := 0
 
 	for {
-		channel, _ := twilio.StreamMessage(params, 8)
+		channel, _ := twilio.StreamMessage(params)
 		for record := range channel {
 			text := fmt.Sprintf("Message %d", messageCount)
 			assert.Equal(t, text, *record.Body)
@@ -769,8 +772,9 @@ func TestStreamError(t *testing.T) {
 
 	params := &openapi.ListMessageParams{}
 	params.SetPageSize(5)
+	params.SetLimit(5)
 
-	resp, err := twilio.StreamMessage(params, 5)
+	resp, err := twilio.StreamMessage(params)
 	assert.Len(t, resp, 0)
 	assert.NotNil(t, err)
 	assert.Equal(t, "streaming error", err.Error())
@@ -790,9 +794,10 @@ func TestObjectArrayTypeParam(t *testing.T) {
 	params.SetTestObjectArray(testObjectArrayParam)
 
 	expectedData := url.Values{}
-
-	v, _ := json.Marshal(testObjectArrayParam)
-	expectedData.Add("TestObjectArray", string(v))
+	for _, item := range testObjectArrayParam {
+		obj, _ := json.Marshal(item)
+		expectedData.Add("TestObjectArray", string(obj))
+	}
 
 	mockCtrl := gomock.NewController(t)
 	testClient := NewMockBaseClient(mockCtrl)

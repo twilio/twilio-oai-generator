@@ -18,8 +18,21 @@ headers := make(map[string]interface{})
 {{#optionalParams}}
 {{^vendorExtensions.x-is-account-sid}}
 {{^isHeaderParam}}
+{{^vendorExtensions.x-custom}}
 if params != nil && params.{{paramName}} != nil {
 {{#isFreeFormObject}}
+{{#isArray}}
+    for _, item  := range *params.{{paramName}} {
+        v, err := json.Marshal(item)
+
+        if err != nil {
+            return nil, err
+        }
+
+        data.Add("{{{baseName}}}", string(v))
+    }
+{{/isArray}}
+{{^isArray}}
     v, err := json.Marshal(params.{{paramName}})
 
     if err != nil {
@@ -27,6 +40,7 @@ if params != nil && params.{{paramName}} != nil {
     }
 
     data.Set("{{{baseName}}}", string(v))
+{{/isArray}}
 {{/isFreeFormObject}}
 {{^isFreeFormObject}}
 {{#isArray}}
@@ -39,6 +53,7 @@ if params != nil && params.{{paramName}} != nil {
 {{/isArray}}
 {{/isFreeFormObject}}
 }
+{{/vendorExtensions.x-custom}}
 {{/isHeaderParam}}
 {{/vendorExtensions.x-is-account-sid}}
 {{/optionalParams}}

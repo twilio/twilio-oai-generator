@@ -6,7 +6,7 @@ RUN go install golang.org/x/tools/cmd/goimports@latest
 COPY examples /go/src/twilio-go
 
 WORKDIR /go/src/twilio-go/go
-RUN go get github.com/twilio/twilio-go@main
+RUN go get -u github.com/twilio/twilio-go@main
 
 WORKDIR /go/src/twilio-go/terraform
 RUN go get github.com/twilio/terraform-provider-twilio@main
