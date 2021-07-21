@@ -169,15 +169,9 @@ func TestArrayTypeParam(t *testing.T) {
 func getStreamCount(twilio *openapi.ApiService, params *openapi.ListMessageParams) int {
 	messageCount := 0
 
-	for {
-		channel, _ := twilio.StreamMessage(params)
-		for range channel {
-			messageCount += 1
-		}
-
-		if len(channel) == 0 {
-			break
-		}
+	channel, _ := twilio.StreamMessage(params)
+	for range channel {
+		messageCount += 1
 	}
 	return messageCount
 }
@@ -431,8 +425,6 @@ func TestListPaging(t *testing.T) {
 	assert.Equal(t, "delivered", *resp[0].Status)
 	assert.Equal(t, "Hi!", *resp[1].Body)
 	assert.Equal(t, 9, len(resp))
-	//TODO: figure out why err is non nil
-	//assert.Nil(t, err)
 }
 
 func TestListError(t *testing.T) {
@@ -710,17 +702,11 @@ func TestStreamPaging(t *testing.T) {
 
 	messageCount := 0
 
-	for {
-		channel, _ := twilio.StreamMessage(params)
-		for record := range channel {
-			text := fmt.Sprintf("Message %d", messageCount)
-			assert.Equal(t, text, *record.Body)
-			messageCount += 1
-		}
-
-		if len(channel) == 0 {
-			break
-		}
+	channel, _ := twilio.StreamMessage(params)
+	for record := range channel {
+		text := fmt.Sprintf("Message %d", messageCount)
+		assert.Equal(t, text, *record.Body)
+		messageCount += 1
 	}
 
 	assert.Equal(t, 8, messageCount)
