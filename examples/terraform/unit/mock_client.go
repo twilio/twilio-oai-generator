@@ -64,6 +64,21 @@ func (mr *MockApiV2010MockRecorder) CreateCredentialAws(params interface{}) *gom
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateCredentialAws", reflect.TypeOf((*MockApiV2010)(nil).CreateCredentialAws), params)
 }
 
+// CreateMessage mocks base method.
+func (m *MockApiV2010) CreateMessage(params *openapi.CreateMessageParams) (*openapi.ApiV2010AccountMessage, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CreateMessage", params)
+	ret0, _ := ret[0].(*openapi.ApiV2010AccountMessage)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CreateMessage indicates an expected call of CreateMessage.
+func (mr *MockApiV2010MockRecorder) CreateMessage(params interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateMessage", reflect.TypeOf((*MockApiV2010)(nil).CreateMessage), params)
+}
+
 // DeleteCallRecording mocks base method.
 func (m *MockApiV2010) DeleteCallRecording(CallSid string, Sid int, params *openapi.DeleteCallRecordingParams) error {
 	m.ctrl.T.Helper()
@@ -90,6 +105,20 @@ func (m *MockApiV2010) DeleteCredentialAws(Sid string) error {
 func (mr *MockApiV2010MockRecorder) DeleteCredentialAws(Sid interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteCredentialAws", reflect.TypeOf((*MockApiV2010)(nil).DeleteCredentialAws), Sid)
+}
+
+// DeleteMessage mocks base method.
+func (m *MockApiV2010) DeleteMessage(Sid string, params *openapi.DeleteMessageParams) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DeleteMessage", Sid, params)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DeleteMessage indicates an expected call of DeleteMessage.
+func (mr *MockApiV2010MockRecorder) DeleteMessage(Sid, params interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteMessage", reflect.TypeOf((*MockApiV2010)(nil).DeleteMessage), Sid, params)
 }
 
 // FetchCallRecording mocks base method.
@@ -122,6 +151,21 @@ func (mr *MockApiV2010MockRecorder) FetchCredentialAws(Sid interface{}) *gomock.
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FetchCredentialAws", reflect.TypeOf((*MockApiV2010)(nil).FetchCredentialAws), Sid)
 }
 
+// FetchMessage mocks base method.
+func (m *MockApiV2010) FetchMessage(Sid string, params *openapi.FetchMessageParams) (*openapi.ApiV2010AccountMessage, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "FetchMessage", Sid, params)
+	ret0, _ := ret[0].(*openapi.ApiV2010AccountMessage)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// FetchMessage indicates an expected call of FetchMessage.
+func (mr *MockApiV2010MockRecorder) FetchMessage(Sid, params interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FetchMessage", reflect.TypeOf((*MockApiV2010)(nil).FetchMessage), Sid, params)
+}
+
 // UpdateCallRecording mocks base method.
 func (m *MockApiV2010) UpdateCallRecording(CallSid string, Sid int, params *openapi.UpdateCallRecordingParams) (*openapi.ApiV2010AccountCallCallRecording, error) {
 	m.ctrl.T.Helper()
@@ -150,4 +194,19 @@ func (m *MockApiV2010) UpdateCredentialAws(Sid string, params *openapi.UpdateCre
 func (mr *MockApiV2010MockRecorder) UpdateCredentialAws(Sid, params interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateCredentialAws", reflect.TypeOf((*MockApiV2010)(nil).UpdateCredentialAws), Sid, params)
+}
+
+// UpdateMessage mocks base method.
+func (m *MockApiV2010) UpdateMessage(Sid string, params *openapi.UpdateMessageParams) (*openapi.ApiV2010AccountMessage, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateMessage", Sid, params)
+	ret0, _ := ret[0].(*openapi.ApiV2010AccountMessage)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// UpdateMessage indicates an expected call of UpdateMessage.
+func (mr *MockApiV2010MockRecorder) UpdateMessage(Sid, params interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateMessage", reflect.TypeOf((*MockApiV2010)(nil).UpdateMessage), Sid, params)
 }

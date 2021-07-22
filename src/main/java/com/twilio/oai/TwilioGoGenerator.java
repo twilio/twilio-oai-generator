@@ -1,8 +1,16 @@
 package com.twilio.oai;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
+
 import io.swagger.v3.oas.models.OpenAPI;
-import org.openapitools.codegen.CodegenParameter;
-import org.openapitools.codegen.SupportingFile;
+import io.swagger.v3.oas.models.media.IntegerSchema;
+import io.swagger.v3.oas.models.parameters.Parameter;
+import org.openapitools.codegen.*;
 
 public class TwilioGoGenerator extends AbstractTwilioGoGenerator {
 
@@ -20,12 +28,71 @@ public class TwilioGoGenerator extends AbstractTwilioGoGenerator {
         return super.toApiFilename(name).replaceAll("^api_", "");
     }
 
+    @SuppressWarnings("unchecked")
+    @Override
+    public Map<String, Object> postProcessOperationsWithModels(final Map<String, Object> objs,
+                                                               final List<Object> allModels) {
+        final Map<String, Object> results = super.postProcessOperationsWithModels(objs, allModels);
+        final Map<String, Object> ops = (Map<String, Object>) results.get("operations");
+        final ArrayList<CodegenOperation> opList = (ArrayList<CodegenOperation>) ops.get("operation");
+        for (final CodegenOperation co : opList) {
+            if (co.nickname.startsWith("List")) {
+                // make sure the format matches the other methods
+                co.vendorExtensions.put("x-domain-name", co.nickname.replaceFirst("List", ""));
+                co.vendorExtensions.put("x-is-list-operation", true);
+
+                Map<String, CodegenModel> models = new HashMap<>();
+
+                // get all models for the operation
+                allModels
+                        .forEach(m -> {
+                            CodegenModel model = (CodegenModel) ((Map<String, Object>) m).get("model");
+                            models.put(model.name, model);
+                        });
+
+                CodegenModel returnModel = null;
+                // get the model for the return type
+                for (CodegenOperation op : opList) {
+                    if (models.containsKey(op.returnType)) {
+                        returnModel = models.get(op.returnType);
+                    }
+                }
+
+                // filter the fields in the model and get only the array typed field
+                if (returnModel != null) {
+                    CodegenProperty field = returnModel.allVars
+                            .stream()
+                            .filter(v -> v.dataType.startsWith("[]"))
+                            .collect(toSingleton());
+
+                    co.vendorExtensions.put("x-payload-field-name", field.name);
+                    co.vendorExtensions.put("x-payload-model-name", field.complexType);
+                }
+            }
+        }
+
+        return results;
+    }
+
+    private static <T> Collector<T, ?, T> toSingleton() {
+        return Collectors.collectingAndThen(
+                Collectors.toList(),
+                list -> {
+                    if (list.size() != 1) {
+                        throw new IllegalStateException();
+                    }
+                    return list.get(0);
+                }
+        );
+    }
+
     @Override
     public void postProcessParameter(final CodegenParameter parameter) {
         super.postProcessParameter(parameter);
 
         // Make sure required non-path params get into the options block.
         parameter.required = parameter.isPathParam;
+        parameter.vendorExtensions.put("x-custom", parameter.baseName.equals("limit"));
     }
 
     @Override
@@ -34,10 +101,15 @@ public class TwilioGoGenerator extends AbstractTwilioGoGenerator {
 
         // Group operations together by tag. This gives us one file/post-process per resource.
         openAPI
-            .getPaths()
-            .forEach((name, path) -> path
-                .readOperations()
-                .forEach(operation -> operation.addTagsItem(PathUtils.cleanPath(name))));
+                .getPaths()
+                .forEach((name, path) -> path
+                        .readOperations()
+                        .forEach(operation -> {
+                            operation.addTagsItem(PathUtils.cleanPath(name));
+                            if (operation.getOperationId().startsWith("List")) {
+                                operation.addParametersItem(new Parameter().name("limit").description("Max number of records to return.").required(false).schema(new IntegerSchema()));
+                            }
+                        }));
     }
 
     /**

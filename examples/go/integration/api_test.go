@@ -28,7 +28,7 @@ func TestMain(m *testing.M) {
 }
 
 func TestGet(t *testing.T) {
-	resp, err := testApiService.ListCredentialAws(nil)
+	resp, err := testApiService.PageCredentialAws(nil, "", "")
 	assert.Nil(t, err)
 	assert.NotNil(t, resp)
 	assert.Equal(t, accountSid, *resp.Credentials[0].AccountSid, "AccountSid mismatch")
@@ -79,7 +79,7 @@ func TestDateTimeQueryParams(t *testing.T) {
 	params.SetDateTest("2021-03-31")
 	params.SetPageSize(4)
 
-	resp, err := testApiService.ListCallRecording("CA12345678123456781234567812345678", params)
+	resp, err := testApiService.PageCallRecording("12345678", params, "", "")
 
 	assert.Nil(t, err)
 	assert.NotNil(t, resp)

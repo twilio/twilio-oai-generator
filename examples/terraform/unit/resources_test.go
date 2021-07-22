@@ -10,5 +10,5 @@ import (
 
 func TestResourceCount(t *testing.T) {
 	resourceFile, _ := ioutil.ReadFile("../resources/api_default.go")
-	assert.Equal(t, 2, strings.Count(string(resourceFile), "func Resource"))
+	assert.Equal(t, 3, strings.Count(string(resourceFile), "func Resource"))
 }

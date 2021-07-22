@@ -23,4 +23,9 @@ type ApiV2010 interface {
 	DeleteCallRecording(CallSid string, Sid int, params *v2010.DeleteCallRecordingParams) error
 	FetchCallRecording(CallSid string, Sid int, params *v2010.FetchCallRecordingParams) (*v2010.ApiV2010AccountCallCallRecording, error)
 	UpdateCallRecording(CallSid string, Sid int, params *v2010.UpdateCallRecordingParams) (*v2010.ApiV2010AccountCallCallRecording, error)
+
+	CreateMessage(params *v2010.CreateMessageParams) (*v2010.ApiV2010AccountMessage, error)
+	DeleteMessage(Sid string, params *v2010.DeleteMessageParams) error
+	FetchMessage(Sid string, params *v2010.FetchMessageParams) (*v2010.ApiV2010AccountMessage, error)
+	UpdateMessage(Sid string, params *v2010.UpdateMessageParams) (*v2010.ApiV2010AccountMessage, error)
 }
