@@ -1,6 +1,6 @@
 .PHONY: install test-docker
 
-OPENAPI_GENERATOR_VERSION=5.1.1
+OPENAPI_GENERATOR_VERSION=5.2.0
 
 install:
 	wget -N https://repo1.maven.org/maven2/org/openapitools/openapi-generator-cli/$(OPENAPI_GENERATOR_VERSION)/openapi-generator-cli-$(OPENAPI_GENERATOR_VERSION).jar
