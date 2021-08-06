@@ -12,7 +12,7 @@ import (
 
 var credentialsSid = "CR123"
 var friendlyName = "house-keys"
-var credential = &AccountsV1CredentialCredentialAws{
+var credential = &AccountsV1CredentialAws{
 	AccountSid:   &accountSid,
 	Sid:          &credentialsSid,
 	FriendlyName: &friendlyName,

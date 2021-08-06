@@ -13,7 +13,7 @@ var callSid = "CA123"
 var recordingSid = 123
 var recordingStatusCallback = "completed"
 var pauseBehavior = "skip"
-var callRecording = &ApiV2010AccountCallCallRecording{
+var callRecording = &ApiV2010CallRecording{
 	CallSid: &callSid,
 	Sid:     &recordingSid,
 }

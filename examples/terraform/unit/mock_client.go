@@ -35,10 +35,10 @@ func (m *MockApiV2010) EXPECT() *MockApiV2010MockRecorder {
 }
 
 // CreateCallRecording mocks base method.
-func (m *MockApiV2010) CreateCallRecording(CallSid string, params *openapi.CreateCallRecordingParams) (*openapi.ApiV2010AccountCallCallRecording, error) {
+func (m *MockApiV2010) CreateCallRecording(CallSid string, params *openapi.CreateCallRecordingParams) (*openapi.ApiV2010CallRecording, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreateCallRecording", CallSid, params)
-	ret0, _ := ret[0].(*openapi.ApiV2010AccountCallCallRecording)
+	ret0, _ := ret[0].(*openapi.ApiV2010CallRecording)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -50,10 +50,10 @@ func (mr *MockApiV2010MockRecorder) CreateCallRecording(CallSid, params interfac
 }
 
 // CreateCredentialAws mocks base method.
-func (m *MockApiV2010) CreateCredentialAws(params *openapi.CreateCredentialAwsParams) (*openapi.AccountsV1CredentialCredentialAws, error) {
+func (m *MockApiV2010) CreateCredentialAws(params *openapi.CreateCredentialAwsParams) (*openapi.AccountsV1CredentialAws, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreateCredentialAws", params)
-	ret0, _ := ret[0].(*openapi.AccountsV1CredentialCredentialAws)
+	ret0, _ := ret[0].(*openapi.AccountsV1CredentialAws)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -65,10 +65,10 @@ func (mr *MockApiV2010MockRecorder) CreateCredentialAws(params interface{}) *gom
 }
 
 // CreateMessage mocks base method.
-func (m *MockApiV2010) CreateMessage(params *openapi.CreateMessageParams) (*openapi.ApiV2010AccountMessage, error) {
+func (m *MockApiV2010) CreateMessage(params *openapi.CreateMessageParams) (*openapi.ApiV2010Message, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreateMessage", params)
-	ret0, _ := ret[0].(*openapi.ApiV2010AccountMessage)
+	ret0, _ := ret[0].(*openapi.ApiV2010Message)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -122,10 +122,10 @@ func (mr *MockApiV2010MockRecorder) DeleteMessage(Sid, params interface{}) *gomo
 }
 
 // FetchCallRecording mocks base method.
-func (m *MockApiV2010) FetchCallRecording(CallSid string, Sid int, params *openapi.FetchCallRecordingParams) (*openapi.ApiV2010AccountCallCallRecording, error) {
+func (m *MockApiV2010) FetchCallRecording(CallSid string, Sid int, params *openapi.FetchCallRecordingParams) (*openapi.ApiV2010CallRecording, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "FetchCallRecording", CallSid, Sid, params)
-	ret0, _ := ret[0].(*openapi.ApiV2010AccountCallCallRecording)
+	ret0, _ := ret[0].(*openapi.ApiV2010CallRecording)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -137,10 +137,10 @@ func (mr *MockApiV2010MockRecorder) FetchCallRecording(CallSid, Sid, params inte
 }
 
 // FetchCredentialAws mocks base method.
-func (m *MockApiV2010) FetchCredentialAws(Sid string) (*openapi.AccountsV1CredentialCredentialAws, error) {
+func (m *MockApiV2010) FetchCredentialAws(Sid string) (*openapi.AccountsV1CredentialAws, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "FetchCredentialAws", Sid)
-	ret0, _ := ret[0].(*openapi.AccountsV1CredentialCredentialAws)
+	ret0, _ := ret[0].(*openapi.AccountsV1CredentialAws)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -152,10 +152,10 @@ func (mr *MockApiV2010MockRecorder) FetchCredentialAws(Sid interface{}) *gomock.
 }
 
 // FetchMessage mocks base method.
-func (m *MockApiV2010) FetchMessage(Sid string, params *openapi.FetchMessageParams) (*openapi.ApiV2010AccountMessage, error) {
+func (m *MockApiV2010) FetchMessage(Sid string, params *openapi.FetchMessageParams) (*openapi.ApiV2010Message, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "FetchMessage", Sid, params)
-	ret0, _ := ret[0].(*openapi.ApiV2010AccountMessage)
+	ret0, _ := ret[0].(*openapi.ApiV2010Message)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -167,10 +167,10 @@ func (mr *MockApiV2010MockRecorder) FetchMessage(Sid, params interface{}) *gomoc
 }
 
 // UpdateCallRecording mocks base method.
-func (m *MockApiV2010) UpdateCallRecording(CallSid string, Sid int, params *openapi.UpdateCallRecordingParams) (*openapi.ApiV2010AccountCallCallRecording, error) {
+func (m *MockApiV2010) UpdateCallRecording(CallSid string, Sid int, params *openapi.UpdateCallRecordingParams) (*openapi.ApiV2010CallRecording, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "UpdateCallRecording", CallSid, Sid, params)
-	ret0, _ := ret[0].(*openapi.ApiV2010AccountCallCallRecording)
+	ret0, _ := ret[0].(*openapi.ApiV2010CallRecording)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -182,10 +182,10 @@ func (mr *MockApiV2010MockRecorder) UpdateCallRecording(CallSid, Sid, params int
 }
 
 // UpdateCredentialAws mocks base method.
-func (m *MockApiV2010) UpdateCredentialAws(Sid string, params *openapi.UpdateCredentialAwsParams) (*openapi.AccountsV1CredentialCredentialAws, error) {
+func (m *MockApiV2010) UpdateCredentialAws(Sid string, params *openapi.UpdateCredentialAwsParams) (*openapi.AccountsV1CredentialAws, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "UpdateCredentialAws", Sid, params)
-	ret0, _ := ret[0].(*openapi.AccountsV1CredentialCredentialAws)
+	ret0, _ := ret[0].(*openapi.AccountsV1CredentialAws)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -197,10 +197,10 @@ func (mr *MockApiV2010MockRecorder) UpdateCredentialAws(Sid, params interface{})
 }
 
 // UpdateMessage mocks base method.
-func (m *MockApiV2010) UpdateMessage(Sid string, params *openapi.UpdateMessageParams) (*openapi.ApiV2010AccountMessage, error) {
+func (m *MockApiV2010) UpdateMessage(Sid string, params *openapi.UpdateMessageParams) (*openapi.ApiV2010Message, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "UpdateMessage", Sid, params)
-	ret0, _ := ret[0].(*openapi.ApiV2010AccountMessage)
+	ret0, _ := ret[0].(*openapi.ApiV2010Message)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
