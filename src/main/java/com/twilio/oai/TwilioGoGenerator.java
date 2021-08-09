@@ -28,6 +28,20 @@ public class TwilioGoGenerator extends AbstractTwilioGoGenerator {
         return super.toApiFilename(name).replaceAll("^api_", "");
     }
 
+    @Override
+    public String toModel(String name, boolean doUnderscore) {
+        String prunedName = name;
+        // Keep the domain, version and the last part of the schema name
+        String[] words = name.split("\\.");
+        if (words.length > 3) {
+            // api.v2010.account.sip.sip_domain.sip_auth.sip_auth_registrations.sip_auth_registrations_credential_list_mapping
+            // becomes api.v2010.sip_auth_registrations_credential_list_mapping
+            prunedName = String.format("%s.%s.%s", words[0], words[1], words[words.length - 1]);
+        }
+
+        return super.toModel(prunedName, doUnderscore);
+    }
+
     @SuppressWarnings("unchecked")
     @Override
     public Map<String, Object> postProcessOperationsWithModels(final Map<String, Object> objs,
@@ -58,7 +72,7 @@ public class TwilioGoGenerator extends AbstractTwilioGoGenerator {
                     }
                 }
 
-                // filter the fields in the model and get only the array typed field
+                // filter the fields in the model and get only the array typed field. Also, make sure there is only one field of type list/array
                 if (returnModel != null) {
                     CodegenProperty field = returnModel.allVars
                             .stream()
@@ -99,17 +113,19 @@ public class TwilioGoGenerator extends AbstractTwilioGoGenerator {
     public void processOpenAPI(final OpenAPI openAPI) {
         super.processOpenAPI(openAPI);
 
-        // Group operations together by tag. This gives us one file/post-process per resource.
         openAPI
                 .getPaths()
                 .forEach((name, path) -> path
                         .readOperations()
                         .forEach(operation -> {
+                            // Group operations together by tag. This gives us one file/post-process per resource.
                             operation.addTagsItem(PathUtils.cleanPath(name));
+                            // Add a parameter called limit for list and stream operations
                             if (operation.getOperationId().startsWith("List")) {
                                 operation.addParametersItem(new Parameter().name("limit").description("Max number of records to return.").required(false).schema(new IntegerSchema()));
                             }
                         }));
+
     }
 
     /**
