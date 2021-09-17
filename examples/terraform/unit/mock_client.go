@@ -64,6 +64,21 @@ func (mr *MockApiV2010MockRecorder) CreateCredentialAws(params interface{}) *gom
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateCredentialAws", reflect.TypeOf((*MockApiV2010)(nil).CreateCredentialAws), params)
 }
 
+// CreateEnvironment mocks base method.
+func (m *MockApiV2010) CreateEnvironment(ServiceSid string, params *openapi.CreateEnvironmentParams) (*openapi.ServerlessV1Environment, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CreateEnvironment", ServiceSid, params)
+	ret0, _ := ret[0].(*openapi.ServerlessV1Environment)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CreateEnvironment indicates an expected call of CreateEnvironment.
+func (mr *MockApiV2010MockRecorder) CreateEnvironment(ServiceSid, params interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateEnvironment", reflect.TypeOf((*MockApiV2010)(nil).CreateEnvironment), ServiceSid, params)
+}
+
 // CreateMessage mocks base method.
 func (m *MockApiV2010) CreateMessage(params *openapi.CreateMessageParams) (*openapi.ApiV2010Message, error) {
 	m.ctrl.T.Helper()
@@ -105,6 +120,20 @@ func (m *MockApiV2010) DeleteCredentialAws(Sid string) error {
 func (mr *MockApiV2010MockRecorder) DeleteCredentialAws(Sid interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteCredentialAws", reflect.TypeOf((*MockApiV2010)(nil).DeleteCredentialAws), Sid)
+}
+
+// DeleteEnvironment mocks base method.
+func (m *MockApiV2010) DeleteEnvironment(ServiceSid, Sid string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DeleteEnvironment", ServiceSid, Sid)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DeleteEnvironment indicates an expected call of DeleteEnvironment.
+func (mr *MockApiV2010MockRecorder) DeleteEnvironment(ServiceSid, Sid interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteEnvironment", reflect.TypeOf((*MockApiV2010)(nil).DeleteEnvironment), ServiceSid, Sid)
 }
 
 // DeleteMessage mocks base method.
@@ -149,6 +178,21 @@ func (m *MockApiV2010) FetchCredentialAws(Sid string) (*openapi.AccountsV1Creden
 func (mr *MockApiV2010MockRecorder) FetchCredentialAws(Sid interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FetchCredentialAws", reflect.TypeOf((*MockApiV2010)(nil).FetchCredentialAws), Sid)
+}
+
+// FetchEnvironment mocks base method.
+func (m *MockApiV2010) FetchEnvironment(ServiceSid, Sid string) (*openapi.ServerlessV1Environment, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "FetchEnvironment", ServiceSid, Sid)
+	ret0, _ := ret[0].(*openapi.ServerlessV1Environment)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// FetchEnvironment indicates an expected call of FetchEnvironment.
+func (mr *MockApiV2010MockRecorder) FetchEnvironment(ServiceSid, Sid interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FetchEnvironment", reflect.TypeOf((*MockApiV2010)(nil).FetchEnvironment), ServiceSid, Sid)
 }
 
 // FetchMessage mocks base method.

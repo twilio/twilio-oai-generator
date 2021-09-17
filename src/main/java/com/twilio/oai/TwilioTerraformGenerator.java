@@ -1,13 +1,7 @@
 package com.twilio.oai;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -55,6 +49,8 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
         // We assume all optional properties may also be computed in the backend. E.g., unique_name is typically
         // optional but it will be populated if omitted.
         OPTIONAL("SchemaComputedOptional", "Optional"),
+        FORCE_NEW_OPTIONAL("SchemaForceNewOptional", "Optional"),
+        FORCE_NEW_REQUIRED("SchemaForceNewRequired", "**Required**"),
         REQUIRED("SchemaRequired", "**Required**");
 
         private final String name;
@@ -113,7 +109,7 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
 
             final Map<String, Object> resource = resources.computeIfAbsent(resourceName, k -> new LinkedHashMap<>());
             final Map<String, Object> resourceOperations = (Map<String, Object>) resource.computeIfAbsent("operations",
-                                                                                                          k -> new LinkedHashMap<>());
+                    k -> new LinkedHashMap<>());
             final ArrayList<CodegenOperation> resourceOperationList =
                 (ArrayList<CodegenOperation>) resourceOperations.computeIfAbsent(
                 "operation",
@@ -124,6 +120,8 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
             resourceOperationList.add(co);
 
             populateCrudOperations(resource, co);
+            resource.put("hasUpdate", resource
+                    .containsKey(ResourceOperation.UPDATE.name()));
 
             this.addParamVendorExtensions(co.allParams);
             this.addParamVendorExtensions(co.pathParams);
@@ -148,13 +146,15 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
             final CodegenOperation fetchOperation = getCodegenOperation(resource, ResourceOperation.FETCH);
 
             // Use the parameters for creating the resource as the resource schema.
-            resource.put("schema", getResourceSchema(createOperation.allParams, updateOperation.allParams));
+            resource.put("schema", getResourceSchema(createOperation, updateOperation, fetchOperation));
 
-            // We need to update te resource after creating it if there are any params which can only be set during
+            // We need to update the resource after creating it if there are any params which can only be set during
             // the update operation.
             final Set<String> createParams = getParamNames(createOperation.allParams);
-            final Set<String> updateParams = getParamNames(updateOperation.formParams);
-            createOperation.vendorExtensions.put("x-update-after-create", !createParams.containsAll(updateParams));
+            if (updateOperation != null) {
+                final Set<String> updateParams = getParamNames(updateOperation.formParams);
+                createOperation.vendorExtensions.put("x-update-after-create", !createParams.containsAll(updateParams));
+            }
 
             createOperation.responses
                 .stream()
@@ -169,8 +169,8 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
 
                     // We need to find the parameter to be used as the Terraform resource ID (as it's not always the
                     // 'sid'). We assume it's the last path parameter for the fetch/update/delete operation.
-                    final CodegenParameter idParameter = updateOperation.pathParams.get(
-                        updateOperation.pathParams.size() - 1);
+                    final CodegenParameter idParameter = fetchOperation.pathParams.get(
+                            fetchOperation.pathParams.size() - 1);
                     final String idParameterSnakeCase = toSnakeCase(idParameter.paramName);
 
                     // If the resource ID parameter is not part of the operation response body, remove the resource.
@@ -234,11 +234,13 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
     }
 
     private void removeNonCrudResources(final Map<String, Map<String, Object>> resources) {
+        // Remove resources that do not have at least create, read and delete operations
+        var resourceOps = EnumSet.complementOf(EnumSet.of(ResourceOperation.UPDATE));
         resources
             .entrySet()
             .removeIf(resource -> Arrays
-                .stream(ResourceOperation.values())
-                .anyMatch(resourceOperation -> !resource.getValue().containsKey(resourceOperation.name())));
+                .stream(resourceOps.toArray())
+                .anyMatch(resourceOperation -> !resource.getValue().containsKey(resourceOperation.toString())));
     }
 
     private CodegenOperation getCodegenOperation(final Map<String, Object> resource,
@@ -246,23 +248,44 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
         return (CodegenOperation) resource.get(resourceOperation.name());
     }
 
-    private List<CodegenParameter> getResourceSchema(final List<CodegenParameter> createParams,
-                                                     final List<CodegenParameter> updateParams) {
-        createParams.forEach(param -> addSchemaVendorExtensions(param,
-                                                                param.required
-                                                                    ? TerraformSchemaOptions.REQUIRED
-                                                                    : TerraformSchemaOptions.OPTIONAL));
-        updateParams.forEach(param -> addSchemaVendorExtensions(param,
-                                                                param.isPathParam
-                                                                    ? TerraformSchemaOptions.COMPUTED
-                                                                    : TerraformSchemaOptions.OPTIONAL));
+    private List<CodegenParameter> getResourceSchema(final CodegenOperation createOperation,
+                                                     final CodegenOperation updateOperation,
+                                                     final CodegenOperation fetchOperation) {
+        var createParams = getCreateParams(createOperation, updateOperation != null);
+
+        List<CodegenParameter> params = updateOperation != null ? updateOperation.allParams : fetchOperation.pathParams;
+        var updateParams = getUpdateParams(params);
 
         final Set<String> createParamName = getParamNames(createParams);
         final Stream<CodegenParameter> updateStream = updateParams
-            .stream()
-            .filter(param -> !createParamName.contains(param.paramName));
+                .stream()
+                .filter(param -> !createParamName.contains(param.paramName));
 
         return Stream.concat(createParams.stream(), updateStream).collect(Collectors.toList());
+    }
+
+    private List<CodegenParameter> getCreateParams(CodegenOperation createOperation, boolean hasUpdate) {
+        var createParams = createOperation.allParams;
+
+        // Resources without an update will be destroyed and force created on update
+        var schemaOptionRequired = !hasUpdate ?
+                TerraformSchemaOptions.FORCE_NEW_REQUIRED : TerraformSchemaOptions.REQUIRED;
+        var schemaOptionOptional = !hasUpdate ?
+                TerraformSchemaOptions.FORCE_NEW_OPTIONAL : TerraformSchemaOptions.OPTIONAL;
+
+        createParams.forEach(param -> addSchemaVendorExtensions(param,
+                param.required
+                        ? schemaOptionRequired
+                        : schemaOptionOptional));
+        return createParams;
+    }
+
+    private List<CodegenParameter> getUpdateParams(List<CodegenParameter> params) {
+        params.forEach(param -> addSchemaVendorExtensions(param,
+                param.isPathParam
+                        ? TerraformSchemaOptions.COMPUTED
+                        : TerraformSchemaOptions.OPTIONAL));
+        return params;
     }
 
     private void addSchemaVendorExtensions(final CodegenParameter codegenParameter,

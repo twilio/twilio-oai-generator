@@ -183,6 +183,61 @@ components:
           nullable: true
           type: string
       type: object
+    serverless.v1.service.environment:
+      properties:
+        account_sid:
+          description: The SID of the Account that created the Environment resource
+          nullable: true
+          type: string
+        build_sid:
+          description: The SID of the build deployed in the environment
+          nullable: true
+          type: string
+        date_created:
+          description: The ISO 8601 date and time in GMT when the Environment resource
+            was created
+          format: date-time
+          nullable: true
+          type: string
+        date_updated:
+          description: The ISO 8601 date and time in GMT when the Environment resource
+            was last updated
+          format: date-time
+          nullable: true
+          type: string
+        domain_name:
+          description: The base domain name for all Functions and Assets deployed
+            in the Environment
+          nullable: true
+          type: string
+        domain_suffix:
+          description: A URL-friendly name that represents the environment
+          nullable: true
+          type: string
+        links:
+          description: The URLs of the Environment resource's nested resources
+          nullable: true
+          type: object
+        service_sid:
+          description: The SID of the Service that the Environment resource is associated
+            with
+          nullable: true
+          type: string
+        sid:
+          description: The unique string that identifies the Environment resource
+          nullable: true
+          type: string
+        unique_name:
+          description: A user-defined string that uniquely identifies the Environment
+            resource
+          nullable: true
+          type: string
+        url:
+          description: The absolute URL of the Environment resource
+          format: uri
+          nullable: true
+          type: string
+      type: object
   securitySchemes:
     accountSid_authToken:
       scheme: basic
@@ -1172,3 +1227,165 @@ paths:
         - direction
         - date_sent
       pathType: list
+  /v1/Services/{ServiceSid}/Environments:
+    description: Represents a deployed build of a given set of Functions and/or Assets
+      at a specific URL.
+    get:
+      description: Retrieve a list of all environments.
+      operationId: ListEnvironment
+      parameters:
+        - description: The SID of the Service to read the Environment resources from.
+          in: path
+          name: ServiceSid
+          required: true
+          schema:
+            type: string
+        - description: How many resources to return in each list page. The default is
+            50, and the maximum is 1000.
+          in: query
+          name: PageSize
+          schema:
+            maximum: 1000
+            minimum: 1
+            type: integer
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  environments:
+                    items:
+                      $ref: '#/components/schemas/serverless.v1.service.environment'
+                    type: array
+                  meta:
+                    properties:
+                      first_page_url:
+                        format: uri
+                        type: string
+                      key:
+                        type: string
+                      next_page_url:
+                        format: uri
+                        type: string
+                      page:
+                        type: integer
+                      page_size:
+                        type: integer
+                      previous_page_url:
+                        format: uri
+                        type: string
+                      url:
+                        format: uri
+                        type: string
+                    type: object
+                title: ListEnvironmentResponse
+                type: object
+          description: OK
+      security:
+        - accountSid_authToken: [ ]
+      x-maturity:
+        - Beta
+    post:
+      description: Create a new environment.
+      operationId: CreateEnvironment
+      parameters:
+        - description: The SID of the Service to create the Environment resource under.
+          in: path
+          name: ServiceSid
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              properties:
+                DomainSuffix:
+                  type: string
+                UniqueName:
+                  type: string
+              required:
+                - UniqueName
+              title: CreateEnvironmentRequest
+              type: object
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/serverless.v1.service.environment'
+          description: Created
+      security:
+        - accountSid_authToken: [ ]
+      x-maturity:
+        - Beta
+    servers:
+      - url: https://serverless.twilio.com
+    x-twilio:
+      defaultOutputProperties:
+        - sid
+        - unique_name
+        - domain_name
+        - build_sid
+      pathType: list
+  /v1/Services/{ServiceSid}/Environments/{Sid}:
+    delete:
+      description: Delete a specific environment.
+      operationId: DeleteEnvironment
+      parameters:
+        - description: The SID of the Service to delete the Environment resource from.
+          in: path
+          name: ServiceSid
+          required: true
+          schema:
+            type: string
+        - description: The SID of the Environment resource to delete.
+          in: path
+          name: Sid
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: The resource was deleted successfully.
+      security:
+        - accountSid_authToken: [ ]
+      x-maturity:
+        - Beta
+    get:
+      description: Retrieve a specific environment.
+      operationId: FetchEnvironment
+      parameters:
+        - description: The SID of the Service to fetch the Environment resource from.
+          in: path
+          name: ServiceSid
+          required: true
+          schema:
+            type: string
+        - description: The SID of the Environment resource to fetch.
+          in: path
+          name: Sid
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/serverless.v1.service.environment'
+          description: OK
+      security:
+        - accountSid_authToken: [ ]
+      x-maturity:
+        - Beta
+    servers:
+      - url: https://serverless.twilio.com
+    x-twilio:
+      defaultOutputProperties:
+        - sid
+        - unique_name
+        - domain_name
+        - build_sid
+      pathType: instance
