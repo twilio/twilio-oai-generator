@@ -1,16 +1,18 @@
 package com.twilio.oai;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.Operation;
 import io.swagger.v3.oas.models.PathItem;
 import org.openapitools.codegen.CodegenConstants;
 import org.openapitools.codegen.CodegenProperty;
 import org.openapitools.codegen.languages.GoClientCodegen;
+
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public abstract class AbstractTwilioGoGenerator extends GoClientCodegen {
 
@@ -83,5 +85,13 @@ public abstract class AbstractTwilioGoGenerator extends GoClientCodegen {
         name = name.replace(">", "After");
         name = super.toVarName(name);
         return name;
+    }
+
+    public String sanitize(String name) {
+        // Character succeeding a digit/s should be uppercased.
+        var regex = "\\d+([\\w])";
+        var pattern = Pattern.compile(regex);
+        var matcher = pattern.matcher(name);
+        return matcher.replaceAll(matched -> matched.group().toUpperCase());
     }
 }

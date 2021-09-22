@@ -107,6 +107,7 @@ public class TwilioGoGenerator extends AbstractTwilioGoGenerator {
         // Make sure required non-path params get into the options block.
         parameter.required = parameter.isPathParam;
         parameter.vendorExtensions.put("x-custom", parameter.baseName.equals("limit"));
+        parameter.baseName = sanitize(parameter.baseName);
     }
 
     @Override
