@@ -1,7 +1,5 @@
 # OpenAPI Generator for the [twilio-go](https://github.com/twilio/twilio-go/) library
 
-**:warning: Note: Please ignore items related to Terraform as it is not yet supported. Thanks!**
-
 ## Overview
 This is a boiler-plate project to generate your own project derived from an OpenAPI specification.
 
