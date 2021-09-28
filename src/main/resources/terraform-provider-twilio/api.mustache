@@ -15,7 +15,9 @@ func Resource{{name}}() *schema.Resource {
     return &schema.Resource{
         CreateContext: create{{name}},
         ReadContext: read{{name}},
+{{#hasUpdate}}
         UpdateContext: update{{name}},
+{{/hasUpdate}}
         DeleteContext: delete{{name}},
         Schema: map[string]*schema.Schema{
             {{#schema}}
