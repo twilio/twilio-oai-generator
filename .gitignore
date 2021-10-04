@@ -5,3 +5,5 @@ target/
 
 examples/go/rest/
 examples/terraform/resources/
+
+*.iml
