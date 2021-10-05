@@ -90,21 +90,16 @@ func TestSchemaServiceEnvironment(t *testing.T) {
 		"sid": {false, false, true, false},
 		"domain_suffix": {false, true, true, true},
 		"date_created": {false, false, true, false},
-		"date_updated": {false, false, true, false},
-		"url": {false, false, true, false},
-		"links": {false, false, true, false},
-		"build_sid": {false, false, true, false},
-		"domain_name": {false, false, true, false},
-		"account_sid": {false, false, true, false},
 	}
 
-	assert.Equal(t, len(testCases), len(resource.Schema), "Resource schema should include all resource properties")
+	assert.Contains(t, resource.Schema, "date_created")
 	for paramName, paramSchema := range resource.Schema {
-		expectedParams := testCases[paramName]
+		if expectedParams, ok := testCases[paramName]; ok {
+			assert.Equal(t, expectedParams.Required, paramSchema.Required, fmt.Sprintf("schema.Required iff service_sid or unique_name: %s", paramName))
+			assert.Equal(t, expectedParams.ForceNew, paramSchema.ForceNew, fmt.Sprintf("schema.ForceNew iff service_sid or unique_name or domain_suffix: %s", paramName))
+			assert.Equal(t, expectedParams.Computed, paramSchema.Computed, fmt.Sprintf("schema.Computed iff not service_sid or unique_name: %s", paramName))
+			assert.Equal(t, expectedParams.Optional, paramSchema.Optional, fmt.Sprintf("schema.Optional iff param and not sid or service_sid or unique_name: %s", paramName))
+		}
 
-		assert.Equal(t, expectedParams.Required, paramSchema.Required, fmt.Sprintf("schema.Required iff service_sid or unique_name: %s", paramName))
-		assert.Equal(t, expectedParams.ForceNew, paramSchema.ForceNew, fmt.Sprintf("schema.ForceNew iff service_sid or unique_name or domain_suffix: %s", paramName))
-		assert.Equal(t, expectedParams.Computed, paramSchema.Computed, fmt.Sprintf("schema.Computed iff not service_sid or unique_name: %s", paramName))
-		assert.Equal(t, expectedParams.Optional, paramSchema.Optional, fmt.Sprintf("schema.Optional iff param and not sid or service_sid or unique_name: %s", paramName))
 	}
 }
