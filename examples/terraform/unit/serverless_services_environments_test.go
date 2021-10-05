@@ -76,16 +76,35 @@ func TestImportInvalidServiceEnvironment(t *testing.T) {
 	assert.Regexp(t, "invalid", err.Error())
 }
 
-func TestSchemaServiceEnvironment(t *testing.T) {
-	for paramName, paramSchema := range resource.Schema {
-		required := paramName == "service_sid" || paramName == "unique_name"
-		forcenew := paramName == "service_sid" || paramName == "unique_name" || paramName == "domain_suffix"
-		computed := paramName != "service_sid" && paramName != "unique_name"
-		optional := paramName != "sid" && paramName != "service_sid" && paramName != "unique_name"
+type ExpectedParamSchema struct {
+	Required bool
+	ForceNew bool
+	Computed bool
+	Optional bool
+}
 
-		assert.Equal(t, required, paramSchema.Required, fmt.Sprintf("schema.Required iff service_sid or unique_name: %s", paramName))
-		assert.Equal(t, forcenew, paramSchema.ForceNew, fmt.Sprintf("schema.ForceNew iff service_sid or unique_name or domain_suffix: %s", paramName))
-		assert.Equal(t, computed, paramSchema.Computed, fmt.Sprintf("schema.Computed iff not service_sid or unique_name: %s", paramName))
-		assert.Equal(t, optional, paramSchema.Optional, fmt.Sprintf("schema.Optional iff not sid or service_sid or unique_name: %s", paramName))
+func TestSchemaServiceEnvironment(t *testing.T) {
+	testCases := map[string]ExpectedParamSchema{
+		"service_sid": {true, true, false, false},
+		"unique_name": {true, true, false, false},
+		"sid": {false, false, true, false},
+		"domain_suffix": {false, true, true, true},
+		"date_created": {false, false, true, false},
+		"date_updated": {false, false, true, false},
+		"url": {false, false, true, false},
+		"links": {false, false, true, false},
+		"build_sid": {false, false, true, false},
+		"domain_name": {false, false, true, false},
+		"account_sid": {false, false, true, false},
+	}
+
+	assert.Equal(t, len(testCases), len(resource.Schema), "Resource schema should include all resource properties")
+	for paramName, paramSchema := range resource.Schema {
+		expectedParams := testCases[paramName]
+
+		assert.Equal(t, expectedParams.Required, paramSchema.Required, fmt.Sprintf("schema.Required iff service_sid or unique_name: %s", paramName))
+		assert.Equal(t, expectedParams.ForceNew, paramSchema.ForceNew, fmt.Sprintf("schema.ForceNew iff service_sid or unique_name or domain_suffix: %s", paramName))
+		assert.Equal(t, expectedParams.Computed, paramSchema.Computed, fmt.Sprintf("schema.Computed iff not service_sid or unique_name: %s", paramName))
+		assert.Equal(t, expectedParams.Optional, paramSchema.Optional, fmt.Sprintf("schema.Optional iff param and not sid or service_sid or unique_name: %s", paramName))
 	}
 }
