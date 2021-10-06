@@ -55,6 +55,11 @@ components:
           format: date-time-rfc-2822
           nullable: true
           type: string
+        date_created_test:
+          description: The RFC 2822 date and time in GMT that the resource was created
+          format: date-time-rfc-2822
+          nullable: true
+          type: string
         price:
           description: The one-time cost of creating the recording.
           nullable: true

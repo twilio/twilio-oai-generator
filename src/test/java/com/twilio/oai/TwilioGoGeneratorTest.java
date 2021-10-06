@@ -15,8 +15,8 @@ public class TwilioGoGeneratorTest {
     public void launchCodeGenerator() {
         final CodegenConfigurator configurator = new CodegenConfigurator()
             .setGeneratorName("twilio-go")
-            .setInputSpec("examples/twilio_api_v2010.yaml")
-            .setOutputDir("examples/go/rest");
+            .setInputSpec("examples/go/oai.yaml")
+            .setOutputDir("codegen/twilio/rest/oai");
 
         final ClientOptInput clientOptInput = configurator.toClientOptInput();
         DefaultGenerator generator = new DefaultGenerator();
