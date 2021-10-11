@@ -83,6 +83,10 @@ components:
             - completed
           nullable: true
           type: string
+        revision:
+          description: Integer Computed Property
+          nullable: true
+          type: integer
       type: object
     api.v2010.account.call.call_feedback_summary:
       properties:

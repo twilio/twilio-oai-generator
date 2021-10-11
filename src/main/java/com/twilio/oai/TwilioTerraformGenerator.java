@@ -8,14 +8,13 @@ import java.util.stream.Stream;
 import io.swagger.v3.oas.models.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Value;
-import org.openapitools.codegen.CodegenOperation;
-import org.openapitools.codegen.CodegenParameter;
-import org.openapitools.codegen.CodegenProperty;
-import org.openapitools.codegen.SupportingFile;
+import org.openapitools.codegen.*;
 import org.openapitools.codegen.utils.ModelUtils;
 import org.openapitools.codegen.utils.StringUtils;
 
 public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
+
+    private final Map<String, CodegenModel> allModels = new HashMap<String, CodegenModel>();
 
     @Value
     private static class TerraformSchema {
@@ -82,7 +81,19 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
 
     @Override
     public Map<String, Object> postProcessAllModels(final Map<String, Object> allModels) {
-        super.postProcessAllModels(allModels);
+        final Map<String, Object> results = super.postProcessAllModels(allModels);
+
+        for (final Object obj : results.values()) {
+            final Map<String, Object> mods = (Map<String, Object>) obj;
+            final ArrayList<Map<String, Object>> modList = (ArrayList<Map<String, Object>>) mods.get("models");
+
+            // Add all the models to the local models list.
+            modList
+                    .stream()
+                    .map(model -> model.get("model"))
+                    .map(CodegenModel.class::cast)
+                    .forEach(model -> this.allModels.put(model.getClassname(), model));
+        }
 
         // Return an empty collection so no model files get generated.
         return new HashMap<>();
@@ -248,9 +259,9 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
         return (CodegenOperation) resource.get(resourceOperation.name());
     }
 
-    private List<CodegenParameter> getResourceSchema(final CodegenOperation createOperation,
-                                                     final CodegenOperation updateOperation,
-                                                     final CodegenOperation fetchOperation) {
+    private List<Object> getResourceSchema(final CodegenOperation createOperation,
+                                           final CodegenOperation updateOperation,
+                                           final CodegenOperation fetchOperation) {
         var createParams = getCreateParams(createOperation, updateOperation != null);
 
         List<CodegenParameter> params = updateOperation != null ? updateOperation.allParams : fetchOperation.pathParams;
@@ -260,8 +271,15 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
         final Stream<CodegenParameter> updateStream = updateParams
                 .stream()
                 .filter(param -> !createParamName.contains(param.paramName));
+        final List<CodegenParameter> operationParams = Stream.concat(createParams.stream(), updateStream).collect(Collectors.toList());
 
-        return Stream.concat(createParams.stream(), updateStream).collect(Collectors.toList());
+        final Set<String> operationParamName = getParamNames(operationParams);
+        final Stream<CodegenProperty> filteredProperties = getResourceProperties(
+                this.allModels.get(createOperation.returnType))
+                .stream()
+                .filter(prop -> !operationParamName.contains(prop.name));
+
+        return Stream.concat(operationParams.stream(), filteredProperties).collect(Collectors.toList());
     }
 
     private List<CodegenParameter> getCreateParams(CodegenOperation createOperation, boolean hasUpdate) {
@@ -288,12 +306,25 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
         return params;
     }
 
+    private List<CodegenProperty> getResourceProperties(CodegenModel resourceModel) {
+        resourceModel.allVars.forEach(prop -> addSchemaVendorExtensions(prop, TerraformSchemaOptions.COMPUTED));
+        return resourceModel.allVars;
+    }
+
     private void addSchemaVendorExtensions(final CodegenParameter codegenParameter,
                                            final TerraformSchemaOptions schemaOptions) {
         final TerraformSchema terraformSchema = buildTerraformSchema(codegenParameter, schemaOptions);
 
         codegenParameter.vendorExtensions.put("x-terraform-schema", terraformSchema);
         codegenParameter.vendorExtensions.put("x-name-in-snake-case", this.toSnakeCase(codegenParameter.baseName));
+    }
+
+    private void addSchemaVendorExtensions(final CodegenProperty codegenProperty,
+                                           final TerraformSchemaOptions schemaOptions) {
+        final TerraformSchema terraformSchema = buildTerraformSchema(codegenProperty, schemaOptions);
+
+        codegenProperty.vendorExtensions.put("x-terraform-schema", terraformSchema);
+        codegenProperty.vendorExtensions.put("x-name-in-snake-case", this.toSnakeCase(codegenProperty.baseName));
     }
 
     private Set<String> getParamNames(final List<CodegenParameter> parameters) {
@@ -307,7 +338,7 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
 
     private TerraformSchema buildTerraformSchema(final CodegenProperty codegenProperty,
                                                  final TerraformSchemaOptions schemaOptions) {
-        return buildTerraformSchema(codegenProperty.dataType, schemaOptions, codegenProperty.items);
+        return buildTerraformSchema(codegenProperty.datatypeWithEnum, schemaOptions, codegenProperty.items);
     }
 
     private TerraformSchema buildTerraformSchema(final String dataType,
