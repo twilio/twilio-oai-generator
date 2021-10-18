@@ -37,9 +37,10 @@ jobs:
         env:
           SLACK_COLOR: ${{ job.status }}
           SLACK_ICON_EMOJI: ':github:'
-          SLACK_MESSAGE: ${{ format('Build [#{2}]({0}/{1}/actions/runs/{2}) in {3} failed.', env.GITHUB_SERVER_URL, env.GITHUB_REPOSITORY, env.GITHUB_RUN_ID, github.repository) }}
+          SLACK_MESSAGE: ${{ format('Build {2} in {1} failed{3} {0}/{1}/actions/runs/{2}', github.server_url, github.repository, github.run_id, ':') }}
           SLACK_TITLE: Build Failure
           SLACK_USERNAME: GitHub Actions
           SLACK_MSG_AUTHOR: twilio-dx
           SLACK_FOOTER: Posted automatically using GitHub Actions
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          MSG_MINIMAL: true
