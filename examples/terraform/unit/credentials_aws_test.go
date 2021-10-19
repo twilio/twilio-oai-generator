@@ -12,12 +12,10 @@ import (
 
 var credentialsSid = "CR123"
 var friendlyName = "house-keys"
-var responseArray = []int{1, 2, 3}
 var credential = &AccountsV1CredentialAws{
 	AccountSid:   &accountSid,
 	Sid:          &credentialsSid,
 	FriendlyName: &friendlyName,
-	ResponseArray: responseArray,
 }
 
 func setupCredential(t *testing.T) {
@@ -46,9 +44,6 @@ func TestCreateCredentialAws(t *testing.T) {
 	assert.Equal(t, accountSid, resourceData.Get("account_sid"))
 	assert.Equal(t, credentialsSid, resourceData.Get("sid"))
 	assert.Equal(t, friendlyName, resourceData.Get("friendly_name"))
-	for _, item := range responseArray {
-		assert.Contains(t, resourceData.Get("response_array"), item)
-	}
 }
 
 func TestFetchCredentialAws(t *testing.T) {
@@ -128,22 +123,13 @@ func TestImportInvalidCredentialAws(t *testing.T) {
 }
 
 func TestSchemaCredentialAws(t *testing.T) {
-	testCases := map[string]ExpectedParamSchema {
-		"credential": {true, false, false, false},
-		"sid": {false, false, true, false},
-		"account_sid": {false, false, true, true},
-		"friendly_name": {false, false, true, true},
-		"test_number": {false, false, true, true},
-		"url": {false, false, true, false},
-		"response_array": {false, false, true, false},
-	}
-
 	for paramName, paramSchema := range resource.Schema {
-		if expectedSchema, ok := testCases[paramName]; ok {
-			assert.Equal(t, expectedSchema.Required, paramSchema.Required, fmt.Sprintf("schema.Required iff credentials: %s", paramName))
-			assert.Equal(t, expectedSchema.Computed, paramSchema.Computed, fmt.Sprintf("schema.Computed iff not credentials: %s", paramName))
-			assert.Equal(t, expectedSchema.Optional, paramSchema.Optional, fmt.Sprintf("schema.Optional iff param and not sid or credentials: %s", paramName))
+		required := paramName == "credentials"
+		computed := paramName != "credentials"
+		optional := paramName != "sid" && paramName != "credentials"
 
-		}
+		assert.Equal(t, required, paramSchema.Required, fmt.Sprintf("schema.Required iff credentials: %s", paramName))
+		assert.Equal(t, computed, paramSchema.Computed, fmt.Sprintf("schema.Computed iff not credentials: %s", paramName))
+		assert.Equal(t, optional, paramSchema.Optional, fmt.Sprintf("schema.Optional iff not sid or credentials: %s", paramName))
 	}
 }
