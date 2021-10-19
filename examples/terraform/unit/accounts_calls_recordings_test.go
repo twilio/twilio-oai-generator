@@ -13,11 +13,9 @@ var callSid = "CA123"
 var recordingSid = 123
 var recordingStatusCallback = "completed"
 var pauseBehavior = "skip"
-var revision = 1
 var callRecording = &ApiV2010CallRecording{
 	CallSid: &callSid,
 	Sid:     &recordingSid,
-	Revision: &revision,
 }
 var recordingId = fmt.Sprintf("%s/%d", callSid, recordingSid)
 
@@ -57,7 +55,6 @@ func TestCreateCallRecording(t *testing.T) {
 	assert.Equal(t, recordingId, resourceData.Id())
 	assert.Equal(t, callSid, resourceData.Get("call_sid"))
 	assert.Equal(t, recordingSid, resourceData.Get("sid"))
-	assert.Equal(t, revision, resourceData.Get("revision"))
 }
 
 func TestImportCallRecording(t *testing.T) {
@@ -86,21 +83,15 @@ func TestImportInvalidCallRecording(t *testing.T) {
 }
 
 func TestSchemaCallRecording(t *testing.T) {
-	testCases := map[string]ExpectedParamSchema {
-		"call_sid": {true, false, false, false},
-		"sid": {false, false, true, false},
-		"path_account_sid": {false, false, true, true},
-		"pause_behavior": {false, false, true, true},
-		"price": {false, false, true, false},
-		"revision": {false, false, true, false},
-	}
-
 	assert.Contains(t, resource.Schema, "path_account_sid")
+
 	for paramName, paramSchema := range resource.Schema {
-		if expectedSchema, ok := testCases[paramName]; ok {
-			assert.Equal(t, expectedSchema.Required, paramSchema.Required, fmt.Sprintf("schema.Required iff call_sid: %s", paramName))
-			assert.Equal(t, expectedSchema.Computed, paramSchema.Computed, fmt.Sprintf("schema.Computed iff not call_sid: %s", paramName))
-			assert.Equal(t, expectedSchema.Optional, paramSchema.Optional, fmt.Sprintf("schema.Optional iff param and not sid or call_sid: %s", paramName))
-		}
+		required := paramName == "call_sid"
+		computed := paramName != "call_sid"
+		optional := paramName != "sid" && paramName != "call_sid"
+
+		assert.Equal(t, required, paramSchema.Required, fmt.Sprintf("schema.Required iff call_sid: %s", paramName))
+		assert.Equal(t, computed, paramSchema.Computed, fmt.Sprintf("schema.Computed iff not call_sid: %s", paramName))
+		assert.Equal(t, optional, paramSchema.Optional, fmt.Sprintf("schema.Optional iff not sid or call_sid: %s", paramName))
 	}
 }

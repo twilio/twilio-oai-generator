@@ -76,29 +76,16 @@ func TestImportInvalidServiceEnvironment(t *testing.T) {
 	assert.Regexp(t, "invalid", err.Error())
 }
 
-type ExpectedParamSchema struct {
-	Required bool
-	ForceNew bool
-	Computed bool
-	Optional bool
-}
-
 func TestSchemaServiceEnvironment(t *testing.T) {
-	testCases := map[string]ExpectedParamSchema{
-		"service_sid": {true, true, false, false},
-		"unique_name": {true, true, false, false},
-		"sid": {false, false, true, false},
-		"domain_suffix": {false, true, true, true},
-		"date_created": {false, false, true, false},
-	}
-
-	assert.Contains(t, resource.Schema, "date_created")
 	for paramName, paramSchema := range resource.Schema {
-		if expectedParams, ok := testCases[paramName]; ok {
-			assert.Equal(t, expectedParams.Required, paramSchema.Required, fmt.Sprintf("schema.Required iff service_sid or unique_name: %s", paramName))
-			assert.Equal(t, expectedParams.ForceNew, paramSchema.ForceNew, fmt.Sprintf("schema.ForceNew iff service_sid or unique_name or domain_suffix: %s", paramName))
-			assert.Equal(t, expectedParams.Computed, paramSchema.Computed, fmt.Sprintf("schema.Computed iff not service_sid or unique_name: %s", paramName))
-			assert.Equal(t, expectedParams.Optional, paramSchema.Optional, fmt.Sprintf("schema.Optional iff param and not sid or service_sid or unique_name: %s", paramName))
-		}
+		required := paramName == "service_sid" || paramName == "unique_name"
+		forcenew := paramName == "service_sid" || paramName == "unique_name" || paramName == "domain_suffix"
+		computed := paramName != "service_sid" && paramName != "unique_name"
+		optional := paramName != "sid" && paramName != "service_sid" && paramName != "unique_name"
+
+		assert.Equal(t, required, paramSchema.Required, fmt.Sprintf("schema.Required iff service_sid or unique_name: %s", paramName))
+		assert.Equal(t, forcenew, paramSchema.ForceNew, fmt.Sprintf("schema.ForceNew iff service_sid or unique_name or domain_suffix: %s", paramName))
+		assert.Equal(t, computed, paramSchema.Computed, fmt.Sprintf("schema.Computed iff not service_sid or unique_name: %s", paramName))
+		assert.Equal(t, optional, paramSchema.Optional, fmt.Sprintf("schema.Optional iff not sid or service_sid or unique_name: %s", paramName))
 	}
 }
