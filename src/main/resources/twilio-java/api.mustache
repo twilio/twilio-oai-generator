@@ -1,0 +1,268 @@
+{{>licenseInfo}}
+package {{package}};
+
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.twilio.base.Resource;
+import com.twilio.converter.Converter;
+import com.twilio.converter.DateConverter;
+import com.twilio.converter.Promoter;
+import com.twilio.exception.ApiConnectionException;
+
+import com.twilio.exception.ApiConnectionException;
+import com.twilio.exception.ApiException;
+import com.twilio.exception.RestException;
+import com.twilio.http.HttpMethod;
+import com.twilio.http.Request;
+import com.twilio.http.Response;
+import com.twilio.http.TwilioRestClient;
+import com.twilio.rest.Domains;
+
+import lombok.ToString;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URI;
+import java.time.ZonedDateTime;
+
+{{#imports}}import {{import}};
+{{/imports}}
+
+
+{{^fullJavaUtil}}
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+{{/fullJavaUtil}}
+
+import lombok.ToString;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URI;
+import java.time.ZonedDateTime;
+import java.util.Map;
+import java.util.Objects;
+
+{{#resources}}
+{{>model}}
+@JsonIgnoreProperties(ignoreUnknown = true)
+@ToString
+public class {{resourceName}} extends Resource {
+    // TODO
+    private static final long serialVersionUID = something;
+
+    {{#hasCreate}}
+    public static {{resourceName}}Creator creator(){
+        return new {{resourceName}}Creator();
+    }
+    {{/hasCreate}}
+
+    {{#hasFetch}}
+    public static {{resourceName}}Fetcher fetch(){
+        return new {{resourceName}}Fetcher();
+    }
+    {{/hasFetch}}
+
+    {{#hasDelete}}
+    public static {{resourceName}}Deleter delete(){
+        return new {{resourceName}}Deleter();
+    }
+    {{/hasDelete}}
+
+    {{#hasRead}}
+    public static {{resourceName}}Reader read(){
+        return new {{resourceName}}Reader();
+    }
+    {{/hasRead}}
+
+    {{#hasUpdate}}
+    public static {{resourceName}}Updater update(){
+        return new {{resourceName}}Updater();
+    }
+    {{/hasUpdate}}
+
+    /**
+    * Converts a JSON String into a {{resourceName}} object using the provided ObjectMapper.
+    *
+    * @param json Raw JSON String
+    * @param objectMapper Jackson ObjectMapper
+    * @return {{resourceName}} object represented by the provided JSON
+    */
+    public static {{resourceName}} fromJson(final String json, final ObjectMapper objectMapper) {
+        // Convert all checked exceptions to Runtime
+        try {
+            return objectMapper.readValue(json, {{resourceName}}.class);
+        } catch (final JsonMappingException | JsonParseException e) {
+            throw new ApiException(e.getMessage(), e);
+        } catch (final IOException e) {
+            throw new ApiConnectionException(e.getMessage(), e);
+        }
+    }
+
+    /**
+    * Converts a JSON InputStream into a {{resourceName}} object using the provided
+    * ObjectMapper.
+    *
+    * @param json Raw JSON InputStream
+    * @param objectMapper Jackson ObjectMapper
+    * @return {{resourceName}} object represented by the provided JSON
+    */
+    public static {{resourceName}} fromJson(final InputStream json, final ObjectMapper objectMapper) {
+        // Convert all checked exceptions to Runtime
+        try {
+            return objectMapper.readValue(json, {{resourceName}}.class);
+        } catch (final JsonMappingException | JsonParseException e) {
+            throw new ApiException(e.getMessage(), e);
+        } catch (final IOException e) {
+            throw new ApiConnectionException(e.getMessage(), e);
+        }
+    }
+
+{{#operations}}
+{{#allParams}}
+    private final {{dataType}} {{paramName}};
+
+    public final {{dataType}} get{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}(){
+        return this.{{paramName}};
+    }
+{{/allParams}}
+
+    @JsonCreator
+    private {{resourceName}}({{#allParams}} @JsonProperty("{{paramName}}")
+                                            final {{dataType}} {{paramName}},
+    {{/allParams}}) {
+        {{#allParams}}
+        this.{{paramName}} = {{paramName}};
+        {{/allParams}}
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        {{resourceName}} other = ({{resourceName}}) o;
+
+        return {{#allParams}}Objects.equals({{paramName}}, other.{{paramName}}) && {{/allParams}}
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash({{#allParams}}{{paramName}}, {{/allParams}});
+    }
+{{/operations}}
+{{/resources}}
+}
+
+{{>generatedAnnotation}}
+{{#operations}}
+public class {{classname}} {
+  private ApiClient apiClient;
+
+  public {{classname}}() {
+    this(Configuration.getDefaultApiClient());
+  }
+
+  public {{classname}}(ApiClient apiClient) {
+    this.apiClient = apiClient;
+  }
+
+  public ApiClient getApiClient() {
+    return apiClient;
+  }
+
+  public void setApiClient(ApiClient apiClient) {
+    this.apiClient = apiClient;
+  }
+
+  {{#operation}}
+  /**
+   * {{summary}}
+   * {{notes}}
+   {{#allParams}}
+   * @param {{paramName}} {{description}}{{#required}} (required){{/required}}{{^required}} (optional{{^isContainer}}{{#defaultValue}}, default to {{.}}{{/defaultValue}}){{/isContainer}}{{/required}}
+   {{/allParams}}
+   {{#returnType}}
+   * @return {{.}}
+   {{/returnType}}
+   * @throws ApiException if fails to make API call
+   {{#isDeprecated}}
+   * @deprecated
+   {{/isDeprecated}}
+   {{#externalDocs}}
+   * {{description}}
+   * @see <a href="{{url}}">{{summary}} Documentation</a>
+   {{/externalDocs}}
+   */
+  {{#isDeprecated}}
+  @Deprecated
+  {{/isDeprecated}}
+  public {{#returnType}}{{{.}}} {{/returnType}}{{^returnType}}void {{/returnType}}{{operationId}}({{#allParams}}{{{dataType}}} {{paramName}}{{^-last}}, {{/-last}}{{/allParams}}) throws ApiException {
+    Object localVarPostBody = {{#bodyParam}}{{paramName}}{{/bodyParam}}{{^bodyParam}}null{{/bodyParam}};
+    {{#allParams}}{{#required}}
+    // verify the required parameter '{{paramName}}' is set
+    if ({{paramName}} == null) {
+      throw new ApiException(400, "Missing the required parameter '{{paramName}}' when calling {{operationId}}");
+    }
+    {{/required}}{{/allParams}}
+    // create path and map variables
+    String localVarPath = "{{{path}}}"{{#pathParams}}
+      .replaceAll("\\{" + "{{baseName}}" + "\\}", apiClient.escapeString({{{paramName}}}.toString())){{/pathParams}};
+
+    // query params
+    {{javaUtilPrefix}}List<Pair> localVarQueryParams = new {{javaUtilPrefix}}ArrayList<Pair>();
+    {{javaUtilPrefix}}List<Pair> localVarCollectionQueryParams = new {{javaUtilPrefix}}ArrayList<Pair>();
+    {{javaUtilPrefix}}Map<String, String> localVarHeaderParams = new {{javaUtilPrefix}}HashMap<String, String>();
+    {{javaUtilPrefix}}Map<String, String> localVarCookieParams = new {{javaUtilPrefix}}HashMap<String, String>();
+    {{javaUtilPrefix}}Map<String, Object> localVarFormParams = new {{javaUtilPrefix}}HashMap<String, Object>();
+
+    {{#queryParams}}
+    {{#collectionFormat}}localVarCollectionQueryParams.addAll(apiClient.parameterToPairs("{{{.}}}", {{/collectionFormat}}{{^collectionFormat}}localVarQueryParams.addAll(apiClient.parameterToPair({{/collectionFormat}}"{{baseName}}", {{paramName}}));
+    {{/queryParams}}
+
+    {{#headerParams}}if ({{paramName}} != null)
+      localVarHeaderParams.put("{{baseName}}", apiClient.parameterToString({{paramName}}));
+    {{/headerParams}}
+
+    {{#cookieParams}}if ({{paramName}} != null)
+      localVarCookieParams.put("{{baseName}}", apiClient.parameterToString({{paramName}}));
+    {{/cookieParams}}
+
+    {{#formParams}}if ({{paramName}} != null)
+      localVarFormParams.put("{{baseName}}", {{paramName}});
+    {{/formParams}}
+
+    final String[] localVarAccepts = {
+      {{#produces}}"{{{mediaType}}}"{{^-last}}, {{/-last}}{{/produces}}
+    };
+    final String localVarAccept = apiClient.selectHeaderAccept(localVarAccepts);
+
+    final String[] localVarContentTypes = {
+      {{#consumes}}"{{{mediaType}}}"{{^-last}}, {{/-last}}{{/consumes}}
+    };
+    final String localVarContentType = apiClient.selectHeaderContentType(localVarContentTypes);
+
+    String[] localVarAuthNames = new String[] { {{#authMethods}}"{{name}}"{{^-last}}, {{/-last}}{{/authMethods}} };
+
+    {{#returnType}}
+    GenericType<{{{returnType}}}> localVarReturnType = new GenericType<{{{returnType}}}>() {};
+    return apiClient.invokeAPI(localVarPath, "{{httpMethod}}", localVarQueryParams, localVarCollectionQueryParams, localVarPostBody, localVarHeaderParams, localVarCookieParams, localVarFormParams, localVarAccept, localVarContentType, localVarAuthNames, localVarReturnType);
+    {{/returnType}}{{^returnType}}
+    apiClient.invokeAPI(localVarPath, "{{httpMethod}}", localVarQueryParams, localVarCollectionQueryParams, localVarPostBody, localVarHeaderParams, localVarCookieParams, localVarFormParams, localVarAccept, localVarContentType, localVarAuthNames, null);
+    {{/returnType}}
+  }
+  {{/operation}}
+}
+{{/operations}}
