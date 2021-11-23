@@ -2,15 +2,16 @@
 {{#hasEnums}}
 {{#vars}}
 {{#isEnum}}
-    export type {{enumName}}Type = {{#allowableValues}}{{#enumVars}}{{{value}}}{{^-last}}|{{/-last}}{{/enumVars}}{{/allowableValues}};
-    public enum {{enumName}} {
+    public enum {{#lambda.titlecase}}{{{baseName}}}{{/lambda.titlecase}} {
+        {{#allowableValues}}
         {{#enumVars}}
-        {{#lambda.lowercase}}{{value}}({{/lambda.lowercase}}"{{value}}"){{^-last}},{{/-last}}
+        {{#lambda.uppercase}}{{{name}}}({{/lambda.uppercase}}{{{value}}}){{^-last}},{{/-last}}
         {{/enumVars}}
+        {{/allowableValues}}
 
         private final String value;
 
-        private {{enumName}}(final String value) { this.value = value; }
+        private {{{enumName}}}(final String value) { this.value = value; }
 
         public String toString() { return value; }
 
@@ -38,7 +39,7 @@
     }
 
     {{#vars}}
-        public final {{dataType}} get{{name}} { return this.{{name}}; }
+        public final {{{dataType}}} get{{#lambda.titlecase}}{{name}}{{/lambda.titlecase}} { return this.{{name}}; }
     {{/vars}}
 
     @Override

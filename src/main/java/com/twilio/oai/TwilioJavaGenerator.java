@@ -193,16 +193,19 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
             if (co.path.endsWith("}")) {
                 if ("GET".equalsIgnoreCase(co.httpMethod)) {
                     co.vendorExtensions.put("x-is-fetch-operation", true);
+                    resource.put("hasFetch", true);
+                    resource.put("hasRead", true);
                     addOperationName(co, "Fetch");
                 } else if ("POST".equalsIgnoreCase(co.httpMethod)) {
+                    resource.put("hasUpdate", true);
                     addOperationName(co, "Update");
                 } else if ("DELETE".equalsIgnoreCase(co.httpMethod)) {
-                    resource.put("isDelete", true);
+                    resource.put("hasDelete", true);
                     addOperationName(co, "Remove");
                 }
             } else {
                 if ("POST".equalsIgnoreCase(co.httpMethod)) {
-                    resource.put("isCreate", true);
+                    resource.put("hasCreate", true);
                     addOperationName(co, "Create");
                 } else if ("GET".equalsIgnoreCase(co.httpMethod)) {
                     addOperationName(co, "Page");

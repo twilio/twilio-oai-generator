@@ -15,7 +15,7 @@ public class TwilioGeneratorTest {
     public void launchCodeGenerator() {
         final CodegenConfigurator configurator = new CodegenConfigurator()
             .setGeneratorName("twilio-java")
-            .setInputSpec("/Users/sradhakrishna/DI/projects/github/twilio-oai/spec/yaml/twilio_studio_v2.yaml")
+            .setInputSpec("/Users/sradhakrishna/DI/projects/github/twilio-oai/spec/yaml/twilio_chat_v2.yaml")
             .setOutputDir("codegen/twilio-java");
 
         final ClientOptInput clientOptInput = configurator.toClientOptInput();
