@@ -11,9 +11,13 @@
 
         private final String value;
 
-        private {{{enumName}}}(final String value) { this.value = value; }
+        private {{{enumName}}}(final String value) {
+            this.value = value;
+        }
 
-        public String toString() { return value; }
+        public String toString() {
+            return value;
+        }
 
         @JsonCreator
         public static Status forValue(final String value) {
@@ -31,15 +35,17 @@
     @JsonCreator
     private {{resourceName}}({{#vars}}
         @JsonProperty("{{name}}")
-        final {{dataType}} {{name}},{{/vars}}
+        final {{dataType}} {{{name}}},{{/vars}}
     ) {
     {{#vars}}
-        this.{{name}} = {{name}};
+        this.{{{name}}} = {{{name}}};
     {{/vars}}
     }
 
     {{#vars}}
-        public final {{{dataType}}} get{{#lambda.titlecase}}{{name}}{{/lambda.titlecase}} { return this.{{name}}; }
+        public final {{{dataType}}} get{{#lambda.titlecase}}{{{name}}}{{/lambda.titlecase}} {
+            return this.{{{name}}};
+        }
     {{/vars}}
 
     @Override
@@ -54,11 +60,11 @@
 
         {{resourceName}} other = ({{resourceName}}) o;
 
-        return {{#vars}}Objects.equals({{name}}, other.{{name}}) {{^-last}}&& {{/-last}} {{/vars}}
+        return {{#vars}}Objects.equals({{name}}, other.{{name}}) {{^-last}}&& <br>{{/-last}} {{/vars}}
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash({{#vars}}{{name}}{{^-last}}, {{/-last}}{{/vars}})
+        return Objects.hash({{#vars}}{{{name}}}{{^-last}}, {{/-last}}{{/vars}})
     }
 {{/responseModel}}

@@ -1,11 +1,11 @@
 package com.twilio.oai;
 
 import io.swagger.v3.oas.models.OpenAPI;
-import io.swagger.v3.oas.models.media.Schema;
 import lombok.AllArgsConstructor;
-import org.openapitools.codegen.*;
+import org.openapitools.codegen.CodegenModel;
+import org.openapitools.codegen.CodegenOperation;
+import org.openapitools.codegen.SupportingFile;
 import org.openapitools.codegen.languages.JavaClientCodegen;
-import org.openapitools.codegen.utils.ModelUtils;
 import org.openapitools.codegen.utils.StringUtils;
 
 import java.io.File;
@@ -27,16 +27,6 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
 
         // Find the templates in the local resources dir.
         embeddedTemplateDir = templateDir = getName();
-    }
-
-    @AllArgsConstructor
-    private enum ResourceOperation {
-        CREATE("Create"),
-        FETCH("Fetch"),
-        UPDATE("Update"),
-        DELETE("Delete");
-
-        private final String prefix;
     }
 
     @Override
@@ -77,28 +67,10 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
                 }
         );
 
-        Map<String, Schema> schemas = ModelUtils.getSchemas(openAPI);
-
         openAPI.getPaths().forEach((name, path) -> path.readOperations().forEach(operation -> {
             // Group operations together by tag. This gives us one file/post-process per resource.
             final String tag = PathUtils.cleanPath(name).replace("/", PATH_SEPARATOR_PLACEHOLDER);
             operation.addTagsItem(tag);
-
-            if (!tag.contains(PATH_SEPARATOR_PLACEHOLDER)) {
-                addDependent(versionResources, tag);
-            }
-
-            // Gather a list of dependents for the operation as those with a path that directly under the current path.
-            operation.addExtension("x-dependents",
-                    openAPI
-                            .getPaths()
-                            .keySet()
-                            .stream()
-                            .filter(p -> PathUtils
-                                    .removePathParamIds(p)
-                                    .matches(
-                                            PathUtils.escapeRegex(PathUtils.removePathParamIds(name)) + "/[^{]+"))
-                            .collect(Collectors.toList()));
         }));
 
         flattenStringMap(additionalProperties, "versionResources");
@@ -111,6 +83,7 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
         return Arrays
                 .stream(super.toApiFilename(name).split(PATH_SEPARATOR_PLACEHOLDER))
                 .map(part -> StringUtils.camelize(part, false))
+                .map(this::singularize)
                 .collect(Collectors.joining(File.separator));
     }
 
@@ -136,32 +109,6 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
     }
 
 
-//    @Override
-//    public Map<String, Object> postProcessOperationsWithModels(final Map<String, Object> objs,
-//                                                               final List<Object> allModels) {
-//        final Map<String, Object> results = super.postProcessOperationsWithModels(objs, allModels);
-//        final Map<String, Object> ops = (Map<String, Object>) results.get("operations");
-//        final ArrayList<CodegenOperation> opList = (ArrayList<CodegenOperation>) ops.get("operation");
-//        for (final CodegenOperation co : opList) {
-//            if (co.nickname.startsWith("List")) {
-//                // make sure the format matches the other methods
-//                co.vendorExtensions.put("x-domain-name", co.nickname.replaceFirst("List", ""));
-//                co.vendorExtensions.put("x-is-list-operation", true);
-//
-//                Map<String, CodegenModel> models = new HashMap<>();
-//
-//                // get all models for the operation
-//                allModels
-//                        .forEach(m -> {
-//                            CodegenModel model = (CodegenModel) ((Map<String, Object>) m).get("model");
-//                            models.put(model.name, model);
-//                        });
-//            }
-//        }
-//
-//        return results;
-//    }
-
     @Override
     public Map<String, Object> postProcessOperationsWithModels(final Map<String, Object> objs,
                                                                final List<Object> allModels) {
@@ -172,8 +119,6 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
         final Map<String, Object> ops = getStringMap(results, "operations");
         final ArrayList<CodegenOperation> opList = (ArrayList<CodegenOperation>) ops.get("operation");
 
-        final Set<String> allProperties = new HashSet<>();
-
         // iterate over the operation and perhaps modify something
         for (final CodegenOperation co : opList) {
             // Group operations by resource.
@@ -182,19 +127,14 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
             final Map<String, Object> resource = resources.computeIfAbsent(resourceName, k -> new LinkedHashMap<>());
             populateCrudOperations(resource, co);
 
-            for (final CodegenParameter pathParam : co.pathParams) {
-                path = path.replace("{" + pathParam.baseName + "}", "${" + pathParam.paramName + "}");
-            }
-
             if (co.nickname.startsWith("list")) {
                 co.vendorExtensions.put("x-is-list-operation", true);
             }
 
             if (co.path.endsWith("}")) {
                 if ("GET".equalsIgnoreCase(co.httpMethod)) {
-                    co.vendorExtensions.put("x-is-fetch-operation", true);
                     resource.put("hasFetch", true);
-                    resource.put("hasRead", true);
+                    co.vendorExtensions.put("x-is-fetch-operation", true);
                     addOperationName(co, "Fetch");
                 } else if ("POST".equalsIgnoreCase(co.httpMethod)) {
                     resource.put("hasUpdate", true);
@@ -208,21 +148,8 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
                     resource.put("hasCreate", true);
                     addOperationName(co, "Create");
                 } else if ("GET".equalsIgnoreCase(co.httpMethod)) {
+                    resource.put("hasRead", true);
                     addOperationName(co, "Page");
-                    co.responses
-                            .stream()
-                            .filter(r -> r.is2xx)
-                            .map(r -> r.schema)
-                            .map(Schema.class::cast)
-                            .findFirst()
-                            .ifPresent(schema -> {
-                                final Map<String, Schema<?>> properties = ModelUtils
-                                        .getReferencedSchema(this.openAPI, schema)
-                                        .getProperties();
-                                properties.forEach((key, value) -> allProperties.add(key));
-                            });
-
-                    resource.put("allProps", allProperties);
                 }
             }
 
@@ -235,8 +162,6 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
             resource.put("resourceName", resourceName);
             resource.put("path", path);
             resource.put("resourcePathParams", co.pathParams);
-//            co.allParams.removeAll(co.pathParams);
-//            co.requiredParams.removeAll(co.pathParams);
 
             co.pathParams = null;
             co.hasParams = !co.allParams.isEmpty();
@@ -247,20 +172,13 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
             }
 
             if (co.path.endsWith("}")) {
-                final Map<String, Object> dependents = getStringMap(resource, "dependents");
-                for (final String dependentPath : (List<String>) co.vendorExtensions.get("x-dependents")) {
-                    addDependent(dependents, dependentPath);
-                }
-
                 co.responses
                         .stream()
                         .map(response -> response.dataType)
                         .filter(Objects::nonNull)
                         .map(this::getModel)
                         .flatMap(Optional::stream)
-                        .forEach(model -> {
-                            resource.put("responseModel", model);
-                        });
+                        .forEach(model -> resource.put("responseModel", model));
             }
 
             results.put("apiFilename", getResourceName(co.path));
@@ -268,7 +186,6 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
 
         for (final Object resource : resources.values()) {
             flattenStringMap((Map<String, Object>) resource, "models");
-            flattenStringMap((Map<String, Object>) resource, "dependents");
         }
 
         results.put("resources", resources.values());
@@ -278,7 +195,6 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
 
     @AllArgsConstructor
     private enum Operation {
-        // TODO: fix casing
         CREATE("create"),
         FETCH("fetch"),
         UPDATE("update"),
@@ -309,14 +225,6 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
                 model.getVars().forEach(property -> addModel(resource, property.dataType));
             }
         });
-    }
-
-    private void addDependent(final Map<String, Object> dependents, final String dependentPath) {
-        final Map<String, Object> dependent = getStringMap(dependents, dependentPath);
-        final String dependentName = getResourceName(dependentPath);
-        dependent.put("name", singularize(dependentName));
-        dependent.put("mountName", StringUtils.underscore(dependentName));
-        dependent.put("filename", dependentName);
     }
 
     private Optional<CodegenModel> getModel(final String modelName) {
@@ -353,6 +261,6 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
 
     @Override
     public String getHelp() {
-        return "Generates the twilio-node helper library.";
+        return "Generates the twilio-java helper library.";
     }
 }

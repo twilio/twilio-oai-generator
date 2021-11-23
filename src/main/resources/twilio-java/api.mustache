@@ -50,7 +50,6 @@ import java.util.Map;
 import java.util.Objects;
 
 {{#resources}}
-{{>model}}
 @JsonIgnoreProperties(ignoreUnknown = true)
 @ToString
 public class {{resourceName}} extends Resource {
@@ -58,31 +57,31 @@ public class {{resourceName}} extends Resource {
     private static final long serialVersionUID = something;
 
     {{#hasCreate}}
-    public static {{resourceName}}Creator creator({{#resourcePathParams}}final {{dataType}} {{{paramName}}}{{^-last}}, {{/-last}}{{/resourcePathParams}}){
+    public static {{resourceName}}Creator creator({{#resourcePathParams}}final {{{dataType}}} {{{paramName}}}{{^-last}}, {{/-last}}{{/resourcePathParams}}){
         return new {{resourceName}}Creator({{#resourcePathParams}}{{{paramName}}}{{^-last}}, {{/-last}}{{/resourcePathParams}});
     }
     {{/hasCreate}}
 
     {{#hasFetch}}
-    public static {{resourceName}}Fetcher fetcher({{#resourcePathParams}}final {{dataType}} {{{paramName}}}{{^-last}}, {{/-last}}{{/resourcePathParams}}){
+    public static {{resourceName}}Fetcher fetcher({{#resourcePathParams}}final {{{dataType}}} {{{paramName}}}{{^-last}}, {{/-last}}{{/resourcePathParams}}){
         return new {{resourceName}}Fetcher({{#resourcePathParams}}{{{paramName}}}{{^-last}}, {{/-last}}{{/resourcePathParams}});
     }
     {{/hasFetch}}
 
     {{#hasDelete}}
-    public static {{resourceName}}Deleter delete({{#resourcePathParams}}final {{dataType}} {{{paramName}}}{{^-last}}, {{/-last}}{{/resourcePathParams}}){
+    public static {{resourceName}}Deleter delete({{#resourcePathParams}}final {{{dataType}}} {{{paramName}}}{{^-last}}, {{/-last}}{{/resourcePathParams}}){
         return new {{resourceName}}Deleter({{#resourcePathParams}}{{{paramName}}}{{^-last}}, {{/-last}}{{/resourcePathParams}});
     }
     {{/hasDelete}}
 
     {{#hasRead}}
-    public static {{resourceName}}Reader reader({{#resourcePathParams}}final {{dataType}} {{{paramName}}}{{^-last}}, {{/-last}}{{/resourcePathParams}}){
+    public static {{resourceName}}Reader reader({{#resourcePathParams}}final {{{dataType}}} {{{paramName}}}{{^-last}}, {{/-last}}{{/resourcePathParams}}){
         return new {{resourceName}}Reader({{#resourcePathParams}}{{{paramName}}}{{^-last}}, {{/-last}}{{/resourcePathParams}});
     }
     {{/hasRead}}
 
     {{#hasUpdate}}
-    public static {{resourceName}}Updater update({{#resourcePathParams}}final {{dataType}} {{{paramName}}}{{^-last}}, {{/-last}}{{/resourcePathParams}}){
+    public static {{resourceName}}Updater update({{#resourcePathParams}}final {{{dataType}}} {{{paramName}}}{{^-last}}, {{/-last}}{{/resourcePathParams}}){
         return new {{resourceName}}Updater({{#resourcePathParams}}{{{paramName}}}{{^-last}}, {{/-last}}{{/resourcePathParams}});
     }
     {{/hasUpdate}}
