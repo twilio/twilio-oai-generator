@@ -1,12 +1,11 @@
 package com.twilio.oai;
 
 import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.media.Schema;
 import lombok.AllArgsConstructor;
-import org.openapitools.codegen.CodegenModel;
-import org.openapitools.codegen.CodegenOperation;
-import org.openapitools.codegen.CodegenParameter;
-import org.openapitools.codegen.SupportingFile;
+import org.openapitools.codegen.*;
 import org.openapitools.codegen.languages.JavaClientCodegen;
+import org.openapitools.codegen.utils.ModelUtils;
 import org.openapitools.codegen.utils.StringUtils;
 
 import java.io.File;
@@ -78,6 +77,7 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
                 }
         );
 
+        Map<String, Schema> schemas = ModelUtils.getSchemas(openAPI);
 
         openAPI.getPaths().forEach((name, path) -> path.readOperations().forEach(operation -> {
             // Group operations together by tag. This gives us one file/post-process per resource.
@@ -135,7 +135,33 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
         return new HashMap<>();
     }
 
-    @SuppressWarnings("unchecked")
+
+//    @Override
+//    public Map<String, Object> postProcessOperationsWithModels(final Map<String, Object> objs,
+//                                                               final List<Object> allModels) {
+//        final Map<String, Object> results = super.postProcessOperationsWithModels(objs, allModels);
+//        final Map<String, Object> ops = (Map<String, Object>) results.get("operations");
+//        final ArrayList<CodegenOperation> opList = (ArrayList<CodegenOperation>) ops.get("operation");
+//        for (final CodegenOperation co : opList) {
+//            if (co.nickname.startsWith("List")) {
+//                // make sure the format matches the other methods
+//                co.vendorExtensions.put("x-domain-name", co.nickname.replaceFirst("List", ""));
+//                co.vendorExtensions.put("x-is-list-operation", true);
+//
+//                Map<String, CodegenModel> models = new HashMap<>();
+//
+//                // get all models for the operation
+//                allModels
+//                        .forEach(m -> {
+//                            CodegenModel model = (CodegenModel) ((Map<String, Object>) m).get("model");
+//                            models.put(model.name, model);
+//                        });
+//            }
+//        }
+//
+//        return results;
+//    }
+
     @Override
     public Map<String, Object> postProcessOperationsWithModels(final Map<String, Object> objs,
                                                                final List<Object> allModels) {
@@ -145,6 +171,8 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
 
         final Map<String, Object> ops = getStringMap(results, "operations");
         final ArrayList<CodegenOperation> opList = (ArrayList<CodegenOperation>) ops.get("operation");
+
+        final Set<String> allProperties = new HashSet<>();
 
         // iterate over the operation and perhaps modify something
         for (final CodegenOperation co : opList) {
@@ -156,6 +184,10 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
 
             for (final CodegenParameter pathParam : co.pathParams) {
                 path = path.replace("{" + pathParam.baseName + "}", "${" + pathParam.paramName + "}");
+            }
+
+            if (co.nickname.startsWith("list")) {
+                co.vendorExtensions.put("x-is-list-operation", true);
             }
 
             if (co.path.endsWith("}")) {
@@ -174,6 +206,20 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
                     addOperationName(co, "Create");
                 } else if ("GET".equalsIgnoreCase(co.httpMethod)) {
                     addOperationName(co, "Page");
+                    co.responses
+                            .stream()
+                            .filter(r -> r.is2xx)
+                            .map(r -> r.schema)
+                            .map(Schema.class::cast)
+                            .findFirst()
+                            .ifPresent(schema -> {
+                                final Map<String, Schema<?>> properties = ModelUtils
+                                        .getReferencedSchema(this.openAPI, schema)
+                                        .getProperties();
+                                properties.forEach((key, value) -> allProperties.add(key));
+                            });
+
+                    resource.put("allProps", allProperties);
                 }
             }
 
@@ -186,8 +232,9 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
             resource.put("resourceName", resourceName);
             resource.put("path", path);
             resource.put("resourcePathParams", co.pathParams);
-            co.allParams.removeAll(co.pathParams);
-            co.requiredParams.removeAll(co.pathParams);
+//            co.allParams.removeAll(co.pathParams);
+//            co.requiredParams.removeAll(co.pathParams);
+
             co.pathParams = null;
             co.hasParams = !co.allParams.isEmpty();
             co.hasRequiredParams = !co.requiredParams.isEmpty();
@@ -209,7 +256,6 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
                         .map(this::getModel)
                         .flatMap(Optional::stream)
                         .forEach(model -> {
-//                            model.setName(instanceName);
                             resource.put("responseModel", model);
                         });
             }

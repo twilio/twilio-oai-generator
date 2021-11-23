@@ -1,0 +1,63 @@
+{{#responseModel}}
+{{#hasEnums}}
+{{#vars}}
+{{#isEnum}}
+    export type {{enumName}}Type = {{#allowableValues}}{{#enumVars}}{{{value}}}{{^-last}}|{{/-last}}{{/enumVars}}{{/allowableValues}};
+    public enum {{enumName}} {
+        {{#enumVars}}
+        {{#lambda.lowercase}}{{value}}({{/lambda.lowercase}}"{{value}}"){{^-last}},{{/-last}}
+        {{/enumVars}}
+
+        private final String value;
+
+        private {{enumName}}(final String value) { this.value = value; }
+
+        public String toString() { return value; }
+
+        @JsonCreator
+        public static Status forValue(final String value) {
+            return Promoter.enumFromString(value, Status.values());
+        }
+    }
+{{/isEnum}}
+{{/vars}}
+{{/hasEnums}}
+
+{{#vars}}
+    private final {{dataType}} {{name}};
+{{/vars}}
+
+    @JsonCreator
+    private {{resourceName}}({{#vars}}
+        @JsonProperty("{{name}}")
+        final {{dataType}} {{name}},{{/vars}}
+    ) {
+    {{#vars}}
+        this.{{name}} = {{name}};
+    {{/vars}}
+    }
+
+    {{#vars}}
+        public final {{dataType}} get{{name}} { return this.{{name}}; }
+    {{/vars}}
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this==o) {
+            return true;
+        }
+
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        {{resourceName}} other = ({{resourceName}}) o;
+
+        return {{#vars}}Objects.equals({{name}}, other.{{name}}) {{^-last}}&& {{/-last}} {{/vars}}
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash({{#vars}}{{name}}{{^-last}}, {{/-last}}{{/vars}})
+    }
+{{/responseModel}}
