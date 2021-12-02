@@ -34,8 +34,8 @@
 
     @JsonCreator
     private {{resourceName}}({{#vars}}
-        @JsonProperty("{{name}}")
-        final {{dataType}} {{{name}}},{{/vars}}
+        @JsonProperty("{{{name}}}")
+        final {{{dataType}}} {{{name}}},{{/vars}}
     ) {
     {{#vars}}
         this.{{{name}}} = {{{name}}};
@@ -60,7 +60,7 @@
 
         {{resourceName}} other = ({{resourceName}}) o;
 
-        return {{#vars}}Objects.equals({{name}}, other.{{name}}) {{^-last}}&& <br>{{/-last}} {{/vars}}
+        return {{#vars}}Objects.equals({{name}}, other.{{name}}) {{^-last}}&& {{/-last}} {{/vars}}
     }
 
     @Override

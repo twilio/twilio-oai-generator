@@ -1,5 +1,5 @@
 {{>licenseInfo}}
-package {{package}};
+{{>packageName}}
 
 import com.twilio.base.Deleter;
 import com.twilio.exception.ApiConnectionException;
@@ -13,7 +13,7 @@ import com.twilio.rest.Domains;
 
 {{#resources}}
 {{>model}}
-{{isDelete}}
+{{#hasDelete}}
 {{#operations}}
 {{#vendorExtensions.x-is-delete-operation}}
 public class {{resourceName}}Deleter extends Deleter<{{resourceName}}> {
@@ -29,11 +29,15 @@ public class {{resourceName}}Deleter extends Deleter<{{resourceName}}> {
 
     @Override
     public boolean delete(final TwilioRestClient client) {
-        this.pathAccountSid = this.pathAccountSid == null ? client.getAccountSid() : this.pathAccountSid;
+        var path = "{{{path}}}";
+        {{#requiredParams}}
+        path = path.Replace("{"+"{{paramName}}"+"}", this.{{paramName}})
+        {{/requiredParams}}
+
         Request request = new Request(
             HttpMethod.DELETE,
             Domains.{{#lambda.uppercase}}{{domain}}{{/lambda.uppercase}}.toString(),
-            "{{path}}"
+            path
         );
 
         Response response = client.request(request);
@@ -52,5 +56,6 @@ public class {{resourceName}}Deleter extends Deleter<{{resourceName}}> {
 }
 {{/vendorExtensions.x-is-delete-operation}}
 {{/operations}}
+{{/hasDelete}}
 {{/resources}}
 

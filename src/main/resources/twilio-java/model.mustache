@@ -1,18 +1,1 @@
 {{>partial_header}}
-package {{packageName}}
-{{#models}}
-    {{#imports}}
-        {{#-first}}
-            import (
-        {{/-first}}
-        "{{import}}"
-        {{#-last}}
-            )
-        {{/-last}}
-    {{/imports}}
-    {{#model}}
-    {{#allVars}}
-        {{{.}}}
-    {{/allVars}}
-    {{/model}}
-{{/models}}

@@ -1,5 +1,5 @@
 {{>licenseInfo}}
-package {{package}};
+{{>packageName}}
 
 import com.twilio.base.Creator;
 import com.twilio.converter.Promoter;
@@ -16,7 +16,7 @@ import java.net.URI;
 
 {{#resources}}
 {{>model}}
-{{#isCreate}}
+{{#hasCreate}}
 {{#operations}}
 {{#vendorExtensions.x-is-create-operation}}
 public class {{resourceName}}Creator extends Creator<{{resourceName}}>{
@@ -31,10 +31,15 @@ public class {{resourceName}}Creator extends Creator<{{resourceName}}>{
 
     @Override
     public {{resourceName}} create(final TwilioRestClient client){
+        var path = "{{{path}}}";
+        {{#requiredParams}}
+        path = path.Replace("{"+"{{paramName}}"+"}", this.{{paramName}})
+        {{/requiredParams}}
+
         Request request = new Request(
             HttpMethod.POST,
             Domains.{{#lambda.uppercase}}{{domain}}{{/lambda.uppercase}}.toString(),
-            "{{path}}"
+            path
         )
 
         addPostParams(request);
@@ -63,5 +68,5 @@ public class {{resourceName}}Creator extends Creator<{{resourceName}}>{
 }
 {{/vendorExtensions.x-is-create-operation}}
 {{/operations}}
-{{/isCreate}}
+{{/hasCreate}}
 {{/resources}}

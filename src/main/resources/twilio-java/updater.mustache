@@ -1,5 +1,5 @@
 {{>licenseInfo}}
-package {{package}};
+{{>packageName}}
 
 import com.twilio.base.Updater;
 import com.twilio.converter.Promoter;
@@ -14,6 +14,7 @@ import com.twilio.rest.Domains;
 
 {{#resources}}
 {{>model}}
+{{#hasUpdate}}
 {{#operations}}
 {{#vendorExtensions.x-is-update-operation}}
 public class {{resourceName}}Updater extends Updater<{{resourceName}}>{
@@ -28,10 +29,15 @@ public class {{resourceName}}Updater extends Updater<{{resourceName}}>{
 
     @Override
     public {{resourceName}} update(final TwilioRestClient client){
+        var path = "{{{path}}}";
+        {{#requiredParams}}
+        path = path.Replace("{"+"{{paramName}}"+"}", this.{{paramName}})
+        {{/requiredParams}}
+
         Request request = new Request(
             HttpMethod.POST,
             Domains.{{#lambda.uppercase}}{{domain}}{{/lambda.uppercase}}.toString(),
-            "{{path}}"
+            path
         )
 
         addPostParams(request);
@@ -60,4 +66,5 @@ public class {{resourceName}}Updater extends Updater<{{resourceName}}>{
 }
 {{/vendorExtensions.x-is-update-operation}}
 {{/operations}}
+{{/hasUpdate}}
 {{/resources}}

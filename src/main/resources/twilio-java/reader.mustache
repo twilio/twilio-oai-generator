@@ -1,5 +1,5 @@
 {{>licenseInfo}}
-package {{package}};
+{{>packageName}}
 
 import com.twilio.base.Fetcher;
 import com.twilio.exception.ApiConnectionException;
@@ -13,7 +13,7 @@ import com.twilio.rest.Domains;
 
 {{#resources}}
 {{>model}}
-{{isFetch}}
+{{#hasRead}}
 {{#operations}}
 {{#vendorExtensions.x-is-read-operation}}
 public class {{resourceName}}Reader extends Reader<{{resourceName}}> {
@@ -47,10 +47,15 @@ public class {{resourceName}}Reader extends Reader<{{resourceName}}> {
     }
 
     public Page<{{resourceName}}> firstPage(final TwilioRestClient client) {
+        var path = "{{{path}}}";
+        {{#requiredParams}}
+        path = path.Replace("{"+"{{paramName}}"+"}", this.{{paramName}})
+        {{/requiredParams}}
+
         Request request = new Request(
             HttpMethod.GET,
             Domains.{{#lambda.uppercase}}{{domain}}{{/lambda.uppercase}}.toString(),
-            "{{path}}"
+            path
         );
 
         addQueryParams(request);
@@ -109,5 +114,6 @@ public class {{resourceName}}Reader extends Reader<{{resourceName}}> {
 }
 {{/vendorExtensions.x-is-read-operation}}
 {{/operations}}
+{{/hasRead}}
 {{/resources}}
 

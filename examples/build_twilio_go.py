@@ -23,13 +23,19 @@ def build(openapi_spec_path, go_path, language='go'):
             generate(openapi_spec_path, go_path, domain, False, language)
 
 
-def generate(openapi_spec_path, go_path, domain, is_file=False, language='go'):
+def generate(openapi_spec_path, library_path, domain, is_file=False, language='go'):
     domain_name, full_path, api_version = get_domain_info(domain, openapi_spec_path, is_file)
     parent_dir = Path(__file__).parent.parent
 
-    to_generate = "terraform-provider-twilio" if language == "terraform" else "twilio-go"
+    to_generate = "twilio-go"
+
+    if language == "terraform":
+        to_generate = "terraform-provider-twilio"
+    elif language == "java":
+        to_generate = "twilio-java"
+
     sub_dir = "twilio/resources" if language == "terraform" else "rest"
-    output_path = f"{go_path}/{sub_dir}/{domain_name}/{api_version}"
+    output_path = f"{library_path}/{sub_dir}/{domain_name}/{api_version}"
     command = f"cd {parent_dir} && java -cp ./openapi-generator-cli.jar:target/twilio-openapi-generator.jar " \
               f"org.openapitools.codegen.OpenAPIGenerator generate -g {to_generate} -i {full_path} -o " \
               f"{output_path} " \
@@ -51,7 +57,7 @@ if __name__ == "__main__":
                                      formatter_class=argparse.RawTextHelpFormatter)
     parser.add_argument("spec_path", type=str, help="path to open api specs")
     parser.add_argument("output_path", type=str, help="path to output the generated code")
-    parser.add_argument("-l", "--lang", type=str, choices=['go', 'terraform'],
+    parser.add_argument("-l", "--lang", type=str, choices=['go', 'terraform', 'java'],
                         help="generate twilio-go/terraform-provider from twilio-oai")
     args = parser.parse_args()
     build(args.spec_path, args.output_path, args.lang)

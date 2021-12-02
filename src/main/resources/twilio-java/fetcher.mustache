@@ -1,5 +1,5 @@
 {{>licenseInfo}}
-package {{package}};
+{{>packageName}}
 
 import com.twilio.base.Fetcher;
 import com.twilio.exception.ApiConnectionException;
@@ -13,7 +13,7 @@ import com.twilio.rest.Domains;
 
 {{#resources}}
 {{>model}}
-{{isFetch}}
+{{#hasFetch}}
 {{#operations}}
 {{#vendorExtensions.x-is-fetch-operation}}
 public class {{resourceName}}Fetcher extends Fetcher<{{resourceName}}> {
@@ -29,13 +29,15 @@ public class {{resourceName}}Fetcher extends Fetcher<{{resourceName}}> {
 
     @Override
     public boolean fetch(final TwilioRestClient client) {
-        {{#pathParams}}
-        this.{{name}} = this.{{name}} == null ? client.get{{name}}() : this.{{name}};
-        {{/pathParams}}
+        var path = "{{{path}}}";
+        {{#requiredParams}}
+        path = path.Replace("{"+"{{paramName}}"+"}", this.{{paramName}})
+        {{/requiredParams}}
+
         Request request = new Request(
             HttpMethod.GET,
             Domains.{{#lambda.uppercase}}{{domain}}{{/lambda.uppercase}}.toString(),
-            "{{path}}"
+            path
         );
 
         Response response = client.request(request);
@@ -55,5 +57,6 @@ public class {{resourceName}}Fetcher extends Fetcher<{{resourceName}}> {
 }
 {{/vendorExtensions.x-is-fetch-operation}}
 {{/operations}}
+{{/hasFetch}}
 {{/resources}}
 

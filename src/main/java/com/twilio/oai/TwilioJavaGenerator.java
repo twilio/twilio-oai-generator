@@ -2,9 +2,7 @@ package com.twilio.oai;
 
 import io.swagger.v3.oas.models.OpenAPI;
 import lombok.AllArgsConstructor;
-import org.openapitools.codegen.CodegenModel;
-import org.openapitools.codegen.CodegenOperation;
-import org.openapitools.codegen.SupportingFile;
+import org.openapitools.codegen.*;
 import org.openapitools.codegen.languages.JavaClientCodegen;
 import org.openapitools.codegen.utils.StringUtils;
 
@@ -27,6 +25,7 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
 
         // Find the templates in the local resources dir.
         embeddedTemplateDir = templateDir = getName();
+        sourceFolder = "";
     }
 
     @Override
@@ -54,26 +53,21 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
 
     @Override
     public void processOpenAPI(final OpenAPI openAPI) {
-        final Map<String, Object> versionResources = getStringMap(additionalProperties, "versionResources");
-
-        // check if there is a read operation and add reader template
-
-        openAPI.getPaths().forEach((name, path) ->
-                {
-                    if (!path.readOperations().isEmpty()) {
-                        apiTemplateFiles.put("reader.mustache", "Reader.java");
-                        apiTemplateFiles.put("fetcher.mustache", "Fetcher.java");
-                    }
-                }
-        );
-
         openAPI.getPaths().forEach((name, path) -> path.readOperations().forEach(operation -> {
             // Group operations together by tag. This gives us one file/post-process per resource.
             final String tag = PathUtils.cleanPath(name).replace("/", PATH_SEPARATOR_PLACEHOLDER);
             operation.addTagsItem(tag);
         }));
+    }
 
-        flattenStringMap(additionalProperties, "versionResources");
+
+    @Override
+    public void postProcessParameter(final CodegenParameter parameter) {
+        super.postProcessParameter(parameter);
+
+        // Make sure required non-path params get into the options block.
+        parameter.paramName = StringUtils.camelize(parameter.paramName, false);
+        parameter.required = parameter.isPathParam;
     }
 
     @Override
@@ -86,6 +80,7 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
                 .map(this::singularize)
                 .collect(Collectors.joining(File.separator));
     }
+
 
     @SuppressWarnings("unchecked")
     @Override
@@ -127,10 +122,6 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
             final Map<String, Object> resource = resources.computeIfAbsent(resourceName, k -> new LinkedHashMap<>());
             populateCrudOperations(resource, co);
 
-            if (co.nickname.startsWith("list")) {
-                co.vendorExtensions.put("x-is-list-operation", true);
-            }
-
             if (co.path.endsWith("}")) {
                 if ("GET".equalsIgnoreCase(co.httpMethod)) {
                     resource.put("hasFetch", true);
@@ -146,9 +137,11 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
             } else {
                 if ("POST".equalsIgnoreCase(co.httpMethod)) {
                     resource.put("hasCreate", true);
+                    co.vendorExtensions.put("x-is-create-operation", true);
                     addOperationName(co, "Create");
                 } else if ("GET".equalsIgnoreCase(co.httpMethod)) {
                     resource.put("hasRead", true);
+                    co.vendorExtensions.put("x-is-read-operation", true);
                     addOperationName(co, "Page");
                 }
             }
@@ -182,6 +175,7 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
             }
 
             results.put("apiFilename", getResourceName(co.path));
+            results.put("packageName", getPackageName(co.path));
         }
 
         for (final Object resource : resources.values()) {
@@ -245,8 +239,18 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
         return PathUtils.getLastPathPart(PathUtils.cleanPath(path));
     }
 
+    private String getPackageName(final String path) {
+        return Arrays
+                .stream(PathUtils.cleanPath(path).split("/"))
+                .map(this::singularize)
+                .collect(Collectors.joining("."));
+    }
+
     private String singularize(final String plural) {
-        return plural.substring(0, plural.length() - 1);
+        if (plural.endsWith("s")) { // doesn't always work. For example: Aws
+            return plural.substring(0, plural.length() - 1);
+        }
+        return plural;
     }
 
     private void addOperationName(final CodegenOperation operation, final String name) {
