@@ -21,9 +21,11 @@ public class {{resourceName}}Deleter extends Deleter<{{resourceName}}> {
     private {{dataType}} {{paramName}};
 {{/allParams}}
 
-    public {{resourceName}}Deleter({{#allParams}}final {{dataType}} {{paramName}}, {{/allParams}}){
+    public {{resourceName}}Deleter({{#allParams}}{{#required}}final {{dataType}} {{paramName}}{{^-last}}, {{/-last}}{{/required}}{{/allParams}}){
     {{#allParams}}
+    {{#required}}
         this.{{paramName}} = {{paramName}};
+    {{/required}}
     {{/allParams}}
     }
 

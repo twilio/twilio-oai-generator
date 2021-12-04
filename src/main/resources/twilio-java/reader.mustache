@@ -24,21 +24,22 @@ public class {{resourceName}}Reader extends Reader<{{resourceName}}> {
         this.{{paramName}} = {{paramName}};
         return this;
     }
-
 {{/allParams}}
 
-    public {{resourceName}}Reader({{#allParams}}final {{dataType}} {{paramName}}, {{/allParams}}){
+    public {{resourceName}}Reader({{#allParams}}{{#required}}final {{dataType}} {{paramName}}{{^-last}}, {{/-last}}{{/required}}{{/allParams}}){
     {{#allParams}}
+    {{#required}}
         this.{{paramName}} = {{paramName}};
+    {{/required}}
     {{/allParams}}
     }
 
     private void addQueryParams(final Request request){
-        {{#optionalParams}}
+        {{#queryParams}}
         if ({{paramName}} != null) {
             request.addQueryParam("{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}", {{paramName}});
         }
-        {{/optionalParams}}
+        {{/queryParams}}
     }
 
     @Override
@@ -76,7 +77,7 @@ public class {{resourceName}}Reader extends Reader<{{resourceName}}> {
         }
 
         return Page.fromJson(
-            "{{domain}}",
+            "{{recordKey}}",
             response.getContent(),
             {{resourceName}}.class,
             client.getObjectMapper()

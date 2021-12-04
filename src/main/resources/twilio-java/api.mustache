@@ -56,32 +56,32 @@ public class {{resourceName}} extends Resource {
     private static final long serialVersionUID = something;
 
     {{#hasCreate}}
-    public static {{resourceName}}Creator creator({{#resourcePathParams}}final {{{dataType}}} {{{paramName}}}{{^-last}}, {{/-last}}{{/resourcePathParams}}){
-        return new {{resourceName}}Creator({{#resourcePathParams}}{{{paramName}}}{{^-last}}, {{/-last}}{{/resourcePathParams}});
+    public static {{resourceName}}Creator creator({{#resourceRequiredParams}}final {{{dataType}}} {{{paramName}}}{{^-last}}, {{/-last}}{{/resourceRequiredParams}}){
+        return new {{resourceName}}Creator({{#resourceRequiredParams}}{{{paramName}}}{{^-last}}, {{/-last}}{{/resourceRequiredParams}});
     }
     {{/hasCreate}}
 
     {{#hasFetch}}
-    public static {{resourceName}}Fetcher fetcher({{#resourcePathParams}}final {{{dataType}}} {{{paramName}}}{{^-last}}, {{/-last}}{{/resourcePathParams}}){
-        return new {{resourceName}}Fetcher({{#resourcePathParams}}{{{paramName}}}{{^-last}}, {{/-last}}{{/resourcePathParams}});
+    public static {{resourceName}}Fetcher fetcher({{#resourceRequiredParams}}final {{{dataType}}} {{{paramName}}}{{^-last}}, {{/-last}}{{/resourceRequiredParams}}){
+        return new {{resourceName}}Fetcher({{#resourceRequiredParams}}{{{paramName}}}{{^-last}}, {{/-last}}{{/resourceRequiredParams}});
     }
     {{/hasFetch}}
 
     {{#hasDelete}}
-    public static {{resourceName}}Deleter delete({{#resourcePathParams}}final {{{dataType}}} {{{paramName}}}{{^-last}}, {{/-last}}{{/resourcePathParams}}){
-        return new {{resourceName}}Deleter({{#resourcePathParams}}{{{paramName}}}{{^-last}}, {{/-last}}{{/resourcePathParams}});
+    public static {{resourceName}}Deleter delete({{#resourceRequiredParams}}final {{{dataType}}} {{{paramName}}}{{^-last}}, {{/-last}}{{/resourceRequiredParams}}){
+        return new {{resourceName}}Deleter({{#resourceRequiredParams}}{{{paramName}}}{{^-last}}, {{/-last}}{{/resourceRequiredParams}});
     }
     {{/hasDelete}}
 
     {{#hasRead}}
-    public static {{resourceName}}Reader reader({{#resourcePathParams}}final {{{dataType}}} {{{paramName}}}{{^-last}}, {{/-last}}{{/resourcePathParams}}){
-        return new {{resourceName}}Reader({{#resourcePathParams}}{{{paramName}}}{{^-last}}, {{/-last}}{{/resourcePathParams}});
+    public static {{resourceName}}Reader reader({{#requiredParams}}final {{{dataType}}} {{{paramName}}}{{^-last}}, {{/-last}}{{/requiredParams}}){
+        return new {{resourceName}}Reader({{#requiredParams}}{{{paramName}}}{{^-last}}, {{/-last}}{{/requiredParams}});
     }
     {{/hasRead}}
 
     {{#hasUpdate}}
-    public static {{resourceName}}Updater update({{#resourcePathParams}}final {{{dataType}}} {{{paramName}}}{{^-last}}, {{/-last}}{{/resourcePathParams}}){
-        return new {{resourceName}}Updater({{#resourcePathParams}}{{{paramName}}}{{^-last}}, {{/-last}}{{/resourcePathParams}});
+    public static {{resourceName}}Updater update({{#resourceRequiredParams}}final {{{dataType}}} {{{paramName}}}{{^-last}}, {{/-last}}{{/resourceRequiredParams}}){
+        return new {{resourceName}}Updater({{#resourceRequiredParams}}{{{paramName}}}{{^-last}}, {{/-last}}{{/resourceRequiredParams}});
     }
     {{/hasUpdate}}
 

@@ -22,7 +22,15 @@ import java.net.URI;
 public class {{resourceName}}Creator extends Creator<{{resourceName}}>{
 {{#allParams}}
     private {{dataType}} {{paramName}};
+{{/allParams}}
 
+    public {{resourceName}}Creator({{#allParams}}{{#required}}final {{dataType}} {{paramName}}{{^-last}}, {{/-last}}{{/required}}{{/allParams}}) {
+    {{#allParams}}{{#required}}
+        this.{{paramName}} = {{paramName}};
+    {{/required}}{{/allParams}}
+    }
+
+{{#allParams}}
     public {{resourceName}}Creator set{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}(final {{dataType}} {{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}){
         this.{{paramName}} = {{paramName}};
         return this;

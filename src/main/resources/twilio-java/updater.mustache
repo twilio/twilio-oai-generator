@@ -20,7 +20,15 @@ import com.twilio.rest.Domains;
 public class {{resourceName}}Updater extends Updater<{{resourceName}}>{
 {{#allParams}}
     private {{dataType}} {{paramName}};
+{{/allParams}}
 
+    public {{resourceName}}Updater({{#allParams}}{{#required}}final {{dataType}} {{paramName}}{{^-last}}, {{/-last}}{{/required}}{{/allParams}}){
+        {{#allParams}}{{#required}}
+            this.{{paramName}} = {{paramName}};
+        {{/required}}{{/allParams}}
+        }
+
+{{#allParams}}
     public {{resourceName}}Updater set{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}(final {{dataType}} {{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}){
         this.{{paramName}} = {{paramName}};
         return this;

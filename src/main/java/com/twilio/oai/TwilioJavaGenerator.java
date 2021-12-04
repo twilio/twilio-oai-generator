@@ -67,7 +67,6 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
 
         // Make sure required non-path params get into the options block.
         parameter.paramName = StringUtils.camelize(parameter.paramName, false);
-        parameter.required = parameter.isPathParam;
     }
 
     @Override
@@ -155,6 +154,7 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
             resource.put("resourceName", resourceName);
             resource.put("path", path);
             resource.put("resourcePathParams", co.pathParams);
+            resource.put("resourceRequiredParams", co.requiredParams);
 
             co.pathParams = null;
             co.hasParams = !co.allParams.isEmpty();
@@ -176,6 +176,7 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
 
             results.put("apiFilename", getResourceName(co.path));
             results.put("packageName", getPackageName(co.path));
+            results.put("recordKey", getFolderName(co.path));
         }
 
         for (final Object resource : resources.values()) {
@@ -202,7 +203,7 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
             operation.vendorExtensions.put("x-is-create-operation", true);
             resource.put(Operation.CREATE.name(), operation);
         } else if (operation.nickname.startsWith(Operation.FETCH.prefix)) {
-            operation.vendorExtensions.put("x-is-read-operation", true);
+            operation.vendorExtensions.put("x-is-fetch-operation", true);
             resource.put(Operation.FETCH.name(), operation);
         } else if (operation.nickname.startsWith(Operation.UPDATE.prefix)) {
             operation.vendorExtensions.put("x-is-update-operation", true);
@@ -244,6 +245,11 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
                 .stream(PathUtils.cleanPath(path).split("/"))
                 .map(this::singularize)
                 .collect(Collectors.joining("."));
+    }
+
+    private String getFolderName(final String path) {
+        var cleanPath = PathUtils.cleanPath(path).split("/");
+        return StringUtils.camelize(cleanPath[cleanPath.length - 1], true);
     }
 
     private String singularize(final String plural) {

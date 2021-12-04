@@ -21,9 +21,11 @@ public class {{resourceName}}Fetcher extends Fetcher<{{resourceName}}> {
     private {{dataType}} {{paramName}};
 {{/allParams}}
 
-    public {{resourceName}}Fetcher({{#allParams}}final {{dataType}} {{paramName}}, {{/allParams}}){
+    public {{resourceName}}Fetcher({{#allParams}}{{#required}}final {{dataType}} {{paramName}}{{^-last}}, {{/-last}}{{/required}}{{/allParams}}){
     {{#allParams}}
+    {{#required}}
         this.{{paramName}} = {{paramName}};
+    {{/required}}
     {{/allParams}}
     }
 
