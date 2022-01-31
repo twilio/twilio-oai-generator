@@ -2,6 +2,7 @@ package com.twilio.oai;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -9,8 +10,11 @@ import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.Operation;
 import io.swagger.v3.oas.models.PathItem;
 import org.openapitools.codegen.CodegenConstants;
+import org.openapitools.codegen.CodegenOperation;
 import org.openapitools.codegen.CodegenProperty;
 import org.openapitools.codegen.languages.GoClientCodegen;
+
+import static org.openapitools.codegen.utils.StringUtils.camelize;
 
 public abstract class AbstractTwilioGoGenerator extends GoClientCodegen {
 
@@ -83,5 +87,23 @@ public abstract class AbstractTwilioGoGenerator extends GoClientCodegen {
         name = name.replace(">", "After");
         name = super.toVarName(name);
         return name;
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public Map<String, Object> postProcessOperationsWithModels(final Map<String, Object> objs, List<Object> allModels) {
+        final Map<String, Object> objectMap = (Map<String, Object>) objs.get("operations");
+        final List<CodegenOperation> operations = (List<CodegenOperation>) objectMap.get("operation");
+        final List<Map<String, String>> imports = (List<Map<String, String>>) objs.get("imports");
+
+        // HTTP method verb conversion (e.g. PUT => Put).
+        operations.forEach(operation -> operation.httpMethod = camelize(operation.httpMethod.toLowerCase()));
+
+        if (imports != null) {
+            // Remove model imports to avoid error.
+            imports.removeIf(item -> item.get("import").startsWith(apiPackage()));
+        }
+
+        return objs;
     }
 }
