@@ -13,6 +13,8 @@ jobs:
   test:
     runs-on: ubuntu-latest
     timeout-minutes: 20
+    env:
+      DOCKER_LOGIN: ${{ secrets.DOCKER_USERNAME && secrets.DOCKER_AUTH_TOKEN }}
     steps:
       - name: Checkout twilio-oai-generator
         uses: actions/checkout@v2
@@ -24,6 +26,7 @@ jobs:
           java-version: '11'
 
       - name: Login to Docker Hub
+        if: env.DOCKER_LOGIN
         uses: docker/login-action@v1
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
@@ -40,7 +43,7 @@ jobs:
       steps:
         - uses: rtCamp/action-slack-notify@v2
           env:
-            SLACK_COLOR: ${{ needs.test.status }}
+            SLACK_COLOR: failure
             SLACK_ICON_EMOJI: ':github:'
             SLACK_MESSAGE: ${{ format('Build {2} in {1} failed{3} {0}/{1}/actions/runs/{2}', github.server_url, github.repository, github.run_id, ':') }}
             SLACK_TITLE: Build Failure
