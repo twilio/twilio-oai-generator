@@ -1,14 +1,13 @@
-package unit
+package openapi
 
 import (
 	"fmt"
 	"testing"
-	. "twilio-oai-generator/go/rest/api/v2010"
+	. "go-client/helper/rest/api/v2010"
 
 	"github.com/stretchr/testify/assert"
 
-	. "twilio-oai-generator/terraform/resources"
-)
+	)
 
 var credentialsSid = "CR123"
 var friendlyName = "house-keys"

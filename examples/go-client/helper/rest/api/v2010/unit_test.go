@@ -1,4 +1,4 @@
-package unit
+package openapi
 
 import (
 	"bytes"
@@ -11,7 +11,7 @@ import (
 	"testing"
 	"time"
 
-	openapi "twilio-oai-generator/go/rest/api/v2010"
+	. "go-client/helper"
 
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
@@ -35,8 +35,8 @@ func TestPathIsCorrect(t *testing.T) {
 		},
 		)
 
-	twilio := openapi.NewApiServiceWithClient(testClient)
-	params := &openapi.FetchIncomingPhoneNumberParams{}
+	twilio := NewApiServiceWithClient(testClient)
+	params := &FetchIncomingPhoneNumberParams{}
 	_, _ = twilio.FetchIncomingPhoneNumber("PNXXXXY", params)
 }
 
@@ -58,16 +58,16 @@ func TestAccountSidAsOptionalParam(t *testing.T) {
 		},
 		)
 
-	twilio := openapi.NewApiServiceWithClient(testClient)
+	twilio := NewApiServiceWithClient(testClient)
 	subAccountSid := "AC444444444444444444444444444444"
-	params := &openapi.FetchIncomingPhoneNumberParams{PathAccountSid: &subAccountSid}
+	params := &FetchIncomingPhoneNumberParams{PathAccountSid: &subAccountSid}
 	_, _ = twilio.FetchIncomingPhoneNumber("PNXXXXY", params)
 }
 
 func TestAddingHeader(t *testing.T) {
 	testHeader := "true"
 	testUri := "https://validurl.com"
-	params := &openapi.CreateCallRecordingParams{}
+	params := &CreateCallRecordingParams{}
 	params.XTwilioWebhookEnabled = &testHeader
 	params.RecordingStatusCallback = &testUri
 
@@ -90,7 +90,7 @@ func TestAddingHeader(t *testing.T) {
 			return &http.Response{Body: ioutil.NopCloser(bytes.NewReader(nil))}, nil
 		},
 		)
-	twilio := openapi.NewApiServiceWithClient(testClient)
+	twilio := NewApiServiceWithClient(testClient)
 	_, _ = twilio.CreateCallRecording("CA1234", params)
 }
 
@@ -100,7 +100,7 @@ func TestQueryParams(t *testing.T) {
 	dateCreatedAfter := time.Date(2000, 1, 4, 1, 0, 0, 0, time.UTC)
 	dateTest := "2021-03-31"
 	pageSize := 4
-	params := openapi.ListCallRecordingParams{
+	params := ListCallRecordingParams{
 		DateCreated:       &dateCreated,
 		DateCreatedBefore: &dateCreatedBefore,
 		DateCreatedAfter:  &dateCreatedAfter,
@@ -131,13 +131,13 @@ func TestQueryParams(t *testing.T) {
 			return &http.Response{Body: ioutil.NopCloser(bytes.NewReader(nil))}, nil
 		},
 		)
-	twilio := openapi.NewApiServiceWithClient(testClient)
+	twilio := NewApiServiceWithClient(testClient)
 	_, _ = twilio.ListCallRecording("12345678", &params)
 }
 
 func TestArrayTypeParam(t *testing.T) {
 	callbackEvents := []string{"http://test1.com/", "http://test2.com"}
-	params := openapi.CreateCallRecordingParams{
+	params := CreateCallRecordingParams{
 		RecordingStatusCallbackEvent: &callbackEvents,
 	}
 
@@ -162,11 +162,11 @@ func TestArrayTypeParam(t *testing.T) {
 			return &http.Response{Body: ioutil.NopCloser(bytes.NewReader(nil))}, nil
 		},
 		)
-	twilio := openapi.NewApiServiceWithClient(testClient)
+	twilio := NewApiServiceWithClient(testClient)
 	_, _ = twilio.CreateCallRecording("CA1234", &params)
 }
 
-func getStreamCount(twilio *openapi.ApiService, params *openapi.ListMessageParams) int {
+func getStreamCount(twilio *ApiService, params *ListMessageParams) int {
 	messageCount := 0
 
 	channel, _ := twilio.StreamMessage(params)
@@ -246,9 +246,9 @@ func TestList(t *testing.T) {
 		},
 		).AnyTimes()
 
-	twilio := openapi.NewApiServiceWithClient(testClient)
+	twilio := NewApiServiceWithClient(testClient)
 
-	params := &openapi.ListMessageParams{}
+	params := &ListMessageParams{}
 	params.SetFrom("4444444444")
 	params.SetTo("9999999999")
 	params.SetPageSize(5)
@@ -413,9 +413,9 @@ func TestListPaging(t *testing.T) {
 		page2,
 	)
 
-	twilio := openapi.NewApiServiceWithClient(testClient)
+	twilio := NewApiServiceWithClient(testClient)
 
-	params := &openapi.ListMessageParams{}
+	params := &ListMessageParams{}
 	params.SetFrom("from")
 	params.SetTo("to")
 	params.SetPageSize(5)
@@ -469,9 +469,9 @@ func TestListError(t *testing.T) {
 		},
 		).AnyTimes()
 
-	twilio := openapi.NewApiServiceWithClient(testClient)
+	twilio := NewApiServiceWithClient(testClient)
 
-	params := &openapi.ListMessageParams{}
+	params := &ListMessageParams{}
 	params.SetFrom("from")
 	params.SetTo("to")
 	params.SetPageSize(5)
@@ -552,9 +552,9 @@ func TestStream(t *testing.T) {
 		},
 		).AnyTimes()
 
-	twilio := openapi.NewApiServiceWithClient(testClient)
+	twilio := NewApiServiceWithClient(testClient)
 
-	params := &openapi.ListMessageParams{}
+	params := &ListMessageParams{}
 	params.SetPageSize(5)
 	params.SetLimit(10)
 
@@ -692,9 +692,9 @@ func TestStreamPaging(t *testing.T) {
 		page1,
 	)
 
-	twilio := openapi.NewApiServiceWithClient(testClient)
+	twilio := NewApiServiceWithClient(testClient)
 
-	params := &openapi.ListMessageParams{}
+	params := &ListMessageParams{}
 	params.SetFrom("4444444444")
 	params.SetTo("9999999999")
 	params.SetPageSize(5)
@@ -754,9 +754,9 @@ func TestStreamError(t *testing.T) {
 		},
 		).AnyTimes()
 
-	twilio := openapi.NewApiServiceWithClient(testClient)
+	twilio := NewApiServiceWithClient(testClient)
 
-	params := &openapi.ListMessageParams{}
+	params := &ListMessageParams{}
 	params.SetPageSize(5)
 	params.SetLimit(5)
 
@@ -776,7 +776,7 @@ func TestObjectArrayTypeParam(t *testing.T) {
 		"key2": 4,
 	}
 	testObjectArrayParam := []map[string]interface{}{item1, item2}
-	params := openapi.CreateCredentialAwsParams{}
+	params := CreateCredentialAwsParams{}
 	params.SetTestObjectArray(testObjectArrayParam)
 
 	expectedData := url.Values{}
@@ -798,6 +798,6 @@ func TestObjectArrayTypeParam(t *testing.T) {
 			return &http.Response{Body: ioutil.NopCloser(bytes.NewReader(nil))}, nil
 		},
 		)
-	twilio := openapi.NewApiServiceWithClient(testClient)
+	twilio := NewApiServiceWithClient(testClient)
 	_, _ = twilio.CreateCredentialAws(&params)
 }

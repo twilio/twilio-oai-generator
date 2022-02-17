@@ -1,4 +1,4 @@
-package unit
+package openapi
 
 import (
 	"io/ioutil"

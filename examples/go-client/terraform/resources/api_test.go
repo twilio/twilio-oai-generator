@@ -1,8 +1,8 @@
-package unit
+package openapi
 
 import (
 	"testing"
-	. "twilio-oai-generator/terraform/client"
+	. "go-client/terraform/client"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 

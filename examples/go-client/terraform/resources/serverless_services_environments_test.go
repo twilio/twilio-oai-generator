@@ -1,11 +1,9 @@
-package unit
+package openapi
 
 import (
 	"fmt"
 	"testing"
-	. "twilio-oai-generator/go/rest/api/v2010"
-	. "twilio-oai-generator/terraform/resources"
-
+	. "go-client/helper/rest/api/v2010"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -15,7 +13,7 @@ var uniqueName = "unique"
 var domainSuffix = "org"
 var serviceEnvironment = &ServerlessV1Environment{
 	ServiceSid: &serviceSid,
-	Sid:     &environmentSid,
+	Sid:        &environmentSid,
 }
 
 var environmentId = fmt.Sprintf("%s/%s", serviceSid, environmentSid)
@@ -38,7 +36,7 @@ func TestCreateServiceEnvironment(t *testing.T) {
 	testClient.EXPECT().CreateEnvironment(
 		serviceSid,
 		&CreateEnvironmentParams{
-			UniqueName: &uniqueName,
+			UniqueName:   &uniqueName,
 			DomainSuffix: &domainSuffix,
 		},
 	).Return(serviceEnvironment, nil)

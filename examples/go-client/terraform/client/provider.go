@@ -1,7 +1,7 @@
 package client
 
 import (
-	v2010 "twilio-oai-generator/go/rest/api/v2010"
+	v2010 "go-client/helper/rest/api/v2010"
 )
 
 // Config is provided as context to the underlying resources.

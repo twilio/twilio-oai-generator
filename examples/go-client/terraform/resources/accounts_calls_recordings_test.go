@@ -1,11 +1,9 @@
-package unit
+package openapi
 
 import (
 	"fmt"
 	"testing"
-	. "twilio-oai-generator/go/rest/api/v2010"
-	. "twilio-oai-generator/terraform/resources"
-
+	. "go-client/helper/rest/api/v2010"
 	"github.com/stretchr/testify/assert"
 )
 

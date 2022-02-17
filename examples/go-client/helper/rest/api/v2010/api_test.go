@@ -1,19 +1,17 @@
-package integration
+package openapi
 
 import (
 	"os"
 	"testing"
 	"time"
 
-	test_client "twilio-oai-generator/go"
-	openapi "twilio-oai-generator/go/rest/api/v2010"
-
+	test_client "go-client/helper"
 	"github.com/stretchr/testify/assert"
 )
 
 var accountSid string
 var authToken string
-var testApiService *openapi.ApiService
+var testApiService *ApiService
 
 func TestMain(m *testing.M) {
 	// Do setup before the tests are run
@@ -21,7 +19,7 @@ func TestMain(m *testing.M) {
 	authToken = "CR12345678123456781234567812345678"
 	testClient := test_client.NewTestClient(accountSid, authToken)
 	testClient.BaseURL = "http://prism_twilio:4010"
-	testApiService = openapi.NewApiServiceWithClient(testClient)
+	testApiService = NewApiServiceWithClient(testClient)
 
 	ret := m.Run()
 	os.Exit(ret)
@@ -36,7 +34,7 @@ func TestGet(t *testing.T) {
 }
 
 func TestPost(t *testing.T) {
-	params := &openapi.CreateCredentialAwsParams{}
+	params := &CreateCredentialAwsParams{}
 
 	params.SetAccountSid(accountSid)
 	params.SetFriendlyName("MockCreds")
@@ -63,7 +61,7 @@ func TestFetch(t *testing.T) {
 }
 
 func TestUpdate(t *testing.T) {
-	params := &openapi.UpdateCredentialAwsParams{}
+	params := &UpdateCredentialAwsParams{}
 	params.SetFriendlyName("MockCreds")
 
 	resp, err := testApiService.UpdateCredentialAws(authToken, params)
@@ -72,7 +70,7 @@ func TestUpdate(t *testing.T) {
 }
 
 func TestDateTimeQueryParams(t *testing.T) {
-	params := &openapi.ListCallRecordingParams{}
+	params := &ListCallRecordingParams{}
 	params.SetDateCreated(time.Now())
 	params.SetDateCreatedBefore(time.Now().Add(-2))
 	params.SetDateCreatedAfter(time.Now().Add(2))
@@ -96,7 +94,7 @@ func TestDateInPath(t *testing.T) {
 }
 
 func TestCustomHeaders(t *testing.T) {
-	params := &openapi.CreateCallRecordingParams{}
+	params := &CreateCallRecordingParams{}
 	params.SetXTwilioWebhookEnabled("true")
 	params.SetRecordingStatusCallback("https://validurl.com")
 
@@ -109,7 +107,7 @@ func TestCustomHeaders(t *testing.T) {
 }
 
 func TestRequiredParameters(t *testing.T) {
-	params := &openapi.CreateCallFeedbackSummaryParams{}
+	params := &CreateCallFeedbackSummaryParams{}
 	params.SetStartDate("2021-04-04")
 	params.SetEndDate("2021-04-05")
 

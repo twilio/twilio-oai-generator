@@ -2,11 +2,11 @@
 // Source: client/provider.go
 
 // Package unit is a generated GoMock package.
-package unit
+package client
 
 import (
 	reflect "reflect"
-	openapi "twilio-oai-generator/go/rest/api/v2010"
+	openapi "go-client/helper/rest/api/v2010"
 
 	gomock "github.com/golang/mock/gomock"
 )
