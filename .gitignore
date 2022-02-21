@@ -5,3 +5,4 @@ target/
 
 examples/go/rest/
 examples/terraform/resources/
+examples/twilio-java/src/main/java/com/twilio/rest 
