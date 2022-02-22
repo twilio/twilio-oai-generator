@@ -21,17 +21,17 @@ import java.net.URI;
 {{#vendorExtensions.x-is-create-operation}}
 public class {{resourceName}}Creator extends Creator<{{resourceName}}>{
 {{#allParams}}
-    private {{dataType}} {{paramName}};
+    private {{{dataType}}} {{paramName}};
 {{/allParams}}
 
-    public {{resourceName}}Creator({{#allParams}}{{#required}}final {{dataType}} {{paramName}}{{^-last}}, {{/-last}}{{/required}}{{/allParams}}) {
+    public {{resourceName}}Creator({{#requiredParams}}final {{{dataType}}} {{paramName}}{{^-last}}, {{/-last}}{{/requiredParams}}) {
     {{#allParams}}{{#required}}
         this.{{paramName}} = {{paramName}};
     {{/required}}{{/allParams}}
     }
 
 {{#allParams}}
-    public {{resourceName}}Creator set{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}(final {{dataType}} {{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}){
+    public {{resourceName}}Creator set{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}(final {{{dataType}}} {{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}){
         this.{{paramName}} = {{paramName}};
         return this;
     }
@@ -41,14 +41,14 @@ public class {{resourceName}}Creator extends Creator<{{resourceName}}>{
     public {{resourceName}} create(final TwilioRestClient client){
         var path = "{{{path}}}";
         {{#requiredParams}}
-        path = path.Replace("{"+"{{paramName}}"+"}", this.{{paramName}})
+        path = path.Replace("{"+"{{paramName}}"+"}", this.{{paramName}});
         {{/requiredParams}}
 
         Request request = new Request(
             HttpMethod.POST,
             Domains.{{#lambda.uppercase}}{{domain}}{{/lambda.uppercase}}.toString(),
             path
-        )
+        );
 
         addPostParams(request);
         Response response = client.request(request);

@@ -29,13 +29,13 @@
 {{/hasEnums}}
 
 {{#vars}}
-    private final {{dataType}} {{name}};
+    private final {{{dataType}}} {{name}};
 {{/vars}}
 
     @JsonCreator
     private {{resourceName}}({{#vars}}
         @JsonProperty("{{{name}}}")
-        final {{{dataType}}} {{{name}}},{{/vars}}
+        final {{{dataType}}} {{{name}}}{{^-last}},{{/-last}}{{/vars}}
     ) {
     {{#vars}}
         this.{{{name}}} = {{{name}}};
@@ -43,7 +43,7 @@
     }
 
     {{#vars}}
-        public final {{{dataType}}} get{{#lambda.titlecase}}{{{name}}}{{/lambda.titlecase}} {
+        public final {{{dataType}}} get{{#lambda.titlecase}}{{{name}}}{{/lambda.titlecase}}() {
             return this.{{{name}}};
         }
     {{/vars}}
@@ -60,11 +60,11 @@
 
         {{resourceName}} other = ({{resourceName}}) o;
 
-        return {{#vars}}Objects.equals({{name}}, other.{{name}}) {{^-last}}&& {{/-last}} {{/vars}}
+        return {{#vars}}Objects.equals({{name}}, other.{{name}}) {{^-last}}&& {{/-last}} {{/vars}};
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash({{#vars}}{{{name}}}{{^-last}}, {{/-last}}{{/vars}})
+        return Objects.hash({{#vars}}{{{name}}}{{^-last}}, {{/-last}}{{/vars}});
     }
 {{/responseModel}}

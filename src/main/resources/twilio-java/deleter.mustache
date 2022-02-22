@@ -18,10 +18,10 @@ import com.twilio.rest.Domains;
 {{#vendorExtensions.x-is-delete-operation}}
 public class {{resourceName}}Deleter extends Deleter<{{resourceName}}> {
 {{#allParams}}
-    private {{dataType}} {{paramName}};
+    private {{{dataType}}} {{paramName}};
 {{/allParams}}
 
-    public {{resourceName}}Deleter({{#allParams}}{{#required}}final {{dataType}} {{paramName}}{{^-last}}, {{/-last}}{{/required}}{{/allParams}}){
+    public {{resourceName}}Deleter({{#allParams}}{{#required}}final {{{dataType}}} {{paramName}}{{^-last}}, {{/-last}}{{/required}}{{/allParams}}){
     {{#allParams}}
     {{#required}}
         this.{{paramName}} = {{paramName}};
@@ -33,7 +33,7 @@ public class {{resourceName}}Deleter extends Deleter<{{resourceName}}> {
     public boolean delete(final TwilioRestClient client) {
         var path = "{{{path}}}";
         {{#requiredParams}}
-        path = path.Replace("{"+"{{paramName}}"+"}", this.{{paramName}})
+        path = path.Replace("{"+"{{paramName}}"+"}", this.{{paramName}});
         {{/requiredParams}}
 
         Request request = new Request(

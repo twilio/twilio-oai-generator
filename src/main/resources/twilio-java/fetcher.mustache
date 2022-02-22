@@ -18,10 +18,10 @@ import com.twilio.rest.Domains;
 {{#vendorExtensions.x-is-fetch-operation}}
 public class {{resourceName}}Fetcher extends Fetcher<{{resourceName}}> {
 {{#allParams}}
-    private {{dataType}} {{paramName}};
+    private {{{dataType}}} {{paramName}};
 {{/allParams}}
 
-    public {{resourceName}}Fetcher({{#allParams}}{{#required}}final {{dataType}} {{paramName}}{{^-last}}, {{/-last}}{{/required}}{{/allParams}}){
+    public {{resourceName}}Fetcher({{#requiredParams}}final {{{dataType}}} {{paramName}}{{^-last}}, {{/-last}}{{/requiredParams}}){
     {{#allParams}}
     {{#required}}
         this.{{paramName}} = {{paramName}};
@@ -33,7 +33,7 @@ public class {{resourceName}}Fetcher extends Fetcher<{{resourceName}}> {
     public boolean fetch(final TwilioRestClient client) {
         var path = "{{{path}}}";
         {{#requiredParams}}
-        path = path.Replace("{"+"{{paramName}}"+"}", this.{{paramName}})
+        path = path.Replace("{"+"{{paramName}}"+"}", this.{{paramName}});
         {{/requiredParams}}
 
         Request request = new Request(

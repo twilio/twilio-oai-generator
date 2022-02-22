@@ -18,15 +18,15 @@ import com.twilio.rest.Domains;
 {{#vendorExtensions.x-is-read-operation}}
 public class {{resourceName}}Reader extends Reader<{{resourceName}}> {
 {{#allParams}}
-    private {{dataType}} {{paramName}};
+    private {{{dataType}}} {{paramName}};
 
-    public {{resourceName}}Reader set{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}(final {{dataType}} {{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}){
+    public {{resourceName}}Reader set{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}(final {{{dataType}}} {{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}){
         this.{{paramName}} = {{paramName}};
         return this;
     }
 {{/allParams}}
 
-    public {{resourceName}}Reader({{#allParams}}{{#required}}final {{dataType}} {{paramName}}{{^-last}}, {{/-last}}{{/required}}{{/allParams}}){
+    public {{resourceName}}Reader({{#requiredParams}}final {{{dataType}}} {{paramName}}{{^-last}}, {{/-last}}{{/requiredParams}}){
     {{#allParams}}
     {{#required}}
         this.{{paramName}} = {{paramName}};
@@ -50,7 +50,7 @@ public class {{resourceName}}Reader extends Reader<{{resourceName}}> {
     public Page<{{resourceName}}> firstPage(final TwilioRestClient client) {
         var path = "{{{path}}}";
         {{#requiredParams}}
-        path = path.Replace("{"+"{{paramName}}"+"}", this.{{paramName}})
+        path = path.Replace("{"+"{{paramName}}"+"}", this.{{paramName}});
         {{/requiredParams}}
 
         Request request = new Request(

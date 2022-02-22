@@ -19,10 +19,10 @@ import com.twilio.rest.Domains;
 {{#vendorExtensions.x-is-update-operation}}
 public class {{resourceName}}Updater extends Updater<{{resourceName}}>{
 {{#allParams}}
-    private {{dataType}} {{paramName}};
+    private {{{dataType}}} {{paramName}};
 {{/allParams}}
 
-    public {{resourceName}}Updater({{#allParams}}{{#required}}final {{dataType}} {{paramName}}{{^-last}}, {{/-last}}{{/required}}{{/allParams}}){
+    public {{resourceName}}Updater({{#requiredParams}}final {{{dataType}}} {{paramName}}{{^-last}}, {{/-last}}{{/requiredParams}}){
         {{#allParams}}{{#required}}
             this.{{paramName}} = {{paramName}};
         {{/required}}{{/allParams}}
@@ -39,14 +39,14 @@ public class {{resourceName}}Updater extends Updater<{{resourceName}}>{
     public {{resourceName}} update(final TwilioRestClient client){
         var path = "{{{path}}}";
         {{#requiredParams}}
-        path = path.Replace("{"+"{{paramName}}"+"}", this.{{paramName}})
+        path = path.Replace("{"+"{{paramName}}"+"}", this.{{paramName}});
         {{/requiredParams}}
 
         Request request = new Request(
             HttpMethod.POST,
             Domains.{{#lambda.uppercase}}{{domain}}{{/lambda.uppercase}}.toString(),
             path
-        )
+        );
 
         addPostParams(request);
         Response response = client.request(request);

@@ -25,6 +25,16 @@ java -cp ./openapi-generator-cli.jar:target/twilio-openapi-generator.jar \
 sed -i.bak "s/github.com\/twilio\/twilio-go/twilio-oai-generator\/go/g" "$OUT_DIR/api_default.go"
 sed -i.bak "s/github.com\/twilio\/terraform-provider-twilio\/client/twilio-oai-generator\/terraform\/client/g" "$OUT_DIR/api_default.go"
 
+OUT_DIR=examples/twilio-java/rest
+rm -rf $OUT_DIR
+java -cp ./openapi-generator-cli.jar:target/twilio-openapi-generator.jar  \
+  org.openapitools.codegen.OpenAPIGenerator \
+  generate -g twilio-java \
+  -i $API_SPEC \
+  -o $OUT_DIR  \
+  --global-property apiTests=false,apiDocs=false
+
+
 cd examples/prism
 docker-compose build
 docker-compose up --force-recreate --abort-on-container-exit --remove-orphans
