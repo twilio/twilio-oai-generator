@@ -37,9 +37,9 @@ public class {{resourceName}}Updater extends Updater<{{resourceName}}>{
 
     @Override
     public {{resourceName}} update(final TwilioRestClient client){
-        var path = "{{{path}}}";
+        String path = "{{{path}}}";
         {{#requiredParams}}
-        path = path.Replace("{"+"{{paramName}}"+"}", this.{{paramName}});
+        path = path.replace("{"+"{{paramName}}"+"}", this.{{paramName}}.toString());
         {{/requiredParams}}
 
         Request request = new Request(
@@ -67,7 +67,7 @@ public class {{resourceName}}Updater extends Updater<{{resourceName}}>{
     private void addPostParams(final Request request) {
 {{#allParams}}
         if ({{paramName}} != null) {
-            request.addPostParam("{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}", {{paramName}});
+            request.addPostParam("{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}", {{paramName}}.toString());
         }
 {{/allParams}}
     }

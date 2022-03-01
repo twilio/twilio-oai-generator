@@ -21,19 +21,18 @@ public class {{resourceName}}Fetcher extends Fetcher<{{resourceName}}> {
     private {{{dataType}}} {{paramName}};
 {{/allParams}}
 
+
     public {{resourceName}}Fetcher({{#requiredParams}}final {{{dataType}}} {{paramName}}{{^-last}}, {{/-last}}{{/requiredParams}}){
-    {{#allParams}}
-    {{#required}}
+    {{#requiredParams}}
         this.{{paramName}} = {{paramName}};
-    {{/required}}
-    {{/allParams}}
+    {{/requiredParams}}
     }
 
     @Override
-    public boolean fetch(final TwilioRestClient client) {
-        var path = "{{{path}}}";
+    public {{resourceName}} fetch(final TwilioRestClient client) {
+        String path = "{{{path}}}";
         {{#requiredParams}}
-        path = path.Replace("{"+"{{paramName}}"+"}", this.{{paramName}});
+        path = path.replace("{"+"{{paramName}}"+"}", this.{{paramName}}.toString());
         {{/requiredParams}}
 
         Request request = new Request(

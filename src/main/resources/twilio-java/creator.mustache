@@ -11,6 +11,10 @@ import com.twilio.http.Request;
 import com.twilio.http.Response;
 import com.twilio.http.TwilioRestClient;
 import com.twilio.rest.Domains;
+import java.math.BigDecimal;
+import java.util.List;
+import java.time.LocalDate;
+import java.time.OffsetDateTime;
 
 import java.net.URI;
 
@@ -23,11 +27,10 @@ public class {{resourceName}}Creator extends Creator<{{resourceName}}>{
 {{#allParams}}
     private {{{dataType}}} {{paramName}};
 {{/allParams}}
-
     public {{resourceName}}Creator({{#requiredParams}}final {{{dataType}}} {{paramName}}{{^-last}}, {{/-last}}{{/requiredParams}}) {
-    {{#allParams}}{{#required}}
+    {{#requiredParams}}{{#required}}
         this.{{paramName}} = {{paramName}};
-    {{/required}}{{/allParams}}
+    {{/required}}{{/requiredParams}}
     }
 
 {{#allParams}}
@@ -39,9 +42,9 @@ public class {{resourceName}}Creator extends Creator<{{resourceName}}>{
 
     @Override
     public {{resourceName}} create(final TwilioRestClient client){
-        var path = "{{{path}}}";
+        String path = "{{{path}}}";
         {{#requiredParams}}
-        path = path.Replace("{"+"{{paramName}}"+"}", this.{{paramName}});
+        path = path.replace("{"+"{{paramName}}"+"}", this.{{paramName}}.toString());
         {{/requiredParams}}
 
         Request request = new Request(
@@ -69,7 +72,7 @@ public class {{resourceName}}Creator extends Creator<{{resourceName}}>{
     private void addPostParams(final Request request) {
 {{#allParams}}
         if ({{paramName}} != null) {
-            request.addPostParam("{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}", {{paramName}});
+            request.addPostParam("{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}", {{paramName}}.toString());
         }
 {{/allParams}}
     }

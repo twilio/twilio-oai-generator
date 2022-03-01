@@ -10,6 +10,7 @@ import com.twilio.http.Request;
 import com.twilio.http.Response;
 import com.twilio.http.TwilioRestClient;
 import com.twilio.rest.Domains;
+import java.time.LocalDate;
 
 {{#resources}}
 {{>model}}
@@ -21,19 +22,17 @@ public class {{resourceName}}Deleter extends Deleter<{{resourceName}}> {
     private {{{dataType}}} {{paramName}};
 {{/allParams}}
 
-    public {{resourceName}}Deleter({{#allParams}}{{#required}}final {{{dataType}}} {{paramName}}{{^-last}}, {{/-last}}{{/required}}{{/allParams}}){
-    {{#allParams}}
-    {{#required}}
+    public {{resourceName}}Deleter({{#requiredParams}}final {{{dataType}}} {{paramName}}{{^-last}}, {{/-last}}{{/requiredParams}}){
+    {{#requiredParams}}
         this.{{paramName}} = {{paramName}};
-    {{/required}}
-    {{/allParams}}
+    {{/requiredParams}}
     }
 
     @Override
     public boolean delete(final TwilioRestClient client) {
-        var path = "{{{path}}}";
+        String path = "{{{path}}}";
         {{#requiredParams}}
-        path = path.Replace("{"+"{{paramName}}"+"}", this.{{paramName}});
+        path = path.replace("{"+"{{paramName}}"+"}", this.{{paramName}}.toString());
         {{/requiredParams}}
 
         Request request = new Request(

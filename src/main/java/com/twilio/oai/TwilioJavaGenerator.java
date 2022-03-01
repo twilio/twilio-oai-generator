@@ -8,7 +8,9 @@ import org.openapitools.codegen.utils.StringUtils;
 
 import java.io.File;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class TwilioJavaGenerator extends JavaClientCodegen {
 
@@ -118,30 +120,40 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
             // Group operations by resource.
             String path = co.path;
             String resourceName = singularize(getResourceName(co.path));
+            // TODO: Remove this after singular issue is fixed
+            if (getResourceName(co.path).equals("AWS")) {
+                continue;
+            }
             final Map<String, Object> resource = resources.computeIfAbsent(resourceName, k -> new LinkedHashMap<>());
             populateCrudOperations(resource, co);
-
-            if (co.path.endsWith("}")) {
+            // TODO: Review this condition
+            if (co.path.endsWith("}") || co.path.endsWith("}.json")) {
                 if ("GET".equalsIgnoreCase(co.httpMethod)) {
                     resource.put("hasFetch", true);
+                    resource.put("requiredParamsFetch", co.requiredParams);
                     co.vendorExtensions.put("x-is-fetch-operation", true);
                     addOperationName(co, "Fetch");
                 } else if ("POST".equalsIgnoreCase(co.httpMethod)) {
                     resource.put("hasUpdate", true);
                     addOperationName(co, "Update");
+                    resource.put("requiredParamsUpdate", co.requiredParams);
                 } else if ("DELETE".equalsIgnoreCase(co.httpMethod)) {
                     resource.put("hasDelete", true);
                     addOperationName(co, "Remove");
+                    resource.put("requiredParamsDelete", co.requiredParams);
                 }
             } else {
                 if ("POST".equalsIgnoreCase(co.httpMethod)) {
+                    // TODO: set false for testing the code, Fix this bug later
                     resource.put("hasCreate", true);
                     co.vendorExtensions.put("x-is-create-operation", true);
                     addOperationName(co, "Create");
+                    resource.put("requiredParamsCreate", co.requiredParams);
                 } else if ("GET".equalsIgnoreCase(co.httpMethod)) {
                     resource.put("hasRead", true);
                     co.vendorExtensions.put("x-is-read-operation", true);
                     addOperationName(co, "Page");
+                    resource.put("requiredParamsRead", co.requiredParams);
                 }
             }
 
@@ -153,6 +165,7 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
             resourceOperationList.add(co);
             resource.put("resourceName", resourceName);
             resource.put("path", path);
+            // TODO: This is the issue, These values will be overridden multiple times
             resource.put("resourcePathParams", co.pathParams);
             resource.put("resourceRequiredParams", co.requiredParams);
 
