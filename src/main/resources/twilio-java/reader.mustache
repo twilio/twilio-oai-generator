@@ -1,5 +1,6 @@
 {{>licenseInfo}}
-{{>packageName}}
+{{#resources}}
+package com.twilio.rest.{{domainPackage}}.{{package}}.{{packageSubPart}};
 
 import com.twilio.base.Reader;
 import com.twilio.base.ResourceSet;
@@ -15,7 +16,7 @@ import com.twilio.base.Page;
 import java.time.OffsetDateTime;
 import java.time.LocalDate;
 
-{{#resources}}
+
 {{>model}}
 {{#hasRead}}
 {{#operations}}

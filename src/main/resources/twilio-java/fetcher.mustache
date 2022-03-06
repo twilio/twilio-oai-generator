@@ -1,5 +1,6 @@
 {{>licenseInfo}}
-{{>packageName}}
+{{#resources}}
+package com.twilio.rest.{{domainPackage}}.{{package}}.{{packageSubPart}};
 
 import com.twilio.base.Fetcher;
 import com.twilio.exception.ApiConnectionException;
@@ -11,7 +12,6 @@ import com.twilio.http.Response;
 import com.twilio.http.TwilioRestClient;
 import com.twilio.rest.Domains;
 
-{{#resources}}
 {{>model}}
 {{#hasFetch}}
 {{#operations}}

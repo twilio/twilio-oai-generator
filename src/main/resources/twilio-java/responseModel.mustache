@@ -5,13 +5,13 @@
     public enum {{#lambda.titlecase}}{{{baseName}}}{{/lambda.titlecase}} {
         {{#allowableValues}}
         {{#enumVars}}
-        {{#lambda.uppercase}}{{{name}}}({{/lambda.uppercase}}{{{value}}}){{^-last}},{{/-last}}
+        {{#lambda.uppercase}}{{{name}}}({{/lambda.uppercase}}{{{value}}}){{^-last}},{{/-last}}{{#-last}};{{/-last}}
         {{/enumVars}}
         {{/allowableValues}}
 
         private final String value;
 
-        private {{{enumName}}}(final String value) {
+        private {{#lambda.titlecase}}{{{baseName}}}{{/lambda.titlecase}}(final String value) {
             this.value = value;
         }
 

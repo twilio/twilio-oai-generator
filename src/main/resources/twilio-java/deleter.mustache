@@ -1,5 +1,6 @@
 {{>licenseInfo}}
-{{>packageName}}
+{{#resources}}
+package com.twilio.rest.{{domainPackage}}.{{package}}.{{packageSubPart}};
 
 import com.twilio.base.Deleter;
 import com.twilio.exception.ApiConnectionException;
@@ -12,7 +13,7 @@ import com.twilio.http.TwilioRestClient;
 import com.twilio.rest.Domains;
 import java.time.LocalDate;
 
-{{#resources}}
+
 {{>model}}
 {{#hasDelete}}
 {{#operations}}

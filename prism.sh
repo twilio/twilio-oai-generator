@@ -21,6 +21,10 @@ java -cp ./openapi-generator-cli.jar:target/twilio-openapi-generator.jar \
   -i $API_SPEC \
   -o $OUT_DIR
 
+# Replace a couple imports in the generated Terraform resource to use local code.
+sed -i.bak "s/github.com\/twilio\/twilio-go/twilio-oai-generator\/go/g" "$OUT_DIR/api_default.go"
+sed -i.bak "s/github.com\/twilio\/terraform-provider-twilio\/client/twilio-oai-generator\/terraform\/client/g" "$OUT_DIR/api_default.go"
+
 OUT_DIR=examples/java/rest
 rm -rf $OUT_DIR
 java -cp ./openapi-generator-cli.jar:target/twilio-openapi-generator.jar  \
@@ -39,6 +43,7 @@ docker-compose up -d --force-recreate --remove-orphans
 while [ "$(docker-compose ps -q golang-test | xargs docker inspect -f "{{.State.Status}}")" != "exited" ] || [ "$(docker-compose ps -q java-test | xargs docker inspect -f "{{.State.Status}}")" != "exited" ]
 do
   echo " Waiting for tests to complete"
+  sleep 10
 done
 
 EXIT_CODE=0
@@ -59,4 +64,5 @@ function check_status() {
 
 testing_services=("golang-test" "java-test")
 check_status "${testing_services[@]}"
+docker-compose down
 exit $EXIT_CODE

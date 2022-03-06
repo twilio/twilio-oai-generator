@@ -1,5 +1,6 @@
 {{>licenseInfo}}
-{{>packageName}}
+{{#resources}}
+package com.twilio.rest.{{domainPackage}}.{{package}}.{{packageSubPart}};
 
 import com.twilio.base.Creator;
 import com.twilio.converter.Promoter;
@@ -18,7 +19,6 @@ import java.time.OffsetDateTime;
 
 import java.net.URI;
 
-{{#resources}}
 {{>model}}
 {{#hasCreate}}
 {{#operations}}

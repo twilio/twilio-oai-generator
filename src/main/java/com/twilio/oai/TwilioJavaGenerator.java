@@ -8,9 +8,7 @@ import org.openapitools.codegen.utils.StringUtils;
 
 import java.io.File;
 import java.util.*;
-import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class TwilioJavaGenerator extends JavaClientCodegen {
 
@@ -18,6 +16,7 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
     private static final String PATH_SEPARATOR_PLACEHOLDER = "1234567890";
 
     private final List<CodegenModel> allModels = new ArrayList<>();
+    private final Inflector inflector = new Inflector();
 
     public TwilioJavaGenerator() {
         super();
@@ -41,6 +40,7 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
         additionalProperties.put("apiVersion", version);
         additionalProperties.put("apiVersionClass", version.toUpperCase());
         additionalProperties.put("domain", StringUtils.camelize(domain));
+        additionalProperties.put("domainPackage", domain.toLowerCase());
 
         supportingFiles.clear();
         apiTemplateFiles.put("api.mustache", ".java");
@@ -119,11 +119,9 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
         for (final CodegenOperation co : opList) {
             // Group operations by resource.
             String path = co.path;
+            // TODO: Nested Properties to be fixed in upcoming stories
             String resourceName = singularize(getResourceName(co.path));
-            // TODO: Remove this after singular issue is fixed
-            if (getResourceName(co.path).equals("AWS")) {
-                continue;
-            }
+            if (resourceName.equals("IncomingPhoneNumber")) continue;
             final Map<String, Object> resource = resources.computeIfAbsent(resourceName, k -> new LinkedHashMap<>());
             populateCrudOperations(resource, co);
             // TODO: Review this condition
@@ -131,6 +129,7 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
                 if ("GET".equalsIgnoreCase(co.httpMethod)) {
                     resource.put("hasFetch", true);
                     resource.put("requiredParamsFetch", co.requiredParams);
+
                     co.vendorExtensions.put("x-is-fetch-operation", true);
                     addOperationName(co, "Fetch");
                 } else if ("POST".equalsIgnoreCase(co.httpMethod)) {
@@ -177,7 +176,7 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
                 addModel(resource, co.bodyParam.dataType);
             }
 
-            if (co.path.endsWith("}")) {
+            if (co.path.endsWith("}") || co.path.endsWith("}.json")) {
                 co.responses
                         .stream()
                         .map(response -> response.dataType)
@@ -190,6 +189,7 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
             results.put("apiFilename", getResourceName(co.path));
             results.put("packageName", getPackageName(co.path));
             results.put("recordKey", getFolderName(co.path));
+            resource.put("packageSubPart", getPackageName(co.path).substring(0, getPackageName(co.path).lastIndexOf(".")));
         }
 
         for (final Object resource : resources.values()) {
@@ -250,7 +250,11 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
     }
 
     private String getResourceName(final String path) {
-        return PathUtils.getLastPathPart(PathUtils.cleanPath(path));
+        String lastPathPart = PathUtils.getLastPathPart(PathUtils.cleanPath(path));
+        if (inflector.isAbbrevation(lastPathPart)) {
+            return StringUtils.camelize(lastPathPart.toLowerCase(), false);
+        }
+        return lastPathPart;
     }
 
     private String getPackageName(final String path) {
@@ -266,10 +270,7 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
     }
 
     private String singularize(final String plural) {
-        if (plural.endsWith("s")) { // doesn't always work. For example: Aws
-            return plural.substring(0, plural.length() - 1);
-        }
-        return plural;
+        return (inflector.singularize(plural));
     }
 
     private void addOperationName(final CodegenOperation operation, final String name) {

@@ -1,5 +1,6 @@
 {{>licenseInfo}}
-{{>packageName}}
+{{#resources}}
+package com.twilio.rest.{{domainPackage}}.{{package}}.{{packageSubPart}};
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -48,8 +49,9 @@ import java.util.Map;
 import java.util.Objects;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
+import java.math.BigDecimal;
 
-{{#resources}}
+
 @JsonIgnoreProperties(ignoreUnknown = true)
 @ToString
 public class {{resourceName}} extends Resource {
