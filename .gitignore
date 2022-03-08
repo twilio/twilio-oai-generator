@@ -3,5 +3,9 @@
 codegen/
 target/
 
-examples/go/rest/
-examples/terraform/resources/
+**/.openapi-generator*
+**/docs
+**/*.bak
+
+**/coverage.out
+**/test-report.out
