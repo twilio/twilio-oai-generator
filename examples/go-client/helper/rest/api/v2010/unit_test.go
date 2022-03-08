@@ -11,7 +11,7 @@ import (
 	"testing"
 	"time"
 
-	. "go-client/helper"
+	. "go-client/helper/client"
 
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
