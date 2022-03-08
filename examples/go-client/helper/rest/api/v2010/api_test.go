@@ -6,6 +6,7 @@ import (
 	"time"
 
 	test_client "go-client/helper/client"
+
 	"github.com/stretchr/testify/assert"
 )
 

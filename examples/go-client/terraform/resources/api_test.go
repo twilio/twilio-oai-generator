@@ -1,8 +1,8 @@
 package openapi
 
 import (
-	"testing"
 	. "go-client/terraform/client"
+	"testing"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 

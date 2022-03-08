@@ -2,12 +2,11 @@ package openapi
 
 import (
 	"fmt"
-	"testing"
 	. "go-client/helper/rest/api/v2010"
+	"testing"
 
 	"github.com/stretchr/testify/assert"
-
-	)
+)
 
 var credentialsSid = "CR123"
 var friendlyName = "house-keys"

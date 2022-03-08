@@ -2,8 +2,9 @@ package openapi
 
 import (
 	"fmt"
-	"testing"
 	. "go-client/helper/rest/api/v2010"
+	"testing"
+
 	"github.com/stretchr/testify/assert"
 )
 
@@ -32,11 +33,11 @@ func TestCreateMessage(t *testing.T) {
 	// Expect calls to create _and_ update the recording.
 	testClient.EXPECT().CreateMessage(
 		&CreateMessageParams{
-			To:   &toNumber,
-			From: &fromNumber,
-			ForceDelivery: &boolDefault,
+			To:              &toNumber,
+			From:            &fromNumber,
+			ForceDelivery:   &boolDefault,
 			ProvideFeedback: &boolDefault,
-			SmartEncoded: &boolDefault,
+			SmartEncoded:    &boolDefault,
 		},
 	).Return(message, nil)
 
@@ -71,15 +72,17 @@ func TestImportInvalidMessage(t *testing.T) {
 }
 
 func TestSchemaMessage(t *testing.T) {
+	setupResource(t)
+
 	for paramName, paramSchema := range resource.Schema {
 		required := paramName == "to"
 		forceNew := paramName != "sid"
-		computed := paramName == "sid"
+		computed := paramName != "to"
 		optional := paramName != "sid" && paramName != "to"
 
 		assert.Equal(t, required, paramSchema.Required, fmt.Sprintf("schema.Required iff to: %s", paramName))
 		assert.Equal(t, forceNew, paramSchema.ForceNew, fmt.Sprintf("schema.ForceNew iff not sid: %s", paramName))
-		assert.Equal(t, computed, paramSchema.Computed, fmt.Sprintf("schema.Computed iff sid: %s", paramName))
+		assert.Equal(t, computed, paramSchema.Computed, fmt.Sprintf("schema.Computed iff not to: %s", paramName))
 		assert.Equal(t, optional, paramSchema.Optional, fmt.Sprintf("schema.Optional iff not sid or to: %s", paramName))
 	}
 }
