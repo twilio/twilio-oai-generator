@@ -9,8 +9,7 @@ import (
 )
 
 var messageSid = "SM123"
-var toNumber = "+12223334444"
-var fromNumber = "+15556667777"
+var stringValue = "someString"
 var message = &ApiV2010Message{
 	AccountSid: &accountSid,
 	Sid:        &messageSid,
@@ -27,17 +26,13 @@ func TestCreateMessage(t *testing.T) {
 	setupResource(t)
 
 	// Set required and optional params.
-	_ = resourceData.Set("to", toNumber)
-	_ = resourceData.Set("from", fromNumber)
+	_ = resourceData.Set("required_string_property", stringValue)
 
 	// Expect calls to create _and_ update the recording.
 	testClient.EXPECT().CreateMessage(
 		&CreateMessageParams{
-			To:              &toNumber,
-			From:            &fromNumber,
-			ForceDelivery:   &boolDefault,
-			ProvideFeedback: &boolDefault,
-			SmartEncoded:    &boolDefault,
+			RequiredStringProperty: &stringValue,
+			BooleanProperty:        &boolDefault,
 		},
 	).Return(message, nil)
 
@@ -75,14 +70,14 @@ func TestSchemaMessage(t *testing.T) {
 	setupResource(t)
 
 	for paramName, paramSchema := range resource.Schema {
-		required := paramName == "to"
+		required := paramName == "required_string_property"
 		forceNew := paramName != "sid"
-		computed := paramName != "to"
-		optional := paramName != "sid" && paramName != "to"
+		computed := paramName != "required_string_property"
+		optional := paramName != "sid" && paramName != "required_string_property"
 
-		assert.Equal(t, required, paramSchema.Required, fmt.Sprintf("schema.Required iff to: %s", paramName))
+		assert.Equal(t, required, paramSchema.Required, fmt.Sprintf("schema.Required iff required_string_property: %s", paramName))
 		assert.Equal(t, forceNew, paramSchema.ForceNew, fmt.Sprintf("schema.ForceNew iff not sid: %s", paramName))
 		assert.Equal(t, computed, paramSchema.Computed, fmt.Sprintf("schema.Computed iff not to: %s", paramName))
-		assert.Equal(t, optional, paramSchema.Optional, fmt.Sprintf("schema.Optional iff not sid or to: %s", paramName))
+		assert.Equal(t, optional, paramSchema.Optional, fmt.Sprintf("schema.Optional iff not sid or required_string_property: %s", paramName))
 	}
 }

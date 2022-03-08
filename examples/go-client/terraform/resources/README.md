@@ -42,22 +42,13 @@ Name | Type | Requirement | Description
 
 Name | Type | Requirement | Description
 --- | --- | --- | ---
-**to** | string | **Required** | 
+**required_string_property** | string | **Required** | 
 **path_account_sid** | string | Optional | 
 **address_retention** | string | Optional | Determines if the address can be stored or obfuscated based on privacy settings
-**application_sid** | string | Optional | 
-**attempt** | int | Optional | 
-**body** | string | Optional | 
-**content_retention** | string | Optional | 
-**force_delivery** | bool | Optional | Reserved
-**from** | string | Optional | 
-**max_price** | float | Optional | 
-**media_url** | list(string) | Optional | 
-**messaging_service_sid** | string | Optional | 
-**persistent_action** | list(string) | Optional | Rich actions for Channels Messages.
-**provide_feedback** | bool | Optional | 
-**smart_encoded** | bool | Optional | 
-**status_callback** | string | Optional | 
-**validity_period** | int | Optional | 
+**int_property** | int | Optional | 
+**boolean_property** | bool | Optional | Reserved
+**number_property** | float | Optional | 
+**array_of_strings_property** | list(string) | Optional | 
+**uri_property** | string | Optional | 
 **sid** | string | *Computed* | 
 

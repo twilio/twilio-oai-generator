@@ -1071,48 +1071,25 @@ paths:
                   enum:
                     - retain
                   type: string
-                ApplicationSid:
-                  type: string
-                Attempt:
+                IntProperty:
                   type: integer
-                Body:
+                RequiredStringProperty:
                   type: string
-                ContentRetention:
-                  enum:
-                    - retain
-                  type: string
-                ForceDelivery:
+                BooleanProperty:
                   description: Reserved
                   type: boolean
-                From:
-                  type: string
-                MaxPrice:
+                NumberProperty:
                   type: number
-                MediaUrl:
+                ArrayOfStringsProperty:
                   items:
                     format: uri
                     type: string
                   type: array
-                MessagingServiceSid:
-                  type: string
-                PersistentAction:
-                  description: Rich actions for Channels Messages.
-                  items:
-                    type: string
-                  type: array
-                ProvideFeedback:
-                  type: boolean
-                SmartEncoded:
-                  type: boolean
-                StatusCallback:
+                UriProperty:
                   format: uri
                   type: string
-                To:
-                  type: string
-                ValidityPeriod:
-                  type: integer
               required:
-                - To
+                - RequiredStringProperty
               title: CreateMessageRequest
               type: object
       responses:

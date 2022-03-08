@@ -27,35 +27,17 @@ type CreateMessageParams struct {
     // Determines if the address can be stored or obfuscated based on privacy settings
     AddressRetention *string `json:"AddressRetention,omitempty"`
     // 
-    ApplicationSid *string `json:"ApplicationSid,omitempty"`
+    IntProperty *int `json:"IntProperty,omitempty"`
     // 
-    Attempt *int `json:"Attempt,omitempty"`
-    // 
-    Body *string `json:"Body,omitempty"`
-    // 
-    ContentRetention *string `json:"ContentRetention,omitempty"`
+    RequiredStringProperty *string `json:"RequiredStringProperty,omitempty"`
     // Reserved
-    ForceDelivery *bool `json:"ForceDelivery,omitempty"`
+    BooleanProperty *bool `json:"BooleanProperty,omitempty"`
     // 
-    From *string `json:"From,omitempty"`
+    NumberProperty *float32 `json:"NumberProperty,omitempty"`
     // 
-    MaxPrice *float32 `json:"MaxPrice,omitempty"`
+    ArrayOfStringsProperty *[]string `json:"ArrayOfStringsProperty,omitempty"`
     // 
-    MediaUrl *[]string `json:"MediaUrl,omitempty"`
-    // 
-    MessagingServiceSid *string `json:"MessagingServiceSid,omitempty"`
-    // Rich actions for Channels Messages.
-    PersistentAction *[]string `json:"PersistentAction,omitempty"`
-    // 
-    ProvideFeedback *bool `json:"ProvideFeedback,omitempty"`
-    // 
-    SmartEncoded *bool `json:"SmartEncoded,omitempty"`
-    // 
-    StatusCallback *string `json:"StatusCallback,omitempty"`
-    // 
-    To *string `json:"To,omitempty"`
-    // 
-    ValidityPeriod *int `json:"ValidityPeriod,omitempty"`
+    UriProperty *string `json:"UriProperty,omitempty"`
 }
 
 func (params *CreateMessageParams) SetPathAccountSid(PathAccountSid string) (*CreateMessageParams){
@@ -66,64 +48,28 @@ func (params *CreateMessageParams) SetAddressRetention(AddressRetention string) 
     params.AddressRetention = &AddressRetention
     return params
 }
-func (params *CreateMessageParams) SetApplicationSid(ApplicationSid string) (*CreateMessageParams){
-    params.ApplicationSid = &ApplicationSid
+func (params *CreateMessageParams) SetIntProperty(IntProperty int) (*CreateMessageParams){
+    params.IntProperty = &IntProperty
     return params
 }
-func (params *CreateMessageParams) SetAttempt(Attempt int) (*CreateMessageParams){
-    params.Attempt = &Attempt
+func (params *CreateMessageParams) SetRequiredStringProperty(RequiredStringProperty string) (*CreateMessageParams){
+    params.RequiredStringProperty = &RequiredStringProperty
     return params
 }
-func (params *CreateMessageParams) SetBody(Body string) (*CreateMessageParams){
-    params.Body = &Body
+func (params *CreateMessageParams) SetBooleanProperty(BooleanProperty bool) (*CreateMessageParams){
+    params.BooleanProperty = &BooleanProperty
     return params
 }
-func (params *CreateMessageParams) SetContentRetention(ContentRetention string) (*CreateMessageParams){
-    params.ContentRetention = &ContentRetention
+func (params *CreateMessageParams) SetNumberProperty(NumberProperty float32) (*CreateMessageParams){
+    params.NumberProperty = &NumberProperty
     return params
 }
-func (params *CreateMessageParams) SetForceDelivery(ForceDelivery bool) (*CreateMessageParams){
-    params.ForceDelivery = &ForceDelivery
+func (params *CreateMessageParams) SetArrayOfStringsProperty(ArrayOfStringsProperty []string) (*CreateMessageParams){
+    params.ArrayOfStringsProperty = &ArrayOfStringsProperty
     return params
 }
-func (params *CreateMessageParams) SetFrom(From string) (*CreateMessageParams){
-    params.From = &From
-    return params
-}
-func (params *CreateMessageParams) SetMaxPrice(MaxPrice float32) (*CreateMessageParams){
-    params.MaxPrice = &MaxPrice
-    return params
-}
-func (params *CreateMessageParams) SetMediaUrl(MediaUrl []string) (*CreateMessageParams){
-    params.MediaUrl = &MediaUrl
-    return params
-}
-func (params *CreateMessageParams) SetMessagingServiceSid(MessagingServiceSid string) (*CreateMessageParams){
-    params.MessagingServiceSid = &MessagingServiceSid
-    return params
-}
-func (params *CreateMessageParams) SetPersistentAction(PersistentAction []string) (*CreateMessageParams){
-    params.PersistentAction = &PersistentAction
-    return params
-}
-func (params *CreateMessageParams) SetProvideFeedback(ProvideFeedback bool) (*CreateMessageParams){
-    params.ProvideFeedback = &ProvideFeedback
-    return params
-}
-func (params *CreateMessageParams) SetSmartEncoded(SmartEncoded bool) (*CreateMessageParams){
-    params.SmartEncoded = &SmartEncoded
-    return params
-}
-func (params *CreateMessageParams) SetStatusCallback(StatusCallback string) (*CreateMessageParams){
-    params.StatusCallback = &StatusCallback
-    return params
-}
-func (params *CreateMessageParams) SetTo(To string) (*CreateMessageParams){
-    params.To = &To
-    return params
-}
-func (params *CreateMessageParams) SetValidityPeriod(ValidityPeriod int) (*CreateMessageParams){
-    params.ValidityPeriod = &ValidityPeriod
+func (params *CreateMessageParams) SetUriProperty(UriProperty string) (*CreateMessageParams){
+    params.UriProperty = &UriProperty
     return params
 }
 
@@ -142,54 +88,25 @@ headers := make(map[string]interface{})
 if params != nil && params.AddressRetention != nil {
     data.Set("AddressRetention", *params.AddressRetention)
 }
-if params != nil && params.ApplicationSid != nil {
-    data.Set("ApplicationSid", *params.ApplicationSid)
+if params != nil && params.IntProperty != nil {
+    data.Set("IntProperty", fmt.Sprint(*params.IntProperty))
 }
-if params != nil && params.Attempt != nil {
-    data.Set("Attempt", fmt.Sprint(*params.Attempt))
+if params != nil && params.RequiredStringProperty != nil {
+    data.Set("RequiredStringProperty", *params.RequiredStringProperty)
 }
-if params != nil && params.Body != nil {
-    data.Set("Body", *params.Body)
+if params != nil && params.BooleanProperty != nil {
+    data.Set("BooleanProperty", fmt.Sprint(*params.BooleanProperty))
 }
-if params != nil && params.ContentRetention != nil {
-    data.Set("ContentRetention", *params.ContentRetention)
+if params != nil && params.NumberProperty != nil {
+    data.Set("NumberProperty", fmt.Sprint(*params.NumberProperty))
 }
-if params != nil && params.ForceDelivery != nil {
-    data.Set("ForceDelivery", fmt.Sprint(*params.ForceDelivery))
-}
-if params != nil && params.From != nil {
-    data.Set("From", *params.From)
-}
-if params != nil && params.MaxPrice != nil {
-    data.Set("MaxPrice", fmt.Sprint(*params.MaxPrice))
-}
-if params != nil && params.MediaUrl != nil {
-    for _, item  := range *params.MediaUrl {
-        data.Add("MediaUrl", item)
+if params != nil && params.ArrayOfStringsProperty != nil {
+    for _, item  := range *params.ArrayOfStringsProperty {
+        data.Add("ArrayOfStringsProperty", item)
     }
 }
-if params != nil && params.MessagingServiceSid != nil {
-    data.Set("MessagingServiceSid", *params.MessagingServiceSid)
-}
-if params != nil && params.PersistentAction != nil {
-    for _, item  := range *params.PersistentAction {
-        data.Add("PersistentAction", item)
-    }
-}
-if params != nil && params.ProvideFeedback != nil {
-    data.Set("ProvideFeedback", fmt.Sprint(*params.ProvideFeedback))
-}
-if params != nil && params.SmartEncoded != nil {
-    data.Set("SmartEncoded", fmt.Sprint(*params.SmartEncoded))
-}
-if params != nil && params.StatusCallback != nil {
-    data.Set("StatusCallback", *params.StatusCallback)
-}
-if params != nil && params.To != nil {
-    data.Set("To", *params.To)
-}
-if params != nil && params.ValidityPeriod != nil {
-    data.Set("ValidityPeriod", fmt.Sprint(*params.ValidityPeriod))
+if params != nil && params.UriProperty != nil {
+    data.Set("UriProperty", *params.UriProperty)
 }
 
 
