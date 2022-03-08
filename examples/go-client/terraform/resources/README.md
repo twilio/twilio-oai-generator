@@ -36,17 +36,6 @@ Name | Type | Requirement | Description
 **test_object_array** | list(string) | Optional | test array of object transformation
 **sid** | string | *Computed* | The Twilio-provided string that uniquely identifies the AWS resource to update.
 
-## twilio_api_services_environments_v2010
-
-### Parameters
-
-Name | Type | Requirement | Description
---- | --- | --- | ---
-**service_sid** | string | **Required** | The SID of the Service to create the Environment resource under.
-**unique_name** | string | **Required** | 
-**domain_suffix** | string | Optional | 
-**sid** | string | *Computed* | The SID of the Environment resource to fetch.
-
 ## twilio_api_accounts_messages_v2010
 
 ### Parameters

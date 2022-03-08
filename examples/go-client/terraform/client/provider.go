@@ -27,9 +27,4 @@ type ApiV2010 interface {
 	CreateMessage(params *v2010.CreateMessageParams) (*v2010.ApiV2010Message, error)
 	DeleteMessage(Sid string, params *v2010.DeleteMessageParams) error
 	FetchMessage(Sid string, params *v2010.FetchMessageParams) (*v2010.ApiV2010Message, error)
-	UpdateMessage(Sid string, params *v2010.UpdateMessageParams) (*v2010.ApiV2010Message, error)
-
-	CreateEnvironment(ServiceSid string, params *v2010.CreateEnvironmentParams) (*v2010.ServerlessV1Environment, error)
-	DeleteEnvironment(ServiceSid string, Sid string) error
-	FetchEnvironment(ServiceSid string, Sid string) (*v2010.ServerlessV1Environment, error)
 }

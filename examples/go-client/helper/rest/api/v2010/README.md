@@ -42,17 +42,12 @@ Class | Method | HTTP request | Description
 *AccountsMessagesApi* | [**DeleteMessage**](docs/AccountsMessagesApi.md#deletemessage) | **Delete** /2010-04-01/Accounts/{AccountSid}/Messages/{Sid}.json | 
 *AccountsMessagesApi* | [**FetchMessage**](docs/AccountsMessagesApi.md#fetchmessage) | **Get** /2010-04-01/Accounts/{AccountSid}/Messages/{Sid}.json | 
 *AccountsMessagesApi* | [**ListMessage**](docs/AccountsMessagesApi.md#listmessage) | **Get** /2010-04-01/Accounts/{AccountSid}/Messages.json | 
-*AccountsMessagesApi* | [**UpdateMessage**](docs/AccountsMessagesApi.md#updatemessage) | **Post** /2010-04-01/Accounts/{AccountSid}/Messages/{Sid}.json | 
 *ArchivesCallsApi* | [**DeleteArchivedCall**](docs/ArchivesCallsApi.md#deletearchivedcall) | **Delete** /v1/Archives/{Date}/Calls/{Sid} | 
 *CredentialsAWSApi* | [**CreateCredentialAws**](docs/CredentialsAWSApi.md#createcredentialaws) | **Post** /v1/Credentials/AWS | 
 *CredentialsAWSApi* | [**DeleteCredentialAws**](docs/CredentialsAWSApi.md#deletecredentialaws) | **Delete** /v1/Credentials/AWS/{Sid} | 
 *CredentialsAWSApi* | [**FetchCredentialAws**](docs/CredentialsAWSApi.md#fetchcredentialaws) | **Get** /v1/Credentials/AWS/{Sid} | 
 *CredentialsAWSApi* | [**ListCredentialAws**](docs/CredentialsAWSApi.md#listcredentialaws) | **Get** /v1/Credentials/AWS | 
 *CredentialsAWSApi* | [**UpdateCredentialAws**](docs/CredentialsAWSApi.md#updatecredentialaws) | **Post** /v1/Credentials/AWS/{Sid} | 
-*ServicesEnvironmentsApi* | [**CreateEnvironment**](docs/ServicesEnvironmentsApi.md#createenvironment) | **Post** /v1/Services/{ServiceSid}/Environments | 
-*ServicesEnvironmentsApi* | [**DeleteEnvironment**](docs/ServicesEnvironmentsApi.md#deleteenvironment) | **Delete** /v1/Services/{ServiceSid}/Environments/{Sid} | 
-*ServicesEnvironmentsApi* | [**FetchEnvironment**](docs/ServicesEnvironmentsApi.md#fetchenvironment) | **Get** /v1/Services/{ServiceSid}/Environments/{Sid} | 
-*ServicesEnvironmentsApi* | [**ListEnvironment**](docs/ServicesEnvironmentsApi.md#listenvironment) | **Get** /v1/Services/{ServiceSid}/Environments | 
 
 
 ## Documentation For Models
@@ -68,9 +63,7 @@ Class | Method | HTTP request | Description
  - [ListCallRecordingResponse](docs/ListCallRecordingResponse.md)
  - [ListCredentialAwsResponse](docs/ListCredentialAwsResponse.md)
  - [ListCredentialAwsResponseMeta](docs/ListCredentialAwsResponseMeta.md)
- - [ListEnvironmentResponse](docs/ListEnvironmentResponse.md)
  - [ListMessageResponse](docs/ListMessageResponse.md)
- - [ServerlessV1Environment](docs/ServerlessV1Environment.md)
 
 
 ## Documentation For Authorization

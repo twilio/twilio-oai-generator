@@ -274,125 +274,29 @@ func updateCredentialsAWS(ctx context.Context, d *schema.ResourceData, m interfa
         return nil
 }
 
-func ResourceServicesEnvironments() *schema.Resource {
-    return &schema.Resource{
-        CreateContext: createServicesEnvironments,
-        ReadContext: readServicesEnvironments,
-        DeleteContext: deleteServicesEnvironments,
-        Schema: map[string]*schema.Schema{
-            "service_sid": AsString(SchemaForceNewRequired),
-            "unique_name": AsString(SchemaForceNewRequired),
-            "domain_suffix": AsString(SchemaForceNewOptional),
-            "sid": AsString(SchemaComputed),
-        },
-        Importer: &schema.ResourceImporter{
-            StateContext: func(ctx context.Context, d *schema.ResourceData, m interface{}) ([]*schema.ResourceData, error) {
-                err := parseServicesEnvironmentsImportId(d.Id(), d)
-                if err != nil {
-                    return nil, err
-                }
-
-                return []*schema.ResourceData{d}, nil
-            },
-        },
-    }
-}
-
-func createServicesEnvironments(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-    params := CreateEnvironmentParams{}
-    if err := UnmarshalSchema(&params, d); err != nil {
-        return diag.FromErr(err)
-    }
-
-    serviceSid := d.Get("service_sid").(string)
-
-        r, err := m.(*client.Config).Client.ApiV2010.CreateEnvironment(serviceSid, &params);
-        if err != nil {
-            return diag.FromErr(err)
-        }
-
-        idParts := []string{ serviceSid,  }
-        idParts = append(idParts, (*r.Sid))
-        d.SetId(strings.Join(idParts, "/"))
-
-            err = MarshalSchema(d, r)
-            if err != nil {
-                return diag.FromErr(err)
-            }
-
-            return nil
-}
-
-func deleteServicesEnvironments(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-
-    serviceSid := d.Get("service_sid").(string)
-    sid := d.Get("sid").(string)
-
-        err := m.(*client.Config).Client.ApiV2010.DeleteEnvironment(serviceSid, sid)
-        if err != nil {
-            return diag.FromErr(err)
-        }
-
-        d.SetId("")
-
-        return nil
-}
-
-func readServicesEnvironments(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-
-    serviceSid := d.Get("service_sid").(string)
-    sid := d.Get("sid").(string)
-
-        r, err := m.(*client.Config).Client.ApiV2010.FetchEnvironment(serviceSid, sid)
-        if err != nil {
-            return diag.FromErr(err)
-        }
-
-        err = MarshalSchema(d, r)
-        if err != nil {
-            return diag.FromErr(err)
-        }
-
-        return nil
-}
-
-func parseServicesEnvironmentsImportId(importId string, d *schema.ResourceData) error {
-    importParts := strings.Split(importId, "/")
-    errStr := "invalid import ID (%q), expected service_sid/sid"
-
-    if len(importParts) != 2 {
-        return fmt.Errorf(errStr, importId)
-    }
-
-        d.Set("service_sid", importParts[0])
-        d.Set("sid", importParts[1])
-
-    return nil
-}
 func ResourceAccountsMessages() *schema.Resource {
     return &schema.Resource{
         CreateContext: createAccountsMessages,
         ReadContext: readAccountsMessages,
-        UpdateContext: updateAccountsMessages,
         DeleteContext: deleteAccountsMessages,
         Schema: map[string]*schema.Schema{
-            "to": AsString(SchemaRequired),
-            "path_account_sid": AsString(SchemaComputedOptional),
-            "address_retention": AsString(SchemaComputedOptional),
-            "application_sid": AsString(SchemaComputedOptional),
-            "attempt": AsInt(SchemaComputedOptional),
-            "body": AsString(SchemaComputedOptional),
-            "content_retention": AsString(SchemaComputedOptional),
-            "force_delivery": AsBool(SchemaComputedOptional),
-            "from": AsString(SchemaComputedOptional),
-            "max_price": AsFloat(SchemaComputedOptional),
-            "media_url": AsList(AsString(SchemaComputedOptional), SchemaComputedOptional),
-            "messaging_service_sid": AsString(SchemaComputedOptional),
-            "persistent_action": AsList(AsString(SchemaComputedOptional), SchemaComputedOptional),
-            "provide_feedback": AsBool(SchemaComputedOptional),
-            "smart_encoded": AsBool(SchemaComputedOptional),
-            "status_callback": AsString(SchemaComputedOptional),
-            "validity_period": AsInt(SchemaComputedOptional),
+            "to": AsString(SchemaForceNewRequired),
+            "path_account_sid": AsString(SchemaForceNewOptional),
+            "address_retention": AsString(SchemaForceNewOptional),
+            "application_sid": AsString(SchemaForceNewOptional),
+            "attempt": AsInt(SchemaForceNewOptional),
+            "body": AsString(SchemaForceNewOptional),
+            "content_retention": AsString(SchemaForceNewOptional),
+            "force_delivery": AsBool(SchemaForceNewOptional),
+            "from": AsString(SchemaForceNewOptional),
+            "max_price": AsFloat(SchemaForceNewOptional),
+            "media_url": AsList(AsString(SchemaForceNewOptional), SchemaForceNewOptional),
+            "messaging_service_sid": AsString(SchemaForceNewOptional),
+            "persistent_action": AsList(AsString(SchemaForceNewOptional), SchemaForceNewOptional),
+            "provide_feedback": AsBool(SchemaForceNewOptional),
+            "smart_encoded": AsBool(SchemaForceNewOptional),
+            "status_callback": AsString(SchemaForceNewOptional),
+            "validity_period": AsInt(SchemaForceNewOptional),
             "sid": AsString(SchemaComputed),
         },
         Importer: &schema.ResourceImporter{
@@ -483,24 +387,3 @@ func parseAccountsMessagesImportId(importId string, d *schema.ResourceData) erro
 
     return nil
 }
-func updateAccountsMessages(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-    params := UpdateMessageParams{}
-    if err := UnmarshalSchema(&params, d); err != nil {
-        return diag.FromErr(err)
-    }
-
-    sid := d.Get("sid").(string)
-
-        r, err := m.(*client.Config).Client.ApiV2010.UpdateMessage(sid, &params)
-        if err != nil {
-            return diag.FromErr(err)
-        }
-
-        err = MarshalSchema(d, r)
-        if err != nil {
-            return diag.FromErr(err)
-        }
-
-        return nil
-}
-

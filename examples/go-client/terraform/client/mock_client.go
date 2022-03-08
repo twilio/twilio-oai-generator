@@ -5,7 +5,7 @@
 package client
 
 import (
-	openapi "go-client/helper/rest/api/v2010"
+	v2010 "go-client/helper/rest/api/v2010"
 	reflect "reflect"
 
 	gomock "github.com/golang/mock/gomock"
@@ -35,10 +35,10 @@ func (m *MockApiV2010) EXPECT() *MockApiV2010MockRecorder {
 }
 
 // CreateCallRecording mocks base method.
-func (m *MockApiV2010) CreateCallRecording(CallSid string, params *openapi.CreateCallRecordingParams) (*openapi.ApiV2010CallRecording, error) {
+func (m *MockApiV2010) CreateCallRecording(CallSid string, params *v2010.CreateCallRecordingParams) (*v2010.ApiV2010CallRecording, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreateCallRecording", CallSid, params)
-	ret0, _ := ret[0].(*openapi.ApiV2010CallRecording)
+	ret0, _ := ret[0].(*v2010.ApiV2010CallRecording)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -50,10 +50,10 @@ func (mr *MockApiV2010MockRecorder) CreateCallRecording(CallSid, params interfac
 }
 
 // CreateCredentialAws mocks base method.
-func (m *MockApiV2010) CreateCredentialAws(params *openapi.CreateCredentialAwsParams) (*openapi.AccountsV1CredentialAws, error) {
+func (m *MockApiV2010) CreateCredentialAws(params *v2010.CreateCredentialAwsParams) (*v2010.AccountsV1CredentialAws, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreateCredentialAws", params)
-	ret0, _ := ret[0].(*openapi.AccountsV1CredentialAws)
+	ret0, _ := ret[0].(*v2010.AccountsV1CredentialAws)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -64,26 +64,11 @@ func (mr *MockApiV2010MockRecorder) CreateCredentialAws(params interface{}) *gom
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateCredentialAws", reflect.TypeOf((*MockApiV2010)(nil).CreateCredentialAws), params)
 }
 
-// CreateEnvironment mocks base method.
-func (m *MockApiV2010) CreateEnvironment(ServiceSid string, params *openapi.CreateEnvironmentParams) (*openapi.ServerlessV1Environment, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "CreateEnvironment", ServiceSid, params)
-	ret0, _ := ret[0].(*openapi.ServerlessV1Environment)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// CreateEnvironment indicates an expected call of CreateEnvironment.
-func (mr *MockApiV2010MockRecorder) CreateEnvironment(ServiceSid, params interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateEnvironment", reflect.TypeOf((*MockApiV2010)(nil).CreateEnvironment), ServiceSid, params)
-}
-
 // CreateMessage mocks base method.
-func (m *MockApiV2010) CreateMessage(params *openapi.CreateMessageParams) (*openapi.ApiV2010Message, error) {
+func (m *MockApiV2010) CreateMessage(params *v2010.CreateMessageParams) (*v2010.ApiV2010Message, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreateMessage", params)
-	ret0, _ := ret[0].(*openapi.ApiV2010Message)
+	ret0, _ := ret[0].(*v2010.ApiV2010Message)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -95,7 +80,7 @@ func (mr *MockApiV2010MockRecorder) CreateMessage(params interface{}) *gomock.Ca
 }
 
 // DeleteCallRecording mocks base method.
-func (m *MockApiV2010) DeleteCallRecording(CallSid string, Sid int, params *openapi.DeleteCallRecordingParams) error {
+func (m *MockApiV2010) DeleteCallRecording(CallSid string, Sid int, params *v2010.DeleteCallRecordingParams) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DeleteCallRecording", CallSid, Sid, params)
 	ret0, _ := ret[0].(error)
@@ -122,22 +107,8 @@ func (mr *MockApiV2010MockRecorder) DeleteCredentialAws(Sid interface{}) *gomock
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteCredentialAws", reflect.TypeOf((*MockApiV2010)(nil).DeleteCredentialAws), Sid)
 }
 
-// DeleteEnvironment mocks base method.
-func (m *MockApiV2010) DeleteEnvironment(ServiceSid, Sid string) error {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "DeleteEnvironment", ServiceSid, Sid)
-	ret0, _ := ret[0].(error)
-	return ret0
-}
-
-// DeleteEnvironment indicates an expected call of DeleteEnvironment.
-func (mr *MockApiV2010MockRecorder) DeleteEnvironment(ServiceSid, Sid interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteEnvironment", reflect.TypeOf((*MockApiV2010)(nil).DeleteEnvironment), ServiceSid, Sid)
-}
-
 // DeleteMessage mocks base method.
-func (m *MockApiV2010) DeleteMessage(Sid string, params *openapi.DeleteMessageParams) error {
+func (m *MockApiV2010) DeleteMessage(Sid string, params *v2010.DeleteMessageParams) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DeleteMessage", Sid, params)
 	ret0, _ := ret[0].(error)
@@ -151,10 +122,10 @@ func (mr *MockApiV2010MockRecorder) DeleteMessage(Sid, params interface{}) *gomo
 }
 
 // FetchCallRecording mocks base method.
-func (m *MockApiV2010) FetchCallRecording(CallSid string, Sid int, params *openapi.FetchCallRecordingParams) (*openapi.ApiV2010CallRecording, error) {
+func (m *MockApiV2010) FetchCallRecording(CallSid string, Sid int, params *v2010.FetchCallRecordingParams) (*v2010.ApiV2010CallRecording, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "FetchCallRecording", CallSid, Sid, params)
-	ret0, _ := ret[0].(*openapi.ApiV2010CallRecording)
+	ret0, _ := ret[0].(*v2010.ApiV2010CallRecording)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -166,10 +137,10 @@ func (mr *MockApiV2010MockRecorder) FetchCallRecording(CallSid, Sid, params inte
 }
 
 // FetchCredentialAws mocks base method.
-func (m *MockApiV2010) FetchCredentialAws(Sid string) (*openapi.AccountsV1CredentialAws, error) {
+func (m *MockApiV2010) FetchCredentialAws(Sid string) (*v2010.AccountsV1CredentialAws, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "FetchCredentialAws", Sid)
-	ret0, _ := ret[0].(*openapi.AccountsV1CredentialAws)
+	ret0, _ := ret[0].(*v2010.AccountsV1CredentialAws)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -180,26 +151,11 @@ func (mr *MockApiV2010MockRecorder) FetchCredentialAws(Sid interface{}) *gomock.
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FetchCredentialAws", reflect.TypeOf((*MockApiV2010)(nil).FetchCredentialAws), Sid)
 }
 
-// FetchEnvironment mocks base method.
-func (m *MockApiV2010) FetchEnvironment(ServiceSid, Sid string) (*openapi.ServerlessV1Environment, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "FetchEnvironment", ServiceSid, Sid)
-	ret0, _ := ret[0].(*openapi.ServerlessV1Environment)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// FetchEnvironment indicates an expected call of FetchEnvironment.
-func (mr *MockApiV2010MockRecorder) FetchEnvironment(ServiceSid, Sid interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FetchEnvironment", reflect.TypeOf((*MockApiV2010)(nil).FetchEnvironment), ServiceSid, Sid)
-}
-
 // FetchMessage mocks base method.
-func (m *MockApiV2010) FetchMessage(Sid string, params *openapi.FetchMessageParams) (*openapi.ApiV2010Message, error) {
+func (m *MockApiV2010) FetchMessage(Sid string, params *v2010.FetchMessageParams) (*v2010.ApiV2010Message, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "FetchMessage", Sid, params)
-	ret0, _ := ret[0].(*openapi.ApiV2010Message)
+	ret0, _ := ret[0].(*v2010.ApiV2010Message)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -211,10 +167,10 @@ func (mr *MockApiV2010MockRecorder) FetchMessage(Sid, params interface{}) *gomoc
 }
 
 // UpdateCallRecording mocks base method.
-func (m *MockApiV2010) UpdateCallRecording(CallSid string, Sid int, params *openapi.UpdateCallRecordingParams) (*openapi.ApiV2010CallRecording, error) {
+func (m *MockApiV2010) UpdateCallRecording(CallSid string, Sid int, params *v2010.UpdateCallRecordingParams) (*v2010.ApiV2010CallRecording, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "UpdateCallRecording", CallSid, Sid, params)
-	ret0, _ := ret[0].(*openapi.ApiV2010CallRecording)
+	ret0, _ := ret[0].(*v2010.ApiV2010CallRecording)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -226,10 +182,10 @@ func (mr *MockApiV2010MockRecorder) UpdateCallRecording(CallSid, Sid, params int
 }
 
 // UpdateCredentialAws mocks base method.
-func (m *MockApiV2010) UpdateCredentialAws(Sid string, params *openapi.UpdateCredentialAwsParams) (*openapi.AccountsV1CredentialAws, error) {
+func (m *MockApiV2010) UpdateCredentialAws(Sid string, params *v2010.UpdateCredentialAwsParams) (*v2010.AccountsV1CredentialAws, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "UpdateCredentialAws", Sid, params)
-	ret0, _ := ret[0].(*openapi.AccountsV1CredentialAws)
+	ret0, _ := ret[0].(*v2010.AccountsV1CredentialAws)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -238,19 +194,4 @@ func (m *MockApiV2010) UpdateCredentialAws(Sid string, params *openapi.UpdateCre
 func (mr *MockApiV2010MockRecorder) UpdateCredentialAws(Sid, params interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateCredentialAws", reflect.TypeOf((*MockApiV2010)(nil).UpdateCredentialAws), Sid, params)
-}
-
-// UpdateMessage mocks base method.
-func (m *MockApiV2010) UpdateMessage(Sid string, params *openapi.UpdateMessageParams) (*openapi.ApiV2010Message, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "UpdateMessage", Sid, params)
-	ret0, _ := ret[0].(*openapi.ApiV2010Message)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// UpdateMessage indicates an expected call of UpdateMessage.
-func (mr *MockApiV2010MockRecorder) UpdateMessage(Sid, params interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateMessage", reflect.TypeOf((*MockApiV2010)(nil).UpdateMessage), Sid, params)
 }
