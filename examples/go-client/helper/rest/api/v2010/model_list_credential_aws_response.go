@@ -12,7 +12,7 @@
 package openapi
 // ListCredentialAwsResponse struct for ListCredentialAwsResponse
 type ListCredentialAwsResponse struct {
-    Credentials []AccountsV1CredentialAws `json:"credentials,omitempty"`
+    Credentials []TestResponseObject `json:"credentials,omitempty"`
     Meta ListCredentialAwsResponseMeta `json:"meta,omitempty"`
 }
 

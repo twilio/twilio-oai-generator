@@ -32,7 +32,7 @@ func (params *FetchIncomingPhoneNumberParams) SetPathAccountSid(PathAccountSid s
 }
 
 // Fetch an incoming-phone-number belonging to the account used to make the request.
-func (c *ApiService) FetchIncomingPhoneNumber(Sid string, params *FetchIncomingPhoneNumberParams) (*ApiV2010IncomingPhoneNumber, error) {
+func (c *ApiService) FetchIncomingPhoneNumber(Sid string, params *FetchIncomingPhoneNumberParams) (*TestResponseObject, error) {
     path := "/2010-04-01/Accounts/{AccountSid}/IncomingPhoneNumbers/{Sid}.json"
     if params != nil && params.PathAccountSid != nil {
     path = strings.Replace(path, "{"+"AccountSid"+"}", *params.PathAccountSid, -1)
@@ -54,7 +54,7 @@ headers := make(map[string]interface{})
 
     defer resp.Body.Close()
 
-    ps := &ApiV2010IncomingPhoneNumber{}
+    ps := &TestResponseObject{}
     if err := json.NewDecoder(resp.Body).Decode(ps); err != nil {
         return nil, err
     }

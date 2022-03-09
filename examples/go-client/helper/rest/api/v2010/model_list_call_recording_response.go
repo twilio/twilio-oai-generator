@@ -18,7 +18,7 @@ type ListCallRecordingResponse struct {
     Page int `json:"page,omitempty"`
     PageSize int `json:"page_size,omitempty"`
     PreviousPageUri string `json:"previous_page_uri,omitempty"`
-    Recordings []ApiV2010CallRecording `json:"recordings,omitempty"`
+    Recordings []TestResponseObject `json:"recordings,omitempty"`
     Start int `json:"start,omitempty"`
     Uri string `json:"uri,omitempty"`
 }

@@ -32,7 +32,7 @@ func ResourceAccountsCallsRecordings() *schema.Resource {
             "path_account_sid": AsString(SchemaComputedOptional),
             "recording_status_callback": AsString(SchemaComputedOptional),
             "recording_status_callback_event": AsList(AsString(SchemaComputedOptional), SchemaComputedOptional),
-            "sid": AsInt(SchemaComputed),
+            "test_integer": AsInt(SchemaComputed),
             "status": AsString(SchemaComputedOptional),
             "pause_behavior": AsString(SchemaComputedOptional),
         },
@@ -63,9 +63,9 @@ func createAccountsCallsRecordings(ctx context.Context, d *schema.ResourceData, 
         }
 
         idParts := []string{ callSid,  }
-        idParts = append(idParts, IntToString(*r.Sid))
+        idParts = append(idParts, IntToString(*r.TestInteger))
         d.SetId(strings.Join(idParts, "/"))
-            d.Set("sid", *r.Sid)
+            d.Set("test_integer", *r.TestInteger)
 
             return updateAccountsCallsRecordings(ctx, d, m)
 }
@@ -77,9 +77,9 @@ func deleteAccountsCallsRecordings(ctx context.Context, d *schema.ResourceData, 
     }
 
     callSid := d.Get("call_sid").(string)
-    sid := d.Get("sid").(int)
+    testInteger := d.Get("test_integer").(int)
 
-        err := m.(*client.Config).Client.ApiV2010.DeleteCallRecording(callSid, sid, &params)
+        err := m.(*client.Config).Client.ApiV2010.DeleteCallRecording(callSid, testInteger, &params)
         if err != nil {
             return diag.FromErr(err)
         }
@@ -96,9 +96,9 @@ func readAccountsCallsRecordings(ctx context.Context, d *schema.ResourceData, m 
     }
 
     callSid := d.Get("call_sid").(string)
-    sid := d.Get("sid").(int)
+    testInteger := d.Get("test_integer").(int)
 
-        r, err := m.(*client.Config).Client.ApiV2010.FetchCallRecording(callSid, sid, &params)
+        r, err := m.(*client.Config).Client.ApiV2010.FetchCallRecording(callSid, testInteger, &params)
         if err != nil {
             return diag.FromErr(err)
         }
@@ -113,18 +113,18 @@ func readAccountsCallsRecordings(ctx context.Context, d *schema.ResourceData, m 
 
 func parseAccountsCallsRecordingsImportId(importId string, d *schema.ResourceData) error {
     importParts := strings.Split(importId, "/")
-    errStr := "invalid import ID (%q), expected call_sid/sid"
+    errStr := "invalid import ID (%q), expected call_sid/test_integer"
 
     if len(importParts) != 2 {
         return fmt.Errorf(errStr, importId)
     }
 
         d.Set("call_sid", importParts[0])
-        sid, err := StringToInt(importParts[1])
+        testInteger, err := StringToInt(importParts[1])
         if err != nil {
             return nil
         }
-        d.Set("sid", sid)
+        d.Set("test_integer", testInteger)
 
     return nil
 }
@@ -135,9 +135,9 @@ func updateAccountsCallsRecordings(ctx context.Context, d *schema.ResourceData, 
     }
 
     callSid := d.Get("call_sid").(string)
-    sid := d.Get("sid").(int)
+    testInteger := d.Get("test_integer").(int)
 
-        r, err := m.(*client.Config).Client.ApiV2010.UpdateCallRecording(callSid, sid, &params)
+        r, err := m.(*client.Config).Client.ApiV2010.UpdateCallRecording(callSid, testInteger, &params)
         if err != nil {
             return diag.FromErr(err)
         }
@@ -157,9 +157,10 @@ func ResourceCredentialsAWS() *schema.Resource {
         UpdateContext: updateCredentialsAWS,
         DeleteContext: deleteCredentialsAWS,
         Schema: map[string]*schema.Schema{
-            "credentials": AsString(SchemaRequired),
-            "account_sid": AsString(SchemaComputedOptional),
-            "friendly_name": AsString(SchemaComputedOptional),
+            "test_string": AsString(SchemaRequired),
+            "test_array_of_strings": AsList(AsString(SchemaComputedOptional), SchemaComputedOptional),
+            "test_boolean": AsBool(SchemaComputedOptional),
+            "test_integer": AsInt(SchemaComputedOptional),
             "test_number": AsFloat(SchemaComputedOptional),
             "test_number_float": AsFloat(SchemaComputedOptional),
             "test_number_double": AsString(SchemaComputedOptional),
@@ -168,7 +169,6 @@ func ResourceCredentialsAWS() *schema.Resource {
             "test_object": AsString(SchemaComputedOptional),
             "test_date_time": AsString(SchemaComputedOptional),
             "test_date": AsString(SchemaComputedOptional),
-            "test_string_array": AsList(AsString(SchemaComputedOptional), SchemaComputedOptional),
             "test_enum": AsString(SchemaComputedOptional),
             "test_object_array": AsList(AsString(SchemaComputedOptional), SchemaComputedOptional),
             "sid": AsString(SchemaComputed),
@@ -282,12 +282,6 @@ func ResourceAccountsMessages() *schema.Resource {
         Schema: map[string]*schema.Schema{
             "required_string_property": AsString(SchemaForceNewRequired),
             "path_account_sid": AsString(SchemaForceNewOptional),
-            "address_retention": AsString(SchemaForceNewOptional),
-            "int_property": AsInt(SchemaForceNewOptional),
-            "boolean_property": AsBool(SchemaForceNewOptional),
-            "number_property": AsFloat(SchemaForceNewOptional),
-            "array_of_strings_property": AsList(AsString(SchemaForceNewOptional), SchemaForceNewOptional),
-            "uri_property": AsString(SchemaForceNewOptional),
             "sid": AsString(SchemaComputed),
         },
         Importer: &schema.ResourceImporter{

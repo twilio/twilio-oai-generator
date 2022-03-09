@@ -1,109 +1,20 @@
 components:
   schemas:
-    accounts.v1.credential.credential_aws:
+    test.response_object:
       properties:
         account_sid:
-          description: The SID of the Account that created the resource
-          nullable: true
-          type: string
-        friendly_name:
-          description: The string that you assigned to describe the resource
           nullable: true
           type: string
         sid:
-          description: The unique string that identifies the resource
           nullable: true
           type: string
-        url:
-          description: The URI for this resource, relative to `https://accounts.twilio.com`
-          format: uri
+        test_string:
           nullable: true
           type: string
-        response_object:
-          description: Test response object type
-          nullable: true
-          type: object
-        response_array:
-          description: Test array
-          items:
-            type: integer
-            properties:
-              id:
-                type: integer
-          type: array
-        response_nested_array:
-          description: Test nested array
-          type: array
-          items:
-            type: array
-            items:
-              type: integer
-              properties:
-                nested_prop_1:
-                  type: integer
-                nested_prop_2:
-                  type: integer
-      type: object
-    api.v2010.account.call.call_recording:
-      properties:
-        call_sid:
-          description: The SID of the Call the resource is associated with
-          nullable: true
-          type: string
-        date_created:
-          description: The RFC 2822 date and time in GMT that the resource was created
-          format: date-time-rfc-2822
-          nullable: true
-          type: string
-        date_created_test:
-          description: The RFC 2822 date and time in GMT that the resource was created
-          format: date-time-rfc-2822
-          nullable: true
-          type: string
-        price:
-          description: The one-time cost of creating the recording.
-          nullable: true
-          type: number
-        sid:
-          description: INTEGER SID!!!
+        test_integer:
           nullable: true
           type: integer
-        source:
-          description: How the recording was created
-          enum:
-            - DialVerb
-            - Trunking
-          nullable: true
-          type: string
-        status:
-          description: The status of the recording
-          enum:
-            - in-progress
-            - processing
-            - completed
-          nullable: true
-          type: string
-      type: object
-    api.v2010.account.call.call_feedback_summary:
-      properties:
-        issues:
-          description: Issues experienced during the call
-          items:
-            properties:
-              count:
-                type: number
-              description:
-                type: string
-              percentage_of_total_calls:
-                type: string
-            type: object
-          nullable: true
-          type: array
-      type: object
-    api.v2010.account.incoming_phone_number:
-      properties:
-        capabilities:
-          description: Whether a phone number can receive calls or messages
+        test_object:
           nullable: true
           properties:
             fax:
@@ -114,74 +25,44 @@ components:
               type: boolean
             voice:
               type: boolean
-            nested_capabilities:
-              description: Whether a phone number can receive calls or messages
-              nullable: true
-              properties:
-                nested_fax:
-                  type: boolean
-                nested_mms:
-                  type: boolean
-                nested_sms:
-                  type: boolean
-                nested_voice:
-                  type: boolean
-              type: object
           type: object
-      type: object
-    api.v2010.account.message:
-      properties:
-        account_sid:
-          description: The SID of the Account that created the resource
+        test_date_time:
+          format: date-time-rfc-2822
           nullable: true
           type: string
-        body:
-          description: The message text
+        test_number:
           nullable: true
-          type: string
-        direction:
-          description: The direction of the message
+          type: number
+        test_number_float:
+          nullable: true
+          type: number
+          format: float
+        test_enum:
           enum:
-            - inbound
-            - outbound-api
-            - outbound-call
-            - outbound-reply
+            - DialVerb
+            - Trunking
           nullable: true
           type: string
-        from:
-          description: The phone number that initiated the message
+        test_array_of_integers:
+          items:
+            type: integer
+          type: array
+        test_array_of_array_of_integers:
+          type: array
+          items:
+            type: array
+            items:
+              type: integer
+        test_array_of_objects:
+          items:
+            properties:
+              count:
+                type: number
+              description:
+                type: string
+            type: object
           nullable: true
-          type: string
-        sid:
-          description: The unique string that identifies the resource
-          nullable: true
-          type: string
-        status:
-          description: The status of the message
-          enum:
-            - queued
-            - sending
-            - sent
-            - failed
-            - delivered
-            - undelivered
-            - receiving
-            - received
-            - accepted
-            - scheduled
-            - read
-            - partially_delivered
-            - canceled
-          nullable: true
-          type: string
-        to:
-          description: The phone number that received the message
-          nullable: true
-          type: string
-        uri:
-          description: The URI of the resource, relative to `https://api.twilio.com`
-          nullable: true
-          type: string
+          type: array
       type: object
   securitySchemes:
     accountSid_authToken:
@@ -224,7 +105,7 @@ paths:
                 properties:
                   credentials:
                     items:
-                      $ref: '#/components/schemas/accounts.v1.credential.credential_aws'
+                      $ref: '#/components/schemas/test.response_object'
                     type: array
                   meta:
                     properties:
@@ -256,11 +137,8 @@ paths:
                     credentials: [
                       {
                         "account_sid": "AC12345678123456781234567812345678",
-                        "date_created": "2021-03-23T08:30:00Z",
-                        "date_updated": "2021-03-26T10:30:00Z",
-                        "friendly_name": "Ahoy",
                         "sid": "CR12345678123456781234567812345678",
-                        "url": "http://example.com"
+                        "test_string": "Ahoy",
                       }
                     ]
                     meta: {
@@ -282,23 +160,16 @@ paths:
           application/x-www-form-urlencoded:
             schema:
               properties:
-                AccountSid:
-                  description: The SID of the Subaccount that this Credential should
-                    be associated with. Must be a valid Subaccount of the account
-                    issuing the request.
-                  maxLength: 34
-                  minLength: 34
-                  pattern: ^AC[0-9a-fA-F]{32}$
+                TestString:
                   type: string
-                Credentials:
-                  description: A string that contains the AWS access credentials in
-                    the format `<AWS_ACCESS_KEY_ID>:<AWS_SECRET_ACCESS_KEY>`. For
-                    example, `AKIAIOSFODNN7EXAMPLE:wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY`
-                  type: string
-                FriendlyName:
-                  description: A descriptive string that you create to describe the
-                    resource. It can be up to 64 characters long.
-                  type: string
+                TestArrayOfStrings:
+                  items:
+                    type: string
+                  type: array
+                TestBoolean:
+                  type: boolean
+                TestInteger:
+                  type: integer
                 TestNumber:
                   description: test number type transformation
                   type: number
@@ -329,14 +200,6 @@ paths:
                   description: test date format transformation
                   type: string
                   format: date
-                TestStringArray:
-                  description: 'The recording status events on which we should call
-                                    the `recording_status_callback` URL. Can be: `in-progress`, `completed`
-                                    and `absent` and the default is `completed`. Separate multiple
-                                    event values with a space.'
-                  items:
-                    type: string
-                  type: array
                 TestEnum:
                   description: Test enum
                   enum:
@@ -349,7 +212,7 @@ paths:
                     type: object
                   type: array
               required:
-                - Credentials
+                - TestString
               title: CreateCredentialAwsRequest
               type: object
       responses:
@@ -357,7 +220,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/accounts.v1.credential.credential_aws'
+                $ref: '#/components/schemas/test.response_object'
           description: Created
       security:
         - accountSid_authToken: [ ]
@@ -404,17 +267,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/accounts.v1.credential.credential_aws'
+                $ref: '#/components/schemas/test.response_object'
               examples:
                 fetch_creds_response_example:
                   summary: Example of a Credential
                   value: {
-                    "account_sid": "AC12345678123456781234567812345678",
-                    "date_created": "2021-03-23T08:30:00Z",
-                    "date_updated": "2021-03-26T10:30:00Z",
-                    "friendly_name": "Ahoy",
                     "sid": "CR12345678123456781234567812345678",
-                    "url": "http://example.com"
+                    "test_string": "Ahoy"
                   }
           description: OK
       security:
@@ -438,9 +297,7 @@ paths:
           application/x-www-form-urlencoded:
             schema:
               properties:
-                FriendlyName:
-                  description: A descriptive string that you create to describe the
-                    resource. It can be up to 64 characters long.
+                TestString:
                   type: string
               title: UpdateCredentialAwsRequest
               type: object
@@ -449,7 +306,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/accounts.v1.credential.credential_aws'
+                $ref: '#/components/schemas/test.response_object'
           description: OK
       security:
         - accountSid_authToken: [ ]
@@ -518,7 +375,7 @@ paths:
                     type: string
                   recordings:
                     items:
-                      $ref: '#/components/schemas/api.v2010.account.call.call_recording'
+                      $ref: '#/components/schemas/test.response_object'
                     type: array
                   start:
                     type: integer
@@ -539,44 +396,10 @@ paths:
                     "previous_page_uri": "http://example.com/page0",
                     "recordings": [
                       {
-                        "account_sid": "AC12345678123456781234567812345678",
-                        "api_version": "1",
-                        "call_sid": "CA12345678123456781234567812345678",
-                        "channels": 2,
-                        "conference_sid": "CF12345678123456781234567812345678",
-                        "date_created": "2021-03-31T08:30:00Z",
-                        "date_updated": "2021-03-23T10:30:00Z",
-                        "duration": "60",
-                        "encryption_details": null,
-                        "error_code": 2,
-                        "price": 5,
-                        "price_unit": "USD",
-                        "sid": 87654321,
-                        "source": "DialVerb",
-                        "start_time": "2021-03-31T08:30:00Z",
-                        "status": "in-progress",
-                        "track": "both",
-                        "uri": "https://myrecoding1.example.com"
+                        "test_string": "Ahoy",
                       },
                       {
-                        "account_sid": "AC87654321876543218765432187654321",
-                        "api_version": "2",
-                        "call_sid": "CA87654321876543218765432187654321",
-                        "channels": 1,
-                        "conference_sid": "CF87654321876543218765432187654321",
-                        "date_created": "2020-03-31T08:30:00Z",
-                        "date_updated": "2020-03-23T10:30:00Z",
-                        "duration": "90",
-                        "encryption_details": null,
-                        "error_code": 1,
-                        "price": 10,
-                        "price_unit": "USD",
-                        "sid": 87654321,
-                        "source": "Trunking",
-                        "start_time": "2020-03-31T08:30:00Z",
-                        "status": "completed",
-                        "track": "outbound",
-                        "uri": "https://myrecoding2.example.com"
+                        "test_string": "Matey"
                       }
                     ],
                     "start": 0,
@@ -626,28 +449,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/api.v2010.account.call.call_recording'
+                $ref: '#/components/schemas/test.response_object'
               examples:
                 create_call_recording_response_example:
                   summary: Example of a CreateCallRecording
                   value: {
-                    "account_sid": "AC12345678123456781234567812345678",
-                    "api_version": "v1",
-                    "call_sid": "CA12345678123456781234567812345678",
-                    "channels": 4,
-                    "conference_sid": "CF12345678123456781234567812345678",
-                    "date_created": "2021-03-23T08:30:00Z",
-                    "date_updated": "2021-03-26T10:30:00Z",
-                    "duration": "60",
-                    "error_code": 2,
-                    "price": 100.22,
-                    "price_unit": "USD",
-                    "sid": 12345678,
-                    "source": "Trunking",
-                    "start_time": "2021-03-26T8:30:00Z",
-                    "status": "completed",
-                    "track": "both",
-                    "url": "http://example.com"
+                    "test_number_float": 100.22,
+                    "test_enum": "Trunking",
                   }
           description: Created
       security:
@@ -686,7 +494,7 @@ paths:
     description: 'TODO: Resource-level docs'
     servers:
       - url: https://api.twilio.com
-  /2010-04-01/Accounts/{AccountSid}/Calls/{CallSid}/Recordings/{Sid}.json:
+  /2010-04-01/Accounts/{AccountSid}/Calls/{CallSid}/Recordings/{TestInteger}.json:
     delete:
       operationId: DeleteCallRecording
       parameters:
@@ -700,9 +508,9 @@ paths:
           required: true
           schema:
             type: string
-        - description: INTEGER SID!!!
+        - description: INTEGER ID param!!!
           in: path
-          name: Sid
+          name: TestInteger
           required: true
           schema:
             type: integer
@@ -724,9 +532,9 @@ paths:
           required: true
           schema:
             type: string
-        - description: INTEGER SID!!!
+        - description: INTEGER ID param!!!
           in: path
-          name: Sid
+          name: TestInteger
           required: true
           schema:
             type: integer
@@ -735,7 +543,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/api.v2010.account.call.call_recording'
+                $ref: '#/components/schemas/test.response_object'
           description: OK
       security:
         - accountSid_authToken: [ ]
@@ -752,9 +560,9 @@ paths:
           required: true
           schema:
             type: string
-        - description: INTEGER SID!!!
+        - description: INTEGER ID param!!!
           in: path
-          name: Sid
+          name: TestInteger
           required: true
           schema:
             type: integer
@@ -783,7 +591,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/api.v2010.account.call.call_recording'
+                $ref: '#/components/schemas/test.response_object'
           description: OK
       security:
         - accountSid_authToken: [ ]
@@ -829,29 +637,15 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/api.v2010.account.call.call_feedback_summary'
+                $ref: '#/components/schemas/test.response_object'
               examples:
                 custom_type_response_example:
                   summary: Example of a Feedback Summary
                   value: {
-                    "account_sid": "AC12345678123456781234567812345678",
-                    "call_count": 2,
-                    "call_feedback_count": 2,
-                    "date_created": "2021-03-23T08:30:00Z",
-                    "date_updated": "2021-03-26T10:30:00Z",
-                    "end_date": "2021-03-26T10:30:00Z",
-                    "include_subaccounts": false,
-                    "issues": [ {
+                    "test_array_of_objects": [ {
                       "count": 4,
                       "description": "issue description",
-                      "percentage_of_total_calls": "50",
                     } ],
-                    "quality_score_average": 1.22,
-                    "quality_score_median": 1.45,
-                    "quality_score_standard_deviation": 1.1,
-                    "sid": "FS12345678123456781234567812345678",
-                    "start_date": "2021-03-23T08:30:00Z",
-                    "status": "completed",
                   }
           description: Created
       security:
@@ -890,17 +684,12 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/api.v2010.account.incoming_phone_number'
+                $ref: '#/components/schemas/test.response_object'
               examples:
                 fetch_creds_response_example:
                   summary: Example of a Incoming Phone Number
                   value: {
-                    "account_sid": "AC12345678123456781234567812345678",
-                    "address_requirements": "foreign",
-                    "emergency_status": "Active",
-                    "sms_fallback_method": "PUT",
-                    "voice_receive_mode": "voice",
-                    "capabilities": {
+                    "test_object": {
                       "fax": false,
                       "mms": false,
                       "sms": true,
@@ -952,7 +741,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/api.v2010.account.message'
+                $ref: '#/components/schemas/test.response_object'
           description: OK
       security:
         - accountSid_authToken: [ ]
@@ -1024,7 +813,7 @@ paths:
                     type: string
                   messages:
                     items:
-                      $ref: '#/components/schemas/api.v2010.account.message'
+                      $ref: '#/components/schemas/test.response_object'
                     type: array
                   next_page_uri:
                     format: uri
@@ -1065,28 +854,7 @@ paths:
           application/x-www-form-urlencoded:
             schema:
               properties:
-                AddressRetention:
-                  description: Determines if the address can be stored or obfuscated
-                    based on privacy settings
-                  enum:
-                    - retain
-                  type: string
-                IntProperty:
-                  type: integer
                 RequiredStringProperty:
-                  type: string
-                BooleanProperty:
-                  description: Reserved
-                  type: boolean
-                NumberProperty:
-                  type: number
-                ArrayOfStringsProperty:
-                  items:
-                    format: uri
-                    type: string
-                  type: array
-                UriProperty:
-                  format: uri
                   type: string
               required:
                 - RequiredStringProperty
@@ -1097,7 +865,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/api.v2010.account.message'
+                $ref: '#/components/schemas/test.response_object'
           description: Created
       security:
         - accountSid_authToken: [ ]

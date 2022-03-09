@@ -44,7 +44,7 @@ func (params *CreateCallFeedbackSummaryParams) SetStartDate(StartDate string) (*
 }
 
 // Create a FeedbackSummary resource for a call
-func (c *ApiService) CreateCallFeedbackSummary(params *CreateCallFeedbackSummaryParams) (*ApiV2010CallFeedbackSummary, error) {
+func (c *ApiService) CreateCallFeedbackSummary(params *CreateCallFeedbackSummaryParams) (*TestResponseObject, error) {
     path := "/2010-04-01/Accounts/{AccountSid}/Calls/FeedbackSummary.json"
     if params != nil && params.PathAccountSid != nil {
     path = strings.Replace(path, "{"+"AccountSid"+"}", *params.PathAccountSid, -1)
@@ -71,7 +71,7 @@ if params != nil && params.StartDate != nil {
 
     defer resp.Body.Close()
 
-    ps := &ApiV2010CallFeedbackSummary{}
+    ps := &TestResponseObject{}
     if err := json.NewDecoder(resp.Body).Decode(ps); err != nil {
         return nil, err
     }

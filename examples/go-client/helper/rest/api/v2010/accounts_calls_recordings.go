@@ -50,7 +50,7 @@ func (params *CreateCallRecordingParams) SetRecordingStatusCallbackEvent(Recordi
 }
 
 // Create a recording for the call
-func (c *ApiService) CreateCallRecording(CallSid string, params *CreateCallRecordingParams) (*ApiV2010CallRecording, error) {
+func (c *ApiService) CreateCallRecording(CallSid string, params *CreateCallRecordingParams) (*TestResponseObject, error) {
     path := "/2010-04-01/Accounts/{AccountSid}/Calls/{CallSid}/Recordings.json"
     if params != nil && params.PathAccountSid != nil {
     path = strings.Replace(path, "{"+"AccountSid"+"}", *params.PathAccountSid, -1)
@@ -83,7 +83,7 @@ if params != nil && params.RecordingStatusCallbackEvent != nil {
 
     defer resp.Body.Close()
 
-    ps := &ApiV2010CallRecording{}
+    ps := &TestResponseObject{}
     if err := json.NewDecoder(resp.Body).Decode(ps); err != nil {
         return nil, err
     }
@@ -102,15 +102,15 @@ func (params *DeleteCallRecordingParams) SetPathAccountSid(PathAccountSid string
     return params
 }
 
-func (c *ApiService) DeleteCallRecording(CallSid string, Sid int, params *DeleteCallRecordingParams) (error) {
-    path := "/2010-04-01/Accounts/{AccountSid}/Calls/{CallSid}/Recordings/{Sid}.json"
+func (c *ApiService) DeleteCallRecording(CallSid string, TestInteger int, params *DeleteCallRecordingParams) (error) {
+    path := "/2010-04-01/Accounts/{AccountSid}/Calls/{CallSid}/Recordings/{TestInteger}.json"
     if params != nil && params.PathAccountSid != nil {
     path = strings.Replace(path, "{"+"AccountSid"+"}", *params.PathAccountSid, -1)
 } else {
     path = strings.Replace(path, "{"+"AccountSid"+"}", c.requestHandler.Client.AccountSid(), -1)
 }
     path = strings.Replace(path, "{"+"CallSid"+"}", CallSid, -1)
-    path = strings.Replace(path, "{"+"Sid"+"}", fmt.Sprint(Sid), -1)
+    path = strings.Replace(path, "{"+"TestInteger"+"}", fmt.Sprint(TestInteger), -1)
 
 data := url.Values{}
 headers := make(map[string]interface{})
@@ -139,15 +139,15 @@ func (params *FetchCallRecordingParams) SetPathAccountSid(PathAccountSid string)
     return params
 }
 
-func (c *ApiService) FetchCallRecording(CallSid string, Sid int, params *FetchCallRecordingParams) (*ApiV2010CallRecording, error) {
-    path := "/2010-04-01/Accounts/{AccountSid}/Calls/{CallSid}/Recordings/{Sid}.json"
+func (c *ApiService) FetchCallRecording(CallSid string, TestInteger int, params *FetchCallRecordingParams) (*TestResponseObject, error) {
+    path := "/2010-04-01/Accounts/{AccountSid}/Calls/{CallSid}/Recordings/{TestInteger}.json"
     if params != nil && params.PathAccountSid != nil {
     path = strings.Replace(path, "{"+"AccountSid"+"}", *params.PathAccountSid, -1)
 } else {
     path = strings.Replace(path, "{"+"AccountSid"+"}", c.requestHandler.Client.AccountSid(), -1)
 }
     path = strings.Replace(path, "{"+"CallSid"+"}", CallSid, -1)
-    path = strings.Replace(path, "{"+"Sid"+"}", fmt.Sprint(Sid), -1)
+    path = strings.Replace(path, "{"+"TestInteger"+"}", fmt.Sprint(TestInteger), -1)
 
 data := url.Values{}
 headers := make(map[string]interface{})
@@ -162,7 +162,7 @@ headers := make(map[string]interface{})
 
     defer resp.Body.Close()
 
-    ps := &ApiV2010CallRecording{}
+    ps := &TestResponseObject{}
     if err := json.NewDecoder(resp.Body).Decode(ps); err != nil {
         return nil, err
     }
@@ -270,7 +270,7 @@ if params != nil && params.PageSize != nil {
 }
 
 // Lists CallRecording records from the API as a list. Unlike stream, this operation is eager and loads 'limit' records into memory before returning.
-func (c *ApiService) ListCallRecording(CallSid string, params *ListCallRecordingParams) ([]ApiV2010CallRecording, error) {
+func (c *ApiService) ListCallRecording(CallSid string, params *ListCallRecordingParams) ([]TestResponseObject, error) {
     if params == nil {
         params = &ListCallRecordingParams{}
     }
@@ -282,7 +282,7 @@ func (c *ApiService) ListCallRecording(CallSid string, params *ListCallRecording
     }
 
     curRecord := 0
-    var records []ApiV2010CallRecording
+    var records []TestResponseObject
 
     for response != nil {
         records = append(records, response.Recordings...)
@@ -299,7 +299,7 @@ func (c *ApiService) ListCallRecording(CallSid string, params *ListCallRecording
 }
 
 // Streams CallRecording records from the API as a channel stream. This operation lazily loads records as efficiently as possible until the limit is reached.
-func (c *ApiService) StreamCallRecording(CallSid string, params *ListCallRecordingParams) (chan ApiV2010CallRecording, error) {
+func (c *ApiService) StreamCallRecording(CallSid string, params *ListCallRecordingParams) (chan TestResponseObject, error) {
     if params == nil {
         params = &ListCallRecordingParams{}
     }
@@ -312,7 +312,7 @@ func (c *ApiService) StreamCallRecording(CallSid string, params *ListCallRecordi
 
     curRecord := 0
     //set buffer size of the channel to 1
-    channel := make(chan ApiV2010CallRecording, 1)
+    channel := make(chan TestResponseObject, 1)
 
     go func() {
         for response != nil {
@@ -377,15 +377,15 @@ func (params *UpdateCallRecordingParams) SetStatus(Status string) (*UpdateCallRe
     return params
 }
 
-func (c *ApiService) UpdateCallRecording(CallSid string, Sid int, params *UpdateCallRecordingParams) (*ApiV2010CallRecording, error) {
-    path := "/2010-04-01/Accounts/{AccountSid}/Calls/{CallSid}/Recordings/{Sid}.json"
+func (c *ApiService) UpdateCallRecording(CallSid string, TestInteger int, params *UpdateCallRecordingParams) (*TestResponseObject, error) {
+    path := "/2010-04-01/Accounts/{AccountSid}/Calls/{CallSid}/Recordings/{TestInteger}.json"
     if params != nil && params.PathAccountSid != nil {
     path = strings.Replace(path, "{"+"AccountSid"+"}", *params.PathAccountSid, -1)
 } else {
     path = strings.Replace(path, "{"+"AccountSid"+"}", c.requestHandler.Client.AccountSid(), -1)
 }
     path = strings.Replace(path, "{"+"CallSid"+"}", CallSid, -1)
-    path = strings.Replace(path, "{"+"Sid"+"}", fmt.Sprint(Sid), -1)
+    path = strings.Replace(path, "{"+"TestInteger"+"}", fmt.Sprint(TestInteger), -1)
 
 data := url.Values{}
 headers := make(map[string]interface{})
@@ -406,7 +406,7 @@ if params != nil && params.Status != nil {
 
     defer resp.Body.Close()
 
-    ps := &ApiV2010CallRecording{}
+    ps := &TestResponseObject{}
     if err := json.NewDecoder(resp.Body).Decode(ps); err != nil {
         return nil, err
     }

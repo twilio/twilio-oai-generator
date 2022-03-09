@@ -10,6 +10,9 @@ import (
 )
 
 var accountSid = "AC111"
+var stringValue = "someString"
+var integerValue = 123
+var booleanValueDefaultValue = false
 
 var testClient *MockApiV2010
 var config *Config

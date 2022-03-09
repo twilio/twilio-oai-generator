@@ -24,57 +24,21 @@ import (
 type CreateMessageParams struct {
     // 
     PathAccountSid *string `json:"PathAccountSid,omitempty"`
-    // Determines if the address can be stored or obfuscated based on privacy settings
-    AddressRetention *string `json:"AddressRetention,omitempty"`
-    // 
-    IntProperty *int `json:"IntProperty,omitempty"`
     // 
     RequiredStringProperty *string `json:"RequiredStringProperty,omitempty"`
-    // Reserved
-    BooleanProperty *bool `json:"BooleanProperty,omitempty"`
-    // 
-    NumberProperty *float32 `json:"NumberProperty,omitempty"`
-    // 
-    ArrayOfStringsProperty *[]string `json:"ArrayOfStringsProperty,omitempty"`
-    // 
-    UriProperty *string `json:"UriProperty,omitempty"`
 }
 
 func (params *CreateMessageParams) SetPathAccountSid(PathAccountSid string) (*CreateMessageParams){
     params.PathAccountSid = &PathAccountSid
     return params
 }
-func (params *CreateMessageParams) SetAddressRetention(AddressRetention string) (*CreateMessageParams){
-    params.AddressRetention = &AddressRetention
-    return params
-}
-func (params *CreateMessageParams) SetIntProperty(IntProperty int) (*CreateMessageParams){
-    params.IntProperty = &IntProperty
-    return params
-}
 func (params *CreateMessageParams) SetRequiredStringProperty(RequiredStringProperty string) (*CreateMessageParams){
     params.RequiredStringProperty = &RequiredStringProperty
     return params
 }
-func (params *CreateMessageParams) SetBooleanProperty(BooleanProperty bool) (*CreateMessageParams){
-    params.BooleanProperty = &BooleanProperty
-    return params
-}
-func (params *CreateMessageParams) SetNumberProperty(NumberProperty float32) (*CreateMessageParams){
-    params.NumberProperty = &NumberProperty
-    return params
-}
-func (params *CreateMessageParams) SetArrayOfStringsProperty(ArrayOfStringsProperty []string) (*CreateMessageParams){
-    params.ArrayOfStringsProperty = &ArrayOfStringsProperty
-    return params
-}
-func (params *CreateMessageParams) SetUriProperty(UriProperty string) (*CreateMessageParams){
-    params.UriProperty = &UriProperty
-    return params
-}
 
 // Send a message from the account used to make the request
-func (c *ApiService) CreateMessage(params *CreateMessageParams) (*ApiV2010Message, error) {
+func (c *ApiService) CreateMessage(params *CreateMessageParams) (*TestResponseObject, error) {
     path := "/2010-04-01/Accounts/{AccountSid}/Messages.json"
     if params != nil && params.PathAccountSid != nil {
     path = strings.Replace(path, "{"+"AccountSid"+"}", *params.PathAccountSid, -1)
@@ -85,28 +49,8 @@ func (c *ApiService) CreateMessage(params *CreateMessageParams) (*ApiV2010Messag
 data := url.Values{}
 headers := make(map[string]interface{})
 
-if params != nil && params.AddressRetention != nil {
-    data.Set("AddressRetention", *params.AddressRetention)
-}
-if params != nil && params.IntProperty != nil {
-    data.Set("IntProperty", fmt.Sprint(*params.IntProperty))
-}
 if params != nil && params.RequiredStringProperty != nil {
     data.Set("RequiredStringProperty", *params.RequiredStringProperty)
-}
-if params != nil && params.BooleanProperty != nil {
-    data.Set("BooleanProperty", fmt.Sprint(*params.BooleanProperty))
-}
-if params != nil && params.NumberProperty != nil {
-    data.Set("NumberProperty", fmt.Sprint(*params.NumberProperty))
-}
-if params != nil && params.ArrayOfStringsProperty != nil {
-    for _, item  := range *params.ArrayOfStringsProperty {
-        data.Add("ArrayOfStringsProperty", item)
-    }
-}
-if params != nil && params.UriProperty != nil {
-    data.Set("UriProperty", *params.UriProperty)
 }
 
 
@@ -118,7 +62,7 @@ if params != nil && params.UriProperty != nil {
 
     defer resp.Body.Close()
 
-    ps := &ApiV2010Message{}
+    ps := &TestResponseObject{}
     if err := json.NewDecoder(resp.Body).Decode(ps); err != nil {
         return nil, err
     }
@@ -175,7 +119,7 @@ func (params *FetchMessageParams) SetPathAccountSid(PathAccountSid string) (*Fet
 }
 
 // Fetch a message belonging to the account used to make the request
-func (c *ApiService) FetchMessage(Sid string, params *FetchMessageParams) (*ApiV2010Message, error) {
+func (c *ApiService) FetchMessage(Sid string, params *FetchMessageParams) (*TestResponseObject, error) {
     path := "/2010-04-01/Accounts/{AccountSid}/Messages/{Sid}.json"
     if params != nil && params.PathAccountSid != nil {
     path = strings.Replace(path, "{"+"AccountSid"+"}", *params.PathAccountSid, -1)
@@ -197,7 +141,7 @@ headers := make(map[string]interface{})
 
     defer resp.Body.Close()
 
-    ps := &ApiV2010Message{}
+    ps := &TestResponseObject{}
     if err := json.NewDecoder(resp.Body).Decode(ps); err != nil {
         return nil, err
     }
@@ -313,7 +257,7 @@ if params != nil && params.PageSize != nil {
 }
 
 // Lists Message records from the API as a list. Unlike stream, this operation is eager and loads 'limit' records into memory before returning.
-func (c *ApiService) ListMessage(params *ListMessageParams) ([]ApiV2010Message, error) {
+func (c *ApiService) ListMessage(params *ListMessageParams) ([]TestResponseObject, error) {
     if params == nil {
         params = &ListMessageParams{}
     }
@@ -325,7 +269,7 @@ func (c *ApiService) ListMessage(params *ListMessageParams) ([]ApiV2010Message, 
     }
 
     curRecord := 0
-    var records []ApiV2010Message
+    var records []TestResponseObject
 
     for response != nil {
         records = append(records, response.Messages...)
@@ -342,7 +286,7 @@ func (c *ApiService) ListMessage(params *ListMessageParams) ([]ApiV2010Message, 
 }
 
 // Streams Message records from the API as a channel stream. This operation lazily loads records as efficiently as possible until the limit is reached.
-func (c *ApiService) StreamMessage(params *ListMessageParams) (chan ApiV2010Message, error) {
+func (c *ApiService) StreamMessage(params *ListMessageParams) (chan TestResponseObject, error) {
     if params == nil {
         params = &ListMessageParams{}
     }
@@ -355,7 +299,7 @@ func (c *ApiService) StreamMessage(params *ListMessageParams) (chan ApiV2010Mess
 
     curRecord := 0
     //set buffer size of the channel to 1
-    channel := make(chan ApiV2010Message, 1)
+    channel := make(chan TestResponseObject, 1)
 
     go func() {
         for response != nil {

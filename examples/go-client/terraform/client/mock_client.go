@@ -5,7 +5,7 @@
 package client
 
 import (
-	v2010 "go-client/helper/rest/api/v2010"
+	openapi "go-client/helper/rest/api/v2010"
 	reflect "reflect"
 
 	gomock "github.com/golang/mock/gomock"
@@ -35,10 +35,10 @@ func (m *MockApiV2010) EXPECT() *MockApiV2010MockRecorder {
 }
 
 // CreateCallRecording mocks base method.
-func (m *MockApiV2010) CreateCallRecording(CallSid string, params *v2010.CreateCallRecordingParams) (*v2010.ApiV2010CallRecording, error) {
+func (m *MockApiV2010) CreateCallRecording(CallSid string, params *openapi.CreateCallRecordingParams) (*openapi.TestResponseObject, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreateCallRecording", CallSid, params)
-	ret0, _ := ret[0].(*v2010.ApiV2010CallRecording)
+	ret0, _ := ret[0].(*openapi.TestResponseObject)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -50,10 +50,10 @@ func (mr *MockApiV2010MockRecorder) CreateCallRecording(CallSid, params interfac
 }
 
 // CreateCredentialAws mocks base method.
-func (m *MockApiV2010) CreateCredentialAws(params *v2010.CreateCredentialAwsParams) (*v2010.AccountsV1CredentialAws, error) {
+func (m *MockApiV2010) CreateCredentialAws(params *openapi.CreateCredentialAwsParams) (*openapi.TestResponseObject, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreateCredentialAws", params)
-	ret0, _ := ret[0].(*v2010.AccountsV1CredentialAws)
+	ret0, _ := ret[0].(*openapi.TestResponseObject)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -65,10 +65,10 @@ func (mr *MockApiV2010MockRecorder) CreateCredentialAws(params interface{}) *gom
 }
 
 // CreateMessage mocks base method.
-func (m *MockApiV2010) CreateMessage(params *v2010.CreateMessageParams) (*v2010.ApiV2010Message, error) {
+func (m *MockApiV2010) CreateMessage(params *openapi.CreateMessageParams) (*openapi.TestResponseObject, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreateMessage", params)
-	ret0, _ := ret[0].(*v2010.ApiV2010Message)
+	ret0, _ := ret[0].(*openapi.TestResponseObject)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -80,7 +80,7 @@ func (mr *MockApiV2010MockRecorder) CreateMessage(params interface{}) *gomock.Ca
 }
 
 // DeleteCallRecording mocks base method.
-func (m *MockApiV2010) DeleteCallRecording(CallSid string, Sid int, params *v2010.DeleteCallRecordingParams) error {
+func (m *MockApiV2010) DeleteCallRecording(CallSid string, Sid int, params *openapi.DeleteCallRecordingParams) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DeleteCallRecording", CallSid, Sid, params)
 	ret0, _ := ret[0].(error)
@@ -108,7 +108,7 @@ func (mr *MockApiV2010MockRecorder) DeleteCredentialAws(Sid interface{}) *gomock
 }
 
 // DeleteMessage mocks base method.
-func (m *MockApiV2010) DeleteMessage(Sid string, params *v2010.DeleteMessageParams) error {
+func (m *MockApiV2010) DeleteMessage(Sid string, params *openapi.DeleteMessageParams) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DeleteMessage", Sid, params)
 	ret0, _ := ret[0].(error)
@@ -122,10 +122,10 @@ func (mr *MockApiV2010MockRecorder) DeleteMessage(Sid, params interface{}) *gomo
 }
 
 // FetchCallRecording mocks base method.
-func (m *MockApiV2010) FetchCallRecording(CallSid string, Sid int, params *v2010.FetchCallRecordingParams) (*v2010.ApiV2010CallRecording, error) {
+func (m *MockApiV2010) FetchCallRecording(CallSid string, Sid int, params *openapi.FetchCallRecordingParams) (*openapi.TestResponseObject, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "FetchCallRecording", CallSid, Sid, params)
-	ret0, _ := ret[0].(*v2010.ApiV2010CallRecording)
+	ret0, _ := ret[0].(*openapi.TestResponseObject)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -137,10 +137,10 @@ func (mr *MockApiV2010MockRecorder) FetchCallRecording(CallSid, Sid, params inte
 }
 
 // FetchCredentialAws mocks base method.
-func (m *MockApiV2010) FetchCredentialAws(Sid string) (*v2010.AccountsV1CredentialAws, error) {
+func (m *MockApiV2010) FetchCredentialAws(Sid string) (*openapi.TestResponseObject, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "FetchCredentialAws", Sid)
-	ret0, _ := ret[0].(*v2010.AccountsV1CredentialAws)
+	ret0, _ := ret[0].(*openapi.TestResponseObject)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -152,10 +152,10 @@ func (mr *MockApiV2010MockRecorder) FetchCredentialAws(Sid interface{}) *gomock.
 }
 
 // FetchMessage mocks base method.
-func (m *MockApiV2010) FetchMessage(Sid string, params *v2010.FetchMessageParams) (*v2010.ApiV2010Message, error) {
+func (m *MockApiV2010) FetchMessage(Sid string, params *openapi.FetchMessageParams) (*openapi.TestResponseObject, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "FetchMessage", Sid, params)
-	ret0, _ := ret[0].(*v2010.ApiV2010Message)
+	ret0, _ := ret[0].(*openapi.TestResponseObject)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -167,10 +167,10 @@ func (mr *MockApiV2010MockRecorder) FetchMessage(Sid, params interface{}) *gomoc
 }
 
 // UpdateCallRecording mocks base method.
-func (m *MockApiV2010) UpdateCallRecording(CallSid string, Sid int, params *v2010.UpdateCallRecordingParams) (*v2010.ApiV2010CallRecording, error) {
+func (m *MockApiV2010) UpdateCallRecording(CallSid string, Sid int, params *openapi.UpdateCallRecordingParams) (*openapi.TestResponseObject, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "UpdateCallRecording", CallSid, Sid, params)
-	ret0, _ := ret[0].(*v2010.ApiV2010CallRecording)
+	ret0, _ := ret[0].(*openapi.TestResponseObject)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -182,10 +182,10 @@ func (mr *MockApiV2010MockRecorder) UpdateCallRecording(CallSid, Sid, params int
 }
 
 // UpdateCredentialAws mocks base method.
-func (m *MockApiV2010) UpdateCredentialAws(Sid string, params *v2010.UpdateCredentialAwsParams) (*v2010.AccountsV1CredentialAws, error) {
+func (m *MockApiV2010) UpdateCredentialAws(Sid string, params *openapi.UpdateCredentialAwsParams) (*openapi.TestResponseObject, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "UpdateCredentialAws", Sid, params)
-	ret0, _ := ret[0].(*v2010.AccountsV1CredentialAws)
+	ret0, _ := ret[0].(*openapi.TestResponseObject)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }

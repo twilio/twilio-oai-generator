@@ -9,12 +9,10 @@ import (
 )
 
 var messageSid = "SM123"
-var stringValue = "someString"
-var message = &ApiV2010Message{
+var message = &TestResponseObject{
 	AccountSid: &accountSid,
 	Sid:        &messageSid,
 }
-var boolDefault = false
 
 func setupResource(t *testing.T) {
 	setup(t)
@@ -32,7 +30,6 @@ func TestCreateMessage(t *testing.T) {
 	testClient.EXPECT().CreateMessage(
 		&CreateMessageParams{
 			RequiredStringProperty: &stringValue,
-			BooleanProperty:        &boolDefault,
 		},
 	).Return(message, nil)
 

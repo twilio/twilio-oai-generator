@@ -196,39 +196,19 @@ func TestList(t *testing.T) {
 				"first_page_uri": "/2010-04-01/Accounts/AC12345678123456781234567812345678/Messages.json?From=9999999999&PageNumber=&To=4444444444&PageSize=5&Page=0",
 				"messages": []map[string]interface{}{
 					{
-						"direction": "outbound-api",
-						"from":      "4444444444",
-						"to":        "9999999999",
-						"body":      "Hi",
-						"status":    "delivered",
+						"test_string": "hi",
 					},
 					{
-						"direction": "inbound",
-						"from":      "4444444444",
-						"to":        "9999999999",
-						"body":      "Hi",
-						"status":    "accepted",
+						"test_string": "there",
 					},
 					{
-						"direction": "outbound-reply",
-						"from":      "4444444444",
-						"to":        "9999999999",
-						"body":      "Hi",
-						"status":    "read",
+						"test_string": "you",
 					},
 					{
-						"direction": "outbound-call",
-						"from":      "4444444444",
-						"to":        "9999999999",
-						"body":      "Hi",
-						"status":    "delivered",
+						"test_string": "and",
 					},
 					{
-						"direction": "outbound-api",
-						"from":      "4444444444",
-						"to":        "9999999999",
-						"body":      "Hi",
-						"status":    "delivered",
+						"test_string": "others",
 					},
 				},
 				"uri":           "“/2010-04-01/Accounts/AC12345678123456781234567812345678/Messages.json?From=9999999999&PageNumber=&To=4444444444&PageSize=5&Page=0&PageToken=",
@@ -255,10 +235,8 @@ func TestList(t *testing.T) {
 	params.SetLimit(5)
 
 	resp, err := twilio.ListMessage(params)
-	assert.Equal(t, "outbound-api", *resp[0].Direction)
-	assert.Equal(t, "4444444444", *resp[0].From)
-	assert.Equal(t, "inbound", *resp[1].Direction)
-	assert.Equal(t, "read", *resp[2].Status)
+	assert.Equal(t, "hi", *resp[0].TestString)
+	assert.Equal(t, "there", *resp[1].TestString)
 	assert.Equal(t, 5, len(resp))
 	assert.Nil(t, err)
 
@@ -289,39 +267,10 @@ func TestListPaging(t *testing.T) {
 				"first_page_uri": "/2010-04-01/Accounts/AC12345678123456781234567812345678/Messages.json?From=9999999999&PageNumber=&To=4444444444&PageSize=5&Page=0",
 				"messages": []map[string]interface{}{
 					{
-						"direction": "outbound-api",
-						"from":      "4444444444",
-						"to":        "9999999999",
-						"body":      "Hi",
-						"status":    "delivered",
+						"test_string": "first",
 					},
 					{
-						"direction": "outbound-call",
-						"from":      "4444444444",
-						"to":        "9999999999",
-						"body":      "Hi!",
-						"status":    "accepted",
-					},
-					{
-						"direction": "outbound-reply",
-						"from":      "4444444444",
-						"to":        "9999999999",
-						"body":      "Hi",
-						"status":    "canceled",
-					},
-					{
-						"direction": "inbound",
-						"from":      "4444444444",
-						"to":        "9999999999",
-						"body":      "Hi",
-						"status":    "received",
-					},
-					{
-						"direction": "outbound-api",
-						"from":      "4444444444",
-						"to":        "9999999999",
-						"body":      "Hi",
-						"status":    "queued",
+						"test_string": "second",
 					},
 				},
 				"uri":           "“/2010-04-01/Accounts/AC12345678123456781234567812345678/Messages.json?From=9999999999&PageNumber=&To=4444444444&PageSize=5&Page=0&PageToken=",
@@ -351,36 +300,11 @@ func TestListPaging(t *testing.T) {
 				"first_page_uri": "/2010-04-01/Accounts/AC12345678123456781234567812345678/Messages.json?From=9999999999&PageNumber=&To=4444444444&PageSize=5&Page=0",
 				"messages": []map[string]interface{}{
 					{
-						"direction": "outbound-api",
-						"from":      "4444444444",
-						"to":        "9999999999",
-						"body":      "Hi",
-						"status":    "delivered",
-					},
-					{
-						"direction": "outbound-call",
-						"from":      "4444444444",
-						"to":        "9999999999",
-						"body":      "Hi!",
-						"status":    "queued",
-					},
-					{
-						"direction": "outbound-reply",
-						"from":      "4444444444",
-						"to":        "9999999999",
-						"body":      "Hi",
-						"status":    "sent",
-					},
-					{
-						"direction": "outbound-api",
-						"from":      "4444444444",
-						"to":        "9999999999",
-						"body":      "Hi",
-						"status":    "delivered",
+						"test_string": "third",
 					},
 				},
 				"uri":           "“/2010-04-01/Accounts/AC12345678123456781234567812345678/Messages.json?From=9999999999&PageNumber=&To=4444444444&PageSize=5&Page=1&PageToken=",
-				"page_size":     2,
+				"page_size":     1,
 				"start":         0,
 				"next_page_uri": "/2010-04-01/Accounts/AC12345678123456781234567812345678/Messages.json?From=9999999999&PageNumber=&To=4444444444&PageSize=5&Page=2&PageToken=PASMc49f620580b24424bcfa885b1f741130",
 				"page":          1,
@@ -422,9 +346,10 @@ func TestListPaging(t *testing.T) {
 	params.SetLimit(10)
 
 	resp, _ := twilio.ListMessage(params)
-	assert.Equal(t, "delivered", *resp[0].Status)
-	assert.Equal(t, "Hi!", *resp[1].Body)
-	assert.Equal(t, 9, len(resp))
+	assert.Equal(t, "first", *resp[0].TestString)
+	assert.Equal(t, "second", *resp[1].TestString)
+	assert.Equal(t, "third", *resp[2].TestString)
+	assert.Equal(t, 3, len(resp))
 }
 
 func TestListError(t *testing.T) {
@@ -585,43 +510,14 @@ func TestStreamPaging(t *testing.T) {
 		DoAndReturn(func(method string, rawURL string, data url.Values,
 			headers map[string]interface{}) (*http.Response, error) {
 			response := map[string]interface{}{
-				"end":            4,
+				"end":            2,
 				"first_page_uri": "/2010-04-01/Accounts/AC12345678123456781234567812345678/Messages.json?From=9999999999&PageNumber=&To=4444444444&PageSize=5&Page=0",
 				"messages": []map[string]interface{}{
 					{
-						"direction": "outbound-api",
-						"from":      "4444444444",
-						"to":        "9999999999",
-						"body":      "Message 0",
-						"status":    "delivered",
+						"test_string": "Message 0",
 					},
 					{
-						"direction": "outbound-api",
-						"from":      "4444444444",
-						"to":        "9999999999",
-						"body":      "Message 1",
-						"status":    "delivered",
-					},
-					{
-						"direction": "outbound-api",
-						"from":      "4444444444",
-						"to":        "9999999999",
-						"body":      "Message 2",
-						"status":    "delivered",
-					},
-					{
-						"direction": "outbound-api",
-						"from":      "4444444444",
-						"to":        "9999999999",
-						"body":      "Message 3",
-						"status":    "delivered",
-					},
-					{
-						"direction": "outbound-api",
-						"from":      "4444444444",
-						"to":        "9999999999",
-						"body":      "Message 4",
-						"status":    "delivered",
+						"test_string": "Message 1",
 					},
 				},
 				"uri":           "/2010-04-01/Accounts/AC12345678123456781234567812345678/Messages.json?From=9999999999&PageNumber=&To=4444444444&PageSize=5&Page=0&PageToken=dummy",
@@ -647,33 +543,15 @@ func TestStreamPaging(t *testing.T) {
 		DoAndReturn(func(method string, rawURL string, data url.Values,
 			headers map[string]interface{}) (*http.Response, error) {
 			response := map[string]interface{}{
-				"end":            2,
+				"end":            1,
 				"first_page_uri": "/2010-04-01/Accounts/AC12345678123456781234567812345678/Messages.json?From=9999999999&PageNumber=&To=4444444444&PageSize=5&Page=0",
 				"messages": []map[string]interface{}{
 					{
-						"direction": "outbound-api",
-						"from":      "4444444444",
-						"to":        "9999999999",
-						"body":      "Message 5",
-						"status":    "delivered",
-					},
-					{
-						"direction": "outbound-api",
-						"from":      "4444444444",
-						"to":        "9999999999",
-						"body":      "Message 6",
-						"status":    "delivered",
-					},
-					{
-						"direction": "outbound-api",
-						"from":      "4444444444",
-						"to":        "9999999999",
-						"body":      "Message 7",
-						"status":    "delivered",
+						"test_string": "Message 2",
 					},
 				},
 				"uri":           "“/2010-04-01/Accounts/AC12345678123456781234567812345678/Messages.json?From=9999999999&PageNumber=&To=4444444444&PageSize=5&Page=1&PageToken=",
-				"page_size":     2,
+				"page_size":     5,
 				"start":         0,
 				"next_page_uri": "/2010-04-01/Accounts/AC12345678123456781234567812345678/Messages.json?From=9999999999&PageNumber=&To=4444444444&PageSize=5&Page=2&PageToken=PASMc49f620580b24424bcfa885b1f741130",
 				"page":          1,
@@ -698,18 +576,18 @@ func TestStreamPaging(t *testing.T) {
 	params.SetFrom("4444444444")
 	params.SetTo("9999999999")
 	params.SetPageSize(5)
-	params.SetLimit(8)
+	params.SetLimit(3)
 
 	messageCount := 0
 
 	channel, _ := twilio.StreamMessage(params)
 	for record := range channel {
 		text := fmt.Sprintf("Message %d", messageCount)
-		assert.Equal(t, text, *record.Body)
+		assert.Equal(t, text, *record.TestString)
 		messageCount += 1
 	}
 
-	assert.Equal(t, 8, messageCount)
+	assert.Equal(t, 3, messageCount)
 }
 
 func TestStreamError(t *testing.T) {
