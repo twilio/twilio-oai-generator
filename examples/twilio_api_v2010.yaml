@@ -462,38 +462,6 @@ paths:
         - accountSid_authToken: [ ]
     servers:
       - url: https://api.twilio.com
-  /v1/Archives/{Date}/Calls/{Sid}:
-    delete:
-      description: Delete an Archived Call record from your account. This removes
-        the record from your Bulk Export results, but not from API or Account Portal
-        logs.
-      operationId: DeleteArchivedCall
-      parameters:
-        - description: The date of the Call in UTC.
-          in: path
-          name: Date
-          required: true
-          schema:
-            format: date
-            type: string
-        - description: The Twilio-provided Call SID that uniquely identifies the Call
-            resource to delete
-          in: path
-          name: Sid
-          required: true
-          schema:
-            maxLength: 34
-            minLength: 34
-            pattern: ^CA[0-9a-fA-F]{32}$
-            type: string
-      responses:
-        '204':
-          description: The resource was deleted successfully.
-      security:
-        - accountSid_authToken: [ ]
-    description: 'TODO: Resource-level docs'
-    servers:
-      - url: https://api.twilio.com
   /2010-04-01/Accounts/{AccountSid}/Calls/{CallSid}/Recordings/{TestInteger}.json:
     delete:
       operationId: DeleteCallRecording

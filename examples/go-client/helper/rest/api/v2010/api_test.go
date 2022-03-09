@@ -97,9 +97,8 @@ func TestDateTimeQueryParams(t *testing.T) {
 	assert.Equal(t, "Matey", *resp.Recordings[1].TestString)
 }
 
-func TestDateInPath(t *testing.T) {
-	date := "2021-01-04"
-	err := testApiService.DeleteArchivedCall(date, "CA12345678123456781234567812345678")
+func TestNonStringInPath(t *testing.T) {
+	err := testApiService.DeleteCallRecording( "CA12345678123456781234567812345678", 123, nil)
 	assert.Nil(t, err)
 }
 

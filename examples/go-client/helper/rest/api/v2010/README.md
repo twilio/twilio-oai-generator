@@ -42,7 +42,6 @@ Class | Method | HTTP request | Description
 *AccountsMessagesApi* | [**DeleteMessage**](docs/AccountsMessagesApi.md#deletemessage) | **Delete** /2010-04-01/Accounts/{AccountSid}/Messages/{Sid}.json | 
 *AccountsMessagesApi* | [**FetchMessage**](docs/AccountsMessagesApi.md#fetchmessage) | **Get** /2010-04-01/Accounts/{AccountSid}/Messages/{Sid}.json | 
 *AccountsMessagesApi* | [**ListMessage**](docs/AccountsMessagesApi.md#listmessage) | **Get** /2010-04-01/Accounts/{AccountSid}/Messages.json | 
-*ArchivesCallsApi* | [**DeleteArchivedCall**](docs/ArchivesCallsApi.md#deletearchivedcall) | **Delete** /v1/Archives/{Date}/Calls/{Sid} | 
 *CredentialsAWSApi* | [**CreateCredentialAws**](docs/CredentialsAWSApi.md#createcredentialaws) | **Post** /v1/Credentials/AWS | 
 *CredentialsAWSApi* | [**DeleteCredentialAws**](docs/CredentialsAWSApi.md#deletecredentialaws) | **Delete** /v1/Credentials/AWS/{Sid} | 
 *CredentialsAWSApi* | [**FetchCredentialAws**](docs/CredentialsAWSApi.md#fetchcredentialaws) | **Get** /v1/Credentials/AWS/{Sid} | 
