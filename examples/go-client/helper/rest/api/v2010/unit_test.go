@@ -30,14 +30,13 @@ func TestPathIsCorrect(t *testing.T) {
 		gomock.Any()).
 		DoAndReturn(func(method string, rawURL string, data url.Values,
 			headers map[string]interface{}) (*http.Response, error) {
-			assert.Equal(t, "https://api.twilio.com/2010-04-01/Accounts/AC222222222222222222222222222222/IncomingPhoneNumbers/PNXXXXY.json", rawURL)
+			assert.Equal(t, "https://api.twilio.com/2010-04-01/Accounts/AC222222222222222222222222222222/Calls/CAXXXXY.json", rawURL)
 			return &http.Response{Body: ioutil.NopCloser(bytes.NewReader(nil))}, nil
 		},
 		)
 
 	twilio := NewApiServiceWithClient(testClient)
-	params := &FetchIncomingPhoneNumberParams{}
-	_, _ = twilio.FetchIncomingPhoneNumber("PNXXXXY", params)
+	_, _ = twilio.FetchCall("CAXXXXY", nil)
 }
 
 func TestAccountSidAsOptionalParam(t *testing.T) {
@@ -53,15 +52,15 @@ func TestAccountSidAsOptionalParam(t *testing.T) {
 		gomock.Any()).
 		DoAndReturn(func(method string, rawURL string, data url.Values,
 			headers map[string]interface{}) (*http.Response, error) {
-			assert.Equal(t, "https://api.twilio.com/2010-04-01/Accounts/AC444444444444444444444444444444/IncomingPhoneNumbers/PNXXXXY.json", rawURL)
+			assert.Equal(t, "https://api.twilio.com/2010-04-01/Accounts/AC444444444444444444444444444444/Calls/CAXXXXY.json", rawURL)
 			return &http.Response{Body: ioutil.NopCloser(bytes.NewReader(nil))}, nil
 		},
 		)
 
 	twilio := NewApiServiceWithClient(testClient)
 	subAccountSid := "AC444444444444444444444444444444"
-	params := &FetchIncomingPhoneNumberParams{PathAccountSid: &subAccountSid}
-	_, _ = twilio.FetchIncomingPhoneNumber("PNXXXXY", params)
+	params := &FetchCallParams{PathAccountSid: &subAccountSid}
+	_, _ = twilio.FetchCall("CAXXXXY", params)
 }
 
 func TestAddingHeader(t *testing.T) {
@@ -166,14 +165,14 @@ func TestArrayTypeParam(t *testing.T) {
 	_, _ = twilio.CreateCallRecording("CA1234", &params)
 }
 
-func getStreamCount(twilio *ApiService, params *ListMessageParams) int {
-	messageCount := 0
+func getStreamCount(twilio *ApiService, params *ListCallParams) int {
+	callCount := 0
 
-	channel, _ := twilio.StreamMessage(params)
+	channel, _ := twilio.StreamCall(params)
 	for range channel {
-		messageCount += 1
+		callCount += 1
 	}
-	return messageCount
+	return callCount
 }
 
 func TestList(t *testing.T) {
@@ -193,8 +192,8 @@ func TestList(t *testing.T) {
 			headers map[string]interface{}) (*http.Response, error) {
 			response := map[string]interface{}{
 				"end":            4,
-				"first_page_uri": "/2010-04-01/Accounts/AC12345678123456781234567812345678/Messages.json?From=9999999999&PageNumber=&To=4444444444&PageSize=5&Page=0",
-				"messages": []map[string]interface{}{
+				"first_page_uri": "/2010-04-01/Accounts/AC12345678123456781234567812345678/Calls.json?From=9999999999&PageNumber=&To=4444444444&PageSize=5&Page=0",
+				"calls": []map[string]interface{}{
 					{
 						"test_string": "hi",
 					},
@@ -211,10 +210,10 @@ func TestList(t *testing.T) {
 						"test_string": "others",
 					},
 				},
-				"uri":           "“/2010-04-01/Accounts/AC12345678123456781234567812345678/Messages.json?From=9999999999&PageNumber=&To=4444444444&PageSize=5&Page=0&PageToken=",
+				"uri":           "“/2010-04-01/Accounts/AC12345678123456781234567812345678/Calls.json?From=9999999999&PageNumber=&To=4444444444&PageSize=5&Page=0&PageToken=",
 				"page_size":     5,
 				"start":         0,
-				"next_page_uri": "/2010-04-01/Accounts/AC12345678123456781234567812345678/Messages.json?From=9999999999&PageNumber=&To=4444444444&PageSize=5&Page=1&PageToken=PASMc49f620580b24424bcfa885b1f741130",
+				"next_page_uri": "/2010-04-01/Accounts/AC12345678123456781234567812345678/Calls.json?From=9999999999&PageNumber=&To=4444444444&PageSize=5&Page=1&PageToken=PASMc49f620580b24424bcfa885b1f741130",
 				"page":          0,
 			}
 
@@ -228,23 +227,23 @@ func TestList(t *testing.T) {
 
 	twilio := NewApiServiceWithClient(testClient)
 
-	params := &ListMessageParams{}
+	params := &ListCallParams{}
 	params.SetFrom("4444444444")
 	params.SetTo("9999999999")
 	params.SetPageSize(5)
 	params.SetLimit(5)
 
-	resp, err := twilio.ListMessage(params)
+	resp, err := twilio.ListCall(params)
 	assert.Equal(t, "hi", *resp[0].TestString)
 	assert.Equal(t, "there", *resp[1].TestString)
 	assert.Equal(t, 5, len(resp))
 	assert.Nil(t, err)
 
-	resp, _ = twilio.ListMessage(params)
+	resp, _ = twilio.ListCall(params)
 	assert.Equal(t, 5, len(resp))
 
 	params.SetLimit(10)
-	resp, _ = twilio.ListMessage(params)
+	resp, _ = twilio.ListCall(params)
 	assert.Equal(t, 10, len(resp))
 }
 
@@ -264,8 +263,8 @@ func TestListPaging(t *testing.T) {
 			headers map[string]interface{}) (*http.Response, error) {
 			response := map[string]interface{}{
 				"end":            4,
-				"first_page_uri": "/2010-04-01/Accounts/AC12345678123456781234567812345678/Messages.json?From=9999999999&PageNumber=&To=4444444444&PageSize=5&Page=0",
-				"messages": []map[string]interface{}{
+				"first_page_uri": "/2010-04-01/Accounts/AC12345678123456781234567812345678/Calls.json?From=9999999999&PageNumber=&To=4444444444&PageSize=5&Page=0",
+				"calls": []map[string]interface{}{
 					{
 						"test_string": "first",
 					},
@@ -273,10 +272,10 @@ func TestListPaging(t *testing.T) {
 						"test_string": "second",
 					},
 				},
-				"uri":           "“/2010-04-01/Accounts/AC12345678123456781234567812345678/Messages.json?From=9999999999&PageNumber=&To=4444444444&PageSize=5&Page=0&PageToken=",
+				"uri":           "“/2010-04-01/Accounts/AC12345678123456781234567812345678/Calls.json?From=9999999999&PageNumber=&To=4444444444&PageSize=5&Page=0&PageToken=",
 				"page_size":     5,
 				"start":         0,
-				"next_page_uri": "/2010-04-01/Accounts/AC12345678123456781234567812345678/Messages.json?From=9999999999&PageNumber=&To=4444444444&PageSize=5&Page=1&PageToken=PASMc49f620580b24424bcfa885b1f741130",
+				"next_page_uri": "/2010-04-01/Accounts/AC12345678123456781234567812345678/Calls.json?From=9999999999&PageNumber=&To=4444444444&PageSize=5&Page=1&PageToken=PASMc49f620580b24424bcfa885b1f741130",
 				"page":          0,
 			}
 
@@ -297,16 +296,16 @@ func TestListPaging(t *testing.T) {
 			headers map[string]interface{}) (*http.Response, error) {
 			response := map[string]interface{}{
 				"end":            3,
-				"first_page_uri": "/2010-04-01/Accounts/AC12345678123456781234567812345678/Messages.json?From=9999999999&PageNumber=&To=4444444444&PageSize=5&Page=0",
-				"messages": []map[string]interface{}{
+				"first_page_uri": "/2010-04-01/Accounts/AC12345678123456781234567812345678/Calls.json?From=9999999999&PageNumber=&To=4444444444&PageSize=5&Page=0",
+				"calls": []map[string]interface{}{
 					{
 						"test_string": "third",
 					},
 				},
-				"uri":           "“/2010-04-01/Accounts/AC12345678123456781234567812345678/Messages.json?From=9999999999&PageNumber=&To=4444444444&PageSize=5&Page=1&PageToken=",
+				"uri":           "“/2010-04-01/Accounts/AC12345678123456781234567812345678/Calls.json?From=9999999999&PageNumber=&To=4444444444&PageSize=5&Page=1&PageToken=",
 				"page_size":     1,
 				"start":         0,
-				"next_page_uri": "/2010-04-01/Accounts/AC12345678123456781234567812345678/Messages.json?From=9999999999&PageNumber=&To=4444444444&PageSize=5&Page=2&PageToken=PASMc49f620580b24424bcfa885b1f741130",
+				"next_page_uri": "/2010-04-01/Accounts/AC12345678123456781234567812345678/Calls.json?From=9999999999&PageNumber=&To=4444444444&PageSize=5&Page=2&PageToken=PASMc49f620580b24424bcfa885b1f741130",
 				"page":          1,
 			}
 
@@ -339,13 +338,13 @@ func TestListPaging(t *testing.T) {
 
 	twilio := NewApiServiceWithClient(testClient)
 
-	params := &ListMessageParams{}
+	params := &ListCallParams{}
 	params.SetFrom("from")
 	params.SetTo("to")
 	params.SetPageSize(5)
 	params.SetLimit(10)
 
-	resp, _ := twilio.ListMessage(params)
+	resp, _ := twilio.ListCall(params)
 	assert.Equal(t, "first", *resp[0].TestString)
 	assert.Equal(t, "second", *resp[1].TestString)
 	assert.Equal(t, "third", *resp[2].TestString)
@@ -369,8 +368,8 @@ func TestListError(t *testing.T) {
 			headers map[string]interface{}) (*http.Response, error) {
 			response := map[string]interface{}{
 				"end":            4,
-				"first_page_uri": "/2010-04-01/Accounts/AC12345678123456781234567812345678/Messages.json?From=9999999999&PageNumber=&To=4444444444&PageSize=5&Page=0",
-				"messages": []map[string]interface{}{
+				"first_page_uri": "/2010-04-01/Accounts/AC12345678123456781234567812345678/Calls.json?From=9999999999&PageNumber=&To=4444444444&PageSize=5&Page=0",
+				"calls": []map[string]interface{}{
 					{
 						"direction": "outbound-api",
 						"from":      "4444444444",
@@ -379,10 +378,10 @@ func TestListError(t *testing.T) {
 						"status":    "delivered",
 					},
 				},
-				"uri":           "“/2010-04-01/Accounts/AC12345678123456781234567812345678/Messages.json?From=9999999999&PageNumber=&To=4444444444&PageSize=5&Page=0&PageToken=",
+				"uri":           "“/2010-04-01/Accounts/AC12345678123456781234567812345678/Calls.json?From=9999999999&PageNumber=&To=4444444444&PageSize=5&Page=0&PageToken=",
 				"page_size":     5,
 				"start":         0,
-				"next_page_uri": "/2010-04-01/Accounts/AC12345678123456781234567812345678/Messages.json?From=9999999999&PageNumber=&To=4444444444&PageSize=5&Page=1&PageToken=PASMc49f620580b24424bcfa885b1f741130",
+				"next_page_uri": "/2010-04-01/Accounts/AC12345678123456781234567812345678/Calls.json?From=9999999999&PageNumber=&To=4444444444&PageSize=5&Page=1&PageToken=PASMc49f620580b24424bcfa885b1f741130",
 				"page":          0,
 			}
 
@@ -396,13 +395,13 @@ func TestListError(t *testing.T) {
 
 	twilio := NewApiServiceWithClient(testClient)
 
-	params := &ListMessageParams{}
+	params := &ListCallParams{}
 	params.SetFrom("from")
 	params.SetTo("to")
 	params.SetPageSize(5)
 	params.SetLimit(5)
 
-	resp, err := twilio.ListMessage(params)
+	resp, err := twilio.ListCall(params)
 	assert.Len(t, resp, 0)
 	assert.NotNil(t, err)
 	assert.Equal(t, "Listing error", err.Error())
@@ -424,8 +423,8 @@ func TestStream(t *testing.T) {
 			headers map[string]interface{}) (*http.Response, error) {
 			response := map[string]interface{}{
 				"end":            4,
-				"first_page_uri": "/2010-04-01/Accounts/AC12345678123456781234567812345678/Messages.json?From=9999999999&PageNumber=&To=4444444444&PageSize=5&Page=0",
-				"messages": []map[string]interface{}{
+				"first_page_uri": "/2010-04-01/Accounts/AC12345678123456781234567812345678/Calls.json?From=9999999999&PageNumber=&To=4444444444&PageSize=5&Page=0",
+				"calls": []map[string]interface{}{
 					{
 						"direction": "outbound-api",
 						"from":      "4444444444",
@@ -462,10 +461,10 @@ func TestStream(t *testing.T) {
 						"status":    "sent",
 					},
 				},
-				"uri":           "“/2010-04-01/Accounts/AC12345678123456781234567812345678/Messages.json?From=9999999999&PageNumber=&To=4444444444&PageSize=5&Page=0&PageToken=",
+				"uri":           "“/2010-04-01/Accounts/AC12345678123456781234567812345678/Calls.json?From=9999999999&PageNumber=&To=4444444444&PageSize=5&Page=0&PageToken=",
 				"page_size":     5,
 				"start":         0,
-				"next_page_uri": "/2010-04-01/Accounts/AC12345678123456781234567812345678/Messages.json?From=9999999999&PageNumber=&To=4444444444&PageSize=5&Page=1&PageToken=PASMc49f620580b24424bcfa885b1f741130",
+				"next_page_uri": "/2010-04-01/Accounts/AC12345678123456781234567812345678/Calls.json?From=9999999999&PageNumber=&To=4444444444&PageSize=5&Page=1&PageToken=PASMc49f620580b24424bcfa885b1f741130",
 				"page":          0,
 			}
 
@@ -479,20 +478,20 @@ func TestStream(t *testing.T) {
 
 	twilio := NewApiServiceWithClient(testClient)
 
-	params := &ListMessageParams{}
+	params := &ListCallParams{}
 	params.SetPageSize(5)
 	params.SetLimit(10)
 
-	messageCount := getStreamCount(twilio, params)
-	assert.Equal(t, 10, messageCount)
+	callCount := getStreamCount(twilio, params)
+	assert.Equal(t, 10, callCount)
 
 	params.SetLimit(15)
-	messageCount = getStreamCount(twilio, params)
-	assert.Equal(t, 15, messageCount)
+	callCount = getStreamCount(twilio, params)
+	assert.Equal(t, 15, callCount)
 
 	params.SetLimit(40)
-	messageCount = getStreamCount(twilio, params)
-	assert.Equal(t, 40, messageCount)
+	callCount = getStreamCount(twilio, params)
+	assert.Equal(t, 40, callCount)
 }
 
 func TestStreamPaging(t *testing.T) {
@@ -511,19 +510,19 @@ func TestStreamPaging(t *testing.T) {
 			headers map[string]interface{}) (*http.Response, error) {
 			response := map[string]interface{}{
 				"end":            2,
-				"first_page_uri": "/2010-04-01/Accounts/AC12345678123456781234567812345678/Messages.json?From=9999999999&PageNumber=&To=4444444444&PageSize=5&Page=0",
-				"messages": []map[string]interface{}{
+				"first_page_uri": "/2010-04-01/Accounts/AC12345678123456781234567812345678/Calls.json?From=9999999999&PageNumber=&To=4444444444&PageSize=5&Page=0",
+				"calls": []map[string]interface{}{
 					{
-						"test_string": "Message 0",
+						"test_string": "Call 0",
 					},
 					{
-						"test_string": "Message 1",
+						"test_string": "Call 1",
 					},
 				},
-				"uri":           "/2010-04-01/Accounts/AC12345678123456781234567812345678/Messages.json?From=9999999999&PageNumber=&To=4444444444&PageSize=5&Page=0&PageToken=dummy",
+				"uri":           "/2010-04-01/Accounts/AC12345678123456781234567812345678/Calls.json?From=9999999999&PageNumber=&To=4444444444&PageSize=5&Page=0&PageToken=dummy",
 				"page_size":     5,
 				"start":         0,
-				"next_page_uri": "/2010-04-01/Accounts/AC12345678123456781234567812345678/Messages.json?From=9999999999&PageNumber=&To=4444444444&PageSize=5&Page=1&PageToken=PASMc49f620580b24424bcfa885b1f741130",
+				"next_page_uri": "/2010-04-01/Accounts/AC12345678123456781234567812345678/Calls.json?From=9999999999&PageNumber=&To=4444444444&PageSize=5&Page=1&PageToken=PASMc49f620580b24424bcfa885b1f741130",
 				"page":          0,
 			}
 
@@ -544,16 +543,16 @@ func TestStreamPaging(t *testing.T) {
 			headers map[string]interface{}) (*http.Response, error) {
 			response := map[string]interface{}{
 				"end":            1,
-				"first_page_uri": "/2010-04-01/Accounts/AC12345678123456781234567812345678/Messages.json?From=9999999999&PageNumber=&To=4444444444&PageSize=5&Page=0",
-				"messages": []map[string]interface{}{
+				"first_page_uri": "/2010-04-01/Accounts/AC12345678123456781234567812345678/Calls.json?From=9999999999&PageNumber=&To=4444444444&PageSize=5&Page=0",
+				"calls": []map[string]interface{}{
 					{
-						"test_string": "Message 2",
+						"test_string": "Call 2",
 					},
 				},
-				"uri":           "“/2010-04-01/Accounts/AC12345678123456781234567812345678/Messages.json?From=9999999999&PageNumber=&To=4444444444&PageSize=5&Page=1&PageToken=",
+				"uri":           "“/2010-04-01/Accounts/AC12345678123456781234567812345678/Calls.json?From=9999999999&PageNumber=&To=4444444444&PageSize=5&Page=1&PageToken=",
 				"page_size":     5,
 				"start":         0,
-				"next_page_uri": "/2010-04-01/Accounts/AC12345678123456781234567812345678/Messages.json?From=9999999999&PageNumber=&To=4444444444&PageSize=5&Page=2&PageToken=PASMc49f620580b24424bcfa885b1f741130",
+				"next_page_uri": "/2010-04-01/Accounts/AC12345678123456781234567812345678/Calls.json?From=9999999999&PageNumber=&To=4444444444&PageSize=5&Page=2&PageToken=PASMc49f620580b24424bcfa885b1f741130",
 				"page":          1,
 			}
 
@@ -572,22 +571,22 @@ func TestStreamPaging(t *testing.T) {
 
 	twilio := NewApiServiceWithClient(testClient)
 
-	params := &ListMessageParams{}
+	params := &ListCallParams{}
 	params.SetFrom("4444444444")
 	params.SetTo("9999999999")
 	params.SetPageSize(5)
 	params.SetLimit(3)
 
-	messageCount := 0
+	callCount := 0
 
-	channel, _ := twilio.StreamMessage(params)
+	channel, _ := twilio.StreamCall(params)
 	for record := range channel {
-		text := fmt.Sprintf("Message %d", messageCount)
+		text := fmt.Sprintf("Call %d", callCount)
 		assert.Equal(t, text, *record.TestString)
-		messageCount += 1
+		callCount += 1
 	}
 
-	assert.Equal(t, 3, messageCount)
+	assert.Equal(t, 3, callCount)
 }
 
 func TestStreamError(t *testing.T) {
@@ -607,8 +606,8 @@ func TestStreamError(t *testing.T) {
 			headers map[string]interface{}) (*http.Response, error) {
 			response := map[string]interface{}{
 				"end":            4,
-				"first_page_uri": "/2010-04-01/Accounts/AC12345678123456781234567812345678/Messages.json?From=9999999999&PageNumber=&To=4444444444&PageSize=5&Page=0",
-				"messages": []map[string]interface{}{
+				"first_page_uri": "/2010-04-01/Accounts/AC12345678123456781234567812345678/Calls.json?From=9999999999&PageNumber=&To=4444444444&PageSize=5&Page=0",
+				"calls": []map[string]interface{}{
 					{
 						"direction": "outbound-api",
 						"from":      "4444444444",
@@ -617,10 +616,10 @@ func TestStreamError(t *testing.T) {
 						"status":    "delivered",
 					},
 				},
-				"uri":           "“/2010-04-01/Accounts/AC12345678123456781234567812345678/Messages.json?From=9999999999&PageNumber=&To=4444444444&PageSize=5&Page=0&PageToken=",
+				"uri":           "“/2010-04-01/Accounts/AC12345678123456781234567812345678/Calls.json?From=9999999999&PageNumber=&To=4444444444&PageSize=5&Page=0&PageToken=",
 				"page_size":     5,
 				"start":         0,
-				"next_page_uri": "/2010-04-01/Accounts/AC12345678123456781234567812345678/Messages.json?From=9999999999&PageNumber=&To=4444444444&PageSize=5&Page=1&PageToken=PASMc49f620580b24424bcfa885b1f741130",
+				"next_page_uri": "/2010-04-01/Accounts/AC12345678123456781234567812345678/Calls.json?From=9999999999&PageNumber=&To=4444444444&PageSize=5&Page=1&PageToken=PASMc49f620580b24424bcfa885b1f741130",
 				"page":          0,
 			}
 
@@ -634,11 +633,11 @@ func TestStreamError(t *testing.T) {
 
 	twilio := NewApiServiceWithClient(testClient)
 
-	params := &ListMessageParams{}
+	params := &ListCallParams{}
 	params.SetPageSize(5)
 	params.SetLimit(5)
 
-	resp, err := twilio.StreamMessage(params)
+	resp, err := twilio.StreamCall(params)
 	assert.Len(t, resp, 0)
 	assert.NotNil(t, err)
 	assert.Equal(t, "streaming error", err.Error())

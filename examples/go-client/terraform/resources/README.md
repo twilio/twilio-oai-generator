@@ -1,4 +1,14 @@
 
+## twilio_api_accounts_calls_v2010
+
+### Parameters
+
+Name | Type | Requirement | Description
+--- | --- | --- | ---
+**required_string_property** | string | **Required** | 
+**path_account_sid** | string | Optional | 
+**sid** | string | *Computed* | 
+
 ## twilio_api_accounts_calls_recordings_v2010
 
 ### Parameters
@@ -24,25 +34,15 @@ Name | Type | Requirement | Description
 **test_array_of_strings** | list(string) | Optional | 
 **test_boolean** | bool | Optional | 
 **test_integer** | int | Optional | 
-**test_number** | float | Optional | test number type transformation
-**test_number_float** | float | Optional | test number/float transformation
-**test_number_double** | string | Optional | test number/double transformation
-**test_number_int32** | float | Optional | test number/int32 transformation
-**test_number_int64** | string | Optional | test integer/int64 transformation
-**test_object** | string | Optional | test object type transformation
-**test_date_time** | string | Optional | test date-time type transformation
-**test_date** | string | Optional | test date format transformation
-**test_enum** | string | Optional | Test enum
-**test_object_array** | list(string) | Optional | test array of object transformation
-**sid** | string | *Computed* | The Twilio-provided string that uniquely identifies the AWS resource to update.
-
-## twilio_api_accounts_messages_v2010
-
-### Parameters
-
-Name | Type | Requirement | Description
---- | --- | --- | ---
-**required_string_property** | string | **Required** | 
-**path_account_sid** | string | Optional | 
+**test_number** | float | Optional | 
+**test_number_float** | float | Optional | 
+**test_number_double** | string | Optional | 
+**test_number_int32** | float | Optional | 
+**test_number_int64** | string | Optional | 
+**test_object** | string | Optional | 
+**test_date_time** | string | Optional | 
+**test_date** | string | Optional | 
+**test_enum** | string | Optional | 
+**test_object_array** | list(string) | Optional | 
 **sid** | string | *Computed* | 
 

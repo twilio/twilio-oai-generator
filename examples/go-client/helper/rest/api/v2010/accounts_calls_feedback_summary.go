@@ -22,11 +22,11 @@ import (
 
 // Optional parameters for the method 'CreateCallFeedbackSummary'
 type CreateCallFeedbackSummaryParams struct {
-    // The unique id of the [Account](https://www.twilio.com/docs/iam/api/account) responsible for this resource.
+    // 
     PathAccountSid *string `json:"PathAccountSid,omitempty"`
-    // Only include feedback given on or before this date. Format is `YYYY-MM-DD` and specified in UTC.
+    // 
     EndDate *string `json:"EndDate,omitempty"`
-    // Only include feedback given on or after this date. Format is `YYYY-MM-DD` and specified in UTC.
+    // 
     StartDate *string `json:"StartDate,omitempty"`
 }
 
@@ -43,7 +43,6 @@ func (params *CreateCallFeedbackSummaryParams) SetStartDate(StartDate string) (*
     return params
 }
 
-// Create a FeedbackSummary resource for a call
 func (c *ApiService) CreateCallFeedbackSummary(params *CreateCallFeedbackSummaryParams) (*TestResponseObject, error) {
     path := "/2010-04-01/Accounts/{AccountSid}/Calls/FeedbackSummary.json"
     if params != nil && params.PathAccountSid != nil {

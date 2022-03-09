@@ -8,53 +8,52 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-var messageSid = "SM123"
-var message = &TestResponseObject{
+var call = &TestResponseObject{
 	AccountSid: &accountSid,
-	Sid:        &messageSid,
+	Sid:        &callSid,
 }
 
 func setupResource(t *testing.T) {
 	setup(t)
-	resource = ResourceAccountsMessages()
+	resource = ResourceAccountsCalls()
 	resourceData = resource.TestResourceData()
 }
 
-func TestCreateMessage(t *testing.T) {
+func TestCreateCall(t *testing.T) {
 	setupResource(t)
 
 	// Set required and optional params.
 	_ = resourceData.Set("required_string_property", stringValue)
 
 	// Expect calls to create _and_ update the recording.
-	testClient.EXPECT().CreateMessage(
-		&CreateMessageParams{
+	testClient.EXPECT().CreateCall(
+		&CreateCallParams{
 			RequiredStringProperty: &stringValue,
 		},
-	).Return(message, nil)
+	).Return(call, nil)
 
 	resource.CreateContext(nil, resourceData, config)
 
 	// Assert API response was successfully marshaled.
-	assert.Equal(t, messageSid, resourceData.Id())
+	assert.Equal(t, callSid, resourceData.Id())
 }
 
-func TestImportMessage(t *testing.T) {
+func TestImportCall(t *testing.T) {
 	setupResource(t)
 
-	resourceData.SetId(messageSid)
+	resourceData.SetId(callSid)
 
 	_, err := resource.Importer.StateContext(nil, resourceData, nil)
 
 	// Assert no errors and the ID was properly parsed.
 	assert.Nil(t, err)
-	assert.Equal(t, messageSid, resourceData.Get("sid"))
+	assert.Equal(t, callSid, resourceData.Get("sid"))
 }
 
-func TestImportInvalidMessage(t *testing.T) {
+func TestImportInvalidCall(t *testing.T) {
 	setupResource(t)
 
-	resourceData.SetId(fmt.Sprintf("%s/%s", accountSid, messageSid))
+	resourceData.SetId(fmt.Sprintf("%s/%s", accountSid, callSid))
 
 	_, err := resource.Importer.StateContext(nil, resourceData, nil)
 
@@ -63,7 +62,7 @@ func TestImportInvalidMessage(t *testing.T) {
 	assert.Regexp(t, "invalid", err.Error())
 }
 
-func TestSchemaMessage(t *testing.T) {
+func TestSchemaCall(t *testing.T) {
 	setupResource(t)
 
 	for paramName, paramSchema := range resource.Schema {

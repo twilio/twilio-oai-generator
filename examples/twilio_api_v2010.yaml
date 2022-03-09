@@ -83,15 +83,10 @@ info:
 openapi: 3.0.1
 paths:
   /v1/Credentials/AWS:
-    description: User provided AWS keys
     get:
-      description: Retrieves a collection of AWS Credentials belonging to the account
-        used to make the request
       operationId: ListCredentialAws
       parameters:
-        - description: How many resources to return in each list page. The default is
-            50, and the maximum is 1000.
-          in: query
+        - in: query
           name: PageSize
           schema:
             maximum: 1000
@@ -153,7 +148,6 @@ paths:
       security:
         - accountSid_authToken: [ ]
     post:
-      description: Create a new AWS Credential
       operationId: CreateCredentialAws
       requestBody:
         content:
@@ -171,43 +165,33 @@ paths:
                 TestInteger:
                   type: integer
                 TestNumber:
-                  description: test number type transformation
                   type: number
                 TestNumberFloat:
-                  description: test number/float transformation
                   type: number
                   format: float
                 TestNumberDouble:
-                  description: test number/double transformation
                   type: number
                   format: double
                 TestNumberInt32:
-                  description: test number/int32 transformation
                   type: number
                   format: int32
                 TestNumberInt64:
-                  description: test integer/int64 transformation
                   type: integer
                   format: int64
                 TestObject:
-                  description: test object type transformation
                   type: object
                 TestDateTime:
-                  description: test date-time type transformation
                   type: string
                   format: date-time
                 TestDate:
-                  description: test date format transformation
                   type: string
                   format: date
                 TestEnum:
-                  description: Test enum
                   enum:
                     - consumer-checking
                     - consumer-savings
                     - commercial-checking
                 TestObjectArray:
-                  description: test array of object transformation
                   items:
                     type: object
                   type: array
@@ -228,12 +212,9 @@ paths:
       - url: https://api.twilio.com
   /v1/Credentials/AWS/{Sid}:
     delete:
-      description: Delete a Credential from your account
       operationId: DeleteCredentialAws
       parameters:
-        - description: The Twilio-provided string that uniquely identifies the AWS resource
-            to delete.
-          in: path
+        - in: path
           name: Sid
           required: true
           schema:
@@ -246,15 +227,10 @@ paths:
           description: The resource was deleted successfully.
       security:
         - accountSid_authToken: [ ]
-    description: User provided AWS keys
     get:
-      description: Fetch the AWS credentials specified by the provided Credential
-        Sid
       operationId: FetchCredentialAws
       parameters:
-        - description: The Twilio-provided string that uniquely identifies the AWS resource
-            to fetch.
-          in: path
+        - in: path
           name: Sid
           required: true
           schema:
@@ -279,12 +255,9 @@ paths:
       security:
         - accountSid_authToken: [ ]
     post:
-      description: Modify the properties of a given Account
       operationId: UpdateCredentialAws
       parameters:
-        - description: The Twilio-provided string that uniquely identifies the AWS resource
-            to update.
-          in: path
+        - in: path
           name: Sid
           required: true
           schema:
@@ -312,7 +285,169 @@ paths:
         - accountSid_authToken: [ ]
     servers:
       - url: https://api.twilio.com
+  /2010-04-01/Accounts/{AccountSid}/Calls.json:
+    description: A top-level resource
+    get:
+      operationId: ListCall
+      parameters:
+        - in: path
+          name: AccountSid
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: To
+          schema:
+            type: string
+        - in: query
+          name: From
+          schema:
+            type: string
+        - in: query
+          name: DateSent
+          schema:
+            format: date-time
+            type: string
+        - in: query
+          name: DateSent<
+          schema:
+            format: date-time
+            type: string
+        - in: query
+          name: DateSent>
+          schema:
+            format: date-time
+            type: string
+        - in: query
+          name: PageSize
+          schema:
+            maximum: 1000
+            minimum: 1
+            type: integer
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  end:
+                    type: integer
+                  first_page_uri:
+                    format: uri
+                    type: string
+                  calls:
+                    items:
+                      $ref: '#/components/schemas/test.response_object'
+                    type: array
+                  next_page_uri:
+                    format: uri
+                    type: string
+                  page:
+                    type: integer
+                  page_size:
+                    type: integer
+                  previous_page_uri:
+                    format: uri
+                    type: string
+                  start:
+                    type: integer
+                  uri:
+                    format: uri
+                    type: string
+                title: ListCallResponse
+                type: object
+          description: OK
+      security:
+        - accountSid_authToken: [ ]
+    post:
+      operationId: CreateCall
+      parameters:
+        - in: path
+          name: AccountSid
+          required: true
+          schema:
+            maxLength: 34
+            minLength: 34
+            pattern: ^AC[0-9a-fA-F]{32}$
+            type: string
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              properties:
+                RequiredStringProperty:
+                  type: string
+              required:
+                - RequiredStringProperty
+              title: CreateCallRequest
+              type: object
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/test.response_object'
+          description: Created
+      security:
+        - accountSid_authToken: [ ]
+    servers:
+      - url: https://api.twilio.com
+  /2010-04-01/Accounts/{AccountSid}/Calls/{Sid}.json:
+    description: A top-level instance
+    delete:
+      operationId: DeleteCall
+      parameters:
+        - in: path
+          name: AccountSid
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: Sid
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: The resource was deleted successfully.
+      security:
+        - accountSid_authToken: [ ]
+    get:
+      operationId: FetchCall
+      parameters:
+        - in: path
+          name: AccountSid
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: Sid
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/test.response_object'
+              examples:
+                custom_type_response_example:
+                  value: {
+                    "test_object": {
+                      "fax": false,
+                      "mms": false,
+                      "sms": true,
+                      "voice": true
+                    }
+                  }
+          description: OK
+      security:
+        - accountSid_authToken: [ ]
+    servers:
+      - url: https://api.twilio.com
   /2010-04-01/Accounts/{AccountSid}/Calls/{CallSid}/Recordings.json:
+    description: A nested resource
     get:
       operationId: ListCallRecording
       parameters:
@@ -410,7 +545,6 @@ paths:
       security:
         - accountSid_authToken: [ ]
     post:
-      description: Create a recording for the call
       operationId: CreateCallRecording
       parameters:
         - in: header
@@ -463,6 +597,7 @@ paths:
     servers:
       - url: https://api.twilio.com
   /2010-04-01/Accounts/{AccountSid}/Calls/{CallSid}/Recordings/{TestInteger}.json:
+    description: A nested resource instance
     delete:
       operationId: DeleteCallRecording
       parameters:
@@ -566,13 +701,11 @@ paths:
     servers:
       - url: https://api.twilio.com
   /2010-04-01/Accounts/{AccountSid}/Calls/FeedbackSummary.json:
+    description: A resource that can only be created
     post:
-      description: Create a FeedbackSummary resource for a call
       operationId: CreateCallFeedbackSummary
       parameters:
-        - description: The unique id of the [Account](https://www.twilio.com/docs/iam/api/account)
-            responsible for this resource.
-          in: path
+        - in: path
           name: AccountSid
           required: true
           schema:
@@ -586,13 +719,9 @@ paths:
             schema:
               properties:
                 EndDate:
-                  description: Only include feedback given on or before this date.
-                    Format is `YYYY-MM-DD` and specified in UTC.
                   format: date
                   type: string
                 StartDate:
-                  description: Only include feedback given on or after this date.
-                    Format is `YYYY-MM-DD` and specified in UTC.
                   format: date
                   type: string
               required:
@@ -620,233 +749,3 @@ paths:
         - accountSid_authToken: [ ]
     servers:
       - url: https://api.twilio.com
-  /2010-04-01/Accounts/{AccountSid}/IncomingPhoneNumbers/{Sid}.json:
-    description: Incoming phone numbers on a Twilio account/project
-    get:
-      description: Fetch an incoming-phone-number belonging to the account used to
-        make the request.
-      operationId: FetchIncomingPhoneNumber
-      parameters:
-        - description: The SID of the [Account](https://www.twilio.com/docs/iam/api/account)
-            that created the IncomingPhoneNumber resource to fetch.
-          in: path
-          name: AccountSid
-          required: true
-          schema:
-            maxLength: 34
-            minLength: 34
-            pattern: ^AC[0-9a-fA-F]{32}$
-            type: string
-        - description: The Twilio-provided string that uniquely identifies the IncomingPhoneNumber
-            resource to fetch.
-          in: path
-          name: Sid
-          required: true
-          schema:
-            maxLength: 34
-            minLength: 34
-            pattern: ^PN[0-9a-fA-F]{32}$
-            type: string
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/test.response_object'
-              examples:
-                fetch_creds_response_example:
-                  summary: Example of a Incoming Phone Number
-                  value: {
-                    "test_object": {
-                      "fax": false,
-                      "mms": false,
-                      "sms": true,
-                      "voice": true
-                    }
-                  }
-          description: OK
-      security:
-        - accountSid_authToken: [ ]
-  /2010-04-01/Accounts/{AccountSid}/Messages/{Sid}.json:
-    description: A resource that doesn't allow updates. Used in verifying resources without all CRUD operations.
-    delete:
-      description: Deletes a message record from your account
-      operationId: DeleteMessage
-      parameters:
-        - in: path
-          name: AccountSid
-          required: true
-          schema:
-            type: string
-        - in: path
-          name: Sid
-          required: true
-          schema:
-            type: string
-      responses:
-        '204':
-          description: The resource was deleted successfully.
-      security:
-        - accountSid_authToken: [ ]
-      x-maturity:
-        - GA
-    get:
-      description: Fetch a message belonging to the account used to make the request
-      operationId: FetchMessage
-      parameters:
-        - in: path
-          name: AccountSid
-          required: true
-          schema:
-            type: string
-        - in: path
-          name: Sid
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/test.response_object'
-          description: OK
-      security:
-        - accountSid_authToken: [ ]
-      x-maturity:
-        - GA
-    servers:
-      - url: https://api.twilio.com
-    x-twilio:
-      defaultOutputProperties:
-        - sid
-        - from
-        - to
-        - status
-        - direction
-        - date_sent
-      pathType: instance
-  /2010-04-01/Accounts/{AccountSid}/Messages.json:
-    description: A Message resource represents an inbound or outbound message.
-    get:
-      description: Retrieve a list of messages belonging to the account used to make
-        the request
-      operationId: ListMessage
-      parameters:
-        - in: path
-          name: AccountSid
-          required: true
-          schema:
-            type: string
-        - description: Read messages sent to only this phone number.
-          in: query
-          name: To
-          schema:
-            type: string
-        - in: query
-          name: From
-          schema:
-            type: string
-        - in: query
-          name: DateSent
-          schema:
-            format: date-time
-            type: string
-        - in: query
-          name: DateSent<
-          schema:
-            format: date-time
-            type: string
-        - in: query
-          name: DateSent>
-          schema:
-            format: date-time
-            type: string
-        - in: query
-          name: PageSize
-          schema:
-            maximum: 1000
-            minimum: 1
-            type: integer
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                properties:
-                  end:
-                    type: integer
-                  first_page_uri:
-                    format: uri
-                    type: string
-                  messages:
-                    items:
-                      $ref: '#/components/schemas/test.response_object'
-                    type: array
-                  next_page_uri:
-                    format: uri
-                    type: string
-                  page:
-                    type: integer
-                  page_size:
-                    type: integer
-                  previous_page_uri:
-                    format: uri
-                    type: string
-                  start:
-                    type: integer
-                  uri:
-                    format: uri
-                    type: string
-                title: ListMessageResponse
-                type: object
-          description: OK
-      security:
-        - accountSid_authToken: [ ]
-      x-maturity:
-        - GA
-    post:
-      description: Send a message from the account used to make the request
-      operationId: CreateMessage
-      parameters:
-        - in: path
-          name: AccountSid
-          required: true
-          schema:
-            maxLength: 34
-            minLength: 34
-            pattern: ^AC[0-9a-fA-F]{32}$
-            type: string
-      requestBody:
-        content:
-          application/x-www-form-urlencoded:
-            schema:
-              properties:
-                RequiredStringProperty:
-                  type: string
-              required:
-                - RequiredStringProperty
-              title: CreateMessageRequest
-              type: object
-      responses:
-        '201':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/test.response_object'
-          description: Created
-      security:
-        - accountSid_authToken: [ ]
-      x-maturity:
-        - GA
-    servers:
-      - url: https://api.twilio.com
-    x-twilio:
-      defaultOutputProperties:
-        - sid
-        - from
-        - to
-        - status
-        - direction
-        - date_sent
-      pathType: list

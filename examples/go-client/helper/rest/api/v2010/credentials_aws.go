@@ -30,25 +30,25 @@ type CreateCredentialAwsParams struct {
     TestBoolean *bool `json:"TestBoolean,omitempty"`
     // 
     TestInteger *int `json:"TestInteger,omitempty"`
-    // test number type transformation
+    // 
     TestNumber *float32 `json:"TestNumber,omitempty"`
-    // test number/float transformation
+    // 
     TestNumberFloat *float32 `json:"TestNumberFloat,omitempty"`
-    // test number/double transformation
+    // 
     TestNumberDouble *float64 `json:"TestNumberDouble,omitempty"`
-    // test number/int32 transformation
+    // 
     TestNumberInt32 *float32 `json:"TestNumberInt32,omitempty"`
-    // test integer/int64 transformation
+    // 
     TestNumberInt64 *int64 `json:"TestNumberInt64,omitempty"`
-    // test object type transformation
+    // 
     TestObject *map[string]interface{} `json:"TestObject,omitempty"`
-    // test date-time type transformation
+    // 
     TestDateTime *time.Time `json:"TestDateTime,omitempty"`
-    // test date format transformation
+    // 
     TestDate *string `json:"TestDate,omitempty"`
-    // Test enum
+    // 
     TestEnum *string `json:"TestEnum,omitempty"`
-    // test array of object transformation
+    // 
     TestObjectArray *[]map[string]interface{} `json:"TestObjectArray,omitempty"`
 }
 
@@ -109,7 +109,6 @@ func (params *CreateCredentialAwsParams) SetTestObjectArray(TestObjectArray []ma
     return params
 }
 
-// Create a new AWS Credential
 func (c *ApiService) CreateCredentialAws(params *CreateCredentialAwsParams) (*TestResponseObject, error) {
     path := "/v1/Credentials/AWS"
     
@@ -192,7 +191,6 @@ if params != nil && params.TestObjectArray != nil {
     return ps, err
 }
 
-// Delete a Credential from your account
 func (c *ApiService) DeleteCredentialAws(Sid string, ) (error) {
     path := "/v1/Credentials/AWS/{Sid}"
         path = strings.Replace(path, "{"+"Sid"+"}", Sid, -1)
@@ -213,7 +211,6 @@ headers := make(map[string]interface{})
     return nil
 }
 
-// Fetch the AWS credentials specified by the provided Credential Sid
 func (c *ApiService) FetchCredentialAws(Sid string, ) (*TestResponseObject, error) {
     path := "/v1/Credentials/AWS/{Sid}"
         path = strings.Replace(path, "{"+"Sid"+"}", Sid, -1)
@@ -241,7 +238,7 @@ headers := make(map[string]interface{})
 
 // Optional parameters for the method 'ListCredentialAws'
 type ListCredentialAwsParams struct {
-    // How many resources to return in each list page. The default is 50, and the maximum is 1000.
+    // 
     PageSize *int `json:"PageSize,omitempty"`
     // Max number of records to return.
     Limit *int `json:"limit,omitempty"`
@@ -386,7 +383,6 @@ func (params *UpdateCredentialAwsParams) SetTestString(TestString string) (*Upda
     return params
 }
 
-// Modify the properties of a given Account
 func (c *ApiService) UpdateCredentialAws(Sid string, params *UpdateCredentialAwsParams) (*TestResponseObject, error) {
     path := "/v1/Credentials/AWS/{Sid}"
         path = strings.Replace(path, "{"+"Sid"+"}", Sid, -1)

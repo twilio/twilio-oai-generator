@@ -20,26 +20,25 @@ import (
 )
 
 
-// Optional parameters for the method 'CreateMessage'
-type CreateMessageParams struct {
+// Optional parameters for the method 'CreateCall'
+type CreateCallParams struct {
     // 
     PathAccountSid *string `json:"PathAccountSid,omitempty"`
     // 
     RequiredStringProperty *string `json:"RequiredStringProperty,omitempty"`
 }
 
-func (params *CreateMessageParams) SetPathAccountSid(PathAccountSid string) (*CreateMessageParams){
+func (params *CreateCallParams) SetPathAccountSid(PathAccountSid string) (*CreateCallParams){
     params.PathAccountSid = &PathAccountSid
     return params
 }
-func (params *CreateMessageParams) SetRequiredStringProperty(RequiredStringProperty string) (*CreateMessageParams){
+func (params *CreateCallParams) SetRequiredStringProperty(RequiredStringProperty string) (*CreateCallParams){
     params.RequiredStringProperty = &RequiredStringProperty
     return params
 }
 
-// Send a message from the account used to make the request
-func (c *ApiService) CreateMessage(params *CreateMessageParams) (*TestResponseObject, error) {
-    path := "/2010-04-01/Accounts/{AccountSid}/Messages.json"
+func (c *ApiService) CreateCall(params *CreateCallParams) (*TestResponseObject, error) {
+    path := "/2010-04-01/Accounts/{AccountSid}/Calls.json"
     if params != nil && params.PathAccountSid != nil {
     path = strings.Replace(path, "{"+"AccountSid"+"}", *params.PathAccountSid, -1)
 } else {
@@ -70,20 +69,19 @@ if params != nil && params.RequiredStringProperty != nil {
     return ps, err
 }
 
-// Optional parameters for the method 'DeleteMessage'
-type DeleteMessageParams struct {
+// Optional parameters for the method 'DeleteCall'
+type DeleteCallParams struct {
     // 
     PathAccountSid *string `json:"PathAccountSid,omitempty"`
 }
 
-func (params *DeleteMessageParams) SetPathAccountSid(PathAccountSid string) (*DeleteMessageParams){
+func (params *DeleteCallParams) SetPathAccountSid(PathAccountSid string) (*DeleteCallParams){
     params.PathAccountSid = &PathAccountSid
     return params
 }
 
-// Deletes a message record from your account
-func (c *ApiService) DeleteMessage(Sid string, params *DeleteMessageParams) (error) {
-    path := "/2010-04-01/Accounts/{AccountSid}/Messages/{Sid}.json"
+func (c *ApiService) DeleteCall(Sid string, params *DeleteCallParams) (error) {
+    path := "/2010-04-01/Accounts/{AccountSid}/Calls/{Sid}.json"
     if params != nil && params.PathAccountSid != nil {
     path = strings.Replace(path, "{"+"AccountSid"+"}", *params.PathAccountSid, -1)
 } else {
@@ -107,20 +105,19 @@ headers := make(map[string]interface{})
     return nil
 }
 
-// Optional parameters for the method 'FetchMessage'
-type FetchMessageParams struct {
+// Optional parameters for the method 'FetchCall'
+type FetchCallParams struct {
     // 
     PathAccountSid *string `json:"PathAccountSid,omitempty"`
 }
 
-func (params *FetchMessageParams) SetPathAccountSid(PathAccountSid string) (*FetchMessageParams){
+func (params *FetchCallParams) SetPathAccountSid(PathAccountSid string) (*FetchCallParams){
     params.PathAccountSid = &PathAccountSid
     return params
 }
 
-// Fetch a message belonging to the account used to make the request
-func (c *ApiService) FetchMessage(Sid string, params *FetchMessageParams) (*TestResponseObject, error) {
-    path := "/2010-04-01/Accounts/{AccountSid}/Messages/{Sid}.json"
+func (c *ApiService) FetchCall(Sid string, params *FetchCallParams) (*TestResponseObject, error) {
+    path := "/2010-04-01/Accounts/{AccountSid}/Calls/{Sid}.json"
     if params != nil && params.PathAccountSid != nil {
     path = strings.Replace(path, "{"+"AccountSid"+"}", *params.PathAccountSid, -1)
 } else {
@@ -149,11 +146,11 @@ headers := make(map[string]interface{})
     return ps, err
 }
 
-// Optional parameters for the method 'ListMessage'
-type ListMessageParams struct {
+// Optional parameters for the method 'ListCall'
+type ListCallParams struct {
     // 
     PathAccountSid *string `json:"PathAccountSid,omitempty"`
-    // Read messages sent to only this phone number.
+    // 
     To *string `json:"To,omitempty"`
     // 
     From *string `json:"From,omitempty"`
@@ -169,42 +166,42 @@ type ListMessageParams struct {
     Limit *int `json:"limit,omitempty"`
 }
 
-func (params *ListMessageParams) SetPathAccountSid(PathAccountSid string) (*ListMessageParams){
+func (params *ListCallParams) SetPathAccountSid(PathAccountSid string) (*ListCallParams){
     params.PathAccountSid = &PathAccountSid
     return params
 }
-func (params *ListMessageParams) SetTo(To string) (*ListMessageParams){
+func (params *ListCallParams) SetTo(To string) (*ListCallParams){
     params.To = &To
     return params
 }
-func (params *ListMessageParams) SetFrom(From string) (*ListMessageParams){
+func (params *ListCallParams) SetFrom(From string) (*ListCallParams){
     params.From = &From
     return params
 }
-func (params *ListMessageParams) SetDateSent(DateSent time.Time) (*ListMessageParams){
+func (params *ListCallParams) SetDateSent(DateSent time.Time) (*ListCallParams){
     params.DateSent = &DateSent
     return params
 }
-func (params *ListMessageParams) SetDateSentBefore(DateSentBefore time.Time) (*ListMessageParams){
+func (params *ListCallParams) SetDateSentBefore(DateSentBefore time.Time) (*ListCallParams){
     params.DateSentBefore = &DateSentBefore
     return params
 }
-func (params *ListMessageParams) SetDateSentAfter(DateSentAfter time.Time) (*ListMessageParams){
+func (params *ListCallParams) SetDateSentAfter(DateSentAfter time.Time) (*ListCallParams){
     params.DateSentAfter = &DateSentAfter
     return params
 }
-func (params *ListMessageParams) SetPageSize(PageSize int) (*ListMessageParams){
+func (params *ListCallParams) SetPageSize(PageSize int) (*ListCallParams){
     params.PageSize = &PageSize
     return params
 }
-func (params *ListMessageParams) SetLimit(Limit int) (*ListMessageParams){
+func (params *ListCallParams) SetLimit(Limit int) (*ListCallParams){
     params.Limit = &Limit
     return params
 }
 
-// Retrieve a single page of Message records from the API. Request is executed immediately.
-func (c *ApiService) PageMessage(params *ListMessageParams, pageToken, pageNumber string) (*ListMessageResponse, error) {
-    path := "/2010-04-01/Accounts/{AccountSid}/Messages.json"
+// Retrieve a single page of Call records from the API. Request is executed immediately.
+func (c *ApiService) PageCall(params *ListCallParams, pageToken, pageNumber string) (*ListCallResponse, error) {
+    path := "/2010-04-01/Accounts/{AccountSid}/Calls.json"
 
     if params != nil && params.PathAccountSid != nil {
     path = strings.Replace(path, "{"+"AccountSid"+"}", *params.PathAccountSid, -1)
@@ -248,7 +245,7 @@ if params != nil && params.PageSize != nil {
 
     defer resp.Body.Close()
 
-    ps := &ListMessageResponse{}
+    ps := &ListCallResponse{}
     if err := json.NewDecoder(resp.Body).Decode(ps); err != nil {
         return nil, err
     }
@@ -256,14 +253,14 @@ if params != nil && params.PageSize != nil {
     return ps, err
 }
 
-// Lists Message records from the API as a list. Unlike stream, this operation is eager and loads 'limit' records into memory before returning.
-func (c *ApiService) ListMessage(params *ListMessageParams) ([]TestResponseObject, error) {
+// Lists Call records from the API as a list. Unlike stream, this operation is eager and loads 'limit' records into memory before returning.
+func (c *ApiService) ListCall(params *ListCallParams) ([]TestResponseObject, error) {
     if params == nil {
-        params = &ListMessageParams{}
+        params = &ListCallParams{}
     }
     params.SetPageSize(client.ReadLimits(params.PageSize, params.Limit))
 
-    response, err := c.PageMessage(params, "", "")
+    response, err := c.PageCall(params, "", "")
     if err != nil {
         return nil, err
     }
@@ -272,27 +269,27 @@ func (c *ApiService) ListMessage(params *ListMessageParams) ([]TestResponseObjec
     var records []TestResponseObject
 
     for response != nil {
-        records = append(records, response.Messages...)
+        records = append(records, response.Calls...)
 
         var record interface{}
-        if record, err = client.GetNext(c.baseURL, response, &curRecord, params.Limit, c.getNextListMessageResponse); record == nil || err != nil {
+        if record, err = client.GetNext(c.baseURL, response, &curRecord, params.Limit, c.getNextListCallResponse); record == nil || err != nil {
             return records, err
         }
 
-        response = record.(*ListMessageResponse)
+        response = record.(*ListCallResponse)
     }
 
     return records, err
 }
 
-// Streams Message records from the API as a channel stream. This operation lazily loads records as efficiently as possible until the limit is reached.
-func (c *ApiService) StreamMessage(params *ListMessageParams) (chan TestResponseObject, error) {
+// Streams Call records from the API as a channel stream. This operation lazily loads records as efficiently as possible until the limit is reached.
+func (c *ApiService) StreamCall(params *ListCallParams) (chan TestResponseObject, error) {
     if params == nil {
-        params = &ListMessageParams{}
+        params = &ListCallParams{}
     }
     params.SetPageSize(client.ReadLimits(params.PageSize, params.Limit))
 
-    response, err := c.PageMessage(params, "", "")
+    response, err := c.PageCall(params, "", "")
     if err != nil {
         return nil, err
     }
@@ -303,18 +300,18 @@ func (c *ApiService) StreamMessage(params *ListMessageParams) (chan TestResponse
 
     go func() {
         for response != nil {
-            for item := range response.Messages {
-                channel <- response.Messages[item]
+            for item := range response.Calls {
+                channel <- response.Calls[item]
             }
 
 
             var record interface{}
-            if record, err = client.GetNext(c.baseURL, response, &curRecord, params.Limit, c.getNextListMessageResponse); record == nil || err != nil {
+            if record, err = client.GetNext(c.baseURL, response, &curRecord, params.Limit, c.getNextListCallResponse); record == nil || err != nil {
                 close(channel)
                 return
             }
 
-            response = record.(*ListMessageResponse)
+            response = record.(*ListCallResponse)
         }
         close(channel)
     }()
@@ -322,7 +319,7 @@ func (c *ApiService) StreamMessage(params *ListMessageParams) (chan TestResponse
     return channel, err
 }
 
-func (c *ApiService) getNextListMessageResponse(nextPageUrl string) (interface{}, error) {
+func (c *ApiService) getNextListCallResponse(nextPageUrl string) (interface{}, error) {
     if nextPageUrl == "" {
         return nil, nil
     }
@@ -333,7 +330,7 @@ func (c *ApiService) getNextListMessageResponse(nextPageUrl string) (interface{}
 
     defer resp.Body.Close()
 
-    ps := &ListMessageResponse{}
+    ps := &ListCallResponse{}
     if err := json.NewDecoder(resp.Body).Decode(ps); err != nil {
         return nil, err
     }

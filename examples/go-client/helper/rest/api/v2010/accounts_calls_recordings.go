@@ -49,7 +49,6 @@ func (params *CreateCallRecordingParams) SetRecordingStatusCallbackEvent(Recordi
     return params
 }
 
-// Create a recording for the call
 func (c *ApiService) CreateCallRecording(CallSid string, params *CreateCallRecordingParams) (*TestResponseObject, error) {
     path := "/2010-04-01/Accounts/{AccountSid}/Calls/{CallSid}/Recordings.json"
     if params != nil && params.PathAccountSid != nil {

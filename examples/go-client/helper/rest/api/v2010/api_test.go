@@ -98,7 +98,7 @@ func TestDateTimeQueryParams(t *testing.T) {
 }
 
 func TestNonStringInPath(t *testing.T) {
-	err := testApiService.DeleteCallRecording( "CA12345678123456781234567812345678", 123, nil)
+	err := testApiService.DeleteCallRecording("CA12345678123456781234567812345678", 123, nil)
 	assert.Nil(t, err)
 }
 
@@ -134,7 +134,7 @@ func TestRequiredParameters(t *testing.T) {
 }
 
 func TestCustomType(t *testing.T) {
-	resp, err := testApiService.FetchIncomingPhoneNumber("PNFB2fe4c709Af4C1c658b25cE7DDCEbC7", nil)
+	resp, err := testApiService.FetchCall("CA1234567890123456789012", nil)
 	assert.Nil(t, err)
 	assert.NotNil(t, resp)
 	assert.Equal(t, false, resp.TestObject.Fax)

@@ -31,17 +31,16 @@ All URIs are relative to *http://localhost*
 
 Class | Method | HTTP request | Description
 ------------ | ------------- | ------------- | -------------
+*AccountsCallsApi* | [**CreateCall**](docs/AccountsCallsApi.md#createcall) | **Post** /2010-04-01/Accounts/{AccountSid}/Calls.json | 
+*AccountsCallsApi* | [**DeleteCall**](docs/AccountsCallsApi.md#deletecall) | **Delete** /2010-04-01/Accounts/{AccountSid}/Calls/{Sid}.json | 
+*AccountsCallsApi* | [**FetchCall**](docs/AccountsCallsApi.md#fetchcall) | **Get** /2010-04-01/Accounts/{AccountSid}/Calls/{Sid}.json | 
+*AccountsCallsApi* | [**ListCall**](docs/AccountsCallsApi.md#listcall) | **Get** /2010-04-01/Accounts/{AccountSid}/Calls.json | 
 *AccountsCallsFeedbackSummaryApi* | [**CreateCallFeedbackSummary**](docs/AccountsCallsFeedbackSummaryApi.md#createcallfeedbacksummary) | **Post** /2010-04-01/Accounts/{AccountSid}/Calls/FeedbackSummary.json | 
 *AccountsCallsRecordingsApi* | [**CreateCallRecording**](docs/AccountsCallsRecordingsApi.md#createcallrecording) | **Post** /2010-04-01/Accounts/{AccountSid}/Calls/{CallSid}/Recordings.json | 
 *AccountsCallsRecordingsApi* | [**DeleteCallRecording**](docs/AccountsCallsRecordingsApi.md#deletecallrecording) | **Delete** /2010-04-01/Accounts/{AccountSid}/Calls/{CallSid}/Recordings/{TestInteger}.json | 
 *AccountsCallsRecordingsApi* | [**FetchCallRecording**](docs/AccountsCallsRecordingsApi.md#fetchcallrecording) | **Get** /2010-04-01/Accounts/{AccountSid}/Calls/{CallSid}/Recordings/{TestInteger}.json | 
 *AccountsCallsRecordingsApi* | [**ListCallRecording**](docs/AccountsCallsRecordingsApi.md#listcallrecording) | **Get** /2010-04-01/Accounts/{AccountSid}/Calls/{CallSid}/Recordings.json | 
 *AccountsCallsRecordingsApi* | [**UpdateCallRecording**](docs/AccountsCallsRecordingsApi.md#updatecallrecording) | **Post** /2010-04-01/Accounts/{AccountSid}/Calls/{CallSid}/Recordings/{TestInteger}.json | 
-*AccountsIncomingPhoneNumbersApi* | [**FetchIncomingPhoneNumber**](docs/AccountsIncomingPhoneNumbersApi.md#fetchincomingphonenumber) | **Get** /2010-04-01/Accounts/{AccountSid}/IncomingPhoneNumbers/{Sid}.json | 
-*AccountsMessagesApi* | [**CreateMessage**](docs/AccountsMessagesApi.md#createmessage) | **Post** /2010-04-01/Accounts/{AccountSid}/Messages.json | 
-*AccountsMessagesApi* | [**DeleteMessage**](docs/AccountsMessagesApi.md#deletemessage) | **Delete** /2010-04-01/Accounts/{AccountSid}/Messages/{Sid}.json | 
-*AccountsMessagesApi* | [**FetchMessage**](docs/AccountsMessagesApi.md#fetchmessage) | **Get** /2010-04-01/Accounts/{AccountSid}/Messages/{Sid}.json | 
-*AccountsMessagesApi* | [**ListMessage**](docs/AccountsMessagesApi.md#listmessage) | **Get** /2010-04-01/Accounts/{AccountSid}/Messages.json | 
 *CredentialsAWSApi* | [**CreateCredentialAws**](docs/CredentialsAWSApi.md#createcredentialaws) | **Post** /v1/Credentials/AWS | 
 *CredentialsAWSApi* | [**DeleteCredentialAws**](docs/CredentialsAWSApi.md#deletecredentialaws) | **Delete** /v1/Credentials/AWS/{Sid} | 
 *CredentialsAWSApi* | [**FetchCredentialAws**](docs/CredentialsAWSApi.md#fetchcredentialaws) | **Get** /v1/Credentials/AWS/{Sid} | 
@@ -52,9 +51,9 @@ Class | Method | HTTP request | Description
 ## Documentation For Models
 
  - [ListCallRecordingResponse](docs/ListCallRecordingResponse.md)
+ - [ListCallResponse](docs/ListCallResponse.md)
  - [ListCredentialAwsResponse](docs/ListCredentialAwsResponse.md)
  - [ListCredentialAwsResponseMeta](docs/ListCredentialAwsResponseMeta.md)
- - [ListMessageResponse](docs/ListMessageResponse.md)
  - [TestResponseObject](docs/TestResponseObject.md)
  - [TestResponseObjectTestArrayOfObjects](docs/TestResponseObjectTestArrayOfObjects.md)
  - [TestResponseObjectTestObject](docs/TestResponseObjectTestObject.md)
