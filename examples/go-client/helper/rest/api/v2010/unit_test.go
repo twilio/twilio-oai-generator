@@ -52,15 +52,15 @@ func TestAccountSidAsOptionalParam(t *testing.T) {
 		gomock.Any()).
 		DoAndReturn(func(method string, rawURL string, data url.Values,
 			headers map[string]interface{}) (*http.Response, error) {
-			assert.Equal(t, "https://api.twilio.com/2010-04-01/Accounts/AC444444444444444444444444444444/Calls/CAXXXXY.json", rawURL)
+			assert.Equal(t, "https://api.twilio.com/2010-04-01/Accounts/AC444444444444444444444444444444/Calls.json", rawURL)
 			return &http.Response{Body: ioutil.NopCloser(bytes.NewReader(nil))}, nil
 		},
 		)
 
 	twilio := NewApiServiceWithClient(testClient)
-	subAccountSid := "AC444444444444444444444444444444"
-	params := &FetchCallParams{PathAccountSid: &subAccountSid}
-	_, _ = twilio.FetchCall("CAXXXXY", params)
+	params := &CreateCallParams{}
+	params.SetPathAccountSid("AC444444444444444444444444444444")
+	_, _ = twilio.CreateCall(params)
 }
 
 func TestAddingHeader(t *testing.T) {

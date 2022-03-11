@@ -393,7 +393,7 @@ paths:
     servers:
       - url: https://api.twilio.com
   /2010-04-01/Accounts/{AccountSid}/Calls/{Sid}.json:
-    description: A top-level resource instance
+    description: A top-level resource instance that cannot be updated
     delete:
       operationId: DeleteCall
       parameters:
