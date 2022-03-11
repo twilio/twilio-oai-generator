@@ -225,8 +225,6 @@ func TestList(t *testing.T) {
 		DoAndReturn(func(method string, rawURL string, data url.Values,
 			headers map[string]interface{}) (*http.Response, error) {
 			response := map[string]interface{}{
-				"end":            4,
-				"first_page_uri": "/2010-04-01/Accounts/AC12345678123456781234567812345678/Calls.json?From=9999999999&PageNumber=&To=4444444444&PageSize=5&Page=0",
 				"calls": []map[string]interface{}{
 					{
 						"test_string": "hi",
@@ -244,11 +242,7 @@ func TestList(t *testing.T) {
 						"test_string": "others",
 					},
 				},
-				"uri":           "“/2010-04-01/Accounts/AC12345678123456781234567812345678/Calls.json?From=9999999999&PageNumber=&To=4444444444&PageSize=5&Page=0&PageToken=",
-				"page_size":     5,
-				"start":         0,
 				"next_page_uri": "/2010-04-01/Accounts/AC12345678123456781234567812345678/Calls.json?From=9999999999&PageNumber=&To=4444444444&PageSize=5&Page=1&PageToken=PASMc49f620580b24424bcfa885b1f741130",
-				"page":          0,
 			}
 
 			resp, _ := json.Marshal(response)
@@ -279,11 +273,16 @@ func TestList(t *testing.T) {
 	params.SetLimit(10)
 	resp, _ = twilio.ListCall(params)
 	assert.Equal(t, 10, len(resp))
+
+	params.SetLimit(3)
+	resp, _ = twilio.ListCall(params)
+	assert.Equal(t, 3, len(resp))
 }
 
 func TestListPaging(t *testing.T) {
 	mockCtrl := gomock.NewController(t)
 	testClient := NewMockBaseClient(mockCtrl)
+
 	testClient.EXPECT().AccountSid().DoAndReturn(func() string {
 		return "AC222222222222222222222222222222"
 	}).AnyTimes()
@@ -296,9 +295,7 @@ func TestListPaging(t *testing.T) {
 		DoAndReturn(func(method string, rawURL string, data url.Values,
 			headers map[string]interface{}) (*http.Response, error) {
 			response := map[string]interface{}{
-				"end":            4,
-				"first_page_uri": "/2010-04-01/Accounts/AC12345678123456781234567812345678/Calls.json?From=9999999999&PageNumber=&To=4444444444&PageSize=5&Page=0",
-				"calls": []map[string]interface{}{
+				"recordings": []map[string]interface{}{
 					{
 						"test_string": "first",
 					},
@@ -306,11 +303,7 @@ func TestListPaging(t *testing.T) {
 						"test_string": "second",
 					},
 				},
-				"uri":           "“/2010-04-01/Accounts/AC12345678123456781234567812345678/Calls.json?From=9999999999&PageNumber=&To=4444444444&PageSize=5&Page=0&PageToken=",
-				"page_size":     5,
-				"start":         0,
 				"next_page_uri": "/2010-04-01/Accounts/AC12345678123456781234567812345678/Calls.json?From=9999999999&PageNumber=&To=4444444444&PageSize=5&Page=1&PageToken=PASMc49f620580b24424bcfa885b1f741130",
-				"page":          0,
 			}
 
 			resp, _ := json.Marshal(response)
@@ -329,18 +322,12 @@ func TestListPaging(t *testing.T) {
 		DoAndReturn(func(method string, rawURL string, data url.Values,
 			headers map[string]interface{}) (*http.Response, error) {
 			response := map[string]interface{}{
-				"end":            3,
-				"first_page_uri": "/2010-04-01/Accounts/AC12345678123456781234567812345678/Calls.json?From=9999999999&PageNumber=&To=4444444444&PageSize=5&Page=0",
-				"calls": []map[string]interface{}{
+				"recordings": []map[string]interface{}{
 					{
 						"test_string": "third",
 					},
 				},
-				"uri":           "“/2010-04-01/Accounts/AC12345678123456781234567812345678/Calls.json?From=9999999999&PageNumber=&To=4444444444&PageSize=5&Page=1&PageToken=",
-				"page_size":     1,
-				"start":         0,
 				"next_page_uri": "/2010-04-01/Accounts/AC12345678123456781234567812345678/Calls.json?From=9999999999&PageNumber=&To=4444444444&PageSize=5&Page=2&PageToken=PASMc49f620580b24424bcfa885b1f741130",
-				"page":          1,
 			}
 
 			resp, _ := json.Marshal(response)
@@ -372,13 +359,11 @@ func TestListPaging(t *testing.T) {
 
 	twilio := NewApiServiceWithClient(testClient)
 
-	params := &ListCallParams{}
-	params.SetFrom("from")
-	params.SetTo("to")
+	params := &ListCallRecordingParams{}
 	params.SetPageSize(5)
 	params.SetLimit(10)
 
-	resp, _ := twilio.ListCall(params)
+	resp, _ := twilio.ListCallRecording("CA123", params)
 	assert.Equal(t, "first", *resp[0].TestString)
 	assert.Equal(t, "second", *resp[1].TestString)
 	assert.Equal(t, "third", *resp[2].TestString)
@@ -401,9 +386,7 @@ func TestListError(t *testing.T) {
 		DoAndReturn(func(method string, rawURL string, data url.Values,
 			headers map[string]interface{}) (*http.Response, error) {
 			response := map[string]interface{}{
-				"end":            4,
-				"first_page_uri": "/2010-04-01/Accounts/AC12345678123456781234567812345678/Calls.json?From=9999999999&PageNumber=&To=4444444444&PageSize=5&Page=0",
-				"calls": []map[string]interface{}{
+				"credentials": []map[string]interface{}{
 					{
 						"direction": "outbound-api",
 						"from":      "4444444444",
@@ -412,11 +395,7 @@ func TestListError(t *testing.T) {
 						"status":    "delivered",
 					},
 				},
-				"uri":           "“/2010-04-01/Accounts/AC12345678123456781234567812345678/Calls.json?From=9999999999&PageNumber=&To=4444444444&PageSize=5&Page=0&PageToken=",
-				"page_size":     5,
-				"start":         0,
 				"next_page_uri": "/2010-04-01/Accounts/AC12345678123456781234567812345678/Calls.json?From=9999999999&PageNumber=&To=4444444444&PageSize=5&Page=1&PageToken=PASMc49f620580b24424bcfa885b1f741130",
-				"page":          0,
 			}
 
 			resp, _ := json.Marshal(response)
@@ -429,201 +408,17 @@ func TestListError(t *testing.T) {
 
 	twilio := NewApiServiceWithClient(testClient)
 
-	params := &ListCallParams{}
-	params.SetFrom("from")
-	params.SetTo("to")
+	params := &ListCredentialAwsParams{}
 	params.SetPageSize(5)
 	params.SetLimit(5)
 
-	resp, err := twilio.ListCall(params)
+	resp, err := twilio.ListCredentialAws(params)
 	assert.Len(t, resp, 0)
 	assert.NotNil(t, err)
 	assert.Equal(t, "Listing error", err.Error())
 }
 
-func TestStream(t *testing.T) {
-	mockCtrl := gomock.NewController(t)
-	testClient := NewMockBaseClient(mockCtrl)
-	testClient.EXPECT().AccountSid().DoAndReturn(func() string {
-		return "AC222222222222222222222222222222"
-	}).AnyTimes()
-
-	testClient.EXPECT().SendRequest(
-		gomock.Any(),
-		gomock.Any(),
-		gomock.Any(),
-		gomock.Any()).
-		DoAndReturn(func(method string, rawURL string, data url.Values,
-			headers map[string]interface{}) (*http.Response, error) {
-			response := map[string]interface{}{
-				"end":            4,
-				"first_page_uri": "/2010-04-01/Accounts/AC12345678123456781234567812345678/Calls.json?From=9999999999&PageNumber=&To=4444444444&PageSize=5&Page=0",
-				"calls": []map[string]interface{}{
-					{
-						"direction": "outbound-api",
-						"from":      "4444444444",
-						"to":        "9999999999",
-						"body":      "Hi",
-						"status":    "delivered",
-					},
-					{
-						"direction": "outbound-call",
-						"from":      "4444444444",
-						"to":        "9999999999",
-						"body":      "Hi",
-						"status":    "queued",
-					},
-					{
-						"direction": "outbound-api",
-						"from":      "4444444444",
-						"to":        "9999999999",
-						"body":      "Hi",
-						"status":    "delivered",
-					},
-					{
-						"direction": "outbound-api",
-						"from":      "4444444444",
-						"to":        "9999999999",
-						"body":      "Hi",
-						"status":    "delivered",
-					},
-					{
-						"direction": "outbound-api",
-						"from":      "4444444444",
-						"to":        "9999999999",
-						"body":      "Hello",
-						"status":    "sent",
-					},
-				},
-				"uri":           "“/2010-04-01/Accounts/AC12345678123456781234567812345678/Calls.json?From=9999999999&PageNumber=&To=4444444444&PageSize=5&Page=0&PageToken=",
-				"page_size":     5,
-				"start":         0,
-				"next_page_uri": "/2010-04-01/Accounts/AC12345678123456781234567812345678/Calls.json?From=9999999999&PageNumber=&To=4444444444&PageSize=5&Page=1&PageToken=PASMc49f620580b24424bcfa885b1f741130",
-				"page":          0,
-			}
-
-			resp, _ := json.Marshal(response)
-
-			return &http.Response{
-				Body: ioutil.NopCloser(bytes.NewReader(resp)),
-			}, nil
-		},
-		).AnyTimes()
-
-	twilio := NewApiServiceWithClient(testClient)
-
-	params := &ListCallParams{}
-	params.SetPageSize(5)
-	params.SetLimit(10)
-
-	callCount := getStreamCount(twilio, params)
-	assert.Equal(t, 10, callCount)
-
-	params.SetLimit(15)
-	callCount = getStreamCount(twilio, params)
-	assert.Equal(t, 15, callCount)
-
-	params.SetLimit(40)
-	callCount = getStreamCount(twilio, params)
-	assert.Equal(t, 40, callCount)
-}
-
-func TestStreamPaging(t *testing.T) {
-	mockCtrl := gomock.NewController(t)
-	testClient := NewMockBaseClient(mockCtrl)
-	testClient.EXPECT().AccountSid().DoAndReturn(func() string {
-		return "AC222222222222222222222222222222"
-	}).AnyTimes()
-
-	page0 := testClient.EXPECT().SendRequest(
-		gomock.Any(),
-		gomock.Any(),
-		gomock.Any(),
-		gomock.Any()).
-		DoAndReturn(func(method string, rawURL string, data url.Values,
-			headers map[string]interface{}) (*http.Response, error) {
-			response := map[string]interface{}{
-				"end":            2,
-				"first_page_uri": "/2010-04-01/Accounts/AC12345678123456781234567812345678/Calls.json?From=9999999999&PageNumber=&To=4444444444&PageSize=5&Page=0",
-				"calls": []map[string]interface{}{
-					{
-						"test_string": "Call 0",
-					},
-					{
-						"test_string": "Call 1",
-					},
-				},
-				"uri":           "/2010-04-01/Accounts/AC12345678123456781234567812345678/Calls.json?From=9999999999&PageNumber=&To=4444444444&PageSize=5&Page=0&PageToken=dummy",
-				"page_size":     5,
-				"start":         0,
-				"next_page_uri": "/2010-04-01/Accounts/AC12345678123456781234567812345678/Calls.json?From=9999999999&PageNumber=&To=4444444444&PageSize=5&Page=1&PageToken=PASMc49f620580b24424bcfa885b1f741130",
-				"page":          0,
-			}
-
-			resp, _ := json.Marshal(response)
-
-			return &http.Response{
-				Body: ioutil.NopCloser(bytes.NewReader(resp)),
-			}, nil
-		},
-		)
-
-	page1 := testClient.EXPECT().SendRequest(
-		gomock.Any(),
-		gomock.Any(),
-		gomock.Any(),
-		gomock.Any()).
-		DoAndReturn(func(method string, rawURL string, data url.Values,
-			headers map[string]interface{}) (*http.Response, error) {
-			response := map[string]interface{}{
-				"end":            1,
-				"first_page_uri": "/2010-04-01/Accounts/AC12345678123456781234567812345678/Calls.json?From=9999999999&PageNumber=&To=4444444444&PageSize=5&Page=0",
-				"calls": []map[string]interface{}{
-					{
-						"test_string": "Call 2",
-					},
-				},
-				"uri":           "“/2010-04-01/Accounts/AC12345678123456781234567812345678/Calls.json?From=9999999999&PageNumber=&To=4444444444&PageSize=5&Page=1&PageToken=",
-				"page_size":     5,
-				"start":         0,
-				"next_page_uri": "/2010-04-01/Accounts/AC12345678123456781234567812345678/Calls.json?From=9999999999&PageNumber=&To=4444444444&PageSize=5&Page=2&PageToken=PASMc49f620580b24424bcfa885b1f741130",
-				"page":          1,
-			}
-
-			resp, _ := json.Marshal(response)
-
-			return &http.Response{
-				Body: ioutil.NopCloser(bytes.NewReader(resp)),
-			}, nil
-		},
-		)
-
-	gomock.InOrder(
-		page0,
-		page1,
-	)
-
-	twilio := NewApiServiceWithClient(testClient)
-
-	params := &ListCallParams{}
-	params.SetFrom("4444444444")
-	params.SetTo("9999999999")
-	params.SetPageSize(5)
-	params.SetLimit(3)
-
-	callCount := 0
-
-	channel, _ := twilio.StreamCall(params)
-	for record := range channel {
-		text := fmt.Sprintf("Call %d", callCount)
-		assert.Equal(t, text, *record.TestString)
-		callCount += 1
-	}
-
-	assert.Equal(t, 3, callCount)
-}
-
-func TestStreamError(t *testing.T) {
+func TestListNoNextPage(t *testing.T) {
 	mockCtrl := gomock.NewController(t)
 	testClient := NewMockBaseClient(mockCtrl)
 
@@ -639,40 +434,59 @@ func TestStreamError(t *testing.T) {
 		DoAndReturn(func(method string, rawURL string, data url.Values,
 			headers map[string]interface{}) (*http.Response, error) {
 			response := map[string]interface{}{
-				"end":            4,
-				"first_page_uri": "/2010-04-01/Accounts/AC12345678123456781234567812345678/Calls.json?From=9999999999&PageNumber=&To=4444444444&PageSize=5&Page=0",
-				"calls": []map[string]interface{}{
+				"credentials": []map[string]interface{}{
 					{
-						"direction": "outbound-api",
-						"from":      "4444444444",
-						"to":        "9999999999",
-						"body":      "Hi",
-						"status":    "delivered",
+						"test_string": "me",
+					},
+					{
+						"test_string": "and",
+					},
+					{
+						"test_string": "you",
 					},
 				},
-				"uri":           "“/2010-04-01/Accounts/AC12345678123456781234567812345678/Calls.json?From=9999999999&PageNumber=&To=4444444444&PageSize=5&Page=0&PageToken=",
-				"page_size":     5,
-				"start":         0,
-				"next_page_uri": "/2010-04-01/Accounts/AC12345678123456781234567812345678/Calls.json?From=9999999999&PageNumber=&To=4444444444&PageSize=5&Page=1&PageToken=PASMc49f620580b24424bcfa885b1f741130",
-				"page":          0,
 			}
 
 			resp, _ := json.Marshal(response)
 
 			return &http.Response{
 				Body: ioutil.NopCloser(bytes.NewReader(resp)),
-			}, errors.New("streaming error")
-		},
-		).AnyTimes()
+			}, nil
+		}).AnyTimes()
 
 	twilio := NewApiServiceWithClient(testClient)
 
-	params := &ListCallParams{}
-	params.SetPageSize(5)
-	params.SetLimit(5)
+	resp, err := twilio.ListCredentialAws(nil)
+	assert.Equal(t, 3, len(resp))
+	assert.Nil(t, err)
+}
 
-	resp, err := twilio.StreamCall(params)
-	assert.Len(t, resp, 0)
-	assert.NotNil(t, err)
-	assert.Equal(t, "streaming error", err.Error())
+func TestPageToken(t *testing.T) {
+	mockCtrl := gomock.NewController(t)
+	testClient := NewMockBaseClient(mockCtrl)
+
+	testClient.EXPECT().AccountSid().DoAndReturn(func() string {
+		return "AC222222222222222222222222222222"
+	}).AnyTimes()
+
+	pageToken := "token"
+	pageNumber := "5"
+
+	expectedData := url.Values{}
+	expectedData.Set("PageToken", pageToken)
+	expectedData.Set("Page", pageNumber)
+
+	testClient.EXPECT().SendRequest(
+		gomock.Any(),
+		gomock.Any(),
+		gomock.Any(),
+		gomock.Any()).
+		DoAndReturn(func(method string, rawURL string, data url.Values, headers map[string]interface{}) (*http.Response, error) {
+			assert.Equal(t, expectedData, data)
+			return &http.Response{Body: ioutil.NopCloser(bytes.NewReader(nil))}, nil
+		}).AnyTimes()
+
+	twilio := NewApiServiceWithClient(testClient)
+
+	_, _ = twilio.PageCredentialAws(nil, pageToken, pageNumber)
 }
