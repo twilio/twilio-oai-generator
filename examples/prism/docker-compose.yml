@@ -4,7 +4,7 @@ services:
     build:
       context: ../go-client
     volumes:
-      - ../go-client:/local
+      - ../go-client:/go/src/twilio-go
     depends_on:
       - prism_twilio
 
