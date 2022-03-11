@@ -79,8 +79,11 @@ public class TwilioGoGenerator extends AbstractTwilioGoGenerator {
                             .filter(v -> v.dataType.startsWith("[]"))
                             .collect(toSingleton());
 
+                    co.returnContainer = co.returnType;
+                    co.returnType = field.dataType;
+                    co.returnBaseType = field.complexType;
+
                     co.vendorExtensions.put("x-payload-field-name", field.name);
-                    co.vendorExtensions.put("x-payload-model-name", field.complexType);
                 }
             }
         }
