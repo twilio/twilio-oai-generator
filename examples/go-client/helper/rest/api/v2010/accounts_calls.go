@@ -166,12 +166,6 @@ type ListCallParams struct {
     // 
     From *string `json:"From,omitempty"`
     // 
-    DateSent *time.Time `json:"DateSent,omitempty"`
-    // 
-    DateSentBefore *time.Time `json:"DateSent&lt;,omitempty"`
-    // 
-    DateSentAfter *time.Time `json:"DateSent&gt;,omitempty"`
-    // 
     PageSize *int `json:"PageSize,omitempty"`
     // Max number of records to return.
     Limit *int `json:"limit,omitempty"`
@@ -187,18 +181,6 @@ func (params *ListCallParams) SetTo(To string) (*ListCallParams){
 }
 func (params *ListCallParams) SetFrom(From string) (*ListCallParams){
     params.From = &From
-    return params
-}
-func (params *ListCallParams) SetDateSent(DateSent time.Time) (*ListCallParams){
-    params.DateSent = &DateSent
-    return params
-}
-func (params *ListCallParams) SetDateSentBefore(DateSentBefore time.Time) (*ListCallParams){
-    params.DateSentBefore = &DateSentBefore
-    return params
-}
-func (params *ListCallParams) SetDateSentAfter(DateSentAfter time.Time) (*ListCallParams){
-    params.DateSentAfter = &DateSentAfter
     return params
 }
 func (params *ListCallParams) SetPageSize(PageSize int) (*ListCallParams){
@@ -228,15 +210,6 @@ if params != nil && params.To != nil {
 }
 if params != nil && params.From != nil {
     data.Set("From", *params.From)
-}
-if params != nil && params.DateSent != nil {
-    data.Set("DateSent", fmt.Sprint((*params.DateSent).Format(time.RFC3339)))
-}
-if params != nil && params.DateSentBefore != nil {
-    data.Set("DateSent<", fmt.Sprint((*params.DateSentBefore).Format(time.RFC3339)))
-}
-if params != nil && params.DateSentAfter != nil {
-    data.Set("DateSent>", fmt.Sprint((*params.DateSentAfter).Format(time.RFC3339)))
 }
 if params != nil && params.PageSize != nil {
     data.Set("PageSize", fmt.Sprint(*params.PageSize))

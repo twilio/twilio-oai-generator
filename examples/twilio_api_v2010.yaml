@@ -300,21 +300,6 @@ paths:
           schema:
             type: string
         - in: query
-          name: DateSent
-          schema:
-            format: date-time
-            type: string
-        - in: query
-          name: DateSent<
-          schema:
-            format: date-time
-            type: string
-        - in: query
-          name: DateSent>
-          schema:
-            format: date-time
-            type: string
-        - in: query
           name: PageSize
           schema:
             maximum: 1000
