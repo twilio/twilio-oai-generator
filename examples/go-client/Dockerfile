@@ -10,4 +10,4 @@ RUN go get -u github.com/twilio/twilio-go@main
 RUN go get -u github.com/twilio/terraform-provider-twilio@main
 RUN goimports -w .
 
-CMD goimports -w /local && go test ./... -coverprofile /local/coverage.out -json > /local/test-report.out
+CMD goimports -w /local && go test ./... -coverprofile /local/coverage.out -json | tee /local/test-report.out
