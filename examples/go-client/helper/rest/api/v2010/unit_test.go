@@ -460,3 +460,33 @@ func TestListNoNextPage(t *testing.T) {
 	assert.Equal(t, 3, len(resp))
 	assert.Nil(t, err)
 }
+
+func TestPageToken(t *testing.T) {
+	mockCtrl := gomock.NewController(t)
+	testClient := NewMockBaseClient(mockCtrl)
+
+	testClient.EXPECT().AccountSid().DoAndReturn(func() string {
+		return "AC222222222222222222222222222222"
+	}).AnyTimes()
+
+	pageToken := "token"
+	pageNumber := "5"
+
+	expectedData := url.Values{}
+	expectedData.Set("PageToken", pageToken)
+	expectedData.Set("Page", pageNumber)
+
+	testClient.EXPECT().SendRequest(
+		gomock.Any(),
+		gomock.Any(),
+		gomock.Any(),
+		gomock.Any()).
+		DoAndReturn(func(method string, rawURL string, data url.Values, headers map[string]interface{}) (*http.Response, error) {
+			assert.Equal(t, expectedData, data)
+			return &http.Response{Body: ioutil.NopCloser(bytes.NewReader(nil))}, nil
+		}).AnyTimes()
+
+	twilio := NewApiServiceWithClient(testClient)
+
+	_, _ = twilio.PageCredentialAws(nil, pageToken, pageNumber)
+}
