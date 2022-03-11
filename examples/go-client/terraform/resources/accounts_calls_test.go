@@ -38,6 +38,34 @@ func TestCreateCall(t *testing.T) {
 	assert.Equal(t, callSid, resourceData.Id())
 }
 
+func TestFetchCall(t *testing.T) {
+	setupResource(t)
+
+	// Set required params.
+	_ = resourceData.Set("sid", callSid)
+
+	testClient.EXPECT().FetchCall(callSid, &FetchCallParams{}).Return(call, nil)
+
+	resource.ReadContext(nil, resourceData, config)
+
+	// Assert API response was successfully marshaled.
+	assert.Equal(t, callSid, resourceData.Get("sid"))
+}
+
+func TestDeleteCall(t *testing.T) {
+	setupResource(t)
+
+	// Set required params.
+	_ = resourceData.Set("sid", callSid)
+
+	testClient.EXPECT().DeleteCall(callSid, &DeleteCallParams{}).Return(nil)
+
+	resource.DeleteContext(nil, resourceData, config)
+
+	// Assert resource ID is now empty.
+	assert.Empty(t, resourceData.Id())
+}
+
 func TestImportCall(t *testing.T) {
 	setupResource(t)
 

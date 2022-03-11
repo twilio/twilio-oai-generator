@@ -56,6 +56,37 @@ func TestCreateCallRecording(t *testing.T) {
 	assert.Equal(t, recordingSid, resourceData.Get("test_integer"))
 }
 
+func TestFetchCallRecording(t *testing.T) {
+	setupCallRecording(t)
+
+	// Set required params.
+	_ = resourceData.Set("call_sid", callSid)
+	_ = resourceData.Set("test_integer", recordingSid)
+
+	testClient.EXPECT().FetchCallRecording(callSid, recordingSid, &FetchCallRecordingParams{}).Return(callRecording, nil)
+
+	resource.ReadContext(nil, resourceData, config)
+
+	// Assert API response was successfully marshaled.
+	assert.Equal(t, callSid, resourceData.Get("call_sid"))
+	assert.Equal(t, recordingSid, resourceData.Get("test_integer"))
+}
+
+func TestDeleteCallRecording(t *testing.T) {
+	setupCallRecording(t)
+
+	// Set required params.
+	_ = resourceData.Set("call_sid", callSid)
+	_ = resourceData.Set("test_integer", recordingSid)
+
+	testClient.EXPECT().DeleteCallRecording(callSid, recordingSid, &DeleteCallRecordingParams{}).Return(nil)
+
+	resource.DeleteContext(nil, resourceData, config)
+
+	// Assert resource ID is now empty.
+	assert.Empty(t, resourceData.Id())
+}
+
 func TestImportCallRecording(t *testing.T) {
 	setupCallRecording(t)
 
