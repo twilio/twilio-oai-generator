@@ -28,6 +28,7 @@ func ResourceAccountsCalls() *schema.Resource {
         Schema: map[string]*schema.Schema{
             "required_string_property": AsString(SchemaForceNewRequired),
             "path_account_sid": AsString(SchemaForceNewOptional),
+            "test_array_of_strings": AsList(AsString(SchemaForceNewOptional), SchemaForceNewOptional),
             "sid": AsString(SchemaComputed),
         },
         Importer: &schema.ResourceImporter{
@@ -256,7 +257,6 @@ func ResourceCredentialsAWS() *schema.Resource {
         DeleteContext: deleteCredentialsAWS,
         Schema: map[string]*schema.Schema{
             "test_string": AsString(SchemaRequired),
-            "test_array_of_strings": AsList(AsString(SchemaComputedOptional), SchemaComputedOptional),
             "test_boolean": AsBool(SchemaComputedOptional),
             "test_integer": AsInt(SchemaComputedOptional),
             "test_number": AsFloat(SchemaComputedOptional),

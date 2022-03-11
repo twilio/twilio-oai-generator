@@ -52,15 +52,15 @@ func TestAccountSidAsOptionalParam(t *testing.T) {
 		gomock.Any()).
 		DoAndReturn(func(method string, rawURL string, data url.Values,
 			headers map[string]interface{}) (*http.Response, error) {
-			assert.Equal(t, "https://api.twilio.com/2010-04-01/Accounts/AC444444444444444444444444444444/Calls.json", rawURL)
+			assert.Equal(t, "https://api.twilio.com/2010-04-01/Accounts/AC444444444444444444444444444444/Calls/CAXXXXY.json", rawURL)
 			return &http.Response{Body: ioutil.NopCloser(bytes.NewReader(nil))}, nil
 		},
 		)
 
 	twilio := NewApiServiceWithClient(testClient)
-	params := &CreateCallParams{}
+	params := &DeleteCallParams{}
 	params.SetPathAccountSid("AC444444444444444444444444444444")
-	_, _ = twilio.CreateCall(params)
+	_ = twilio.DeleteCall("CAXXXXY", params)
 }
 
 func TestAddingHeader(t *testing.T) {
@@ -99,13 +99,12 @@ func TestQueryParams(t *testing.T) {
 	dateCreatedAfter := time.Date(2000, 1, 4, 1, 0, 0, 0, time.UTC)
 	dateTest := "2021-03-31"
 	pageSize := 4
-	params := ListCallRecordingParams{
-		DateCreated:       &dateCreated,
-		DateCreatedBefore: &dateCreatedBefore,
-		DateCreatedAfter:  &dateCreatedAfter,
-		DateTest:          &dateTest,
-		PageSize:          &pageSize,
-	}
+	params := ListCallRecordingParams{}
+	params.SetDateCreated(dateCreated)
+	params.SetDateCreatedBefore(dateCreatedBefore)
+	params.SetDateCreatedAfter(dateCreatedAfter)
+	params.SetDateTest(dateTest)
+	params.SetPageSize(pageSize)
 
 	expectedData := url.Values{}
 	expectedData.Set("DateCreated", fmt.Sprint(dateCreated.Format(time.RFC3339)))
@@ -135,14 +134,13 @@ func TestQueryParams(t *testing.T) {
 }
 
 func TestArrayTypeParam(t *testing.T) {
-	callbackEvents := []string{"http://test1.com/", "http://test2.com"}
-	params := CreateCallRecordingParams{
-		RecordingStatusCallbackEvent: &callbackEvents,
-	}
+	items := []string{"https://test1.com/", "https://test2.com"}
+	params := CreateCallParams{}
+	params.SetTestArrayOfStrings(items)
 
 	expectedData := url.Values{}
-	for _, item := range callbackEvents {
-		expectedData.Add("RecordingStatusCallbackEvent", item)
+	for _, item := range items {
+		expectedData.Add("TestArrayOfStrings", item)
 	}
 
 	mockCtrl := gomock.NewController(t)
@@ -162,7 +160,43 @@ func TestArrayTypeParam(t *testing.T) {
 		},
 		)
 	twilio := NewApiServiceWithClient(testClient)
-	_, _ = twilio.CreateCallRecording("CA1234", &params)
+	_, _ = twilio.CreateCall(&params)
+}
+
+func TestObjectArrayTypeParam(t *testing.T) {
+	item1 := map[string]interface{}{
+		"key1": "value1",
+		"key2": 2,
+	}
+	item2 := map[string]interface{}{
+		"key1": "value3",
+		"key2": 4,
+	}
+	testObjectArrayParam := []map[string]interface{}{item1, item2}
+	params := CreateCredentialAwsParams{}
+	params.SetTestObjectArray(testObjectArrayParam)
+
+	expectedData := url.Values{}
+	for _, item := range testObjectArrayParam {
+		obj, _ := json.Marshal(item)
+		expectedData.Add("TestObjectArray", string(obj))
+	}
+
+	mockCtrl := gomock.NewController(t)
+	testClient := NewMockBaseClient(mockCtrl)
+	testClient.EXPECT().SendRequest(
+		gomock.Any(),
+		gomock.Any(),
+		gomock.Any(),
+		gomock.Any()).
+		DoAndReturn(func(method string, rawURL string, data url.Values,
+			headers map[string]interface{}) (*http.Response, error) {
+			assert.Equal(t, expectedData, data)
+			return &http.Response{Body: ioutil.NopCloser(bytes.NewReader(nil))}, nil
+		},
+		)
+	twilio := NewApiServiceWithClient(testClient)
+	_, _ = twilio.CreateCredentialAws(&params)
 }
 
 func getStreamCount(twilio *ApiService, params *ListCallParams) int {
@@ -641,40 +675,4 @@ func TestStreamError(t *testing.T) {
 	assert.Len(t, resp, 0)
 	assert.NotNil(t, err)
 	assert.Equal(t, "streaming error", err.Error())
-}
-
-func TestObjectArrayTypeParam(t *testing.T) {
-	item1 := map[string]interface{}{
-		"key1": "value1",
-		"key2": 2,
-	}
-	item2 := map[string]interface{}{
-		"key1": "value3",
-		"key2": 4,
-	}
-	testObjectArrayParam := []map[string]interface{}{item1, item2}
-	params := CreateCredentialAwsParams{}
-	params.SetTestObjectArray(testObjectArrayParam)
-
-	expectedData := url.Values{}
-	for _, item := range testObjectArrayParam {
-		obj, _ := json.Marshal(item)
-		expectedData.Add("TestObjectArray", string(obj))
-	}
-
-	mockCtrl := gomock.NewController(t)
-	testClient := NewMockBaseClient(mockCtrl)
-	testClient.EXPECT().SendRequest(
-		gomock.Any(),
-		gomock.Any(),
-		gomock.Any(),
-		gomock.Any()).
-		DoAndReturn(func(method string, rawURL string, data url.Values,
-			headers map[string]interface{}) (*http.Response, error) {
-			assert.Equal(t, expectedData, data)
-			return &http.Response{Body: ioutil.NopCloser(bytes.NewReader(nil))}, nil
-		},
-		)
-	twilio := NewApiServiceWithClient(testClient)
-	_, _ = twilio.CreateCredentialAws(&params)
 }

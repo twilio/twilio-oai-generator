@@ -26,6 +26,8 @@ type CreateCallParams struct {
     PathAccountSid *string `json:"PathAccountSid,omitempty"`
     // 
     RequiredStringProperty *string `json:"RequiredStringProperty,omitempty"`
+    // 
+    TestArrayOfStrings *[]string `json:"TestArrayOfStrings,omitempty"`
 }
 
 func (params *CreateCallParams) SetPathAccountSid(PathAccountSid string) (*CreateCallParams){
@@ -34,6 +36,10 @@ func (params *CreateCallParams) SetPathAccountSid(PathAccountSid string) (*Creat
 }
 func (params *CreateCallParams) SetRequiredStringProperty(RequiredStringProperty string) (*CreateCallParams){
     params.RequiredStringProperty = &RequiredStringProperty
+    return params
+}
+func (params *CreateCallParams) SetTestArrayOfStrings(TestArrayOfStrings []string) (*CreateCallParams){
+    params.TestArrayOfStrings = &TestArrayOfStrings
     return params
 }
 
@@ -50,6 +56,11 @@ headers := make(map[string]interface{})
 
 if params != nil && params.RequiredStringProperty != nil {
     data.Set("RequiredStringProperty", *params.RequiredStringProperty)
+}
+if params != nil && params.TestArrayOfStrings != nil {
+    for _, item  := range *params.TestArrayOfStrings {
+        data.Add("TestArrayOfStrings", item)
+    }
 }
 
 

@@ -25,8 +25,6 @@ type CreateCredentialAwsParams struct {
     // 
     TestString *string `json:"TestString,omitempty"`
     // 
-    TestArrayOfStrings *[]string `json:"TestArrayOfStrings,omitempty"`
-    // 
     TestBoolean *bool `json:"TestBoolean,omitempty"`
     // 
     TestInteger *int `json:"TestInteger,omitempty"`
@@ -54,10 +52,6 @@ type CreateCredentialAwsParams struct {
 
 func (params *CreateCredentialAwsParams) SetTestString(TestString string) (*CreateCredentialAwsParams){
     params.TestString = &TestString
-    return params
-}
-func (params *CreateCredentialAwsParams) SetTestArrayOfStrings(TestArrayOfStrings []string) (*CreateCredentialAwsParams){
-    params.TestArrayOfStrings = &TestArrayOfStrings
     return params
 }
 func (params *CreateCredentialAwsParams) SetTestBoolean(TestBoolean bool) (*CreateCredentialAwsParams){
@@ -117,11 +111,6 @@ headers := make(map[string]interface{})
 
 if params != nil && params.TestString != nil {
     data.Set("TestString", *params.TestString)
-}
-if params != nil && params.TestArrayOfStrings != nil {
-    for _, item  := range *params.TestArrayOfStrings {
-        data.Add("TestArrayOfStrings", item)
-    }
 }
 if params != nil && params.TestBoolean != nil {
     data.Set("TestBoolean", fmt.Sprint(*params.TestBoolean))

@@ -156,10 +156,6 @@ paths:
               properties:
                 TestString:
                   type: string
-                TestArrayOfStrings:
-                  items:
-                    type: string
-                  type: array
                 TestBoolean:
                   type: boolean
                 TestInteger:
@@ -377,6 +373,10 @@ paths:
               properties:
                 RequiredStringProperty:
                   type: string
+                TestArrayOfStrings:
+                  items:
+                    type: string
+                  type: array
               required:
                 - RequiredStringProperty
               title: CreateCallRequest

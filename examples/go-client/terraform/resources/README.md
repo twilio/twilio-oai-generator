@@ -7,6 +7,7 @@ Name | Type | Requirement | Description
 --- | --- | --- | ---
 **required_string_property** | string | **Required** | 
 **path_account_sid** | string | Optional | 
+**test_array_of_strings** | list(string) | Optional | 
 **sid** | string | *Computed* | 
 
 ## twilio_api_accounts_calls_recordings_v2010
@@ -31,7 +32,6 @@ Name | Type | Requirement | Description
 Name | Type | Requirement | Description
 --- | --- | --- | ---
 **test_string** | string | **Required** | 
-**test_array_of_strings** | list(string) | Optional | 
 **test_boolean** | bool | Optional | 
 **test_integer** | int | Optional | 
 **test_number** | float | Optional | 

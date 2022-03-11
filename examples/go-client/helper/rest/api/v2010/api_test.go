@@ -38,7 +38,6 @@ func TestPost(t *testing.T) {
 	params := &CreateCredentialAwsParams{}
 
 	params.SetTestString("string")
-	params.SetTestArrayOfStrings([]string{"firstString", "secondString"})
 	params.SetTestBoolean(true)
 	params.SetTestInteger(123)
 	params.SetTestNumber(1.23)
