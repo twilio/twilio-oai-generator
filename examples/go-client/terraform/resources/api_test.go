@@ -1,8 +1,8 @@
 package openapi
 
 import (
-	"testing"
 	. "go-client/terraform/client"
+	"testing"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 
@@ -10,6 +10,9 @@ import (
 )
 
 var accountSid = "AC111"
+var stringValue = "someString"
+var integerValue = 123
+var booleanValueDefaultValue = false
 
 var testClient *MockApiV2010
 var config *Config

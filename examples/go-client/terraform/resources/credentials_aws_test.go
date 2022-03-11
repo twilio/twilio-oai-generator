@@ -2,19 +2,17 @@ package openapi
 
 import (
 	"fmt"
-	"testing"
 	. "go-client/helper/rest/api/v2010"
+	"testing"
 
 	"github.com/stretchr/testify/assert"
-
-	)
+)
 
 var credentialsSid = "CR123"
-var friendlyName = "house-keys"
-var credential = &AccountsV1CredentialAws{
-	AccountSid:   &accountSid,
-	Sid:          &credentialsSid,
-	FriendlyName: &friendlyName,
+var credential = &TestResponseObject{
+	Sid:         &credentialsSid,
+	TestString:  &stringValue,
+	TestInteger: &integerValue,
 }
 
 func setupCredential(t *testing.T) {
@@ -27,12 +25,14 @@ func TestCreateCredentialAws(t *testing.T) {
 	setupCredential(t)
 
 	// Set required and optional params.
-	_ = resourceData.Set("sid", credentialsSid)
-	_ = resourceData.Set("friendly_name", friendlyName)
+	_ = resourceData.Set("test_string", stringValue)
+	_ = resourceData.Set("test_integer", integerValue)
 
 	testClient.EXPECT().CreateCredentialAws(
 		&CreateCredentialAwsParams{
-			FriendlyName: &friendlyName,
+			TestString:  &stringValue,
+			TestInteger: &integerValue,
+			TestBoolean: &booleanValueDefaultValue,
 		},
 	).Return(credential, nil)
 
@@ -40,9 +40,9 @@ func TestCreateCredentialAws(t *testing.T) {
 
 	// Assert API response was successfully marshaled.
 	assert.Equal(t, credentialsSid, resourceData.Id())
-	assert.Equal(t, accountSid, resourceData.Get("account_sid"))
 	assert.Equal(t, credentialsSid, resourceData.Get("sid"))
-	assert.Equal(t, friendlyName, resourceData.Get("friendly_name"))
+	assert.Equal(t, stringValue, resourceData.Get("test_string"))
+	assert.Equal(t, integerValue, resourceData.Get("test_integer"))
 }
 
 func TestFetchCredentialAws(t *testing.T) {
@@ -56,9 +56,8 @@ func TestFetchCredentialAws(t *testing.T) {
 	resource.ReadContext(nil, resourceData, config)
 
 	// Assert API response was successfully marshaled.
-	assert.Equal(t, accountSid, resourceData.Get("account_sid"))
 	assert.Equal(t, credentialsSid, resourceData.Get("sid"))
-	assert.Equal(t, friendlyName, resourceData.Get("friendly_name"))
+	assert.Equal(t, stringValue, resourceData.Get("test_string"))
 }
 
 func TestUpdateCredentialAws(t *testing.T) {
@@ -66,21 +65,20 @@ func TestUpdateCredentialAws(t *testing.T) {
 
 	// Set required and optional params.
 	_ = resourceData.Set("sid", credentialsSid)
-	_ = resourceData.Set("friendly_name", friendlyName)
+	_ = resourceData.Set("test_string", stringValue)
 
 	testClient.EXPECT().UpdateCredentialAws(
 		credentialsSid,
 		&UpdateCredentialAwsParams{
-			FriendlyName: &friendlyName,
+			TestString: &stringValue,
 		},
 	).Return(credential, nil)
 
 	resource.UpdateContext(nil, resourceData, config)
 
 	// Assert API response was successfully marshaled.
-	assert.Equal(t, accountSid, resourceData.Get("account_sid"))
 	assert.Equal(t, credentialsSid, resourceData.Get("sid"))
-	assert.Equal(t, friendlyName, resourceData.Get("friendly_name"))
+	assert.Equal(t, stringValue, resourceData.Get("test_string"))
 }
 
 func TestDeleteCredentialAws(t *testing.T) {
@@ -123,12 +121,12 @@ func TestImportInvalidCredentialAws(t *testing.T) {
 
 func TestSchemaCredentialAws(t *testing.T) {
 	for paramName, paramSchema := range resource.Schema {
-		required := paramName == "credentials"
-		computed := paramName != "credentials"
-		optional := paramName != "sid" && paramName != "credentials"
+		required := paramName == "test_string"
+		computed := paramName != "test_string"
+		optional := paramName != "sid" && paramName != "test_string"
 
-		assert.Equal(t, required, paramSchema.Required, fmt.Sprintf("schema.Required iff credentials: %s", paramName))
-		assert.Equal(t, computed, paramSchema.Computed, fmt.Sprintf("schema.Computed iff not credentials: %s", paramName))
-		assert.Equal(t, optional, paramSchema.Optional, fmt.Sprintf("schema.Optional iff not sid or credentials: %s", paramName))
+		assert.Equal(t, required, paramSchema.Required, fmt.Sprintf("schema.Required iff test_string: %s", paramName))
+		assert.Equal(t, computed, paramSchema.Computed, fmt.Sprintf("schema.Computed iff not test_string: %s", paramName))
+		assert.Equal(t, optional, paramSchema.Optional, fmt.Sprintf("schema.Optional iff not sid or test_string: %s", paramName))
 	}
 }

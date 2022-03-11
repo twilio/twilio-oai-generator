@@ -20,6 +20,105 @@ import (
     . "go-client/helper/rest/api/v2010"
 )
 
+func ResourceAccountsCalls() *schema.Resource {
+    return &schema.Resource{
+        CreateContext: createAccountsCalls,
+        ReadContext: readAccountsCalls,
+        DeleteContext: deleteAccountsCalls,
+        Schema: map[string]*schema.Schema{
+            "required_string_property": AsString(SchemaForceNewRequired),
+            "path_account_sid": AsString(SchemaForceNewOptional),
+            "test_array_of_strings": AsList(AsString(SchemaForceNewOptional), SchemaForceNewOptional),
+            "sid": AsString(SchemaComputed),
+        },
+        Importer: &schema.ResourceImporter{
+            StateContext: func(ctx context.Context, d *schema.ResourceData, m interface{}) ([]*schema.ResourceData, error) {
+                err := parseAccountsCallsImportId(d.Id(), d)
+                if err != nil {
+                    return nil, err
+                }
+
+                return []*schema.ResourceData{d}, nil
+            },
+        },
+    }
+}
+
+func createAccountsCalls(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+    params := CreateCallParams{}
+    if err := UnmarshalSchema(&params, d); err != nil {
+        return diag.FromErr(err)
+    }
+
+
+        r, err := m.(*client.Config).Client.ApiV2010.CreateCall(&params);
+        if err != nil {
+            return diag.FromErr(err)
+        }
+
+        idParts := []string{  }
+        idParts = append(idParts, (*r.Sid))
+        d.SetId(strings.Join(idParts, "/"))
+
+            err = MarshalSchema(d, r)
+            if err != nil {
+                return diag.FromErr(err)
+            }
+
+            return nil
+}
+
+func deleteAccountsCalls(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+    params := DeleteCallParams{}
+    if err := UnmarshalSchema(&params, d); err != nil {
+        return diag.FromErr(err)
+    }
+
+    sid := d.Get("sid").(string)
+
+        err := m.(*client.Config).Client.ApiV2010.DeleteCall(sid, &params)
+        if err != nil {
+            return diag.FromErr(err)
+        }
+
+        d.SetId("")
+
+        return nil
+}
+
+func readAccountsCalls(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+    params := FetchCallParams{}
+    if err := UnmarshalSchema(&params, d); err != nil {
+        return diag.FromErr(err)
+    }
+
+    sid := d.Get("sid").(string)
+
+        r, err := m.(*client.Config).Client.ApiV2010.FetchCall(sid, &params)
+        if err != nil {
+            return diag.FromErr(err)
+        }
+
+        err = MarshalSchema(d, r)
+        if err != nil {
+            return diag.FromErr(err)
+        }
+
+        return nil
+}
+
+func parseAccountsCallsImportId(importId string, d *schema.ResourceData) error {
+    importParts := strings.Split(importId, "/")
+    errStr := "invalid import ID (%q), expected sid"
+
+    if len(importParts) != 1 {
+        return fmt.Errorf(errStr, importId)
+    }
+
+        d.Set("sid", importParts[0])
+
+    return nil
+}
 func ResourceAccountsCallsRecordings() *schema.Resource {
     return &schema.Resource{
         CreateContext: createAccountsCallsRecordings,
@@ -32,7 +131,7 @@ func ResourceAccountsCallsRecordings() *schema.Resource {
             "path_account_sid": AsString(SchemaComputedOptional),
             "recording_status_callback": AsString(SchemaComputedOptional),
             "recording_status_callback_event": AsList(AsString(SchemaComputedOptional), SchemaComputedOptional),
-            "sid": AsInt(SchemaComputed),
+            "test_integer": AsInt(SchemaComputed),
             "status": AsString(SchemaComputedOptional),
             "pause_behavior": AsString(SchemaComputedOptional),
         },
@@ -63,9 +162,9 @@ func createAccountsCallsRecordings(ctx context.Context, d *schema.ResourceData, 
         }
 
         idParts := []string{ callSid,  }
-        idParts = append(idParts, IntToString(*r.Sid))
+        idParts = append(idParts, IntToString(*r.TestInteger))
         d.SetId(strings.Join(idParts, "/"))
-            d.Set("sid", *r.Sid)
+            d.Set("test_integer", *r.TestInteger)
 
             return updateAccountsCallsRecordings(ctx, d, m)
 }
@@ -77,9 +176,9 @@ func deleteAccountsCallsRecordings(ctx context.Context, d *schema.ResourceData, 
     }
 
     callSid := d.Get("call_sid").(string)
-    sid := d.Get("sid").(int)
+    testInteger := d.Get("test_integer").(int)
 
-        err := m.(*client.Config).Client.ApiV2010.DeleteCallRecording(callSid, sid, &params)
+        err := m.(*client.Config).Client.ApiV2010.DeleteCallRecording(callSid, testInteger, &params)
         if err != nil {
             return diag.FromErr(err)
         }
@@ -96,9 +195,9 @@ func readAccountsCallsRecordings(ctx context.Context, d *schema.ResourceData, m 
     }
 
     callSid := d.Get("call_sid").(string)
-    sid := d.Get("sid").(int)
+    testInteger := d.Get("test_integer").(int)
 
-        r, err := m.(*client.Config).Client.ApiV2010.FetchCallRecording(callSid, sid, &params)
+        r, err := m.(*client.Config).Client.ApiV2010.FetchCallRecording(callSid, testInteger, &params)
         if err != nil {
             return diag.FromErr(err)
         }
@@ -113,18 +212,18 @@ func readAccountsCallsRecordings(ctx context.Context, d *schema.ResourceData, m 
 
 func parseAccountsCallsRecordingsImportId(importId string, d *schema.ResourceData) error {
     importParts := strings.Split(importId, "/")
-    errStr := "invalid import ID (%q), expected call_sid/sid"
+    errStr := "invalid import ID (%q), expected call_sid/test_integer"
 
     if len(importParts) != 2 {
         return fmt.Errorf(errStr, importId)
     }
 
         d.Set("call_sid", importParts[0])
-        sid, err := StringToInt(importParts[1])
+        testInteger, err := StringToInt(importParts[1])
         if err != nil {
             return nil
         }
-        d.Set("sid", sid)
+        d.Set("test_integer", testInteger)
 
     return nil
 }
@@ -135,9 +234,9 @@ func updateAccountsCallsRecordings(ctx context.Context, d *schema.ResourceData, 
     }
 
     callSid := d.Get("call_sid").(string)
-    sid := d.Get("sid").(int)
+    testInteger := d.Get("test_integer").(int)
 
-        r, err := m.(*client.Config).Client.ApiV2010.UpdateCallRecording(callSid, sid, &params)
+        r, err := m.(*client.Config).Client.ApiV2010.UpdateCallRecording(callSid, testInteger, &params)
         if err != nil {
             return diag.FromErr(err)
         }
@@ -157,9 +256,9 @@ func ResourceCredentialsAWS() *schema.Resource {
         UpdateContext: updateCredentialsAWS,
         DeleteContext: deleteCredentialsAWS,
         Schema: map[string]*schema.Schema{
-            "credentials": AsString(SchemaRequired),
-            "account_sid": AsString(SchemaComputedOptional),
-            "friendly_name": AsString(SchemaComputedOptional),
+            "test_string": AsString(SchemaRequired),
+            "test_boolean": AsBool(SchemaComputedOptional),
+            "test_integer": AsInt(SchemaComputedOptional),
             "test_number": AsFloat(SchemaComputedOptional),
             "test_number_float": AsFloat(SchemaComputedOptional),
             "test_number_double": AsString(SchemaComputedOptional),
@@ -168,7 +267,6 @@ func ResourceCredentialsAWS() *schema.Resource {
             "test_object": AsString(SchemaComputedOptional),
             "test_date_time": AsString(SchemaComputedOptional),
             "test_date": AsString(SchemaComputedOptional),
-            "test_string_array": AsList(AsString(SchemaComputedOptional), SchemaComputedOptional),
             "test_enum": AsString(SchemaComputedOptional),
             "test_object_array": AsList(AsString(SchemaComputedOptional), SchemaComputedOptional),
             "sid": AsString(SchemaComputed),
@@ -262,236 +360,6 @@ func updateCredentialsAWS(ctx context.Context, d *schema.ResourceData, m interfa
     sid := d.Get("sid").(string)
 
         r, err := m.(*client.Config).Client.ApiV2010.UpdateCredentialAws(sid, &params)
-        if err != nil {
-            return diag.FromErr(err)
-        }
-
-        err = MarshalSchema(d, r)
-        if err != nil {
-            return diag.FromErr(err)
-        }
-
-        return nil
-}
-
-func ResourceServicesEnvironments() *schema.Resource {
-    return &schema.Resource{
-        CreateContext: createServicesEnvironments,
-        ReadContext: readServicesEnvironments,
-        DeleteContext: deleteServicesEnvironments,
-        Schema: map[string]*schema.Schema{
-            "service_sid": AsString(SchemaForceNewRequired),
-            "unique_name": AsString(SchemaForceNewRequired),
-            "domain_suffix": AsString(SchemaForceNewOptional),
-            "sid": AsString(SchemaComputed),
-        },
-        Importer: &schema.ResourceImporter{
-            StateContext: func(ctx context.Context, d *schema.ResourceData, m interface{}) ([]*schema.ResourceData, error) {
-                err := parseServicesEnvironmentsImportId(d.Id(), d)
-                if err != nil {
-                    return nil, err
-                }
-
-                return []*schema.ResourceData{d}, nil
-            },
-        },
-    }
-}
-
-func createServicesEnvironments(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-    params := CreateEnvironmentParams{}
-    if err := UnmarshalSchema(&params, d); err != nil {
-        return diag.FromErr(err)
-    }
-
-    serviceSid := d.Get("service_sid").(string)
-
-        r, err := m.(*client.Config).Client.ApiV2010.CreateEnvironment(serviceSid, &params);
-        if err != nil {
-            return diag.FromErr(err)
-        }
-
-        idParts := []string{ serviceSid,  }
-        idParts = append(idParts, (*r.Sid))
-        d.SetId(strings.Join(idParts, "/"))
-
-            err = MarshalSchema(d, r)
-            if err != nil {
-                return diag.FromErr(err)
-            }
-
-            return nil
-}
-
-func deleteServicesEnvironments(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-
-    serviceSid := d.Get("service_sid").(string)
-    sid := d.Get("sid").(string)
-
-        err := m.(*client.Config).Client.ApiV2010.DeleteEnvironment(serviceSid, sid)
-        if err != nil {
-            return diag.FromErr(err)
-        }
-
-        d.SetId("")
-
-        return nil
-}
-
-func readServicesEnvironments(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-
-    serviceSid := d.Get("service_sid").(string)
-    sid := d.Get("sid").(string)
-
-        r, err := m.(*client.Config).Client.ApiV2010.FetchEnvironment(serviceSid, sid)
-        if err != nil {
-            return diag.FromErr(err)
-        }
-
-        err = MarshalSchema(d, r)
-        if err != nil {
-            return diag.FromErr(err)
-        }
-
-        return nil
-}
-
-func parseServicesEnvironmentsImportId(importId string, d *schema.ResourceData) error {
-    importParts := strings.Split(importId, "/")
-    errStr := "invalid import ID (%q), expected service_sid/sid"
-
-    if len(importParts) != 2 {
-        return fmt.Errorf(errStr, importId)
-    }
-
-        d.Set("service_sid", importParts[0])
-        d.Set("sid", importParts[1])
-
-    return nil
-}
-func ResourceAccountsMessages() *schema.Resource {
-    return &schema.Resource{
-        CreateContext: createAccountsMessages,
-        ReadContext: readAccountsMessages,
-        UpdateContext: updateAccountsMessages,
-        DeleteContext: deleteAccountsMessages,
-        Schema: map[string]*schema.Schema{
-            "to": AsString(SchemaRequired),
-            "path_account_sid": AsString(SchemaComputedOptional),
-            "address_retention": AsString(SchemaComputedOptional),
-            "application_sid": AsString(SchemaComputedOptional),
-            "attempt": AsInt(SchemaComputedOptional),
-            "body": AsString(SchemaComputedOptional),
-            "content_retention": AsString(SchemaComputedOptional),
-            "force_delivery": AsBool(SchemaComputedOptional),
-            "from": AsString(SchemaComputedOptional),
-            "max_price": AsFloat(SchemaComputedOptional),
-            "media_url": AsList(AsString(SchemaComputedOptional), SchemaComputedOptional),
-            "messaging_service_sid": AsString(SchemaComputedOptional),
-            "persistent_action": AsList(AsString(SchemaComputedOptional), SchemaComputedOptional),
-            "provide_feedback": AsBool(SchemaComputedOptional),
-            "smart_encoded": AsBool(SchemaComputedOptional),
-            "status_callback": AsString(SchemaComputedOptional),
-            "validity_period": AsInt(SchemaComputedOptional),
-            "sid": AsString(SchemaComputed),
-        },
-        Importer: &schema.ResourceImporter{
-            StateContext: func(ctx context.Context, d *schema.ResourceData, m interface{}) ([]*schema.ResourceData, error) {
-                err := parseAccountsMessagesImportId(d.Id(), d)
-                if err != nil {
-                    return nil, err
-                }
-
-                return []*schema.ResourceData{d}, nil
-            },
-        },
-    }
-}
-
-func createAccountsMessages(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-    params := CreateMessageParams{}
-    if err := UnmarshalSchema(&params, d); err != nil {
-        return diag.FromErr(err)
-    }
-
-
-        r, err := m.(*client.Config).Client.ApiV2010.CreateMessage(&params);
-        if err != nil {
-            return diag.FromErr(err)
-        }
-
-        idParts := []string{  }
-        idParts = append(idParts, (*r.Sid))
-        d.SetId(strings.Join(idParts, "/"))
-
-            err = MarshalSchema(d, r)
-            if err != nil {
-                return diag.FromErr(err)
-            }
-
-            return nil
-}
-
-func deleteAccountsMessages(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-    params := DeleteMessageParams{}
-    if err := UnmarshalSchema(&params, d); err != nil {
-        return diag.FromErr(err)
-    }
-
-    sid := d.Get("sid").(string)
-
-        err := m.(*client.Config).Client.ApiV2010.DeleteMessage(sid, &params)
-        if err != nil {
-            return diag.FromErr(err)
-        }
-
-        d.SetId("")
-
-        return nil
-}
-
-func readAccountsMessages(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-    params := FetchMessageParams{}
-    if err := UnmarshalSchema(&params, d); err != nil {
-        return diag.FromErr(err)
-    }
-
-    sid := d.Get("sid").(string)
-
-        r, err := m.(*client.Config).Client.ApiV2010.FetchMessage(sid, &params)
-        if err != nil {
-            return diag.FromErr(err)
-        }
-
-        err = MarshalSchema(d, r)
-        if err != nil {
-            return diag.FromErr(err)
-        }
-
-        return nil
-}
-
-func parseAccountsMessagesImportId(importId string, d *schema.ResourceData) error {
-    importParts := strings.Split(importId, "/")
-    errStr := "invalid import ID (%q), expected sid"
-
-    if len(importParts) != 1 {
-        return fmt.Errorf(errStr, importId)
-    }
-
-        d.Set("sid", importParts[0])
-
-    return nil
-}
-func updateAccountsMessages(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-    params := UpdateMessageParams{}
-    if err := UnmarshalSchema(&params, d); err != nil {
-        return diag.FromErr(err)
-    }
-
-    sid := d.Get("sid").(string)
-
-        r, err := m.(*client.Config).Client.ApiV2010.UpdateMessage(sid, &params)
         if err != nil {
             return diag.FromErr(err)
         }

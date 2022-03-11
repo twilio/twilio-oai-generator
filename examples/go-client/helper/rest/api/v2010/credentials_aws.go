@@ -22,46 +22,44 @@ import (
 
 // Optional parameters for the method 'CreateCredentialAws'
 type CreateCredentialAwsParams struct {
-    // The SID of the Subaccount that this Credential should be associated with. Must be a valid Subaccount of the account issuing the request.
-    AccountSid *string `json:"AccountSid,omitempty"`
-    // A string that contains the AWS access credentials in the format `<AWS_ACCESS_KEY_ID>:<AWS_SECRET_ACCESS_KEY>`. For example, `AKIAIOSFODNN7EXAMPLE:wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY`
-    Credentials *string `json:"Credentials,omitempty"`
-    // A descriptive string that you create to describe the resource. It can be up to 64 characters long.
-    FriendlyName *string `json:"FriendlyName,omitempty"`
-    // test number type transformation
+    // 
+    TestString *string `json:"TestString,omitempty"`
+    // 
+    TestBoolean *bool `json:"TestBoolean,omitempty"`
+    // 
+    TestInteger *int `json:"TestInteger,omitempty"`
+    // 
     TestNumber *float32 `json:"TestNumber,omitempty"`
-    // test number/float transformation
+    // 
     TestNumberFloat *float32 `json:"TestNumberFloat,omitempty"`
-    // test number/double transformation
+    // 
     TestNumberDouble *float64 `json:"TestNumberDouble,omitempty"`
-    // test number/int32 transformation
+    // 
     TestNumberInt32 *float32 `json:"TestNumberInt32,omitempty"`
-    // test integer/int64 transformation
+    // 
     TestNumberInt64 *int64 `json:"TestNumberInt64,omitempty"`
-    // test object type transformation
+    // 
     TestObject *map[string]interface{} `json:"TestObject,omitempty"`
-    // test date-time type transformation
+    // 
     TestDateTime *time.Time `json:"TestDateTime,omitempty"`
-    // test date format transformation
+    // 
     TestDate *string `json:"TestDate,omitempty"`
-    // The recording status events on which we should call the `recording_status_callback` URL. Can be: `in-progress`, `completed` and `absent` and the default is `completed`. Separate multiple event values with a space.
-    TestStringArray *[]string `json:"TestStringArray,omitempty"`
-    // Test enum
+    // 
     TestEnum *string `json:"TestEnum,omitempty"`
-    // test array of object transformation
+    // 
     TestObjectArray *[]map[string]interface{} `json:"TestObjectArray,omitempty"`
 }
 
-func (params *CreateCredentialAwsParams) SetAccountSid(AccountSid string) (*CreateCredentialAwsParams){
-    params.AccountSid = &AccountSid
+func (params *CreateCredentialAwsParams) SetTestString(TestString string) (*CreateCredentialAwsParams){
+    params.TestString = &TestString
     return params
 }
-func (params *CreateCredentialAwsParams) SetCredentials(Credentials string) (*CreateCredentialAwsParams){
-    params.Credentials = &Credentials
+func (params *CreateCredentialAwsParams) SetTestBoolean(TestBoolean bool) (*CreateCredentialAwsParams){
+    params.TestBoolean = &TestBoolean
     return params
 }
-func (params *CreateCredentialAwsParams) SetFriendlyName(FriendlyName string) (*CreateCredentialAwsParams){
-    params.FriendlyName = &FriendlyName
+func (params *CreateCredentialAwsParams) SetTestInteger(TestInteger int) (*CreateCredentialAwsParams){
+    params.TestInteger = &TestInteger
     return params
 }
 func (params *CreateCredentialAwsParams) SetTestNumber(TestNumber float32) (*CreateCredentialAwsParams){
@@ -96,10 +94,6 @@ func (params *CreateCredentialAwsParams) SetTestDate(TestDate string) (*CreateCr
     params.TestDate = &TestDate
     return params
 }
-func (params *CreateCredentialAwsParams) SetTestStringArray(TestStringArray []string) (*CreateCredentialAwsParams){
-    params.TestStringArray = &TestStringArray
-    return params
-}
 func (params *CreateCredentialAwsParams) SetTestEnum(TestEnum string) (*CreateCredentialAwsParams){
     params.TestEnum = &TestEnum
     return params
@@ -109,21 +103,20 @@ func (params *CreateCredentialAwsParams) SetTestObjectArray(TestObjectArray []ma
     return params
 }
 
-// Create a new AWS Credential
-func (c *ApiService) CreateCredentialAws(params *CreateCredentialAwsParams) (*AccountsV1CredentialAws, error) {
+func (c *ApiService) CreateCredentialAws(params *CreateCredentialAwsParams) (*TestResponseObject, error) {
     path := "/v1/Credentials/AWS"
     
 data := url.Values{}
 headers := make(map[string]interface{})
 
-if params != nil && params.AccountSid != nil {
-    data.Set("AccountSid", *params.AccountSid)
+if params != nil && params.TestString != nil {
+    data.Set("TestString", *params.TestString)
 }
-if params != nil && params.Credentials != nil {
-    data.Set("Credentials", *params.Credentials)
+if params != nil && params.TestBoolean != nil {
+    data.Set("TestBoolean", fmt.Sprint(*params.TestBoolean))
 }
-if params != nil && params.FriendlyName != nil {
-    data.Set("FriendlyName", *params.FriendlyName)
+if params != nil && params.TestInteger != nil {
+    data.Set("TestInteger", fmt.Sprint(*params.TestInteger))
 }
 if params != nil && params.TestNumber != nil {
     data.Set("TestNumber", fmt.Sprint(*params.TestNumber))
@@ -155,11 +148,6 @@ if params != nil && params.TestDateTime != nil {
 if params != nil && params.TestDate != nil {
     data.Set("TestDate", fmt.Sprint(*params.TestDate))
 }
-if params != nil && params.TestStringArray != nil {
-    for _, item  := range *params.TestStringArray {
-        data.Add("TestStringArray", item)
-    }
-}
 if params != nil && params.TestEnum != nil {
     data.Set("TestEnum", *params.TestEnum)
 }
@@ -184,7 +172,7 @@ if params != nil && params.TestObjectArray != nil {
 
     defer resp.Body.Close()
 
-    ps := &AccountsV1CredentialAws{}
+    ps := &TestResponseObject{}
     if err := json.NewDecoder(resp.Body).Decode(ps); err != nil {
         return nil, err
     }
@@ -192,7 +180,6 @@ if params != nil && params.TestObjectArray != nil {
     return ps, err
 }
 
-// Delete a Credential from your account
 func (c *ApiService) DeleteCredentialAws(Sid string, ) (error) {
     path := "/v1/Credentials/AWS/{Sid}"
         path = strings.Replace(path, "{"+"Sid"+"}", Sid, -1)
@@ -213,8 +200,7 @@ headers := make(map[string]interface{})
     return nil
 }
 
-// Fetch the AWS credentials specified by the provided Credential Sid
-func (c *ApiService) FetchCredentialAws(Sid string, ) (*AccountsV1CredentialAws, error) {
+func (c *ApiService) FetchCredentialAws(Sid string, ) (*TestResponseObject, error) {
     path := "/v1/Credentials/AWS/{Sid}"
         path = strings.Replace(path, "{"+"Sid"+"}", Sid, -1)
 
@@ -231,7 +217,7 @@ headers := make(map[string]interface{})
 
     defer resp.Body.Close()
 
-    ps := &AccountsV1CredentialAws{}
+    ps := &TestResponseObject{}
     if err := json.NewDecoder(resp.Body).Decode(ps); err != nil {
         return nil, err
     }
@@ -241,7 +227,7 @@ headers := make(map[string]interface{})
 
 // Optional parameters for the method 'ListCredentialAws'
 type ListCredentialAwsParams struct {
-    // How many resources to return in each list page. The default is 50, and the maximum is 1000.
+    // 
     PageSize *int `json:"PageSize,omitempty"`
     // Max number of records to return.
     Limit *int `json:"limit,omitempty"`
@@ -291,7 +277,7 @@ if params != nil && params.PageSize != nil {
 }
 
 // Lists CredentialAws records from the API as a list. Unlike stream, this operation is eager and loads 'limit' records into memory before returning.
-func (c *ApiService) ListCredentialAws(params *ListCredentialAwsParams) ([]AccountsV1CredentialAws, error) {
+func (c *ApiService) ListCredentialAws(params *ListCredentialAwsParams) ([]TestResponseObject, error) {
     if params == nil {
         params = &ListCredentialAwsParams{}
     }
@@ -303,7 +289,7 @@ func (c *ApiService) ListCredentialAws(params *ListCredentialAwsParams) ([]Accou
     }
 
     curRecord := 0
-    var records []AccountsV1CredentialAws
+    var records []TestResponseObject
 
     for response != nil {
         records = append(records, response.Credentials...)
@@ -320,7 +306,7 @@ func (c *ApiService) ListCredentialAws(params *ListCredentialAwsParams) ([]Accou
 }
 
 // Streams CredentialAws records from the API as a channel stream. This operation lazily loads records as efficiently as possible until the limit is reached.
-func (c *ApiService) StreamCredentialAws(params *ListCredentialAwsParams) (chan AccountsV1CredentialAws, error) {
+func (c *ApiService) StreamCredentialAws(params *ListCredentialAwsParams) (chan TestResponseObject, error) {
     if params == nil {
         params = &ListCredentialAwsParams{}
     }
@@ -333,7 +319,7 @@ func (c *ApiService) StreamCredentialAws(params *ListCredentialAwsParams) (chan 
 
     curRecord := 0
     //set buffer size of the channel to 1
-    channel := make(chan AccountsV1CredentialAws, 1)
+    channel := make(chan TestResponseObject, 1)
 
     go func() {
         for response != nil {
@@ -377,25 +363,24 @@ func (c *ApiService) getNextListCredentialAwsResponse(nextPageUrl string) (inter
 
 // Optional parameters for the method 'UpdateCredentialAws'
 type UpdateCredentialAwsParams struct {
-    // A descriptive string that you create to describe the resource. It can be up to 64 characters long.
-    FriendlyName *string `json:"FriendlyName,omitempty"`
+    // 
+    TestString *string `json:"TestString,omitempty"`
 }
 
-func (params *UpdateCredentialAwsParams) SetFriendlyName(FriendlyName string) (*UpdateCredentialAwsParams){
-    params.FriendlyName = &FriendlyName
+func (params *UpdateCredentialAwsParams) SetTestString(TestString string) (*UpdateCredentialAwsParams){
+    params.TestString = &TestString
     return params
 }
 
-// Modify the properties of a given Account
-func (c *ApiService) UpdateCredentialAws(Sid string, params *UpdateCredentialAwsParams) (*AccountsV1CredentialAws, error) {
+func (c *ApiService) UpdateCredentialAws(Sid string, params *UpdateCredentialAwsParams) (*TestResponseObject, error) {
     path := "/v1/Credentials/AWS/{Sid}"
         path = strings.Replace(path, "{"+"Sid"+"}", Sid, -1)
 
 data := url.Values{}
 headers := make(map[string]interface{})
 
-if params != nil && params.FriendlyName != nil {
-    data.Set("FriendlyName", *params.FriendlyName)
+if params != nil && params.TestString != nil {
+    data.Set("TestString", *params.TestString)
 }
 
 
@@ -407,7 +392,7 @@ if params != nil && params.FriendlyName != nil {
 
     defer resp.Body.Close()
 
-    ps := &AccountsV1CredentialAws{}
+    ps := &TestResponseObject{}
     if err := json.NewDecoder(resp.Body).Decode(ps); err != nil {
         return nil, err
     }

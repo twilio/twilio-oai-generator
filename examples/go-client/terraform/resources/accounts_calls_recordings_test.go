@@ -2,8 +2,9 @@ package openapi
 
 import (
 	"fmt"
-	"testing"
 	. "go-client/helper/rest/api/v2010"
+	"testing"
+
 	"github.com/stretchr/testify/assert"
 )
 
@@ -11,9 +12,9 @@ var callSid = "CA123"
 var recordingSid = 123
 var recordingStatusCallback = "completed"
 var pauseBehavior = "skip"
-var callRecording = &ApiV2010CallRecording{
-	CallSid: &callSid,
-	Sid:     &recordingSid,
+var callRecording = &TestResponseObject{
+	AccountSid:  &accountSid,
+	TestInteger: &recordingSid,
 }
 var recordingId = fmt.Sprintf("%s/%d", callSid, recordingSid)
 
@@ -52,7 +53,38 @@ func TestCreateCallRecording(t *testing.T) {
 	// Assert API response was successfully marshaled.
 	assert.Equal(t, recordingId, resourceData.Id())
 	assert.Equal(t, callSid, resourceData.Get("call_sid"))
-	assert.Equal(t, recordingSid, resourceData.Get("sid"))
+	assert.Equal(t, recordingSid, resourceData.Get("test_integer"))
+}
+
+func TestFetchCallRecording(t *testing.T) {
+	setupCallRecording(t)
+
+	// Set required params.
+	_ = resourceData.Set("call_sid", callSid)
+	_ = resourceData.Set("test_integer", recordingSid)
+
+	testClient.EXPECT().FetchCallRecording(callSid, recordingSid, &FetchCallRecordingParams{}).Return(callRecording, nil)
+
+	resource.ReadContext(nil, resourceData, config)
+
+	// Assert API response was successfully marshaled.
+	assert.Equal(t, callSid, resourceData.Get("call_sid"))
+	assert.Equal(t, recordingSid, resourceData.Get("test_integer"))
+}
+
+func TestDeleteCallRecording(t *testing.T) {
+	setupCallRecording(t)
+
+	// Set required params.
+	_ = resourceData.Set("call_sid", callSid)
+	_ = resourceData.Set("test_integer", recordingSid)
+
+	testClient.EXPECT().DeleteCallRecording(callSid, recordingSid, &DeleteCallRecordingParams{}).Return(nil)
+
+	resource.DeleteContext(nil, resourceData, config)
+
+	// Assert resource ID is now empty.
+	assert.Empty(t, resourceData.Id())
 }
 
 func TestImportCallRecording(t *testing.T) {
@@ -65,7 +97,7 @@ func TestImportCallRecording(t *testing.T) {
 	// Assert no errors and the ID was properly parsed.
 	assert.Nil(t, err)
 	assert.Equal(t, callSid, resourceData.Get("call_sid"))
-	assert.Equal(t, recordingSid, resourceData.Get("sid"))
+	assert.Equal(t, recordingSid, resourceData.Get("test_integer"))
 }
 
 func TestImportInvalidCallRecording(t *testing.T) {
@@ -86,7 +118,7 @@ func TestSchemaCallRecording(t *testing.T) {
 	for paramName, paramSchema := range resource.Schema {
 		required := paramName == "call_sid"
 		computed := paramName != "call_sid"
-		optional := paramName != "sid" && paramName != "call_sid"
+		optional := paramName != "test_integer" && paramName != "call_sid"
 
 		assert.Equal(t, required, paramSchema.Required, fmt.Sprintf("schema.Required iff call_sid: %s", paramName))
 		assert.Equal(t, computed, paramSchema.Computed, fmt.Sprintf("schema.Computed iff not call_sid: %s", paramName))

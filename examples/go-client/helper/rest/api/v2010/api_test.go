@@ -6,6 +6,7 @@ import (
 	"time"
 
 	test_client "go-client/helper/client"
+
 	"github.com/stretchr/testify/assert"
 )
 
@@ -29,16 +30,26 @@ func TestGet(t *testing.T) {
 	resp, err := testApiService.PageCredentialAws(nil, "", "")
 	assert.Nil(t, err)
 	assert.NotNil(t, resp)
-	assert.Equal(t, accountSid, *resp.Credentials[0].AccountSid, "AccountSid mismatch")
+	assert.Equal(t, "Ahoy", *resp.Credentials[0].TestString)
 	assert.Equal(t, "http://example.com/page1", resp.Meta.FirstPageUrl, "FirstPageUrl mismatch")
 }
 
 func TestPost(t *testing.T) {
 	params := &CreateCredentialAwsParams{}
 
-	params.SetAccountSid(accountSid)
-	params.SetFriendlyName("MockCreds")
-	params.SetCredentials("credentials")
+	params.SetTestString("string")
+	params.SetTestBoolean(true)
+	params.SetTestInteger(123)
+	params.SetTestNumber(1.23)
+	params.SetTestNumberFloat(4.56)
+	params.SetTestNumberDouble(7.89)
+	params.SetTestNumberInt32(111)
+	params.SetTestNumberInt64(222)
+	params.SetTestObject(make(map[string]interface{}))
+	params.SetTestDateTime(time.Now())
+	params.SetTestDate("2022-01-01")
+	params.SetTestEnum("consumer-checking")
+	params.SetTestObjectArray(make([]map[string]interface{}, 1))
 
 	resp, err := testApiService.CreateCredentialAws(params)
 	assert.Nil(t, err)
@@ -54,15 +65,13 @@ func TestFetch(t *testing.T) {
 	resp, err := testApiService.FetchCredentialAws("CR12345678123456781234567812345678")
 	assert.Nil(t, err)
 	assert.NotNil(t, resp)
-	assert.Equal(t, accountSid, *resp.AccountSid)
-	assert.Equal(t, "Ahoy", *resp.FriendlyName)
 	assert.Equal(t, "CR12345678123456781234567812345678", *resp.Sid)
-	assert.Equal(t, "http://example.com", *resp.Url)
+	assert.Equal(t, "Ahoy", *resp.TestString)
 }
 
 func TestUpdate(t *testing.T) {
 	params := &UpdateCredentialAwsParams{}
-	params.SetFriendlyName("MockCreds")
+	params.SetTestString("MockCreds")
 
 	resp, err := testApiService.UpdateCredentialAws(authToken, params)
 	assert.Nil(t, err)
@@ -83,13 +92,12 @@ func TestDateTimeQueryParams(t *testing.T) {
 	assert.NotNil(t, resp)
 	assert.NotNil(t, resp.Recordings)
 	assert.Equal(t, 2, len(resp.Recordings))
-	assert.Equal(t, "DialVerb", *resp.Recordings[0].Source)
-	assert.Equal(t, "completed", *resp.Recordings[1].Status)
+	assert.Equal(t, "Ahoy", *resp.Recordings[0].TestString)
+	assert.Equal(t, "Matey", *resp.Recordings[1].TestString)
 }
 
-func TestDateInPath(t *testing.T) {
-	date := "2021-01-04"
-	err := testApiService.DeleteArchivedCall(date, "CA12345678123456781234567812345678")
+func TestNonStringInPath(t *testing.T) {
+	err := testApiService.DeleteCallRecording("CA12345678123456781234567812345678", 123, nil)
 	assert.Nil(t, err)
 }
 
@@ -102,8 +110,8 @@ func TestCustomHeaders(t *testing.T) {
 
 	assert.Nil(t, err)
 	assert.NotNil(t, resp)
-	assert.Equal(t, float32(100.22), *resp.Price)
-	assert.Equal(t, "Trunking", *resp.Source)
+	assert.Equal(t, float32(100.22), *resp.TestNumberFloat)
+	assert.Equal(t, "Trunking", *resp.TestEnum)
 }
 
 func TestRequiredParameters(t *testing.T) {
@@ -120,16 +128,16 @@ func TestRequiredParameters(t *testing.T) {
 
 	assert.Nil(t, err)
 	assert.NotNil(t, resp)
-	assert.Equal(t, float32(4), (*resp.Issues)[0].Count)
-	assert.Equal(t, "issue description", (*resp.Issues)[0].Description)
+	assert.Equal(t, float32(4), (*resp.TestArrayOfObjects)[0].Count)
+	assert.Equal(t, "issue description", (*resp.TestArrayOfObjects)[0].Description)
 }
 
 func TestCustomType(t *testing.T) {
-	resp, err := testApiService.FetchIncomingPhoneNumber("PNFB2fe4c709Af4C1c658b25cE7DDCEbC7", nil)
+	resp, err := testApiService.FetchCall("CA1234567890123456789012", nil)
 	assert.Nil(t, err)
 	assert.NotNil(t, resp)
-	assert.Equal(t, false, resp.Capabilities.Fax)
-	assert.Equal(t, false, resp.Capabilities.Mms)
-	assert.Equal(t, true, resp.Capabilities.Sms)
-	assert.Equal(t, true, resp.Capabilities.Voice)
+	assert.Equal(t, false, resp.TestObject.Fax)
+	assert.Equal(t, false, resp.TestObject.Mms)
+	assert.Equal(t, true, resp.TestObject.Sms)
+	assert.Equal(t, true, resp.TestObject.Voice)
 }
