@@ -282,64 +282,7 @@ paths:
     servers:
       - url: https://api.twilio.com
   /2010-04-01/Accounts/{AccountSid}/Calls.json:
-    description: A top-level resource
-    get:
-      operationId: ListCall
-      parameters:
-        - in: path
-          name: AccountSid
-          required: true
-          schema:
-            type: string
-        - in: query
-          name: To
-          schema:
-            type: string
-        - in: query
-          name: From
-          schema:
-            type: string
-        - in: query
-          name: PageSize
-          schema:
-            maximum: 1000
-            minimum: 1
-            type: integer
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                properties:
-                  end:
-                    type: integer
-                  first_page_uri:
-                    format: uri
-                    type: string
-                  calls:
-                    items:
-                      $ref: '#/components/schemas/test.response_object'
-                    type: array
-                  next_page_uri:
-                    format: uri
-                    type: string
-                  page:
-                    type: integer
-                  page_size:
-                    type: integer
-                  previous_page_uri:
-                    format: uri
-                    type: string
-                  start:
-                    type: integer
-                  uri:
-                    format: uri
-                    type: string
-                title: ListCallResponse
-                type: object
-          description: OK
-      security:
-        - accountSid_authToken: [ ]
+    description: A top-level resource, dose not support listing
     post:
       operationId: CreateCall
       parameters:

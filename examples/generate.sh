@@ -22,3 +22,9 @@ java -cp ./openapi-generator-cli.jar:target/twilio-openapi-generator.jar \
 # Replace a couple imports in the generated Terraform resource to use local code.
 sed -i.bak "s/github.com\/twilio\/twilio-go/go-client\/helper/g" "$OUT_DIR/api_default.go"
 sed -i.bak "s/github.com\/twilio\/terraform-provider-twilio\/client/go-client\/terraform\/client/g" "$OUT_DIR/api_default.go"
+
+pushd examples/go-client
+docker run -it \
+  -v "${PWD}":/local \
+  "$(docker build -f Dockerfile-goimports -q .)"
+popd

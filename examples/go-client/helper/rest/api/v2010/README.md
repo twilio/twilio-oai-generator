@@ -34,7 +34,6 @@ Class | Method | HTTP request | Description
 *AccountsCallsApi* | [**CreateCall**](docs/AccountsCallsApi.md#createcall) | **Post** /2010-04-01/Accounts/{AccountSid}/Calls.json | 
 *AccountsCallsApi* | [**DeleteCall**](docs/AccountsCallsApi.md#deletecall) | **Delete** /2010-04-01/Accounts/{AccountSid}/Calls/{Sid}.json | 
 *AccountsCallsApi* | [**FetchCall**](docs/AccountsCallsApi.md#fetchcall) | **Get** /2010-04-01/Accounts/{AccountSid}/Calls/{Sid}.json | 
-*AccountsCallsApi* | [**ListCall**](docs/AccountsCallsApi.md#listcall) | **Get** /2010-04-01/Accounts/{AccountSid}/Calls.json | 
 *AccountsCallsFeedbackSummaryApi* | [**CreateCallFeedbackSummary**](docs/AccountsCallsFeedbackSummaryApi.md#createcallfeedbacksummary) | **Post** /2010-04-01/Accounts/{AccountSid}/Calls/FeedbackSummary.json | 
 *AccountsCallsRecordingsApi* | [**CreateCallRecording**](docs/AccountsCallsRecordingsApi.md#createcallrecording) | **Post** /2010-04-01/Accounts/{AccountSid}/Calls/{CallSid}/Recordings.json | 
 *AccountsCallsRecordingsApi* | [**DeleteCallRecording**](docs/AccountsCallsRecordingsApi.md#deletecallrecording) | **Delete** /2010-04-01/Accounts/{AccountSid}/Calls/{CallSid}/Recordings/{TestInteger}.json | 
@@ -51,7 +50,6 @@ Class | Method | HTTP request | Description
 ## Documentation For Models
 
  - [ListCallRecordingResponse](docs/ListCallRecordingResponse.md)
- - [ListCallResponse](docs/ListCallResponse.md)
  - [ListCredentialAwsResponse](docs/ListCredentialAwsResponse.md)
  - [ListCredentialAwsResponseMeta](docs/ListCredentialAwsResponseMeta.md)
  - [TestResponseObject](docs/TestResponseObject.md)
