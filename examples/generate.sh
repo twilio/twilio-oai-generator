@@ -24,7 +24,7 @@ sed -i.bak "s/github.com\/twilio\/twilio-go/go-client\/helper/g" "$OUT_DIR/api_d
 sed -i.bak "s/github.com\/twilio\/terraform-provider-twilio\/client/go-client\/terraform\/client/g" "$OUT_DIR/api_default.go"
 
 pushd examples/go-client
-docker run -it \
+docker run \
   -v "${PWD}":/local \
   "$(docker build -f Dockerfile-goimports -q .)"
 popd
