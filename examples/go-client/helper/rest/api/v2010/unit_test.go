@@ -390,7 +390,7 @@ func TestListError(t *testing.T) {
 
 			return &http.Response{
 				Body: ioutil.NopCloser(bytes.NewReader(resp)),
-			}, errors.New("Listing error")
+			}, errors.New("listing error")
 		},
 		).AnyTimes()
 
@@ -403,7 +403,7 @@ func TestListError(t *testing.T) {
 	resp, err := twilio.ListCredentialAws(params)
 	assert.Len(t, resp, 0)
 	assert.NotNil(t, err)
-	assert.Equal(t, "Listing error", err.Error())
+	assert.Equal(t, "listing error", err.Error())
 }
 
 func TestListNoNextPage(t *testing.T) {

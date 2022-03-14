@@ -64,6 +64,18 @@ components:
           nullable: true
           type: array
       type: object
+  examples:
+    test.response_object.example:
+      value:
+        sid: "CR12345678123456781234567812345678"
+        test_string: "Ahoy"
+        test_object:
+          fax: false
+          mms: false
+          sms: true
+          voice: true
+        test_number_float: 100.22
+        test_enum: "Trunking"
   securitySchemes:
     accountSid_authToken:
       scheme: basic
@@ -201,6 +213,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/test.response_object'
+              examples:
+                example:
+                  $ref: '#/components/examples/test.response_object.example'
           description: Created
       security:
         - accountSid_authToken: [ ]
@@ -241,12 +256,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/test.response_object'
               examples:
-                fetch_creds_response_example:
-                  summary: Example of a Credential
-                  value: {
-                    "sid": "CR12345678123456781234567812345678",
-                    "test_string": "Ahoy"
-                  }
+                example:
+                  $ref: '#/components/examples/test.response_object.example'
           description: OK
       security:
         - accountSid_authToken: [ ]
@@ -276,6 +287,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/test.response_object'
+              examples:
+                example:
+                  $ref: '#/components/examples/test.response_object.example'
           description: OK
       security:
         - accountSid_authToken: [ ]
@@ -360,15 +374,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/test.response_object'
               examples:
-                custom_type_response_example:
-                  value: {
-                    "test_object": {
-                      "fax": false,
-                      "mms": false,
-                      "sms": true,
-                      "voice": true
-                    }
-                  }
+                example:
+                  $ref: '#/components/examples/test.response_object.example'
           description: OK
       security:
         - accountSid_authToken: [ ]
@@ -513,12 +520,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/test.response_object'
               examples:
-                create_call_recording_response_example:
-                  summary: Example of a CreateCallRecording
-                  value: {
-                    "test_number_float": 100.22,
-                    "test_enum": "Trunking",
-                  }
+                example:
+                  $ref: '#/components/examples/test.response_object.example'
           description: Created
       security:
         - accountSid_authToken: [ ]

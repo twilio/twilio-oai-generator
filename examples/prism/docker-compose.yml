@@ -12,6 +12,8 @@ services:
     image: stoplight/prism:4
     volumes:
       - ../twilio_api_v2010.yaml:/tmp/oai.yaml
+    ports:
+      - "4010:4010"
     command: >
       mock -p 4010 --host 0.0.0.0
       /tmp/oai.yaml
