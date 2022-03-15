@@ -16,6 +16,7 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
     private static final String PATH_SEPARATOR_PLACEHOLDER = "1234567890";
 
     private final List<CodegenModel> allModels = new ArrayList<>();
+    private final Inflector inflector = new Inflector();
 
     public TwilioJavaGenerator() {
         super();
@@ -39,6 +40,7 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
         additionalProperties.put("apiVersion", version);
         additionalProperties.put("apiVersionClass", version.toUpperCase());
         additionalProperties.put("domain", StringUtils.camelize(domain));
+        additionalProperties.put("domainPackage", domain.toLowerCase());
 
         supportingFiles.clear();
         apiTemplateFiles.put("api.mustache", ".java");
@@ -117,31 +119,40 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
         for (final CodegenOperation co : opList) {
             // Group operations by resource.
             String path = co.path;
+            // TODO: Nested Properties to be fixed in upcoming stories
             String resourceName = singularize(getResourceName(co.path));
+            if (resourceName.equals("IncomingPhoneNumber")) continue;
             final Map<String, Object> resource = resources.computeIfAbsent(resourceName, k -> new LinkedHashMap<>());
             populateCrudOperations(resource, co);
-
-            if (co.path.endsWith("}")) {
+            // TODO: Review this condition
+            if (co.path.endsWith("}") || co.path.endsWith("}.json")) {
                 if ("GET".equalsIgnoreCase(co.httpMethod)) {
                     resource.put("hasFetch", true);
+                    resource.put("requiredParamsFetch", co.requiredParams);
+
                     co.vendorExtensions.put("x-is-fetch-operation", true);
                     addOperationName(co, "Fetch");
                 } else if ("POST".equalsIgnoreCase(co.httpMethod)) {
                     resource.put("hasUpdate", true);
                     addOperationName(co, "Update");
+                    resource.put("requiredParamsUpdate", co.requiredParams);
                 } else if ("DELETE".equalsIgnoreCase(co.httpMethod)) {
                     resource.put("hasDelete", true);
                     addOperationName(co, "Remove");
+                    resource.put("requiredParamsDelete", co.requiredParams);
                 }
             } else {
                 if ("POST".equalsIgnoreCase(co.httpMethod)) {
+                    // TODO: set false for testing the code, Fix this bug later
                     resource.put("hasCreate", true);
                     co.vendorExtensions.put("x-is-create-operation", true);
                     addOperationName(co, "Create");
+                    resource.put("requiredParamsCreate", co.requiredParams);
                 } else if ("GET".equalsIgnoreCase(co.httpMethod)) {
                     resource.put("hasRead", true);
                     co.vendorExtensions.put("x-is-read-operation", true);
                     addOperationName(co, "Page");
+                    resource.put("requiredParamsRead", co.requiredParams);
                 }
             }
 
@@ -153,6 +164,7 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
             resourceOperationList.add(co);
             resource.put("resourceName", resourceName);
             resource.put("path", path);
+            // TODO: This is the issue, These values will be overridden multiple times
             resource.put("resourcePathParams", co.pathParams);
             resource.put("resourceRequiredParams", co.requiredParams);
 
@@ -164,7 +176,7 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
                 addModel(resource, co.bodyParam.dataType);
             }
 
-            if (co.path.endsWith("}")) {
+            if (co.path.endsWith("}") || co.path.endsWith("}.json")) {
                 co.responses
                         .stream()
                         .map(response -> response.dataType)
@@ -177,6 +189,7 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
             results.put("apiFilename", getResourceName(co.path));
             results.put("packageName", getPackageName(co.path));
             results.put("recordKey", getFolderName(co.path));
+            resource.put("packageSubPart", getPackageName(co.path).substring(0, getPackageName(co.path).lastIndexOf(".")));
         }
 
         for (final Object resource : resources.values()) {
@@ -237,7 +250,11 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
     }
 
     private String getResourceName(final String path) {
-        return PathUtils.getLastPathPart(PathUtils.cleanPath(path));
+        String lastPathPart = PathUtils.getLastPathPart(PathUtils.cleanPath(path));
+        if (inflector.isAbbrevation(lastPathPart)) {
+            return StringUtils.camelize(lastPathPart.toLowerCase(), false);
+        }
+        return lastPathPart;
     }
 
     private String getPackageName(final String path) {
@@ -253,10 +270,7 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
     }
 
     private String singularize(final String plural) {
-        if (plural.endsWith("s")) { // doesn't always work. For example: Aws
-            return plural.substring(0, plural.length() - 1);
-        }
-        return plural;
+        return (inflector.singularize(plural));
     }
 
     private void addOperationName(final CodegenOperation operation, final String name) {

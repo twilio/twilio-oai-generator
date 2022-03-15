@@ -6,6 +6,13 @@ services:
     depends_on:
       - prism_twilio
 
+  java-test:
+    build:
+      dockerfile: java.Dockerfile
+      context: ../../
+    depends_on:
+      - prism_twilio
+
   prism_twilio:
     image: stoplight/prism:4
     volumes:

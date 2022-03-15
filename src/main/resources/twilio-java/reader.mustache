@@ -1,7 +1,9 @@
 {{>licenseInfo}}
-{{>packageName}}
+{{#resources}}
+package com.twilio.rest.{{domainPackage}}.{{package}}.{{packageSubPart}};
 
-import com.twilio.base.Fetcher;
+import com.twilio.base.Reader;
+import com.twilio.base.ResourceSet;
 import com.twilio.exception.ApiConnectionException;
 import com.twilio.exception.ApiException;
 import com.twilio.exception.RestException;
@@ -10,23 +12,26 @@ import com.twilio.http.Request;
 import com.twilio.http.Response;
 import com.twilio.http.TwilioRestClient;
 import com.twilio.rest.Domains;
+import com.twilio.base.Page;
+import java.time.OffsetDateTime;
+import java.time.LocalDate;
 
-{{#resources}}
+
 {{>model}}
 {{#hasRead}}
 {{#operations}}
 {{#vendorExtensions.x-is-read-operation}}
 public class {{resourceName}}Reader extends Reader<{{resourceName}}> {
 {{#allParams}}
-    private {{dataType}} {{paramName}};
+    private {{{dataType}}} {{paramName}};
 
-    public {{resourceName}}Reader set{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}(final {{dataType}} {{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}){
+    public {{resourceName}}Reader set{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}(final {{{dataType}}} {{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}){
         this.{{paramName}} = {{paramName}};
         return this;
     }
 {{/allParams}}
 
-    public {{resourceName}}Reader({{#allParams}}{{#required}}final {{dataType}} {{paramName}}{{^-last}}, {{/-last}}{{/required}}{{/allParams}}){
+    public {{resourceName}}Reader({{#requiredParams}}final {{{dataType}}} {{paramName}}{{^-last}}, {{/-last}}{{/requiredParams}}){
     {{#allParams}}
     {{#required}}
         this.{{paramName}} = {{paramName}};
@@ -37,20 +42,20 @@ public class {{resourceName}}Reader extends Reader<{{resourceName}}> {
     private void addQueryParams(final Request request){
         {{#queryParams}}
         if ({{paramName}} != null) {
-            request.addQueryParam("{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}", {{paramName}});
+            request.addQueryParam("{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}", {{paramName}}.toString());
         }
         {{/queryParams}}
     }
 
     @Override
-    public boolean read(final TwilioRestClient client) {
+    public ResourceSet<{{resourceName}}> read(final TwilioRestClient client) {
         return new ResourceSet<>(this, client, firstPage(client));
     }
 
     public Page<{{resourceName}}> firstPage(final TwilioRestClient client) {
-        var path = "{{{path}}}";
+        String path = "{{{path}}}";
         {{#requiredParams}}
-        path = path.Replace("{"+"{{paramName}}"+"}", this.{{paramName}})
+        path = path.replace("{"+"{{paramName}}"+"}", this.{{paramName}}.toString());
         {{/requiredParams}}
 
         Request request = new Request(

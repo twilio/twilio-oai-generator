@@ -1,5 +1,6 @@
 {{>licenseInfo}}
-{{>packageName}}
+{{#resources}}
+package com.twilio.rest.{{domainPackage}}.{{package}}.{{packageSubPart}};
 
 import com.twilio.base.Creator;
 import com.twilio.converter.Promoter;
@@ -11,27 +12,29 @@ import com.twilio.http.Request;
 import com.twilio.http.Response;
 import com.twilio.http.TwilioRestClient;
 import com.twilio.rest.Domains;
+import java.math.BigDecimal;
+import java.util.List;
+import java.time.LocalDate;
+import java.time.OffsetDateTime;
 
 import java.net.URI;
 
-{{#resources}}
 {{>model}}
 {{#hasCreate}}
 {{#operations}}
 {{#vendorExtensions.x-is-create-operation}}
 public class {{resourceName}}Creator extends Creator<{{resourceName}}>{
 {{#allParams}}
-    private {{dataType}} {{paramName}};
+    private {{{dataType}}} {{paramName}};
 {{/allParams}}
-
-    public {{resourceName}}Creator({{#allParams}}{{#required}}final {{dataType}} {{paramName}}{{^-last}}, {{/-last}}{{/required}}{{/allParams}}) {
-    {{#allParams}}{{#required}}
+    public {{resourceName}}Creator({{#requiredParams}}final {{{dataType}}} {{paramName}}{{^-last}}, {{/-last}}{{/requiredParams}}) {
+    {{#requiredParams}}{{#required}}
         this.{{paramName}} = {{paramName}};
-    {{/required}}{{/allParams}}
+    {{/required}}{{/requiredParams}}
     }
 
 {{#allParams}}
-    public {{resourceName}}Creator set{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}(final {{dataType}} {{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}){
+    public {{resourceName}}Creator set{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}(final {{{dataType}}} {{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}){
         this.{{paramName}} = {{paramName}};
         return this;
     }
@@ -39,16 +42,16 @@ public class {{resourceName}}Creator extends Creator<{{resourceName}}>{
 
     @Override
     public {{resourceName}} create(final TwilioRestClient client){
-        var path = "{{{path}}}";
+        String path = "{{{path}}}";
         {{#requiredParams}}
-        path = path.Replace("{"+"{{paramName}}"+"}", this.{{paramName}})
+        path = path.replace("{"+"{{paramName}}"+"}", this.{{paramName}}.toString());
         {{/requiredParams}}
 
         Request request = new Request(
             HttpMethod.POST,
             Domains.{{#lambda.uppercase}}{{domain}}{{/lambda.uppercase}}.toString(),
             path
-        )
+        );
 
         addPostParams(request);
         Response response = client.request(request);
@@ -69,7 +72,7 @@ public class {{resourceName}}Creator extends Creator<{{resourceName}}>{
     private void addPostParams(final Request request) {
 {{#allParams}}
         if ({{paramName}} != null) {
-            request.addPostParam("{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}", {{paramName}});
+            request.addPostParam("{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}", {{paramName}}.toString());
         }
 {{/allParams}}
     }
