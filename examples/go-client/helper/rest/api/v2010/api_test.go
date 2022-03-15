@@ -45,11 +45,9 @@ func TestPost(t *testing.T) {
 	params.SetTestNumberDouble(7.89)
 	params.SetTestNumberInt32(111)
 	params.SetTestNumberInt64(222)
-	params.SetTestObject(make(map[string]interface{}))
 	params.SetTestDateTime(time.Now())
 	params.SetTestDate("2022-01-01")
 	params.SetTestEnum("consumer-checking")
-	params.SetTestObjectArray(make([]map[string]interface{}, 1))
 
 	resp, err := testApiService.CreateCredentialAws(params)
 	assert.Nil(t, err)

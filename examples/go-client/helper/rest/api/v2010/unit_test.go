@@ -199,16 +199,6 @@ func TestObjectArrayTypeParam(t *testing.T) {
 	_, _ = twilio.CreateCredentialAws(&params)
 }
 
-func getStreamCount(twilio *ApiService, params *ListCallParams) int {
-	callCount := 0
-
-	channel, _ := twilio.StreamCall(params)
-	for range channel {
-		callCount += 1
-	}
-	return callCount
-}
-
 func TestList(t *testing.T) {
 	mockCtrl := gomock.NewController(t)
 	testClient := NewMockBaseClient(mockCtrl)
@@ -225,7 +215,7 @@ func TestList(t *testing.T) {
 		DoAndReturn(func(method string, rawURL string, data url.Values,
 			headers map[string]interface{}) (*http.Response, error) {
 			response := map[string]interface{}{
-				"calls": []map[string]interface{}{
+				"recordings": []map[string]interface{}{
 					{
 						"test_string": "hi",
 					},
@@ -242,7 +232,7 @@ func TestList(t *testing.T) {
 						"test_string": "others",
 					},
 				},
-				"next_page_uri": "/2010-04-01/Accounts/AC12345678123456781234567812345678/Calls.json?From=9999999999&PageNumber=&To=4444444444&PageSize=5&Page=1&PageToken=PASMc49f620580b24424bcfa885b1f741130",
+				"next_page_uri": "/2010-04-01/Accounts/AC12345678123456781234567812345678/Calls/CA123/Recordings.json?PageNumber=&PageSize=5&Page=1&PageToken=PASMc49f620580b24424bcfa885b1f741130",
 			}
 
 			resp, _ := json.Marshal(response)
@@ -255,27 +245,25 @@ func TestList(t *testing.T) {
 
 	twilio := NewApiServiceWithClient(testClient)
 
-	params := &ListCallParams{}
-	params.SetFrom("4444444444")
-	params.SetTo("9999999999")
+	params := &ListCallRecordingParams{}
 	params.SetPageSize(5)
 	params.SetLimit(5)
 
-	resp, err := twilio.ListCall(params)
+	resp, err := twilio.ListCallRecording("CA123", params)
 	assert.Equal(t, "hi", *resp[0].TestString)
 	assert.Equal(t, "there", *resp[1].TestString)
 	assert.Equal(t, 5, len(resp))
 	assert.Nil(t, err)
 
-	resp, _ = twilio.ListCall(params)
+	resp, _ = twilio.ListCallRecording("CA123", params)
 	assert.Equal(t, 5, len(resp))
 
 	params.SetLimit(10)
-	resp, _ = twilio.ListCall(params)
+	resp, _ = twilio.ListCallRecording("CA123", params)
 	assert.Equal(t, 10, len(resp))
 
 	params.SetLimit(3)
-	resp, _ = twilio.ListCall(params)
+	resp, _ = twilio.ListCallRecording("CA123", params)
 	assert.Equal(t, 3, len(resp))
 }
 
@@ -402,7 +390,7 @@ func TestListError(t *testing.T) {
 
 			return &http.Response{
 				Body: ioutil.NopCloser(bytes.NewReader(resp)),
-			}, errors.New("Listing error")
+			}, errors.New("listing error")
 		},
 		).AnyTimes()
 
@@ -415,7 +403,7 @@ func TestListError(t *testing.T) {
 	resp, err := twilio.ListCredentialAws(params)
 	assert.Len(t, resp, 0)
 	assert.NotNil(t, err)
-	assert.Equal(t, "Listing error", err.Error())
+	assert.Equal(t, "listing error", err.Error())
 }
 
 func TestListNoNextPage(t *testing.T) {
