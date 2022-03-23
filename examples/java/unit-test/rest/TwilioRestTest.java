@@ -5,18 +5,14 @@ import static org.junit.Assert.*;
 import com.twilio.rest.api.v2010.Account.Message;
 import com.twilio.rest.api.v2010.Account.MessageReader;
 import com.twilio.rest.api.v2010.Credential.AwsCreator;
-
 import org.json.CDL;
 import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
-
 import static org.mockito.Mockito.*;
 import java.util.*;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-
-
 import java.net.URI;
 
 import com.twilio.http.Request;
@@ -36,7 +32,6 @@ import com.twilio.rest.api.v2010.Account.Call.Recording;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
-//TODO: Ignore Test cases will covered in future stories
 public class TwilioRestTest {
     @Mock
     private TwilioRestClient twilioRestClient;
