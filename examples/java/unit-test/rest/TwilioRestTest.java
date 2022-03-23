@@ -8,18 +8,14 @@ import com.twilio.rest.api.v2010.Credential.AwsCreator;
 
 import org.json.CDL;
 import org.json.JSONObject;
-import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
 import static org.mockito.Mockito.*;
 import java.util.*;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import nl.jqno.equalsverifier.internal.lib.bytebuddy.implementation.bytecode.ByteCodeAppender.Size;
 
 import java.net.URI;
 
@@ -172,10 +168,12 @@ public class TwilioRestTest {
         jsonMap.put("page", 0);
         jsonMap.put("messages", CDL.toJSONArray(messagesValues));
         
+
         JSONObject response = new JSONObject(jsonMap);
         mockRequest.addQueryParam("PageSize", "5");
         mockRequest.addQueryParam("To", "9999999999");
         mockRequest.addQueryParam("From", "4444444444");
+
         when(twilioRestClient.request(mockRequest)).thenReturn(new Response(response.toString(), 200));
         when(twilioRestClient.getObjectMapper()).thenReturn(objectMapper);
         MessageReader messageReader = new MessageReader("AC222222222222222222222222222222");
@@ -298,5 +296,3 @@ public class TwilioRestTest {
         assertNotNull(awsCreator);
     }
 }
-
-
