@@ -167,9 +167,10 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
             // TODO: This is the issue, These values will be overridden multiple times
             resource.put("resourcePathParams", co.pathParams);
             resource.put("resourceRequiredParams", co.requiredParams);
-
+            co.queryParams =  co.queryParams.stream().map(ConventionResolver::prefixedCollapsibleMap).collect(Collectors.toList());
             co.pathParams = null;
             co.hasParams = !co.allParams.isEmpty();
+            co.allParams = co.allParams.stream().map(ConventionResolver::resolveTypes).collect(Collectors.toList());
             co.hasRequiredParams = !co.requiredParams.isEmpty();
 
             if (co.bodyParam != null) {
@@ -182,10 +183,10 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
                         .map(response -> response.dataType)
                         .filter(Objects::nonNull)
                         .map(this::getModel)
+                        .map(ConventionResolver::resolve)
                         .flatMap(Optional::stream)
                         .forEach(model -> resource.put("responseModel", model));
             }
-
             results.put("apiFilename", getResourceName(co.path));
             results.put("packageName", getPackageName(co.path));
             results.put("recordKey", getFolderName(co.path));

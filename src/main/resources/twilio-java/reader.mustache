@@ -39,11 +39,21 @@ public class {{resourceName}}Reader extends Reader<{{resourceName}}> {
     {{/allParams}}
     }
 
-    private void addQueryParams(final Request request){
+    private void addQueryParams(final Request request) {
         {{#queryParams}}
+        {{#vendorExtensions.x-prefixed_collapsible_map}}
+        if ({{paramName}} != null) {
+            Map<String, String> params = PrefixedCollapsibleMap.serialize({{{paramName}}}, "{{vendorExtensions.x-prefixed_collapsible_map}}");
+            for (Map.Entry<String, String> entry : params.entrySet()) {
+                request.addQueryParam(entry.getKey(), entry.getValue());
+            }
+        }
+        {{/vendorExtensions.x-prefixed_collapsible_map}}
+        {{^vendorExtensions.x-prefixed_collapsible_map}}
         if ({{paramName}} != null) {
             request.addQueryParam("{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}", {{paramName}}.toString());
         }
+        {{/vendorExtensions.x-prefixed_collapsible_map}}
         {{/queryParams}}
     }
 
