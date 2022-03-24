@@ -9,6 +9,9 @@ import org.openapitools.codegen.utils.StringUtils;
 import java.io.File;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 public class TwilioJavaGenerator extends JavaClientCodegen {
 
@@ -276,6 +279,51 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
     private void addOperationName(final CodegenOperation operation, final String name) {
         operation.vendorExtensions.put("x-name", name);
         operation.vendorExtensions.put("x-name-lower", name.toLowerCase());
+    }
+    private String getMd5(String input){
+        try {
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            byte[] messageDigest = md.digest(input.getBytes());
+            BigInteger no = new BigInteger(1, messageDigest);
+            String hashtext = no.toString(16);
+            while (hashtext.length() < 32) {
+                hashtext = "0" + hashtext;
+            }
+            return hashtext;
+        }
+
+        // For specifying wrong message digest algorithms
+        catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private long calculate_serial_version_uid(final Map<String, Object> modelProperties){
+        String signature = calculate_signature(modelProperties);
+        String md5Hash  = getMd5(signature);
+        return Long.parseLong(getMd5(md5Hash).substring(0,12), 16);
+    }
+
+    private String calculate_signature(final Map<String, Object> modelProperties){
+
+        Map<String, String> propertyMap = new HashMap<>();
+        for(Map.Entry<String,Object> entry : modelProperties.entrySet()){
+            String key = entry.getKey();
+            String type = entry.getClass().toString(); //concatenate the class name
+            propertyMap.put(key,type);
+        }
+
+        ArrayList<String> sortedKeys = new ArrayList<String>(propertyMap.keySet());
+        Collections.sort(sortedKeys);
+        StringBuilder sb = new StringBuilder();
+        for (String key : sortedKeys){
+             sb.append("|");
+             sb.append(key);
+             sb.append("|");
+             sb.append(propertyMap.get(key));
+        }
+        return sb.deleteCharAt(sb.length()-1).toString();
+
     }
 
     @Override
