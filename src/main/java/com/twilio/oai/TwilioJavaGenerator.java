@@ -311,7 +311,6 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
     private long calculate_serial_version_uid(final List<CodegenProperty> modelProperties){
 
         String signature = calculate_signature(modelProperties);
-        System.out.println("signature: "+signature);
         String md5Hash  = getMd5(signature);
         return Long.parseLong(getMd5(md5Hash).substring(0,12), 16);
     }
