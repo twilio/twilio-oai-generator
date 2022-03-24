@@ -186,9 +186,19 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
                         .filter(Objects::nonNull)
                         .map(this::getModel)
                         .flatMap(Optional::stream)
-                        .forEach(model -> resource.put("responseModel", model));
+                        .forEach(model -> {
+                            resource.put("responseModel", model);
+                        });
             }
-
+            co.responses
+                    .stream()
+                    .map(response -> response.dataType)
+                    .filter(Objects::nonNull)
+                    .map(this::getModel)
+                    .flatMap(Optional::stream)
+                    .forEach(model -> {
+                        resource.put("serialVersionUID", calculate_serial_version_uid(model.vars));
+                    });
             results.put("apiFilename", getResourceName(co.path));
             results.put("packageName", getPackageName(co.path));
             results.put("recordKey", getFolderName(co.path));
@@ -298,18 +308,20 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
         }
     }
 
-    private long calculate_serial_version_uid(final Map<String, Object> modelProperties){
+    private long calculate_serial_version_uid(final List<CodegenProperty> modelProperties){
+
         String signature = calculate_signature(modelProperties);
+        System.out.println("signature: "+signature);
         String md5Hash  = getMd5(signature);
         return Long.parseLong(getMd5(md5Hash).substring(0,12), 16);
     }
 
-    private String calculate_signature(final Map<String, Object> modelProperties){
+    private String calculate_signature(final List<CodegenProperty> modelProperties){
 
         Map<String, String> propertyMap = new HashMap<>();
-        for(Map.Entry<String,Object> entry : modelProperties.entrySet()){
-            String key = entry.getKey();
-            String type = entry.getClass().toString(); //concatenate the class name
+        for(CodegenProperty property : modelProperties){
+            String key = property.name;
+            String type = property.dataType; //concatenate the class name
             propertyMap.put(key,type);
         }
 
@@ -318,11 +330,11 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
         StringBuilder sb = new StringBuilder();
         for (String key : sortedKeys){
              sb.append("|");
-             sb.append(key);
+             sb.append(key.toLowerCase());
              sb.append("|");
-             sb.append(propertyMap.get(key));
+             sb.append(propertyMap.get(key).toLowerCase());
         }
-        return sb.deleteCharAt(sb.length()-1).toString();
+        return sb.toString();
 
     }
 
