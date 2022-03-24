@@ -17,6 +17,11 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
 
     // Unique string devoid of symbols.
     private static final String PATH_SEPARATOR_PLACEHOLDER = "1234567890";
+    private static final int THIRTY_TWO = 32;
+    private static final int SIXTEEN = 16;
+    private static final int ONE = 1;
+    private static final int ZERO = 0;
+    private static final int TWELVE = 12;
 
     private final List<CodegenModel> allModels = new ArrayList<>();
     private final Inflector inflector = new Inflector();
@@ -179,17 +184,6 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
                 addModel(resource, co.bodyParam.dataType);
             }
 
-            if (co.path.endsWith("}") || co.path.endsWith("}.json")) {
-                co.responses
-                        .stream()
-                        .map(response -> response.dataType)
-                        .filter(Objects::nonNull)
-                        .map(this::getModel)
-                        .flatMap(Optional::stream)
-                        .forEach(model -> {
-                            resource.put("responseModel", model);
-                        });
-            }
             co.responses
                     .stream()
                     .map(response -> response.dataType)
@@ -197,12 +191,16 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
                     .map(this::getModel)
                     .flatMap(Optional::stream)
                     .forEach(model -> {
-                        resource.put("serialVersionUID", calculate_serial_version_uid(model.vars));
+                        if (co.path.endsWith("}") || co.path.endsWith("}.json")) {
+                            resource.put("responseModel", model);
+                        }
+                        resource.put("serialVersionUID", calculateSerialVersionUid(model.vars));
                     });
+
             results.put("apiFilename", getResourceName(co.path));
             results.put("packageName", getPackageName(co.path));
             results.put("recordKey", getFolderName(co.path));
-            resource.put("packageSubPart", getPackageName(co.path).substring(0, getPackageName(co.path).lastIndexOf(".")));
+            resource.put("packageSubPart", getPackageName(co.path).substring(ZERO, getPackageName(co.path).lastIndexOf(".")));
         }
 
         for (final Object resource : resources.values()) {
@@ -290,32 +288,14 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
         operation.vendorExtensions.put("x-name", name);
         operation.vendorExtensions.put("x-name-lower", name.toLowerCase());
     }
-    private String getMd5(String input){
-        try {
-            MessageDigest md = MessageDigest.getInstance("MD5");
-            byte[] messageDigest = md.digest(input.getBytes());
-            BigInteger no = new BigInteger(1, messageDigest);
-            String hashtext = no.toString(16);
-            while (hashtext.length() < 32) {
-                hashtext = "0" + hashtext;
-            }
-            return hashtext;
-        }
 
-        // For specifying wrong message digest algorithms
-        catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException(e);
-        }
+    private long calculateSerialVersionUid(final List<CodegenProperty> modelProperties){
+
+        String signature = calculateSignature(modelProperties);
+        return Long.parseLong(getMd5(signature).substring(ZERO,TWELVE), SIXTEEN);
     }
 
-    private long calculate_serial_version_uid(final List<CodegenProperty> modelProperties){
-
-        String signature = calculate_signature(modelProperties);
-        String md5Hash  = getMd5(signature);
-        return Long.parseLong(getMd5(md5Hash).substring(0,12), 16);
-    }
-
-    private String calculate_signature(final List<CodegenProperty> modelProperties){
+    private String calculateSignature(final List<CodegenProperty> modelProperties){
 
         Map<String, String> propertyMap = new HashMap<>();
         for(CodegenProperty property : modelProperties){
@@ -335,6 +315,22 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
         }
         return sb.toString();
 
+    }
+
+    private String getMd5(String input){
+        try {
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            byte[] messageDigest = md.digest(input.getBytes());
+            BigInteger bigInteger = new BigInteger(ONE, messageDigest);
+            String hashtext = bigInteger.toString(SIXTEEN);
+            while (hashtext.length() < THIRTY_TWO) {
+                hashtext = "0" + hashtext;
+            }
+            return hashtext;
+        }
+        catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
