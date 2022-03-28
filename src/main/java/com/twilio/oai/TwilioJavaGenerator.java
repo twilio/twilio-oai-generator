@@ -345,7 +345,7 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
 
     private void fixDateRange(List<CodegenParameter> allParams){
         for(CodegenParameter param: allParams){
-            if(param.dataType==INCORRECT_DATE_RANGE_TYPE){
+            if(!param.dataType.isEmpty() && param.dataType.equals(INCORRECT_DATE_RANGE_TYPE)){
                 param.dataType=CORRECT_DATE_RANGE_TYPE;
                 if(param.paramName.length() >=LENGTH_OF_LESSERTHAN && param.paramName.substring(param.paramName.length() - LENGTH_OF_LESSERTHAN ).equals("LessThan")){
                     param.paramName = param.paramName.substring(0, param.paramName.length() - LENGTH_OF_LESSERTHAN ) + BEFORE;
@@ -359,6 +359,7 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
                         param.getSchema().complexType=CORRECT_DATE_RANGE_TYPE;
                         param.getSchema().datatypeWithEnum=CORRECT_DATE_RANGE_TYPE;
                         param.getSchema().baseType=CORRECT_DATE_RANGE_TYPE;
+//                        param.getSchema().example=CORRECT_DATE_RANGE_TYPE+".now()";
                     }
                     if(param.getSchema().baseName.length()>=LENGTH_OF_RELATIONAL_OPERATOR && param.getSchema().baseName.substring(param.getSchema().baseName.length() - LENGTH_OF_RELATIONAL_OPERATOR ).equals("<")){
                         if(param.getSchema().getter.length()>=LENGTH_OF_LESSERTHAN){
@@ -396,6 +397,13 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
                         }
                     }
                 }
+            }
+            if( !param.example.isEmpty() && param.example.equals("OffsetDateTime.now()")){
+                param.example="ZonedDateTime.now()";
+            }
+
+            if(!param.paramName.isEmpty() && param.paramName.equals("TestDateTime")){
+                param.baseType = CORRECT_DATE_RANGE_TYPE;
             }
         }
     }
