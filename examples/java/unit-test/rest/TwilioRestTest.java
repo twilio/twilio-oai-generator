@@ -19,7 +19,7 @@ import com.twilio.http.Response;
 import com.twilio.http.HttpMethod;
 import com.twilio.base.ResourceSet;
 import com.twilio.http.TwilioRestClient;
-import java.time.OffsetDateTime;
+import java.time.ZonedDateTime;
 import java.time.LocalDate;
 import com.twilio.rest.api.v2010.Account.Call.RecordingCreator;
 import com.twilio.rest.api.v2010.Account.Call.RecordingReader;
@@ -89,12 +89,12 @@ public class TwilioRestTest {
                 "/2010-04-01/Accounts/AC222222222222222222222222222222/Calls/PNXXXXY/Recordings.json"
         );
         String url = "https://api.twilio.com/2010-04-01/Accounts/AC222222222222222222222222222222/Calls/PNXXXXY/Recordings.json";
-        OffsetDateTime currentDateTime = OffsetDateTime.now();
+        ZonedDateTime currentDateTime = ZonedDateTime.now();
         LocalDate localDate  = LocalDate.now();
         mockRequest.addQueryParam("DateCreated", currentDateTime.toString());
         mockRequest.addQueryParam("DateTest", localDate.toString());
-        mockRequest.addQueryParam("DateCreatedLessThan", currentDateTime.toString());
-        mockRequest.addQueryParam("DateCreatedGreaterThan", currentDateTime.toString());
+        mockRequest.addQueryParam("DateCreatedBefore", currentDateTime.toString());
+        mockRequest.addQueryParam("DateCreatedAfter", currentDateTime.toString());
         mockRequest.addQueryParam("PageSize", "4");
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
@@ -103,8 +103,8 @@ public class TwilioRestTest {
         when(twilioRestClient.getObjectMapper()).thenReturn(objectMapper);
         RecordingReader recordingReader = new RecordingReader("AC222222222222222222222222222222", "PNXXXXY");
         recordingReader.setDateCreated(currentDateTime);
-        recordingReader.setDateCreatedLessThan(currentDateTime);
-        recordingReader.setDateCreatedGreaterThan(currentDateTime);
+        recordingReader.setDateCreatedBefore(currentDateTime);
+        recordingReader.setDateCreatedAfter(currentDateTime);
         recordingReader.setDateTest(localDate);
         recordingReader.setPageSize(4);
 
