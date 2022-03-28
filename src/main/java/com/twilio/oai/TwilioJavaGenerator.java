@@ -19,17 +19,15 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
     private static final String PATH_SEPARATOR_PLACEHOLDER = "1234567890";
     private static final String INCORRECT_DATE_RANGE_TYPE = "OffsetDateTime";
     private static final String CORRECT_DATE_RANGE_TYPE = "ZonedDateTime";
+    private static final String LESS_THAN = "LessThan";
+    private static final String GREATER_THAN = "GreaterThan";
+
     private static final String BEFORE = "Before";
     private static final String AFTER = "After";
     private static final int OVERFLOW_CHECKER = 32;
     private static final int BASE_SIXTEEN = 16;
     private static final int BIG_INTEGER_CONSTANT = 1;
     private static final int SERIAL_UID_LENGTH = 12;
-    private static final int LENGTH_OF_LESSERTHAN = 8;
-    private static final int LENGTH_OF_GREATERTHAN = 11;
-    private static final int LENGTH_OF_LESSER_THAN = 9;
-    private static final int LENGTH_OF_GREATER_THAN = 12;
-    private static final int LENGTH_OF_RELATIONAL_OPERATOR = 1;
 
     private final List<CodegenModel> allModels = new ArrayList<>();
     private final Inflector inflector = new Inflector();
@@ -347,11 +345,11 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
         for(CodegenParameter param: allParams){
             if(!param.dataType.isEmpty() && param.dataType.equals(INCORRECT_DATE_RANGE_TYPE)){
                 param.dataType=CORRECT_DATE_RANGE_TYPE;
-                if(param.paramName.length() >=LENGTH_OF_LESSERTHAN && param.paramName.substring(param.paramName.length() - LENGTH_OF_LESSERTHAN ).equals("LessThan")){
-                    param.paramName = param.paramName.substring(0, param.paramName.length() - LENGTH_OF_LESSERTHAN ) + BEFORE;
+                if(param.paramName.contains(LESS_THAN)){
+                    param.paramName = param.paramName.replace(LESS_THAN, BEFORE);
                 }
-                if(param.paramName.length() >=LENGTH_OF_GREATERTHAN &&  param.paramName.substring(param.paramName.length() - LENGTH_OF_GREATERTHAN ).equals("GreaterThan")){
-                    param.paramName = param.paramName.substring(0, param.paramName.length() - LENGTH_OF_GREATERTHAN ) + AFTER;
+                if(param.paramName.contains(GREATER_THAN)){
+                    param.paramName = param.paramName.replace(GREATER_THAN, AFTER);
                 }
                 if(param.getSchema()!=null){
                     if(param.getSchema().dataType.equals(INCORRECT_DATE_RANGE_TYPE)){
@@ -361,40 +359,22 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
                         param.getSchema().baseType=CORRECT_DATE_RANGE_TYPE;
 //                        param.getSchema().example=CORRECT_DATE_RANGE_TYPE+".now()";
                     }
-                    if(param.getSchema().baseName.length()>=LENGTH_OF_RELATIONAL_OPERATOR && param.getSchema().baseName.substring(param.getSchema().baseName.length() - LENGTH_OF_RELATIONAL_OPERATOR ).equals("<")){
-                        if(param.getSchema().getter.length()>=LENGTH_OF_LESSERTHAN){
-                            param.getSchema().getter = param.getSchema().getter.substring(0, param.getSchema().getter.length() - LENGTH_OF_LESSERTHAN ) + BEFORE;
-                        }
-                        if(param.getSchema().setter.length()>=LENGTH_OF_LESSERTHAN){
-                            param.getSchema().setter = param.getSchema().setter.substring(0, param.getSchema().setter.length() - LENGTH_OF_LESSERTHAN ) + BEFORE;
-                        }
-                        if(param.getSchema().name.length()>=LENGTH_OF_LESSERTHAN){
-                            param.getSchema().name = param.getSchema().name.substring(0, param.getSchema().name.length() - LENGTH_OF_LESSERTHAN ) + BEFORE;
-                        }
-                        if(param.getSchema().nameInCamelCase.length()>=LENGTH_OF_LESSERTHAN){
-                            param.getSchema().nameInCamelCase= param.getSchema().nameInCamelCase.substring(0, param.getSchema().nameInCamelCase.length() - LENGTH_OF_LESSERTHAN ) + BEFORE;
-                        }
-                        if(param.getSchema().baseName.length()>=LENGTH_OF_LESSER_THAN){
-                            param.getSchema().nameInSnakeCase= param.getSchema().nameInSnakeCase.substring(0, param.getSchema().nameInSnakeCase.length() - LENGTH_OF_LESSER_THAN ) + "BEFORE";
-                        }
+                    if(param.getSchema().baseName.contains("<")){
+                        param.getSchema().getter = param.getSchema().getter.replace(LESS_THAN, BEFORE);
+                        param.getSchema().setter = param.getSchema().setter.replace(LESS_THAN, BEFORE);
+                        param.getSchema().name = param.getSchema().name.replace(LESS_THAN, BEFORE);
+                        param.getSchema().nameInCamelCase= param.getSchema().nameInCamelCase.replace(LESS_THAN, BEFORE);
+                        param.getSchema().nameInSnakeCase= param.getSchema().nameInSnakeCase.replace("LESS_THAN",BEFORE.toUpperCase());
+
 
                     }
-                    if(param.getSchema().baseName.length()>=LENGTH_OF_RELATIONAL_OPERATOR && param.getSchema().baseName.substring(param.getSchema().baseName.length() - LENGTH_OF_RELATIONAL_OPERATOR ).equals(">")){
-                        if(param.getSchema().getter.length()>=LENGTH_OF_GREATERTHAN){
-                            param.getSchema().getter = param.getSchema().getter.substring(0, param.getSchema().getter.length() - LENGTH_OF_GREATERTHAN ) + AFTER;
-                        }
-                        if(param.getSchema().setter.length()>=LENGTH_OF_GREATERTHAN){
-                            param.getSchema().setter = param.getSchema().setter.substring(0, param.getSchema().setter.length() - LENGTH_OF_GREATERTHAN ) + AFTER;
-                        }
-                        if(param.getSchema().name.length()>=LENGTH_OF_GREATERTHAN){
-                            param.getSchema().name = param.getSchema().name.substring(0, param.getSchema().name.length() - LENGTH_OF_GREATERTHAN ) + AFTER;
-                        }
-                        if(param.getSchema().nameInCamelCase.length()>=LENGTH_OF_GREATERTHAN){
-                            param.getSchema().nameInCamelCase= param.getSchema().nameInCamelCase.substring(0, param.getSchema().nameInCamelCase.length() - LENGTH_OF_GREATERTHAN ) + AFTER;
-                        }
-                        if(param.getSchema().nameInSnakeCase.length()>=LENGTH_OF_GREATER_THAN){
-                            param.getSchema().nameInSnakeCase= param.getSchema().nameInSnakeCase.substring(0, param.getSchema().nameInSnakeCase.length() - LENGTH_OF_GREATER_THAN ) + "AFTER";
-                        }
+                    if(param.getSchema().baseName.contains(">")){
+                        param.getSchema().getter = param.getSchema().getter.replace(GREATER_THAN, AFTER);
+                        param.getSchema().setter = param.getSchema().setter.replace(GREATER_THAN, AFTER);
+                        param.getSchema().name = param.getSchema().name.replace(GREATER_THAN, AFTER);
+                        param.getSchema().nameInCamelCase= param.getSchema().nameInCamelCase.replace(GREATER_THAN, AFTER);
+                        param.getSchema().nameInSnakeCase= param.getSchema().nameInSnakeCase.replace("GREATER_THAN",AFTER.toUpperCase());
+
                     }
                 }
             }
