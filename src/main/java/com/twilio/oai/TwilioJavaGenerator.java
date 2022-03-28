@@ -17,10 +17,19 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
 
     // Unique string devoid of symbols.
     private static final String PATH_SEPARATOR_PLACEHOLDER = "1234567890";
+    private static final String INCORRECT_DATE_RANGE_TYPE = "OffsetDateTime";
+    private static final String CORRECT_DATE_RANGE_TYPE = "ZonedDateTime";
+    private static final String BEFORE = "Before";
+    private static final String AFTER = "After";
     private static final int OVERFLOW_CHECKER = 32;
     private static final int BASE_SIXTEEN = 16;
     private static final int BIG_INTEGER_CONSTANT = 1;
     private static final int SERIAL_UID_LENGTH = 12;
+    private static final int LENGTH_OF_LESSERTHAN = 8;
+    private static final int LENGTH_OF_GREATERTHAN = 11;
+    private static final int LENGTH_OF_LESSER_THAN = 9;
+    private static final int LENGTH_OF_GREATER_THAN = 12;
+    private static final int LENGTH_OF_RELATIONAL_OPERATOR = 1;
 
     private final List<CodegenModel> allModels = new ArrayList<>();
     private final Inflector inflector = new Inflector();
@@ -196,6 +205,8 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
                         resource.put("serialVersionUID", calculateSerialVersionUid(model.vars));
                     });
 
+            fixDateRange(co.allParams);
+
             results.put("apiFilename", getResourceName(co.path));
             results.put("packageName", getPackageName(co.path));
             results.put("recordKey", getFolderName(co.path));
@@ -329,6 +340,42 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
         }
         catch (NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    private void fixDateRange(List<CodegenParameter> allParams){
+        for(CodegenParameter param: allParams){
+            if(param.dataType==INCORRECT_DATE_RANGE_TYPE){
+                param.dataType=CORRECT_DATE_RANGE_TYPE;
+                if(param.paramName.substring(param.paramName.length() - LENGTH_OF_LESSERTHAN ).equals("LessThan")){
+                    param.paramName = param.paramName.substring(0, param.paramName.length() - LENGTH_OF_LESSERTHAN ) + BEFORE;
+                }
+                if(param.paramName.substring(param.paramName.length() - LENGTH_OF_GREATERTHAN ).equals("GreaterThan")){
+                    param.paramName = param.paramName.substring(0, param.paramName.length() - LENGTH_OF_GREATERTHAN ) + AFTER;
+                }
+                if(param.getSchema()!=null){
+                    if(param.getSchema().dataType.equals(INCORRECT_DATE_RANGE_TYPE)){
+                        param.getSchema().dataType=CORRECT_DATE_RANGE_TYPE;
+                        param.getSchema().complexType=CORRECT_DATE_RANGE_TYPE;
+                        param.getSchema().datatypeWithEnum=CORRECT_DATE_RANGE_TYPE;
+                        param.getSchema().baseType=CORRECT_DATE_RANGE_TYPE;
+                    }
+                    if(param.getSchema().baseName.substring(param.getSchema().baseName.length() - LENGTH_OF_RELATIONAL_OPERATOR ).equals("<")){
+                        param.getSchema().getter = param.getSchema().getter.substring(0, param.getSchema().getter.length() - LENGTH_OF_LESSERTHAN ) + BEFORE;
+                        param.getSchema().setter = param.getSchema().setter.substring(0, param.getSchema().setter.length() - LENGTH_OF_LESSERTHAN ) + BEFORE;
+                        param.getSchema().name = param.getSchema().name.substring(0, param.getSchema().name.length() - LENGTH_OF_LESSERTHAN ) + BEFORE;
+                        param.getSchema().nameInCamelCase= param.getSchema().nameInCamelCase.substring(0, param.getSchema().nameInCamelCase.length() - LENGTH_OF_LESSERTHAN ) + BEFORE;
+                        param.getSchema().nameInSnakeCase= param.getSchema().nameInSnakeCase.substring(0, param.getSchema().nameInSnakeCase.length() - LENGTH_OF_LESSER_THAN ) + "BEFORE";
+                    }
+                    if(param.getSchema().baseName.substring(param.getSchema().baseName.length() - LENGTH_OF_RELATIONAL_OPERATOR ).equals(">")){
+                        param.getSchema().getter = param.getSchema().getter.substring(0, param.getSchema().getter.length() - LENGTH_OF_GREATERTHAN ) + AFTER;
+                        param.getSchema().setter = param.getSchema().setter.substring(0, param.getSchema().setter.length() - LENGTH_OF_GREATERTHAN ) + AFTER;
+                        param.getSchema().name = param.getSchema().name.substring(0, param.getSchema().name.length() - LENGTH_OF_GREATERTHAN ) + AFTER;
+                        param.getSchema().nameInCamelCase= param.getSchema().nameInCamelCase.substring(0, param.getSchema().nameInCamelCase.length() - LENGTH_OF_GREATERTHAN ) + AFTER;
+                        param.getSchema().nameInSnakeCase= param.getSchema().nameInSnakeCase.substring(0, param.getSchema().nameInSnakeCase.length() - LENGTH_OF_GREATER_THAN ) + "AFTER";
+                    }
+                }
+            }
         }
     }
 
