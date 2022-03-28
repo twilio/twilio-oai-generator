@@ -17,11 +17,10 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
 
     // Unique string devoid of symbols.
     private static final String PATH_SEPARATOR_PLACEHOLDER = "1234567890";
-    private static final int THIRTY_TWO = 32;
-    private static final int SIXTEEN = 16;
-    private static final int ONE = 1;
-    private static final int ZERO = 0;
-    private static final int TWELVE = 12;
+    private static final int OVERFLOW_CHECKER = 32;
+    private static final int BASE_SIXTEEN = 16;
+    private static final int BIG_INTEGER_CONSTANT = 1;
+    private static final int SERIAL_UID_LENGTH = 12;
 
     private final List<CodegenModel> allModels = new ArrayList<>();
     private final Inflector inflector = new Inflector();
@@ -200,7 +199,7 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
             results.put("apiFilename", getResourceName(co.path));
             results.put("packageName", getPackageName(co.path));
             results.put("recordKey", getFolderName(co.path));
-            resource.put("packageSubPart", getPackageName(co.path).substring(ZERO, getPackageName(co.path).lastIndexOf(".")));
+            resource.put("packageSubPart", getPackageName(co.path).substring(0, getPackageName(co.path).lastIndexOf(".")));
         }
 
         for (final Object resource : resources.values()) {
@@ -292,7 +291,7 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
     private long calculateSerialVersionUid(final List<CodegenProperty> modelProperties){
 
         String signature = calculateSignature(modelProperties);
-        return Long.parseLong(getMd5(signature).substring(ZERO,TWELVE), SIXTEEN);
+        return Long.parseLong(getMd5(signature).substring(0,SERIAL_UID_LENGTH), BASE_SIXTEEN);
     }
 
     private String calculateSignature(final List<CodegenProperty> modelProperties){
@@ -321,9 +320,9 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
         try {
             MessageDigest md = MessageDigest.getInstance("MD5");
             byte[] messageDigest = md.digest(input.getBytes());
-            BigInteger bigInteger = new BigInteger(ONE, messageDigest);
-            String hashtext = bigInteger.toString(SIXTEEN);
-            while (hashtext.length() < THIRTY_TWO) {
+            BigInteger bigInteger = new BigInteger(BIG_INTEGER_CONSTANT, messageDigest);
+            String hashtext = bigInteger.toString(BASE_SIXTEEN);
+            while (hashtext.length() < OVERFLOW_CHECKER) {
                 hashtext = "0" + hashtext;
             }
             return hashtext;
