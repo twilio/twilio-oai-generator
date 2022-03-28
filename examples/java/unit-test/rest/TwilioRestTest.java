@@ -145,7 +145,6 @@ public class TwilioRestTest {
                 "/2010-04-01/Accounts/AC222222222222222222222222222222/Messages.json"
         );
         ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.registerModule(new JavaTimeModule());
         String messagesValues = 
         "direction,      from,         to,           body,  status    \n" +
         "outbound-api,   4444444444,   9999999999,   Hi,    delivered \n" +
@@ -188,7 +187,6 @@ public class TwilioRestTest {
                 "/2010-04-01/Accounts/AC222222222222222222222222222222/Messages.json"
         );
         ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.registerModule(new JavaTimeModule());
         when(twilioRestClient.getObjectMapper()).thenReturn(objectMapper);
 
         String messagesValues = 
@@ -218,7 +216,6 @@ public class TwilioRestTest {
             "api",
             "/2010-04-01/Accounts/AC222222222222222222222222222222/Messages.json?From=9999999999&PageNumber=&To=4444444444&PageSize=5&Page=1&PageToken=PASMc49f620580b24424bcfa885b1f741130"
         );
-
         Map<String, Object> jsonMap1 = new HashMap<String, Object>();
         jsonMap1.put("page", 1);
         jsonMap1.put("uri", "/2010-04-01/Accounts/AC222222222222222222222222222222/Messages.json?From=9999999999&PageNumber=&To=4444444444&PageSize=5&Page=1&PageToken=PASMc49f620580b24424bcfa885b1f741130");
@@ -244,27 +241,25 @@ public class TwilioRestTest {
             HttpMethod.GET,
             "api",
             "/2010-04-01/Accounts/AC222222222222222222222222222222/Messages.json"
-    );
-    ObjectMapper objectMapper = new ObjectMapper();
-    objectMapper.registerModule(new JavaTimeModule());
+        );
+        ObjectMapper objectMapper = new ObjectMapper();
 
-    Map<String, Object> jsonMap = new HashMap<String, Object>();
-    jsonMap.put("code", 20001);
-    jsonMap.put("message", "Invalid PageSize.");
-    jsonMap.put("more_info", "https://www.twilio.com/docs/errors/20001");
-    jsonMap.put("status", 400);
-    JSONObject response = new JSONObject(jsonMap);
-    mockRequest.addQueryParam("To", "9999999999");
-    mockRequest.addQueryParam("From", "4444444444");
-    mockRequest.addQueryParam("PageSize", "0");
-  //  when(twilioRestClient.request(mockRequest)).thenReturn(new Response("{\"messages\":[{\"from\":\"4444444444\", \"to\":\"9999999999\", \"PageSize\":\"5\"}], \"meta\": {\"url\":\"https://api.twilio.com/2010-04-01/Accounts/AC222222222222222222222222222222/Messages.json\", \"next_page_url\":\"\", \"previous_page_url\":\"\", \"first_page_url\":\"\", \"page_size\":5}}", 200));
-    when(twilioRestClient.request(mockRequest)).thenReturn(new Response(response.toString(), 400));
-    when(twilioRestClient.getObjectMapper()).thenReturn(objectMapper);
-    MessageReader messageReader = new MessageReader("AC222222222222222222222222222222");
-    messageReader.setFrom("4444444444");
-    messageReader.setTo("9999999999");
-    messageReader.setPageSize(0);
-    assertThrows("Invalid PageSize.", ApiException.class, () -> messageReader.read(twilioRestClient));
+        Map<String, Object> jsonMap = new HashMap<String, Object>();
+        jsonMap.put("code", 20001);
+        jsonMap.put("message", "Invalid PageSize.");
+        jsonMap.put("more_info", "https://www.twilio.com/docs/errors/20001");
+        jsonMap.put("status", 400);
+        JSONObject response = new JSONObject(jsonMap);
+        mockRequest.addQueryParam("To", "9999999999");
+        mockRequest.addQueryParam("From", "4444444444");
+        mockRequest.addQueryParam("PageSize", "0");
+        when(twilioRestClient.request(mockRequest)).thenReturn(new Response(response.toString(), 400));
+        when(twilioRestClient.getObjectMapper()).thenReturn(objectMapper);
+        MessageReader messageReader = new MessageReader("AC222222222222222222222222222222");
+        messageReader.setFrom("4444444444");
+        messageReader.setTo("9999999999");
+        messageReader.setPageSize(0);
+        assertThrows("Invalid PageSize.", ApiException.class, () -> messageReader.read(twilioRestClient));
     }
 
     @Test
