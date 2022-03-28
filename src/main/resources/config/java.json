@@ -1,0 +1,130 @@
+{
+  "library": {
+    "_": "",
+    "currency": ["java.util.Currency"],
+    "date": [
+      "java.time.LocalDate",
+      "com.twilio.converter.DateConverter"
+    ],
+    "date-time": [
+      "java.time.ZonedDateTime",
+      "com.twilio.converter.DateConverter"
+    ],
+    "date-time-rfc-2822": [
+      "java.time.ZonedDateTime",
+      "com.twilio.converter.DateConverter"
+    ],
+    "date-or-time": [
+      "java.time.ZonedDateTime",
+      "com.twilio.converter.DateConverter"
+    ],
+    "date-time-range": [
+      "java.time.ZonedDateTime",
+      "com.twilio.converter.DateConverter"
+    ],
+    "decimal": ["java.math.BigDecimal"],
+    "endpoint": ["com.twilio.type.Endpoint"],
+    "http-method": ["com.twilio.http.HttpMethod"],
+    "url": ["java.net.URI"],
+    "ice-server": ["com.twilio.type.IceServer"],
+    "subscribe-rule": ["com.twilio.type.SubscribeRule"],
+    "recording-rule": ["com.twilio.type.RecordingRule"],
+    "phone-number-capabilities": ["com.twilio.type.PhoneNumberCapabilities"],
+    "feedback-issue": ["com.twilio.type.FeedbackIssue"],
+    "object": ["java.util.Map", "com.twilio.converter.Converter"],
+    "phone-number-price": ["com.twilio.type.PhoneNumberPrice"],
+    "outbound-sms-price": ["com.twilio.type.OutboundSmsPrice"],
+    "inbound-sms-price": ["com.twilio.type.InboundSmsPrice"],
+    "outbound-prefix-price": ["com.twilio.type.OutboundPrefixPrice"],
+    "inbound-call-price": ["com.twilio.type.InboundCallPrice"],
+    "outbound-call-price": ["com.twilio.type.OutboundCallPrice"],
+    "outbound-call-price-with-origin": ["com.twilio.type.OutboundCallPriceWithOrigin"],
+    "outbound-prefix-price-with-origin": ["com.twilio.type.OutboundPrefixPriceWithOrigin"],
+    "prefixed-collapsible-map": ["com.twilio.converter.PrefixedCollapsibleMap", "java.util.Map"],
+    "twiml": ["com.twilio.type.Twiml"]
+  },
+
+  "properties": {
+    "_": "String",
+    "boolean": "Boolean",
+    "currency": "Currency",
+    "date": "LocalDate",
+    "date-range": "LocalDate",
+    "date-time": "ZonedDateTime",
+    "date-time-rfc-2822": "ZonedDateTime",
+    "date-or-time": "ZonedDateTime",
+    "date-time-range": "ZonedDateTime",
+    "decimal": "BigDecimal",
+    "endpoint": "com.twilio.type.Endpoint",
+    "feedback-issue": "FeedbackIssue",
+    "http-method": "HttpMethod",
+    "ice-servers": "IceServer",
+    "subscribe-rule": "SubscribeRule",
+    "recording-rule": "RecordingRule",
+    "inbound-call-price": "InboundCallPrice",
+    "inbound-sms-price": "InboundSmsPrice",
+    "integer": "Integer",
+    "long": "Long",
+    "object": "Map<String, Object>",
+    "outbound-call-price": "OutboundCallPrice",
+    "outbound-call-price-with-origin": "OutboundCallPriceWithOrigin",
+    "outbound-prefix-price": "OutboundPrefixPrice",
+    "outbound-sms-price": "OutboundSmsPrice",
+    "phone-number": "com.twilio.type.PhoneNumber",
+    "phone-number-capabilities": "PhoneNumberCapabilities",
+    "phone-number-price": "PhoneNumberPrice",
+    "prefixed-collapsible-map": "Map<String, String>",
+    "outbound-prefix-price-with-origin": "OutboundPrefixPriceWithOrigin",
+    "string-map": "Map<String, String>",
+    "twiml": "com.twilio.type.Twiml",
+    "uri-map": "Map<String, String>",
+    "url": "URI"
+  },
+
+  "json": {
+    "_": "String",
+    "date-time": "String",
+    "date": "String"
+  },
+
+  "hydrate": {
+    "_": "%s",
+    "date-time-rfc-2822": "DateConverter.rfc2822DateTimeFromString(%s)",
+    "date-time": "DateConverter.iso8601DateTimeFromString(%s)",
+    "date": "DateConverter.localDateFromString(%s)"
+  },
+
+  "promotions": {
+    "url": {
+      "string": "Promoter.uriFromString({})"
+    },
+    "phone_number": {
+      "string": "Promoter.phoneNumberFromString({})"
+    },
+    "twiml": {
+      "string": "Promoter.twimlFromString({})"
+    }
+  },
+
+  "serialize": {
+    "_": "%s.toString()",
+    "endpoint": "%s.getEndpoint()",
+    "iso-country-code": "%s",
+    "object": "Converter.mapToJson(%s)",
+    "date": "DateConverter.dateStringFromLocalDate(%s)",
+    "date-time": "%s.toInstant().toString()",
+    "date-or-time": "%s.toInstant().toString()",
+    "string": "%s",
+    "sid": "%s",
+    "prefixed-collapsible-map": "PrefixedCollapsibleMap.serialize(%s, %s)"
+  },
+
+  "deserialize": {
+    "currency": "com.twilio.converter.CurrencyDeserializer"
+  },
+
+  "cardinality": {
+    "_": "single",
+    "prefixed-collapsible-map": "multi"
+  }
+}

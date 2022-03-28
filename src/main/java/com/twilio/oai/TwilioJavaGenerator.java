@@ -167,16 +167,15 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
             // TODO: This is the issue, These values will be overridden multiple times
             resource.put("resourcePathParams", co.pathParams);
             resource.put("resourceRequiredParams", co.requiredParams);
-            co.queryParams =  co.queryParams.stream().map(ConventionResolver::prefixedCollapsibleMap).collect(Collectors.toList());
+            co.queryParams =  co.queryParams.stream().map(ConventionResolver::resolveParamTypes).map(ConventionResolver::prefixedCollapsibleMap).collect(Collectors.toList());
             co.pathParams = null;
             co.hasParams = !co.allParams.isEmpty();
-            co.allParams = co.allParams.stream().map(ConventionResolver::resolveTypes).collect(Collectors.toList());
+            co.allParams = co.allParams.stream().map(ConventionResolver::resolveParamTypes).collect(Collectors.toList());
             co.hasRequiredParams = !co.requiredParams.isEmpty();
 
             if (co.bodyParam != null) {
                 addModel(resource, co.bodyParam.dataType);
             }
-
             if (co.path.endsWith("}") || co.path.endsWith("}.json")) {
                 co.responses
                         .stream()

@@ -19,7 +19,7 @@ import com.twilio.http.Response;
 import com.twilio.http.HttpMethod;
 import com.twilio.base.ResourceSet;
 import com.twilio.http.TwilioRestClient;
-import java.time.OffsetDateTime;
+import java.time.ZonedDateTime;
 import java.time.LocalDate;
 import com.twilio.rest.api.v2010.Account.Call.RecordingCreator;
 import com.twilio.rest.api.v2010.Account.Call.RecordingReader;
@@ -89,7 +89,7 @@ public class TwilioRestTest {
                 "/2010-04-01/Accounts/AC222222222222222222222222222222/Calls/PNXXXXY/Recordings.json"
         );
         String url = "https://api.twilio.com/2010-04-01/Accounts/AC222222222222222222222222222222/Calls/PNXXXXY/Recordings.json";
-        OffsetDateTime currentDateTime = OffsetDateTime.now();
+        ZonedDateTime currentDateTime = ZonedDateTime.now();
         LocalDate localDate  = LocalDate.now();
         mockRequest.addQueryParam("DateCreated", currentDateTime.toString());
         mockRequest.addQueryParam("DateTest", localDate.toString());
