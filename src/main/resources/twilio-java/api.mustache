@@ -53,7 +53,7 @@ import java.math.BigDecimal;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @ToString
 public class {{resourceName}} extends Resource {
-    private static final long serialVersionUID = {{serialVersionUID}};
+    private static final long serialVersionUID = {{serialVersionUID}}L;
 
     {{#hasCreate}}
     public static {{resourceName}}Creator creator({{#requiredParamsCreate}}final {{{dataType}}} {{{paramName}}}{{^-last}}, {{/-last}}{{/requiredParamsCreate}}){
