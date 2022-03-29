@@ -1,4 +1,4 @@
-.PHONY: install test-docker
+.PHONY: install generate test-docker
 
 OPENAPI_GENERATOR_VERSION=5.4.0
 
@@ -7,5 +7,8 @@ install:
 	ln -sf openapi-generator-cli-$(OPENAPI_GENERATOR_VERSION).jar openapi-generator-cli.jar
 	mvn clean package -DskipTests
 
-test-docker:
+generate: install
+	bash examples/generate.sh
+
+test-docker: generate
 	bash ./prism.sh

@@ -1,46 +1,12 @@
 #!/bin/bash
 set -e
 
-make install
-
-API_SPEC=examples/twilio_api_v2010.yaml
-
-OUT_DIR=examples/go/rest
-rm -rf $OUT_DIR
-java -cp ./openapi-generator-cli.jar:target/twilio-openapi-generator.jar \
-  org.openapitools.codegen.OpenAPIGenerator \
-  generate -g twilio-go \
-  -i $API_SPEC \
-  -o $OUT_DIR/api/v2010
-
-OUT_DIR=examples/terraform/resources
-rm -rf $OUT_DIR
-java -cp ./openapi-generator-cli.jar:target/twilio-openapi-generator.jar \
-  org.openapitools.codegen.OpenAPIGenerator \
-  generate -g terraform-provider-twilio \
-  -i $API_SPEC \
-  -o $OUT_DIR
-
-# Replace a couple imports in the generated Terraform resource to use local code.
-sed -i.bak "s/github.com\/twilio\/twilio-go/twilio-oai-generator\/go/g" "$OUT_DIR/api_default.go"
-sed -i.bak "s/github.com\/twilio\/terraform-provider-twilio\/client/twilio-oai-generator\/terraform\/client/g" "$OUT_DIR/api_default.go"
-
-OUT_DIR=examples/java/rest
-rm -rf $OUT_DIR
-java -cp ./openapi-generator-cli.jar:target/twilio-openapi-generator.jar  \
-  org.openapitools.codegen.OpenAPIGenerator \
-  generate -g twilio-java \
-  -i $API_SPEC \
-  -o $OUT_DIR/api  \
-  --global-property apiTests=false,apiDocs=false
-
-
 cd examples/prism
 docker-compose build
 docker-compose up -d --force-recreate --remove-orphans
 
 
-while [ "$(docker-compose ps -q golang-test | xargs docker inspect -f "{{.State.Status}}")" != "exited" ] || [ "$(docker-compose ps -q java-test | xargs docker inspect -f "{{.State.Status}}")" != "exited" ]
+while [ "$(docker-compose ps -q go-client-test | xargs docker inspect -f "{{.State.Status}}")" != "exited" ] || [ "$(docker-compose ps -q java-test | xargs docker inspect -f "{{.State.Status}}")" != "exited" ]
 do
   echo " Waiting for tests to complete"
   sleep 10
@@ -62,7 +28,7 @@ function check_status() {
   done
 }
 
-testing_services=("golang-test" "java-test")
+testing_services=("go-client-test" "java-test")
 check_status "${testing_services[@]}"
 docker-compose down
 exit $EXIT_CODE

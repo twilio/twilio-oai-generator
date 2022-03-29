@@ -1,9 +1,11 @@
 .idea
 *.jar
-*.iml
 codegen/
 target/
 
-examples/go/rest/
-examples/terraform/resources/
-examples/java/rest
+**/.openapi-generator*
+**/docs
+**/*.bak
+
+**/coverage.out
+**/test-report.out
