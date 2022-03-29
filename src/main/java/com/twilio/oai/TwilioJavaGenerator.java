@@ -17,13 +17,6 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
 
     // Unique string devoid of symbols.
     private static final String PATH_SEPARATOR_PLACEHOLDER = "1234567890";
-    private static final String INCORRECT_DATE_RANGE_TYPE = "OffsetDateTime";
-    private static final String CORRECT_DATE_RANGE_TYPE = "ZonedDateTime";
-    private static final String LESS_THAN = "LessThan";
-    private static final String GREATER_THAN = "GreaterThan";
-
-    private static final String BEFORE = "Before";
-    private static final String AFTER = "After";
     private static final int OVERFLOW_CHECKER = 32;
     private static final int BASE_SIXTEEN = 16;
     private static final int BIG_INTEGER_CONSTANT = 1;
