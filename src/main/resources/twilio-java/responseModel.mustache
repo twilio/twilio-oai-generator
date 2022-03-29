@@ -20,8 +20,8 @@
         }
 
         @JsonCreator
-        public static Status forValue(final String value) {
-            return Promoter.enumFromString(value, Status.values());
+        public static {{#lambda.titlecase}}{{{baseName}}}{{/lambda.titlecase}} forValue(final String value) {
+            return Promoter.enumFromString(value, {{#lambda.titlecase}}{{{baseName}}}{{/lambda.titlecase}}.values());
         }
     }
 {{/isEnum}}
@@ -35,10 +35,30 @@
     @JsonCreator
     private {{resourceName}}({{#vars}}
         @JsonProperty("{{{name}}}")
-        final {{{dataType}}} {{{name}}}{{^-last}},{{/-last}}{{/vars}}
+        {{#vendorExtensions.hydrate}}
+        final String {{{name}}}{{^-last}},{{/-last}}
+        {{/vendorExtensions.hydrate}}
+        {{#vendorExtensions.deserialize.x-currency}}
+        @JsonDeserialize(using = com.twilio.converter.CurrencyDeserializer.class)
+        {{/vendorExtensions.deserialize.x-currency}}
+        {{^vendorExtensions.hydrate}}
+        final {{{dataType}}} {{{name}}}{{^-last}},{{/-last}}
+        {{/vendorExtensions.hydrate}}
+    {{/vars}}
     ) {
     {{#vars}}
+        {{#vendorExtensions.hydrate.x-date-time-rfc-2822}}
+        this.{{{name}}} = {{{vendorExtensions.hydrate.x-date-time-rfc-2822}}};
+        {{/vendorExtensions.hydrate.x-date-time-rfc-2822}}
+        {{#vendorExtensions.hydrate.x-date-time}}
+        this.{{{name}}} = {{{vendorExtensions.hydrate.x-date-time}}};
+        {{/vendorExtensions.hydrate.x-date-time}}
+        {{#vendorExtensions.hydrate.x-date}}
+        this.{{{name}}} = {{{vendorExtensions.hydrate.x-date}}};
+        {{/vendorExtensions.hydrate.x-date}}
+        {{^vendorExtensions.hydrate}}
         this.{{{name}}} = {{{name}}};
+        {{/vendorExtensions.hydrate}}
     {{/vars}}
     }
 
