@@ -9,11 +9,18 @@ import org.openapitools.codegen.utils.StringUtils;
 import java.io.File;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 public class TwilioJavaGenerator extends JavaClientCodegen {
 
     // Unique string devoid of symbols.
     private static final String PATH_SEPARATOR_PLACEHOLDER = "1234567890";
+    private static final int OVERFLOW_CHECKER = 32;
+    private static final int BASE_SIXTEEN = 16;
+    private static final int BIG_INTEGER_CONSTANT = 1;
+    private static final int SERIAL_UID_LENGTH = 12;
 
     private final List<CodegenModel> allModels = new ArrayList<>();
     private final Inflector inflector = new Inflector();
@@ -27,6 +34,10 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
         // Find the templates in the local resources dir.
         embeddedTemplateDir = templateDir = getName();
         sourceFolder = "";
+
+        // Skip automated api test and doc generation
+        apiTestTemplateFiles.clear();
+        apiDocTemplateFiles.clear();
     }
 
     @Override
@@ -176,16 +187,20 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
             if (co.bodyParam != null) {
                 addModel(resource, co.bodyParam.dataType);
             }
-            if (co.path.endsWith("}") || co.path.endsWith("}.json")) {
-                co.responses
-                        .stream()
-                        .map(response -> response.dataType)
-                        .filter(Objects::nonNull)
-                        .map(this::getModel)
-                        .map(ConventionResolver::resolve)
-                        .flatMap(Optional::stream)
-                        .forEach(model -> resource.put("responseModel", model));
-            }
+          
+            co.responses
+              .stream()
+              .map(response -> response.dataType)
+              .filter(Objects::nonNull)
+              .map(this::getModel)
+              .map(ConventionResolver::resolve)
+              .flatMap(Optional::stream)
+              .forEach(model -> {
+                  if (co.path.endsWith("}") || co.path.endsWith("}.json")) {
+                      resource.put("responseModel", model);
+                  }
+                  resource.put("serialVersionUID", calculateSerialVersionUid(model.vars));
+              });
             results.put("apiFilename", getResourceName(co.path));
             results.put("packageName", getPackageName(co.path));
             results.put("recordKey", getFolderName(co.path));
@@ -276,6 +291,50 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
     private void addOperationName(final CodegenOperation operation, final String name) {
         operation.vendorExtensions.put("x-name", name);
         operation.vendorExtensions.put("x-name-lower", name.toLowerCase());
+    }
+
+    private long calculateSerialVersionUid(final List<CodegenProperty> modelProperties){
+
+        String signature = calculateSignature(modelProperties);
+        return Long.parseLong(getMd5(signature).substring(0,SERIAL_UID_LENGTH), BASE_SIXTEEN);
+    }
+
+    private String calculateSignature(final List<CodegenProperty> modelProperties){
+
+        Map<String, String> propertyMap = new HashMap<>();
+        for(CodegenProperty property : modelProperties){
+            String key = property.name;
+            String type = property.dataType; //concatenate the class name
+            propertyMap.put(key,type);
+        }
+
+        ArrayList<String> sortedKeys = new ArrayList<String>(propertyMap.keySet());
+        Collections.sort(sortedKeys);
+        StringBuilder sb = new StringBuilder();
+        for (String key : sortedKeys){
+             sb.append("|");
+             sb.append(key.toLowerCase());
+             sb.append("|");
+             sb.append(propertyMap.get(key).toLowerCase());
+        }
+        return sb.toString();
+
+    }
+
+    private String getMd5(String input){
+        try {
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            byte[] messageDigest = md.digest(input.getBytes());
+            BigInteger bigInteger = new BigInteger(BIG_INTEGER_CONSTANT, messageDigest);
+            String hashtext = bigInteger.toString(BASE_SIXTEEN);
+            while (hashtext.length() < OVERFLOW_CHECKER) {
+                hashtext = "0" + hashtext;
+            }
+            return hashtext;
+        }
+        catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
