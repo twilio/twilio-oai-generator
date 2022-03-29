@@ -94,8 +94,8 @@ public class TwilioRestTest {
         LocalDate localDate  = LocalDate.now();
         mockRequest.addQueryParam("DateCreated", currentDateTime.toString());
         mockRequest.addQueryParam("DateTest", localDate.toString());
-        mockRequest.addQueryParam("DateCreatedLessThan", currentDateTime.toString());
-        mockRequest.addQueryParam("DateCreatedGreaterThan", currentDateTime.toString());
+        mockRequest.addQueryParam("DateCreatedBefore", currentDateTime.toString());
+        mockRequest.addQueryParam("DateCreatedAfter", currentDateTime.toString());
         mockRequest.addQueryParam("PageSize", "4");
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
@@ -104,8 +104,8 @@ public class TwilioRestTest {
         when(twilioRestClient.getObjectMapper()).thenReturn(objectMapper);
         RecordingReader recordingReader = new RecordingReader("AC222222222222222222222222222222", "PNXXXXY");
         recordingReader.setDateCreated(currentDateTime);
-        recordingReader.setDateCreatedLessThan(currentDateTime);
-        recordingReader.setDateCreatedGreaterThan(currentDateTime);
+        recordingReader.setDateCreatedBefore(currentDateTime);
+        recordingReader.setDateCreatedAfter(currentDateTime);
         recordingReader.setDateTest(localDate);
         recordingReader.setPageSize(4);
 

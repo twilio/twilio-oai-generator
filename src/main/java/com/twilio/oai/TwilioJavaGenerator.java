@@ -73,6 +73,14 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
         }));
     }
 
+    @Override
+    public String toParamName(String name) {
+        name = name.replace("<", "Before");
+        name = name.replace(">", "After");
+        name = super.toVarName(name);
+        return name;
+    }
+
 
     @Override
     public void postProcessParameter(final CodegenParameter parameter) {
@@ -201,6 +209,7 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
                   }
                   resource.put("serialVersionUID", calculateSerialVersionUid(model.vars));
               });
+  
             results.put("apiFilename", getResourceName(co.path));
             results.put("packageName", getPackageName(co.path));
             results.put("recordKey", getFolderName(co.path));
