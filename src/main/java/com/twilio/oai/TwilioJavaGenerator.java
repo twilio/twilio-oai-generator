@@ -84,13 +84,18 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
 
     @Override
     public String toApiFilename(final String name) {
-        // Replace the path separator placeholder with the actual separator and lowercase the first character of each
-        // path part.
-        return Arrays
+        List<String> apiPathList = Arrays
                 .stream(super.toApiFilename(name).split(PATH_SEPARATOR_PLACEHOLDER))
                 .map(part -> StringUtils.camelize(part, false))
                 .map(this::singularize)
-                .collect(Collectors.joining(File.separator));
+                .collect(Collectors.toList());
+        List<String> apiPathLowerList = apiPathList
+                .subList(0, apiPathList.size() - 1 )
+                .stream()
+                .map(String::toLowerCase)
+                .collect(Collectors.toList());
+        apiPathLowerList.add(apiPathList.get(apiPathList.size() - 1));
+        return apiPathLowerList.stream().collect(Collectors.joining(File.separator));
     }
 
 
@@ -132,7 +137,6 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
             String path = co.path;
             // TODO: Nested Properties to be fixed in upcoming stories
             String resourceName = singularize(getResourceName(co.path));
-            if (resourceName.equals("IncomingPhoneNumber")) continue;
             final Map<String, Object> resource = resources.computeIfAbsent(resourceName, k -> new LinkedHashMap<>());
             populateCrudOperations(resource, co);
             // TODO: Review this condition
@@ -187,7 +191,6 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
             if (co.bodyParam != null) {
                 addModel(resource, co.bodyParam.dataType);
             }
-          
             co.responses
               .stream()
               .map(response -> response.dataType)
@@ -276,6 +279,7 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
         return Arrays
                 .stream(PathUtils.cleanPath(path).split("/"))
                 .map(this::singularize)
+                .map(String::toLowerCase)
                 .collect(Collectors.joining("."));
     }
 

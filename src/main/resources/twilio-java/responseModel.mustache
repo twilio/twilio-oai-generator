@@ -34,7 +34,7 @@
 
     @JsonCreator
     private {{resourceName}}({{#vars}}
-        @JsonProperty("{{{name}}}")
+        @JsonProperty("{{{nameInSnakeCase}}}")
         {{#vendorExtensions.hydrate}}
         final String {{{name}}}{{^-last}},{{/-last}}
         {{/vendorExtensions.hydrate}}

@@ -2,9 +2,6 @@ package com.twilio.rest;
 
 import static org.junit.Assert.*;
 
-import com.twilio.rest.api.v2010.Account.Message;
-import com.twilio.rest.api.v2010.Account.MessageReader;
-import com.twilio.rest.api.v2010.Credential.AwsCreator;
 import org.json.CDL;
 import org.json.JSONObject;
 import org.junit.Before;
@@ -23,11 +20,10 @@ import com.twilio.exception.ApiException;
 import com.twilio.http.TwilioRestClient;
 import java.time.ZonedDateTime;
 import java.time.LocalDate;
-import com.twilio.rest.api.v2010.Account.Call.RecordingCreator;
-import com.twilio.rest.api.v2010.Account.Call.RecordingReader;
-import com.twilio.rest.api.v2010.Account.Call.RecordingFetcher;
-
-import com.twilio.rest.api.v2010.Account.Call.Recording;
+import com.twilio.rest.api.v2010.account.call.RecordingCreator;
+import com.twilio.rest.api.v2010.account.call.RecordingReader;
+import com.twilio.rest.api.v2010.account.call.RecordingFetcher;
+import com.twilio.rest.api.v2010.account.call.Recording;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -145,7 +141,7 @@ public class TwilioRestTest {
                 "/2010-04-01/Accounts/AC222222222222222222222222222222/Messages.json"
         );
         ObjectMapper objectMapper = new ObjectMapper();
-        String messagesValues = 
+        String messagesValues =
         "direction,      from,         to,           body,  status    \n" +
         "outbound-api,   4444444444,   9999999999,   Hi,    delivered \n" +
         "outbound-call,  4444444444,   9999999999,   Hi,    queued    \n" +
@@ -161,7 +157,7 @@ public class TwilioRestTest {
         jsonMap.put("next_page_uri", "/2010-04-01/Accounts/AC12345678123456781234567812345678/Messages.json?From=9999999999&PageNumber=&To=4444444444&PageSize=5&Page=1&PageToken=PASMc49f620580b24424bcfa885b1f741130");
         jsonMap.put("page", 0);
         jsonMap.put("messages", CDL.toJSONArray(messagesValues));
-        
+
 
         JSONObject response = new JSONObject(jsonMap);
         mockRequest.addQueryParam("PageSize", "5");
@@ -189,7 +185,7 @@ public class TwilioRestTest {
         ObjectMapper objectMapper = new ObjectMapper();
         when(twilioRestClient.getObjectMapper()).thenReturn(objectMapper);
 
-        String messagesValues = 
+        String messagesValues =
         "direction,      from,         to,           body,  status    \n" +
         "outbound-api,   4444444444,   9999999999,   Hi,    delivered \n" +
         "outbound-call,  4444444444,   9999999999,   Hi,    queued    \n" +

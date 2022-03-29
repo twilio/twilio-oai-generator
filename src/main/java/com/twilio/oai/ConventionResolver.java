@@ -30,6 +30,7 @@ public class ConventionResolver {
             if (hasProperty) {
                 property.dataType = (String)conventionMap.get(Segments.SEGMENT_PROPERTIES.getSegment()).get(property.dataFormat);
             }
+            property.nameInSnakeCase = property.nameInSnakeCase.toLowerCase(Locale.ROOT);
             vendorExtensions.forEach(
                     (key, value) -> property.getVendorExtensions().merge(key, value, (oldValue, newValue) -> newValue));
         }
