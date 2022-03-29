@@ -196,20 +196,6 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
             }
           
             co.responses
-                    .stream()
-                    .map(response -> response.dataType)
-                    .filter(Objects::nonNull)
-                    .map(this::getModel)
-                    .flatMap(Optional::stream)
-                    .forEach(model -> {
-                        if (co.path.endsWith("}") || co.path.endsWith("}.json")) {
-                            resource.put("responseModel", model);
-                        }
-                        resource.put("serialVersionUID", calculateSerialVersionUid(model.vars));
-                    });
-
-            fixDateRange(co.allParams);
-
               .stream()
               .map(response -> response.dataType)
               .filter(Objects::nonNull)
@@ -222,6 +208,9 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
                   }
                   resource.put("serialVersionUID", calculateSerialVersionUid(model.vars));
               });
+
+            fixDateRange(co.allParams);
+  
             results.put("apiFilename", getResourceName(co.path));
             results.put("packageName", getPackageName(co.path));
             results.put("recordKey", getFolderName(co.path));
