@@ -34,6 +34,10 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
         // Find the templates in the local resources dir.
         embeddedTemplateDir = templateDir = getName();
         sourceFolder = "";
+
+        // Skip automated api test and doc generation
+        apiTestTemplateFiles.clear();
+        apiDocTemplateFiles.clear();
     }
 
     @Override
