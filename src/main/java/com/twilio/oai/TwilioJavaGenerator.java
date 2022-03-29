@@ -80,6 +80,14 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
         }));
     }
 
+    @Override
+    public String toParamName(String name) {
+        name = name.replace("<", "Before");
+        name = name.replace(">", "After");
+        name = super.toVarName(name);
+        return name;
+    }
+
 
     @Override
     public void postProcessParameter(final CodegenParameter parameter) {
@@ -208,8 +216,6 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
                   }
                   resource.put("serialVersionUID", calculateSerialVersionUid(model.vars));
               });
-
-            fixDateRange(co.allParams);
   
             results.put("apiFilename", getResourceName(co.path));
             results.put("packageName", getPackageName(co.path));
@@ -344,53 +350,6 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
         }
         catch (NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
-        }
-    }
-
-    private void fixDateRange(List<CodegenParameter> allParams){
-        for(CodegenParameter param: allParams){
-            if(!param.dataType.isEmpty() && param.dataType.equals(INCORRECT_DATE_RANGE_TYPE)){
-                param.dataType=CORRECT_DATE_RANGE_TYPE;
-                if(param.paramName.contains(LESS_THAN)){
-                    param.paramName = param.paramName.replace(LESS_THAN, BEFORE);
-                }
-                if(param.paramName.contains(GREATER_THAN)){
-                    param.paramName = param.paramName.replace(GREATER_THAN, AFTER);
-                }
-                if(param.getSchema()!=null){
-                    if(param.getSchema().dataType.equals(INCORRECT_DATE_RANGE_TYPE)){
-                        param.getSchema().dataType=CORRECT_DATE_RANGE_TYPE;
-                        param.getSchema().complexType=CORRECT_DATE_RANGE_TYPE;
-                        param.getSchema().datatypeWithEnum=CORRECT_DATE_RANGE_TYPE;
-                        param.getSchema().baseType=CORRECT_DATE_RANGE_TYPE;
-//                        param.getSchema().example=CORRECT_DATE_RANGE_TYPE+".now()";
-                    }
-                    if(param.getSchema().baseName.contains("<")){
-                        param.getSchema().getter = param.getSchema().getter.replace(LESS_THAN, BEFORE);
-                        param.getSchema().setter = param.getSchema().setter.replace(LESS_THAN, BEFORE);
-                        param.getSchema().name = param.getSchema().name.replace(LESS_THAN, BEFORE);
-                        param.getSchema().nameInCamelCase= param.getSchema().nameInCamelCase.replace(LESS_THAN, BEFORE);
-                        param.getSchema().nameInSnakeCase= param.getSchema().nameInSnakeCase.replace("LESS_THAN",BEFORE.toUpperCase());
-
-
-                    }
-                    if(param.getSchema().baseName.contains(">")){
-                        param.getSchema().getter = param.getSchema().getter.replace(GREATER_THAN, AFTER);
-                        param.getSchema().setter = param.getSchema().setter.replace(GREATER_THAN, AFTER);
-                        param.getSchema().name = param.getSchema().name.replace(GREATER_THAN, AFTER);
-                        param.getSchema().nameInCamelCase= param.getSchema().nameInCamelCase.replace(GREATER_THAN, AFTER);
-                        param.getSchema().nameInSnakeCase= param.getSchema().nameInSnakeCase.replace("GREATER_THAN",AFTER.toUpperCase());
-
-                    }
-                }
-            }
-            if( !param.example.isEmpty() && param.example.equals("OffsetDateTime.now()")){
-                param.example="ZonedDateTime.now()";
-            }
-
-            if(!param.paramName.isEmpty() && param.paramName.equals("TestDateTime")){
-                param.baseType = CORRECT_DATE_RANGE_TYPE;
-            }
         }
     }
 
