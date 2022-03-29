@@ -178,28 +178,29 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
             // TODO: This is the issue, These values will be overridden multiple times
             resource.put("resourcePathParams", co.pathParams);
             resource.put("resourceRequiredParams", co.requiredParams);
-
+            co.queryParams =  co.queryParams.stream().map(ConventionResolver::resolveParamTypes).map(ConventionResolver::prefixedCollapsibleMap).collect(Collectors.toList());
             co.pathParams = null;
             co.hasParams = !co.allParams.isEmpty();
+            co.allParams = co.allParams.stream().map(ConventionResolver::resolveParamTypes).collect(Collectors.toList());
             co.hasRequiredParams = !co.requiredParams.isEmpty();
 
             if (co.bodyParam != null) {
                 addModel(resource, co.bodyParam.dataType);
             }
-
+          
             co.responses
-                    .stream()
-                    .map(response -> response.dataType)
-                    .filter(Objects::nonNull)
-                    .map(this::getModel)
-                    .flatMap(Optional::stream)
-                    .forEach(model -> {
-                        if (co.path.endsWith("}") || co.path.endsWith("}.json")) {
-                            resource.put("responseModel", model);
-                        }
-                        resource.put("serialVersionUID", calculateSerialVersionUid(model.vars));
-                    });
-
+              .stream()
+              .map(response -> response.dataType)
+              .filter(Objects::nonNull)
+              .map(this::getModel)
+              .map(ConventionResolver::resolve)
+              .flatMap(Optional::stream)
+              .forEach(model -> {
+                  if (co.path.endsWith("}") || co.path.endsWith("}.json")) {
+                      resource.put("responseModel", model);
+                  }
+                  resource.put("serialVersionUID", calculateSerialVersionUid(model.vars));
+              });
             results.put("apiFilename", getResourceName(co.path));
             results.put("packageName", getPackageName(co.path));
             results.put("recordKey", getFolderName(co.path));

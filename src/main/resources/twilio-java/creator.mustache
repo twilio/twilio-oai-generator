@@ -14,8 +14,11 @@ import com.twilio.http.TwilioRestClient;
 import com.twilio.rest.Domains;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
+import com.twilio.converter.Converter;
+import java.time.ZonedDateTime;
 
 import java.net.URI;
 
@@ -72,8 +75,14 @@ public class {{resourceName}}Creator extends Creator<{{resourceName}}>{
     private void addPostParams(final Request request) {
 {{#allParams}}
         if ({{paramName}} != null) {
-            request.addPostParam("{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}", {{paramName}}.toString());
+        {{#isFreeFormObject}}
+        request.addPostParam("{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}",  Converter.mapToJson({{paramName}}));
+        {{/isFreeFormObject}}
+        {{^isFreeFormObject}}
+        request.addPostParam("{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}", {{paramName}}.toString());
+        {{/isFreeFormObject}}
         }
+
 {{/allParams}}
     }
 }
