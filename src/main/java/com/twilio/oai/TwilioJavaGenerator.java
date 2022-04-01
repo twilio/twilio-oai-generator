@@ -1,5 +1,8 @@
 package com.twilio.oai;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.v3.oas.models.OpenAPI;
 import lombok.AllArgsConstructor;
 import org.openapitools.codegen.*;
@@ -23,6 +26,7 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
     private static final int SERIAL_UID_LENGTH = 12;
 
     private final List<CodegenModel> allModels = new ArrayList<>();
+    private  Map<String, String> modelFormatMap = new HashMap<>();
     private final Inflector inflector = new Inflector();
 
     public TwilioJavaGenerator() {
@@ -123,7 +127,7 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
                     .map(CodegenModel.class::cast)
                     .collect(Collectors.toCollection(() -> this.allModels));
         }
-
+        setObjectFormatMap(this.allModels);
         // Return an empty collection so no model files get generated.
         return new HashMap<>();
     }
@@ -205,6 +209,7 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
               .filter(Objects::nonNull)
               .map(this::getModel)
               .map(ConventionResolver::resolve)
+              .map(item -> ConventionResolver.resolveComplexType(item, modelFormatMap))
               .flatMap(Optional::stream)
               .forEach(model -> {
                   if (co.path.endsWith("}") || co.path.endsWith("}.json")) {
@@ -212,7 +217,7 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
                   }
                   resource.put("serialVersionUID", calculateSerialVersionUid(model.vars));
               });
-  
+
             results.put("apiFilename", getResourceName(co.path));
             results.put("packageName", getPackageName(co.path));
             results.put("recordKey", getFolderName(co.path));
@@ -348,6 +353,20 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
         catch (NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private void setObjectFormatMap(final List<CodegenModel> allModels) {
+        allModels.forEach(item -> {
+            ObjectMapper objectMapper = new ObjectMapper();
+            try {
+                JsonNode jsonNode = objectMapper.readTree(item.modelJson);
+                if (jsonNode.get("type").textValue().equals("object") && jsonNode.has("format")) {
+                    modelFormatMap.put(item.classFilename, jsonNode.get("format").textValue());
+                }
+            } catch (JsonProcessingException e) {
+                e.printStackTrace();
+            }
+        });
     }
 
     @Override

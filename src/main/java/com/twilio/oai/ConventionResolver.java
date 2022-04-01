@@ -62,6 +62,22 @@ public class ConventionResolver {
         }
         return null;
     }
+
+    public static Optional<CodegenModel> resolveComplexType(Optional<CodegenModel> item, Map<String, String> modelFormatMap) {
+        for (CodegenProperty prop: item.get().vars) {
+            if(modelFormatMap.containsKey(prop.complexType)) {
+                boolean hasProperty =  conventionMap.get(Segments.SEGMENT_PROPERTIES.getSegment()).containsKey(modelFormatMap.get(prop.complexType));
+                if (hasProperty) {
+                    if ( prop.containerType != null && prop.containerType.equals("array")) {
+                        prop.dataType = "List<" + (String)conventionMap.get(Segments.SEGMENT_PROPERTIES.getSegment()).get(modelFormatMap.get(prop.complexType)) + ">";
+                    } else {
+                        prop.dataType = (String)conventionMap.get(Segments.SEGMENT_PROPERTIES.getSegment()).get(modelFormatMap.get(prop.complexType));
+                    }
+                }
+            }
+        }
+        return item;
+    }
 }
 
 

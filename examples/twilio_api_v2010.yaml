@@ -4,6 +4,7 @@ components:
       properties:
         account_sid:
           nullable: true
+          format: foobar
           type: string
         sid:
           nullable: true
@@ -16,6 +17,7 @@ components:
           type: integer
         test_object:
           nullable: true
+          format: phone-number-capabilities
           properties:
             fax:
               type: boolean
@@ -55,6 +57,7 @@ components:
               type: integer
         test_array_of_objects:
           items:
+            format: feedback-issue
             properties:
               count:
                 type: number
@@ -188,6 +191,7 @@ paths:
                   format: int64
                 TestObject:
                   type: object
+                  format: object
                 TestDateTime:
                   type: string
                   format: date-time
