@@ -35,6 +35,10 @@ components:
         test_number:
           nullable: true
           type: number
+        price_unit:
+          nullable: true
+          format: currency
+          type: string
         test_number_float:
           nullable: true
           type: number

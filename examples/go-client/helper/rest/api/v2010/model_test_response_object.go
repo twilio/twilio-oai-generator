@@ -20,6 +20,7 @@ type TestResponseObject struct {
 	TestObject                 *TestResponseObjectTestObject           `json:"test_object,omitempty"`
 	TestDateTime               *string                                 `json:"test_date_time,omitempty"`
 	TestNumber                 *float32                                `json:"test_number,omitempty"`
+	PriceUnit                  *string                                 `json:"price_unit,omitempty"`
 	TestNumberFloat            *float32                                `json:"test_number_float,omitempty"`
 	TestEnum                   *string                                 `json:"test_enum,omitempty"`
 	TestArrayOfIntegers        []int                                   `json:"test_array_of_integers,omitempty"`

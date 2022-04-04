@@ -220,7 +220,7 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
 
             results.put("apiFilename", getResourceName(co.path));
             results.put("packageName", getPackageName(co.path));
-            results.put("recordKey", getFolderName(co.path));
+            results.put("recordKey", getFolderName(co.path).toLowerCase(Locale.ROOT));
             resource.put("packageSubPart", getPackageName(co.path).substring(0, getPackageName(co.path).lastIndexOf(".")));
         }
 
