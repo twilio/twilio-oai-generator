@@ -23,6 +23,16 @@ java -cp ./openapi-generator-cli.jar:target/twilio-openapi-generator.jar \
 sed -i.bak "s/github.com\/twilio\/twilio-go/go-client\/helper/g" "$OUT_DIR/api_default.go"
 sed -i.bak "s/github.com\/twilio\/terraform-provider-twilio\/client/go-client\/terraform\/client/g" "$OUT_DIR/api_default.go"
 
+OUT_DIR=examples/java/rest
+rm -rf $OUT_DIR
+java -cp ./openapi-generator-cli.jar:target/twilio-openapi-generator.jar  \
+  org.openapitools.codegen.OpenAPIGenerator \
+  generate -g twilio-java \
+  -i $API_SPEC \
+  -o $OUT_DIR/api  \
+  --global-property apiTests=false,apiDocs=false
+
+
 pushd examples/go-client
 docker run \
   -v "${PWD}":/local \

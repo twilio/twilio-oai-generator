@@ -1,0 +1,63 @@
+{{>licenseInfo}}
+{{#resources}}
+package com.twilio.rest.{{domainPackage}}.{{package}}.{{packageSubPart}};
+
+import com.twilio.base.Fetcher;
+import com.twilio.exception.ApiConnectionException;
+import com.twilio.exception.ApiException;
+import com.twilio.exception.RestException;
+import com.twilio.http.HttpMethod;
+import com.twilio.http.Request;
+import com.twilio.http.Response;
+import com.twilio.http.TwilioRestClient;
+import com.twilio.rest.Domains;
+
+{{>model}}
+{{#hasFetch}}
+{{#operations}}
+{{#vendorExtensions.x-is-fetch-operation}}
+public class {{resourceName}}Fetcher extends Fetcher<{{resourceName}}> {
+{{#allParams}}
+    private {{{dataType}}} {{paramName}};
+{{/allParams}}
+
+
+    public {{resourceName}}Fetcher({{#requiredParams}}final {{{dataType}}} {{paramName}}{{^-last}}, {{/-last}}{{/requiredParams}}){
+    {{#requiredParams}}
+        this.{{paramName}} = {{paramName}};
+    {{/requiredParams}}
+    }
+
+    @Override
+    public {{resourceName}} fetch(final TwilioRestClient client) {
+        String path = "{{{path}}}";
+        {{#requiredParams}}
+        path = path.replace("{"+"{{paramName}}"+"}", this.{{paramName}}.toString());
+        {{/requiredParams}}
+
+        Request request = new Request(
+            HttpMethod.GET,
+            Domains.{{#lambda.uppercase}}{{domain}}{{/lambda.uppercase}}.toString(),
+            path
+        );
+
+        Response response = client.request(request);
+
+        if (response == null) {
+        throw new ApiConnectionException("{{resourceName}} fetch failed: Unable to connect to server");
+        } else if (!TwilioRestClient.SUCCESS.test(response.getStatusCode())) {
+            RestException restException = RestException.fromJson(response.getStream(), client.getObjectMapper());
+            if (restException == null) {
+                throw new ApiException("Server Error, no content");
+            }
+            throw new ApiException(restException);
+        }
+
+        return {{resourceName}}.fromJson(response.getStream(), client.getObjectMapper());
+    }
+}
+{{/vendorExtensions.x-is-fetch-operation}}
+{{/operations}}
+{{/hasFetch}}
+{{/resources}}
+

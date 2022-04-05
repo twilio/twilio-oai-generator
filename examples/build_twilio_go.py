@@ -3,6 +3,15 @@ import os
 import re
 from pathlib import Path
 
+'''
+Subdirectories map for maintaining directory 
+structures specific to language style. 
+'''
+subdirectories = {
+    "go": "rest",
+    "terraform": "twilio/resources",
+    "java": "rest"
+}
 
 def get_domain_info(domain, oai_spec_location, is_file=False):
     full_path = os.path.join(oai_spec_location, domain) if not is_file else oai_spec_location
@@ -27,9 +36,11 @@ def generate(openapi_spec_path, go_path, domain, is_file=False, language='go'):
     domain_name, full_path, api_version = get_domain_info(domain, openapi_spec_path, is_file)
     parent_dir = Path(__file__).parent.parent
 
-    to_generate = "terraform-provider-twilio" if language == "terraform" else "twilio-go"
-    sub_dir = "twilio/resources" if language == "terraform" else "rest"
-    output_path = f"{go_path}/{sub_dir}/{domain_name}/{api_version}"
+    to_generate = "terraform-provider-twilio" if language == "terraform" else f"twilio-{language}"
+    sub_dir = subdirectories.get(language)
+    output_path = f"{go_path}/{sub_dir}/{domain_name}"
+    if language != "java":
+        output_path+= f"/{api_version}"
     command = f"cd {parent_dir} && java -cp ./openapi-generator-cli.jar:target/twilio-openapi-generator.jar " \
               f"org.openapitools.codegen.OpenAPIGenerator generate -g {to_generate} -i {full_path} -o " \
               f"{output_path} " \
@@ -46,12 +57,11 @@ if __name__ == "__main__":
      python3 examples/build_twilio_go.py /path/to/twilio-oai/spec/yaml/twilio_accounts_v1.yaml /path/to/terraform-provider-twilio -l terraform
      python3 examples/build_twilio_go.py /path/to/twilio-oai/spec/yaml/twilio_accounts_v1.yaml /path/to/terraform-provider-twilio -l terraform
      python3 examples/build_twilio_go.py /path/to/twilio-oai/spec/yaml /path/to/terraform-provider-twilio --lang terraform'''
-
     parser = argparse.ArgumentParser(description='Generate code from twilio-oai-generator', epilog=example_text,
                                      formatter_class=argparse.RawTextHelpFormatter)
     parser.add_argument("spec_path", type=str, help="path to open api specs")
     parser.add_argument("output_path", type=str, help="path to output the generated code")
-    parser.add_argument("-l", "--lang", type=str, choices=['go', 'terraform'],
+    parser.add_argument("-l", "--lang", type=str, choices=['go', 'terraform', 'java'],
                         help="generate twilio-go/terraform-provider from twilio-oai")
     args = parser.parse_args()
     build(args.spec_path, args.output_path, args.lang)

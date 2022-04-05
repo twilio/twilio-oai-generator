@@ -1,0 +1,90 @@
+{{#responseModel}}
+{{#hasEnums}}
+{{#vars}}
+{{#isEnum}}
+    public enum {{#lambda.titlecase}}{{{baseName}}}{{/lambda.titlecase}} {
+        {{#allowableValues}}
+        {{#enumVars}}
+        {{#lambda.uppercase}}{{{name}}}({{/lambda.uppercase}}{{{value}}}){{^-last}},{{/-last}}{{#-last}};{{/-last}}
+        {{/enumVars}}
+        {{/allowableValues}}
+
+        private final String value;
+
+        private {{#lambda.titlecase}}{{{baseName}}}{{/lambda.titlecase}}(final String value) {
+            this.value = value;
+        }
+
+        public String toString() {
+            return value;
+        }
+
+        @JsonCreator
+        public static {{#lambda.titlecase}}{{{baseName}}}{{/lambda.titlecase}} forValue(final String value) {
+            return Promoter.enumFromString(value, {{#lambda.titlecase}}{{{baseName}}}{{/lambda.titlecase}}.values());
+        }
+    }
+{{/isEnum}}
+{{/vars}}
+{{/hasEnums}}
+
+{{#vars}}
+    private final {{{dataType}}} {{name}};
+{{/vars}}
+
+    @JsonCreator
+    private {{resourceName}}({{#vars}}
+        @JsonProperty("{{{nameInSnakeCase}}}")
+        {{#vendorExtensions.hydrate}}
+        final String {{{name}}}{{^-last}},{{/-last}}
+        {{/vendorExtensions.hydrate}}
+        {{#vendorExtensions.deserialize.x-currency}}
+        @JsonDeserialize(using = com.twilio.converter.CurrencyDeserializer.class)
+        {{/vendorExtensions.deserialize.x-currency}}
+        {{^vendorExtensions.hydrate}}
+        final {{{dataType}}} {{{name}}}{{^-last}},{{/-last}}
+        {{/vendorExtensions.hydrate}}
+    {{/vars}}
+    ) {
+    {{#vars}}
+        {{#vendorExtensions.hydrate.x-date-time-rfc-2822}}
+        this.{{{name}}} = {{{vendorExtensions.hydrate.x-date-time-rfc-2822}}};
+        {{/vendorExtensions.hydrate.x-date-time-rfc-2822}}
+        {{#vendorExtensions.hydrate.x-date-time}}
+        this.{{{name}}} = {{{vendorExtensions.hydrate.x-date-time}}};
+        {{/vendorExtensions.hydrate.x-date-time}}
+        {{#vendorExtensions.hydrate.x-date}}
+        this.{{{name}}} = {{{vendorExtensions.hydrate.x-date}}};
+        {{/vendorExtensions.hydrate.x-date}}
+        {{^vendorExtensions.hydrate}}
+        this.{{{name}}} = {{{name}}};
+        {{/vendorExtensions.hydrate}}
+    {{/vars}}
+    }
+
+    {{#vars}}
+        public final {{{dataType}}} get{{#lambda.titlecase}}{{{name}}}{{/lambda.titlecase}}() {
+            return this.{{{name}}};
+        }
+    {{/vars}}
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this==o) {
+            return true;
+        }
+
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        {{resourceName}} other = ({{resourceName}}) o;
+
+        return {{#vars}}Objects.equals({{name}}, other.{{name}}) {{^-last}}&& {{/-last}} {{/vars}};
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash({{#vars}}{{{name}}}{{^-last}}, {{/-last}}{{/vars}});
+    }
+{{/responseModel}}

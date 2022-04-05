@@ -1,0 +1,132 @@
+{{>licenseInfo}}
+{{#resources}}
+package com.twilio.rest.{{domainPackage}}.{{package}}.{{packageSubPart}};
+
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.twilio.base.Resource;
+import com.twilio.converter.Converter;
+import java.util.Currency;
+import com.twilio.converter.DateConverter;
+import com.twilio.converter.Promoter;
+import com.twilio.converter.PrefixedCollapsibleMap;
+import com.twilio.converter.CurrencyDeserializer;
+import com.twilio.exception.ApiConnectionException;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+
+import com.twilio.exception.ApiException;
+import com.twilio.exception.RestException;
+import com.twilio.http.HttpMethod;
+import com.twilio.http.Request;
+import com.twilio.http.Response;
+import com.twilio.http.TwilioRestClient;
+import com.twilio.rest.Domains;
+
+import lombok.ToString;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URI;
+import java.time.ZonedDateTime;
+
+{{^fullJavaUtil}}
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+{{/fullJavaUtil}}
+
+import lombok.ToString;
+
+import java.util.Map;
+import java.util.Objects;
+import java.time.LocalDate;
+import java.math.BigDecimal;
+import com.twilio.type.PhoneNumberCapabilities;
+import com.twilio.type.FeedbackIssue;
+
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+@ToString
+public class {{resourceName}} extends Resource {
+    private static final long serialVersionUID = {{serialVersionUID}}L;
+
+    {{#hasCreate}}
+    public static {{resourceName}}Creator creator({{#requiredParamsCreate}}final {{{dataType}}} {{{paramName}}}{{^-last}}, {{/-last}}{{/requiredParamsCreate}}){
+        return new {{resourceName}}Creator({{#requiredParamsCreate}}{{{paramName}}}{{^-last}}, {{/-last}}{{/requiredParamsCreate}});
+    }
+    {{/hasCreate}}
+
+    {{#hasFetch}}
+    public static {{resourceName}}Fetcher fetcher({{#requiredParamsFetch}}final {{{dataType}}} {{{paramName}}}{{^-last}}, {{/-last}}{{/requiredParamsFetch}}){
+        return new {{resourceName}}Fetcher({{#requiredParamsFetch}}{{{paramName}}}{{^-last}}, {{/-last}}{{/requiredParamsFetch}});
+    }
+    {{/hasFetch}}
+
+    {{#hasDelete}}
+    public static {{resourceName}}Deleter delete({{#requiredParamsDelete}}final {{{dataType}}} {{{paramName}}}{{^-last}}, {{/-last}}{{/requiredParamsDelete}}){
+        return new {{resourceName}}Deleter({{#requiredParamsDelete}}{{{paramName}}}{{^-last}}, {{/-last}}{{/requiredParamsDelete}});
+    }
+    {{/hasDelete}}
+
+    {{#hasRead}}
+    public static {{resourceName}}Reader reader({{#requiredParamsRead}}final {{{dataType}}} {{{paramName}}}{{^-last}}, {{/-last}}{{/requiredParamsRead}}){
+        return new {{resourceName}}Reader({{#requiredParamsRead}}{{{paramName}}}{{^-last}}, {{/-last}}{{/requiredParamsRead}});
+    }
+    {{/hasRead}}
+
+    {{#hasUpdate}}
+    public static {{resourceName}}Updater update({{#requiredParamsUpdate}}final {{{dataType}}} {{{paramName}}}{{^-last}}, {{/-last}}{{/requiredParamsUpdate}}){
+        return new {{resourceName}}Updater({{#requiredParamsUpdate}}{{{paramName}}}{{^-last}}, {{/-last}}{{/requiredParamsUpdate}});
+    }
+    {{/hasUpdate}}
+
+    /**
+    * Converts a JSON String into a {{resourceName}} object using the provided ObjectMapper.
+    *
+    * @param json Raw JSON String
+    * @param objectMapper Jackson ObjectMapper
+    * @return {{resourceName}} object represented by the provided JSON
+    */
+    public static {{resourceName}} fromJson(final String json, final ObjectMapper objectMapper) {
+        // Convert all checked exceptions to Runtime
+        try {
+            return objectMapper.readValue(json, {{resourceName}}.class);
+        } catch (final JsonMappingException | JsonParseException e) {
+            throw new ApiException(e.getMessage(), e);
+        } catch (final IOException e) {
+            throw new ApiConnectionException(e.getMessage(), e);
+        }
+    }
+
+    /**
+    * Converts a JSON InputStream into a {{resourceName}} object using the provided
+    * ObjectMapper.
+    *
+    * @param json Raw JSON InputStream
+    * @param objectMapper Jackson ObjectMapper
+    * @return {{resourceName}} object represented by the provided JSON
+    */
+    public static {{resourceName}} fromJson(final InputStream json, final ObjectMapper objectMapper) {
+        // Convert all checked exceptions to Runtime
+        try {
+            return objectMapper.readValue(json, {{resourceName}}.class);
+        } catch (final JsonMappingException | JsonParseException e) {
+            throw new ApiException(e.getMessage(), e);
+        } catch (final IOException e) {
+            throw new ApiConnectionException(e.getMessage(), e);
+        }
+    }
+{{#operations}}
+{{#vendorExtensions.x-is-fetch-operation}}
+{{>responseModel}}
+{{/vendorExtensions.x-is-fetch-operation}}
+{{/operations}}
+}
+{{/resources}}
+

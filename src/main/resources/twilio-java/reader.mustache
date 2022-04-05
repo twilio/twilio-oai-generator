@@ -1,0 +1,136 @@
+{{>licenseInfo}}
+{{#resources}}
+package com.twilio.rest.{{domainPackage}}.{{package}}.{{packageSubPart}};
+
+import com.twilio.base.Reader;
+import com.twilio.base.ResourceSet;
+import com.twilio.exception.ApiConnectionException;
+import com.twilio.exception.ApiException;
+import com.twilio.exception.RestException;
+import com.twilio.http.HttpMethod;
+import com.twilio.http.Request;
+import com.twilio.http.Response;
+import com.twilio.http.TwilioRestClient;
+import com.twilio.rest.Domains;
+import com.twilio.base.Page;
+import java.time.ZonedDateTime;
+import java.time.LocalDate;
+import java.time.ZonedDateTime;
+
+
+{{>model}}
+{{#hasRead}}
+{{#operations}}
+{{#vendorExtensions.x-is-read-operation}}
+public class {{resourceName}}Reader extends Reader<{{resourceName}}> {
+{{#allParams}}
+    private {{{dataType}}} {{paramName}};
+
+    public {{resourceName}}Reader set{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}(final {{{dataType}}} {{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}){
+        this.{{paramName}} = {{paramName}};
+        return this;
+    }
+{{/allParams}}
+
+    public {{resourceName}}Reader({{#requiredParams}}final {{{dataType}}} {{paramName}}{{^-last}}, {{/-last}}{{/requiredParams}}){
+    {{#allParams}}
+    {{#required}}
+        this.{{paramName}} = {{paramName}};
+    {{/required}}
+    {{/allParams}}
+    }
+
+    private void addQueryParams(final Request request) {
+        {{#queryParams}}
+        {{#vendorExtensions.x-prefixed-collapsible-map}}
+        if ({{paramName}} != null) {
+            Map<String, String> params = PrefixedCollapsibleMap.serialize({{{paramName}}}, "{{vendorExtensions.x-prefixed-collapsible-map}}");
+            for (Map.Entry<String, String> entry : params.entrySet()) {
+                request.addQueryParam(entry.getKey(), entry.getValue());
+            }
+        }
+        {{/vendorExtensions.x-prefixed-collapsible-map}}
+        {{^vendorExtensions.x-prefixed-collapsible-map}}
+        if ({{paramName}} != null) {
+            request.addQueryParam("{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}", {{paramName}}.toString());
+        }
+        {{/vendorExtensions.x-prefixed-collapsible-map}}
+        {{/queryParams}}
+    }
+
+    @Override
+    public ResourceSet<{{resourceName}}> read(final TwilioRestClient client) {
+        return new ResourceSet<>(this, client, firstPage(client));
+    }
+
+    public Page<{{resourceName}}> firstPage(final TwilioRestClient client) {
+        String path = "{{{path}}}";
+        {{#requiredParams}}
+        path = path.replace("{"+"{{paramName}}"+"}", this.{{paramName}}.toString());
+        {{/requiredParams}}
+
+        Request request = new Request(
+            HttpMethod.GET,
+            Domains.{{#lambda.uppercase}}{{domain}}{{/lambda.uppercase}}.toString(),
+            path
+        );
+
+        addQueryParams(request);
+        return pageForRequest(client, request);
+    }
+
+    private Page<{{resourceName}}> pageForRequest(final TwilioRestClient client, final Request request) {
+        Response response = client.request(request);
+
+        if (response == null) {
+            throw new ApiConnectionException("{{resourceName}} read failed: Unable to connect to server");
+        } else if (!TwilioRestClient.SUCCESS.test(response.getStatusCode())) {
+            RestException restException = RestException.fromJson(response.getStream(), client.getObjectMapper());
+            if (restException == null) {
+                throw new ApiException("Server Error, no content");
+            }
+            throw new ApiException(restException);
+        }
+
+        return Page.fromJson(
+            "{{recordKey}}",
+            response.getContent(),
+            {{resourceName}}.class,
+            client.getObjectMapper()
+        );
+    }
+
+    @Override
+    public Page<{{resourceName}}> previousPage(final Page<{{resourceName}}> page, final TwilioRestClient client) {
+        Request request = new Request(
+            HttpMethod.GET,
+            page.getPreviousPageUrl(Domains.{{#lambda.uppercase}}{{domain}}{{/lambda.uppercase}}.toString())
+        );
+        return pageForRequest(client, request);
+    }
+
+
+    @Override
+    public Page<{{resourceName}}> nextPage(final Page<{{resourceName}}> page, final TwilioRestClient client) {
+        Request request = new Request(
+            HttpMethod.GET,
+            page.getNextPageUrl(Domains.{{#lambda.uppercase}}{{domain}}{{/lambda.uppercase}}.toString())
+        );
+        return pageForRequest(client, request);
+    }
+
+    @Override
+    public Page<{{resourceName}}> getPage(final String targetUrl, final TwilioRestClient client) {
+        Request request = new Request(
+            HttpMethod.GET,
+            targetUrl
+        );
+
+        return pageForRequest(client, request);
+    }
+}
+{{/vendorExtensions.x-is-read-operation}}
+{{/operations}}
+{{/hasRead}}
+{{/resources}}
+
