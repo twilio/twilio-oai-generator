@@ -9,6 +9,8 @@ import java.util.Objects;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.Operation;
 import io.swagger.v3.oas.models.PathItem;
+import io.swagger.v3.oas.models.responses.ApiResponse;
+import io.swagger.v3.oas.models.responses.ApiResponses;
 import org.openapitools.codegen.CodegenConstants;
 import org.openapitools.codegen.CodegenOperation;
 import org.openapitools.codegen.CodegenProperty;
@@ -105,5 +107,23 @@ public abstract class AbstractTwilioGoGenerator extends GoClientCodegen {
         }
 
         return objs;
+    }
+
+    @Override
+    protected ApiResponse findMethodResponse(final ApiResponses responses) {
+        final ApiResponse response = super.findMethodResponse(responses);
+
+        if (response != null) {
+            return response;
+        }
+
+        // If we found no 2XX or default responses, look for 3XX.
+        return responses
+            .keySet()
+            .stream()
+            .filter(responseCode -> responseCode.startsWith("3"))
+            .findFirst()
+            .map(responses::get)
+            .orElse(null);
     }
 }
