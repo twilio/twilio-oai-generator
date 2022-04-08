@@ -22,7 +22,7 @@ headers := make(map[string]interface{})
 if params != nil && params.{{paramName}} != nil {
 {{#isArray}}
     for _, item  := range *params.{{paramName}} {
-{{#items.isFreeFormObject}}
+{{#items.vendorExtensions.x-marshal}}
         v, err := json.Marshal(item)
 
         if err != nil {
@@ -30,14 +30,14 @@ if params != nil && params.{{paramName}} != nil {
         }
 
         data.Add("{{{baseName}}}", string(v))
-{{/items.isFreeFormObject}}
-{{^items.isFreeFormObject}}
+{{/items.vendorExtensions.x-marshal}}
+{{^items.vendorExtensions.x-marshal}}
         data.Add("{{{baseName}}}", item)
-{{/items.isFreeFormObject}}
+{{/items.vendorExtensions.x-marshal}}
     }
 {{/isArray}}
 {{^isArray}}
-{{#isFreeFormObject}}
+{{#vendorExtensions.x-marshal}}
     v, err := json.Marshal(params.{{paramName}})
 
     if err != nil {
@@ -45,10 +45,10 @@ if params != nil && params.{{paramName}} != nil {
     }
 
     data.Set("{{{baseName}}}", string(v))
-{{/isFreeFormObject}}
-{{^isFreeFormObject}}
+{{/vendorExtensions.x-marshal}}
+{{^vendorExtensions.x-marshal}}
     data.Set("{{{baseName}}}", {{^isString}}fmt.Sprint({{/isString}}{{#isDateTime}}({{/isDateTime}}*params.{{paramName}}{{^isString}}{{#isDateTime}}).Format(time.RFC3339){{/isDateTime}}){{/isString}})
-{{/isFreeFormObject}}
+{{/vendorExtensions.x-marshal}}
 {{/isArray}}
 }
 {{/vendorExtensions.x-custom}}

@@ -211,6 +211,7 @@ paths:
                   items:
                     type: object
                   type: array
+                TestAnyType: { }
               required:
                 - TestString
               title: CreateCredentialAwsRequest

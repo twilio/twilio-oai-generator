@@ -48,6 +48,10 @@ func TestPost(t *testing.T) {
 	params.SetTestDateTime(time.Now())
 	params.SetTestDate("2022-01-01")
 	params.SetTestEnum("consumer-checking")
+	params.SetTestAnyType([]map[string]interface{}{{
+		"type": "include",
+		"all":  true,
+	}})
 
 	resp, err := testApiService.CreateCredentialAws(params)
 	assert.Nil(t, err)
