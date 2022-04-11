@@ -49,6 +49,8 @@ type CreateCredentialAwsParams struct {
 	TestEnum *string `json:"TestEnum,omitempty"`
 	//
 	TestObjectArray *[]map[string]interface{} `json:"TestObjectArray,omitempty"`
+	//
+	TestAnyType *interface{} `json:"TestAnyType,omitempty"`
 }
 
 func (params *CreateCredentialAwsParams) SetTestString(TestString string) *CreateCredentialAwsParams {
@@ -101,6 +103,10 @@ func (params *CreateCredentialAwsParams) SetTestEnum(TestEnum string) *CreateCre
 }
 func (params *CreateCredentialAwsParams) SetTestObjectArray(TestObjectArray []map[string]interface{}) *CreateCredentialAwsParams {
 	params.TestObjectArray = &TestObjectArray
+	return params
+}
+func (params *CreateCredentialAwsParams) SetTestAnyType(TestAnyType interface{}) *CreateCredentialAwsParams {
+	params.TestAnyType = &TestAnyType
 	return params
 }
 
@@ -162,6 +168,15 @@ func (c *ApiService) CreateCredentialAws(params *CreateCredentialAwsParams) (*Te
 
 			data.Add("TestObjectArray", string(v))
 		}
+	}
+	if params != nil && params.TestAnyType != nil {
+		v, err := json.Marshal(params.TestAnyType)
+
+		if err != nil {
+			return nil, err
+		}
+
+		data.Set("TestAnyType", string(v))
 	}
 
 	resp, err := c.requestHandler.Post(c.baseURL+path, data, headers)

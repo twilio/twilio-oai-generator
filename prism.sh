@@ -5,19 +5,19 @@ cd examples/prism
 docker-compose build
 docker-compose up -d --force-recreate --remove-orphans
 
-
+echo -n "Waiting for tests to complete"
 while [ "$(docker-compose ps -q go-client-test | xargs docker inspect -f "{{.State.Status}}")" != "exited" ]
 do
-  echo " Waiting for tests to complete"
+  echo -n "."
   sleep 10
 done
+echo
 
 EXIT_CODE=0
 function check_status() {
   docker_test_services=("$@")
   for docker_test_service in "${docker_test_services[@]}"
   do
-      echo "$docker_test_service"
       if [[ $(docker-compose ps -q $docker_test_service | xargs docker inspect -f "{{.State.ExitCode}}") -ne 0 ]]
         then
           EXIT_CODE=$(($EXIT_CODE || $(docker-compose ps -q $docker_test_service | xargs docker inspect -f "{{.State.ExitCode}}")))
