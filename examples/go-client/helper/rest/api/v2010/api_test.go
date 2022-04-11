@@ -48,6 +48,8 @@ func TestPost(t *testing.T) {
 	params.SetTestDateTime(time.Now())
 	params.SetTestDate("2022-01-01")
 	params.SetTestEnum("consumer-checking")
+
+	// "Any" type should expect any type of value. We'll test with an array of maps, but any type should work.
 	params.SetTestAnyType([]map[string]interface{}{{
 		"type": "include",
 		"all":  true,
