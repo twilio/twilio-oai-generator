@@ -61,11 +61,11 @@ import com.twilio.type.FeedbackIssue;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @ToString
-public class FeedbackSummary extends Resource {
+public class FeedbackCallSummary extends Resource {
     private static final long serialVersionUID = 44112120076447L;
 
-    public static FeedbackSummaryCreator creator(final String AccountSid, final LocalDate EndDate, final LocalDate StartDate){
-        return new FeedbackSummaryCreator(AccountSid, EndDate, StartDate);
+    public static FeedbackCallSummaryCreator creator(final String AccountSid, final LocalDate EndDate, final LocalDate StartDate){
+        return new FeedbackCallSummaryCreator(AccountSid, EndDate, StartDate);
     }
 
 
@@ -73,16 +73,16 @@ public class FeedbackSummary extends Resource {
 
 
     /**
-    * Converts a JSON String into a FeedbackSummary object using the provided ObjectMapper.
+    * Converts a JSON String into a FeedbackCallSummary object using the provided ObjectMapper.
     *
     * @param json Raw JSON String
     * @param objectMapper Jackson ObjectMapper
-    * @return FeedbackSummary object represented by the provided JSON
+    * @return FeedbackCallSummary object represented by the provided JSON
     */
-    public static FeedbackSummary fromJson(final String json, final ObjectMapper objectMapper) {
+    public static FeedbackCallSummary fromJson(final String json, final ObjectMapper objectMapper) {
         // Convert all checked exceptions to Runtime
         try {
-            return objectMapper.readValue(json, FeedbackSummary.class);
+            return objectMapper.readValue(json, FeedbackCallSummary.class);
         } catch (final JsonMappingException | JsonParseException e) {
             throw new ApiException(e.getMessage(), e);
         } catch (final IOException e) {
@@ -91,17 +91,17 @@ public class FeedbackSummary extends Resource {
     }
 
     /**
-    * Converts a JSON InputStream into a FeedbackSummary object using the provided
+    * Converts a JSON InputStream into a FeedbackCallSummary object using the provided
     * ObjectMapper.
     *
     * @param json Raw JSON InputStream
     * @param objectMapper Jackson ObjectMapper
-    * @return FeedbackSummary object represented by the provided JSON
+    * @return FeedbackCallSummary object represented by the provided JSON
     */
-    public static FeedbackSummary fromJson(final InputStream json, final ObjectMapper objectMapper) {
+    public static FeedbackCallSummary fromJson(final InputStream json, final ObjectMapper objectMapper) {
         // Convert all checked exceptions to Runtime
         try {
-            return objectMapper.readValue(json, FeedbackSummary.class);
+            return objectMapper.readValue(json, FeedbackCallSummary.class);
         } catch (final JsonMappingException | JsonParseException e) {
             throw new ApiException(e.getMessage(), e);
         } catch (final IOException e) {

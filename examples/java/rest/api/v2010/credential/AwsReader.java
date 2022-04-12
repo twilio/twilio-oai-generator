@@ -89,7 +89,7 @@ public class AwsReader extends Reader<Aws> {
         }
 
         return Page.fromJson(
-            "aws",
+            "credentials",
             response.getContent(),
             Aws.class,
             client.getObjectMapper()

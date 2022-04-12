@@ -688,3 +688,5 @@ paths:
         - accountSid_authToken: [ ]
     servers:
       - url: https://api.twilio.com
+    x-twilio:
+      className: FeedbackCallSummary
