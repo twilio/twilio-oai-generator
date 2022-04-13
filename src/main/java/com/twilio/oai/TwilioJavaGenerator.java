@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.PathItem;
-import io.swagger.v3.oas.models.Paths;
 import lombok.AllArgsConstructor;
 import org.openapitools.codegen.*;
 import org.openapitools.codegen.languages.JavaClientCodegen;
@@ -345,7 +344,7 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
             pathMap.getExtensions().forEach((key, value) -> {
                 if (key.equals("x-twilio")) {
                     if(((Map<?, ?>) value).containsKey("className")) {
-                        String fileName = ((Map<?, String>) value).get("className");
+                        String fileName = Arrays.stream(((Map<?, String>) value).get("className").split("_")).map(StringUtils::camelize).collect(Collectors.joining());
                         apiNameMap.put(singularize(getResourceName(path)), fileName);
                     }
                 }

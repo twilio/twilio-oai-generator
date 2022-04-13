@@ -689,4 +689,4 @@ paths:
     servers:
       - url: https://api.twilio.com
     x-twilio:
-      className: FeedbackCallSummary
+      className: feedback_call_summary
