@@ -15,7 +15,7 @@ components:
         test_integer:
           nullable: true
           type: integer
-        test_object:
+        test_object:  
           nullable: true
           format: phone-number-capabilities
           properties:
@@ -39,6 +39,7 @@ components:
           nullable: true
           format: currency
           type: string
+          example: "USD"
         test_number_float:
           nullable: true
           type: number
