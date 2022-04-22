@@ -31,10 +31,10 @@ func (response *{{classname}}) UnmarshalJSON(bytes []byte) (err error) {
 {{#allVars}}
 {{#isNumber}}
 	response{{name}}, err := client.UnmarshalFloat32({{^isNullable}}&{{/isNullable}}raw.{{name}})
-    if err != nil {
+	if err != nil {
 		return err
 	}
-    response.{{name}} = {{^isNullable}}*{{/isNullable}}response{{name}}
+	response.{{name}} = {{^isNullable}}*{{/isNullable}}response{{name}}
 
 {{/isNumber}}
 {{/allVars}}
