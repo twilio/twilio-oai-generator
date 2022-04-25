@@ -5,8 +5,6 @@ import com.twilio.http.Response;
 import com.twilio.http.TwilioRestClient;
 
 public class TestRestClient extends TwilioRestClient{
-    String username;
-    String password;
     String baseURL;
     TestRestClient(Builder b, String url) {
         super(b);  

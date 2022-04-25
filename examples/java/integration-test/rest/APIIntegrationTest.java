@@ -29,7 +29,6 @@ public class APIIntegrationTest {
         String authToken = "CR12345678123456781234567812345678";
 
         TestRestClient testClient = new TestRestClient(new Builder(ACCOUNT_SID, authToken).httpClient(new NetworkHttpClient()), baseURL);
-        Twilio.setRestClient(testClient); 
         Twilio.init(ACCOUNT_SID, authToken);
         Twilio.setRestClient(testClient);
     }
