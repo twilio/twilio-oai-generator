@@ -12,6 +12,7 @@ RUN rm -rf /src/main/java/com/twilio/rest/ \
 
 COPY examples/java/rest /src/main/java/com/twilio/rest
 COPY examples/java/unit-test/rest /src/test/java/com/twilio/rest/
+COPY examples/java/integration-test/rest /src/test/java/com/twilio/rest/
 COPY examples/java/pom.xml /pom.xml
 
 RUN apt-get update && apt-get install maven -y

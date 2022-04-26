@@ -6,7 +6,7 @@ docker-compose build
 docker-compose up -d --force-recreate --remove-orphans
 
 echo -n "Waiting for tests to complete"
-while [ "$(docker-compose ps -q go-client-test | xargs docker inspect -f "{{.State.Status}}")" != "exited" ]
+while [[ "$(docker-compose ps -q go-client-test | xargs docker inspect -f "{{.State.Status}}")" != "exited" && "$(docker-compose ps -q java-test | xargs docker inspect -f "{{.State.Status}}")" != "exited" ]]
 do
   echo -n "."
   sleep 10
@@ -28,7 +28,7 @@ function check_status() {
   done
 }
 
-testing_services=("go-client-test")
+testing_services=("go-client-test" "java-test")
 check_status "${testing_services[@]}"
 docker-compose down
 exit $EXIT_CODE

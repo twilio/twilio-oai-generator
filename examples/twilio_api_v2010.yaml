@@ -39,6 +39,7 @@ components:
           nullable: true
           format: currency
           type: string
+          example: "USD"
         test_number_float:
           nullable: true
           type: number
