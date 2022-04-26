@@ -9,25 +9,30 @@ public class Inflector {
 
     ExpressionRule ruleBook = new ExpressionRule();
 
-    public  String singularize(String word) {
+    public  String singular(String word) {
         if (word == null) return null;
         String wordStr = word.trim();
         if (wordStr.length() == 0) return wordStr;
-        if (ruleBook.isIrregular(wordStr) || isAbbrevation(wordStr)) return wordStr;
+        if (ruleBook.isIrregular(wordStr) || isAbbreviation(wordStr)) return wordStr;
+        if (ruleBook.isWildCard(wordStr)) {
+            return ruleBook.getWildCardMapping(wordStr);
+        }
         return ruleBook.getReplacementString(word);
     }
 
-    public boolean isAbbrevation(String word) {
+    public boolean isAbbreviation(String word) {
         return word.chars().allMatch(Character::isUpperCase);
     }
 
      class ExpressionRule {
         private  final Map<Pattern, String> pluralExpressionList= new HashMap<>();
         private  final List<String> irregulars = new ArrayList<>();
+        private  final Map<String, String> wildCardMapping = new HashMap<>();
 
         public ExpressionRule() {
             this.initIrregulars();
             this.initRules();
+            this.initWildCardMapping();
         }
 
         public void addRule(String expression, String replacement) {
@@ -85,5 +90,17 @@ public class Inflector {
             }
             return word;
         }
-    }
+
+        public boolean isWildCard(String wordStr) {
+            return wildCardMapping.containsKey(wordStr);
+        }
+
+         public String getWildCardMapping(String wordStr) {
+            return wildCardMapping.get(wordStr);
+         }
+
+         public void initWildCardMapping() {
+             wildCardMapping.put("Addresses", "Address");
+         }
+     }
 }

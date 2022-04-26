@@ -1,6 +1,6 @@
 {{>licenseInfo}}
 {{#resources}}
-package com.twilio.rest.{{domainPackage}}.{{package}}.{{packageSubPart}};
+package com.twilio.rest.{{domainPackage}}.{{package}}{{packageSubPart}};
 
 import com.twilio.base.Updater;
 import com.twilio.converter.Promoter;
@@ -12,6 +12,22 @@ import com.twilio.http.Request;
 import com.twilio.http.Response;
 import com.twilio.http.TwilioRestClient;
 import com.twilio.rest.Domains;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URI;
+import java.time.ZonedDateTime;
+
+{{^fullJavaUtil}}
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+{{/fullJavaUtil}}
+
+import lombok.ToString;
+
 
 {{>model}}
 {{#hasUpdate}}
@@ -29,7 +45,7 @@ public class {{resourceName}}Updater extends Updater<{{resourceName}}>{
         }
 
 {{#allParams}}
-    public {{resourceName}}Updater set{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}(final {{dataType}} {{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}){
+    public {{resourceName}}Updater set{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}(final {{{dataType}}} {{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}){
         this.{{paramName}} = {{paramName}};
         return this;
     }

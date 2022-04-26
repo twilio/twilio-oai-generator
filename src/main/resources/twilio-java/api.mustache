@@ -1,6 +1,6 @@
 {{>licenseInfo}}
 {{#resources}}
-package com.twilio.rest.{{domainPackage}}.{{package}}.{{packageSubPart}};
+package com.twilio.rest.{{domainPackage}}.{{package}}{{packageSubPart}};
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -49,6 +49,7 @@ import java.time.LocalDate;
 import java.math.BigDecimal;
 import com.twilio.type.PhoneNumberCapabilities;
 import com.twilio.type.FeedbackIssue;
+import com.twilio.type.IceServer;
 
 
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -122,11 +123,7 @@ public class {{resourceName}} extends Resource {
             throw new ApiConnectionException(e.getMessage(), e);
         }
     }
-{{#operations}}
-{{#vendorExtensions.x-is-fetch-operation}}
 {{>responseModel}}
-{{/vendorExtensions.x-is-fetch-operation}}
-{{/operations}}
 }
 {{/resources}}
 

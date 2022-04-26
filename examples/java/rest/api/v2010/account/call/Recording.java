@@ -57,6 +57,7 @@ import java.time.LocalDate;
 import java.math.BigDecimal;
 import com.twilio.type.PhoneNumberCapabilities;
 import com.twilio.type.FeedbackIssue;
+import com.twilio.type.IceServer;
 
 
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -118,25 +119,6 @@ public class Recording extends Resource {
             throw new ApiException(e.getMessage(), e);
         } catch (final IOException e) {
             throw new ApiConnectionException(e.getMessage(), e);
-        }
-    }
-    public enum Test_enum {
-        DIALVERB("DialVerb"),
-        TRUNKING("Trunking");
-
-        private final String value;
-
-        private Test_enum(final String value) {
-            this.value = value;
-        }
-
-        public String toString() {
-            return value;
-        }
-
-        @JsonCreator
-        public static Test_enum forValue(final String value) {
-            return Promoter.enumFromString(value, Test_enum.values());
         }
     }
 

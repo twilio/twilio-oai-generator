@@ -10,7 +10,7 @@
  * Do not edit the class manually.
  */
 
-package com.twilio.rest.api.v2010.credential;
+package com.twilio.rest.api.v2010.account.call;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -62,40 +62,28 @@ import com.twilio.type.IceServer;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @ToString
-public class Aws extends Resource {
+public class FeedbackCallSummary extends Resource {
     private static final long serialVersionUID = 44112120076447L;
 
-    public static AwsCreator creator(final String TestString){
-        return new AwsCreator(TestString);
+    public static FeedbackCallSummaryCreator creator(final String AccountSid, final LocalDate EndDate, final LocalDate StartDate){
+        return new FeedbackCallSummaryCreator(AccountSid, EndDate, StartDate);
     }
 
-    public static AwsFetcher fetcher(final String Sid){
-        return new AwsFetcher(Sid);
-    }
 
-    public static AwsDeleter delete(final String Sid){
-        return new AwsDeleter(Sid);
-    }
 
-    public static AwsReader reader(){
-        return new AwsReader();
-    }
 
-    public static AwsUpdater update(final String Sid){
-        return new AwsUpdater(Sid);
-    }
 
     /**
-    * Converts a JSON String into a Aws object using the provided ObjectMapper.
+    * Converts a JSON String into a FeedbackCallSummary object using the provided ObjectMapper.
     *
     * @param json Raw JSON String
     * @param objectMapper Jackson ObjectMapper
-    * @return Aws object represented by the provided JSON
+    * @return FeedbackCallSummary object represented by the provided JSON
     */
-    public static Aws fromJson(final String json, final ObjectMapper objectMapper) {
+    public static FeedbackCallSummary fromJson(final String json, final ObjectMapper objectMapper) {
         // Convert all checked exceptions to Runtime
         try {
-            return objectMapper.readValue(json, Aws.class);
+            return objectMapper.readValue(json, FeedbackCallSummary.class);
         } catch (final JsonMappingException | JsonParseException e) {
             throw new ApiException(e.getMessage(), e);
         } catch (final IOException e) {
@@ -104,17 +92,17 @@ public class Aws extends Resource {
     }
 
     /**
-    * Converts a JSON InputStream into a Aws object using the provided
+    * Converts a JSON InputStream into a FeedbackCallSummary object using the provided
     * ObjectMapper.
     *
     * @param json Raw JSON InputStream
     * @param objectMapper Jackson ObjectMapper
-    * @return Aws object represented by the provided JSON
+    * @return FeedbackCallSummary object represented by the provided JSON
     */
-    public static Aws fromJson(final InputStream json, final ObjectMapper objectMapper) {
+    public static FeedbackCallSummary fromJson(final InputStream json, final ObjectMapper objectMapper) {
         // Convert all checked exceptions to Runtime
         try {
-            return objectMapper.readValue(json, Aws.class);
+            return objectMapper.readValue(json, FeedbackCallSummary.class);
         } catch (final JsonMappingException | JsonParseException e) {
             throw new ApiException(e.getMessage(), e);
         } catch (final IOException e) {
@@ -137,7 +125,7 @@ public class Aws extends Resource {
     private final List<FeedbackIssue> testArrayOfObjects;
 
     @JsonCreator
-    private Aws(
+    private FeedbackCallSummary(
         @JsonProperty("account_sid")
         final String accountSid,
 
@@ -243,7 +231,7 @@ public class Aws extends Resource {
             return false;
         }
 
-        Aws other = (Aws) o;
+        FeedbackCallSummary other = (FeedbackCallSummary) o;
 
         return Objects.equals(accountSid, other.accountSid) &&  Objects.equals(sid, other.sid) &&  Objects.equals(testString, other.testString) &&  Objects.equals(testInteger, other.testInteger) &&  Objects.equals(testObject, other.testObject) &&  Objects.equals(testDateTime, other.testDateTime) &&  Objects.equals(testNumber, other.testNumber) &&  Objects.equals(priceUnit, other.priceUnit) &&  Objects.equals(testNumberFloat, other.testNumberFloat) &&  Objects.equals(testEnum, other.testEnum) &&  Objects.equals(testArrayOfIntegers, other.testArrayOfIntegers) &&  Objects.equals(testArrayOfArrayOfIntegers, other.testArrayOfArrayOfIntegers) &&  Objects.equals(testArrayOfObjects, other.testArrayOfObjects)  ;
     }
