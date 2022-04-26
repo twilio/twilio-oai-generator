@@ -5,7 +5,7 @@ ENV GOPATH /go
 WORKDIR /go/src/twilio-go
 COPY . .
 
-RUN go get -u github.com/twilio/twilio-go@unmarshal
+RUN go get -u github.com/twilio/twilio-go@main
 RUN go get -u github.com/twilio/terraform-provider-twilio@main
 
 # pipefail prevents errors in a pipeline from being masked.
