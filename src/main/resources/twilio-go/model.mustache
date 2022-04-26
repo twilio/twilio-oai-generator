@@ -1,15 +1,13 @@
 {{>partial_header}}
 package {{packageName}}
 {{#models}}
-{{#imports}}
-{{#-first}}
 import (
-{{/-first}}
+	"encoding/json"
+	"github.com/twilio/twilio-go/client"
+{{#imports}}
 	"{{import}}"
-{{#-last}}
-)
-{{/-last}}
 {{/imports}}
+)
 {{#model}}
 {{#isEnum}}
 {{>model_enum}}

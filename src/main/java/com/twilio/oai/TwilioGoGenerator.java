@@ -48,6 +48,22 @@ public class TwilioGoGenerator extends AbstractTwilioGoGenerator {
 
     @SuppressWarnings("unchecked")
     @Override
+    public Map<String, Object> postProcessModels(final Map<String, Object> objs) {
+        final Map<String, Object> results = super.postProcessModels(objs);
+        final List<Map<String, Object>> models = (List<Map<String, Object>>) results.get("models");
+
+        for (final Map<String, Object> m : models) {
+            final CodegenModel model = (CodegenModel) m.get("model");
+
+            model.allVars.forEach(v -> v.setIsNumber(v.isNumber || v.isFloat));
+            model.vendorExtensions.put("x-has-numbers-vars", model.allVars.stream().anyMatch(v -> v.isNumber));
+        }
+
+        return results;
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
     public Map<String, Object> postProcessOperationsWithModels(final Map<String, Object> objs,
                                                                final List<Object> allModels) {
         final Map<String, Object> results = super.postProcessOperationsWithModels(objs, allModels);
