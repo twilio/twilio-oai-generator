@@ -1,11 +1,43 @@
 // {{classname}}{{#description}} {{{description}}}{{/description}}{{^description}} struct for {{{classname}}}{{/description}}
 type {{classname}} struct {
 {{#allVars}}
-    {{^-first}}
-    {{/-first}}
-    {{#description}}
-        // {{{description}}}
-    {{/description}}
-    {{name}} {{#isNullable}}*{{/isNullable}}{{{vendorExtensions.x-go-base-type}}} `json:"{{baseName}}{{^required}},omitempty{{/required}}"{{#withXml}} xml:"{{baseName}}{{#isXmlAttribute}},attr{{/isXmlAttribute}}"{{/withXml}}{{#vendorExtensions.x-go-custom-tag}} {{{.}}}{{/vendorExtensions.x-go-custom-tag}}`
+	{{#description}}
+		// {{{description}}}
+	{{/description}}
+	{{name}} {{#isNullable}}*{{/isNullable}}{{{vendorExtensions.x-go-base-type}}} `json:"{{baseName}}{{^required}},omitempty{{/required}}"{{#withXml}} xml:"{{baseName}}{{#isXmlAttribute}},attr{{/isXmlAttribute}}"{{/withXml}}{{#vendorExtensions.x-go-custom-tag}} {{{.}}}{{/vendorExtensions.x-go-custom-tag}}`
 {{/allVars}}
 }
+
+{{#vendorExtensions.x-has-numbers-vars}}
+func (response *{{classname}}) UnmarshalJSON(bytes []byte) (err error) {
+	raw := struct {
+	{{#allVars}}
+		{{name}} {{#isNullable}}*{{/isNullable}}{{#isNumber}}interface{}{{/isNumber}}{{^isNumber}}{{{vendorExtensions.x-go-base-type}}}{{/isNumber}} `json:"{{baseName}}"`
+	{{/allVars}}
+	}{}
+
+	if err = json.Unmarshal(bytes, &raw); err != nil {
+		return err
+	}
+
+	*response = {{classname}}{
+	{{#allVars}}
+	{{^isNumber}}
+		{{name}}: raw.{{name}},
+	{{/isNumber}}
+	{{/allVars}}
+	}
+
+{{#allVars}}
+{{#isNumber}}
+	response{{name}}, err := client.UnmarshalFloat32({{^isNullable}}&{{/isNullable}}raw.{{name}})
+	if err != nil {
+		return err
+	}
+	response.{{name}} = {{^isNullable}}*{{/isNullable}}response{{name}}
+
+{{/isNumber}}
+{{/allVars}}
+	return
+}
+{{/vendorExtensions.x-has-numbers-vars}}

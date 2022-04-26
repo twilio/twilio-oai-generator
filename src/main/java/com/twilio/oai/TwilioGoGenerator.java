@@ -10,7 +10,11 @@ import java.util.stream.Collectors;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.media.IntegerSchema;
 import io.swagger.v3.oas.models.parameters.Parameter;
-import org.openapitools.codegen.*;
+import org.openapitools.codegen.CodegenModel;
+import org.openapitools.codegen.CodegenOperation;
+import org.openapitools.codegen.CodegenParameter;
+import org.openapitools.codegen.CodegenProperty;
+import org.openapitools.codegen.SupportingFile;
 
 public class TwilioGoGenerator extends AbstractTwilioGoGenerator {
 
@@ -40,6 +44,22 @@ public class TwilioGoGenerator extends AbstractTwilioGoGenerator {
         }
 
         return super.toModel(prunedName, doUnderscore);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public Map<String, Object> postProcessModels(final Map<String, Object> objs) {
+        final Map<String, Object> results = super.postProcessModels(objs);
+        final List<Map<String, Object>> models = (List<Map<String, Object>>) results.get("models");
+
+        for (final Map<String, Object> m : models) {
+            final CodegenModel model = (CodegenModel) m.get("model");
+
+            model.allVars.forEach(v -> v.setIsNumber(v.isNumber || v.isFloat));
+            model.vendorExtensions.put("x-has-numbers-vars", model.allVars.stream().anyMatch(v -> v.isNumber));
+        }
+
+        return results;
     }
 
     @SuppressWarnings("unchecked")
@@ -110,6 +130,16 @@ public class TwilioGoGenerator extends AbstractTwilioGoGenerator {
         // Make sure required non-path params get into the options block.
         parameter.required = parameter.isPathParam;
         parameter.vendorExtensions.put("x-custom", parameter.baseName.equals("limit"));
+
+        // Parameters (and their items) need to be marshalled to a string for inclusion in the request payload when
+        // they are either free-form objects (type: object) or any type objects (type is absent).
+        if (parameter.isFreeFormObject || parameter.isAnyType) {
+            parameter.vendorExtensions.put("x-marshal", true);
+        }
+
+        if (parameter.isArray && (parameter.items.isFreeFormObject || parameter.items.isAnyType)) {
+            parameter.items.vendorExtensions.put("x-marshal", true);
+        }
     }
 
     @Override

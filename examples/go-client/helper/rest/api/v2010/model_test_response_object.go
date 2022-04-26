@@ -11,6 +11,12 @@
 
 package openapi
 
+import (
+	"encoding/json"
+
+	"github.com/twilio/twilio-go/client"
+)
+
 // TestResponseObject struct for TestResponseObject
 type TestResponseObject struct {
 	AccountSid                 *string                                 `json:"account_sid,omitempty"`
@@ -26,4 +32,54 @@ type TestResponseObject struct {
 	TestArrayOfIntegers        []int                                   `json:"test_array_of_integers,omitempty"`
 	TestArrayOfArrayOfIntegers [][]int                                 `json:"test_array_of_array_of_integers,omitempty"`
 	TestArrayOfObjects         *[]TestResponseObjectTestArrayOfObjects `json:"test_array_of_objects,omitempty"`
+}
+
+func (response *TestResponseObject) UnmarshalJSON(bytes []byte) (err error) {
+	raw := struct {
+		AccountSid                 *string                                 `json:"account_sid"`
+		Sid                        *string                                 `json:"sid"`
+		TestString                 *string                                 `json:"test_string"`
+		TestInteger                *int                                    `json:"test_integer"`
+		TestObject                 *TestResponseObjectTestObject           `json:"test_object"`
+		TestDateTime               *string                                 `json:"test_date_time"`
+		TestNumber                 *interface{}                            `json:"test_number"`
+		PriceUnit                  *string                                 `json:"price_unit"`
+		TestNumberFloat            *interface{}                            `json:"test_number_float"`
+		TestEnum                   *string                                 `json:"test_enum"`
+		TestArrayOfIntegers        []int                                   `json:"test_array_of_integers"`
+		TestArrayOfArrayOfIntegers [][]int                                 `json:"test_array_of_array_of_integers"`
+		TestArrayOfObjects         *[]TestResponseObjectTestArrayOfObjects `json:"test_array_of_objects"`
+	}{}
+
+	if err = json.Unmarshal(bytes, &raw); err != nil {
+		return err
+	}
+
+	*response = TestResponseObject{
+		AccountSid:                 raw.AccountSid,
+		Sid:                        raw.Sid,
+		TestString:                 raw.TestString,
+		TestInteger:                raw.TestInteger,
+		TestObject:                 raw.TestObject,
+		TestDateTime:               raw.TestDateTime,
+		PriceUnit:                  raw.PriceUnit,
+		TestEnum:                   raw.TestEnum,
+		TestArrayOfIntegers:        raw.TestArrayOfIntegers,
+		TestArrayOfArrayOfIntegers: raw.TestArrayOfArrayOfIntegers,
+		TestArrayOfObjects:         raw.TestArrayOfObjects,
+	}
+
+	responseTestNumber, err := client.UnmarshalFloat32(raw.TestNumber)
+	if err != nil {
+		return err
+	}
+	response.TestNumber = responseTestNumber
+
+	responseTestNumberFloat, err := client.UnmarshalFloat32(raw.TestNumberFloat)
+	if err != nil {
+		return err
+	}
+	response.TestNumberFloat = responseTestNumberFloat
+
+	return
 }

@@ -49,6 +49,12 @@ func TestPost(t *testing.T) {
 	params.SetTestDate("2022-01-01")
 	params.SetTestEnum("consumer-checking")
 
+	// "Any" type should expect any type of value. We'll test with an array of maps, but any type should work.
+	params.SetTestAnyType([]map[string]interface{}{{
+		"type": "include",
+		"all":  true,
+	}})
+
 	resp, err := testApiService.CreateCredentialAws(params)
 	assert.Nil(t, err)
 	assert.NotNil(t, resp)

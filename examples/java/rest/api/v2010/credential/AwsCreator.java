@@ -70,6 +70,7 @@ public class AwsCreator extends Creator<Aws>{
     private LocalDate TestDate;
     private String TestEnum;
     private List<Object> TestObjectArray;
+    private Object TestAnyType;
     public AwsCreator(final String TestString) {
     
         this.TestString = TestString;
@@ -126,6 +127,10 @@ public class AwsCreator extends Creator<Aws>{
     }
     public AwsCreator setTestObjectArray(final List<Object> TestObjectArray){
         this.TestObjectArray = TestObjectArray;
+        return this;
+    }
+    public AwsCreator setTestAnyType(final Object TestAnyType){
+        this.TestAnyType = TestAnyType;
         return this;
     }
 
@@ -207,6 +212,10 @@ public class AwsCreator extends Creator<Aws>{
 
         if (TestObjectArray != null) {
         request.addPostParam("TestObjectArray", TestObjectArray.toString());
+        }
+
+        if (TestAnyType != null) {
+        request.addPostParam("TestAnyType", TestAnyType.toString());
         }
 
     }

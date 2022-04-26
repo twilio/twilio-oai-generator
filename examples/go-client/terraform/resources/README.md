@@ -44,5 +44,6 @@ Name | Type | Requirement | Description
 **test_date** | string | Optional | 
 **test_enum** | string | Optional | 
 **test_object_array** | list(string) | Optional | 
+**test_any_type** | string | Optional | 
 **sid** | string | *Computed* | 
 

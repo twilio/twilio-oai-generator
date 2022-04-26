@@ -39,6 +39,7 @@ components:
           nullable: true
           format: currency
           type: string
+          example: "USD"
         test_number_float:
           nullable: true
           type: number
@@ -211,6 +212,7 @@ paths:
                   items:
                     type: object
                   type: array
+                TestAnyType: { }
               required:
                 - TestString
               title: CreateCredentialAwsRequest
@@ -376,7 +378,8 @@ paths:
           schema:
             type: string
       responses:
-        '200':
+        '307':
+          description: Test that an operation with no 2XX responses is handled properly
           content:
             application/json:
               schema:
@@ -384,7 +387,6 @@ paths:
               examples:
                 example:
                   $ref: '#/components/examples/test.response_object.example'
-          description: OK
       security:
         - accountSid_authToken: [ ]
     servers:
