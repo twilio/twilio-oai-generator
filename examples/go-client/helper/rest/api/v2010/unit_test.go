@@ -200,6 +200,39 @@ func TestObjectArrayTypeParam(t *testing.T) {
 	_, _ = twilio.CreateCredentialAws(&params)
 }
 
+func TestResponseDecodeTypes(t *testing.T) {
+	mockCtrl := gomock.NewController(t)
+	testClient := NewMockBaseClient(mockCtrl)
+	twilio := NewApiServiceWithClient(testClient)
+
+	testClient.EXPECT().SendRequest(
+		gomock.Any(),
+		gomock.Any(),
+		gomock.Any(),
+		gomock.Any()).
+		DoAndReturn(func(method string, rawURL string, data url.Values, headers map[string]interface{}) (*http.Response, error) {
+			response := map[string]interface{}{
+				"test_number":       123.45,
+				"test_number_float": "67.89",
+				"test_array_of_objects": []map[string]interface{}{{
+					"count": 7,
+				}},
+			}
+
+			resp, _ := json.Marshal(response)
+
+			return &http.Response{Body: ioutil.NopCloser(bytes.NewReader(resp))}, nil
+		})
+
+	params := CreateCredentialAwsParams{}
+	resp, err := twilio.CreateCredentialAws(&params)
+
+	assert.Nil(t, err)
+	assert.Equal(t, float32(123.45), *resp.TestNumber)
+	assert.Equal(t, float32(67.89), *resp.TestNumberFloat)
+	assert.Equal(t, float32(7), (*resp.TestArrayOfObjects)[0].Count)
+}
+
 func TestList(t *testing.T) {
 	mockCtrl := gomock.NewController(t)
 	testClient := NewMockBaseClient(mockCtrl)
