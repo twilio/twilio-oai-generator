@@ -1,6 +1,6 @@
 {{>licenseInfo}}
 {{#resources}}
-package com.twilio.rest.{{domainPackage}}.{{package}}.{{packageSubPart}};
+package com.twilio.rest.{{domainPackage}}.{{package}}{{packageSubPart}};
 
 import com.twilio.base.Reader;
 import com.twilio.base.ResourceSet;
@@ -16,6 +16,21 @@ import com.twilio.base.Page;
 import java.time.ZonedDateTime;
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URI;
+import java.time.ZonedDateTime;
+
+{{^fullJavaUtil}}
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+{{/fullJavaUtil}}
+
+import lombok.ToString;
+
 
 
 {{>model}}

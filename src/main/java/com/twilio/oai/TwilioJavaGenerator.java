@@ -17,8 +17,6 @@ import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-import static com.twilio.oai.PathUtils.removeExtension;
-
 public class TwilioJavaGenerator extends JavaClientCodegen {
 
     // Unique string devoid of symbols.
@@ -107,7 +105,7 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
         List<String> apiPathList = Arrays
                 .stream(super.toApiFilename(name).split(PATH_SEPARATOR_PLACEHOLDER))
                 .map(part -> StringUtils.camelize(part, false))
-                .map(this::singularize)
+                .map(this::singular)
                 .collect(Collectors.toList());
         List<String> apiPathLowerList = apiPathList
                 .subList(0, apiPathList.size() - 1 )
@@ -153,28 +151,25 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
 
         final Map<String, Object> ops = getStringMap(results, "operations");
         final ArrayList<CodegenOperation> opList = (ArrayList<CodegenOperation>) ops.get("operation");
-
+        String recordKey = getRecordKey(opList, this.allModels);
+        List<CodegenModel> responseModels = new ArrayList<CodegenModel>();
         // iterate over the operation and perhaps modify something
         for (final CodegenOperation co : opList) {
             // Group operations by resource.
             String path = co.path;
-            String resourceName = singularize(getResourceName(co.path));
+            String resourceName = singular(getResourceName(co.path));
             final Map<String, Object> resource = resources.computeIfAbsent(resourceName, k -> new LinkedHashMap<>());
             populateCrudOperations(resource, co);
             if (co.path.endsWith("}") || co.path.endsWith("}.json")) {
-                if ("GET".equalsIgnoreCase(co.httpMethod)) {
-                    resource.put("hasFetch", true);
-                    resource.put("requiredParamsFetch", co.requiredParams);
-
-                    co.vendorExtensions.put("x-is-fetch-operation", true);
-                    addOperationName(co, "Fetch");
-                } else if ("POST".equalsIgnoreCase(co.httpMethod)) {
+                if ("POST".equalsIgnoreCase(co.httpMethod)) {
                     resource.put("hasUpdate", true);
                     addOperationName(co, "Update");
+                    co.vendorExtensions.put("x-is-update-operation", true);
                     resource.put("requiredParamsUpdate", co.requiredParams);
                 } else if ("DELETE".equalsIgnoreCase(co.httpMethod)) {
                     resource.put("hasDelete", true);
                     addOperationName(co, "Remove");
+                    co.vendorExtensions.put("x-is-delete-operation", true);
                     resource.put("requiredParamsDelete", co.requiredParams);
                 }
             } else {
@@ -183,7 +178,18 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
                     co.vendorExtensions.put("x-is-create-operation", true);
                     addOperationName(co, "Create");
                     resource.put("requiredParamsCreate", co.requiredParams);
-                } else if ("GET".equalsIgnoreCase(co.httpMethod)) {
+                }
+            }
+
+            if (!co.nickname.startsWith("list")) {
+                if ("GET".equalsIgnoreCase(co.httpMethod)) {
+                    resource.put("hasFetch", true);
+                    resource.put("requiredParamsFetch", co.requiredParams);
+                    co.vendorExtensions.put("x-is-fetch-operation", true);
+                    addOperationName(co, "Fetch");
+                }
+            } else {
+                if ("GET".equalsIgnoreCase(co.httpMethod)) {
                     resource.put("hasRead", true);
                     co.vendorExtensions.put("x-is-read-operation", true);
                     addOperationName(co, "Page");
@@ -195,10 +201,9 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
                     (ArrayList<CodegenOperation>) resource.computeIfAbsent(
                             "operations",
                             k -> new ArrayList<>());
-
             resourceOperationList.add(co);
             resource.put("path", path);
-            resource.put("resourceName", apiNameMap.get(inflector.singularize(getResourceName(co.path))));
+            resource.put("resourceName", apiNameMap.get(inflector.singular(getResourceName(co.path))));
             resource.put("resourcePathParams", co.pathParams);
             resource.put("resourceRequiredParams", co.requiredParams);
             co.queryParams =  co.queryParams.stream().map(ConventionResolver::resolveParamTypes).map(ConventionResolver::prefixedCollapsibleMap).collect(Collectors.toList());
@@ -214,14 +219,12 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
               .stream()
               .map(response -> response.dataType)
               .filter(Objects::nonNull)
-              .map(this::getModel)
+              .map(modelName -> this.getModelCoPath(modelName, co, recordKey))
               .map(ConventionResolver::resolve)
               .map(item -> ConventionResolver.resolveComplexType(item, modelFormatMap))
               .flatMap(Optional::stream)
               .forEach(model -> {
-                  if (co.path.endsWith("}") || co.path.endsWith("}.json")) {
-                      resource.put("responseModel", model);
-                  }
+                  responseModels.add(model);
                   resource.put("serialVersionUID", calculateSerialVersionUid(model.vars));
 
               });
@@ -231,13 +234,47 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
             resource.put("packageSubPart", getPackagePath(co.path));
         }
 
-        for (final Object resource : resources.values()) {
-            flattenStringMap((Map<String, Object>) resource, "models");
+        for (final Map<String, Object> resource : resources.values()) {
+            resource.put("responseModel", getConcatenatedResponseModel(responseModels));
+            flattenStringMap(resource, "models");
         }
 
         results.put("resources", resources.values());
 
         return results;
+    }
+
+    private CodegenModel getConcatenatedResponseModel(List<CodegenModel> responseModels) {
+        CodegenModel codegenModel = new CodegenModel();
+        List<CodegenProperty> codegenProperties = new ArrayList<>();
+        for (CodegenModel resModel : responseModels) {
+                for (CodegenProperty modelProp : resModel.vars) {
+                        boolean contains = false;
+                        for (CodegenProperty property : codegenProperties) {
+                                if (property.baseName.equals(modelProp.baseName)) {
+                                        contains = true;
+                                    }
+                            }
+                        if (!contains) {
+                                codegenProperties.add(modelProp);
+                            }
+                    }
+            }
+        codegenModel.setVars(codegenProperties);
+        return codegenModel;
+    }
+
+    private Optional<CodegenModel> getModelCoPath(final String modelName, CodegenOperation codegenOperation, String recordKey) {
+        if (codegenOperation.vendorExtensions.containsKey("x-is-read-operation") && (boolean)codegenOperation.vendorExtensions.get("x-is-read-operation")) {
+                Optional<CodegenModel> coModel = allModels.stream().filter(model -> model.getClassname().equals(modelName)).findFirst();
+                if (!coModel.isPresent()) {
+                        return Optional.empty();
+                    }
+                CodegenProperty property = coModel.get().vars.stream().filter(prop -> prop.baseName.equals(recordKey)).findFirst().get();
+                Optional<CodegenModel> complexModel = allModels.stream().filter(model -> model.getClassname().equals(property.complexType)).findFirst();
+                return complexModel;
+            }
+        return allModels.stream().filter(model -> model.getClassname().equals(modelName)).findFirst();
     }
 
     private String getRecordKey(List<CodegenOperation> opList, List<CodegenModel> models) {
@@ -248,7 +285,7 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
                     recordKey = model.allVars
                             .stream()
                             .filter(v -> v.openApiType.equals("array"))
-                            .collect(Collectors.toList()).get(0).name;
+                            .collect(Collectors.toList()).get(0).baseName;
                 }
             }
         }
@@ -305,7 +342,7 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
 
     private String getResourceName(final String path) {
         String lastPathPart = PathUtils.getLastPathPart(PathUtils.cleanPath(path));
-        if (inflector.isAbbrevation(lastPathPart)) {
+        if (inflector.isAbbreviation(lastPathPart)) {
             return StringUtils.camelize(lastPathPart.toLowerCase(), false);
         }
         return lastPathPart;
@@ -313,15 +350,19 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
 
     private String getPackagePath(final String path) {
         String[] packagePaths = getPackageName(path).split("\\.");
-        return Arrays
+        String packagePath = Arrays
                 .stream(Arrays.copyOf(packagePaths, packagePaths.length-1))
                 .collect(Collectors.joining("."));
+        if (packagePath.isEmpty()) {
+            return "";
+        }
+        return "."+packagePath;
     }
 
     private String getPackageName(final String path) {
         return Arrays
                 .stream(PathUtils.cleanPath(path).split("/"))
-                .map(this::singularize)
+                .map(this::singular)
                 .map(String::toLowerCase)
                 .map(this::mapPackageVersion)
                 .collect(Collectors.joining("."));
@@ -334,18 +375,18 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
         return version;
     }
 
-    private String singularize(final String plural) {
-        return (inflector.singularize(plural));
+    private String singular(final String plural) {
+        return (inflector.singular(plural));
     }
 
     private void createAPIClassMap(final String path, final PathItem pathMap) {
-        apiNameMap.put(singularize(getResourceName(path)), singularize(getResourceName(path)));
+        apiNameMap.put(singular(getResourceName(path)), singular(getResourceName(path)));
         if (pathMap.getExtensions() != null) {
             pathMap.getExtensions().forEach((key, value) -> {
                 if (key.equals("x-twilio")) {
                     if(((Map<?, ?>) value).containsKey("className")) {
                         String fileName = Arrays.stream(((Map<?, String>) value).get("className").split("_")).map(StringUtils::camelize).collect(Collectors.joining());
-                        apiNameMap.put(singularize(getResourceName(path)), fileName);
+                        apiNameMap.put(singular(getResourceName(path)), fileName);
                     }
                 }
             });
