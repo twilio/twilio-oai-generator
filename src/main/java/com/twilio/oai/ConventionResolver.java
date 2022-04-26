@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenParameter;
 import org.openapitools.codegen.CodegenProperty;
+import org.openapitools.codegen.utils.StringUtils;
 
 public class ConventionResolver {
     final static Map<String, Map<String, Object>> conventionMap = getConventionalMap() ;
@@ -37,6 +38,15 @@ public class ConventionResolver {
         return model;
     }
 
+    public static Optional<CodegenParameter> resolveParameter(CodegenParameter parameter) {
+        boolean hasProperty = conventionMap.get(Segments.SEGMENT_PROPERTIES.getSegment()).containsKey(parameter.dataFormat);
+        if (hasProperty) {
+            parameter.dataType = (String)conventionMap.get(Segments.SEGMENT_PROPERTIES.getSegment()).get(parameter.dataFormat);
+        }
+        parameter.paramName = StringUtils.camelize(parameter.paramName, true);
+        return Optional.of(parameter);
+    }
+
     public static CodegenParameter resolveParamTypes(CodegenParameter codegenParameter) {
         boolean hasProperty = conventionMap.get(Segments.SEGMENT_PROPERTIES.getSegment()).containsKey(codegenParameter.dataFormat);
         if (hasProperty) {
@@ -51,6 +61,7 @@ public class ConventionResolver {
             parameter.vendorExtensions.put(X_PREFIXED_COLLAPSIBLE_MAP, split_format_array[split_format_array.length - 1]);
             parameter.dataType = (String)conventionMap.get(Segments.SEGMENT_PROPERTIES.getSegment()).get(PREFIXED_COLLAPSIBLE_MAP);
         }
+        parameter.paramName = StringUtils.camelize(parameter.paramName, true);
         return parameter;
     }
 

@@ -1,5 +1,4 @@
 {{#responseModel}}
-{{#hasEnums}}
 {{#vars}}
 {{#isEnum}}
     public enum {{#lambda.titlecase}}{{{baseName}}}{{/lambda.titlecase}} {
@@ -26,7 +25,6 @@
     }
 {{/isEnum}}
 {{/vars}}
-{{/hasEnums}}
 
 {{#vars}}
     private final {{{dataType}}} {{name}};

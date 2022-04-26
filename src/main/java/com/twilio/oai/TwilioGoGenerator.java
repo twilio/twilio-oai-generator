@@ -152,7 +152,7 @@ public class TwilioGoGenerator extends AbstractTwilioGoGenerator {
                         .readOperations()
                         .forEach(operation -> {
                             // Group operations together by tag. This gives us one file/post-process per resource.
-                            operation.addTagsItem(PathUtils.cleanPath(name));
+                            operation.addTagsItem(PathUtils.cleanPathAndRemoveFirstElement(name));
                             // Add a parameter called limit for list and stream operations
                             if (operation.getOperationId().startsWith("List")) {
                                 operation.addParametersItem(new Parameter().name("limit").description("Max number of records to return.").required(false).schema(new IntegerSchema()));
