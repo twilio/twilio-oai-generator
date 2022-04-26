@@ -57,6 +57,7 @@ import java.time.LocalDate;
 import java.math.BigDecimal;
 import com.twilio.type.PhoneNumberCapabilities;
 import com.twilio.type.FeedbackIssue;
+import com.twilio.type.IceServer;
 
 
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -108,5 +109,137 @@ public class FeedbackCallSummary extends Resource {
             throw new ApiConnectionException(e.getMessage(), e);
         }
     }
+
+    private final String accountSid;
+    private final String sid;
+    private final String testString;
+    private final Integer testInteger;
+    private final PhoneNumberCapabilities testObject;
+    private final ZonedDateTime testDateTime;
+    private final BigDecimal testNumber;
+    private final Currency priceUnit;
+    private final Float testNumberFloat;
+    private final String testEnum;
+    private final List<Integer> testArrayOfIntegers;
+    private final List<List<Integer>> testArrayOfArrayOfIntegers;
+    private final List<FeedbackIssue> testArrayOfObjects;
+
+    @JsonCreator
+    private FeedbackCallSummary(
+        @JsonProperty("account_sid")
+        final String accountSid,
+
+        @JsonProperty("sid")
+        final String sid,
+
+        @JsonProperty("test_string")
+        final String testString,
+
+        @JsonProperty("test_integer")
+        final Integer testInteger,
+
+        @JsonProperty("test_object")
+        final PhoneNumberCapabilities testObject,
+
+        @JsonProperty("test_date_time")
+        final String testDateTime,
+
+        @JsonProperty("test_number")
+        final BigDecimal testNumber,
+
+        @JsonProperty("price_unit")
+        @JsonDeserialize(using = com.twilio.converter.CurrencyDeserializer.class)
+        final Currency priceUnit,
+
+        @JsonProperty("test_number_float")
+        final Float testNumberFloat,
+
+        @JsonProperty("test_enum")
+        final String testEnum,
+
+        @JsonProperty("test_array_of_integers")
+        final List<Integer> testArrayOfIntegers,
+
+        @JsonProperty("test_array_of_array_of_integers")
+        final List<List<Integer>> testArrayOfArrayOfIntegers,
+
+        @JsonProperty("test_array_of_objects")
+        final List<FeedbackIssue> testArrayOfObjects
+    ) {
+        this.accountSid = accountSid;
+        this.sid = sid;
+        this.testString = testString;
+        this.testInteger = testInteger;
+        this.testObject = testObject;
+        this.testDateTime = DateConverter.rfc2822DateTimeFromString(testDateTime);
+        this.testNumber = testNumber;
+        this.priceUnit = priceUnit;
+        this.testNumberFloat = testNumberFloat;
+        this.testEnum = testEnum;
+        this.testArrayOfIntegers = testArrayOfIntegers;
+        this.testArrayOfArrayOfIntegers = testArrayOfArrayOfIntegers;
+        this.testArrayOfObjects = testArrayOfObjects;
+    }
+
+        public final String getAccountSid() {
+            return this.accountSid;
+        }
+        public final String getSid() {
+            return this.sid;
+        }
+        public final String getTestString() {
+            return this.testString;
+        }
+        public final Integer getTestInteger() {
+            return this.testInteger;
+        }
+        public final PhoneNumberCapabilities getTestObject() {
+            return this.testObject;
+        }
+        public final ZonedDateTime getTestDateTime() {
+            return this.testDateTime;
+        }
+        public final BigDecimal getTestNumber() {
+            return this.testNumber;
+        }
+        public final Currency getPriceUnit() {
+            return this.priceUnit;
+        }
+        public final Float getTestNumberFloat() {
+            return this.testNumberFloat;
+        }
+        public final String getTestEnum() {
+            return this.testEnum;
+        }
+        public final List<Integer> getTestArrayOfIntegers() {
+            return this.testArrayOfIntegers;
+        }
+        public final List<List<Integer>> getTestArrayOfArrayOfIntegers() {
+            return this.testArrayOfArrayOfIntegers;
+        }
+        public final List<FeedbackIssue> getTestArrayOfObjects() {
+            return this.testArrayOfObjects;
+        }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this==o) {
+            return true;
+        }
+
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        FeedbackCallSummary other = (FeedbackCallSummary) o;
+
+        return Objects.equals(accountSid, other.accountSid) &&  Objects.equals(sid, other.sid) &&  Objects.equals(testString, other.testString) &&  Objects.equals(testInteger, other.testInteger) &&  Objects.equals(testObject, other.testObject) &&  Objects.equals(testDateTime, other.testDateTime) &&  Objects.equals(testNumber, other.testNumber) &&  Objects.equals(priceUnit, other.priceUnit) &&  Objects.equals(testNumberFloat, other.testNumberFloat) &&  Objects.equals(testEnum, other.testEnum) &&  Objects.equals(testArrayOfIntegers, other.testArrayOfIntegers) &&  Objects.equals(testArrayOfArrayOfIntegers, other.testArrayOfArrayOfIntegers) &&  Objects.equals(testArrayOfObjects, other.testArrayOfObjects)  ;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(accountSid, sid, testString, testInteger, testObject, testDateTime, testNumber, priceUnit, testNumberFloat, testEnum, testArrayOfIntegers, testArrayOfArrayOfIntegers, testArrayOfObjects);
+    }
+
 }
 
