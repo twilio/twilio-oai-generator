@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"net/http"
 	"net/url"
@@ -31,7 +32,7 @@ func TestPathIsCorrect(t *testing.T) {
 		DoAndReturn(func(method string, rawURL string, data url.Values,
 			headers map[string]interface{}) (*http.Response, error) {
 			assert.Equal(t, "https://api.twilio.com/2010-04-01/Accounts/AC222222222222222222222222222222/Calls/CAXXXXY.json", rawURL)
-			return &http.Response{Body: ioutil.NopCloser(bytes.NewReader(nil))}, nil
+			return &http.Response{Body: getEmptyBody()}, nil
 		},
 		)
 
@@ -53,7 +54,7 @@ func TestAccountSidAsOptionalParam(t *testing.T) {
 		DoAndReturn(func(method string, rawURL string, data url.Values,
 			headers map[string]interface{}) (*http.Response, error) {
 			assert.Equal(t, "https://api.twilio.com/2010-04-01/Accounts/AC444444444444444444444444444444/Calls/CAXXXXY.json", rawURL)
-			return &http.Response{Body: ioutil.NopCloser(bytes.NewReader(nil))}, nil
+			return &http.Response{Body: getEmptyBody()}, nil
 		},
 		)
 
@@ -86,7 +87,7 @@ func TestAddingHeader(t *testing.T) {
 		DoAndReturn(func(method string, rawURL string, data url.Values,
 			headers map[string]interface{}) (*http.Response, error) {
 			assert.Equal(t, expectedHeader, headers)
-			return &http.Response{Body: ioutil.NopCloser(bytes.NewReader(nil))}, nil
+			return &http.Response{Body: getEmptyBody()}, nil
 		},
 		)
 	twilio := NewApiServiceWithClient(testClient)
@@ -126,7 +127,7 @@ func TestQueryParams(t *testing.T) {
 		DoAndReturn(func(method string, rawURL string, data url.Values,
 			headers map[string]interface{}) (*http.Response, error) {
 			assert.Equal(t, expectedData, data)
-			return &http.Response{Body: ioutil.NopCloser(bytes.NewReader(nil))}, nil
+			return &http.Response{Body: getEmptyBody()}, nil
 		},
 		)
 	twilio := NewApiServiceWithClient(testClient)
@@ -156,7 +157,7 @@ func TestArrayTypeParam(t *testing.T) {
 		DoAndReturn(func(method string, rawURL string, data url.Values,
 			headers map[string]interface{}) (*http.Response, error) {
 			assert.Equal(t, expectedData, data)
-			return &http.Response{Body: ioutil.NopCloser(bytes.NewReader(nil))}, nil
+			return &http.Response{Body: getEmptyBody()}, nil
 		},
 		)
 	twilio := NewApiServiceWithClient(testClient)
@@ -192,7 +193,7 @@ func TestObjectArrayTypeParam(t *testing.T) {
 		DoAndReturn(func(method string, rawURL string, data url.Values,
 			headers map[string]interface{}) (*http.Response, error) {
 			assert.Equal(t, expectedData, data)
-			return &http.Response{Body: ioutil.NopCloser(bytes.NewReader(nil))}, nil
+			return &http.Response{Body: getEmptyBody()}, nil
 		},
 		)
 	twilio := NewApiServiceWithClient(testClient)
@@ -270,9 +271,7 @@ func TestList(t *testing.T) {
 
 			resp, _ := json.Marshal(response)
 
-			return &http.Response{
-				Body: ioutil.NopCloser(bytes.NewReader(resp)),
-			}, nil
+			return &http.Response{Body: ioutil.NopCloser(bytes.NewReader(resp))}, nil
 		},
 		).AnyTimes()
 
@@ -329,9 +328,7 @@ func TestListPaging(t *testing.T) {
 
 			resp, _ := json.Marshal(response)
 
-			return &http.Response{
-				Body: ioutil.NopCloser(bytes.NewReader(resp)),
-			}, nil
+			return &http.Response{Body: ioutil.NopCloser(bytes.NewReader(resp))}, nil
 		},
 		)
 
@@ -353,9 +350,7 @@ func TestListPaging(t *testing.T) {
 
 			resp, _ := json.Marshal(response)
 
-			return &http.Response{
-				Body: ioutil.NopCloser(bytes.NewReader(resp)),
-			}, nil
+			return &http.Response{Body: ioutil.NopCloser(bytes.NewReader(resp))}, nil
 		},
 		)
 
@@ -366,9 +361,7 @@ func TestListPaging(t *testing.T) {
 		gomock.Any()).
 		DoAndReturn(func(method string, rawURL string, data url.Values,
 			headers map[string]interface{}) (*http.Response, error) {
-			return &http.Response{
-				Body: ioutil.NopCloser(bytes.NewReader(nil)),
-			}, nil
+			return &http.Response{Body: getEmptyBody()}, nil
 		},
 		)
 
@@ -421,9 +414,7 @@ func TestListError(t *testing.T) {
 
 			resp, _ := json.Marshal(response)
 
-			return &http.Response{
-				Body: ioutil.NopCloser(bytes.NewReader(resp)),
-			}, errors.New("listing error")
+			return &http.Response{Body: ioutil.NopCloser(bytes.NewReader(resp))}, errors.New("listing error")
 		},
 		).AnyTimes()
 
@@ -437,6 +428,48 @@ func TestListError(t *testing.T) {
 	assert.Len(t, resp, 0)
 	assert.NotNil(t, err)
 	assert.Equal(t, "listing error", err.Error())
+}
+
+func TestListPagingError(t *testing.T) {
+	mockCtrl := gomock.NewController(t)
+	testClient := NewMockBaseClient(mockCtrl)
+
+	testClient.EXPECT().AccountSid().DoAndReturn(func() string {
+		return "AC222222222222222222222222222222"
+	}).AnyTimes()
+
+	gomock.InOrder(
+		testClient.EXPECT().SendRequest(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).
+			DoAndReturn(func(method string, rawURL string, data url.Values,
+				headers map[string]interface{}) (*http.Response, error) {
+				response := map[string]interface{}{
+					"recordings": []map[string]interface{}{
+						{
+							"test_string": "first",
+						},
+						{
+							"test_string": "second",
+						},
+					},
+					"next_page_uri": "/2010-04-01/Accounts/AC12345678123456781234567812345678/Calls.json?From=9999999999&PageNumber=&To=4444444444&PageSize=5&Page=1&PageToken=PASMc49f620580b24424bcfa885b1f741130",
+				}
+
+				resp, _ := json.Marshal(response)
+
+				return &http.Response{Body: ioutil.NopCloser(bytes.NewReader(resp))}, nil
+			}),
+		testClient.EXPECT().SendRequest(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).
+			DoAndReturn(func(method string, rawURL string, data url.Values,
+				headers map[string]interface{}) (*http.Response, error) {
+				return &http.Response{Body: ioutil.NopCloser(bytes.NewReader(nil))}, nil
+			}),
+	)
+
+	twilio := NewApiServiceWithClient(testClient)
+
+	resp, err := twilio.ListCallRecording("CA123", nil)
+	assert.Len(t, resp, 0)
+	assert.NotNil(t, err)
 }
 
 func TestListNoNextPage(t *testing.T) {
@@ -470,9 +503,7 @@ func TestListNoNextPage(t *testing.T) {
 
 			resp, _ := json.Marshal(response)
 
-			return &http.Response{
-				Body: ioutil.NopCloser(bytes.NewReader(resp)),
-			}, nil
+			return &http.Response{Body: ioutil.NopCloser(bytes.NewReader(resp))}, nil
 		}).AnyTimes()
 
 	twilio := NewApiServiceWithClient(testClient)
@@ -504,10 +535,14 @@ func TestPageToken(t *testing.T) {
 		gomock.Any()).
 		DoAndReturn(func(method string, rawURL string, data url.Values, headers map[string]interface{}) (*http.Response, error) {
 			assert.Equal(t, expectedData, data)
-			return &http.Response{Body: ioutil.NopCloser(bytes.NewReader(nil))}, nil
+			return &http.Response{Body: getEmptyBody()}, nil
 		}).AnyTimes()
 
 	twilio := NewApiServiceWithClient(testClient)
 
 	_, _ = twilio.PageCredentialAws(nil, pageToken, pageNumber)
+}
+
+func getEmptyBody() io.ReadCloser {
+	return ioutil.NopCloser(bytes.NewReader([]byte("{}")))
 }
