@@ -57,23 +57,20 @@ import java.net.URI;
 
 
 public class FeedbackCallSummaryCreator extends Creator<FeedbackCallSummary>{
-    private String AccountSid;
     private LocalDate EndDate;
     private LocalDate StartDate;
-    public FeedbackCallSummaryCreator(final String AccountSid, final LocalDate EndDate, final LocalDate StartDate) {
-    
-        this.AccountSid = AccountSid;
-    
+    private String AccountSid;
+
+    public FeedbackCallSummaryCreator(final LocalDate EndDate, final LocalDate StartDate) {
         this.EndDate = EndDate;
-    
         this.StartDate = StartDate;
-    
+    }
+    public FeedbackCallSummaryCreator(final String AccountSid, final LocalDate EndDate, final LocalDate StartDate) {
+        this.AccountSid = AccountSid;
+        this.EndDate = EndDate;
+        this.StartDate = StartDate;
     }
 
-    public FeedbackCallSummaryCreator setAccountSid(final String AccountSid){
-        this.AccountSid = AccountSid;
-        return this;
-    }
     public FeedbackCallSummaryCreator setEndDate(final LocalDate EndDate){
         this.EndDate = EndDate;
         return this;
@@ -82,10 +79,15 @@ public class FeedbackCallSummaryCreator extends Creator<FeedbackCallSummary>{
         this.StartDate = StartDate;
         return this;
     }
+    public FeedbackCallSummaryCreator setAccountSid(final String AccountSid){
+        this.AccountSid = AccountSid;
+        return this;
+    }
 
     @Override
     public FeedbackCallSummary create(final TwilioRestClient client){
         String path = "/2010-04-01/Accounts/{AccountSid}/Calls/FeedbackSummary.json";
+        this.AccountSid = this.AccountSid == null ? client.getAccountSid() : this.AccountSid;
         path = path.replace("{"+"AccountSid"+"}", this.AccountSid.toString());
         path = path.replace("{"+"EndDate"+"}", this.EndDate.toString());
         path = path.replace("{"+"StartDate"+"}", this.StartDate.toString());
@@ -113,16 +115,16 @@ public class FeedbackCallSummaryCreator extends Creator<FeedbackCallSummary>{
 
 
     private void addPostParams(final Request request) {
-        if (AccountSid != null) {
-        request.addPostParam("AccountSid", AccountSid.toString());
-        }
-
         if (EndDate != null) {
         request.addPostParam("EndDate", EndDate.toString());
         }
 
         if (StartDate != null) {
         request.addPostParam("StartDate", StartDate.toString());
+        }
+
+        if (AccountSid != null) {
+        request.addPostParam("AccountSid", AccountSid.toString());
         }
 
     }

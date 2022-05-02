@@ -49,9 +49,12 @@ import lombok.ToString;
 
 
 public class CallDeleter extends Deleter<Call> {
-    private String AccountSid;
     private String Sid;
+    private String AccountSid;
 
+    public CallDeleter(final String Sid){
+        this.Sid = Sid;
+    }
     public CallDeleter(final String AccountSid, final String Sid){
         this.AccountSid = AccountSid;
         this.Sid = Sid;
@@ -60,6 +63,7 @@ public class CallDeleter extends Deleter<Call> {
     @Override
     public boolean delete(final TwilioRestClient client) {
         String path = "/2010-04-01/Accounts/{AccountSid}/Calls/{Sid}.json";
+        this.AccountSid = this.AccountSid == null ? client.getAccountSid() : this.AccountSid;
         path = path.replace("{"+"AccountSid"+"}", this.AccountSid.toString());
         path = path.replace("{"+"Sid"+"}", this.Sid.toString());
 

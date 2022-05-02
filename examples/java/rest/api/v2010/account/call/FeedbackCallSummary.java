@@ -65,6 +65,9 @@ import com.twilio.type.IceServer;
 public class FeedbackCallSummary extends Resource {
     private static final long serialVersionUID = 44112120076447L;
 
+    public static FeedbackCallSummaryCreator creator(final LocalDate EndDate, final LocalDate StartDate){
+        return new FeedbackCallSummaryCreator(EndDate, StartDate);
+    }
     public static FeedbackCallSummaryCreator creator(final String AccountSid, final LocalDate EndDate, final LocalDate StartDate){
         return new FeedbackCallSummaryCreator(AccountSid, EndDate, StartDate);
     }

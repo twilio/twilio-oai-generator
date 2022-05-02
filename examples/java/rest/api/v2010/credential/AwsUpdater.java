@@ -54,10 +54,8 @@ public class AwsUpdater extends Updater<Aws>{
     private String TestString;
 
     public AwsUpdater(final String Sid){
-        
-            this.Sid = Sid;
-        
-        }
+        this.Sid = Sid;
+    }
 
     public AwsUpdater setSid(final String Sid){
         this.Sid = Sid;

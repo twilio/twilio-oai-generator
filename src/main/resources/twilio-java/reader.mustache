@@ -47,13 +47,13 @@ public class {{resourceName}}Reader extends Reader<{{resourceName}}> {
     }
 {{/allParams}}
 
-    public {{resourceName}}Reader({{#requiredParams}}final {{{dataType}}} {{paramName}}{{^-last}}, {{/-last}}{{/requiredParams}}){
-    {{#allParams}}
-    {{#required}}
+{{#signatureListRead}}
+    public {{resourceName}}Reader({{#.}}final {{{dataType}}} {{paramName}}{{^-last}}, {{/-last}}{{/.}}){
+    {{#.}}
         this.{{paramName}} = {{paramName}};
-    {{/required}}
-    {{/allParams}}
+    {{/.}}
     }
+{{/signatureListRead}}
 
     private void addQueryParams(final Request request) {
         {{#queryParams}}
@@ -80,6 +80,12 @@ public class {{resourceName}}Reader extends Reader<{{resourceName}}> {
 
     public Page<{{resourceName}}> firstPage(final TwilioRestClient client) {
         String path = "{{{path}}}";
+        {{#allParams}}
+        {{#vendorExtensions.x-is-account-sid}}
+        this.{{paramName}} = this.{{paramName}} == null ? client.getAccountSid() : this.{{paramName}};
+        path = path.replace("{"+"{{paramName}}"+"}", this.{{paramName}}.toString());
+        {{/vendorExtensions.x-is-account-sid}}
+        {{/allParams}}
         {{#requiredParams}}
         path = path.replace("{"+"{{paramName}}"+"}", this.{{paramName}}.toString());
         {{/requiredParams}}

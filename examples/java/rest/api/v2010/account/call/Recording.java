@@ -65,22 +65,37 @@ import com.twilio.type.IceServer;
 public class Recording extends Resource {
     private static final long serialVersionUID = 44112120076447L;
 
+    public static RecordingCreator creator(final String CallSid){
+        return new RecordingCreator(CallSid);
+    }
     public static RecordingCreator creator(final String AccountSid, final String CallSid){
         return new RecordingCreator(AccountSid, CallSid);
     }
 
+    public static RecordingFetcher fetcher(final String CallSid, final Integer TestInteger){
+        return new RecordingFetcher(CallSid, TestInteger);
+    }
     public static RecordingFetcher fetcher(final String AccountSid, final String CallSid, final Integer TestInteger){
         return new RecordingFetcher(AccountSid, CallSid, TestInteger);
     }
 
+    public static RecordingDeleter delete(final String CallSid, final Integer TestInteger){
+        return new RecordingDeleter(CallSid, TestInteger);
+    }
     public static RecordingDeleter delete(final String AccountSid, final String CallSid, final Integer TestInteger){
         return new RecordingDeleter(AccountSid, CallSid, TestInteger);
     }
 
+    public static RecordingReader reader(final String CallSid){
+        return new RecordingReader(CallSid);
+    }
     public static RecordingReader reader(final String AccountSid, final String CallSid){
         return new RecordingReader(AccountSid, CallSid);
     }
 
+    public static RecordingUpdater update(final String CallSid, final Integer TestInteger, final String Status){
+        return new RecordingUpdater(CallSid, TestInteger, Status);
+    }
     public static RecordingUpdater update(final String AccountSid, final String CallSid, final Integer TestInteger, final String Status){
         return new RecordingUpdater(AccountSid, CallSid, TestInteger, Status);
     }

@@ -44,11 +44,14 @@ public class {{resourceName}}Creator extends Creator<{{resourceName}}>{
 {{#allParams}}
     private {{{dataType}}} {{paramName}};
 {{/allParams}}
-    public {{resourceName}}Creator({{#requiredParams}}final {{{dataType}}} {{paramName}}{{^-last}}, {{/-last}}{{/requiredParams}}) {
-    {{#requiredParams}}{{#required}}
+
+{{#signatureListCreate}}
+    public {{resourceName}}Creator({{#.}}final {{{dataType}}} {{paramName}}{{^-last}}, {{/-last}}{{/.}}) {
+    {{#.}}
         this.{{paramName}} = {{paramName}};
-    {{/required}}{{/requiredParams}}
+    {{/.}}
     }
+{{/signatureListCreate}}
 
 {{#allParams}}
     public {{resourceName}}Creator set{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}(final {{{dataType}}} {{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}){
@@ -60,6 +63,12 @@ public class {{resourceName}}Creator extends Creator<{{resourceName}}>{
     @Override
     public {{resourceName}} create(final TwilioRestClient client){
         String path = "{{{path}}}";
+        {{#allParams}}
+        {{#vendorExtensions.x-is-account-sid}}
+        this.{{paramName}} = this.{{paramName}} == null ? client.getAccountSid() : this.{{paramName}};
+        path = path.replace("{"+"{{paramName}}"+"}", this.{{paramName}}.toString());
+        {{/vendorExtensions.x-is-account-sid}}
+        {{/allParams}}
         {{#requiredParams}}
         path = path.replace("{"+"{{paramName}}"+"}", this.{{paramName}}.toString());
         {{/requiredParams}}

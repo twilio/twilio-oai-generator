@@ -1,45 +1,45 @@
 package com.twilio.rest;
-
 import static org.junit.Assert.*;
 
 import com.twilio.rest.api.v2010.credential.Aws;
 import com.twilio.rest.api.v2010.credential.AwsCreator;
 import com.twilio.rest.api.v2010.credential.AwsReader;
-import org.json.CDL;
 import org.json.JSONObject;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
-
-import java.util.List;
-import java.util.Map;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Arrays;
-
-import java.net.URI;
-import java.time.ZonedDateTime;
-import java.time.LocalDate;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-
 import static org.mockito.Mockito.*;
+
+
+
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+
+import java.net.URI;
 
 import com.twilio.http.Request;
 import com.twilio.http.Response;
 import com.twilio.http.HttpMethod;
+import com.twilio.base.Page;
 import com.twilio.base.ResourceSet;
 import com.twilio.exception.ApiException;
 import com.twilio.http.TwilioRestClient;
+
+import java.time.ZonedDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.time.LocalDate;
 
 import com.twilio.rest.api.v2010.account.call.RecordingCreator;
 import com.twilio.rest.api.v2010.account.call.RecordingReader;
 import com.twilio.rest.api.v2010.account.call.RecordingFetcher;
 import com.twilio.rest.api.v2010.account.call.Recording;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 public class TwilioRestTest {
     @Mock
@@ -140,57 +140,49 @@ public class TwilioRestTest {
         when(twilioRestClient.getObjectMapper()).thenReturn(objectMapper);
         RecordingCreator recordingCreator = new RecordingCreator("AC222222222222222222222222222222", "PNXXXXY");
         recordingCreator.setRecordingStatusCallbackEvent(recordingStatusCallbackEvent);
-
         Recording recording = recordingCreator.create(twilioRestClient);
 
         assertNotNull(recording);
     }
 
     @Test
-    @Ignore
+    public void testShouldAddAccountSidIfNotPresent() {
+        when(twilioRestClient.getAccountSid()).thenReturn("AC222222222222222222222222222222");
+        Request mockRequest = new Request(
+                HttpMethod.GET,
+                com.twilio.rest.Domains.API.toString(),
+                "/2010-04-01/Accounts/AC222222222222222222222222222222/Calls/PNXXXXY/Recordings/123.json"
+        );
+        ObjectMapper objectMapper = new ObjectMapper();
+        when(twilioRestClient.getObjectMapper()).thenReturn(objectMapper);
+        when(twilioRestClient.request(mockRequest)).thenReturn(new Response("{\"account_sid\":\"AC222222222222222222222222222222\",\"call_sid\":\"PNXXXXY\", \"sid\":123, \"test_object\":{\"mms\": true, \"sms\":false, \"voice\": false, \"fax\":true}}", 200));
+        Recording recording = new RecordingFetcher( "PNXXXXY", 123).fetch(twilioRestClient);
+        assertNotNull(recording);
+        assertEquals("123", recording.getSid());
+        assertEquals("AC222222222222222222222222222222", recording.getAccountSid());
+    }
+
+
+    @Test
     public void testShouldReadListOfMessages() {
         Request mockRequest = new Request(
                 HttpMethod.GET,
                 "api",
-                "/2010-04-01/Accounts/AC222222222222222222222222222222/Messages.json"
+                "/v1/Credentials/AWS"
         );
+        String url = "https://api.twilio.com/v1/Credentials/AWS";
         ObjectMapper objectMapper = new ObjectMapper();
-        String messagesValues =
-                "direction,      from,         to,           body,  status    \n" +
-                        "outbound-api,   4444444444,   9999999999,   Hi,    delivered \n" +
-                        "outbound-call,  4444444444,   9999999999,   Hi,    queued    \n" +
-                        "outbound-api,   4444444444,   9999999999,   Hi,    delivered \n" +
-                        "outbound-api,   4444444444,   9999999999,   Hi,    delivered \n" +
-                        "outbound-api,   4444444444,   9999999999,   Hello, sent      \n";
-        Map<String, Object> jsonMap = new HashMap<String, Object>();
-        jsonMap.put("end", 4);
-        jsonMap.put("first_page_uri", "/2010-04-01/Accounts/AC12345678123456781234567812345678/Messages.json?From=9999999999&PageNumber=&To=4444444444&PageSize=5&Page=0");
-        jsonMap.put("uri", "/2010-04-01/Accounts/AC12345678123456781234567812345678/Messages.json?From=9999999999&PageNumber=&To=4444444444&PageSize=5&Page=0&PageToken=");
-        jsonMap.put("page_size", 5);
-        jsonMap.put("start", 0);
-        jsonMap.put("next_page_uri", "/2010-04-01/Accounts/AC12345678123456781234567812345678/Messages.json?From=9999999999&PageNumber=&To=4444444444&PageSize=5&Page=1&PageToken=PASMc49f620580b24424bcfa885b1f741130");
-        jsonMap.put("page", 0);
-        jsonMap.put("messages", CDL.toJSONArray(messagesValues));
-
-
-        JSONObject response = new JSONObject(jsonMap);
-        mockRequest.addQueryParam("PageSize", "5");
-        mockRequest.addQueryParam("To", "9999999999");
-        mockRequest.addQueryParam("From", "4444444444");
-
-        when(twilioRestClient.request(mockRequest)).thenReturn(new Response(response.toString(), 200));
+        String testResponse =  "{\"credentials\":[{\"sid\":\"CR12345678123456781234567812345678\", \"test_string\":\"Ahoy\", \"test_object\":{\"mms\": true, \"sms\":false, \"voice\": false, \"fax\":true}}, {\"sid\":\"CR12345678123456781234567812345678\", \"test_string\":\"Hello\", \"test_object\":{\"mms\": true, \"sms\":false, \"voice\": false, \"fax\":true}}], \"meta\": {\"url\":\"" + url + "\", \"next_page_url\":\"" + url + "?PageSize=5" + "\", \"previous_page_url\":\"" + url + "?PageSize=3" + "\", \"first_page_url\":\"" + url + "?PageSize=1" + "\", \"page_size\":4}}";
+        when(twilioRestClient.request(mockRequest)).thenReturn(new Response(testResponse.toString(), 200));
         when(twilioRestClient.getObjectMapper()).thenReturn(objectMapper);
-        AwsReader awsReader = new AwsReader();
-        awsReader.setPageSize(5);
-
-        ResourceSet<Aws> awsResourceSet = awsReader.read(twilioRestClient);
-        assertNotNull(awsResourceSet);
+        Page<Aws> awsPage = new AwsReader().firstPage(twilioRestClient);
+        assertEquals("Ahoy",  awsPage.getRecords().get(0).getTestString());
+        assertEquals("Hello",  awsPage.getRecords().get(1).getTestString());
     }
 
     @Test
-    @Ignore
     public void testShouldReadPageOfMessages() {
-        String uri = "/2010-04-01/Accounts/AC222222222222222222222222222222/Calls/{CallSid}/Recordings.json";
+        String uri = "/2010-04-01/Accounts/AC222222222222222222222222222222/Calls/PNXXXXY/Recordings.json";
         Request mockRequestPage0 = new Request(
                 HttpMethod.GET,
                 "api",
@@ -198,75 +190,52 @@ public class TwilioRestTest {
         );
         ObjectMapper objectMapper = new ObjectMapper();
         when(twilioRestClient.getObjectMapper()).thenReturn(objectMapper);
-
-        String messagesValues =
-                "direction,      from,         to,           body,  status    \n" +
-                        "outbound-api,   4444444444,   9999999999,   Hi,    delivered \n" +
-                        "outbound-call,  4444444444,   9999999999,   Hi,    queued    \n" +
-                        "outbound-api,   4444444444,   9999999999,   Hi,    delivered \n" +
-                        "outbound-api,   4444444444,   9999999999,   Hi,    delivered \n" +
-                        "outbound-api,   4444444444,   9999999999,   Hello, sent      \n";
-        Map<String, Object> jsonMap = new HashMap<String, Object>();
-        jsonMap.put("end", 4);
-        jsonMap.put("first_page_uri", uri + "/2010-04-01/Accounts/AC222222222222222222222222222222/Messages.json?From=9999999999&PageNumber=&To=4444444444&PageSize=5&Page=0");
-        jsonMap.put("uri", "/2010-04-01/Accounts/AC222222222222222222222222222222/Messages.json?From=9999999999&PageNumber=&To=4444444444&PageSize=5&Page=0&PageToken=");
-        jsonMap.put("page_size", 5);
-        jsonMap.put("start", 0);
-        jsonMap.put("next_page_uri", "/2010-04-01/Accounts/AC222222222222222222222222222222/Messages.json?From=9999999999&PageNumber=&To=4444444444&PageSize=5&Page=1&PageToken=PASMc49f620580b24424bcfa885b1f741130");
-        jsonMap.put("page", 0);
-        jsonMap.put("messages", CDL.toJSONArray(messagesValues));
-        JSONObject page0 = new JSONObject(jsonMap);
-        mockRequestPage0.addQueryParam("PageSize", "5");
-        mockRequestPage0.addQueryParam("To", "9999999999");
-        mockRequestPage0.addQueryParam("From", "4444444444");
-        when(twilioRestClient.request(mockRequestPage0)).thenReturn(new Response(page0.toString(), 200));
+        mockRequestPage0.addQueryParam("PageSize", "2");
+        String url = "https://api.twilio.com/2010-04-01/Accounts/AC222222222222222222222222222222/Calls/PNXXXXY/Recordings.json";
+        String nextPageURL = "https://api.twilio.com/2010-04-01/Accounts/AC222222222222222222222222222222/Calls/PNXXXXY/Recordings.jsonFrom=9999999999&PageNumber=&To=4444444444&PageSize=2&Page=1&PageToken=PASMc49f620580b24424bcfa885b1f741130";
+        String responseContent = "{\"recordings\":[{\"call_sid\":\"PNXXXXY\", \"sid\":123, \"test_string\":\"Ahoy\"}], \"meta\": {\"url\":\"" + url + "\", \"next_page_url\":\"" + nextPageURL + "?PageSize=2" + "\", \"previous_page_url\":\"" + url + "?PageSize=2" + "\", \"first_page_url\":\"" + url + "?PageSize=2" + "\", \"page_size\":2}}";
+        when(twilioRestClient.request(mockRequestPage0)).thenReturn(new Response(responseContent, 200));
 
         Request mockRequestPage1 = new Request(
                 HttpMethod.GET,
                 "api",
-                "/2010-04-01/Accounts/AC222222222222222222222222222222/Messages.json?From=9999999999&PageNumber=&To=4444444444&PageSize=5&Page=1&PageToken=PASMc49f620580b24424bcfa885b1f741130"
+                "/2010-04-01/Accounts/AC222222222222222222222222222222/Calls/PNXXXXY/Recordings.jsonFrom=9999999999&PageNumber=&To=4444444444&PageSize=2&Page=1&PageToken=PASMc49f620580b24424bcfa885b1f741130?PageSize=2"
         );
-        Map<String, Object> jsonMap1 = new HashMap<String, Object>();
-        jsonMap1.put("page", 1);
-        jsonMap1.put("uri", "/2010-04-01/Accounts/AC222222222222222222222222222222/Messages.json?From=9999999999&PageNumber=&To=4444444444&PageSize=5&Page=1&PageToken=PASMc49f620580b24424bcfa885b1f741130");
-        jsonMap1.put("next_page_uri", "");
-        jsonMap1.put("messages", CDL.toJSONArray(messagesValues));
-        JSONObject page1 = new JSONObject(jsonMap1);
-        when(twilioRestClient.request(mockRequestPage1)).thenReturn(new Response(page1.toString(), 200));
-        AwsReader awsReader = new AwsReader();
-        awsReader.setPageSize(5);
-
-        ResourceSet<Aws> aws = awsReader.read(twilioRestClient);
-        List<Aws> messages = new ArrayList<>();
-        aws.iterator().forEachRemaining(e -> messages.add(e));
-        assertNotNull(aws);
-        assertSame("total messages from all pages", messages.size(), 10);
+        String responseContent2 = "{\"recordings\":[{\"call_sid\":\"PNXXXXY\", \"sid\":123, \"test_string\":\"Matey\"}], \"meta\": {\"url\":\"" + url + "\", \"next_page_url\":\"" + ""  + "\", \"previous_page_url\":\"" + url + "?PageSize=2" + "\", \"first_page_url\":\"" + url + "?PageSize=2" + "\", \"page_size\":2}}";
+        when(twilioRestClient.request(mockRequestPage1)).thenReturn(new Response(responseContent2, 200));
+        RecordingReader recordingReader = new RecordingReader("AC222222222222222222222222222222", "PNXXXXY");
+        recordingReader.setPageSize(2);
+        ResourceSet<Recording> recording = recordingReader.read(twilioRestClient);
+        List<String> testStringValues = new ArrayList<>();
+        recording.forEach(recordingVal -> {
+                assertNotNull(recordingVal);
+                testStringValues.add(recordingVal.getTestString());
+        });
+        assertEquals("Ahoy", testStringValues.get(0));
+        assertEquals("Matey", testStringValues.get(1));
     }
 
     @Test
-    @Ignore
     public void testListError() {
         Request mockRequest = new Request(
                 HttpMethod.GET,
                 "api",
-                "/2010-04-01/Accounts/AC222222222222222222222222222222/Messages.json"
+                "/v1/Credentials/AWS"
         );
         ObjectMapper objectMapper = new ObjectMapper();
 
-        Map<String, Object> jsonMap = new HashMap<String, Object>();
-        jsonMap.put("code", 20001);
-        jsonMap.put("message", "Invalid PageSize.");
-        jsonMap.put("more_info", "https://www.twilio.com/docs/errors/20001");
-        jsonMap.put("status", 400);
-        JSONObject response = new JSONObject(jsonMap);
-        mockRequest.addQueryParam("To", "9999999999");
-        mockRequest.addQueryParam("From", "4444444444");
+        Map<String, Object> content = new HashMap<String, Object>();
+        content.put("code", 20001);
+        content.put("message", "Invalid PageSize.");
+        content.put("more_info", "https://www.twilio.com/docs/errors/20001");
+        content.put("status", 400);
+        JSONObject response = new JSONObject(content);
         mockRequest.addQueryParam("PageSize", "0");
         when(twilioRestClient.request(mockRequest)).thenReturn(new Response(response.toString(), 400));
         when(twilioRestClient.getObjectMapper()).thenReturn(objectMapper);
-        AwsReader messageReader = new AwsReader();
-        messageReader.setPageSize(0);
-        assertThrows("Invalid PageSize.", ApiException.class, () -> messageReader.read(twilioRestClient));
+        AwsReader reader = new AwsReader();
+        reader.setPageSize(0);
+        assertThrows("Invalid PageSize.", ApiException.class, () -> reader.read(twilioRestClient));
     }
 
     @Test

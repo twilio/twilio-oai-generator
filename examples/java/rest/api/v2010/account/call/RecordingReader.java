@@ -54,16 +54,16 @@ import lombok.ToString;
 
 
 public class RecordingReader extends Reader<Recording> {
-    private String AccountSid;
-
-    public RecordingReader setAccountSid(final String AccountSid){
-        this.AccountSid = AccountSid;
-        return this;
-    }
     private String CallSid;
 
     public RecordingReader setCallSid(final String CallSid){
         this.CallSid = CallSid;
+        return this;
+    }
+    private String AccountSid;
+
+    public RecordingReader setAccountSid(final String AccountSid){
+        this.AccountSid = AccountSid;
         return this;
     }
     private ZonedDateTime DateCreated;
@@ -97,6 +97,9 @@ public class RecordingReader extends Reader<Recording> {
         return this;
     }
 
+    public RecordingReader(final String CallSid){
+        this.CallSid = CallSid;
+    }
     public RecordingReader(final String AccountSid, final String CallSid){
         this.AccountSid = AccountSid;
         this.CallSid = CallSid;
@@ -127,6 +130,7 @@ public class RecordingReader extends Reader<Recording> {
 
     public Page<Recording> firstPage(final TwilioRestClient client) {
         String path = "/2010-04-01/Accounts/{AccountSid}/Calls/{CallSid}/Recordings.json";
+        this.AccountSid = this.AccountSid == null ? client.getAccountSid() : this.AccountSid;
         path = path.replace("{"+"AccountSid"+"}", this.AccountSid.toString());
         path = path.replace("{"+"CallSid"+"}", this.CallSid.toString());
 

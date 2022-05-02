@@ -38,11 +38,13 @@ public class {{resourceName}}Updater extends Updater<{{resourceName}}>{
     private {{{dataType}}} {{paramName}};
 {{/allParams}}
 
-    public {{resourceName}}Updater({{#requiredParams}}final {{{dataType}}} {{paramName}}{{^-last}}, {{/-last}}{{/requiredParams}}){
-        {{#allParams}}{{#required}}
-            this.{{paramName}} = {{paramName}};
-        {{/required}}{{/allParams}}
-        }
+{{#signatureListUpdate}}
+    public {{resourceName}}Updater({{#.}}final {{{dataType}}} {{paramName}}{{^-last}}, {{/-last}}{{/.}}){
+    {{#.}}
+        this.{{paramName}} = {{paramName}};
+    {{/.}}
+    }
+{{/signatureListUpdate}}
 
 {{#allParams}}
     public {{resourceName}}Updater set{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}(final {{{dataType}}} {{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}){
@@ -54,6 +56,12 @@ public class {{resourceName}}Updater extends Updater<{{resourceName}}>{
     @Override
     public {{resourceName}} update(final TwilioRestClient client){
         String path = "{{{path}}}";
+        {{#allParams}}
+        {{#vendorExtensions.x-is-account-sid}}
+        this.{{paramName}} = this.{{paramName}} == null ? client.getAccountSid() : this.{{paramName}};
+        path = path.replace("{"+"{{paramName}}"+"}", this.{{paramName}}.toString());
+        {{/vendorExtensions.x-is-account-sid}}
+        {{/allParams}}
         {{#requiredParams}}
         path = path.replace("{"+"{{paramName}}"+"}", this.{{paramName}}.toString());
         {{/requiredParams}}

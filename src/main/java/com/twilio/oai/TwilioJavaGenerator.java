@@ -10,6 +10,7 @@ import org.openapitools.codegen.*;
 import org.openapitools.codegen.languages.JavaClientCodegen;
 import org.openapitools.codegen.utils.StringUtils;
 
+
 import java.io.File;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -74,12 +75,22 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
     public void processOpenAPI(final OpenAPI openAPI) {
         openAPI.getPaths().forEach((name, path) -> {
             createAPIClassMap(name, path);
+            updateAccountSidParam(name, path);
             path.readOperations().forEach(operation -> {
                 // Group operations together by tag. This gives us one file/post-process per resource.
                 final String tag = PathUtils.cleanPath(name).replace("/", PATH_SEPARATOR_PLACEHOLDER);
                 operation.addTagsItem(tag);
             });
-
+        });
+    }
+    private void updateAccountSidParam(final String path, final PathItem pathMap) {
+        pathMap.readOperations().stream().map(io.swagger.v3.oas.models.Operation::getParameters)
+        .filter(Objects::nonNull)
+        .flatMap(Collection::stream)
+        .filter(param -> param.getIn().equals("path") && param.getName().equals("AccountSid"))
+        .forEach(param -> {
+            param.required(false);
+            param.addExtension("x-is-account-sid", true);
         });
     }
 
@@ -153,11 +164,13 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
         final ArrayList<CodegenOperation> opList = (ArrayList<CodegenOperation>) ops.get("operation");
         String recordKey = getRecordKey(opList, this.allModels);
         List<CodegenModel> responseModels = new ArrayList<CodegenModel>();
+        boolean isVersionV2010 = objs.get("package").equals("v2010");
         // iterate over the operation and perhaps modify something
         for (final CodegenOperation co : opList) {
             // Group operations by resource.
             String path = co.path;
             String resourceName = singular(getResourceName(co.path));
+            co.vendorExtensions.put("x-is-version-v2010", isVersionV2010);
             final Map<String, Object> resource = resources.computeIfAbsent(resourceName, k -> new LinkedHashMap<>());
             populateCrudOperations(resource, co);
             if (co.path.endsWith("}") || co.path.endsWith("}.json")) {
@@ -165,26 +178,27 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
                     resource.put("hasUpdate", true);
                     addOperationName(co, "Update");
                     co.vendorExtensions.put("x-is-update-operation", true);
-                    resource.put("requiredParamsUpdate", co.requiredParams);
+                    resource.put("signatureListUpdate", generateSignatureList(resource, co, isVersionV2010));
                 } else if ("DELETE".equalsIgnoreCase(co.httpMethod)) {
                     resource.put("hasDelete", true);
                     addOperationName(co, "Remove");
                     co.vendorExtensions.put("x-is-delete-operation", true);
-                    resource.put("requiredParamsDelete", co.requiredParams);
+                    resource.put("signatureListDelete", generateSignatureList(resource, co, isVersionV2010));
                 }
+            
             } else {
                 if ("POST".equalsIgnoreCase(co.httpMethod)) {
                     resource.put("hasCreate", true);
                     co.vendorExtensions.put("x-is-create-operation", true);
                     addOperationName(co, "Create");
-                    resource.put("requiredParamsCreate", co.requiredParams);
+                    resource.put("signatureListCreate", generateSignatureList(resource, co, isVersionV2010));
                 }
             }
 
             if (!co.nickname.startsWith("list")) {
                 if ("GET".equalsIgnoreCase(co.httpMethod)) {
                     resource.put("hasFetch", true);
-                    resource.put("requiredParamsFetch", co.requiredParams);
+                    resource.put("signatureListFetch", generateSignatureList(resource, co, isVersionV2010));
                     co.vendorExtensions.put("x-is-fetch-operation", true);
                     addOperationName(co, "Fetch");
                 }
@@ -193,7 +207,7 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
                     resource.put("hasRead", true);
                     co.vendorExtensions.put("x-is-read-operation", true);
                     addOperationName(co, "Page");
-                    resource.put("requiredParamsRead", co.requiredParams);
+                    resource.put("signatureListRead", generateSignatureList(resource, co, isVersionV2010));
                 }
             }
 
@@ -300,6 +314,22 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
         DELETE("delete");
 
         private final String prefix;
+    }
+    private ArrayList<List<CodegenParameter>> generateSignatureList(final Map<String, Object> resource, final CodegenOperation co, boolean isVersionV2010) {
+        final ArrayList<List<CodegenParameter>> signatureList = new ArrayList<>();
+        signatureList.add(co.requiredParams);
+        if (isVersionV2010) {
+            Optional<CodegenParameter> optionalParam = co.allParams.stream()
+            .filter(param -> param.vendorExtensions.containsKey("x-is-account-sid")).findAny();
+            if(optionalParam.isPresent()){
+                CodegenParameter cp = optionalParam.get();
+                List<CodegenParameter> cpList = new ArrayList<>();
+                cpList.add(cp);
+                cpList.addAll(co.requiredParams);
+                signatureList.add(cpList);
+            }
+        }
+        return signatureList;
     }
 
     private void populateCrudOperations(final Map<String, Object> resource, final CodegenOperation operation) {
