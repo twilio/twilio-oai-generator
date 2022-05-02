@@ -83,6 +83,7 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
             });
         });
     }
+    
     private void updateAccountSidParam(final String path, final PathItem pathMap) {
         pathMap.readOperations().stream().map(io.swagger.v3.oas.models.Operation::getParameters)
         .filter(Objects::nonNull)
