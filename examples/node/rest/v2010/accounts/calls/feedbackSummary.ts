@@ -11,7 +11,6 @@
  */
 
 import { inspect } from 'util';
-import V2010 from '../../../V2010';
 
 
 /**
@@ -30,7 +29,7 @@ export class FeedbackSummarListInstance {
     protected _uri: string;
 
 
-    constructor(protected _version: V2010, accountSid: string) {
+    constructor(protected _version: Version, accountSid: string) {
         this._solution = { accountSid };
         this._uri = `/2010-04-01/Accounts/${accountSid}/Calls/FeedbackSummary.json`;
     }
@@ -68,17 +67,17 @@ export class FeedbackSummarListInstance {
         };
 
 
-        const operationPromise = this._version.create({ uri: this._uri, method: 'POST', data, headers });
+        let promise = this._version.create({ uri: this._uri, method: 'POST', data, headers });
 
-        let instancePromise = operationPromise.then(payload => new FeedbackSummarInstance(this._version, payload, this._solution.accountSid));
+        promise = promise.then(payload => new FeedbackSummarInstance(this._version, payload, this._solution.accountSid));
 
         if (typeof callback === 'function') {
-            instancePromise = instancePromise
+            promise = promise
                 .then(value => callback(null, value))
                 .catch(error => callback(error));
         }
 
-        return instancePromise;
+        return promise;
     }
 
     /**

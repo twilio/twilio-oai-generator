@@ -11,7 +11,6 @@
  */
 
 import { inspect } from 'util';
-import V2010 from '../../V2010';
 
 
 /**
@@ -30,7 +29,7 @@ export class CallListInstance {
     protected _uri: string;
 
 
-    constructor(protected _version: V2010, accountSid: string, sid: string) {
+    constructor(protected _version: Version, accountSid: string, sid: string) {
         this._solution = { accountSid, sid };
         this._uri = `/2010-04-01/Accounts/${accountSid}/Calls/${sid}.json`;
     }
@@ -64,17 +63,17 @@ export class CallListInstance {
         };
 
 
-        const operationPromise = this._version.create({ uri: this._uri, method: 'POST', data, headers });
+        let promise = this._version.create({ uri: this._uri, method: 'POST', data, headers });
 
-        let instancePromise = operationPromise.then(payload => new CallInstance(this._version, payload, this._solution.accountSid, this._solution.sid));
+        promise = promise.then(payload => new CallInstance(this._version, payload, this._solution.accountSid, this._solution.sid));
 
         if (typeof callback === 'function') {
-            instancePromise = instancePromise
+            promise = promise
                 .then(value => callback(null, value))
                 .catch(error => callback(error));
         }
 
-        return instancePromise;
+        return promise;
     }
 
     /**
@@ -87,17 +86,17 @@ export class CallListInstance {
     public async (callback?: (error: Error | null, item?: CallInstance) => any): Promise<CallInstance> { 
 
 
-        const operationPromise = this._version.({ uri: this._uri, method: 'DELETE' });
+        let promise = this._version.({ uri: this._uri, method: 'DELETE' });
 
-        let instancePromise = operationPromise.then(payload => new CallInstance(this._version, payload, this._solution.accountSid, this._solution.sid));
+        promise = promise.then(payload => new CallInstance(this._version, payload, this._solution.accountSid, this._solution.sid));
 
         if (typeof callback === 'function') {
-            instancePromise = instancePromise
+            promise = promise
                 .then(value => callback(null, value))
                 .catch(error => callback(error));
         }
 
-        return instancePromise;
+        return promise;
     }
 
     /**
@@ -110,17 +109,17 @@ export class CallListInstance {
     public async page(callback?: (error: Error | null, item?: CallInstance) => any): Promise<CallInstance> { 
 
 
-        const operationPromise = this._version.page({ uri: this._uri, method: 'GET' });
+        let promise = this._version.page({ uri: this._uri, method: 'GET' });
 
-        let instancePromise = operationPromise.then(payload => new CallInstance(this._version, payload, this._solution.accountSid, this._solution.sid));
+        promise = promise.then(payload => new CallInstance(this._version, payload, this._solution.accountSid, this._solution.sid));
 
         if (typeof callback === 'function') {
-            instancePromise = instancePromise
+            promise = promise
                 .then(value => callback(null, value))
                 .catch(error => callback(error));
         }
 
-        return instancePromise;
+        return promise;
     }
 
     /**

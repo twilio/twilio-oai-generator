@@ -10,10 +10,10 @@
  * Do not edit the class manually.
  */
 
-import Api = require('../Api');
-import Version = require('../../base/Version');
+import { Api } from '../Api';
+import Version from '../../base/Version';
 
-export default class V2010 extends Version {
+export class V2010 extends Version {
     /**
      * Initialize the V2010 version of Api
      *

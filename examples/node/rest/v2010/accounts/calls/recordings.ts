@@ -11,7 +11,6 @@
  */
 
 import { inspect } from 'util';
-import V2010 from '../../../V2010';
 
 
 /**
@@ -58,7 +57,7 @@ export class RecordingListInstance {
     protected _uri: string;
 
 
-    constructor(protected _version: V2010, accountSid: string, callSid: string, testInteger: number) {
+    constructor(protected _version: Version, accountSid: string, callSid: string, testInteger: number) {
         this._solution = { accountSid, callSid, testInteger };
         this._uri = `/2010-04-01/Accounts/${accountSid}/Calls/${callSid}/Recordings/${testInteger}.json`;
     }
@@ -100,17 +99,17 @@ export class RecordingListInstance {
 
         if (params.xTwilioWebhookEnabled !== undefined) headers['X-Twilio-Webhook-Enabled'] = params.xTwilioWebhookEnabled;
 
-        const operationPromise = this._version.create({ uri: this._uri, method: 'POST', data, headers });
+        let promise = this._version.create({ uri: this._uri, method: 'POST', data, headers });
 
-        let instancePromise = operationPromise.then(payload => new RecordingInstance(this._version, payload, this._solution.accountSid, this._solution.callSid, this._solution.testInteger));
+        promise = promise.then(payload => new RecordingInstance(this._version, payload, this._solution.accountSid, this._solution.callSid, this._solution.testInteger));
 
         if (typeof callback === 'function') {
-            instancePromise = instancePromise
+            promise = promise
                 .then(value => callback(null, value))
                 .catch(error => callback(error));
         }
 
-        return instancePromise;
+        return promise;
     }
 
     /**
@@ -123,17 +122,17 @@ export class RecordingListInstance {
     public async (callback?: (error: Error | null, item?: RecordingInstance) => any): Promise<RecordingInstance> { 
 
 
-        const operationPromise = this._version.({ uri: this._uri, method: 'DELETE' });
+        let promise = this._version.({ uri: this._uri, method: 'DELETE' });
 
-        let instancePromise = operationPromise.then(payload => new RecordingInstance(this._version, payload, this._solution.accountSid, this._solution.callSid, this._solution.testInteger));
+        promise = promise.then(payload => new RecordingInstance(this._version, payload, this._solution.accountSid, this._solution.callSid, this._solution.testInteger));
 
         if (typeof callback === 'function') {
-            instancePromise = instancePromise
+            promise = promise
                 .then(value => callback(null, value))
                 .catch(error => callback(error));
         }
 
-        return instancePromise;
+        return promise;
     }
 
     /**
@@ -146,17 +145,17 @@ export class RecordingListInstance {
     public async page(callback?: (error: Error | null, item?: RecordingInstance) => any): Promise<RecordingInstance> { 
 
 
-        const operationPromise = this._version.page({ uri: this._uri, method: 'GET' });
+        let promise = this._version.page({ uri: this._uri, method: 'GET' });
 
-        let instancePromise = operationPromise.then(payload => new RecordingInstance(this._version, payload, this._solution.accountSid, this._solution.callSid, this._solution.testInteger));
+        promise = promise.then(payload => new RecordingInstance(this._version, payload, this._solution.accountSid, this._solution.callSid, this._solution.testInteger));
 
         if (typeof callback === 'function') {
-            instancePromise = instancePromise
+            promise = promise
                 .then(value => callback(null, value))
                 .catch(error => callback(error));
         }
 
-        return instancePromise;
+        return promise;
     }
 
     /**
@@ -193,17 +192,17 @@ export class RecordingListInstance {
         };
 
 
-        const operationPromise = this._version.page({ uri: this._uri, method: 'GET', data, headers });
+        let promise = this._version.page({ uri: this._uri, method: 'GET', data, headers });
 
-        let instancePromise = operationPromise.then(payload => new RecordingInstance(this._version, payload, this._solution.accountSid, this._solution.callSid, this._solution.testInteger));
+        promise = promise.then(payload => new RecordingInstance(this._version, payload, this._solution.accountSid, this._solution.callSid, this._solution.testInteger));
 
         if (typeof callback === 'function') {
-            instancePromise = instancePromise
+            promise = promise
                 .then(value => callback(null, value))
                 .catch(error => callback(error));
         }
 
-        return instancePromise;
+        return promise;
     }
 
     /**
@@ -235,17 +234,17 @@ export class RecordingListInstance {
         };
 
 
-        const operationPromise = this._version.create({ uri: this._uri, method: 'POST', data, headers });
+        let promise = this._version.create({ uri: this._uri, method: 'POST', data, headers });
 
-        let instancePromise = operationPromise.then(payload => new RecordingInstance(this._version, payload, this._solution.accountSid, this._solution.callSid, this._solution.testInteger));
+        promise = promise.then(payload => new RecordingInstance(this._version, payload, this._solution.accountSid, this._solution.callSid, this._solution.testInteger));
 
         if (typeof callback === 'function') {
-            instancePromise = instancePromise
+            promise = promise
                 .then(value => callback(null, value))
                 .catch(error => callback(error));
         }
 
-        return instancePromise;
+        return promise;
     }
 
     /**
