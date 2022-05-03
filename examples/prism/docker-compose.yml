@@ -10,8 +10,9 @@ services:
 
   java-test:
     build:
-      dockerfile: java.Dockerfile
-      context: ../../
+      context: ../java
+    volumes:
+      - ../java:/local
     depends_on:
       - prism_twilio
 
