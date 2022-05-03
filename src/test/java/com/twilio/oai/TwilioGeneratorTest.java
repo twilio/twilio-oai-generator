@@ -1,9 +1,14 @@
 package com.twilio.oai;
 
+import java.io.File;
+import java.util.List;
+
 import org.junit.Test;
 import org.openapitools.codegen.ClientOptInput;
 import org.openapitools.codegen.DefaultGenerator;
 import org.openapitools.codegen.config.CodegenConfigurator;
+
+import static org.junit.Assert.assertFalse;
 
 /**
  * This test allows you to easily launch your code generation software under a debugger. Then run this test under debug
@@ -20,6 +25,8 @@ public class TwilioGeneratorTest {
 
         final ClientOptInput clientOptInput = configurator.toClientOptInput();
         DefaultGenerator generator = new DefaultGenerator();
-        generator.opts(clientOptInput).generate();
+        final List<File> output = generator.opts(clientOptInput).generate();
+
+        assertFalse(output.isEmpty());
     }
 }
