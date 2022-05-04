@@ -339,6 +339,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/test.response_object'
+              examples:
+                example:
+                  $ref: '#/components/examples/test.response_object.example'
           description: Created
       security:
         - accountSid_authToken: [ ]
