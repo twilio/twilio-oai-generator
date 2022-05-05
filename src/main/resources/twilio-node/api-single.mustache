@@ -1,5 +1,6 @@
 {{>licenseInfo}}
 import { inspect } from 'util';
+import {{apiVersionClass}} from '{{apiVersionPath}}/{{apiVersionClass}}';
 {{#resources}}
 {{#dependents}}
 import { {{name}}ListInstance } from './{{apiFilename}}/{{filename}}';
@@ -37,7 +38,7 @@ export class {{resourceName}} {
     protected _{{mountName}}?: {{name}}ListInstance;
     {{/dependents}}
 
-    constructor(protected _version: Version{{#resourcePathParams}}, {{paramName}}: {{{dataType}}}{{/resourcePathParams}}) {
+    constructor(protected _version: {{apiVersionClass}}{{#resourcePathParams}}, {{paramName}}: {{{dataType}}}{{/resourcePathParams}}) {
         this._solution = { {{#resourcePathParams}}{{paramName}}{{^-last}}, {{/-last}}{{/resourcePathParams}} };
         this._uri = `{{path}}`;
     }
@@ -92,17 +93,17 @@ export class {{resourceName}} {
         {{/headerParams}}
         {{/hasParams}}
 
-        let promise = this._version.{{vendorExtensions.x-name-lower}}({ uri: this._uri, method: '{{httpMethod}}'{{#hasParams}}{{#bodyParam}}, body: params{{/bodyParam}}{{^bodyParam}}, data{{/bodyParam}}, headers{{/hasParams}} });
+        const operationPromise = this._version.{{vendorExtensions.x-name-lower}}({ uri: this._uri, method: '{{httpMethod}}'{{#hasParams}}{{#bodyParam}}, body: params{{/bodyParam}}{{^bodyParam}}, data{{/bodyParam}}, headers{{/hasParams}} });
 
-        promise = promise.then(payload => new {{instanceName}}(this._version, payload{{#resourcePathParams}}, this._solution.{{paramName}}{{/resourcePathParams}}));
+        let instancePromise = operationPromise.then(payload => new {{instanceName}}(this._version, payload{{#resourcePathParams}}, this._solution.{{paramName}}{{/resourcePathParams}}));
 
         if (typeof callback === 'function') {
-            promise = promise
+            instancePromise = instancePromise
                 .then(value => callback(null, value))
                 .catch(error => callback(error));
         }
 
-        return promise;
+        return instancePromise;
     }
 
 {{/operations}}
