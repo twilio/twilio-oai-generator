@@ -34,7 +34,10 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_AUTH_TOKEN }}
 
-      - name: Run tests
+      - name: Run unit tests
+        run: make test
+
+      - name: Run helper tests
         run: make test-docker
 
       - name: Show git status and fail on diff

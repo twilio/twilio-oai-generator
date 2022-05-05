@@ -67,8 +67,6 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
         apiTemplateFiles.put("fetcher.mustache", "Fetcher.java");
         apiTemplateFiles.put("reader.mustache", "Reader.java");
         apiTemplateFiles.put("updater.mustache", "Updater.java");
-
-        supportingFiles.add(new SupportingFile("Domains.mustache", "Domains.java"));
     }
 
     @Override
