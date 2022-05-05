@@ -21,9 +21,9 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class APIIntegrationTest {
-    final String baseURL = " http://127.0.0.1:4010";
+    final String baseURL = "http://prism_twilio:4010";
     final String ACCOUNT_SID = "AC12345678123456781234567812345678";
-    
+
     @Before
     public void setUp() {
         String authToken = "CR12345678123456781234567812345678";
@@ -47,31 +47,33 @@ public class APIIntegrationTest {
         assertEquals("CR12345678123456781234567812345678", call.getSid());
         assertEquals("Ahoy", call.getTestString());
     }
+
     @Test
     public void testPost() {
-       Call call = new CallCreator(ACCOUNT_SID, "testString").create();
-       assertEquals("Ahoy", call.getTestString());
-       assertNotNull(call);
-
+        Call call = new CallCreator(ACCOUNT_SID, "testString").create();
+        assertEquals("Ahoy", call.getTestString());
+        assertNotNull(call);
     }
 
     @Test
     public void testDelete() {
-       assertTrue(new CallDeleter(ACCOUNT_SID, "CA1234567890123456789012").delete());
+        assertTrue(new CallDeleter(ACCOUNT_SID, "CA1234567890123456789012").delete());
     }
 
     @Test
     public void testUpdate() {
-       Recording recording = new RecordingUpdater(ACCOUNT_SID, "CA1234567890123456789012", 12, "paused").update();
-       assertNotNull(recording);
+        Recording recording = new RecordingUpdater(ACCOUNT_SID, "CA1234567890123456789012", 12, "paused").update();
+        assertNotNull(recording);
     }
 
     @Test
     public void testDateTimeQueryParam() {
         Page<Recording> recording = new RecordingReader(ACCOUNT_SID, "CR12345678123456781234567812345678")
-        .setDateTest(LocalDate.now())
-        .setDateCreatedBefore(ZonedDateTime.now().minusMonths(-2))
-        .setDateCreatedAfter(ZonedDateTime.now().minusMonths(2)).pageSize(5).firstPage();
+            .setDateTest(LocalDate.now())
+            .setDateCreatedBefore(ZonedDateTime.now().minusMonths(-2))
+            .setDateCreatedAfter(ZonedDateTime.now().minusMonths(2))
+            .pageSize(5)
+            .firstPage();
         assertEquals(2, recording.getRecords().size());
         assertEquals("Ahoy", recording.getRecords().get(0).getTestString());
         assertEquals("Matey", recording.getRecords().get(1).getTestString());
@@ -85,6 +87,5 @@ public class APIIntegrationTest {
         assertEquals(Boolean.FALSE, call.getTestObject().getMms());
         assertEquals(Boolean.TRUE, call.getTestObject().getSms());
         assertEquals(Boolean.TRUE, call.getTestObject().getVoice());
-        
     }
 }
