@@ -53,12 +53,12 @@ public class {{resourceName}}Creator extends Creator<{{resourceName}}>{
     }
 {{/signatureListCreate}}
 
-{{#allParams}}
+{{#vendorExtensions.x-non-path-params}}
     public {{resourceName}}Creator set{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}(final {{{dataType}}} {{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}){
         this.{{paramName}} = {{paramName}};
         return this;
     }
-{{/allParams}}
+{{/vendorExtensions.x-non-path-params}}
 
     @Override
     public {{resourceName}} create(final TwilioRestClient client){
@@ -96,7 +96,7 @@ public class {{resourceName}}Creator extends Creator<{{resourceName}}>{
 
 
     private void addPostParams(final Request request) {
-{{#allParams}}
+{{#vendorExtensions.x-non-path-params}}
         if ({{paramName}} != null) {
         {{#isFreeFormObject}}
         request.addPostParam("{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}",  Converter.mapToJson({{paramName}}));
@@ -106,7 +106,7 @@ public class {{resourceName}}Creator extends Creator<{{resourceName}}>{
         {{/isFreeFormObject}}
         }
 
-{{/allParams}}
+{{/vendorExtensions.x-non-path-params}}
     }
 }
 {{/vendorExtensions.x-is-create-operation}}

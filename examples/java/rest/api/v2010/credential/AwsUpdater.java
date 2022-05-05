@@ -57,10 +57,6 @@ public class AwsUpdater extends Updater<Aws>{
         this.Sid = Sid;
     }
 
-    public AwsUpdater setSid(final String Sid){
-        this.Sid = Sid;
-        return this;
-    }
     public AwsUpdater setTestString(final String TestString){
         this.TestString = TestString;
         return this;
@@ -94,9 +90,6 @@ public class AwsUpdater extends Updater<Aws>{
 
 
     private void addPostParams(final Request request) {
-        if (Sid != null) {
-            request.addPostParam("Sid", Sid.toString());
-        }
         if (TestString != null) {
             request.addPostParam("TestString", TestString.toString());
         }

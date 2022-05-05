@@ -46,12 +46,12 @@ public class {{resourceName}}Updater extends Updater<{{resourceName}}>{
     }
 {{/signatureListUpdate}}
 
-{{#allParams}}
+{{#vendorExtensions.x-non-path-params}}
     public {{resourceName}}Updater set{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}(final {{{dataType}}} {{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}){
         this.{{paramName}} = {{paramName}};
         return this;
     }
-{{/allParams}}
+{{/vendorExtensions.x-non-path-params}}
 
     @Override
     public {{resourceName}} update(final TwilioRestClient client){
@@ -89,11 +89,11 @@ public class {{resourceName}}Updater extends Updater<{{resourceName}}>{
 
 
     private void addPostParams(final Request request) {
-{{#allParams}}
+{{#vendorExtensions.x-non-path-params}}
         if ({{paramName}} != null) {
             request.addPostParam("{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}", {{paramName}}.toString());
         }
-{{/allParams}}
+{{/vendorExtensions.x-non-path-params}}
     }
 }
 {{/vendorExtensions.x-is-update-operation}}

@@ -79,10 +79,6 @@ public class FeedbackCallSummaryCreator extends Creator<FeedbackCallSummary>{
         this.StartDate = StartDate;
         return this;
     }
-    public FeedbackCallSummaryCreator setAccountSid(final String AccountSid){
-        this.AccountSid = AccountSid;
-        return this;
-    }
 
     @Override
     public FeedbackCallSummary create(final TwilioRestClient client){
@@ -121,10 +117,6 @@ public class FeedbackCallSummaryCreator extends Creator<FeedbackCallSummary>{
 
         if (StartDate != null) {
         request.addPostParam("StartDate", StartDate.toString());
-        }
-
-        if (AccountSid != null) {
-        request.addPostParam("AccountSid", AccountSid.toString());
         }
 
     }

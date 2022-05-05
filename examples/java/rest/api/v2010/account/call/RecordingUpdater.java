@@ -68,20 +68,8 @@ public class RecordingUpdater extends Updater<Recording>{
         this.Status = Status;
     }
 
-    public RecordingUpdater setCallSid(final String CallSid){
-        this.CallSid = CallSid;
-        return this;
-    }
-    public RecordingUpdater setTestInteger(final Integer TestInteger){
-        this.TestInteger = TestInteger;
-        return this;
-    }
     public RecordingUpdater setStatus(final String Status){
         this.Status = Status;
-        return this;
-    }
-    public RecordingUpdater setAccountSid(final String AccountSid){
-        this.AccountSid = AccountSid;
         return this;
     }
     public RecordingUpdater setPauseBehavior(final String PauseBehavior){
@@ -121,17 +109,8 @@ public class RecordingUpdater extends Updater<Recording>{
 
 
     private void addPostParams(final Request request) {
-        if (CallSid != null) {
-            request.addPostParam("CallSid", CallSid.toString());
-        }
-        if (TestInteger != null) {
-            request.addPostParam("TestInteger", TestInteger.toString());
-        }
         if (Status != null) {
             request.addPostParam("Status", Status.toString());
-        }
-        if (AccountSid != null) {
-            request.addPostParam("AccountSid", AccountSid.toString());
         }
         if (PauseBehavior != null) {
             request.addPostParam("PauseBehavior", PauseBehavior.toString());

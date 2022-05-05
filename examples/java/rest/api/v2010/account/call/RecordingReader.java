@@ -55,47 +55,12 @@ import lombok.ToString;
 
 public class RecordingReader extends Reader<Recording> {
     private String CallSid;
-
-    public RecordingReader setCallSid(final String CallSid){
-        this.CallSid = CallSid;
-        return this;
-    }
     private String AccountSid;
-
-    public RecordingReader setAccountSid(final String AccountSid){
-        this.AccountSid = AccountSid;
-        return this;
-    }
     private ZonedDateTime DateCreated;
-
-    public RecordingReader setDateCreated(final ZonedDateTime DateCreated){
-        this.DateCreated = DateCreated;
-        return this;
-    }
     private LocalDate DateTest;
-
-    public RecordingReader setDateTest(final LocalDate DateTest){
-        this.DateTest = DateTest;
-        return this;
-    }
     private ZonedDateTime DateCreatedBefore;
-
-    public RecordingReader setDateCreatedBefore(final ZonedDateTime DateCreatedBefore){
-        this.DateCreatedBefore = DateCreatedBefore;
-        return this;
-    }
     private ZonedDateTime DateCreatedAfter;
-
-    public RecordingReader setDateCreatedAfter(final ZonedDateTime DateCreatedAfter){
-        this.DateCreatedAfter = DateCreatedAfter;
-        return this;
-    }
     private Integer PageSize;
-
-    public RecordingReader setPageSize(final Integer PageSize){
-        this.PageSize = PageSize;
-        return this;
-    }
 
     public RecordingReader(final String CallSid){
         this.CallSid = CallSid;
@@ -103,6 +68,27 @@ public class RecordingReader extends Reader<Recording> {
     public RecordingReader(final String AccountSid, final String CallSid){
         this.AccountSid = AccountSid;
         this.CallSid = CallSid;
+    }
+
+    public RecordingReader setDateCreated(final ZonedDateTime DateCreated){
+        this.DateCreated = DateCreated;
+        return this;
+    }
+    public RecordingReader setDateTest(final LocalDate DateTest){
+        this.DateTest = DateTest;
+        return this;
+    }
+    public RecordingReader setDateCreatedBefore(final ZonedDateTime DateCreatedBefore){
+        this.DateCreatedBefore = DateCreatedBefore;
+        return this;
+    }
+    public RecordingReader setDateCreatedAfter(final ZonedDateTime DateCreatedAfter){
+        this.DateCreatedAfter = DateCreatedAfter;
+        return this;
+    }
+    public RecordingReader setPageSize(final Integer PageSize){
+        this.PageSize = PageSize;
+        return this;
     }
 
     private void addQueryParams(final Request request) {

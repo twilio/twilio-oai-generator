@@ -71,16 +71,8 @@ public class RecordingCreator extends Creator<Recording>{
         this.CallSid = CallSid;
     }
 
-    public RecordingCreator setCallSid(final String CallSid){
-        this.CallSid = CallSid;
-        return this;
-    }
     public RecordingCreator setXTwilioWebhookEnabled(final String XTwilioWebhookEnabled){
         this.XTwilioWebhookEnabled = XTwilioWebhookEnabled;
-        return this;
-    }
-    public RecordingCreator setAccountSid(final String AccountSid){
-        this.AccountSid = AccountSid;
         return this;
     }
     public RecordingCreator setRecordingStatusCallback(final URI RecordingStatusCallback){
@@ -122,16 +114,8 @@ public class RecordingCreator extends Creator<Recording>{
 
 
     private void addPostParams(final Request request) {
-        if (CallSid != null) {
-        request.addPostParam("CallSid", CallSid.toString());
-        }
-
         if (XTwilioWebhookEnabled != null) {
         request.addPostParam("XTwilioWebhookEnabled", XTwilioWebhookEnabled.toString());
-        }
-
-        if (AccountSid != null) {
-        request.addPostParam("AccountSid", AccountSid.toString());
         }
 
         if (RecordingStatusCallback != null) {

@@ -40,11 +40,6 @@ import lombok.ToString;
 public class {{resourceName}}Reader extends Reader<{{resourceName}}> {
 {{#allParams}}
     private {{{dataType}}} {{paramName}};
-
-    public {{resourceName}}Reader set{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}(final {{{dataType}}} {{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}){
-        this.{{paramName}} = {{paramName}};
-        return this;
-    }
 {{/allParams}}
 
 {{#signatureListRead}}
@@ -54,6 +49,13 @@ public class {{resourceName}}Reader extends Reader<{{resourceName}}> {
     {{/.}}
     }
 {{/signatureListRead}}
+
+{{#vendorExtensions.x-non-path-params}}
+    public {{resourceName}}Reader set{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}(final {{{dataType}}} {{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}){
+        this.{{paramName}} = {{paramName}};
+        return this;
+    }
+{{/vendorExtensions.x-non-path-params}}
 
     private void addQueryParams(final Request request) {
         {{#queryParams}}

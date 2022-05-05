@@ -220,12 +220,13 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
             resource.put("path", path);
             resource.put("resourceName", apiNameMap.get(inflector.singular(getResourceName(co.path))));
             resource.put("resourcePathParams", co.pathParams);
-            resource.put("resourceRequiredParams", co.requiredParams);
+            resource.put("resourceRequiredParams", co.requiredParams);       
             co.queryParams =  co.queryParams.stream().map(ConventionResolver::resolveParamTypes).map(ConventionResolver::prefixedCollapsibleMap).collect(Collectors.toList());
             co.pathParams = null;
             co.hasParams = !co.allParams.isEmpty();
             co.allParams = co.allParams.stream().map(ConventionResolver::resolveParamTypes).collect(Collectors.toList());
             co.hasRequiredParams = !co.requiredParams.isEmpty();
+            co.vendorExtensions.put("x-non-path-params", getNonPathParams(co.allParams));
 
             if (co.bodyParam != null) {
                 addModel(resource, co.bodyParam.dataType);
@@ -257,6 +258,10 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
         results.put("resources", resources.values());
 
         return results;
+    }
+
+    private List<CodegenParameter> getNonPathParams(List<CodegenParameter> allParams) {
+       return allParams.stream().filter(param -> !param.isPathParam).collect(Collectors.toList());
     }
 
     private CodegenModel getConcatenatedResponseModel(List<CodegenModel> responseModels) {

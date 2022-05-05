@@ -73,10 +73,6 @@ public class CallCreator extends Creator<Call>{
         this.RequiredStringProperty = RequiredStringProperty;
         return this;
     }
-    public CallCreator setAccountSid(final String AccountSid){
-        this.AccountSid = AccountSid;
-        return this;
-    }
     public CallCreator setTestArrayOfStrings(final List<String> TestArrayOfStrings){
         this.TestArrayOfStrings = TestArrayOfStrings;
         return this;
@@ -114,10 +110,6 @@ public class CallCreator extends Creator<Call>{
     private void addPostParams(final Request request) {
         if (RequiredStringProperty != null) {
         request.addPostParam("RequiredStringProperty", RequiredStringProperty.toString());
-        }
-
-        if (AccountSid != null) {
-        request.addPostParam("AccountSid", AccountSid.toString());
         }
 
         if (TestArrayOfStrings != null) {

@@ -56,12 +56,12 @@ import lombok.ToString;
 public class AwsReader extends Reader<Aws> {
     private Integer PageSize;
 
+    public AwsReader(){
+    }
+
     public AwsReader setPageSize(final Integer PageSize){
         this.PageSize = PageSize;
         return this;
-    }
-
-    public AwsReader(){
     }
 
     private void addQueryParams(final Request request) {
