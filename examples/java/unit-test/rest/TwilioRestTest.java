@@ -76,8 +76,6 @@ public class TwilioRestTest {
         );
         mockRequest.addPostParam("XTwilioWebhookEnabled", "true");
         mockRequest.addPostParam("RecordingStatusCallback", "https://validurl.com");
-        mockRequest.addPostParam("CallSid", "PNXXXXY");
-        mockRequest.addPostParam("AccountSid", "AC222222222222222222222222222222");
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
         when(twilioRestClient.request(mockRequest)).thenReturn(new Response("{\"sid\": 123, \"call_sid\":\"PNXXXXY\"}", 200));
@@ -132,8 +130,6 @@ public class TwilioRestTest {
                 "/2010-04-01/Accounts/AC222222222222222222222222222222/Calls/PNXXXXY/Recordings.json"
         );
         mockRequest.addPostParam("RecordingStatusCallbackEvent", recordingStatusCallbackEvent.toString());
-        mockRequest.addPostParam("AccountSid", "AC222222222222222222222222222222");
-        mockRequest.addPostParam("CallSid", "PNXXXXY");
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
         when(twilioRestClient.request(mockRequest)).thenReturn(new Response("{\"recordings\":[{\"call_sid\":\"PNXXXXY\", \"sid\":123}]}", 200));
