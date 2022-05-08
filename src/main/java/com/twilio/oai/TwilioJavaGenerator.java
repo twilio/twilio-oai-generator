@@ -81,7 +81,11 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
             });
         });
     }
-    
+    /**
+     * make accountSid an optional param
+     * @param path
+     * @param pathMap
+     */
     private void updateAccountSidParam(final String path, final PathItem pathMap) {
         pathMap.readOperations().stream().map(io.swagger.v3.oas.models.Operation::getParameters)
         .filter(Objects::nonNull)
@@ -319,6 +323,14 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
 
         private final String prefix;
     }
+
+    /**
+     * keep track of signature list that would contain different combinations of signatures for constructor generation (since Account sid is optional, so different constructor are needed)
+     * @param resource
+     * @param co
+     * @param isVersionV2010
+     * @return
+     */
     private ArrayList<List<CodegenParameter>> generateSignatureList(final Map<String, Object> resource, final CodegenOperation co, boolean isVersionV2010) {
         final ArrayList<List<CodegenParameter>> signatureList = new ArrayList<>();
         signatureList.add(co.requiredParams);
