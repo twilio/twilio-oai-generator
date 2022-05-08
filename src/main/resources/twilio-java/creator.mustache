@@ -44,22 +44,31 @@ public class {{resourceName}}Creator extends Creator<{{resourceName}}>{
 {{#allParams}}
     private {{{dataType}}} {{paramName}};
 {{/allParams}}
-    public {{resourceName}}Creator({{#requiredParams}}final {{{dataType}}} {{paramName}}{{^-last}}, {{/-last}}{{/requiredParams}}) {
-    {{#requiredParams}}{{#required}}
-        this.{{paramName}} = {{paramName}};
-    {{/required}}{{/requiredParams}}
-    }
 
-{{#allParams}}
+{{#signatureListCreate}}
+    public {{resourceName}}Creator({{#.}}final {{{dataType}}} {{paramName}}{{^-last}}, {{/-last}}{{/.}}) {
+    {{#.}}
+        this.{{paramName}} = {{paramName}};
+    {{/.}}
+    }
+{{/signatureListCreate}}
+
+{{#vendorExtensions.x-non-path-params}}
     public {{resourceName}}Creator set{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}(final {{{dataType}}} {{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}){
         this.{{paramName}} = {{paramName}};
         return this;
     }
-{{/allParams}}
+{{/vendorExtensions.x-non-path-params}}
 
     @Override
     public {{resourceName}} create(final TwilioRestClient client){
         String path = "{{{path}}}";
+        {{#allParams}}
+        {{#vendorExtensions.x-is-account-sid}}
+        this.{{paramName}} = this.{{paramName}} == null ? client.getAccountSid() : this.{{paramName}};
+        path = path.replace("{"+"{{paramName}}"+"}", this.{{paramName}}.toString());
+        {{/vendorExtensions.x-is-account-sid}}
+        {{/allParams}}
         {{#requiredParams}}
         path = path.replace("{"+"{{paramName}}"+"}", this.{{paramName}}.toString());
         {{/requiredParams}}
@@ -87,7 +96,7 @@ public class {{resourceName}}Creator extends Creator<{{resourceName}}>{
 
 
     private void addPostParams(final Request request) {
-{{#allParams}}
+{{#vendorExtensions.x-non-path-params}}
         if ({{paramName}} != null) {
         {{#isFreeFormObject}}
         request.addPostParam("{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}",  Converter.mapToJson({{paramName}}));
@@ -97,7 +106,7 @@ public class {{resourceName}}Creator extends Creator<{{resourceName}}>{
         {{/isFreeFormObject}}
         }
 
-{{/allParams}}
+{{/vendorExtensions.x-non-path-params}}
     }
 }
 {{/vendorExtensions.x-is-create-operation}}

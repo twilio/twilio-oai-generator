@@ -37,16 +37,23 @@ public class {{resourceName}}Fetcher extends Fetcher<{{resourceName}}> {
     private {{{dataType}}} {{paramName}};
 {{/allParams}}
 
-
-    public {{resourceName}}Fetcher({{#requiredParams}}final {{{dataType}}} {{paramName}}{{^-last}}, {{/-last}}{{/requiredParams}}){
-    {{#requiredParams}}
+{{#signatureListFetch}}
+    public {{resourceName}}Fetcher({{#.}}final {{{dataType}}} {{paramName}}{{^-last}}, {{/-last}}{{/.}}){
+    {{#.}}
         this.{{paramName}} = {{paramName}};
-    {{/requiredParams}}
+    {{/.}}
     }
+{{/signatureListFetch}}
 
     @Override
     public {{resourceName}} fetch(final TwilioRestClient client) {
         String path = "{{{path}}}";
+        {{#allParams}}
+        {{#vendorExtensions.x-is-account-sid}}
+        this.{{paramName}} = this.{{paramName}} == null ? client.getAccountSid() : this.{{paramName}};
+        path = path.replace("{"+"{{paramName}}"+"}", this.{{paramName}}.toString());
+        {{/vendorExtensions.x-is-account-sid}}
+        {{/allParams}}
         {{#requiredParams}}
         path = path.replace("{"+"{{paramName}}"+"}", this.{{paramName}}.toString());
         {{/requiredParams}}

@@ -49,10 +49,12 @@ import lombok.ToString;
 
 
 public class CallFetcher extends Fetcher<Call> {
-    private String AccountSid;
     private String Sid;
+    private String AccountSid;
 
-
+    public CallFetcher(final String Sid){
+        this.Sid = Sid;
+    }
     public CallFetcher(final String AccountSid, final String Sid){
         this.AccountSid = AccountSid;
         this.Sid = Sid;
@@ -61,6 +63,7 @@ public class CallFetcher extends Fetcher<Call> {
     @Override
     public Call fetch(final TwilioRestClient client) {
         String path = "/2010-04-01/Accounts/{AccountSid}/Calls/{Sid}.json";
+        this.AccountSid = this.AccountSid == null ? client.getAccountSid() : this.AccountSid;
         path = path.replace("{"+"AccountSid"+"}", this.AccountSid.toString());
         path = path.replace("{"+"Sid"+"}", this.Sid.toString());
 

@@ -71,10 +71,9 @@ public class AwsCreator extends Creator<Aws>{
     private String TestEnum;
     private List<Object> TestObjectArray;
     private Object TestAnyType;
+
     public AwsCreator(final String TestString) {
-    
         this.TestString = TestString;
-    
     }
 
     public AwsCreator setTestString(final String TestString){

@@ -57,27 +57,20 @@ import java.net.URI;
 
 
 public class RecordingCreator extends Creator<Recording>{
-    private String AccountSid;
     private String CallSid;
     private String XTwilioWebhookEnabled;
+    private String AccountSid;
     private URI RecordingStatusCallback;
     private List<String> RecordingStatusCallbackEvent;
-    public RecordingCreator(final String AccountSid, final String CallSid) {
-    
-        this.AccountSid = AccountSid;
-    
+
+    public RecordingCreator(final String CallSid) {
         this.CallSid = CallSid;
-    
+    }
+    public RecordingCreator(final String AccountSid, final String CallSid) {
+        this.AccountSid = AccountSid;
+        this.CallSid = CallSid;
     }
 
-    public RecordingCreator setAccountSid(final String AccountSid){
-        this.AccountSid = AccountSid;
-        return this;
-    }
-    public RecordingCreator setCallSid(final String CallSid){
-        this.CallSid = CallSid;
-        return this;
-    }
     public RecordingCreator setXTwilioWebhookEnabled(final String XTwilioWebhookEnabled){
         this.XTwilioWebhookEnabled = XTwilioWebhookEnabled;
         return this;
@@ -94,6 +87,7 @@ public class RecordingCreator extends Creator<Recording>{
     @Override
     public Recording create(final TwilioRestClient client){
         String path = "/2010-04-01/Accounts/{AccountSid}/Calls/{CallSid}/Recordings.json";
+        this.AccountSid = this.AccountSid == null ? client.getAccountSid() : this.AccountSid;
         path = path.replace("{"+"AccountSid"+"}", this.AccountSid.toString());
         path = path.replace("{"+"CallSid"+"}", this.CallSid.toString());
 
@@ -120,14 +114,6 @@ public class RecordingCreator extends Creator<Recording>{
 
 
     private void addPostParams(final Request request) {
-        if (AccountSid != null) {
-        request.addPostParam("AccountSid", AccountSid.toString());
-        }
-
-        if (CallSid != null) {
-        request.addPostParam("CallSid", CallSid.toString());
-        }
-
         if (XTwilioWebhookEnabled != null) {
         request.addPostParam("XTwilioWebhookEnabled", XTwilioWebhookEnabled.toString());
         }

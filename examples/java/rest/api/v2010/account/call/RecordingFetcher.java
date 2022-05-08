@@ -49,11 +49,14 @@ import lombok.ToString;
 
 
 public class RecordingFetcher extends Fetcher<Recording> {
-    private String AccountSid;
     private String CallSid;
     private Integer TestInteger;
+    private String AccountSid;
 
-
+    public RecordingFetcher(final String CallSid, final Integer TestInteger){
+        this.CallSid = CallSid;
+        this.TestInteger = TestInteger;
+    }
     public RecordingFetcher(final String AccountSid, final String CallSid, final Integer TestInteger){
         this.AccountSid = AccountSid;
         this.CallSid = CallSid;
@@ -63,6 +66,7 @@ public class RecordingFetcher extends Fetcher<Recording> {
     @Override
     public Recording fetch(final TwilioRestClient client) {
         String path = "/2010-04-01/Accounts/{AccountSid}/Calls/{CallSid}/Recordings/{TestInteger}.json";
+        this.AccountSid = this.AccountSid == null ? client.getAccountSid() : this.AccountSid;
         path = path.replace("{"+"AccountSid"+"}", this.AccountSid.toString());
         path = path.replace("{"+"CallSid"+"}", this.CallSid.toString());
         path = path.replace("{"+"TestInteger"+"}", this.TestInteger.toString());

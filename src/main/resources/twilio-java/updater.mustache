@@ -38,22 +38,30 @@ public class {{resourceName}}Updater extends Updater<{{resourceName}}>{
     private {{{dataType}}} {{paramName}};
 {{/allParams}}
 
-    public {{resourceName}}Updater({{#requiredParams}}final {{{dataType}}} {{paramName}}{{^-last}}, {{/-last}}{{/requiredParams}}){
-        {{#allParams}}{{#required}}
-            this.{{paramName}} = {{paramName}};
-        {{/required}}{{/allParams}}
-        }
+{{#signatureListUpdate}}
+    public {{resourceName}}Updater({{#.}}final {{{dataType}}} {{paramName}}{{^-last}}, {{/-last}}{{/.}}){
+    {{#.}}
+        this.{{paramName}} = {{paramName}};
+    {{/.}}
+    }
+{{/signatureListUpdate}}
 
-{{#allParams}}
+{{#vendorExtensions.x-non-path-params}}
     public {{resourceName}}Updater set{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}(final {{{dataType}}} {{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}){
         this.{{paramName}} = {{paramName}};
         return this;
     }
-{{/allParams}}
+{{/vendorExtensions.x-non-path-params}}
 
     @Override
     public {{resourceName}} update(final TwilioRestClient client){
         String path = "{{{path}}}";
+        {{#allParams}}
+        {{#vendorExtensions.x-is-account-sid}}
+        this.{{paramName}} = this.{{paramName}} == null ? client.getAccountSid() : this.{{paramName}};
+        path = path.replace("{"+"{{paramName}}"+"}", this.{{paramName}}.toString());
+        {{/vendorExtensions.x-is-account-sid}}
+        {{/allParams}}
         {{#requiredParams}}
         path = path.replace("{"+"{{paramName}}"+"}", this.{{paramName}}.toString());
         {{/requiredParams}}
@@ -81,11 +89,11 @@ public class {{resourceName}}Updater extends Updater<{{resourceName}}>{
 
 
     private void addPostParams(final Request request) {
-{{#allParams}}
+{{#vendorExtensions.x-non-path-params}}
         if ({{paramName}} != null) {
             request.addPostParam("{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}", {{paramName}}.toString());
         }
-{{/allParams}}
+{{/vendorExtensions.x-non-path-params}}
     }
 }
 {{/vendorExtensions.x-is-update-operation}}

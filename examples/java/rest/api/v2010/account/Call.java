@@ -65,14 +65,23 @@ import com.twilio.type.IceServer;
 public class Call extends Resource {
     private static final long serialVersionUID = 44112120076447L;
 
+    public static CallCreator creator(final String RequiredStringProperty){
+        return new CallCreator(RequiredStringProperty);
+    }
     public static CallCreator creator(final String AccountSid, final String RequiredStringProperty){
         return new CallCreator(AccountSid, RequiredStringProperty);
     }
 
+    public static CallFetcher fetcher(final String Sid){
+        return new CallFetcher(Sid);
+    }
     public static CallFetcher fetcher(final String AccountSid, final String Sid){
         return new CallFetcher(AccountSid, Sid);
     }
 
+    public static CallDeleter delete(final String Sid){
+        return new CallDeleter(Sid);
+    }
     public static CallDeleter delete(final String AccountSid, final String Sid){
         return new CallDeleter(AccountSid, Sid);
     }

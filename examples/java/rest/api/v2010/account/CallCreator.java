@@ -57,21 +57,18 @@ import java.net.URI;
 
 
 public class CallCreator extends Creator<Call>{
-    private String AccountSid;
     private String RequiredStringProperty;
+    private String AccountSid;
     private List<String> TestArrayOfStrings;
-    public CallCreator(final String AccountSid, final String RequiredStringProperty) {
-    
-        this.AccountSid = AccountSid;
-    
+
+    public CallCreator(final String RequiredStringProperty) {
         this.RequiredStringProperty = RequiredStringProperty;
-    
+    }
+    public CallCreator(final String AccountSid, final String RequiredStringProperty) {
+        this.AccountSid = AccountSid;
+        this.RequiredStringProperty = RequiredStringProperty;
     }
 
-    public CallCreator setAccountSid(final String AccountSid){
-        this.AccountSid = AccountSid;
-        return this;
-    }
     public CallCreator setRequiredStringProperty(final String RequiredStringProperty){
         this.RequiredStringProperty = RequiredStringProperty;
         return this;
@@ -84,6 +81,7 @@ public class CallCreator extends Creator<Call>{
     @Override
     public Call create(final TwilioRestClient client){
         String path = "/2010-04-01/Accounts/{AccountSid}/Calls.json";
+        this.AccountSid = this.AccountSid == null ? client.getAccountSid() : this.AccountSid;
         path = path.replace("{"+"AccountSid"+"}", this.AccountSid.toString());
         path = path.replace("{"+"RequiredStringProperty"+"}", this.RequiredStringProperty.toString());
 
@@ -110,10 +108,6 @@ public class CallCreator extends Creator<Call>{
 
 
     private void addPostParams(final Request request) {
-        if (AccountSid != null) {
-        request.addPostParam("AccountSid", AccountSid.toString());
-        }
-
         if (RequiredStringProperty != null) {
         request.addPostParam("RequiredStringProperty", RequiredStringProperty.toString());
         }

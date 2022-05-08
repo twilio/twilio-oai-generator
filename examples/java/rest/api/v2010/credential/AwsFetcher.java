@@ -51,7 +51,6 @@ import lombok.ToString;
 public class AwsFetcher extends Fetcher<Aws> {
     private String Sid;
 
-
     public AwsFetcher(final String Sid){
         this.Sid = Sid;
     }

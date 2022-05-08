@@ -50,36 +50,24 @@ import lombok.ToString;
 
 
 public class RecordingUpdater extends Updater<Recording>{
-    private String AccountSid;
     private String CallSid;
     private Integer TestInteger;
     private String Status;
+    private String AccountSid;
     private String PauseBehavior;
 
-    public RecordingUpdater(final String AccountSid, final String CallSid, final Integer TestInteger, final String Status){
-        
-            this.AccountSid = AccountSid;
-        
-            this.CallSid = CallSid;
-        
-            this.TestInteger = TestInteger;
-        
-            this.Status = Status;
-        
-        }
-
-    public RecordingUpdater setAccountSid(final String AccountSid){
-        this.AccountSid = AccountSid;
-        return this;
-    }
-    public RecordingUpdater setCallSid(final String CallSid){
+    public RecordingUpdater(final String CallSid, final Integer TestInteger, final String Status){
         this.CallSid = CallSid;
-        return this;
-    }
-    public RecordingUpdater setTestInteger(final Integer TestInteger){
         this.TestInteger = TestInteger;
-        return this;
+        this.Status = Status;
     }
+    public RecordingUpdater(final String AccountSid, final String CallSid, final Integer TestInteger, final String Status){
+        this.AccountSid = AccountSid;
+        this.CallSid = CallSid;
+        this.TestInteger = TestInteger;
+        this.Status = Status;
+    }
+
     public RecordingUpdater setStatus(final String Status){
         this.Status = Status;
         return this;
@@ -92,6 +80,7 @@ public class RecordingUpdater extends Updater<Recording>{
     @Override
     public Recording update(final TwilioRestClient client){
         String path = "/2010-04-01/Accounts/{AccountSid}/Calls/{CallSid}/Recordings/{TestInteger}.json";
+        this.AccountSid = this.AccountSid == null ? client.getAccountSid() : this.AccountSid;
         path = path.replace("{"+"AccountSid"+"}", this.AccountSid.toString());
         path = path.replace("{"+"CallSid"+"}", this.CallSid.toString());
         path = path.replace("{"+"TestInteger"+"}", this.TestInteger.toString());
@@ -120,15 +109,6 @@ public class RecordingUpdater extends Updater<Recording>{
 
 
     private void addPostParams(final Request request) {
-        if (AccountSid != null) {
-            request.addPostParam("AccountSid", AccountSid.toString());
-        }
-        if (CallSid != null) {
-            request.addPostParam("CallSid", CallSid.toString());
-        }
-        if (TestInteger != null) {
-            request.addPostParam("TestInteger", TestInteger.toString());
-        }
         if (Status != null) {
             request.addPostParam("Status", Status.toString());
         }
