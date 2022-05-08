@@ -16,7 +16,7 @@ export class {{name}} {
     protected _solution: any;
     protected _context?: {{resourceName}};
 
-    constructor(protected _version: Version, payload{{#resourcePathParams}}, {{paramName}}{{#-last}}?{{/-last}}: {{{dataType}}}{{/resourcePathParams}}) {
+    constructor(protected _version: {{apiVersionClass}}, payload{{#resourcePathParams}}, {{paramName}}{{#-last}}?{{/-last}}: {{{dataType}}}{{/resourcePathParams}}) {
         {{#vars}}
         this.{{name}} = payload.{{baseName}};
         {{/vars}}

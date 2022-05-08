@@ -21,7 +21,7 @@ import org.openapitools.codegen.utils.StringUtils;
 public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
 
     // Unique string devoid of symbols.
-    private static final String PATH_SEPARATOR_PLACEHOLDER = "1234567890";
+    public static final String PATH_SEPARATOR_PLACEHOLDER = "1234567890";
 
     private final List<CodegenModel> allModels = new ArrayList<>();
 
@@ -121,7 +121,10 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
         final Map<String, Object> resources = new HashMap<>();
 
         final Map<String, Object> ops = getStringMap(results, "operations");
+        final String classname = (String) ops.get("classname");
         final ArrayList<CodegenOperation> opList = (ArrayList<CodegenOperation>) ops.get("operation");
+
+        results.put("apiVersionPath", getRelativeRoot(classname));
 
         // iterate over the operation and perhaps modify something
         for (final CodegenOperation co : opList) {
@@ -202,6 +205,13 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
         results.put("resources", resources.values());
 
         return results;
+    }
+
+    protected String getRelativeRoot(final String classname) {
+        return Arrays
+            .stream(classname.split(PATH_SEPARATOR_PLACEHOLDER))
+            .map(part -> "..")
+            .collect(Collectors.joining(File.separator));
     }
 
     private void addModel(final Map<String, Object> resource, final String dataType) {

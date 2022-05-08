@@ -1,11 +1,11 @@
 {{>licenseInfo}}
-import { {{domain}} } from '../{{domain}}';
-import Version from '../../base/Version';
+import {{domain}} = require('../{{domain}}');
+import Version = require('../../base/Version');
 {{#versionResources}}
 import { {{name}}ListInstance } from './{{apiVersion}}/{{filename}}';
 {{/versionResources}}
 
-export class {{apiVersionClass}} extends Version {
+export default class {{apiVersionClass}} extends Version {
     /**
      * Initialize the {{apiVersionClass}} version of {{domain}}
      *

@@ -11,6 +11,7 @@
  */
 
 import { inspect } from 'util';
+import V2010 from '../../V2010';
 
 
 /**
@@ -70,7 +71,7 @@ export class AWListInstance {
     protected _uri: string;
 
 
-    constructor(protected _version: Version) {
+    constructor(protected _version: V2010) {
         this._solution = {  };
         this._uri = `/v1/Credentials/AWS`;
     }
@@ -116,17 +117,17 @@ export class AWListInstance {
         };
 
 
-        let promise = this._version.create({ uri: this._uri, method: 'POST', data, headers });
+        const operationPromise = this._version.create({ uri: this._uri, method: 'POST', data, headers });
 
-        promise = promise.then(payload => new AWInstance(this._version, payload));
+        let instancePromise = operationPromise.then(payload => new AWInstance(this._version, payload));
 
         if (typeof callback === 'function') {
-            promise = promise
+            instancePromise = instancePromise
                 .then(value => callback(null, value))
                 .catch(error => callback(error));
         }
 
-        return promise;
+        return instancePromise;
     }
 
     /**
@@ -163,17 +164,17 @@ export class AWListInstance {
         };
 
 
-        let promise = this._version.page({ uri: this._uri, method: 'GET', data, headers });
+        const operationPromise = this._version.page({ uri: this._uri, method: 'GET', data, headers });
 
-        promise = promise.then(payload => new AWInstance(this._version, payload));
+        let instancePromise = operationPromise.then(payload => new AWInstance(this._version, payload));
 
         if (typeof callback === 'function') {
-            promise = promise
+            instancePromise = instancePromise
                 .then(value => callback(null, value))
                 .catch(error => callback(error));
         }
 
-        return promise;
+        return instancePromise;
     }
 
     /**
@@ -196,7 +197,7 @@ export class AWContext {
     protected _uri: string;
 
 
-    constructor(protected _version: Version, sid: string) {
+    constructor(protected _version: V2010, sid: string) {
         this._solution = { sid };
         this._uri = `/v1/Credentials/AWS/${sid}`;
     }
@@ -211,17 +212,17 @@ export class AWContext {
     public async remove(callback?: (error: Error | null, item?: AWInstance) => any): Promise<AWInstance> { 
 
 
-        let promise = this._version.remove({ uri: this._uri, method: 'DELETE' });
+        const operationPromise = this._version.remove({ uri: this._uri, method: 'DELETE' });
 
-        promise = promise.then(payload => new AWInstance(this._version, payload, this._solution.sid));
+        let instancePromise = operationPromise.then(payload => new AWInstance(this._version, payload, this._solution.sid));
 
         if (typeof callback === 'function') {
-            promise = promise
+            instancePromise = instancePromise
                 .then(value => callback(null, value))
                 .catch(error => callback(error));
         }
 
-        return promise;
+        return instancePromise;
     }
 
     /**
@@ -234,17 +235,17 @@ export class AWContext {
     public async fetch(callback?: (error: Error | null, item?: AWInstance) => any): Promise<AWInstance> { 
 
 
-        let promise = this._version.fetch({ uri: this._uri, method: 'GET' });
+        const operationPromise = this._version.fetch({ uri: this._uri, method: 'GET' });
 
-        promise = promise.then(payload => new AWInstance(this._version, payload, this._solution.sid));
+        let instancePromise = operationPromise.then(payload => new AWInstance(this._version, payload, this._solution.sid));
 
         if (typeof callback === 'function') {
-            promise = promise
+            instancePromise = instancePromise
                 .then(value => callback(null, value))
                 .catch(error => callback(error));
         }
 
-        return promise;
+        return instancePromise;
     }
 
     /**
@@ -282,17 +283,17 @@ export class AWContext {
         };
 
 
-        let promise = this._version.update({ uri: this._uri, method: 'POST', data, headers });
+        const operationPromise = this._version.update({ uri: this._uri, method: 'POST', data, headers });
 
-        promise = promise.then(payload => new AWInstance(this._version, payload, this._solution.sid));
+        let instancePromise = operationPromise.then(payload => new AWInstance(this._version, payload, this._solution.sid));
 
         if (typeof callback === 'function') {
-            promise = promise
+            instancePromise = instancePromise
                 .then(value => callback(null, value))
                 .catch(error => callback(error));
         }
 
-        return promise;
+        return instancePromise;
     }
 
     /**
@@ -314,7 +315,7 @@ export class AWInstance {
     protected _solution: any;
     protected _context?: AWContext;
 
-    constructor(protected _version: Version, payload, sid?: string) {
+    constructor(protected _version: V2010, payload, sid?: string) {
         this.accountSid = payload.account_sid;
         this.sid = payload.sid;
         this.testString = payload.test_string;
