@@ -44,6 +44,7 @@ import lombok.ToString;
 
 import java.net.URI;
 
+
 /*
     * Twilio - Accounts
     *
@@ -96,8 +97,8 @@ public class RecordingCreator extends Creator<Recording>{
             Domains.API.toString(),
             path
         );
-
         addPostParams(request);
+        addHeaderParams(request);
         Response response = client.request(request);
         if (response == null) {
             throw new ApiConnectionException("Recording creation failed: Unable to connect to server");
@@ -112,19 +113,26 @@ public class RecordingCreator extends Creator<Recording>{
         return Recording.fromJson(response.getStream(), client.getObjectMapper());
     }
 
-
     private void addPostParams(final Request request) {
-        if (XTwilioWebhookEnabled != null) {
-        request.addPostParam("XTwilioWebhookEnabled", XTwilioWebhookEnabled.toString());
-        }
 
-        if (RecordingStatusCallback != null) {
+        if (RecordingStatusCallback != null){
         request.addPostParam("RecordingStatusCallback", RecordingStatusCallback.toString());
         }
 
-        if (RecordingStatusCallbackEvent != null) {
+        if (RecordingStatusCallbackEvent != null){
         request.addPostParam("RecordingStatusCallbackEvent", RecordingStatusCallbackEvent.toString());
         }
 
     }
+
+    private void addHeaderParams(final Request request) {
+        if (XTwilioWebhookEnabled != null) {
+           request.addHeaderParam("X-Twilio-Webhook-Enabled", XTwilioWebhookEnabled.toString());
+        }
+    }
+
+
 }
+
+
+

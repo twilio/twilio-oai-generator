@@ -77,6 +77,9 @@ public class RecordingUpdater extends Updater<Recording>{
         return this;
     }
 
+
+
+
     @Override
     public Recording update(final TwilioRestClient client){
         String path = "/2010-04-01/Accounts/{AccountSid}/Calls/{CallSid}/Recordings/{TestInteger}.json";
@@ -91,8 +94,6 @@ public class RecordingUpdater extends Updater<Recording>{
             Domains.API.toString(),
             path
         );
-
-        addPostParams(request);
         Response response = client.request(request);
         if (response == null) {
             throw new ApiConnectionException("Recording update failed: Unable to connect to server");
@@ -107,13 +108,18 @@ public class RecordingUpdater extends Updater<Recording>{
         return Recording.fromJson(response.getStream(), client.getObjectMapper());
     }
 
-
     private void addPostParams(final Request request) {
-        if (Status != null) {
-            request.addPostParam("Status", Status.toString());
-        }
+
         if (PauseBehavior != null) {
             request.addPostParam("PauseBehavior", PauseBehavior.toString());
         }
+        if (Status != null) {
+            request.addPostParam("Status", Status.toString());
+        }
     }
+
+
+
+
+
 }

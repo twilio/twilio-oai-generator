@@ -62,6 +62,9 @@ public class AwsUpdater extends Updater<Aws>{
         return this;
     }
 
+
+
+
     @Override
     public Aws update(final TwilioRestClient client){
         String path = "/v1/Credentials/AWS/{Sid}";
@@ -72,8 +75,6 @@ public class AwsUpdater extends Updater<Aws>{
             Domains.API.toString(),
             path
         );
-
-        addPostParams(request);
         Response response = client.request(request);
         if (response == null) {
             throw new ApiConnectionException("Aws update failed: Unable to connect to server");
@@ -88,10 +89,15 @@ public class AwsUpdater extends Updater<Aws>{
         return Aws.fromJson(response.getStream(), client.getObjectMapper());
     }
 
-
     private void addPostParams(final Request request) {
+
         if (TestString != null) {
             request.addPostParam("TestString", TestString.toString());
         }
     }
+
+
+
+
+
 }
