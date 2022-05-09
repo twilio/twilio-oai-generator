@@ -53,6 +53,9 @@ public class {{resourceName}}Updater extends Updater<{{resourceName}}>{
     }
 {{/vendorExtensions.x-non-path-params}}
 
+
+
+
     @Override
     public {{resourceName}} update(final TwilioRestClient client){
         String path = "{{{path}}}";
@@ -71,8 +74,12 @@ public class {{resourceName}}Updater extends Updater<{{resourceName}}>{
             Domains.{{#lambda.uppercase}}{{domain}}{{/lambda.uppercase}}.toString(),
             path
         );
-
+        {{#hasUpdateFormParams}}
         addPostParams(request);
+        {{/hasUpdateFormParams}}
+        {{#headerParams.0}}
+        addHeaderParams(request);
+        {{/headerParams.0}}
         Response response = client.request(request);
         if (response == null) {
             throw new ApiConnectionException("{{resourceName}} update failed: Unable to connect to server");
@@ -87,14 +94,34 @@ public class {{resourceName}}Updater extends Updater<{{resourceName}}>{
         return {{resourceName}}.fromJson(response.getStream(), client.getObjectMapper());
     }
 
-
+{{#formParams.0}}
     private void addPostParams(final Request request) {
-{{#vendorExtensions.x-non-path-params}}
+{{/formParams.0}}
+
+{{#formParams}}
         if ({{paramName}} != null) {
             request.addPostParam("{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}", {{paramName}}.toString());
         }
-{{/vendorExtensions.x-non-path-params}}
+{{/formParams}}
+{{#formParams.0}}
     }
+{{/formParams.0}}
+
+
+    {{#headerParams.0}}
+    private void addHeaderParams(final Request request) {
+    {{/headerParams.0}}
+    {{#headerParams}}
+        if ({{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}} != null) {
+            request.addHeaderParam("{{baseName}}", {{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}.toString());
+        }
+    {{/headerParams}}
+    {{#headerParams.0}}
+    }
+    {{/headerParams.0}}
+
+
+
 }
 {{/vendorExtensions.x-is-update-operation}}
 {{/operations}}
