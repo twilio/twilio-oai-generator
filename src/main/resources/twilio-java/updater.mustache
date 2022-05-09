@@ -99,7 +99,7 @@ public class {{resourceName}}Updater extends Updater<{{resourceName}}>{
 {{/formParams.0}}
 
 {{#formParams}}
-        if ({{paramName}} != null) {
+        if ({{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}} != null) {
             request.addPostParam("{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}", {{paramName}}.toString());
         }
 {{/formParams}}

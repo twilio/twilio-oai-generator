@@ -104,7 +104,6 @@ public class {{resourceName}}Creator extends Creator<{{resourceName}}>{
 
 {{/formParams.0}}
 {{#formParams}}
-    if ({{paramName}} != null) {
         if ({{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}} != null){
         {{#isFreeFormObject}}
         request.addPostParam("{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}",  Converter.mapToJson({{paramName}}));
