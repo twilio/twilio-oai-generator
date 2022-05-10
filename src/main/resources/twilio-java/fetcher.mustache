@@ -83,7 +83,6 @@ public class {{resourceName}}Fetcher extends Fetcher<{{resourceName}}> {
 
         return {{resourceName}}.fromJson(response.getStream(), client.getObjectMapper());
     }
-
 {{#formParams.0}}
     private void addPostParams(final Request request) {
 {{/formParams.0}}
@@ -100,7 +99,6 @@ public class {{resourceName}}Fetcher extends Fetcher<{{resourceName}}> {
 {{#formParams.0}}
     }
 {{/formParams.0}}
-
     {{#headerParams.0}}
     private void addHeaderParams(final Request request) {
     {{/headerParams.0}}
@@ -112,7 +110,6 @@ public class {{resourceName}}Fetcher extends Fetcher<{{resourceName}}> {
     {{#headerParams.0}}
     }
     {{/headerParams.0}}
-
 }
 {{/vendorExtensions.x-is-fetch-operation}}
 {{/operations}}

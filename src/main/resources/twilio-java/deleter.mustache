@@ -82,7 +82,6 @@ public class {{resourceName}}Deleter extends Deleter<{{resourceName}}> {
         }
         return response.getStatusCode() == 204;
     }
-
 {{#formParams.0}}
     private void addPostParams(final Request request) {
 {{/formParams.0}}
@@ -99,7 +98,6 @@ public class {{resourceName}}Deleter extends Deleter<{{resourceName}}> {
 {{#formParams.0}}
     }
 {{/formParams.0}}
-
     {{#headerParams.0}}
     private void addHeaderParams(final Request request) {
     {{/headerParams.0}}
@@ -111,7 +109,6 @@ public class {{resourceName}}Deleter extends Deleter<{{resourceName}}> {
     {{#headerParams.0}}
     }
     {{/headerParams.0}}
-
 }
 {{/vendorExtensions.x-is-delete-operation}}
 {{/operations}}
