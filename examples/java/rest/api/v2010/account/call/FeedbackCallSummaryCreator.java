@@ -116,5 +116,3 @@ public class FeedbackCallSummaryCreator extends Creator<FeedbackCallSummary>{
         }
     }
 }
-
-
