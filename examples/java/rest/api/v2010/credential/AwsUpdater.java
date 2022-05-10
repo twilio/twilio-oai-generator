@@ -75,6 +75,7 @@ public class AwsUpdater extends Updater<Aws>{
             Domains.API.toString(),
             path
         );
+        addPostParams(request);
         Response response = client.request(request);
         if (response == null) {
             throw new ApiConnectionException("Aws update failed: Unable to connect to server");

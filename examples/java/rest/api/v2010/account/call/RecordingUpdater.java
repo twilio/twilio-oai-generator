@@ -94,6 +94,7 @@ public class RecordingUpdater extends Updater<Recording>{
             Domains.API.toString(),
             path
         );
+        addPostParams(request);
         Response response = client.request(request);
         if (response == null) {
             throw new ApiConnectionException("Recording update failed: Unable to connect to server");

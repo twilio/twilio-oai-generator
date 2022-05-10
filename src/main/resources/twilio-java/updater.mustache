@@ -74,9 +74,9 @@ public class {{resourceName}}Updater extends Updater<{{resourceName}}>{
             Domains.{{#lambda.uppercase}}{{domain}}{{/lambda.uppercase}}.toString(),
             path
         );
-        {{#hasUpdateFormParams}}
+        {{#formParams.0}}
         addPostParams(request);
-        {{/hasUpdateFormParams}}
+        {{/formParams.0}}
         {{#headerParams.0}}
         addHeaderParams(request);
         {{/headerParams.0}}
