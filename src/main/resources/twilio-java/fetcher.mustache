@@ -86,7 +86,6 @@ public class {{resourceName}}Fetcher extends Fetcher<{{resourceName}}> {
 
 {{#formParams.0}}
     private void addPostParams(final Request request) {
-{{/formParams.0}}
 {{#formParams}}
     if ({{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}} != null){
     {{#isFreeFormObject}}
@@ -96,21 +95,17 @@ public class {{resourceName}}Fetcher extends Fetcher<{{resourceName}}> {
         request.addPostParam("{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}", {{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}.toString());
     {{/isFreeFormObject}}
     }
-
 {{/formParams}}
-{{#formParams.0}}
     }
 {{/formParams.0}}
 
     {{#headerParams.0}}
     private void addHeaderParams(final Request request) {
-    {{/headerParams.0}}
     {{#headerParams}}
         if ({{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}} != null) {
             request.addHeaderParam("{{baseName}}", {{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}.toString());
         }
     {{/headerParams}}
-    {{#headerParams.0}}
     }
     {{/headerParams.0}}
 

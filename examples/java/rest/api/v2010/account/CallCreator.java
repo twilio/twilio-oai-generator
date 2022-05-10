@@ -44,7 +44,6 @@ import lombok.ToString;
 
 import java.net.URI;
 
-
 /*
     * Twilio - Accounts
     *
@@ -107,20 +106,11 @@ public class CallCreator extends Creator<Call>{
     }
 
     private void addPostParams(final Request request) {
-
         if (RequiredStringProperty != null){
         request.addPostParam("RequiredStringProperty", RequiredStringProperty.toString());
         }
-
-        if (TestArrayOfStrings != null){
-        request.addPostParam("TestArrayOfStrings", TestArrayOfStrings.toString());
-        }
-
     }
 
-
-
 }
-
 
 

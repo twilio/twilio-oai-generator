@@ -44,7 +44,6 @@ import lombok.ToString;
 
 import java.net.URI;
 
-
 /*
     * Twilio - Accounts
     *
@@ -110,20 +109,11 @@ public class FeedbackCallSummaryCreator extends Creator<FeedbackCallSummary>{
     }
 
     private void addPostParams(final Request request) {
-
         if (EndDate != null){
         request.addPostParam("EndDate", EndDate.toString());
         }
-
-        if (StartDate != null){
-        request.addPostParam("StartDate", StartDate.toString());
-        }
-
     }
 
-
-
 }
-
 
 

@@ -44,7 +44,6 @@ import lombok.ToString;
 
 import java.net.URI;
 
-
 /*
     * Twilio - Accounts
     *
@@ -160,68 +159,11 @@ public class AwsCreator extends Creator<Aws>{
     }
 
     private void addPostParams(final Request request) {
-
         if (TestString != null){
         request.addPostParam("TestString", TestString.toString());
         }
-
-        if (TestBoolean != null){
-        request.addPostParam("TestBoolean", TestBoolean.toString());
-        }
-
-        if (TestInteger != null){
-        request.addPostParam("TestInteger", TestInteger.toString());
-        }
-
-        if (TestNumber != null){
-        request.addPostParam("TestNumber", TestNumber.toString());
-        }
-
-        if (TestNumberFloat != null){
-        request.addPostParam("TestNumberFloat", TestNumberFloat.toString());
-        }
-
-        if (TestNumberDouble != null){
-        request.addPostParam("TestNumberDouble", TestNumberDouble.toString());
-        }
-
-        if (TestNumberInt32 != null){
-        request.addPostParam("TestNumberInt32", TestNumberInt32.toString());
-        }
-
-        if (TestNumberInt64 != null){
-        request.addPostParam("TestNumberInt64", TestNumberInt64.toString());
-        }
-
-        if (TestObject != null){
-        request.addPostParam("TestObject",  Converter.mapToJson(TestObject));
-        }
-
-        if (TestDateTime != null){
-        request.addPostParam("TestDateTime", TestDateTime.toString());
-        }
-
-        if (TestDate != null){
-        request.addPostParam("TestDate", TestDate.toString());
-        }
-
-        if (TestEnum != null){
-        request.addPostParam("TestEnum", TestEnum.toString());
-        }
-
-        if (TestObjectArray != null){
-        request.addPostParam("TestObjectArray", TestObjectArray.toString());
-        }
-
-        if (TestAnyType != null){
-        request.addPostParam("TestAnyType", TestAnyType.toString());
-        }
-
     }
 
-
-
 }
-
 
 

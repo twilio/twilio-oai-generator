@@ -96,27 +96,22 @@ public class {{resourceName}}Updater extends Updater<{{resourceName}}>{
 
 {{#formParams.0}}
     private void addPostParams(final Request request) {
-{{/formParams.0}}
-
 {{#formParams}}
         if ({{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}} != null) {
             request.addPostParam("{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}", {{paramName}}.toString());
         }
 {{/formParams}}
-{{#formParams.0}}
     }
 {{/formParams.0}}
 
 
     {{#headerParams.0}}
     private void addHeaderParams(final Request request) {
-    {{/headerParams.0}}
     {{#headerParams}}
         if ({{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}} != null) {
             request.addHeaderParam("{{baseName}}", {{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}.toString());
         }
     {{/headerParams}}
-    {{#headerParams.0}}
     }
     {{/headerParams.0}}
 

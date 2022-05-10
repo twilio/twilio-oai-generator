@@ -44,7 +44,6 @@ import lombok.ToString;
 
 import java.net.URI;
 
-
 /*
     * Twilio - Accounts
     *
@@ -114,15 +113,9 @@ public class RecordingCreator extends Creator<Recording>{
     }
 
     private void addPostParams(final Request request) {
-
         if (RecordingStatusCallback != null){
         request.addPostParam("RecordingStatusCallback", RecordingStatusCallback.toString());
         }
-
-        if (RecordingStatusCallbackEvent != null){
-        request.addPostParam("RecordingStatusCallbackEvent", RecordingStatusCallbackEvent.toString());
-        }
-
     }
 
     private void addHeaderParams(final Request request) {
@@ -130,9 +123,6 @@ public class RecordingCreator extends Creator<Recording>{
            request.addHeaderParam("X-Twilio-Webhook-Enabled", XTwilioWebhookEnabled.toString());
         }
     }
-
-
 }
-
 
 

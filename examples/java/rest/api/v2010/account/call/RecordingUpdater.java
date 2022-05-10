@@ -110,7 +110,6 @@ public class RecordingUpdater extends Updater<Recording>{
     }
 
     private void addPostParams(final Request request) {
-
         if (PauseBehavior != null) {
             request.addPostParam("PauseBehavior", PauseBehavior.toString());
         }
