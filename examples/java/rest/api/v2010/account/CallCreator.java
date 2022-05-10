@@ -109,6 +109,9 @@ public class CallCreator extends Creator<Call>{
         if (RequiredStringProperty != null){
         request.addPostParam("RequiredStringProperty", RequiredStringProperty.toString());
         }
+        if (TestArrayOfStrings != null){
+        request.addPostParam("TestArrayOfStrings", TestArrayOfStrings.toString());
+        }
     }
 
 }

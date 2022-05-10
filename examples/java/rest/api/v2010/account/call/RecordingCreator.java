@@ -116,6 +116,9 @@ public class RecordingCreator extends Creator<Recording>{
         if (RecordingStatusCallback != null){
         request.addPostParam("RecordingStatusCallback", RecordingStatusCallback.toString());
         }
+        if (RecordingStatusCallbackEvent != null){
+        request.addPostParam("RecordingStatusCallbackEvent", RecordingStatusCallbackEvent.toString());
+        }
     }
 
     private void addHeaderParams(final Request request) {

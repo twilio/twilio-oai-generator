@@ -112,6 +112,9 @@ public class FeedbackCallSummaryCreator extends Creator<FeedbackCallSummary>{
         if (EndDate != null){
         request.addPostParam("EndDate", EndDate.toString());
         }
+        if (StartDate != null){
+        request.addPostParam("StartDate", StartDate.toString());
+        }
     }
 
 }
