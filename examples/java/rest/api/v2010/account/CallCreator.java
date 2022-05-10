@@ -105,10 +105,10 @@ public class CallCreator extends Creator<Call>{
         return Call.fromJson(response.getStream(), client.getObjectMapper());
     }
     private void addPostParams(final Request request) {
-        if (RequiredStringProperty != null){
+        if (RequiredStringProperty != null) {
         request.addPostParam("RequiredStringProperty", RequiredStringProperty.toString());
         }
-        if (TestArrayOfStrings != null){
+        if (TestArrayOfStrings != null) {
         request.addPostParam("TestArrayOfStrings", TestArrayOfStrings.toString());
         }
     }

@@ -108,10 +108,10 @@ public class FeedbackCallSummaryCreator extends Creator<FeedbackCallSummary>{
         return FeedbackCallSummary.fromJson(response.getStream(), client.getObjectMapper());
     }
     private void addPostParams(final Request request) {
-        if (EndDate != null){
+        if (EndDate != null) {
         request.addPostParam("EndDate", EndDate.toString());
         }
-        if (StartDate != null){
+        if (StartDate != null) {
         request.addPostParam("StartDate", StartDate.toString());
         }
     }

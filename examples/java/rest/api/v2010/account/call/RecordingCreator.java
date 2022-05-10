@@ -112,10 +112,10 @@ public class RecordingCreator extends Creator<Recording>{
         return Recording.fromJson(response.getStream(), client.getObjectMapper());
     }
     private void addPostParams(final Request request) {
-        if (RecordingStatusCallback != null){
+        if (RecordingStatusCallback != null) {
         request.addPostParam("RecordingStatusCallback", RecordingStatusCallback.toString());
         }
-        if (RecordingStatusCallbackEvent != null){
+        if (RecordingStatusCallbackEvent != null) {
         request.addPostParam("RecordingStatusCallbackEvent", RecordingStatusCallbackEvent.toString());
         }
     }
