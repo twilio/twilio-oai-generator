@@ -78,8 +78,5 @@ public class AwsDeleter extends Deleter<Aws> {
         }
         return response.getStatusCode() == 204;
     }
-
-
-
 }
 

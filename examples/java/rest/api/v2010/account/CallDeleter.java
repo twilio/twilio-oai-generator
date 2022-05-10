@@ -85,8 +85,5 @@ public class CallDeleter extends Deleter<Call> {
         }
         return response.getStatusCode() == 204;
     }
-
-
-
 }
 

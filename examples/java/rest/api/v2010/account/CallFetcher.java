@@ -86,8 +86,5 @@ public class CallFetcher extends Fetcher<Call> {
 
         return Call.fromJson(response.getStream(), client.getObjectMapper());
     }
-
-
-
 }
 

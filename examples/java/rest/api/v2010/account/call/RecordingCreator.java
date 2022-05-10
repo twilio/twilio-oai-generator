@@ -111,7 +111,6 @@ public class RecordingCreator extends Creator<Recording>{
 
         return Recording.fromJson(response.getStream(), client.getObjectMapper());
     }
-
     private void addPostParams(final Request request) {
         if (RecordingStatusCallback != null){
         request.addPostParam("RecordingStatusCallback", RecordingStatusCallback.toString());
@@ -120,7 +119,6 @@ public class RecordingCreator extends Creator<Recording>{
         request.addPostParam("RecordingStatusCallbackEvent", RecordingStatusCallbackEvent.toString());
         }
     }
-
     private void addHeaderParams(final Request request) {
         if (XTwilioWebhookEnabled != null) {
            request.addHeaderParam("X-Twilio-Webhook-Enabled", XTwilioWebhookEnabled.toString());

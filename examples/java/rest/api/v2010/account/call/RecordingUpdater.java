@@ -108,7 +108,6 @@ public class RecordingUpdater extends Updater<Recording>{
 
         return Recording.fromJson(response.getStream(), client.getObjectMapper());
     }
-
     private void addPostParams(final Request request) {
         if (PauseBehavior != null) {
             request.addPostParam("PauseBehavior", PauseBehavior.toString());
@@ -117,9 +116,4 @@ public class RecordingUpdater extends Updater<Recording>{
             request.addPostParam("Status", Status.toString());
         }
     }
-
-
-
-
-
 }

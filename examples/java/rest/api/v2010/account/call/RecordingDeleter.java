@@ -89,8 +89,5 @@ public class RecordingDeleter extends Deleter<Recording> {
         }
         return response.getStatusCode() == 204;
     }
-
-
-
 }
 

@@ -157,7 +157,6 @@ public class AwsCreator extends Creator<Aws>{
 
         return Aws.fromJson(response.getStream(), client.getObjectMapper());
     }
-
     private void addPostParams(final Request request) {
         if (TestString != null){
         request.addPostParam("TestString", TestString.toString());
@@ -202,7 +201,6 @@ public class AwsCreator extends Creator<Aws>{
         request.addPostParam("TestAnyType", TestAnyType.toString());
         }
     }
-
 }
 
 

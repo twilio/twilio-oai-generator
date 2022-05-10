@@ -79,8 +79,5 @@ public class AwsFetcher extends Fetcher<Aws> {
 
         return Aws.fromJson(response.getStream(), client.getObjectMapper());
     }
-
-
-
 }
 
