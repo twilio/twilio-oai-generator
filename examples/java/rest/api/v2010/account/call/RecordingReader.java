@@ -179,6 +179,5 @@ public class RecordingReader extends Reader<Recording> {
 
         return pageForRequest(client, request);
     }
-
 }
 

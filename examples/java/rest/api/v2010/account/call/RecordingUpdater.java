@@ -77,9 +77,6 @@ public class RecordingUpdater extends Updater<Recording>{
         return this;
     }
 
-
-
-
     @Override
     public Recording update(final TwilioRestClient client){
         String path = "/2010-04-01/Accounts/{AccountSid}/Calls/{CallSid}/Recordings/{TestInteger}.json";
