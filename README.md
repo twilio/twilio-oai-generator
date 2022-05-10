@@ -1,6 +1,6 @@
 # OpenAPI Generator for the [twilio-go](https://github.com/twilio/twilio-go/) library
 [![Tests](https://github.com/twilio/twilio-oai-generator/actions/workflows/test.yml/badge.svg)](https://github.com/twilio/twilio-oai-generator/actions/workflows/test.yml)
-
+#
 ## Overview
 This is a boiler-plate project to generate your own project derived from an OpenAPI specification.
 
