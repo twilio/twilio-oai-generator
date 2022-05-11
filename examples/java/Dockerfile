@@ -19,5 +19,6 @@ RUN sed -i.bak 's/<dependencies>/<dependencies><dependency><groupId>org.mockito<
 RUN echo $(ls -1 target/classes)
 RUN mvn clean install -Dmaven.test.skip=true
 RUN echo $(ls -1 target/classes)
+RUN echo $(ls -1)
 # pipefail prevents errors in a pipeline from being masked.
 CMD ["/bin/bash", "-c", "set -o pipefail && mvn test --no-transfer-progress | tee /local/test-report.out"]
