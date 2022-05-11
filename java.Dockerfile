@@ -10,10 +10,7 @@ RUN echo $(ls -1 src/main/java/com/twilio)
 RUN rm -rf /src/main/java/com/twilio/rest/ \
     rm -rf /src/test/java/com/twilio/rest/ \
     rm -rf /src/main/java/com/twilio/example\
-    rm -rf /src/test/java/com/twilio/base/ReaderTest.java 
-
-RUN ls /src/main/java/com/twilio
-RUN ls src/main/java/com/twilio
+    rm -rf /src/test/java/com/twilio/base/ReaderTest.java
 
 COPY examples/java/rest src/main/java/com/twilio/rest
 COPY examples/java/unit-test/rest src/test/java/com/twilio/rest/
