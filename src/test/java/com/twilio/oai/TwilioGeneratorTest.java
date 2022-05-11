@@ -28,5 +28,6 @@ public class TwilioGeneratorTest {
         final List<File> output = generator.opts(clientOptInput).generate();
 
         assertFalse(output.isEmpty());
+        
     }
 }
