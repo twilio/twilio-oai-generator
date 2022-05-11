@@ -17,4 +17,4 @@ COPY examples/java/pom.xml /pom.xml
 
 RUN apt-get update && apt-get install maven -y
 
-CMD mvn clean test
+CMD mvn compile; mvn clean test
