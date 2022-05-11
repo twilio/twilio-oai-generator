@@ -16,6 +16,8 @@ COPY unit-test/rest integration-test/rest src/test/java/com/twilio/
 RUN sed -i.bak 's/<dependencies>/<dependencies><dependency><groupId>org.mockito<\/groupId><artifactId>mockito-all<\/artifactId><version>1.10.18 <\/version><\/dependency>/g' pom.xml \
   ; sed -i.bak 's/<dependencies>/<dependencies><dependency><groupId>org.json   <\/groupId><artifactId>json       <\/artifactId><version>20220320<\/version><\/dependency>/g' pom.xml
 
+RUN echo $(ls -1 target/classes)
 RUN mvn clean install -Dmaven.test.skip=true
+RUN echo $(ls -1 target/classes)
 # pipefail prevents errors in a pipeline from being masked.
 CMD ["/bin/bash", "-c", "set -o pipefail && mvn test --no-transfer-progress | tee /local/test-report.out"]
