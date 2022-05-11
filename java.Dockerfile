@@ -4,8 +4,8 @@ RUN mkdir /app
 WORKDIR /app
 RUN git clone https://github.com/twilio/twilio-java.git
 WORKDIR /app/twilio-java/
-RUN ls /src/main/java/com/twilio
-RUN ls src/main/java/com/twilio
+RUN echo $(ls -1 /src/main/java/com/twilio)
+RUN echo $(ls -1 src/main/java/com/twilio)
 
 RUN rm -rf /src/main/java/com/twilio/rest/ \
     rm -rf /src/test/java/com/twilio/rest/ \
@@ -19,7 +19,9 @@ COPY examples/java/rest src/main/java/com/twilio/rest
 COPY examples/java/unit-test/rest src/test/java/com/twilio/rest/
 COPY examples/java/integration-test/rest src/test/java/com/twilio/rest/
 COPY examples/java/pom.xml pom.xml
-RUN ls src/main/java/com/twilio
+
+RUN echo $(ls -1 /src/main/java/com/twilio)
+RUN echo $(ls -1 src/main/java/com/twilio)
 
 RUN apt-get update && apt-get install maven -y
 
