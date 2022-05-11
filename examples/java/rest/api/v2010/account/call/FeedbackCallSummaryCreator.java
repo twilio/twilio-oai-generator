@@ -93,7 +93,6 @@ public class FeedbackCallSummaryCreator extends Creator<FeedbackCallSummary>{
             Domains.API.toString(),
             path
         );
-
         addPostParams(request);
         Response response = client.request(request);
         if (response == null) {
@@ -108,16 +107,12 @@ public class FeedbackCallSummaryCreator extends Creator<FeedbackCallSummary>{
 
         return FeedbackCallSummary.fromJson(response.getStream(), client.getObjectMapper());
     }
-
-
     private void addPostParams(final Request request) {
         if (EndDate != null) {
         request.addPostParam("EndDate", EndDate.toString());
         }
-
         if (StartDate != null) {
         request.addPostParam("StartDate", StartDate.toString());
         }
-
     }
 }

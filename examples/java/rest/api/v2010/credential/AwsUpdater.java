@@ -72,7 +72,6 @@ public class AwsUpdater extends Updater<Aws>{
             Domains.API.toString(),
             path
         );
-
         addPostParams(request);
         Response response = client.request(request);
         if (response == null) {
@@ -87,8 +86,6 @@ public class AwsUpdater extends Updater<Aws>{
 
         return Aws.fromJson(response.getStream(), client.getObjectMapper());
     }
-
-
     private void addPostParams(final Request request) {
         if (TestString != null) {
             request.addPostParam("TestString", TestString.toString());

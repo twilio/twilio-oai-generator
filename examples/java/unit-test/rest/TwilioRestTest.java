@@ -74,7 +74,7 @@ public class TwilioRestTest {
                 com.twilio.rest.Domains.API.toString(),
                 "/2010-04-01/Accounts/AC222222222222222222222222222222/Calls/PNXXXXY/Recordings.json"
         );
-        mockRequest.addPostParam("XTwilioWebhookEnabled", "true");
+        mockRequest.addHeaderParam("X-Twilio-Webhook-Enabled", "true");
         mockRequest.addPostParam("RecordingStatusCallback", "https://validurl.com");
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
@@ -130,12 +130,17 @@ public class TwilioRestTest {
                 "/2010-04-01/Accounts/AC222222222222222222222222222222/Calls/PNXXXXY/Recordings.json"
         );
         mockRequest.addPostParam("RecordingStatusCallbackEvent", recordingStatusCallbackEvent.toString());
+        mockRequest.addPostParam("RecordingStatusCallback", "https://validurl.com");
+        mockRequest.addHeaderParam("X-Twilio-Webhook-Enabled", "true");
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
         when(twilioRestClient.request(mockRequest)).thenReturn(new Response("{\"recordings\":[{\"call_sid\":\"PNXXXXY\", \"sid\":123}]}", 200));
         when(twilioRestClient.getObjectMapper()).thenReturn(objectMapper);
         RecordingCreator recordingCreator = new RecordingCreator("AC222222222222222222222222222222", "PNXXXXY");
         recordingCreator.setRecordingStatusCallbackEvent(recordingStatusCallbackEvent);
+        recordingCreator.setRecordingStatusCallback(URI.create("https://validurl.com"));
+        recordingCreator.setXTwilioWebhookEnabled("true");
+
         Recording recording = recordingCreator.create(twilioRestClient);
 
         assertNotNull(recording);

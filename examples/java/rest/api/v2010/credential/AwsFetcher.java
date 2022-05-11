@@ -65,7 +65,6 @@ public class AwsFetcher extends Fetcher<Aws> {
             Domains.API.toString(),
             path
         );
-
         Response response = client.request(request);
 
         if (response == null) {

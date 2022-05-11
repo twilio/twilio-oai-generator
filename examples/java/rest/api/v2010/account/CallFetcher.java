@@ -72,7 +72,6 @@ public class CallFetcher extends Fetcher<Call> {
             Domains.API.toString(),
             path
         );
-
         Response response = client.request(request);
 
         if (response == null) {
