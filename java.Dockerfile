@@ -7,10 +7,12 @@ WORKDIR /app/twilio-java/
 
 RUN echo $(ls -1 src/main/java/com/twilio)
 
-RUN rm -rf /src/main/java/com/twilio/rest/ \
-    rm -rf /src/test/java/com/twilio/rest/ \
-    rm -rf /src/main/java/com/twilio/example\
-    rm -rf /src/test/java/com/twilio/base/ReaderTest.java
+RUN rm -rf src/main/java/com/twilio/rest/ \
+    rm -rf src/test/java/com/twilio/rest/ \
+    rm -rf src/main/java/com/twilio/example\
+    rm -rf src/test/java/com/twilio/base/ReaderTest.java
+
+RUN echo $(ls -1 src/main/java/com/twilio)
 
 COPY examples/java/rest src/main/java/com/twilio/rest
 COPY examples/java/unit-test/rest src/test/java/com/twilio/rest/
