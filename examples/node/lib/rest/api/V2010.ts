@@ -12,11 +12,13 @@
 
 import Api = require('../Api');
 import Version = require('../../base/Version');
+import { AccountListInstance } from './v2010/Accounts';
 
 export default class V2010 extends Version {
     /**
      * Initialize the V2010 version of Api
      *
+     * @property { Twilio.Api.V2010.AccountListInstance } accounts - accounts resource
      *
      * @param { Twilio.Api } domain - The Twilio domain
      */
@@ -24,5 +26,11 @@ export default class V2010 extends Version {
         super(domain, 'v2010');
     }
 
+    protected _accounts?: AccountListInstance;
+
+    get accounts(): AccountListInstance {
+        this._accounts = this._accounts || new AccountListInstance(this);
+        return this._accounts;
+    }
 
 }

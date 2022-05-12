@@ -30,9 +30,9 @@ export class CallListInstance {
     protected _uri: string;
 
 
-    constructor(protected _version: V2010, accountSid: string, sid: string) {
-        this._solution = { accountSid, sid };
-        this._uri = `/2010-04-01/Accounts/${accountSid}/Calls/${sid}.json`;
+    constructor(protected _version: V2010, accountSid: string, testInteger: number) {
+        this._solution = { accountSid, testInteger };
+        this._uri = `/2010-04-01/Accounts/${accountSid}/Calls/${testInteger}.json`;
     }
 
     /**
@@ -66,7 +66,7 @@ export class CallListInstance {
 
         const operationPromise = this._version.create({ uri: this._uri, method: 'POST', data, headers });
 
-        let instancePromise = operationPromise.then(payload => new CallInstance(this._version, payload, this._solution.accountSid, this._solution.sid));
+        let instancePromise = operationPromise.then(payload => new CallInstance(this._version, payload, this._solution.accountSid, this._solution.testInteger));
 
         if (typeof callback === 'function') {
             instancePromise = instancePromise
@@ -89,7 +89,7 @@ export class CallListInstance {
 
         const operationPromise = this._version.({ uri: this._uri, method: 'DELETE' });
 
-        let instancePromise = operationPromise.then(payload => new CallInstance(this._version, payload, this._solution.accountSid, this._solution.sid));
+        let instancePromise = operationPromise.then(payload => new CallInstance(this._version, payload, this._solution.accountSid, this._solution.testInteger));
 
         if (typeof callback === 'function') {
             instancePromise = instancePromise
@@ -112,7 +112,7 @@ export class CallListInstance {
 
         const operationPromise = this._version.page({ uri: this._uri, method: 'GET' });
 
-        let instancePromise = operationPromise.then(payload => new CallInstance(this._version, payload, this._solution.accountSid, this._solution.sid));
+        let instancePromise = operationPromise.then(payload => new CallInstance(this._version, payload, this._solution.accountSid, this._solution.testInteger));
 
         if (typeof callback === 'function') {
             instancePromise = instancePromise

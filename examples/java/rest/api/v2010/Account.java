@@ -10,7 +10,7 @@
  * Do not edit the class manually.
  */
 
-package com.twilio.rest.api.v2010.account.call;
+package com.twilio.rest.api.v2010;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -62,55 +62,40 @@ import com.twilio.type.IceServer;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @ToString
-public class Recording extends Resource {
+public class Account extends Resource {
     private static final long serialVersionUID = 44112120076447L;
 
-    public static RecordingCreator creator(final String CallSid){
-        return new RecordingCreator(CallSid);
-    }
-    public static RecordingCreator creator(final String AccountSid, final String CallSid){
-        return new RecordingCreator(AccountSid, CallSid);
+    public static AccountCreator creator(){
+        return new AccountCreator();
     }
 
-    public static RecordingFetcher fetcher(final String CallSid, final Integer TestInteger){
-        return new RecordingFetcher(CallSid, TestInteger);
-    }
-    public static RecordingFetcher fetcher(final String AccountSid, final String CallSid, final Integer TestInteger){
-        return new RecordingFetcher(AccountSid, CallSid, TestInteger);
+    public static AccountFetcher fetcher(final String Sid){
+        return new AccountFetcher(Sid);
     }
 
-    public static RecordingDeleter delete(final String CallSid, final Integer TestInteger){
-        return new RecordingDeleter(CallSid, TestInteger);
-    }
-    public static RecordingDeleter delete(final String AccountSid, final String CallSid, final Integer TestInteger){
-        return new RecordingDeleter(AccountSid, CallSid, TestInteger);
+    public static AccountDeleter delete(final String Sid){
+        return new AccountDeleter(Sid);
     }
 
-    public static RecordingReader reader(final String CallSid){
-        return new RecordingReader(CallSid);
-    }
-    public static RecordingReader reader(final String AccountSid, final String CallSid){
-        return new RecordingReader(AccountSid, CallSid);
+    public static AccountReader reader(){
+        return new AccountReader();
     }
 
-    public static RecordingUpdater update(final String CallSid, final Integer TestInteger, final String Status){
-        return new RecordingUpdater(CallSid, TestInteger, Status);
-    }
-    public static RecordingUpdater update(final String AccountSid, final String CallSid, final Integer TestInteger, final String Status){
-        return new RecordingUpdater(AccountSid, CallSid, TestInteger, Status);
+    public static AccountUpdater update(final String Sid, final String Status){
+        return new AccountUpdater(Sid, Status);
     }
 
     /**
-    * Converts a JSON String into a Recording object using the provided ObjectMapper.
+    * Converts a JSON String into a Account object using the provided ObjectMapper.
     *
     * @param json Raw JSON String
     * @param objectMapper Jackson ObjectMapper
-    * @return Recording object represented by the provided JSON
+    * @return Account object represented by the provided JSON
     */
-    public static Recording fromJson(final String json, final ObjectMapper objectMapper) {
+    public static Account fromJson(final String json, final ObjectMapper objectMapper) {
         // Convert all checked exceptions to Runtime
         try {
-            return objectMapper.readValue(json, Recording.class);
+            return objectMapper.readValue(json, Account.class);
         } catch (final JsonMappingException | JsonParseException e) {
             throw new ApiException(e.getMessage(), e);
         } catch (final IOException e) {
@@ -119,17 +104,17 @@ public class Recording extends Resource {
     }
 
     /**
-    * Converts a JSON InputStream into a Recording object using the provided
+    * Converts a JSON InputStream into a Account object using the provided
     * ObjectMapper.
     *
     * @param json Raw JSON InputStream
     * @param objectMapper Jackson ObjectMapper
-    * @return Recording object represented by the provided JSON
+    * @return Account object represented by the provided JSON
     */
-    public static Recording fromJson(final InputStream json, final ObjectMapper objectMapper) {
+    public static Account fromJson(final InputStream json, final ObjectMapper objectMapper) {
         // Convert all checked exceptions to Runtime
         try {
-            return objectMapper.readValue(json, Recording.class);
+            return objectMapper.readValue(json, Account.class);
         } catch (final JsonMappingException | JsonParseException e) {
             throw new ApiException(e.getMessage(), e);
         } catch (final IOException e) {
@@ -152,7 +137,7 @@ public class Recording extends Resource {
     private final List<FeedbackIssue> testArrayOfObjects;
 
     @JsonCreator
-    private Recording(
+    private Account(
         @JsonProperty("account_sid")
         final String accountSid,
 
@@ -258,7 +243,7 @@ public class Recording extends Resource {
             return false;
         }
 
-        Recording other = (Recording) o;
+        Account other = (Account) o;
 
         return Objects.equals(accountSid, other.accountSid) &&  Objects.equals(sid, other.sid) &&  Objects.equals(testString, other.testString) &&  Objects.equals(testInteger, other.testInteger) &&  Objects.equals(testObject, other.testObject) &&  Objects.equals(testDateTime, other.testDateTime) &&  Objects.equals(testNumber, other.testNumber) &&  Objects.equals(priceUnit, other.priceUnit) &&  Objects.equals(testNumberFloat, other.testNumberFloat) &&  Objects.equals(testEnum, other.testEnum) &&  Objects.equals(testArrayOfIntegers, other.testArrayOfIntegers) &&  Objects.equals(testArrayOfArrayOfIntegers, other.testArrayOfArrayOfIntegers) &&  Objects.equals(testArrayOfObjects, other.testArrayOfObjects)  ;
     }

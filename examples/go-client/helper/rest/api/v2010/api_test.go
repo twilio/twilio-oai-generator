@@ -83,34 +83,34 @@ func TestUpdate(t *testing.T) {
 }
 
 func TestDateTimeQueryParams(t *testing.T) {
-	params := &ListCallRecordingParams{}
+	params := &ListAccountParams{}
 	params.SetDateCreated(time.Now())
 	params.SetDateCreatedBefore(time.Now().Add(-2))
 	params.SetDateCreatedAfter(time.Now().Add(2))
 	params.SetDateTest("2021-03-31")
 	params.SetPageSize(4)
 
-	resp, err := testApiService.PageCallRecording("12345678", params, "", "")
+	resp, err := testApiService.PageAccount(params, "", "")
 
 	assert.Nil(t, err)
 	assert.NotNil(t, resp)
-	assert.NotNil(t, resp.Recordings)
-	assert.Equal(t, 2, len(resp.Recordings))
-	assert.Equal(t, "Ahoy", *resp.Recordings[0].TestString)
-	assert.Equal(t, "Matey", *resp.Recordings[1].TestString)
+	assert.NotNil(t, resp.Accounts)
+	assert.Equal(t, 2, len(resp.Accounts))
+	assert.Equal(t, "Ahoy", *resp.Accounts[0].TestString)
+	assert.Equal(t, "Matey", *resp.Accounts[1].TestString)
 }
 
 func TestNonStringInPath(t *testing.T) {
-	err := testApiService.DeleteCallRecording("CA12345678123456781234567812345678", 123, nil)
+	err := testApiService.DeleteCall(123, nil)
 	assert.Nil(t, err)
 }
 
 func TestCustomHeaders(t *testing.T) {
-	params := &CreateCallRecordingParams{}
+	params := &CreateAccountParams{}
 	params.SetXTwilioWebhookEnabled("true")
 	params.SetRecordingStatusCallback("https://validurl.com")
 
-	resp, err := testApiService.CreateCallRecording("CA12345678123456781234567812345678", params)
+	resp, err := testApiService.CreateAccount(params)
 
 	assert.Nil(t, err)
 	assert.NotNil(t, resp)
@@ -137,7 +137,7 @@ func TestRequiredParameters(t *testing.T) {
 }
 
 func TestCustomType(t *testing.T) {
-	resp, err := testApiService.FetchCall("CA1234567890123456789012", nil)
+	resp, err := testApiService.FetchCall(123, nil)
 	assert.Nil(t, err)
 	assert.NotNil(t, resp)
 	assert.Equal(t, false, resp.TestObject.Fax)

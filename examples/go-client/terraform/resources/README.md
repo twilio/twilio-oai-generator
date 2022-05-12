@@ -1,4 +1,17 @@
 
+## twilio_api_accounts_v2010
+
+### Parameters
+
+Name | Type | Requirement | Description
+--- | --- | --- | ---
+**x_twilio_webhook_enabled** | string | Optional | 
+**recording_status_callback** | string | Optional | 
+**recording_status_callback_event** | list(string) | Optional | 
+**sid** | string | *Computed* | 
+**status** | string | Optional | 
+**pause_behavior** | string | Optional | 
+
 ## twilio_api_accounts_calls_v2010
 
 ### Parameters
@@ -8,22 +21,7 @@ Name | Type | Requirement | Description
 **required_string_property** | string | **Required** | 
 **path_account_sid** | string | Optional | 
 **test_array_of_strings** | list(string) | Optional | 
-**sid** | string | *Computed* | 
-
-## twilio_api_accounts_calls_recordings_v2010
-
-### Parameters
-
-Name | Type | Requirement | Description
---- | --- | --- | ---
-**call_sid** | string | **Required** | 
-**x_twilio_webhook_enabled** | string | Optional | 
-**path_account_sid** | string | Optional | 
-**recording_status_callback** | string | Optional | 
-**recording_status_callback_event** | list(string) | Optional | 
 **test_integer** | int | *Computed* | INTEGER ID param!!!
-**status** | string | Optional | 
-**pause_behavior** | string | Optional | 
 
 ## twilio_api_credentials_aws_v2010
 

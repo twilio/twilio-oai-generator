@@ -72,18 +72,18 @@ public class Call extends Resource {
         return new CallCreator(AccountSid, RequiredStringProperty);
     }
 
-    public static CallFetcher fetcher(final String Sid){
-        return new CallFetcher(Sid);
+    public static CallFetcher fetcher(final Integer TestInteger){
+        return new CallFetcher(TestInteger);
     }
-    public static CallFetcher fetcher(final String AccountSid, final String Sid){
-        return new CallFetcher(AccountSid, Sid);
+    public static CallFetcher fetcher(final String AccountSid, final Integer TestInteger){
+        return new CallFetcher(AccountSid, TestInteger);
     }
 
-    public static CallDeleter delete(final String Sid){
-        return new CallDeleter(Sid);
+    public static CallDeleter delete(final Integer TestInteger){
+        return new CallDeleter(TestInteger);
     }
-    public static CallDeleter delete(final String AccountSid, final String Sid){
-        return new CallDeleter(AccountSid, Sid);
+    public static CallDeleter delete(final String AccountSid, final Integer TestInteger){
+        return new CallDeleter(AccountSid, TestInteger);
     }
 
 
