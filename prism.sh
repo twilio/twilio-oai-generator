@@ -25,7 +25,7 @@ function check_status() {
   docker_test_services=("$@")
   for docker_test_service in "${docker_test_services[@]}"; do
     if [[ $(docker-compose ps -q "$docker_test_service" | xargs docker inspect -f "{{.State.ExitCode}}") -ne 0 ]]; then
-      EXIT_CODE=$(("$EXIT_CODE" || $(docker-compose ps -q "$docker_test_service" | xargs docker inspect -f "{{.State.ExitCode}}")))
+      EXIT_CODE=$(($EXIT_CODE || $(docker-compose ps -q "$docker_test_service" | xargs docker inspect -f "{{.State.ExitCode}}")))
       echo "Failed $docker_test_service with EXIT code $(docker-compose ps -q "$docker_test_service" | xargs docker inspect -f "{{.State.ExitCode}}")"
     else
       echo "$docker_test_service completed successfully"

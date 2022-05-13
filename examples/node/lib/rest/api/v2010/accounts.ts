@@ -11,23 +11,23 @@
  */
 
 import { inspect } from 'util';
-import V2010 from '../../../V2010';
+import V2010 from '../V2010';
 
 
 /**
- * Options to pass to create a RecordingInstance
+ * Options to pass to create a AccountInstance
  *
  * @property { 'true' | 'false' } [xTwilioWebhookEnabled] 
  * @property { string } [recordingStatusCallback] 
  * @property { Array<string> } [recordingStatusCallbackEvent] 
  */
-export interface RecordingInstanceCreateOptions {
+export interface AccountInstanceCreateOptions {
     xTwilioWebhookEnabled?: 'true' | 'false';
     recordingStatusCallback?: string;
     recordingStatusCallbackEvent?: Array<string>;
 }
 /**
- * Options to pass to page a RecordingInstance
+ * Options to pass to page a AccountInstance
  *
  * @property { Date } [dateCreated] 
  * @property { string } [dateTest] 
@@ -35,7 +35,7 @@ export interface RecordingInstanceCreateOptions {
  * @property { Date } [dateCreated3] 
  * @property { number } [pageSize] 
  */
-export interface RecordingInstancePageOptions {
+export interface AccountInstancePageOptions {
     dateCreated?: Date;
     dateTest?: string;
     dateCreated2?: Date;
@@ -43,44 +43,44 @@ export interface RecordingInstancePageOptions {
     pageSize?: number;
 }
 /**
- * Options to pass to create a RecordingInstance
+ * Options to pass to create a AccountInstance
  *
  * @property { string } status 
  * @property { string } [pauseBehavior] 
  */
-export interface RecordingInstanceCreateOptions {
+export interface AccountInstanceCreateOptions {
     status: string;
     pauseBehavior?: string;
 }
 
-export class RecordingListInstance {
+export class AccountListInstance {
     protected _solution: any;
     protected _uri: string;
 
 
-    constructor(protected _version: V2010, accountSid: string, callSid: string, testInteger: number) {
-        this._solution = { accountSid, callSid, testInteger };
-        this._uri = `/2010-04-01/Accounts/${accountSid}/Calls/${callSid}/Recordings/${testInteger}.json`;
+    constructor(protected _version: V2010, sid: string) {
+        this._solution = { sid };
+        this._uri = `/2010-04-01/Accounts/${sid}.json`;
     }
 
     /**
-     * Create a RecordingInstance
+     * Create a AccountInstance
      *
      * @param { function } [callback] - Callback to handle processed record
      *
-     * @returns { Promise } Resolves to processed RecordingInstance
+     * @returns { Promise } Resolves to processed AccountInstance
      */
-    public async create(callback?: (error: Error | null, item?: RecordingInstance) => any): Promise<RecordingInstance>;
+    public async create(callback?: (error: Error | null, item?: AccountInstance) => any): Promise<AccountInstance>;
     /**
-     * Create a RecordingInstance
+     * Create a AccountInstance
      *
-     * @param { RecordingInstanceCreateOptions } params - Parameter for request
+     * @param { AccountInstanceCreateOptions } params - Parameter for request
      * @param { function } [callback] - Callback to handle processed record
      *
-     * @returns { Promise } Resolves to processed RecordingInstance
+     * @returns { Promise } Resolves to processed AccountInstance
      */
-    public async create(params: RecordingInstanceCreateOptions, callback?: (error: Error | null, item?: RecordingInstance) => any): Promise<RecordingInstance>;
-    public async create(params?: any, callback?: any): Promise<RecordingInstance> {
+    public async create(params: AccountInstanceCreateOptions, callback?: (error: Error | null, item?: AccountInstance) => any): Promise<AccountInstance>;
+    public async create(params?: any, callback?: any): Promise<AccountInstance> {
 
         if (typeof params === 'function') {
             callback = params;
@@ -102,7 +102,7 @@ export class RecordingListInstance {
 
         const operationPromise = this._version.create({ uri: this._uri, method: 'POST', data, headers });
 
-        let instancePromise = operationPromise.then(payload => new RecordingInstance(this._version, payload, this._solution.accountSid, this._solution.callSid, this._solution.testInteger));
+        let instancePromise = operationPromise.then(payload => new AccountInstance(this._version, payload, this._solution.sid));
 
         if (typeof callback === 'function') {
             instancePromise = instancePromise
@@ -114,18 +114,18 @@ export class RecordingListInstance {
     }
 
     /**
-     *  a RecordingInstance
+     *  a AccountInstance
      *
      * @param { function } [callback] - Callback to handle processed record
      *
-     * @returns { Promise } Resolves to processed RecordingInstance
+     * @returns { Promise } Resolves to processed AccountInstance
      */
-    public async (callback?: (error: Error | null, item?: RecordingInstance) => any): Promise<RecordingInstance> { 
+    public async (callback?: (error: Error | null, item?: AccountInstance) => any): Promise<AccountInstance> { 
 
 
         const operationPromise = this._version.({ uri: this._uri, method: 'DELETE' });
 
-        let instancePromise = operationPromise.then(payload => new RecordingInstance(this._version, payload, this._solution.accountSid, this._solution.callSid, this._solution.testInteger));
+        let instancePromise = operationPromise.then(payload => new AccountInstance(this._version, payload, this._solution.sid));
 
         if (typeof callback === 'function') {
             instancePromise = instancePromise
@@ -137,18 +137,18 @@ export class RecordingListInstance {
     }
 
     /**
-     * Page a RecordingInstance
+     * Page a AccountInstance
      *
      * @param { function } [callback] - Callback to handle processed record
      *
-     * @returns { Promise } Resolves to processed RecordingInstance
+     * @returns { Promise } Resolves to processed AccountInstance
      */
-    public async page(callback?: (error: Error | null, item?: RecordingInstance) => any): Promise<RecordingInstance> { 
+    public async page(callback?: (error: Error | null, item?: AccountInstance) => any): Promise<AccountInstance> { 
 
 
         const operationPromise = this._version.page({ uri: this._uri, method: 'GET' });
 
-        let instancePromise = operationPromise.then(payload => new RecordingInstance(this._version, payload, this._solution.accountSid, this._solution.callSid, this._solution.testInteger));
+        let instancePromise = operationPromise.then(payload => new AccountInstance(this._version, payload, this._solution.sid));
 
         if (typeof callback === 'function') {
             instancePromise = instancePromise
@@ -160,23 +160,23 @@ export class RecordingListInstance {
     }
 
     /**
-     * Page a RecordingInstance
+     * Page a AccountInstance
      *
      * @param { function } [callback] - Callback to handle processed record
      *
-     * @returns { Promise } Resolves to processed RecordingInstance
+     * @returns { Promise } Resolves to processed AccountInstance
      */
-    public async page(callback?: (error: Error | null, item?: RecordingInstance) => any): Promise<RecordingInstance>;
+    public async page(callback?: (error: Error | null, item?: AccountInstance) => any): Promise<AccountInstance>;
     /**
-     * Page a RecordingInstance
+     * Page a AccountInstance
      *
-     * @param { RecordingInstancePageOptions } params - Parameter for request
+     * @param { AccountInstancePageOptions } params - Parameter for request
      * @param { function } [callback] - Callback to handle processed record
      *
-     * @returns { Promise } Resolves to processed RecordingInstance
+     * @returns { Promise } Resolves to processed AccountInstance
      */
-    public async page(params: RecordingInstancePageOptions, callback?: (error: Error | null, item?: RecordingInstance) => any): Promise<RecordingInstance>;
-    public async page(params?: any, callback?: any): Promise<RecordingInstance> {
+    public async page(params: AccountInstancePageOptions, callback?: (error: Error | null, item?: AccountInstance) => any): Promise<AccountInstance>;
+    public async page(params?: any, callback?: any): Promise<AccountInstance> {
 
         if (typeof params === 'function') {
             callback = params;
@@ -195,7 +195,7 @@ export class RecordingListInstance {
 
         const operationPromise = this._version.page({ uri: this._uri, method: 'GET', data, headers });
 
-        let instancePromise = operationPromise.then(payload => new RecordingInstance(this._version, payload, this._solution.accountSid, this._solution.callSid, this._solution.testInteger));
+        let instancePromise = operationPromise.then(payload => new AccountInstance(this._version, payload, this._solution.sid));
 
         if (typeof callback === 'function') {
             instancePromise = instancePromise
@@ -207,15 +207,15 @@ export class RecordingListInstance {
     }
 
     /**
-     * Create a RecordingInstance
+     * Create a AccountInstance
      *
-     * @param { RecordingInstanceCreateOptions } params - Parameter for request
+     * @param { AccountInstanceCreateOptions } params - Parameter for request
      * @param { function } [callback] - Callback to handle processed record
      *
-     * @returns { Promise } Resolves to processed RecordingInstance
+     * @returns { Promise } Resolves to processed AccountInstance
      */
-    public async create(params: RecordingInstanceCreateOptions, callback?: (error: Error | null, item?: RecordingInstance) => any): Promise<RecordingInstance>;
-    public async create(params: any, callback?: any): Promise<RecordingInstance> {
+    public async create(params: AccountInstanceCreateOptions, callback?: (error: Error | null, item?: AccountInstance) => any): Promise<AccountInstance>;
+    public async create(params: any, callback?: any): Promise<AccountInstance> {
 
         if (params === null || params === undefined) {
             throw new Error('Required parameter "params" missing.');
@@ -237,7 +237,7 @@ export class RecordingListInstance {
 
         const operationPromise = this._version.create({ uri: this._uri, method: 'POST', data, headers });
 
-        let instancePromise = operationPromise.then(payload => new RecordingInstance(this._version, payload, this._solution.accountSid, this._solution.callSid, this._solution.testInteger));
+        let instancePromise = operationPromise.then(payload => new AccountInstance(this._version, payload, this._solution.sid));
 
         if (typeof callback === 'function') {
             instancePromise = instancePromise

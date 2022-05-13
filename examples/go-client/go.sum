@@ -310,6 +310,8 @@ github.com/twilio/terraform-provider-twilio v0.13.1/go.mod h1:SrIOuaRtGTrAAUC3xm
 github.com/twilio/twilio-go v0.22.1/go.mod h1:mZF1yc+wuuotZAJ2gHB2vcIKotxa0VXyfqUZN9Em5G8=
 github.com/twilio/twilio-go v0.22.3-0.20220311215041-90cc0cc47f6a h1:zOYwr6dnqhf/uUcRgcCOEhgkN1BtDppS73KhZRS1hCA=
 github.com/twilio/twilio-go v0.22.3-0.20220311215041-90cc0cc47f6a/go.mod h1:mZF1yc+wuuotZAJ2gHB2vcIKotxa0VXyfqUZN9Em5G8=
+github.com/twilio/twilio-go v0.25.0 h1:Vk3OjsIcm//WTpywp3y+HD+Goiyf1SIiLQR+sxw+/gM=
+github.com/twilio/twilio-go v0.25.0/go.mod h1:lz62Hopu4vicpQ056H5TJ0JE4AP0rS3sQ35/ejmgOwE=
 github.com/ulikunitz/xz v0.5.8/go.mod h1:nbz6k7qbPmH4IRqmfOplQw/tblSgqTqBwxkY0oWt/14=
 github.com/vmihailenco/msgpack v3.3.3+incompatible/go.mod h1:fy3FlTQTDXWkZ7Bh6AcGMlsjHatGryHQYUTf1ShIgkk=
 github.com/vmihailenco/msgpack v4.0.4+incompatible h1:dSLoQfGFAo3F6OoNhwUmLwVgaUXK79GlxNBwueZn0xI=

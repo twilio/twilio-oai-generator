@@ -23,6 +23,116 @@ import (
 	. "github.com/twilio/terraform-provider-twilio/core"
 )
 
+func ResourceAccounts() *schema.Resource {
+	return &schema.Resource{
+		CreateContext: createAccounts,
+		ReadContext:   readAccounts,
+		UpdateContext: updateAccounts,
+		DeleteContext: deleteAccounts,
+		Schema: map[string]*schema.Schema{
+			"x_twilio_webhook_enabled":        AsString(SchemaComputedOptional),
+			"recording_status_callback":       AsString(SchemaComputedOptional),
+			"recording_status_callback_event": AsList(AsString(SchemaComputedOptional), SchemaComputedOptional),
+			"sid":                             AsString(SchemaComputed),
+			"status":                          AsString(SchemaComputedOptional),
+			"pause_behavior":                  AsString(SchemaComputedOptional),
+		},
+		Importer: &schema.ResourceImporter{
+			StateContext: func(ctx context.Context, d *schema.ResourceData, m interface{}) ([]*schema.ResourceData, error) {
+				err := parseAccountsImportId(d.Id(), d)
+				if err != nil {
+					return nil, err
+				}
+
+				return []*schema.ResourceData{d}, nil
+			},
+		},
+	}
+}
+
+func createAccounts(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+	params := CreateAccountParams{}
+	if err := UnmarshalSchema(&params, d); err != nil {
+		return diag.FromErr(err)
+	}
+
+	r, err := m.(*client.Config).Client.ApiV2010.CreateAccount(&params)
+	if err != nil {
+		return diag.FromErr(err)
+	}
+
+	idParts := []string{}
+	idParts = append(idParts, (*r.Sid))
+	d.SetId(strings.Join(idParts, "/"))
+	d.Set("sid", *r.Sid)
+
+	return updateAccounts(ctx, d, m)
+}
+
+func deleteAccounts(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+
+	sid := d.Get("sid").(string)
+
+	err := m.(*client.Config).Client.ApiV2010.DeleteAccount(sid)
+	if err != nil {
+		return diag.FromErr(err)
+	}
+
+	d.SetId("")
+
+	return nil
+}
+
+func readAccounts(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+
+	sid := d.Get("sid").(string)
+
+	r, err := m.(*client.Config).Client.ApiV2010.FetchAccount(sid)
+	if err != nil {
+		return diag.FromErr(err)
+	}
+
+	err = MarshalSchema(d, r)
+	if err != nil {
+		return diag.FromErr(err)
+	}
+
+	return nil
+}
+
+func parseAccountsImportId(importId string, d *schema.ResourceData) error {
+	importParts := strings.Split(importId, "/")
+	errStr := "invalid import ID (%q), expected sid"
+
+	if len(importParts) != 1 {
+		return fmt.Errorf(errStr, importId)
+	}
+
+	d.Set("sid", importParts[0])
+
+	return nil
+}
+func updateAccounts(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+	params := UpdateAccountParams{}
+	if err := UnmarshalSchema(&params, d); err != nil {
+		return diag.FromErr(err)
+	}
+
+	sid := d.Get("sid").(string)
+
+	r, err := m.(*client.Config).Client.ApiV2010.UpdateAccount(sid, &params)
+	if err != nil {
+		return diag.FromErr(err)
+	}
+
+	err = MarshalSchema(d, r)
+	if err != nil {
+		return diag.FromErr(err)
+	}
+
+	return nil
+}
+
 func ResourceAccountsCalls() *schema.Resource {
 	return &schema.Resource{
 		CreateContext: createAccountsCalls,
@@ -32,7 +142,7 @@ func ResourceAccountsCalls() *schema.Resource {
 			"required_string_property": AsString(SchemaForceNewRequired),
 			"path_account_sid":         AsString(SchemaForceNewOptional),
 			"test_array_of_strings":    AsList(AsString(SchemaForceNewOptional), SchemaForceNewOptional),
-			"sid":                      AsString(SchemaComputed),
+			"test_integer":             AsInt(SchemaComputed),
 		},
 		Importer: &schema.ResourceImporter{
 			StateContext: func(ctx context.Context, d *schema.ResourceData, m interface{}) ([]*schema.ResourceData, error) {
@@ -59,7 +169,7 @@ func createAccountsCalls(ctx context.Context, d *schema.ResourceData, m interfac
 	}
 
 	idParts := []string{}
-	idParts = append(idParts, (*r.Sid))
+	idParts = append(idParts, IntToString(*r.TestInteger))
 	d.SetId(strings.Join(idParts, "/"))
 
 	err = MarshalSchema(d, r)
@@ -76,9 +186,9 @@ func deleteAccountsCalls(ctx context.Context, d *schema.ResourceData, m interfac
 		return diag.FromErr(err)
 	}
 
-	sid := d.Get("sid").(string)
+	testInteger := d.Get("test_integer").(int)
 
-	err := m.(*client.Config).Client.ApiV2010.DeleteCall(sid, &params)
+	err := m.(*client.Config).Client.ApiV2010.DeleteCall(testInteger, &params)
 	if err != nil {
 		return diag.FromErr(err)
 	}
@@ -94,9 +204,9 @@ func readAccountsCalls(ctx context.Context, d *schema.ResourceData, m interface{
 		return diag.FromErr(err)
 	}
 
-	sid := d.Get("sid").(string)
+	testInteger := d.Get("test_integer").(int)
 
-	r, err := m.(*client.Config).Client.ApiV2010.FetchCall(sid, &params)
+	r, err := m.(*client.Config).Client.ApiV2010.FetchCall(testInteger, &params)
 	if err != nil {
 		return diag.FromErr(err)
 	}
@@ -111,117 +221,13 @@ func readAccountsCalls(ctx context.Context, d *schema.ResourceData, m interface{
 
 func parseAccountsCallsImportId(importId string, d *schema.ResourceData) error {
 	importParts := strings.Split(importId, "/")
-	errStr := "invalid import ID (%q), expected sid"
+	errStr := "invalid import ID (%q), expected test_integer"
 
 	if len(importParts) != 1 {
 		return fmt.Errorf(errStr, importId)
 	}
 
-	d.Set("sid", importParts[0])
-
-	return nil
-}
-func ResourceAccountsCallsRecordings() *schema.Resource {
-	return &schema.Resource{
-		CreateContext: createAccountsCallsRecordings,
-		ReadContext:   readAccountsCallsRecordings,
-		UpdateContext: updateAccountsCallsRecordings,
-		DeleteContext: deleteAccountsCallsRecordings,
-		Schema: map[string]*schema.Schema{
-			"call_sid":                        AsString(SchemaRequired),
-			"x_twilio_webhook_enabled":        AsString(SchemaComputedOptional),
-			"path_account_sid":                AsString(SchemaComputedOptional),
-			"recording_status_callback":       AsString(SchemaComputedOptional),
-			"recording_status_callback_event": AsList(AsString(SchemaComputedOptional), SchemaComputedOptional),
-			"test_integer":                    AsInt(SchemaComputed),
-			"status":                          AsString(SchemaComputedOptional),
-			"pause_behavior":                  AsString(SchemaComputedOptional),
-		},
-		Importer: &schema.ResourceImporter{
-			StateContext: func(ctx context.Context, d *schema.ResourceData, m interface{}) ([]*schema.ResourceData, error) {
-				err := parseAccountsCallsRecordingsImportId(d.Id(), d)
-				if err != nil {
-					return nil, err
-				}
-
-				return []*schema.ResourceData{d}, nil
-			},
-		},
-	}
-}
-
-func createAccountsCallsRecordings(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-	params := CreateCallRecordingParams{}
-	if err := UnmarshalSchema(&params, d); err != nil {
-		return diag.FromErr(err)
-	}
-
-	callSid := d.Get("call_sid").(string)
-
-	r, err := m.(*client.Config).Client.ApiV2010.CreateCallRecording(callSid, &params)
-	if err != nil {
-		return diag.FromErr(err)
-	}
-
-	idParts := []string{callSid}
-	idParts = append(idParts, IntToString(*r.TestInteger))
-	d.SetId(strings.Join(idParts, "/"))
-	d.Set("test_integer", *r.TestInteger)
-
-	return updateAccountsCallsRecordings(ctx, d, m)
-}
-
-func deleteAccountsCallsRecordings(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-	params := DeleteCallRecordingParams{}
-	if err := UnmarshalSchema(&params, d); err != nil {
-		return diag.FromErr(err)
-	}
-
-	callSid := d.Get("call_sid").(string)
-	testInteger := d.Get("test_integer").(int)
-
-	err := m.(*client.Config).Client.ApiV2010.DeleteCallRecording(callSid, testInteger, &params)
-	if err != nil {
-		return diag.FromErr(err)
-	}
-
-	d.SetId("")
-
-	return nil
-}
-
-func readAccountsCallsRecordings(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-	params := FetchCallRecordingParams{}
-	if err := UnmarshalSchema(&params, d); err != nil {
-		return diag.FromErr(err)
-	}
-
-	callSid := d.Get("call_sid").(string)
-	testInteger := d.Get("test_integer").(int)
-
-	r, err := m.(*client.Config).Client.ApiV2010.FetchCallRecording(callSid, testInteger, &params)
-	if err != nil {
-		return diag.FromErr(err)
-	}
-
-	err = MarshalSchema(d, r)
-	if err != nil {
-		return diag.FromErr(err)
-	}
-
-	return nil
-}
-
-func parseAccountsCallsRecordingsImportId(importId string, d *schema.ResourceData) error {
-	importParts := strings.Split(importId, "/")
-	errStr := "invalid import ID (%q), expected call_sid/test_integer"
-
-	if len(importParts) != 2 {
-		return fmt.Errorf(errStr, importId)
-	}
-
-	d.Set("call_sid", importParts[0])
-	testInteger, err := StringToInt(importParts[1])
+	testInteger, err := StringToInt(importParts[0])
 	if err != nil {
 		return nil
 	}
@@ -229,28 +235,6 @@ func parseAccountsCallsRecordingsImportId(importId string, d *schema.ResourceDat
 
 	return nil
 }
-func updateAccountsCallsRecordings(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-	params := UpdateCallRecordingParams{}
-	if err := UnmarshalSchema(&params, d); err != nil {
-		return diag.FromErr(err)
-	}
-
-	callSid := d.Get("call_sid").(string)
-	testInteger := d.Get("test_integer").(int)
-
-	r, err := m.(*client.Config).Client.ApiV2010.UpdateCallRecording(callSid, testInteger, &params)
-	if err != nil {
-		return diag.FromErr(err)
-	}
-
-	err = MarshalSchema(d, r)
-	if err != nil {
-		return diag.FromErr(err)
-	}
-
-	return nil
-}
-
 func ResourceCredentialsAWS() *schema.Resource {
 	return &schema.Resource{
 		CreateContext: createCredentialsAWS,

@@ -31,13 +31,13 @@ func TestPathIsCorrect(t *testing.T) {
 		gomock.Any()).
 		DoAndReturn(func(method string, rawURL string, data url.Values,
 			headers map[string]interface{}) (*http.Response, error) {
-			assert.Equal(t, "https://api.twilio.com/2010-04-01/Accounts/AC222222222222222222222222222222/Calls/CAXXXXY.json", rawURL)
+			assert.Equal(t, "https://api.twilio.com/2010-04-01/Accounts/AC222222222222222222222222222222/Calls/123.json", rawURL)
 			return &http.Response{Body: getEmptyBody()}, nil
 		},
 		)
 
 	twilio := NewApiServiceWithClient(testClient)
-	_, _ = twilio.FetchCall("CAXXXXY", nil)
+	_, _ = twilio.FetchCall(123, nil)
 }
 
 func TestAccountSidAsOptionalParam(t *testing.T) {
@@ -53,7 +53,7 @@ func TestAccountSidAsOptionalParam(t *testing.T) {
 		gomock.Any()).
 		DoAndReturn(func(method string, rawURL string, data url.Values,
 			headers map[string]interface{}) (*http.Response, error) {
-			assert.Equal(t, "https://api.twilio.com/2010-04-01/Accounts/AC444444444444444444444444444444/Calls/CAXXXXY.json", rawURL)
+			assert.Equal(t, "https://api.twilio.com/2010-04-01/Accounts/AC444444444444444444444444444444/Calls/123.json", rawURL)
 			return &http.Response{Body: getEmptyBody()}, nil
 		},
 		)
@@ -61,13 +61,13 @@ func TestAccountSidAsOptionalParam(t *testing.T) {
 	twilio := NewApiServiceWithClient(testClient)
 	params := &DeleteCallParams{}
 	params.SetPathAccountSid("AC444444444444444444444444444444")
-	_ = twilio.DeleteCall("CAXXXXY", params)
+	_ = twilio.DeleteCall(123, params)
 }
 
 func TestAddingHeader(t *testing.T) {
 	testHeader := "true"
 	testUri := "https://validurl.com"
-	params := &CreateCallRecordingParams{}
+	params := &CreateAccountParams{}
 	params.XTwilioWebhookEnabled = &testHeader
 	params.RecordingStatusCallback = &testUri
 
@@ -76,9 +76,6 @@ func TestAddingHeader(t *testing.T) {
 
 	mockCtrl := gomock.NewController(t)
 	testClient := NewMockBaseClient(mockCtrl)
-	testClient.EXPECT().AccountSid().DoAndReturn(func() string {
-		return "AC123"
-	})
 	testClient.EXPECT().SendRequest(
 		gomock.Any(),
 		gomock.Any(),
@@ -91,7 +88,7 @@ func TestAddingHeader(t *testing.T) {
 		},
 		)
 	twilio := NewApiServiceWithClient(testClient)
-	_, _ = twilio.CreateCallRecording("CA1234", params)
+	_, _ = twilio.CreateAccount(params)
 }
 
 func TestQueryParams(t *testing.T) {
@@ -100,7 +97,7 @@ func TestQueryParams(t *testing.T) {
 	dateCreatedAfter := time.Date(2000, 1, 4, 1, 0, 0, 0, time.UTC)
 	dateTest := "2021-03-31"
 	pageSize := 4
-	params := ListCallRecordingParams{}
+	params := ListAccountParams{}
 	params.SetDateCreated(dateCreated)
 	params.SetDateCreatedBefore(dateCreatedBefore)
 	params.SetDateCreatedAfter(dateCreatedAfter)
@@ -116,9 +113,6 @@ func TestQueryParams(t *testing.T) {
 
 	mockCtrl := gomock.NewController(t)
 	testClient := NewMockBaseClient(mockCtrl)
-	testClient.EXPECT().AccountSid().DoAndReturn(func() string {
-		return "AC123"
-	})
 	testClient.EXPECT().SendRequest(
 		gomock.Any(),
 		gomock.Any(),
@@ -131,7 +125,7 @@ func TestQueryParams(t *testing.T) {
 		},
 		)
 	twilio := NewApiServiceWithClient(testClient)
-	_, _ = twilio.ListCallRecording("12345678", &params)
+	_, _ = twilio.ListAccount(&params)
 }
 
 func TestArrayTypeParam(t *testing.T) {
@@ -224,8 +218,7 @@ func TestResponseDecodeTypes(t *testing.T) {
 			return &http.Response{Body: ioutil.NopCloser(bytes.NewReader(resp))}, nil
 		})
 
-	params := CreateCredentialAwsParams{}
-	resp, err := twilio.CreateCredentialAws(&params)
+	resp, err := twilio.FetchAccount("AC123")
 
 	assert.Nil(t, err)
 	assert.Equal(t, float32(123.45), *resp.TestNumber)
@@ -249,7 +242,7 @@ func TestList(t *testing.T) {
 		DoAndReturn(func(method string, rawURL string, data url.Values,
 			headers map[string]interface{}) (*http.Response, error) {
 			response := map[string]interface{}{
-				"recordings": []map[string]interface{}{
+				"accounts": []map[string]interface{}{
 					{
 						"test_string": "hi",
 					},
@@ -266,7 +259,7 @@ func TestList(t *testing.T) {
 						"test_string": "others",
 					},
 				},
-				"next_page_uri": "/2010-04-01/Accounts/AC12345678123456781234567812345678/Calls/CA123/Recordings.json?PageNumber=&PageSize=5&Page=1&PageToken=PASMc49f620580b24424bcfa885b1f741130",
+				"next_page_uri": "/2010-04-01/Accounts.json?PageNumber=&PageSize=5&Page=1&PageToken=PASMc49f620580b24424bcfa885b1f741130",
 			}
 
 			resp, _ := json.Marshal(response)
@@ -277,25 +270,25 @@ func TestList(t *testing.T) {
 
 	twilio := NewApiServiceWithClient(testClient)
 
-	params := &ListCallRecordingParams{}
+	params := &ListAccountParams{}
 	params.SetPageSize(5)
 	params.SetLimit(5)
 
-	resp, err := twilio.ListCallRecording("CA123", params)
+	resp, err := twilio.ListAccount(params)
 	assert.Equal(t, "hi", *resp[0].TestString)
 	assert.Equal(t, "there", *resp[1].TestString)
 	assert.Equal(t, 5, len(resp))
 	assert.Nil(t, err)
 
-	resp, _ = twilio.ListCallRecording("CA123", params)
+	resp, _ = twilio.ListAccount(params)
 	assert.Equal(t, 5, len(resp))
 
 	params.SetLimit(10)
-	resp, _ = twilio.ListCallRecording("CA123", params)
+	resp, _ = twilio.ListAccount(params)
 	assert.Equal(t, 10, len(resp))
 
 	params.SetLimit(3)
-	resp, _ = twilio.ListCallRecording("CA123", params)
+	resp, _ = twilio.ListAccount(params)
 	assert.Equal(t, 3, len(resp))
 }
 
@@ -315,7 +308,7 @@ func TestListPaging(t *testing.T) {
 		DoAndReturn(func(method string, rawURL string, data url.Values,
 			headers map[string]interface{}) (*http.Response, error) {
 			response := map[string]interface{}{
-				"recordings": []map[string]interface{}{
+				"accounts": []map[string]interface{}{
 					{
 						"test_string": "first",
 					},
@@ -323,7 +316,7 @@ func TestListPaging(t *testing.T) {
 						"test_string": "second",
 					},
 				},
-				"next_page_uri": "/2010-04-01/Accounts/AC12345678123456781234567812345678/Calls.json?From=9999999999&PageNumber=&To=4444444444&PageSize=5&Page=1&PageToken=PASMc49f620580b24424bcfa885b1f741130",
+				"next_page_uri": "/2010-04-01/Accounts.json?From=9999999999&PageNumber=&To=4444444444&PageSize=5&Page=1&PageToken=PASMc49f620580b24424bcfa885b1f741130",
 			}
 
 			resp, _ := json.Marshal(response)
@@ -340,12 +333,12 @@ func TestListPaging(t *testing.T) {
 		DoAndReturn(func(method string, rawURL string, data url.Values,
 			headers map[string]interface{}) (*http.Response, error) {
 			response := map[string]interface{}{
-				"recordings": []map[string]interface{}{
+				"accounts": []map[string]interface{}{
 					{
 						"test_string": "third",
 					},
 				},
-				"next_page_uri": "/2010-04-01/Accounts/AC12345678123456781234567812345678/Calls.json?From=9999999999&PageNumber=&To=4444444444&PageSize=5&Page=2&PageToken=PASMc49f620580b24424bcfa885b1f741130",
+				"next_page_uri": "/2010-04-01/Accounts.json?From=9999999999&PageNumber=&To=4444444444&PageSize=5&Page=2&PageToken=PASMc49f620580b24424bcfa885b1f741130",
 			}
 
 			resp, _ := json.Marshal(response)
@@ -373,11 +366,11 @@ func TestListPaging(t *testing.T) {
 
 	twilio := NewApiServiceWithClient(testClient)
 
-	params := &ListCallRecordingParams{}
+	params := &ListAccountParams{}
 	params.SetPageSize(5)
 	params.SetLimit(10)
 
-	resp, _ := twilio.ListCallRecording("CA123", params)
+	resp, _ := twilio.ListAccount(params)
 	assert.Equal(t, "first", *resp[0].TestString)
 	assert.Equal(t, "second", *resp[1].TestString)
 	assert.Equal(t, "third", *resp[2].TestString)
@@ -467,7 +460,7 @@ func TestListPagingError(t *testing.T) {
 
 	twilio := NewApiServiceWithClient(testClient)
 
-	resp, err := twilio.ListCallRecording("CA123", nil)
+	resp, err := twilio.ListAccount(nil)
 	assert.Len(t, resp, 0)
 	assert.NotNil(t, err)
 }

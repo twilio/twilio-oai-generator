@@ -13,6 +13,7 @@ package openapi
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/url"
 	"strings"
 )
@@ -86,14 +87,14 @@ func (params *DeleteCallParams) SetPathAccountSid(PathAccountSid string) *Delete
 	return params
 }
 
-func (c *ApiService) DeleteCall(Sid string, params *DeleteCallParams) error {
-	path := "/2010-04-01/Accounts/{AccountSid}/Calls/{Sid}.json"
+func (c *ApiService) DeleteCall(TestInteger int, params *DeleteCallParams) error {
+	path := "/2010-04-01/Accounts/{AccountSid}/Calls/{TestInteger}.json"
 	if params != nil && params.PathAccountSid != nil {
 		path = strings.Replace(path, "{"+"AccountSid"+"}", *params.PathAccountSid, -1)
 	} else {
 		path = strings.Replace(path, "{"+"AccountSid"+"}", c.requestHandler.Client.AccountSid(), -1)
 	}
-	path = strings.Replace(path, "{"+"Sid"+"}", Sid, -1)
+	path = strings.Replace(path, "{"+"TestInteger"+"}", fmt.Sprint(TestInteger), -1)
 
 	data := url.Values{}
 	headers := make(map[string]interface{})
@@ -119,14 +120,14 @@ func (params *FetchCallParams) SetPathAccountSid(PathAccountSid string) *FetchCa
 	return params
 }
 
-func (c *ApiService) FetchCall(Sid string, params *FetchCallParams) (*TestResponseObject, error) {
-	path := "/2010-04-01/Accounts/{AccountSid}/Calls/{Sid}.json"
+func (c *ApiService) FetchCall(TestInteger int, params *FetchCallParams) (*TestResponseObject, error) {
+	path := "/2010-04-01/Accounts/{AccountSid}/Calls/{TestInteger}.json"
 	if params != nil && params.PathAccountSid != nil {
 		path = strings.Replace(path, "{"+"AccountSid"+"}", *params.PathAccountSid, -1)
 	} else {
 		path = strings.Replace(path, "{"+"AccountSid"+"}", c.requestHandler.Client.AccountSid(), -1)
 	}
-	path = strings.Replace(path, "{"+"Sid"+"}", Sid, -1)
+	path = strings.Replace(path, "{"+"TestInteger"+"}", fmt.Sprint(TestInteger), -1)
 
 	data := url.Values{}
 	headers := make(map[string]interface{})
