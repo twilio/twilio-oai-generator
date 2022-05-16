@@ -10,7 +10,7 @@
  * Do not edit the class manually.
  */
 
-package com.twilio.rest.api.v2010.account.call;
+package com.twilio.rest.api.v2010;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -58,15 +58,23 @@ import java.math.BigDecimal;
 import com.twilio.type.PhoneNumberCapabilities;
 import com.twilio.type.FeedbackIssue;
 import com.twilio.type.IceServer;
-
+import com.twilio.type.InboundCallPrice;
+import com.twilio.type.OutboundPrefixPriceWithOrigin;
+import com.twilio.type.OutboundPrefixPrice;
+import com.twilio.type.OutboundCallPriceWithOrigin;
+import com.twilio.type.PhoneNumberPrice;
+import com.twilio.type.InboundSmsPrice;
+import com.twilio.type.OutboundSmsPrice;
+import com.twilio.type.OutboundCallPrice;
+import com.twilio.type.RecordingRule;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @ToString
 public class FeedbackCallSummary extends Resource {
     private static final long serialVersionUID = 44112120076447L;
 
-    public static FeedbackCallSummaryCreator creator(final String AccountSid, final LocalDate EndDate, final LocalDate StartDate){
-        return new FeedbackCallSummaryCreator(AccountSid, EndDate, StartDate);
+    public static FeedbackCallSummaryCreator creator(final String accountSid, final LocalDate endDate, final LocalDate startDate){
+        return new FeedbackCallSummaryCreator(accountSid, endDate, startDate);
     }
 
 
@@ -107,6 +115,25 @@ public class FeedbackCallSummary extends Resource {
             throw new ApiException(e.getMessage(), e);
         } catch (final IOException e) {
             throw new ApiConnectionException(e.getMessage(), e);
+        }
+    }
+    public enum TestEnum {
+        DIALVERB("DialVerb"),
+        TRUNKING("Trunking");
+
+        private final String value;
+
+        private TestEnum(final String value) {
+            this.value = value;
+        }
+
+        public String toString() {
+            return value;
+        }
+
+        @JsonCreator
+        public static TestEnum forValue(final String value) {
+            return Promoter.enumFromString(value, TestEnum.values());
         }
     }
 

@@ -10,7 +10,7 @@
  * Do not edit the class manually.
  */
 
-package com.twilio.rest.api.v2010.account.call;
+package com.twilio.rest.api.v2010;
 
 import com.twilio.base.Creator;
 import com.twilio.converter.Promoter;
@@ -57,45 +57,45 @@ import java.net.URI;
 
 
 public class RecordingCreator extends Creator<Recording>{
-    private String AccountSid;
-    private String CallSid;
-    private String XTwilioWebhookEnabled;
-    private URI RecordingStatusCallback;
-    private List<String> RecordingStatusCallbackEvent;
-    public RecordingCreator(final String AccountSid, final String CallSid) {
+    private String accountSid;
+    private String callSid;
+    private String xTwilioWebhookEnabled;
+    private URI recordingStatusCallback;
+    private List<String> recordingStatusCallbackEvent;
+    public RecordingCreator(final String accountSid, final String callSid) {
     
-        this.AccountSid = AccountSid;
+        this.accountSid = accountSid;
     
-        this.CallSid = CallSid;
+        this.callSid = callSid;
     
     }
 
     public RecordingCreator setAccountSid(final String AccountSid){
-        this.AccountSid = AccountSid;
+        this.accountSid = accountSid;
         return this;
     }
     public RecordingCreator setCallSid(final String CallSid){
-        this.CallSid = CallSid;
+        this.callSid = callSid;
         return this;
     }
     public RecordingCreator setXTwilioWebhookEnabled(final String XTwilioWebhookEnabled){
-        this.XTwilioWebhookEnabled = XTwilioWebhookEnabled;
+        this.xTwilioWebhookEnabled = xTwilioWebhookEnabled;
         return this;
     }
     public RecordingCreator setRecordingStatusCallback(final URI RecordingStatusCallback){
-        this.RecordingStatusCallback = RecordingStatusCallback;
+        this.recordingStatusCallback = recordingStatusCallback;
         return this;
     }
     public RecordingCreator setRecordingStatusCallbackEvent(final List<String> RecordingStatusCallbackEvent){
-        this.RecordingStatusCallbackEvent = RecordingStatusCallbackEvent;
+        this.recordingStatusCallbackEvent = recordingStatusCallbackEvent;
         return this;
     }
 
     @Override
     public Recording create(final TwilioRestClient client){
         String path = "/2010-04-01/Accounts/{AccountSid}/Calls/{CallSid}/Recordings.json";
-        path = path.replace("{"+"AccountSid"+"}", this.AccountSid.toString());
-        path = path.replace("{"+"CallSid"+"}", this.CallSid.toString());
+        path = path.replace("{"+"accountSid"+"}", this.accountSid.toString());
+        path = path.replace("{"+"callSid"+"}", this.callSid.toString());
 
         Request request = new Request(
             HttpMethod.POST,
@@ -120,24 +120,24 @@ public class RecordingCreator extends Creator<Recording>{
 
 
     private void addPostParams(final Request request) {
-        if (AccountSid != null) {
-        request.addPostParam("AccountSid", AccountSid.toString());
+        if (accountSid != null) {
+        request.addPostParam("AccountSid", accountSid.toString());
         }
 
-        if (CallSid != null) {
-        request.addPostParam("CallSid", CallSid.toString());
+        if (callSid != null) {
+        request.addPostParam("CallSid", callSid.toString());
         }
 
-        if (XTwilioWebhookEnabled != null) {
-        request.addPostParam("XTwilioWebhookEnabled", XTwilioWebhookEnabled.toString());
+        if (xTwilioWebhookEnabled != null) {
+        request.addPostParam("XTwilioWebhookEnabled", xTwilioWebhookEnabled.toString());
         }
 
-        if (RecordingStatusCallback != null) {
-        request.addPostParam("RecordingStatusCallback", RecordingStatusCallback.toString());
+        if (recordingStatusCallback != null) {
+        request.addPostParam("RecordingStatusCallback", recordingStatusCallback.toString());
         }
 
-        if (RecordingStatusCallbackEvent != null) {
-        request.addPostParam("RecordingStatusCallbackEvent", RecordingStatusCallbackEvent.toString());
+        if (recordingStatusCallbackEvent != null) {
+        request.addPostParam("RecordingStatusCallbackEvent", recordingStatusCallbackEvent.toString());
         }
 
     }

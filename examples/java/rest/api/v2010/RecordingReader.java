@@ -10,7 +10,7 @@
  * Do not edit the class manually.
  */
 
-package com.twilio.rest.api.v2010.account.call;
+package com.twilio.rest.api.v2010;
 
 import com.twilio.base.Reader;
 import com.twilio.base.ResourceSet;
@@ -54,69 +54,69 @@ import lombok.ToString;
 
 
 public class RecordingReader extends Reader<Recording> {
-    private String AccountSid;
+    private String accountSid;
 
     public RecordingReader setAccountSid(final String AccountSid){
-        this.AccountSid = AccountSid;
+        this.accountSid = accountSid;
         return this;
     }
-    private String CallSid;
+    private String callSid;
 
     public RecordingReader setCallSid(final String CallSid){
-        this.CallSid = CallSid;
+        this.callSid = callSid;
         return this;
     }
-    private ZonedDateTime DateCreated;
+    private ZonedDateTime dateCreated;
 
     public RecordingReader setDateCreated(final ZonedDateTime DateCreated){
-        this.DateCreated = DateCreated;
+        this.dateCreated = dateCreated;
         return this;
     }
-    private LocalDate DateTest;
+    private LocalDate dateTest;
 
     public RecordingReader setDateTest(final LocalDate DateTest){
-        this.DateTest = DateTest;
+        this.dateTest = dateTest;
         return this;
     }
-    private ZonedDateTime DateCreatedBefore;
+    private ZonedDateTime dateCreatedBefore;
 
     public RecordingReader setDateCreatedBefore(final ZonedDateTime DateCreatedBefore){
-        this.DateCreatedBefore = DateCreatedBefore;
+        this.dateCreatedBefore = dateCreatedBefore;
         return this;
     }
-    private ZonedDateTime DateCreatedAfter;
+    private ZonedDateTime dateCreatedAfter;
 
     public RecordingReader setDateCreatedAfter(final ZonedDateTime DateCreatedAfter){
-        this.DateCreatedAfter = DateCreatedAfter;
+        this.dateCreatedAfter = dateCreatedAfter;
         return this;
     }
-    private Integer PageSize;
+    private Integer pageSize;
 
     public RecordingReader setPageSize(final Integer PageSize){
-        this.PageSize = PageSize;
+        this.pageSize = pageSize;
         return this;
     }
 
-    public RecordingReader(final String AccountSid, final String CallSid){
-        this.AccountSid = AccountSid;
-        this.CallSid = CallSid;
+    public RecordingReader(final String accountSid, final String callSid){
+        this.accountSid = accountSid;
+        this.callSid = callSid;
     }
 
     private void addQueryParams(final Request request) {
-        if (DateCreated != null) {
-            request.addQueryParam("DateCreated", DateCreated.toString());
+        if (dateCreated != null) {
+            request.addQueryParam("DateCreated", dateCreated.toString());
         }
-        if (DateTest != null) {
-            request.addQueryParam("DateTest", DateTest.toString());
+        if (dateTest != null) {
+            request.addQueryParam("DateTest", dateTest.toString());
         }
-        if (DateCreatedBefore != null) {
-            request.addQueryParam("DateCreatedBefore", DateCreatedBefore.toString());
+        if (dateCreatedBefore != null) {
+            request.addQueryParam("DateCreatedBefore", dateCreatedBefore.toString());
         }
-        if (DateCreatedAfter != null) {
-            request.addQueryParam("DateCreatedAfter", DateCreatedAfter.toString());
+        if (dateCreatedAfter != null) {
+            request.addQueryParam("DateCreatedAfter", dateCreatedAfter.toString());
         }
-        if (PageSize != null) {
-            request.addQueryParam("PageSize", PageSize.toString());
+        if (pageSize != null) {
+            request.addQueryParam("PageSize", pageSize.toString());
         }
     }
 
@@ -127,8 +127,8 @@ public class RecordingReader extends Reader<Recording> {
 
     public Page<Recording> firstPage(final TwilioRestClient client) {
         String path = "/2010-04-01/Accounts/{AccountSid}/Calls/{CallSid}/Recordings.json";
-        path = path.replace("{"+"AccountSid"+"}", this.AccountSid.toString());
-        path = path.replace("{"+"CallSid"+"}", this.CallSid.toString());
+        path = path.replace("{"+"accountSid"+"}", this.accountSid.toString());
+        path = path.replace("{"+"callSid"+"}", this.callSid.toString());
 
         Request request = new Request(
             HttpMethod.GET,

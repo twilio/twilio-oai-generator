@@ -10,7 +10,7 @@
  * Do not edit the class manually.
  */
 
-package com.twilio.rest.api.v2010.account;
+package com.twilio.rest.api.v2010;
 
 import com.twilio.base.Creator;
 import com.twilio.converter.Promoter;
@@ -57,35 +57,35 @@ import java.net.URI;
 
 
 public class CallCreator extends Creator<Call>{
-    private String AccountSid;
-    private String RequiredStringProperty;
-    private List<String> TestArrayOfStrings;
-    public CallCreator(final String AccountSid, final String RequiredStringProperty) {
+    private String accountSid;
+    private String requiredStringProperty;
+    private List<String> testArrayOfStrings;
+    public CallCreator(final String accountSid, final String requiredStringProperty) {
     
-        this.AccountSid = AccountSid;
+        this.accountSid = accountSid;
     
-        this.RequiredStringProperty = RequiredStringProperty;
+        this.requiredStringProperty = requiredStringProperty;
     
     }
 
     public CallCreator setAccountSid(final String AccountSid){
-        this.AccountSid = AccountSid;
+        this.accountSid = accountSid;
         return this;
     }
     public CallCreator setRequiredStringProperty(final String RequiredStringProperty){
-        this.RequiredStringProperty = RequiredStringProperty;
+        this.requiredStringProperty = requiredStringProperty;
         return this;
     }
     public CallCreator setTestArrayOfStrings(final List<String> TestArrayOfStrings){
-        this.TestArrayOfStrings = TestArrayOfStrings;
+        this.testArrayOfStrings = testArrayOfStrings;
         return this;
     }
 
     @Override
     public Call create(final TwilioRestClient client){
         String path = "/2010-04-01/Accounts/{AccountSid}/Calls.json";
-        path = path.replace("{"+"AccountSid"+"}", this.AccountSid.toString());
-        path = path.replace("{"+"RequiredStringProperty"+"}", this.RequiredStringProperty.toString());
+        path = path.replace("{"+"accountSid"+"}", this.accountSid.toString());
+        path = path.replace("{"+"requiredStringProperty"+"}", this.requiredStringProperty.toString());
 
         Request request = new Request(
             HttpMethod.POST,
@@ -110,16 +110,16 @@ public class CallCreator extends Creator<Call>{
 
 
     private void addPostParams(final Request request) {
-        if (AccountSid != null) {
-        request.addPostParam("AccountSid", AccountSid.toString());
+        if (accountSid != null) {
+        request.addPostParam("AccountSid", accountSid.toString());
         }
 
-        if (RequiredStringProperty != null) {
-        request.addPostParam("RequiredStringProperty", RequiredStringProperty.toString());
+        if (requiredStringProperty != null) {
+        request.addPostParam("RequiredStringProperty", requiredStringProperty.toString());
         }
 
-        if (TestArrayOfStrings != null) {
-        request.addPostParam("TestArrayOfStrings", TestArrayOfStrings.toString());
+        if (testArrayOfStrings != null) {
+        request.addPostParam("TestArrayOfStrings", testArrayOfStrings.toString());
         }
 
     }

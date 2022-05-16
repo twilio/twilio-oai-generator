@@ -10,7 +10,7 @@
  * Do not edit the class manually.
  */
 
-package com.twilio.rest.api.v2010.credential;
+package com.twilio.rest.api.v2010;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -58,44 +58,43 @@ import java.math.BigDecimal;
 import com.twilio.type.PhoneNumberCapabilities;
 import com.twilio.type.FeedbackIssue;
 import com.twilio.type.IceServer;
-
+import com.twilio.type.InboundCallPrice;
+import com.twilio.type.OutboundPrefixPriceWithOrigin;
+import com.twilio.type.OutboundPrefixPrice;
+import com.twilio.type.OutboundCallPriceWithOrigin;
+import com.twilio.type.PhoneNumberPrice;
+import com.twilio.type.InboundSmsPrice;
+import com.twilio.type.OutboundSmsPrice;
+import com.twilio.type.OutboundCallPrice;
+import com.twilio.type.RecordingRule;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @ToString
-public class Aws extends Resource {
+public class Recording extends Resource {
     private static final long serialVersionUID = 44112120076447L;
 
-    public static AwsCreator creator(final String TestString){
-        return new AwsCreator(TestString);
+    public static RecordingCreator creator(final String accountSid, final String callSid){
+        return new RecordingCreator(accountSid, callSid);
     }
 
-    public static AwsFetcher fetcher(final String Sid){
-        return new AwsFetcher(Sid);
+
+
+    public static RecordingReader reader(final String accountSid, final String callSid){
+        return new RecordingReader(accountSid, callSid);
     }
 
-    public static AwsDeleter delete(final String Sid){
-        return new AwsDeleter(Sid);
-    }
-
-    public static AwsReader reader(){
-        return new AwsReader();
-    }
-
-    public static AwsUpdater update(final String Sid){
-        return new AwsUpdater(Sid);
-    }
 
     /**
-    * Converts a JSON String into a Aws object using the provided ObjectMapper.
+    * Converts a JSON String into a Recording object using the provided ObjectMapper.
     *
     * @param json Raw JSON String
     * @param objectMapper Jackson ObjectMapper
-    * @return Aws object represented by the provided JSON
+    * @return Recording object represented by the provided JSON
     */
-    public static Aws fromJson(final String json, final ObjectMapper objectMapper) {
+    public static Recording fromJson(final String json, final ObjectMapper objectMapper) {
         // Convert all checked exceptions to Runtime
         try {
-            return objectMapper.readValue(json, Aws.class);
+            return objectMapper.readValue(json, Recording.class);
         } catch (final JsonMappingException | JsonParseException e) {
             throw new ApiException(e.getMessage(), e);
         } catch (final IOException e) {
@@ -104,21 +103,40 @@ public class Aws extends Resource {
     }
 
     /**
-    * Converts a JSON InputStream into a Aws object using the provided
+    * Converts a JSON InputStream into a Recording object using the provided
     * ObjectMapper.
     *
     * @param json Raw JSON InputStream
     * @param objectMapper Jackson ObjectMapper
-    * @return Aws object represented by the provided JSON
+    * @return Recording object represented by the provided JSON
     */
-    public static Aws fromJson(final InputStream json, final ObjectMapper objectMapper) {
+    public static Recording fromJson(final InputStream json, final ObjectMapper objectMapper) {
         // Convert all checked exceptions to Runtime
         try {
-            return objectMapper.readValue(json, Aws.class);
+            return objectMapper.readValue(json, Recording.class);
         } catch (final JsonMappingException | JsonParseException e) {
             throw new ApiException(e.getMessage(), e);
         } catch (final IOException e) {
             throw new ApiConnectionException(e.getMessage(), e);
+        }
+    }
+    public enum TestEnum {
+        DIALVERB("DialVerb"),
+        TRUNKING("Trunking");
+
+        private final String value;
+
+        private TestEnum(final String value) {
+            this.value = value;
+        }
+
+        public String toString() {
+            return value;
+        }
+
+        @JsonCreator
+        public static TestEnum forValue(final String value) {
+            return Promoter.enumFromString(value, TestEnum.values());
         }
     }
 
@@ -137,7 +155,7 @@ public class Aws extends Resource {
     private final List<FeedbackIssue> testArrayOfObjects;
 
     @JsonCreator
-    private Aws(
+    private Recording(
         @JsonProperty("account_sid")
         final String accountSid,
 
@@ -243,7 +261,7 @@ public class Aws extends Resource {
             return false;
         }
 
-        Aws other = (Aws) o;
+        Recording other = (Recording) o;
 
         return Objects.equals(accountSid, other.accountSid) &&  Objects.equals(sid, other.sid) &&  Objects.equals(testString, other.testString) &&  Objects.equals(testInteger, other.testInteger) &&  Objects.equals(testObject, other.testObject) &&  Objects.equals(testDateTime, other.testDateTime) &&  Objects.equals(testNumber, other.testNumber) &&  Objects.equals(priceUnit, other.priceUnit) &&  Objects.equals(testNumberFloat, other.testNumberFloat) &&  Objects.equals(testEnum, other.testEnum) &&  Objects.equals(testArrayOfIntegers, other.testArrayOfIntegers) &&  Objects.equals(testArrayOfArrayOfIntegers, other.testArrayOfArrayOfIntegers) &&  Objects.equals(testArrayOfObjects, other.testArrayOfObjects)  ;
     }
