@@ -100,7 +100,7 @@ public class {{resourceName}}Deleter extends Deleter<{{resourceName}}> {
     private void addHeaderParams(final Request request) {
     {{#headerParams}}
         if ({{paramName}} != null) {
-           request.addHeaderParam("{{#lambda.titlecase}}{{baseName}}{{/lambda.titlecase}}", {paramName}}.toString());
+           request.addHeaderParam("{{#lambda.titlecase}}{{baseName}}{{/lambda.titlecase}}", {{paramName}}.toString());
         }
     {{/headerParams}}
     }
