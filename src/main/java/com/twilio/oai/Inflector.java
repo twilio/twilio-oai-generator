@@ -103,7 +103,7 @@ public class Inflector {
          }
 
          public void initWildCardMapping() {
-             wildCardMapping.put("Aws", "AWS");
+             wildCardMapping.put("Aws", "Aws");
              wildCardMapping.put("Addresses", "Address");
              wildCardMapping.put("IpAddresses", "IpAddress");
              wildCardMapping.put("Queries", "Query");
