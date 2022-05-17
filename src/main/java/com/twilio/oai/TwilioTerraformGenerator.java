@@ -207,9 +207,11 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
         final String product = inputSpec.replaceAll(inputSpecPattern, "$1");
         final String productVersion = inputSpec.replaceAll(inputSpecPattern, "$2");
         final String clientPath = String.format("rest/%s/%s", product, productVersion);
+        final boolean isV2010Api = productVersion.contains("2010");
 
         results.put("product", product);
         results.put("productVersion", productVersion);
+        results.put("isV2010Api", isV2010Api);
         results.put("clientService", StringUtils.camelize(product + "_" + productVersion));
         results.put("clientPath", clientPath);
         results.put("resources", resources.values());
