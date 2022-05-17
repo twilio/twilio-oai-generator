@@ -18,7 +18,7 @@ public class ResourceMap implements IResourceTree {
     @Override
     public List<String> ancestors(String resourceName) {
         List<String> ancestorList = new ArrayList<>();
-        Resource resource = findResource(resourceName.toUpperCase(Locale.ROOT), true);
+        Resource resource = findResource(resourceName.toUpperCase(Locale.ROOT), false);
         String className = resource.getClassName();
         resource = resource.getParentResource(this);
         while (resource != null) {

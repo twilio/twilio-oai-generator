@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.twilio.oai.resource.IResourceTree;
 import com.twilio.oai.resource.ResourceMap;
 import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.Operation;
 import lombok.AllArgsConstructor;
 import org.openapitools.codegen.*;
 import org.openapitools.codegen.languages.JavaClientCodegen;
@@ -73,9 +74,12 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
     public void processOpenAPI(final OpenAPI openAPI) {
         resourceTree = new ResourceMap(inflector, PATH_SEPARATOR_PLACEHOLDER);
         openAPI.getPaths().forEach((name, path) -> {
-            String tag = resourceTree.addResource(name, path);
+            resourceTree.addResource(name, path);
+        });
+        openAPI.getPaths().forEach((name, path) -> {
             path.readOperations().forEach(operation -> {
                 // Group operations together by tag. This gives us one file/post-process per resource.
+                String tag = String.join(PATH_SEPARATOR_PLACEHOLDER, resourceTree.ancestors("/"+name.replaceFirst("/[^/]+/", "")));
                 operation.addTagsItem(tag);
             });
         });
@@ -106,7 +110,10 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
 
     @Override
     public String toApiFilename(final String name) {
-        return resourceTree.ancestors(super.toApiFilename(name)).stream().collect(Collectors.joining("/"));
+        String[] split = super.toApiFilename(name).split(PATH_SEPARATOR_PLACEHOLDER);
+        return Arrays.stream(Arrays.copyOfRange(split, 0, split.length - 1))
+                .map(String::toLowerCase)
+                .collect(Collectors.joining("/")) + "/"+split[split.length-1];
     }
 
     @SuppressWarnings("unchecked")
@@ -146,7 +153,8 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
         for (final CodegenOperation co : opList) {
             // Group operations by resource.
             String path = co.path;
-            String resourceName = resourceTree.findResource(co.tags.get(0).getName(), true).getClassName();
+            String[] filePathArray = co.baseName.split(PATH_SEPARATOR_PLACEHOLDER);
+            String resourceName = filePathArray[filePathArray.length-1];
             final Map<String, Object> resource = resources.computeIfAbsent(resourceName, k -> new LinkedHashMap<>());
             populateCrudOperations(resource, co);
             co.requiredParams = co.requiredParams
@@ -235,11 +243,12 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
 
               });
             results.put("recordKey", getRecordKey(opList, this.allModels));
-            List<String> packagePaths = resourceTree.ancestors(co.tags.get(0).getName());
-            String packagePath = packagePaths.subList(0,packagePaths.size()-1).stream().collect(Collectors.joining("."));
-            if (packagePath.isEmpty()) {
-                resource.put("packageSubPart", packagePath);
+            List<String> packagePaths = Arrays.asList(Arrays.copyOfRange(filePathArray,0 , filePathArray.length-1))
+                    .stream().map(String::toLowerCase).collect(Collectors.toList());
+            if (packagePaths.isEmpty()) {
+                resource.put("packageSubPart", "");
             } else {
+                String packagePath = packagePaths.stream().map(String::toLowerCase).collect(Collectors.joining("."));
                 resource.put("packageSubPart", "."+packagePath);
             }
         }
