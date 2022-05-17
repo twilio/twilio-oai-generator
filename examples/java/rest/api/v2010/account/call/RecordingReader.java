@@ -61,7 +61,6 @@ public class RecordingReader extends Reader<Recording> {
     private ZonedDateTime DateCreatedBefore;
     private ZonedDateTime DateCreatedAfter;
     private Integer PageSize;
-    private String PageSizeText;
 
     public RecordingReader(final String CallSid){
         this.CallSid = CallSid;
@@ -91,10 +90,6 @@ public class RecordingReader extends Reader<Recording> {
         this.PageSize = PageSize;
         return this;
     }
-    public RecordingReader setPageSizeText(final String PageSizeText){
-        this.PageSizeText = PageSizeText;
-        return this;
-    }
 
     private void addQueryParams(final Request request) {
         if (DateCreated != null) {
@@ -109,13 +104,7 @@ public class RecordingReader extends Reader<Recording> {
         }
 
         if (getPageSize != null) {
-            request.addQueryParam("PageSize", Integer.toString(getPageSize()));
-        }
-        if (PageSize != null) {
-        }
-
-        if (PageSizeText != null) {
-            request.addQueryParam("PageSizeText", PageSizeText);
+           request.addQueryParam("PageSize", Integer.toString(getPageSize()));
         }
 
     }

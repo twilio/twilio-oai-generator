@@ -66,9 +66,7 @@ public class AwsReader extends Reader<Aws> {
 
     private void addQueryParams(final Request request) {
         if (getPageSize != null) {
-            request.addQueryParam("PageSize", Integer.toString(getPageSize()));
-        }
-        if (PageSize != null) {
+           request.addQueryParam("PageSize", Integer.toString(getPageSize()));
         }
 
     }
