@@ -1,5 +1,5 @@
 
-## twilio_api_accounts_v2010
+## twilio_api_accounts
 
 ### Parameters
 
@@ -12,7 +12,7 @@ Name | Type | Requirement | Description
 **status** | string | Optional | 
 **pause_behavior** | string | Optional | 
 
-## twilio_api_accounts_calls_v2010
+## twilio_api_accounts_calls
 
 ### Parameters
 
@@ -23,7 +23,7 @@ Name | Type | Requirement | Description
 **test_array_of_strings** | list(string) | Optional | 
 **test_integer** | int | *Computed* | INTEGER ID param!!!
 
-## twilio_api_credentials_aws_v2010
+## twilio_api_credentials_aws
 
 ### Parameters
 

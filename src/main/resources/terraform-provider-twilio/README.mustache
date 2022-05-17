@@ -1,5 +1,10 @@
 {{#apiInfo}}{{#apis}}{{#resources}}
+{{#isV2010Api}}
+## twilio_{{product}}_{{nameInSnakeCase}}
+{{/isV2010Api}}
+{{^isV2010Api}}
 ## twilio_{{product}}_{{nameInSnakeCase}}_{{productVersion}}
+{{/isV2010Api}}
 
 ### Parameters
 
