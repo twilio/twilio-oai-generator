@@ -66,33 +66,43 @@ public class {{resourceName}} extends Resource {
     private static final long serialVersionUID = {{serialVersionUID}}L;
 
     {{#hasCreate}}
-    public static {{resourceName}}Creator creator({{#requiredParamsCreate}}final {{{dataType}}} {{{paramName}}}{{^-last}}, {{/-last}}{{/requiredParamsCreate}}){
-        return new {{resourceName}}Creator({{#requiredParamsCreate}}{{{paramName}}}{{^-last}}, {{/-last}}{{/requiredParamsCreate}});
+    {{#signatureListCreate}}
+    public static {{resourceName}}Creator creator({{#.}}final {{{dataType}}} {{{paramName}}}{{^-last}}, {{/-last}}{{/.}}){
+        return new {{resourceName}}Creator({{#.}}{{{paramName}}}{{^-last}}, {{/-last}}{{/.}});
     }
+    {{/signatureListCreate}}
     {{/hasCreate}}
 
     {{#hasFetch}}
-    public static {{resourceName}}Fetcher fetcher({{#requiredParamsFetch}}final {{{dataType}}} {{{paramName}}}{{^-last}}, {{/-last}}{{/requiredParamsFetch}}){
-        return new {{resourceName}}Fetcher({{#requiredParamsFetch}}{{{paramName}}}{{^-last}}, {{/-last}}{{/requiredParamsFetch}});
+    {{#signatureListFetch}}
+    public static {{resourceName}}Fetcher fetcher({{#.}}final {{{dataType}}} {{{paramName}}}{{^-last}}, {{/-last}}{{/.}}){
+        return new {{resourceName}}Fetcher({{#.}}{{{paramName}}}{{^-last}}, {{/-last}}{{/.}});
     }
+    {{/signatureListFetch}}
     {{/hasFetch}}
 
     {{#hasDelete}}
-    public static {{resourceName}}Deleter delete({{#requiredParamsDelete}}final {{{dataType}}} {{{paramName}}}{{^-last}}, {{/-last}}{{/requiredParamsDelete}}){
-        return new {{resourceName}}Deleter({{#requiredParamsDelete}}{{{paramName}}}{{^-last}}, {{/-last}}{{/requiredParamsDelete}});
+    {{#signatureListDelete}}
+    public static {{resourceName}}Deleter delete({{#.}}final {{{dataType}}} {{{paramName}}}{{^-last}}, {{/-last}}{{/.}}){
+        return new {{resourceName}}Deleter({{#.}}{{{paramName}}}{{^-last}}, {{/-last}}{{/.}});
     }
+    {{/signatureListDelete}}
     {{/hasDelete}}
 
     {{#hasRead}}
-    public static {{resourceName}}Reader reader({{#requiredParamsRead}}final {{{dataType}}} {{{paramName}}}{{^-last}}, {{/-last}}{{/requiredParamsRead}}){
-        return new {{resourceName}}Reader({{#requiredParamsRead}}{{{paramName}}}{{^-last}}, {{/-last}}{{/requiredParamsRead}});
+    {{#signatureListRead}}
+    public static {{resourceName}}Reader reader({{#.}}final {{{dataType}}} {{{paramName}}}{{^-last}}, {{/-last}}{{/.}}){
+        return new {{resourceName}}Reader({{#.}}{{{paramName}}}{{^-last}}, {{/-last}}{{/.}});
     }
+    {{/signatureListRead}}
     {{/hasRead}}
 
     {{#hasUpdate}}
-    public static {{resourceName}}Updater update({{#requiredParamsUpdate}}final {{{dataType}}} {{{paramName}}}{{^-last}}, {{/-last}}{{/requiredParamsUpdate}}){
-        return new {{resourceName}}Updater({{#requiredParamsUpdate}}{{{paramName}}}{{^-last}}, {{/-last}}{{/requiredParamsUpdate}});
+    {{#signatureListUpdate}}
+    public static {{resourceName}}Updater update({{#.}}final {{{dataType}}} {{{paramName}}}{{^-last}}, {{/-last}}{{/.}}){
+        return new {{resourceName}}Updater({{#.}}{{{paramName}}}{{^-last}}, {{/-last}}{{/.}});
     }
+    {{/signatureListUpdate}}
     {{/hasUpdate}}
 
     /**

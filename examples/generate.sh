@@ -32,6 +32,14 @@ java -cp ./openapi-generator-cli.jar:target/twilio-openapi-generator.jar  \
   -o $OUT_DIR/api  \
   --global-property apiTests=false,apiDocs=false
 
+OUT_DIR=examples/node/lib/rest/api
+rm -rf $OUT_DIR
+java -cp ./openapi-generator-cli.jar:target/twilio-openapi-generator.jar \
+  org.openapitools.codegen.OpenAPIGenerator \
+  generate -g twilio-node \
+  -i $API_SPEC \
+  -o $OUT_DIR
+
 
 pushd examples/go-client
 docker run \

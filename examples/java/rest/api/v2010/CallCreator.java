@@ -10,7 +10,7 @@
  * Do not edit the class manually.
  */
 
-package com.twilio.rest.api.v2010;
+package com.twilio.rest.api.v2010.account;
 
 import com.twilio.base.Creator;
 import com.twilio.converter.Promoter;
@@ -57,42 +57,39 @@ import java.net.URI;
 
 
 public class CallCreator extends Creator<Call>{
-    private String accountSid;
-    private String requiredStringProperty;
-    private List<String> testArrayOfStrings;
-    public CallCreator(final String accountSid, final String requiredStringProperty) {
-    
-        this.accountSid = accountSid;
-    
-        this.requiredStringProperty = requiredStringProperty;
-    
+    private String RequiredStringProperty;
+    private String AccountSid;
+    private List<String> TestArrayOfStrings;
+
+    public CallCreator(final String RequiredStringProperty) {
+        this.RequiredStringProperty = RequiredStringProperty;
+    }
+    public CallCreator(final String AccountSid, final String RequiredStringProperty) {
+        this.AccountSid = AccountSid;
+        this.RequiredStringProperty = RequiredStringProperty;
     }
 
-    public CallCreator setAccountSid(final String AccountSid){
-        this.accountSid = accountSid;
-        return this;
-    }
     public CallCreator setRequiredStringProperty(final String RequiredStringProperty){
-        this.requiredStringProperty = requiredStringProperty;
+        this.RequiredStringProperty = RequiredStringProperty;
         return this;
     }
     public CallCreator setTestArrayOfStrings(final List<String> TestArrayOfStrings){
-        this.testArrayOfStrings = testArrayOfStrings;
+        this.TestArrayOfStrings = TestArrayOfStrings;
         return this;
     }
 
     @Override
     public Call create(final TwilioRestClient client){
         String path = "/2010-04-01/Accounts/{AccountSid}/Calls.json";
-        path = path.replace("{"+"accountSid"+"}", this.accountSid.toString());
-        path = path.replace("{"+"requiredStringProperty"+"}", this.requiredStringProperty.toString());
+        this.AccountSid = this.AccountSid == null ? client.getAccountSid() : this.AccountSid;
+        path = path.replace("{"+"AccountSid"+"}", this.AccountSid.toString());
+        path = path.replace("{"+"RequiredStringProperty"+"}", this.RequiredStringProperty.toString());
 
         Request request = new Request(
             HttpMethod.POST,
             Domains.API.toString(),
             path
         );
-
         addPostParams(request);
         Response response = client.request(request);
         if (response == null) {
@@ -107,20 +104,12 @@ public class CallCreator extends Creator<Call>{
 
         return Call.fromJson(response.getStream(), client.getObjectMapper());
     }
-
-
     private void addPostParams(final Request request) {
-        if (accountSid != null) {
-        request.addPostParam("AccountSid", accountSid.toString());
+        if (RequiredStringProperty != null) {
+        request.addPostParam("RequiredStringProperty", RequiredStringProperty.toString());
         }
-
-        if (requiredStringProperty != null) {
-        request.addPostParam("RequiredStringProperty", requiredStringProperty.toString());
+        if (TestArrayOfStrings != null) {
+        request.addPostParam("TestArrayOfStrings", TestArrayOfStrings.toString());
         }
-
-        if (testArrayOfStrings != null) {
-        request.addPostParam("TestArrayOfStrings", testArrayOfStrings.toString());
-        }
-
     }
 }

@@ -40,20 +40,22 @@ import lombok.ToString;
 public class {{resourceName}}Reader extends Reader<{{resourceName}}> {
 {{#allParams}}
     private {{{dataType}}} {{paramName}};
+{{/allParams}}
 
+{{#signatureListRead}}
+    public {{resourceName}}Reader({{#.}}final {{{dataType}}} {{paramName}}{{^-last}}, {{/-last}}{{/.}}){
+    {{#.}}
+        this.{{paramName}} = {{paramName}};
+    {{/.}}
+    }
+{{/signatureListRead}}
+
+{{#vendorExtensions.x-non-path-params}}
     public {{resourceName}}Reader set{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}(final {{{dataType}}} {{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}){
         this.{{paramName}} = {{paramName}};
         return this;
     }
-{{/allParams}}
-
-    public {{resourceName}}Reader({{#requiredParams}}final {{{dataType}}} {{paramName}}{{^-last}}, {{/-last}}{{/requiredParams}}){
-    {{#allParams}}
-    {{#required}}
-        this.{{paramName}} = {{paramName}};
-    {{/required}}
-    {{/allParams}}
-    }
+{{/vendorExtensions.x-non-path-params}}
 
     private void addQueryParams(final Request request) {
         {{#queryParams}}
@@ -80,6 +82,12 @@ public class {{resourceName}}Reader extends Reader<{{resourceName}}> {
 
     public Page<{{resourceName}}> firstPage(final TwilioRestClient client) {
         String path = "{{{path}}}";
+        {{#allParams}}
+        {{#vendorExtensions.x-is-account-sid}}
+        this.{{paramName}} = this.{{paramName}} == null ? client.getAccountSid() : this.{{paramName}};
+        path = path.replace("{"+"{{paramName}}"+"}", this.{{paramName}}.toString());
+        {{/vendorExtensions.x-is-account-sid}}
+        {{/allParams}}
         {{#requiredParams}}
         path = path.replace("{"+"{{paramName}}"+"}", this.{{paramName}}.toString());
         {{/requiredParams}}
@@ -91,6 +99,12 @@ public class {{resourceName}}Reader extends Reader<{{resourceName}}> {
         );
 
         addQueryParams(request);
+        {{#formParams.0}}
+        addPostParams(request);
+        {{/formParams.0}}
+        {{#headerParams.0}}
+        addHeaderParams(request);
+        {{/headerParams.0}}
         return pageForRequest(client, request);
     }
 
@@ -143,6 +157,29 @@ public class {{resourceName}}Reader extends Reader<{{resourceName}}> {
 
         return pageForRequest(client, request);
     }
+{{#formParams.0}}
+    private void addPostParams(final Request request) {
+{{#formParams}}
+    if ({{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}} != null){
+    {{#isFreeFormObject}}
+        request.addPostParam("{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}",  Converter.mapToJson({{paramName}}));
+    {{/isFreeFormObject}}
+    {{^isFreeFormObject}}
+        request.addPostParam("{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}", {{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}.toString());
+    {{/isFreeFormObject}}
+    }
+{{/formParams}}
+    }
+{{/formParams.0}}
+    {{#headerParams.0}}
+    private void addHeaderParams(final Request request) {
+    {{#headerParams}}
+        if ({{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}} != null) {
+            request.addHeaderParam("{{baseName}}", {{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}.toString());
+        }
+    {{/headerParams}}
+    }
+    {{/headerParams.0}}
 }
 {{/vendorExtensions.x-is-read-operation}}
 {{/operations}}

@@ -10,7 +10,7 @@
  * Do not edit the class manually.
  */
 
-package com.twilio.rest.api.v2010;
+package com.twilio.rest.api.v2010.account.call;
 
 import com.twilio.base.Creator;
 import com.twilio.converter.Promoter;
@@ -57,45 +57,42 @@ import java.net.URI;
 
 
 public class FeedbackCallSummaryCreator extends Creator<FeedbackCallSummary>{
-    private String accountSid;
-    private LocalDate endDate;
-    private LocalDate startDate;
-    public FeedbackCallSummaryCreator(final String accountSid, final LocalDate endDate, final LocalDate startDate) {
-    
-        this.accountSid = accountSid;
-    
-        this.endDate = endDate;
-    
-        this.startDate = startDate;
-    
+    private LocalDate EndDate;
+    private LocalDate StartDate;
+    private String AccountSid;
+
+    public FeedbackCallSummaryCreator(final LocalDate EndDate, final LocalDate StartDate) {
+        this.EndDate = EndDate;
+        this.StartDate = StartDate;
+    }
+    public FeedbackCallSummaryCreator(final String AccountSid, final LocalDate EndDate, final LocalDate StartDate) {
+        this.AccountSid = AccountSid;
+        this.EndDate = EndDate;
+        this.StartDate = StartDate;
     }
 
-    public FeedbackCallSummaryCreator setAccountSid(final String AccountSid){
-        this.accountSid = accountSid;
-        return this;
-    }
     public FeedbackCallSummaryCreator setEndDate(final LocalDate EndDate){
-        this.endDate = endDate;
+        this.EndDate = EndDate;
         return this;
     }
     public FeedbackCallSummaryCreator setStartDate(final LocalDate StartDate){
-        this.startDate = startDate;
+        this.StartDate = StartDate;
         return this;
     }
 
     @Override
     public FeedbackCallSummary create(final TwilioRestClient client){
         String path = "/2010-04-01/Accounts/{AccountSid}/Calls/FeedbackSummary.json";
-        path = path.replace("{"+"accountSid"+"}", this.accountSid.toString());
-        path = path.replace("{"+"endDate"+"}", this.endDate.toString());
-        path = path.replace("{"+"startDate"+"}", this.startDate.toString());
+        this.AccountSid = this.AccountSid == null ? client.getAccountSid() : this.AccountSid;
+        path = path.replace("{"+"AccountSid"+"}", this.AccountSid.toString());
+        path = path.replace("{"+"EndDate"+"}", this.EndDate.toString());
+        path = path.replace("{"+"StartDate"+"}", this.StartDate.toString());
 
         Request request = new Request(
             HttpMethod.POST,
             Domains.API.toString(),
             path
         );
-
         addPostParams(request);
         Response response = client.request(request);
         if (response == null) {
@@ -110,20 +107,12 @@ public class FeedbackCallSummaryCreator extends Creator<FeedbackCallSummary>{
 
         return FeedbackCallSummary.fromJson(response.getStream(), client.getObjectMapper());
     }
-
-
     private void addPostParams(final Request request) {
-        if (accountSid != null) {
-        request.addPostParam("AccountSid", accountSid.toString());
+        if (EndDate != null) {
+        request.addPostParam("EndDate", EndDate.toString());
         }
-
-        if (endDate != null) {
-        request.addPostParam("EndDate", endDate.toString());
+        if (StartDate != null) {
+        request.addPostParam("StartDate", StartDate.toString());
         }
-
-        if (startDate != null) {
-        request.addPostParam("StartDate", startDate.toString());
-        }
-
     }
 }

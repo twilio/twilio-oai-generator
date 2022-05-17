@@ -10,7 +10,7 @@
  * Do not edit the class manually.
  */
 
-package com.twilio.rest.api.v2010;
+package com.twilio.rest.api.v2010.account;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -58,26 +58,33 @@ import java.math.BigDecimal;
 import com.twilio.type.PhoneNumberCapabilities;
 import com.twilio.type.FeedbackIssue;
 import com.twilio.type.IceServer;
-import com.twilio.type.InboundCallPrice;
-import com.twilio.type.OutboundPrefixPriceWithOrigin;
-import com.twilio.type.OutboundPrefixPrice;
-import com.twilio.type.OutboundCallPriceWithOrigin;
-import com.twilio.type.PhoneNumberPrice;
-import com.twilio.type.InboundSmsPrice;
-import com.twilio.type.OutboundSmsPrice;
-import com.twilio.type.OutboundCallPrice;
-import com.twilio.type.RecordingRule;
+
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @ToString
 public class Call extends Resource {
     private static final long serialVersionUID = 44112120076447L;
 
-    public static CallCreator creator(final String accountSid, final String requiredStringProperty){
-        return new CallCreator(accountSid, requiredStringProperty);
+    public static CallCreator creator(final String RequiredStringProperty){
+        return new CallCreator(RequiredStringProperty);
+    }
+    public static CallCreator creator(final String AccountSid, final String RequiredStringProperty){
+        return new CallCreator(AccountSid, RequiredStringProperty);
     }
 
+    public static CallFetcher fetcher(final Integer TestInteger){
+        return new CallFetcher(TestInteger);
+    }
+    public static CallFetcher fetcher(final String AccountSid, final Integer TestInteger){
+        return new CallFetcher(AccountSid, TestInteger);
+    }
 
+    public static CallDeleter delete(final Integer TestInteger){
+        return new CallDeleter(TestInteger);
+    }
+    public static CallDeleter delete(final String AccountSid, final Integer TestInteger){
+        return new CallDeleter(AccountSid, TestInteger);
+    }
 
 
 
@@ -115,25 +122,6 @@ public class Call extends Resource {
             throw new ApiException(e.getMessage(), e);
         } catch (final IOException e) {
             throw new ApiConnectionException(e.getMessage(), e);
-        }
-    }
-    public enum TestEnum {
-        DIALVERB("DialVerb"),
-        TRUNKING("Trunking");
-
-        private final String value;
-
-        private TestEnum(final String value) {
-            this.value = value;
-        }
-
-        public String toString() {
-            return value;
-        }
-
-        @JsonCreator
-        public static TestEnum forValue(final String value) {
-            return Promoter.enumFromString(value, TestEnum.values());
         }
     }
 

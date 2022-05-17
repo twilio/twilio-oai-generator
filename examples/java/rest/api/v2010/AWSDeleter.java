@@ -65,7 +65,6 @@ public class AWSDeleter extends Deleter<AWS> {
             Domains.API.toString(),
             path
         );
-
         Response response = client.request(request);
 
         if (response == null) {

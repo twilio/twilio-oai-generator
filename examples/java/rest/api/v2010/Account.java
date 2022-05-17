@@ -58,43 +58,44 @@ import java.math.BigDecimal;
 import com.twilio.type.PhoneNumberCapabilities;
 import com.twilio.type.FeedbackIssue;
 import com.twilio.type.IceServer;
-import com.twilio.type.InboundCallPrice;
-import com.twilio.type.OutboundPrefixPriceWithOrigin;
-import com.twilio.type.OutboundPrefixPrice;
-import com.twilio.type.OutboundCallPriceWithOrigin;
-import com.twilio.type.PhoneNumberPrice;
-import com.twilio.type.InboundSmsPrice;
-import com.twilio.type.OutboundSmsPrice;
-import com.twilio.type.OutboundCallPrice;
-import com.twilio.type.RecordingRule;
+
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @ToString
-public class Recording extends Resource {
+public class Account extends Resource {
     private static final long serialVersionUID = 44112120076447L;
 
-    public static RecordingCreator creator(final String accountSid, final String callSid){
-        return new RecordingCreator(accountSid, callSid);
+    public static AccountCreator creator(){
+        return new AccountCreator();
     }
 
-
-
-    public static RecordingReader reader(final String accountSid, final String callSid){
-        return new RecordingReader(accountSid, callSid);
+    public static AccountFetcher fetcher(final String Sid){
+        return new AccountFetcher(Sid);
     }
 
+    public static AccountDeleter delete(final String Sid){
+        return new AccountDeleter(Sid);
+    }
+
+    public static AccountReader reader(){
+        return new AccountReader();
+    }
+
+    public static AccountUpdater update(final String Sid, final String Status){
+        return new AccountUpdater(Sid, Status);
+    }
 
     /**
-    * Converts a JSON String into a Recording object using the provided ObjectMapper.
+    * Converts a JSON String into a Account object using the provided ObjectMapper.
     *
     * @param json Raw JSON String
     * @param objectMapper Jackson ObjectMapper
-    * @return Recording object represented by the provided JSON
+    * @return Account object represented by the provided JSON
     */
-    public static Recording fromJson(final String json, final ObjectMapper objectMapper) {
+    public static Account fromJson(final String json, final ObjectMapper objectMapper) {
         // Convert all checked exceptions to Runtime
         try {
-            return objectMapper.readValue(json, Recording.class);
+            return objectMapper.readValue(json, Account.class);
         } catch (final JsonMappingException | JsonParseException e) {
             throw new ApiException(e.getMessage(), e);
         } catch (final IOException e) {
@@ -103,40 +104,21 @@ public class Recording extends Resource {
     }
 
     /**
-    * Converts a JSON InputStream into a Recording object using the provided
+    * Converts a JSON InputStream into a Account object using the provided
     * ObjectMapper.
     *
     * @param json Raw JSON InputStream
     * @param objectMapper Jackson ObjectMapper
-    * @return Recording object represented by the provided JSON
+    * @return Account object represented by the provided JSON
     */
-    public static Recording fromJson(final InputStream json, final ObjectMapper objectMapper) {
+    public static Account fromJson(final InputStream json, final ObjectMapper objectMapper) {
         // Convert all checked exceptions to Runtime
         try {
-            return objectMapper.readValue(json, Recording.class);
+            return objectMapper.readValue(json, Account.class);
         } catch (final JsonMappingException | JsonParseException e) {
             throw new ApiException(e.getMessage(), e);
         } catch (final IOException e) {
             throw new ApiConnectionException(e.getMessage(), e);
-        }
-    }
-    public enum TestEnum {
-        DIALVERB("DialVerb"),
-        TRUNKING("Trunking");
-
-        private final String value;
-
-        private TestEnum(final String value) {
-            this.value = value;
-        }
-
-        public String toString() {
-            return value;
-        }
-
-        @JsonCreator
-        public static TestEnum forValue(final String value) {
-            return Promoter.enumFromString(value, TestEnum.values());
         }
     }
 
@@ -155,7 +137,7 @@ public class Recording extends Resource {
     private final List<FeedbackIssue> testArrayOfObjects;
 
     @JsonCreator
-    private Recording(
+    private Account(
         @JsonProperty("account_sid")
         final String accountSid,
 
@@ -261,7 +243,7 @@ public class Recording extends Resource {
             return false;
         }
 
-        Recording other = (Recording) o;
+        Account other = (Account) o;
 
         return Objects.equals(accountSid, other.accountSid) &&  Objects.equals(sid, other.sid) &&  Objects.equals(testString, other.testString) &&  Objects.equals(testInteger, other.testInteger) &&  Objects.equals(testObject, other.testObject) &&  Objects.equals(testDateTime, other.testDateTime) &&  Objects.equals(testNumber, other.testNumber) &&  Objects.equals(priceUnit, other.priceUnit) &&  Objects.equals(testNumberFloat, other.testNumberFloat) &&  Objects.equals(testEnum, other.testEnum) &&  Objects.equals(testArrayOfIntegers, other.testArrayOfIntegers) &&  Objects.equals(testArrayOfArrayOfIntegers, other.testArrayOfArrayOfIntegers) &&  Objects.equals(testArrayOfObjects, other.testArrayOfObjects)  ;
     }

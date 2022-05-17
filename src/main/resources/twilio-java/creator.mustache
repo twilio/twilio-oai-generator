@@ -44,22 +44,31 @@ public class {{resourceName}}Creator extends Creator<{{resourceName}}>{
 {{#allParams}}
     private {{{dataType}}} {{paramName}};
 {{/allParams}}
-    public {{resourceName}}Creator({{#requiredParams}}final {{{dataType}}} {{paramName}}{{^-last}}, {{/-last}}{{/requiredParams}}) {
-    {{#requiredParams}}{{#required}}
-        this.{{paramName}} = {{paramName}};
-    {{/required}}{{/requiredParams}}
-    }
 
-{{#allParams}}
+{{#signatureListCreate}}
+    public {{resourceName}}Creator({{#.}}final {{{dataType}}} {{paramName}}{{^-last}}, {{/-last}}{{/.}}) {
+    {{#.}}
+        this.{{paramName}} = {{paramName}};
+    {{/.}}
+    }
+{{/signatureListCreate}}
+
+{{#vendorExtensions.x-non-path-params}}
     public {{resourceName}}Creator set{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}(final {{{dataType}}} {{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}){
         this.{{paramName}} = {{paramName}};
         return this;
     }
-{{/allParams}}
+{{/vendorExtensions.x-non-path-params}}
 
     @Override
     public {{resourceName}} create(final TwilioRestClient client){
         String path = "{{{path}}}";
+        {{#allParams}}
+        {{#vendorExtensions.x-is-account-sid}}
+        this.{{paramName}} = this.{{paramName}} == null ? client.getAccountSid() : this.{{paramName}};
+        path = path.replace("{"+"{{paramName}}"+"}", this.{{paramName}}.toString());
+        {{/vendorExtensions.x-is-account-sid}}
+        {{/allParams}}
         {{#requiredParams}}
         path = path.replace("{"+"{{paramName}}"+"}", this.{{paramName}}.toString());
         {{/requiredParams}}
@@ -69,8 +78,12 @@ public class {{resourceName}}Creator extends Creator<{{resourceName}}>{
             Domains.{{#lambda.uppercase}}{{domain}}{{/lambda.uppercase}}.toString(),
             path
         );
-
+        {{#formParams.0}}
         addPostParams(request);
+        {{/formParams.0}}
+        {{#headerParams.0}}
+        addHeaderParams(request);
+        {{/headerParams.0}}
         Response response = client.request(request);
         if (response == null) {
             throw new ApiConnectionException("{{resourceName}} creation failed: Unable to connect to server");
@@ -84,21 +97,29 @@ public class {{resourceName}}Creator extends Creator<{{resourceName}}>{
 
         return {{resourceName}}.fromJson(response.getStream(), client.getObjectMapper());
     }
-
-
+{{#formParams.0}}
     private void addPostParams(final Request request) {
-{{#allParams}}
-        if ({{paramName}} != null) {
+{{#formParams}}
+        if ({{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}} != null) {
         {{#isFreeFormObject}}
         request.addPostParam("{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}",  Converter.mapToJson({{paramName}}));
         {{/isFreeFormObject}}
         {{^isFreeFormObject}}
-        request.addPostParam("{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}", {{paramName}}.toString());
+        request.addPostParam("{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}", {{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}.toString());
         {{/isFreeFormObject}}
         }
-
-{{/allParams}}
+{{/formParams}}
     }
+{{/formParams.0}}
+    {{#headerParams.0}}
+    private void addHeaderParams(final Request request) {
+    {{#headerParams}}
+        if ({{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}} != null) {
+           request.addHeaderParam("{{baseName}}", {{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}.toString());
+        }
+    {{/headerParams}}
+    }
+    {{/headerParams.0}}
 }
 {{/vendorExtensions.x-is-create-operation}}
 {{/operations}}
