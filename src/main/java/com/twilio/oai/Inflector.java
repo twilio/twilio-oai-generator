@@ -75,7 +75,6 @@ public class Inflector {
         }
 
         private void initIrregulars() {
-            this.addIrregulars("Aws");
             this.addIrregulars("AuthTypes");
             this.addIrregulars("AuthTypeCalls");
             this.addIrregulars("AuthTypeTegistrations");
@@ -104,6 +103,7 @@ public class Inflector {
          }
 
          public void initWildCardMapping() {
+             wildCardMapping.put("Aws", "AWS");
              wildCardMapping.put("Addresses", "Address");
              wildCardMapping.put("IpAddresses", "IpAddress");
              wildCardMapping.put("Queries", "Query");

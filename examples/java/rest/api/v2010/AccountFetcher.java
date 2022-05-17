@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.time.ZonedDateTime;
+import java.time.LocalDate;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -49,16 +50,16 @@ import lombok.ToString;
 
 
 public class AccountFetcher extends Fetcher<Account> {
-    private String Sid;
+    private String sid;
 
-    public AccountFetcher(final String Sid){
-        this.Sid = Sid;
+    public AccountFetcher(final String sid){
+        this.sid = sid;
     }
 
     @Override
     public Account fetch(final TwilioRestClient client) {
         String path = "/2010-04-01/Accounts/{Sid}.json";
-        path = path.replace("{"+"Sid"+"}", this.Sid.toString());
+        path = path.replace("{"+"Sid"+"}", this.sid.toString());
 
         Request request = new Request(
             HttpMethod.GET,

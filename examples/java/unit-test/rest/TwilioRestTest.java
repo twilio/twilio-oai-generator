@@ -11,11 +11,11 @@ import com.twilio.rest.api.v2010.Account;
 import com.twilio.rest.api.v2010.AccountCreator;
 import com.twilio.rest.api.v2010.AccountFetcher;
 import com.twilio.rest.api.v2010.AccountReader;
-import com.twilio.rest.api.v2010.account.Call;
-import com.twilio.rest.api.v2010.account.CallFetcher;
-import com.twilio.rest.api.v2010.credential.Aws;
-import com.twilio.rest.api.v2010.credential.AwsCreator;
-import com.twilio.rest.api.v2010.credential.AwsReader;
+import com.twilio.rest.api.v2010.Call;
+import com.twilio.rest.api.v2010.CallFetcher;
+import com.twilio.rest.api.v2010.Aws;
+import com.twilio.rest.api.v2010.AwsCreator;
+import com.twilio.rest.api.v2010.AwsReader;
 
 import java.net.URI;
 import java.time.LocalDate;
@@ -54,9 +54,9 @@ public class TwilioRestTest {
     @Test
     public void testShouldMakeValidAPICall() {
         Request mockRequest = new Request(
-            HttpMethod.GET,
-            "api",
-            "/2010-04-01/Accounts/AC222222222222222222222222222222.json"
+                HttpMethod.GET,
+                "api",
+                "/2010-04-01/Accounts/AC222222222222222222222222222222.json"
         );
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
@@ -71,9 +71,9 @@ public class TwilioRestTest {
     @Test
     public void testShouldSendAddedHeadersThroughRestClient() {
         Request mockRequest = new Request(
-            HttpMethod.POST,
-            Domains.API.toString(),
-            "/2010-04-01/Accounts.json"
+                HttpMethod.POST,
+                Domains.API.toString(),
+                "/2010-04-01/Accounts.json"
         );
         mockRequest.addHeaderParam("X-Twilio-Webhook-Enabled", "true");
         mockRequest.addPostParam("RecordingStatusCallback", "https://validurl.com");
@@ -93,9 +93,9 @@ public class TwilioRestTest {
     @Test
     public void testShouldQueryParamInRequest() {
         Request mockRequest = new Request(
-            HttpMethod.GET,
-            "api",
-            "/2010-04-01/Accounts.json"
+                HttpMethod.GET,
+                "api",
+                "/2010-04-01/Accounts.json"
         );
         String url = "https://api.twilio.com/2010-04-01/Accounts.json";
         ZonedDateTime currentDateTime = ZonedDateTime.now();
@@ -126,9 +126,9 @@ public class TwilioRestTest {
     public void testShouldSendArrayTypeParamInRequest() {
         List<String> recordingStatusCallbackEvent = Arrays.asList("http://test1.com/", "http://test2.com");
         Request mockRequest = new Request(
-            HttpMethod.POST,
-            Domains.API.toString(),
-            "/2010-04-01/Accounts.json"
+                HttpMethod.POST,
+                Domains.API.toString(),
+                "/2010-04-01/Accounts.json"
         );
         mockRequest.addPostParam("RecordingStatusCallbackEvent", recordingStatusCallbackEvent.toString());
         mockRequest.addPostParam("RecordingStatusCallback", "https://validurl.com");
@@ -151,26 +151,26 @@ public class TwilioRestTest {
     public void testShouldAddAccountSidIfNotPresent() {
         when(twilioRestClient.getAccountSid()).thenReturn("AC222222222222222222222222222222");
         Request mockRequest = new Request(
-            HttpMethod.GET,
-            Domains.API.toString(),
-            "/2010-04-01/Accounts/AC222222222222222222222222222222/Calls/123.json"
+                HttpMethod.GET,
+                Domains.API.toString(),
+                "/2010-04-01/Accounts/AC222222222222222222222222222222/Calls/123.json"
         );
         ObjectMapper objectMapper = new ObjectMapper();
         when(twilioRestClient.getObjectMapper()).thenReturn(objectMapper);
         when(twilioRestClient.request(mockRequest)).thenReturn(new Response("{\"account_sid\":\"AC222222222222222222222222222222\",\"call_sid\":\"PNXXXXY\", \"sid\":123, \"test_object\":{\"mms\": true, \"sms\":false, \"voice\": false, \"fax\":true}}", 200));
         Call call = new CallFetcher(123).fetch(twilioRestClient);
         assertNotNull(call);
-        assertEquals("123", call.getSid());
-        assertEquals("AC222222222222222222222222222222", call.getAccountSid());
+        assertEquals(call.getSid(), "123");
+        assertEquals(call.getAccountSid(), "AC222222222222222222222222222222");
     }
 
 
     @Test
     public void testShouldReadListOfMessages() {
         Request mockRequest = new Request(
-            HttpMethod.GET,
-            "api",
-            "/v1/Credentials/AWS"
+                HttpMethod.GET,
+                "api",
+                "/v1/Credentials/AWS"
         );
         String url = "https://api.twilio.com/v1/Credentials/AWS";
         ObjectMapper objectMapper = new ObjectMapper();
@@ -178,17 +178,17 @@ public class TwilioRestTest {
         when(twilioRestClient.request(mockRequest)).thenReturn(new Response(testResponse, 200));
         when(twilioRestClient.getObjectMapper()).thenReturn(objectMapper);
         Page<Aws> awsPage = new AwsReader().firstPage(twilioRestClient);
-        assertEquals("Ahoy",  awsPage.getRecords().get(0).getTestString());
-        assertEquals("Hello",  awsPage.getRecords().get(1).getTestString());
+        assertEquals(awsPage.getRecords().get(0).getTestString(), "Ahoy"  );
+        assertEquals(awsPage.getRecords().get(1).getTestString(), "Hello" );
     }
 
     @Test
     public void testShouldReadPageOfMessages() {
         String uri = "/2010-04-01/Accounts.json";
         Request mockRequestPage0 = new Request(
-            HttpMethod.GET,
-            "api",
-            uri
+                HttpMethod.GET,
+                "api",
+                uri
         );
         ObjectMapper objectMapper = new ObjectMapper();
         when(twilioRestClient.getObjectMapper()).thenReturn(objectMapper);
@@ -199,9 +199,9 @@ public class TwilioRestTest {
         when(twilioRestClient.request(mockRequestPage0)).thenReturn(new Response(responseContent, 200));
 
         Request mockRequestPage1 = new Request(
-            HttpMethod.GET,
-            "api",
-            "/2010-04-01/Accounts.jsonFrom=9999999999&PageNumber=&To=4444444444&PageSize=2&Page=1&PageToken=PASMc49f620580b24424bcfa885b1f741130?PageSize=2"
+                HttpMethod.GET,
+                "api",
+                "/2010-04-01/Accounts.jsonFrom=9999999999&PageNumber=&To=4444444444&PageSize=2&Page=1&PageToken=PASMc49f620580b24424bcfa885b1f741130?PageSize=2"
         );
         String responseContent2 = "{\"accounts\":[{\"call_sid\":\"PNXXXXY\", \"sid\":123, \"test_string\":\"Matey\"}], \"meta\": {\"url\":\"" + url + "\", \"next_page_url\":\"" + ""  + "\", \"previous_page_url\":\"" + url + "?PageSize=2" + "\", \"first_page_url\":\"" + url + "?PageSize=2" + "\", \"page_size\":2}}";
         when(twilioRestClient.request(mockRequestPage1)).thenReturn(new Response(responseContent2, 200));
@@ -213,16 +213,16 @@ public class TwilioRestTest {
             assertNotNull(accountVal);
             testStringValues.add(accountVal.getTestString());
         });
-        assertEquals("Ahoy", testStringValues.get(0));
-        assertEquals("Matey", testStringValues.get(1));
+        assertEquals(testStringValues.get(0), "Ahoy");
+        assertEquals(testStringValues.get(1), "Matey");
     }
 
     @Test
     public void testListError() {
         Request mockRequest = new Request(
-            HttpMethod.GET,
-            "api",
-            "/v1/Credentials/AWS"
+                HttpMethod.GET,
+                "api",
+                "/v1/Credentials/AWS"
         );
         ObjectMapper objectMapper = new ObjectMapper();
 
@@ -243,9 +243,9 @@ public class TwilioRestTest {
     @Test
     public void testObjectArrayTypeParam() {
         Request mockRequest = new Request(
-            HttpMethod.POST,
-            "api",
-            "/v1/Credentials/AWS"
+                HttpMethod.POST,
+                "api",
+                "/v1/Credentials/AWS"
         );
         Map<String, Object> item1 = new HashMap<>();
         Map<String, Object> item2 = new HashMap<>();
@@ -267,14 +267,14 @@ public class TwilioRestTest {
     @Test
     public void testShouldSupportNestedPropertiesResponse() {
         Request mockRequest = new Request(
-            HttpMethod.GET,
-            "api",
-            "/2010-04-01/Accounts.json"
+                HttpMethod.GET,
+                "api",
+                "/2010-04-01/Accounts.json"
         );
         Request mockRequest2 = new Request(
-            HttpMethod.GET,
-            "api",
-            "/2010-04-01/Accounts.json?PageSize=5"
+                HttpMethod.GET,
+                "api",
+                "/2010-04-01/Accounts.json?PageSize=5"
         );
         String url = "https://api.twilio.com/2010-04-01/Accounts.json";
         ZonedDateTime currentDateTime = ZonedDateTime.now();
@@ -310,14 +310,14 @@ public class TwilioRestTest {
     @Test
     public void testShouldSupportArrayOfObjectResponse() {
         Request mockRequest = new Request(
-            HttpMethod.GET,
-            "api",
-            "/2010-04-01/Accounts.json"
+                HttpMethod.GET,
+                "api",
+                "/2010-04-01/Accounts.json"
         );
         Request mockRequest2 = new Request(
-            HttpMethod.GET,
-            "api",
-            "/2010-04-01/Accounts.json?PageSize=5"
+                HttpMethod.GET,
+                "api",
+                "/2010-04-01/Accounts.json?PageSize=5"
         );
         String url = "https://api.twilio.com/2010-04-01/Accounts.json";
         ZonedDateTime currentDateTime = ZonedDateTime.now();
@@ -352,14 +352,14 @@ public class TwilioRestTest {
     @Test
     public void testShouldSupportDeserializationTypes() {
         Request mockRequest = new Request(
-            HttpMethod.GET,
-            "api",
-            "/2010-04-01/Accounts.json"
+                HttpMethod.GET,
+                "api",
+                "/2010-04-01/Accounts.json"
         );
         Request mockRequest2 = new Request(
-            HttpMethod.GET,
-            "api",
-            "/2010-04-01/Accounts.json?PageSize=5"
+                HttpMethod.GET,
+                "api",
+                "/2010-04-01/Accounts.json?PageSize=5"
         );
         String url = "https://api.twilio.com/2010-04-01/Accounts.json";
         ZonedDateTime currentDateTime = ZonedDateTime.now();

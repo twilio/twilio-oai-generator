@@ -6,14 +6,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.twilio.oai.resource.IResourceTree;
 import com.twilio.oai.resource.ResourceMap;
 import io.swagger.v3.oas.models.OpenAPI;
-import io.swagger.v3.oas.models.Operation;
+import io.swagger.v3.oas.models.PathItem;
 import lombok.AllArgsConstructor;
 import org.openapitools.codegen.*;
 import org.openapitools.codegen.languages.JavaClientCodegen;
 import org.openapitools.codegen.utils.StringUtils;
 
-
-import java.io.File;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.math.BigInteger;
@@ -68,8 +66,6 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
         apiTemplateFiles.put("fetcher.mustache", "Fetcher.java");
         apiTemplateFiles.put("reader.mustache", "Reader.java");
         apiTemplateFiles.put("updater.mustache", "Updater.java");
-
-        supportingFiles.add(new SupportingFile("Domains.mustache", "Domains.java"));
     }
 
     @Override
@@ -227,26 +223,14 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
             resourceOperationList.add(co);
             resource.put("path", path);
             resource.put("resourceName", resourceName);
-            co.allParams = co.allParams
-                    .stream()
-                    .map(ConventionResolver::resolveParameter)
-                    .map(Optional::get)
-                    .collect(Collectors.toList());
-            co.pathParams = co.pathParams
-                    .stream()
-                    .map(ConventionResolver::resolveParameter)
-                    .map(Optional::get)
-                    .collect(Collectors.toList());
-            co.queryParams = co.queryParams.stream().map(ConventionResolver::resolveParamTypes)
-                    .map(ConventionResolver::prefixedCollapsibleMap)
-                    .collect(Collectors.toList());
+            updateCodeOperationParams(co);
             co.pathParams = null;
             co.hasParams = !co.allParams.isEmpty();
             co.allParams.stream().map(ConventionResolver::resolveParamTypes).map(item -> StringUtils.camelize(item.paramName)).collect(Collectors.toList());
             co.hasRequiredParams = !co.requiredParams.isEmpty();
             resource.put("resourcePathParams", co.pathParams);
             resource.put("resourceRequiredParams", co.requiredParams);
-            resource.put("serialVersionUID",1L);
+            resource.put("serialVersionUID",1);
             co.vendorExtensions.put("x-non-path-params", getNonPathParams(co.allParams));
 
             if (co.bodyParam != null) {
@@ -491,6 +475,28 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
             return str;
         }
         return str.substring(0, 1).toUpperCase() + str.substring(1);
+    }
+
+    private void updateCodeOperationParams(final CodegenOperation co) {
+        co.allParams = co.allParams
+                .stream()
+                .map(ConventionResolver::resolveParameter)
+                .map(Optional::get)
+                .collect(Collectors.toList());
+        co.pathParams = co.pathParams
+                .stream()
+                .map(ConventionResolver::resolveParameter)
+                .map(Optional::get)
+                .collect(Collectors.toList());
+        co.queryParams = co.queryParams.stream().map(ConventionResolver::resolveParamTypes)
+                .map(ConventionResolver::prefixedCollapsibleMap)
+                .collect(Collectors.toList());
+        co.formParams = co.formParams.stream().map(ConventionResolver::resolveParamTypes)
+                .map(ConventionResolver::prefixedCollapsibleMap)
+                .collect(Collectors.toList());
+        co.headerParams = co.headerParams.stream().map(ConventionResolver::resolveParamTypes)
+                .map(ConventionResolver::prefixedCollapsibleMap)
+                .collect(Collectors.toList());
     }
 
     @Override

@@ -7,10 +7,10 @@ import com.twilio.http.TwilioRestClient.Builder;
 import com.twilio.rest.api.v2010.Account;
 import com.twilio.rest.api.v2010.AccountReader;
 import com.twilio.rest.api.v2010.AccountUpdater;
-import com.twilio.rest.api.v2010.account.Call;
-import com.twilio.rest.api.v2010.account.CallCreator;
-import com.twilio.rest.api.v2010.account.CallDeleter;
-import com.twilio.rest.api.v2010.account.CallFetcher;
+import com.twilio.rest.api.v2010.Call;
+import com.twilio.rest.api.v2010.CallCreator;
+import com.twilio.rest.api.v2010.CallDeleter;
+import com.twilio.rest.api.v2010.CallFetcher;
 
 import static org.junit.Assert.*;
 

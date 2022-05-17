@@ -10,7 +10,7 @@
  * Do not edit the class manually.
  */
 
-package com.twilio.rest.api.v2010;
+package com.twilio.rest.api.v2010.call;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -70,34 +70,31 @@ import com.twilio.type.RecordingRule;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @ToString
-public class AWS extends Resource {
+public class FeedbackCallSummary extends Resource {
     private static final long serialVersionUID = 44112120076447L;
 
-
-    public static AWSFetcher fetcher(final String sid){
-        return new AWSFetcher(sid);
+    public static FeedbackCallSummaryCreator creator(final LocalDate endDate, final LocalDate startDate){
+        return new FeedbackCallSummaryCreator(endDate, startDate);
+    }
+    public static FeedbackCallSummaryCreator creator(final String accountSid, final LocalDate endDate, final LocalDate startDate){
+        return new FeedbackCallSummaryCreator(accountSid, endDate, startDate);
     }
 
-    public static AWSDeleter delete(final String sid){
-        return new AWSDeleter(sid);
-    }
 
 
-    public static AWSUpdater update(final String sid){
-        return new AWSUpdater(sid);
-    }
+
 
     /**
-    * Converts a JSON String into a AWS object using the provided ObjectMapper.
+    * Converts a JSON String into a FeedbackCallSummary object using the provided ObjectMapper.
     *
     * @param json Raw JSON String
     * @param objectMapper Jackson ObjectMapper
-    * @return AWS object represented by the provided JSON
+    * @return FeedbackCallSummary object represented by the provided JSON
     */
-    public static AWS fromJson(final String json, final ObjectMapper objectMapper) {
+    public static FeedbackCallSummary fromJson(final String json, final ObjectMapper objectMapper) {
         // Convert all checked exceptions to Runtime
         try {
-            return objectMapper.readValue(json, AWS.class);
+            return objectMapper.readValue(json, FeedbackCallSummary.class);
         } catch (final JsonMappingException | JsonParseException e) {
             throw new ApiException(e.getMessage(), e);
         } catch (final IOException e) {
@@ -106,17 +103,17 @@ public class AWS extends Resource {
     }
 
     /**
-    * Converts a JSON InputStream into a AWS object using the provided
+    * Converts a JSON InputStream into a FeedbackCallSummary object using the provided
     * ObjectMapper.
     *
     * @param json Raw JSON InputStream
     * @param objectMapper Jackson ObjectMapper
-    * @return AWS object represented by the provided JSON
+    * @return FeedbackCallSummary object represented by the provided JSON
     */
-    public static AWS fromJson(final InputStream json, final ObjectMapper objectMapper) {
+    public static FeedbackCallSummary fromJson(final InputStream json, final ObjectMapper objectMapper) {
         // Convert all checked exceptions to Runtime
         try {
-            return objectMapper.readValue(json, AWS.class);
+            return objectMapper.readValue(json, FeedbackCallSummary.class);
         } catch (final JsonMappingException | JsonParseException e) {
             throw new ApiException(e.getMessage(), e);
         } catch (final IOException e) {
@@ -158,7 +155,7 @@ public class AWS extends Resource {
     private final List<FeedbackIssue> testArrayOfObjects;
 
     @JsonCreator
-    private AWS(
+    private FeedbackCallSummary(
         @JsonProperty("account_sid")
         final String accountSid,
 
@@ -264,7 +261,7 @@ public class AWS extends Resource {
             return false;
         }
 
-        AWS other = (AWS) o;
+        FeedbackCallSummary other = (FeedbackCallSummary) o;
 
         return Objects.equals(accountSid, other.accountSid) &&  Objects.equals(sid, other.sid) &&  Objects.equals(testString, other.testString) &&  Objects.equals(testInteger, other.testInteger) &&  Objects.equals(testObject, other.testObject) &&  Objects.equals(testDateTime, other.testDateTime) &&  Objects.equals(testNumber, other.testNumber) &&  Objects.equals(priceUnit, other.priceUnit) &&  Objects.equals(testNumberFloat, other.testNumberFloat) &&  Objects.equals(testEnum, other.testEnum) &&  Objects.equals(testArrayOfIntegers, other.testArrayOfIntegers) &&  Objects.equals(testArrayOfArrayOfIntegers, other.testArrayOfArrayOfIntegers) &&  Objects.equals(testArrayOfObjects, other.testArrayOfObjects)  ;
     }

@@ -10,7 +10,7 @@
  * Do not edit the class manually.
  */
 
-package com.twilio.rest.api.v2010.credential;
+package com.twilio.rest.api.v2010;
 
 import com.twilio.base.Reader;
 import com.twilio.base.ResourceSet;
@@ -54,19 +54,19 @@ import lombok.ToString;
 
 
 public class AwsReader extends Reader<Aws> {
-    private Integer PageSize;
+    private Integer pageSize;
 
     public AwsReader(){
     }
 
-    public AwsReader setPageSize(final Integer PageSize){
-        this.PageSize = PageSize;
+    public AwsReader setPageSize(final Integer pageSize){
+        this.pageSize = pageSize;
         return this;
     }
 
     private void addQueryParams(final Request request) {
-        if (PageSize != null) {
-            request.addQueryParam("PageSize", PageSize.toString());
+        if (pageSize != null) {
+            request.addQueryParam("PageSize", pageSize.toString());
         }
     }
 

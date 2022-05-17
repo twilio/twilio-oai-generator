@@ -10,7 +10,7 @@
  * Do not edit the class manually.
  */
 
-package com.twilio.rest.api.v2010;
+package com.twilio.rest.api.v2010.call;
 
 import com.twilio.base.Updater;
 import com.twilio.converter.Promoter;
