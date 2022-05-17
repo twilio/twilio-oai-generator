@@ -57,8 +57,24 @@ public class {{resourceName}}Reader extends Reader<{{resourceName}}> {
     }
 {{/vendorExtensions.x-non-path-params}}
 
+{{#queryParams.0}}
     private void addQueryParams(final Request request) {
-        {{#queryParams}}
+    {{#queryParams}}
+        {{#vendorExtensions.x-has-before-and-after}}
+        if ({{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}} != null) {
+            request.addQueryParam("{{baseName}}", {{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}.format(DateTimeFormatter.ofPattern(Request.QUERY_STRING_DATE_TIME_FORMAT)));
+        }
+        else if ({{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}After != null || {{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}Before != null) {
+            request.addQueryDateTimeRange("{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}", {{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}After, {{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}Before);
+        }
+        {{/vendorExtensions.x-has-before-and-after}}
+        {{^vendorExtensions.x-has-before-and-after}}
+        {{#vendorExtensions.x-is-page-size}}
+        if (get{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}} != null) {
+           request.addQueryParam("{{baseName}}", Integer.toString(get{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}()));
+        }
+        {{/vendorExtensions.x-is-page-size}}
+        {{^vendorExtensions.x-is-page-size}}
         {{#vendorExtensions.x-prefixed-collapsible-map}}
         if ({{paramName}} != null) {
             Map<String, String> params = PrefixedCollapsibleMap.serialize({{{paramName}}}, "{{vendorExtensions.x-prefixed-collapsible-map}}");
@@ -68,12 +84,32 @@ public class {{resourceName}}Reader extends Reader<{{resourceName}}> {
         }
         {{/vendorExtensions.x-prefixed-collapsible-map}}
         {{^vendorExtensions.x-prefixed-collapsible-map}}
-        if ({{paramName}} != null) {
-            request.addQueryParam("{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}", {{paramName}}.toString());
+        if ({{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}} != null) {
+        {{#isString}}
+            request.addQueryParam("{{baseName}}", {{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}});
+        {{/isString}}
+        {{#isArray}}
+            for ({{baseType}} prop : {{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}) {
+                request.addQueryParam("{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}", prop);
+            }
+        {{/isArray}}
+        {{#isDate}}
+            request.addQueryParam("{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}", DateConverter.dateStringFromLocalDate({{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}));
+        {{/isDate}}
+        {{#isDateTime}}
+            request.addQueryParam("{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}", {{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}.toInstant().toString());
+        {{/isDateTime}}
+        {{#vendorExtensions.x-is-other-data-type}}
+            request.addQueryParam("{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}", {{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}.toString());
+        {{/vendorExtensions.x-is-other-data-type}}
         }
         {{/vendorExtensions.x-prefixed-collapsible-map}}
-        {{/queryParams}}
+        {{/vendorExtensions.x-is-page-size}}
+        {{/vendorExtensions.x-has-before-and-after}}
+
+    {{/queryParams}}
     }
+{{/queryParams.0}}
 
     @Override
     public ResourceSet<{{resourceName}}> read(final TwilioRestClient client) {
@@ -98,7 +134,9 @@ public class {{resourceName}}Reader extends Reader<{{resourceName}}> {
             path
         );
 
+        {{#queryParams.0}}
         addQueryParams(request);
+        {{/queryParams.0}}
         {{#formParams.0}}
         addPostParams(request);
         {{/formParams.0}}
@@ -175,7 +213,12 @@ public class {{resourceName}}Reader extends Reader<{{resourceName}}> {
     private void addHeaderParams(final Request request) {
     {{#headerParams}}
         if ({{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}} != null) {
-            request.addHeaderParam("{{baseName}}", {{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}.toString());
+            {{#isString}}
+                request.addHeaderParam("{{baseName}}", {{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}});
+            {{/isString}}
+            {{^isString}}
+                request.addHeaderParam("{{baseName}}", {{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}.toString());
+            {{/isString}}
         }
     {{/headerParams}}
     }

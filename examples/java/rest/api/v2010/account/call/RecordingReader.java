@@ -61,6 +61,7 @@ public class RecordingReader extends Reader<Recording> {
     private ZonedDateTime DateCreatedBefore;
     private ZonedDateTime DateCreatedAfter;
     private Integer PageSize;
+    private String PageSizeText;
 
     public RecordingReader(final String CallSid){
         this.CallSid = CallSid;
@@ -90,23 +91,33 @@ public class RecordingReader extends Reader<Recording> {
         this.PageSize = PageSize;
         return this;
     }
+    public RecordingReader setPageSizeText(final String PageSizeText){
+        this.PageSizeText = PageSizeText;
+        return this;
+    }
 
     private void addQueryParams(final Request request) {
         if (DateCreated != null) {
-            request.addQueryParam("DateCreated", DateCreated.toString());
+            request.addQueryParam("DateCreated", DateCreated.format(DateTimeFormatter.ofPattern(Request.QUERY_STRING_DATE_TIME_FORMAT)));
         }
+        else if (DateCreatedAfter != null || DateCreatedBefore != null) {
+            request.addQueryDateTimeRange("DateCreated", DateCreatedAfter, DateCreatedBefore);
+        }
+
         if (DateTest != null) {
-            request.addQueryParam("DateTest", DateTest.toString());
+            request.addQueryParam("DateTest", DateConverter.dateStringFromLocalDate(DateTest));
         }
-        if (DateCreatedBefore != null) {
-            request.addQueryParam("DateCreatedBefore", DateCreatedBefore.toString());
-        }
-        if (DateCreatedAfter != null) {
-            request.addQueryParam("DateCreatedAfter", DateCreatedAfter.toString());
+
+        if (getPageSize != null) {
+            request.addQueryParam("PageSize", Integer.toString(getPageSize()));
         }
         if (PageSize != null) {
-            request.addQueryParam("PageSize", PageSize.toString());
         }
+
+        if (PageSizeText != null) {
+            request.addQueryParam("PageSizeText", PageSizeText);
+        }
+
     }
 
     @Override
