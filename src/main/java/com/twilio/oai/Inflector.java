@@ -75,7 +75,10 @@ public class Inflector {
         }
 
         private void initIrregulars() {
-            this.addIrregulars("Aws");
+            this.addIrregulars("AuthTypes");
+            this.addIrregulars("AuthTypeCalls");
+            this.addIrregulars("AuthTypeTegistrations");
+            this.addIrregulars("DialingPermissions");
         }
 
         public boolean isIrregular(String word) {
@@ -100,7 +103,17 @@ public class Inflector {
          }
 
          public void initWildCardMapping() {
+             wildCardMapping.put("Aws", "Aws");
              wildCardMapping.put("Addresses", "Address");
+             wildCardMapping.put("IpAddresses", "IpAddress");
+             wildCardMapping.put("Queries", "Query");
+             wildCardMapping.put("Countries", "Country");
+             wildCardMapping.put("Policies", "Policy");
+             wildCardMapping.put("ConnectionPolicies", "ConnectionPolicy");
+             wildCardMapping.put("CallSummaries", "CallSummary");
+             wildCardMapping.put("BuildStatus", "BuildStatus");
+             wildCardMapping.put("Activities", "Activity");
+             wildCardMapping.put("Entities", "Entity");
          }
      }
 }

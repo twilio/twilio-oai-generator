@@ -58,7 +58,15 @@ import java.math.BigDecimal;
 import com.twilio.type.PhoneNumberCapabilities;
 import com.twilio.type.FeedbackIssue;
 import com.twilio.type.IceServer;
-
+import com.twilio.type.InboundCallPrice;
+import com.twilio.type.OutboundPrefixPriceWithOrigin;
+import com.twilio.type.OutboundPrefixPrice;
+import com.twilio.type.OutboundCallPriceWithOrigin;
+import com.twilio.type.PhoneNumberPrice;
+import com.twilio.type.InboundSmsPrice;
+import com.twilio.type.OutboundSmsPrice;
+import com.twilio.type.OutboundCallPrice;
+import com.twilio.type.RecordingRule;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @ToString
@@ -69,20 +77,20 @@ public class Account extends Resource {
         return new AccountCreator();
     }
 
-    public static AccountFetcher fetcher(final String Sid){
-        return new AccountFetcher(Sid);
+    public static AccountFetcher fetcher(final String sid){
+        return new AccountFetcher(sid);
     }
 
-    public static AccountDeleter delete(final String Sid){
-        return new AccountDeleter(Sid);
+    public static AccountDeleter delete(final String sid){
+        return new AccountDeleter(sid);
     }
 
     public static AccountReader reader(){
         return new AccountReader();
     }
 
-    public static AccountUpdater update(final String Sid, final String Status){
-        return new AccountUpdater(Sid, Status);
+    public static AccountUpdater update(final String sid, final String status){
+        return new AccountUpdater(sid, status);
     }
 
     /**
@@ -119,6 +127,25 @@ public class Account extends Resource {
             throw new ApiException(e.getMessage(), e);
         } catch (final IOException e) {
             throw new ApiConnectionException(e.getMessage(), e);
+        }
+    }
+    public enum TestEnum {
+        DIALVERB("DialVerb"),
+        TRUNKING("Trunking");
+
+        private final String value;
+
+        private TestEnum(final String value) {
+            this.value = value;
+        }
+
+        public String toString() {
+            return value;
+        }
+
+        @JsonCreator
+        public static TestEnum forValue(final String value) {
+            return Promoter.enumFromString(value, TestEnum.values());
         }
     }
 

@@ -10,7 +10,7 @@
  * Do not edit the class manually.
  */
 
-package com.twilio.rest.api.v2010.credential;
+package com.twilio.rest.api.v2010;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -58,31 +58,39 @@ import java.math.BigDecimal;
 import com.twilio.type.PhoneNumberCapabilities;
 import com.twilio.type.FeedbackIssue;
 import com.twilio.type.IceServer;
-
+import com.twilio.type.InboundCallPrice;
+import com.twilio.type.OutboundPrefixPriceWithOrigin;
+import com.twilio.type.OutboundPrefixPrice;
+import com.twilio.type.OutboundCallPriceWithOrigin;
+import com.twilio.type.PhoneNumberPrice;
+import com.twilio.type.InboundSmsPrice;
+import com.twilio.type.OutboundSmsPrice;
+import com.twilio.type.OutboundCallPrice;
+import com.twilio.type.RecordingRule;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @ToString
 public class Aws extends Resource {
     private static final long serialVersionUID = 44112120076447L;
 
-    public static AwsCreator creator(final String TestString){
-        return new AwsCreator(TestString);
+    public static AwsCreator creator(final String testString){
+        return new AwsCreator(testString);
     }
 
-    public static AwsFetcher fetcher(final String Sid){
-        return new AwsFetcher(Sid);
+    public static AwsFetcher fetcher(final String sid){
+        return new AwsFetcher(sid);
     }
 
-    public static AwsDeleter delete(final String Sid){
-        return new AwsDeleter(Sid);
+    public static AwsDeleter delete(final String sid){
+        return new AwsDeleter(sid);
     }
 
     public static AwsReader reader(){
         return new AwsReader();
     }
 
-    public static AwsUpdater update(final String Sid){
-        return new AwsUpdater(Sid);
+    public static AwsUpdater update(final String sid){
+        return new AwsUpdater(sid);
     }
 
     /**
@@ -119,6 +127,25 @@ public class Aws extends Resource {
             throw new ApiException(e.getMessage(), e);
         } catch (final IOException e) {
             throw new ApiConnectionException(e.getMessage(), e);
+        }
+    }
+    public enum TestEnum {
+        DIALVERB("DialVerb"),
+        TRUNKING("Trunking");
+
+        private final String value;
+
+        private TestEnum(final String value) {
+            this.value = value;
+        }
+
+        public String toString() {
+            return value;
+        }
+
+        @JsonCreator
+        public static TestEnum forValue(final String value) {
+            return Promoter.enumFromString(value, TestEnum.values());
         }
     }
 

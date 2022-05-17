@@ -51,7 +51,7 @@ public class {{resourceName}}Reader extends Reader<{{resourceName}}> {
 {{/signatureListRead}}
 
 {{#vendorExtensions.x-non-path-params}}
-    public {{resourceName}}Reader set{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}(final {{{dataType}}} {{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}){
+    public {{resourceName}}Reader set{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}(final {{{dataType}}} {{paramName}}){
         this.{{paramName}} = {{paramName}};
         return this;
     }
@@ -85,11 +85,11 @@ public class {{resourceName}}Reader extends Reader<{{resourceName}}> {
         {{#allParams}}
         {{#vendorExtensions.x-is-account-sid}}
         this.{{paramName}} = this.{{paramName}} == null ? client.getAccountSid() : this.{{paramName}};
-        path = path.replace("{"+"{{paramName}}"+"}", this.{{paramName}}.toString());
+        path = path.replace("{"+"{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}"+"}", this.{{paramName}}.toString());
         {{/vendorExtensions.x-is-account-sid}}
         {{/allParams}}
         {{#requiredParams}}
-        path = path.replace("{"+"{{paramName}}"+"}", this.{{paramName}}.toString());
+        path = path.replace("{"+"{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}"+"}", this.{{paramName}}.toString());
         {{/requiredParams}}
 
         Request request = new Request(
@@ -160,12 +160,12 @@ public class {{resourceName}}Reader extends Reader<{{resourceName}}> {
 {{#formParams.0}}
     private void addPostParams(final Request request) {
 {{#formParams}}
-    if ({{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}} != null){
+    if ({{paramName}} != null){
     {{#isFreeFormObject}}
         request.addPostParam("{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}",  Converter.mapToJson({{paramName}}));
     {{/isFreeFormObject}}
     {{^isFreeFormObject}}
-        request.addPostParam("{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}", {{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}.toString());
+        request.addPostParam("{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}", {{paramName}}.toString());
     {{/isFreeFormObject}}
     }
 {{/formParams}}
@@ -174,8 +174,8 @@ public class {{resourceName}}Reader extends Reader<{{resourceName}}> {
     {{#headerParams.0}}
     private void addHeaderParams(final Request request) {
     {{#headerParams}}
-        if ({{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}} != null) {
-            request.addHeaderParam("{{baseName}}", {{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}.toString());
+        if ({{paramName}} != null) {
+            request.addHeaderParam("{{#lambda.titlecase}}{{baseName}}{{/lambda.titlecase}}", {{paramName}}.toString());
         }
     {{/headerParams}}
     }

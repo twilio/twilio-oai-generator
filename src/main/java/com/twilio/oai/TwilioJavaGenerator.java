@@ -3,6 +3,8 @@ package com.twilio.oai;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.twilio.oai.resource.IResourceTree;
+import com.twilio.oai.resource.ResourceMap;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.PathItem;
 import lombok.AllArgsConstructor;
@@ -10,8 +12,6 @@ import org.openapitools.codegen.*;
 import org.openapitools.codegen.languages.JavaClientCodegen;
 import org.openapitools.codegen.utils.StringUtils;
 
-
-import java.io.File;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.math.BigInteger;
@@ -21,7 +21,7 @@ import java.security.NoSuchAlgorithmException;
 public class TwilioJavaGenerator extends JavaClientCodegen {
 
     // Unique string devoid of symbols.
-    private static final String PATH_SEPARATOR_PLACEHOLDER = "1234567890";
+    public static final String PATH_SEPARATOR_PLACEHOLDER = "1234567890";
     private static final int OVERFLOW_CHECKER = 32;
     private static final int BASE_SIXTEEN = 16;
     private static final int BIG_INTEGER_CONSTANT = 1;
@@ -29,8 +29,8 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
 
     private final List<CodegenModel> allModels = new ArrayList<>();
     private  Map<String, String> modelFormatMap = new HashMap<>();
-    private Map<String, String> apiNameMap = new HashMap<>();
     private final Inflector inflector = new Inflector();
+    private IResourceTree resourceTree;
 
     public TwilioJavaGenerator() {
         super();
@@ -50,10 +50,9 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
     @Override
     public void processOpts() {
         super.processOpts();
-
-        final String inputSpecPattern = ".+_(?<domain>.+)_(?<version>.+)\\..+";
-        final String version = inputSpec.replaceAll(inputSpecPattern, "${version}");
-        final String domain = inputSpec.replaceAll(inputSpecPattern, "${domain}");
+        String[] inputSpecs = inputSpec.split("_");
+        final String version = inputSpecs[inputSpecs.length-1].replaceAll("\\.[^/]+$", "");
+        final String domain = String.join("_", Arrays.copyOfRange(inputSpecs, 1, inputSpecs.length-1));
         apiPackage = version; // Place the API files in the version folder.
         additionalProperties.put("apiVersion", version);
         additionalProperties.put("apiVersionClass", version.toUpperCase());
@@ -71,12 +70,15 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
 
     @Override
     public void processOpenAPI(final OpenAPI openAPI) {
+        resourceTree = new ResourceMap(inflector, PATH_SEPARATOR_PLACEHOLDER);
         openAPI.getPaths().forEach((name, path) -> {
-            createAPIClassMap(name, path);
+            resourceTree.addResource(name, path);
+        });
+        openAPI.getPaths().forEach((name, path) -> {
             updateAccountSidParam(name, path);
             path.readOperations().forEach(operation -> {
                 // Group operations together by tag. This gives us one file/post-process per resource.
-                final String tag = PathUtils.cleanPath(name).replace("/", PATH_SEPARATOR_PLACEHOLDER);
+                String tag = String.join(PATH_SEPARATOR_PLACEHOLDER, resourceTree.ancestors("/"+name.replaceFirst("/[^/]+/", "")));
                 operation.addTagsItem(tag);
             });
         });
@@ -115,24 +117,18 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
     }
 
     @Override
-    public String toApiFilename(final String name) {
-        List<String> apiPathList = Arrays
-                .stream(super.toApiFilename(name).split(PATH_SEPARATOR_PLACEHOLDER))
-                .map(part -> StringUtils.camelize(part, false))
-                .map(this::singular)
-                .collect(Collectors.toList());
-        List<String> apiPathLowerList = apiPathList
-                .subList(0, apiPathList.size() - 1 )
-                .stream()
-                .map(String::toLowerCase)
-                .collect(Collectors.toList());
-        apiPathLowerList.add(apiPathList.get(apiPathList.size() - 1));
-        String example = apiPathLowerList.get(apiPathLowerList.size() - 1);
-        apiPathLowerList.remove(apiPathLowerList.size() - 1);
-        apiPathLowerList.add(apiNameMap.get(example));
-        return apiPathLowerList.stream().collect(Collectors.joining(File.separator));
+    public void postProcessModelProperty(CodegenModel model, CodegenProperty property) {
+        super.postProcessModelProperty(model, property);
+        property.isEnum =  property.isEnum && property.dataFormat == null;
     }
 
+    @Override
+    public String toApiFilename(final String name) {
+        String[] split = super.toApiFilename(name).split(PATH_SEPARATOR_PLACEHOLDER);
+        return Arrays.stream(Arrays.copyOfRange(split, 0, split.length - 1))
+                .map(String::toLowerCase)
+                .collect(Collectors.joining("/")) + "/"+split[split.length-1];
+    }
 
     @SuppressWarnings("unchecked")
     @Override
@@ -172,10 +168,16 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
         for (final CodegenOperation co : opList) {
             // Group operations by resource.
             String path = co.path;
-            String resourceName = singular(getResourceName(co.path));
             co.vendorExtensions.put("x-is-version-v2010", isVersionV2010);
+            String[] filePathArray = co.baseName.split(PATH_SEPARATOR_PLACEHOLDER);
+            String resourceName = filePathArray[filePathArray.length-1];
             final Map<String, Object> resource = resources.computeIfAbsent(resourceName, k -> new LinkedHashMap<>());
             populateCrudOperations(resource, co);
+            co.requiredParams = co.requiredParams
+                    .stream()
+                    .map(ConventionResolver::resolveParameter)
+                    .map(Optional::get)
+                    .collect(Collectors.toList());
             if (co.path.endsWith("}") || co.path.endsWith("}.json")) {
                 if ("POST".equalsIgnoreCase(co.httpMethod)) {
                     resource.put("hasUpdate", true);
@@ -188,7 +190,7 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
                     co.vendorExtensions.put("x-is-delete-operation", true);
                     resource.put("signatureListDelete", generateSignatureList(resource, co, isVersionV2010));
                 }
-            
+
             } else {
                 if ("POST".equalsIgnoreCase(co.httpMethod)) {
                     resource.put("hasCreate", true);
@@ -198,7 +200,7 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
                 }
             }
 
-            if (!co.nickname.startsWith("list")) {
+            if (co.nickname.startsWith("fetch")) {
                 if ("GET".equalsIgnoreCase(co.httpMethod)) {
                     resource.put("hasFetch", true);
                     resource.put("signatureListFetch", generateSignatureList(resource, co, isVersionV2010));
@@ -220,14 +222,15 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
                             k -> new ArrayList<>());
             resourceOperationList.add(co);
             resource.put("path", path);
-            resource.put("resourceName", apiNameMap.get(inflector.singular(getResourceName(co.path))));
-            resource.put("resourcePathParams", co.pathParams);
-            resource.put("resourceRequiredParams", co.requiredParams);       
-            co.queryParams =  co.queryParams.stream().map(ConventionResolver::resolveParamTypes).map(ConventionResolver::prefixedCollapsibleMap).collect(Collectors.toList());
+            resource.put("resourceName", resourceName);
+            updateCodeOperationParams(co);
             co.pathParams = null;
             co.hasParams = !co.allParams.isEmpty();
-            co.allParams = co.allParams.stream().map(ConventionResolver::resolveParamTypes).collect(Collectors.toList());
+            co.allParams.stream().map(ConventionResolver::resolveParamTypes).map(item -> StringUtils.camelize(item.paramName)).collect(Collectors.toList());
             co.hasRequiredParams = !co.requiredParams.isEmpty();
+            resource.put("resourcePathParams", co.pathParams);
+            resource.put("resourceRequiredParams", co.requiredParams);
+            resource.put("serialVersionUID",1);
             co.vendorExtensions.put("x-non-path-params", getNonPathParams(co.allParams));
 
             if (co.bodyParam != null) {
@@ -247,9 +250,14 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
 
               });
             results.put("recordKey", getRecordKey(opList, this.allModels));
-            results.put("apiFilename", getResourceName(co.path));
-            results.put("packageName", getPackageName(co.path));
-            resource.put("packageSubPart", getPackagePath(co.path));
+            List<String> packagePaths = Arrays.asList(Arrays.copyOfRange(filePathArray,0 , filePathArray.length-1))
+                    .stream().map(String::toLowerCase).collect(Collectors.toList());
+            if (packagePaths.isEmpty()) {
+                resource.put("packageSubPart", "");
+            } else {
+                String packagePath = packagePaths.stream().map(String::toLowerCase).collect(Collectors.joining("."));
+                resource.put("packageSubPart", "."+packagePath);
+            }
         }
 
         for (final Map<String, Object> resource : resources.values()) {
@@ -268,20 +276,34 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
 
     private CodegenModel getConcatenatedResponseModel(List<CodegenModel> responseModels) {
         CodegenModel codegenModel = new CodegenModel();
+        codegenModel.allowableValues = new HashMap<>();
         List<CodegenProperty> codegenProperties = new ArrayList<>();
+        if(responseModels.isEmpty()) {
+            return null;
+        }
         for (CodegenModel resModel : responseModels) {
+                codegenModel.hasEnums = codegenModel.hasEnums || resModel.hasEnums;
+                codegenModel.isEnum = codegenModel.isEnum || ( resModel.isEnum );
+                if (resModel.allowableValues != null) {
+                    resModel.allowableValues.forEach(
+                            (key, value) -> codegenModel.allowableValues.merge(key, value, (oldValue, newValue) -> newValue));
+                }
                 for (CodegenProperty modelProp : resModel.vars) {
                         boolean contains = false;
                         for (CodegenProperty property : codegenProperties) {
-                                if (property.baseName.equals(modelProp.baseName)) {
+                                if (Arrays.stream(modelProp.baseName.split("_")).
+                                        map(StringUtils::camelize).collect(Collectors.joining()).equals(property.baseName)) {
                                         contains = true;
                                     }
                             }
                         if (!contains) {
+                                modelProp.baseName = Arrays.stream(modelProp.baseName.split("_")).
+                                        map(StringUtils::camelize).collect(Collectors.joining());
                                 codegenProperties.add(modelProp);
                             }
                     }
             }
+
         codegenModel.setVars(codegenProperties);
         return codegenModel;
     }
@@ -386,66 +408,12 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
         resource.computeIfPresent(key, (k, dependents) -> ((Map<String, Object>) dependents).values());
     }
 
-    private String getResourceName(final String path) {
-        String lastPathPart = PathUtils.getLastPathPart(PathUtils.cleanPath(path));
-        if (inflector.isAbbreviation(lastPathPart)) {
-            return StringUtils.camelize(lastPathPart.toLowerCase(), false);
-        }
-        return lastPathPart;
-    }
-
-    private String getPackagePath(final String path) {
-        String[] packagePaths = getPackageName(path).split("\\.");
-        String packagePath = Arrays
-                .stream(Arrays.copyOf(packagePaths, packagePaths.length-1))
-                .collect(Collectors.joining("."));
-        if (packagePath.isEmpty()) {
-            return "";
-        }
-        return "."+packagePath;
-    }
-
-    private String getPackageName(final String path) {
-        return Arrays
-                .stream(PathUtils.cleanPath(path).split("/"))
-                .map(this::singular)
-                .map(String::toLowerCase)
-                .map(this::mapPackageVersion)
-                .collect(Collectors.joining("."));
-    }
-
-    private String mapPackageVersion(final String version) {
-        if (version.equals("2010-04-01")) {
-            return "v2010";
-        }
-        return version;
-    }
-
-    private String singular(final String plural) {
-        return (inflector.singular(plural));
-    }
-
-    private void createAPIClassMap(final String path, final PathItem pathMap) {
-        apiNameMap.put(singular(getResourceName(path)), singular(getResourceName(path)));
-        if (pathMap.getExtensions() != null) {
-            pathMap.getExtensions().forEach((key, value) -> {
-                if (key.equals("x-twilio")) {
-                    if(((Map<?, ?>) value).containsKey("className")) {
-                        String fileName = Arrays.stream(((Map<?, String>) value).get("className").split("_")).map(StringUtils::camelize).collect(Collectors.joining());
-                        apiNameMap.put(singular(getResourceName(path)), fileName);
-                    }
-                }
-            });
-        }
-    }
-
     private void addOperationName(final CodegenOperation operation, final String name) {
         operation.vendorExtensions.put("x-name", name);
         operation.vendorExtensions.put("x-name-lower", name.toLowerCase());
     }
 
     private long calculateSerialVersionUid(final List<CodegenProperty> modelProperties){
-
         String signature = calculateSignature(modelProperties);
         return Long.parseLong(getMd5(signature).substring(0,SERIAL_UID_LENGTH), BASE_SIXTEEN);
     }
@@ -500,6 +468,35 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
                 e.printStackTrace();
             }
         });
+    }
+
+    public static String capitalize(String str) {
+        if(str == null || str.isEmpty()) {
+            return str;
+        }
+        return str.substring(0, 1).toUpperCase() + str.substring(1);
+    }
+
+    private void updateCodeOperationParams(final CodegenOperation co) {
+        co.allParams = co.allParams
+                .stream()
+                .map(ConventionResolver::resolveParameter)
+                .map(Optional::get)
+                .collect(Collectors.toList());
+        co.pathParams = co.pathParams
+                .stream()
+                .map(ConventionResolver::resolveParameter)
+                .map(Optional::get)
+                .collect(Collectors.toList());
+        co.queryParams = co.queryParams.stream().map(ConventionResolver::resolveParamTypes)
+                .map(ConventionResolver::prefixedCollapsibleMap)
+                .collect(Collectors.toList());
+        co.formParams = co.formParams.stream().map(ConventionResolver::resolveParamTypes)
+                .map(ConventionResolver::prefixedCollapsibleMap)
+                .collect(Collectors.toList());
+        co.headerParams = co.headerParams.stream().map(ConventionResolver::resolveParamTypes)
+                .map(ConventionResolver::prefixedCollapsibleMap)
+                .collect(Collectors.toList());
     }
 
     @Override

@@ -54,51 +54,51 @@ import lombok.ToString;
 
 
 public class AccountReader extends Reader<Account> {
-    private ZonedDateTime DateCreated;
-    private LocalDate DateTest;
-    private ZonedDateTime DateCreatedBefore;
-    private ZonedDateTime DateCreatedAfter;
-    private Integer PageSize;
+    private ZonedDateTime dateCreated;
+    private LocalDate dateTest;
+    private ZonedDateTime dateCreatedBefore;
+    private ZonedDateTime dateCreatedAfter;
+    private Integer pageSize;
 
     public AccountReader(){
     }
 
-    public AccountReader setDateCreated(final ZonedDateTime DateCreated){
-        this.DateCreated = DateCreated;
+    public AccountReader setDateCreated(final ZonedDateTime dateCreated){
+        this.dateCreated = dateCreated;
         return this;
     }
-    public AccountReader setDateTest(final LocalDate DateTest){
-        this.DateTest = DateTest;
+    public AccountReader setDateTest(final LocalDate dateTest){
+        this.dateTest = dateTest;
         return this;
     }
-    public AccountReader setDateCreatedBefore(final ZonedDateTime DateCreatedBefore){
-        this.DateCreatedBefore = DateCreatedBefore;
+    public AccountReader setDateCreatedBefore(final ZonedDateTime dateCreatedBefore){
+        this.dateCreatedBefore = dateCreatedBefore;
         return this;
     }
-    public AccountReader setDateCreatedAfter(final ZonedDateTime DateCreatedAfter){
-        this.DateCreatedAfter = DateCreatedAfter;
+    public AccountReader setDateCreatedAfter(final ZonedDateTime dateCreatedAfter){
+        this.dateCreatedAfter = dateCreatedAfter;
         return this;
     }
-    public AccountReader setPageSize(final Integer PageSize){
-        this.PageSize = PageSize;
+    public AccountReader setPageSize(final Integer pageSize){
+        this.pageSize = pageSize;
         return this;
     }
 
     private void addQueryParams(final Request request) {
-        if (DateCreated != null) {
-            request.addQueryParam("DateCreated", DateCreated.toString());
+        if (dateCreated != null) {
+            request.addQueryParam("DateCreated", dateCreated.toString());
         }
-        if (DateTest != null) {
-            request.addQueryParam("DateTest", DateTest.toString());
+        if (dateTest != null) {
+            request.addQueryParam("DateTest", dateTest.toString());
         }
-        if (DateCreatedBefore != null) {
-            request.addQueryParam("DateCreatedBefore", DateCreatedBefore.toString());
+        if (dateCreatedBefore != null) {
+            request.addQueryParam("DateCreatedBefore", dateCreatedBefore.toString());
         }
-        if (DateCreatedAfter != null) {
-            request.addQueryParam("DateCreatedAfter", DateCreatedAfter.toString());
+        if (dateCreatedAfter != null) {
+            request.addQueryParam("DateCreatedAfter", dateCreatedAfter.toString());
         }
-        if (PageSize != null) {
-            request.addQueryParam("PageSize", PageSize.toString());
+        if (pageSize != null) {
+            request.addQueryParam("PageSize", pageSize.toString());
         }
     }
 

@@ -50,29 +50,29 @@ import lombok.ToString;
 
 
 public class AccountUpdater extends Updater<Account>{
-    private String Sid;
-    private String Status;
-    private String PauseBehavior;
+    private String sid;
+    private String status;
+    private String pauseBehavior;
 
-    public AccountUpdater(final String Sid, final String Status){
-        this.Sid = Sid;
-        this.Status = Status;
+    public AccountUpdater(final String sid, final String status){
+        this.sid = sid;
+        this.status = status;
     }
 
-    public AccountUpdater setStatus(final String Status){
-        this.Status = Status;
+    public AccountUpdater setStatus(final String status){
+        this.status = status;
         return this;
     }
-    public AccountUpdater setPauseBehavior(final String PauseBehavior){
-        this.PauseBehavior = PauseBehavior;
+    public AccountUpdater setPauseBehavior(final String pauseBehavior){
+        this.pauseBehavior = pauseBehavior;
         return this;
     }
 
     @Override
     public Account update(final TwilioRestClient client){
         String path = "/2010-04-01/Accounts/{Sid}.json";
-        path = path.replace("{"+"Sid"+"}", this.Sid.toString());
-        path = path.replace("{"+"Status"+"}", this.Status.toString());
+        path = path.replace("{"+"Sid"+"}", this.sid.toString());
+        path = path.replace("{"+"Status"+"}", this.status.toString());
 
         Request request = new Request(
             HttpMethod.POST,
@@ -94,11 +94,11 @@ public class AccountUpdater extends Updater<Account>{
         return Account.fromJson(response.getStream(), client.getObjectMapper());
     }
     private void addPostParams(final Request request) {
-        if (PauseBehavior != null) {
-            request.addPostParam("PauseBehavior", PauseBehavior.toString());
+        if (pauseBehavior != null) {
+            request.addPostParam("PauseBehavior", pauseBehavior.toString());
         }
-        if (Status != null) {
-            request.addPostParam("Status", Status.toString());
+        if (status != null) {
+            request.addPostParam("Status", status.toString());
         }
     }
 }

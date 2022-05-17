@@ -57,23 +57,23 @@ import java.net.URI;
 
 
 public class AccountCreator extends Creator<Account>{
-    private String XTwilioWebhookEnabled;
-    private URI RecordingStatusCallback;
-    private List<String> RecordingStatusCallbackEvent;
+    private String xTwilioWebhookEnabled;
+    private URI recordingStatusCallback;
+    private List<String> recordingStatusCallbackEvent;
 
     public AccountCreator() {
     }
 
-    public AccountCreator setXTwilioWebhookEnabled(final String XTwilioWebhookEnabled){
-        this.XTwilioWebhookEnabled = XTwilioWebhookEnabled;
+    public AccountCreator setXTwilioWebhookEnabled(final String xTwilioWebhookEnabled){
+        this.xTwilioWebhookEnabled = xTwilioWebhookEnabled;
         return this;
     }
-    public AccountCreator setRecordingStatusCallback(final URI RecordingStatusCallback){
-        this.RecordingStatusCallback = RecordingStatusCallback;
+    public AccountCreator setRecordingStatusCallback(final URI recordingStatusCallback){
+        this.recordingStatusCallback = recordingStatusCallback;
         return this;
     }
-    public AccountCreator setRecordingStatusCallbackEvent(final List<String> RecordingStatusCallbackEvent){
-        this.RecordingStatusCallbackEvent = RecordingStatusCallbackEvent;
+    public AccountCreator setRecordingStatusCallbackEvent(final List<String> recordingStatusCallbackEvent){
+        this.recordingStatusCallbackEvent = recordingStatusCallbackEvent;
         return this;
     }
 
@@ -102,16 +102,16 @@ public class AccountCreator extends Creator<Account>{
         return Account.fromJson(response.getStream(), client.getObjectMapper());
     }
     private void addPostParams(final Request request) {
-        if (RecordingStatusCallback != null) {
-        request.addPostParam("RecordingStatusCallback", RecordingStatusCallback.toString());
+        if (recordingStatusCallback != null) {
+        request.addPostParam("RecordingStatusCallback", recordingStatusCallback.toString());
         }
-        if (RecordingStatusCallbackEvent != null) {
-        request.addPostParam("RecordingStatusCallbackEvent", RecordingStatusCallbackEvent.toString());
+        if (recordingStatusCallbackEvent != null) {
+        request.addPostParam("RecordingStatusCallbackEvent", recordingStatusCallbackEvent.toString());
         }
     }
     private void addHeaderParams(final Request request) {
-        if (XTwilioWebhookEnabled != null) {
-           request.addHeaderParam("X-Twilio-Webhook-Enabled", XTwilioWebhookEnabled.toString());
+        if (xTwilioWebhookEnabled != null) {
+           request.addHeaderParam("X-Twilio-Webhook-Enabled", xTwilioWebhookEnabled.toString());
         }
     }
 }

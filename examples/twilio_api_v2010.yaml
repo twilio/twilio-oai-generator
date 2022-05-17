@@ -231,6 +231,8 @@ paths:
         - accountSid_authToken: [ ]
     servers:
       - url: https://api.twilio.com
+    x-twilio:
+      pathType: list
   /v1/Credentials/AWS/{Sid}:
     delete:
       operationId: DeleteCredentialAws
@@ -305,6 +307,8 @@ paths:
         - accountSid_authToken: [ ]
     servers:
       - url: https://api.twilio.com
+    x-twilio:
+      pathType: instance
   /2010-04-01/Accounts.json:
     description: A top-level resource
     get:
@@ -431,6 +435,8 @@ paths:
         - accountSid_authToken: [ ]
     servers:
       - url: https://api.twilio.com
+    x-twilio:
+      pathType: list
   /2010-04-01/Accounts/{Sid}.json:
     description: A top-level resource instance
     delete:
@@ -502,6 +508,8 @@ paths:
         - accountSid_authToken: [ ]
     servers:
       - url: https://api.twilio.com
+    x-twilio:
+      pathType: instance
   /2010-04-01/Accounts/{AccountSid}/Calls.json:
     description: A nested resource, dose not support listing
     post:
@@ -544,6 +552,8 @@ paths:
         - accountSid_authToken: [ ]
     servers:
       - url: https://api.twilio.com
+    x-twilio:
+      pathType: list
   /2010-04-01/Accounts/{AccountSid}/Calls/{TestInteger}.json:
     description: A nested resource instance that cannot be updated
     delete:
@@ -593,6 +603,8 @@ paths:
         - accountSid_authToken: [ ]
     servers:
       - url: https://api.twilio.com
+    x-twilio:
+      pathType: instance
   /2010-04-01/Accounts/{AccountSid}/Calls/FeedbackSummary.json:
     description: A resource that can only be created
     post:
@@ -644,3 +656,5 @@ paths:
       - url: https://api.twilio.com
     x-twilio:
       className: feedback_call_summary
+      parent: /Accounts/{AccountSid}/Calls.json
+      pathType: list

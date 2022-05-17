@@ -10,7 +10,7 @@
  * Do not edit the class manually.
  */
 
-package com.twilio.rest.api.v2010.account.call;
+package com.twilio.rest.api.v2010.call;
 
 import com.twilio.base.Reader;
 import com.twilio.base.ResourceSet;
