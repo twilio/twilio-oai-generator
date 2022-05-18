@@ -1,6 +1,7 @@
 package com.twilio.rest;
 import static org.junit.Assert.*;
 
+import com.twilio.converter.DateConverter;
 import com.twilio.rest.api.v2010.credential.Aws;
 import com.twilio.rest.api.v2010.credential.AwsCreator;
 import com.twilio.rest.api.v2010.credential.AwsReader;
@@ -26,6 +27,7 @@ import com.twilio.exception.ApiException;
 import com.twilio.http.TwilioRestClient;
 
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -71,7 +73,7 @@ public class TwilioRestTest {
     public void testShouldSendAddedHeadersThroughRestClient() {
         Request mockRequest = new Request(
                 HttpMethod.POST,
-                com.twilio.rest.Domains.API.toString(),
+                Domains.API.toString(),
                 "/2010-04-01/Accounts/AC222222222222222222222222222222/Calls/PNXXXXY/Recordings.json"
         );
         mockRequest.addHeaderParam("X-Twilio-Webhook-Enabled", "true");
@@ -98,11 +100,12 @@ public class TwilioRestTest {
         );
         String url = "https://api.twilio.com/2010-04-01/Accounts/AC222222222222222222222222222222/Calls/PNXXXXY/Recordings.json";
         ZonedDateTime currentDateTime = ZonedDateTime.now();
+        String currentDateTimeFormatted = currentDateTime.format(DateTimeFormatter.ofPattern(Request.QUERY_STRING_DATE_TIME_FORMAT));
         LocalDate localDate = LocalDate.now();
-        mockRequest.addQueryParam("DateCreated", currentDateTime.toString());
-        mockRequest.addQueryParam("DateTest", localDate.toString());
-        mockRequest.addQueryParam("DateCreatedBefore", currentDateTime.toString());
-        mockRequest.addQueryParam("DateCreatedAfter", currentDateTime.toString());
+        String formattedLocalDate = DateConverter.dateStringFromLocalDate(localDate);
+
+        mockRequest.addQueryParam("DateCreated", currentDateTimeFormatted);
+        mockRequest.addQueryParam("DateTest", formattedLocalDate);
         mockRequest.addQueryParam("PageSize", "4");
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
@@ -111,8 +114,6 @@ public class TwilioRestTest {
         when(twilioRestClient.getObjectMapper()).thenReturn(objectMapper);
         RecordingReader recordingReader = new RecordingReader("AC222222222222222222222222222222", "PNXXXXY");
         recordingReader.setDateCreated(currentDateTime);
-        recordingReader.setDateCreatedBefore(currentDateTime);
-        recordingReader.setDateCreatedAfter(currentDateTime);
         recordingReader.setDateTest(localDate);
         recordingReader.setPageSize(4);
 
@@ -126,7 +127,7 @@ public class TwilioRestTest {
         List<String> recordingStatusCallbackEvent = Arrays.asList("http://test1.com/", "http://test2.com");
         Request mockRequest = new Request(
                 HttpMethod.POST,
-                com.twilio.rest.Domains.API.toString(),
+                Domains.API.toString(),
                 "/2010-04-01/Accounts/AC222222222222222222222222222222/Calls/PNXXXXY/Recordings.json"
         );
         mockRequest.addPostParam("RecordingStatusCallbackEvent", recordingStatusCallbackEvent.toString());
@@ -151,7 +152,7 @@ public class TwilioRestTest {
         when(twilioRestClient.getAccountSid()).thenReturn("AC222222222222222222222222222222");
         Request mockRequest = new Request(
                 HttpMethod.GET,
-                com.twilio.rest.Domains.API.toString(),
+                Domains.API.toString(),
                 "/2010-04-01/Accounts/AC222222222222222222222222222222/Calls/PNXXXXY/Recordings/123.json"
         );
         ObjectMapper objectMapper = new ObjectMapper();
@@ -209,8 +210,8 @@ public class TwilioRestTest {
         ResourceSet<Recording> recording = recordingReader.read(twilioRestClient);
         List<String> testStringValues = new ArrayList<>();
         recording.forEach(recordingVal -> {
-                assertNotNull(recordingVal);
-                testStringValues.add(recordingVal.getTestString());
+            assertNotNull(recordingVal);
+            testStringValues.add(recordingVal.getTestString());
         });
         assertEquals("Ahoy", testStringValues.get(0));
         assertEquals("Matey", testStringValues.get(1));
@@ -278,10 +279,9 @@ public class TwilioRestTest {
         String url = "https://api.twilio.com/2010-04-01/Accounts/AC222222222222222222222222222222/Calls/PNXXXXY/Recordings.json";
         ZonedDateTime currentDateTime = ZonedDateTime.now();
         LocalDate localDate = LocalDate.now();
-        mockRequest.addQueryParam("DateCreated", currentDateTime.toString());
-        mockRequest.addQueryParam("DateTest", localDate.toString());
-        mockRequest.addQueryParam("DateCreatedBefore", currentDateTime.toString());
-        mockRequest.addQueryParam("DateCreatedAfter", currentDateTime.toString());
+        String formattedLocalDate = DateConverter.dateStringFromLocalDate(localDate);
+        mockRequest.addQueryParam("DateTest", formattedLocalDate);
+        mockRequest.addQueryDateTimeRange("DateCreated", currentDateTime, currentDateTime);
         mockRequest.addQueryParam("PageSize", "4");
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
@@ -290,7 +290,6 @@ public class TwilioRestTest {
         when(twilioRestClient.request(mockRequest2)).thenReturn(new Response(responseContent, 200));
         when(twilioRestClient.getObjectMapper()).thenReturn(objectMapper);
         RecordingReader recordingReader = new RecordingReader("AC222222222222222222222222222222", "PNXXXXY");
-        recordingReader.setDateCreated(currentDateTime);
         recordingReader.setDateCreatedBefore(currentDateTime);
         recordingReader.setDateCreatedAfter(currentDateTime);
         recordingReader.setDateTest(localDate);
@@ -321,10 +320,10 @@ public class TwilioRestTest {
         String url = "https://api.twilio.com/2010-04-01/Accounts/AC222222222222222222222222222222/Calls/PNXXXXY/Recordings.json";
         ZonedDateTime currentDateTime = ZonedDateTime.now();
         LocalDate localDate = LocalDate.now();
-        mockRequest.addQueryParam("DateCreated", currentDateTime.toString());
-        mockRequest.addQueryParam("DateTest", localDate.toString());
-        mockRequest.addQueryParam("DateCreatedBefore", currentDateTime.toString());
-        mockRequest.addQueryParam("DateCreatedAfter", currentDateTime.toString());
+        String formattedCurrentDate = currentDateTime.format(DateTimeFormatter.ofPattern(Request.QUERY_STRING_DATE_TIME_FORMAT));
+        String formattedLocalDate = DateConverter.dateStringFromLocalDate(localDate);
+        mockRequest.addQueryParam("DateCreated", formattedCurrentDate);
+        mockRequest.addQueryParam("DateTest", formattedLocalDate);
         mockRequest.addQueryParam("PageSize", "4");
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
@@ -363,10 +362,11 @@ public class TwilioRestTest {
         String url = "https://api.twilio.com/2010-04-01/Accounts/AC222222222222222222222222222222/Calls/PNXXXXY/Recordings.json";
         ZonedDateTime currentDateTime = ZonedDateTime.now();
         LocalDate localDate = LocalDate.now();
-        mockRequest.addQueryParam("DateCreated", currentDateTime.toString());
-        mockRequest.addQueryParam("DateTest", localDate.toString());
-        mockRequest.addQueryParam("DateCreatedBefore", currentDateTime.toString());
-        mockRequest.addQueryParam("DateCreatedAfter", currentDateTime.toString());
+        String currentDateTimeFormatted = currentDateTime.format(DateTimeFormatter.ofPattern(Request.QUERY_STRING_DATE_TIME_FORMAT));
+        String formattedLocalDate = DateConverter.dateStringFromLocalDate(localDate);
+
+        mockRequest.addQueryParam("DateCreated", currentDateTimeFormatted);
+        mockRequest.addQueryParam("DateTest", formattedLocalDate);
         mockRequest.addQueryParam("PageSize", "4");
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
