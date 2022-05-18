@@ -90,5 +90,6 @@ public class RecordingFetcher extends Fetcher<Recording> {
 
         return Recording.fromJson(response.getStream(), client.getObjectMapper());
     }
+
 }
 

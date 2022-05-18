@@ -106,6 +106,10 @@ public class {{resourceName}}Fetcher extends Fetcher<{{resourceName}}> {
     {{/headerParams}}
     }
     {{/headerParams.0}}
+{{#queryParams.0}}
+{{>queryParams}}
+{{/queryParams.0}}
+
 }
 {{/vendorExtensions.x-is-fetch-operation}}
 {{/operations}}

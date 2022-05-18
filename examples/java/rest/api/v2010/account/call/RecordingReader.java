@@ -103,8 +103,8 @@ public class RecordingReader extends Reader<Recording> {
             request.addQueryParam("DateTest", DateConverter.dateStringFromLocalDate(DateTest));
         }
 
-        if (getPageSize != null) {
-           request.addQueryParam("PageSize", Integer.toString(getPageSize()));
+        if (getPageSize() != null) {
+            request.addQueryParam("PageSize", Integer.toString(getPageSize()));
         }
 
     }

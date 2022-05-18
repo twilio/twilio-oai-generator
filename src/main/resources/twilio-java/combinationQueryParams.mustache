@@ -1,6 +1,6 @@
-if ({{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}} != null) {
-request.addQueryParam("{{baseName}}", {{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}.format(DateTimeFormatter.ofPattern(Request.QUERY_STRING_DATE_TIME_FORMAT)));
-}
-else if ({{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}After != null || {{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}Before != null) {
-request.addQueryDateTimeRange("{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}", {{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}After, {{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}Before);
-}
+        if ({{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}} != null) {
+            request.addQueryParam("{{baseName}}", {{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}.format(DateTimeFormatter.ofPattern(Request.QUERY_STRING_DATE_TIME_FORMAT)));
+        }
+        else if ({{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}After != null || {{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}Before != null) {
+            request.addQueryDateTimeRange("{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}", {{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}After, {{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}Before);
+        }
