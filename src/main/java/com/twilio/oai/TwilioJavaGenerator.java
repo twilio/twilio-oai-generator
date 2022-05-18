@@ -165,11 +165,8 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
         List<String> specialTypes = Arrays.asList("String", "ZonedDateTime", "LocalDate");
 
         for(CodegenParameter e : finalQueryParamList){
-            //Special handling for pageSize
-            if(e.paramName.equals("PageSize")){
-                e.vendorExtensions.put("x-is-page-size", true);
-            }
-            else if(!specialTypes.contains(e.dataType) && !e.vendorExtensions.containsKey("x-prefixed-collapsible-map") && !e.isArray){
+
+            if(!specialTypes.contains(e.dataType) && !e.vendorExtensions.containsKey("x-prefixed-collapsible-map") && !e.isArray){
                 e.vendorExtensions.put("x-is-other-data-type", true);
             }
 
@@ -188,9 +185,6 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
         List<String> queryParamNames = new ArrayList<>();
         for(CodegenParameter e : co.queryParams){
             queryParamNames.add(e.paramName);
-            if(e.paramName.equals("PageSize")){
-                e.vendorExtensions.put("x-is-page-size", true);
-            }
         }
         Collections.sort(queryParamNames, Collections.reverseOrder());
         for(CodegenParameter e : co.queryParams){

@@ -27,6 +27,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import com.twilio.converter.DateConverter;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -72,6 +74,7 @@ public class AwsUpdater extends Updater<Aws>{
             Domains.API.toString(),
             path
         );
+
         addPostParams(request);
         Response response = client.request(request);
         if (response == null) {
@@ -91,4 +94,6 @@ public class AwsUpdater extends Updater<Aws>{
             request.addPostParam("TestString", TestString.toString());
         }
     }
+
+
 }

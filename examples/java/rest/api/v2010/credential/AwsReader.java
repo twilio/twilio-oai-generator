@@ -30,6 +30,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import com.twilio.converter.DateConverter;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -65,10 +67,10 @@ public class AwsReader extends Reader<Aws> {
     }
 
     private void addQueryParams(final Request request) {
-        if (getPageSize() != null) {
-            request.addQueryParam("PageSize", Integer.toString(getPageSize()));
+        if (PageSize != null) {
+            
+            request.addQueryParam("PageSize", PageSize.toString());
         }
-
     }
 
     @Override

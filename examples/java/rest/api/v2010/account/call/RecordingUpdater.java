@@ -27,6 +27,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import com.twilio.converter.DateConverter;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -91,6 +93,7 @@ public class RecordingUpdater extends Updater<Recording>{
             Domains.API.toString(),
             path
         );
+
         addPostParams(request);
         Response response = client.request(request);
         if (response == null) {
@@ -113,4 +116,6 @@ public class RecordingUpdater extends Updater<Recording>{
             request.addPostParam("Status", Status.toString());
         }
     }
+
+
 }

@@ -30,6 +30,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import com.twilio.converter.DateConverter;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -98,15 +100,14 @@ public class RecordingReader extends Reader<Recording> {
         else if (DateCreatedAfter != null || DateCreatedBefore != null) {
             request.addQueryDateTimeRange("DateCreated", DateCreatedAfter, DateCreatedBefore);
         }
-
         if (DateTest != null) {
             request.addQueryParam("DateTest", DateConverter.dateStringFromLocalDate(DateTest));
         }
 
-        if (getPageSize() != null) {
-            request.addQueryParam("PageSize", Integer.toString(getPageSize()));
+        if (PageSize != null) {
+            
+            request.addQueryParam("PageSize", PageSize.toString());
         }
-
     }
 
     @Override

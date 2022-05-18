@@ -4,8 +4,6 @@
 {{>combinationQueryParams}}
 {{/vendorExtensions.x-has-before-and-after}}
 {{^vendorExtensions.x-has-before-and-after}}
-{{>pageSizeQParam}}
-{{^vendorExtensions.x-is-page-size}}
 {{#vendorExtensions.x-prefixed-collapsible-map}}
 {{>prefixedCollapsibleMapQParams}}
         {{/vendorExtensions.x-prefixed-collapsible-map}}
@@ -27,7 +25,6 @@
         }
         {{/vendorExtensions.x-is-other-data-type}}
             {{/vendorExtensions.x-prefixed-collapsible-map}}
-        {{/vendorExtensions.x-is-page-size}}
 {{/vendorExtensions.x-has-before-and-after}}
 {{/queryParams}}
     }
