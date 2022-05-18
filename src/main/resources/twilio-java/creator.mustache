@@ -78,6 +78,9 @@ public class {{resourceName}}Creator extends Creator<{{resourceName}}>{
             Domains.{{#lambda.uppercase}}{{domain}}{{/lambda.uppercase}}.toString(),
             path
         );
+        {{#queryParams.0}}
+        addQueryParams(request);
+        {{/queryParams.0}}
         {{#formParams.0}}
         addPostParams(request);
         {{/formParams.0}}
@@ -120,6 +123,11 @@ public class {{resourceName}}Creator extends Creator<{{resourceName}}>{
     {{/headerParams}}
     }
     {{/headerParams.0}}
+
+{{#queryParams.0}}
+{{>queryParams}}
+{{/queryParams.0}}
+
 }
 {{/vendorExtensions.x-is-create-operation}}
 {{/operations}}
