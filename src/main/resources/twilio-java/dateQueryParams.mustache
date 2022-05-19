@@ -1,8 +1,8 @@
 {{#isDate}}
-request.addQueryParam("{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}", DateConverter.dateStringFromLocalDate({{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}));
+request.addQueryParam("{{baseName}}", DateConverter.dateStringFromLocalDate({{paramName}}));
         }
 {{/isDate}}
 {{#isDateTime}}
-request.addQueryParam("{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}", {{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}.toInstant().toString());
+request.addQueryParam("{{baseName}}", {{paramName}}.toInstant().toString());
         }
 {{/isDateTime}}

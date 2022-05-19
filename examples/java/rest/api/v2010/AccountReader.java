@@ -25,11 +25,11 @@ import com.twilio.rest.Domains;
 import com.twilio.base.Page;
 import java.time.ZonedDateTime;
 import java.time.LocalDate;
-import java.time.ZonedDateTime;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
-import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import com.twilio.converter.DateConverter;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -84,23 +84,6 @@ public class AccountReader extends Reader<Account> {
         return this;
     }
 
-    private void addQueryParams(final Request request) {
-        if (dateCreated != null) {
-            request.addQueryParam("DateCreated", dateCreated.toString());
-        }
-        if (dateTest != null) {
-            request.addQueryParam("DateTest", dateTest.toString());
-        }
-        if (dateCreatedBefore != null) {
-            request.addQueryParam("DateCreatedBefore", dateCreatedBefore.toString());
-        }
-        if (dateCreatedAfter != null) {
-            request.addQueryParam("DateCreatedAfter", dateCreatedAfter.toString());
-        }
-        if (pageSize != null) {
-            request.addQueryParam("PageSize", pageSize.toString());
-        }
-    }
 
     @Override
     public ResourceSet<Account> read(final TwilioRestClient client) {
@@ -168,6 +151,22 @@ public class AccountReader extends Reader<Account> {
         );
 
         return pageForRequest(client, request);
+    }
+    private void addQueryParams(final Request request) {
+        if (dateCreated != null) {
+            request.addQueryParam("DateCreated", dateCreated.format(DateTimeFormatter.ofPattern(Request.QUERY_STRING_DATE_TIME_FORMAT)));
+        }
+        else if (dateCreatedAfter != null || dateCreatedBefore != null) {
+            request.addQueryDateTimeRange("DateCreated", dateCreatedAfter, dateCreatedBefore);
+        }
+        if (dateTest != null) {
+            request.addQueryParam("Date.Test", DateConverter.dateStringFromLocalDate(dateTest));
+        }
+
+        if (pageSize != null) {
+            
+            request.addQueryParam("PageSize", pageSize.toString());
+        }
     }
 }
 

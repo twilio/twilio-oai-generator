@@ -15,11 +15,11 @@ import com.twilio.rest.Domains;
 import com.twilio.base.Page;
 import java.time.ZonedDateTime;
 import java.time.LocalDate;
-import java.time.ZonedDateTime;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
-import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import com.twilio.converter.DateConverter;
 
 {{^fullJavaUtil}}
 import java.util.ArrayList;
@@ -57,23 +57,6 @@ public class {{resourceName}}Reader extends Reader<{{resourceName}}> {
     }
 {{/vendorExtensions.x-non-path-params}}
 
-    private void addQueryParams(final Request request) {
-        {{#queryParams}}
-        {{#vendorExtensions.x-prefixed-collapsible-map}}
-        if ({{paramName}} != null) {
-            Map<String, String> params = PrefixedCollapsibleMap.serialize({{{paramName}}}, "{{vendorExtensions.x-prefixed-collapsible-map}}");
-            for (Map.Entry<String, String> entry : params.entrySet()) {
-                request.addQueryParam(entry.getKey(), entry.getValue());
-            }
-        }
-        {{/vendorExtensions.x-prefixed-collapsible-map}}
-        {{^vendorExtensions.x-prefixed-collapsible-map}}
-        if ({{paramName}} != null) {
-            request.addQueryParam("{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}", {{paramName}}.toString());
-        }
-        {{/vendorExtensions.x-prefixed-collapsible-map}}
-        {{/queryParams}}
-    }
 
     @Override
     public ResourceSet<{{resourceName}}> read(final TwilioRestClient client) {

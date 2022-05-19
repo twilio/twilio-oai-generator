@@ -6,25 +6,25 @@
 {{^vendorExtensions.x-has-before-and-after}}
 {{#vendorExtensions.x-prefixed-collapsible-map}}
 {{>prefixedCollapsibleMapQParams}}
-        {{/vendorExtensions.x-prefixed-collapsible-map}}
-        {{^vendorExtensions.x-prefixed-collapsible-map}}
-        if ({{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}} != null) {
-            {{#isString}}
-            request.addQueryParam("{{baseName}}", {{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}});
+{{/vendorExtensions.x-prefixed-collapsible-map}}
+{{^vendorExtensions.x-prefixed-collapsible-map}}
+        if ({{paramName}} != null) {
+{{#isString}}
+            request.addQueryParam("{{baseName}}", {{paramName}});
         }
-            {{/isString}}
-            {{#isArray}}
-            for ({{baseType}} prop : {{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}) {
-                request.addQueryParam("{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}", prop);
+{{/isString}}
+{{#isArray}}
+            for ({{baseType}} prop : {{paramName}}) {
+                request.addQueryParam("{{baseName}}", prop);
             }
         }
-            {{/isArray}}
+{{/isArray}}
             {{>dateQueryParams}}
-            {{#vendorExtensions.x-is-other-data-type}}
-            request.addQueryParam("{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}", {{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}.toString());
+{{#vendorExtensions.x-is-other-data-type}}
+            request.addQueryParam("{{baseName}}", {{paramName}}.toString());
         }
-        {{/vendorExtensions.x-is-other-data-type}}
-            {{/vendorExtensions.x-prefixed-collapsible-map}}
+{{/vendorExtensions.x-is-other-data-type}}
+{{/vendorExtensions.x-prefixed-collapsible-map}}
 {{/vendorExtensions.x-has-before-and-after}}
 {{/queryParams}}
     }
