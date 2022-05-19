@@ -1,0 +1,8 @@
+{{#isDate}}
+request.addQueryParam("{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}", DateConverter.dateStringFromLocalDate({{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}));
+        }
+{{/isDate}}
+{{#isDateTime}}
+request.addQueryParam("{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}", {{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}.toInstant().toString());
+        }
+{{/isDateTime}}

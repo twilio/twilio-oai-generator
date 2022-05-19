@@ -130,6 +130,58 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
                 .collect(Collectors.joining("/")) + "/"+split[split.length-1];
     }
 
+    /**
+     * Different data types need different formatting and conversion mechanisms while they are being added as parameters to the request
+     * This special handling will be done in mustache files
+     * This function sets different flags for processing in mustache files
+     * */
+    private void processDataTypesForParams(List<CodegenParameter> finalQueryParamList) {
+        //Date types needing special processing
+        List<String> specialTypes = Arrays.asList("String", "ZonedDateTime", "LocalDate");
+
+        for(CodegenParameter e : finalQueryParamList){
+
+            if(!specialTypes.contains(e.dataType) && !e.vendorExtensions.containsKey("x-prefixed-collapsible-map") && !e.isArray){
+                e.vendorExtensions.put("x-is-other-data-type", true);
+            }
+
+        }
+    }
+
+
+    /**
+     * Function to pre process query parameters
+     * There are some combination of query parameters, if present needs to be treated different
+     * This function identifies and label them and remove some query params from the original list
+     * returns finalQueryParamList - Modified query parameters list
+     */
+    public List<CodegenParameter> preProcessQueryParameters(CodegenOperation co){
+
+        List<String> queryParamNames = new ArrayList<>();
+        for(CodegenParameter e : co.queryParams){
+            queryParamNames.add(e.paramName);
+        }
+        Collections.sort(queryParamNames, Collections.reverseOrder());
+        for(CodegenParameter e : co.queryParams){
+            String afterName = e.paramName + "After";
+            String beforeName = e.paramName + "Before";
+            if(queryParamNames.contains(afterName) && queryParamNames.contains(beforeName)){
+                e.vendorExtensions.put("x-has-before-and-after", true);
+                queryParamNames.remove(afterName);
+                queryParamNames.remove(beforeName);
+            }
+        }
+        List<CodegenParameter> finalQueryParamList = new ArrayList<CodegenParameter>();
+        for (CodegenParameter e : co.queryParams) {
+            if (queryParamNames.contains(e.paramName)) {
+                finalQueryParamList.add(e);
+            }
+        }
+        processDataTypesForParams(finalQueryParamList);
+        return finalQueryParamList;
+    }
+
+
     @SuppressWarnings("unchecked")
     @Override
     public Map<String, Object> postProcessAllModels(final Map<String, Object> allModels) {
@@ -224,6 +276,7 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
             resource.put("path", path);
             resource.put("resourceName", resourceName);
             updateCodeOperationParams(co);
+            co.queryParams = preProcessQueryParameters(co);
             co.pathParams = null;
             co.hasParams = !co.allParams.isEmpty();
             co.allParams.stream().map(ConventionResolver::resolveParamTypes).map(item -> StringUtils.camelize(item.paramName)).collect(Collectors.toList());
@@ -491,6 +544,7 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
         co.queryParams = co.queryParams.stream().map(ConventionResolver::resolveParamTypes)
                 .map(ConventionResolver::prefixedCollapsibleMap)
                 .collect(Collectors.toList());
+        co.queryParams = preProcessQueryParameters(co);
         co.formParams = co.formParams.stream().map(ConventionResolver::resolveParamTypes)
                 .map(ConventionResolver::prefixedCollapsibleMap)
                 .collect(Collectors.toList());

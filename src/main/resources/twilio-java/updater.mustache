@@ -71,6 +71,9 @@ public class {{resourceName}}Updater extends Updater<{{resourceName}}>{
             Domains.{{#lambda.uppercase}}{{domain}}{{/lambda.uppercase}}.toString(),
             path
         );
+        {{#queryParams.0}}
+        addQueryParams(request);
+        {{/queryParams.0}}
         {{#formParams.0}}
         addPostParams(request);
         {{/formParams.0}}
@@ -108,6 +111,9 @@ public class {{resourceName}}Updater extends Updater<{{resourceName}}>{
     {{/headerParams}}
     }
     {{/headerParams.0}}
+{{#queryParams.0}}
+{{>queryParams}}
+{{/queryParams.0}}
 }
 {{/vendorExtensions.x-is-update-operation}}
 {{/operations}}

@@ -98,7 +98,9 @@ public class {{resourceName}}Reader extends Reader<{{resourceName}}> {
             path
         );
 
+        {{#queryParams.0}}
         addQueryParams(request);
+        {{/queryParams.0}}
         {{#formParams.0}}
         addPostParams(request);
         {{/formParams.0}}
@@ -180,6 +182,9 @@ public class {{resourceName}}Reader extends Reader<{{resourceName}}> {
     {{/headerParams}}
     }
     {{/headerParams.0}}
+{{#queryParams.0}}
+{{>queryParams}}
+{{/queryParams.0}}
 }
 {{/vendorExtensions.x-is-read-operation}}
 {{/operations}}
