@@ -20,32 +20,48 @@ import V2010 from '../../../V2010';
  * @property { string } endDate 
  * @property { string } startDate 
  */
-export interface FeedbackSummarInstanceCreateOptions {
+export interface FeedbackSummarListInstanceInstanceCreateOptions {
     endDate: string;
     startDate: string;
 }
 
-export class FeedbackSummarListInstance {
-    protected _solution: any;
-    protected _uri: string;
+export interface FeedbackSummarListInstance {
 
-
-    constructor(protected _version: V2010, accountSid: string) {
-        this._solution = { accountSid };
-        this._uri = `/2010-04-01/Accounts/${accountSid}/Calls/FeedbackSummary.json`;
-    }
 
     /**
      * Create a FeedbackSummarInstance
      *
-     * @param { FeedbackSummarInstanceCreateOptions } params - Parameter for request
+     * @param { FeedbackSummarListInstanceInstanceCreateOptions } params - Parameter for request
      * @param { function } [callback] - Callback to handle processed record
      *
      * @returns { Promise } Resolves to processed FeedbackSummarInstance
      */
-    public async create(params: FeedbackSummarInstanceCreateOptions, callback?: (error: Error | null, item?: FeedbackSummarInstance) => any): Promise<FeedbackSummarInstance>;
-    public async create(params: any, callback?: any): Promise<FeedbackSummarInstance> {
+    create(params: FeedbackSummarListInstanceInstanceCreateOptions, callback?: (error: Error | null, item?: FeedbackSummarInstance) => any): Promise<FeedbackSummarInstance>;
+    create(params: any, callback?: any): Promise<FeedbackSummarInstance>
+;
+    /**
+     * Provide a user-friendly representation
+     */
+    toJSON(): any;
+}
 
+
+interface FeedbackSummarListInstanceImpl extends FeedbackSummarListInstance {}
+class FeedbackSummarListInstanceImpl implements FeedbackSummarListInstance {
+    _version: V2010;
+    _solution: any;
+    _uri: string;
+
+}
+
+export function FeedbackSummarListInstance(version: V2010, accountSid: string): FeedbackSummarListInstance {
+    const instance = {} as FeedbackSummarListInstanceImpl;
+
+    instance._version = version;
+    instance._solution = { accountSid };
+    instance._uri = `/2010-04-01/Accounts/${accountSid}/Calls/FeedbackSummary.json`;
+
+    instance.create = function create(params: any, callback?: any): Promise<FeedbackSummarInstance> {
         if (params === null || params === undefined) {
             throw new Error('Required parameter "params" missing.');
         }
@@ -79,19 +95,17 @@ export class FeedbackSummarListInstance {
         }
 
         return instancePromise;
+
     }
 
-    /**
-     * Provide a user-friendly representation
-     *
-     * @returns Object
-     */
-    toJSON() {
+    instance.toJSON = function toJSON() {
         return this._solution;
     }
 
-    [inspect.custom](depth, options) {
+    instance[inspect.custom] = function inspectImpl(_depth, options) {
         return inspect(this.toJSON(), options);
     }
+
+    return instance;
 }
 

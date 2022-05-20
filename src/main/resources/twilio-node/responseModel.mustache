@@ -2,7 +2,7 @@
 {{#hasEnums}}
 {{#vars}}
 {{#isEnum}}
-export type {{enumName}}Type = {{#allowableValues}}{{#enumVars}}{{{value}}}{{^-last}}|{{/-last}}{{/enumVars}}{{/allowableValues}};
+export type {{vendorExtensions.x-name}} = {{#allowableValues}}{{#enumVars}}{{{value}}}{{^-last}}|{{/-last}}{{/enumVars}}{{/allowableValues}};
 {{/isEnum}}
 {{/vars}}
 {{/hasEnums}}
@@ -12,7 +12,7 @@ export type {{enumName}}Type = {{#allowableValues}}{{#enumVars}}{{{value}}}{{^-l
  * {{{description}}}
  */
 {{/description}}
-export class {{name}} {
+export class {{name}}Instance {
     protected _solution: any;
     protected _context?: {{resourceName}};
 
@@ -25,7 +25,7 @@ export class {{name}} {
     }
 
     private get _proxy(): {{resourceName}} {
-        this._context = this._context || new {{resourceName}}(this._version{{#resourcePathParams}}, this._solution.{{paramName}}{{/resourcePathParams}});
+        this._context = this._context || new {{resourceName}}Impl(this._version{{#resourcePathParams}}, this._solution.{{paramName}}{{/resourcePathParams}});
         return this._context;
     }
 
@@ -35,11 +35,11 @@ export class {{name}} {
      * {{{description}}}
      */
     {{/description}}
-    {{name}}{{^required}}?{{/required}}: {{#isEnum}}{{{datatypeWithEnum}}}{{/isEnum}}{{^isEnum}}{{{dataType}}}{{#isNullable}} | null{{/isNullable}}{{/isEnum}};
+    {{name}}{{^required}}?{{/required}}: {{#isEnum}}{{{vendorExtensions.x-name}}}{{/isEnum}}{{^isEnum}}{{{dataType}}}{{#isNullable}} | null{{/isNullable}}{{/isEnum}};
     {{/vars}}
     {{#operations}}
 
-{{>operationSignature}}
+{{>operationSignature}} {
         return this._proxy.{{vendorExtensions.x-name-lower}}({{#hasParams}}params, {{/hasParams}}callback);
     }
     {{/operations}}
@@ -66,7 +66,7 @@ export class {{name}} {
         }
     }
 
-    [inspect.custom](depth, options) {
+    [inspect.custom](_depth, options) {
         return inspect(this.toJSON(), options);
     }
 }

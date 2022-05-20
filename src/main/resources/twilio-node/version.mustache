@@ -1,6 +1,6 @@
 {{>licenseInfo}}
-import {{domain}} = require('../{{domain}}');
-import Version = require('../../base/Version');
+import {{domain}} from '../{{domain}}';
+import Version from '../../base/Version';
 {{#versionResources}}
 import { {{name}}ListInstance } from './{{apiVersion}}/{{filename}}';
 {{/versionResources}}
@@ -25,7 +25,7 @@ export default class {{apiVersionClass}} extends Version {
 
     {{#versionResources}}
     get {{mountName}}(): {{name}}ListInstance {
-        this._{{mountName}} = this._{{mountName}} || new {{name}}ListInstance(this);
+        this._{{mountName}} = this._{{mountName}} || {{name}}ListInstance(this);
         return this._{{mountName}};
     }
 
