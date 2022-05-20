@@ -65,7 +65,7 @@ export class {{resourceName}}Impl implements {{resourceName}} {
 
     {{#dependents}}
     get {{mountName}}(): {{name}}ListInstance {
-        this._{{mountName}} = this._{{mountName}} || new {{name}}ListInstance(this._version{{#resourcePathParams}}, this._solution.{{paramName}}{{/resourcePathParams}});
+        this._{{mountName}} = this._{{mountName}} || {{name}}ListInstance(this._version{{#resourcePathParams}}, this._solution.{{paramName}}{{/resourcePathParams}});
         return this._{{mountName}};
     }
 
@@ -120,10 +120,10 @@ export function {{resourceName}}(version: {{apiVersionClass}}{{#resourcePathPara
     instance._uri = `{{path}}`;
 
     {{#dependents}}
-    Object.defineProperty(instance, {{mountName}}, {
+    Object.defineProperty(instance, '{{mountName}}', {
         get: function {{mountName}}() {
             if (!this._{{mountName}}) {
-                this._{{mountName}} = new {{name}}ListInstance(this._version{{#resourcePathParams}}, this._solution.{{paramName}}{{/resourcePathParams}});
+                this._{{mountName}} = {{name}}ListInstance(this._version{{#resourcePathParams}}, this._solution.{{paramName}}{{/resourcePathParams}});
             }
             return this._{{mountName}};
         }

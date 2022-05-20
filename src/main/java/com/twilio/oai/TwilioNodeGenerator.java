@@ -71,10 +71,10 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
                                        .getPaths()
                                        .keySet()
                                        .stream()
-                                       .filter(p -> PathUtils
-                                           .removePathParamIds(p)
-                                           .matches(
-                                               PathUtils.escapeRegex(PathUtils.removePathParamIds(name)) + "/[^{]+"))
+                                       .map(PathUtils::removePathParamIds)
+                                       .map(PathUtils::removeExtension)
+                                       .filter(p -> p.matches(PathUtils.escapeRegex(
+                                           PathUtils.removeExtension(PathUtils.removePathParamIds(name)) + "/[^{/]+")))
                                        .collect(Collectors.toList()));
         }));
 
@@ -181,12 +181,12 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
                 addModel(resource, co.bodyParam.dataType);
             }
 
-            if (isInstanceResource) {
-                final Map<String, Object> dependents = getStringMap(resource, "dependents");
-                for (final String dependentPath : (List<String>) co.vendorExtensions.get("x-dependents")) {
-                    addDependent(dependents, dependentPath);
-                }
+            final Map<String, Object> dependents = getStringMap(resource, "dependents");
+            for (final String dependentPath : (List<String>) co.vendorExtensions.get("x-dependents")) {
+                addDependent(dependents, dependentPath);
+            }
 
+            if (isInstanceResource) {
                 co.responses
                     .stream()
                     .map(response -> response.dataType)

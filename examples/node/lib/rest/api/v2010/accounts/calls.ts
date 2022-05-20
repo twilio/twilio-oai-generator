@@ -12,6 +12,7 @@
 
 import { inspect } from 'util';
 import V2010 from '../../V2010';
+import { FeedbackSummarListInstance } from './Calls/FeedbackSummary';
 
 
 /**
@@ -30,6 +31,7 @@ export interface CallListInstance {
     (accountSid, testInteger): CallContext;
     get(accountSid, testInteger): CallContext;
 
+    feedback_summary?: FeedbackSummarListInstance;
 
     /**
      * Create a CallInstance
@@ -55,6 +57,7 @@ class CallListInstanceImpl implements CallListInstance {
     _solution: any;
     _uri: string;
 
+    _feedback_summary?: FeedbackSummarListInstance;
 }
 
 export function CallListInstance(version: V2010, accountSid: string): CallListInstance {
@@ -67,6 +70,15 @@ export function CallListInstance(version: V2010, accountSid: string): CallListIn
     instance._version = version;
     instance._solution = { accountSid };
     instance._uri = `/2010-04-01/Accounts/${accountSid}/Calls.json`;
+
+    Object.defineProperty(instance, 'feedback_summary', {
+        get: function feedback_summary() {
+            if (!this._feedback_summary) {
+                this._feedback_summary = FeedbackSummarListInstance(this._version, this._solution.accountSid);
+            }
+            return this._feedback_summary;
+        }
+    });
 
     instance.create = function create(params: any, callback?: any): Promise<CallInstance> {
         if (params === null || params === undefined) {

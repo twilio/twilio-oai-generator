@@ -12,6 +12,7 @@
 
 import { inspect } from 'util';
 import V2010 from '../V2010';
+import { CallListInstance } from './Accounts/Calls';
 
 
 /**
@@ -56,6 +57,7 @@ export interface AccountListInstanceInstancePageOptions {
 
 export interface AccountContext {
 
+    calls?: CallListInstance;
 
     /**
      * Remove a AccountInstance
@@ -96,10 +98,16 @@ export class AccountContextImpl implements AccountContext {
     protected _solution: any;
     protected _uri: string;
 
+    protected _calls?: CallListInstance;
 
     constructor(protected _version: V2010, sid: string) {
         this._solution = { sid };
         this._uri = `/2010-04-01/Accounts/${sid}.json`;
+    }
+
+    get calls(): CallListInstance {
+        this._calls = this._calls || CallListInstance(this._version, this._solution.sid);
+        return this._calls;
     }
 
     remove(callback?: any): Promise<AccountInstance> {
@@ -259,6 +267,13 @@ export class AccountInstance {
     update(params: any, callback?: any): Promise<AccountInstance>
  {
         return this._proxy.update(params, callback);
+    }
+
+    /**
+     * Access the calls.
+     */
+    calls(): CallListInstance {
+        return this._proxy.calls;
     }
 
     /**
