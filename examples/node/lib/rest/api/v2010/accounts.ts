@@ -148,9 +148,8 @@ export class AccountContextImpl implements AccountContext {
         if (params.pauseBehavior !== undefined) data['PauseBehavior'] = params.pauseBehavior;
         data['Status'] = params.status;
 
-        const headers: any = {
-            'Content-Type': 'application/x-www-form-urlencoded'
-        };
+        const headers: any = {};
+        headers['Content-Type'] = 'application/x-www-form-urlencoded'
 
 
         const operationPromise = this._version.update({ uri: this._uri, method: 'POST', data, headers });
@@ -373,9 +372,8 @@ export function AccountListInstance(version: V2010): AccountListInstance {
         if (params.recordingStatusCallback !== undefined) data['RecordingStatusCallback'] = params.recordingStatusCallback;
         if (params.recordingStatusCallbackEvent !== undefined) data['RecordingStatusCallbackEvent'] = params.recordingStatusCallbackEvent;
 
-        const headers: any = {
-            'Content-Type': 'application/x-www-form-urlencoded'
-        };
+        const headers: any = {};
+        headers['Content-Type'] = 'application/x-www-form-urlencoded'
 
         if (params.xTwilioWebhookEnabled !== undefined) headers['X-Twilio-Webhook-Enabled'] = params.xTwilioWebhookEnabled;
 
@@ -404,9 +402,7 @@ export function AccountListInstance(version: V2010): AccountListInstance {
         const data: any = {};
 
 
-        const headers: any = {
-            'Content-Type': 
-        };
+        const headers: any = {};
 
 
         const operationPromise = this._version.page({ uri: this._uri, method: 'GET', data, headers });

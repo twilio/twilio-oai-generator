@@ -82,9 +82,8 @@ export function CallListInstance(version: V2010, accountSid: string): CallListIn
         data['RequiredStringProperty'] = params.requiredStringProperty;
         if (params.testArrayOfStrings !== undefined) data['TestArrayOfStrings'] = params.testArrayOfStrings;
 
-        const headers: any = {
-            'Content-Type': 'application/x-www-form-urlencoded'
-        };
+        const headers: any = {};
+        headers['Content-Type'] = 'application/x-www-form-urlencoded'
 
 
         const operationPromise = this._version.create({ uri: this._uri, method: 'POST', data, headers });

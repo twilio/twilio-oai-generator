@@ -153,9 +153,8 @@ export function AWListInstance(version: V2010): AWListInstance {
         if (params.testObjectArray !== undefined) data['TestObjectArray'] = params.testObjectArray;
         if (params.testAnyType !== undefined) data['TestAnyType'] = params.testAnyType;
 
-        const headers: any = {
-            'Content-Type': 'application/x-www-form-urlencoded'
-        };
+        const headers: any = {};
+        headers['Content-Type'] = 'application/x-www-form-urlencoded'
 
 
         const operationPromise = this._version.create({ uri: this._uri, method: 'POST', data, headers });
@@ -183,9 +182,7 @@ export function AWListInstance(version: V2010): AWListInstance {
         const data: any = {};
 
 
-        const headers: any = {
-            'Content-Type': 
-        };
+        const headers: any = {};
 
 
         const operationPromise = this._version.page({ uri: this._uri, method: 'GET', data, headers });
@@ -314,9 +311,8 @@ export class AWContextImpl implements AWContext {
 
         if (params.testString !== undefined) data['TestString'] = params.testString;
 
-        const headers: any = {
-            'Content-Type': 'application/x-www-form-urlencoded'
-        };
+        const headers: any = {};
+        headers['Content-Type'] = 'application/x-www-form-urlencoded'
 
 
         const operationPromise = this._version.update({ uri: this._uri, method: 'POST', data, headers });

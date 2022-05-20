@@ -30,9 +30,12 @@
         {{/formParams}}
     {{/bodyParam}}
 
-        const headers: any = {
-            'Content-Type': {{#consumes}}{{#-first}}'{{{mediaType}}}'{{/-first}}{{/consumes}}
-        };
+        const headers: any = {};
+    {{#consumes}}
+    {{#-first}}
+        headers['Content-Type'] = '{{{mediaType}}}'
+    {{/-first}}
+    {{/consumes}}
 
     {{#headerParams}}
         if (params.{{paramName}} !== undefined) headers['{{{baseName}}}'] = params.{{paramName}};
