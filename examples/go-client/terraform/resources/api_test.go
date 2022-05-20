@@ -21,5 +21,5 @@ var resourceData *schema.ResourceData
 
 func setup(t *testing.T) {
 	testClient = NewMockApiV2010(gomock.NewController(t))
-	config = &Config{Client: &RestClient{ApiV2010: testClient}}
+	config = &Config{Client: &RestClient{Api: testClient}}
 }

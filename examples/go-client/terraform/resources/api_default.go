@@ -56,7 +56,7 @@ func createAccounts(ctx context.Context, d *schema.ResourceData, m interface{}) 
 		return diag.FromErr(err)
 	}
 
-	r, err := m.(*client.Config).Client.ApiV2010.CreateAccount(&params)
+	r, err := m.(*client.Config).Client.Api.CreateAccount(&params)
 	if err != nil {
 		return diag.FromErr(err)
 	}
@@ -73,7 +73,7 @@ func deleteAccounts(ctx context.Context, d *schema.ResourceData, m interface{}) 
 
 	sid := d.Get("sid").(string)
 
-	err := m.(*client.Config).Client.ApiV2010.DeleteAccount(sid)
+	err := m.(*client.Config).Client.Api.DeleteAccount(sid)
 	if err != nil {
 		return diag.FromErr(err)
 	}
@@ -87,7 +87,7 @@ func readAccounts(ctx context.Context, d *schema.ResourceData, m interface{}) di
 
 	sid := d.Get("sid").(string)
 
-	r, err := m.(*client.Config).Client.ApiV2010.FetchAccount(sid)
+	r, err := m.(*client.Config).Client.Api.FetchAccount(sid)
 	if err != nil {
 		return diag.FromErr(err)
 	}
@@ -120,7 +120,7 @@ func updateAccounts(ctx context.Context, d *schema.ResourceData, m interface{}) 
 
 	sid := d.Get("sid").(string)
 
-	r, err := m.(*client.Config).Client.ApiV2010.UpdateAccount(sid, &params)
+	r, err := m.(*client.Config).Client.Api.UpdateAccount(sid, &params)
 	if err != nil {
 		return diag.FromErr(err)
 	}
@@ -163,7 +163,7 @@ func createAccountsCalls(ctx context.Context, d *schema.ResourceData, m interfac
 		return diag.FromErr(err)
 	}
 
-	r, err := m.(*client.Config).Client.ApiV2010.CreateCall(&params)
+	r, err := m.(*client.Config).Client.Api.CreateCall(&params)
 	if err != nil {
 		return diag.FromErr(err)
 	}
@@ -188,7 +188,7 @@ func deleteAccountsCalls(ctx context.Context, d *schema.ResourceData, m interfac
 
 	testInteger := d.Get("test_integer").(int)
 
-	err := m.(*client.Config).Client.ApiV2010.DeleteCall(testInteger, &params)
+	err := m.(*client.Config).Client.Api.DeleteCall(testInteger, &params)
 	if err != nil {
 		return diag.FromErr(err)
 	}
@@ -206,7 +206,7 @@ func readAccountsCalls(ctx context.Context, d *schema.ResourceData, m interface{
 
 	testInteger := d.Get("test_integer").(int)
 
-	r, err := m.(*client.Config).Client.ApiV2010.FetchCall(testInteger, &params)
+	r, err := m.(*client.Config).Client.Api.FetchCall(testInteger, &params)
 	if err != nil {
 		return diag.FromErr(err)
 	}
@@ -277,7 +277,7 @@ func createCredentialsAWS(ctx context.Context, d *schema.ResourceData, m interfa
 		return diag.FromErr(err)
 	}
 
-	r, err := m.(*client.Config).Client.ApiV2010.CreateCredentialAws(&params)
+	r, err := m.(*client.Config).Client.Api.CreateCredentialAws(&params)
 	if err != nil {
 		return diag.FromErr(err)
 	}
@@ -298,7 +298,7 @@ func deleteCredentialsAWS(ctx context.Context, d *schema.ResourceData, m interfa
 
 	sid := d.Get("sid").(string)
 
-	err := m.(*client.Config).Client.ApiV2010.DeleteCredentialAws(sid)
+	err := m.(*client.Config).Client.Api.DeleteCredentialAws(sid)
 	if err != nil {
 		return diag.FromErr(err)
 	}
@@ -312,7 +312,7 @@ func readCredentialsAWS(ctx context.Context, d *schema.ResourceData, m interface
 
 	sid := d.Get("sid").(string)
 
-	r, err := m.(*client.Config).Client.ApiV2010.FetchCredentialAws(sid)
+	r, err := m.(*client.Config).Client.Api.FetchCredentialAws(sid)
 	if err != nil {
 		return diag.FromErr(err)
 	}
@@ -345,7 +345,7 @@ func updateCredentialsAWS(ctx context.Context, d *schema.ResourceData, m interfa
 
 	sid := d.Get("sid").(string)
 
-	r, err := m.(*client.Config).Client.ApiV2010.UpdateCredentialAws(sid, &params)
+	r, err := m.(*client.Config).Client.Api.UpdateCredentialAws(sid, &params)
 	if err != nil {
 		return diag.FromErr(err)
 	}
