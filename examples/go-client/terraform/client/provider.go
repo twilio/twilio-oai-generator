@@ -10,10 +10,10 @@ type Config struct {
 }
 
 type RestClient struct {
-	ApiV2010
+	Api
 }
 
-type ApiV2010 interface {
+type Api interface {
 	CreateCredentialAws(params *v2010.CreateCredentialAwsParams) (*v2010.TestResponseObject, error)
 	DeleteCredentialAws(Sid string) error
 	FetchCredentialAws(Sid string) (*v2010.TestResponseObject, error)
