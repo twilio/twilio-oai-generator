@@ -1,5 +1,6 @@
 {{>licenseInfo}}
-import { inspect } from 'util';
+import { inspect, InspectOptions } from 'util';
+import Page from '{{apiVersionPath}}/../../base/Page';
 import {{apiVersionClass}} from '{{apiVersionPath}}/{{apiVersionClass}}';
 {{#resources}}
 {{#dependents}}
@@ -32,12 +33,12 @@ export interface {{resourceName}}Instance{{vendorExtensions.x-name}}Options {
 
 export interface {{resourceName}} {
     {{#instanceResource}}
-    ({{#resourcePathParams}}{{paramName}}{{^-last}}, {{/-last}}{{/resourcePathParams}}): {{resourceName}};
-    get({{#resourcePathParams}}{{paramName}}{{^-last}}, {{/-last}}{{/resourcePathParams}}): {{resourceName}};
+    ({{#resourcePathParams}}{{paramName}}: {{dataType}}{{^-last}}, {{/-last}}{{/resourcePathParams}}): {{resourceName}};
+    get({{#resourcePathParams}}{{paramName}}: {{dataType}}{{^-last}}, {{/-last}}{{/resourcePathParams}}): {{resourceName}};
     {{/instanceResource}}
 
     {{#dependents}}
-    {{mountName}}?: {{name}}ListInstance;
+    {{mountName}}: {{name}}ListInstance;
     {{/dependents}}
 
 {{#operations}}
@@ -47,6 +48,7 @@ export interface {{resourceName}} {
      * Provide a user-friendly representation
      */
     toJSON(): any;
+    [inspect.custom](_depth: any, options: InspectOptions): any;
 }
 
 {{#parentResourceName}}
@@ -71,7 +73,7 @@ export class {{resourceName}}Impl implements {{resourceName}} {
 
     {{/dependents}}
 {{#operations}}
-    {{vendorExtensions.x-name-lower}}({{#hasParams}}params{{^hasRequiredParams}}?{{/hasRequiredParams}}: any, {{/hasParams}}callback?: any): Promise<{{instanceName}}> {
+    {{vendorExtensions.x-name-lower}}({{#hasParams}}params{{^hasRequiredParams}}?{{/hasRequiredParams}}: any, {{/hasParams}}callback?: any): Promise<{{returnType}}> {
 {{>operation}}
     }
 
@@ -85,7 +87,7 @@ export class {{resourceName}}Impl implements {{resourceName}} {
         return this._solution;
     }
 
-    [inspect.custom](_depth, options) {
+    [inspect.custom](_depth: any, options: InspectOptions) {
         return inspect(this.toJSON(), options);
     }
 }
@@ -94,9 +96,9 @@ export class {{resourceName}}Impl implements {{resourceName}} {
 {{^parentResourceName}}
 interface {{resourceName}}Impl extends {{resourceName}} {}
 class {{resourceName}}Impl implements {{resourceName}} {
-    _version: {{apiVersionClass}};
-    _solution: any;
-    _uri: string;
+    _version?: {{apiVersionClass}};
+    _solution?: any;
+    _uri?: string;
 
     {{#dependents}}
     _{{mountName}}?: {{name}}ListInstance;
@@ -131,7 +133,7 @@ export function {{resourceName}}(version: {{apiVersionClass}}{{#resourcePathPara
 
     {{/dependents}}
 {{#operations}}
-    instance.{{vendorExtensions.x-name-lower}} = function {{vendorExtensions.x-name-lower}}({{#hasParams}}params{{^hasRequiredParams}}?{{/hasRequiredParams}}: any, {{/hasParams}}callback?: any): Promise<{{instanceName}}> {
+    instance.{{vendorExtensions.x-name-lower}} = function {{vendorExtensions.x-name-lower}}({{#hasParams}}params{{^hasRequiredParams}}?{{/hasRequiredParams}}: any, {{/hasParams}}callback?: any): Promise<{{returnType}}> {
 {{>operation}}
     }
 
@@ -140,7 +142,7 @@ export function {{resourceName}}(version: {{apiVersionClass}}{{#resourcePathPara
         return this._solution;
     }
 
-    instance[inspect.custom] = function inspectImpl(_depth, options) {
+    instance[inspect.custom] = function inspectImpl(_depth: any, options: InspectOptions) {
         return inspect(this.toJSON(), options);
     }
 

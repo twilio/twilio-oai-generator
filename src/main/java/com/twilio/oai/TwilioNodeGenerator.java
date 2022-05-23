@@ -48,7 +48,6 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
         additionalProperties.put("domain", StringUtils.camelize(domain));
 
         supportingFiles.clear();
-        supportingFiles.add(new SupportingFile("tsconfig.mustache", "tsconfig.json"));
         supportingFiles.add(new SupportingFile("version.mustache", apiPackage.toUpperCase() + ".ts"));
     }
 
@@ -140,6 +139,8 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
             String resourceName;
             String parentResourceName = null;
 
+            co.returnType = instanceName;
+
             if (isInstanceResource) {
                 resourceName = itemName + "Context";
                 parentResourceName = itemName + "ListInstance";
@@ -149,6 +150,8 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
                     addOperationName(co, "Update");
                 } else if ("DELETE".equalsIgnoreCase(co.httpMethod)) {
                     addOperationName(co, "Remove");
+                    co.returnType = "boolean";
+                    co.vendorExtensions.put("x-is-delete-operation", true);
                 }
             } else {
                 resourceName = itemName + "ListInstance";

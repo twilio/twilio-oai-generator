@@ -10,7 +10,8 @@
  * Do not edit the class manually.
  */
 
-import { inspect } from 'util';
+import { inspect, InspectOptions } from 'util';
+import Page from '../../../base/Page';
 import V2010 from '../V2010';
 import { CallListInstance } from './Accounts/Calls';
 
@@ -57,16 +58,16 @@ export interface AccountListInstanceInstancePageOptions {
 
 export interface AccountContext {
 
-    calls?: CallListInstance;
+    calls: CallListInstance;
 
     /**
      * Remove a AccountInstance
      *
      * @param { function } [callback] - Callback to handle processed record
      *
-     * @returns { Promise } Resolves to processed AccountInstance
+     * @returns { Promise } Resolves to processed boolean
      */
-    remove(callback?: (error: Error | null, item?: AccountInstance) => any): Promise<AccountInstance>
+    remove(callback?: (error: Error | null, item?: AccountInstance) => any): Promise<boolean>
 ;
     /**
      * Fetch a AccountInstance
@@ -92,6 +93,7 @@ export interface AccountContext {
      * Provide a user-friendly representation
      */
     toJSON(): any;
+    [inspect.custom](_depth: any, options: InspectOptions): any;
 }
 
 export class AccountContextImpl implements AccountContext {
@@ -110,35 +112,36 @@ export class AccountContextImpl implements AccountContext {
         return this._calls;
     }
 
-    remove(callback?: any): Promise<AccountInstance> {
+    remove(callback?: any): Promise<boolean> {
 
-        const operationPromise = this._version.remove({ uri: this._uri, method: 'DELETE' });
+        let operationVersion = this._version,
+            operationPromise = operationVersion.remove({ uri: this._uri, method: 'DELETE' });
 
-        let instancePromise = operationPromise.then(payload => new AccountInstance(this._version, payload, this._solution.sid));
 
         if (typeof callback === 'function') {
-            instancePromise = instancePromise
+            operationPromise = operationPromise
                 .then(value => callback(null, value))
                 .catch(error => callback(error));
         }
 
-        return instancePromise;
+        return operationPromise;
 
     }
 
     fetch(callback?: any): Promise<AccountInstance> {
 
-        const operationPromise = this._version.fetch({ uri: this._uri, method: 'GET' });
+        let operationVersion = this._version,
+            operationPromise = operationVersion.fetch({ uri: this._uri, method: 'GET' });
 
-        let instancePromise = operationPromise.then(payload => new AccountInstance(this._version, payload, this._solution.sid));
+        operationPromise = operationPromise.then(payload => new AccountInstance(operationVersion, payload, this._solution.sid));
 
         if (typeof callback === 'function') {
-            instancePromise = instancePromise
+            operationPromise = operationPromise
                 .then(value => callback(null, value))
                 .catch(error => callback(error));
         }
 
-        return instancePromise;
+        return operationPromise;
 
     }
 
@@ -160,17 +163,18 @@ export class AccountContextImpl implements AccountContext {
         headers['Content-Type'] = 'application/x-www-form-urlencoded'
 
 
-        const operationPromise = this._version.update({ uri: this._uri, method: 'POST', data, headers });
+        let operationVersion = this._version,
+            operationPromise = operationVersion.update({ uri: this._uri, method: 'POST', data, headers });
 
-        let instancePromise = operationPromise.then(payload => new AccountInstance(this._version, payload, this._solution.sid));
+        operationPromise = operationPromise.then(payload => new AccountInstance(operationVersion, payload, this._solution.sid));
 
         if (typeof callback === 'function') {
-            instancePromise = instancePromise
+            operationPromise = operationPromise
                 .then(value => callback(null, value))
                 .catch(error => callback(error));
         }
 
-        return instancePromise;
+        return operationPromise;
 
     }
 
@@ -183,18 +187,37 @@ export class AccountContextImpl implements AccountContext {
         return this._solution;
     }
 
-    [inspect.custom](_depth, options) {
+    [inspect.custom](_depth: any, options: InspectOptions) {
         return inspect(this.toJSON(), options);
     }
 }
 
 export type AccountTestEnum = 'DialVerb'|'Trunking';
 
+interface AccountPayload extends AccountResource, Page.TwilioResponsePayload {
+}
+
+interface AccountResource {
+    account_sid?: string | null;
+    sid?: string | null;
+    test_string?: string | null;
+    test_integer?: number | null;
+    test_object?: TestResponseObjectTestObject | null;
+    test_date_time?: string | null;
+    test_number?: number | null;
+    price_unit?: string | null;
+    test_number_float?: number | null;
+    test_enum?: AccountTestEnum;
+    test_array_of_integers?: Array<number>;
+    test_array_of_array_of_integers?: Array<Array<number>>;
+    test_array_of_objects?: Array<TestResponseObjectTestArrayOfObjects> | null;
+}
+
 export class AccountInstance {
     protected _solution: any;
     protected _context?: AccountContext;
 
-    constructor(protected _version: V2010, payload, sid?: string) {
+    constructor(protected _version: V2010, payload: AccountPayload, sid?: string) {
         this.accountSid = payload.account_sid;
         this.sid = payload.sid;
         this.testString = payload.test_string;
@@ -236,9 +259,9 @@ export class AccountInstance {
      *
      * @param { function } [callback] - Callback to handle processed record
      *
-     * @returns { Promise } Resolves to processed AccountInstance
+     * @returns { Promise } Resolves to processed boolean
      */
-    remove(callback?: (error: Error | null, item?: AccountInstance) => any): Promise<AccountInstance>
+    remove(callback?: (error: Error | null, item?: AccountInstance) => any): Promise<boolean>
  {
         return this._proxy.remove(callback);
     }
@@ -299,15 +322,15 @@ export class AccountInstance {
         }
     }
 
-    [inspect.custom](_depth, options) {
+    [inspect.custom](_depth: any, options: InspectOptions) {
         return inspect(this.toJSON(), options);
     }
 }
 
 
 export interface AccountListInstance {
-    (sid): AccountContext;
-    get(sid): AccountContext;
+    (sid: string): AccountContext;
+    get(sid: string): AccountContext;
 
 
     /**
@@ -352,14 +375,15 @@ export interface AccountListInstance {
      * Provide a user-friendly representation
      */
     toJSON(): any;
+    [inspect.custom](_depth: any, options: InspectOptions): any;
 }
 
 
 interface AccountListInstanceImpl extends AccountListInstance {}
 class AccountListInstanceImpl implements AccountListInstance {
-    _version: V2010;
-    _solution: any;
-    _uri: string;
+    _version?: V2010;
+    _solution?: any;
+    _uri?: string;
 
 }
 
@@ -392,17 +416,18 @@ export function AccountListInstance(version: V2010): AccountListInstance {
 
         if (params.xTwilioWebhookEnabled !== undefined) headers['X-Twilio-Webhook-Enabled'] = params.xTwilioWebhookEnabled;
 
-        const operationPromise = this._version.create({ uri: this._uri, method: 'POST', data, headers });
+        let operationVersion = version,
+            operationPromise = operationVersion.create({ uri: this._uri, method: 'POST', data, headers });
 
-        let instancePromise = operationPromise.then(payload => new AccountInstance(this._version, payload));
+        operationPromise = operationPromise.then(payload => new AccountInstance(operationVersion, payload));
 
         if (typeof callback === 'function') {
-            instancePromise = instancePromise
+            operationPromise = operationPromise
                 .then(value => callback(null, value))
                 .catch(error => callback(error));
         }
 
-        return instancePromise;
+        return operationPromise;
 
     }
 
@@ -416,21 +441,27 @@ export function AccountListInstance(version: V2010): AccountListInstance {
 
         const data: any = {};
 
+        if (params.dateCreated !== undefined) data['DateCreated'] = params.dateCreated;
+        if (params.dateTest !== undefined) data['Date.Test'] = params.dateTest;
+        if (params.dateCreated2 !== undefined) data['DateCreated<'] = params.dateCreated2;
+        if (params.dateCreated3 !== undefined) data['DateCreated>'] = params.dateCreated3;
+        if (params.pageSize !== undefined) data['PageSize'] = params.pageSize;
 
         const headers: any = {};
 
 
-        const operationPromise = this._version.page({ uri: this._uri, method: 'GET', data, headers });
+        let operationVersion = version,
+            operationPromise = operationVersion.page({ uri: this._uri, method: 'GET', data, headers });
 
-        let instancePromise = operationPromise.then(payload => new AccountInstance(this._version, payload));
+        operationPromise = operationPromise.then(payload => new AccountInstance(operationVersion, payload));
 
         if (typeof callback === 'function') {
-            instancePromise = instancePromise
+            operationPromise = operationPromise
                 .then(value => callback(null, value))
                 .catch(error => callback(error));
         }
 
-        return instancePromise;
+        return operationPromise;
 
     }
 
@@ -438,7 +469,7 @@ export function AccountListInstance(version: V2010): AccountListInstance {
         return this._solution;
     }
 
-    instance[inspect.custom] = function inspectImpl(_depth, options) {
+    instance[inspect.custom] = function inspectImpl(_depth: any, options: InspectOptions) {
         return inspect(this.toJSON(), options);
     }
 

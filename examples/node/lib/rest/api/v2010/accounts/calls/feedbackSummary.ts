@@ -10,7 +10,8 @@
  * Do not edit the class manually.
  */
 
-import { inspect } from 'util';
+import { inspect, InspectOptions } from 'util';
+import Page from '../../../../../base/Page';
 import V2010 from '../../../V2010';
 
 
@@ -43,14 +44,15 @@ export interface FeedbackSummarListInstance {
      * Provide a user-friendly representation
      */
     toJSON(): any;
+    [inspect.custom](_depth: any, options: InspectOptions): any;
 }
 
 
 interface FeedbackSummarListInstanceImpl extends FeedbackSummarListInstance {}
 class FeedbackSummarListInstanceImpl implements FeedbackSummarListInstance {
-    _version: V2010;
-    _solution: any;
-    _uri: string;
+    _version?: V2010;
+    _solution?: any;
+    _uri?: string;
 
 }
 
@@ -83,17 +85,18 @@ export function FeedbackSummarListInstance(version: V2010, accountSid: string): 
         headers['Content-Type'] = 'application/x-www-form-urlencoded'
 
 
-        const operationPromise = this._version.create({ uri: this._uri, method: 'POST', data, headers });
+        let operationVersion = version,
+            operationPromise = operationVersion.create({ uri: this._uri, method: 'POST', data, headers });
 
-        let instancePromise = operationPromise.then(payload => new FeedbackSummarInstance(this._version, payload, this._solution.accountSid));
+        operationPromise = operationPromise.then(payload => new FeedbackSummarInstance(operationVersion, payload, this._solution.accountSid));
 
         if (typeof callback === 'function') {
-            instancePromise = instancePromise
+            operationPromise = operationPromise
                 .then(value => callback(null, value))
                 .catch(error => callback(error));
         }
 
-        return instancePromise;
+        return operationPromise;
 
     }
 
@@ -101,7 +104,7 @@ export function FeedbackSummarListInstance(version: V2010, accountSid: string): 
         return this._solution;
     }
 
-    instance[inspect.custom] = function inspectImpl(_depth, options) {
+    instance[inspect.custom] = function inspectImpl(_depth: any, options: InspectOptions) {
         return inspect(this.toJSON(), options);
     }
 

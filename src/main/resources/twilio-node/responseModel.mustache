@@ -7,6 +7,15 @@ export type {{vendorExtensions.x-name}} = {{#allowableValues}}{{#enumVars}}{{{va
 {{/vars}}
 {{/hasEnums}}
 
+interface {{name}}Payload extends {{name}}Resource, Page.TwilioResponsePayload {
+}
+
+interface {{name}}Resource {
+    {{#vars}}
+    {{baseName}}{{^required}}?{{/required}}: {{#isEnum}}{{{vendorExtensions.x-name}}}{{/isEnum}}{{^isEnum}}{{{dataType}}}{{#isNullable}} | null{{/isNullable}}{{/isEnum}};
+    {{/vars}}
+}
+
 {{#description}}
 /**
  * {{{description}}}
@@ -16,7 +25,7 @@ export class {{name}}Instance {
     protected _solution: any;
     protected _context?: {{resourceName}};
 
-    constructor(protected _version: {{apiVersionClass}}, payload{{#resourcePathParams}}, {{paramName}}{{#-last}}?{{/-last}}: {{{dataType}}}{{/resourcePathParams}}) {
+    constructor(protected _version: {{apiVersionClass}}, payload: {{name}}Payload{{#resourcePathParams}}, {{paramName}}{{#-last}}?{{/-last}}: {{{dataType}}}{{/resourcePathParams}}) {
         {{#vars}}
         this.{{name}} = payload.{{baseName}};
         {{/vars}}
@@ -66,7 +75,7 @@ export class {{name}}Instance {
         }
     }
 
-    [inspect.custom](_depth, options) {
+    [inspect.custom](_depth: any, options: InspectOptions) {
         return inspect(this.toJSON(), options);
     }
 }

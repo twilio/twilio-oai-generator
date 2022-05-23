@@ -10,7 +10,8 @@
  * Do not edit the class manually.
  */
 
-import { inspect } from 'util';
+import { inspect, InspectOptions } from 'util';
+import Page from '../../../../base/Page';
 import V2010 from '../../V2010';
 import { FeedbackSummarListInstance } from './Calls/FeedbackSummary';
 
@@ -28,10 +29,10 @@ export interface CallListInstanceInstanceCreateOptions {
 
 
 export interface CallListInstance {
-    (accountSid, testInteger): CallContext;
-    get(accountSid, testInteger): CallContext;
+    (accountSid: string, testInteger: number): CallContext;
+    get(accountSid: string, testInteger: number): CallContext;
 
-    feedback_summary?: FeedbackSummarListInstance;
+    feedback_summary: FeedbackSummarListInstance;
 
     /**
      * Create a CallInstance
@@ -48,14 +49,15 @@ export interface CallListInstance {
      * Provide a user-friendly representation
      */
     toJSON(): any;
+    [inspect.custom](_depth: any, options: InspectOptions): any;
 }
 
 
 interface CallListInstanceImpl extends CallListInstance {}
 class CallListInstanceImpl implements CallListInstance {
-    _version: V2010;
-    _solution: any;
-    _uri: string;
+    _version?: V2010;
+    _solution?: any;
+    _uri?: string;
 
     _feedback_summary?: FeedbackSummarListInstance;
 }
@@ -98,17 +100,18 @@ export function CallListInstance(version: V2010, accountSid: string): CallListIn
         headers['Content-Type'] = 'application/x-www-form-urlencoded'
 
 
-        const operationPromise = this._version.create({ uri: this._uri, method: 'POST', data, headers });
+        let operationVersion = version,
+            operationPromise = operationVersion.create({ uri: this._uri, method: 'POST', data, headers });
 
-        let instancePromise = operationPromise.then(payload => new CallInstance(this._version, payload, this._solution.accountSid));
+        operationPromise = operationPromise.then(payload => new CallInstance(operationVersion, payload, this._solution.accountSid));
 
         if (typeof callback === 'function') {
-            instancePromise = instancePromise
+            operationPromise = operationPromise
                 .then(value => callback(null, value))
                 .catch(error => callback(error));
         }
 
-        return instancePromise;
+        return operationPromise;
 
     }
 
@@ -116,7 +119,7 @@ export function CallListInstance(version: V2010, accountSid: string): CallListIn
         return this._solution;
     }
 
-    instance[inspect.custom] = function inspectImpl(_depth, options) {
+    instance[inspect.custom] = function inspectImpl(_depth: any, options: InspectOptions) {
         return inspect(this.toJSON(), options);
     }
 
@@ -132,9 +135,9 @@ export interface CallContext {
      *
      * @param { function } [callback] - Callback to handle processed record
      *
-     * @returns { Promise } Resolves to processed CallInstance
+     * @returns { Promise } Resolves to processed boolean
      */
-    remove(callback?: (error: Error | null, item?: CallInstance) => any): Promise<CallInstance>
+    remove(callback?: (error: Error | null, item?: CallInstance) => any): Promise<boolean>
 ;
     /**
      * Fetch a CallInstance
@@ -149,6 +152,7 @@ export interface CallContext {
      * Provide a user-friendly representation
      */
     toJSON(): any;
+    [inspect.custom](_depth: any, options: InspectOptions): any;
 }
 
 export class CallContextImpl implements CallContext {
@@ -161,35 +165,36 @@ export class CallContextImpl implements CallContext {
         this._uri = `/2010-04-01/Accounts/${accountSid}/Calls/${testInteger}.json`;
     }
 
-    remove(callback?: any): Promise<CallInstance> {
+    remove(callback?: any): Promise<boolean> {
 
-        const operationPromise = this._version.remove({ uri: this._uri, method: 'DELETE' });
+        let operationVersion = this._version,
+            operationPromise = operationVersion.remove({ uri: this._uri, method: 'DELETE' });
 
-        let instancePromise = operationPromise.then(payload => new CallInstance(this._version, payload, this._solution.accountSid, this._solution.testInteger));
 
         if (typeof callback === 'function') {
-            instancePromise = instancePromise
+            operationPromise = operationPromise
                 .then(value => callback(null, value))
                 .catch(error => callback(error));
         }
 
-        return instancePromise;
+        return operationPromise;
 
     }
 
     fetch(callback?: any): Promise<CallInstance> {
 
-        const operationPromise = this._version.fetch({ uri: this._uri, method: 'GET' });
+        let operationVersion = this._version,
+            operationPromise = operationVersion.fetch({ uri: this._uri, method: 'GET' });
 
-        let instancePromise = operationPromise.then(payload => new CallInstance(this._version, payload, this._solution.accountSid, this._solution.testInteger));
+        operationPromise = operationPromise.then(payload => new CallInstance(operationVersion, payload, this._solution.accountSid, this._solution.testInteger));
 
         if (typeof callback === 'function') {
-            instancePromise = instancePromise
+            operationPromise = operationPromise
                 .then(value => callback(null, value))
                 .catch(error => callback(error));
         }
 
-        return instancePromise;
+        return operationPromise;
 
     }
 
@@ -202,18 +207,37 @@ export class CallContextImpl implements CallContext {
         return this._solution;
     }
 
-    [inspect.custom](_depth, options) {
+    [inspect.custom](_depth: any, options: InspectOptions) {
         return inspect(this.toJSON(), options);
     }
 }
 
 export type CallTestEnum = 'DialVerb'|'Trunking';
 
+interface CallPayload extends CallResource, Page.TwilioResponsePayload {
+}
+
+interface CallResource {
+    account_sid?: string | null;
+    sid?: string | null;
+    test_string?: string | null;
+    test_integer?: number | null;
+    test_object?: TestResponseObjectTestObject | null;
+    test_date_time?: string | null;
+    test_number?: number | null;
+    price_unit?: string | null;
+    test_number_float?: number | null;
+    test_enum?: CallTestEnum;
+    test_array_of_integers?: Array<number>;
+    test_array_of_array_of_integers?: Array<Array<number>>;
+    test_array_of_objects?: Array<TestResponseObjectTestArrayOfObjects> | null;
+}
+
 export class CallInstance {
     protected _solution: any;
     protected _context?: CallContext;
 
-    constructor(protected _version: V2010, payload, accountSid: string, testInteger?: number) {
+    constructor(protected _version: V2010, payload: CallPayload, accountSid: string, testInteger?: number) {
         this.accountSid = payload.account_sid;
         this.sid = payload.sid;
         this.testString = payload.test_string;
@@ -255,9 +279,9 @@ export class CallInstance {
      *
      * @param { function } [callback] - Callback to handle processed record
      *
-     * @returns { Promise } Resolves to processed CallInstance
+     * @returns { Promise } Resolves to processed boolean
      */
-    remove(callback?: (error: Error | null, item?: CallInstance) => any): Promise<CallInstance>
+    remove(callback?: (error: Error | null, item?: CallInstance) => any): Promise<boolean>
  {
         return this._proxy.remove(callback);
     }
@@ -297,7 +321,7 @@ export class CallInstance {
         }
     }
 
-    [inspect.custom](_depth, options) {
+    [inspect.custom](_depth: any, options: InspectOptions) {
         return inspect(this.toJSON(), options);
     }
 }
