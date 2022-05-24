@@ -22,7 +22,7 @@ import { FeedbackSummarListInstance } from './Calls/FeedbackSummary';
  * @property { string } requiredStringProperty 
  * @property { Array<string> } [testArrayOfStrings] 
  */
-export interface CallListInstanceInstanceCreateOptions {
+export interface CallListInstanceCreateOptions {
     requiredStringProperty: string;
     testArrayOfStrings?: Array<string>;
 }
@@ -37,12 +37,12 @@ export interface CallListInstance {
     /**
      * Create a CallInstance
      *
-     * @param { CallListInstanceInstanceCreateOptions } params - Parameter for request
+     * @param { CallListInstanceCreateOptions } params - Parameter for request
      * @param { function } [callback] - Callback to handle processed record
      *
      * @returns { Promise } Resolves to processed CallInstance
      */
-    create(params: CallListInstanceInstanceCreateOptions, callback?: (error: Error | null, item?: CallInstance) => any): Promise<CallInstance>;
+    create(params: CallListInstanceCreateOptions, callback?: (error: Error | null, item?: CallInstance) => any): Promise<CallInstance>;
     create(params: any, callback?: any): Promise<CallInstance>
 ;
     /**

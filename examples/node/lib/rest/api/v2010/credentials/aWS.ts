@@ -33,7 +33,7 @@ import V2010 from '../../V2010';
  * @property { Array<object> } [testObjectArray] 
  * @property { any } [testAnyType] 
  */
-export interface AWListInstanceInstanceCreateOptions {
+export interface AWListInstanceCreateOptions {
     testString: string;
     testBoolean?: boolean;
     testInteger?: number;
@@ -54,7 +54,7 @@ export interface AWListInstanceInstanceCreateOptions {
  *
  * @property { number } [pageSize] 
  */
-export interface AWListInstanceInstancePageOptions {
+export interface AWListInstancePageOptions {
     pageSize?: number;
 }
 
@@ -63,7 +63,7 @@ export interface AWListInstanceInstancePageOptions {
  *
  * @property { string } [testString] 
  */
-export interface AWContextInstanceUpdateOptions {
+export interface AWContextUpdateOptions {
     testString?: string;
 }
 
@@ -75,12 +75,12 @@ export interface AWListInstance {
     /**
      * Create a AWInstance
      *
-     * @param { AWListInstanceInstanceCreateOptions } params - Parameter for request
+     * @param { AWListInstanceCreateOptions } params - Parameter for request
      * @param { function } [callback] - Callback to handle processed record
      *
      * @returns { Promise } Resolves to processed AWInstance
      */
-    create(params: AWListInstanceInstanceCreateOptions, callback?: (error: Error | null, item?: AWInstance) => any): Promise<AWInstance>;
+    create(params: AWListInstanceCreateOptions, callback?: (error: Error | null, item?: AWInstance) => any): Promise<AWInstance>;
     create(params: any, callback?: any): Promise<AWInstance>
 ;
     /**
@@ -94,12 +94,12 @@ export interface AWListInstance {
     /**
      * Page a AWInstance
      *
-     * @param { AWListInstanceInstancePageOptions } params - Parameter for request
+     * @param { AWListInstancePageOptions } params - Parameter for request
      * @param { function } [callback] - Callback to handle processed record
      *
      * @returns { Promise } Resolves to processed AWInstance
      */
-    page(params: AWListInstanceInstancePageOptions, callback?: (error: Error | null, item?: AWInstance) => any): Promise<AWInstance>;
+    page(params: AWListInstancePageOptions, callback?: (error: Error | null, item?: AWInstance) => any): Promise<AWInstance>;
     page(params?: any, callback?: any): Promise<AWInstance>
 ;
     /**
@@ -248,12 +248,12 @@ export interface AWContext {
     /**
      * Update a AWInstance
      *
-     * @param { AWContextInstanceUpdateOptions } params - Parameter for request
+     * @param { AWContextUpdateOptions } params - Parameter for request
      * @param { function } [callback] - Callback to handle processed record
      *
      * @returns { Promise } Resolves to processed AWInstance
      */
-    update(params: AWContextInstanceUpdateOptions, callback?: (error: Error | null, item?: AWInstance) => any): Promise<AWInstance>;
+    update(params: AWContextUpdateOptions, callback?: (error: Error | null, item?: AWInstance) => any): Promise<AWInstance>;
     update(params?: any, callback?: any): Promise<AWInstance>
 ;
     /**
@@ -448,12 +448,12 @@ export class AWInstance {
     /**
      * Update a AWInstance
      *
-     * @param { AWContextInstanceUpdateOptions } params - Parameter for request
+     * @param { AWContextUpdateOptions } params - Parameter for request
      * @param { function } [callback] - Callback to handle processed record
      *
      * @returns { Promise } Resolves to processed AWInstance
      */
-    update(params: AWContextInstanceUpdateOptions, callback?: (error: Error | null, item?: AWInstance) => any): Promise<AWInstance>;
+    update(params: AWContextUpdateOptions, callback?: (error: Error | null, item?: AWInstance) => any): Promise<AWInstance>;
     update(params?: any, callback?: any): Promise<AWInstance>
  {
         return this._proxy.update(params, callback);

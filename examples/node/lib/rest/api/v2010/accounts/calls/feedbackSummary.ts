@@ -21,7 +21,7 @@ import V2010 from '../../../V2010';
  * @property { string } endDate 
  * @property { string } startDate 
  */
-export interface FeedbackSummarListInstanceInstanceCreateOptions {
+export interface FeedbackSummarListInstanceCreateOptions {
     endDate: string;
     startDate: string;
 }
@@ -32,12 +32,12 @@ export interface FeedbackSummarListInstance {
     /**
      * Create a FeedbackSummarInstance
      *
-     * @param { FeedbackSummarListInstanceInstanceCreateOptions } params - Parameter for request
+     * @param { FeedbackSummarListInstanceCreateOptions } params - Parameter for request
      * @param { function } [callback] - Callback to handle processed record
      *
      * @returns { Promise } Resolves to processed FeedbackSummarInstance
      */
-    create(params: FeedbackSummarListInstanceInstanceCreateOptions, callback?: (error: Error | null, item?: FeedbackSummarInstance) => any): Promise<FeedbackSummarInstance>;
+    create(params: FeedbackSummarListInstanceCreateOptions, callback?: (error: Error | null, item?: FeedbackSummarInstance) => any): Promise<FeedbackSummarInstance>;
     create(params: any, callback?: any): Promise<FeedbackSummarInstance>
 ;
     /**

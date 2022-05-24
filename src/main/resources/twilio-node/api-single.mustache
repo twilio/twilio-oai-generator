@@ -20,7 +20,7 @@ import { {{name}}ListInstance } from './{{apiFilename}}/{{filename}}';
  * @property { {{{dataType}}} } {{^required}}[{{/required}}{{paramName}}{{^required}}]{{/required}} {{description}}
  {{/allParams}}
  */
-export interface {{resourceName}}Instance{{vendorExtensions.x-name}}Options {
+export interface {{resourceName}}{{vendorExtensions.x-name}}Options {
     {{#allParams}}
     {{paramName}}{{^required}}?{{/required}}: {{{dataType}}};
     {{/allParams}}

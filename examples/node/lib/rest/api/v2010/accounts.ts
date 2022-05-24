@@ -22,7 +22,7 @@ import { CallListInstance } from './Accounts/Calls';
  * @property { string } status 
  * @property { string } [pauseBehavior] 
  */
-export interface AccountContextInstanceUpdateOptions {
+export interface AccountContextUpdateOptions {
     status: string;
     pauseBehavior?: string;
 }
@@ -34,7 +34,7 @@ export interface AccountContextInstanceUpdateOptions {
  * @property { string } [recordingStatusCallback] 
  * @property { Array<string> } [recordingStatusCallbackEvent] 
  */
-export interface AccountListInstanceInstanceCreateOptions {
+export interface AccountListInstanceCreateOptions {
     xTwilioWebhookEnabled?: 'true' | 'false';
     recordingStatusCallback?: string;
     recordingStatusCallbackEvent?: Array<string>;
@@ -48,7 +48,7 @@ export interface AccountListInstanceInstanceCreateOptions {
  * @property { Date } [dateCreated3] 
  * @property { number } [pageSize] 
  */
-export interface AccountListInstanceInstancePageOptions {
+export interface AccountListInstancePageOptions {
     dateCreated?: Date;
     dateTest?: string;
     dateCreated2?: Date;
@@ -81,12 +81,12 @@ export interface AccountContext {
     /**
      * Update a AccountInstance
      *
-     * @param { AccountContextInstanceUpdateOptions } params - Parameter for request
+     * @param { AccountContextUpdateOptions } params - Parameter for request
      * @param { function } [callback] - Callback to handle processed record
      *
      * @returns { Promise } Resolves to processed AccountInstance
      */
-    update(params: AccountContextInstanceUpdateOptions, callback?: (error: Error | null, item?: AccountInstance) => any): Promise<AccountInstance>;
+    update(params: AccountContextUpdateOptions, callback?: (error: Error | null, item?: AccountInstance) => any): Promise<AccountInstance>;
     update(params: any, callback?: any): Promise<AccountInstance>
 ;
     /**
@@ -281,12 +281,12 @@ export class AccountInstance {
     /**
      * Update a AccountInstance
      *
-     * @param { AccountContextInstanceUpdateOptions } params - Parameter for request
+     * @param { AccountContextUpdateOptions } params - Parameter for request
      * @param { function } [callback] - Callback to handle processed record
      *
      * @returns { Promise } Resolves to processed AccountInstance
      */
-    update(params: AccountContextInstanceUpdateOptions, callback?: (error: Error | null, item?: AccountInstance) => any): Promise<AccountInstance>;
+    update(params: AccountContextUpdateOptions, callback?: (error: Error | null, item?: AccountInstance) => any): Promise<AccountInstance>;
     update(params: any, callback?: any): Promise<AccountInstance>
  {
         return this._proxy.update(params, callback);
@@ -344,12 +344,12 @@ export interface AccountListInstance {
     /**
      * Create a AccountInstance
      *
-     * @param { AccountListInstanceInstanceCreateOptions } params - Parameter for request
+     * @param { AccountListInstanceCreateOptions } params - Parameter for request
      * @param { function } [callback] - Callback to handle processed record
      *
      * @returns { Promise } Resolves to processed AccountInstance
      */
-    create(params: AccountListInstanceInstanceCreateOptions, callback?: (error: Error | null, item?: AccountInstance) => any): Promise<AccountInstance>;
+    create(params: AccountListInstanceCreateOptions, callback?: (error: Error | null, item?: AccountInstance) => any): Promise<AccountInstance>;
     create(params?: any, callback?: any): Promise<AccountInstance>
 ;
     /**
@@ -363,12 +363,12 @@ export interface AccountListInstance {
     /**
      * Page a AccountInstance
      *
-     * @param { AccountListInstanceInstancePageOptions } params - Parameter for request
+     * @param { AccountListInstancePageOptions } params - Parameter for request
      * @param { function } [callback] - Callback to handle processed record
      *
      * @returns { Promise } Resolves to processed AccountInstance
      */
-    page(params: AccountListInstanceInstancePageOptions, callback?: (error: Error | null, item?: AccountInstance) => any): Promise<AccountInstance>;
+    page(params: AccountListInstancePageOptions, callback?: (error: Error | null, item?: AccountInstance) => any): Promise<AccountInstance>;
     page(params?: any, callback?: any): Promise<AccountInstance>
 ;
     /**
