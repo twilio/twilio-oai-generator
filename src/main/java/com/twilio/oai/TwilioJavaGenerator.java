@@ -63,11 +63,6 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
 
         supportingFiles.clear();
         apiTemplateFiles.put("api.mustache", ".java");
-        apiTemplateFiles.put("creator.mustache", "Creator.java");
-        apiTemplateFiles.put("deleter.mustache", "Deleter.java");
-        apiTemplateFiles.put("fetcher.mustache", "Fetcher.java");
-        apiTemplateFiles.put("reader.mustache", "Reader.java");
-        apiTemplateFiles.put("updater.mustache", "Updater.java");
     }
 
     @Override
@@ -172,6 +167,12 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
         String recordKey = getRecordKey(opList, this.allModels);
         List<CodegenModel> responseModels = new ArrayList<CodegenModel>();
         boolean isVersionV2010 = objs.get("package").equals("v2010");
+        apiTemplateFiles.remove("updater.mustache");
+        apiTemplateFiles.remove("creator.mustache");
+        apiTemplateFiles.remove("deleter.mustache");
+        apiTemplateFiles.remove("reader.mustache");
+        apiTemplateFiles.remove("fetcher.mustache");
+
         // iterate over the operation and perhaps modify something
         for (final CodegenOperation co : opList) {
             // Group operations by resource.
@@ -186,42 +187,38 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
                     .map(ConventionResolver::resolveParameter)
                     .map(Optional::get)
                     .collect(Collectors.toList());
-            if (co.path.endsWith("}") || co.path.endsWith("}.json")) {
-                if ("POST".equalsIgnoreCase(co.httpMethod)) {
-                    resource.put("hasUpdate", true);
-                    addOperationName(co, "Update");
-                    co.vendorExtensions.put("x-is-update-operation", true);
-                    resource.put("signatureListUpdate", generateSignatureList(resource, co, isVersionV2010));
-                } else if ("DELETE".equalsIgnoreCase(co.httpMethod)) {
-                    resource.put("hasDelete", true);
-                    addOperationName(co, "Remove");
-                    co.vendorExtensions.put("x-is-delete-operation", true);
-                    resource.put("signatureListDelete", generateSignatureList(resource, co, isVersionV2010));
-                }
 
+            if (co.nickname.startsWith("update")) {
+                resource.put("hasUpdate", true);
+                addOperationName(co, "Update");
+                co.vendorExtensions.put("x-is-update-operation", true);
+                resource.put("signatureListUpdate", generateSignatureList(resource, co, isVersionV2010));
+                apiTemplateFiles.put("updater.mustache", "Updater.java");
+            } else if (co.nickname.startsWith("delete")) {
+                resource.put("hasDelete", true);
+                addOperationName(co, "Remove");
+                co.vendorExtensions.put("x-is-delete-operation", true);
+                resource.put("signatureListDelete", generateSignatureList(resource, co, isVersionV2010));
+                apiTemplateFiles.put("deleter.mustache", "Deleter.java");
+            } else if (co.nickname.startsWith("create")) {
+                resource.put("hasCreate", true);
+                co.vendorExtensions.put("x-is-create-operation", true);
+                addOperationName(co, "Create");
+                resource.put("signatureListCreate", generateSignatureList(resource, co, isVersionV2010));
+                apiTemplateFiles.put("creator.mustache", "Creator.java");
+            } else if (co.nickname.startsWith("fetch")) {
+                resource.put("hasFetch", true);
+                resource.put("signatureListFetch", generateSignatureList(resource, co, isVersionV2010));
+                co.vendorExtensions.put("x-is-fetch-operation", true);
+                addOperationName(co, "Fetch");
+                apiTemplateFiles.put("fetcher.mustache", "Fetcher.java");
             } else {
-                if ("POST".equalsIgnoreCase(co.httpMethod)) {
-                    resource.put("hasCreate", true);
-                    co.vendorExtensions.put("x-is-create-operation", true);
-                    addOperationName(co, "Create");
-                    resource.put("signatureListCreate", generateSignatureList(resource, co, isVersionV2010));
-                }
-            }
+                resource.put("hasRead", true);
+                co.vendorExtensions.put("x-is-read-operation", true);
+                addOperationName(co, "Page");
+                resource.put("signatureListRead", generateSignatureList(resource, co, isVersionV2010));
+                apiTemplateFiles.put("reader.mustache", "Reader.java");
 
-            if (co.nickname.startsWith("fetch")) {
-                if ("GET".equalsIgnoreCase(co.httpMethod)) {
-                    resource.put("hasFetch", true);
-                    resource.put("signatureListFetch", generateSignatureList(resource, co, isVersionV2010));
-                    co.vendorExtensions.put("x-is-fetch-operation", true);
-                    addOperationName(co, "Fetch");
-                }
-            } else {
-                if ("GET".equalsIgnoreCase(co.httpMethod)) {
-                    resource.put("hasRead", true);
-                    co.vendorExtensions.put("x-is-read-operation", true);
-                    addOperationName(co, "Page");
-                    resource.put("signatureListRead", generateSignatureList(resource, co, isVersionV2010));
-                }
             }
 
             final ArrayList<CodegenOperation> resourceOperationList =
