@@ -283,8 +283,9 @@ public class TwilioRestTest {
         when(twilioRestClient.getObjectMapper()).thenReturn(objectMapper);
         AwsCreator awsCreator = new AwsCreator("AC222222222222222222222222222222");
         awsCreator.setTestAnyType(anyMap);
-        awsCreator.create(twilioRestClient);
+        Aws aws = awsCreator.create(twilioRestClient);
 
+        assertNotNull(aws);
         assertNotNull(awsCreator);
     }
 
