@@ -61,7 +61,7 @@ public class {{resourceName}}Fetcher extends Fetcher<{{resourceName}}> {
 
         Request request = new Request(
             HttpMethod.GET,
-            Domains.{{#lambda.uppercase}}{{domain}}{{/lambda.uppercase}}.toString(),
+            Domains.{{#lambda.uppercase}}{{domainName}}{{/lambda.uppercase}}.toString(),
             path
         );
         {{#formParams.0}}

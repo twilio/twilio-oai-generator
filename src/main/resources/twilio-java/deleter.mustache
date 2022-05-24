@@ -60,7 +60,7 @@ public class {{resourceName}}Deleter extends Deleter<{{resourceName}}> {
 
         Request request = new Request(
             HttpMethod.DELETE,
-            Domains.{{#lambda.uppercase}}{{domain}}{{/lambda.uppercase}}.toString(),
+            Domains.{{#lambda.uppercase}}{{domainName}}{{/lambda.uppercase}}.toString(),
             path
         );
         {{#formParams.0}}
