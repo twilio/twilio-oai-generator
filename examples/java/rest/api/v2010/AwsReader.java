@@ -23,13 +23,13 @@ import com.twilio.http.Response;
 import com.twilio.http.TwilioRestClient;
 import com.twilio.rest.Domains;
 import com.twilio.base.Page;
-import java.time.ZonedDateTime;
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
-import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import com.twilio.converter.DateConverter;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -62,12 +62,6 @@ public class AwsReader extends Reader<Aws> {
     public AwsReader setPageSize(final Integer pageSize){
         this.pageSize = pageSize;
         return this;
-    }
-
-    private void addQueryParams(final Request request) {
-        if (pageSize != null) {
-            request.addQueryParam("PageSize", pageSize.toString());
-        }
     }
 
     @Override
@@ -137,5 +131,11 @@ public class AwsReader extends Reader<Aws> {
 
         return pageForRequest(client, request);
     }
+private void addQueryParams(final Request request) {
+            if (PageSize != null) {
+            
+                request.addQueryParam("PageSize", PageSize.toString());
+                }
+}
 }
 
