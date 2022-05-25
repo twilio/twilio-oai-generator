@@ -1,30 +1,30 @@
-private void addQueryParams(final Request request) {
+    private void addQueryParams(final Request request) {
 {{#queryParams}}
     {{#vendorExtensions.x-has-before-and-after}}
-        {{>dateTimeGroupParams}}
+{{>dateTimeGroupParams}}
     {{/vendorExtensions.x-has-before-and-after}}
     {{^vendorExtensions.x-has-before-and-after}}
         {{#vendorExtensions.x-prefixed-collapsible-map}}
-            {{>prefixedCollapsibleMapQParams}}
+        {{>prefixedCollapsibleMapQParams}}
         {{/vendorExtensions.x-prefixed-collapsible-map}}
         {{^vendorExtensions.x-prefixed-collapsible-map}}
-            if ({{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}} != null) {
+        if ({{paramName}} != null) {
             {{#isString}}
-                request.addQueryParam("{{baseName}}", {{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}});
-                }
+            request.addQueryParam("{{baseName}}", {{paramName}});
+        }
             {{/isString}}
             {{#isArray}}
-                for ({{baseType}} prop : {{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}) {
-                request.addQueryParam("{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}", prop);
-                }
-                }
+            for ({{baseType}} prop : {{paramName}}) {
+                request.addQueryParam("{{baseName}}", prop);
+            }
+        }
             {{/isArray}}
-            {{>dateQueryParams}}
+    {{>dateQueryParams}}
             {{#vendorExtensions.x-is-other-data-type}}
-                request.addQueryParam("{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}", {{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}.toString());
-                }
+            request.addQueryParam("{{baseName}}", {{paramName}}.toString());
+        }
             {{/vendorExtensions.x-is-other-data-type}}
         {{/vendorExtensions.x-prefixed-collapsible-map}}
     {{/vendorExtensions.x-has-before-and-after}}
 {{/queryParams}}
-}
+    }

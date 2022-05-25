@@ -151,21 +151,21 @@ public class AccountReader extends Reader<Account> {
 
         return pageForRequest(client, request);
     }
-private void addQueryParams(final Request request) {
+    private void addQueryParams(final Request request) {
         if (dateCreated != null) {
-request.addQueryParam("DateCreated", dateCreated.format(DateTimeFormatter.ofPattern(Request.QUERY_STRING_DATE_TIME_FORMAT)));
-}
-else if (dateCreatedAfter != null || dateCreatedBefore != null) {
-request.addQueryDateTimeRange("DateCreated", dateCreatedAfter, dateCreatedBefore);
-}
-            if (DateTest != null) {
-                request.addQueryParam("Date.Test", DateConverter.dateStringFromLocalDate(dateTest));
-    }
+            request.addQueryParam("DateCreated", dateCreated.format(DateTimeFormatter.ofPattern(Request.QUERY_STRING_DATE_TIME_FORMAT)));
+        }
+        else if (dateCreatedAfter != null || dateCreatedBefore != null) {
+            request.addQueryDateTimeRange("DateCreated", dateCreatedAfter, dateCreatedBefore);
+        }
+        if (dateTest != null) {
+            request.addQueryParam("Date.Test", DateConverter.dateStringFromLocalDate(dateTest));
+        }
 
-            if (PageSize != null) {
-            
-                request.addQueryParam("PageSize", PageSize.toString());
-                }
-}
+        if (pageSize != null) {
+    
+            request.addQueryParam("PageSize", pageSize.toString());
+        }
+    }
 }
 

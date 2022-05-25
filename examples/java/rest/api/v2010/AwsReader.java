@@ -131,11 +131,11 @@ public class AwsReader extends Reader<Aws> {
 
         return pageForRequest(client, request);
     }
-private void addQueryParams(final Request request) {
-            if (PageSize != null) {
-            
-                request.addQueryParam("PageSize", PageSize.toString());
-                }
-}
+    private void addQueryParams(final Request request) {
+        if (pageSize != null) {
+    
+            request.addQueryParam("PageSize", pageSize.toString());
+        }
+    }
 }
 
