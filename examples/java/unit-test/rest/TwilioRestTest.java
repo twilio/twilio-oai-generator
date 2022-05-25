@@ -265,6 +265,31 @@ public class TwilioRestTest {
     }
 
     @Test
+    public void testAnyTypeParam() {
+        Request mockRequest = new Request(
+                HttpMethod.POST,
+                "api",
+                "/v1/Credentials/AWS"
+        );
+
+        Map<String, Object> anyMap = new HashMap<>();
+        anyMap.put("TestInteger", 1);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        mockRequest.addPostParam("TestAnyType", "{TestInteger=1}");
+        mockRequest.addPostParam("TestString", "AC222222222222222222222222222222");
+        when(twilioRestClient.request(mockRequest)).thenReturn(new Response("{\"account_sid\":\"AC222222222222222222222222222222\", \"sid\":\"PNXXXXY\"}", 200));
+        when(twilioRestClient.getObjectMapper()).thenReturn(objectMapper);
+        AwsCreator awsCreator = new AwsCreator("AC222222222222222222222222222222");
+        awsCreator.setTestAnyType(anyMap);
+        Aws aws = awsCreator.create(twilioRestClient);
+
+        assertNotNull(aws);
+        assertNotNull(awsCreator);
+    }
+
+    @Test
     public void testShouldSupportNestedPropertiesResponse() {
         Request mockRequest = new Request(
                 HttpMethod.GET,
