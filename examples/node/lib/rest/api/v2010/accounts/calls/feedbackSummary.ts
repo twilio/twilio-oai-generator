@@ -10,7 +10,8 @@
  * Do not edit the class manually.
  */
 
-import { inspect } from 'util';
+import { inspect, InspectOptions } from 'util';
+import Page from '../../../../../base/Page';
 import V2010 from '../../../V2010';
 
 
@@ -20,32 +21,49 @@ import V2010 from '../../../V2010';
  * @property { string } endDate 
  * @property { string } startDate 
  */
-export interface FeedbackSummarInstanceCreateOptions {
+export interface FeedbackSummarListInstanceCreateOptions {
     endDate: string;
     startDate: string;
 }
 
-export class FeedbackSummarListInstance {
-    protected _solution: any;
-    protected _uri: string;
+export interface FeedbackSummarListInstance {
 
-
-    constructor(protected _version: V2010, accountSid: string) {
-        this._solution = { accountSid };
-        this._uri = `/2010-04-01/Accounts/${accountSid}/Calls/FeedbackSummary.json`;
-    }
 
     /**
      * Create a FeedbackSummarInstance
      *
-     * @param { FeedbackSummarInstanceCreateOptions } params - Parameter for request
+     * @param { FeedbackSummarListInstanceCreateOptions } params - Parameter for request
      * @param { function } [callback] - Callback to handle processed record
      *
      * @returns { Promise } Resolves to processed FeedbackSummarInstance
      */
-    public async create(params: FeedbackSummarInstanceCreateOptions, callback?: (error: Error | null, item?: FeedbackSummarInstance) => any): Promise<FeedbackSummarInstance>;
-    public async create(params: any, callback?: any): Promise<FeedbackSummarInstance> {
+    create(params: FeedbackSummarListInstanceCreateOptions, callback?: (error: Error | null, item?: FeedbackSummarInstance) => any): Promise<FeedbackSummarInstance>;
+    create(params: any, callback?: any): Promise<FeedbackSummarInstance>
+;
+    /**
+     * Provide a user-friendly representation
+     */
+    toJSON(): any;
+    [inspect.custom](_depth: any, options: InspectOptions): any;
+}
 
+
+interface FeedbackSummarListInstanceImpl extends FeedbackSummarListInstance {}
+class FeedbackSummarListInstanceImpl implements FeedbackSummarListInstance {
+    _version?: V2010;
+    _solution?: any;
+    _uri?: string;
+
+}
+
+export function FeedbackSummarListInstance(version: V2010, accountSid: string): FeedbackSummarListInstance {
+    const instance = {} as FeedbackSummarListInstanceImpl;
+
+    instance._version = version;
+    instance._solution = { accountSid };
+    instance._uri = `/2010-04-01/Accounts/${accountSid}/Calls/FeedbackSummary.json`;
+
+    instance.create = function create(params: any, callback?: any): Promise<FeedbackSummarInstance> {
         if (params === null || params === undefined) {
             throw new Error('Required parameter "params" missing.');
         }
@@ -63,35 +81,33 @@ export class FeedbackSummarListInstance {
         data['EndDate'] = params.endDate;
         data['StartDate'] = params.startDate;
 
-        const headers: any = {
-            'Content-Type': 'application/x-www-form-urlencoded'
-        };
+        const headers: any = {};
+        headers['Content-Type'] = 'application/x-www-form-urlencoded'
 
 
-        const operationPromise = this._version.create({ uri: this._uri, method: 'POST', data, headers });
+        let operationVersion = version,
+            operationPromise = operationVersion.create({ uri: this._uri, method: 'POST', data, headers });
 
-        let instancePromise = operationPromise.then(payload => new FeedbackSummarInstance(this._version, payload, this._solution.accountSid));
+        operationPromise = operationPromise.then(payload => new FeedbackSummarInstance(operationVersion, payload, this._solution.accountSid));
 
         if (typeof callback === 'function') {
-            instancePromise = instancePromise
+            operationPromise = operationPromise
                 .then(value => callback(null, value))
                 .catch(error => callback(error));
         }
 
-        return instancePromise;
+        return operationPromise;
+
     }
 
-    /**
-     * Provide a user-friendly representation
-     *
-     * @returns Object
-     */
-    toJSON() {
+    instance.toJSON = function toJSON() {
         return this._solution;
     }
 
-    [inspect.custom](depth, options) {
+    instance[inspect.custom] = function inspectImpl(_depth: any, options: InspectOptions) {
         return inspect(this.toJSON(), options);
     }
+
+    return instance;
 }
 

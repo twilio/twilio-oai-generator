@@ -10,8 +10,10 @@
  * Do not edit the class manually.
  */
 
-import { inspect } from 'util';
+import { inspect, InspectOptions } from 'util';
+import Page from '../../../../base/Page';
 import V2010 from '../../V2010';
+import { FeedbackSummarListInstance } from './Calls/FeedbackSummary';
 
 
 /**
@@ -20,32 +22,67 @@ import V2010 from '../../V2010';
  * @property { string } requiredStringProperty 
  * @property { Array<string> } [testArrayOfStrings] 
  */
-export interface CallInstanceCreateOptions {
+export interface CallListInstanceCreateOptions {
     requiredStringProperty: string;
     testArrayOfStrings?: Array<string>;
 }
 
-export class CallListInstance {
-    protected _solution: any;
-    protected _uri: string;
 
+export interface CallListInstance {
+    (accountSid: string, testInteger: number): CallContext;
+    get(accountSid: string, testInteger: number): CallContext;
 
-    constructor(protected _version: V2010, accountSid: string, testInteger: number) {
-        this._solution = { accountSid, testInteger };
-        this._uri = `/2010-04-01/Accounts/${accountSid}/Calls/${testInteger}.json`;
-    }
+    feedback_summary: FeedbackSummarListInstance;
 
     /**
      * Create a CallInstance
      *
-     * @param { CallInstanceCreateOptions } params - Parameter for request
+     * @param { CallListInstanceCreateOptions } params - Parameter for request
      * @param { function } [callback] - Callback to handle processed record
      *
      * @returns { Promise } Resolves to processed CallInstance
      */
-    public async create(params: CallInstanceCreateOptions, callback?: (error: Error | null, item?: CallInstance) => any): Promise<CallInstance>;
-    public async create(params: any, callback?: any): Promise<CallInstance> {
+    create(params: CallListInstanceCreateOptions, callback?: (error: Error | null, item?: CallInstance) => any): Promise<CallInstance>;
+    create(params: any, callback?: any): Promise<CallInstance>
+;
+    /**
+     * Provide a user-friendly representation
+     */
+    toJSON(): any;
+    [inspect.custom](_depth: any, options: InspectOptions): any;
+}
 
+
+interface CallListInstanceImpl extends CallListInstance {}
+class CallListInstanceImpl implements CallListInstance {
+    _version?: V2010;
+    _solution?: any;
+    _uri?: string;
+
+    _feedback_summary?: FeedbackSummarListInstance;
+}
+
+export function CallListInstance(version: V2010, accountSid: string): CallListInstance {
+    const instance = ((accountSid, testInteger) => instance.get(accountSid, testInteger)) as CallListInstanceImpl;
+
+    instance.get = function get(accountSid, testInteger): CallContext {
+        return new CallContextImpl(version, accountSid, testInteger);
+    }
+
+    instance._version = version;
+    instance._solution = { accountSid };
+    instance._uri = `/2010-04-01/Accounts/${accountSid}/Calls.json`;
+
+    Object.defineProperty(instance, 'feedback_summary', {
+        get: function feedback_summary() {
+            if (!this._feedback_summary) {
+                this._feedback_summary = FeedbackSummarListInstance(this._version, this._solution.accountSid);
+            }
+            return this._feedback_summary;
+        }
+    });
+
+    instance.create = function create(params: any, callback?: any): Promise<CallInstance> {
         if (params === null || params === undefined) {
             throw new Error('Required parameter "params" missing.');
         }
@@ -59,68 +96,106 @@ export class CallListInstance {
         data['RequiredStringProperty'] = params.requiredStringProperty;
         if (params.testArrayOfStrings !== undefined) data['TestArrayOfStrings'] = params.testArrayOfStrings;
 
-        const headers: any = {
-            'Content-Type': 'application/x-www-form-urlencoded'
-        };
+        const headers: any = {};
+        headers['Content-Type'] = 'application/x-www-form-urlencoded'
 
 
-        const operationPromise = this._version.create({ uri: this._uri, method: 'POST', data, headers });
+        let operationVersion = version,
+            operationPromise = operationVersion.create({ uri: this._uri, method: 'POST', data, headers });
 
-        let instancePromise = operationPromise.then(payload => new CallInstance(this._version, payload, this._solution.accountSid, this._solution.testInteger));
+        operationPromise = operationPromise.then(payload => new CallInstance(operationVersion, payload, this._solution.accountSid));
 
         if (typeof callback === 'function') {
-            instancePromise = instancePromise
+            operationPromise = operationPromise
                 .then(value => callback(null, value))
                 .catch(error => callback(error));
         }
 
-        return instancePromise;
+        return operationPromise;
+
     }
 
+    instance.toJSON = function toJSON() {
+        return this._solution;
+    }
+
+    instance[inspect.custom] = function inspectImpl(_depth: any, options: InspectOptions) {
+        return inspect(this.toJSON(), options);
+    }
+
+    return instance;
+}
+
+
+export interface CallContext {
+
+
     /**
-     *  a CallInstance
+     * Remove a CallInstance
+     *
+     * @param { function } [callback] - Callback to handle processed record
+     *
+     * @returns { Promise } Resolves to processed boolean
+     */
+    remove(callback?: (error: Error | null, item?: CallInstance) => any): Promise<boolean>
+;
+    /**
+     * Fetch a CallInstance
      *
      * @param { function } [callback] - Callback to handle processed record
      *
      * @returns { Promise } Resolves to processed CallInstance
      */
-    public async (callback?: (error: Error | null, item?: CallInstance) => any): Promise<CallInstance> { 
+    fetch(callback?: (error: Error | null, item?: CallInstance) => any): Promise<CallInstance>
+;
+    /**
+     * Provide a user-friendly representation
+     */
+    toJSON(): any;
+    [inspect.custom](_depth: any, options: InspectOptions): any;
+}
+
+export class CallContextImpl implements CallContext {
+    protected _solution: any;
+    protected _uri: string;
 
 
-        const operationPromise = this._version.({ uri: this._uri, method: 'DELETE' });
-
-        let instancePromise = operationPromise.then(payload => new CallInstance(this._version, payload, this._solution.accountSid, this._solution.testInteger));
-
-        if (typeof callback === 'function') {
-            instancePromise = instancePromise
-                .then(value => callback(null, value))
-                .catch(error => callback(error));
-        }
-
-        return instancePromise;
+    constructor(protected _version: V2010, accountSid: string, testInteger: number) {
+        this._solution = { accountSid, testInteger };
+        this._uri = `/2010-04-01/Accounts/${accountSid}/Calls/${testInteger}.json`;
     }
 
-    /**
-     * Page a CallInstance
-     *
-     * @param { function } [callback] - Callback to handle processed record
-     *
-     * @returns { Promise } Resolves to processed CallInstance
-     */
-    public async page(callback?: (error: Error | null, item?: CallInstance) => any): Promise<CallInstance> { 
+    remove(callback?: any): Promise<boolean> {
 
+        let operationVersion = this._version,
+            operationPromise = operationVersion.remove({ uri: this._uri, method: 'DELETE' });
 
-        const operationPromise = this._version.page({ uri: this._uri, method: 'GET' });
-
-        let instancePromise = operationPromise.then(payload => new CallInstance(this._version, payload, this._solution.accountSid, this._solution.testInteger));
 
         if (typeof callback === 'function') {
-            instancePromise = instancePromise
+            operationPromise = operationPromise
                 .then(value => callback(null, value))
                 .catch(error => callback(error));
         }
 
-        return instancePromise;
+        return operationPromise;
+
+    }
+
+    fetch(callback?: any): Promise<CallInstance> {
+
+        let operationVersion = this._version,
+            operationPromise = operationVersion.fetch({ uri: this._uri, method: 'GET' });
+
+        operationPromise = operationPromise.then(payload => new CallInstance(operationVersion, payload, this._solution.accountSid, this._solution.testInteger));
+
+        if (typeof callback === 'function') {
+            operationPromise = operationPromise
+                .then(value => callback(null, value))
+                .catch(error => callback(error));
+        }
+
+        return operationPromise;
+
     }
 
     /**
@@ -132,7 +207,121 @@ export class CallListInstance {
         return this._solution;
     }
 
-    [inspect.custom](depth, options) {
+    [inspect.custom](_depth: any, options: InspectOptions) {
+        return inspect(this.toJSON(), options);
+    }
+}
+
+export type CallTestEnum = 'DialVerb'|'Trunking';
+
+interface CallPayload extends CallResource, Page.TwilioResponsePayload {
+}
+
+interface CallResource {
+    account_sid?: string | null;
+    sid?: string | null;
+    test_string?: string | null;
+    test_integer?: number | null;
+    test_object?: TestResponseObjectTestObject | null;
+    test_date_time?: string | null;
+    test_number?: number | null;
+    price_unit?: string | null;
+    test_number_float?: number | null;
+    test_enum?: CallTestEnum;
+    test_array_of_integers?: Array<number>;
+    test_array_of_array_of_integers?: Array<Array<number>>;
+    test_array_of_objects?: Array<TestResponseObjectTestArrayOfObjects> | null;
+}
+
+export class CallInstance {
+    protected _solution: any;
+    protected _context?: CallContext;
+
+    constructor(protected _version: V2010, payload: CallPayload, accountSid: string, testInteger?: number) {
+        this.accountSid = payload.account_sid;
+        this.sid = payload.sid;
+        this.testString = payload.test_string;
+        this.testInteger = payload.test_integer;
+        this.testObject = payload.test_object;
+        this.testDateTime = payload.test_date_time;
+        this.testNumber = payload.test_number;
+        this.priceUnit = payload.price_unit;
+        this.testNumberFloat = payload.test_number_float;
+        this.testEnum = payload.test_enum;
+        this.testArrayOfIntegers = payload.test_array_of_integers;
+        this.testArrayOfArrayOfIntegers = payload.test_array_of_array_of_integers;
+        this.testArrayOfObjects = payload.test_array_of_objects;
+
+        this._solution = { accountSid, testInteger: testInteger || this.testInteger };
+    }
+
+    private get _proxy(): CallContext {
+        this._context = this._context || new CallContextImpl(this._version, this._solution.accountSid, this._solution.testInteger);
+        return this._context;
+    }
+
+    accountSid?: string | null;
+    sid?: string | null;
+    testString?: string | null;
+    testInteger?: number | null;
+    testObject?: TestResponseObjectTestObject | null;
+    testDateTime?: string | null;
+    testNumber?: number | null;
+    priceUnit?: string | null;
+    testNumberFloat?: number | null;
+    testEnum?: CallTestEnum;
+    testArrayOfIntegers?: Array<number>;
+    testArrayOfArrayOfIntegers?: Array<Array<number>>;
+    testArrayOfObjects?: Array<TestResponseObjectTestArrayOfObjects> | null;
+
+    /**
+     * Remove a CallInstance
+     *
+     * @param { function } [callback] - Callback to handle processed record
+     *
+     * @returns { Promise } Resolves to processed boolean
+     */
+    remove(callback?: (error: Error | null, item?: CallInstance) => any): Promise<boolean>
+ {
+        return this._proxy.remove(callback);
+    }
+
+    /**
+     * Fetch a CallInstance
+     *
+     * @param { function } [callback] - Callback to handle processed record
+     *
+     * @returns { Promise } Resolves to processed CallInstance
+     */
+    fetch(callback?: (error: Error | null, item?: CallInstance) => any): Promise<CallInstance>
+ {
+        return this._proxy.fetch(callback);
+    }
+
+    /**
+     * Provide a user-friendly representation
+     *
+     * @returns Object
+     */
+    toJSON() {
+        return {
+            accountSid: this.accountSid, 
+            sid: this.sid, 
+            testString: this.testString, 
+            testInteger: this.testInteger, 
+            testObject: this.testObject, 
+            testDateTime: this.testDateTime, 
+            testNumber: this.testNumber, 
+            priceUnit: this.priceUnit, 
+            testNumberFloat: this.testNumberFloat, 
+            testEnum: this.testEnum, 
+            testArrayOfIntegers: this.testArrayOfIntegers, 
+            testArrayOfArrayOfIntegers: this.testArrayOfArrayOfIntegers, 
+            testArrayOfObjects: this.testArrayOfObjects
+        }
+    }
+
+    [inspect.custom](_depth: any, options: InspectOptions) {
         return inspect(this.toJSON(), options);
     }
 }
