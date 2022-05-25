@@ -1,0 +1,6 @@
+        if ({{paramName}} != null) {
+            request.addQueryParam("{{baseName}}", {{paramName}}.format(DateTimeFormatter.ofPattern(Request.QUERY_STRING_DATE_TIME_FORMAT)));
+        }
+        else if ({{paramName}}After != null || {{paramName}}Before != null) {
+            request.addQueryDateTimeRange("{{baseName}}", {{paramName}}After, {{paramName}}Before);
+        }

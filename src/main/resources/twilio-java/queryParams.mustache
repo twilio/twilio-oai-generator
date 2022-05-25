@@ -1,0 +1,30 @@
+    private void addQueryParams(final Request request) {
+{{#queryParams}}
+    {{#vendorExtensions.x-has-before-and-after}}
+{{>dateTimeGroupParams}}
+    {{/vendorExtensions.x-has-before-and-after}}
+    {{^vendorExtensions.x-has-before-and-after}}
+        {{#vendorExtensions.x-prefixed-collapsible-map}}
+        {{>prefixedCollapsibleMapQParams}}
+        {{/vendorExtensions.x-prefixed-collapsible-map}}
+        {{^vendorExtensions.x-prefixed-collapsible-map}}
+        if ({{paramName}} != null) {
+            {{#isString}}
+            request.addQueryParam("{{baseName}}", {{paramName}});
+        }
+            {{/isString}}
+            {{#isArray}}
+            for ({{baseType}} prop : {{paramName}}) {
+                request.addQueryParam("{{baseName}}", prop);
+            }
+        }
+            {{/isArray}}
+    {{>dateQueryParams}}
+            {{#vendorExtensions.x-is-other-data-type}}
+            request.addQueryParam("{{baseName}}", {{paramName}}.toString());
+        }
+            {{/vendorExtensions.x-is-other-data-type}}
+        {{/vendorExtensions.x-prefixed-collapsible-map}}
+    {{/vendorExtensions.x-has-before-and-after}}
+{{/queryParams}}
+    }
