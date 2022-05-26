@@ -48,7 +48,6 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
         additionalProperties.put("domain", StringUtils.camelize(domain));
 
         supportingFiles.clear();
-        supportingFiles.add(new SupportingFile("tsconfig.mustache", "tsconfig.json"));
         supportingFiles.add(new SupportingFile("version.mustache", apiPackage.toUpperCase() + ".ts"));
     }
 
@@ -71,10 +70,10 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
                                        .getPaths()
                                        .keySet()
                                        .stream()
-                                       .filter(p -> PathUtils
-                                           .removePathParamIds(p)
-                                           .matches(
-                                               PathUtils.escapeRegex(PathUtils.removePathParamIds(name)) + "/[^{]+"))
+                                       .map(PathUtils::removePathParamIds)
+                                       .map(PathUtils::removeExtension)
+                                       .filter(p -> p.matches(PathUtils.escapeRegex(
+                                           PathUtils.removeExtension(PathUtils.removePathParamIds(name)) + "/[^{/]+")))
                                        .collect(Collectors.toList()));
         }));
 
@@ -134,20 +133,28 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
                 path = path.replace("{" + pathParam.baseName + "}", "${" + pathParam.paramName + "}");
             }
 
-            String resourceName = singularize(getResourceName(co.path));
-            final String instanceName = resourceName + "Instance";
+            final String itemName = singularize(getResourceName(co.path));
+            final String instanceName = itemName + "Instance";
+            final boolean isInstanceResource = PathUtils.removeExtension(co.path).endsWith("}");
+            String resourceName;
+            String parentResourceName = null;
 
-            if (co.path.endsWith("}")) {
-                resourceName = resourceName + "Context";
+            co.returnType = instanceName;
+
+            if (isInstanceResource) {
+                resourceName = itemName + "Context";
+                parentResourceName = itemName + "ListInstance";
                 if ("GET".equalsIgnoreCase(co.httpMethod)) {
                     addOperationName(co, "Fetch");
                 } else if ("POST".equalsIgnoreCase(co.httpMethod)) {
                     addOperationName(co, "Update");
                 } else if ("DELETE".equalsIgnoreCase(co.httpMethod)) {
                     addOperationName(co, "Remove");
+                    co.returnType = "boolean";
+                    co.vendorExtensions.put("x-is-delete-operation", true);
                 }
             } else {
-                resourceName = resourceName + "ListInstance";
+                resourceName = itemName + "ListInstance";
                 if ("POST".equalsIgnoreCase(co.httpMethod)) {
                     addOperationName(co, "Create");
                 } else if ("GET".equalsIgnoreCase(co.httpMethod)) {
@@ -163,6 +170,7 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
 
             resourceOperationList.add(co);
             resource.put("resourceName", resourceName);
+            resource.put("parentResourceName", parentResourceName);
             resource.put("instanceName", instanceName);
             resource.put("path", path);
             resource.put("resourcePathParams", co.pathParams);
@@ -176,12 +184,12 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
                 addModel(resource, co.bodyParam.dataType);
             }
 
-            if (co.path.endsWith("}")) {
-                final Map<String, Object> dependents = getStringMap(resource, "dependents");
-                for (final String dependentPath : (List<String>) co.vendorExtensions.get("x-dependents")) {
-                    addDependent(dependents, dependentPath);
-                }
+            final Map<String, Object> dependents = getStringMap(resource, "dependents");
+            for (final String dependentPath : (List<String>) co.vendorExtensions.get("x-dependents")) {
+                addDependent(dependents, dependentPath);
+            }
 
+            if (isInstanceResource) {
                 co.responses
                     .stream()
                     .map(response -> response.dataType)
@@ -189,18 +197,30 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
                     .map(this::getModel)
                     .flatMap(Optional::stream)
                     .forEach(model -> {
-                        model.setName(instanceName);
+                        model.setName(itemName);
                         resource.put("responseModel", model);
+
+                        model
+                            .getVars()
+                            .forEach(variable -> variable.vendorExtensions.put("x-name",
+                                                                               itemName +
+                                                                                   variable.getNameInCamelCase()));
                     });
             }
 
             results.put("apiFilename", getResourceName(co.path));
         }
 
-        for (final Object resource : resources.values()) {
-            flattenStringMap((Map<String, Object>) resource, "models");
-            flattenStringMap((Map<String, Object>) resource, "dependents");
-        }
+        resources.values().stream().map(resource -> (Map<String, Object>) resource).forEach(resource -> {
+            final String parentResourceName = (String) resource.get("parentResourceName");
+            if (parentResourceName != null) {
+                final Map<String, Object> parentResource = (Map<String, Object>) resources.get(parentResourceName);
+                parentResource.put("instanceResource", resource);
+            }
+
+            flattenStringMap(resource, "models");
+            flattenStringMap(resource, "dependents");
+        });
 
         results.put("resources", resources.values());
 

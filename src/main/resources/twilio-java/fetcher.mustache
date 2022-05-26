@@ -17,6 +17,8 @@ import java.io.InputStream;
 import java.net.URI;
 import java.time.ZonedDateTime;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import com.twilio.converter.DateConverter;
 
 {{^fullJavaUtil}}
 import java.util.ArrayList;
@@ -64,6 +66,9 @@ public class {{resourceName}}Fetcher extends Fetcher<{{resourceName}}> {
             Domains.{{#lambda.uppercase}}{{domainName}}{{/lambda.uppercase}}.toString(),
             path
         );
+        {{#queryParams.0}}
+        addQueryParams(request);
+        {{/queryParams.0}}
         {{#formParams.0}}
         addPostParams(request);
         {{/formParams.0}}
@@ -107,6 +112,9 @@ public class {{resourceName}}Fetcher extends Fetcher<{{resourceName}}> {
     {{/headerParams}}
     }
     {{/headerParams.0}}
+{{#queryParams.0}}
+{{>queryParams}}
+{{/queryParams.0}}
 }
 {{/vendorExtensions.x-is-fetch-operation}}
 {{/operations}}

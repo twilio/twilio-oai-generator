@@ -10,8 +10,8 @@
  * Do not edit the class manually.
  */
 
-import Api = require('../Api');
-import Version = require('../../base/Version');
+import Api from '../Api';
+import Version from '../../base/Version';
 import { AccountListInstance } from './v2010/Accounts';
 
 export default class V2010 extends Version {
@@ -29,7 +29,7 @@ export default class V2010 extends Version {
     protected _accounts?: AccountListInstance;
 
     get accounts(): AccountListInstance {
-        this._accounts = this._accounts || new AccountListInstance(this);
+        this._accounts = this._accounts || AccountListInstance(this);
         return this._accounts;
     }
 

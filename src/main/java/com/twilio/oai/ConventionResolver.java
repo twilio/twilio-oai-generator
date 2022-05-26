@@ -15,6 +15,7 @@ public class ConventionResolver {
     final static String PREFIXED_COLLAPSIBLE_MAP = "prefixed-collapsible-map";
     final static String X_PREFIXED_COLLAPSIBLE_MAP = "x-prefixed-collapsible-map";
     final static String HYPHEN = "-";
+    public static final String OBJECT = "object";
 
     public static Optional<CodegenModel> resolve(Optional<CodegenModel> model) {
         for (CodegenProperty property : model.get().vars) {
@@ -31,6 +32,10 @@ public class ConventionResolver {
             if (hasProperty) {
                 property.dataType = (String)conventionMap.get(Segments.SEGMENT_PROPERTIES.getSegment()).get(property.dataFormat);
             }
+
+            if(property.dataType.equalsIgnoreCase(OBJECT)) {
+                property.dataType = (String)conventionMap.get(Segments.SEGMENT_PROPERTIES.getSegment()).get(OBJECT);
+            }
             property.nameInSnakeCase = property.nameInSnakeCase.toLowerCase(Locale.ROOT);
             vendorExtensions.forEach(
                     (key, value) -> property.getVendorExtensions().merge(key, value, (oldValue, newValue) -> newValue));
@@ -39,6 +44,11 @@ public class ConventionResolver {
     }
 
     public static Optional<CodegenParameter> resolveParameter(CodegenParameter parameter) {
+
+        if(parameter.dataType.equalsIgnoreCase(OBJECT)) {
+            parameter.dataType = (String)conventionMap.get(Segments.SEGMENT_PROPERTIES.getSegment()).get(OBJECT);
+        }
+
         boolean hasProperty = conventionMap.get(Segments.SEGMENT_PROPERTIES.getSegment()).containsKey(parameter.dataFormat);
         if (hasProperty) {
             parameter.dataType = (String)conventionMap.get(Segments.SEGMENT_PROPERTIES.getSegment()).get(parameter.dataFormat);

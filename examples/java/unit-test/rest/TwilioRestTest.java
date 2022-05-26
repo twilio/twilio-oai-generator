@@ -41,6 +41,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
+import java.time.format.DateTimeFormatter;
+import com.twilio.converter.DateConverter;
 
 public class TwilioRestTest {
     @Mock
@@ -100,10 +102,10 @@ public class TwilioRestTest {
         String url = "https://api.twilio.com/2010-04-01/Accounts.json";
         ZonedDateTime currentDateTime = ZonedDateTime.now();
         LocalDate localDate = LocalDate.now();
-        mockRequest.addQueryParam("DateCreated", currentDateTime.toString());
-        mockRequest.addQueryParam("DateTest", localDate.toString());
-        mockRequest.addQueryParam("DateCreatedBefore", currentDateTime.toString());
-        mockRequest.addQueryParam("DateCreatedAfter", currentDateTime.toString());
+        String formattedLocalDate = DateConverter.dateStringFromLocalDate(localDate);
+        String formattedCurrentDate =  currentDateTime.format(DateTimeFormatter.ofPattern(Request.QUERY_STRING_DATE_TIME_FORMAT));
+        mockRequest.addQueryParam("DateCreated", formattedCurrentDate);
+        mockRequest.addQueryParam("Date.Test", formattedLocalDate);
         mockRequest.addQueryParam("PageSize", "4");
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
@@ -112,8 +114,6 @@ public class TwilioRestTest {
         when(twilioRestClient.getObjectMapper()).thenReturn(objectMapper);
         AccountReader accountReader = new AccountReader();
         accountReader.setDateCreated(currentDateTime);
-        accountReader.setDateCreatedBefore(currentDateTime);
-        accountReader.setDateCreatedAfter(currentDateTime);
         accountReader.setDateTest(localDate);
         accountReader.setPageSize(4);
 
@@ -265,6 +265,31 @@ public class TwilioRestTest {
     }
 
     @Test
+    public void testAnyTypeParam() {
+        Request mockRequest = new Request(
+                HttpMethod.POST,
+                "api",
+                "/v1/Credentials/AWS"
+        );
+
+        Map<String, Object> anyMap = new HashMap<>();
+        anyMap.put("TestInteger", 1);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        mockRequest.addPostParam("TestAnyType", "{TestInteger=1}");
+        mockRequest.addPostParam("TestString", "AC222222222222222222222222222222");
+        when(twilioRestClient.request(mockRequest)).thenReturn(new Response("{\"account_sid\":\"AC222222222222222222222222222222\", \"sid\":\"PNXXXXY\"}", 200));
+        when(twilioRestClient.getObjectMapper()).thenReturn(objectMapper);
+        AwsCreator awsCreator = new AwsCreator("AC222222222222222222222222222222");
+        awsCreator.setTestAnyType(anyMap);
+        Aws aws = awsCreator.create(twilioRestClient);
+
+        assertNotNull(aws);
+        assertNotNull(awsCreator);
+    }
+
+    @Test
     public void testShouldSupportNestedPropertiesResponse() {
         Request mockRequest = new Request(
                 HttpMethod.GET,
@@ -279,10 +304,9 @@ public class TwilioRestTest {
         String url = "https://api.twilio.com/2010-04-01/Accounts.json";
         ZonedDateTime currentDateTime = ZonedDateTime.now();
         LocalDate localDate = LocalDate.now();
-        mockRequest.addQueryParam("DateCreated", currentDateTime.toString());
-        mockRequest.addQueryParam("DateTest", localDate.toString());
-        mockRequest.addQueryParam("DateCreatedBefore", currentDateTime.toString());
-        mockRequest.addQueryParam("DateCreatedAfter", currentDateTime.toString());
+        String formattedLocalDate = DateConverter.dateStringFromLocalDate(localDate);
+        mockRequest.addQueryParam("Date.Test", formattedLocalDate);
+        mockRequest.addQueryDateTimeRange("DateCreated", currentDateTime, currentDateTime);
         mockRequest.addQueryParam("PageSize", "4");
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
@@ -291,7 +315,6 @@ public class TwilioRestTest {
         when(twilioRestClient.request(mockRequest2)).thenReturn(new Response(responseContent, 200));
         when(twilioRestClient.getObjectMapper()).thenReturn(objectMapper);
         AccountReader accountReader = new AccountReader();
-        accountReader.setDateCreated(currentDateTime);
         accountReader.setDateCreatedBefore(currentDateTime);
         accountReader.setDateCreatedAfter(currentDateTime);
         accountReader.setDateTest(localDate);
@@ -322,10 +345,10 @@ public class TwilioRestTest {
         String url = "https://api.twilio.com/2010-04-01/Accounts.json";
         ZonedDateTime currentDateTime = ZonedDateTime.now();
         LocalDate localDate = LocalDate.now();
-        mockRequest.addQueryParam("DateCreated", currentDateTime.toString());
-        mockRequest.addQueryParam("DateTest", localDate.toString());
-        mockRequest.addQueryParam("DateCreatedBefore", currentDateTime.toString());
-        mockRequest.addQueryParam("DateCreatedAfter", currentDateTime.toString());
+        String formattedLocalDate = DateConverter.dateStringFromLocalDate(localDate);
+        String formattedCurrentDate =  currentDateTime.format(DateTimeFormatter.ofPattern(Request.QUERY_STRING_DATE_TIME_FORMAT));
+        mockRequest.addQueryParam("DateCreated", formattedCurrentDate);
+        mockRequest.addQueryParam("Date.Test", formattedLocalDate);
         mockRequest.addQueryParam("PageSize", "4");
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
@@ -335,8 +358,6 @@ public class TwilioRestTest {
         when(twilioRestClient.getObjectMapper()).thenReturn(objectMapper);
         AccountReader accountReader = new AccountReader();
         accountReader.setDateCreated(currentDateTime);
-        accountReader.setDateCreatedBefore(currentDateTime);
-        accountReader.setDateCreatedAfter(currentDateTime);
         accountReader.setDateTest(localDate);
         accountReader.setPageSize(4);
 
@@ -364,10 +385,10 @@ public class TwilioRestTest {
         String url = "https://api.twilio.com/2010-04-01/Accounts.json";
         ZonedDateTime currentDateTime = ZonedDateTime.now();
         LocalDate localDate = LocalDate.now();
-        mockRequest.addQueryParam("DateCreated", currentDateTime.toString());
-        mockRequest.addQueryParam("DateTest", localDate.toString());
-        mockRequest.addQueryParam("DateCreatedBefore", currentDateTime.toString());
-        mockRequest.addQueryParam("DateCreatedAfter", currentDateTime.toString());
+        String formattedLocalDate = DateConverter.dateStringFromLocalDate(localDate);
+        String formattedCurrentDate =  currentDateTime.format(DateTimeFormatter.ofPattern(Request.QUERY_STRING_DATE_TIME_FORMAT));
+        mockRequest.addQueryParam("DateCreated", formattedCurrentDate);
+        mockRequest.addQueryParam("Date.Test", formattedLocalDate);
         mockRequest.addQueryParam("PageSize", "4");
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
@@ -377,8 +398,6 @@ public class TwilioRestTest {
         when(twilioRestClient.getObjectMapper()).thenReturn(objectMapper);
         AccountReader accountReader = new AccountReader();
         accountReader.setDateCreated(currentDateTime);
-        accountReader.setDateCreatedBefore(currentDateTime);
-        accountReader.setDateCreatedAfter(currentDateTime);
         accountReader.setDateTest(localDate);
         accountReader.setPageSize(4);
 
