@@ -187,7 +187,7 @@ public class AwsCreator extends Creator<Aws>{
             request.addPostParam("TestObject",  Converter.mapToJson(testObject));
         }
         if (testDateTime != null) {
-            request.addQueryParam("TestDateTime", testDateTime.toInstant().toString());
+            request.addPostParam("TestDateTime", testDateTime.toInstant().toString());
         }
         if (testDate != null) {
             request.addPostParam("TestDate", testDate.toString());
