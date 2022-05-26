@@ -161,47 +161,61 @@ public class AwsCreator extends Creator<Aws>{
     private void addPostParams(final Request request) {
         if (testString != null) {
             request.addPostParam("TestString", testString);
+    
         }
         if (testBoolean != null) {
             request.addPostParam("TestBoolean", testBoolean.toString());
+    
         }
         if (testInteger != null) {
             request.addPostParam("TestInteger", testInteger.toString());
+    
         }
         if (testNumber != null) {
             request.addPostParam("TestNumber", testNumber.toString());
+    
         }
         if (testNumberFloat != null) {
             request.addPostParam("TestNumberFloat", testNumberFloat.toString());
+    
         }
         if (testNumberDouble != null) {
             request.addPostParam("TestNumberDouble", testNumberDouble.toString());
+    
         }
         if (testNumberInt32 != null) {
             request.addPostParam("TestNumberInt32", testNumberInt32.toString());
+    
         }
         if (testNumberInt64 != null) {
             request.addPostParam("TestNumberInt64", testNumberInt64.toString());
+    
         }
         if (testObject != null) {
             request.addPostParam("TestObject",  Converter.mapToJson(testObject));
+    
         }
         if (testDateTime != null) {
             request.addPostParam("TestDateTime", testDateTime.toInstant().toString());
+
         }
         if (testDate != null) {
-            request.addPostParam("TestDate", testDate.toString());
+            request.addPostParam("TestDate", DateConverter.dateStringFromLocalDate(testDate));
+
         }
         if (testEnum != null) {
             request.addPostParam("TestEnum", testEnum);
+    
         }
         if (testObjectArray != null) {
             for (Object prop : testObjectArray) {
                 request.addPostParam("TestObjectArray", prop.toString());
             }
+    
         }
         if (testAnyType != null) {
             request.addPostParam("TestAnyType", testAnyType.toString());
+    
         }
     }
 }

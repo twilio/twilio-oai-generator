@@ -108,11 +108,13 @@ public class CallCreator extends Creator<Call>{
     private void addPostParams(final Request request) {
         if (requiredStringProperty != null) {
             request.addPostParam("RequiredStringProperty", requiredStringProperty);
+    
         }
         if (testArrayOfStrings != null) {
             for (String prop : testArrayOfStrings) {
                 request.addPostParam("TestArrayOfStrings", prop.toString());
             }
+    
         }
     }
 }

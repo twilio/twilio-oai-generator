@@ -105,11 +105,13 @@ public class AccountCreator extends Creator<Account>{
     private void addPostParams(final Request request) {
         if (recordingStatusCallback != null) {
             request.addPostParam("RecordingStatusCallback", recordingStatusCallback.toString());
+    
         }
         if (recordingStatusCallbackEvent != null) {
             for (String prop : recordingStatusCallbackEvent) {
                 request.addPostParam("RecordingStatusCallbackEvent", prop.toString());
             }
+    
         }
     }
     private void addHeaderParams(final Request request) {

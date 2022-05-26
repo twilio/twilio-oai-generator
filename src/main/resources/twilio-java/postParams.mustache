@@ -14,21 +14,19 @@
     {{/vendorExtensions.x-is-uri-param}}
     {{/isString}}
     {{^isString}}
-    {{#isDateTime}}
-            request.addPostParam("{{baseName}}", {{paramName}}.toInstant().toString());
-    {{/isDateTime}}
-    {{^isDateTime}}
     {{#isArray}}
             for ({{baseType}} prop : {{paramName}}) {
                 request.addPostParam("{{baseName}}", prop.toString());
             }
     {{/isArray}}
     {{^isArray}}
+    {{#vendorExtensions.x-is-other-data-type}}
             request.addPostParam("{{baseName}}", {{paramName}}.toString());
+    {{/vendorExtensions.x-is-other-data-type}}
     {{/isArray}}
-    {{/isDateTime}}
     {{/isString}}
     {{/isFreeFormObject}}
+    {{>dateParams}}
         }
 {{/formParams}}
     }

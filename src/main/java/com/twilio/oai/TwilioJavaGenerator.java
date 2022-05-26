@@ -553,6 +553,7 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
     }
 
     private List<CodegenParameter> preProcessFormParams(CodegenOperation co) {
+        processDataTypesForParams(co.formParams);
         for(CodegenParameter e : co.formParams){
             if(e.dataType.equalsIgnoreCase(URI)) {
                 e.vendorExtensions.put("x-is-uri-param",true);
