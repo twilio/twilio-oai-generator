@@ -130,7 +130,9 @@ public class TwilioRestTest {
                 Domains.API.toString(),
                 "/2010-04-01/Accounts.json"
         );
-        mockRequest.addPostParam("RecordingStatusCallbackEvent", recordingStatusCallbackEvent.toString());
+        for(String recordingStatusEvent : recordingStatusCallbackEvent){
+            mockRequest.addPostParam("RecordingStatusCallbackEvent", recordingStatusEvent);
+        }
         mockRequest.addPostParam("RecordingStatusCallback", "https://validurl.com");
         mockRequest.addHeaderParam("X-Twilio-Webhook-Enabled", "true");
         ObjectMapper objectMapper = new ObjectMapper();
@@ -253,7 +255,10 @@ public class TwilioRestTest {
         item2.put("B", Collections.singletonList("Banana"));
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
-        mockRequest.addPostParam("TestObjectArray", "[{A=[Apple, Aces]}, {B=[Banana]}]");
+        List<Object> testObjectArray = Arrays.asList(item1, item2);
+        for(Object testObject : testObjectArray){
+            mockRequest.addPostParam("TestObjectArray", testObject.toString());
+        }
         mockRequest.addPostParam("TestString", "AC222222222222222222222222222222");
         when(twilioRestClient.request(mockRequest)).thenReturn(new Response("{\"account_sid\":\"AC222222222222222222222222222222\", \"sid\":\"PNXXXXY\"}", 200));
         when(twilioRestClient.getObjectMapper()).thenReturn(objectMapper);

@@ -104,15 +104,17 @@ public class AccountCreator extends Creator<Account>{
     }
     private void addPostParams(final Request request) {
         if (recordingStatusCallback != null) {
-        request.addPostParam("RecordingStatusCallback", recordingStatusCallback.toString());
+            request.addPostParam("RecordingStatusCallback", recordingStatusCallback.toString());
         }
         if (recordingStatusCallbackEvent != null) {
-        request.addPostParam("RecordingStatusCallbackEvent", recordingStatusCallbackEvent.toString());
+            for (String prop : recordingStatusCallbackEvent) {
+                request.addPostParam("RecordingStatusCallbackEvent", prop.toString());
+            }
         }
     }
     private void addHeaderParams(final Request request) {
         if (xTwilioWebhookEnabled != null) {
-           request.addHeaderParam("X-Twilio-Webhook-Enabled", xTwilioWebhookEnabled.toString());
+            request.addHeaderParam("X-Twilio-Webhook-Enabled", xTwilioWebhookEnabled);
         }
     }
 }

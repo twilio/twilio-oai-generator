@@ -1,0 +1,34 @@
+    private void addPostParams(final Request request) {
+{{#formParams}}
+        if ({{paramName}} != null) {
+    {{#isFreeFormObject}}
+            request.addPostParam("{{baseName}}",  Converter.mapToJson({{paramName}}));
+    {{/isFreeFormObject}}
+    {{^isFreeFormObject}}
+    {{#isString}}
+    {{#vendorExtensions.x-is-uri-param}}
+            request.addPostParam("{{baseName}}", {{paramName}}.toString());
+    {{/vendorExtensions.x-is-uri-param}}
+    {{^vendorExtensions.x-is-uri-param}}
+            request.addPostParam("{{baseName}}", {{paramName}});
+    {{/vendorExtensions.x-is-uri-param}}
+    {{/isString}}
+    {{^isString}}
+    {{#isDateTime}}
+            request.addQueryParam("{{baseName}}", {{paramName}}.toInstant().toString());
+    {{/isDateTime}}
+    {{^isDateTime}}
+    {{#isArray}}
+            for ({{baseType}} prop : {{paramName}}) {
+                request.addPostParam("{{baseName}}", prop.toString());
+            }
+    {{/isArray}}
+    {{^isArray}}
+            request.addPostParam("{{baseName}}", {{paramName}}.toString());
+    {{/isArray}}
+    {{/isDateTime}}
+    {{/isString}}
+    {{/isFreeFormObject}}
+        }
+{{/formParams}}
+    }
