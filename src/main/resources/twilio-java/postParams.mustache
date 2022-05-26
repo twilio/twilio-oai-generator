@@ -15,7 +15,7 @@
     {{/isString}}
     {{^isString}}
     {{#isDateTime}}
-            request.addQueryParam("{{baseName}}", {{paramName}}.toInstant().toString());
+            request.addPostParam("{{baseName}}", {{paramName}}.toInstant().toString());
     {{/isDateTime}}
     {{^isDateTime}}
     {{#isArray}}
