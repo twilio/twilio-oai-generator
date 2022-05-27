@@ -26,6 +26,7 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
     private static final int BASE_SIXTEEN = 16;
     private static final int BIG_INTEGER_CONSTANT = 1;
     private static final int SERIAL_UID_LENGTH = 12;
+    public static final String URI = "uri";
 
     private final List<CodegenModel> allModels = new ArrayList<>();
     private  Map<String, String> modelFormatMap = new HashMap<>();
@@ -545,9 +546,20 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
         co.formParams = co.formParams.stream().map(ConventionResolver::resolveParamTypes)
                 .map(ConventionResolver::prefixedCollapsibleMap)
                 .collect(Collectors.toList());
+        co.formParams = preProcessFormParams(co);
         co.headerParams = co.headerParams.stream().map(ConventionResolver::resolveParamTypes)
                 .map(ConventionResolver::prefixedCollapsibleMap)
                 .collect(Collectors.toList());
+    }
+
+    private List<CodegenParameter> preProcessFormParams(CodegenOperation co) {
+        processDataTypesForParams(co.formParams);
+        for(CodegenParameter e : co.formParams){
+            if(e.dataType.equalsIgnoreCase(URI)) {
+                e.vendorExtensions.put("x-is-uri-param",true);
+            }
+        }
+        return co.formParams;
     }
 
     @Override

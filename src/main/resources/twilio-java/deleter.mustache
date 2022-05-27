@@ -88,28 +88,11 @@ public class {{resourceName}}Deleter extends Deleter<{{resourceName}}> {
         return response.getStatusCode() == 204;
     }
 {{#formParams.0}}
-    private void addPostParams(final Request request) {
-{{#formParams}}
-    if ({{paramName}} != null){
-    {{#isFreeFormObject}}
-        request.addPostParam("{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}",  Converter.mapToJson({{paramName}}));
-    {{/isFreeFormObject}}
-    {{^isFreeFormObject}}
-        request.addPostParam("{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}", {{paramName}}.toString());
-    {{/isFreeFormObject}}
-    }
-{{/formParams}}
-    }
+{{>postParams}}
 {{/formParams.0}}
-    {{#headerParams.0}}
-    private void addHeaderParams(final Request request) {
-    {{#headerParams}}
-        if ({{paramName}} != null) {
-           request.addHeaderParam("{{#lambda.titlecase}}{{baseName}}{{/lambda.titlecase}}", {{paramName}}.toString());
-        }
-    {{/headerParams}}
-    }
-    {{/headerParams.0}}
+{{#headerParams.0}}
+{{>headerParams}}
+{{/headerParams.0}}
 {{#queryParams.0}}
 {{>queryParams}}
 {{/queryParams.0}}

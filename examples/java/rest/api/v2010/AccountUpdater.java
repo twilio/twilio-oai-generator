@@ -97,10 +97,12 @@ public class AccountUpdater extends Updater<Account>{
     }
     private void addPostParams(final Request request) {
         if (pauseBehavior != null) {
-            request.addPostParam("PauseBehavior", pauseBehavior.toString());
+            request.addPostParam("PauseBehavior", pauseBehavior);
+    
         }
         if (status != null) {
-            request.addPostParam("Status", status.toString());
+            request.addPostParam("Status", status);
+    
         }
     }
 }
