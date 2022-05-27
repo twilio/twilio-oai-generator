@@ -4,6 +4,9 @@ import os
 
 IMPORT_RE = re.compile(r'^\s*import\s+[\w\.]+\.(\w+)\s*;\s*(?://.*)?$')
 
+LANGUAGE_REGEX_MAP = {
+    "java": "*.java"
+}
 
 def locate(pattern, root=os.curdir):
     for path, dirs, files in os.walk(os.path.abspath(root)):
@@ -11,8 +14,8 @@ def locate(pattern, root=os.curdir):
             yield os.path.join(path, file_name)
 
 
-def remove_unused_imports(root_dir, import_pattern):
-    for filename in locate(import_pattern, root_dir):
+def remove_unused_imports(root_dir, language):
+    for filename in locate(LANGUAGE_REGEX_MAP[language], root_dir):
         import_lines = {}
         other_lines = []
         with open(filename) as f:

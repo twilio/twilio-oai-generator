@@ -37,9 +37,10 @@ def generate(openapi_spec_path: str, output_path: str, language: str, domain: st
               f'-o {output_path} ' \
               f'> /dev/null'  # Suppress stdout
     print(f'Generating {output_path} from {full_path}')
-    if language == 'twilio-java':
-        remove_unused_imports(output_path, "*.java")
     os.system(command)
+    if language == 'java':
+        remove_unused_imports(output_path, "java")
+    print(f"Code generation completed at {output_path}")
 
 
 def get_domain_info(oai_spec_location: str, domain: str, is_file: bool = False) -> Tuple[str, str, str]:

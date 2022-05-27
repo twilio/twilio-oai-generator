@@ -81,7 +81,7 @@ public class {{resourceName}} extends Resource {
 
     {{#hasDelete}}
     {{#signatureListDelete}}
-    public static {{resourceName}}Deleter delete({{#.}}final {{{dataType}}} {{{paramName}}}{{^-last}}, {{/-last}}{{/.}}){
+    public static {{resourceName}}Deleter deleter({{#.}}final {{{dataType}}} {{{paramName}}}{{^-last}}, {{/-last}}{{/.}}){
         return new {{resourceName}}Deleter({{#.}}{{{paramName}}}{{^-last}}, {{/-last}}{{/.}});
     }
     {{/signatureListDelete}}
@@ -97,7 +97,7 @@ public class {{resourceName}} extends Resource {
 
     {{#hasUpdate}}
     {{#signatureListUpdate}}
-    public static {{resourceName}}Updater update({{#.}}final {{{dataType}}} {{{paramName}}}{{^-last}}, {{/-last}}{{/.}}){
+    public static {{resourceName}}Updater updater({{#.}}final {{{dataType}}} {{{paramName}}}{{^-last}}, {{/-last}}{{/.}}){
         return new {{resourceName}}Updater({{#.}}{{{paramName}}}{{^-last}}, {{/-last}}{{/.}});
     }
     {{/signatureListUpdate}}
