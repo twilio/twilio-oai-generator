@@ -49,10 +49,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import lombok.ToString;
 
 import java.util.Map;
-import java.util.Objects;
 import java.time.LocalDate;
 import java.math.BigDecimal;
 import com.twilio.type.PhoneNumberCapabilities;
@@ -81,7 +79,7 @@ public class Aws extends Resource {
         return new AwsFetcher(sid);
     }
 
-    public static AwsDeleter delete(final String sid){
+    public static AwsDeleter deleter(final String sid){
         return new AwsDeleter(sid);
     }
 
@@ -89,7 +87,7 @@ public class Aws extends Resource {
         return new AwsReader();
     }
 
-    public static AwsUpdater update(final String sid){
+    public static AwsUpdater updater(final String sid){
         return new AwsUpdater(sid);
     }
 
