@@ -52,7 +52,7 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
         super.processOpts();
         String[] inputSpecs = inputSpec.split("_");
         final String version = inputSpecs[inputSpecs.length-1].replaceAll("\\.[^/]+$", "");
-        final String domain = String.join("_", Arrays.copyOfRange(inputSpecs, 1, inputSpecs.length-1));
+        final String domain = String.join("", Arrays.copyOfRange(inputSpecs, 1, inputSpecs.length-1));
         apiPackage = version; // Place the API files in the version folder.
         additionalProperties.put("apiVersion", version);
         additionalProperties.put("apiVersionClass", version.toUpperCase());
