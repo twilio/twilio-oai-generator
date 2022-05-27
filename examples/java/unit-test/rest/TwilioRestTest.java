@@ -408,4 +408,12 @@ public class TwilioRestTest {
         assertEquals("USD", account.iterator().next().getPriceUnit().toString() );
         assertEquals("2021-03-23T21:43:32.010069453Z[UTC]",account.iterator().next().getTestDateTime().toString());
     }
+
+    @Test
+    public void testRequestNonStandardDomainName() {
+        Request mockRequest = new Request(HttpMethod.GET, Domains.FLEXAPI.toString(), "/v1/uri");
+        assertNotNull(mockRequest);
+        assertEquals(HttpMethod.GET, mockRequest.getMethod());
+        assertEquals("https://flex-api.twilio.com/v1/uri", mockRequest.getUrl());
+    }
 }
