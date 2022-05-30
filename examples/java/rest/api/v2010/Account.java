@@ -49,10 +49,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import lombok.ToString;
 
 import java.util.Map;
-import java.util.Objects;
 import java.time.LocalDate;
 import java.math.BigDecimal;
 import com.twilio.type.PhoneNumberCapabilities;
@@ -81,7 +79,7 @@ public class Account extends Resource {
         return new AccountFetcher(sid);
     }
 
-    public static AccountDeleter delete(final String sid){
+    public static AccountDeleter deleter(final String sid){
         return new AccountDeleter(sid);
     }
 
@@ -89,7 +87,7 @@ public class Account extends Resource {
         return new AccountReader();
     }
 
-    public static AccountUpdater update(final String sid, final String status){
+    public static AccountUpdater updater(final String sid, final String status){
         return new AccountUpdater(sid, status);
     }
 
