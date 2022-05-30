@@ -19,7 +19,7 @@
             }
         }
             {{/isArray}}
-    {{>dateQueryParams}}
+    {{>dateParams}}
             {{#vendorExtensions.x-is-other-data-type}}
             request.addQueryParam("{{baseName}}", {{paramName}}.toString());
         }

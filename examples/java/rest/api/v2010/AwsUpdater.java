@@ -90,7 +90,8 @@ public class AwsUpdater extends Updater<Aws>{
     }
     private void addPostParams(final Request request) {
         if (testString != null) {
-            request.addPostParam("TestString", testString.toString());
+            request.addPostParam("TestString", testString);
+    
         }
     }
 }
