@@ -1,45 +1,48 @@
 package com.twilio.rest;
-import static org.junit.Assert.*;
 
-import com.twilio.rest.api.v2010.credential.Aws;
-import com.twilio.rest.api.v2010.credential.AwsCreator;
-import com.twilio.rest.api.v2010.credential.AwsReader;
-import org.json.JSONObject;
-import org.junit.Before;
-import org.junit.Test;
-
-import static org.mockito.Mockito.*;
-
-
-
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-
-import java.net.URI;
-
-import com.twilio.http.Request;
-import com.twilio.http.Response;
-import com.twilio.http.HttpMethod;
 import com.twilio.base.Page;
 import com.twilio.base.ResourceSet;
 import com.twilio.exception.ApiException;
+import com.twilio.http.HttpMethod;
+import com.twilio.http.Request;
+import com.twilio.http.Response;
 import com.twilio.http.TwilioRestClient;
+import com.twilio.rest.api.v2010.Account;
+import com.twilio.rest.api.v2010.AccountCreator;
+import com.twilio.rest.api.v2010.AccountFetcher;
+import com.twilio.rest.api.v2010.AccountReader;
+import com.twilio.rest.api.v2010.Call;
+import com.twilio.rest.api.v2010.CallFetcher;
+import com.twilio.rest.api.v2010.Aws;
+import com.twilio.rest.api.v2010.AwsCreator;
+import com.twilio.rest.api.v2010.AwsReader;
 
+import java.net.URI;
+import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.time.LocalDate;
-
-import com.twilio.rest.api.v2010.account.call.RecordingCreator;
-import com.twilio.rest.api.v2010.account.call.RecordingReader;
-import com.twilio.rest.api.v2010.account.call.RecordingFetcher;
-import com.twilio.rest.api.v2010.account.call.Recording;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import org.json.JSONObject;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.when;
+import java.time.format.DateTimeFormatter;
+import com.twilio.converter.DateConverter;
 
 public class TwilioRestTest {
     @Mock
@@ -55,24 +58,24 @@ public class TwilioRestTest {
         Request mockRequest = new Request(
                 HttpMethod.GET,
                 "api",
-                "/2010-04-01/Accounts/AC222222222222222222222222222222/Calls/PNXXXXY/Recordings/123.json"
+                "/2010-04-01/Accounts/AC222222222222222222222222222222.json"
         );
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
         when(twilioRestClient.request(mockRequest)).thenReturn(new Response("{\"account_sid\":\"AC222222222222222222222222222222\", \"call_sid\":\"PNXXXXY\"}", 200));
         when(twilioRestClient.getObjectMapper()).thenReturn(objectMapper);
 
-        Recording recording = new RecordingFetcher("AC222222222222222222222222222222", "PNXXXXY", 123).fetch(twilioRestClient);
+        Account account = new AccountFetcher("AC222222222222222222222222222222").fetch(twilioRestClient);
 
-        assertNotNull(recording);
+        assertNotNull(account);
     }
 
     @Test
     public void testShouldSendAddedHeadersThroughRestClient() {
         Request mockRequest = new Request(
                 HttpMethod.POST,
-                com.twilio.rest.Domains.API.toString(),
-                "/2010-04-01/Accounts/AC222222222222222222222222222222/Calls/PNXXXXY/Recordings.json"
+                Domains.API.toString(),
+                "/2010-04-01/Accounts.json"
         );
         mockRequest.addHeaderParam("X-Twilio-Webhook-Enabled", "true");
         mockRequest.addPostParam("RecordingStatusCallback", "https://validurl.com");
@@ -80,13 +83,13 @@ public class TwilioRestTest {
         objectMapper.registerModule(new JavaTimeModule());
         when(twilioRestClient.request(mockRequest)).thenReturn(new Response("{\"sid\": 123, \"call_sid\":\"PNXXXXY\"}", 200));
         when(twilioRestClient.getObjectMapper()).thenReturn(objectMapper);
-        RecordingCreator recordingCreator = new RecordingCreator("AC222222222222222222222222222222", "PNXXXXY");
-        recordingCreator.setXTwilioWebhookEnabled("true");
-        recordingCreator.setRecordingStatusCallback(URI.create("https://validurl.com"));
+        AccountCreator accountCreator = new AccountCreator();
+        accountCreator.setXTwilioWebhookEnabled("true");
+        accountCreator.setRecordingStatusCallback(URI.create("https://validurl.com"));
 
-        Recording recording = recordingCreator.create(twilioRestClient);
+        Account account  = accountCreator.create(twilioRestClient);
 
-        assertNotNull(recording);
+        assertNotNull(account);
     }
 
     @Test
@@ -94,31 +97,29 @@ public class TwilioRestTest {
         Request mockRequest = new Request(
                 HttpMethod.GET,
                 "api",
-                "/2010-04-01/Accounts/AC222222222222222222222222222222/Calls/PNXXXXY/Recordings.json"
+                "/2010-04-01/Accounts.json"
         );
-        String url = "https://api.twilio.com/2010-04-01/Accounts/AC222222222222222222222222222222/Calls/PNXXXXY/Recordings.json";
+        String url = "https://api.twilio.com/2010-04-01/Accounts.json";
         ZonedDateTime currentDateTime = ZonedDateTime.now();
         LocalDate localDate = LocalDate.now();
-        mockRequest.addQueryParam("DateCreated", currentDateTime.toString());
-        mockRequest.addQueryParam("DateTest", localDate.toString());
-        mockRequest.addQueryParam("DateCreatedBefore", currentDateTime.toString());
-        mockRequest.addQueryParam("DateCreatedAfter", currentDateTime.toString());
+        String formattedLocalDate = DateConverter.dateStringFromLocalDate(localDate);
+        String formattedCurrentDate =  currentDateTime.format(DateTimeFormatter.ofPattern(Request.QUERY_STRING_DATE_TIME_FORMAT));
+        mockRequest.addQueryParam("DateCreated", formattedCurrentDate);
+        mockRequest.addQueryParam("Date.Test", formattedLocalDate);
         mockRequest.addQueryParam("PageSize", "4");
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
-        String responseContent = "{\"recordings\":[{\"call_sid\":\"PNXXXXY\", \"sid\":123}], \"meta\": {\"url\":\"" + url + "\", \"next_page_url\":\"" + url + "?PageSize=5" + "\", \"previous_page_url\":\"" + url + "?PageSize=3" + "\", \"first_page_url\":\"" + url + "?PageSize=1" + "\", \"page_size\":4}}";
+        String responseContent = "{\"accounts\":[{\"call_sid\":\"PNXXXXY\", \"sid\":123}], \"meta\": {\"url\":\"" + url + "\", \"next_page_url\":\"" + url + "?PageSize=5" + "\", \"previous_page_url\":\"" + url + "?PageSize=3" + "\", \"first_page_url\":\"" + url + "?PageSize=1" + "\", \"page_size\":4}}";
         when(twilioRestClient.request(mockRequest)).thenReturn(new Response(responseContent, 200));
         when(twilioRestClient.getObjectMapper()).thenReturn(objectMapper);
-        RecordingReader recordingReader = new RecordingReader("AC222222222222222222222222222222", "PNXXXXY");
-        recordingReader.setDateCreated(currentDateTime);
-        recordingReader.setDateCreatedBefore(currentDateTime);
-        recordingReader.setDateCreatedAfter(currentDateTime);
-        recordingReader.setDateTest(localDate);
-        recordingReader.setPageSize(4);
+        AccountReader accountReader = new AccountReader();
+        accountReader.setDateCreated(currentDateTime);
+        accountReader.setDateTest(localDate);
+        accountReader.setPageSize(4);
 
-        ResourceSet<Recording> recording = recordingReader.read(twilioRestClient);
+        ResourceSet<Account> account  = accountReader.read(twilioRestClient);
 
-        assertNotNull(recording);
+        assertNotNull(account);
     }
 
     @Test
@@ -126,24 +127,26 @@ public class TwilioRestTest {
         List<String> recordingStatusCallbackEvent = Arrays.asList("http://test1.com/", "http://test2.com");
         Request mockRequest = new Request(
                 HttpMethod.POST,
-                com.twilio.rest.Domains.API.toString(),
-                "/2010-04-01/Accounts/AC222222222222222222222222222222/Calls/PNXXXXY/Recordings.json"
+                Domains.API.toString(),
+                "/2010-04-01/Accounts.json"
         );
-        mockRequest.addPostParam("RecordingStatusCallbackEvent", recordingStatusCallbackEvent.toString());
+        for(String recordingStatusEvent : recordingStatusCallbackEvent){
+            mockRequest.addPostParam("RecordingStatusCallbackEvent", recordingStatusEvent);
+        }
         mockRequest.addPostParam("RecordingStatusCallback", "https://validurl.com");
         mockRequest.addHeaderParam("X-Twilio-Webhook-Enabled", "true");
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
-        when(twilioRestClient.request(mockRequest)).thenReturn(new Response("{\"recordings\":[{\"call_sid\":\"PNXXXXY\", \"sid\":123}]}", 200));
+        when(twilioRestClient.request(mockRequest)).thenReturn(new Response("{\"accounts\":[{\"call_sid\":\"PNXXXXY\", \"sid\":123}]}", 200));
         when(twilioRestClient.getObjectMapper()).thenReturn(objectMapper);
-        RecordingCreator recordingCreator = new RecordingCreator("AC222222222222222222222222222222", "PNXXXXY");
-        recordingCreator.setRecordingStatusCallbackEvent(recordingStatusCallbackEvent);
-        recordingCreator.setRecordingStatusCallback(URI.create("https://validurl.com"));
-        recordingCreator.setXTwilioWebhookEnabled("true");
+        AccountCreator accountCreator = new AccountCreator();
+        accountCreator.setRecordingStatusCallbackEvent(recordingStatusCallbackEvent);
+        accountCreator.setRecordingStatusCallback(URI.create("https://validurl.com"));
+        accountCreator.setXTwilioWebhookEnabled("true");
 
-        Recording recording = recordingCreator.create(twilioRestClient);
+        Account account  = accountCreator.create(twilioRestClient);
 
-        assertNotNull(recording);
+        assertNotNull(account);
     }
 
     @Test
@@ -151,16 +154,16 @@ public class TwilioRestTest {
         when(twilioRestClient.getAccountSid()).thenReturn("AC222222222222222222222222222222");
         Request mockRequest = new Request(
                 HttpMethod.GET,
-                com.twilio.rest.Domains.API.toString(),
-                "/2010-04-01/Accounts/AC222222222222222222222222222222/Calls/PNXXXXY/Recordings/123.json"
+                Domains.API.toString(),
+                "/2010-04-01/Accounts/AC222222222222222222222222222222/Calls/123.json"
         );
         ObjectMapper objectMapper = new ObjectMapper();
         when(twilioRestClient.getObjectMapper()).thenReturn(objectMapper);
         when(twilioRestClient.request(mockRequest)).thenReturn(new Response("{\"account_sid\":\"AC222222222222222222222222222222\",\"call_sid\":\"PNXXXXY\", \"sid\":123, \"test_object\":{\"mms\": true, \"sms\":false, \"voice\": false, \"fax\":true}}", 200));
-        Recording recording = new RecordingFetcher( "PNXXXXY", 123).fetch(twilioRestClient);
-        assertNotNull(recording);
-        assertEquals("123", recording.getSid());
-        assertEquals("AC222222222222222222222222222222", recording.getAccountSid());
+        Call call = new CallFetcher(123).fetch(twilioRestClient);
+        assertNotNull(call);
+        assertEquals(call.getSid(), "123");
+        assertEquals(call.getAccountSid(), "AC222222222222222222222222222222");
     }
 
 
@@ -174,16 +177,16 @@ public class TwilioRestTest {
         String url = "https://api.twilio.com/v1/Credentials/AWS";
         ObjectMapper objectMapper = new ObjectMapper();
         String testResponse =  "{\"credentials\":[{\"sid\":\"CR12345678123456781234567812345678\", \"test_string\":\"Ahoy\", \"test_object\":{\"mms\": true, \"sms\":false, \"voice\": false, \"fax\":true}}, {\"sid\":\"CR12345678123456781234567812345678\", \"test_string\":\"Hello\", \"test_object\":{\"mms\": true, \"sms\":false, \"voice\": false, \"fax\":true}}], \"meta\": {\"url\":\"" + url + "\", \"next_page_url\":\"" + url + "?PageSize=5" + "\", \"previous_page_url\":\"" + url + "?PageSize=3" + "\", \"first_page_url\":\"" + url + "?PageSize=1" + "\", \"page_size\":4}}";
-        when(twilioRestClient.request(mockRequest)).thenReturn(new Response(testResponse.toString(), 200));
+        when(twilioRestClient.request(mockRequest)).thenReturn(new Response(testResponse, 200));
         when(twilioRestClient.getObjectMapper()).thenReturn(objectMapper);
         Page<Aws> awsPage = new AwsReader().firstPage(twilioRestClient);
-        assertEquals("Ahoy",  awsPage.getRecords().get(0).getTestString());
-        assertEquals("Hello",  awsPage.getRecords().get(1).getTestString());
+        assertEquals(awsPage.getRecords().get(0).getTestString(), "Ahoy"  );
+        assertEquals(awsPage.getRecords().get(1).getTestString(), "Hello" );
     }
 
     @Test
     public void testShouldReadPageOfMessages() {
-        String uri = "/2010-04-01/Accounts/AC222222222222222222222222222222/Calls/PNXXXXY/Recordings.json";
+        String uri = "/2010-04-01/Accounts.json";
         Request mockRequestPage0 = new Request(
                 HttpMethod.GET,
                 "api",
@@ -192,28 +195,28 @@ public class TwilioRestTest {
         ObjectMapper objectMapper = new ObjectMapper();
         when(twilioRestClient.getObjectMapper()).thenReturn(objectMapper);
         mockRequestPage0.addQueryParam("PageSize", "2");
-        String url = "https://api.twilio.com/2010-04-01/Accounts/AC222222222222222222222222222222/Calls/PNXXXXY/Recordings.json";
-        String nextPageURL = "https://api.twilio.com/2010-04-01/Accounts/AC222222222222222222222222222222/Calls/PNXXXXY/Recordings.jsonFrom=9999999999&PageNumber=&To=4444444444&PageSize=2&Page=1&PageToken=PASMc49f620580b24424bcfa885b1f741130";
-        String responseContent = "{\"recordings\":[{\"call_sid\":\"PNXXXXY\", \"sid\":123, \"test_string\":\"Ahoy\"}], \"meta\": {\"url\":\"" + url + "\", \"next_page_url\":\"" + nextPageURL + "?PageSize=2" + "\", \"previous_page_url\":\"" + url + "?PageSize=2" + "\", \"first_page_url\":\"" + url + "?PageSize=2" + "\", \"page_size\":2}}";
+        String url = "https://api.twilio.com/2010-04-01/Accounts.json";
+        String nextPageURL = "https://api.twilio.com/2010-04-01/Accounts.jsonFrom=9999999999&PageNumber=&To=4444444444&PageSize=2&Page=1&PageToken=PASMc49f620580b24424bcfa885b1f741130";
+        String responseContent = "{\"accounts\":[{\"call_sid\":\"PNXXXXY\", \"sid\":123, \"test_string\":\"Ahoy\"}], \"meta\": {\"url\":\"" + url + "\", \"next_page_url\":\"" + nextPageURL + "?PageSize=2" + "\", \"previous_page_url\":\"" + url + "?PageSize=2" + "\", \"first_page_url\":\"" + url + "?PageSize=2" + "\", \"page_size\":2}}";
         when(twilioRestClient.request(mockRequestPage0)).thenReturn(new Response(responseContent, 200));
 
         Request mockRequestPage1 = new Request(
                 HttpMethod.GET,
                 "api",
-                "/2010-04-01/Accounts/AC222222222222222222222222222222/Calls/PNXXXXY/Recordings.jsonFrom=9999999999&PageNumber=&To=4444444444&PageSize=2&Page=1&PageToken=PASMc49f620580b24424bcfa885b1f741130?PageSize=2"
+                "/2010-04-01/Accounts.jsonFrom=9999999999&PageNumber=&To=4444444444&PageSize=2&Page=1&PageToken=PASMc49f620580b24424bcfa885b1f741130?PageSize=2"
         );
-        String responseContent2 = "{\"recordings\":[{\"call_sid\":\"PNXXXXY\", \"sid\":123, \"test_string\":\"Matey\"}], \"meta\": {\"url\":\"" + url + "\", \"next_page_url\":\"" + ""  + "\", \"previous_page_url\":\"" + url + "?PageSize=2" + "\", \"first_page_url\":\"" + url + "?PageSize=2" + "\", \"page_size\":2}}";
+        String responseContent2 = "{\"accounts\":[{\"call_sid\":\"PNXXXXY\", \"sid\":123, \"test_string\":\"Matey\"}], \"meta\": {\"url\":\"" + url + "\", \"next_page_url\":\"" + ""  + "\", \"previous_page_url\":\"" + url + "?PageSize=2" + "\", \"first_page_url\":\"" + url + "?PageSize=2" + "\", \"page_size\":2}}";
         when(twilioRestClient.request(mockRequestPage1)).thenReturn(new Response(responseContent2, 200));
-        RecordingReader recordingReader = new RecordingReader("AC222222222222222222222222222222", "PNXXXXY");
-        recordingReader.setPageSize(2);
-        ResourceSet<Recording> recording = recordingReader.read(twilioRestClient);
+        AccountReader accountReader = new AccountReader();
+        accountReader.setPageSize(2);
+        ResourceSet<Account> account = accountReader.read(twilioRestClient);
         List<String> testStringValues = new ArrayList<>();
-        recording.forEach(recordingVal -> {
-                assertNotNull(recordingVal);
-                testStringValues.add(recordingVal.getTestString());
+        account.forEach(accountVal -> {
+            assertNotNull(accountVal);
+            testStringValues.add(accountVal.getTestString());
         });
-        assertEquals("Ahoy", testStringValues.get(0));
-        assertEquals("Matey", testStringValues.get(1));
+        assertEquals(testStringValues.get(0), "Ahoy");
+        assertEquals(testStringValues.get(1), "Matey");
     }
 
     @Test
@@ -225,7 +228,7 @@ public class TwilioRestTest {
         );
         ObjectMapper objectMapper = new ObjectMapper();
 
-        Map<String, Object> content = new HashMap<String, Object>();
+        Map<String, Object> content = new HashMap<>();
         content.put("code", 20001);
         content.put("message", "Invalid PageSize.");
         content.put("more_info", "https://www.twilio.com/docs/errors/20001");
@@ -249,17 +252,44 @@ public class TwilioRestTest {
         Map<String, Object> item1 = new HashMap<>();
         Map<String, Object> item2 = new HashMap<>();
         item1.put("A", Arrays.asList("Apple", "Aces"));
-        item2.put("B", Arrays.asList("Banana"));
+        item2.put("B", Collections.singletonList("Banana"));
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
-        mockRequest.addPostParam("TestObjectArray", "[{A=[Apple, Aces]}, {B=[Banana]}]");
+        List<Object> testObjectArray = Arrays.asList(item1, item2);
+        for(Object testObject : testObjectArray){
+            mockRequest.addPostParam("TestObjectArray", testObject.toString());
+        }
         mockRequest.addPostParam("TestString", "AC222222222222222222222222222222");
         when(twilioRestClient.request(mockRequest)).thenReturn(new Response("{\"account_sid\":\"AC222222222222222222222222222222\", \"sid\":\"PNXXXXY\"}", 200));
         when(twilioRestClient.getObjectMapper()).thenReturn(objectMapper);
         AwsCreator awsCreator = new AwsCreator("AC222222222222222222222222222222");
         awsCreator.setTestObjectArray(Arrays.asList(item1, item2));
-        awsCreator.create(twilioRestClient);
+        Aws aws = awsCreator.create(twilioRestClient);
+        assertNotNull(aws);
+    }
 
+    @Test
+    public void testAnyTypeParam() {
+        Request mockRequest = new Request(
+                HttpMethod.POST,
+                "api",
+                "/v1/Credentials/AWS"
+        );
+
+        Map<String, Object> anyMap = new HashMap<>();
+        anyMap.put("TestInteger", 1);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        mockRequest.addPostParam("TestAnyType", "{TestInteger=1}");
+        mockRequest.addPostParam("TestString", "AC222222222222222222222222222222");
+        when(twilioRestClient.request(mockRequest)).thenReturn(new Response("{\"account_sid\":\"AC222222222222222222222222222222\", \"sid\":\"PNXXXXY\"}", 200));
+        when(twilioRestClient.getObjectMapper()).thenReturn(objectMapper);
+        AwsCreator awsCreator = new AwsCreator("AC222222222222222222222222222222");
+        awsCreator.setTestAnyType(anyMap);
+        Aws aws = awsCreator.create(twilioRestClient);
+
+        assertNotNull(aws);
         assertNotNull(awsCreator);
     }
 
@@ -268,42 +298,40 @@ public class TwilioRestTest {
         Request mockRequest = new Request(
                 HttpMethod.GET,
                 "api",
-                "/2010-04-01/Accounts/AC222222222222222222222222222222/Calls/PNXXXXY/Recordings.json"
+                "/2010-04-01/Accounts.json"
         );
         Request mockRequest2 = new Request(
                 HttpMethod.GET,
                 "api",
-                "/2010-04-01/Accounts/AC222222222222222222222222222222/Calls/PNXXXXY/Recordings.json?PageSize=5"
+                "/2010-04-01/Accounts.json?PageSize=5"
         );
-        String url = "https://api.twilio.com/2010-04-01/Accounts/AC222222222222222222222222222222/Calls/PNXXXXY/Recordings.json";
+        String url = "https://api.twilio.com/2010-04-01/Accounts.json";
         ZonedDateTime currentDateTime = ZonedDateTime.now();
         LocalDate localDate = LocalDate.now();
-        mockRequest.addQueryParam("DateCreated", currentDateTime.toString());
-        mockRequest.addQueryParam("DateTest", localDate.toString());
-        mockRequest.addQueryParam("DateCreatedBefore", currentDateTime.toString());
-        mockRequest.addQueryParam("DateCreatedAfter", currentDateTime.toString());
+        String formattedLocalDate = DateConverter.dateStringFromLocalDate(localDate);
+        mockRequest.addQueryParam("Date.Test", formattedLocalDate);
+        mockRequest.addQueryDateTimeRange("DateCreated", currentDateTime, currentDateTime);
         mockRequest.addQueryParam("PageSize", "4");
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
-        String responseContent = "{\"recordings\":[{\"call_sid\":\"PNXXXXY\", \"sid\":123, \"test_object\":{\"mms\": true, \"sms\":false, \"voice\": false, \"fax\":true}}], \"meta\": {\"url\":\"" + url + "\", \"next_page_url\":\"" + url + "?PageSize=5" + "\", \"previous_page_url\":\"" + url + "?PageSize=3" + "\", \"first_page_url\":\"" + url + "?PageSize=1" + "\", \"page_size\":4}}";
+        String responseContent = "{\"accounts\":[{\"call_sid\":\"PNXXXXY\", \"sid\":123, \"test_object\":{\"mms\": true, \"sms\":false, \"voice\": false, \"fax\":true}}], \"meta\": {\"url\":\"" + url + "\", \"next_page_url\":\"" + url + "?PageSize=5" + "\", \"previous_page_url\":\"" + url + "?PageSize=3" + "\", \"first_page_url\":\"" + url + "?PageSize=1" + "\", \"page_size\":4}}";
         when(twilioRestClient.request(mockRequest)).thenReturn(new Response(responseContent, 200));
         when(twilioRestClient.request(mockRequest2)).thenReturn(new Response(responseContent, 200));
         when(twilioRestClient.getObjectMapper()).thenReturn(objectMapper);
-        RecordingReader recordingReader = new RecordingReader("AC222222222222222222222222222222", "PNXXXXY");
-        recordingReader.setDateCreated(currentDateTime);
-        recordingReader.setDateCreatedBefore(currentDateTime);
-        recordingReader.setDateCreatedAfter(currentDateTime);
-        recordingReader.setDateTest(localDate);
-        recordingReader.setPageSize(4);
+        AccountReader accountReader = new AccountReader();
+        accountReader.setDateCreatedBefore(currentDateTime);
+        accountReader.setDateCreatedAfter(currentDateTime);
+        accountReader.setDateTest(localDate);
+        accountReader.setPageSize(4);
 
-        ResourceSet<Recording> recording = recordingReader.read(twilioRestClient);
+        ResourceSet<Account> account = accountReader.read(twilioRestClient);
 
-        assertNotNull(recording);
-        assertEquals("123", recording.iterator().next().getSid());
-        assertEquals(true, recording.iterator().next().getTestObject().getMms());
-        assertEquals(false, recording.iterator().next().getTestObject().getSms());
-        assertEquals(false, recording.iterator().next().getTestObject().getVoice());
-        assertEquals(true, recording.iterator().next().getTestObject().getFax());
+        assertNotNull(account);
+        assertEquals("123", account.iterator().next().getSid());
+        assertTrue(account.iterator().next().getTestObject().getMms());
+        assertFalse(account.iterator().next().getTestObject().getSms());
+        assertFalse(account.iterator().next().getTestObject().getVoice());
+        assertTrue(account.iterator().next().getTestObject().getFax());
     }
 
     @Test
@@ -311,41 +339,39 @@ public class TwilioRestTest {
         Request mockRequest = new Request(
                 HttpMethod.GET,
                 "api",
-                "/2010-04-01/Accounts/AC222222222222222222222222222222/Calls/PNXXXXY/Recordings.json"
+                "/2010-04-01/Accounts.json"
         );
         Request mockRequest2 = new Request(
                 HttpMethod.GET,
                 "api",
-                "/2010-04-01/Accounts/AC222222222222222222222222222222/Calls/PNXXXXY/Recordings.json?PageSize=5"
+                "/2010-04-01/Accounts.json?PageSize=5"
         );
-        String url = "https://api.twilio.com/2010-04-01/Accounts/AC222222222222222222222222222222/Calls/PNXXXXY/Recordings.json";
+        String url = "https://api.twilio.com/2010-04-01/Accounts.json";
         ZonedDateTime currentDateTime = ZonedDateTime.now();
         LocalDate localDate = LocalDate.now();
-        mockRequest.addQueryParam("DateCreated", currentDateTime.toString());
-        mockRequest.addQueryParam("DateTest", localDate.toString());
-        mockRequest.addQueryParam("DateCreatedBefore", currentDateTime.toString());
-        mockRequest.addQueryParam("DateCreatedAfter", currentDateTime.toString());
+        String formattedLocalDate = DateConverter.dateStringFromLocalDate(localDate);
+        String formattedCurrentDate =  currentDateTime.format(DateTimeFormatter.ofPattern(Request.QUERY_STRING_DATE_TIME_FORMAT));
+        mockRequest.addQueryParam("DateCreated", formattedCurrentDate);
+        mockRequest.addQueryParam("Date.Test", formattedLocalDate);
         mockRequest.addQueryParam("PageSize", "4");
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
-        String responseContent = "{\"recordings\":[{\"call_sid\":\"PNXXXXY\", \"sid\":123, \"test_array_of_objects\": [{\"count\": 123, \"description\":\"Testing Object Array\"}] }], \"meta\": {\"url\":\"" + url + "\", \"next_page_url\":\"" + url + "?PageSize=5" + "\", \"previous_page_url\":\"" + url + "?PageSize=3" + "\", \"first_page_url\":\"" + url + "?PageSize=1" + "\", \"page_size\":4}}";
+        String responseContent = "{\"accounts\":[{\"call_sid\":\"PNXXXXY\", \"sid\":123, \"test_array_of_objects\": [{\"count\": 123, \"description\":\"Testing Object Array\"}] }], \"meta\": {\"url\":\"" + url + "\", \"next_page_url\":\"" + url + "?PageSize=5" + "\", \"previous_page_url\":\"" + url + "?PageSize=3" + "\", \"first_page_url\":\"" + url + "?PageSize=1" + "\", \"page_size\":4}}";
         when(twilioRestClient.request(mockRequest)).thenReturn(new Response(responseContent, 200));
         when(twilioRestClient.request(mockRequest2)).thenReturn(new Response(responseContent, 200));
         when(twilioRestClient.getObjectMapper()).thenReturn(objectMapper);
-        RecordingReader recordingReader = new RecordingReader("AC222222222222222222222222222222", "PNXXXXY");
-        recordingReader.setDateCreated(currentDateTime);
-        recordingReader.setDateCreatedBefore(currentDateTime);
-        recordingReader.setDateCreatedAfter(currentDateTime);
-        recordingReader.setDateTest(localDate);
-        recordingReader.setPageSize(4);
+        AccountReader accountReader = new AccountReader();
+        accountReader.setDateCreated(currentDateTime);
+        accountReader.setDateTest(localDate);
+        accountReader.setPageSize(4);
 
-        ResourceSet<Recording> recording = recordingReader.read(twilioRestClient);
+        ResourceSet<Account> account = accountReader.read(twilioRestClient);
 
-        assertNotNull(recording);
-        assertEquals("123", recording.iterator().next().getSid());
-        assertEquals(1, recording.iterator().next().getTestArrayOfObjects().size());
-        assertEquals("Testing Object Array", recording.iterator().next().getTestArrayOfObjects().get(0).getDescription());
-        assertEquals(123, recording.iterator().next().getTestArrayOfObjects().get(0).getCount());
+        assertNotNull(account);
+        assertEquals("123", account.iterator().next().getSid());
+        assertEquals(1, account.iterator().next().getTestArrayOfObjects().size());
+        assertEquals("Testing Object Array", account.iterator().next().getTestArrayOfObjects().get(0).getDescription());
+        assertEquals(123, account.iterator().next().getTestArrayOfObjects().get(0).getCount());
     }
 
     @Test
@@ -353,39 +379,37 @@ public class TwilioRestTest {
         Request mockRequest = new Request(
                 HttpMethod.GET,
                 "api",
-                "/2010-04-01/Accounts/AC222222222222222222222222222222/Calls/PNXXXXY/Recordings.json"
+                "/2010-04-01/Accounts.json"
         );
         Request mockRequest2 = new Request(
                 HttpMethod.GET,
                 "api",
-                "/2010-04-01/Accounts/AC222222222222222222222222222222/Calls/PNXXXXY/Recordings.json?PageSize=5"
+                "/2010-04-01/Accounts.json?PageSize=5"
         );
-        String url = "https://api.twilio.com/2010-04-01/Accounts/AC222222222222222222222222222222/Calls/PNXXXXY/Recordings.json";
+        String url = "https://api.twilio.com/2010-04-01/Accounts.json";
         ZonedDateTime currentDateTime = ZonedDateTime.now();
         LocalDate localDate = LocalDate.now();
-        mockRequest.addQueryParam("DateCreated", currentDateTime.toString());
-        mockRequest.addQueryParam("DateTest", localDate.toString());
-        mockRequest.addQueryParam("DateCreatedBefore", currentDateTime.toString());
-        mockRequest.addQueryParam("DateCreatedAfter", currentDateTime.toString());
+        String formattedLocalDate = DateConverter.dateStringFromLocalDate(localDate);
+        String formattedCurrentDate =  currentDateTime.format(DateTimeFormatter.ofPattern(Request.QUERY_STRING_DATE_TIME_FORMAT));
+        mockRequest.addQueryParam("DateCreated", formattedCurrentDate);
+        mockRequest.addQueryParam("Date.Test", formattedLocalDate);
         mockRequest.addQueryParam("PageSize", "4");
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
-        String responseContent = "{\"recordings\":[{\"call_sid\":\"PNXXXXY\", \"sid\":123, \"testDateTime\":\"2021-03-23T16:43:32.010069453-05:00\", \"price_unit\": \"USD\" }], \"meta\": {\"url\":\"" + url + "\", \"next_page_url\":\"" + url + "?PageSize=5" + "\", \"previous_page_url\":\"" + url + "?PageSize=3" + "\", \"first_page_url\":\"" + url + "?PageSize=1" + "\", \"page_size\":4}}";
+        String responseContent = "{\"accounts\":[{\"call_sid\":\"PNXXXXY\", \"sid\":123, \"testDateTime\":\"2021-03-23T16:43:32.010069453-05:00\", \"price_unit\": \"USD\" }], \"meta\": {\"url\":\"" + url + "\", \"next_page_url\":\"" + url + "?PageSize=5" + "\", \"previous_page_url\":\"" + url + "?PageSize=3" + "\", \"first_page_url\":\"" + url + "?PageSize=1" + "\", \"page_size\":4}}";
         when(twilioRestClient.request(mockRequest)).thenReturn(new Response(responseContent, 200));
         when(twilioRestClient.request(mockRequest2)).thenReturn(new Response(responseContent, 200));
         when(twilioRestClient.getObjectMapper()).thenReturn(objectMapper);
-        RecordingReader recordingReader = new RecordingReader("AC222222222222222222222222222222", "PNXXXXY");
-        recordingReader.setDateCreated(currentDateTime);
-        recordingReader.setDateCreatedBefore(currentDateTime);
-        recordingReader.setDateCreatedAfter(currentDateTime);
-        recordingReader.setDateTest(localDate);
-        recordingReader.setPageSize(4);
+        AccountReader accountReader = new AccountReader();
+        accountReader.setDateCreated(currentDateTime);
+        accountReader.setDateTest(localDate);
+        accountReader.setPageSize(4);
 
-        ResourceSet<Recording> recording = recordingReader.read(twilioRestClient);
+        ResourceSet<Account> account = accountReader.read(twilioRestClient);
 
-        assertNotNull(recording);
-        assertEquals("123",recording.iterator().next().getSid());
-        assertEquals("USD", recording.iterator().next().getPriceUnit().toString() );
-        assertEquals("2021-03-23T21:43:32.010069453Z[UTC]",recording.iterator().next().getTestDateTime().toString());
+        assertNotNull(account);
+        assertEquals("123",account.iterator().next().getSid());
+        assertEquals("USD", account.iterator().next().getPriceUnit().toString() );
+        assertEquals("2021-03-23T21:43:32.010069453Z[UTC]",account.iterator().next().getTestDateTime().toString());
     }
 }

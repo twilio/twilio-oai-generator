@@ -16,6 +16,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.time.ZonedDateTime;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import com.twilio.converter.DateConverter;
 
 {{^fullJavaUtil}}
 import java.util.ArrayList;
@@ -51,11 +54,11 @@ public class {{resourceName}}Fetcher extends Fetcher<{{resourceName}}> {
         {{#allParams}}
         {{#vendorExtensions.x-is-account-sid}}
         this.{{paramName}} = this.{{paramName}} == null ? client.getAccountSid() : this.{{paramName}};
-        path = path.replace("{"+"{{paramName}}"+"}", this.{{paramName}}.toString());
+        path = path.replace("{"+"{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}"+"}", this.{{paramName}}.toString());
         {{/vendorExtensions.x-is-account-sid}}
         {{/allParams}}
         {{#requiredParams}}
-        path = path.replace("{"+"{{paramName}}"+"}", this.{{paramName}}.toString());
+        path = path.replace("{"+"{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}"+"}", this.{{paramName}}.toString());
         {{/requiredParams}}
 
         Request request = new Request(
@@ -63,6 +66,9 @@ public class {{resourceName}}Fetcher extends Fetcher<{{resourceName}}> {
             Domains.{{#lambda.uppercase}}{{domain}}{{/lambda.uppercase}}.toString(),
             path
         );
+        {{#queryParams.0}}
+        addQueryParams(request);
+        {{/queryParams.0}}
         {{#formParams.0}}
         addPostParams(request);
         {{/formParams.0}}
@@ -84,28 +90,14 @@ public class {{resourceName}}Fetcher extends Fetcher<{{resourceName}}> {
         return {{resourceName}}.fromJson(response.getStream(), client.getObjectMapper());
     }
 {{#formParams.0}}
-    private void addPostParams(final Request request) {
-{{#formParams}}
-    if ({{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}} != null){
-    {{#isFreeFormObject}}
-        request.addPostParam("{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}",  Converter.mapToJson({{paramName}}));
-    {{/isFreeFormObject}}
-    {{^isFreeFormObject}}
-        request.addPostParam("{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}", {{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}.toString());
-    {{/isFreeFormObject}}
-    }
-{{/formParams}}
-    }
+{{>postParams}}
 {{/formParams.0}}
-    {{#headerParams.0}}
-    private void addHeaderParams(final Request request) {
-    {{#headerParams}}
-        if ({{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}} != null) {
-            request.addHeaderParam("{{baseName}}", {{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}.toString());
-        }
-    {{/headerParams}}
-    }
-    {{/headerParams.0}}
+{{#headerParams.0}}
+{{>headerParams}}
+{{/headerParams.0}}
+{{#queryParams.0}}
+{{>queryParams}}
+{{/queryParams.0}}
 }
 {{/vendorExtensions.x-is-fetch-operation}}
 {{/operations}}

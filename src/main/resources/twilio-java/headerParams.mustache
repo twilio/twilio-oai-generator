@@ -1,0 +1,12 @@
+    private void addHeaderParams(final Request request) {
+{{#headerParams}}
+        if ({{paramName}} != null) {
+        {{#isString}}
+            request.addHeaderParam("{{baseName}}", {{paramName}});
+        {{/isString}}
+        {{^isString}}
+            request.addHeaderParam("{{baseName}}", {{paramName}}.toString());
+        {{/isString}}
+        }
+{{/headerParams}}
+    }

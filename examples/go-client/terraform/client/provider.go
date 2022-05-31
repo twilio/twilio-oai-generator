@@ -10,21 +10,21 @@ type Config struct {
 }
 
 type RestClient struct {
-	ApiV2010
+	Api
 }
 
-type ApiV2010 interface {
+type Api interface {
 	CreateCredentialAws(params *v2010.CreateCredentialAwsParams) (*v2010.TestResponseObject, error)
 	DeleteCredentialAws(Sid string) error
 	FetchCredentialAws(Sid string) (*v2010.TestResponseObject, error)
 	UpdateCredentialAws(Sid string, params *v2010.UpdateCredentialAwsParams) (*v2010.TestResponseObject, error)
 
-	CreateCall(params *v2010.CreateCallParams) (*v2010.TestResponseObject, error)
-	DeleteCall(Sid string, params *v2010.DeleteCallParams) error
-	FetchCall(Sid string, params *v2010.FetchCallParams) (*v2010.TestResponseObject, error)
+	CreateAccount(params *v2010.CreateAccountParams) (*v2010.TestResponseObject, error)
+	DeleteAccount(Sid string) error
+	FetchAccount(Sid string) (*v2010.TestResponseObject, error)
+	UpdateAccount(Sid string, params *v2010.UpdateAccountParams) (*v2010.TestResponseObject, error)
 
-	CreateCallRecording(CallSid string, params *v2010.CreateCallRecordingParams) (*v2010.TestResponseObject, error)
-	DeleteCallRecording(CallSid string, Sid int, params *v2010.DeleteCallRecordingParams) error
-	FetchCallRecording(CallSid string, Sid int, params *v2010.FetchCallRecordingParams) (*v2010.TestResponseObject, error)
-	UpdateCallRecording(CallSid string, Sid int, params *v2010.UpdateCallRecordingParams) (*v2010.TestResponseObject, error)
+	CreateCall(params *v2010.CreateCallParams) (*v2010.TestResponseObject, error)
+	DeleteCall(Sid int, params *v2010.DeleteCallParams) error
+	FetchCall(Sid int, params *v2010.FetchCallParams) (*v2010.TestResponseObject, error)
 }

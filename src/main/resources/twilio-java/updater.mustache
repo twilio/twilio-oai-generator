@@ -12,6 +12,8 @@ import com.twilio.http.Request;
 import com.twilio.http.Response;
 import com.twilio.http.TwilioRestClient;
 import com.twilio.rest.Domains;
+import java.time.format.DateTimeFormatter;
+import com.twilio.converter.DateConverter;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -47,7 +49,7 @@ public class {{resourceName}}Updater extends Updater<{{resourceName}}>{
 {{/signatureListUpdate}}
 
 {{#vendorExtensions.x-non-path-params}}
-    public {{resourceName}}Updater set{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}(final {{{dataType}}} {{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}){
+    public {{resourceName}}Updater set{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}(final {{{dataType}}} {{paramName}}){
         this.{{paramName}} = {{paramName}};
         return this;
     }
@@ -59,11 +61,11 @@ public class {{resourceName}}Updater extends Updater<{{resourceName}}>{
         {{#allParams}}
         {{#vendorExtensions.x-is-account-sid}}
         this.{{paramName}} = this.{{paramName}} == null ? client.getAccountSid() : this.{{paramName}};
-        path = path.replace("{"+"{{paramName}}"+"}", this.{{paramName}}.toString());
+        path = path.replace("{"+"{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}"+"}", this.{{paramName}}.toString());
         {{/vendorExtensions.x-is-account-sid}}
         {{/allParams}}
         {{#requiredParams}}
-        path = path.replace("{"+"{{paramName}}"+"}", this.{{paramName}}.toString());
+        path = path.replace("{"+"{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}"+"}", this.{{paramName}}.toString());
         {{/requiredParams}}
 
         Request request = new Request(
@@ -71,6 +73,9 @@ public class {{resourceName}}Updater extends Updater<{{resourceName}}>{
             Domains.{{#lambda.uppercase}}{{domain}}{{/lambda.uppercase}}.toString(),
             path
         );
+        {{#queryParams.0}}
+        addQueryParams(request);
+        {{/queryParams.0}}
         {{#formParams.0}}
         addPostParams(request);
         {{/formParams.0}}
@@ -91,23 +96,14 @@ public class {{resourceName}}Updater extends Updater<{{resourceName}}>{
         return {{resourceName}}.fromJson(response.getStream(), client.getObjectMapper());
     }
 {{#formParams.0}}
-    private void addPostParams(final Request request) {
-{{#formParams}}
-        if ({{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}} != null) {
-            request.addPostParam("{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}", {{paramName}}.toString());
-        }
-{{/formParams}}
-    }
+{{>postParams}}
 {{/formParams.0}}
-    {{#headerParams.0}}
-    private void addHeaderParams(final Request request) {
-    {{#headerParams}}
-        if ({{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}} != null) {
-            request.addHeaderParam("{{baseName}}", {{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}.toString());
-        }
-    {{/headerParams}}
-    }
-    {{/headerParams.0}}
+{{#headerParams.0}}
+{{>headerParams}}
+{{/headerParams.0}}
+{{#queryParams.0}}
+{{>queryParams}}
+{{/queryParams.0}}
 }
 {{/vendorExtensions.x-is-update-operation}}
 {{/operations}}

@@ -34,6 +34,21 @@ func (m *MockApiV2010) EXPECT() *MockApiV2010MockRecorder {
 	return m.recorder
 }
 
+// CreateAccount mocks base method.
+func (m *MockApiV2010) CreateAccount(params *openapi.CreateAccountParams) (*openapi.TestResponseObject, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CreateAccount", params)
+	ret0, _ := ret[0].(*openapi.TestResponseObject)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CreateAccount indicates an expected call of CreateAccount.
+func (mr *MockApiV2010MockRecorder) CreateAccount(params interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateAccount", reflect.TypeOf((*MockApiV2010)(nil).CreateAccount), params)
+}
+
 // CreateCall mocks base method.
 func (m *MockApiV2010) CreateCall(params *openapi.CreateCallParams) (*openapi.TestResponseObject, error) {
 	m.ctrl.T.Helper()
@@ -47,21 +62,6 @@ func (m *MockApiV2010) CreateCall(params *openapi.CreateCallParams) (*openapi.Te
 func (mr *MockApiV2010MockRecorder) CreateCall(params interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateCall", reflect.TypeOf((*MockApiV2010)(nil).CreateCall), params)
-}
-
-// CreateCallRecording mocks base method.
-func (m *MockApiV2010) CreateCallRecording(CallSid string, params *openapi.CreateCallRecordingParams) (*openapi.TestResponseObject, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "CreateCallRecording", CallSid, params)
-	ret0, _ := ret[0].(*openapi.TestResponseObject)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// CreateCallRecording indicates an expected call of CreateCallRecording.
-func (mr *MockApiV2010MockRecorder) CreateCallRecording(CallSid, params interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateCallRecording", reflect.TypeOf((*MockApiV2010)(nil).CreateCallRecording), CallSid, params)
 }
 
 // CreateCredentialAws mocks base method.
@@ -79,8 +79,22 @@ func (mr *MockApiV2010MockRecorder) CreateCredentialAws(params interface{}) *gom
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateCredentialAws", reflect.TypeOf((*MockApiV2010)(nil).CreateCredentialAws), params)
 }
 
+// DeleteAccount mocks base method.
+func (m *MockApiV2010) DeleteAccount(Sid string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DeleteAccount", Sid)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DeleteAccount indicates an expected call of DeleteAccount.
+func (mr *MockApiV2010MockRecorder) DeleteAccount(Sid interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteAccount", reflect.TypeOf((*MockApiV2010)(nil).DeleteAccount), Sid)
+}
+
 // DeleteCall mocks base method.
-func (m *MockApiV2010) DeleteCall(Sid string, params *openapi.DeleteCallParams) error {
+func (m *MockApiV2010) DeleteCall(Sid int, params *openapi.DeleteCallParams) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DeleteCall", Sid, params)
 	ret0, _ := ret[0].(error)
@@ -91,20 +105,6 @@ func (m *MockApiV2010) DeleteCall(Sid string, params *openapi.DeleteCallParams) 
 func (mr *MockApiV2010MockRecorder) DeleteCall(Sid, params interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteCall", reflect.TypeOf((*MockApiV2010)(nil).DeleteCall), Sid, params)
-}
-
-// DeleteCallRecording mocks base method.
-func (m *MockApiV2010) DeleteCallRecording(CallSid string, Sid int, params *openapi.DeleteCallRecordingParams) error {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "DeleteCallRecording", CallSid, Sid, params)
-	ret0, _ := ret[0].(error)
-	return ret0
-}
-
-// DeleteCallRecording indicates an expected call of DeleteCallRecording.
-func (mr *MockApiV2010MockRecorder) DeleteCallRecording(CallSid, Sid, params interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteCallRecording", reflect.TypeOf((*MockApiV2010)(nil).DeleteCallRecording), CallSid, Sid, params)
 }
 
 // DeleteCredentialAws mocks base method.
@@ -121,8 +121,23 @@ func (mr *MockApiV2010MockRecorder) DeleteCredentialAws(Sid interface{}) *gomock
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteCredentialAws", reflect.TypeOf((*MockApiV2010)(nil).DeleteCredentialAws), Sid)
 }
 
+// FetchAccount mocks base method.
+func (m *MockApiV2010) FetchAccount(Sid string) (*openapi.TestResponseObject, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "FetchAccount", Sid)
+	ret0, _ := ret[0].(*openapi.TestResponseObject)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// FetchAccount indicates an expected call of FetchAccount.
+func (mr *MockApiV2010MockRecorder) FetchAccount(Sid interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FetchAccount", reflect.TypeOf((*MockApiV2010)(nil).FetchAccount), Sid)
+}
+
 // FetchCall mocks base method.
-func (m *MockApiV2010) FetchCall(Sid string, params *openapi.FetchCallParams) (*openapi.TestResponseObject, error) {
+func (m *MockApiV2010) FetchCall(Sid int, params *openapi.FetchCallParams) (*openapi.TestResponseObject, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "FetchCall", Sid, params)
 	ret0, _ := ret[0].(*openapi.TestResponseObject)
@@ -134,21 +149,6 @@ func (m *MockApiV2010) FetchCall(Sid string, params *openapi.FetchCallParams) (*
 func (mr *MockApiV2010MockRecorder) FetchCall(Sid, params interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FetchCall", reflect.TypeOf((*MockApiV2010)(nil).FetchCall), Sid, params)
-}
-
-// FetchCallRecording mocks base method.
-func (m *MockApiV2010) FetchCallRecording(CallSid string, Sid int, params *openapi.FetchCallRecordingParams) (*openapi.TestResponseObject, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "FetchCallRecording", CallSid, Sid, params)
-	ret0, _ := ret[0].(*openapi.TestResponseObject)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// FetchCallRecording indicates an expected call of FetchCallRecording.
-func (mr *MockApiV2010MockRecorder) FetchCallRecording(CallSid, Sid, params interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FetchCallRecording", reflect.TypeOf((*MockApiV2010)(nil).FetchCallRecording), CallSid, Sid, params)
 }
 
 // FetchCredentialAws mocks base method.
@@ -166,19 +166,19 @@ func (mr *MockApiV2010MockRecorder) FetchCredentialAws(Sid interface{}) *gomock.
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FetchCredentialAws", reflect.TypeOf((*MockApiV2010)(nil).FetchCredentialAws), Sid)
 }
 
-// UpdateCallRecording mocks base method.
-func (m *MockApiV2010) UpdateCallRecording(CallSid string, Sid int, params *openapi.UpdateCallRecordingParams) (*openapi.TestResponseObject, error) {
+// UpdateAccount mocks base method.
+func (m *MockApiV2010) UpdateAccount(Sid string, params *openapi.UpdateAccountParams) (*openapi.TestResponseObject, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "UpdateCallRecording", CallSid, Sid, params)
+	ret := m.ctrl.Call(m, "UpdateAccount", Sid, params)
 	ret0, _ := ret[0].(*openapi.TestResponseObject)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// UpdateCallRecording indicates an expected call of UpdateCallRecording.
-func (mr *MockApiV2010MockRecorder) UpdateCallRecording(CallSid, Sid, params interface{}) *gomock.Call {
+// UpdateAccount indicates an expected call of UpdateAccount.
+func (mr *MockApiV2010MockRecorder) UpdateAccount(Sid, params interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateCallRecording", reflect.TypeOf((*MockApiV2010)(nil).UpdateCallRecording), CallSid, Sid, params)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateAccount", reflect.TypeOf((*MockApiV2010)(nil).UpdateAccount), Sid, params)
 }
 
 // UpdateCredentialAws mocks base method.

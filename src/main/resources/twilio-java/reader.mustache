@@ -13,13 +13,13 @@ import com.twilio.http.Response;
 import com.twilio.http.TwilioRestClient;
 import com.twilio.rest.Domains;
 import com.twilio.base.Page;
-import java.time.ZonedDateTime;
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
-import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import com.twilio.converter.DateConverter;
 
 {{^fullJavaUtil}}
 import java.util.ArrayList;
@@ -51,29 +51,11 @@ public class {{resourceName}}Reader extends Reader<{{resourceName}}> {
 {{/signatureListRead}}
 
 {{#vendorExtensions.x-non-path-params}}
-    public {{resourceName}}Reader set{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}(final {{{dataType}}} {{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}){
+    public {{resourceName}}Reader set{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}(final {{{dataType}}} {{paramName}}){
         this.{{paramName}} = {{paramName}};
         return this;
     }
 {{/vendorExtensions.x-non-path-params}}
-
-    private void addQueryParams(final Request request) {
-        {{#queryParams}}
-        {{#vendorExtensions.x-prefixed-collapsible-map}}
-        if ({{paramName}} != null) {
-            Map<String, String> params = PrefixedCollapsibleMap.serialize({{{paramName}}}, "{{vendorExtensions.x-prefixed-collapsible-map}}");
-            for (Map.Entry<String, String> entry : params.entrySet()) {
-                request.addQueryParam(entry.getKey(), entry.getValue());
-            }
-        }
-        {{/vendorExtensions.x-prefixed-collapsible-map}}
-        {{^vendorExtensions.x-prefixed-collapsible-map}}
-        if ({{paramName}} != null) {
-            request.addQueryParam("{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}", {{paramName}}.toString());
-        }
-        {{/vendorExtensions.x-prefixed-collapsible-map}}
-        {{/queryParams}}
-    }
 
     @Override
     public ResourceSet<{{resourceName}}> read(final TwilioRestClient client) {
@@ -85,11 +67,11 @@ public class {{resourceName}}Reader extends Reader<{{resourceName}}> {
         {{#allParams}}
         {{#vendorExtensions.x-is-account-sid}}
         this.{{paramName}} = this.{{paramName}} == null ? client.getAccountSid() : this.{{paramName}};
-        path = path.replace("{"+"{{paramName}}"+"}", this.{{paramName}}.toString());
+        path = path.replace("{"+"{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}"+"}", this.{{paramName}}.toString());
         {{/vendorExtensions.x-is-account-sid}}
         {{/allParams}}
         {{#requiredParams}}
-        path = path.replace("{"+"{{paramName}}"+"}", this.{{paramName}}.toString());
+        path = path.replace("{"+"{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}"+"}", this.{{paramName}}.toString());
         {{/requiredParams}}
 
         Request request = new Request(
@@ -98,7 +80,9 @@ public class {{resourceName}}Reader extends Reader<{{resourceName}}> {
             path
         );
 
+        {{#queryParams.0}}
         addQueryParams(request);
+        {{/queryParams.0}}
         {{#formParams.0}}
         addPostParams(request);
         {{/formParams.0}}
@@ -158,28 +142,14 @@ public class {{resourceName}}Reader extends Reader<{{resourceName}}> {
         return pageForRequest(client, request);
     }
 {{#formParams.0}}
-    private void addPostParams(final Request request) {
-{{#formParams}}
-    if ({{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}} != null){
-    {{#isFreeFormObject}}
-        request.addPostParam("{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}",  Converter.mapToJson({{paramName}}));
-    {{/isFreeFormObject}}
-    {{^isFreeFormObject}}
-        request.addPostParam("{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}", {{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}.toString());
-    {{/isFreeFormObject}}
-    }
-{{/formParams}}
-    }
+{{>postParams}}
 {{/formParams.0}}
-    {{#headerParams.0}}
-    private void addHeaderParams(final Request request) {
-    {{#headerParams}}
-        if ({{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}} != null) {
-            request.addHeaderParam("{{baseName}}", {{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}.toString());
-        }
-    {{/headerParams}}
-    }
-    {{/headerParams.0}}
+{{#headerParams.0}}
+{{>headerParams}}
+{{/headerParams.0}}
+{{#queryParams.0}}
+{{>queryParams}}
+{{/queryParams.0}}
 }
 {{/vendorExtensions.x-is-read-operation}}
 {{/operations}}
