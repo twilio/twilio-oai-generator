@@ -11,7 +11,7 @@ test:
 	mvn clean test
 
 generate: install
-	bash examples/generate.sh
+	bash scripts/generate.sh
 
 test-docker: generate
 	bash ./prism.sh
