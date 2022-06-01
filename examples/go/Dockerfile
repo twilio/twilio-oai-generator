@@ -3,7 +3,7 @@ FROM golang:1.18
 ENV GOPATH /go
 
 WORKDIR /go/src/twilio-go
-COPY . .
+COPY go-client .
 
 RUN go get -u github.com/twilio/twilio-go@main
 RUN go get -u github.com/twilio/terraform-provider-twilio@main
