@@ -81,58 +81,128 @@ public class AwsCreator extends Creator<Aws>{
         this.testString = testString;
         return this;
     }
+
+    public String getTestString(){
+        return this.testString;
+    }
+
     public AwsCreator setTestBoolean(final Boolean testBoolean){
         this.testBoolean = testBoolean;
         return this;
     }
+
+    public Boolean getTestBoolean(){
+        return this.testBoolean;
+    }
+
     public AwsCreator setTestInteger(final Integer testInteger){
         this.testInteger = testInteger;
         return this;
     }
+
+    public Integer getTestInteger(){
+        return this.testInteger;
+    }
+
     public AwsCreator setTestNumber(final BigDecimal testNumber){
         this.testNumber = testNumber;
         return this;
     }
+
+    public BigDecimal getTestNumber(){
+        return this.testNumber;
+    }
+
     public AwsCreator setTestNumberFloat(final Float testNumberFloat){
         this.testNumberFloat = testNumberFloat;
         return this;
     }
+
+    public Float getTestNumberFloat(){
+        return this.testNumberFloat;
+    }
+
     public AwsCreator setTestNumberDouble(final Double testNumberDouble){
         this.testNumberDouble = testNumberDouble;
         return this;
     }
+
+    public Double getTestNumberDouble(){
+        return this.testNumberDouble;
+    }
+
     public AwsCreator setTestNumberInt32(final BigDecimal testNumberInt32){
         this.testNumberInt32 = testNumberInt32;
         return this;
     }
+
+    public BigDecimal getTestNumberInt32(){
+        return this.testNumberInt32;
+    }
+
     public AwsCreator setTestNumberInt64(final Long testNumberInt64){
         this.testNumberInt64 = testNumberInt64;
         return this;
     }
+
+    public Long getTestNumberInt64(){
+        return this.testNumberInt64;
+    }
+
     public AwsCreator setTestObject(final Map<String, Object> testObject){
         this.testObject = testObject;
         return this;
     }
+
+    public Map<String, Object> getTestObject(){
+        return this.testObject;
+    }
+
     public AwsCreator setTestDateTime(final ZonedDateTime testDateTime){
         this.testDateTime = testDateTime;
         return this;
     }
+
+    public ZonedDateTime getTestDateTime(){
+        return this.testDateTime;
+    }
+
     public AwsCreator setTestDate(final LocalDate testDate){
         this.testDate = testDate;
         return this;
     }
+
+    public LocalDate getTestDate(){
+        return this.testDate;
+    }
+
     public AwsCreator setTestEnum(final String testEnum){
         this.testEnum = testEnum;
         return this;
     }
+
+    public String getTestEnum(){
+        return this.testEnum;
+    }
+
     public AwsCreator setTestObjectArray(final List<Object> testObjectArray){
         this.testObjectArray = testObjectArray;
         return this;
     }
+
+    public List<Object> getTestObjectArray(){
+        return this.testObjectArray;
+    }
+
     public AwsCreator setTestAnyType(final Map<String, Object> testAnyType){
         this.testAnyType = testAnyType;
         return this;
     }
+
+    public Map<String, Object> getTestAnyType(){
+        return this.testAnyType;
+    }
+
 
     @Override
     public Aws create(final TwilioRestClient client){

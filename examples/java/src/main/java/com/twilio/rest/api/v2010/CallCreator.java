@@ -74,10 +74,29 @@ public class CallCreator extends Creator<Call>{
         this.requiredStringProperty = requiredStringProperty;
         return this;
     }
+
+    public String getRequiredStringProperty(){
+        return this.requiredStringProperty;
+    }
+
+    public CallCreator setAccountSid(final String accountSid){
+        this.accountSid = accountSid;
+        return this;
+    }
+
+    public String getAccountSid(){
+        return this.accountSid;
+    }
+
     public CallCreator setTestArrayOfStrings(final List<String> testArrayOfStrings){
         this.testArrayOfStrings = testArrayOfStrings;
         return this;
     }
+
+    public List<String> getTestArrayOfStrings(){
+        return this.testArrayOfStrings;
+    }
+
 
     @Override
     public Call create(final TwilioRestClient client){

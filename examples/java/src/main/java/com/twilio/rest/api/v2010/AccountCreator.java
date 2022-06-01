@@ -69,14 +69,29 @@ public class AccountCreator extends Creator<Account>{
         this.xTwilioWebhookEnabled = xTwilioWebhookEnabled;
         return this;
     }
+
+    public String getXTwilioWebhookEnabled(){
+        return this.xTwilioWebhookEnabled;
+    }
+
     public AccountCreator setRecordingStatusCallback(final URI recordingStatusCallback){
         this.recordingStatusCallback = recordingStatusCallback;
         return this;
     }
+
+    public URI getRecordingStatusCallback(){
+        return this.recordingStatusCallback;
+    }
+
     public AccountCreator setRecordingStatusCallbackEvent(final List<String> recordingStatusCallbackEvent){
         this.recordingStatusCallbackEvent = recordingStatusCallbackEvent;
         return this;
     }
+
+    public List<String> getRecordingStatusCallbackEvent(){
+        return this.recordingStatusCallbackEvent;
+    }
+
 
     @Override
     public Account create(final TwilioRestClient client){

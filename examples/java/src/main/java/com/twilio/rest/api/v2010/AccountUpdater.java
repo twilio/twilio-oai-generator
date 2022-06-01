@@ -61,14 +61,33 @@ public class AccountUpdater extends Updater<Account>{
         this.status = status;
     }
 
+    public AccountUpdater setSid(final String sid){
+        this.sid = sid;
+        return this;
+    }
+
+    public String getSid(){
+        return this.sid;
+    }
+
     public AccountUpdater setStatus(final String status){
         this.status = status;
         return this;
     }
+
+    public String getStatus(){
+        return this.status;
+    }
+
     public AccountUpdater setPauseBehavior(final String pauseBehavior){
         this.pauseBehavior = pauseBehavior;
         return this;
     }
+
+    public String getPauseBehavior(){
+        return this.pauseBehavior;
+    }
+
 
     @Override
     public Account update(final TwilioRestClient client){

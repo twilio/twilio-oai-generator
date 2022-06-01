@@ -67,22 +67,47 @@ public class AccountReader extends Reader<Account> {
         this.dateCreated = dateCreated;
         return this;
     }
+
+    public ZonedDateTime getDateCreated(){
+        return this.dateCreated;
+    }
+
     public AccountReader setDateTest(final LocalDate dateTest){
         this.dateTest = dateTest;
         return this;
     }
+
+    public LocalDate getDateTest(){
+        return this.dateTest;
+    }
+
     public AccountReader setDateCreatedBefore(final ZonedDateTime dateCreatedBefore){
         this.dateCreatedBefore = dateCreatedBefore;
         return this;
     }
+
+    public ZonedDateTime getDateCreatedBefore(){
+        return this.dateCreatedBefore;
+    }
+
     public AccountReader setDateCreatedAfter(final ZonedDateTime dateCreatedAfter){
         this.dateCreatedAfter = dateCreatedAfter;
         return this;
     }
+
+    public ZonedDateTime getDateCreatedAfter(){
+        return this.dateCreatedAfter;
+    }
+
     public AccountReader setPageSize(final Integer pageSize){
         this.pageSize = pageSize;
         return this;
     }
+
+    public Integer getPageSize(){
+        return this.pageSize;
+    }
+
 
     @Override
     public ResourceSet<Account> read(final TwilioRestClient client) {

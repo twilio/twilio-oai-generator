@@ -59,10 +59,24 @@ public class AwsUpdater extends Updater<Aws>{
         this.sid = sid;
     }
 
+    public AwsUpdater setSid(final String sid){
+        this.sid = sid;
+        return this;
+    }
+
+    public String getSid(){
+        return this.sid;
+    }
+
     public AwsUpdater setTestString(final String testString){
         this.testString = testString;
         return this;
     }
+
+    public String getTestString(){
+        return this.testString;
+    }
+
 
     @Override
     public Aws update(final TwilioRestClient client){

@@ -76,10 +76,29 @@ public class FeedbackCallSummaryCreator extends Creator<FeedbackCallSummary>{
         this.endDate = endDate;
         return this;
     }
+
+    public LocalDate getEndDate(){
+        return this.endDate;
+    }
+
     public FeedbackCallSummaryCreator setStartDate(final LocalDate startDate){
         this.startDate = startDate;
         return this;
     }
+
+    public LocalDate getStartDate(){
+        return this.startDate;
+    }
+
+    public FeedbackCallSummaryCreator setAccountSid(final String accountSid){
+        this.accountSid = accountSid;
+        return this;
+    }
+
+    public String getAccountSid(){
+        return this.accountSid;
+    }
+
 
     @Override
     public FeedbackCallSummary create(final TwilioRestClient client){

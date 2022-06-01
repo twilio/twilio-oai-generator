@@ -50,12 +50,17 @@ public class {{resourceName}}Reader extends Reader<{{resourceName}}> {
     }
 {{/signatureListRead}}
 
-{{#vendorExtensions.x-non-path-params}}
+{{#allParams}}
     public {{resourceName}}Reader set{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}(final {{{dataType}}} {{paramName}}){
         this.{{paramName}} = {{paramName}};
         return this;
     }
-{{/vendorExtensions.x-non-path-params}}
+
+    public {{{dataType}}} get{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}(){
+        return this.{{paramName}};
+    }
+
+{{/allParams}}
 
     @Override
     public ResourceSet<{{resourceName}}> read(final TwilioRestClient client) {

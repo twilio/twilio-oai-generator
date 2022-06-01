@@ -54,12 +54,17 @@ public class {{resourceName}}Creator extends Creator<{{resourceName}}>{
     }
 {{/signatureListCreate}}
 
-{{#vendorExtensions.x-non-path-params}}
+{{#allParams}}
     public {{resourceName}}Creator set{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}(final {{{dataType}}} {{paramName}}){
         this.{{paramName}} = {{paramName}};
         return this;
     }
-{{/vendorExtensions.x-non-path-params}}
+
+    public {{{dataType}}} get{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}(){
+        return this.{{paramName}};
+    }
+
+{{/allParams}}
 
     @Override
     public {{resourceName}} create(final TwilioRestClient client){

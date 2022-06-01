@@ -64,6 +64,11 @@ public class AwsReader extends Reader<Aws> {
         return this;
     }
 
+    public Integer getPageSize(){
+        return this.pageSize;
+    }
+
+
     @Override
     public ResourceSet<Aws> read(final TwilioRestClient client) {
         return new ResourceSet<>(this, client, firstPage(client));
