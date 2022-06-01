@@ -9,10 +9,6 @@
         {{/vendorExtensions.x-prefixed-collapsible-map}}
         {{^vendorExtensions.x-prefixed-collapsible-map}}
         if ({{paramName}} != null) {
-            {{#isString}}
-            request.addQueryParam("{{baseName}}", {{paramName}});
-        }
-            {{/isString}}
             {{#isArray}}
             for ({{baseType}} prop : {{paramName}}) {
                 request.addQueryParam("{{baseName}}", prop);
@@ -23,6 +19,12 @@
             {{#vendorExtensions.x-is-other-data-type}}
             request.addQueryParam("{{baseName}}", {{paramName}}.toString());
         }
+            {{/vendorExtensions.x-is-other-data-type}}
+            {{^vendorExtensions.x-is-other-data-type}}
+            {{#isString}}
+            request.addQueryParam("{{baseName}}", {{paramName}});
+        }
+            {{/isString}}
             {{/vendorExtensions.x-is-other-data-type}}
         {{/vendorExtensions.x-prefixed-collapsible-map}}
     {{/vendorExtensions.x-has-before-and-after}}
