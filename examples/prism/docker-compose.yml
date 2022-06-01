@@ -2,9 +2,9 @@ version: '3'
 services:
   go-client-test:
     build:
-      context: ../go-client
+      context: ../go
     volumes:
-      - ../go-client:/local
+      - ../go:/local
     depends_on:
       - prism_twilio
 
