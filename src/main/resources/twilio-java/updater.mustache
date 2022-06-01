@@ -48,17 +48,12 @@ public class {{resourceName}}Updater extends Updater<{{resourceName}}>{
     }
 {{/signatureListUpdate}}
 
-{{#allParams}}
+{{#vendorExtensions.x-non-path-params}}
     public {{resourceName}}Updater set{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}(final {{{dataType}}} {{paramName}}){
         this.{{paramName}} = {{paramName}};
         return this;
     }
-
-    public {{{dataType}}} get{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}(){
-        return this.{{paramName}};
-    }
-
-{{/allParams}}
+{{/vendorExtensions.x-non-path-params}}
 
     @Override
     public {{resourceName}} update(final TwilioRestClient client){
