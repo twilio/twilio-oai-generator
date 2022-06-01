@@ -139,7 +139,6 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
 
             if(!specialTypes.contains(e.dataType) && !e.vendorExtensions.containsKey("x-prefixed-collapsible-map") && !e.isArray){
                 e.vendorExtensions.put("x-is-other-data-type", true);
-                e.vendorExtensions.put("x-is-other-data-type", true);
             }
         }
     }
