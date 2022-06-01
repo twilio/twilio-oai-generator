@@ -1,4 +1,4 @@
-# OpenAPI Generator for the [twilio-go](https://github.com/twilio/twilio-go/) library
+# OpenAPI Generator for Twilio helper libraries
 [![Tests](https://github.com/twilio/twilio-oai-generator/actions/workflows/test.yml/badge.svg)](https://github.com/twilio/twilio-oai-generator/actions/workflows/test.yml)
 
 ## Overview
@@ -14,6 +14,8 @@ When properly described with OpenAPI, a consumer can understand and interact wit
 Check out [OpenAPI-Spec](https://github.com/OAI/OpenAPI-Specification) for additional information about the OpenAPI project, including additional libraries with support for other languages and more.
 
 ## How do I use this?
+`Note: The instructions below uses Golang. It can be used interchangeably with other languages.`
+
 Clone this repo into your local machine. It will include:
 
 ```
