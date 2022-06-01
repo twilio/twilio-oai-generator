@@ -45,6 +45,11 @@ public class {{resourceName}}Creator extends Creator<{{resourceName}}>{
     private {{{dataType}}} {{paramName}};
 {{/allParams}}
 
+    /**
+     * Construct a new {{resourceName}}Creator.
+     *
+     * {{#.}}@param {{paramName}}{{^-last}}, {{/-last}}{{/.}}
+     */
 {{#signatureListCreate}}
     public {{resourceName}}Creator({{#.}}final {{{dataType}}} {{paramName}}{{^-last}}, {{/-last}}{{/.}}) {
     {{#.}}
@@ -53,6 +58,13 @@ public class {{resourceName}}Creator extends Creator<{{resourceName}}>{
     }
 {{/signatureListCreate}}
 
+    /**
+     * {{paramDescription}}
+     *
+     * @param {{paramName}} {{paramMessage}}
+     *                       
+     * @return this
+     */
 {{#vendorExtensions.x-non-path-params}}
     public {{resourceName}}Creator set{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}(final {{{dataType}}} {{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}){
         this.{{paramName}} = {{paramName}};
@@ -60,6 +72,12 @@ public class {{resourceName}}Creator extends Creator<{{resourceName}}>{
     }
 {{/vendorExtensions.x-non-path-params}}
 
+    /**
+     * Make the request to the Twilio API to perform the create.
+     *
+     * @param client TwilioRestClient with which to make the request
+     * @return Created Call
+     */
     @Override
     public {{resourceName}} create(final TwilioRestClient client){
         String path = "{{{path}}}";
@@ -94,7 +112,11 @@ public class {{resourceName}}Creator extends Creator<{{resourceName}}>{
         return {{resourceName}}.fromJson(response.getStream(), client.getObjectMapper());
     }
 
-
+    /**
+     * Add the requested post parameters to the Request.
+     *
+     * @param request Request to add post params to
+     */
     private void addPostParams(final Request request) {
 {{#vendorExtensions.x-non-path-params}}
         if ({{paramName}} != null) {

@@ -37,6 +37,12 @@ public class {{resourceName}}Deleter extends Deleter<{{resourceName}}> {
     private {{{dataType}}} {{paramName}};
 {{/allParams}}
 
+
+    /**
+     * Construct a new {{resourceName}}Deleter.
+     *
+     * {{#.}}@param {{paramName}}{{^-last}}, {{/-last}}{{/.}}
+     */
 {{#signatureListDelete}}
     public {{resourceName}}Deleter({{#.}}final {{{dataType}}} {{paramName}}{{^-last}}, {{/-last}}{{/.}}){
     {{#.}}
@@ -45,6 +51,11 @@ public class {{resourceName}}Deleter extends Deleter<{{resourceName}}> {
     }
 {{/signatureListDelete}}
 
+   /**
+     * Make the request to the Twilio API to perform the delete.
+     *
+     * @param client TwilioRestClient with which to make the request
+     */
     @Override
     public boolean delete(final TwilioRestClient client) {
         String path = "{{{path}}}";

@@ -42,6 +42,11 @@ public class {{resourceName}}Reader extends Reader<{{resourceName}}> {
     private {{{dataType}}} {{paramName}};
 {{/allParams}}
 
+    /**
+     * Construct a new {{resourceName}}Reader.
+     *
+     * {{#.}}@param {{paramName}}{{^-last}}, {{/-last}}{{/.}}
+     */
 {{#signatureListRead}}
     public {{resourceName}}Reader({{#.}}final {{{dataType}}} {{paramName}}{{^-last}}, {{/-last}}{{/.}}){
     {{#.}}
@@ -50,6 +55,13 @@ public class {{resourceName}}Reader extends Reader<{{resourceName}}> {
     }
 {{/signatureListRead}}
 
+    /**
+     * {{paramDescription}}
+     *
+     * @param {{paramName}} {{paramMessage}}
+     *                       
+     * @return this
+     */
 {{#vendorExtensions.x-non-path-params}}
     public {{resourceName}}Reader set{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}(final {{{dataType}}} {{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}){
         this.{{paramName}} = {{paramName}};
@@ -57,6 +69,11 @@ public class {{resourceName}}Reader extends Reader<{{resourceName}}> {
     }
 {{/vendorExtensions.x-non-path-params}}
 
+    /**
+     * Add the requested query string arguments to the Request.
+     *
+     * @param request Request to add query string arguments to
+     */
     private void addQueryParams(final Request request) {
         {{#queryParams}}
         {{#vendorExtensions.x-prefixed-collapsible-map}}
@@ -79,7 +96,13 @@ public class {{resourceName}}Reader extends Reader<{{resourceName}}> {
     public ResourceSet<{{resourceName}}> read(final TwilioRestClient client) {
         return new ResourceSet<>(this, client, firstPage(client));
     }
-
+    
+    /**
+     * Make the request to the Twilio API to perform the read.
+     *
+     * @param client TwilioRestClient with which to make the request
+     * @return Call ResourceSet
+     */
     public Page<{{resourceName}}> firstPage(final TwilioRestClient client) {
         String path = "{{{path}}}";
         {{#allParams}}
@@ -102,6 +125,13 @@ public class {{resourceName}}Reader extends Reader<{{resourceName}}> {
         return pageForRequest(client, request);
     }
 
+    /**
+     * Generate a Page of Call Resources for a given request.
+     *
+     * @param client TwilioRestClient with which to make the request
+     * @param request Request to generate a page for
+     * @return Page for the Request
+     */
     private Page<{{resourceName}}> pageForRequest(final TwilioRestClient client, final Request request) {
         Response response = client.request(request);
 
@@ -123,6 +153,13 @@ public class {{resourceName}}Reader extends Reader<{{resourceName}}> {
         );
     }
 
+    /**
+     * Retrieve the previous page from the Twilio API.
+     *
+     * @param page current page
+     * @param client TwilioRestClient with which to make the request
+     * @return Previous Page
+     */
     @Override
     public Page<{{resourceName}}> previousPage(final Page<{{resourceName}}> page, final TwilioRestClient client) {
         Request request = new Request(
@@ -132,7 +169,13 @@ public class {{resourceName}}Reader extends Reader<{{resourceName}}> {
         return pageForRequest(client, request);
     }
 
-
+    /**
+     * Retrieve the next page from the Twilio API.
+     *
+     * @param page current page
+     * @param client TwilioRestClient with which to make the request
+     * @return Next Page
+     */
     @Override
     public Page<{{resourceName}}> nextPage(final Page<{{resourceName}}> page, final TwilioRestClient client) {
         Request request = new Request(
@@ -142,6 +185,13 @@ public class {{resourceName}}Reader extends Reader<{{resourceName}}> {
         return pageForRequest(client, request);
     }
 
+    /**
+     * Retrieve the target page from the Twilio API.
+     *
+     * @param targetUrl API-generated URL for the requested results page
+     * @param client TwilioRestClient with which to make the request
+     * @return Call ResourceSet
+     */
     @Override
     public Page<{{resourceName}}> getPage(final String targetUrl, final TwilioRestClient client) {
         Request request = new Request(

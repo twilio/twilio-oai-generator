@@ -38,6 +38,11 @@ public class {{resourceName}}Updater extends Updater<{{resourceName}}>{
     private {{{dataType}}} {{paramName}};
 {{/allParams}}
 
+    /**
+     * Construct a new {{resourceName}}Updater.
+     *
+     * {{#.}}@param {{paramName}}{{^-last}}, {{/-last}}{{/.}}
+     */
 {{#signatureListUpdate}}
     public {{resourceName}}Updater({{#.}}final {{{dataType}}} {{paramName}}{{^-last}}, {{/-last}}{{/.}}){
     {{#.}}
@@ -46,6 +51,13 @@ public class {{resourceName}}Updater extends Updater<{{resourceName}}>{
     }
 {{/signatureListUpdate}}
 
+    /**
+     * {{paramDescription}}
+     *
+     * @param {{paramName}} {{paramMessage}}
+     *                       
+     * @return this
+     */
 {{#vendorExtensions.x-non-path-params}}
     public {{resourceName}}Updater set{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}(final {{{dataType}}} {{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}){
         this.{{paramName}} = {{paramName}};
@@ -53,6 +65,12 @@ public class {{resourceName}}Updater extends Updater<{{resourceName}}>{
     }
 {{/vendorExtensions.x-non-path-params}}
 
+    /**
+     * Make the request to the Twilio API to perform the update.
+     *
+     * @param client TwilioRestClient with which to make the request
+     * @return Updated Call
+     */
     @Override
     public {{resourceName}} update(final TwilioRestClient client){
         String path = "{{{path}}}";
