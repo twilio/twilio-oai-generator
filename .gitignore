@@ -2,6 +2,7 @@
 *.jar
 codegen/
 target/
+__pycache__
 
 **/.openapi-generator*
 **/docs
