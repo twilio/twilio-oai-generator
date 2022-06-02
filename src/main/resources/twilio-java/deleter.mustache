@@ -16,6 +16,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import com.twilio.converter.DateConverter;
 
 {{^fullJavaUtil}}
 import java.util.ArrayList;
@@ -45,6 +47,13 @@ public class {{resourceName}}Deleter extends Deleter<{{resourceName}}> {
     }
 {{/signatureListDelete}}
 
+{{#vendorExtensions.x-non-path-params}}
+    public {{resourceName}}Creator set{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}(final {{{dataType}}} {{paramName}}){
+    this.{{paramName}} = {{paramName}};
+    return this;
+    }
+{{/vendorExtensions.x-non-path-params}}
+
     @Override
     public boolean delete(final TwilioRestClient client) {
         String path = "{{{path}}}";
@@ -63,6 +72,9 @@ public class {{resourceName}}Deleter extends Deleter<{{resourceName}}> {
             Domains.{{#lambda.uppercase}}{{domain}}{{/lambda.uppercase}}.toString(),
             path
         );
+        {{#queryParams.0}}
+        addQueryParams(request);
+        {{/queryParams.0}}
         {{#formParams.0}}
         addPostParams(request);
         {{/formParams.0}}
@@ -83,28 +95,14 @@ public class {{resourceName}}Deleter extends Deleter<{{resourceName}}> {
         return response.getStatusCode() == 204;
     }
 {{#formParams.0}}
-    private void addPostParams(final Request request) {
-{{#formParams}}
-    if ({{paramName}} != null){
-    {{#isFreeFormObject}}
-        request.addPostParam("{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}",  Converter.mapToJson({{paramName}}));
-    {{/isFreeFormObject}}
-    {{^isFreeFormObject}}
-        request.addPostParam("{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}", {{paramName}}.toString());
-    {{/isFreeFormObject}}
-    }
-{{/formParams}}
-    }
+{{>postParams}}
 {{/formParams.0}}
-    {{#headerParams.0}}
-    private void addHeaderParams(final Request request) {
-    {{#headerParams}}
-        if ({{paramName}} != null) {
-           request.addHeaderParam("{{#lambda.titlecase}}{{baseName}}{{/lambda.titlecase}}", {{paramName}}.toString());
-        }
-    {{/headerParams}}
-    }
-    {{/headerParams.0}}
+{{#headerParams.0}}
+{{>headerParams}}
+{{/headerParams.0}}
+{{#queryParams.0}}
+{{>queryParams}}
+{{/queryParams.0}}
 }
 {{/vendorExtensions.x-is-delete-operation}}
 {{/operations}}

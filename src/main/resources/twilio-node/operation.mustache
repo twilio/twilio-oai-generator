@@ -1,0 +1,61 @@
+{{#hasParams}}
+    {{#hasRequiredParams}}
+        if (params === null || params === undefined) {
+            throw new Error('Required parameter "params" missing.');
+        }
+
+        {{#requiredParams}}
+        {{^isBodyParam}}
+        if (params.{{paramName}} === null || params.{{paramName}} === undefined) {
+            throw new Error('Required parameter "params.{{paramName}}" missing.');
+        }
+
+        {{/isBodyParam}}
+        {{/requiredParams}}
+    {{/hasRequiredParams}}
+    {{^hasRequiredParams}}
+        if (typeof params === 'function') {
+            callback = params;
+            params = {};
+        } else {
+            params = params || {};
+        }
+
+    {{/hasRequiredParams}}
+    {{^bodyParam}}
+        const data: any = {};
+
+        {{#queryParams}}
+        {{^required}}if (params.{{paramName}} !== undefined) {{/required}}data['{{{baseName}}}'] = params.{{paramName}};
+        {{/queryParams}}
+        {{#formParams}}
+        {{^required}}if (params.{{paramName}} !== undefined) {{/required}}data['{{{baseName}}}'] = params.{{paramName}};
+        {{/formParams}}
+    {{/bodyParam}}
+
+        const headers: any = {};
+    {{#consumes}}
+    {{#-first}}
+        headers['Content-Type'] = '{{{mediaType}}}'
+    {{/-first}}
+    {{/consumes}}
+
+    {{#headerParams}}
+        if (params.{{paramName}} !== undefined) headers['{{{baseName}}}'] = params.{{paramName}};
+    {{/headerParams}}
+{{/hasParams}}
+
+        let operationVersion = {{#parentResourceName}}this._version{{/parentResourceName}}{{^parentResourceName}}version{{/parentResourceName}},
+            operationPromise = operationVersion.{{vendorExtensions.x-name-lower}}({ uri: this._uri, method: '{{httpMethod}}'{{#hasParams}}{{#bodyParam}}, body: params{{/bodyParam}}{{^bodyParam}}, data{{/bodyParam}}, headers{{/hasParams}} });
+
+        {{^vendorExtensions.x-is-delete-operation}}
+        operationPromise = operationPromise.then(payload => new {{instanceName}}(operationVersion, payload{{#resourcePathParams}}, this._solution.{{paramName}}{{/resourcePathParams}}));
+        {{/vendorExtensions.x-is-delete-operation}}
+
+        if (typeof callback === 'function') {
+            operationPromise = operationPromise
+                .then(value => callback(null, value))
+                .catch(error => callback(error));
+        }
+
+        return operationPromise;
