@@ -5,15 +5,6 @@
             request.addPostParam("{{baseName}}",  Converter.mapToJson({{paramName}}));
     {{/isFreeFormObject}}
     {{^isFreeFormObject}}
-    {{#isString}}
-    {{#vendorExtensions.x-is-uri-param}}
-            request.addPostParam("{{baseName}}", {{paramName}}.toString());
-    {{/vendorExtensions.x-is-uri-param}}
-    {{^vendorExtensions.x-is-uri-param}}
-            request.addPostParam("{{baseName}}", {{paramName}});
-    {{/vendorExtensions.x-is-uri-param}}
-    {{/isString}}
-    {{^isString}}
     {{#isArray}}
             for ({{baseType}} prop : {{paramName}}) {
                 request.addPostParam("{{baseName}}", prop.toString());
@@ -23,8 +14,12 @@
     {{#vendorExtensions.x-is-other-data-type}}
             request.addPostParam("{{baseName}}", {{paramName}}.toString());
     {{/vendorExtensions.x-is-other-data-type}}
-    {{/isArray}}
+    {{^vendorExtensions.x-is-other-data-type}}
+    {{#isString}}
+            request.addPostParam("{{baseName}}", {{paramName}});
     {{/isString}}
+    {{/vendorExtensions.x-is-other-data-type}}
+    {{/isArray}}
     {{/isFreeFormObject}}
     {{>dateParams}}
         }
