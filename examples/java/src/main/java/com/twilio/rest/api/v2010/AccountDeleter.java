@@ -57,6 +57,7 @@ public class AccountDeleter extends Deleter<Account> {
         this.sid = sid;
     }
 
+
     @Override
     public boolean delete(final TwilioRestClient client) {
         String path = "/2010-04-01/Accounts/{Sid}.json";
