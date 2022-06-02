@@ -62,6 +62,7 @@ public class CallDeleter extends Deleter<Call> {
         this.testInteger = testInteger;
     }
 
+
     @Override
     public boolean delete(final TwilioRestClient client) {
         String path = "/2010-04-01/Accounts/{AccountSid}/Calls/{TestInteger}.json";
