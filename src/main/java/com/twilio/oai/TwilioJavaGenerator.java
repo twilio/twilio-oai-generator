@@ -298,13 +298,6 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
               .forEach(model -> {
 
                   resource.put("serialVersionUID", calculateSerialVersionUid(model.vars));
-                  if(!model.hasEnums){
-                      co.allParams.forEach(item -> {
-                          if(item.isEnum){
-                              model.vars.add((CodegenProperty) co.allParams);
-                          }
-                      });
-                  }
                   responseModels.add(model);
                   co.queryParams.forEach(param -> processEnumVars(param, model, resourceName));
                   co.formParams.forEach(param -> processEnumVars(param, model, resourceName));
