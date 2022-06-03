@@ -12,12 +12,14 @@
 
 import Api from '../Api';
 import Version from '../../base/Version';
+import { FlexFlowListInstance } from './v2010/FlexFlows';
 import { AccountListInstance } from './v2010/Accounts';
 
 export default class V2010 extends Version {
     /**
      * Initialize the V2010 version of Api
      *
+     * @property { Twilio.Api.V2010.FlexFlowListInstance } flex_flows - flex_flows resource
      * @property { Twilio.Api.V2010.AccountListInstance } accounts - accounts resource
      *
      * @param { Twilio.Api } domain - The Twilio domain
@@ -26,7 +28,13 @@ export default class V2010 extends Version {
         super(domain, 'v2010');
     }
 
+    protected _flex_flows?: FlexFlowListInstance;
     protected _accounts?: AccountListInstance;
+
+    get flex_flows(): FlexFlowListInstance {
+        this._flex_flows = this._flex_flows || FlexFlowListInstance(this);
+        return this._flex_flows;
+    }
 
     get accounts(): AccountListInstance {
         this._accounts = this._accounts || AccountListInstance(this);
