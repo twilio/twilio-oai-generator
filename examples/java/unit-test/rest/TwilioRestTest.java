@@ -287,7 +287,6 @@ public class TwilioRestTest {
 
         Map<String, Object> anyMap = new HashMap<>();
         anyMap.put("TestInteger", 1);
-
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
         mockRequest.addPostParam("TestAnyType", "{TestInteger=1}");
