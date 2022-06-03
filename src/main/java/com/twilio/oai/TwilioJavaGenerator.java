@@ -485,6 +485,9 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
                 .map(ConventionResolver::resolveParameter)
                 .map(Optional::get)
                 .collect(Collectors.toList());
+        co.pathParams.stream().
+                map(ConventionResolver::resolveParamTypes)
+                .forEach(param -> param.paramName = "path"+param.paramName);
         co.queryParams = co.queryParams.stream().map(ConventionResolver::resolveParamTypes)
                 .map(ConventionResolver::prefixedCollapsibleMap)
                 .collect(Collectors.toList());
