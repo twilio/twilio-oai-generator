@@ -45,12 +45,13 @@ public class {{resourceName}}Creator extends Creator<{{resourceName}}>{
     private {{{dataType}}} {{paramName}};
 {{/allParams}}
 
-    /**
-     * Construct a new {{resourceName}}Creator.
-     *
-     * {{#.}}@param {{paramName}}{{^-last}}, {{/-last}}{{/.}}
-     */
+
 {{#signatureListCreate}}
+    /**
+    * Construct a new {{resourceName}}Creator.
+    *
+    * {{#.}}@param {{paramName}}{{^-last}}, {{/-last}}{{/.}}
+    */
     public {{resourceName}}Creator({{#.}}final {{{dataType}}} {{paramName}}{{^-last}}, {{/-last}}{{/.}}) {
     {{#.}}
         this.{{paramName}} = {{paramName}};
@@ -58,14 +59,15 @@ public class {{resourceName}}Creator extends Creator<{{resourceName}}>{
     }
 {{/signatureListCreate}}
 
-    /**
-     * {{paramDescription}}
-     *
-     * @param {{paramName}} {{paramMessage}}
-     *                       
-     * @return this
-     */
+
 {{#vendorExtensions.x-non-path-params}}
+    /**
+    * {{paramDescription}}
+    *
+    * @param {{paramName}} {{paramMessage}}
+    *
+    * @return this
+    */
     public {{resourceName}}Creator set{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}(final {{{dataType}}} {{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}){
         this.{{paramName}} = {{paramName}};
         return this;

@@ -37,12 +37,13 @@ public class {{resourceName}}Fetcher extends Fetcher<{{resourceName}}> {
     private {{{dataType}}} {{paramName}};
 {{/allParams}}
 
-    /**
-     * Construct a new {{resourceName}}Fetcher.
-     *
-     * {{#.}}@param {{paramName}}{{^-last}}, {{/-last}}{{/.}}
-     */
+
 {{#signatureListFetch}}
+    /**
+    * Construct a new {{resourceName}}Fetcher.
+    *
+    * {{#.}}@param {{paramName}}{{^-last}}, {{/-last}}{{/.}}
+    */
     public {{resourceName}}Fetcher({{#.}}final {{{dataType}}} {{paramName}}{{^-last}}, {{/-last}}{{/.}}){
     {{#.}}
         this.{{paramName}} = {{paramName}};

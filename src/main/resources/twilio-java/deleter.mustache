@@ -38,12 +38,13 @@ public class {{resourceName}}Deleter extends Deleter<{{resourceName}}> {
 {{/allParams}}
 
 
-    /**
-     * Construct a new {{resourceName}}Deleter.
-     *
-     * {{#.}}@param {{paramName}}{{^-last}}, {{/-last}}{{/.}}
-     */
+
 {{#signatureListDelete}}
+    /**
+    * Construct a new {{resourceName}}Deleter.
+    *
+    * {{#.}}@param {{paramName}}{{^-last}}, {{/-last}}{{/.}}
+    */
     public {{resourceName}}Deleter({{#.}}final {{{dataType}}} {{paramName}}{{^-last}}, {{/-last}}{{/.}}){
     {{#.}}
         this.{{paramName}} = {{paramName}};

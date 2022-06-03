@@ -42,12 +42,13 @@ public class {{resourceName}}Reader extends Reader<{{resourceName}}> {
     private {{{dataType}}} {{paramName}};
 {{/allParams}}
 
-    /**
-     * Construct a new {{resourceName}}Reader.
-     *
-     * {{#.}}@param {{paramName}}{{^-last}}, {{/-last}}{{/.}}
-     */
+
 {{#signatureListRead}}
+    /**
+    * Construct a new {{resourceName}}Reader.
+    *
+    * {{#.}}@param {{paramName}}{{^-last}}, {{/-last}}{{/.}}
+    */
     public {{resourceName}}Reader({{#.}}final {{{dataType}}} {{paramName}}{{^-last}}, {{/-last}}{{/.}}){
     {{#.}}
         this.{{paramName}} = {{paramName}};
@@ -55,14 +56,15 @@ public class {{resourceName}}Reader extends Reader<{{resourceName}}> {
     }
 {{/signatureListRead}}
 
-    /**
-     * {{paramDescription}}
-     *
-     * @param {{paramName}} {{paramMessage}}
-     *                       
-     * @return this
-     */
+
 {{#vendorExtensions.x-non-path-params}}
+    /**
+    * {{paramDescription}}
+    *
+    * @param {{paramName}} {{paramMessage}}
+    *
+    * @return this
+    */
     public {{resourceName}}Reader set{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}(final {{{dataType}}} {{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}){
         this.{{paramName}} = {{paramName}};
         return this;

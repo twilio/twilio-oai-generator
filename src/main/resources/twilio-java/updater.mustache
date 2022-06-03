@@ -38,12 +38,13 @@ public class {{resourceName}}Updater extends Updater<{{resourceName}}>{
     private {{{dataType}}} {{paramName}};
 {{/allParams}}
 
-    /**
-     * Construct a new {{resourceName}}Updater.
-     *
-     * {{#.}}@param {{paramName}}{{^-last}}, {{/-last}}{{/.}}
-     */
+
 {{#signatureListUpdate}}
+    /**
+    * Construct a new {{resourceName}}Updater.
+    *
+    * {{#.}}@param {{paramName}}{{^-last}}, {{/-last}}{{/.}}
+    */
     public {{resourceName}}Updater({{#.}}final {{{dataType}}} {{paramName}}{{^-last}}, {{/-last}}{{/.}}){
     {{#.}}
         this.{{paramName}} = {{paramName}};
@@ -51,14 +52,15 @@ public class {{resourceName}}Updater extends Updater<{{resourceName}}>{
     }
 {{/signatureListUpdate}}
 
-    /**
-     * {{paramDescription}}
-     *
-     * @param {{paramName}} {{paramMessage}}
-     *                       
-     * @return this
-     */
+
 {{#vendorExtensions.x-non-path-params}}
+    /**
+    * {{paramDescription}}
+    *
+    * @param {{paramName}} {{paramMessage}}
+    *
+    * @return this
+    */
     public {{resourceName}}Updater set{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}(final {{{dataType}}} {{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}){
         this.{{paramName}} = {{paramName}};
         return this;
