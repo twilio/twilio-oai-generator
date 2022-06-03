@@ -151,7 +151,7 @@ public class TwilioRestTest {
         Account account  = accountCreator.create(twilioRestClient);
         assertNotNull(account);
         assertEquals("true", mockRequest.getHeaderParams().get("X-Twilio-Webhook-Enabled").get(0));
-        assertEquals(recordingStatusCallbackEvent.toString(), mockRequest.getPostParams().get("RecordingStatusCallbackEvent").get(0));
+        assertEquals(recordingStatusCallbackEvent.get(0), mockRequest.getPostParams().get("RecordingStatusCallbackEvent").get(0));
         assertEquals("https://validurl.com", mockRequest.getPostParams().get("RecordingStatusCallback").get(0));
 
     }
@@ -273,6 +273,8 @@ public class TwilioRestTest {
         awsCreator.setTestObjectArray(Arrays.asList(item1, item2));
         Aws aws = awsCreator.create(twilioRestClient);
         assertNotNull(aws);
+        assertEquals(item1.toString(), mockRequest.getPostParams().get("TestObjectArray").get(0));
+        assertEquals("AC222222222222222222222222222222", mockRequest.getPostParams().get("TestString").get(0));
     }
 
     @Test
@@ -298,8 +300,8 @@ public class TwilioRestTest {
 
         assertNotNull(aws);
         assertNotNull(awsCreator);
-        assertEquals("[{A=[Apple, Aces]}, {B=[Banana]}]", mockRequest.getPostParams().get("TestObjectArray").get(0));
         assertEquals("AC222222222222222222222222222222", mockRequest.getPostParams().get("TestString").get(0));
+        assertEquals("{TestInteger=1}", mockRequest.getPostParams().get("TestAnyType").get(0));
 
     }
 
