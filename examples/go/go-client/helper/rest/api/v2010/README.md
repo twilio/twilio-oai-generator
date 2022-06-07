@@ -45,8 +45,8 @@ Class | Method | HTTP request | Description
 *CredentialsAWSApi* | [**FetchCredentialAws**](docs/CredentialsAWSApi.md#fetchcredentialaws) | **Get** /v1/Credentials/AWS/{Sid} | 
 *CredentialsAWSApi* | [**ListCredentialAws**](docs/CredentialsAWSApi.md#listcredentialaws) | **Get** /v1/Credentials/AWS | 
 *CredentialsAWSApi* | [**UpdateCredentialAws**](docs/CredentialsAWSApi.md#updatecredentialaws) | **Post** /v1/Credentials/AWS/{Sid} | 
-*FlexFlowsApi* | [**CreateFlexFlow**](docs/FlexFlowsApi.md#createflexflow) | **Post** /v1/FlexFlows | 
-*FlexFlowsApi* | [**ListFlexFlow**](docs/FlexFlowsApi.md#listflexflow) | **Get** /v1/FlexFlows | 
+*V1FlexFlowsApi* | [**CreateFlexFlow**](docs/V1FlexFlowsApi.md#createflexflow) | **Post** /2010-04-01/v1/FlexFlows | 
+*V1FlexFlowsApi* | [**ListFlexFlow**](docs/V1FlexFlowsApi.md#listflexflow) | **Get** /2010-04-01/v1/FlexFlows | 
 
 
 ## Documentation For Models

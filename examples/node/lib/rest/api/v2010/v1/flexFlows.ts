@@ -11,8 +11,8 @@
  */
 
 import { inspect, InspectOptions } from 'util';
-import Page from '../../../base/Page';
-import V2010 from '../V2010';
+import Page from '../../../../base/Page';
+import V2010 from '../../V2010';
 
 
 /**
@@ -120,7 +120,7 @@ export function FlexFlowListInstance(version: V2010): FlexFlowListInstance {
 
     instance._version = version;
     instance._solution = {  };
-    instance._uri = `/v1/FlexFlows`;
+    instance._uri = `/2010-04-01/v1/FlexFlows`;
 
     instance.create = function create(params: any, callback?: any): Promise<FlexFlowInstance> {
         if (params === null || params === undefined) {

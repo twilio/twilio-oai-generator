@@ -127,7 +127,7 @@ func (params *CreateFlexFlowParams) SetLongLived(LongLived bool) *CreateFlexFlow
 }
 
 func (c *ApiService) CreateFlexFlow(params *CreateFlexFlowParams) (*TestResponseObject, error) {
-	path := "/v1/FlexFlows"
+	path := "/2010-04-01/v1/FlexFlows"
 
 	data := url.Values{}
 	headers := make(map[string]interface{})
@@ -224,7 +224,7 @@ func (params *ListFlexFlowParams) SetLimit(Limit int) *ListFlexFlowParams {
 
 // Retrieve a single page of FlexFlow records from the API. Request is executed immediately.
 func (c *ApiService) PageFlexFlow(params *ListFlexFlowParams, pageToken, pageNumber string) (*ListFlexFlowResponse, error) {
-	path := "/v1/FlexFlows"
+	path := "/2010-04-01/v1/FlexFlows"
 
 	data := url.Values{}
 	headers := make(map[string]interface{})

@@ -153,7 +153,7 @@ public class FlexFlowCreator extends Creator<FlexFlow>{
 
     @Override
     public FlexFlow create(final TwilioRestClient client){
-        String path = "/v1/FlexFlows";
+        String path = "/2010-04-01/v1/FlexFlows";
         path = path.replace("{"+"ChannelType"+"}", this.channelType.toString());
         path = path.replace("{"+"ChatServiceSid"+"}", this.chatServiceSid.toString());
         path = path.replace("{"+"FriendlyName"+"}", this.friendlyName.toString());

@@ -75,7 +75,7 @@ public class FlexFlowReader extends Reader<FlexFlow> {
     }
 
     public Page<FlexFlow> firstPage(final TwilioRestClient client) {
-        String path = "/v1/FlexFlows";
+        String path = "/2010-04-01/v1/FlexFlows";
 
         Request request = new Request(
             HttpMethod.GET,
