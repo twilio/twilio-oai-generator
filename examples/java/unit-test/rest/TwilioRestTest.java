@@ -16,9 +16,6 @@ import com.twilio.rest.api.v2010.CallFetcher;
 import com.twilio.rest.api.v2010.Aws;
 import com.twilio.rest.api.v2010.AwsCreator;
 import com.twilio.rest.api.v2010.AwsReader;
-import com.twilio.rest.api.v2010.FlexFlow;
-import com.twilio.rest.api.v2010.FlexFlowCreator;
-import com.twilio.Twilio;
 
 import java.net.URI;
 import java.time.LocalDate;
@@ -422,25 +419,20 @@ public class TwilioRestTest {
 
     @Test
     public void testRequestNonStandardDomainName() {
-        Twilio.init("AC123", "AUTH TOKEN");
         Request mockRequest = new Request(HttpMethod.GET,
                 Domains.FLEXAPI.toString(),
-                "/v1/FlexFlows");
+                "/2010-04-01/v1/FlexFlows");
         mockRequest.addHeaderParam("Accept", "application/json");
         mockRequest.addPostParam("FriendlyName", "friendly_name");
         mockRequest.addPostParam("ChatServiceSid", "ISXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
         mockRequest.addPostParam("ChannelType", "web");
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
-
         String responseContent = "{\"sid\": \"FOaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"account_sid\": \"ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"date_created\": \"2016-08-01T22:10:40Z\",\"date_updated\": \"2016-08-01T22:10:40Z\",\"friendly_name\": \"friendly_name\",\"chat_service_sid\": \"ISaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"channel_type\": \"sms\",\"contact_identity\": \"12345\",\"enabled\": true,\"integration_type\": \"studio\",\"integration\": {\"flow_sid\": \"FWaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"retry_count\": 1},\"long_lived\": true,\"janitor_enabled\": true,\"url\": \"https://flex-api.twilio.com/v1/FlexFlows/FOaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"}";
         when(twilioRestClient.request(mockRequest)).thenReturn(new Response(responseContent, 200));
-        FlexFlowCreator flexflowCreator = FlexFlow.creator("friendly_name", "ISXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", "web");
-        flexflowCreator.setChannelType("web");
-        flexflowCreator.setFriendlyName("friendly_name");
-        flexflowCreator.setChatServiceSid("ISXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
+        when(twilioRestClient.getObjectMapper()).thenReturn(objectMapper);
         assertNotNull(mockRequest);
         assertEquals(HttpMethod.GET, mockRequest.getMethod());
-        assertEquals("https://flex-api.twilio.com/v1/FlexFlows", mockRequest.getUrl());
+        assertEquals("https://flex-api.twilio.com/2010-04-01/v1/FlexFlows", mockRequest.getUrl());
     }
 }
