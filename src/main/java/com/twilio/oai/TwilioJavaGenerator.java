@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.twilio.oai.resource.IResourceTree;
 import com.twilio.oai.resource.ResourceMap;
+import io.swagger.annotations.Info;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.PathItem;
 import lombok.AllArgsConstructor;
@@ -302,6 +303,7 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
                   co.queryParams.forEach(param -> processEnumVars(param, model, resourceName));
                   co.formParams.forEach(param -> processEnumVars(param, model, resourceName));
                   co.allParams.forEach(param -> processEnumVars(param, model, resourceName));
+                  co.headerParams.forEach(param -> processEnumVars(param, model, resourceName));
               });
 
             results.put("recordKey", getRecordKey(opList, this.allModels));
@@ -324,6 +326,8 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
 
         return results;
     }
+
+
 
     private List<CodegenParameter> getNonPathParams(List<CodegenParameter> allParams) {
        return allParams.stream().filter(param -> !param.isPathParam).collect(Collectors.toList());
@@ -377,11 +381,16 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
     }
 
     private CodegenParameter processEnumVars(CodegenParameter param, CodegenModel model, String resourceName) {
-        if(param.isEnum && param.isArray){
+        if(param.isEnum){
             model.vars.forEach(item -> {
-                if(param.baseName.equalsIgnoreCase(item.name)){
-                    param.dataType = "List<"+ resourceName + "." + item.nameInCamelCase +">";
-                    param.baseType = resourceName + "." + item.nameInCamelCase;
+                if(param.paramName.equalsIgnoreCase(item.nameInCamelCase)){
+                    if(param.isArray){
+                        param.dataType = "List<"+ resourceName + "." + item.nameInCamelCase +">";
+                        param.baseType = resourceName + "." + item.nameInCamelCase;
+                    }
+                    else{
+                        param.dataType = resourceName + "." + item.nameInCamelCase;
+                    }
                 }
             });
         }
