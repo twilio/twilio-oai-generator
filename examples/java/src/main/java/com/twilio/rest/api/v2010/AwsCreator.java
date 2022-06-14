@@ -69,7 +69,7 @@ public class AwsCreator extends Creator<Aws>{
     private Map<String, Object> testObject;
     private ZonedDateTime testDateTime;
     private LocalDate testDate;
-    private String testEnum;
+    private Aws.TestEnum testEnum;
     private List<Object> testObjectArray;
     private Map<String, Object> testAnyType;
 
@@ -121,7 +121,7 @@ public class AwsCreator extends Creator<Aws>{
         this.testDate = testDate;
         return this;
     }
-    public AwsCreator setTestEnum(final String testEnum){
+    public AwsCreator setTestEnum(final Aws.TestEnum testEnum){
         this.testEnum = testEnum;
         return this;
     }

@@ -58,14 +58,14 @@ import java.net.URI;
 
 
 public class AccountCreator extends Creator<Account>{
-    private String xTwilioWebhookEnabled;
+    private Account.XTwilioWebhookEnabled xTwilioWebhookEnabled;
     private URI recordingStatusCallback;
     private List<String> recordingStatusCallbackEvent;
 
     public AccountCreator() {
     }
 
-    public AccountCreator setXTwilioWebhookEnabled(final String xTwilioWebhookEnabled){
+    public AccountCreator setXTwilioWebhookEnabled(final Account.XTwilioWebhookEnabled xTwilioWebhookEnabled){
         this.xTwilioWebhookEnabled = xTwilioWebhookEnabled;
         return this;
     }
