@@ -86,6 +86,12 @@ public class ConnectApp extends Resource {
         return new ConnectAppDeleter(accountSid, sid);
     }
 
+    public static ConnectAppReader reader(){
+        return new ConnectAppReader();
+    }
+    public static ConnectAppReader reader(final String accountSid){
+        return new ConnectAppReader(accountSid);
+    }
 
     public static ConnectAppUpdater updater(final String sid){
         return new ConnectAppUpdater(sid);

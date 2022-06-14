@@ -743,6 +743,76 @@ paths:
       - url: https://api.twilio.com
     x-twilio:
       pathType: instance
+  /2010-04-01/Accounts/{AccountSid}/ConnectApps.json:
+    description: Twilio Connect apps
+    get:
+      description: Retrieve a list of connect-apps belonging to the account used to
+        make the request
+      operationId: ListConnectApp
+      parameters:
+        - description: The SID of the [Account](https://www.twilio.com/docs/iam/api/account)
+            that created the ConnectApp resources to read.
+          in: path
+          name: AccountSid
+          required: true
+          schema:
+            maxLength: 34
+            minLength: 34
+            pattern: ^AC[0-9a-fA-F]{32}$
+            type: string
+        - description: How many resources to return in each list page. The default is
+            50, and the maximum is 1000.
+          in: query
+          name: PageSize
+          schema:
+            maximum: 1000
+            minimum: 1
+            type: integer
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  connect_apps:
+                    items:
+                      $ref: '#/components/schemas/api.v2010.account.connect_app'
+                    type: array
+                  end:
+                    type: integer
+                  first_page_uri:
+                    format: uri
+                    type: string
+                  next_page_uri:
+                    format: uri
+                    type: string
+                  page:
+                    type: integer
+                  page_size:
+                    type: integer
+                  previous_page_uri:
+                    format: uri
+                    type: string
+                  start:
+                    type: integer
+                  uri:
+                    format: uri
+                    type: string
+                title: ListConnectAppResponse
+                type: object
+          description: OK
+      security:
+        - accountSid_authToken: [ ]
+      x-maturity:
+        - GA
+    servers:
+      - url: https://api.twilio.com
+    x-twilio:
+      defaultOutputProperties:
+        - sid
+        - friendly_name
+      parent: /Accounts.json
+      pathType: list
   /2010-04-01/Accounts/{AccountSid}/ConnectApps/{Sid}.json:
     delete:
       description: Delete an instance of a connect-app
