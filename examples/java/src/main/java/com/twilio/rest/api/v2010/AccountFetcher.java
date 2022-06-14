@@ -58,6 +58,7 @@ public class AccountFetcher extends Fetcher<Account> {
         this.sid = sid;
     }
 
+
     @Override
     public Account fetch(final TwilioRestClient client) {
         String path = "/2010-04-01/Accounts/{Sid}.json";

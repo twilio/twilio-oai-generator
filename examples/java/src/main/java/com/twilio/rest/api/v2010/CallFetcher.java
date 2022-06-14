@@ -63,6 +63,7 @@ public class CallFetcher extends Fetcher<Call> {
         this.testInteger = testInteger;
     }
 
+
     @Override
     public Call fetch(final TwilioRestClient client) {
         String path = "/2010-04-01/Accounts/{AccountSid}/Calls/{TestInteger}.json";

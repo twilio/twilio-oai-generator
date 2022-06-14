@@ -13,6 +13,8 @@ import org.openapitools.codegen.languages.JavaClientCodegen;
 import org.openapitools.codegen.utils.StringUtils;
 
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.math.BigInteger;
 import java.security.MessageDigest;
@@ -67,6 +69,8 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
     @Override
     public void processOpenAPI(final OpenAPI openAPI) {
         resourceTree = new ResourceMap(inflector, PATH_SEPARATOR_PLACEHOLDER);
+        // regex example : https://flex-api.twilio.com
+        Pattern serverUrlPattern = Pattern.compile("https:\\/\\/([a-zA-Z-]+)\\.twilio\\.com");
         openAPI.getPaths().forEach((name, path) -> {
             resourceTree.addResource(name, path);
         });
@@ -77,6 +81,10 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
                 String tag = String.join(PATH_SEPARATOR_PLACEHOLDER, resourceTree.ancestors("/"+name.replaceFirst("/[^/]+/", "")));
                 operation.addTagsItem(tag);
             });
+            Matcher m = serverUrlPattern.matcher(path.getServers().get(0).getUrl());
+            if(m.find()){
+                additionalProperties.put("domainName", StringUtils.camelize(m.group(1)));
+            }
         });
     }
     /**
@@ -296,10 +304,14 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
               .map(item -> ConventionResolver.resolveComplexType(item, modelFormatMap))
               .flatMap(Optional::stream)
               .forEach(model -> {
-                  responseModels.add(model);
-                  resource.put("serialVersionUID", calculateSerialVersionUid(model.vars));
 
+                  resource.put("serialVersionUID", calculateSerialVersionUid(model.vars));
+                  responseModels.add(model);
+                  co.queryParams.forEach(param -> processEnumVars(param, model, resourceName));
+                  co.formParams.forEach(param -> processEnumVars(param, model, resourceName));
+                  co.allParams.forEach(param -> processEnumVars(param, model, resourceName));
               });
+
             results.put("recordKey", getRecordKey(opList, this.allModels));
             List<String> packagePaths = Arrays.asList(Arrays.copyOfRange(filePathArray,0 , filePathArray.length-1))
                     .stream().map(String::toLowerCase).collect(Collectors.toList());
@@ -370,6 +382,18 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
                 return complexModel;
             }
         return allModels.stream().filter(model -> model.getClassname().equals(modelName)).findFirst();
+    }
+
+    private CodegenParameter processEnumVars(CodegenParameter param, CodegenModel model, String resourceName) {
+        if(param.isEnum && param.isArray){
+            model.vars.forEach(item -> {
+                if(param.baseName.equalsIgnoreCase(item.name)){
+                    param.dataType = "List<"+ resourceName + "." + item.nameInCamelCase +">";
+                    param.baseType = resourceName + "." + item.nameInCamelCase;
+                }
+            });
+        }
+        return param;
     }
 
     private String getRecordKey(List<CodegenOperation> opList, List<CodegenModel> models) {
