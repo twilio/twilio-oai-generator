@@ -101,7 +101,7 @@ public class AccountUpdater extends Updater<Account>{
     
         }
         if (status != null) {
-            request.addPostParam("Status", status);
+            request.addPostParam("Status", status.toString());
     
         }
     }

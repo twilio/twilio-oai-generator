@@ -204,7 +204,7 @@ public class AwsCreator extends Creator<Aws>{
 
         }
         if (testEnum != null) {
-            request.addPostParam("TestEnum", testEnum);
+            request.addPostParam("TestEnum", testEnum.toString());
     
         }
         if (testObjectArray != null) {

@@ -116,7 +116,7 @@ public class AccountCreator extends Creator<Account>{
     }
     private void addHeaderParams(final Request request) {
         if (xTwilioWebhookEnabled != null) {
-            request.addHeaderParam("X-Twilio-Webhook-Enabled", xTwilioWebhookEnabled);
+            request.addHeaderParam("X-Twilio-Webhook-Enabled", xTwilioWebhookEnabled.toString());
         }
     }
 }

@@ -113,7 +113,7 @@ public class RecordingUpdater extends Updater<Recording>{
     
         }
         if (status != null) {
-            request.addPostParam("Status", status);
+            request.addPostParam("Status", status.toString());
     
         }
     }

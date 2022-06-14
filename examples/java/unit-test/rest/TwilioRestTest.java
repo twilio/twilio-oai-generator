@@ -84,7 +84,7 @@ public class TwilioRestTest {
         when(twilioRestClient.request(mockRequest)).thenReturn(new Response("{\"sid\": 123, \"call_sid\":\"PNXXXXY\"}", 200));
         when(twilioRestClient.getObjectMapper()).thenReturn(objectMapper);
         AccountCreator accountCreator = new AccountCreator();
-        accountCreator.setXTwilioWebhookEnabled("true");
+        accountCreator.setXTwilioWebhookEnabled(Account.XTwilioWebhookEnabled.TRUE);
         accountCreator.setRecordingStatusCallback(URI.create("https://validurl.com"));
 
         Account account  = accountCreator.create(twilioRestClient);
@@ -142,7 +142,7 @@ public class TwilioRestTest {
         AccountCreator accountCreator = new AccountCreator();
         accountCreator.setRecordingStatusCallbackEvent(recordingStatusCallbackEvent);
         accountCreator.setRecordingStatusCallback(URI.create("https://validurl.com"));
-        accountCreator.setXTwilioWebhookEnabled("true");
+        accountCreator.setXTwilioWebhookEnabled(Account.XTwilioWebhookEnabled.TRUE);
 
         Account account  = accountCreator.create(twilioRestClient);
 

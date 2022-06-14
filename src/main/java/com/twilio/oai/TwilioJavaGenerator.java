@@ -338,6 +338,8 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
         model.vars.forEach(item -> {
             if(item.isEnum){
                 item.dataType = resourceName + "." + item.nameInCamelCase;
+                item.vendorExtensions.put("x-is-other-data-type", true);
+
             }
 
         });
@@ -419,7 +421,7 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
     private CodegenParameter processEnumVars(CodegenParameter param, CodegenModel model, String resourceName) {
         if(param.isEnum){
             model.vars.forEach(item -> {
-                if(param.paramName.equalsIgnoreCase(item.nameInCamelCase)){
+                if(param.paramName.equalsIgnoreCase(item.nameInCamelCase) && item.isEnum == true){
                     String baseType = resourceName + "." + item.nameInCamelCase;
                     if(param.isArray){
                         param.dataType = "List<"+ baseType +">";
@@ -428,6 +430,7 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
                     else{
                         param.dataType = baseType;
                     }
+                    param.vendorExtensions.put("x-is-other-data-type", true);
                 }
             });
         }

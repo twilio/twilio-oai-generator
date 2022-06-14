@@ -56,7 +56,7 @@ public class ConnectAppUpdater extends Updater<ConnectApp>{
     private String accountSid;
     private URI authorizeRedirectUrl;
     private String companyName;
-    private ConnectApp.DeauthorizeCallbackMethod deauthorizeCallbackMethod;
+    private HttpMethod deauthorizeCallbackMethod;
     private URI deauthorizeCallbackUrl;
     private String description;
     private String friendlyName;
@@ -79,7 +79,7 @@ public class ConnectAppUpdater extends Updater<ConnectApp>{
         this.companyName = companyName;
         return this;
     }
-    public ConnectAppUpdater setDeauthorizeCallbackMethod(final ConnectApp.DeauthorizeCallbackMethod deauthorizeCallbackMethod){
+    public ConnectAppUpdater setDeauthorizeCallbackMethod(final HttpMethod deauthorizeCallbackMethod){
         this.deauthorizeCallbackMethod = deauthorizeCallbackMethod;
         return this;
     }
