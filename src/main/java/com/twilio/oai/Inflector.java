@@ -79,6 +79,7 @@ public class Inflector {
             this.addIrregulars("AuthTypeCalls");
             this.addIrregulars("AuthTypeTegistrations");
             this.addIrregulars("DialingPermissions");
+            this.addIrregulars("Media");
         }
 
         public boolean isIrregular(String word) {
