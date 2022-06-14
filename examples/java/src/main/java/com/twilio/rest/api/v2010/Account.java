@@ -69,7 +69,7 @@ import com.twilio.type.RecordingRule;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @ToString
 public class Account extends Resource {
-    private static final long serialVersionUID = 9069278908860L;
+    private static final long serialVersionUID = 101016944188709L;
 
     public static AccountCreator creator(){
         return new AccountCreator();
@@ -198,12 +198,12 @@ public class Account extends Resource {
     private final BigDecimal testNumber;
     private final Currency priceUnit;
     private final Float testNumberFloat;
-    private final String testEnum;
+    private final Account.TestEnum testEnum;
     private final List<Integer> testArrayOfIntegers;
     private final List<List<Integer>> testArrayOfArrayOfIntegers;
     private final List<FeedbackIssue> testArrayOfObjects;
-    private final String xTwilioWebhookEnabled;
-    private final String status;
+    private final Account.XTwilioWebhookEnabled xTwilioWebhookEnabled;
+    private final Account.Status status;
 
     @JsonCreator
     private Account(
@@ -236,7 +236,7 @@ public class Account extends Resource {
         final Float testNumberFloat,
 
         @JsonProperty("test_enum")
-        final String testEnum,
+        final Account.TestEnum testEnum,
 
         @JsonProperty("test_array_of_integers")
         final List<Integer> testArrayOfIntegers,
@@ -248,10 +248,10 @@ public class Account extends Resource {
         final List<FeedbackIssue> testArrayOfObjects,
 
         @JsonProperty("x_twilio_webhook_enabled")
-        final String xTwilioWebhookEnabled,
+        final Account.XTwilioWebhookEnabled xTwilioWebhookEnabled,
 
         @JsonProperty("status")
-        final String status
+        final Account.Status status
     ) {
         this.accountSid = accountSid;
         this.sid = sid;
@@ -297,7 +297,7 @@ public class Account extends Resource {
         public final Float getTestNumberFloat() {
             return this.testNumberFloat;
         }
-        public final String getTestEnum() {
+        public final Account.TestEnum getTestEnum() {
             return this.testEnum;
         }
         public final List<Integer> getTestArrayOfIntegers() {
@@ -309,10 +309,10 @@ public class Account extends Resource {
         public final List<FeedbackIssue> getTestArrayOfObjects() {
             return this.testArrayOfObjects;
         }
-        public final String getXTwilioWebhookEnabled() {
+        public final Account.XTwilioWebhookEnabled getXTwilioWebhookEnabled() {
             return this.xTwilioWebhookEnabled;
         }
-        public final String getStatus() {
+        public final Account.Status getStatus() {
             return this.status;
         }
 

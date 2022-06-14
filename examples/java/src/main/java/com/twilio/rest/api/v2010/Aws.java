@@ -69,7 +69,7 @@ import com.twilio.type.RecordingRule;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @ToString
 public class Aws extends Resource {
-    private static final long serialVersionUID = 206322088570809L;
+    private static final long serialVersionUID = 102879623605645L;
 
     public static AwsCreator creator(final String testString){
         return new AwsCreator(testString);
@@ -198,12 +198,12 @@ public class Aws extends Resource {
     private final BigDecimal testNumber;
     private final Currency priceUnit;
     private final Float testNumberFloat;
-    private final String testEnum;
+    private final Aws.TestEnum testEnum;
     private final List<Integer> testArrayOfIntegers;
     private final List<List<Integer>> testArrayOfArrayOfIntegers;
     private final List<FeedbackIssue> testArrayOfObjects;
-    private final String xTwilioWebhookEnabled;
-    private final String status;
+    private final Aws.XTwilioWebhookEnabled xTwilioWebhookEnabled;
+    private final Aws.Status status;
 
     @JsonCreator
     private Aws(
@@ -236,7 +236,7 @@ public class Aws extends Resource {
         final Float testNumberFloat,
 
         @JsonProperty("test_enum")
-        final String testEnum,
+        final Aws.TestEnum testEnum,
 
         @JsonProperty("test_array_of_integers")
         final List<Integer> testArrayOfIntegers,
@@ -248,10 +248,10 @@ public class Aws extends Resource {
         final List<FeedbackIssue> testArrayOfObjects,
 
         @JsonProperty("x_twilio_webhook_enabled")
-        final String xTwilioWebhookEnabled,
+        final Aws.XTwilioWebhookEnabled xTwilioWebhookEnabled,
 
         @JsonProperty("status")
-        final String status
+        final Aws.Status status
     ) {
         this.accountSid = accountSid;
         this.sid = sid;
@@ -297,7 +297,7 @@ public class Aws extends Resource {
         public final Float getTestNumberFloat() {
             return this.testNumberFloat;
         }
-        public final String getTestEnum() {
+        public final Aws.TestEnum getTestEnum() {
             return this.testEnum;
         }
         public final List<Integer> getTestArrayOfIntegers() {
@@ -309,10 +309,10 @@ public class Aws extends Resource {
         public final List<FeedbackIssue> getTestArrayOfObjects() {
             return this.testArrayOfObjects;
         }
-        public final String getXTwilioWebhookEnabled() {
+        public final Aws.XTwilioWebhookEnabled getXTwilioWebhookEnabled() {
             return this.xTwilioWebhookEnabled;
         }
-        public final String getStatus() {
+        public final Aws.Status getStatus() {
             return this.status;
         }
 

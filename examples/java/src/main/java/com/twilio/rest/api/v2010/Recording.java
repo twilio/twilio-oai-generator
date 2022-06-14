@@ -69,7 +69,7 @@ import com.twilio.type.RecordingRule;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @ToString
 public class Recording extends Resource {
-    private static final long serialVersionUID = 194216998635095L;
+    private static final long serialVersionUID = 71375271651535L;
 
 
     public static RecordingFetcher fetcher(final String conferenceSid, final String sid){
@@ -197,9 +197,9 @@ public class Recording extends Resource {
     private final String price;
     private final Currency priceUnit;
     private final String sid;
-    private final String source;
+    private final Recording.Source source;
     private final ZonedDateTime startTime;
-    private final String status;
+    private final Recording.Status status;
     private final String uri;
 
     @JsonCreator
@@ -245,13 +245,13 @@ public class Recording extends Resource {
         final String sid,
 
         @JsonProperty("source")
-        final String source,
+        final Recording.Source source,
 
         @JsonProperty("start_time")
         final String startTime,
 
         @JsonProperty("status")
-        final String status,
+        final Recording.Status status,
 
         @JsonProperty("uri")
         final String uri
@@ -314,13 +314,13 @@ public class Recording extends Resource {
         public final String getSid() {
             return this.sid;
         }
-        public final String getSource() {
+        public final Recording.Source getSource() {
             return this.source;
         }
         public final ZonedDateTime getStartTime() {
             return this.startTime;
         }
-        public final String getStatus() {
+        public final Recording.Status getStatus() {
             return this.status;
         }
         public final String getUri() {

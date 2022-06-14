@@ -335,6 +335,12 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
                 }
             }
 
+        model.vars.forEach(item -> {
+            if(item.isEnum){
+                item.dataType = resourceName + "." + item.nameInCamelCase;
+            }
+
+        });
         co.queryParams.forEach(param -> processEnumVars(param, model, resourceName));
         co.formParams.forEach(param -> processEnumVars(param, model, resourceName));
         co.allParams.forEach(param -> processEnumVars(param, model, resourceName));

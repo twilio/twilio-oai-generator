@@ -69,7 +69,7 @@ import com.twilio.type.RecordingRule;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @ToString
 public class FeedbackCallSummary extends Resource {
-    private static final long serialVersionUID = 206322088570809L;
+    private static final long serialVersionUID = 191475196031556L;
 
     public static FeedbackCallSummaryCreator creator(final LocalDate endDate, final LocalDate startDate){
         return new FeedbackCallSummaryCreator(endDate, startDate);
@@ -189,12 +189,12 @@ public class FeedbackCallSummary extends Resource {
     private final BigDecimal testNumber;
     private final Currency priceUnit;
     private final Float testNumberFloat;
-    private final String testEnum;
+    private final FeedbackCallSummary.TestEnum testEnum;
     private final List<Integer> testArrayOfIntegers;
     private final List<List<Integer>> testArrayOfArrayOfIntegers;
     private final List<FeedbackIssue> testArrayOfObjects;
-    private final String xTwilioWebhookEnabled;
-    private final String status;
+    private final FeedbackCallSummary.XTwilioWebhookEnabled xTwilioWebhookEnabled;
+    private final FeedbackCallSummary.Status status;
 
     @JsonCreator
     private FeedbackCallSummary(
@@ -227,7 +227,7 @@ public class FeedbackCallSummary extends Resource {
         final Float testNumberFloat,
 
         @JsonProperty("test_enum")
-        final String testEnum,
+        final FeedbackCallSummary.TestEnum testEnum,
 
         @JsonProperty("test_array_of_integers")
         final List<Integer> testArrayOfIntegers,
@@ -239,10 +239,10 @@ public class FeedbackCallSummary extends Resource {
         final List<FeedbackIssue> testArrayOfObjects,
 
         @JsonProperty("x_twilio_webhook_enabled")
-        final String xTwilioWebhookEnabled,
+        final FeedbackCallSummary.XTwilioWebhookEnabled xTwilioWebhookEnabled,
 
         @JsonProperty("status")
-        final String status
+        final FeedbackCallSummary.Status status
     ) {
         this.accountSid = accountSid;
         this.sid = sid;
@@ -288,7 +288,7 @@ public class FeedbackCallSummary extends Resource {
         public final Float getTestNumberFloat() {
             return this.testNumberFloat;
         }
-        public final String getTestEnum() {
+        public final FeedbackCallSummary.TestEnum getTestEnum() {
             return this.testEnum;
         }
         public final List<Integer> getTestArrayOfIntegers() {
@@ -300,10 +300,10 @@ public class FeedbackCallSummary extends Resource {
         public final List<FeedbackIssue> getTestArrayOfObjects() {
             return this.testArrayOfObjects;
         }
-        public final String getXTwilioWebhookEnabled() {
+        public final FeedbackCallSummary.XTwilioWebhookEnabled getXTwilioWebhookEnabled() {
             return this.xTwilioWebhookEnabled;
         }
-        public final String getStatus() {
+        public final FeedbackCallSummary.Status getStatus() {
             return this.status;
         }
 

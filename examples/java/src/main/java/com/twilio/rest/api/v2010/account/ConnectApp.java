@@ -69,7 +69,7 @@ import com.twilio.type.RecordingRule;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @ToString
 public class ConnectApp extends Resource {
-    private static final long serialVersionUID = 208507077582989L;
+    private static final long serialVersionUID = 205274107563187L;
 
 
     public static ConnectAppFetcher fetcher(final String sid){
@@ -158,7 +158,7 @@ public class ConnectApp extends Resource {
     private final String description;
     private final String friendlyName;
     private final URI homepageUrl;
-    private final List<String> permissions;
+    private final ConnectApp.Permissions permissions;
     private final String sid;
     private final URI uri;
 
@@ -189,7 +189,7 @@ public class ConnectApp extends Resource {
         final URI homepageUrl,
 
         @JsonProperty("permissions")
-        final List<String> permissions,
+        final ConnectApp.Permissions permissions,
 
         @JsonProperty("sid")
         final String sid,
@@ -234,7 +234,7 @@ public class ConnectApp extends Resource {
         public final URI getHomepageUrl() {
             return this.homepageUrl;
         }
-        public final List<String> getPermissions() {
+        public final ConnectApp.Permissions getPermissions() {
             return this.permissions;
         }
         public final String getSid() {
