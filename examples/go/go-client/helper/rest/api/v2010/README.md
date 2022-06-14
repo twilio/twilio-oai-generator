@@ -40,6 +40,14 @@ Class | Method | HTTP request | Description
 *AccountsCallsApi* | [**DeleteCall**](docs/AccountsCallsApi.md#deletecall) | **Delete** /2010-04-01/Accounts/{AccountSid}/Calls/{TestInteger}.json | 
 *AccountsCallsApi* | [**FetchCall**](docs/AccountsCallsApi.md#fetchcall) | **Get** /2010-04-01/Accounts/{AccountSid}/Calls/{TestInteger}.json | 
 *AccountsCallsFeedbackSummaryApi* | [**CreateCallFeedbackSummary**](docs/AccountsCallsFeedbackSummaryApi.md#createcallfeedbacksummary) | **Post** /2010-04-01/Accounts/{AccountSid}/Calls/FeedbackSummary.json | 
+*AccountsConferencesRecordingsApi* | [**DeleteConferenceRecording**](docs/AccountsConferencesRecordingsApi.md#deleteconferencerecording) | **Delete** /2010-04-01/Accounts/{AccountSid}/Conferences/{ConferenceSid}/Recordings/{Sid}.json | 
+*AccountsConferencesRecordingsApi* | [**FetchConferenceRecording**](docs/AccountsConferencesRecordingsApi.md#fetchconferencerecording) | **Get** /2010-04-01/Accounts/{AccountSid}/Conferences/{ConferenceSid}/Recordings/{Sid}.json | 
+*AccountsConferencesRecordingsApi* | [**ListConferenceRecording**](docs/AccountsConferencesRecordingsApi.md#listconferencerecording) | **Get** /2010-04-01/Accounts/{AccountSid}/Conferences/{ConferenceSid}/Recordings.json | 
+*AccountsConferencesRecordingsApi* | [**UpdateConferenceRecording**](docs/AccountsConferencesRecordingsApi.md#updateconferencerecording) | **Post** /2010-04-01/Accounts/{AccountSid}/Conferences/{ConferenceSid}/Recordings/{Sid}.json | 
+*AccountsConnectAppsApi* | [**DeleteConnectApp**](docs/AccountsConnectAppsApi.md#deleteconnectapp) | **Delete** /2010-04-01/Accounts/{AccountSid}/ConnectApps/{Sid}.json | 
+*AccountsConnectAppsApi* | [**FetchConnectApp**](docs/AccountsConnectAppsApi.md#fetchconnectapp) | **Get** /2010-04-01/Accounts/{AccountSid}/ConnectApps/{Sid}.json | 
+*AccountsConnectAppsApi* | [**ListConnectApp**](docs/AccountsConnectAppsApi.md#listconnectapp) | **Get** /2010-04-01/Accounts/{AccountSid}/ConnectApps.json | 
+*AccountsConnectAppsApi* | [**UpdateConnectApp**](docs/AccountsConnectAppsApi.md#updateconnectapp) | **Post** /2010-04-01/Accounts/{AccountSid}/ConnectApps/{Sid}.json | 
 *CredentialsAWSApi* | [**CreateCredentialAws**](docs/CredentialsAWSApi.md#createcredentialaws) | **Post** /v1/Credentials/AWS | 
 *CredentialsAWSApi* | [**DeleteCredentialAws**](docs/CredentialsAWSApi.md#deletecredentialaws) | **Delete** /v1/Credentials/AWS/{Sid} | 
 *CredentialsAWSApi* | [**FetchCredentialAws**](docs/CredentialsAWSApi.md#fetchcredentialaws) | **Get** /v1/Credentials/AWS/{Sid} | 
@@ -49,7 +57,12 @@ Class | Method | HTTP request | Description
 
 ## Documentation For Models
 
+ - [ApiV2010AuthorizedConnectApp](docs/ApiV2010AuthorizedConnectApp.md)
+ - [ApiV2010ConferenceRecording](docs/ApiV2010ConferenceRecording.md)
+ - [ApiV2010ConnectApp](docs/ApiV2010ConnectApp.md)
  - [ListAccountResponse](docs/ListAccountResponse.md)
+ - [ListConferenceRecordingResponse](docs/ListConferenceRecordingResponse.md)
+ - [ListConnectAppResponse](docs/ListConnectAppResponse.md)
  - [ListCredentialAwsResponse](docs/ListCredentialAwsResponse.md)
  - [ListCredentialAwsResponseMeta](docs/ListCredentialAwsResponseMeta.md)
  - [TestResponseObject](docs/TestResponseObject.md)
