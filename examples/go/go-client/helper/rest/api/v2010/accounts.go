@@ -38,7 +38,7 @@ type CreateAccountParams struct {
 	RecordingStatusCallbackEvent *[]string `json:"RecordingStatusCallbackEvent,omitempty"`
 }
 
-func (param *CreateAccountParams) SetXTwilioWebhookEnabled(XTwilioWebhookEnabled string) *CreateAccountParams {
+func (params *CreateAccountParams) SetXTwilioWebhookEnabled(XTwilioWebhookEnabled string) *CreateAccountParams {
 	params.XTwilioWebhookEnabled = &XTwilioWebhookEnabled
 	return params
 }
