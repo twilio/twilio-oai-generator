@@ -55,7 +55,7 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
         super.processOpts();
         String[] inputSpecs = inputSpec.split("_");
         final String version = inputSpecs[inputSpecs.length-1].replaceAll("\\.[^/]+$", "");
-        final String domain = String.join("_", Arrays.copyOfRange(inputSpecs, 1, inputSpecs.length-1));
+        final String domain = String.join("", Arrays.copyOfRange(inputSpecs, 1, inputSpecs.length-1));
         apiPackage = version; // Place the API files in the version folder.
         additionalProperties.put("apiVersion", version);
         additionalProperties.put("apiVersionClass", version.toUpperCase());
@@ -304,10 +304,14 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
               .map(item -> ConventionResolver.resolveComplexType(item, modelFormatMap))
               .flatMap(Optional::stream)
               .forEach(model -> {
-                  responseModels.add(model);
-                  resource.put("serialVersionUID", calculateSerialVersionUid(model.vars));
 
+                  resource.put("serialVersionUID", calculateSerialVersionUid(model.vars));
+                  responseModels.add(model);
+                  co.queryParams.forEach(param -> processEnumVars(param, model, resourceName));
+                  co.formParams.forEach(param -> processEnumVars(param, model, resourceName));
+                  co.allParams.forEach(param -> processEnumVars(param, model, resourceName));
               });
+
             results.put("recordKey", getRecordKey(opList, this.allModels));
             List<String> packagePaths = Arrays.asList(Arrays.copyOfRange(filePathArray,0 , filePathArray.length-1))
                     .stream().map(String::toLowerCase).collect(Collectors.toList());
@@ -378,6 +382,18 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
                 return complexModel;
             }
         return allModels.stream().filter(model -> model.getClassname().equals(modelName)).findFirst();
+    }
+
+    private CodegenParameter processEnumVars(CodegenParameter param, CodegenModel model, String resourceName) {
+        if(param.isEnum && param.isArray){
+            model.vars.forEach(item -> {
+                if(param.baseName.equalsIgnoreCase(item.name)){
+                    param.dataType = "List<"+ resourceName + "." + item.nameInCamelCase +">";
+                    param.baseType = resourceName + "." + item.nameInCamelCase;
+                }
+            });
+        }
+        return param;
     }
 
     private String getRecordKey(List<CodegenOperation> opList, List<CodegenModel> models) {

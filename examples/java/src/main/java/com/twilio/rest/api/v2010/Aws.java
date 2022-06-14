@@ -49,10 +49,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import lombok.ToString;
 
 import java.util.Map;
-import java.util.Objects;
 import java.time.LocalDate;
 import java.math.BigDecimal;
 import com.twilio.type.PhoneNumberCapabilities;
@@ -70,40 +68,40 @@ import com.twilio.type.RecordingRule;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @ToString
-public class Account extends Resource {
+public class Aws extends Resource {
     private static final long serialVersionUID = 44112120076447L;
 
-    public static AccountCreator creator(){
-        return new AccountCreator();
+    public static AwsCreator creator(final String testString){
+        return new AwsCreator(testString);
     }
 
-    public static AccountFetcher fetcher(final String sid){
-        return new AccountFetcher(sid);
+    public static AwsFetcher fetcher(final String sid){
+        return new AwsFetcher(sid);
     }
 
-    public static AccountDeleter delete(final String sid){
-        return new AccountDeleter(sid);
+    public static AwsDeleter deleter(final String sid){
+        return new AwsDeleter(sid);
     }
 
-    public static AccountReader reader(){
-        return new AccountReader();
+    public static AwsReader reader(){
+        return new AwsReader();
     }
 
-    public static AccountUpdater update(final String sid, final String status){
-        return new AccountUpdater(sid, status);
+    public static AwsUpdater updater(final String sid){
+        return new AwsUpdater(sid);
     }
 
     /**
-    * Converts a JSON String into a Account object using the provided ObjectMapper.
+    * Converts a JSON String into a Aws object using the provided ObjectMapper.
     *
     * @param json Raw JSON String
     * @param objectMapper Jackson ObjectMapper
-    * @return Account object represented by the provided JSON
+    * @return Aws object represented by the provided JSON
     */
-    public static Account fromJson(final String json, final ObjectMapper objectMapper) {
+    public static Aws fromJson(final String json, final ObjectMapper objectMapper) {
         // Convert all checked exceptions to Runtime
         try {
-            return objectMapper.readValue(json, Account.class);
+            return objectMapper.readValue(json, Aws.class);
         } catch (final JsonMappingException | JsonParseException e) {
             throw new ApiException(e.getMessage(), e);
         } catch (final IOException e) {
@@ -112,17 +110,17 @@ public class Account extends Resource {
     }
 
     /**
-    * Converts a JSON InputStream into a Account object using the provided
+    * Converts a JSON InputStream into a Aws object using the provided
     * ObjectMapper.
     *
     * @param json Raw JSON InputStream
     * @param objectMapper Jackson ObjectMapper
-    * @return Account object represented by the provided JSON
+    * @return Aws object represented by the provided JSON
     */
-    public static Account fromJson(final InputStream json, final ObjectMapper objectMapper) {
+    public static Aws fromJson(final InputStream json, final ObjectMapper objectMapper) {
         // Convert all checked exceptions to Runtime
         try {
-            return objectMapper.readValue(json, Account.class);
+            return objectMapper.readValue(json, Aws.class);
         } catch (final JsonMappingException | JsonParseException e) {
             throw new ApiException(e.getMessage(), e);
         } catch (final IOException e) {
@@ -164,7 +162,7 @@ public class Account extends Resource {
     private final List<FeedbackIssue> testArrayOfObjects;
 
     @JsonCreator
-    private Account(
+    private Aws(
         @JsonProperty("account_sid")
         final String accountSid,
 
@@ -270,7 +268,7 @@ public class Account extends Resource {
             return false;
         }
 
-        Account other = (Account) o;
+        Aws other = (Aws) o;
 
         return Objects.equals(accountSid, other.accountSid) &&  Objects.equals(sid, other.sid) &&  Objects.equals(testString, other.testString) &&  Objects.equals(testInteger, other.testInteger) &&  Objects.equals(testObject, other.testObject) &&  Objects.equals(testDateTime, other.testDateTime) &&  Objects.equals(testNumber, other.testNumber) &&  Objects.equals(priceUnit, other.priceUnit) &&  Objects.equals(testNumberFloat, other.testNumberFloat) &&  Objects.equals(testEnum, other.testEnum) &&  Objects.equals(testArrayOfIntegers, other.testArrayOfIntegers) &&  Objects.equals(testArrayOfArrayOfIntegers, other.testArrayOfArrayOfIntegers) &&  Objects.equals(testArrayOfObjects, other.testArrayOfObjects)  ;
     }

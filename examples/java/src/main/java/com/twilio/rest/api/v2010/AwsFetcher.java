@@ -58,6 +58,7 @@ public class AwsFetcher extends Fetcher<Aws> {
         this.sid = sid;
     }
 
+
     @Override
     public Aws fetch(final TwilioRestClient client) {
         String path = "/v1/Credentials/AWS/{Sid}";

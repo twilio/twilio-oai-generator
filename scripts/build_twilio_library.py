@@ -3,6 +3,7 @@ import os
 import re
 from pathlib import Path
 from typing import Tuple
+from clean_java_imports import remove_unused_imports
 
 '''
 Subdirectories map for maintaining directory
@@ -37,6 +38,9 @@ def generate(openapi_spec_path: str, output_path: str, language: str, domain: st
               f'> /dev/null'  # Suppress stdout
     print(f'Generating {output_path} from {full_path}')
     os.system(command)
+    if language == 'java':
+        remove_unused_imports(output_path, "java")
+    print(f"Code generation completed at {output_path}")
 
 
 def get_domain_info(oai_spec_location: str, domain: str, is_file: bool = False) -> Tuple[str, str, str]:
@@ -50,11 +54,11 @@ def get_domain_info(oai_spec_location: str, domain: str, is_file: bool = False) 
 if __name__ == '__main__':
     example_text = '''example:
 
-     python3 examples/build_twilio_library.py /path/to/twilio-oai/spec/yaml /path/to/twilio-go -l go
-     python3 examples/build_twilio_library.py /path/to/twilio-oai/spec/yaml/twilio_accounts_v1.yaml /path/to/twilio-go -l go
-     python3 examples/build_twilio_library.py /path/to/twilio-oai/spec/yaml/twilio_accounts_v1.yaml /path/to/terraform-provider-twilio -l terraform
-     python3 examples/build_twilio_library.py /path/to/twilio-oai/spec/yaml/twilio_accounts_v1.yaml /path/to/terraform-provider-twilio -l terraform
-     python3 examples/build_twilio_library.py /path/to/twilio-oai/spec/yaml /path/to/terraform-provider-twilio --lang terraform'''
+     python3 scripts/build_twilio_library.py /path/to/twilio-oai/spec/yaml /path/to/twilio-go -l go
+     python3 scripts/build_twilio_library.py /path/to/twilio-oai/spec/yaml/twilio_accounts_v1.yaml /path/to/twilio-go -l go
+     python3 scripts/build_twilio_library.py /path/to/twilio-oai/spec/yaml/twilio_accounts_v1.yaml /path/to/terraform-provider-twilio -l terraform
+     python3 scripts/build_twilio_library.py /path/to/twilio-oai/spec/yaml/twilio_accounts_v1.yaml /path/to/terraform-provider-twilio -l terraform
+     python3 scripts/build_twilio_library.py /path/to/twilio-oai/spec/yaml /path/to/terraform-provider-twilio --lang terraform'''
     parser = argparse.ArgumentParser(description='Generate code from twilio-oai-generator', epilog=example_text,
                                      formatter_class=argparse.RawTextHelpFormatter)
     parser.add_argument('spec_path', type=str, help='path to open api specs')
