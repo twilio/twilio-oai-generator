@@ -420,12 +420,13 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
         if(param.isEnum){
             model.vars.forEach(item -> {
                 if(param.paramName.equalsIgnoreCase(item.nameInCamelCase)){
+                    String baseType = resourceName + "." + item.nameInCamelCase;
                     if(param.isArray){
-                        param.dataType = "List<"+ resourceName + "." + item.nameInCamelCase +">";
-                        param.baseType = resourceName + "." + item.nameInCamelCase;
+                        param.dataType = "List<"+ baseType +">";
+                        param.baseType = baseType;
                     }
                     else{
-                        param.dataType = resourceName + "." + item.nameInCamelCase;
+                        param.dataType = baseType;
                     }
                 }
             });
