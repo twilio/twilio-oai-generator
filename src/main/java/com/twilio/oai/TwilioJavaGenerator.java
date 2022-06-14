@@ -299,10 +299,8 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
 
                   resource.put("serialVersionUID", calculateSerialVersionUid(model.vars));
                   responseModels.add(model);
-                  co.queryParams.forEach(param -> processEnumVars(param, model, resourceName));
-                  co.formParams.forEach(param -> processEnumVars(param, model, resourceName));
-                  co.allParams.forEach(param -> processEnumVars(param, model, resourceName));
-                  co.headerParams.forEach(param -> processEnumVars(param, model, resourceName));
+                  processEnumVarsForAll(responseModels, co, model, resourceName);
+
               });
 
             results.put("recordKey", getRecordKey(opList, this.allModels));
@@ -324,6 +322,41 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
         results.put("resources", resources.values());
 
         return results;
+    }
+
+    private void processEnumVarsForAll(List<CodegenModel> responseModels, CodegenOperation co, CodegenModel model, String resourceName) {
+            for (CodegenParameter param : co.allParams) {
+                if(param.isEnum){
+                    Optional<CodegenProperty> alreadyExisting = model.vars.stream().filter(item -> item.name.equalsIgnoreCase(param.paramName)).findFirst();
+                    if(!alreadyExisting.isPresent()){
+                        responseModels.get(0).vars.add(createCodeGenPropertyFromParameter(param));
+                        model.vars.add(createCodeGenPropertyFromParameter(param));
+                    }
+                }
+            }
+
+        co.queryParams.forEach(param -> processEnumVars(param, model, resourceName));
+        co.formParams.forEach(param -> processEnumVars(param, model, resourceName));
+        co.allParams.forEach(param -> processEnumVars(param, model, resourceName));
+        co.headerParams.forEach(param -> processEnumVars(param, model, resourceName));
+        co.requiredParams.forEach(param -> processEnumVars(param, model, resourceName));
+    }
+
+    private CodegenProperty createCodeGenPropertyFromParameter(CodegenParameter co) {
+        CodegenProperty property = new CodegenProperty();
+        property.isEnum = co.isEnum;
+        property.baseName = co.baseName;
+        property.allowableValues = co.allowableValues;
+        property.dataType = co.dataType;
+        property.vendorExtensions = co.vendorExtensions;
+        property.datatypeWithEnum = co.datatypeWithEnum;
+        property.complexType = co.getComplexType();
+
+
+        property.name = co.paramName;
+        property.nameInCamelCase = co.baseName.replaceAll("-","");
+        property.nameInSnakeCase = co.baseName.replaceAll("-","_").toLowerCase();
+        return property;
     }
 
     private List<CodegenParameter> getNonPathParams(List<CodegenParameter> allParams) {
