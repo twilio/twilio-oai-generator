@@ -13,6 +13,8 @@ import org.openapitools.codegen.languages.JavaClientCodegen;
 import org.openapitools.codegen.utils.StringUtils;
 
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.math.BigInteger;
 import java.security.MessageDigest;
@@ -67,6 +69,8 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
     @Override
     public void processOpenAPI(final OpenAPI openAPI) {
         resourceTree = new ResourceMap(inflector, PATH_SEPARATOR_PLACEHOLDER);
+        // regex example : https://flex-api.twilio.com
+        Pattern serverUrlPattern = Pattern.compile("https:\\/\\/([a-zA-Z-]+)\\.twilio\\.com");
         openAPI.getPaths().forEach((name, path) -> {
             resourceTree.addResource(name, path);
         });
@@ -77,6 +81,10 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
                 String tag = String.join(PATH_SEPARATOR_PLACEHOLDER, resourceTree.ancestors("/"+name.replaceFirst("/[^/]+/", "")));
                 operation.addTagsItem(tag);
             });
+            Matcher m = serverUrlPattern.matcher(path.getServers().get(0).getUrl());
+            if(m.find()){
+                additionalProperties.put("domainName", StringUtils.camelize(m.group(1)));
+            }
         });
     }
     /**
