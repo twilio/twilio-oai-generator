@@ -44,4 +44,5 @@ Name | Type | Requirement | Description
 **test_object_array** | list(string) | Optional | 
 **test_any_type** | string | Optional | 
 **sid** | string | *Computed* | 
+**permissions** | list(string) | Optional | A comma-separated list of the permissions you will request from the users of this ConnectApp.  Can include: &#x60;get-all&#x60; and &#x60;post-all&#x60;.
 

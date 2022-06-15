@@ -14,7 +14,6 @@ import { inspect, InspectOptions } from 'util';
 import Page from '../../../base/Page';
 import V2010 from '../V2010';
 import { CallListInstance } from './Accounts/Calls';
-import { ConnectAppListInstance } from './Accounts/ConnectApps';
 
 
 /**
@@ -60,7 +59,6 @@ export interface AccountListInstancePageOptions {
 export interface AccountContext {
 
     calls: CallListInstance;
-    connect_apps: ConnectAppListInstance;
 
     /**
      * Remove a AccountInstance
@@ -103,7 +101,6 @@ export class AccountContextImpl implements AccountContext {
     protected _uri: string;
 
     protected _calls?: CallListInstance;
-    protected _connect_apps?: ConnectAppListInstance;
 
     constructor(protected _version: V2010, sid: string) {
         this._solution = { sid };
@@ -113,11 +110,6 @@ export class AccountContextImpl implements AccountContext {
     get calls(): CallListInstance {
         this._calls = this._calls || CallListInstance(this._version, this._solution.sid);
         return this._calls;
-    }
-
-    get connect_apps(): ConnectAppListInstance {
-        this._connect_apps = this._connect_apps || ConnectAppListInstance(this._version, this._solution.sid);
-        return this._connect_apps;
     }
 
     remove(callback?: any): Promise<boolean> {
@@ -305,13 +297,6 @@ export class AccountInstance {
      */
     calls(): CallListInstance {
         return this._proxy.calls;
-    }
-
-    /**
-     * Access the connect_apps.
-     */
-    connect_apps(): ConnectAppListInstance {
-        return this._proxy.connect_apps;
     }
 
     /**
