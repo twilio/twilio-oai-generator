@@ -147,6 +147,8 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
 
             if(!specialTypes.contains(e.dataType) && !e.vendorExtensions.containsKey("x-prefixed-collapsible-map") && !e.isArray){
                 e.vendorExtensions.put("x-is-other-data-type", true);
+            } else if (e.isArray && e.baseType.equalsIgnoreCase("String")) {
+                e.vendorExtensions.put("x-is-string-array", true);
             }
 
         }
@@ -345,7 +347,8 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
 
         model.vars.forEach(item -> {
             if(item.isEnum){
-                item.dataType = resourceName + "." + item.nameInCamelCase;
+                item.dataType = generateDataType(resourceName, item.nameInCamelCase);
+
                 item.vendorExtensions.put("x-is-other-data-type", true);
 
             }
@@ -426,11 +429,25 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
         return allModels.stream().filter(model -> model.getClassname().equals(modelName)).findFirst();
     }
 
+    private String generateDataType(String resourceName, String nameInCamelCase){
+        String name = nameInCamelCase;
+        String dataType = "";
+        String nameArr[] = name.split("[.]", 0);
+        if(nameArr.length > 0){
+            String itemName = String.join("", nameArr);
+            dataType = resourceName + "." + itemName;
+        }
+        else{
+            dataType = resourceName + "." + name;
+        }
+        return dataType;
+    }
+
     private CodegenParameter processEnumVars(CodegenParameter param, CodegenModel model, String resourceName) {
         if(param.isEnum){
             model.vars.forEach(item -> {
                 if(param.paramName.equalsIgnoreCase(item.nameInCamelCase) && item.isEnum == true){
-                    String baseType = resourceName + "." + item.nameInCamelCase;
+                    String baseType = generateDataType(resourceName, item.nameInCamelCase);
                     if(param.isArray){
                         param.dataType = "List<"+ baseType +">";
                         param.baseType = baseType;
