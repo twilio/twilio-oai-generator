@@ -15,6 +15,7 @@ package com.twilio.rest.api.v2010;
 import com.twilio.base.Creator;
 import com.twilio.converter.Promoter;
 import com.twilio.exception.ApiConnectionException;
+import com.twilio.converter.PrefixedCollapsibleMap;
 import com.twilio.exception.ApiException;
 import com.twilio.exception.RestException;
 import com.twilio.http.HttpMethod;
@@ -112,7 +113,7 @@ public class CallCreator extends Creator<Call>{
         }
         if (testArrayOfStrings != null) {
             for (String prop : testArrayOfStrings) {
-                request.addPostParam("TestArrayOfStrings", prop.toString());
+                request.addPostParam("TestArrayOfStrings", prop);
             }
     
         }

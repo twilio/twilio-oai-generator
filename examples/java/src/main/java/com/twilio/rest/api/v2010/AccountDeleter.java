@@ -14,6 +14,7 @@ package com.twilio.rest.api.v2010;
 
 import com.twilio.base.Deleter;
 import com.twilio.exception.ApiConnectionException;
+import com.twilio.converter.PrefixedCollapsibleMap;
 import com.twilio.exception.ApiException;
 import com.twilio.exception.RestException;
 import com.twilio.http.HttpMethod;
