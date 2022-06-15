@@ -25,6 +25,8 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
 
     // Unique string devoid of symbols.
     public static final String PATH_SEPARATOR_PLACEHOLDER = "1234567890";
+
+    public static final String ACCOUNT_SID_FORMAT = "^AC[0-9a-fA-F]{32}$";
     private static final int OVERFLOW_CHECKER = 32;
     private static final int BASE_SIXTEEN = 16;
     private static final int BIG_INTEGER_CONSTANT = 1;
@@ -97,7 +99,7 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
         pathMap.readOperations().stream().map(io.swagger.v3.oas.models.Operation::getParameters)
         .filter(Objects::nonNull)
         .flatMap(Collection::stream)
-        .filter(param -> param.getIn().equals("path") && param.getName().equals("AccountSid"))
+        .filter(param -> param.getIn().equals("path") && ( ACCOUNT_SID_FORMAT.equals(param.getSchema().getPattern())))
         .forEach(param -> {
             param.required(false);
             param.addExtension("x-is-account-sid", true);
