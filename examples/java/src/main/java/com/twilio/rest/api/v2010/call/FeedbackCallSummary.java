@@ -69,7 +69,7 @@ import com.twilio.type.RecordingRule;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @ToString
 public class FeedbackCallSummary extends Resource {
-    private static final long serialVersionUID = 191475196031556L;
+    private static final long serialVersionUID = 196847422539171L;
 
     public static FeedbackCallSummaryCreator creator(final LocalDate endDate, final LocalDate startDate){
         return new FeedbackCallSummaryCreator(endDate, startDate);
@@ -179,6 +179,25 @@ public class FeedbackCallSummary extends Resource {
             return Promoter.enumFromString(value, Status.values());
         }
     }
+    public enum Permissions {
+        GET_ALL("get-all"),
+        POST_ALL("post-all");
+
+        private final String value;
+
+        private Permissions(final String value) {
+            this.value = value;
+        }
+
+        public String toString() {
+            return value;
+        }
+
+        @JsonCreator
+        public static Permissions forValue(final String value) {
+            return Promoter.enumFromString(value, Permissions.values());
+        }
+    }
 
     private final String accountSid;
     private final String sid;
@@ -195,6 +214,7 @@ public class FeedbackCallSummary extends Resource {
     private final List<FeedbackIssue> testArrayOfObjects;
     private final FeedbackCallSummary.XTwilioWebhookEnabled xTwilioWebhookEnabled;
     private final FeedbackCallSummary.Status status;
+    private final FeedbackCallSummary.Permissions permissions;
 
     @JsonCreator
     private FeedbackCallSummary(
@@ -242,7 +262,10 @@ public class FeedbackCallSummary extends Resource {
         final FeedbackCallSummary.XTwilioWebhookEnabled xTwilioWebhookEnabled,
 
         @JsonProperty("status")
-        final FeedbackCallSummary.Status status
+        final FeedbackCallSummary.Status status,
+
+        @JsonProperty("permissions")
+        final FeedbackCallSummary.Permissions permissions
     ) {
         this.accountSid = accountSid;
         this.sid = sid;
@@ -259,6 +282,7 @@ public class FeedbackCallSummary extends Resource {
         this.testArrayOfObjects = testArrayOfObjects;
         this.xTwilioWebhookEnabled = xTwilioWebhookEnabled;
         this.status = status;
+        this.permissions = permissions;
     }
 
         public final String getAccountSid() {
@@ -306,6 +330,9 @@ public class FeedbackCallSummary extends Resource {
         public final FeedbackCallSummary.Status getStatus() {
             return this.status;
         }
+        public final FeedbackCallSummary.Permissions getPermissions() {
+            return this.permissions;
+        }
 
     @Override
     public boolean equals(final Object o) {
@@ -319,12 +346,12 @@ public class FeedbackCallSummary extends Resource {
 
         FeedbackCallSummary other = (FeedbackCallSummary) o;
 
-        return Objects.equals(accountSid, other.accountSid) &&  Objects.equals(sid, other.sid) &&  Objects.equals(testString, other.testString) &&  Objects.equals(testInteger, other.testInteger) &&  Objects.equals(testObject, other.testObject) &&  Objects.equals(testDateTime, other.testDateTime) &&  Objects.equals(testNumber, other.testNumber) &&  Objects.equals(priceUnit, other.priceUnit) &&  Objects.equals(testNumberFloat, other.testNumberFloat) &&  Objects.equals(testEnum, other.testEnum) &&  Objects.equals(testArrayOfIntegers, other.testArrayOfIntegers) &&  Objects.equals(testArrayOfArrayOfIntegers, other.testArrayOfArrayOfIntegers) &&  Objects.equals(testArrayOfObjects, other.testArrayOfObjects) &&  Objects.equals(xTwilioWebhookEnabled, other.xTwilioWebhookEnabled) &&  Objects.equals(status, other.status)  ;
+        return Objects.equals(accountSid, other.accountSid) &&  Objects.equals(sid, other.sid) &&  Objects.equals(testString, other.testString) &&  Objects.equals(testInteger, other.testInteger) &&  Objects.equals(testObject, other.testObject) &&  Objects.equals(testDateTime, other.testDateTime) &&  Objects.equals(testNumber, other.testNumber) &&  Objects.equals(priceUnit, other.priceUnit) &&  Objects.equals(testNumberFloat, other.testNumberFloat) &&  Objects.equals(testEnum, other.testEnum) &&  Objects.equals(testArrayOfIntegers, other.testArrayOfIntegers) &&  Objects.equals(testArrayOfArrayOfIntegers, other.testArrayOfArrayOfIntegers) &&  Objects.equals(testArrayOfObjects, other.testArrayOfObjects) &&  Objects.equals(xTwilioWebhookEnabled, other.xTwilioWebhookEnabled) &&  Objects.equals(status, other.status) &&  Objects.equals(permissions, other.permissions)  ;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(accountSid, sid, testString, testInteger, testObject, testDateTime, testNumber, priceUnit, testNumberFloat, testEnum, testArrayOfIntegers, testArrayOfArrayOfIntegers, testArrayOfObjects, xTwilioWebhookEnabled, status);
+        return Objects.hash(accountSid, sid, testString, testInteger, testObject, testDateTime, testNumber, priceUnit, testNumberFloat, testEnum, testArrayOfIntegers, testArrayOfArrayOfIntegers, testArrayOfObjects, xTwilioWebhookEnabled, status, permissions);
     }
 
 }

@@ -188,6 +188,25 @@ public class Aws extends Resource {
             return Promoter.enumFromString(value, Status.values());
         }
     }
+    public enum Permissions {
+        GET_ALL("get-all"),
+        POST_ALL("post-all");
+
+        private final String value;
+
+        private Permissions(final String value) {
+            this.value = value;
+        }
+
+        public String toString() {
+            return value;
+        }
+
+        @JsonCreator
+        public static Permissions forValue(final String value) {
+            return Promoter.enumFromString(value, Permissions.values());
+        }
+    }
 
     private final String accountSid;
     private final String sid;
@@ -204,6 +223,7 @@ public class Aws extends Resource {
     private final List<FeedbackIssue> testArrayOfObjects;
     private final Aws.XTwilioWebhookEnabled xTwilioWebhookEnabled;
     private final Aws.Status status;
+    private final Aws.Permissions permissions;
 
     @JsonCreator
     private Aws(
@@ -251,7 +271,10 @@ public class Aws extends Resource {
         final Aws.XTwilioWebhookEnabled xTwilioWebhookEnabled,
 
         @JsonProperty("status")
-        final Aws.Status status
+        final Aws.Status status,
+
+        @JsonProperty("permissions")
+        final Aws.Permissions permissions
     ) {
         this.accountSid = accountSid;
         this.sid = sid;
@@ -268,6 +291,7 @@ public class Aws extends Resource {
         this.testArrayOfObjects = testArrayOfObjects;
         this.xTwilioWebhookEnabled = xTwilioWebhookEnabled;
         this.status = status;
+        this.permissions = permissions;
     }
 
         public final String getAccountSid() {
@@ -315,6 +339,9 @@ public class Aws extends Resource {
         public final Aws.Status getStatus() {
             return this.status;
         }
+        public final Aws.Permissions getPermissions() {
+            return this.permissions;
+        }
 
     @Override
     public boolean equals(final Object o) {
@@ -328,12 +355,12 @@ public class Aws extends Resource {
 
         Aws other = (Aws) o;
 
-        return Objects.equals(accountSid, other.accountSid) &&  Objects.equals(sid, other.sid) &&  Objects.equals(testString, other.testString) &&  Objects.equals(testInteger, other.testInteger) &&  Objects.equals(testObject, other.testObject) &&  Objects.equals(testDateTime, other.testDateTime) &&  Objects.equals(testNumber, other.testNumber) &&  Objects.equals(priceUnit, other.priceUnit) &&  Objects.equals(testNumberFloat, other.testNumberFloat) &&  Objects.equals(testEnum, other.testEnum) &&  Objects.equals(testArrayOfIntegers, other.testArrayOfIntegers) &&  Objects.equals(testArrayOfArrayOfIntegers, other.testArrayOfArrayOfIntegers) &&  Objects.equals(testArrayOfObjects, other.testArrayOfObjects) &&  Objects.equals(xTwilioWebhookEnabled, other.xTwilioWebhookEnabled) &&  Objects.equals(status, other.status)  ;
+        return Objects.equals(accountSid, other.accountSid) &&  Objects.equals(sid, other.sid) &&  Objects.equals(testString, other.testString) &&  Objects.equals(testInteger, other.testInteger) &&  Objects.equals(testObject, other.testObject) &&  Objects.equals(testDateTime, other.testDateTime) &&  Objects.equals(testNumber, other.testNumber) &&  Objects.equals(priceUnit, other.priceUnit) &&  Objects.equals(testNumberFloat, other.testNumberFloat) &&  Objects.equals(testEnum, other.testEnum) &&  Objects.equals(testArrayOfIntegers, other.testArrayOfIntegers) &&  Objects.equals(testArrayOfArrayOfIntegers, other.testArrayOfArrayOfIntegers) &&  Objects.equals(testArrayOfObjects, other.testArrayOfObjects) &&  Objects.equals(xTwilioWebhookEnabled, other.xTwilioWebhookEnabled) &&  Objects.equals(status, other.status) &&  Objects.equals(permissions, other.permissions)  ;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(accountSid, sid, testString, testInteger, testObject, testDateTime, testNumber, priceUnit, testNumberFloat, testEnum, testArrayOfIntegers, testArrayOfArrayOfIntegers, testArrayOfObjects, xTwilioWebhookEnabled, status);
+        return Objects.hash(accountSid, sid, testString, testInteger, testObject, testDateTime, testNumber, priceUnit, testNumberFloat, testEnum, testArrayOfIntegers, testArrayOfArrayOfIntegers, testArrayOfObjects, xTwilioWebhookEnabled, status, permissions);
     }
 
 }
