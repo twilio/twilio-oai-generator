@@ -71,8 +71,17 @@ import com.twilio.type.RecordingRule;
 public class Aws extends Resource {
     private static final long serialVersionUID = 44112120076447L;
 
-    public static AwsCreator creator(final String testString){
-        return new AwsCreator(testString);
+    public static AwsCreator creator(final String testString, final Integer testInteger, final LocalDate testDate){
+        return new AwsCreator(testString, testInteger, testDate);
+    }
+    public static AwsCreator creator(final String testString, final Integer testInteger, final Map<String, Object> testObject){
+        return new AwsCreator(testString, testInteger, testObject);
+    }
+    public static AwsCreator creator(final String testString, final Float testNumberFloat, final LocalDate testDate){
+        return new AwsCreator(testString, testNumberFloat, testDate);
+    }
+    public static AwsCreator creator(final String testString, final Float testNumberFloat, final Map<String, Object> testObject){
+        return new AwsCreator(testString, testNumberFloat, testObject);
     }
 
     public static AwsFetcher fetcher(final String sid){

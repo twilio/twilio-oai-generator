@@ -229,6 +229,12 @@ paths:
           description: Created
       security:
         - accountSid_authToken: [ ]
+      x-twilio:
+        conditional:
+        - - TestInteger
+          - TestNumberFloat
+        - - TestDate
+          - TestObject
     servers:
       - url: https://api.twilio.com
     x-twilio:
