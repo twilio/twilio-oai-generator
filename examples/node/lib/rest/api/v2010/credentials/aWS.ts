@@ -371,7 +371,7 @@ interface AWResource {
     test_enum?: AWTestEnum;
     test_array_of_integers?: Array<number>;
     test_array_of_array_of_integers?: Array<Array<number>>;
-    test_array_of_objects?: Array<TestResponseObjectTestArrayOfObjects> | null;
+    test_array_of_objects?: Array<TestResponseObjectTestArrayOfObjectsInner> | null;
 }
 
 export class AWInstance {
@@ -413,7 +413,7 @@ export class AWInstance {
     testEnum?: AWTestEnum;
     testArrayOfIntegers?: Array<number>;
     testArrayOfArrayOfIntegers?: Array<Array<number>>;
-    testArrayOfObjects?: Array<TestResponseObjectTestArrayOfObjects> | null;
+    testArrayOfObjects?: Array<TestResponseObjectTestArrayOfObjectsInner> | null;
 
     /**
      * Remove a AWInstance

@@ -232,7 +232,7 @@ interface CallResource {
     test_enum?: CallTestEnum;
     test_array_of_integers?: Array<number>;
     test_array_of_array_of_integers?: Array<Array<number>>;
-    test_array_of_objects?: Array<TestResponseObjectTestArrayOfObjects> | null;
+    test_array_of_objects?: Array<TestResponseObjectTestArrayOfObjectsInner> | null;
 }
 
 export class CallInstance {
@@ -274,7 +274,7 @@ export class CallInstance {
     testEnum?: CallTestEnum;
     testArrayOfIntegers?: Array<number>;
     testArrayOfArrayOfIntegers?: Array<Array<number>>;
-    testArrayOfObjects?: Array<TestResponseObjectTestArrayOfObjects> | null;
+    testArrayOfObjects?: Array<TestResponseObjectTestArrayOfObjectsInner> | null;
 
     /**
      * Remove a CallInstance

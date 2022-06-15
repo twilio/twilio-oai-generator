@@ -15,6 +15,9 @@ import org.openapitools.codegen.CodegenConstants;
 import org.openapitools.codegen.CodegenOperation;
 import org.openapitools.codegen.CodegenProperty;
 import org.openapitools.codegen.languages.GoClientCodegen;
+import org.openapitools.codegen.model.OperationMap;
+import org.openapitools.codegen.model.OperationsMap;
+import org.openapitools.codegen.model.ModelMap;
 
 import static org.openapitools.codegen.utils.StringUtils.camelize;
 
@@ -95,9 +98,9 @@ public abstract class AbstractTwilioGoGenerator extends GoClientCodegen {
 
     @SuppressWarnings("unchecked")
     @Override
-    public Map<String, Object> postProcessOperationsWithModels(final Map<String, Object> objs, List<Object> allModels) {
-        final Map<String, Object> objectMap = (Map<String, Object>) objs.get("operations");
-        final List<CodegenOperation> operations = (List<CodegenOperation>) objectMap.get("operation");
+    public OperationsMap postProcessOperationsWithModels(final OperationsMap objs, List<ModelMap> allModels) {
+        final OperationMap objectMap = objs.getOperations();
+        final List<CodegenOperation> operations = objectMap.getOperation();
         final List<Map<String, String>> imports = (List<Map<String, String>>) objs.get("imports");
 
         // HTTP method verb conversion (e.g. PUT => Put).

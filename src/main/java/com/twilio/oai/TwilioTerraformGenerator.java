@@ -12,6 +12,10 @@ import org.openapitools.codegen.CodegenOperation;
 import org.openapitools.codegen.CodegenParameter;
 import org.openapitools.codegen.CodegenProperty;
 import org.openapitools.codegen.SupportingFile;
+import org.openapitools.codegen.model.ModelMap;
+import org.openapitools.codegen.model.ModelsMap;
+import org.openapitools.codegen.model.OperationMap;
+import org.openapitools.codegen.model.OperationsMap;
 import org.openapitools.codegen.utils.ModelUtils;
 import org.openapitools.codegen.utils.StringUtils;
 
@@ -81,7 +85,7 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
     }
 
     @Override
-    public Map<String, Object> postProcessAllModels(final Map<String, Object> allModels) {
+    public Map<String, ModelsMap> postProcessAllModels(final Map<String, ModelsMap> allModels) {
         super.postProcessAllModels(allModels);
 
         // Return an empty collection so no model files get generated.
@@ -90,14 +94,13 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
 
     @SuppressWarnings("unchecked")
     @Override
-    public Map<String, Object> postProcessOperationsWithModels(final Map<String, Object> objs,
-                                                               final List<Object> allModels) {
-        final Map<String, Object> results = super.postProcessOperationsWithModels(objs, allModels);
+    public OperationsMap postProcessOperationsWithModels(final OperationsMap objs, List<ModelMap> allModels) {
+        final OperationsMap results = super.postProcessOperationsWithModels(objs, allModels);
 
         final Map<String, Map<String, Object>> resources = new LinkedHashMap<>();
 
-        final Map<String, Object> ops = (Map<String, Object>) results.get("operations");
-        final ArrayList<CodegenOperation> opList = (ArrayList<CodegenOperation>) ops.get("operation");
+        final OperationMap ops = results.getOperations();
+        final ArrayList<CodegenOperation> opList = (ArrayList<CodegenOperation>) ops.getOperation();
 
         // Drop list operations since they're not needed in CRUD operations.
         opList.removeIf(co -> co.nickname.startsWith("List"));
