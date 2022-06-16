@@ -17,6 +17,7 @@ package com.twilio.rest.api.v2010;
 import com.twilio.base.Creator;
 import com.twilio.converter.Promoter;
 import com.twilio.exception.ApiConnectionException;
+import com.twilio.converter.PrefixedCollapsibleMap;
 import com.twilio.exception.ApiException;
 import com.twilio.exception.RestException;
 import com.twilio.http.HttpMethod;
@@ -71,9 +72,10 @@ public class AwsCreator extends Creator<Aws>{
     private Map<String, Object> testObject;
     private ZonedDateTime testDateTime;
     private LocalDate testDate;
-    private String testEnum;
+    private Aws.TestEnum testEnum;
     private List<Object> testObjectArray;
     private Map<String, Object> testAnyType;
+    private List<Aws.Permissions> permissions;
 
     public AwsCreator(final String testString) {
         this.testString = testString;
@@ -123,7 +125,7 @@ public class AwsCreator extends Creator<Aws>{
         this.testDate = testDate;
         return this;
     }
-    public AwsCreator setTestEnum(final String testEnum){
+    public AwsCreator setTestEnum(final Aws.TestEnum testEnum){
         this.testEnum = testEnum;
         return this;
     }
@@ -133,6 +135,10 @@ public class AwsCreator extends Creator<Aws>{
     }
     public AwsCreator setTestAnyType(final Map<String, Object> testAnyType){
         this.testAnyType = testAnyType;
+        return this;
+    }
+    public AwsCreator setPermissions(final List<Aws.Permissions> permissions){
+        this.permissions = permissions;
         return this;
     }
 
@@ -206,7 +212,7 @@ public class AwsCreator extends Creator<Aws>{
 
         }
         if (testEnum != null) {
-            request.addPostParam("TestEnum", testEnum);
+            request.addPostParam("TestEnum", testEnum.toString());
     
         }
         if (testObjectArray != null) {
@@ -217,6 +223,12 @@ public class AwsCreator extends Creator<Aws>{
         }
         if (testAnyType != null) {
             request.addPostParam("TestAnyType", testAnyType.toString());
+    
+        }
+        if (permissions != null) {
+            for (Aws.Permissions prop : permissions) {
+                request.addPostParam("Permissions", prop.toString());
+            }
     
         }
     }
