@@ -17,6 +17,7 @@ package com.twilio.rest.api.v2010;
 import com.twilio.base.Creator;
 import com.twilio.converter.Promoter;
 import com.twilio.exception.ApiConnectionException;
+import com.twilio.converter.PrefixedCollapsibleMap;
 import com.twilio.exception.ApiException;
 import com.twilio.exception.RestException;
 import com.twilio.http.HttpMethod;
@@ -60,14 +61,14 @@ import java.net.URI;
 
 
 public class AccountCreator extends Creator<Account>{
-    private String xTwilioWebhookEnabled;
+    private Account.XTwilioWebhookEnabled xTwilioWebhookEnabled;
     private URI recordingStatusCallback;
     private List<String> recordingStatusCallbackEvent;
 
     public AccountCreator() {
     }
 
-    public AccountCreator setXTwilioWebhookEnabled(final String xTwilioWebhookEnabled){
+    public AccountCreator setXTwilioWebhookEnabled(final Account.XTwilioWebhookEnabled xTwilioWebhookEnabled){
         this.xTwilioWebhookEnabled = xTwilioWebhookEnabled;
         return this;
     }
@@ -111,14 +112,14 @@ public class AccountCreator extends Creator<Account>{
         }
         if (recordingStatusCallbackEvent != null) {
             for (String prop : recordingStatusCallbackEvent) {
-                request.addPostParam("RecordingStatusCallbackEvent", prop.toString());
+                request.addPostParam("RecordingStatusCallbackEvent", prop);
             }
     
         }
     }
     private void addHeaderParams(final Request request) {
         if (xTwilioWebhookEnabled != null) {
-            request.addHeaderParam("X-Twilio-Webhook-Enabled", xTwilioWebhookEnabled);
+            request.addHeaderParam("X-Twilio-Webhook-Enabled", xTwilioWebhookEnabled.toString());
         }
     }
 }
