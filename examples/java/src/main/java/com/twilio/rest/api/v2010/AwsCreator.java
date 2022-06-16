@@ -73,24 +73,24 @@ public class AwsCreator extends Creator<Aws>{
     private List<Object> testObjectArray;
     private Map<String, Object> testAnyType;
 
-    public AwsCreator(final String testString, final Integer testInteger, final LocalDate testDate) {
+    public AwsCreator(final String testString, final Integer testInteger, final Float testNumberFloat) {
         this.testString = testString;
         this.testInteger = testInteger;
-        this.testDate = testDate;
+        this.testNumberFloat = testNumberFloat;
     }
     public AwsCreator(final String testString, final Integer testInteger, final Map<String, Object> testObject) {
         this.testString = testString;
         this.testInteger = testInteger;
         this.testObject = testObject;
     }
-    public AwsCreator(final String testString, final Float testNumberFloat, final LocalDate testDate) {
+    public AwsCreator(final String testString, final LocalDate testDate, final Float testNumberFloat) {
         this.testString = testString;
-        this.testNumberFloat = testNumberFloat;
         this.testDate = testDate;
-    }
-    public AwsCreator(final String testString, final Float testNumberFloat, final Map<String, Object> testObject) {
-        this.testString = testString;
         this.testNumberFloat = testNumberFloat;
+    }
+    public AwsCreator(final String testString, final LocalDate testDate, final Map<String, Object> testObject) {
+        this.testString = testString;
+        this.testDate = testDate;
         this.testObject = testObject;
     }
 

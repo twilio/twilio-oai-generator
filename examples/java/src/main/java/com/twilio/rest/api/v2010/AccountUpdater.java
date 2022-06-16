@@ -52,10 +52,13 @@ import lombok.ToString;
 
 
 public class AccountUpdater extends Updater<Account>{
-    private String sid;
     private String status;
+    private String sid;
     private String pauseBehavior;
 
+    public AccountUpdater(final String status){
+        this.status = status;
+    }
     public AccountUpdater(final String sid, final String status){
         this.sid = sid;
         this.status = status;
@@ -73,6 +76,7 @@ public class AccountUpdater extends Updater<Account>{
     @Override
     public Account update(final TwilioRestClient client){
         String path = "/2010-04-01/Accounts/{Sid}.json";
+        this.sid = this.sid == null ? client.getAccountSid() : this.sid;
         path = path.replace("{"+"Sid"+"}", this.sid.toString());
         path = path.replace("{"+"Status"+"}", this.status.toString());
 
