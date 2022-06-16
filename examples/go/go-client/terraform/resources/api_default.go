@@ -256,8 +256,8 @@ func ResourceCredentialsAWS() *schema.Resource {
 			"test_enum":          AsString(SchemaComputedOptional),
 			"test_object_array":  AsList(AsString(SchemaComputedOptional), SchemaComputedOptional),
 			"test_any_type":      AsString(SchemaComputedOptional),
-			"sid":                AsString(SchemaComputed),
 			"permissions":        AsList(AsString(SchemaComputedOptional), SchemaComputedOptional),
+			"sid":                AsString(SchemaComputed),
 		},
 		Importer: &schema.ResourceImporter{
 			StateContext: func(ctx context.Context, d *schema.ResourceData, m interface{}) ([]*schema.ResourceData, error) {
@@ -286,9 +286,13 @@ func createCredentialsAWS(ctx context.Context, d *schema.ResourceData, m interfa
 	idParts := []string{}
 	idParts = append(idParts, (*r.Sid))
 	d.SetId(strings.Join(idParts, "/"))
-	d.Set("sid", *r.Sid)
 
-	return updateCredentialsAWS(ctx, d, m)
+	err = MarshalSchema(d, r)
+	if err != nil {
+		return diag.FromErr(err)
+	}
+
+	return nil
 }
 
 func deleteCredentialsAWS(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {

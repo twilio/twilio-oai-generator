@@ -51,6 +51,8 @@ type CreateCredentialAwsParams struct {
 	TestObjectArray *[]map[string]interface{} `json:"TestObjectArray,omitempty"`
 	//
 	TestAnyType *interface{} `json:"TestAnyType,omitempty"`
+	// A comma-separated list of the permissions you will request from the users of this ConnectApp.  Can include: `get-all` and `post-all`.
+	Permissions *[]string `json:"Permissions,omitempty"`
 }
 
 func (params *CreateCredentialAwsParams) SetTestString(TestString string) *CreateCredentialAwsParams {
@@ -107,6 +109,10 @@ func (params *CreateCredentialAwsParams) SetTestObjectArray(TestObjectArray []ma
 }
 func (params *CreateCredentialAwsParams) SetTestAnyType(TestAnyType interface{}) *CreateCredentialAwsParams {
 	params.TestAnyType = &TestAnyType
+	return params
+}
+func (params *CreateCredentialAwsParams) SetPermissions(Permissions []string) *CreateCredentialAwsParams {
+	params.Permissions = &Permissions
 	return params
 }
 
@@ -177,6 +183,11 @@ func (c *ApiService) CreateCredentialAws(params *CreateCredentialAwsParams) (*Te
 		}
 
 		data.Set("TestAnyType", string(v))
+	}
+	if params != nil && params.Permissions != nil {
+		for _, item := range *params.Permissions {
+			data.Add("Permissions", item)
+		}
 	}
 
 	resp, err := c.requestHandler.Post(c.baseURL+path, data, headers)
@@ -373,16 +384,10 @@ func (c *ApiService) getNextListCredentialAwsResponse(nextPageUrl string) (inter
 type UpdateCredentialAwsParams struct {
 	//
 	TestString *string `json:"TestString,omitempty"`
-	// A comma-separated list of the permissions you will request from the users of this ConnectApp.  Can include: `get-all` and `post-all`.
-	Permissions *[]string `json:"Permissions,omitempty"`
 }
 
 func (params *UpdateCredentialAwsParams) SetTestString(TestString string) *UpdateCredentialAwsParams {
 	params.TestString = &TestString
-	return params
-}
-func (params *UpdateCredentialAwsParams) SetPermissions(Permissions []string) *UpdateCredentialAwsParams {
-	params.Permissions = &Permissions
 	return params
 }
 
@@ -395,11 +400,6 @@ func (c *ApiService) UpdateCredentialAws(Sid string, params *UpdateCredentialAws
 
 	if params != nil && params.TestString != nil {
 		data.Set("TestString", *params.TestString)
-	}
-	if params != nil && params.Permissions != nil {
-		for _, item := range *params.Permissions {
-			data.Add("Permissions", item)
-		}
 	}
 
 	resp, err := c.requestHandler.Post(c.baseURL+path, data, headers)
