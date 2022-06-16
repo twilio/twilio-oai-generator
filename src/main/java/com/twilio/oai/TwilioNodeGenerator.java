@@ -100,7 +100,7 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
         final Map<String, ModelsMap> results = super.postProcessAllModels(allModels);
 
         for (final ModelsMap mods : results.values()) {
-            final ArrayList<ModelMap> modList = (ArrayList<ModelMap>) mods.getModels();
+            final List<ModelMap> modList = mods.getModels();
 
             // Add all the models to the local models list.
             modList
