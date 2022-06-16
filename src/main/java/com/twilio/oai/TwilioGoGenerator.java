@@ -70,7 +70,7 @@ public class TwilioGoGenerator extends AbstractTwilioGoGenerator {
     public OperationsMap postProcessOperationsWithModels(final OperationsMap objs, List<ModelMap> allModels) {
         final OperationsMap results = super.postProcessOperationsWithModels(objs, allModels);
         final OperationMap ops = results.getOperations();
-        final ArrayList<CodegenOperation> opList = (ArrayList<CodegenOperation>) ops.getOperation();
+        final List<CodegenOperation> opList = ops.getOperation();
         for (final CodegenOperation co : opList) {
             if (co.nickname.startsWith("List")) {
                 // make sure the format matches the other methods

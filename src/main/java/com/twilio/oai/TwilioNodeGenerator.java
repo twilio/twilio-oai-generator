@@ -105,7 +105,7 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
             // Add all the models to the local models list.
             modList
                 .stream()
-                .map(model -> model.getModel())
+                .map(ModelMap::getModel)
                 .map(CodegenModel.class::cast)
                 .collect(Collectors.toCollection(() -> this.allModels));
         }
@@ -123,7 +123,7 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
 
         final OperationMap ops = results.getOperations();
         final String classname = (String) ops.get("classname");
-        final ArrayList<CodegenOperation> opList = (ArrayList<CodegenOperation>) ops.getOperation();
+        final List<CodegenOperation> opList = ops.getOperation();
 
         results.put("apiVersionPath", getRelativeRoot(classname));
 

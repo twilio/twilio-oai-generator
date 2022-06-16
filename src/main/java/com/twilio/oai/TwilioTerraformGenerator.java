@@ -100,7 +100,7 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
         final Map<String, Map<String, Object>> resources = new LinkedHashMap<>();
 
         final OperationMap ops = results.getOperations();
-        final ArrayList<CodegenOperation> opList = (ArrayList<CodegenOperation>) ops.getOperation();
+        final List<CodegenOperation> opList = ops.getOperation();
 
         // Drop list operations since they're not needed in CRUD operations.
         opList.removeIf(co -> co.nickname.startsWith("List"));

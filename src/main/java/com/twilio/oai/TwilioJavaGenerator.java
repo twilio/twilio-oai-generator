@@ -203,7 +203,7 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
             // Add all the models to the local models list.
             modList
                     .stream()
-                    .map(model -> model.getModel())
+                    .map(ModelMap::getModel)
                     .map(CodegenModel.class::cast)
                     .collect(Collectors.toCollection(() -> this.allModels));
         }
@@ -220,9 +220,9 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
         final Map<String, Map<String, Object>> resources = new LinkedHashMap<>();
 
         final OperationMap ops = results.getOperations();
-        final ArrayList<CodegenOperation> opList = (ArrayList<CodegenOperation>) ops.getOperation();
+        final List<CodegenOperation> opList = ops.getOperation();
         String recordKey = getRecordKey(opList, this.allModels);
-        List<CodegenModel> responseModels = new ArrayList<CodegenModel>();
+        List<CodegenModel> responseModels = new ArrayList<>();
         boolean isVersionV2010 = objs.get("package").equals("v2010");
         apiTemplateFiles.remove("updater.mustache");
         apiTemplateFiles.remove("creator.mustache");
