@@ -73,6 +73,7 @@ public class AwsCreator extends Creator<Aws>{
     private Aws.TestEnum testEnum;
     private List<Object> testObjectArray;
     private Map<String, Object> testAnyType;
+    private List<Aws.Permissions> permissions;
 
     public AwsCreator(final String testString) {
         this.testString = testString;
@@ -132,6 +133,10 @@ public class AwsCreator extends Creator<Aws>{
     }
     public AwsCreator setTestAnyType(final Map<String, Object> testAnyType){
         this.testAnyType = testAnyType;
+        return this;
+    }
+    public AwsCreator setPermissions(final List<Aws.Permissions> permissions){
+        this.permissions = permissions;
         return this;
     }
 
@@ -216,6 +221,12 @@ public class AwsCreator extends Creator<Aws>{
         }
         if (testAnyType != null) {
             request.addPostParam("TestAnyType", testAnyType.toString());
+    
+        }
+        if (permissions != null) {
+            for (Aws.Permissions prop : permissions) {
+                request.addPostParam("Permissions", prop.toString());
+            }
     
         }
     }

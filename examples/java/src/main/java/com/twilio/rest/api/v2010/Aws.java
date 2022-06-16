@@ -69,7 +69,7 @@ import com.twilio.type.RecordingRule;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @ToString
 public class Aws extends Resource {
-    private static final long serialVersionUID = 102879623605645L;
+    private static final long serialVersionUID = 259030760536895L;
 
     public static AwsCreator creator(final String testString){
         return new AwsCreator(testString);
