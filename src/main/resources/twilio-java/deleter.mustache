@@ -4,6 +4,7 @@ package com.twilio.rest.{{domainPackage}}.{{package}}{{packageSubPart}};
 
 import com.twilio.base.Deleter;
 import com.twilio.exception.ApiConnectionException;
+import com.twilio.converter.PrefixedCollapsibleMap;
 import com.twilio.exception.ApiException;
 import com.twilio.exception.RestException;
 import com.twilio.http.HttpMethod;
@@ -48,7 +49,7 @@ public class {{resourceName}}Deleter extends Deleter<{{resourceName}}> {
 {{/signatureListDelete}}
 
 {{#vendorExtensions.x-non-path-params}}
-    public {{resourceName}}Creator set{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}(final {{{dataType}}} {{paramName}}){
+    public {{resourceName}}Deleter set{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}(final {{{dataType}}} {{paramName}}){
     this.{{paramName}} = {{paramName}};
     return this;
     }
@@ -69,7 +70,7 @@ public class {{resourceName}}Deleter extends Deleter<{{resourceName}}> {
 
         Request request = new Request(
             HttpMethod.DELETE,
-            Domains.{{#lambda.uppercase}}{{domain}}{{/lambda.uppercase}}.toString(),
+            Domains.{{#lambda.uppercase}}{{domainName}}{{/lambda.uppercase}}.toString(),
             path
         );
         {{#queryParams.0}}
