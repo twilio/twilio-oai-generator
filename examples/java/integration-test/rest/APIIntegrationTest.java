@@ -62,18 +62,18 @@ public class APIIntegrationTest {
 
     @Test
     public void testUpdate() {
-        Account account = new AccountUpdater(ACCOUNT_SID, "paused").update();
+        Account account = new AccountUpdater(ACCOUNT_SID, Account.Status.PAUSED).update();
         assertNotNull(account);
     }
 
     @Test
     public void testDateTimeQueryParam() {
         Page<Account> account = new AccountReader()
-            .setDateTest(LocalDate.now())
-            .setDateCreatedBefore(ZonedDateTime.now().minusMonths(-2))
-            .setDateCreatedAfter(ZonedDateTime.now().minusMonths(2))
-            .pageSize(5)
-            .firstPage();
+                .setDateTest(LocalDate.now())
+                .setDateCreatedBefore(ZonedDateTime.now().minusMonths(-2))
+                .setDateCreatedAfter(ZonedDateTime.now().minusMonths(2))
+                .pageSize(5)
+                .firstPage();
         assertEquals(2, account.getRecords().size());
         assertEquals("Ahoy", account.getRecords().get(0).getTestString());
         assertEquals("Matey", account.getRecords().get(1).getTestString());

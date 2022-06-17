@@ -17,6 +17,7 @@ package com.twilio.rest.api.v2010;
 import com.twilio.base.Updater;
 import com.twilio.converter.Promoter;
 import com.twilio.exception.ApiConnectionException;
+import com.twilio.converter.PrefixedCollapsibleMap;
 import com.twilio.exception.ApiException;
 import com.twilio.exception.RestException;
 import com.twilio.http.HttpMethod;
@@ -54,19 +55,19 @@ import lombok.ToString;
 
 
 public class AccountUpdater extends Updater<Account>{
-    private String status;
+    private Account.Status status;
     private String sid;
     private String pauseBehavior;
 
-    public AccountUpdater(final String status){
+    public AccountUpdater(final Account.Status status){
         this.status = status;
     }
-    public AccountUpdater(final String sid, final String status){
+    public AccountUpdater(final String sid, final Account.Status status){
         this.sid = sid;
         this.status = status;
     }
 
-    public AccountUpdater setStatus(final String status){
+    public AccountUpdater setStatus(final Account.Status status){
         this.status = status;
         return this;
     }
@@ -107,7 +108,7 @@ public class AccountUpdater extends Updater<Account>{
     
         }
         if (status != null) {
-            request.addPostParam("Status", status);
+            request.addPostParam("Status", status.toString());
     
         }
     }

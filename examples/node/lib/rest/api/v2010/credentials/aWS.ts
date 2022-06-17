@@ -34,6 +34,7 @@ import V2010 from '../../V2010';
  * @property { string } [testEnum] 
  * @property { Array<object> } [testObjectArray] 
  * @property { any } [testAnyType] 
+ * @property { Array<string> } [permissions] A comma-separated list of the permissions you will request from the users of this ConnectApp.  Can include: &#x60;get-all&#x60; and &#x60;post-all&#x60;.
  */
 export interface AWListInstanceCreateOptions {
     testString: string;
@@ -50,6 +51,7 @@ export interface AWListInstanceCreateOptions {
     testEnum?: string;
     testObjectArray?: Array<object>;
     testAnyType?: any;
+    permissions?: Array<string>;
 }
 /**
  * Options to pass to page a AWInstance
@@ -156,6 +158,7 @@ export function AWListInstance(version: V2010): AWListInstance {
         if (params.testEnum !== undefined) data['TestEnum'] = params.testEnum;
         if (params.testObjectArray !== undefined) data['TestObjectArray'] = params.testObjectArray;
         if (params.testAnyType !== undefined) data['TestAnyType'] = params.testAnyType;
+        if (params.permissions !== undefined) data['Permissions'] = params.permissions;
 
         const headers: any = {};
         headers['Content-Type'] = 'application/x-www-form-urlencoded'

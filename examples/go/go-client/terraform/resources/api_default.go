@@ -259,6 +259,7 @@ func ResourceCredentialsAWS() *schema.Resource {
 			"test_enum":          AsString(SchemaComputedOptional),
 			"test_object_array":  AsList(AsString(SchemaComputedOptional), SchemaComputedOptional),
 			"test_any_type":      AsString(SchemaComputedOptional),
+			"permissions":        AsList(AsString(SchemaComputedOptional), SchemaComputedOptional),
 			"sid":                AsString(SchemaComputed),
 		},
 		Importer: &schema.ResourceImporter{
