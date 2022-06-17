@@ -255,8 +255,7 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
     private CodegenModel resolveComplexType(CodegenModel item) {
         for (CodegenProperty prop: item.vars) {
             if (prop.complexType != null) {
-                prop.dataType = prop.baseName.equals("test_object") ? "object" :
-                        prop.baseName.equals("test_array_of_objects") ? "Array<object>" : prop.dataType;
+                prop.dataType = prop.isArray ? "Array<object>" : "object";
             }
         }
         return item;
