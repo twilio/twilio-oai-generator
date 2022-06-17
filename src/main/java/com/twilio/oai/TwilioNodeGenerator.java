@@ -196,8 +196,8 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
                     .map(response -> response.dataType)
                     .filter(Objects::nonNull)
                     .map(this::getModel)
-                    .map(item -> resolveComplexType(item))
                     .flatMap(Optional::stream)
+                    .map(item -> resolveComplexType(item))
                     .forEach(model -> {
                         model.setName(itemName);
                         resource.put("responseModel", model);
@@ -252,13 +252,11 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
         dependent.put("filename", dependentName);
     }
 
-    private Optional<CodegenModel> resolveComplexType(Optional<CodegenModel> item) {
-        for (CodegenProperty prop: item.get().vars) {
-            if (prop.dataType.equals("Array<TestResponseObjectTestArrayOfObjects>")) {
-                prop.dataType = "Array<object>";
-            }
-            else if (prop.dataType.equals("TestResponseObjectTestObject")) {
-                prop.dataType = "object";
+    private CodegenModel resolveComplexType(CodegenModel item) {
+        for (CodegenProperty prop: item.vars) {
+            if (prop.complexType != null) {
+                prop.dataType = prop.baseName.equals("test_object") ? "object" :
+                        prop.baseName.equals("test_array_of_objects") ? "Array<object>" : prop.dataType;
             }
         }
         return item;
