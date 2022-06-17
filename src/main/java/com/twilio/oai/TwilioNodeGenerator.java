@@ -14,6 +14,7 @@ import io.swagger.v3.oas.models.OpenAPI;
 import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenOperation;
 import org.openapitools.codegen.CodegenParameter;
+import org.openapitools.codegen.CodegenProperty;
 import org.openapitools.codegen.SupportingFile;
 import org.openapitools.codegen.languages.TypeScriptNodeClientCodegen;
 import org.openapitools.codegen.utils.StringUtils;
@@ -196,6 +197,7 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
                     .filter(Objects::nonNull)
                     .map(this::getModel)
                     .flatMap(Optional::stream)
+                    .map(item -> resolveComplexType(item))
                     .forEach(model -> {
                         model.setName(itemName);
                         resource.put("responseModel", model);
@@ -248,6 +250,15 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
         dependent.put("name", singularize(dependentName));
         dependent.put("mountName", StringUtils.underscore(dependentName));
         dependent.put("filename", dependentName);
+    }
+
+    private CodegenModel resolveComplexType(CodegenModel item) {
+        for (CodegenProperty prop: item.vars) {
+            if (prop.complexType != null) {
+                prop.dataType = prop.isArray ? "Array<object>" : "object";
+            }
+        }
+        return item;
     }
 
     private Optional<CodegenModel> getModel(final String modelName) {
