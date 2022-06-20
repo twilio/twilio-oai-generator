@@ -366,7 +366,7 @@ interface AWResource {
     sid?: string | null;
     test_string?: string | null;
     test_integer?: number | null;
-    test_object?: TestResponseObjectTestObject | null;
+    test_object?: object | null;
     test_date_time?: string | null;
     test_number?: number | null;
     price_unit?: string | null;
@@ -374,7 +374,7 @@ interface AWResource {
     test_enum?: AWTestEnum;
     test_array_of_integers?: Array<number>;
     test_array_of_array_of_integers?: Array<Array<number>>;
-    test_array_of_objects?: Array<TestResponseObjectTestArrayOfObjects> | null;
+    test_array_of_objects?: Array<object> | null;
 }
 
 export class AWInstance {
@@ -408,7 +408,7 @@ export class AWInstance {
     sid?: string | null;
     testString?: string | null;
     testInteger?: number | null;
-    testObject?: TestResponseObjectTestObject | null;
+    testObject?: object | null;
     testDateTime?: string | null;
     testNumber?: number | null;
     priceUnit?: string | null;
@@ -416,7 +416,7 @@ export class AWInstance {
     testEnum?: AWTestEnum;
     testArrayOfIntegers?: Array<number>;
     testArrayOfArrayOfIntegers?: Array<Array<number>>;
-    testArrayOfObjects?: Array<TestResponseObjectTestArrayOfObjects> | null;
+    testArrayOfObjects?: Array<object> | null;
 
     /**
      * Remove a AWInstance
