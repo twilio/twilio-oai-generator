@@ -47,8 +47,8 @@ import com.twilio.converter.DateConverter;
 public class TwilioRestTest {
     @Mock
     private TwilioRestClient twilioRestClient;
-    private final static String TEST_INTEGER = "TestInteger";
-    private final static String ACCOUNT_SID = "AC222222222222222222222222222222";
+    private static final String TEST_INTEGER = "TestInteger";
+    private static final String ACCOUNT_SID = "AC222222222222222222222222222222";
 
     @Before
     public void setUp() {
