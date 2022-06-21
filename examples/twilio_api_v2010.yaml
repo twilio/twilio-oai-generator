@@ -239,6 +239,12 @@ paths:
           description: Created
       security:
         - accountSid_authToken: [ ]
+      x-twilio:
+        conditional:
+        - - TestInteger
+          - TestDate
+        - - TestNumberFloat
+          - TestObject
     servers:
       - url: https://api.twilio.com
     x-twilio:
@@ -456,6 +462,9 @@ paths:
           name: Sid
           required: true
           schema:
+            maxLength: 34
+            minLength: 34
+            pattern: ^AC[0-9a-fA-F]{32}$
             type: string
       responses:
         '204':
@@ -469,6 +478,9 @@ paths:
           name: Sid
           required: true
           schema:
+            maxLength: 34
+            minLength: 34
+            pattern: ^AC[0-9a-fA-F]{32}$
             type: string
       responses:
         '200':
@@ -486,6 +498,9 @@ paths:
           name: Sid
           required: true
           schema:
+            maxLength: 34
+            minLength: 34
+            pattern: ^AC[0-9a-fA-F]{32}$
             type: string
       requestBody:
         content:
@@ -573,6 +588,9 @@ paths:
           name: AccountSid
           required: true
           schema:
+            maxLength: 34
+            minLength: 34
+            pattern: ^AC[0-9a-fA-F]{32}$
             type: string
         - description: INTEGER ID param!!!
           in: path
@@ -592,6 +610,9 @@ paths:
           name: AccountSid
           required: true
           schema:
+            maxLength: 34
+            minLength: 34
+            pattern: ^AC[0-9a-fA-F]{32}$
             type: string
         - description: INTEGER ID param!!!
           in: path
