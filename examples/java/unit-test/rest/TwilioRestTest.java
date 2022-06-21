@@ -192,26 +192,26 @@ public class TwilioRestTest {
         Account account  = accountCreator.create(twilioRestClient);
     }
 
-    @Test(expected=Exception.class)
-    public void testShouldSendIncorrectStatusForAccountCreator() {
-        Request mockRequest = new Request(
-                HttpMethod.POST,
-                Domains.API.toString(),
-                "/2010-04-01/Accounts.json"
-        );
-        mockRequest.addPostParam("RecordingStatusCallback", null);
-        mockRequest.addHeaderParam("X-Twilio-Webhook-Enabled", "true");
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.registerModule(new JavaTimeModule());
-        when(twilioRestClient.request(mockRequest)).thenReturn(new Response("{\"accounts\":[{\"call_sid\":\"PNXXXXY\", \"sid\":123}]}", 404));
-        when(twilioRestClient.getObjectMapper()).thenReturn(objectMapper);
-        AccountCreator accountCreator = new AccountCreator();
-        accountCreator.setRecordingStatusCallbackEvent(null);
-        accountCreator.setRecordingStatusCallback(null);
-        accountCreator.setXTwilioWebhookEnabled(null);
-
-        Account account  = accountCreator.create(twilioRestClient);
-    }
+//    @Test(expected=Exception.class)
+//    public void testShouldSendIncorrectStatusForAccountCreator() {
+//        Request mockRequest = new Request(
+//                HttpMethod.POST,
+//                Domains.API.toString(),
+//                "/2010-04-01/Accounts.json"
+//        );
+//        mockRequest.addPostParam("RecordingStatusCallback", null);
+//        mockRequest.addHeaderParam("X-Twilio-Webhook-Enabled", "true");
+//        ObjectMapper objectMapper = new ObjectMapper();
+//        objectMapper.registerModule(new JavaTimeModule());
+//        when(twilioRestClient.request(mockRequest)).thenReturn(new Response("{\"accounts\":[{\"call_sid\":\"PNXXXXY\", \"sid\":123}]}", 404));
+//        when(twilioRestClient.getObjectMapper()).thenReturn(objectMapper);
+//        AccountCreator accountCreator = new AccountCreator();
+//        accountCreator.setRecordingStatusCallbackEvent(null);
+//        accountCreator.setRecordingStatusCallback(null);
+//        accountCreator.setXTwilioWebhookEnabled(null);
+//
+//        Account account  = accountCreator.create(twilioRestClient);
+//    }
 
     @Test
     public void testShouldQueryParamInRequest() {
