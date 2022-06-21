@@ -7,7 +7,15 @@ import com.twilio.http.HttpMethod;
 import com.twilio.http.Request;
 import com.twilio.http.Response;
 import com.twilio.http.TwilioRestClient;
-import com.twilio.rest.api.v2010.*;
+import com.twilio.rest.api.v2010.Account;
+import com.twilio.rest.api.v2010.AccountCreator;
+import com.twilio.rest.api.v2010.AccountFetcher;
+import com.twilio.rest.api.v2010.AccountReader;
+import com.twilio.rest.api.v2010.Call;
+import com.twilio.rest.api.v2010.CallFetcher;
+import com.twilio.rest.api.v2010.Aws;
+import com.twilio.rest.api.v2010.AwsCreator;
+import com.twilio.rest.api.v2010.AwsReader;
 
 import java.net.URI;
 import java.time.LocalDate;
@@ -46,7 +54,7 @@ public class TwilioRestTest {
     }
 
     @Test
-    public void testShouldMakeValidAPICall() {
+    public void testShouldMakeValidAPICallAccountFetcher() {
         Request mockRequest = new Request(
                 HttpMethod.GET,
                 "api",
@@ -63,9 +71,9 @@ public class TwilioRestTest {
     }
 
     @Test
-    public void testShouldMakeValidAPICallAccountDeleter() {
+    public void testShouldMakeValidAPICall() {
         Request mockRequest = new Request(
-                HttpMethod.DELETE,
+                HttpMethod.GET,
                 "api",
                 "/2010-04-01/Accounts/AC222222222222222222222222222222.json"
         );
@@ -74,7 +82,7 @@ public class TwilioRestTest {
         when(twilioRestClient.request(mockRequest)).thenReturn(new Response("{\"account_sid\":\"AC222222222222222222222222222222\", \"call_sid\":\"PNXXXXY\"}", 200));
         when(twilioRestClient.getObjectMapper()).thenReturn(objectMapper);
 
-        Boolean account = new AccountDeleter("AC222222222222222222222222222222").delete(twilioRestClient);
+        Account account = new AccountFetcher("AC222222222222222222222222222222").fetch(twilioRestClient);
 
         assertNotNull(account);
     }
@@ -150,7 +158,7 @@ public class TwilioRestTest {
         when(twilioRestClient.request(mockRequest)).thenReturn(new Response("{\"sid\": 123, \"call_sid\":\"PNXXXXY\"}", 200));
         when(twilioRestClient.getObjectMapper()).thenReturn(objectMapper);
         AccountCreator accountCreator = new AccountCreator();
-        accountCreator.setXTwilioWebhookEnabled("true");
+        accountCreator.setXTwilioWebhookEnabled(Account.XTwilioWebhookEnabled.TRUE);
         accountCreator.setRecordingStatusCallback(URI.create("https://validurl.com"));
 
         Account account  = accountCreator.create(twilioRestClient);
@@ -208,7 +216,7 @@ public class TwilioRestTest {
         AccountCreator accountCreator = new AccountCreator();
         accountCreator.setRecordingStatusCallbackEvent(recordingStatusCallbackEvent);
         accountCreator.setRecordingStatusCallback(URI.create("https://validurl.com"));
-        accountCreator.setXTwilioWebhookEnabled("true");
+        accountCreator.setXTwilioWebhookEnabled(Account.XTwilioWebhookEnabled.TRUE);
 
         Account account  = accountCreator.create(twilioRestClient);
 
