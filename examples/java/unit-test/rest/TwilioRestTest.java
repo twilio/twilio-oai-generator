@@ -62,79 +62,79 @@ public class TwilioRestTest {
         assertNotNull(account);
     }
 
-//    @Test
-//    public void testShouldMakeValidAPICallAccountDeleter() {
-//        Request mockRequest = new Request(
-//                HttpMethod.DELETE,
-//                "api",
-//                "/2010-04-01/Accounts/AC222222222222222222222222222222.json"
-//        );
-//        ObjectMapper objectMapper = new ObjectMapper();
-//        objectMapper.registerModule(new JavaTimeModule());
-//        when(twilioRestClient.request(mockRequest)).thenReturn(new Response("{\"account_sid\":\"AC222222222222222222222222222222\", \"call_sid\":\"PNXXXXY\"}", 200));
-//        when(twilioRestClient.getObjectMapper()).thenReturn(objectMapper);
-//
-//        Boolean account = new AccountDeleter("AC222222222222222222222222222222").delete(twilioRestClient);
-//
-//        assertNotNull(account);
-//    }
-//
-//    @Test(expected=Exception.class)
-//    public void testShouldMakeInValidAPICallReturnsNullForAccountFetcher() {
-//        Request mockRequest = new Request(
-//                HttpMethod.GET,
-//                "api",
-//                "/2010-04-01/Accounts/AC222222222222222222222222222222.json"
-//        );
-//        ObjectMapper objectMapper = new ObjectMapper();
-//        objectMapper.registerModule(new JavaTimeModule());
-//        when(twilioRestClient.request(mockRequest)).thenReturn(null);
-//        when(twilioRestClient.getObjectMapper()).thenReturn(objectMapper);
-//        Account account = new AccountFetcher("AC222222222222222222222222222222").fetch(twilioRestClient);
-//        assertNotNull(account);
-//    }
-//
-//    @Test(expected=ApiException.class)
-//    public void testShouldMakeInValidAPICallWithExceptionForAccountFetcher() {
-//        Request mockRequest = new Request(
-//                HttpMethod.GET,
-//                "api",
-//                "/2010-04-01/Accounts/AC222222222222222222222222222222.json"
-//        );
-//        ObjectMapper objectMapper = new ObjectMapper();
-//        objectMapper.registerModule(new JavaTimeModule());
-//        when(twilioRestClient.request(mockRequest)).thenReturn(new Response("{\"account_sid\":\"AC222222222222222222222222222222\", \"call_sid\":\"PNXXXXY\"}", 404));
-//        when(twilioRestClient.getObjectMapper()).thenReturn(objectMapper);
-//        Account account = new AccountFetcher("AC222222222222222222222222222222").fetch(twilioRestClient);
-//    }
-//
-//    @Test(expected=Exception.class)
-//    public void testShouldMakeInValidAPICallReturnsNulForAccountDeleter() {
-//        Request mockRequest = new Request(
-//                HttpMethod.DELETE,
-//                "api",
-//                "/2010-04-01/Accounts/AC222222222222222222222222222222.json"
-//        );
-//        ObjectMapper objectMapper = new ObjectMapper();
-//        objectMapper.registerModule(new JavaTimeModule());
-//        when(twilioRestClient.request(mockRequest)).thenReturn(null);
-//        when(twilioRestClient.getObjectMapper()).thenReturn(objectMapper);
-//        Boolean account = new AccountDeleter("AC222222222222222222222222222222").delete(twilioRestClient);
-//    }
-//
-//    @Test(expected=ApiException.class)
-//    public void testShouldMakeInValidAPICallWithExceptionForAccountDeleter() {
-//        Request mockRequest = new Request(
-//                HttpMethod.DELETE,
-//                "api",
-//                "/2010-04-01/Accounts/AC222222222222222222222222222222.json"
-//        );
-//        ObjectMapper objectMapper = new ObjectMapper();
-//        objectMapper.registerModule(new JavaTimeModule());
-//        when(twilioRestClient.request(mockRequest)).thenReturn(new Response("{\"account_sid\":\"AC222222222222222222222222222222\", \"call_sid\":\"PNXXXXY\"}", 404));
-//        when(twilioRestClient.getObjectMapper()).thenReturn(objectMapper);
-//        Boolean account = new AccountDeleter("AC222222222222222222222222222222").delete(twilioRestClient);
-//    }
+    @Test
+    public void testShouldMakeValidAPICallAccountDeleter() {
+        Request mockRequest = new Request(
+                HttpMethod.DELETE,
+                "api",
+                "/2010-04-01/Accounts/AC222222222222222222222222222222.json"
+        );
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        when(twilioRestClient.request(mockRequest)).thenReturn(new Response("{\"account_sid\":\"AC222222222222222222222222222222\", \"call_sid\":\"PNXXXXY\"}", 200));
+        when(twilioRestClient.getObjectMapper()).thenReturn(objectMapper);
+
+        Boolean account = new AccountDeleter("AC222222222222222222222222222222").delete(twilioRestClient);
+
+        assertNotNull(account);
+    }
+
+    @Test(expected=Exception.class)
+    public void testShouldMakeInValidAPICallReturnsNullForAccountFetcher() {
+        Request mockRequest = new Request(
+                HttpMethod.GET,
+                "api",
+                "/2010-04-01/Accounts/AC222222222222222222222222222222.json"
+        );
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        when(twilioRestClient.request(mockRequest)).thenReturn(null);
+        when(twilioRestClient.getObjectMapper()).thenReturn(objectMapper);
+        Account account = new AccountFetcher("AC222222222222222222222222222222").fetch(twilioRestClient);
+        assertNotNull(account);
+    }
+
+    @Test(expected=ApiException.class)
+    public void testShouldMakeInValidAPICallWithExceptionForAccountFetcher() {
+        Request mockRequest = new Request(
+                HttpMethod.GET,
+                "api",
+                "/2010-04-01/Accounts/AC222222222222222222222222222222.json"
+        );
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        when(twilioRestClient.request(mockRequest)).thenReturn(new Response("{\"account_sid\":\"AC222222222222222222222222222222\", \"call_sid\":\"PNXXXXY\"}", 404));
+        when(twilioRestClient.getObjectMapper()).thenReturn(objectMapper);
+        Account account = new AccountFetcher("AC222222222222222222222222222222").fetch(twilioRestClient);
+    }
+
+    @Test(expected=Exception.class)
+    public void testShouldMakeInValidAPICallReturnsNulForAccountDeleter() {
+        Request mockRequest = new Request(
+                HttpMethod.DELETE,
+                "api",
+                "/2010-04-01/Accounts/AC222222222222222222222222222222.json"
+        );
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        when(twilioRestClient.request(mockRequest)).thenReturn(null);
+        when(twilioRestClient.getObjectMapper()).thenReturn(objectMapper);
+        Boolean account = new AccountDeleter("AC222222222222222222222222222222").delete(twilioRestClient);
+    }
+
+    @Test(expected=ApiException.class)
+    public void testShouldMakeInValidAPICallWithExceptionForAccountDeleter() {
+        Request mockRequest = new Request(
+                HttpMethod.DELETE,
+                "api",
+                "/2010-04-01/Accounts/AC222222222222222222222222222222.json"
+        );
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        when(twilioRestClient.request(mockRequest)).thenReturn(new Response("{\"account_sid\":\"AC222222222222222222222222222222\", \"call_sid\":\"PNXXXXY\"}", 404));
+        when(twilioRestClient.getObjectMapper()).thenReturn(objectMapper);
+        Boolean account = new AccountDeleter("AC222222222222222222222222222222").delete(twilioRestClient);
+    }
 
     @Test
     public void testShouldSendAddedHeadersThroughRestClient() {
