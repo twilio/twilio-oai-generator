@@ -630,25 +630,4 @@ public class TwilioRestTest {
         accountReader.previousPage(null, twilioRestClient);
 
     }
-
-    @Test(expected = Exception.class)
-    public void testShouldMakeValidAPICallAccountUpdaterException() {
-        Request mockRequest = new Request(
-                HttpMethod.POST,
-                "api",
-                "/2010-04-01/Accounts/AC222222222222222222222222222222.json"
-        );
-        mockRequest.addPostParam("PauseBehavior", "true");
-
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.registerModule(new JavaTimeModule());
-        when(twilioRestClient.request(mockRequest)).thenReturn(new Response("{\"account_sid\":\"AC222222222222222222222222222222\", \"call_sid\":\"PNXXXXY\"}", 200));
-        when(twilioRestClient.getObjectMapper()).thenReturn(objectMapper);
-        AccountUpdater accountUpdater = new AccountUpdater("AC222222222222222222222222222222","");
-        accountUpdater.setPauseBehavior("true");
-
-        accountUpdater.update(twilioRestClient);
-
-        assertNotNull(accountUpdater);
-    }
 }
