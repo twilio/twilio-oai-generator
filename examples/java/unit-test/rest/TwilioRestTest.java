@@ -248,7 +248,7 @@ public class TwilioRestTest {
         Account account  = accountCreator.create(twilioRestClient);
     }
 
-    @Test(expected=ApiException.class)
+    @Test(expected=Exception.class)
     public void testShouldSendIncorrectStatusForAccountCreator() {
         Request mockRequest = new Request(
                 HttpMethod.POST,
