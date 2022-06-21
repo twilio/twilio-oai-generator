@@ -25,7 +25,7 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
     // Unique string devoid of symbols.
     public static final String PATH_SEPARATOR_PLACEHOLDER = "1234567890";
     private static final int OVERFLOW_CHECKER = 32;
-    private static final int BASE_SIXTEEN = 16;
+    private static final int BASE_SIXTEEN = 16; 
     private static final int BIG_INTEGER_CONSTANT = 1;
     private static final int SERIAL_UID_LENGTH = 12;
     public static final String URI = "uri";
