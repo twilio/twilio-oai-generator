@@ -6,9 +6,23 @@
     {{/isFreeFormObject}}
     {{^isFreeFormObject}}
     {{#isArray}}
+        {{#isEnum}}
             for ({{baseType}} prop : {{paramName}}) {
                 request.addPostParam("{{baseName}}", prop.toString());
             }
+        {{/isEnum}}
+        {{^isEnum}}
+        {{#vendorExtensions.x-is-string-array}}
+            for ({{baseType}} prop : {{paramName}}) {
+                request.addPostParam("{{baseName}}", prop);
+            }
+        {{/vendorExtensions.x-is-string-array}}
+        {{^vendorExtensions.x-is-string-array}}
+            for ({{baseType}} prop : {{paramName}}) {
+                request.addPostParam("{{baseName}}", prop.toString());
+            }
+        {{/vendorExtensions.x-is-string-array}}
+        {{/isEnum}}
     {{/isArray}}
     {{^isArray}}
     {{#vendorExtensions.x-is-other-data-type}}

@@ -5,6 +5,7 @@ package com.twilio.rest.{{domainPackage}}.{{package}}{{packageSubPart}};
 import com.twilio.base.Updater;
 import com.twilio.converter.Promoter;
 import com.twilio.exception.ApiConnectionException;
+import com.twilio.converter.PrefixedCollapsibleMap;
 import com.twilio.exception.ApiException;
 import com.twilio.exception.RestException;
 import com.twilio.http.HttpMethod;
@@ -70,7 +71,7 @@ public class {{resourceName}}Updater extends Updater<{{resourceName}}>{
 
         Request request = new Request(
             HttpMethod.POST,
-            Domains.{{#lambda.uppercase}}{{domain}}{{/lambda.uppercase}}.toString(),
+            Domains.{{#lambda.uppercase}}{{domainName}}{{/lambda.uppercase}}.toString(),
             path
         );
         {{#queryParams.0}}
