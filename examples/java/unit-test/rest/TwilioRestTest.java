@@ -48,6 +48,9 @@ public class TwilioRestTest {
     @Mock
     private TwilioRestClient twilioRestClient;
 
+    @Injectable
+    private TwilioRestClient twilioRestClientExtension;
+
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
