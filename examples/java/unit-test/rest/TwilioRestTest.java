@@ -1,7 +1,13 @@
 package com.twilio.rest;
 
+import com.twilio.rest.api.v2010.AwsCreator;
+import java.util.Collections;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.twilio.base.Page;
 import com.twilio.base.ResourceSet;
+import com.twilio.converter.DateConverter;
+import com.twilio.exception.ApiConnectionException;
 import com.twilio.exception.ApiException;
 import com.twilio.http.HttpMethod;
 import com.twilio.http.Request;
@@ -9,41 +15,41 @@ import com.twilio.http.Response;
 import com.twilio.http.TwilioRestClient;
 import com.twilio.rest.api.v2010.Account;
 import com.twilio.rest.api.v2010.AccountCreator;
+import com.twilio.rest.api.v2010.AccountDeleter;
 import com.twilio.rest.api.v2010.AccountFetcher;
 import com.twilio.rest.api.v2010.AccountReader;
-import com.twilio.rest.api.v2010.AccountDeleter;
-import com.twilio.rest.api.v2010.Call;
-import com.twilio.rest.api.v2010.CallFetcher;
 import com.twilio.rest.api.v2010.Aws;
-import com.twilio.rest.api.v2010.AwsCreator;
 import com.twilio.rest.api.v2010.AwsReader;
-
-import java.net.URI;
-import java.time.LocalDate;
-import java.time.ZonedDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.twilio.rest.api.v2010.AwsUpdater;
+import com.twilio.rest.api.v2010.Call;
+import com.twilio.rest.api.v2010.CallCreator;
+import com.twilio.rest.api.v2010.CallDeleter;
+import com.twilio.rest.api.v2010.CallFetcher;
 import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.math.BigDecimal;
+import java.net.URI;
+import java.time.LocalDate;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
-import java.time.format.DateTimeFormatter;
-import com.twilio.converter.DateConverter;
 
 public class TwilioRestTest {
     @Mock
