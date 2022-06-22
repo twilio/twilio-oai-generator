@@ -650,4 +650,220 @@ public class TwilioRestTest {
         accountReader.previousPage(null, twilioRestClient);
 
     }
+
+    @Test(expected = ApiConnectionException.class)
+    public void testCallFetcherResponseNull() {
+        when(twilioRestClient.request(Mockito.any())).thenReturn(null);
+        new CallFetcher(ACCOUNT_SID, 123).fetch(twilioRestClient);
+    }
+
+    @Test(expected = ApiException.class)
+    public void testCallFetcherResponseNotSuccess() {
+        Response response = new Response("{\"account_sid\":\"SID\", \"call_sid\":\"PNXXXXY\"}", 404);
+        when(twilioRestClient.request(Mockito.any())).thenReturn(response);
+        when(twilioRestClient.getAccountSid()).thenReturn(ACCOUNT_SID);
+        when(twilioRestClient.getObjectMapper()).thenReturn(new ObjectMapper());
+        new CallFetcher(1234).fetch(twilioRestClient);
+    }
+
+    @Test(expected = ApiConnectionException.class)
+    public void testCallDeleterResponseNull() {
+        when(twilioRestClient.request(Mockito.any())).thenReturn(null);
+        new CallDeleter(ACCOUNT_SID, 123).delete(twilioRestClient);
+    }
+
+    @Test(expected = ApiException.class)
+    public void testCallDeleterResponseNotSuccess() {
+        Response response = new Response("{\"account_sid\":\"AC222222222222222222222222222222\", \"call_sid\":\"PNXXXXY\"}", 404);
+        when(twilioRestClient.request(Mockito.any())).thenReturn(response);
+        when(twilioRestClient.getAccountSid()).thenReturn(ACCOUNT_SID);
+        when(twilioRestClient.getObjectMapper()).thenReturn(new ObjectMapper());
+        new CallDeleter(1234).delete(twilioRestClient);
+    }
+
+    @Test(expected = ApiConnectionException.class)
+    public void testCallCreatorResponseNull() {
+        when(twilioRestClient.request(Mockito.any())).thenReturn(null);
+        new CallCreator(ACCOUNT_SID, "123").create(twilioRestClient);
+    }
+
+    @Test(expected = ApiException.class)
+    public void testCallCreatorResponseNotSuccess() {
+        Response response = new Response("{\"account_sid\":\"SID\", \"call_sid\":\"PNXXXXY\"}", 404);
+        when(twilioRestClient.request(Mockito.any())).thenReturn(response);
+        when(twilioRestClient.getAccountSid()).thenReturn(ACCOUNT_SID);
+        when(twilioRestClient.getObjectMapper()).thenReturn(new ObjectMapper());
+        new CallCreator("123").setTestArrayOfStrings(Arrays.asList("value1", "value2")).create(twilioRestClient);
+    }
+
+    @Test
+    public void testCallCrud() {
+        CallCreator callCreator = Call.creator("123");
+        CallCreator callCreatorAccountSid = Call.creator(ACCOUNT_SID,"123");
+        assertNotNull(callCreator);
+        assertNotNull(callCreatorAccountSid);
+
+        CallFetcher callFetcher = Call.fetcher(123);
+        CallFetcher callFetcherAccountSid =  Call.fetcher(ACCOUNT_SID,123);
+        assertNotNull(callFetcher);
+        assertNotNull(callFetcherAccountSid);
+
+        CallDeleter callDeleter = Call.deleter(123);
+        CallDeleter callDeleterAccountSid = Call.deleter(ACCOUNT_SID,123);
+        assertNotNull(callDeleter);
+        assertNotNull(callDeleterAccountSid);
+    }
+
+    @Test
+    public void testCallVariable() {
+        Call.TestEnum testEnum = Call.TestEnum.forValue("DialVerb");
+        Call.XTwilioWebhookEnabled xTwilioWebhookEnabled = Call.XTwilioWebhookEnabled.forValue("true");
+        Call.Status status = Call.Status.forValue("paused");
+        Call.Permissions permissions = Call.Permissions.forValue("get-all");
+
+        assertEquals("DialVerb", testEnum.toString());
+        assertEquals("true", xTwilioWebhookEnabled.toString());
+        assertEquals("paused", status.toString());
+        assertEquals("get-all", permissions.toString());
+    }
+
+    @Test
+    public void testCallObjectCreation() {
+        ObjectMapper objectMapper = new ObjectMapper();
+        String json = "{\"testInteger\": 123}";
+        Call callString = Call.fromJson(json, objectMapper);
+
+        String initialString = "{\"testInteger\": 123}";
+        InputStream targetStream = new ByteArrayInputStream(initialString.getBytes());
+        Call callInputStream = Call.fromJson(targetStream, objectMapper);
+
+        assertEquals((Integer)123, callString.getTestInteger());
+        assertEquals((Integer)123, callInputStream.getTestInteger());
+    }
+    @Test(expected = ApiException.class)
+    public void testCallObjectCreationInvalidJsonString() {
+        ObjectMapper objectMapper = new ObjectMapper();
+        Call.fromJson("json", objectMapper);
+    }
+
+    @Test(expected = ApiException.class)
+    public void testCallObjectCreationInvalidInputStream() {
+        ObjectMapper objectMapper = new ObjectMapper();
+        Call.fromJson(new ByteArrayInputStream("initialString".getBytes()), objectMapper);
+    }
+    @Test
+    public void testCallGetters() {
+        ObjectMapper objectMapper = new ObjectMapper();
+        String json = "{\"accountSid\": \"a123\", \"sid\": \"123\", \"testInteger\": 123, \"testNumber\": 123.1, \"testNumberFloat\": 123.2, \"testEnum\": \"Trunking\", " +
+                "\"testEnum\": \"Trunking\"}";
+        String jsonDuplicate = "{\"accountSid\": \"a123\", \"sid\": \"123\", \"testInteger\": 123, \"testNumber\": 123.1, \"testNumberFloat\": 123.2, \"testEnum\": \"Trunking\", " +
+                "\"testEnum\": \"Trunking\"}";
+        Call call = Call.fromJson(json, objectMapper);
+        Call callDuplicate = Call.fromJson(jsonDuplicate, objectMapper);
+
+        assertEquals("a123", call.getAccountSid());
+        assertEquals("123", call.getSid());
+        assertNull(call.getTestObject());
+        assertEquals(Integer.valueOf("123"), call.getTestInteger());
+        assertNull(call.getTestDateTime());
+        assertEquals(BigDecimal.valueOf(123.1), call.getTestNumber());
+        assertNull(call.getPriceUnit());
+        assertEquals(Float.valueOf("123.2"), call.getTestNumberFloat());
+        assertEquals("Trunking", call.getTestEnum().toString());
+        assertNull(call.getTestArrayOfIntegers());
+        assertNull(call.getTestArrayOfArrayOfIntegers());
+        assertNull(call.getTestArrayOfObjects());
+        assertNull(call.getXTwilioWebhookEnabled());
+        assertNull(call.getStatus());
+        assertNull(call.getPermissions());
+        assertNull(call.getTestString());
+
+        assertTrue(call.equals(callDuplicate));
+        // If two objects are equal they must have same hashcode
+        assertEquals(callDuplicate.hashCode(), call.hashCode());
+        assertFalse(call.equals(null));
+    }
+
+    @Test
+    public void testAwsReaderPagination() {
+        String firstPageURI = "/v1/Credentials/AWS";
+        String nextPageURI = "/v1/Credentials/AWSN";
+        Request mockRequestFirstPage = new Request(
+                HttpMethod.GET,
+                "api",
+                firstPageURI
+        );
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        when(twilioRestClient.getObjectMapper()).thenReturn(objectMapper);
+
+        mockRequestFirstPage.addQueryParam("PageSize", "2");
+        String responseContent = "{\"credentials\":[" +
+                "{\"sid\":\"CR12345678123456781234567812345678\", \"test_string\":\"Ahoy\", \"test_object\":{\"mms\": true, \"sms\":false, \"voice\": false, \"fax\":true}}" +
+                "],\"meta\": {\"url\":\"" + firstPageURI + "\", \"next_page_url\":\"" + nextPageURI + "?PageSize=2" + "\", \"previous_page_url\":\"" + firstPageURI + "?PageSize=2" + "\", \"first_page_url\":\"" + firstPageURI + "?PageSize=2" + "\", \"page_size\":2}}";
+        when(twilioRestClient.request(mockRequestFirstPage)).thenReturn(new Response(responseContent, 200));
+
+        String responseContentNextPage = "{\"credentials\":[" +
+                "{\"sid\":\"CR12345678123456781234567812345678\", \"test_string\":\"Matey\", \"test_object\":{\"mms\": true, \"sms\":false, \"voice\": false, \"fax\":true}}" +
+                "],\"meta\": {\"url\":\"" + firstPageURI + "\", \"next_page_url\":\"" + "" + "?PageSize=2" + "\", \"previous_page_url\":\"" + firstPageURI + "?PageSize=2" + "\", \"first_page_url\":\"" + firstPageURI + "?PageSize=2" + "\", \"page_size\":2}}";
+
+        AwsReader awsReader = new AwsReader();
+        awsReader.setPageSize(2);
+        Page<Aws> firstPage = awsReader.firstPage(twilioRestClient);
+
+        when(twilioRestClient.request(Mockito.any())).thenReturn(new Response(responseContentNextPage, 200));
+        Page<Aws> nextPage = awsReader.nextPage(firstPage, twilioRestClient);
+        when(twilioRestClient.request(Mockito.any())).thenReturn(new Response(responseContent, 200));
+        Page<Aws> previousPage = awsReader.previousPage(nextPage, twilioRestClient);
+        Page<Aws> page = awsReader.getPage(firstPageURI, twilioRestClient);
+
+        assertEquals("Ahoy", firstPage.getRecords().get(0).getTestString());
+        assertEquals("Matey", nextPage.getRecords().get(0).getTestString());
+        assertEquals("Ahoy", previousPage.getRecords().get(0).getTestString());
+        assertEquals("Ahoy", page.getRecords().get(0).getTestString());
+    }
+
+    @Test(expected = ApiConnectionException.class)
+    public void testAwsReaderResponseNull() {
+        AwsReader awsReader = new AwsReader();
+        awsReader.firstPage(twilioRestClient);
+    }
+
+    @Test(expected = ApiException.class)
+    public void testAwsReaderResponseNotSuccess() {
+        String testResponse =  "{\"credentials\":[], \"meta\": {\"url\":\"" + "url" + "\", \"next_page_url\":\"" + "url" + "?PageSize=5" + "\", \"previous_page_url\":\"" + "url" + "?PageSize=3" + "\", \"first_page_url\":\"" + "url" + "?PageSize=1" + "\", \"page_size\":4}}";
+        when(twilioRestClient.request(Mockito.any())).thenReturn(new Response(testResponse, 404));
+        when(twilioRestClient.getObjectMapper()).thenReturn(objectMapper);
+        AwsReader awsReader = new AwsReader();
+        awsReader.firstPage(twilioRestClient);
+    }
+
+    @Test
+    public void testAwsUpdater() {
+        ObjectMapper objectMapper = new ObjectMapper();
+        when(twilioRestClient.getObjectMapper()).thenReturn(objectMapper);
+
+        String testResponse = "{\"accountSid\": \"sid\"}";
+        when(twilioRestClient.request(Mockito.any())).thenReturn(new Response(testResponse, 200));
+        AwsUpdater awsUpdater = Aws.updater("sidUpdated").setTestString("testString");
+        Aws awsUpdated = awsUpdater.update(twilioRestClient);
+
+        assertEquals("sid", awsUpdated.getAccountSid());
+    }
+    @Test(expected = ApiConnectionException.class)
+    public void testAwsUpdaterResponseNull() {
+        AwsUpdater awsUpdater = Aws.updater("123");
+        awsUpdater.update(twilioRestClient);
+    }
+
+    @Test(expected = ApiException.class)
+    public void testAwsUpdaterResponseNotSuccess() {
+        AwsUpdater awsUpdater = Aws.updater("123");
+        String testResponse = "{\"accountSid\": \"sid\"}";
+        ObjectMapper objectMapper = new ObjectMapper();
+        when(twilioRestClient.getObjectMapper()).thenReturn(objectMapper);
+
+        when(twilioRestClient.request(Mockito.any())).thenReturn(new Response(testResponse, 404));
+        awsUpdater.update(twilioRestClient);
+    }
 }
