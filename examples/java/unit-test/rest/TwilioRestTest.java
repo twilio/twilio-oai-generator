@@ -67,7 +67,7 @@ public class TwilioRestTest {
         assertNotNull(account);
     }
 
-    @Test(expected=Exception.class)
+    @Test(expected=NullPointerException.class)
     public void testShouldMakeInValidAPICallReturnsNullForAccountFetcher() {
         Request mockRequest = new Request(
                 HttpMethod.GET,
@@ -113,7 +113,7 @@ public class TwilioRestTest {
         assertNotNull(account);
     }
 
-    @Test(expected=Exception.class)
+    @Test(expected=NullPointerException.class)
     public void testShouldMakeInValidAPICallReturnsNulForAccountDeleter() {
         Request mockRequest = new Request(
                 HttpMethod.DELETE,
@@ -163,7 +163,7 @@ public class TwilioRestTest {
         assertNotNull(account);
     }
 
-    @Test(expected=Exception.class)
+    @Test(expected=ApiConnectionException.class)
     public void testShouldSendNullResponseForAccountCreator() {
         List<String> recordingStatusCallbackEvent = Arrays.asList("http://test1.com/", "http://test2.com");
         Request mockRequest = new Request(
@@ -188,7 +188,7 @@ public class TwilioRestTest {
         Account account  = accountCreator.create(twilioRestClient);
     }
 
-    @Test(expected=Exception.class)
+    @Test(expected=ApiConnectionException.class)
     public void testShouldSendIncorrectStatusForAccountCreator() {
         Request mockRequest = new Request(
                 HttpMethod.POST,
@@ -440,16 +440,11 @@ public class TwilioRestTest {
         awsCreator.setTestInteger(new Integer(1));
         awsCreator.setTestBoolean(true);
         awsCreator.setTestString("test");
-        Aws aws = awsCreator.create(twilioRestClient);
+        awsCreator.create(twilioRestClient);
     }
 
     @Test(expected =  Exception.class)
     public void testObjectArrayTypeParamInvalidStatus() {
-        Request mockRequest = new Request(
-                HttpMethod.POST,
-                "api",
-                "/v1/Credentials/AWS"
-        );
 
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
@@ -467,11 +462,6 @@ public class TwilioRestTest {
 
     @Test(expected =  Exception.class)
     public void testObjectArrayTypeParamInvalidStatus2() {
-        Request mockRequest = new Request(
-                HttpMethod.POST,
-                "api",
-                "/v1/Credentials/AWS"
-        );
 
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
@@ -489,11 +479,6 @@ public class TwilioRestTest {
 
     @Test(expected =  Exception.class)
     public void testObjectArrayTypeParamInvalidStatus3() {
-        Request mockRequest = new Request(
-                HttpMethod.POST,
-                "api",
-                "/v1/Credentials/AWS"
-        );
 
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
@@ -664,7 +649,7 @@ public class TwilioRestTest {
         assertEquals("https://flex-api.twilio.com/v1/uri", mockRequest.getUrl());
     }
 
-    @Test(expected=Exception.class)
+    @Test(expected=ApiException.class)
     public void testShouldQueryParamInRequestNullResponse() {
         Request mockRequest = new Request(
                 HttpMethod.GET,
@@ -694,7 +679,7 @@ public class TwilioRestTest {
         assertNotNull(account);
     }
 
-    @Test(expected=Exception.class)
+    @Test(expected=ApiConnectionException.class)
     public void testShouldQueryParamInRequestwithIncorrectResponseCode() {
         Request mockRequest = new Request(
                 HttpMethod.GET,
@@ -808,11 +793,6 @@ public class TwilioRestTest {
 
     @Test
     public void testShouldMakeValidAPICallAWSFetcher() {
-        Request mockRequest = new Request(
-                HttpMethod.GET,
-                "api",
-                "/v1/Credentials/AWS"
-        );
         String url = "https://api.twilio.com/v1/Credentials/AWS";
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
