@@ -831,6 +831,7 @@ public class TwilioRestTest {
 
     @Test(expected = ApiException.class)
     public void testAwsReaderResponseNotSuccess() {
+        ObjectMapper objectMapper = new ObjectMapper();
         String testResponse =  "{\"credentials\":[], \"meta\": {\"url\":\"" + "url" + "\", \"next_page_url\":\"" + "url" + "?PageSize=5" + "\", \"previous_page_url\":\"" + "url" + "?PageSize=3" + "\", \"first_page_url\":\"" + "url" + "?PageSize=1" + "\", \"page_size\":4}}";
         when(twilioRestClient.request(Mockito.any())).thenReturn(new Response(testResponse, 404));
         when(twilioRestClient.getObjectMapper()).thenReturn(objectMapper);
