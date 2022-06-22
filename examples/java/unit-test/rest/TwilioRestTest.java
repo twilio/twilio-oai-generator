@@ -10,6 +10,7 @@ import com.twilio.http.Response;
 import com.twilio.http.TwilioRestClient;
 import com.twilio.rest.api.v2010.*;
 
+import java.math.BigDecimal;
 import java.net.URI;
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
@@ -384,6 +385,128 @@ public class TwilioRestTest {
         awsCreator.setTestObjectArray(Arrays.asList(item1, item2));
         Aws aws = awsCreator.create(twilioRestClient);
         assertNotNull(aws);
+    }
+
+    @Test(expected =  Exception.class)
+    public void testObjectArrayTypeParamNullResponseAwsCreator() {
+        Request mockRequest = new Request(
+                HttpMethod.POST,
+                "api",
+                "/v1/Credentials/AWS"
+        );
+        Map<String, Object> item1 = new HashMap<>();
+        Map<String, Object> item2 = new HashMap<>();
+        item1.put("A", Arrays.asList("Apple", "Aces"));
+        item2.put("B", Collections.singletonList("Banana"));
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        List<Object> testObjectArray = Arrays.asList(item1, item2);
+        for(Object testObject : testObjectArray){
+            mockRequest.addPostParam("TestObjectArray", testObject.toString());
+        }
+        mockRequest.addPostParam("TestString", ACCOUNT_SID);
+        mockRequest.addPostParam("TestNumberFloat", "1.4");
+        mockRequest.addPostParam(TEST_INTEGER, "1");
+        mockRequest.addPostParam("Permissions", "test");
+        mockRequest.addPostParam("TestEnum", "test");
+        mockRequest.addPostParam("TestDate", "test");
+        mockRequest.addPostParam("TestDateTime", "test");
+        mockRequest.addPostParam("TestObject", "test");
+        mockRequest.addPostParam("TestDateTime", "test");
+        mockRequest.addPostParam("TestNumberInt64", "test");
+        mockRequest.addPostParam("TestNumberInt32", "test");
+        mockRequest.addPostParam("TestNumberDouble", "test");
+        mockRequest.addPostParam("TestNumber", "test");
+        mockRequest.addPostParam("TestBoolean", "test");
+        when(twilioRestClient.request(mockRequest)).thenReturn(null);
+        when(twilioRestClient.getObjectMapper()).thenReturn(objectMapper);
+        AwsCreator awsCreator = new AwsCreator(ACCOUNT_SID, 1, 1.4F);
+        awsCreator.setTestObjectArray(Arrays.asList(item1, item2));
+        List<Aws.Permissions> permissions = new ArrayList<>();
+        permissions.add(Aws.Permissions.GET_ALL);
+        permissions.add(Aws.Permissions.POST_ALL);
+        awsCreator.setPermissions( permissions);
+        awsCreator.setTestEnum(Aws.TestEnum.DIALVERB);
+        LocalDate localDate = LocalDate.now();
+        ZonedDateTime zonedDateTime = ZonedDateTime.now();
+        awsCreator.setTestDate(localDate);
+        awsCreator.setTestDateTime(zonedDateTime);
+        awsCreator.setTestObject(new HashMap<>());
+        awsCreator.setTestNumberInt64(new Long(1));
+        awsCreator.setTestNumberInt32(new BigDecimal(1));
+        awsCreator.setTestNumberDouble(new Double(1));
+        awsCreator.setTestNumberFloat(new Float(1));
+        awsCreator.setTestNumber(new BigDecimal(1));
+        awsCreator.setTestInteger(new Integer(1));
+        awsCreator.setTestBoolean(true);
+        awsCreator.setTestString("test");
+        Aws aws = awsCreator.create(twilioRestClient);
+    }
+
+    @Test(expected =  Exception.class)
+    public void testObjectArrayTypeParamInvalidStatus() {
+        Request mockRequest = new Request(
+                HttpMethod.POST,
+                "api",
+                "/v1/Credentials/AWS"
+        );
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        Map<String, Object> content = new HashMap<>();
+        content.put("code", 20001);
+        content.put("message", "Invalid PageSize.");
+        content.put("more_info", "https://www.twilio.com/docs/errors/20001");
+        content.put("status", 400);
+        JSONObject response = new JSONObject(content);
+        when(twilioRestClient.request(Mockito.any())).thenReturn(new Response(response.toString(), 400));
+        when(twilioRestClient.getObjectMapper()).thenReturn(objectMapper);
+        AwsCreator awsCreator = new AwsCreator(ACCOUNT_SID, LocalDate.now(), 1.4F);
+        Aws aws = awsCreator.create(twilioRestClient);
+    }
+
+    @Test(expected =  Exception.class)
+    public void testObjectArrayTypeParamInvalidStatus2() {
+        Request mockRequest = new Request(
+                HttpMethod.POST,
+                "api",
+                "/v1/Credentials/AWS"
+        );
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        Map<String, Object> content = new HashMap<>();
+        content.put("code", 20001);
+        content.put("message", "Invalid PageSize.");
+        content.put("more_info", "https://www.twilio.com/docs/errors/20001");
+        content.put("status", 400);
+        JSONObject response = new JSONObject(content);
+        when(twilioRestClient.request(Mockito.any())).thenReturn(new Response(response.toString(), 400));
+        when(twilioRestClient.getObjectMapper()).thenReturn(objectMapper);
+        AwsCreator awsCreator = new AwsCreator(ACCOUNT_SID, LocalDate.now(), new HashMap<>());
+        Aws aws = awsCreator.create(twilioRestClient);
+    }
+
+    @Test(expected =  Exception.class)
+    public void testObjectArrayTypeParamInvalidStatus3() {
+        Request mockRequest = new Request(
+                HttpMethod.POST,
+                "api",
+                "/v1/Credentials/AWS"
+        );
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        Map<String, Object> content = new HashMap<>();
+        content.put("code", 20001);
+        content.put("message", "Invalid PageSize.");
+        content.put("more_info", "https://www.twilio.com/docs/errors/20001");
+        content.put("status", 400);
+        JSONObject response = new JSONObject(content);
+        when(twilioRestClient.request(Mockito.any())).thenReturn(new Response(response.toString(), 400));
+        when(twilioRestClient.getObjectMapper()).thenReturn(objectMapper);
+        AwsCreator awsCreator = new AwsCreator(ACCOUNT_SID, 1, new HashMap<>());
+        Aws aws = awsCreator.create(twilioRestClient);
     }
 
     @Test
