@@ -461,7 +461,7 @@ public class TwilioRestTest {
     }
 
     @Test(expected =  Exception.class)
-    public void testObjectArrayTypeParamInvalidStatus2() {
+    public void testAwsCreatorConstructorWithLocalDateAndMap() {
 
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
@@ -478,7 +478,7 @@ public class TwilioRestTest {
     }
 
     @Test(expected =  Exception.class)
-    public void testObjectArrayTypeParamInvalidStatus3() {
+    public void testAwsCreatorConstructorWithIntAndMap() {
 
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
