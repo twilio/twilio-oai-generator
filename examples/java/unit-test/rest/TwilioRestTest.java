@@ -67,9 +67,7 @@ public class TwilioRestTest {
         objectMapper.registerModule(new JavaTimeModule());
         when(twilioRestClient.request(mockRequest)).thenReturn(new Response("{\"account_sid\":\"AC222222222222222222222222222222\", \"call_sid\":\"PNXXXXY\"}", 200));
         when(twilioRestClient.getObjectMapper()).thenReturn(objectMapper);
-
         Account account = new AccountFetcher(ACCOUNT_SID).fetch(twilioRestClient);
-
         assertNotNull(account);
     }
 
@@ -165,8 +163,10 @@ public class TwilioRestTest {
         accountCreator.setRecordingStatusCallback(URI.create("https://validurl.com"));
 
         Account account  = accountCreator.create(twilioRestClient);
-
         assertNotNull(account);
+        assertEquals("123",account.getSid());
+        assertEquals("true", mockRequest.getHeaderParams().get("X-Twilio-Webhook-Enabled").get(0));
+        assertEquals("https://validurl.com", mockRequest.getPostParams().get("RecordingStatusCallback").get(0));
     }
 
 //    @Test(expected=ApiConnectionException.class)
@@ -241,8 +241,9 @@ public class TwilioRestTest {
         accountReader.setPageSize(4);
 
         ResourceSet<Account> account  = accountReader.read(twilioRestClient);
-
         assertNotNull(account);
+        assertNotNull(mockRequest.getQueryParams().get("DateCreated"));
+        assertNotNull(mockRequest.getQueryParams().get("PageSize"));
     }
 
     @Test
@@ -266,10 +267,12 @@ public class TwilioRestTest {
         accountCreator.setRecordingStatusCallbackEvent(recordingStatusCallbackEvent);
         accountCreator.setRecordingStatusCallback(URI.create("https://validurl.com"));
         accountCreator.setXTwilioWebhookEnabled(Account.XTwilioWebhookEnabled.TRUE);
-
         Account account  = accountCreator.create(twilioRestClient);
-
         assertNotNull(account);
+        assertEquals("true", mockRequest.getHeaderParams().get("X-Twilio-Webhook-Enabled").get(0));
+        assertEquals(recordingStatusCallbackEvent.get(0), mockRequest.getPostParams().get("RecordingStatusCallbackEvent").get(0));
+        assertEquals("https://validurl.com", mockRequest.getPostParams().get("RecordingStatusCallback").get(0));
+
     }
 
     @Test
@@ -391,6 +394,8 @@ public class TwilioRestTest {
         awsCreator.setTestObjectArray(Arrays.asList(item1, item2));
         Aws aws = awsCreator.create(twilioRestClient);
         assertNotNull(aws);
+        assertEquals(item1.toString(), mockRequest.getPostParams().get("TestObjectArray").get(0));
+        assertEquals("AC222222222222222222222222222222", mockRequest.getPostParams().get("TestString").get(0));
     }
 
     @Test
@@ -403,7 +408,6 @@ public class TwilioRestTest {
 
         Map<String, Object> anyMap = new HashMap<>();
         anyMap.put(TEST_INTEGER, 1);
-
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
         mockRequest.addPostParam("TestAnyType", "{TestInteger=1}");
@@ -418,6 +422,9 @@ public class TwilioRestTest {
 
         assertNotNull(aws);
         assertNotNull(awsCreator);
+        assertEquals("AC222222222222222222222222222222", mockRequest.getPostParams().get("TestString").get(0));
+        assertEquals("{TestInteger=1}", mockRequest.getPostParams().get("TestAnyType").get(0));
+
     }
 
     @Test
@@ -450,14 +457,12 @@ public class TwilioRestTest {
         accountReader.setDateCreatedAfter(currentDateTime);
         accountReader.setDateTest(localDate);
         accountReader.setPageSize(4);
-
         ResourceSet<Account> account = accountReader.read(twilioRestClient);
-
         assertNotNull(account);
-        assertEquals("123", account.iterator().next().getSid());
-        assertTrue(account.iterator().next().getTestObject().getMms());
         assertFalse(account.iterator().next().getTestObject().getSms());
         assertFalse(account.iterator().next().getTestObject().getVoice());
+        assertTrue(account.iterator().next().getTestObject().getMms());
+        assertEquals("123", account.iterator().next().getSid());
         assertTrue(account.iterator().next().getTestObject().getFax());
     }
 
@@ -531,9 +536,7 @@ public class TwilioRestTest {
         accountReader.setDateCreated(currentDateTime);
         accountReader.setDateTest(localDate);
         accountReader.setPageSize(4);
-
         ResourceSet<Account> account = accountReader.read(twilioRestClient);
-
         assertNotNull(account);
         assertEquals("123",account.iterator().next().getSid());
         assertEquals("USD", account.iterator().next().getPriceUnit().toString() );
@@ -542,10 +545,21 @@ public class TwilioRestTest {
 
     @Test
     public void testRequestNonStandardDomainName() {
-        Request mockRequest = new Request(HttpMethod.GET, Domains.FLEXAPI.toString(), "/v1/uri");
+        Request mockRequest = new Request(HttpMethod.GET,
+                Domains.FLEXAPI.toString(),
+                "/2010-04-01/v1/FlexFlows");
+        mockRequest.addHeaderParam("Accept", "application/json");
+        mockRequest.addPostParam("FriendlyName", "friendly_name");
+        mockRequest.addPostParam("ChatServiceSid", "ISXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
+        mockRequest.addPostParam("ChannelType", "web");
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        String responseContent = "{\"sid\": \"FOaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"account_sid\": \"ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"date_created\": \"2016-08-01T22:10:40Z\",\"date_updated\": \"2016-08-01T22:10:40Z\",\"friendly_name\": \"friendly_name\",\"chat_service_sid\": \"ISaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"channel_type\": \"sms\",\"contact_identity\": \"12345\",\"enabled\": true,\"integration_type\": \"studio\",\"integration\": {\"flow_sid\": \"FWaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"retry_count\": 1},\"long_lived\": true,\"janitor_enabled\": true,\"url\": \"https://flex-api.twilio.com/v1/FlexFlows/FOaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"}";
+        when(twilioRestClient.request(mockRequest)).thenReturn(new Response(responseContent, 200));
+        when(twilioRestClient.getObjectMapper()).thenReturn(objectMapper);
         assertNotNull(mockRequest);
         assertEquals(HttpMethod.GET, mockRequest.getMethod());
-        assertEquals("https://flex-api.twilio.com/v1/uri", mockRequest.getUrl());
+        assertEquals("https://flex-api.twilio.com/2010-04-01/v1/FlexFlows", mockRequest.getUrl());
     }
 
     @Test(expected=Exception.class)
