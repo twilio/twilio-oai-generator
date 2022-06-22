@@ -84,7 +84,7 @@ public class TwilioRestTest {
         objectMapper.registerModule(new JavaTimeModule());
         when(twilioRestClient.request(mockRequest)).thenReturn(null);
         when(twilioRestClient.getObjectMapper()).thenReturn(objectMapper);
-        Account account = new AccountFetcher("AC222222222222222222222222222222").fetch(twilioRestClient);
+        Account account = new AccountFetcher().fetch(twilioRestClient);
         assertNotNull(account);
     }
 
