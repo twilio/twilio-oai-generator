@@ -387,7 +387,7 @@ public class TwilioRestTest {
         assertNotNull(aws);
     }
 
-    @Test(expected =  Exception.class)
+    @Test(expected =  ApiConnectionException.class)
     public void testObjectArrayTypeParamNullResponseAwsCreator() {
         Request mockRequest = new Request(
                 HttpMethod.POST,
@@ -443,7 +443,7 @@ public class TwilioRestTest {
         awsCreator.create(twilioRestClient);
     }
 
-    @Test(expected =  Exception.class)
+    @Test(expected =  ApiException.class)
     public void testObjectArrayTypeParamInvalidStatus() {
 
         ObjectMapper objectMapper = new ObjectMapper();
@@ -460,7 +460,7 @@ public class TwilioRestTest {
         Aws aws = awsCreator.create(twilioRestClient);
     }
 
-    @Test(expected =  Exception.class)
+    @Test(expected =  ApiException.class)
     public void testAwsCreatorConstructorWithLocalDateAndMap() {
 
         ObjectMapper objectMapper = new ObjectMapper();
@@ -477,7 +477,7 @@ public class TwilioRestTest {
         Aws aws = awsCreator.create(twilioRestClient);
     }
 
-    @Test(expected =  Exception.class)
+    @Test(expected =  ApiException.class)
     public void testAwsCreatorConstructorWithIntAndMap() {
 
         ObjectMapper objectMapper = new ObjectMapper();
@@ -709,7 +709,7 @@ public class TwilioRestTest {
         assertNotNull(account);
     }
 
-    @Test(expected = Exception.class)
+    @Test(expected = NullPointerException.class)
     public void testShouldReadPreviousPage() {
         String uri = "/2010-04-01/Accounts.json";
         Request mockRequestPage0 = new Request(
@@ -738,7 +738,7 @@ public class TwilioRestTest {
 
     }
 
-    @Test(expected = Exception.class)
+    @Test(expected = ApiConnectionException.class)
     public void testShouldMakeInValidAPICallReturnsNullForAccountUpdater() {
         Request mockRequest = new Request(
                 HttpMethod.POST,
@@ -753,7 +753,7 @@ public class TwilioRestTest {
         Account account = new AccountUpdater(ACCOUNT_SID,status).update(twilioRestClient);
     }
 
-    @Test(expected = Exception.class)
+    @Test(expected = ApiException.class)
     public void testShouldMakeInValidAPICallReturnsWrongStatusForAccountUpdater() {
         Request mockRequest = new Request(
                 HttpMethod.POST,
@@ -772,7 +772,7 @@ public class TwilioRestTest {
         Account account = accountUpdater.update(twilioRestClient);
     }
 
-    @Test(expected = Exception.class)
+    @Test(expected = NullPointerException.class)
     public void testShouldHaveInValidParametersForAccountUpdater() {
         Request mockRequest = new Request(
                 HttpMethod.POST,
