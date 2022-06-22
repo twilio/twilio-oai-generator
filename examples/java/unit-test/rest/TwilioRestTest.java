@@ -12,6 +12,7 @@ import com.twilio.rest.api.v2010.AccountCreator;
 import com.twilio.rest.api.v2010.AccountFetcher;
 import com.twilio.rest.api.v2010.AccountReader;
 import com.twilio.rest.api.v2010.AccountDeleter;
+import com.twilio.rest.api.v2010.AccountUpdater;
 import com.twilio.rest.api.v2010.Call;
 import com.twilio.rest.api.v2010.CallFetcher;
 import com.twilio.rest.api.v2010.Aws;
@@ -635,5 +636,58 @@ public class TwilioRestTest {
         accountReader.setPageSize(2);
         accountReader.previousPage(null, twilioRestClient);
 
+    }
+
+    @Test(expected = Exception.class)
+    public void testShouldMakeInValidAPICallReturnsNullForAccountUpdater() {
+        Request mockRequest = new Request(
+                HttpMethod.POST,
+                "api",
+                "/2010-04-01/Accounts/AC222222222222222222222222222222.json"
+        );
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        when(twilioRestClient.request(mockRequest)).thenReturn(null);
+        when(twilioRestClient.getObjectMapper()).thenReturn(objectMapper);
+        Account.Status status = Account.Status.IN_PROGRESS;
+        Account account = new AccountUpdater(ACCOUNT_SID,status).update(twilioRestClient);
+    }
+
+    @Test(expected = Exception.class)
+    public void testShouldMakeInValidAPICallReturnsWrongStatusForAccountUpdater() {
+        Request mockRequest = new Request(
+                HttpMethod.POST,
+                com.twilio.rest.Domains.API.toString(),
+                "/2010-04-01/Accounts/AC222222222222222222222222222222.json"
+        );
+        mockRequest.addPostParam("PauseBehavior", "test");
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        when(twilioRestClient.request(mockRequest)).thenReturn(new Response("{\"account_sid\":\"AC222222222222222222222222222222\", \"call_sid\":\"PNXXXXY\"}", 404));
+        when(twilioRestClient.getObjectMapper()).thenReturn(objectMapper);
+        Account.Status status = Account.Status.IN_PROGRESS;
+        AccountUpdater accountUpdater = new AccountUpdater(ACCOUNT_SID,status);
+        accountUpdater.setPauseBehavior("test");
+        Account account = accountUpdater.update(twilioRestClient);
+    }
+
+    @Test(expected = Exception.class)
+    public void testShouldHaveInValidParametersForAccountUpdater() {
+        Request mockRequest = new Request(
+                HttpMethod.POST,
+                com.twilio.rest.Domains.API.toString(),
+                "/2010-04-01/Accounts/AC222222222222222222222222222222.json"
+        );
+        mockRequest.addPostParam("PauseBehavior", "test");
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        when(twilioRestClient.request(mockRequest)).thenReturn(new Response("{\"account_sid\":\"AC222222222222222222222222222222\", \"call_sid\":\"PNXXXXY\"}", 404));
+        when(twilioRestClient.getObjectMapper()).thenReturn(objectMapper);
+        Account.Status status = Account.Status.IN_PROGRESS;
+        AccountUpdater accountUpdater = new AccountUpdater(status);
+        accountUpdater.setPauseBehavior("test");
+        Account account = accountUpdater.update(twilioRestClient);
     }
 }
