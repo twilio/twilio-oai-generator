@@ -130,7 +130,7 @@ public class TwilioRestTest {
         objectMapper.registerModule(new JavaTimeModule());
         when(twilioRestClient.request(mockRequest)).thenReturn(null);
         when(twilioRestClient.getObjectMapper()).thenReturn(objectMapper);
-        Boolean account = new AccountDeleter("AC222222222222222222222222222222").delete(twilioRestClient);
+        Boolean account = new AccountDeleter().delete(twilioRestClient);
     }
 
     @Test(expected=ApiException.class)
@@ -169,30 +169,30 @@ public class TwilioRestTest {
         assertNotNull(account);
     }
 
-//    @Test(expected=ApiConnectionException.class)
-//    public void testShouldSendNullResponseForAccountCreator() {
-//        List<String> recordingStatusCallbackEvent = Arrays.asList("http://test1.com/", "http://test2.com");
-//        Request mockRequest = new Request(
-//                HttpMethod.POST,
-//                Domains.API.toString(),
-//                "/2010-04-01/Accounts.json"
-//        );
-//        for(String recordingStatusEvent : recordingStatusCallbackEvent){
-//            mockRequest.addPostParam("RecordingStatusCallbackEvent", recordingStatusEvent);
-//        }
-//        mockRequest.addPostParam("RecordingStatusCallback", "https://validurl.com");
-//        mockRequest.addHeaderParam("X-Twilio-Webhook-Enabled", "true");
-//        ObjectMapper objectMapper = new ObjectMapper();
-//        objectMapper.registerModule(new JavaTimeModule());
-//        when(twilioRestClient.request(mockRequest)).thenReturn(null);
-//        when(twilioRestClient.getObjectMapper()).thenReturn(objectMapper);
-//        AccountCreator accountCreator = new AccountCreator();
-//        accountCreator.setRecordingStatusCallbackEvent(recordingStatusCallbackEvent);
-//        accountCreator.setRecordingStatusCallback(URI.create("https://validurl.com"));
-//        accountCreator.setXTwilioWebhookEnabled("true");
-//
-//        Account account  = accountCreator.create(twilioRestClient);
-//    }
+    @Test(expected=Exception.class)
+    public void testShouldSendNullResponseForAccountCreator() {
+        List<String> recordingStatusCallbackEvent = Arrays.asList("http://test1.com/", "http://test2.com");
+        Request mockRequest = new Request(
+                HttpMethod.POST,
+                Domains.API.toString(),
+                "/2010-04-01/Accounts.json"
+        );
+        for(String recordingStatusEvent : recordingStatusCallbackEvent){
+            mockRequest.addPostParam("RecordingStatusCallbackEvent", recordingStatusEvent);
+        }
+        mockRequest.addPostParam("RecordingStatusCallback", "https://validurl.com");
+        mockRequest.addHeaderParam("X-Twilio-Webhook-Enabled", "true");
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        when(twilioRestClient.request(mockRequest)).thenReturn(null);
+        when(twilioRestClient.getObjectMapper()).thenReturn(objectMapper);
+        AccountCreator accountCreator = new AccountCreator();
+        accountCreator.setRecordingStatusCallbackEvent(recordingStatusCallbackEvent);
+        accountCreator.setRecordingStatusCallback(URI.create("https://validurl.com"));
+        accountCreator.setXTwilioWebhookEnabled(Account.XTwilioWebhookEnabled.TRUE);
+
+        Account account  = accountCreator.create(twilioRestClient);
+    }
 
     @Test(expected=Exception.class)
     public void testShouldSendIncorrectStatusForAccountCreator() {
