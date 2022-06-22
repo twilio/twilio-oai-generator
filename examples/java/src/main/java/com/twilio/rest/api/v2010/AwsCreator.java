@@ -77,8 +77,25 @@ public class AwsCreator extends Creator<Aws>{
     private Map<String, Object> testAnyType;
     private List<Aws.Permissions> permissions;
 
-    public AwsCreator(final String testString) {
+    public AwsCreator(final String testString, final Integer testInteger, final Float testNumberFloat) {
         this.testString = testString;
+        this.testInteger = testInteger;
+        this.testNumberFloat = testNumberFloat;
+    }
+    public AwsCreator(final String testString, final Integer testInteger, final Map<String, Object> testObject) {
+        this.testString = testString;
+        this.testInteger = testInteger;
+        this.testObject = testObject;
+    }
+    public AwsCreator(final String testString, final LocalDate testDate, final Float testNumberFloat) {
+        this.testString = testString;
+        this.testDate = testDate;
+        this.testNumberFloat = testNumberFloat;
+    }
+    public AwsCreator(final String testString, final LocalDate testDate, final Map<String, Object> testObject) {
+        this.testString = testString;
+        this.testDate = testDate;
+        this.testObject = testObject;
     }
 
     public AwsCreator setTestString(final String testString){

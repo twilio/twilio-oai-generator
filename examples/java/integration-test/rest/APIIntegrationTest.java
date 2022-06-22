@@ -81,7 +81,7 @@ public class APIIntegrationTest {
 
     @Test
     public void testCustomTypes() {
-        Call call = new CallFetcher("CA1234567890123456789012", 123).fetch();
+        Call call = new CallFetcher("ACD93d1A6d2c5F0aE3A9C29E6cDd9BdeB9", 123).fetch();
         assertNotNull(call);
         assertEquals(Boolean.FALSE, call.getTestObject().getFax());
         assertEquals(Boolean.FALSE, call.getTestObject().getMms());
