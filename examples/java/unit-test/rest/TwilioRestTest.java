@@ -48,6 +48,8 @@ import com.twilio.converter.DateConverter;
 public class TwilioRestTest {
     @Mock
     private TwilioRestClient twilioRestClient;
+    private static final String TEST_INTEGER = "TestInteger";
+    private static final String ACCOUNT_SID = "AC222222222222222222222222222222";
 
     @Before
     public void setUp() {
@@ -65,8 +67,7 @@ public class TwilioRestTest {
         objectMapper.registerModule(new JavaTimeModule());
         when(twilioRestClient.request(mockRequest)).thenReturn(new Response("{\"account_sid\":\"AC222222222222222222222222222222\", \"call_sid\":\"PNXXXXY\"}", 200));
         when(twilioRestClient.getObjectMapper()).thenReturn(objectMapper);
-
-        Account account = new AccountFetcher("AC222222222222222222222222222222").fetch(twilioRestClient);
+        Account account = new AccountFetcher(ACCOUNT_SID).fetch(twilioRestClient);
         assertNotNull(account);
     }
 
@@ -276,7 +277,7 @@ public class TwilioRestTest {
 
     @Test
     public void testShouldAddAccountSidIfNotPresent() {
-        when(twilioRestClient.getAccountSid()).thenReturn("AC222222222222222222222222222222");
+        when(twilioRestClient.getAccountSid()).thenReturn(ACCOUNT_SID);
         Request mockRequest = new Request(
                 HttpMethod.GET,
                 Domains.API.toString(),
@@ -288,7 +289,7 @@ public class TwilioRestTest {
         Call call = new CallFetcher(123).fetch(twilioRestClient);
         assertNotNull(call);
         assertEquals(call.getSid(), "123");
-        assertEquals(call.getAccountSid(), "AC222222222222222222222222222222");
+        assertEquals(call.getAccountSid(), ACCOUNT_SID);
     }
 
 
@@ -384,10 +385,12 @@ public class TwilioRestTest {
         for(Object testObject : testObjectArray){
             mockRequest.addPostParam("TestObjectArray", testObject.toString());
         }
-        mockRequest.addPostParam("TestString", "AC222222222222222222222222222222");
+        mockRequest.addPostParam("TestString", ACCOUNT_SID);
+        mockRequest.addPostParam("TestNumberFloat", "1.4");
+        mockRequest.addPostParam(TEST_INTEGER, "1");
         when(twilioRestClient.request(mockRequest)).thenReturn(new Response("{\"account_sid\":\"AC222222222222222222222222222222\", \"sid\":\"PNXXXXY\"}", 200));
         when(twilioRestClient.getObjectMapper()).thenReturn(objectMapper);
-        AwsCreator awsCreator = new AwsCreator("AC222222222222222222222222222222");
+        AwsCreator awsCreator = new AwsCreator(ACCOUNT_SID, 1, 1.4F);
         awsCreator.setTestObjectArray(Arrays.asList(item1, item2));
         Aws aws = awsCreator.create(twilioRestClient);
         assertNotNull(aws);
@@ -404,14 +407,16 @@ public class TwilioRestTest {
         );
 
         Map<String, Object> anyMap = new HashMap<>();
-        anyMap.put("TestInteger", 1);
+        anyMap.put(TEST_INTEGER, 1);
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
         mockRequest.addPostParam("TestAnyType", "{TestInteger=1}");
-        mockRequest.addPostParam("TestString", "AC222222222222222222222222222222");
+        mockRequest.addPostParam("TestNumberFloat", "1.4");
+        mockRequest.addPostParam(TEST_INTEGER, "1");
+        mockRequest.addPostParam("TestString", ACCOUNT_SID);
         when(twilioRestClient.request(mockRequest)).thenReturn(new Response("{\"account_sid\":\"AC222222222222222222222222222222\", \"sid\":\"PNXXXXY\"}", 200));
         when(twilioRestClient.getObjectMapper()).thenReturn(objectMapper);
-        AwsCreator awsCreator = new AwsCreator("AC222222222222222222222222222222");
+        AwsCreator awsCreator = new AwsCreator(ACCOUNT_SID, 1, 1.4F);
         awsCreator.setTestAnyType(anyMap);
         Aws aws = awsCreator.create(twilioRestClient);
 

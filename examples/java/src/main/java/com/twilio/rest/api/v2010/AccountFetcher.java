@@ -57,6 +57,8 @@ import lombok.ToString;
 public class AccountFetcher extends Fetcher<Account> {
     private String sid;
 
+    public AccountFetcher(){
+    }
     public AccountFetcher(final String sid){
         this.sid = sid;
     }
@@ -65,6 +67,7 @@ public class AccountFetcher extends Fetcher<Account> {
     @Override
     public Account fetch(final TwilioRestClient client) {
         String path = "/2010-04-01/Accounts/{Sid}.json";
+        this.sid = this.sid == null ? client.getAccountSid() : this.sid;
         path = path.replace("{"+"Sid"+"}", this.sid.toString());
 
         Request request = new Request(

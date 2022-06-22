@@ -77,10 +77,16 @@ public class Account extends Resource {
         return new AccountCreator();
     }
 
+    public static AccountFetcher fetcher(){
+        return new AccountFetcher();
+    }
     public static AccountFetcher fetcher(final String sid){
         return new AccountFetcher(sid);
     }
 
+    public static AccountDeleter deleter(){
+        return new AccountDeleter();
+    }
     public static AccountDeleter deleter(final String sid){
         return new AccountDeleter(sid);
     }
@@ -89,6 +95,9 @@ public class Account extends Resource {
         return new AccountReader();
     }
 
+    public static AccountUpdater updater(final Account.Status status){
+        return new AccountUpdater(status);
+    }
     public static AccountUpdater updater(final String sid, final Account.Status status){
         return new AccountUpdater(sid, status);
     }
