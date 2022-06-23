@@ -675,9 +675,8 @@ public class TwilioRestTest {
         accountReader.setDateTest(localDate);
         accountReader.setPageSize(4);
 
-        ResourceSet<Account> account  = accountReader.read(twilioRestClient);
+        accountReader.read(twilioRestClient);
 
-        assertNotNull(account);
     }
 
     @Test(expected=ApiConnectionException.class)
@@ -748,13 +747,14 @@ public class TwilioRestTest {
         String url = "https://api.twilio.com/v1/Credentials/AWS";
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
-        String testResponse =  "{\"credentials\":[{\"sid\":\"CR12345678123456781234567812345678\", \"test_string\":\"Ahoy\", \"test_object\":{\"mms\": true, \"sms\":false, \"voice\": false, \"fax\":true}}, {\"sid\":\"CR12345678123456781234567812345678\", \"test_string\":\"Hello\", \"test_object\":{\"mms\": true, \"sms\":false, \"voice\": false, \"fax\":true}}], \"meta\": {\"url\":\"" + url + "\", \"next_page_url\":\"" + url + "?PageSize=5" + "\", \"previous_page_url\":\"" + url + "?PageSize=3" + "\", \"first_page_url\":\"" + url + "?PageSize=1" + "\", \"page_size\":4}}";
+        String testResponse =  "{\"accountSid\": \"sid\"}";
         when(twilioRestClient.request(Mockito.any() )).thenReturn(new Response(testResponse, 200));
         when(twilioRestClient.getObjectMapper()).thenReturn(objectMapper);
 
         Aws resource = new AwsFetcher(ACCOUNT_SID).fetch(twilioRestClient);
 
         assertNotNull(resource);
+        assertEquals(resource.getAccountSid(),"sid");
     }
 
     @Test(expected = ApiException.class)
@@ -789,7 +789,7 @@ public class TwilioRestTest {
         String url = "https://api.twilio.com/v1/Credentials/AWS";
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
-        String testResponse =  "{\"credentials\":[{\"sid\":\"CR12345678123456781234567812345678\", \"test_string\":\"Ahoy\", \"test_object\":{\"mms\": true, \"sms\":false, \"voice\": false, \"fax\":true}}, {\"sid\":\"CR12345678123456781234567812345678\", \"test_string\":\"Hello\", \"test_object\":{\"mms\": true, \"sms\":false, \"voice\": false, \"fax\":true}}], \"meta\": {\"url\":\"" + url + "\", \"next_page_url\":\"" + url + "?PageSize=5" + "\", \"previous_page_url\":\"" + url + "?PageSize=3" + "\", \"first_page_url\":\"" + url + "?PageSize=1" + "\", \"page_size\":4}}";
+        String testResponse = "{\"accountSid\": \"sid\"}";
         when(twilioRestClient.request(Mockito.any() )).thenReturn(new Response(testResponse, 200));
         when(twilioRestClient.getObjectMapper()).thenReturn(objectMapper);
 
