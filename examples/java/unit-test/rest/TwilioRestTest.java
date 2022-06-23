@@ -28,6 +28,20 @@ import java.util.Map;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.twilio.rest.api.v2010.Account;
+import com.twilio.rest.api.v2010.AccountCreator;
+import com.twilio.rest.api.v2010.AccountDeleter;
+import com.twilio.rest.api.v2010.AccountFetcher;
+import com.twilio.rest.api.v2010.AccountReader;
+import com.twilio.rest.api.v2010.Aws;
+import com.twilio.rest.api.v2010.AwsReader;
+import com.twilio.rest.api.v2010.AwsUpdater;
+import com.twilio.rest.api.v2010.Call;
+import com.twilio.rest.api.v2010.CallCreator;
+import com.twilio.rest.api.v2010.CallDeleter;
+import com.twilio.rest.api.v2010.CallFetcher;
+import com.twilio.rest.api.v2010.call.FeedbackCallSummary;
+import com.twilio.rest.api.v2010.call.FeedbackCallSummaryCreator;
 import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
@@ -936,7 +950,7 @@ public class TwilioRestTest {
 
 
     @Test
-    public void testCallVariable() {
+    public void testCallVariables() {
         Call.TestEnum testEnum = Call.TestEnum.forValue("DialVerb");
         Call.XTwilioWebhookEnabled xTwilioWebhookEnabled = Call.XTwilioWebhookEnabled.forValue("true");
         Call.Status status = Call.Status.forValue("paused");
@@ -949,7 +963,7 @@ public class TwilioRestTest {
     }
 
     @Test
-    public void testAwsVariable() {
+    public void testAwsVariables() {
         Aws.TestEnum testEnum = Aws.TestEnum.forValue("DialVerb");
         Aws.XTwilioWebhookEnabled xTwilioWebhookEnabled = Aws.XTwilioWebhookEnabled.forValue("true");
         Aws.Status status = Aws.Status.forValue("paused");
@@ -962,7 +976,7 @@ public class TwilioRestTest {
     }
 
     @Test
-    public void testAccountVariable() {
+    public void testAccountVariables() {
         Account.TestEnum testEnum = Account.TestEnum.forValue("DialVerb");
         Account.XTwilioWebhookEnabled xTwilioWebhookEnabled = Account.XTwilioWebhookEnabled.forValue("true");
         Account.Status status = Account.Status.forValue("paused");
@@ -1054,10 +1068,8 @@ public class TwilioRestTest {
     @Test
     public void testCallGetters() {
         ObjectMapper objectMapper = new ObjectMapper();
-        String json = "{\"accountSid\": \"a123\", \"sid\": \"123\", \"testInteger\": 123, \"testNumber\": 123.1, \"testNumberFloat\": 123.2, \"testEnum\": \"Trunking\", " +
-                "\"testEnum\": \"Trunking\"}";
-        String jsonDuplicate = "{\"accountSid\": \"a123\", \"sid\": \"123\", \"testInteger\": 123, \"testNumber\": 123.1, \"testNumberFloat\": 123.2, \"testEnum\": \"Trunking\", " +
-                "\"testEnum\": \"Trunking\"}";
+        String json = "{\"accountSid\": \"a123\", \"sid\": \"123\", \"testInteger\": 123, \"testNumber\": 123.1, \"testNumberFloat\": 123.2, \"testEnum\": \"Trunking\"}";
+        String jsonDuplicate = "{\"accountSid\": \"a123\", \"sid\": \"123\", \"testInteger\": 123, \"testNumber\": 123.1, \"testNumberFloat\": 123.2, \"testEnum\": \"Trunking\"}";
         Call call = Call.fromJson(json, objectMapper);
         Call callDuplicate = Call.fromJson(jsonDuplicate, objectMapper);
 
@@ -1234,5 +1246,114 @@ public class TwilioRestTest {
 
         when(twilioRestClient.request(Mockito.any())).thenReturn(new Response(testResponse, 404));
         awsUpdater.update(twilioRestClient);
+    }
+
+    @Test
+    public void testFeedbackCallSummaryObjectCreation() {
+        LocalDate startDate = LocalDate.parse("2009-01-27");
+        LocalDate endDate = LocalDate.parse("2022-01-27");
+
+        String response = "{\"accountSid\": \"123\"}";
+        when(twilioRestClient.request(Mockito.any())).thenReturn(new Response(response, 200));
+        ObjectMapper objectMapper = new ObjectMapper();
+        when(twilioRestClient.getObjectMapper()).thenReturn(objectMapper);
+
+        FeedbackCallSummaryCreator creatorSid = FeedbackCallSummary.creator("sid",startDate, endDate);
+        creatorSid.setStartDate(LocalDate.parse("2009-01-17"));
+        creatorSid.setEndDate(LocalDate.parse("2021-01-17"));
+        FeedbackCallSummary feedbackCallSummary = creatorSid.create(twilioRestClient);
+
+        assertEquals("123", feedbackCallSummary.getAccountSid());
+    }
+
+    @Test(expected = ApiConnectionException.class)
+    public void testFeedbackCallSummaryObjectCreationResponseNull() {
+        LocalDate startDate = LocalDate.parse("2009-01-27");
+        LocalDate endDate = LocalDate.parse("2022-01-27");
+
+        when(twilioRestClient.getAccountSid()).thenReturn("sid");
+        when(twilioRestClient.request(Mockito.any())).thenReturn(null);
+
+        FeedbackCallSummaryCreator creator = FeedbackCallSummary.creator(startDate, endDate);
+        creator.create(twilioRestClient);
+    }
+
+    @Test(expected = ApiException.class)
+    public void testFeedbackCallSummaryObjectCreationResponseNotSuccess() {
+        LocalDate startDate = LocalDate.parse("2009-01-27");
+        LocalDate endDate = LocalDate.parse("2022-01-27");
+
+        when(twilioRestClient.getAccountSid()).thenReturn("sid");
+        String response = "{\"accountSid\": \"sid\"}";
+        when(twilioRestClient.request(Mockito.any())).thenReturn(new Response(response, 404));
+        ObjectMapper objectMapper = new ObjectMapper();
+        when(twilioRestClient.getObjectMapper()).thenReturn(objectMapper);
+
+        FeedbackCallSummaryCreator creator = FeedbackCallSummary.creator(startDate, endDate);
+        creator.create(twilioRestClient);
+    }
+
+    @Test
+    public void testFeedbackCallSummaryVariables() {
+        FeedbackCallSummary.TestEnum testEnum = FeedbackCallSummary.TestEnum.forValue("DialVerb");
+        FeedbackCallSummary.XTwilioWebhookEnabled xTwilioWebhookEnabled = FeedbackCallSummary.XTwilioWebhookEnabled.forValue("true");
+        FeedbackCallSummary.Status status = FeedbackCallSummary.Status.forValue("paused");
+        FeedbackCallSummary.Permissions permissions = FeedbackCallSummary.Permissions.forValue("get-all");
+
+        assertEquals("DialVerb", testEnum.toString());
+        assertEquals("true", xTwilioWebhookEnabled.toString());
+        assertEquals("paused", status.toString());
+        assertEquals("get-all", permissions.toString());
+    }
+
+    @Test
+    public void testFeedbackCallSummaryObjectCreationFromString() {
+        String json = "{\"accountSid\": \"a123\", \"sid\": \"123\", \"testInteger\": 123, \"testNumber\": 123.1, \"testNumberFloat\": 123.2, \"testEnum\": \"Trunking\", " +
+                "\"status\": \"paused\"}";
+        String jsonDuplicate = "{\"accountSid\": \"a123\", \"sid\": \"123\", \"testInteger\": 123, \"testNumber\": 123.1, \"testNumberFloat\": 123.2, \"testEnum\": \"Trunking\", " +
+                "\"status\": \"paused\"}";
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        FeedbackCallSummary feedbackCallSummary = FeedbackCallSummary.fromJson(json, objectMapper);
+        FeedbackCallSummary feedbackCallSummaryDuplicate = FeedbackCallSummary.fromJson(new ByteArrayInputStream(jsonDuplicate.getBytes()), objectMapper);
+
+        assertEquals("a123", feedbackCallSummary.getAccountSid());
+        assertEquals("123", feedbackCallSummary.getSid());
+        assertNull(feedbackCallSummary.getTestObject());
+        assertEquals(Integer.valueOf("123"), feedbackCallSummary.getTestInteger());
+        assertNull(feedbackCallSummary.getTestDateTime());
+        assertEquals(BigDecimal.valueOf(123.1), feedbackCallSummary.getTestNumber());
+        assertNull(feedbackCallSummary.getPriceUnit());
+        assertEquals(Float.valueOf("123.2"), feedbackCallSummary.getTestNumberFloat());
+        assertEquals("Trunking", feedbackCallSummary.getTestEnum().toString());
+        assertEquals("paused", feedbackCallSummary.getStatus().toString());
+        assertNull(feedbackCallSummary.getTestArrayOfIntegers());
+        assertNull(feedbackCallSummary.getTestArrayOfArrayOfIntegers());
+        assertNull(feedbackCallSummary.getTestArrayOfObjects());
+        assertNull(feedbackCallSummary.getXTwilioWebhookEnabled());
+        assertNull(feedbackCallSummary.getPermissions());
+        assertNull(feedbackCallSummary.getTestString());
+
+        assertTrue(feedbackCallSummary.equals(feedbackCallSummaryDuplicate));
+        // If two objects are equal they must have same hashcode
+        assertEquals(feedbackCallSummaryDuplicate.hashCode(), feedbackCallSummary.hashCode());
+        assertFalse(feedbackCallSummary.equals(null));
+        assertFalse(feedbackCallSummary.equals(new Object()));
+    }
+
+    @Test(expected = ApiException.class)
+    public void testFeedbackCallSummaryObjectCreationFromInvalidString() {
+        String invalidJson = "invalid";
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        FeedbackCallSummary.fromJson(invalidJson, objectMapper);
+    }
+
+    @Test(expected = ApiException.class)
+    public void testFeedbackCallSummaryObjectCreationFromInvalidInputString() {
+        String invalidJson = "invalid";
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        FeedbackCallSummary.fromJson(new ByteArrayInputStream(invalidJson.getBytes()), objectMapper);
     }
 }
