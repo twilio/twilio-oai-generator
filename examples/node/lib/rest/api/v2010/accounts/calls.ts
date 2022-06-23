@@ -15,7 +15,7 @@
 import { inspect, InspectOptions } from 'util';
 import Page from '../../../../base/Page';
 import V2010 from '../../V2010';
-import { FeedbackSummarListInstance } from './Calls/FeedbackSummary';
+import { FeedbackSummaryListInstance } from './Calls/FeedbackSummary';
 
 
 /**
@@ -34,7 +34,7 @@ export interface CallListInstance {
     (accountSid: string, testInteger: number): CallContext;
     get(accountSid: string, testInteger: number): CallContext;
 
-    feedback_summary: FeedbackSummarListInstance;
+    feedback_summary: FeedbackSummaryListInstance;
 
     /**
      * Create a CallInstance
@@ -61,7 +61,7 @@ class CallListInstanceImpl implements CallListInstance {
     _solution?: any;
     _uri?: string;
 
-    _feedback_summary?: FeedbackSummarListInstance;
+    _feedback_summary?: FeedbackSummaryListInstance;
 }
 
 export function CallListInstance(version: V2010, accountSid: string): CallListInstance {
@@ -78,7 +78,7 @@ export function CallListInstance(version: V2010, accountSid: string): CallListIn
     Object.defineProperty(instance, 'feedback_summary', {
         get: function feedback_summary() {
             if (!this._feedback_summary) {
-                this._feedback_summary = FeedbackSummarListInstance(this._version, this._solution.accountSid);
+                this._feedback_summary = FeedbackSummaryListInstance(this._version, this._solution.accountSid);
             }
             return this._feedback_summary;
         }
