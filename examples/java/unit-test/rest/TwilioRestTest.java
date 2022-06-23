@@ -9,7 +9,6 @@ import com.twilio.base.ResourceSet;
 import com.twilio.converter.DateConverter;
 import com.twilio.exception.ApiConnectionException;
 import com.twilio.exception.ApiException;
-import com.twilio.exception.ApiConnectionException;
 import com.twilio.http.HttpMethod;
 import com.twilio.http.Request;
 import com.twilio.http.Response;
@@ -79,6 +78,7 @@ public class TwilioRestTest {
         when(twilioRestClient.getObjectMapper()).thenReturn(objectMapper);
         Account account = new AccountFetcher(ACCOUNT_SID).fetch(twilioRestClient);
         assertNotNull(account);
+        assertEquals(account.getAccountSid(), "AC222222222222222222222222222222");
     }
 
     @Test(expected=ApiException.class)
@@ -92,7 +92,7 @@ public class TwilioRestTest {
         objectMapper.registerModule(new JavaTimeModule());
         when(twilioRestClient.request(mockRequest)).thenReturn(new Response("{\"account_sid\":\"AC222222222222222222222222222222\", \"call_sid\":\"PNXXXXY\"}", 404));
         when(twilioRestClient.getObjectMapper()).thenReturn(objectMapper);
-        Account account = new AccountFetcher("AC222222222222222222222222222222").fetch(twilioRestClient);
+        new AccountFetcher("AC222222222222222222222222222222").fetch(twilioRestClient);
     }
 
     @Test
@@ -109,7 +109,7 @@ public class TwilioRestTest {
 
         Boolean account = new AccountDeleter("AC222222222222222222222222222222").delete(twilioRestClient);
 
-        assertNotNull(account);
+        assertFalse(account);
     }
 
     @Test(expected=ApiException.class)
@@ -123,7 +123,7 @@ public class TwilioRestTest {
         objectMapper.registerModule(new JavaTimeModule());
         when(twilioRestClient.request(mockRequest)).thenReturn(new Response("{\"account_sid\":\"AC222222222222222222222222222222\", \"call_sid\":\"PNXXXXY\"}", 404));
         when(twilioRestClient.getObjectMapper()).thenReturn(objectMapper);
-        Boolean account = new AccountDeleter("AC222222222222222222222222222222").delete(twilioRestClient);
+        new AccountDeleter("AC222222222222222222222222222222").delete(twilioRestClient);
     }
 
     @Test
@@ -172,7 +172,7 @@ public class TwilioRestTest {
         accountCreator.setRecordingStatusCallback(URI.create("https://validurl.com"));
         accountCreator.setXTwilioWebhookEnabled(Account.XTwilioWebhookEnabled.TRUE);
 
-        Account account  = accountCreator.create(twilioRestClient);
+        accountCreator.create(twilioRestClient);
     }
 
     @Test(expected=ApiConnectionException.class)
@@ -193,7 +193,7 @@ public class TwilioRestTest {
         accountCreator.setRecordingStatusCallback(null);
         accountCreator.setXTwilioWebhookEnabled(null);
 
-        Account account  = accountCreator.create(twilioRestClient);
+        accountCreator.create(twilioRestClient);
     }
 
     @Test
@@ -449,7 +449,7 @@ public class TwilioRestTest {
         when(twilioRestClient.request(Mockito.any())).thenReturn(new Response(response.toString(), 400));
         when(twilioRestClient.getObjectMapper()).thenReturn(objectMapper);
         AwsCreator awsCreator = new AwsCreator(ACCOUNT_SID, LocalDate.now(), 1.4F);
-        Aws aws = awsCreator.create(twilioRestClient);
+        awsCreator.create(twilioRestClient);
     }
 
     @Test(expected =  ApiException.class)
@@ -466,7 +466,7 @@ public class TwilioRestTest {
         when(twilioRestClient.request(Mockito.any())).thenReturn(new Response(response.toString(), 400));
         when(twilioRestClient.getObjectMapper()).thenReturn(objectMapper);
         AwsCreator awsCreator = new AwsCreator(ACCOUNT_SID, LocalDate.now(), new HashMap<>());
-        Aws aws = awsCreator.create(twilioRestClient);
+        awsCreator.create(twilioRestClient);
     }
 
     @Test(expected =  ApiException.class)
@@ -483,7 +483,7 @@ public class TwilioRestTest {
         when(twilioRestClient.request(Mockito.any())).thenReturn(new Response(response.toString(), 400));
         when(twilioRestClient.getObjectMapper()).thenReturn(objectMapper);
         AwsCreator awsCreator = new AwsCreator(ACCOUNT_SID, 1, new HashMap<>());
-        Aws aws = awsCreator.create(twilioRestClient);
+        awsCreator.create(twilioRestClient);
     }
 
     @Test
@@ -705,9 +705,8 @@ public class TwilioRestTest {
         accountReader.setDateTest(localDate);
         accountReader.setPageSize(4);
 
-        ResourceSet<Account> account  = accountReader.read(twilioRestClient);
+        accountReader.read(twilioRestClient);
 
-        assertNotNull(account);
     }
 
     @Test(expected = ApiConnectionException.class)
@@ -722,7 +721,7 @@ public class TwilioRestTest {
         when(twilioRestClient.request(mockRequest)).thenReturn(null);
         when(twilioRestClient.getObjectMapper()).thenReturn(objectMapper);
         Account.Status status = Account.Status.IN_PROGRESS;
-        Account account = new AccountUpdater(ACCOUNT_SID,status).update(twilioRestClient);
+        new AccountUpdater(ACCOUNT_SID,status).update(twilioRestClient);
     }
 
     @Test(expected = ApiException.class)
@@ -741,7 +740,7 @@ public class TwilioRestTest {
         Account.Status status = Account.Status.IN_PROGRESS;
         AccountUpdater accountUpdater = new AccountUpdater(ACCOUNT_SID,status);
         accountUpdater.setPauseBehavior("test");
-        Account account = accountUpdater.update(twilioRestClient);
+        accountUpdater.update(twilioRestClient);
     }
 
     @Test
@@ -768,7 +767,7 @@ public class TwilioRestTest {
         when(twilioRestClient.request(Mockito.any() )).thenReturn(new Response(testResponse, 404));
         when(twilioRestClient.getObjectMapper()).thenReturn(objectMapper);
 
-        Aws resource = new AwsFetcher(ACCOUNT_SID).fetch(twilioRestClient);
+        new AwsFetcher(ACCOUNT_SID).fetch(twilioRestClient);
     }
 
     @Test(expected = ApiConnectionException.class)
@@ -781,7 +780,7 @@ public class TwilioRestTest {
         when(twilioRestClient.request(Mockito.any() )).thenReturn(null);
         when(twilioRestClient.getObjectMapper()).thenReturn(objectMapper);
 
-        Aws resource = new AwsFetcher(ACCOUNT_SID).fetch(twilioRestClient);
+        new AwsFetcher(ACCOUNT_SID).fetch(twilioRestClient);
     }
 
     @Test
@@ -796,7 +795,7 @@ public class TwilioRestTest {
 
         Boolean resource = new AwsDeleter(ACCOUNT_SID).delete(twilioRestClient);
 
-        assertNotNull(resource);
+        assertFalse(resource);
     }
 
     @Test(expected = ApiException.class)
@@ -809,7 +808,7 @@ public class TwilioRestTest {
         when(twilioRestClient.request(Mockito.any() )).thenReturn(new Response(testResponse, 404));
         when(twilioRestClient.getObjectMapper()).thenReturn(objectMapper);
 
-        Boolean resource = new AwsDeleter(ACCOUNT_SID).delete(twilioRestClient);
+        new AwsDeleter(ACCOUNT_SID).delete(twilioRestClient);
     }
 
     @Test(expected = ApiConnectionException.class)
@@ -822,7 +821,7 @@ public class TwilioRestTest {
         when(twilioRestClient.request(Mockito.any() )).thenReturn(null);
         when(twilioRestClient.getObjectMapper()).thenReturn(objectMapper);
 
-        Boolean resource = new AwsDeleter(ACCOUNT_SID).delete(twilioRestClient);
+        new AwsDeleter(ACCOUNT_SID).delete(twilioRestClient);
     }
 
     public void testCallFetcherResponseNull() {
