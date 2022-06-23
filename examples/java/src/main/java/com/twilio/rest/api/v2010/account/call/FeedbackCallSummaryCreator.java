@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-package com.twilio.rest.api.v2010.call;
+package com.twilio.rest.api.v2010.account.call;
 
 import com.twilio.base.Creator;
 import com.twilio.converter.Promoter;

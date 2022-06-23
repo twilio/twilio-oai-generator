@@ -578,6 +578,7 @@ paths:
     servers:
       - url: https://api.twilio.com
     x-twilio:
+      parent: /Accounts.json
       pathType: list
   /2010-04-01/Accounts/{AccountSid}/Calls/{TestInteger}.json:
     description: A nested resource instance that cannot be updated
@@ -635,6 +636,7 @@ paths:
     servers:
       - url: https://api.twilio.com
     x-twilio:
+      parent: /Accounts.json
       pathType: instance
   /2010-04-01/Accounts/{AccountSid}/Calls/FeedbackSummary.json:
     description: A resource that can only be created
