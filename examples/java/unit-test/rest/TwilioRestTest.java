@@ -965,11 +965,49 @@ public class TwilioRestTest {
     }
 
     @Test
+    public void testAWSCrud() {
+        AwsCreator awsCreator1 = Aws.creator(ACCOUNT_SID,1,1F);
+        AwsCreator awsCreator2 = Aws.creator(ACCOUNT_SID,1,new HashMap<>());
+        AwsCreator awsCreator3 = Aws.creator(ACCOUNT_SID,LocalDate.now(),new HashMap<>());
+        AwsCreator awsCreator4 = Aws.creator(ACCOUNT_SID,LocalDate.now(),1F);
+        assertNotNull(awsCreator1);
+        assertNotNull(awsCreator2);
+        assertNotNull(awsCreator3);
+        assertNotNull(awsCreator4);
+
+        AwsFetcher awsFetcher = Aws.fetcher(ACCOUNT_SID);
+        assertNotNull(awsFetcher);
+
+        AwsDeleter awsDeleter = Aws.deleter(ACCOUNT_SID);
+        assertNotNull(awsDeleter);
+
+        AwsReader awsReader = Aws.reader();
+        assertNotNull(awsReader);
+
+        AwsUpdater awsUpdater = Aws.updater(ACCOUNT_SID);
+        assertNotNull(awsUpdater);
+    }
+
+
+    @Test
     public void testCallVariable() {
         Call.TestEnum testEnum = Call.TestEnum.forValue("DialVerb");
         Call.XTwilioWebhookEnabled xTwilioWebhookEnabled = Call.XTwilioWebhookEnabled.forValue("true");
         Call.Status status = Call.Status.forValue("paused");
         Call.Permissions permissions = Call.Permissions.forValue("get-all");
+
+        assertEquals("DialVerb", testEnum.toString());
+        assertEquals("true", xTwilioWebhookEnabled.toString());
+        assertEquals("paused", status.toString());
+        assertEquals("get-all", permissions.toString());
+    }
+
+    @Test
+    public void testAwsVariable() {
+        Aws.TestEnum testEnum = Aws.TestEnum.forValue("DialVerb");
+        Aws.XTwilioWebhookEnabled xTwilioWebhookEnabled = Aws.XTwilioWebhookEnabled.forValue("true");
+        Aws.Status status = Aws.Status.forValue("paused");
+        Aws.Permissions permissions = Aws.Permissions.forValue("get-all");
 
         assertEquals("DialVerb", testEnum.toString());
         assertEquals("true", xTwilioWebhookEnabled.toString());
@@ -990,6 +1028,22 @@ public class TwilioRestTest {
         assertEquals((Integer)123, callString.getTestInteger());
         assertEquals((Integer)123, callInputStream.getTestInteger());
     }
+
+    @Test
+    public void testAwsObjectCreation() {
+        ObjectMapper objectMapper = new ObjectMapper();
+        String json = "{\"testInteger\": 123}";
+        Aws awsString = Aws.fromJson(json, objectMapper);
+
+        String initialString = "{\"testInteger\": 123}";
+        InputStream targetStream = new ByteArrayInputStream(initialString.getBytes());
+        Aws awsInputStream = Aws.fromJson(targetStream, objectMapper);
+
+        assertEquals((Integer)123, awsString.getTestInteger());
+        assertEquals((Integer)123, awsInputStream.getTestInteger());
+    }
+
+
     @Test(expected = ApiException.class)
     public void testCallObjectCreationInvalidJsonString() {
         ObjectMapper objectMapper = new ObjectMapper();
@@ -997,10 +1051,23 @@ public class TwilioRestTest {
     }
 
     @Test(expected = ApiException.class)
+    public void testAwsObjectCreationInvalidJsonString() {
+        ObjectMapper objectMapper = new ObjectMapper();
+        Aws.fromJson("json", objectMapper);
+    }
+
+    @Test(expected = ApiException.class)
     public void testCallObjectCreationInvalidInputStream() {
         ObjectMapper objectMapper = new ObjectMapper();
         Call.fromJson(new ByteArrayInputStream("initialString".getBytes()), objectMapper);
     }
+
+    @Test(expected = ApiException.class)
+    public void testAwsObjectCreationInvalidInputStream() {
+        ObjectMapper objectMapper = new ObjectMapper();
+        Aws.fromJson(new ByteArrayInputStream("initialString".getBytes()), objectMapper);
+    }
+
     @Test
     public void testCallGetters() {
         ObjectMapper objectMapper = new ObjectMapper();
@@ -1029,9 +1096,44 @@ public class TwilioRestTest {
         assertNull(call.getTestString());
 
         assertTrue(call.equals(callDuplicate));
+        assertTrue(call.equals(call));
         // If two objects are equal they must have same hashcode
         assertEquals(callDuplicate.hashCode(), call.hashCode());
         assertFalse(call.equals(null));
+    }
+
+    @Test
+    public void testAwsGetters() {
+        ObjectMapper objectMapper = new ObjectMapper();
+        String json = "{\"accountSid\": \"a123\", \"sid\": \"123\", \"testInteger\": 123, \"testNumber\": 123.1, \"testNumberFloat\": 123.2, \"testEnum\": \"Trunking\", " +
+                "\"testEnum\": \"Trunking\"}";
+        String jsonDuplicate = "{\"accountSid\": \"a123\", \"sid\": \"123\", \"testInteger\": 123, \"testNumber\": 123.1, \"testNumberFloat\": 123.2, \"testEnum\": \"Trunking\", " +
+                "\"testEnum\": \"Trunking\"}";
+        Aws aws = Aws.fromJson(json, objectMapper);
+        Aws awsDuplicate = Aws.fromJson(jsonDuplicate, objectMapper);
+
+        assertEquals("a123", aws.getAccountSid());
+        assertEquals("123", aws.getSid());
+        assertNull(aws.getTestObject());
+        assertEquals(Integer.valueOf("123"), aws.getTestInteger());
+        assertNull(aws.getTestDateTime());
+        assertEquals(BigDecimal.valueOf(123.1), aws.getTestNumber());
+        assertNull(aws.getPriceUnit());
+        assertEquals(Float.valueOf("123.2"), aws.getTestNumberFloat());
+        assertEquals("Trunking", aws.getTestEnum().toString());
+        assertNull(aws.getTestArrayOfIntegers());
+        assertNull(aws.getTestArrayOfArrayOfIntegers());
+        assertNull(aws.getTestArrayOfObjects());
+        assertNull(aws.getXTwilioWebhookEnabled());
+        assertNull(aws.getStatus());
+        assertNull(aws.getPermissions());
+        assertNull(aws.getTestString());
+
+        assertTrue(aws.equals(awsDuplicate));
+        assertTrue(aws.equals(aws));
+        // If two objects are equal they must have same hashcode
+        assertEquals(awsDuplicate.hashCode(), aws.hashCode());
+        assertFalse(aws.equals(null));
     }
 
     @Test
