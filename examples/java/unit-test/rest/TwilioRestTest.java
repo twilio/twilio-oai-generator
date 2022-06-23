@@ -762,7 +762,7 @@ public class TwilioRestTest {
     @Test
     public void testCallGetters() {
         ObjectMapper objectMapper = new ObjectMapper();
-        String json = "{\"accountSid\": \"a123\", \"sid\": \"123\", \"testInteger\": 123, \"testNumber\": 123.1, \"testNumberFloat\": 123.2, \"testEnum\": \"Trunking\"};
+        String json = "{\"accountSid\": \"a123\", \"sid\": \"123\", \"testInteger\": 123, \"testNumber\": 123.1, \"testNumberFloat\": 123.2, \"testEnum\": \"Trunking\"}";
         String jsonDuplicate = "{\"accountSid\": \"a123\", \"sid\": \"123\", \"testInteger\": 123, \"testNumber\": 123.1, \"testNumberFloat\": 123.2, \"testEnum\": \"Trunking\"}";
         Call call = Call.fromJson(json, objectMapper);
         Call callDuplicate = Call.fromJson(jsonDuplicate, objectMapper);
