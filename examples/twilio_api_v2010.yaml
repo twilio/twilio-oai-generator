@@ -246,7 +246,7 @@ paths:
         - - TestNumberFloat
           - TestObject
     servers:
-      - url: https://api.twilio.com
+      - url: https://flex-api.twilio.com
     x-twilio:
       pathType: list
   /v1/Credentials/AWS/{Sid}:
