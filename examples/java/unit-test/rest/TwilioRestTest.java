@@ -81,21 +81,6 @@ public class TwilioRestTest {
         assertNotNull(account);
     }
 
-    @Test(expected=NullPointerException.class)
-    public void testShouldMakeInValidAPICallReturnsNullForAccountFetcher() {
-        Request mockRequest = new Request(
-                HttpMethod.GET,
-                "api",
-                "/2010-04-01/Accounts/AC222222222222222222222222222222.json"
-        );
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.registerModule(new JavaTimeModule());
-        when(twilioRestClient.request(mockRequest)).thenReturn(null);
-        when(twilioRestClient.getObjectMapper()).thenReturn(objectMapper);
-        Account account = new AccountFetcher().fetch(twilioRestClient);
-        assertNotNull(account);
-    }
-
     @Test(expected=ApiException.class)
     public void testShouldMakeInValidAPICallWithExceptionForAccountFetcher() {
         Request mockRequest = new Request(
@@ -125,20 +110,6 @@ public class TwilioRestTest {
         Boolean account = new AccountDeleter("AC222222222222222222222222222222").delete(twilioRestClient);
 
         assertNotNull(account);
-    }
-
-    @Test(expected=NullPointerException.class)
-    public void testShouldMakeInValidAPICallReturnsNulForAccountDeleter() {
-        Request mockRequest = new Request(
-                HttpMethod.DELETE,
-                "api",
-                "/2010-04-01/Accounts/AC222222222222222222222222222222.json"
-        );
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.registerModule(new JavaTimeModule());
-        when(twilioRestClient.request(mockRequest)).thenReturn(null);
-        when(twilioRestClient.getObjectMapper()).thenReturn(objectMapper);
-        Boolean account = new AccountDeleter().delete(twilioRestClient);
     }
 
     @Test(expected=ApiException.class)
@@ -739,35 +710,6 @@ public class TwilioRestTest {
         assertNotNull(account);
     }
 
-    @Test(expected = NullPointerException.class)
-    public void testShouldReadPreviousPage() {
-        String uri = "/2010-04-01/Accounts.json";
-        Request mockRequestPage0 = new Request(
-                HttpMethod.GET,
-                "api",
-                uri
-        );
-        ObjectMapper objectMapper = new ObjectMapper();
-        when(twilioRestClient.getObjectMapper()).thenReturn(objectMapper);
-        mockRequestPage0.addQueryParam("PageSize", "2");
-        String url = "https://api.twilio.com/2010-04-01/Accounts.json";
-        String nextPageURL = "https://api.twilio.com/2010-04-01/Accounts.jsonFrom=9999999999&PageNumber=&To=4444444444&PageSize=2&Page=1&PageToken=PASMc49f620580b24424bcfa885b1f741130";
-        String responseContent = "{\"accounts\":[{\"call_sid\":\"PNXXXXY\", \"sid\":123, \"test_string\":\"Ahoy\"}], \"meta\": {\"url\":\"" + url + "\", \"next_page_url\":\"" + nextPageURL + "?PageSize=2" + "\", \"previous_page_url\":\"" + url + "?PageSize=2" + "\", \"first_page_url\":\"" + url + "?PageSize=2" + "\", \"page_size\":2}}";
-        when(twilioRestClient.request(mockRequestPage0)).thenReturn(new Response(responseContent, 200));
-
-        Request mockRequestPage1 = new Request(
-                HttpMethod.GET,
-                "api",
-                "/2010-04-01/Accounts.jsonFrom=9999999999&PageNumber=&To=4444444444&PageSize=2&Page=1&PageToken=PASMc49f620580b24424bcfa885b1f741130?PageSize=2"
-        );
-        String responseContent2 = "{\"accounts\":[{\"call_sid\":\"PNXXXXY\", \"sid\":123, \"test_string\":\"Matey\"}], \"meta\": {\"url\":\"" + url + "\", \"next_page_url\":\"" + ""  + "\", \"previous_page_url\":\"" + url + "?PageSize=2" + "\", \"first_page_url\":\"" + url + "?PageSize=2" + "\", \"page_size\":2}}";
-        when(twilioRestClient.request(mockRequestPage1)).thenReturn(new Response(responseContent2, 200));
-        AccountReader accountReader = new AccountReader();
-        accountReader.setPageSize(2);
-        accountReader.previousPage(null, twilioRestClient);
-
-    }
-
     @Test(expected = ApiConnectionException.class)
     public void testShouldMakeInValidAPICallReturnsNullForAccountUpdater() {
         Request mockRequest = new Request(
@@ -798,25 +740,6 @@ public class TwilioRestTest {
         when(twilioRestClient.getObjectMapper()).thenReturn(objectMapper);
         Account.Status status = Account.Status.IN_PROGRESS;
         AccountUpdater accountUpdater = new AccountUpdater(ACCOUNT_SID,status);
-        accountUpdater.setPauseBehavior("test");
-        Account account = accountUpdater.update(twilioRestClient);
-    }
-
-    @Test(expected = NullPointerException.class)
-    public void testShouldHaveInValidParametersForAccountUpdater() {
-        Request mockRequest = new Request(
-                HttpMethod.POST,
-                com.twilio.rest.Domains.API.toString(),
-                "/2010-04-01/Accounts/AC222222222222222222222222222222.json"
-        );
-        mockRequest.addPostParam("PauseBehavior", "test");
-
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.registerModule(new JavaTimeModule());
-        when(twilioRestClient.request(mockRequest)).thenReturn(new Response("{\"account_sid\":\"AC222222222222222222222222222222\", \"call_sid\":\"PNXXXXY\"}", 404));
-        when(twilioRestClient.getObjectMapper()).thenReturn(objectMapper);
-        Account.Status status = Account.Status.IN_PROGRESS;
-        AccountUpdater accountUpdater = new AccountUpdater(status);
         accountUpdater.setPauseBehavior("test");
         Account account = accountUpdater.update(twilioRestClient);
     }
