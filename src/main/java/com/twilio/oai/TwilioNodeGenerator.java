@@ -25,6 +25,7 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
     public static final String PATH_SEPARATOR_PLACEHOLDER = "1234567890";
 
     private final List<CodegenModel> allModels = new ArrayList<>();
+    private final Inflector inflector = new Inflector();
 
     public TwilioNodeGenerator() {
         super();
@@ -134,7 +135,7 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
                 path = path.replace("{" + pathParam.baseName + "}", "${" + pathParam.paramName + "}");
             }
 
-            final String itemName = singularize(getResourceName(co.path));
+            final String itemName = inflector.singular(getResourceName(co.path));
             final String instanceName = itemName + "Instance";
             final boolean isInstanceResource = PathUtils.removeExtension(co.path).endsWith("}");
             String resourceName;
@@ -197,7 +198,7 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
                     .filter(Objects::nonNull)
                     .map(this::getModel)
                     .flatMap(Optional::stream)
-                    .map(item -> resolveComplexType(item))
+                    .map(this::resolveComplexType)
                     .forEach(model -> {
                         model.setName(itemName);
                         resource.put("responseModel", model);
@@ -247,13 +248,13 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
     private void addDependent(final Map<String, Object> dependents, final String dependentPath) {
         final Map<String, Object> dependent = getStringMap(dependents, dependentPath);
         final String dependentName = getResourceName(dependentPath);
-        dependent.put("name", singularize(dependentName));
+        dependent.put("name", inflector.singular(dependentName));
         dependent.put("mountName", StringUtils.underscore(dependentName));
         dependent.put("filename", dependentName);
     }
 
     private CodegenModel resolveComplexType(CodegenModel item) {
-        for (CodegenProperty prop: item.vars) {
+        for (CodegenProperty prop : item.vars) {
             if (prop.complexType != null) {
                 prop.dataType = prop.isArray ? "Array<object>" : "object";
             }
@@ -277,10 +278,6 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
 
     private String getResourceName(final String path) {
         return PathUtils.getLastPathPart(PathUtils.cleanPathAndRemoveFirstElement(path));
-    }
-
-    private String singularize(final String plural) {
-        return plural.substring(0, plural.length() - 1);
     }
 
     private void addOperationName(final CodegenOperation operation, final String name) {

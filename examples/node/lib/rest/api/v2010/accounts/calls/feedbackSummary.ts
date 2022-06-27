@@ -18,29 +18,29 @@ import V2010 from '../../../V2010';
 
 
 /**
- * Options to pass to create a FeedbackSummarInstance
+ * Options to pass to create a FeedbackSummaryInstance
  *
  * @property { string } endDate 
  * @property { string } startDate 
  */
-export interface FeedbackSummarListInstanceCreateOptions {
+export interface FeedbackSummaryListInstanceCreateOptions {
     endDate: string;
     startDate: string;
 }
 
-export interface FeedbackSummarListInstance {
+export interface FeedbackSummaryListInstance {
 
 
     /**
-     * Create a FeedbackSummarInstance
+     * Create a FeedbackSummaryInstance
      *
-     * @param { FeedbackSummarListInstanceCreateOptions } params - Parameter for request
+     * @param { FeedbackSummaryListInstanceCreateOptions } params - Parameter for request
      * @param { function } [callback] - Callback to handle processed record
      *
-     * @returns { Promise } Resolves to processed FeedbackSummarInstance
+     * @returns { Promise } Resolves to processed FeedbackSummaryInstance
      */
-    create(params: FeedbackSummarListInstanceCreateOptions, callback?: (error: Error | null, item?: FeedbackSummarInstance) => any): Promise<FeedbackSummarInstance>;
-    create(params: any, callback?: any): Promise<FeedbackSummarInstance>
+    create(params: FeedbackSummaryListInstanceCreateOptions, callback?: (error: Error | null, item?: FeedbackSummaryInstance) => any): Promise<FeedbackSummaryInstance>;
+    create(params: any, callback?: any): Promise<FeedbackSummaryInstance>
 ;
     /**
      * Provide a user-friendly representation
@@ -50,22 +50,22 @@ export interface FeedbackSummarListInstance {
 }
 
 
-interface FeedbackSummarListInstanceImpl extends FeedbackSummarListInstance {}
-class FeedbackSummarListInstanceImpl implements FeedbackSummarListInstance {
+interface FeedbackSummaryListInstanceImpl extends FeedbackSummaryListInstance {}
+class FeedbackSummaryListInstanceImpl implements FeedbackSummaryListInstance {
     _version?: V2010;
     _solution?: any;
     _uri?: string;
 
 }
 
-export function FeedbackSummarListInstance(version: V2010, accountSid: string): FeedbackSummarListInstance {
-    const instance = {} as FeedbackSummarListInstanceImpl;
+export function FeedbackSummaryListInstance(version: V2010, accountSid: string): FeedbackSummaryListInstance {
+    const instance = {} as FeedbackSummaryListInstanceImpl;
 
     instance._version = version;
     instance._solution = { accountSid };
     instance._uri = `/2010-04-01/Accounts/${accountSid}/Calls/FeedbackSummary.json`;
 
-    instance.create = function create(params: any, callback?: any): Promise<FeedbackSummarInstance> {
+    instance.create = function create(params: any, callback?: any): Promise<FeedbackSummaryInstance> {
         if (params === null || params === undefined) {
             throw new Error('Required parameter "params" missing.');
         }
@@ -90,7 +90,7 @@ export function FeedbackSummarListInstance(version: V2010, accountSid: string): 
         let operationVersion = version,
             operationPromise = operationVersion.create({ uri: this._uri, method: 'POST', data, headers });
 
-        operationPromise = operationPromise.then(payload => new FeedbackSummarInstance(operationVersion, payload, this._solution.accountSid));
+        operationPromise = operationPromise.then(payload => new FeedbackSummaryInstance(operationVersion, payload, this._solution.accountSid));
 
         if (typeof callback === 'function') {
             operationPromise = operationPromise

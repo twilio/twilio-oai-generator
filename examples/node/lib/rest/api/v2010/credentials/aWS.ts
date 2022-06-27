@@ -18,7 +18,16 @@ import V2010 from '../../V2010';
 
 
 /**
- * Options to pass to create a AWInstance
+ * Options to pass to update a AWSInstance
+ *
+ * @property { string } [testString] 
+ */
+export interface AWSContextUpdateOptions {
+    testString?: string;
+}
+
+/**
+ * Options to pass to create a AWSInstance
  *
  * @property { string } testString 
  * @property { boolean } [testBoolean] 
@@ -36,7 +45,7 @@ import V2010 from '../../V2010';
  * @property { any } [testAnyType] 
  * @property { Array<string> } [permissions] A comma-separated list of the permissions you will request from the users of this ConnectApp.  Can include: &#x60;get-all&#x60; and &#x60;post-all&#x60;.
  */
-export interface AWListInstanceCreateOptions {
+export interface AWSListInstanceCreateOptions {
     testString: string;
     testBoolean?: boolean;
     testInteger?: number;
@@ -54,57 +63,320 @@ export interface AWListInstanceCreateOptions {
     permissions?: Array<string>;
 }
 /**
- * Options to pass to page a AWInstance
+ * Options to pass to page a AWSInstance
  *
  * @property { number } [pageSize] 
  */
-export interface AWListInstancePageOptions {
+export interface AWSListInstancePageOptions {
     pageSize?: number;
 }
 
-/**
- * Options to pass to update a AWInstance
- *
- * @property { string } [testString] 
- */
-export interface AWContextUpdateOptions {
-    testString?: string;
-}
-
-export interface AWListInstance {
-    (sid: string): AWContext;
-    get(sid: string): AWContext;
+export interface AWSContext {
 
 
     /**
-     * Create a AWInstance
+     * Remove a AWSInstance
      *
-     * @param { AWListInstanceCreateOptions } params - Parameter for request
      * @param { function } [callback] - Callback to handle processed record
      *
-     * @returns { Promise } Resolves to processed AWInstance
+     * @returns { Promise } Resolves to processed boolean
      */
-    create(params: AWListInstanceCreateOptions, callback?: (error: Error | null, item?: AWInstance) => any): Promise<AWInstance>;
-    create(params: any, callback?: any): Promise<AWInstance>
+    remove(callback?: (error: Error | null, item?: AWSInstance) => any): Promise<boolean>
 ;
     /**
-     * Page a AWInstance
+     * Fetch a AWSInstance
      *
      * @param { function } [callback] - Callback to handle processed record
      *
-     * @returns { Promise } Resolves to processed AWInstance
+     * @returns { Promise } Resolves to processed AWSInstance
      */
-    page(callback?: (error: Error | null, item?: AWInstance) => any): Promise<AWInstance>;
+    fetch(callback?: (error: Error | null, item?: AWSInstance) => any): Promise<AWSInstance>
+;
     /**
-     * Page a AWInstance
+     * Update a AWSInstance
      *
-     * @param { AWListInstancePageOptions } params - Parameter for request
      * @param { function } [callback] - Callback to handle processed record
      *
-     * @returns { Promise } Resolves to processed AWInstance
+     * @returns { Promise } Resolves to processed AWSInstance
      */
-    page(params: AWListInstancePageOptions, callback?: (error: Error | null, item?: AWInstance) => any): Promise<AWInstance>;
-    page(params?: any, callback?: any): Promise<AWInstance>
+    update(callback?: (error: Error | null, item?: AWSInstance) => any): Promise<AWSInstance>;
+    /**
+     * Update a AWSInstance
+     *
+     * @param { AWSContextUpdateOptions } params - Parameter for request
+     * @param { function } [callback] - Callback to handle processed record
+     *
+     * @returns { Promise } Resolves to processed AWSInstance
+     */
+    update(params: AWSContextUpdateOptions, callback?: (error: Error | null, item?: AWSInstance) => any): Promise<AWSInstance>;
+    update(params?: any, callback?: any): Promise<AWSInstance>
+;
+    /**
+     * Provide a user-friendly representation
+     */
+    toJSON(): any;
+    [inspect.custom](_depth: any, options: InspectOptions): any;
+}
+
+export class AWSContextImpl implements AWSContext {
+    protected _solution: any;
+    protected _uri: string;
+
+
+    constructor(protected _version: V2010, sid: string) {
+        this._solution = { sid };
+        this._uri = `/v1/Credentials/AWS/${sid}`;
+    }
+
+    remove(callback?: any): Promise<boolean> {
+
+        let operationVersion = this._version,
+            operationPromise = operationVersion.remove({ uri: this._uri, method: 'DELETE' });
+
+
+        if (typeof callback === 'function') {
+            operationPromise = operationPromise
+                .then(value => callback(null, value))
+                .catch(error => callback(error));
+        }
+
+        return operationPromise;
+
+    }
+
+    fetch(callback?: any): Promise<AWSInstance> {
+
+        let operationVersion = this._version,
+            operationPromise = operationVersion.fetch({ uri: this._uri, method: 'GET' });
+
+        operationPromise = operationPromise.then(payload => new AWSInstance(operationVersion, payload, this._solution.sid));
+
+        if (typeof callback === 'function') {
+            operationPromise = operationPromise
+                .then(value => callback(null, value))
+                .catch(error => callback(error));
+        }
+
+        return operationPromise;
+
+    }
+
+    update(params?: any, callback?: any): Promise<AWSInstance> {
+        if (typeof params === 'function') {
+            callback = params;
+            params = {};
+        } else {
+            params = params || {};
+        }
+
+        const data: any = {};
+
+        if (params.testString !== undefined) data['TestString'] = params.testString;
+
+        const headers: any = {};
+        headers['Content-Type'] = 'application/x-www-form-urlencoded'
+
+
+        let operationVersion = this._version,
+            operationPromise = operationVersion.update({ uri: this._uri, method: 'POST', data, headers });
+
+        operationPromise = operationPromise.then(payload => new AWSInstance(operationVersion, payload, this._solution.sid));
+
+        if (typeof callback === 'function') {
+            operationPromise = operationPromise
+                .then(value => callback(null, value))
+                .catch(error => callback(error));
+        }
+
+        return operationPromise;
+
+    }
+
+    /**
+     * Provide a user-friendly representation
+     *
+     * @returns Object
+     */
+    toJSON() {
+        return this._solution;
+    }
+
+    [inspect.custom](_depth: any, options: InspectOptions) {
+        return inspect(this.toJSON(), options);
+    }
+}
+
+export type AWSTestEnum = 'DialVerb'|'Trunking';
+
+interface AWSPayload extends AWSResource, Page.TwilioResponsePayload {
+}
+
+interface AWSResource {
+    account_sid?: string | null;
+    sid?: string | null;
+    test_string?: string | null;
+    test_integer?: number | null;
+    test_object?: object | null;
+    test_date_time?: string | null;
+    test_number?: number | null;
+    price_unit?: string | null;
+    test_number_float?: number | null;
+    test_enum?: AWSTestEnum;
+    test_array_of_integers?: Array<number>;
+    test_array_of_array_of_integers?: Array<Array<number>>;
+    test_array_of_objects?: Array<object> | null;
+}
+
+export class AWSInstance {
+    protected _solution: any;
+    protected _context?: AWSContext;
+
+    constructor(protected _version: V2010, payload: AWSPayload, sid?: string) {
+        this.accountSid = payload.account_sid;
+        this.sid = payload.sid;
+        this.testString = payload.test_string;
+        this.testInteger = payload.test_integer;
+        this.testObject = payload.test_object;
+        this.testDateTime = payload.test_date_time;
+        this.testNumber = payload.test_number;
+        this.priceUnit = payload.price_unit;
+        this.testNumberFloat = payload.test_number_float;
+        this.testEnum = payload.test_enum;
+        this.testArrayOfIntegers = payload.test_array_of_integers;
+        this.testArrayOfArrayOfIntegers = payload.test_array_of_array_of_integers;
+        this.testArrayOfObjects = payload.test_array_of_objects;
+
+        this._solution = { sid: sid || this.sid };
+    }
+
+    private get _proxy(): AWSContext {
+        this._context = this._context || new AWSContextImpl(this._version, this._solution.sid);
+        return this._context;
+    }
+
+    accountSid?: string | null;
+    sid?: string | null;
+    testString?: string | null;
+    testInteger?: number | null;
+    testObject?: object | null;
+    testDateTime?: string | null;
+    testNumber?: number | null;
+    priceUnit?: string | null;
+    testNumberFloat?: number | null;
+    testEnum?: AWSTestEnum;
+    testArrayOfIntegers?: Array<number>;
+    testArrayOfArrayOfIntegers?: Array<Array<number>>;
+    testArrayOfObjects?: Array<object> | null;
+
+    /**
+     * Remove a AWSInstance
+     *
+     * @param { function } [callback] - Callback to handle processed record
+     *
+     * @returns { Promise } Resolves to processed boolean
+     */
+    remove(callback?: (error: Error | null, item?: AWSInstance) => any): Promise<boolean>
+ {
+        return this._proxy.remove(callback);
+    }
+
+    /**
+     * Fetch a AWSInstance
+     *
+     * @param { function } [callback] - Callback to handle processed record
+     *
+     * @returns { Promise } Resolves to processed AWSInstance
+     */
+    fetch(callback?: (error: Error | null, item?: AWSInstance) => any): Promise<AWSInstance>
+ {
+        return this._proxy.fetch(callback);
+    }
+
+    /**
+     * Update a AWSInstance
+     *
+     * @param { function } [callback] - Callback to handle processed record
+     *
+     * @returns { Promise } Resolves to processed AWSInstance
+     */
+    update(callback?: (error: Error | null, item?: AWSInstance) => any): Promise<AWSInstance>;
+    /**
+     * Update a AWSInstance
+     *
+     * @param { AWSContextUpdateOptions } params - Parameter for request
+     * @param { function } [callback] - Callback to handle processed record
+     *
+     * @returns { Promise } Resolves to processed AWSInstance
+     */
+    update(params: AWSContextUpdateOptions, callback?: (error: Error | null, item?: AWSInstance) => any): Promise<AWSInstance>;
+    update(params?: any, callback?: any): Promise<AWSInstance>
+ {
+        return this._proxy.update(params, callback);
+    }
+
+    /**
+     * Provide a user-friendly representation
+     *
+     * @returns Object
+     */
+    toJSON() {
+        return {
+            accountSid: this.accountSid, 
+            sid: this.sid, 
+            testString: this.testString, 
+            testInteger: this.testInteger, 
+            testObject: this.testObject, 
+            testDateTime: this.testDateTime, 
+            testNumber: this.testNumber, 
+            priceUnit: this.priceUnit, 
+            testNumberFloat: this.testNumberFloat, 
+            testEnum: this.testEnum, 
+            testArrayOfIntegers: this.testArrayOfIntegers, 
+            testArrayOfArrayOfIntegers: this.testArrayOfArrayOfIntegers, 
+            testArrayOfObjects: this.testArrayOfObjects
+        }
+    }
+
+    [inspect.custom](_depth: any, options: InspectOptions) {
+        return inspect(this.toJSON(), options);
+    }
+}
+
+
+export interface AWSListInstance {
+    (sid: string): AWSContext;
+    get(sid: string): AWSContext;
+
+
+    /**
+     * Create a AWSInstance
+     *
+     * @param { AWSListInstanceCreateOptions } params - Parameter for request
+     * @param { function } [callback] - Callback to handle processed record
+     *
+     * @returns { Promise } Resolves to processed AWSInstance
+     */
+    create(params: AWSListInstanceCreateOptions, callback?: (error: Error | null, item?: AWSInstance) => any): Promise<AWSInstance>;
+    create(params: any, callback?: any): Promise<AWSInstance>
+;
+    /**
+     * Page a AWSInstance
+     *
+     * @param { function } [callback] - Callback to handle processed record
+     *
+     * @returns { Promise } Resolves to processed AWSInstance
+     */
+    page(callback?: (error: Error | null, item?: AWSInstance) => any): Promise<AWSInstance>;
+    /**
+     * Page a AWSInstance
+     *
+     * @param { AWSListInstancePageOptions } params - Parameter for request
+     * @param { function } [callback] - Callback to handle processed record
+     *
+     * @returns { Promise } Resolves to processed AWSInstance
+     */
+    page(params: AWSListInstancePageOptions, callback?: (error: Error | null, item?: AWSInstance) => any): Promise<AWSInstance>;
+    page(params?: any, callback?: any): Promise<AWSInstance>
 ;
     /**
      * Provide a user-friendly representation
@@ -114,26 +386,26 @@ export interface AWListInstance {
 }
 
 
-interface AWListInstanceImpl extends AWListInstance {}
-class AWListInstanceImpl implements AWListInstance {
+interface AWSListInstanceImpl extends AWSListInstance {}
+class AWSListInstanceImpl implements AWSListInstance {
     _version?: V2010;
     _solution?: any;
     _uri?: string;
 
 }
 
-export function AWListInstance(version: V2010): AWListInstance {
-    const instance = ((sid) => instance.get(sid)) as AWListInstanceImpl;
+export function AWSListInstance(version: V2010): AWSListInstance {
+    const instance = ((sid) => instance.get(sid)) as AWSListInstanceImpl;
 
-    instance.get = function get(sid): AWContext {
-        return new AWContextImpl(version, sid);
+    instance.get = function get(sid): AWSContext {
+        return new AWSContextImpl(version, sid);
     }
 
     instance._version = version;
     instance._solution = {  };
     instance._uri = `/v1/Credentials/AWS`;
 
-    instance.create = function create(params: any, callback?: any): Promise<AWInstance> {
+    instance.create = function create(params: any, callback?: any): Promise<AWSInstance> {
         if (params === null || params === undefined) {
             throw new Error('Required parameter "params" missing.');
         }
@@ -167,7 +439,7 @@ export function AWListInstance(version: V2010): AWListInstance {
         let operationVersion = version,
             operationPromise = operationVersion.create({ uri: this._uri, method: 'POST', data, headers });
 
-        operationPromise = operationPromise.then(payload => new AWInstance(operationVersion, payload));
+        operationPromise = operationPromise.then(payload => new AWSInstance(operationVersion, payload));
 
         if (typeof callback === 'function') {
             operationPromise = operationPromise
@@ -179,7 +451,7 @@ export function AWListInstance(version: V2010): AWListInstance {
 
     }
 
-    instance.page = function page(params?: any, callback?: any): Promise<AWInstance> {
+    instance.page = function page(params?: any, callback?: any): Promise<AWSInstance> {
         if (typeof params === 'function') {
             callback = params;
             params = {};
@@ -197,7 +469,7 @@ export function AWListInstance(version: V2010): AWListInstance {
         let operationVersion = version,
             operationPromise = operationVersion.page({ uri: this._uri, method: 'GET', data, headers });
 
-        operationPromise = operationPromise.then(payload => new AWInstance(operationVersion, payload));
+        operationPromise = operationPromise.then(payload => new AWSInstance(operationVersion, payload));
 
         if (typeof callback === 'function') {
             operationPromise = operationPromise
@@ -218,277 +490,5 @@ export function AWListInstance(version: V2010): AWListInstance {
     }
 
     return instance;
-}
-
-
-export interface AWContext {
-
-
-    /**
-     * Remove a AWInstance
-     *
-     * @param { function } [callback] - Callback to handle processed record
-     *
-     * @returns { Promise } Resolves to processed boolean
-     */
-    remove(callback?: (error: Error | null, item?: AWInstance) => any): Promise<boolean>
-;
-    /**
-     * Fetch a AWInstance
-     *
-     * @param { function } [callback] - Callback to handle processed record
-     *
-     * @returns { Promise } Resolves to processed AWInstance
-     */
-    fetch(callback?: (error: Error | null, item?: AWInstance) => any): Promise<AWInstance>
-;
-    /**
-     * Update a AWInstance
-     *
-     * @param { function } [callback] - Callback to handle processed record
-     *
-     * @returns { Promise } Resolves to processed AWInstance
-     */
-    update(callback?: (error: Error | null, item?: AWInstance) => any): Promise<AWInstance>;
-    /**
-     * Update a AWInstance
-     *
-     * @param { AWContextUpdateOptions } params - Parameter for request
-     * @param { function } [callback] - Callback to handle processed record
-     *
-     * @returns { Promise } Resolves to processed AWInstance
-     */
-    update(params: AWContextUpdateOptions, callback?: (error: Error | null, item?: AWInstance) => any): Promise<AWInstance>;
-    update(params?: any, callback?: any): Promise<AWInstance>
-;
-    /**
-     * Provide a user-friendly representation
-     */
-    toJSON(): any;
-    [inspect.custom](_depth: any, options: InspectOptions): any;
-}
-
-export class AWContextImpl implements AWContext {
-    protected _solution: any;
-    protected _uri: string;
-
-
-    constructor(protected _version: V2010, sid: string) {
-        this._solution = { sid };
-        this._uri = `/v1/Credentials/AWS/${sid}`;
-    }
-
-    remove(callback?: any): Promise<boolean> {
-
-        let operationVersion = this._version,
-            operationPromise = operationVersion.remove({ uri: this._uri, method: 'DELETE' });
-
-
-        if (typeof callback === 'function') {
-            operationPromise = operationPromise
-                .then(value => callback(null, value))
-                .catch(error => callback(error));
-        }
-
-        return operationPromise;
-
-    }
-
-    fetch(callback?: any): Promise<AWInstance> {
-
-        let operationVersion = this._version,
-            operationPromise = operationVersion.fetch({ uri: this._uri, method: 'GET' });
-
-        operationPromise = operationPromise.then(payload => new AWInstance(operationVersion, payload, this._solution.sid));
-
-        if (typeof callback === 'function') {
-            operationPromise = operationPromise
-                .then(value => callback(null, value))
-                .catch(error => callback(error));
-        }
-
-        return operationPromise;
-
-    }
-
-    update(params?: any, callback?: any): Promise<AWInstance> {
-        if (typeof params === 'function') {
-            callback = params;
-            params = {};
-        } else {
-            params = params || {};
-        }
-
-        const data: any = {};
-
-        if (params.testString !== undefined) data['TestString'] = params.testString;
-
-        const headers: any = {};
-        headers['Content-Type'] = 'application/x-www-form-urlencoded'
-
-
-        let operationVersion = this._version,
-            operationPromise = operationVersion.update({ uri: this._uri, method: 'POST', data, headers });
-
-        operationPromise = operationPromise.then(payload => new AWInstance(operationVersion, payload, this._solution.sid));
-
-        if (typeof callback === 'function') {
-            operationPromise = operationPromise
-                .then(value => callback(null, value))
-                .catch(error => callback(error));
-        }
-
-        return operationPromise;
-
-    }
-
-    /**
-     * Provide a user-friendly representation
-     *
-     * @returns Object
-     */
-    toJSON() {
-        return this._solution;
-    }
-
-    [inspect.custom](_depth: any, options: InspectOptions) {
-        return inspect(this.toJSON(), options);
-    }
-}
-
-export type AWTestEnum = 'DialVerb'|'Trunking';
-
-interface AWPayload extends AWResource, Page.TwilioResponsePayload {
-}
-
-interface AWResource {
-    account_sid?: string | null;
-    sid?: string | null;
-    test_string?: string | null;
-    test_integer?: number | null;
-    test_object?: object | null;
-    test_date_time?: string | null;
-    test_number?: number | null;
-    price_unit?: string | null;
-    test_number_float?: number | null;
-    test_enum?: AWTestEnum;
-    test_array_of_integers?: Array<number>;
-    test_array_of_array_of_integers?: Array<Array<number>>;
-    test_array_of_objects?: Array<object> | null;
-}
-
-export class AWInstance {
-    protected _solution: any;
-    protected _context?: AWContext;
-
-    constructor(protected _version: V2010, payload: AWPayload, sid?: string) {
-        this.accountSid = payload.account_sid;
-        this.sid = payload.sid;
-        this.testString = payload.test_string;
-        this.testInteger = payload.test_integer;
-        this.testObject = payload.test_object;
-        this.testDateTime = payload.test_date_time;
-        this.testNumber = payload.test_number;
-        this.priceUnit = payload.price_unit;
-        this.testNumberFloat = payload.test_number_float;
-        this.testEnum = payload.test_enum;
-        this.testArrayOfIntegers = payload.test_array_of_integers;
-        this.testArrayOfArrayOfIntegers = payload.test_array_of_array_of_integers;
-        this.testArrayOfObjects = payload.test_array_of_objects;
-
-        this._solution = { sid: sid || this.sid };
-    }
-
-    private get _proxy(): AWContext {
-        this._context = this._context || new AWContextImpl(this._version, this._solution.sid);
-        return this._context;
-    }
-
-    accountSid?: string | null;
-    sid?: string | null;
-    testString?: string | null;
-    testInteger?: number | null;
-    testObject?: object | null;
-    testDateTime?: string | null;
-    testNumber?: number | null;
-    priceUnit?: string | null;
-    testNumberFloat?: number | null;
-    testEnum?: AWTestEnum;
-    testArrayOfIntegers?: Array<number>;
-    testArrayOfArrayOfIntegers?: Array<Array<number>>;
-    testArrayOfObjects?: Array<object> | null;
-
-    /**
-     * Remove a AWInstance
-     *
-     * @param { function } [callback] - Callback to handle processed record
-     *
-     * @returns { Promise } Resolves to processed boolean
-     */
-    remove(callback?: (error: Error | null, item?: AWInstance) => any): Promise<boolean>
- {
-        return this._proxy.remove(callback);
-    }
-
-    /**
-     * Fetch a AWInstance
-     *
-     * @param { function } [callback] - Callback to handle processed record
-     *
-     * @returns { Promise } Resolves to processed AWInstance
-     */
-    fetch(callback?: (error: Error | null, item?: AWInstance) => any): Promise<AWInstance>
- {
-        return this._proxy.fetch(callback);
-    }
-
-    /**
-     * Update a AWInstance
-     *
-     * @param { function } [callback] - Callback to handle processed record
-     *
-     * @returns { Promise } Resolves to processed AWInstance
-     */
-    update(callback?: (error: Error | null, item?: AWInstance) => any): Promise<AWInstance>;
-    /**
-     * Update a AWInstance
-     *
-     * @param { AWContextUpdateOptions } params - Parameter for request
-     * @param { function } [callback] - Callback to handle processed record
-     *
-     * @returns { Promise } Resolves to processed AWInstance
-     */
-    update(params: AWContextUpdateOptions, callback?: (error: Error | null, item?: AWInstance) => any): Promise<AWInstance>;
-    update(params?: any, callback?: any): Promise<AWInstance>
- {
-        return this._proxy.update(params, callback);
-    }
-
-    /**
-     * Provide a user-friendly representation
-     *
-     * @returns Object
-     */
-    toJSON() {
-        return {
-            accountSid: this.accountSid, 
-            sid: this.sid, 
-            testString: this.testString, 
-            testInteger: this.testInteger, 
-            testObject: this.testObject, 
-            testDateTime: this.testDateTime, 
-            testNumber: this.testNumber, 
-            priceUnit: this.priceUnit, 
-            testNumberFloat: this.testNumberFloat, 
-            testEnum: this.testEnum, 
-            testArrayOfIntegers: this.testArrayOfIntegers, 
-            testArrayOfArrayOfIntegers: this.testArrayOfArrayOfIntegers, 
-            testArrayOfObjects: this.testArrayOfObjects
-        }
-    }
-
-    [inspect.custom](_depth: any, options: InspectOptions) {
-        return inspect(this.toJSON(), options);
-    }
 }
 
