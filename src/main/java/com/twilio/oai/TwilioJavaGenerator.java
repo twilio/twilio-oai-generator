@@ -74,6 +74,7 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
         resourceTree = new ResourceMap(inflector, PATH_SEPARATOR_PLACEHOLDER);
         // regex example : https://flex-api.twilio.com
         Pattern serverUrlPattern = Pattern.compile("https:\\/\\/([a-zA-Z-]+)\\.twilio\\.com");
+        Map<String, Object> extensionMapAtResourceLevel = new HashMap<String, Object>();
         openAPI.getPaths().forEach((name, path) -> {
             resourceTree.addResource(name, path);
         });
@@ -83,11 +84,15 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
                 // Group operations together by tag. This gives us one file/post-process per resource.
                 String tag = String.join(PATH_SEPARATOR_PLACEHOLDER, resourceTree.ancestors("/"+name.replaceFirst("/[^/]+/", "")));
                 operation.addTagsItem(tag);
+                extensionMapAtResourceLevel.put(tag, path.getExtensions());
             });
+
             Matcher m = serverUrlPattern.matcher(path.getServers().get(0).getUrl());
             if(m.find()){
                 additionalProperties.put("domainName", StringUtils.camelize(m.group(1)));
             }
+
+            additionalProperties.put("extensionMapAtResourceLevel", extensionMapAtResourceLevel);
         });
     }
     /**
@@ -222,6 +227,10 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
 
         final Map<String, Object> ops = getStringMap(results, "operations");
         final ArrayList<CodegenOperation> opList = (ArrayList<CodegenOperation>) ops.get("operation");
+
+        final Map<String, String> enumAliasDict = (Map<String, String>) getEnumAliasDict(this.additionalProperties.get("extensionMapAtResourceLevel"), ops);
+
+
         String recordKey = getRecordKey(opList, this.allModels);
         List<CodegenModel> responseModels = new ArrayList<CodegenModel>();
         boolean isVersionV2010 = objs.get("package").equals("v2010");
@@ -295,6 +304,7 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
             if (co.bodyParam != null) {
                 addModel(resource, co.bodyParam.dataType);
             }
+            Map<String, String> finalEnumAliasDict = enumAliasDict;
             co.responses
               .stream()
               .map(response -> response.dataType)
@@ -306,8 +316,7 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
               .forEach(model -> {
 
                   resource.put("serialVersionUID", calculateSerialVersionUid(model.vars));
-                  responseModels.add(model);
-                  processEnumVarsForAll(responseModels, co, model, resourceName);
+                  processEnumVarsForAll(responseModels, co, model, resourceName, finalEnumAliasDict);
 
               });
 
@@ -332,31 +341,78 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
         return results;
     }
 
-    private void processEnumVarsForAll(List<CodegenModel> responseModels, CodegenOperation co, CodegenModel model, String resourceName) {
-            for (CodegenParameter param : co.allParams) {
+    private Object getEnumAliasDict(Object extensionMapAtResourceLevelPassed, Map<String, Object> ops) {
+        final Map<String, Object> extensionMapAtResourceLevel = (Map<String, Object>) extensionMapAtResourceLevelPassed;
+        Map<String, String> enumAliasDict = new HashMap<String, String>(){};
+        LinkedHashMap<String, Object> extensions = null;
+        Object keyNametoFetchExtensionsAtResourceLevel = ops.get("classname");
+
+
+        if(!extensionMapAtResourceLevel.containsKey(keyNametoFetchExtensionsAtResourceLevel)){
+            keyNametoFetchExtensionsAtResourceLevel = ops.get("pathPrefix");
+        }
+        extensions = (LinkedHashMap<String, Object>) extensionMapAtResourceLevel.get(keyNametoFetchExtensionsAtResourceLevel);
+        LinkedHashMap<String, Object> xtwilioExtensions = null;
+        if(extensions != null)
+            xtwilioExtensions = (LinkedHashMap<String, Object>) extensions.get("x-twilio");
+
+        if(xtwilioExtensions != null && xtwilioExtensions.containsKey("enumAliases") ){
+            enumAliasDict = (Map<String, String>) xtwilioExtensions.get("enumAliases");
+        }
+
+        return enumAliasDict;
+    }
+
+    private void processEnumVarsForAll(List<CodegenModel> responseModels, CodegenOperation co, CodegenModel model, String resourceName, Map<String, String> enumAliasDict) {
+        model.vars.forEach(item -> {
+            if(item.isEnum){
+                if(enumAliasDict.containsKey(item.baseName)){
+                    item = renameItem(item, enumAliasDict);
+                }
+            }
+
+        });
+        for (CodegenParameter param : co.allParams) {
                 if(param.isEnum){
-                    Optional<CodegenProperty> alreadyExisting = model.vars.stream().filter(item -> item.name.equalsIgnoreCase(param.paramName)).findFirst();
+                    String aliasName = getAliasNameForEnum(enumAliasDict, param.paramName);
+                    final String camelizedAliasName = StringUtils.camelize(aliasName, false);
+                    Optional<CodegenProperty> alreadyExisting = model.vars.stream().filter(item -> item.name.equalsIgnoreCase(camelizedAliasName)).findFirst();
                     if(!alreadyExisting.isPresent()){
-                        responseModels.get(0).vars.add(createCodeGenPropertyFromParameter(param));
                         model.vars.add(createCodeGenPropertyFromParameter(param));
+
                     }
                 }
             }
 
         model.vars.forEach(item -> {
             if(item.isEnum){
-                item.dataType = generateDataType(resourceName, item.nameInCamelCase);
-
-                item.vendorExtensions.put("x-is-other-data-type", true);
-
+                    item.dataType = generateDataType(resourceName, item.nameInCamelCase, enumAliasDict);
+                    item.vendorExtensions.put("x-is-other-data-type", true);
             }
 
         });
-        co.queryParams.forEach(param -> processEnumVars(param, model, resourceName));
-        co.formParams.forEach(param -> processEnumVars(param, model, resourceName));
-        co.allParams.forEach(param -> processEnumVars(param, model, resourceName));
-        co.headerParams.forEach(param -> processEnumVars(param, model, resourceName));
-        co.requiredParams.forEach(param -> processEnumVars(param, model, resourceName));
+        responseModels.add(model);
+        co.queryParams.forEach(param -> processEnumVars(param, model, resourceName, enumAliasDict));
+        co.formParams.forEach(param -> processEnumVars(param, model, resourceName, enumAliasDict));
+        co.allParams.forEach(param -> processEnumVars(param, model, resourceName, enumAliasDict));
+        co.headerParams.forEach(param -> processEnumVars(param, model, resourceName, enumAliasDict));
+        co.requiredParams.forEach(param -> processEnumVars(param, model, resourceName, enumAliasDict));
+
+
+    }
+
+    private CodegenProperty renameItem(CodegenProperty item, Map<String, String> enumAliasDict){
+        String camelizedName = StringUtils.camelize(enumAliasDict.get(item.baseName), false);
+        item.getter = "get"+ camelizedName;
+        item.setter = "set"+ camelizedName;
+        item.datatypeWithEnum = camelizedName + "Enum";
+        item.name = StringUtils.camelize(enumAliasDict.get(item.baseName),true);
+        item.nameInCamelCase = camelizedName;
+        item.nameInSnakeCase = camelizedName;
+        item.enumName = camelizedName + "Enum";
+        item.baseName = enumAliasDict.get(item.baseName);
+
+        return item;
     }
 
     private CodegenProperty createCodeGenPropertyFromParameter(CodegenParameter co) {
@@ -427,25 +483,39 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
         return allModels.stream().filter(model -> model.getClassname().equals(modelName)).findFirst();
     }
 
-    private String generateDataType(String resourceName, String nameInCamelCase){
+    private String getAliasNameForEnum(Map<String, String> enumAliasDict, String name){
+        String result = name;
+        String processedItemName = StringUtils.camelize(name, false);
+        for (Map.Entry<String,String> entry : enumAliasDict.entrySet()){
+            if(StringUtils.camelize(entry.getKey(), false).equalsIgnoreCase(processedItemName)){
+                result = entry.getValue();
+            }
+        }
+        return result;
+    }
+
+    private String generateDataType(String resourceName, String nameInCamelCase, Map<String,String> enumAliases){
         String name = nameInCamelCase;
         String dataType = "";
         String nameArr[] = name.split("[.]", 0);
-        if(nameArr.length > 0){
+        if(nameArr.length > 1){
             String itemName = String.join("", nameArr);
-            dataType = resourceName + "." + itemName;
+            itemName = getAliasNameForEnum(enumAliases, itemName);
+            dataType = resourceName + "." + StringUtils.camelize(itemName, false);
         }
         else{
-            dataType = resourceName + "." + name;
+            name = getAliasNameForEnum(enumAliases, name);
+            dataType = resourceName + "." + StringUtils.camelize(name, false);
+
         }
         return dataType;
     }
 
-    private CodegenParameter processEnumVars(CodegenParameter param, CodegenModel model, String resourceName) {
+    private CodegenParameter processEnumVars(CodegenParameter param, CodegenModel model, String resourceName, Map<String, String> enumAliases) {
         if(param.isEnum){
             model.vars.forEach(item -> {
                 if(param.paramName.equalsIgnoreCase(item.nameInCamelCase) && item.isEnum == true){
-                    String baseType = generateDataType(resourceName, item.nameInCamelCase);
+                    String baseType = generateDataType(resourceName, item.nameInCamelCase, enumAliases);
                     if(param.isArray){
                         param.dataType = "List<"+ baseType +">";
                         param.baseType = baseType;
