@@ -86,12 +86,10 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
                 operation.addTagsItem(tag);
                 extensionMapAtResourceLevel.put(tag, path.getExtensions());
             });
-
             Matcher m = serverUrlPattern.matcher(path.getServers().get(0).getUrl());
             if(m.find()){
                 additionalProperties.put("domainName", StringUtils.camelize(m.group(1)));
             }
-
             additionalProperties.put("extensionMapAtResourceLevel", extensionMapAtResourceLevel);
         });
     }
@@ -227,10 +225,7 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
 
         final Map<String, Object> ops = getStringMap(results, "operations");
         final ArrayList<CodegenOperation> opList = (ArrayList<CodegenOperation>) ops.get("operation");
-
         final Map<String, String> enumAliasDict = (Map<String, String>) getEnumAliasDict(this.additionalProperties.get("extensionMapAtResourceLevel"), ops);
-
-
         String recordKey = getRecordKey(opList, this.allModels);
         List<CodegenModel> responseModels = new ArrayList<CodegenModel>();
         boolean isVersionV2010 = objs.get("package").equals("v2010");
@@ -347,7 +342,6 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
         LinkedHashMap<String, Object> extensions = null;
         Object keyNametoFetchExtensionsAtResourceLevel = ops.get("classname");
 
-
         if(!extensionMapAtResourceLevel.containsKey(keyNametoFetchExtensionsAtResourceLevel)){
             keyNametoFetchExtensionsAtResourceLevel = ops.get("pathPrefix");
         }
@@ -379,7 +373,6 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
                     Optional<CodegenProperty> alreadyExisting = model.vars.stream().filter(item -> item.name.equalsIgnoreCase(camelizedAliasName)).findFirst();
                     if(!alreadyExisting.isPresent()){
                         model.vars.add(createCodeGenPropertyFromParameter(param));
-
                     }
                 }
             }
@@ -397,8 +390,6 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
         co.allParams.forEach(param -> processEnumVars(param, model, resourceName, enumAliasDict));
         co.headerParams.forEach(param -> processEnumVars(param, model, resourceName, enumAliasDict));
         co.requiredParams.forEach(param -> processEnumVars(param, model, resourceName, enumAliasDict));
-
-
     }
 
     private CodegenProperty renameItem(CodegenProperty item, Map<String, String> enumAliasDict){
