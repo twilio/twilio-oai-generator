@@ -39,11 +39,12 @@ import com.twilio.rest.api.v2010.account.CallFetcher;
 import com.twilio.rest.api.v2010.account.call.FeedbackCallSummary;
 import com.twilio.rest.api.v2010.account.call.FeedbackCallSummaryCreator;
 import com.twilio.rest.api.v2010.credential.Aws;
-import com.twilio.rest.api.v2010.credential.AwsCreator;
 import com.twilio.rest.api.v2010.credential.AwsDeleter;
 import com.twilio.rest.api.v2010.credential.AwsFetcher;
 import com.twilio.rest.api.v2010.credential.AwsReader;
 import com.twilio.rest.api.v2010.credential.AwsUpdater;
+import com.twilio.rest.api.v2010.credential.NewCredentials;
+import com.twilio.rest.api.v2010.credential.NewCredentialsCreator;
 import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
@@ -387,16 +388,16 @@ public class TwilioRestTest {
         mockRequest.addPostParam(TEST_INTEGER, "1");
         when(twilioRestClient.request(mockRequest)).thenReturn(new Response("{\"account_sid\":\"AC222222222222222222222222222222\", \"sid\":\"PNXXXXY\"}", 200));
         when(twilioRestClient.getObjectMapper()).thenReturn(objectMapper);
-        AwsCreator awsCreator = new AwsCreator(ACCOUNT_SID, 1, 1.4F);
-        awsCreator.setTestObjectArray(Arrays.asList(item1, item2));
-        Aws aws = awsCreator.create(twilioRestClient);
-        assertNotNull(aws);
+        NewCredentialsCreator credentialsCreator = new NewCredentialsCreator(ACCOUNT_SID, 1, 1.4F);
+        credentialsCreator.setTestObjectArray(Arrays.asList(item1, item2));
+        NewCredentials credentials = credentialsCreator.create(twilioRestClient);
+        assertNotNull(credentials);
         assertEquals(item1.toString(), mockRequest.getPostParams().get("TestObjectArray").get(0));
         assertEquals("AC222222222222222222222222222222", mockRequest.getPostParams().get("TestString").get(0));
     }
 
     @Test(expected =  ApiConnectionException.class)
-    public void testObjectArrayTypeParamNullResponseAwsCreator() {
+    public void testObjectArrayTypeParamNullResponseNewCredentialsCreator() {
         Request mockRequest = new Request(
                 HttpMethod.POST,
                 "api",
@@ -428,27 +429,27 @@ public class TwilioRestTest {
         mockRequest.addPostParam("TestBoolean", "test");
         when(twilioRestClient.request(mockRequest)).thenReturn(null);
         when(twilioRestClient.getObjectMapper()).thenReturn(objectMapper);
-        AwsCreator awsCreator = new AwsCreator(ACCOUNT_SID, 1, 1.4F);
-        awsCreator.setTestObjectArray(Arrays.asList(item1, item2));
-        List<Aws.Permissions> permissions = new ArrayList<>();
-        permissions.add(Aws.Permissions.GET_ALL);
-        permissions.add(Aws.Permissions.POST_ALL);
-        awsCreator.setPermissions( permissions);
-        awsCreator.setTestEnum(Aws.TestEnum.DIALVERB);
+        NewCredentialsCreator credentialsCreator = new NewCredentialsCreator(ACCOUNT_SID, 1, 1.4F);
+        credentialsCreator.setTestObjectArray(Arrays.asList(item1, item2));
+        List<NewCredentials.Permissions> permissions = new ArrayList<>();
+        permissions.add(NewCredentials.Permissions.GET_ALL);
+        permissions.add(NewCredentials.Permissions.POST_ALL);
+        credentialsCreator.setPermissions( permissions);
+        credentialsCreator.setTestEnum(NewCredentials.TestEnum.DIALVERB);
         LocalDate localDate = LocalDate.now();
         ZonedDateTime zonedDateTime = ZonedDateTime.now();
-        awsCreator.setTestDate(localDate);
-        awsCreator.setTestDateTime(zonedDateTime);
-        awsCreator.setTestObject(new HashMap<>());
-        awsCreator.setTestNumberInt64(new Long(1));
-        awsCreator.setTestNumberInt32(new BigDecimal(1));
-        awsCreator.setTestNumberDouble(new Double(1));
-        awsCreator.setTestNumberFloat(new Float(1));
-        awsCreator.setTestNumber(new BigDecimal(1));
-        awsCreator.setTestInteger(new Integer(1));
-        awsCreator.setTestBoolean(true);
-        awsCreator.setTestString("test");
-        awsCreator.create(twilioRestClient);
+        credentialsCreator.setTestDate(localDate);
+        credentialsCreator.setTestDateTime(zonedDateTime);
+        credentialsCreator.setTestObject(new HashMap<>());
+        credentialsCreator.setTestNumberInt64(new Long(1));
+        credentialsCreator.setTestNumberInt32(new BigDecimal(1));
+        credentialsCreator.setTestNumberDouble(new Double(1));
+        credentialsCreator.setTestNumberFloat(new Float(1));
+        credentialsCreator.setTestNumber(new BigDecimal(1));
+        credentialsCreator.setTestInteger(new Integer(1));
+        credentialsCreator.setTestBoolean(true);
+        credentialsCreator.setTestString("test");
+        credentialsCreator.create(twilioRestClient);
     }
 
     @Test(expected =  ApiException.class)
@@ -464,12 +465,12 @@ public class TwilioRestTest {
         JSONObject response = new JSONObject(content);
         when(twilioRestClient.request(Mockito.any())).thenReturn(new Response(response.toString(), 400));
         when(twilioRestClient.getObjectMapper()).thenReturn(objectMapper);
-        AwsCreator awsCreator = new AwsCreator(ACCOUNT_SID, LocalDate.now(), 1.4F);
-        awsCreator.create(twilioRestClient);
+        NewCredentialsCreator credentialsCreator = new NewCredentialsCreator(ACCOUNT_SID, LocalDate.now(), 1.4F);
+        credentialsCreator.create(twilioRestClient);
     }
 
     @Test(expected =  ApiException.class)
-    public void testAwsCreatorConstructorWithLocalDateAndMap() {
+    public void testNewCredentialsCreatorConstructorWithLocalDateAndMap() {
 
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
@@ -481,12 +482,12 @@ public class TwilioRestTest {
         JSONObject response = new JSONObject(content);
         when(twilioRestClient.request(Mockito.any())).thenReturn(new Response(response.toString(), 400));
         when(twilioRestClient.getObjectMapper()).thenReturn(objectMapper);
-        AwsCreator awsCreator = new AwsCreator(ACCOUNT_SID, LocalDate.now(), new HashMap<>());
-        awsCreator.create(twilioRestClient);
+        NewCredentialsCreator credentialsCreator = new NewCredentialsCreator(ACCOUNT_SID, LocalDate.now(), new HashMap<>());
+        credentialsCreator.create(twilioRestClient);
     }
 
     @Test(expected =  ApiException.class)
-    public void testAwsCreatorConstructorWithIntAndMap() {
+    public void testNewCredentialsCreatorConstructorWithIntAndMap() {
 
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
@@ -498,8 +499,8 @@ public class TwilioRestTest {
         JSONObject response = new JSONObject(content);
         when(twilioRestClient.request(Mockito.any())).thenReturn(new Response(response.toString(), 400));
         when(twilioRestClient.getObjectMapper()).thenReturn(objectMapper);
-        AwsCreator awsCreator = new AwsCreator(ACCOUNT_SID, 1, new HashMap<>());
-        awsCreator.create(twilioRestClient);
+        NewCredentialsCreator credentialsCreator = new NewCredentialsCreator(ACCOUNT_SID, 1, new HashMap<>());
+        credentialsCreator.create(twilioRestClient);
     }
 
     @Test
@@ -520,12 +521,12 @@ public class TwilioRestTest {
         mockRequest.addPostParam("TestString", ACCOUNT_SID);
         when(twilioRestClient.request(mockRequest)).thenReturn(new Response("{\"account_sid\":\"AC222222222222222222222222222222\", \"sid\":\"PNXXXXY\"}", 200));
         when(twilioRestClient.getObjectMapper()).thenReturn(objectMapper);
-        AwsCreator awsCreator = new AwsCreator(ACCOUNT_SID, 1, 1.4F);
-        awsCreator.setTestAnyType(anyMap);
-        Aws aws = awsCreator.create(twilioRestClient);
+        NewCredentialsCreator credentialsCreator = new NewCredentialsCreator(ACCOUNT_SID, 1, 1.4F);
+        credentialsCreator.setTestAnyType(anyMap);
+        NewCredentials credentials = credentialsCreator.create(twilioRestClient);
 
-        assertNotNull(aws);
-        assertNotNull(awsCreator);
+        assertNotNull(credentials);
+        assertNotNull(credentialsCreator);
         assertEquals("AC222222222222222222222222222222", mockRequest.getPostParams().get("TestString").get(0));
         assertEquals("{TestInteger=1}", mockRequest.getPostParams().get("TestAnyType").get(0));
 
@@ -904,14 +905,14 @@ public class TwilioRestTest {
 
     @Test
     public void testAWSCrud() {
-        AwsCreator awsCreator1 = Aws.creator(ACCOUNT_SID,1,1F);
-        AwsCreator awsCreator2 = Aws.creator(ACCOUNT_SID,1,new HashMap<>());
-        AwsCreator awsCreator3 = Aws.creator(ACCOUNT_SID,LocalDate.now(),new HashMap<>());
-        AwsCreator awsCreator4 = Aws.creator(ACCOUNT_SID,LocalDate.now(),1F);
-        assertNotNull(awsCreator1);
-        assertNotNull(awsCreator2);
-        assertNotNull(awsCreator3);
-        assertNotNull(awsCreator4);
+        NewCredentialsCreator credentialsCreator1 = NewCredentials.creator(ACCOUNT_SID,1,1F);
+        NewCredentialsCreator credentialsCreator2 = NewCredentials.creator(ACCOUNT_SID,1,new HashMap<>());
+        NewCredentialsCreator credentialsCreator3 = NewCredentials.creator(ACCOUNT_SID,LocalDate.now(),new HashMap<>());
+        NewCredentialsCreator credentialsCreator4 = NewCredentials.creator(ACCOUNT_SID,LocalDate.now(),1F);
+        assertNotNull(credentialsCreator1);
+        assertNotNull(credentialsCreator2);
+        assertNotNull(credentialsCreator3);
+        assertNotNull(credentialsCreator4);
 
         AwsFetcher awsFetcher = Aws.fetcher(ACCOUNT_SID);
         assertNotNull(awsFetcher);
@@ -967,7 +968,7 @@ public class TwilioRestTest {
         Aws.TestEnum testEnum = Aws.TestEnum.forValue("DialVerb");
         Aws.XTwilioWebhookEnabled xTwilioWebhookEnabled = Aws.XTwilioWebhookEnabled.forValue("true");
         Aws.Status status = Aws.Status.forValue("paused");
-        Aws.Permissions permissions = Aws.Permissions.forValue("get-all");
+        NewCredentials.Permissions permissions = NewCredentials.Permissions.forValue("get-all");
 
         assertEquals("DialVerb", testEnum.toString());
         assertEquals("true", xTwilioWebhookEnabled.toString());
@@ -1120,7 +1121,6 @@ public class TwilioRestTest {
         assertNull(aws.getTestArrayOfObjects());
         assertNull(aws.getXTwilioWebhookEnabled());
         assertNull(aws.getStatus());
-        assertNull(aws.getPermissions());
         assertNull(aws.getTestString());
 
         assertTrue(aws.equals(awsDuplicate));
@@ -1128,6 +1128,37 @@ public class TwilioRestTest {
         // If two objects are equal they must have same hashcode
         assertEquals(awsDuplicate.hashCode(), aws.hashCode());
         assertFalse(aws.equals(null));
+    }
+
+    @Test
+    public void testNewCredentialsGetters() {
+        final ObjectMapper objectMapper = new ObjectMapper();
+        final String json = "{\"accountSid\": \"a123\", \"sid\": \"123\", \"testInteger\": 123, \"testNumber\": 123.1, \"testNumberFloat\": 123.2, \"testEnum\": \"Trunking\", " +
+                "\"testEnum\": \"Trunking\"}";
+        final NewCredentials credentials = NewCredentials.fromJson(json, objectMapper);
+        final NewCredentials credentialsDuplicate = NewCredentials.fromJson(json, objectMapper);
+
+        assertEquals("a123", credentials.getAccountSid());
+        assertEquals("123", credentials.getSid());
+        assertNull(credentials.getTestString());
+        assertNull(credentials.getTestObject());
+        assertEquals(Integer.valueOf("123"), credentials.getTestInteger());
+        assertNull(credentials.getTestDateTime());
+        assertEquals(BigDecimal.valueOf(123.1), credentials.getTestNumber());
+        assertNull(credentials.getPriceUnit());
+        assertEquals(Float.valueOf("123.2"), credentials.getTestNumberFloat());
+        assertEquals("Trunking", credentials.getTestEnum().toString());
+        assertNull(credentials.getTestArrayOfIntegers());
+        assertNull(credentials.getTestArrayOfArrayOfIntegers());
+        assertNull(credentials.getTestArrayOfObjects());
+        assertNull(credentials.getXTwilioWebhookEnabled());
+        assertNull(credentials.getStatus());
+        assertNull(credentials.getPermissions());
+
+        assertTrue(credentials.equals(credentialsDuplicate));
+        assertTrue(credentialsDuplicate.equals(credentials));
+        assertEquals(credentialsDuplicate.hashCode(), credentials.hashCode());
+        assertFalse(credentials.equals(null));
     }
 
     @Test

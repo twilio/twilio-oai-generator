@@ -37,7 +37,8 @@ def generate(openapi_spec_path: str, output_path: str, language: str, domain: st
               f'-o {output_path} ' \
               f'> /dev/null'  # Suppress stdout
     print(f'Generating {output_path} from {full_path}')
-    os.system(command)
+    if os.system(command) != 0:
+        raise RuntimeError()
     if language == 'java':
         remove_unused_imports(output_path, "java")
     print(f"Code generation completed at {output_path}")

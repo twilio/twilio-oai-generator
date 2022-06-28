@@ -247,6 +247,7 @@ paths:
       security:
         - accountSid_authToken: [ ]
       x-twilio:
+        className: new_credentials
         conditional:
         - - TestInteger
           - TestDate
