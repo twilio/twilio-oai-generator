@@ -128,19 +128,6 @@ public class {{resourceName}}Creator extends Creator<{{resourceName}}>{
      *
      * @param request Request to add post params to
      */
-    private void addPostParams(final Request request) {
-{{#vendorExtensions.x-non-path-params}}
-        if ({{paramName}} != null) {
-        {{#isFreeFormObject}}
-        request.addPostParam("{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}",  Converter.mapToJson({{paramName}}));
-        {{/isFreeFormObject}}
-        {{^isFreeFormObject}}
-        request.addPostParam("{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}", {{paramName}}.toString());
-        {{/isFreeFormObject}}
-        }
-
-{{/vendorExtensions.x-non-path-params}}
-    }
 {{#formParams.0}}
 {{>postParams}}
 {{/formParams.0}}

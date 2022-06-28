@@ -72,29 +72,6 @@ public class {{resourceName}}Reader extends Reader<{{resourceName}}> {
     }
 {{/vendorExtensions.x-non-path-params}}
 
-    /**
-     * Add the requested query string arguments to the Request.
-     *
-     * @param request Request to add query string arguments to
-     */
-    private void addQueryParams(final Request request) {
-        {{#queryParams}}
-        {{#vendorExtensions.x-prefixed-collapsible-map}}
-        if ({{paramName}} != null) {
-            Map<String, String> params = PrefixedCollapsibleMap.serialize({{{paramName}}}, "{{vendorExtensions.x-prefixed-collapsible-map}}");
-            for (Map.Entry<String, String> entry : params.entrySet()) {
-                request.addQueryParam(entry.getKey(), entry.getValue());
-            }
-        }
-        {{/vendorExtensions.x-prefixed-collapsible-map}}
-        {{^vendorExtensions.x-prefixed-collapsible-map}}
-        if ({{paramName}} != null) {
-            request.addQueryParam("{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}", {{paramName}}.toString());
-        }
-        {{/vendorExtensions.x-prefixed-collapsible-map}}
-        {{/queryParams}}
-    }
-
     @Override
     public ResourceSet<{{resourceName}}> read(final TwilioRestClient client) {
         return new ResourceSet<>(this, client, firstPage(client));
@@ -212,6 +189,11 @@ public class {{resourceName}}Reader extends Reader<{{resourceName}}> {
 
         return pageForRequest(client, request);
     }
+    /**
+     * Add the requested query string arguments to the Request.
+     *
+     * @param request Request to add query string arguments to
+     */
 {{#formParams.0}}
 {{>postParams}}
 {{/formParams.0}}
