@@ -5,6 +5,7 @@ package com.twilio.rest.{{domainPackage}}.{{package}}{{packageSubPart}};
 import com.twilio.base.Updater;
 import com.twilio.converter.Promoter;
 import com.twilio.exception.ApiConnectionException;
+import com.twilio.converter.PrefixedCollapsibleMap;
 import com.twilio.exception.ApiException;
 import com.twilio.exception.RestException;
 import com.twilio.http.HttpMethod;
@@ -12,6 +13,8 @@ import com.twilio.http.Request;
 import com.twilio.http.Response;
 import com.twilio.http.TwilioRestClient;
 import com.twilio.rest.Domains;
+import java.time.format.DateTimeFormatter;
+import com.twilio.converter.DateConverter;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -79,20 +82,27 @@ public class {{resourceName}}Updater extends Updater<{{resourceName}}>{
         {{#allParams}}
         {{#vendorExtensions.x-is-account-sid}}
         this.{{paramName}} = this.{{paramName}} == null ? client.getAccountSid() : this.{{paramName}};
-        path = path.replace("{"+"{{paramName}}"+"}", this.{{paramName}}.toString());
+        path = path.replace("{"+"{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}"+"}", this.{{paramName}}.toString());
         {{/vendorExtensions.x-is-account-sid}}
         {{/allParams}}
         {{#requiredParams}}
-        path = path.replace("{"+"{{paramName}}"+"}", this.{{paramName}}.toString());
+        path = path.replace("{"+"{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}"+"}", this.{{paramName}}.toString());
         {{/requiredParams}}
 
         Request request = new Request(
             HttpMethod.POST,
-            Domains.{{#lambda.uppercase}}{{domain}}{{/lambda.uppercase}}.toString(),
+            Domains.{{#lambda.uppercase}}{{domainName}}{{/lambda.uppercase}}.toString(),
             path
         );
-
+        {{#queryParams.0}}
+        addQueryParams(request);
+        {{/queryParams.0}}
+        {{#formParams.0}}
         addPostParams(request);
+        {{/formParams.0}}
+        {{#headerParams.0}}
+        addHeaderParams(request);
+        {{/headerParams.0}}
         Response response = client.request(request);
         if (response == null) {
             throw new ApiConnectionException("{{resourceName}} update failed: Unable to connect to server");
@@ -106,15 +116,15 @@ public class {{resourceName}}Updater extends Updater<{{resourceName}}>{
 
         return {{resourceName}}.fromJson(response.getStream(), client.getObjectMapper());
     }
-
-
-    private void addPostParams(final Request request) {
-{{#vendorExtensions.x-non-path-params}}
-        if ({{paramName}} != null) {
-            request.addPostParam("{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}", {{paramName}}.toString());
-        }
-{{/vendorExtensions.x-non-path-params}}
-    }
+{{#formParams.0}}
+{{>postParams}}
+{{/formParams.0}}
+{{#headerParams.0}}
+{{>headerParams}}
+{{/headerParams.0}}
+{{#queryParams.0}}
+{{>queryParams}}
+{{/queryParams.0}}
 }
 {{/vendorExtensions.x-is-update-operation}}
 {{/operations}}

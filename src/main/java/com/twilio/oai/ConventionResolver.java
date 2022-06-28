@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenParameter;
 import org.openapitools.codegen.CodegenProperty;
+import org.openapitools.codegen.utils.StringUtils;
 
 public class ConventionResolver {
     final static Map<String, Map<String, Object>> conventionMap = getConventionalMap() ;
@@ -14,6 +15,7 @@ public class ConventionResolver {
     final static String PREFIXED_COLLAPSIBLE_MAP = "prefixed-collapsible-map";
     final static String X_PREFIXED_COLLAPSIBLE_MAP = "x-prefixed-collapsible-map";
     final static String HYPHEN = "-";
+    public static final String OBJECT = "object";
 
     public static Optional<CodegenModel> resolve(Optional<CodegenModel> model) {
         for (CodegenProperty property : model.get().vars) {
@@ -30,11 +32,29 @@ public class ConventionResolver {
             if (hasProperty) {
                 property.dataType = (String)conventionMap.get(Segments.SEGMENT_PROPERTIES.getSegment()).get(property.dataFormat);
             }
+
+            if(property.dataType.equalsIgnoreCase(OBJECT)) {
+                property.dataType = (String)conventionMap.get(Segments.SEGMENT_PROPERTIES.getSegment()).get(OBJECT);
+            }
             property.nameInSnakeCase = property.nameInSnakeCase.toLowerCase(Locale.ROOT);
             vendorExtensions.forEach(
                     (key, value) -> property.getVendorExtensions().merge(key, value, (oldValue, newValue) -> newValue));
         }
         return model;
+    }
+
+    public static Optional<CodegenParameter> resolveParameter(CodegenParameter parameter) {
+
+        if(parameter.dataType.equalsIgnoreCase(OBJECT)) {
+            parameter.dataType = (String)conventionMap.get(Segments.SEGMENT_PROPERTIES.getSegment()).get(OBJECT);
+        }
+
+        boolean hasProperty = conventionMap.get(Segments.SEGMENT_PROPERTIES.getSegment()).containsKey(parameter.dataFormat);
+        if (hasProperty) {
+            parameter.dataType = (String)conventionMap.get(Segments.SEGMENT_PROPERTIES.getSegment()).get(parameter.dataFormat);
+        }
+        parameter.paramName = StringUtils.camelize(parameter.paramName, true);
+        return Optional.of(parameter);
     }
 
     public static CodegenParameter resolveParamTypes(CodegenParameter codegenParameter) {
@@ -51,6 +71,7 @@ public class ConventionResolver {
             parameter.vendorExtensions.put(X_PREFIXED_COLLAPSIBLE_MAP, split_format_array[split_format_array.length - 1]);
             parameter.dataType = (String)conventionMap.get(Segments.SEGMENT_PROPERTIES.getSegment()).get(PREFIXED_COLLAPSIBLE_MAP);
         }
+        parameter.paramName = StringUtils.camelize(parameter.paramName, true);
         return parameter;
     }
 

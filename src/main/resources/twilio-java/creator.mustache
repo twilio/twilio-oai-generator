@@ -5,6 +5,7 @@ package com.twilio.rest.{{domainPackage}}.{{package}}{{packageSubPart}};
 import com.twilio.base.Creator;
 import com.twilio.converter.Promoter;
 import com.twilio.exception.ApiConnectionException;
+import com.twilio.converter.PrefixedCollapsibleMap;
 import com.twilio.exception.ApiException;
 import com.twilio.exception.RestException;
 import com.twilio.http.HttpMethod;
@@ -21,7 +22,8 @@ import java.time.ZonedDateTime;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
-import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import com.twilio.converter.DateConverter;
 
 {{^fullJavaUtil}}
 import java.util.ArrayList;
@@ -68,7 +70,7 @@ public class {{resourceName}}Creator extends Creator<{{resourceName}}>{
     *
     * @return this
     */
-    public {{resourceName}}Creator set{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}(final {{{dataType}}} {{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}){
+    public {{resourceName}}Creator set{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}(final {{{dataType}}} {{paramName}}){
         this.{{paramName}} = {{paramName}};
         return this;
     }
@@ -86,20 +88,27 @@ public class {{resourceName}}Creator extends Creator<{{resourceName}}>{
         {{#allParams}}
         {{#vendorExtensions.x-is-account-sid}}
         this.{{paramName}} = this.{{paramName}} == null ? client.getAccountSid() : this.{{paramName}};
-        path = path.replace("{"+"{{paramName}}"+"}", this.{{paramName}}.toString());
+        path = path.replace("{"+"{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}"+"}", this.{{paramName}}.toString());
         {{/vendorExtensions.x-is-account-sid}}
         {{/allParams}}
         {{#requiredParams}}
-        path = path.replace("{"+"{{paramName}}"+"}", this.{{paramName}}.toString());
+        path = path.replace("{"+"{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}"+"}", this.{{paramName}}.toString());
         {{/requiredParams}}
 
         Request request = new Request(
             HttpMethod.POST,
-            Domains.{{#lambda.uppercase}}{{domain}}{{/lambda.uppercase}}.toString(),
+            Domains.{{#lambda.uppercase}}{{domainName}}{{/lambda.uppercase}}.toString(),
             path
         );
-
+        {{#queryParams.0}}
+        addQueryParams(request);
+        {{/queryParams.0}}
+        {{#formParams.0}}
         addPostParams(request);
+        {{/formParams.0}}
+        {{#headerParams.0}}
+        addHeaderParams(request);
+        {{/headerParams.0}}
         Response response = client.request(request);
         if (response == null) {
             throw new ApiConnectionException("{{resourceName}} creation failed: Unable to connect to server");
@@ -132,6 +141,15 @@ public class {{resourceName}}Creator extends Creator<{{resourceName}}>{
 
 {{/vendorExtensions.x-non-path-params}}
     }
+{{#formParams.0}}
+{{>postParams}}
+{{/formParams.0}}
+{{#headerParams.0}}
+{{>headerParams}}
+{{/headerParams.0}}
+{{#queryParams.0}}
+{{>queryParams}}
+{{/queryParams.0}}
 }
 {{/vendorExtensions.x-is-create-operation}}
 {{/operations}}

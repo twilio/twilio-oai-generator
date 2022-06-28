@@ -41,16 +41,22 @@ import java.util.Map;
 import java.util.Objects;
 {{/fullJavaUtil}}
 
-import lombok.ToString;
 
 import java.util.Map;
-import java.util.Objects;
 import java.time.LocalDate;
 import java.math.BigDecimal;
 import com.twilio.type.PhoneNumberCapabilities;
 import com.twilio.type.FeedbackIssue;
 import com.twilio.type.IceServer;
-
+import com.twilio.type.InboundCallPrice;
+import com.twilio.type.OutboundPrefixPriceWithOrigin;
+import com.twilio.type.OutboundPrefixPrice;
+import com.twilio.type.OutboundCallPriceWithOrigin;
+import com.twilio.type.PhoneNumberPrice;
+import com.twilio.type.InboundSmsPrice;
+import com.twilio.type.OutboundSmsPrice;
+import com.twilio.type.OutboundCallPrice;
+import com.twilio.type.RecordingRule;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @ToString
@@ -75,7 +81,7 @@ public class {{resourceName}} extends Resource {
 
     {{#hasDelete}}
     {{#signatureListDelete}}
-    public static {{resourceName}}Deleter delete({{#.}}final {{{dataType}}} {{{paramName}}}{{^-last}}, {{/-last}}{{/.}}){
+    public static {{resourceName}}Deleter deleter({{#.}}final {{{dataType}}} {{{paramName}}}{{^-last}}, {{/-last}}{{/.}}){
         return new {{resourceName}}Deleter({{#.}}{{{paramName}}}{{^-last}}, {{/-last}}{{/.}});
     }
     {{/signatureListDelete}}
@@ -91,7 +97,7 @@ public class {{resourceName}} extends Resource {
 
     {{#hasUpdate}}
     {{#signatureListUpdate}}
-    public static {{resourceName}}Updater update({{#.}}final {{{dataType}}} {{{paramName}}}{{^-last}}, {{/-last}}{{/.}}){
+    public static {{resourceName}}Updater updater({{#.}}final {{{dataType}}} {{{paramName}}}{{^-last}}, {{/-last}}{{/.}}){
         return new {{resourceName}}Updater({{#.}}{{{paramName}}}{{^-last}}, {{/-last}}{{/.}});
     }
     {{/signatureListUpdate}}

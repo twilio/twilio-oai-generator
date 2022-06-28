@@ -1,0 +1,17 @@
+    private void addHeaderParams(final Request request) {
+{{#headerParams}}
+        if ({{paramName}} != null) {
+        {{#vendorExtensions.x-is-other-data-type}}
+            request.addHeaderParam("{{baseName}}", {{paramName}}.toString());
+        {{/vendorExtensions.x-is-other-data-type}}
+        {{^vendorExtensions.x-is-other-data-type}}
+        {{#isString}}
+            request.addHeaderParam("{{baseName}}", {{paramName}});
+        {{/isString}}
+        {{^isString}}
+            request.addHeaderParam("{{baseName}}", {{paramName}}.toString());
+        {{/isString}}
+        {{/vendorExtensions.x-is-other-data-type}}
+        }
+{{/headerParams}}
+    }

@@ -4,6 +4,7 @@ package com.twilio.rest.{{domainPackage}}.{{package}}{{packageSubPart}};
 
 import com.twilio.base.Fetcher;
 import com.twilio.exception.ApiConnectionException;
+import com.twilio.converter.PrefixedCollapsibleMap;
 import com.twilio.exception.ApiException;
 import com.twilio.exception.RestException;
 import com.twilio.http.HttpMethod;
@@ -16,6 +17,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.time.ZonedDateTime;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import com.twilio.converter.DateConverter;
 
 {{^fullJavaUtil}}
 import java.util.ArrayList;
@@ -57,25 +61,40 @@ public class {{resourceName}}Fetcher extends Fetcher<{{resourceName}}> {
      * @param client TwilioRestClient with which to make the request
      * @return Fetched Call
      */
+{{#vendorExtensions.x-non-path-params}}
+    public {{resourceName}}Fetcher set{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}(final {{{dataType}}} {{paramName}}){
+    this.{{paramName}} = {{paramName}};
+    return this;
+    }
+{{/vendorExtensions.x-non-path-params}}
+
     @Override
     public {{resourceName}} fetch(final TwilioRestClient client) {
         String path = "{{{path}}}";
         {{#allParams}}
         {{#vendorExtensions.x-is-account-sid}}
         this.{{paramName}} = this.{{paramName}} == null ? client.getAccountSid() : this.{{paramName}};
-        path = path.replace("{"+"{{paramName}}"+"}", this.{{paramName}}.toString());
+        path = path.replace("{"+"{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}"+"}", this.{{paramName}}.toString());
         {{/vendorExtensions.x-is-account-sid}}
         {{/allParams}}
         {{#requiredParams}}
-        path = path.replace("{"+"{{paramName}}"+"}", this.{{paramName}}.toString());
+        path = path.replace("{"+"{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}"+"}", this.{{paramName}}.toString());
         {{/requiredParams}}
 
         Request request = new Request(
             HttpMethod.GET,
-            Domains.{{#lambda.uppercase}}{{domain}}{{/lambda.uppercase}}.toString(),
+            Domains.{{#lambda.uppercase}}{{domainName}}{{/lambda.uppercase}}.toString(),
             path
         );
-
+        {{#queryParams.0}}
+        addQueryParams(request);
+        {{/queryParams.0}}
+        {{#formParams.0}}
+        addPostParams(request);
+        {{/formParams.0}}
+        {{#headerParams.0}}
+        addHeaderParams(request);
+        {{/headerParams.0}}
         Response response = client.request(request);
 
         if (response == null) {
@@ -90,6 +109,15 @@ public class {{resourceName}}Fetcher extends Fetcher<{{resourceName}}> {
 
         return {{resourceName}}.fromJson(response.getStream(), client.getObjectMapper());
     }
+{{#formParams.0}}
+{{>postParams}}
+{{/formParams.0}}
+{{#headerParams.0}}
+{{>headerParams}}
+{{/headerParams.0}}
+{{#queryParams.0}}
+{{>queryParams}}
+{{/queryParams.0}}
 }
 {{/vendorExtensions.x-is-fetch-operation}}
 {{/operations}}

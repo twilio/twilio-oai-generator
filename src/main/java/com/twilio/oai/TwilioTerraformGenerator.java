@@ -105,7 +105,7 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
         // iterate over the operation and perhaps modify something
         for (final CodegenOperation co : opList) {
             // Group operations by resource.
-            final String resourceName = PathUtils.cleanPath(co.path).replace("/", ""); // Drop the path separators
+            final String resourceName = PathUtils.cleanPathAndRemoveFirstElement(co.path).replace("/", ""); // Drop the path separators
 
             final Map<String, Object> resource = resources.computeIfAbsent(resourceName, k -> new LinkedHashMap<>());
             final Map<String, Object> resourceOperations = (Map<String, Object>) resource.computeIfAbsent("operations",
@@ -129,7 +129,7 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
             this.addParamVendorExtensions(co.bodyParams);
 
             if (!co.optionalParams.isEmpty() || co.requiredParams.stream().anyMatch(p -> !p.isPathParam) ||
-                co.path.contains("/2010-04-01/")) {
+                co.allParams.stream().anyMatch(p -> (boolean) p.vendorExtensions.getOrDefault(VENDOR_EXTENSION_ACCOUNT_SID, false))) {
                 co.vendorExtensions.put("x-has-optional-params", true);
             }
         }
@@ -207,10 +207,13 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
         final String product = inputSpec.replaceAll(inputSpecPattern, "$1");
         final String productVersion = inputSpec.replaceAll(inputSpecPattern, "$2");
         final String clientPath = String.format("rest/%s/%s", product, productVersion);
+        final boolean isV2010Api = productVersion.contains("2010");
+        final String clientService = isV2010Api ? StringUtils.camelize(product) : StringUtils.camelize(product + "_" + productVersion);
 
         results.put("product", product);
         results.put("productVersion", productVersion);
-        results.put("clientService", StringUtils.camelize(product + "_" + productVersion));
+        results.put("isV2010Api", isV2010Api);
+        results.put("clientService", clientService);
         results.put("clientPath", clientPath);
         results.put("resources", resources.values());
 

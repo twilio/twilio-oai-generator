@@ -1,0 +1,41 @@
+    private void addPostParams(final Request request) {
+{{#formParams}}
+        if ({{paramName}} != null) {
+    {{#isFreeFormObject}}
+            request.addPostParam("{{baseName}}",  Converter.mapToJson({{paramName}}));
+    {{/isFreeFormObject}}
+    {{^isFreeFormObject}}
+    {{#isArray}}
+        {{#isEnum}}
+            for ({{baseType}} prop : {{paramName}}) {
+                request.addPostParam("{{baseName}}", prop.toString());
+            }
+        {{/isEnum}}
+        {{^isEnum}}
+        {{#vendorExtensions.x-is-string-array}}
+            for ({{baseType}} prop : {{paramName}}) {
+                request.addPostParam("{{baseName}}", prop);
+            }
+        {{/vendorExtensions.x-is-string-array}}
+        {{^vendorExtensions.x-is-string-array}}
+            for ({{baseType}} prop : {{paramName}}) {
+                request.addPostParam("{{baseName}}", prop.toString());
+            }
+        {{/vendorExtensions.x-is-string-array}}
+        {{/isEnum}}
+    {{/isArray}}
+    {{^isArray}}
+    {{#vendorExtensions.x-is-other-data-type}}
+            request.addPostParam("{{baseName}}", {{paramName}}.toString());
+    {{/vendorExtensions.x-is-other-data-type}}
+    {{^vendorExtensions.x-is-other-data-type}}
+    {{#isString}}
+            request.addPostParam("{{baseName}}", {{paramName}});
+    {{/isString}}
+    {{/vendorExtensions.x-is-other-data-type}}
+    {{/isArray}}
+    {{/isFreeFormObject}}
+    {{>dateParams}}
+        }
+{{/formParams}}
+    }

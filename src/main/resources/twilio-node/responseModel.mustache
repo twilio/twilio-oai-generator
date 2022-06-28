@@ -2,21 +2,30 @@
 {{#hasEnums}}
 {{#vars}}
 {{#isEnum}}
-export type {{enumName}}Type = {{#allowableValues}}{{#enumVars}}{{{value}}}{{^-last}}|{{/-last}}{{/enumVars}}{{/allowableValues}};
+export type {{vendorExtensions.x-name}} = {{#allowableValues}}{{#enumVars}}{{{value}}}{{^-last}}|{{/-last}}{{/enumVars}}{{/allowableValues}};
 {{/isEnum}}
 {{/vars}}
 {{/hasEnums}}
+
+interface {{name}}Payload extends {{name}}Resource, Page.TwilioResponsePayload {
+}
+
+interface {{name}}Resource {
+    {{#vars}}
+    {{baseName}}{{^required}}?{{/required}}: {{#isEnum}}{{{vendorExtensions.x-name}}}{{/isEnum}}{{^isEnum}}{{{dataType}}}{{#isNullable}} | null{{/isNullable}}{{/isEnum}};
+    {{/vars}}
+}
 
 {{#description}}
 /**
  * {{{description}}}
  */
 {{/description}}
-export class {{name}} {
+export class {{name}}Instance {
     protected _solution: any;
     protected _context?: {{resourceName}};
 
-    constructor(protected _version: {{apiVersionClass}}, payload{{#resourcePathParams}}, {{paramName}}{{#-last}}?{{/-last}}: {{{dataType}}}{{/resourcePathParams}}) {
+    constructor(protected _version: {{apiVersionClass}}, payload: {{name}}Payload{{#resourcePathParams}}, {{paramName}}{{#-last}}?{{/-last}}: {{{dataType}}}{{/resourcePathParams}}) {
         {{#vars}}
         this.{{name}} = payload.{{baseName}};
         {{/vars}}
@@ -25,7 +34,7 @@ export class {{name}} {
     }
 
     private get _proxy(): {{resourceName}} {
-        this._context = this._context || new {{resourceName}}(this._version{{#resourcePathParams}}, this._solution.{{paramName}}{{/resourcePathParams}});
+        this._context = this._context || new {{resourceName}}Impl(this._version{{#resourcePathParams}}, this._solution.{{paramName}}{{/resourcePathParams}});
         return this._context;
     }
 
@@ -35,11 +44,11 @@ export class {{name}} {
      * {{{description}}}
      */
     {{/description}}
-    {{name}}{{^required}}?{{/required}}: {{#isEnum}}{{{datatypeWithEnum}}}{{/isEnum}}{{^isEnum}}{{{dataType}}}{{#isNullable}} | null{{/isNullable}}{{/isEnum}};
+    {{name}}{{^required}}?{{/required}}: {{#isEnum}}{{{vendorExtensions.x-name}}}{{/isEnum}}{{^isEnum}}{{{dataType}}}{{#isNullable}} | null{{/isNullable}}{{/isEnum}};
     {{/vars}}
     {{#operations}}
 
-{{>operationSignature}}
+{{>operationSignature}} {
         return this._proxy.{{vendorExtensions.x-name-lower}}({{#hasParams}}params, {{/hasParams}}callback);
     }
     {{/operations}}
@@ -66,7 +75,7 @@ export class {{name}} {
         }
     }
 
-    [inspect.custom](depth, options) {
+    [inspect.custom](_depth: any, options: InspectOptions) {
         return inspect(this.toJSON(), options);
     }
 }

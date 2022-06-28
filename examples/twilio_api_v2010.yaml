@@ -213,6 +213,16 @@ paths:
                     type: object
                   type: array
                 TestAnyType: { }
+                Permissions:
+                  description: 'A comma-separated list of the permissions you will
+                                      request from the users of this ConnectApp.  Can include: `get-all`
+                                      and `post-all`.'
+                  items:
+                    enum:
+                      - get-all
+                      - post-all
+                    type: string
+                  type: array
               required:
                 - TestString
               title: CreateCredentialAwsRequest
@@ -229,8 +239,16 @@ paths:
           description: Created
       security:
         - accountSid_authToken: [ ]
+      x-twilio:
+        conditional:
+        - - TestInteger
+          - TestDate
+        - - TestNumberFloat
+          - TestObject
     servers:
-      - url: https://api.twilio.com
+      - url: https://flex-api.twilio.com
+    x-twilio:
+      pathType: list
   /v1/Credentials/AWS/{Sid}:
     delete:
       operationId: DeleteCredentialAws
@@ -305,110 +323,13 @@ paths:
         - accountSid_authToken: [ ]
     servers:
       - url: https://api.twilio.com
-  /2010-04-01/Accounts/{AccountSid}/Calls.json:
-    description: A top-level resource, dose not support listing
-    post:
-      operationId: CreateCall
-      parameters:
-        - in: path
-          name: AccountSid
-          required: true
-          schema:
-            maxLength: 34
-            minLength: 34
-            pattern: ^AC[0-9a-fA-F]{32}$
-            type: string
-      requestBody:
-        content:
-          application/x-www-form-urlencoded:
-            schema:
-              properties:
-                RequiredStringProperty:
-                  type: string
-                TestArrayOfStrings:
-                  items:
-                    type: string
-                  type: array
-              required:
-                - RequiredStringProperty
-              title: CreateCallRequest
-              type: object
-      responses:
-        '201':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/test.response_object'
-              examples:
-                example:
-                  $ref: '#/components/examples/test.response_object.example'
-          description: Created
-      security:
-        - accountSid_authToken: [ ]
-    servers:
-      - url: https://api.twilio.com
-  /2010-04-01/Accounts/{AccountSid}/Calls/{Sid}.json:
-    description: A top-level resource instance that cannot be updated
-    delete:
-      operationId: DeleteCall
-      parameters:
-        - in: path
-          name: AccountSid
-          required: true
-          schema:
-            type: string
-        - in: path
-          name: Sid
-          required: true
-          schema:
-            type: string
-      responses:
-        '204':
-          description: The resource was deleted successfully.
-      security:
-        - accountSid_authToken: [ ]
+    x-twilio:
+      pathType: instance
+  /2010-04-01/Accounts.json:
+    description: A top-level resource
     get:
-      operationId: FetchCall
+      operationId: ListAccount
       parameters:
-        - in: path
-          name: AccountSid
-          required: true
-          schema:
-            type: string
-        - in: path
-          name: Sid
-          required: true
-          schema:
-            type: string
-      responses:
-        '307':
-          description: Test that an operation with no 2XX responses is handled properly
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/test.response_object'
-              examples:
-                example:
-                  $ref: '#/components/examples/test.response_object.example'
-      security:
-        - accountSid_authToken: [ ]
-    servers:
-      - url: https://api.twilio.com
-  /2010-04-01/Accounts/{AccountSid}/Calls/{CallSid}/Recordings.json:
-    description: A nested resource
-    get:
-      operationId: ListCallRecording
-      parameters:
-        - in: path
-          name: AccountSid
-          required: true
-          schema:
-            type: string
-        - in: path
-          name: CallSid
-          required: true
-          schema:
-            type: string
         - in: query
           name: DateCreated
           schema:
@@ -456,7 +377,7 @@ paths:
                   previous_page_uri:
                     format: uri
                     type: string
-                  recordings:
+                  accounts:
                     items:
                       $ref: '#/components/schemas/test.response_object'
                     type: array
@@ -465,10 +386,10 @@ paths:
                   uri:
                     format: uri
                     type: string
-                title: ListCallRecordingResponse
+                title: ListAccountResponse
                 type: object
               examples:
-                call_recording_response:
+                account_response:
                   summary: Example of Call Recodings
                   value: {
                     "end": 5,
@@ -477,7 +398,7 @@ paths:
                     "page": 1,
                     "page_size": 4,
                     "previous_page_uri": "http://example.com/page0",
-                    "recordings": [
+                    "accounts": [
                       {
                         "test_string": "Ahoy",
                       },
@@ -493,7 +414,7 @@ paths:
       security:
         - accountSid_authToken: [ ]
     post:
-      operationId: CreateCallRecording
+      operationId: CreateAccount
       parameters:
         - in: header
           name: X-Twilio-Webhook-Enabled
@@ -501,16 +422,6 @@ paths:
             enum:
               - 'true'
               - 'false'
-            type: string
-        - in: path
-          name: AccountSid
-          required: true
-          schema:
-            type: string
-        - in: path
-          name: CallSid
-          required: true
-          schema:
             type: string
       requestBody:
         content:
@@ -524,7 +435,7 @@ paths:
                   items:
                     type: string
                   type: array
-              title: CreateCallRecordingRequest
+              title: CreateAccountRequest
               type: object
       responses:
         '201':
@@ -540,51 +451,37 @@ paths:
         - accountSid_authToken: [ ]
     servers:
       - url: https://api.twilio.com
-  /2010-04-01/Accounts/{AccountSid}/Calls/{CallSid}/Recordings/{TestInteger}.json:
-    description: A nested resource instance
+    x-twilio:
+      pathType: list
+  /2010-04-01/Accounts/{Sid}.json:
+    description: A top-level resource instance
     delete:
-      operationId: DeleteCallRecording
+      operationId: DeleteAccount
       parameters:
         - in: path
-          name: AccountSid
+          name: Sid
           required: true
           schema:
+            maxLength: 34
+            minLength: 34
+            pattern: ^AC[0-9a-fA-F]{32}$
             type: string
-        - in: path
-          name: CallSid
-          required: true
-          schema:
-            type: string
-        - description: INTEGER ID param!!!
-          in: path
-          name: TestInteger
-          required: true
-          schema:
-            type: integer
       responses:
         '204':
           description: The resource was deleted successfully.
       security:
         - accountSid_authToken: [ ]
     get:
-      operationId: FetchCallRecording
+      operationId: FetchAccount
       parameters:
         - in: path
-          name: AccountSid
+          name: Sid
           required: true
           schema:
+            maxLength: 34
+            minLength: 34
+            pattern: ^AC[0-9a-fA-F]{32}$
             type: string
-        - in: path
-          name: CallSid
-          required: true
-          schema:
-            type: string
-        - description: INTEGER ID param!!!
-          in: path
-          name: TestInteger
-          required: true
-          schema:
-            type: integer
       responses:
         '200':
           content:
@@ -595,24 +492,16 @@ paths:
       security:
         - accountSid_authToken: [ ]
     post:
-      operationId: UpdateCallRecording
+      operationId: UpdateAccount
       parameters:
         - in: path
-          name: AccountSid
+          name: Sid
           required: true
           schema:
+            maxLength: 34
+            minLength: 34
+            pattern: ^AC[0-9a-fA-F]{32}$
             type: string
-        - in: path
-          name: CallSid
-          required: true
-          schema:
-            type: string
-        - description: INTEGER ID param!!!
-          in: path
-          name: TestInteger
-          required: true
-          schema:
-            type: integer
       requestBody:
         content:
           application/x-www-form-urlencoded:
@@ -631,7 +520,7 @@ paths:
                   type: string
               required:
                 - Status
-              title: UpdateCallRecordingRequest
+              title: UpdateAccountRequest
               type: object
       responses:
         '200':
@@ -644,6 +533,109 @@ paths:
         - accountSid_authToken: [ ]
     servers:
       - url: https://api.twilio.com
+    x-twilio:
+      pathType: instance
+  /2010-04-01/Accounts/{AccountSid}/Calls.json:
+    description: A nested resource, dose not support listing
+    post:
+      operationId: CreateCall
+      parameters:
+        - in: path
+          name: AccountSid
+          required: true
+          schema:
+            maxLength: 34
+            minLength: 34
+            pattern: ^AC[0-9a-fA-F]{32}$
+            type: string
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              properties:
+                RequiredStringProperty:
+                  type: string
+                TestArrayOfStrings:
+                  items:
+                    type: string
+                  type: array
+              required:
+                - RequiredStringProperty
+              title: CreateCallRequest
+              type: object
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/test.response_object'
+              examples:
+                example:
+                  $ref: '#/components/examples/test.response_object.example'
+          description: Created
+      security:
+        - accountSid_authToken: [ ]
+    servers:
+      - url: https://api.twilio.com
+    x-twilio:
+      pathType: list
+  /2010-04-01/Accounts/{AccountSid}/Calls/{TestInteger}.json:
+    description: A nested resource instance that cannot be updated
+    delete:
+      operationId: DeleteCall
+      parameters:
+        - in: path
+          name: AccountSid
+          required: true
+          schema:
+            maxLength: 34
+            minLength: 34
+            pattern: ^AC[0-9a-fA-F]{32}$
+            type: string
+        - description: INTEGER ID param!!!
+          in: path
+          name: TestInteger
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: The resource was deleted successfully.
+      security:
+        - accountSid_authToken: [ ]
+    get:
+      operationId: FetchCall
+      parameters:
+        - in: path
+          name: AccountSid
+          required: true
+          schema:
+            maxLength: 34
+            minLength: 34
+            pattern: ^AC[0-9a-fA-F]{32}$
+            type: string
+        - description: INTEGER ID param!!!
+          in: path
+          name: TestInteger
+          required: true
+          schema:
+            type: integer
+      responses:
+        '307':
+          description: Test that an operation with no 2XX responses is handled properly
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/test.response_object'
+              examples:
+                example:
+                  $ref: '#/components/examples/test.response_object.example'
+      security:
+        - accountSid_authToken: [ ]
+    servers:
+      - url: https://api.twilio.com
+    x-twilio:
+      pathType: instance
   /2010-04-01/Accounts/{AccountSid}/Calls/FeedbackSummary.json:
     description: A resource that can only be created
     post:
@@ -695,3 +687,5 @@ paths:
       - url: https://api.twilio.com
     x-twilio:
       className: feedback_call_summary
+      parent: /Accounts/{AccountSid}/Calls.json
+      pathType: list

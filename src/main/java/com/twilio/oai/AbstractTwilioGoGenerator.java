@@ -20,6 +20,8 @@ import static org.openapitools.codegen.utils.StringUtils.camelize;
 
 public abstract class AbstractTwilioGoGenerator extends GoClientCodegen {
 
+    public static final String VENDOR_EXTENSION_ACCOUNT_SID = "x-is-account-sid";
+
     protected AbstractTwilioGoGenerator() {
         super();
 
@@ -65,7 +67,7 @@ public abstract class AbstractTwilioGoGenerator extends GoClientCodegen {
                 param.setName("PathAccountSid");
                 param.required(false);
                 param.in("query");
-                param.addExtension("x-is-account-sid", true);
+                param.addExtension(VENDOR_EXTENSION_ACCOUNT_SID, true);
             });
     }
 
