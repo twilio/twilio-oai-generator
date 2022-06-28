@@ -1,6 +1,5 @@
 package com.twilio.rest;
 
-import com.twilio.rest.api.v2010.AwsCreator;
 import java.util.Collections;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -13,20 +12,38 @@ import com.twilio.http.HttpMethod;
 import com.twilio.http.Request;
 import com.twilio.http.Response;
 import com.twilio.http.TwilioRestClient;
+import com.twilio.rest.api.v2010.*;
+
+import java.math.BigDecimal;
+import java.net.URI;
+import java.time.LocalDate;
+import java.time.ZonedDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.twilio.rest.api.v2010.Account;
 import com.twilio.rest.api.v2010.AccountCreator;
 import com.twilio.rest.api.v2010.AccountDeleter;
 import com.twilio.rest.api.v2010.AccountFetcher;
 import com.twilio.rest.api.v2010.AccountReader;
-import com.twilio.rest.api.v2010.Aws;
-import com.twilio.rest.api.v2010.AwsReader;
-import com.twilio.rest.api.v2010.AwsUpdater;
-import com.twilio.rest.api.v2010.Call;
-import com.twilio.rest.api.v2010.CallCreator;
-import com.twilio.rest.api.v2010.CallDeleter;
-import com.twilio.rest.api.v2010.CallFetcher;
-import com.twilio.rest.api.v2010.call.FeedbackCallSummary;
-import com.twilio.rest.api.v2010.call.FeedbackCallSummaryCreator;
+import com.twilio.rest.api.v2010.account.Call;
+import com.twilio.rest.api.v2010.account.CallCreator;
+import com.twilio.rest.api.v2010.account.CallDeleter;
+import com.twilio.rest.api.v2010.account.CallFetcher;
+import com.twilio.rest.api.v2010.account.call.FeedbackCallSummary;
+import com.twilio.rest.api.v2010.account.call.FeedbackCallSummaryCreator;
+import com.twilio.rest.api.v2010.credential.Aws;
+import com.twilio.rest.api.v2010.credential.AwsCreator;
+import com.twilio.rest.api.v2010.credential.AwsDeleter;
+import com.twilio.rest.api.v2010.credential.AwsFetcher;
+import com.twilio.rest.api.v2010.credential.AwsReader;
+import com.twilio.rest.api.v2010.credential.AwsUpdater;
 import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
@@ -77,21 +94,7 @@ public class TwilioRestTest {
         when(twilioRestClient.getObjectMapper()).thenReturn(objectMapper);
         Account account = new AccountFetcher(ACCOUNT_SID).fetch(twilioRestClient);
         assertNotNull(account);
-    }
-
-    @Test(expected=Exception.class)
-    public void testShouldMakeInValidAPICallReturnsNullForAccountFetcher() {
-        Request mockRequest = new Request(
-                HttpMethod.GET,
-                "api",
-                "/2010-04-01/Accounts/AC222222222222222222222222222222.json"
-        );
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.registerModule(new JavaTimeModule());
-        when(twilioRestClient.request(mockRequest)).thenReturn(null);
-        when(twilioRestClient.getObjectMapper()).thenReturn(objectMapper);
-        Account account = new AccountFetcher("AC222222222222222222222222222222").fetch(twilioRestClient);
-        assertNotNull(account);
+        assertEquals(account.getAccountSid(), "AC222222222222222222222222222222");
     }
 
     @Test(expected=ApiException.class)
@@ -105,7 +108,7 @@ public class TwilioRestTest {
         objectMapper.registerModule(new JavaTimeModule());
         when(twilioRestClient.request(mockRequest)).thenReturn(new Response("{\"account_sid\":\"AC222222222222222222222222222222\", \"call_sid\":\"PNXXXXY\"}", 404));
         when(twilioRestClient.getObjectMapper()).thenReturn(objectMapper);
-        Account account = new AccountFetcher("AC222222222222222222222222222222").fetch(twilioRestClient);
+        new AccountFetcher("AC222222222222222222222222222222").fetch(twilioRestClient);
     }
 
     @Test
@@ -122,21 +125,7 @@ public class TwilioRestTest {
 
         Boolean account = new AccountDeleter("AC222222222222222222222222222222").delete(twilioRestClient);
 
-        assertNotNull(account);
-    }
-
-    @Test(expected=Exception.class)
-    public void testShouldMakeInValidAPICallReturnsNulForAccountDeleter() {
-        Request mockRequest = new Request(
-                HttpMethod.DELETE,
-                "api",
-                "/2010-04-01/Accounts/AC222222222222222222222222222222.json"
-        );
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.registerModule(new JavaTimeModule());
-        when(twilioRestClient.request(mockRequest)).thenReturn(null);
-        when(twilioRestClient.getObjectMapper()).thenReturn(objectMapper);
-        Boolean account = new AccountDeleter("AC222222222222222222222222222222").delete(twilioRestClient);
+        assertFalse(account);
     }
 
     @Test(expected=ApiException.class)
@@ -150,7 +139,7 @@ public class TwilioRestTest {
         objectMapper.registerModule(new JavaTimeModule());
         when(twilioRestClient.request(mockRequest)).thenReturn(new Response("{\"account_sid\":\"AC222222222222222222222222222222\", \"call_sid\":\"PNXXXXY\"}", 404));
         when(twilioRestClient.getObjectMapper()).thenReturn(objectMapper);
-        Boolean account = new AccountDeleter("AC222222222222222222222222222222").delete(twilioRestClient);
+        new AccountDeleter("AC222222222222222222222222222222").delete(twilioRestClient);
     }
 
     @Test
@@ -177,32 +166,32 @@ public class TwilioRestTest {
         assertEquals("https://validurl.com", mockRequest.getPostParams().get("RecordingStatusCallback").get(0));
     }
 
-//    @Test(expected=ApiConnectionException.class)
-//    public void testShouldSendNullResponseForAccountCreator() {
-//        List<String> recordingStatusCallbackEvent = Arrays.asList("http://test1.com/", "http://test2.com");
-//        Request mockRequest = new Request(
-//                HttpMethod.POST,
-//                Domains.API.toString(),
-//                "/2010-04-01/Accounts.json"
-//        );
-//        for(String recordingStatusEvent : recordingStatusCallbackEvent){
-//            mockRequest.addPostParam("RecordingStatusCallbackEvent", recordingStatusEvent);
-//        }
-//        mockRequest.addPostParam("RecordingStatusCallback", "https://validurl.com");
-//        mockRequest.addHeaderParam("X-Twilio-Webhook-Enabled", "true");
-//        ObjectMapper objectMapper = new ObjectMapper();
-//        objectMapper.registerModule(new JavaTimeModule());
-//        when(twilioRestClient.request(mockRequest)).thenReturn(null);
-//        when(twilioRestClient.getObjectMapper()).thenReturn(objectMapper);
-//        AccountCreator accountCreator = new AccountCreator();
-//        accountCreator.setRecordingStatusCallbackEvent(recordingStatusCallbackEvent);
-//        accountCreator.setRecordingStatusCallback(URI.create("https://validurl.com"));
-//        accountCreator.setXTwilioWebhookEnabled("true");
-//
-//        Account account  = accountCreator.create(twilioRestClient);
-//    }
+    @Test(expected=ApiConnectionException.class)
+    public void testShouldSendNullResponseForAccountCreator() {
+        List<String> recordingStatusCallbackEvent = Arrays.asList("http://test1.com/", "http://test2.com");
+        Request mockRequest = new Request(
+                HttpMethod.POST,
+                Domains.API.toString(),
+                "/2010-04-01/Accounts.json"
+        );
+        for(String recordingStatusEvent : recordingStatusCallbackEvent){
+            mockRequest.addPostParam("RecordingStatusCallbackEvent", recordingStatusEvent);
+        }
+        mockRequest.addPostParam("RecordingStatusCallback", "https://validurl.com");
+        mockRequest.addHeaderParam("X-Twilio-Webhook-Enabled", "true");
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        when(twilioRestClient.request(mockRequest)).thenReturn(null);
+        when(twilioRestClient.getObjectMapper()).thenReturn(objectMapper);
+        AccountCreator accountCreator = new AccountCreator();
+        accountCreator.setRecordingStatusCallbackEvent(recordingStatusCallbackEvent);
+        accountCreator.setRecordingStatusCallback(URI.create("https://validurl.com"));
+        accountCreator.setXTwilioWebhookEnabled(Account.XTwilioWebhookEnabled.TRUE);
 
-    @Test(expected=Exception.class)
+        accountCreator.create(twilioRestClient);
+    }
+
+    @Test(expected=ApiConnectionException.class)
     public void testShouldSendIncorrectStatusForAccountCreator() {
         Request mockRequest = new Request(
                 HttpMethod.POST,
@@ -220,7 +209,7 @@ public class TwilioRestTest {
         accountCreator.setRecordingStatusCallback(null);
         accountCreator.setXTwilioWebhookEnabled(null);
 
-        Account account  = accountCreator.create(twilioRestClient);
+        accountCreator.create(twilioRestClient);
     }
 
     @Test
@@ -406,6 +395,113 @@ public class TwilioRestTest {
         assertEquals("AC222222222222222222222222222222", mockRequest.getPostParams().get("TestString").get(0));
     }
 
+    @Test(expected =  ApiConnectionException.class)
+    public void testObjectArrayTypeParamNullResponseAwsCreator() {
+        Request mockRequest = new Request(
+                HttpMethod.POST,
+                "api",
+                "/v1/Credentials/AWS"
+        );
+        Map<String, Object> item1 = new HashMap<>();
+        Map<String, Object> item2 = new HashMap<>();
+        item1.put("A", Arrays.asList("Apple", "Aces"));
+        item2.put("B", Collections.singletonList("Banana"));
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        List<Object> testObjectArray = Arrays.asList(item1, item2);
+        for(Object testObject : testObjectArray){
+            mockRequest.addPostParam("TestObjectArray", testObject.toString());
+        }
+        mockRequest.addPostParam("TestString", ACCOUNT_SID);
+        mockRequest.addPostParam("TestNumberFloat", "1.4");
+        mockRequest.addPostParam(TEST_INTEGER, "1");
+        mockRequest.addPostParam("Permissions", "test");
+        mockRequest.addPostParam("TestEnum", "test");
+        mockRequest.addPostParam("TestDate", "test");
+        mockRequest.addPostParam("TestDateTime", "test");
+        mockRequest.addPostParam("TestObject", "test");
+        mockRequest.addPostParam("TestDateTime", "test");
+        mockRequest.addPostParam("TestNumberInt64", "test");
+        mockRequest.addPostParam("TestNumberInt32", "test");
+        mockRequest.addPostParam("TestNumberDouble", "test");
+        mockRequest.addPostParam("TestNumber", "test");
+        mockRequest.addPostParam("TestBoolean", "test");
+        when(twilioRestClient.request(mockRequest)).thenReturn(null);
+        when(twilioRestClient.getObjectMapper()).thenReturn(objectMapper);
+        AwsCreator awsCreator = new AwsCreator(ACCOUNT_SID, 1, 1.4F);
+        awsCreator.setTestObjectArray(Arrays.asList(item1, item2));
+        List<Aws.Permissions> permissions = new ArrayList<>();
+        permissions.add(Aws.Permissions.GET_ALL);
+        permissions.add(Aws.Permissions.POST_ALL);
+        awsCreator.setPermissions( permissions);
+        awsCreator.setTestEnum(Aws.TestEnum.DIALVERB);
+        LocalDate localDate = LocalDate.now();
+        ZonedDateTime zonedDateTime = ZonedDateTime.now();
+        awsCreator.setTestDate(localDate);
+        awsCreator.setTestDateTime(zonedDateTime);
+        awsCreator.setTestObject(new HashMap<>());
+        awsCreator.setTestNumberInt64(new Long(1));
+        awsCreator.setTestNumberInt32(new BigDecimal(1));
+        awsCreator.setTestNumberDouble(new Double(1));
+        awsCreator.setTestNumberFloat(new Float(1));
+        awsCreator.setTestNumber(new BigDecimal(1));
+        awsCreator.setTestInteger(new Integer(1));
+        awsCreator.setTestBoolean(true);
+        awsCreator.setTestString("test");
+        awsCreator.create(twilioRestClient);
+    }
+
+    @Test(expected =  ApiException.class)
+    public void testObjectArrayTypeParamInvalidStatus() {
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        Map<String, Object> content = new HashMap<>();
+        content.put("code", 20001);
+        content.put("message", "Invalid PageSize.");
+        content.put("more_info", "https://www.twilio.com/docs/errors/20001");
+        content.put("status", 400);
+        JSONObject response = new JSONObject(content);
+        when(twilioRestClient.request(Mockito.any())).thenReturn(new Response(response.toString(), 400));
+        when(twilioRestClient.getObjectMapper()).thenReturn(objectMapper);
+        AwsCreator awsCreator = new AwsCreator(ACCOUNT_SID, LocalDate.now(), 1.4F);
+        awsCreator.create(twilioRestClient);
+    }
+
+    @Test(expected =  ApiException.class)
+    public void testAwsCreatorConstructorWithLocalDateAndMap() {
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        Map<String, Object> content = new HashMap<>();
+        content.put("code", 20001);
+        content.put("message", "Invalid PageSize.");
+        content.put("more_info", "https://www.twilio.com/docs/errors/20001");
+        content.put("status", 400);
+        JSONObject response = new JSONObject(content);
+        when(twilioRestClient.request(Mockito.any())).thenReturn(new Response(response.toString(), 400));
+        when(twilioRestClient.getObjectMapper()).thenReturn(objectMapper);
+        AwsCreator awsCreator = new AwsCreator(ACCOUNT_SID, LocalDate.now(), new HashMap<>());
+        awsCreator.create(twilioRestClient);
+    }
+
+    @Test(expected =  ApiException.class)
+    public void testAwsCreatorConstructorWithIntAndMap() {
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        Map<String, Object> content = new HashMap<>();
+        content.put("code", 20001);
+        content.put("message", "Invalid PageSize.");
+        content.put("more_info", "https://www.twilio.com/docs/errors/20001");
+        content.put("status", 400);
+        JSONObject response = new JSONObject(content);
+        when(twilioRestClient.request(Mockito.any())).thenReturn(new Response(response.toString(), 400));
+        when(twilioRestClient.getObjectMapper()).thenReturn(objectMapper);
+        AwsCreator awsCreator = new AwsCreator(ACCOUNT_SID, 1, new HashMap<>());
+        awsCreator.create(twilioRestClient);
+    }
+
     @Test
     public void testAnyTypeParam() {
         Request mockRequest = new Request(
@@ -570,7 +666,7 @@ public class TwilioRestTest {
         assertEquals("https://flex-api.twilio.com/2010-04-01/v1/FlexFlows", mockRequest.getUrl());
     }
 
-    @Test(expected=Exception.class)
+    @Test(expected=ApiException.class)
     public void testShouldQueryParamInRequestNullResponse() {
         Request mockRequest = new Request(
                 HttpMethod.GET,
@@ -595,12 +691,11 @@ public class TwilioRestTest {
         accountReader.setDateTest(localDate);
         accountReader.setPageSize(4);
 
-        ResourceSet<Account> account  = accountReader.read(twilioRestClient);
+        accountReader.read(twilioRestClient);
 
-        assertNotNull(account);
     }
 
-    @Test(expected=Exception.class)
+    @Test(expected=ApiConnectionException.class)
     public void testShouldQueryParamInRequestwithIncorrectResponseCode() {
         Request mockRequest = new Request(
                 HttpMethod.GET,
@@ -625,41 +720,126 @@ public class TwilioRestTest {
         accountReader.setDateTest(localDate);
         accountReader.setPageSize(4);
 
-        ResourceSet<Account> account  = accountReader.read(twilioRestClient);
-
-        assertNotNull(account);
-    }
-
-    @Test(expected = Exception.class)
-    public void testShouldReadPreviousPage() {
-        String uri = "/2010-04-01/Accounts.json";
-        Request mockRequestPage0 = new Request(
-                HttpMethod.GET,
-                "api",
-                uri
-        );
-        ObjectMapper objectMapper = new ObjectMapper();
-        when(twilioRestClient.getObjectMapper()).thenReturn(objectMapper);
-        mockRequestPage0.addQueryParam("PageSize", "2");
-        String url = "https://api.twilio.com/2010-04-01/Accounts.json";
-        String nextPageURL = "https://api.twilio.com/2010-04-01/Accounts.jsonFrom=9999999999&PageNumber=&To=4444444444&PageSize=2&Page=1&PageToken=PASMc49f620580b24424bcfa885b1f741130";
-        String responseContent = "{\"accounts\":[{\"call_sid\":\"PNXXXXY\", \"sid\":123, \"test_string\":\"Ahoy\"}], \"meta\": {\"url\":\"" + url + "\", \"next_page_url\":\"" + nextPageURL + "?PageSize=2" + "\", \"previous_page_url\":\"" + url + "?PageSize=2" + "\", \"first_page_url\":\"" + url + "?PageSize=2" + "\", \"page_size\":2}}";
-        when(twilioRestClient.request(mockRequestPage0)).thenReturn(new Response(responseContent, 200));
-
-        Request mockRequestPage1 = new Request(
-                HttpMethod.GET,
-                "api",
-                "/2010-04-01/Accounts.jsonFrom=9999999999&PageNumber=&To=4444444444&PageSize=2&Page=1&PageToken=PASMc49f620580b24424bcfa885b1f741130?PageSize=2"
-        );
-        String responseContent2 = "{\"accounts\":[{\"call_sid\":\"PNXXXXY\", \"sid\":123, \"test_string\":\"Matey\"}], \"meta\": {\"url\":\"" + url + "\", \"next_page_url\":\"" + ""  + "\", \"previous_page_url\":\"" + url + "?PageSize=2" + "\", \"first_page_url\":\"" + url + "?PageSize=2" + "\", \"page_size\":2}}";
-        when(twilioRestClient.request(mockRequestPage1)).thenReturn(new Response(responseContent2, 200));
-        AccountReader accountReader = new AccountReader();
-        accountReader.setPageSize(2);
-        accountReader.previousPage(null, twilioRestClient);
+        accountReader.read(twilioRestClient);
 
     }
 
     @Test(expected = ApiConnectionException.class)
+    public void testShouldMakeInValidAPICallReturnsNullForAccountUpdater() {
+        Request mockRequest = new Request(
+                HttpMethod.POST,
+                "api",
+                "/2010-04-01/Accounts/AC222222222222222222222222222222.json"
+        );
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        when(twilioRestClient.request(mockRequest)).thenReturn(null);
+        when(twilioRestClient.getObjectMapper()).thenReturn(objectMapper);
+        Account.Status status = Account.Status.IN_PROGRESS;
+        new AccountUpdater(ACCOUNT_SID,status).update(twilioRestClient);
+    }
+
+    @Test(expected = ApiException.class)
+    public void testShouldMakeInValidAPICallReturnsWrongStatusForAccountUpdater() {
+        Request mockRequest = new Request(
+                HttpMethod.POST,
+                com.twilio.rest.Domains.API.toString(),
+                "/2010-04-01/Accounts/AC222222222222222222222222222222.json"
+        );
+        mockRequest.addPostParam("PauseBehavior", "test");
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        when(twilioRestClient.request(Mockito.any())).thenReturn(new Response("{\"account_sid\":\"AC222222222222222222222222222222\", \"call_sid\":\"PNXXXXY\"}", 404));
+        when(twilioRestClient.getObjectMapper()).thenReturn(objectMapper);
+        Account.Status status = Account.Status.IN_PROGRESS;
+        AccountUpdater accountUpdater = new AccountUpdater(ACCOUNT_SID,status);
+        accountUpdater.setPauseBehavior("test");
+        accountUpdater.update(twilioRestClient);
+    }
+
+    @Test
+    public void testShouldMakeValidAPICallAWSFetcher() {
+        String url = "https://api.twilio.com/v1/Credentials/AWS";
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        String testResponse =  "{\"accountSid\": \"sid\"}";
+        when(twilioRestClient.request(Mockito.any() )).thenReturn(new Response(testResponse, 200));
+        when(twilioRestClient.getObjectMapper()).thenReturn(objectMapper);
+
+        Aws resource = new AwsFetcher(ACCOUNT_SID).fetch(twilioRestClient);
+
+        assertNotNull(resource);
+        assertEquals(resource.getAccountSid(),"sid");
+    }
+
+    @Test(expected = ApiException.class)
+    public void testShouldGetInValidAPICallResponseAWSFetcher() {
+
+        String url = "https://api.twilio.com/v1/Credentials/AWS";
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        String testResponse = "{\"accountSid\": \"sid\"}";
+        when(twilioRestClient.request(Mockito.any() )).thenReturn(new Response(testResponse, 404));
+        when(twilioRestClient.getObjectMapper()).thenReturn(objectMapper);
+
+        new AwsFetcher(ACCOUNT_SID).fetch(twilioRestClient);
+    }
+
+    @Test(expected = ApiConnectionException.class)
+    public void testShouldGetNullAPICallResponseAWSFetcher() {
+
+        String url = "https://api.twilio.com/v1/Credentials/AWS";
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        String testResponse =  "{\"accountSid\": \"sid\"}";
+        when(twilioRestClient.request(Mockito.any() )).thenReturn(null);
+        when(twilioRestClient.getObjectMapper()).thenReturn(objectMapper);
+
+        new AwsFetcher(ACCOUNT_SID).fetch(twilioRestClient);
+    }
+
+    @Test
+    public void testShouldMakeValidAPICallAwsDeleter() {
+
+        String url = "https://api.twilio.com/v1/Credentials/AWS";
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        String testResponse = "{\"accountSid\": \"sid\"}";
+        when(twilioRestClient.request(Mockito.any() )).thenReturn(new Response(testResponse, 200));
+        when(twilioRestClient.getObjectMapper()).thenReturn(objectMapper);
+
+        Boolean resource = new AwsDeleter(ACCOUNT_SID).delete(twilioRestClient);
+
+        assertFalse(resource);
+    }
+
+    @Test(expected = ApiException.class)
+    public void testShouldGetInValidAPICallResponseAwsDeleter() {
+
+        String url = "https://api.twilio.com/v1/Credentials/AWS";
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        String testResponse =  "{\"accountSid\": \"sid\"}";
+        when(twilioRestClient.request(Mockito.any() )).thenReturn(new Response(testResponse, 404));
+        when(twilioRestClient.getObjectMapper()).thenReturn(objectMapper);
+
+        new AwsDeleter(ACCOUNT_SID).delete(twilioRestClient);
+    }
+
+    @Test(expected = ApiConnectionException.class)
+    public void testShouldGetNullAPICallResponseAwsDeleter() {
+
+        String url = "https://api.twilio.com/v1/Credentials/AWS";
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        String testResponse =  "{\"accountSid\": \"sid\"}";
+        when(twilioRestClient.request(Mockito.any() )).thenReturn(null);
+        when(twilioRestClient.getObjectMapper()).thenReturn(objectMapper);
+
+        new AwsDeleter(ACCOUNT_SID).delete(twilioRestClient);
+    }
+
     public void testCallFetcherResponseNull() {
         when(twilioRestClient.request(Mockito.any())).thenReturn(null);
         new CallFetcher(ACCOUNT_SID, 123).fetch(twilioRestClient);
@@ -723,16 +903,87 @@ public class TwilioRestTest {
     }
 
     @Test
+    public void testAWSCrud() {
+        AwsCreator awsCreator1 = Aws.creator(ACCOUNT_SID,1,1F);
+        AwsCreator awsCreator2 = Aws.creator(ACCOUNT_SID,1,new HashMap<>());
+        AwsCreator awsCreator3 = Aws.creator(ACCOUNT_SID,LocalDate.now(),new HashMap<>());
+        AwsCreator awsCreator4 = Aws.creator(ACCOUNT_SID,LocalDate.now(),1F);
+        assertNotNull(awsCreator1);
+        assertNotNull(awsCreator2);
+        assertNotNull(awsCreator3);
+        assertNotNull(awsCreator4);
+
+        AwsFetcher awsFetcher = Aws.fetcher(ACCOUNT_SID);
+        assertNotNull(awsFetcher);
+
+        AwsDeleter awsDeleter = Aws.deleter(ACCOUNT_SID);
+        assertNotNull(awsDeleter);
+
+        AwsReader awsReader = Aws.reader();
+        assertNotNull(awsReader);
+
+        AwsUpdater awsUpdater = Aws.updater(ACCOUNT_SID);
+        assertNotNull(awsUpdater);
+    }
+
+    @Test
+    public void testAccountCrud() {
+        AccountCreator accountCreator = Account.creator();
+        assertNotNull(accountCreator);
+
+        AccountFetcher accountFetcherSid = Account.fetcher(ACCOUNT_SID);
+        AccountFetcher accountFetcher = Account.fetcher();
+        assertNotNull(accountFetcherSid);
+        assertNotNull(accountFetcher);
+
+        AccountDeleter accountDeleter = Account.deleter();
+        assertNotNull(accountDeleter);
+        AccountDeleter accountDeleterSid = Account.deleter(ACCOUNT_SID);
+        assertNotNull(accountDeleterSid);
+
+        AccountReader accountReader = Account.reader();
+        assertNotNull(accountReader);
+
+        AccountUpdater accountUpdaterSid = Account.updater(ACCOUNT_SID,Account.Status.COMPLETED);
+        assertNotNull(accountUpdaterSid);
+        AccountUpdater accountUpdater = Account.updater(Account.Status.COMPLETED);
+        assertNotNull(accountUpdater);
+    }
+
+
+    @Test
     public void testCallVariables() {
         Call.TestEnum testEnum = Call.TestEnum.forValue("DialVerb");
         Call.XTwilioWebhookEnabled xTwilioWebhookEnabled = Call.XTwilioWebhookEnabled.forValue("true");
         Call.Status status = Call.Status.forValue("paused");
-        Call.Permissions permissions = Call.Permissions.forValue("get-all");
+
+        assertEquals("DialVerb", testEnum.toString());
+        assertEquals("true", xTwilioWebhookEnabled.toString());
+        assertEquals("paused", status.toString());
+    }
+
+    @Test
+    public void testAwsVariables() {
+        Aws.TestEnum testEnum = Aws.TestEnum.forValue("DialVerb");
+        Aws.XTwilioWebhookEnabled xTwilioWebhookEnabled = Aws.XTwilioWebhookEnabled.forValue("true");
+        Aws.Status status = Aws.Status.forValue("paused");
+        Aws.Permissions permissions = Aws.Permissions.forValue("get-all");
 
         assertEquals("DialVerb", testEnum.toString());
         assertEquals("true", xTwilioWebhookEnabled.toString());
         assertEquals("paused", status.toString());
         assertEquals("get-all", permissions.toString());
+    }
+
+    @Test
+    public void testAccountVariables() {
+        Account.TestEnum testEnum = Account.TestEnum.forValue("DialVerb");
+        Account.XTwilioWebhookEnabled xTwilioWebhookEnabled = Account.XTwilioWebhookEnabled.forValue("true");
+        Account.Status status = Account.Status.forValue("paused");
+
+        assertEquals("DialVerb", testEnum.toString());
+        assertEquals("true", xTwilioWebhookEnabled.toString());
+        assertEquals("paused", status.toString());
     }
 
     @Test
@@ -748,6 +999,36 @@ public class TwilioRestTest {
         assertEquals((Integer)123, callString.getTestInteger());
         assertEquals((Integer)123, callInputStream.getTestInteger());
     }
+
+    @Test
+    public void testAwsObjectCreation() {
+        ObjectMapper objectMapper = new ObjectMapper();
+        String json = "{\"testInteger\": 123}";
+        Aws awsString = Aws.fromJson(json, objectMapper);
+
+        String initialString = "{\"testInteger\": 123}";
+        InputStream targetStream = new ByteArrayInputStream(initialString.getBytes());
+        Aws awsInputStream = Aws.fromJson(targetStream, objectMapper);
+
+        assertEquals((Integer)123, awsString.getTestInteger());
+        assertEquals((Integer)123, awsInputStream.getTestInteger());
+    }
+
+    @Test
+    public void testAccountObjectCreation() {
+        ObjectMapper objectMapper = new ObjectMapper();
+        String json = "{\"testInteger\": 123}";
+        Account accountString = Account.fromJson(json, objectMapper);
+
+        String initialString = "{\"testInteger\": 123}";
+        InputStream targetStream = new ByteArrayInputStream(initialString.getBytes());
+        Account accountInputStream = Account.fromJson(targetStream, objectMapper);
+
+        assertEquals((Integer)123, accountString.getTestInteger());
+        assertEquals((Integer)123, accountInputStream.getTestInteger());
+    }
+
+
     @Test(expected = ApiException.class)
     public void testCallObjectCreationInvalidJsonString() {
         ObjectMapper objectMapper = new ObjectMapper();
@@ -755,10 +1036,35 @@ public class TwilioRestTest {
     }
 
     @Test(expected = ApiException.class)
+    public void testAwsObjectCreationInvalidJsonString() {
+        ObjectMapper objectMapper = new ObjectMapper();
+        Aws.fromJson("json", objectMapper);
+    }
+
+    @Test(expected = ApiException.class)
+    public void testAccountObjectCreationInvalidJsonString() {
+        ObjectMapper objectMapper = new ObjectMapper();
+        Account.fromJson("json", objectMapper);
+    }
+
+    @Test(expected = ApiException.class)
     public void testCallObjectCreationInvalidInputStream() {
         ObjectMapper objectMapper = new ObjectMapper();
         Call.fromJson(new ByteArrayInputStream("initialString".getBytes()), objectMapper);
     }
+
+    @Test(expected = ApiException.class)
+    public void testAwsObjectCreationInvalidInputStream() {
+        ObjectMapper objectMapper = new ObjectMapper();
+        Aws.fromJson(new ByteArrayInputStream("initialString".getBytes()), objectMapper);
+    }
+
+    @Test(expected = ApiException.class)
+    public void testAccountObjectCreationInvalidInputStream() {
+        ObjectMapper objectMapper = new ObjectMapper();
+        Account.fromJson(new ByteArrayInputStream("initialString".getBytes()), objectMapper);
+    }
+
     @Test
     public void testCallGetters() {
         ObjectMapper objectMapper = new ObjectMapper();
@@ -781,13 +1087,80 @@ public class TwilioRestTest {
         assertNull(call.getTestArrayOfObjects());
         assertNull(call.getXTwilioWebhookEnabled());
         assertNull(call.getStatus());
-        assertNull(call.getPermissions());
         assertNull(call.getTestString());
 
         assertTrue(call.equals(callDuplicate));
+        assertTrue(call.equals(call));
         // If two objects are equal they must have same hashcode
         assertEquals(callDuplicate.hashCode(), call.hashCode());
         assertFalse(call.equals(null));
+    }
+
+    @Test
+    public void testAwsGetters() {
+        ObjectMapper objectMapper = new ObjectMapper();
+        String json = "{\"accountSid\": \"a123\", \"sid\": \"123\", \"testInteger\": 123, \"testNumber\": 123.1, \"testNumberFloat\": 123.2, \"testEnum\": \"Trunking\", " +
+                "\"testEnum\": \"Trunking\"}";
+        String jsonDuplicate = "{\"accountSid\": \"a123\", \"sid\": \"123\", \"testInteger\": 123, \"testNumber\": 123.1, \"testNumberFloat\": 123.2, \"testEnum\": \"Trunking\", " +
+                "\"testEnum\": \"Trunking\"}";
+        Aws aws = Aws.fromJson(json, objectMapper);
+        Aws awsDuplicate = Aws.fromJson(jsonDuplicate, objectMapper);
+
+        assertEquals("a123", aws.getAccountSid());
+        assertEquals("123", aws.getSid());
+        assertNull(aws.getTestObject());
+        assertEquals(Integer.valueOf("123"), aws.getTestInteger());
+        assertNull(aws.getTestDateTime());
+        assertEquals(BigDecimal.valueOf(123.1), aws.getTestNumber());
+        assertNull(aws.getPriceUnit());
+        assertEquals(Float.valueOf("123.2"), aws.getTestNumberFloat());
+        assertEquals("Trunking", aws.getTestEnum().toString());
+        assertNull(aws.getTestArrayOfIntegers());
+        assertNull(aws.getTestArrayOfArrayOfIntegers());
+        assertNull(aws.getTestArrayOfObjects());
+        assertNull(aws.getXTwilioWebhookEnabled());
+        assertNull(aws.getStatus());
+        assertNull(aws.getPermissions());
+        assertNull(aws.getTestString());
+
+        assertTrue(aws.equals(awsDuplicate));
+        assertTrue(aws.equals(aws));
+        // If two objects are equal they must have same hashcode
+        assertEquals(awsDuplicate.hashCode(), aws.hashCode());
+        assertFalse(aws.equals(null));
+    }
+
+    @Test
+    public void testAccountGetters() {
+        ObjectMapper objectMapper = new ObjectMapper();
+        String json = "{\"accountSid\": \"a123\", \"sid\": \"123\", \"testInteger\": 123, \"testNumber\": 123.1, \"testNumberFloat\": 123.2, \"testEnum\": \"Trunking\", " +
+                "\"testEnum\": \"Trunking\"}";
+        String jsonDuplicate = "{\"accountSid\": \"a123\", \"sid\": \"123\", \"testInteger\": 123, \"testNumber\": 123.1, \"testNumberFloat\": 123.2, \"testEnum\": \"Trunking\", " +
+                "\"testEnum\": \"Trunking\"}";
+        Account account = Account.fromJson(json, objectMapper);
+        Account accountDuplicate = Account.fromJson(jsonDuplicate, objectMapper);
+
+        assertEquals("a123", account.getAccountSid());
+        assertEquals("123", account.getSid());
+        assertNull(account.getTestObject());
+        assertEquals(Integer.valueOf("123"), account.getTestInteger());
+        assertNull(account.getTestDateTime());
+        assertEquals(BigDecimal.valueOf(123.1), account.getTestNumber());
+        assertNull(account.getPriceUnit());
+        assertEquals(Float.valueOf("123.2"), account.getTestNumberFloat());
+        assertEquals("Trunking", account.getTestEnum().toString());
+        assertNull(account.getTestArrayOfIntegers());
+        assertNull(account.getTestArrayOfArrayOfIntegers());
+        assertNull(account.getTestArrayOfObjects());
+        assertNull(account.getXTwilioWebhookEnabled());
+        assertNull(account.getStatus());
+        assertNull(account.getTestString());
+
+        assertTrue(account.equals(accountDuplicate));
+        assertTrue(account.equals(account));
+        // If two objects are equal they must have same hashcode
+        assertEquals(accountDuplicate.hashCode(), account.hashCode());
+        assertFalse(account.equals(null));
     }
 
     @Test
@@ -924,12 +1297,10 @@ public class TwilioRestTest {
         FeedbackCallSummary.TestEnum testEnum = FeedbackCallSummary.TestEnum.forValue("DialVerb");
         FeedbackCallSummary.XTwilioWebhookEnabled xTwilioWebhookEnabled = FeedbackCallSummary.XTwilioWebhookEnabled.forValue("true");
         FeedbackCallSummary.Status status = FeedbackCallSummary.Status.forValue("paused");
-        FeedbackCallSummary.Permissions permissions = FeedbackCallSummary.Permissions.forValue("get-all");
 
         assertEquals("DialVerb", testEnum.toString());
         assertEquals("true", xTwilioWebhookEnabled.toString());
         assertEquals("paused", status.toString());
-        assertEquals("get-all", permissions.toString());
     }
 
     @Test
@@ -957,7 +1328,6 @@ public class TwilioRestTest {
         assertNull(feedbackCallSummary.getTestArrayOfArrayOfIntegers());
         assertNull(feedbackCallSummary.getTestArrayOfObjects());
         assertNull(feedbackCallSummary.getXTwilioWebhookEnabled());
-        assertNull(feedbackCallSummary.getPermissions());
         assertNull(feedbackCallSummary.getTestString());
 
         assertTrue(feedbackCallSummary.equals(feedbackCallSummaryDuplicate));
