@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-package com.twilio.rest.api.v2010;
+package com.twilio.rest.api.v2010.credential;
 
 import com.twilio.base.Deleter;
 import com.twilio.exception.ApiConnectionException;

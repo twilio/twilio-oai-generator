@@ -1,6 +1,5 @@
 package com.twilio.rest;
 
-import com.twilio.rest.api.v2010.AwsCreator;
 import java.util.Collections;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -33,15 +32,18 @@ import com.twilio.rest.api.v2010.AccountCreator;
 import com.twilio.rest.api.v2010.AccountDeleter;
 import com.twilio.rest.api.v2010.AccountFetcher;
 import com.twilio.rest.api.v2010.AccountReader;
-import com.twilio.rest.api.v2010.Aws;
-import com.twilio.rest.api.v2010.AwsReader;
-import com.twilio.rest.api.v2010.AwsUpdater;
-import com.twilio.rest.api.v2010.Call;
-import com.twilio.rest.api.v2010.CallCreator;
-import com.twilio.rest.api.v2010.CallDeleter;
-import com.twilio.rest.api.v2010.CallFetcher;
-import com.twilio.rest.api.v2010.call.FeedbackCallSummary;
-import com.twilio.rest.api.v2010.call.FeedbackCallSummaryCreator;
+import com.twilio.rest.api.v2010.account.Call;
+import com.twilio.rest.api.v2010.account.CallCreator;
+import com.twilio.rest.api.v2010.account.CallDeleter;
+import com.twilio.rest.api.v2010.account.CallFetcher;
+import com.twilio.rest.api.v2010.account.call.FeedbackCallSummary;
+import com.twilio.rest.api.v2010.account.call.FeedbackCallSummaryCreator;
+import com.twilio.rest.api.v2010.credential.Aws;
+import com.twilio.rest.api.v2010.credential.AwsCreator;
+import com.twilio.rest.api.v2010.credential.AwsDeleter;
+import com.twilio.rest.api.v2010.credential.AwsFetcher;
+import com.twilio.rest.api.v2010.credential.AwsReader;
+import com.twilio.rest.api.v2010.credential.AwsUpdater;
 import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
@@ -954,12 +956,10 @@ public class TwilioRestTest {
         Call.TestEnum testEnum = Call.TestEnum.forValue("DialVerb");
         Call.XTwilioWebhookEnabled xTwilioWebhookEnabled = Call.XTwilioWebhookEnabled.forValue("true");
         Call.Status status = Call.Status.forValue("paused");
-        Call.Permissions permissions = Call.Permissions.forValue("get-all");
 
         assertEquals("DialVerb", testEnum.toString());
         assertEquals("true", xTwilioWebhookEnabled.toString());
         assertEquals("paused", status.toString());
-        assertEquals("get-all", permissions.toString());
     }
 
     @Test
@@ -1087,7 +1087,6 @@ public class TwilioRestTest {
         assertNull(call.getTestArrayOfObjects());
         assertNull(call.getXTwilioWebhookEnabled());
         assertNull(call.getStatus());
-        assertNull(call.getPermissions());
         assertNull(call.getTestString());
 
         assertTrue(call.equals(callDuplicate));
@@ -1298,12 +1297,10 @@ public class TwilioRestTest {
         FeedbackCallSummary.TestEnum testEnum = FeedbackCallSummary.TestEnum.forValue("DialVerb");
         FeedbackCallSummary.XTwilioWebhookEnabled xTwilioWebhookEnabled = FeedbackCallSummary.XTwilioWebhookEnabled.forValue("true");
         FeedbackCallSummary.Status status = FeedbackCallSummary.Status.forValue("paused");
-        FeedbackCallSummary.Permissions permissions = FeedbackCallSummary.Permissions.forValue("get-all");
 
         assertEquals("DialVerb", testEnum.toString());
         assertEquals("true", xTwilioWebhookEnabled.toString());
         assertEquals("paused", status.toString());
-        assertEquals("get-all", permissions.toString());
     }
 
     @Test
@@ -1331,7 +1328,6 @@ public class TwilioRestTest {
         assertNull(feedbackCallSummary.getTestArrayOfArrayOfIntegers());
         assertNull(feedbackCallSummary.getTestArrayOfObjects());
         assertNull(feedbackCallSummary.getXTwilioWebhookEnabled());
-        assertNull(feedbackCallSummary.getPermissions());
         assertNull(feedbackCallSummary.getTestString());
 
         assertTrue(feedbackCallSummary.equals(feedbackCallSummaryDuplicate));
