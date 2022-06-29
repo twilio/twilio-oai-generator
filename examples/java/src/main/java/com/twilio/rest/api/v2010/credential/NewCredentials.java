@@ -70,37 +70,37 @@ import com.twilio.type.RecordingRule;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @ToString
-public class Aws extends Resource {
+public class NewCredentials extends Resource {
     private static final long serialVersionUID = 102879623605645L;
 
-
-    public static AwsFetcher fetcher(final String sid){
-        return new AwsFetcher(sid);
+    public static NewCredentialsCreator creator(final String testString, final Integer testInteger, final Float testNumberFloat){
+        return new NewCredentialsCreator(testString, testInteger, testNumberFloat);
+    }
+    public static NewCredentialsCreator creator(final String testString, final Integer testInteger, final Map<String, Object> testObject){
+        return new NewCredentialsCreator(testString, testInteger, testObject);
+    }
+    public static NewCredentialsCreator creator(final String testString, final LocalDate testDate, final Float testNumberFloat){
+        return new NewCredentialsCreator(testString, testDate, testNumberFloat);
+    }
+    public static NewCredentialsCreator creator(final String testString, final LocalDate testDate, final Map<String, Object> testObject){
+        return new NewCredentialsCreator(testString, testDate, testObject);
     }
 
-    public static AwsDeleter deleter(final String sid){
-        return new AwsDeleter(sid);
-    }
 
-    public static AwsReader reader(){
-        return new AwsReader();
-    }
 
-    public static AwsUpdater updater(final String sid){
-        return new AwsUpdater(sid);
-    }
+
 
     /**
-    * Converts a JSON String into a Aws object using the provided ObjectMapper.
+    * Converts a JSON String into a NewCredentials object using the provided ObjectMapper.
     *
     * @param json Raw JSON String
     * @param objectMapper Jackson ObjectMapper
-    * @return Aws object represented by the provided JSON
+    * @return NewCredentials object represented by the provided JSON
     */
-    public static Aws fromJson(final String json, final ObjectMapper objectMapper) {
+    public static NewCredentials fromJson(final String json, final ObjectMapper objectMapper) {
         // Convert all checked exceptions to Runtime
         try {
-            return objectMapper.readValue(json, Aws.class);
+            return objectMapper.readValue(json, NewCredentials.class);
         } catch (final JsonMappingException | JsonParseException e) {
             throw new ApiException(e.getMessage(), e);
         } catch (final IOException e) {
@@ -109,17 +109,17 @@ public class Aws extends Resource {
     }
 
     /**
-    * Converts a JSON InputStream into a Aws object using the provided
+    * Converts a JSON InputStream into a NewCredentials object using the provided
     * ObjectMapper.
     *
     * @param json Raw JSON InputStream
     * @param objectMapper Jackson ObjectMapper
-    * @return Aws object represented by the provided JSON
+    * @return NewCredentials object represented by the provided JSON
     */
-    public static Aws fromJson(final InputStream json, final ObjectMapper objectMapper) {
+    public static NewCredentials fromJson(final InputStream json, final ObjectMapper objectMapper) {
         // Convert all checked exceptions to Runtime
         try {
-            return objectMapper.readValue(json, Aws.class);
+            return objectMapper.readValue(json, NewCredentials.class);
         } catch (final JsonMappingException | JsonParseException e) {
             throw new ApiException(e.getMessage(), e);
         } catch (final IOException e) {
@@ -187,6 +187,25 @@ public class Aws extends Resource {
             return Promoter.enumFromString(value, Status.values());
         }
     }
+    public enum Permissions {
+        GET_ALL("get-all"),
+        POST_ALL("post-all");
+
+        private final String value;
+
+        private Permissions(final String value) {
+            this.value = value;
+        }
+
+        public String toString() {
+            return value;
+        }
+
+        @JsonCreator
+        public static Permissions forValue(final String value) {
+            return Promoter.enumFromString(value, Permissions.values());
+        }
+    }
 
     private final String accountSid;
     private final String sid;
@@ -197,15 +216,16 @@ public class Aws extends Resource {
     private final BigDecimal testNumber;
     private final Currency priceUnit;
     private final Float testNumberFloat;
-    private final Aws.TestEnum testEnum;
+    private final NewCredentials.TestEnum testEnum;
     private final List<Integer> testArrayOfIntegers;
     private final List<List<Integer>> testArrayOfArrayOfIntegers;
     private final List<FeedbackIssue> testArrayOfObjects;
-    private final Aws.XTwilioWebhookEnabled xTwilioWebhookEnabled;
-    private final Aws.Status status;
+    private final NewCredentials.XTwilioWebhookEnabled xTwilioWebhookEnabled;
+    private final NewCredentials.Status status;
+    private final NewCredentials.Permissions permissions;
 
     @JsonCreator
-    private Aws(
+    private NewCredentials(
         @JsonProperty("account_sid")
         final String accountSid,
 
@@ -235,7 +255,7 @@ public class Aws extends Resource {
         final Float testNumberFloat,
 
         @JsonProperty("test_enum")
-        final Aws.TestEnum testEnum,
+        final NewCredentials.TestEnum testEnum,
 
         @JsonProperty("test_array_of_integers")
         final List<Integer> testArrayOfIntegers,
@@ -247,10 +267,13 @@ public class Aws extends Resource {
         final List<FeedbackIssue> testArrayOfObjects,
 
         @JsonProperty("x_twilio_webhook_enabled")
-        final Aws.XTwilioWebhookEnabled xTwilioWebhookEnabled,
+        final NewCredentials.XTwilioWebhookEnabled xTwilioWebhookEnabled,
 
         @JsonProperty("status")
-        final Aws.Status status
+        final NewCredentials.Status status,
+
+        @JsonProperty("permissions")
+        final NewCredentials.Permissions permissions
     ) {
         this.accountSid = accountSid;
         this.sid = sid;
@@ -267,6 +290,7 @@ public class Aws extends Resource {
         this.testArrayOfObjects = testArrayOfObjects;
         this.xTwilioWebhookEnabled = xTwilioWebhookEnabled;
         this.status = status;
+        this.permissions = permissions;
     }
 
         public final String getAccountSid() {
@@ -296,7 +320,7 @@ public class Aws extends Resource {
         public final Float getTestNumberFloat() {
             return this.testNumberFloat;
         }
-        public final Aws.TestEnum getTestEnum() {
+        public final NewCredentials.TestEnum getTestEnum() {
             return this.testEnum;
         }
         public final List<Integer> getTestArrayOfIntegers() {
@@ -308,11 +332,14 @@ public class Aws extends Resource {
         public final List<FeedbackIssue> getTestArrayOfObjects() {
             return this.testArrayOfObjects;
         }
-        public final Aws.XTwilioWebhookEnabled getXTwilioWebhookEnabled() {
+        public final NewCredentials.XTwilioWebhookEnabled getXTwilioWebhookEnabled() {
             return this.xTwilioWebhookEnabled;
         }
-        public final Aws.Status getStatus() {
+        public final NewCredentials.Status getStatus() {
             return this.status;
+        }
+        public final NewCredentials.Permissions getPermissions() {
+            return this.permissions;
         }
 
     @Override
@@ -325,14 +352,14 @@ public class Aws extends Resource {
             return false;
         }
 
-        Aws other = (Aws) o;
+        NewCredentials other = (NewCredentials) o;
 
-        return Objects.equals(accountSid, other.accountSid) &&  Objects.equals(sid, other.sid) &&  Objects.equals(testString, other.testString) &&  Objects.equals(testInteger, other.testInteger) &&  Objects.equals(testObject, other.testObject) &&  Objects.equals(testDateTime, other.testDateTime) &&  Objects.equals(testNumber, other.testNumber) &&  Objects.equals(priceUnit, other.priceUnit) &&  Objects.equals(testNumberFloat, other.testNumberFloat) &&  Objects.equals(testEnum, other.testEnum) &&  Objects.equals(testArrayOfIntegers, other.testArrayOfIntegers) &&  Objects.equals(testArrayOfArrayOfIntegers, other.testArrayOfArrayOfIntegers) &&  Objects.equals(testArrayOfObjects, other.testArrayOfObjects) &&  Objects.equals(xTwilioWebhookEnabled, other.xTwilioWebhookEnabled) &&  Objects.equals(status, other.status)  ;
+        return Objects.equals(accountSid, other.accountSid) &&  Objects.equals(sid, other.sid) &&  Objects.equals(testString, other.testString) &&  Objects.equals(testInteger, other.testInteger) &&  Objects.equals(testObject, other.testObject) &&  Objects.equals(testDateTime, other.testDateTime) &&  Objects.equals(testNumber, other.testNumber) &&  Objects.equals(priceUnit, other.priceUnit) &&  Objects.equals(testNumberFloat, other.testNumberFloat) &&  Objects.equals(testEnum, other.testEnum) &&  Objects.equals(testArrayOfIntegers, other.testArrayOfIntegers) &&  Objects.equals(testArrayOfArrayOfIntegers, other.testArrayOfArrayOfIntegers) &&  Objects.equals(testArrayOfObjects, other.testArrayOfObjects) &&  Objects.equals(xTwilioWebhookEnabled, other.xTwilioWebhookEnabled) &&  Objects.equals(status, other.status) &&  Objects.equals(permissions, other.permissions)  ;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(accountSid, sid, testString, testInteger, testObject, testDateTime, testNumber, priceUnit, testNumberFloat, testEnum, testArrayOfIntegers, testArrayOfArrayOfIntegers, testArrayOfObjects, xTwilioWebhookEnabled, status);
+        return Objects.hash(accountSid, sid, testString, testInteger, testObject, testDateTime, testNumber, priceUnit, testNumberFloat, testEnum, testArrayOfIntegers, testArrayOfArrayOfIntegers, testArrayOfObjects, xTwilioWebhookEnabled, status, permissions);
     }
 
 }

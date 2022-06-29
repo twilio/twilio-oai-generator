@@ -35,18 +35,20 @@ def generate(openapi_spec_path: str, output_path: str, language: str, domain: st
         output_path = os.path.join(output_path, api_version)
     if is_domain_irrelevant == False:
         run_openapi_generator(parent_dir, to_generate, output_path, full_path)
-        print(f"Code generation completed at {output_path}")
     if language == 'java':
-        remove_unused_imports(output_path, "java")
+        remove_unused_imports(output_path, 'java')
 
 
-def run_openapi_generator(parent_dir: str, to_generate: str, output_path: str, full_path: str):
+def run_openapi_generator(parent_dir: str, to_generate: str, output_path: str, full_path: str) -> None:
     command = f'cd {parent_dir} && java -cp ./openapi-generator-cli.jar:target/twilio-openapi-generator.jar ' \
                       f'org.openapitools.codegen.OpenAPIGenerator generate -g {to_generate} -i {full_path} ' \
                       f'-o {output_path} ' \
                       f'> /dev/null'  # Suppress stdout
     print(f'Generating {output_path} from {full_path}')
-    os.system(command)
+    if os.system(command) != 0:
+        raise RuntimeError()
+    print(f'Code generation completed at {output_path}')
+
 
 def get_domain_info(oai_spec_location: str, domain: str, is_file: bool = False) -> Tuple[str, str, str]:
     full_path = oai_spec_location if is_file else os.path.join(oai_spec_location, domain)

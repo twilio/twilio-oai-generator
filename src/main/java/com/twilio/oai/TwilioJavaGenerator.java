@@ -81,7 +81,7 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
             updateAccountSidParam(name, path);
             path.readOperations().forEach(operation -> {
                 // Group operations together by tag. This gives us one file/post-process per resource.
-                String tag = String.join(PATH_SEPARATOR_PLACEHOLDER, resourceTree.ancestors("/"+name.replaceFirst("/[^/]+/", "")));
+                String tag = String.join(PATH_SEPARATOR_PLACEHOLDER, resourceTree.ancestors(name, operation));
                 operation.addTagsItem(tag);
             });
             Matcher m = serverUrlPattern.matcher(path.getServers().get(0).getUrl());
