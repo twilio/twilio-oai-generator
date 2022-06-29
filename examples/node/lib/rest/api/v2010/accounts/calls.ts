@@ -15,7 +15,7 @@
 import { inspect, InspectOptions } from 'util';
 import Page from '../../../../base/Page';
 import V2010 from '../../V2010';
-import { FeedbackSummarListInstance } from './Calls/FeedbackSummary';
+import { FeedbackSummaryListInstance } from './Calls/FeedbackSummary';
 
 
 /**
@@ -34,7 +34,7 @@ export interface CallListInstance {
     (accountSid: string, testInteger: number): CallContext;
     get(accountSid: string, testInteger: number): CallContext;
 
-    feedback_summary: FeedbackSummarListInstance;
+    feedback_summary: FeedbackSummaryListInstance;
 
     /**
      * Create a CallInstance
@@ -61,7 +61,7 @@ class CallListInstanceImpl implements CallListInstance {
     _solution?: any;
     _uri?: string;
 
-    _feedback_summary?: FeedbackSummarListInstance;
+    _feedback_summary?: FeedbackSummaryListInstance;
 }
 
 export function CallListInstance(version: V2010, accountSid: string): CallListInstance {
@@ -78,7 +78,7 @@ export function CallListInstance(version: V2010, accountSid: string): CallListIn
     Object.defineProperty(instance, 'feedback_summary', {
         get: function feedback_summary() {
             if (!this._feedback_summary) {
-                this._feedback_summary = FeedbackSummarListInstance(this._version, this._solution.accountSid);
+                this._feedback_summary = FeedbackSummaryListInstance(this._version, this._solution.accountSid);
             }
             return this._feedback_summary;
         }
@@ -224,7 +224,7 @@ interface CallResource {
     sid?: string | null;
     test_string?: string | null;
     test_integer?: number | null;
-    test_object?: TestResponseObjectTestObject | null;
+    test_object?: object | null;
     test_date_time?: string | null;
     test_number?: number | null;
     price_unit?: string | null;
@@ -232,7 +232,7 @@ interface CallResource {
     test_enum?: CallTestEnum;
     test_array_of_integers?: Array<number>;
     test_array_of_array_of_integers?: Array<Array<number>>;
-    test_array_of_objects?: Array<TestResponseObjectTestArrayOfObjectsInner> | null;
+    test_array_of_objects?: Array<object> | null;
 }
 
 export class CallInstance {
@@ -266,7 +266,7 @@ export class CallInstance {
     sid?: string | null;
     testString?: string | null;
     testInteger?: number | null;
-    testObject?: TestResponseObjectTestObject | null;
+    testObject?: object | null;
     testDateTime?: string | null;
     testNumber?: number | null;
     priceUnit?: string | null;
@@ -274,7 +274,7 @@ export class CallInstance {
     testEnum?: CallTestEnum;
     testArrayOfIntegers?: Array<number>;
     testArrayOfArrayOfIntegers?: Array<Array<number>>;
-    testArrayOfObjects?: Array<TestResponseObjectTestArrayOfObjectsInner> | null;
+    testArrayOfObjects?: Array<object> | null;
 
     /**
      * Remove a CallInstance

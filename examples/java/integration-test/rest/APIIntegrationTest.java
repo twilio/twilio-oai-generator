@@ -7,10 +7,10 @@ import com.twilio.http.TwilioRestClient.Builder;
 import com.twilio.rest.api.v2010.Account;
 import com.twilio.rest.api.v2010.AccountReader;
 import com.twilio.rest.api.v2010.AccountUpdater;
-import com.twilio.rest.api.v2010.Call;
-import com.twilio.rest.api.v2010.CallCreator;
-import com.twilio.rest.api.v2010.CallDeleter;
-import com.twilio.rest.api.v2010.CallFetcher;
+import com.twilio.rest.api.v2010.account.Call;
+import com.twilio.rest.api.v2010.account.CallCreator;
+import com.twilio.rest.api.v2010.account.CallDeleter;
+import com.twilio.rest.api.v2010.account.CallFetcher;
 
 import static org.junit.Assert.*;
 
@@ -81,7 +81,7 @@ public class APIIntegrationTest {
 
     @Test
     public void testCustomTypes() {
-        Call call = new CallFetcher("CA1234567890123456789012", 123).fetch();
+        Call call = new CallFetcher("ACD93d1A6d2c5F0aE3A9C29E6cDd9BdeB9", 123).fetch();
         assertNotNull(call);
         assertEquals(Boolean.FALSE, call.getTestObject().getFax());
         assertEquals(Boolean.FALSE, call.getTestObject().getMms());

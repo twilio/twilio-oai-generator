@@ -3,6 +3,7 @@ package com.twilio.oai;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.Lists;
 import com.twilio.oai.resource.IResourceTree;
 import com.twilio.oai.resource.ResourceMap;
 import io.swagger.v3.oas.models.OpenAPI;
@@ -28,6 +29,8 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
 
     // Unique string devoid of symbols.
     public static final String PATH_SEPARATOR_PLACEHOLDER = "1234567890";
+
+    public static final String ACCOUNT_SID_FORMAT = "^AC[0-9a-fA-F]{32}$";
     private static final int OVERFLOW_CHECKER = 32;
     private static final int BASE_SIXTEEN = 16;
     private static final int BIG_INTEGER_CONSTANT = 1;
@@ -82,7 +85,7 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
             updateAccountSidParam(name, path);
             path.readOperations().forEach(operation -> {
                 // Group operations together by tag. This gives us one file/post-process per resource.
-                String tag = String.join(PATH_SEPARATOR_PLACEHOLDER, resourceTree.ancestors("/"+name.replaceFirst("/[^/]+/", "")));
+                String tag = String.join(PATH_SEPARATOR_PLACEHOLDER, resourceTree.ancestors(name, operation));
                 operation.addTagsItem(tag);
             });
             Matcher m = serverUrlPattern.matcher(path.getServers().get(0).getUrl());
@@ -100,7 +103,7 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
         pathMap.readOperations().stream().map(io.swagger.v3.oas.models.Operation::getParameters)
         .filter(Objects::nonNull)
         .flatMap(Collection::stream)
-        .filter(param -> param.getIn().equals("path") && param.getName().equals("AccountSid"))
+        .filter(param -> param.getIn().equals("path") && ( ACCOUNT_SID_FORMAT.equals(param.getSchema().getPattern())))
         .forEach(param -> {
             param.required(false);
             param.addExtension("x-is-account-sid", true);
@@ -239,12 +242,7 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
             String resourceName = filePathArray[filePathArray.length-1];
             final Map<String, Object> resource = resources.computeIfAbsent(resourceName, k -> new LinkedHashMap<>());
             populateCrudOperations(resource, co);
-            co.requiredParams = co.requiredParams
-                    .stream()
-                    .map(ConventionResolver::resolveParameter)
-                    .map(Optional::get)
-                    .collect(Collectors.toList());
-
+            updateCodeOperationParams(co);
             if (co.nickname.startsWith("update")) {
                 resource.put("hasUpdate", true);
                 addOperationName(co, "Update");
@@ -497,20 +495,52 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
      * @return
      */
     private ArrayList<List<CodegenParameter>> generateSignatureList(final Map<String, Object> resource, final CodegenOperation co, boolean isVersionV2010) {
-        final ArrayList<List<CodegenParameter>> signatureList = new ArrayList<>();
-        signatureList.add(co.requiredParams);
+        CodegenParameter accountSidParam = null;
+        List<List<CodegenParameter>> conditionalCodegenParam = new ArrayList<>();
         if (isVersionV2010) {
             Optional<CodegenParameter> optionalParam = co.allParams.stream()
             .filter(param -> param.vendorExtensions.containsKey("x-is-account-sid")).findAny();
             if(optionalParam.isPresent()){
-                CodegenParameter cp = optionalParam.get();
-                List<CodegenParameter> cpList = new ArrayList<>();
-                cpList.add(cp);
-                cpList.addAll(co.requiredParams);
-                signatureList.add(cpList);
+                accountSidParam = optionalParam.get();
+            }
+            /**
+             * structure for vendorExtensions
+             * @<code> x-twilio:
+             *          conditional:
+             *           - - from
+             *             - messaging_service_sid
+             *           - - body
+             *             - media_url</code>
+             */
+            if(co.vendorExtensions.containsKey("x-twilio")) {
+                HashMap<String, Object> twilioVendorExtension = (HashMap<String, Object>) co.vendorExtensions.get("x-twilio");
+                if(twilioVendorExtension.containsKey("conditional")) {
+                    List<List<String>> conditionalParams = (List<List<String>>) twilioVendorExtension.get("conditional");
+                    // map the conditional param names with the codegenParameter added in optional params
+                    conditionalCodegenParam = conditionalParams.stream().map(
+                            paramList -> paramList.stream().map(
+                                    cp -> co.optionalParams.stream().filter(
+                                            op -> op.paramName.equals(StringUtils.camelize(cp, true))
+                                    ).findAny().get()
+                            ).collect(Collectors.toList())).collect(Collectors.toList());
+                    // added filter to prevent same signature types
+                    conditionalCodegenParam = conditionalCodegenParam.stream().filter(cpList -> (cpList.size() <=1 || !cpList.get(0).dataType.equals(cpList.get(1).dataType))).collect(Collectors.toList());
+                }
+            }
+        }
+        conditionalCodegenParam = Lists.cartesianProduct(conditionalCodegenParam);
+        ArrayList<List<CodegenParameter>> signatureList = new ArrayList<>();
+        for(List<CodegenParameter> paramList : conditionalCodegenParam){
+            signatureList.add(addAllToList(co.requiredParams, paramList));
+            if( accountSidParam != null) {
+                signatureList.add(addAllToList(List.of(accountSidParam), co.requiredParams, paramList));
             }
         }
         return signatureList;
+    }
+
+    private <T> List<T> addAllToList(List<T> ... list) {
+        return Arrays.stream(list).flatMap(List<T>::stream).collect(Collectors.toList());
     }
 
     private void populateCrudOperations(final Map<String, Object> resource, final CodegenOperation operation) {
@@ -631,6 +661,9 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
                 .map(ConventionResolver::resolveParameter)
                 .map(Optional::get)
                 .collect(Collectors.toList());
+        co.pathParams.stream().
+                map(ConventionResolver::resolveParamTypes)
+                .forEach(param -> param.paramName = "path"+param.paramName);
         co.queryParams = co.queryParams.stream().map(ConventionResolver::resolveParamTypes)
                 .map(ConventionResolver::prefixedCollapsibleMap)
                 .collect(Collectors.toList());
@@ -641,6 +674,16 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
         co.formParams = preProcessFormParams(co);
         co.headerParams = co.headerParams.stream().map(ConventionResolver::resolveParamTypes)
                 .map(ConventionResolver::prefixedCollapsibleMap)
+                .collect(Collectors.toList());
+        co.optionalParams = co.optionalParams
+                .stream()
+                .map(ConventionResolver::resolveParameter)
+                .map(Optional::get)
+                .collect(Collectors.toList());
+        co.requiredParams = co.requiredParams
+                .stream()
+                .map(ConventionResolver::resolveParameter)
+                .map(Optional::get)
                 .collect(Collectors.toList());
     }
 

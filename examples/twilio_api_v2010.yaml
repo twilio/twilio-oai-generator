@@ -102,6 +102,13 @@ info:
   version: 1.11.0
 openapi: 3.0.1
 paths:
+  /v1/Credentials:
+    description: A parent resource with no operations
+    servers:
+      - url: https://api.twilio.com
+    x-twilio:
+      className: credential
+      pathType: list
   /v1/Credentials/AWS:
     get:
       operationId: ListCredentialAws
@@ -239,9 +246,17 @@ paths:
           description: Created
       security:
         - accountSid_authToken: [ ]
+      x-twilio:
+        className: new_credentials
+        conditional:
+        - - TestInteger
+          - TestDate
+        - - TestNumberFloat
+          - TestObject
     servers:
-      - url: https://api.twilio.com
+      - url: https://flex-api.twilio.com
     x-twilio:
+      parent: /Credentials
       pathType: list
   /v1/Credentials/AWS/{Sid}:
     delete:
@@ -318,6 +333,7 @@ paths:
     servers:
       - url: https://api.twilio.com
     x-twilio:
+      parent: /Credentials
       pathType: instance
   /2010-04-01/Accounts.json:
     description: A top-level resource
@@ -456,6 +472,9 @@ paths:
           name: Sid
           required: true
           schema:
+            maxLength: 34
+            minLength: 34
+            pattern: ^AC[0-9a-fA-F]{32}$
             type: string
       responses:
         '204':
@@ -469,6 +488,9 @@ paths:
           name: Sid
           required: true
           schema:
+            maxLength: 34
+            minLength: 34
+            pattern: ^AC[0-9a-fA-F]{32}$
             type: string
       responses:
         '200':
@@ -486,6 +508,9 @@ paths:
           name: Sid
           required: true
           schema:
+            maxLength: 34
+            minLength: 34
+            pattern: ^AC[0-9a-fA-F]{32}$
             type: string
       requestBody:
         content:
@@ -563,6 +588,7 @@ paths:
     servers:
       - url: https://api.twilio.com
     x-twilio:
+      parent: /Accounts.json
       pathType: list
   /2010-04-01/Accounts/{AccountSid}/Calls/{TestInteger}.json:
     description: A nested resource instance that cannot be updated
@@ -573,6 +599,9 @@ paths:
           name: AccountSid
           required: true
           schema:
+            maxLength: 34
+            minLength: 34
+            pattern: ^AC[0-9a-fA-F]{32}$
             type: string
         - description: INTEGER ID param!!!
           in: path
@@ -592,6 +621,9 @@ paths:
           name: AccountSid
           required: true
           schema:
+            maxLength: 34
+            minLength: 34
+            pattern: ^AC[0-9a-fA-F]{32}$
             type: string
         - description: INTEGER ID param!!!
           in: path
@@ -614,6 +646,7 @@ paths:
     servers:
       - url: https://api.twilio.com
     x-twilio:
+      parent: /Accounts.json
       pathType: instance
   /2010-04-01/Accounts/{AccountSid}/Calls/FeedbackSummary.json:
     description: A resource that can only be created

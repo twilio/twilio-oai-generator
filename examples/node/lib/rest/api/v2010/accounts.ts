@@ -204,7 +204,7 @@ interface AccountResource {
     sid?: string | null;
     test_string?: string | null;
     test_integer?: number | null;
-    test_object?: TestResponseObjectTestObject | null;
+    test_object?: object | null;
     test_date_time?: string | null;
     test_number?: number | null;
     price_unit?: string | null;
@@ -212,7 +212,7 @@ interface AccountResource {
     test_enum?: AccountTestEnum;
     test_array_of_integers?: Array<number>;
     test_array_of_array_of_integers?: Array<Array<number>>;
-    test_array_of_objects?: Array<TestResponseObjectTestArrayOfObjectsInner> | null;
+    test_array_of_objects?: Array<object> | null;
 }
 
 export class AccountInstance {
@@ -246,7 +246,7 @@ export class AccountInstance {
     sid?: string | null;
     testString?: string | null;
     testInteger?: number | null;
-    testObject?: TestResponseObjectTestObject | null;
+    testObject?: object | null;
     testDateTime?: string | null;
     testNumber?: number | null;
     priceUnit?: string | null;
@@ -254,7 +254,7 @@ export class AccountInstance {
     testEnum?: AccountTestEnum;
     testArrayOfIntegers?: Array<number>;
     testArrayOfArrayOfIntegers?: Array<Array<number>>;
-    testArrayOfObjects?: Array<TestResponseObjectTestArrayOfObjectsInner> | null;
+    testArrayOfObjects?: Array<object> | null;
 
     /**
      * Remove a AccountInstance

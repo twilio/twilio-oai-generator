@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-package com.twilio.rest.api.v2010;
+package com.twilio.rest.api.v2010.account.call;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -70,49 +70,31 @@ import com.twilio.type.RecordingRule;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @ToString
-public class Account extends Resource {
-    private static final long serialVersionUID = 101016944188709L;
+public class FeedbackCallSummary extends Resource {
+    private static final long serialVersionUID = 191475196031556L;
 
-    public static AccountCreator creator(){
-        return new AccountCreator();
+    public static FeedbackCallSummaryCreator creator(final LocalDate endDate, final LocalDate startDate){
+        return new FeedbackCallSummaryCreator(endDate, startDate);
     }
-
-    public static AccountFetcher fetcher(){
-        return new AccountFetcher();
-    }
-    public static AccountFetcher fetcher(final String sid){
-        return new AccountFetcher(sid);
+    public static FeedbackCallSummaryCreator creator(final String accountSid, final LocalDate endDate, final LocalDate startDate){
+        return new FeedbackCallSummaryCreator(accountSid, endDate, startDate);
     }
 
-    public static AccountDeleter deleter(){
-        return new AccountDeleter();
-    }
-    public static AccountDeleter deleter(final String sid){
-        return new AccountDeleter(sid);
-    }
 
-    public static AccountReader reader(){
-        return new AccountReader();
-    }
 
-    public static AccountUpdater updater(final Account.Status status){
-        return new AccountUpdater(status);
-    }
-    public static AccountUpdater updater(final String sid, final Account.Status status){
-        return new AccountUpdater(sid, status);
-    }
+
 
     /**
-    * Converts a JSON String into a Account object using the provided ObjectMapper.
+    * Converts a JSON String into a FeedbackCallSummary object using the provided ObjectMapper.
     *
     * @param json Raw JSON String
     * @param objectMapper Jackson ObjectMapper
-    * @return Account object represented by the provided JSON
+    * @return FeedbackCallSummary object represented by the provided JSON
     */
-    public static Account fromJson(final String json, final ObjectMapper objectMapper) {
+    public static FeedbackCallSummary fromJson(final String json, final ObjectMapper objectMapper) {
         // Convert all checked exceptions to Runtime
         try {
-            return objectMapper.readValue(json, Account.class);
+            return objectMapper.readValue(json, FeedbackCallSummary.class);
         } catch (final JsonMappingException | JsonParseException e) {
             throw new ApiException(e.getMessage(), e);
         } catch (final IOException e) {
@@ -121,17 +103,17 @@ public class Account extends Resource {
     }
 
     /**
-    * Converts a JSON InputStream into a Account object using the provided
+    * Converts a JSON InputStream into a FeedbackCallSummary object using the provided
     * ObjectMapper.
     *
     * @param json Raw JSON InputStream
     * @param objectMapper Jackson ObjectMapper
-    * @return Account object represented by the provided JSON
+    * @return FeedbackCallSummary object represented by the provided JSON
     */
-    public static Account fromJson(final InputStream json, final ObjectMapper objectMapper) {
+    public static FeedbackCallSummary fromJson(final InputStream json, final ObjectMapper objectMapper) {
         // Convert all checked exceptions to Runtime
         try {
-            return objectMapper.readValue(json, Account.class);
+            return objectMapper.readValue(json, FeedbackCallSummary.class);
         } catch (final JsonMappingException | JsonParseException e) {
             throw new ApiException(e.getMessage(), e);
         } catch (final IOException e) {
@@ -209,15 +191,15 @@ public class Account extends Resource {
     private final BigDecimal testNumber;
     private final Currency priceUnit;
     private final Float testNumberFloat;
-    private final Account.TestEnum testEnum;
+    private final FeedbackCallSummary.TestEnum testEnum;
     private final List<Integer> testArrayOfIntegers;
     private final List<List<Integer>> testArrayOfArrayOfIntegers;
     private final List<FeedbackIssue> testArrayOfObjects;
-    private final Account.XTwilioWebhookEnabled xTwilioWebhookEnabled;
-    private final Account.Status status;
+    private final FeedbackCallSummary.XTwilioWebhookEnabled xTwilioWebhookEnabled;
+    private final FeedbackCallSummary.Status status;
 
     @JsonCreator
-    private Account(
+    private FeedbackCallSummary(
         @JsonProperty("account_sid")
         final String accountSid,
 
@@ -247,7 +229,7 @@ public class Account extends Resource {
         final Float testNumberFloat,
 
         @JsonProperty("test_enum")
-        final Account.TestEnum testEnum,
+        final FeedbackCallSummary.TestEnum testEnum,
 
         @JsonProperty("test_array_of_integers")
         final List<Integer> testArrayOfIntegers,
@@ -259,10 +241,10 @@ public class Account extends Resource {
         final List<FeedbackIssue> testArrayOfObjects,
 
         @JsonProperty("x_twilio_webhook_enabled")
-        final Account.XTwilioWebhookEnabled xTwilioWebhookEnabled,
+        final FeedbackCallSummary.XTwilioWebhookEnabled xTwilioWebhookEnabled,
 
         @JsonProperty("status")
-        final Account.Status status
+        final FeedbackCallSummary.Status status
     ) {
         this.accountSid = accountSid;
         this.sid = sid;
@@ -308,7 +290,7 @@ public class Account extends Resource {
         public final Float getTestNumberFloat() {
             return this.testNumberFloat;
         }
-        public final Account.TestEnum getTestEnum() {
+        public final FeedbackCallSummary.TestEnum getTestEnum() {
             return this.testEnum;
         }
         public final List<Integer> getTestArrayOfIntegers() {
@@ -320,10 +302,10 @@ public class Account extends Resource {
         public final List<FeedbackIssue> getTestArrayOfObjects() {
             return this.testArrayOfObjects;
         }
-        public final Account.XTwilioWebhookEnabled getXTwilioWebhookEnabled() {
+        public final FeedbackCallSummary.XTwilioWebhookEnabled getXTwilioWebhookEnabled() {
             return this.xTwilioWebhookEnabled;
         }
-        public final Account.Status getStatus() {
+        public final FeedbackCallSummary.Status getStatus() {
             return this.status;
         }
 
@@ -337,7 +319,7 @@ public class Account extends Resource {
             return false;
         }
 
-        Account other = (Account) o;
+        FeedbackCallSummary other = (FeedbackCallSummary) o;
 
         return Objects.equals(accountSid, other.accountSid) &&  Objects.equals(sid, other.sid) &&  Objects.equals(testString, other.testString) &&  Objects.equals(testInteger, other.testInteger) &&  Objects.equals(testObject, other.testObject) &&  Objects.equals(testDateTime, other.testDateTime) &&  Objects.equals(testNumber, other.testNumber) &&  Objects.equals(priceUnit, other.priceUnit) &&  Objects.equals(testNumberFloat, other.testNumberFloat) &&  Objects.equals(testEnum, other.testEnum) &&  Objects.equals(testArrayOfIntegers, other.testArrayOfIntegers) &&  Objects.equals(testArrayOfArrayOfIntegers, other.testArrayOfArrayOfIntegers) &&  Objects.equals(testArrayOfObjects, other.testArrayOfObjects) &&  Objects.equals(xTwilioWebhookEnabled, other.xTwilioWebhookEnabled) &&  Objects.equals(status, other.status)  ;
     }
