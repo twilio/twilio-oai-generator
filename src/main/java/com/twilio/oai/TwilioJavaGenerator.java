@@ -9,6 +9,7 @@ import com.twilio.oai.resource.ResourceMap;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.PathItem;
 import lombok.AllArgsConstructor;
+import org.commonmark.node.Code;
 import org.openapitools.codegen.*;
 import org.openapitools.codegen.languages.JavaClientCodegen;
 import org.openapitools.codegen.utils.StringUtils;
@@ -208,8 +209,32 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
                     .collect(Collectors.toCollection(() -> this.allModels));
         }
         setObjectFormatMap(this.allModels);
+        setEnumProperties(this.allModels);
         // Return an empty collection so no model files get generated.
         return new HashMap<>();
+    }
+
+    private void setEnumProperties(List<CodegenModel> allModels) {
+        allModels.forEach(model -> {
+            model.vars.forEach(property -> {
+                allModels.forEach(enumModel -> {
+                    if (property.items != null && property.items.allowableValues != null && property.items.allowableValues.containsKey("enumVars")) {
+                        if (enumModel.getClassname().equals(property.items.getBaseType())) {
+                            property.isEnum = true;
+                            property.allowableValues = enumModel.allowableValues;
+                            property._enum = (List<String>) enumModel.allowableValues.get("values");
+                        }
+                    }
+                    if (property.allowableValues != null && property.allowableValues.containsKey("enumVars")) {
+                        if (enumModel.getClassname().equals(property.getBaseType())) {
+                            property.isEnum = true;
+                            property.allowableValues = enumModel.allowableValues;
+                            property._enum = (List<String>) enumModel.allowableValues.get("values");
+                        }
+                    }
+                });
+            });
+        });
     }
 
 
@@ -653,6 +678,7 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
                 .stream()
                 .map(ConventionResolver::resolveParameter)
                 .map(Optional::get)
+                .map(this::resolveEnumParameter)
                 .collect(Collectors.toList());
         co.pathParams = co.pathParams
                 .stream()
@@ -693,6 +719,28 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
             }
         }
         return co.formParams;
+    }
+
+    private CodegenParameter resolveEnumParameter(CodegenParameter parameter) {
+        allModels.forEach(model -> {
+            if (parameter.items != null && parameter.items.allowableValues != null && parameter.items.allowableValues.containsKey("enumVars")) {
+                if (model.getClassname().equals(parameter.baseName)) {
+                    parameter.isEnum = true;
+                    parameter.allowableValues = model.allowableValues;
+                    parameter._enum = (List<String>) model.allowableValues.get("values");
+
+                }
+            }
+            if (parameter.allowableValues != null && parameter.allowableValues.containsKey("enumVars")) {
+                if (model.getClassname().equals(parameter.baseName)) {
+                    parameter.isEnum = true;
+                    parameter.allowableValues = model.allowableValues;
+                    parameter._enum = (List<String>) model.allowableValues.get("values");
+
+                }
+            }
+        });
+        return parameter;
     }
 
     @Override
