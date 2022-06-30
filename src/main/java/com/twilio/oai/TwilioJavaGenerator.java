@@ -217,26 +217,18 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
     private void setEnumProperties(List<CodegenModel> allModels) {
         allModels.forEach(model -> {
             model.vars.forEach(property -> {
-                allModels.forEach(enumModel -> {
-                    if (property.items != null && property.items.allowableValues != null && property.items.allowableValues.containsKey("enumVars")) {
-                        if (enumModel.getClassname().equals(property.items.getBaseType())) {
-                            property.isEnum = true;
-                            property.allowableValues = enumModel.allowableValues;
-                            property._enum = (List<String>) enumModel.allowableValues.get("values");
-                        }
-                    }
-                    if (property.allowableValues != null && property.allowableValues.containsKey("enumVars")) {
-                        if (enumModel.getClassname().equals(property.getBaseType())) {
-                            property.isEnum = true;
-                            property.allowableValues = enumModel.allowableValues;
-                            property._enum = (List<String>) enumModel.allowableValues.get("values");
-                        }
-                    }
-                });
+                if (property.items != null && property.items.allowableValues != null && property.items.allowableValues.containsKey("enumVars")) {
+                    property.isEnum = true;
+                    property.allowableValues = property.items.allowableValues;
+                    property._enum = (List<String>) property.items.allowableValues.get("values");
+                }
+                if (property.allowableValues != null && property.allowableValues.containsKey("enumVars")) {
+                        property.isEnum = true;
+                        property._enum = (List<String>) property.allowableValues.get("values");
+                }
             });
         });
     }
-
 
     @Override
     public Map<String, Object> postProcessOperationsWithModels(final Map<String, Object> objs,
@@ -265,7 +257,7 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
             String resourceName = filePathArray[filePathArray.length-1];
             final Map<String, Object> resource = resources.computeIfAbsent(resourceName, k -> new LinkedHashMap<>());
             populateCrudOperations(resource, co);
-            updateCodeOperationParams(co);
+            updateCodeOperationParams(co, resourceName);
             if (co.nickname.startsWith("update")) {
                 resource.put("hasUpdate", true);
                 addOperationName(co, "Update");
@@ -306,7 +298,6 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
             resourceOperationList.add(co);
             resource.put("path", path);
             resource.put("resourceName", resourceName);
-            updateCodeOperationParams(co);
             co.queryParams = preProcessQueryParameters(co);
             co.pathParams = null;
             co.hasParams = !co.allParams.isEmpty();
@@ -329,7 +320,6 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
               .map(item -> ConventionResolver.resolveComplexType(item, modelFormatMap))
               .flatMap(Optional::stream)
               .forEach(model -> {
-
                   resource.put("serialVersionUID", calculateSerialVersionUid(model.vars));
                   responseModels.add(model);
                   processEnumVarsForAll(responseModels, co, model, resourceName);
@@ -370,8 +360,14 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
 
         model.vars.forEach(item -> {
             if(item.isEnum){
-                item.dataType = generateDataType(resourceName, item.nameInCamelCase);
-
+                //item.dataType = generateDataType(resourceName, item.nameInCamelCase);
+                if (item.containerType != null && item.containerType.equals("array")) {
+                    item.baseName = item.complexType;
+                    item.dataType = "List<"+resourceName +"." + item.complexType+">";
+                } else {
+                    item.baseName = item.dataType;
+                    item.dataType = resourceName + "." + item.dataType;
+                }
                 item.vendorExtensions.put("x-is-other-data-type", true);
 
             }
@@ -673,41 +669,48 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
         return str.substring(0, 1).toUpperCase() + str.substring(1);
     }
 
-    private void updateCodeOperationParams(final CodegenOperation co) {
+    private void updateCodeOperationParams(final CodegenOperation co, String resourceName) {
         co.allParams = co.allParams
                 .stream()
                 .map(ConventionResolver::resolveParameter)
                 .map(Optional::get)
-                .map(this::resolveEnumParameter)
+                .map(item -> this.resolveEnumParameter(item, resourceName))
                 .collect(Collectors.toList());
         co.pathParams = co.pathParams
                 .stream()
                 .map(ConventionResolver::resolveParameter)
                 .map(Optional::get)
+                .map(item -> this.resolveEnumParameter(item, resourceName))
                 .collect(Collectors.toList());
         co.pathParams.stream().
                 map(ConventionResolver::resolveParamTypes)
+                .map(item -> this.resolveEnumParameter(item, resourceName))
                 .forEach(param -> param.paramName = "path"+param.paramName);
         co.queryParams = co.queryParams.stream().map(ConventionResolver::resolveParamTypes)
                 .map(ConventionResolver::prefixedCollapsibleMap)
+                .map(item -> this.resolveEnumParameter(item, resourceName))
                 .collect(Collectors.toList());
         co.queryParams = preProcessQueryParameters(co);
         co.formParams = co.formParams.stream().map(ConventionResolver::resolveParamTypes)
                 .map(ConventionResolver::prefixedCollapsibleMap)
+                .map(item -> this.resolveEnumParameter(item, resourceName))
                 .collect(Collectors.toList());
         co.formParams = preProcessFormParams(co);
         co.headerParams = co.headerParams.stream().map(ConventionResolver::resolveParamTypes)
                 .map(ConventionResolver::prefixedCollapsibleMap)
+                .map(item -> this.resolveEnumParameter(item, resourceName))
                 .collect(Collectors.toList());
         co.optionalParams = co.optionalParams
                 .stream()
                 .map(ConventionResolver::resolveParameter)
                 .map(Optional::get)
+                .map(item -> this.resolveEnumParameter(item, resourceName))
                 .collect(Collectors.toList());
         co.requiredParams = co.requiredParams
                 .stream()
                 .map(ConventionResolver::resolveParameter)
                 .map(Optional::get)
+                .map(item -> this.resolveEnumParameter(item, resourceName))
                 .collect(Collectors.toList());
     }
 
@@ -721,25 +724,18 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
         return co.formParams;
     }
 
-    private CodegenParameter resolveEnumParameter(CodegenParameter parameter) {
-        allModels.forEach(model -> {
-            if (parameter.items != null && parameter.items.allowableValues != null && parameter.items.allowableValues.containsKey("enumVars")) {
-                if (model.getClassname().equals(parameter.baseName)) {
-                    parameter.isEnum = true;
-                    parameter.allowableValues = model.allowableValues;
-                    parameter._enum = (List<String>) model.allowableValues.get("values");
-
-                }
-            }
-            if (parameter.allowableValues != null && parameter.allowableValues.containsKey("enumVars")) {
-                if (model.getClassname().equals(parameter.baseName)) {
-                    parameter.isEnum = true;
-                    parameter.allowableValues = model.allowableValues;
-                    parameter._enum = (List<String>) model.allowableValues.get("values");
-
-                }
-            }
-        });
+    private CodegenParameter resolveEnumParameter(CodegenParameter parameter, String resourceName) {
+        if (parameter.items != null && parameter.items.allowableValues != null && parameter.items.allowableValues.containsKey("enumVars")) {
+            parameter.isEnum = true;
+            parameter._enum = (List<String>) parameter.items.allowableValues.get("values");
+            parameter.dataType=resourceName+"."+parameter.items.dataType;
+        }
+        if (parameter.allowableValues != null && parameter.allowableValues.containsKey("enumVars")) {
+            parameter.isEnum = true;
+            parameter._enum = (List<String>) parameter.allowableValues.get("values");
+            parameter.baseName = parameter.dataType;
+            parameter.dataType=resourceName+"."+parameter.dataType;
+        }
         return parameter;
     }
 
