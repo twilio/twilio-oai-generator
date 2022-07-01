@@ -70,7 +70,8 @@ func TestUpdateCredentialAws(t *testing.T) {
 	testClient.EXPECT().UpdateCredentialAws(
 		credentialsSid,
 		&UpdateCredentialAwsParams{
-			TestString: &stringValue,
+			TestString:  &stringValue,
+			TestBoolean: &booleanValueDefaultValue,
 		},
 	).Return(credential, nil)
 
