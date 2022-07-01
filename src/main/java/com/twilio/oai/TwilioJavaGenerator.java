@@ -124,7 +124,8 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
     @Override
     public void postProcessParameter(final CodegenParameter parameter) {
         super.postProcessParameter(parameter);
-
+        String[] value = parameter.dataType.split("Enum");
+        parameter.dataType = value[value.length-1];
         // Make sure required non-path params get into the options block.
         parameter.paramName = StringUtils.camelize(parameter.paramName, false);
     }
@@ -132,6 +133,8 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
     @Override
     public void postProcessModelProperty(CodegenModel model, CodegenProperty property) {
         super.postProcessModelProperty(model, property);
+        String[] value = property.dataType.split("Enum");
+        property.dataType = value[value.length-1];
         property.isEnum =  property.isEnum && property.dataFormat == null;
     }
 
@@ -355,7 +358,7 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
     private void processEnumVarsForAll(List<CodegenModel> responseModels, CodegenOperation co, CodegenModel model, String resourceName) {
             for (CodegenParameter param : co.allParams) {
                 if(param.isEnum){
-                    Optional<CodegenProperty> alreadyExisting = model.vars.stream().filter(item -> item.name.equalsIgnoreCase(param.paramName)).findFirst();
+                    Optional<CodegenProperty> alreadyExisting = model.vars.stream().filter(item -> item.name.equalsIgnoreCase(param.baseName) && item.dataType.equals(param.dataType)).findFirst();
                     if(!alreadyExisting.isPresent()){
                         responseModels.get(0).vars.add(createCodeGenPropertyFromParameter(param));
                         model.vars.add(createCodeGenPropertyFromParameter(param));
