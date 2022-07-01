@@ -3,9 +3,9 @@
 {{#isEnum}}
     public enum {{#lambda.titlecase}}{{{baseName}}}{{/lambda.titlecase}} {
         {{#allowableValues}}
-        {{#enumVars}}
-        {{#lambda.uppercase}}{{{name}}}({{/lambda.uppercase}}{{{value}}}){{^-last}},{{/-last}}{{#-last}};{{/-last}}
-        {{/enumVars}}
+        {{#values}}
+        {{#lambda.uppercase}}{{#lambda.replacehyphen}}{{{.}}}{{/lambda.replacehyphen}}({{/lambda.uppercase}}"{{{.}}}"){{^-last}},{{/-last}}{{#-last}};{{/-last}}
+        {{/values}}
         {{/allowableValues}}
 
         private final String value;

@@ -4,6 +4,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
+import com.samskivert.mustache.Mustache;
+import com.twilio.oai.mlambdas.ReplaceHyphenLambda;
 import com.twilio.oai.resource.IResourceTree;
 import com.twilio.oai.resource.ResourceMap;
 import io.swagger.v3.oas.models.OpenAPI;
@@ -12,6 +14,7 @@ import lombok.AllArgsConstructor;
 import org.commonmark.node.Code;
 import org.openapitools.codegen.*;
 import org.openapitools.codegen.languages.JavaClientCodegen;
+import org.openapitools.codegen.templating.mustache.*;
 import org.openapitools.codegen.utils.StringUtils;
 
 import java.util.*;
@@ -21,6 +24,8 @@ import java.util.stream.Collectors;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import com.google.common.collect.ImmutableMap;
+import com.samskivert.mustache.Mustache.Lambda;
 
 public class TwilioJavaGenerator extends JavaClientCodegen {
 
@@ -217,7 +222,7 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
     private void setEnumProperties(List<CodegenModel> allModels) {
         allModels.forEach(model -> {
             model.vars.forEach(property -> {
-                if (property.items != null && property.items.allowableValues != null && property.items.allowableValues.containsKey("enumVars")) {
+                if (property.items != null && property.items.allowableValues != null && property.items.allowableValues.containsKey("values")) {
                     property.isEnum = true;
                     property.allowableValues = property.items.allowableValues;
                     property._enum = (List<String>) property.items.allowableValues.get("values");
@@ -359,7 +364,7 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
             }
 
         model.vars.forEach(item -> {
-            if(item.isEnum){
+            if(item.isEnum && !item.dataType.contains(resourceName+ ".")){
                 //item.dataType = generateDataType(resourceName, item.nameInCamelCase);
                 if (item.containerType != null && item.containerType.equals("array")) {
                     item.baseName = item.complexType;
@@ -371,13 +376,7 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
                 item.vendorExtensions.put("x-is-other-data-type", true);
 
             }
-
         });
-        co.queryParams.forEach(param -> processEnumVars(param, model, resourceName));
-        co.formParams.forEach(param -> processEnumVars(param, model, resourceName));
-        co.allParams.forEach(param -> processEnumVars(param, model, resourceName));
-        co.headerParams.forEach(param -> processEnumVars(param, model, resourceName));
-        co.requiredParams.forEach(param -> processEnumVars(param, model, resourceName));
     }
 
     private CodegenProperty createCodeGenPropertyFromParameter(CodegenParameter co) {
@@ -724,11 +723,20 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
         return co.formParams;
     }
 
+    @Override
+    protected ImmutableMap.Builder<String, Lambda> addMustacheLambdas() {
+        ImmutableMap.Builder<String, Lambda> lambdaBuilder = super.addMustacheLambdas();
+        lambdaBuilder.put("replacehyphen", new ReplaceHyphenLambda());
+        return lambdaBuilder;
+    }
+
     private CodegenParameter resolveEnumParameter(CodegenParameter parameter, String resourceName) {
-        if (parameter.items != null && parameter.items.allowableValues != null && parameter.items.allowableValues.containsKey("enumVars")) {
+        if (parameter.items != null && parameter.items.allowableValues != null && parameter.items.allowableValues.containsKey("values")) {
             parameter.isEnum = true;
+            parameter.baseName = parameter.baseType;
             parameter._enum = (List<String>) parameter.items.allowableValues.get("values");
-            parameter.dataType=resourceName+"."+parameter.items.dataType;
+            parameter.dataType = "List<" + resourceName + "." + parameter.items.complexType + ">";
+            parameter.allowableValues = parameter.items.allowableValues;
         }
         if (parameter.allowableValues != null && parameter.allowableValues.containsKey("enumVars")) {
             parameter.isEnum = true;
