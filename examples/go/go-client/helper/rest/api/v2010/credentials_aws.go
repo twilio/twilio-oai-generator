@@ -387,10 +387,16 @@ func (c *ApiService) getNextListCredentialAwsResponse(nextPageUrl string) (inter
 type UpdateCredentialAwsParams struct {
 	//
 	TestString *string `json:"TestString,omitempty"`
+	//
+	TestBoolean *bool `json:"TestBoolean,omitempty"`
 }
 
 func (params *UpdateCredentialAwsParams) SetTestString(TestString string) *UpdateCredentialAwsParams {
 	params.TestString = &TestString
+	return params
+}
+func (params *UpdateCredentialAwsParams) SetTestBoolean(TestBoolean bool) *UpdateCredentialAwsParams {
+	params.TestBoolean = &TestBoolean
 	return params
 }
 
@@ -403,6 +409,9 @@ func (c *ApiService) UpdateCredentialAws(Sid string, params *UpdateCredentialAws
 
 	if params != nil && params.TestString != nil {
 		data.Set("TestString", *params.TestString)
+	}
+	if params != nil && params.TestBoolean != nil {
+		data.Set("TestBoolean", fmt.Sprint(*params.TestBoolean))
 	}
 
 	resp, err := c.requestHandler.Post(c.baseURL+path, data, headers)
