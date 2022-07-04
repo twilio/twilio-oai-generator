@@ -765,6 +765,7 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
             parameter.baseName = parameter.baseType;
             parameter._enum = (List<String>) parameter.items.allowableValues.get("values");
             parameter.dataType = "List<" + resourceName + "." + parameter.baseType + ">";
+            parameter.baseType = resourceName + "." + parameter.baseType;
             parameter.allowableValues = parameter.items.allowableValues;
         }
         if (parameter.allowableValues != null && parameter.allowableValues.containsKey("enumVars")) {
