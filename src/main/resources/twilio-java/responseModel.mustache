@@ -1,5 +1,5 @@
 {{#responseModel}}
-{{#vars}}
+{{#vendorExtensions.enumVars}}
 {{#isEnum}}
     public enum {{#lambda.titlecase}}{{{baseName}}}{{/lambda.titlecase}} {
         {{#allowableValues}}
@@ -24,7 +24,7 @@
         }
     }
 {{/isEnum}}
-{{/vars}}
+{{/vendorExtensions.enumVars}}
 
 {{#vars}}
     private final {{{dataType}}} {{name}};
