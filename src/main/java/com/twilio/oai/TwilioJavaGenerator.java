@@ -4,17 +4,16 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
-import com.samskivert.mustache.Mustache;
 import com.twilio.oai.mlambdas.ReplaceHyphenLambda;
 import com.twilio.oai.resource.IResourceTree;
 import com.twilio.oai.resource.ResourceMap;
 import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.Operation;
 import io.swagger.v3.oas.models.PathItem;
+import io.swagger.v3.oas.models.Paths;
 import lombok.AllArgsConstructor;
-import org.commonmark.node.Code;
 import org.openapitools.codegen.*;
 import org.openapitools.codegen.languages.JavaClientCodegen;
-import org.openapitools.codegen.templating.mustache.*;
 import org.openapitools.codegen.utils.StringUtils;
 
 import java.util.*;
@@ -86,7 +85,7 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
         resourceTree = new ResourceMap(inflector, PATH_SEPARATOR_PLACEHOLDER);
         // regex example : https://flex-api.twilio.com
         Pattern serverUrlPattern = Pattern.compile("https:\\/\\/([a-zA-Z-]+)\\.twilio\\.com");
-        openAPI.getPaths().forEach((name, path) -> {
+        extendOpenAPI(openAPI).getPaths().forEach((name, path) -> {
             resourceTree.addResource(name, path);
         });
         openAPI.getPaths().forEach((name, path) -> {
@@ -102,6 +101,77 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
             }
         });
     }
+
+    private OpenAPI extendOpenAPI(OpenAPI openAPI) {
+        Paths newPaths = new Paths();
+        openAPI.getPaths().forEach((name, path) -> {
+            if (extracted(path)) {
+                for(Map.Entry<String, PathItem> newPathItem : extractOperatorToPathItem(name, path).entrySet()) {
+                    newPaths.addPathItem(newPathItem.getKey(), newPathItem.getValue());
+                }
+            }
+            else {
+                newPaths.addPathItem(name, path);
+            }
+        });
+        openAPI.paths(newPaths);
+        return openAPI;
+    }
+
+    private Map<String, PathItem> extractOperatorToPathItem(String name, PathItem path)  {
+        ObjectMapper objectMapper = new ObjectMapper();
+        Map<String, PathItem> pathItemMap = new HashMap<>();
+        try {
+            PathItem pathItemOperatorClassVendExt = objectMapper
+                    .readValue(objectMapper.writeValueAsString(path), PathItem.class);
+            PathItem pathItemClassVendExt = objectMapper
+                    .readValue(objectMapper.writeValueAsString(path), PathItem.class);
+            pathItemClassVendExt.put(null);
+            pathItemClassVendExt.get(null);
+            pathItemClassVendExt.post(null);
+            pathItemClassVendExt.delete(null);
+            pathItemClassVendExt.patch(null);
+            pathItemOperatorClassVendExt.put(null);
+            pathItemOperatorClassVendExt.get(null);
+            pathItemOperatorClassVendExt.post(null);
+            pathItemOperatorClassVendExt.delete(null);
+            pathItemOperatorClassVendExt.patch(null);
+            for (Map.Entry<PathItem.HttpMethod, io.swagger.v3.oas.models.Operation> entryMapOperation: path.readOperationsMap().entrySet()) {
+                if (isClassName(entryMapOperation.getValue())) {
+                    String[] urls = name.split("/");
+                    String className = Arrays.stream(((Map<String, String>)entryMapOperation.getValue()
+                            .getExtensions().get("x-twilio")).get("className").split("_")).
+                            map(StringUtils::camelize).collect(Collectors.joining());
+                    urls[urls.length-1] = className + ".json";
+                    String urlPath = String.join("/", urls);
+                    pathItemOperatorClassVendExt.operation(entryMapOperation.getKey(), entryMapOperation.getValue());
+                    pathItemOperatorClassVendExt.getExtensions().put("parentUrl", name);
+                    pathItemMap.put(urlPath, pathItemOperatorClassVendExt);
+                } else {
+                    pathItemClassVendExt.operation(entryMapOperation.getKey(), entryMapOperation.getValue());
+                    pathItemMap.put(name, pathItemClassVendExt);
+                }
+            }
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        return pathItemMap;
+    }
+
+    private boolean extracted(PathItem path) {
+        for (io.swagger.v3.oas.models.Operation operation: path.readOperations()) {
+            if (isClassName(operation)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean isClassName(io.swagger.v3.oas.models.Operation operation) {
+        return (operation.getExtensions().containsKey("x-twilio")) &&
+                ((Map<String, String>) operation.getExtensions().get("x-twilio")).containsKey("className");
+    }
+
     /**
      * make accountSid an optional param
      * @param path
