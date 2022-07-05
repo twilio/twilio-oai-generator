@@ -17,6 +17,10 @@ public class ConventionResolver {
     final static String HYPHEN = "-";
     public static final String OBJECT = "object";
 
+    public static final String PHONE_NUMBER_FORMAT = "phone-number";
+
+    final static String X_IS_PHONE_NUMBER_FORMAT = "x-is-phone-number-format";
+
     public static Optional<CodegenModel> resolve(Optional<CodegenModel> model) {
         for (CodegenProperty property : model.get().vars) {
             Map<String, Map<String, Object>> vendorExtensions = new HashMap<>();
@@ -52,6 +56,9 @@ public class ConventionResolver {
         boolean hasProperty = conventionMap.get(Segments.SEGMENT_PROPERTIES.getSegment()).containsKey(parameter.dataFormat);
         if (hasProperty) {
             parameter.dataType = (String)conventionMap.get(Segments.SEGMENT_PROPERTIES.getSegment()).get(parameter.dataFormat);
+        }
+        if( PHONE_NUMBER_FORMAT.equals(parameter.dataFormat)) {
+            parameter.vendorExtensions.put(X_IS_PHONE_NUMBER_FORMAT, true);
         }
         parameter.paramName = StringUtils.camelize(parameter.paramName, true);
         return Optional.of(parameter);

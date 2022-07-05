@@ -5,12 +5,18 @@
             request.addHeaderParam("{{baseName}}", {{paramName}}.toString());
         {{/vendorExtensions.x-is-other-data-type}}
         {{^vendorExtensions.x-is-other-data-type}}
+        {{#isEnum}}
+            request.addHeaderParam("{{baseName}}", {{paramName}}.toString());
+        {{/isEnum}}
+        {{^isEnum}}
         {{#isString}}
             request.addHeaderParam("{{baseName}}", {{paramName}});
         {{/isString}}
         {{^isString}}
             request.addHeaderParam("{{baseName}}", {{paramName}}.toString());
         {{/isString}}
+        {{/isEnum}}
+
         {{/vendorExtensions.x-is-other-data-type}}
         }
 {{/headerParams}}

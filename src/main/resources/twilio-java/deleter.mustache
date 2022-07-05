@@ -57,17 +57,7 @@ public class {{resourceName}}Deleter extends Deleter<{{resourceName}}> {
 
     @Override
     public boolean delete(final TwilioRestClient client) {
-        String path = "{{{path}}}";
-        {{#allParams}}
-        {{#vendorExtensions.x-is-account-sid}}
-        this.{{paramName}} = this.{{paramName}} == null ? client.getAccountSid() : this.{{paramName}};
-        path = path.replace("{"+"{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}"+"}", this.{{paramName}}.toString());
-        {{/vendorExtensions.x-is-account-sid}}
-        {{/allParams}}
-        {{#requiredParams}}
-        path = path.replace("{"+"{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}"+"}", this.{{paramName}}.toString());
-        {{/requiredParams}}
-
+{{>generate_uri}}
         Request request = new Request(
             HttpMethod.DELETE,
             Domains.{{#lambda.uppercase}}{{domainName}}{{/lambda.uppercase}}.toString(),
