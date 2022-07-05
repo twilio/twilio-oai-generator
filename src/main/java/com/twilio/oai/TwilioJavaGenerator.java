@@ -296,6 +296,7 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
                 co.vendorExtensions.put("x-is-delete-operation", true);
                 resource.put("signatureListDelete", generateSignatureList(resource, co, isVersionV2010));
                 apiTemplateFiles.put("deleter.mustache", "Deleter.java");
+                addDeleteHeaderEnums(co, responseModels);
             } else if (co.nickname.startsWith("create")) {
                 resource.put("hasCreate", true);
                 co.vendorExtensions.put("x-is-create-operation", true);
@@ -370,6 +371,20 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
         results.put("resources", resources.values());
 
         return results;
+    }
+
+    private void addDeleteHeaderEnums(CodegenOperation co, List<CodegenModel> responseModels) {
+        List<CodegenProperty> codegenProperties = new ArrayList<>();
+        for (CodegenParameter cp: co.allParams) {
+            if (cp.isEnum && cp.isHeaderParam) {
+                codegenProperties.add(createCodeGenPropertyFromParameter(cp));
+            }
+        }
+        if (codegenProperties.size() > 0) {
+            CodegenModel codegenModel = new CodegenModel();
+            codegenModel.vendorExtensions.put("enumVars", codegenProperties);
+            responseModels.add(codegenModel);
+        }
     }
 
     private CodegenModel processEnumVarsForAll(CodegenModel model, CodegenOperation co,  String resourceName) {
@@ -466,14 +481,10 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
                                 codeModelEnums.add(resCodegenProperty);
                             }
                         }
-                        resModel.vendorExtensions.forEach(
-                                (key, value) -> codegenModel.vendorExtensions.merge(key, value, (oldValue, newValue) -> newValue));
                         resModel.vendorExtensions.put("enumVars", codeModelEnums);
-                    } else {
-                        resModel.vendorExtensions.forEach(
-                                (key, value) -> codegenModel.vendorExtensions.merge(key, value, (oldValue, newValue) -> newValue));
-
                     }
+                    resModel.vendorExtensions.forEach(
+                            (key, value) -> codegenModel.vendorExtensions.merge(key, value, (oldValue, newValue) -> newValue));
                 }
 
                 for (CodegenProperty modelProp : resModel.vars) {
@@ -772,7 +783,7 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
             parameter.isEnum = true;
             parameter._enum = (List<String>) parameter.allowableValues.get("values");
             parameter.baseName = parameter.dataType;
-            parameter.dataType=resourceName+"."+parameter.dataType;
+            parameter.dataType=resourceName + "." + parameter.dataType;
         }
         return parameter;
     }
