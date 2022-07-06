@@ -144,8 +144,8 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
                             map(StringUtils::camelize).collect(Collectors.joining());
                     urls[urls.length-1] = className + ".json";
                     String urlPath = String.join("/", urls);
+                    entryMapOperation.getValue().getExtensions().put("parentUrl", name);
                     pathItemOperatorClassVendExt.operation(entryMapOperation.getKey(), entryMapOperation.getValue());
-                    pathItemOperatorClassVendExt.getExtensions().put("parentUrl", name);
                     pathItemMap.put(urlPath, pathItemOperatorClassVendExt);
                 } else {
                     pathItemClassVendExt.operation(entryMapOperation.getKey(), entryMapOperation.getValue());
