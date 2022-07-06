@@ -53,7 +53,7 @@ Class | Method | HTTP request | Description
  - [ListCredentialAwsResponse](docs/ListCredentialAwsResponse.md)
  - [ListCredentialAwsResponseMeta](docs/ListCredentialAwsResponseMeta.md)
  - [TestResponseObject](docs/TestResponseObject.md)
- - [TestResponseObjectTestArrayOfObjectsInner](docs/TestResponseObjectTestArrayOfObjectsInner.md)
+ - [TestResponseObjectTestArrayOfObjects](docs/TestResponseObjectTestArrayOfObjects.md)
  - [TestResponseObjectTestObject](docs/TestResponseObjectTestObject.md)
 
 
