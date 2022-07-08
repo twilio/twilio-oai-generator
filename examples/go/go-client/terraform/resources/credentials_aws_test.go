@@ -70,7 +70,8 @@ func TestUpdateCredentialAws(t *testing.T) {
 	testClient.EXPECT().UpdateCredentialAws(
 		credentialsSid,
 		&UpdateCredentialAwsParams{
-			TestString: &stringValue,
+			TestString:  &stringValue,
+			TestBoolean: &booleanValueDefaultValue,
 		},
 	).Return(credential, nil)
 
@@ -124,9 +125,11 @@ func TestSchemaCredentialAws(t *testing.T) {
 		required := paramName == "test_string"
 		computed := paramName != "test_string"
 		optional := paramName != "sid" && paramName != "test_string"
+		forceNew := paramName != "sid" && paramName != "test_string" && paramName != "test_boolean"
 
 		assert.Equal(t, required, paramSchema.Required, fmt.Sprintf("schema.Required iff test_string: %s", paramName))
 		assert.Equal(t, computed, paramSchema.Computed, fmt.Sprintf("schema.Computed iff not test_string: %s", paramName))
 		assert.Equal(t, optional, paramSchema.Optional, fmt.Sprintf("schema.Optional iff not sid or test_string: %s", paramName))
+		assert.Equal(t, forceNew, paramSchema.ForceNew, fmt.Sprintf("schema.ForceNew iff not sid or test_string or test_boolean: %s", paramName))
 	}
 }

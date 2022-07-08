@@ -57,6 +57,7 @@ import lombok.ToString;
 public class AwsUpdater extends Updater<Aws>{
     private String sid;
     private String testString;
+    private Boolean testBoolean;
 
     public AwsUpdater(final String sid){
         this.sid = sid;
@@ -64,6 +65,10 @@ public class AwsUpdater extends Updater<Aws>{
 
     public AwsUpdater setTestString(final String testString){
         this.testString = testString;
+        return this;
+    }
+    public AwsUpdater setTestBoolean(final Boolean testBoolean){
+        this.testBoolean = testBoolean;
         return this;
     }
 
@@ -94,6 +99,10 @@ public class AwsUpdater extends Updater<Aws>{
     private void addPostParams(final Request request) {
         if (testString != null) {
             request.addPostParam("TestString", testString);
+    
+        }
+        if (testBoolean != null) {
+            request.addPostParam("TestBoolean", testBoolean.toString());
     
         }
     }
