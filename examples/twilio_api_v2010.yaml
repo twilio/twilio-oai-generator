@@ -316,6 +316,8 @@ paths:
               properties:
                 TestString:
                   type: string
+                TestBoolean:
+                  type: boolean
               title: UpdateCredentialAwsRequest
               type: object
       responses:
