@@ -8,7 +8,6 @@ import com.twilio.oai.mlambdas.ReplaceHyphenLambda;
 import com.twilio.oai.resource.IResourceTree;
 import com.twilio.oai.resource.ResourceMap;
 import io.swagger.v3.oas.models.OpenAPI;
-import io.swagger.v3.oas.models.Operation;
 import io.swagger.v3.oas.models.PathItem;
 import io.swagger.v3.oas.models.Paths;
 import lombok.AllArgsConstructor;
@@ -105,8 +104,8 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
     private OpenAPI extendOpenAPI(OpenAPI openAPI) {
         Paths newPaths = new Paths();
         openAPI.getPaths().forEach((name, path) -> {
-            if (extracted(path)) {
-                for(Map.Entry<String, PathItem> newPathItem : extractOperatorToPathItem(name, path).entrySet()) {
+            if (hasOperatorWithClassName(path)) {
+                for(Map.Entry<String, PathItem> newPathItem : extractMultiPathItemFromOperatorWithClassName(name, path).entrySet()) {
                     newPaths.addPathItem(newPathItem.getKey(), newPathItem.getValue());
                 }
             }
@@ -118,7 +117,7 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
         return openAPI;
     }
 
-    private Map<String, PathItem> extractOperatorToPathItem(String name, PathItem path)  {
+    private Map<String, PathItem> extractMultiPathItemFromOperatorWithClassName(String name, PathItem path)  {
         ObjectMapper objectMapper = new ObjectMapper();
         Map<String, PathItem> pathItemMap = new HashMap<>();
         try {
@@ -126,16 +125,7 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
                     .readValue(objectMapper.writeValueAsString(path), PathItem.class);
             PathItem pathItemClassVendExt = objectMapper
                     .readValue(objectMapper.writeValueAsString(path), PathItem.class);
-            pathItemClassVendExt.put(null);
-            pathItemClassVendExt.get(null);
-            pathItemClassVendExt.post(null);
-            pathItemClassVendExt.delete(null);
-            pathItemClassVendExt.patch(null);
-            pathItemOperatorClassVendExt.put(null);
-            pathItemOperatorClassVendExt.get(null);
-            pathItemOperatorClassVendExt.post(null);
-            pathItemOperatorClassVendExt.delete(null);
-            pathItemOperatorClassVendExt.patch(null);
+            resetOperationMethodCalls(pathItemOperatorClassVendExt, pathItemClassVendExt);
             for (Map.Entry<PathItem.HttpMethod, io.swagger.v3.oas.models.Operation> entryMapOperation: path.readOperationsMap().entrySet()) {
                 if (isClassName(entryMapOperation.getValue())) {
                     String[] urls = name.split("/");
@@ -158,7 +148,20 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
         return pathItemMap;
     }
 
-    private boolean extracted(PathItem path) {
+    private void resetOperationMethodCalls(PathItem pathItemOperatorClassVendExt, PathItem pathItemClassVendExt) {
+        pathItemClassVendExt.put(null);
+        pathItemClassVendExt.get(null);
+        pathItemClassVendExt.post(null);
+        pathItemClassVendExt.delete(null);
+        pathItemClassVendExt.patch(null);
+        pathItemOperatorClassVendExt.put(null);
+        pathItemOperatorClassVendExt.get(null);
+        pathItemOperatorClassVendExt.post(null);
+        pathItemOperatorClassVendExt.delete(null);
+        pathItemOperatorClassVendExt.patch(null);
+    }
+
+    private boolean hasOperatorWithClassName(PathItem path) {
         for (io.swagger.v3.oas.models.Operation operation: path.readOperations()) {
             if (isClassName(operation)) {
                 return true;
