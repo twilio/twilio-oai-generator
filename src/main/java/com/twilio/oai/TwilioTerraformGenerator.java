@@ -92,7 +92,6 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
         return new HashMap<>();
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public OperationsMap postProcessOperationsWithModels(final OperationsMap objs, List<ModelMap> allModels) {
         final OperationsMap results = super.postProcessOperationsWithModels(objs, allModels);

@@ -96,7 +96,6 @@ public abstract class AbstractTwilioGoGenerator extends GoClientCodegen {
         return name;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public OperationsMap postProcessOperationsWithModels(final OperationsMap objs, List<ModelMap> allModels) {
         final OperationMap objectMap = objs.getOperations();

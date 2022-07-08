@@ -96,7 +96,6 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
             .collect(Collectors.joining(File.separator));
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public Map<String, ModelsMap> postProcessAllModels(final Map<String, ModelsMap> allModels) {
         final Map<String, ModelsMap> results = super.postProcessAllModels(allModels);
@@ -116,7 +115,6 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
         return new HashMap<>();
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public OperationsMap postProcessOperationsWithModels(final OperationsMap objs, List<ModelMap> allModels) {
         final OperationsMap results = super.postProcessOperationsWithModels(objs, allModels);

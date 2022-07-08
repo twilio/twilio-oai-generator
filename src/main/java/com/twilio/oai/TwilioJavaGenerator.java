@@ -195,7 +195,6 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
     }
 
 
-    @SuppressWarnings("unchecked")
     @Override
     public Map<String, ModelsMap> postProcessAllModels(final Map<String, ModelsMap> allModels) {
         final Map<String, ModelsMap> results = super.postProcessAllModels(allModels);

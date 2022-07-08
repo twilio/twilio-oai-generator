@@ -1,6 +1,5 @@
 package com.twilio.oai;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -61,11 +60,9 @@ public class TwilioGoGenerator extends AbstractTwilioGoGenerator {
             model.allVars.forEach(v -> v.setIsNumber(v.isNumber || v.isFloat));
             model.vendorExtensions.put("x-has-numbers-vars", model.allVars.stream().anyMatch(v -> v.isNumber));
         }
-
         return results;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public OperationsMap postProcessOperationsWithModels(final OperationsMap objs, List<ModelMap> allModels) {
         final OperationsMap results = super.postProcessOperationsWithModels(objs, allModels);
