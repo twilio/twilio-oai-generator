@@ -41,7 +41,9 @@ def generate(openapi_spec_path: str, output_path: str, language: str, domain: st
 
 def run_openapi_generator(parent_dir: str, to_generate: str, output_path: str, full_path: str) -> None:
     command = f'cd {parent_dir} && java -cp ./openapi-generator-cli.jar:target/twilio-openapi-generator.jar ' \
-                      f'org.openapitools.codegen.OpenAPIGenerator generate -g {to_generate} -i {full_path} ' \
+                      f'org.openapitools.codegen.OpenAPIGenerator generate -g {to_generate} ' \
+                      f'--inline-schema-name-defaults arrayItemSuffix="" ' \
+                      f'-i {full_path} ' \
                       f'-o {output_path} ' \
                       f'> /dev/null'  # Suppress stdout
     print(f'Generating {output_path} from {full_path}')
