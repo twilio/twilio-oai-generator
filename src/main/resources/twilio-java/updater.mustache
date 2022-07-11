@@ -54,6 +54,25 @@ public class {{resourceName}}Updater extends Updater<{{resourceName}}>{
         this.{{paramName}} = {{paramName}};
         return this;
     }
+{{#vendorExtensions.x-promotions}}
+{{#isArray}}
+{{#entrySet}}
+
+    public {{resourceName}}Updater set{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}(final {{#lambda.titlecase}}{{key}}{{/lambda.titlecase}} {{paramName}}){
+        return set{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}({{value}});
+    }
+{{/entrySet}}
+{{/isArray}}
+{{^isArray}}
+{{#entrySet}}
+
+    public {{resourceName}}Updater set{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}(final {{#lambda.titlecase}}{{key}}{{/lambda.titlecase}} {{paramName}}){
+    this.{{paramName}} = {{value}};
+    return this;
+    }
+{{/entrySet}}
+{{/isArray}}
+{{/vendorExtensions.x-promotions}}
 {{/vendorExtensions.x-non-path-params}}
 
     @Override

@@ -21,6 +21,10 @@ public class ConventionResolver {
 
     final static String X_IS_PHONE_NUMBER_FORMAT = "x-is-phone-number-format";
 
+    final static String CONFIG_JAVA_JSON_PATH = "config/java.json";
+
+    final static String LIST_PREFIX = "list-";
+
     public static Optional<CodegenModel> resolve(Optional<CodegenModel> model) {
         for (CodegenProperty property : model.get().vars) {
             Map<String, Map<String, Object>> vendorExtensions = new HashMap<>();
@@ -51,6 +55,17 @@ public class ConventionResolver {
 
         if(parameter.dataType.equalsIgnoreCase(OBJECT)) {
             parameter.dataType = (String)conventionMap.get(Segments.SEGMENT_PROPERTIES.getSegment()).get(OBJECT);
+        }
+        boolean hasPromotion = conventionMap.get(Segments.SEGMENT_PROMOTIONS.getSegment()).containsKey(parameter.dataFormat);
+        if (hasPromotion) {
+            // cloning to prevent update in source map
+            HashMap<String, String> promotionsMap = new HashMap<>((Map) conventionMap
+                    .get(Segments.SEGMENT_PROMOTIONS.getSegment()).get(parameter.dataFormat));
+            if(parameter.isArray && conventionMap.get(Segments.SEGMENT_PROMOTIONS.getSegment()).containsKey(LIST_PREFIX+parameter.dataFormat)) {
+                promotionsMap.put(parameter.baseType, (String) ((Map)conventionMap.get(Segments.SEGMENT_PROMOTIONS.getSegment()).get(LIST_PREFIX+parameter.dataFormat)).get(parameter.dataFormat));
+            }
+            promotionsMap.replaceAll((dataType, value) -> String.format(value, parameter.paramName) );
+            parameter.vendorExtensions.put("x-promotions", promotionsMap);
         }
 
         boolean hasProperty = conventionMap.get(Segments.SEGMENT_PROPERTIES.getSegment()).containsKey(parameter.dataFormat);
@@ -84,7 +99,7 @@ public class ConventionResolver {
 
     public static Map<String, Map<String, Object>> getConventionalMap() {
         try {
-            return new ObjectMapper().readValue(Thread.currentThread().getContextClassLoader().getResourceAsStream("config/java.json"), new TypeReference<Map<String, Map<String, Object>>>(){});
+            return new ObjectMapper().readValue(Thread.currentThread().getContextClassLoader().getResourceAsStream(CONFIG_JAVA_JSON_PATH), new TypeReference<Map<String, Map<String, Object>>>(){});
         } catch (Exception e) {
             e.printStackTrace();
         }

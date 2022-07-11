@@ -214,7 +214,7 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
             parameter.baseType = value[value.length-1];
         }
         // Make sure required non-path params get into the options block.
-        parameter.paramName = StringUtils.camelize(parameter.paramName, false);
+        parameter.paramName = StringUtils.camelize(parameter.paramName, true);
     }
 
     @Override

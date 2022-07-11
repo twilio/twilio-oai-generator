@@ -3,6 +3,7 @@
 package com.twilio.rest.{{domainPackage}}.{{package}}{{packageSubPart}};
 
 import com.twilio.base.Fetcher;
+import com.twilio.converter.Promoter;
 import com.twilio.exception.ApiConnectionException;
 import com.twilio.converter.PrefixedCollapsibleMap;
 import com.twilio.exception.ApiException;
@@ -54,6 +55,25 @@ public class {{resourceName}}Fetcher extends Fetcher<{{resourceName}}> {
     this.{{paramName}} = {{paramName}};
     return this;
     }
+{{#vendorExtensions.x-promotions}}
+{{#isArray}}
+{{#entrySet}}
+
+    public {{resourceName}}Fetcher set{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}(final {{#lambda.titlecase}}{{key}}{{/lambda.titlecase}} {{paramName}}){
+        return set{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}({{value}});
+    }
+{{/entrySet}}
+{{/isArray}}
+{{^isArray}}
+{{#entrySet}}
+
+    public {{resourceName}}Fetcher set{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}(final {{#lambda.titlecase}}{{key}}{{/lambda.titlecase}} {{paramName}}){
+    this.{{paramName}} = {{value}};
+    return this;
+    }
+{{/entrySet}}
+{{/isArray}}
+{{/vendorExtensions.x-promotions}}
 {{/vendorExtensions.x-non-path-params}}
 
     @Override
