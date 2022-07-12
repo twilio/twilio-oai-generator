@@ -70,14 +70,16 @@ public class TwilioGoGenerator extends AbstractTwilioGoGenerator {
             property._enum = (List<String>) property.items.allowableValues.get("values");
             property.allowableValues = property.items.allowableValues;
             property.dataType = "[]string";
-            property.isEnum =  property.isEnum && property.dataFormat == null;
+            property.isEnum = property.dataType == null;
+            property.isNullable = true;
         } else if (property.dataType.contains("Enum")) {
             String[] value = property.dataType.split("Enum");
             property.datatypeWithEnum = value[value.length-1];
             property.dataType = "string";
-            property.isEnum =  property.isEnum && property.dataFormat == null;
-
+            property.isEnum = property.dataType == null;;
+            property.isNullable = true;
         }
+
     }
 
 
@@ -86,12 +88,14 @@ public class TwilioGoGenerator extends AbstractTwilioGoGenerator {
             parameter._enum = (List<String>) parameter.items.allowableValues.get("values");
             parameter.allowableValues = parameter.items.allowableValues;
             parameter.dataType = "[]string";
-            parameter.isEnum =  parameter.isEnum && parameter.dataFormat == null;
+            parameter.isEnum = parameter.dataType == null;
+            parameter.isNullable = true;
         } else if (parameter.dataType.contains("Enum")) {
             String[] value = parameter.dataType.split("Enum");
             parameter.datatypeWithEnum = value[value.length-1];
             parameter.dataType = "string";
-            parameter.isEnum =  parameter.isEnum && parameter.dataFormat == null;
+            parameter.isEnum = parameter.dataType == null;
+            parameter.isNullable = true;
         }
     }
 
