@@ -71,7 +71,7 @@ import com.twilio.type.RecordingRule;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @ToString
 public class Aws extends Resource {
-    private static final long serialVersionUID = 102879623605645L;
+    private static final long serialVersionUID = 185329949738742L;
 
 
     public static AwsFetcher fetcher(final String sid){
@@ -201,6 +201,7 @@ public class Aws extends Resource {
     private final List<Integer> testArrayOfIntegers;
     private final List<List<Integer>> testArrayOfArrayOfIntegers;
     private final List<FeedbackIssue> testArrayOfObjects;
+    private final List<TestEnumPermission> testArrayOfEnum;
     private final Aws.XTwilioWebhookEnabled xTwilioWebhookEnabled;
     private final Aws.Status status;
 
@@ -246,6 +247,9 @@ public class Aws extends Resource {
         @JsonProperty("test_array_of_objects")
         final List<FeedbackIssue> testArrayOfObjects,
 
+        @JsonProperty("test_array_of_enum")
+        final List<TestEnumPermission> testArrayOfEnum,
+
         @JsonProperty("x_twilio_webhook_enabled")
         final Aws.XTwilioWebhookEnabled xTwilioWebhookEnabled,
 
@@ -265,6 +269,7 @@ public class Aws extends Resource {
         this.testArrayOfIntegers = testArrayOfIntegers;
         this.testArrayOfArrayOfIntegers = testArrayOfArrayOfIntegers;
         this.testArrayOfObjects = testArrayOfObjects;
+        this.testArrayOfEnum = testArrayOfEnum;
         this.xTwilioWebhookEnabled = xTwilioWebhookEnabled;
         this.status = status;
     }
@@ -308,6 +313,9 @@ public class Aws extends Resource {
         public final List<FeedbackIssue> getTestArrayOfObjects() {
             return this.testArrayOfObjects;
         }
+        public final List<TestEnumPermission> getTestArrayOfEnum() {
+            return this.testArrayOfEnum;
+        }
         public final Aws.XTwilioWebhookEnabled getXTwilioWebhookEnabled() {
             return this.xTwilioWebhookEnabled;
         }
@@ -327,12 +335,12 @@ public class Aws extends Resource {
 
         Aws other = (Aws) o;
 
-        return Objects.equals(accountSid, other.accountSid) &&  Objects.equals(sid, other.sid) &&  Objects.equals(testString, other.testString) &&  Objects.equals(testInteger, other.testInteger) &&  Objects.equals(testObject, other.testObject) &&  Objects.equals(testDateTime, other.testDateTime) &&  Objects.equals(testNumber, other.testNumber) &&  Objects.equals(priceUnit, other.priceUnit) &&  Objects.equals(testNumberFloat, other.testNumberFloat) &&  Objects.equals(testEnum, other.testEnum) &&  Objects.equals(testArrayOfIntegers, other.testArrayOfIntegers) &&  Objects.equals(testArrayOfArrayOfIntegers, other.testArrayOfArrayOfIntegers) &&  Objects.equals(testArrayOfObjects, other.testArrayOfObjects) &&  Objects.equals(xTwilioWebhookEnabled, other.xTwilioWebhookEnabled) &&  Objects.equals(status, other.status)  ;
+        return Objects.equals(accountSid, other.accountSid) &&  Objects.equals(sid, other.sid) &&  Objects.equals(testString, other.testString) &&  Objects.equals(testInteger, other.testInteger) &&  Objects.equals(testObject, other.testObject) &&  Objects.equals(testDateTime, other.testDateTime) &&  Objects.equals(testNumber, other.testNumber) &&  Objects.equals(priceUnit, other.priceUnit) &&  Objects.equals(testNumberFloat, other.testNumberFloat) &&  Objects.equals(testEnum, other.testEnum) &&  Objects.equals(testArrayOfIntegers, other.testArrayOfIntegers) &&  Objects.equals(testArrayOfArrayOfIntegers, other.testArrayOfArrayOfIntegers) &&  Objects.equals(testArrayOfObjects, other.testArrayOfObjects) &&  Objects.equals(testArrayOfEnum, other.testArrayOfEnum) &&  Objects.equals(xTwilioWebhookEnabled, other.xTwilioWebhookEnabled) &&  Objects.equals(status, other.status)  ;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(accountSid, sid, testString, testInteger, testObject, testDateTime, testNumber, priceUnit, testNumberFloat, testEnum, testArrayOfIntegers, testArrayOfArrayOfIntegers, testArrayOfObjects, xTwilioWebhookEnabled, status);
+        return Objects.hash(accountSid, sid, testString, testInteger, testObject, testDateTime, testNumber, priceUnit, testNumberFloat, testEnum, testArrayOfIntegers, testArrayOfArrayOfIntegers, testArrayOfObjects, testArrayOfEnum, xTwilioWebhookEnabled, status);
     }
 
 }

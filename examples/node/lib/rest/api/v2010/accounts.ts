@@ -213,6 +213,7 @@ interface AccountResource {
     test_array_of_integers?: Array<number>;
     test_array_of_array_of_integers?: Array<Array<number>>;
     test_array_of_objects?: Array<object> | null;
+    test_array_of_enum?: Array<object> | null;
 }
 
 export class AccountInstance {
@@ -233,6 +234,7 @@ export class AccountInstance {
         this.testArrayOfIntegers = payload.test_array_of_integers;
         this.testArrayOfArrayOfIntegers = payload.test_array_of_array_of_integers;
         this.testArrayOfObjects = payload.test_array_of_objects;
+        this.testArrayOfEnum = payload.test_array_of_enum;
 
         this._solution = { sid: sid || this.sid };
     }
@@ -255,6 +257,10 @@ export class AccountInstance {
     testArrayOfIntegers?: Array<number>;
     testArrayOfArrayOfIntegers?: Array<Array<number>>;
     testArrayOfObjects?: Array<object> | null;
+    /**
+     * Permissions authorized to the app
+     */
+    testArrayOfEnum?: Array<object> | null;
 
     /**
      * Remove a AccountInstance
@@ -320,7 +326,8 @@ export class AccountInstance {
             testEnum: this.testEnum, 
             testArrayOfIntegers: this.testArrayOfIntegers, 
             testArrayOfArrayOfIntegers: this.testArrayOfArrayOfIntegers, 
-            testArrayOfObjects: this.testArrayOfObjects
+            testArrayOfObjects: this.testArrayOfObjects, 
+            testArrayOfEnum: this.testArrayOfEnum
         }
     }
 

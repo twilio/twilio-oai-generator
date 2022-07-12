@@ -1,5 +1,6 @@
 package com.twilio.oai;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,6 +15,7 @@ import org.openapitools.codegen.CodegenOperation;
 import org.openapitools.codegen.CodegenParameter;
 import org.openapitools.codegen.CodegenProperty;
 import org.openapitools.codegen.SupportingFile;
+import org.openapitools.codegen.utils.StringUtils;
 import org.openapitools.codegen.model.ModelMap;
 import org.openapitools.codegen.model.ModelsMap;
 import org.openapitools.codegen.model.OperationMap;
@@ -63,6 +65,39 @@ public class TwilioGoGenerator extends AbstractTwilioGoGenerator {
         return results;
     }
 
+    @Override
+    public void postProcessModelProperty(CodegenModel model, CodegenProperty property) {
+        super.postProcessModelProperty(model, property);
+        if (property.dataType.startsWith("[]") && property.dataType.contains("Enum")) {
+            property._enum = (List<String>) property.items.allowableValues.get("values");
+            property.allowableValues = property.items.allowableValues;
+            property.dataType = "[]string";
+        } else if (property.dataType.contains("Enum")) {
+            String[] value = property.dataType.split("Enum");
+            property.datatypeWithEnum = value[value.length-1];
+            property.dataType = "string";
+
+        }
+        property.isEnum =  property.isEnum && property.dataFormat == null;
+    }
+
+
+    private void processEnumParameters(final CodegenParameter parameter) {
+        if (parameter.dataType.startsWith("[]") && parameter.dataType.contains("Enum")) {
+            parameter._enum = (List<String>) parameter.items.allowableValues.get("values");
+            parameter.allowableValues = parameter.items.allowableValues;
+            parameter.dataType = "[]string";
+        } else if (parameter.dataType.contains("Enum")) {
+            String[] value = parameter.dataType.split("Enum");
+            parameter.datatypeWithEnum = value[value.length-1];
+            parameter.dataType = "string";
+
+        }
+        parameter.isEnum =  parameter.isEnum && parameter.dataFormat == null;
+    }
+
+
+    @SuppressWarnings("unchecked")
     @Override
     public OperationsMap postProcessOperationsWithModels(final OperationsMap objs, List<ModelMap> allModels) {
         final OperationsMap results = super.postProcessOperationsWithModels(objs, allModels);
@@ -125,7 +160,7 @@ public class TwilioGoGenerator extends AbstractTwilioGoGenerator {
     @Override
     public void postProcessParameter(final CodegenParameter parameter) {
         super.postProcessParameter(parameter);
-
+        processEnumParameters(parameter);
         // Make sure required non-path params get into the options block.
         parameter.required = parameter.isPathParam;
         parameter.vendorExtensions.put("x-custom", parameter.baseName.equals("limit"));

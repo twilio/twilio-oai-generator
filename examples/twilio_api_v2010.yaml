@@ -1,5 +1,10 @@
 components:
   schemas:
+    test_enum_permission:
+      enum:
+        - get-all
+        - post-all
+      type: string
     test.response_object:
       properties:
         account_sid:
@@ -69,6 +74,13 @@ components:
               description:
                 type: string
             type: object
+          nullable: true
+          type: array
+        test_array_of_enum:
+          description: Permissions authorized to the app
+          items:
+            $ref: '#/components/schemas/test_enum_permission'
+            type: string
           nullable: true
           type: array
       type: object

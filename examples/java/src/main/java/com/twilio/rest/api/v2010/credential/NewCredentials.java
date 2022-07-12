@@ -71,7 +71,7 @@ import com.twilio.type.RecordingRule;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @ToString
 public class NewCredentials extends Resource {
-    private static final long serialVersionUID = 102879623605645L;
+    private static final long serialVersionUID = 185329949738742L;
 
     public static NewCredentialsCreator creator(final String testString, final Integer testInteger, final Float testNumberFloat){
         return new NewCredentialsCreator(testString, testInteger, testNumberFloat);
@@ -220,6 +220,7 @@ public class NewCredentials extends Resource {
     private final List<Integer> testArrayOfIntegers;
     private final List<List<Integer>> testArrayOfArrayOfIntegers;
     private final List<FeedbackIssue> testArrayOfObjects;
+    private final List<TestEnumPermission> testArrayOfEnum;
     private final NewCredentials.XTwilioWebhookEnabled xTwilioWebhookEnabled;
     private final NewCredentials.Status status;
     private final NewCredentials.Permissions permissions;
@@ -266,6 +267,9 @@ public class NewCredentials extends Resource {
         @JsonProperty("test_array_of_objects")
         final List<FeedbackIssue> testArrayOfObjects,
 
+        @JsonProperty("test_array_of_enum")
+        final List<TestEnumPermission> testArrayOfEnum,
+
         @JsonProperty("x_twilio_webhook_enabled")
         final NewCredentials.XTwilioWebhookEnabled xTwilioWebhookEnabled,
 
@@ -288,6 +292,7 @@ public class NewCredentials extends Resource {
         this.testArrayOfIntegers = testArrayOfIntegers;
         this.testArrayOfArrayOfIntegers = testArrayOfArrayOfIntegers;
         this.testArrayOfObjects = testArrayOfObjects;
+        this.testArrayOfEnum = testArrayOfEnum;
         this.xTwilioWebhookEnabled = xTwilioWebhookEnabled;
         this.status = status;
         this.permissions = permissions;
@@ -332,6 +337,9 @@ public class NewCredentials extends Resource {
         public final List<FeedbackIssue> getTestArrayOfObjects() {
             return this.testArrayOfObjects;
         }
+        public final List<TestEnumPermission> getTestArrayOfEnum() {
+            return this.testArrayOfEnum;
+        }
         public final NewCredentials.XTwilioWebhookEnabled getXTwilioWebhookEnabled() {
             return this.xTwilioWebhookEnabled;
         }
@@ -354,12 +362,12 @@ public class NewCredentials extends Resource {
 
         NewCredentials other = (NewCredentials) o;
 
-        return Objects.equals(accountSid, other.accountSid) &&  Objects.equals(sid, other.sid) &&  Objects.equals(testString, other.testString) &&  Objects.equals(testInteger, other.testInteger) &&  Objects.equals(testObject, other.testObject) &&  Objects.equals(testDateTime, other.testDateTime) &&  Objects.equals(testNumber, other.testNumber) &&  Objects.equals(priceUnit, other.priceUnit) &&  Objects.equals(testNumberFloat, other.testNumberFloat) &&  Objects.equals(testEnum, other.testEnum) &&  Objects.equals(testArrayOfIntegers, other.testArrayOfIntegers) &&  Objects.equals(testArrayOfArrayOfIntegers, other.testArrayOfArrayOfIntegers) &&  Objects.equals(testArrayOfObjects, other.testArrayOfObjects) &&  Objects.equals(xTwilioWebhookEnabled, other.xTwilioWebhookEnabled) &&  Objects.equals(status, other.status) &&  Objects.equals(permissions, other.permissions)  ;
+        return Objects.equals(accountSid, other.accountSid) &&  Objects.equals(sid, other.sid) &&  Objects.equals(testString, other.testString) &&  Objects.equals(testInteger, other.testInteger) &&  Objects.equals(testObject, other.testObject) &&  Objects.equals(testDateTime, other.testDateTime) &&  Objects.equals(testNumber, other.testNumber) &&  Objects.equals(priceUnit, other.priceUnit) &&  Objects.equals(testNumberFloat, other.testNumberFloat) &&  Objects.equals(testEnum, other.testEnum) &&  Objects.equals(testArrayOfIntegers, other.testArrayOfIntegers) &&  Objects.equals(testArrayOfArrayOfIntegers, other.testArrayOfArrayOfIntegers) &&  Objects.equals(testArrayOfObjects, other.testArrayOfObjects) &&  Objects.equals(testArrayOfEnum, other.testArrayOfEnum) &&  Objects.equals(xTwilioWebhookEnabled, other.xTwilioWebhookEnabled) &&  Objects.equals(status, other.status) &&  Objects.equals(permissions, other.permissions)  ;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(accountSid, sid, testString, testInteger, testObject, testDateTime, testNumber, priceUnit, testNumberFloat, testEnum, testArrayOfIntegers, testArrayOfArrayOfIntegers, testArrayOfObjects, xTwilioWebhookEnabled, status, permissions);
+        return Objects.hash(accountSid, sid, testString, testInteger, testObject, testDateTime, testNumber, priceUnit, testNumberFloat, testEnum, testArrayOfIntegers, testArrayOfArrayOfIntegers, testArrayOfObjects, testArrayOfEnum, xTwilioWebhookEnabled, status, permissions);
     }
 
 }
