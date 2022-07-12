@@ -125,6 +125,10 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
         final String classname = (String) ops.get("classname");
         final List<CodegenOperation> opList = ops.getOperation();
 
+        final boolean hasInstanceOperations = opList
+            .stream()
+            .anyMatch(co -> PathUtils.removeExtension(co.path).endsWith("}"));
+
         results.put("apiVersionPath", getRelativeRoot(classname));
 
         // iterate over the operation and perhaps modify something
@@ -137,29 +141,30 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
 
             final String itemName = inflector.singular(getResourceName(co.path));
             final String instanceName = itemName + "Instance";
-            final boolean isInstanceResource = PathUtils.removeExtension(co.path).endsWith("}");
+            final boolean isInstanceOperation = PathUtils.removeExtension(co.path).endsWith("}");
+            final HttpMethod httpMethod = HttpMethod.fromString(co.httpMethod);
             String resourceName;
             String parentResourceName = null;
 
             co.returnType = instanceName;
 
-            if (isInstanceResource) {
+            if (isInstanceOperation) {
                 resourceName = itemName + "Context";
                 parentResourceName = itemName + "ListInstance";
-                if ("GET".equalsIgnoreCase(co.httpMethod)) {
+                if (httpMethod == HttpMethod.GET) {
                     addOperationName(co, "Fetch");
-                } else if ("POST".equalsIgnoreCase(co.httpMethod)) {
+                } else if (httpMethod == HttpMethod.POST) {
                     addOperationName(co, "Update");
-                } else if ("DELETE".equalsIgnoreCase(co.httpMethod)) {
+                } else if (httpMethod == HttpMethod.DELETE) {
                     addOperationName(co, "Remove");
                     co.returnType = "boolean";
                     co.vendorExtensions.put("x-is-delete-operation", true);
                 }
             } else {
                 resourceName = itemName + "ListInstance";
-                if ("POST".equalsIgnoreCase(co.httpMethod)) {
+                if (httpMethod == HttpMethod.POST) {
                     addOperationName(co, "Create");
-                } else if ("GET".equalsIgnoreCase(co.httpMethod)) {
+                } else if (httpMethod == HttpMethod.GET) {
                     addOperationName(co, "Page");
                 }
             }
@@ -191,7 +196,7 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
                 addDependent(dependents, dependentPath);
             }
 
-            if (isInstanceResource) {
+            if (isInstanceOperation || (!hasInstanceOperations && httpMethod == HttpMethod.POST)) {
                 co.responses
                     .stream()
                     .map(response -> response.dataType)
