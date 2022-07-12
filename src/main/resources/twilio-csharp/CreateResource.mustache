@@ -1,0 +1,51 @@
+
+        private static Request BuildCreateRequest(Create{{resourceName}}Options, ITwilioRestClient client)
+        {
+            string path = "{{{path}}}";
+            {{#allParams}}
+            {{#vendorExtensions.x-is-account-sid}}
+            string Path{{paramName}} = options.Path{{paramName}} ?? client.{{paramName}}
+            path = path.replace("{"+"{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}"+"}", Path{{paramName}});
+            {{/vendorExtensions.x-is-account-sid}}
+            {{/allParams}}
+
+            return new Request(
+                HttpMethod.Post,
+                Rest.Domain.Api,
+                path,
+                postParams: options.GetParams(),
+                headerParams: null
+            );
+        }
+
+        public static {{resourceName}}{{resourceConstant}} Create(Create{{resourceName}}Options, ITwilioRestClient client = null)
+        {
+            client = client ?? TwilioClient.GetRestClient();
+            var response = client.Request(BuildCreateRequest(options, client));
+            return FromJson(response.Content);
+        }
+
+        #if !NET35
+        public static async System.Threading.Tasks.Task<{{resourceName}}{{resourceConstant}}> CreateAsync(Create{{resourceName}}Options options,
+        ITwilioRestClient client = null)
+        {
+            client = client ?? TwilioClient.GetRestClient();
+            var response = await client.RequestAsync(BuildCreateRequest(options, client));
+            return FromJson(response.Content);
+        }
+        #endif
+
+        public static {{resourceName}}{{resourceConstant}} Create(string friendlyName = null, ITwilioRestClient client = null)
+        {
+            var options = new Create{{resourceName}}Options(){FriendlyName = friendlyName};
+            return Create(options, client);
+        }
+
+        #if !NET35
+        public static async System.Threading.Tasks.Task<{{resourceName}}{{resourceConstant}}> CreateAsync(string friendlyName = null,
+                                                                                                          ITwilioRestClient client = null)
+        {
+            var options = new Create{{resourceName}}Options(){FriendlyName = friendlyName};
+            return await CreateAsync(options, client);
+        }
+        #endif

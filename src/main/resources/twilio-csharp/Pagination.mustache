@@ -1,0 +1,35 @@
+
+        public static Page<{{resourceName}}{{resourceConstant}}> GetPage(string targetUrl, ITwilioRestClient client)
+        {
+            client = client ?? TwilioClient.GetRestClient();
+
+            var request = new Request(
+                HttpMethod.Get,
+                targetUrl
+            );
+
+            var response = client.Request(request);
+            return Page<{{resourceName}}{{resourceConstant}}>.FromJson("{{recordKey}}", response.Content);
+        }
+
+        public static Page<{{resourceName}}{{resourceConstant}}> NextPage(Page<{{resourceName}}{{resourceConstant}}> page, ITwilioRestClient client)
+        {
+            var request = new Request(
+                HttpMethod.Get,
+                page.GetNextPageUrl(Rest.Domain.Api)
+            );
+
+            var response = client.Request(request);
+            return Page<{{resourceName}}{{resourceConstant}}>.FromJson("{{recordKey}}", response.Content);
+        }
+
+        public static Page<{{resourceName}}{{resourceConstant}}> PreviousPage(Page<{{resourceName}}{{resourceConstant}}> page, ITwilioRestClient client)
+        {
+            var request = new Request(
+                HttpMethod.Get,
+                page.GetPreviousPageUrl(Rest.Domain.Api)
+            );
+
+            var response = client.Request(request);
+            return Page<{{resourceName}}{{resourceConstant}}>.FromJson("{{recordKey}}", response.Content);
+        }

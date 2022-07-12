@@ -1,0 +1,54 @@
+{{>LicenseInfo}}
+{{#resources}}
+
+
+namespace Twilio.Rest.{{domainPackage}}.{{package}}{{packageSubPart}}
+{
+    {{#hasCreate}}
+
+    public class Create{{resourceName}}Options : IOptions<{{resourceName}}{{resourceConstant}}>
+    {
+        // How to decide which has getter and which has setter ?
+        {{#operations}}
+        {{#allParams}}
+        public {{{dataType}}} {{paramName}} { get; set; };
+        {{/allParams}}
+        {{/operations}}
+
+        public Create{{resourceName}}Options(IEndpoint to, IEndpoint from)
+        {
+        To = to;
+        From = from;
+        StatusCallbackEvent = new List<string>();
+        RecordingStatusCallbackEvent = new List<string>();
+        }
+        }
+
+{{/hasCreate}}
+{{#hasDelete}}
+
+    public class Delete{{resourceName}}Options : IOptions<{{resourceName}}{{resourceConstant}}>
+    {
+    }
+{{/hasDelete}}
+{{#hasFetch}}
+
+    public class Fetch{{resourceName}}Options : IOptions<{{resourceName}}{{resourceConstant}}>
+    {
+    }
+{{/hasFetch}}
+{{#hasRead}}
+
+    public class Read{{resourceName}}Options : IOptions<{{resourceName}}{{resourceConstant}}>
+    {
+    }
+{{/hasRead}}
+{{#hasUpdate}}
+
+    public class Update{{resourceName}}Options : IOptions<{{resourceName}}{{resourceConstant}}>
+    {
+    }
+{{/hasUpdate}}
+}
+
+{{/resources}}

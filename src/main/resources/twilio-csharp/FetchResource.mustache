@@ -1,0 +1,58 @@
+
+
+        private static Request BuildFetchRequest(Fetch{{resourceName}}Options options, ITwilioRestClient client)
+        {
+            string path = "{{{path}}}";
+            {{#pathParams}}
+            {{#vendorExtensions.x-is-account-sid}}
+            string Path{{paramName}} = options.Path{{paramName}} ?? client.{{paramName}}
+            path = path.replace("{"+"{{paramName}}"+"}", Path{{paramName}}.toString());
+            {{/vendorExtensions.x-is-account-sid}}
+            {{^vendorExtensions.x-is-account-sid}}
+
+            string Path{{paramName}} = options.Path{{paramName}};
+            path = path.replace("{"+"{{paramName}}"+"}", Path{{paramName}}.toString());
+            {{/vendorExtensions.x-is-account-sid}}
+            {{/pathParams}}
+
+            return new Request(
+                HttpMethod.Get,
+                Rest.Domain.Api,
+                path,
+                queryParams: options.GetParams(),
+                headerParams: null
+            );
+        }
+
+        public static {{resourceName}}Resource Fetch(Fetch{{resourceName}}Options options, ITwilioRestClient client = null)
+        {
+            client = client ?? TwilioClient.GetRestClient();
+            var response = client.Request(BuildFetchRequest(options, client));
+            return FromJson(response.Content);
+        }
+
+        #if !NET35
+        public static async System.Threading.Tasks.Task<{{resourceName}}Resource> FetchAsync(Fetch{{resourceName}}Options options,
+                                                                                             ITwilioRestClient client = null)
+        {
+            client = client ?? TwilioClient.GetRestClient();
+            var response = await client.RequestAsync(BuildFetchRequest(options, client));
+            return FromJson(response.Content);
+        }
+        #endif
+
+        public static {{resourceName}}Resource Fetch(string pathSid, string pathAccountSid = null, ITwilioRestClient client = null)
+        {
+            var options = new Fetch{{resourceName}}Options(pathSid){PathAccountSid = pathAccountSid};
+            return Fetch(options, client);
+        }
+
+        #if !NET35
+        public static async System.Threading.Tasks.Task<{{resourceName}}{{resourceConstant}}> FetchAsync(string pathSid,
+                string pathAccountSid = null,
+                ITwilioRestClient client = null)
+                {
+                var options = new Fetch{{resourceName}}Options(pathSid){PathAccountSid = pathAccountSid};
+                return await FetchAsync(options, client);
+        }
+        #endif
