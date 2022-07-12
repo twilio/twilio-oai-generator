@@ -26,7 +26,7 @@ public class ResourceMap implements IResourceTree {
         String className = resource.getClassName(operation);
         resource = resource.getParentResource(this);
         while (resource != null) {
-            ancestorList.add(0, resource.getClassName().toLowerCase(Locale.ROOT));
+            ancestorList.add(0, resource.getClassName()); //TODO: Need to integrate it with java and csharp .toLowerCase(Locale.ROOT));
             resource = resource.getParentResource(this);
         }
         ancestorList.add(className);

@@ -1,0 +1,29 @@
+{{>LicenseInfo}}
+{{#resources}}
+
+namespace Twilio.Rest.{{domainPackage}}.{{package}}{{packageSubPart}}
+{
+    public class {{resourceName}}{{resourceConstant}} : {{resourceConstant}}
+    {
+    {{#operations}}
+    {{#vendorExtensions.x-is-create-operation}}
+        {{>CreateResource}}
+    {{/vendorExtensions.x-is-create-operation}}
+
+    {{#vendorExtensions.x-is-delete-operation}}
+        {{>DeleteResource}}
+    {{/vendorExtensions.x-is-delete-operation}}
+
+    {{#vendorExtensions.x-is-fetch-operation}}
+        {{>FetchResource}}
+    {{/vendorExtensions.x-is-fetch-operation}}
+
+    {{#vendorExtensions.x-is-read-operation}}
+        {{>ReadResource}}
+    {{/vendorExtensions.x-is-read-operation}}
+    {{/operations}}
+    {{>Pagination}}
+    } // end of resource class
+} // end of namespace
+
+{{/resources}}
