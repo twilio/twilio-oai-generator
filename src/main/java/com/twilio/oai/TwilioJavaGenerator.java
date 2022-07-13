@@ -500,7 +500,12 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
                     String baseName = Arrays.stream(item.baseName.split("_")).map(StringUtils::camelize)
                             .collect(Collectors.joining());
                     item.enumName = baseName;
-                    item.dataType = resourceName + "." + baseName;
+                    if (item.containerType != null && item.containerType.equals("array")) {
+                        item.dataType = "List<"+ resourceName + "." + baseName + ">";
+                    } else {
+                        item.dataType = resourceName + "." + baseName;
+                    }
+
                 }
                 item.vendorExtensions.put("x-is-other-data-type", true);
             }
@@ -876,7 +881,12 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
         if( parameter.isEnum && !parameter.vendorExtensions.containsKey("refEnum")) {
             parameter.enumName = Arrays.stream(parameter.enumName.split("_")).map(StringUtils::camelize)
                     .collect(Collectors.joining());
-            parameter.dataType = resourceName+"."+ parameter.enumName;
+            if (parameter.items != null && parameter.items.allowableValues != null && parameter.items.allowableValues.containsKey("values")) {
+                parameter.dataType = "List<" + resourceName+"."+ parameter.enumName + ">";
+            } else {
+                parameter.dataType = resourceName+"."+ parameter.enumName;
+            }
+
             return parameter;
         }
         if (parameter.items != null && parameter.items.allowableValues != null && parameter.items.allowableValues.containsKey("values") ) {
