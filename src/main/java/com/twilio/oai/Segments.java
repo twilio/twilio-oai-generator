@@ -5,7 +5,9 @@ enum Segments {
     SEGMENT_SERIALIZE("serialize"),
     SEGMENT_DESERIALIZE("deserialize"),
     SEGMENT_PROPERTIES("properties"),
-    SEGMENT_LIBRARY("library");
+    SEGMENT_LIBRARY("library"),
+    //promotions is uses to provide support for different datatypes of same parameter
+    SEGMENT_PROMOTIONS("promotions");
 
     private final String segment;
 

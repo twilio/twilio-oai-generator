@@ -1,16 +1,16 @@
 {{#responseModel}}
-{{#vars}}
+{{#vendorExtensions.enumVars}}
 {{#isEnum}}
-    public enum {{#lambda.titlecase}}{{{baseName}}}{{/lambda.titlecase}} {
+    public enum {{#lambda.titlecase}}{{{enumName}}}{{/lambda.titlecase}} {
         {{#allowableValues}}
-        {{#enumVars}}
-        {{#lambda.uppercase}}{{{name}}}({{/lambda.uppercase}}{{{value}}}){{^-last}},{{/-last}}{{#-last}};{{/-last}}
-        {{/enumVars}}
+        {{#values}}
+        {{#lambda.uppercase}}{{#lambda.replacehyphen}}{{{.}}}{{/lambda.replacehyphen}}({{/lambda.uppercase}}"{{{.}}}"){{^-last}},{{/-last}}{{#-last}};{{/-last}}
+        {{/values}}
         {{/allowableValues}}
 
         private final String value;
 
-        private {{#lambda.titlecase}}{{{baseName}}}{{/lambda.titlecase}}(final String value) {
+        private {{#lambda.titlecase}}{{{enumName}}}{{/lambda.titlecase}}(final String value) {
             this.value = value;
         }
 
@@ -19,12 +19,12 @@
         }
 
         @JsonCreator
-        public static {{#lambda.titlecase}}{{{baseName}}}{{/lambda.titlecase}} forValue(final String value) {
-            return Promoter.enumFromString(value, {{#lambda.titlecase}}{{{baseName}}}{{/lambda.titlecase}}.values());
+        public static {{#lambda.titlecase}}{{{enumName}}}{{/lambda.titlecase}} forValue(final String value) {
+            return Promoter.enumFromString(value, {{#lambda.titlecase}}{{{enumName}}}{{/lambda.titlecase}}.values());
         }
     }
 {{/isEnum}}
-{{/vars}}
+{{/vendorExtensions.enumVars}}
 
 {{#vars}}
     private final {{{dataType}}} {{name}};
