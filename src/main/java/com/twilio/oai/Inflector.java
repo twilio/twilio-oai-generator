@@ -115,6 +115,7 @@ public class Inflector {
              wildCardMapping.put("BuildStatus", "BuildStatus");
              wildCardMapping.put("Activities", "Activity");
              wildCardMapping.put("Entities", "Entity");
+             wildCardMapping.put("ESimProfiles", "EsimProfile");
          }
      }
 }

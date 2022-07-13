@@ -207,7 +207,6 @@ public class TwilioRestTest {
         when(twilioRestClient.getObjectMapper()).thenReturn(objectMapper);
         AccountCreator accountCreator = new AccountCreator();
         accountCreator.setRecordingStatusCallbackEvent(null);
-        accountCreator.setRecordingStatusCallback(null);
         accountCreator.setXTwilioWebhookEnabled(null);
 
         accountCreator.create(twilioRestClient);
@@ -744,7 +743,7 @@ public class TwilioRestTest {
     public void testShouldMakeInValidAPICallReturnsWrongStatusForAccountUpdater() {
         Request mockRequest = new Request(
                 HttpMethod.POST,
-                com.twilio.rest.Domains.API.toString(),
+                Domains.API.toString(),
                 "/2010-04-01/Accounts/AC222222222222222222222222222222.json"
         );
         mockRequest.addPostParam("PauseBehavior", "test");
@@ -951,31 +950,6 @@ public class TwilioRestTest {
         assertNotNull(accountUpdater);
     }
 
-
-    @Test
-    public void testCallVariables() {
-        Call.TestEnum testEnum = Call.TestEnum.forValue("DialVerb");
-        Call.XTwilioWebhookEnabled xTwilioWebhookEnabled = Call.XTwilioWebhookEnabled.forValue("true");
-        Call.Status status = Call.Status.forValue("paused");
-
-        assertEquals("DialVerb", testEnum.toString());
-        assertEquals("true", xTwilioWebhookEnabled.toString());
-        assertEquals("paused", status.toString());
-    }
-
-    @Test
-    public void testAwsVariables() {
-        Aws.TestEnum testEnum = Aws.TestEnum.forValue("DialVerb");
-        Aws.XTwilioWebhookEnabled xTwilioWebhookEnabled = Aws.XTwilioWebhookEnabled.forValue("true");
-        Aws.Status status = Aws.Status.forValue("paused");
-        NewCredentials.Permissions permissions = NewCredentials.Permissions.forValue("get-all");
-
-        assertEquals("DialVerb", testEnum.toString());
-        assertEquals("true", xTwilioWebhookEnabled.toString());
-        assertEquals("paused", status.toString());
-        assertEquals("get-all", permissions.toString());
-    }
-
     @Test
     public void testAccountVariables() {
         Account.TestEnum testEnum = Account.TestEnum.forValue("DialVerb");
@@ -1086,8 +1060,6 @@ public class TwilioRestTest {
         assertNull(call.getTestArrayOfIntegers());
         assertNull(call.getTestArrayOfArrayOfIntegers());
         assertNull(call.getTestArrayOfObjects());
-        assertNull(call.getXTwilioWebhookEnabled());
-        assertNull(call.getStatus());
         assertNull(call.getTestString());
 
         assertTrue(call.equals(callDuplicate));
@@ -1119,8 +1091,6 @@ public class TwilioRestTest {
         assertNull(aws.getTestArrayOfIntegers());
         assertNull(aws.getTestArrayOfArrayOfIntegers());
         assertNull(aws.getTestArrayOfObjects());
-        assertNull(aws.getXTwilioWebhookEnabled());
-        assertNull(aws.getStatus());
         assertNull(aws.getTestString());
 
         assertTrue(aws.equals(awsDuplicate));
@@ -1151,9 +1121,6 @@ public class TwilioRestTest {
         assertNull(credentials.getTestArrayOfIntegers());
         assertNull(credentials.getTestArrayOfArrayOfIntegers());
         assertNull(credentials.getTestArrayOfObjects());
-        assertNull(credentials.getXTwilioWebhookEnabled());
-        assertNull(credentials.getStatus());
-        assertNull(credentials.getPermissions());
 
         assertTrue(credentials.equals(credentialsDuplicate));
         assertTrue(credentialsDuplicate.equals(credentials));
@@ -1183,8 +1150,6 @@ public class TwilioRestTest {
         assertNull(account.getTestArrayOfIntegers());
         assertNull(account.getTestArrayOfArrayOfIntegers());
         assertNull(account.getTestArrayOfObjects());
-        assertNull(account.getXTwilioWebhookEnabled());
-        assertNull(account.getStatus());
         assertNull(account.getTestString());
 
         assertTrue(account.equals(accountDuplicate));
@@ -1323,16 +1288,6 @@ public class TwilioRestTest {
         creator.create(twilioRestClient);
     }
 
-    @Test
-    public void testFeedbackCallSummaryVariables() {
-        FeedbackCallSummary.TestEnum testEnum = FeedbackCallSummary.TestEnum.forValue("DialVerb");
-        FeedbackCallSummary.XTwilioWebhookEnabled xTwilioWebhookEnabled = FeedbackCallSummary.XTwilioWebhookEnabled.forValue("true");
-        FeedbackCallSummary.Status status = FeedbackCallSummary.Status.forValue("paused");
-
-        assertEquals("DialVerb", testEnum.toString());
-        assertEquals("true", xTwilioWebhookEnabled.toString());
-        assertEquals("paused", status.toString());
-    }
 
     @Test
     public void testFeedbackCallSummaryObjectCreationFromString() {
@@ -1354,11 +1309,9 @@ public class TwilioRestTest {
         assertNull(feedbackCallSummary.getPriceUnit());
         assertEquals(Float.valueOf("123.2"), feedbackCallSummary.getTestNumberFloat());
         assertEquals("Trunking", feedbackCallSummary.getTestEnum().toString());
-        assertEquals("paused", feedbackCallSummary.getStatus().toString());
         assertNull(feedbackCallSummary.getTestArrayOfIntegers());
         assertNull(feedbackCallSummary.getTestArrayOfArrayOfIntegers());
         assertNull(feedbackCallSummary.getTestArrayOfObjects());
-        assertNull(feedbackCallSummary.getXTwilioWebhookEnabled());
         assertNull(feedbackCallSummary.getTestString());
 
         assertTrue(feedbackCallSummary.equals(feedbackCallSummaryDuplicate));

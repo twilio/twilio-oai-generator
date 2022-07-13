@@ -76,6 +76,11 @@ public class AccountCreator extends Creator<Account>{
         this.recordingStatusCallback = recordingStatusCallback;
         return this;
     }
+
+    public AccountCreator setRecordingStatusCallback(final String recordingStatusCallback){
+    this.recordingStatusCallback = Promoter.uriFromString(recordingStatusCallback);
+    return this;
+    }
     public AccountCreator setRecordingStatusCallbackEvent(final List<String> recordingStatusCallbackEvent){
         this.recordingStatusCallbackEvent = recordingStatusCallbackEvent;
         return this;
@@ -83,7 +88,8 @@ public class AccountCreator extends Creator<Account>{
 
     @Override
     public Account create(final TwilioRestClient client){
-        String path = "/2010-04-01/Accounts.json";
+    String path = "/2010-04-01/Accounts.json";
+
 
         Request request = new Request(
             HttpMethod.POST,
@@ -120,6 +126,7 @@ public class AccountCreator extends Creator<Account>{
     private void addHeaderParams(final Request request) {
         if (xTwilioWebhookEnabled != null) {
             request.addHeaderParam("X-Twilio-Webhook-Enabled", xTwilioWebhookEnabled.toString());
+
         }
     }
 }
