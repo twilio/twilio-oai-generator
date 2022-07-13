@@ -67,11 +67,12 @@ import com.twilio.type.InboundSmsPrice;
 import com.twilio.type.OutboundSmsPrice;
 import com.twilio.type.OutboundCallPrice;
 import com.twilio.type.RecordingRule;
+import com.twilio.type.SubscribeRule;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @ToString
 public class FeedbackCallSummary extends Resource {
-    private static final long serialVersionUID = 157497464051388L;
+    private static final long serialVersionUID = 193205363285633L;
 
     public static FeedbackCallSummaryCreator creator(final LocalDate endDate, final LocalDate startDate){
         return new FeedbackCallSummaryCreator(endDate, startDate);
@@ -120,44 +121,6 @@ public class FeedbackCallSummary extends Resource {
             throw new ApiConnectionException(e.getMessage(), e);
         }
     }
-    public enum TestEnum {
-        DIALVERB("DialVerb"),
-        TRUNKING("Trunking");
-
-        private final String value;
-
-        private TestEnum(final String value) {
-            this.value = value;
-        }
-
-        public String toString() {
-            return value;
-        }
-
-        @JsonCreator
-        public static TestEnum forValue(final String value) {
-            return Promoter.enumFromString(value, TestEnum.values());
-        }
-    }
-    public enum XTwilioWebhookEnabled {
-        TRUE("true"),
-        FALSE("false");
-
-        private final String value;
-
-        private XTwilioWebhookEnabled(final String value) {
-            this.value = value;
-        }
-
-        public String toString() {
-            return value;
-        }
-
-        @JsonCreator
-        public static XTwilioWebhookEnabled forValue(final String value) {
-            return Promoter.enumFromString(value, XTwilioWebhookEnabled.values());
-        }
-    }
     public enum Status {
         IN_PROGRESS("in-progress"),
         PAUSED("paused"),
@@ -191,13 +154,11 @@ public class FeedbackCallSummary extends Resource {
     private final BigDecimal testNumber;
     private final Currency priceUnit;
     private final Float testNumberFloat;
-    private final FeedbackCallSummary.TestEnum testEnum;
+    private final FeedbackCallSummary.Status testEnum;
     private final List<Integer> testArrayOfIntegers;
     private final List<List<Integer>> testArrayOfArrayOfIntegers;
     private final List<FeedbackIssue> testArrayOfObjects;
-    private final List<TestEnumPermission> testArrayOfEnum;
-    private final FeedbackCallSummary.XTwilioWebhookEnabled xTwilioWebhookEnabled;
-    private final FeedbackCallSummary.Status status;
+    private final List<FeedbackCallSummary.Status> testArrayOfEnum;
 
     @JsonCreator
     private FeedbackCallSummary(
@@ -230,7 +191,7 @@ public class FeedbackCallSummary extends Resource {
         final Float testNumberFloat,
 
         @JsonProperty("test_enum")
-        final FeedbackCallSummary.TestEnum testEnum,
+        final FeedbackCallSummary.Status testEnum,
 
         @JsonProperty("test_array_of_integers")
         final List<Integer> testArrayOfIntegers,
@@ -242,13 +203,7 @@ public class FeedbackCallSummary extends Resource {
         final List<FeedbackIssue> testArrayOfObjects,
 
         @JsonProperty("test_array_of_enum")
-        final List<TestEnumPermission> testArrayOfEnum,
-
-        @JsonProperty("x_twilio_webhook_enabled")
-        final FeedbackCallSummary.XTwilioWebhookEnabled xTwilioWebhookEnabled,
-
-        @JsonProperty("status")
-        final FeedbackCallSummary.Status status
+        final List<FeedbackCallSummary.Status> testArrayOfEnum
     ) {
         this.accountSid = accountSid;
         this.sid = sid;
@@ -264,8 +219,6 @@ public class FeedbackCallSummary extends Resource {
         this.testArrayOfArrayOfIntegers = testArrayOfArrayOfIntegers;
         this.testArrayOfObjects = testArrayOfObjects;
         this.testArrayOfEnum = testArrayOfEnum;
-        this.xTwilioWebhookEnabled = xTwilioWebhookEnabled;
-        this.status = status;
     }
 
         public final String getAccountSid() {
@@ -295,7 +248,7 @@ public class FeedbackCallSummary extends Resource {
         public final Float getTestNumberFloat() {
             return this.testNumberFloat;
         }
-        public final FeedbackCallSummary.TestEnum getTestEnum() {
+        public final FeedbackCallSummary.Status getTestEnum() {
             return this.testEnum;
         }
         public final List<Integer> getTestArrayOfIntegers() {
@@ -307,14 +260,8 @@ public class FeedbackCallSummary extends Resource {
         public final List<FeedbackIssue> getTestArrayOfObjects() {
             return this.testArrayOfObjects;
         }
-        public final List<TestEnumPermission> getTestArrayOfEnum() {
+        public final List<FeedbackCallSummary.Status> getTestArrayOfEnum() {
             return this.testArrayOfEnum;
-        }
-        public final FeedbackCallSummary.XTwilioWebhookEnabled getXTwilioWebhookEnabled() {
-            return this.xTwilioWebhookEnabled;
-        }
-        public final FeedbackCallSummary.Status getStatus() {
-            return this.status;
         }
 
     @Override
@@ -329,12 +276,12 @@ public class FeedbackCallSummary extends Resource {
 
         FeedbackCallSummary other = (FeedbackCallSummary) o;
 
-        return Objects.equals(accountSid, other.accountSid) &&  Objects.equals(sid, other.sid) &&  Objects.equals(testString, other.testString) &&  Objects.equals(testInteger, other.testInteger) &&  Objects.equals(testObject, other.testObject) &&  Objects.equals(testDateTime, other.testDateTime) &&  Objects.equals(testNumber, other.testNumber) &&  Objects.equals(priceUnit, other.priceUnit) &&  Objects.equals(testNumberFloat, other.testNumberFloat) &&  Objects.equals(testEnum, other.testEnum) &&  Objects.equals(testArrayOfIntegers, other.testArrayOfIntegers) &&  Objects.equals(testArrayOfArrayOfIntegers, other.testArrayOfArrayOfIntegers) &&  Objects.equals(testArrayOfObjects, other.testArrayOfObjects) &&  Objects.equals(testArrayOfEnum, other.testArrayOfEnum) &&  Objects.equals(xTwilioWebhookEnabled, other.xTwilioWebhookEnabled) &&  Objects.equals(status, other.status)  ;
+        return Objects.equals(accountSid, other.accountSid) &&  Objects.equals(sid, other.sid) &&  Objects.equals(testString, other.testString) &&  Objects.equals(testInteger, other.testInteger) &&  Objects.equals(testObject, other.testObject) &&  Objects.equals(testDateTime, other.testDateTime) &&  Objects.equals(testNumber, other.testNumber) &&  Objects.equals(priceUnit, other.priceUnit) &&  Objects.equals(testNumberFloat, other.testNumberFloat) &&  Objects.equals(testEnum, other.testEnum) &&  Objects.equals(testArrayOfIntegers, other.testArrayOfIntegers) &&  Objects.equals(testArrayOfArrayOfIntegers, other.testArrayOfArrayOfIntegers) &&  Objects.equals(testArrayOfObjects, other.testArrayOfObjects) &&  Objects.equals(testArrayOfEnum, other.testArrayOfEnum)  ;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(accountSid, sid, testString, testInteger, testObject, testDateTime, testNumber, priceUnit, testNumberFloat, testEnum, testArrayOfIntegers, testArrayOfArrayOfIntegers, testArrayOfObjects, testArrayOfEnum, xTwilioWebhookEnabled, status);
+        return Objects.hash(accountSid, sid, testString, testInteger, testObject, testDateTime, testNumber, priceUnit, testNumberFloat, testEnum, testArrayOfIntegers, testArrayOfArrayOfIntegers, testArrayOfObjects, testArrayOfEnum);
     }
 
 }

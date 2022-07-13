@@ -1,10 +1,5 @@
 components:
   schemas:
-    test_enum_permission:
-      enum:
-        - get-all
-        - post-all
-      type: string
     test_enum_status:
       enum:
         - in-progress
@@ -13,17 +8,6 @@ components:
         - processing
         - completed
         - absent
-      type: string
-    recording_enum_source:
-      enum:
-        - DialVerb
-        - Trunking
-      type: string
-    payments_enum_bank_account_type:
-      enum:
-        - consumer-checking
-        - consumer-savings
-        - commercial-checking
       type: string
     test.response_object:
       properties:
@@ -70,7 +54,7 @@ components:
           type: number
           format: float
         test_enum:
-          $ref: '#/components/schemas/recording_enum_source'
+          $ref: '#/components/schemas/test_enum_status'
           nullable: true
           type: string
         test_array_of_integers:
@@ -97,7 +81,7 @@ components:
         test_array_of_enum:
           description: Permissions authorized to the app
           items:
-            $ref: '#/components/schemas/test_enum_permission'
+            $ref: '#/components/schemas/test_enum_status'
             type: string
           nullable: true
           type: array
@@ -241,7 +225,7 @@ paths:
                   type: string
                   format: date
                 TestEnum:
-                  $ref: '#/components/schemas/payments_enum_bank_account_type'
+                  $ref: '#/components/schemas/test_enum_status'
                   type: string
                 TestObjectArray:
                   items:
