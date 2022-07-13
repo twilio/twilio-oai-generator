@@ -15,6 +15,7 @@
 package com.twilio.rest.api.v2010.credential;
 
 import com.twilio.base.Deleter;
+import com.twilio.converter.Promoter;
 import com.twilio.exception.ApiConnectionException;
 import com.twilio.converter.PrefixedCollapsibleMap;
 import com.twilio.exception.ApiException;
@@ -63,7 +64,8 @@ public class AwsDeleter extends Deleter<Aws> {
 
     @Override
     public boolean delete(final TwilioRestClient client) {
-        String path = "/v1/Credentials/AWS/{Sid}";
+    String path = "/v1/Credentials/AWS/{Sid}";
+
         path = path.replace("{"+"Sid"+"}", this.sid.toString());
 
         Request request = new Request(
