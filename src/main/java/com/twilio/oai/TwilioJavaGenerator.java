@@ -502,6 +502,7 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
                     item.enumName = baseName;
                     if (item.containerType != null && item.containerType.equals("array")) {
                         item.dataType = "List<"+ resourceName + "." + baseName + ">";
+                        item.baseType = resourceName + "." + baseName;
                     } else {
                         item.dataType = resourceName + "." + baseName;
                     }
@@ -883,6 +884,7 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
                     .collect(Collectors.joining());
             if (parameter.items != null && parameter.items.allowableValues != null && parameter.items.allowableValues.containsKey("values")) {
                 parameter.dataType = "List<" + resourceName+"."+ parameter.enumName + ">";
+                parameter.baseType = resourceName + "." + parameter.enumName;
             } else {
                 parameter.dataType = resourceName+"."+ parameter.enumName;
             }

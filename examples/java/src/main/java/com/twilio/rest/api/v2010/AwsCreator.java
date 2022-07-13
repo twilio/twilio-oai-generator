@@ -244,7 +244,7 @@ public class AwsCreator extends Creator<Aws>{
     
         }
         if (permissions != null) {
-            for (String prop : permissions) {
+            for (Aws.Permissions prop : permissions) {
                 request.addPostParam("Permissions", prop.toString());
             }
     
