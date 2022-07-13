@@ -17,6 +17,10 @@ import org.openapitools.codegen.CodegenParameter;
 import org.openapitools.codegen.CodegenProperty;
 import org.openapitools.codegen.SupportingFile;
 import org.openapitools.codegen.languages.TypeScriptNodeClientCodegen;
+import org.openapitools.codegen.model.ModelMap;
+import org.openapitools.codegen.model.ModelsMap;
+import org.openapitools.codegen.model.OperationMap;
+import org.openapitools.codegen.model.OperationsMap;
 import org.openapitools.codegen.utils.StringUtils;
 
 public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
@@ -92,19 +96,17 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
             .collect(Collectors.joining(File.separator));
     }
 
-    @SuppressWarnings("unchecked")
     @Override
-    public Map<String, Object> postProcessAllModels(final Map<String, Object> allModels) {
-        final Map<String, Object> results = super.postProcessAllModels(allModels);
+    public Map<String, ModelsMap> postProcessAllModels(final Map<String, ModelsMap> allModels) {
+        final Map<String, ModelsMap> results = super.postProcessAllModels(allModels);
 
-        for (final Object obj : results.values()) {
-            final Map<String, Object> mods = (Map<String, Object>) obj;
-            final ArrayList<Map<String, Object>> modList = (ArrayList<Map<String, Object>>) mods.get("models");
+        for (final ModelsMap mods : results.values()) {
+            final List<ModelMap> modList = mods.getModels();
 
             // Add all the models to the local models list.
             modList
                 .stream()
-                .map(model -> model.get("model"))
+                .map(ModelMap::getModel)
                 .map(CodegenModel.class::cast)
                 .collect(Collectors.toCollection(() -> this.allModels));
         }
@@ -113,17 +115,15 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
         return new HashMap<>();
     }
 
-    @SuppressWarnings("unchecked")
     @Override
-    public Map<String, Object> postProcessOperationsWithModels(final Map<String, Object> objs,
-                                                               final List<Object> allModels) {
-        final Map<String, Object> results = super.postProcessOperationsWithModels(objs, allModels);
+    public OperationsMap postProcessOperationsWithModels(final OperationsMap objs, List<ModelMap> allModels) {
+        final OperationsMap results = super.postProcessOperationsWithModels(objs, allModels);
 
         final Map<String, Object> resources = new HashMap<>();
 
-        final Map<String, Object> ops = getStringMap(results, "operations");
+        final OperationMap ops = results.getOperations();
         final String classname = (String) ops.get("classname");
-        final ArrayList<CodegenOperation> opList = (ArrayList<CodegenOperation>) ops.get("operation");
+        final List<CodegenOperation> opList = ops.getOperation();
 
         results.put("apiVersionPath", getRelativeRoot(classname));
 

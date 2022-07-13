@@ -13,6 +13,10 @@ import io.swagger.v3.oas.models.Paths;
 import lombok.AllArgsConstructor;
 import org.openapitools.codegen.*;
 import org.openapitools.codegen.languages.JavaClientCodegen;
+import org.openapitools.codegen.model.ModelMap;
+import org.openapitools.codegen.model.ModelsMap;
+import org.openapitools.codegen.model.OperationMap;
+import org.openapitools.codegen.model.OperationsMap;
 import org.openapitools.codegen.utils.StringUtils;
 
 import java.util.*;
@@ -91,7 +95,7 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
             updateAccountSidParam(name, path);
             path.readOperations().forEach(operation -> {
                 // Group operations together by tag. This gives us one file/post-process per resource.
-                String tag = String.join(PATH_SEPARATOR_PLACEHOLDER, resourceTree.ancestors("/"+name.replaceFirst("/[^/]+/", "")));
+                String tag = String.join(PATH_SEPARATOR_PLACEHOLDER, resourceTree.ancestors(name, operation));
                 operation.addTagsItem(tag);
             });
             Matcher m = serverUrlPattern.matcher(path.getServers().get(0).getUrl());
@@ -311,55 +315,37 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
     }
 
 
-    @SuppressWarnings("unchecked")
     @Override
-    public Map<String, Object> postProcessAllModels(final Map<String, Object> allModels) {
-        final Map<String, Object> results = super.postProcessAllModels(allModels);
+    public Map<String, ModelsMap> postProcessAllModels(final Map<String, ModelsMap> allModels) {
+        final Map<String, ModelsMap> results = super.postProcessAllModels(allModels);
 
-        for (final Object obj : results.values()) {
-            final Map<String, Object> mods = (Map<String, Object>) obj;
-            final ArrayList<Map<String, Object>> modList = (ArrayList<Map<String, Object>>) mods.get("models");
+        for (final ModelsMap mods : results.values()) {
+            final List<ModelMap> modList = mods.getModels();
 
             // Add all the models to the local models list.
             modList
                     .stream()
-                    .map(model -> model.get("model"))
+                    .map(ModelMap::getModel)
                     .map(CodegenModel.class::cast)
                     .collect(Collectors.toCollection(() -> this.allModels));
         }
         setObjectFormatMap(this.allModels);
-    //  setEnumProperties(this.allModels);
         // Return an empty collection so no model files get generated.
         return new HashMap<>();
     }
 
-    private void setEnumProperties(List<CodegenModel> allModels) {
-        allModels.forEach(model -> {
-            model.vars.forEach(property -> {
-                if (property.items != null && property.items.allowableValues != null && property.items.allowableValues.containsKey("values")) {
-                    property.isEnum = true;
-                    property.allowableValues = property.items.allowableValues;
-                    property._enum = (List<String>) property.items.allowableValues.get("values");
-                }
-                if (property.allowableValues != null && property.allowableValues.containsKey("enumVars")) {
-                        property.isEnum = true;
-                        property._enum = (List<String>) property.allowableValues.get("values");
-                }
-            });
-        });
-    }
 
     @Override
-    public Map<String, Object> postProcessOperationsWithModels(final Map<String, Object> objs,
-                                                               final List<Object> allModels) {
-        final Map<String, Object> results = super.postProcessOperationsWithModels(objs, allModels);
+    public OperationsMap postProcessOperationsWithModels(final OperationsMap objs, List<ModelMap> allModels) {
+        final OperationsMap results = super.postProcessOperationsWithModels(objs, allModels);
 
         final Map<String, Map<String, Object>> resources = new LinkedHashMap<>();
 
-        final Map<String, Object> ops = getStringMap(results, "operations");
-        final ArrayList<CodegenOperation> opList = (ArrayList<CodegenOperation>) ops.get("operation");
+        final OperationMap ops = results.getOperations();
+        final List<CodegenOperation> opList = ops.getOperation();
         String recordKey = getRecordKey(opList, this.allModels);
-        List<CodegenModel> responseModels = new ArrayList<CodegenModel>();
+        List<CodegenModel> responseModels = new ArrayList<>();
+        boolean isVersionV2010 = objs.get("package").equals("v2010");
         apiTemplateFiles.remove("updater.mustache");
         apiTemplateFiles.remove("creator.mustache");
         apiTemplateFiles.remove("deleter.mustache");

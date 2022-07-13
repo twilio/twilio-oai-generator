@@ -21,9 +21,11 @@ import V2010 from '../../V2010';
  * Options to pass to update a AWSInstance
  *
  * @property { string } [testString] 
+ * @property { boolean } [testBoolean] 
  */
 export interface AWSContextUpdateOptions {
     testString?: string;
+    testBoolean?: boolean;
 }
 
 /**
@@ -172,6 +174,7 @@ export class AWSContextImpl implements AWSContext {
         const data: any = {};
 
         if (params.testString !== undefined) data['TestString'] = params.testString;
+        if (params.testBoolean !== undefined) data['TestBoolean'] = params.testBoolean;
 
         const headers: any = {};
         headers['Content-Type'] = 'application/x-www-form-urlencoded'

@@ -3,25 +3,23 @@ package com.twilio.oai.resource;
 import com.twilio.oai.Inflector;
 import com.twilio.oai.PathUtils;
 import com.twilio.oai.TwilioJavaGenerator;
-import io.swagger.v3.oas.models.PathItem;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.Setter;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
+import io.swagger.v3.oas.models.Operation;
+import io.swagger.v3.oas.models.PathItem;
+import lombok.RequiredArgsConstructor;
+
+import static com.twilio.oai.TwilioJavaGenerator.PATH_SEPARATOR_PLACEHOLDER;
+
+@RequiredArgsConstructor
 public class Resource {
-    @Getter @Setter(AccessLevel.PROTECTED) private String path;
-    @Getter @Setter(AccessLevel.PROTECTED) private PathItem pathItem;
-    @Getter @Setter (AccessLevel.PROTECTED) private String className;
-    private Inflector inflector;
-    public Resource(String name, PathItem pathItem, Inflector inflector) {
-        this.path = name;
-        this.pathItem = pathItem;
-        this.inflector = inflector;
-        this.className = getClassName(TwilioJavaGenerator.PATH_SEPARATOR_PLACEHOLDER);
-    }
+    private final String path;
+    private final PathItem pathItem;
+    private final Inflector inflector;
 
     public Resource getParentResource(IResourceTree resourceTree) {
         for(Map.Entry entrySet: pathItem.getExtensions().entrySet()) {
@@ -35,20 +33,38 @@ public class Resource {
         return null;
     }
 
-    private String getClassName(String tagDelimiter) {
-        for(Map.Entry entrySet: pathItem.getExtensions().entrySet()) {
-            if (entrySet.getKey().equals("x-twilio")) {
-                if (((Map<?, ?>) entrySet.getValue()).containsKey("className")) {
-                    return fetchClassNameFromTwilioVendExt((Map<?, String>) entrySet.getValue());
+    public String getClassName(final Operation operation) {
+        final Optional<String> className = getClassNameFromExtensions(operation.getExtensions());
+
+        return className.orElseGet(this::getClassName);
+    }
+
+    public String getClassName() {
+        final Optional<String> className = getClassNameFromExtensions(pathItem.getExtensions());
+
+        return className.orElseGet(() -> inflector.singular(PathUtils.fetchLastElement(path,
+                                                                                       PATH_SEPARATOR_PLACEHOLDER)));
+    }
+
+    @SuppressWarnings("unchecked")
+    private Optional<String> getClassNameFromExtensions(final Map<String, Object> extensions) {
+        if (extensions != null) {
+            final Map<String, Object> xTwilio = (Map<String, Object>) extensions.get("x-twilio");
+
+            if (xTwilio != null) {
+                final String className = (String) xTwilio.get("className");
+
+                if (className != null) {
+                    return Optional.of(transformClassName(className));
                 }
             }
         }
-        return inflector.singular(PathUtils.fetchLastElement(path, tagDelimiter));
+
+        return Optional.empty();
     }
 
-    public static String fetchClassNameFromTwilioVendExt(Map<?, String> vendExt) {
-        return Arrays.stream(vendExt.get("className").split("_"))
-                .map(TwilioJavaGenerator::capitalize).collect(Collectors.joining());
+    private String transformClassName(final String className) {
+        return Arrays.stream(className.split("_")).map(TwilioJavaGenerator::capitalize).collect(Collectors.joining());
     }
 
     public String resourceName() {

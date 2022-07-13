@@ -76,6 +76,7 @@ func TestFetch(t *testing.T) {
 func TestUpdate(t *testing.T) {
 	params := &UpdateCredentialAwsParams{}
 	params.SetTestString("MockCreds")
+	params.SetTestBoolean(true)
 
 	resp, err := testApiService.UpdateCredentialAws(authToken, params)
 	assert.Nil(t, err)

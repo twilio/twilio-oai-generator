@@ -28,26 +28,35 @@ def generate(openapi_spec_path: str, output_path: str, language: str, domain: st
     parent_dir = Path(__file__).parent.parent
 
     to_generate = 'terraform-provider-twilio' if language == 'terraform' else f'twilio-{language}'
+    is_domain_irrelevant = language in {'go', 'terraform'} and domain_name == 'preview'
     sub_dir = subdirectories.get(language, 'rest')
     output_path = os.path.join(output_path, sub_dir, domain_name)
     if language in {'go', 'terraform'}:
         output_path = os.path.join(output_path, api_version)
-    command = f'cd {parent_dir} && java -cp ./openapi-generator-cli.jar:target/twilio-openapi-generator.jar ' \
-              f'org.openapitools.codegen.OpenAPIGenerator generate -g {to_generate} -i {full_path} ' \
-              f'-o {output_path} ' \
-              f'> /dev/null'  # Suppress stdout
-    print(f'Generating {output_path} from {full_path}')
-    os.system(command)
+    if is_domain_irrelevant == False:
+        run_openapi_generator(parent_dir, to_generate, output_path, full_path)
     if language == 'java':
-        remove_unused_imports(output_path, "java")
-    print(f"Code generation completed at {output_path}")
+        remove_unused_imports(output_path, 'java')
+
+
+def run_openapi_generator(parent_dir: str, to_generate: str, output_path: str, full_path: str) -> None:
+    command = f'cd {parent_dir} && java -cp ./openapi-generator-cli.jar:target/twilio-openapi-generator.jar ' \
+                      f'org.openapitools.codegen.OpenAPIGenerator generate -g {to_generate} ' \
+                      f'--inline-schema-name-defaults arrayItemSuffix="" ' \
+                      f'-i {full_path} ' \
+                      f'-o {output_path} ' \
+                      f'> /dev/null'  # Suppress stdout
+    print(f'Generating {output_path} from {full_path}')
+    if os.system(command) != 0:
+        raise RuntimeError()
+    print(f'Code generation completed at {output_path}')
 
 
 def get_domain_info(oai_spec_location: str, domain: str, is_file: bool = False) -> Tuple[str, str, str]:
     full_path = oai_spec_location if is_file else os.path.join(oai_spec_location, domain)
-    parts = re.split(r'twilio_(.+?)_(v\d+)', domain, flags=re.IGNORECASE)
+    parts = re.split(r'twilio_(.+?)_?(v\d+)?\.', domain, flags=re.IGNORECASE)
     domain_name = parts[1]
-    api_version = parts[2]
+    api_version = parts[2] or ''
     return full_path, domain_name, api_version
 
 

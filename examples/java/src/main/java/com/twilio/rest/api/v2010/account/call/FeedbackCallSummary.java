@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-package com.twilio.rest.api.v2010;
+package com.twilio.rest.api.v2010.account.call;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -71,49 +71,31 @@ import com.twilio.type.SubscribeRule;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @ToString
-public class Aws extends Resource {
-    private static final long serialVersionUID = 204159094531598L;
+public class FeedbackCallSummary extends Resource {
+    private static final long serialVersionUID = 67961494484503L;
 
-    public static AwsCreator creator(final String testString, final Integer testInteger, final Float testNumberFloat){
-        return new AwsCreator(testString, testInteger, testNumberFloat);
+    public static FeedbackCallSummaryCreator creator(final LocalDate endDate, final LocalDate startDate){
+        return new FeedbackCallSummaryCreator(endDate, startDate);
     }
-    public static AwsCreator creator(final String testString, final Integer testInteger, final Map<String, Object> testObject){
-        return new AwsCreator(testString, testInteger, testObject);
-    }
-    public static AwsCreator creator(final String testString, final LocalDate testDate, final Float testNumberFloat){
-        return new AwsCreator(testString, testDate, testNumberFloat);
-    }
-    public static AwsCreator creator(final String testString, final LocalDate testDate, final Map<String, Object> testObject){
-        return new AwsCreator(testString, testDate, testObject);
+    public static FeedbackCallSummaryCreator creator(final String accountSid, final LocalDate endDate, final LocalDate startDate){
+        return new FeedbackCallSummaryCreator(accountSid, endDate, startDate);
     }
 
-    public static AwsFetcher fetcher(final String sid){
-        return new AwsFetcher(sid);
-    }
 
-    public static AwsDeleter deleter(final String sid){
-        return new AwsDeleter(sid);
-    }
 
-    public static AwsReader reader(){
-        return new AwsReader();
-    }
 
-    public static AwsUpdater updater(final String sid){
-        return new AwsUpdater(sid);
-    }
 
     /**
-    * Converts a JSON String into a Aws object using the provided ObjectMapper.
+    * Converts a JSON String into a FeedbackCallSummary object using the provided ObjectMapper.
     *
     * @param json Raw JSON String
     * @param objectMapper Jackson ObjectMapper
-    * @return Aws object represented by the provided JSON
+    * @return FeedbackCallSummary object represented by the provided JSON
     */
-    public static Aws fromJson(final String json, final ObjectMapper objectMapper) {
+    public static FeedbackCallSummary fromJson(final String json, final ObjectMapper objectMapper) {
         // Convert all checked exceptions to Runtime
         try {
-            return objectMapper.readValue(json, Aws.class);
+            return objectMapper.readValue(json, FeedbackCallSummary.class);
         } catch (final JsonMappingException | JsonParseException e) {
             throw new ApiException(e.getMessage(), e);
         } catch (final IOException e) {
@@ -122,40 +104,21 @@ public class Aws extends Resource {
     }
 
     /**
-    * Converts a JSON InputStream into a Aws object using the provided
+    * Converts a JSON InputStream into a FeedbackCallSummary object using the provided
     * ObjectMapper.
     *
     * @param json Raw JSON InputStream
     * @param objectMapper Jackson ObjectMapper
-    * @return Aws object represented by the provided JSON
+    * @return FeedbackCallSummary object represented by the provided JSON
     */
-    public static Aws fromJson(final InputStream json, final ObjectMapper objectMapper) {
+    public static FeedbackCallSummary fromJson(final InputStream json, final ObjectMapper objectMapper) {
         // Convert all checked exceptions to Runtime
         try {
-            return objectMapper.readValue(json, Aws.class);
+            return objectMapper.readValue(json, FeedbackCallSummary.class);
         } catch (final JsonMappingException | JsonParseException e) {
             throw new ApiException(e.getMessage(), e);
         } catch (final IOException e) {
             throw new ApiConnectionException(e.getMessage(), e);
-        }
-    }
-    public enum Permissions {
-        GET_ALL("get-all"),
-        POST_ALL("post-all");
-
-        private final String value;
-
-        private Permissions(final String value) {
-            this.value = value;
-        }
-
-        public String toString() {
-            return value;
-        }
-
-        @JsonCreator
-        public static Permissions forValue(final String value) {
-            return Promoter.enumFromString(value, Permissions.values());
         }
     }
     public enum TestEnum {
@@ -187,13 +150,13 @@ public class Aws extends Resource {
     private final BigDecimal testNumber;
     private final Currency priceUnit;
     private final Float testNumberFloat;
-    private final Aws.TestEnum testEnum;
+    private final FeedbackCallSummary.TestEnum testEnum;
     private final List<Integer> testArrayOfIntegers;
     private final List<List<Integer>> testArrayOfArrayOfIntegers;
     private final List<FeedbackIssue> testArrayOfObjects;
 
     @JsonCreator
-    private Aws(
+    private FeedbackCallSummary(
         @JsonProperty("account_sid")
         final String accountSid,
 
@@ -223,7 +186,7 @@ public class Aws extends Resource {
         final Float testNumberFloat,
 
         @JsonProperty("test_enum")
-        final Aws.TestEnum testEnum,
+        final FeedbackCallSummary.TestEnum testEnum,
 
         @JsonProperty("test_array_of_integers")
         final List<Integer> testArrayOfIntegers,
@@ -276,7 +239,7 @@ public class Aws extends Resource {
         public final Float getTestNumberFloat() {
             return this.testNumberFloat;
         }
-        public final Aws.TestEnum getTestEnum() {
+        public final FeedbackCallSummary.TestEnum getTestEnum() {
             return this.testEnum;
         }
         public final List<Integer> getTestArrayOfIntegers() {
@@ -299,7 +262,7 @@ public class Aws extends Resource {
             return false;
         }
 
-        Aws other = (Aws) o;
+        FeedbackCallSummary other = (FeedbackCallSummary) o;
 
         return Objects.equals(accountSid, other.accountSid) &&  Objects.equals(sid, other.sid) &&  Objects.equals(testString, other.testString) &&  Objects.equals(testInteger, other.testInteger) &&  Objects.equals(testObject, other.testObject) &&  Objects.equals(testDateTime, other.testDateTime) &&  Objects.equals(testNumber, other.testNumber) &&  Objects.equals(priceUnit, other.priceUnit) &&  Objects.equals(testNumberFloat, other.testNumberFloat) &&  Objects.equals(testEnum, other.testEnum) &&  Objects.equals(testArrayOfIntegers, other.testArrayOfIntegers) &&  Objects.equals(testArrayOfArrayOfIntegers, other.testArrayOfArrayOfIntegers) &&  Objects.equals(testArrayOfObjects, other.testArrayOfObjects)  ;
     }

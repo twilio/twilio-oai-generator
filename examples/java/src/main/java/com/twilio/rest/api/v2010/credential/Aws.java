@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-package com.twilio.rest.api.v2010;
+package com.twilio.rest.api.v2010.credential;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -71,43 +71,37 @@ import com.twilio.type.SubscribeRule;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @ToString
-public class Call extends Resource {
-    private static final long serialVersionUID = 67961494484503L;
-
-    public static CallCreator creator(final String requiredStringProperty){
-        return new CallCreator(requiredStringProperty);
-    }
-    public static CallCreator creator(final String accountSid, final String requiredStringProperty){
-        return new CallCreator(accountSid, requiredStringProperty);
-    }
-
-    public static CallFetcher fetcher(final Integer testInteger){
-        return new CallFetcher(testInteger);
-    }
-    public static CallFetcher fetcher(final String accountSid, final Integer testInteger){
-        return new CallFetcher(accountSid, testInteger);
-    }
-
-    public static CallDeleter deleter(final Integer testInteger){
-        return new CallDeleter(testInteger);
-    }
-    public static CallDeleter deleter(final String accountSid, final Integer testInteger){
-        return new CallDeleter(accountSid, testInteger);
-    }
+public class Aws extends Resource {
+    private static final long serialVersionUID = 204159094531598L;
 
 
+    public static AwsFetcher fetcher(final String sid){
+        return new AwsFetcher(sid);
+    }
+
+    public static AwsDeleter deleter(final String sid){
+        return new AwsDeleter(sid);
+    }
+
+    public static AwsReader reader(){
+        return new AwsReader();
+    }
+
+    public static AwsUpdater updater(final String sid){
+        return new AwsUpdater(sid);
+    }
 
     /**
-    * Converts a JSON String into a Call object using the provided ObjectMapper.
+    * Converts a JSON String into a Aws object using the provided ObjectMapper.
     *
     * @param json Raw JSON String
     * @param objectMapper Jackson ObjectMapper
-    * @return Call object represented by the provided JSON
+    * @return Aws object represented by the provided JSON
     */
-    public static Call fromJson(final String json, final ObjectMapper objectMapper) {
+    public static Aws fromJson(final String json, final ObjectMapper objectMapper) {
         // Convert all checked exceptions to Runtime
         try {
-            return objectMapper.readValue(json, Call.class);
+            return objectMapper.readValue(json, Aws.class);
         } catch (final JsonMappingException | JsonParseException e) {
             throw new ApiException(e.getMessage(), e);
         } catch (final IOException e) {
@@ -116,17 +110,17 @@ public class Call extends Resource {
     }
 
     /**
-    * Converts a JSON InputStream into a Call object using the provided
+    * Converts a JSON InputStream into a Aws object using the provided
     * ObjectMapper.
     *
     * @param json Raw JSON InputStream
     * @param objectMapper Jackson ObjectMapper
-    * @return Call object represented by the provided JSON
+    * @return Aws object represented by the provided JSON
     */
-    public static Call fromJson(final InputStream json, final ObjectMapper objectMapper) {
+    public static Aws fromJson(final InputStream json, final ObjectMapper objectMapper) {
         // Convert all checked exceptions to Runtime
         try {
-            return objectMapper.readValue(json, Call.class);
+            return objectMapper.readValue(json, Aws.class);
         } catch (final JsonMappingException | JsonParseException e) {
             throw new ApiException(e.getMessage(), e);
         } catch (final IOException e) {
@@ -162,13 +156,13 @@ public class Call extends Resource {
     private final BigDecimal testNumber;
     private final Currency priceUnit;
     private final Float testNumberFloat;
-    private final Call.TestEnum testEnum;
+    private final Aws.TestEnum testEnum;
     private final List<Integer> testArrayOfIntegers;
     private final List<List<Integer>> testArrayOfArrayOfIntegers;
     private final List<FeedbackIssue> testArrayOfObjects;
 
     @JsonCreator
-    private Call(
+    private Aws(
         @JsonProperty("account_sid")
         final String accountSid,
 
@@ -198,7 +192,7 @@ public class Call extends Resource {
         final Float testNumberFloat,
 
         @JsonProperty("test_enum")
-        final Call.TestEnum testEnum,
+        final Aws.TestEnum testEnum,
 
         @JsonProperty("test_array_of_integers")
         final List<Integer> testArrayOfIntegers,
@@ -251,7 +245,7 @@ public class Call extends Resource {
         public final Float getTestNumberFloat() {
             return this.testNumberFloat;
         }
-        public final Call.TestEnum getTestEnum() {
+        public final Aws.TestEnum getTestEnum() {
             return this.testEnum;
         }
         public final List<Integer> getTestArrayOfIntegers() {
@@ -274,7 +268,7 @@ public class Call extends Resource {
             return false;
         }
 
-        Call other = (Call) o;
+        Aws other = (Aws) o;
 
         return Objects.equals(accountSid, other.accountSid) &&  Objects.equals(sid, other.sid) &&  Objects.equals(testString, other.testString) &&  Objects.equals(testInteger, other.testInteger) &&  Objects.equals(testObject, other.testObject) &&  Objects.equals(testDateTime, other.testDateTime) &&  Objects.equals(testNumber, other.testNumber) &&  Objects.equals(priceUnit, other.priceUnit) &&  Objects.equals(testNumberFloat, other.testNumberFloat) &&  Objects.equals(testEnum, other.testEnum) &&  Objects.equals(testArrayOfIntegers, other.testArrayOfIntegers) &&  Objects.equals(testArrayOfArrayOfIntegers, other.testArrayOfArrayOfIntegers) &&  Objects.equals(testArrayOfObjects, other.testArrayOfObjects)  ;
     }
