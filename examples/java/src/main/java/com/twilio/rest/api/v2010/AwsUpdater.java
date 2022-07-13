@@ -69,7 +69,8 @@ public class AwsUpdater extends Updater<Aws>{
 
     @Override
     public Aws update(final TwilioRestClient client){
-        String path = "/v1/Credentials/AWS/{Sid}";
+    String path = "/v1/Credentials/AWS/{Sid}";
+
         path = path.replace("{"+"Sid"+"}", this.sid.toString());
 
         Request request = new Request(

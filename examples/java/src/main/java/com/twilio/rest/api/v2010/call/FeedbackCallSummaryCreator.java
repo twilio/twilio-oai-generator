@@ -86,7 +86,8 @@ public class FeedbackCallSummaryCreator extends Creator<FeedbackCallSummary>{
 
     @Override
     public FeedbackCallSummary create(final TwilioRestClient client){
-        String path = "/2010-04-01/Accounts/{AccountSid}/Calls/FeedbackSummary.json";
+    String path = "/2010-04-01/Accounts/{AccountSid}/Calls/FeedbackSummary.json";
+
         this.accountSid = this.accountSid == null ? client.getAccountSid() : this.accountSid;
         path = path.replace("{"+"AccountSid"+"}", this.accountSid.toString());
         path = path.replace("{"+"EndDate"+"}", this.endDate.toString());

@@ -75,7 +75,7 @@ public class AwsCreator extends Creator<Aws>{
     private Aws.TestEnum testEnum;
     private List<Object> testObjectArray;
     private Map<String, Object> testAnyType;
-    private List<Aws.Permissions> permissions;
+    private Aws.Permissions permissions;
 
     public AwsCreator(final String testString, final Integer testInteger, final Float testNumberFloat) {
         this.testString = testString;
@@ -154,14 +154,15 @@ public class AwsCreator extends Creator<Aws>{
         this.testAnyType = testAnyType;
         return this;
     }
-    public AwsCreator setPermissions(final List<Aws.Permissions> permissions){
+    public AwsCreator setPermissions(final Aws.Permissions permissions){
         this.permissions = permissions;
         return this;
     }
 
     @Override
     public Aws create(final TwilioRestClient client){
-        String path = "/v1/Credentials/AWS";
+    String path = "/v1/Credentials/AWS";
+
         path = path.replace("{"+"TestString"+"}", this.testString.toString());
 
         Request request = new Request(
@@ -243,7 +244,7 @@ public class AwsCreator extends Creator<Aws>{
     
         }
         if (permissions != null) {
-            for (Aws.Permissions prop : permissions) {
+            for (String prop : permissions) {
                 request.addPostParam("Permissions", prop.toString());
             }
     
