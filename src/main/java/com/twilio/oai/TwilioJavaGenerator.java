@@ -4,13 +4,19 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
+import com.twilio.oai.mlambdas.ReplaceHyphenLambda;
 import com.twilio.oai.resource.IResourceTree;
 import com.twilio.oai.resource.ResourceMap;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.PathItem;
+import io.swagger.v3.oas.models.Paths;
 import lombok.AllArgsConstructor;
 import org.openapitools.codegen.*;
 import org.openapitools.codegen.languages.JavaClientCodegen;
+import org.openapitools.codegen.model.ModelMap;
+import org.openapitools.codegen.model.ModelsMap;
+import org.openapitools.codegen.model.OperationMap;
+import org.openapitools.codegen.model.OperationsMap;
 import org.openapitools.codegen.utils.StringUtils;
 
 import java.util.*;
@@ -20,6 +26,8 @@ import java.util.stream.Collectors;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import com.google.common.collect.ImmutableMap;
+import com.samskivert.mustache.Mustache.Lambda;
 
 public class TwilioJavaGenerator extends JavaClientCodegen {
 
@@ -57,9 +65,15 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
     public void processOpts() {
         super.processOpts();
         String[] inputSpecs = inputSpec.split("_");
-        final String version = inputSpecs[inputSpecs.length-1].replaceAll("\\.[^/]+$", "");
-        final String domain = String.join("", Arrays.copyOfRange(inputSpecs, 1, inputSpecs.length-1));
-        apiPackage = version; // Place the API files in the version folder.
+        String version = inputSpecs[inputSpecs.length-1].replaceAll("\\.[^/]+$", "");
+        String domain = String.join("", Arrays.copyOfRange(inputSpecs, 1, inputSpecs.length-1));
+
+        if(inputSpecs.length <3){   // version is missing
+            version = "";
+            domain = inputSpecs[inputSpecs.length-1].replaceAll("\\.[^/]+$", "");
+        }
+
+        apiPackage = (version != "")? version : domain ; // Place the API files in the version folder.
         additionalProperties.put("apiVersion", version);
         additionalProperties.put("apiVersionClass", version.toUpperCase());
         additionalProperties.put("domain", StringUtils.camelize(domain));
@@ -74,7 +88,7 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
         resourceTree = new ResourceMap(inflector, PATH_SEPARATOR_PLACEHOLDER);
         // regex example : https://flex-api.twilio.com
         Pattern serverUrlPattern = Pattern.compile("https:\\/\\/([a-zA-Z-]+)\\.twilio\\.com");
-        openAPI.getPaths().forEach((name, path) -> {
+        extendOpenAPI(openAPI).getPaths().forEach((name, path) -> {
             resourceTree.addResource(name, path);
         });
         openAPI.getPaths().forEach((name, path) -> {
@@ -90,6 +104,81 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
             }
         });
     }
+
+    private OpenAPI extendOpenAPI(OpenAPI openAPI) {
+        Paths newPaths = new Paths();
+        openAPI.getPaths().forEach((name, path) -> {
+            if (hasOperatorWithClassName(path)) {
+                for(Map.Entry<String, PathItem> newPathItem : extractMultiPathItemFromOperatorWithClassName(name, path).entrySet()) {
+                    newPaths.addPathItem(newPathItem.getKey(), newPathItem.getValue());
+                }
+            }
+            else {
+                newPaths.addPathItem(name, path);
+            }
+        });
+        openAPI.paths(newPaths);
+        return openAPI;
+    }
+
+    private Map<String, PathItem> extractMultiPathItemFromOperatorWithClassName(String name, PathItem path)  {
+        ObjectMapper objectMapper = new ObjectMapper();
+        Map<String, PathItem> pathItemMap = new HashMap<>();
+        try {
+            PathItem pathItemOperatorClassVendExt = objectMapper
+                    .readValue(objectMapper.writeValueAsString(path), PathItem.class);
+            PathItem pathItemClassVendExt = objectMapper
+                    .readValue(objectMapper.writeValueAsString(path), PathItem.class);
+            resetOperationMethodCalls(pathItemOperatorClassVendExt, pathItemClassVendExt);
+            for (Map.Entry<PathItem.HttpMethod, io.swagger.v3.oas.models.Operation> entryMapOperation: path.readOperationsMap().entrySet()) {
+                if (isClassName(entryMapOperation.getValue())) {
+                    String[] urls = name.split("/");
+                    String className = Arrays.stream(((Map<String, String>)entryMapOperation.getValue()
+                            .getExtensions().get("x-twilio")).get("className").split("_")).
+                            map(StringUtils::camelize).collect(Collectors.joining());
+                    urls[urls.length-1] = className + ".json";
+                    String urlPath = String.join("/", urls);
+                    entryMapOperation.getValue().getExtensions().put("parentUrl", name);
+                    pathItemOperatorClassVendExt.operation(entryMapOperation.getKey(), entryMapOperation.getValue());
+                    pathItemMap.put(urlPath, pathItemOperatorClassVendExt);
+                } else {
+                    pathItemClassVendExt.operation(entryMapOperation.getKey(), entryMapOperation.getValue());
+                    pathItemMap.put(name, pathItemClassVendExt);
+                }
+            }
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        return pathItemMap;
+    }
+
+    private void resetOperationMethodCalls(PathItem pathItemOperatorClassVendExt, PathItem pathItemClassVendExt) {
+        pathItemClassVendExt.put(null);
+        pathItemClassVendExt.get(null);
+        pathItemClassVendExt.post(null);
+        pathItemClassVendExt.delete(null);
+        pathItemClassVendExt.patch(null);
+        pathItemOperatorClassVendExt.put(null);
+        pathItemOperatorClassVendExt.get(null);
+        pathItemOperatorClassVendExt.post(null);
+        pathItemOperatorClassVendExt.delete(null);
+        pathItemOperatorClassVendExt.patch(null);
+    }
+
+    private boolean hasOperatorWithClassName(PathItem path) {
+        for (io.swagger.v3.oas.models.Operation operation: path.readOperations()) {
+            if (isClassName(operation)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean isClassName(io.swagger.v3.oas.models.Operation operation) {
+        return (operation.getExtensions().containsKey("x-twilio")) &&
+                ((Map<String, String>) operation.getExtensions().get("x-twilio")).containsKey("className");
+    }
+
     /**
      * make accountSid an optional param
      * @param path
@@ -118,14 +207,49 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
     @Override
     public void postProcessParameter(final CodegenParameter parameter) {
         super.postProcessParameter(parameter);
-
+        if (parameter.dataType.startsWith("List<") && parameter.dataType.contains("Enum")) {
+            parameter.vendorExtensions.put("refEnum", true);
+            String[] value = parameter.dataType.split("Enum");
+            String lastValue = value[value.length-1];
+            parameter.dataType = "List<"+lastValue;
+            parameter.baseType = lastValue.substring(0, lastValue.length()-1);
+        } else if(parameter.dataType.contains("Enum")) {
+             parameter.vendorExtensions.put("refEnum", true);
+            String[] value = parameter.dataType.split("Enum");
+            parameter.dataType = value[value.length-1];
+            parameter.baseType = value[value.length-1];
+        }
+        else if (parameter.isEnum) {
+            parameter.enumName = parameter.paramName;
+        }
         // Make sure required non-path params get into the options block.
-        parameter.paramName = StringUtils.camelize(parameter.paramName, false);
+        parameter.paramName = StringUtils.camelize(parameter.paramName, true);
     }
 
     @Override
     public void postProcessModelProperty(CodegenModel model, CodegenProperty property) {
         super.postProcessModelProperty(model, property);
+        if (property.dataType.startsWith("List<") && property.dataType.contains("Enum")) {
+            property.vendorExtensions.put("refEnum", true);
+            String[] value = property.dataType.split("Enum");
+            String lastValue = value[value.length-1];
+            property.dataType = "List<" + lastValue;
+            property.complexType = lastValue.substring(0, lastValue.length()-1);
+            property.baseType = lastValue.substring(0, lastValue.length()-1);
+             property.isEnum = true;
+            property.allowableValues = property.items.allowableValues;
+            property._enum = (List<String>) property.items.allowableValues.get("values");
+        } else if (property.dataType.contains("Enum")) {
+            property.vendorExtensions.put("refEnum", true);
+            String[] value = property.dataType.split("Enum");
+            property.dataType = value[value.length - 1];
+            property.complexType = property.dataType;
+            property.baseType = property.dataType;
+            property.isEnum = true;
+            property._enum = (List<String>) property.allowableValues.get("values");
+        } else if (property.isEnum ) {
+            property.enumName = property.baseName;
+        }
         property.isEnum =  property.isEnum && property.dataFormat == null;
     }
 
@@ -191,19 +315,17 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
     }
 
 
-    @SuppressWarnings("unchecked")
     @Override
-    public Map<String, Object> postProcessAllModels(final Map<String, Object> allModels) {
-        final Map<String, Object> results = super.postProcessAllModels(allModels);
+    public Map<String, ModelsMap> postProcessAllModels(final Map<String, ModelsMap> allModels) {
+        final Map<String, ModelsMap> results = super.postProcessAllModels(allModels);
 
-        for (final Object obj : results.values()) {
-            final Map<String, Object> mods = (Map<String, Object>) obj;
-            final ArrayList<Map<String, Object>> modList = (ArrayList<Map<String, Object>>) mods.get("models");
+        for (final ModelsMap mods : results.values()) {
+            final List<ModelMap> modList = mods.getModels();
 
             // Add all the models to the local models list.
             modList
                     .stream()
-                    .map(model -> model.get("model"))
+                    .map(ModelMap::getModel)
                     .map(CodegenModel.class::cast)
                     .collect(Collectors.toCollection(() -> this.allModels));
         }
@@ -214,54 +336,54 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
 
 
     @Override
-    public Map<String, Object> postProcessOperationsWithModels(final Map<String, Object> objs,
-                                                               final List<Object> allModels) {
-        final Map<String, Object> results = super.postProcessOperationsWithModels(objs, allModels);
+    public OperationsMap postProcessOperationsWithModels(final OperationsMap objs, List<ModelMap> allModels) {
+        final OperationsMap results = super.postProcessOperationsWithModels(objs, allModels);
 
         final Map<String, Map<String, Object>> resources = new LinkedHashMap<>();
 
-        final Map<String, Object> ops = getStringMap(results, "operations");
-        final ArrayList<CodegenOperation> opList = (ArrayList<CodegenOperation>) ops.get("operation");
+        final OperationMap ops = results.getOperations();
+        final List<CodegenOperation> opList = ops.getOperation();
         String recordKey = getRecordKey(opList, this.allModels);
-        List<CodegenModel> responseModels = new ArrayList<CodegenModel>();
+        List<CodegenModel> responseModels = new ArrayList<>();
         boolean isVersionV2010 = objs.get("package").equals("v2010");
         apiTemplateFiles.remove("updater.mustache");
         apiTemplateFiles.remove("creator.mustache");
         apiTemplateFiles.remove("deleter.mustache");
         apiTemplateFiles.remove("reader.mustache");
         apiTemplateFiles.remove("fetcher.mustache");
+        resetAllModelVendorExtensions();
 
         // iterate over the operation and perhaps modify something
         for (final CodegenOperation co : opList) {
             // Group operations by resource.
             String path = co.path;
-            co.vendorExtensions.put("x-is-version-v2010", isVersionV2010);
             String[] filePathArray = co.baseName.split(PATH_SEPARATOR_PLACEHOLDER);
             String resourceName = filePathArray[filePathArray.length-1];
             final Map<String, Object> resource = resources.computeIfAbsent(resourceName, k -> new LinkedHashMap<>());
             populateCrudOperations(resource, co);
-            updateCodeOperationParams(co);
+            updateCodeOperationParams(co, resourceName);
             if (co.nickname.startsWith("update")) {
                 resource.put("hasUpdate", true);
                 addOperationName(co, "Update");
                 co.vendorExtensions.put("x-is-update-operation", true);
-                resource.put("signatureListUpdate", generateSignatureList(resource, co, isVersionV2010));
+                resource.put("signatureListUpdate", generateSignatureList(resource, co));
                 apiTemplateFiles.put("updater.mustache", "Updater.java");
             } else if (co.nickname.startsWith("delete")) {
                 resource.put("hasDelete", true);
                 addOperationName(co, "Remove");
                 co.vendorExtensions.put("x-is-delete-operation", true);
-                resource.put("signatureListDelete", generateSignatureList(resource, co, isVersionV2010));
+                resource.put("signatureListDelete", generateSignatureList(resource, co));
                 apiTemplateFiles.put("deleter.mustache", "Deleter.java");
+                addDeleteHeaderEnums(co, responseModels);
             } else if (co.nickname.startsWith("create")) {
                 resource.put("hasCreate", true);
                 co.vendorExtensions.put("x-is-create-operation", true);
                 addOperationName(co, "Create");
-                resource.put("signatureListCreate", generateSignatureList(resource, co, isVersionV2010));
+                resource.put("signatureListCreate", generateSignatureList(resource, co));
                 apiTemplateFiles.put("creator.mustache", "Creator.java");
             } else if (co.nickname.startsWith("fetch")) {
                 resource.put("hasFetch", true);
-                resource.put("signatureListFetch", generateSignatureList(resource, co, isVersionV2010));
+                resource.put("signatureListFetch", generateSignatureList(resource, co));
                 co.vendorExtensions.put("x-is-fetch-operation", true);
                 addOperationName(co, "Fetch");
                 apiTemplateFiles.put("fetcher.mustache", "Fetcher.java");
@@ -269,7 +391,7 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
                 resource.put("hasRead", true);
                 co.vendorExtensions.put("x-is-read-operation", true);
                 addOperationName(co, "Page");
-                resource.put("signatureListRead", generateSignatureList(resource, co, isVersionV2010));
+                resource.put("signatureListRead", generateSignatureList(resource, co));
                 apiTemplateFiles.put("reader.mustache", "Reader.java");
 
             }
@@ -281,7 +403,6 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
             resourceOperationList.add(co);
             resource.put("path", path);
             resource.put("resourceName", resourceName);
-            updateCodeOperationParams(co);
             co.queryParams = preProcessQueryParameters(co);
             co.pathParams = null;
             co.hasParams = !co.allParams.isEmpty();
@@ -304,11 +425,9 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
               .map(item -> ConventionResolver.resolveComplexType(item, modelFormatMap))
               .flatMap(Optional::stream)
               .forEach(model -> {
-
                   resource.put("serialVersionUID", calculateSerialVersionUid(model.vars));
-                  responseModels.add(model);
-                  processEnumVarsForAll(responseModels, co, model, resourceName);
-
+                  CodegenModel responseModel = processEnumVarsForAll(model, co, resourceName);
+                  responseModels.add(responseModel);
               });
 
             results.put("recordKey", getRecordKey(opList, this.allModels));
@@ -332,44 +451,94 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
         return results;
     }
 
-    private void processEnumVarsForAll(List<CodegenModel> responseModels, CodegenOperation co, CodegenModel model, String resourceName) {
-            for (CodegenParameter param : co.allParams) {
-                if(param.isEnum){
-                    Optional<CodegenProperty> alreadyExisting = model.vars.stream().filter(item -> item.name.equalsIgnoreCase(param.paramName)).findFirst();
-                    if(!alreadyExisting.isPresent()){
-                        responseModels.get(0).vars.add(createCodeGenPropertyFromParameter(param));
-                        model.vars.add(createCodeGenPropertyFromParameter(param));
+    private void resetAllModelVendorExtensions() {
+        allModels.forEach(item -> item.getVendorExtensions().remove("enumVars"));
+    }
+
+    private void addDeleteHeaderEnums(CodegenOperation co, List<CodegenModel> responseModels) {
+        List<CodegenProperty> codegenProperties = new ArrayList<>();
+        for (CodegenParameter cp: co.allParams) {
+            if (cp.isEnum && cp.isHeaderParam) {
+                codegenProperties.add(createCodeGenPropertyFromParameter(cp));
+            }
+        }
+        if (codegenProperties.size() > 0) {
+            CodegenModel codegenModel = new CodegenModel();
+            codegenModel.vendorExtensions.put("enumVars", codegenProperties);
+            responseModels.add(codegenModel);
+        }
+    }
+
+    private CodegenModel processEnumVarsForAll(CodegenModel model, CodegenOperation co,  String resourceName) {
+        List<CodegenProperty> enumProperties = new ArrayList<>();
+        model.vars.forEach(item -> {
+            if (item.isEnum && item.dataFormat == null && !item.dataType.contains(resourceName+ ".")) {
+                if (item.vendorExtensions.containsKey("refEnum")) {
+                    if (item.containerType != null && item.containerType.equals("array")) {
+                        item.enumName = item.baseType;
+                        item.dataType = "List<"+resourceName +"." + item.complexType+">";
+                    } else {
+                        item.enumName = item.baseType;
+                        String[] values = item.dataType.split("\\.");
+                        item.dataType = resourceName + "." + values[values.length -1];
                     }
+                } else {
+                    String baseName = Arrays.stream(item.baseName.split("_")).map(StringUtils::camelize)
+                            .collect(Collectors.joining());
+                    item.enumName = baseName;
+                    if (item.containerType != null && item.containerType.equals("array")) {
+                        item.dataType = "List<"+ resourceName + "." + baseName + ">";
+                        item.baseType = resourceName + "." + baseName;
+                    } else {
+                        item.dataType = resourceName + "." + baseName;
+                    }
+
+                }
+                item.vendorExtensions.put("x-is-other-data-type", true);
+            }
+        });
+        for (CodegenProperty codegenProperty: model.vars) {
+            if (codegenProperty.isEnum && codegenProperty.dataFormat == null) {
+                enumProperties.add(codegenProperty);
+            }
+        }
+        for (CodegenParameter param : co.allParams) {
+            if (param.isEnum) {
+                Optional<CodegenProperty> alreadyAdded = enumProperties.stream().
+                        filter(item -> item.enumName.equalsIgnoreCase(param.enumName)).findFirst();
+                if (!alreadyAdded.isPresent() && param.dataFormat == null) {
+                    enumProperties.add(createCodeGenPropertyFromParameter(param));
                 }
             }
+        }
+        TreeSet<CodegenProperty> ts = getEnumPropertyComparator();
+        ts.addAll(enumProperties);
+        if (model.getVendorExtensions().get("enumVars") != null) {
+            List<CodegenProperty> codegenProperties = (List<CodegenProperty>) model.getVendorExtensions().get("enumVars");
+            ts.addAll(codegenProperties);
+        }
+        model.vendorExtensions.put("enumVars",new ArrayList<>(ts));
+        return model;
+    }
 
-        model.vars.forEach(item -> {
-            if(item.isEnum){
-                item.dataType = generateDataType(resourceName, item.nameInCamelCase);
-
-                item.vendorExtensions.put("x-is-other-data-type", true);
-
+    private TreeSet<CodegenProperty> getEnumPropertyComparator() {
+        return new TreeSet<CodegenProperty>(new Comparator<CodegenProperty>() {
+            public int compare(CodegenProperty cp1, CodegenProperty cp2) {
+                return cp1.enumName.compareTo(cp2.getEnumName());
             }
-
         });
-        co.queryParams.forEach(param -> processEnumVars(param, model, resourceName));
-        co.formParams.forEach(param -> processEnumVars(param, model, resourceName));
-        co.allParams.forEach(param -> processEnumVars(param, model, resourceName));
-        co.headerParams.forEach(param -> processEnumVars(param, model, resourceName));
-        co.requiredParams.forEach(param -> processEnumVars(param, model, resourceName));
     }
 
     private CodegenProperty createCodeGenPropertyFromParameter(CodegenParameter co) {
         CodegenProperty property = new CodegenProperty();
         property.isEnum = co.isEnum;
         property.baseName = co.baseName;
+        property.enumName = co.enumName;
         property.allowableValues = co.allowableValues;
         property.dataType = co.dataType;
         property.vendorExtensions = co.vendorExtensions;
         property.datatypeWithEnum = co.datatypeWithEnum;
         property.complexType = co.getComplexType();
-
-
         property.name = co.paramName;
         property.nameInCamelCase = co.baseName.replaceAll("-","");
         property.nameInSnakeCase = co.baseName.replaceAll("-","_").toLowerCase();
@@ -394,6 +563,27 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
                     resModel.allowableValues.forEach(
                             (key, value) -> codegenModel.allowableValues.merge(key, value, (oldValue, newValue) -> newValue));
                 }
+                if (resModel.vendorExtensions != null && resModel.vendorExtensions.size() > 0) {
+                    List<CodegenProperty> resEnum1 = (List<CodegenProperty>)resModel.vendorExtensions.get("enumVars");
+                    List<CodegenProperty> codeModelEnums = (List<CodegenProperty>)codegenModel.vendorExtensions.get("enumVars");
+                    if (codeModelEnums != null) {
+                        for (CodegenProperty resCodegenProperty: resEnum1) {
+                            boolean found = false;
+                            for (CodegenProperty codeEnumProperty: codeModelEnums) {
+                                if (codeEnumProperty.enumName.equals(resCodegenProperty.getEnumName())) {
+                                    found = true;
+                                }
+                            }
+                            if (!found) {
+                                codeModelEnums.add(resCodegenProperty);
+                            }
+                        }
+                        resModel.vendorExtensions.put("enumVars", codeModelEnums);
+                    }
+                    resModel.vendorExtensions.forEach(
+                            (key, value) -> codegenModel.vendorExtensions.merge(key, value, (oldValue, newValue) -> newValue));
+                }
+
                 for (CodegenProperty modelProp : resModel.vars) {
                         boolean contains = false;
                         for (CodegenProperty property : codegenProperties) {
@@ -427,39 +617,6 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
         return allModels.stream().filter(model -> model.getClassname().equals(modelName)).findFirst();
     }
 
-    private String generateDataType(String resourceName, String nameInCamelCase){
-        String name = nameInCamelCase;
-        String dataType = "";
-        String nameArr[] = name.split("[.]", 0);
-        if(nameArr.length > 0){
-            String itemName = String.join("", nameArr);
-            dataType = resourceName + "." + itemName;
-        }
-        else{
-            dataType = resourceName + "." + name;
-        }
-        return dataType;
-    }
-
-    private CodegenParameter processEnumVars(CodegenParameter param, CodegenModel model, String resourceName) {
-        if(param.isEnum){
-            model.vars.forEach(item -> {
-                if(param.paramName.equalsIgnoreCase(item.nameInCamelCase) && item.isEnum == true){
-                    String baseType = generateDataType(resourceName, item.nameInCamelCase);
-                    if(param.isArray){
-                        param.dataType = "List<"+ baseType +">";
-                        param.baseType = baseType;
-                    }
-                    else{
-                        param.dataType = baseType;
-                    }
-                    param.vendorExtensions.put("x-is-other-data-type", true);
-                }
-            });
-        }
-        return param;
-    }
-
     private String getRecordKey(List<CodegenOperation> opList, List<CodegenModel> models) {
         String recordKey =  "";
         for (CodegenOperation co: opList) {
@@ -489,41 +646,38 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
      * keep track of signature list that would contain different combinations of signatures for constructor generation (since Account sid is optional, so different constructor are needed)
      * @param resource
      * @param co
-     * @param isVersionV2010
      * @return
      */
-    private ArrayList<List<CodegenParameter>> generateSignatureList(final Map<String, Object> resource, final CodegenOperation co, boolean isVersionV2010) {
+    private ArrayList<List<CodegenParameter>> generateSignatureList(final Map<String, Object> resource, final CodegenOperation co) {
         CodegenParameter accountSidParam = null;
         List<List<CodegenParameter>> conditionalCodegenParam = new ArrayList<>();
-        if (isVersionV2010) {
-            Optional<CodegenParameter> optionalParam = co.allParams.stream()
-            .filter(param -> param.vendorExtensions.containsKey("x-is-account-sid")).findAny();
-            if(optionalParam.isPresent()){
-                accountSidParam = optionalParam.get();
-            }
-            /**
-             * structure for vendorExtensions
-             * @<code> x-twilio:
-             *          conditional:
-             *           - - from
-             *             - messaging_service_sid
-             *           - - body
-             *             - media_url</code>
-             */
-            if(co.vendorExtensions.containsKey("x-twilio")) {
-                HashMap<String, Object> twilioVendorExtension = (HashMap<String, Object>) co.vendorExtensions.get("x-twilio");
-                if(twilioVendorExtension.containsKey("conditional")) {
-                    List<List<String>> conditionalParams = (List<List<String>>) twilioVendorExtension.get("conditional");
-                    // map the conditional param names with the codegenParameter added in optional params
-                    conditionalCodegenParam = conditionalParams.stream().map(
-                            paramList -> paramList.stream().map(
-                                    cp -> co.optionalParams.stream().filter(
-                                            op -> op.paramName.equals(StringUtils.camelize(cp, true))
-                                    ).findAny().get()
-                            ).collect(Collectors.toList())).collect(Collectors.toList());
-                    // added filter to prevent same signature types
-                    conditionalCodegenParam = conditionalCodegenParam.stream().filter(cpList -> (cpList.size() <=1 || !cpList.get(0).dataType.equals(cpList.get(1).dataType))).collect(Collectors.toList());
-                }
+        Optional<CodegenParameter> optionalParam = co.allParams.stream()
+                .filter(param -> param.vendorExtensions.containsKey("x-is-account-sid")).findAny();
+        if(optionalParam.isPresent()){
+            accountSidParam = optionalParam.get();
+        }
+        /**
+         * structure for vendorExtensions
+         * @<code> x-twilio:
+         *          conditional:
+         *           - - from
+         *             - messaging_service_sid
+         *           - - body
+         *             - media_url</code>
+         */
+        if(co.vendorExtensions.containsKey("x-twilio")) {
+            HashMap<String, Object> twilioVendorExtension = (HashMap<String, Object>) co.vendorExtensions.get("x-twilio");
+            if(twilioVendorExtension.containsKey("conditional")) {
+                List<List<String>> conditionalParams = (List<List<String>>) twilioVendorExtension.get("conditional");
+                // map the conditional param names with the codegenParameter added in optional params
+                conditionalCodegenParam = conditionalParams.stream().map(
+                        paramList -> paramList.stream().map(
+                                cp -> co.optionalParams.stream().filter(
+                                        op -> op.paramName.equals(StringUtils.camelize(cp, true))
+                                ).findAny().get()
+                        ).collect(Collectors.toList())).collect(Collectors.toList());
+                // added filter to prevent same signature types
+                conditionalCodegenParam = conditionalCodegenParam.stream().filter(cpList -> (cpList.size() <=1 || !cpList.get(0).dataType.equals(cpList.get(1).dataType))).collect(Collectors.toList());
             }
         }
         conditionalCodegenParam = Lists.cartesianProduct(conditionalCodegenParam);
@@ -648,40 +802,48 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
         return str.substring(0, 1).toUpperCase() + str.substring(1);
     }
 
-    private void updateCodeOperationParams(final CodegenOperation co) {
+    private void updateCodeOperationParams(final CodegenOperation co, String resourceName) {
         co.allParams = co.allParams
                 .stream()
                 .map(ConventionResolver::resolveParameter)
                 .map(Optional::get)
+                .map(item -> this.resolveEnumParameter(item, resourceName))
                 .collect(Collectors.toList());
         co.pathParams = co.pathParams
                 .stream()
                 .map(ConventionResolver::resolveParameter)
                 .map(Optional::get)
+                .map(item -> this.resolveEnumParameter(item, resourceName))
                 .collect(Collectors.toList());
         co.pathParams.stream().
                 map(ConventionResolver::resolveParamTypes)
+                .map(item -> this.resolveEnumParameter(item, resourceName))
                 .forEach(param -> param.paramName = "path"+param.paramName);
         co.queryParams = co.queryParams.stream().map(ConventionResolver::resolveParamTypes)
                 .map(ConventionResolver::prefixedCollapsibleMap)
+                .map(item -> this.resolveEnumParameter(item, resourceName))
                 .collect(Collectors.toList());
         co.queryParams = preProcessQueryParameters(co);
         co.formParams = co.formParams.stream().map(ConventionResolver::resolveParamTypes)
                 .map(ConventionResolver::prefixedCollapsibleMap)
+                .map(item -> this.resolveEnumParameter(item, resourceName))
                 .collect(Collectors.toList());
         co.formParams = preProcessFormParams(co);
         co.headerParams = co.headerParams.stream().map(ConventionResolver::resolveParamTypes)
                 .map(ConventionResolver::prefixedCollapsibleMap)
+                .map(item -> this.resolveEnumParameter(item, resourceName))
                 .collect(Collectors.toList());
         co.optionalParams = co.optionalParams
                 .stream()
                 .map(ConventionResolver::resolveParameter)
                 .map(Optional::get)
+                .map(item -> this.resolveEnumParameter(item, resourceName))
                 .collect(Collectors.toList());
         co.requiredParams = co.requiredParams
                 .stream()
                 .map(ConventionResolver::resolveParameter)
                 .map(Optional::get)
+                .map(item -> this.resolveEnumParameter(item, resourceName))
                 .collect(Collectors.toList());
     }
 
@@ -693,6 +855,43 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
             }
         }
         return co.formParams;
+    }
+
+    @Override
+    protected ImmutableMap.Builder<String, Lambda> addMustacheLambdas() {
+        ImmutableMap.Builder<String, Lambda> lambdaBuilder = super.addMustacheLambdas();
+        lambdaBuilder.put("replacehyphen", new ReplaceHyphenLambda());
+        return lambdaBuilder;
+    }
+
+    private CodegenParameter resolveEnumParameter(CodegenParameter parameter, String resourceName) {
+        if( parameter.isEnum && !parameter.vendorExtensions.containsKey("refEnum")) {
+            parameter.enumName = Arrays.stream(parameter.enumName.split("_")).map(StringUtils::camelize)
+                    .collect(Collectors.joining());
+            if (parameter.items != null && parameter.items.allowableValues != null && parameter.items.allowableValues.containsKey("values")) {
+                parameter.dataType = "List<" + resourceName+"."+ parameter.enumName + ">";
+                parameter.baseType = resourceName + "." + parameter.enumName;
+            } else {
+                parameter.dataType = resourceName+"."+ parameter.enumName;
+            }
+
+            return parameter;
+        }
+        if (parameter.items != null && parameter.items.allowableValues != null && parameter.items.allowableValues.containsKey("values") ) {
+            parameter.isEnum = true;
+            parameter.enumName = parameter.baseType;
+            parameter._enum = (List<String>) parameter.items.allowableValues.get("values");
+            parameter.dataType = "List<" + resourceName + "." + parameter.baseType + ">";
+            parameter.baseType = resourceName + "." + parameter.baseType;
+            parameter.allowableValues = parameter.items.allowableValues;
+        }
+        if (parameter.allowableValues != null && parameter.allowableValues.containsKey("enumVars")) {
+            parameter.isEnum = true;
+            parameter._enum = (List<String>) parameter.allowableValues.get("values");
+            parameter.enumName = parameter.dataType;
+            parameter.dataType=resourceName+"."+parameter.dataType;
+        }
+        return parameter;
     }
 
     @Override

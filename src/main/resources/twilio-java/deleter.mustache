@@ -3,6 +3,7 @@
 package com.twilio.rest.{{domainPackage}}.{{package}}{{packageSubPart}};
 
 import com.twilio.base.Deleter;
+import com.twilio.converter.Promoter;
 import com.twilio.exception.ApiConnectionException;
 import com.twilio.converter.PrefixedCollapsibleMap;
 import com.twilio.exception.ApiException;
@@ -53,21 +54,30 @@ public class {{resourceName}}Deleter extends Deleter<{{resourceName}}> {
     this.{{paramName}} = {{paramName}};
     return this;
     }
+{{#vendorExtensions.x-promotions}}
+{{#isArray}}
+{{#entrySet}}
+
+    public {{resourceName}}Deleter set{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}(final {{#lambda.titlecase}}{{key}}{{/lambda.titlecase}} {{paramName}}){
+        return set{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}({{value}});
+    }
+{{/entrySet}}
+{{/isArray}}
+{{^isArray}}
+{{#entrySet}}
+
+    public {{resourceName}}Deleter set{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}(final {{#lambda.titlecase}}{{key}}{{/lambda.titlecase}} {{paramName}}){
+    this.{{paramName}} = {{value}};
+    return this;
+    }
+{{/entrySet}}
+{{/isArray}}
+{{/vendorExtensions.x-promotions}}
 {{/vendorExtensions.x-non-path-params}}
 
     @Override
     public boolean delete(final TwilioRestClient client) {
-        String path = "{{{path}}}";
-        {{#allParams}}
-        {{#vendorExtensions.x-is-account-sid}}
-        this.{{paramName}} = this.{{paramName}} == null ? client.getAccountSid() : this.{{paramName}};
-        path = path.replace("{"+"{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}"+"}", this.{{paramName}}.toString());
-        {{/vendorExtensions.x-is-account-sid}}
-        {{/allParams}}
-        {{#requiredParams}}
-        path = path.replace("{"+"{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}"+"}", this.{{paramName}}.toString());
-        {{/requiredParams}}
-
+{{>generate_uri}}
         Request request = new Request(
             HttpMethod.DELETE,
             Domains.{{#lambda.uppercase}}{{domainName}}{{/lambda.uppercase}}.toString(),

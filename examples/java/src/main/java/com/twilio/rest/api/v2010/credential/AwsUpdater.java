@@ -57,6 +57,7 @@ import lombok.ToString;
 public class AwsUpdater extends Updater<Aws>{
     private String sid;
     private String testString;
+    private Boolean testBoolean;
 
     public AwsUpdater(final String sid){
         this.sid = sid;
@@ -66,10 +67,15 @@ public class AwsUpdater extends Updater<Aws>{
         this.testString = testString;
         return this;
     }
+    public AwsUpdater setTestBoolean(final Boolean testBoolean){
+        this.testBoolean = testBoolean;
+        return this;
+    }
 
     @Override
     public Aws update(final TwilioRestClient client){
-        String path = "/v1/Credentials/AWS/{Sid}";
+    String path = "/v1/Credentials/AWS/{Sid}";
+
         path = path.replace("{"+"Sid"+"}", this.sid.toString());
 
         Request request = new Request(
@@ -94,6 +100,10 @@ public class AwsUpdater extends Updater<Aws>{
     private void addPostParams(final Request request) {
         if (testString != null) {
             request.addPostParam("TestString", testString);
+    
+        }
+        if (testBoolean != null) {
+            request.addPostParam("TestBoolean", testBoolean.toString());
     
         }
     }

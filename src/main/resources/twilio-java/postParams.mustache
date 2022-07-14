@@ -8,7 +8,7 @@
     {{#isArray}}
         {{#isEnum}}
             for ({{baseType}} prop : {{paramName}}) {
-                request.addPostParam("{{baseName}}", prop.toString());
+                request.addPostParam("{{#lambda.titlecase}}{{{paramName}}}{{/lambda.titlecase}}", prop.toString());
             }
         {{/isEnum}}
         {{^isEnum}}
@@ -26,7 +26,7 @@
     {{/isArray}}
     {{^isArray}}
     {{#vendorExtensions.x-is-other-data-type}}
-            request.addPostParam("{{baseName}}", {{paramName}}.toString());
+            request.addPostParam("{{#lambda.titlecase}}{{{paramName}}}{{/lambda.titlecase}}", {{paramName}}.toString());
     {{/vendorExtensions.x-is-other-data-type}}
     {{^vendorExtensions.x-is-other-data-type}}
     {{#isString}}

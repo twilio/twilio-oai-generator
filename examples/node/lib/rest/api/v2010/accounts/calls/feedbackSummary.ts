@@ -112,4 +112,88 @@ export function FeedbackSummaryListInstance(version: V2010, accountSid: string):
 
     return instance;
 }
+export type FeedbackSummaryTestEnum = 'DialVerb'|'Trunking';
+
+interface FeedbackSummaryPayload extends FeedbackSummaryResource, Page.TwilioResponsePayload {
+}
+
+interface FeedbackSummaryResource {
+    account_sid?: string | null;
+    sid?: string | null;
+    test_string?: string | null;
+    test_integer?: number | null;
+    test_object?: object | null;
+    test_date_time?: string | null;
+    test_number?: number | null;
+    price_unit?: string | null;
+    test_number_float?: number | null;
+    test_enum?: FeedbackSummaryTestEnum;
+    test_array_of_integers?: Array<number>;
+    test_array_of_array_of_integers?: Array<Array<number>>;
+    test_array_of_objects?: Array<object> | null;
+}
+
+export class FeedbackSummaryInstance {
+    protected _solution: any;
+    protected _context?: FeedbackSummaryListInstance;
+
+    constructor(protected _version: V2010, payload: FeedbackSummaryPayload, accountSid?: string) {
+        this.accountSid = payload.account_sid;
+        this.sid = payload.sid;
+        this.testString = payload.test_string;
+        this.testInteger = payload.test_integer;
+        this.testObject = payload.test_object;
+        this.testDateTime = payload.test_date_time;
+        this.testNumber = payload.test_number;
+        this.priceUnit = payload.price_unit;
+        this.testNumberFloat = payload.test_number_float;
+        this.testEnum = payload.test_enum;
+        this.testArrayOfIntegers = payload.test_array_of_integers;
+        this.testArrayOfArrayOfIntegers = payload.test_array_of_array_of_integers;
+        this.testArrayOfObjects = payload.test_array_of_objects;
+
+        this._solution = { accountSid: accountSid || this.accountSid };
+    }
+
+    accountSid?: string | null;
+    sid?: string | null;
+    testString?: string | null;
+    testInteger?: number | null;
+    testObject?: object | null;
+    testDateTime?: string | null;
+    testNumber?: number | null;
+    priceUnit?: string | null;
+    testNumberFloat?: number | null;
+    testEnum?: FeedbackSummaryTestEnum;
+    testArrayOfIntegers?: Array<number>;
+    testArrayOfArrayOfIntegers?: Array<Array<number>>;
+    testArrayOfObjects?: Array<object> | null;
+
+    /**
+     * Provide a user-friendly representation
+     *
+     * @returns Object
+     */
+    toJSON() {
+        return {
+            accountSid: this.accountSid, 
+            sid: this.sid, 
+            testString: this.testString, 
+            testInteger: this.testInteger, 
+            testObject: this.testObject, 
+            testDateTime: this.testDateTime, 
+            testNumber: this.testNumber, 
+            priceUnit: this.priceUnit, 
+            testNumberFloat: this.testNumberFloat, 
+            testEnum: this.testEnum, 
+            testArrayOfIntegers: this.testArrayOfIntegers, 
+            testArrayOfArrayOfIntegers: this.testArrayOfArrayOfIntegers, 
+            testArrayOfObjects: this.testArrayOfObjects
+        }
+    }
+
+    [inspect.custom](_depth: any, options: InspectOptions) {
+        return inspect(this.toJSON(), options);
+    }
+}
 

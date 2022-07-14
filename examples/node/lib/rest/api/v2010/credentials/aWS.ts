@@ -21,9 +21,11 @@ import V2010 from '../../V2010';
  * Options to pass to update a AWSInstance
  *
  * @property { string } [testString] 
+ * @property { boolean } [testBoolean] 
  */
 export interface AWSContextUpdateOptions {
     testString?: string;
+    testBoolean?: boolean;
 }
 
 /**
@@ -172,6 +174,7 @@ export class AWSContextImpl implements AWSContext {
         const data: any = {};
 
         if (params.testString !== undefined) data['TestString'] = params.testString;
+        if (params.testBoolean !== undefined) data['TestBoolean'] = params.testBoolean;
 
         const headers: any = {};
         headers['Content-Type'] = 'application/x-www-form-urlencoded'
@@ -249,11 +252,6 @@ export class AWSInstance {
         this._solution = { sid: sid || this.sid };
     }
 
-    private get _proxy(): AWSContext {
-        this._context = this._context || new AWSContextImpl(this._version, this._solution.sid);
-        return this._context;
-    }
-
     accountSid?: string | null;
     sid?: string | null;
     testString?: string | null;
@@ -267,6 +265,11 @@ export class AWSInstance {
     testArrayOfIntegers?: Array<number>;
     testArrayOfArrayOfIntegers?: Array<Array<number>>;
     testArrayOfObjects?: Array<object> | null;
+
+    private get _proxy(): AWSContext {
+        this._context = this._context || new AWSContextImpl(this._version, this._solution.sid);
+        return this._context;
+    }
 
     /**
      * Remove a AWSInstance
