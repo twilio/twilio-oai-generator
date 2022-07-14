@@ -12,6 +12,9 @@ import org.openapitools.codegen.CodegenOperation;
 import org.openapitools.codegen.CodegenParameter;
 import org.openapitools.codegen.CodegenProperty;
 import org.openapitools.codegen.languages.CSharpClientCodegen;
+import org.openapitools.codegen.model.ModelMap;
+import org.openapitools.codegen.model.ModelsMap;
+import org.openapitools.codegen.model.OperationsMap;
 import org.openapitools.codegen.utils.StringUtils;
 
 import java.util.ArrayList;
@@ -96,9 +99,8 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
     }
 
     @Override
-    public Map<String, Object> postProcessOperationsWithModels(final Map<String, Object> objs,
-                                                               final List<Object> allModels) {
-        final Map<String, Object> results = super.postProcessOperationsWithModels(objs, allModels);
+    public OperationsMap postProcessOperationsWithModels(final OperationsMap objs, List<ModelMap> allModels) {
+        final OperationsMap results = super.postProcessOperationsWithModels(objs, allModels);
         final Map<String, Map<String, Object>> resources = new LinkedHashMap<>();
 
         System.out.println("======= Operation =======");
@@ -155,101 +157,16 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
     }
 
     @Override
-    public Map<String, Object> postProcessAllModels(final Map<String, Object> allModels) {
-        final Map<String, Object> results = super.postProcessAllModels(allModels);
+    public Map<String, ModelsMap> postProcessAllModels(final Map<String, ModelsMap> allModels) {
+        final Map<String, ModelsMap> results = super.postProcessAllModels(allModels);
 
-        for (final Object obj : results.values()) {
-            final Map<String, Object> mods = (Map<String, Object>) obj;
-            final ArrayList<Map<String, Object>> modList = (ArrayList<Map<String, Object>>) mods.get("models");
-
-            // Add all the models to the local models list.
-            modList
-                    .stream()
-                    .map(model -> model.get("model"))
-                    .map(CodegenModel.class::cast)
-                    .collect(Collectors.toCollection(() -> this.allModels));
-        }
-        setObjectFormatMap(this.allModels);
-        // Return an empty collection so no model files get generated.
-        return new HashMap<>();
-    }
-
-
-    private String getRecordKey(List<CodegenOperation> opList, List<CodegenModel> models) {
-        String recordKey =  "";
-        for (CodegenOperation co: opList) {
-            for(CodegenModel model: models) {
-                if(model.name.equals(co.returnType)) {
-                    recordKey = model.allVars
-                            .stream()
-                            .filter(v -> v.openApiType.equals("array"))
-                            .collect(Collectors.toList()).get(0).baseName;
-                }
-            }
-        }
-        return recordKey;
-    }
-
-    private ArrayList<CodegenOperation> getAllOperations(final Map<String, Object> results) {
-        final Map<String, Object> ops = getStringMap(results, "operations");
-         return (ArrayList<CodegenOperation>) ops.get("operation");
-    }
-
-    private void setObjectFormatMap(final List<CodegenModel> allModels) {
-        allModels.forEach(item -> {
-            ObjectMapper objectMapper = new ObjectMapper();
-            try {
-                JsonNode jsonNode = objectMapper.readTree(item.modelJson);
-                if (jsonNode.get("type").textValue().equals("object") && jsonNode.has("format")) {
-                    modelFormatMap.put(item.classFilename, jsonNode.get("format").textValue());
-                }
-            } catch (JsonProcessingException e) {
-                e.printStackTrace();
-            }
-        });
-    }
-
-    private void populateCrudOperations(final Map<String, Object> resource, final CodegenOperation operation) {
-        if (operation.nickname.startsWith(EnumConstants.Operation.CREATE.getValue())) {
-            resource.put("hasCreate", true);
-            operation.vendorExtensions.put("x-is-create-operation", true);
-            resource.put(EnumConstants.Operation.CREATE.name(), operation);
-        } else if (operation.nickname.startsWith(EnumConstants.Operation.FETCH.getValue())) {
-            resource.put("hasFetch", true);
-            resource.put(EnumConstants.Operation.FETCH.name(), operation);
-            operation.vendorExtensions.put("x-is-fetch-operation", true);
-        } else if (operation.nickname.startsWith(EnumConstants.Operation.UPDATE.getValue())) {
-            resource.put("hasUpdate", true);
-            operation.vendorExtensions.put("x-is-update-operation", true);
-            resource.put(EnumConstants.Operation.UPDATE.name(), operation);
-        } else if (operation.nickname.startsWith(EnumConstants.Operation.DELETE.getValue())) {
-            resource.put("hasDelete", true);
-            operation.vendorExtensions.put("x-is-delete-operation", true);
-            resource.put(EnumConstants.Operation.DELETE.name(), operation);
-        } else {
-            resource.put("hasRead", true);
-            operation.vendorExtensions.put("x-is-read-operation", true);
-            resource.put(EnumConstants.Operation.READ.name(), operation);
-        }
-    }
-
-    @SuppressWarnings("unchecked")
-    private Map<String, Object> getStringMap(final Map<String, Object> resource, final String key) {
-        return (Map<String, Object>) resource.computeIfAbsent(key, k -> new HashMap<>());
-    }
-
-    @Override
-    public Map<String, Object> postProcessAllModels(final Map<String, Object> allModels) {
-        final Map<String, Object> results = super.postProcessAllModels(allModels);
-
-        for (final Object obj : results.values()) {
-            final Map<String, Object> mods = (Map<String, Object>) obj;
-            final ArrayList<Map<String, Object>> modList = (ArrayList<Map<String, Object>>) mods.get("models");
+        for (final ModelsMap mods : results.values()) {
+            final List<ModelMap> modList = mods.getModels();
 
             // Add all the models to the local models list.
             modList
                     .stream()
-                    .map(model -> model.get("model"))
+                    .map(ModelMap::getModel)
                     .map(CodegenModel.class::cast)
                     .collect(Collectors.toCollection(() -> this.allModels));
         }
