@@ -8,6 +8,7 @@ find $OUT_DIR ! -name "*_test.go" -type f -delete
 java -cp ./openapi-generator-cli.jar:target/twilio-openapi-generator.jar \
   org.openapitools.codegen.OpenAPIGenerator \
   generate -g twilio-go \
+  --inline-schema-name-defaults arrayItemSuffix="" \
   -i $API_SPEC \
   -o $OUT_DIR/api/v2010
 
@@ -16,6 +17,7 @@ find $OUT_DIR ! -name "*_test.go" -type f -delete
 java -cp ./openapi-generator-cli.jar:target/twilio-openapi-generator.jar \
   org.openapitools.codegen.OpenAPIGenerator \
   generate -g terraform-provider-twilio \
+  --inline-schema-name-defaults arrayItemSuffix="" \
   -i $API_SPEC \
   -o $OUT_DIR
 
@@ -28,6 +30,7 @@ rm -rf $OUT_DIR
 java -cp ./openapi-generator-cli.jar:target/twilio-openapi-generator.jar  \
   org.openapitools.codegen.OpenAPIGenerator \
   generate -g twilio-java \
+  --inline-schema-name-defaults arrayItemSuffix="" \
   -i $API_SPEC \
   -o $OUT_DIR/api  \
   --global-property apiTests=false,apiDocs=false
@@ -37,6 +40,7 @@ rm -rf $OUT_DIR
 java -cp ./openapi-generator-cli.jar:target/twilio-openapi-generator.jar \
   org.openapitools.codegen.OpenAPIGenerator \
   generate -g twilio-node \
+  --inline-schema-name-defaults arrayItemSuffix="" \
   -i $API_SPEC \
   -o $OUT_DIR
 

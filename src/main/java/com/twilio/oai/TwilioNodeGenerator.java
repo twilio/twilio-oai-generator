@@ -17,6 +17,10 @@ import org.openapitools.codegen.CodegenParameter;
 import org.openapitools.codegen.CodegenProperty;
 import org.openapitools.codegen.SupportingFile;
 import org.openapitools.codegen.languages.TypeScriptNodeClientCodegen;
+import org.openapitools.codegen.model.ModelMap;
+import org.openapitools.codegen.model.ModelsMap;
+import org.openapitools.codegen.model.OperationMap;
+import org.openapitools.codegen.model.OperationsMap;
 import org.openapitools.codegen.utils.StringUtils;
 
 public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
@@ -92,19 +96,17 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
             .collect(Collectors.joining(File.separator));
     }
 
-    @SuppressWarnings("unchecked")
     @Override
-    public Map<String, Object> postProcessAllModels(final Map<String, Object> allModels) {
-        final Map<String, Object> results = super.postProcessAllModels(allModels);
+    public Map<String, ModelsMap> postProcessAllModels(final Map<String, ModelsMap> allModels) {
+        final Map<String, ModelsMap> results = super.postProcessAllModels(allModels);
 
-        for (final Object obj : results.values()) {
-            final Map<String, Object> mods = (Map<String, Object>) obj;
-            final ArrayList<Map<String, Object>> modList = (ArrayList<Map<String, Object>>) mods.get("models");
+        for (final ModelsMap mods : results.values()) {
+            final List<ModelMap> modList = mods.getModels();
 
             // Add all the models to the local models list.
             modList
                 .stream()
-                .map(model -> model.get("model"))
+                .map(ModelMap::getModel)
                 .map(CodegenModel.class::cast)
                 .collect(Collectors.toCollection(() -> this.allModels));
         }
@@ -113,17 +115,19 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
         return new HashMap<>();
     }
 
-    @SuppressWarnings("unchecked")
     @Override
-    public Map<String, Object> postProcessOperationsWithModels(final Map<String, Object> objs,
-                                                               final List<Object> allModels) {
-        final Map<String, Object> results = super.postProcessOperationsWithModels(objs, allModels);
+    public OperationsMap postProcessOperationsWithModels(final OperationsMap objs, List<ModelMap> allModels) {
+        final OperationsMap results = super.postProcessOperationsWithModels(objs, allModels);
 
         final Map<String, Object> resources = new HashMap<>();
 
-        final Map<String, Object> ops = getStringMap(results, "operations");
+        final OperationMap ops = results.getOperations();
         final String classname = (String) ops.get("classname");
-        final ArrayList<CodegenOperation> opList = (ArrayList<CodegenOperation>) ops.get("operation");
+        final List<CodegenOperation> opList = ops.getOperation();
+
+        final boolean hasInstanceOperations = opList
+            .stream()
+            .anyMatch(co -> PathUtils.removeExtension(co.path).endsWith("}"));
 
         results.put("apiVersionPath", getRelativeRoot(classname));
 
@@ -137,29 +141,30 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
 
             final String itemName = inflector.singular(getResourceName(co.path));
             final String instanceName = itemName + "Instance";
-            final boolean isInstanceResource = PathUtils.removeExtension(co.path).endsWith("}");
+            final boolean isInstanceOperation = PathUtils.removeExtension(co.path).endsWith("}");
+            final HttpMethod httpMethod = HttpMethod.fromString(co.httpMethod);
             String resourceName;
             String parentResourceName = null;
 
             co.returnType = instanceName;
 
-            if (isInstanceResource) {
+            if (isInstanceOperation) {
                 resourceName = itemName + "Context";
                 parentResourceName = itemName + "ListInstance";
-                if ("GET".equalsIgnoreCase(co.httpMethod)) {
+                if (httpMethod == HttpMethod.GET) {
                     addOperationName(co, "Fetch");
-                } else if ("POST".equalsIgnoreCase(co.httpMethod)) {
+                } else if (httpMethod == HttpMethod.POST) {
                     addOperationName(co, "Update");
-                } else if ("DELETE".equalsIgnoreCase(co.httpMethod)) {
+                } else if (httpMethod == HttpMethod.DELETE) {
                     addOperationName(co, "Remove");
                     co.returnType = "boolean";
                     co.vendorExtensions.put("x-is-delete-operation", true);
                 }
             } else {
                 resourceName = itemName + "ListInstance";
-                if ("POST".equalsIgnoreCase(co.httpMethod)) {
+                if (httpMethod == HttpMethod.POST) {
                     addOperationName(co, "Create");
-                } else if ("GET".equalsIgnoreCase(co.httpMethod)) {
+                } else if (httpMethod == HttpMethod.GET) {
                     addOperationName(co, "Page");
                 }
             }
@@ -191,7 +196,7 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
                 addDependent(dependents, dependentPath);
             }
 
-            if (isInstanceResource) {
+            if (isInstanceOperation || (!hasInstanceOperations && httpMethod == HttpMethod.POST)) {
                 co.responses
                     .stream()
                     .map(response -> response.dataType)

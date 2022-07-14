@@ -1,7 +1,14 @@
 package com.twilio.oai;
 
-import java.util.*;
-
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.EnumSet;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -12,6 +19,10 @@ import org.openapitools.codegen.CodegenOperation;
 import org.openapitools.codegen.CodegenParameter;
 import org.openapitools.codegen.CodegenProperty;
 import org.openapitools.codegen.SupportingFile;
+import org.openapitools.codegen.model.ModelMap;
+import org.openapitools.codegen.model.ModelsMap;
+import org.openapitools.codegen.model.OperationMap;
+import org.openapitools.codegen.model.OperationsMap;
 import org.openapitools.codegen.utils.ModelUtils;
 import org.openapitools.codegen.utils.StringUtils;
 
@@ -47,7 +58,7 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
     private enum TerraformSchemaOptions {
         COMPUTED("SchemaComputed", "*Computed*"),
         // We assume all optional properties may also be computed in the backend. E.g., unique_name is typically
-        // optional but it will be populated if omitted.
+        // optional, but it will be populated if omitted.
         OPTIONAL("SchemaComputedOptional", "Optional"),
         FORCE_NEW_OPTIONAL("SchemaForceNewOptional", "Optional"),
         FORCE_NEW_REQUIRED("SchemaForceNewRequired", "**Required**"),
@@ -81,23 +92,21 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
     }
 
     @Override
-    public Map<String, Object> postProcessAllModels(final Map<String, Object> allModels) {
+    public Map<String, ModelsMap> postProcessAllModels(final Map<String, ModelsMap> allModels) {
         super.postProcessAllModels(allModels);
 
         // Return an empty collection so no model files get generated.
         return new HashMap<>();
     }
 
-    @SuppressWarnings("unchecked")
     @Override
-    public Map<String, Object> postProcessOperationsWithModels(final Map<String, Object> objs,
-                                                               final List<Object> allModels) {
-        final Map<String, Object> results = super.postProcessOperationsWithModels(objs, allModels);
+    public OperationsMap postProcessOperationsWithModels(final OperationsMap objs, List<ModelMap> allModels) {
+        final OperationsMap results = super.postProcessOperationsWithModels(objs, allModels);
 
         final Map<String, Map<String, Object>> resources = new LinkedHashMap<>();
 
-        final Map<String, Object> ops = (Map<String, Object>) results.get("operations");
-        final ArrayList<CodegenOperation> opList = (ArrayList<CodegenOperation>) ops.get("operation");
+        final OperationMap ops = results.getOperations();
+        final List<CodegenOperation> opList = ops.getOperation();
 
         // Drop list operations since they're not needed in CRUD operations.
         opList.removeIf(co -> co.nickname.startsWith("List"));
@@ -254,7 +263,7 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
     private List<CodegenParameter> getResourceSchema(final CodegenOperation createOperation,
                                                      final CodegenOperation updateOperation,
                                                      final CodegenOperation fetchOperation) {
-        var createParams = getCreateParams(createOperation, updateOperation != null);
+        var createParams = getCreateParams(createOperation, updateOperation);
 
         List<CodegenParameter> params = updateOperation != null ? updateOperation.allParams : fetchOperation.pathParams;
         var updateParams = getUpdateParams(params);
@@ -267,20 +276,25 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
         return Stream.concat(createParams.stream(), updateStream).collect(Collectors.toList());
     }
 
-    private List<CodegenParameter> getCreateParams(CodegenOperation createOperation, boolean hasUpdate) {
-        var createParams = createOperation.allParams;
+    private List<CodegenParameter> getCreateParams(final CodegenOperation createOperation,
+                                                   final CodegenOperation updateOperation) {
+        createOperation.allParams.forEach(createParam -> {
+            // Create params that are not part of the update operation params will require to force a new resource to
+            // be created.
+            final boolean forceNew = updateOperation == null || updateOperation.allParams
+                .stream()
+                .noneMatch(updateParam -> updateParam.paramName.equals(createParam.paramName));
+            final var schemaOptionRequired = forceNew
+                ? TerraformSchemaOptions.FORCE_NEW_REQUIRED
+                : TerraformSchemaOptions.REQUIRED;
+            final var schemaOptionOptional = forceNew
+                ? TerraformSchemaOptions.FORCE_NEW_OPTIONAL
+                : TerraformSchemaOptions.OPTIONAL;
 
-        // Resources without an update will be destroyed and force created on update
-        var schemaOptionRequired = !hasUpdate ?
-                TerraformSchemaOptions.FORCE_NEW_REQUIRED : TerraformSchemaOptions.REQUIRED;
-        var schemaOptionOptional = !hasUpdate ?
-                TerraformSchemaOptions.FORCE_NEW_OPTIONAL : TerraformSchemaOptions.OPTIONAL;
+            addSchemaVendorExtensions(createParam, createParam.required ? schemaOptionRequired : schemaOptionOptional);
+        });
 
-        createParams.forEach(param -> addSchemaVendorExtensions(param,
-                param.required
-                        ? schemaOptionRequired
-                        : schemaOptionOptional));
-        return createParams;
+        return createOperation.allParams;
     }
 
     private List<CodegenParameter> getUpdateParams(List<CodegenParameter> params) {

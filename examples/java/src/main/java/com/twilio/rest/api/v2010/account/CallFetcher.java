@@ -15,6 +15,7 @@
 package com.twilio.rest.api.v2010.account;
 
 import com.twilio.base.Fetcher;
+import com.twilio.converter.Promoter;
 import com.twilio.exception.ApiConnectionException;
 import com.twilio.converter.PrefixedCollapsibleMap;
 import com.twilio.exception.ApiException;
@@ -69,7 +70,8 @@ public class CallFetcher extends Fetcher<Call> {
 
     @Override
     public Call fetch(final TwilioRestClient client) {
-        String path = "/2010-04-01/Accounts/{AccountSid}/Calls/{TestInteger}.json";
+    String path = "/2010-04-01/Accounts/{AccountSid}/Calls/{TestInteger}.json";
+
         this.accountSid = this.accountSid == null ? client.getAccountSid() : this.accountSid;
         path = path.replace("{"+"AccountSid"+"}", this.accountSid.toString());
         path = path.replace("{"+"TestInteger"+"}", this.testInteger.toString());

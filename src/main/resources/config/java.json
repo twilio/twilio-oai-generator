@@ -95,14 +95,17 @@
   },
 
   "promotions": {
-    "url": {
-      "string": "Promoter.uriFromString({})"
+    "uri": {
+      "string": "Promoter.uriFromString(%s)"
     },
-    "phone_number": {
-      "string": "Promoter.phoneNumberFromString({})"
+    "list-uri": {
+      "uri": "Promoter.listOfOne(%s)"
+    },
+    "phone-number": {
+      "string": "Promoter.phoneNumberFromString(%s)"
     },
     "twiml": {
-      "string": "Promoter.twimlFromString({})"
+      "string": "Promoter.twimlFromString(%s)"
     }
   },
 

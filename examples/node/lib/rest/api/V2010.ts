@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import Api from '../Api';
+import ApiBase from '../ApiBase';
 import Version from '../../base/Version';
 import { AccountListInstance } from './v2010/Accounts';
 
@@ -24,7 +24,7 @@ export default class V2010 extends Version {
      *
      * @param { Twilio.Api } domain - The Twilio domain
      */
-    constructor(domain: Api) {
+    constructor(domain: ApiBase) {
         super(domain, 'v2010');
     }
 

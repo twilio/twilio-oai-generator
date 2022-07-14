@@ -1,6 +1,5 @@
 package com.twilio.oai;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,6 +14,10 @@ import org.openapitools.codegen.CodegenOperation;
 import org.openapitools.codegen.CodegenParameter;
 import org.openapitools.codegen.CodegenProperty;
 import org.openapitools.codegen.SupportingFile;
+import org.openapitools.codegen.model.ModelMap;
+import org.openapitools.codegen.model.ModelsMap;
+import org.openapitools.codegen.model.OperationMap;
+import org.openapitools.codegen.model.OperationsMap;
 
 public class TwilioGoGenerator extends AbstractTwilioGoGenerator {
 
@@ -46,29 +49,25 @@ public class TwilioGoGenerator extends AbstractTwilioGoGenerator {
         return super.toModel(prunedName, doUnderscore);
     }
 
-    @SuppressWarnings("unchecked")
     @Override
-    public Map<String, Object> postProcessModels(final Map<String, Object> objs) {
-        final Map<String, Object> results = super.postProcessModels(objs);
-        final List<Map<String, Object>> models = (List<Map<String, Object>>) results.get("models");
+    public ModelsMap postProcessModels(final ModelsMap objs) {
+        final ModelsMap results = super.postProcessModels(objs);
+        final List<ModelMap> models = results.getModels();
 
-        for (final Map<String, Object> m : models) {
-            final CodegenModel model = (CodegenModel) m.get("model");
+        for (final ModelMap m : models) {
+            final CodegenModel model = m.getModel();
 
             model.allVars.forEach(v -> v.setIsNumber(v.isNumber || v.isFloat));
             model.vendorExtensions.put("x-has-numbers-vars", model.allVars.stream().anyMatch(v -> v.isNumber));
         }
-
         return results;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
-    public Map<String, Object> postProcessOperationsWithModels(final Map<String, Object> objs,
-                                                               final List<Object> allModels) {
-        final Map<String, Object> results = super.postProcessOperationsWithModels(objs, allModels);
-        final Map<String, Object> ops = (Map<String, Object>) results.get("operations");
-        final ArrayList<CodegenOperation> opList = (ArrayList<CodegenOperation>) ops.get("operation");
+    public OperationsMap postProcessOperationsWithModels(final OperationsMap objs, List<ModelMap> allModels) {
+        final OperationsMap results = super.postProcessOperationsWithModels(objs, allModels);
+        final OperationMap ops = results.getOperations();
+        final List<CodegenOperation> opList = ops.getOperation();
         for (final CodegenOperation co : opList) {
             if (co.nickname.startsWith("List")) {
                 // make sure the format matches the other methods
