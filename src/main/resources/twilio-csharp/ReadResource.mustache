@@ -1,0 +1,46 @@
+
+
+
+        private static Request BuildReadRequest(Read{{resourceName}}Options options, ITwilioRestClient client)
+        {
+            string path = "{{{path}}}";
+            {{#pathParams}}
+            {{#vendorExtensions.x-is-account-sid}}
+            string Path{{paramName}} = options.Path{{paramName}} ?? client.{{paramName}}
+            path = path.replace("{"+"{{paramName}}"+"}", Path{{paramName}}.toString());
+            {{/vendorExtensions.x-is-account-sid}}
+            {{^vendorExtensions.x-is-account-sid}}
+
+            string Path{{paramName}} = options.Path{{paramName}};
+            path = path.replace("{"+"{{paramName}}"+"}", Path{{paramName}}.toString());
+            {{/vendorExtensions.x-is-account-sid}}
+            {{/pathParams}}
+
+            return new Request(
+                HttpMethod.Get,
+                Rest.Domain.{{domainPackage}},
+                path,
+                queryParams: options.GetParams(),
+                headerParams: null
+            );
+        }
+
+        public static ResourceSet<{{resourceName}}{{resourceConstant}}> Read(Read{{resourceName}}Options options, ITwilioRestClient client = null)
+        {
+            client = client ?? TwilioClient.GetRestClient();
+            var response = client.Request(BuildReadRequest(options, client));
+            var page = Page<{{resourceName}}{{resourceConstant}}>.FromJson("{{recordKey}}", response.Content);
+            return new ResourceSet<{{resourceName}}{{resourceConstant}}>(page, options, client);
+        }
+
+        #if !NET35
+        public static async System.Threading.Tasks.Task<ResourceSet<{{resourceName}}{{resourceConstant}}>> ReadAsync(Read{{resourceName}}Options options,
+                                                                                             ITwilioRestClient client = null)
+        {
+            client = client ?? TwilioClient.GetRestClient();
+            var response = await client.RequestAsync(BuildReadRequest(options, client));
+
+            var page = Page<{{resourceName}}{{resourceConstant}}>.FromJson("{{recordKey}}", response.Content);
+            return new ResourceSet<{{resourceName}}{{resourceConstant}}>(page, options, client);
+        }
+        #endif

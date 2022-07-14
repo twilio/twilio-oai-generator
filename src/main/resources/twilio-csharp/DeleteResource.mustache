@@ -1,0 +1,47 @@
+
+        private static Request BuildDeleteRequest(Delete{{resourceName}}Options options, ITwilioRestClient client)
+        {
+            string path = "{{path}}";
+            {{#pathParams}}
+            {{#vendorExtensions.x-is-account-sid}}
+            string Path{{paramName}} = options.Path{{paramName}} ?? client.{{paramName}};
+            path = path.replace("{"+"{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}"+"}", Path{{paramName}});
+            {{/vendorExtensions.x-is-account-sid}}
+            {{^vendorExtensions.x-is-account-sid}}
+
+            string Path{{paramName}} = options.Path{{paramName}};
+            path = path.replace("{"+"{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}"+"}", Path{{paramName}});
+            {{/vendorExtensions.x-is-account-sid}}
+            {{/pathParams}}
+
+            return new Request(
+                HttpMethod.Delete,
+                Rest.Domain.{{domainPackage}},
+                path,
+                queryParams: options.GetParams(),
+                headerParams: null
+            );
+        }
+
+        public static book Delete(Delete{{resource}}Options options, ITwilioRestClient client = null)
+        {
+            client = client ?? TwilioClient.GetRestClient();
+            var response = client.Request(BuildDeleteRequest(options, client));
+            return response.StatusCode == System.Net.HttpStatusCode.NoContent;
+        }
+
+        #if !NET35
+        public static async System.Threading.Tasks.Task<bool> DeleteAsync(Delete{{resource}}Options options,
+                                                                          ITwilioRestClient client = null)
+        {
+            client = client ?? TwilioClient.GetRestClient();
+            var response = await client.RequestAsync(BuildDeleteRequest(options, client));
+            return response.StatusCode == System.Net.HttpStatusCode.NoContent;
+        }
+        #endif
+
+        public static bool Delete({{#pathParams}}{{dataType}} {{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{#vendorExtensions.x-is-account-sid}} = null{{/vendorExtensions.x-is-account-sid}}, {{/pathParams}}ITwilioRestClient client = null)
+        {
+            var options = new Delete{{resource}}Options(pathSid){PathAccountSid = pathAccountSid};
+            return Delete(options, client);
+        }
