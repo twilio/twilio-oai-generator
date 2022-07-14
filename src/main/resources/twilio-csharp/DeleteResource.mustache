@@ -16,7 +16,7 @@
 
             return new Request(
                 HttpMethod.Delete,
-                Rest.Domain.Api,
+                Rest.Domain.{{domainPackage}},
                 path,
                 queryParams: options.GetParams(),
                 headerParams: null
