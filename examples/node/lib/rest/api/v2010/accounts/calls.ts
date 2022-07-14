@@ -214,7 +214,6 @@ export class CallContextImpl implements CallContext {
     }
 }
 
-export type CallTestEnum = 'DialVerb'|'Trunking';
 
 interface CallPayload extends CallResource, Page.TwilioResponsePayload {
 }
@@ -229,7 +228,7 @@ interface CallResource {
     test_number?: number | null;
     price_unit?: string | null;
     test_number_float?: number | null;
-    test_enum?: CallTestEnum;
+    test_enum?: object;
     test_array_of_integers?: Array<number>;
     test_array_of_array_of_integers?: Array<Array<number>>;
     test_array_of_objects?: Array<object> | null;
@@ -268,7 +267,7 @@ export class CallInstance {
     testNumber?: number | null;
     priceUnit?: string | null;
     testNumberFloat?: number | null;
-    testEnum?: CallTestEnum;
+    testEnum?: object;
     testArrayOfIntegers?: Array<number>;
     testArrayOfArrayOfIntegers?: Array<Array<number>>;
     testArrayOfObjects?: Array<object> | null;

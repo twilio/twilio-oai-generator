@@ -21,11 +21,11 @@ import { CallListInstance } from './Accounts/Calls';
 /**
  * Options to pass to update a AccountInstance
  *
- * @property { string } status 
+ * @property { TestEnumStatus } status 
  * @property { string } [pauseBehavior] 
  */
 export interface AccountContextUpdateOptions {
-    status: string;
+    status: TestEnumStatus;
     pauseBehavior?: string;
 }
 
@@ -194,7 +194,6 @@ export class AccountContextImpl implements AccountContext {
     }
 }
 
-export type AccountTestEnum = 'DialVerb'|'Trunking';
 
 interface AccountPayload extends AccountResource, Page.TwilioResponsePayload {
 }
@@ -209,7 +208,7 @@ interface AccountResource {
     test_number?: number | null;
     price_unit?: string | null;
     test_number_float?: number | null;
-    test_enum?: AccountTestEnum;
+    test_enum?: object;
     test_array_of_integers?: Array<number>;
     test_array_of_array_of_integers?: Array<Array<number>>;
     test_array_of_objects?: Array<object> | null;
@@ -248,7 +247,7 @@ export class AccountInstance {
     testNumber?: number | null;
     priceUnit?: string | null;
     testNumberFloat?: number | null;
-    testEnum?: AccountTestEnum;
+    testEnum?: object;
     testArrayOfIntegers?: Array<number>;
     testArrayOfArrayOfIntegers?: Array<Array<number>>;
     testArrayOfObjects?: Array<object> | null;
