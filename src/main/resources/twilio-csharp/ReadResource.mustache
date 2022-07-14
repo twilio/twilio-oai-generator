@@ -18,7 +18,7 @@
 
             return new Request(
                 HttpMethod.Get,
-                Rest.Domain.Api,
+                Rest.Domain.{{domainPackage}},
                 path,
                 queryParams: options.GetParams(),
                 headerParams: null

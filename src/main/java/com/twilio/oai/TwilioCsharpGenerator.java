@@ -143,6 +143,17 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
         return results;
     }
 
+    // Sanitizing URL path similar to java codegen.
+    @Override
+    public String sanitizeTag(String tag) {
+        tag = org.openapitools.codegen.utils.StringUtils.camelize(org.openapitools.codegen.utils.StringUtils.underscore(this.sanitizeName(tag)));
+        if (tag.matches("^\\d.*")) {
+            tag = "Class" + tag;
+        }
+
+        return tag;
+    }
+
     @Override
     public Map<String, Object> postProcessAllModels(final Map<String, Object> allModels) {
         final Map<String, Object> results = super.postProcessAllModels(allModels);

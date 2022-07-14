@@ -1,5 +1,5 @@
 
-        private static Request BuildCreateRequest(Create{{resourceName}}Options, ITwilioRestClient client)
+        private static Request BuildCreateRequest(Create{{resourceName}}Options options, ITwilioRestClient client)
         {
             string path = "{{{path}}}";
             {{#allParams}}
@@ -11,14 +11,14 @@
 
             return new Request(
                 HttpMethod.Post,
-                Rest.Domain.Api,
+                Rest.Domain.{{domainPackage}},
                 path,
                 postParams: options.GetParams(),
                 headerParams: null
             );
         }
 
-        public static {{resourceName}}{{resourceConstant}} Create(Create{{resourceName}}Options, ITwilioRestClient client = null)
+        public static {{resourceName}}{{resourceConstant}} Create(Create{{resourceName}}Options options, ITwilioRestClient client = null)
         {
             client = client ?? TwilioClient.GetRestClient();
             var response = client.Request(BuildCreateRequest(options, client));
