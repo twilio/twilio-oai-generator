@@ -239,11 +239,6 @@ export class AccountInstance {
         this._solution = { sid: sid || this.sid };
     }
 
-    private get _proxy(): AccountContext {
-        this._context = this._context || new AccountContextImpl(this._version, this._solution.sid);
-        return this._context;
-    }
-
     accountSid?: string | null;
     sid?: string | null;
     testString?: string | null;
@@ -261,6 +256,11 @@ export class AccountInstance {
      * Permissions authorized to the app
      */
     testArrayOfEnum?: Array<object> | null;
+
+    private get _proxy(): AccountContext {
+        this._context = this._context || new AccountContextImpl(this._version, this._solution.sid);
+        return this._context;
+    }
 
     /**
      * Remove a AccountInstance

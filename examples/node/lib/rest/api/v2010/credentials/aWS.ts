@@ -254,11 +254,6 @@ export class AWSInstance {
         this._solution = { sid: sid || this.sid };
     }
 
-    private get _proxy(): AWSContext {
-        this._context = this._context || new AWSContextImpl(this._version, this._solution.sid);
-        return this._context;
-    }
-
     accountSid?: string | null;
     sid?: string | null;
     testString?: string | null;
@@ -276,6 +271,11 @@ export class AWSInstance {
      * Permissions authorized to the app
      */
     testArrayOfEnum?: Array<object> | null;
+
+    private get _proxy(): AWSContext {
+        this._context = this._context || new AWSContextImpl(this._version, this._solution.sid);
+        return this._context;
+    }
 
     /**
      * Remove a AWSInstance

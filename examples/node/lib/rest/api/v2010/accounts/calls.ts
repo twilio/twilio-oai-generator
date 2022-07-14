@@ -259,11 +259,6 @@ export class CallInstance {
         this._solution = { accountSid, testInteger: testInteger || this.testInteger };
     }
 
-    private get _proxy(): CallContext {
-        this._context = this._context || new CallContextImpl(this._version, this._solution.accountSid, this._solution.testInteger);
-        return this._context;
-    }
-
     accountSid?: string | null;
     sid?: string | null;
     testString?: string | null;
@@ -281,6 +276,11 @@ export class CallInstance {
      * Permissions authorized to the app
      */
     testArrayOfEnum?: Array<object> | null;
+
+    private get _proxy(): CallContext {
+        this._context = this._context || new CallContextImpl(this._version, this._solution.accountSid, this._solution.testInteger);
+        return this._context;
+    }
 
     /**
      * Remove a CallInstance

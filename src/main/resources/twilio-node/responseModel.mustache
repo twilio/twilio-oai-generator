@@ -33,11 +33,6 @@ export class {{name}}Instance {
         this._solution = { {{#resourcePathParams}}{{paramName}}{{#-last}}: {{paramName}} || this.{{paramName}}{{/-last}}{{^-last}}, {{/-last}}{{/resourcePathParams}} };
     }
 
-    private get _proxy(): {{resourceName}} {
-        this._context = this._context || new {{resourceName}}Impl(this._version{{#resourcePathParams}}, this._solution.{{paramName}}{{/resourcePathParams}});
-        return this._context;
-    }
-
     {{#vars}}
     {{#description}}
     /**
@@ -46,12 +41,19 @@ export class {{name}}Instance {
     {{/description}}
     {{name}}{{^required}}?{{/required}}: {{#isEnum}}{{{vendorExtensions.x-name}}}{{/isEnum}}{{^isEnum}}{{{dataType}}}{{#isNullable}} | null{{/isNullable}}{{/isEnum}};
     {{/vars}}
+    {{#parentResourceName}}
+
+    private get _proxy(): {{resourceName}} {
+        this._context = this._context || new {{resourceName}}Impl(this._version{{#resourcePathParams}}, this._solution.{{paramName}}{{/resourcePathParams}});
+        return this._context;
+    }
     {{#operations}}
 
 {{>operationSignature}} {
         return this._proxy.{{vendorExtensions.x-name-lower}}({{#hasParams}}params, {{/hasParams}}callback);
     }
     {{/operations}}
+    {{/parentResourceName}}
     {{#dependents}}
 
     /**

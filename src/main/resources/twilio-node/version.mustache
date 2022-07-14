@@ -1,5 +1,5 @@
 {{>licenseInfo}}
-import {{domain}} from '../{{domain}}';
+import {{domain}}Base from '../{{domain}}Base';
 import Version from '../../base/Version';
 {{#versionResources}}
 import { {{name}}ListInstance } from './{{apiVersion}}/{{filename}}';
@@ -15,7 +15,7 @@ export default class {{apiVersionClass}} extends Version {
      *
      * @param { Twilio.{{domain}} } domain - The Twilio domain
      */
-    constructor(domain: {{domain}}) {
+    constructor(domain: {{domain}}Base) {
         super(domain, '{{apiVersion}}');
     }
 
