@@ -97,7 +97,7 @@ components:
           sms: true
           voice: true
         test_number_float: 100.22
-        test_enum: "Trunking"
+        test_enum: "completed"
   securitySchemes:
     accountSid_authToken:
       scheme: basic

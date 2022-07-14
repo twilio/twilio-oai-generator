@@ -47,7 +47,7 @@ func TestPost(t *testing.T) {
 	params.SetTestNumberInt64(222)
 	params.SetTestDateTime(time.Now())
 	params.SetTestDate("2022-01-01")
-	params.SetTestEnum("consumer-checking")
+	params.SetTestEnum("completed")
 
 	// "Any" type should expect any type of value. We'll test with an array of maps, but any type should work.
 	params.SetTestAnyType([]map[string]interface{}{{
@@ -116,7 +116,7 @@ func TestCustomHeaders(t *testing.T) {
 	assert.Nil(t, err)
 	assert.NotNil(t, resp)
 	assert.Equal(t, float32(100.22), *resp.TestNumberFloat)
-	assert.Equal(t, "Trunking", *resp.TestEnum)
+	assert.Equal(t, "completed", *resp.TestEnum)
 }
 
 func TestRequiredParameters(t *testing.T) {
