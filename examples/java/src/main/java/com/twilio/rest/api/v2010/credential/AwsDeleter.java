@@ -64,7 +64,7 @@ public class AwsDeleter extends Deleter<Aws> {
 
     @Override
     public boolean delete(final TwilioRestClient client) {
-    String path = "/v1/Credentials/AWS/{Sid}";
+        String path = "/v1/Credentials/AWS/{Sid}";
 
         path = path.replace("{"+"Sid"+"}", this.sid.toString());
 
