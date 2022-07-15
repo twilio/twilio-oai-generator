@@ -42,7 +42,7 @@ export interface AWSContextUpdateOptions {
  * @property { object } [testObject] 
  * @property { Date } [testDateTime] 
  * @property { string } [testDate] 
- * @property { string } [testEnum] 
+ * @property { TestEnumStatus } [testEnum] 
  * @property { Array<object> } [testObjectArray] 
  * @property { any } [testAnyType] 
  * @property { Array<string> } [permissions] A comma-separated list of the permissions you will request from the users of this ConnectApp.  Can include: &#x60;get-all&#x60; and &#x60;post-all&#x60;.
@@ -59,7 +59,7 @@ export interface AWSListInstanceCreateOptions {
     testObject?: object;
     testDateTime?: Date;
     testDate?: string;
-    testEnum?: string;
+    testEnum?: TestEnumStatus;
     testObjectArray?: Array<object>;
     testAnyType?: any;
     permissions?: Array<string>;
@@ -209,7 +209,6 @@ export class AWSContextImpl implements AWSContext {
     }
 }
 
-export type AWSTestEnum = 'DialVerb'|'Trunking';
 
 interface AWSPayload extends AWSResource, Page.TwilioResponsePayload {
 }
@@ -224,10 +223,11 @@ interface AWSResource {
     test_number?: number | null;
     price_unit?: string | null;
     test_number_float?: number | null;
-    test_enum?: AWSTestEnum;
+    test_enum?: object;
     test_array_of_integers?: Array<number>;
     test_array_of_array_of_integers?: Array<Array<number>>;
     test_array_of_objects?: Array<object> | null;
+    test_array_of_enum?: Array<object> | null;
 }
 
 export class AWSInstance {
@@ -248,6 +248,7 @@ export class AWSInstance {
         this.testArrayOfIntegers = payload.test_array_of_integers;
         this.testArrayOfArrayOfIntegers = payload.test_array_of_array_of_integers;
         this.testArrayOfObjects = payload.test_array_of_objects;
+        this.testArrayOfEnum = payload.test_array_of_enum;
 
         this._solution = { sid: sid || this.sid };
     }
@@ -261,10 +262,14 @@ export class AWSInstance {
     testNumber?: number | null;
     priceUnit?: string | null;
     testNumberFloat?: number | null;
-    testEnum?: AWSTestEnum;
+    testEnum?: object;
     testArrayOfIntegers?: Array<number>;
     testArrayOfArrayOfIntegers?: Array<Array<number>>;
     testArrayOfObjects?: Array<object> | null;
+    /**
+     * Permissions authorized to the app
+     */
+    testArrayOfEnum?: Array<object> | null;
 
     private get _proxy(): AWSContext {
         this._context = this._context || new AWSContextImpl(this._version, this._solution.sid);
@@ -336,7 +341,8 @@ export class AWSInstance {
             testEnum: this.testEnum, 
             testArrayOfIntegers: this.testArrayOfIntegers, 
             testArrayOfArrayOfIntegers: this.testArrayOfArrayOfIntegers, 
-            testArrayOfObjects: this.testArrayOfObjects
+            testArrayOfObjects: this.testArrayOfObjects, 
+            testArrayOfEnum: this.testArrayOfEnum
         }
     }
 

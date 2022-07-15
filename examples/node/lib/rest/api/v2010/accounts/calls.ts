@@ -214,7 +214,6 @@ export class CallContextImpl implements CallContext {
     }
 }
 
-export type CallTestEnum = 'DialVerb'|'Trunking';
 
 interface CallPayload extends CallResource, Page.TwilioResponsePayload {
 }
@@ -229,10 +228,11 @@ interface CallResource {
     test_number?: number | null;
     price_unit?: string | null;
     test_number_float?: number | null;
-    test_enum?: CallTestEnum;
+    test_enum?: object;
     test_array_of_integers?: Array<number>;
     test_array_of_array_of_integers?: Array<Array<number>>;
     test_array_of_objects?: Array<object> | null;
+    test_array_of_enum?: Array<object> | null;
 }
 
 export class CallInstance {
@@ -253,6 +253,7 @@ export class CallInstance {
         this.testArrayOfIntegers = payload.test_array_of_integers;
         this.testArrayOfArrayOfIntegers = payload.test_array_of_array_of_integers;
         this.testArrayOfObjects = payload.test_array_of_objects;
+        this.testArrayOfEnum = payload.test_array_of_enum;
 
         this._solution = { accountSid, testInteger: testInteger || this.testInteger };
     }
@@ -266,10 +267,14 @@ export class CallInstance {
     testNumber?: number | null;
     priceUnit?: string | null;
     testNumberFloat?: number | null;
-    testEnum?: CallTestEnum;
+    testEnum?: object;
     testArrayOfIntegers?: Array<number>;
     testArrayOfArrayOfIntegers?: Array<Array<number>>;
     testArrayOfObjects?: Array<object> | null;
+    /**
+     * Permissions authorized to the app
+     */
+    testArrayOfEnum?: Array<object> | null;
 
     private get _proxy(): CallContext {
         this._context = this._context || new CallContextImpl(this._version, this._solution.accountSid, this._solution.testInteger);
@@ -319,7 +324,8 @@ export class CallInstance {
             testEnum: this.testEnum, 
             testArrayOfIntegers: this.testArrayOfIntegers, 
             testArrayOfArrayOfIntegers: this.testArrayOfArrayOfIntegers, 
-            testArrayOfObjects: this.testArrayOfObjects
+            testArrayOfObjects: this.testArrayOfObjects, 
+            testArrayOfEnum: this.testArrayOfEnum
         }
     }
 

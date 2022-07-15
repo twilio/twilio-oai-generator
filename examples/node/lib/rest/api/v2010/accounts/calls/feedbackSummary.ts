@@ -112,7 +112,6 @@ export function FeedbackSummaryListInstance(version: V2010, accountSid: string):
 
     return instance;
 }
-export type FeedbackSummaryTestEnum = 'DialVerb'|'Trunking';
 
 interface FeedbackSummaryPayload extends FeedbackSummaryResource, Page.TwilioResponsePayload {
 }
@@ -127,10 +126,11 @@ interface FeedbackSummaryResource {
     test_number?: number | null;
     price_unit?: string | null;
     test_number_float?: number | null;
-    test_enum?: FeedbackSummaryTestEnum;
+    test_enum?: object;
     test_array_of_integers?: Array<number>;
     test_array_of_array_of_integers?: Array<Array<number>>;
     test_array_of_objects?: Array<object> | null;
+    test_array_of_enum?: Array<object> | null;
 }
 
 export class FeedbackSummaryInstance {
@@ -151,6 +151,7 @@ export class FeedbackSummaryInstance {
         this.testArrayOfIntegers = payload.test_array_of_integers;
         this.testArrayOfArrayOfIntegers = payload.test_array_of_array_of_integers;
         this.testArrayOfObjects = payload.test_array_of_objects;
+        this.testArrayOfEnum = payload.test_array_of_enum;
 
         this._solution = { accountSid: accountSid || this.accountSid };
     }
@@ -164,10 +165,14 @@ export class FeedbackSummaryInstance {
     testNumber?: number | null;
     priceUnit?: string | null;
     testNumberFloat?: number | null;
-    testEnum?: FeedbackSummaryTestEnum;
+    testEnum?: object;
     testArrayOfIntegers?: Array<number>;
     testArrayOfArrayOfIntegers?: Array<Array<number>>;
     testArrayOfObjects?: Array<object> | null;
+    /**
+     * Permissions authorized to the app
+     */
+    testArrayOfEnum?: Array<object> | null;
 
     /**
      * Provide a user-friendly representation
@@ -188,7 +193,8 @@ export class FeedbackSummaryInstance {
             testEnum: this.testEnum, 
             testArrayOfIntegers: this.testArrayOfIntegers, 
             testArrayOfArrayOfIntegers: this.testArrayOfArrayOfIntegers, 
-            testArrayOfObjects: this.testArrayOfObjects
+            testArrayOfObjects: this.testArrayOfObjects, 
+            testArrayOfEnum: this.testArrayOfEnum
         }
     }
 

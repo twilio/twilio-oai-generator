@@ -72,7 +72,7 @@ import com.twilio.type.SubscribeRule;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @ToString
 public class Aws extends Resource {
-    private static final long serialVersionUID = 204159094531598L;
+    private static final long serialVersionUID = 91236299650619L;
 
 
     public static AwsFetcher fetcher(final String sid){
@@ -127,13 +127,17 @@ public class Aws extends Resource {
             throw new ApiConnectionException(e.getMessage(), e);
         }
     }
-    public enum TestEnum {
-        DIALVERB("DialVerb"),
-        TRUNKING("Trunking");
+    public enum Status {
+        IN_PROGRESS("in-progress"),
+        PAUSED("paused"),
+        STOPPED("stopped"),
+        PROCESSING("processing"),
+        COMPLETED("completed"),
+        ABSENT("absent");
 
         private final String value;
 
-        private TestEnum(final String value) {
+        private Status(final String value) {
             this.value = value;
         }
 
@@ -142,8 +146,8 @@ public class Aws extends Resource {
         }
 
         @JsonCreator
-        public static TestEnum forValue(final String value) {
-            return Promoter.enumFromString(value, TestEnum.values());
+        public static Status forValue(final String value) {
+            return Promoter.enumFromString(value, Status.values());
         }
     }
 
@@ -156,10 +160,11 @@ public class Aws extends Resource {
     private final BigDecimal testNumber;
     private final Currency priceUnit;
     private final Float testNumberFloat;
-    private final Aws.TestEnum testEnum;
+    private final Aws.Status testEnum;
     private final List<Integer> testArrayOfIntegers;
     private final List<List<Integer>> testArrayOfArrayOfIntegers;
     private final List<FeedbackIssue> testArrayOfObjects;
+    private final List<Aws.Status> testArrayOfEnum;
 
     @JsonCreator
     private Aws(
@@ -192,7 +197,7 @@ public class Aws extends Resource {
         final Float testNumberFloat,
 
         @JsonProperty("test_enum")
-        final Aws.TestEnum testEnum,
+        final Aws.Status testEnum,
 
         @JsonProperty("test_array_of_integers")
         final List<Integer> testArrayOfIntegers,
@@ -201,7 +206,10 @@ public class Aws extends Resource {
         final List<List<Integer>> testArrayOfArrayOfIntegers,
 
         @JsonProperty("test_array_of_objects")
-        final List<FeedbackIssue> testArrayOfObjects
+        final List<FeedbackIssue> testArrayOfObjects,
+
+        @JsonProperty("test_array_of_enum")
+        final List<Aws.Status> testArrayOfEnum
     ) {
         this.accountSid = accountSid;
         this.sid = sid;
@@ -216,6 +224,7 @@ public class Aws extends Resource {
         this.testArrayOfIntegers = testArrayOfIntegers;
         this.testArrayOfArrayOfIntegers = testArrayOfArrayOfIntegers;
         this.testArrayOfObjects = testArrayOfObjects;
+        this.testArrayOfEnum = testArrayOfEnum;
     }
 
         public final String getAccountSid() {
@@ -245,7 +254,7 @@ public class Aws extends Resource {
         public final Float getTestNumberFloat() {
             return this.testNumberFloat;
         }
-        public final Aws.TestEnum getTestEnum() {
+        public final Aws.Status getTestEnum() {
             return this.testEnum;
         }
         public final List<Integer> getTestArrayOfIntegers() {
@@ -256,6 +265,9 @@ public class Aws extends Resource {
         }
         public final List<FeedbackIssue> getTestArrayOfObjects() {
             return this.testArrayOfObjects;
+        }
+        public final List<Aws.Status> getTestArrayOfEnum() {
+            return this.testArrayOfEnum;
         }
 
     @Override
@@ -270,12 +282,12 @@ public class Aws extends Resource {
 
         Aws other = (Aws) o;
 
-        return Objects.equals(accountSid, other.accountSid) &&  Objects.equals(sid, other.sid) &&  Objects.equals(testString, other.testString) &&  Objects.equals(testInteger, other.testInteger) &&  Objects.equals(testObject, other.testObject) &&  Objects.equals(testDateTime, other.testDateTime) &&  Objects.equals(testNumber, other.testNumber) &&  Objects.equals(priceUnit, other.priceUnit) &&  Objects.equals(testNumberFloat, other.testNumberFloat) &&  Objects.equals(testEnum, other.testEnum) &&  Objects.equals(testArrayOfIntegers, other.testArrayOfIntegers) &&  Objects.equals(testArrayOfArrayOfIntegers, other.testArrayOfArrayOfIntegers) &&  Objects.equals(testArrayOfObjects, other.testArrayOfObjects)  ;
+        return Objects.equals(accountSid, other.accountSid) &&  Objects.equals(sid, other.sid) &&  Objects.equals(testString, other.testString) &&  Objects.equals(testInteger, other.testInteger) &&  Objects.equals(testObject, other.testObject) &&  Objects.equals(testDateTime, other.testDateTime) &&  Objects.equals(testNumber, other.testNumber) &&  Objects.equals(priceUnit, other.priceUnit) &&  Objects.equals(testNumberFloat, other.testNumberFloat) &&  Objects.equals(testEnum, other.testEnum) &&  Objects.equals(testArrayOfIntegers, other.testArrayOfIntegers) &&  Objects.equals(testArrayOfArrayOfIntegers, other.testArrayOfArrayOfIntegers) &&  Objects.equals(testArrayOfObjects, other.testArrayOfObjects) &&  Objects.equals(testArrayOfEnum, other.testArrayOfEnum)  ;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(accountSid, sid, testString, testInteger, testObject, testDateTime, testNumber, priceUnit, testNumberFloat, testEnum, testArrayOfIntegers, testArrayOfArrayOfIntegers, testArrayOfObjects);
+        return Objects.hash(accountSid, sid, testString, testInteger, testObject, testDateTime, testNumber, priceUnit, testNumberFloat, testEnum, testArrayOfIntegers, testArrayOfArrayOfIntegers, testArrayOfObjects, testArrayOfEnum);
     }
 
 }

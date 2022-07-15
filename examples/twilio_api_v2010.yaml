@@ -1,5 +1,14 @@
 components:
   schemas:
+    test_enum_status:
+      enum:
+        - in-progress
+        - paused
+        - stopped
+        - processing
+        - completed
+        - absent
+      type: string
     test.response_object:
       properties:
         account_sid:
@@ -45,9 +54,7 @@ components:
           type: number
           format: float
         test_enum:
-          enum:
-            - DialVerb
-            - Trunking
+          $ref: '#/components/schemas/test_enum_status'
           nullable: true
           type: string
         test_array_of_integers:
@@ -71,6 +78,13 @@ components:
             type: object
           nullable: true
           type: array
+        test_array_of_enum:
+          description: Permissions authorized to the app
+          items:
+            $ref: '#/components/schemas/test_enum_status'
+            type: string
+          nullable: true
+          type: array
       type: object
   examples:
     test.response_object.example:
@@ -83,7 +97,7 @@ components:
           sms: true
           voice: true
         test_number_float: 100.22
-        test_enum: "Trunking"
+        test_enum: "completed"
   securitySchemes:
     accountSid_authToken:
       scheme: basic
@@ -211,10 +225,8 @@ paths:
                   type: string
                   format: date
                 TestEnum:
-                  enum:
-                    - consumer-checking
-                    - consumer-savings
-                    - commercial-checking
+                  $ref: '#/components/schemas/test_enum_status'
+                  type: string
                 TestObjectArray:
                   items:
                     type: object
@@ -522,13 +534,7 @@ paths:
                 PauseBehavior:
                   type: string
                 Status:
-                  enum:
-                    - in-progress
-                    - paused
-                    - stopped
-                    - processing
-                    - completed
-                    - absent
+                  $ref: '#/components/schemas/test_enum_status'
                   type: string
               required:
                 - Status
