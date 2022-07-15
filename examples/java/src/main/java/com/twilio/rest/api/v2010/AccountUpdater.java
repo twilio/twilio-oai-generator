@@ -78,7 +78,7 @@ public class AccountUpdater extends Updater<Account>{
 
     @Override
     public Account update(final TwilioRestClient client){
-    String path = "/2010-04-01/Accounts/{Sid}.json";
+        String path = "/2010-04-01/Accounts/{Sid}.json";
 
         this.sid = this.sid == null ? client.getAccountSid() : this.sid;
         path = path.replace("{"+"Sid"+"}", this.sid.toString());
