@@ -161,7 +161,7 @@ public class NewCredentialsCreator extends Creator<NewCredentials>{
 
     @Override
     public NewCredentials create(final TwilioRestClient client){
-        String path = "/v1/Credentials/AWS";
+    String path = "/v1/Credentials/AWS";
 
         path = path.replace("{"+"TestString"+"}", this.testString.toString());
 
