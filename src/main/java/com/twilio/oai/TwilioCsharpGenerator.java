@@ -5,6 +5,7 @@ import org.openapitools.codegen.CodegenParameter;
 import org.openapitools.codegen.languages.CSharpClientCodegen;
 
 import java.util.List;
+import java.util.*;
 import java.util.Map;
 
 public class TwilioCsharpGenerator extends CSharpClientCodegen {
