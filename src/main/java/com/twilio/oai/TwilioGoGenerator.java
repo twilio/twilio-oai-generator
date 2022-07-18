@@ -64,6 +64,44 @@ public class TwilioGoGenerator extends AbstractTwilioGoGenerator {
     }
 
     @Override
+    public void postProcessModelProperty(CodegenModel model, CodegenProperty property) {
+        super.postProcessModelProperty(model, property);
+        if (property.dataType.startsWith("[]") && property.dataType.contains("Enum")) {
+            property._enum = (List<String>) property.items.allowableValues.get("values");
+            property.allowableValues = property.items.allowableValues;
+            property.dataType = "[]string";
+            property.isEnum = property.dataType == null;
+            property.isNullable = true;
+        } else if (property.dataType.contains("Enum")) {
+            String[] value = property.dataType.split("Enum");
+            property.datatypeWithEnum = value[value.length-1];
+            property.dataType = "string";
+            property.isEnum = property.dataFormat == null;
+            property.isNullable = true;
+        }
+
+    }
+
+
+    private void processEnumParameters(final CodegenParameter parameter) {
+        if (parameter.dataType.startsWith("[]") && parameter.dataType.contains("Enum")) {
+            parameter._enum = (List<String>) parameter.items.allowableValues.get("values");
+            parameter.allowableValues = parameter.items.allowableValues;
+            parameter.dataType = "[]string";
+            parameter.isEnum = parameter.dataType == null;
+            parameter.isNullable = true;
+        } else if (parameter.dataType.contains("Enum")) {
+            String[] value = parameter.dataType.split("Enum");
+            parameter.datatypeWithEnum = value[value.length-1];
+            parameter.dataType = "string";
+            parameter.isEnum = parameter.dataFormat == null;
+            parameter.isNullable = true;
+        }
+    }
+
+
+    @SuppressWarnings("unchecked")
+    @Override
     public OperationsMap postProcessOperationsWithModels(final OperationsMap objs, List<ModelMap> allModels) {
         final OperationsMap results = super.postProcessOperationsWithModels(objs, allModels);
         final OperationMap ops = results.getOperations();
@@ -125,7 +163,7 @@ public class TwilioGoGenerator extends AbstractTwilioGoGenerator {
     @Override
     public void postProcessParameter(final CodegenParameter parameter) {
         super.postProcessParameter(parameter);
-
+        processEnumParameters(parameter);
         // Make sure required non-path params get into the options block.
         parameter.required = parameter.isPathParam;
         parameter.vendorExtensions.put("x-custom", parameter.baseName.equals("limit"));

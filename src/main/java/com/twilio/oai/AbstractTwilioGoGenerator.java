@@ -1,10 +1,7 @@
 package com.twilio.oai;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.Operation;
@@ -12,9 +9,11 @@ import io.swagger.v3.oas.models.PathItem;
 import io.swagger.v3.oas.models.responses.ApiResponse;
 import io.swagger.v3.oas.models.responses.ApiResponses;
 import org.openapitools.codegen.CodegenConstants;
+import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenOperation;
 import org.openapitools.codegen.CodegenProperty;
 import org.openapitools.codegen.languages.GoClientCodegen;
+import org.openapitools.codegen.model.ModelsMap;
 import org.openapitools.codegen.model.OperationMap;
 import org.openapitools.codegen.model.OperationsMap;
 import org.openapitools.codegen.model.ModelMap;
@@ -111,6 +110,21 @@ public abstract class AbstractTwilioGoGenerator extends GoClientCodegen {
         }
 
         return objs;
+    }
+
+    private Map<String, ModelsMap> filterOutEnumResults( Map<String, ModelsMap> results) {
+        HashMap <String, ModelsMap> resultMap = new HashMap<>();
+        results.forEach((key ,value) -> {
+            if (!key.contains("_enum_")) {
+                resultMap.put(key, value);
+            }});
+        return resultMap;
+    }
+
+    @Override
+    public Map<String, ModelsMap> postProcessAllModels(final Map<String, ModelsMap> allModels) {
+        Map<String, ModelsMap> results = filterOutEnumResults(super.postProcessAllModels(allModels));
+        return results;
     }
 
     @Override

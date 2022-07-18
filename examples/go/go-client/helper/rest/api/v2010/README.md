@@ -49,12 +49,12 @@ Class | Method | HTTP request | Description
 
 ## Documentation For Models
 
- - [ListAccountResponse](docs/ListAccountResponse.md)
  - [ListCredentialAwsResponse](docs/ListCredentialAwsResponse.md)
- - [ListCredentialAwsResponseMeta](docs/ListCredentialAwsResponseMeta.md)
- - [TestResponseObject](docs/TestResponseObject.md)
- - [TestResponseObjectTestArrayOfObjects](docs/TestResponseObjectTestArrayOfObjects.md)
+ - [ListAccountResponse](docs/ListAccountResponse.md)
  - [TestResponseObjectTestObject](docs/TestResponseObjectTestObject.md)
+ - [TestResponseObject](docs/TestResponseObject.md)
+ - [ListCredentialAwsResponseMeta](docs/ListCredentialAwsResponseMeta.md)
+ - [TestResponseObjectTestArrayOfObjects](docs/TestResponseObjectTestArrayOfObjects.md)
 
 
 ## Documentation For Authorization

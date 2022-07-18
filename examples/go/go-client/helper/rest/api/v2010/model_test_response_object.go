@@ -35,6 +35,8 @@ type TestResponseObject struct {
 	TestArrayOfIntegers        []int                                   `json:"test_array_of_integers,omitempty"`
 	TestArrayOfArrayOfIntegers [][]int                                 `json:"test_array_of_array_of_integers,omitempty"`
 	TestArrayOfObjects         *[]TestResponseObjectTestArrayOfObjects `json:"test_array_of_objects,omitempty"`
+	// Permissions authorized to the app
+	TestArrayOfEnum *[]string `json:"test_array_of_enum,omitempty"`
 }
 
 func (response *TestResponseObject) UnmarshalJSON(bytes []byte) (err error) {
@@ -52,6 +54,7 @@ func (response *TestResponseObject) UnmarshalJSON(bytes []byte) (err error) {
 		TestArrayOfIntegers        []int                                   `json:"test_array_of_integers"`
 		TestArrayOfArrayOfIntegers [][]int                                 `json:"test_array_of_array_of_integers"`
 		TestArrayOfObjects         *[]TestResponseObjectTestArrayOfObjects `json:"test_array_of_objects"`
+		TestArrayOfEnum            *[]string                               `json:"test_array_of_enum"`
 	}{}
 
 	if err = json.Unmarshal(bytes, &raw); err != nil {
@@ -70,6 +73,7 @@ func (response *TestResponseObject) UnmarshalJSON(bytes []byte) (err error) {
 		TestArrayOfIntegers:        raw.TestArrayOfIntegers,
 		TestArrayOfArrayOfIntegers: raw.TestArrayOfArrayOfIntegers,
 		TestArrayOfObjects:         raw.TestArrayOfObjects,
+		TestArrayOfEnum:            raw.TestArrayOfEnum,
 	}
 
 	responseTestNumber, err := client.UnmarshalFloat32(raw.TestNumber)
