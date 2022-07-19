@@ -21,6 +21,10 @@ namespace Twilio.Rest.{{domainPackage}}.{{package}}{{packageSubPart}}
     {{#vendorExtensions.x-is-read-operation}}
         {{>ReadResource}}
     {{/vendorExtensions.x-is-read-operation}}
+
+    {{#vendorExtensions.x-is-update-operation}}
+        {{>UpdateResource}}
+    {{/vendorExtensions.x-is-update-operation}}
     {{/operations}}
     {{>Pagination}}
     } // end of resource class

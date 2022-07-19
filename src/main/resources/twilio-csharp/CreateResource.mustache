@@ -1,13 +1,7 @@
 
         private static Request BuildCreateRequest(Create{{resourceName}}Options options, ITwilioRestClient client)
         {
-            string path = "{{{path}}}";
-            {{#allParams}}
-            {{#vendorExtensions.x-is-account-sid}}
-            string Path{{paramName}} = options.Path{{paramName}} ?? client.{{paramName}}
-            path = path.replace("{"+"{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}"+"}", Path{{paramName}});
-            {{/vendorExtensions.x-is-account-sid}}
-            {{/allParams}}
+            {{>GeneratePath}}
 
             return new Request(
                 HttpMethod.Post,

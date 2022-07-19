@@ -1,0 +1,30 @@
+
+        private static Request BuildUpdateRequest(Update{{resourceName}}Options options, ITwilioRestClient client)
+        {
+            {{>GeneratePath}}
+
+            return new Request(
+                HttpMethod.Post,
+                Rest.Domain.{{domainPackage}},
+                path,
+                postParams: options.GetParams(),
+                headerParams: null
+            );
+        }
+
+
+        public static {{resourceName}}{{resourceConstant}} Update(Update{{resourceName}}Options options, ITwilioRestClient client = null)
+        {
+            client = client ?? TwilioClient.GetRestClient();
+            var response = client.Request(BuildUpdateRequest(options, client));
+            return FromJson(response.Content);
+        }
+
+        #if !NET35
+        public static async System.Threading.Tasks.Task<{{resourceName}}{{resourceConstant}}> UpdateAsync(Update{{resourceName}}Options options,
+                                                                                                          ITwilioRestClient client = null)
+        {
+            client = client ?? TwilioClient.GetRestClient();
+            var response = await client.RequestAsync(BuildUpdateRequest(options, client));
+            return FromJson(response.Content);
+        }

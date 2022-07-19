@@ -7,6 +7,7 @@ import com.twilio.oai.common.ApplicationConstants;
 import com.twilio.oai.common.EnumConstants;
 import com.twilio.oai.common.Utility;
 import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.PathItem;
 import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenOperation;
 import org.openapitools.codegen.CodegenParameter;
@@ -40,6 +41,7 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
         // Find the templates in the local resources dir.
         embeddedTemplateDir = templateDir = getName();
         sourceFolder = "";
+        packageName = "";
     }
 
     @Override
@@ -65,6 +67,10 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
         modelTemplateFiles.clear();
         modelTestTemplateFiles.clear();
         modelDocTemplateFiles.clear();
+
+        filesMetadataFilename = "";
+        versionMetadataFilename = "";
+
     }
 
     @Override
