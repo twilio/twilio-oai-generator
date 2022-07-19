@@ -17,6 +17,8 @@ public class ConventionResolver {
     final static String HYPHEN = "-";
     public static final String OBJECT = "object";
 
+    public static final String LIST_OBJECT = "List<Object>";
+
     public static final String PHONE_NUMBER_FORMAT = "phone-number";
 
     final static String X_IS_PHONE_NUMBER_FORMAT = "x-is-phone-number-format";
@@ -41,8 +43,12 @@ public class ConventionResolver {
                 property.dataType = (String)conventionMap.get(Segments.SEGMENT_PROPERTIES.getSegment()).get(property.dataFormat);
             }
 
-            if(property.dataType.equalsIgnoreCase(OBJECT)) {
-                property.dataType = (String)conventionMap.get(Segments.SEGMENT_PROPERTIES.getSegment()).get(OBJECT);
+            if(property.dataType.equalsIgnoreCase(OBJECT) || property.dataType.equals(LIST_OBJECT)) {
+                if (property.dataType.equals(LIST_OBJECT)) {
+                    property.dataType = "List<" + conventionMap.get(Segments.SEGMENT_PROPERTIES.getSegment()).get(OBJECT) + ">";
+                } else {
+                    property.dataType = (String) conventionMap.get(Segments.SEGMENT_PROPERTIES.getSegment()).get(OBJECT);
+                }
             }
             property.nameInSnakeCase = property.nameInSnakeCase.toLowerCase(Locale.ROOT);
             vendorExtensions.forEach(
@@ -53,8 +59,12 @@ public class ConventionResolver {
 
     public static Optional<CodegenParameter> resolveParameter(CodegenParameter parameter) {
 
-        if(parameter.dataType.equalsIgnoreCase(OBJECT)) {
-            parameter.dataType = (String)conventionMap.get(Segments.SEGMENT_PROPERTIES.getSegment()).get(OBJECT);
+        if(parameter.dataType.equalsIgnoreCase(OBJECT) || parameter.dataType.equals(LIST_OBJECT)) {
+            if (parameter.dataType.equals(LIST_OBJECT)) {
+                parameter.dataType = "List<" + conventionMap.get(Segments.SEGMENT_PROPERTIES.getSegment()).get(OBJECT)+ ">";
+            } else {
+                parameter.dataType = (String) conventionMap.get(Segments.SEGMENT_PROPERTIES.getSegment()).get(OBJECT);
+            }
         }
         boolean hasPromotion = conventionMap.get(Segments.SEGMENT_PROMOTIONS.getSegment()).containsKey(parameter.dataFormat);
         if (hasPromotion) {
