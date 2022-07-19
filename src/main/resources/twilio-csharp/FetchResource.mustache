@@ -2,18 +2,7 @@
 
         private static Request BuildFetchRequest(Fetch{{resourceName}}Options options, ITwilioRestClient client)
         {
-            string path = "{{{path}}}";
-            {{#pathParams}}
-            {{#vendorExtensions.x-is-account-sid}}
-            string Path{{paramName}} = options.Path{{paramName}} ?? client.{{paramName}}
-            path = path.replace("{"+"{{paramName}}"+"}", Path{{paramName}}.toString());
-            {{/vendorExtensions.x-is-account-sid}}
-            {{^vendorExtensions.x-is-account-sid}}
-
-            string Path{{paramName}} = options.Path{{paramName}};
-            path = path.replace("{"+"{{paramName}}"+"}", Path{{paramName}}.toString());
-            {{/vendorExtensions.x-is-account-sid}}
-            {{/pathParams}}
+            {{>GeneratePath}}
 
             return new Request(
                 HttpMethod.Get,
