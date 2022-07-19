@@ -73,7 +73,7 @@ public class NewCredentialsCreator extends Creator<NewCredentials>{
     private ZonedDateTime testDateTime;
     private LocalDate testDate;
     private NewCredentials.Status testEnum;
-    private List<Object> testObjectArray;
+    private List<Map<String, Object>> testObjectArray;
     private Map<String, Object> testAnyType;
     private List<NewCredentials.Permissions> permissions;
 
@@ -146,7 +146,7 @@ public class NewCredentialsCreator extends Creator<NewCredentials>{
         this.testEnum = testEnum;
         return this;
     }
-    public NewCredentialsCreator setTestObjectArray(final List<Object> testObjectArray){
+    public NewCredentialsCreator setTestObjectArray(final List<Map<String, Object>> testObjectArray){
         this.testObjectArray = testObjectArray;
         return this;
     }
