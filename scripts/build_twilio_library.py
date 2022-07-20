@@ -1,6 +1,7 @@
 import argparse
 import os
 import re
+import json
 from pathlib import Path
 from typing import Tuple
 from clean_java_imports import remove_unused_imports
@@ -24,7 +25,7 @@ def build(openapi_spec_path: str, output_path: str, language: str) -> None:
 
 
 def generate(openapi_spec_path: str, output_path: str, language: str, domain: str, is_file: bool = False) -> None:
-    full_path, domain_name, api_version = get_domain_info(openapi_spec_path, domain, is_file)
+    full_path, domain_name, api_version = get_domain_info(openapi_spec_path, domain, is_file, language)
     parent_dir = Path(__file__).parent.parent
 
     to_generate = 'terraform-provider-twilio' if language == 'terraform' else f'twilio-{language}'
@@ -52,12 +53,25 @@ def run_openapi_generator(parent_dir: str, to_generate: str, output_path: str, f
     print(f'Code generation completed at {output_path}')
 
 
-def get_domain_info(oai_spec_location: str, domain: str, is_file: bool = False) -> Tuple[str, str, str]:
+def get_domain_info(oai_spec_location: str, domain: str, is_file: bool = False, language: str = "") -> Tuple[str, str, str]:
     full_path = oai_spec_location if is_file else os.path.join(oai_spec_location, domain)
     parts = re.split(r'twilio_(.+?)_?(v\d+)?\.', domain, flags=re.IGNORECASE)
     domain_name = parts[1]
     api_version = parts[2] or ''
+    # added logic to fetch the domain name from servers url in spec file, instead for relying on file name
+    if language == 'java' and full_path.endswith('.json'):
+        domain_name = parse_domain_name(full_path)
     return full_path, domain_name, api_version
+
+
+def parse_domain_name(oai_spec_location_path: str):
+    server_regex = '^(?:https?://)?(?:[^@/\n]+@)?([^:/?\n.]+)'
+    with open(oai_spec_location_path, 'r') as f:
+        file_content = json.load(f)
+    domain_from_server_url = re.search(
+        server_regex, file_content["servers"][0]["url"]).group(1)
+    domain_name = domain_from_server_url.replace('-', '').lower()
+    return domain_name
 
 
 if __name__ == '__main__':
