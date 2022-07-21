@@ -514,7 +514,7 @@ public class TwilioRestTest {
         anyMap.put(TEST_INTEGER, 1);
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
-        mockRequest.addPostParam("TestAnyType", "{TestInteger=1}");
+        mockRequest.addPostParam("TestAnyType", "{\"TestInteger\":1}");
         mockRequest.addPostParam("TestNumberFloat", "1.4");
         mockRequest.addPostParam(TEST_INTEGER, "1");
         mockRequest.addPostParam("TestString", ACCOUNT_SID);
@@ -527,7 +527,7 @@ public class TwilioRestTest {
         assertNotNull(credentials);
         assertNotNull(credentialsCreator);
         assertEquals("AC222222222222222222222222222222", mockRequest.getPostParams().get("TestString").get(0));
-        assertEquals("{TestInteger=1}", mockRequest.getPostParams().get("TestAnyType").get(0));
+        assertEquals("{\"TestInteger\":1}", mockRequest.getPostParams().get("TestAnyType").get(0));
 
     }
 
