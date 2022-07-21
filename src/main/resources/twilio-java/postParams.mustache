@@ -2,7 +2,14 @@
 {{#formParams}}
         if ({{paramName}} != null) {
     {{#isFreeFormObject}}
+        {{#isArray}}
+            for (Map<String, Object> prop : {{paramName}}) {
+                request.addPostParam("{{baseName}}", Converter.mapToJson(prop));
+            }
+        {{/isArray}}
+        {{^isArray}}
             request.addPostParam("{{baseName}}",  Converter.mapToJson({{paramName}}));
+        {{/isArray}}
     {{/isFreeFormObject}}
     {{^isFreeFormObject}}
     {{#isArray}}
