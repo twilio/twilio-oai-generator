@@ -108,6 +108,7 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
             Matcher m = serverUrlPattern.matcher(path.getServers().get(0).getUrl());
             if(m.find()){
                 additionalProperties.put("domainName", StringUtils.camelize(m.group(1)));
+                additionalProperties.put("domainPackage", m.group(1).replaceAll("-",""));
             }
         });
     }
@@ -788,17 +789,20 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
                 map(ConventionResolver::resolveParamTypes)
                 .map(item -> this.resolveEnumParameter(item, resourceName))
                 .forEach(param -> param.paramName = "path"+param.paramName);
-        co.queryParams = co.queryParams.stream().map(ConventionResolver::resolveParamTypes)
+        co.queryParams = co.queryParams.stream().map(ConventionResolver::resolveParameter)
+                .map(Optional::get)
                 .map(ConventionResolver::prefixedCollapsibleMap)
                 .map(item -> this.resolveEnumParameter(item, resourceName))
                 .collect(Collectors.toList());
         co.queryParams = preProcessQueryParameters(co);
-        co.formParams = co.formParams.stream().map(ConventionResolver::resolveParamTypes)
+        co.formParams = co.formParams.stream().map(ConventionResolver::resolveParameter)
+                .map(Optional::get)
                 .map(ConventionResolver::prefixedCollapsibleMap)
                 .map(item -> this.resolveEnumParameter(item, resourceName))
                 .collect(Collectors.toList());
         co.formParams = preProcessFormParams(co);
-        co.headerParams = co.headerParams.stream().map(ConventionResolver::resolveParamTypes)
+        co.headerParams = co.headerParams.stream().map(ConventionResolver::resolveParameter)
+                .map(Optional::get)
                 .map(ConventionResolver::prefixedCollapsibleMap)
                 .map(item -> this.resolveEnumParameter(item, resourceName))
                 .collect(Collectors.toList());
