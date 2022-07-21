@@ -64,8 +64,8 @@ public class ConventionResolver {
                 parameter.dataType = "List<" + conventionMap.get(Segments.SEGMENT_PROPERTIES.getSegment()).get(OBJECT)+ ">";
             } else {
                 parameter.dataType = (String) conventionMap.get(Segments.SEGMENT_PROPERTIES.getSegment()).get(OBJECT);
-                parameter.isFreeFormObject = true;
             }
+            parameter.isFreeFormObject = true;
         }
         boolean hasPromotion = conventionMap.get(Segments.SEGMENT_PROMOTIONS.getSegment()).containsKey(parameter.dataFormat);
         if (hasPromotion) {
