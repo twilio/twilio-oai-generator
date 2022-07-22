@@ -18,6 +18,7 @@ import com.twilio.base.Creator;
 import com.twilio.converter.Promoter;
 import com.twilio.exception.ApiConnectionException;
 import com.twilio.converter.PrefixedCollapsibleMap;
+import com.twilio.converter.Converter;
 import com.twilio.exception.ApiException;
 import com.twilio.exception.RestException;
 import com.twilio.http.HttpMethod;
@@ -73,7 +74,7 @@ public class NewCredentialsCreator extends Creator<NewCredentials>{
     private ZonedDateTime testDateTime;
     private LocalDate testDate;
     private NewCredentials.Status testEnum;
-    private List<Object> testObjectArray;
+    private List<Map<String, Object>> testObjectArray;
     private Map<String, Object> testAnyType;
     private List<NewCredentials.Permissions> permissions;
 
@@ -146,7 +147,7 @@ public class NewCredentialsCreator extends Creator<NewCredentials>{
         this.testEnum = testEnum;
         return this;
     }
-    public NewCredentialsCreator setTestObjectArray(final List<Object> testObjectArray){
+    public NewCredentialsCreator setTestObjectArray(final List<Map<String, Object>> testObjectArray){
         this.testObjectArray = testObjectArray;
         return this;
     }
@@ -234,13 +235,13 @@ public class NewCredentialsCreator extends Creator<NewCredentials>{
     
         }
         if (testObjectArray != null) {
-            for (Object prop : testObjectArray) {
-                request.addPostParam("TestObjectArray", prop.toString());
+            for (Map<String, Object> prop : testObjectArray) {
+                request.addPostParam("TestObjectArray", Converter.mapToJson(prop));
             }
     
         }
         if (testAnyType != null) {
-            request.addPostParam("TestAnyType", testAnyType.toString());
+            request.addPostParam("TestAnyType",  Converter.mapToJson(testAnyType));
     
         }
         if (permissions != null) {
