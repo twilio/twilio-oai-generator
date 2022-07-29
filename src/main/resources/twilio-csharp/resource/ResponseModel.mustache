@@ -1,0 +1,13 @@
+
+{{#responseModel}}
+    {{#isEnum}}
+        [JsonConverter(typeof(StringEnumConverter))]
+        [JsonProperty("{{baseName}}")]
+        public {{resourceName}}{{resourceConstant}}.{{nameInCamelCase}}Enum {{nameInCamelCase}} { get; private set; }
+    {{/isEnum}}
+    {{^isEnum}}
+        [JsonProperty("{{baseName}}")]
+        public {{{dataType}}} {{nameInCamelCase}} { get; private set; }
+    {{/isEnum}}
+
+{{/responseModel}}

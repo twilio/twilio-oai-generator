@@ -36,4 +36,17 @@ public class EnumConstants {
             this.value = value;
         }
     }
+
+    public enum CsharpDataTypes {
+        LIST("List<");
+
+        private final String value;
+
+        public String getValue() {
+            return value;
+        }
+        private CsharpDataTypes(String value) {
+            this.value = value;
+        }
+    }
 }

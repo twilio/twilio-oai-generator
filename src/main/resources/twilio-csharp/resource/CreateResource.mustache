@@ -1,7 +1,7 @@
 
         private static Request BuildCreateRequest(Create{{resourceName}}Options options, ITwilioRestClient client)
         {
-            {{>GeneratePath}}
+            {{>resource/GeneratePath}}
 
             return new Request(
                 HttpMethod.Post,
@@ -43,3 +43,10 @@
             return await CreateAsync(options, client);
         }
         #endif
+
+        public static {{resourceName}}{{resourceConstant}} Create(
+
+        )
+        {
+
+        }
