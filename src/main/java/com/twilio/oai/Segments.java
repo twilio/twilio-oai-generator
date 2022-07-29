@@ -1,6 +1,6 @@
 package com.twilio.oai;
 
-enum Segments {
+public enum Segments {
     SEGMENT_HYDRATE("hydrate"),
     SEGMENT_SERIALIZE("serialize"),
     SEGMENT_DESERIALIZE("deserialize"),

@@ -1,17 +1,17 @@
 package com.twilio.oai;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.twilio.oai.common.ApplicationConstants;
 import com.twilio.oai.common.EnumConstants;
+import com.twilio.oai.common.Resolver;
+import com.twilio.oai.common.ParameterResolverFactory;
 import com.twilio.oai.common.Utility;
 import io.swagger.v3.oas.models.OpenAPI;
-import io.swagger.v3.oas.models.PathItem;
+import lombok.extern.slf4j.Slf4j;
 import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenOperation;
 import org.openapitools.codegen.CodegenParameter;
 import org.openapitools.codegen.CodegenProperty;
+import org.openapitools.codegen.CodegenResponse;
 import org.openapitools.codegen.languages.CSharpClientCodegen;
 import org.openapitools.codegen.model.ModelMap;
 import org.openapitools.codegen.model.ModelsMap;
@@ -27,12 +27,16 @@ import java.util.*;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+@Slf4j
 public class TwilioCsharpGenerator extends CSharpClientCodegen {
 
     private DirectoryStructureService directoryStructureService = new DirectoryStructureService(EnumConstants.Generator.TWILIO_CSHARP);
     String initialApiPackage;
     private final List<CodegenModel> allModels = new ArrayList<>();
     private  Map<String, String> modelFormatMap = new HashMap<>();
+
+    private Resolver resolver = ParameterResolverFactory.getInstance(EnumConstants.Generator.TWILIO_CSHARP);
+
 
     public TwilioCsharpGenerator() {
         super();
@@ -79,6 +83,9 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
         directoryStructureService.configure(openAPI, additionalProperties);
     }
 
+    private List<CodegenParameter> getNonPathParams(List<CodegenParameter> allParams) {
+        return allParams.stream().filter(param -> !param.isPathParam).collect(Collectors.toList());
+    }
     @Override
     public void postProcessParameter(final CodegenParameter parameter) {
         super.postProcessParameter(parameter);
@@ -95,9 +102,10 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
     @Override
     public void postProcessModelProperty(CodegenModel model, CodegenProperty property) {
         super.postProcessModelProperty(model, property);
-        property.isEnum =  property.isEnum && property.dataFormat == null;
+        resolver.initializeEnumProperty(property);
     }
 
+    @Override
     public String toApiFilename(final String name) {
         String[] split = super.toApiFilename(name).split(ApplicationConstants.PATH_SEPARATOR_PLACEHOLDER);
         String apiFileName =  Arrays.stream(Arrays.copyOfRange(split, 0, split.length - 1))
@@ -110,46 +118,107 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
         final OperationsMap results = super.postProcessOperationsWithModels(objs, allModels);
         final Map<String, Map<String, Object>> resources = new LinkedHashMap<>();
 
+        List<CodegenModel> responseModels = new ArrayList<>();
+        String recordKey = null;
+
         System.out.println("======= Operation =======");
         final ArrayList<CodegenOperation> opList = getAllOperations(results);
         for (final CodegenOperation co : opList) {
             String path = co.path;
 
             String[] filePathArray = co.baseName.split(ApplicationConstants.PATH_SEPARATOR_PLACEHOLDER);
-            String resourceName = filePathArray[filePathArray.length-1];
+            String resourceName = filePathArray[filePathArray.length - 1];
             final Map<String, Object> resource = resources.computeIfAbsent(resourceName, k -> new LinkedHashMap<>());
             populateCrudOperations(resource, co);
-
-            List<String> packagePaths = Arrays.asList(Arrays.copyOfRange(filePathArray,0 , filePathArray.length-1))
+            updateCodeOperationParams(co, resourceName);
+            List<String> packagePaths = Arrays.asList(Arrays.copyOfRange(filePathArray, 0, filePathArray.length - 1))
                     .stream().collect(Collectors.toList());
 
             // Add operations key to resource
             final ArrayList<CodegenOperation> resourceOperationList = (ArrayList<CodegenOperation>) resource.computeIfAbsent("operations", k -> new ArrayList<>());
             resourceOperationList.add(co);
 
-            co.allParams.stream().map(ConventionResolver::resolveParamTypes).map(item -> StringUtils.camelize(item.paramName)).collect(Collectors.toList());
+            if (co.operationId.equals("CreateCall") || co.operationId.equals("DeleteCall") || co.operationId.equals("FetchCall")) {
+                //System.out.println("All Params for: " + co.operationId + " are: -------------------> +" + co.allParams);
+            }
 
-            System.out.println(co.operationId + "path: --> " + packagePaths);
+            // Options instance variables
+            co.allParams.stream().map(resolver::resolveParameter).map(item -> StringUtils.camelize(item.paramName)).collect(Collectors.toList());
+
             if (packagePaths.isEmpty()) {
                 resource.put("packageSubPart", "");
             } else {
                 String packagePath = packagePaths.stream().collect(Collectors.joining("."));
-                resource.put("packageSubPart", "."+packagePath);
+                resource.put("packageSubPart", "." + packagePath);
             }
-            if (co.operationId.equals("DeleteCall")) {
-                System.out.println("Path is: " +path);
+            recordKey = getRecordKey(opList, this.allModels);
+            co.vendorExtensions.put("x-non-path-params", getNonPathParams(co.allParams));
+
+            for (CodegenResponse response : co.responses) {
+                String modelName = response.dataType;
+                Optional<CodegenModel> responseModel = getModelCoPath(modelName,co, recordKey);
+                if (!responseModel.isPresent()) {
+                    continue;
+                }
+                resolver.resolveParameter(responseModel.get());
+                responseModels.add(responseModel.get());
             }
 
 
-            results.put("recordKey", getRecordKey(opList, this.allModels));
+            results.put("recordKey", recordKey);
             resource.put("path", path);
             resource.put("resourceName", resourceName);
             resource.put("resourceConstant", "Resource");
         }
 
+        for (final Map<String, Object> resource : resources.values()) {
+            resource.put("responseModel", getDistinctResponseModel(responseModels));
+            flattenStringMap(resource, "models");
+        }
 
         results.put("resources", resources.values());
         return results;
+    }
+
+    private void flattenStringMap(final Map<String, Object> resource, final String key) {
+        resource.computeIfPresent(key, (k, dependents) -> ((Map<String, Object>) dependents).values());
+    }
+
+    private Optional<CodegenModel> getModelCoPath(final String modelName, CodegenOperation codegenOperation, String recordKey) {
+        if (codegenOperation.vendorExtensions.containsKey("x-is-read-operation") && (boolean)codegenOperation.vendorExtensions.get("x-is-read-operation")) {
+            Optional<CodegenModel> coModel = allModels.stream().filter(model -> model.getClassname().equals(modelName)).findFirst();
+            if (!coModel.isPresent()) {
+                return Optional.empty();
+            }
+            CodegenProperty property = coModel.get().vars.stream().filter(prop -> prop.baseName.equals(recordKey)).findFirst().get();
+            Optional<CodegenModel> complexModel = allModels.stream().filter(model -> model.getClassname().equals(property.complexType)).findFirst();
+            return complexModel;
+        }
+        return allModels.stream().filter(model -> model.getClassname().equals(modelName)).findFirst();
+    }
+
+
+    private List<CodegenProperty> getDistinctResponseModel(List<CodegenModel> responseModels) {
+        Set<CodegenProperty> distinctResponseModels = new LinkedHashSet<>();
+        for (CodegenModel codegenModel: responseModels) {
+            for (CodegenProperty property: codegenModel.vars) {
+                if (property.isEnum) {
+
+                }
+                distinctResponseModels.add(property);
+            }
+        }
+        List<CodegenProperty> response = new LinkedList<>();
+        response.addAll(distinctResponseModels);
+        return response;
+    }
+
+    private void updateCodeOperationParams(final CodegenOperation co, String resourceName) {
+        //parameterResolver.resolveParameter(co.allParams);
+        resolver.resolveParameter(co.pathParams);
+        resolver.resolveParameter(co.queryParams);
+        resolver.resolveParameter(co.optionalParams);
+        resolver.resolveParameter(co.requiredParams);
     }
 
     // Sanitizing URL path similar to java codegen.
@@ -177,7 +246,8 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
                     .map(CodegenModel.class::cast)
                     .collect(Collectors.toCollection(() -> this.allModels));
         }
-        setObjectFormatMap(this.allModels);
+        Utility.setComplexDataMapping(this.allModels, this.modelFormatMap);
+        resolver.setModelFormatMap(modelFormatMap);
         // Return an empty collection so no model files get generated.
         return new HashMap<>();
     }
@@ -201,20 +271,6 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
     private ArrayList<CodegenOperation> getAllOperations(final Map<String, Object> results) {
         final Map<String, Object> ops = getStringMap(results, "operations");
          return (ArrayList<CodegenOperation>) ops.get("operation");
-    }
-
-    private void setObjectFormatMap(final List<CodegenModel> allModels) {
-        allModels.forEach(item -> {
-            ObjectMapper objectMapper = new ObjectMapper();
-            try {
-                JsonNode jsonNode = objectMapper.readTree(item.modelJson);
-                if (jsonNode.get("type").textValue().equals("object") && jsonNode.has("format")) {
-                    modelFormatMap.put(item.classFilename, jsonNode.get("format").textValue());
-                }
-            } catch (JsonProcessingException e) {
-                e.printStackTrace();
-            }
-        });
     }
 
     private void populateCrudOperations(final Map<String, Object> resource, final CodegenOperation operation) {

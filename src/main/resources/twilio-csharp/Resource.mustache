@@ -7,26 +7,32 @@ namespace Twilio.Rest.{{domainPackage}}.{{package}}{{packageSubPart}}
     {
     {{#operations}}
     {{#vendorExtensions.x-is-create-operation}}
-        {{>CreateResource}}
+        {{>resource/CreateResource}}
     {{/vendorExtensions.x-is-create-operation}}
 
     {{#vendorExtensions.x-is-delete-operation}}
-        {{>DeleteResource}}
+        {{>resource/DeleteResource}}
     {{/vendorExtensions.x-is-delete-operation}}
 
     {{#vendorExtensions.x-is-fetch-operation}}
-        {{>FetchResource}}
+        {{>resource/FetchResource}}
     {{/vendorExtensions.x-is-fetch-operation}}
 
     {{#vendorExtensions.x-is-read-operation}}
-        {{>ReadResource}}
+        {{>resource/ReadResource}}
     {{/vendorExtensions.x-is-read-operation}}
 
     {{#vendorExtensions.x-is-update-operation}}
-        {{>UpdateResource}}
+        {{>resource/UpdateResource}}
     {{/vendorExtensions.x-is-update-operation}}
     {{/operations}}
     {{>Pagination}}
+
+    {{>resource/ResponseModel}}
+
+    private {{resourceName}}{{resourceConstant}}(){
+
+    }
     } // end of resource class
 } // end of namespace
 
