@@ -15,7 +15,7 @@
 import { inspect, InspectOptions } from 'util';
 import Page from '../../../../base/Page';
 import V2010 from '../../V2010';
-import { FeedbackSummaryListInstance } from './Calls/FeedbackSummary';
+import { FeedbackSummaryListInstance } from './calls/feedbackSummary';
 
 
 /**

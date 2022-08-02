@@ -216,7 +216,7 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
                     });
             }
 
-            results.put("apiFilename", getResourceName(co.path));
+            results.put("apiFilename", StringUtils.camelize(getResourceName(co.path), true));
         }
 
         resources.values().stream().map(resource -> (Map<String, Object>) resource).forEach(resource -> {
@@ -255,7 +255,7 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
         final String dependentName = getResourceName(dependentPath);
         dependent.put("name", inflector.singular(dependentName));
         dependent.put("mountName", StringUtils.underscore(dependentName));
-        dependent.put("filename", dependentName);
+        dependent.put("filename", StringUtils.camelize(dependentName, true));
     }
 
     private CodegenModel resolveComplexType(CodegenModel item) {
