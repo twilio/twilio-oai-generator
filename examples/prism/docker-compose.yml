@@ -16,6 +16,14 @@ services:
     depends_on:
       - prism_twilio
 
+  node-test:
+    build:
+      context: ../node
+    volumes:
+      - ../node:/local
+    depends_on:
+      - prism_twilio
+
   prism_twilio:
     image: stoplight/prism:4
     volumes:
