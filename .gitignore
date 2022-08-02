@@ -8,5 +8,5 @@ __pycache__
 **/docs
 **/*.bak
 
-**/coverage.out
+**/coverage*
 **/test-report.out

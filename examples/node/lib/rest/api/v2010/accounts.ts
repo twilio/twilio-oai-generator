@@ -15,7 +15,7 @@
 import { inspect, InspectOptions } from 'util';
 import Page from '../../../base/Page';
 import V2010 from '../V2010';
-import { CallListInstance } from './Accounts/Calls';
+import { CallListInstance } from './accounts/calls';
 
 
 /**
