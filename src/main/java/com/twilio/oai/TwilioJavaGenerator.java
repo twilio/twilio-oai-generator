@@ -868,14 +868,7 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
     }
 
     private String getSubDomainName(Map<String, String> subDomainMap, String name) {
-        String subDomainName = null;
-        for (Map.Entry<String, String> set :
-                subDomainMap.entrySet()) {
-            if(set.getKey().equalsIgnoreCase(name)){
-                subDomainName = set.getValue();
-            }
-        }
-        return subDomainName;
+        return subDomainMap.entrySet().stream().filter(x -> x.getKey().equalsIgnoreCase(name)).findFirst().get().getValue();
     }
 
     @Override
