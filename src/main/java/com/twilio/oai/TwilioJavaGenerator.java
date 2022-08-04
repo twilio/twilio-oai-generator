@@ -115,7 +115,7 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
 
     private String extractSubDomainName(String name) {
         String[] split = name.split("/");
-        if(split[1] != null) {
+        if(split.length > 1 && split[1] != null) {
             String result = split[1];
             result = result.substring(0, 1).toLowerCase() + result.substring(1);
             return result;
