@@ -75,7 +75,7 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
             domain = inputSpecs[inputSpecs.length-1].replaceAll("\\.[^/]+$", "");
         }
 
-        apiPackage = (version != "")? version : "" ; // Place the API files in the version folder.
+        apiPackage = version; // Place the API files in the version folder.
         additionalProperties.put("apiVersion", version);
         additionalProperties.put("apiVersionClass", version.toUpperCase());
         additionalProperties.put("domain", StringUtils.camelize(domain));
