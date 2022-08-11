@@ -12,7 +12,7 @@
             );
         }
 
-        public static book Delete(Delete{{resource}}Options options, ITwilioRestClient client = null)
+        public static book Delete(Delete{{resourceName}}Options options, ITwilioRestClient client = null)
         {
             client = client ?? TwilioClient.GetRestClient();
             var response = client.Request(BuildDeleteRequest(options, client));
@@ -20,7 +20,7 @@
         }
 
         #if !NET35
-        public static async System.Threading.Tasks.Task<bool> DeleteAsync(Delete{{resource}}Options options,
+        public static async System.Threading.Tasks.Task<bool> DeleteAsync(Delete{{resourceName}}Options options,
                                                                           ITwilioRestClient client = null)
         {
             client = client ?? TwilioClient.GetRestClient();
@@ -29,8 +29,16 @@
         }
         #endif
 
-        public static bool Delete({{#pathParams}}{{dataType}} {{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{#vendorExtensions.x-is-account-sid}} = null{{/vendorExtensions.x-is-account-sid}}, {{/pathParams}}ITwilioRestClient client = null)
+        public static bool Delete({{#vendorExtensions.x-request-body-param}}{{{dataType}}} {{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^required}} = null{{/required}}, {{/vendorExtensions.x-request-body-param}}ITwilioRestClient client = null)
         {
-            var options = new Delete{{resource}}Options(pathSid){PathAccountSid = pathAccountSid};
+            var options = new Delete{{resourceName}}Options({{#requiredParams}}{{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^-last}}, {{/-last}}{{/requiredParams}}){ {{#vendorExtensions.x-request-body-param}}{{^required}}{{paramName}} = {{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^-last}},{{/-last}}{{/required}}{{/vendorExtensions.x-request-body-param}} };
             return Delete(options, client);
         }
+
+        #if !NET35
+        public static async System.Threading.Tasks.Task<bool> DeleteAsync({{#vendorExtensions.x-request-body-param}}{{{dataType}}} {{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^required}} = null{{/required}}, {{/vendorExtensions.x-request-body-param}}ITwilioRestClient client = null)
+        {
+            var options = new Delete{{resourceName}}Options({{#requiredParams}}{{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^-last}}, {{/-last}}{{/requiredParams}}){ {{#vendorExtensions.x-request-body-param}}{{^required}}{{paramName}} = {{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^-last}},{{/-last}}{{/required}}{{/vendorExtensions.x-request-body-param}} };
+            return Delete(options, client);
+        }
+        #endif
