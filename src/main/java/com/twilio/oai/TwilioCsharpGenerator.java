@@ -1,8 +1,8 @@
 package com.twilio.oai;
 
 import com.twilio.oai.common.ApplicationConstants;
+import com.twilio.oai.common.CsharpResolver;
 import com.twilio.oai.common.EnumConstants;
-import com.twilio.oai.common.Resolver;
 import com.twilio.oai.common.ParameterResolverFactory;
 import com.twilio.oai.common.Utility;
 import io.swagger.v3.oas.models.OpenAPI;
@@ -12,6 +12,7 @@ import org.openapitools.codegen.CodegenOperation;
 import org.openapitools.codegen.CodegenParameter;
 import org.openapitools.codegen.CodegenProperty;
 import org.openapitools.codegen.CodegenResponse;
+import org.openapitools.codegen.IJsonSchemaValidationProperties;
 import org.openapitools.codegen.languages.CSharpClientCodegen;
 import org.openapitools.codegen.model.ModelMap;
 import org.openapitools.codegen.model.ModelsMap;
@@ -21,10 +22,14 @@ import org.openapitools.codegen.utils.StringUtils;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.*;
 import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -35,7 +40,7 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
     private final List<CodegenModel> allModels = new ArrayList<>();
     private  Map<String, String> modelFormatMap = new HashMap<>();
 
-    private Resolver resolver = ParameterResolverFactory.getInstance(EnumConstants.Generator.TWILIO_CSHARP);
+    private CsharpResolver resolver = (CsharpResolver) ParameterResolverFactory.getInstance(EnumConstants.Generator.TWILIO_CSHARP);
 
 
     public TwilioCsharpGenerator() {
@@ -102,7 +107,6 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
     @Override
     public void postProcessModelProperty(CodegenModel model, CodegenProperty property) {
         super.postProcessModelProperty(model, property);
-        resolver.initializeEnumProperty(property);
     }
 
     @Override
@@ -120,9 +124,14 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
 
         List<CodegenModel> responseModels = new ArrayList<>();
         String recordKey = null;
+        String tagMap[] = ((Map<String, String>) objs.get("operations")).get("classname").split(ApplicationConstants.PATH_SEPARATOR_PLACEHOLDER);
+        String className = tagMap[tagMap.length-1];
+        resolver.setClassName(className);
 
-        System.out.println("======= Operation =======");
         final ArrayList<CodegenOperation> opList = getAllOperations(results);
+        final Map<String, IJsonSchemaValidationProperties> enums = new HashMap<>();
+        resolver.setEnums(enums);
+
         for (final CodegenOperation co : opList) {
             String path = co.path;
 
@@ -130,7 +139,7 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
             String resourceName = filePathArray[filePathArray.length - 1];
             final Map<String, Object> resource = resources.computeIfAbsent(resourceName, k -> new LinkedHashMap<>());
             populateCrudOperations(resource, co);
-            updateCodeOperationParams(co, resourceName);
+            updateCodeOperationParams(co);
             List<String> packagePaths = Arrays.asList(Arrays.copyOfRange(filePathArray, 0, filePathArray.length - 1))
                     .stream().collect(Collectors.toList());
 
@@ -140,6 +149,9 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
 
             if (co.operationId.equals("CreateCall") || co.operationId.equals("DeleteCall") || co.operationId.equals("FetchCall")) {
                 //System.out.println("All Params for: " + co.operationId + " are: -------------------> +" + co.allParams);
+            }
+            if (co.requiredParams.size() > 0) {
+                co.vendorExtensions.put("x-required-param-exist", true);
             }
 
             // Options instance variables
@@ -164,6 +176,7 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
                 responseModels.add(responseModel.get());
             }
 
+            requestBodyArgument(co);
 
             results.put("recordKey", recordKey);
             resource.put("path", path);
@@ -176,8 +189,88 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
             flattenStringMap(resource, "models");
         }
 
+        List<IJsonSchemaValidationProperties> enumList = new ArrayList<>(resolver.getEnums().values());
+        results.put("enums", enumList);
         results.put("resources", resources.values());
         return results;
+    }
+
+    private void requestBodyArgument(final CodegenOperation co) {
+        List<CodegenParameter> conditionalParameters = new ArrayList<>();
+        List<CodegenParameter> optionalParameters = new ArrayList<>();
+
+        HashMap<String, CodegenParameter> optionalParamMap = new HashMap<>();
+        for (CodegenParameter codegenParameter: co.optionalParams) {
+            optionalParamMap.put(codegenParameter.paramName, codegenParameter);
+        }
+
+        // Process Conditional Parameters
+        if (co.vendorExtensions.containsKey("x-twilio")) {
+            HashMap<String, Object> twilioVendorExtension = (HashMap<String, Object>) co.vendorExtensions.get("x-twilio");
+            if (twilioVendorExtension != null && twilioVendorExtension.containsKey("conditional")) {
+                List<List<String>> conditionalParamList = (List<List<String>>) twilioVendorExtension.get("conditional");
+                for (List<String> conditionalParams: conditionalParamList) {
+                    for (String conditionalParam: conditionalParams) {
+                        if (optionalParamMap.containsKey(StringUtils.camelize(conditionalParam))) {
+                            conditionalParameters.add(optionalParamMap.get(StringUtils.camelize(conditionalParam)));
+                            optionalParamMap.remove(StringUtils.camelize(conditionalParam));
+                        }
+                    }
+                }
+            }
+        }
+
+        // Remove path param from Optional Parameters as they appear before conditional and optional Parameter
+        for (CodegenParameter pathParam: co.pathParams) {
+            if (optionalParamMap.containsKey(pathParam.paramName)) {
+                optionalParamMap.remove(pathParam.paramName);
+            }
+        }
+
+        // Process Optional Parameters
+        for (CodegenParameter optionalParam: co.optionalParams) {
+            if (optionalParamMap.containsKey(optionalParam.paramName)) {
+                optionalParameters.add(optionalParam);
+            }
+        }
+
+        rearrangeBeforeAfter(co.requiredParams);
+        rearrangeBeforeAfter(co.pathParams);
+        rearrangeBeforeAfter(conditionalParameters);
+        rearrangeBeforeAfter(optionalParameters);
+
+        // Add to vendor extension
+        HashSet<CodegenParameter> requestBodyArgument = new LinkedHashSet<>();
+        requestBodyArgument.addAll(co.requiredParams);
+        requestBodyArgument.addAll(co.pathParams);
+        requestBodyArgument.addAll(conditionalParameters);
+        requestBodyArgument.addAll(optionalParameters);
+
+        co.vendorExtensions.put("x-request-body-param", new ArrayList<>(requestBodyArgument));
+        int requiredCnt = 0;
+        for (CodegenParameter parameter: requestBodyArgument) {
+            if (parameter.required) {
+                requiredCnt++;
+            }
+        }
+        if (requiredCnt != co.requiredParams.size()) {
+            System.out.println("Exception Occurred ...............");
+        }
+    }
+
+    // TODO: Need to be corrected in open api spec by yps
+    void rearrangeBeforeAfter(final List<CodegenParameter> parameters) {
+        for (int index = 0; index < parameters.size(); index++) {
+            CodegenParameter codegenParameter = parameters.get(index);
+            if (!org.apache.commons.lang3.StringUtils.isBlank(codegenParameter.paramName) && codegenParameter.paramName.endsWith("Before")) {
+                String paramName = codegenParameter.paramName.replace("Before", "");
+                if (index > 0 && paramName.equals(parameters.get(index-1).paramName)) {
+                    CodegenParameter codegenParameterToRearrange = parameters.get(index-1);
+                    parameters.set(index, codegenParameterToRearrange);
+                    parameters.set(index-1, codegenParameter);
+                }
+            }
+        }
     }
 
     private void flattenStringMap(final Map<String, Object> resource, final String key) {
@@ -213,8 +306,7 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
         return response;
     }
 
-    private void updateCodeOperationParams(final CodegenOperation co, String resourceName) {
-        //parameterResolver.resolveParameter(co.allParams);
+    private void updateCodeOperationParams(final CodegenOperation co) {
         resolver.resolveParameter(co.pathParams);
         resolver.resolveParameter(co.queryParams);
         resolver.resolveParameter(co.optionalParams);

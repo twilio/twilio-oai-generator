@@ -6,6 +6,7 @@ import com.twilio.oai.Segments;
 import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenParameter;
 import org.openapitools.codegen.CodegenProperty;
+import org.openapitools.codegen.IJsonSchemaValidationProperties;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,6 +21,10 @@ public class CsharpResolver extends Resolver {
 
     private EnumConstants.Generator generator;
 
+    private String className;
+
+    private Map<String, IJsonSchemaValidationProperties> enums;
+
     private final Map<String, Map<String, Object>> conventionMap;
 
     private  Map<String, String> modelFormatMap = new HashMap<>();
@@ -29,6 +34,18 @@ public class CsharpResolver extends Resolver {
         this.generator = generator;
         conventionMap = getConventionalMap();
 
+    }
+
+    public void setClassName(String className) {
+        this.className = className;
+    }
+
+    public Map<String, IJsonSchemaValidationProperties> getEnums() {
+        return enums;
+    }
+
+    public void setEnums(Map<String, IJsonSchemaValidationProperties> enums) {
+        this.enums = enums;
     }
 
     public void setModelFormatMap(final Map<String, String> modelFormatMap) {
@@ -54,8 +71,18 @@ public class CsharpResolver extends Resolver {
                 System.out.println("Complex data base name: " + codegenProperty.baseName);
             }
             sanitizeDataFormat(codegenProperty);
-            resolveDirect(codegenProperty);
-            resolveInDirect(codegenProperty);
+            String existsInDataType = null;
+            for (EnumConstants.CsharpDataTypes dataType: EnumConstants.CsharpDataTypes.values()) {
+                if (codegenProperty.dataType != null && codegenProperty.dataType.startsWith(dataType.getValue())) {
+                    existsInDataType = dataType.getValue();
+                    break;
+                }
+            }
+            if (existsInDataType != null) {
+                resolveInDirect(codegenProperty, existsInDataType);
+            } else {
+                resolveDirect(codegenProperty);
+            }
             resolveComplex(codegenProperty);
         }
 
@@ -87,8 +114,19 @@ public class CsharpResolver extends Resolver {
         if (parameter == null) {
             return null;
         }
-        resolveDirect(parameter);
-        resolveInDirect(parameter);
+
+        String existsInDataType = null;
+        for (EnumConstants.CsharpDataTypes dataType: EnumConstants.CsharpDataTypes.values()) {
+            if (parameter.dataType != null && parameter.dataType.startsWith(dataType.getValue())) {
+                existsInDataType = dataType.getValue();
+                break;
+            }
+        }
+        if (existsInDataType != null) {
+            resolveInDirect(parameter, existsInDataType);
+        } else {
+            resolveDirect(parameter);
+        }
         return parameter;
     }
 
@@ -106,22 +144,22 @@ public class CsharpResolver extends Resolver {
                 codegenProperty.dataType = "List<object";
             }
         }
+        if (codegenProperty.complexType != null && codegenProperty.complexType.contains("Enum")) { // codegenProperty.dataType.contains(className) &&
+            String[] value = codegenProperty.complexType.split("Enum");
+            codegenProperty.enumName = value[value.length-1] + "Enum";
+            if (codegenProperty.items != null) {
+                codegenProperty.items.enumName = value[value.length-1];
+            }
+            if (enums == null) {
+                enums = new HashMap<>();
+            }
+            codegenProperty.dataType = String.join("Resource.", value) + "Enum";
+            enums.putIfAbsent(codegenProperty.enumName, codegenProperty);
+        }
         return codegenProperty;
     }
 
-    private CodegenProperty resolveInDirect(CodegenProperty codegenProperty) {
-        String existsInDataType = null;
-        for (EnumConstants.CsharpDataTypes dataType: EnumConstants.CsharpDataTypes.values()) {
-            if (codegenProperty.dataType != null && codegenProperty.dataType.startsWith(dataType.getValue())) {
-                existsInDataType = dataType.getValue();
-                break;
-            }
-        }
-
-        if (existsInDataType == null) {
-            return codegenProperty;
-        }
-
+    private CodegenProperty resolveInDirect(CodegenProperty codegenProperty, String existsInDataType) {
         codegenProperty.dataType = codegenProperty.dataType.replace(existsInDataType, "");
         codegenProperty.dataType = codegenProperty.dataType.substring(0, codegenProperty.dataType.length()-1);
         /// Can be re-used
@@ -131,11 +169,7 @@ public class CsharpResolver extends Resolver {
         return codegenProperty;
     }
 
-    private void resolveDeserialize() {
-
-    }
-
-    private CodegenParameter resolveDirect(CodegenParameter parameter)  {
+    private CodegenParameter resolveDirect(CodegenParameter parameter) {
         String property = Segments.SEGMENT_PROPERTIES.getSegment();
 
         sanitizeDataFormat(parameter);
@@ -153,44 +187,44 @@ public class CsharpResolver extends Resolver {
                 parameter.dataType = "List<object";
             }
         }
+
+        if (parameter.dataType.contains("Enum")) { // parameter.dataType.contains(className) &&
+            String[] value = parameter.dataType.split("Enum");
+            parameter.enumName = value[value.length-1] + "Enum";
+            if (enums == null) {
+                enums = new HashMap<>();
+            }
+            parameter.dataType = String.join("Resource.", value) + "Enum";
+            enums.putIfAbsent(parameter.enumName, parameter);
+        }
+
         return parameter;
     }
 
     private void sanitizeDataFormat(CodegenParameter parameter) {
         if (parameter.dataFormat == null) return;
-        List<String> splitDataFormat = new ArrayList<>(List.of(parameter.dataFormat.split("-")));
         if (parameter.isMap) {
+            List<String> splitDataFormat = new ArrayList<>(List.of(parameter.dataFormat.split("-")));
             splitDataFormat.remove(splitDataFormat.size()-1);
+            parameter.dataFormat = String.join("-", splitDataFormat);
         }
-        parameter.dataFormat = String.join("_", splitDataFormat);
     }
 
     private void sanitizeDataFormat(CodegenProperty property) {
         if (property.dataFormat == null) return;
-        List<String> splitDataFormat = new ArrayList<>(List.of(property.dataFormat.split("-")));
         if (property.isMap) {
+            List<String> splitDataFormat = new ArrayList<>(List.of(property.dataFormat.split("-")));
             splitDataFormat.remove(splitDataFormat.size()-1);
+            property.dataFormat = String.join("-", splitDataFormat);
         }
-        property.dataFormat = String.join("_", splitDataFormat);
+
     }
 
-    private CodegenParameter resolveInDirect(CodegenParameter parameter)  {
-        String existsInDataType = null;
-        for (EnumConstants.CsharpDataTypes dataType: EnumConstants.CsharpDataTypes.values()) {
-            if (parameter.dataType != null && parameter.dataType.startsWith(dataType.getValue())) {
-                existsInDataType = dataType.getValue();
-                break;
-            }
-        }
-
-        if (existsInDataType == null) {
-            return parameter;
-        }
-
+    private CodegenParameter resolveInDirect(CodegenParameter parameter, String existsInDataType)  {
         parameter.dataType = parameter.dataType.replace(existsInDataType, "");
         parameter.dataType = parameter.dataType.substring(0, parameter.dataType.length()-1);
         /// Can be re-used
-        resolveInDirect(parameter);
+        resolveDirect(parameter);
         ////
         parameter.dataType = existsInDataType + parameter.dataType + ApplicationConstants.LIST_END;
         return parameter;
@@ -202,34 +236,5 @@ public class CsharpResolver extends Resolver {
             resolveParameter(parameter);
         }
         return parameters;
-    }
-
-    public void initializeEnumProperty(CodegenProperty property) {
-        if (property.isEnum) {
-            property.enumName = property.baseName;
-            property.isEnum =  property.isEnum && property.dataFormat == null;
-            return;
-        }
-
-        if (property.dataType.contains("Enum")) {
-            property.vendorExtensions.put("refEnum", true);
-            String[] value = property.dataType.split("Enum");
-            String lastValue = value[value.length-1];
-
-            if (property.dataType.startsWith("List<")) {
-                property.dataType = "List<" + lastValue;
-                property.complexType = lastValue.substring(0, lastValue.length()-1);
-                property.baseType = lastValue.substring(0, lastValue.length()-1);
-                property.allowableValues = property.items.allowableValues;
-                property._enum = (List<String>) property.items.allowableValues.get("values");
-            } else {
-                property.dataType = value[value.length - 1];
-                property.complexType = property.dataType;
-                property.baseType = property.dataType;
-                property._enum = (List<String>) property.allowableValues.get("values");
-            }
-            property.isEnum = true;
-        }
-        property.isEnum =  property.isEnum && property.dataFormat == null;
     }
 }

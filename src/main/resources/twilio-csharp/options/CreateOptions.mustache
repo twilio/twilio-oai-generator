@@ -2,4 +2,17 @@
     {
         // How to decide which has getter and which has setter ?
         {{>options/Params}}
+    {{#vendorExtensions.x-required-param-exist}}
+        public Create{{resourceName}}Options({{#requiredParams}}{{{dataType}}} {{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^-last}}, {{/-last}}{{/requiredParams}})
+        {
+        {{#requiredParams}}
+            {{paramName}} = {{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}};
+        {{/requiredParams}}
+        {{#allParams}}
+            {{#isArray}}
+            {{paramName}} = new {{{dataType}}}();
+            {{/isArray}}
+        {{/allParams}}
+        }
+    {{/vendorExtensions.x-required-param-exist}}
     }

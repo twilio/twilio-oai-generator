@@ -33,3 +33,23 @@
             return new ResourceSet<{{resourceName}}{{resourceConstant}}>(page, options, client);
         }
         #endif
+
+        public static ResourceSet<{{resourceName}}{{resourceConstant}}> Read({{#vendorExtensions.x-request-body-param}}
+                                                     {{{dataType}}} {{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^required}} = null{{/required}},{{/vendorExtensions.x-request-body-param}}
+                                                     long? limit = null,
+                                                     ITwilioRestClient client = null)
+        {
+            var options = new Read{{resourceName}}Options({{#requiredParams}}{{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^-last}}, {{/-last}}{{/requiredParams}}){ {{#vendorExtensions.x-request-body-param}}{{^required}}{{paramName}} = {{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}, {{/required}}{{/vendorExtensions.x-request-body-param}}Limit = limit};
+            return Read(options, client);
+        }
+
+        #if !NET35
+        public static async System.Threading.Tasks.Task<ResourceSet<{{resourceName}}{{resourceConstant}}>> ReadAsync({{#vendorExtensions.x-request-body-param}}
+                                                                                             {{{dataType}}} {{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^required}} = null{{/required}},{{/vendorExtensions.x-request-body-param}}
+                                                                                             long? limit = null,
+                                                                                             ITwilioRestClient client = null)
+        {
+            var options = new Read{{resourceName}}Options({{#requiredParams}}{{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^-last}}, {{/-last}}{{/requiredParams}}){ {{#vendorExtensions.x-request-body-param}}{{^required}}{{paramName}} = {{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}, {{/required}}{{/vendorExtensions.x-request-body-param}}Limit = limit};
+            return await ReadAsync(options, client);
+        }
+        #endif

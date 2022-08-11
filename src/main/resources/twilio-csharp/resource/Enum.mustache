@@ -1,0 +1,29 @@
+
+{{#enums}}
+        public sealed class {{{enumName}}} : StringEnum
+        {
+            private {{{enumName}}}(string value) : base(value) {}
+            public {{{enumName}}}() {}
+            public static implicit operator {{{enumName}}}(string value)
+            {
+                return new {{{enumName}}}(value);
+            }
+        {{^isArray}}
+        {{#allowableValues}}
+            {{#enumVars}}
+            public static readonly {{{enumName}}} {{name}} = new {{{enumName}}}("{{value}}");
+            {{/enumVars}}
+        {{/allowableValues}}
+        {{/isArray}}
+
+        {{#isArray}}
+            {{#items}}
+            {{#allowableValues}}
+                {{#enumVars}}
+                public static readonly {{enumName}} {{name}} = new {{{enumName}}}("{{value}}");
+                {{/enumVars}}
+            {{/allowableValues}}
+            {{/items}}
+        {{/isArray}}
+        }
+{{/enums}}

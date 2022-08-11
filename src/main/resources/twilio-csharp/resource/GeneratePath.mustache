@@ -2,12 +2,12 @@
             string path = "{{path}}";
     {{#pathParams}}
         {{#vendorExtensions.x-is-account-sid}}
-            string Path{{paramName}} = options.Path{{paramName}} ?? client.{{paramName}};
-            path = path.replace("{"+"{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}"+"}", Path{{paramName}});
+            string {{paramName}} = options.{{paramName}} ?? client.{{paramName}};
+            path = path.replace("{"+"{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}"+"}", {{paramName}});
         {{/vendorExtensions.x-is-account-sid}}
         {{^vendorExtensions.x-is-account-sid}}
 
-            string Path{{paramName}} = options.Path{{paramName}};
-            path = path.replace("{"+"{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}"+"}", Path{{paramName}});
+            string {{paramName}} = options.{{paramName}};
+            path = path.replace("{"+"{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}"+"}", {{paramName}});
         {{/vendorExtensions.x-is-account-sid}}
     {{/pathParams}}
