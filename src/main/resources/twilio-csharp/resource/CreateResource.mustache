@@ -1,4 +1,5 @@
 
+
         private static Request BuildCreateRequest(Create{{resourceName}}Options options, ITwilioRestClient client)
         {
             {{>resource/GeneratePath}}
@@ -11,7 +12,7 @@
                 headerParams: null
             );
         }
-
+        {{>resource/Comment}}
         public static {{resourceName}}{{resourceConstant}} Create(Create{{resourceName}}Options options, ITwilioRestClient client = null)
         {
             client = client ?? TwilioClient.GetRestClient();
@@ -20,6 +21,7 @@
         }
 
         #if !NET35
+        {{>resource/Comment}}
         public static async System.Threading.Tasks.Task<{{resourceName}}{{resourceConstant}}> CreateAsync(Create{{resourceName}}Options options,
         ITwilioRestClient client = null)
         {
@@ -29,7 +31,7 @@
         }
         #endif
 
-
+        {{>resource/Comment}}
         public static {{resourceName}}{{resourceConstant}} Create({{#vendorExtensions.x-request-body-param}}
                                           {{{dataType}}} {{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^required}} = null{{/required}},{{/vendorExtensions.x-request-body-param}}
                                           ITwilioRestClient client = null)
@@ -39,6 +41,7 @@
         }
 
         #if !NET35
+        {{>resource/Comment}}
         public static async System.Threading.Tasks.Task<{{resourceName}}{{resourceConstant}}> CreateAsync({{#vendorExtensions.x-request-body-param}}
                                                                                   {{{dataType}}} {{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^required}} = null{{/required}},{{/vendorExtensions.x-request-body-param}}
                                                                                   ITwilioRestClient client = null)

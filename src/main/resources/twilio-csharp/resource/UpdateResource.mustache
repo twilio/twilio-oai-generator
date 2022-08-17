@@ -12,7 +12,14 @@
             );
         }
 
-
+        {{>resource/Comment}}
+        public static {{resourceName}}Resource Fetch(Fetch{{resourceName}}Options options, ITwilioRestClient client = null)
+        {
+        client = client ?? TwilioClient.GetRestClient();
+        var response = client.Request(BuildFetchRequest(options, client));
+        return FromJson(response.Content);
+        }
+        {{>resource/Comment}}
         public static {{resourceName}}{{resourceConstant}} Update(Update{{resourceName}}Options options, ITwilioRestClient client = null)
         {
             client = client ?? TwilioClient.GetRestClient();
@@ -21,6 +28,7 @@
         }
 
         #if !NET35
+        {{>resource/Comment}}
         public static async System.Threading.Tasks.Task<{{resourceName}}{{resourceConstant}}> UpdateAsync(Update{{resourceName}}Options options,
                                                                                                           ITwilioRestClient client = null)
         {
@@ -29,6 +37,7 @@
             return FromJson(response.Content);
         }
 
+        {{>resource/Comment}}
         public static {{resourceName}}{{resourceConstant}} Update({{#vendorExtensions.x-request-body-param}}
                                           {{{dataType}}} {{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^required}} = null{{/required}},{{/vendorExtensions.x-request-body-param}}
                                           ITwilioRestClient client = null)
@@ -38,6 +47,7 @@
         }
 
         #if !NET35
+        {{>resource/Comment}}
         public static async System.Threading.Tasks.Task<{{resourceName}}{{resourceConstant}}> UpdateAsync({{#vendorExtensions.x-request-body-param}}
                                                                               {{{dataType}}} {{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^required}} = null{{/required}},{{/vendorExtensions.x-request-body-param}}
                                                                               ITwilioRestClient client = null)

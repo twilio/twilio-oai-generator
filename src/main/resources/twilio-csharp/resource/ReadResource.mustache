@@ -14,6 +14,7 @@
             );
         }
 
+        {{>resource/Comment}}
         public static ResourceSet<{{resourceName}}{{resourceConstant}}> Read(Read{{resourceName}}Options options, ITwilioRestClient client = null)
         {
             client = client ?? TwilioClient.GetRestClient();
@@ -23,6 +24,7 @@
         }
 
         #if !NET35
+        {{>resource/Comment}}
         public static async System.Threading.Tasks.Task<ResourceSet<{{resourceName}}{{resourceConstant}}>> ReadAsync(Read{{resourceName}}Options options,
                                                                                              ITwilioRestClient client = null)
         {
@@ -33,7 +35,7 @@
             return new ResourceSet<{{resourceName}}{{resourceConstant}}>(page, options, client);
         }
         #endif
-
+        {{>resource/Comment}}
         public static ResourceSet<{{resourceName}}{{resourceConstant}}> Read({{#vendorExtensions.x-request-body-param}}
                                                      {{{dataType}}} {{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^required}} = null{{/required}},{{/vendorExtensions.x-request-body-param}}
                                                      long? limit = null,
@@ -44,6 +46,7 @@
         }
 
         #if !NET35
+        {{>resource/Comment}}
         public static async System.Threading.Tasks.Task<ResourceSet<{{resourceName}}{{resourceConstant}}>> ReadAsync({{#vendorExtensions.x-request-body-param}}
                                                                                              {{{dataType}}} {{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^required}} = null{{/required}},{{/vendorExtensions.x-request-body-param}}
                                                                                              long? limit = null,
