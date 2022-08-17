@@ -1,4 +1,5 @@
-
+        {{>resource/Summary}}
+        {{>resource/Params}}
         public static Page<{{resourceName}}{{resourceConstant}}> GetPage(string targetUrl, ITwilioRestClient client)
         {
             client = client ?? TwilioClient.GetRestClient();
@@ -12,6 +13,8 @@
             return Page<{{resourceName}}{{resourceConstant}}>.FromJson("{{recordKey}}", response.Content);
         }
 
+        {{>resource/Summary}}
+        {{>resource/Params}}
         public static Page<{{resourceName}}{{resourceConstant}}> NextPage(Page<{{resourceName}}{{resourceConstant}}> page, ITwilioRestClient client)
         {
             var request = new Request(
@@ -23,6 +26,8 @@
             return Page<{{resourceName}}{{resourceConstant}}>.FromJson("{{recordKey}}", response.Content);
         }
 
+        {{>resource/Summary}}
+        {{>resource/Params}}
         public static Page<{{resourceName}}{{resourceConstant}}> PreviousPage(Page<{{resourceName}}{{resourceConstant}}> page, ITwilioRestClient client)
         {
             var request = new Request(

@@ -13,7 +13,8 @@
             );
         }
 
-        {{>resource/Comment}}
+        {{>resource/Summary}}
+        {{>resource/Params}}
         public static {{resourceName}}Resource Fetch(Fetch{{resourceName}}Options options, ITwilioRestClient client = null)
         {
             client = client ?? TwilioClient.GetRestClient();
@@ -22,7 +23,8 @@
         }
 
         #if !NET35
-        {{>resource/Comment}}
+        {{>resource/Summary}}
+        {{>resource/Params}}
         public static async System.Threading.Tasks.Task<{{resourceName}}Resource> FetchAsync(Fetch{{resourceName}}Options options,
                                                                                              ITwilioRestClient client = null)
         {
@@ -31,7 +33,8 @@
             return FromJson(response.Content);
         }
         #endif
-            {{>resource/Comment}}
+            {{>resource/Summary}}
+            {{>resource/Params}}
         public static {{resourceName}}{{resourceConstant}} Fetch({{#vendorExtensions.x-request-body-param}}{{{dataType}}} {{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^required}} = null{{/required}}, {{/vendorExtensions.x-request-body-param}}ITwilioRestClient client = null)
         {
             var options = new Fetch{{resourceName}}Options({{#requiredParams}}{{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^-last}}, {{/-last}}{{/requiredParams}}){ {{#vendorExtensions.x-request-body-param}}{{^required}}{{paramName}} = {{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^-last}},{{/-last}}{{/required}}{{/vendorExtensions.x-request-body-param}} };
@@ -39,7 +42,8 @@
         }
 
         #if !NET35
-            {{>resource/Comment}}
+            {{>resource/Summary}}
+            {{>resource/Params}}
         public static async System.Threading.Tasks.Task<{{resourceName}}{{resourceConstant}}> FetchAsync({{#vendorExtensions.x-request-body-param}}{{{dataType}}} {{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^required}} = null{{/required}}, {{/vendorExtensions.x-request-body-param}}ITwilioRestClient client = null)
         {
             var options = new Fetch{{resourceName}}Options({{#requiredParams}}{{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^-last}}, {{/-last}}{{/requiredParams}}){ {{#vendorExtensions.x-request-body-param}}{{^required}}{{paramName}} = {{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^-last}},{{/-last}}{{/required}}{{/vendorExtensions.x-request-body-param}} };
