@@ -14,6 +14,7 @@
 
         {{>resource/Summary}}
         {{>resource/Params}}
+        /// <returns> A single instance of {{resourceName}} </returns>
         public static {{resourceName}}Resource Fetch(Fetch{{resourceName}}Options options, ITwilioRestClient client = null)
         {
         client = client ?? TwilioClient.GetRestClient();
@@ -21,7 +22,9 @@
         return FromJson(response.Content);
         }
         {{>resource/Summary}}
-        {{>resource/Params}}
+        /// <param name="options"> Update {{resourceName}} parameters </param>
+        /// <param name="client"> Client to make requests to Twilio </param>
+        /// <returns> Task that resolves to A single instance of {{resourceName}} </returns>
         public static {{resourceName}}{{resourceConstant}} Update(Update{{resourceName}}Options options, ITwilioRestClient client = null)
         {
             client = client ?? TwilioClient.GetRestClient();
@@ -31,7 +34,8 @@
 
         #if !NET35
         {{>resource/Summary}}
-        {{>resource/Params}}
+        /// <param name="options"> Update {{resourceName}} parameters </param>
+        /// <param name="client"> Client to make requests to Twilio </param>
         public static async System.Threading.Tasks.Task<{{resourceName}}{{resourceConstant}}> UpdateAsync(Update{{resourceName}}Options options,
                                                                                                           ITwilioRestClient client = null)
         {
@@ -42,6 +46,7 @@
 
         {{>resource/Summary}}
         {{>resource/Params}}
+        /// <returns> A single instance of {{resourceName}} </returns>
         public static {{resourceName}}{{resourceConstant}} Update({{#vendorExtensions.x-request-body-param}}
                                           {{{dataType}}} {{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^required}} = null{{/required}},{{/vendorExtensions.x-request-body-param}}
                                           ITwilioRestClient client = null)
@@ -53,6 +58,7 @@
         #if !NET35
         {{>resource/Summary}}
         {{>resource/Params}}
+        /// <returns> Task that resolves to A single instance of {{resourceName}} </returns>
         public static async System.Threading.Tasks.Task<{{resourceName}}{{resourceConstant}}> UpdateAsync({{#vendorExtensions.x-request-body-param}}
                                                                               {{{dataType}}} {{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^required}} = null{{/required}},{{/vendorExtensions.x-request-body-param}}
                                                                               ITwilioRestClient client = null)

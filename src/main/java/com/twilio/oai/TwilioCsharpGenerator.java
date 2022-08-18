@@ -106,6 +106,9 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
 
     @Override
     public void postProcessModelProperty(CodegenModel model, CodegenProperty property) {
+        if(property.description != null){
+            property.vendorExtensions.put("x-property-description",property.description);
+        }
         super.postProcessModelProperty(model, property);
     }
 
@@ -366,39 +369,37 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
     }
 
     private void populateCrudOperations(final Map<String, Object> resource, final CodegenOperation operation) {
-
+        String summary;
         if (operation.nickname.startsWith(EnumConstants.Operation.CREATE.getValue())) {
             resource.put("hasCreate", true);
             operation.vendorExtensions.put("x-is-create-operation", true);
-            if(operation.notes != null)
-                operation.vendorExtensions.put("x-generate-comment",operation.notes);
+            summary = "create";
             resource.put(EnumConstants.Operation.CREATE.name(), operation);
-
         } else if (operation.nickname.startsWith(EnumConstants.Operation.FETCH.getValue())) {
             resource.put("hasFetch", true);
             resource.put(EnumConstants.Operation.FETCH.name(), operation);
-            if(operation.notes != null)
-                operation.vendorExtensions.put("x-generate-comment",operation.notes);
+            summary = "fetch";
             operation.vendorExtensions.put("x-is-fetch-operation", true);
         } else if (operation.nickname.startsWith(EnumConstants.Operation.UPDATE.getValue())) {
             resource.put("hasUpdate", true);
             operation.vendorExtensions.put("x-is-update-operation", true);
-            if(operation.notes != null)
-                operation.vendorExtensions.put("x-generate-comment",operation.notes);
+            summary = "update";
             resource.put(EnumConstants.Operation.UPDATE.name(), operation);
         } else if (operation.nickname.startsWith(EnumConstants.Operation.DELETE.getValue())) {
             resource.put("hasDelete", true);
             operation.vendorExtensions.put("x-is-delete-operation", true);
-            if(operation.notes != null)
-                operation.vendorExtensions.put("x-generate-comment",operation.notes);
+            summary = "delete";
             resource.put(EnumConstants.Operation.DELETE.name(), operation);
         } else {
             resource.put("hasRead", true);
             operation.vendorExtensions.put("x-is-read-operation", true);
-            if(operation.notes != null)
-                operation.vendorExtensions.put("x-generate-comment",operation.notes);
+            summary = "read";
             resource.put(EnumConstants.Operation.READ.name(), operation);
         }
+        if(operation.notes != null)
+            summary = operation.notes;
+        operation.vendorExtensions.put("x-generate-comment",summary);
+
     }
 
     @SuppressWarnings("unchecked")
