@@ -106,9 +106,6 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
 
     @Override
     public void postProcessModelProperty(CodegenModel model, CodegenProperty property) {
-        if(property.description != null){
-            property.vendorExtensions.put("x-property-description",property.description);
-        }
         super.postProcessModelProperty(model, property);
     }
 
@@ -193,8 +190,10 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
         }
 
         List<IJsonSchemaValidationProperties> enumList = new ArrayList<>(resolver.getEnums().values());
+
         results.put("enums", enumList);
         results.put("resources", resources.values());
+
         return results;
     }
 

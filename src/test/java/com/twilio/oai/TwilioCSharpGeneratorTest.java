@@ -20,7 +20,7 @@ public class TwilioCSharpGeneratorTest {
     public void launchCodeGenerator() {
         final CodegenConfigurator configurator = new CodegenConfigurator()
             .setGeneratorName("twilio-csharp")
-            .setInputSpec("/Users/rprakash/code/codegen-twilio/twilio-oai/spec/yaml/twilio_bulkexports_v1.yaml")
+            .setInputSpec("/Users/rprakash/code/codegen-twilio/twilio-oai/spec/yaml/twilio_api_v2010.yaml")
             .setOutputDir("codegen/twilio-csharp");
 
         final ClientOptInput clientOptInput = configurator.toClientOptInput();
