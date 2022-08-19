@@ -13,18 +13,9 @@
         }
 
         {{>resource/Summary}}
-        {{>resource/Params}}
-        /// <returns> A single instance of {{resourceName}} </returns>
-        public static {{resourceName}}Resource Fetch(Fetch{{resourceName}}Options options, ITwilioRestClient client = null)
-        {
-        client = client ?? TwilioClient.GetRestClient();
-        var response = client.Request(BuildFetchRequest(options, client));
-        return FromJson(response.Content);
-        }
-        {{>resource/Summary}}
         /// <param name="options"> Update {{resourceName}} parameters </param>
         /// <param name="client"> Client to make requests to Twilio </param>
-        /// <returns> Task that resolves to A single instance of {{resourceName}} </returns>
+        /// <returns> A single instance of {{resourceName}} </returns>
         public static {{resourceName}}{{resourceConstant}} Update(Update{{resourceName}}Options options, ITwilioRestClient client = null)
         {
             client = client ?? TwilioClient.GetRestClient();
@@ -36,6 +27,7 @@
         {{>resource/Summary}}
         /// <param name="options"> Update {{resourceName}} parameters </param>
         /// <param name="client"> Client to make requests to Twilio </param>
+        /// <returns> Task that resolves to A single instance of {{resourceName}} </returns>
         public static async System.Threading.Tasks.Task<{{resourceName}}{{resourceConstant}}> UpdateAsync(Update{{resourceName}}Options options,
                                                                                                           ITwilioRestClient client = null)
         {
@@ -45,7 +37,7 @@
         }
 
         {{>resource/Summary}}
-        {{>resource/Params}}
+{{>resource/Params}}
         /// <returns> A single instance of {{resourceName}} </returns>
         public static {{resourceName}}{{resourceConstant}} Update({{#vendorExtensions.x-request-body-param}}
                                           {{{dataType}}} {{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^required}} = null{{/required}},{{/vendorExtensions.x-request-body-param}}
@@ -57,7 +49,7 @@
 
         #if !NET35
         {{>resource/Summary}}
-        {{>resource/Params}}
+{{>resource/Params}}
         /// <returns> Task that resolves to A single instance of {{resourceName}} </returns>
         public static async System.Threading.Tasks.Task<{{resourceName}}{{resourceConstant}}> UpdateAsync({{#vendorExtensions.x-request-body-param}}
                                                                               {{{dataType}}} {{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^required}} = null{{/required}},{{/vendorExtensions.x-request-body-param}}

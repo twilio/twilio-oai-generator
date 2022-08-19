@@ -1,6 +1,4 @@
 
-
-
         private static Request BuildReadRequest(Read{{resourceName}}Options options, ITwilioRestClient client)
         {
             {{>resource/GeneratePath}}
@@ -42,7 +40,8 @@
         }
         #endif
         {{>resource/Summary}}
-        {{>resource/Params}}
+{{>resource/Params}}
+        /// <param name="limit"> Record limit </param>
         /// <returns> A single instance of {{resourceName}} </returns>
         public static ResourceSet<{{resourceName}}{{resourceConstant}}> Read({{#vendorExtensions.x-request-body-param}}
                                                      {{{dataType}}} {{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^required}} = null{{/required}},{{/vendorExtensions.x-request-body-param}}
@@ -55,7 +54,8 @@
 
         #if !NET35
         {{>resource/Summary}}
-        {{>resource/Params}}
+{{>resource/Params}}
+        /// <param name="limit"> Record limit </param>
         /// <returns> Task that resolves to A single instance of {{resourceName}} </returns>
         public static async System.Threading.Tasks.Task<ResourceSet<{{resourceName}}{{resourceConstant}}>> ReadAsync({{#vendorExtensions.x-request-body-param}}
                                                                                              {{{dataType}}} {{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^required}} = null{{/required}},{{/vendorExtensions.x-request-body-param}}

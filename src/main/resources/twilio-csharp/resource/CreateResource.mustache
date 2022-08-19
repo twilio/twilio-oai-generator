@@ -1,5 +1,4 @@
 
-
         private static Request BuildCreateRequest(Create{{resourceName}}Options options, ITwilioRestClient client)
         {
             {{>resource/GeneratePath}}
@@ -38,7 +37,7 @@
         #endif
 
         {{>resource/Summary}}
-        {{>resource/Params}}
+{{>resource/Params}}
         /// <returns> A single instance of {{resourceName}} </returns>
         public static {{resourceName}}{{resourceConstant}} Create({{#vendorExtensions.x-request-body-param}}
                                           {{{dataType}}} {{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^required}} = null{{/required}},{{/vendorExtensions.x-request-body-param}}
@@ -50,7 +49,7 @@
 
         #if !NET35
         {{>resource/Summary}}
-        {{>resource/Params}}
+{{>resource/Params}}
         /// <returns> Task that resolves to A single instance of {{resourceName}} </returns>
         public static async System.Threading.Tasks.Task<{{resourceName}}{{resourceConstant}}> CreateAsync({{#vendorExtensions.x-request-body-param}}
                                                                                   {{{dataType}}} {{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^required}} = null{{/required}},{{/vendorExtensions.x-request-body-param}}

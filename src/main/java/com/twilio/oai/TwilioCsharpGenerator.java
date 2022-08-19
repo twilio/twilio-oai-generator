@@ -396,7 +396,7 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
             summary = "read";
             resource.put(EnumConstants.Operation.READ.name(), operation);
         }
-        if(operation.notes != null)
+        if(operation.notes != null && !operation.notes.isEmpty())
             summary = operation.notes;
         operation.vendorExtensions.put("x-generate-comment",summary);
 
