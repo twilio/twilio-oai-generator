@@ -387,8 +387,6 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
             operation.vendorExtensions.put("x-is-read-operation", true);
             resource.put(EnumConstants.Operation.READ.name(), operation);
         }
-        if(operation.notes!=null && !operation.notes.isEmpty())
-            operation.vendorExtensions.put("x-generate-comment", operation.notes);
     }
 
     @SuppressWarnings("unchecked")

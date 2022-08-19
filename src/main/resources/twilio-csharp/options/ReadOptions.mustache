@@ -1,10 +1,8 @@
-{{>Summary}}
     public class Read{{resourceName}}Options : ReadOptions<{{resourceName}}{{resourceConstant}}>
     {
     {{>options/Params}}
 
     {{#vendorExtensions.x-required-param-exist}}
-    {{>options/MethodsComments}}
         public Read{{resourceName}}Options({{#requiredParams}}{{{dataType}}} {{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^-last}}, {{/-last}}{{/requiredParams}})
         {
         {{#requiredParams}}

@@ -1,10 +1,8 @@
-{{>Summary}}
     public class Delete{{resourceName}}Options : IOptions<{{resourceName}}{{resourceConstant}}>
     {
         {{>options/Params}}
 
     {{#vendorExtensions.x-required-param-exist}}
-    {{>options/MethodsComments}}
         public Delete{{resourceName}}Options({{#requiredParams}}{{{dataType}}} {{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^-last}}, {{/-last}}{{/requiredParams}})
         {
         {{#requiredParams}}
