@@ -1,4 +1,9 @@
 
 {{#allParams}}
+    {{#description}}
+        ///<summary>
+        /// {{description}}
+        ///</summary>
+    {{/description}}
         public {{{dataType}}} {{paramName}} { get; set; };
 {{/allParams}}
