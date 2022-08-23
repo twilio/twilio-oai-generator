@@ -1,12 +1,13 @@
 import fnmatch
-import re
 import os
+import re
 
 IMPORT_RE = re.compile(r'^\s*import\s+[\w\.]+\.(\w+)\s*;\s*(?://.*)?$')
 
 LANGUAGE_REGEX_MAP = {
     "java": "*.java"
 }
+
 
 def locate(pattern, root=os.curdir):
     for path, dirs, files in os.walk(os.path.abspath(root)):
@@ -32,7 +33,5 @@ def remove_unused_imports(root_dir, language):
                 if (n in import_lines and
                         not re.search(r'(?<!\w)%s(?!\w)' % import_lines[n],
                                       other_code)):
-                    print("unused: %s at %s:%d" % (line, filename, n))
                     continue
                 f.write(line)
-    print("Removal of unused imports completed")
