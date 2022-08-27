@@ -46,15 +46,15 @@ export interface AccountListInstanceCreateOptions {
  *
  * @property { Date } [dateCreated] 
  * @property { string } [dateTest] 
- * @property { Date } [dateCreated2] 
- * @property { Date } [dateCreated3] 
+ * @property { Date } [dateCreatedBefore] 
+ * @property { Date } [dateCreatedAfter] 
  * @property { number } [pageSize] 
  */
 export interface AccountListInstancePageOptions {
     dateCreated?: Date;
     dateTest?: string;
-    dateCreated2?: Date;
-    dateCreated3?: Date;
+    dateCreatedBefore?: Date;
+    dateCreatedAfter?: Date;
     pageSize?: number;
 }
 
@@ -451,8 +451,8 @@ export function AccountListInstance(version: V2010): AccountListInstance {
 
         if (params.dateCreated !== undefined) data['DateCreated'] = params.dateCreated;
         if (params.dateTest !== undefined) data['Date.Test'] = params.dateTest;
-        if (params.dateCreated2 !== undefined) data['DateCreated<'] = params.dateCreated2;
-        if (params.dateCreated3 !== undefined) data['DateCreated>'] = params.dateCreated3;
+        if (params.dateCreatedBefore !== undefined) data['DateCreated<'] = params.dateCreatedBefore;
+        if (params.dateCreatedAfter !== undefined) data['DateCreated>'] = params.dateCreatedAfter;
         if (params.pageSize !== undefined) data['PageSize'] = params.pageSize;
 
         const headers: any = {};
