@@ -1,6 +1,7 @@
 'use strict';
 import nock from 'nock';
 import Twilio from '../../lib/rest/Twilio';
+import {AccountListInstancePageOptions} from "../../lib/rest/api/v2010/accounts";
 
 describe('accounts', () => {
     const twilio = new Twilio();
@@ -37,6 +38,13 @@ describe('accounts', () => {
         return twilio.api.v2010.accounts('123').remove().then(() => scope.done());
     });
 
+    it('should get account pages in between dates', () => {
+        const scope = nock('https://api.twilio.com')
+            .get('/v2010/2010-04-01/Accounts.json')
+            .reply(200, {});
+        let params: AccountListInstancePageOptions = {dateCreatedBefore: new Date("2022-12-25"), dateCreatedAfter: new Date("2022-01-01")}
+        return twilio.api.v2010.accounts.page(params).then(() => scope.done());
+    })
 });
 
 describe('calls', () => {
