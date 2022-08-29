@@ -1,5 +1,8 @@
 
     {{#vendorExtensions.x-header-params-exists}}
+        /// <summary>
+        /// Generate the necessary header parameters
+        /// </summary>
     public List<KeyValuePair<string, string>> GetHeaderParams()
     {
         var p = new List<KeyValuePair<string, string>>();
