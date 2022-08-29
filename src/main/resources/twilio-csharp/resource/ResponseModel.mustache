@@ -1,12 +1,17 @@
 
 {{#responseModel}}
     {{#isEnum}}
-        [JsonConverter(typeof(StringEnumConverter))]
         [JsonProperty("{{baseName}}")]
+        {{#vendorExtensions.x-jsonConverter}}
+        [JsonConverter(typeof({{vendorExtensions.x-jsonConverter}}))]
+        {{/vendorExtensions.x-jsonConverter}}
         public {{{dataType}}} {{nameInCamelCase}} { get; private set; }
     {{/isEnum}}
     {{^isEnum}}
         [JsonProperty("{{baseName}}")]
+        {{#vendorExtensions.x-jsonConverter}}
+        [JsonConverter(typeof({{vendorExtensions.x-jsonConverter}}))]
+        {{/vendorExtensions.x-jsonConverter}}
         public {{{dataType}}} {{nameInCamelCase}} { get; private set; }
     {{/isEnum}}
 

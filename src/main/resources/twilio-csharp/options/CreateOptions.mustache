@@ -1,3 +1,4 @@
+
     public class Create{{resourceName}}Options : IOptions<{{resourceName}}{{resourceConstant}}>
     {
         // How to decide which has getter and which has setter ?
@@ -9,10 +10,15 @@
             {{paramName}} = {{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}};
         {{/requiredParams}}
         {{#allParams}}
+            {{^required}}
             {{#isArray}}
             {{paramName}} = new {{{dataType}}}();
             {{/isArray}}
+            {{/required}}
         {{/allParams}}
         }
     {{/vendorExtensions.x-required-param-exist}}
+
+        {{>options/GetParams}}
+        {{>options/HeaderParams}}
     }

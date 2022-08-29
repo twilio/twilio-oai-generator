@@ -33,3 +33,15 @@
             var response = client.Request(request);
             return Page<{{resourceName}}{{resourceConstant}}>.FromJson("{{recordKey}}", response.Content);
         }
+
+        public static {{resourceName}}{{resourceConstant}} FromJson(string json)
+        {
+            try
+            {
+                return JsonConvert.DeserializeObject<{{resourceName}}{{resourceConstant}}>(json);
+            }
+            catch (JsonException e)
+            {
+                throw new ApiException(e.Message, e);
+            }
+        }

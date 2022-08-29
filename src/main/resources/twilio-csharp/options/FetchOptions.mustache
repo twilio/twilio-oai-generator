@@ -9,11 +9,16 @@
             {{paramName}} = {{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}};
         {{/requiredParams}}
         {{#allParams}}
+            {{^required}}
             {{#isArray}}
             {{paramName}} = new {{{dataType}}}();
             {{/isArray}}
+            {{/required}}
         {{/allParams}}
         }
     {{/vendorExtensions.x-required-param-exist}}
+
+        {{>options/GetParams}}
+        {{>options/HeaderParams}}
     }
 

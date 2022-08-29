@@ -83,7 +83,7 @@ public class CsharpResolver extends Resolver {
             } else {
                 resolveDirect(codegenProperty);
             }
-            resolveComplex(codegenProperty);
+            //resolveComplex(codegenProperty);
         }
 
         return codegenModel;
@@ -99,11 +99,7 @@ public class CsharpResolver extends Resolver {
 
             if (propertyMap.containsKey(complexType)) {
                 final String resolvedDataType = (String)propertyMap.get(complexType);
-                if (codegenProperty.isArray) {
-                    codegenProperty.dataType = "List<" + resolvedDataType + ">";
-                } else {
-                    codegenProperty.dataType = resolvedDataType;
-                }
+                codegenProperty.dataType = resolvedDataType;
             }
         }
         return codegenProperty;
@@ -132,11 +128,16 @@ public class CsharpResolver extends Resolver {
 
     private CodegenProperty resolveDirect(CodegenProperty codegenProperty) {
         String property = Segments.SEGMENT_PROPERTIES.getSegment();
+        String deserialize = Segments.SEGMENT_DESERIALIZE.getSegment();
         if (conventionMap.get(property).containsKey(codegenProperty.dataFormat)) {
             codegenProperty.dataType = (String)conventionMap.get(property).get(codegenProperty.dataFormat);
         }
 
-        // Exceptional case, data format does not exists for Object type.
+        if (conventionMap.get(deserialize).containsKey(codegenProperty.dataFormat)) {
+            codegenProperty.vendorExtensions.put("x-jsonConverter", conventionMap.get(deserialize).get(codegenProperty.dataFormat));
+        }
+
+        // Exceptional case, data format does not exist for Object type.
         if (codegenProperty.dataFormat == null) {
             if (codegenProperty.dataType == "Object") {
                 codegenProperty.dataType = "object";
@@ -153,9 +154,15 @@ public class CsharpResolver extends Resolver {
             if (enums == null) {
                 enums = new HashMap<>();
             }
-            codegenProperty.dataType = String.join("Resource.", value) + "Enum";
+            codegenProperty.dataType = className + "Resource." + codegenProperty.enumName;
+            codegenProperty.vendorExtensions.put("x-jsonConverter", "StringEnumConverter");
             enums.putIfAbsent(codegenProperty.enumName, codegenProperty);
         }
+
+        if (codegenProperty.complexType != null && modelFormatMap.containsKey(codegenProperty.complexType)) {
+            resolveComplex(codegenProperty);
+        }
+
         return codegenProperty;
     }
 
@@ -194,7 +201,7 @@ public class CsharpResolver extends Resolver {
             if (enums == null) {
                 enums = new HashMap<>();
             }
-            parameter.dataType = String.join("Resource.", value) + "Enum";
+            parameter.dataType = className + "Resource." + parameter.enumName;
             enums.putIfAbsent(parameter.enumName, parameter);
         }
 
