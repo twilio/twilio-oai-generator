@@ -15,6 +15,7 @@
         }
 
 {{>Summary}}
+{{>resource/MethodsCommentsFixed}}
         public static ResourceSet<{{resourceName}}{{resourceConstant}}> Read(Read{{resourceName}}Options options, ITwilioRestClient client = null)
         {
             client = client ?? TwilioClient.GetRestClient();
@@ -25,6 +26,7 @@
 
         #if !NET35
 {{>Summary}}
+{{>resource/MethodsCommentsFixed}}
         public static async System.Threading.Tasks.Task<ResourceSet<{{resourceName}}{{resourceConstant}}>> ReadAsync(Read{{resourceName}}Options options,
                                                                                              ITwilioRestClient client = null)
         {
@@ -37,6 +39,7 @@
         #endif
 
 {{>Summary}}
+{{>resource/MethodsComments}}
         public static ResourceSet<{{resourceName}}{{resourceConstant}}> Read({{#vendorExtensions.x-request-body-param}}
                                                      {{{dataType}}} {{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^required}} = null{{/required}},{{/vendorExtensions.x-request-body-param}}
                                                      long? limit = null,
@@ -48,6 +51,8 @@
 
         #if !NET35
 {{>Summary}}
+{{>resource/MethodsComments}}
+        /// <param name="limit"> Record limit </param>
         public static async System.Threading.Tasks.Task<ResourceSet<{{resourceName}}{{resourceConstant}}>> ReadAsync({{#vendorExtensions.x-request-body-param}}
                                                                                              {{{dataType}}} {{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^required}} = null{{/required}},{{/vendorExtensions.x-request-body-param}}
                                                                                              long? limit = null,

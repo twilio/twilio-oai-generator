@@ -13,6 +13,7 @@
         }
 
 {{>Summary}}
+{{>resource/MethodsCommentsFixed}}
         public static {{resourceName}}{{resourceConstant}} Create(Create{{resourceName}}Options options, ITwilioRestClient client = null)
         {
             client = client ?? TwilioClient.GetRestClient();
@@ -22,6 +23,7 @@
 
         #if !NET35
 {{>Summary}}
+{{>resource/MethodsCommentsFixed}}
         public static async System.Threading.Tasks.Task<{{resourceName}}{{resourceConstant}}> CreateAsync(Create{{resourceName}}Options options,
         ITwilioRestClient client = null)
         {
@@ -32,6 +34,7 @@
         #endif
 
 {{>Summary}}
+{{>resource/MethodsComments}}
         public static {{resourceName}}{{resourceConstant}} Create({{#vendorExtensions.x-request-body-param}}
                                           {{{dataType}}} {{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^required}} = null{{/required}},{{/vendorExtensions.x-request-body-param}}
                                           ITwilioRestClient client = null)
@@ -42,6 +45,7 @@
 
         #if !NET35
 {{>Summary}}
+{{>resource/MethodsComments}}
         public static async System.Threading.Tasks.Task<{{resourceName}}{{resourceConstant}}> CreateAsync({{#vendorExtensions.x-request-body-param}}
                                                                                   {{{dataType}}} {{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^required}} = null{{/required}},{{/vendorExtensions.x-request-body-param}}
                                                                                   ITwilioRestClient client = null)
