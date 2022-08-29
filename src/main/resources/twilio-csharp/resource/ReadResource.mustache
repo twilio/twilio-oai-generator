@@ -15,7 +15,9 @@
         }
 
 {{>Summary}}
-{{>resource/MethodsCommentsFixed}}
+        /// <param name="options"> Read {{resourceName}} parameters </param>
+        /// <param name="client"> Client to make requests to Twilio </param>
+{{>resource/ReturnComments}}
         public static ResourceSet<{{resourceName}}{{resourceConstant}}> Read(Read{{resourceName}}Options options, ITwilioRestClient client = null)
         {
             client = client ?? TwilioClient.GetRestClient();
@@ -26,7 +28,9 @@
 
         #if !NET35
 {{>Summary}}
-{{>resource/MethodsCommentsFixed}}
+        /// <param name="options"> Read {{resourceName}} parameters </param>
+        /// <param name="client"> Client to make requests to Twilio </param>
+{{>resource/ReturnCommentsAsync}}
         public static async System.Threading.Tasks.Task<ResourceSet<{{resourceName}}{{resourceConstant}}>> ReadAsync(Read{{resourceName}}Options options,
                                                                                              ITwilioRestClient client = null)
         {
@@ -40,6 +44,8 @@
 
 {{>Summary}}
 {{>resource/MethodsComments}}
+        /// <param name="limit"> Record limit </param>
+{{>resource/ReturnComments}}
         public static ResourceSet<{{resourceName}}{{resourceConstant}}> Read({{#vendorExtensions.x-request-body-param}}
                                                      {{{dataType}}} {{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^required}} = null{{/required}},{{/vendorExtensions.x-request-body-param}}
                                                      long? limit = null,
@@ -53,6 +59,7 @@
 {{>Summary}}
 {{>resource/MethodsComments}}
         /// <param name="limit"> Record limit </param>
+{{>resource/ReturnCommentsAsync}}
         public static async System.Threading.Tasks.Task<ResourceSet<{{resourceName}}{{resourceConstant}}>> ReadAsync({{#vendorExtensions.x-request-body-param}}
                                                                                              {{{dataType}}} {{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^required}} = null{{/required}},{{/vendorExtensions.x-request-body-param}}
                                                                                              long? limit = null,

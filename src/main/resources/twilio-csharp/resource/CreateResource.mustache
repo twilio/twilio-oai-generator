@@ -13,7 +13,9 @@
         }
 
 {{>Summary}}
-{{>resource/MethodsCommentsFixed}}
+        /// <param name="options"> Create {{resourceName}} parameters </param>
+        /// <param name="client"> Client to make requests to Twilio </param>
+{{>resource/ReturnComments}}
         public static {{resourceName}}{{resourceConstant}} Create(Create{{resourceName}}Options options, ITwilioRestClient client = null)
         {
             client = client ?? TwilioClient.GetRestClient();
@@ -23,7 +25,9 @@
 
         #if !NET35
 {{>Summary}}
-{{>resource/MethodsCommentsFixed}}
+        /// <param name="options"> Create {{resourceName}} parameters </param>
+        /// <param name="client"> Client to make requests to Twilio </param>
+{{>resource/ReturnCommentsAsync}}
         public static async System.Threading.Tasks.Task<{{resourceName}}{{resourceConstant}}> CreateAsync(Create{{resourceName}}Options options,
         ITwilioRestClient client = null)
         {
@@ -35,6 +39,7 @@
 
 {{>Summary}}
 {{>resource/MethodsComments}}
+{{>resource/ReturnComments}}
         public static {{resourceName}}{{resourceConstant}} Create({{#vendorExtensions.x-request-body-param}}
                                           {{{dataType}}} {{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^required}} = null{{/required}},{{/vendorExtensions.x-request-body-param}}
                                           ITwilioRestClient client = null)
@@ -46,6 +51,7 @@
         #if !NET35
 {{>Summary}}
 {{>resource/MethodsComments}}
+{{>resource/ReturnCommentsAsync}}
         public static async System.Threading.Tasks.Task<{{resourceName}}{{resourceConstant}}> CreateAsync({{#vendorExtensions.x-request-body-param}}
                                                                                   {{{dataType}}} {{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^required}} = null{{/required}},{{/vendorExtensions.x-request-body-param}}
                                                                                   ITwilioRestClient client = null)
