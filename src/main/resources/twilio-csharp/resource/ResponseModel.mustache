@@ -1,6 +1,10 @@
 
 {{#responseModel}}
     {{#isEnum}}
+        {{#description}}
+        ///<summary>
+        ///{{description}}
+        ///</summary> {{/description}}
         [JsonProperty("{{baseName}}")]
         {{#vendorExtensions.x-jsonConverter}}
         [JsonConverter(typeof({{vendorExtensions.x-jsonConverter}}))]
@@ -8,6 +12,13 @@
         public {{{dataType}}} {{nameInCamelCase}} { get; private set; }
     {{/isEnum}}
     {{^isEnum}}
+        {{#description}}
+        ///<summary>
+        ///{{description}}
+        ///</summary> {{/description}}{{^description}}
+        ///<summary>
+        ///The {{{dataType}}}
+        ///</summary> {{/description}}
         [JsonProperty("{{baseName}}")]
         {{#vendorExtensions.x-jsonConverter}}
         [JsonConverter(typeof({{vendorExtensions.x-jsonConverter}}))]
