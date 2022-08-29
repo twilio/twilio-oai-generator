@@ -51,7 +51,7 @@
         "string-map": "Dictionary<string, string>",
         "phone-number": "Types.PhoneNumber",
         "twiml": "Types.Twiml",
-        "ice-server": "IceServer",
+        "ice-servers": "IceServer",
         "subscribe-rule": "SubscribeRule",
         "recording-rule": "RecordingRule",
         "phone-number-capabilities": "PhoneNumberCapabilities",
@@ -90,26 +90,35 @@
     "deserialize": {
         "enum": "StringEnumConverter",
         "ienum": "StringEnumConverter",
-        "http_method": "HttpMethodConverter",
-        "phone_number": "PhoneNumberConverter",
+        "http-method": "HttpMethodConverter",
+        "phone-number": "PhoneNumberConverter",
         "twiml": "TwimlConverter"
     },
 
     "serialize": {
         "_": "%s.ToString()",
-        "url": "Serializers.Url(%s)",
+        "uri": "Serializers.Url(%s)",
         "string": "%s",
         "object": "Serializers.JsonObject(%s)",
         "boolean": "%s.Value.ToString().ToLower()",
         "decimal": "%s.Value.ToString()",
         "integer": "%s.ToString()",
         "long": "%s.Value.ToString()",
-        "date_time_inequality": "Serializers.DateTimeIso8601(%s)",
-        "date_inequality": "%s.Value.ToString(\"yyyy-MM-dd\")",
-        "date_or_time": "Serializers.DateTimeIso8601(%s)",
-        "date_time": "Serializers.DateTimeIso8601(%s)",
+        "date-time-inequality": "Serializers.DateTimeIso8601(%s)",
+        "date-inequality": "%s.Value.ToString(\"yyyy-MM-dd\")",
+        "date-or-time": "Serializers.DateTimeIso8601(%s)",
+        "date-time": "Serializers.DateTimeIso8601(%s)",
         "date": "%s.Value.ToString(\"yyyy-MM-dd\")",
-        "prefixed_collapsible_map": "PrefixedCollapsibleMap.Serialize(%s, %s)"
+        "prefixed-collapsible-map": "PrefixedCollapsibleMap.Serialize(%s, %s)"
+    },
+
+    "serialize_dataType": {
+        "string": "%s",
+        "object": "Serializers.JsonObject(%s)",
+        "bool?": "%s.Value.ToString().ToLower()",
+        "decimal": "%s.Value.ToString()",
+        "int?": "%s.ToString()",
+        "long?": "%s.Value.ToString()"
     },
 
     "cardinality": {

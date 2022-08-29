@@ -1,13 +1,18 @@
 
-            string path = "{{path}}";
+    {{#vendorExtensions.parentUrl}}
+            string path = "{{{vendorExtensions.parentUrl}}}";
+    {{/vendorExtensions.parentUrl}}
+    {{^vendorExtensions.parentUrl}}
+            string path = "{{{path}}}";
+    {{/vendorExtensions.parentUrl}}
+
     {{#pathParams}}
         {{#vendorExtensions.x-is-account-sid}}
-            string {{paramName}} = options.{{paramName}} ?? client.{{paramName}};
-            path = path.replace("{"+"{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}"+"}", {{paramName}});
+            string {{paramName}} = options.{{paramName}} ?? client.AccountSid;
+            path = path.Replace("{"+"{{#lambda.titlecase}}{{baseName}}{{/lambda.titlecase}}"+"}", {{paramName}});
         {{/vendorExtensions.x-is-account-sid}}
         {{^vendorExtensions.x-is-account-sid}}
-
-            string {{paramName}} = options.{{paramName}};
-            path = path.replace("{"+"{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}"+"}", {{paramName}});
+            string {{paramName}} = options.{{paramName}}.ToString();
+            path = path.Replace("{"+"{{#lambda.titlecase}}{{baseName}}{{/lambda.titlecase}}"+"}", {{paramName}});
         {{/vendorExtensions.x-is-account-sid}}
     {{/pathParams}}

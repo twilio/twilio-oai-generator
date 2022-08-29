@@ -20,7 +20,7 @@
             {{#items}}
             {{#allowableValues}}
                 {{#enumVars}}
-                public static readonly {{enumName}} {{name}} = new {{{enumName}}}("{{value}}");
+            public static readonly {{{enumName}}}Enum {{name}} = new {{{enumName}}}Enum("{{value}}");
                 {{/enumVars}}
             {{/allowableValues}}
             {{/items}}

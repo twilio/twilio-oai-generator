@@ -4,6 +4,7 @@ import com.twilio.oai.common.ApplicationConstants;
 import com.twilio.oai.common.CsharpResolver;
 import com.twilio.oai.common.EnumConstants;
 import com.twilio.oai.common.ParameterResolverFactory;
+import com.twilio.oai.common.Serializer;
 import com.twilio.oai.common.Utility;
 import io.swagger.v3.oas.models.OpenAPI;
 import lombok.extern.slf4j.Slf4j;
@@ -134,7 +135,6 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
 
         for (final CodegenOperation co : opList) {
             String path = co.path;
-
             String[] filePathArray = co.baseName.split(ApplicationConstants.PATH_SEPARATOR_PLACEHOLDER);
             String resourceName = filePathArray[filePathArray.length - 1];
             final Map<String, Object> resource = resources.computeIfAbsent(resourceName, k -> new LinkedHashMap<>());
@@ -156,6 +156,11 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
 
             // Options instance variables
             co.allParams.stream().map(resolver::resolveParameter).map(item -> StringUtils.camelize(item.paramName)).collect(Collectors.toList());
+            co.headerParams.stream().map(resolver::resolveParameter).map(item -> StringUtils.camelize(item.paramName)).collect(Collectors.toList());
+
+            Serializer.serialize(co.allParams);
+            
+            co.vendorExtensions.put("x-getparams", getParams(co));
 
             if (packagePaths.isEmpty()) {
                 resource.put("packageSubPart", "");
@@ -165,6 +170,11 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
             }
             recordKey = getRecordKey(opList, this.allModels);
             co.vendorExtensions.put("x-non-path-params", getNonPathParams(co.allParams));
+            List<CodegenParameter> headerParams = getHeaderParams(co);
+            if (headerParams != null && headerParams.size() > 0) {
+                co.vendorExtensions.put("x-header-params-exists", true);
+                co.vendorExtensions.put("x-header-params", headerParams);
+            }
 
             for (CodegenResponse response : co.responses) {
                 String modelName = response.dataType;
@@ -177,7 +187,6 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
             }
 
             requestBodyArgument(co);
-
             results.put("recordKey", recordKey);
             resource.put("path", path);
             resource.put("resourceName", resourceName);
@@ -193,6 +202,27 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
         results.put("enums", enumList);
         results.put("resources", resources.values());
         return results;
+    }
+
+    private List<CodegenParameter> getParams(CodegenOperation co) {
+        LinkedList<CodegenParameter> headerParams = new LinkedList<>();
+        for (CodegenParameter codegenParameter: co.allParams) {
+            if (!codegenParameter.isPathParam && !codegenParameter.isHeaderParam) {
+                headerParams.add(codegenParameter);
+            }
+        }
+        return headerParams;
+    }
+
+    private List<CodegenParameter> getHeaderParams(final CodegenOperation co) {
+        LinkedList<CodegenParameter> headerParams = new LinkedList<>();
+
+        for (CodegenParameter codegenParameter: co.allParams) {
+            if (codegenParameter.isHeaderParam) {
+                headerParams.add(codegenParameter);
+            }
+        }
+        return headerParams;
     }
 
     private void requestBodyArgument(final CodegenOperation co) {
@@ -295,9 +325,6 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
         Set<CodegenProperty> distinctResponseModels = new LinkedHashSet<>();
         for (CodegenModel codegenModel: responseModels) {
             for (CodegenProperty property: codegenModel.vars) {
-                if (property.isEnum) {
-
-                }
                 distinctResponseModels.add(property);
             }
         }
