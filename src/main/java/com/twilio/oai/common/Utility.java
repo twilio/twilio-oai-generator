@@ -1,6 +1,7 @@
 package com.twilio.oai.common;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.experimental.UtilityClass;
@@ -29,5 +30,14 @@ public class Utility {
                 e.printStackTrace();
             }
         });
+    }
+
+    public static Map<String, Map<String, Object>> getConventionalMap() {
+        try {
+            return new ObjectMapper().readValue(Thread.currentThread().getContextClassLoader().getResourceAsStream(ApplicationConstants.CONFIG_CSHARP_JSON_PATH), new TypeReference<Map<String, Map<String, Object>>>(){});
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }
