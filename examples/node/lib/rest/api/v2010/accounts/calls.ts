@@ -105,7 +105,7 @@ export function CallListInstance(version: V2010, accountSid: string): CallListIn
 
 
         let operationVersion = version,
-            operationPromise = operationVersion.create({ uri: this._uri, method: 'POST', data, headers });
+            operationPromise = operationVersion.create({ uri: this._uri, method: 'POST', params: data, headers });
 
         operationPromise = operationPromise.then(payload => new CallInstance(operationVersion, payload, this._solution.accountSid));
 

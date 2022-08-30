@@ -90,7 +90,7 @@
 {{/hasParams}}
 
         let operationVersion = {{#parentResourceName}}this._version{{/parentResourceName}}{{^parentResourceName}}version{{/parentResourceName}},
-            operationPromise = operationVersion.{{vendorExtensions.x-name-lower}}({ uri: this._uri, method: '{{httpMethod}}'{{#hasParams}}{{#bodyParam}}, body: params{{/bodyParam}}{{^bodyParam}}, data{{/bodyParam}}, headers{{/hasParams}} });
+            operationPromise = operationVersion.{{vendorExtensions.x-name-lower}}({ uri: this._uri, method: '{{httpMethod}}'{{#hasParams}}{{#bodyParam}}, body: params{{/bodyParam}}{{^bodyParam}}, params: data{{/bodyParam}}, headers{{/hasParams}} });
 
         {{^vendorExtensions.x-is-delete-operation}}
         operationPromise = operationPromise.then(payload => new {{instanceName}}(operationVersion, payload{{#resourcePathParams}}, this._solution.{{paramName}}{{/resourcePathParams}}));

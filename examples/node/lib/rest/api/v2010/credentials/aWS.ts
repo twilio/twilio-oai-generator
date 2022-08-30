@@ -183,7 +183,7 @@ export class AWSContextImpl implements AWSContext {
 
 
         let operationVersion = this._version,
-            operationPromise = operationVersion.update({ uri: this._uri, method: 'POST', data, headers });
+            operationPromise = operationVersion.update({ uri: this._uri, method: 'POST', params: data, headers });
 
         operationPromise = operationPromise.then(payload => new AWSInstance(operationVersion, payload, this._solution.sid));
 
@@ -448,7 +448,7 @@ export function AWSListInstance(version: V2010): AWSListInstance {
 
 
         let operationVersion = version,
-            operationPromise = operationVersion.create({ uri: this._uri, method: 'POST', data, headers });
+            operationPromise = operationVersion.create({ uri: this._uri, method: 'POST', params: data, headers });
 
         operationPromise = operationPromise.then(payload => new AWSInstance(operationVersion, payload));
 
@@ -478,7 +478,7 @@ export function AWSListInstance(version: V2010): AWSListInstance {
 
 
         let operationVersion = version,
-            operationPromise = operationVersion.page({ uri: this._uri, method: 'GET', data, headers });
+            operationPromise = operationVersion.page({ uri: this._uri, method: 'GET', params: data, headers });
 
         operationPromise = operationPromise.then(payload => new AWSInstance(operationVersion, payload));
 

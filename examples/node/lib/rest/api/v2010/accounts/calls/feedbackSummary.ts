@@ -90,7 +90,7 @@ export function FeedbackSummaryListInstance(version: V2010, accountSid: string):
 
 
         let operationVersion = version,
-            operationPromise = operationVersion.create({ uri: this._uri, method: 'POST', data, headers });
+            operationPromise = operationVersion.create({ uri: this._uri, method: 'POST', params: data, headers });
 
         operationPromise = operationPromise.then(payload => new FeedbackSummaryInstance(operationVersion, payload, this._solution.accountSid));
 

@@ -322,4 +322,12 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
     public String getHelp() {
         return "Generates the twilio-node helper library.";
     }
+
+    @Override
+    public String toParamName(String name) {
+        name = name.replace("<", "Before");
+        name = name.replace(">", "After");
+        name = super.toVarName(name);
+        return name;
+    }
 }
