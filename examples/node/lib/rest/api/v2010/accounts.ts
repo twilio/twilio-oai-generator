@@ -452,15 +452,10 @@ export function AccountListInstance(version: V2010): AccountListInstance {
         const data: any = {};
 
         if (params.dateCreated !== undefined) data['DateCreated'] = serialize.iso8601DateTime(params.dateCreated);
-        date-time
         if (params.dateTest !== undefined) data['Date.Test'] = serialize.iso8601Date(params.dateTest);
-        date
         if (params.dateCreated2 !== undefined) data['DateCreated<'] = serialize.iso8601DateTime(params.dateCreated2);
-        date-time
         if (params.dateCreated3 !== undefined) data['DateCreated>'] = serialize.iso8601DateTime(params.dateCreated3);
-        date-time
         if (params.pageSize !== undefined) data['PageSize'] = params.pageSize;
-        
 
         const headers: any = {};
 

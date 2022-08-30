@@ -473,7 +473,6 @@ export function AWSListInstance(version: V2010): AWSListInstance {
         const data: any = {};
 
         if (params.pageSize !== undefined) data['PageSize'] = params.pageSize;
-        
 
         const headers: any = {};
 
