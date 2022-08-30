@@ -190,7 +190,7 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
                 if (param.isDate || param.isDateTime || param.isMap || param.isFreeFormObject || param.isBoolean || param.isArray) {
                     param.vendorExtensions.put("x-serialize", true);
                 }
-                if (param.isFreeFormObject && param.dataFormat.startsWith("prefixed-collapsible-map")) {
+                if (param.isFreeFormObject && param.dataFormat!= null && param.dataFormat.startsWith("prefixed-collapsible-map")) {
                     param.vendorExtensions.put("x-prefixed-collapsible-map", true);
                 }
             });
