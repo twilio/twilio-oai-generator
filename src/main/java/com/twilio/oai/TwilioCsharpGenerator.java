@@ -191,10 +191,10 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
             resource.put("path", path);
             resource.put("resourceName", resourceName);
             resource.put("resourceConstant", "Resource");
-            if(enums.size() > 0){
+            if (enums.size() > 0) {
                 resource.put("hasEnums", true);
             }
-            if(arrayParamsPresent == true){
+            if(arrayParamsPresent){
                 resource.put("hasArrayParams", true);
             }
         }
@@ -212,7 +212,7 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
 
     private boolean hasArrayParams(List<CodegenParameter> allParams) {
         for (CodegenParameter item : allParams) {
-            if (item.isArray == true) {
+            if (item.isArray) {
                 return true;
             }
         }
