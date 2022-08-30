@@ -15,8 +15,8 @@
 import { inspect, InspectOptions } from 'util';
 import Page from '../../../../../base/Page';
 import V2010 from '../../../V2010';
-var deserialize = require('../../../../../base/deserialize');
-var serialize = require('../../../../../base/serialize');
+const deserialize = require('../../../../../base/deserialize');
+const serialize = require('../../../../../base/serialize');
 
 
 /**

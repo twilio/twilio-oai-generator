@@ -15,8 +15,8 @@
 import { inspect, InspectOptions } from 'util';
 import Page from '../../../base/Page';
 import V2010 from '../V2010';
-var deserialize = require('../../../base/deserialize');
-var serialize = require('../../../base/serialize');
+const deserialize = require('../../../base/deserialize');
+const serialize = require('../../../base/serialize');
 import { CallListInstance } from './accounts/calls';
 
 
@@ -419,7 +419,7 @@ export function AccountListInstance(version: V2010): AccountListInstance {
         const data: any = {};
 
         if (params.recordingStatusCallback !== undefined) data['RecordingStatusCallback'] = params.recordingStatusCallback;
-        if (params.recordingStatusCallbackEvent !== undefined) data['RecordingStatusCallbackEvent'] = serialize.map(params.recordingStatusCallbackEvent, function(e) { return e; });
+        if (params.recordingStatusCallbackEvent !== undefined) data['RecordingStatusCallbackEvent'] = serialize.map(params.recordingStatusCallbackEvent, ((e) => e));
 
         const headers: any = {};
         headers['Content-Type'] = 'application/x-www-form-urlencoded'

@@ -15,8 +15,8 @@
 import { inspect, InspectOptions } from 'util';
 import Page from '../../../../base/Page';
 import V2010 from '../../V2010';
-var deserialize = require('../../../../base/deserialize');
-var serialize = require('../../../../base/serialize');
+const deserialize = require('../../../../base/deserialize');
+const serialize = require('../../../../base/serialize');
 
 
 /**
@@ -439,9 +439,9 @@ export function AWSListInstance(version: V2010): AWSListInstance {
         if (params.testDateTime !== undefined) data['TestDateTime'] = serialize.iso8601DateTime(params.testDateTime);
         if (params.testDate !== undefined) data['TestDate'] = serialize.iso8601Date(params.testDate);
         if (params.testEnum !== undefined) data['TestEnum'] = params.testEnum;
-        if (params.testObjectArray !== undefined) data['TestObjectArray'] = serialize.map(params.testObjectArray, function(e) { return e; });
+        if (params.testObjectArray !== undefined) data['TestObjectArray'] = serialize.map(params.testObjectArray, ((e) => e));
         if (params.testAnyType !== undefined) data['TestAnyType'] = params.testAnyType;
-        if (params.permissions !== undefined) data['Permissions'] = serialize.map(params.permissions, function(e) { return e; });
+        if (params.permissions !== undefined) data['Permissions'] = serialize.map(params.permissions, ((e) => e));
 
         const headers: any = {};
         headers['Content-Type'] = 'application/x-www-form-urlencoded'
