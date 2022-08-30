@@ -26,10 +26,55 @@
         const data: any = {};
 
         {{#queryParams}}
+        {{^vendorExtensions.x-serialize}}
         {{^required}}if (params.{{paramName}} !== undefined) {{/required}}data['{{{baseName}}}'] = params.{{paramName}};
+        {{/vendorExtensions.x-serialize}}
+        {{#isDate}}
+        {{^required}}if (params.{{paramName}} !== undefined) {{/required}}data['{{{baseName}}}'] = serialize.iso8601Date(params.{{paramName}});
+        {{/isDate}}
+        {{#isDateTime}}
+        {{^required}}if (params.{{paramName}} !== undefined) {{/required}}data['{{{baseName}}}'] = serialize.iso8601DateTime(params.{{paramName}});
+        {{/isDateTime}}
+        {{#vendorExtensions.x-prefixed-collapsible-map}}
+        {{^required}}if (params.{{paramName}} !== undefined) {{/required}}data['{{{baseName}}}'] = serialize.prefixedCollapsibleMap(params.{{paramName}});
+        {{/vendorExtensions.x-prefixed-collapsible-map}}
+        {{^vendorExtensions.x-prefixed-collapsible-map}}
+        {{#isFreeFormObject}}
+        {{^required}}if (params.{{paramName}} !== undefined) {{/required}}data['{{{baseName}}}'] = serialize.object(params.{{paramName}});
+        {{/isFreeFormObject}}
+        {{/vendorExtensions.x-prefixed-collapsible-map}}
+        {{#isBoolean}}
+        {{^required}}if (params.{{paramName}} !== undefined) {{/required}}data['{{{baseName}}}'] = serialize.bool(params.{{paramName}});
+        {{/isBoolean}}
+        {{#isArray}}
+        {{^required}}if (params.{{paramName}} !== undefined) {{/required}}data['{{{baseName}}}'] = serialize.map(params.{{paramName}}, function(e) { return e; });
+        {{/isArray}}
+        {{dataFormat}}
         {{/queryParams}}
         {{#formParams}}
+        {{^vendorExtensions.x-serialize}}
         {{^required}}if (params.{{paramName}} !== undefined) {{/required}}data['{{{baseName}}}'] = params.{{paramName}};
+        {{/vendorExtensions.x-serialize}}
+        {{#isDate}}
+        {{^required}}if (params.{{paramName}} !== undefined) {{/required}}data['{{{baseName}}}'] = serialize.iso8601Date(params.{{paramName}});
+        {{/isDate}}
+        {{#isDateTime}}
+        {{^required}}if (params.{{paramName}} !== undefined) {{/required}}data['{{{baseName}}}'] = serialize.iso8601DateTime(params.{{paramName}});
+        {{/isDateTime}}
+        {{#vendorExtensions.x-prefixed-collapsible-map}}
+        {{^required}}if (params.{{paramName}} !== undefined) {{/required}}data['{{{baseName}}}'] = serialize.prefixedCollapsibleMap(params.{{paramName}});
+        {{/vendorExtensions.x-prefixed-collapsible-map}}
+        {{^vendorExtensions.x-prefixed-collapsible-map}}
+        {{#isFreeFormObject}}
+        {{^required}}if (params.{{paramName}} !== undefined) {{/required}}data['{{{baseName}}}'] = serialize.object(params.{{paramName}});
+        {{/isFreeFormObject}}
+        {{/vendorExtensions.x-prefixed-collapsible-map}}
+        {{#isBoolean}}
+        {{^required}}if (params.{{paramName}} !== undefined) {{/required}}data['{{{baseName}}}'] = serialize.bool(params.{{paramName}});
+        {{/isBoolean}}
+        {{#isArray}}
+        {{^required}}if (params.{{paramName}} !== undefined) {{/required}}data['{{{baseName}}}'] = serialize.map(params.{{paramName}}, function(e) { return e; });
+        {{/isArray}}
         {{/formParams}}
     {{/bodyParam}}
 

@@ -15,6 +15,8 @@
 import { inspect, InspectOptions } from 'util';
 import Page from '../../../../base/Page';
 import V2010 from '../../V2010';
+var deserialize = require('../../../../base/deserialize');
+var serialize = require('../../../../base/serialize');
 import { FeedbackSummaryListInstance } from './calls/feedbackSummary';
 
 
@@ -96,7 +98,7 @@ export function CallListInstance(version: V2010, accountSid: string): CallListIn
         const data: any = {};
 
         data['RequiredStringProperty'] = params.requiredStringProperty;
-        if (params.testArrayOfStrings !== undefined) data['TestArrayOfStrings'] = params.testArrayOfStrings;
+        if (params.testArrayOfStrings !== undefined) data['TestArrayOfStrings'] = serialize.map(params.testArrayOfStrings, function(e) { return e; });
 
         const headers: any = {};
         headers['Content-Type'] = 'application/x-www-form-urlencoded'
@@ -243,9 +245,9 @@ export class CallInstance {
         this.accountSid = payload.account_sid;
         this.sid = payload.sid;
         this.testString = payload.test_string;
-        this.testInteger = payload.test_integer;
+        this.testInteger = deserialize.integer(payload.test_integer);
         this.testObject = payload.test_object;
-        this.testDateTime = payload.test_date_time;
+        this.testDateTime = deserialize.rfc2822DateTime(payload.test_date_time);
         this.testNumber = payload.test_number;
         this.priceUnit = payload.price_unit;
         this.testNumberFloat = payload.test_number_float;

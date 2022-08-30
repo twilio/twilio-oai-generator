@@ -27,7 +27,24 @@ export class {{name}}Instance {
 
     constructor(protected _version: {{apiVersionClass}}, payload: {{name}}Payload{{#resourcePathParams}}, {{paramName}}{{#-last}}?{{/-last}}: {{{dataType}}}{{/resourcePathParams}}) {
         {{#vars}}
+        {{^vendorExtensions.x-deserialize}}
         this.{{name}} = payload.{{baseName}};
+        {{/vendorExtensions.x-deserialize}}
+        {{#vendorExtensions.date}}
+        this.{{name}} = deserialize.iso8601Date(payload.{{baseName}});
+        {{/vendorExtensions.date}}
+        {{#vendorExtensions.date-time}}
+        this.{{name}} = deserialize.iso8601DateTime(payload.{{baseName}});
+        {{/vendorExtensions.date-time}}
+        {{#vendorExtensions.date-time-rfc-2822}}
+        this.{{name}} = deserialize.rfc2822DateTime(payload.{{baseName}});
+        {{/vendorExtensions.date-time-rfc-2822}}
+        {{#isInteger}}
+        this.{{name}} = deserialize.integer(payload.{{baseName}});
+        {{/isInteger}}
+        {{#isDecimal}}
+        this.{{name}} = deserialize.decimal(payload.{{baseName}});
+        {{/isDecimal}}
         {{/vars}}
 
         this._solution = { {{#resourcePathParams}}{{paramName}}{{#-last}}: {{paramName}} || this.{{paramName}}{{/-last}}{{^-last}}, {{/-last}}{{/resourcePathParams}} };

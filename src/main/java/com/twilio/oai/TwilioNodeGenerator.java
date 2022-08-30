@@ -186,6 +186,22 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
             co.pathParams = null;
             co.hasParams = !co.allParams.isEmpty();
             co.hasRequiredParams = !co.requiredParams.isEmpty();
+            co.queryParams.forEach(param -> {
+                if (param.isDate || param.isDateTime || param.isMap || param.isFreeFormObject || param.isBoolean || param.isArray) {
+                    param.vendorExtensions.put("x-serialize", true);
+                }
+                if (param.isFreeFormObject && param.dataFormat.startsWith("prefixed-collapsible-map")) {
+                    param.vendorExtensions.put("x-prefixed-collapsible-map", true);
+                }
+            });
+            co.formParams.forEach(param -> {
+                if (param.isDate || param.isDateTime || param.isMap || param.isFreeFormObject || param.isBoolean || param.isArray) {
+                    param.vendorExtensions.put("x-serialize", true);
+                }
+                if (param.isFreeFormObject && param.dataFormat != null && param.dataFormat.startsWith("prefixed-collapsible-map")) {
+                    param.vendorExtensions.put("x-prefixed-collapsible-map", true);
+                }
+            });
 
             if (co.bodyParam != null) {
                 addModel(resource, co.bodyParam.dataType);
@@ -210,9 +226,16 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
 
                         model
                             .getVars()
-                            .forEach(variable -> variable.vendorExtensions.put("x-name",
-                                                                               itemName +
-                                                                                   variable.getNameInCamelCase()));
+                            .forEach(variable -> {
+                                variable.vendorExtensions.put("x-name",
+                                        itemName +
+                                                variable.getNameInCamelCase());
+                                variable.vendorExtensions.put(variable.dataFormat, variable.dataFormat);
+                                if ((variable.dataFormat != null && variable.dataFormat.equals("date-time-rfc-2822"))
+                                        || variable.isInteger || variable.isDecimal || variable.isDate || variable.isDateTime) {
+                                    variable.vendorExtensions.put("x-deserialize", true);
+                                }
+                            });
                     });
             }
 
