@@ -49,7 +49,6 @@
         {{#isArray}}
         {{^required}}if (params.{{paramName}} !== undefined) {{/required}}data['{{{baseName}}}'] = serialize.map(params.{{paramName}}, function(e) { return e; });
         {{/isArray}}
-        {{dataFormat}}
         {{/queryParams}}
         {{#formParams}}
         {{^vendorExtensions.x-serialize}}
