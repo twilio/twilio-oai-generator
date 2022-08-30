@@ -87,6 +87,6 @@ if __name__ == '__main__':
     parser.add_argument('spec_path', type=str, help='path to open api specs')
     parser.add_argument('output_path', type=str, help='path to output the generated code')
     parser.add_argument('-l', '--lang', type=str, help='generate Twilio library from twilio-oai',
-                        choices=['go', 'terraform', 'java', 'node'], required=True)
+                        choices=['go', 'terraform', 'java', 'node', 'csharp'], required=True)
     args = parser.parse_args()
     build(args.spec_path, args.output_path, args.lang)
