@@ -65,7 +65,7 @@
         "inbound-call-price": "InboundCallPrice",
         "outbound-call-price": "OutboundCallPrice",
         "outbound-call-price-with-origin": "OutboundCallPriceWithOrigin",
-        "prefixed_collapsible_map": "Dictionary<string, object>"
+        "prefixed-collapsible-map": "Dictionary<string, object>"
     },
 
     "json": {

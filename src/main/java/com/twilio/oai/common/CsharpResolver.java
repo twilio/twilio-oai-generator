@@ -212,6 +212,7 @@ public class CsharpResolver extends Resolver {
         if (parameter.dataFormat == null) return;
         if (parameter.isMap) {
             List<String> splitDataFormat = new ArrayList<>(List.of(parameter.dataFormat.split("-")));
+            parameter.vendorExtensions.put("x-map-value", splitDataFormat.get(splitDataFormat.size()-1));
             splitDataFormat.remove(splitDataFormat.size()-1);
             parameter.dataFormat = String.join("-", splitDataFormat);
         }

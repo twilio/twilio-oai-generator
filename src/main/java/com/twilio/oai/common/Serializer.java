@@ -57,7 +57,11 @@ public class Serializer {
         }
 
         if (serializedFormat != null) {
-            serializedFormat = String.format(serializedFormat, codegenParameter.paramName);
+            if (codegenParameter.isMap) {
+                serializedFormat = String.format(serializedFormat, codegenParameter.paramName, codegenParameter.vendorExtensions.get("x-map-value"));
+            } else {
+                serializedFormat = String.format(serializedFormat, codegenParameter.paramName);
+            }
         } else {
             serializedFormat = codegenParameter.paramName + "." +"ToString()";
         }
