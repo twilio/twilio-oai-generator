@@ -158,6 +158,7 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
             co.allParams.stream().map(resolver::resolveParameter).map(item -> StringUtils.camelize(item.paramName)).collect(Collectors.toList());
             co.headerParams.stream().map(resolver::resolveParameter).map(item -> StringUtils.camelize(item.paramName)).collect(Collectors.toList());
 
+            boolean arrayParamsPresent = hasArrayParams(co.allParams);
             Serializer.serialize(co.allParams);
             
             co.vendorExtensions.put("x-getparams", getParams(co));
@@ -191,6 +192,12 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
             resource.put("path", path);
             resource.put("resourceName", resourceName);
             resource.put("resourceConstant", "Resource");
+            if (enums.size() > 0) {
+                resource.put("hasEnums", true);
+            }
+            if(arrayParamsPresent){
+                resource.put("hasArrayParams", true);
+            }
         }
 
         for (final Map<String, Object> resource : resources.values()) {
@@ -202,6 +209,15 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
         results.put("enums", enumList);
         results.put("resources", resources.values());
         return results;
+    }
+
+    private boolean hasArrayParams(List<CodegenParameter> allParams) {
+        for (CodegenParameter item : allParams) {
+            if (item.isArray) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private List<CodegenParameter> getParams(CodegenOperation co) {

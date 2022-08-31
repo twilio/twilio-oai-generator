@@ -3,9 +3,7 @@ package com.twilio.oai.common;
 import com.twilio.oai.Segments;
 import lombok.experimental.UtilityClass;
 import org.apache.commons.lang3.StringUtils;
-import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenParameter;
-import org.openapitools.codegen.CodegenProperty;
 
 import java.util.LinkedHashMap;
 import java.util.List;
