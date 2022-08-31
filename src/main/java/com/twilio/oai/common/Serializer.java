@@ -3,9 +3,7 @@ package com.twilio.oai.common;
 import com.twilio.oai.Segments;
 import lombok.experimental.UtilityClass;
 import org.apache.commons.lang3.StringUtils;
-import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenParameter;
-import org.openapitools.codegen.CodegenProperty;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -57,7 +55,11 @@ public class Serializer {
         }
 
         if (serializedFormat != null) {
-            serializedFormat = String.format(serializedFormat, codegenParameter.paramName);
+            if (codegenParameter.isMap) {
+                serializedFormat = String.format(serializedFormat, codegenParameter.paramName, codegenParameter.vendorExtensions.get("x-map-value"));
+            } else {
+                serializedFormat = String.format(serializedFormat, codegenParameter.paramName);
+            }
         } else {
             serializedFormat = codegenParameter.paramName + "." +"ToString()";
         }

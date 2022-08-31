@@ -157,6 +157,7 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
             // Options instance variables
             co.allParams.stream().map(resolver::resolveParameter).map(item -> StringUtils.camelize(item.paramName)).collect(Collectors.toList());
             co.headerParams.stream().map(resolver::resolveParameter).map(item -> StringUtils.camelize(item.paramName)).collect(Collectors.toList());
+
             boolean arrayParamsPresent = hasArrayParams(co.allParams);
             Serializer.serialize(co.allParams);
             
