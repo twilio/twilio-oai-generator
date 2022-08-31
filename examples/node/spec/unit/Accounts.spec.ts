@@ -45,8 +45,8 @@ describe('accounts', () => {
         const scope = nock('https://api.twilio.com')
             .get('/v2010/2010-04-01/Accounts.json')
             .query({
-                'DateCreated<': '2022-12-25T00:00:00.000Z',
-                'DateCreated>': '2022-01-01T00:00:00.000Z'
+                'DateCreated<': '2022-12-25T00:00:00Z',
+                'DateCreated>': '2022-01-01T00:00:00Z'
             })
             .reply(200, {});
         const params: AccountListInstancePageOptions = {dateCreatedBefore: new Date('2022-12-25'), dateCreatedAfter: new Date('2022-01-01')}
