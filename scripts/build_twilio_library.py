@@ -12,6 +12,7 @@ structures specific to language style.
 '''
 subdirectories = {
     'terraform': 'twilio/resources',
+    'csharp':'Rest',
 }
 
 
@@ -30,10 +31,7 @@ def generate(openapi_spec_path: str, output_path: str, language: str, domain: st
 
     to_generate = 'terraform-provider-twilio' if language == 'terraform' else f'twilio-{language}'
     is_domain_irrelevant = language in {'go', 'terraform'} and domain_name == 'preview'
-    if language == 'csharp':
-        sub_dir = subdirectories.get(language, 'Rest')
-    else:
-        sub_dir = subdirectories.get(language, 'rest')
+    sub_dir = subdirectories.get(language, 'rest')
     output_path = os.path.join(output_path, sub_dir, domain_name)
     if language in {'go', 'terraform'}:
         output_path = os.path.join(output_path, api_version)
@@ -64,6 +62,8 @@ def get_domain_info(oai_spec_location: str, domain: str, is_file: bool = False, 
     # added logic to fetch the domain name from servers url in spec file, instead for relying on file name
     if language == 'java' and full_path.endswith('.json'):
         domain_name = parse_domain_name(full_path)
+    if language in {'csharp'}:
+        domain_name = domain_name.capitalize()
     return full_path, domain_name, api_version
 
 
