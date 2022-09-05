@@ -3,6 +3,7 @@ import os
 import re
 import json
 from pathlib import Path
+from re import sub
 from typing import Tuple
 from clean_java_imports import remove_unused_imports
 
@@ -60,20 +61,24 @@ def get_domain_info(oai_spec_location: str, domain: str, is_file: bool = False, 
     domain_name = parts[1]
     api_version = parts[2] or ''
     # added logic to fetch the domain name from servers url in spec file, instead for relying on file name
-    if language == 'java' and full_path.endswith('.json'):
-        domain_name = parse_domain_name(full_path)
-    if language in {'csharp'}:
-        domain_name = domain_name.capitalize()
+    if language == 'csharp' or language == 'java' and full_path.endswith('.json'):
+        domain_name = parse_domain_name(full_path, language)
     return full_path, domain_name, api_version
 
+def title_case(s):
+    s = sub(r"(_|-)+", " ", s).title().replace(" ", "")
+    return ''.join([s[0].upper(), s[1:]])
 
-def parse_domain_name(oai_spec_location_path: str):
+def parse_domain_name(oai_spec_location_path: str, language: str):
     server_regex = '^(?:https?://)?(?:[^@/\n]+@)?([^:/?\n.]+)'
     with open(oai_spec_location_path, 'r') as f:
         file_content = json.load(f)
     domain_from_server_url = re.search(
         server_regex, file_content["servers"][0]["url"]).group(1)
-    domain_name = domain_from_server_url.replace('-', '').lower()
+    if language in {'csharp'}:
+        domain_name = title_case(domain_from_server_url)
+    else:
+        domain_name = domain_from_server_url.replace('-', '').lower()
     return domain_name
 
 
