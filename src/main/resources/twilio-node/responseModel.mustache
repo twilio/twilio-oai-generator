@@ -27,7 +27,12 @@ export class {{name}}Instance {
 
     constructor(protected _version: {{apiVersionClass}}, payload: {{name}}Payload{{#resourcePathParams}}, {{paramName}}{{#-last}}?{{/-last}}: {{{dataType}}}{{/resourcePathParams}}) {
         {{#vars}}
+        {{#vendorExtensions.x-deserialize}}
+        this.{{name}} = {{vendorExtensions.x-deserialize}}(payload.{{baseName}});
+        {{/vendorExtensions.x-deserialize}}
+        {{^vendorExtensions.x-deserialize}}
         this.{{name}} = payload.{{baseName}};
+        {{/vendorExtensions.x-deserialize}}
         {{/vars}}
 
         this._solution = { {{#resourcePathParams}}{{paramName}}{{#-last}}: {{paramName}} || this.{{paramName}}{{/-last}}{{^-last}}, {{/-last}}{{/resourcePathParams}} };

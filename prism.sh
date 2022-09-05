@@ -2,7 +2,7 @@
 set -e
 
 cd examples/prism
-docker-compose build
+docker-compose build --pull
 docker-compose up -d --force-recreate --remove-orphans
 
 function wait_for() {
@@ -33,7 +33,8 @@ function check_status() {
   done
 }
 
-testing_services=("go-client-test" "java-test" "csharp-test")
+
+testing_services=("go-client-test" "java-test" "node-test" "csharp-test")
 wait_for "${testing_services[@]}"
 check_status "${testing_services[@]}"
 docker-compose down

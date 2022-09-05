@@ -15,6 +15,8 @@
 import { inspect, InspectOptions } from 'util';
 import Page from '../../../../base/Page';
 import V2010 from '../../V2010';
+const deserialize = require('../../../../base/deserialize');
+const serialize = require('../../../../base/serialize');
 
 
 /**
@@ -174,14 +176,14 @@ export class AWSContextImpl implements AWSContext {
         const data: any = {};
 
         if (params.testString !== undefined) data['TestString'] = params.testString;
-        if (params.testBoolean !== undefined) data['TestBoolean'] = params.testBoolean;
+        if (params.testBoolean !== undefined) data['TestBoolean'] = serialize.bool(params.testBoolean);
 
         const headers: any = {};
         headers['Content-Type'] = 'application/x-www-form-urlencoded'
 
 
         let operationVersion = this._version,
-            operationPromise = operationVersion.update({ uri: this._uri, method: 'POST', data, headers });
+            operationPromise = operationVersion.update({ uri: this._uri, method: 'POST', params: data, headers });
 
         operationPromise = operationPromise.then(payload => new AWSInstance(operationVersion, payload, this._solution.sid));
 
@@ -238,9 +240,9 @@ export class AWSInstance {
         this.accountSid = payload.account_sid;
         this.sid = payload.sid;
         this.testString = payload.test_string;
-        this.testInteger = payload.test_integer;
+        this.testInteger = deserialize.integer(payload.test_integer);
         this.testObject = payload.test_object;
-        this.testDateTime = payload.test_date_time;
+        this.testDateTime = deserialize.rfc2822DateTime(payload.test_date_time);
         this.testNumber = payload.test_number;
         this.priceUnit = payload.price_unit;
         this.testNumberFloat = payload.test_number_float;
@@ -426,27 +428,27 @@ export function AWSListInstance(version: V2010): AWSListInstance {
         const data: any = {};
 
         data['TestString'] = params.testString;
-        if (params.testBoolean !== undefined) data['TestBoolean'] = params.testBoolean;
+        if (params.testBoolean !== undefined) data['TestBoolean'] = serialize.bool(params.testBoolean);
         if (params.testInteger !== undefined) data['TestInteger'] = params.testInteger;
         if (params.testNumber !== undefined) data['TestNumber'] = params.testNumber;
         if (params.testNumberFloat !== undefined) data['TestNumberFloat'] = params.testNumberFloat;
         if (params.testNumberDouble !== undefined) data['TestNumberDouble'] = params.testNumberDouble;
         if (params.testNumberInt32 !== undefined) data['TestNumberInt32'] = params.testNumberInt32;
         if (params.testNumberInt64 !== undefined) data['TestNumberInt64'] = params.testNumberInt64;
-        if (params.testObject !== undefined) data['TestObject'] = params.testObject;
-        if (params.testDateTime !== undefined) data['TestDateTime'] = params.testDateTime;
-        if (params.testDate !== undefined) data['TestDate'] = params.testDate;
+        if (params.testObject !== undefined) data['TestObject'] = serialize.object(params.testObject);
+        if (params.testDateTime !== undefined) data['TestDateTime'] = serialize.iso8601DateTime(params.testDateTime);
+        if (params.testDate !== undefined) data['TestDate'] = serialize.iso8601Date(params.testDate);
         if (params.testEnum !== undefined) data['TestEnum'] = params.testEnum;
-        if (params.testObjectArray !== undefined) data['TestObjectArray'] = params.testObjectArray;
+        if (params.testObjectArray !== undefined) data['TestObjectArray'] = serialize.map(params.testObjectArray, ((e) => e));
         if (params.testAnyType !== undefined) data['TestAnyType'] = params.testAnyType;
-        if (params.permissions !== undefined) data['Permissions'] = params.permissions;
+        if (params.permissions !== undefined) data['Permissions'] = serialize.map(params.permissions, ((e) => e));
 
         const headers: any = {};
         headers['Content-Type'] = 'application/x-www-form-urlencoded'
 
 
         let operationVersion = version,
-            operationPromise = operationVersion.create({ uri: this._uri, method: 'POST', data, headers });
+            operationPromise = operationVersion.create({ uri: this._uri, method: 'POST', params: data, headers });
 
         operationPromise = operationPromise.then(payload => new AWSInstance(operationVersion, payload));
 
@@ -476,7 +478,7 @@ export function AWSListInstance(version: V2010): AWSListInstance {
 
 
         let operationVersion = version,
-            operationPromise = operationVersion.page({ uri: this._uri, method: 'GET', data, headers });
+            operationPromise = operationVersion.page({ uri: this._uri, method: 'GET', params: data, headers });
 
         operationPromise = operationPromise.then(payload => new AWSInstance(operationVersion, payload));
 

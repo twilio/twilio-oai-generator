@@ -15,7 +15,9 @@
 import { inspect, InspectOptions } from 'util';
 import Page from '../../../../base/Page';
 import V2010 from '../../V2010';
-import { FeedbackSummaryListInstance } from './Calls/FeedbackSummary';
+const deserialize = require('../../../../base/deserialize');
+const serialize = require('../../../../base/serialize');
+import { FeedbackSummaryListInstance } from './calls/feedbackSummary';
 
 
 /**
@@ -96,14 +98,14 @@ export function CallListInstance(version: V2010, accountSid: string): CallListIn
         const data: any = {};
 
         data['RequiredStringProperty'] = params.requiredStringProperty;
-        if (params.testArrayOfStrings !== undefined) data['TestArrayOfStrings'] = params.testArrayOfStrings;
+        if (params.testArrayOfStrings !== undefined) data['TestArrayOfStrings'] = serialize.map(params.testArrayOfStrings, ((e) => e));
 
         const headers: any = {};
         headers['Content-Type'] = 'application/x-www-form-urlencoded'
 
 
         let operationVersion = version,
-            operationPromise = operationVersion.create({ uri: this._uri, method: 'POST', data, headers });
+            operationPromise = operationVersion.create({ uri: this._uri, method: 'POST', params: data, headers });
 
         operationPromise = operationPromise.then(payload => new CallInstance(operationVersion, payload, this._solution.accountSid));
 
@@ -243,9 +245,9 @@ export class CallInstance {
         this.accountSid = payload.account_sid;
         this.sid = payload.sid;
         this.testString = payload.test_string;
-        this.testInteger = payload.test_integer;
+        this.testInteger = deserialize.integer(payload.test_integer);
         this.testObject = payload.test_object;
-        this.testDateTime = payload.test_date_time;
+        this.testDateTime = deserialize.rfc2822DateTime(payload.test_date_time);
         this.testNumber = payload.test_number;
         this.priceUnit = payload.price_unit;
         this.testNumberFloat = payload.test_number_float;

@@ -186,6 +186,8 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
             co.pathParams = null;
             co.hasParams = !co.allParams.isEmpty();
             co.hasRequiredParams = !co.requiredParams.isEmpty();
+            co.queryParams.forEach(param -> addSerializeVendorExtension(param));
+            co.formParams.forEach(param -> addSerializeVendorExtension(param));
 
             if (co.bodyParam != null) {
                 addModel(resource, co.bodyParam.dataType);
@@ -210,13 +212,16 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
 
                         model
                             .getVars()
-                            .forEach(variable -> variable.vendorExtensions.put("x-name",
-                                                                               itemName +
-                                                                                   variable.getNameInCamelCase()));
+                            .forEach(variable -> {
+                                variable.vendorExtensions.put("x-name",
+                                        itemName +
+                                                variable.getNameInCamelCase());
+                                addDeserializeVendorExtension(variable);
+                            });
                     });
             }
 
-            results.put("apiFilename", getResourceName(co.path));
+            results.put("apiFilename", StringUtils.camelize(getResourceName(co.path), true));
         }
 
         resources.values().stream().map(resource -> (Map<String, Object>) resource).forEach(resource -> {
@@ -255,7 +260,7 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
         final String dependentName = getResourceName(dependentPath);
         dependent.put("name", inflector.singular(dependentName));
         dependent.put("mountName", StringUtils.underscore(dependentName));
-        dependent.put("filename", dependentName);
+        dependent.put("filename", StringUtils.camelize(dependentName, true));
     }
 
     private CodegenModel resolveComplexType(CodegenModel item) {
@@ -265,6 +270,51 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
             }
         }
         return item;
+    }
+
+    private void addSerializeVendorExtension(CodegenParameter param) {
+        if (param.isDate) {
+            param.vendorExtensions.put("x-serialize", "serialize.iso8601Date");
+        }
+        if (param.isDateTime) {
+            param.vendorExtensions.put("x-serialize", "serialize.iso8601DateTime");
+        }
+        if (param.isFreeFormObject) {
+            if (param.dataFormat != null && param.dataFormat.startsWith("prefixed-collapsible-map")) {
+                param.vendorExtensions.put("x-serialize", "serialize.prefixedCollapsibleMap");
+                String[] formatArray = param.dataFormat.split("-");
+                param.vendorExtensions.put("x-prefixed-collapsible-map", formatArray[formatArray.length-1]);
+            }
+            else {
+                param.vendorExtensions.put("x-serialize", "serialize.object");
+            }
+        }
+        if (param.isBoolean) {
+            param.vendorExtensions.put("x-serialize", "serialize.bool");
+        }
+
+        if (param.isArray) {
+            param.vendorExtensions.put("x-serialize", "serialize.map");
+            param.vendorExtensions.put("x-is-array", true);
+        }
+    }
+
+    private void addDeserializeVendorExtension(CodegenProperty variable) {
+        if (variable.dataFormat != null && variable.dataFormat.equals("date")) {
+            variable.vendorExtensions.put("x-deserialize", "deserialize.iso8601Date");
+        }
+        if (variable.dataFormat != null && variable.dataFormat.equals("date-time")) {
+            variable.vendorExtensions.put("x-deserialize", "deserialize.iso8601DateTime");
+        }
+        if (variable.dataFormat != null && variable.dataFormat.equals("date-time-rfc-2822")) {
+            variable.vendorExtensions.put("x-deserialize", "deserialize.rfc2822DateTime");
+        }
+        if (variable.isInteger) {
+            variable.vendorExtensions.put("x-deserialize", "deserialize.integer");
+        }
+        if (variable.isDecimal) {
+            variable.vendorExtensions.put("x-deserialize", "deserialize.decimal");
+        }
     }
 
     private Optional<CodegenModel> getModel(final String modelName) {
@@ -298,5 +348,13 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
     @Override
     public String getHelp() {
         return "Generates the twilio-node helper library.";
+    }
+
+    @Override
+    public String toParamName(String name) {
+        name = name.replace("<", "Before");
+        name = name.replace(">", "After");
+        name = super.toVarName(name);
+        return name;
     }
 }

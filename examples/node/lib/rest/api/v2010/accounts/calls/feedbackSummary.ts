@@ -15,6 +15,8 @@
 import { inspect, InspectOptions } from 'util';
 import Page from '../../../../../base/Page';
 import V2010 from '../../../V2010';
+const deserialize = require('../../../../../base/deserialize');
+const serialize = require('../../../../../base/serialize');
 
 
 /**
@@ -80,15 +82,15 @@ export function FeedbackSummaryListInstance(version: V2010, accountSid: string):
 
         const data: any = {};
 
-        data['EndDate'] = params.endDate;
-        data['StartDate'] = params.startDate;
+        data['EndDate'] = serialize.iso8601Date(params.endDate);
+        data['StartDate'] = serialize.iso8601Date(params.startDate);
 
         const headers: any = {};
         headers['Content-Type'] = 'application/x-www-form-urlencoded'
 
 
         let operationVersion = version,
-            operationPromise = operationVersion.create({ uri: this._uri, method: 'POST', data, headers });
+            operationPromise = operationVersion.create({ uri: this._uri, method: 'POST', params: data, headers });
 
         operationPromise = operationPromise.then(payload => new FeedbackSummaryInstance(operationVersion, payload, this._solution.accountSid));
 
@@ -141,9 +143,9 @@ export class FeedbackSummaryInstance {
         this.accountSid = payload.account_sid;
         this.sid = payload.sid;
         this.testString = payload.test_string;
-        this.testInteger = payload.test_integer;
+        this.testInteger = deserialize.integer(payload.test_integer);
         this.testObject = payload.test_object;
-        this.testDateTime = payload.test_date_time;
+        this.testDateTime = deserialize.rfc2822DateTime(payload.test_date_time);
         this.testNumber = payload.test_number;
         this.priceUnit = payload.price_unit;
         this.testNumberFloat = payload.test_number_float;
