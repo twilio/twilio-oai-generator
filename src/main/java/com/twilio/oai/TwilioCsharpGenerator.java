@@ -63,7 +63,7 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
         String version = inputSpecs[inputSpecs.length-1].replaceAll("\\.[^/]+$", "");
         String domain = String.join("", Arrays.copyOfRange(inputSpecs, 1, inputSpecs.length-1));
 
-        if(inputSpecs.length <3){   // version is missing
+        if (inputSpecs.length < 3) {   // version is missing
             version = "";
             domain = inputSpecs[inputSpecs.length-1].replaceAll("\\.[^/]+$", "");
         }
@@ -118,11 +118,11 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
     @Override
     public String toApiFilename(final String name) {
         String[] split = super.toApiFilename(name).split(ApplicationConstants.PATH_SEPARATOR_PLACEHOLDER);
-        if(directoryStructureService.isPreviewDomain(this.additionalProperties)){
-            return directoryStructureService.getSubDomainName(name) + "/" +Arrays.stream(Arrays.copyOfRange(split, 0, split.length - 1)).collect(Collectors.joining("/")) + "/"+split[split.length-1];
+        if (directoryStructureService.isPreviewDomain(this.additionalProperties)) {
+            return directoryStructureService.getSubDomainName(name) + "/" +Arrays.stream(Arrays.copyOfRange(split, 0, split.length - 1)).collect(Collectors.joining("/")) + "/" + split[split.length-1];
         }
         String apiFileName =  Arrays.stream(Arrays.copyOfRange(split, 0, split.length - 1))
-                .collect(Collectors.joining("/")) + "/"+split[split.length-1];
+                .collect(Collectors.joining("/")) + "/" + split[split.length-1];
         return apiFileName;
     }
 
