@@ -45,7 +45,7 @@ public class DirectoryStructureService {
             path.readOperations().forEach(operation -> {
                 // Group operations together by tag. This gives us one file/post-process per resource.
                 String tag = String.join(PATH_SEPARATOR_PLACEHOLDER, resourceTree.ancestors(name, operation));
-                if(isPreviewDomain(additionalProperties)){
+                if (isPreviewDomain(additionalProperties)) {
                     String subDomainName = extractSubDomainName(name);
                     subDomainMap.put(tag, subDomainName);
                 }
