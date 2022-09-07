@@ -22,14 +22,21 @@ import org.openapitools.codegen.model.ModelsMap;
 import org.openapitools.codegen.model.OperationMap;
 import org.openapitools.codegen.model.OperationsMap;
 import org.openapitools.codegen.utils.StringUtils;
+import com.twilio.oai.resource.IResourceTree;
+import com.twilio.oai.resource.ResourceMap;
+
 
 public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
 
     // Unique string devoid of symbols.
     public static final String PATH_SEPARATOR_PLACEHOLDER = "1234567890";
+    public static final String PREVIEW_STRING = "Preview";
+
 
     private final List<CodegenModel> allModels = new ArrayList<>();
     private final Inflector inflector = new Inflector();
+    private  Map<String, String> subDomainMap = new HashMap<>();
+    private IResourceTree resourceTree;
 
     public TwilioNodeGenerator() {
         super();
@@ -59,11 +66,22 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
 
     @Override
     public void processOpenAPI(final OpenAPI openAPI) {
+        resourceTree = new ResourceMap(inflector, PATH_SEPARATOR_PLACEHOLDER);
         final Map<String, Object> versionResources = getStringMap(additionalProperties, "versionResources");
+
+        openAPI.getPaths().forEach((name, path) -> {
+            resourceTree.addResource(name, path);
+        });
 
         openAPI.getPaths().forEach((name, path) -> path.readOperations().forEach(operation -> {
             // Group operations together by tag. This gives us one file/post-process per resource.
-            final String tag = PathUtils.cleanPathAndRemoveFirstElement(name).replace("/", PATH_SEPARATOR_PLACEHOLDER);
+            final String tag = String.join(PATH_SEPARATOR_PLACEHOLDER, resourceTree.ancestors(name, operation));
+
+            if(isPreviewDomain()){
+                String subDomainName = extractSubDomainName(name);
+                subDomainMap.put(tag, subDomainName);
+            }
+
             operation.addTagsItem(tag);
 
             if (!tag.contains(PATH_SEPARATOR_PLACEHOLDER)) {
@@ -90,6 +108,11 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
     public String toApiFilename(final String name) {
         // Replace the path separator placeholder with the actual separator and lowercase the first character of each
         // path part.
+        String[] split = super.toApiFilename(name).split(PATH_SEPARATOR_PLACEHOLDER);
+        if(isPreviewDomain()){
+            return getSubDomainName(subDomainMap, name) + "/" +Arrays.stream(Arrays.copyOfRange(split, 0, split.length - 1)).map(String::toLowerCase).collect(Collectors.joining("/")) + "/"+split[split.length-1];
+        }
+
         return Arrays
             .stream(super.toApiFilename(name).split(PATH_SEPARATOR_PLACEHOLDER))
             .map(part -> StringUtils.camelize(part, true))
@@ -260,7 +283,7 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
         final String dependentName = getResourceName(dependentPath);
         dependent.put("name", inflector.singular(dependentName));
         dependent.put("mountName", StringUtils.underscore(dependentName));
-        dependent.put("filename", StringUtils.camelize(dependentName, true));
+        dependent.put("filename", inflector.singular(StringUtils.camelize(dependentName, true)));
     }
 
     private CodegenModel resolveComplexType(CodegenModel item) {
@@ -270,6 +293,16 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
             }
         }
         return item;
+    }
+
+    private String extractSubDomainName(String name) {
+        String[] split = name.split("/");
+        if(split.length > 1 && split[1] != null) {
+            String result = split[1];
+            result = result.substring(0, 1).toLowerCase() + result.substring(1);
+            return result;
+        }
+        return null;
     }
 
     private void addSerializeVendorExtension(CodegenParameter param) {
@@ -338,6 +371,14 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
     private void addOperationName(final CodegenOperation operation, final String name) {
         operation.vendorExtensions.put("x-name", name);
         operation.vendorExtensions.put("x-name-lower", name.toLowerCase());
+    }
+
+    private String getSubDomainName(Map<String, String> subDomainMap, String name) {
+        return subDomainMap.entrySet().stream().filter(x -> x.getKey().equalsIgnoreCase(name)).findFirst().get().getValue();
+    }
+
+    private boolean isPreviewDomain(){
+        return this.additionalProperties.get("domain").equals(PREVIEW_STRING);
     }
 
     @Override

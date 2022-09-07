@@ -17,7 +17,7 @@ import Page from '../../../base/Page';
 import V2010 from '../V2010';
 const deserialize = require('../../../base/deserialize');
 const serialize = require('../../../base/serialize');
-import { CallListInstance } from './accounts/calls';
+import { CallListInstance } from './accounts/call';
 
 
 /**

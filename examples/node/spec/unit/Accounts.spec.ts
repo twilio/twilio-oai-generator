@@ -1,7 +1,7 @@
 'use strict';
 import nock from 'nock';
 import Twilio from '../../lib/rest/Twilio';
-import {AccountListInstancePageOptions} from "../../lib/rest/api/v2010/accounts";
+import {AccountListInstancePageOptions} from "../../lib/rest/api/v2010/account";
 
 describe('accounts', () => {
     const twilio = new Twilio();
