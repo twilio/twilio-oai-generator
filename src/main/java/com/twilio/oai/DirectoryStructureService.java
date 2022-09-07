@@ -150,7 +150,7 @@ public class DirectoryStructureService {
 
     private String extractSubDomainName(String name) {
         String[] split = name.split("/");
-        if(split.length > 1 && split[1] != null) {
+        if (split.length > 1 && split[1] != null) {
             String result = split[1];
             result = result.substring(0, 1).toUpperCase() + result.substring(1);
             return result;

@@ -150,8 +150,7 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
             updateCodeOperationParams(co);
             List<String> packagePaths = Arrays.asList(Arrays.copyOfRange(filePathArray, 0, filePathArray.length - 1))
                     .stream().collect(Collectors.toList());
-            if(directoryStructureService.isPreviewDomain(this.additionalProperties)){
-
+            if (directoryStructureService.isPreviewDomain(this.additionalProperties)) {
                 String tag = objs.getOperations().getClassname();
                 String subDomainName = directoryStructureService.getSubDomainName(tag);
                 resource.put("package", subDomainName);
