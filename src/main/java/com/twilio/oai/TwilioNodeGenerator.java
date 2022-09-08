@@ -283,7 +283,7 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
         final String dependentName = getResourceName(dependentPath);
         dependent.put("name", inflector.singular(dependentName));
         dependent.put("mountName", StringUtils.underscore(dependentName));
-        dependent.put("filename", inflector.singular(StringUtils.camelize(dependentName, true)));
+        dependent.put("filename", StringUtils.camelize(dependentName, true));
     }
 
     private CodegenModel resolveComplexType(CodegenModel item) {
