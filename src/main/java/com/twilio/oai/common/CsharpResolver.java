@@ -145,6 +145,7 @@ public class CsharpResolver extends Resolver {
                 codegenProperty.dataType = "List<object";
             }
         }
+
         if (codegenProperty.complexType != null && codegenProperty.complexType.contains("Enum")) { // codegenProperty.dataType.contains(className) &&
             String[] value = codegenProperty.complexType.split("Enum");
             codegenProperty.enumName = value[value.length-1] + "Enum";
@@ -157,9 +158,7 @@ public class CsharpResolver extends Resolver {
             codegenProperty.dataType = className + "Resource." + codegenProperty.enumName;
             codegenProperty.vendorExtensions.put("x-jsonConverter", "StringEnumConverter");
             enums.putIfAbsent(codegenProperty.enumName, codegenProperty);
-        }
-
-        if (codegenProperty.complexType != null && modelFormatMap.containsKey(codegenProperty.complexType)) {
+        } else if (codegenProperty.complexType != null && modelFormatMap.containsKey(codegenProperty.complexType)) {
             resolveComplex(codegenProperty);
         }
 
@@ -167,8 +166,15 @@ public class CsharpResolver extends Resolver {
     }
 
     private CodegenProperty resolveInDirect(CodegenProperty codegenProperty, String existsInDataType) {
-        codegenProperty.dataType = codegenProperty.dataType.replace(existsInDataType, "");
+        codegenProperty.dataType = codegenProperty.dataType.replaceFirst(existsInDataType, "");
         codegenProperty.dataType = codegenProperty.dataType.substring(0, codegenProperty.dataType.length()-1);
+        // Added to handle case List<List<string>>
+        for (EnumConstants.CsharpDataTypes dataType: EnumConstants.CsharpDataTypes.values()) {
+            if (codegenProperty.dataType != null && codegenProperty.dataType.startsWith(dataType.getValue())) {
+                existsInDataType = dataType.getValue();
+                resolveInDirect(codegenProperty, existsInDataType);
+            }
+        }
         /// Can be re-used
         resolveDirect(codegenProperty);
         ////
@@ -183,9 +189,6 @@ public class CsharpResolver extends Resolver {
         if (parameter.isPathParam) {
             parameter.paramName = "Path"+parameter.paramName;
         }
-        if (conventionMap.get(property).containsKey(parameter.dataFormat)) {
-            parameter.dataType = (String) conventionMap.get(property).get(parameter.dataFormat);
-        }
 
         if (parameter.dataFormat == null) {
             if (parameter.dataType == "Object") {
@@ -195,12 +198,17 @@ public class CsharpResolver extends Resolver {
             }
         }
 
-        if (parameter.dataType.contains("Enum")) { // parameter.dataType.contains(className) &&
+        if (conventionMap.get(property).containsKey(parameter.dataFormat)) {
+            parameter.dataType = (String) conventionMap.get(property).get(parameter.dataFormat);
+        } else if (parameter.dataType.contains("Enum")) { // parameter.dataType.contains(className) &&
             String[] value = parameter.dataType.split("Enum");
             parameter.enumName = value[value.length-1] + "Enum";
             if (enums == null) {
                 enums = new HashMap<>();
             }
+            parameter.dataType = className + "Resource." + parameter.enumName;
+            enums.putIfAbsent(parameter.enumName, parameter);
+        } else if (parameter.isEnum) {
             parameter.dataType = className + "Resource." + parameter.enumName;
             enums.putIfAbsent(parameter.enumName, parameter);
         }

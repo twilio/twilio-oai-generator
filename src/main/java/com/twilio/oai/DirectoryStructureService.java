@@ -53,7 +53,9 @@ public class DirectoryStructureService {
             });
             Matcher m = ApplicationConstants.serverUrlPattern.matcher(path.getServers().get(0).getUrl());
             if (m.find()) {
-                additionalProperties.put("domainName", StringUtils.camelize(m.group(1)));
+                String domain = StringUtils.camelize(m.group(1));
+                additionalProperties.put("domainName", domain);
+                additionalProperties.put("domainPackage",domain);
             }
         });
     }
