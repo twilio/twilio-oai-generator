@@ -61,8 +61,13 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
         super.processOpts();
 
         String[] inputSpecs = inputSpec.split("_");
-        final String version = inputSpecs[inputSpecs.length-1].replaceAll("\\.[^/]+$", "");
-        final String domain = String.join("", Arrays.copyOfRange(inputSpecs, 1, inputSpecs.length-1));
+        String version = inputSpecs[inputSpecs.length-1].replaceAll("\\.[^/]+$", "");
+        String domain = String.join("", Arrays.copyOfRange(inputSpecs, 1, inputSpecs.length-1));
+
+        if (inputSpecs.length < 3) {   // version is missing
+            version = "";
+            domain = inputSpecs[inputSpecs.length-1].replaceAll("\\.[^/]+$", "");
+        }
 
         apiPackage = version.toUpperCase(); // Place the API files in the version folder.
         additionalProperties.put("apiVersion", Utility.toFirstLetterCaps(version));
@@ -114,8 +119,11 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
     @Override
     public String toApiFilename(final String name) {
         String[] split = super.toApiFilename(name).split(ApplicationConstants.PATH_SEPARATOR_PLACEHOLDER);
+        if (directoryStructureService.isPreviewDomain(this.additionalProperties)) {
+            return directoryStructureService.getSubDomainName(name) + "/" +Arrays.stream(Arrays.copyOfRange(split, 0, split.length - 1)).collect(Collectors.joining("/")) + "/" + split[split.length-1];
+        }
         String apiFileName =  Arrays.stream(Arrays.copyOfRange(split, 0, split.length - 1))
-                .collect(Collectors.joining("/")) + "/"+split[split.length-1];
+                .collect(Collectors.joining("/")) + "/" + split[split.length-1];
         return apiFileName;
     }
 
@@ -143,6 +151,11 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
             updateCodeOperationParams(co);
             List<String> packagePaths = Arrays.asList(Arrays.copyOfRange(filePathArray, 0, filePathArray.length - 1))
                     .stream().collect(Collectors.toList());
+            if (directoryStructureService.isPreviewDomain(this.additionalProperties)) {
+                String tag = objs.getOperations().getClassname();
+                String subDomainName = directoryStructureService.getSubDomainName(tag);
+                resource.put("package", subDomainName);
+            }
 
             // Add operations key to resource
             final ArrayList<CodegenOperation> resourceOperationList = (ArrayList<CodegenOperation>) resource.computeIfAbsent("operations", k -> new ArrayList<>());

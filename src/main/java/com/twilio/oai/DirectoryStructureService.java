@@ -22,10 +22,13 @@ import java.util.stream.Collectors;
 public class DirectoryStructureService {
 
     public static final String ACCOUNT_SID_FORMAT = "^AC[0-9a-fA-F]{32}$";
+    public static final String PREVIEW_STRING = "Preview";
     private EnumConstants.Generator generator;
     private static final String PATH_SEPARATOR_PLACEHOLDER = "1234567890";
     private final Inflector inflector = new Inflector();
     private IResourceTree resourceTree;
+
+    private  Map<String, String> subDomainMap = new HashMap<>();
 
     public DirectoryStructureService(EnumConstants.Generator generator) {
         this.generator = generator;
@@ -42,6 +45,10 @@ public class DirectoryStructureService {
             path.readOperations().forEach(operation -> {
                 // Group operations together by tag. This gives us one file/post-process per resource.
                 String tag = String.join(PATH_SEPARATOR_PLACEHOLDER, resourceTree.ancestors(name, operation));
+                if (isPreviewDomain(additionalProperties)) {
+                    String subDomainName = extractSubDomainName(name);
+                    subDomainMap.put(tag, subDomainName);
+                }
                 operation.addTagsItem(tag);
             });
             Matcher m = ApplicationConstants.serverUrlPattern.matcher(path.getServers().get(0).getUrl());
@@ -137,5 +144,23 @@ public class DirectoryStructureService {
     private boolean isClassName(io.swagger.v3.oas.models.Operation operation) {
         return (operation.getExtensions() != null && operation.getExtensions().containsKey("x-twilio")) &&
                 ((Map<String, String>) operation.getExtensions().get("x-twilio")).containsKey("className");
+    }
+
+    boolean isPreviewDomain(Map<String, Object> additionalProperties){
+        return additionalProperties.get("domain").equals(PREVIEW_STRING);
+    }
+
+    private String extractSubDomainName(String name) {
+        String[] split = name.split("/");
+        if (split.length > 1 && split[1] != null) {
+            String result = split[1];
+            result = result.substring(0, 1).toUpperCase() + result.substring(1);
+            return result;
+        }
+        return null;
+    }
+
+    String getSubDomainName(String name) {
+        return subDomainMap.entrySet().stream().filter(x -> x.getKey().equalsIgnoreCase(name)).findFirst().get().getValue();
     }
 }
