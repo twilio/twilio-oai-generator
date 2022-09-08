@@ -4,6 +4,7 @@ import com.twilio.oai.common.ApplicationConstants;
 import com.twilio.oai.common.CsharpResolver;
 import com.twilio.oai.common.EnumConstants;
 import com.twilio.oai.common.ParameterResolverFactory;
+import com.twilio.oai.common.ReservedKeyword;
 import com.twilio.oai.common.Serializer;
 import com.twilio.oai.common.Utility;
 import io.swagger.v3.oas.models.OpenAPI;
@@ -147,9 +148,6 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
             final ArrayList<CodegenOperation> resourceOperationList = (ArrayList<CodegenOperation>) resource.computeIfAbsent("operations", k -> new ArrayList<>());
             resourceOperationList.add(co);
 
-            if (co.operationId.equals("CreateCall") || co.operationId.equals("DeleteCall") || co.operationId.equals("FetchCall")) {
-                //System.out.println("All Params for: " + co.operationId + " are: -------------------> +" + co.allParams);
-            }
             if (co.requiredParams.size() > 0) {
                 co.vendorExtensions.put("x-required-param-exist", true);
             }
@@ -341,6 +339,13 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
         Set<CodegenProperty> distinctResponseModels = new LinkedHashSet<>();
         for (CodegenModel codegenModel: responseModels) {
             for (CodegenProperty property: codegenModel.vars) {
+                ReservedKeyword.Csharp[] reservedKeyWords = ReservedKeyword.Csharp.values();
+                Optional<ReservedKeyword.Csharp> result = Arrays.stream(reservedKeyWords)
+                        .filter(value -> value.getValue().equals(property.nameInCamelCase))
+                        .findAny();
+                if (result.isPresent()) {
+                    property.nameInCamelCase = "_" + property.nameInCamelCase;
+                }
                 distinctResponseModels.add(property);
             }
         }
