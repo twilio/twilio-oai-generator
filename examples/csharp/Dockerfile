@@ -21,6 +21,7 @@ COPY src/Twilio/Rest /app/twilio-csharp/src/Twilio
 
 RUN rm -rf test/*
 COPY test /app/twilio-csharp/test
+COPY integrationTest/rest/ /app/twilio-csharp/test/Twilio.Test
 
 RUN dotnet restore
 RUN dotnet build -c Release
