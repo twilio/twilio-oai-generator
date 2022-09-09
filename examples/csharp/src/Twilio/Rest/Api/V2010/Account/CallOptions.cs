@@ -18,8 +18,9 @@ using System.Collections.Generic;
 using Twilio.Base;
 using Twilio.Converters;
 
-using System.Linq
+using System.Linq;
 
+using Twilio.Types;
 
 
 namespace Twilio.Rest.Api.V2010.Account
@@ -27,6 +28,8 @@ namespace Twilio.Rest.Api.V2010.Account
 
     public class CreateCallOptions : IOptions<CallResource>
     {
+        // How to decide which has getter and which has setter ?
+        
         public string RequiredStringProperty { get; set; }
         public string PathAccountSid { get; set; }
         public List<string> TestArrayOfStrings { get; set; }
@@ -38,39 +41,48 @@ namespace Twilio.Rest.Api.V2010.Account
         }
 
         
-        public  List<KeyValuePair<string, string>> GetParams()
+    public  List<KeyValuePair<string, string>> GetParams()
+    {
+        var p = new List<KeyValuePair<string, string>>();
+
+        if (RequiredStringProperty != null)
         {
-            var p = new List<KeyValuePair<string, string>>();
-
-            if (RequiredStringProperty != null)
-            {
-                p.Add(new KeyValuePair<string, string>("RequiredStringProperty", RequiredStringProperty));
-            }
-            if (TestArrayOfStrings != null)
-            {
-                p.AddRange(TestArrayOfStrings.Select(TestArrayOfStrings => new KeyValuePair<string, string>("TestArrayOfStrings", TestArrayOfStrings)));
-            }
-            return p;
+            p.Add(new KeyValuePair<string, string>("RequiredStringProperty", RequiredStringProperty));
         }
+        if (TestArrayOfStrings != null)
+        {
+            p.AddRange(TestArrayOfStrings.Select(TestArrayOfStrings => new KeyValuePair<string, string>("TestArrayOfStrings", TestArrayOfStrings)));
+        }
+        return p;
     }
+        
 
+
+
+    }
     public class DeleteCallOptions : IOptions<CallResource>
     {
         
         public int PathTestInteger { get; set; }
         public string PathAccountSid { get; set; }
 
+
         public DeleteCallOptions(int pathTestInteger)
         {
             PathTestInteger = pathTestInteger;
         }
-        
-        public  List<KeyValuePair<string, string>> GetParams()
-        {
-            var p = new List<KeyValuePair<string, string>>();
 
-            return p;
-        }
+        
+    public  List<KeyValuePair<string, string>> GetParams()
+    {
+        var p = new List<KeyValuePair<string, string>>();
+
+        return p;
+    }
+        
+
+
+
     }
 
 
@@ -80,18 +92,23 @@ namespace Twilio.Rest.Api.V2010.Account
         public int PathTestInteger { get; set; }
         public string PathAccountSid { get; set; }
 
+
         public FetchCallOptions(int pathTestInteger)
         {
             PathTestInteger = pathTestInteger;
         }
 
         
-        public  List<KeyValuePair<string, string>> GetParams()
-        {
-            var p = new List<KeyValuePair<string, string>>();
+    public  List<KeyValuePair<string, string>> GetParams()
+    {
+        var p = new List<KeyValuePair<string, string>>();
 
-            return p;
-        }
+        return p;
+    }
+        
+
+
+
     }
 
 

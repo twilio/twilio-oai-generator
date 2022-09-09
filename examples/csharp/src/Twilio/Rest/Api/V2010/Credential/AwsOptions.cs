@@ -18,13 +18,16 @@ using System.Collections.Generic;
 using Twilio.Base;
 using Twilio.Converters;
 
+using Twilio.Types;
 
 
 namespace Twilio.Rest.Api.V2010.Credential
 {
     public class DeleteAwsOptions : IOptions<AwsResource>
     {
+        
         public string PathSid { get; set; }
+
 
         public DeleteAwsOptions(string pathSid)
         {
@@ -32,11 +35,15 @@ namespace Twilio.Rest.Api.V2010.Credential
         }
 
         
-        public  List<KeyValuePair<string, string>> GetParams()
-        {
-            var p = new List<KeyValuePair<string, string>>();
-            return p;
-        }
+    public  List<KeyValuePair<string, string>> GetParams()
+    {
+        var p = new List<KeyValuePair<string, string>>();
+
+        return p;
+    }
+        
+
+
 
     }
 
@@ -46,34 +53,48 @@ namespace Twilio.Rest.Api.V2010.Credential
     
         public string PathSid { get; set; }
 
+
         public FetchAwsOptions(string pathSid)
         {
             PathSid = pathSid;
         }
 
         
-        public  List<KeyValuePair<string, string>> GetParams()
-        {
-            var p = new List<KeyValuePair<string, string>>();
-            return p;
-        }
+    public  List<KeyValuePair<string, string>> GetParams()
+    {
+        var p = new List<KeyValuePair<string, string>>();
+
+        return p;
+    }
+        
+
+
+
     }
 
 
     public class ReadAwsOptions : ReadOptions<AwsResource>
     {
+    
         public int? PageSize { get; set; }
 
-        public  override List<KeyValuePair<string, string>> GetParams()
-        {
-            var p = new List<KeyValuePair<string, string>>();
 
-            if (PageSize != null)
-            {
-                p.Add(new KeyValuePair<string, string>("PageSize", PageSize.ToString()));
-            }
-            return p;
+
+        
+    public  override List<KeyValuePair<string, string>> GetParams()
+    {
+        var p = new List<KeyValuePair<string, string>>();
+
+        if (PageSize != null)
+        {
+            p.Add(new KeyValuePair<string, string>("PageSize", PageSize.ToString()));
         }
+        return p;
+    }
+        
+
+
+
     }
 
     public class UpdateAwsOptions : IOptions<AwsResource>
@@ -83,26 +104,33 @@ namespace Twilio.Rest.Api.V2010.Credential
         public string TestString { get; set; }
         public bool? TestBoolean { get; set; }
 
+
         public UpdateAwsOptions(string pathSid)
         {
             PathSid = pathSid;
         }
 
         
-        public  List<KeyValuePair<string, string>> GetParams()
-        {
-            var p = new List<KeyValuePair<string, string>>();
+    public  List<KeyValuePair<string, string>> GetParams()
+    {
+        var p = new List<KeyValuePair<string, string>>();
 
-            if (TestString != null)
-            {
-                p.Add(new KeyValuePair<string, string>("TestString", TestString));
-            }
-            if (TestBoolean != null)
-            {
-                p.Add(new KeyValuePair<string, string>("TestBoolean", TestBoolean.Value.ToString().ToLower()));
-            }
-            return p;
+        if (TestString != null)
+        {
+            p.Add(new KeyValuePair<string, string>("TestString", TestString));
         }
+        if (TestBoolean != null)
+        {
+            p.Add(new KeyValuePair<string, string>("TestBoolean", TestBoolean.Value.ToString().ToLower()));
+        }
+        return p;
     }
+        
+
+
+
+    }
+
+
 }
 
