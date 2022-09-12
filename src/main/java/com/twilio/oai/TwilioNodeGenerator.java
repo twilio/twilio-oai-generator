@@ -1,7 +1,6 @@
 package com.twilio.oai;
 
 import java.io.File;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -38,9 +37,8 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
 
     private final List<CodegenModel> allModels = new ArrayList<>();
     private final Inflector inflector = new Inflector();
-    private  Map<String, String> subDomainMap = new HashMap<>();
-    private Map<String, Set<String>> dependentMap = new HashMap<>();
-    private Map<String, String> nameMap = new HashMap<>();
+    private Map<String, String> subDomainMap = new HashMap<>();
+    private Map<String, String> resourceNameMap = new HashMap<>();
     private IResourceTree resourceTree;
 
     public TwilioNodeGenerator() {
@@ -84,26 +82,11 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
 
 
             List<String> ancestors = resourceTree.ancestors(name, operation);
-            if (!nameMap.containsKey(name)) {
+            if (!resourceNameMap.containsKey(name)) {
                 String resourceName = ancestors.get(ancestors.size()-1);
-                nameMap.put(name, resourceName);
-                nameMap.put(PathUtils.removeExtension(PathUtils.removePathParamIds(name)), resourceName);
+                resourceNameMap.put(name, resourceName);
+                resourceNameMap.put(PathUtils.removeExtension(PathUtils.removePathParamIds(name)), resourceName);
             }
-
-            for (int i = 0; i < ancestors.size()-2; i++) {
-                Set<String> deps = new HashSet<>(ancestors.subList(i+1, ancestors.size()-1));
-                if (dependentMap.containsKey(ancestors.get(i))) {
-                    Set<String> currentDeps = dependentMap.get(ancestors.get(i));
-                    currentDeps.addAll(deps);
-                    dependentMap.put(ancestors.get(i), currentDeps);
-                }
-                else {
-                    dependentMap.put(ancestors.get(i), deps);
-                }
-            }
-
-            Set<String> deps = new HashSet<>();
-            dependentMap.put(ancestors.get(ancestors.size()-1), deps);
 
             if(isPreviewDomain()){
                 String subDomainName = extractSubDomainName(name);
@@ -394,8 +377,8 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
     }
 
     private String getResourceName(final String path) {
-        if (nameMap.containsKey(path)) {
-            return nameMap.get(path);
+        if (resourceNameMap.containsKey(path)) {
+            return resourceNameMap.get(path);
         }
         return PathUtils.getLastPathPart(PathUtils.cleanPathAndRemoveFirstElement(path));
     }
