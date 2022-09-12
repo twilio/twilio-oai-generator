@@ -131,6 +131,8 @@ public class CsharpResolver extends Resolver {
         String deserialize = Segments.SEGMENT_DESERIALIZE.getSegment();
         if (conventionMap.get(property).containsKey(codegenProperty.dataFormat)) {
             codegenProperty.dataType = (String)conventionMap.get(property).get(codegenProperty.dataFormat);
+        } else if (conventionMap.get(property).containsKey(codegenProperty.dataType)) {
+            codegenProperty.dataType = (String)conventionMap.get(property).get(codegenProperty.dataType);
         }
 
         if (conventionMap.get(deserialize).containsKey(codegenProperty.dataFormat)) {
@@ -200,6 +202,8 @@ public class CsharpResolver extends Resolver {
 
         if (conventionMap.get(property).containsKey(parameter.dataFormat)) {
             parameter.dataType = (String) conventionMap.get(property).get(parameter.dataFormat);
+        } else if (conventionMap.get(property).containsKey(parameter.dataType)) {
+            parameter.dataType = (String) conventionMap.get(property).get(parameter.dataType);
         } else if (parameter.dataType.contains("Enum")) { // parameter.dataType.contains(className) &&
             String[] value = parameter.dataType.split("Enum");
             parameter.enumName = value[value.length-1] + "Enum";
@@ -249,6 +253,10 @@ public class CsharpResolver extends Resolver {
     @Override
     public List<CodegenParameter> resolveParameter(List<CodegenParameter> parameters) {
         for (CodegenParameter parameter: parameters) {
+            // Adding reserved keyword for backward compatibility
+            if (ApplicationConstants._CONFIGURATION.equals(parameter.paramName)) {
+                parameter.paramName = "Configuration";
+            }
             resolveParameter(parameter);
         }
         return parameters;
