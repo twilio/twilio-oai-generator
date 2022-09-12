@@ -10,3 +10,5 @@ __pycache__
 
 **/coverage*
 **/test-report.out
+**/lcov.*.xml
+*.iml
