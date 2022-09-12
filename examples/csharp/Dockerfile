@@ -24,10 +24,10 @@ RUN dotnet build -c Release
 
 # sonar coverage reports
 # Add /d:sonar.login="${SONAR_TOKEN}" to sync up with sonarcloud.
-RUN dotnet sonarscanner begin /k:"twilio_twilio-csharp" /o:"twilio" /d:sonar.host.url=https://sonarcloud.io /d:sonar.language="cs" /d:sonar.exclusions="src/Twilio/Rest/**/*.*,test/Twilio.Test/**/*.*" /d:sonar.cs.opencover.reportsPaths="test/lcov.net451.opencover.xml" /d:sonar.coverageReportPaths=".\sonarqubecoverage\SonarQube.xml"
+#RUN dotnet sonarscanner begin /k:"twilio_twilio-csharp" /o:"twilio" /d:sonar.host.url=https://sonarcloud.io /d:sonar.language="cs" /d:sonar.exclusions="test/Twilio.Test/**/*.*" /d:sonar.cs.opencover.reportsPaths="test/lcov.net451.opencover.xml" /d:sonar.coverageReportPaths=".\sonarqubecoverage\SonarQube.xml"
 # Generates way too much logs / warnings so sending it to a log file instead
-RUN	dotnet build Twilio.sln > buildforsonar.log
+#RUN	dotnet build Twilio.sln > buildforsonar.log
 #RUN reportgenerator "-reports:./test/lcov.net451.opencover.xml" "-targetdir:test" "-reporttypes:SonarQube" -- enable this to generate better reports
-CMD ["/bin/bash", "-c", "dotnet test test/Twilio.Test/Twilio.Test.csproj --no-build /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput=../lcov| tee /local/test-report.out"]
+#CMD ["/bin/bash", "-c", "dotnet test test/Twilio.Test/Twilio.Test.csproj --no-build /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput=../lcov| tee /local/test-report.out"]
 # dotnet sonarscanner end /d:sonar.login="${SONAR_TOKEN}" -- enable this when syncing up with sonarcloud
 
