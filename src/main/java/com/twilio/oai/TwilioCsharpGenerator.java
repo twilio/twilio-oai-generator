@@ -165,12 +165,10 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
                 co.vendorExtensions.put("x-required-param-exist", true);
             }
 
-            // Options instance variables
-            co.allParams.stream().map(resolver::resolveParameter).map(item -> StringUtils.camelize(item.paramName)).collect(Collectors.toList());
-            co.headerParams.stream().map(resolver::resolveParameter).map(item -> StringUtils.camelize(item.paramName)).collect(Collectors.toList());
-
             boolean arrayParamsPresent = hasArrayParams(co.allParams);
+
             Serializer.serialize(co.allParams);
+            Serializer.serialize(co.pathParams);
             
             co.vendorExtensions.put("x-getparams", getParams(co));
 
@@ -297,15 +295,15 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
         rearrangeBeforeAfter(optionalParameters);
 
         // Add to vendor extension
-        HashSet<CodegenParameter> requestBodyArgument = new LinkedHashSet<>();
-        requestBodyArgument.addAll(co.requiredParams);
-        requestBodyArgument.addAll(co.pathParams);
-        requestBodyArgument.addAll(conditionalParameters);
-        requestBodyArgument.addAll(optionalParameters);
+        LinkedHashMap<String, CodegenParameter> requestBodyArgument = new LinkedHashMap<>();
+        co.requiredParams.stream().forEach(parameter -> requestBodyArgument.put(parameter.paramName, parameter));
+        co.pathParams.stream().forEach(parameter -> requestBodyArgument.put(parameter.paramName, parameter));
+        conditionalParameters.stream().forEach(parameter -> requestBodyArgument.put(parameter.paramName, parameter));
+        optionalParameters.stream().forEach(parameter -> requestBodyArgument.put(parameter.paramName, parameter));
 
-        co.vendorExtensions.put("x-request-body-param", new ArrayList<>(requestBodyArgument));
+        co.vendorExtensions.put("x-request-body-param", new ArrayList<>(requestBodyArgument.values()));
         int requiredCnt = 0;
-        for (CodegenParameter parameter: requestBodyArgument) {
+        for (CodegenParameter parameter: requestBodyArgument.values()) {
             if (parameter.required) {
                 requiredCnt++;
             }
@@ -372,6 +370,8 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
         resolver.resolveParameter(co.queryParams);
         resolver.resolveParameter(co.optionalParams);
         resolver.resolveParameter(co.requiredParams);
+        resolver.resolveParameter(co.allParams);
+        resolver.resolveParameter(co.headerParams);
     }
 
     // Sanitizing URL path similar to java codegen.
