@@ -17,7 +17,7 @@ import Page from '../../../../base/Page';
 import V2010 from '../../V2010';
 const deserialize = require('../../../../base/deserialize');
 const serialize = require('../../../../base/serialize');
-import { FeedbackSummaryListInstance } from './call/feedbackSummary';
+import { FeedbackCallSummaryListInstance } from './call/feedbackCallSummary';
 
 
 /**
@@ -36,7 +36,7 @@ export interface CallListInstance {
     (accountSid: string, testInteger: number): CallContext;
     get(accountSid: string, testInteger: number): CallContext;
 
-    feedback_summary: FeedbackSummaryListInstance;
+    feedback_call_summary: FeedbackCallSummaryListInstance;
 
     /**
      * Create a CallInstance
@@ -63,7 +63,7 @@ class CallListInstanceImpl implements CallListInstance {
     _solution?: any;
     _uri?: string;
 
-    _feedback_summary?: FeedbackSummaryListInstance;
+    _feedback_call_summary?: FeedbackCallSummaryListInstance;
 }
 
 export function CallListInstance(version: V2010, accountSid: string): CallListInstance {
@@ -77,12 +77,12 @@ export function CallListInstance(version: V2010, accountSid: string): CallListIn
     instance._solution = { accountSid };
     instance._uri = `/2010-04-01/Accounts/${accountSid}/Calls.json`;
 
-    Object.defineProperty(instance, 'feedback_summary', {
-        get: function feedback_summary() {
-            if (!this._feedback_summary) {
-                this._feedback_summary = FeedbackSummaryListInstance(this._version, this._solution.accountSid);
+    Object.defineProperty(instance, 'feedback_call_summary', {
+        get: function feedback_call_summary() {
+            if (!this._feedback_call_summary) {
+                this._feedback_call_summary = FeedbackCallSummaryListInstance(this._version, this._solution.accountSid);
             }
-            return this._feedback_summary;
+            return this._feedback_call_summary;
         }
     });
 

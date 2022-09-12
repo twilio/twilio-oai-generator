@@ -17,7 +17,7 @@ import Page from '../../../base/Page';
 import V2010 from '../V2010';
 const deserialize = require('../../../base/deserialize');
 const serialize = require('../../../base/serialize');
-import { CallListInstance } from './account/calls';
+import { CallListInstance } from './account/call';
 
 
 /**
@@ -62,7 +62,7 @@ export interface AccountListInstancePageOptions {
 
 export interface AccountContext {
 
-    calls: CallListInstance;
+    call: CallListInstance;
 
     /**
      * Remove a AccountInstance
@@ -104,16 +104,16 @@ export class AccountContextImpl implements AccountContext {
     protected _solution: any;
     protected _uri: string;
 
-    protected _calls?: CallListInstance;
+    protected _call?: CallListInstance;
 
     constructor(protected _version: V2010, sid: string) {
         this._solution = { sid };
         this._uri = `/2010-04-01/Accounts/${sid}.json`;
     }
 
-    get calls(): CallListInstance {
-        this._calls = this._calls || CallListInstance(this._version, this._solution.sid);
-        return this._calls;
+    get call(): CallListInstance {
+        this._call = this._call || CallListInstance(this._version, this._solution.sid);
+        return this._call;
     }
 
     remove(callback?: any): Promise<boolean> {
@@ -302,10 +302,10 @@ export class AccountInstance {
     }
 
     /**
-     * Access the calls.
+     * Access the call.
      */
-    calls(): CallListInstance {
-        return this._proxy.calls;
+    call(): CallListInstance {
+        return this._proxy.call;
     }
 
     /**

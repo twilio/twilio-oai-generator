@@ -87,8 +87,7 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
             if (!nameMap.containsKey(name)) {
                 String resourceName = ancestors.get(ancestors.size()-1);
                 nameMap.put(name, resourceName);
-                nameMap.put(PathUtils.removePathParamIds(name), resourceName);
-                //System.out.println("namemap pair " + name + " " + ancestors.get(ancestors.size()-1));
+                nameMap.put(PathUtils.removeExtension(PathUtils.removePathParamIds(name)), resourceName);
             }
 
             for (int i = 0; i < ancestors.size()-2; i++) {
@@ -101,7 +100,6 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
                 else {
                     dependentMap.put(ancestors.get(i), deps);
                 }
-                //System.out.println("dep map pair: " + ancestors.get(i) + " " + dependentMap.get(ancestors.get(i)));
             }
 
             Set<String> deps = new HashSet<>();
@@ -249,7 +247,6 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
 
             final Map<String, Object> dependents = getStringMap(resource, "dependents");
             for (final String dependentPath : (List<String>) co.vendorExtensions.get("x-dependents")) {
-                System.out.println("dep path for x-dependent " + dependentPath);
                 addDependent(dependents, dependentPath);
             }
 
@@ -311,10 +308,6 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
     }
 
     private void addDependent(final Map<String, Object> dependents, final String dependentPath) {
-
-        // fix the case for filename where the path has the sids and params in b/w the brackets cleaned out
-//        System.out.println("deps: " + dependents);
-//        System.out.println("dep path: " + dependentPath);
         final Map<String, Object> dependent = getStringMap(dependents, dependentPath);
         final String dependentName = getResourceName(dependentPath);
         dependent.put("name", inflector.singular(dependentName));
