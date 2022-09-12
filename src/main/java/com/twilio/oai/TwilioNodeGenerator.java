@@ -158,11 +158,12 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
         for (final CodegenOperation co : opList) {
             // Group operations by resource.
             String path = co.path;
+            String[] filePathArray = co.baseName.split(PATH_SEPARATOR_PLACEHOLDER);
             for (final CodegenParameter pathParam : co.pathParams) {
                 path = path.replace("{" + pathParam.baseName + "}", "${" + pathParam.paramName + "}");
             }
 
-            final String itemName = inflector.singular(getResourceName(co.path));
+            final String itemName = filePathArray[filePathArray.length-1];
             final String instanceName = itemName + "Instance";
             final boolean isInstanceOperation = PathUtils.removeExtension(co.path).endsWith("}");
             final HttpMethod httpMethod = HttpMethod.fromString(co.httpMethod);

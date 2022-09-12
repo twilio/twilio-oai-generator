@@ -20,29 +20,29 @@ const serialize = require('../../../../../base/serialize');
 
 
 /**
- * Options to pass to create a FeedbackSummaryInstance
+ * Options to pass to create a FeedbackCallSummaryInstance
  *
  * @property { string } endDate 
  * @property { string } startDate 
  */
-export interface FeedbackSummaryListInstanceCreateOptions {
+export interface FeedbackCallSummaryListInstanceCreateOptions {
     endDate: string;
     startDate: string;
 }
 
-export interface FeedbackSummaryListInstance {
+export interface FeedbackCallSummaryListInstance {
 
 
     /**
-     * Create a FeedbackSummaryInstance
+     * Create a FeedbackCallSummaryInstance
      *
-     * @param { FeedbackSummaryListInstanceCreateOptions } params - Parameter for request
+     * @param { FeedbackCallSummaryListInstanceCreateOptions } params - Parameter for request
      * @param { function } [callback] - Callback to handle processed record
      *
-     * @returns { Promise } Resolves to processed FeedbackSummaryInstance
+     * @returns { Promise } Resolves to processed FeedbackCallSummaryInstance
      */
-    create(params: FeedbackSummaryListInstanceCreateOptions, callback?: (error: Error | null, item?: FeedbackSummaryInstance) => any): Promise<FeedbackSummaryInstance>;
-    create(params: any, callback?: any): Promise<FeedbackSummaryInstance>
+    create(params: FeedbackCallSummaryListInstanceCreateOptions, callback?: (error: Error | null, item?: FeedbackCallSummaryInstance) => any): Promise<FeedbackCallSummaryInstance>;
+    create(params: any, callback?: any): Promise<FeedbackCallSummaryInstance>
 ;
     /**
      * Provide a user-friendly representation
@@ -52,22 +52,22 @@ export interface FeedbackSummaryListInstance {
 }
 
 
-interface FeedbackSummaryListInstanceImpl extends FeedbackSummaryListInstance {}
-class FeedbackSummaryListInstanceImpl implements FeedbackSummaryListInstance {
+interface FeedbackCallSummaryListInstanceImpl extends FeedbackCallSummaryListInstance {}
+class FeedbackCallSummaryListInstanceImpl implements FeedbackCallSummaryListInstance {
     _version?: V2010;
     _solution?: any;
     _uri?: string;
 
 }
 
-export function FeedbackSummaryListInstance(version: V2010, accountSid: string): FeedbackSummaryListInstance {
-    const instance = {} as FeedbackSummaryListInstanceImpl;
+export function FeedbackCallSummaryListInstance(version: V2010, accountSid: string): FeedbackCallSummaryListInstance {
+    const instance = {} as FeedbackCallSummaryListInstanceImpl;
 
     instance._version = version;
     instance._solution = { accountSid };
     instance._uri = `/2010-04-01/Accounts/${accountSid}/Calls/FeedbackSummary.json`;
 
-    instance.create = function create(params: any, callback?: any): Promise<FeedbackSummaryInstance> {
+    instance.create = function create(params: any, callback?: any): Promise<FeedbackCallSummaryInstance> {
         if (params === null || params === undefined) {
             throw new Error('Required parameter "params" missing.');
         }
@@ -92,7 +92,7 @@ export function FeedbackSummaryListInstance(version: V2010, accountSid: string):
         let operationVersion = version,
             operationPromise = operationVersion.create({ uri: this._uri, method: 'POST', params: data, headers });
 
-        operationPromise = operationPromise.then(payload => new FeedbackSummaryInstance(operationVersion, payload, this._solution.accountSid));
+        operationPromise = operationPromise.then(payload => new FeedbackCallSummaryInstance(operationVersion, payload, this._solution.accountSid));
 
         if (typeof callback === 'function') {
             operationPromise = operationPromise
@@ -115,10 +115,10 @@ export function FeedbackSummaryListInstance(version: V2010, accountSid: string):
     return instance;
 }
 
-interface FeedbackSummaryPayload extends FeedbackSummaryResource, Page.TwilioResponsePayload {
+interface FeedbackCallSummaryPayload extends FeedbackCallSummaryResource, Page.TwilioResponsePayload {
 }
 
-interface FeedbackSummaryResource {
+interface FeedbackCallSummaryResource {
     account_sid?: string | null;
     sid?: string | null;
     test_string?: string | null;
@@ -135,11 +135,11 @@ interface FeedbackSummaryResource {
     test_array_of_enum?: Array<object> | null;
 }
 
-export class FeedbackSummaryInstance {
+export class FeedbackCallSummaryInstance {
     protected _solution: any;
-    protected _context?: FeedbackSummaryListInstance;
+    protected _context?: FeedbackCallSummaryListInstance;
 
-    constructor(protected _version: V2010, payload: FeedbackSummaryPayload, accountSid?: string) {
+    constructor(protected _version: V2010, payload: FeedbackCallSummaryPayload, accountSid?: string) {
         this.accountSid = payload.account_sid;
         this.sid = payload.sid;
         this.testString = payload.test_string;

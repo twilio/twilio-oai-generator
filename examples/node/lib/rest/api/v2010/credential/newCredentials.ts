@@ -20,7 +20,7 @@ const serialize = require('../../../../base/serialize');
 
 
 /**
- * Options to pass to create a AWSInstance
+ * Options to pass to create a NewCredentialsInstance
  *
  * @property { string } testString 
  * @property { boolean } [testBoolean] 
@@ -38,7 +38,7 @@ const serialize = require('../../../../base/serialize');
  * @property { any } [testAnyType] 
  * @property { Array<string> } [permissions] A comma-separated list of the permissions you will request from the users of this ConnectApp.  Can include: &#x60;get-all&#x60; and &#x60;post-all&#x60;.
  */
-export interface AWSListInstanceCreateOptions {
+export interface NewCredentialsListInstanceCreateOptions {
     testString: string;
     testBoolean?: boolean;
     testInteger?: number;
@@ -56,19 +56,19 @@ export interface AWSListInstanceCreateOptions {
     permissions?: Array<string>;
 }
 
-export interface AWSListInstance {
+export interface NewCredentialsListInstance {
 
 
     /**
-     * Create a AWSInstance
+     * Create a NewCredentialsInstance
      *
-     * @param { AWSListInstanceCreateOptions } params - Parameter for request
+     * @param { NewCredentialsListInstanceCreateOptions } params - Parameter for request
      * @param { function } [callback] - Callback to handle processed record
      *
-     * @returns { Promise } Resolves to processed AWSInstance
+     * @returns { Promise } Resolves to processed NewCredentialsInstance
      */
-    create(params: AWSListInstanceCreateOptions, callback?: (error: Error | null, item?: AWSInstance) => any): Promise<AWSInstance>;
-    create(params: any, callback?: any): Promise<AWSInstance>
+    create(params: NewCredentialsListInstanceCreateOptions, callback?: (error: Error | null, item?: NewCredentialsInstance) => any): Promise<NewCredentialsInstance>;
+    create(params: any, callback?: any): Promise<NewCredentialsInstance>
 ;
     /**
      * Provide a user-friendly representation
@@ -78,22 +78,22 @@ export interface AWSListInstance {
 }
 
 
-interface AWSListInstanceImpl extends AWSListInstance {}
-class AWSListInstanceImpl implements AWSListInstance {
+interface NewCredentialsListInstanceImpl extends NewCredentialsListInstance {}
+class NewCredentialsListInstanceImpl implements NewCredentialsListInstance {
     _version?: V2010;
     _solution?: any;
     _uri?: string;
 
 }
 
-export function AWSListInstance(version: V2010): AWSListInstance {
-    const instance = {} as AWSListInstanceImpl;
+export function NewCredentialsListInstance(version: V2010): NewCredentialsListInstance {
+    const instance = {} as NewCredentialsListInstanceImpl;
 
     instance._version = version;
     instance._solution = {  };
     instance._uri = `/v1/Credentials/AWS`;
 
-    instance.create = function create(params: any, callback?: any): Promise<AWSInstance> {
+    instance.create = function create(params: any, callback?: any): Promise<NewCredentialsInstance> {
         if (params === null || params === undefined) {
             throw new Error('Required parameter "params" missing.');
         }
@@ -127,7 +127,7 @@ export function AWSListInstance(version: V2010): AWSListInstance {
         let operationVersion = version,
             operationPromise = operationVersion.create({ uri: this._uri, method: 'POST', params: data, headers });
 
-        operationPromise = operationPromise.then(payload => new AWSInstance(operationVersion, payload));
+        operationPromise = operationPromise.then(payload => new NewCredentialsInstance(operationVersion, payload));
 
         if (typeof callback === 'function') {
             operationPromise = operationPromise
@@ -150,10 +150,10 @@ export function AWSListInstance(version: V2010): AWSListInstance {
     return instance;
 }
 
-interface AWSPayload extends AWSResource, Page.TwilioResponsePayload {
+interface NewCredentialsPayload extends NewCredentialsResource, Page.TwilioResponsePayload {
 }
 
-interface AWSResource {
+interface NewCredentialsResource {
     account_sid?: string | null;
     sid?: string | null;
     test_string?: string | null;
@@ -170,11 +170,11 @@ interface AWSResource {
     test_array_of_enum?: Array<object> | null;
 }
 
-export class AWSInstance {
+export class NewCredentialsInstance {
     protected _solution: any;
-    protected _context?: AWSListInstance;
+    protected _context?: NewCredentialsListInstance;
 
-    constructor(protected _version: V2010, payload: AWSPayload) {
+    constructor(protected _version: V2010, payload: NewCredentialsPayload) {
         this.accountSid = payload.account_sid;
         this.sid = payload.sid;
         this.testString = payload.test_string;
