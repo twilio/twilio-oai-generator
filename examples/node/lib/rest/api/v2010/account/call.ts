@@ -17,7 +17,7 @@ import Page from '../../../../base/Page';
 import V2010 from '../../V2010';
 const deserialize = require('../../../../base/deserialize');
 const serialize = require('../../../../base/serialize');
-import { FeedbackSummaryListInstance } from './calls/feedbackSummary';
+import { FeedbackSummaryListInstance } from './call/feedbackSummary';
 
 
 /**
