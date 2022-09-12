@@ -24,6 +24,7 @@ using Twilio.Http;
 
 using Twilio.Types;
 
+using Twilio.Types;
 
 
 namespace Twilio.Rest.Api.V2010
@@ -45,6 +46,18 @@ namespace Twilio.Rest.Api.V2010
             public static readonly StatusEnum Processing = new StatusEnum("processing");
             public static readonly StatusEnum Completed = new StatusEnum("completed");
             public static readonly StatusEnum Absent = new StatusEnum("absent");
+
+        }
+        public sealed class XTwilioWebhookEnabledEnum : StringEnum
+        {
+            private XTwilioWebhookEnabledEnum(string value) : base(value) {}
+            public XTwilioWebhookEnabledEnum() {}
+            public static implicit operator XTwilioWebhookEnabledEnum(string value)
+            {
+                return new XTwilioWebhookEnabledEnum(value);
+            }
+            public static readonly XTwilioWebhookEnabledEnum True = new XTwilioWebhookEnabledEnum("true");
+            public static readonly XTwilioWebhookEnabledEnum False = new XTwilioWebhookEnabledEnum("false");
 
         }
 
@@ -84,7 +97,7 @@ namespace Twilio.Rest.Api.V2010
 
 
         public static AccountResource Create(
-                                          string xTwilioWebhookEnabled = null,
+                                          AccountResource.XTwilioWebhookEnabledEnum xTwilioWebhookEnabled = null,
                                           Uri recordingStatusCallback = null,
                                           List<string> recordingStatusCallbackEvent = null,
                                           ITwilioRestClient client = null)
@@ -95,7 +108,7 @@ namespace Twilio.Rest.Api.V2010
 
         #if !NET35
         public static async System.Threading.Tasks.Task<AccountResource> CreateAsync(
-                                                                                  string xTwilioWebhookEnabled = null,
+                                                                                  AccountResource.XTwilioWebhookEnabledEnum xTwilioWebhookEnabled = null,
                                                                                   Uri recordingStatusCallback = null,
                                                                                   List<string> recordingStatusCallbackEvent = null,
                                                                                   ITwilioRestClient client = null)
@@ -104,6 +117,14 @@ namespace Twilio.Rest.Api.V2010
             return await CreateAsync(options, client);
         }
         #endif
+
+
+
+
+
+
+
+
 
         
         private static Request BuildDeleteRequest(DeleteAccountOptions options, ITwilioRestClient client)
@@ -154,6 +175,12 @@ namespace Twilio.Rest.Api.V2010
             return await DeleteAsync(options, client);
         }
         #endif
+
+
+
+
+
+
         
 
         private static Request BuildFetchRequest(FetchAccountOptions options, ITwilioRestClient client)
@@ -275,6 +302,12 @@ namespace Twilio.Rest.Api.V2010
             return await ReadAsync(options, client);
         }
         #endif
+
+
+
+
+
+
         
         private static Request BuildUpdateRequest(UpdateAccountOptions options, ITwilioRestClient client)
         {
@@ -415,10 +448,10 @@ namespace Twilio.Rest.Api.V2010
         public AccountResource.StatusEnum TestEnum { get; private set; }
 
         [JsonProperty("test_array_of_integers")]
-        public List<int> TestArrayOfIntegers { get; private set; }
+        public List<int?> TestArrayOfIntegers { get; private set; }
 
         [JsonProperty("test_array_of_array_of_integers")]
-        public List<int>> TestArrayOfArrayOfIntegers { get; private set; }
+        public List<List<int?>> TestArrayOfArrayOfIntegers { get; private set; }
 
         [JsonProperty("test_array_of_objects")]
         public List<FeedbackIssue> TestArrayOfObjects { get; private set; }
@@ -432,6 +465,6 @@ namespace Twilio.Rest.Api.V2010
         private AccountResource() {
 
         }
-    }
-}
+    } // end of resource class
+} // end of namespace
 

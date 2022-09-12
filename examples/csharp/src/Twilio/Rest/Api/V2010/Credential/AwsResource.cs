@@ -24,6 +24,7 @@ using Twilio.Http;
 
 using Twilio.Types;
 
+using Twilio.Types;
 
 
 namespace Twilio.Rest.Api.V2010.Credential
@@ -55,7 +56,7 @@ namespace Twilio.Rest.Api.V2010.Credential
             
             string path = "/v1/Credentials/AWS/{Sid}";
 
-            string PathSid = options.PathSid.ToString();
+            string PathSid = options.PathSid;
             path = path.Replace("{"+"Sid"+"}", PathSid);
 
 
@@ -99,12 +100,19 @@ namespace Twilio.Rest.Api.V2010.Credential
         }
         #endif
 
+
+
+
+
+
+        
+
         private static Request BuildFetchRequest(FetchAwsOptions options, ITwilioRestClient client)
         {
             
             string path = "/v1/Credentials/AWS/{Sid}";
 
-            string PathSid = options.PathSid.ToString();
+            string PathSid = options.PathSid;
             path = path.Replace("{"+"Sid"+"}", PathSid);
 
 
@@ -147,6 +155,13 @@ namespace Twilio.Rest.Api.V2010.Credential
             return await FetchAsync(options, client);
         }
         #endif
+
+
+
+
+
+        
+
 
         private static Request BuildReadRequest(ReadAwsOptions options, ITwilioRestClient client)
         {
@@ -204,13 +219,18 @@ namespace Twilio.Rest.Api.V2010.Credential
         }
         #endif
 
+
+
+
+
+
         
         private static Request BuildUpdateRequest(UpdateAwsOptions options, ITwilioRestClient client)
         {
             
             string path = "/v1/Credentials/AWS/{Sid}";
 
-            string PathSid = options.PathSid.ToString();
+            string PathSid = options.PathSid;
             path = path.Replace("{"+"Sid"+"}", PathSid);
 
 
@@ -344,10 +364,10 @@ namespace Twilio.Rest.Api.V2010.Credential
         public AwsResource.StatusEnum TestEnum { get; private set; }
 
         [JsonProperty("test_array_of_integers")]
-        public List<int> TestArrayOfIntegers { get; private set; }
+        public List<int?> TestArrayOfIntegers { get; private set; }
 
         [JsonProperty("test_array_of_array_of_integers")]
-        public List<int>> TestArrayOfArrayOfIntegers { get; private set; }
+        public List<List<int?>> TestArrayOfArrayOfIntegers { get; private set; }
 
         [JsonProperty("test_array_of_objects")]
         public List<FeedbackIssue> TestArrayOfObjects { get; private set; }
@@ -361,6 +381,6 @@ namespace Twilio.Rest.Api.V2010.Credential
         private AwsResource() {
 
         }
-    }
-}
+    } // end of resource class
+} // end of namespace
 
