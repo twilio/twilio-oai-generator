@@ -18,7 +18,10 @@ using System.Collections.Generic;
 using Twilio.Base;
 using Twilio.Converters;
 
-using System.Linq
+using System.Linq;
+
+using Twilio.Types;
+
 
 namespace Twilio.Rest.Api.V2010.Credential
 {
@@ -41,13 +44,13 @@ namespace Twilio.Rest.Api.V2010.Credential
         public NewCredentialsResource.StatusEnum TestEnum { get; set; }
         public List<Object> TestObjectArray { get; set; }
         public object TestAnyType { get; set; }
-        public List<string> Permissions { get; set; }
+        public List<NewCredentialsResource.PermissionsEnum> Permissions { get; set; }
 
         public CreateNewCredentialsOptions(string testString)
         {
             TestString = testString;
             TestObjectArray = new List<Object>();
-            Permissions = new List<string>();
+            Permissions = new List<NewCredentialsResource.PermissionsEnum>();
         }
 
         
@@ -113,10 +116,12 @@ namespace Twilio.Rest.Api.V2010.Credential
             }
             if (Permissions != null)
             {
-                p.AddRange(Permissions.Select(Permissions => new KeyValuePair<string, string>("Permissions", Permissions)));
+                p.AddRange(Permissions.Select(Permissions => new KeyValuePair<string, string>("Permissions", Permissions.ToString())));
             }
             return p;
         }
+        
+
     }
 }
 

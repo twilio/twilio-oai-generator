@@ -1,5 +1,7 @@
 package com.twilio.oai;
 
+import com.google.common.collect.ImmutableMap;
+import com.samskivert.mustache.Mustache;
 import com.twilio.oai.common.ApplicationConstants;
 import com.twilio.oai.common.CsharpResolver;
 import com.twilio.oai.common.EnumConstants;
@@ -7,6 +9,8 @@ import com.twilio.oai.common.ParameterResolverFactory;
 import com.twilio.oai.common.ReservedKeyword;
 import com.twilio.oai.common.Serializer;
 import com.twilio.oai.common.Utility;
+import com.twilio.oai.mlambdas.ReplaceHyphenLambda;
+import com.twilio.oai.mlambdas.TitleCaseLambda;
 import io.swagger.v3.oas.models.OpenAPI;
 import lombok.extern.slf4j.Slf4j;
 import org.openapitools.codegen.CodegenModel;
@@ -330,6 +334,13 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
 
     private void flattenStringMap(final Map<String, Object> resource, final String key) {
         resource.computeIfPresent(key, (k, dependents) -> ((Map<String, Object>) dependents).values());
+    }
+
+    @Override
+    protected ImmutableMap.Builder<String, Mustache.Lambda> addMustacheLambdas() {
+        ImmutableMap.Builder<String, Mustache.Lambda> lambdaBuilder = super.addMustacheLambdas();
+        lambdaBuilder.put("titlecasewithnumbers", new TitleCaseLambda());
+        return lambdaBuilder;
     }
 
     private Optional<CodegenModel> getModelCoPath(final String modelName, CodegenOperation codegenOperation, String recordKey) {

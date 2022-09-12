@@ -24,6 +24,7 @@ using Twilio.Http;
 
 using Twilio.Types;
 
+using Twilio.Types;
 
 
 namespace Twilio.Rest.Api.V2010.Account.Call
@@ -106,6 +107,14 @@ namespace Twilio.Rest.Api.V2010.Account.Call
             return await CreateAsync(options, client);
         }
         #endif
+
+
+
+
+
+
+
+
     
         public static Page<FeedbackCallSummaryResource> GetPage(string targetUrl, ITwilioRestClient client)
         {
@@ -188,10 +197,10 @@ namespace Twilio.Rest.Api.V2010.Account.Call
         public FeedbackCallSummaryResource.StatusEnum TestEnum { get; private set; }
 
         [JsonProperty("test_array_of_integers")]
-        public List<int> TestArrayOfIntegers { get; private set; }
+        public List<int?> TestArrayOfIntegers { get; private set; }
 
         [JsonProperty("test_array_of_array_of_integers")]
-        public List<int>> TestArrayOfArrayOfIntegers { get; private set; }
+        public List<List<int?>> TestArrayOfArrayOfIntegers { get; private set; }
 
         [JsonProperty("test_array_of_objects")]
         public List<FeedbackIssue> TestArrayOfObjects { get; private set; }
@@ -201,9 +210,10 @@ namespace Twilio.Rest.Api.V2010.Account.Call
         public List<FeedbackCallSummaryResource.StatusEnum> TestArrayOfEnum { get; private set; }
 
 
+
         private FeedbackCallSummaryResource() {
 
         }
-    }
-}
+    } // end of resource class
+} // end of namespace
 

@@ -24,6 +24,7 @@ using Twilio.Http;
 
 using Twilio.Types;
 
+using Twilio.Types;
 
 
 namespace Twilio.Rest.Api.V2010.Account
@@ -106,6 +107,15 @@ namespace Twilio.Rest.Api.V2010.Account
             return await CreateAsync(options, client);
         }
         #endif
+
+
+
+
+
+
+
+
+
         
         private static Request BuildDeleteRequest(DeleteCallOptions options, ITwilioRestClient client)
         {
@@ -144,19 +154,26 @@ namespace Twilio.Rest.Api.V2010.Account
         }
         #endif
 
-        public static bool Delete(int pathTestInteger, string pathAccountSid = null, ITwilioRestClient client = null)
+        public static bool Delete(int? pathTestInteger, string pathAccountSid = null, ITwilioRestClient client = null)
         {
             var options = new DeleteCallOptions(pathTestInteger)      { PathAccountSid = pathAccountSid }   ;
             return Delete(options, client);
         }
 
         #if !NET35
-        public static async System.Threading.Tasks.Task<bool> DeleteAsync(int pathTestInteger, string pathAccountSid = null, ITwilioRestClient client = null)
+        public static async System.Threading.Tasks.Task<bool> DeleteAsync(int? pathTestInteger, string pathAccountSid = null, ITwilioRestClient client = null)
         {
             var options = new DeleteCallOptions(pathTestInteger)  { PathAccountSid = pathAccountSid };
             return await DeleteAsync(options, client);
         }
         #endif
+
+
+
+
+
+
+        
 
         private static Request BuildFetchRequest(FetchCallOptions options, ITwilioRestClient client)
         {
@@ -195,19 +212,20 @@ namespace Twilio.Rest.Api.V2010.Account
         }
         #endif
 
-        public static CallResource Fetch(int pathTestInteger, string pathAccountSid = null, ITwilioRestClient client = null)
+        public static CallResource Fetch(int? pathTestInteger, string pathAccountSid = null, ITwilioRestClient client = null)
         {
             var options = new FetchCallOptions(pathTestInteger){ PathAccountSid = pathAccountSid };
             return Fetch(options, client);
         }
 
         #if !NET35
-        public static async System.Threading.Tasks.Task<CallResource> FetchAsync(int pathTestInteger, string pathAccountSid = null, ITwilioRestClient client = null)
+        public static async System.Threading.Tasks.Task<CallResource> FetchAsync(int? pathTestInteger, string pathAccountSid = null, ITwilioRestClient client = null)
         {
             var options = new FetchCallOptions(pathTestInteger){ PathAccountSid = pathAccountSid };
             return await FetchAsync(options, client);
         }
         #endif
+
 
     
         public static Page<CallResource> GetPage(string targetUrl, ITwilioRestClient client)
@@ -256,6 +274,8 @@ namespace Twilio.Rest.Api.V2010.Account
                 throw new ApiException(e.Message, e);
             }
         }
+
+
     
         [JsonProperty("account_sid")]
         public string AccountSid { get; private set; }
@@ -289,10 +309,10 @@ namespace Twilio.Rest.Api.V2010.Account
         public CallResource.StatusEnum TestEnum { get; private set; }
 
         [JsonProperty("test_array_of_integers")]
-        public List<int> TestArrayOfIntegers { get; private set; }
+        public List<int?> TestArrayOfIntegers { get; private set; }
 
         [JsonProperty("test_array_of_array_of_integers")]
-        public List<int>> TestArrayOfArrayOfIntegers { get; private set; }
+        public List<List<int?>> TestArrayOfArrayOfIntegers { get; private set; }
 
         [JsonProperty("test_array_of_objects")]
         public List<FeedbackIssue> TestArrayOfObjects { get; private set; }
@@ -302,9 +322,10 @@ namespace Twilio.Rest.Api.V2010.Account
         public List<CallResource.StatusEnum> TestArrayOfEnum { get; private set; }
 
 
+
         private CallResource() {
 
         }
-    }
-}
+    } // end of resource class
+} // end of namespace
 

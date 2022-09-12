@@ -152,7 +152,7 @@ public class CsharpResolver extends Resolver {
             String[] value = codegenProperty.complexType.split("Enum");
             codegenProperty.enumName = value[value.length-1] + "Enum";
             if (codegenProperty.items != null) {
-                codegenProperty.items.enumName = value[value.length-1];
+                codegenProperty.items.enumName = value[value.length-1] + "Enum";
             }
             if (enums == null) {
                 enums = new HashMap<>();
@@ -208,6 +208,9 @@ public class CsharpResolver extends Resolver {
         } else if (parameter.dataType.contains("Enum")) { // parameter.dataType.contains(className) &&
             String[] value = parameter.dataType.split("Enum");
             parameter.enumName = value[value.length-1] + "Enum";
+            if (parameter.items != null) {
+                parameter.items.enumName = value[value.length-1] + "Enum";
+            }
             if (enums == null) {
                 enums = new HashMap<>();
             }
@@ -215,6 +218,9 @@ public class CsharpResolver extends Resolver {
             enums.putIfAbsent(parameter.enumName, parameter);
         } else if (parameter.isEnum) {
             parameter.dataType = className + "Resource." + parameter.enumName;
+            if (parameter.items != null) {
+                parameter.items.enumName = parameter.enumName;
+            }
             enums.putIfAbsent(parameter.enumName, parameter);
         }
 

@@ -24,6 +24,7 @@ using Twilio.Http;
 
 using Twilio.Types;
 
+using Twilio.Types;
 
 
 namespace Twilio.Rest.Api.V2010.Credential
@@ -46,6 +47,18 @@ namespace Twilio.Rest.Api.V2010.Credential
             public static readonly StatusEnum Completed = new StatusEnum("completed");
             public static readonly StatusEnum Absent = new StatusEnum("absent");
 
+        }
+        public sealed class PermissionsEnum : StringEnum
+        {
+            private PermissionsEnum(string value) : base(value) {}
+            public PermissionsEnum() {}
+            public static implicit operator PermissionsEnum(string value)
+            {
+                return new PermissionsEnum(value);
+            }
+
+            public static readonly PermissionsEnum GetAll = new PermissionsEnum("get-all");
+            public static readonly PermissionsEnum PostAll = new PermissionsEnum("post-all");
         }
 
         
@@ -98,7 +111,7 @@ namespace Twilio.Rest.Api.V2010.Credential
                                           NewCredentialsResource.StatusEnum testEnum = null,
                                           List<Object> testObjectArray = null,
                                           object testAnyType = null,
-                                          List<string> permissions = null,
+                                          List<NewCredentialsResource.PermissionsEnum> permissions = null,
                                           ITwilioRestClient client = null)
         {
             var options = new CreateNewCredentialsOptions(testString){  TestInteger = testInteger, TestDate = testDate, TestNumberFloat = testNumberFloat, TestObject = testObject, TestBoolean = testBoolean, TestNumber = testNumber, TestNumberDouble = testNumberDouble, TestNumberInt32 = testNumberInt32, TestNumberInt64 = testNumberInt64, TestDateTime = testDateTime, TestEnum = testEnum, TestObjectArray = testObjectArray, TestAnyType = testAnyType, Permissions = permissions };
@@ -121,13 +134,19 @@ namespace Twilio.Rest.Api.V2010.Credential
                                                                                   NewCredentialsResource.StatusEnum testEnum = null,
                                                                                   List<Object> testObjectArray = null,
                                                                                   object testAnyType = null,
-                                                                                  List<string> permissions = null,
+                                                                                  List<NewCredentialsResource.PermissionsEnum> permissions = null,
                                                                                   ITwilioRestClient client = null)
         {
         var options = new CreateNewCredentialsOptions(testString){  TestInteger = testInteger, TestDate = testDate, TestNumberFloat = testNumberFloat, TestObject = testObject, TestBoolean = testBoolean, TestNumber = testNumber, TestNumberDouble = testNumberDouble, TestNumberInt32 = testNumberInt32, TestNumberInt64 = testNumberInt64, TestDateTime = testDateTime, TestEnum = testEnum, TestObjectArray = testObjectArray, TestAnyType = testAnyType, Permissions = permissions };
             return await CreateAsync(options, client);
         }
         #endif
+
+
+
+
+
+
 
 
     
@@ -212,10 +231,10 @@ namespace Twilio.Rest.Api.V2010.Credential
         public NewCredentialsResource.StatusEnum TestEnum { get; private set; }
 
         [JsonProperty("test_array_of_integers")]
-        public List<int> TestArrayOfIntegers { get; private set; }
+        public List<int?> TestArrayOfIntegers { get; private set; }
 
         [JsonProperty("test_array_of_array_of_integers")]
-        public List<int>> TestArrayOfArrayOfIntegers { get; private set; }
+        public List<List<int?>> TestArrayOfArrayOfIntegers { get; private set; }
 
         [JsonProperty("test_array_of_objects")]
         public List<FeedbackIssue> TestArrayOfObjects { get; private set; }
@@ -226,9 +245,9 @@ namespace Twilio.Rest.Api.V2010.Credential
 
 
 
-        private NewCredentialsResource(){
+        private NewCredentialsResource() {
 
         }
-    }
-}
+    } // end of resource class
+} // end of namespace
 
