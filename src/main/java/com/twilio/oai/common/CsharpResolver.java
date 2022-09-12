@@ -204,6 +204,7 @@ public class CsharpResolver extends Resolver {
             parameter.dataType = (String) conventionMap.get(property).get(parameter.dataFormat);
         } else if (conventionMap.get(property).containsKey(parameter.dataType)) {
             parameter.dataType = (String) conventionMap.get(property).get(parameter.dataType);
+
         } else if (parameter.dataType.contains("Enum")) { // parameter.dataType.contains(className) &&
             String[] value = parameter.dataType.split("Enum");
             parameter.enumName = value[value.length-1] + "Enum";
