@@ -41,21 +41,23 @@ namespace Twilio.Rest.Api.V2010.Account
         }
 
         
-        public  List<KeyValuePair<string, string>> GetParams()
-        {
-            var p = new List<KeyValuePair<string, string>>();
+    public  List<KeyValuePair<string, string>> GetParams()
+    {
+        var p = new List<KeyValuePair<string, string>>();
 
-            if (RequiredStringProperty != null)
-            {
-                p.Add(new KeyValuePair<string, string>("RequiredStringProperty", RequiredStringProperty));
-            }
-            if (TestArrayOfStrings != null)
-            {
-                p.AddRange(TestArrayOfStrings.Select(TestArrayOfStrings => new KeyValuePair<string, string>("TestArrayOfStrings", TestArrayOfStrings)));
-            }
-            return p;
+        if (RequiredStringProperty != null)
+        {
+            p.Add(new KeyValuePair<string, string>("RequiredStringProperty", RequiredStringProperty));
         }
+        if (TestArrayOfStrings != null)
+        {
+            p.AddRange(TestArrayOfStrings.Select(TestArrayOfStrings => new KeyValuePair<string, string>("TestArrayOfStrings", TestArrayOfStrings)));
+        }
+        return p;
+    }
         
+
+
 
     }
     public class DeleteCallOptions : IOptions<CallResource>
@@ -71,13 +73,15 @@ namespace Twilio.Rest.Api.V2010.Account
         }
 
         
-        public  List<KeyValuePair<string, string>> GetParams()
-        {
-            var p = new List<KeyValuePair<string, string>>();
+    public  List<KeyValuePair<string, string>> GetParams()
+    {
+        var p = new List<KeyValuePair<string, string>>();
 
-            return p;
-        }
+        return p;
+    }
         
+
+
 
     }
 
@@ -95,13 +99,15 @@ namespace Twilio.Rest.Api.V2010.Account
         }
 
         
-        public  List<KeyValuePair<string, string>> GetParams()
-        {
-            var p = new List<KeyValuePair<string, string>>();
+    public  List<KeyValuePair<string, string>> GetParams()
+    {
+        var p = new List<KeyValuePair<string, string>>();
 
-            return p;
-        }
+        return p;
+    }
         
+
+
 
     }
 

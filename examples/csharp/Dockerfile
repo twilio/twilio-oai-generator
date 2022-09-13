@@ -16,12 +16,17 @@ WORKDIR /app
 RUN git clone --depth 1 https://github.com/twilio/twilio-csharp.git
 WORKDIR /app/twilio-csharp
 
-RUN rm -rf src/test/
-COPY test /app/twilio-csharp/test
+RUN rm -rf /app/twilio-csharp/src/Twilio/Rest/*
+COPY src/Twilio/ /app/twilio-csharp/src/Twilio
+
+RUN rm -rf /app/twilio-csharp/test/Twilio.Test/Rest/*
+COPY test/Twilio.Test/Rest/ /app/twilio-csharp/test/Twilio.Test/Rest
+COPY test/Twilio.Test/Twilio.Test.csproj /app/twilio-csharp/test/Twilio.Test/
+COPY test/Twilio.Test/TwilioTest.cs /app/twilio-csharp/test/Twilio.Test/
 
 RUN dotnet restore
 RUN dotnet build -c Release
-
+#RUN dotnet test test/Twilio.Test/Twilio.Test.csproj --no-build
 # sonar coverage reports
 # Add /d:sonar.login="${SONAR_TOKEN}" to sync up with sonarcloud.
 RUN dotnet sonarscanner begin /k:"twilio_twilio-csharp" /o:"twilio" /d:sonar.host.url=https://sonarcloud.io /d:sonar.language="cs" /d:sonar.exclusions="src/Twilio/Rest/**/*.*,test/Twilio.Test/**/*.*" /d:sonar.cs.opencover.reportsPaths="test/lcov.net451.opencover.xml" /d:sonar.coverageReportPaths=".\sonarqubecoverage\SonarQube.xml"
@@ -30,4 +35,3 @@ RUN	dotnet build Twilio.sln > buildforsonar.log
 #RUN reportgenerator "-reports:./test/lcov.net451.opencover.xml" "-targetdir:test" "-reporttypes:SonarQube" -- enable this to generate better reports
 CMD ["/bin/bash", "-c", "dotnet test test/Twilio.Test/Twilio.Test.csproj --no-build /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput=../lcov| tee /local/test-report.out"]
 # dotnet sonarscanner end /d:sonar.login="${SONAR_TOKEN}" -- enable this when syncing up with sonarcloud
-

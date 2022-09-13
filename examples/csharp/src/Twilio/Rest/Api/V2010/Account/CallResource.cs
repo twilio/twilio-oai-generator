@@ -323,9 +323,9 @@ namespace Twilio.Rest.Api.V2010.Account
 
 
 
-        private CallResource() {
+    private CallResource(){
 
-        }
+    }
     } // end of resource class
 } // end of namespace
 

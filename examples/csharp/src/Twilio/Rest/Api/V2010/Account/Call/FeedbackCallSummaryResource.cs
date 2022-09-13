@@ -211,9 +211,9 @@ namespace Twilio.Rest.Api.V2010.Account.Call
 
 
 
-        private FeedbackCallSummaryResource() {
+    private FeedbackCallSummaryResource(){
 
-        }
+    }
     } // end of resource class
 } // end of namespace
 

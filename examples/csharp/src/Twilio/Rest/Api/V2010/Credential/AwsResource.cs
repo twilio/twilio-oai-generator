@@ -378,9 +378,9 @@ namespace Twilio.Rest.Api.V2010.Credential
 
 
 
-        private AwsResource() {
+    private AwsResource(){
 
-        }
+    }
     } // end of resource class
 } // end of namespace
 

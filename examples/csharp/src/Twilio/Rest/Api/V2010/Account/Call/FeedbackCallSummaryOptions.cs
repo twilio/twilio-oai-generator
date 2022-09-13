@@ -26,6 +26,8 @@ namespace Twilio.Rest.Api.V2010.Account.Call
 
     public class CreateFeedbackCallSummaryOptions : IOptions<FeedbackCallSummaryResource>
     {
+        // How to decide which has getter and which has setter ?
+        
         public DateTime? EndDate { get; set; }
         public DateTime? StartDate { get; set; }
         public string PathAccountSid { get; set; }
@@ -37,21 +39,23 @@ namespace Twilio.Rest.Api.V2010.Account.Call
         }
 
         
-        public  List<KeyValuePair<string, string>> GetParams()
-        {
-            var p = new List<KeyValuePair<string, string>>();
+    public  List<KeyValuePair<string, string>> GetParams()
+    {
+        var p = new List<KeyValuePair<string, string>>();
 
-            if (EndDate != null)
-            {
-                p.Add(new KeyValuePair<string, string>("EndDate", EndDate.Value.ToString("yyyy-MM-dd")));
-            }
-            if (StartDate != null)
-            {
-                p.Add(new KeyValuePair<string, string>("StartDate", StartDate.Value.ToString("yyyy-MM-dd")));
-            }
-            return p;
+        if (EndDate != null)
+        {
+            p.Add(new KeyValuePair<string, string>("EndDate", EndDate.Value.ToString("yyyy-MM-dd")));
         }
+        if (StartDate != null)
+        {
+            p.Add(new KeyValuePair<string, string>("StartDate", StartDate.Value.ToString("yyyy-MM-dd")));
+        }
+        return p;
+    }
         
+
+
 
     }
 }

@@ -38,89 +38,91 @@ namespace Twilio.Rest.Api.V2010.Credential
         public double? TestNumberDouble { get; set; }
         public decimal? TestNumberInt32 { get; set; }
         public long? TestNumberInt64 { get; set; }
-        public Object TestObject { get; set; }
+        public Dictionary<string,Object> TestObject { get; set; }
         public DateTime? TestDateTime { get; set; }
         public DateTime? TestDate { get; set; }
         public NewCredentialsResource.StatusEnum TestEnum { get; set; }
-        public List<Object> TestObjectArray { get; set; }
+        public List<Dictionary<string,Object>> TestObjectArray { get; set; }
         public object TestAnyType { get; set; }
         public List<NewCredentialsResource.PermissionsEnum> Permissions { get; set; }
 
         public CreateNewCredentialsOptions(string testString)
         {
             TestString = testString;
-            TestObjectArray = new List<Object>();
+            TestObjectArray = new List<Dictionary<string,Object>>();
             Permissions = new List<NewCredentialsResource.PermissionsEnum>();
         }
 
         
-        public  List<KeyValuePair<string, string>> GetParams()
-        {
-            var p = new List<KeyValuePair<string, string>>();
+    public  List<KeyValuePair<string, string>> GetParams()
+    {
+        var p = new List<KeyValuePair<string, string>>();
 
-            if (TestString != null)
-            {
-                p.Add(new KeyValuePair<string, string>("TestString", TestString));
-            }
-            if (TestBoolean != null)
-            {
-                p.Add(new KeyValuePair<string, string>("TestBoolean", TestBoolean.Value.ToString().ToLower()));
-            }
-            if (TestInteger != null)
-            {
-                p.Add(new KeyValuePair<string, string>("TestInteger", TestInteger.ToString()));
-            }
-            if (TestNumber != null)
-            {
-                p.Add(new KeyValuePair<string, string>("TestNumber", TestNumber.ToString()));
-            }
-            if (TestNumberFloat != null)
-            {
-                p.Add(new KeyValuePair<string, string>("TestNumberFloat", TestNumberFloat.ToString()));
-            }
-            if (TestNumberDouble != null)
-            {
-                p.Add(new KeyValuePair<string, string>("TestNumberDouble", TestNumberDouble.ToString()));
-            }
-            if (TestNumberInt32 != null)
-            {
-                p.Add(new KeyValuePair<string, string>("TestNumberInt32", TestNumberInt32.ToString()));
-            }
-            if (TestNumberInt64 != null)
-            {
-                p.Add(new KeyValuePair<string, string>("TestNumberInt64", TestNumberInt64.ToString()));
-            }
-            if (TestObject != null)
-            {
-                p.AddRange(PrefixedCollapsibleMap.Serialize(TestObject, "object"));
-            }
-            if (TestDateTime != null)
-            {
-                p.Add(new KeyValuePair<string, string>("TestDateTime", Serializers.DateTimeIso8601(TestDateTime)));
-            }
-            if (TestDate != null)
-            {
-                p.Add(new KeyValuePair<string, string>("TestDate", TestDate.Value.ToString("yyyy-MM-dd")));
-            }
-            if (TestEnum != null)
-            {
-                p.Add(new KeyValuePair<string, string>("TestEnum", TestEnum.ToString()));
-            }
-            if (TestObjectArray != null)
-            {
-                p.AddRange(TestObjectArray.Select(TestObjectArray => new KeyValuePair<string, string>("TestObjectArray", TestObjectArray.ToString())));
-            }
-            if (TestAnyType != null)
-            {
-                p.Add(new KeyValuePair<string, string>("TestAnyType", Serializers.JsonObject(TestAnyType)));
-            }
-            if (Permissions != null)
-            {
-                p.AddRange(Permissions.Select(Permissions => new KeyValuePair<string, string>("Permissions", Permissions.ToString())));
-            }
-            return p;
+        if (TestString != null)
+        {
+            p.Add(new KeyValuePair<string, string>("TestString", TestString));
         }
+        if (TestBoolean != null)
+        {
+            p.Add(new KeyValuePair<string, string>("TestBoolean", TestBoolean.Value.ToString().ToLower()));
+        }
+        if (TestInteger != null)
+        {
+            p.Add(new KeyValuePair<string, string>("TestInteger", TestInteger.ToString()));
+        }
+        if (TestNumber != null)
+        {
+            p.Add(new KeyValuePair<string, string>("TestNumber", TestNumber.ToString()));
+        }
+        if (TestNumberFloat != null)
+        {
+            p.Add(new KeyValuePair<string, string>("TestNumberFloat", TestNumberFloat.ToString()));
+        }
+        if (TestNumberDouble != null)
+        {
+            p.Add(new KeyValuePair<string, string>("TestNumberDouble", TestNumberDouble.ToString()));
+        }
+        if (TestNumberInt32 != null)
+        {
+            p.Add(new KeyValuePair<string, string>("TestNumberInt32", TestNumberInt32.ToString()));
+        }
+        if (TestNumberInt64 != null)
+        {
+            p.Add(new KeyValuePair<string, string>("TestNumberInt64", TestNumberInt64.ToString()));
+        }
+        if (TestObject != null)
+        {
+            p.AddRange(PrefixedCollapsibleMap.Serialize(TestObject, "object"));
+        }
+        if (TestDateTime != null)
+        {
+            p.Add(new KeyValuePair<string, string>("TestDateTime", Serializers.DateTimeIso8601(TestDateTime)));
+        }
+        if (TestDate != null)
+        {
+            p.Add(new KeyValuePair<string, string>("TestDate", TestDate.Value.ToString("yyyy-MM-dd")));
+        }
+        if (TestEnum != null)
+        {
+            p.Add(new KeyValuePair<string, string>("TestEnum", TestEnum.ToString()));
+        }
+        if (TestObjectArray != null)
+        {
+            p.AddRange(TestObjectArray.Select(TestObjectArray => new KeyValuePair<string, string>("TestObjectArray", TestObjectArray.ToString())));
+        }
+        if (TestAnyType != null)
+        {
+            p.Add(new KeyValuePair<string, string>("TestAnyType", Serializers.JsonObject(TestAnyType)));
+        }
+        if (Permissions != null)
+        {
+            p.AddRange(Permissions.Select(Permissions => new KeyValuePair<string, string>("Permissions", Permissions.ToString())));
+        }
+        return p;
+    }
         
+
+
 
     }
 }

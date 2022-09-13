@@ -35,13 +35,15 @@ namespace Twilio.Rest.Api.V2010.Credential
         }
 
         
-        public  List<KeyValuePair<string, string>> GetParams()
-        {
-            var p = new List<KeyValuePair<string, string>>();
+    public  List<KeyValuePair<string, string>> GetParams()
+    {
+        var p = new List<KeyValuePair<string, string>>();
 
-            return p;
-        }
+        return p;
+    }
         
+
+
 
     }
 
@@ -58,13 +60,15 @@ namespace Twilio.Rest.Api.V2010.Credential
         }
 
         
-        public  List<KeyValuePair<string, string>> GetParams()
-        {
-            var p = new List<KeyValuePair<string, string>>();
+    public  List<KeyValuePair<string, string>> GetParams()
+    {
+        var p = new List<KeyValuePair<string, string>>();
 
-            return p;
-        }
+        return p;
+    }
         
+
+
 
     }
 
@@ -77,17 +81,19 @@ namespace Twilio.Rest.Api.V2010.Credential
 
 
         
-        public  override List<KeyValuePair<string, string>> GetParams()
-        {
-            var p = new List<KeyValuePair<string, string>>();
+    public  override List<KeyValuePair<string, string>> GetParams()
+    {
+        var p = new List<KeyValuePair<string, string>>();
 
-            if (PageSize != null)
-            {
-                p.Add(new KeyValuePair<string, string>("PageSize", PageSize.ToString()));
-            }
-            return p;
+        if (PageSize != null)
+        {
+            p.Add(new KeyValuePair<string, string>("PageSize", PageSize.ToString()));
         }
+        return p;
+    }
         
+
+
 
     }
 
@@ -105,21 +111,23 @@ namespace Twilio.Rest.Api.V2010.Credential
         }
 
         
-        public  List<KeyValuePair<string, string>> GetParams()
-        {
-            var p = new List<KeyValuePair<string, string>>();
+    public  List<KeyValuePair<string, string>> GetParams()
+    {
+        var p = new List<KeyValuePair<string, string>>();
 
-            if (TestString != null)
-            {
-                p.Add(new KeyValuePair<string, string>("TestString", TestString));
-            }
-            if (TestBoolean != null)
-            {
-                p.Add(new KeyValuePair<string, string>("TestBoolean", TestBoolean.Value.ToString().ToLower()));
-            }
-            return p;
+        if (TestString != null)
+        {
+            p.Add(new KeyValuePair<string, string>("TestString", TestString));
         }
+        if (TestBoolean != null)
+        {
+            p.Add(new KeyValuePair<string, string>("TestBoolean", TestBoolean.Value.ToString().ToLower()));
+        }
+        return p;
+    }
         
+
+
 
     }
 
