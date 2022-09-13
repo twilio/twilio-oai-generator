@@ -38,18 +38,18 @@ namespace Twilio.Rest.Api.V2010.Credential
         public double? TestNumberDouble { get; set; }
         public decimal? TestNumberInt32 { get; set; }
         public long? TestNumberInt64 { get; set; }
-        public Object TestObject { get; set; }
+        public object TestObject { get; set; }
         public DateTime? TestDateTime { get; set; }
         public DateTime? TestDate { get; set; }
         public NewCredentialsResource.StatusEnum TestEnum { get; set; }
-        public List<Object> TestObjectArray { get; set; }
+        public List<object> TestObjectArray { get; set; }
         public object TestAnyType { get; set; }
         public List<NewCredentialsResource.PermissionsEnum> Permissions { get; set; }
 
         public CreateNewCredentialsOptions(string testString)
         {
             TestString = testString;
-            TestObjectArray = new List<Object>();
+            TestObjectArray = new List<object>();
             Permissions = new List<NewCredentialsResource.PermissionsEnum>();
         }
 
@@ -92,7 +92,7 @@ namespace Twilio.Rest.Api.V2010.Credential
             }
             if (TestObject != null)
             {
-                p.AddRange(PrefixedCollapsibleMap.Serialize(TestObject, "object"));
+                p.Add(new KeyValuePair<string, string>("TestObject", TestObject.ToString()));
             }
             if (TestDateTime != null)
             {
@@ -108,7 +108,7 @@ namespace Twilio.Rest.Api.V2010.Credential
             }
             if (TestObjectArray != null)
             {
-                p.AddRange(TestObjectArray.Select(TestObjectArray => new KeyValuePair<string, string>("TestObjectArray", TestObjectArray.ToString())));
+                p.AddRange(TestObjectArray.Select(TestObjectArray => new KeyValuePair<string, string>("TestObjectArray", Serializers.JsonObject(TestObjectArray))));
             }
             if (TestAnyType != null)
             {
