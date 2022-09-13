@@ -15,4 +15,6 @@ public class ApplicationConstants {
     public static final String LIST_START = "List<";
 
     public static final String LIST_END = ">";
+
+    public static final String _CONFIGURATION = "_Configuration";
 }

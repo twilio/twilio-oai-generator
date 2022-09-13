@@ -34,7 +34,7 @@
 
     "properties": {
         "_": "string",
-        "boolean": "bool?",
+        "bool": "bool?",
         "currency": "string",
         "date": "DateTime?",
         "date-time": "DateTime?",
@@ -44,7 +44,7 @@
         "decimal": "decimal?",
         "endpoint": "IEndpoint",
         "http-method": "Twilio.Http.HttpMethod",
-        "integer": "int?",
+        "int": "int?",
         "long": "long?",
         "uri": "Uri",
         "uri-map": "Dictionary<string, string>",
