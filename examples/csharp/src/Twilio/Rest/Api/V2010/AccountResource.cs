@@ -462,9 +462,9 @@ namespace Twilio.Rest.Api.V2010
 
 
 
-    private AccountResource(){
+        private AccountResource() {
 
-    }
+        }
     } // end of resource class
 } // end of namespace
 

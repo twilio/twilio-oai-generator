@@ -36,20 +36,20 @@ namespace Twilio.Rest.Api.V2010
 
 
         
-    public  List<KeyValuePair<string, string>> GetParams()
-    {
-        var p = new List<KeyValuePair<string, string>>();
+        public  List<KeyValuePair<string, string>> GetParams()
+        {
+            var p = new List<KeyValuePair<string, string>>();
 
-        if (RecordingStatusCallback != null)
-        {
-            p.Add(new KeyValuePair<string, string>("RecordingStatusCallback", Serializers.Url(RecordingStatusCallback)));
+            if (RecordingStatusCallback != null)
+            {
+                p.Add(new KeyValuePair<string, string>("RecordingStatusCallback", Serializers.Url(RecordingStatusCallback)));
+            }
+            if (RecordingStatusCallbackEvent != null)
+            {
+                p.AddRange(RecordingStatusCallbackEvent.Select(RecordingStatusCallbackEvent => new KeyValuePair<string, string>("RecordingStatusCallbackEvent", RecordingStatusCallbackEvent)));
+            }
+            return p;
         }
-        if (RecordingStatusCallbackEvent != null)
-        {
-            p.AddRange(RecordingStatusCallbackEvent.Select(RecordingStatusCallbackEvent => new KeyValuePair<string, string>("RecordingStatusCallbackEvent", RecordingStatusCallbackEvent)));
-        }
-        return p;
-    }
         
     public List<KeyValuePair<string, string>> GetHeaderParams()
     {
@@ -61,8 +61,6 @@ namespace Twilio.Rest.Api.V2010
         return p;
     }
 
-
-
     }
     public class DeleteAccountOptions : IOptions<AccountResource>
     {
@@ -72,15 +70,13 @@ namespace Twilio.Rest.Api.V2010
 
 
         
-    public  List<KeyValuePair<string, string>> GetParams()
-    {
-        var p = new List<KeyValuePair<string, string>>();
+        public  List<KeyValuePair<string, string>> GetParams()
+        {
+            var p = new List<KeyValuePair<string, string>>();
 
-        return p;
-    }
+            return p;
+        }
         
-
-
 
     }
 
@@ -93,15 +89,13 @@ namespace Twilio.Rest.Api.V2010
 
 
         
-    public  List<KeyValuePair<string, string>> GetParams()
-    {
-        var p = new List<KeyValuePair<string, string>>();
+        public  List<KeyValuePair<string, string>> GetParams()
+        {
+            var p = new List<KeyValuePair<string, string>>();
 
-        return p;
-    }
+            return p;
+        }
         
-
-
 
     }
 
@@ -118,47 +112,45 @@ namespace Twilio.Rest.Api.V2010
 
 
         
-    public  override List<KeyValuePair<string, string>> GetParams()
-    {
-        var p = new List<KeyValuePair<string, string>>();
+        public  override List<KeyValuePair<string, string>> GetParams()
+        {
+            var p = new List<KeyValuePair<string, string>>();
 
-        if (DateCreated != null)
-        {
-            p.Add(new KeyValuePair<string, string>("DateCreated", Serializers.DateTimeIso8601(DateCreated)));
-        }
-        else
-        {
+            if (DateCreated != null)
+            {
+                p.Add(new KeyValuePair<string, string>("DateCreated", Serializers.DateTimeIso8601(DateCreated)));
+            }
+            else
+            {
+                if (DateCreatedBefore != null)
+                {
+                    p.Add(new KeyValuePair<string, string>("DateCreated<", Serializers.DateTimeIso8601(DateCreatedBefore)));
+                }
+                if (DateCreatedAfter != null)
+                {
+                    p.Add(new KeyValuePair<string, string>("DateCreated>", Serializers.DateTimeIso8601(DateCreatedAfter)));
+                }
+
+            }
+            if (DateTest != null)
+            {
+                p.Add(new KeyValuePair<string, string>("DateTest", DateTest.Value.ToString("yyyy-MM-dd")));
+            }
             if (DateCreatedBefore != null)
             {
-                p.Add(new KeyValuePair<string, string>("DateCreated<", Serializers.DateTimeIso8601(DateCreatedBefore)));
+                p.Add(new KeyValuePair<string, string>("DateCreatedBefore", Serializers.DateTimeIso8601(DateCreatedBefore)));
             }
             if (DateCreatedAfter != null)
             {
-                p.Add(new KeyValuePair<string, string>("DateCreated>", Serializers.DateTimeIso8601(DateCreatedAfter)));
+                p.Add(new KeyValuePair<string, string>("DateCreatedAfter", Serializers.DateTimeIso8601(DateCreatedAfter)));
             }
-
+            if (PageSize != null)
+            {
+                p.Add(new KeyValuePair<string, string>("PageSize", PageSize.ToString()));
+            }
+            return p;
         }
-        if (DateTest != null)
-        {
-            p.Add(new KeyValuePair<string, string>("DateTest", DateTest.Value.ToString("yyyy-MM-dd")));
-        }
-        if (DateCreatedBefore != null)
-        {
-            p.Add(new KeyValuePair<string, string>("DateCreatedBefore", Serializers.DateTimeIso8601(DateCreatedBefore)));
-        }
-        if (DateCreatedAfter != null)
-        {
-            p.Add(new KeyValuePair<string, string>("DateCreatedAfter", Serializers.DateTimeIso8601(DateCreatedAfter)));
-        }
-        if (PageSize != null)
-        {
-            p.Add(new KeyValuePair<string, string>("PageSize", PageSize.ToString()));
-        }
-        return p;
-    }
         
-
-
 
     }
 
@@ -176,23 +168,21 @@ namespace Twilio.Rest.Api.V2010
         }
 
         
-    public  List<KeyValuePair<string, string>> GetParams()
-    {
-        var p = new List<KeyValuePair<string, string>>();
+        public  List<KeyValuePair<string, string>> GetParams()
+        {
+            var p = new List<KeyValuePair<string, string>>();
 
-        if (Status != null)
-        {
-            p.Add(new KeyValuePair<string, string>("Status", Status.ToString()));
+            if (Status != null)
+            {
+                p.Add(new KeyValuePair<string, string>("Status", Status.ToString()));
+            }
+            if (PauseBehavior != null)
+            {
+                p.Add(new KeyValuePair<string, string>("PauseBehavior", PauseBehavior));
+            }
+            return p;
         }
-        if (PauseBehavior != null)
-        {
-            p.Add(new KeyValuePair<string, string>("PauseBehavior", PauseBehavior));
-        }
-        return p;
-    }
         
-
-
 
     }
 

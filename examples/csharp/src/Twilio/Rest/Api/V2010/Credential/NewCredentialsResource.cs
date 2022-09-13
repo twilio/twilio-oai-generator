@@ -57,6 +57,8 @@ namespace Twilio.Rest.Api.V2010.Credential
                 return new PermissionsEnum(value);
             }
 
+            public static readonly PermissionsEnum GetAll = new PermissionsEnum("get-all");
+            public static readonly PermissionsEnum PostAll = new PermissionsEnum("post-all");
         }
 
         
@@ -99,7 +101,7 @@ namespace Twilio.Rest.Api.V2010.Credential
                                           int? testInteger = null,
                                           DateTime? testDate = null,
                                           float? testNumberFloat = null,
-                                          Dictionary<string,Object> testObject = null,
+                                          object testObject = null,
                                           bool? testBoolean = null,
                                           decimal? testNumber = null,
                                           double? testNumberDouble = null,
@@ -107,7 +109,7 @@ namespace Twilio.Rest.Api.V2010.Credential
                                           long? testNumberInt64 = null,
                                           DateTime? testDateTime = null,
                                           NewCredentialsResource.StatusEnum testEnum = null,
-                                          List<Dictionary<string,Object>> testObjectArray = null,
+                                          List<object> testObjectArray = null,
                                           object testAnyType = null,
                                           List<NewCredentialsResource.PermissionsEnum> permissions = null,
                                           ITwilioRestClient client = null)
@@ -122,7 +124,7 @@ namespace Twilio.Rest.Api.V2010.Credential
                                                                                   int? testInteger = null,
                                                                                   DateTime? testDate = null,
                                                                                   float? testNumberFloat = null,
-                                                                                  Dictionary<string,Object> testObject = null,
+                                                                                  object testObject = null,
                                                                                   bool? testBoolean = null,
                                                                                   decimal? testNumber = null,
                                                                                   double? testNumberDouble = null,
@@ -130,7 +132,7 @@ namespace Twilio.Rest.Api.V2010.Credential
                                                                                   long? testNumberInt64 = null,
                                                                                   DateTime? testDateTime = null,
                                                                                   NewCredentialsResource.StatusEnum testEnum = null,
-                                                                                  List<Dictionary<string,Object>> testObjectArray = null,
+                                                                                  List<object> testObjectArray = null,
                                                                                   object testAnyType = null,
                                                                                   List<NewCredentialsResource.PermissionsEnum> permissions = null,
                                                                                   ITwilioRestClient client = null)
@@ -243,9 +245,8 @@ namespace Twilio.Rest.Api.V2010.Credential
 
 
 
-    private NewCredentialsResource(){
+        private NewCredentialsResource() {
 
-    }
+        }
     } // end of resource class
 } // end of namespace
-
