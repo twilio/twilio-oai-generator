@@ -858,82 +858,8 @@ namespace Twilio.Test.Rest
        }
 
        [Test]
-       public void TestCreateNewCredentialsOptionsCreation()
+          public void TestCreateNewCredentialsOptionsCreation()
        {
-
-           string testString = "testString";
-           bool testBoolean = true;
-           int testInteger = 5;
-           decimal testNumber = Decimal.Parse("5");
-           float testNumberFloat = 12.0F;
-           double testNumberDouble = 19.0;
-           decimal testNumberInt32 = Decimal.Parse("100");
-           long testNumberInt64 = 100L;
-           Dictionary<string, Object> testObject = new Dictionary<string, Object>();
-           testObject.Add("test1", DateTime.Parse("1999-12-01"));
-           testObject.Add("test2", DateTime.Now);
-           DateTime testDateTime = DateTime.Now;
-           DateTime testDate = DateTime.Parse("2011-5-12");
-           NewCredentialsResource.StatusEnum testEnum = NewCredentialsResource.StatusEnum.InProgress;
-           List<Dictionary<string, Object>> testObjectArray = new List<Dictionary<string, Object>>()
-           {
-               new Dictionary<string, object>(){{"key11","value11"},{"key12","value12"}},
-               new Dictionary<string, object>(){{"key21","value21"},{ "key22", "value22" }}
-           };
-
-
-
-           var permission1 = new NewCredentialsResource.PermissionsEnum();
-           permission1.FromString("START");
-           var permission2 = new NewCredentialsResource.PermissionsEnum();
-           permission2.FromString("NEXT");
-
-           List<NewCredentialsResource.PermissionsEnum> permissions = new List<NewCredentialsResource.PermissionsEnum>()
-           {
-               permission1,
-               permission2
-           };
-
-           var credentials = new CreateNewCredentialsOptions(testString) {
-               TestBoolean = testBoolean,
-               TestInteger = testInteger,
-               TestNumber = testNumber,
-               TestNumberFloat = testNumberFloat,
-               TestNumberDouble = testNumberDouble,
-               TestNumberInt32 = testNumberInt32,
-               TestNumberInt64 = testNumberInt64,
-               TestDate = testDate,
-               TestDateTime = testDateTime,
-               TestEnum = testEnum,
-               Permissions = permissions,
-               TestObject = testObject,
-               TestObjectArray = testObjectArray
-           };
-           Assert.IsNotNull(credentials);
-           Assert.IsNotNull(credentials.TestString);
-           Assert.IsNotNull(credentials.Permissions);
-           Assert.IsNotNull(credentials.TestObject);
-           Assert.IsNotNull(credentials.TestObjectArray);
-           Assert.AreEqual(testString, credentials.TestString);
-           Assert.IsTrue(credentials.TestBoolean);
-           Assert.AreEqual(testInteger,credentials.TestInteger);
-           Assert.AreEqual(testNumber, credentials.TestNumber);
-           Assert.AreEqual(testNumberFloat, credentials.TestNumberFloat);
-           Assert.AreEqual(testNumberDouble, credentials.TestNumberDouble);
-           Assert.AreEqual(testNumberInt32, credentials.TestNumberInt32);
-           Assert.AreEqual(testNumberInt64, credentials.TestNumberInt64);
-           Assert.AreEqual(testDate, credentials.TestDate);
-           Assert.AreEqual(testDateTime, credentials.TestDateTime);
-           Assert.AreEqual(testEnum,credentials.TestEnum);
-           CollectionAssert.AreEquivalent(permissions, credentials.Permissions);
-           CollectionAssert.AreEquivalent(testObject, credentials.TestObject);
-           CollectionAssert.AreEquivalent(testObjectArray, credentials.TestObjectArray);
-
-       }
-
-       [Test]
-        public void TestCreateNewCredentialsOptionsParamsCreation()
-        {
 
             string testString = "testString";
             bool testBoolean = true;
@@ -943,32 +869,97 @@ namespace Twilio.Test.Rest
             double testNumberDouble = 19.0;
             decimal testNumberInt32 = Decimal.Parse("100");
             long testNumberInt64 = 100L;
-            Dictionary<string, Object> testObject = new Dictionary<string, Object>();
-            testObject.Add("test1", DateTime.Parse("1999-12-01"));
-            testObject.Add("test2", DateTime.Now);
+            Dictionary<string, Object> testObjectHelper = new Dictionary<string, Object>();
+            testObjectHelper.Add("test1", DateTime.Parse("1999-12-01"));
+            testObjectHelper.Add("test2", DateTime.Now);
             DateTime testDateTime = DateTime.Now;
             DateTime testDate = DateTime.Parse("2011-5-12");
             NewCredentialsResource.StatusEnum testEnum = NewCredentialsResource.StatusEnum.InProgress;
-            List<Dictionary<string, Object>> testObjectArray = new List<Dictionary<string, Object>>()
+            List<Dictionary<string, Object>> testObjectArrayHelper = new List<Dictionary<string, Object>>()
+                {
+                    new Dictionary<string, object>(){{"key11","value11"},{"key12","value12"}},
+                    new Dictionary<string, object>(){{"key21","value21"},{ "key22", "value22" }}
+                };
+
+            Object testObject = (Object)testObjectHelper;
+            List<Object> testObjectArray = testObjectArrayHelper.Select(x => (Object)x).ToList();
+            List<NewCredentialsResource.PermissionsEnum> permissions = new List<NewCredentialsResource.PermissionsEnum>()
+               {
+                   NewCredentialsResource.PermissionsEnum.GetAll,
+                   NewCredentialsResource.PermissionsEnum.PostAll
+               };
+
+            var credentials = new CreateNewCredentialsOptions(testString)
             {
-                new Dictionary<string, object>(){{"key11","value11"},{"key12","value12"}},
-                new Dictionary<string, object>(){{"key21","value21"},{ "key22", "value22" }}
+                TestBoolean = testBoolean,
+                TestInteger = testInteger,
+                TestNumber = testNumber,
+                TestNumberFloat = testNumberFloat,
+                TestNumberDouble = testNumberDouble,
+                TestNumberInt32 = testNumberInt32,
+                TestNumberInt64 = testNumberInt64,
+                TestDate = testDate,
+                TestDateTime = testDateTime,
+                TestEnum = testEnum,
+                Permissions = permissions,
+                TestObject = testObject,
+                TestObjectArray = testObjectArray
             };
+            Assert.IsNotNull(credentials);
+            Assert.IsNotNull(credentials.TestString);
+            Assert.IsNotNull(credentials.Permissions);
+            Assert.IsNotNull(credentials.TestObject);
+            Assert.IsNotNull(credentials.TestObjectArray);
+            Assert.AreEqual(testString, credentials.TestString);
+            Assert.IsTrue(credentials.TestBoolean);
+            Assert.AreEqual(testInteger, credentials.TestInteger);
+            Assert.AreEqual(testNumber, credentials.TestNumber);
+            Assert.AreEqual(testNumberFloat, credentials.TestNumberFloat);
+            Assert.AreEqual(testNumberDouble, credentials.TestNumberDouble);
+            Assert.AreEqual(testNumberInt32, credentials.TestNumberInt32);
+            Assert.AreEqual(testNumberInt64, credentials.TestNumberInt64);
+            Assert.AreEqual(testDate, credentials.TestDate);
+            Assert.AreEqual(testDateTime, credentials.TestDateTime);
+            Assert.AreEqual(testEnum, credentials.TestEnum);
+            CollectionAssert.AreEquivalent(permissions, credentials.Permissions);
+            Assert.AreEqual(testObject, credentials.TestObject);
+            CollectionAssert.AreEquivalent(testObjectArray, credentials.TestObjectArray);
 
+       }
 
+       [Test]
+       public void TestCreateNewCredentialsOptionsParamsCreation()
+       {
 
-            var permission1 = new NewCredentialsResource.PermissionsEnum();
-            permission1.FromString("START");
-            var permission2 = new NewCredentialsResource.PermissionsEnum();
-            permission2.FromString("NEXT");
+            string testString = "testString";
+            bool testBoolean = true;
+            int testInteger = 5;
+            decimal testNumber = Decimal.Parse("5");
+            float testNumberFloat = 12.0F;
+            double testNumberDouble = 19.0;
+            decimal testNumberInt32 = Decimal.Parse("100");
+            long testNumberInt64 = 100L;
+            Dictionary<string, Object> testObjectHelper = new Dictionary<string, Object>();
+            testObjectHelper.Add("test1", DateTime.Parse("1999-12-01"));
+            testObjectHelper.Add("test2", DateTime.Now);
+            DateTime testDateTime = DateTime.Now;
+            DateTime testDate = DateTime.Parse("2011-5-12");
+            NewCredentialsResource.StatusEnum testEnum = NewCredentialsResource.StatusEnum.InProgress;
+            List<Dictionary<string, Object>> testObjectArrayHelper = new List<Dictionary<string, Object>>()
+            {
+                new Dictionary<string, Object>(){{"key11","value11"},{"key12","value12"}},
+                new Dictionary<string, Object>(){{"key21","value21"},{ "key22", "value22" }}
+            };
 
             List<NewCredentialsResource.PermissionsEnum> permissions = new List<NewCredentialsResource.PermissionsEnum>()
             {
-                permission1,
-                permission2
+                NewCredentialsResource.PermissionsEnum.GetAll,
+                NewCredentialsResource.PermissionsEnum.PostAll
             };
-
-            var credentials = new CreateNewCredentialsOptions(testString) {
+            Object testObject = (Object)testObjectHelper;
+            List<Object> testObjectArray = testObjectArrayHelper.Select(x => (Object)x).ToList();
+            var credentials = new CreateNewCredentialsOptions(testString)
+            {
                 TestBoolean = testBoolean,
                 TestInteger = testInteger,
                 TestNumber = testNumber,
@@ -998,18 +989,18 @@ namespace Twilio.Test.Rest
             Assert.AreEqual(Serializers.DateTimeIso8601(testDateTime), param.Single((x) => x.Key == "TestDateTime").Value);
             Assert.AreEqual(testEnum.ToString(), param.Single((x) => x.Key == "TestEnum").Value);
 
-            var testObjectData = PrefixedCollapsibleMap.Serialize(testObject, "object");
-            var testObjectDataRetieved = param.Where((x) => x.Key.StartsWith("object."));
-            CollectionAssert.AreEquivalent(testObjectData, testObjectDataRetieved);
+            var testObjectData = testObject.ToString();
+            var testObjectDataRetieved = param.Single((x) => x.Key == "TestObject").Value;
+            Assert.AreEqual(testObjectData, testObjectDataRetieved);
 
             var permissionsString = permissions.Select(x => x.ToString());
             var permissionsStringRetrieved = param.Where(x => x.Key == "Permissions").Select(x => x.Value);
             CollectionAssert.AreEquivalent(permissionsString, permissionsStringRetrieved);
 
-            var testObjectArrayData = testObjectArray.Select(x => x.ToString());
-            var testObjectArrayDataRetrieved = param.Where(x => x.Key == "TestObjectArray").Select(x => x.Value);
+            var testObjectArrayData = testObjectArray.Select(TestObjectArray => new KeyValuePair<string, string>("TestObjectArray", Serializers.JsonObject(TestObjectArray)));
+            var testObjectArrayDataRetrieved = param.Where(x => x.Key == "TestObjectArray").ToList();
             CollectionAssert.AreEquivalent(testObjectArrayData, testObjectArrayDataRetrieved);
 
-        }
+       }
     }
 }
