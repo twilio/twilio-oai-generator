@@ -3,6 +3,7 @@ package com.twilio.oai.common;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.twilio.oai.Segments;
+import org.apache.commons.lang3.StringUtils;
 import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenParameter;
 import org.openapitools.codegen.CodegenProperty;
@@ -192,13 +193,13 @@ public class CsharpResolver extends Resolver {
             parameter.paramName = "Path"+parameter.paramName;
         }
 
-        if (parameter.dataFormat == null) {
-            if (parameter.dataType == "Object") {
+        if (StringUtils.isBlank(parameter.dataFormat)) {
+            if (parameter.dataType != null && parameter.dataType.equals("Object")) {
                 parameter.dataType = "object";
-            } else if (parameter.dataType == "List<Object" ) {
-                parameter.dataType = "List<object";
+                parameter.isMap = false;
             }
         }
+
 
         if (conventionMap.get(property).containsKey(parameter.dataFormat)) {
             parameter.dataType = (String) conventionMap.get(property).get(parameter.dataFormat);
