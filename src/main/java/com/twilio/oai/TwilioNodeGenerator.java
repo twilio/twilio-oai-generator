@@ -27,7 +27,6 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
     public static final String PATH_SEPARATOR_PLACEHOLDER = "1234567890";
     public static final String PREVIEW_STRING = "Preview";
 
-
     private final List<CodegenModel> allModels = new ArrayList<>();
     private final Inflector inflector = new Inflector();
     private Map<String, String> subDomainMap = new HashMap<>();
@@ -89,9 +88,7 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
             operation.addTagsItem(tag);
 
             if (!tag.contains(PATH_SEPARATOR_PLACEHOLDER)) {
-                // This would work if I have fullPath (pluralized) and
                 addVersionResource(versionResources, path, name, tag);
-                // addDependent(versionResources, tag);
             }
 
             // Gather a list of dependents for the operation as those with a path that directly under the current path.
@@ -111,7 +108,7 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
     }
 
     /**
-     * Adds a version resource to versionResources map.
+     * Adds a version resource to versionResources map
      * @param versionResources
      * @param pathItem
      * @param path
@@ -119,12 +116,11 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
      */
     private void addVersionResource(final Map<String, Object> versionResources, final PathItem pathItem, String path, String tag){
         final Map<String, Object> versionResource = getStringMap(versionResources, tag);
-        String customClassName = getCustomClassName(pathItem);
-        // TODO: Clean this
-        String cleanedPath = StringUtils.underscore(PathUtils.getLastPathPart(PathUtils.removeExtension(PathUtils.cleanPath(path))));
+        String cleanedPath = StringUtils.underscore(PathUtils.getLastPathPart(PathUtils.cleanPathAndRemoveFirstElement(path)));
 
-        // For MountName: If there is a classname extension (custom name), use that. Else: break down the path and use that
+        // If there is a classname extension (custom name), use that. Else: break down the path and use that
         String mountName;
+        String customClassName = getCustomClassName(pathItem);
         if (customClassName == null){
             mountName = cleanedPath;
         } else {
@@ -136,7 +132,7 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
     }
 
     /**
-     * Given a PathItem, returns the custom "className" from the x-twilio extension if it exists
+     * Given a PathItem, returns the custom "className" from the x-twilio extension if it exists, else null
      * @param pathItem
      * @return
      */
@@ -427,19 +423,12 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
             String resource = inflector.singular(PathUtils.getLastPathPart(PathUtils.cleanPathAndRemoveFirstElement(path)));
             String className = resourceNameMap.get(path);
             if (!className.equals(resource)){
-                // Use plural version of resoureName
+                // Use plural version of resourceName
                 return className;
             }
         }
         return PathUtils.getLastPathPart(PathUtils.cleanPathAndRemoveFirstElement(path));
-
     }
-
-//    private PathItem getPathItem(final String pathName){
-//        for (PathItem pathItem : this.openAPI.paths()){
-//            if
-//        }
-//    }
 
     private void addOperationName(final CodegenOperation operation, final String name) {
         operation.vendorExtensions.put("x-name", name);
