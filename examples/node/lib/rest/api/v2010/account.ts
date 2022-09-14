@@ -62,7 +62,7 @@ export interface AccountListInstancePageOptions {
 
 export interface AccountContext {
 
-    call: CallListInstance;
+    calls: CallListInstance;
 
     /**
      * Remove a AccountInstance
@@ -104,16 +104,16 @@ export class AccountContextImpl implements AccountContext {
     protected _solution: any;
     protected _uri: string;
 
-    protected _call?: CallListInstance;
+    protected _calls?: CallListInstance;
 
     constructor(protected _version: V2010, sid: string) {
         this._solution = { sid };
         this._uri = `/2010-04-01/Accounts/${sid}.json`;
     }
 
-    get call(): CallListInstance {
-        this._call = this._call || CallListInstance(this._version, this._solution.sid);
-        return this._call;
+    get calls(): CallListInstance {
+        this._calls = this._calls || CallListInstance(this._version, this._solution.sid);
+        return this._calls;
     }
 
     remove(callback?: any): Promise<boolean> {
@@ -302,10 +302,10 @@ export class AccountInstance {
     }
 
     /**
-     * Access the call.
+     * Access the calls.
      */
-    call(): CallListInstance {
-        return this._proxy.call;
+    calls(): CallListInstance {
+        return this._proxy.calls;
     }
 
     /**

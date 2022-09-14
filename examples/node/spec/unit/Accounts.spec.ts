@@ -11,7 +11,7 @@ describe('account', () => {
             .post('/v2010/2010-04-01/Accounts.json')
             .reply(201, {account_sid: '123'});
 
-        return twilio.api.v2010.account.create({sid: '123'}).then(() => scope.done());
+        return twilio.api.v2010.accounts.create({sid: '123'}).then(() => scope.done());
     });
 
     it('should fetch an account', () => {
@@ -19,7 +19,7 @@ describe('account', () => {
             .get('/v2010/2010-04-01/Accounts/123.json')
             .reply(200, {account_sid: '123'});
 
-        return twilio.api.v2010.account('123').fetch().then(() => scope.done());
+        return twilio.api.v2010.accounts('123').fetch().then(() => scope.done());
     });
 
     it('should update an account', () => {
@@ -30,7 +30,7 @@ describe('account', () => {
             })
             .reply(200, {account_sid: '123', status: 'closed'});
 
-        return twilio.api.v2010.account('123').update({status: 'closed'}).then(() => scope.done());
+        return twilio.api.v2010.accounts('123').update({status: 'closed'}).then(() => scope.done());
     });
 
     it('should remove an account', () => {
@@ -38,7 +38,7 @@ describe('account', () => {
             .delete('/v2010/2010-04-01/Accounts/123.json')
             .reply(204);
 
-        return twilio.api.v2010.account('123').remove().then(() => scope.done());
+        return twilio.api.v2010.accounts('123').remove().then(() => scope.done());
     });
 
     it('should get account pages in between dates', () => {
@@ -50,7 +50,7 @@ describe('account', () => {
             })
             .reply(200, {});
         const params: AccountListInstancePageOptions = {dateCreatedBefore: new Date('2022-12-25'), dateCreatedAfter: new Date('2022-01-01')}
-        return twilio.api.v2010.account.page(params).then(() => scope.done());
+        return twilio.api.v2010.accounts.page(params).then(() => scope.done());
     })
 });
 
@@ -66,7 +66,7 @@ describe('call', () => {
             })
             .reply(201, {requiredStringProperty: 'radda radda', account_sid: '123', sid: 1});
 
-        return twilio.api.v2010.account('123').call.create({requiredStringProperty: 'radda radda',
+        return twilio.api.v2010.accounts('123').calls.create({requiredStringProperty: 'radda radda',
             account_sid: '123', sid: 1})
             .then(() => scope.done());
     });
@@ -76,7 +76,7 @@ describe('call', () => {
             .get('/v2010/2010-04-01/Accounts/123/Calls/1.json')
             .reply(307, {account_sid: '123', sid: 1});
 
-        return twilio.api.v2010.account('123').call('123', 1).fetch()
+        return twilio.api.v2010.accounts('123').calls('123', 1).fetch()
             .then(() => scope.done());
     });
 
@@ -85,7 +85,7 @@ describe('call', () => {
             .delete('/v2010/2010-04-01/Accounts/123/Calls/1.json')
             .reply(204);
 
-        return twilio.api.v2010.account('123').call('123', 1).remove()
+        return twilio.api.v2010.accounts('123').calls('123', 1).remove()
             .then(() => scope.done());
     });
 
@@ -98,7 +98,7 @@ describe('call', () => {
             })
             .reply(201, {test_array: [{count: 4}]});
 
-        return twilio.api.v2010.account('123').call.feedback_call_summary
+        return twilio.api.v2010.accounts('123').calls.feedback_call_summary
             .create({endDate: '2022-08-01', startDate: '2022-08-01'})
             .then(() => scope.done())
     });
