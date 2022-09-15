@@ -29,9 +29,9 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
 
     private final List<CodegenModel> allModels = new ArrayList<>();
     private final Inflector inflector = new Inflector();
-    private Map<String, String> subDomainMap = new HashMap<>();
-    private Map<String, String> resourceNameMap = new HashMap<>();
-    private IResourceTree resourceTree;
+    private final Map<String, String> subDomainMap = new HashMap<>();
+    private final Map<String, String> resourceNameMap = new HashMap<>();
+    private final IResourceTree resourceTree;
 
     public TwilioNodeGenerator() {
         super();
