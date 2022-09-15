@@ -26,6 +26,8 @@ namespace Twilio.Rest.Api.V2010.Account.Call
 
     public class CreateFeedbackCallSummaryOptions : IOptions<FeedbackCallSummaryResource>
     {
+        // How to decide which has getter and which has setter ?
+        
         public DateTime? EndDate { get; set; }
         public DateTime? StartDate { get; set; }
         public string PathAccountSid { get; set; }
