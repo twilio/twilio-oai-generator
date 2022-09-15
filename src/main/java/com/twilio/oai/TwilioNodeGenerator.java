@@ -107,41 +107,6 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
         flattenStringMap(additionalProperties, "versionResources");
     }
 
-    /**
-     * Adds a version resource to versionResources map
-     * @param versionResources
-     * @param pathItem
-     * @param path
-     * @param tag
-     */
-    private void addVersionResource(final Map<String, Object> versionResources, final PathItem pathItem, String path, String tag){
-        final Map<String, Object> versionResource = getStringMap(versionResources, tag);
-        String cleanedPath = StringUtils.underscore(PathUtils.getLastPathPart(PathUtils.cleanPathAndRemoveFirstElement(path)));
-
-        // If there is a classname extension (custom name), use that. Else: break down the path and use that
-        String mountName;
-        String customClassName = getCustomClassName(pathItem);
-        if (customClassName == null){
-            mountName = cleanedPath;
-        } else {
-            mountName = customClassName;
-        }
-        versionResource.put("name", tag);
-        versionResource.put("mountName", StringUtils.underscore(mountName));
-        versionResource.put("filename", StringUtils.camelize(tag, true));
-    }
-
-    /**
-     * Given a PathItem, returns the custom "className" from the x-twilio extension if it exists, else null
-     * @param pathItem
-     * @return
-     */
-    private String getCustomClassName(final PathItem pathItem){
-        Map<String, Object> extensions = pathItem.getExtensions();
-        Map<String, String> xTwilioExtension = (Map<String, String>) extensions.get("x-twilio");
-        return xTwilioExtension.get("className");
-
-    }
     @Override
     public String toApiFilename(final String name) {
         // Replace the path separator placeholder with the actual separator and lowercase the first character of each
@@ -302,6 +267,41 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
         return results;
     }
 
+    /**
+     * Adds a version resource to the versionResources map
+     * @param versionResources
+     * @param pathItem
+     * @param path
+     * @param tag
+     */
+    private void addVersionResource(final Map<String, Object> versionResources, final PathItem pathItem, String path, String tag){
+        final Map<String, Object> versionResource = getStringMap(versionResources, tag);
+        String cleanedPath = StringUtils.underscore(PathUtils.getLastPathPart(PathUtils.cleanPathAndRemoveFirstElement(path)));
+
+        // If there is a classname extension (custom name), use that. Else: break down the path and use that
+        String mountName;
+        String customClassName = getCustomClassName(pathItem);
+        if (customClassName == null){
+            mountName = cleanedPath;
+        } else {
+            mountName = customClassName;
+        }
+        versionResource.put("name", tag);
+        versionResource.put("mountName", StringUtils.underscore(mountName));
+        versionResource.put("filename", StringUtils.camelize(tag, true));
+    }
+
+    /**
+     * Given a PathItem, returns the custom "className" from the x-twilio extension if it exists, else return null
+     * @param pathItem
+     * @return
+     */
+    private String getCustomClassName(final PathItem pathItem){
+        Map<String, Object> extensions = pathItem.getExtensions();
+        Map<String, String> xTwilioExtension = (Map<String, String>) extensions.get("x-twilio");
+        return xTwilioExtension.get("className");
+    }
+
     protected String getRelativeRoot(final String classname) {
         return Arrays
             .stream(classname.split(PATH_SEPARATOR_PLACEHOLDER))
@@ -321,7 +321,7 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
         final Map<String, Object> dependent = getStringMap(dependents, dependentPath);
         final String dependentName = getResourceName(dependentPath);
         // Use custom class name if available. Do I have access to that?
-        final String mountName = getMountName(dependentPath);
+        final String mountName = generateMountName(dependentPath);
         dependent.put("name", inflector.singular(dependentName));
         dependent.put("mountName", StringUtils.underscore(mountName));
         dependent.put("filename", StringUtils.camelize(dependentName, true));
@@ -417,7 +417,7 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
      * @param path
      * @return
      */
-    private String getMountName(final String path){
+    private String generateMountName(final String path){
         // Determine if the path has a custom class name
         if (resourceNameMap.containsKey(path)){
             String resource = inflector.singular(PathUtils.getLastPathPart(PathUtils.cleanPathAndRemoveFirstElement(path)));
