@@ -9,7 +9,6 @@ import com.twilio.oai.common.ParameterResolverFactory;
 import com.twilio.oai.common.ReservedKeyword;
 import com.twilio.oai.common.Serializer;
 import com.twilio.oai.common.Utility;
-import com.twilio.oai.mlambdas.ReplaceHyphenLambda;
 import com.twilio.oai.mlambdas.TitleCaseLambda;
 import io.swagger.v3.oas.models.OpenAPI;
 import lombok.extern.slf4j.Slf4j;
@@ -28,7 +27,6 @@ import org.openapitools.codegen.utils.StringUtils;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
@@ -137,7 +135,6 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
         final Map<String, Map<String, Object>> resources = new LinkedHashMap<>();
 
         List<CodegenModel> responseModels = new ArrayList<>();
-        String recordKey = null;
         String tagMap[] = ((Map<String, String>) objs.get("operations")).get("classname").split(ApplicationConstants.PATH_SEPARATOR_PLACEHOLDER);
         String className = tagMap[tagMap.length-1];
         resolver.setClassName(className);
@@ -152,63 +149,25 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
             String resourceName = filePathArray[filePathArray.length - 1];
             final Map<String, Object> resource = resources.computeIfAbsent(resourceName, k -> new LinkedHashMap<>());
             populateCrudOperations(resource, co);
-            updateCodeOperationParams(co);
-            List<String> packagePaths = Arrays.asList(Arrays.copyOfRange(filePathArray, 0, filePathArray.length - 1))
-                    .stream().collect(Collectors.toList());
-            if (directoryStructureService.isPreviewDomain(this.additionalProperties)) {
-                String tag = objs.getOperations().getClassname();
-                String subDomainName = directoryStructureService.getSubDomainName(tag);
-                resource.put("package", subDomainName);
-            }
+            resolveCodeOperationParams(co, opList, results, responseModels);
 
             // Add operations key to resource
             final ArrayList<CodegenOperation> resourceOperationList = (ArrayList<CodegenOperation>) resource.computeIfAbsent("operations", k -> new ArrayList<>());
             resourceOperationList.add(co);
 
-            if (co.requiredParams.size() > 0) {
-                co.vendorExtensions.put("x-required-param-exist", true);
-            }
-
-            boolean arrayParamsPresent = hasArrayParams(co.allParams);
-
             Serializer.serialize(co.allParams);
             Serializer.serialize(co.pathParams);
-            
-            co.vendorExtensions.put("x-getparams", getParams(co));
-
-            if (packagePaths.isEmpty()) {
-                resource.put("packageSubPart", "");
-            } else {
-                String packagePath = packagePaths.stream().collect(Collectors.joining("."));
-                resource.put("packageSubPart", "." + packagePath);
-            }
-            recordKey = getRecordKey(opList, this.allModels);
-            co.vendorExtensions.put("x-non-path-params", getNonPathParams(co.allParams));
-            List<CodegenParameter> headerParams = getHeaderParams(co);
-            if (headerParams != null && headerParams.size() > 0) {
-                co.vendorExtensions.put("x-header-params-exists", true);
-                co.vendorExtensions.put("x-header-params", headerParams);
-            }
-
-            for (CodegenResponse response : co.responses) {
-                String modelName = response.dataType;
-                Optional<CodegenModel> responseModel = getModelCoPath(modelName,co, recordKey);
-                if (!responseModel.isPresent()) {
-                    continue;
-                }
-                resolver.resolveParameter(responseModel.get());
-                responseModels.add(responseModel.get());
-            }
-
+            generateGetParams(co);
+            generatePackage(objs, co, resource);
             requestBodyArgument(co);
-            results.put("recordKey", recordKey);
+
             resource.put("path", path);
             resource.put("resourceName", resourceName);
             resource.put("resourceConstant", "Resource");
             if (enums.size() > 0) {
                 resource.put("hasEnums", true);
             }
-            if(arrayParamsPresent){
+            if (hasArrayParams(co.allParams)) {
                 resource.put("hasArrayParams", true);
             }
         }
@@ -224,6 +183,26 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
         return results;
     }
 
+    private void generatePackage(final OperationsMap objs, final CodegenOperation co, final Map<String, Object> resource) {
+        String[] filePathArray = co.baseName.split(ApplicationConstants.PATH_SEPARATOR_PLACEHOLDER);
+
+        // Generate Preview package.
+        if (directoryStructureService.isPreviewDomain(this.additionalProperties)) {
+            String tag = objs.getOperations().getClassname();
+            String subDomainName = directoryStructureService.getSubDomainName(tag);
+            resource.put("package", subDomainName);
+        }
+
+        List<String> packagePaths = Arrays.asList(Arrays.copyOfRange(filePathArray, 0, filePathArray.length - 1))
+                .stream().collect(Collectors.toList());
+        if (packagePaths.isEmpty()) {
+            resource.put("packageSubPart", "");
+        } else {
+            String packagePath = packagePaths.stream().collect(Collectors.joining("."));
+            resource.put("packageSubPart", "." + packagePath);
+        }
+    }
+
     private boolean hasArrayParams(List<CodegenParameter> allParams) {
         for (CodegenParameter item : allParams) {
             if (item.isArray) {
@@ -233,14 +212,15 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
         return false;
     }
 
-    private List<CodegenParameter> getParams(CodegenOperation co) {
+    private void generateGetParams(CodegenOperation co) {
         LinkedList<CodegenParameter> headerParams = new LinkedList<>();
         for (CodegenParameter codegenParameter: co.allParams) {
             if (!codegenParameter.isPathParam && !codegenParameter.isHeaderParam) {
                 headerParams.add(codegenParameter);
             }
         }
-        return headerParams;
+
+        co.vendorExtensions.put("x-getparams", headerParams);
     }
 
     private List<CodegenParameter> getHeaderParams(final CodegenOperation co) {
@@ -306,18 +286,8 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
         optionalParameters.stream().forEach(parameter -> requestBodyArgument.put(parameter.paramName, parameter));
 
         co.vendorExtensions.put("x-request-body-param", new ArrayList<>(requestBodyArgument.values()));
-        int requiredCnt = 0;
-        for (CodegenParameter parameter: requestBodyArgument.values()) {
-            if (parameter.required) {
-                requiredCnt++;
-            }
-        }
-        if (requiredCnt != co.requiredParams.size()) {
-            System.out.println("Exception Occurred ...............");
-        }
     }
 
-    // TODO: Need to be corrected in open api spec by yps
     void rearrangeBeforeAfter(final List<CodegenParameter> parameters) {
         for (int index = 0; index < parameters.size(); index++) {
             CodegenParameter codegenParameter = parameters.get(index);
@@ -376,13 +346,40 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
         return response;
     }
 
-    private void updateCodeOperationParams(final CodegenOperation co) {
+    private void resolveCodeOperationParams(final CodegenOperation co, ArrayList<CodegenOperation> opList, OperationsMap results, List<CodegenModel> responseModels) {
         resolver.resolveParameter(co.pathParams);
         resolver.resolveParameter(co.queryParams);
         resolver.resolveParameter(co.optionalParams);
         resolver.resolveParameter(co.requiredParams);
         resolver.resolveParameter(co.allParams);
         resolver.resolveParameter(co.headerParams);
+
+        if (co.requiredParams.size() > 0) {
+            co.vendorExtensions.put("x-required-param-exist", true);
+        }
+
+        String recordKey = getRecordKey(opList, this.allModels);
+        co.vendorExtensions.put("x-non-path-params", getNonPathParams(co.allParams));
+
+        // Used in GetHeaderParams
+        List<CodegenParameter> headerParams = getHeaderParams(co);
+        if (headerParams != null && headerParams.size() > 0) {
+            co.vendorExtensions.put("x-header-params-exists", true);
+            co.vendorExtensions.put("x-header-params", headerParams);
+        }
+
+        // Resolve Response Model
+        for (CodegenResponse response : co.responses) {
+            String modelName = response.dataType;
+            Optional<CodegenModel> responseModel = getModelCoPath(modelName,co, recordKey);
+            if (!responseModel.isPresent()) {
+                continue;
+            }
+            resolver.resolveParameter(responseModel.get());
+            responseModels.add(responseModel.get()); // Check for DeleteCall (delete operation)
+        }
+
+        results.put("recordKey", recordKey);
     }
 
     // Sanitizing URL path similar to java codegen.
@@ -439,25 +436,15 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
 
     private void populateCrudOperations(final Map<String, Object> resource, final CodegenOperation operation) {
         if (operation.nickname.startsWith(EnumConstants.Operation.CREATE.getValue())) {
-            resource.put("hasCreate", true);
             operation.vendorExtensions.put("x-is-create-operation", true);
-            resource.put(EnumConstants.Operation.CREATE.name(), operation);
         } else if (operation.nickname.startsWith(EnumConstants.Operation.FETCH.getValue())) {
-            resource.put("hasFetch", true);
-            resource.put(EnumConstants.Operation.FETCH.name(), operation);
             operation.vendorExtensions.put("x-is-fetch-operation", true);
         } else if (operation.nickname.startsWith(EnumConstants.Operation.UPDATE.getValue())) {
-            resource.put("hasUpdate", true);
             operation.vendorExtensions.put("x-is-update-operation", true);
-            resource.put(EnumConstants.Operation.UPDATE.name(), operation);
         } else if (operation.nickname.startsWith(EnumConstants.Operation.DELETE.getValue())) {
-            resource.put("hasDelete", true);
             operation.vendorExtensions.put("x-is-delete-operation", true);
-            resource.put(EnumConstants.Operation.DELETE.name(), operation);
         } else {
-            resource.put("hasRead", true);
             operation.vendorExtensions.put("x-is-read-operation", true);
-            resource.put(EnumConstants.Operation.READ.name(), operation);
         }
     }
 
