@@ -72,7 +72,6 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
             // Group operations together by tag. This gives us one file/post-process per resource.
             final String tag = String.join(PATH_SEPARATOR_PLACEHOLDER, resourceTree.ancestors(name, operation));
 
-
             List<String> ancestors = resourceTree.ancestors(name, operation);
             if (!resourceNameMap.containsKey(name)) {
                 String resourceName = ancestors.get(ancestors.size()-1);
