@@ -17,11 +17,25 @@ import static org.junit.Assert.assertFalse;
 public class TwilioGeneratorTest {
 
     @Test
-    public void launchCodeGenerator() {
+    public void launchJavaGenerator() {
         final CodegenConfigurator configurator = new CodegenConfigurator()
             .setGeneratorName("twilio-java")
             .setInputSpec("examples/twilio_api_v2010.yaml")
             .setOutputDir("codegen/twilio-java");
+
+        final ClientOptInput clientOptInput = configurator.toClientOptInput();
+        DefaultGenerator generator = new DefaultGenerator();
+        final List<File> output = generator.opts(clientOptInput).generate();
+
+        assertFalse(output.isEmpty());
+    }
+
+    @Test
+    public void launchNodeGenerator() {
+        final CodegenConfigurator configurator = new CodegenConfigurator()
+                .setGeneratorName("twilio-node")
+                .setInputSpec("examples/twilio_api_v2010.yaml")
+                .setOutputDir("codegen/twilio-node");
 
         final ClientOptInput clientOptInput = configurator.toClientOptInput();
         DefaultGenerator generator = new DefaultGenerator();
