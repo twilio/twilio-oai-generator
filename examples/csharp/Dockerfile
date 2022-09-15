@@ -16,7 +16,7 @@ WORKDIR /app
 RUN git clone --depth 1 https://github.com/twilio/twilio-csharp.git
 WORKDIR /app/twilio-csharp
 
-RUN rm -rf /app/twilio-csharp/src/Twilio/Rest/*
+RUN rm -rf /app/twilio-csharp/src/Twilio/Rest/*/
 COPY src/Twilio/ /app/twilio-csharp/src/Twilio
 
 RUN rm -rf /app/twilio-csharp/test/Twilio.Test/Rest/*
