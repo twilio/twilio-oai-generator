@@ -1,18 +1,17 @@
-using Twilio.Http;
 using System;
 using System.Text;
-using System.Linq;
 using System.Collections.Generic;
+using Twilio.Http;
 using Twilio.Clients;
 using Twilio.Converters;
 
-namespace examples.csharp.integrationTest.rest
+namespace Twilio.Tests.Rest
 {
     public class TestRestClient : TwilioRestClient, ITwilioRestClient
     {
-        String baseURL;
+        string baseURL;
 
-        public TestRestClient( String username, String password, String url) : base(username,password) {
+        public TestRestClient( string username, string password, string url) : base(username,password) {
             this.baseURL = url;
         }
         
