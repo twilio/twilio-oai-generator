@@ -3,4 +3,4 @@ using System.Collections.Generic;
 using Twilio.Base;
 using Twilio.Converters;
 {{#resources}}{{#hasArrayParams}}using System.Linq;{{/hasArrayParams}}{{/resources}}
-{{#resources}}{{#hasEnumParams}}using Twilio.Types;{{/hasEnumParams}}{{/resources}}
+{{#resources}}{{#hasEnumsInOptions}}using Twilio.Types;{{/hasEnumsInOptions}}{{/resources}}
