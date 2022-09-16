@@ -11,6 +11,7 @@ import org.openapitools.codegen.IJsonSchemaValidationProperties;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -25,6 +26,8 @@ public class CsharpResolver extends Resolver {
     private String className;
 
     private Map<String, IJsonSchemaValidationProperties> enums;
+    public boolean hasEnums = false;
+    private HashSet<String> enumsDict = new HashSet<>();
 
     private final Map<String, Map<String, Object>> conventionMap;
 
@@ -34,6 +37,7 @@ public class CsharpResolver extends Resolver {
     public CsharpResolver(EnumConstants.Generator generator) {
         this.generator = generator;
         conventionMap = getConventionalMap();
+        extractEnums();
 
     }
 
@@ -175,7 +179,9 @@ public class CsharpResolver extends Resolver {
         }
 
         resolveDataType(codegenProperty);
-
+        if(enumsDict.contains(codegenProperty.dataType)){//List of enums present
+            hasEnums = true;
+        }
         codegenProperty.dataType = existsInDataType + codegenProperty.dataType + ApplicationConstants.LIST_END;
         return codegenProperty;
     }
@@ -249,6 +255,9 @@ public class CsharpResolver extends Resolver {
         /// Can be re-used
         resolveDataType(parameter);
         ////
+        if(enumsDict.contains(parameter.dataType)){//List of enums present
+            hasEnums = true;
+        }
         parameter.dataType = existsInDataType + parameter.dataType + ApplicationConstants.LIST_END;
         return parameter;
     }
@@ -263,5 +272,33 @@ public class CsharpResolver extends Resolver {
             resolveParameter(parameter);
         }
         return parameters;
+    }
+
+    private String titleCase(String input){
+        input.replace(" ","");
+        String[] split = input.split("_");
+        String result = "";
+        for(int i = 0; i < split.length; i++){
+            String item = split[i];
+            result+= Character.toTitleCase(item.charAt(0)) + item.substring(1);
+        }
+        return result;
+    }
+
+    private void extractEnums() {
+        Map<String, Object> usingMappings = conventionMap.get("library");
+        usingMappings.forEach((key, value) -> {
+            if(value != null){
+                if(value instanceof String && ((String) value).equalsIgnoreCase("Twilio.Types")){
+                    enumsDict.add(titleCase(key));
+                } else if (value instanceof ArrayList) {
+                    ((ArrayList<String>) value).forEach(item -> {
+                        if(item.equalsIgnoreCase("Twilio.Types")){
+                            enumsDict.add(titleCase(key));
+                        }
+                    });
+                }
+            }
+        });
     }
 }

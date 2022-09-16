@@ -2,7 +2,5 @@ using System;
 using System.Collections.Generic;
 using Twilio.Base;
 using Twilio.Converters;
-{{#resources}}{{#hasArrayParams}}
-using System.Linq;
-{{/hasArrayParams}}{{/resources}}
-using Twilio.Types;
+{{#resources}}{{#hasArrayParams}}using System.Linq;{{/hasArrayParams}}{{/resources}}
+{{#resources}}{{#hasEnumParams}}using Twilio.Types;{{/hasEnumParams}}{{/resources}}

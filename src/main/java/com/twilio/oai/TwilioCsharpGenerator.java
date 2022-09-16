@@ -147,13 +147,16 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
             String path = co.path;
             String[] filePathArray = co.baseName.split(ApplicationConstants.PATH_SEPARATOR_PLACEHOLDER);
             String resourceName = filePathArray[filePathArray.length - 1];
-            final Map<String, Object> resource = resources.computeIfAbsent(resourceName, k -> new LinkedHashMap<>());
+            Map<String, Object> resource = resources.computeIfAbsent(resourceName, k -> new LinkedHashMap<>());
             populateCrudOperations(resource, co);
             resolveCodeOperationParams(co, opList, results, responseModels);
 
             // Add operations key to resource
             final ArrayList<CodegenOperation> resourceOperationList = (ArrayList<CodegenOperation>) resource.computeIfAbsent("operations", k -> new ArrayList<>());
             resourceOperationList.add(co);
+
+            boolean enumParamsInOptions = hasEnumParamsInOptions(co.allParams);
+            boolean arrayParamsPresent = hasArrayParams(co.allParams);
 
             Serializer.serialize(co.allParams);
             Serializer.serialize(co.pathParams);
@@ -164,12 +167,7 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
             resource.put("path", path);
             resource.put("resourceName", resourceName);
             resource.put("resourceConstant", "Resource");
-            if (enums.size() > 0) {
-                resource.put("hasEnums", true);
-            }
-            if (hasArrayParams(co.allParams)) {
-                resource.put("hasArrayParams", true);
-            }
+            handleImports(resource, enums, arrayParamsPresent);
         }
 
         for (final Map<String, Object> resource : resources.values()) {
@@ -461,6 +459,28 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
     @Override
     public String getHelp() {
         return "Generates the twilio-csharp helper library.";
+    }
+
+    private void handleImports(Map<String, Object> resource, Map<String, IJsonSchemaValidationProperties> enums,
+                               boolean arrayParamsPresent) {
+        //Handle imports for enum and enum list params for resource file
+        if (enums.size() > 0 || resolver.hasEnums) {
+            resource.put("hasEnumParams", true);
+        }
+        //Handle array params for options file
+        if (arrayParamsPresent) {
+            resource.put("hasArrayParams", true);
+        }
+
+    }
+
+    private boolean hasEnumParamsInOptions(List<CodegenParameter> allParams) {
+        for (CodegenParameter item : allParams) {
+            if (item.isEnum) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }
