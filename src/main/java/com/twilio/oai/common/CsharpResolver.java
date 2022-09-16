@@ -26,7 +26,6 @@ public class CsharpResolver extends Resolver {
     private String className;
 
     private Map<String, IJsonSchemaValidationProperties> enums;
-    public boolean hasEnums = false;
 
     public boolean hasEnumsInResource = false;
     public boolean hasEnumsInOptions = false;
@@ -195,7 +194,6 @@ public class CsharpResolver extends Resolver {
 
         resolveDataType(codegenProperty);
         if(enumsDict.contains(codegenProperty.dataType)){//List of enums present
-//            hasEnums = true;
               codegenProperty.vendorExtensions.put("x-has-enum-params", true);
         }
         codegenProperty.dataType = existsInDataType + codegenProperty.dataType + ApplicationConstants.LIST_END;
@@ -272,7 +270,6 @@ public class CsharpResolver extends Resolver {
         resolveDataType(parameter);
         ////
         if(enumsDict.contains(parameter.dataType)){//List of enums present
-            hasEnums = true;
             parameter.vendorExtensions.put("x-has-enum-params", true);
         }
         parameter.dataType = existsInDataType + parameter.dataType + ApplicationConstants.LIST_END;
