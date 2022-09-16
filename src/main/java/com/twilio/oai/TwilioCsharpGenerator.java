@@ -155,7 +155,6 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
             final ArrayList<CodegenOperation> resourceOperationList = (ArrayList<CodegenOperation>) resource.computeIfAbsent("operations", k -> new ArrayList<>());
             resourceOperationList.add(co);
 
-            boolean enumParamsInOptions = hasEnumParamsInOptions(co.allParams);
             boolean arrayParamsPresent = hasArrayParams(co.allParams);
 
             Serializer.serialize(co.allParams);
@@ -474,13 +473,5 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
 
     }
 
-    private boolean hasEnumParamsInOptions(List<CodegenParameter> allParams) {
-        for (CodegenParameter item : allParams) {
-            if (item.isEnum) {
-                return true;
-            }
-        }
-        return false;
-    }
 
 }
