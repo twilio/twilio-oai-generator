@@ -1,16 +1,11 @@
 package com.twilio.oai;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.PathItem;
 import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenOperation;
 import org.openapitools.codegen.CodegenParameter;
@@ -22,14 +17,21 @@ import org.openapitools.codegen.model.ModelsMap;
 import org.openapitools.codegen.model.OperationMap;
 import org.openapitools.codegen.model.OperationsMap;
 import org.openapitools.codegen.utils.StringUtils;
+import com.twilio.oai.resource.IResourceTree;
+import com.twilio.oai.resource.ResourceMap;
+
 
 public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
 
     // Unique string devoid of symbols.
     public static final String PATH_SEPARATOR_PLACEHOLDER = "1234567890";
+    public static final String PREVIEW_STRING = "Preview";
 
     private final List<CodegenModel> allModels = new ArrayList<>();
     private final Inflector inflector = new Inflector();
+    private final Map<String, String> subDomainMap = new HashMap<>();
+    private final Map<String, String> resourceNameMap = new HashMap<>();
+    private IResourceTree resourceTree;
 
     public TwilioNodeGenerator() {
         super();
@@ -59,15 +61,33 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
 
     @Override
     public void processOpenAPI(final OpenAPI openAPI) {
+        resourceTree = new ResourceMap(inflector, PATH_SEPARATOR_PLACEHOLDER);
         final Map<String, Object> versionResources = getStringMap(additionalProperties, "versionResources");
+
+        openAPI.getPaths().forEach((name, path) -> {
+            resourceTree.addResource(name, path);
+        });
 
         openAPI.getPaths().forEach((name, path) -> path.readOperations().forEach(operation -> {
             // Group operations together by tag. This gives us one file/post-process per resource.
-            final String tag = PathUtils.cleanPathAndRemoveFirstElement(name).replace("/", PATH_SEPARATOR_PLACEHOLDER);
+            final String tag = String.join(PATH_SEPARATOR_PLACEHOLDER, resourceTree.ancestors(name, operation));
+
+            List<String> ancestors = resourceTree.ancestors(name, operation);
+            if (!resourceNameMap.containsKey(name)) {
+                String resourceName = ancestors.get(ancestors.size()-1);
+                resourceNameMap.put(name, resourceName);
+                resourceNameMap.put(PathUtils.removeExtension(PathUtils.removePathParamIds(name)), resourceName);
+            }
+
+            if(isPreviewDomain()){
+                String subDomainName = extractSubDomainName(name);
+                subDomainMap.put(tag, subDomainName);
+            }
+
             operation.addTagsItem(tag);
 
             if (!tag.contains(PATH_SEPARATOR_PLACEHOLDER)) {
-                addDependent(versionResources, tag);
+                addVersionResource(versionResources, path, name, tag);
             }
 
             // Gather a list of dependents for the operation as those with a path that directly under the current path.
@@ -90,6 +110,11 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
     public String toApiFilename(final String name) {
         // Replace the path separator placeholder with the actual separator and lowercase the first character of each
         // path part.
+        String[] split = super.toApiFilename(name).split(PATH_SEPARATOR_PLACEHOLDER);
+        if(isPreviewDomain()){
+            return getSubDomainName(subDomainMap, name) + "/" +Arrays.stream(Arrays.copyOfRange(split, 0, split.length - 1)).map(String::toLowerCase).collect(Collectors.joining("/")) + "/"+split[split.length-1];
+        }
+
         return Arrays
             .stream(super.toApiFilename(name).split(PATH_SEPARATOR_PLACEHOLDER))
             .map(part -> StringUtils.camelize(part, true))
@@ -135,11 +160,12 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
         for (final CodegenOperation co : opList) {
             // Group operations by resource.
             String path = co.path;
+            String[] filePathArray = co.baseName.split(PATH_SEPARATOR_PLACEHOLDER);
             for (final CodegenParameter pathParam : co.pathParams) {
                 path = path.replace("{" + pathParam.baseName + "}", "${" + pathParam.paramName + "}");
             }
 
-            final String itemName = inflector.singular(getResourceName(co.path));
+            final String itemName = filePathArray[filePathArray.length-1];
             final String instanceName = itemName + "Instance";
             final boolean isInstanceOperation = PathUtils.removeExtension(co.path).endsWith("}");
             final HttpMethod httpMethod = HttpMethod.fromString(co.httpMethod);
@@ -240,6 +266,41 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
         return results;
     }
 
+    /**
+     * Adds a version resource to the versionResources map
+     * @param versionResources
+     * @param pathItem
+     * @param path
+     * @param tag
+     */
+    private void addVersionResource(final Map<String, Object> versionResources, final PathItem pathItem, String path, String tag){
+        final Map<String, Object> versionResource = getStringMap(versionResources, tag);
+        String cleanedPath = StringUtils.underscore(PathUtils.getLastPathPart(PathUtils.cleanPathAndRemoveFirstElement(path)));
+
+        // If there is a classname extension (custom name), use that. Else: break down the path and use that
+        String mountName;
+        String customClassName = getCustomClassName(pathItem);
+        if (customClassName == null){
+            mountName = cleanedPath;
+        } else {
+            mountName = customClassName;
+        }
+        versionResource.put("name", tag);
+        versionResource.put("mountName", StringUtils.underscore(mountName));
+        versionResource.put("filename", StringUtils.camelize(tag, true));
+    }
+
+    /**
+     * Given a PathItem, returns the custom "className" from the x-twilio extension if it exists, else return null
+     * @param pathItem
+     * @return
+     */
+    private String getCustomClassName(final PathItem pathItem){
+        Map<String, Object> extensions = pathItem.getExtensions();
+        Map<String, String> xTwilioExtension = (Map<String, String>) extensions.get("x-twilio");
+        return xTwilioExtension.get("className");
+    }
+
     protected String getRelativeRoot(final String classname) {
         return Arrays
             .stream(classname.split(PATH_SEPARATOR_PLACEHOLDER))
@@ -258,8 +319,10 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
     private void addDependent(final Map<String, Object> dependents, final String dependentPath) {
         final Map<String, Object> dependent = getStringMap(dependents, dependentPath);
         final String dependentName = getResourceName(dependentPath);
+        // Use custom class name if available. Do I have access to that?
+        final String mountName = generateMountName(dependentPath);
         dependent.put("name", inflector.singular(dependentName));
-        dependent.put("mountName", StringUtils.underscore(dependentName));
+        dependent.put("mountName", StringUtils.underscore(mountName));
         dependent.put("filename", StringUtils.camelize(dependentName, true));
     }
 
@@ -270,6 +333,16 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
             }
         }
         return item;
+    }
+
+    private String extractSubDomainName(String name) {
+        String[] split = name.split("/");
+        if(split.length > 1 && split[1] != null) {
+            String result = split[1];
+            result = result.substring(0, 1).toLowerCase() + result.substring(1);
+            return result;
+        }
+        return null;
     }
 
     private void addSerializeVendorExtension(CodegenParameter param) {
@@ -332,12 +405,41 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
     }
 
     private String getResourceName(final String path) {
+        if (resourceNameMap.containsKey(path)) {
+            return resourceNameMap.get(path);
+        }
+        return PathUtils.getLastPathPart(PathUtils.cleanPathAndRemoveFirstElement(path));
+    }
+
+    /**
+     * If there is a custom class name, return that. Else return a cleaned version of the original path
+     * @param path
+     * @return
+     */
+    private String generateMountName(final String path){
+        // Determine if the path has a custom class name
+        if (resourceNameMap.containsKey(path)){
+            String resource = inflector.singular(PathUtils.getLastPathPart(PathUtils.cleanPathAndRemoveFirstElement(path)));
+            String className = resourceNameMap.get(path);
+            if (!className.equals(resource)){
+                // Use plural version of resourceName
+                return className;
+            }
+        }
         return PathUtils.getLastPathPart(PathUtils.cleanPathAndRemoveFirstElement(path));
     }
 
     private void addOperationName(final CodegenOperation operation, final String name) {
         operation.vendorExtensions.put("x-name", name);
         operation.vendorExtensions.put("x-name-lower", name.toLowerCase());
+    }
+
+    private String getSubDomainName(Map<String, String> subDomainMap, String name) {
+        return subDomainMap.entrySet().stream().filter(x -> x.getKey().equalsIgnoreCase(name)).findFirst().get().getValue();
+    }
+
+    private boolean isPreviewDomain(){
+        return this.additionalProperties.get("domain").equals(PREVIEW_STRING);
     }
 
     @Override

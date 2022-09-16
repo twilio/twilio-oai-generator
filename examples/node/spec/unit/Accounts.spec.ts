@@ -1,9 +1,9 @@
 'use strict';
 import nock from 'nock';
 import Twilio from '../../lib/rest/Twilio';
-import {AccountListInstancePageOptions} from "../../lib/rest/api/v2010/accounts";
+import {AccountListInstancePageOptions} from "../../lib/rest/api/v2010/account";
 
-describe('accounts', () => {
+describe('account', () => {
     const twilio = new Twilio();
 
     it('should create an account', () => {
@@ -55,7 +55,7 @@ describe('accounts', () => {
 });
 
 
-describe('calls', () => {
+describe('call', () => {
     const twilio = new Twilio();
 
     it('should create a call', () => {
@@ -98,7 +98,7 @@ describe('calls', () => {
             })
             .reply(201, {test_array: [{count: 4}]});
 
-        return twilio.api.v2010.accounts('123').calls.feedback_summary
+        return twilio.api.v2010.accounts('123').calls.feedback_call_summary
             .create({endDate: '2022-08-01', startDate: '2022-08-01'})
             .then(() => scope.done())
     });
