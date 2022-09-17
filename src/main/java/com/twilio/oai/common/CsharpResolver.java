@@ -67,10 +67,6 @@ public class CsharpResolver extends Resolver {
             return null;
         }
         for (CodegenProperty codegenProperty : codegenModel.vars) {
-            if (codegenProperty.complexType != null) {
-                System.out.println("Complex data types: " + codegenProperty.complexType);
-                System.out.println("Complex data base name: " + codegenProperty.baseName);
-            }
             sanitizeDataFormat(codegenProperty);
             String existsInDataType = null;
             for (EnumConstants.CsharpDataTypes dataType: EnumConstants.CsharpDataTypes.values()) {
@@ -80,11 +76,10 @@ public class CsharpResolver extends Resolver {
                 }
             }
             if (existsInDataType != null) {
-                resolveInDirect(codegenProperty, existsInDataType);
+                resolveContainerDataType(codegenProperty, existsInDataType);
             } else {
-                resolveDirect(codegenProperty);
+                resolveDataType(codegenProperty);
             }
-            //resolveComplex(codegenProperty);
         }
 
         return codegenModel;
@@ -120,14 +115,14 @@ public class CsharpResolver extends Resolver {
             }
         }
         if (existsInDataType != null) {
-            resolveInDirect(parameter, existsInDataType);
+            resolveContainerDataType(parameter, existsInDataType);
         } else {
-            resolveDirect(parameter);
+            resolveDataType(parameter);
         }
         return parameter;
     }
 
-    private CodegenProperty resolveDirect(CodegenProperty codegenProperty) {
+    private CodegenProperty resolveDataType(CodegenProperty codegenProperty) {
         String property = Segments.SEGMENT_PROPERTIES.getSegment();
         String deserialize = Segments.SEGMENT_DESERIALIZE.getSegment();
         if (conventionMap.get(property).containsKey(codegenProperty.dataFormat)) {
@@ -168,24 +163,24 @@ public class CsharpResolver extends Resolver {
         return codegenProperty;
     }
 
-    private CodegenProperty resolveInDirect(CodegenProperty codegenProperty, String existsInDataType) {
+    private CodegenProperty resolveContainerDataType(CodegenProperty codegenProperty, String existsInDataType) {
         codegenProperty.dataType = codegenProperty.dataType.replaceFirst(existsInDataType, "");
         codegenProperty.dataType = codegenProperty.dataType.substring(0, codegenProperty.dataType.length()-1);
         // Added to handle case List<List<string>>
         for (EnumConstants.CsharpDataTypes dataType: EnumConstants.CsharpDataTypes.values()) {
             if (codegenProperty.dataType != null && codegenProperty.dataType.startsWith(dataType.getValue())) {
                 existsInDataType = dataType.getValue();
-                resolveInDirect(codegenProperty, existsInDataType);
+                resolveContainerDataType(codegenProperty, existsInDataType);
             }
         }
-        /// Can be re-used
-        resolveDirect(codegenProperty);
-        ////
+
+        resolveDataType(codegenProperty);
+
         codegenProperty.dataType = existsInDataType + codegenProperty.dataType + ApplicationConstants.LIST_END;
         return codegenProperty;
     }
 
-    private CodegenParameter resolveDirect(CodegenParameter parameter) {
+    private CodegenParameter resolveDataType(CodegenParameter parameter) {
         String property = Segments.SEGMENT_PROPERTIES.getSegment();
 
         sanitizeDataFormat(parameter);
@@ -248,11 +243,11 @@ public class CsharpResolver extends Resolver {
 
     }
 
-    private CodegenParameter resolveInDirect(CodegenParameter parameter, String existsInDataType)  {
+    private CodegenParameter resolveContainerDataType(CodegenParameter parameter, String existsInDataType)  {
         parameter.dataType = parameter.dataType.replace(existsInDataType, "");
         parameter.dataType = parameter.dataType.substring(0, parameter.dataType.length()-1);
         /// Can be re-used
-        resolveDirect(parameter);
+        resolveDataType(parameter);
         ////
         parameter.dataType = existsInDataType + parameter.dataType + ApplicationConstants.LIST_END;
         return parameter;
