@@ -12,7 +12,7 @@
         public {{{dataType}}} {{nameInCamelCase}} { get; }
         {{/required}}
     {{/isEnum}}
-    {{^isEnum}}c
+    {{^isEnum}}
         [JsonProperty("{{baseName}}")]
         {{#vendorExtensions.x-jsonConverter}}
         [JsonConverter(typeof({{vendorExtensions.x-jsonConverter}}))]
