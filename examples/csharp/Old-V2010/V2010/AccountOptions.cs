@@ -157,7 +157,7 @@ namespace Twilio.Rest.Api.V2010
     public class UpdateAccountOptions : IOptions<AccountResource>
     {
     
-        public AccountResource.StatusEnum Status { get; }
+        public AccountResource.StatusEnum Status { get; set; }
         public string PathSid { get; set; }
         public string PauseBehavior { get; set; }
 
