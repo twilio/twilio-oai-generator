@@ -5,14 +5,24 @@
         {{#vendorExtensions.x-jsonConverter}}
         [JsonConverter(typeof({{vendorExtensions.x-jsonConverter}}))]
         {{/vendorExtensions.x-jsonConverter}}
+        {{^required}}
         public {{{dataType}}} {{nameInCamelCase}} { get; private set; }
+        {{/required}}
+        {{#required}}
+        public {{{dataType}}} {{nameInCamelCase}} { get; }
+        {{/required}}
     {{/isEnum}}
     {{^isEnum}}
         [JsonProperty("{{baseName}}")]
         {{#vendorExtensions.x-jsonConverter}}
         [JsonConverter(typeof({{vendorExtensions.x-jsonConverter}}))]
         {{/vendorExtensions.x-jsonConverter}}
+        {{^required}}
         public {{{dataType}}} {{nameInCamelCase}} { get; private set; }
+        {{/required}}
+        {{#required}}
+        public {{{dataType}}} {{nameInCamelCase}} { get; }
+        {{/required}}
     {{/isEnum}}
 
 {{/responseModel}}

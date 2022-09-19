@@ -33,7 +33,7 @@ services:
       - prism_twilio
 
   prism_twilio:
-    image: stoplight/prism:4
+    image: stoplight/prism:4.10.3
     volumes:
       - ../twilio_api_v2010.yaml:/tmp/oai.yaml
     ports:
