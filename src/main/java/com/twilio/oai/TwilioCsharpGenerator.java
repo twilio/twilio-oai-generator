@@ -464,9 +464,11 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
                                boolean arrayParamsPresent) {
         if(resolver.hasEnumsInOptions){
             resource.put("hasEnumsInOptions", true);
+            resolver.hasEnumsInOptions = false;
         }
         if(enums.size() > 0 || resolver.hasEnumsInResource){
             resource.put("hasEnumsInResource", true);
+            resolver.hasEnumsInResource = false;
         }
         if (arrayParamsPresent) {
             resource.put("hasArrayParams", true);

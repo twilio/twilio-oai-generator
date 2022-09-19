@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Iterator;
 
 
 // Data Type can be of 2 types
@@ -74,9 +75,10 @@ public class CsharpResolver extends Resolver {
         }
         for (CodegenProperty codegenProperty : codegenModel.vars) {
             sanitizeDataFormat(codegenProperty);
-            if(codegenProperty.isEnum){
+            if(codegenProperty.isEnum && existInEnumsDict(codegenProperty.dataType)){
                 hasEnumsInResource = true;
             }
+
             String existsInDataType = null;
             for (EnumConstants.CsharpDataTypes dataType: EnumConstants.CsharpDataTypes.values()) {
                 if (codegenProperty.dataType != null && codegenProperty.dataType.startsWith(dataType.getValue())) {
@@ -86,11 +88,11 @@ public class CsharpResolver extends Resolver {
             }
             if (existsInDataType != null) {
                 resolveContainerDataType(codegenProperty, existsInDataType);
-                if(codegenProperty.vendorExtensions.containsKey("x-has-enum-params")){
-                    hasEnumsInResource = true;
-                }
             } else {
                 resolveDataType(codegenProperty);
+            }
+            if(codegenProperty.vendorExtensions.containsKey("x-has-enum-params")){
+                hasEnumsInResource = true;
             }
         }
 
@@ -118,7 +120,7 @@ public class CsharpResolver extends Resolver {
         if (parameter == null) {
             return null;
         }
-        if(parameter.isEnum){
+        if(parameter.isEnum  && existInEnumsDict(parameter.dataType)){
             hasEnumsInOptions = true;
         }
 
@@ -131,11 +133,11 @@ public class CsharpResolver extends Resolver {
         }
         if (existsInDataType != null) {
             resolveContainerDataType(parameter, existsInDataType);
-            if(parameter.vendorExtensions.containsKey("x-has-enum-params")){
-                hasEnumsInOptions = true;
-            }
         } else {
             resolveDataType(parameter);
+        }
+        if(parameter.vendorExtensions.containsKey("x-has-enum-params")){
+            hasEnumsInOptions = true;
         }
         return parameter;
     }
@@ -143,6 +145,9 @@ public class CsharpResolver extends Resolver {
     private CodegenProperty resolveDataType(CodegenProperty codegenProperty) {
         String property = Segments.SEGMENT_PROPERTIES.getSegment();
         String deserialize = Segments.SEGMENT_DESERIALIZE.getSegment();
+        if(existInEnumsDict(codegenProperty.dataType) || existInEnumsDict(codegenProperty.dataFormat)){
+            codegenProperty.vendorExtensions.put("x-has-enum-params", true);
+        }
         if (conventionMap.get(property).containsKey(codegenProperty.dataFormat)) {
             codegenProperty.dataType = (String)conventionMap.get(property).get(codegenProperty.dataFormat);
         } else if (conventionMap.get(property).containsKey(codegenProperty.dataType)) {
@@ -193,7 +198,7 @@ public class CsharpResolver extends Resolver {
         }
 
         resolveDataType(codegenProperty);
-        if(enumsDict.contains(codegenProperty.dataType)){//List of enums present
+        if(existInEnumsDict(codegenProperty.dataType)){//List of enums present
               codegenProperty.vendorExtensions.put("x-has-enum-params", true);
         }
         codegenProperty.dataType = existsInDataType + codegenProperty.dataType + ApplicationConstants.LIST_END;
@@ -214,7 +219,9 @@ public class CsharpResolver extends Resolver {
                 parameter.isMap = false;
             }
         }
-
+        if(existInEnumsDict(parameter.dataType) || existInEnumsDict(parameter.dataFormat)){
+            parameter.vendorExtensions.put("x-has-enum-params", true);
+        }
 
         if (conventionMap.get(property).containsKey(parameter.dataFormat)) {
             parameter.dataType = (String) conventionMap.get(property).get(parameter.dataFormat);
@@ -269,7 +276,7 @@ public class CsharpResolver extends Resolver {
         /// Can be re-used
         resolveDataType(parameter);
         ////
-        if(enumsDict.contains(parameter.dataType)){//List of enums present
+        if(existInEnumsDict(parameter.dataType)){//List of enums present
             parameter.vendorExtensions.put("x-has-enum-params", true);
         }
         parameter.dataType = existsInDataType + parameter.dataType + ApplicationConstants.LIST_END;
@@ -314,5 +321,14 @@ public class CsharpResolver extends Resolver {
                 }
             }
         });
+    }
+
+    private boolean existInEnumsDict(String item){
+        for (String s : enumsDict) {
+            if(s.equalsIgnoreCase(item)){
+                return true;
+            }
+        }
+        return false;
     }
 }
