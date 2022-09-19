@@ -207,7 +207,7 @@ public class TwilioRestTest {
         when(twilioRestClient.request(mockRequest)).thenReturn(new Response("{\"accounts\":[{\"call_sid\":\"PNXXXXY\", \"sid\":123}]}", 404));
         when(twilioRestClient.getObjectMapper()).thenReturn(objectMapper);
         AccountCreator accountCreator = new AccountCreator();
-        accountCreator.setRecordingStatusCallbackEvent(null);
+        accountCreator.setRecordingStatusCallbackEvent("some value");
         accountCreator.setXTwilioWebhookEnabled(null);
 
         accountCreator.create(twilioRestClient);
@@ -901,6 +901,13 @@ public class TwilioRestTest {
         CallDeleter callDeleterAccountSid = Call.deleter(ACCOUNT_SID,123);
         assertNotNull(callDeleter);
         assertNotNull(callDeleterAccountSid);
+    }
+
+    @Test
+    public void testShouldAcceptSingleObjectForList() {
+        CallCreator callCreator=new CallCreator(ACCOUNT_SID, "testString");
+        callCreator.setTestArrayOfStrings( "Hello" );
+        callCreator.setTestArrayOfUri("http://example-uri.com");
     }
 
     @Test

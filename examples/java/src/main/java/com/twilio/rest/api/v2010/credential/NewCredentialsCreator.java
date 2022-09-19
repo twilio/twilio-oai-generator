@@ -151,6 +151,9 @@ public class NewCredentialsCreator extends Creator<NewCredentials>{
         this.testObjectArray = testObjectArray;
         return this;
     }
+    public NewCredentialsCreator setTestObjectArray(final Object testObjectArray){
+        return setTestObjectArray(Promoter.listOfOne(testObjectArray));
+    }
     public NewCredentialsCreator setTestAnyType(final Map<String, Object> testAnyType){
         this.testAnyType = testAnyType;
         return this;
@@ -158,6 +161,9 @@ public class NewCredentialsCreator extends Creator<NewCredentials>{
     public NewCredentialsCreator setPermissions(final List<NewCredentials.Permissions> permissions){
         this.permissions = permissions;
         return this;
+    }
+    public NewCredentialsCreator setPermissions(final NewCredentials.Permissions permissions){
+        return setPermissions(Promoter.listOfOne(permissions));
     }
 
     @Override

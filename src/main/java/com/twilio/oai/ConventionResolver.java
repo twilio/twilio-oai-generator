@@ -72,9 +72,6 @@ public class ConventionResolver {
             // cloning to prevent update in source map
             HashMap<String, String> promotionsMap = new HashMap<>((Map) conventionMap
                     .get(Segments.SEGMENT_PROMOTIONS.getSegment()).get(parameter.dataFormat));
-            if(parameter.isArray && conventionMap.get(Segments.SEGMENT_PROMOTIONS.getSegment()).containsKey(LIST_PREFIX+parameter.dataFormat)) {
-                promotionsMap.put(parameter.baseType, (String) ((Map)conventionMap.get(Segments.SEGMENT_PROMOTIONS.getSegment()).get(LIST_PREFIX+parameter.dataFormat)).get(parameter.dataFormat));
-            }
             promotionsMap.replaceAll((dataType, value) -> String.format(value, parameter.paramName) );
             parameter.vendorExtensions.put("x-promotions", promotionsMap);
         }

@@ -61,24 +61,18 @@ public class {{resourceName}}Creator extends Creator<{{resourceName}}>{
         this.{{paramName}} = {{paramName}};
         return this;
     }
-{{#vendorExtensions.x-promotions}}
 {{#isArray}}
+    public {{resourceName}}Creator set{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}(final {{#lambda.titlecase}}{{baseType}}{{/lambda.titlecase}} {{paramName}}){
+        return set{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}(Promoter.listOfOne({{paramName}}));
+    }
+{{/isArray}}
+{{#vendorExtensions.x-promotions}}
 {{#entrySet}}
 
     public {{resourceName}}Creator set{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}(final {{#lambda.titlecase}}{{key}}{{/lambda.titlecase}} {{paramName}}){
         return set{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}({{value}});
     }
 {{/entrySet}}
-{{/isArray}}
-{{^isArray}}
-{{#entrySet}}
-
-    public {{resourceName}}Creator set{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}(final {{#lambda.titlecase}}{{key}}{{/lambda.titlecase}} {{paramName}}){
-    this.{{paramName}} = {{value}};
-    return this;
-    }
-{{/entrySet}}
-{{/isArray}}
 {{/vendorExtensions.x-promotions}}
 {{/vendorExtensions.x-non-path-params}}
 
