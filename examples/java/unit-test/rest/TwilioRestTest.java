@@ -903,11 +903,22 @@ public class TwilioRestTest {
         assertNotNull(callDeleterAccountSid);
     }
 
-    @Test
+    @Test(expected = ApiException.class)
     public void testShouldAcceptSingleObjectForList() {
+        when(twilioRestClient.request(Mockito.any())).thenReturn(null);
         CallCreator callCreator=new CallCreator(ACCOUNT_SID, "testString");
         callCreator.setTestArrayOfStrings( "Hello" );
         callCreator.setTestArrayOfUri("http://example-uri.com");
+        callCreator.create(twilioRestClient);
+        NewCredentialsCreator credentialsCreator = NewCredentials.creator(ACCOUNT_SID,1,1F);
+        Map<String, Object> item1 = new HashMap<>();
+         item1.put("A", Arrays.asList("Apple", "Aces"));
+        credentialsCreator.setTestObjectArray(item1);
+        credentialsCreator.setPermissions(NewCredentials.Permissions.GET_ALL);
+        credentialsCreator.create(twilioRestClient);
+        AccountCreator accountCreator = new AccountCreator();
+        accountCreator.setRecordingStatusCallback("https://validurl.com");
+        accountCreator.create(twilioRestClient);
     }
 
     @Test
