@@ -1,10 +1,11 @@
-package com.twilio.oai.common.resolver;
+package com.twilio.oai.resolver.csharp;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.twilio.oai.Segments;
 import com.twilio.oai.common.ApplicationConstants;
 import com.twilio.oai.common.EnumConstants;
+import com.twilio.oai.resolver.Resolver;
 import org.apache.commons.lang3.StringUtils;
 import org.openapitools.codegen.CodegenParameter;
 import org.openapitools.codegen.IJsonSchemaValidationProperties;
@@ -13,11 +14,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class CSharpCodegenParameterResolver implements  Resolver<CodegenParameter> {
+public class CodegenParameterResolver implements Resolver<CodegenParameter> {
     private final Map<String, Map<String, Object>> conventionMap;
     private String className;
     private Map<String, IJsonSchemaValidationProperties> enums;
-    public CSharpCodegenParameterResolver() {
+    public CodegenParameterResolver() {
         conventionMap = getConventionalMap();
     }
 
@@ -43,8 +44,7 @@ public class CSharpCodegenParameterResolver implements  Resolver<CodegenParamete
 
     private CodegenParameter resolveDataType(CodegenParameter parameter) {
         String property = Segments.SEGMENT_PROPERTIES.getSegment();
-
-        CSharpDataSanitizer.sanitizeParameterFormat(parameter);
+        new ParameterFormat().sanitize(parameter);
         if (parameter.isPathParam) {
             parameter.paramName = "Path"+parameter.paramName;
         }

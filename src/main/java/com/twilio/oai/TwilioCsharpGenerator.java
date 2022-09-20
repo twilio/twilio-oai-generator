@@ -7,8 +7,8 @@ import com.twilio.oai.common.EnumConstants;
 import com.twilio.oai.common.ReservedKeyword;
 import com.twilio.oai.common.Serializer;
 import com.twilio.oai.common.Utility;
-import com.twilio.oai.common.resolver.CSharpCodegenModelResolver;
-import com.twilio.oai.common.resolver.CSharpCodegenParameterResolver;
+import com.twilio.oai.resolver.csharp.CodegenModelResolver;
+import com.twilio.oai.resolver.csharp.CodegenParameterResolver;
 import com.twilio.oai.mlambdas.TitleCaseLambda;
 import io.swagger.v3.oas.models.OpenAPI;
 import lombok.extern.slf4j.Slf4j;
@@ -43,8 +43,8 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
     String initialApiPackage;
     private final List<CodegenModel> allModels = new ArrayList<>();
     private  Map<String, String> modelFormatMap = new HashMap<>();
-    private CSharpCodegenModelResolver codegenModelResolver = new CSharpCodegenModelResolver();
-    private CSharpCodegenParameterResolver codegenParameterResolver = new CSharpCodegenParameterResolver();
+    private CodegenModelResolver codegenModelResolver = new CodegenModelResolver();
+    private CodegenParameterResolver codegenParameterResolver = new CodegenParameterResolver();
     public TwilioCsharpGenerator() {
         super();
 

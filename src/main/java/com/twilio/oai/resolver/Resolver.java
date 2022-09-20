@@ -1,7 +1,7 @@
-package com.twilio.oai.common.resolver;
+package com.twilio.oai.resolver;
 
 import org.openapitools.codegen.IJsonSchemaValidationProperties;
 
 public interface Resolver <T extends IJsonSchemaValidationProperties>{
-    public T resolve(T arg);
+    T resolve(T arg);
 }
