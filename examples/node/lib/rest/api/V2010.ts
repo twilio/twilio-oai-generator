@@ -14,7 +14,7 @@
 
 import ApiBase from '../ApiBase';
 import Version from '../../base/Version';
-import { AccountListInstance } from './v2010/accounts';
+import { AccountListInstance } from './v2010/account';
 
 export default class V2010 extends Version {
     /**

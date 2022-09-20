@@ -15,6 +15,8 @@
 import { inspect, InspectOptions } from 'util';
 import Page from '../../../../base/Page';
 import V2010 from '../../V2010';
+const deserialize = require('../../../../base/deserialize');
+const serialize = require('../../../../base/serialize');
 
 
 /**
@@ -28,42 +30,6 @@ export interface AWSContextUpdateOptions {
     testBoolean?: boolean;
 }
 
-/**
- * Options to pass to create a AWSInstance
- *
- * @property { string } testString 
- * @property { boolean } [testBoolean] 
- * @property { number } [testInteger] 
- * @property { number } [testNumber] 
- * @property { number } [testNumberFloat] 
- * @property { number } [testNumberDouble] 
- * @property { number } [testNumberInt32] 
- * @property { number } [testNumberInt64] 
- * @property { object } [testObject] 
- * @property { Date } [testDateTime] 
- * @property { string } [testDate] 
- * @property { TestEnumStatus } [testEnum] 
- * @property { Array<object> } [testObjectArray] 
- * @property { any } [testAnyType] 
- * @property { Array<string> } [permissions] A comma-separated list of the permissions you will request from the users of this ConnectApp.  Can include: &#x60;get-all&#x60; and &#x60;post-all&#x60;.
- */
-export interface AWSListInstanceCreateOptions {
-    testString: string;
-    testBoolean?: boolean;
-    testInteger?: number;
-    testNumber?: number;
-    testNumberFloat?: number;
-    testNumberDouble?: number;
-    testNumberInt32?: number;
-    testNumberInt64?: number;
-    testObject?: object;
-    testDateTime?: Date;
-    testDate?: string;
-    testEnum?: TestEnumStatus;
-    testObjectArray?: Array<object>;
-    testAnyType?: any;
-    permissions?: Array<string>;
-}
 /**
  * Options to pass to page a AWSInstance
  *
@@ -174,14 +140,14 @@ export class AWSContextImpl implements AWSContext {
         const data: any = {};
 
         if (params.testString !== undefined) data['TestString'] = params.testString;
-        if (params.testBoolean !== undefined) data['TestBoolean'] = params.testBoolean;
+        if (params.testBoolean !== undefined) data['TestBoolean'] = serialize.bool(params.testBoolean);
 
         const headers: any = {};
         headers['Content-Type'] = 'application/x-www-form-urlencoded'
 
 
         let operationVersion = this._version,
-            operationPromise = operationVersion.update({ uri: this._uri, method: 'POST', data, headers });
+            operationPromise = operationVersion.update({ uri: this._uri, method: 'POST', params: data, headers });
 
         operationPromise = operationPromise.then(payload => new AWSInstance(operationVersion, payload, this._solution.sid));
 
@@ -238,9 +204,9 @@ export class AWSInstance {
         this.accountSid = payload.account_sid;
         this.sid = payload.sid;
         this.testString = payload.test_string;
-        this.testInteger = payload.test_integer;
+        this.testInteger = deserialize.integer(payload.test_integer);
         this.testObject = payload.test_object;
-        this.testDateTime = payload.test_date_time;
+        this.testDateTime = deserialize.rfc2822DateTime(payload.test_date_time);
         this.testNumber = payload.test_number;
         this.priceUnit = payload.price_unit;
         this.testNumberFloat = payload.test_number_float;
@@ -358,17 +324,6 @@ export interface AWSListInstance {
 
 
     /**
-     * Create a AWSInstance
-     *
-     * @param { AWSListInstanceCreateOptions } params - Parameter for request
-     * @param { function } [callback] - Callback to handle processed record
-     *
-     * @returns { Promise } Resolves to processed AWSInstance
-     */
-    create(params: AWSListInstanceCreateOptions, callback?: (error: Error | null, item?: AWSInstance) => any): Promise<AWSInstance>;
-    create(params: any, callback?: any): Promise<AWSInstance>
-;
-    /**
      * Page a AWSInstance
      *
      * @param { function } [callback] - Callback to handle processed record
@@ -414,52 +369,6 @@ export function AWSListInstance(version: V2010): AWSListInstance {
     instance._solution = {  };
     instance._uri = `/v1/Credentials/AWS`;
 
-    instance.create = function create(params: any, callback?: any): Promise<AWSInstance> {
-        if (params === null || params === undefined) {
-            throw new Error('Required parameter "params" missing.');
-        }
-
-        if (params.testString === null || params.testString === undefined) {
-            throw new Error('Required parameter "params.testString" missing.');
-        }
-
-        const data: any = {};
-
-        data['TestString'] = params.testString;
-        if (params.testBoolean !== undefined) data['TestBoolean'] = params.testBoolean;
-        if (params.testInteger !== undefined) data['TestInteger'] = params.testInteger;
-        if (params.testNumber !== undefined) data['TestNumber'] = params.testNumber;
-        if (params.testNumberFloat !== undefined) data['TestNumberFloat'] = params.testNumberFloat;
-        if (params.testNumberDouble !== undefined) data['TestNumberDouble'] = params.testNumberDouble;
-        if (params.testNumberInt32 !== undefined) data['TestNumberInt32'] = params.testNumberInt32;
-        if (params.testNumberInt64 !== undefined) data['TestNumberInt64'] = params.testNumberInt64;
-        if (params.testObject !== undefined) data['TestObject'] = params.testObject;
-        if (params.testDateTime !== undefined) data['TestDateTime'] = params.testDateTime;
-        if (params.testDate !== undefined) data['TestDate'] = params.testDate;
-        if (params.testEnum !== undefined) data['TestEnum'] = params.testEnum;
-        if (params.testObjectArray !== undefined) data['TestObjectArray'] = params.testObjectArray;
-        if (params.testAnyType !== undefined) data['TestAnyType'] = params.testAnyType;
-        if (params.permissions !== undefined) data['Permissions'] = params.permissions;
-
-        const headers: any = {};
-        headers['Content-Type'] = 'application/x-www-form-urlencoded'
-
-
-        let operationVersion = version,
-            operationPromise = operationVersion.create({ uri: this._uri, method: 'POST', data, headers });
-
-        operationPromise = operationPromise.then(payload => new AWSInstance(operationVersion, payload));
-
-        if (typeof callback === 'function') {
-            operationPromise = operationPromise
-                .then(value => callback(null, value))
-                .catch(error => callback(error));
-        }
-
-        return operationPromise;
-
-    }
-
     instance.page = function page(params?: any, callback?: any): Promise<AWSInstance> {
         if (typeof params === 'function') {
             callback = params;
@@ -476,7 +385,7 @@ export function AWSListInstance(version: V2010): AWSListInstance {
 
 
         let operationVersion = version,
-            operationPromise = operationVersion.page({ uri: this._uri, method: 'GET', data, headers });
+            operationPromise = operationVersion.page({ uri: this._uri, method: 'GET', params: data, headers });
 
         operationPromise = operationPromise.then(payload => new AWSInstance(operationVersion, payload));
 

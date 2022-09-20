@@ -15,7 +15,9 @@
 import { inspect, InspectOptions } from 'util';
 import Page from '../../../../base/Page';
 import V2010 from '../../V2010';
-import { FeedbackSummaryListInstance } from './calls/feedbackSummary';
+const deserialize = require('../../../../base/deserialize');
+const serialize = require('../../../../base/serialize');
+import { FeedbackCallSummaryListInstance } from './call/feedbackCallSummary';
 
 
 /**
@@ -23,7 +25,7 @@ import { FeedbackSummaryListInstance } from './calls/feedbackSummary';
  *
  * @property { string } requiredStringProperty 
  * @property { Array<string> } [testArrayOfStrings] 
- * @property { Array<string> } [testArrayOfUri] 
+ * @property { Array<string> } [testArrayOfUri]
  */
 export interface CallListInstanceCreateOptions {
     requiredStringProperty: string;
@@ -36,7 +38,7 @@ export interface CallListInstance {
     (accountSid: string, testInteger: number): CallContext;
     get(accountSid: string, testInteger: number): CallContext;
 
-    feedback_summary: FeedbackSummaryListInstance;
+    feedback_call_summary: FeedbackCallSummaryListInstance;
 
     /**
      * Create a CallInstance
@@ -63,7 +65,7 @@ class CallListInstanceImpl implements CallListInstance {
     _solution?: any;
     _uri?: string;
 
-    _feedback_summary?: FeedbackSummaryListInstance;
+    _feedback_call_summary?: FeedbackCallSummaryListInstance;
 }
 
 export function CallListInstance(version: V2010, accountSid: string): CallListInstance {
@@ -77,12 +79,12 @@ export function CallListInstance(version: V2010, accountSid: string): CallListIn
     instance._solution = { accountSid };
     instance._uri = `/2010-04-01/Accounts/${accountSid}/Calls.json`;
 
-    Object.defineProperty(instance, 'feedback_summary', {
-        get: function feedback_summary() {
-            if (!this._feedback_summary) {
-                this._feedback_summary = FeedbackSummaryListInstance(this._version, this._solution.accountSid);
+    Object.defineProperty(instance, 'feedback_call_summary', {
+        get: function feedback_call_summary() {
+            if (!this._feedback_call_summary) {
+                this._feedback_call_summary = FeedbackCallSummaryListInstance(this._version, this._solution.accountSid);
             }
-            return this._feedback_summary;
+            return this._feedback_call_summary;
         }
     });
 
@@ -98,15 +100,14 @@ export function CallListInstance(version: V2010, accountSid: string): CallListIn
         const data: any = {};
 
         data['RequiredStringProperty'] = params.requiredStringProperty;
-        if (params.testArrayOfStrings !== undefined) data['TestArrayOfStrings'] = params.testArrayOfStrings;
-        if (params.testArrayOfUri !== undefined) data['TestArrayOfUri'] = params.testArrayOfUri;
+        if (params.testArrayOfStrings !== undefined) data['TestArrayOfStrings'] = serialize.map(params.testArrayOfStrings, ((e) => e));
 
         const headers: any = {};
         headers['Content-Type'] = 'application/x-www-form-urlencoded'
 
 
         let operationVersion = version,
-            operationPromise = operationVersion.create({ uri: this._uri, method: 'POST', data, headers });
+            operationPromise = operationVersion.create({ uri: this._uri, method: 'POST', params: data, headers });
 
         operationPromise = operationPromise.then(payload => new CallInstance(operationVersion, payload, this._solution.accountSid));
 
@@ -246,9 +247,9 @@ export class CallInstance {
         this.accountSid = payload.account_sid;
         this.sid = payload.sid;
         this.testString = payload.test_string;
-        this.testInteger = payload.test_integer;
+        this.testInteger = deserialize.integer(payload.test_integer);
         this.testObject = payload.test_object;
-        this.testDateTime = payload.test_date_time;
+        this.testDateTime = deserialize.rfc2822DateTime(payload.test_date_time);
         this.testNumber = payload.test_number;
         this.priceUnit = payload.price_unit;
         this.testNumberFloat = payload.test_number_float;
