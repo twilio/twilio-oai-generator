@@ -99,7 +99,7 @@ export class AWSContextImpl implements AWSContext {
     remove(callback?: any): Promise<boolean> {
 
         let operationVersion = this._version,
-            operationPromise = operationVersion.remove({ uri: this._uri, method: 'DELETE' });
+            operationPromise = operationVersion.remove({ uri: this._uri, method: 'delete' });
 
 
         if (typeof callback === 'function') {
@@ -115,7 +115,7 @@ export class AWSContextImpl implements AWSContext {
     fetch(callback?: any): Promise<AWSInstance> {
 
         let operationVersion = this._version,
-            operationPromise = operationVersion.fetch({ uri: this._uri, method: 'GET' });
+            operationPromise = operationVersion.fetch({ uri: this._uri, method: 'get' });
 
         operationPromise = operationPromise.then(payload => new AWSInstance(operationVersion, payload, this._solution.sid));
 
@@ -147,7 +147,7 @@ export class AWSContextImpl implements AWSContext {
 
 
         let operationVersion = this._version,
-            operationPromise = operationVersion.update({ uri: this._uri, method: 'POST', params: data, headers });
+            operationPromise = operationVersion.update({ uri: this._uri, method: 'post', params: data, headers });
 
         operationPromise = operationPromise.then(payload => new AWSInstance(operationVersion, payload, this._solution.sid));
 
@@ -385,7 +385,7 @@ export function AWSListInstance(version: V2010): AWSListInstance {
 
 
         let operationVersion = version,
-            operationPromise = operationVersion.page({ uri: this._uri, method: 'GET', params: data, headers });
+            operationPromise = operationVersion.page({ uri: this._uri, method: 'get', params: data, headers });
 
         operationPromise = operationPromise.then(payload => new AWSInstance(operationVersion, payload));
 
