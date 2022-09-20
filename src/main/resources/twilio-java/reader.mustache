@@ -59,7 +59,7 @@ public class {{resourceName}}Reader extends Reader<{{resourceName}}> {
         return this;
     }
 {{#isArray}}
-    public {{resourceName}}Reader set{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}(final {{#lambda.titlecase}}{{baseType}}{{/lambda.titlecase}} {{paramName}}){
+    public {{resourceName}}Reader set{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}(final {{{baseType}}} {{paramName}}){
         return set{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}(Promoter.listOfOne({{paramName}}));
     }
 {{/isArray}}

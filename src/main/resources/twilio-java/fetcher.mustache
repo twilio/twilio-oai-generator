@@ -57,7 +57,7 @@ public class {{resourceName}}Fetcher extends Fetcher<{{resourceName}}> {
         return this;
     }
 {{#isArray}}
-    public {{resourceName}}Fetcher set{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}(final {{#lambda.titlecase}}{{baseType}}{{/lambda.titlecase}} {{paramName}}){
+    public {{resourceName}}Fetcher set{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}(final {{{baseType}}} {{paramName}}){
         return set{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}(Promoter.listOfOne({{paramName}}));
     }
 {{/isArray}}

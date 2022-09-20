@@ -151,7 +151,7 @@ public class NewCredentialsCreator extends Creator<NewCredentials>{
         this.testObjectArray = testObjectArray;
         return this;
     }
-    public NewCredentialsCreator setTestObjectArray(final Object testObjectArray){
+    public NewCredentialsCreator setTestObjectArray(final Map<String, Object> testObjectArray){
         return setTestObjectArray(Promoter.listOfOne(testObjectArray));
     }
     public NewCredentialsCreator setTestAnyType(final Map<String, Object> testAnyType){

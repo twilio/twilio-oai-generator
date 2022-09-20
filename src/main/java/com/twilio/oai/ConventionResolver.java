@@ -62,6 +62,7 @@ public class ConventionResolver {
         if(parameter.dataType.equalsIgnoreCase(OBJECT) || parameter.dataType.equals(LIST_OBJECT)) {
             if (parameter.dataType.equals(LIST_OBJECT)) {
                 parameter.dataType = "List<" + conventionMap.get(Segments.SEGMENT_PROPERTIES.getSegment()).get(OBJECT)+ ">";
+                parameter.baseType = "" + conventionMap.get(Segments.SEGMENT_PROPERTIES.getSegment()).get(OBJECT);
             } else {
                 parameter.dataType = (String) conventionMap.get(Segments.SEGMENT_PROPERTIES.getSegment()).get(OBJECT);
             }
