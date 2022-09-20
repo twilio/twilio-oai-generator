@@ -8,6 +8,9 @@ import org.openapitools.codegen.IJsonSchemaValidationProperties;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.twilio.oai.common.ApplicationConstants.LIST_START;
+import static com.twilio.oai.common.ApplicationConstants.OBJECT;
+
 public class CodegenModelDataTypeResolver implements Resolver<CodegenProperty> {
     private Map<String, Map<String, Object>> conventionMap;
     private Map<String, IJsonSchemaValidationProperties> enums;
@@ -16,6 +19,24 @@ public class CodegenModelDataTypeResolver implements Resolver<CodegenProperty> {
     private  Map<String, String> modelFormatMap = new HashMap<>();
 
     public CodegenProperty resolve(CodegenProperty codegenProperty){
+
+        assignDataType(codegenProperty);
+        // Exceptional case, data format does not exist for Object type.
+        assignDataTypeObjectForNullDataFormat(codegenProperty);
+
+        if (codegenProperty.complexType != null && codegenProperty.complexType.contains("Enum")) { // codegenProperty.dataType.contains(className) &&
+            handleEnums(codegenProperty);
+        } else if (codegenProperty.complexType != null && modelFormatMap.containsKey(codegenProperty.complexType)) {
+
+            codegenModelComplexResolver.setModelFormatMap(modelFormatMap);
+            codegenModelComplexResolver.setConventionalMap(conventionMap);
+            codegenModelComplexResolver.resolve(codegenProperty);
+        }
+
+        return codegenProperty;
+    }
+
+    private void assignDataType(CodegenProperty codegenProperty){
         String property = Segments.SEGMENT_PROPERTIES.getSegment();
         String deserialize = Segments.SEGMENT_DESERIALIZE.getSegment();
         if (conventionMap.get(property).containsKey(codegenProperty.dataFormat)) {
@@ -27,36 +48,30 @@ public class CodegenModelDataTypeResolver implements Resolver<CodegenProperty> {
         if (conventionMap.get(deserialize).containsKey(codegenProperty.dataFormat)) {
             codegenProperty.vendorExtensions.put("x-jsonConverter", conventionMap.get(deserialize).get(codegenProperty.dataFormat));
         }
+    }
 
-        // Exceptional case, data format does not exist for Object type.
+    private void assignDataTypeObjectForNullDataFormat(CodegenProperty codegenProperty){
         if (codegenProperty.dataFormat == null) {
-            if (codegenProperty.dataType.equals("Object")) {
+            if (codegenProperty.dataType.equals(OBJECT)) {
                 codegenProperty.dataType = "object";
-            } else if (codegenProperty.dataType.equals("List<Object" )) {
+            } else if (codegenProperty.dataType.equals(LIST_START + OBJECT )) {
                 codegenProperty.dataType = "List<object";
             }
         }
+    }
 
-        if (codegenProperty.complexType != null && codegenProperty.complexType.contains("Enum")) { // codegenProperty.dataType.contains(className) &&
-            String[] value = codegenProperty.complexType.split("Enum");
-            codegenProperty.enumName = value[value.length-1] + "Enum";
-            if (codegenProperty.items != null) {
-                codegenProperty.items.enumName = value[value.length-1] + "Enum";
-            }
-            if (enums == null) {
-                enums = new HashMap<>();
-            }
-            codegenProperty.dataType = className + "Resource." + codegenProperty.enumName;
-            codegenProperty.vendorExtensions.put("x-jsonConverter", "StringEnumConverter");
-            enums.putIfAbsent(codegenProperty.enumName, codegenProperty);
-        } else if (codegenProperty.complexType != null && modelFormatMap.containsKey(codegenProperty.complexType)) {
-            //resolveComplex(codegenProperty);
-            codegenModelComplexResolver.setModelFormatMap(modelFormatMap);
-            codegenModelComplexResolver.setConventionalMap(conventionMap);
-            codegenModelComplexResolver.resolve(codegenProperty);
+    private void handleEnums(CodegenProperty codegenProperty){
+        String[] value = codegenProperty.complexType.split("Enum");
+        codegenProperty.enumName = value[value.length-1] + "Enum";
+        if (codegenProperty.items != null) {
+            codegenProperty.items.enumName = value[value.length-1] + "Enum";
         }
-
-        return codegenProperty;
+        if (enums == null) {
+            enums = new HashMap<>();
+        }
+        codegenProperty.dataType = className + "Resource." + codegenProperty.enumName;
+        codegenProperty.vendorExtensions.put("x-jsonConverter", "StringEnumConverter");
+        enums.putIfAbsent(codegenProperty.enumName, codegenProperty);
     }
     public void setClassName(String className){
         this.className = className;

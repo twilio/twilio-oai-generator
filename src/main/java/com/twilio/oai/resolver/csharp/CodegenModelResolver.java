@@ -2,17 +2,15 @@ package com.twilio.oai.resolver.csharp;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.twilio.oai.Segments;
 import com.twilio.oai.common.ApplicationConstants;
 import com.twilio.oai.common.EnumConstants;
 import com.twilio.oai.resolver.Resolver;
 import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenProperty;
 import org.openapitools.codegen.IJsonSchemaValidationProperties;
-
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Stack;
+
 
 public class CodegenModelResolver implements Resolver<CodegenModel> {
 
@@ -20,7 +18,6 @@ public class CodegenModelResolver implements Resolver<CodegenModel> {
     private String className;
     private Map<String, IJsonSchemaValidationProperties> enums;
     private  Map<String, String> modelFormatMap = new HashMap<>();
-    private CodegenModelComplexResolver codegenModelComplexResolver = new CodegenModelComplexResolver();
     private CodegenModelDataTypeResolver codegenModelDataTypeResolver = new CodegenModelDataTypeResolver();
     private CodegenModelContainerDataTypeResolver codegenModelContainerDataTypeResolver = new CodegenModelContainerDataTypeResolver(codegenModelDataTypeResolver);
     public CodegenModelResolver(){
@@ -34,31 +31,29 @@ public class CodegenModelResolver implements Resolver<CodegenModel> {
         }
         for (CodegenProperty codegenProperty : codegenModel.vars) {
             new PropertyFormat().sanitize(codegenProperty);
-            String existsInDataType = null;
-            for (EnumConstants.CsharpDataTypes dataType: EnumConstants.CsharpDataTypes.values()) {
-                if (codegenProperty.dataType != null && codegenProperty.dataType.startsWith(dataType.getValue())) {
-                    existsInDataType = dataType.getValue();
-                    break;
-                }
-            }
-//            System.out.println(codegenProperty);
+
             codegenModelDataTypeResolver.setModelFormatMap(modelFormatMap);
             codegenModelDataTypeResolver.setConventionMap(conventionMap);
             codegenModelDataTypeResolver.setClassName(className);
             codegenModelDataTypeResolver.setEnums(enums);
-            if (existsInDataType != null) {
-                //resolveContainerDataType(codegenProperty, existsInDataType);
-                //resolveContainerDataType(codegenProperty);
+
+            if (isContainerType(codegenProperty)) {
                 codegenModelContainerDataTypeResolver.resolve(codegenProperty);
             } else {
-
                 codegenModelDataTypeResolver.resolve(codegenProperty);
-                //resolveDataType(codegenProperty);
             }
-//            System.out.println(codegenProperty);
         }
 
         return codegenModel;
+    }
+
+    private boolean isContainerType(CodegenProperty codegenProperty){
+        for (EnumConstants.CsharpDataTypes dataType: EnumConstants.CsharpDataTypes.values()) {
+            if (codegenProperty.dataType != null && codegenProperty.dataType.startsWith(dataType.getValue())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public static Map<String, Map<String, Object>> getConventionalMap() {
