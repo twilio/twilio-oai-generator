@@ -903,7 +903,7 @@ public class TwilioRestTest {
         assertNotNull(callDeleterAccountSid);
     }
 
-    @Test(expected = ApiException.class)
+    @Test(expected = ApiConnectionException.class)
     public void testShouldAcceptSingleObjectForList() {
         when(twilioRestClient.request(Mockito.any())).thenReturn(null);
         CallCreator callCreator=new CallCreator(ACCOUNT_SID, "testString");
