@@ -21,16 +21,11 @@ public class Resource {
     private final PathItem pathItem;
     private final Inflector inflector;
 
-    public Resource getParentResource(IResourceTree resourceTree) {
-        for(Map.Entry entrySet: pathItem.getExtensions().entrySet()) {
-            if (entrySet.getKey().equals("x-twilio")) {
-                if (((Map<?, ?>) entrySet.getValue()).containsKey("parent")) {
-                    String parent =((Map<?, String>) entrySet.getValue()).get("parent");
-                    return resourceTree.findResource(parent, false);
-                }
-            }
-        }
-        return null;
+    public Resource getParentResource(final IResourceTree resourceTree) {
+        return PathUtils
+            .getTwilioExtension(pathItem, "parent")
+            .map(parent -> resourceTree.findResource(parent, false))
+            .orElse(null);
     }
 
     public String getClassName(final Operation operation) {
