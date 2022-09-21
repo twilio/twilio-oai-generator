@@ -25,7 +25,7 @@ describe('call', () => {
             .get('/v2010/2010-04-01/Accounts/123/Calls/1.json')
             .reply(307, {account_sid: '123', sid: 1});
 
-        return twilio.api.v2010.accounts('123').calls('123', 1).fetch()
+        return twilio.api.v2010.accounts('123').calls(1).fetch()
             .then(() => scope.done());
     });
 
@@ -34,7 +34,7 @@ describe('call', () => {
             .delete('/v2010/2010-04-01/Accounts/123/Calls/1.json')
             .reply(204);
 
-        return twilio.api.v2010.accounts('123').calls('123', 1).remove()
+        return twilio.api.v2010.accounts('123').calls(1).remove()
             .then(() => scope.done());
     });
 
@@ -51,5 +51,4 @@ describe('call', () => {
             .create({endDate: '2022-08-01', startDate: '2022-08-01'})
             .then(() => scope.done())
     });
-
 });

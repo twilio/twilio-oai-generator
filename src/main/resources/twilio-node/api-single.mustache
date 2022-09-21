@@ -35,8 +35,8 @@ export interface {{resourceName}}{{vendorExtensions.x-name}}Options {
 
 export interface {{resourceName}} {
     {{#instanceResource}}
-    ({{#resourcePathParams}}{{paramName}}: {{dataType}}{{^-last}}, {{/-last}}{{/resourcePathParams}}): {{resourceName}};
-    get({{#resourcePathParams}}{{paramName}}: {{dataType}}{{^-last}}, {{/-last}}{{/resourcePathParams}}): {{resourceName}};
+    ({{#resourcePathParams}}{{#-last}}{{paramName}}: {{dataType}}{{/-last}}{{/resourcePathParams}}): {{resourceName}};
+    get({{#resourcePathParams}}{{#-last}}{{paramName}}: {{dataType}}{{/-last}}{{/resourcePathParams}}): {{resourceName}};
     {{/instanceResource}}
 
     {{#dependents}}
@@ -109,9 +109,9 @@ class {{resourceName}}Impl implements {{resourceName}} {
 
 export function {{resourceName}}(version: {{apiVersionClass}}{{#resourcePathParams}}, {{paramName}}: {{{dataType}}}{{/resourcePathParams}}): {{resourceName}} {
     {{#instanceResource}}
-    const instance = (({{#resourcePathParams}}{{paramName}}{{^-last}}, {{/-last}}{{/resourcePathParams}}) => instance.get({{#resourcePathParams}}{{paramName}}{{^-last}}, {{/-last}}{{/resourcePathParams}})) as {{parentResourceName}}Impl;
+    const instance = (({{#resourcePathParams}}{{#-last}}{{paramName}}{{/-last}}{{/resourcePathParams}}) => instance.get({{#resourcePathParams}}{{#-last}}{{paramName}}{{/-last}}{{/resourcePathParams}})) as {{parentResourceName}}Impl;
 
-    instance.get = function get({{#resourcePathParams}}{{paramName}}{{^-last}}, {{/-last}}{{/resourcePathParams}}): {{resourceName}} {
+    instance.get = function get({{#resourcePathParams}}{{#-last}}{{paramName}}{{/-last}}{{/resourcePathParams}}): {{resourceName}} {
         return new {{resourceName}}Impl(version{{#resourcePathParams}}, {{paramName}}{{/resourcePathParams}});
     }
     {{/instanceResource}}

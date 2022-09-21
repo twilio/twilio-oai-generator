@@ -35,8 +35,8 @@ export interface CallListInstanceCreateOptions {
 
 
 export interface CallListInstance {
-    (accountSid: string, testInteger: number): CallContext;
-    get(accountSid: string, testInteger: number): CallContext;
+    (testInteger: number): CallContext;
+    get(testInteger: number): CallContext;
 
     feedback_call_summary: FeedbackCallSummaryListInstance;
 
@@ -69,9 +69,9 @@ class CallListInstanceImpl implements CallListInstance {
 }
 
 export function CallListInstance(version: V2010, accountSid: string): CallListInstance {
-    const instance = ((accountSid, testInteger) => instance.get(accountSid, testInteger)) as CallListInstanceImpl;
+    const instance = ((testInteger) => instance.get(testInteger)) as CallListInstanceImpl;
 
-    instance.get = function get(accountSid, testInteger): CallContext {
+    instance.get = function get(testInteger): CallContext {
         return new CallContextImpl(version, accountSid, testInteger);
     }
 
