@@ -27,9 +27,26 @@ public class CsharpResolver extends Resolver {
 
     private Map<String, IJsonSchemaValidationProperties> enums;
 
-    public boolean hasEnumsInResource = false;
-    public boolean hasEnumsInOptions = false;
+    private boolean hasEnumsInResource = false;
+    private boolean hasEnumsInOptions = false;
     private HashSet<String> enumsDict = new HashSet<>();
+
+
+    public boolean isHasEnumsInResource() {
+        return hasEnumsInResource;
+    }
+
+    public void setHasEnumsInResource(boolean hasEnumsInResource) {
+        this.hasEnumsInResource = hasEnumsInResource;
+    }
+
+    public boolean isHasEnumsInOptions() {
+        return hasEnumsInOptions;
+    }
+
+    public void setHasEnumsInOptions(boolean hasEnumsInOptions) {
+        this.hasEnumsInOptions = hasEnumsInOptions;
+    }
 
     private final Map<String, Map<String, Object>> conventionMap;
 

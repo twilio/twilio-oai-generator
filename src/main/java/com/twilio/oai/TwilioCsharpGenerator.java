@@ -121,7 +121,7 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
     @Override
     public String toApiFilename(final String name) {
         String[] split = super.toApiFilename(name).split(ApplicationConstants.PATH_SEPARATOR_PLACEHOLDER);
-        if (directoryStructureService.isPreviewDomain(this.additionalProperties)) {
+        if (directoryStructureService.isVersionLess(this.additionalProperties)) {
             return directoryStructureService.getSubDomainName(name) + "/" +Arrays.stream(Arrays.copyOfRange(split, 0, split.length - 1)).collect(Collectors.joining("/")) + "/" + split[split.length-1];
         }
         String apiFileName =  Arrays.stream(Arrays.copyOfRange(split, 0, split.length - 1))
@@ -183,8 +183,8 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
     private void generatePackage(final OperationsMap objs, final CodegenOperation co, final Map<String, Object> resource) {
         String[] filePathArray = co.baseName.split(ApplicationConstants.PATH_SEPARATOR_PLACEHOLDER);
 
-        // Generate Preview package.
-        if (directoryStructureService.isPreviewDomain(this.additionalProperties)) {
+        // Generate packages for domains without version
+        if (directoryStructureService.isVersionLess(this.additionalProperties)) {
             String tag = objs.getOperations().getClassname();
             String subDomainName = directoryStructureService.getSubDomainName(tag);
             resource.put("package", subDomainName);
@@ -462,13 +462,13 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
 
     private void handleImports(Map<String, Object> resource, Map<String, IJsonSchemaValidationProperties> enums,
                                boolean arrayParamsPresent) {
-        if(resolver.hasEnumsInOptions){
+        if(resolver.isHasEnumsInOptions()){
             resource.put("hasEnumsInOptions", true);
-            resolver.hasEnumsInOptions = false;
+            resolver.setHasEnumsInOptions(false);
         }
-        if(enums.size() > 0 || resolver.hasEnumsInResource){
+        if(enums.size() > 0 || resolver.isHasEnumsInResource()){
             resource.put("hasEnumsInResource", true);
-            resolver.hasEnumsInResource = false;
+            resolver.setHasEnumsInResource(false);
         }
         if (arrayParamsPresent) {
             resource.put("hasArrayParams", true);
