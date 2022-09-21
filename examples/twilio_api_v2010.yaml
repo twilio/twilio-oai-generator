@@ -577,6 +577,11 @@ paths:
                   items:
                     type: string
                   type: array
+                TestArrayOfUri:
+                  items:
+                    format: uri
+                    type: string
+                  type: array
               required:
                 - RequiredStringProperty
               title: CreateCallRequest

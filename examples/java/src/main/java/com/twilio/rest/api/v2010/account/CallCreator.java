@@ -65,6 +65,7 @@ public class CallCreator extends Creator<Call>{
     private String requiredStringProperty;
     private String accountSid;
     private List<String> testArrayOfStrings;
+    private List<URI> testArrayOfUri;
 
     public CallCreator(final String requiredStringProperty) {
         this.requiredStringProperty = requiredStringProperty;
@@ -81,6 +82,20 @@ public class CallCreator extends Creator<Call>{
     public CallCreator setTestArrayOfStrings(final List<String> testArrayOfStrings){
         this.testArrayOfStrings = testArrayOfStrings;
         return this;
+    }
+    public CallCreator setTestArrayOfStrings(final String testArrayOfStrings){
+        return setTestArrayOfStrings(Promoter.listOfOne(testArrayOfStrings));
+    }
+    public CallCreator setTestArrayOfUri(final List<URI> testArrayOfUri){
+        this.testArrayOfUri = testArrayOfUri;
+        return this;
+    }
+    public CallCreator setTestArrayOfUri(final URI testArrayOfUri){
+        return setTestArrayOfUri(Promoter.listOfOne(testArrayOfUri));
+    }
+
+    public CallCreator setTestArrayOfUri(final String testArrayOfUri){
+        return setTestArrayOfUri(Promoter.uriFromString(testArrayOfUri));
     }
 
     @Override
@@ -118,6 +133,12 @@ public class CallCreator extends Creator<Call>{
         if (testArrayOfStrings != null) {
             for (String prop : testArrayOfStrings) {
                 request.addPostParam("TestArrayOfStrings", prop);
+            }
+    
+        }
+        if (testArrayOfUri != null) {
+            for (URI prop : testArrayOfUri) {
+                request.addPostParam("TestArrayOfUri", prop.toString());
             }
     
         }

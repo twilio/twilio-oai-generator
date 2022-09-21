@@ -207,7 +207,7 @@ public class TwilioRestTest {
         when(twilioRestClient.request(mockRequest)).thenReturn(new Response("{\"accounts\":[{\"call_sid\":\"PNXXXXY\", \"sid\":123}]}", 404));
         when(twilioRestClient.getObjectMapper()).thenReturn(objectMapper);
         AccountCreator accountCreator = new AccountCreator();
-        accountCreator.setRecordingStatusCallbackEvent(null);
+        accountCreator.setRecordingStatusCallbackEvent("some value");
         accountCreator.setXTwilioWebhookEnabled(null);
 
         accountCreator.create(twilioRestClient);
@@ -901,6 +901,24 @@ public class TwilioRestTest {
         CallDeleter callDeleterAccountSid = Call.deleter(ACCOUNT_SID,123);
         assertNotNull(callDeleter);
         assertNotNull(callDeleterAccountSid);
+    }
+
+    @Test(expected = ApiConnectionException.class)
+    public void testShouldAcceptSingleObjectForList() {
+        when(twilioRestClient.request(Mockito.any())).thenReturn(null);
+        CallCreator callCreator=new CallCreator(ACCOUNT_SID, "testString");
+        callCreator.setTestArrayOfStrings( "Hello" );
+        callCreator.setTestArrayOfUri("http://example-uri.com");
+        callCreator.create(twilioRestClient);
+        NewCredentialsCreator credentialsCreator = NewCredentials.creator(ACCOUNT_SID,1,1F);
+        Map<String, Object> item1 = new HashMap<>();
+         item1.put("A", Arrays.asList("Apple", "Aces"));
+        credentialsCreator.setTestObjectArray(item1);
+        credentialsCreator.setPermissions(NewCredentials.Permissions.GET_ALL);
+        credentialsCreator.create(twilioRestClient);
+        AccountCreator accountCreator = new AccountCreator();
+        accountCreator.setRecordingStatusCallback("https://validurl.com");
+        accountCreator.create(twilioRestClient);
     }
 
     @Test

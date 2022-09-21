@@ -79,12 +79,14 @@ public class AccountCreator extends Creator<Account>{
     }
 
     public AccountCreator setRecordingStatusCallback(final String recordingStatusCallback){
-    this.recordingStatusCallback = Promoter.uriFromString(recordingStatusCallback);
-    return this;
+        return setRecordingStatusCallback(Promoter.uriFromString(recordingStatusCallback));
     }
     public AccountCreator setRecordingStatusCallbackEvent(final List<String> recordingStatusCallbackEvent){
         this.recordingStatusCallbackEvent = recordingStatusCallbackEvent;
         return this;
+    }
+    public AccountCreator setRecordingStatusCallbackEvent(final String recordingStatusCallbackEvent){
+        return setRecordingStatusCallbackEvent(Promoter.listOfOne(recordingStatusCallbackEvent));
     }
 
     @Override

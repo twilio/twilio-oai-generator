@@ -25,10 +25,12 @@ import { FeedbackCallSummaryListInstance } from './call/feedbackCallSummary';
  *
  * @property { string } requiredStringProperty 
  * @property { Array<string> } [testArrayOfStrings] 
+ * @property { Array<string> } [testArrayOfUri] 
  */
 export interface CallListInstanceCreateOptions {
     requiredStringProperty: string;
     testArrayOfStrings?: Array<string>;
+    testArrayOfUri?: Array<string>;
 }
 
 
@@ -99,6 +101,7 @@ export function CallListInstance(version: V2010, accountSid: string): CallListIn
 
         data['RequiredStringProperty'] = params.requiredStringProperty;
         if (params.testArrayOfStrings !== undefined) data['TestArrayOfStrings'] = serialize.map(params.testArrayOfStrings, ((e) => e));
+        if (params.testArrayOfUri !== undefined) data['TestArrayOfUri'] = serialize.map(params.testArrayOfUri, ((e) => e));
 
         const headers: any = {};
         headers['Content-Type'] = 'application/x-www-form-urlencoded'

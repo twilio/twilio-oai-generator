@@ -132,10 +132,12 @@ func TestArrayTypeParam(t *testing.T) {
 	items := []string{"https://test1.com/", "https://test2.com"}
 	params := CreateCallParams{}
 	params.SetTestArrayOfStrings(items)
+	params.SetTestArrayOfUri(items)
 
 	expectedData := url.Values{}
 	for _, item := range items {
 		expectedData.Add("TestArrayOfStrings", item)
+		expectedData.Add("TestArrayOfUri", item)
 	}
 
 	mockCtrl := gomock.NewController(t)
