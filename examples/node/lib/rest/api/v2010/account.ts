@@ -119,7 +119,7 @@ export class AccountContextImpl implements AccountContext {
     remove(callback?: any): Promise<boolean> {
 
         let operationVersion = this._version,
-            operationPromise = operationVersion.remove({ uri: this._uri, method: 'DELETE' });
+            operationPromise = operationVersion.remove({ uri: this._uri, method: 'delete' });
 
 
         if (typeof callback === 'function') {
@@ -135,7 +135,7 @@ export class AccountContextImpl implements AccountContext {
     fetch(callback?: any): Promise<AccountInstance> {
 
         let operationVersion = this._version,
-            operationPromise = operationVersion.fetch({ uri: this._uri, method: 'GET' });
+            operationPromise = operationVersion.fetch({ uri: this._uri, method: 'get' });
 
         operationPromise = operationPromise.then(payload => new AccountInstance(operationVersion, payload, this._solution.sid));
 
@@ -168,7 +168,7 @@ export class AccountContextImpl implements AccountContext {
 
 
         let operationVersion = this._version,
-            operationPromise = operationVersion.update({ uri: this._uri, method: 'POST', params: data, headers });
+            operationPromise = operationVersion.update({ uri: this._uri, method: 'post', params: data, headers });
 
         operationPromise = operationPromise.then(payload => new AccountInstance(operationVersion, payload, this._solution.sid));
 
@@ -427,7 +427,7 @@ export function AccountListInstance(version: V2010): AccountListInstance {
         if (params.xTwilioWebhookEnabled !== undefined) headers['X-Twilio-Webhook-Enabled'] = params.xTwilioWebhookEnabled;
 
         let operationVersion = version,
-            operationPromise = operationVersion.create({ uri: this._uri, method: 'POST', params: data, headers });
+            operationPromise = operationVersion.create({ uri: this._uri, method: 'post', params: data, headers });
 
         operationPromise = operationPromise.then(payload => new AccountInstance(operationVersion, payload));
 
@@ -461,7 +461,7 @@ export function AccountListInstance(version: V2010): AccountListInstance {
 
 
         let operationVersion = version,
-            operationPromise = operationVersion.page({ uri: this._uri, method: 'GET', params: data, headers });
+            operationPromise = operationVersion.page({ uri: this._uri, method: 'get', params: data, headers });
 
         operationPromise = operationPromise.then(payload => new AccountInstance(operationVersion, payload));
 

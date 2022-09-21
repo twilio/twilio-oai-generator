@@ -125,7 +125,7 @@ export function NewCredentialsListInstance(version: V2010): NewCredentialsListIn
 
 
         let operationVersion = version,
-            operationPromise = operationVersion.create({ uri: this._uri, method: 'POST', params: data, headers });
+            operationPromise = operationVersion.create({ uri: this._uri, method: 'post', params: data, headers });
 
         operationPromise = operationPromise.then(payload => new NewCredentialsInstance(operationVersion, payload));
 

@@ -108,7 +108,7 @@ export function CallListInstance(version: V2010, accountSid: string): CallListIn
 
 
         let operationVersion = version,
-            operationPromise = operationVersion.create({ uri: this._uri, method: 'POST', params: data, headers });
+            operationPromise = operationVersion.create({ uri: this._uri, method: 'post', params: data, headers });
 
         operationPromise = operationPromise.then(payload => new CallInstance(operationVersion, payload, this._solution.accountSid));
 
@@ -175,7 +175,7 @@ export class CallContextImpl implements CallContext {
     remove(callback?: any): Promise<boolean> {
 
         let operationVersion = this._version,
-            operationPromise = operationVersion.remove({ uri: this._uri, method: 'DELETE' });
+            operationPromise = operationVersion.remove({ uri: this._uri, method: 'delete' });
 
 
         if (typeof callback === 'function') {
@@ -191,7 +191,7 @@ export class CallContextImpl implements CallContext {
     fetch(callback?: any): Promise<CallInstance> {
 
         let operationVersion = this._version,
-            operationPromise = operationVersion.fetch({ uri: this._uri, method: 'GET' });
+            operationPromise = operationVersion.fetch({ uri: this._uri, method: 'get' });
 
         operationPromise = operationPromise.then(payload => new CallInstance(operationVersion, payload, this._solution.accountSid, this._solution.testInteger));
 
