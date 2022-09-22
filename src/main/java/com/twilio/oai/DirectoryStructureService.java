@@ -22,7 +22,6 @@ import java.util.stream.Collectors;
 public class DirectoryStructureService {
 
     public static final String ACCOUNT_SID_FORMAT = "^AC[0-9a-fA-F]{32}$";
-    public static final String PREVIEW_STRING = "Preview";
     private EnumConstants.Generator generator;
     private static final String PATH_SEPARATOR_PLACEHOLDER = "1234567890";
     private final Inflector inflector = new Inflector();
@@ -45,7 +44,7 @@ public class DirectoryStructureService {
             path.readOperations().forEach(operation -> {
                 // Group operations together by tag. This gives us one file/post-process per resource.
                 String tag = String.join(PATH_SEPARATOR_PLACEHOLDER, resourceTree.ancestors(name, operation));
-                if (isPreviewDomain(additionalProperties)) {
+                if (isVersionLess(additionalProperties)) {
                     String subDomainName = extractSubDomainName(name);
                     subDomainMap.put(tag, subDomainName);
                 }
@@ -146,8 +145,8 @@ public class DirectoryStructureService {
                 ((Map<String, String>) operation.getExtensions().get("x-twilio")).containsKey("className");
     }
 
-    boolean isPreviewDomain(Map<String, Object> additionalProperties){
-        return additionalProperties.get("domain").equals(PREVIEW_STRING);
+    boolean isVersionLess(Map<String, Object> additionalProperties){
+        return additionalProperties.get("apiVersion").equals("");
     }
 
     private String extractSubDomainName(String name) {

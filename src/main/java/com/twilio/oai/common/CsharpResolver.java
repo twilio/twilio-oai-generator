@@ -4,6 +4,8 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.twilio.oai.Segments;
 import org.apache.commons.lang3.StringUtils;
+import com.twilio.oai.StringHelper;
+import com.twilio.oai.EnumsResolver;
 import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenParameter;
 import org.openapitools.codegen.CodegenProperty;
@@ -11,6 +13,7 @@ import org.openapitools.codegen.IJsonSchemaValidationProperties;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -25,6 +28,11 @@ public class CsharpResolver extends Resolver {
     private String className;
 
     private Map<String, IJsonSchemaValidationProperties> enums;
+    private boolean hasEnumsInResource = false;
+    private boolean hasEnumsInOptions = false;
+    private EnumsResolver enumsResolver;
+
+    private HashSet<String> enumsDict;
 
     private final Map<String, Map<String, Object>> conventionMap;
 
@@ -34,6 +42,8 @@ public class CsharpResolver extends Resolver {
     public CsharpResolver(EnumConstants.Generator generator) {
         this.generator = generator;
         conventionMap = getConventionalMap();
+        enumsResolver = new EnumsResolver(conventionMap);
+        enumsDict = enumsResolver.getEnumsDict();
 
     }
 
@@ -48,6 +58,23 @@ public class CsharpResolver extends Resolver {
     public void setEnums(Map<String, IJsonSchemaValidationProperties> enums) {
         this.enums = enums;
     }
+
+    public boolean isHasEnumsInResource() {
+        return hasEnumsInResource;
+    }
+
+    public void setHasEnumsInResource(boolean hasEnumsInResource) {
+        this.hasEnumsInResource = hasEnumsInResource;
+    }
+
+    public boolean isHasEnumsInOptions() {
+        return hasEnumsInOptions;
+    }
+
+    public void setHasEnumsInOptions(boolean hasEnumsInOptions) {
+        this.hasEnumsInOptions = hasEnumsInOptions;
+    }
+
 
     public void setModelFormatMap(final Map<String, String> modelFormatMap) {
         this.modelFormatMap = new HashMap<>(modelFormatMap);
@@ -68,6 +95,10 @@ public class CsharpResolver extends Resolver {
         }
         for (CodegenProperty codegenProperty : codegenModel.vars) {
             sanitizeDataFormat(codegenProperty);
+            if(codegenProperty.isEnum && StringHelper.existInSetIgnoreCase(codegenProperty.dataType, enumsDict)){
+                hasEnumsInResource = true;
+            }
+
             String existsInDataType = null;
             for (EnumConstants.CsharpDataTypes dataType: EnumConstants.CsharpDataTypes.values()) {
                 if (codegenProperty.dataType != null && codegenProperty.dataType.startsWith(dataType.getValue())) {
@@ -79,6 +110,9 @@ public class CsharpResolver extends Resolver {
                 resolveContainerDataType(codegenProperty, existsInDataType);
             } else {
                 resolveDataType(codegenProperty);
+            }
+            if(codegenProperty.vendorExtensions.containsKey("x-has-enum-params")){
+                hasEnumsInResource = true;
             }
         }
 
@@ -106,6 +140,9 @@ public class CsharpResolver extends Resolver {
         if (parameter == null) {
             return null;
         }
+        if(parameter.isEnum  && StringHelper.existInSetIgnoreCase(parameter.dataType, enumsDict)){
+            hasEnumsInOptions = true;
+        }
 
         String existsInDataType = null;
         for (EnumConstants.CsharpDataTypes dataType: EnumConstants.CsharpDataTypes.values()) {
@@ -119,12 +156,18 @@ public class CsharpResolver extends Resolver {
         } else {
             resolveDataType(parameter);
         }
+        if(parameter.vendorExtensions.containsKey("x-has-enum-params")){
+            hasEnumsInOptions = true;
+        }
         return parameter;
     }
 
     private CodegenProperty resolveDataType(CodegenProperty codegenProperty) {
         String property = Segments.SEGMENT_PROPERTIES.getSegment();
         String deserialize = Segments.SEGMENT_DESERIALIZE.getSegment();
+        if(StringHelper.existInSetIgnoreCase(codegenProperty.dataType, enumsDict) || StringHelper.existInSetIgnoreCase(codegenProperty.dataFormat, enumsDict)){
+            codegenProperty.vendorExtensions.put("x-has-enum-params", true);
+        }
         if (conventionMap.get(property).containsKey(codegenProperty.dataFormat)) {
             codegenProperty.dataType = (String)conventionMap.get(property).get(codegenProperty.dataFormat);
         } else if (conventionMap.get(property).containsKey(codegenProperty.dataType)) {
@@ -175,6 +218,9 @@ public class CsharpResolver extends Resolver {
         }
 
         resolveDataType(codegenProperty);
+        if(StringHelper.existInSetIgnoreCase(codegenProperty.dataType, enumsDict)){//List of enums present
+            codegenProperty.vendorExtensions.put("x-has-enum-params", true);
+        }
 
         codegenProperty.dataType = existsInDataType + codegenProperty.dataType + ApplicationConstants.LIST_END;
         return codegenProperty;
@@ -194,7 +240,9 @@ public class CsharpResolver extends Resolver {
                 parameter.isMap = false;
             }
         }
-
+        if(StringHelper.existInSetIgnoreCase(parameter.dataType, enumsDict) || StringHelper.existInSetIgnoreCase(parameter.dataFormat, enumsDict)){
+            parameter.vendorExtensions.put("x-has-enum-params", true);
+        }
 
         if (conventionMap.get(property).containsKey(parameter.dataFormat)) {
             parameter.dataType = (String) conventionMap.get(property).get(parameter.dataFormat);
@@ -249,6 +297,9 @@ public class CsharpResolver extends Resolver {
         /// Can be re-used
         resolveDataType(parameter);
         ////
+        if(StringHelper.existInSetIgnoreCase(parameter.dataType, enumsDict)){//List of enums present
+            parameter.vendorExtensions.put("x-has-enum-params", true);
+        }
         parameter.dataType = existsInDataType + parameter.dataType + ApplicationConstants.LIST_END;
         return parameter;
     }
