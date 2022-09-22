@@ -1669,7 +1669,6 @@ namespace Twilio.Tests.Rest
 
           var serializedObject = JsonConvert.SerializeObject(resource);
           Assert.True(serializedObject.Contains(testEnumString));
-//            Assert.IsNull(serializedObject);
        }
 
        [Test]
@@ -1683,7 +1682,6 @@ namespace Twilio.Tests.Rest
 
           var serializedObject = JsonConvert.SerializeObject(resource);
           Assert.True(serializedObject.Contains(testArrayOfEnumString));
-//            Assert.IsNull(serializedObject);
        }
     }
 }
