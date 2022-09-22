@@ -130,6 +130,9 @@ public class CsharpResolver extends Resolver {
             if (propertyMap.containsKey(complexType)) {
                 final String resolvedDataType = (String)propertyMap.get(complexType);
                 codegenProperty.dataType = resolvedDataType;
+                if(StringHelper.existInSetIgnoreCase(codegenProperty.dataType, enumsDict)){
+                    codegenProperty.vendorExtensions.put("x-has-enum-params", true);
+                }
             }
         }
         return codegenProperty;
