@@ -3,6 +3,8 @@ package com.twilio.oai.common;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.twilio.oai.Segments;
+import com.twilio.oai.StringHelper;
+import com.twilio.oai.EnumsResolver;
 import org.apache.commons.lang3.StringUtils;
 import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenParameter;
@@ -29,8 +31,35 @@ public class CsharpResolver extends Resolver {
 
     private boolean hasEnumsInResource = false;
     private boolean hasEnumsInOptions = false;
-    private HashSet<String> enumsDict = new HashSet<>();
 
+    private EnumsResolver enumsResolver;
+
+    private HashSet<String> enumsDict;
+
+    private final Map<String, Map<String, Object>> conventionMap;
+
+    private  Map<String, String> modelFormatMap = new HashMap<>();
+
+
+    public CsharpResolver(EnumConstants.Generator generator) {
+        this.generator = generator;
+        conventionMap = getConventionalMap();
+        enumsResolver = new EnumsResolver(conventionMap);
+        enumsDict = enumsResolver.getEnumsDict();
+
+    }
+
+    public void setClassName(String className) {
+        this.className = className;
+    }
+
+    public Map<String, IJsonSchemaValidationProperties> getEnums() {
+        return enums;
+    }
+
+    public void setEnums(Map<String, IJsonSchemaValidationProperties> enums) {
+        this.enums = enums;
+    }
 
     public boolean isHasEnumsInResource() {
         return hasEnumsInResource;
@@ -46,30 +75,6 @@ public class CsharpResolver extends Resolver {
 
     public void setHasEnumsInOptions(boolean hasEnumsInOptions) {
         this.hasEnumsInOptions = hasEnumsInOptions;
-    }
-
-    private final Map<String, Map<String, Object>> conventionMap;
-
-    private  Map<String, String> modelFormatMap = new HashMap<>();
-
-
-    public CsharpResolver(EnumConstants.Generator generator) {
-        this.generator = generator;
-        conventionMap = getConventionalMap();
-        extractEnums();
-
-    }
-
-    public void setClassName(String className) {
-        this.className = className;
-    }
-
-    public Map<String, IJsonSchemaValidationProperties> getEnums() {
-        return enums;
-    }
-
-    public void setEnums(Map<String, IJsonSchemaValidationProperties> enums) {
-        this.enums = enums;
     }
 
     public void setModelFormatMap(final Map<String, String> modelFormatMap) {
@@ -91,7 +96,7 @@ public class CsharpResolver extends Resolver {
         }
         for (CodegenProperty codegenProperty : codegenModel.vars) {
             sanitizeDataFormat(codegenProperty);
-            if(codegenProperty.isEnum && existInEnumsDict(codegenProperty.dataType)){
+            if(codegenProperty.isEnum && StringHelper.existInSetIgnoreCase(codegenProperty.dataType, enumsDict)){
                 hasEnumsInResource = true;
             }
 
@@ -136,7 +141,7 @@ public class CsharpResolver extends Resolver {
         if (parameter == null) {
             return null;
         }
-        if(parameter.isEnum  && existInEnumsDict(parameter.dataType)){
+        if(parameter.isEnum  && StringHelper.existInSetIgnoreCase(parameter.dataType, enumsDict)){
             hasEnumsInOptions = true;
         }
 
@@ -161,7 +166,7 @@ public class CsharpResolver extends Resolver {
     private CodegenProperty resolveDataType(CodegenProperty codegenProperty) {
         String property = Segments.SEGMENT_PROPERTIES.getSegment();
         String deserialize = Segments.SEGMENT_DESERIALIZE.getSegment();
-        if(existInEnumsDict(codegenProperty.dataType) || existInEnumsDict(codegenProperty.dataFormat)){
+        if(StringHelper.existInSetIgnoreCase(codegenProperty.dataType, enumsDict) || StringHelper.existInSetIgnoreCase(codegenProperty.dataFormat, enumsDict)){
             codegenProperty.vendorExtensions.put("x-has-enum-params", true);
         }
         if (conventionMap.get(property).containsKey(codegenProperty.dataFormat)) {
@@ -214,7 +219,7 @@ public class CsharpResolver extends Resolver {
         }
 
         resolveDataType(codegenProperty);
-        if(existInEnumsDict(codegenProperty.dataType)){//List of enums present
+        if(StringHelper.existInSetIgnoreCase(codegenProperty.dataType, enumsDict)){//List of enums present
               codegenProperty.vendorExtensions.put("x-has-enum-params", true);
         }
         codegenProperty.dataType = existsInDataType + codegenProperty.dataType + ApplicationConstants.LIST_END;
@@ -235,7 +240,7 @@ public class CsharpResolver extends Resolver {
                 parameter.isMap = false;
             }
         }
-        if(existInEnumsDict(parameter.dataType) || existInEnumsDict(parameter.dataFormat)){
+        if(StringHelper.existInSetIgnoreCase(parameter.dataType, enumsDict) || StringHelper.existInSetIgnoreCase(parameter.dataFormat, enumsDict)){
             parameter.vendorExtensions.put("x-has-enum-params", true);
         }
 
@@ -292,7 +297,7 @@ public class CsharpResolver extends Resolver {
         /// Can be re-used
         resolveDataType(parameter);
         ////
-        if(existInEnumsDict(parameter.dataType)){//List of enums present
+        if(StringHelper.existInSetIgnoreCase(parameter.dataType, enumsDict)){//List of enums present
             parameter.vendorExtensions.put("x-has-enum-params", true);
         }
         parameter.dataType = existsInDataType + parameter.dataType + ApplicationConstants.LIST_END;
@@ -311,40 +316,4 @@ public class CsharpResolver extends Resolver {
         return parameters;
     }
 
-    private String titleCase(String input){
-        input.replace(" ","");
-        String[] split = input.split("_");
-        String result = "";
-        for(int i = 0; i < split.length; i++){
-            String item = split[i];
-            result+= Character.toTitleCase(item.charAt(0)) + item.substring(1);
-        }
-        return result;
-    }
-
-    private void extractEnums() {
-        Map<String, Object> usingMappings = conventionMap.get("library");
-        usingMappings.forEach((key, value) -> {
-            if(value != null){
-                if(value instanceof String && ((String) value).equalsIgnoreCase("Twilio.Types")){
-                    enumsDict.add(titleCase(key));
-                } else if (value instanceof ArrayList) {
-                    ((ArrayList<String>) value).forEach(item -> {
-                        if(item.equalsIgnoreCase("Twilio.Types")){
-                            enumsDict.add(titleCase(key));
-                        }
-                    });
-                }
-            }
-        });
-    }
-
-    private boolean existInEnumsDict(String item){
-        for (String s : enumsDict) {
-            if(s.equalsIgnoreCase(item)){
-                return true;
-            }
-        }
-        return false;
-    }
 }
