@@ -32,6 +32,7 @@ namespace Twilio.Rest.Api.V2010.Credential
     public class NewCredentialsResource : Resource
     {
     
+        [JsonConverter(typeof(StringEnumConverter))]
         public sealed class StatusEnum : StringEnum
         {
             private StatusEnum(string value) : base(value) {}
@@ -40,13 +41,13 @@ namespace Twilio.Rest.Api.V2010.Credential
             {
                 return new StatusEnum(value);
             }
+
             public static readonly StatusEnum InProgress = new StatusEnum("in-progress");
             public static readonly StatusEnum Paused = new StatusEnum("paused");
             public static readonly StatusEnum Stopped = new StatusEnum("stopped");
             public static readonly StatusEnum Processing = new StatusEnum("processing");
             public static readonly StatusEnum Completed = new StatusEnum("completed");
             public static readonly StatusEnum Absent = new StatusEnum("absent");
-
         }
         public sealed class PermissionsEnum : StringEnum
         {

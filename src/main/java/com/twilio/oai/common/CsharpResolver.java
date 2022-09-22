@@ -151,12 +151,12 @@ public class CsharpResolver extends Resolver {
             if (codegenProperty.items != null) {
                 codegenProperty.items.enumName = value[value.length-1] + "Enum";
             }
+            codegenProperty.dataType = className + "Resource." + codegenProperty.enumName;
+            codegenProperty.vendorExtensions.put("x-jsonConverter", "StringEnumConverter");
             if (enums == null) {
                 enums = new HashMap<>();
             }
-            codegenProperty.dataType = className + "Resource." + codegenProperty.enumName;
-            codegenProperty.vendorExtensions.put("x-jsonConverter", "StringEnumConverter");
-            enums.putIfAbsent(codegenProperty.enumName, codegenProperty);
+            enums.put(codegenProperty.enumName,codegenProperty);
         } else if (codegenProperty.complexType != null && modelFormatMap.containsKey(codegenProperty.complexType)) {
             resolveComplex(codegenProperty);
         }
