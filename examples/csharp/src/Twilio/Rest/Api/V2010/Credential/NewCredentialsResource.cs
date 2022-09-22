@@ -227,7 +227,6 @@ namespace Twilio.Rest.Api.V2010.Credential
         public float? TestNumberFloat { get; private set; }
 
         [JsonProperty("test_enum")]
-        [JsonConverter(typeof(StringEnumConverter))]
         public NewCredentialsResource.StatusEnum TestEnum { get; private set; }
 
         [JsonProperty("test_array_of_integers")]
@@ -240,7 +239,6 @@ namespace Twilio.Rest.Api.V2010.Credential
         public List<FeedbackIssue> TestArrayOfObjects { get; private set; }
 
         [JsonProperty("test_array_of_enum")]
-        [JsonConverter(typeof(StringEnumConverter))]
         public List<NewCredentialsResource.StatusEnum> TestArrayOfEnum { get; private set; }
 
 
@@ -250,3 +248,4 @@ namespace Twilio.Rest.Api.V2010.Credential
         }
     } // end of resource class
 } // end of namespace
+

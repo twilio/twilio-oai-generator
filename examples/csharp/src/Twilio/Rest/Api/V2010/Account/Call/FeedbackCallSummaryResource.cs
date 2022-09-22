@@ -32,6 +32,7 @@ namespace Twilio.Rest.Api.V2010.Account.Call
     public class FeedbackCallSummaryResource : Resource
     {
     
+        [JsonConverter(typeof(StringEnumConverter))]
         public sealed class StatusEnum : StringEnum
         {
             private StatusEnum(string value) : base(value) {}
@@ -193,7 +194,6 @@ namespace Twilio.Rest.Api.V2010.Account.Call
         public float? TestNumberFloat { get; private set; }
 
         [JsonProperty("test_enum")]
-        [JsonConverter(typeof(StringEnumConverter))]
         public FeedbackCallSummaryResource.StatusEnum TestEnum { get; private set; }
 
         [JsonProperty("test_array_of_integers")]
@@ -206,7 +206,6 @@ namespace Twilio.Rest.Api.V2010.Account.Call
         public List<FeedbackIssue> TestArrayOfObjects { get; private set; }
 
         [JsonProperty("test_array_of_enum")]
-        [JsonConverter(typeof(StringEnumConverter))]
         public List<FeedbackCallSummaryResource.StatusEnum> TestArrayOfEnum { get; private set; }
 
 

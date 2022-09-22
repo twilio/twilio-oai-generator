@@ -1,5 +1,8 @@
 
 {{#enums}}
+        {{#vendorExtensions.x-jsonConverter}}
+        [JsonConverter(typeof({{vendorExtensions.x-jsonConverter}}))]
+        {{/vendorExtensions.x-jsonConverter}}
         public sealed class {{{enumName}}} : StringEnum
         {
             private {{{enumName}}}(string value) : base(value) {}

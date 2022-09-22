@@ -26,7 +26,7 @@ namespace Twilio.Rest.Api.V2010.Credential
     public class DeleteAwsOptions : IOptions<AwsResource>
     {
         
-        public string PathSid { get; set; }
+        public string PathSid { get; }
 
 
         public DeleteAwsOptions(string pathSid)
@@ -49,7 +49,7 @@ namespace Twilio.Rest.Api.V2010.Credential
     public class FetchAwsOptions : IOptions<AwsResource>
     {
     
-        public string PathSid { get; set; }
+        public string PathSid { get; }
 
 
         public FetchAwsOptions(string pathSid)
@@ -94,7 +94,7 @@ namespace Twilio.Rest.Api.V2010.Credential
     public class UpdateAwsOptions : IOptions<AwsResource>
     {
     
-        public string PathSid { get; set; }
+        public string PathSid { get; }
         public string TestString { get; set; }
         public bool? TestBoolean { get; set; }
 

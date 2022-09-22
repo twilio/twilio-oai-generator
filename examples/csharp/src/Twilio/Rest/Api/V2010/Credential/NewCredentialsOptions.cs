@@ -30,7 +30,7 @@ namespace Twilio.Rest.Api.V2010.Credential
     {
         // How to decide which has getter and which has setter ?
         
-        public string TestString { get; set; }
+        public string TestString { get; }
         public bool? TestBoolean { get; set; }
         public int? TestInteger { get; set; }
         public decimal? TestNumber { get; set; }
@@ -124,3 +124,4 @@ namespace Twilio.Rest.Api.V2010.Credential
 
     }
 }
+

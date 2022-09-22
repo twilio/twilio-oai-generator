@@ -145,6 +145,7 @@ public class CsharpResolver extends Resolver {
         }
 
         if (codegenProperty.complexType != null && codegenProperty.complexType.contains("Enum")) { // codegenProperty.dataType.contains(className) &&
+            codegenProperty.isEnum = true;
             String[] value = codegenProperty.complexType.split("Enum");
             codegenProperty.enumName = value[value.length-1] + "Enum";
             if (codegenProperty.items != null) {
