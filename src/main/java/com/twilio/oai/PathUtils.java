@@ -1,10 +1,12 @@
 package com.twilio.oai;
 
-import com.google.common.collect.Streams;
-
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Map;
 import java.util.Optional;
+
+import com.google.common.collect.Streams;
+import io.swagger.v3.oas.models.PathItem;
 
 public class PathUtils {
 
@@ -33,6 +35,7 @@ public class PathUtils {
     public static String cleanPath(final String path) {
         return path.replaceAll("/\\{[^}]+}", "");
     }
+
     public static String removeExtension(final String path) {
         return path.replaceAll("\\.[^/]+$", "");
     }
@@ -47,5 +50,14 @@ public class PathUtils {
 
     public static String fetchLastElement(final String path, final String delimiter) {
         return Streams.findLast(Arrays.stream(path.split(delimiter))).get();
+    }
+
+    public static Optional<String> getTwilioExtension(final PathItem pathItem, final String extensionKey) {
+        return Optional
+            .ofNullable(pathItem.getExtensions())
+            .map(ext -> ext.get("x-twilio"))
+            .map(Map.class::cast)
+            .map(xTwilio -> xTwilio.get(extensionKey))
+            .map(String.class::cast);
     }
 }
