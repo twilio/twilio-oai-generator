@@ -18,20 +18,22 @@ public class CodegenModelContainerDataTypeResolver implements Resolver<CodegenPr
 
     public CodegenProperty resolve(CodegenProperty codegenProperty){
 
-        String codegenPropertyDataType = "";
         Stack<String> containerTypes = new Stack<>();
 
         codegenProperty.dataType = unwrapContainerType(codegenProperty,containerTypes);
 
-        //resolveDataType(codegenProperty);
         codegenModelDataTypeResolver.resolve(codegenProperty);
+        setHasEnumParamsVendorExtension(codegenProperty);
+        rewrapContainerType(codegenProperty,containerTypes);
+
+        return codegenProperty;
+    }
+
+    public void setHasEnumParamsVendorExtension(CodegenProperty codegenProperty){
         HashSet<String> enumsDict = codegenModelDataTypeResolver.getEnumsDict();
         if(StringHelper.existInSetIgnoreCase(codegenProperty.dataType, enumsDict)){//List of enums present
             codegenProperty.vendorExtensions.put("x-has-enum-params", true);
         }
-        rewrapContainerType(codegenProperty,containerTypes);
-
-        return codegenProperty;
     }
 
     private static String unwrapContainerType(CodegenProperty codegenProperty,Stack<String> containerTypes){

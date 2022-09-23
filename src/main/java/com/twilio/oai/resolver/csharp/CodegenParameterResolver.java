@@ -2,7 +2,6 @@ package com.twilio.oai.resolver.csharp;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.twilio.oai.EnumsResolver;
 import com.twilio.oai.StringHelper;
 import com.twilio.oai.common.ApplicationConstants;
 import com.twilio.oai.common.EnumConstants;
@@ -19,7 +18,6 @@ public class CodegenParameterResolver implements Resolver<CodegenParameter> {
     private String className;
     private boolean hasEnumsInResource = false;
     private boolean hasEnumsInOptions = false;
-    private EnumsResolver enumsResolver;
 
     private HashSet<String> enumsDict;
     private CodegenParameterDataTypeResolver codegenParameterDataTypeResolver = new CodegenParameterDataTypeResolver();

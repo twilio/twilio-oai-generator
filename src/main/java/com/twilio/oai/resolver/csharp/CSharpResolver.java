@@ -8,20 +8,15 @@ import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenParameter;
 import org.openapitools.codegen.IJsonSchemaValidationProperties;
 
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
 public class CSharpResolver {
-    private CodegenModelResolver codegenModelResolver = new CodegenModelResolver();
-    private CodegenParameterResolver codegenParameterResolver = new CodegenParameterResolver();
-//    private boolean hasEnumsInResource = false;
-//    private boolean hasEnumsInOptions = false;
+    private CodegenModelResolver codegenModelResolver;
+    private CodegenParameterResolver codegenParameterResolver;
     private EnumsResolver enumsResolver;
-
     private HashSet<String> enumsDict;
-    private  Map<String, String> modelFormatMap = new HashMap<>();
     private final Map<String, Map<String, Object>> conventionMap;
 
     String className;
@@ -65,9 +60,6 @@ public class CSharpResolver {
         return enums;
     }
 
-    public void setModelFormatMap(Map<String, String> modelFormatMap) {
-        codegenModelResolver.setModelFormatMap(modelFormatMap);
-    }
     public void setHasEnumsInResource(boolean hasEnumsInResource) {
         codegenModelResolver.setHasEnumsInResource(hasEnumsInResource);
         codegenParameterResolver.setHasEnumsInResource(hasEnumsInResource);
@@ -91,6 +83,10 @@ public class CSharpResolver {
     }
 
     public boolean isHasEnumsInResource() {
-        return codegenParameterResolver.isHasEnumsInResource() || codegenModelResolver.isHasEnumsInOptions();
+        return codegenParameterResolver.isHasEnumsInResource() || codegenModelResolver.isHasEnumsInResource();
+    }
+
+    public void setModelFormatMap(Map<String, String> modelFormatMap) {
+        codegenModelResolver.setModelFormatMap(modelFormatMap);
     }
 }

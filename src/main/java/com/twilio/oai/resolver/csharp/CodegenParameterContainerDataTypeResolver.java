@@ -18,12 +18,16 @@ public class CodegenParameterContainerDataTypeResolver implements Resolver<Codeg
     public CodegenParameter resolve(CodegenParameter parameter){
         String unwrappedContainer = unwrapContainerType(parameter);
         codegenParameterDataTypeResolver.resolve(parameter);
+        setHasEnumParamsVendorExtension(parameter);
+        rewrapContainerType(parameter,unwrappedContainer);
+        return parameter;
+    }
+
+    private void setHasEnumParamsVendorExtension(CodegenParameter parameter){
         HashSet<String> enumsDict = codegenParameterDataTypeResolver.getEnumsDict();
         if(StringHelper.existInSetIgnoreCase(parameter.dataType, enumsDict)){//List of enums present
             parameter.vendorExtensions.put("x-has-enum-params", true);
         }
-        rewrapContainerType(parameter,unwrappedContainer);
-        return parameter;
     }
 
     private String unwrapContainerType(CodegenParameter parameter){

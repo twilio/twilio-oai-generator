@@ -2,7 +2,6 @@ package com.twilio.oai.resolver.csharp;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.twilio.oai.EnumsResolver;
 import com.twilio.oai.StringHelper;
 import com.twilio.oai.common.ApplicationConstants;
 import com.twilio.oai.common.EnumConstants;
@@ -24,7 +23,7 @@ public class CodegenModelResolver implements Resolver<CodegenModel> {
 
     private HashSet<String> enumsDict;
     private Map<String, IJsonSchemaValidationProperties> enums;
-    private  Map<String, String> modelFormatMap = new HashMap<>();
+    private  Map<String, String> modelFormatMap;
     private CodegenModelDataTypeResolver codegenModelDataTypeResolver = new CodegenModelDataTypeResolver();
     private CodegenModelContainerDataTypeResolver codegenModelContainerDataTypeResolver = new CodegenModelContainerDataTypeResolver(codegenModelDataTypeResolver);
     public CodegenModelResolver(){
@@ -54,6 +53,7 @@ public class CodegenModelResolver implements Resolver<CodegenModel> {
             } else {
                 codegenModelDataTypeResolver.resolve(codegenProperty);
             }
+
             if(codegenProperty.vendorExtensions.containsKey("x-has-enum-params")){
                 hasEnumsInResource = true;
             }
@@ -92,9 +92,6 @@ public class CodegenModelResolver implements Resolver<CodegenModel> {
         this.enums = enums;
     }
 
-    public void setModelFormatMap(final Map<String, String> modelFormatMap) {
-        this.modelFormatMap = new HashMap<>(modelFormatMap);
-    }
 
     public void setHasEnumsInResource(boolean hasEnumsInResource) {
         this.hasEnumsInResource = hasEnumsInResource;
@@ -102,6 +99,9 @@ public class CodegenModelResolver implements Resolver<CodegenModel> {
 
     public boolean isHasEnumsInOptions() {
         return hasEnumsInOptions;
+    }
+    public boolean isHasEnumsInResource() {
+        return hasEnumsInResource;
     }
 
     public void setHasEnumsInOptions(boolean hasEnumsInOptions) {
@@ -112,5 +112,7 @@ public class CodegenModelResolver implements Resolver<CodegenModel> {
         this.enumsDict = enumsDict;
     }
 
-
+    public void setModelFormatMap(Map<String, String> modelFormatMap) {
+        this.modelFormatMap = modelFormatMap;
+    }
 }
