@@ -662,9 +662,17 @@ paths:
       parent: /Accounts.json
       pathType: instance
   /2010-04-01/Accounts/{AccountSid}/Calls/FeedbackSummary.json:
-    description: A resource that can only be created
+    description: A nested resource without operations
+    servers:
+      - url: https://api.twilio.com
+    x-twilio:
+      className: feedback_call_summary
+      parent: /Accounts/{AccountSid}/Calls.json
+      pathType: list
+  /2010-04-01/Accounts/{AccountSid}/Calls/FeedbackSummary/{Sid}.json:
+    description: A resource that can only be updated
     post:
-      operationId: CreateCallFeedbackSummary
+      operationId: UpdateCallFeedbackSummary
       parameters:
         - in: path
           name: AccountSid
@@ -673,6 +681,11 @@ paths:
             maxLength: 34
             minLength: 34
             pattern: ^AC[0-9a-fA-F]{32}$
+            type: string
+        - in: path
+          name: Sid
+          required: true
+          schema:
             type: string
       requestBody:
         content:
@@ -688,7 +701,7 @@ paths:
               required:
                 - StartDate
                 - EndDate
-              title: CreateCallFeedbackSummaryRequest
+              title: UpdateCallFeedbackSummaryRequest
               type: object
       responses:
         '201':

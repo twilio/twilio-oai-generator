@@ -19,31 +19,23 @@ const deserialize = require('../../../../../base/deserialize');
 const serialize = require('../../../../../base/serialize');
 
 
+
 /**
- * Options to pass to create a FeedbackCallSummaryInstance
+ * Options to pass to update a FeedbackCallSummaryInstance
  *
  * @property { string } endDate 
  * @property { string } startDate 
  */
-export interface FeedbackCallSummaryListInstanceCreateOptions {
+export interface FeedbackCallSummaryContextUpdateOptions {
     endDate: string;
     startDate: string;
 }
 
 export interface FeedbackCallSummaryListInstance {
+    (sid: string): FeedbackCallSummaryContext;
+    get(sid: string): FeedbackCallSummaryContext;
 
 
-    /**
-     * Create a FeedbackCallSummaryInstance
-     *
-     * @param { FeedbackCallSummaryListInstanceCreateOptions } params - Parameter for request
-     * @param { function } [callback] - Callback to handle processed record
-     *
-     * @returns { Promise } Resolves to processed FeedbackCallSummaryInstance
-     */
-    create(params: FeedbackCallSummaryListInstanceCreateOptions, callback?: (error: Error | null, item?: FeedbackCallSummaryInstance) => any): Promise<FeedbackCallSummaryInstance>;
-    create(params: any, callback?: any): Promise<FeedbackCallSummaryInstance>
-;
     /**
      * Provide a user-friendly representation
      */
@@ -60,14 +52,61 @@ class FeedbackCallSummaryListInstanceImpl implements FeedbackCallSummaryListInst
 
 }
 
-export function FeedbackCallSummaryListInstance(version: V2010, accountSid: string): FeedbackCallSummaryListInstance {
-    const instance = {} as FeedbackCallSummaryListInstanceImpl;
+export function FeedbackCallSummaryListInstance(version: V2010): FeedbackCallSummaryListInstance {
+    const instance = ((sid) => instance.get(sid)) as FeedbackCallSummaryListInstanceImpl;
+
+    instance.get = function get(sid): FeedbackCallSummaryContext {
+        return new FeedbackCallSummaryContextImpl(version, accountSid, sid);
+    }
 
     instance._version = version;
-    instance._solution = { accountSid };
-    instance._uri = `/2010-04-01/Accounts/${accountSid}/Calls/FeedbackSummary.json`;
+    instance._solution = {  };
+    instance._uri = `/2010-04-01/Accounts/{AccountSid}/Calls/FeedbackSummary.json`;
 
-    instance.create = function create(params: any, callback?: any): Promise<FeedbackCallSummaryInstance> {
+    instance.toJSON = function toJSON() {
+        return this._solution;
+    }
+
+    instance[inspect.custom] = function inspectImpl(_depth: any, options: InspectOptions) {
+        return inspect(this.toJSON(), options);
+    }
+
+    return instance;
+}
+
+
+export interface FeedbackCallSummaryContext {
+
+
+    /**
+     * Update a FeedbackCallSummaryInstance
+     *
+     * @param { FeedbackCallSummaryContextUpdateOptions } params - Parameter for request
+     * @param { function } [callback] - Callback to handle processed record
+     *
+     * @returns { Promise } Resolves to processed FeedbackCallSummaryInstance
+     */
+    update(params: FeedbackCallSummaryContextUpdateOptions, callback?: (error: Error | null, item?: FeedbackCallSummaryInstance) => any): Promise<FeedbackCallSummaryInstance>;
+    update(params: any, callback?: any): Promise<FeedbackCallSummaryInstance>
+;
+    /**
+     * Provide a user-friendly representation
+     */
+    toJSON(): any;
+    [inspect.custom](_depth: any, options: InspectOptions): any;
+}
+
+export class FeedbackCallSummaryContextImpl implements FeedbackCallSummaryContext {
+    protected _solution: any;
+    protected _uri: string;
+
+
+    constructor(protected _version: V2010, accountSid: string, sid: string) {
+        this._solution = { accountSid, sid };
+        this._uri = `/2010-04-01/Accounts/${accountSid}/Calls/FeedbackSummary/${sid}.json`;
+    }
+
+    update(params: any, callback?: any): Promise<FeedbackCallSummaryInstance> {
         if (params === null || params === undefined) {
             throw new Error('Required parameter "params" missing.');
         }
@@ -89,10 +128,10 @@ export function FeedbackCallSummaryListInstance(version: V2010, accountSid: stri
         headers['Content-Type'] = 'application/x-www-form-urlencoded'
 
 
-        let operationVersion = version,
-            operationPromise = operationVersion.create({ uri: this._uri, method: 'post', params: data, headers });
+        let operationVersion = this._version,
+            operationPromise = operationVersion.update({ uri: this._uri, method: 'post', params: data, headers });
 
-        operationPromise = operationPromise.then(payload => new FeedbackCallSummaryInstance(operationVersion, payload, this._solution.accountSid));
+        operationPromise = operationPromise.then(payload => new FeedbackCallSummaryInstance(operationVersion, payload, this._solution.accountSid, this._solution.sid));
 
         if (typeof callback === 'function') {
             operationPromise = operationPromise
@@ -104,16 +143,20 @@ export function FeedbackCallSummaryListInstance(version: V2010, accountSid: stri
 
     }
 
-    instance.toJSON = function toJSON() {
+    /**
+     * Provide a user-friendly representation
+     *
+     * @returns Object
+     */
+    toJSON() {
         return this._solution;
     }
 
-    instance[inspect.custom] = function inspectImpl(_depth: any, options: InspectOptions) {
+    [inspect.custom](_depth: any, options: InspectOptions) {
         return inspect(this.toJSON(), options);
     }
-
-    return instance;
 }
+
 
 interface FeedbackCallSummaryPayload extends FeedbackCallSummaryResource, Page.TwilioResponsePayload {
 }
@@ -137,9 +180,9 @@ interface FeedbackCallSummaryResource {
 
 export class FeedbackCallSummaryInstance {
     protected _solution: any;
-    protected _context?: FeedbackCallSummaryListInstance;
+    protected _context?: FeedbackCallSummaryContext;
 
-    constructor(protected _version: V2010, payload: FeedbackCallSummaryPayload, accountSid?: string) {
+    constructor(protected _version: V2010, payload: FeedbackCallSummaryPayload, accountSid: string, sid?: string) {
         this.accountSid = payload.account_sid;
         this.sid = payload.sid;
         this.testString = payload.test_string;
@@ -155,7 +198,7 @@ export class FeedbackCallSummaryInstance {
         this.testArrayOfObjects = payload.test_array_of_objects;
         this.testArrayOfEnum = payload.test_array_of_enum;
 
-        this._solution = { accountSid: accountSid || this.accountSid };
+        this._solution = { accountSid, sid: sid || this.sid };
     }
 
     accountSid?: string | null;
@@ -175,6 +218,25 @@ export class FeedbackCallSummaryInstance {
      * Permissions authorized to the app
      */
     testArrayOfEnum?: Array<object> | null;
+
+    private get _proxy(): FeedbackCallSummaryContext {
+        this._context = this._context || new FeedbackCallSummaryContextImpl(this._version, this._solution.accountSid, this._solution.sid);
+        return this._context;
+    }
+
+    /**
+     * Update a FeedbackCallSummaryInstance
+     *
+     * @param { FeedbackCallSummaryContextUpdateOptions } params - Parameter for request
+     * @param { function } [callback] - Callback to handle processed record
+     *
+     * @returns { Promise } Resolves to processed FeedbackCallSummaryInstance
+     */
+    update(params: FeedbackCallSummaryContextUpdateOptions, callback?: (error: Error | null, item?: FeedbackCallSummaryInstance) => any): Promise<FeedbackCallSummaryInstance>;
+    update(params: any, callback?: any): Promise<FeedbackCallSummaryInstance>
+ {
+        return this._proxy.update(params, callback);
+    }
 
     /**
      * Provide a user-friendly representation
