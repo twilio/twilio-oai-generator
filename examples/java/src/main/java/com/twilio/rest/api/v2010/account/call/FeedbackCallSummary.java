@@ -74,16 +74,16 @@ import com.twilio.type.SubscribeRule;
 public class FeedbackCallSummary extends Resource {
     private static final long serialVersionUID = 193205363285633L;
 
-    public static FeedbackCallSummaryCreator creator(final LocalDate endDate, final LocalDate startDate){
-        return new FeedbackCallSummaryCreator(endDate, startDate);
+
+
+
+
+    public static FeedbackCallSummaryUpdater updater(final String sid, final LocalDate endDate, final LocalDate startDate){
+        return new FeedbackCallSummaryUpdater(sid, endDate, startDate);
     }
-    public static FeedbackCallSummaryCreator creator(final String accountSid, final LocalDate endDate, final LocalDate startDate){
-        return new FeedbackCallSummaryCreator(accountSid, endDate, startDate);
+    public static FeedbackCallSummaryUpdater updater(final String accountSid, final String sid, final LocalDate endDate, final LocalDate startDate){
+        return new FeedbackCallSummaryUpdater(accountSid, sid, endDate, startDate);
     }
-
-
-
-
 
     /**
     * Converts a JSON String into a FeedbackCallSummary object using the provided ObjectMapper.
