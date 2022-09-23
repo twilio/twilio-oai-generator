@@ -55,5 +55,7 @@ public class ResourceMapTest {
         assertEquals(List.of("Path"), resourceTree.ancestors(listPath, new Operation()));
         assertEquals(List.of("Path"), resourceTree.ancestors(instancePath, new Operation()));
         assertEquals(List.of("Path", "Nested"), resourceTree.ancestors(nestedPath, new Operation()));
+
+        assertEquals(listResource, resourceTree.getResourceByTag(instanceResource.getListTag()).orElseThrow());
     }
 }

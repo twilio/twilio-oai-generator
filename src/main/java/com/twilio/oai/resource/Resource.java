@@ -19,7 +19,7 @@ import lombok.RequiredArgsConstructor;
 public class Resource {
     // Some characters that are not allowed in API paths.
     public static final String SEPARATOR = ":";
-    private final String tag;
+    private final String listTag;
     private final PathItem pathItem;
     private final Inflector inflector;
 
@@ -38,7 +38,7 @@ public class Resource {
     public String getClassName() {
         final Optional<String> className = getClassNameFromExtensions(pathItem.getExtensions());
 
-        return className.orElseGet(() -> inflector.singular(PathUtils.fetchLastElement(tag, SEPARATOR)));
+        return className.orElseGet(() -> inflector.singular(PathUtils.fetchLastElement(listTag, SEPARATOR)));
     }
 
     @SuppressWarnings("unchecked")
