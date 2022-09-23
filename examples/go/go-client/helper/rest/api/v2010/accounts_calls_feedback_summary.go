@@ -21,8 +21,8 @@ import (
 	"strings"
 )
 
-// Optional parameters for the method 'CreateCallFeedbackSummary'
-type CreateCallFeedbackSummaryParams struct {
+// Optional parameters for the method 'UpdateCallFeedbackSummary'
+type UpdateCallFeedbackSummaryParams struct {
 	//
 	PathAccountSid *string `json:"PathAccountSid,omitempty"`
 	//
@@ -31,26 +31,27 @@ type CreateCallFeedbackSummaryParams struct {
 	StartDate *string `json:"StartDate,omitempty"`
 }
 
-func (params *CreateCallFeedbackSummaryParams) SetPathAccountSid(PathAccountSid string) *CreateCallFeedbackSummaryParams {
+func (params *UpdateCallFeedbackSummaryParams) SetPathAccountSid(PathAccountSid string) *UpdateCallFeedbackSummaryParams {
 	params.PathAccountSid = &PathAccountSid
 	return params
 }
-func (params *CreateCallFeedbackSummaryParams) SetEndDate(EndDate string) *CreateCallFeedbackSummaryParams {
+func (params *UpdateCallFeedbackSummaryParams) SetEndDate(EndDate string) *UpdateCallFeedbackSummaryParams {
 	params.EndDate = &EndDate
 	return params
 }
-func (params *CreateCallFeedbackSummaryParams) SetStartDate(StartDate string) *CreateCallFeedbackSummaryParams {
+func (params *UpdateCallFeedbackSummaryParams) SetStartDate(StartDate string) *UpdateCallFeedbackSummaryParams {
 	params.StartDate = &StartDate
 	return params
 }
 
-func (c *ApiService) CreateCallFeedbackSummary(params *CreateCallFeedbackSummaryParams) (*TestResponseObject, error) {
-	path := "/2010-04-01/Accounts/{AccountSid}/Calls/FeedbackSummary.json"
+func (c *ApiService) UpdateCallFeedbackSummary(Sid string, params *UpdateCallFeedbackSummaryParams) (*TestResponseObject, error) {
+	path := "/2010-04-01/Accounts/{AccountSid}/Calls/FeedbackSummary/{Sid}.json"
 	if params != nil && params.PathAccountSid != nil {
 		path = strings.Replace(path, "{"+"AccountSid"+"}", *params.PathAccountSid, -1)
 	} else {
 		path = strings.Replace(path, "{"+"AccountSid"+"}", c.requestHandler.Client.AccountSid(), -1)
 	}
+	path = strings.Replace(path, "{"+"Sid"+"}", Sid, -1)
 
 	data := url.Values{}
 	headers := make(map[string]interface{})

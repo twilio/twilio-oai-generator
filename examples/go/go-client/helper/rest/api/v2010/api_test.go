@@ -120,16 +120,16 @@ func TestCustomHeaders(t *testing.T) {
 }
 
 func TestRequiredParameters(t *testing.T) {
-	params := &CreateCallFeedbackSummaryParams{}
+	params := &UpdateCallFeedbackSummaryParams{}
 	params.SetStartDate("2021-04-04")
 
 	// EndDate is a required parameter.
-	resp, err := testApiService.CreateCallFeedbackSummary(params)
+	resp, err := testApiService.UpdateCallFeedbackSummary("sid", params)
 	assert.NotNil(t, err)
 	assert.Nil(t, resp)
 
 	params.SetEndDate("2021-04-05")
-	resp, err = testApiService.CreateCallFeedbackSummary(params)
+	resp, err = testApiService.UpdateCallFeedbackSummary("sid", params)
 
 	assert.Nil(t, err)
 	assert.NotNil(t, resp)
