@@ -1,12 +1,14 @@
 package com.twilio.oai.resolver.csharp;
 
 import com.twilio.oai.Segments;
+import com.twilio.oai.StringHelper;
 import com.twilio.oai.resolver.Resolver;
 import org.apache.commons.lang3.StringUtils;
 import org.openapitools.codegen.CodegenParameter;
 import org.openapitools.codegen.IJsonSchemaValidationProperties;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 
 import static com.twilio.oai.common.ApplicationConstants.OBJECT;
@@ -15,11 +17,15 @@ public class CodegenParameterDataTypeResolver implements Resolver<CodegenParamet
     private Map<String, Map<String, Object>> conventionMap;
     private Map<String, IJsonSchemaValidationProperties> enums;
     private String className;
+    private HashSet<String> enumsDict;
 
     public CodegenParameter resolve(CodegenParameter parameter) {
         new ParameterFormat().sanitize(parameter);
         assignParameterName(parameter);
         assignDataTypeForObject(parameter);
+        if(StringHelper.existInSetIgnoreCase(parameter.dataType, enumsDict) || StringHelper.existInSetIgnoreCase(parameter.dataFormat, enumsDict)){
+            parameter.vendorExtensions.put("x-has-enum-params", true);
+        }
         assignDataType(parameter);
         handleEnums(parameter);
         return parameter;
@@ -80,5 +86,13 @@ public class CodegenParameterDataTypeResolver implements Resolver<CodegenParamet
 
     public void setConventionMap(Map<String, Map<String, Object>> conventionMap) {
         this.conventionMap = conventionMap;
+    }
+
+    public void setEnumsDict(HashSet<String> enumsDict) {
+        this.enumsDict = enumsDict;
+    }
+
+    public HashSet<String> getEnumsDict() {
+        return enumsDict;
     }
 }

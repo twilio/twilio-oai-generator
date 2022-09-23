@@ -1,11 +1,13 @@
 package com.twilio.oai.resolver.csharp;
 
 import com.twilio.oai.Segments;
+import com.twilio.oai.StringHelper;
 import com.twilio.oai.resolver.Resolver;
 import org.openapitools.codegen.CodegenProperty;
 import org.openapitools.codegen.IJsonSchemaValidationProperties;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 
 import static com.twilio.oai.common.ApplicationConstants.LIST_START;
@@ -17,6 +19,7 @@ public class CodegenModelDataTypeResolver implements Resolver<CodegenProperty> {
     private CodegenModelComplexResolver codegenModelComplexResolver = new CodegenModelComplexResolver();
     private String className;
     private  Map<String, String> modelFormatMap = new HashMap<>();
+    private HashSet<String> enumsDict;
 
     public CodegenProperty resolve(CodegenProperty codegenProperty){
 
@@ -30,6 +33,7 @@ public class CodegenModelDataTypeResolver implements Resolver<CodegenProperty> {
 
             codegenModelComplexResolver.setModelFormatMap(modelFormatMap);
             codegenModelComplexResolver.setConventionalMap(conventionMap);
+            codegenModelComplexResolver.setEnumsDict(enumsDict);
             codegenModelComplexResolver.resolve(codegenProperty);
         }
 
@@ -39,6 +43,11 @@ public class CodegenModelDataTypeResolver implements Resolver<CodegenProperty> {
     private void assignDataType(CodegenProperty codegenProperty){
         String property = Segments.SEGMENT_PROPERTIES.getSegment();
         String deserialize = Segments.SEGMENT_DESERIALIZE.getSegment();
+
+        if(StringHelper.existInSetIgnoreCase(codegenProperty.dataType, enumsDict) || StringHelper.existInSetIgnoreCase(codegenProperty.dataFormat, enumsDict)){
+            codegenProperty.vendorExtensions.put("x-has-enum-params", true);
+        }
+
         if (conventionMap.get(property).containsKey(codegenProperty.dataFormat)) {
             codegenProperty.dataType = (String)conventionMap.get(property).get(codegenProperty.dataFormat);
         } else if (conventionMap.get(property).containsKey(codegenProperty.dataType)) {
@@ -61,6 +70,7 @@ public class CodegenModelDataTypeResolver implements Resolver<CodegenProperty> {
     }
 
     private void handleEnums(CodegenProperty codegenProperty){
+        codegenProperty.isEnum = true;
         String[] value = codegenProperty.complexType.split("Enum");
         codegenProperty.enumName = value[value.length-1] + "Enum";
         if (codegenProperty.items != null) {
@@ -71,7 +81,7 @@ public class CodegenModelDataTypeResolver implements Resolver<CodegenProperty> {
         }
         codegenProperty.dataType = className + "Resource." + codegenProperty.enumName;
         codegenProperty.vendorExtensions.put("x-jsonConverter", "StringEnumConverter");
-        enums.putIfAbsent(codegenProperty.enumName, codegenProperty);
+        enums.put(codegenProperty.enumName, codegenProperty);
     }
     public void setClassName(String className){
         this.className = className;
@@ -85,5 +95,11 @@ public class CodegenModelDataTypeResolver implements Resolver<CodegenProperty> {
     }
     public void setConventionMap(Map<String, Map<String, Object>> conventionMap) {
         this.conventionMap = conventionMap;
+    }
+    public void setEnumsDict(HashSet<String> enumsDict){
+        this.enumsDict = enumsDict;
+    }
+    public HashSet<String> getEnumsDict() {
+        return enumsDict;
     }
 }

@@ -2,6 +2,8 @@ package com.twilio.oai.resolver.csharp;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.twilio.oai.EnumsResolver;
+import com.twilio.oai.StringHelper;
 import com.twilio.oai.common.ApplicationConstants;
 import com.twilio.oai.common.EnumConstants;
 import com.twilio.oai.resolver.Resolver;
@@ -9,6 +11,7 @@ import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenProperty;
 import org.openapitools.codegen.IJsonSchemaValidationProperties;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 
 
@@ -16,6 +19,10 @@ public class CodegenModelResolver implements Resolver<CodegenModel> {
 
     private final Map<String, Map<String, Object>> conventionMap;
     private String className;
+    private boolean hasEnumsInResource = false;
+    private boolean hasEnumsInOptions = false;
+
+    private HashSet<String> enumsDict;
     private Map<String, IJsonSchemaValidationProperties> enums;
     private  Map<String, String> modelFormatMap = new HashMap<>();
     private CodegenModelDataTypeResolver codegenModelDataTypeResolver = new CodegenModelDataTypeResolver();
@@ -32,15 +39,23 @@ public class CodegenModelResolver implements Resolver<CodegenModel> {
         for (CodegenProperty codegenProperty : codegenModel.vars) {
             new PropertyFormat().sanitize(codegenProperty);
 
+            if(codegenProperty.isEnum && StringHelper.existInSetIgnoreCase(codegenProperty.dataType, enumsDict)){
+                hasEnumsInResource = true;
+            }
+
             codegenModelDataTypeResolver.setModelFormatMap(modelFormatMap);
             codegenModelDataTypeResolver.setConventionMap(conventionMap);
             codegenModelDataTypeResolver.setClassName(className);
             codegenModelDataTypeResolver.setEnums(enums);
+            codegenModelDataTypeResolver.setEnumsDict(enumsDict);
 
             if (isContainerType(codegenProperty)) {
                 codegenModelContainerDataTypeResolver.resolve(codegenProperty);
             } else {
                 codegenModelDataTypeResolver.resolve(codegenProperty);
+            }
+            if(codegenProperty.vendorExtensions.containsKey("x-has-enum-params")){
+                hasEnumsInResource = true;
             }
         }
 
@@ -80,5 +95,22 @@ public class CodegenModelResolver implements Resolver<CodegenModel> {
     public void setModelFormatMap(final Map<String, String> modelFormatMap) {
         this.modelFormatMap = new HashMap<>(modelFormatMap);
     }
+
+    public void setHasEnumsInResource(boolean hasEnumsInResource) {
+        this.hasEnumsInResource = hasEnumsInResource;
+    }
+
+    public boolean isHasEnumsInOptions() {
+        return hasEnumsInOptions;
+    }
+
+    public void setHasEnumsInOptions(boolean hasEnumsInOptions) {
+        this.hasEnumsInOptions = hasEnumsInOptions;
+    }
+
+    public void setEnumsDict(HashSet<String> enumsDict) {
+        this.enumsDict = enumsDict;
+    }
+
 
 }

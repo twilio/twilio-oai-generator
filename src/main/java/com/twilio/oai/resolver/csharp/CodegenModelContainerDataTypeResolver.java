@@ -1,10 +1,12 @@
 package com.twilio.oai.resolver.csharp;
 
+import com.twilio.oai.StringHelper;
 import com.twilio.oai.common.ApplicationConstants;
 import com.twilio.oai.common.EnumConstants;
 import com.twilio.oai.resolver.Resolver;
 import org.openapitools.codegen.CodegenProperty;
 
+import java.util.HashSet;
 import java.util.Stack;
 
 public class CodegenModelContainerDataTypeResolver implements Resolver<CodegenProperty> {
@@ -23,6 +25,10 @@ public class CodegenModelContainerDataTypeResolver implements Resolver<CodegenPr
 
         //resolveDataType(codegenProperty);
         codegenModelDataTypeResolver.resolve(codegenProperty);
+        HashSet<String> enumsDict = codegenModelDataTypeResolver.getEnumsDict();
+        if(StringHelper.existInSetIgnoreCase(codegenProperty.dataType, enumsDict)){//List of enums present
+            codegenProperty.vendorExtensions.put("x-has-enum-params", true);
+        }
         rewrapContainerType(codegenProperty,containerTypes);
 
         return codegenProperty;
