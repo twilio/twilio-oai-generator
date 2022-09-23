@@ -33,7 +33,6 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
 
     // Unique string devoid of symbols.
     public static final String PATH_SEPARATOR_PLACEHOLDER = "1234567890";
-    public static final String PREVIEW_STRING = "Preview";
 
     public static final String ACCOUNT_SID_FORMAT = "^AC[0-9a-fA-F]{32}$";
     private static final int OVERFLOW_CHECKER = 32;
@@ -98,7 +97,7 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
             path.readOperations().forEach(operation -> {
                 // Group operations together by tag. This gives us one file/post-process per resource.
                 String tag = String.join(PATH_SEPARATOR_PLACEHOLDER, resourceTree.ancestors(name, operation));
-                if(isPreviewDomain()){
+                if(isVersionLess()){
                     String subDomainName = extractSubDomainName(name);
                     subDomainMap.put(tag, subDomainName);
                 }
@@ -213,7 +212,7 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
     @Override
     public String toApiFilename(final String name) {
         String[] split = super.toApiFilename(name).split(PATH_SEPARATOR_PLACEHOLDER);
-        if(isPreviewDomain()){
+        if(isVersionLess()){
             return getSubDomainName(subDomainMap, name) + "/" +Arrays.stream(Arrays.copyOfRange(split, 0, split.length - 1)).map(String::toLowerCase).collect(Collectors.joining("/")) + "/"+split[split.length-1];
         }
 
@@ -394,7 +393,7 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
             results.put("recordKey", getRecordKey(opList, this.allModels));
             List<String> packagePaths = Arrays.asList(Arrays.copyOfRange(filePathArray,0 , filePathArray.length-1))
                     .stream().map(String::toLowerCase).collect(Collectors.toList());
-            if(isPreviewDomain()){
+            if(isVersionLess()){
                 String tag = ops.getClassname();
                 String subDomainName = getSubDomainName(subDomainMap, tag);
                 resource.put("package", subDomainName);
@@ -417,8 +416,8 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
         return results;
     }
 
-    private boolean isPreviewDomain(){
-       return this.additionalProperties.get("domain").equals(PREVIEW_STRING);
+    private boolean isVersionLess(){
+        return additionalProperties.get("apiVersion").equals("");
     }
 
     private void resetAllModelVendorExtensions() {
