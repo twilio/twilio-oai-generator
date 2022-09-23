@@ -1,33 +1,33 @@
 {{>licenseInfo}}
-import {{domain}}Base from '../{{domain}}Base';
-import Version from '../../base/Version';
+import {{domain}}Base from "../{{domain}}Base";
+import Version from "../../base/Version";
 {{#versionResources}}
-import { {{name}}ListInstance } from './{{apiVersion}}/{{filename}}';
+import { {{name}}ListInstance } from "./{{apiVersion}}/{{filename}}";
 {{/versionResources}}
 
 export default class {{apiVersionClass}} extends Version {
-    /**
-     * Initialize the {{apiVersionClass}} version of {{domain}}
-     *
-     {{#versionResources}}
-     * @property { Twilio.{{domain}}.{{apiVersionClass}}.{{name}}ListInstance } {{mountName}} - {{mountName}} resource
-     {{/versionResources}}
-     *
-     * @param { Twilio.{{domain}} } domain - The Twilio domain
-     */
-    constructor(domain: {{domain}}Base) {
-        super(domain, '{{apiVersion}}');
-    }
+  /**
+   * Initialize the {{apiVersionClass}} version of {{domain}}
+   *
+   {{#versionResources}}
+   * @property { Twilio.{{domain}}.{{apiVersionClass}}.{{name}}ListInstance } {{mountName}} - {{mountName}} resource
+   {{/versionResources}}
+   *
+   * @param { Twilio.{{domain}} } domain - The Twilio domain
+   */
+  constructor(domain: {{domain}}Base) {
+    super(domain, "{{apiVersion}}");
+  }
 
-    {{#versionResources}}
-    protected _{{mountName}}?: {{name}}ListInstance;
-    {{/versionResources}}
+  {{#versionResources}}
+  protected _{{mountName}}?: {{name}}ListInstance;
+  {{/versionResources}}
 
-    {{#versionResources}}
-    get {{mountName}}(): {{name}}ListInstance {
-        this._{{mountName}} = this._{{mountName}} || {{name}}ListInstance(this);
-        return this._{{mountName}};
-    }
+  {{#versionResources}}
+  get {{mountName}}(): {{name}}ListInstance {
+    this._{{mountName}} = this._{{mountName}} || {{name}}ListInstance(this);
+    return this._{{mountName}};
+  }
 
-    {{/versionResources}}
+  {{/versionResources}}
 }
