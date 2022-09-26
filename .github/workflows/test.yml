@@ -58,6 +58,18 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
+      - name: Install SonarCloud scanner and run analysis for .NET
+        uses: SonarSource/sonarcloud-github-action@master
+        if: (github.event_name == 'pull_request' || github.ref_type == 'branch') && !github.event.pull_request.head.repo.fork
+        with:
+          projectBaseDir: examples
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+          SONAR_TOKEN: ${{ secrets.SONAR_CSHARP_TOKEN }}
+        run:
+          dotnet tool install --global dotnet-sonarscanner
+          make cover
+
   notify-on-failure:
     name: Slack notify on failure
     if: ${{ failure() && github.ref == 'refs/heads/main' && github.event_name != 'pull_request' }}
