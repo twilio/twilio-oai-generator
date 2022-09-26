@@ -11,9 +11,9 @@ interface {{name}}Payload extends {{name}}Resource, Page.TwilioResponsePayload {
 }
 
 interface {{name}}Resource {
-    {{#vars}}
-    {{baseName}}{{^required}}?{{/required}}: {{#isEnum}}{{{vendorExtensions.x-name}}}{{/isEnum}}{{^isEnum}}{{{dataType}}}{{#isNullable}} | null{{/isNullable}}{{/isEnum}};
-    {{/vars}}
+  {{#vars}}
+  {{baseName}}{{^required}}?{{/required}}: {{#isEnum}}{{{vendorExtensions.x-name}}}{{/isEnum}}{{^isEnum}}{{{dataType}}}{{#isNullable}} | null{{/isNullable}}{{/isEnum}};
+  {{/vars}}
 }
 
 {{#description}}
@@ -22,68 +22,68 @@ interface {{name}}Resource {
  */
 {{/description}}
 export class {{name}}Instance {
-    protected _solution: any;
-    protected _context?: {{resourceName}};
+  protected _solution: any;
+  protected _context?: {{resourceName}};
 
-    constructor(protected _version: {{apiVersionClass}}, payload: {{name}}Payload{{#resourcePathParams}}, {{paramName}}{{#-last}}?{{/-last}}: {{{dataType}}}{{/resourcePathParams}}) {
-        {{#vars}}
-        {{#vendorExtensions.x-deserialize}}
-        this.{{name}} = {{vendorExtensions.x-deserialize}}(payload.{{baseName}});
-        {{/vendorExtensions.x-deserialize}}
-        {{^vendorExtensions.x-deserialize}}
-        this.{{name}} = payload.{{baseName}};
-        {{/vendorExtensions.x-deserialize}}
-        {{/vars}}
-
-        this._solution = { {{#resourcePathParams}}{{paramName}}{{#-last}}: {{paramName}} || this.{{paramName}}{{/-last}}{{^-last}}, {{/-last}}{{/resourcePathParams}} };
-    }
-
+  constructor(protected _version: {{apiVersionClass}}, payload: {{name}}Payload{{#resourcePathParams}}, {{paramName}}{{#-last}}?{{/-last}}: {{{dataType}}}{{/resourcePathParams}}) {
     {{#vars}}
-    {{#description}}
-    /**
-     * {{{description}}}
-     */
-    {{/description}}
-    {{name}}{{^required}}?{{/required}}: {{#isEnum}}{{{vendorExtensions.x-name}}}{{/isEnum}}{{^isEnum}}{{{dataType}}}{{#isNullable}} | null{{/isNullable}}{{/isEnum}};
+    {{#vendorExtensions.x-deserialize}}
+    this.{{name}} = {{vendorExtensions.x-deserialize}}(payload.{{baseName}});
+    {{/vendorExtensions.x-deserialize}}
+    {{^vendorExtensions.x-deserialize}}
+    this.{{name}} = payload.{{baseName}};
+    {{/vendorExtensions.x-deserialize}}
     {{/vars}}
-    {{#parentResourceName}}
 
-    private get _proxy(): {{resourceName}} {
-        this._context = this._context || new {{resourceName}}Impl(this._version{{#resourcePathParams}}, this._solution.{{paramName}}{{/resourcePathParams}});
-        return this._context;
-    }
-    {{#operations}}
+    this._solution = { {{#resourcePathParams}}{{paramName}}{{#-last}}: {{paramName}} || this.{{paramName}}{{/-last}}{{^-last}}, {{/-last}}{{/resourcePathParams}} };
+  }
+
+  {{#vars}}
+  {{#description}}
+  /**
+   * {{{description}}}
+   */
+  {{/description}}
+  {{name}}{{^required}}?{{/required}}: {{#isEnum}}{{{vendorExtensions.x-name}}}{{/isEnum}}{{^isEnum}}{{{dataType}}}{{#isNullable}} | null{{/isNullable}}{{/isEnum}};
+  {{/vars}}
+  {{#parentResourceName}}
+
+  private get _proxy(): {{resourceName}} {
+    this._context = this._context || new {{resourceName}}Impl(this._version{{#resourcePathParams}}, this._solution.{{paramName}}{{/resourcePathParams}});
+    return this._context;
+  }
+  {{#operations}}
 
 {{>operationSignature}} {
-        return this._proxy.{{vendorExtensions.x-name-lower}}({{#hasParams}}params, {{/hasParams}}callback);
-    }
-    {{/operations}}
-    {{/parentResourceName}}
-    {{#dependents}}
+    return this._proxy.{{vendorExtensions.x-name-lower}}({{#hasParams}}params, {{/hasParams}}callback);
+  }
+  {{/operations}}
+  {{/parentResourceName}}
+  {{#dependents}}
 
-    /**
-     * Access the {{mountName}}.
-     */
-    {{mountName}}(): {{name}}ListInstance {
-        return this._proxy.{{mountName}};
-    }
-    {{/dependents}}
+  /**
+   * Access the {{mountName}}.
+   */
+  {{mountName}}(): {{name}}ListInstance {
+    return this._proxy.{{mountName}};
+  }
+  {{/dependents}}
 
-    /**
-     * Provide a user-friendly representation
-     *
-     * @returns Object
-     */
-    toJSON() {
-        return {
-            {{#vars}}
-            {{name}}: this.{{name}}{{^-last}}, {{/-last}}
-            {{/vars}}
-        }
+  /**
+   * Provide a user-friendly representation
+   *
+   * @returns Object
+   */
+  toJSON() {
+    return {
+      {{#vars}}
+      {{name}}: this.{{name}}{{^-last}}, {{/-last}}
+      {{/vars}}
     }
+  }
 
-    [inspect.custom](_depth: any, options: InspectOptions) {
-        return inspect(this.toJSON(), options);
-    }
+  [inspect.custom](_depth: any, options: InspectOptions) {
+    return inspect(this.toJSON(), options);
+  }
 }
 {{/responseModel}}
