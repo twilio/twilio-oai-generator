@@ -17,10 +17,8 @@ using System;
 using System.Collections.Generic;
 using Twilio.Base;
 using Twilio.Converters;
-
 using System.Linq;
 
-using Twilio.Types;
 
 
 namespace Twilio.Rest.Api.V2010
@@ -157,7 +155,7 @@ namespace Twilio.Rest.Api.V2010
     public class UpdateAccountOptions : IOptions<AccountResource>
     {
     
-        public AccountResource.StatusEnum Status { get; set; }
+        public AccountResource.StatusEnum Status { get; }
         public string PathSid { get; set; }
         public string PauseBehavior { get; set; }
 

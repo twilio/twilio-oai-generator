@@ -17,10 +17,8 @@ using System;
 using System.Collections.Generic;
 using Twilio.Base;
 using Twilio.Converters;
-
 using System.Linq;
 
-using Twilio.Types;
 
 
 namespace Twilio.Rest.Api.V2010.Credential
@@ -30,7 +28,7 @@ namespace Twilio.Rest.Api.V2010.Credential
     {
         // How to decide which has getter and which has setter ?
         
-        public string TestString { get; set; }
+        public string TestString { get; }
         public bool? TestBoolean { get; set; }
         public int? TestInteger { get; set; }
         public decimal? TestNumber { get; set; }
@@ -124,3 +122,4 @@ namespace Twilio.Rest.Api.V2010.Credential
 
     }
 }
+

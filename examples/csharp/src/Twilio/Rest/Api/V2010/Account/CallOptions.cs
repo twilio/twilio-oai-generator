@@ -17,10 +17,8 @@ using System;
 using System.Collections.Generic;
 using Twilio.Base;
 using Twilio.Converters;
-
 using System.Linq;
 
-using Twilio.Types;
 
 
 namespace Twilio.Rest.Api.V2010.Account
@@ -30,7 +28,7 @@ namespace Twilio.Rest.Api.V2010.Account
     {
         // How to decide which has getter and which has setter ?
         
-        public string RequiredStringProperty { get; set; }
+        public string RequiredStringProperty { get; }
         public string PathAccountSid { get; set; }
         public List<string> TestArrayOfStrings { get; set; }
 
@@ -61,7 +59,7 @@ namespace Twilio.Rest.Api.V2010.Account
     public class DeleteCallOptions : IOptions<CallResource>
     {
         
-        public int? PathTestInteger { get; set; }
+        public int? PathTestInteger { get; }
         public string PathAccountSid { get; set; }
 
 
@@ -85,7 +83,7 @@ namespace Twilio.Rest.Api.V2010.Account
     public class FetchCallOptions : IOptions<CallResource>
     {
     
-        public int? PathTestInteger { get; set; }
+        public int? PathTestInteger { get; }
         public string PathAccountSid { get; set; }
 
 

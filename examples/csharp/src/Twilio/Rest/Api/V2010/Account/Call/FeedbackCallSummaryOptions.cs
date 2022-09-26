@@ -18,7 +18,7 @@ using System.Collections.Generic;
 using Twilio.Base;
 using Twilio.Converters;
 
-using Twilio.Types;
+
 
 
 namespace Twilio.Rest.Api.V2010.Account.Call
@@ -28,8 +28,8 @@ namespace Twilio.Rest.Api.V2010.Account.Call
     {
         // How to decide which has getter and which has setter ?
         
-        public DateTime? EndDate { get; set; }
-        public DateTime? StartDate { get; set; }
+        public DateTime? EndDate { get; }
+        public DateTime? StartDate { get; }
         public string PathAccountSid { get; set; }
 
         public CreateFeedbackCallSummaryOptions(DateTime? endDate, DateTime? startDate)

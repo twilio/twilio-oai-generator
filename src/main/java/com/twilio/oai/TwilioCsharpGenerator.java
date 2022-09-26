@@ -3,12 +3,13 @@ package com.twilio.oai;
 import com.google.common.collect.ImmutableMap;
 import com.samskivert.mustache.Mustache;
 import com.twilio.oai.common.ApplicationConstants;
-import com.twilio.oai.common.CsharpResolver;
 import com.twilio.oai.common.EnumConstants;
-import com.twilio.oai.common.ParameterResolverFactory;
 import com.twilio.oai.common.ReservedKeyword;
 import com.twilio.oai.common.Serializer;
 import com.twilio.oai.common.Utility;
+import com.twilio.oai.resolver.csharp.CSharpResolver;
+import com.twilio.oai.resolver.csharp.CodegenModelResolver;
+import com.twilio.oai.resolver.csharp.CodegenParameterResolver;
 import com.twilio.oai.mlambdas.TitleCaseLambda;
 import io.swagger.v3.oas.models.OpenAPI;
 import lombok.extern.slf4j.Slf4j;
@@ -44,8 +45,7 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
     private final List<CodegenModel> allModels = new ArrayList<>();
     private  Map<String, String> modelFormatMap = new HashMap<>();
 
-    private CsharpResolver resolver = (CsharpResolver) ParameterResolverFactory.getInstance(EnumConstants.Generator.TWILIO_CSHARP);
-
+    CSharpResolver resolver = new CSharpResolver();
 
     public TwilioCsharpGenerator() {
         super();
@@ -137,6 +137,7 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
         List<CodegenModel> responseModels = new ArrayList<>();
         String tagMap[] = ((Map<String, String>) objs.get("operations")).get("classname").split(ApplicationConstants.PATH_SEPARATOR_PLACEHOLDER);
         String className = tagMap[tagMap.length-1];
+
         resolver.setClassName(className);
 
         final ArrayList<CodegenOperation> opList = getAllOperations(results);
@@ -344,12 +345,12 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
     }
 
     private void resolveCodeOperationParams(final CodegenOperation co, ArrayList<CodegenOperation> opList, OperationsMap results, List<CodegenModel> responseModels) {
-        resolver.resolveParameter(co.pathParams);
-        resolver.resolveParameter(co.queryParams);
-        resolver.resolveParameter(co.optionalParams);
-        resolver.resolveParameter(co.requiredParams);
-        resolver.resolveParameter(co.allParams);
-        resolver.resolveParameter(co.headerParams);
+        resolver.resolve(co.pathParams);
+        resolver.resolve(co.queryParams);
+        resolver.resolve(co.optionalParams);
+        resolver.resolve(co.requiredParams);
+        resolver.resolve(co.allParams);
+        resolver.resolve(co.headerParams);
 
         if (co.requiredParams.size() > 0) {
             co.vendorExtensions.put("x-required-param-exist", true);
@@ -372,7 +373,8 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
             if (!responseModel.isPresent()) {
                 continue;
             }
-            resolver.resolveParameter(responseModel.get());
+
+            resolver.resolve(responseModel.get());
             responseModels.add(responseModel.get()); // Check for DeleteCall (delete operation)
         }
 
