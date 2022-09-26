@@ -25,6 +25,12 @@ java -cp ./openapi-generator-cli.jar:target/twilio-openapi-generator.jar \
 sed -i.bak "s/github.com\/twilio\/twilio-go/go-client\/helper/g" "$OUT_DIR/api_default.go"
 sed -i.bak "s/github.com\/twilio\/terraform-provider-twilio\/client/go-client\/terraform\/client/g" "$OUT_DIR/api_default.go"
 
+pushd examples/go
+docker run \
+  -v "${PWD}":/local \
+  "$(docker build -f Dockerfile-goimports -q .)"
+popd
+
 OUT_DIR=examples/java/src/main/java/com/twilio/rest
 rm -rf $OUT_DIR
 java -cp ./openapi-generator-cli.jar:target/twilio-openapi-generator.jar  \
@@ -44,9 +50,8 @@ java -cp ./openapi-generator-cli.jar:target/twilio-openapi-generator.jar \
   -i $API_SPEC \
   -o $OUT_DIR
 
-
-pushd examples/go
+pushd examples/node
 docker run \
   -v "${PWD}":/local \
-  "$(docker build -f Dockerfile-goimports -q .)"
+  "$(docker build -f Dockerfile-prettier -q .)"
 popd

@@ -12,60 +12,58 @@
  * Do not edit the class manually.
  */
 
-import { inspect, InspectOptions } from 'util';
-import Page from '../../../base/Page';
-import V2010 from '../V2010';
-const deserialize = require('../../../base/deserialize');
-const serialize = require('../../../base/serialize');
-import { AWSListInstance } from './credential/aWS';
-
-
+import { inspect, InspectOptions } from "util";
+import Page from "../../../base/Page";
+import V2010 from "../V2010";
+const deserialize = require("../../../base/deserialize");
+const serialize = require("../../../base/serialize");
+import { AWSListInstance } from "./credential/aWS";
 
 export interface CredentialListInstance {
+  aws: AWSListInstance;
 
-    aws: AWSListInstance;
-
-    /**
-     * Provide a user-friendly representation
-     */
-    toJSON(): any;
-    [inspect.custom](_depth: any, options: InspectOptions): any;
+  /**
+   * Provide a user-friendly representation
+   */
+  toJSON(): any;
+  [inspect.custom](_depth: any, options: InspectOptions): any;
 }
-
 
 interface CredentialListInstanceImpl extends CredentialListInstance {}
 class CredentialListInstanceImpl implements CredentialListInstance {
-    _version?: V2010;
-    _solution?: any;
-    _uri?: string;
+  _version?: V2010;
+  _solution?: any;
+  _uri?: string;
 
-    _aws?: AWSListInstance;
+  _aws?: AWSListInstance;
 }
 
 export function CredentialListInstance(version: V2010): CredentialListInstance {
-    const instance = {} as CredentialListInstanceImpl;
+  const instance = {} as CredentialListInstanceImpl;
 
-    instance._version = version;
-    instance._solution = {  };
-    instance._uri = `/v1/Credentials`;
+  instance._version = version;
+  instance._solution = {};
+  instance._uri = `/v1/Credentials`;
 
-    Object.defineProperty(instance, 'aws', {
-        get: function aws() {
-            if (!this._aws) {
-                this._aws = AWSListInstance(this._version);
-            }
-            return this._aws;
-        }
-    });
+  Object.defineProperty(instance, "aws", {
+    get: function aws() {
+      if (!this._aws) {
+        this._aws = AWSListInstance(this._version);
+      }
+      return this._aws;
+    },
+  });
 
-    instance.toJSON = function toJSON() {
-        return this._solution;
-    }
+  instance.toJSON = function toJSON() {
+    return this._solution;
+  };
 
-    instance[inspect.custom] = function inspectImpl(_depth: any, options: InspectOptions) {
-        return inspect(this.toJSON(), options);
-    }
+  instance[inspect.custom] = function inspectImpl(
+    _depth: any,
+    options: InspectOptions
+  ) {
+    return inspect(this.toJSON(), options);
+  };
 
-    return instance;
+  return instance;
 }
-
