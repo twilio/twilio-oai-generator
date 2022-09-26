@@ -14,6 +14,7 @@
 
 import { inspect, InspectOptions } from 'util';
 import Page from '../../../../base/Page';
+import Response from '../../../../http/response';
 import V2010 from '../../V2010';
 const deserialize = require('../../../../base/deserialize');
 const serialize = require('../../../../base/serialize');
@@ -48,7 +49,8 @@ export interface CallListInstance {
      */
     create(params: CallListInstanceCreateOptions, callback?: (error: Error | null, item?: CallInstance) => any): Promise<CallInstance>;
     create(params: any, callback?: any): Promise<CallInstance>
-;
+
+
     /**
      * Provide a user-friendly representation
      */
@@ -56,11 +58,10 @@ export interface CallListInstance {
     [inspect.custom](_depth: any, options: InspectOptions): any;
 }
 
-
 interface CallListInstanceImpl extends CallListInstance {}
 class CallListInstanceImpl implements CallListInstance {
     _version?: V2010;
-    _solution?: any;
+    _solution?: CallSolution;
     _uri?: string;
 
     _feedback_call_summary?: FeedbackCallSummaryListInstance;
@@ -103,19 +104,16 @@ export function CallListInstance(version: V2010, accountSid: string): CallListIn
         const headers: any = {};
         headers['Content-Type'] = 'application/x-www-form-urlencoded'
 
-
         let operationVersion = version,
             operationPromise = operationVersion.create({ uri: this._uri, method: 'POST', params: data, headers });
-
+        
         operationPromise = operationPromise.then(payload => new CallInstance(operationVersion, payload, this._solution.accountSid));
+        
 
-        if (typeof callback === 'function') {
-            operationPromise = operationPromise
-                .then(value => callback(null, value))
-                .catch(error => callback(error));
-        }
-
+        operationPromise = operationVersion.isCallbackFunction(operationPromise,callback);
         return operationPromise;
+
+
 
     }
 
@@ -142,7 +140,8 @@ export interface CallContext {
      * @returns { Promise } Resolves to processed boolean
      */
     remove(callback?: (error: Error | null, item?: CallInstance) => any): Promise<boolean>
-;
+
+
     /**
      * Fetch a CallInstance
      *
@@ -151,7 +150,8 @@ export interface CallContext {
      * @returns { Promise } Resolves to processed CallInstance
      */
     fetch(callback?: (error: Error | null, item?: CallInstance) => any): Promise<CallInstance>
-;
+
+
     /**
      * Provide a user-friendly representation
      */
@@ -160,7 +160,7 @@ export interface CallContext {
 }
 
 export class CallContextImpl implements CallContext {
-    protected _solution: any;
+    protected _solution: CallSolution;
     protected _uri: string;
 
 
@@ -173,15 +173,12 @@ export class CallContextImpl implements CallContext {
 
         let operationVersion = this._version,
             operationPromise = operationVersion.remove({ uri: this._uri, method: 'DELETE' });
+        
 
-
-        if (typeof callback === 'function') {
-            operationPromise = operationPromise
-                .then(value => callback(null, value))
-                .catch(error => callback(error));
-        }
-
+        operationPromise = operationVersion.isCallbackFunction(operationPromise,callback);
         return operationPromise;
+
+
 
     }
 
@@ -189,16 +186,14 @@ export class CallContextImpl implements CallContext {
 
         let operationVersion = this._version,
             operationPromise = operationVersion.fetch({ uri: this._uri, method: 'GET' });
-
+        
         operationPromise = operationPromise.then(payload => new CallInstance(operationVersion, payload, this._solution.accountSid, this._solution.testInteger));
+        
 
-        if (typeof callback === 'function') {
-            operationPromise = operationPromise
-                .then(value => callback(null, value))
-                .catch(error => callback(error));
-        }
-
+        operationPromise = operationVersion.isCallbackFunction(operationPromise,callback);
         return operationPromise;
+
+
 
     }
 
@@ -216,6 +211,41 @@ export class CallContextImpl implements CallContext {
     }
 }
 
+export interface CallSolution {
+    accountSid?: string;
+    testInteger?: number;
+}
+
+export class CallPage extends Page<V2010, CallPayload, CallResource, CallInstance> {
+/**
+* Initialize the CallPage
+*
+* @param version - Version of the resource
+* @param response - Response from the API
+* @param solution - Path solution
+*/
+    constructor(version: V2010, response: Response<string>, solution: CallSolution) {
+        super(version, response, solution);
+    }
+
+    /**
+    * Build an instance of CallInstance
+    *
+    * @param payload - Payload response from the API
+    */
+    getInstance(payload: CallPayload): CallInstance {
+        return new CallInstance(
+            this._version,
+            payload,
+            this._solution.accountSid,
+            this._solution.testInteger,
+        );
+    }
+
+    [inspect.custom](depth: any, options: InspectOptions) {
+        return inspect(this.toJSON(), options);
+    }
+}
 
 interface CallPayload extends CallResource, Page.TwilioResponsePayload {
 }
@@ -291,7 +321,7 @@ export class CallInstance {
      * @returns { Promise } Resolves to processed boolean
      */
     remove(callback?: (error: Error | null, item?: CallInstance) => any): Promise<boolean>
- {
+    {
         return this._proxy.remove(callback);
     }
 
@@ -303,7 +333,7 @@ export class CallInstance {
      * @returns { Promise } Resolves to processed CallInstance
      */
     fetch(callback?: (error: Error | null, item?: CallInstance) => any): Promise<CallInstance>
- {
+    {
         return this._proxy.fetch(callback);
     }
 

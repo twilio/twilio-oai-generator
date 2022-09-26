@@ -14,6 +14,7 @@
 
 import { inspect, InspectOptions } from 'util';
 import Page from '../../../../base/Page';
+import Response from '../../../../http/response';
 import V2010 from '../../V2010';
 const deserialize = require('../../../../base/deserialize');
 const serialize = require('../../../../base/serialize');
@@ -69,7 +70,8 @@ export interface NewCredentialsListInstance {
      */
     create(params: NewCredentialsListInstanceCreateOptions, callback?: (error: Error | null, item?: NewCredentialsInstance) => any): Promise<NewCredentialsInstance>;
     create(params: any, callback?: any): Promise<NewCredentialsInstance>
-;
+
+
     /**
      * Provide a user-friendly representation
      */
@@ -77,11 +79,10 @@ export interface NewCredentialsListInstance {
     [inspect.custom](_depth: any, options: InspectOptions): any;
 }
 
-
 interface NewCredentialsListInstanceImpl extends NewCredentialsListInstance {}
 class NewCredentialsListInstanceImpl implements NewCredentialsListInstance {
     _version?: V2010;
-    _solution?: any;
+    _solution?: NewCredentialsSolution;
     _uri?: string;
 
 }
@@ -123,19 +124,16 @@ export function NewCredentialsListInstance(version: V2010): NewCredentialsListIn
         const headers: any = {};
         headers['Content-Type'] = 'application/x-www-form-urlencoded'
 
-
         let operationVersion = version,
             operationPromise = operationVersion.create({ uri: this._uri, method: 'POST', params: data, headers });
-
+        
         operationPromise = operationPromise.then(payload => new NewCredentialsInstance(operationVersion, payload));
+        
 
-        if (typeof callback === 'function') {
-            operationPromise = operationPromise
-                .then(value => callback(null, value))
-                .catch(error => callback(error));
-        }
-
+        operationPromise = operationVersion.isCallbackFunction(operationPromise,callback);
         return operationPromise;
+
+
 
     }
 

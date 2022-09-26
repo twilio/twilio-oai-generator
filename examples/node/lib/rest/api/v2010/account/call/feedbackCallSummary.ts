@@ -14,6 +14,7 @@
 
 import { inspect, InspectOptions } from 'util';
 import Page from '../../../../../base/Page';
+import Response from '../../../../../http/response';
 import V2010 from '../../../V2010';
 const deserialize = require('../../../../../base/deserialize');
 const serialize = require('../../../../../base/serialize');
@@ -43,7 +44,8 @@ export interface FeedbackCallSummaryListInstance {
      */
     create(params: FeedbackCallSummaryListInstanceCreateOptions, callback?: (error: Error | null, item?: FeedbackCallSummaryInstance) => any): Promise<FeedbackCallSummaryInstance>;
     create(params: any, callback?: any): Promise<FeedbackCallSummaryInstance>
-;
+
+
     /**
      * Provide a user-friendly representation
      */
@@ -51,11 +53,10 @@ export interface FeedbackCallSummaryListInstance {
     [inspect.custom](_depth: any, options: InspectOptions): any;
 }
 
-
 interface FeedbackCallSummaryListInstanceImpl extends FeedbackCallSummaryListInstance {}
 class FeedbackCallSummaryListInstanceImpl implements FeedbackCallSummaryListInstance {
     _version?: V2010;
-    _solution?: any;
+    _solution?: FeedbackCallSummarySolution;
     _uri?: string;
 
 }
@@ -88,19 +89,16 @@ export function FeedbackCallSummaryListInstance(version: V2010, accountSid: stri
         const headers: any = {};
         headers['Content-Type'] = 'application/x-www-form-urlencoded'
 
-
         let operationVersion = version,
             operationPromise = operationVersion.create({ uri: this._uri, method: 'POST', params: data, headers });
-
+        
         operationPromise = operationPromise.then(payload => new FeedbackCallSummaryInstance(operationVersion, payload, this._solution.accountSid));
+        
 
-        if (typeof callback === 'function') {
-            operationPromise = operationPromise
-                .then(value => callback(null, value))
-                .catch(error => callback(error));
-        }
-
+        operationPromise = operationVersion.isCallbackFunction(operationPromise,callback);
         return operationPromise;
+
+
 
     }
 
