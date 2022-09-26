@@ -1,11 +1,13 @@
 package com.twilio.oai;
 
+import com.twilio.oai.resource.IResourceTree;
+import com.twilio.oai.resource.ResourceMap;
+
 import java.io.File;
 import java.util.*;
 import java.util.stream.Collectors;
 
 import io.swagger.v3.oas.models.OpenAPI;
-import io.swagger.v3.oas.models.Operation;
 import io.swagger.v3.oas.models.PathItem;
 import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenOperation;
@@ -18,9 +20,6 @@ import org.openapitools.codegen.model.ModelsMap;
 import org.openapitools.codegen.model.OperationMap;
 import org.openapitools.codegen.model.OperationsMap;
 import org.openapitools.codegen.utils.StringUtils;
-import com.twilio.oai.resource.IResourceTree;
-import com.twilio.oai.resource.ResourceMap;
-
 
 public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
 
@@ -65,16 +64,10 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
         final IResourceTree resourceTree = new ResourceMap(inflector);
         final Map<String, Object> versionResources = getStringMap(additionalProperties, "versionResources");
 
-        openAPI.getPaths().forEach((name, path) -> {
-            resourceTree.addResource(name, path);
-
-            // Certain paths exists which have no operations and are only parent placeholders. We need these paths to
-            // exist as resources during post-processing.
-            if (path.readOperations().isEmpty()) {
-                path.setGet(new Operation());
-                path.getGet().addExtension(IGNORE_EXTENSION_NAME, true);
-            }
-        });
+        openAPI.getPaths().forEach(resourceTree::addResource);
+        resourceTree.getResources().forEach(resource -> resource.updateFamily(openAPI, resourceTree));
+        // Add any paths that were created above.
+        openAPI.getPaths().forEach(resourceTree::addResource);
 
         openAPI.getPaths().forEach((name, path) -> path.readOperations().forEach(operation -> {
             // Group operations together by tag. This gives us one file/post-process per resource.
@@ -158,7 +151,7 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
         final String classname = (String) ops.get("classname");
         final List<CodegenOperation> opList = ops.getOperation();
 
-        final boolean hasInstanceOperations = opList.stream().anyMatch(this::isInstanceOperation);
+        final boolean hasInstanceOperations = opList.stream().anyMatch(PathUtils::isInstanceOperation);
 
         results.put("apiVersionPath", getRelativeRoot(classname));
 
@@ -169,7 +162,7 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
 
             final String itemName = filePathArray[filePathArray.length - 1];
             final String instanceName = itemName + "Instance";
-            final boolean isInstanceOperation = isInstanceOperation(co);
+            final boolean isInstanceOperation = PathUtils.isInstanceOperation(co);
             final HttpMethod httpMethod = HttpMethod.fromString(co.httpMethod);
             String resourceName;
             String parentResourceName = null;
@@ -271,14 +264,6 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
         results.put("resources", resources.values());
 
         return results;
-    }
-
-    private boolean isInstanceOperation(final CodegenOperation operation) {
-        return isInstancePath(operation.path);
-    }
-
-    private boolean isInstancePath(final String path) {
-        return PathUtils.removeExtension(path).endsWith("}");
     }
 
     @SuppressWarnings("unchecked")

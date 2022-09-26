@@ -28,6 +28,8 @@ import java.security.NoSuchAlgorithmException;
 import com.google.common.collect.ImmutableMap;
 import com.samskivert.mustache.Mustache.Lambda;
 
+import static com.twilio.oai.resource.Resource.TWILIO_EXTENSION_NAME;
+
 public class TwilioJavaGenerator extends JavaClientCodegen {
 
     // Unique string devoid of symbols.
@@ -590,6 +592,7 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
     /**
      * keep track of signature list that would contain different combinations of signatures for constructor generation (since Account sid is optional, so different constructor are needed)
      */
+    @SuppressWarnings("unchecked")
     private ArrayList<List<CodegenParameter>> generateSignatureList(final CodegenOperation co) {
         CodegenParameter accountSidParam = null;
         List<List<CodegenParameter>> conditionalCodegenParam = new ArrayList<>();
@@ -607,9 +610,9 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
          *           - - body
          *             - media_url</code>
          */
-        if(co.vendorExtensions.containsKey("x-twilio")) {
-            HashMap<String, Object> twilioVendorExtension = (HashMap<String, Object>) co.vendorExtensions.get("x-twilio");
-            if(twilioVendorExtension.containsKey("conditional")) {
+        if (co.vendorExtensions.containsKey(TWILIO_EXTENSION_NAME)) {
+            HashMap<String, Object> twilioVendorExtension = (HashMap<String, Object>) co.vendorExtensions.get(TWILIO_EXTENSION_NAME);
+            if (twilioVendorExtension.containsKey("conditional")) {
                 List<List<String>> conditionalParams = (List<List<String>>) twilioVendorExtension.get("conditional");
                 // map the conditional param names with the codegenParameter added in optional params
                 conditionalCodegenParam = conditionalParams.stream().map(
