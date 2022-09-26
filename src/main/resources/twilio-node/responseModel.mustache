@@ -54,7 +54,7 @@ export class {{name}}Instance {
     }
     {{#operations}}
 
-{{>operationSignature}} {
+{{>operationSignature}}    {
         return this._proxy.{{vendorExtensions.x-name-lower}}({{#hasParams}}params, {{/hasParams}}callback);
     }
     {{/operations}}
