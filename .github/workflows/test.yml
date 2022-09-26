@@ -69,14 +69,14 @@ jobs:
           dotnet tool install --global dotnet-sonarscanner
 
       - name: Run SonarCloud analysis for .NET
-          if: (github.event_name == 'pull_request' || github.ref_type == 'branch') && !github.event.pull_request.head.repo.fork
-          with:
-            projectBaseDir: examples
-          env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
-            SONAR_TOKEN: ${{ secrets.SONAR_CSHARP_TOKEN }}
-          run:
-            make cover
+        if: (github.event_name == 'pull_request' || github.ref_type == 'branch') && !github.event.pull_request.head.repo.fork
+        with:
+          projectBaseDir: examples
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+          SONAR_TOKEN: ${{ secrets.SONAR_CSHARP_TOKEN }}
+        run:
+          make cover
 
   notify-on-failure:
     name: Slack notify on failure
