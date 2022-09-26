@@ -41,6 +41,10 @@
         {{^required}}if (params.{{paramName}} !== undefined) {{/required}}data['{{{baseName}}}'] = params.{{paramName}};
         {{/vendorExtensions.x-serialize}}
         {{/formParams}}
+        {{#vendorExtensions.x-is-list-operation}}
+        if (params.page !== undefined) data['Page'] = params.pageNumber;
+        if (params.pageToken !== undefined) data['PageToken'] = params.pageToken;
+        {{/vendorExtensions.x-is-list-operation}}
     {{/bodyParam}}
 
         const headers: any = {};
@@ -49,23 +53,61 @@
         headers['Content-Type'] = '{{{mediaType}}}'
     {{/-first}}
     {{/consumes}}
-
     {{#headerParams}}
         if (params.{{paramName}} !== undefined) headers['{{{baseName}}}'] = params.{{paramName}};
     {{/headerParams}}
-{{/hasParams}}
+    {{/hasParams}}
 
         let operationVersion = {{#parentResourceName}}this._version{{/parentResourceName}}{{^parentResourceName}}version{{/parentResourceName}},
             operationPromise = operationVersion.{{vendorExtensions.x-name-lower}}({ uri: this._uri, method: '{{httpMethod}}'{{#hasParams}}{{#bodyParam}}, body: params{{/bodyParam}}{{^bodyParam}}, params: data{{/bodyParam}}, headers{{/hasParams}} });
-
-        {{^vendorExtensions.x-is-delete-operation}}
+        {{^vendorExtensions.x-is-list-operation}}{{^vendorExtensions.x-is-delete-operation}}
         operationPromise = operationPromise.then(payload => new {{instanceName}}(operationVersion, payload{{#resourcePathParams}}, this._solution.{{paramName}}{{/resourcePathParams}}));
-        {{/vendorExtensions.x-is-delete-operation}}
+        {{/vendorExtensions.x-is-delete-operation}}{{/vendorExtensions.x-is-list-operation}}
+        {{#vendorExtensions.x-is-list-operation}}
+        operationPromise = operationPromise.then(payload => new {{returnType}}(operationVersion, payload, this._solution));
+        {{/vendorExtensions.x-is-list-operation}}
 
-        if (typeof callback === 'function') {
-            operationPromise = operationPromise
-                .then(value => callback(null, value))
-                .catch(error => callback(error));
-        }
-
+        operationPromise = operationVersion.isCallbackFunction(operationPromise,callback);
         return operationPromise;
+
+    {{#vendorExtensions.x-is-list-operation}}
+    }
+    instance.each = instance._version.each;
+    instance.list = function list(params?: any, callback?: any): Promise<{{instanceName}}[]> {
+        if (typeof params === 'function') {
+            callback = params;
+            params = {};
+        } else {
+            params = params || {};
+        }
+        let allResources = [];
+        params.callback = function (resource, done) {
+            allResources.push(resource);
+            if (typeof params.limit !== 'undefined' && allResources.length === params.limit) {
+                done();
+            }
+        };
+        let operationPromise = new Promise((resolve, reject) => {
+            params.done = function (error) {
+                if (typeof error === 'undefined') {
+                    resolve(allResources);
+                } else {
+                    reject(error);
+                }
+            };
+        });
+        operationPromise = version.isCallbackFunction(operationPromise, callback);
+        this.each(params);
+        return operationPromise as Promise<{{instanceName}}[]>;
+    }
+
+    instance.getPage = function getPage(targetUrl?: any, callback?: any): Promise<{{returnType}}> {
+        let operationPromise = this._version._domain.twilio.request({method: '{{httpMethod}}', uri: targetUrl});
+
+        operationPromise = operationPromise.then(payload => new {{returnType}}(this._version, payload, this._solution));
+        operationPromise = version.isCallbackFunction(operationPromise,callback);
+        return operationPromise;
+    }
+
+    {{/vendorExtensions.x-is-list-operation}}
+
