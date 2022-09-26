@@ -52,7 +52,7 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
 
         apiNameSuffix = "";
         initialApiPackage = apiPackage;
-        // Find the templates in the local resources dir
+        // Find the templates in the local resources dir.
         embeddedTemplateDir = templateDir = getName();
         sourceFolder = "";
         packageName = "";
