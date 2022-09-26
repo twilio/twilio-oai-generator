@@ -62,7 +62,7 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
 
     @Override
     public void processOpenAPI(final OpenAPI openAPI) {
-        final IResourceTree resourceTree = new ResourceMap(inflector, PATH_SEPARATOR_PLACEHOLDER);
+        final IResourceTree resourceTree = new ResourceMap(inflector);
         final Map<String, Object> versionResources = getStringMap(additionalProperties, "versionResources");
 
         openAPI.getPaths().forEach((name, path) -> {

@@ -9,7 +9,6 @@ import com.twilio.oai.resource.IResourceTree;
 import com.twilio.oai.resource.ResourceMap;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.PathItem;
-import io.swagger.v3.oas.models.Paths;
 import lombok.AllArgsConstructor;
 import org.openapitools.codegen.*;
 import org.openapitools.codegen.languages.JavaClientCodegen;
@@ -42,10 +41,9 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
     public static final String URI = "uri";
 
     private final List<CodegenModel> allModels = new ArrayList<>();
-    private  Map<String, String> modelFormatMap = new HashMap<>();
-    private  Map<String, String> subDomainMap = new HashMap<>();
+    private final Map<String, String> modelFormatMap = new HashMap<>();
+    private final Map<String, String> subDomainMap = new HashMap<>();
     private final Inflector inflector = new Inflector();
-    private IResourceTree resourceTree;
 
     public TwilioJavaGenerator() {
         super();
@@ -86,14 +84,12 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
 
     @Override
     public void processOpenAPI(final OpenAPI openAPI) {
-        resourceTree = new ResourceMap(inflector, PATH_SEPARATOR_PLACEHOLDER);
+        final IResourceTree resourceTree = new ResourceMap(inflector);
         // regex example : https://flex-api.twilio.com
         Pattern serverUrlPattern = Pattern.compile("https:\\/\\/([a-zA-Z-]+)\\.twilio\\.com");
+        openAPI.getPaths().forEach(resourceTree::addResource);
         openAPI.getPaths().forEach((name, path) -> {
-            resourceTree.addResource(name, path);
-        });
-        openAPI.getPaths().forEach((name, path) -> {
-            updateAccountSidParam(name, path);
+            updateAccountSidParam(path);
             path.readOperations().forEach(operation -> {
                 // Group operations together by tag. This gives us one file/post-process per resource.
                 String tag = String.join(PATH_SEPARATOR_PLACEHOLDER, resourceTree.ancestors(name, operation));
@@ -107,7 +103,7 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
             Matcher m = serverUrlPattern.matcher(path.getServers().get(0).getUrl());
             if(m.find()){
                 additionalProperties.put("domainName", StringUtils.camelize(m.group(1)));
-                additionalProperties.put("domainPackage", m.group(1).replaceAll("-",""));
+                additionalProperties.put("domainPackage", m.group(1).replace("-",""));
             }
         });
     }
@@ -122,25 +118,10 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
         return null;
     }
 
-    private void resetOperationMethodCalls(PathItem pathItemOperatorClassVendExt, PathItem pathItemClassVendExt) {
-        pathItemClassVendExt.put(null);
-        pathItemClassVendExt.get(null);
-        pathItemClassVendExt.post(null);
-        pathItemClassVendExt.delete(null);
-        pathItemClassVendExt.patch(null);
-        pathItemOperatorClassVendExt.put(null);
-        pathItemOperatorClassVendExt.get(null);
-        pathItemOperatorClassVendExt.post(null);
-        pathItemOperatorClassVendExt.delete(null);
-        pathItemOperatorClassVendExt.patch(null);
-    }
-
     /**
      * make accountSid an optional param
-     * @param path
-     * @param pathMap
      */
-    private void updateAccountSidParam(final String path, final PathItem pathMap) {
+    private void updateAccountSidParam(final PathItem pathMap) {
         pathMap.readOperations().stream().map(io.swagger.v3.oas.models.Operation::getParameters)
         .filter(Objects::nonNull)
         .flatMap(Collection::stream)
@@ -158,7 +139,6 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
         name = super.toVarName(name);
         return name;
     }
-
 
     @Override
     public void postProcessParameter(final CodegenParameter parameter) {
@@ -254,7 +234,7 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
         for(CodegenParameter e : co.queryParams){
             queryParamNames.add(e.paramName);
         }
-        Collections.sort(queryParamNames, Collections.reverseOrder());
+        queryParamNames.sort(Collections.reverseOrder());
         for(CodegenParameter e : co.queryParams){
             String afterName = e.paramName + "After";
             String beforeName = e.paramName + "Before";
@@ -264,7 +244,7 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
                 queryParamNames.remove(beforeName);
             }
         }
-        List<CodegenParameter> finalQueryParamList = new ArrayList<CodegenParameter>();
+        List<CodegenParameter> finalQueryParamList = new ArrayList<>();
         for (CodegenParameter e : co.queryParams) {
             if (queryParamNames.contains(e.paramName)) {
                 finalQueryParamList.add(e);
@@ -305,7 +285,6 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
         final List<CodegenOperation> opList = ops.getOperation();
         String recordKey = getRecordKey(opList, this.allModels);
         List<CodegenModel> responseModels = new ArrayList<>();
-        boolean isVersionV2010 = objs.get("package").equals("v2010");
         apiTemplateFiles.remove("updater.mustache");
         apiTemplateFiles.remove("creator.mustache");
         apiTemplateFiles.remove("deleter.mustache");
@@ -326,24 +305,24 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
                 resource.put("hasUpdate", true);
                 addOperationName(co, "Update");
                 co.vendorExtensions.put("x-is-update-operation", true);
-                resource.put("signatureListUpdate", generateSignatureList(resource, co));
+                resource.put("signatureListUpdate", generateSignatureList(co));
                 apiTemplateFiles.put("updater.mustache", "Updater.java");
             } else if (co.nickname.startsWith("delete")) {
                 resource.put("hasDelete", true);
                 addOperationName(co, "Remove");
                 co.vendorExtensions.put("x-is-delete-operation", true);
-                resource.put("signatureListDelete", generateSignatureList(resource, co));
+                resource.put("signatureListDelete", generateSignatureList(co));
                 apiTemplateFiles.put("deleter.mustache", "Deleter.java");
                 addDeleteHeaderEnums(co, responseModels);
             } else if (co.nickname.startsWith("create")) {
                 resource.put("hasCreate", true);
                 co.vendorExtensions.put("x-is-create-operation", true);
                 addOperationName(co, "Create");
-                resource.put("signatureListCreate", generateSignatureList(resource, co));
+                resource.put("signatureListCreate", generateSignatureList(co));
                 apiTemplateFiles.put("creator.mustache", "Creator.java");
             } else if (co.nickname.startsWith("fetch")) {
                 resource.put("hasFetch", true);
-                resource.put("signatureListFetch", generateSignatureList(resource, co));
+                resource.put("signatureListFetch", generateSignatureList(co));
                 co.vendorExtensions.put("x-is-fetch-operation", true);
                 addOperationName(co, "Fetch");
                 apiTemplateFiles.put("fetcher.mustache", "Fetcher.java");
@@ -351,7 +330,7 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
                 resource.put("hasRead", true);
                 co.vendorExtensions.put("x-is-read-operation", true);
                 addOperationName(co, "Page");
-                resource.put("signatureListRead", generateSignatureList(resource, co));
+                resource.put("signatureListRead", generateSignatureList(co));
                 apiTemplateFiles.put("reader.mustache", "Reader.java");
 
             }
@@ -391,8 +370,10 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
               });
 
             results.put("recordKey", getRecordKey(opList, this.allModels));
-            List<String> packagePaths = Arrays.asList(Arrays.copyOfRange(filePathArray,0 , filePathArray.length-1))
-                    .stream().map(String::toLowerCase).collect(Collectors.toList());
+            List<String> packagePaths = Arrays
+                .stream(Arrays.copyOfRange(filePathArray, 0, filePathArray.length - 1))
+                .map(String::toLowerCase)
+                .collect(Collectors.toList());
             if(isVersionLess()){
                 String tag = ops.getClassname();
                 String subDomainName = getSubDomainName(subDomainMap, tag);
@@ -431,7 +412,7 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
                 codegenProperties.add(createCodeGenPropertyFromParameter(cp));
             }
         }
-        if (codegenProperties.size() > 0) {
+        if (!codegenProperties.isEmpty()) {
             CodegenModel codegenModel = new CodegenModel();
             codegenModel.vendorExtensions.put("enumVars", codegenProperties);
             responseModels.add(codegenModel);
@@ -475,7 +456,7 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
             if (param.isEnum) {
                 Optional<CodegenProperty> alreadyAdded = enumProperties.stream().
                         filter(item -> item.enumName.equalsIgnoreCase(param.enumName)).findFirst();
-                if (!alreadyAdded.isPresent() && param.dataFormat == null) {
+                if (alreadyAdded.isEmpty() && param.dataFormat == null) {
                     enumProperties.add(createCodeGenPropertyFromParameter(param));
                 }
             }
@@ -491,11 +472,7 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
     }
 
     private TreeSet<CodegenProperty> getEnumPropertyComparator() {
-        return new TreeSet<CodegenProperty>(new Comparator<CodegenProperty>() {
-            public int compare(CodegenProperty cp1, CodegenProperty cp2) {
-                return cp1.enumName.compareTo(cp2.getEnumName());
-            }
-        });
+        return new TreeSet<>((cp1, cp2) -> cp1.enumName.compareTo(cp2.getEnumName()));
     }
 
     private CodegenProperty createCodeGenPropertyFromParameter(CodegenParameter co) {
@@ -509,8 +486,8 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
         property.datatypeWithEnum = co.datatypeWithEnum;
         property.complexType = co.getComplexType();
         property.name = co.paramName;
-        property.nameInCamelCase = co.baseName.replaceAll("-","");
-        property.nameInSnakeCase = co.baseName.replaceAll("-","_").toLowerCase();
+        property.nameInCamelCase = co.baseName.replace("-","");
+        property.nameInSnakeCase = co.baseName.replace("-","_").toLowerCase();
         return property;
     }
 
@@ -576,12 +553,11 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
     private Optional<CodegenModel> getModelCoPath(final String modelName, CodegenOperation codegenOperation, String recordKey) {
         if (codegenOperation.vendorExtensions.containsKey("x-is-read-operation") && (boolean)codegenOperation.vendorExtensions.get("x-is-read-operation")) {
                 Optional<CodegenModel> coModel = allModels.stream().filter(model -> model.getClassname().equals(modelName)).findFirst();
-                if (!coModel.isPresent()) {
+                if (coModel.isEmpty()) {
                         return Optional.empty();
                     }
                 CodegenProperty property = coModel.get().vars.stream().filter(prop -> prop.baseName.equals(recordKey)).findFirst().get();
-                Optional<CodegenModel> complexModel = allModels.stream().filter(model -> model.getClassname().equals(property.complexType)).findFirst();
-                return complexModel;
+            return allModels.stream().filter(model -> model.getClassname().equals(property.complexType)).findFirst();
             }
         return allModels.stream().filter(model -> model.getClassname().equals(modelName)).findFirst();
     }
@@ -613,11 +589,8 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
 
     /**
      * keep track of signature list that would contain different combinations of signatures for constructor generation (since Account sid is optional, so different constructor are needed)
-     * @param resource
-     * @param co
-     * @return
      */
-    private ArrayList<List<CodegenParameter>> generateSignatureList(final Map<String, Object> resource, final CodegenOperation co) {
+    private ArrayList<List<CodegenParameter>> generateSignatureList(final CodegenOperation co) {
         CodegenParameter accountSidParam = null;
         List<List<CodegenParameter>> conditionalCodegenParam = new ArrayList<>();
         Optional<CodegenParameter> optionalParam = co.allParams.stream()
@@ -625,7 +598,7 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
         if(optionalParam.isPresent()){
             accountSidParam = optionalParam.get();
         }
-        /**
+        /*
          * structure for vendorExtensions
          * @<code> x-twilio:
          *          conditional:
@@ -721,7 +694,7 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
             propertyMap.put(key,type);
         }
 
-        ArrayList<String> sortedKeys = new ArrayList<String>(propertyMap.keySet());
+        ArrayList<String> sortedKeys = new ArrayList<>(propertyMap.keySet());
         Collections.sort(sortedKeys);
         StringBuilder sb = new StringBuilder();
         for (String key : sortedKeys){

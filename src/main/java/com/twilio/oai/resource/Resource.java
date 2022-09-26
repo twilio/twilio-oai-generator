@@ -11,21 +11,22 @@ import java.util.stream.Collectors;
 
 import io.swagger.v3.oas.models.Operation;
 import io.swagger.v3.oas.models.PathItem;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-import static com.twilio.oai.TwilioJavaGenerator.PATH_SEPARATOR_PLACEHOLDER;
-
+@Getter
 @RequiredArgsConstructor
 public class Resource {
-    private final String path;
+    // Some characters that are not allowed in API paths.
+    public static final String SEPARATOR = ":";
+    private final String listTag;
     private final PathItem pathItem;
     private final Inflector inflector;
 
-    public Resource getParentResource(final IResourceTree resourceTree) {
+    public Optional<Resource> getParentResource(final IResourceTree resourceTree) {
         return PathUtils
             .getTwilioExtension(pathItem, "parent")
-            .map(parent -> resourceTree.findResource(parent, false))
-            .orElse(null);
+            .flatMap(parent -> resourceTree.findResource(parent, false));
     }
 
     public String getClassName(final Operation operation) {
@@ -37,8 +38,7 @@ public class Resource {
     public String getClassName() {
         final Optional<String> className = getClassNameFromExtensions(pathItem.getExtensions());
 
-        return className.orElseGet(() -> inflector.singular(PathUtils.fetchLastElement(path,
-                                                                                       PATH_SEPARATOR_PLACEHOLDER)));
+        return className.orElseGet(() -> inflector.singular(PathUtils.fetchLastElement(listTag, SEPARATOR)));
     }
 
     @SuppressWarnings("unchecked")
@@ -60,9 +60,5 @@ public class Resource {
 
     private String transformClassName(final String className) {
         return Arrays.stream(className.split("_")).map(TwilioJavaGenerator::capitalize).collect(Collectors.joining());
-    }
-
-    public String resourceName() {
-        return this.path;
     }
 }
