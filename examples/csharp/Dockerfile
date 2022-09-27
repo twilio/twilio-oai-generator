@@ -27,4 +27,4 @@ RUN dotnet restore
 RUN dotnet build -c Release
 
 RUN apt-get -y install build-essential
-RUN make cover PROJECT_NAME=twilio_twilio-oai-generator-csharp SONAR_TOKEN=$SONAR_TOKEN
+RUN make cover PROJECT_NAME=twilio_twilio-oai-generator-csharp

@@ -2,7 +2,7 @@
 set -e
 
 cd examples/prism
-docker-compose build --pull --build-arg SONAR_TOKEN=$1
+docker-compose build --pull
 docker-compose up -d --force-recreate --remove-orphans
 
 function wait_for() {
