@@ -14,4 +14,4 @@ generate: install
 	bash scripts/generate.sh
 
 test-docker: generate
-	bash ./prism.sh
+	bash scripts/prism.sh
