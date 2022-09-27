@@ -145,6 +145,7 @@ func ResourceAccountsCalls() *schema.Resource {
 			"required_string_property": AsString(SchemaForceNewRequired),
 			"path_account_sid":         AsString(SchemaForceNewOptional),
 			"test_array_of_strings":    AsList(AsString(SchemaForceNewOptional), SchemaForceNewOptional),
+			"test_array_of_uri":        AsList(AsString(SchemaForceNewOptional), SchemaForceNewOptional),
 			"test_integer":             AsInt(SchemaComputed),
 		},
 		Importer: &schema.ResourceImporter{

@@ -6,8 +6,8 @@ import com.twilio.oai.PathUtils;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
 
 import io.swagger.v3.oas.models.Operation;
 import io.swagger.v3.oas.models.PathItem;
@@ -17,44 +17,55 @@ import lombok.RequiredArgsConstructor;
 public class ResourceMap implements IResourceTree {
     private final Map<String, Resource> urlResourceMap = new HashMap<>();
     private final Inflector inflector;
-    private final String pathDelimiter;
 
     @Override
     public List<String> ancestors(final String resourceName, final Operation operation) {
-        List<String> ancestorList = new ArrayList<>();
-        Resource resource = findResource(removeVersion(resourceName).toUpperCase(Locale.ROOT), false);
-        String className = resource.getClassName(operation);
-        resource = resource.getParentResource(this);
-        while (resource != null) {
-            ancestorList.add(0, resource.getClassName().toLowerCase(Locale.ROOT));
-            resource = resource.getParentResource(this);
+        final Resource resource = findResource(resourceName).orElseThrow();
+        final List<String> ancestorList = new ArrayList<>();
+        ancestorList.add(resource.getClassName(operation));
+
+        Optional<Resource> parent = resource.getParentResource(this);
+        while (parent.isPresent()) {
+            final Resource parentResource = parent.get();
+            ancestorList.add(0, parentResource.getClassName());
+            parent = parentResource.getParentResource(this);
         }
-        ancestorList.add(className);
+
         return ancestorList;
     }
 
     @Override
-    public Resource findResource(String name, boolean isTag) {
-        if (isTag) {
-            return urlResourceMap.get(name);
-        }
-        String tag = generateTag(name);
-        return urlResourceMap.get(tag);
+    public Optional<Resource> findResource(final String name) {
+        return findResource(name, true);
     }
 
     @Override
-    public String addResource(String name, PathItem pathItem) {
-        String withoutVersion = removeVersion(name);
-        String tag = generateTag(withoutVersion);
-        urlResourceMap.put(tag, new Resource(PathUtils.cleanPathAndRemoveFirstElement(name).replace("/", pathDelimiter), pathItem, inflector));
+    public Optional<Resource> findResource(String name, final boolean removeVersion) {
+        if (removeVersion) {
+            name = PathUtils.removeFirstPart(name);
+        }
+
+        return getResourceByTag(generateTag(name));
+    }
+
+    @Override
+    public Optional<Resource> getResourceByTag(final String tag) {
+        return Optional.ofNullable(urlResourceMap.get(tag));
+    }
+
+    @Override
+    public String addResource(final String name, final PathItem pathItem) {
+        final String withoutVersion = PathUtils.removeFirstPart(name);
+        final String withoutTrailingParam = PathUtils.removeTrailingPathParam(withoutVersion);
+        final String tag = generateTag(withoutVersion);
+        urlResourceMap.put(tag, new Resource(generateTag(withoutTrailingParam), pathItem, inflector));
         return tag;
     }
 
-    private String removeVersion(final String path) {
-        return path.replaceFirst("/[^/]+", "");
-    }
-
     private String generateTag(String url) {
-        return url.substring(1).replaceAll("\\{|\\}|\\.", "").replace("/", pathDelimiter).toUpperCase();
+        return PathUtils
+            .removeBraces(PathUtils.removeExtension(url))
+            .replaceFirst("^/", "")
+            .replace("/", Resource.SEPARATOR);
     }
 }

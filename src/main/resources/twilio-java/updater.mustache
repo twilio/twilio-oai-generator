@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.time.ZonedDateTime;
+import java.time.LocalDate;
 
 {{^fullJavaUtil}}
 import java.util.ArrayList;
@@ -55,24 +56,18 @@ public class {{resourceName}}Updater extends Updater<{{resourceName}}>{
         this.{{paramName}} = {{paramName}};
         return this;
     }
-{{#vendorExtensions.x-promotions}}
 {{#isArray}}
+    public {{resourceName}}Updater set{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}(final {{{baseType}}} {{paramName}}){
+        return set{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}(Promoter.listOfOne({{paramName}}));
+    }
+{{/isArray}}
+{{#vendorExtensions.x-promotions}}
 {{#entrySet}}
 
     public {{resourceName}}Updater set{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}(final {{#lambda.titlecase}}{{key}}{{/lambda.titlecase}} {{paramName}}){
         return set{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}({{value}});
     }
 {{/entrySet}}
-{{/isArray}}
-{{^isArray}}
-{{#entrySet}}
-
-    public {{resourceName}}Updater set{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}(final {{#lambda.titlecase}}{{key}}{{/lambda.titlecase}} {{paramName}}){
-    this.{{paramName}} = {{value}};
-    return this;
-    }
-{{/entrySet}}
-{{/isArray}}
 {{/vendorExtensions.x-promotions}}
 {{/vendorExtensions.x-non-path-params}}
 

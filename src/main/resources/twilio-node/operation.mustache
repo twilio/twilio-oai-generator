@@ -1,29 +1,29 @@
 {{#hasParams}}
-    {{#hasRequiredParams}}
-        if (params === null || params === undefined) {
-            throw new Error('Required parameter "params" missing.');
-        }
+  {{#hasRequiredParams}}
+    if (params === null || params === undefined) {
+      throw new Error('Required parameter "params" missing.');
+    }
 
-        {{#requiredParams}}
-        {{^isBodyParam}}
-        if (params.{{paramName}} === null || params.{{paramName}} === undefined) {
-            throw new Error('Required parameter "params.{{paramName}}" missing.');
-        }
+    {{#requiredParams}}
+    {{^isBodyParam}}
+    if (params.{{paramName}} === null || params.{{paramName}} === undefined) {
+      throw new Error('Required parameter "params.{{paramName}}" missing.');
+    }
 
-        {{/isBodyParam}}
-        {{/requiredParams}}
-    {{/hasRequiredParams}}
-    {{^hasRequiredParams}}
-        if (typeof params === 'function') {
-            callback = params;
-            params = {};
-        } else {
-            params = params || {};
-        }
+    {{/isBodyParam}}
+    {{/requiredParams}}
+  {{/hasRequiredParams}}
+  {{^hasRequiredParams}}
+    if (typeof params === "function") {
+      callback = params;
+      params = {};
+    } else {
+      params = params || {};
+    }
 
-    {{/hasRequiredParams}}
-    {{^bodyParam}}
-        const data: any = {};
+  {{/hasRequiredParams}}
+  {{^bodyParam}}
+    const data: any = {};
 
         {{#queryParams}}
         {{#vendorExtensions.x-serialize}}

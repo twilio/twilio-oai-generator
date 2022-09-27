@@ -9,11 +9,11 @@
 export class {{classname}} {{#parent}}extends {{{parent}}} {{/parent}}{
 {{#vars}}
 {{#description}}
-    /**
-     * {{{description}}}
-     */
+  /**
+   * {{{description}}}
+   */
 {{/description}}
-    '{{name}}'{{^required}}?{{/required}}: {{#isEnum}}{{{datatypeWithEnum}}}{{/isEnum}}{{^isEnum}}{{{dataType}}}{{#isNullable}} | null{{/isNullable}}{{/isEnum}};
+  "{{name}}"{{^required}}?{{/required}}: {{#isEnum}}{{{datatypeWithEnum}}}{{/isEnum}}{{^isEnum}}{{{dataType}}}{{#isNullable}} | null{{/isNullable}}{{/isEnum}};
 {{/vars}}
 }
 
@@ -21,13 +21,13 @@ export class {{classname}} {{#parent}}extends {{{parent}}} {{/parent}}{
 export namespace {{classname}} {
 {{#vars}}
 {{#isEnum}}
-    export enum {{enumName}} {
-        {{#allowableValues}}
-        {{#enumVars}}
-        {{name}} = <any> {{{value}}}{{^-last}},{{/-last}}
-        {{/enumVars}}
-        {{/allowableValues}}
-    }
+  export enum {{enumName}} {
+    {{#allowableValues}}
+    {{#enumVars}}
+    {{name}} = <any> {{{value}}}{{^-last}},{{/-last}}
+    {{/enumVars}}
+    {{/allowableValues}}
+  }
 {{/isEnum}}
 {{/vars}}
 }
@@ -35,11 +35,11 @@ export namespace {{classname}} {
 {{/isEnum}}
 {{#isEnum}}
 export enum {{classname}} {
-    {{#allowableValues}}
-    {{#enumVars}}
-    {{name}} = <any> {{{value}}}{{^-last}},{{/-last}}
-    {{/enumVars}}
-    {{/allowableValues}}
+  {{#allowableValues}}
+  {{#enumVars}}
+  {{name}} = <any> {{{value}}}{{^-last}},{{/-last}}
+  {{/enumVars}}
+  {{/allowableValues}}
 }
 {{/isEnum}}
 {{/models}}
