@@ -11,6 +11,7 @@ RUN dotnet tool install --global dotnet-sonarscanner \
 
 RUN dotnet tool list -g
 ENV PATH="${PATH}:/root/.dotnet/tools"
+ENV SONAR_TOKEN=$SONAR_TOKEN
 
 RUN mkdir /app
 WORKDIR /app
@@ -21,10 +22,10 @@ RUN rm -rf src/Twilio/Rest/*/
 COPY src/Twilio/Rest src/Twilio/Rest
 
 RUN rm -rf test/Twilio.Test/*/
-COPY unit-test/Rest integrationTest/Rest test/Twilio.Test/
+COPY unit-test/Rest test/Twilio.Test/
 
 RUN dotnet restore
 RUN dotnet build -c Release
 
 RUN apt-get -y install build-essential
-RUN make cover PROJECT_NAME=twilio_twilio-oai-generator-csharp SONAR_TOKEN=$SONAR_TOKEN
+RUN make cover PROJECT_NAME=twilio_twilio-oai-generator-csharp
