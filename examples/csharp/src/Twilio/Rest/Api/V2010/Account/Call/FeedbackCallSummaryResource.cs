@@ -47,14 +47,20 @@ namespace Twilio.Rest.Api.V2010.Account.Call
             public static readonly StatusEnum Absent = new StatusEnum("absent");
         }
 
+
+
+
+
         
-        private static Request BuildCreateRequest(CreateFeedbackCallSummaryOptions options, ITwilioRestClient client)
+        private static Request BuildUpdateRequest(UpdateFeedbackCallSummaryOptions options, ITwilioRestClient client)
         {
             
-            string path = "/2010-04-01/Accounts/{AccountSid}/Calls/FeedbackSummary.json";
+            string path = "/2010-04-01/Accounts/{AccountSid}/Calls/FeedbackSummary/{Sid}.json";
 
             string PathAccountSid = options.PathAccountSid ?? client.AccountSid;
             path = path.Replace("{"+"AccountSid"+"}", PathAccountSid);
+            string PathSid = options.PathSid;
+            path = path.Replace("{"+"Sid"+"}", PathSid);
 
 
             return new Request(
@@ -66,53 +72,47 @@ namespace Twilio.Rest.Api.V2010.Account.Call
             );
         }
 
-        public static FeedbackCallSummaryResource Create(CreateFeedbackCallSummaryOptions options, ITwilioRestClient client = null)
+
+        public static FeedbackCallSummaryResource Update(UpdateFeedbackCallSummaryOptions options, ITwilioRestClient client = null)
         {
             client = client ?? TwilioClient.GetRestClient();
-            var response = client.Request(BuildCreateRequest(options, client));
+            var response = client.Request(BuildUpdateRequest(options, client));
             return FromJson(response.Content);
         }
 
         #if !NET35
-        public static async System.Threading.Tasks.Task<FeedbackCallSummaryResource> CreateAsync(CreateFeedbackCallSummaryOptions options,
-        ITwilioRestClient client = null)
+        public static async System.Threading.Tasks.Task<FeedbackCallSummaryResource> UpdateAsync(UpdateFeedbackCallSummaryOptions options,
+                                                                                                          ITwilioRestClient client = null)
         {
             client = client ?? TwilioClient.GetRestClient();
-            var response = await client.RequestAsync(BuildCreateRequest(options, client));
+            var response = await client.RequestAsync(BuildUpdateRequest(options, client));
             return FromJson(response.Content);
         }
         #endif
 
-
-        public static FeedbackCallSummaryResource Create(
+        public static FeedbackCallSummaryResource Update(
+                                          string pathSid,
                                           DateTime? endDate,
                                           DateTime? startDate,
                                           string pathAccountSid = null,
                                           ITwilioRestClient client = null)
         {
-            var options = new CreateFeedbackCallSummaryOptions(endDate, startDate){  PathAccountSid = pathAccountSid };
-            return Create(options, client);
+            var options = new UpdateFeedbackCallSummaryOptions(pathSid, endDate, startDate){ PathAccountSid = pathAccountSid };
+            return Update(options, client);
         }
 
         #if !NET35
-        public static async System.Threading.Tasks.Task<FeedbackCallSummaryResource> CreateAsync(
-                                                                                  DateTime? endDate,
-                                                                                  DateTime? startDate,
-                                                                                  string pathAccountSid = null,
-                                                                                  ITwilioRestClient client = null)
+        public static async System.Threading.Tasks.Task<FeedbackCallSummaryResource> UpdateAsync(
+                                                                              string pathSid,
+                                                                              DateTime? endDate,
+                                                                              DateTime? startDate,
+                                                                              string pathAccountSid = null,
+                                                                              ITwilioRestClient client = null)
         {
-        var options = new CreateFeedbackCallSummaryOptions(endDate, startDate){  PathAccountSid = pathAccountSid };
-            return await CreateAsync(options, client);
+            var options = new UpdateFeedbackCallSummaryOptions(pathSid, endDate, startDate){ PathAccountSid = pathAccountSid };
+            return await UpdateAsync(options, client);
         }
         #endif
-
-
-
-
-
-
-
-
     
         public static Page<FeedbackCallSummaryResource> GetPage(string targetUrl, ITwilioRestClient client)
         {

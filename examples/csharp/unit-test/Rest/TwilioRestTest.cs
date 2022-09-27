@@ -995,7 +995,7 @@ namespace Twilio.Tests.Rest
         }
 
         [Test]
-        public void TestFeedbackCallSummaryObjectCreationResponseValid()
+        public void TestFeedbackCallSummaryObjectUpdateResponseValid()
         {
             var twilioRestClient = Substitute.For<ITwilioRestClient>();
             DateTime startDate = DateTime.Parse("2009-01-27");
@@ -1003,7 +1003,7 @@ namespace Twilio.Tests.Rest
 
             twilioRestClient.AccountSid.Returns("sid");
             twilioRestClient.Request(Arg.Any<Request>()).Returns(new Response(System.Net.HttpStatusCode.OK, "{ \"account_sid\":\"AXCCCCC1234567891234567\",\"sid\":\"123\"}"));
-            FeedbackCallSummaryResource feedbackSummary = FeedbackCallSummaryResource.Create(startDate, endDate,pathAccountSid:ACCOUNT_SID,client:twilioRestClient);
+            FeedbackCallSummaryResource feedbackSummary = FeedbackCallSummaryResource.Update(ACCOUNT_SID, endDate,startDate,client:twilioRestClient);
             Assert.IsNotNull(feedbackSummary);
         }
 
@@ -1257,14 +1257,14 @@ namespace Twilio.Tests.Rest
 
        #if !NET35
        [Test]
-       public async System.Threading.Tasks.Task TestFeedbackCallSummaryObjectCreationResponseValidAsync()
+       public async System.Threading.Tasks.Task TestFeedbackCallSummaryObjectUpdationResponseValidAsync()
        {
            var twilioRestClient = Substitute.For<ITwilioRestClient>();
            DateTime startDate = DateTime.Parse("2009-01-27");
            DateTime endDate = DateTime.Parse("2022-01-27");
            twilioRestClient.AccountSid.Returns("sid");
            twilioRestClient.RequestAsync(Arg.Any<Request>()).Returns(new Response(System.Net.HttpStatusCode.OK, "{ \"account_sid\":\"AXCCCCC1234567891234567\",\"sid\":\"123\"}"));
-           FeedbackCallSummaryResource feedbackSummary = await FeedbackCallSummaryResource.CreateAsync(startDate, endDate,pathAccountSid:ACCOUNT_SID,client:twilioRestClient);
+           FeedbackCallSummaryResource feedbackSummary = await FeedbackCallSummaryResource.UpdateAsync(ACCOUNT_SID,startDate, endDate,client:twilioRestClient);
            Assert.IsNotNull(feedbackSummary);
        }
        #endif
@@ -1486,27 +1486,27 @@ namespace Twilio.Tests.Rest
         public void TestCreateFeedbackCallSummaryOptionsCreation()
         {
 
-            string pathAccountSid = "PathAccountSid";
+            string pathSid = "PathAccountSid";
             DateTime startDate = DateTime.Parse("2010-3-12");
             DateTime endDate = DateTime.Parse("2011-5-12");
 
-            var createCall = new CreateFeedbackCallSummaryOptions(endDate,startDate) { PathAccountSid = pathAccountSid};
-            Assert.IsNotNull(createCall);
-            Assert.IsNotNull(createCall.PathAccountSid);
-            Assert.AreEqual(pathAccountSid, createCall.PathAccountSid);
+            var updateCall = new UpdateFeedbackCallSummaryOptions(pathSid,endDate,startDate);
+            Assert.IsNotNull(updateCall);
+            Assert.IsNotNull(updateCall.PathSid);
+            Assert.AreEqual(pathSid, updateCall.PathSid);
         }
 
        [Test]
        public void TestCreateFeedbackCallSummaryOptionsParamsCreation()
        {
 
-           string pathAccountSid = "PathAccountSid";
+           string pathSid = "PathAccountSid";
            DateTime startDate = DateTime.Parse("2010-3-12");
            DateTime endDate = DateTime.Parse("2011-5-12");
 
-           var createCall = new CreateFeedbackCallSummaryOptions(endDate,startDate) { PathAccountSid = pathAccountSid};
-           Assert.IsNotNull(createCall);
-           var param = createCall.GetParams();
+           var updateCall = new UpdateFeedbackCallSummaryOptions(pathSid,endDate,startDate);
+           Assert.IsNotNull(updateCall);
+           var param = updateCall.GetParams();
            Assert.IsNotNull(param);
            Assert.AreEqual(startDate.ToString("yyyy-MM-dd"), param.Single((x) => x.Key == "StartDate").Value);
            Assert.AreEqual(endDate.ToString("yyyy-MM-dd"), param.Single((x) => x.Key == "EndDate").Value);

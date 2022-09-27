@@ -88,9 +88,10 @@ namespace Twilio.Rest.Api.V2010.Account
                                           string requiredStringProperty,
                                           string pathAccountSid = null,
                                           List<string> testArrayOfStrings = null,
+                                          List<Uri> testArrayOfUri = null,
                                           ITwilioRestClient client = null)
         {
-            var options = new CreateCallOptions(requiredStringProperty){  PathAccountSid = pathAccountSid, TestArrayOfStrings = testArrayOfStrings };
+            var options = new CreateCallOptions(requiredStringProperty){  PathAccountSid = pathAccountSid, TestArrayOfStrings = testArrayOfStrings, TestArrayOfUri = testArrayOfUri };
             return Create(options, client);
         }
 
@@ -99,9 +100,10 @@ namespace Twilio.Rest.Api.V2010.Account
                                                                                   string requiredStringProperty,
                                                                                   string pathAccountSid = null,
                                                                                   List<string> testArrayOfStrings = null,
+                                                                                  List<Uri> testArrayOfUri = null,
                                                                                   ITwilioRestClient client = null)
         {
-        var options = new CreateCallOptions(requiredStringProperty){  PathAccountSid = pathAccountSid, TestArrayOfStrings = testArrayOfStrings };
+        var options = new CreateCallOptions(requiredStringProperty){  PathAccountSid = pathAccountSid, TestArrayOfStrings = testArrayOfStrings, TestArrayOfUri = testArrayOfUri };
             return await CreateAsync(options, client);
         }
         #endif

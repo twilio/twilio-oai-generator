@@ -31,11 +31,13 @@ namespace Twilio.Rest.Api.V2010.Account
         public string RequiredStringProperty { get; }
         public string PathAccountSid { get; set; }
         public List<string> TestArrayOfStrings { get; set; }
+        public List<Uri> TestArrayOfUri { get; set; }
 
         public CreateCallOptions(string requiredStringProperty)
         {
             RequiredStringProperty = requiredStringProperty;
             TestArrayOfStrings = new List<string>();
+            TestArrayOfUri = new List<Uri>();
         }
 
         
@@ -50,6 +52,10 @@ namespace Twilio.Rest.Api.V2010.Account
             if (TestArrayOfStrings != null)
             {
                 p.AddRange(TestArrayOfStrings.Select(TestArrayOfStrings => new KeyValuePair<string, string>("TestArrayOfStrings", TestArrayOfStrings)));
+            }
+            if (TestArrayOfUri != null)
+            {
+                p.AddRange(TestArrayOfUri.Select(TestArrayOfUri => new KeyValuePair<string, string>("TestArrayOfUri", Serializers.Url(TestArrayOfUri))));
             }
             return p;
         }

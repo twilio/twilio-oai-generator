@@ -23,17 +23,18 @@ using Twilio.Converters;
 
 namespace Twilio.Rest.Api.V2010.Account.Call
 {
-
-    public class CreateFeedbackCallSummaryOptions : IOptions<FeedbackCallSummaryResource>
+    public class UpdateFeedbackCallSummaryOptions : IOptions<FeedbackCallSummaryResource>
     {
-        // How to decide which has getter and which has setter ?
-        
+    
+        public string PathSid { get; }
         public DateTime? EndDate { get; }
         public DateTime? StartDate { get; }
         public string PathAccountSid { get; set; }
 
-        public CreateFeedbackCallSummaryOptions(DateTime? endDate, DateTime? startDate)
+
+        public UpdateFeedbackCallSummaryOptions(string pathSid, DateTime? endDate, DateTime? startDate)
         {
+            PathSid = pathSid;
             EndDate = endDate;
             StartDate = startDate;
         }
@@ -56,5 +57,7 @@ namespace Twilio.Rest.Api.V2010.Account.Call
         
 
     }
+
+
 }
 
