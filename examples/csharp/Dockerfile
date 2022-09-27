@@ -1,6 +1,5 @@
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 ARG SONAR_CSHARP_TOKEN=""
-ARG DUMMY=""
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
          git \
@@ -27,5 +26,5 @@ COPY unit-test/Rest integrationTest/Rest test/Twilio.Test/
 RUN dotnet restore
 RUN dotnet build -c Release
 
-RUN apt-get install build-essential
+RUN apt-get -y install build-essential
 RUN make cover PROJECT_NAME=twilio_twilio-csharp SONAR_TOKEN=$SONAR_CSHARP_TOKEN
