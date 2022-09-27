@@ -27,6 +27,5 @@ COPY unit-test/Rest integrationTest/Rest test/Twilio.Test/
 RUN dotnet restore
 RUN dotnet build -c Release
 
-RUN echo $DUMMY DUMMY ${DUMMY} DUMMY
-
+RUN apt-get install build-essential
 RUN make cover PROJECT_NAME=twilio_twilio-csharp SONAR_TOKEN=$SONAR_CSHARP_TOKEN
