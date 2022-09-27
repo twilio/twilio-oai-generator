@@ -1,5 +1,5 @@
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
-ARG SONAR_CSHARP_TOKEN=""
+ARG SONAR_CSHARP_TOKEN="515a571d5d81ee03461ff13b1329b723611b9766"
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
          git \
