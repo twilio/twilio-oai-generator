@@ -53,27 +53,21 @@ public class {{resourceName}}Fetcher extends Fetcher<{{resourceName}}> {
 
 {{#vendorExtensions.x-non-path-params}}
     public {{resourceName}}Fetcher set{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}(final {{{dataType}}} {{paramName}}){
-    this.{{paramName}} = {{paramName}};
-    return this;
+        this.{{paramName}} = {{paramName}};
+        return this;
     }
-{{#vendorExtensions.x-promotions}}
 {{#isArray}}
+    public {{resourceName}}Fetcher set{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}(final {{{baseType}}} {{paramName}}){
+        return set{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}(Promoter.listOfOne({{paramName}}));
+    }
+{{/isArray}}
+{{#vendorExtensions.x-promotions}}
 {{#entrySet}}
 
     public {{resourceName}}Fetcher set{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}(final {{#lambda.titlecase}}{{key}}{{/lambda.titlecase}} {{paramName}}){
         return set{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}({{value}});
     }
 {{/entrySet}}
-{{/isArray}}
-{{^isArray}}
-{{#entrySet}}
-
-    public {{resourceName}}Fetcher set{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}(final {{#lambda.titlecase}}{{key}}{{/lambda.titlecase}} {{paramName}}){
-    this.{{paramName}} = {{value}};
-    return this;
-    }
-{{/entrySet}}
-{{/isArray}}
 {{/vendorExtensions.x-promotions}}
 {{/vendorExtensions.x-non-path-params}}
 

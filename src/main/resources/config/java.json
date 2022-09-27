@@ -98,9 +98,6 @@
     "uri": {
       "string": "Promoter.uriFromString(%s)"
     },
-    "list-uri": {
-      "uri": "Promoter.listOfOne(%s)"
-    },
     "phone-number": {
       "string": "Promoter.phoneNumberFromString(%s)"
     },

@@ -21,9 +21,6 @@ using Twilio.Clients;
 using Twilio.Converters;
 using Twilio.Exceptions;
 using Twilio.Http;
-
-using Twilio.Types;
-
 using Twilio.Types;
 
 

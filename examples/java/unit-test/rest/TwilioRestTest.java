@@ -38,7 +38,7 @@ import com.twilio.rest.api.v2010.account.CallCreator;
 import com.twilio.rest.api.v2010.account.CallDeleter;
 import com.twilio.rest.api.v2010.account.CallFetcher;
 import com.twilio.rest.api.v2010.account.call.FeedbackCallSummary;
-import com.twilio.rest.api.v2010.account.call.FeedbackCallSummaryCreator;
+import com.twilio.rest.api.v2010.account.call.FeedbackCallSummaryUpdater;
 import com.twilio.rest.api.v2010.credential.Aws;
 import com.twilio.rest.api.v2010.credential.AwsDeleter;
 import com.twilio.rest.api.v2010.credential.AwsFetcher;
@@ -207,7 +207,7 @@ public class TwilioRestTest {
         when(twilioRestClient.request(mockRequest)).thenReturn(new Response("{\"accounts\":[{\"call_sid\":\"PNXXXXY\", \"sid\":123}]}", 404));
         when(twilioRestClient.getObjectMapper()).thenReturn(objectMapper);
         AccountCreator accountCreator = new AccountCreator();
-        accountCreator.setRecordingStatusCallbackEvent(null);
+        accountCreator.setRecordingStatusCallbackEvent("some value");
         accountCreator.setXTwilioWebhookEnabled(null);
 
         accountCreator.create(twilioRestClient);
@@ -903,6 +903,24 @@ public class TwilioRestTest {
         assertNotNull(callDeleterAccountSid);
     }
 
+    @Test(expected = ApiConnectionException.class)
+    public void testShouldAcceptSingleObjectForList() {
+        when(twilioRestClient.request(Mockito.any())).thenReturn(null);
+        CallCreator callCreator=new CallCreator(ACCOUNT_SID, "testString");
+        callCreator.setTestArrayOfStrings( "Hello" );
+        callCreator.setTestArrayOfUri("http://example-uri.com");
+        callCreator.create(twilioRestClient);
+        NewCredentialsCreator credentialsCreator = NewCredentials.creator(ACCOUNT_SID,1,1F);
+        Map<String, Object> item1 = new HashMap<>();
+         item1.put("A", Arrays.asList("Apple", "Aces"));
+        credentialsCreator.setTestObjectArray(item1);
+        credentialsCreator.setPermissions(NewCredentials.Permissions.GET_ALL);
+        credentialsCreator.create(twilioRestClient);
+        AccountCreator accountCreator = new AccountCreator();
+        accountCreator.setRecordingStatusCallback("https://validurl.com");
+        accountCreator.create(twilioRestClient);
+    }
+
     @Test
     public void testAWSCrud() {
         NewCredentialsCreator credentialsCreator1 = NewCredentials.creator(ACCOUNT_SID,1,1F);
@@ -1250,10 +1268,10 @@ public class TwilioRestTest {
         ObjectMapper objectMapper = new ObjectMapper();
         when(twilioRestClient.getObjectMapper()).thenReturn(objectMapper);
 
-        FeedbackCallSummaryCreator creatorSid = FeedbackCallSummary.creator("sid",startDate, endDate);
-        creatorSid.setStartDate(LocalDate.parse("2009-01-17"));
-        creatorSid.setEndDate(LocalDate.parse("2021-01-17"));
-        FeedbackCallSummary feedbackCallSummary = creatorSid.create(twilioRestClient);
+        FeedbackCallSummaryUpdater updater = FeedbackCallSummary.updater("account_sid", "sid", startDate, endDate);
+        updater.setStartDate(LocalDate.parse("2009-01-17"));
+        updater.setEndDate(LocalDate.parse("2021-01-17"));
+        FeedbackCallSummary feedbackCallSummary = updater.update(twilioRestClient);
 
         assertEquals("123", feedbackCallSummary.getAccountSid());
     }
@@ -1266,8 +1284,8 @@ public class TwilioRestTest {
         when(twilioRestClient.getAccountSid()).thenReturn("sid");
         when(twilioRestClient.request(Mockito.any())).thenReturn(null);
 
-        FeedbackCallSummaryCreator creator = FeedbackCallSummary.creator(startDate, endDate);
-        creator.create(twilioRestClient);
+        FeedbackCallSummaryUpdater updater = FeedbackCallSummary.updater("sid", startDate, endDate);
+        updater.update(twilioRestClient);
     }
 
     @Test(expected = ApiException.class)
@@ -1281,10 +1299,9 @@ public class TwilioRestTest {
         ObjectMapper objectMapper = new ObjectMapper();
         when(twilioRestClient.getObjectMapper()).thenReturn(objectMapper);
 
-        FeedbackCallSummaryCreator creator = FeedbackCallSummary.creator(startDate, endDate);
-        creator.create(twilioRestClient);
+        FeedbackCallSummaryUpdater updater = FeedbackCallSummary.updater("sid", startDate, endDate);
+        updater.update(twilioRestClient);
     }
-
 
     @Test
     public void testFeedbackCallSummaryObjectCreationFromString() {

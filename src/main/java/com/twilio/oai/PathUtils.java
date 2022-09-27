@@ -1,21 +1,16 @@
 package com.twilio.oai;
 
-import com.google.common.collect.Streams;
-
 import java.util.Arrays;
-import java.util.Collection;
+import java.util.Map;
 import java.util.Optional;
 
-public class PathUtils {
+import com.google.common.collect.Streams;
+import io.swagger.v3.oas.models.PathItem;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
-    public static Optional<String> getInstancePath(final String targetPath, final Collection<String> allPaths) {
-        return allPaths
-            .stream()
-            .map(PathUtils::removeExtension)
-            .filter(p -> removePathParamIds(p)
-                .matches(escapeRegex(removeExtension(removePathParamIds(targetPath))) + "/\\{[^/]+"))
-            .findFirst();
-    }
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public class PathUtils {
 
     public static String getLastPathPart(final String path) {
         final String[] pathParts = path.split("/");
@@ -23,7 +18,7 @@ public class PathUtils {
     }
 
     public static String cleanPathAndRemoveFirstElement(final String path) {
-        return removeExtension(path).replaceFirst("/[^/]+/", "").replaceAll("/\\{[^}]+}", ""); // Drop the version
+        return cleanPath(removeExtension(removeFirstPart(path)));
     }
 
     public static String removeBraces(final String path) {
@@ -33,6 +28,11 @@ public class PathUtils {
     public static String cleanPath(final String path) {
         return path.replaceAll("/\\{[^}]+}", "");
     }
+
+    public static String removeFirstPart(final String path) {
+        return path.replaceFirst("/[^/]+/", "");
+    }
+
     public static String removeExtension(final String path) {
         return path.replaceAll("\\.[^/]+$", "");
     }
@@ -41,11 +41,24 @@ public class PathUtils {
         return path.replaceAll("\\{[^}]+", "{");
     }
 
+    public static String removeTrailingPathParam(final String path) {
+        return path.replaceFirst("/\\{[^}]+}[^/]*$", "");
+    }
+
     public static String escapeRegex(final String regex) {
         return regex.replace("{", "\\{");
     }
 
     public static String fetchLastElement(final String path, final String delimiter) {
         return Streams.findLast(Arrays.stream(path.split(delimiter))).get();
+    }
+
+    public static Optional<String> getTwilioExtension(final PathItem pathItem, final String extensionKey) {
+        return Optional
+            .ofNullable(pathItem.getExtensions())
+            .map(ext -> ext.get("x-twilio"))
+            .map(Map.class::cast)
+            .map(xTwilio -> xTwilio.get(extensionKey))
+            .map(String.class::cast);
     }
 }
