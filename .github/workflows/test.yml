@@ -38,7 +38,7 @@ jobs:
         run: make test
 
       - name: Run helper tests
-        run: make test-docker
+        run: make test-docker SONAR_CSHARP_TOKEN=${{ secrets.SONAR_TOKEN }}
 
       - name: Show git status and fail on diff
         run: |
@@ -57,22 +57,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-
-      - name: Install SonarCloud scanner for .NET
-        if: (github.event_name == 'pull_request' || github.ref_type == 'branch') && !github.event.pull_request.head.repo.fork
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
-          SONAR_TOKEN: ${{ secrets.SONAR_CSHARP_TOKEN }}
-        run:
-          dotnet tool install --global dotnet-sonarscanner
-
-      - name: Run SonarCloud analysis for .NET
-        if: (github.event_name == 'pull_request' || github.ref_type == 'branch') && !github.event.pull_request.head.repo.fork
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
-          SONAR_TOKEN: ${{ secrets.SONAR_CSHARP_TOKEN }}
-        run:
-          make cover
 
   notify-on-failure:
     name: Slack notify on failure
