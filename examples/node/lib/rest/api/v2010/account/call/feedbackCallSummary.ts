@@ -95,7 +95,7 @@ export function FeedbackCallSummaryListInstance(version: V2010, accountSid: stri
         operationPromise = operationPromise.then(payload => new FeedbackCallSummaryInstance(operationVersion, payload, this._solution.accountSid));
         
 
-        operationPromise = operationVersion.isCallbackFunction(operationPromise,callback);
+        operationPromise = operationVersion.setPromiseCallback(operationPromise,callback);
         return operationPromise;
 
 

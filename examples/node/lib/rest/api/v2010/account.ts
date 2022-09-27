@@ -183,7 +183,7 @@ export class AccountContextImpl implements AccountContext {
             operationPromise = operationVersion.remove({ uri: this._uri, method: 'DELETE' });
         
 
-        operationPromise = operationVersion.isCallbackFunction(operationPromise,callback);
+        operationPromise = operationVersion.setPromiseCallback(operationPromise,callback);
         return operationPromise;
 
 
@@ -198,7 +198,7 @@ export class AccountContextImpl implements AccountContext {
         operationPromise = operationPromise.then(payload => new AccountInstance(operationVersion, payload, this._solution.sid));
         
 
-        operationPromise = operationVersion.isCallbackFunction(operationPromise,callback);
+        operationPromise = operationVersion.setPromiseCallback(operationPromise,callback);
         return operationPromise;
 
 
@@ -228,7 +228,7 @@ export class AccountContextImpl implements AccountContext {
         operationPromise = operationPromise.then(payload => new AccountInstance(operationVersion, payload, this._solution.sid));
         
 
-        operationPromise = operationVersion.isCallbackFunction(operationPromise,callback);
+        operationPromise = operationVersion.setPromiseCallback(operationPromise,callback);
         return operationPromise;
 
 
@@ -600,7 +600,7 @@ export function AccountListInstance(version: V2010): AccountListInstance {
         operationPromise = operationPromise.then(payload => new AccountInstance(operationVersion, payload));
         
 
-        operationPromise = operationVersion.isCallbackFunction(operationPromise,callback);
+        operationPromise = operationVersion.setPromiseCallback(operationPromise,callback);
         return operationPromise;
 
 
@@ -632,44 +632,18 @@ export function AccountListInstance(version: V2010): AccountListInstance {
         
         operationPromise = operationPromise.then(payload => new AccountPage(operationVersion, payload, this._solution));
 
-        operationPromise = operationVersion.isCallbackFunction(operationPromise,callback);
+        operationPromise = operationVersion.setPromiseCallback(operationPromise,callback);
         return operationPromise;
 
     }
     instance.each = instance._version.each;
-    instance.list = function list(params?: any, callback?: any): Promise<AccountInstance[]> {
-        if (typeof params === 'function') {
-            callback = params;
-            params = {};
-        } else {
-            params = params || {};
-        }
-        let allResources = [];
-        params.callback = function (resource, done) {
-            allResources.push(resource);
-            if (typeof params.limit !== 'undefined' && allResources.length === params.limit) {
-                done();
-            }
-        };
-        let operationPromise = new Promise((resolve, reject) => {
-            params.done = function (error) {
-                if (typeof error === 'undefined') {
-                    resolve(allResources);
-                } else {
-                    reject(error);
-                }
-            };
-        });
-        operationPromise = version.isCallbackFunction(operationPromise, callback);
-        this.each(params);
-        return operationPromise as Promise<AccountInstance[]>;
-    }
+    instance.list = instance._version.list;
 
     instance.getPage = function getPage(targetUrl?: any, callback?: any): Promise<AccountPage> {
         let operationPromise = this._version._domain.twilio.request({method: 'GET', uri: targetUrl});
 
         operationPromise = operationPromise.then(payload => new AccountPage(this._version, payload, this._solution));
-        operationPromise = version.isCallbackFunction(operationPromise,callback);
+        operationPromise = version.setPromiseCallback(operationPromise,callback);
         return operationPromise;
     }
 

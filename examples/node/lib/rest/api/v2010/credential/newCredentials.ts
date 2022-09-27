@@ -130,7 +130,7 @@ export function NewCredentialsListInstance(version: V2010): NewCredentialsListIn
         operationPromise = operationPromise.then(payload => new NewCredentialsInstance(operationVersion, payload));
         
 
-        operationPromise = operationVersion.isCallbackFunction(operationPromise,callback);
+        operationPromise = operationVersion.setPromiseCallback(operationPromise,callback);
         return operationPromise;
 
 

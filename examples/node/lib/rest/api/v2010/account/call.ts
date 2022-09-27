@@ -110,7 +110,7 @@ export function CallListInstance(version: V2010, accountSid: string): CallListIn
         operationPromise = operationPromise.then(payload => new CallInstance(operationVersion, payload, this._solution.accountSid));
         
 
-        operationPromise = operationVersion.isCallbackFunction(operationPromise,callback);
+        operationPromise = operationVersion.setPromiseCallback(operationPromise,callback);
         return operationPromise;
 
 
@@ -175,7 +175,7 @@ export class CallContextImpl implements CallContext {
             operationPromise = operationVersion.remove({ uri: this._uri, method: 'DELETE' });
         
 
-        operationPromise = operationVersion.isCallbackFunction(operationPromise,callback);
+        operationPromise = operationVersion.setPromiseCallback(operationPromise,callback);
         return operationPromise;
 
 
@@ -190,7 +190,7 @@ export class CallContextImpl implements CallContext {
         operationPromise = operationPromise.then(payload => new CallInstance(operationVersion, payload, this._solution.accountSid, this._solution.testInteger));
         
 
-        operationPromise = operationVersion.isCallbackFunction(operationPromise,callback);
+        operationPromise = operationVersion.setPromiseCallback(operationPromise,callback);
         return operationPromise;
 
 

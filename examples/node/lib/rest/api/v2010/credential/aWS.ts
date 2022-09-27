@@ -146,7 +146,7 @@ export class AWSContextImpl implements AWSContext {
             operationPromise = operationVersion.remove({ uri: this._uri, method: 'DELETE' });
         
 
-        operationPromise = operationVersion.isCallbackFunction(operationPromise,callback);
+        operationPromise = operationVersion.setPromiseCallback(operationPromise,callback);
         return operationPromise;
 
 
@@ -161,7 +161,7 @@ export class AWSContextImpl implements AWSContext {
         operationPromise = operationPromise.then(payload => new AWSInstance(operationVersion, payload, this._solution.sid));
         
 
-        operationPromise = operationVersion.isCallbackFunction(operationPromise,callback);
+        operationPromise = operationVersion.setPromiseCallback(operationPromise,callback);
         return operationPromise;
 
 
@@ -190,7 +190,7 @@ export class AWSContextImpl implements AWSContext {
         operationPromise = operationPromise.then(payload => new AWSInstance(operationVersion, payload, this._solution.sid));
         
 
-        operationPromise = operationVersion.isCallbackFunction(operationPromise,callback);
+        operationPromise = operationVersion.setPromiseCallback(operationPromise,callback);
         return operationPromise;
 
 
@@ -541,44 +541,18 @@ export function AWSListInstance(version: V2010): AWSListInstance {
         
         operationPromise = operationPromise.then(payload => new AWSPage(operationVersion, payload, this._solution));
 
-        operationPromise = operationVersion.isCallbackFunction(operationPromise,callback);
+        operationPromise = operationVersion.setPromiseCallback(operationPromise,callback);
         return operationPromise;
 
     }
     instance.each = instance._version.each;
-    instance.list = function list(params?: any, callback?: any): Promise<AWSInstance[]> {
-        if (typeof params === 'function') {
-            callback = params;
-            params = {};
-        } else {
-            params = params || {};
-        }
-        let allResources = [];
-        params.callback = function (resource, done) {
-            allResources.push(resource);
-            if (typeof params.limit !== 'undefined' && allResources.length === params.limit) {
-                done();
-            }
-        };
-        let operationPromise = new Promise((resolve, reject) => {
-            params.done = function (error) {
-                if (typeof error === 'undefined') {
-                    resolve(allResources);
-                } else {
-                    reject(error);
-                }
-            };
-        });
-        operationPromise = version.isCallbackFunction(operationPromise, callback);
-        this.each(params);
-        return operationPromise as Promise<AWSInstance[]>;
-    }
+    instance.list = instance._version.list;
 
     instance.getPage = function getPage(targetUrl?: any, callback?: any): Promise<AWSPage> {
         let operationPromise = this._version._domain.twilio.request({method: 'GET', uri: targetUrl});
 
         operationPromise = operationPromise.then(payload => new AWSPage(this._version, payload, this._solution));
-        operationPromise = version.isCallbackFunction(operationPromise,callback);
+        operationPromise = version.setPromiseCallback(operationPromise,callback);
         return operationPromise;
     }
 
