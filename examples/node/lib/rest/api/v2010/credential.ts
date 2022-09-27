@@ -14,6 +14,7 @@
 
 import { inspect, InspectOptions } from "util";
 import Page from "../../../base/Page";
+import Response from "../../../http/response";
 import V2010 from "../V2010";
 const deserialize = require("../../../base/deserialize");
 const serialize = require("../../../base/serialize");
@@ -21,6 +22,127 @@ import { AWSListInstance } from "./credential/aWS";
 
 export interface CredentialListInstance {
   aws: AWSListInstance;
+
+  /**
+   * Streams CredentialInstance records from the API.
+   *
+   * This operation lazily loads records as efficiently as possible until the limit
+   * is reached.
+   *
+   * The results are passed into the callback function, so this operation is memory
+   * efficient.
+   *
+   * If a function is passed as the first argument, it will be used as the callback
+   * function.
+   *
+   * @param { function } [callback] - Function to process each record
+   */
+  each(
+    callback?: (item: CredentialInstance, done: (err?: Error) => void) => void
+  ): void;
+  /**
+   * Streams CredentialInstance records from the API.
+   *
+   * This operation lazily loads records as efficiently as possible until the limit
+   * is reached.
+   *
+   * The results are passed into the callback function, so this operation is memory
+   * efficient.
+   *
+   * If a function is passed as the first argument, it will be used as the callback
+   * function.
+   *
+   * @param { CredentialListInstanceEachOptions } [params] - Options for request
+   * @param { function } [callback] - Function to process each record
+   */
+  each(
+    params?: CredentialListInstanceEachOptions,
+    callback?: (item: CredentialInstance, done: (err?: Error) => void) => void
+  ): void;
+  each(params?: any, callback?: any): void;
+  /**
+   * Retrieve a single target page of CredentialInstance records from the API.
+   *
+   * The request is executed immediately.
+   *
+   * If a function is passed as the first argument, it will be used as the callback
+   * function.
+   *
+   * @param { function } [callback] - Callback to handle list of records
+   */
+  getPage(
+    callback?: (error: Error | null, items: CredentialPage) => any
+  ): Promise<CredentialPage>;
+  /**
+   * Retrieve a single target page of CredentialInstance records from the API.
+   *
+   * The request is executed immediately.
+   *
+   * If a function is passed as the first argument, it will be used as the callback
+   * function.
+   *
+   * @param { string } [targetUrl] - API-generated URL for the requested results page
+   * @param { function } [callback] - Callback to handle list of records
+   */
+  getPage(
+    targetUrl?: string,
+    callback?: (error: Error | null, items: CredentialPage) => any
+  ): Promise<CredentialPage>;
+  getPage(params?: any, callback?: any): Promise<CredentialPage>;
+  /**
+   * Lists CredentialInstance records from the API as a list.
+   *
+   * If a function is passed as the first argument, it will be used as the callback
+   * function.
+   *
+   * @param { function } [callback] - Callback to handle list of records
+   */
+  list(
+    callback?: (error: Error | null, items: CredentialInstance[]) => any
+  ): Promise<CredentialInstance[]>;
+  /**
+   * Lists CredentialInstance records from the API as a list.
+   *
+   * If a function is passed as the first argument, it will be used as the callback
+   * function.
+   *
+   * @param { CredentialListInstanceOptions } [params] - Options for request
+   * @param { function } [callback] - Callback to handle list of records
+   */
+  list(
+    params?: CredentialListInstanceOptions,
+    callback?: (error: Error | null, items: CredentialInstance[]) => any
+  ): Promise<CredentialInstance[]>;
+  list(params?: any, callback?: any): Promise<CredentialInstance[]>;
+  /**
+   * Retrieve a single page of CredentialInstance records from the API.
+   *
+   * The request is executed immediately.
+   *
+   * If a function is passed as the first argument, it will be used as the callback
+   * function.
+   *
+   * @param { function } [callback] - Callback to handle list of records
+   */
+  page(
+    callback?: (error: Error | null, items: CredentialPage) => any
+  ): Promise<CredentialPage>;
+  /**
+   * Retrieve a single page of CredentialInstance records from the API.
+   *
+   * The request is executed immediately.
+   *
+   * If a function is passed as the first argument, it will be used as the callback
+   * function.
+   *
+   * @param { CredentialListInstancePageOptions } [params] - Options for request
+   * @param { function } [callback] - Callback to handle list of records
+   */
+  page(
+    params: CredentialListInstancePageOptions,
+    callback?: (error: Error | null, items: CredentialPage) => any
+  ): Promise<CredentialPage>;
+  page(params?: any, callback?: any): Promise<CredentialPage>;
 
   /**
    * Provide a user-friendly representation
@@ -32,7 +154,7 @@ export interface CredentialListInstance {
 interface CredentialListInstanceImpl extends CredentialListInstance {}
 class CredentialListInstanceImpl implements CredentialListInstance {
   _version?: V2010;
-  _solution?: any;
+  _solution?: CredentialSolution;
   _uri?: string;
 
   _aws?: AWSListInstance;
@@ -53,6 +175,42 @@ export function CredentialListInstance(version: V2010): CredentialListInstance {
       return this._aws;
     },
   });
+
+  instance.page = function page(callback?: any): Promise<CredentialPage> {
+    let operationVersion = version,
+      operationPromise = operationVersion.page({
+        uri: this._uri,
+        method: "get",
+      });
+
+    operationPromise = operationPromise.then(
+      (payload) => new CredentialPage(operationVersion, payload, this._solution)
+    );
+
+    operationPromise = operationVersion.setPromiseCallback(
+      operationPromise,
+      callback
+    );
+    return operationPromise;
+  };
+  instance.each = instance._version.each;
+  instance.list = instance._version.list;
+
+  instance.getPage = function getPage(
+    targetUrl?: any,
+    callback?: any
+  ): Promise<CredentialPage> {
+    let operationPromise = this._version._domain.twilio.request({
+      method: "get",
+      uri: targetUrl,
+    });
+
+    operationPromise = operationPromise.then(
+      (payload) => new CredentialPage(this._version, payload, this._solution)
+    );
+    operationPromise = version.setPromiseCallback(operationPromise, callback);
+    return operationPromise;
+  };
 
   instance.toJSON = function toJSON() {
     return this._solution;

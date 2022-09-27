@@ -14,9 +14,21 @@
 
 import { inspect, InspectOptions } from "util";
 import Page from "../../../../../base/Page";
+import Response from "../../../../../http/response";
 import V2010 from "../../../V2010";
 const deserialize = require("../../../../../base/deserialize");
 const serialize = require("../../../../../base/serialize");
+
+/**
+ * Options to pass to update a FeedbackCallSummaryInstance
+ *
+ * @property { string } endDate
+ * @property { string } startDate
+ */
+export interface FeedbackCallSummaryContextUpdateOptions {
+  endDate: string;
+  startDate: string;
+}
 
 /**
  * Options to pass to update a FeedbackCallSummaryInstance
@@ -34,6 +46,139 @@ export interface FeedbackCallSummaryListInstance {
   get(sid: string): FeedbackCallSummaryContext;
 
   /**
+   * Streams FeedbackCallSummaryInstance records from the API.
+   *
+   * This operation lazily loads records as efficiently as possible until the limit
+   * is reached.
+   *
+   * The results are passed into the callback function, so this operation is memory
+   * efficient.
+   *
+   * If a function is passed as the first argument, it will be used as the callback
+   * function.
+   *
+   * @param { function } [callback] - Function to process each record
+   */
+  each(
+    callback?: (
+      item: FeedbackCallSummaryInstance,
+      done: (err?: Error) => void
+    ) => void
+  ): void;
+  /**
+   * Streams FeedbackCallSummaryInstance records from the API.
+   *
+   * This operation lazily loads records as efficiently as possible until the limit
+   * is reached.
+   *
+   * The results are passed into the callback function, so this operation is memory
+   * efficient.
+   *
+   * If a function is passed as the first argument, it will be used as the callback
+   * function.
+   *
+   * @param { FeedbackCallSummaryListInstanceEachOptions } [params] - Options for request
+   * @param { function } [callback] - Function to process each record
+   */
+  each(
+    params?: FeedbackCallSummaryListInstanceEachOptions,
+    callback?: (
+      item: FeedbackCallSummaryInstance,
+      done: (err?: Error) => void
+    ) => void
+  ): void;
+  each(params?: any, callback?: any): void;
+  /**
+   * Retrieve a single target page of FeedbackCallSummaryInstance records from the API.
+   *
+   * The request is executed immediately.
+   *
+   * If a function is passed as the first argument, it will be used as the callback
+   * function.
+   *
+   * @param { function } [callback] - Callback to handle list of records
+   */
+  getPage(
+    callback?: (error: Error | null, items: FeedbackCallSummaryPage) => any
+  ): Promise<FeedbackCallSummaryPage>;
+  /**
+   * Retrieve a single target page of FeedbackCallSummaryInstance records from the API.
+   *
+   * The request is executed immediately.
+   *
+   * If a function is passed as the first argument, it will be used as the callback
+   * function.
+   *
+   * @param { string } [targetUrl] - API-generated URL for the requested results page
+   * @param { function } [callback] - Callback to handle list of records
+   */
+  getPage(
+    targetUrl?: string,
+    callback?: (error: Error | null, items: FeedbackCallSummaryPage) => any
+  ): Promise<FeedbackCallSummaryPage>;
+  getPage(params?: any, callback?: any): Promise<FeedbackCallSummaryPage>;
+  /**
+   * Lists FeedbackCallSummaryInstance records from the API as a list.
+   *
+   * If a function is passed as the first argument, it will be used as the callback
+   * function.
+   *
+   * @param { function } [callback] - Callback to handle list of records
+   */
+  list(
+    callback?: (
+      error: Error | null,
+      items: FeedbackCallSummaryInstance[]
+    ) => any
+  ): Promise<FeedbackCallSummaryInstance[]>;
+  /**
+   * Lists FeedbackCallSummaryInstance records from the API as a list.
+   *
+   * If a function is passed as the first argument, it will be used as the callback
+   * function.
+   *
+   * @param { FeedbackCallSummaryListInstanceOptions } [params] - Options for request
+   * @param { function } [callback] - Callback to handle list of records
+   */
+  list(
+    params?: FeedbackCallSummaryListInstanceOptions,
+    callback?: (
+      error: Error | null,
+      items: FeedbackCallSummaryInstance[]
+    ) => any
+  ): Promise<FeedbackCallSummaryInstance[]>;
+  list(params?: any, callback?: any): Promise<FeedbackCallSummaryInstance[]>;
+  /**
+   * Retrieve a single page of FeedbackCallSummaryInstance records from the API.
+   *
+   * The request is executed immediately.
+   *
+   * If a function is passed as the first argument, it will be used as the callback
+   * function.
+   *
+   * @param { function } [callback] - Callback to handle list of records
+   */
+  page(
+    callback?: (error: Error | null, items: FeedbackCallSummaryPage) => any
+  ): Promise<FeedbackCallSummaryPage>;
+  /**
+   * Retrieve a single page of FeedbackCallSummaryInstance records from the API.
+   *
+   * The request is executed immediately.
+   *
+   * If a function is passed as the first argument, it will be used as the callback
+   * function.
+   *
+   * @param { FeedbackCallSummaryListInstancePageOptions } [params] - Options for request
+   * @param { function } [callback] - Callback to handle list of records
+   */
+  page(
+    params: FeedbackCallSummaryListInstancePageOptions,
+    callback?: (error: Error | null, items: FeedbackCallSummaryPage) => any
+  ): Promise<FeedbackCallSummaryPage>;
+  page(params?: any, callback?: any): Promise<FeedbackCallSummaryPage>;
+
+  /**
    * Provide a user-friendly representation
    */
   toJSON(): any;
@@ -46,7 +191,7 @@ class FeedbackCallSummaryListInstanceImpl
   implements FeedbackCallSummaryListInstance
 {
   _version?: V2010;
-  _solution?: any;
+  _solution?: FeedbackCallSummarySolution;
   _uri?: string;
 }
 
@@ -63,6 +208,46 @@ export function FeedbackCallSummaryListInstance(
   instance._version = version;
   instance._solution = {};
   instance._uri = `/2010-04-01/Accounts/{AccountSid}/Calls/FeedbackSummary.json`;
+
+  instance.page = function page(
+    callback?: any
+  ): Promise<FeedbackCallSummaryPage> {
+    let operationVersion = version,
+      operationPromise = operationVersion.page({
+        uri: this._uri,
+        method: "get",
+      });
+
+    operationPromise = operationPromise.then(
+      (payload) =>
+        new FeedbackCallSummaryPage(operationVersion, payload, this._solution)
+    );
+
+    operationPromise = operationVersion.setPromiseCallback(
+      operationPromise,
+      callback
+    );
+    return operationPromise;
+  };
+  instance.each = instance._version.each;
+  instance.list = instance._version.list;
+
+  instance.getPage = function getPage(
+    targetUrl?: any,
+    callback?: any
+  ): Promise<FeedbackCallSummaryPage> {
+    let operationPromise = this._version._domain.twilio.request({
+      method: "get",
+      uri: targetUrl,
+    });
+
+    operationPromise = operationPromise.then(
+      (payload) =>
+        new FeedbackCallSummaryPage(this._version, payload, this._solution)
+    );
+    operationPromise = version.setPromiseCallback(operationPromise, callback);
+    return operationPromise;
+  };
 
   instance.toJSON = function toJSON() {
     return this._solution;
@@ -92,6 +277,21 @@ export interface FeedbackCallSummaryContext {
     callback?: (error: Error | null, item?: FeedbackCallSummaryInstance) => any
   ): Promise<FeedbackCallSummaryInstance>;
   update(params: any, callback?: any): Promise<FeedbackCallSummaryInstance>;
+
+  /**
+   * Update a FeedbackCallSummaryInstance
+   *
+   * @param { FeedbackCallSummaryContextUpdateOptions } params - Parameter for request
+   * @param { function } [callback] - Callback to handle processed record
+   *
+   * @returns { Promise } Resolves to processed FeedbackCallSummaryInstance
+   */
+  update(
+    params: FeedbackCallSummaryContextUpdateOptions,
+    callback?: (error: Error | null, item?: FeedbackCallSummaryInstance) => any
+  ): Promise<FeedbackCallSummaryInstance>;
+  update(params: any, callback?: any): Promise<FeedbackCallSummaryInstance>;
+
   /**
    * Provide a user-friendly representation
    */
@@ -102,7 +302,7 @@ export interface FeedbackCallSummaryContext {
 export class FeedbackCallSummaryContextImpl
   implements FeedbackCallSummaryContext
 {
-  protected _solution: any;
+  protected _solution: FeedbackCallSummarySolution;
   protected _uri: string;
 
   constructor(protected _version: V2010, accountSid: string, sid: string) {
@@ -149,12 +349,56 @@ export class FeedbackCallSummaryContextImpl
         )
     );
 
-    if (typeof callback === "function") {
-      operationPromise = operationPromise
-        .then((value) => callback(null, value))
-        .catch((error) => callback(error));
+    operationPromise = operationVersion.setPromiseCallback(
+      operationPromise,
+      callback
+    );
+    return operationPromise;
+  }
+
+  update(params: any, callback?: any): Promise<FeedbackCallSummaryInstance> {
+    if (params === null || params === undefined) {
+      throw new Error('Required parameter "params" missing.');
     }
 
+    if (params.endDate === null || params.endDate === undefined) {
+      throw new Error('Required parameter "params.endDate" missing.');
+    }
+
+    if (params.startDate === null || params.startDate === undefined) {
+      throw new Error('Required parameter "params.startDate" missing.');
+    }
+
+    const data: any = {};
+
+    data["EndDate"] = serialize.iso8601Date(params.endDate);
+    data["StartDate"] = serialize.iso8601Date(params.startDate);
+
+    const headers: any = {};
+    headers["Content-Type"] = "application/x-www-form-urlencoded";
+
+    let operationVersion = this._version,
+      operationPromise = operationVersion.update({
+        uri: this._uri,
+        method: "post",
+        params: data,
+        headers,
+      });
+
+    operationPromise = operationPromise.then(
+      (payload) =>
+        new FeedbackCallSummaryInstance(
+          operationVersion,
+          payload,
+          this._solution.accountSid,
+          this._solution.sid
+        )
+    );
+
+    operationPromise = operationVersion.setPromiseCallback(
+      operationPromise,
+      callback
+    );
     return operationPromise;
   }
 
@@ -168,6 +412,53 @@ export class FeedbackCallSummaryContextImpl
   }
 
   [inspect.custom](_depth: any, options: InspectOptions) {
+    return inspect(this.toJSON(), options);
+  }
+}
+
+export interface FeedbackCallSummarySolution {
+  accountSid?: string;
+  sid?: string;
+}
+
+export class FeedbackCallSummaryPage extends Page<
+  V2010,
+  FeedbackCallSummaryPayload,
+  FeedbackCallSummaryResource,
+  FeedbackCallSummaryInstance
+> {
+  /**
+   * Initialize the FeedbackCallSummaryPage
+   *
+   * @param version - Version of the resource
+   * @param response - Response from the API
+   * @param solution - Path solution
+   */
+  constructor(
+    version: V2010,
+    response: Response<string>,
+    solution: FeedbackCallSummarySolution
+  ) {
+    super(version, response, solution);
+  }
+
+  /**
+   * Build an instance of FeedbackCallSummaryInstance
+   *
+   * @param payload - Payload response from the API
+   */
+  getInstance(
+    payload: FeedbackCallSummaryPayload
+  ): FeedbackCallSummaryInstance {
+    return new FeedbackCallSummaryInstance(
+      this._version,
+      payload,
+      this._solution.accountSid,
+      this._solution.sid
+    );
+  }
+
+  [inspect.custom](depth: any, options: InspectOptions) {
     return inspect(this.toJSON(), options);
   }
 }
@@ -248,6 +539,22 @@ export class FeedbackCallSummaryInstance {
         this._solution.sid
       );
     return this._context;
+  }
+
+  /**
+   * Update a FeedbackCallSummaryInstance
+   *
+   * @param { FeedbackCallSummaryContextUpdateOptions } params - Parameter for request
+   * @param { function } [callback] - Callback to handle processed record
+   *
+   * @returns { Promise } Resolves to processed FeedbackCallSummaryInstance
+   */
+  update(
+    params: FeedbackCallSummaryContextUpdateOptions,
+    callback?: (error: Error | null, item?: FeedbackCallSummaryInstance) => any
+  ): Promise<FeedbackCallSummaryInstance>;
+  update(params: any, callback?: any): Promise<FeedbackCallSummaryInstance> {
+    return this._proxy.update(params, callback);
   }
 
   /**
