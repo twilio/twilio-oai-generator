@@ -25,7 +25,7 @@ COPY unit-test/Rest integrationTest/Rest test/Twilio.Test/
 
 RUN dotnet restore
 RUN dotnet build -c Release
-RUN echo $SONAR_CSHARP_TOKEN SONAR_CSHARP_TOKEN
+RUN echo ${SONAR_CSHARP_TOKEN} SONAR_CSHARP_TOKEN
 
 RUN dotnet sonarscanner begin /k:"twilio_twilio-oai-generator-csharp" /o:"twilio" /d:sonar.host.url=https://sonarcloud.io /d:sonar.language="cs" /d:sonar.login=$SONAR_CSHARP_TOKEN /d:sonar.exclusions="src/Twilio/Rest/**/*.*,test/Twilio.Test/**/*.*" /d:sonar.cs.opencover.reportsPaths="test/lcov.net451.opencover.xml"
 RUN	dotnet build Twilio.sln > buildforsonar.log
