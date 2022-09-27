@@ -187,7 +187,7 @@ export function CredentialListInstance(version: V2010): CredentialListInstance {
       (payload) => new CredentialPage(operationVersion, payload, this._solution)
     );
 
-    operationPromise = operationVersion.setPromiseCallback(
+    operationPromise = this._version.setPromiseCallback(
       operationPromise,
       callback
     );
@@ -208,7 +208,10 @@ export function CredentialListInstance(version: V2010): CredentialListInstance {
     operationPromise = operationPromise.then(
       (payload) => new CredentialPage(this._version, payload, this._solution)
     );
-    operationPromise = version.setPromiseCallback(operationPromise, callback);
+    operationPromise = this._version.setPromiseCallback(
+      operationPromise,
+      callback
+    );
     return operationPromise;
   };
 

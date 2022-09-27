@@ -315,7 +315,7 @@ export class AccountContextImpl implements AccountContext {
         method: "delete",
       });
 
-    operationPromise = operationVersion.setPromiseCallback(
+    operationPromise = this._version.setPromiseCallback(
       operationPromise,
       callback
     );
@@ -329,7 +329,7 @@ export class AccountContextImpl implements AccountContext {
         method: "delete",
       });
 
-    operationPromise = operationVersion.setPromiseCallback(
+    operationPromise = this._version.setPromiseCallback(
       operationPromise,
       callback
     );
@@ -348,7 +348,7 @@ export class AccountContextImpl implements AccountContext {
         new AccountInstance(operationVersion, payload, this._solution.sid)
     );
 
-    operationPromise = operationVersion.setPromiseCallback(
+    operationPromise = this._version.setPromiseCallback(
       operationPromise,
       callback
     );
@@ -367,7 +367,7 @@ export class AccountContextImpl implements AccountContext {
         new AccountInstance(operationVersion, payload, this._solution.sid)
     );
 
-    operationPromise = operationVersion.setPromiseCallback(
+    operationPromise = this._version.setPromiseCallback(
       operationPromise,
       callback
     );
@@ -405,7 +405,7 @@ export class AccountContextImpl implements AccountContext {
         new AccountInstance(operationVersion, payload, this._solution.sid)
     );
 
-    operationPromise = operationVersion.setPromiseCallback(
+    operationPromise = this._version.setPromiseCallback(
       operationPromise,
       callback
     );
@@ -443,7 +443,7 @@ export class AccountContextImpl implements AccountContext {
         new AccountInstance(operationVersion, payload, this._solution.sid)
     );
 
-    operationPromise = operationVersion.setPromiseCallback(
+    operationPromise = this._version.setPromiseCallback(
       operationPromise,
       callback
     );
@@ -1051,7 +1051,7 @@ export function AccountListInstance(version: V2010): AccountListInstance {
       (payload) => new AccountInstance(operationVersion, payload)
     );
 
-    operationPromise = operationVersion.setPromiseCallback(
+    operationPromise = this._version.setPromiseCallback(
       operationPromise,
       callback
     );
@@ -1096,7 +1096,7 @@ export function AccountListInstance(version: V2010): AccountListInstance {
       (payload) => new AccountInstance(operationVersion, payload)
     );
 
-    operationPromise = operationVersion.setPromiseCallback(
+    operationPromise = this._version.setPromiseCallback(
       operationPromise,
       callback
     );
@@ -1144,7 +1144,7 @@ export function AccountListInstance(version: V2010): AccountListInstance {
       (payload) => new AccountPage(operationVersion, payload, this._solution)
     );
 
-    operationPromise = operationVersion.setPromiseCallback(
+    operationPromise = this._version.setPromiseCallback(
       operationPromise,
       callback
     );
@@ -1165,7 +1165,10 @@ export function AccountListInstance(version: V2010): AccountListInstance {
     operationPromise = operationPromise.then(
       (payload) => new AccountPage(this._version, payload, this._solution)
     );
-    operationPromise = version.setPromiseCallback(operationPromise, callback);
+    operationPromise = this._version.setPromiseCallback(
+      operationPromise,
+      callback
+    );
     return operationPromise;
   };
 
@@ -1210,7 +1213,7 @@ export function AccountListInstance(version: V2010): AccountListInstance {
       (payload) => new AccountPage(operationVersion, payload, this._solution)
     );
 
-    operationPromise = operationVersion.setPromiseCallback(
+    operationPromise = this._version.setPromiseCallback(
       operationPromise,
       callback
     );
@@ -1231,7 +1234,10 @@ export function AccountListInstance(version: V2010): AccountListInstance {
     operationPromise = operationPromise.then(
       (payload) => new AccountPage(this._version, payload, this._solution)
     );
-    operationPromise = version.setPromiseCallback(operationPromise, callback);
+    operationPromise = this._version.setPromiseCallback(
+      operationPromise,
+      callback
+    );
     return operationPromise;
   };
 

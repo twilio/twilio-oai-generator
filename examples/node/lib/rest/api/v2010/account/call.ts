@@ -167,7 +167,7 @@ export function CallListInstance(
         new CallInstance(operationVersion, payload, this._solution.accountSid)
     );
 
-    operationPromise = operationVersion.setPromiseCallback(
+    operationPromise = this._version.setPromiseCallback(
       operationPromise,
       callback
     );
@@ -218,7 +218,7 @@ export function CallListInstance(
         new CallInstance(operationVersion, payload, this._solution.accountSid)
     );
 
-    operationPromise = operationVersion.setPromiseCallback(
+    operationPromise = this._version.setPromiseCallback(
       operationPromise,
       callback
     );
@@ -311,7 +311,7 @@ export class CallContextImpl implements CallContext {
         method: "delete",
       });
 
-    operationPromise = operationVersion.setPromiseCallback(
+    operationPromise = this._version.setPromiseCallback(
       operationPromise,
       callback
     );
@@ -325,7 +325,7 @@ export class CallContextImpl implements CallContext {
         method: "delete",
       });
 
-    operationPromise = operationVersion.setPromiseCallback(
+    operationPromise = this._version.setPromiseCallback(
       operationPromise,
       callback
     );
@@ -349,7 +349,7 @@ export class CallContextImpl implements CallContext {
         )
     );
 
-    operationPromise = operationVersion.setPromiseCallback(
+    operationPromise = this._version.setPromiseCallback(
       operationPromise,
       callback
     );
@@ -373,7 +373,7 @@ export class CallContextImpl implements CallContext {
         )
     );
 
-    operationPromise = operationVersion.setPromiseCallback(
+    operationPromise = this._version.setPromiseCallback(
       operationPromise,
       callback
     );

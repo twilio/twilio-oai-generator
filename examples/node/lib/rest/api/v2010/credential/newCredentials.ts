@@ -202,7 +202,7 @@ export function NewCredentialsListInstance(
       (payload) => new NewCredentialsInstance(operationVersion, payload)
     );
 
-    operationPromise = operationVersion.setPromiseCallback(
+    operationPromise = this._version.setPromiseCallback(
       operationPromise,
       callback
     );
@@ -266,7 +266,7 @@ export function NewCredentialsListInstance(
       (payload) => new NewCredentialsInstance(operationVersion, payload)
     );
 
-    operationPromise = operationVersion.setPromiseCallback(
+    operationPromise = this._version.setPromiseCallback(
       operationPromise,
       callback
     );

@@ -223,7 +223,7 @@ export function FeedbackCallSummaryListInstance(
         new FeedbackCallSummaryPage(operationVersion, payload, this._solution)
     );
 
-    operationPromise = operationVersion.setPromiseCallback(
+    operationPromise = this._version.setPromiseCallback(
       operationPromise,
       callback
     );
@@ -245,7 +245,10 @@ export function FeedbackCallSummaryListInstance(
       (payload) =>
         new FeedbackCallSummaryPage(this._version, payload, this._solution)
     );
-    operationPromise = version.setPromiseCallback(operationPromise, callback);
+    operationPromise = this._version.setPromiseCallback(
+      operationPromise,
+      callback
+    );
     return operationPromise;
   };
 
@@ -349,7 +352,7 @@ export class FeedbackCallSummaryContextImpl
         )
     );
 
-    operationPromise = operationVersion.setPromiseCallback(
+    operationPromise = this._version.setPromiseCallback(
       operationPromise,
       callback
     );
@@ -395,7 +398,7 @@ export class FeedbackCallSummaryContextImpl
         )
     );
 
-    operationPromise = operationVersion.setPromiseCallback(
+    operationPromise = this._version.setPromiseCallback(
       operationPromise,
       callback
     );

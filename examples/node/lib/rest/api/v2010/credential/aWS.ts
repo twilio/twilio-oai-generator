@@ -251,7 +251,7 @@ export class AWSContextImpl implements AWSContext {
         method: "delete",
       });
 
-    operationPromise = operationVersion.setPromiseCallback(
+    operationPromise = this._version.setPromiseCallback(
       operationPromise,
       callback
     );
@@ -265,7 +265,7 @@ export class AWSContextImpl implements AWSContext {
         method: "delete",
       });
 
-    operationPromise = operationVersion.setPromiseCallback(
+    operationPromise = this._version.setPromiseCallback(
       operationPromise,
       callback
     );
@@ -284,7 +284,7 @@ export class AWSContextImpl implements AWSContext {
         new AWSInstance(operationVersion, payload, this._solution.sid)
     );
 
-    operationPromise = operationVersion.setPromiseCallback(
+    operationPromise = this._version.setPromiseCallback(
       operationPromise,
       callback
     );
@@ -303,7 +303,7 @@ export class AWSContextImpl implements AWSContext {
         new AWSInstance(operationVersion, payload, this._solution.sid)
     );
 
-    operationPromise = operationVersion.setPromiseCallback(
+    operationPromise = this._version.setPromiseCallback(
       operationPromise,
       callback
     );
@@ -340,7 +340,7 @@ export class AWSContextImpl implements AWSContext {
         new AWSInstance(operationVersion, payload, this._solution.sid)
     );
 
-    operationPromise = operationVersion.setPromiseCallback(
+    operationPromise = this._version.setPromiseCallback(
       operationPromise,
       callback
     );
@@ -377,7 +377,7 @@ export class AWSContextImpl implements AWSContext {
         new AWSInstance(operationVersion, payload, this._solution.sid)
     );
 
-    operationPromise = operationVersion.setPromiseCallback(
+    operationPromise = this._version.setPromiseCallback(
       operationPromise,
       callback
     );
@@ -933,7 +933,7 @@ export function AWSListInstance(version: V2010): AWSListInstance {
       (payload) => new AWSPage(operationVersion, payload, this._solution)
     );
 
-    operationPromise = operationVersion.setPromiseCallback(
+    operationPromise = this._version.setPromiseCallback(
       operationPromise,
       callback
     );
@@ -954,7 +954,10 @@ export function AWSListInstance(version: V2010): AWSListInstance {
     operationPromise = operationPromise.then(
       (payload) => new AWSPage(this._version, payload, this._solution)
     );
-    operationPromise = version.setPromiseCallback(operationPromise, callback);
+    operationPromise = this._version.setPromiseCallback(
+      operationPromise,
+      callback
+    );
     return operationPromise;
   };
 
@@ -989,7 +992,7 @@ export function AWSListInstance(version: V2010): AWSListInstance {
       (payload) => new AWSPage(operationVersion, payload, this._solution)
     );
 
-    operationPromise = operationVersion.setPromiseCallback(
+    operationPromise = this._version.setPromiseCallback(
       operationPromise,
       callback
     );
@@ -1010,7 +1013,10 @@ export function AWSListInstance(version: V2010): AWSListInstance {
     operationPromise = operationPromise.then(
       (payload) => new AWSPage(this._version, payload, this._solution)
     );
-    operationPromise = version.setPromiseCallback(operationPromise, callback);
+    operationPromise = this._version.setPromiseCallback(
+      operationPromise,
+      callback
+    );
     return operationPromise;
   };
 

@@ -67,7 +67,7 @@
         operationPromise = operationPromise.then(payload => new {{returnType}}(operationVersion, payload, this._solution));
         {{/vendorExtensions.x-is-list-operation}}
 
-        operationPromise = operationVersion.setPromiseCallback(operationPromise,callback);
+        operationPromise = this._version.setPromiseCallback(operationPromise,callback);
         return operationPromise;
 
     {{#vendorExtensions.x-is-list-operation}}
@@ -79,7 +79,7 @@
         let operationPromise = this._version._domain.twilio.request({method: '{{httpMethod}}', uri: targetUrl});
 
         operationPromise = operationPromise.then(payload => new {{returnType}}(this._version, payload, this._solution));
-        operationPromise = version.setPromiseCallback(operationPromise,callback);
+        operationPromise = this._version.setPromiseCallback(operationPromise,callback);
         return operationPromise;
     }
 
