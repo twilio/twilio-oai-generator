@@ -39,14 +39,14 @@ public class Resource {
             final Operation operation = pathItem.readOperations().get(0);
 
             // If we have a parent, ensure it has at least one operation.
-            getParentResource(resourceTree).ifPresent(parentResource -> addIgnoreOperation(parentResource.pathItem,
-                                                                                           operation));
+            getParentResource(resourceTree).ifPresent(parentResource -> addIgnoreOperationIfNone(parentResource.pathItem,
+                                                                                                 operation));
 
             // If we are in instance operation, ensure we have a list operation with at least one operation.
             if (PathUtils.isInstancePath(name)) {
                 resourceTree
                     .getResourceByTag(listTag)
-                    .ifPresentOrElse(listResource -> addIgnoreOperation(listResource.pathItem, operation), () -> {
+                    .ifPresentOrElse(listResource -> addIgnoreOperationIfNone(listResource.pathItem, operation), () -> {
                         final String missingName = PathUtils.removeTrailingPathParam(name);
                         final PathItem missingPath = createMissingPathItem(operation);
 
@@ -60,7 +60,7 @@ public class Resource {
      * Add a new operation to the given PathItem if it has no operations. Certain paths exists which have no operations
      * and are only placeholders. We need these paths to exist as resources during post-processing.
      */
-    private void addIgnoreOperation(final PathItem pathItem, final Operation operation) {
+    private void addIgnoreOperationIfNone(final PathItem pathItem, final Operation operation) {
         if (pathItem.readOperations().isEmpty()) {
             pathItem.setGet(new Operation());
             pathItem.getGet().addExtension(IGNORE_EXTENSION_NAME, true);
@@ -74,7 +74,7 @@ public class Resource {
     private PathItem createMissingPathItem(final Operation operation) {
         final PathItem missingPath = new PathItem();
         missingPath.addExtension(TWILIO_EXTENSION_NAME, pathItem.getExtensions().get(TWILIO_EXTENSION_NAME));
-        addIgnoreOperation(missingPath, operation);
+        addIgnoreOperationIfNone(missingPath, operation);
         return missingPath;
     }
 
