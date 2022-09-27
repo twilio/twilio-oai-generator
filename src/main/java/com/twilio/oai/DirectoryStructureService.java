@@ -34,7 +34,7 @@ public class DirectoryStructureService {
     }
 
     public void configure(OpenAPI openAPI, Map<String, Object> additionalProperties) {
-        resourceTree = new ResourceMap(inflector, PATH_SEPARATOR_PLACEHOLDER);
+        resourceTree = new ResourceMap(inflector);
 
         extendOpenAPI(openAPI).getPaths().forEach((name, path) -> {
             resourceTree.addResource(name, path);

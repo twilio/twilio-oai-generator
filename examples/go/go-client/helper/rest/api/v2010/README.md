@@ -39,7 +39,7 @@ Class | Method | HTTP request | Description
 *AccountsCallsApi* | [**CreateCall**](docs/AccountsCallsApi.md#createcall) | **Post** /2010-04-01/Accounts/{AccountSid}/Calls.json | 
 *AccountsCallsApi* | [**DeleteCall**](docs/AccountsCallsApi.md#deletecall) | **Delete** /2010-04-01/Accounts/{AccountSid}/Calls/{TestInteger}.json | 
 *AccountsCallsApi* | [**FetchCall**](docs/AccountsCallsApi.md#fetchcall) | **Get** /2010-04-01/Accounts/{AccountSid}/Calls/{TestInteger}.json | 
-*AccountsCallsFeedbackSummaryApi* | [**CreateCallFeedbackSummary**](docs/AccountsCallsFeedbackSummaryApi.md#createcallfeedbacksummary) | **Post** /2010-04-01/Accounts/{AccountSid}/Calls/FeedbackSummary.json | 
+*AccountsCallsFeedbackSummaryApi* | [**UpdateCallFeedbackSummary**](docs/AccountsCallsFeedbackSummaryApi.md#updatecallfeedbacksummary) | **Post** /2010-04-01/Accounts/{AccountSid}/Calls/FeedbackSummary/{Sid}.json | 
 *CredentialsAWSApi* | [**CreateCredentialAws**](docs/CredentialsAWSApi.md#createcredentialaws) | **Post** /v1/Credentials/AWS | 
 *CredentialsAWSApi* | [**DeleteCredentialAws**](docs/CredentialsAWSApi.md#deletecredentialaws) | **Delete** /v1/Credentials/AWS/{Sid} | 
 *CredentialsAWSApi* | [**FetchCredentialAws**](docs/CredentialsAWSApi.md#fetchcredentialaws) | **Get** /v1/Credentials/AWS/{Sid} | 

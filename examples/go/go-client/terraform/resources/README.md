@@ -21,6 +21,7 @@ Name | Type | Requirement | Description
 **required_string_property** | string | **Required** | 
 **path_account_sid** | string | Optional | 
 **test_array_of_strings** | list(string) | Optional | 
+**test_array_of_uri** | list(string) | Optional | 
 **test_integer** | int | *Computed* | INTEGER ID param!!!
 
 ## twilio_api_credentials_aws

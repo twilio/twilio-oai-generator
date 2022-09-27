@@ -1,12 +1,12 @@
 {{>licenseInfo}}
-import { inspect, InspectOptions } from 'util';
-import Page from '{{apiVersionPath}}/../../base/Page';
-import {{apiVersionClass}} from '{{apiVersionPath}}/{{apiVersionClass}}';
-const deserialize = require('{{apiVersionPath}}/../../base/deserialize');
-const serialize = require('{{apiVersionPath}}/../../base/serialize');
+import { inspect, InspectOptions } from "util";
+import Page from "{{apiVersionPath}}/../../base/Page";
+import {{apiVersionClass}} from "{{apiVersionPath}}/{{apiVersionClass}}";
+const deserialize = require("{{apiVersionPath}}/../../base/deserialize");
+const serialize = require("{{apiVersionPath}}/../../base/serialize");
 {{#resources}}
 {{#dependents}}
-import { {{name}}ListInstance } from './{{apiFilename}}/{{filename}}';
+import { {{name}}ListInstance } from "./{{apiFilename}}/{{filename}}";
 {{/dependents}}
 {{/resources}}
 
@@ -23,9 +23,9 @@ import { {{name}}ListInstance } from './{{apiFilename}}/{{filename}}';
  {{/allParams}}
  */
 export interface {{resourceName}}{{vendorExtensions.x-name}}Options {
-    {{#allParams}}
-    {{paramName}}{{^required}}?{{/required}}: {{{dataType}}};
-    {{/allParams}}
+  {{#allParams}}
+  {{paramName}}{{^required}}?{{/required}}: {{{dataType}}};
+  {{/allParams}}
 }
 {{/bodyParam}}
 {{/hasParams}}
@@ -34,121 +34,121 @@ export interface {{resourceName}}{{vendorExtensions.x-name}}Options {
 {{#resources}}
 
 export interface {{resourceName}} {
-    {{#instanceResource}}
-    ({{#resourcePathParams}}{{paramName}}: {{dataType}}{{^-last}}, {{/-last}}{{/resourcePathParams}}): {{resourceName}};
-    get({{#resourcePathParams}}{{paramName}}: {{dataType}}{{^-last}}, {{/-last}}{{/resourcePathParams}}): {{resourceName}};
-    {{/instanceResource}}
+  {{#instanceResource}}
+  ({{#resourcePathParams}}{{#-last}}{{paramName}}: {{dataType}}{{/-last}}{{/resourcePathParams}}): {{resourceName}};
+  get({{#resourcePathParams}}{{#-last}}{{paramName}}: {{dataType}}{{/-last}}{{/resourcePathParams}}): {{resourceName}};
+  {{/instanceResource}}
 
-    {{#dependents}}
-    {{mountName}}: {{name}}ListInstance;
-    {{/dependents}}
+  {{#dependents}}
+  {{mountName}}: {{name}}ListInstance;
+  {{/dependents}}
 
 {{#operations}}
 {{>operationSignature}};
 {{/operations}}
-    /**
-     * Provide a user-friendly representation
-     */
-    toJSON(): any;
-    [inspect.custom](_depth: any, options: InspectOptions): any;
+  /**
+   * Provide a user-friendly representation
+   */
+  toJSON(): any;
+  [inspect.custom](_depth: any, options: InspectOptions): any;
 }
 
 {{#parentResourceName}}
 export class {{resourceName}}Impl implements {{resourceName}} {
-    protected _solution: any;
-    protected _uri: string;
+  protected _solution: any;
+  protected _uri: string;
 
-    {{#dependents}}
-    protected _{{mountName}}?: {{name}}ListInstance;
-    {{/dependents}}
+  {{#dependents}}
+  protected _{{mountName}}?: {{name}}ListInstance;
+  {{/dependents}}
 
-    constructor(protected _version: {{apiVersionClass}}{{#resourcePathParams}}, {{paramName}}: {{{dataType}}}{{/resourcePathParams}}) {
-        this._solution = { {{#resourcePathParams}}{{paramName}}{{^-last}}, {{/-last}}{{/resourcePathParams}} };
-        this._uri = `{{path}}`;
-    }
+  constructor(protected _version: {{apiVersionClass}}{{#resourcePathParams}}, {{paramName}}: {{{dataType}}}{{/resourcePathParams}}) {
+    this._solution = { {{#resourcePathParams}}{{paramName}}{{^-last}}, {{/-last}}{{/resourcePathParams}} };
+    this._uri = `{{path}}`;
+  }
 
-    {{#dependents}}
-    get {{mountName}}(): {{name}}ListInstance {
-        this._{{mountName}} = this._{{mountName}} || {{name}}ListInstance(this._version{{#resourcePathParams}}, this._solution.{{paramName}}{{/resourcePathParams}});
-        return this._{{mountName}};
-    }
+  {{#dependents}}
+  get {{mountName}}(): {{name}}ListInstance {
+    this._{{mountName}} = this._{{mountName}} || {{name}}ListInstance(this._version{{#resourcePathParams}}, this._solution.{{paramName}}{{/resourcePathParams}});
+    return this._{{mountName}};
+  }
 
-    {{/dependents}}
+  {{/dependents}}
 {{#operations}}
-    {{vendorExtensions.x-name-lower}}({{#hasParams}}params{{^hasRequiredParams}}?{{/hasRequiredParams}}: any, {{/hasParams}}callback?: any): Promise<{{returnType}}> {
+  {{vendorExtensions.x-name-lower}}({{#hasParams}}params{{^hasRequiredParams}}?{{/hasRequiredParams}}: any, {{/hasParams}}callback?: any): Promise<{{returnType}}> {
 {{>operation}}
-    }
+  }
 
 {{/operations}}
-    /**
-     * Provide a user-friendly representation
-     *
-     * @returns Object
-     */
-    toJSON() {
-        return this._solution;
-    }
+  /**
+   * Provide a user-friendly representation
+   *
+   * @returns Object
+   */
+  toJSON() {
+    return this._solution;
+  }
 
-    [inspect.custom](_depth: any, options: InspectOptions) {
-        return inspect(this.toJSON(), options);
-    }
+  [inspect.custom](_depth: any, options: InspectOptions) {
+    return inspect(this.toJSON(), options);
+  }
 }
 {{/parentResourceName}}
 
 {{^parentResourceName}}
 interface {{resourceName}}Impl extends {{resourceName}} {}
 class {{resourceName}}Impl implements {{resourceName}} {
-    _version?: {{apiVersionClass}};
-    _solution?: any;
-    _uri?: string;
+  _version?: {{apiVersionClass}};
+  _solution?: any;
+  _uri?: string;
 
-    {{#dependents}}
-    _{{mountName}}?: {{name}}ListInstance;
-    {{/dependents}}
+  {{#dependents}}
+  _{{mountName}}?: {{name}}ListInstance;
+  {{/dependents}}
 }
 
 export function {{resourceName}}(version: {{apiVersionClass}}{{#resourcePathParams}}, {{paramName}}: {{{dataType}}}{{/resourcePathParams}}): {{resourceName}} {
-    {{#instanceResource}}
-    const instance = (({{#resourcePathParams}}{{paramName}}{{^-last}}, {{/-last}}{{/resourcePathParams}}) => instance.get({{#resourcePathParams}}{{paramName}}{{^-last}}, {{/-last}}{{/resourcePathParams}})) as {{parentResourceName}}Impl;
+  {{#instanceResource}}
+  const instance = (({{#resourcePathParams}}{{#-last}}{{paramName}}{{/-last}}{{/resourcePathParams}}) => instance.get({{#resourcePathParams}}{{#-last}}{{paramName}}{{/-last}}{{/resourcePathParams}})) as {{parentResourceName}}Impl;
 
-    instance.get = function get({{#resourcePathParams}}{{paramName}}{{^-last}}, {{/-last}}{{/resourcePathParams}}): {{resourceName}} {
-        return new {{resourceName}}Impl(version{{#resourcePathParams}}, {{paramName}}{{/resourcePathParams}});
+  instance.get = function get({{#resourcePathParams}}{{#-last}}{{paramName}}{{/-last}}{{/resourcePathParams}}): {{resourceName}} {
+    return new {{resourceName}}Impl(version{{#resourcePathParams}}, {{paramName}}{{/resourcePathParams}});
+  }
+  {{/instanceResource}}
+  {{^instanceResource}}
+  const instance = {} as {{resourceName}}Impl;
+  {{/instanceResource}}
+
+  instance._version = version;
+  instance._solution = { {{#resourcePathParams}}{{paramName}}{{^-last}}, {{/-last}}{{/resourcePathParams}} };
+  instance._uri = `{{path}}`;
+
+  {{#dependents}}
+  Object.defineProperty(instance, "{{mountName}}", {
+    get: function {{mountName}}() {
+      if (!this._{{mountName}}) {
+        this._{{mountName}} = {{name}}ListInstance(this._version{{#resourcePathParams}}, this._solution.{{paramName}}{{/resourcePathParams}});
+      }
+      return this._{{mountName}};
     }
-    {{/instanceResource}}
-    {{^instanceResource}}
-    const instance = {} as {{resourceName}}Impl;
-    {{/instanceResource}}
+  });
 
-    instance._version = version;
-    instance._solution = { {{#resourcePathParams}}{{paramName}}{{^-last}}, {{/-last}}{{/resourcePathParams}} };
-    instance._uri = `{{path}}`;
-
-    {{#dependents}}
-    Object.defineProperty(instance, '{{mountName}}', {
-        get: function {{mountName}}() {
-            if (!this._{{mountName}}) {
-                this._{{mountName}} = {{name}}ListInstance(this._version{{#resourcePathParams}}, this._solution.{{paramName}}{{/resourcePathParams}});
-            }
-            return this._{{mountName}};
-        }
-    });
-
-    {{/dependents}}
+  {{/dependents}}
 {{#operations}}
-    instance.{{vendorExtensions.x-name-lower}} = function {{vendorExtensions.x-name-lower}}({{#hasParams}}params{{^hasRequiredParams}}?{{/hasRequiredParams}}: any, {{/hasParams}}callback?: any): Promise<{{returnType}}> {
+  instance.{{vendorExtensions.x-name-lower}} = function {{vendorExtensions.x-name-lower}}({{#hasParams}}params{{^hasRequiredParams}}?{{/hasRequiredParams}}: any, {{/hasParams}}callback?: any): Promise<{{returnType}}> {
 {{>operation}}
-    }
+  }
 
 {{/operations}}
-    instance.toJSON = function toJSON() {
-        return this._solution;
-    }
+  instance.toJSON = function toJSON() {
+    return this._solution;
+  }
 
-    instance[inspect.custom] = function inspectImpl(_depth: any, options: InspectOptions) {
-        return inspect(this.toJSON(), options);
-    }
+  instance[inspect.custom] = function inspectImpl(_depth: any, options: InspectOptions) {
+    return inspect(this.toJSON(), options);
+  }
 
-    return instance;
+  return instance;
 }
 {{/parentResourceName}}
 {{>responseModel}}

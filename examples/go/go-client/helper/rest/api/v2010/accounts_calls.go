@@ -29,6 +29,8 @@ type CreateCallParams struct {
 	RequiredStringProperty *string `json:"RequiredStringProperty,omitempty"`
 	//
 	TestArrayOfStrings *[]string `json:"TestArrayOfStrings,omitempty"`
+	//
+	TestArrayOfUri *[]string `json:"TestArrayOfUri,omitempty"`
 }
 
 func (params *CreateCallParams) SetPathAccountSid(PathAccountSid string) *CreateCallParams {
@@ -41,6 +43,10 @@ func (params *CreateCallParams) SetRequiredStringProperty(RequiredStringProperty
 }
 func (params *CreateCallParams) SetTestArrayOfStrings(TestArrayOfStrings []string) *CreateCallParams {
 	params.TestArrayOfStrings = &TestArrayOfStrings
+	return params
+}
+func (params *CreateCallParams) SetTestArrayOfUri(TestArrayOfUri []string) *CreateCallParams {
+	params.TestArrayOfUri = &TestArrayOfUri
 	return params
 }
 
@@ -61,6 +67,11 @@ func (c *ApiService) CreateCall(params *CreateCallParams) (*TestResponseObject, 
 	if params != nil && params.TestArrayOfStrings != nil {
 		for _, item := range *params.TestArrayOfStrings {
 			data.Add("TestArrayOfStrings", item)
+		}
+	}
+	if params != nil && params.TestArrayOfUri != nil {
+		for _, item := range *params.TestArrayOfUri {
+			data.Add("TestArrayOfUri", item)
 		}
 	}
 
