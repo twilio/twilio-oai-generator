@@ -261,10 +261,10 @@ paths:
       x-twilio:
         className: new_credentials
         conditional:
-        - - TestInteger
-          - TestDate
-        - - TestNumberFloat
-          - TestObject
+          - - TestInteger
+            - TestDate
+          - - TestNumberFloat
+            - TestObject
     servers:
       - url: https://flex-api.twilio.com
     x-twilio:
@@ -349,6 +349,34 @@ paths:
     x-twilio:
       parent: /Credentials
       pathType: instance
+  /v1/Voice/{Sid}:
+    description: An instance resource with no parent
+    post:
+      operationId: UpdateCall
+      parameters:
+        - in: path
+          name: Sid
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  sid:
+                    nullable: true
+                    type: string
+                type: object
+          description: OK
+      security:
+        - accountSid_authToken: [ ]
+    servers:
+      - url: https://api.twilio.com
+    x-twilio:
+      pathType: instance
+      className: call
   /2010-04-01/Accounts.json:
     description: A top-level resource
     get:
@@ -726,4 +754,4 @@ paths:
     x-twilio:
       className: feedback_call_summary
       parent: /Accounts/{AccountSid}/Calls.json
-      pathType: list
+      pathType: instance

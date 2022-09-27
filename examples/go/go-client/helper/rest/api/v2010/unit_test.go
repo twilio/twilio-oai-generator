@@ -6,7 +6,6 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"net/http"
 	"net/url"
 	"testing"
@@ -217,7 +216,7 @@ func TestResponseDecodeTypes(t *testing.T) {
 
 			resp, _ := json.Marshal(response)
 
-			return &http.Response{Body: ioutil.NopCloser(bytes.NewReader(resp))}, nil
+			return &http.Response{Body: io.NopCloser(bytes.NewReader(resp))}, nil
 		})
 
 	resp, err := twilio.FetchAccount("AC123")
@@ -226,6 +225,24 @@ func TestResponseDecodeTypes(t *testing.T) {
 	assert.Equal(t, float32(123.45), *resp.TestNumber)
 	assert.Equal(t, float32(67.89), *resp.TestNumberFloat)
 	assert.Equal(t, float32(7), (*resp.TestArrayOfObjects)[0].Count)
+}
+
+func TestUpdateOperation(t *testing.T) {
+	mockCtrl := gomock.NewController(t)
+	testClient := NewMockBaseClient(mockCtrl)
+	testClient.EXPECT().SendRequest(
+		gomock.Any(),
+		gomock.Any(),
+		gomock.Any(),
+		gomock.Any()).
+		DoAndReturn(func(method string, rawURL string, data url.Values, headers map[string]interface{}) (*http.Response, error) {
+			assert.Equal(t, "POST", method)
+			assert.Equal(t, "https://api.twilio.com/v1/Voice/VO123", rawURL)
+			return &http.Response{Body: getEmptyBody()}, nil
+		},
+		)
+	twilio := NewApiServiceWithClient(testClient)
+	_, _ = twilio.UpdateCall("VO123")
 }
 
 func TestList(t *testing.T) {
@@ -266,7 +283,7 @@ func TestList(t *testing.T) {
 
 			resp, _ := json.Marshal(response)
 
-			return &http.Response{Body: ioutil.NopCloser(bytes.NewReader(resp))}, nil
+			return &http.Response{Body: io.NopCloser(bytes.NewReader(resp))}, nil
 		},
 		).AnyTimes()
 
@@ -323,7 +340,7 @@ func TestListPaging(t *testing.T) {
 
 			resp, _ := json.Marshal(response)
 
-			return &http.Response{Body: ioutil.NopCloser(bytes.NewReader(resp))}, nil
+			return &http.Response{Body: io.NopCloser(bytes.NewReader(resp))}, nil
 		},
 		)
 
@@ -345,7 +362,7 @@ func TestListPaging(t *testing.T) {
 
 			resp, _ := json.Marshal(response)
 
-			return &http.Response{Body: ioutil.NopCloser(bytes.NewReader(resp))}, nil
+			return &http.Response{Body: io.NopCloser(bytes.NewReader(resp))}, nil
 		},
 		)
 
@@ -409,7 +426,7 @@ func TestListError(t *testing.T) {
 
 			resp, _ := json.Marshal(response)
 
-			return &http.Response{Body: ioutil.NopCloser(bytes.NewReader(resp))}, errors.New("listing error")
+			return &http.Response{Body: io.NopCloser(bytes.NewReader(resp))}, errors.New("listing error")
 		},
 		).AnyTimes()
 
@@ -451,12 +468,12 @@ func TestListPagingError(t *testing.T) {
 
 				resp, _ := json.Marshal(response)
 
-				return &http.Response{Body: ioutil.NopCloser(bytes.NewReader(resp))}, nil
+				return &http.Response{Body: io.NopCloser(bytes.NewReader(resp))}, nil
 			}),
 		testClient.EXPECT().SendRequest(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).
 			DoAndReturn(func(method string, rawURL string, data url.Values,
 				headers map[string]interface{}) (*http.Response, error) {
-				return &http.Response{Body: ioutil.NopCloser(bytes.NewReader(nil))}, nil
+				return &http.Response{Body: io.NopCloser(bytes.NewReader(nil))}, nil
 			}),
 	)
 
@@ -498,7 +515,7 @@ func TestListNoNextPage(t *testing.T) {
 
 			resp, _ := json.Marshal(response)
 
-			return &http.Response{Body: ioutil.NopCloser(bytes.NewReader(resp))}, nil
+			return &http.Response{Body: io.NopCloser(bytes.NewReader(resp))}, nil
 		}).AnyTimes()
 
 	twilio := NewApiServiceWithClient(testClient)
@@ -539,5 +556,5 @@ func TestPageToken(t *testing.T) {
 }
 
 func getEmptyBody() io.ReadCloser {
-	return ioutil.NopCloser(bytes.NewReader([]byte("{}")))
+	return io.NopCloser(bytes.NewReader([]byte("{}")))
 }
