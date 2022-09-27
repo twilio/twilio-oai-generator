@@ -26,5 +26,7 @@ COPY unit-test/Rest integrationTest/Rest test/Twilio.Test/
 RUN dotnet restore
 RUN dotnet build -c Release
 
-RUN apt-get -y install build-essential
-RUN make cover PROJECT_NAME=twilio_twilio-csharp SONAR_TOKEN=$SONAR_CSHARP_TOKEN
+RUN dotnet sonarscanner begin /k:"twilio_twilio-csharp" /o:"twilio" /d:sonar.host.url=https://sonarcloud.io /d:sonar.language="cs" /d:sonar.login=$SONAR_CSHARP_TOKEN /d:sonar.exclusions="src/Twilio/Rest/**/*.*,test/Twilio.Test/**/*.*" /d:sonar.cs.opencover.reportsPaths="test/lcov.net451.opencover.xml"
+RUN	dotnet build Twilio.sln > buildforsonar.log
+CMD ["/bin/bash", "-c", "dotnet test test/Twilio.Test/Twilio.Test.csproj --no-build /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput=../lcov| tee /local/test-report.out && cp test/lcov.net451.opencover.xml /local"]
+RUN dotnet sonarscanner end /d:sonar.login=$SONAR_CSHARP_TOKEN
