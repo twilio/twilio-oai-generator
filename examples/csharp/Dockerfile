@@ -1,5 +1,6 @@
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
-ARG SONAR_CSHARP_TOKEN="515a571d5d81ee03461ff13b1329b723611b9766"
+ARG SONAR_CSHARP_TOKEN=""
+ARG DUMMY=""
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
          git \
@@ -25,9 +26,7 @@ COPY unit-test/Rest integrationTest/Rest test/Twilio.Test/
 
 RUN dotnet restore
 RUN dotnet build -c Release
-RUN echo ${SONAR_CSHARP_TOKEN} SONAR_CSHARP_TOKEN
 
-RUN dotnet sonarscanner begin /k:"twilio_twilio-oai-generator-csharp" /o:"twilio" /d:sonar.host.url=https://sonarcloud.io /d:sonar.language="cs" /d:sonar.login=${SONAR_CSHARP_TOKEN} /d:sonar.exclusions="src/Twilio/Rest/**/*.*,test/Twilio.Test/**/*.*" /d:sonar.cs.opencover.reportsPaths="test/lcov.net451.opencover.xml"
-RUN	dotnet build Twilio.sln > buildforsonar.log
-CMD ["/bin/bash", "-c", "dotnet test test/Twilio.Test/Twilio.Test.csproj --no-build /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput=../lcov| tee /local/test-report.out && cp test/lcov.net451.opencover.xml /local"]
-RUN dotnet sonarscanner end /d:sonar.login=${SONAR_CSHARP_TOKEN}
+RUN echo $DUMMY DUMMY ${DUMMY} DUMMY
+
+RUN make cover PROJECT_NAME=twilio_twilio-csharp SONAR_TOKEN=$SONAR_CSHARP_TOKEN
