@@ -14,7 +14,7 @@ ENV PATH="${PATH}:/root/.dotnet/tools"
 
 RUN mkdir /app
 WORKDIR /app
-RUN git clone --depth 1 https://github.com/twilio/twilio-csharp.git
+RUN git clone --depth 1 https://github.com/twilio/twilio-csharp.git -b asabu_monorepo_testing
 WORKDIR /app/twilio-csharp
 
 RUN rm -rf src/Twilio/Rest/*/
