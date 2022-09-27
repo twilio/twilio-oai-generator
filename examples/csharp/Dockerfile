@@ -1,4 +1,5 @@
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+ARG SONAR_TOKEN=""
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
          git \
@@ -26,4 +27,4 @@ RUN dotnet restore
 RUN dotnet build -c Release
 
 RUN apt-get -y install build-essential
-RUN make cover PROJECT_NAME=twilio_twilio-oai-generator-csharp
+RUN make cover PROJECT_NAME=twilio_twilio-oai-generator-csharp SONAR_TOKEN=$SONAR_TOKEN
