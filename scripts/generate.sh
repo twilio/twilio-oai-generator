@@ -34,6 +34,9 @@ sed -i.bak "s/github.com\/twilio\/terraform-provider-twilio\/client/go-client\/t
 
 docker-run examples/go/Dockerfile-goimports
 
+OUT_DIR=examples/csharp/src/Twilio/Rest/Api
+generate twilio-csharp
+
 OUT_DIR=examples/java/src/main/java/com/twilio/rest/api
 generate twilio-java
 
