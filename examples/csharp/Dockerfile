@@ -22,9 +22,7 @@ RUN rm -rf src/Twilio/Rest/*/
 COPY src/Twilio/Rest src/Twilio/Rest
 
 RUN rm -rf test/Twilio.Test/*/
-RUN echo SONAR_TOKEN $SONAR_TOKEN
 COPY unit-test/Rest test/Twilio.Test/
-RUN echo SONAR_TOKEN $SONAR_TOKEN
 
 RUN dotnet restore
 RUN dotnet build -c Release
