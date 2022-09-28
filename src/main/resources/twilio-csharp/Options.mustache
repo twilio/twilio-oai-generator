@@ -1,0 +1,28 @@
+{{>LicenseInfo}}
+
+{{>OptionsUsings}}
+
+{{#resources}}
+
+namespace Twilio.Rest.{{domainPackage}}.{{package}}{{packageSubPart}}
+{
+{{#operations}}
+    {{#vendorExtensions.x-is-create-operation}}
+{{>options/CreateOptions}}
+    {{/vendorExtensions.x-is-create-operation}}
+    {{#vendorExtensions.x-is-delete-operation}}
+{{>options/DeleteOptions}}
+    {{/vendorExtensions.x-is-delete-operation}}
+    {{#vendorExtensions.x-is-fetch-operation}}
+{{>options/FetchOptions}}
+    {{/vendorExtensions.x-is-fetch-operation}}
+    {{#vendorExtensions.x-is-read-operation}}
+{{>options/ReadOptions}}
+    {{/vendorExtensions.x-is-read-operation}}
+    {{#vendorExtensions.x-is-update-operation}}
+{{>options/UpdateOptions}}
+    {{/vendorExtensions.x-is-update-operation}}
+{{/operations}}
+}
+
+{{/resources}}
