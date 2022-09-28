@@ -28,4 +28,4 @@ RUN dotnet restore
 RUN dotnet build -c Release
 
 RUN apt-get -y install build-essential
-RUN if [ "$SONAR_TOKEN" = "" ] ; then echo Skipping sonar analysis ;  else make cover PROJECT_NAME=twilio_twilio-oai-generator-csharp SONAR_SOURCES="/d:sonar.exclusions=src/Twilio/Rest" ; fi
+RUN if [ "$SONAR_TOKEN" = "" ] ; then echo Skipping sonar analysis ;  else make cover PROJECT_NAME=twilio_twilio-oai-generator-csharp SONAR_SOURCES="/d:sonar.inclusions=src/Twilio/Rest" ; fi
