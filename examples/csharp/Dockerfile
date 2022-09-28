@@ -22,10 +22,13 @@ RUN rm -rf src/Twilio/Rest/*/
 COPY src/Twilio/Rest src/Twilio/Rest
 
 RUN rm -rf test/Twilio.Test/*/
+RUN echo SONAR_TOKEN $SONAR_TOKEN
 COPY unit-test/Rest test/Twilio.Test/
+RUN echo SONAR_TOKEN $SONAR_TOKEN
 
 RUN dotnet restore
 RUN dotnet build -c Release
 
 RUN apt-get -y install build-essential
-RUN make cover PROJECT_NAME=twilio_twilio-oai-generator-csharp
+RUN echo SONAR_TOKEN $SONAR_TOKEN
+RUN if [ "$SONAR_TOKEN" = "" ] ; then echo Skipping sonar analysis ;  else make cover PROJECT_NAME=twilio_twilio-oai-generator-csharp ; fi
