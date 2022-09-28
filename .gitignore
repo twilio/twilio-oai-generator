@@ -10,3 +10,4 @@ __pycache__
 
 **/coverage*
 **/test-report.out
+**/lcov.net451.opencover.xml

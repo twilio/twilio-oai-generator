@@ -1,0 +1,47 @@
+
+        public {{#vendorExtensions.x-is-read-operation}} override{{/vendorExtensions.x-is-read-operation}} List<KeyValuePair<string, string>> GetParams()
+        {
+            var p = new List<KeyValuePair<string, string>>();
+
+            {{#vendorExtensions.x-getparams}}
+            {{#isArray}}
+            if ({{paramName}} != null)
+            {
+                p.AddRange({{paramName}}.Select({{paramName}} => new KeyValuePair<string, string>("{{paramName}}", {{{vendorExtensions.x-param-to-string}}})));
+            }
+            {{/isArray}}
+            {{^isArray}}
+            {{^isMap}}
+            if ({{paramName}} != null)
+            {
+                p.Add(new KeyValuePair<string, string>("{{paramName}}", {{{vendorExtensions.x-param-to-string}}}));
+            }
+            {{/isMap}}
+            {{/isArray}}
+            {{#isMap}}
+            if ({{paramName}} != null)
+            {
+                p.AddRange(PrefixedCollapsibleMap.Serialize({{paramName}}, "{{{vendorExtensions.x-map-value}}}"));
+            }
+            {{/isMap}}
+            {{#vendorExtensions.x-before-or-after}}
+            else
+            {
+            {{#vendorExtensions.x-before}}
+                if ({{paramName}} != null)
+                {
+                    p.Add(new KeyValuePair<string, string>("{{{baseName}}}", {{{vendorExtensions.x-param-to-string}}}));
+                }
+            {{/vendorExtensions.x-before}}
+            {{#vendorExtensions.x-after}}
+                if ({{paramName}} != null)
+                {
+                    p.Add(new KeyValuePair<string, string>("{{{baseName}}}", {{{vendorExtensions.x-param-to-string}}}));
+                }
+            {{/vendorExtensions.x-after}}
+
+            }
+            {{/vendorExtensions.x-before-or-after}}
+            {{/vendorExtensions.x-getparams}}
+            return p;
+        }
