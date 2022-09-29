@@ -31,64 +31,6 @@ export interface AWSContextUpdateOptions {
 }
 
 /**
- * Options to pass to update a AWSInstance
- *
- * @property { string } [testString]
- * @property { boolean } [testBoolean]
- */
-export interface AWSContextUpdateOptions {
-  testString?: string;
-  testBoolean?: boolean;
-}
-
-/**
- * Options to pass to each
- *
- * @property { number } [pageSize]
- * @property { Function } [callback] -
- *                         Function to process each record. If this and a positional
- *                         callback are passed, this one will be used
- * @property { Function } [done] - Function to be called upon completion of streaming
- * @property { number } [limit] -
- *                         Upper limit for the number of records to return.
- *                         each() guarantees never to return more than limit.
- *                         Default is no limit
- */
-export interface AWSListInstanceEachOptions {
-  pageSize?: number;
-  callback?: (item: AWSInstance, done: (err?: Error) => void) => void;
-  done?: Function;
-  limit?: number;
-}
-
-/**
- * Options to pass to list
- *
- * @property { number } [pageSize]
- * @property { number } [limit] -
- *                         Upper limit for the number of records to return.
- *                         list() guarantees never to return more than limit.
- *                         Default is no limit
- */
-export interface AWSListInstanceOptions {
-  pageSize?: number;
-  limit?: number;
-}
-
-/**
- * Options to pass to page
- *
- * @property { number } [pageSize]
- * @property { number } [pageNumber] - Page Number, this value is simply for client state
- * @property { string } [pageToken] - PageToken provided by the API
- */
-export interface AWSListInstancePageOptions {
-  pageSize?: number;
-  pageNumber?: number;
-  pageToken?: string;
-}
-
-/**
  * Options to pass to each
  *
  * @property { number } [pageSize]
@@ -148,17 +90,6 @@ export interface AWSContext {
   ): Promise<boolean>;
 
   /**
-   * Remove a AWSInstance
-   *
-   * @param { function } [callback] - Callback to handle processed record
-   *
-   * @returns { Promise } Resolves to processed boolean
-   */
-  remove(
-    callback?: (error: Error | null, item?: AWSInstance) => any
-  ): Promise<boolean>;
-
-  /**
    * Fetch a AWSInstance
    *
    * @param { function } [callback] - Callback to handle processed record
@@ -168,41 +99,6 @@ export interface AWSContext {
   fetch(
     callback?: (error: Error | null, item?: AWSInstance) => any
   ): Promise<AWSInstance>;
-
-  /**
-   * Fetch a AWSInstance
-   *
-   * @param { function } [callback] - Callback to handle processed record
-   *
-   * @returns { Promise } Resolves to processed AWSInstance
-   */
-  fetch(
-    callback?: (error: Error | null, item?: AWSInstance) => any
-  ): Promise<AWSInstance>;
-
-  /**
-   * Update a AWSInstance
-   *
-   * @param { function } [callback] - Callback to handle processed record
-   *
-   * @returns { Promise } Resolves to processed AWSInstance
-   */
-  update(
-    callback?: (error: Error | null, item?: AWSInstance) => any
-  ): Promise<AWSInstance>;
-  /**
-   * Update a AWSInstance
-   *
-   * @param { AWSContextUpdateOptions } params - Parameter for request
-   * @param { function } [callback] - Callback to handle processed record
-   *
-   * @returns { Promise } Resolves to processed AWSInstance
-   */
-  update(
-    params: AWSContextUpdateOptions,
-    callback?: (error: Error | null, item?: AWSInstance) => any
-  ): Promise<AWSInstance>;
-  update(params?: any, callback?: any): Promise<AWSInstance>;
 
   /**
    * Update a AWSInstance
@@ -258,81 +154,11 @@ export class AWSContextImpl implements AWSContext {
     return operationPromise;
   }
 
-  remove(callback?: any): Promise<boolean> {
-    let operationVersion = this._version,
-      operationPromise = operationVersion.remove({
-        uri: this._uri,
-        method: "delete",
-      });
-
-    operationPromise = this._version.setPromiseCallback(
-      operationPromise,
-      callback
-    );
-    return operationPromise;
-  }
-
   fetch(callback?: any): Promise<AWSInstance> {
     let operationVersion = this._version,
       operationPromise = operationVersion.fetch({
         uri: this._uri,
         method: "get",
-      });
-
-    operationPromise = operationPromise.then(
-      (payload) =>
-        new AWSInstance(operationVersion, payload, this._solution.sid)
-    );
-
-    operationPromise = this._version.setPromiseCallback(
-      operationPromise,
-      callback
-    );
-    return operationPromise;
-  }
-
-  fetch(callback?: any): Promise<AWSInstance> {
-    let operationVersion = this._version,
-      operationPromise = operationVersion.fetch({
-        uri: this._uri,
-        method: "get",
-      });
-
-    operationPromise = operationPromise.then(
-      (payload) =>
-        new AWSInstance(operationVersion, payload, this._solution.sid)
-    );
-
-    operationPromise = this._version.setPromiseCallback(
-      operationPromise,
-      callback
-    );
-    return operationPromise;
-  }
-
-  update(params?: any, callback?: any): Promise<AWSInstance> {
-    if (typeof params === "function") {
-      callback = params;
-      params = {};
-    } else {
-      params = params || {};
-    }
-
-    const data: any = {};
-
-    if (params.testString !== undefined) data["TestString"] = params.testString;
-    if (params.testBoolean !== undefined)
-      data["TestBoolean"] = serialize.bool(params.testBoolean);
-
-    const headers: any = {};
-    headers["Content-Type"] = "application/x-www-form-urlencoded";
-
-    let operationVersion = this._version,
-      operationPromise = operationVersion.update({
-        uri: this._uri,
-        method: "post",
-        params: data,
-        headers,
       });
 
     operationPromise = operationPromise.then(
@@ -512,19 +338,6 @@ export class AWSInstance {
   }
 
   /**
-   * Remove a AWSInstance
-   *
-   * @param { function } [callback] - Callback to handle processed record
-   *
-   * @returns { Promise } Resolves to processed boolean
-   */
-  remove(
-    callback?: (error: Error | null, item?: AWSInstance) => any
-  ): Promise<boolean> {
-    return this._proxy.remove(callback);
-  }
-
-  /**
    * Fetch a AWSInstance
    *
    * @param { function } [callback] - Callback to handle processed record
@@ -535,45 +348,6 @@ export class AWSInstance {
     callback?: (error: Error | null, item?: AWSInstance) => any
   ): Promise<AWSInstance> {
     return this._proxy.fetch(callback);
-  }
-
-  /**
-   * Fetch a AWSInstance
-   *
-   * @param { function } [callback] - Callback to handle processed record
-   *
-   * @returns { Promise } Resolves to processed AWSInstance
-   */
-  fetch(
-    callback?: (error: Error | null, item?: AWSInstance) => any
-  ): Promise<AWSInstance> {
-    return this._proxy.fetch(callback);
-  }
-
-  /**
-   * Update a AWSInstance
-   *
-   * @param { function } [callback] - Callback to handle processed record
-   *
-   * @returns { Promise } Resolves to processed AWSInstance
-   */
-  update(
-    callback?: (error: Error | null, item?: AWSInstance) => any
-  ): Promise<AWSInstance>;
-  /**
-   * Update a AWSInstance
-   *
-   * @param { AWSContextUpdateOptions } params - Parameter for request
-   * @param { function } [callback] - Callback to handle processed record
-   *
-   * @returns { Promise } Resolves to processed AWSInstance
-   */
-  update(
-    params: AWSContextUpdateOptions,
-    callback?: (error: Error | null, item?: AWSInstance) => any
-  ): Promise<AWSInstance>;
-  update(params?: any, callback?: any): Promise<AWSInstance> {
-    return this._proxy.update(params, callback);
   }
 
   /**
@@ -757,127 +531,6 @@ export interface AWSListInstance {
   page(params?: any, callback?: any): Promise<AWSPage>;
 
   /**
-   * Streams AWSInstance records from the API.
-   *
-   * This operation lazily loads records as efficiently as possible until the limit
-   * is reached.
-   *
-   * The results are passed into the callback function, so this operation is memory
-   * efficient.
-   *
-   * If a function is passed as the first argument, it will be used as the callback
-   * function.
-   *
-   * @param { function } [callback] - Function to process each record
-   */
-  each(
-    callback?: (item: AWSInstance, done: (err?: Error) => void) => void
-  ): void;
-  /**
-   * Streams AWSInstance records from the API.
-   *
-   * This operation lazily loads records as efficiently as possible until the limit
-   * is reached.
-   *
-   * The results are passed into the callback function, so this operation is memory
-   * efficient.
-   *
-   * If a function is passed as the first argument, it will be used as the callback
-   * function.
-   *
-   * @param { AWSListInstanceEachOptions } [params] - Options for request
-   * @param { function } [callback] - Function to process each record
-   */
-  each(
-    params?: AWSListInstanceEachOptions,
-    callback?: (item: AWSInstance, done: (err?: Error) => void) => void
-  ): void;
-  each(params?: any, callback?: any): void;
-  /**
-   * Retrieve a single target page of AWSInstance records from the API.
-   *
-   * The request is executed immediately.
-   *
-   * If a function is passed as the first argument, it will be used as the callback
-   * function.
-   *
-   * @param { function } [callback] - Callback to handle list of records
-   */
-  getPage(
-    callback?: (error: Error | null, items: AWSPage) => any
-  ): Promise<AWSPage>;
-  /**
-   * Retrieve a single target page of AWSInstance records from the API.
-   *
-   * The request is executed immediately.
-   *
-   * If a function is passed as the first argument, it will be used as the callback
-   * function.
-   *
-   * @param { string } [targetUrl] - API-generated URL for the requested results page
-   * @param { function } [callback] - Callback to handle list of records
-   */
-  getPage(
-    targetUrl?: string,
-    callback?: (error: Error | null, items: AWSPage) => any
-  ): Promise<AWSPage>;
-  getPage(params?: any, callback?: any): Promise<AWSPage>;
-  /**
-   * Lists AWSInstance records from the API as a list.
-   *
-   * If a function is passed as the first argument, it will be used as the callback
-   * function.
-   *
-   * @param { function } [callback] - Callback to handle list of records
-   */
-  list(
-    callback?: (error: Error | null, items: AWSInstance[]) => any
-  ): Promise<AWSInstance[]>;
-  /**
-   * Lists AWSInstance records from the API as a list.
-   *
-   * If a function is passed as the first argument, it will be used as the callback
-   * function.
-   *
-   * @param { AWSListInstanceOptions } [params] - Options for request
-   * @param { function } [callback] - Callback to handle list of records
-   */
-  list(
-    params?: AWSListInstanceOptions,
-    callback?: (error: Error | null, items: AWSInstance[]) => any
-  ): Promise<AWSInstance[]>;
-  list(params?: any, callback?: any): Promise<AWSInstance[]>;
-  /**
-   * Retrieve a single page of AWSInstance records from the API.
-   *
-   * The request is executed immediately.
-   *
-   * If a function is passed as the first argument, it will be used as the callback
-   * function.
-   *
-   * @param { function } [callback] - Callback to handle list of records
-   */
-  page(
-    callback?: (error: Error | null, items: AWSPage) => any
-  ): Promise<AWSPage>;
-  /**
-   * Retrieve a single page of AWSInstance records from the API.
-   *
-   * The request is executed immediately.
-   *
-   * If a function is passed as the first argument, it will be used as the callback
-   * function.
-   *
-   * @param { AWSListInstancePageOptions } [params] - Options for request
-   * @param { function } [callback] - Callback to handle list of records
-   */
-  page(
-    params: AWSListInstancePageOptions,
-    callback?: (error: Error | null, items: AWSPage) => any
-  ): Promise<AWSPage>;
-  page(params?: any, callback?: any): Promise<AWSPage>;
-
-  /**
    * Provide a user-friendly representation
    */
   toJSON(): any;
@@ -901,65 +554,6 @@ export function AWSListInstance(version: V2010): AWSListInstance {
   instance._version = version;
   instance._solution = {};
   instance._uri = `/v1/Credentials/AWS`;
-
-  instance.page = function page(
-    params?: any,
-    callback?: any
-  ): Promise<AWSPage> {
-    if (typeof params === "function") {
-      callback = params;
-      params = {};
-    } else {
-      params = params || {};
-    }
-
-    const data: any = {};
-
-    if (params.pageSize !== undefined) data["PageSize"] = params.pageSize;
-    if (params.page !== undefined) data["Page"] = params.pageNumber;
-    if (params.pageToken !== undefined) data["PageToken"] = params.pageToken;
-
-    const headers: any = {};
-
-    let operationVersion = version,
-      operationPromise = operationVersion.page({
-        uri: this._uri,
-        method: "get",
-        params: data,
-        headers,
-      });
-
-    operationPromise = operationPromise.then(
-      (payload) => new AWSPage(operationVersion, payload, this._solution)
-    );
-
-    operationPromise = this._version.setPromiseCallback(
-      operationPromise,
-      callback
-    );
-    return operationPromise;
-  };
-  instance.each = instance._version.each;
-  instance.list = instance._version.list;
-
-  instance.getPage = function getPage(
-    targetUrl?: any,
-    callback?: any
-  ): Promise<AWSPage> {
-    let operationPromise = this._version._domain.twilio.request({
-      method: "get",
-      uri: targetUrl,
-    });
-
-    operationPromise = operationPromise.then(
-      (payload) => new AWSPage(this._version, payload, this._solution)
-    );
-    operationPromise = this._version.setPromiseCallback(
-      operationPromise,
-      callback
-    );
-    return operationPromise;
-  };
 
   instance.page = function page(
     params?: any,

@@ -33,38 +33,11 @@ export interface CallListInstanceCreateOptions {
   testArrayOfUri?: Array<string>;
 }
 
-/**
- * Options to pass to create a CallInstance
- *
- * @property { string } requiredStringProperty
- * @property { Array<string> } [testArrayOfStrings]
- * @property { Array<string> } [testArrayOfUri]
- */
-export interface CallListInstanceCreateOptions {
-  requiredStringProperty: string;
-  testArrayOfStrings?: Array<string>;
-  testArrayOfUri?: Array<string>;
-}
-
 export interface CallListInstance {
   (testInteger: number): CallContext;
   get(testInteger: number): CallContext;
 
   feedback_call_summary: FeedbackCallSummaryListInstance;
-
-  /**
-   * Create a CallInstance
-   *
-   * @param { CallListInstanceCreateOptions } params - Parameter for request
-   * @param { function } [callback] - Callback to handle processed record
-   *
-   * @returns { Promise } Resolves to processed CallInstance
-   */
-  create(
-    params: CallListInstanceCreateOptions,
-    callback?: (error: Error | null, item?: CallInstance) => any
-  ): Promise<CallInstance>;
-  create(params: any, callback?: any): Promise<CallInstance>;
 
   /**
    * Create a CallInstance
@@ -174,57 +147,6 @@ export function CallListInstance(
     return operationPromise;
   };
 
-  instance.create = function create(
-    params: any,
-    callback?: any
-  ): Promise<CallInstance> {
-    if (params === null || params === undefined) {
-      throw new Error('Required parameter "params" missing.');
-    }
-
-    if (
-      params.requiredStringProperty === null ||
-      params.requiredStringProperty === undefined
-    ) {
-      throw new Error(
-        'Required parameter "params.requiredStringProperty" missing.'
-      );
-    }
-
-    const data: any = {};
-
-    data["RequiredStringProperty"] = params.requiredStringProperty;
-    if (params.testArrayOfStrings !== undefined)
-      data["TestArrayOfStrings"] = serialize.map(
-        params.testArrayOfStrings,
-        (e) => e
-      );
-    if (params.testArrayOfUri !== undefined)
-      data["TestArrayOfUri"] = serialize.map(params.testArrayOfUri, (e) => e);
-
-    const headers: any = {};
-    headers["Content-Type"] = "application/x-www-form-urlencoded";
-
-    let operationVersion = version,
-      operationPromise = operationVersion.create({
-        uri: this._uri,
-        method: "post",
-        params: data,
-        headers,
-      });
-
-    operationPromise = operationPromise.then(
-      (payload) =>
-        new CallInstance(operationVersion, payload, this._solution.accountSid)
-    );
-
-    operationPromise = this._version.setPromiseCallback(
-      operationPromise,
-      callback
-    );
-    return operationPromise;
-  };
-
   instance.toJSON = function toJSON() {
     return this._solution;
   };
@@ -250,28 +172,6 @@ export interface CallContext {
   remove(
     callback?: (error: Error | null, item?: CallInstance) => any
   ): Promise<boolean>;
-
-  /**
-   * Remove a CallInstance
-   *
-   * @param { function } [callback] - Callback to handle processed record
-   *
-   * @returns { Promise } Resolves to processed boolean
-   */
-  remove(
-    callback?: (error: Error | null, item?: CallInstance) => any
-  ): Promise<boolean>;
-
-  /**
-   * Fetch a CallInstance
-   *
-   * @param { function } [callback] - Callback to handle processed record
-   *
-   * @returns { Promise } Resolves to processed CallInstance
-   */
-  fetch(
-    callback?: (error: Error | null, item?: CallInstance) => any
-  ): Promise<CallInstance>;
 
   /**
    * Fetch a CallInstance
@@ -310,44 +210,6 @@ export class CallContextImpl implements CallContext {
         uri: this._uri,
         method: "delete",
       });
-
-    operationPromise = this._version.setPromiseCallback(
-      operationPromise,
-      callback
-    );
-    return operationPromise;
-  }
-
-  remove(callback?: any): Promise<boolean> {
-    let operationVersion = this._version,
-      operationPromise = operationVersion.remove({
-        uri: this._uri,
-        method: "delete",
-      });
-
-    operationPromise = this._version.setPromiseCallback(
-      operationPromise,
-      callback
-    );
-    return operationPromise;
-  }
-
-  fetch(callback?: any): Promise<CallInstance> {
-    let operationVersion = this._version,
-      operationPromise = operationVersion.fetch({
-        uri: this._uri,
-        method: "get",
-      });
-
-    operationPromise = operationPromise.then(
-      (payload) =>
-        new CallInstance(
-          operationVersion,
-          payload,
-          this._solution.accountSid,
-          this._solution.testInteger
-        )
-    );
 
     operationPromise = this._version.setPromiseCallback(
       operationPromise,
@@ -529,32 +391,6 @@ export class CallInstance {
     callback?: (error: Error | null, item?: CallInstance) => any
   ): Promise<boolean> {
     return this._proxy.remove(callback);
-  }
-
-  /**
-   * Remove a CallInstance
-   *
-   * @param { function } [callback] - Callback to handle processed record
-   *
-   * @returns { Promise } Resolves to processed boolean
-   */
-  remove(
-    callback?: (error: Error | null, item?: CallInstance) => any
-  ): Promise<boolean> {
-    return this._proxy.remove(callback);
-  }
-
-  /**
-   * Fetch a CallInstance
-   *
-   * @param { function } [callback] - Callback to handle processed record
-   *
-   * @returns { Promise } Resolves to processed CallInstance
-   */
-  fetch(
-    callback?: (error: Error | null, item?: CallInstance) => any
-  ): Promise<CallInstance> {
-    return this._proxy.fetch(callback);
   }
 
   /**
