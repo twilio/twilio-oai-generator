@@ -37,7 +37,7 @@ jobs:
       - name: Run unit tests
         run: make test
 
-      - name: Run helper tests and sonar analysis for .NET
+      - name: Run helper tests and sonar analysis
         run: make test-docker SONAR_TOKEN=${{ secrets.SONAR_TOKEN }}
 
       - name: Show git status and fail on diff

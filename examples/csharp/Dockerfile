@@ -15,7 +15,7 @@ ENV SONAR_TOKEN=$SONAR_TOKEN
 
 RUN mkdir /app
 WORKDIR /app
-RUN git clone --depth 1 https://github.com/twilio/twilio-csharp.git -b csharp_monorepo_setup
+RUN git clone --depth 1 https://github.com/twilio/twilio-csharp.git
 WORKDIR /app/twilio-csharp
 
 RUN rm -rf src/Twilio/Rest/*/
@@ -26,6 +26,8 @@ COPY unit-test/Rest test/Twilio.Test/
 
 RUN dotnet restore
 RUN dotnet build -c Release
+
+CMD ["/bin/bash", "-c", "dotnet test test/Twilio.Test/Twilio.Test.csproj --no-build | tee /local/test-report.out"]
 
 RUN apt-get -y install build-essential
 RUN if [ "$SONAR_TOKEN" = "" ] ; then echo Skipping sonar analysis ;  else make cover PROJECT_NAME=twilio_twilio-oai-generator-csharp SONAR_SOURCES="/d:sonar.sources=src/Twilio/Rest/**/*.* /d:sonar.tests=test/Twilio.Test/**/*.*" ; fi
