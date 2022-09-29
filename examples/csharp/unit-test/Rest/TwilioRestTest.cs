@@ -1003,7 +1003,7 @@ namespace Twilio.Tests.Rest
 
             twilioRestClient.AccountSid.Returns("sid");
             twilioRestClient.Request(Arg.Any<Request>()).Returns(new Response(System.Net.HttpStatusCode.OK, "{ \"account_sid\":\"AXCCCCC1234567891234567\",\"sid\":\"123\"}"));
-            FeedbackCallSummaryResource feedbackSummary = FeedbackCallSummaryResource.Create(startDate, endDate,pathAccountSid:ACCOUNT_SID,client:twilioRestClient);
+            FeedbackCallSummaryResource feedbackSummary = FeedbackCallSummaryResource.Update(pathSid: "PATHSID", startDate, endDate,pathAccountSid:ACCOUNT_SID,client:twilioRestClient);
             Assert.IsNotNull(feedbackSummary);
         }
 
@@ -1264,7 +1264,7 @@ namespace Twilio.Tests.Rest
            DateTime endDate = DateTime.Parse("2022-01-27");
            twilioRestClient.AccountSid.Returns("sid");
            twilioRestClient.RequestAsync(Arg.Any<Request>()).Returns(new Response(System.Net.HttpStatusCode.OK, "{ \"account_sid\":\"AXCCCCC1234567891234567\",\"sid\":\"123\"}"));
-           FeedbackCallSummaryResource feedbackSummary = await FeedbackCallSummaryResource.CreateAsync(startDate, endDate,pathAccountSid:ACCOUNT_SID,client:twilioRestClient);
+           FeedbackCallSummaryResource feedbackSummary = await FeedbackCallSummaryResource.UpdateAsync(pathSid: "PATHSID", startDate, endDate,pathAccountSid:ACCOUNT_SID,client:twilioRestClient);
            Assert.IsNotNull(feedbackSummary);
        }
        #endif
@@ -1482,7 +1482,7 @@ namespace Twilio.Tests.Rest
 
         }
 
-        [Test]
+/*        [Test]
         public void TestCreateFeedbackCallSummaryOptionsCreation()
         {
 
@@ -1510,7 +1510,7 @@ namespace Twilio.Tests.Rest
            Assert.IsNotNull(param);
            Assert.AreEqual(startDate.ToString("yyyy-MM-dd"), param.Single((x) => x.Key == "StartDate").Value);
            Assert.AreEqual(endDate.ToString("yyyy-MM-dd"), param.Single((x) => x.Key == "EndDate").Value);
-       }
+       }*/
 
        [Test]
           public void TestCreateNewCredentialsOptionsCreation()
