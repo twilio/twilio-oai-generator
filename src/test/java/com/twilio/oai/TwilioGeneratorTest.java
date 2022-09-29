@@ -19,9 +19,9 @@ public class TwilioGeneratorTest {
     @Test
     public void launchJavaGenerator() {
         final CodegenConfigurator configurator = new CodegenConfigurator()
-            .setGeneratorName("twilio-java")
+            .setGeneratorName("twilio-csharp")
             .setInputSpec("examples/twilio_api_v2010.yaml")
-            .setOutputDir("codegen/twilio-java");
+            .setOutputDir("codegen/twilio-csharp");
 
         final ClientOptInput clientOptInput = configurator.toClientOptInput();
         DefaultGenerator generator = new DefaultGenerator();

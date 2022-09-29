@@ -19,6 +19,11 @@ public class ResourceMap implements IResourceTree {
     private final Inflector inflector;
 
     @Override
+    public Iterable<Resource> getResources() {
+        return urlResourceMap.values();
+    }
+
+    @Override
     public List<String> ancestors(final String resourceName, final Operation operation) {
         final Resource resource = findResource(resourceName).orElseThrow();
         final List<String> ancestorList = new ArrayList<>();
@@ -58,7 +63,7 @@ public class ResourceMap implements IResourceTree {
         final String withoutVersion = PathUtils.removeFirstPart(name);
         final String withoutTrailingParam = PathUtils.removeTrailingPathParam(withoutVersion);
         final String tag = generateTag(withoutVersion);
-        urlResourceMap.put(tag, new Resource(generateTag(withoutTrailingParam), pathItem, inflector));
+        urlResourceMap.put(tag, new Resource(generateTag(withoutTrailingParam), name, pathItem, inflector));
         return tag;
     }
 

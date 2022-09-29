@@ -7,6 +7,8 @@ import io.swagger.v3.oas.models.Operation;
 import io.swagger.v3.oas.models.PathItem;
 
 public interface IResourceTree {
+    Iterable<Resource> getResources();
+
     List<String> ancestors(String resourceName, Operation operation);
 
     Optional<Resource> findResource(String name);

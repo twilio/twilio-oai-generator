@@ -52,7 +52,8 @@ class FeedbackCallSummaryListInstanceImpl
 }
 
 export function FeedbackCallSummaryListInstance(
-  version: V2010
+  version: V2010,
+  accountSid: string
 ): FeedbackCallSummaryListInstance {
   const instance = ((sid) =>
     instance.get(sid)) as FeedbackCallSummaryListInstanceImpl;
@@ -62,8 +63,8 @@ export function FeedbackCallSummaryListInstance(
   };
 
   instance._version = version;
-  instance._solution = {};
-  instance._uri = `/2010-04-01/Accounts/{AccountSid}/Calls/FeedbackSummary.json`;
+  instance._solution = { accountSid };
+  instance._uri = `/2010-04-01/Accounts/${accountSid}/Calls/FeedbackSummary.json`;
 
   instance.toJSON = function toJSON() {
     return this._solution;

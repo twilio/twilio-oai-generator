@@ -16,6 +16,14 @@ services:
     depends_on:
       - prism_twilio
 
+  csharp-test:
+    build:
+      context: ../csharp
+    volumes:
+      - ../csharp:/local
+    depends_on:
+      - prism_twilio
+
   node-test:
     build:
       context: ../node

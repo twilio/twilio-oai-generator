@@ -45,6 +45,7 @@ Class | Method | HTTP request | Description
 *CredentialsAWSApi* | [**FetchCredentialAws**](docs/CredentialsAWSApi.md#fetchcredentialaws) | **Get** /v1/Credentials/AWS/{Sid} | 
 *CredentialsAWSApi* | [**ListCredentialAws**](docs/CredentialsAWSApi.md#listcredentialaws) | **Get** /v1/Credentials/AWS | 
 *CredentialsAWSApi* | [**UpdateCredentialAws**](docs/CredentialsAWSApi.md#updatecredentialaws) | **Post** /v1/Credentials/AWS/{Sid} | 
+*VoiceApi* | [**UpdateCall**](docs/VoiceApi.md#updatecall) | **Post** /v1/Voice/{Sid} | 
 
 
 ## Documentation For Models
@@ -52,6 +53,7 @@ Class | Method | HTTP request | Description
  - [ListCredentialAwsResponse](docs/ListCredentialAwsResponse.md)
  - [ListAccountResponse](docs/ListAccountResponse.md)
  - [TestResponseObjectTestObject](docs/TestResponseObjectTestObject.md)
+ - [UpdateCall200Response](docs/UpdateCall200Response.md)
  - [TestResponseObject](docs/TestResponseObject.md)
  - [ListCredentialAwsResponseMeta](docs/ListCredentialAwsResponseMeta.md)
  - [TestResponseObjectTestArrayOfObjects](docs/TestResponseObjectTestArrayOfObjects.md)
