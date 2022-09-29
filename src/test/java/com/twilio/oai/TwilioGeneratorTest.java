@@ -17,7 +17,7 @@ import static org.junit.Assert.assertFalse;
 public class TwilioGeneratorTest {
 
     @Test
-    public void launchJavaGenerator() {
+    public void launchCsharpGenerator() {
         final CodegenConfigurator configurator = new CodegenConfigurator()
             .setGeneratorName("twilio-csharp")
             .setInputSpec("examples/twilio_api_v2010.yaml")
