@@ -2,7 +2,7 @@
 set -e
 
 function generate() {
-  find "$OUT_DIR" ! -name "*_test.go" -type f -delete
+  find "$OUT_DIR"/*/ ! -name "*_test.go" -type f -delete
   java -cp ./openapi-generator-cli.jar:target/twilio-openapi-generator.jar \
     org.openapitools.codegen.OpenAPIGenerator \
     generate -g "$@" \
@@ -22,21 +22,21 @@ function docker-run() {
 
 API_SPEC=examples/twilio_api_v2010.yaml
 
-OUT_DIR=examples/go/go-client/helper/rest/api/v2010
+OUT_DIR=examples/go/go-client/helper/rest
 generate twilio-go
 
 OUT_DIR=examples/go/go-client/terraform/resources
 generate terraform-provider-twilio
 
 # Replace a couple imports in the generated Terraform resource to use local code.
-sed -i.bak "s/github.com\/twilio\/twilio-go/go-client\/helper/g" "$OUT_DIR/api_default.go"
-sed -i.bak "s/github.com\/twilio\/terraform-provider-twilio\/client/go-client\/terraform\/client/g" "$OUT_DIR/api_default.go"
+sed -i.bak "s/github.com\/twilio\/twilio-go/go-client\/helper/g" "$OUT_DIR/api/v2010/api_default.go"
+sed -i.bak "s/github.com\/twilio\/terraform-provider-twilio\/client/go-client\/terraform\/client/g" "$OUT_DIR/api/v2010/api_default.go"
 
 docker-run examples/go/Dockerfile-goimports
 
-OUT_DIR=examples/java/src/main/java/com/twilio/rest/api
+OUT_DIR=examples/java/src/main/java/com/twilio/rest
 generate twilio-java
 
-OUT_DIR=examples/node/lib/rest/api
+OUT_DIR=examples/node/lib/rest
 generate twilio-node
 docker-run examples/node/Dockerfile-prettier

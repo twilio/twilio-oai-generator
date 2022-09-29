@@ -1,5 +1,5 @@
 {{>licenseInfo}}
-import {{domain}}Base from "../{{domain}}Base";
+import {{domainName}}Base from "../{{domainName}}Base";
 import Version from "../../base/Version";
 {{#versionResources}}
 import { {{name}}ListInstance } from "./{{apiVersion}}/{{filename}}";
@@ -7,15 +7,15 @@ import { {{name}}ListInstance } from "./{{apiVersion}}/{{filename}}";
 
 export default class {{apiVersionClass}} extends Version {
   /**
-   * Initialize the {{apiVersionClass}} version of {{domain}}
+   * Initialize the {{apiVersionClass}} version of {{domainName}}
    *
    {{#versionResources}}
-   * @property { Twilio.{{domain}}.{{apiVersionClass}}.{{name}}ListInstance } {{mountName}} - {{mountName}} resource
+   * @property { Twilio.{{domainName}}.{{apiVersionClass}}.{{name}}ListInstance } {{mountName}} - {{mountName}} resource
    {{/versionResources}}
    *
-   * @param { Twilio.{{domain}} } domain - The Twilio domain
+   * @param { Twilio.{{domainName}} } domain - The Twilio domain
    */
-  constructor(domain: {{domain}}Base) {
+  constructor(domain: {{domainName}}Base) {
     super(domain, "{{apiVersion}}");
   }
 
