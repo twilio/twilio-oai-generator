@@ -206,12 +206,10 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
                 .map(Boolean.class::cast)
                 .orElse(false);
 
-            resourceOperationList.add(co);
-            resource.put("name", itemName);
             if (!ignoreOperation) {
                 resourceOperationList.add(co);
             }
-
+            resource.put("name", itemName);
             resource.put("resourceName", resourceName);
             resource.put("parentResourceName", parentResourceName);
             resource.put("instanceName", instanceName);
