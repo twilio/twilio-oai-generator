@@ -1,10 +1,11 @@
 import argparse
+import json
 import os
 import re
-import json
 from pathlib import Path
 from re import sub
 from typing import Tuple
+
 from clean_java_imports import remove_unused_imports
 
 '''
@@ -13,7 +14,7 @@ structures specific to language style.
 '''
 subdirectories = {
     'terraform': 'twilio/resources',
-    'csharp':'Rest',
+    'csharp': 'Rest',
 }
 
 
@@ -33,9 +34,7 @@ def generate(openapi_spec_path: str, output_path: str, language: str, domain: st
     to_generate = 'terraform-provider-twilio' if language == 'terraform' else f'twilio-{language}'
     is_domain_irrelevant = language in {'go', 'terraform'} and domain_name == 'preview'
     sub_dir = subdirectories.get(language, 'rest')
-    output_path = os.path.join(output_path, sub_dir, domain_name)
-    if language in {'go', 'terraform'}:
-        output_path = os.path.join(output_path, api_version)
+    output_path = os.path.join(output_path, sub_dir)
     if is_domain_irrelevant == False:
         run_openapi_generator(parent_dir, to_generate, output_path, full_path)
     if language == 'java':
@@ -44,11 +43,11 @@ def generate(openapi_spec_path: str, output_path: str, language: str, domain: st
 
 def run_openapi_generator(parent_dir: str, to_generate: str, output_path: str, full_path: str) -> None:
     command = f'cd {parent_dir} && java -cp ./openapi-generator-cli.jar:target/twilio-openapi-generator.jar ' \
-                      f'org.openapitools.codegen.OpenAPIGenerator generate -g {to_generate} ' \
-                      f'--inline-schema-name-defaults arrayItemSuffix="" ' \
-                      f'-i {full_path} ' \
-                      f'-o {output_path} ' \
-                      f'> /dev/null'  # Suppress stdout
+              f'org.openapitools.codegen.OpenAPIGenerator generate -g {to_generate} ' \
+              f'--inline-schema-name-defaults arrayItemSuffix="" ' \
+              f'-i {full_path} ' \
+              f'-o {output_path} ' \
+              f'> /dev/null'  # Suppress stdout
     print(f'Generating {output_path} from {full_path}')
     if os.system(command) != 0:
         raise RuntimeError()
@@ -65,9 +64,11 @@ def get_domain_info(oai_spec_location: str, domain: str, is_file: bool = False, 
         domain_name = parse_domain_name(full_path, language)
     return full_path, domain_name, api_version
 
+
 def title_case(s):
     s = sub(r"(_|-)+", " ", s).title().replace(" ", "")
     return ''.join([s[0].upper(), s[1:]])
+
 
 def parse_domain_name(oai_spec_location_path: str, language: str):
     server_regex = '^(?:https?://)?(?:[^@/\n]+@)?([^:/?\n.]+)'

@@ -8,8 +8,6 @@ import com.twilio.oai.common.ReservedKeyword;
 import com.twilio.oai.common.Serializer;
 import com.twilio.oai.common.Utility;
 import com.twilio.oai.resolver.csharp.CSharpResolver;
-import com.twilio.oai.resolver.csharp.CodegenModelResolver;
-import com.twilio.oai.resolver.csharp.CodegenParameterResolver;
 import com.twilio.oai.mlambdas.TitleCaseLambda;
 import io.swagger.v3.oas.models.OpenAPI;
 import lombok.extern.slf4j.Slf4j;
@@ -40,20 +38,19 @@ import java.util.stream.Collectors;
 @Slf4j
 public class TwilioCsharpGenerator extends CSharpClientCodegen {
 
-    private DirectoryStructureService directoryStructureService = new DirectoryStructureService(EnumConstants.Generator.TWILIO_CSHARP);
-    String initialApiPackage;
+    private final TwilioCodegenAdapter twilioCodegen;
+    private final DirectoryStructureService directoryStructureService =
+        new DirectoryStructureService(EnumConstants.Generator.TWILIO_CSHARP);
     private final List<CodegenModel> allModels = new ArrayList<>();
-    private  Map<String, String> modelFormatMap = new HashMap<>();
+    private final Map<String, String> modelFormatMap = new HashMap<>();
 
     CSharpResolver resolver = new CSharpResolver();
 
     public TwilioCsharpGenerator() {
         super();
 
-        apiNameSuffix = "";
-        initialApiPackage = apiPackage;
-        // Find the templates in the local resources dir.
-        embeddedTemplateDir = templateDir = getName();
+        twilioCodegen = new TwilioCodegenAdapter(this, getName());
+
         sourceFolder = "";
         packageName = "";
     }
@@ -62,24 +59,10 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
     public void processOpts() {
         super.processOpts();
 
-        String[] inputSpecs = inputSpec.split("_");
-        String version = inputSpecs[inputSpecs.length-1].replaceAll("\\.[^/]+$", "");
-        String domain = String.join("", Arrays.copyOfRange(inputSpecs, 1, inputSpecs.length-1));
-
-        if (inputSpecs.length < 3) {   // version is missing
-            version = "";
-            domain = inputSpecs[inputSpecs.length-1].replaceAll("\\.[^/]+$", "");
-        }
-
-        apiPackage = version.toUpperCase(); // Place the API files in the version folder.
-        additionalProperties.put("apiVersion", Utility.toFirstLetterCaps(version));
-        additionalProperties.put("apiVersionClass", version.toUpperCase());
-        additionalProperties.put("domain", StringUtils.camelize(domain));
-        additionalProperties.put("domainPackage", Utility.toFirstLetterCaps(domain));
+        twilioCodegen.processOpts();
 
         apiTestTemplateFiles.clear();
         apiDocTemplateFiles.clear();
-        supportingFiles.clear();
         apiTemplateFiles.clear();
         apiTemplateFiles.put("Resource.mustache", "Resource.cs");
         apiTemplateFiles.put("Options.mustache", "Options.cs");
@@ -89,11 +72,13 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
 
         filesMetadataFilename = "";
         versionMetadataFilename = "";
-
     }
 
     @Override
     public void processOpenAPI(final OpenAPI openAPI) {
+        final String domain = twilioCodegen.getDomainFromOpenAPI(openAPI);
+        twilioCodegen.setDomain(StringUtils.camelize(domain));
+
         directoryStructureService.configure(openAPI, additionalProperties);
     }
 
@@ -188,7 +173,7 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
         if (directoryStructureService.isVersionLess(this.additionalProperties)) {
             String tag = objs.getOperations().getClassname();
             String subDomainName = directoryStructureService.getSubDomainName(tag);
-            resource.put("package", subDomainName);
+            resource.put("apiVersion", subDomainName);
         }
 
         List<String> packagePaths = Arrays.asList(Arrays.copyOfRange(filePathArray, 0, filePathArray.length - 1))
