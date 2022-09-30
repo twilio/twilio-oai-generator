@@ -42,12 +42,14 @@ public class TwilioCodegenAdapter {
 
     public void setDomain(final String domain) {
         final String domainPackage = domain.replace("-", "");
-
-        codegen.setOutputDir(
-            originalOutputDir + File.separator + domainPackage + File.separator + getInputSpecVersion());
+        setOutputDir(domainPackage, getInputSpecVersion());
 
         codegen.additionalProperties().put("domainName", StringUtils.camelize(domain));
         codegen.additionalProperties().put("domainPackage", domainPackage);
+    }
+
+    public void setOutputDir(final String domain, final String version) {
+        codegen.setOutputDir(originalOutputDir + File.separator + domain + File.separator + version);
     }
 
     public String getDomainFromOpenAPI(final OpenAPI openAPI) {
