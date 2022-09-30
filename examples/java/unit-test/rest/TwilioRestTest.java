@@ -16,20 +16,20 @@ import com.twilio.rest.api.v2010.AccountDeleter;
 import com.twilio.rest.api.v2010.AccountFetcher;
 import com.twilio.rest.api.v2010.AccountReader;
 import com.twilio.rest.api.v2010.AccountUpdater;
-import com.twilio.rest.api.v2010.CallUpdater;
 import com.twilio.rest.api.v2010.account.Call;
 import com.twilio.rest.api.v2010.account.CallCreator;
 import com.twilio.rest.api.v2010.account.CallDeleter;
 import com.twilio.rest.api.v2010.account.CallFetcher;
 import com.twilio.rest.api.v2010.account.call.FeedbackCallSummary;
 import com.twilio.rest.api.v2010.account.call.FeedbackCallSummaryUpdater;
-import com.twilio.rest.api.v2010.credential.Aws;
-import com.twilio.rest.api.v2010.credential.AwsDeleter;
-import com.twilio.rest.api.v2010.credential.AwsFetcher;
-import com.twilio.rest.api.v2010.credential.AwsReader;
-import com.twilio.rest.api.v2010.credential.AwsUpdater;
-import com.twilio.rest.api.v2010.credential.NewCredentials;
-import com.twilio.rest.api.v2010.credential.NewCredentialsCreator;
+import com.twilio.rest.flexapi.v1.CallUpdater;
+import com.twilio.rest.flexapi.v1.credential.Aws;
+import com.twilio.rest.flexapi.v1.credential.AwsDeleter;
+import com.twilio.rest.flexapi.v1.credential.AwsFetcher;
+import com.twilio.rest.flexapi.v1.credential.AwsReader;
+import com.twilio.rest.flexapi.v1.credential.AwsUpdater;
+import com.twilio.rest.flexapi.v1.credential.NewCredentials;
+import com.twilio.rest.flexapi.v1.credential.NewCredentialsCreator;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -260,7 +260,7 @@ public class TwilioRestTest {
     public void testShouldReadListOfMessages() {
         Request mockRequest = new Request(
             HttpMethod.GET,
-            "api",
+            "flex-api",
             "/v1/Credentials/AWS"
         );
         String url = "https://api.twilio.com/v1/Credentials/AWS";
@@ -308,7 +308,7 @@ public class TwilioRestTest {
     public void testListError() {
         Request mockRequest = new Request(
             HttpMethod.GET,
-            "api",
+            "flex-api",
             "/v1/Credentials/AWS"
         );
 
@@ -329,7 +329,7 @@ public class TwilioRestTest {
     public void testObjectArrayTypeParam() {
         Request mockRequest = new Request(
             HttpMethod.POST,
-            "api",
+            "flex-api",
             "/v1/Credentials/AWS"
         );
         Map<String, Object> item1 = new HashMap<>();
@@ -449,7 +449,7 @@ public class TwilioRestTest {
     public void testAnyTypeParam() {
         Request mockRequest = new Request(
             HttpMethod.POST,
-            "api",
+            "flex-api",
             "/v1/Credentials/AWS"
         );
 
@@ -969,16 +969,7 @@ public class TwilioRestTest {
 
         assertEquals("a123", aws.getAccountSid());
         assertEquals("123", aws.getSid());
-        assertNull(aws.getTestObject());
         assertEquals(Integer.valueOf("123"), aws.getTestInteger());
-        assertNull(aws.getTestDateTime());
-        assertEquals(BigDecimal.valueOf(123.1), aws.getTestNumber());
-        assertNull(aws.getPriceUnit());
-        assertEquals(Float.valueOf("123.2"), aws.getTestNumberFloat());
-        assertEquals(Aws.Status.PAUSED.toString(), aws.getTestEnum().toString());
-        assertNull(aws.getTestArrayOfIntegers());
-        assertNull(aws.getTestArrayOfArrayOfIntegers());
-        assertNull(aws.getTestArrayOfObjects());
         assertNull(aws.getTestString());
 
         assertEquals(aws, awsDuplicate);
@@ -999,16 +990,7 @@ public class TwilioRestTest {
         assertEquals("a123", credentials.getAccountSid());
         assertEquals("123", credentials.getSid());
         assertNull(credentials.getTestString());
-        assertNull(credentials.getTestObject());
         assertEquals(Integer.valueOf("123"), credentials.getTestInteger());
-        assertNull(credentials.getTestDateTime());
-        assertEquals(BigDecimal.valueOf(123.1), credentials.getTestNumber());
-        assertNull(credentials.getPriceUnit());
-        assertEquals(Float.valueOf("123.2"), credentials.getTestNumberFloat());
-        assertEquals("paused", credentials.getTestEnum().toString());
-        assertNull(credentials.getTestArrayOfIntegers());
-        assertNull(credentials.getTestArrayOfArrayOfIntegers());
-        assertNull(credentials.getTestArrayOfObjects());
 
         assertEquals(credentials, credentialsDuplicate);
         assertEquals(credentialsDuplicate, credentials);
@@ -1050,7 +1032,7 @@ public class TwilioRestTest {
         String nextPageURI = "/v1/Credentials/AWSN";
         Request mockRequestFirstPage = new Request(
             HttpMethod.GET,
-            "api",
+            "flex-api",
             firstPageURI
         );
 
@@ -1122,7 +1104,7 @@ public class TwilioRestTest {
     @Test
     public void testVoiceCallUpdater() {
         when(twilioRestClient.request(Mockito.any())).thenReturn(new Response("{\"sid\": \"123\"}", 200));
-        final com.twilio.rest.api.v2010.Call updatedCall = com.twilio.rest.api.v2010.Call
+        final com.twilio.rest.flexapi.v1.Call updatedCall = com.twilio.rest.flexapi.v1.Call
             .updater("sidUpdated")
             .update(twilioRestClient);
 

@@ -6,10 +6,10 @@ describe("credential", () => {
   const twilio = new Twilio();
 
   it("should update an aws credential", () => {
-    const scope = nock("https://api.twilio.com")
-      .post("/v2010/v1/Credentials/AWS/123")
+    const scope = nock("https://flex-api.twilio.com")
+      .post("/v1/v1/Credentials/AWS/123")
       .reply(200, { sid: "123" });
 
-    return twilio.api.v2010.credential.aws("123").update(() => scope.done());
+    return twilio.flexApi.v1.credential.aws("123").update(() => scope.done());
   });
 });

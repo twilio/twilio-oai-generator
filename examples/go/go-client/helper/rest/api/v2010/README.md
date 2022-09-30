@@ -40,22 +40,13 @@ Class | Method | HTTP request | Description
 *AccountsCallsApi* | [**DeleteCall**](docs/AccountsCallsApi.md#deletecall) | **Delete** /2010-04-01/Accounts/{AccountSid}/Calls/{TestInteger}.json | 
 *AccountsCallsApi* | [**FetchCall**](docs/AccountsCallsApi.md#fetchcall) | **Get** /2010-04-01/Accounts/{AccountSid}/Calls/{TestInteger}.json | 
 *AccountsCallsFeedbackSummaryApi* | [**UpdateCallFeedbackSummary**](docs/AccountsCallsFeedbackSummaryApi.md#updatecallfeedbacksummary) | **Post** /2010-04-01/Accounts/{AccountSid}/Calls/FeedbackSummary/{Sid}.json | 
-*CredentialsAWSApi* | [**CreateCredentialAws**](docs/CredentialsAWSApi.md#createcredentialaws) | **Post** /v1/Credentials/AWS | 
-*CredentialsAWSApi* | [**DeleteCredentialAws**](docs/CredentialsAWSApi.md#deletecredentialaws) | **Delete** /v1/Credentials/AWS/{Sid} | 
-*CredentialsAWSApi* | [**FetchCredentialAws**](docs/CredentialsAWSApi.md#fetchcredentialaws) | **Get** /v1/Credentials/AWS/{Sid} | 
-*CredentialsAWSApi* | [**ListCredentialAws**](docs/CredentialsAWSApi.md#listcredentialaws) | **Get** /v1/Credentials/AWS | 
-*CredentialsAWSApi* | [**UpdateCredentialAws**](docs/CredentialsAWSApi.md#updatecredentialaws) | **Post** /v1/Credentials/AWS/{Sid} | 
-*VoiceApi* | [**UpdateCall**](docs/VoiceApi.md#updatecall) | **Post** /v1/Voice/{Sid} | 
 
 
 ## Documentation For Models
 
- - [ListCredentialAwsResponse](docs/ListCredentialAwsResponse.md)
  - [ListAccountResponse](docs/ListAccountResponse.md)
  - [TestResponseObjectTestObject](docs/TestResponseObjectTestObject.md)
- - [UpdateCall200Response](docs/UpdateCall200Response.md)
  - [TestResponseObject](docs/TestResponseObject.md)
- - [ListCredentialAwsResponseMeta](docs/ListCredentialAwsResponseMeta.md)
  - [TestResponseObjectTestArrayOfObjects](docs/TestResponseObjectTestArrayOfObjects.md)
 
 
