@@ -28,6 +28,7 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
     public static final String IGNORE_EXTENSION_NAME = "x-ignore";
     public static final String PREVIEW_STRING = "Preview";
 
+    private final TwilioCodegenAdapter twilioCodegen;
     private final List<CodegenModel> allModels = new ArrayList<>();
     private final Inflector inflector = new Inflector();
     private final Map<String, String> subDomainMap = new HashMap<>();
@@ -36,31 +37,28 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
     public TwilioNodeGenerator() {
         super();
 
+        twilioCodegen = new TwilioCodegenAdapter(this, getName());
+
         // Remove the "API" suffix from the API filenames.
         apiSuffix = "";
-
-        // Find the templates in the local resources dir.
-        embeddedTemplateDir = templateDir = getName();
     }
 
     @Override
     public void processOpts() {
         super.processOpts();
 
-        final String inputSpecPattern = ".+_(?<domain>.+)_(?<version>.+)\\..+";
-        final String version = inputSpec.replaceAll(inputSpecPattern, "${version}");
-        final String domain = inputSpec.replaceAll(inputSpecPattern, "${domain}");
-        apiPackage = version; // Place the API files in the version folder.
-        additionalProperties.put("apiVersion", version);
-        additionalProperties.put("apiVersionClass", version.toUpperCase());
-        additionalProperties.put("domain", StringUtils.camelize(domain));
+        twilioCodegen.processOpts();
 
-        supportingFiles.clear();
-        supportingFiles.add(new SupportingFile("version.mustache", apiPackage.toUpperCase() + ".ts"));
+        supportingFiles.add(new SupportingFile("version.mustache",
+                                               ".." + File.separator + additionalProperties.get("apiVersionClass") +
+                                                   ".ts"));
     }
 
     @Override
     public void processOpenAPI(final OpenAPI openAPI) {
+        final String domain = twilioCodegen.getDomainFromOpenAPI(openAPI);
+        twilioCodegen.setDomain(StringUtils.camelize(domain, true));
+
         final IResourceTree resourceTree = new ResourceMap(inflector);
         final Map<String, Object> versionResources = getStringMap(additionalProperties, "versionResources");
 
@@ -447,7 +445,7 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
     }
 
     private boolean isPreviewDomain(){
-        return this.additionalProperties.get("domain").equals(PREVIEW_STRING);
+        return this.additionalProperties.get("domainName").equals(PREVIEW_STRING);
     }
 
     @Override
