@@ -17,14 +17,15 @@ type BaseClient interface {
 
 type TestClient struct {
 	client.Client
-	BaseURL string
+	scheme string
 }
 
-func NewTestClient(username string, password string) *TestClient {
+func NewTestClient(username string, password string, scheme string) *TestClient {
 	c := &TestClient{
 		Client: client.Client{
 			Credentials: client.NewCredentials(username, password),
 		},
+		scheme: scheme,
 	}
 	c.SetAccountSid(username)
 	return c
@@ -32,9 +33,7 @@ func NewTestClient(username string, password string) *TestClient {
 
 func (tc *TestClient) getParsedUrl(path string) *url.URL {
 	parsedUrl, _ := url.Parse(path)
-	baseUrl, _ := url.Parse(tc.BaseURL)
-	parsedUrl.Scheme = baseUrl.Scheme
-	parsedUrl.Host = baseUrl.Host
+	parsedUrl.Scheme = tc.scheme
 	return parsedUrl
 }
 

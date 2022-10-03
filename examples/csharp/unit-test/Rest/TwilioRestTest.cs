@@ -10,11 +10,12 @@ using Twilio.Exceptions;
 using Twilio.Http;
 using System.Linq;
 using Twilio.Rest.Api.V2010;
-using Twilio.Rest.Api.V2010.Credential;
 using Twilio.Rest.Api.V2010.Account;
 using Twilio.Rest.Api.V2010.Account.Call;
+using Twilio.Rest.FlexApi.V1.Credential;
 using Twilio.Base;
 using Newtonsoft.Json;
+using CallResource = Twilio.Rest.Api.V2010.Account.CallResource;
 
 namespace Twilio.Tests.Rest
 {
@@ -708,7 +709,6 @@ namespace Twilio.Tests.Rest
                     Assert.AreEqual("Hello",secondResult.TestString);
         }
 
-
         [Test]
         public void TestRequestForAWSFetch()
         {
@@ -728,7 +728,6 @@ namespace Twilio.Tests.Rest
             }
             catch (ApiException) {}
             twilioRestClient.Received().Request(request);
-
         }
 
         [Test]
@@ -913,13 +912,9 @@ namespace Twilio.Tests.Rest
             Assert.IsNotNull(awsDuplicate);
             Assert.IsNotNull(aws.AccountSid);
             Assert.IsNotNull(aws.Sid);
-            Assert.IsNotNull(aws.TestEnum);
             Assert.AreEqual(aws.AccountSid,awsDuplicate.AccountSid);
             Assert.AreEqual(aws.Sid,awsDuplicate.Sid);
             Assert.AreEqual(aws.TestInteger,awsDuplicate.TestInteger);
-            Assert.AreEqual(aws.TestNumber,awsDuplicate.TestNumber);
-            Assert.AreEqual(aws.TestNumberFloat,awsDuplicate.TestNumberFloat);
-            Assert.AreEqual(aws.TestEnum,awsDuplicate.TestEnum);
 
             Assert.AreEqual("a123",aws.AccountSid);
             Assert.AreEqual("123",aws.Sid);
@@ -1003,10 +998,9 @@ namespace Twilio.Tests.Rest
 
             twilioRestClient.AccountSid.Returns("sid");
             twilioRestClient.Request(Arg.Any<Request>()).Returns(new Response(System.Net.HttpStatusCode.OK, "{ \"account_sid\":\"AXCCCCC1234567891234567\",\"sid\":\"123\"}"));
-            FeedbackCallSummaryResource feedbackSummary = FeedbackCallSummaryResource.Create(startDate, endDate,pathAccountSid:ACCOUNT_SID,client:twilioRestClient);
+            FeedbackCallSummaryResource feedbackSummary = FeedbackCallSummaryResource.Update("123", startDate, endDate,pathAccountSid:ACCOUNT_SID,client:twilioRestClient);
             Assert.IsNotNull(feedbackSummary);
         }
-
 
         [Test]
         public void TestFeedbackCallSummaryResourceObjectCreationValues()
@@ -1089,7 +1083,6 @@ namespace Twilio.Tests.Rest
             }
             catch (ApiException) {}
             twilioRestClient.Received().RequestAsync(request);
-
         }
         #endif
 
@@ -1264,7 +1257,7 @@ namespace Twilio.Tests.Rest
            DateTime endDate = DateTime.Parse("2022-01-27");
            twilioRestClient.AccountSid.Returns("sid");
            twilioRestClient.RequestAsync(Arg.Any<Request>()).Returns(new Response(System.Net.HttpStatusCode.OK, "{ \"account_sid\":\"AXCCCCC1234567891234567\",\"sid\":\"123\"}"));
-           FeedbackCallSummaryResource feedbackSummary = await FeedbackCallSummaryResource.CreateAsync(startDate, endDate,pathAccountSid:ACCOUNT_SID,client:twilioRestClient);
+           FeedbackCallSummaryResource feedbackSummary = await FeedbackCallSummaryResource.UpdateAsync("123", startDate, endDate,pathAccountSid:ACCOUNT_SID,client:twilioRestClient);
            Assert.IsNotNull(feedbackSummary);
        }
        #endif
@@ -1312,7 +1305,6 @@ namespace Twilio.Tests.Rest
         [Test]
         public void TestNewCredentialsGetters()
         {
-
             string json = "{\"account_sid\": \"a123\", \"sid\": \"123\", \"test_integer\": 123, \"test_number\": 123.1, \"test_number_float\": 123.2, \"test_enum\": \"paused\", " +
                     "\"test_enum\": \"paused\"}";
             NewCredentialsResource credentials = NewCredentialsResource.FromJson(json);
@@ -1323,20 +1315,10 @@ namespace Twilio.Tests.Rest
             Assert.AreEqual("a123", credentials.AccountSid);
             Assert.AreEqual("123", credentials.Sid);
             Assert.IsNull(credentials.TestString);
-            Assert.IsNull(credentials.TestObject);
             Assert.AreEqual(123, credentials.TestInteger);
-            Assert.IsNull(credentials.TestDateTime);
-
-            Assert.IsNull(credentials.PriceUnit);
-
-            Assert.IsNull(credentials.TestArrayOfIntegers);
-            Assert.IsNull(credentials.TestArrayOfArrayOfIntegers);
-            Assert.IsNull(credentials.TestArrayOfObjects);
 
             Assert.AreEqual(credentials.AccountSid, credentialsDuplicate.AccountSid);
             Assert.AreEqual(credentials.Sid, credentialsDuplicate.Sid);
-            Assert.AreEqual(credentials.TestInteger, credentialsDuplicate.TestInteger);
-            Assert.AreEqual(credentials.TestNumber, credentialsDuplicate.TestNumber);
         }
 
         #if !NET35
@@ -1432,7 +1414,6 @@ namespace Twilio.Tests.Rest
             Assert.AreEqual(requiredStringProperty, createCall.RequiredStringProperty);
             Assert.IsNotNull(createCall.TestArrayOfStrings);
             Assert.AreEqual(testArrayOfStrings, createCall.TestArrayOfStrings);
-
         }
 
         [Test]
@@ -1455,7 +1436,6 @@ namespace Twilio.Tests.Rest
         [Test]
         public void TestDeleteCallOptionsCreation()
         {
-
             string pathAccountSid = "PathAccountSid";
             int pathTestInteger = 10;
 
@@ -1464,13 +1444,11 @@ namespace Twilio.Tests.Rest
             Assert.IsNotNull(deleteCall.PathAccountSid);
             Assert.AreEqual(pathAccountSid, deleteCall.PathAccountSid);
             Assert.AreEqual(pathTestInteger, deleteCall.PathTestInteger);
-
         }
 
         [Test]
         public void TestFetchCallOptionsCreation()
         {
-
             string pathAccountSid = "PathAccountSid";
             int pathTestInteger = 10;
 
@@ -1479,34 +1457,31 @@ namespace Twilio.Tests.Rest
             Assert.IsNotNull(fetchCall.PathAccountSid);
             Assert.AreEqual(pathAccountSid, fetchCall.PathAccountSid);
             Assert.AreEqual(pathTestInteger, fetchCall.PathTestInteger);
-
         }
 
         [Test]
-        public void TestCreateFeedbackCallSummaryOptionsCreation()
+        public void TestUpdateFeedbackCallSummaryOptionsCreation()
         {
-
             string pathAccountSid = "PathAccountSid";
             DateTime startDate = DateTime.Parse("2010-3-12");
             DateTime endDate = DateTime.Parse("2011-5-12");
 
-            var createCall = new CreateFeedbackCallSummaryOptions(endDate,startDate) { PathAccountSid = pathAccountSid};
-            Assert.IsNotNull(createCall);
-            Assert.IsNotNull(createCall.PathAccountSid);
-            Assert.AreEqual(pathAccountSid, createCall.PathAccountSid);
+            var updateCall = new UpdateFeedbackCallSummaryOptions("pathSid", endDate, startDate) { PathAccountSid = pathAccountSid};
+            Assert.IsNotNull(updateCall);
+            Assert.IsNotNull(updateCall.PathAccountSid);
+            Assert.AreEqual(pathAccountSid, updateCall.PathAccountSid);
         }
 
        [Test]
-       public void TestCreateFeedbackCallSummaryOptionsParamsCreation()
+       public void TestUpdateFeedbackCallSummaryOptionsParamsCreation()
        {
-
            string pathAccountSid = "PathAccountSid";
            DateTime startDate = DateTime.Parse("2010-3-12");
            DateTime endDate = DateTime.Parse("2011-5-12");
 
-           var createCall = new CreateFeedbackCallSummaryOptions(endDate,startDate) { PathAccountSid = pathAccountSid};
-           Assert.IsNotNull(createCall);
-           var param = createCall.GetParams();
+           var updateCall = new UpdateFeedbackCallSummaryOptions("pathSid", endDate, startDate) { PathAccountSid = pathAccountSid};
+           Assert.IsNotNull(updateCall);
+           var param = updateCall.GetParams();
            Assert.IsNotNull(param);
            Assert.AreEqual(startDate.ToString("yyyy-MM-dd"), param.Single((x) => x.Key == "StartDate").Value);
            Assert.AreEqual(endDate.ToString("yyyy-MM-dd"), param.Single((x) => x.Key == "EndDate").Value);
@@ -1515,7 +1490,6 @@ namespace Twilio.Tests.Rest
        [Test]
           public void TestCreateNewCredentialsOptionsCreation()
        {
-
             string testString = "testString";
             bool testBoolean = true;
             int testInteger = 5;
@@ -1579,13 +1553,11 @@ namespace Twilio.Tests.Rest
             CollectionAssert.AreEquivalent(permissions, credentials.Permissions);
             Assert.AreEqual(testObject, credentials.TestObject);
             CollectionAssert.AreEquivalent(testObjectArray, credentials.TestObjectArray);
-
        }
 
        [Test]
        public void TestCreateNewCredentialsOptionsParamsCreation()
        {
-
             string testString = "testString";
             bool testBoolean = true;
             int testInteger = 5;
@@ -1655,7 +1627,6 @@ namespace Twilio.Tests.Rest
             var testObjectArrayData = testObjectArray.Select(TestObjectArray => new KeyValuePair<string, string>("TestObjectArray", Serializers.JsonObject(TestObjectArray)));
             var testObjectArrayDataRetrieved = param.Where(x => x.Key == "TestObjectArray").ToList();
             CollectionAssert.AreEquivalent(testObjectArrayData, testObjectArrayDataRetrieved);
-
        }
     }
 }
