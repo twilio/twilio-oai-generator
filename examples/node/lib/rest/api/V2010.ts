@@ -15,16 +15,12 @@
 import ApiBase from "../ApiBase";
 import Version from "../../base/Version";
 import { AccountListInstance } from "./v2010/account";
-import { CallListInstance } from "./v2010/call";
-import { CredentialListInstance } from "./v2010/credential";
 
 export default class V2010 extends Version {
   /**
    * Initialize the V2010 version of Api
    *
    * @property { Twilio.Api.V2010.AccountListInstance } accounts - accounts resource
-   * @property { Twilio.Api.V2010.CallListInstance } call - call resource
-   * @property { Twilio.Api.V2010.CredentialListInstance } credential - credential resource
    *
    * @param { Twilio.Api } domain - The Twilio domain
    */
@@ -33,21 +29,9 @@ export default class V2010 extends Version {
   }
 
   protected _accounts?: AccountListInstance;
-  protected _call?: CallListInstance;
-  protected _credential?: CredentialListInstance;
 
   get accounts(): AccountListInstance {
     this._accounts = this._accounts || AccountListInstance(this);
     return this._accounts;
-  }
-
-  get call(): CallListInstance {
-    this._call = this._call || CallListInstance(this);
-    return this._call;
-  }
-
-  get credential(): CredentialListInstance {
-    this._credential = this._credential || CredentialListInstance(this);
-    return this._credential;
   }
 }

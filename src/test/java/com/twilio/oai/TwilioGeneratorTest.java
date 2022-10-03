@@ -40,7 +40,7 @@ public class TwilioGeneratorTest {
     public void launchGenerator() {
         final CodegenConfigurator configurator = new CodegenConfigurator()
             .setGeneratorName(generatorName)
-            .setInputSpec("examples/twilio_api_v2010.yaml")
+            .setInputSpec("examples/spec/twilio_api_v2010.yaml")
             .setOutputDir("codegen/" + generatorName);
 
         final ClientOptInput clientOptInput = configurator.toClientOptInput();

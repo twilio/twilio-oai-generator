@@ -1,0 +1,305 @@
+components:
+  schemas:
+    test_enum_status:
+      enum:
+        - in-progress
+        - paused
+        - stopped
+        - processing
+        - completed
+        - absent
+      type: string
+    test.response_object:
+      properties:
+        account_sid:
+          nullable: true
+          format: foobar
+          type: string
+        sid:
+          nullable: true
+          type: string
+        test_string:
+          nullable: true
+          type: string
+        test_integer:
+          nullable: true
+          type: integer
+      type: object
+  examples:
+    test.response_object.example:
+      value:
+        sid: "CR12345678123456781234567812345678"
+        test_string: "Ahoy"
+  securitySchemes:
+    accountSid_authToken:
+      scheme: basic
+      type: http
+info:
+  contact:
+    email: support@twilio.com
+    name: Twilio Support
+    url: https://support.twilio.com
+  description: This is the public Twilio REST API.
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: https://www.twilio.com/legal/tos
+  title: Twilio - Accounts
+  version: 1.11.0
+openapi: 3.0.1
+paths:
+  /v1/Credentials:
+    description: A parent resource with no operations
+    servers:
+      - url: https://flex-api.twilio.com
+    x-twilio:
+      className: credential
+      pathType: list
+  /v1/Credentials/AWS:
+    get:
+      operationId: ListCredentialAws
+      parameters:
+        - in: query
+          name: PageSize
+          schema:
+            maximum: 1000
+            minimum: 1
+            type: integer
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  credentials:
+                    items:
+                      $ref: '#/components/schemas/test.response_object'
+                    type: array
+                  meta:
+                    properties:
+                      first_page_url:
+                        format: uri
+                        type: string
+                      key:
+                        type: string
+                      next_page_url:
+                        format: uri
+                        type: string
+                      page:
+                        type: integer
+                      page_size:
+                        type: integer
+                      previous_page_url:
+                        format: uri
+                        type: string
+                      url:
+                        format: uri
+                        type: string
+                    type: object
+                title: ListCredentialAwsResponse
+                type: object
+              examples:
+                creds_response_example:
+                  summary: Example of a Credential
+                  value:
+                    credentials: [
+                      {
+                        "account_sid": "AC12345678123456781234567812345678",
+                        "sid": "CR12345678123456781234567812345678",
+                        "test_string": "Ahoy",
+                      }
+                    ]
+                    meta: {
+                      first_page_url: "http://example.com/page1",
+                      next_page_url: "http://example.com/page2",
+                      page: 1,
+                      page_size: 3,
+                      previous_page_url: "http://example.com/page0",
+                      url: "http://example.com"
+                    }
+          description: OK
+      security:
+        - accountSid_authToken: [ ]
+    post:
+      operationId: CreateCredentialAws
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              properties:
+                TestString:
+                  type: string
+                TestBoolean:
+                  type: boolean
+                TestInteger:
+                  type: integer
+                TestNumber:
+                  type: number
+                TestNumberFloat:
+                  type: number
+                  format: float
+                TestNumberDouble:
+                  type: number
+                  format: double
+                TestNumberInt32:
+                  type: number
+                  format: int32
+                TestNumberInt64:
+                  type: integer
+                  format: int64
+                TestObject:
+                  type: object
+                  format: object
+                TestDateTime:
+                  type: string
+                  format: date-time
+                TestDate:
+                  type: string
+                  format: date
+                TestEnum:
+                  $ref: '#/components/schemas/test_enum_status'
+                  type: string
+                TestObjectArray:
+                  items:
+                    type: object
+                  type: array
+                TestAnyType: { }
+                Permissions:
+                  description: 'A comma-separated list of the permissions you will
+                                      request from the users of this ConnectApp.  Can include: `get-all`
+                                      and `post-all`.'
+                  items:
+                    enum:
+                      - get-all
+                      - post-all
+                    type: string
+                  type: array
+              required:
+                - TestString
+              title: CreateCredentialAwsRequest
+              type: object
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/test.response_object'
+          description: Created
+      security:
+        - accountSid_authToken: [ ]
+      x-twilio:
+        className: new_credentials
+        conditional:
+          - - TestInteger
+            - TestDate
+          - - TestNumberFloat
+            - TestObject
+    servers:
+      - url: https://flex-api.twilio.com
+    x-twilio:
+      parent: /Credentials
+      pathType: list
+  /v1/Credentials/AWS/{Sid}:
+    delete:
+      operationId: DeleteCredentialAws
+      parameters:
+        - in: path
+          name: Sid
+          required: true
+          schema:
+            maxLength: 34
+            minLength: 34
+            pattern: ^CR[0-9a-fA-F]{32}$
+            type: string
+      responses:
+        '204':
+          description: The resource was deleted successfully.
+      security:
+        - accountSid_authToken: [ ]
+    get:
+      operationId: FetchCredentialAws
+      parameters:
+        - in: path
+          name: Sid
+          required: true
+          schema:
+            maxLength: 34
+            minLength: 34
+            pattern: ^CR[0-9a-fA-F]{32}$
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/test.response_object'
+              examples:
+                example:
+                  $ref: '#/components/examples/test.response_object.example'
+          description: OK
+      security:
+        - accountSid_authToken: [ ]
+    post:
+      operationId: UpdateCredentialAws
+      parameters:
+        - in: path
+          name: Sid
+          required: true
+          schema:
+            maxLength: 34
+            minLength: 34
+            pattern: ^CR[0-9a-fA-F]{32}$
+            type: string
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              properties:
+                TestString:
+                  type: string
+                TestBoolean:
+                  type: boolean
+              title: UpdateCredentialAwsRequest
+              type: object
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/test.response_object'
+          description: OK
+      security:
+        - accountSid_authToken: [ ]
+    servers:
+      - url: https://flex-api.twilio.com
+    x-twilio:
+      parent: /Credentials
+      pathType: instance
+  /v1/Voice/{Sid}:
+    description: An instance resource with no parent
+    post:
+      operationId: UpdateCall
+      parameters:
+        - in: path
+          name: Sid
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  sid:
+                    nullable: true
+                    type: string
+                type: object
+          description: OK
+      security:
+        - accountSid_authToken: [ ]
+    servers:
+      - url: https://flex-api.twilio.com
+    x-twilio:
+      pathType: instance
+      className: call

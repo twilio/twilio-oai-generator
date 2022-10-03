@@ -10,9 +10,9 @@ using Twilio.Exceptions;
 using Twilio.Http;
 using System.Linq;
 using Twilio.Rest.Api.V2010;
-using Twilio.Rest.Api.V2010.Credential;
 using Twilio.Rest.Api.V2010.Account;
 using Twilio.Rest.Api.V2010.Account.Call;
+using Twilio.Rest.FlexApi.V1.Credential;
 using Twilio.Base;
 using Newtonsoft.Json;
 using CallResource = Twilio.Rest.Api.V2010.Account.CallResource;
@@ -912,13 +912,9 @@ namespace Twilio.Tests.Rest
             Assert.IsNotNull(awsDuplicate);
             Assert.IsNotNull(aws.AccountSid);
             Assert.IsNotNull(aws.Sid);
-            Assert.IsNotNull(aws.TestEnum);
             Assert.AreEqual(aws.AccountSid,awsDuplicate.AccountSid);
             Assert.AreEqual(aws.Sid,awsDuplicate.Sid);
             Assert.AreEqual(aws.TestInteger,awsDuplicate.TestInteger);
-            Assert.AreEqual(aws.TestNumber,awsDuplicate.TestNumber);
-            Assert.AreEqual(aws.TestNumberFloat,awsDuplicate.TestNumberFloat);
-            Assert.AreEqual(aws.TestEnum,awsDuplicate.TestEnum);
 
             Assert.AreEqual("a123",aws.AccountSid);
             Assert.AreEqual("123",aws.Sid);
@@ -1319,20 +1315,10 @@ namespace Twilio.Tests.Rest
             Assert.AreEqual("a123", credentials.AccountSid);
             Assert.AreEqual("123", credentials.Sid);
             Assert.IsNull(credentials.TestString);
-            Assert.IsNull(credentials.TestObject);
             Assert.AreEqual(123, credentials.TestInteger);
-            Assert.IsNull(credentials.TestDateTime);
-
-            Assert.IsNull(credentials.PriceUnit);
-
-            Assert.IsNull(credentials.TestArrayOfIntegers);
-            Assert.IsNull(credentials.TestArrayOfArrayOfIntegers);
-            Assert.IsNull(credentials.TestArrayOfObjects);
 
             Assert.AreEqual(credentials.AccountSid, credentialsDuplicate.AccountSid);
             Assert.AreEqual(credentials.Sid, credentialsDuplicate.Sid);
-            Assert.AreEqual(credentials.TestInteger, credentialsDuplicate.TestInteger);
-            Assert.AreEqual(credentials.TestNumber, credentialsDuplicate.TestNumber);
         }
 
         #if !NET35
