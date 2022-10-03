@@ -45,7 +45,7 @@ export function CallListInstance(version: V1): CallListInstance {
 
   instance._version = version;
   instance._solution = {};
-  instance._uri = `/v1/Voice`;
+  instance._uri = `/Voice`;
 
   instance.toJSON = function toJSON() {
     return this._solution;
@@ -85,7 +85,7 @@ export class CallContextImpl implements CallContext {
 
   constructor(protected _version: V1, sid: string) {
     this._solution = { sid };
-    this._uri = `/v1/Voice/${sid}`;
+    this._uri = `/Voice/${sid}`;
   }
 
   update(callback?: any): Promise<CallInstance> {

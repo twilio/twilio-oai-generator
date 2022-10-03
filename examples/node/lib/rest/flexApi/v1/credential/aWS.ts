@@ -95,7 +95,7 @@ export class AWSContextImpl implements AWSContext {
 
   constructor(protected _version: V1, sid: string) {
     this._solution = { sid };
-    this._uri = `/v1/Credentials/AWS/${sid}`;
+    this._uri = `/Credentials/AWS/${sid}`;
   }
 
   remove(callback?: any): Promise<boolean> {
@@ -342,7 +342,7 @@ export function AWSListInstance(version: V1): AWSListInstance {
 
   instance._version = version;
   instance._solution = {};
-  instance._uri = `/v1/Credentials/AWS`;
+  instance._uri = `/Credentials/AWS`;
 
   instance.page = function page(
     params?: any,
