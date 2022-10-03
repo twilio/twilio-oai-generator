@@ -14,6 +14,7 @@
 
 import { inspect, InspectOptions } from "util";
 import Page from "../../../base/Page";
+import Response from "../../../http/response";
 import V2010 from "../V2010";
 const deserialize = require("../../../base/deserialize");
 const serialize = require("../../../base/serialize");
@@ -32,7 +33,7 @@ export interface CallListInstance {
 interface CallListInstanceImpl extends CallListInstance {}
 class CallListInstanceImpl implements CallListInstance {
   _version?: V2010;
-  _solution?: any;
+  _solution?: CallSolution;
   _uri?: string;
 }
 
@@ -72,6 +73,7 @@ export interface CallContext {
   update(
     callback?: (error: Error | null, item?: CallInstance) => any
   ): Promise<CallInstance>;
+
   /**
    * Provide a user-friendly representation
    */
@@ -80,7 +82,7 @@ export interface CallContext {
 }
 
 export class CallContextImpl implements CallContext {
-  protected _solution: any;
+  protected _solution: CallSolution;
   protected _uri: string;
 
   constructor(protected _version: V2010, sid: string) {
@@ -100,12 +102,10 @@ export class CallContextImpl implements CallContext {
         new CallInstance(operationVersion, payload, this._solution.sid)
     );
 
-    if (typeof callback === "function") {
-      operationPromise = operationPromise
-        .then((value) => callback(null, value))
-        .catch((error) => callback(error));
-    }
-
+    operationPromise = this._version.setPromiseCallback(
+      operationPromise,
+      callback
+    );
     return operationPromise;
   }
 
@@ -119,6 +119,45 @@ export class CallContextImpl implements CallContext {
   }
 
   [inspect.custom](_depth: any, options: InspectOptions) {
+    return inspect(this.toJSON(), options);
+  }
+}
+
+export interface CallSolution {
+  sid?: string;
+}
+
+export class CallPage extends Page<
+  V2010,
+  CallPayload,
+  CallResource,
+  CallInstance
+> {
+  /**
+   * Initialize the CallPage
+   *
+   * @param version - Version of the resource
+   * @param response - Response from the API
+   * @param solution - Path solution
+   */
+  constructor(
+    version: V2010,
+    response: Response<string>,
+    solution: CallSolution
+  ) {
+    super(version, response, solution);
+  }
+
+  /**
+   * Build an instance of CallInstance
+   *
+   * @param payload - Payload response from the API
+   */
+  getInstance(payload: CallPayload): CallInstance {
+    return new CallInstance(this._version, payload, this._solution.sid);
+  }
+
+  [inspect.custom](depth: any, options: InspectOptions) {
     return inspect(this.toJSON(), options);
   }
 }
