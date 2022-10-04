@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.Operation;
 import io.swagger.v3.oas.models.PathItem;
+import lombok.Data;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -27,6 +28,17 @@ public class Resource {
     private final String name;
     private final PathItem pathItem;
     private final Inflector inflector;
+
+    @Data
+    @RequiredArgsConstructor
+    public static class ClassName {
+        private final String name;
+        private final String mountName;
+
+        public ClassName(final String name) {
+            this(name, name);
+        }
+    }
 
     public Optional<Resource> getParentResource(final IResourceTree resourceTree) {
         return PathUtils
@@ -78,16 +90,19 @@ public class Resource {
         return missingPath;
     }
 
-    public String getClassName(final Operation operation) {
+    public ClassName getClassName(final Operation operation) {
         final Optional<String> className = getClassNameFromExtensions(operation.getExtensions());
 
-        return className.orElseGet(this::getClassName);
+        return className.map(ClassName::new).orElseGet(this::getClassName);
     }
 
-    public String getClassName() {
+    public ClassName getClassName() {
         final Optional<String> className = getClassNameFromExtensions(pathItem.getExtensions());
 
-        return className.orElseGet(() -> inflector.singular(PathUtils.fetchLastElement(listTag, SEPARATOR)));
+        return className.map(ClassName::new).orElseGet(() -> {
+            final String mountName = PathUtils.fetchLastElement(listTag, SEPARATOR);
+            return new ClassName(inflector.singular(mountName), mountName);
+        });
     }
 
     private Optional<String> getClassNameFromExtensions(final Map<String, Object> extensions) {
