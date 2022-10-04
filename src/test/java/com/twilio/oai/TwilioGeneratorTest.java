@@ -26,7 +26,9 @@ import static org.junit.Assert.assertFalse;
 public class TwilioGeneratorTest {
     @Parameterized.Parameters
     public static Collection<String> generators() {
-        return Arrays.asList("twilio-csharp", "twilio-go", "twilio-java", "twilio-node", "terraform-provider-twilio");
+//        return Arrays.asList("twilio-csharp", "twilio-go", "twilio-java", "twilio-node", "terraform-provider-twilio");
+        return Arrays.asList("twilio-node");
+
     }
 
     private final String generatorName;

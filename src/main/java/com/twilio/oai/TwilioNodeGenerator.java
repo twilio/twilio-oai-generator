@@ -1,5 +1,6 @@
 package com.twilio.oai;
 
+import com.twilio.oai.resolver.node.NodeConventionResolver;
 import com.twilio.oai.resource.IResourceTree;
 import com.twilio.oai.resource.ResourceMap;
 
@@ -27,12 +28,13 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
     public static final String PATH_SEPARATOR_PLACEHOLDER = "1234567890";
     public static final String IGNORE_EXTENSION_NAME = "x-ignore";
     public static final String PREVIEW_STRING = "Preview";
-
     private final TwilioCodegenAdapter twilioCodegen;
     private final List<CodegenModel> allModels = new ArrayList<>();
     private final Inflector inflector = new Inflector();
     private final Map<String, String> subDomainMap = new HashMap<>();
     private final Map<String, String> resourceNameMap = new HashMap<>();
+
+    private final NodeConventionResolver conventionResolver = new NodeConventionResolver();
 
     public TwilioNodeGenerator() {
         super();
@@ -168,6 +170,8 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
             String parentResourceName = null;
 
             co.returnType = instanceName;
+
+            updateCodeOperationParams(co);
 
             if (isInstanceOperation) {
                 resourceName = itemName + "Context";
@@ -448,6 +452,29 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
 
     private boolean isPreviewDomain(){
         return this.additionalProperties.get("domainName").equals(PREVIEW_STRING);
+    }
+
+    private void updateCodeOperationParams(final CodegenOperation co) {
+        co.allParams = co.allParams
+                .stream()
+                .map(conventionResolver::resolveParameter)
+                .map(Optional::get)
+                .collect(Collectors.toList());
+        co.pathParams = co.pathParams
+                .stream()
+                .map(ConventionResolver::resolveParameter)
+                .map(Optional::get)
+                .collect(Collectors.toList());
+        co.optionalParams = co.optionalParams
+                .stream()
+                .map(ConventionResolver::resolveParameter)
+                .map(Optional::get)
+                .collect(Collectors.toList());
+        co.requiredParams = co.requiredParams
+                .stream()
+                .map(ConventionResolver::resolveParameter)
+                .map(Optional::get)
+                .collect(Collectors.toList());
     }
 
     @Override
