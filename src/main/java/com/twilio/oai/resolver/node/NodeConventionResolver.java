@@ -22,18 +22,23 @@ public class NodeConventionResolver {
     }
 
     public Optional<CodegenParameter> resolveParameter(CodegenParameter codegenParameter) {
-        boolean hasProperty = conventionMap.get(Segments.SEGMENT_PROPERTIES.getSegment()).containsKey(codegenParameter.dataFormat);
+        if (codegenParameter.dataFormat == null) {
+            return Optional.of(codegenParameter);
+        }
+        boolean hasProperty = conventionMap.get(Segments.SEGMENT_PROPERTIES.getSegment()).containsKey(StringUtils.underscore(codegenParameter.dataFormat));
         if (hasProperty) {
-            codegenParameter.dataType = (String) conventionMap.get(Segments.SEGMENT_PROPERTIES.getSegment()).get(codegenParameter.dataFormat);
+            codegenParameter.dataType = (String) conventionMap.get(Segments.SEGMENT_PROPERTIES.getSegment()).get(StringUtils.underscore(codegenParameter.dataFormat));
         }
         return Optional.of(codegenParameter);
     }
 
     public CodegenModel resolveModel(CodegenModel model){
         for (CodegenProperty property : model.vars) {
-            boolean hasProperty = conventionMap.get(Segments.SEGMENT_PROPERTIES.getSegment()).containsKey(property.dataFormat);
-            if (hasProperty) {
-                property.dataType = (String)conventionMap.get(Segments.SEGMENT_PROPERTIES.getSegment()).get(property.dataFormat);
+            if (property.dataFormat != null) {
+                boolean hasProperty = conventionMap.get(Segments.SEGMENT_PROPERTIES.getSegment()).containsKey(StringUtils.underscore(property.dataFormat));
+                if (hasProperty) {
+                    property.dataType = (String)conventionMap.get(Segments.SEGMENT_PROPERTIES.getSegment()).get(StringUtils.underscore(property.dataFormat));
+                }
             }
         }
         return model;
@@ -42,12 +47,15 @@ public class NodeConventionResolver {
     public CodegenModel resolveComplexType(CodegenModel model, Map<String, String> modelFormatMap){
         for (CodegenProperty prop: model.vars) {
             if(modelFormatMap.containsKey(prop.complexType)) {
-                //TODO: May need to handle arrays here
                 boolean hasProperty =  conventionMap.get(Segments.SEGMENT_PROPERTIES.getSegment()).
                         containsKey(StringUtils.underscore(modelFormatMap.get(prop.complexType)));
                 if (hasProperty) {
                     prop.dataType = (String)conventionMap.get(Segments.SEGMENT_PROPERTIES.getSegment()).
                             get(StringUtils.underscore(modelFormatMap.get(prop.complexType)));
+
+                    if (prop.containerType != null && prop.containerType.equals("array")) {
+                        prop.dataType = "Array<" + prop.dataType + ">";
+                    }
                 }
             }
         }
