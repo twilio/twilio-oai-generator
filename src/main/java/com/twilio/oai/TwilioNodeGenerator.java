@@ -35,7 +35,6 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
     private final Map<String, String> subDomainMap = new HashMap<>();
     private final Map<String, String> resourceNameMap = new HashMap<>();
     private final NodeConventionResolver conventionResolver = new NodeConventionResolver();
-
     private final Map<String, String> modelFormatMap = new HashMap<>();
 
     public TwilioNodeGenerator() {
@@ -140,9 +139,8 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
                 .collect(Collectors.toCollection(() -> this.allModels));
         }
 
-        // Return an empty collection so no model files get generated.
-
         Utility.setComplexDataMapping(this.allModels, this.modelFormatMap);
+        // Return an empty collection so no model files get generated.
         return new HashMap<>();
     }
 

@@ -205,7 +205,7 @@ interface AccountResource {
   sid?: string | null;
   test_string?: string | null;
   test_integer?: number | null;
-  test_object?: object | null;
+  test_object?: PhoneNumberCapabilities | null;
   test_date_time?: string | null;
   test_number?: number | null;
   price_unit?: string | null;
@@ -244,7 +244,7 @@ export class AccountInstance {
   sid?: string | null;
   testString?: string | null;
   testInteger?: number | null;
-  testObject?: object | null;
+  testObject?: PhoneNumberCapabilities | null;
   testDateTime?: string | null;
   testNumber?: number | null;
   priceUnit?: string | null;

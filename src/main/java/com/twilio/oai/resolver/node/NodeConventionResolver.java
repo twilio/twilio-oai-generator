@@ -43,14 +43,11 @@ public class NodeConventionResolver {
         for (CodegenProperty prop: model.vars) {
             if(modelFormatMap.containsKey(prop.complexType)) {
                 //TODO: May need to handle arrays here
-//                boolean hasProperty =  conventionMap.get(Segments.SEGMENT_PROPERTIES.getSegment()).containsKey(modelFormatMap.get(StringUtils.underscore(prop.complexType)));
-                Map<String, Object> properties = conventionMap.get(Segments.SEGMENT_PROPERTIES.getSegment());
-                String keyUntouched = modelFormatMap.get(prop.complexType);
-                String keyModified = StringUtils.underscore(keyUntouched);
-                boolean hasProperty = properties.containsKey(keyModified);
-
+                boolean hasProperty =  conventionMap.get(Segments.SEGMENT_PROPERTIES.getSegment()).
+                        containsKey(StringUtils.underscore(modelFormatMap.get(prop.complexType)));
                 if (hasProperty) {
-                    prop.dataType = (String)conventionMap.get(Segments.SEGMENT_PROPERTIES.getSegment()).get(keyModified);
+                    prop.dataType = (String)conventionMap.get(Segments.SEGMENT_PROPERTIES.getSegment()).
+                            get(StringUtils.underscore(modelFormatMap.get(prop.complexType)));
                 }
             }
         }
