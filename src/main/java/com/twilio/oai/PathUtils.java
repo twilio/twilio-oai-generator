@@ -20,6 +20,10 @@ public class PathUtils {
         return pathParts[pathParts.length - 1];
     }
 
+    public static String getFirstPathPart(final String path) {
+        return path.replaceAll("^/", "").split("/")[0];
+    }
+
     public static String cleanPathAndRemoveFirstElement(final String path) {
         return cleanPath(removeExtension(removeFirstPart(path)));
     }
@@ -33,7 +37,7 @@ public class PathUtils {
     }
 
     public static String removeFirstPart(final String path) {
-        return path.replaceFirst("/[^/]+/", "");
+        return path.replaceFirst("/[^/]+", "");
     }
 
     public static String removeExtension(final String path) {

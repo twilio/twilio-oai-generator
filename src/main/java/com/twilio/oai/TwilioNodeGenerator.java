@@ -57,7 +57,9 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
     @Override
     public void processOpenAPI(final OpenAPI openAPI) {
         final String domain = twilioCodegen.getDomainFromOpenAPI(openAPI);
+        final String version = twilioCodegen.getVersionFromOpenAPI(openAPI);
         twilioCodegen.setDomain(StringUtils.camelize(domain, true));
+        additionalProperties.put("version", version);
 
         final IResourceTree resourceTree = new ResourceMap(inflector);
         final Map<String, Object> versionResources = getStringMap(additionalProperties, "versionResources");
@@ -276,7 +278,7 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
     private void updateResourcePath(final Map<String, Object> resource, final CodegenOperation operation) {
         final List<CodegenParameter> resourcePathParams = new ArrayList<>();
 
-        String path = operation.path;
+        String path = PathUtils.removeFirstPart(operation.path);
         for (final CodegenParameter pathParam : operation.pathParams) {
             final String target = "{" + pathParam.baseName + "}";
 

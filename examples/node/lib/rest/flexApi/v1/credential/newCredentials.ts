@@ -92,7 +92,7 @@ export function NewCredentialsListInstance(
 
   instance._version = version;
   instance._solution = {};
-  instance._uri = `/v1/Credentials/AWS`;
+  instance._uri = `/Credentials/AWS`;
 
   instance.create = function create(
     params: any,

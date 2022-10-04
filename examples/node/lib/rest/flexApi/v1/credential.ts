@@ -44,7 +44,7 @@ export function CredentialListInstance(version: V1): CredentialListInstance {
 
   instance._version = version;
   instance._solution = {};
-  instance._uri = `/v1/Credentials`;
+  instance._uri = `/Credentials`;
 
   Object.defineProperty(instance, "aws", {
     get: function aws() {
