@@ -45,7 +45,7 @@ public class PathUtils {
     }
 
     public static String removePathParamIds(final String path) {
-        return path.replaceAll("\\{[^}]+", "{");
+        return removeExtension(path).replaceAll("\\{[^}]+", "{");
     }
 
     public static String removeTrailingPathParam(final String path) {
