@@ -402,17 +402,17 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
                 .collect(Collectors.toList());
         co.pathParams = co.pathParams
                 .stream()
-                .map(ConventionResolver::resolveParameter)
+                .map(conventionResolver::resolveParameter)
                 .map(Optional::get)
                 .collect(Collectors.toList());
         co.optionalParams = co.optionalParams
                 .stream()
-                .map(ConventionResolver::resolveParameter)
+                .map(conventionResolver::resolveParameter)
                 .map(Optional::get)
                 .collect(Collectors.toList());
         co.requiredParams = co.requiredParams
                 .stream()
-                .map(ConventionResolver::resolveParameter)
+                .map(conventionResolver::resolveParameter)
                 .map(Optional::get)
                 .collect(Collectors.toList());
     }
