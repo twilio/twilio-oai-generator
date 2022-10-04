@@ -15,9 +15,7 @@ import java.util.Optional;
 
 public class NodeConventionResolver {
     final Map<String, Map<String, Object>> conventionMap;
-
-    public static final String OBJECT = "object";
-    final static String CONFIG_NODE_JSON_PATH = "config/node.json";
+    static final String CONFIG_NODE_JSON_PATH = "config/node.json";
 
     public NodeConventionResolver(){
         conventionMap = getConventionalMap();
@@ -32,6 +30,30 @@ public class NodeConventionResolver {
     }
 
     public CodegenModel resolveModel(CodegenModel model){
+        for (CodegenProperty property : model.vars) {
+            boolean hasProperty = conventionMap.get(Segments.SEGMENT_PROPERTIES.getSegment()).containsKey(property.dataFormat);
+            if (hasProperty) {
+                property.dataType = (String)conventionMap.get(Segments.SEGMENT_PROPERTIES.getSegment()).get(property.dataFormat);
+            }
+        }
+        return model;
+    }
+
+    public CodegenModel resolveComplexType(CodegenModel model, Map<String, String> modelFormatMap){
+        for (CodegenProperty prop: model.vars) {
+            if(modelFormatMap.containsKey(prop.complexType)) {
+                //TODO: May need to handle arrays here
+//                boolean hasProperty =  conventionMap.get(Segments.SEGMENT_PROPERTIES.getSegment()).containsKey(modelFormatMap.get(StringUtils.underscore(prop.complexType)));
+                Map<String, Object> properties = conventionMap.get(Segments.SEGMENT_PROPERTIES.getSegment());
+                String keyUntouched = modelFormatMap.get(prop.complexType);
+                String keyModified = StringUtils.underscore(keyUntouched);
+                boolean hasProperty = properties.containsKey(keyModified);
+
+                if (hasProperty) {
+                    prop.dataType = (String)conventionMap.get(Segments.SEGMENT_PROPERTIES.getSegment()).get(keyModified);
+                }
+            }
+        }
         return model;
     }
 

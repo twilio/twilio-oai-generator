@@ -1,5 +1,6 @@
 package com.twilio.oai;
 
+import com.twilio.oai.common.Utility;
 import com.twilio.oai.resolver.node.NodeConventionResolver;
 import com.twilio.oai.resource.IResourceTree;
 import com.twilio.oai.resource.ResourceMap;
@@ -33,8 +34,9 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
     private final Inflector inflector = new Inflector();
     private final Map<String, String> subDomainMap = new HashMap<>();
     private final Map<String, String> resourceNameMap = new HashMap<>();
-
     private final NodeConventionResolver conventionResolver = new NodeConventionResolver();
+
+    private final Map<String, String> modelFormatMap = new HashMap<>();
 
     public TwilioNodeGenerator() {
         super();
@@ -139,8 +141,12 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
         }
 
         // Return an empty collection so no model files get generated.
+
+        Utility.setComplexDataMapping(this.allModels, this.modelFormatMap);
         return new HashMap<>();
     }
+
+
 
     @SuppressWarnings("unchecked")
     @Override
@@ -234,8 +240,8 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
                     .map(response -> response.dataType)
                     .filter(Objects::nonNull)
                     .map(this::getModel)
-                    .flatMap(Optional::stream)
-                    .map(this::resolveComplexType)
+                    .flatMap(Optional::stream).map(conventionResolver::resolveModel)
+                    .map(this::resolveComplexType).map(item -> conventionResolver.resolveComplexType(item, modelFormatMap))
                     .forEach(model -> {
                         model.setName(itemName);
                         resource.put("responseModel", model);
