@@ -165,7 +165,7 @@ interface CallResource {
 }
 
 export class CallInstance {
-  protected _solution: any;
+  protected _solution: CallSolution;
   protected _context?: CallContext;
 
   constructor(protected _version: V1, payload: CallPayload, sid?: string) {

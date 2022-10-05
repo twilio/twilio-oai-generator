@@ -1,13 +1,14 @@
 {{>licenseInfo}}
-import { inspect, InspectOptions } from 'util';
-import Page from '{{apiVersionPath}}/../../base/Page';
-import Response from '{{apiVersionPath}}/../../http/response';
-import {{apiVersionClass}} from '{{apiVersionPath}}/{{apiVersionClass}}';
-const deserialize = require('{{apiVersionPath}}/../../base/deserialize');
-const serialize = require('{{apiVersionPath}}/../../base/serialize');
+
+import { inspect, InspectOptions } from "util";
+import Page from "{{apiVersionPath}}/../../base/Page";
+import Response from "{{apiVersionPath}}/../../http/response";
+import {{apiVersionClass}} from "{{apiVersionPath}}/{{apiVersionClass}}";
+const deserialize = require("{{apiVersionPath}}/../../base/deserialize");
+const serialize = require("{{apiVersionPath}}/../../base/serialize");
 {{#resources}}
 {{#dependents}}
-import { {{name}}ListInstance } from './{{apiFilename}}/{{filename}}';
+import { {{name}}ListInstance } from "./{{apiFilename}}/{{filename}}";
 {{/dependents}}
 {{/resources}}
 {{#resources}}
@@ -59,8 +60,8 @@ export interface {{resourceName}} {
 
 {{#parentResourceName}}
 export class {{resourceName}}Impl implements {{resourceName}} {
-    protected _solution: {{name}}Solution;
-    protected _uri: string;
+  protected _solution: {{name}}Solution;
+  protected _uri: string;
 
   {{#dependents}}
   protected _{{mountName}}?: {{name}}ListInstance;
@@ -78,9 +79,9 @@ export class {{resourceName}}Impl implements {{resourceName}} {
   }
 
   {{/dependents}}
-{{#operations}}
+  {{#operations}}
   {{vendorExtensions.x-name-lower}}({{#hasParams}}params{{^hasRequiredParams}}?{{/hasRequiredParams}}: any, {{/hasParams}}callback?: any): Promise<{{returnType}}> {
-{{>operation}}
+  {{>operation}}
   }
 
 {{/operations}}
@@ -99,49 +100,49 @@ export class {{resourceName}}Impl implements {{resourceName}} {
 }
 
 export interface {{name}}Solution {
-{{#resourcePathParams}}
-    {{paramName}}?: {{{dataType}}};
-{{/resourcePathParams}}
+  {{#resourcePathParams}}
+  {{paramName}}?: {{{dataType}}};
+  {{/resourcePathParams}}
 }
 
 export class {{name}}Page extends Page<{{apiVersionClass}}, {{name}}Payload, {{name}}Resource, {{name}}Instance> {
-/**
-* Initialize the {{name}}Page
-*
-* @param version - Version of the resource
-* @param response - Response from the API
-* @param solution - Path solution
-*/
-    constructor(version: {{apiVersionClass}}, response: Response<string>, solution: {{name}}Solution) {
-        super(version, response, solution);
-    }
+  /**
+   * Initialize the {{name}}Page
+   *
+   * @param version - Version of the resource
+   * @param response - Response from the API
+   * @param solution - Path solution
+   */
+  constructor(version: {{apiVersionClass}}, response: Response<string>, solution: {{name}}Solution) {
+    super(version, response, solution);
+  }
 
-    /**
-    * Build an instance of {{name}}Instance
-    *
-    * @param payload - Payload response from the API
-    */
-    getInstance(payload: {{name}}Payload): {{name}}Instance {
-        return new {{name}}Instance(
-            this._version,
-            payload,
-            {{#resourcePathParams}}
-            this._solution.{{paramName}},
-            {{/resourcePathParams}}
-        );
-    }
+  /**
+   * Build an instance of {{name}}Instance
+   *
+   * @param payload - Payload response from the API
+   */
+  getInstance(payload: {{name}}Payload): {{name}}Instance {
+    return new {{name}}Instance(
+      this._version,
+      payload,
+      {{#resourcePathParams}}
+      this._solution.{{paramName}},
+      {{/resourcePathParams}}
+    );
+  }
 
-    [inspect.custom](depth: any, options: InspectOptions) {
-        return inspect(this.toJSON(), options);
-    }
+  [inspect.custom](depth: any, options: InspectOptions) {
+    return inspect(this.toJSON(), options);
+  }
 }
 {{/parentResourceName}}
 {{^parentResourceName}}
 interface {{resourceName}}Impl extends {{resourceName}} {}
 class {{resourceName}}Impl implements {{resourceName}} {
-    _version?: {{apiVersionClass}};
-    _solution?: {{name}}Solution;
-    _uri?: string;
+  _version?: {{apiVersionClass}};
+  _solution?: {{name}}Solution;
+  _uri?: string;
 
   {{#dependents}}
   _{{mountName}}?: {{name}}ListInstance;

@@ -242,7 +242,7 @@ interface FeedbackCallSummaryResource {
 }
 
 export class FeedbackCallSummaryInstance {
-  protected _solution: any;
+  protected _solution: FeedbackCallSummarySolution;
   protected _context?: FeedbackCallSummaryContext;
 
   constructor(

@@ -184,7 +184,7 @@ interface NewCredentialsResource {
 }
 
 export class NewCredentialsInstance {
-  protected _solution: any;
+  protected _solution: NewCredentialsSolution;
   protected _context?: NewCredentialsListInstance;
 
   constructor(protected _version: V1, payload: NewCredentialsPayload) {

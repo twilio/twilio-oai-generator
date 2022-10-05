@@ -321,7 +321,7 @@ interface AccountResource {
 }
 
 export class AccountInstance {
-  protected _solution: any;
+  protected _solution: AccountSolution;
   protected _context?: AccountContext;
 
   constructor(

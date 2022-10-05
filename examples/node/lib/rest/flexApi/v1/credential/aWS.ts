@@ -264,7 +264,7 @@ interface AWSResource {
 }
 
 export class AWSInstance {
-  protected _solution: any;
+  protected _solution: AWSSolution;
   protected _context?: AWSContext;
 
   constructor(protected _version: V1, payload: AWSPayload, sid?: string) {
