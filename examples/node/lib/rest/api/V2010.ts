@@ -25,7 +25,7 @@ export default class V2010 extends Version {
    * @param { Twilio.Api } domain - The Twilio domain
    */
   constructor(domain: ApiBase) {
-    super(domain, "v2010");
+    super(domain, "2010-04-01");
   }
 
   protected _accounts?: AccountListInstance;
