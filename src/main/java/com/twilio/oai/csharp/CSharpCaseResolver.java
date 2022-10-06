@@ -2,10 +2,12 @@ package com.twilio.oai.csharp;
 
 import com.twilio.oai.resolver.CaseResolver;
 
+import org.openapitools.codegen.utils.StringUtils;
+
 public class CSharpCaseResolver implements CaseResolver {
     @Override
     public String productOperation(final String product) {
-        return product;
+        return StringUtils.camelize(product);
     }
 
     @Override

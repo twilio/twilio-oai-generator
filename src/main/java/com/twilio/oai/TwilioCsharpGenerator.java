@@ -157,14 +157,11 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
 
         // Generate packages for domains without version
         if (directoryStructureService.isVersionLess(this.additionalProperties)) {
-            resource.put("apiVersion", PathUtils.getFirstPathPart(co.path));
+            resource.put("apiVersionClass", StringUtils.camelize(PathUtils.getFirstPathPart(co.path)));
         }
 
-        List<String> packagePaths = Arrays.asList(Arrays.copyOfRange(filePathArray, 0, filePathArray.length - 1))
-                .stream().collect(Collectors.toList());
-        if (packagePaths.isEmpty()) {
-            resource.put("packageSubPart", "");
-        } else {
+        final String[] packagePaths = Arrays.copyOfRange(filePathArray, 0, filePathArray.length - 1);
+        if (packagePaths.length > 0) {
             String packagePath = String.join(".", packagePaths);
             resource.put("packageSubPart", "." + packagePath);
         }
