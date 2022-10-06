@@ -1,6 +1,11 @@
 package com.twilio.oai;
 
-enum Segments {
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+
+@Getter
+@RequiredArgsConstructor
+public enum Segments {
     SEGMENT_HYDRATE("hydrate"),
     SEGMENT_SERIALIZE("serialize"),
     SEGMENT_DESERIALIZE("deserialize"),
@@ -10,12 +15,4 @@ enum Segments {
     SEGMENT_PROMOTIONS("promotions");
 
     private final String segment;
-
-    Segments(String segment) {
-        this.segment = segment;
-    }
-
-    public String getSegment() {
-        return segment;
-    }
 }

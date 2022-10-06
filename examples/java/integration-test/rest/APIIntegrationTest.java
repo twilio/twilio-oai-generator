@@ -21,14 +21,13 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class APIIntegrationTest {
-    final String baseURL = "http://prism_twilio:4010";
     final String ACCOUNT_SID = "AC12345678123456781234567812345678";
 
     @Before
     public void setUp() {
         String authToken = "CR12345678123456781234567812345678";
 
-        TestRestClient testClient = new TestRestClient(new Builder(ACCOUNT_SID, authToken).httpClient(new NetworkHttpClient()), baseURL);
+        TestRestClient testClient = new TestRestClient(new Builder(ACCOUNT_SID, authToken).httpClient(new NetworkHttpClient()), "http");
         Twilio.init(ACCOUNT_SID, authToken);
         Twilio.setRestClient(testClient);
     }

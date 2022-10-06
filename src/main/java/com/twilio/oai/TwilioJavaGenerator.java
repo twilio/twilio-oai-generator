@@ -19,14 +19,14 @@ import org.openapitools.codegen.model.OperationsMap;
 import org.openapitools.codegen.utils.StringUtils;
 
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import com.google.common.collect.ImmutableMap;
 import com.samskivert.mustache.Mustache.Lambda;
+
+import static com.twilio.oai.resource.Resource.TWILIO_EXTENSION_NAME;
 
 public class TwilioJavaGenerator extends JavaClientCodegen {
 
@@ -40,6 +40,7 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
     private static final int SERIAL_UID_LENGTH = 12;
     public static final String URI = "uri";
 
+    private final TwilioCodegenAdapter twilioCodegen;
     private final List<CodegenModel> allModels = new ArrayList<>();
     private final Map<String, String> modelFormatMap = new HashMap<>();
     private final Map<String, String> subDomainMap = new HashMap<>();
@@ -48,11 +49,8 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
     public TwilioJavaGenerator() {
         super();
 
-        // Remove the "API" suffix from the API filenames.
-        apiNameSuffix = "";
+        twilioCodegen = new TwilioCodegenAdapter(this, getName());
 
-        // Find the templates in the local resources dir.
-        embeddedTemplateDir = templateDir = getName();
         sourceFolder = "";
 
         // Skip automated api test and doc generation
@@ -63,30 +61,18 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
     @Override
     public void processOpts() {
         super.processOpts();
-        String[] inputSpecs = inputSpec.split("_");
-        String version = inputSpecs[inputSpecs.length-1].replaceAll("\\.[^/]+$", "");
-        String domain = String.join("", Arrays.copyOfRange(inputSpecs, 1, inputSpecs.length-1));
 
-        if(inputSpecs.length <3){   // version is missing
-            version = "";
-            domain = inputSpecs[inputSpecs.length-1].replaceAll("\\.[^/]+$", "");
-        }
+        twilioCodegen.processOpts();
 
-        apiPackage = version; // Place the API files in the version folder.
-        additionalProperties.put("apiVersion", version);
-        additionalProperties.put("apiVersionClass", version.toUpperCase());
-        additionalProperties.put("domain", StringUtils.camelize(domain));
-        additionalProperties.put("domainPackage", domain.toLowerCase());
-
-        supportingFiles.clear();
         apiTemplateFiles.put("api.mustache", ".java");
     }
 
     @Override
     public void processOpenAPI(final OpenAPI openAPI) {
+        final String domain = twilioCodegen.getDomainFromOpenAPI(openAPI);
+        twilioCodegen.setDomain(domain);
+
         final IResourceTree resourceTree = new ResourceMap(inflector);
-        // regex example : https://flex-api.twilio.com
-        Pattern serverUrlPattern = Pattern.compile("https:\\/\\/([a-zA-Z-]+)\\.twilio\\.com");
         openAPI.getPaths().forEach(resourceTree::addResource);
         openAPI.getPaths().forEach((name, path) -> {
             updateAccountSidParam(path);
@@ -100,11 +86,6 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
 
                 operation.addTagsItem(tag);
             });
-            Matcher m = serverUrlPattern.matcher(path.getServers().get(0).getUrl());
-            if(m.find()){
-                additionalProperties.put("domainName", StringUtils.camelize(m.group(1)));
-                additionalProperties.put("domainPackage", m.group(1).replace("-",""));
-            }
         });
     }
 
@@ -377,7 +358,7 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
             if(isVersionLess()){
                 String tag = ops.getClassname();
                 String subDomainName = getSubDomainName(subDomainMap, tag);
-                resource.put("package", subDomainName);
+                resource.put("apiVersion", subDomainName);
             }
             if (packagePaths.isEmpty()) {
                 resource.put("packageSubPart", "");
@@ -590,6 +571,7 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
     /**
      * keep track of signature list that would contain different combinations of signatures for constructor generation (since Account sid is optional, so different constructor are needed)
      */
+    @SuppressWarnings("unchecked")
     private ArrayList<List<CodegenParameter>> generateSignatureList(final CodegenOperation co) {
         CodegenParameter accountSidParam = null;
         List<List<CodegenParameter>> conditionalCodegenParam = new ArrayList<>();
@@ -607,9 +589,9 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
          *           - - body
          *             - media_url</code>
          */
-        if(co.vendorExtensions.containsKey("x-twilio")) {
-            HashMap<String, Object> twilioVendorExtension = (HashMap<String, Object>) co.vendorExtensions.get("x-twilio");
-            if(twilioVendorExtension.containsKey("conditional")) {
+        if (co.vendorExtensions.containsKey(TWILIO_EXTENSION_NAME)) {
+            HashMap<String, Object> twilioVendorExtension = (HashMap<String, Object>) co.vendorExtensions.get(TWILIO_EXTENSION_NAME);
+            if (twilioVendorExtension.containsKey("conditional")) {
                 List<List<String>> conditionalParams = (List<List<String>>) twilioVendorExtension.get("conditional");
                 // map the conditional param names with the codegenParameter added in optional params
                 conditionalCodegenParam = conditionalParams.stream().map(

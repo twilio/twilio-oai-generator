@@ -5,7 +5,6 @@ RUN apt-get update && apt-get install maven -y
 WORKDIR /app
 RUN git clone https://github.com/twilio/twilio-java.git
 WORKDIR /app/twilio-java/
-RUN git fetch && git checkout 9.0.0-rc
 
 RUN rm -rf src/main/java/com/twilio/rest/*/ \
            src/main/java/com/twilio/example/ \

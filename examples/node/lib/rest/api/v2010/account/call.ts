@@ -80,7 +80,7 @@ export function CallListInstance(
 
   instance._version = version;
   instance._solution = { accountSid };
-  instance._uri = `/2010-04-01/Accounts/${accountSid}/Calls.json`;
+  instance._uri = `/Accounts/${accountSid}/Calls.json`;
 
   Object.defineProperty(instance, "feedback_call_summary", {
     get: function feedback_call_summary() {
@@ -199,7 +199,7 @@ export class CallContextImpl implements CallContext {
     testInteger: number
   ) {
     this._solution = { accountSid, testInteger };
-    this._uri = `/2010-04-01/Accounts/${accountSid}/Calls/${testInteger}.json`;
+    this._uri = `/Accounts/${accountSid}/Calls/${testInteger}.json`;
   }
 
   remove(callback?: any): Promise<boolean> {

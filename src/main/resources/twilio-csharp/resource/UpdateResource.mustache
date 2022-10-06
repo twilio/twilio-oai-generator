@@ -1,0 +1,49 @@
+
+        private static Request BuildUpdateRequest(Update{{resourceName}}Options options, ITwilioRestClient client)
+        {
+            {{>resource/GeneratePath}}
+
+            return new Request(
+                HttpMethod.Post,
+                Rest.Domain.{{domainPackage}},
+                path,
+                postParams: options.GetParams(),
+                headerParams: {{^vendorExtensions.x-header-params-exists}}null{{/vendorExtensions.x-header-params-exists}}{{#vendorExtensions.x-header-params-exists}}options.GetHeaderParams(){{/vendorExtensions.x-header-params-exists}}
+            );
+        }
+
+
+        public static {{resourceName}}{{resourceConstant}} Update(Update{{resourceName}}Options options, ITwilioRestClient client = null)
+        {
+            client = client ?? TwilioClient.GetRestClient();
+            var response = client.Request(BuildUpdateRequest(options, client));
+            return FromJson(response.Content);
+        }
+
+        #if !NET35
+        public static async System.Threading.Tasks.Task<{{resourceName}}{{resourceConstant}}> UpdateAsync(Update{{resourceName}}Options options,
+                                                                                                          ITwilioRestClient client = null)
+        {
+            client = client ?? TwilioClient.GetRestClient();
+            var response = await client.RequestAsync(BuildUpdateRequest(options, client));
+            return FromJson(response.Content);
+        }
+        #endif
+
+        public static {{resourceName}}{{resourceConstant}} Update({{#vendorExtensions.x-request-body-param}}
+                                          {{{dataType}}} {{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^required}} = null{{/required}},{{/vendorExtensions.x-request-body-param}}
+                                          ITwilioRestClient client = null)
+        {
+            var options = new Update{{resourceName}}Options({{#requiredParams}}{{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^-last}}, {{/-last}}{{/requiredParams}}){ {{#vendorExtensions.x-request-body-param}}{{^required}}{{paramName}} = {{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^-last}}, {{/-last}}{{/required}}{{/vendorExtensions.x-request-body-param}} };
+            return Update(options, client);
+        }
+
+        #if !NET35
+        public static async System.Threading.Tasks.Task<{{resourceName}}{{resourceConstant}}> UpdateAsync({{#vendorExtensions.x-request-body-param}}
+                                                                              {{{dataType}}} {{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^required}} = null{{/required}},{{/vendorExtensions.x-request-body-param}}
+                                                                              ITwilioRestClient client = null)
+        {
+            var options = new Update{{resourceName}}Options({{#requiredParams}}{{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^-last}}, {{/-last}}{{/requiredParams}}){ {{#vendorExtensions.x-request-body-param}}{{^required}}{{paramName}} = {{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^-last}}, {{/-last}}{{/required}}{{/vendorExtensions.x-request-body-param}} };
+            return await UpdateAsync(options, client);
+        }
+        #endif

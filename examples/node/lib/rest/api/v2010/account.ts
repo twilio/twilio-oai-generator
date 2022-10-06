@@ -110,7 +110,7 @@ export class AccountContextImpl implements AccountContext {
 
   constructor(protected _version: V2010, sid: string) {
     this._solution = { sid };
-    this._uri = `/2010-04-01/Accounts/${sid}.json`;
+    this._uri = `/Accounts/${sid}.json`;
   }
 
   get calls(): CallListInstance {
@@ -432,7 +432,7 @@ export function AccountListInstance(version: V2010): AccountListInstance {
 
   instance._version = version;
   instance._solution = {};
-  instance._uri = `/2010-04-01/Accounts.json`;
+  instance._uri = `/Accounts.json`;
 
   instance.create = function create(
     params?: any,

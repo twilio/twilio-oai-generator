@@ -6,7 +6,8 @@ services:
     volumes:
       - ../go:/local
     depends_on:
-      - prism_twilio
+      - prism_api_v2010
+      - prism_flex_v1
 
   java-test:
     build:
@@ -14,7 +15,17 @@ services:
     volumes:
       - ../java:/local
     depends_on:
-      - prism_twilio
+      - prism_api_v2010
+      - prism_flex_v1
+
+  csharp-test:
+    build:
+      context: ../csharp
+    volumes:
+      - ../csharp:/local
+    depends_on:
+      - prism_api_v2010
+      - prism_flex_v1
 
   node-test:
     build:
@@ -22,14 +33,23 @@ services:
     volumes:
       - ../node:/local
     depends_on:
-      - prism_twilio
+      - prism_api_v2010
+      - prism_flex_v1
 
-  prism_twilio:
+  prism_api_v2010:
     image: stoplight/prism:4.10.3
     volumes:
-      - ../twilio_api_v2010.yaml:/tmp/oai.yaml
-    ports:
-      - "4010:4010"
+      - ../spec/twilio_api_v2010.yaml:/tmp/oai.yaml
+    hostname: api.twilio.com
     command: >
-      mock -p 4010 --host 0.0.0.0
+      mock -p 80 --host 0.0.0.0
+      /tmp/oai.yaml
+
+  prism_flex_v1:
+    image: stoplight/prism:4.10.3
+    volumes:
+      - ../spec/twilio_flex_v1.yaml:/tmp/oai.yaml
+    hostname: flex-api.twilio.com
+    command: >
+      mock -p 80 --host 0.0.0.0
       /tmp/oai.yaml
