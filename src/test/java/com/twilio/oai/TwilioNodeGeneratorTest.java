@@ -1,11 +1,13 @@
 package com.twilio.oai;
 
+import com.twilio.oai.common.ApplicationConstants;
+
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
 public class TwilioNodeGeneratorTest {
-    private static final String SEPARATOR = TwilioNodeGenerator.PATH_SEPARATOR_PLACEHOLDER;
+    private static final String SEPARATOR = ApplicationConstants.PATH_SEPARATOR_PLACEHOLDER;
 
     @Test
     public void testGetRelativeRoot() {
