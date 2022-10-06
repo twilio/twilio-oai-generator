@@ -263,16 +263,6 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
         return item;
     }
 
-    private String extractSubDomainName(String name) {
-        String[] split = name.split("/");
-        if(split.length > 1 && split[1] != null) {
-            String result = split[1];
-            result = result.substring(0, 1).toLowerCase() + result.substring(1);
-            return result;
-        }
-        return null;
-    }
-
     private void addSerializeVendorExtension(CodegenParameter param) {
         if (param.isDate) {
             param.vendorExtensions.put("x-serialize", "serialize.iso8601Date");
