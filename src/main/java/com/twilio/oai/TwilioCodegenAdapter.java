@@ -52,6 +52,10 @@ public class TwilioCodegenAdapter {
         codegen.setOutputDir(originalOutputDir + File.separator + domain + File.separator + version);
     }
 
+    public String toParamName(final String name) {
+        return name.replace("<", "Before").replace(">", "After");
+    }
+
     public String getDomainFromOpenAPI(final OpenAPI openAPI) {
         return openAPI
             .getPaths()
