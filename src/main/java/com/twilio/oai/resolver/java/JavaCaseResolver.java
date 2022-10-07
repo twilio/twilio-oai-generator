@@ -1,18 +1,18 @@
-package com.twilio.oai.csharp;
+package com.twilio.oai.resolver.java;
 
 import com.twilio.oai.resolver.CaseResolver;
 
 import org.openapitools.codegen.utils.StringUtils;
 
-public class CSharpCaseResolver implements CaseResolver {
+public class JavaCaseResolver implements CaseResolver {
     @Override
     public String productOperation(final String product) {
-        return StringUtils.camelize(product);
+        return StringUtils.camelize(product, true);
     }
 
     @Override
     public String pathOperation(final String pathPart) {
-        return pathPart;
+        return pathPart.toLowerCase();
     }
 
     @Override

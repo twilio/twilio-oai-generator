@@ -5,8 +5,8 @@ import com.twilio.oai.common.EnumConstants;
 import com.twilio.oai.common.ReservedKeyword;
 import com.twilio.oai.common.Serializer;
 import com.twilio.oai.common.Utility;
-import com.twilio.oai.csharp.CSharpCaseResolver;
 import com.twilio.oai.mlambdas.TitleCaseLambda;
+import com.twilio.oai.resolver.csharp.CSharpCaseResolver;
 import com.twilio.oai.resolver.csharp.CSharpResolver;
 import com.twilio.oai.resource.ResourceMap;
 

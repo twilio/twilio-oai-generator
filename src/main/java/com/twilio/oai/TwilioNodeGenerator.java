@@ -38,9 +38,6 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
         super();
 
         twilioCodegen = new TwilioCodegenAdapter(this, getName());
-
-        // Remove the "API" suffix from the API filenames.
-        apiSuffix = "";
     }
 
     @Override
@@ -69,7 +66,7 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
 
     @Override
     public String toApiFilename(final String name) {
-        return directoryStructureService.toApiFilename(super.toApiFilename(name));
+        return directoryStructureService.toApiFilename(name);
     }
 
     @Override

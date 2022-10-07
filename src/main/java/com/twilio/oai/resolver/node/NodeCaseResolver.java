@@ -7,7 +7,7 @@ import org.openapitools.codegen.utils.StringUtils;
 public class NodeCaseResolver implements CaseResolver {
     @Override
     public String productOperation(final String product) {
-        return product;
+        return StringUtils.underscore(product);
     }
 
     @Override

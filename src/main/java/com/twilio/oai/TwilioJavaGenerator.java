@@ -6,8 +6,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
 
 import com.twilio.oai.common.EnumConstants;
-import com.twilio.oai.java.JavaCaseResolver;
 import com.twilio.oai.mlambdas.ReplaceHyphenLambda;
+import com.twilio.oai.resolver.java.JavaCaseResolver;
 import com.twilio.oai.resource.ResourceMap;
 
 import io.swagger.v3.oas.models.OpenAPI;
