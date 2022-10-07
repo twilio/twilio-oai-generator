@@ -14,6 +14,7 @@
 
 import { inspect, InspectOptions } from "util";
 import Page from "../../../base/Page";
+import Response from "../../../http/response";
 import V2010 from "../V2010";
 const deserialize = require("../../../base/deserialize");
 const serialize = require("../../../base/serialize");
@@ -43,13 +44,65 @@ export interface AccountListInstanceCreateOptions {
   recordingStatusCallbackEvent?: Array<string>;
 }
 /**
- * Options to pass to page a AccountInstance
+ * Options to pass to each
  *
  * @property { Date } [dateCreated]
  * @property { string } [dateTest]
  * @property { Date } [dateCreatedBefore]
  * @property { Date } [dateCreatedAfter]
  * @property { number } [pageSize]
+ * @property { Function } [callback] -
+ *                         Function to process each record. If this and a positional
+ *                         callback are passed, this one will be used
+ * @property { Function } [done] - Function to be called upon completion of streaming
+ * @property { number } [limit] -
+ *                         Upper limit for the number of records to return.
+ *                         each() guarantees never to return more than limit.
+ *                         Default is no limit
+ */
+export interface AccountListInstanceEachOptions {
+  dateCreated?: Date;
+  dateTest?: string;
+  dateCreatedBefore?: Date;
+  dateCreatedAfter?: Date;
+  pageSize?: number;
+  callback?: (item: AccountInstance, done: (err?: Error) => void) => void;
+  done?: Function;
+  limit?: number;
+}
+
+/**
+ * Options to pass to list
+ *
+ * @property { Date } [dateCreated]
+ * @property { string } [dateTest]
+ * @property { Date } [dateCreatedBefore]
+ * @property { Date } [dateCreatedAfter]
+ * @property { number } [pageSize]
+ * @property { number } [limit] -
+ *                         Upper limit for the number of records to return.
+ *                         list() guarantees never to return more than limit.
+ *                         Default is no limit
+ */
+export interface AccountListInstanceOptions {
+  dateCreated?: Date;
+  dateTest?: string;
+  dateCreatedBefore?: Date;
+  dateCreatedAfter?: Date;
+  pageSize?: number;
+  limit?: number;
+}
+
+/**
+ * Options to pass to page
+ *
+ * @property { Date } [dateCreated]
+ * @property { string } [dateTest]
+ * @property { Date } [dateCreatedBefore]
+ * @property { Date } [dateCreatedAfter]
+ * @property { number } [pageSize]
+ * @property { number } [pageNumber] - Page Number, this value is simply for client state
+ * @property { string } [pageToken] - PageToken provided by the API
  */
 export interface AccountListInstancePageOptions {
   dateCreated?: Date;
@@ -57,6 +110,8 @@ export interface AccountListInstancePageOptions {
   dateCreatedBefore?: Date;
   dateCreatedAfter?: Date;
   pageSize?: number;
+  pageNumber?: number;
+  pageToken?: string;
 }
 
 export interface AccountContext {
@@ -72,6 +127,7 @@ export interface AccountContext {
   remove(
     callback?: (error: Error | null, item?: AccountInstance) => any
   ): Promise<boolean>;
+
   /**
    * Fetch a AccountInstance
    *
@@ -82,6 +138,7 @@ export interface AccountContext {
   fetch(
     callback?: (error: Error | null, item?: AccountInstance) => any
   ): Promise<AccountInstance>;
+
   /**
    * Update a AccountInstance
    *
@@ -95,6 +152,7 @@ export interface AccountContext {
     callback?: (error: Error | null, item?: AccountInstance) => any
   ): Promise<AccountInstance>;
   update(params: any, callback?: any): Promise<AccountInstance>;
+
   /**
    * Provide a user-friendly representation
    */
@@ -103,7 +161,7 @@ export interface AccountContext {
 }
 
 export class AccountContextImpl implements AccountContext {
-  protected _solution: any;
+  protected _solution: AccountSolution;
   protected _uri: string;
 
   protected _calls?: CallListInstance;
@@ -126,12 +184,10 @@ export class AccountContextImpl implements AccountContext {
         method: "delete",
       });
 
-    if (typeof callback === "function") {
-      operationPromise = operationPromise
-        .then((value) => callback(null, value))
-        .catch((error) => callback(error));
-    }
-
+    operationPromise = this._version.setPromiseCallback(
+      operationPromise,
+      callback
+    );
     return operationPromise;
   }
 
@@ -147,12 +203,10 @@ export class AccountContextImpl implements AccountContext {
         new AccountInstance(operationVersion, payload, this._solution.sid)
     );
 
-    if (typeof callback === "function") {
-      operationPromise = operationPromise
-        .then((value) => callback(null, value))
-        .catch((error) => callback(error));
-    }
-
+    operationPromise = this._version.setPromiseCallback(
+      operationPromise,
+      callback
+    );
     return operationPromise;
   }
 
@@ -187,12 +241,10 @@ export class AccountContextImpl implements AccountContext {
         new AccountInstance(operationVersion, payload, this._solution.sid)
     );
 
-    if (typeof callback === "function") {
-      operationPromise = operationPromise
-        .then((value) => callback(null, value))
-        .catch((error) => callback(error));
-    }
-
+    operationPromise = this._version.setPromiseCallback(
+      operationPromise,
+      callback
+    );
     return operationPromise;
   }
 
@@ -230,7 +282,7 @@ interface AccountResource {
 }
 
 export class AccountInstance {
-  protected _solution: any;
+  protected _solution: AccountSolution;
   protected _context?: AccountContext;
 
   constructor(
@@ -358,6 +410,44 @@ export class AccountInstance {
     return inspect(this.toJSON(), options);
   }
 }
+export interface AccountSolution {
+  sid?: string;
+}
+
+export class AccountPage extends Page<
+  V2010,
+  AccountPayload,
+  AccountResource,
+  AccountInstance
+> {
+  /**
+   * Initialize the AccountPage
+   *
+   * @param version - Version of the resource
+   * @param response - Response from the API
+   * @param solution - Path solution
+   */
+  constructor(
+    version: V2010,
+    response: Response<string>,
+    solution: AccountSolution
+  ) {
+    super(version, response, solution);
+  }
+
+  /**
+   * Build an instance of AccountInstance
+   *
+   * @param payload - Payload response from the API
+   */
+  getInstance(payload: AccountPayload): AccountInstance {
+    return new AccountInstance(this._version, payload, this._solution.sid);
+  }
+
+  [inspect.custom](depth: any, options: InspectOptions) {
+    return inspect(this.toJSON(), options);
+  }
+}
 
 export interface AccountListInstance {
   (sid: string): AccountContext;
@@ -386,29 +476,128 @@ export interface AccountListInstance {
     callback?: (error: Error | null, item?: AccountInstance) => any
   ): Promise<AccountInstance>;
   create(params?: any, callback?: any): Promise<AccountInstance>;
+
   /**
-   * Page a AccountInstance
+   * Streams AccountInstance records from the API.
    *
-   * @param { function } [callback] - Callback to handle processed record
+   * This operation lazily loads records as efficiently as possible until the limit
+   * is reached.
    *
-   * @returns { Promise } Resolves to processed AccountInstance
+   * The results are passed into the callback function, so this operation is memory
+   * efficient.
+   *
+   * If a function is passed as the first argument, it will be used as the callback
+   * function.
+   *
+   * @param { function } [callback] - Function to process each record
+   */
+  each(
+    callback?: (item: AccountInstance, done: (err?: Error) => void) => void
+  ): void;
+  /**
+   * Streams AccountInstance records from the API.
+   *
+   * This operation lazily loads records as efficiently as possible until the limit
+   * is reached.
+   *
+   * The results are passed into the callback function, so this operation is memory
+   * efficient.
+   *
+   * If a function is passed as the first argument, it will be used as the callback
+   * function.
+   *
+   * @param { AccountListInstanceEachOptions } [params] - Options for request
+   * @param { function } [callback] - Function to process each record
+   */
+  each(
+    params?: AccountListInstanceEachOptions,
+    callback?: (item: AccountInstance, done: (err?: Error) => void) => void
+  ): void;
+  each(params?: any, callback?: any): void;
+  /**
+   * Retrieve a single target page of AccountInstance records from the API.
+   *
+   * The request is executed immediately.
+   *
+   * If a function is passed as the first argument, it will be used as the callback
+   * function.
+   *
+   * @param { function } [callback] - Callback to handle list of records
+   */
+  getPage(
+    callback?: (error: Error | null, items: AccountPage) => any
+  ): Promise<AccountPage>;
+  /**
+   * Retrieve a single target page of AccountInstance records from the API.
+   *
+   * The request is executed immediately.
+   *
+   * If a function is passed as the first argument, it will be used as the callback
+   * function.
+   *
+   * @param { string } [targetUrl] - API-generated URL for the requested results page
+   * @param { function } [callback] - Callback to handle list of records
+   */
+  getPage(
+    targetUrl?: string,
+    callback?: (error: Error | null, items: AccountPage) => any
+  ): Promise<AccountPage>;
+  getPage(params?: any, callback?: any): Promise<AccountPage>;
+  /**
+   * Lists AccountInstance records from the API as a list.
+   *
+   * If a function is passed as the first argument, it will be used as the callback
+   * function.
+   *
+   * @param { function } [callback] - Callback to handle list of records
+   */
+  list(
+    callback?: (error: Error | null, items: AccountInstance[]) => any
+  ): Promise<AccountInstance[]>;
+  /**
+   * Lists AccountInstance records from the API as a list.
+   *
+   * If a function is passed as the first argument, it will be used as the callback
+   * function.
+   *
+   * @param { AccountListInstanceOptions } [params] - Options for request
+   * @param { function } [callback] - Callback to handle list of records
+   */
+  list(
+    params?: AccountListInstanceOptions,
+    callback?: (error: Error | null, items: AccountInstance[]) => any
+  ): Promise<AccountInstance[]>;
+  list(params?: any, callback?: any): Promise<AccountInstance[]>;
+  /**
+   * Retrieve a single page of AccountInstance records from the API.
+   *
+   * The request is executed immediately.
+   *
+   * If a function is passed as the first argument, it will be used as the callback
+   * function.
+   *
+   * @param { function } [callback] - Callback to handle list of records
    */
   page(
-    callback?: (error: Error | null, item?: AccountInstance) => any
-  ): Promise<AccountInstance>;
+    callback?: (error: Error | null, items: AccountPage) => any
+  ): Promise<AccountPage>;
   /**
-   * Page a AccountInstance
+   * Retrieve a single page of AccountInstance records from the API.
    *
-   * @param { AccountListInstancePageOptions } params - Parameter for request
-   * @param { function } [callback] - Callback to handle processed record
+   * The request is executed immediately.
    *
-   * @returns { Promise } Resolves to processed AccountInstance
+   * If a function is passed as the first argument, it will be used as the callback
+   * function.
+   *
+   * @param { AccountListInstancePageOptions } [params] - Options for request
+   * @param { function } [callback] - Callback to handle list of records
    */
   page(
     params: AccountListInstancePageOptions,
-    callback?: (error: Error | null, item?: AccountInstance) => any
-  ): Promise<AccountInstance>;
-  page(params?: any, callback?: any): Promise<AccountInstance>;
+    callback?: (error: Error | null, items: AccountPage) => any
+  ): Promise<AccountPage>;
+  page(params?: any, callback?: any): Promise<AccountPage>;
+
   /**
    * Provide a user-friendly representation
    */
@@ -419,7 +608,7 @@ export interface AccountListInstance {
 interface AccountListInstanceImpl extends AccountListInstance {}
 class AccountListInstanceImpl implements AccountListInstance {
   _version?: V2010;
-  _solution?: any;
+  _solution?: AccountSolution;
   _uri?: string;
 }
 
@@ -457,7 +646,6 @@ export function AccountListInstance(version: V2010): AccountListInstance {
 
     const headers: any = {};
     headers["Content-Type"] = "application/x-www-form-urlencoded";
-
     if (params.xTwilioWebhookEnabled !== undefined)
       headers["X-Twilio-Webhook-Enabled"] = params.xTwilioWebhookEnabled;
 
@@ -473,19 +661,17 @@ export function AccountListInstance(version: V2010): AccountListInstance {
       (payload) => new AccountInstance(operationVersion, payload)
     );
 
-    if (typeof callback === "function") {
-      operationPromise = operationPromise
-        .then((value) => callback(null, value))
-        .catch((error) => callback(error));
-    }
-
+    operationPromise = this._version.setPromiseCallback(
+      operationPromise,
+      callback
+    );
     return operationPromise;
   };
 
   instance.page = function page(
     params?: any,
     callback?: any
-  ): Promise<AccountInstance> {
+  ): Promise<AccountPage> {
     if (typeof params === "function") {
       callback = params;
       params = {};
@@ -506,6 +692,8 @@ export function AccountListInstance(version: V2010): AccountListInstance {
     if (params.dateCreatedAfter !== undefined)
       data["DateCreated>"] = serialize.iso8601DateTime(params.dateCreatedAfter);
     if (params.pageSize !== undefined) data["PageSize"] = params.pageSize;
+    if (params.page !== undefined) data["Page"] = params.pageNumber;
+    if (params.pageToken !== undefined) data["PageToken"] = params.pageToken;
 
     const headers: any = {};
 
@@ -518,15 +706,34 @@ export function AccountListInstance(version: V2010): AccountListInstance {
       });
 
     operationPromise = operationPromise.then(
-      (payload) => new AccountInstance(operationVersion, payload)
+      (payload) => new AccountPage(operationVersion, payload, this._solution)
     );
 
-    if (typeof callback === "function") {
-      operationPromise = operationPromise
-        .then((value) => callback(null, value))
-        .catch((error) => callback(error));
-    }
+    operationPromise = this._version.setPromiseCallback(
+      operationPromise,
+      callback
+    );
+    return operationPromise;
+  };
+  instance.each = instance._version.each;
+  instance.list = instance._version.list;
 
+  instance.getPage = function getPage(
+    targetUrl?: any,
+    callback?: any
+  ): Promise<AccountPage> {
+    let operationPromise = this._version._domain.twilio.request({
+      method: "get",
+      uri: targetUrl,
+    });
+
+    operationPromise = operationPromise.then(
+      (payload) => new AccountPage(this._version, payload, this._solution)
+    );
+    operationPromise = this._version.setPromiseCallback(
+      operationPromise,
+      callback
+    );
     return operationPromise;
   };
 
