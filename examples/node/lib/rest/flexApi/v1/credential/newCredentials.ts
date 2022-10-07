@@ -219,3 +219,39 @@ export class NewCredentialsInstance {
     return inspect(this.toJSON(), options);
   }
 }
+export interface NewCredentialsSolution {}
+
+export class NewCredentialsPage extends Page<
+  V1,
+  NewCredentialsPayload,
+  NewCredentialsResource,
+  NewCredentialsInstance
+> {
+  /**
+   * Initialize the NewCredentialsPage
+   *
+   * @param version - Version of the resource
+   * @param response - Response from the API
+   * @param solution - Path solution
+   */
+  constructor(
+    version: V1,
+    response: Response<string>,
+    solution: NewCredentialsSolution
+  ) {
+    super(version, response, solution);
+  }
+
+  /**
+   * Build an instance of NewCredentialsInstance
+   *
+   * @param payload - Payload response from the API
+   */
+  getInstance(payload: NewCredentialsPayload): NewCredentialsInstance {
+    return new NewCredentialsInstance(this._version, payload);
+  }
+
+  [inspect.custom](depth: any, options: InspectOptions) {
+    return inspect(this.toJSON(), options);
+  }
+}

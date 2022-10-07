@@ -256,51 +256,6 @@ export class CallContextImpl implements CallContext {
   }
 }
 
-export interface CallSolution {
-  accountSid?: string;
-  testInteger?: number;
-}
-
-export class CallPage extends Page<
-  V2010,
-  CallPayload,
-  CallResource,
-  CallInstance
-> {
-  /**
-   * Initialize the CallPage
-   *
-   * @param version - Version of the resource
-   * @param response - Response from the API
-   * @param solution - Path solution
-   */
-  constructor(
-    version: V2010,
-    response: Response<string>,
-    solution: CallSolution
-  ) {
-    super(version, response, solution);
-  }
-
-  /**
-   * Build an instance of CallInstance
-   *
-   * @param payload - Payload response from the API
-   */
-  getInstance(payload: CallPayload): CallInstance {
-    return new CallInstance(
-      this._version,
-      payload,
-      this._solution.accountSid,
-      this._solution.testInteger
-    );
-  }
-
-  [inspect.custom](depth: any, options: InspectOptions) {
-    return inspect(this.toJSON(), options);
-  }
-}
-
 interface CallPayload extends CallResource, Page.TwilioResponsePayload {}
 
 interface CallResource {
@@ -431,6 +386,50 @@ export class CallInstance {
   }
 
   [inspect.custom](_depth: any, options: InspectOptions) {
+    return inspect(this.toJSON(), options);
+  }
+}
+export interface CallSolution {
+  accountSid?: string;
+  testInteger?: number;
+}
+
+export class CallPage extends Page<
+  V2010,
+  CallPayload,
+  CallResource,
+  CallInstance
+> {
+  /**
+   * Initialize the CallPage
+   *
+   * @param version - Version of the resource
+   * @param response - Response from the API
+   * @param solution - Path solution
+   */
+  constructor(
+    version: V2010,
+    response: Response<string>,
+    solution: CallSolution
+  ) {
+    super(version, response, solution);
+  }
+
+  /**
+   * Build an instance of CallInstance
+   *
+   * @param payload - Payload response from the API
+   */
+  getInstance(payload: CallPayload): CallInstance {
+    return new CallInstance(
+      this._version,
+      payload,
+      this._solution.accountSid,
+      this._solution.testInteger
+    );
+  }
+
+  [inspect.custom](depth: any, options: InspectOptions) {
     return inspect(this.toJSON(), options);
   }
 }
