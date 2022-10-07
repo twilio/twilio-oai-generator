@@ -1,6 +1,8 @@
 {{>licenseInfo}}
+
 import { inspect, InspectOptions } from "util";
 import Page from "{{apiVersionPath}}/../../base/Page";
+import Response from "{{apiVersionPath}}/../../http/response";
 import {{apiVersionClass}} from "{{apiVersionPath}}/{{apiVersionClass}}";
 const deserialize = require("{{apiVersionPath}}/../../base/deserialize");
 const serialize = require("{{apiVersionPath}}/../../base/serialize");
@@ -9,11 +11,12 @@ const serialize = require("{{apiVersionPath}}/../../base/serialize");
 import { {{name}}ListInstance } from "./{{apiFilename}}/{{filename}}";
 {{/dependents}}
 {{/resources}}
-
 {{#resources}}
 {{>model}}
 {{#operations}}
 {{#hasParams}}
+{{#vendorExtensions.x-is-list-operation}}{{>listOperationsOptions}}{{/vendorExtensions.x-is-list-operation}}
+{{^vendorExtensions.x-is-list-operation}}
 {{^bodyParam}}
 /**
  * Options to pass to {{vendorExtensions.x-name-lower}} a {{instanceName}}
@@ -28,6 +31,7 @@ export interface {{resourceName}}{{vendorExtensions.x-name}}Options {
   {{/allParams}}
 }
 {{/bodyParam}}
+{{/vendorExtensions.x-is-list-operation}}
 {{/hasParams}}
 {{/operations}}
 {{/resources}}
@@ -44,7 +48,8 @@ export interface {{resourceName}} {
   {{/dependents}}
 
 {{#operations}}
-{{>operationSignature}};
+{{^vendorExtensions.x-is-list-operation}}{{>operationSignature}}{{/vendorExtensions.x-is-list-operation}}
+{{#vendorExtensions.x-is-list-operation}}{{>listInterfaceFunctions}}{{/vendorExtensions.x-is-list-operation}}
 {{/operations}}
   /**
    * Provide a user-friendly representation
@@ -55,7 +60,7 @@ export interface {{resourceName}} {
 
 {{#parentResourceName}}
 export class {{resourceName}}Impl implements {{resourceName}} {
-  protected _solution: any;
+  protected _solution: {{name}}Solution;
   protected _uri: string;
 
   {{#dependents}}
@@ -74,9 +79,9 @@ export class {{resourceName}}Impl implements {{resourceName}} {
   }
 
   {{/dependents}}
-{{#operations}}
+  {{#operations}}
   {{vendorExtensions.x-name-lower}}({{#hasParams}}params{{^hasRequiredParams}}?{{/hasRequiredParams}}: any, {{/hasParams}}callback?: any): Promise<{{returnType}}> {
-{{>operation}}
+  {{>operation}}
   }
 
 {{/operations}}
@@ -94,12 +99,11 @@ export class {{resourceName}}Impl implements {{resourceName}} {
   }
 }
 {{/parentResourceName}}
-
 {{^parentResourceName}}
 interface {{resourceName}}Impl extends {{resourceName}} {}
 class {{resourceName}}Impl implements {{resourceName}} {
   _version?: {{apiVersionClass}};
-  _solution?: any;
+  _solution?: {{name}}Solution;
   _uri?: string;
 
   {{#dependents}}
@@ -137,7 +141,9 @@ export function {{resourceName}}(version: {{apiVersionClass}}{{#resourcePathPara
 {{#operations}}
   instance.{{vendorExtensions.x-name-lower}} = function {{vendorExtensions.x-name-lower}}({{#hasParams}}params{{^hasRequiredParams}}?{{/hasRequiredParams}}: any, {{/hasParams}}callback?: any): Promise<{{returnType}}> {
 {{>operation}}
-  }
+{{^vendorExtensions.x-is-list-operation}}
+    }
+{{/vendorExtensions.x-is-list-operation}}
 
 {{/operations}}
   instance.toJSON = function toJSON() {
