@@ -1,9 +1,7 @@
 import argparse
-import json
 import os
 import re
 from pathlib import Path
-from re import sub
 from typing import Tuple
 
 from clean_java_imports import remove_unused_imports
