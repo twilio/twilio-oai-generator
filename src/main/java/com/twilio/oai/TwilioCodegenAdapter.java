@@ -66,6 +66,10 @@ public class TwilioCodegenAdapter {
             .orElseThrow();
     }
 
+    public String getVersionFromOpenAPI(final OpenAPI openAPI) {
+        return openAPI.getPaths().keySet().stream().findFirst().map(PathUtils::getFirstPathPart).orElseThrow();
+    }
+
     private String getInputSpecDomain() {
         return codegen.getInputSpec().replaceAll(INPUT_SPEC_PATTERN, "${domain}");
     }

@@ -14,6 +14,7 @@
 
 import { inspect, InspectOptions } from "util";
 import Page from "../../../base/Page";
+import Response from "../../../http/response";
 import V1 from "../V1";
 const deserialize = require("../../../base/deserialize");
 const serialize = require("../../../base/serialize");
@@ -32,7 +33,7 @@ export interface CredentialListInstance {
 interface CredentialListInstanceImpl extends CredentialListInstance {}
 class CredentialListInstanceImpl implements CredentialListInstance {
   _version?: V1;
-  _solution?: any;
+  _solution?: CredentialSolution;
   _uri?: string;
 
   _aws?: AWSListInstance;
@@ -43,7 +44,7 @@ export function CredentialListInstance(version: V1): CredentialListInstance {
 
   instance._version = version;
   instance._solution = {};
-  instance._uri = `/v1/Credentials`;
+  instance._uri = `/Credentials`;
 
   Object.defineProperty(instance, "aws", {
     get: function aws() {

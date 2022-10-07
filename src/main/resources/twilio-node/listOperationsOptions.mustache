@@ -1,0 +1,61 @@
+{{^bodyParam}}
+/**
+ * Options to pass to each
+ *
+ {{#allParams}}
+ * @property { {{{dataType}}} } {{^required}}[{{/required}}{{paramName}}{{^required}}]{{/required}} {{description}}
+ {{/allParams}}
+ * @property { Function } [callback] -
+ *                         Function to process each record. If this and a positional
+ *                         callback are passed, this one will be used
+ * @property { Function } [done] - Function to be called upon completion of streaming
+ * @property { number } [limit] -
+ *                         Upper limit for the number of records to return.
+ *                         each() guarantees never to return more than limit.
+ *                         Default is no limit
+ */
+export interface {{resourceName}}EachOptions {
+  {{#allParams}}
+  {{paramName}}{{^required}}?{{/required}}: {{{dataType}}};
+  {{/allParams}}
+  callback?: (item: {{instanceName}}, done: (err?: Error) => void) => void;
+  done?: Function;
+  limit?: number;
+}
+
+/**
+ * Options to pass to list
+ *
+ {{#allParams}}
+ * @property { {{{dataType}}} } {{^required}}[{{/required}}{{paramName}}{{^required}}]{{/required}} {{description}}
+ {{/allParams}}
+ * @property { number } [limit] -
+ *                         Upper limit for the number of records to return.
+ *                         list() guarantees never to return more than limit.
+ *                         Default is no limit
+ */
+export interface {{resourceName}}Options {
+  {{#allParams}}
+  {{paramName}}{{^required}}?{{/required}}: {{{dataType}}};
+  {{/allParams}}
+  limit?: number;
+}
+
+/**
+ * Options to pass to page
+ *
+ {{#allParams}}
+ * @property { {{{dataType}}} } {{^required}}[{{/required}}{{paramName}}{{^required}}]{{/required}} {{description}}
+ {{/allParams}}
+ * @property { number } [pageNumber] - Page Number, this value is simply for client state
+ * @property { string } [pageToken] - PageToken provided by the API
+ */
+export interface {{resourceName}}PageOptions {
+  {{#allParams}}
+  {{paramName}}{{^required}}?{{/required}}: {{{dataType}}};
+  {{/allParams}}
+  pageNumber?: number;
+  pageToken?: string;
+}
+
+{{/bodyParam}}

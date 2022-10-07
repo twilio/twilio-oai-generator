@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import io.swagger.v3.oas.models.Operation;
 import io.swagger.v3.oas.models.PathItem;
@@ -27,16 +28,31 @@ public class ResourceMap implements IResourceTree {
     public List<String> ancestors(final String resourceName, final Operation operation) {
         final Resource resource = findResource(resourceName).orElseThrow();
         final List<String> ancestorList = new ArrayList<>();
-        ancestorList.add(resource.getClassName(operation));
+        ancestorList.add(resource.getClassName(operation).getName());
 
         Optional<Resource> parent = resource.getParentResource(this);
         while (parent.isPresent()) {
             final Resource parentResource = parent.get();
-            ancestorList.add(0, parentResource.getClassName());
+            ancestorList.add(0, parentResource.getClassName().getName());
             parent = parentResource.getParentResource(this);
         }
 
         return ancestorList;
+    }
+
+    /**
+     * Returns a list of dependents for the operation as those with a path that directly under the current path.
+     */
+    @Override
+    public List<String> dependents(final String name) {
+        return urlResourceMap
+            .values()
+            .stream()
+            .map(Resource::getName)
+            .filter(p -> PathUtils
+                .removePathParamIds(p)
+                .matches(PathUtils.escapeRegex(PathUtils.removePathParamIds(name) + "/[^{/]+")))
+            .collect(Collectors.toList());
     }
 
     @Override

@@ -14,6 +14,7 @@
 
 import { inspect, InspectOptions } from "util";
 import Page from "../../../../../base/Page";
+import Response from "../../../../../http/response";
 import V2010 from "../../../V2010";
 const deserialize = require("../../../../../base/deserialize");
 const serialize = require("../../../../../base/serialize");
@@ -46,7 +47,7 @@ class FeedbackCallSummaryListInstanceImpl
   implements FeedbackCallSummaryListInstance
 {
   _version?: V2010;
-  _solution?: any;
+  _solution?: FeedbackCallSummarySolution;
   _uri?: string;
 }
 
@@ -63,7 +64,7 @@ export function FeedbackCallSummaryListInstance(
 
   instance._version = version;
   instance._solution = { accountSid };
-  instance._uri = `/2010-04-01/Accounts/${accountSid}/Calls/FeedbackSummary.json`;
+  instance._uri = `/Accounts/${accountSid}/Calls/FeedbackSummary.json`;
 
   instance.toJSON = function toJSON() {
     return this._solution;
@@ -93,6 +94,7 @@ export interface FeedbackCallSummaryContext {
     callback?: (error: Error | null, item?: FeedbackCallSummaryInstance) => any
   ): Promise<FeedbackCallSummaryInstance>;
   update(params: any, callback?: any): Promise<FeedbackCallSummaryInstance>;
+
   /**
    * Provide a user-friendly representation
    */
@@ -103,12 +105,12 @@ export interface FeedbackCallSummaryContext {
 export class FeedbackCallSummaryContextImpl
   implements FeedbackCallSummaryContext
 {
-  protected _solution: any;
+  protected _solution: FeedbackCallSummarySolution;
   protected _uri: string;
 
   constructor(protected _version: V2010, accountSid: string, sid: string) {
     this._solution = { accountSid, sid };
-    this._uri = `/2010-04-01/Accounts/${accountSid}/Calls/FeedbackSummary/${sid}.json`;
+    this._uri = `/Accounts/${accountSid}/Calls/FeedbackSummary/${sid}.json`;
   }
 
   update(params: any, callback?: any): Promise<FeedbackCallSummaryInstance> {
@@ -150,12 +152,10 @@ export class FeedbackCallSummaryContextImpl
         )
     );
 
-    if (typeof callback === "function") {
-      operationPromise = operationPromise
-        .then((value) => callback(null, value))
-        .catch((error) => callback(error));
-    }
-
+    operationPromise = this._version.setPromiseCallback(
+      operationPromise,
+      callback
+    );
     return operationPromise;
   }
 
@@ -195,7 +195,7 @@ interface FeedbackCallSummaryResource {
 }
 
 export class FeedbackCallSummaryInstance {
-  protected _solution: any;
+  protected _solution: FeedbackCallSummarySolution;
   protected _context?: FeedbackCallSummaryContext;
 
   constructor(
@@ -292,6 +292,52 @@ export class FeedbackCallSummaryInstance {
   }
 
   [inspect.custom](_depth: any, options: InspectOptions) {
+    return inspect(this.toJSON(), options);
+  }
+}
+export interface FeedbackCallSummarySolution {
+  accountSid?: string;
+  sid?: string;
+}
+
+export class FeedbackCallSummaryPage extends Page<
+  V2010,
+  FeedbackCallSummaryPayload,
+  FeedbackCallSummaryResource,
+  FeedbackCallSummaryInstance
+> {
+  /**
+   * Initialize the FeedbackCallSummaryPage
+   *
+   * @param version - Version of the resource
+   * @param response - Response from the API
+   * @param solution - Path solution
+   */
+  constructor(
+    version: V2010,
+    response: Response<string>,
+    solution: FeedbackCallSummarySolution
+  ) {
+    super(version, response, solution);
+  }
+
+  /**
+   * Build an instance of FeedbackCallSummaryInstance
+   *
+   * @param payload - Payload response from the API
+   */
+  getInstance(
+    payload: FeedbackCallSummaryPayload
+  ): FeedbackCallSummaryInstance {
+    return new FeedbackCallSummaryInstance(
+      this._version,
+      payload,
+      this._solution.accountSid,
+      this._solution.sid
+    );
+  }
+
+  [inspect.custom](depth: any, options: InspectOptions) {
     return inspect(this.toJSON(), options);
   }
 }
