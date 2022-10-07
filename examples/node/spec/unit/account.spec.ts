@@ -8,7 +8,7 @@ describe("account", () => {
 
   it("should create an account", () => {
     const scope = nock("https://api.twilio.com")
-      .post("/v2010/2010-04-01/Accounts.json")
+      .post("/2010-04-01/Accounts.json")
       .reply(201, { account_sid: "123" });
 
     return twilio.api.v2010.accounts
@@ -18,7 +18,7 @@ describe("account", () => {
 
   it("should fetch an account", () => {
     const scope = nock("https://api.twilio.com")
-      .get("/v2010/2010-04-01/Accounts/123.json")
+      .get("/2010-04-01/Accounts/123.json")
       .reply(200, { account_sid: "123" });
 
     return twilio.api.v2010
@@ -29,7 +29,7 @@ describe("account", () => {
 
   it("should update an account", () => {
     const scope = nock("https://api.twilio.com")
-      .post("/v2010/2010-04-01/Accounts/123.json")
+      .post("/2010-04-01/Accounts/123.json")
       .query({
         Status: "closed",
       })
@@ -43,7 +43,7 @@ describe("account", () => {
 
   it("should remove an account", () => {
     const scope = nock("https://api.twilio.com")
-      .delete("/v2010/2010-04-01/Accounts/123.json")
+      .delete("/2010-04-01/Accounts/123.json")
       .reply(204);
 
     return twilio.api.v2010
@@ -54,16 +54,36 @@ describe("account", () => {
 
   it("should get account pages in between dates", () => {
     const scope = nock("https://api.twilio.com")
-      .get("/v2010/2010-04-01/Accounts.json")
+      .get("/2010-04-01/Accounts.json")
       .query({
         "DateCreated<": "2022-12-25T00:00:00Z",
         "DateCreated>": "2022-01-01T00:00:00Z",
       })
-      .reply(200, {});
+      .reply(200, {
+        first_page_uri:
+          "/2010-04-01/Accounts.json?FriendlyName=friendly_name&Status=active&PageSize=50&Page=0",
+        end: 0,
+        previous_page_uri:
+          "/2010-04-01/Accounts.json?FriendlyName=friendly_name&Status=active&PageSize=50&Page=0",
+        accounts: [],
+        uri: "/2010-04-01/Accounts.json?FriendlyName=friendly_name&Status=active&PageSize=50&Page=0",
+        page_size: 50,
+        start: 0,
+        next_page_uri:
+          "/2010-04-01/Accounts.json?FriendlyName=friendly_name&Status=active&PageSize=50&Page=50",
+        page: 0,
+      });
     const params: AccountListInstancePageOptions = {
       dateCreatedBefore: new Date("2022-12-25"),
       dateCreatedAfter: new Date("2022-01-01"),
     };
-    return twilio.api.v2010.accounts.page(params).then(() => scope.done());
+    return twilio.api.v2010.accounts
+      .page(params)
+      .then((accountPage) =>
+        expect(accountPage.nextPageUrl).toEqual(
+          "https://api.twilio.com/2010-04-01/Accounts.json?FriendlyName=friendly_name&Status=active&PageSize=50&Page=50"
+        )
+      )
+      .then(() => scope.done());
   });
 });

@@ -5,18 +5,18 @@ import com.twilio.http.Response;
 import com.twilio.http.TwilioRestClient;
 
 public class TestRestClient extends TwilioRestClient {
-    String baseURL;
+    String scheme;
 
-    TestRestClient(Builder b, String url) {
+    TestRestClient(final Builder b, final String scheme) {
         super(b);
-        this.baseURL = url;
+        this.scheme = scheme;
     }
 
     @Override
     public Response request(final Request request) {
         StringBuilder sb = new StringBuilder(request.getUrl());
         // manipulate string for mock server url
-        sb.replace(0, (request.getUrl().indexOf("twilio.com") + 10), baseURL);
+        sb.replace(0, 5, scheme);
         Request testRequest = new Request(request.getMethod(), sb.toString());
         // updating the query and post params
         request.getPostParams().forEach((key, value) -> value.forEach(listValue -> testRequest.addPostParam(key, listValue)));

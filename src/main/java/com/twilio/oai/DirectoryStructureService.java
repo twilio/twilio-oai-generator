@@ -2,7 +2,6 @@ package com.twilio.oai;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.twilio.oai.common.ApplicationConstants;
 import com.twilio.oai.common.EnumConstants;
 import com.twilio.oai.resource.IResourceTree;
 import com.twilio.oai.resource.ResourceMap;
@@ -16,7 +15,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.regex.Matcher;
 import java.util.stream.Collectors;
 
 public class DirectoryStructureService {
@@ -25,20 +23,16 @@ public class DirectoryStructureService {
     private EnumConstants.Generator generator;
     private static final String PATH_SEPARATOR_PLACEHOLDER = "1234567890";
     private final Inflector inflector = new Inflector();
-    private IResourceTree resourceTree;
-
-    private  Map<String, String> subDomainMap = new HashMap<>();
+    private final Map<String, String> subDomainMap = new HashMap<>();
 
     public DirectoryStructureService(EnumConstants.Generator generator) {
         this.generator = generator;
     }
 
     public void configure(OpenAPI openAPI, Map<String, Object> additionalProperties) {
-        resourceTree = new ResourceMap(inflector);
+        final IResourceTree resourceTree = new ResourceMap(inflector);
 
-        extendOpenAPI(openAPI).getPaths().forEach((name, path) -> {
-            resourceTree.addResource(name, path);
-        });
+        extendOpenAPI(openAPI).getPaths().forEach(resourceTree::addResource);
         openAPI.getPaths().forEach((name, path) -> {
             updateAccountSidParam(name, path);
             path.readOperations().forEach(operation -> {
@@ -50,12 +44,6 @@ public class DirectoryStructureService {
                 }
                 operation.addTagsItem(tag);
             });
-            Matcher m = ApplicationConstants.serverUrlPattern.matcher(path.getServers().get(0).getUrl());
-            if (m.find()) {
-                String domain = StringUtils.camelize(m.group(1));
-                additionalProperties.put("domainName", domain);
-                additionalProperties.put("domainPackage",domain);
-            }
         });
     }
 

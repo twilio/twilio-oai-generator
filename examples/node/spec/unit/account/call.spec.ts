@@ -7,7 +7,7 @@ describe("call", () => {
 
   it("should create a call", () => {
     const scope = nock("https://api.twilio.com")
-      .post("/v2010/2010-04-01/Accounts/123/Calls.json")
+      .post("/2010-04-01/Accounts/123/Calls.json")
       .query({
         RequiredStringProperty: "radda radda",
       })
@@ -29,7 +29,7 @@ describe("call", () => {
 
   it("should fetch a call", () => {
     const scope = nock("https://api.twilio.com")
-      .get("/v2010/2010-04-01/Accounts/123/Calls/1.json")
+      .get("/2010-04-01/Accounts/123/Calls/1.json")
       .reply(307, { account_sid: "123", sid: 1 });
 
     return twilio.api.v2010
@@ -41,7 +41,7 @@ describe("call", () => {
 
   it("should remove a call", () => {
     const scope = nock("https://api.twilio.com")
-      .delete("/v2010/2010-04-01/Accounts/123/Calls/1.json")
+      .delete("/2010-04-01/Accounts/123/Calls/1.json")
       .reply(204);
 
     return twilio.api.v2010
@@ -53,7 +53,7 @@ describe("call", () => {
 
   it("should create a feedback summary", () => {
     const scope = nock("https://api.twilio.com")
-      .post("/v2010/2010-04-01/Accounts/123/Calls/FeedbackSummary/456.json")
+      .post("/2010-04-01/Accounts/123/Calls/FeedbackSummary/456.json")
       .query({
         EndDate: "2022-08-01",
         StartDate: "2022-08-01",
