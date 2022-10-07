@@ -24,15 +24,25 @@ using System.Linq;
 namespace Twilio.Rest.Api.V2010.Account
 {
 
+    /// <summary> create </summary>
     public class CreateCallOptions : IOptions<CallResource>
     {
-        // How to decide which has getter and which has setter ?
+        
         
         public string RequiredStringProperty { get; }
+
+        
         public string PathAccountSid { get; set; }
+
+        
         public List<string> TestArrayOfStrings { get; set; }
+
+        
         public List<Uri> TestArrayOfUri { get; set; }
 
+
+        /// <summary> Construct a new CreateCallOptions </summary>
+        /// <param name="requiredStringProperty">  </param>
         public CreateCallOptions(string requiredStringProperty)
         {
             RequiredStringProperty = requiredStringProperty;
@@ -41,6 +51,7 @@ namespace Twilio.Rest.Api.V2010.Account
         }
 
         
+        /// <summary> Generate the necessary parameters </summary>
         public  List<KeyValuePair<string, string>> GetParams()
         {
             var p = new List<KeyValuePair<string, string>>();
@@ -62,19 +73,27 @@ namespace Twilio.Rest.Api.V2010.Account
         
 
     }
+    /// <summary> delete </summary>
     public class DeleteCallOptions : IOptions<CallResource>
     {
         
+        ///<summary> INTEGER ID param!!! </summary> 
         public int? PathTestInteger { get; }
+
+        
         public string PathAccountSid { get; set; }
 
 
+
+        /// <summary> Construct a new DeleteCallOptions </summary>
+        /// <param name="pathTestInteger"> INTEGER ID param!!! </param>
         public DeleteCallOptions(int? pathTestInteger)
         {
             PathTestInteger = pathTestInteger;
         }
 
         
+        /// <summary> Generate the necessary parameters </summary>
         public  List<KeyValuePair<string, string>> GetParams()
         {
             var p = new List<KeyValuePair<string, string>>();
@@ -86,19 +105,27 @@ namespace Twilio.Rest.Api.V2010.Account
     }
 
 
+    /// <summary> fetch </summary>
     public class FetchCallOptions : IOptions<CallResource>
     {
     
+        ///<summary> INTEGER ID param!!! </summary> 
         public int? PathTestInteger { get; }
+
+        
         public string PathAccountSid { get; set; }
 
 
+
+        /// <summary> Construct a new FetchCallOptions </summary>
+        /// <param name="pathTestInteger"> INTEGER ID param!!! </param>
         public FetchCallOptions(int? pathTestInteger)
         {
             PathTestInteger = pathTestInteger;
         }
 
         
+        /// <summary> Generate the necessary parameters </summary>
         public  List<KeyValuePair<string, string>> GetParams()
         {
             var p = new List<KeyValuePair<string, string>>();
