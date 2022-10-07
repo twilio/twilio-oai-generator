@@ -14,6 +14,7 @@
 
 import { inspect, InspectOptions } from "util";
 import Page from "../../../../base/Page";
+import Response from "../../../../http/response";
 import V1 from "../../V1";
 const deserialize = require("../../../../base/deserialize");
 const serialize = require("../../../../base/serialize");
@@ -69,6 +70,7 @@ export interface NewCredentialsListInstance {
     callback?: (error: Error | null, item?: NewCredentialsInstance) => any
   ): Promise<NewCredentialsInstance>;
   create(params: any, callback?: any): Promise<NewCredentialsInstance>;
+
   /**
    * Provide a user-friendly representation
    */
@@ -79,7 +81,7 @@ export interface NewCredentialsListInstance {
 interface NewCredentialsListInstanceImpl extends NewCredentialsListInstance {}
 class NewCredentialsListInstanceImpl implements NewCredentialsListInstance {
   _version?: V1;
-  _solution?: any;
+  _solution?: NewCredentialsSolution;
   _uri?: string;
 }
 
@@ -149,12 +151,10 @@ export function NewCredentialsListInstance(
       (payload) => new NewCredentialsInstance(operationVersion, payload)
     );
 
-    if (typeof callback === "function") {
-      operationPromise = operationPromise
-        .then((value) => callback(null, value))
-        .catch((error) => callback(error));
-    }
-
+    operationPromise = this._version.setPromiseCallback(
+      operationPromise,
+      callback
+    );
     return operationPromise;
   };
 
@@ -184,7 +184,7 @@ interface NewCredentialsResource {
 }
 
 export class NewCredentialsInstance {
-  protected _solution: any;
+  protected _solution: NewCredentialsSolution;
   protected _context?: NewCredentialsListInstance;
 
   constructor(protected _version: V1, payload: NewCredentialsPayload) {
@@ -216,6 +216,42 @@ export class NewCredentialsInstance {
   }
 
   [inspect.custom](_depth: any, options: InspectOptions) {
+    return inspect(this.toJSON(), options);
+  }
+}
+export interface NewCredentialsSolution {}
+
+export class NewCredentialsPage extends Page<
+  V1,
+  NewCredentialsPayload,
+  NewCredentialsResource,
+  NewCredentialsInstance
+> {
+  /**
+   * Initialize the NewCredentialsPage
+   *
+   * @param version - Version of the resource
+   * @param response - Response from the API
+   * @param solution - Path solution
+   */
+  constructor(
+    version: V1,
+    response: Response<string>,
+    solution: NewCredentialsSolution
+  ) {
+    super(version, response, solution);
+  }
+
+  /**
+   * Build an instance of NewCredentialsInstance
+   *
+   * @param payload - Payload response from the API
+   */
+  getInstance(payload: NewCredentialsPayload): NewCredentialsInstance {
+    return new NewCredentialsInstance(this._version, payload);
+  }
+
+  [inspect.custom](depth: any, options: InspectOptions) {
     return inspect(this.toJSON(), options);
   }
 }

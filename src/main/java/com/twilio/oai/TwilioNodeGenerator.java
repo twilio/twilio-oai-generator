@@ -167,6 +167,8 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
                     addOperationName(co, "Create");
                 } else if (httpMethod == HttpMethod.GET) {
                     addOperationName(co, "Page");
+                    co.returnType = itemName + "Page";
+                    co.vendorExtensions.put("x-is-list-operation", true);
                 }
             }
 
@@ -180,7 +182,7 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
             if (!ignoreOperation) {
                 resourceOperationList.add(co);
             }
-
+            resource.put("name", itemName);
             resource.put("resourceName", resourceName);
             resource.put("parentResourceName", parentResourceName);
             resource.put("instanceName", instanceName);
