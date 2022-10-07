@@ -90,10 +90,8 @@ public abstract class AbstractTwilioGoGenerator extends GoClientCodegen {
     @Override
     public String toParamName(String name) {
         name = name.replaceAll("[-+.^:,]", "");
-        name = name.replace("<", "Before");
-        name = name.replace(">", "After");
-        name = super.toVarName(name);
-        return name;
+        name = twilioCodegen.toParamName(name);
+        return super.toVarName(name);
     }
 
     @Override

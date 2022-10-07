@@ -1,23 +1,22 @@
 package com.twilio.oai.common;
 
-import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 public class EnumConstants {
 
+    @Getter
+    @RequiredArgsConstructor
     public enum Generator {
+        TWILIO_CSHARP("twilio-csharp"),
         TWILIO_JAVA("twilio-java"),
-        TWILIO_CSHARP("twilio-csharp");
+        TWILIO_NODE("twilio-node");
 
         private final String value;
-
-        public String getValue() {
-            return value;
-        }
-        private Generator(String value) {
-            this.value = value;
-        }
     }
 
+    @Getter
+    @RequiredArgsConstructor
     public enum Operation {
         CREATE("Create"),
         FETCH("Fetch"),
@@ -28,25 +27,13 @@ public class EnumConstants {
         READ("Read");
 
         private final String value;
-
-        public String getValue() {
-            return value;
-        }
-        private Operation(String value) {
-            this.value = value;
-        }
     }
 
+    @Getter
+    @RequiredArgsConstructor
     public enum CsharpDataTypes {
         LIST("List<");
 
         private final String value;
-
-        public String getValue() {
-            return value;
-        }
-        private CsharpDataTypes(String value) {
-            this.value = value;
-        }
     }
 }
