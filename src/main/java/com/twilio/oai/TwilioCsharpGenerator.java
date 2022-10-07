@@ -151,6 +151,8 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
             generatePackage(objs, co, resource);
             requestBodyArgument(co);
 
+            // Remove PageSize from optionalParams
+            co.optionalParams = co.optionalParams.stream().filter(parameter -> !parameter.paramName.equals("PageSize")).collect(Collectors.toList());
             resource.put("path", path);
             resource.put("resourceName", resourceName);
             resource.put("resourceConstant", "Resource");
@@ -175,7 +177,7 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
         if (directoryStructureService.isVersionLess(this.additionalProperties)) {
             String tag = objs.getOperations().getClassname();
             String subDomainName = directoryStructureService.getSubDomainName(tag);
-            resource.put("apiVersion", subDomainName);
+            resource.put("apiVersionClass", subDomainName);
         }
 
         List<String> packagePaths = Arrays.asList(Arrays.copyOfRange(filePathArray, 0, filePathArray.length - 1))
@@ -421,17 +423,27 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
     }
 
     private void populateCrudOperations(final Map<String, Object> resource, final CodegenOperation operation) {
+        String summary;
         if (operation.nickname.startsWith(EnumConstants.Operation.CREATE.getValue())) {
             operation.vendorExtensions.put("x-is-create-operation", true);
+            summary = "create";
         } else if (operation.nickname.startsWith(EnumConstants.Operation.FETCH.getValue())) {
             operation.vendorExtensions.put("x-is-fetch-operation", true);
+            summary = "fetch";
         } else if (operation.nickname.startsWith(EnumConstants.Operation.UPDATE.getValue())) {
             operation.vendorExtensions.put("x-is-update-operation", true);
+            summary = "update";
         } else if (operation.nickname.startsWith(EnumConstants.Operation.DELETE.getValue())) {
             operation.vendorExtensions.put("x-is-delete-operation", true);
+            summary = "delete";
         } else {
             operation.vendorExtensions.put("x-is-read-operation", true);
+            summary = "read";
         }
+        if (operation.notes != null && !operation.notes.isEmpty()) {
+            summary = operation.notes;
+        }
+        operation.vendorExtensions.put("x-generate-comment", summary);
     }
 
     @SuppressWarnings("unchecked")

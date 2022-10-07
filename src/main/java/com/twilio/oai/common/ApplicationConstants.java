@@ -15,4 +15,6 @@ public class ApplicationConstants {
     public static final String OBJECT = "Object";
 
     public static final String _CONFIGURATION = "_Configuration";
+
+    public static final String _VERSION = "_Version";
 }

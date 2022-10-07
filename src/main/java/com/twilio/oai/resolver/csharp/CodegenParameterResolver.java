@@ -67,6 +67,8 @@ public class CodegenParameterResolver implements Resolver<CodegenParameter> {
             // Adding reserved keyword for backward compatibility
             if (ApplicationConstants._CONFIGURATION.equals(parameter.paramName)) {
                 parameter.paramName = "Configuration";
+            } else if (ApplicationConstants._VERSION.equals(parameter.paramName)) {
+                parameter.paramName = "Version";
             }
             resolve(parameter);
         }
