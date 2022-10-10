@@ -1,153 +1,107 @@
 package com.twilio.oai;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.twilio.oai.common.EnumConstants;
+import com.twilio.oai.resolver.CaseResolver;
 import com.twilio.oai.resource.IResourceTree;
-import com.twilio.oai.resource.ResourceMap;
-import io.swagger.v3.oas.models.OpenAPI;
-import io.swagger.v3.oas.models.PathItem;
-import io.swagger.v3.oas.models.Paths;
-import org.openapitools.codegen.utils.StringUtils;
+import com.twilio.oai.resource.Resource;
 
+import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.Operation;
+import io.swagger.v3.oas.models.PathItem;
+import lombok.RequiredArgsConstructor;
+import org.openapitools.codegen.utils.StringUtils;
+
+import static com.twilio.oai.common.ApplicationConstants.ACCOUNT_SID_FORMAT;
+import static com.twilio.oai.common.ApplicationConstants.PATH_SEPARATOR_PLACEHOLDER;
+
+@RequiredArgsConstructor
 public class DirectoryStructureService {
-
-    public static final String ACCOUNT_SID_FORMAT = "^AC[0-9a-fA-F]{32}$";
-    private EnumConstants.Generator generator;
-    private static final String PATH_SEPARATOR_PLACEHOLDER = "1234567890";
-    private final Inflector inflector = new Inflector();
-    private final Map<String, String> subDomainMap = new HashMap<>();
-
-    public DirectoryStructureService(EnumConstants.Generator generator) {
-        this.generator = generator;
-    }
+    private final IResourceTree resourceTree;
+    private final CaseResolver caseResolver;
+    private final Map<String, String> productMap = new HashMap<>();
 
     public void configure(OpenAPI openAPI, Map<String, Object> additionalProperties) {
-        final IResourceTree resourceTree = new ResourceMap(inflector);
+        final Map<String, Object> versionResources = PathUtils.getStringMap(additionalProperties, "versionResources");
 
-        extendOpenAPI(openAPI).getPaths().forEach(resourceTree::addResource);
+        openAPI.getPaths().forEach(resourceTree::addResource);
         openAPI.getPaths().forEach((name, path) -> {
-            updateAccountSidParam(name, path);
+            updateAccountSidParam(path);
             path.readOperations().forEach(operation -> {
                 // Group operations together by tag. This gives us one file/post-process per resource.
-                String tag = String.join(PATH_SEPARATOR_PLACEHOLDER, resourceTree.ancestors(name, operation));
+                final String tag = String.join(PATH_SEPARATOR_PLACEHOLDER, resourceTree.ancestors(name, operation));
+
                 if (isVersionLess(additionalProperties)) {
-                    String subDomainName = extractSubDomainName(name);
-                    subDomainMap.put(tag, subDomainName);
+                    productMap.put(tag, PathUtils.getFirstPathPart(name));
                 }
+
                 operation.addTagsItem(tag);
+
+                if (!tag.contains(PATH_SEPARATOR_PLACEHOLDER)) {
+                    addDependent(versionResources, name);
+                }
             });
         });
+
+        PathUtils.flattenStringMap(additionalProperties, "versionResources");
     }
 
     // If account sid is present in path param, it is stored in x-is-account-sid.
-    private void updateAccountSidParam(final String path, final PathItem pathMap) {
-        pathMap.readOperations().stream().map(io.swagger.v3.oas.models.Operation::getParameters)
-                .filter(Objects::nonNull)
-                .flatMap(Collection::stream)
-                .filter(param -> param.getIn().equals("path") && ( ACCOUNT_SID_FORMAT.equals(param.getSchema().getPattern())))
-                .forEach(param -> {
-                    param.required(false);
-                    param.addExtension("x-is-account-sid", true);
-                });
+    private void updateAccountSidParam(final PathItem pathMap) {
+        pathMap
+            .readOperations()
+            .stream()
+            .map(Operation::getParameters)
+            .filter(Objects::nonNull)
+            .flatMap(Collection::stream)
+            .filter(param -> param.getIn().equals("path") &&
+                (ACCOUNT_SID_FORMAT.equals(param.getSchema().getPattern())))
+            .forEach(param -> {
+                param.required(false);
+                param.addExtension("x-is-account-sid", true);
+            });
     }
 
-    private OpenAPI extendOpenAPI(OpenAPI openAPI) {
-        Paths newPaths = new Paths();
-        openAPI.getPaths().forEach((name, path) -> {
-            if (hasOperatorWithClassName(path)) {
-                for(Map.Entry<String, PathItem> newPathItem : extractMultiPathItemFromOperatorWithClassName(name, path).entrySet()) {
-                    newPaths.addPathItem(newPathItem.getKey(), newPathItem.getValue());
-                }
-            }
-            else {
-                newPaths.addPathItem(name, path);
-            }
-        });
-        openAPI.paths(newPaths);
-        return openAPI;
+    public void addDependent(final Map<String, Object> resourcesMap, final String path) {
+        final Resource.ClassName className = getResourceClassName(path);
+        final Map<String, Object> versionResource = PathUtils.getStringMap(resourcesMap, className.getName());
+        versionResource.put("name", className.getName());
+        versionResource.put("mountName", StringUtils.underscore(className.getMountName()));
+        versionResource.put("filename", StringUtils.camelize(className.getName(), true));
     }
 
-    private Map<String, PathItem> extractMultiPathItemFromOperatorWithClassName(String name, PathItem path)  {
-        ObjectMapper objectMapper = new ObjectMapper();
-        Map<String, PathItem> pathItemMap = new HashMap<>();
-        try {
-            PathItem pathItemOperatorClassVendExt = objectMapper
-                    .readValue(objectMapper.writeValueAsString(path), PathItem.class);
-            PathItem pathItemClassVendExt = objectMapper
-                    .readValue(objectMapper.writeValueAsString(path), PathItem.class);
-            resetOperationMethodCalls(pathItemOperatorClassVendExt, pathItemClassVendExt);
-            for (Map.Entry<PathItem.HttpMethod, io.swagger.v3.oas.models.Operation> entryMapOperation: path.readOperationsMap().entrySet()) {
-                if (isClassName(entryMapOperation.getValue())) {
-                    String[] urls = name.split("/");
-                    String className = Arrays.stream(((Map<String, String>)entryMapOperation.getValue()
-                                    .getExtensions().get("x-twilio")).get("className").split("_")).
-                            map(StringUtils::camelize).collect(Collectors.joining());
-                    urls[urls.length-1] = className + ".json";
-                    String urlPath = String.join("/", urls);
-                    entryMapOperation.getValue().getExtensions().put("parentUrl", name);
-                    pathItemOperatorClassVendExt.operation(entryMapOperation.getKey(), entryMapOperation.getValue());
-                    pathItemMap.put(urlPath, pathItemOperatorClassVendExt);
-                } else {
-                    pathItemClassVendExt.operation(entryMapOperation.getKey(), entryMapOperation.getValue());
-                    pathItemMap.put(name, pathItemClassVendExt);
-                }
-            }
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
+    public Resource.ClassName getResourceClassName(final String path) {
+        return resourceTree.findResource(path).map(Resource::getClassName).orElseThrow();
+    }
+
+    /**
+     * Replaces the path separator placeholder with the actual separator and applies case converter to each path part.
+     */
+    public String toApiFilename(final String name) {
+        final List<String> pathParts = new ArrayList<>();
+
+        final List<String> nameParts = new ArrayList<>(Arrays.asList(name.split(PATH_SEPARATOR_PLACEHOLDER)));
+        final String filename = nameParts.remove(nameParts.size() - 1);
+
+        if (productMap.containsKey(name)) {
+            pathParts.add(caseResolver.productOperation(productMap.get(name)));
         }
-        return pathItemMap;
+
+        pathParts.addAll(nameParts.stream().map(caseResolver::pathOperation).collect(Collectors.toList()));
+        pathParts.add(caseResolver.filenameOperation(filename));
+
+        return String.join(File.separator, pathParts);
     }
 
-    private void resetOperationMethodCalls(PathItem pathItemOperatorClassVendExt, PathItem pathItemClassVendExt) {
-        pathItemClassVendExt.put(null);
-        pathItemClassVendExt.get(null);
-        pathItemClassVendExt.post(null);
-        pathItemClassVendExt.delete(null);
-        pathItemClassVendExt.patch(null);
-        pathItemOperatorClassVendExt.put(null);
-        pathItemOperatorClassVendExt.get(null);
-        pathItemOperatorClassVendExt.post(null);
-        pathItemOperatorClassVendExt.delete(null);
-        pathItemOperatorClassVendExt.patch(null);
-    }
-
-    private boolean hasOperatorWithClassName(PathItem path) {
-        for (io.swagger.v3.oas.models.Operation operation: path.readOperations()) {
-            if (isClassName(operation)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private boolean isClassName(io.swagger.v3.oas.models.Operation operation) {
-        return (operation.getExtensions() != null && operation.getExtensions().containsKey("x-twilio")) &&
-                ((Map<String, String>) operation.getExtensions().get("x-twilio")).containsKey("className");
-    }
-
-    boolean isVersionLess(Map<String, Object> additionalProperties){
+    boolean isVersionLess(Map<String, Object> additionalProperties) {
         return additionalProperties.get("apiVersion").equals("");
-    }
-
-    private String extractSubDomainName(String name) {
-        String[] split = name.split("/");
-        if (split.length > 1 && split[1] != null) {
-            String result = split[1];
-            result = result.substring(0, 1).toUpperCase() + result.substring(1);
-            return result;
-        }
-        return null;
-    }
-
-    String getSubDomainName(String name) {
-        return subDomainMap.entrySet().stream().filter(x -> x.getKey().equalsIgnoreCase(name)).findFirst().get().getValue();
     }
 }
