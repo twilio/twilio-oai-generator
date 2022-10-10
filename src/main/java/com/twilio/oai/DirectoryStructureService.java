@@ -17,7 +17,11 @@ import java.util.stream.Collectors;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.Operation;
 import io.swagger.v3.oas.models.PathItem;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.openapitools.codegen.CodegenOperation;
+import org.openapitools.codegen.model.OperationMap;
+import org.openapitools.codegen.model.OperationsMap;
 import org.openapitools.codegen.utils.StringUtils;
 
 import static com.twilio.oai.common.ApplicationConstants.ACCOUNT_SID_FORMAT;
@@ -25,12 +29,18 @@ import static com.twilio.oai.common.ApplicationConstants.PATH_SEPARATOR_PLACEHOL
 
 @RequiredArgsConstructor
 public class DirectoryStructureService {
+    private final Map<String, Object> additionalProperties;
     private final IResourceTree resourceTree;
     private final CaseResolver caseResolver;
+
+    @Getter
+    private boolean isVersionLess = false;
     private final Map<String, String> productMap = new HashMap<>();
 
-    public void configure(OpenAPI openAPI, Map<String, Object> additionalProperties) {
+    public void configure(final OpenAPI openAPI) {
         final Map<String, Object> versionResources = PathUtils.getStringMap(additionalProperties, "versionResources");
+
+        isVersionLess = additionalProperties.get("apiVersion").equals("");
 
         openAPI.getPaths().forEach(resourceTree::addResource);
         openAPI.getPaths().forEach((name, path) -> {
@@ -39,7 +49,7 @@ public class DirectoryStructureService {
                 // Group operations together by tag. This gives us one file/post-process per resource.
                 final String tag = String.join(PATH_SEPARATOR_PLACEHOLDER, resourceTree.ancestors(name, operation));
 
-                if (isVersionLess(additionalProperties)) {
+                if (isVersionLess) {
                     productMap.put(tag, PathUtils.getFirstPathPart(name));
                 }
 
@@ -82,6 +92,29 @@ public class DirectoryStructureService {
         return resourceTree.findResource(path).map(Resource::getClassName).orElseThrow();
     }
 
+    public List<CodegenOperation> processOperations(final OperationsMap results) {
+        final OperationMap ops = results.getOperations();
+        final List<CodegenOperation> operations = ops.getOperation();
+        final CodegenOperation firstOperation = operations.stream().findFirst().orElseThrow();
+
+        additionalProperties.put("apiVersionPath", getRelativeRoot(firstOperation.baseName));
+
+        if (isVersionLess) {
+            final String version = PathUtils.getFirstPathPart(firstOperation.path);
+            additionalProperties.put("apiVersion", StringUtils.camelize(version, true));
+            additionalProperties.put("apiVersionClass", StringUtils.camelize(version));
+        }
+
+        return operations;
+    }
+
+    protected String getRelativeRoot(final String tag) {
+        return Arrays
+            .stream(tag.split(PATH_SEPARATOR_PLACEHOLDER))
+            .map(part -> "..")
+            .collect(Collectors.joining(File.separator));
+    }
+
     /**
      * Replaces the path separator placeholder with the actual separator and applies case converter to each path part.
      */
@@ -99,9 +132,5 @@ public class DirectoryStructureService {
         pathParts.add(caseResolver.filenameOperation(filename));
 
         return String.join(File.separator, pathParts);
-    }
-
-    boolean isVersionLess(Map<String, Object> additionalProperties) {
-        return additionalProperties.get("apiVersion").equals("");
     }
 }
