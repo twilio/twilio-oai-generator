@@ -16,7 +16,6 @@ import org.openapitools.codegen.*;
 import org.openapitools.codegen.languages.JavaClientCodegen;
 import org.openapitools.codegen.model.ModelMap;
 import org.openapitools.codegen.model.ModelsMap;
-import org.openapitools.codegen.model.OperationMap;
 import org.openapitools.codegen.model.OperationsMap;
 import org.openapitools.codegen.utils.StringUtils;
 
@@ -40,8 +39,10 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
     public static final String URI = "uri";
 
     private final TwilioCodegenAdapter twilioCodegen;
-    private final DirectoryStructureService directoryStructureService = new DirectoryStructureService(new ResourceMap(
-        new Inflector()), new JavaCaseResolver());
+    private final DirectoryStructureService directoryStructureService = new DirectoryStructureService(
+        additionalProperties,
+        new ResourceMap(new Inflector()),
+        new JavaCaseResolver());
     private final List<CodegenModel> allModels = new ArrayList<>();
     private final Map<String, String> modelFormatMap = new HashMap<>();
 
@@ -71,7 +72,7 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
         final String domain = twilioCodegen.getDomainFromOpenAPI(openAPI);
         twilioCodegen.setDomain(domain);
 
-        directoryStructureService.configure(openAPI, additionalProperties);
+        directoryStructureService.configure(openAPI);
     }
 
     @Override
@@ -210,11 +211,10 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
     @Override
     public OperationsMap postProcessOperationsWithModels(final OperationsMap objs, List<ModelMap> allModels) {
         final OperationsMap results = super.postProcessOperationsWithModels(objs, allModels);
+        final List<CodegenOperation> opList = directoryStructureService.processOperations(results);
 
         final Map<String, Map<String, Object>> resources = new LinkedHashMap<>();
 
-        final OperationMap ops = results.getOperations();
-        final List<CodegenOperation> opList = ops.getOperation();
         String recordKey = getRecordKey(opList, this.allModels);
         List<CodegenModel> responseModels = new ArrayList<>();
         apiTemplateFiles.remove("updater.mustache");
@@ -303,9 +303,6 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
 
             results.put("recordKey", getRecordKey(opList, this.allModels));
 
-            if (directoryStructureService.isVersionLess(additionalProperties)) {
-                resource.put("apiVersion", StringUtils.camelize(PathUtils.getFirstPathPart(co.path), true));
-            }
             if (!filePathArray.isEmpty()) {
                 final String packagePath = filePathArray
                     .stream()

@@ -34,8 +34,8 @@ public class TwilioCodegenAdapter {
         setDomain(getInputSpecDomain());
 
         final String version = getInputSpecVersion();
-        codegen.additionalProperties().put("apiVersion", version);
-        codegen.additionalProperties().put("apiVersionClass", version.toUpperCase());
+        codegen.additionalProperties().put("apiVersion", StringUtils.camelize(version, true));
+        codegen.additionalProperties().put("apiVersionClass", StringUtils.camelize(version));
 
         codegen.supportingFiles().clear();
     }
