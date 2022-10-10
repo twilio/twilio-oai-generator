@@ -20,13 +20,13 @@ public class TitleCaseLambda implements Mustache.Lambda {
     }
 
     private static String titleCase(final String input) {
-        String[] splits = input.split("((?<=[-0-9]))");
+        String[] splits = input.split("((?<=[-0-9_]))");
         StringBuilder sb = new StringBuilder();
         for (String word: splits) {
             word = Utility.toFirstLetterCaps(word);
             sb.append(word);
         }
-        return sb.toString().replaceAll("-", "");
+        return sb.toString().replaceAll("[-_]", "");
     }
 
     @Override
@@ -36,6 +36,8 @@ public class TitleCaseLambda implements Mustache.Lambda {
             writer.write(titleCase(text));
             return;
         }
+
+        text = text.toLowerCase();
 
         // Split accepts regex. \Q and \E wrap the delimiter to create a literal regex,
         // so things like "." and "|" aren't treated as their regex equivalents.
