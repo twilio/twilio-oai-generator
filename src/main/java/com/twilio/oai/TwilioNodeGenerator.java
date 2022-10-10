@@ -20,7 +20,6 @@ import org.openapitools.codegen.SupportingFile;
 import org.openapitools.codegen.languages.TypeScriptNodeClientCodegen;
 import org.openapitools.codegen.model.ModelMap;
 import org.openapitools.codegen.model.ModelsMap;
-import org.openapitools.codegen.model.OperationMap;
 import org.openapitools.codegen.model.OperationsMap;
 import org.openapitools.codegen.utils.StringUtils;
 
@@ -32,12 +31,10 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
 
     private final TwilioCodegenAdapter twilioCodegen;
     private final IResourceTree resourceTree = new ResourceMap(new Inflector());
-    private final Map<String, String> subDomainMap = new HashMap<>();
-    private final Map<String, String> resourceNameMap = new HashMap<>();
-    private final NodeConventionResolver conventionResolver = new NodeConventionResolver();
-    private final Map<String, String> modelFormatMap = new HashMap<>();
-    private final DirectoryStructureService directoryStructureService = new DirectoryStructureService(resourceTree,
-                                                                                                      new NodeCaseResolver());
+    private final DirectoryStructureService directoryStructureService = new DirectoryStructureService(
+        additionalProperties,
+        resourceTree,
+        new NodeCaseResolver());
     private final List<CodegenModel> allModels = new ArrayList<>();
 
     public TwilioNodeGenerator() {
@@ -67,7 +64,7 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
         openAPI.getPaths().forEach(resourceTree::addResource);
         resourceTree.getResources().forEach(resource -> resource.updateFamily(openAPI, resourceTree));
 
-        directoryStructureService.configure(openAPI, additionalProperties);
+        directoryStructureService.configure(openAPI);
     }
 
     @Override
@@ -99,16 +96,11 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
     @Override
     public OperationsMap postProcessOperationsWithModels(final OperationsMap objs, List<ModelMap> allModels) {
         final OperationsMap results = super.postProcessOperationsWithModels(objs, allModels);
+        final List<CodegenOperation> opList = directoryStructureService.processOperations(results);
 
         final Map<String, Object> resources = new HashMap<>();
 
-        final OperationMap ops = results.getOperations();
-        final String classname = (String) ops.get("classname");
-        final List<CodegenOperation> opList = ops.getOperation();
-
         final boolean hasInstanceOperations = opList.stream().anyMatch(PathUtils::isInstanceOperation);
-
-        results.put("apiVersionPath", getRelativeRoot(classname));
 
         // iterate over the operation and perhaps modify something
         for (final CodegenOperation co : opList) {
@@ -245,13 +237,6 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
 
         resource.put("path", path);
         resource.put("resourcePathParams", resourcePathParams);
-    }
-
-    protected String getRelativeRoot(final String classname) {
-        return Arrays
-            .stream(classname.split(PATH_SEPARATOR_PLACEHOLDER))
-            .map(part -> "..")
-            .collect(Collectors.joining(File.separator));
     }
 
     private void addModel(final Map<String, Object> resource, final String dataType) {
