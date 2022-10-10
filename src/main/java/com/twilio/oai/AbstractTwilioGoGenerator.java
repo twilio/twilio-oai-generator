@@ -1,6 +1,10 @@
 package com.twilio.oai;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.Operation;
@@ -11,10 +15,10 @@ import org.openapitools.codegen.CodegenConstants;
 import org.openapitools.codegen.CodegenOperation;
 import org.openapitools.codegen.CodegenProperty;
 import org.openapitools.codegen.languages.GoClientCodegen;
+import org.openapitools.codegen.model.ModelMap;
 import org.openapitools.codegen.model.ModelsMap;
 import org.openapitools.codegen.model.OperationMap;
 import org.openapitools.codegen.model.OperationsMap;
-import org.openapitools.codegen.model.ModelMap;
 
 import static org.openapitools.codegen.utils.StringUtils.camelize;
 
@@ -37,6 +41,12 @@ public abstract class AbstractTwilioGoGenerator extends GoClientCodegen {
         super.processOpts();
 
         twilioCodegen.processOpts();
+
+        if (additionalProperties().get("apiVersion").equals("")) {
+            // Exit gracefully if given an OpenAPI document that doesn't contain a versioned API. The Go clients do
+            // not currently support this.
+            System.exit(0);
+        }
 
         additionalProperties.put(CodegenConstants.IS_GO_SUBMODULE, true);
         additionalProperties.put(CodegenConstants.ENUM_CLASS_PREFIX, true);

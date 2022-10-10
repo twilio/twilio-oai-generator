@@ -26,15 +26,13 @@ def build(openapi_spec_path: str, output_path: str, language: str) -> None:
 
 
 def generate(openapi_spec_path: str, output_path: str, language: str, domain: str, is_file: bool = False) -> None:
-    full_path, domain_name, api_version = get_domain_info(openapi_spec_path, domain, is_file, language)
+    full_path, domain_name, api_version = get_domain_info(openapi_spec_path, domain, is_file)
     parent_dir = Path(__file__).parent.parent
 
     to_generate = 'terraform-provider-twilio' if language == 'terraform' else f'twilio-{language}'
-    is_domain_irrelevant = language in {'go', 'terraform'} and domain_name == 'preview'
     sub_dir = subdirectories.get(language, 'rest')
     output_path = os.path.join(output_path, sub_dir)
-    if is_domain_irrelevant == False:
-        run_openapi_generator(parent_dir, to_generate, output_path, full_path)
+    run_openapi_generator(parent_dir, to_generate, output_path, full_path)
     if language == 'java':
         remove_unused_imports(output_path, 'java')
 
@@ -52,12 +50,13 @@ def run_openapi_generator(parent_dir: str, to_generate: str, output_path: str, f
     print(f'Code generation completed at {output_path}')
 
 
-def get_domain_info(oai_spec_location: str, domain: str, is_file: bool = False, language: str = "") -> Tuple[str, str, str]:
+def get_domain_info(oai_spec_location: str, domain: str, is_file: bool = False) -> Tuple[str, str, str]:
     full_path = oai_spec_location if is_file else os.path.join(oai_spec_location, domain)
     parts = re.split(r'twilio_(.+?)_?(v\d+)?\.', domain, flags=re.IGNORECASE)
     domain_name = parts[1]
     api_version = parts[2] or ''
     return full_path, domain_name, api_version
+
 
 if __name__ == '__main__':
     example_text = '''example:
