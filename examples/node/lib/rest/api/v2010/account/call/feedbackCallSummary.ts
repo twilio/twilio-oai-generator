@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+
 import { inspect, InspectOptions } from "util";
 import Page from "../../../../../base/Page";
 import Response from "../../../../../http/response";
@@ -19,20 +20,23 @@ import V2010 from "../../../V2010";
 const deserialize = require("../../../../../base/deserialize");
 const serialize = require("../../../../../base/serialize");
 
+
+
 /**
  * Options to pass to update a FeedbackCallSummaryInstance
  *
- * @property { string } endDate
- * @property { string } startDate
+ * @property { Date } endDate 
+ * @property { Date } startDate 
  */
 export interface FeedbackCallSummaryContextUpdateOptions {
-  endDate: string;
-  startDate: string;
+  endDate: Date;
+  startDate: Date;
 }
 
 export interface FeedbackCallSummaryListInstance {
   (sid: string): FeedbackCallSummaryContext;
   get(sid: string): FeedbackCallSummaryContext;
+
 
   /**
    * Provide a user-friendly representation
@@ -41,26 +45,20 @@ export interface FeedbackCallSummaryListInstance {
   [inspect.custom](_depth: any, options: InspectOptions): any;
 }
 
-interface FeedbackCallSummaryListInstanceImpl
-  extends FeedbackCallSummaryListInstance {}
-class FeedbackCallSummaryListInstanceImpl
-  implements FeedbackCallSummaryListInstance
-{
+interface FeedbackCallSummaryListInstanceImpl extends FeedbackCallSummaryListInstance {}
+class FeedbackCallSummaryListInstanceImpl implements FeedbackCallSummaryListInstance {
   _version?: V2010;
   _solution?: FeedbackCallSummarySolution;
   _uri?: string;
+
 }
 
-export function FeedbackCallSummaryListInstance(
-  version: V2010,
-  accountSid: string
-): FeedbackCallSummaryListInstance {
-  const instance = ((sid) =>
-    instance.get(sid)) as FeedbackCallSummaryListInstanceImpl;
+export function FeedbackCallSummaryListInstance(version: V2010, accountSid: string): FeedbackCallSummaryListInstance {
+  const instance = ((sid) => instance.get(sid)) as FeedbackCallSummaryListInstanceImpl;
 
   instance.get = function get(sid): FeedbackCallSummaryContext {
     return new FeedbackCallSummaryContextImpl(version, accountSid, sid);
-  };
+  }
 
   instance._version = version;
   instance._solution = { accountSid };
@@ -68,19 +66,19 @@ export function FeedbackCallSummaryListInstance(
 
   instance.toJSON = function toJSON() {
     return this._solution;
-  };
+  }
 
-  instance[inspect.custom] = function inspectImpl(
-    _depth: any,
-    options: InspectOptions
-  ) {
+  instance[inspect.custom] = function inspectImpl(_depth: any, options: InspectOptions) {
     return inspect(this.toJSON(), options);
-  };
+  }
 
   return instance;
 }
 
+
 export interface FeedbackCallSummaryContext {
+
+
   /**
    * Update a FeedbackCallSummaryInstance
    *
@@ -89,11 +87,9 @@ export interface FeedbackCallSummaryContext {
    *
    * @returns { Promise } Resolves to processed FeedbackCallSummaryInstance
    */
-  update(
-    params: FeedbackCallSummaryContextUpdateOptions,
-    callback?: (error: Error | null, item?: FeedbackCallSummaryInstance) => any
-  ): Promise<FeedbackCallSummaryInstance>;
-  update(params: any, callback?: any): Promise<FeedbackCallSummaryInstance>;
+  update(params: FeedbackCallSummaryContextUpdateOptions, callback?: (error: Error | null, item?: FeedbackCallSummaryInstance) => any): Promise<FeedbackCallSummaryInstance>;
+  update(params: any, callback?: any): Promise<FeedbackCallSummaryInstance>
+
 
   /**
    * Provide a user-friendly representation
@@ -102,11 +98,10 @@ export interface FeedbackCallSummaryContext {
   [inspect.custom](_depth: any, options: InspectOptions): any;
 }
 
-export class FeedbackCallSummaryContextImpl
-  implements FeedbackCallSummaryContext
-{
+export class FeedbackCallSummaryContextImpl implements FeedbackCallSummaryContext {
   protected _solution: FeedbackCallSummarySolution;
   protected _uri: string;
+
 
   constructor(protected _version: V2010, accountSid: string, sid: string) {
     this._solution = { accountSid, sid };
@@ -114,7 +109,7 @@ export class FeedbackCallSummaryContextImpl
   }
 
   update(params: any, callback?: any): Promise<FeedbackCallSummaryInstance> {
-    if (params === null || params === undefined) {
+      if (params === null || params === undefined) {
       throw new Error('Required parameter "params" missing.');
     }
 
@@ -128,35 +123,23 @@ export class FeedbackCallSummaryContextImpl
 
     const data: any = {};
 
-    data["EndDate"] = serialize.iso8601Date(params.endDate);
-    data["StartDate"] = serialize.iso8601Date(params.startDate);
+    data['EndDate'] = serialize.iso8601Date(params.endDate);
+    data['StartDate'] = serialize.iso8601Date(params.startDate);
 
     const headers: any = {};
-    headers["Content-Type"] = "application/x-www-form-urlencoded";
+    headers['Content-Type'] = 'application/x-www-form-urlencoded'
 
     let operationVersion = this._version,
-      operationPromise = operationVersion.update({
-        uri: this._uri,
-        method: "post",
-        params: data,
-        headers,
-      });
+        operationPromise = operationVersion.update({ uri: this._uri, method: 'post', params: data, headers });
+    
+    operationPromise = operationPromise.then(payload => new FeedbackCallSummaryInstance(operationVersion, payload, this._solution.accountSid, this._solution.sid));
+    
 
-    operationPromise = operationPromise.then(
-      (payload) =>
-        new FeedbackCallSummaryInstance(
-          operationVersion,
-          payload,
-          this._solution.accountSid,
-          this._solution.sid
-        )
-    );
-
-    operationPromise = this._version.setPromiseCallback(
-      operationPromise,
-      callback
-    );
+    operationPromise = this._version.setPromiseCallback(operationPromise,callback);
     return operationPromise;
+
+
+
   }
 
   /**
@@ -173,16 +156,15 @@ export class FeedbackCallSummaryContextImpl
   }
 }
 
-interface FeedbackCallSummaryPayload
-  extends FeedbackCallSummaryResource,
-    Page.TwilioResponsePayload {}
+interface FeedbackCallSummaryPayload extends FeedbackCallSummaryResource, Page.TwilioResponsePayload {
+}
 
 interface FeedbackCallSummaryResource {
   account_sid?: string | null;
   sid?: string | null;
   test_string?: string | null;
   test_integer?: number | null;
-  test_object?: object | null;
+  test_object?: PhoneNumberCapabilities | null;
   test_date_time?: string | null;
   test_number?: number | null;
   price_unit?: string | null;
@@ -198,12 +180,7 @@ export class FeedbackCallSummaryInstance {
   protected _solution: FeedbackCallSummarySolution;
   protected _context?: FeedbackCallSummaryContext;
 
-  constructor(
-    protected _version: V2010,
-    payload: FeedbackCallSummaryPayload,
-    accountSid: string,
-    sid?: string
-  ) {
+  constructor(protected _version: V2010, payload: FeedbackCallSummaryPayload, accountSid: string, sid?: string) {
     this.accountSid = payload.account_sid;
     this.sid = payload.sid;
     this.testString = payload.test_string;
@@ -226,7 +203,7 @@ export class FeedbackCallSummaryInstance {
   sid?: string | null;
   testString?: string | null;
   testInteger?: number | null;
-  testObject?: object | null;
+  testObject?: PhoneNumberCapabilities | null;
   testDateTime?: string | null;
   testNumber?: number | null;
   priceUnit?: string | null;
@@ -241,13 +218,7 @@ export class FeedbackCallSummaryInstance {
   testArrayOfEnum?: Array<object> | null;
 
   private get _proxy(): FeedbackCallSummaryContext {
-    this._context =
-      this._context ||
-      new FeedbackCallSummaryContextImpl(
-        this._version,
-        this._solution.accountSid,
-        this._solution.sid
-      );
+    this._context = this._context || new FeedbackCallSummaryContextImpl(this._version, this._solution.accountSid, this._solution.sid);
     return this._context;
   }
 
@@ -259,11 +230,9 @@ export class FeedbackCallSummaryInstance {
    *
    * @returns { Promise } Resolves to processed FeedbackCallSummaryInstance
    */
-  update(
-    params: FeedbackCallSummaryContextUpdateOptions,
-    callback?: (error: Error | null, item?: FeedbackCallSummaryInstance) => any
-  ): Promise<FeedbackCallSummaryInstance>;
-  update(params: any, callback?: any): Promise<FeedbackCallSummaryInstance> {
+  update(params: FeedbackCallSummaryContextUpdateOptions, callback?: (error: Error | null, item?: FeedbackCallSummaryInstance) => any): Promise<FeedbackCallSummaryInstance>;
+  update(params: any, callback?: any): Promise<FeedbackCallSummaryInstance>
+     {
     return this._proxy.update(params, callback);
   }
 
@@ -274,21 +243,21 @@ export class FeedbackCallSummaryInstance {
    */
   toJSON() {
     return {
-      accountSid: this.accountSid,
-      sid: this.sid,
-      testString: this.testString,
-      testInteger: this.testInteger,
-      testObject: this.testObject,
-      testDateTime: this.testDateTime,
-      testNumber: this.testNumber,
-      priceUnit: this.priceUnit,
-      testNumberFloat: this.testNumberFloat,
-      testEnum: this.testEnum,
-      testArrayOfIntegers: this.testArrayOfIntegers,
-      testArrayOfArrayOfIntegers: this.testArrayOfArrayOfIntegers,
-      testArrayOfObjects: this.testArrayOfObjects,
-      testArrayOfEnum: this.testArrayOfEnum,
-    };
+      accountSid: this.accountSid, 
+      sid: this.sid, 
+      testString: this.testString, 
+      testInteger: this.testInteger, 
+      testObject: this.testObject, 
+      testDateTime: this.testDateTime, 
+      testNumber: this.testNumber, 
+      priceUnit: this.priceUnit, 
+      testNumberFloat: this.testNumberFloat, 
+      testEnum: this.testEnum, 
+      testArrayOfIntegers: this.testArrayOfIntegers, 
+      testArrayOfArrayOfIntegers: this.testArrayOfArrayOfIntegers, 
+      testArrayOfObjects: this.testArrayOfObjects, 
+      testArrayOfEnum: this.testArrayOfEnum
+    }
   }
 
   [inspect.custom](_depth: any, options: InspectOptions) {
@@ -300,12 +269,7 @@ export interface FeedbackCallSummarySolution {
   sid?: string;
 }
 
-export class FeedbackCallSummaryPage extends Page<
-  V2010,
-  FeedbackCallSummaryPayload,
-  FeedbackCallSummaryResource,
-  FeedbackCallSummaryInstance
-> {
+export class FeedbackCallSummaryPage extends Page<V2010, FeedbackCallSummaryPayload, FeedbackCallSummaryResource, FeedbackCallSummaryInstance> {
   /**
    * Initialize the FeedbackCallSummaryPage
    *
@@ -313,11 +277,7 @@ export class FeedbackCallSummaryPage extends Page<
    * @param response - Response from the API
    * @param solution - Path solution
    */
-  constructor(
-    version: V2010,
-    response: Response<string>,
-    solution: FeedbackCallSummarySolution
-  ) {
+  constructor(version: V2010, response: Response<string>, solution: FeedbackCallSummarySolution) {
     super(version, response, solution);
   }
 
@@ -326,14 +286,12 @@ export class FeedbackCallSummaryPage extends Page<
    *
    * @param payload - Payload response from the API
    */
-  getInstance(
-    payload: FeedbackCallSummaryPayload
-  ): FeedbackCallSummaryInstance {
+  getInstance(payload: FeedbackCallSummaryPayload): FeedbackCallSummaryInstance {
     return new FeedbackCallSummaryInstance(
       this._version,
       payload,
       this._solution.accountSid,
-      this._solution.sid
+      this._solution.sid,
     );
   }
 
@@ -341,3 +299,4 @@ export class FeedbackCallSummaryPage extends Page<
     return inspect(this.toJSON(), options);
   }
 }
+
