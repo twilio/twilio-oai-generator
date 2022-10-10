@@ -35,6 +35,10 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
         additionalProperties,
         resourceTree,
         new NodeCaseResolver());
+
+    private final Map<String, String> modelFormatMap = new HashMap<>();
+    private final NodeConventionResolver conventionResolver = new NodeConventionResolver();
+
     private final List<CodegenModel> allModels = new ArrayList<>();
 
     public TwilioNodeGenerator() {
