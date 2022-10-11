@@ -11,7 +11,7 @@ namespace Twilio.Tests.Rest
     [TestFixture]
     public class ApiIntegrationTest
     {
-        readonly string baseURL = "http://prism_api_v2010:80";
+        readonly string baseURL = "http://api.twilio.com:80";
         readonly string ACCOUNT_SID = "AC12345678123456781234567812345678";
 
         [SetUp]
