@@ -12,7 +12,10 @@
             );
         }
 
-
+        {{>Summary}}
+        /// <param name="options"> Update {{resourceName}} parameters </param>
+        /// <param name="client"> Client to make requests to Twilio </param>
+        {{>resource/ReturnComments}}
         public static {{resourceName}}{{resourceConstant}} Update(Update{{resourceName}}Options options, ITwilioRestClient client = null)
         {
             client = client ?? TwilioClient.GetRestClient();
@@ -20,6 +23,10 @@
             return FromJson(response.Content);
         }
 
+        {{>Summary}}
+        /// <param name="options"> Update {{resourceName}} parameters </param>
+        /// <param name="client"> Client to make requests to Twilio </param>
+        {{>resource/ReturnCommentsAsync}}
         #if !NET35
         public static async System.Threading.Tasks.Task<{{resourceName}}{{resourceConstant}}> UpdateAsync(Update{{resourceName}}Options options,
                                                                                                           ITwilioRestClient client = null)
@@ -30,6 +37,9 @@
         }
         #endif
 
+        {{>Summary}}
+        {{>resource/MethodsComments}}
+        {{>resource/ReturnComments}}
         public static {{resourceName}}{{resourceConstant}} Update({{#vendorExtensions.x-request-body-param}}
                                           {{{dataType}}} {{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^required}} = null{{/required}},{{/vendorExtensions.x-request-body-param}}
                                           ITwilioRestClient client = null)
@@ -39,6 +49,9 @@
         }
 
         #if !NET35
+        {{>Summary}}
+        {{>resource/MethodsComments}}
+        {{>resource/ReturnCommentsAsync}}
         public static async System.Threading.Tasks.Task<{{resourceName}}{{resourceConstant}}> UpdateAsync({{#vendorExtensions.x-request-body-param}}
                                                                               {{{dataType}}} {{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^required}} = null{{/required}},{{/vendorExtensions.x-request-body-param}}
                                                                               ITwilioRestClient client = null)
