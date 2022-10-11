@@ -23,15 +23,26 @@ using Twilio.Converters;
 
 namespace Twilio.Rest.Api.V2010.Account.Call
 {
+    /// <summary> update </summary>
     public class UpdateFeedbackCallSummaryOptions : IOptions<FeedbackCallSummaryResource>
     {
     
+        
         public string PathSid { get; }
+
+        
         public DateTime? EndDate { get; }
+
+        
         public DateTime? StartDate { get; }
+
+        
         public string PathAccountSid { get; set; }
 
 
+
+        /// <summary> Construct a new UpdateCallFeedbackSummaryOptions </summary>
+        /// <param name="pathSid">  </param>        /// <param name="endDate">  </param>        /// <param name="startDate">  </param>
         public UpdateFeedbackCallSummaryOptions(string pathSid, DateTime? endDate, DateTime? startDate)
         {
             PathSid = pathSid;
@@ -40,6 +51,7 @@ namespace Twilio.Rest.Api.V2010.Account.Call
         }
 
         
+        /// <summary> Generate the necessary parameters </summary>
         public  List<KeyValuePair<string, string>> GetParams()
         {
             var p = new List<KeyValuePair<string, string>>();

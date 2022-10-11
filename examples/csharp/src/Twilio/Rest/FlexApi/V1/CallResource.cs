@@ -53,7 +53,10 @@ namespace Twilio.Rest.FlexApi.V1
             );
         }
 
-
+        /// <summary> update </summary>
+        /// <param name="options"> Update Call parameters </param>
+        /// <param name="client"> Client to make requests to Twilio </param>
+        /// <returns> A single instance of Call </returns>
         public static CallResource Update(UpdateCallOptions options, ITwilioRestClient client = null)
         {
             client = client ?? TwilioClient.GetRestClient();
@@ -61,6 +64,10 @@ namespace Twilio.Rest.FlexApi.V1
             return FromJson(response.Content);
         }
 
+        /// <summary> update </summary>
+        /// <param name="options"> Update Call parameters </param>
+        /// <param name="client"> Client to make requests to Twilio </param>
+        /// <returns> Task that resolves to A single instance of Call </returns>
         #if !NET35
         public static async System.Threading.Tasks.Task<CallResource> UpdateAsync(UpdateCallOptions options,
                                                                                                           ITwilioRestClient client = null)
@@ -71,6 +78,10 @@ namespace Twilio.Rest.FlexApi.V1
         }
         #endif
 
+        /// <summary> update </summary>
+                /// <param name="pathSid">  </param>
+        /// <param name="client"> Client to make requests to Twilio </param>
+        /// <returns> A single instance of Call </returns>
         public static CallResource Update(
                                           string pathSid,
                                           ITwilioRestClient client = null)
@@ -80,6 +91,10 @@ namespace Twilio.Rest.FlexApi.V1
         }
 
         #if !NET35
+        /// <summary> update </summary>
+                /// <param name="pathSid">  </param>
+        /// <param name="client"> Client to make requests to Twilio </param>
+        /// <returns> Task that resolves to A single instance of Call </returns>
         public static async System.Threading.Tasks.Task<CallResource> UpdateAsync(
                                                                               string pathSid,
                                                                               ITwilioRestClient client = null)
@@ -89,6 +104,10 @@ namespace Twilio.Rest.FlexApi.V1
         }
         #endif
     
+        /// <summary> Fetch the target page of records </summary>
+        /// <param name="targetUrl"> API-generated URL for the requested results page </param>
+        /// <param name="client"> Client to make requests to Twilio </param>
+        /// <returns> The target page of records </returns>
         public static Page<CallResource> GetPage(string targetUrl, ITwilioRestClient client)
         {
             client = client ?? TwilioClient.GetRestClient();
@@ -102,6 +121,10 @@ namespace Twilio.Rest.FlexApi.V1
             return Page<CallResource>.FromJson("", response.Content);
         }
 
+        /// <summary> Fetch the next page of records </summary>
+        /// <param name="page"> current page of records </param>
+        /// <param name="client"> Client to make requests to Twilio </param>
+        /// <returns> The next page of records </returns>
         public static Page<CallResource> NextPage(Page<CallResource> page, ITwilioRestClient client)
         {
             var request = new Request(
@@ -113,6 +136,10 @@ namespace Twilio.Rest.FlexApi.V1
             return Page<CallResource>.FromJson("", response.Content);
         }
 
+        /// <summary> Fetch the previous page of records </summary>
+        /// <param name="page"> current page of records </param>
+        /// <param name="client"> Client to make requests to Twilio </param>
+        /// <returns> The previous page of records </returns>
         public static Page<CallResource> PreviousPage(Page<CallResource> page, ITwilioRestClient client)
         {
             var request = new Request(
@@ -124,6 +151,11 @@ namespace Twilio.Rest.FlexApi.V1
             return Page<CallResource>.FromJson("", response.Content);
         }
 
+        /// <summary>
+        /// Converts a JSON string into a CallResource object
+        /// </summary>
+        /// <param name="json"> Raw JSON string </param>
+        /// <returns> CallResource object represented by the provided JSON </returns>
         public static CallResource FromJson(string json)
         {
             try
@@ -138,6 +170,7 @@ namespace Twilio.Rest.FlexApi.V1
 
 
     
+        ///<summary> The sid </summary> 
         [JsonProperty("sid")]
         public string Sid { get; private set; }
 
@@ -146,6 +179,6 @@ namespace Twilio.Rest.FlexApi.V1
         private CallResource() {
 
         }
-    } // end of resource class
-} // end of namespace
+    }
+}
 

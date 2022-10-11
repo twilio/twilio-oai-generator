@@ -71,7 +71,10 @@ namespace Twilio.Rest.Api.V2010.Account.Call
             );
         }
 
-
+        /// <summary> update </summary>
+        /// <param name="options"> Update FeedbackCallSummary parameters </param>
+        /// <param name="client"> Client to make requests to Twilio </param>
+        /// <returns> A single instance of FeedbackCallSummary </returns>
         public static FeedbackCallSummaryResource Update(UpdateFeedbackCallSummaryOptions options, ITwilioRestClient client = null)
         {
             client = client ?? TwilioClient.GetRestClient();
@@ -79,6 +82,10 @@ namespace Twilio.Rest.Api.V2010.Account.Call
             return FromJson(response.Content);
         }
 
+        /// <summary> update </summary>
+        /// <param name="options"> Update FeedbackCallSummary parameters </param>
+        /// <param name="client"> Client to make requests to Twilio </param>
+        /// <returns> Task that resolves to A single instance of FeedbackCallSummary </returns>
         #if !NET35
         public static async System.Threading.Tasks.Task<FeedbackCallSummaryResource> UpdateAsync(UpdateFeedbackCallSummaryOptions options,
                                                                                                           ITwilioRestClient client = null)
@@ -89,6 +96,13 @@ namespace Twilio.Rest.Api.V2010.Account.Call
         }
         #endif
 
+        /// <summary> update </summary>
+                /// <param name="pathSid">  </param>
+        /// <param name="endDate">  </param>
+        /// <param name="startDate">  </param>
+        /// <param name="pathAccountSid">  </param>
+        /// <param name="client"> Client to make requests to Twilio </param>
+        /// <returns> A single instance of FeedbackCallSummary </returns>
         public static FeedbackCallSummaryResource Update(
                                           string pathSid,
                                           DateTime? endDate,
@@ -101,6 +115,13 @@ namespace Twilio.Rest.Api.V2010.Account.Call
         }
 
         #if !NET35
+        /// <summary> update </summary>
+                /// <param name="pathSid">  </param>
+        /// <param name="endDate">  </param>
+        /// <param name="startDate">  </param>
+        /// <param name="pathAccountSid">  </param>
+        /// <param name="client"> Client to make requests to Twilio </param>
+        /// <returns> Task that resolves to A single instance of FeedbackCallSummary </returns>
         public static async System.Threading.Tasks.Task<FeedbackCallSummaryResource> UpdateAsync(
                                                                               string pathSid,
                                                                               DateTime? endDate,
@@ -113,6 +134,10 @@ namespace Twilio.Rest.Api.V2010.Account.Call
         }
         #endif
     
+        /// <summary> Fetch the target page of records </summary>
+        /// <param name="targetUrl"> API-generated URL for the requested results page </param>
+        /// <param name="client"> Client to make requests to Twilio </param>
+        /// <returns> The target page of records </returns>
         public static Page<FeedbackCallSummaryResource> GetPage(string targetUrl, ITwilioRestClient client)
         {
             client = client ?? TwilioClient.GetRestClient();
@@ -126,6 +151,10 @@ namespace Twilio.Rest.Api.V2010.Account.Call
             return Page<FeedbackCallSummaryResource>.FromJson("", response.Content);
         }
 
+        /// <summary> Fetch the next page of records </summary>
+        /// <param name="page"> current page of records </param>
+        /// <param name="client"> Client to make requests to Twilio </param>
+        /// <returns> The next page of records </returns>
         public static Page<FeedbackCallSummaryResource> NextPage(Page<FeedbackCallSummaryResource> page, ITwilioRestClient client)
         {
             var request = new Request(
@@ -137,6 +166,10 @@ namespace Twilio.Rest.Api.V2010.Account.Call
             return Page<FeedbackCallSummaryResource>.FromJson("", response.Content);
         }
 
+        /// <summary> Fetch the previous page of records </summary>
+        /// <param name="page"> current page of records </param>
+        /// <param name="client"> Client to make requests to Twilio </param>
+        /// <returns> The previous page of records </returns>
         public static Page<FeedbackCallSummaryResource> PreviousPage(Page<FeedbackCallSummaryResource> page, ITwilioRestClient client)
         {
             var request = new Request(
@@ -148,6 +181,11 @@ namespace Twilio.Rest.Api.V2010.Account.Call
             return Page<FeedbackCallSummaryResource>.FromJson("", response.Content);
         }
 
+        /// <summary>
+        /// Converts a JSON string into a FeedbackCallSummaryResource object
+        /// </summary>
+        /// <param name="json"> Raw JSON string </param>
+        /// <returns> FeedbackCallSummaryResource object represented by the provided JSON </returns>
         public static FeedbackCallSummaryResource FromJson(string json)
         {
             try
@@ -162,46 +200,60 @@ namespace Twilio.Rest.Api.V2010.Account.Call
 
 
     
+        ///<summary> The account_sid </summary> 
         [JsonProperty("account_sid")]
         public string AccountSid { get; private set; }
 
+        ///<summary> The sid </summary> 
         [JsonProperty("sid")]
         public string Sid { get; private set; }
 
+        ///<summary> The test_string </summary> 
         [JsonProperty("test_string")]
         public string TestString { get; private set; }
 
+        ///<summary> The test_integer </summary> 
         [JsonProperty("test_integer")]
         public int? TestInteger { get; private set; }
 
+        ///<summary> The test_object </summary> 
         [JsonProperty("test_object")]
         public PhoneNumberCapabilities TestObject { get; private set; }
 
+        ///<summary> The test_date_time </summary> 
         [JsonProperty("test_date_time")]
         public DateTime? TestDateTime { get; private set; }
 
+        ///<summary> The test_number </summary> 
         [JsonProperty("test_number")]
         public decimal? TestNumber { get; private set; }
 
+        ///<summary> The price_unit </summary> 
         [JsonProperty("price_unit")]
         public string PriceUnit { get; private set; }
 
+        ///<summary> The test_number_float </summary> 
         [JsonProperty("test_number_float")]
         public float? TestNumberFloat { get; private set; }
 
+        
         [JsonProperty("test_enum")]
         [JsonConverter(typeof(StringEnumConverter))]
         public FeedbackCallSummaryResource.StatusEnum TestEnum { get; private set; }
 
+        ///<summary> The test_array_of_integers </summary> 
         [JsonProperty("test_array_of_integers")]
         public List<int?> TestArrayOfIntegers { get; private set; }
 
+        ///<summary> The test_array_of_array_of_integers </summary> 
         [JsonProperty("test_array_of_array_of_integers")]
         public List<List<int?>> TestArrayOfArrayOfIntegers { get; private set; }
 
+        ///<summary> The test_array_of_objects </summary> 
         [JsonProperty("test_array_of_objects")]
         public List<FeedbackIssue> TestArrayOfObjects { get; private set; }
 
+        ///<summary> Permissions authorized to the app </summary> 
         [JsonProperty("test_array_of_enum")]
         [JsonConverter(typeof(StringEnumConverter))]
         public List<FeedbackCallSummaryResource.StatusEnum> TestArrayOfEnum { get; private set; }
@@ -211,6 +263,6 @@ namespace Twilio.Rest.Api.V2010.Account.Call
         private FeedbackCallSummaryResource() {
 
         }
-    } // end of resource class
-} // end of namespace
+    }
+}
 

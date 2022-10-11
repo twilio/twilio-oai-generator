@@ -1,8 +1,10 @@
+    {{>Summary}}
     public class Fetch{{resourceName}}Options : IOptions<{{resourceName}}{{resourceConstant}}>
     {
     {{>options/Params}}
 
     {{#vendorExtensions.x-required-param-exist}}
+        {{>options/MethodsComments}}
         public Fetch{{resourceName}}Options({{#requiredParams}}{{{dataType}}} {{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^-last}}, {{/-last}}{{/requiredParams}})
         {
         {{#requiredParams}}

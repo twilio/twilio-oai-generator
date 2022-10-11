@@ -24,26 +24,58 @@ using System.Linq;
 namespace Twilio.Rest.FlexApi.V1.Credential
 {
 
+    /// <summary> create </summary>
     public class CreateNewCredentialsOptions : IOptions<NewCredentialsResource>
     {
-        // How to decide which has getter and which has setter ?
+        
         
         public string TestString { get; }
+
+        
         public bool? TestBoolean { get; set; }
+
+        
         public int? TestInteger { get; set; }
+
+        
         public decimal? TestNumber { get; set; }
+
+        
         public float? TestNumberFloat { get; set; }
+
+        
         public double? TestNumberDouble { get; set; }
+
+        
         public decimal? TestNumberInt32 { get; set; }
+
+        
         public long? TestNumberInt64 { get; set; }
+
+        
         public object TestObject { get; set; }
+
+        
         public DateTime? TestDateTime { get; set; }
+
+        
         public DateTime? TestDate { get; set; }
+
+        
         public NewCredentialsResource.StatusEnum TestEnum { get; set; }
+
+        
         public List<object> TestObjectArray { get; set; }
+
+        
         public object TestAnyType { get; set; }
+
+        ///<summary> A comma-separated list of the permissions you will request from the users of this ConnectApp.  Can include: `get-all` and `post-all`. </summary> 
         public List<NewCredentialsResource.PermissionsEnum> Permissions { get; set; }
 
+
+        /// <summary> Construct a new CreateCredentialAwsOptions </summary>
+        /// <param name="testString">  </param>
         public CreateNewCredentialsOptions(string testString)
         {
             TestString = testString;
@@ -52,6 +84,7 @@ namespace Twilio.Rest.FlexApi.V1.Credential
         }
 
         
+        /// <summary> Generate the necessary parameters </summary>
         public  List<KeyValuePair<string, string>> GetParams()
         {
             var p = new List<KeyValuePair<string, string>>();
