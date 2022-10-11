@@ -8,8 +8,8 @@ import {FeedbackCallSummaryContextUpdateOptions} from "../../lib/rest/api/v2010/
 describe('Integration tests', () => {
     const accountSid:string = 'AC12345678123456781234567812345678';
     const authToken:string = 'CR12345678123456781234567812345678';
-    const testRequestClient: TestRequestClient = new TestRequestClient();
-    const client = new Twilio(accountSid, authToken, {httpClient: testRequestClient});
+    // const testRequestClient: TestRequestClient = new TestRequestClient();
+    const client = new Twilio(accountSid, authToken);
 
     // Throws error: "Page Records can not be deserialized"
     xit('should get an account', async () => {

@@ -17,14 +17,6 @@ class Twilio extends BaseTwilio {
     return new FlexApiBase(this);
   }
 
-  // request(opts: RequestOpts) {
-  //   return new RequestClient().request({
-  //     method: opts.method,
-  //     uri: opts.uri,
-  //     params: opts.params,
-  //     data: opts.data,
-  //   });
-  // }
 }
 
 export = Twilio;

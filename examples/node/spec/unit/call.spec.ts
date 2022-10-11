@@ -8,7 +8,7 @@ describe("credential", () => {
   const twilio = new Twilio(accountSid, authToken);
 
   it("should update an aws credential", () => {
-    const scope = nock("https://flex-api.twilio.com")
+    const scope = nock("http://flex-api.twilio.com")
       .post("/v1/Voice/123")
       .reply(200, { sid: "123" });
 
