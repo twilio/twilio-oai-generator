@@ -4,23 +4,25 @@ import {AccountListInstanceCreateOptions, AccountListInstancePageOptions} from "
 
 // // TODO: Need to change baseUrl from https://api.twilio.com to http://api.twilio.com (change scheme to http)
 // //  Options: jasmine spy or create custom Twilio test object
-xdescribe('Integration tests', () => {
+describe('Integration tests', () => {
     const accountSid:string = 'AC12345678123456781234567812345678';
     const authToken:string = 'CR12345678123456781234567812345678';
     const client = new Twilio(accountSid, authToken);
 
+    // Not working
     xit('should get an account', async () => {
         const params = {};
         const result = await client.api.v2010.accounts.page();
     })
 
-    xit('should create an account', async () => {
+    it('should create an account', async () => {
         const result = await client.api.v2010.accounts.create();
         expect(result.sid).toEqual("CR12345678123456781234567812345678");
         expect(result.testString).toEqual("Ahoy");
     })
 
-    xit('should create a call ', async () => {
+    // Not working
+    it('should create a call ', async () => {
         const params = {};
         const result = await client.api.v2010.accounts(accountSid).calls.create(params);
         expect(result.sid).toEqual("CR12345678123456781234567812345678");
@@ -33,7 +35,8 @@ xdescribe('Integration tests', () => {
         expect(result.testString).toEqual("Ahoy");
     })
 
-    xit('should update call feedback summary', async () => {
+    // Not working
+    it('should update call feedback summary', async () => {
         const params = {};
         const result = await client.api.v2010.accounts(accountSid).calls.feedback_call_summary("CR12345678123456781234567812345678").update(params);
         expect(result.testArrayOfObjects[0].description).toEqual("issue description")

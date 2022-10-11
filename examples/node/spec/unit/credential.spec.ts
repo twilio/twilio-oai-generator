@@ -2,7 +2,7 @@
 import nock from "nock";
 import Twilio from "../../lib/rest/Twilio";
 
-describe("credential", () => {
+xdescribe("credential", () => {
   const accountSid:string = 'AC12345678123456781234567812345678';
   const authToken:string = 'CR12345678123456781234567812345678';
   const twilio = new Twilio(accountSid, authToken);
