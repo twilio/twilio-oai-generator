@@ -35,9 +35,6 @@ import java.util.Objects;
 
 import lombok.ToString;
 
-
-
-{{>model}}
 {{#hasRead}}
 {{#operations}}
 {{#vendorExtensions.x-is-read-operation}}
@@ -172,4 +169,3 @@ public class {{resourceName}}Reader extends Reader<{{resourceName}}> {
 {{/operations}}
 {{/hasRead}}
 {{/resources}}
-

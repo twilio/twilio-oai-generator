@@ -34,8 +34,6 @@ import java.util.Objects;
 
 import lombok.ToString;
 
-
-{{>model}}
 {{#hasFetch}}
 {{#operations}}
 {{#vendorExtensions.x-is-fetch-operation}}
@@ -117,4 +115,3 @@ public class {{resourceName}}Fetcher extends Fetcher<{{resourceName}}> {
 {{/operations}}
 {{/hasFetch}}
 {{/resources}}
-

@@ -33,8 +33,6 @@ import java.util.Objects;
 
 import lombok.ToString;
 
-
-{{>model}}
 {{#hasDelete}}
 {{#operations}}
 {{#vendorExtensions.x-is-delete-operation}}
@@ -115,4 +113,3 @@ public class {{resourceName}}Deleter extends Deleter<{{resourceName}}> {
 {{/operations}}
 {{/hasDelete}}
 {{/resources}}
-
