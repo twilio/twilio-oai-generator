@@ -4,7 +4,7 @@ import {AccountListInstanceCreateOptions, AccountListInstancePageOptions} from "
 
 // // TODO: Need to change baseUrl from https://api.twilio.com to http://api.twilio.com (change scheme to http)
 // //  Options: jasmine spy or create custom Twilio test object
-describe('Integration tests', () => {
+xdescribe('Integration tests', () => {
     const accountSid:string = 'AC12345678123456781234567812345678';
     const authToken:string = 'CR12345678123456781234567812345678';
     const client = new Twilio(accountSid, authToken);

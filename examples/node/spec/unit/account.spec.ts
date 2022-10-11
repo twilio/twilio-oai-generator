@@ -4,7 +4,9 @@ import { AccountListInstancePageOptions } from "../../lib/rest/api/v2010/account
 import Twilio from "../../lib/rest/Twilio";
 
 describe("account", () => {
-  const twilio = new Twilio();
+  const accountSid:string = 'AC12345678123456781234567812345678';
+  const authToken:string = 'CR12345678123456781234567812345678';
+  const twilio = new Twilio(accountSid, authToken);
 
   it("should create an account", () => {
     const scope = nock("https://api.twilio.com")
