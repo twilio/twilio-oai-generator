@@ -1,7 +1,5 @@
 'use strict'
 import Twilio from '../../lib/rest/Twilio';
-import {AccountListInstanceCreateOptions, AccountListInstancePageOptions} from "../../lib/rest/api/v2010/account";
-import TestRequestClient from './TestRequestClient';
 import {CallListInstanceCreateOptions} from "../../lib/rest/api/v2010/account/call";
 import {FeedbackCallSummaryContextUpdateOptions} from "../../lib/rest/api/v2010/account/call/feedbackCallSummary";
 
