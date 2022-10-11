@@ -75,6 +75,10 @@ namespace Twilio.Rest.FlexApi.V1.Credential
             );
         }
 
+        /// <summary> create </summary>
+        /// <param name="options"> Create NewCredentials parameters </param>
+        /// <param name="client"> Client to make requests to Twilio </param>
+        /// <returns> A single instance of NewCredentials </returns>
         public static NewCredentialsResource Create(CreateNewCredentialsOptions options, ITwilioRestClient client = null)
         {
             client = client ?? TwilioClient.GetRestClient();
@@ -83,6 +87,10 @@ namespace Twilio.Rest.FlexApi.V1.Credential
         }
 
         #if !NET35
+        /// <summary> create </summary>
+        /// <param name="options"> Create NewCredentials parameters </param>
+        /// <param name="client"> Client to make requests to Twilio </param>
+        /// <returns> Task that resolves to A single instance of NewCredentials </returns>
         public static async System.Threading.Tasks.Task<NewCredentialsResource> CreateAsync(CreateNewCredentialsOptions options,
         ITwilioRestClient client = null)
         {
@@ -92,7 +100,24 @@ namespace Twilio.Rest.FlexApi.V1.Credential
         }
         #endif
 
-
+        /// <summary> create </summary>
+                /// <param name="testString">  </param>
+        /// <param name="testBoolean">  </param>
+        /// <param name="testInteger">  </param>
+        /// <param name="testNumber">  </param>
+        /// <param name="testNumberFloat">  </param>
+        /// <param name="testNumberDouble">  </param>
+        /// <param name="testNumberInt32">  </param>
+        /// <param name="testNumberInt64">  </param>
+        /// <param name="testObject">  </param>
+        /// <param name="testDateTime">  </param>
+        /// <param name="testDate">  </param>
+        /// <param name="testEnum">  </param>
+        /// <param name="testObjectArray">  </param>
+        /// <param name="testAnyType">  </param>
+        /// <param name="permissions"> A comma-separated list of the permissions you will request from the users of this ConnectApp.  Can include: `get-all` and `post-all`. </param>
+        /// <param name="client"> Client to make requests to Twilio </param>
+        /// <returns> A single instance of NewCredentials </returns>
         public static NewCredentialsResource Create(
                                           string testString,
                                           int? testInteger = null,
@@ -116,6 +141,24 @@ namespace Twilio.Rest.FlexApi.V1.Credential
         }
 
         #if !NET35
+        /// <summary> create </summary>
+                /// <param name="testString">  </param>
+        /// <param name="testBoolean">  </param>
+        /// <param name="testInteger">  </param>
+        /// <param name="testNumber">  </param>
+        /// <param name="testNumberFloat">  </param>
+        /// <param name="testNumberDouble">  </param>
+        /// <param name="testNumberInt32">  </param>
+        /// <param name="testNumberInt64">  </param>
+        /// <param name="testObject">  </param>
+        /// <param name="testDateTime">  </param>
+        /// <param name="testDate">  </param>
+        /// <param name="testEnum">  </param>
+        /// <param name="testObjectArray">  </param>
+        /// <param name="testAnyType">  </param>
+        /// <param name="permissions"> A comma-separated list of the permissions you will request from the users of this ConnectApp.  Can include: `get-all` and `post-all`. </param>
+        /// <param name="client"> Client to make requests to Twilio </param>
+        /// <returns> Task that resolves to A single instance of NewCredentials </returns>
         public static async System.Threading.Tasks.Task<NewCredentialsResource> CreateAsync(
                                                                                   string testString,
                                                                                   int? testInteger = null,
@@ -147,6 +190,10 @@ namespace Twilio.Rest.FlexApi.V1.Credential
 
 
     
+        /// <summary> Fetch the target page of records </summary>
+        /// <param name="targetUrl"> API-generated URL for the requested results page </param>
+        /// <param name="client"> Client to make requests to Twilio </param>
+        /// <returns> The target page of records </returns>
         public static Page<NewCredentialsResource> GetPage(string targetUrl, ITwilioRestClient client)
         {
             client = client ?? TwilioClient.GetRestClient();
@@ -160,6 +207,10 @@ namespace Twilio.Rest.FlexApi.V1.Credential
             return Page<NewCredentialsResource>.FromJson("", response.Content);
         }
 
+        /// <summary> Fetch the next page of records </summary>
+        /// <param name="page"> current page of records </param>
+        /// <param name="client"> Client to make requests to Twilio </param>
+        /// <returns> The next page of records </returns>
         public static Page<NewCredentialsResource> NextPage(Page<NewCredentialsResource> page, ITwilioRestClient client)
         {
             var request = new Request(
@@ -171,6 +222,10 @@ namespace Twilio.Rest.FlexApi.V1.Credential
             return Page<NewCredentialsResource>.FromJson("", response.Content);
         }
 
+        /// <summary> Fetch the previous page of records </summary>
+        /// <param name="page"> current page of records </param>
+        /// <param name="client"> Client to make requests to Twilio </param>
+        /// <returns> The previous page of records </returns>
         public static Page<NewCredentialsResource> PreviousPage(Page<NewCredentialsResource> page, ITwilioRestClient client)
         {
             var request = new Request(
@@ -182,6 +237,11 @@ namespace Twilio.Rest.FlexApi.V1.Credential
             return Page<NewCredentialsResource>.FromJson("", response.Content);
         }
 
+        /// <summary>
+        /// Converts a JSON string into a NewCredentialsResource object
+        /// </summary>
+        /// <param name="json"> Raw JSON string </param>
+        /// <returns> NewCredentialsResource object represented by the provided JSON </returns>
         public static NewCredentialsResource FromJson(string json)
         {
             try
@@ -196,15 +256,19 @@ namespace Twilio.Rest.FlexApi.V1.Credential
 
 
     
+        ///<summary> The account_sid </summary> 
         [JsonProperty("account_sid")]
         public string AccountSid { get; private set; }
 
+        ///<summary> The sid </summary> 
         [JsonProperty("sid")]
         public string Sid { get; private set; }
 
+        ///<summary> The test_string </summary> 
         [JsonProperty("test_string")]
         public string TestString { get; private set; }
 
+        ///<summary> The test_integer </summary> 
         [JsonProperty("test_integer")]
         public int? TestInteger { get; private set; }
 
@@ -213,6 +277,6 @@ namespace Twilio.Rest.FlexApi.V1.Credential
         private NewCredentialsResource() {
 
         }
-    } // end of resource class
-} // end of namespace
+    }
+}
 

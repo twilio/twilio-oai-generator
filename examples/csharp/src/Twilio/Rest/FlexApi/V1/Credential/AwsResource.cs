@@ -32,6 +32,10 @@ namespace Twilio.Rest.FlexApi.V1.Credential
 
 
         
+        /// <summary> delete </summary>
+        /// <param name="options"> Delete Aws parameters </param>
+        /// <param name="client"> Client to make requests to Twilio </param>
+        /// <returns> A single instance of Aws </returns>
         private static Request BuildDeleteRequest(DeleteAwsOptions options, ITwilioRestClient client)
         {
             
@@ -50,6 +54,10 @@ namespace Twilio.Rest.FlexApi.V1.Credential
             );
         }
 
+        /// <summary> delete </summary>
+        /// <param name="options"> Delete Aws parameters </param>
+        /// <param name="client"> Client to make requests to Twilio </param>
+        /// <returns> Task that resolves to A single instance of Aws </returns>
         public static bool Delete(DeleteAwsOptions options, ITwilioRestClient client = null)
         {
             client = client ?? TwilioClient.GetRestClient();
@@ -106,6 +114,10 @@ namespace Twilio.Rest.FlexApi.V1.Credential
             );
         }
 
+        /// <summary> fetch </summary>
+        /// <param name="options"> Fetch Aws parameters </param>
+        /// <param name="client"> Client to make requests to Twilio </param>
+        /// <returns> A single instance of Aws </returns>
         public static AwsResource Fetch(FetchAwsOptions options, ITwilioRestClient client = null)
         {
             client = client ?? TwilioClient.GetRestClient();
@@ -114,6 +126,10 @@ namespace Twilio.Rest.FlexApi.V1.Credential
         }
 
         #if !NET35
+        /// <summary> fetch </summary>
+        /// <param name="options"> Fetch Aws parameters </param>
+        /// <param name="client"> Client to make requests to Twilio </param>
+        /// <returns> Task that resolves to A single instance of Aws </returns>
         public static async System.Threading.Tasks.Task<AwsResource> FetchAsync(FetchAwsOptions options,
                                                                                              ITwilioRestClient client = null)
         {
@@ -122,7 +138,10 @@ namespace Twilio.Rest.FlexApi.V1.Credential
             return FromJson(response.Content);
         }
         #endif
-
+        /// <summary> fetch </summary>
+                /// <param name="pathSid">  </param>
+        /// <param name="client"> Client to make requests to Twilio </param>
+        /// <returns> A single instance of Aws </returns>
         public static AwsResource Fetch(string pathSid, ITwilioRestClient client = null)
         {
             var options = new FetchAwsOptions(pathSid){  };
@@ -130,6 +149,10 @@ namespace Twilio.Rest.FlexApi.V1.Credential
         }
 
         #if !NET35
+        /// <summary> fetch </summary>
+                /// <param name="pathSid">  </param>
+        /// <param name="client"> Client to make requests to Twilio </param>
+        /// <returns> Task that resolves to A single instance of Aws </returns>
         public static async System.Threading.Tasks.Task<AwsResource> FetchAsync(string pathSid, ITwilioRestClient client = null)
         {
             var options = new FetchAwsOptions(pathSid){  };
@@ -159,7 +182,10 @@ namespace Twilio.Rest.FlexApi.V1.Credential
                 headerParams: null
             );
         }
-
+        /// <summary> read </summary>
+        /// <param name="options"> Read Aws parameters </param>
+        /// <param name="client"> Client to make requests to Twilio </param>
+        /// <returns> A single instance of Aws </returns>
         public static ResourceSet<AwsResource> Read(ReadAwsOptions options, ITwilioRestClient client = null)
         {
             client = client ?? TwilioClient.GetRestClient();
@@ -169,6 +195,10 @@ namespace Twilio.Rest.FlexApi.V1.Credential
         }
 
         #if !NET35
+        /// <summary> read </summary>
+        /// <param name="options"> Read Aws parameters </param>
+        /// <param name="client"> Client to make requests to Twilio </param>
+        /// <returns> Task that resolves to A single instance of Aws </returns>
         public static async System.Threading.Tasks.Task<ResourceSet<AwsResource>> ReadAsync(ReadAwsOptions options,
                                                                                              ITwilioRestClient client = null)
         {
@@ -179,7 +209,11 @@ namespace Twilio.Rest.FlexApi.V1.Credential
             return new ResourceSet<AwsResource>(page, options, client);
         }
         #endif
-
+        /// <summary> read </summary>
+                /// <param name="pageSize">  </param>
+        /// <param name="client"> Client to make requests to Twilio </param>
+        /// <param name="limit"> Record limit </param>
+        /// <returns> A single instance of Aws </returns>
         public static ResourceSet<AwsResource> Read(
                                                      int? pageSize = null,
                                                      long? limit = null,
@@ -190,6 +224,11 @@ namespace Twilio.Rest.FlexApi.V1.Credential
         }
 
         #if !NET35
+        /// <summary> read </summary>
+                /// <param name="pageSize">  </param>
+        /// <param name="client"> Client to make requests to Twilio </param>
+        /// <param name="limit"> Record limit </param>
+        /// <returns> Task that resolves to A single instance of Aws </returns>
         public static async System.Threading.Tasks.Task<ResourceSet<AwsResource>> ReadAsync(
                                                                                              int? pageSize = null,
                                                                                              long? limit = null,
@@ -224,7 +263,10 @@ namespace Twilio.Rest.FlexApi.V1.Credential
             );
         }
 
-
+        /// <summary> update </summary>
+        /// <param name="options"> Update Aws parameters </param>
+        /// <param name="client"> Client to make requests to Twilio </param>
+        /// <returns> A single instance of Aws </returns>
         public static AwsResource Update(UpdateAwsOptions options, ITwilioRestClient client = null)
         {
             client = client ?? TwilioClient.GetRestClient();
@@ -232,6 +274,10 @@ namespace Twilio.Rest.FlexApi.V1.Credential
             return FromJson(response.Content);
         }
 
+        /// <summary> update </summary>
+        /// <param name="options"> Update Aws parameters </param>
+        /// <param name="client"> Client to make requests to Twilio </param>
+        /// <returns> Task that resolves to A single instance of Aws </returns>
         #if !NET35
         public static async System.Threading.Tasks.Task<AwsResource> UpdateAsync(UpdateAwsOptions options,
                                                                                                           ITwilioRestClient client = null)
@@ -242,6 +288,12 @@ namespace Twilio.Rest.FlexApi.V1.Credential
         }
         #endif
 
+        /// <summary> update </summary>
+                /// <param name="pathSid">  </param>
+        /// <param name="testString">  </param>
+        /// <param name="testBoolean">  </param>
+        /// <param name="client"> Client to make requests to Twilio </param>
+        /// <returns> A single instance of Aws </returns>
         public static AwsResource Update(
                                           string pathSid,
                                           string testString = null,
@@ -253,6 +305,12 @@ namespace Twilio.Rest.FlexApi.V1.Credential
         }
 
         #if !NET35
+        /// <summary> update </summary>
+                /// <param name="pathSid">  </param>
+        /// <param name="testString">  </param>
+        /// <param name="testBoolean">  </param>
+        /// <param name="client"> Client to make requests to Twilio </param>
+        /// <returns> Task that resolves to A single instance of Aws </returns>
         public static async System.Threading.Tasks.Task<AwsResource> UpdateAsync(
                                                                               string pathSid,
                                                                               string testString = null,
@@ -264,6 +322,10 @@ namespace Twilio.Rest.FlexApi.V1.Credential
         }
         #endif
     
+        /// <summary> Fetch the target page of records </summary>
+        /// <param name="targetUrl"> API-generated URL for the requested results page </param>
+        /// <param name="client"> Client to make requests to Twilio </param>
+        /// <returns> The target page of records </returns>
         public static Page<AwsResource> GetPage(string targetUrl, ITwilioRestClient client)
         {
             client = client ?? TwilioClient.GetRestClient();
@@ -277,6 +339,10 @@ namespace Twilio.Rest.FlexApi.V1.Credential
             return Page<AwsResource>.FromJson("credentials", response.Content);
         }
 
+        /// <summary> Fetch the next page of records </summary>
+        /// <param name="page"> current page of records </param>
+        /// <param name="client"> Client to make requests to Twilio </param>
+        /// <returns> The next page of records </returns>
         public static Page<AwsResource> NextPage(Page<AwsResource> page, ITwilioRestClient client)
         {
             var request = new Request(
@@ -288,6 +354,10 @@ namespace Twilio.Rest.FlexApi.V1.Credential
             return Page<AwsResource>.FromJson("credentials", response.Content);
         }
 
+        /// <summary> Fetch the previous page of records </summary>
+        /// <param name="page"> current page of records </param>
+        /// <param name="client"> Client to make requests to Twilio </param>
+        /// <returns> The previous page of records </returns>
         public static Page<AwsResource> PreviousPage(Page<AwsResource> page, ITwilioRestClient client)
         {
             var request = new Request(
@@ -299,6 +369,11 @@ namespace Twilio.Rest.FlexApi.V1.Credential
             return Page<AwsResource>.FromJson("credentials", response.Content);
         }
 
+        /// <summary>
+        /// Converts a JSON string into a AwsResource object
+        /// </summary>
+        /// <param name="json"> Raw JSON string </param>
+        /// <returns> AwsResource object represented by the provided JSON </returns>
         public static AwsResource FromJson(string json)
         {
             try
@@ -313,15 +388,19 @@ namespace Twilio.Rest.FlexApi.V1.Credential
 
 
     
+        ///<summary> The account_sid </summary> 
         [JsonProperty("account_sid")]
         public string AccountSid { get; private set; }
 
+        ///<summary> The sid </summary> 
         [JsonProperty("sid")]
         public string Sid { get; private set; }
 
+        ///<summary> The test_string </summary> 
         [JsonProperty("test_string")]
         public string TestString { get; private set; }
 
+        ///<summary> The test_integer </summary> 
         [JsonProperty("test_integer")]
         public int? TestInteger { get; private set; }
 
@@ -330,6 +409,6 @@ namespace Twilio.Rest.FlexApi.V1.Credential
         private AwsResource() {
 
         }
-    } // end of resource class
-} // end of namespace
+    }
+}
 

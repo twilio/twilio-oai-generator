@@ -23,18 +23,24 @@ using Twilio.Converters;
 
 namespace Twilio.Rest.FlexApi.V1
 {
+    /// <summary> update </summary>
     public class UpdateCallOptions : IOptions<CallResource>
     {
     
+        
         public string PathSid { get; }
 
 
+
+        /// <summary> Construct a new UpdateCallOptions </summary>
+        /// <param name="pathSid">  </param>
         public UpdateCallOptions(string pathSid)
         {
             PathSid = pathSid;
         }
 
         
+        /// <summary> Generate the necessary parameters </summary>
         public  List<KeyValuePair<string, string>> GetParams()
         {
             var p = new List<KeyValuePair<string, string>>();
