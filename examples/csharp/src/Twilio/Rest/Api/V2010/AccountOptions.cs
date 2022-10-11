@@ -24,16 +24,23 @@ using System.Linq;
 namespace Twilio.Rest.Api.V2010
 {
 
+    /// <summary> create </summary>
     public class CreateAccountOptions : IOptions<AccountResource>
     {
-        // How to decide which has getter and which has setter ?
+        
         
         public AccountResource.XTwilioWebhookEnabledEnum XTwilioWebhookEnabled { get; set; }
+
+        
         public Uri RecordingStatusCallback { get; set; }
+
+        
         public List<string> RecordingStatusCallbackEvent { get; set; }
 
 
+
         
+        /// <summary> Generate the necessary parameters </summary>
         public  List<KeyValuePair<string, string>> GetParams()
         {
             var p = new List<KeyValuePair<string, string>>();
@@ -49,6 +56,7 @@ namespace Twilio.Rest.Api.V2010
             return p;
         }
         
+    /// <summary> Generate the necessary header parameters </summary>
     public List<KeyValuePair<string, string>> GetHeaderParams()
     {
         var p = new List<KeyValuePair<string, string>>();
@@ -60,14 +68,18 @@ namespace Twilio.Rest.Api.V2010
     }
 
     }
+    /// <summary> delete </summary>
     public class DeleteAccountOptions : IOptions<AccountResource>
     {
         
+        
         public string PathSid { get; set; }
 
 
 
+
         
+        /// <summary> Generate the necessary parameters </summary>
         public  List<KeyValuePair<string, string>> GetParams()
         {
             var p = new List<KeyValuePair<string, string>>();
@@ -79,14 +91,18 @@ namespace Twilio.Rest.Api.V2010
     }
 
 
+    /// <summary> fetch </summary>
     public class FetchAccountOptions : IOptions<AccountResource>
     {
     
+        
         public string PathSid { get; set; }
 
 
 
+
         
+        /// <summary> Generate the necessary parameters </summary>
         public  List<KeyValuePair<string, string>> GetParams()
         {
             var p = new List<KeyValuePair<string, string>>();
@@ -98,18 +114,27 @@ namespace Twilio.Rest.Api.V2010
     }
 
 
+    /// <summary> read </summary>
     public class ReadAccountOptions : ReadOptions<AccountResource>
     {
     
+        
         public DateTime? DateCreated { get; set; }
+
+        
         public DateTime? DateTest { get; set; }
+
+        
         public DateTime? DateCreatedBefore { get; set; }
+
+        
         public DateTime? DateCreatedAfter { get; set; }
-        public int? PageSize { get; set; }
+
 
 
 
         
+        /// <summary> Generate the necessary parameters </summary>
         public  override List<KeyValuePair<string, string>> GetParams()
         {
             var p = new List<KeyValuePair<string, string>>();
@@ -152,20 +177,30 @@ namespace Twilio.Rest.Api.V2010
 
     }
 
+    /// <summary> update </summary>
     public class UpdateAccountOptions : IOptions<AccountResource>
     {
     
+        
         public AccountResource.StatusEnum Status { get; }
+
+        
         public string PathSid { get; set; }
+
+        
         public string PauseBehavior { get; set; }
 
 
+
+        /// <summary> Construct a new UpdateAccountOptions </summary>
+        /// <param name="status">  </param>
         public UpdateAccountOptions(AccountResource.StatusEnum status)
         {
             Status = status;
         }
 
         
+        /// <summary> Generate the necessary parameters </summary>
         public  List<KeyValuePair<string, string>> GetParams()
         {
             var p = new List<KeyValuePair<string, string>>();

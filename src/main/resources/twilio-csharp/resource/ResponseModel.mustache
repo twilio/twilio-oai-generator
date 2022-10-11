@@ -1,6 +1,7 @@
 
 {{#responseModel}}
     {{#isEnum}}
+        {{#description}}///<summary> {{description}} </summary> {{/description}}
         [JsonProperty("{{baseName}}")]
         {{#vendorExtensions.x-jsonConverter}}
         [JsonConverter(typeof({{vendorExtensions.x-jsonConverter}}))]
@@ -13,6 +14,7 @@
         {{/required}}
     {{/isEnum}}
     {{^isEnum}}
+        {{#description}}///<summary> {{{description}}} </summary> {{/description}}{{^description}}///<summary> The {{baseName}} </summary> {{/description}}
         [JsonProperty("{{baseName}}")]
         {{#vendorExtensions.x-jsonConverter}}
         [JsonConverter(typeof({{vendorExtensions.x-jsonConverter}}))]
