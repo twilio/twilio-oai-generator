@@ -8,6 +8,7 @@ services:
     depends_on:
       - prism_api_v2010
       - prism_flex_v1
+      - prism_versionless
 
   java-test:
     build:
@@ -17,6 +18,7 @@ services:
     depends_on:
       - prism_api_v2010
       - prism_flex_v1
+      - prism_versionless
 
   csharp-test:
     build:
@@ -26,6 +28,7 @@ services:
     depends_on:
       - prism_api_v2010
       - prism_flex_v1
+      - prism_versionless
 
   node-test:
     build:
@@ -35,6 +38,7 @@ services:
     depends_on:
       - prism_api_v2010
       - prism_flex_v1
+      - prism_versionless
 
   prism_api_v2010:
     image: stoplight/prism:4.10.3
@@ -50,6 +54,15 @@ services:
     volumes:
       - ../spec/twilio_flex_v1.yaml:/tmp/oai.yaml
     hostname: flex-api.twilio.com
+    command: >
+      mock -p 80 --host 0.0.0.0
+      /tmp/oai.yaml
+
+  prism_versionless:
+    image: stoplight/prism:4.10.3
+    volumes:
+      - ../spec/twilio_versionless.yaml:/tmp/oai.yaml
+    hostname: versionless.twilio.com
     command: >
       mock -p 80 --host 0.0.0.0
       /tmp/oai.yaml
