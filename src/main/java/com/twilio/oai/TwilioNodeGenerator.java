@@ -26,6 +26,8 @@ import static com.twilio.oai.common.ApplicationConstants.PATH_SEPARATOR_PLACEHOL
 public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
 
     public static final String IGNORE_EXTENSION_NAME = "x-ignore";
+    public static final String VERSION_TEMPLATE = "version.mustache";
+    public static final String FILENAME_EXTENSION = ".ts";
 
     private final TwilioCodegenAdapter twilioCodegen;
     private final IResourceTree resourceTree = new ResourceMap(new Inflector());
@@ -46,23 +48,34 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
         super.processOpts();
 
         twilioCodegen.processOpts();
-
-        supportingFiles.add(new SupportingFile("version.mustache",
-                                               ".." + File.separator + additionalProperties.get("apiVersionClass") +
-                                                   ".ts"));
     }
 
     @Override
     public void processOpenAPI(final OpenAPI openAPI) {
         final String domain = twilioCodegen.getDomainFromOpenAPI(openAPI);
-        final String version = twilioCodegen.getVersionFromOpenAPI(openAPI);
         twilioCodegen.setDomain(StringUtils.camelize(domain, true));
-        additionalProperties.put("version", version);
 
         openAPI.getPaths().forEach(resourceTree::addResource);
         resourceTree.getResources().forEach(resource -> resource.updateFamily(openAPI, resourceTree));
 
         directoryStructureService.configure(openAPI);
+
+        directoryStructureService
+            .getApiVersionClass()
+            .ifPresent(apiVersionClass -> supportingFiles.add(new SupportingFile(VERSION_TEMPLATE,
+                                                                                 ".." + File.separator +
+                                                                                     apiVersionClass +
+                                                                                     FILENAME_EXTENSION)));
+    }
+
+    @Override
+    public String apiFilename(final String templateName, final String tag) {
+        if (directoryStructureService.isVersionLess() && templateName.equals(VERSION_TEMPLATE)) {
+            return apiFileFolder() + File.separator + directoryStructureService.getApiVersionClass().orElseThrow() +
+                FILENAME_EXTENSION;
+        }
+
+        return super.apiFilename(templateName, tag);
     }
 
     @Override
@@ -94,6 +107,10 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
     public OperationsMap postProcessOperationsWithModels(final OperationsMap objs, List<ModelMap> allModels) {
         final OperationsMap results = super.postProcessOperationsWithModels(objs, allModels);
         final List<CodegenOperation> opList = directoryStructureService.processOperations(results);
+
+        if (directoryStructureService.isVersionLess()) {
+            apiTemplateFiles.put(VERSION_TEMPLATE, FILENAME_EXTENSION);
+        }
 
         final Map<String, Object> resources = new HashMap<>();
 

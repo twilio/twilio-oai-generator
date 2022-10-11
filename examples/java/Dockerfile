@@ -10,7 +10,7 @@ RUN rm -rf src/main/java/com/twilio/rest/*/ \
            src/main/java/com/twilio/example/ \
            src/test/
 
-COPY src/main/java/com/twilio/rest src/main/java/com/twilio/
+COPY src/main/java/com/twilio src/main/java/com/twilio/
 COPY unit-test/rest integration-test/rest src/test/java/com/twilio/
 
 # pipefail prevents errors in a pipeline from being masked.
