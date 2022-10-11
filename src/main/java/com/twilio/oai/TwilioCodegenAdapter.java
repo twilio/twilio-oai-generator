@@ -34,8 +34,8 @@ public class TwilioCodegenAdapter {
         setDomain(getInputSpecDomain());
 
         final String version = getInputSpecVersion();
-        codegen.additionalProperties().put("apiVersion", version);
-        codegen.additionalProperties().put("apiVersionClass", version.toUpperCase());
+        codegen.additionalProperties().put("apiVersion", StringUtils.camelize(version, true));
+        codegen.additionalProperties().put("apiVersionClass", StringUtils.camelize(version));
 
         codegen.supportingFiles().clear();
     }
@@ -50,6 +50,10 @@ public class TwilioCodegenAdapter {
 
     public void setOutputDir(final String domain, final String version) {
         codegen.setOutputDir(originalOutputDir + File.separator + domain + File.separator + version);
+    }
+
+    public String toParamName(final String name) {
+        return name.replace("<", "Before").replace(">", "After");
     }
 
     public String getDomainFromOpenAPI(final OpenAPI openAPI) {

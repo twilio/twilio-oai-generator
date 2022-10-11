@@ -687,7 +687,7 @@ namespace Twilio.Tests.Rest
             var twilioRestClient = Substitute.For<ITwilioRestClient>();
                     Request request = new Request(
                             HttpMethod.Get,
-                            Twilio.Rest.Domain.Api,
+                            Twilio.Rest.Domain.FlexApi,
                             "/v1/Credentials/AWS"
                     );
                     string url = "https://api.twilio.com/v1/Credentials/AWS";
@@ -715,7 +715,7 @@ namespace Twilio.Tests.Rest
             var twilioRestClient = Substitute.For<ITwilioRestClient>();
             var request = new Request(
                 HttpMethod.Get,
-                Twilio.Rest.Domain.Api,
+                Twilio.Rest.Domain.FlexApi,
                 "/v1/Credentials/AWS/CRXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
                 ""
             );
@@ -736,7 +736,7 @@ namespace Twilio.Tests.Rest
             var twilioRestClient = Substitute.For<ITwilioRestClient>();
             var request = new Request(
                 HttpMethod.Delete,
-                Twilio.Rest.Domain.Api,
+                Twilio.Rest.Domain.FlexApi,
                 "/v1/Credentials/AWS/CRXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
                 ""
             );
@@ -787,7 +787,7 @@ namespace Twilio.Tests.Rest
            var twilioRestClient = Substitute.For<ITwilioRestClient>();
            var request = new Request(
                HttpMethod.Post,
-               Twilio.Rest.Domain.Api,
+               Twilio.Rest.Domain.FlexApi,
                "/v1/Credentials/AWS/CRXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
                ""
            );
@@ -807,7 +807,7 @@ namespace Twilio.Tests.Rest
            var twilioRestClient = Substitute.For<ITwilioRestClient>();
            var request = new Request(
                HttpMethod.Get,
-               Twilio.Rest.Domain.Api,
+               Twilio.Rest.Domain.FlexApi,
                "/v1/Credentials/AWS",
                ""
            );
@@ -1040,7 +1040,7 @@ namespace Twilio.Tests.Rest
             var twilioRestClient = Substitute.For<ITwilioRestClient>();
                     Request request = new Request(
                             HttpMethod.Get,
-                            Twilio.Rest.Domain.Api,
+                            Twilio.Rest.Domain.FlexApi,
                             "/v1/Credentials/AWS"
                     );
                     string url = "https://api.twilio.com/v1/Credentials/AWS";
@@ -1070,7 +1070,7 @@ namespace Twilio.Tests.Rest
             var twilioRestClient = Substitute.For<ITwilioRestClient>();
             var request = new Request(
                 HttpMethod.Get,
-                Twilio.Rest.Domain.Api,
+                Twilio.Rest.Domain.FlexApi,
                 "/v1/Credentials/AWS/CRXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
                 ""
             );
@@ -1093,7 +1093,7 @@ namespace Twilio.Tests.Rest
             var twilioRestClient = Substitute.For<ITwilioRestClient>();
             var request = new Request(
                 HttpMethod.Delete,
-                Twilio.Rest.Domain.Api,
+                Twilio.Rest.Domain.FlexApi,
                 "/v1/Credentials/AWS/CRXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
                 ""
             );
@@ -1150,7 +1150,7 @@ namespace Twilio.Tests.Rest
            var twilioRestClient = Substitute.For<ITwilioRestClient>();
            var request = new Request(
                HttpMethod.Post,
-               Twilio.Rest.Domain.Api,
+               Twilio.Rest.Domain.FlexApi,
                "/v1/Credentials/AWS/CRXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
                ""
            );
@@ -1172,7 +1172,7 @@ namespace Twilio.Tests.Rest
            var twilioRestClient = Substitute.For<ITwilioRestClient>();
            var request = new Request(
                HttpMethod.Get,
-               Twilio.Rest.Domain.Api,
+               Twilio.Rest.Domain.FlexApi,
                "/v1/Credentials/AWS",
                ""
            );
@@ -1268,7 +1268,7 @@ namespace Twilio.Tests.Rest
             var twilioRestClient = Substitute.For<ITwilioRestClient>();
             Request request = new Request(
                     HttpMethod.Post,
-                    Twilio.Rest.Domain.Api,
+                    Twilio.Rest.Domain.FlexApi,
                     "/v1/Credentials/AWS"
             );
 
@@ -1328,7 +1328,7 @@ namespace Twilio.Tests.Rest
             var twilioRestClient = Substitute.For<ITwilioRestClient>();
             Request request = new Request(
                     HttpMethod.Post,
-                    Twilio.Rest.Domain.Api,
+                    Twilio.Rest.Domain.FlexApi,
                     "/v1/Credentials/AWS"
             );
 
