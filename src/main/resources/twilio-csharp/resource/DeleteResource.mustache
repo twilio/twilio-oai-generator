@@ -1,4 +1,8 @@
 
+        {{>Summary}}
+        /// <param name="options"> Delete {{resourceName}} parameters </param>
+        /// <param name="client"> Client to make requests to Twilio </param>
+        {{>resource/ReturnComments}}
         private static Request BuildDeleteRequest(Delete{{resourceName}}Options options, ITwilioRestClient client)
         {
             {{>resource/GeneratePath}}
@@ -12,6 +16,10 @@
             );
         }
 
+        {{>Summary}}
+        /// <param name="options"> Delete {{resourceName}} parameters </param>
+        /// <param name="client"> Client to make requests to Twilio </param>
+        {{>resource/ReturnCommentsAsync}}
         public static bool Delete(Delete{{resourceName}}Options options, ITwilioRestClient client = null)
         {
             client = client ?? TwilioClient.GetRestClient();

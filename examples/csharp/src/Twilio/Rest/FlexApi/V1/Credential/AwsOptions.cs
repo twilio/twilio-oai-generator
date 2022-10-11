@@ -23,18 +23,24 @@ using Twilio.Converters;
 
 namespace Twilio.Rest.FlexApi.V1.Credential
 {
+    /// <summary> delete </summary>
     public class DeleteAwsOptions : IOptions<AwsResource>
     {
+        
         
         public string PathSid { get; }
 
 
+
+        /// <summary> Construct a new DeleteCredentialAwsOptions </summary>
+        /// <param name="pathSid">  </param>
         public DeleteAwsOptions(string pathSid)
         {
             PathSid = pathSid;
         }
 
         
+        /// <summary> Generate the necessary parameters </summary>
         public  List<KeyValuePair<string, string>> GetParams()
         {
             var p = new List<KeyValuePair<string, string>>();
@@ -46,18 +52,24 @@ namespace Twilio.Rest.FlexApi.V1.Credential
     }
 
 
+    /// <summary> fetch </summary>
     public class FetchAwsOptions : IOptions<AwsResource>
     {
     
+        
         public string PathSid { get; }
 
 
+
+        /// <summary> Construct a new FetchCredentialAwsOptions </summary>
+        /// <param name="pathSid">  </param>
         public FetchAwsOptions(string pathSid)
         {
             PathSid = pathSid;
         }
 
         
+        /// <summary> Generate the necessary parameters </summary>
         public  List<KeyValuePair<string, string>> GetParams()
         {
             var p = new List<KeyValuePair<string, string>>();
@@ -69,14 +81,15 @@ namespace Twilio.Rest.FlexApi.V1.Credential
     }
 
 
+    /// <summary> read </summary>
     public class ReadAwsOptions : ReadOptions<AwsResource>
     {
     
-        public int? PageSize { get; set; }
 
 
 
         
+        /// <summary> Generate the necessary parameters </summary>
         public  override List<KeyValuePair<string, string>> GetParams()
         {
             var p = new List<KeyValuePair<string, string>>();
@@ -91,20 +104,30 @@ namespace Twilio.Rest.FlexApi.V1.Credential
 
     }
 
+    /// <summary> update </summary>
     public class UpdateAwsOptions : IOptions<AwsResource>
     {
     
+        
         public string PathSid { get; }
+
+        
         public string TestString { get; set; }
+
+        
         public bool? TestBoolean { get; set; }
 
 
+
+        /// <summary> Construct a new UpdateCredentialAwsOptions </summary>
+        /// <param name="pathSid">  </param>
         public UpdateAwsOptions(string pathSid)
         {
             PathSid = pathSid;
         }
 
         
+        /// <summary> Generate the necessary parameters </summary>
         public  List<KeyValuePair<string, string>> GetParams()
         {
             var p = new List<KeyValuePair<string, string>>();
