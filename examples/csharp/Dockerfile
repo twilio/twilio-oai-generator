@@ -22,10 +22,10 @@ RUN rm -rf src/Twilio/Rest/*/
 COPY src/Twilio/Rest src/Twilio/Rest
 
 RUN rm -rf test/Twilio.Test/*/
-COPY unit-test/Rest test/Twilio.Test/
+COPY integrationTest/Rest test/Twilio.Test/
 
 RUN dotnet restore
-RUN dotnet build -c Release
+RUN dotnet build Twilio.sln
 
 CMD ["/bin/bash", "-c", "dotnet test test/Twilio.Test/Twilio.Test.csproj --no-build | tee /local/test-report.out"]
 
