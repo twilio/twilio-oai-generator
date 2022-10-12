@@ -5,7 +5,6 @@ import FlexApiBase from "./FlexApiBase";
 import VersionlessBase from "./VersionlessBase";
 
 class Twilio extends BaseTwilio {
-
   constructor(username?: string, password?: string, opts?: ClientOpts) {
     super(username, password, opts);
   }

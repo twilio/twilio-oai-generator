@@ -3,9 +3,9 @@ import nock from "nock";
 import Twilio from "../../../lib/rest/Twilio";
 
 describe("call", () => {
-    const accountSid:string = 'AC12345678123456781234567812345678';
-    const authToken:string = 'CR12345678123456781234567812345678';
-    const twilio = new Twilio(accountSid, authToken);
+  const accountSid: string = "AC12345678123456781234567812345678";
+  const authToken: string = "CR12345678123456781234567812345678";
+  const twilio = new Twilio(accountSid, authToken);
 
   it("should create a call", () => {
     const scope = nock("http://api.twilio.com")
