@@ -2,6 +2,7 @@ import { RequestOpts } from "../base/BaseTwilio";
 import RequestClient from "../base/RequestClient";
 import ApiBase from "./ApiBase";
 import FlexApiBase from "./FlexApiBase";
+import VersionlessBase from "./VersionlessBase";
 
 class Twilio {
   get api(): ApiBase {
@@ -10,6 +11,10 @@ class Twilio {
 
   get flexApi(): FlexApiBase {
     return new FlexApiBase(this);
+  }
+
+  get versionless(): VersionlessBase {
+    return new VersionlessBase(this);
   }
 
   request(opts: RequestOpts) {
