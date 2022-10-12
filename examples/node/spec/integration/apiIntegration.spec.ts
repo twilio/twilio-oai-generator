@@ -6,10 +6,9 @@ import { FeedbackCallSummaryContextUpdateOptions } from "../../lib/rest/api/v201
 describe("Integration tests", () => {
   const accountSid: string = "AC12345678123456781234567812345678";
   const authToken: string = "CR12345678123456781234567812345678";
-  // const testRequestClient: TestRequestClient = new TestRequestClient();
   const client = new Twilio(accountSid, authToken);
 
-  // Throws error: "Page Records can not be deserialized"
+  // Throws error: "Page Records can not be deserialized" - likely needs to be investigated
   xit("should get an account", async () => {
     const params = {};
     const result = await client.api.v2010.accounts.page();
@@ -43,7 +42,6 @@ describe("Integration tests", () => {
     expect(result.testString).toEqual("Ahoy");
   });
 
-  // Not working
   it("should update call feedback summary", async () => {
     const params: FeedbackCallSummaryContextUpdateOptions = {
       endDate: "strDate",
