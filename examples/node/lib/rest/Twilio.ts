@@ -2,6 +2,7 @@ import { BaseTwilio, RequestOpts, ClientOpts } from "../base/BaseTwilio";
 import RequestClient from "../base/RequestClient";
 import ApiBase from "./ApiBase";
 import FlexApiBase from "./FlexApiBase";
+import VersionlessBase from "./VersionlessBase";
 
 class Twilio extends BaseTwilio {
 
@@ -17,6 +18,9 @@ class Twilio extends BaseTwilio {
     return new FlexApiBase(this);
   }
 
+  get versionless(): VersionlessBase {
+    return new VersionlessBase(this);
+  }
 }
 
 export = Twilio;
