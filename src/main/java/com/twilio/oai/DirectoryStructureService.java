@@ -12,11 +12,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.Operation;
 import io.swagger.v3.oas.models.PathItem;
+import lombok.Builder;
+import lombok.Data;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.openapitools.codegen.CodegenOperation;
@@ -29,6 +32,9 @@ import static com.twilio.oai.common.ApplicationConstants.PATH_SEPARATOR_PLACEHOL
 
 @RequiredArgsConstructor
 public class DirectoryStructureService {
+    public static final String VERSION_RESOURCES = "versionResources";
+    public static final String ALL_VERSION_RESOURCES = VERSION_RESOURCES + "All";
+
     private final Map<String, Object> additionalProperties;
     private final IResourceTree resourceTree;
     private final CaseResolver caseResolver;
@@ -37,8 +43,18 @@ public class DirectoryStructureService {
     private boolean isVersionLess = false;
     private final Map<String, String> productMap = new HashMap<>();
 
+    @Data
+    @Builder
+    private static class DependentResource {
+        private final String version;
+        private final String name;
+        private final String mountName;
+        private final String filename;
+    }
+
     public void configure(final OpenAPI openAPI) {
-        final Map<String, Object> versionResources = PathUtils.getStringMap(additionalProperties, "versionResources");
+        final Map<String, Object> versionResources = PathUtils.getStringMap(additionalProperties,
+                                                                            ALL_VERSION_RESOURCES);
 
         isVersionLess = additionalProperties.get("apiVersion").equals("");
 
@@ -60,8 +76,6 @@ public class DirectoryStructureService {
                 }
             });
         });
-
-        PathUtils.flattenStringMap(additionalProperties, "versionResources");
     }
 
     // If account sid is present in path param, it is stored in x-is-account-sid.
@@ -82,28 +96,48 @@ public class DirectoryStructureService {
 
     public void addDependent(final Map<String, Object> resourcesMap, final String path) {
         final Resource.ClassName className = getResourceClassName(path);
-        final Map<String, Object> versionResource = PathUtils.getStringMap(resourcesMap, className.getName());
-        versionResource.put("name", className.getName());
-        versionResource.put("mountName", StringUtils.underscore(className.getMountName()));
-        versionResource.put("filename", StringUtils.camelize(className.getName(), true));
+        final DependentResource dependent = new DependentResource.DependentResourceBuilder()
+            .version(PathUtils.getFirstPathPart(path))
+            .name(className.getName())
+            .mountName(StringUtils.underscore(className.getMountName()))
+            .filename(caseResolver.filenameOperation(className.getName()))
+            .build();
+        resourcesMap.put(className.getName(), dependent);
     }
 
     public Resource.ClassName getResourceClassName(final String path) {
         return resourceTree.findResource(path).map(Resource::getClassName).orElseThrow();
     }
 
+    public Optional<String> getApiVersionClass() {
+        return Optional
+            .of(additionalProperties.get("apiVersionClass"))
+            .map(String.class::cast)
+            .map(version -> version.isEmpty() ? null : version);
+    }
+
     public List<CodegenOperation> processOperations(final OperationsMap results) {
         final OperationMap ops = results.getOperations();
         final List<CodegenOperation> operations = ops.getOperation();
         final CodegenOperation firstOperation = operations.stream().findFirst().orElseThrow();
+        final String version = PathUtils.getFirstPathPart(firstOperation.path);
 
+        additionalProperties.put("version", version);
         additionalProperties.put("apiVersionPath", getRelativeRoot(firstOperation.baseName));
 
         if (isVersionLess) {
-            final String version = PathUtils.getFirstPathPart(firstOperation.path);
-            additionalProperties.put("apiVersion", StringUtils.camelize(version, true));
+            additionalProperties.put("apiVersion", caseResolver.productOperation(version));
             additionalProperties.put("apiVersionClass", StringUtils.camelize(version));
         }
+
+        final List<Object> versionResources = PathUtils
+            .getStringMap(additionalProperties, ALL_VERSION_RESOURCES)
+            .values()
+            .stream()
+            .map(DependentResource.class::cast)
+            .filter(resource -> resource.getVersion().equals(version))
+            .collect(Collectors.toList());
+        additionalProperties.put(VERSION_RESOURCES, versionResources);
 
         return operations;
     }
