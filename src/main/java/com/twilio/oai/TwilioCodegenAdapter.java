@@ -1,6 +1,7 @@
 package com.twilio.oai;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.stream.Stream;
 
@@ -38,6 +39,11 @@ public class TwilioCodegenAdapter {
         codegen.additionalProperties().put("apiVersionClass", StringUtils.camelize(version));
 
         codegen.supportingFiles().clear();
+
+        Arrays.asList("Configuration", "Version").forEach(word -> {
+            codegen.reservedWords().remove(word);
+            codegen.reservedWords().remove(word.toLowerCase());
+        });
     }
 
     public void setDomain(final String domain) {
