@@ -3,7 +3,7 @@ import DeployedDevices from "./versionless/DeployedDevices";
 
 class VersionlessBase extends Domain {
   constructor(twilio: any) {
-    super(twilio, "https://versionless.twilio.com");
+    super(twilio, "http://versionless.twilio.com");
   }
 
   get deployed_devices(): DeployedDevices {
