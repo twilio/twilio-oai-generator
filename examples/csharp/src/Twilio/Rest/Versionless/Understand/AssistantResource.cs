@@ -73,7 +73,7 @@ namespace Twilio.Rest.Versionless.Understand
         #endif
 
         /// <summary> create </summary>
-                /// <param name="friendlyName">  </param>
+        /// <param name="friendlyName">  </param>
         /// <param name="client"> Client to make requests to Twilio </param>
         /// <returns> A single instance of Assistant </returns>
         public static AssistantResource Create(
@@ -86,7 +86,7 @@ namespace Twilio.Rest.Versionless.Understand
 
         #if !NET35
         /// <summary> create </summary>
-                /// <param name="friendlyName">  </param>
+        /// <param name="friendlyName">  </param>
         /// <param name="client"> Client to make requests to Twilio </param>
         /// <returns> Task that resolves to A single instance of Assistant </returns>
         public static async System.Threading.Tasks.Task<AssistantResource> CreateAsync(
@@ -97,10 +97,6 @@ namespace Twilio.Rest.Versionless.Understand
             return await CreateAsync(options, client);
         }
         #endif
-
-
-
-
 
 
 
@@ -169,7 +165,6 @@ namespace Twilio.Rest.Versionless.Understand
                 throw new ApiException(e.Message, e);
             }
         }
-
 
     
         ///<summary> The unique SID that identifies this Account. </summary> 

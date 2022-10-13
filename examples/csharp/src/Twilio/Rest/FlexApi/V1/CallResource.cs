@@ -30,10 +30,6 @@ namespace Twilio.Rest.FlexApi.V1
     {
     
 
-
-
-
-
         
         private static Request BuildUpdateRequest(UpdateCallOptions options, ITwilioRestClient client)
         {
@@ -79,7 +75,7 @@ namespace Twilio.Rest.FlexApi.V1
         #endif
 
         /// <summary> update </summary>
-                /// <param name="pathSid">  </param>
+        /// <param name="pathSid">  </param>
         /// <param name="client"> Client to make requests to Twilio </param>
         /// <returns> A single instance of Call </returns>
         public static CallResource Update(
@@ -92,7 +88,7 @@ namespace Twilio.Rest.FlexApi.V1
 
         #if !NET35
         /// <summary> update </summary>
-                /// <param name="pathSid">  </param>
+        /// <param name="pathSid">  </param>
         /// <param name="client"> Client to make requests to Twilio </param>
         /// <returns> Task that resolves to A single instance of Call </returns>
         public static async System.Threading.Tasks.Task<CallResource> UpdateAsync(
@@ -167,7 +163,6 @@ namespace Twilio.Rest.FlexApi.V1
                 throw new ApiException(e.Message, e);
             }
         }
-
 
     
         ///<summary> The sid </summary> 

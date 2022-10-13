@@ -30,7 +30,6 @@ namespace Twilio.Rest.FlexApi.V1.Credential
     {
     
 
-
         
         /// <summary> delete </summary>
         /// <param name="options"> Delete Aws parameters </param>
@@ -57,7 +56,7 @@ namespace Twilio.Rest.FlexApi.V1.Credential
         /// <summary> delete </summary>
         /// <param name="options"> Delete Aws parameters </param>
         /// <param name="client"> Client to make requests to Twilio </param>
-        /// <returns> Task that resolves to A single instance of Aws </returns>
+        /// <returns> A single instance of Aws </returns>
         public static bool Delete(DeleteAwsOptions options, ITwilioRestClient client = null)
         {
             client = client ?? TwilioClient.GetRestClient();
@@ -66,6 +65,10 @@ namespace Twilio.Rest.FlexApi.V1.Credential
         }
 
         #if !NET35
+        /// <summary> delete </summary>
+        /// <param name="options"> Delete Aws parameters </param>
+        /// <param name="client"> Client to make requests to Twilio </param>
+        /// <returns> Task that resolves to A single instance of Aws </returns>
         public static async System.Threading.Tasks.Task<bool> DeleteAsync(DeleteAwsOptions options,
                                                                           ITwilioRestClient client = null)
         {
@@ -75,6 +78,10 @@ namespace Twilio.Rest.FlexApi.V1.Credential
         }
         #endif
 
+        /// <summary> delete </summary>
+        /// <param name="pathSid">  </param>
+        /// <param name="client"> Client to make requests to Twilio </param>
+        /// <returns> A single instance of Aws </returns>
         public static bool Delete(string pathSid, ITwilioRestClient client = null)
         {
             var options = new DeleteAwsOptions(pathSid)     ;
@@ -82,20 +89,17 @@ namespace Twilio.Rest.FlexApi.V1.Credential
         }
 
         #if !NET35
+        /// <summary> delete </summary>
+        /// <param name="pathSid">  </param>
+        /// <param name="client"> Client to make requests to Twilio </param>
+        /// <returns> Task that resolves to A single instance of Aws </returns>
         public static async System.Threading.Tasks.Task<bool> DeleteAsync(string pathSid, ITwilioRestClient client = null)
         {
             var options = new DeleteAwsOptions(pathSid) ;
             return await DeleteAsync(options, client);
         }
         #endif
-
-
-
-
-
-
         
-
         private static Request BuildFetchRequest(FetchAwsOptions options, ITwilioRestClient client)
         {
             
@@ -139,10 +143,12 @@ namespace Twilio.Rest.FlexApi.V1.Credential
         }
         #endif
         /// <summary> fetch </summary>
-                /// <param name="pathSid">  </param>
+        /// <param name="pathSid">  </param>
         /// <param name="client"> Client to make requests to Twilio </param>
         /// <returns> A single instance of Aws </returns>
-        public static AwsResource Fetch(string pathSid, ITwilioRestClient client = null)
+        public static AwsResource Fetch(
+                                         string pathSid, 
+                                         ITwilioRestClient client = null)
         {
             var options = new FetchAwsOptions(pathSid){  };
             return Fetch(options, client);
@@ -150,7 +156,7 @@ namespace Twilio.Rest.FlexApi.V1.Credential
 
         #if !NET35
         /// <summary> fetch </summary>
-                /// <param name="pathSid">  </param>
+        /// <param name="pathSid">  </param>
         /// <param name="client"> Client to make requests to Twilio </param>
         /// <returns> Task that resolves to A single instance of Aws </returns>
         public static async System.Threading.Tasks.Task<AwsResource> FetchAsync(string pathSid, ITwilioRestClient client = null)
@@ -159,14 +165,7 @@ namespace Twilio.Rest.FlexApi.V1.Credential
             return await FetchAsync(options, client);
         }
         #endif
-
-
-
-
-
         
-
-
         private static Request BuildReadRequest(ReadAwsOptions options, ITwilioRestClient client)
         {
             
@@ -210,7 +209,7 @@ namespace Twilio.Rest.FlexApi.V1.Credential
         }
         #endif
         /// <summary> read </summary>
-                /// <param name="pageSize">  </param>
+        /// <param name="pageSize">  </param>
         /// <param name="client"> Client to make requests to Twilio </param>
         /// <param name="limit"> Record limit </param>
         /// <returns> A single instance of Aws </returns>
@@ -225,7 +224,7 @@ namespace Twilio.Rest.FlexApi.V1.Credential
 
         #if !NET35
         /// <summary> read </summary>
-                /// <param name="pageSize">  </param>
+        /// <param name="pageSize">  </param>
         /// <param name="client"> Client to make requests to Twilio </param>
         /// <param name="limit"> Record limit </param>
         /// <returns> Task that resolves to A single instance of Aws </returns>
@@ -238,11 +237,6 @@ namespace Twilio.Rest.FlexApi.V1.Credential
             return await ReadAsync(options, client);
         }
         #endif
-
-
-
-
-
 
         
         private static Request BuildUpdateRequest(UpdateAwsOptions options, ITwilioRestClient client)
@@ -289,7 +283,7 @@ namespace Twilio.Rest.FlexApi.V1.Credential
         #endif
 
         /// <summary> update </summary>
-                /// <param name="pathSid">  </param>
+        /// <param name="pathSid">  </param>
         /// <param name="testString">  </param>
         /// <param name="testBoolean">  </param>
         /// <param name="client"> Client to make requests to Twilio </param>
@@ -306,7 +300,7 @@ namespace Twilio.Rest.FlexApi.V1.Credential
 
         #if !NET35
         /// <summary> update </summary>
-                /// <param name="pathSid">  </param>
+        /// <param name="pathSid">  </param>
         /// <param name="testString">  </param>
         /// <param name="testBoolean">  </param>
         /// <param name="client"> Client to make requests to Twilio </param>
@@ -385,7 +379,6 @@ namespace Twilio.Rest.FlexApi.V1.Credential
                 throw new ApiException(e.Message, e);
             }
         }
-
 
     
         ///<summary> The account_sid </summary> 
