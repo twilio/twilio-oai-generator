@@ -13,7 +13,6 @@
                 headerParams: {{^vendorExtensions.x-header-params-exists}}null{{/vendorExtensions.x-header-params-exists}}{{#vendorExtensions.x-header-params-exists}}options.GetHeaderParams(){{/vendorExtensions.x-header-params-exists}}
             );
         }
-
         {{>Summary}}
         /// <param name="options"> Read {{resourceName}} parameters </param>
         /// <param name="client"> Client to make requests to Twilio </param>
