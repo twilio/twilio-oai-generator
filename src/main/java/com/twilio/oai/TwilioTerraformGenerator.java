@@ -24,7 +24,6 @@ import org.openapitools.codegen.model.ModelsMap;
 import org.openapitools.codegen.model.OperationMap;
 import org.openapitools.codegen.model.OperationsMap;
 import org.openapitools.codegen.utils.ModelUtils;
-import org.openapitools.codegen.utils.StringUtils;
 
 public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
 
@@ -45,12 +44,12 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
         public String getFunc() {
             if (innerSchema != null) {
                 return String.format("As%s(%s, %s)",
-                                     StringUtils.camelize(dataType),
+                                     StringHelper.camelize(dataType),
                                      innerSchema.getFunc(),
                                      options.name);
             }
 
-            return String.format("As%s(%s)", StringUtils.camelize(dataType), options.name);
+            return String.format("As%s(%s)", StringHelper.camelize(dataType), options.name);
         }
     }
 
@@ -217,7 +216,7 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
         final String productVersion = inputSpec.replaceAll(inputSpecPattern, "$2");
         final String clientPath = String.format("rest/%s/%s", product, productVersion);
         final boolean isV2010Api = productVersion.contains("2010");
-        final String clientService = isV2010Api ? StringUtils.camelize(product) : StringUtils.camelize(product + "_" + productVersion);
+        final String clientService = isV2010Api ? StringHelper.camelize(product) : StringHelper.camelize(product + "_" + productVersion);
 
         results.put("product", product);
         results.put("productVersion", productVersion);

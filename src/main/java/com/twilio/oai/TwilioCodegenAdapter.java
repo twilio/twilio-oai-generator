@@ -10,7 +10,6 @@ import io.swagger.v3.oas.models.PathItem;
 import io.swagger.v3.oas.models.servers.Server;
 import lombok.RequiredArgsConstructor;
 import org.openapitools.codegen.DefaultCodegen;
-import org.openapitools.codegen.utils.StringUtils;
 
 @RequiredArgsConstructor
 public class TwilioCodegenAdapter {
@@ -35,8 +34,8 @@ public class TwilioCodegenAdapter {
         setDomain(getInputSpecDomain());
 
         final String version = getInputSpecVersion();
-        codegen.additionalProperties().put("apiVersion", StringUtils.camelize(version, true));
-        codegen.additionalProperties().put("apiVersionClass", StringUtils.camelize(version));
+        codegen.additionalProperties().put("apiVersion", StringHelper.camelize(version, true));
+        codegen.additionalProperties().put("apiVersionClass", StringHelper.camelize(version));
 
         codegen.supportingFiles().clear();
 
@@ -50,7 +49,7 @@ public class TwilioCodegenAdapter {
         final String domainPackage = domain.replace("-", "");
         setOutputDir(domainPackage, getInputSpecVersion());
 
-        codegen.additionalProperties().put("domainName", StringUtils.camelize(domain));
+        codegen.additionalProperties().put("domainName", StringHelper.camelize(domain));
         codegen.additionalProperties().put("domainPackage", domainPackage);
     }
 

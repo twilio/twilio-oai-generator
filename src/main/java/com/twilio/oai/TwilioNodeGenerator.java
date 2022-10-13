@@ -19,7 +19,6 @@ import org.openapitools.codegen.languages.TypeScriptNodeClientCodegen;
 import org.openapitools.codegen.model.ModelMap;
 import org.openapitools.codegen.model.ModelsMap;
 import org.openapitools.codegen.model.OperationsMap;
-import org.openapitools.codegen.utils.StringUtils;
 
 import static com.twilio.oai.common.ApplicationConstants.PATH_SEPARATOR_PLACEHOLDER;
 
@@ -53,7 +52,7 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
     @Override
     public void processOpenAPI(final OpenAPI openAPI) {
         final String domain = twilioCodegen.getDomainFromOpenAPI(openAPI);
-        twilioCodegen.setDomain(StringUtils.camelize(domain, true));
+        twilioCodegen.setDomain(StringHelper.camelize(domain, true));
 
         openAPI.getPaths().forEach(resourceTree::addResource);
         resourceTree.getResources().forEach(resource -> resource.updateFamily(openAPI, resourceTree));
@@ -208,7 +207,7 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
                     });
             }
 
-            results.put("apiFilename", StringUtils.camelize(directoryStructureService.getResourceClassName(co.path).getName(), true));
+            results.put("apiFilename", StringHelper.camelize(directoryStructureService.getResourceClassName(co.path).getName(), true));
         }
 
         resources.values().stream().map(resource -> (Map<String, Object>) resource).forEach(resource -> {
