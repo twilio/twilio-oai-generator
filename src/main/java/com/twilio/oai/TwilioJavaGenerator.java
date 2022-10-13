@@ -17,9 +17,9 @@ import org.openapitools.codegen.languages.JavaClientCodegen;
 import org.openapitools.codegen.model.ModelMap;
 import org.openapitools.codegen.model.ModelsMap;
 import org.openapitools.codegen.model.OperationsMap;
-import org.openapitools.codegen.utils.StringUtils;
 
 import java.util.*;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.math.BigInteger;
 import java.security.MessageDigest;
@@ -98,8 +98,6 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
         else if (parameter.isEnum) {
             parameter.enumName = parameter.paramName;
         }
-        // Make sure required non-path params get into the options block.
-        parameter.paramName = StringUtils.camelize(parameter.paramName, true);
     }
 
     @Override
@@ -126,7 +124,7 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
         } else if (property.isEnum ) {
             property.enumName = property.baseName;
         }
-        property.isEnum =  property.isEnum && property.dataFormat == null;
+        property.isEnum = property.isEnum && property.dataFormat == null;
     }
 
     @Override
@@ -277,7 +275,7 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
             co.queryParams = preProcessQueryParameters(co);
             co.pathParams = null;
             co.hasParams = !co.allParams.isEmpty();
-            co.allParams.stream().map(ConventionResolver::resolveParamTypes).map(item -> StringUtils.camelize(item.paramName)).collect(Collectors.toList());
+            co.allParams.forEach(ConventionResolver::resolveParamTypes);
             co.hasRequiredParams = !co.requiredParams.isEmpty();
             resource.put("resourcePathParams", co.pathParams);
             resource.put("resourceRequiredParams", co.requiredParams);
@@ -354,8 +352,7 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
                         item.dataType = resourceName + "." + values[values.length -1];
                     }
                 } else {
-                    String baseName = Arrays.stream(item.baseName.split("_")).map(StringUtils::camelize)
-                            .collect(Collectors.joining());
+                    String baseName = StringHelper.camelize(item.baseName, true);
                     item.enumName = baseName;
                     if (item.containerType != null && item.containerType.equals("array")) {
                         item.dataType = "List<"+ resourceName + "." + baseName + ">";
@@ -451,21 +448,10 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
                             (key, value) -> codegenModel.vendorExtensions.merge(key, value, (oldValue, newValue) -> newValue));
                 }
 
-                for (CodegenProperty modelProp : resModel.vars) {
-                        boolean contains = false;
-                        for (CodegenProperty property : codegenProperties) {
-                                if (Arrays.stream(modelProp.baseName.split("_")).
-                                        map(StringUtils::camelize).collect(Collectors.joining()).equals(property.baseName)) {
-                                        contains = true;
-                                    }
-                            }
-                        if (!contains) {
-                                modelProp.baseName = Arrays.stream(modelProp.baseName.split("_")).
-                                        map(StringUtils::camelize).collect(Collectors.joining());
-                                codegenProperties.add(modelProp);
-                            }
-                    }
-            }
+            resModel.vars.stream().filter(Predicate.not(codegenProperties::contains)).forEach(codegenProperties::add);
+        }
+
+        codegenProperties.forEach(prop -> prop.baseName = StringHelper.camelize(prop.baseName, true));
 
         codegenModel.setVars(codegenProperties);
         return codegenModel;
@@ -537,7 +523,7 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
                 conditionalCodegenParam = conditionalParams.stream().map(
                         paramList -> paramList.stream().map(
                                 cp -> co.optionalParams.stream().filter(
-                                        op -> op.paramName.equals(StringUtils.camelize(cp, true))
+                                        op -> op.paramName.equals(StringHelper.camelize(cp, true))
                                 ).findAny().get()
                         ).collect(Collectors.toList())).collect(Collectors.toList());
                 // added filter to prevent same signature types
@@ -649,13 +635,6 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
         });
     }
 
-    public static String capitalize(String str) {
-        if(str == null || str.isEmpty()) {
-            return str;
-        }
-        return str.substring(0, 1).toUpperCase() + str.substring(1);
-    }
-
     private void updateCodeOperationParams(final CodegenOperation co, String resourceName) {
         co.allParams = co.allParams
                 .stream()
@@ -723,8 +702,7 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
 
     private CodegenParameter resolveEnumParameter(CodegenParameter parameter, String resourceName) {
         if( parameter.isEnum && !parameter.vendorExtensions.containsKey("refEnum")) {
-            parameter.enumName = Arrays.stream(parameter.enumName.split("_")).map(StringUtils::camelize)
-                    .collect(Collectors.joining());
+            parameter.enumName = StringHelper.camelize(parameter.enumName);
             if (parameter.items != null && parameter.items.allowableValues != null && parameter.items.allowableValues.containsKey("values")) {
                 parameter.dataType = "List<" + resourceName+"."+ parameter.enumName + ">";
                 parameter.baseType = resourceName + "." + parameter.enumName;
