@@ -40,7 +40,7 @@ public class TwilioCodegenAdapter {
 
         codegen.supportingFiles().clear();
 
-        Arrays.asList("Configuration", "Version").forEach(word -> {
+        Arrays.asList("Configuration", "Parameter", "Version").forEach(word -> {
             codegen.reservedWords().remove(word);
             codegen.reservedWords().remove(word.toLowerCase());
         });
