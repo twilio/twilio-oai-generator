@@ -3,10 +3,16 @@ import nock from "nock";
 import Twilio from "../../lib/rest/Twilio";
 
 describe("versionless", () => {
-  const twilio = new Twilio();
+  const accountSid: string = "AC12345678123456781234567812345678";
+  const authToken: string = "CR12345678123456781234567812345678";
+  const twilio = new Twilio(accountSid, authToken);
+
+  afterAll(() => {
+    nock.cleanAll();
+  });
 
   it("should create a deployed devices fleet", () => {
-    const scope = nock("https://versionless.twilio.com")
+    const scope = nock("http://versionless.twilio.com")
       .post("/DeployedDevices/Fleets")
       .query({
         FriendlyName: "Friend-o",

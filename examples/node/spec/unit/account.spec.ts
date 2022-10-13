@@ -4,10 +4,16 @@ import { AccountListInstancePageOptions } from "../../lib/rest/api/v2010/account
 import Twilio from "../../lib/rest/Twilio";
 
 describe("account", () => {
-  const twilio = new Twilio();
+  const accountSid: string = "AC12345678123456781234567812345678";
+  const authToken: string = "CR12345678123456781234567812345678";
+  const twilio = new Twilio(accountSid, authToken);
+
+  afterAll(() => {
+    nock.cleanAll();
+  });
 
   it("should create an account", () => {
-    const scope = nock("https://api.twilio.com")
+    const scope = nock("http://api.twilio.com")
       .post("/2010-04-01/Accounts.json")
       .reply(201, { account_sid: "123" });
 
@@ -17,7 +23,7 @@ describe("account", () => {
   });
 
   it("should fetch an account", () => {
-    const scope = nock("https://api.twilio.com")
+    const scope = nock("http://api.twilio.com")
       .get("/2010-04-01/Accounts/123.json")
       .reply(200, { account_sid: "123" });
 
@@ -28,7 +34,7 @@ describe("account", () => {
   });
 
   it("should update an account", () => {
-    const scope = nock("https://api.twilio.com")
+    const scope = nock("http://api.twilio.com")
       .post("/2010-04-01/Accounts/123.json")
       .query({
         Status: "closed",
@@ -42,7 +48,7 @@ describe("account", () => {
   });
 
   it("should remove an account", () => {
-    const scope = nock("https://api.twilio.com")
+    const scope = nock("http://api.twilio.com")
       .delete("/2010-04-01/Accounts/123.json")
       .reply(204);
 
@@ -53,7 +59,7 @@ describe("account", () => {
   });
 
   it("should get account pages in between dates", () => {
-    const scope = nock("https://api.twilio.com")
+    const scope = nock("http://api.twilio.com")
       .get("/2010-04-01/Accounts.json")
       .query({
         "DateCreated<": "2022-12-25T00:00:00Z",
@@ -81,7 +87,7 @@ describe("account", () => {
       .page(params)
       .then((accountPage) =>
         expect(accountPage.nextPageUrl).toEqual(
-          "https://api.twilio.com/2010-04-01/Accounts.json?FriendlyName=friendly_name&Status=active&PageSize=50&Page=50"
+          "http://api.twilio.com/2010-04-01/Accounts.json?FriendlyName=friendly_name&Status=active&PageSize=50&Page=50"
         )
       )
       .then(() => scope.done());
