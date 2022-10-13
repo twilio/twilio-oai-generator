@@ -1,17 +1,18 @@
 package com.twilio.oai.resolver.csharp;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.twilio.oai.StringHelper;
 import com.twilio.oai.common.ApplicationConstants;
 import com.twilio.oai.common.EnumConstants;
 import com.twilio.oai.resolver.Resolver;
-import org.openapitools.codegen.CodegenParameter;
-import org.openapitools.codegen.IJsonSchemaValidationProperties;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.openapitools.codegen.CodegenParameter;
+import org.openapitools.codegen.IJsonSchemaValidationProperties;
 
 public class CodegenParameterResolver implements Resolver<CodegenParameter> {
     private final Map<String, Map<String, Object>> conventionMap;
@@ -62,17 +63,8 @@ public class CodegenParameterResolver implements Resolver<CodegenParameter> {
         return false;
     }
 
-    public List<CodegenParameter> resolveParameters(List<CodegenParameter> parameters) {
-        for (CodegenParameter parameter: parameters) {
-            // Adding reserved keyword for backward compatibility
-            if (ApplicationConstants._CONFIGURATION.equals(parameter.paramName)) {
-                parameter.paramName = "Configuration";
-            } else if (ApplicationConstants._VERSION.equals(parameter.paramName)) {
-                parameter.paramName = "Version";
-            }
-            resolve(parameter);
-        }
-        return parameters;
+    public void resolveParameters(List<CodegenParameter> parameters) {
+        parameters.forEach(this::resolve);
     }
 
     public static Map<String, Map<String, Object>> getConventionalMap() {
@@ -115,5 +107,4 @@ public class CodegenParameterResolver implements Resolver<CodegenParameter> {
     public void setEnumsDict(HashSet<String> enumsDict) {
         this.enumsDict = enumsDict;
     }
-
 }
