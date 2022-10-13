@@ -46,10 +46,6 @@ namespace Twilio.Rest.Api.V2010.Account.Call
             public static readonly StatusEnum Absent = new StatusEnum("absent");
         }
 
-
-
-
-
         
         private static Request BuildUpdateRequest(UpdateFeedbackCallSummaryOptions options, ITwilioRestClient client)
         {
@@ -97,7 +93,7 @@ namespace Twilio.Rest.Api.V2010.Account.Call
         #endif
 
         /// <summary> update </summary>
-                /// <param name="pathSid">  </param>
+        /// <param name="pathSid">  </param>
         /// <param name="endDate">  </param>
         /// <param name="startDate">  </param>
         /// <param name="pathAccountSid">  </param>
@@ -116,7 +112,7 @@ namespace Twilio.Rest.Api.V2010.Account.Call
 
         #if !NET35
         /// <summary> update </summary>
-                /// <param name="pathSid">  </param>
+        /// <param name="pathSid">  </param>
         /// <param name="endDate">  </param>
         /// <param name="startDate">  </param>
         /// <param name="pathAccountSid">  </param>
@@ -197,7 +193,6 @@ namespace Twilio.Rest.Api.V2010.Account.Call
                 throw new ApiException(e.Message, e);
             }
         }
-
 
     
         ///<summary> The account_sid </summary> 

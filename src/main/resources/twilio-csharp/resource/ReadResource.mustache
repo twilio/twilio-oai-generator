@@ -1,6 +1,4 @@
 
-
-
         private static Request BuildReadRequest(Read{{resourceName}}Options options, ITwilioRestClient client)
         {
             {{>resource/GeneratePath}}
@@ -40,8 +38,7 @@
             return new ResourceSet<{{resourceName}}{{resourceConstant}}>(page, options, client);
         }
         #endif
-        {{>Summary}}
-        {{>resource/MethodsComments}}
+        {{>Summary}}{{>resource/MethodsComments}}
         /// <param name="limit"> Record limit </param>
         {{>resource/ReturnComments}}
         public static ResourceSet<{{resourceName}}{{resourceConstant}}> Read({{#vendorExtensions.x-request-body-param}}
@@ -54,8 +51,7 @@
         }
 
         #if !NET35
-        {{>Summary}}
-        {{>resource/MethodsComments}}
+        {{>Summary}}{{>resource/MethodsComments}}
         /// <param name="limit"> Record limit </param>
         {{>resource/ReturnCommentsAsync}}
         public static async System.Threading.Tasks.Task<ResourceSet<{{resourceName}}{{resourceConstant}}>> ReadAsync({{#vendorExtensions.x-request-body-param}}

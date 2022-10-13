@@ -13,25 +13,20 @@ namespace Twilio.Rest.{{domainPackage}}.{{apiVersionClass}}{{packageSubPart}}
     {{#vendorExtensions.x-is-create-operation}}
         {{>resource/CreateResource}}
     {{/vendorExtensions.x-is-create-operation}}
-
     {{#vendorExtensions.x-is-delete-operation}}
         {{>resource/DeleteResource}}
     {{/vendorExtensions.x-is-delete-operation}}
-
     {{#vendorExtensions.x-is-fetch-operation}}
         {{>resource/FetchResource}}
     {{/vendorExtensions.x-is-fetch-operation}}
-
     {{#vendorExtensions.x-is-read-operation}}
         {{>resource/ReadResource}}
     {{/vendorExtensions.x-is-read-operation}}
-
     {{#vendorExtensions.x-is-update-operation}}
         {{>resource/UpdateResource}}
     {{/vendorExtensions.x-is-update-operation}}
     {{/operations}}
     {{>Pagination}}
-
     {{>resource/ResponseModel}}
 
         private {{resourceName}}{{resourceConstant}}() {
