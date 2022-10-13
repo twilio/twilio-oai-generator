@@ -62,7 +62,7 @@ describe("call", () => {
 
     return twilio.api.v2010
       .accounts("123")
-      .calls.feedback_call_summary("456")
+      .calls.feedbackCallSummary("456")
       .update({ endDate: "2022-08-01", startDate: "2022-08-01" })
       .then(() => scope.done());
   });

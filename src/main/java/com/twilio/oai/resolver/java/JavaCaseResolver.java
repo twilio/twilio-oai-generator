@@ -1,13 +1,12 @@
 package com.twilio.oai.resolver.java;
 
+import com.twilio.oai.StringHelper;
 import com.twilio.oai.resolver.CaseResolver;
-
-import org.openapitools.codegen.utils.StringUtils;
 
 public class JavaCaseResolver implements CaseResolver {
     @Override
     public String productOperation(final String product) {
-        return StringUtils.camelize(product, true);
+        return StringHelper.camelize(product, true);
     }
 
     @Override

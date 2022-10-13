@@ -25,7 +25,6 @@ import lombok.RequiredArgsConstructor;
 import org.openapitools.codegen.CodegenOperation;
 import org.openapitools.codegen.model.OperationMap;
 import org.openapitools.codegen.model.OperationsMap;
-import org.openapitools.codegen.utils.StringUtils;
 
 import static com.twilio.oai.common.ApplicationConstants.ACCOUNT_SID_FORMAT;
 import static com.twilio.oai.common.ApplicationConstants.PATH_SEPARATOR_PLACEHOLDER;
@@ -99,7 +98,7 @@ public class DirectoryStructureService {
         final DependentResource dependent = new DependentResource.DependentResourceBuilder()
             .version(PathUtils.getFirstPathPart(path))
             .name(className.getName())
-            .mountName(StringUtils.underscore(className.getMountName()))
+            .mountName(caseResolver.pathOperation(className.getMountName()))
             .filename(caseResolver.filenameOperation(className.getName()))
             .build();
         resourcesMap.put(className.getName(), dependent);
@@ -127,7 +126,7 @@ public class DirectoryStructureService {
 
         if (isVersionLess) {
             additionalProperties.put("apiVersion", caseResolver.productOperation(version));
-            additionalProperties.put("apiVersionClass", StringUtils.camelize(version));
+            additionalProperties.put("apiVersionClass", StringHelper.camelize(version));
         }
 
         final List<Object> versionResources = PathUtils
