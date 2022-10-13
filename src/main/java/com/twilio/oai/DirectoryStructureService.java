@@ -94,18 +94,18 @@ public class DirectoryStructureService {
     }
 
     public void addDependent(final Map<String, Object> resourcesMap, final String path) {
-        final Resource.ClassName className = getResourceClassName(path);
+        final Resource.Aliases resourceAliases = getResourceAliases(path);
         final DependentResource dependent = new DependentResource.DependentResourceBuilder()
             .version(PathUtils.getFirstPathPart(path))
-            .name(className.getName())
-            .mountName(caseResolver.pathOperation(className.getMountName()))
-            .filename(caseResolver.filenameOperation(className.getName()))
+            .name(resourceAliases.getClassName())
+            .mountName(caseResolver.pathOperation(resourceAliases.getMountName()))
+            .filename(caseResolver.filenameOperation(resourceAliases.getClassName()))
             .build();
-        resourcesMap.put(className.getName(), dependent);
+        resourcesMap.put(resourceAliases.getClassName(), dependent);
     }
 
-    public Resource.ClassName getResourceClassName(final String path) {
-        return resourceTree.findResource(path).map(Resource::getClassName).orElseThrow();
+    public Resource.Aliases getResourceAliases(final String path) {
+        return resourceTree.findResource(path).map(Resource::getResourceAliases).orElseThrow();
     }
 
     public Optional<String> getApiVersionClass() {

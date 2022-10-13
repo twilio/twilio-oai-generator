@@ -435,6 +435,7 @@ paths:
       - url: https://api.twilio.com
     x-twilio:
       className: feedback_call_summary
+      mountName: feedback_call_summary
       parent: /Accounts/{AccountSid}/Calls.json
       pathType: list
   /2010-04-01/Accounts/{AccountSid}/Calls/FeedbackSummary/{Sid}.json:
@@ -493,5 +494,6 @@ paths:
       - url: https://api.twilio.com
     x-twilio:
       className: feedback_call_summary
+      mountName: feedback_call_summary
       parent: /Accounts/{AccountSid}/Calls.json
       pathType: instance

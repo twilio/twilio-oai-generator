@@ -53,7 +53,6 @@ paths:
     servers:
       - url: https://flex-api.twilio.com
     x-twilio:
-      className: credential
       pathType: list
   /v1/Credentials/AWS:
     get:
@@ -302,4 +301,4 @@ paths:
       - url: https://flex-api.twilio.com
     x-twilio:
       pathType: instance
-      className: call
+      mountName: calls

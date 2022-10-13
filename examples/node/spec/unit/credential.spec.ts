@@ -16,6 +16,6 @@ describe("credential", () => {
       .post("/v1/Credentials/AWS/123")
       .reply(200, { sid: "123" });
 
-    return twilio.flexApi.v1.credential.aws("123").update(() => scope.done());
+    return twilio.flexApi.v1.credentials.aws("123").update(() => scope.done());
   });
 });

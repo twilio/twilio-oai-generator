@@ -207,7 +207,9 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
                     });
             }
 
-            results.put("apiFilename", StringHelper.camelize(directoryStructureService.getResourceClassName(co.path).getName(), true));
+            results.put("apiFilename",
+                        StringHelper.camelize(directoryStructureService.getResourceAliases(co.path).getClassName(),
+                                              true));
         }
 
         resources.values().stream().map(resource -> (Map<String, Object>) resource).forEach(resource -> {

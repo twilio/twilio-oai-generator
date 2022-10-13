@@ -29,13 +29,9 @@ public class Resource {
 
     @Data
     @RequiredArgsConstructor
-    public static class ClassName {
-        private final String name;
+    public static class Aliases {
+        private final String className;
         private final String mountName;
-
-        public ClassName(final String name) {
-            this(name, name);
-        }
     }
 
     public Optional<Resource> getParentResource(final IResourceTree resourceTree) {
@@ -88,27 +84,42 @@ public class Resource {
         return missingPath;
     }
 
-    public ClassName getClassName(final Operation operation) {
-        final Optional<String> className = getClassNameFromExtensions(operation.getExtensions());
+    public Aliases getResourceAliases(final Operation operation) {
+        final Optional<Aliases> className = getResourceNamesFromExtensions(operation.getExtensions());
 
-        return className.map(ClassName::new).orElseGet(this::getClassName);
+        return className.orElseGet(this::getResourceAliases);
     }
 
-    public ClassName getClassName() {
-        final Optional<String> className = getClassNameFromExtensions(pathItem.getExtensions());
+    public Aliases getResourceAliases() {
+        final Optional<Aliases> className = getResourceNamesFromExtensions(pathItem.getExtensions());
 
-        return className.map(ClassName::new).orElseGet(() -> {
+        return className.orElseGet(() -> {
             final String mountName = PathUtils.fetchLastElement(listTag, SEPARATOR);
-            return new ClassName(inflector.singular(mountName), mountName);
+            return new Aliases(inflector.singular(mountName), mountName);
         });
     }
 
-    private Optional<String> getClassNameFromExtensions(final Map<String, Object> extensions) {
+    private Optional<Aliases> getResourceNamesFromExtensions(final Map<String, Object> extensions) {
+        final Optional<String> classNameOpt = getTwilioStringExtension(extensions, "className");
+        final Optional<String> mountNameOpt = getTwilioStringExtension(extensions, "mountName");
+
+        if (classNameOpt.isPresent() || mountNameOpt.isPresent()) {
+            final String mountName = mountNameOpt.orElse(PathUtils.fetchLastElement(listTag, SEPARATOR));
+            final String className = classNameOpt.orElse(inflector.singular(mountName));
+
+            return Optional.of(new Aliases(className, mountName));
+        }
+
+        return Optional.empty();
+    }
+
+    private Optional<String> getTwilioStringExtension(final Map<String, Object> extensions,
+                                                      final String extensionName) {
         return Optional
             .ofNullable(extensions)
             .map(ext -> ext.get(TWILIO_EXTENSION_NAME))
             .map(Map.class::cast)
-            .map(xTwilio -> xTwilio.get("className"))
+            .map(xTwilio -> xTwilio.get(extensionName))
             .map(String.class::cast)
             .map(StringHelper::camelize);
     }
