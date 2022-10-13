@@ -7,6 +7,10 @@ describe("credential", () => {
   const authToken: string = "CR12345678123456781234567812345678";
   const twilio = new Twilio(accountSid, authToken);
 
+  afterAll(() => {
+    nock.cleanAll();
+  });
+
   it("should update an aws credential", () => {
     const scope = nock("http://flex-api.twilio.com")
       .post("/v1/Voice/123")

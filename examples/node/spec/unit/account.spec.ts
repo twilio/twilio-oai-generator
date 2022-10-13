@@ -8,6 +8,10 @@ describe("account", () => {
   const authToken: string = "CR12345678123456781234567812345678";
   const twilio = new Twilio(accountSid, authToken);
 
+  afterAll(() => {
+    nock.cleanAll();
+  });
+
   it("should create an account", () => {
     const scope = nock("http://api.twilio.com")
       .post("/2010-04-01/Accounts.json")

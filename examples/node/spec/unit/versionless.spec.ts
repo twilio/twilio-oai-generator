@@ -7,6 +7,10 @@ describe("versionless", () => {
   const authToken: string = "CR12345678123456781234567812345678";
   const twilio = new Twilio(accountSid, authToken);
 
+  afterAll(() => {
+    nock.cleanAll();
+  });
+
   it("should create a deployed devices fleet", () => {
     const scope = nock("http://versionless.twilio.com")
       .post("/DeployedDevices/Fleets")
