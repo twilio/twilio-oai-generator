@@ -13,13 +13,8 @@
  */
 
 package openapi
-import (
-	"encoding/json"
-	"github.com/twilio/twilio-go/client"
-)
+
 // UpdateCall200Response struct for UpdateCall200Response
 type UpdateCall200Response struct {
 	Sid *string `json:"sid,omitempty"`
 }
-
-
