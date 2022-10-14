@@ -1,5 +1,6 @@
 package com.twilio.oai.resolver.node;
 
+import com.twilio.oai.StringHelper;
 import com.twilio.oai.resolver.CaseResolver;
 
 import org.openapitools.codegen.utils.StringUtils;
@@ -12,7 +13,7 @@ public class NodeCaseResolver implements CaseResolver {
 
     @Override
     public String pathOperation(final String pathPart) {
-        return StringUtils.camelize(pathPart, true);
+        return StringHelper.camelize(pathPart, true);
     }
 
     @Override

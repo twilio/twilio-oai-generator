@@ -37,8 +37,7 @@
         }
         #endif
 
-        {{>Summary}}
-        {{>resource/MethodsComments}}
+        {{>Summary}}{{>resource/MethodsComments}}
         {{>resource/ReturnComments}}
         public static {{resourceName}}{{resourceConstant}} Update({{#vendorExtensions.x-request-body-param}}
                                           {{{dataType}}} {{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^required}} = null{{/required}},{{/vendorExtensions.x-request-body-param}}
@@ -49,8 +48,7 @@
         }
 
         #if !NET35
-        {{>Summary}}
-        {{>resource/MethodsComments}}
+        {{>Summary}}{{>resource/MethodsComments}}
         {{>resource/ReturnCommentsAsync}}
         public static async System.Threading.Tasks.Task<{{resourceName}}{{resourceConstant}}> UpdateAsync({{#vendorExtensions.x-request-body-param}}
                                                                               {{{dataType}}} {{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^required}} = null{{/required}},{{/vendorExtensions.x-request-body-param}}

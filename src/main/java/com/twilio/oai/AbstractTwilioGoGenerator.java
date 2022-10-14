@@ -20,8 +20,6 @@ import org.openapitools.codegen.model.ModelsMap;
 import org.openapitools.codegen.model.OperationMap;
 import org.openapitools.codegen.model.OperationsMap;
 
-import static org.openapitools.codegen.utils.StringUtils.camelize;
-
 public abstract class AbstractTwilioGoGenerator extends GoClientCodegen {
 
     public static final String VENDOR_EXTENSION_ACCOUNT_SID = "x-is-account-sid";
@@ -111,7 +109,7 @@ public abstract class AbstractTwilioGoGenerator extends GoClientCodegen {
         final List<Map<String, String>> imports = (List<Map<String, String>>) objs.get("imports");
 
         // HTTP method verb conversion (e.g. PUT => Put).
-        operations.forEach(operation -> operation.httpMethod = camelize(operation.httpMethod.toLowerCase()));
+        operations.forEach(operation -> operation.httpMethod = StringHelper.camelize(operation.httpMethod));
 
         if (imports != null) {
             // Remove model imports to avoid error.

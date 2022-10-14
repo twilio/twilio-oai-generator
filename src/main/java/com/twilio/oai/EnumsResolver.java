@@ -25,11 +25,11 @@ public class EnumsResolver {
         usingMappings.forEach((key, value) -> {
             if(value != null){
                 if(value instanceof String && ((String) value).equalsIgnoreCase("Twilio.Types")){
-                    enumsDict.add(StringHelper.titleCase(key));
+                    enumsDict.add(StringHelper.camelize(key));
                 } else if (value instanceof ArrayList) {
                     ((ArrayList<String>) value).forEach(item -> {
                         if(item.equalsIgnoreCase("Twilio.Types")){
-                            enumsDict.add(StringHelper.titleCase(key));
+                            enumsDict.add(StringHelper.camelize(key));
                         }
                     });
                 }
