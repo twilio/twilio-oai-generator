@@ -44,13 +44,12 @@ public class ResourceMap implements IResourceTree {
      * Returns a list of dependents for the operation as those with a path that directly under the current path.
      */
     @Override
-    public List<String> dependents(final String name) {
+    public List<Resource> dependents(final String name) {
         return urlResourceMap
             .values()
             .stream()
-            .map(Resource::getName)
-            .filter(p -> PathUtils
-                .removePathParamIds(p)
+            .filter(resource -> PathUtils
+                .removePathParamIds(resource.getName())
                 .matches(PathUtils.escapeRegex(PathUtils.removePathParamIds(name) + "/[^{/]+")))
             .collect(Collectors.toList());
     }

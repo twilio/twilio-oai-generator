@@ -188,6 +188,7 @@ paths:
         - accountSid_authToken: [ ]
       x-twilio:
         className: new_credentials
+        mountName: new_credentials
         conditional:
           - - TestInteger
             - TestDate
