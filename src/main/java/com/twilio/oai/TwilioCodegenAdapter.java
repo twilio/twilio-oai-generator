@@ -1,6 +1,7 @@
 package com.twilio.oai;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.stream.Stream;
 
@@ -9,7 +10,6 @@ import io.swagger.v3.oas.models.PathItem;
 import io.swagger.v3.oas.models.servers.Server;
 import lombok.RequiredArgsConstructor;
 import org.openapitools.codegen.DefaultCodegen;
-import org.openapitools.codegen.utils.StringUtils;
 
 @RequiredArgsConstructor
 public class TwilioCodegenAdapter {
@@ -34,17 +34,22 @@ public class TwilioCodegenAdapter {
         setDomain(getInputSpecDomain());
 
         final String version = getInputSpecVersion();
-        codegen.additionalProperties().put("apiVersion", StringUtils.camelize(version, true));
-        codegen.additionalProperties().put("apiVersionClass", StringUtils.camelize(version));
+        codegen.additionalProperties().put("apiVersion", StringHelper.camelize(version, true));
+        codegen.additionalProperties().put("apiVersionClass", StringHelper.camelize(version));
 
         codegen.supportingFiles().clear();
+
+        Arrays.asList("Configuration", "Parameter", "Version").forEach(word -> {
+            codegen.reservedWords().remove(word);
+            codegen.reservedWords().remove(word.toLowerCase());
+        });
     }
 
     public void setDomain(final String domain) {
         final String domainPackage = domain.replace("-", "");
         setOutputDir(domainPackage, getInputSpecVersion());
 
-        codegen.additionalProperties().put("domainName", StringUtils.camelize(domain));
+        codegen.additionalProperties().put("domainName", StringHelper.camelize(domain));
         codegen.additionalProperties().put("domainPackage", domainPackage);
     }
 
