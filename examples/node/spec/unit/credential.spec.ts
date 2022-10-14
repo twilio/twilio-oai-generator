@@ -11,11 +11,24 @@ describe("credential", () => {
     nock.cleanAll();
   });
 
+  it("should create a new set of credentials", () => {
+    const scope = nock("http://flex-api.twilio.com")
+      .post("/v1/Credentials/AWS")
+      .query({
+        TestString: "I'm New Here",
+      })
+      .reply(201, { sid: "123" });
+
+    return twilio.flexApi.v1.credentials.newCredentials
+      .create({ testString: "I'm New Here" })
+      .then(() => scope.done());
+  });
+
   it("should update an aws credential", () => {
     const scope = nock("http://flex-api.twilio.com")
       .post("/v1/Credentials/AWS/123")
       .reply(200, { sid: "123" });
 
-    return twilio.flexApi.v1.credential.aws("123").update(() => scope.done());
+    return twilio.flexApi.v1.credentials.aws("123").update(() => scope.done());
   });
 });

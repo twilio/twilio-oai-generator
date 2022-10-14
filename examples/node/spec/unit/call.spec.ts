@@ -16,6 +16,6 @@ describe("credential", () => {
       .post("/v1/Voice/123")
       .reply(200, { sid: "123" });
 
-    return twilio.flexApi.v1.call("123").update(() => scope.done());
+    return twilio.flexApi.v1.calls("123").update(() => scope.done());
   });
 });

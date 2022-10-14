@@ -11,7 +11,7 @@ public interface IResourceTree {
 
     List<String> ancestors(String resourceName, Operation operation);
 
-    List<String> dependents(String name);
+    List<Resource> dependents(String name);
 
     Optional<Resource> findResource(String name);
 
