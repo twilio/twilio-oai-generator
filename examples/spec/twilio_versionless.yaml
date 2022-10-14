@@ -78,6 +78,7 @@ paths:
     x-twilio:
       pathType: instance
   /understand/Assistants:
+    description: A path for a different product.
     post:
       operationId: CreateUnderstandAssistant
       requestBody:

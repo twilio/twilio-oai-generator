@@ -30,10 +30,6 @@ namespace Twilio.Rest.FlexApi.V1
     {
     
 
-
-
-
-
         
         private static Request BuildUpdateRequest(UpdateCallOptions options, ITwilioRestClient client)
         {
@@ -79,7 +75,7 @@ namespace Twilio.Rest.FlexApi.V1
         #endif
 
         /// <summary> update </summary>
-                /// <param name="pathSid">  </param>
+        /// <param name="pathSid">  </param>
         /// <param name="client"> Client to make requests to Twilio </param>
         /// <returns> A single instance of Call </returns>
         public static CallResource Update(
@@ -92,7 +88,7 @@ namespace Twilio.Rest.FlexApi.V1
 
         #if !NET35
         /// <summary> update </summary>
-                /// <param name="pathSid">  </param>
+        /// <param name="pathSid">  </param>
         /// <param name="client"> Client to make requests to Twilio </param>
         /// <returns> Task that resolves to A single instance of Call </returns>
         public static async System.Threading.Tasks.Task<CallResource> UpdateAsync(
@@ -104,53 +100,6 @@ namespace Twilio.Rest.FlexApi.V1
         }
         #endif
     
-        /// <summary> Fetch the target page of records </summary>
-        /// <param name="targetUrl"> API-generated URL for the requested results page </param>
-        /// <param name="client"> Client to make requests to Twilio </param>
-        /// <returns> The target page of records </returns>
-        public static Page<CallResource> GetPage(string targetUrl, ITwilioRestClient client)
-        {
-            client = client ?? TwilioClient.GetRestClient();
-
-            var request = new Request(
-                HttpMethod.Get,
-                targetUrl
-            );
-
-            var response = client.Request(request);
-            return Page<CallResource>.FromJson("", response.Content);
-        }
-
-        /// <summary> Fetch the next page of records </summary>
-        /// <param name="page"> current page of records </param>
-        /// <param name="client"> Client to make requests to Twilio </param>
-        /// <returns> The next page of records </returns>
-        public static Page<CallResource> NextPage(Page<CallResource> page, ITwilioRestClient client)
-        {
-            var request = new Request(
-                HttpMethod.Get,
-                page.GetNextPageUrl(Rest.Domain.Api)
-            );
-
-            var response = client.Request(request);
-            return Page<CallResource>.FromJson("", response.Content);
-        }
-
-        /// <summary> Fetch the previous page of records </summary>
-        /// <param name="page"> current page of records </param>
-        /// <param name="client"> Client to make requests to Twilio </param>
-        /// <returns> The previous page of records </returns>
-        public static Page<CallResource> PreviousPage(Page<CallResource> page, ITwilioRestClient client)
-        {
-            var request = new Request(
-                HttpMethod.Get,
-                page.GetPreviousPageUrl(Rest.Domain.Api)
-            );
-
-            var response = client.Request(request);
-            return Page<CallResource>.FromJson("", response.Content);
-        }
-
         /// <summary>
         /// Converts a JSON string into a CallResource object
         /// </summary>
@@ -167,7 +116,6 @@ namespace Twilio.Rest.FlexApi.V1
                 throw new ApiException(e.Message, e);
             }
         }
-
 
     
         ///<summary> The sid </summary> 

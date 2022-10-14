@@ -49,7 +49,7 @@ describe("Integration tests", () => {
     };
     const result = await client.api.v2010
       .accounts(accountSid)
-      .calls.feedback_call_summary("CR12345678123456781234567812345678")
+      .calls.feedbackCallSummary("CR12345678123456781234567812345678")
       .update(params);
     expect(result.testArrayOfObjects[0].description).toEqual(
       "issue description"

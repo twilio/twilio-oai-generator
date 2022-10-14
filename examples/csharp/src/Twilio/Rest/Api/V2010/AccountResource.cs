@@ -101,43 +101,38 @@ namespace Twilio.Rest.Api.V2010
         #endif
 
         /// <summary> create </summary>
-                /// <param name="xTwilioWebhookEnabled">  </param>
         /// <param name="recordingStatusCallback">  </param>
         /// <param name="recordingStatusCallbackEvent">  </param>
+        /// <param name="xTwilioWebhookEnabled">  </param>
         /// <param name="client"> Client to make requests to Twilio </param>
         /// <returns> A single instance of Account </returns>
         public static AccountResource Create(
-                                          AccountResource.XTwilioWebhookEnabledEnum xTwilioWebhookEnabled = null,
                                           Uri recordingStatusCallback = null,
                                           List<string> recordingStatusCallbackEvent = null,
+                                          AccountResource.XTwilioWebhookEnabledEnum xTwilioWebhookEnabled = null,
                                           ITwilioRestClient client = null)
         {
-            var options = new CreateAccountOptions(){  XTwilioWebhookEnabled = xTwilioWebhookEnabled, RecordingStatusCallback = recordingStatusCallback, RecordingStatusCallbackEvent = recordingStatusCallbackEvent };
+            var options = new CreateAccountOptions(){  RecordingStatusCallback = recordingStatusCallback, RecordingStatusCallbackEvent = recordingStatusCallbackEvent, XTwilioWebhookEnabled = xTwilioWebhookEnabled };
             return Create(options, client);
         }
 
         #if !NET35
         /// <summary> create </summary>
-                /// <param name="xTwilioWebhookEnabled">  </param>
         /// <param name="recordingStatusCallback">  </param>
         /// <param name="recordingStatusCallbackEvent">  </param>
+        /// <param name="xTwilioWebhookEnabled">  </param>
         /// <param name="client"> Client to make requests to Twilio </param>
         /// <returns> Task that resolves to A single instance of Account </returns>
         public static async System.Threading.Tasks.Task<AccountResource> CreateAsync(
-                                                                                  AccountResource.XTwilioWebhookEnabledEnum xTwilioWebhookEnabled = null,
                                                                                   Uri recordingStatusCallback = null,
                                                                                   List<string> recordingStatusCallbackEvent = null,
+                                                                                  AccountResource.XTwilioWebhookEnabledEnum xTwilioWebhookEnabled = null,
                                                                                   ITwilioRestClient client = null)
         {
-        var options = new CreateAccountOptions(){  XTwilioWebhookEnabled = xTwilioWebhookEnabled, RecordingStatusCallback = recordingStatusCallback, RecordingStatusCallbackEvent = recordingStatusCallbackEvent };
+        var options = new CreateAccountOptions(){  RecordingStatusCallback = recordingStatusCallback, RecordingStatusCallbackEvent = recordingStatusCallbackEvent, XTwilioWebhookEnabled = xTwilioWebhookEnabled };
             return await CreateAsync(options, client);
         }
         #endif
-
-
-
-
-
 
 
 
@@ -168,7 +163,7 @@ namespace Twilio.Rest.Api.V2010
         /// <summary> delete </summary>
         /// <param name="options"> Delete Account parameters </param>
         /// <param name="client"> Client to make requests to Twilio </param>
-        /// <returns> Task that resolves to A single instance of Account </returns>
+        /// <returns> A single instance of Account </returns>
         public static bool Delete(DeleteAccountOptions options, ITwilioRestClient client = null)
         {
             client = client ?? TwilioClient.GetRestClient();
@@ -177,6 +172,10 @@ namespace Twilio.Rest.Api.V2010
         }
 
         #if !NET35
+        /// <summary> delete </summary>
+        /// <param name="options"> Delete Account parameters </param>
+        /// <param name="client"> Client to make requests to Twilio </param>
+        /// <returns> Task that resolves to A single instance of Account </returns>
         public static async System.Threading.Tasks.Task<bool> DeleteAsync(DeleteAccountOptions options,
                                                                           ITwilioRestClient client = null)
         {
@@ -186,6 +185,10 @@ namespace Twilio.Rest.Api.V2010
         }
         #endif
 
+        /// <summary> delete </summary>
+        /// <param name="pathSid">  </param>
+        /// <param name="client"> Client to make requests to Twilio </param>
+        /// <returns> A single instance of Account </returns>
         public static bool Delete(string pathSid = null, ITwilioRestClient client = null)
         {
             var options = new DeleteAccountOptions()   { PathSid = pathSid }   ;
@@ -193,20 +196,17 @@ namespace Twilio.Rest.Api.V2010
         }
 
         #if !NET35
+        /// <summary> delete </summary>
+        /// <param name="pathSid">  </param>
+        /// <param name="client"> Client to make requests to Twilio </param>
+        /// <returns> Task that resolves to A single instance of Account </returns>
         public static async System.Threading.Tasks.Task<bool> DeleteAsync(string pathSid = null, ITwilioRestClient client = null)
         {
             var options = new DeleteAccountOptions()  { PathSid = pathSid };
             return await DeleteAsync(options, client);
         }
         #endif
-
-
-
-
-
-
         
-
         private static Request BuildFetchRequest(FetchAccountOptions options, ITwilioRestClient client)
         {
             
@@ -250,10 +250,12 @@ namespace Twilio.Rest.Api.V2010
         }
         #endif
         /// <summary> fetch </summary>
-                /// <param name="pathSid">  </param>
+        /// <param name="pathSid">  </param>
         /// <param name="client"> Client to make requests to Twilio </param>
         /// <returns> A single instance of Account </returns>
-        public static AccountResource Fetch(string pathSid = null, ITwilioRestClient client = null)
+        public static AccountResource Fetch(
+                                         string pathSid = null, 
+                                         ITwilioRestClient client = null)
         {
             var options = new FetchAccountOptions(){ PathSid = pathSid };
             return Fetch(options, client);
@@ -261,7 +263,7 @@ namespace Twilio.Rest.Api.V2010
 
         #if !NET35
         /// <summary> fetch </summary>
-                /// <param name="pathSid">  </param>
+        /// <param name="pathSid">  </param>
         /// <param name="client"> Client to make requests to Twilio </param>
         /// <returns> Task that resolves to A single instance of Account </returns>
         public static async System.Threading.Tasks.Task<AccountResource> FetchAsync(string pathSid = null, ITwilioRestClient client = null)
@@ -270,14 +272,7 @@ namespace Twilio.Rest.Api.V2010
             return await FetchAsync(options, client);
         }
         #endif
-
-
-
-
-
         
-
-
         private static Request BuildReadRequest(ReadAccountOptions options, ITwilioRestClient client)
         {
             
@@ -321,7 +316,7 @@ namespace Twilio.Rest.Api.V2010
         }
         #endif
         /// <summary> read </summary>
-                /// <param name="dateCreated">  </param>
+        /// <param name="dateCreated">  </param>
         /// <param name="dateTest">  </param>
         /// <param name="dateCreatedBefore">  </param>
         /// <param name="dateCreatedAfter">  </param>
@@ -344,7 +339,7 @@ namespace Twilio.Rest.Api.V2010
 
         #if !NET35
         /// <summary> read </summary>
-                /// <param name="dateCreated">  </param>
+        /// <param name="dateCreated">  </param>
         /// <param name="dateTest">  </param>
         /// <param name="dateCreatedBefore">  </param>
         /// <param name="dateCreatedAfter">  </param>
@@ -366,8 +361,53 @@ namespace Twilio.Rest.Api.V2010
         }
         #endif
 
+        
+        /// <summary> Fetch the target page of records </summary>
+        /// <param name="targetUrl"> API-generated URL for the requested results page </param>
+        /// <param name="client"> Client to make requests to Twilio </param>
+        /// <returns> The target page of records </returns>
+        public static Page<AccountResource> GetPage(string targetUrl, ITwilioRestClient client)
+        {
+            client = client ?? TwilioClient.GetRestClient();
 
+            var request = new Request(
+                HttpMethod.Get,
+                targetUrl
+            );
 
+            var response = client.Request(request);
+            return Page<AccountResource>.FromJson("accounts", response.Content);
+        }
+
+        /// <summary> Fetch the next page of records </summary>
+        /// <param name="page"> current page of records </param>
+        /// <param name="client"> Client to make requests to Twilio </param>
+        /// <returns> The next page of records </returns>
+        public static Page<AccountResource> NextPage(Page<AccountResource> page, ITwilioRestClient client)
+        {
+            var request = new Request(
+                HttpMethod.Get,
+                page.GetNextPageUrl(Rest.Domain.Api)
+            );
+
+            var response = client.Request(request);
+            return Page<AccountResource>.FromJson("accounts", response.Content);
+        }
+
+        /// <summary> Fetch the previous page of records </summary>
+        /// <param name="page"> current page of records </param>
+        /// <param name="client"> Client to make requests to Twilio </param>
+        /// <returns> The previous page of records </returns>
+        public static Page<AccountResource> PreviousPage(Page<AccountResource> page, ITwilioRestClient client)
+        {
+            var request = new Request(
+                HttpMethod.Get,
+                page.GetPreviousPageUrl(Rest.Domain.Api)
+            );
+
+            var response = client.Request(request);
+            return Page<AccountResource>.FromJson("accounts", response.Content);
+        }
 
 
 
@@ -416,7 +456,7 @@ namespace Twilio.Rest.Api.V2010
         #endif
 
         /// <summary> update </summary>
-                /// <param name="status">  </param>
+        /// <param name="status">  </param>
         /// <param name="pathSid">  </param>
         /// <param name="pauseBehavior">  </param>
         /// <param name="client"> Client to make requests to Twilio </param>
@@ -433,7 +473,7 @@ namespace Twilio.Rest.Api.V2010
 
         #if !NET35
         /// <summary> update </summary>
-                /// <param name="status">  </param>
+        /// <param name="status">  </param>
         /// <param name="pathSid">  </param>
         /// <param name="pauseBehavior">  </param>
         /// <param name="client"> Client to make requests to Twilio </param>
@@ -449,53 +489,6 @@ namespace Twilio.Rest.Api.V2010
         }
         #endif
     
-        /// <summary> Fetch the target page of records </summary>
-        /// <param name="targetUrl"> API-generated URL for the requested results page </param>
-        /// <param name="client"> Client to make requests to Twilio </param>
-        /// <returns> The target page of records </returns>
-        public static Page<AccountResource> GetPage(string targetUrl, ITwilioRestClient client)
-        {
-            client = client ?? TwilioClient.GetRestClient();
-
-            var request = new Request(
-                HttpMethod.Get,
-                targetUrl
-            );
-
-            var response = client.Request(request);
-            return Page<AccountResource>.FromJson("accounts", response.Content);
-        }
-
-        /// <summary> Fetch the next page of records </summary>
-        /// <param name="page"> current page of records </param>
-        /// <param name="client"> Client to make requests to Twilio </param>
-        /// <returns> The next page of records </returns>
-        public static Page<AccountResource> NextPage(Page<AccountResource> page, ITwilioRestClient client)
-        {
-            var request = new Request(
-                HttpMethod.Get,
-                page.GetNextPageUrl(Rest.Domain.Api)
-            );
-
-            var response = client.Request(request);
-            return Page<AccountResource>.FromJson("accounts", response.Content);
-        }
-
-        /// <summary> Fetch the previous page of records </summary>
-        /// <param name="page"> current page of records </param>
-        /// <param name="client"> Client to make requests to Twilio </param>
-        /// <returns> The previous page of records </returns>
-        public static Page<AccountResource> PreviousPage(Page<AccountResource> page, ITwilioRestClient client)
-        {
-            var request = new Request(
-                HttpMethod.Get,
-                page.GetPreviousPageUrl(Rest.Domain.Api)
-            );
-
-            var response = client.Request(request);
-            return Page<AccountResource>.FromJson("accounts", response.Content);
-        }
-
         /// <summary>
         /// Converts a JSON string into a AccountResource object
         /// </summary>
@@ -512,7 +505,6 @@ namespace Twilio.Rest.Api.V2010
                 throw new ApiException(e.Message, e);
             }
         }
-
 
     
         ///<summary> The account_sid </summary> 

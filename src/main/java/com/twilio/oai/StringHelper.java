@@ -1,27 +1,48 @@
 package com.twilio.oai;
 
-import java.util.HashSet;
+import java.util.Arrays;
+import java.util.Set;
+import java.util.function.UnaryOperator;
+import java.util.stream.Collectors;
 
+import lombok.experimental.UtilityClass;
+import org.apache.commons.lang3.StringUtils;
+
+@UtilityClass
 public class StringHelper {
 
-    public static String titleCase(String input){
-        input.replace(" ","");
-        String[] split = input.split("_");
-        String result = "";
-        for(int i = 0; i < split.length; i++){
-            String item = split[i];
-            result+= Character.toTitleCase(item.charAt(0)) + item.substring(1);
-        }
-        return result;
+    public String camelize(final String inputWord) {
+        return StringHelper.camelize(inputWord, false);
     }
 
-    public static boolean existInSetIgnoreCase(String item, HashSet<String> set){
-        for (String s : set) {
-            if(s.equalsIgnoreCase(item)){
-                return true;
-            }
-        }
-        return false;
+    public String camelize(final String inputWord, final boolean lowercaseFirstLetter) {
+        final String camelized = Arrays
+            .stream(inputWord
+                        .replaceAll("([a-z])([A-Z])", "$1_$2")
+                        .replaceAll("(\\d)([A-Za-z])", "$1_$2")
+                        .split("[_.-]"))
+            .map(String::toLowerCase)
+            .map(StringHelper::toFirstLetterCaps)
+            .collect(Collectors.joining());
+
+        return lowercaseFirstLetter ? toFirstLetterLower(camelized) : camelized;
     }
 
+    public String toFirstLetterCaps(final String input) {
+        return convertFirstChar(input, String::toUpperCase);
+    }
+
+    public String toFirstLetterLower(final String input) {
+        return convertFirstChar(input, String::toLowerCase);
+    }
+
+    private String convertFirstChar(final String inputWord, final UnaryOperator<String> firstCharFunction) {
+        return StringUtils.isBlank(inputWord)
+            ? inputWord
+            : firstCharFunction.apply(inputWord.substring(0, 1)) + inputWord.substring(1);
+    }
+
+    public boolean existInSetIgnoreCase(final String item, final Set<String> set) {
+        return set.stream().anyMatch(target -> target.equalsIgnoreCase(item));
+    }
 }
