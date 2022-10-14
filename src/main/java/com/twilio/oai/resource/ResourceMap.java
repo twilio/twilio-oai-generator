@@ -28,12 +28,12 @@ public class ResourceMap implements IResourceTree {
     public List<String> ancestors(final String resourceName, final Operation operation) {
         final Resource resource = findResource(resourceName).orElseThrow();
         final List<String> ancestorList = new ArrayList<>();
-        ancestorList.add(resource.getClassName(operation).getName());
+        ancestorList.add(resource.getResourceAliases(operation).getClassName());
 
         Optional<Resource> parent = resource.getParentResource(this);
         while (parent.isPresent()) {
             final Resource parentResource = parent.get();
-            ancestorList.add(0, parentResource.getClassName().getName());
+            ancestorList.add(0, parentResource.getResourceAliases().getClassName());
             parent = parentResource.getParentResource(this);
         }
 
@@ -44,13 +44,12 @@ public class ResourceMap implements IResourceTree {
      * Returns a list of dependents for the operation as those with a path that directly under the current path.
      */
     @Override
-    public List<String> dependents(final String name) {
+    public List<Resource> dependents(final String name) {
         return urlResourceMap
             .values()
             .stream()
-            .map(Resource::getName)
-            .filter(p -> PathUtils
-                .removePathParamIds(p)
+            .filter(resource -> PathUtils
+                .removePathParamIds(resource.getName())
                 .matches(PathUtils.escapeRegex(PathUtils.removePathParamIds(name) + "/[^{/]+")))
             .collect(Collectors.toList());
     }
