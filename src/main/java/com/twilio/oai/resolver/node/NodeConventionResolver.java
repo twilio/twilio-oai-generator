@@ -56,19 +56,14 @@ public class NodeConventionResolver {
                     }
 
                     model.vendorExtensions.computeIfAbsent("x-imports", k -> new ArrayList<>());
-
-                    HashMap<String, String> obj = (HashMap<String, String>) conventionMap.get(Segments.SEGMENT_LIBRARY.getSegment()).
+                    Map<String, String> obj = (Map<String, String>) conventionMap.get(Segments.SEGMENT_LIBRARY.getSegment()).
                             get(StringUtils.underscore(modelFormatMap.get(prop.complexType)));
-                    ArrayList array = (ArrayList) model.vendorExtensions.get("x-imports");
-
-                    HashMap<String, String> value = new HashMap<>();
-
-                    // If the object isn't already there, add it
-                    value.put("name", prop.dataType);
-                    value.put("path", obj.get(prop.dataType));
-
-                    if (!importAlreadyExists(prop.dataType, array)) {
-                        array.add(value);
+                    ArrayList<Map<String, String>> imports = (ArrayList<Map<String, String>>) model.vendorExtensions.get("x-imports");
+                    Map<String, String> objectImport = new HashMap<>();
+                    objectImport.put("name", prop.dataType);
+                    objectImport.put("path", obj.get(prop.dataType));
+                    if (!importAlreadyExists(prop.dataType, imports)) {
+                        imports.add(objectImport);
                     }
                 }
             }
@@ -76,8 +71,8 @@ public class NodeConventionResolver {
         return model;
     }
 
-    private Boolean importAlreadyExists(String importName, ArrayList<HashMap<String, String>> array){
-        for (HashMap<String, String> element : array) {
+    private Boolean importAlreadyExists(String importName, ArrayList<Map<String, String>> array){
+        for (Map<String, String> element : array) {
             if (importName.equals(element.get("name"))) {
                 return true;
             }
@@ -85,9 +80,6 @@ public class NodeConventionResolver {
         return false;
     }
 
-    private Boolean ximportVendorExtensionExists(CodegenModel model) {
-        return model.vendorExtensions.containsKey("x-imports");
-    }
     public Map<String, Map<String, Object>> getConventionalMap() {
         try {
             return new ObjectMapper().readValue(Thread.currentThread().getContextClassLoader().getResourceAsStream(CONFIG_NODE_JSON_PATH), new TypeReference<Map<String, Map<String, Object>>>(){});

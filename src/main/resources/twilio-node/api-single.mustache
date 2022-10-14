@@ -8,12 +8,10 @@ import {{apiVersionClass}} from "{{apiVersionPath}}/{{apiVersionClass}}";
 const deserialize = require("{{apiVersionPath}}/../../base/deserialize");
 const serialize = require("{{apiVersionPath}}/../../base/serialize");
 {{#resources}}
-{{>imports}}
-{{/resources}}
-{{#resources}}
 {{#dependents}}
 import { {{name}}ListInstance } from "./{{apiFilename}}/{{filename}}";
 {{/dependents}}
+{{>imports}}
 {{/resources}}
 {{#resources}}
 {{>model}}

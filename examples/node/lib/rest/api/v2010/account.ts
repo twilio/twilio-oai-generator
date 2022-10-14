@@ -15,11 +15,11 @@
 import { inspect, InspectOptions } from "util";
 import Page from "../../../base/Page";
 import Response from "../../../http/response";
-import PhoneNumberCapabilities from "../../../interfaces";
 import V2010 from "../V2010";
 const deserialize = require("../../../base/deserialize");
 const serialize = require("../../../base/serialize");
 import { CallListInstance } from "./account/call";
+import PhoneNumberCapabilities from "../../../interfaces";
 
 /**
  * Options to pass to update a AccountInstance
