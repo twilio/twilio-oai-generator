@@ -3,7 +3,7 @@ import V1 from "./flexApi/V1";
 
 class FlexApiBase extends Domain {
   constructor(twilio: any) {
-    super(twilio, "https://flex-api.twilio.com");
+    super(twilio, "http://flex-api.twilio.com");
   }
 
   get v1(): V1 {

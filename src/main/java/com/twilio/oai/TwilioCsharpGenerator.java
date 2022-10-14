@@ -26,6 +26,7 @@ import com.google.common.collect.ImmutableMap;
 import com.samskivert.mustache.Mustache;
 import io.swagger.v3.oas.models.OpenAPI;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenOperation;
 import org.openapitools.codegen.CodegenParameter;
@@ -36,7 +37,6 @@ import org.openapitools.codegen.languages.CSharpClientCodegen;
 import org.openapitools.codegen.model.ModelMap;
 import org.openapitools.codegen.model.ModelsMap;
 import org.openapitools.codegen.model.OperationsMap;
-import org.openapitools.codegen.utils.StringUtils;
 
 @Slf4j
 public class TwilioCsharpGenerator extends CSharpClientCodegen {
@@ -81,7 +81,7 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
 
     @Override
     public void processOpenAPI(final OpenAPI openAPI) {
-        final String domain = StringUtils.camelize(twilioCodegen.getDomainFromOpenAPI(openAPI));
+        final String domain = StringHelper.camelize(twilioCodegen.getDomainFromOpenAPI(openAPI));
         final String version = (String) additionalProperties.get("apiVersionClass");
         twilioCodegen.setDomain(domain);
         twilioCodegen.setOutputDir(domain, version);
@@ -212,9 +212,9 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
                 List<List<String>> conditionalParamList = (List<List<String>>) twilioVendorExtension.get("conditional");
                 for (List<String> conditionalParams: conditionalParamList) {
                     for (String conditionalParam: conditionalParams) {
-                        if (optionalParamMap.containsKey(StringUtils.camelize(conditionalParam))) {
-                            conditionalParameters.add(optionalParamMap.get(StringUtils.camelize(conditionalParam)));
-                            optionalParamMap.remove(StringUtils.camelize(conditionalParam));
+                        if (optionalParamMap.containsKey(StringHelper.camelize(conditionalParam))) {
+                            conditionalParameters.add(optionalParamMap.get(StringHelper.camelize(conditionalParam)));
+                            optionalParamMap.remove(StringHelper.camelize(conditionalParam));
                         }
                     }
                 }
@@ -255,7 +255,7 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
     void rearrangeBeforeAfter(final List<CodegenParameter> parameters) {
         for (int index = 0; index < parameters.size(); index++) {
             CodegenParameter codegenParameter = parameters.get(index);
-            if (!org.apache.commons.lang3.StringUtils.isBlank(codegenParameter.paramName) && codegenParameter.paramName.endsWith("Before")) {
+            if (!StringUtils.isBlank(codegenParameter.paramName) && codegenParameter.paramName.endsWith("Before")) {
                 String paramName = codegenParameter.paramName.replace("Before", "");
                 if (index > 0 && paramName.equals(parameters.get(index-1).paramName)) {
                     CodegenParameter codegenParameterToRearrange = parameters.get(index-1);
@@ -344,7 +344,7 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
     // Sanitizing URL path similar to java codegen.
     @Override
     public String sanitizeTag(String tag) {
-        tag = org.openapitools.codegen.utils.StringUtils.camelize(org.openapitools.codegen.utils.StringUtils.underscore(this.sanitizeName(tag)));
+        tag = StringHelper.camelize(org.openapitools.codegen.utils.StringUtils.underscore(this.sanitizeName(tag)));
         if (tag.matches("^\\d.*")) {
             tag = "Class" + tag;
         }

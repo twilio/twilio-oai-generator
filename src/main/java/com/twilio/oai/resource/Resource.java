@@ -2,12 +2,10 @@ package com.twilio.oai.resource;
 
 import com.twilio.oai.Inflector;
 import com.twilio.oai.PathUtils;
-import com.twilio.oai.TwilioJavaGenerator;
+import com.twilio.oai.StringHelper;
 
-import java.util.Arrays;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.Operation;
@@ -112,10 +110,6 @@ public class Resource {
             .map(Map.class::cast)
             .map(xTwilio -> xTwilio.get("className"))
             .map(String.class::cast)
-            .map(this::transformClassName);
-    }
-
-    private String transformClassName(final String className) {
-        return Arrays.stream(className.split("_")).map(TwilioJavaGenerator::capitalize).collect(Collectors.joining());
+            .map(StringHelper::camelize);
     }
 }

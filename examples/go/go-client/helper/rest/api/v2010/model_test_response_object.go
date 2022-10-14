@@ -13,48 +13,45 @@
  */
 
 package openapi
-
 import (
 	"encoding/json"
-
 	"github.com/twilio/twilio-go/client"
 )
-
 // TestResponseObject struct for TestResponseObject
 type TestResponseObject struct {
-	AccountSid                 *string                                 `json:"account_sid,omitempty"`
-	Sid                        *string                                 `json:"sid,omitempty"`
-	TestString                 *string                                 `json:"test_string,omitempty"`
-	TestInteger                *int                                    `json:"test_integer,omitempty"`
-	TestObject                 *TestResponseObjectTestObject           `json:"test_object,omitempty"`
-	TestDateTime               *string                                 `json:"test_date_time,omitempty"`
-	TestNumber                 *float32                                `json:"test_number,omitempty"`
-	PriceUnit                  *string                                 `json:"price_unit,omitempty"`
-	TestNumberFloat            *float32                                `json:"test_number_float,omitempty"`
-	TestEnum                   *string                                 `json:"test_enum,omitempty"`
-	TestArrayOfIntegers        []int                                   `json:"test_array_of_integers,omitempty"`
-	TestArrayOfArrayOfIntegers [][]int                                 `json:"test_array_of_array_of_integers,omitempty"`
-	TestArrayOfObjects         *[]TestResponseObjectTestArrayOfObjects `json:"test_array_of_objects,omitempty"`
-	// Permissions authorized to the app
+	AccountSid *string `json:"account_sid,omitempty"`
+	Sid *string `json:"sid,omitempty"`
+	TestString *string `json:"test_string,omitempty"`
+	TestInteger *int `json:"test_integer,omitempty"`
+	TestObject *TestResponseObjectTestObject `json:"test_object,omitempty"`
+	TestDateTime *string `json:"test_date_time,omitempty"`
+	TestNumber *float32 `json:"test_number,omitempty"`
+	PriceUnit *string `json:"price_unit,omitempty"`
+	TestNumberFloat *float32 `json:"test_number_float,omitempty"`
+	TestEnum *string `json:"test_enum,omitempty"`
+	TestArrayOfIntegers []int `json:"test_array_of_integers,omitempty"`
+	TestArrayOfArrayOfIntegers [][]int `json:"test_array_of_array_of_integers,omitempty"`
+	TestArrayOfObjects *[]TestResponseObjectTestArrayOfObjects `json:"test_array_of_objects,omitempty"`
+		// Permissions authorized to the app
 	TestArrayOfEnum *[]string `json:"test_array_of_enum,omitempty"`
 }
 
 func (response *TestResponseObject) UnmarshalJSON(bytes []byte) (err error) {
 	raw := struct {
-		AccountSid                 *string                                 `json:"account_sid"`
-		Sid                        *string                                 `json:"sid"`
-		TestString                 *string                                 `json:"test_string"`
-		TestInteger                *int                                    `json:"test_integer"`
-		TestObject                 *TestResponseObjectTestObject           `json:"test_object"`
-		TestDateTime               *string                                 `json:"test_date_time"`
-		TestNumber                 *interface{}                            `json:"test_number"`
-		PriceUnit                  *string                                 `json:"price_unit"`
-		TestNumberFloat            *interface{}                            `json:"test_number_float"`
-		TestEnum                   *string                                 `json:"test_enum"`
-		TestArrayOfIntegers        []int                                   `json:"test_array_of_integers"`
-		TestArrayOfArrayOfIntegers [][]int                                 `json:"test_array_of_array_of_integers"`
-		TestArrayOfObjects         *[]TestResponseObjectTestArrayOfObjects `json:"test_array_of_objects"`
-		TestArrayOfEnum            *[]string                               `json:"test_array_of_enum"`
+		AccountSid *string `json:"account_sid"`
+		Sid *string `json:"sid"`
+		TestString *string `json:"test_string"`
+		TestInteger *int `json:"test_integer"`
+		TestObject *TestResponseObjectTestObject `json:"test_object"`
+		TestDateTime *string `json:"test_date_time"`
+		TestNumber *interface{} `json:"test_number"`
+		PriceUnit *string `json:"price_unit"`
+		TestNumberFloat *interface{} `json:"test_number_float"`
+		TestEnum *string `json:"test_enum"`
+		TestArrayOfIntegers []int `json:"test_array_of_integers"`
+		TestArrayOfArrayOfIntegers [][]int `json:"test_array_of_array_of_integers"`
+		TestArrayOfObjects *[]TestResponseObjectTestArrayOfObjects `json:"test_array_of_objects"`
+		TestArrayOfEnum *[]string `json:"test_array_of_enum"`
 	}{}
 
 	if err = json.Unmarshal(bytes, &raw); err != nil {
@@ -62,18 +59,18 @@ func (response *TestResponseObject) UnmarshalJSON(bytes []byte) (err error) {
 	}
 
 	*response = TestResponseObject{
-		AccountSid:                 raw.AccountSid,
-		Sid:                        raw.Sid,
-		TestString:                 raw.TestString,
-		TestInteger:                raw.TestInteger,
-		TestObject:                 raw.TestObject,
-		TestDateTime:               raw.TestDateTime,
-		PriceUnit:                  raw.PriceUnit,
-		TestEnum:                   raw.TestEnum,
-		TestArrayOfIntegers:        raw.TestArrayOfIntegers,
+		AccountSid: raw.AccountSid,
+		Sid: raw.Sid,
+		TestString: raw.TestString,
+		TestInteger: raw.TestInteger,
+		TestObject: raw.TestObject,
+		TestDateTime: raw.TestDateTime,
+		PriceUnit: raw.PriceUnit,
+		TestEnum: raw.TestEnum,
+		TestArrayOfIntegers: raw.TestArrayOfIntegers,
 		TestArrayOfArrayOfIntegers: raw.TestArrayOfArrayOfIntegers,
-		TestArrayOfObjects:         raw.TestArrayOfObjects,
-		TestArrayOfEnum:            raw.TestArrayOfEnum,
+		TestArrayOfObjects: raw.TestArrayOfObjects,
+		TestArrayOfEnum: raw.TestArrayOfEnum,
 	}
 
 	responseTestNumber, err := client.UnmarshalFloat32(raw.TestNumber)
@@ -90,3 +87,4 @@ func (response *TestResponseObject) UnmarshalJSON(bytes []byte) (err error) {
 
 	return
 }
+

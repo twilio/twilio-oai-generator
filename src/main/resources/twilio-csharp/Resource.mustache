@@ -26,7 +26,8 @@ namespace Twilio.Rest.{{domainPackage}}.{{apiVersionClass}}{{packageSubPart}}
         {{>resource/UpdateResource}}
     {{/vendorExtensions.x-is-update-operation}}
     {{/operations}}
-    {{>Pagination}}
+    {{>FromJson}}
+
     {{>resource/ResponseModel}}
 
         private {{resourceName}}{{resourceConstant}}() {

@@ -12,140 +12,140 @@
  * Do not edit the class manually.
  */
 
+
 package openapi
 
 import (
-	"context"
-	"fmt"
-	. "go-client/helper/rest/flex/v1"
-	"go-client/terraform/client"
-	"strings"
-
-	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
-	. "github.com/twilio/terraform-provider-twilio/core"
+    "context"
+    "github.com/hashicorp/terraform-plugin-sdk/v2/diag"
+    "github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+    "go-client/terraform/client"
+    . "github.com/twilio/terraform-provider-twilio/core"
+    . "go-client/helper/rest/flex/v1"
 )
 
 func ResourceCredentialsAWS() *schema.Resource {
-	return &schema.Resource{
-		CreateContext: createCredentialsAWS,
-		ReadContext:   readCredentialsAWS,
-		UpdateContext: updateCredentialsAWS,
-		DeleteContext: deleteCredentialsAWS,
-		Schema: map[string]*schema.Schema{
-			"test_string":        AsString(SchemaRequired),
-			"test_boolean":       AsBool(SchemaComputedOptional),
-			"test_integer":       AsInt(SchemaForceNewOptional),
-			"test_number":        AsFloat(SchemaForceNewOptional),
-			"test_number_float":  AsFloat(SchemaForceNewOptional),
-			"test_number_double": AsString(SchemaForceNewOptional),
-			"test_number_int32":  AsFloat(SchemaForceNewOptional),
-			"test_number_int64":  AsString(SchemaForceNewOptional),
-			"test_object":        AsString(SchemaForceNewOptional),
-			"test_date_time":     AsString(SchemaForceNewOptional),
-			"test_date":          AsString(SchemaForceNewOptional),
-			"test_enum":          AsString(SchemaForceNewOptional),
-			"test_object_array":  AsList(AsString(SchemaForceNewOptional), SchemaForceNewOptional),
-			"test_any_type":      AsString(SchemaForceNewOptional),
-			"permissions":        AsList(AsString(SchemaForceNewOptional), SchemaForceNewOptional),
-			"sid":                AsString(SchemaComputed),
-		},
-		Importer: &schema.ResourceImporter{
-			StateContext: func(ctx context.Context, d *schema.ResourceData, m interface{}) ([]*schema.ResourceData, error) {
-				err := parseCredentialsAWSImportId(d.Id(), d)
-				if err != nil {
-					return nil, err
-				}
+    return &schema.Resource{
+        CreateContext: createCredentialsAWS,
+        ReadContext: readCredentialsAWS,
+        UpdateContext: updateCredentialsAWS,
+        DeleteContext: deleteCredentialsAWS,
+        Schema: map[string]*schema.Schema{
+            "test_string": AsString(SchemaRequired),
+            "test_boolean": AsBool(SchemaComputedOptional),
+            "test_integer": AsInt(SchemaForceNewOptional),
+            "test_number": AsFloat(SchemaForceNewOptional),
+            "test_number_float": AsFloat(SchemaForceNewOptional),
+            "test_number_double": AsString(SchemaForceNewOptional),
+            "test_number_int32": AsFloat(SchemaForceNewOptional),
+            "test_number_int64": AsString(SchemaForceNewOptional),
+            "test_object": AsString(SchemaForceNewOptional),
+            "test_date_time": AsString(SchemaForceNewOptional),
+            "test_date": AsString(SchemaForceNewOptional),
+            "test_enum": AsString(SchemaForceNewOptional),
+            "test_object_array": AsList(AsString(SchemaForceNewOptional), SchemaForceNewOptional),
+            "test_any_type": AsString(SchemaForceNewOptional),
+            "permissions": AsList(AsString(SchemaForceNewOptional), SchemaForceNewOptional),
+            "sid": AsString(SchemaComputed),
+        },
+        Importer: &schema.ResourceImporter{
+            StateContext: func(ctx context.Context, d *schema.ResourceData, m interface{}) ([]*schema.ResourceData, error) {
+                err := parseCredentialsAWSImportId(d.Id(), d)
+                if err != nil {
+                    return nil, err
+                }
 
-				return []*schema.ResourceData{d}, nil
-			},
-		},
-	}
+                return []*schema.ResourceData{d}, nil
+            },
+        },
+    }
 }
 
 func createCredentialsAWS(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-	params := CreateCredentialAwsParams{}
-	if err := UnmarshalSchema(&params, d); err != nil {
-		return diag.FromErr(err)
-	}
+    params := CreateCredentialAwsParams{}
+    if err := UnmarshalSchema(&params, d); err != nil {
+        return diag.FromErr(err)
+    }
 
-	r, err := m.(*client.Config).Client.FlexV1.CreateCredentialAws(&params)
-	if err != nil {
-		return diag.FromErr(err)
-	}
 
-	idParts := []string{}
-	idParts = append(idParts, (*r.Sid))
-	d.SetId(strings.Join(idParts, "/"))
+        r, err := m.(*client.Config).Client.FlexV1.CreateCredentialAws(&params);
+        if err != nil {
+            return diag.FromErr(err)
+        }
 
-	err = MarshalSchema(d, r)
-	if err != nil {
-		return diag.FromErr(err)
-	}
+        idParts := []string{  }
+        idParts = append(idParts, (*r.Sid))
+        d.SetId(strings.Join(idParts, "/"))
 
-	return nil
+            err = MarshalSchema(d, r)
+            if err != nil {
+                return diag.FromErr(err)
+            }
+
+            return nil
 }
 
 func deleteCredentialsAWS(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 
-	sid := d.Get("sid").(string)
+    sid := d.Get("sid").(string)
 
-	err := m.(*client.Config).Client.FlexV1.DeleteCredentialAws(sid)
-	if err != nil {
-		return diag.FromErr(err)
-	}
+        err := m.(*client.Config).Client.FlexV1.DeleteCredentialAws(sid)
+        if err != nil {
+            return diag.FromErr(err)
+        }
 
-	d.SetId("")
+        d.SetId("")
 
-	return nil
+        return nil
 }
 
 func readCredentialsAWS(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 
-	sid := d.Get("sid").(string)
+    sid := d.Get("sid").(string)
 
-	r, err := m.(*client.Config).Client.FlexV1.FetchCredentialAws(sid)
-	if err != nil {
-		return diag.FromErr(err)
-	}
+        r, err := m.(*client.Config).Client.FlexV1.FetchCredentialAws(sid)
+        if err != nil {
+            return diag.FromErr(err)
+        }
 
-	err = MarshalSchema(d, r)
-	if err != nil {
-		return diag.FromErr(err)
-	}
+        err = MarshalSchema(d, r)
+        if err != nil {
+            return diag.FromErr(err)
+        }
 
-	return nil
+        return nil
 }
 
 func parseCredentialsAWSImportId(importId string, d *schema.ResourceData) error {
-	importParts := strings.Split(importId, "/")
-	errStr := "invalid import ID (%q), expected sid"
+    importParts := strings.Split(importId, "/")
+    errStr := "invalid import ID (%q), expected sid"
 
-	if len(importParts) != 1 {
-		return fmt.Errorf(errStr, importId)
-	}
+    if len(importParts) != 1 {
+        return fmt.Errorf(errStr, importId)
+    }
 
-	d.Set("sid", importParts[0])
+        d.Set("sid", importParts[0])
 
-	return nil
+    return nil
 }
 func updateCredentialsAWS(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-	params := UpdateCredentialAwsParams{}
-	if err := UnmarshalSchema(&params, d); err != nil {
-		return diag.FromErr(err)
-	}
+    params := UpdateCredentialAwsParams{}
+    if err := UnmarshalSchema(&params, d); err != nil {
+        return diag.FromErr(err)
+    }
 
-	sid := d.Get("sid").(string)
+    sid := d.Get("sid").(string)
 
-	r, err := m.(*client.Config).Client.FlexV1.UpdateCredentialAws(sid, &params)
-	if err != nil {
-		return diag.FromErr(err)
-	}
+        r, err := m.(*client.Config).Client.FlexV1.UpdateCredentialAws(sid, &params)
+        if err != nil {
+            return diag.FromErr(err)
+        }
 
-	err = MarshalSchema(d, r)
-	if err != nil {
-		return diag.FromErr(err)
-	}
+        err = MarshalSchema(d, r)
+        if err != nil {
+            return diag.FromErr(err)
+        }
 
-	return nil
+        return nil
 }
+

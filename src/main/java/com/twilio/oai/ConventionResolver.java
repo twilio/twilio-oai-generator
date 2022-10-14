@@ -7,7 +7,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenParameter;
 import org.openapitools.codegen.CodegenProperty;
-import org.openapitools.codegen.utils.StringUtils;
 
 public class ConventionResolver {
     final static Map<String, Map<String, Object>> conventionMap = getConventionalMap() ;
@@ -84,7 +83,7 @@ public class ConventionResolver {
         if( PHONE_NUMBER_FORMAT.equals(parameter.dataFormat)) {
             parameter.vendorExtensions.put(X_IS_PHONE_NUMBER_FORMAT, true);
         }
-        parameter.paramName = StringUtils.camelize(parameter.paramName, true);
+        parameter.paramName = StringHelper.toFirstLetterLower(parameter.paramName);
         return Optional.of(parameter);
     }
 
@@ -102,7 +101,7 @@ public class ConventionResolver {
             parameter.vendorExtensions.put(X_PREFIXED_COLLAPSIBLE_MAP, split_format_array[split_format_array.length - 1]);
             parameter.dataType = (String)conventionMap.get(Segments.SEGMENT_PROPERTIES.getSegment()).get(PREFIXED_COLLAPSIBLE_MAP);
         }
-        parameter.paramName = StringUtils.camelize(parameter.paramName, true);
+        parameter.paramName = StringHelper.toFirstLetterLower(parameter.paramName);
         return parameter;
     }
 
@@ -121,7 +120,7 @@ public class ConventionResolver {
                 boolean hasProperty =  conventionMap.get(Segments.SEGMENT_PROPERTIES.getSegment()).containsKey(modelFormatMap.get(prop.complexType));
                 if (hasProperty) {
                     if ( prop.containerType != null && prop.containerType.equals("array")) {
-                        prop.dataType = "List<" + (String)conventionMap.get(Segments.SEGMENT_PROPERTIES.getSegment()).get(modelFormatMap.get(prop.complexType)) + ">";
+                        prop.dataType = "List<" + conventionMap.get(Segments.SEGMENT_PROPERTIES.getSegment()).get(modelFormatMap.get(prop.complexType)) + ">";
                     } else {
                         prop.dataType = (String)conventionMap.get(Segments.SEGMENT_PROPERTIES.getSegment()).get(modelFormatMap.get(prop.complexType));
                     }
@@ -131,5 +130,3 @@ public class ConventionResolver {
         return item;
     }
 }
-
-
