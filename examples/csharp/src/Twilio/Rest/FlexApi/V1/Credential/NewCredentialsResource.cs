@@ -101,17 +101,17 @@ namespace Twilio.Rest.FlexApi.V1.Credential
         #endif
 
         /// <summary> create </summary>
-                /// <param name="testString">  </param>
-        /// <param name="testBoolean">  </param>
+        /// <param name="testString">  </param>
         /// <param name="testInteger">  </param>
-        /// <param name="testNumber">  </param>
+        /// <param name="testDate">  </param>
         /// <param name="testNumberFloat">  </param>
+        /// <param name="testObject">  </param>
+        /// <param name="testBoolean">  </param>
+        /// <param name="testNumber">  </param>
         /// <param name="testNumberDouble">  </param>
         /// <param name="testNumberInt32">  </param>
         /// <param name="testNumberInt64">  </param>
-        /// <param name="testObject">  </param>
         /// <param name="testDateTime">  </param>
-        /// <param name="testDate">  </param>
         /// <param name="testEnum">  </param>
         /// <param name="testObjectArray">  </param>
         /// <param name="testAnyType">  </param>
@@ -142,17 +142,17 @@ namespace Twilio.Rest.FlexApi.V1.Credential
 
         #if !NET35
         /// <summary> create </summary>
-                /// <param name="testString">  </param>
-        /// <param name="testBoolean">  </param>
+        /// <param name="testString">  </param>
         /// <param name="testInteger">  </param>
-        /// <param name="testNumber">  </param>
+        /// <param name="testDate">  </param>
         /// <param name="testNumberFloat">  </param>
+        /// <param name="testObject">  </param>
+        /// <param name="testBoolean">  </param>
+        /// <param name="testNumber">  </param>
         /// <param name="testNumberDouble">  </param>
         /// <param name="testNumberInt32">  </param>
         /// <param name="testNumberInt64">  </param>
-        /// <param name="testObject">  </param>
         /// <param name="testDateTime">  </param>
-        /// <param name="testDate">  </param>
         /// <param name="testEnum">  </param>
         /// <param name="testObjectArray">  </param>
         /// <param name="testAnyType">  </param>
@@ -181,10 +181,6 @@ namespace Twilio.Rest.FlexApi.V1.Credential
             return await CreateAsync(options, client);
         }
         #endif
-
-
-
-
 
 
 
