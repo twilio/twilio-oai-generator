@@ -299,6 +299,13 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
         return new LinkedList<>(distinctResponseModels);
     }
 
+    public void postProcessParameter(CodegenParameter parameter) {
+        super.postProcessParameter(parameter);
+        if (parameter.isPathParam) {
+            parameter.paramName = "Path" + parameter.paramName;
+        }
+    }
+
     private void resolveCodeOperationParams(final CodegenOperation co, List<CodegenOperation> opList, OperationsMap results, List<CodegenModel> responseModels) {
         resolver.resolve(co.pathParams);
         resolver.resolve(co.queryParams);
