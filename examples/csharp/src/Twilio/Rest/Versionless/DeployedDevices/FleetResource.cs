@@ -73,7 +73,7 @@ namespace Twilio.Rest.Versionless.DeployedDevices
         #endif
 
         /// <summary> create </summary>
-                /// <param name="friendlyName">  </param>
+        /// <param name="friendlyName">  </param>
         /// <param name="client"> Client to make requests to Twilio </param>
         /// <returns> A single instance of Fleet </returns>
         public static FleetResource Create(
@@ -86,7 +86,7 @@ namespace Twilio.Rest.Versionless.DeployedDevices
 
         #if !NET35
         /// <summary> create </summary>
-                /// <param name="friendlyName">  </param>
+        /// <param name="friendlyName">  </param>
         /// <param name="client"> Client to make requests to Twilio </param>
         /// <returns> Task that resolves to A single instance of Fleet </returns>
         public static async System.Threading.Tasks.Task<FleetResource> CreateAsync(
@@ -101,14 +101,7 @@ namespace Twilio.Rest.Versionless.DeployedDevices
 
 
 
-
-
-
-
-
-
         
-
         private static Request BuildFetchRequest(FetchFleetOptions options, ITwilioRestClient client)
         {
             
@@ -152,10 +145,12 @@ namespace Twilio.Rest.Versionless.DeployedDevices
         }
         #endif
         /// <summary> fetch </summary>
-                /// <param name="pathSid">  </param>
+        /// <param name="pathSid">  </param>
         /// <param name="client"> Client to make requests to Twilio </param>
         /// <returns> A single instance of Fleet </returns>
-        public static FleetResource Fetch(string pathSid, ITwilioRestClient client = null)
+        public static FleetResource Fetch(
+                                         string pathSid, 
+                                         ITwilioRestClient client = null)
         {
             var options = new FetchFleetOptions(pathSid){  };
             return Fetch(options, client);
@@ -163,7 +158,7 @@ namespace Twilio.Rest.Versionless.DeployedDevices
 
         #if !NET35
         /// <summary> fetch </summary>
-                /// <param name="pathSid">  </param>
+        /// <param name="pathSid">  </param>
         /// <param name="client"> Client to make requests to Twilio </param>
         /// <returns> Task that resolves to A single instance of Fleet </returns>
         public static async System.Threading.Tasks.Task<FleetResource> FetchAsync(string pathSid, ITwilioRestClient client = null)
@@ -172,8 +167,6 @@ namespace Twilio.Rest.Versionless.DeployedDevices
             return await FetchAsync(options, client);
         }
         #endif
-
-
     
         /// <summary>
         /// Converts a JSON string into a FleetResource object
