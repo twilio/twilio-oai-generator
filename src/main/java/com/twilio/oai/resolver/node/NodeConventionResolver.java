@@ -8,10 +8,8 @@ import org.openapitools.codegen.CodegenParameter;
 import org.openapitools.codegen.CodegenProperty;
 import org.openapitools.codegen.utils.StringUtils;
 
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
+import java.util.function.Function;
 
 public class NodeConventionResolver {
     final Map<String, Map<String, Object>> conventionMap;
@@ -56,12 +54,40 @@ public class NodeConventionResolver {
                     if (prop.containerType != null && prop.containerType.equals("array")) {
                         prop.dataType = "Array<" + prop.dataType + ">";
                     }
+
+                    model.vendorExtensions.computeIfAbsent("x-imports", k -> new ArrayList<>());
+
+                    HashMap<String, String> obj = (HashMap<String, String>) conventionMap.get(Segments.SEGMENT_LIBRARY.getSegment()).
+                            get(StringUtils.underscore(modelFormatMap.get(prop.complexType)));
+                    ArrayList array = (ArrayList) model.vendorExtensions.get("x-imports");
+
+                    HashMap<String, String> value = new HashMap<>();
+
+                    // If the object isn't already there, add it
+                    value.put("name", prop.dataType);
+                    value.put("path", obj.get(prop.dataType));
+
+                    if (!importAlreadyExists(prop.dataType, array)) {
+                        array.add(value);
+                    }
                 }
             }
         }
         return model;
     }
 
+    private Boolean importAlreadyExists(String importName, ArrayList<HashMap<String, String>> array){
+        for (HashMap<String, String> element : array) {
+            if (importName.equals(element.get("name"))) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private Boolean ximportVendorExtensionExists(CodegenModel model) {
+        return model.vendorExtensions.containsKey("x-imports");
+    }
     public Map<String, Map<String, Object>> getConventionalMap() {
         try {
             return new ObjectMapper().readValue(Thread.currentThread().getContextClassLoader().getResourceAsStream(CONFIG_NODE_JSON_PATH), new TypeReference<Map<String, Map<String, Object>>>(){});
