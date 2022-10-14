@@ -26,7 +26,7 @@ namespace Twilio.Tests.Rest
         [Test]
         public void TestEnum()
         {
-            var response = AccountResource.Create("true",new Uri("https://example.com"));
+            var response = AccountResource.Create(new Uri("https://example.com"));
             Assert.NotNull(response);
             Assert.AreEqual(response.TestEnum.ToString(), "completed");
         }

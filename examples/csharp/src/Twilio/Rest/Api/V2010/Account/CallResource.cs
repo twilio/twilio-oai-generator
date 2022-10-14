@@ -91,7 +91,7 @@ namespace Twilio.Rest.Api.V2010.Account
         #endif
 
         /// <summary> create </summary>
-                /// <param name="requiredStringProperty">  </param>
+        /// <param name="requiredStringProperty">  </param>
         /// <param name="pathAccountSid">  </param>
         /// <param name="testArrayOfStrings">  </param>
         /// <param name="testArrayOfUri">  </param>
@@ -110,7 +110,7 @@ namespace Twilio.Rest.Api.V2010.Account
 
         #if !NET35
         /// <summary> create </summary>
-                /// <param name="requiredStringProperty">  </param>
+        /// <param name="requiredStringProperty">  </param>
         /// <param name="pathAccountSid">  </param>
         /// <param name="testArrayOfStrings">  </param>
         /// <param name="testArrayOfUri">  </param>
@@ -127,11 +127,6 @@ namespace Twilio.Rest.Api.V2010.Account
             return await CreateAsync(options, client);
         }
         #endif
-
-
-
-
-
 
 
 
@@ -164,7 +159,7 @@ namespace Twilio.Rest.Api.V2010.Account
         /// <summary> delete </summary>
         /// <param name="options"> Delete Call parameters </param>
         /// <param name="client"> Client to make requests to Twilio </param>
-        /// <returns> Task that resolves to A single instance of Call </returns>
+        /// <returns> A single instance of Call </returns>
         public static bool Delete(DeleteCallOptions options, ITwilioRestClient client = null)
         {
             client = client ?? TwilioClient.GetRestClient();
@@ -173,6 +168,10 @@ namespace Twilio.Rest.Api.V2010.Account
         }
 
         #if !NET35
+        /// <summary> delete </summary>
+        /// <param name="options"> Delete Call parameters </param>
+        /// <param name="client"> Client to make requests to Twilio </param>
+        /// <returns> Task that resolves to A single instance of Call </returns>
         public static async System.Threading.Tasks.Task<bool> DeleteAsync(DeleteCallOptions options,
                                                                           ITwilioRestClient client = null)
         {
@@ -182,6 +181,11 @@ namespace Twilio.Rest.Api.V2010.Account
         }
         #endif
 
+        /// <summary> delete </summary>
+        /// <param name="pathTestInteger"> INTEGER ID param!!! </param>
+        /// <param name="pathAccountSid">  </param>
+        /// <param name="client"> Client to make requests to Twilio </param>
+        /// <returns> A single instance of Call </returns>
         public static bool Delete(int? pathTestInteger, string pathAccountSid = null, ITwilioRestClient client = null)
         {
             var options = new DeleteCallOptions(pathTestInteger)      { PathAccountSid = pathAccountSid }   ;
@@ -189,20 +193,18 @@ namespace Twilio.Rest.Api.V2010.Account
         }
 
         #if !NET35
+        /// <summary> delete </summary>
+        /// <param name="pathTestInteger"> INTEGER ID param!!! </param>
+        /// <param name="pathAccountSid">  </param>
+        /// <param name="client"> Client to make requests to Twilio </param>
+        /// <returns> Task that resolves to A single instance of Call </returns>
         public static async System.Threading.Tasks.Task<bool> DeleteAsync(int? pathTestInteger, string pathAccountSid = null, ITwilioRestClient client = null)
         {
             var options = new DeleteCallOptions(pathTestInteger)  { PathAccountSid = pathAccountSid };
             return await DeleteAsync(options, client);
         }
         #endif
-
-
-
-
-
-
         
-
         private static Request BuildFetchRequest(FetchCallOptions options, ITwilioRestClient client)
         {
             
@@ -248,11 +250,14 @@ namespace Twilio.Rest.Api.V2010.Account
         }
         #endif
         /// <summary> fetch </summary>
-                /// <param name="pathTestInteger"> INTEGER ID param!!! </param>
+        /// <param name="pathTestInteger"> INTEGER ID param!!! </param>
         /// <param name="pathAccountSid">  </param>
         /// <param name="client"> Client to make requests to Twilio </param>
         /// <returns> A single instance of Call </returns>
-        public static CallResource Fetch(int? pathTestInteger, string pathAccountSid = null, ITwilioRestClient client = null)
+        public static CallResource Fetch(
+                                         int? pathTestInteger, 
+                                         string pathAccountSid = null, 
+                                         ITwilioRestClient client = null)
         {
             var options = new FetchCallOptions(pathTestInteger){ PathAccountSid = pathAccountSid };
             return Fetch(options, client);
@@ -260,7 +265,7 @@ namespace Twilio.Rest.Api.V2010.Account
 
         #if !NET35
         /// <summary> fetch </summary>
-                /// <param name="pathTestInteger"> INTEGER ID param!!! </param>
+        /// <param name="pathTestInteger"> INTEGER ID param!!! </param>
         /// <param name="pathAccountSid">  </param>
         /// <param name="client"> Client to make requests to Twilio </param>
         /// <returns> Task that resolves to A single instance of Call </returns>
@@ -270,56 +275,7 @@ namespace Twilio.Rest.Api.V2010.Account
             return await FetchAsync(options, client);
         }
         #endif
-
-
     
-        /// <summary> Fetch the target page of records </summary>
-        /// <param name="targetUrl"> API-generated URL for the requested results page </param>
-        /// <param name="client"> Client to make requests to Twilio </param>
-        /// <returns> The target page of records </returns>
-        public static Page<CallResource> GetPage(string targetUrl, ITwilioRestClient client)
-        {
-            client = client ?? TwilioClient.GetRestClient();
-
-            var request = new Request(
-                HttpMethod.Get,
-                targetUrl
-            );
-
-            var response = client.Request(request);
-            return Page<CallResource>.FromJson("", response.Content);
-        }
-
-        /// <summary> Fetch the next page of records </summary>
-        /// <param name="page"> current page of records </param>
-        /// <param name="client"> Client to make requests to Twilio </param>
-        /// <returns> The next page of records </returns>
-        public static Page<CallResource> NextPage(Page<CallResource> page, ITwilioRestClient client)
-        {
-            var request = new Request(
-                HttpMethod.Get,
-                page.GetNextPageUrl(Rest.Domain.Api)
-            );
-
-            var response = client.Request(request);
-            return Page<CallResource>.FromJson("", response.Content);
-        }
-
-        /// <summary> Fetch the previous page of records </summary>
-        /// <param name="page"> current page of records </param>
-        /// <param name="client"> Client to make requests to Twilio </param>
-        /// <returns> The previous page of records </returns>
-        public static Page<CallResource> PreviousPage(Page<CallResource> page, ITwilioRestClient client)
-        {
-            var request = new Request(
-                HttpMethod.Get,
-                page.GetPreviousPageUrl(Rest.Domain.Api)
-            );
-
-            var response = client.Request(request);
-            return Page<CallResource>.FromJson("", response.Content);
-        }
-
         /// <summary>
         /// Converts a JSON string into a CallResource object
         /// </summary>
@@ -336,7 +292,6 @@ namespace Twilio.Rest.Api.V2010.Account
                 throw new ApiException(e.Message, e);
             }
         }
-
 
     
         ///<summary> The account_sid </summary> 

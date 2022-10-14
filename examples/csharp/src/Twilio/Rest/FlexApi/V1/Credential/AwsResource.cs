@@ -30,7 +30,6 @@ namespace Twilio.Rest.FlexApi.V1.Credential
     {
     
 
-
         
         /// <summary> delete </summary>
         /// <param name="options"> Delete Aws parameters </param>
@@ -57,7 +56,7 @@ namespace Twilio.Rest.FlexApi.V1.Credential
         /// <summary> delete </summary>
         /// <param name="options"> Delete Aws parameters </param>
         /// <param name="client"> Client to make requests to Twilio </param>
-        /// <returns> Task that resolves to A single instance of Aws </returns>
+        /// <returns> A single instance of Aws </returns>
         public static bool Delete(DeleteAwsOptions options, ITwilioRestClient client = null)
         {
             client = client ?? TwilioClient.GetRestClient();
@@ -66,6 +65,10 @@ namespace Twilio.Rest.FlexApi.V1.Credential
         }
 
         #if !NET35
+        /// <summary> delete </summary>
+        /// <param name="options"> Delete Aws parameters </param>
+        /// <param name="client"> Client to make requests to Twilio </param>
+        /// <returns> Task that resolves to A single instance of Aws </returns>
         public static async System.Threading.Tasks.Task<bool> DeleteAsync(DeleteAwsOptions options,
                                                                           ITwilioRestClient client = null)
         {
@@ -75,6 +78,10 @@ namespace Twilio.Rest.FlexApi.V1.Credential
         }
         #endif
 
+        /// <summary> delete </summary>
+        /// <param name="pathSid">  </param>
+        /// <param name="client"> Client to make requests to Twilio </param>
+        /// <returns> A single instance of Aws </returns>
         public static bool Delete(string pathSid, ITwilioRestClient client = null)
         {
             var options = new DeleteAwsOptions(pathSid)     ;
@@ -82,20 +89,17 @@ namespace Twilio.Rest.FlexApi.V1.Credential
         }
 
         #if !NET35
+        /// <summary> delete </summary>
+        /// <param name="pathSid">  </param>
+        /// <param name="client"> Client to make requests to Twilio </param>
+        /// <returns> Task that resolves to A single instance of Aws </returns>
         public static async System.Threading.Tasks.Task<bool> DeleteAsync(string pathSid, ITwilioRestClient client = null)
         {
             var options = new DeleteAwsOptions(pathSid) ;
             return await DeleteAsync(options, client);
         }
         #endif
-
-
-
-
-
-
         
-
         private static Request BuildFetchRequest(FetchAwsOptions options, ITwilioRestClient client)
         {
             
@@ -139,10 +143,12 @@ namespace Twilio.Rest.FlexApi.V1.Credential
         }
         #endif
         /// <summary> fetch </summary>
-                /// <param name="pathSid">  </param>
+        /// <param name="pathSid">  </param>
         /// <param name="client"> Client to make requests to Twilio </param>
         /// <returns> A single instance of Aws </returns>
-        public static AwsResource Fetch(string pathSid, ITwilioRestClient client = null)
+        public static AwsResource Fetch(
+                                         string pathSid, 
+                                         ITwilioRestClient client = null)
         {
             var options = new FetchAwsOptions(pathSid){  };
             return Fetch(options, client);
@@ -150,7 +156,7 @@ namespace Twilio.Rest.FlexApi.V1.Credential
 
         #if !NET35
         /// <summary> fetch </summary>
-                /// <param name="pathSid">  </param>
+        /// <param name="pathSid">  </param>
         /// <param name="client"> Client to make requests to Twilio </param>
         /// <returns> Task that resolves to A single instance of Aws </returns>
         public static async System.Threading.Tasks.Task<AwsResource> FetchAsync(string pathSid, ITwilioRestClient client = null)
@@ -159,14 +165,7 @@ namespace Twilio.Rest.FlexApi.V1.Credential
             return await FetchAsync(options, client);
         }
         #endif
-
-
-
-
-
         
-
-
         private static Request BuildReadRequest(ReadAwsOptions options, ITwilioRestClient client)
         {
             
@@ -210,7 +209,7 @@ namespace Twilio.Rest.FlexApi.V1.Credential
         }
         #endif
         /// <summary> read </summary>
-                /// <param name="pageSize">  </param>
+        /// <param name="pageSize">  </param>
         /// <param name="client"> Client to make requests to Twilio </param>
         /// <param name="limit"> Record limit </param>
         /// <returns> A single instance of Aws </returns>
@@ -225,7 +224,7 @@ namespace Twilio.Rest.FlexApi.V1.Credential
 
         #if !NET35
         /// <summary> read </summary>
-                /// <param name="pageSize">  </param>
+        /// <param name="pageSize">  </param>
         /// <param name="client"> Client to make requests to Twilio </param>
         /// <param name="limit"> Record limit </param>
         /// <returns> Task that resolves to A single instance of Aws </returns>
@@ -239,8 +238,53 @@ namespace Twilio.Rest.FlexApi.V1.Credential
         }
         #endif
 
+        
+        /// <summary> Fetch the target page of records </summary>
+        /// <param name="targetUrl"> API-generated URL for the requested results page </param>
+        /// <param name="client"> Client to make requests to Twilio </param>
+        /// <returns> The target page of records </returns>
+        public static Page<AwsResource> GetPage(string targetUrl, ITwilioRestClient client)
+        {
+            client = client ?? TwilioClient.GetRestClient();
 
+            var request = new Request(
+                HttpMethod.Get,
+                targetUrl
+            );
 
+            var response = client.Request(request);
+            return Page<AwsResource>.FromJson("credentials", response.Content);
+        }
+
+        /// <summary> Fetch the next page of records </summary>
+        /// <param name="page"> current page of records </param>
+        /// <param name="client"> Client to make requests to Twilio </param>
+        /// <returns> The next page of records </returns>
+        public static Page<AwsResource> NextPage(Page<AwsResource> page, ITwilioRestClient client)
+        {
+            var request = new Request(
+                HttpMethod.Get,
+                page.GetNextPageUrl(Rest.Domain.Api)
+            );
+
+            var response = client.Request(request);
+            return Page<AwsResource>.FromJson("credentials", response.Content);
+        }
+
+        /// <summary> Fetch the previous page of records </summary>
+        /// <param name="page"> current page of records </param>
+        /// <param name="client"> Client to make requests to Twilio </param>
+        /// <returns> The previous page of records </returns>
+        public static Page<AwsResource> PreviousPage(Page<AwsResource> page, ITwilioRestClient client)
+        {
+            var request = new Request(
+                HttpMethod.Get,
+                page.GetPreviousPageUrl(Rest.Domain.Api)
+            );
+
+            var response = client.Request(request);
+            return Page<AwsResource>.FromJson("credentials", response.Content);
+        }
 
 
 
@@ -289,7 +333,7 @@ namespace Twilio.Rest.FlexApi.V1.Credential
         #endif
 
         /// <summary> update </summary>
-                /// <param name="pathSid">  </param>
+        /// <param name="pathSid">  </param>
         /// <param name="testString">  </param>
         /// <param name="testBoolean">  </param>
         /// <param name="client"> Client to make requests to Twilio </param>
@@ -306,7 +350,7 @@ namespace Twilio.Rest.FlexApi.V1.Credential
 
         #if !NET35
         /// <summary> update </summary>
-                /// <param name="pathSid">  </param>
+        /// <param name="pathSid">  </param>
         /// <param name="testString">  </param>
         /// <param name="testBoolean">  </param>
         /// <param name="client"> Client to make requests to Twilio </param>
@@ -322,53 +366,6 @@ namespace Twilio.Rest.FlexApi.V1.Credential
         }
         #endif
     
-        /// <summary> Fetch the target page of records </summary>
-        /// <param name="targetUrl"> API-generated URL for the requested results page </param>
-        /// <param name="client"> Client to make requests to Twilio </param>
-        /// <returns> The target page of records </returns>
-        public static Page<AwsResource> GetPage(string targetUrl, ITwilioRestClient client)
-        {
-            client = client ?? TwilioClient.GetRestClient();
-
-            var request = new Request(
-                HttpMethod.Get,
-                targetUrl
-            );
-
-            var response = client.Request(request);
-            return Page<AwsResource>.FromJson("credentials", response.Content);
-        }
-
-        /// <summary> Fetch the next page of records </summary>
-        /// <param name="page"> current page of records </param>
-        /// <param name="client"> Client to make requests to Twilio </param>
-        /// <returns> The next page of records </returns>
-        public static Page<AwsResource> NextPage(Page<AwsResource> page, ITwilioRestClient client)
-        {
-            var request = new Request(
-                HttpMethod.Get,
-                page.GetNextPageUrl(Rest.Domain.Api)
-            );
-
-            var response = client.Request(request);
-            return Page<AwsResource>.FromJson("credentials", response.Content);
-        }
-
-        /// <summary> Fetch the previous page of records </summary>
-        /// <param name="page"> current page of records </param>
-        /// <param name="client"> Client to make requests to Twilio </param>
-        /// <returns> The previous page of records </returns>
-        public static Page<AwsResource> PreviousPage(Page<AwsResource> page, ITwilioRestClient client)
-        {
-            var request = new Request(
-                HttpMethod.Get,
-                page.GetPreviousPageUrl(Rest.Domain.Api)
-            );
-
-            var response = client.Request(request);
-            return Page<AwsResource>.FromJson("credentials", response.Content);
-        }
-
         /// <summary>
         /// Converts a JSON string into a AwsResource object
         /// </summary>
@@ -385,7 +382,6 @@ namespace Twilio.Rest.FlexApi.V1.Credential
                 throw new ApiException(e.Message, e);
             }
         }
-
 
     
         ///<summary> The account_sid </summary> 
