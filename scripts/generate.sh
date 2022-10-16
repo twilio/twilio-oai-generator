@@ -46,3 +46,6 @@ generate twilio-java
 OUT_DIR=examples/node/lib/rest
 generate twilio-node
 docker-run examples/node/Dockerfile-prettier
+
+OUT_DIR=examples/php/src/Twilio/Rest
+generate twilio-php
