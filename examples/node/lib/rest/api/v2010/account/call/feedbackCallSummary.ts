@@ -24,10 +24,12 @@ const serialize = require("../../../../../base/serialize");
  *
  * @property { string } endDate
  * @property { string } startDate
+ * @property { string } [accountSid2]
  */
 export interface FeedbackCallSummaryContextUpdateOptions {
   endDate: string;
   startDate: string;
+  accountSid2?: string;
 }
 
 export interface FeedbackCallSummaryListInstance {
@@ -128,6 +130,8 @@ export class FeedbackCallSummaryContextImpl
 
     const data: any = {};
 
+    if (params.accountSid2 !== undefined)
+      data["AccountSid"] = params.accountSid2;
     data["EndDate"] = serialize.iso8601Date(params.endDate);
     data["StartDate"] = serialize.iso8601Date(params.startDate);
 
