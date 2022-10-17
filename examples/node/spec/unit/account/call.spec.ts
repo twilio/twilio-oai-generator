@@ -59,7 +59,7 @@ describe("call", () => {
 
   it("should create a feedback summary", () => {
     const scope = nock("http://api.twilio.com")
-      .post("/2010-04-01/Accounts/123/Calls/FeedbackSummary/456.json")
+      .post("/2010-04-01/Accounts/123/Calls/Feedback/Summary/456.json")
       .query({
         EndDate: "2022-08-01",
         StartDate: "2022-08-01",

@@ -429,8 +429,8 @@ paths:
     x-twilio:
       parent: /Accounts.json
       pathType: instance
-  /2010-04-01/Accounts/{AccountSid}/Calls/FeedbackSummary.json:
-    description: A nested resource without operations
+  /2010-04-01/Accounts/{AccountSid}/Calls/Feedback/Summary.json:
+    description: A nested resource with sub-dirs and without operations
     servers:
       - url: https://api.twilio.com
     x-twilio:
@@ -438,7 +438,7 @@ paths:
       mountName: feedback_call_summary
       parent: /Accounts/{AccountSid}/Calls.json
       pathType: list
-  /2010-04-01/Accounts/{AccountSid}/Calls/FeedbackSummary/{Sid}.json:
+  /2010-04-01/Accounts/{AccountSid}/Calls/Feedback/Summary/{Sid}.json:
     description: A resource that can only be updated
     post:
       operationId: UpdateCallFeedbackSummary
