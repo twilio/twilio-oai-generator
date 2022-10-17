@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
 
 import com.twilio.oai.common.EnumConstants;
+import com.twilio.oai.common.Utility;
 import com.twilio.oai.mlambdas.ReplaceHyphenLambda;
 import com.twilio.oai.resolver.java.JavaCaseResolver;
 import com.twilio.oai.resource.ResourceMap;
@@ -201,6 +202,7 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
                     .collect(Collectors.toCollection(() -> this.allModels));
         }
         setObjectFormatMap(this.allModels);
+        Utility.setComplexDataMapping(this.allModels, this.modelFormatMap);
         // Return an empty collection so no model files get generated.
         return new HashMap<>();
     }
@@ -619,20 +621,6 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
         catch (NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    private void setObjectFormatMap(final List<CodegenModel> allModels) {
-        allModels.forEach(item -> {
-            ObjectMapper objectMapper = new ObjectMapper();
-            try {
-                JsonNode jsonNode = objectMapper.readTree(item.modelJson);
-                if (jsonNode.get("type").textValue().equals("object") && jsonNode.has("format")) {
-                    modelFormatMap.put(item.classFilename, jsonNode.get("format").textValue());
-                }
-            } catch (JsonProcessingException e) {
-                e.printStackTrace();
-            }
-        });
     }
 
     private void updateCodeOperationParams(final CodegenOperation co, String resourceName) {
