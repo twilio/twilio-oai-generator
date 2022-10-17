@@ -520,6 +520,11 @@ paths:
           application/x-www-form-urlencoded:
             schema:
               properties:
+                AccountSid:
+                  type: string
+                  minLength: 34
+                  maxLength: 34
+                  pattern: ^AC[0-9a-fA-F]{32}$
                 EndDate:
                   format: date
                   type: string

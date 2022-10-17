@@ -1480,11 +1480,13 @@ namespace Twilio.Tests.Rest
            DateTime endDate = DateTime.Parse("2011-5-12");
 
            var updateCall = new UpdateFeedbackCallSummaryOptions("pathSid", endDate, startDate) { PathAccountSid = pathAccountSid};
+           updateCall.AccountSid = "AccountSidBody";
            Assert.IsNotNull(updateCall);
            var param = updateCall.GetParams();
            Assert.IsNotNull(param);
            Assert.AreEqual(startDate.ToString("yyyy-MM-dd"), param.Single((x) => x.Key == "StartDate").Value);
            Assert.AreEqual(endDate.ToString("yyyy-MM-dd"), param.Single((x) => x.Key == "EndDate").Value);
+           Assert.AreEqual("AccountSidBody", param.Single((x) => x.Key == "AccountSid").Value);
        }
 
        [Test]

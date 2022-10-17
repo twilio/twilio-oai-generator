@@ -49,6 +49,7 @@ public class FeedbackCallSummaryUpdater extends Updater<FeedbackCallSummary>{
     private LocalDate endDate;
     private LocalDate startDate;
     private String accountSid;
+    private String accountSid2;
 
     public FeedbackCallSummaryUpdater(final String sid, final LocalDate endDate, final LocalDate startDate){
         this.sid = sid;
@@ -68,6 +69,10 @@ public class FeedbackCallSummaryUpdater extends Updater<FeedbackCallSummary>{
     }
     public FeedbackCallSummaryUpdater setStartDate(final LocalDate startDate){
         this.startDate = startDate;
+        return this;
+    }
+    public FeedbackCallSummaryUpdater setAccountSid2(final String accountSid2){
+        this.accountSid2 = accountSid2;
         return this;
     }
 
@@ -101,6 +106,10 @@ public class FeedbackCallSummaryUpdater extends Updater<FeedbackCallSummary>{
         return FeedbackCallSummary.fromJson(response.getStream(), client.getObjectMapper());
     }
     private void addPostParams(final Request request) {
+        if (accountSid2 != null) {
+            request.addPostParam("AccountSid", accountSid2);
+    
+        }
         if (endDate != null) {
             request.addPostParam("EndDate", DateConverter.dateStringFromLocalDate(endDate));
 
