@@ -27,6 +27,7 @@ import org.openapitools.codegen.model.OperationMap;
 import org.openapitools.codegen.model.OperationsMap;
 
 import static com.twilio.oai.common.ApplicationConstants.ACCOUNT_SID_FORMAT;
+import static com.twilio.oai.common.ApplicationConstants.LIST_INSTANCE;
 import static com.twilio.oai.common.ApplicationConstants.PATH_SEPARATOR_PLACEHOLDER;
 
 @RequiredArgsConstructor
@@ -44,11 +45,12 @@ public class DirectoryStructureService {
 
     @Data
     @Builder
-    private static class DependentResource {
-        private final String version;
-        private final String name;
-        private final String mountName;
-        private final String filename;
+    public static class DependentResource {
+        private String version;
+        private String name;
+        private String importName;
+        private String mountName;
+        private String filename;
     }
 
     public void configure(final OpenAPI openAPI) {
@@ -97,7 +99,8 @@ public class DirectoryStructureService {
         final Resource.Aliases resourceAliases = getResourceAliases(path, operation);
         final DependentResource dependent = new DependentResource.DependentResourceBuilder()
             .version(PathUtils.getFirstPathPart(path))
-            .name(resourceAliases.getClassName())
+            .name(resourceAliases.getClassName() + LIST_INSTANCE)
+            .importName(resourceAliases.getClassName() + LIST_INSTANCE)
             .mountName(caseResolver.pathOperation(resourceAliases.getMountName()))
             .filename(caseResolver.filenameOperation(resourceAliases.getClassName()))
             .build();
