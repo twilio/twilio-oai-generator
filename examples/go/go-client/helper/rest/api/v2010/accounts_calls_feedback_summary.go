@@ -45,7 +45,7 @@ func (params *UpdateCallFeedbackSummaryParams) SetStartDate(StartDate string) *U
 }
 
 func (c *ApiService) UpdateCallFeedbackSummary(Sid string, params *UpdateCallFeedbackSummaryParams) (*TestResponseObject, error) {
-	path := "/2010-04-01/Accounts/{AccountSid}/Calls/FeedbackSummary/{Sid}.json"
+	path := "/2010-04-01/Accounts/{AccountSid}/Calls/Feedback/Summary/{Sid}.json"
 	if params != nil && params.PathAccountSid != nil {
 		path = strings.Replace(path, "{"+"AccountSid"+"}", *params.PathAccountSid, -1)
 	} else {

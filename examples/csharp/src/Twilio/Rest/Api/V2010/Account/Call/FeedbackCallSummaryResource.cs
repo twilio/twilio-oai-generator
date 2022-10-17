@@ -50,7 +50,7 @@ namespace Twilio.Rest.Api.V2010.Account.Call
         private static Request BuildUpdateRequest(UpdateFeedbackCallSummaryOptions options, ITwilioRestClient client)
         {
             
-            string path = "/2010-04-01/Accounts/{AccountSid}/Calls/FeedbackSummary/{Sid}.json";
+            string path = "/2010-04-01/Accounts/{AccountSid}/Calls/Feedback/Summary/{Sid}.json";
 
             string PathAccountSid = options.PathAccountSid ?? client.AccountSid;
             path = path.Replace("{"+"AccountSid"+"}", PathAccountSid);
