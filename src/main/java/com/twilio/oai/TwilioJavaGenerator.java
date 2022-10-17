@@ -9,6 +9,7 @@ import com.twilio.oai.common.EnumConstants;
 import com.twilio.oai.common.Utility;
 import com.twilio.oai.mlambdas.ReplaceHyphenLambda;
 import com.twilio.oai.resolver.java.JavaCaseResolver;
+import com.twilio.oai.resolver.java.JavaConventionResolver;
 import com.twilio.oai.resource.ResourceMap;
 
 import io.swagger.v3.oas.models.OpenAPI;
@@ -201,7 +202,6 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
                     .map(CodegenModel.class::cast)
                     .collect(Collectors.toCollection(() -> this.allModels));
         }
-        setObjectFormatMap(this.allModels);
         Utility.setComplexDataMapping(this.allModels, this.modelFormatMap);
         // Return an empty collection so no model files get generated.
         return new HashMap<>();
@@ -277,7 +277,7 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
             co.queryParams = preProcessQueryParameters(co);
             co.pathParams = null;
             co.hasParams = !co.allParams.isEmpty();
-            co.allParams.forEach(ConventionResolver::resolveParamTypes);
+            co.allParams.forEach(JavaConventionResolver::resolveParamTypes);
             co.hasRequiredParams = !co.requiredParams.isEmpty();
             resource.put("resourcePathParams", co.pathParams);
             resource.put("resourceRequiredParams", co.requiredParams);
@@ -292,8 +292,8 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
               .map(response -> response.dataType)
               .filter(Objects::nonNull)
               .map(modelName -> this.getModelCoPath(modelName, co, recordKey))
-              .map(ConventionResolver::resolve)
-              .map(item -> ConventionResolver.resolveComplexType(item, modelFormatMap))
+              .map(JavaConventionResolver::resolve)
+              .map(item -> JavaConventionResolver.resolveComplexType(item, modelFormatMap))
               .flatMap(Optional::stream)
               .forEach(model -> {
                   resource.put("serialVersionUID", calculateSerialVersionUid(model.vars));
@@ -626,46 +626,46 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
     private void updateCodeOperationParams(final CodegenOperation co, String resourceName) {
         co.allParams = co.allParams
                 .stream()
-                .map(ConventionResolver::resolveParameter)
+                .map(JavaConventionResolver::resolveParameter)
                 .map(Optional::get)
                 .map(item -> this.resolveEnumParameter(item, resourceName))
                 .collect(Collectors.toList());
         co.pathParams = co.pathParams
                 .stream()
-                .map(ConventionResolver::resolveParameter)
+                .map(JavaConventionResolver::resolveParameter)
                 .map(Optional::get)
                 .map(item -> this.resolveEnumParameter(item, resourceName))
                 .collect(Collectors.toList());
         co.pathParams.stream().
-                map(ConventionResolver::resolveParamTypes)
+                map(JavaConventionResolver::resolveParamTypes)
                 .map(item -> this.resolveEnumParameter(item, resourceName))
                 .forEach(param -> param.paramName = "path"+param.paramName);
-        co.queryParams = co.queryParams.stream().map(ConventionResolver::resolveParameter)
+        co.queryParams = co.queryParams.stream().map(JavaConventionResolver::resolveParameter)
                 .map(Optional::get)
-                .map(ConventionResolver::prefixedCollapsibleMap)
+                .map(JavaConventionResolver::prefixedCollapsibleMap)
                 .map(item -> this.resolveEnumParameter(item, resourceName))
                 .collect(Collectors.toList());
         co.queryParams = preProcessQueryParameters(co);
-        co.formParams = co.formParams.stream().map(ConventionResolver::resolveParameter)
+        co.formParams = co.formParams.stream().map(JavaConventionResolver::resolveParameter)
                 .map(Optional::get)
-                .map(ConventionResolver::prefixedCollapsibleMap)
+                .map(JavaConventionResolver::prefixedCollapsibleMap)
                 .map(item -> this.resolveEnumParameter(item, resourceName))
                 .collect(Collectors.toList());
         co.formParams = preProcessFormParams(co);
-        co.headerParams = co.headerParams.stream().map(ConventionResolver::resolveParameter)
+        co.headerParams = co.headerParams.stream().map(JavaConventionResolver::resolveParameter)
                 .map(Optional::get)
-                .map(ConventionResolver::prefixedCollapsibleMap)
+                .map(JavaConventionResolver::prefixedCollapsibleMap)
                 .map(item -> this.resolveEnumParameter(item, resourceName))
                 .collect(Collectors.toList());
         co.optionalParams = co.optionalParams
                 .stream()
-                .map(ConventionResolver::resolveParameter)
+                .map(JavaConventionResolver::resolveParameter)
                 .map(Optional::get)
                 .map(item -> this.resolveEnumParameter(item, resourceName))
                 .collect(Collectors.toList());
         co.requiredParams = co.requiredParams
                 .stream()
-                .map(ConventionResolver::resolveParameter)
+                .map(JavaConventionResolver::resolveParameter)
                 .map(Optional::get)
                 .map(item -> this.resolveEnumParameter(item, resourceName))
                 .collect(Collectors.toList());
