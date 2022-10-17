@@ -12,7 +12,8 @@ public class CodegenModelContainerDataTypeResolver implements Resolver<CodegenPr
     private CodegenModelDataTypeResolver codegenModelDataTypeResolver;
     private List<? extends LanguageDataType> languageDataTypes;
 
-    public CodegenModelContainerDataTypeResolver(CodegenModelDataTypeResolver codegenModelDataTypeResolver, List<? extends LanguageDataType> languageDataTypes) {
+    public CodegenModelContainerDataTypeResolver(CodegenModelDataTypeResolver codegenModelDataTypeResolver,
+                                                 List<? extends LanguageDataType> languageDataTypes) {
         this.codegenModelDataTypeResolver = codegenModelDataTypeResolver;
         this.languageDataTypes = languageDataTypes;
     }
