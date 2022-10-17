@@ -7,14 +7,23 @@ import org.openapitools.codegen.CodegenProperty;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.twilio.oai.common.ApplicationConstants.LIST_START;
+import static com.twilio.oai.common.ApplicationConstants.OBJECT;
+
 public class CodegenModelDataTypeResolver implements Resolver<CodegenProperty> {
 
     private Map<String, Map<String, Object>> conventionMap;
-    private CodegenModelComplexResolver codegenModelComplexResolver = new CodegenModelComplexResolver();
+    private CodegenModelComplexResolver codegenModelComplexResolver;
     private  Map<String, String> modelFormatMap = new HashMap<>();
+
+    public CodegenModelDataTypeResolver(final String listStart, final String listEnd) {
+        codegenModelComplexResolver = new CodegenModelComplexResolver(listStart, listEnd);
+    }
 
     public CodegenProperty resolve(CodegenProperty property) {
         assignDataType(property);
+        // Exceptional case, data format does not exist for Object type.
+        assignDataTypeObjectForNullDataFormat(property);
 
         if (property.complexType != null && modelFormatMap.containsKey(property.complexType)) {
             codegenModelComplexResolver.setModelFormatMap(modelFormatMap);
@@ -32,6 +41,16 @@ public class CodegenModelDataTypeResolver implements Resolver<CodegenProperty> {
             property.dataType = (String)conventionMap.get(propertyFieldName).get(property.dataFormat);
         } else if (conventionMap.get(propertyFieldName).containsKey(property.dataType)) {
             property.dataType = (String)conventionMap.get(propertyFieldName).get(property.dataType);
+        }
+    }
+
+    private void assignDataTypeObjectForNullDataFormat(CodegenProperty property){
+        if (property.dataFormat == null) {
+            if (property.dataType.equals(OBJECT)) {
+                property.dataType = "object";
+            } else if (property.dataType.equals(LIST_START + OBJECT )) {
+                property.dataType = "List<object";
+            }
         }
     }
 

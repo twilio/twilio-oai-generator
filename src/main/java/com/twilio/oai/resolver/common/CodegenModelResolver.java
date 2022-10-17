@@ -14,13 +14,18 @@ public class CodegenModelResolver implements Resolver<CodegenModel> {
     private List<? extends LanguageDataType> languageDataTypes;
     private String className;
     private Map<String, String> modelFormatMap;
-    private CodegenModelDataTypeResolver codegenModelDataTypeResolver = new CodegenModelDataTypeResolver();
+    private CodegenModelDataTypeResolver codegenModelDataTypeResolver;
     private CodegenModelContainerDataTypeResolver codegenModelContainerDataTypeResolver;
 
-    public CodegenModelResolver(Map<String, Map<String, Object>> conventionMap, List<? extends LanguageDataType> languageDataTypes) {
+    public CodegenModelResolver(Map<String, Map<String, Object>> conventionMap,
+                                List<? extends LanguageDataType> languageDataTypes,
+                                String listStart,
+                                String listEnd) {
         this.conventionMap = conventionMap;
         this.languageDataTypes = languageDataTypes;
-        codegenModelContainerDataTypeResolver = new CodegenModelContainerDataTypeResolver(codegenModelDataTypeResolver, languageDataTypes);
+        codegenModelDataTypeResolver = new CodegenModelDataTypeResolver(listStart, listEnd);
+        codegenModelContainerDataTypeResolver = new CodegenModelContainerDataTypeResolver(codegenModelDataTypeResolver,
+                languageDataTypes);
     }
 
     @Override

@@ -1,7 +1,6 @@
 package com.twilio.oai.resolver.common;
 
 import com.twilio.oai.Segments;
-import com.twilio.oai.StringHelper;
 import com.twilio.oai.resolver.Resolver;
 import org.openapitools.codegen.CodegenProperty;
 
@@ -12,6 +11,13 @@ public class CodegenModelComplexResolver implements Resolver<CodegenProperty> {
 
     private Map<String, Map<String, Object>> conventionMap;
     private Map<String, String> modelFormatMap = new HashMap<>();
+    private String listStart;
+    private String listEnd;
+
+    public CodegenModelComplexResolver(final String listStart, final String listEnd) {
+        this.listStart = listStart;
+        this.listEnd = listEnd;
+    }
 
     public CodegenProperty resolve(CodegenProperty property){
         if (this.modelFormatMap.isEmpty()) {
@@ -23,8 +29,11 @@ public class CodegenModelComplexResolver implements Resolver<CodegenProperty> {
             String complexType = modelFormatMap.get(property.complexType);
 
             if (propertyMap.containsKey(complexType)) {
-                final String resolvedDataType = (String)propertyMap.get(complexType);
-                property.dataType = resolvedDataType;
+                if (property.containerType != null && property.containerType.equals("array")) {
+                    property.dataType = listStart + propertyMap.get(complexType) + listEnd;
+                } else {
+                    property.dataType = (String)propertyMap.get(complexType);
+                }
             }
         }
         return property;
