@@ -78,7 +78,7 @@ public class FeedbackCallSummaryUpdater extends Updater<FeedbackCallSummary>{
 
     @Override
     public FeedbackCallSummary update(final TwilioRestClient client){
-        String path = "/2010-04-01/Accounts/{AccountSid}/Calls/FeedbackSummary/{Sid}.json";
+        String path = "/2010-04-01/Accounts/{AccountSid}/Calls/Feedback/Summary/{Sid}.json";
 
         this.accountSid = this.accountSid == null ? client.getAccountSid() : this.accountSid;
         path = path.replace("{"+"AccountSid"+"}", this.accountSid.toString());
