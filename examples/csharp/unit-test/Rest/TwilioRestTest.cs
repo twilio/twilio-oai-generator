@@ -1630,5 +1630,20 @@ namespace Twilio.Tests.Rest
             var testObjectArrayDataRetrieved = param.Where(x => x.Key == "TestObjectArray").ToList();
             CollectionAssert.AreEquivalent(testObjectArrayData, testObjectArrayDataRetrieved);
        }
+
+       [Test]
+       public void TestCreateCall()
+       {
+            var twilioRestClient = Substitute.For<ITwilioRestClient>();
+            twilioRestClient.AccountSid.Returns("ACXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
+            twilioRestClient.Request(Arg.Any<Request>())
+                            .Returns(new Response(
+                                         System.Net.HttpStatusCode.Created,
+                                         "{\"account_sid\": \"ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"sid\": \"ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"a2p_profile_bundle_sid\": \"BU0987654321abcdefABCDEFABCDEFABCD\"}"
+                                     ));
+            var response = CallResource.Create(requiredStringProperty: "requiredPart", client: twilioRestClient);
+            Assert.NotNull(response);
+            Assert.AreEqual("BU0987654321abcdefABCDEFABCDEFABCD", response.A2PProfileBundleSid);
+       }
     }
 }
