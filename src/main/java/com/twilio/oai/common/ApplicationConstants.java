@@ -18,4 +18,6 @@ public class ApplicationConstants {
     public static final String LIST_END = ">";
 
     public static final String OBJECT = "Object";
+
+    public static final String LIST_INSTANCE = "ListInstance";
 }
