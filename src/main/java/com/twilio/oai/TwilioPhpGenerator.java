@@ -2,6 +2,9 @@ package com.twilio.oai;
 
 import org.openapitools.codegen.languages.PhpClientCodegen;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class TwilioPhpGenerator extends PhpClientCodegen {
     private final TwilioCodegenAdapter twilioCodegen;
 
@@ -9,11 +12,19 @@ public class TwilioPhpGenerator extends PhpClientCodegen {
         super();
 
         twilioCodegen = new TwilioCodegenAdapter(this, getName());
-
-        // Skip automated api test and doc generation
-        apiTestTemplateFiles.clear();
-        apiDocTemplateFiles.clear();
     }
+
+    @Override
+    public void processOpts() {
+        super.processOpts();
+
+        apiTestTemplateFiles.clear();
+        modelTestTemplateFiles.clear();
+        apiDocTemplateFiles.clear();
+        modelDocTemplateFiles.clear();
+        twilioCodegen.processOpts();
+    }
+
 
     @Override
     public String getName() {
