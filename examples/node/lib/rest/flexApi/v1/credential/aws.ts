@@ -86,7 +86,7 @@ export interface AWSContext {
    * @returns { Promise } Resolves to processed boolean
    */
   remove(
-    callback?: (error: Error | null, item?: AWSInstance) => any
+    callback?: (error: Error | null, item?: boolean) => any
   ): Promise<boolean>;
 
   /**
@@ -265,7 +265,7 @@ export class AWSInstance {
    * @returns { Promise } Resolves to processed boolean
    */
   remove(
-    callback?: (error: Error | null, item?: AWSInstance) => any
+    callback?: (error: Error | null, item?: boolean) => any
   ): Promise<boolean> {
     return this._proxy.remove(callback);
   }

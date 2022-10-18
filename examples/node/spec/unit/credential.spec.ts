@@ -31,4 +31,18 @@ describe("credential", () => {
 
     return twilio.flexApi.v1.credentials.aws("123").update(() => scope.done());
   });
+
+  it("should remove an aws credential", () => {
+    const scope = nock("http://flex-api.twilio.com")
+      .delete("/v1/Credentials/AWS/123")
+      .reply(204);
+
+    return twilio.flexApi.v1.credentials
+      .aws("123")
+      .remove((error, response) => {
+        expect(error).toBeNull();
+        expect(response).toEqual(true);
+        scope.done();
+      });
+  });
 });
