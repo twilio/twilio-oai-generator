@@ -58,6 +58,9 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
+      - name: Run helper tests and sonar analysis
+        run: make test-docker SONAR_TOKEN=${{ secrets.SONAR_TOKEN }}
+
   notify-on-failure:
     name: Slack notify on failure
     if: ${{ failure() && github.ref == 'refs/heads/main' && github.event_name != 'pull_request' }}
