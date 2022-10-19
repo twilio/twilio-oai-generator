@@ -63,6 +63,10 @@ export interface FeedbackCallSummaryListInstance {
   [inspect.custom](_depth: any, options: InspectOptions): any;
 }
 
+export interface FeedbackCallSummarySolution {
+  accountSid?: string;
+}
+
 interface FeedbackCallSummaryListInstanceImpl
   extends FeedbackCallSummaryListInstance {}
 class FeedbackCallSummaryListInstanceImpl
@@ -124,10 +128,15 @@ export interface FeedbackCallSummaryContext {
   [inspect.custom](_depth: any, options: InspectOptions): any;
 }
 
+export interface FeedbackCallSummaryContextSolution {
+  accountSid?: string;
+  sid?: string;
+}
+
 export class FeedbackCallSummaryContextImpl
   implements FeedbackCallSummaryContext
 {
-  protected _solution: FeedbackCallSummarySolution;
+  protected _solution: FeedbackCallSummaryContextSolution;
   protected _uri: string;
 
   constructor(protected _version: V2010, accountSid: string, sid: string) {
@@ -220,7 +229,7 @@ interface FeedbackCallSummaryResource {
 }
 
 export class FeedbackCallSummaryInstance {
-  protected _solution: FeedbackCallSummarySolution;
+  protected _solution: FeedbackCallSummaryContextSolution;
   protected _context?: FeedbackCallSummaryContext;
 
   constructor(
@@ -325,10 +334,6 @@ export class FeedbackCallSummaryInstance {
   [inspect.custom](_depth: any, options: InspectOptions) {
     return inspect(this.toJSON(), options);
   }
-}
-export interface FeedbackCallSummarySolution {
-  accountSid?: string;
-  sid?: string;
 }
 
 export class FeedbackCallSummaryPage extends Page<

@@ -86,6 +86,8 @@ export interface NewCredentialsListInstance {
   [inspect.custom](_depth: any, options: InspectOptions): any;
 }
 
+export interface NewCredentialsSolution {}
+
 interface NewCredentialsListInstanceImpl extends NewCredentialsListInstance {}
 class NewCredentialsListInstanceImpl implements NewCredentialsListInstance {
   _version?: V1;
@@ -192,16 +194,11 @@ interface NewCredentialsResource {
 }
 
 export class NewCredentialsInstance {
-  protected _solution: NewCredentialsSolution;
-  protected _context?: NewCredentialsListInstance;
-
   constructor(protected _version: V1, payload: NewCredentialsPayload) {
     this.accountSid = payload.account_sid;
     this.sid = payload.sid;
     this.testString = payload.test_string;
     this.testInteger = deserialize.integer(payload.test_integer);
-
-    this._solution = {};
   }
 
   accountSid?: string | null;
@@ -227,7 +224,6 @@ export class NewCredentialsInstance {
     return inspect(this.toJSON(), options);
   }
 }
-export interface NewCredentialsSolution {}
 
 export class NewCredentialsPage extends Page<
   V1,
