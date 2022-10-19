@@ -22,16 +22,18 @@ import (
 
 // TestResponseObject struct for TestResponseObject
 type TestResponseObject struct {
-	AccountSid                 *string                                 `json:"account_sid,omitempty"`
-	Sid                        *string                                 `json:"sid,omitempty"`
-	TestString                 *string                                 `json:"test_string,omitempty"`
-	TestInteger                *int                                    `json:"test_integer,omitempty"`
-	TestObject                 *TestResponseObjectTestObject           `json:"test_object,omitempty"`
-	TestDateTime               *string                                 `json:"test_date_time,omitempty"`
-	TestNumber                 *float32                                `json:"test_number,omitempty"`
-	PriceUnit                  *string                                 `json:"price_unit,omitempty"`
-	TestNumberFloat            *float32                                `json:"test_number_float,omitempty"`
-	TestEnum                   *string                                 `json:"test_enum,omitempty"`
+	AccountSid      *string                       `json:"account_sid,omitempty"`
+	Sid             *string                       `json:"sid,omitempty"`
+	TestString      *string                       `json:"test_string,omitempty"`
+	TestInteger     *int                          `json:"test_integer,omitempty"`
+	TestObject      *TestResponseObjectTestObject `json:"test_object,omitempty"`
+	TestDateTime    *string                       `json:"test_date_time,omitempty"`
+	TestNumber      *float32                      `json:"test_number,omitempty"`
+	PriceUnit       *string                       `json:"price_unit,omitempty"`
+	TestNumberFloat *float32                      `json:"test_number_float,omitempty"`
+	TestEnum        *string                       `json:"test_enum,omitempty"`
+	// A2P Messaging Profile Bundle BundleSid
+	A2pProfileBundleSid        *string                                 `json:"a2p_profile_bundle_sid,omitempty"`
 	TestArrayOfIntegers        []int                                   `json:"test_array_of_integers,omitempty"`
 	TestArrayOfArrayOfIntegers [][]int                                 `json:"test_array_of_array_of_integers,omitempty"`
 	TestArrayOfObjects         *[]TestResponseObjectTestArrayOfObjects `json:"test_array_of_objects,omitempty"`
@@ -51,6 +53,7 @@ func (response *TestResponseObject) UnmarshalJSON(bytes []byte) (err error) {
 		PriceUnit                  *string                                 `json:"price_unit"`
 		TestNumberFloat            *interface{}                            `json:"test_number_float"`
 		TestEnum                   *string                                 `json:"test_enum"`
+		A2pProfileBundleSid        *string                                 `json:"a2p_profile_bundle_sid"`
 		TestArrayOfIntegers        []int                                   `json:"test_array_of_integers"`
 		TestArrayOfArrayOfIntegers [][]int                                 `json:"test_array_of_array_of_integers"`
 		TestArrayOfObjects         *[]TestResponseObjectTestArrayOfObjects `json:"test_array_of_objects"`
@@ -70,6 +73,7 @@ func (response *TestResponseObject) UnmarshalJSON(bytes []byte) (err error) {
 		TestDateTime:               raw.TestDateTime,
 		PriceUnit:                  raw.PriceUnit,
 		TestEnum:                   raw.TestEnum,
+		A2pProfileBundleSid:        raw.A2pProfileBundleSid,
 		TestArrayOfIntegers:        raw.TestArrayOfIntegers,
 		TestArrayOfArrayOfIntegers: raw.TestArrayOfArrayOfIntegers,
 		TestArrayOfObjects:         raw.TestArrayOfObjects,
