@@ -275,6 +275,7 @@ interface AccountResource {
   price_unit?: string | null;
   test_number_float?: number | null;
   test_enum?: object;
+  a2p_profile_bundle_sid?: string | null;
   test_array_of_integers?: Array<number>;
   test_array_of_array_of_integers?: Array<Array<number>>;
   test_array_of_objects?: Array<object> | null;
@@ -300,6 +301,7 @@ export class AccountInstance {
     this.priceUnit = payload.price_unit;
     this.testNumberFloat = payload.test_number_float;
     this.testEnum = payload.test_enum;
+    this.a2pProfileBundleSid = payload.a2p_profile_bundle_sid;
     this.testArrayOfIntegers = payload.test_array_of_integers;
     this.testArrayOfArrayOfIntegers = payload.test_array_of_array_of_integers;
     this.testArrayOfObjects = payload.test_array_of_objects;
@@ -318,6 +320,10 @@ export class AccountInstance {
   priceUnit?: string | null;
   testNumberFloat?: number | null;
   testEnum?: object;
+  /**
+   * A2P Messaging Profile Bundle BundleSid
+   */
+  a2pProfileBundleSid?: string | null;
   testArrayOfIntegers?: Array<number>;
   testArrayOfArrayOfIntegers?: Array<Array<number>>;
   testArrayOfObjects?: Array<object> | null;
@@ -399,6 +405,7 @@ export class AccountInstance {
       priceUnit: this.priceUnit,
       testNumberFloat: this.testNumberFloat,
       testEnum: this.testEnum,
+      a2pProfileBundleSid: this.a2pProfileBundleSid,
       testArrayOfIntegers: this.testArrayOfIntegers,
       testArrayOfArrayOfIntegers: this.testArrayOfArrayOfIntegers,
       testArrayOfObjects: this.testArrayOfObjects,
