@@ -22,8 +22,10 @@ interface {{name}}Resource {
  */
 {{/description}}
 export class {{name}}Instance {
-  protected _solution: {{name}}Solution;
+  {{#parentResourceName}}
+  protected _solution: {{resourceName}}Solution;
   protected _context?: {{resourceName}};
+  {{/parentResourceName}}
 
   constructor(protected _version: {{apiVersionClass}}, payload: {{name}}Payload{{#resourcePathParams}}, {{paramName}}{{#-last}}?{{/-last}}: {{{dataType}}}{{/resourcePathParams}}) {
     {{#vars}}
@@ -35,7 +37,9 @@ export class {{name}}Instance {
     {{/vendorExtensions.x-deserialize}}
     {{/vars}}
 
+    {{#parentResourceName}}
     this._solution = { {{#resourcePathParams}}{{paramName}}{{#-last}}: {{paramName}} || this.{{paramName}}{{/-last}}{{^-last}}, {{/-last}}{{/resourcePathParams}} };
+    {{/parentResourceName}}
   }
 
   {{#vars}}
@@ -85,11 +89,6 @@ export class {{name}}Instance {
   [inspect.custom](_depth: any, options: InspectOptions) {
     return inspect(this.toJSON(), options);
   }
-}
-export interface {{name}}Solution {
-  {{#resourcePathParams}}
-  {{paramName}}?: {{{dataType}}};
-  {{/resourcePathParams}}
 }
 
 export class {{name}}Page extends Page<{{apiVersionClass}}, {{name}}Payload, {{name}}Resource, {{name}}Instance> {
