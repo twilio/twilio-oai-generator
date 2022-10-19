@@ -289,6 +289,7 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
         Set<CodegenProperty> distinctResponseModels = new LinkedHashSet<>();
         for (CodegenModel codegenModel: responseModels) {
             for (CodegenProperty property: codegenModel.vars) {
+                property.nameInCamelCase = StringHelper.camelize(property.nameInSnakeCase);
                 ReservedKeyword.Csharp[] reservedKeyWords = ReservedKeyword.Csharp.values();
                 Optional<ReservedKeyword.Csharp> result = Arrays.stream(reservedKeyWords)
                         .filter(value -> value.getValue().equals(property.nameInCamelCase))
