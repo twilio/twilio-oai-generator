@@ -1,6 +1,9 @@
 "use strict";
 import nock from "nock";
-import {AccountInstance, AccountListInstancePageOptions} from "../../lib/rest/api/v2010/account";
+import {
+  AccountInstance,
+  AccountListInstancePageOptions,
+} from "../../lib/rest/api/v2010/account";
 import Twilio from "../../lib/rest/Twilio";
 
 describe("account", () => {
@@ -84,10 +87,12 @@ describe("account", () => {
         next_page_uri:
           "/2010-04-01/Accounts.json?FriendlyName=friendly_name&Status=active&PageSize=50&Page=50",
         page: 0,
-        payload: [{
-          test_object: phoneNumberCapabilities,
-          test_number: 1,
-        }],
+        payload: [
+          {
+            test_object: phoneNumberCapabilities,
+            test_number: 1,
+          },
+        ],
       });
     // May need to pass in values for the testObject / anything else ?
     const params: AccountListInstancePageOptions = {
@@ -98,12 +103,12 @@ describe("account", () => {
       .page(params)
       .then((accountPage) => {
         console.log(accountPage);
-        expect(accountPage.nextPageUrl).toEqual("http://api.twilio.com/2010-04-01/Accounts.json?FriendlyName=friendly_name&Status=active&PageSize=50&Page=50")
-        expect(accountPage.instances[0].testObject.mms).toEqual(true)
-        expect(accountPage.instances[0].testObject.sms).toEqual(false)
-      }
-
-  )
+        expect(accountPage.nextPageUrl).toEqual(
+          "http://api.twilio.com/2010-04-01/Accounts.json?FriendlyName=friendly_name&Status=active&PageSize=50&Page=50"
+        );
+        expect(accountPage.instances[0].testObject.mms).toEqual(true);
+        expect(accountPage.instances[0].testObject.sms).toEqual(false);
+      })
       .then(() => scope.done());
   });
 });
