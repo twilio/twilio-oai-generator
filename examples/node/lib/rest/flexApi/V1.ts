@@ -21,8 +21,8 @@ export default class V1 extends Version {
   /**
    * Initialize the V1 version of FlexApi
    *
-   * @property { Twilio.FlexApi.V1.CallListInstance } call - call resource
-   * @property { Twilio.FlexApi.V1.CredentialListInstance } credential - credential resource
+   * @property { Twilio.FlexApi.V1.CallListInstance } calls - calls resource
+   * @property { Twilio.FlexApi.V1.CredentialListInstance } credentials - credentials resource
    *
    * @param { Twilio.FlexApi } domain - The Twilio domain
    */
@@ -30,16 +30,16 @@ export default class V1 extends Version {
     super(domain, "v1");
   }
 
-  protected _call?: CallListInstance;
-  protected _credential?: CredentialListInstance;
+  protected _calls?: CallListInstance;
+  protected _credentials?: CredentialListInstance;
 
-  get call(): CallListInstance {
-    this._call = this._call || CallListInstance(this);
-    return this._call;
+  get calls(): CallListInstance {
+    this._calls = this._calls || CallListInstance(this);
+    return this._calls;
   }
 
-  get credential(): CredentialListInstance {
-    this._credential = this._credential || CredentialListInstance(this);
-    return this._credential;
+  get credentials(): CredentialListInstance {
+    this._credentials = this._credentials || CredentialListInstance(this);
+    return this._credentials;
   }
 }

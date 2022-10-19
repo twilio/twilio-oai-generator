@@ -48,6 +48,7 @@ public class FeedbackCallSummaryUpdater extends Updater<FeedbackCallSummary>{
     private LocalDate endDate;
     private LocalDate startDate;
     private String accountSid;
+    private String accountSid2;
 
     public FeedbackCallSummaryUpdater(final String sid, final LocalDate endDate, final LocalDate startDate){
         this.sid = sid;
@@ -69,10 +70,14 @@ public class FeedbackCallSummaryUpdater extends Updater<FeedbackCallSummary>{
         this.startDate = startDate;
         return this;
     }
+    public FeedbackCallSummaryUpdater setAccountSid2(final String accountSid2){
+        this.accountSid2 = accountSid2;
+        return this;
+    }
 
     @Override
     public FeedbackCallSummary update(final TwilioRestClient client){
-        String path = "/2010-04-01/Accounts/{AccountSid}/Calls/FeedbackSummary/{Sid}.json";
+        String path = "/2010-04-01/Accounts/{AccountSid}/Calls/Feedback/Summary/{Sid}.json";
 
         this.accountSid = this.accountSid == null ? client.getAccountSid() : this.accountSid;
         path = path.replace("{"+"AccountSid"+"}", this.accountSid.toString());
@@ -100,6 +105,10 @@ public class FeedbackCallSummaryUpdater extends Updater<FeedbackCallSummary>{
         return FeedbackCallSummary.fromJson(response.getStream(), client.getObjectMapper());
     }
     private void addPostParams(final Request request) {
+        if (accountSid2 != null) {
+            request.addPostParam("AccountSid", accountSid2);
+    
+        }
         if (endDate != null) {
             request.addPostParam("EndDate", DateConverter.dateStringFromLocalDate(endDate));
 

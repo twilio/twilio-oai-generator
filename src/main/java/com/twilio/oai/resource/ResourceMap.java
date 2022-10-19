@@ -28,12 +28,12 @@ public class ResourceMap implements IResourceTree {
     public List<String> ancestors(final String resourceName, final Operation operation) {
         final Resource resource = findResource(resourceName).orElseThrow();
         final List<String> ancestorList = new ArrayList<>();
-        ancestorList.add(resource.getClassName(operation).getName());
+        ancestorList.add(resource.getResourceAliases(operation).getClassName());
 
         Optional<Resource> parent = resource.getParentResource(this);
         while (parent.isPresent()) {
             final Resource parentResource = parent.get();
-            ancestorList.add(0, parentResource.getClassName().getName());
+            ancestorList.add(0, parentResource.getResourceAliases().getClassName());
             parent = parentResource.getParentResource(this);
         }
 
@@ -44,15 +44,27 @@ public class ResourceMap implements IResourceTree {
      * Returns a list of dependents for the operation as those with a path that directly under the current path.
      */
     @Override
-    public List<String> dependents(final String name) {
-        return urlResourceMap
+    public List<Resource> dependents(final String name) {
+        // First get a list of all the descendants.
+        final List<Resource> descendants = urlResourceMap
             .values()
             .stream()
-            .map(Resource::getName)
-            .filter(p -> PathUtils
-                .removePathParamIds(p)
-                .matches(PathUtils.escapeRegex(PathUtils.removePathParamIds(name) + "/[^{/]+")))
+            .filter(resource -> isDescendent(name, resource.getName()))
             .collect(Collectors.toList());
+
+        // Then filter out any that are descendents of any descendants.
+        return descendants
+            .stream()
+            .filter(descendent -> descendants
+                .stream()
+                .noneMatch(current -> isDescendent(current.getName(), descendent.getName())))
+            .collect(Collectors.toList());
+    }
+
+    private boolean isDescendent(final String resource, final String descendent) {
+        return PathUtils
+            .removePathParamIds(descendent)
+            .matches(PathUtils.escapeRegex(PathUtils.removePathParamIds(resource) + "/[^{]+"));
     }
 
     @Override

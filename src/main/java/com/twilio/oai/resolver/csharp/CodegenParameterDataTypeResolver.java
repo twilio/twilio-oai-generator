@@ -21,7 +21,6 @@ public class CodegenParameterDataTypeResolver implements Resolver<CodegenParamet
 
     public CodegenParameter resolve(CodegenParameter parameter) {
         new ParameterFormat().sanitize(parameter);
-        assignParameterName(parameter);
         assignDataTypeForObject(parameter);
         if(StringHelper.existInSetIgnoreCase(parameter.dataType, enumsDict) || StringHelper.existInSetIgnoreCase(parameter.dataFormat, enumsDict)){
             parameter.vendorExtensions.put("x-has-enum-params", true);
@@ -29,11 +28,6 @@ public class CodegenParameterDataTypeResolver implements Resolver<CodegenParamet
         assignDataType(parameter);
         handleEnums(parameter);
         return parameter;
-    }
-    private void assignParameterName(CodegenParameter parameter){
-        if (parameter.isPathParam) {
-            parameter.paramName = "Path"+parameter.paramName;
-        }
     }
 
     private void assignDataTypeForObject(CodegenParameter parameter){
