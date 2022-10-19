@@ -77,22 +77,22 @@ public class Call extends Resource {
     public static CallCreator creator(final String requiredStringProperty){
         return new CallCreator(requiredStringProperty);
     }
-    public static CallCreator creator(final String accountSid, final String requiredStringProperty){
-        return new CallCreator(accountSid, requiredStringProperty);
+    public static CallCreator creator(final String pathAccountSid, final String requiredStringProperty){
+        return new CallCreator(pathAccountSid, requiredStringProperty);
     }
 
-    public static CallFetcher fetcher(final Integer testInteger){
-        return new CallFetcher(testInteger);
+    public static CallFetcher fetcher(final Integer pathTestInteger){
+        return new CallFetcher(pathTestInteger);
     }
-    public static CallFetcher fetcher(final String accountSid, final Integer testInteger){
-        return new CallFetcher(accountSid, testInteger);
+    public static CallFetcher fetcher(final String pathAccountSid, final Integer pathTestInteger){
+        return new CallFetcher(pathAccountSid, pathTestInteger);
     }
 
-    public static CallDeleter deleter(final Integer testInteger){
-        return new CallDeleter(testInteger);
+    public static CallDeleter deleter(final Integer pathTestInteger){
+        return new CallDeleter(pathTestInteger);
     }
-    public static CallDeleter deleter(final String accountSid, final Integer testInteger){
-        return new CallDeleter(accountSid, testInteger);
+    public static CallDeleter deleter(final String pathAccountSid, final Integer pathTestInteger){
+        return new CallDeleter(pathAccountSid, pathTestInteger);
     }
 
 

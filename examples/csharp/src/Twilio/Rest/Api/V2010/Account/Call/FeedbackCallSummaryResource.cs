@@ -29,6 +29,7 @@ namespace Twilio.Rest.Api.V2010.Account.Call
     public class FeedbackCallSummaryResource : Resource
     {
     
+        [JsonConverter(typeof(StringEnumConverter))]
         public sealed class StatusEnum : StringEnum
         {
             private StatusEnum(string value) : base(value) {}
@@ -190,7 +191,6 @@ namespace Twilio.Rest.Api.V2010.Account.Call
 
         
         [JsonProperty("test_enum")]
-        [JsonConverter(typeof(StringEnumConverter))]
         public FeedbackCallSummaryResource.StatusEnum TestEnum { get; private set; }
 
         ///<summary> A2P Messaging Profile Bundle BundleSid </summary> 
@@ -211,7 +211,6 @@ namespace Twilio.Rest.Api.V2010.Account.Call
 
         ///<summary> Permissions authorized to the app </summary> 
         [JsonProperty("test_array_of_enum")]
-        [JsonConverter(typeof(StringEnumConverter))]
         public List<FeedbackCallSummaryResource.StatusEnum> TestArrayOfEnum { get; private set; }
 
 

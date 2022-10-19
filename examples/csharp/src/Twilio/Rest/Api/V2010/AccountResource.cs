@@ -29,6 +29,7 @@ namespace Twilio.Rest.Api.V2010
     public class AccountResource : Resource
     {
     
+        [JsonConverter(typeof(StringEnumConverter))]
         public sealed class StatusEnum : StringEnum
         {
             private StatusEnum(string value) : base(value) {}
@@ -545,7 +546,6 @@ namespace Twilio.Rest.Api.V2010
 
         
         [JsonProperty("test_enum")]
-        [JsonConverter(typeof(StringEnumConverter))]
         public AccountResource.StatusEnum TestEnum { get; private set; }
 
         ///<summary> A2P Messaging Profile Bundle BundleSid </summary> 
@@ -566,7 +566,6 @@ namespace Twilio.Rest.Api.V2010
 
         ///<summary> Permissions authorized to the app </summary> 
         [JsonProperty("test_array_of_enum")]
-        [JsonConverter(typeof(StringEnumConverter))]
         public List<AccountResource.StatusEnum> TestArrayOfEnum { get; private set; }
 
 
