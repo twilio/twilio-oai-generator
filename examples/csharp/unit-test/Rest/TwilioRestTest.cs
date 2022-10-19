@@ -1630,5 +1630,30 @@ namespace Twilio.Tests.Rest
             var testObjectArrayDataRetrieved = param.Where(x => x.Key == "TestObjectArray").ToList();
             CollectionAssert.AreEquivalent(testObjectArrayData, testObjectArrayDataRetrieved);
        }
+
+       [Test]
+       public void TestEnumSerialization()
+       {
+          var testJson = "{\"sid\":\"AC123456789123456789\",\"test_enum\":\"in-progress\"}";
+          var testEnum = CallResource.StatusEnum.InProgress;
+          var testEnumString = "in-progress";
+          var resource = CallResource.FromJson(testJson);
+          Assert.AreEqual(testEnum,resource.TestEnum);
+
+          var serializedObject = JsonConvert.SerializeObject(resource);
+          Assert.True(serializedObject.Contains(testEnumString));
+       }
+
+      [Test]
+      public void TestEnumArraySerialization()
+      {
+         var testJson = "{\"sid\":\"AC123456789123456789\",\"test_array_of_enum\":[\"in-progress\",\"paused\",\"stopped\"]}";
+         var testArrayOfEnum = new List<CallResource.StatusEnum>(){CallResource.StatusEnum.InProgress,CallResource.StatusEnum.Paused,CallResource.StatusEnum.Stopped};
+         var testArrayOfEnumString = "[\"in-progress\",\"paused\",\"stopped\"]";
+         var resource = CallResource.FromJson(testJson);
+         CollectionAssert.AreEquivalent(testArrayOfEnum,resource.TestArrayOfEnum);
+         var serializedObject = JsonConvert.SerializeObject(resource);
+         Assert.True(serializedObject.Contains(testArrayOfEnumString));
+      }
     }
 }
