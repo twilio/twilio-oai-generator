@@ -45,10 +45,10 @@ import java.util.Objects;
 import lombok.ToString;
 
 public class CallUpdater extends Updater<Call>{
-    private String sid;
+    private String pathSid;
 
-    public CallUpdater(final String sid){
-        this.sid = sid;
+    public CallUpdater(final String pathSid){
+        this.pathSid = pathSid;
     }
 
 
@@ -56,7 +56,7 @@ public class CallUpdater extends Updater<Call>{
     public Call update(final TwilioRestClient client){
         String path = "/v1/Voice/{Sid}";
 
-        path = path.replace("{"+"Sid"+"}", this.sid.toString());
+        path = path.replace("{"+"Sid"+"}", this.pathSid.toString());
 
         Request request = new Request(
             HttpMethod.POST,

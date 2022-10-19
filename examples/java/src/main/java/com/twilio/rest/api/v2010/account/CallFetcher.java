@@ -45,15 +45,15 @@ import java.util.Objects;
 import lombok.ToString;
 
 public class CallFetcher extends Fetcher<Call> {
-    private Integer testInteger;
-    private String accountSid;
+    private Integer pathTestInteger;
+    private String pathAccountSid;
 
-    public CallFetcher(final Integer testInteger){
-        this.testInteger = testInteger;
+    public CallFetcher(final Integer pathTestInteger){
+        this.pathTestInteger = pathTestInteger;
     }
-    public CallFetcher(final String accountSid, final Integer testInteger){
-        this.accountSid = accountSid;
-        this.testInteger = testInteger;
+    public CallFetcher(final String pathAccountSid, final Integer pathTestInteger){
+        this.pathAccountSid = pathAccountSid;
+        this.pathTestInteger = pathTestInteger;
     }
 
 
@@ -61,9 +61,9 @@ public class CallFetcher extends Fetcher<Call> {
     public Call fetch(final TwilioRestClient client) {
         String path = "/2010-04-01/Accounts/{AccountSid}/Calls/{TestInteger}.json";
 
-        this.accountSid = this.accountSid == null ? client.getAccountSid() : this.accountSid;
-        path = path.replace("{"+"AccountSid"+"}", this.accountSid.toString());
-        path = path.replace("{"+"TestInteger"+"}", this.testInteger.toString());
+        this.pathAccountSid = this.pathAccountSid == null ? client.getAccountSid() : this.pathAccountSid;
+        path = path.replace("{"+"AccountSid"+"}", this.pathAccountSid.toString());
+        path = path.replace("{"+"TestInteger"+"}", this.pathTestInteger.toString());
 
         Request request = new Request(
             HttpMethod.GET,

@@ -44,10 +44,10 @@ import java.util.Objects;
 import lombok.ToString;
 
 public class FleetFetcher extends Fetcher<Fleet> {
-    private String sid;
+    private String pathSid;
 
-    public FleetFetcher(final String sid){
-        this.sid = sid;
+    public FleetFetcher(final String pathSid){
+        this.pathSid = pathSid;
     }
 
 
@@ -55,7 +55,7 @@ public class FleetFetcher extends Fetcher<Fleet> {
     public Fleet fetch(final TwilioRestClient client) {
         String path = "/DeployedDevices/Fleets/{Sid}";
 
-        path = path.replace("{"+"Sid"+"}", this.sid.toString());
+        path = path.replace("{"+"Sid"+"}", this.pathSid.toString());
 
         Request request = new Request(
             HttpMethod.GET,
