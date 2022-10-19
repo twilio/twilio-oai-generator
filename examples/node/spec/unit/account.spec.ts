@@ -1,6 +1,6 @@
 "use strict";
 import nock from "nock";
-import { AccountListInstancePageOptions } from "../../lib/rest/api/v2010/account";
+import {AccountInstance, AccountListInstancePageOptions} from "../../lib/rest/api/v2010/account";
 import Twilio from "../../lib/rest/Twilio";
 
 describe("account", () => {
@@ -59,6 +59,12 @@ describe("account", () => {
   });
 
   it("should get account pages in between dates", () => {
+    const phoneNumberCapabilities = {
+      mms: true,
+      sms: false,
+      voice: false,
+      fax: false,
+    };
     const scope = nock("http://api.twilio.com")
       .get("/2010-04-01/Accounts.json")
       .query({
@@ -71,25 +77,33 @@ describe("account", () => {
         end: 0,
         previous_page_uri:
           "/2010-04-01/Accounts.json?FriendlyName=friendly_name&Status=active&PageSize=50&Page=0",
-        accounts: [],
+        // accounts: [],
         uri: "/2010-04-01/Accounts.json?FriendlyName=friendly_name&Status=active&PageSize=50&Page=0",
         page_size: 50,
         start: 0,
         next_page_uri:
           "/2010-04-01/Accounts.json?FriendlyName=friendly_name&Status=active&PageSize=50&Page=50",
         page: 0,
+        payload: [{
+          test_object: phoneNumberCapabilities,
+          test_number: 1,
+        }],
       });
+    // May need to pass in values for the testObject / anything else ?
     const params: AccountListInstancePageOptions = {
       dateCreatedBefore: new Date("2022-12-25"),
       dateCreatedAfter: new Date("2022-01-01"),
     };
     return twilio.api.v2010.accounts
       .page(params)
-      .then((accountPage) =>
-        expect(accountPage.nextPageUrl).toEqual(
-          "http://api.twilio.com/2010-04-01/Accounts.json?FriendlyName=friendly_name&Status=active&PageSize=50&Page=50"
-        )
-      )
+      .then((accountPage) => {
+        console.log(accountPage);
+        expect(accountPage.nextPageUrl).toEqual("http://api.twilio.com/2010-04-01/Accounts.json?FriendlyName=friendly_name&Status=active&PageSize=50&Page=50")
+        expect(accountPage.instances[0].testObject.mms).toEqual(true)
+        expect(accountPage.instances[0].testObject.sms).toEqual(false)
+      }
+
+  )
       .then(() => scope.done());
   });
 });
