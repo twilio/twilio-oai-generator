@@ -80,11 +80,11 @@ public class {{resourceName}}Reader extends Reader<{{resourceName}}> {
         {{#allParams}}
         {{#vendorExtensions.x-is-account-sid}}
         this.{{paramName}} = this.{{paramName}} == null ? client.getAccountSid() : this.{{paramName}};
-        path = path.replace("{"+"{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}"+"}", this.{{paramName}}.toString());
+        path = path.replace("{"+"{{#lambda.titlecase}}{{baseName}}{{/lambda.titlecase}}"+"}", this.{{paramName}}.toString());
         {{/vendorExtensions.x-is-account-sid}}
         {{/allParams}}
         {{#requiredParams}}
-        path = path.replace("{"+"{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}"+"}", this.{{paramName}}.toString());
+        path = path.replace("{"+"{{#lambda.titlecase}}{{baseName}}{{/lambda.titlecase}}"+"}", this.{{paramName}}.toString());
         {{/requiredParams}}
 
         Request request = new Request(

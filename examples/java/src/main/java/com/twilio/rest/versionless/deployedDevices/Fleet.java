@@ -78,8 +78,8 @@ public class Fleet extends Resource {
         return new FleetCreator();
     }
 
-    public static FleetFetcher fetcher(final String sid){
-        return new FleetFetcher(sid);
+    public static FleetFetcher fetcher(final String pathSid){
+        return new FleetFetcher(pathSid);
     }
 
 
