@@ -12,8 +12,8 @@ describe("Integration tests", () => {
   xit("should get an account", async () => {
     const params = {};
     const result = await client.api.v2010.accounts.page();
-    expect(result.end).toEqual(5);
-    expect(result.first_page_uri).toEqual("http://example.com/page1");
+    // expect(result.end).toEqual(5);
+    // expect(result.first_page_uri).toEqual("http://example.com/page1");
   });
 
   it("should create an account", async () => {
