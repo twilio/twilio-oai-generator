@@ -61,6 +61,13 @@ components:
           $ref: '#/components/schemas/test_enum_status'
           nullable: true
           type: string
+        a2p_profile_bundle_sid:
+          type: string
+          minLength: 34
+          maxLength: 34
+          pattern: ^BU[0-9a-fA-F]{32}$
+          nullable: true
+          description: A2P Messaging Profile Bundle BundleSid
         test_array_of_integers:
           items:
             type: integer
@@ -102,6 +109,7 @@ components:
           voice: true
         test_number_float: 100.22
         test_enum: "completed"
+        a2p_profile_bundle_sid: "BU0987654321abcdefABCDEFABCDEFABCD"
   securitySchemes:
     accountSid_authToken:
       scheme: basic

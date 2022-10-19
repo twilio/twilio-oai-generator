@@ -276,6 +276,7 @@ interface AccountResource {
   test_number_float?: number | null;
   test_number_decimal?: object | null;
   test_enum?: object;
+  a2p_profile_bundle_sid?: string | null;
   test_array_of_integers?: Array<number>;
   test_array_of_array_of_integers?: Array<Array<number>>;
   test_array_of_objects?: Array<object> | null;
@@ -302,6 +303,7 @@ export class AccountInstance {
     this.testNumberFloat = payload.test_number_float;
     this.testNumberDecimal = payload.test_number_decimal;
     this.testEnum = payload.test_enum;
+    this.a2pProfileBundleSid = payload.a2p_profile_bundle_sid;
     this.testArrayOfIntegers = payload.test_array_of_integers;
     this.testArrayOfArrayOfIntegers = payload.test_array_of_array_of_integers;
     this.testArrayOfObjects = payload.test_array_of_objects;
@@ -321,6 +323,10 @@ export class AccountInstance {
   testNumberFloat?: number | null;
   testNumberDecimal?: object | null;
   testEnum?: object;
+  /**
+   * A2P Messaging Profile Bundle BundleSid
+   */
+  a2pProfileBundleSid?: string | null;
   testArrayOfIntegers?: Array<number>;
   testArrayOfArrayOfIntegers?: Array<Array<number>>;
   testArrayOfObjects?: Array<object> | null;
@@ -403,6 +409,7 @@ export class AccountInstance {
       testNumberFloat: this.testNumberFloat,
       testNumberDecimal: this.testNumberDecimal,
       testEnum: this.testEnum,
+      a2pProfileBundleSid: this.a2pProfileBundleSid,
       testArrayOfIntegers: this.testArrayOfIntegers,
       testArrayOfArrayOfIntegers: this.testArrayOfArrayOfIntegers,
       testArrayOfObjects: this.testArrayOfObjects,

@@ -193,6 +193,10 @@ namespace Twilio.Rest.Api.V2010.Account.Call
         [JsonProperty("test_enum")]
         public FeedbackCallSummaryResource.StatusEnum TestEnum { get; private set; }
 
+        ///<summary> A2P Messaging Profile Bundle BundleSid </summary> 
+        [JsonProperty("a2p_profile_bundle_sid")]
+        public string A2PProfileBundleSid { get; private set; }
+
         ///<summary> The test_array_of_integers </summary> 
         [JsonProperty("test_array_of_integers")]
         public List<int?> TestArrayOfIntegers { get; private set; }

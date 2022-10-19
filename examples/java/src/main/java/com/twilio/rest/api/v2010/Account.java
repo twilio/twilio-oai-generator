@@ -72,7 +72,7 @@ import com.twilio.type.SubscribeRule;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @ToString
 public class Account extends Resource {
-    private static final long serialVersionUID = 166028517984965L;
+    private static final long serialVersionUID = 215783025104178L;
 
     public static AccountCreator creator(){
         return new AccountCreator();
@@ -191,8 +191,8 @@ public class Account extends Resource {
     private final BigDecimal testNumber;
     private final Currency priceUnit;
     private final Float testNumberFloat;
-    private final BigDecimal testNumberDecimal;
     private final Account.Status testEnum;
+    private final String a2pProfileBundleSid;
     private final List<Integer> testArrayOfIntegers;
     private final List<List<Integer>> testArrayOfArrayOfIntegers;
     private final List<FeedbackIssue> testArrayOfObjects;
@@ -228,11 +228,11 @@ public class Account extends Resource {
         @JsonProperty("test_number_float")
         final Float testNumberFloat,
 
-        @JsonProperty("test_number_decimal")
-        final BigDecimal testNumberDecimal,
-
         @JsonProperty("test_enum")
         final Account.Status testEnum,
+
+        @JsonProperty("a2p_profile_bundle_sid")
+        final String a2pProfileBundleSid,
 
         @JsonProperty("test_array_of_integers")
         final List<Integer> testArrayOfIntegers,
@@ -255,8 +255,8 @@ public class Account extends Resource {
         this.testNumber = testNumber;
         this.priceUnit = priceUnit;
         this.testNumberFloat = testNumberFloat;
-        this.testNumberDecimal = testNumberDecimal;
         this.testEnum = testEnum;
+        this.a2pProfileBundleSid = a2pProfileBundleSid;
         this.testArrayOfIntegers = testArrayOfIntegers;
         this.testArrayOfArrayOfIntegers = testArrayOfArrayOfIntegers;
         this.testArrayOfObjects = testArrayOfObjects;
@@ -290,11 +290,11 @@ public class Account extends Resource {
         public final Float getTestNumberFloat() {
             return this.testNumberFloat;
         }
-        public final BigDecimal getTestNumberDecimal() {
-            return this.testNumberDecimal;
-        }
         public final Account.Status getTestEnum() {
             return this.testEnum;
+        }
+        public final String getA2pProfileBundleSid() {
+            return this.a2pProfileBundleSid;
         }
         public final List<Integer> getTestArrayOfIntegers() {
             return this.testArrayOfIntegers;
@@ -321,12 +321,12 @@ public class Account extends Resource {
 
         Account other = (Account) o;
 
-        return Objects.equals(accountSid, other.accountSid) &&  Objects.equals(sid, other.sid) &&  Objects.equals(testString, other.testString) &&  Objects.equals(testInteger, other.testInteger) &&  Objects.equals(testObject, other.testObject) &&  Objects.equals(testDateTime, other.testDateTime) &&  Objects.equals(testNumber, other.testNumber) &&  Objects.equals(priceUnit, other.priceUnit) &&  Objects.equals(testNumberFloat, other.testNumberFloat) &&  Objects.equals(testNumberDecimal, other.testNumberDecimal) &&  Objects.equals(testEnum, other.testEnum) &&  Objects.equals(testArrayOfIntegers, other.testArrayOfIntegers) &&  Objects.equals(testArrayOfArrayOfIntegers, other.testArrayOfArrayOfIntegers) &&  Objects.equals(testArrayOfObjects, other.testArrayOfObjects) &&  Objects.equals(testArrayOfEnum, other.testArrayOfEnum)  ;
+        return Objects.equals(accountSid, other.accountSid) &&  Objects.equals(sid, other.sid) &&  Objects.equals(testString, other.testString) &&  Objects.equals(testInteger, other.testInteger) &&  Objects.equals(testObject, other.testObject) &&  Objects.equals(testDateTime, other.testDateTime) &&  Objects.equals(testNumber, other.testNumber) &&  Objects.equals(priceUnit, other.priceUnit) &&  Objects.equals(testNumberFloat, other.testNumberFloat) &&  Objects.equals(testEnum, other.testEnum) &&  Objects.equals(a2pProfileBundleSid, other.a2pProfileBundleSid) &&  Objects.equals(testArrayOfIntegers, other.testArrayOfIntegers) &&  Objects.equals(testArrayOfArrayOfIntegers, other.testArrayOfArrayOfIntegers) &&  Objects.equals(testArrayOfObjects, other.testArrayOfObjects) &&  Objects.equals(testArrayOfEnum, other.testArrayOfEnum)  ;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(accountSid, sid, testString, testInteger, testObject, testDateTime, testNumber, priceUnit, testNumberFloat, testNumberDecimal, testEnum, testArrayOfIntegers, testArrayOfArrayOfIntegers, testArrayOfObjects, testArrayOfEnum);
+        return Objects.hash(accountSid, sid, testString, testInteger, testObject, testDateTime, testNumber, priceUnit, testNumberFloat, testEnum, a2pProfileBundleSid, testArrayOfIntegers, testArrayOfArrayOfIntegers, testArrayOfObjects, testArrayOfEnum);
     }
 
 }
