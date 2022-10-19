@@ -125,7 +125,7 @@ export interface AccountContext {
    * @returns { Promise } Resolves to processed boolean
    */
   remove(
-    callback?: (error: Error | null, item?: AccountInstance) => any
+    callback?: (error: Error | null, item?: boolean) => any
   ): Promise<boolean>;
 
   /**
@@ -350,7 +350,7 @@ export class AccountInstance {
    * @returns { Promise } Resolves to processed boolean
    */
   remove(
-    callback?: (error: Error | null, item?: AccountInstance) => any
+    callback?: (error: Error | null, item?: boolean) => any
   ): Promise<boolean> {
     return this._proxy.remove(callback);
   }
