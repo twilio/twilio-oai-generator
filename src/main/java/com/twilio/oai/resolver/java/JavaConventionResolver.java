@@ -14,14 +14,14 @@ import org.openapitools.codegen.CodegenProperty;
 
 public class JavaConventionResolver {
     private final String VENDOR_PREFIX = "x-";
-    private final String PREFIXED_COLLAPSIBLE_MAP = "prefixed-collapsible-map";
+    private final String PREFIXED_COLLAPSIBLE_MAP = "prefixed_collapsible_map";
     private final String X_PREFIXED_COLLAPSIBLE_MAP = "x-prefixed-collapsible-map";
     private final String HYPHEN = "-";
     private final String OBJECT = "object";
 
     private final String LIST_OBJECT = "List<Object>";
 
-    private final String PHONE_NUMBER_FORMAT = "phone-number";
+    private final String PHONE_NUMBER_FORMAT = "phone_number";
 
     private final String X_IS_PHONE_NUMBER_FORMAT = "x-is-phone-number-format";
 
@@ -39,9 +39,9 @@ public class JavaConventionResolver {
                 Arrays.asList(EnumConstants.JavaDataTypes.values()));
     }
 
-    public Optional<CodegenModel> resolve(Optional<CodegenModel> model) {
-        codegenModelResolver.resolve(model.get());
-        for (CodegenProperty property : model.get().vars) {
+    public CodegenModel resolve(CodegenModel model) {
+        codegenModelResolver.resolve(model);
+        for (CodegenProperty property : model.vars) {
             Map<String, Map<String, Object>> vendorExtensions = new HashMap<>();
 
             for (Segments segment: Segments.values()) {
@@ -64,7 +64,7 @@ public class JavaConventionResolver {
         return model;
     }
 
-    public Optional<CodegenParameter> resolveParameter(CodegenParameter parameter) {
+    public CodegenParameter resolveParameter(CodegenParameter parameter) {
         if(parameter.dataType.equalsIgnoreCase(OBJECT) || parameter.dataType.equals(LIST_OBJECT)) {
             if (parameter.dataType.equals(LIST_OBJECT)) {
                 parameter.dataType = "List<" + conventionMap.get(Segments.SEGMENT_PROPERTIES.getSegment()).get(OBJECT)+ ">";
@@ -90,7 +90,7 @@ public class JavaConventionResolver {
             parameter.vendorExtensions.put(X_IS_PHONE_NUMBER_FORMAT, true);
         }
         parameter.paramName = StringHelper.toFirstLetterLower(parameter.paramName);
-        return Optional.of(parameter);
+        return parameter;
     }
 
     public CodegenParameter resolveParamTypes(CodegenParameter codegenParameter) {
@@ -112,9 +112,9 @@ public class JavaConventionResolver {
     }
 
     // Resolves the dataType for a property if the property.complexType is in the given modelFormatMap
-    public Optional<CodegenModel> resolveComplexType(Optional<CodegenModel> item, Map<String, String> modelFormatMap) {
+    public CodegenModel resolveComplexType(CodegenModel item, Map<String, String> modelFormatMap) {
         codegenModelResolver.setModelFormatMap(modelFormatMap);
-        codegenModelResolver.resolve(item.get());
+        codegenModelResolver.resolve(item);
         return item;
     }
 }

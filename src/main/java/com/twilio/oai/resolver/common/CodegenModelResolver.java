@@ -5,6 +5,7 @@ import com.twilio.oai.resolver.Resolver;
 import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenProperty;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -13,7 +14,7 @@ public class CodegenModelResolver implements Resolver<CodegenModel> {
     private Map<String, Map<String, Object>> conventionMap;
     private List<? extends LanguageDataType> languageDataTypes;
     private String className;
-    private Map<String, String> modelFormatMap;
+    private Map<String, String> modelFormatMap = new HashMap<>();
     private CodegenModelDataTypeResolver codegenModelDataTypeResolver;
     private CodegenModelContainerDataTypeResolver codegenModelContainerDataTypeResolver;
 

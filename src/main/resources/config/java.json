@@ -81,35 +81,37 @@
   },
   "hydrate": {
     "_": "{value}",
-    "date_time<rfc2822>": "DateConverter.rfc2822DateTimeFromString({value})",
-    "date_time<iso8601>": "DateConverter.iso8601DateTimeFromString({value})",
-    "date": "DateConverter.localDateFromString({value})"
+    "date_time<rfc2822>": "DateConverter.rfc2822DateTimeFromString(%s)",
+    "date_time<iso8601>": "DateConverter.iso8601DateTimeFromString(%s)",
+    "date_time_rfc_2822": "DateConverter.rfc2822DateTimeFromString(%s)",
+    "date_time": "DateConverter.iso8601DateTimeFromString(%s)",
+    "date": "DateConverter.localDateFromString(%s)"
   },
   "promotions": {
     "uri": {
-      "string": "Promoter.uriFromString({})"
+      "string": "Promoter.uriFromString(%s)"
     },
     "url": {
-      "string": "Promoter.uriFromString({})"
+      "string": "Promoter.phoneNumberFromString(%s)"
     },
     "phone_number": {
-      "string": "Promoter.phoneNumberFromString({})"
+      "string": "Promoter.phoneNumberFromString(%s)"
     },
     "twiml": {
-      "string": "Promoter.twimlFromString({})"
+      "string": "Promoter.twimlFromString(%s)"
     }
   },
   "serialize": {
-    "_": "{value}.toString()",
-    "endpoint": "{value}.getEndpoint()",
-    "iso_country_code": "{value}",
-    "object": "Converter.mapToJson({value})",
-    "date": "DateConverter.dateStringFromLocalDate({value})",
-    "date_time": "{value}.toInstant().toString()",
-    "date_or_time": "{value}.toInstant().toString()",
-    "string": "{value}",
-    "sid": "{value}",
-    "prefixed_collapsible_map": "PrefixedCollapsibleMap.serialize({value}, {trait})"
+    "_": "%s.toString()",
+    "endpoint": "%s.getEndpoint()",
+    "iso_country_code": "%s",
+    "object": "Converter.mapToJson(%s)",
+    "date": "DateConverter.dateStringFromLocalDate(%s)",
+    "date_time": "%s.toInstant().toString()",
+    "date_or_time": "%s.toInstant().toString()",
+    "string": "%s",
+    "sid": "%s",
+    "prefixed_collapsible_map": "PrefixedCollapsibleMap.serialize(%s, %s)"
   },
   "deserialize": {
     "currency": "com.twilio.converter.CurrencyDeserializer"
