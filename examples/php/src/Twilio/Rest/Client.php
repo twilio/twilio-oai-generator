@@ -420,608 +420,608 @@ class Client {
      *
      * @return Api Api Twilio Domain
      */
-    protected function getApi(): Api {
-        if (!$this->_api) {
-            $this->_api = new Api($this);
-        }
-        return $this->_api;
-    }
+//     protected function getApi(): Api {
+//         if (!$this->_api) {
+//             $this->_api = new Api($this);
+//         }
+//         return $this->_api;
+//     }
 
     /**
      * @return \Twilio\Rest\Api\V2010\AccountContext Account provided as the
      *                                               authenticating account
      */
-    public function getAccount(): \Twilio\Rest\Api\V2010\AccountContext {
-        return $this->api->v2010->account;
-    }
-
-    protected function getAddresses(): \Twilio\Rest\Api\V2010\Account\AddressList {
-        return $this->api->v2010->account->addresses;
-    }
-
-    /**
-     * @param string $sid The unique string that identifies the resource
-     */
-    protected function contextAddresses(string $sid): \Twilio\Rest\Api\V2010\Account\AddressContext {
-        return $this->api->v2010->account->addresses($sid);
-    }
-
-    protected function getApplications(): \Twilio\Rest\Api\V2010\Account\ApplicationList {
-        return $this->api->v2010->account->applications;
-    }
-
-    /**
-     * @param string $sid The unique string that identifies the resource
-     */
-    protected function contextApplications(string $sid): \Twilio\Rest\Api\V2010\Account\ApplicationContext {
-        return $this->api->v2010->account->applications($sid);
-    }
-
-    protected function getAuthorizedConnectApps(): \Twilio\Rest\Api\V2010\Account\AuthorizedConnectAppList {
-        return $this->api->v2010->account->authorizedConnectApps;
-    }
-
-    /**
-     * @param string $connectAppSid The SID of the Connect App to fetch
-     */
-    protected function contextAuthorizedConnectApps(string $connectAppSid): \Twilio\Rest\Api\V2010\Account\AuthorizedConnectAppContext {
-        return $this->api->v2010->account->authorizedConnectApps($connectAppSid);
-    }
-
-    protected function getAvailablePhoneNumbers(): \Twilio\Rest\Api\V2010\Account\AvailablePhoneNumberCountryList {
-        return $this->api->v2010->account->availablePhoneNumbers;
-    }
-
-    /**
-     * @param string $countryCode The ISO country code of the country to fetch
-     *                            available phone number information about
-     */
-    protected function contextAvailablePhoneNumbers(string $countryCode): \Twilio\Rest\Api\V2010\Account\AvailablePhoneNumberCountryContext {
-        return $this->api->v2010->account->availablePhoneNumbers($countryCode);
-    }
-
-    protected function getBalance(): \Twilio\Rest\Api\V2010\Account\BalanceList {
-        return $this->api->v2010->account->balance;
-    }
-
-    protected function getCalls(): \Twilio\Rest\Api\V2010\Account\CallList {
-        return $this->api->v2010->account->calls;
-    }
-
-    /**
-     * @param string $sid The SID of the Call resource to fetch
-     */
-    protected function contextCalls(string $sid): \Twilio\Rest\Api\V2010\Account\CallContext {
-        return $this->api->v2010->account->calls($sid);
-    }
-
-    protected function getConferences(): \Twilio\Rest\Api\V2010\Account\ConferenceList {
-        return $this->api->v2010->account->conferences;
-    }
-
-    /**
-     * @param string $sid The unique string that identifies this resource
-     */
-    protected function contextConferences(string $sid): \Twilio\Rest\Api\V2010\Account\ConferenceContext {
-        return $this->api->v2010->account->conferences($sid);
-    }
-
-    protected function getConnectApps(): \Twilio\Rest\Api\V2010\Account\ConnectAppList {
-        return $this->api->v2010->account->connectApps;
-    }
-
-    /**
-     * @param string $sid The unique string that identifies the resource
-     */
-    protected function contextConnectApps(string $sid): \Twilio\Rest\Api\V2010\Account\ConnectAppContext {
-        return $this->api->v2010->account->connectApps($sid);
-    }
-
-    protected function getIncomingPhoneNumbers(): \Twilio\Rest\Api\V2010\Account\IncomingPhoneNumberList {
-        return $this->api->v2010->account->incomingPhoneNumbers;
-    }
-
-    /**
-     * @param string $sid The unique string that identifies the resource
-     */
-    protected function contextIncomingPhoneNumbers(string $sid): \Twilio\Rest\Api\V2010\Account\IncomingPhoneNumberContext {
-        return $this->api->v2010->account->incomingPhoneNumbers($sid);
-    }
-
-    protected function getKeys(): \Twilio\Rest\Api\V2010\Account\KeyList {
-        return $this->api->v2010->account->keys;
-    }
-
-    /**
-     * @param string $sid The unique string that identifies the resource
-     */
-    protected function contextKeys(string $sid): \Twilio\Rest\Api\V2010\Account\KeyContext {
-        return $this->api->v2010->account->keys($sid);
-    }
-
-    protected function getMessages(): \Twilio\Rest\Api\V2010\Account\MessageList {
-        return $this->api->v2010->account->messages;
-    }
-
-    /**
-     * @param string $sid The unique string that identifies the resource
-     */
-    protected function contextMessages(string $sid): \Twilio\Rest\Api\V2010\Account\MessageContext {
-        return $this->api->v2010->account->messages($sid);
-    }
-
-    protected function getNewKeys(): \Twilio\Rest\Api\V2010\Account\NewKeyList {
-        return $this->api->v2010->account->newKeys;
-    }
-
-    protected function getNewSigningKeys(): \Twilio\Rest\Api\V2010\Account\NewSigningKeyList {
-        return $this->api->v2010->account->newSigningKeys;
-    }
-
-    protected function getNotifications(): \Twilio\Rest\Api\V2010\Account\NotificationList {
-        return $this->api->v2010->account->notifications;
-    }
-
-    /**
-     * @param string $sid The unique string that identifies the resource
-     */
-    protected function contextNotifications(string $sid): \Twilio\Rest\Api\V2010\Account\NotificationContext {
-        return $this->api->v2010->account->notifications($sid);
-    }
-
-    protected function getOutgoingCallerIds(): \Twilio\Rest\Api\V2010\Account\OutgoingCallerIdList {
-        return $this->api->v2010->account->outgoingCallerIds;
-    }
-
-    /**
-     * @param string $sid The unique string that identifies the resource
-     */
-    protected function contextOutgoingCallerIds(string $sid): \Twilio\Rest\Api\V2010\Account\OutgoingCallerIdContext {
-        return $this->api->v2010->account->outgoingCallerIds($sid);
-    }
-
-    protected function getQueues(): \Twilio\Rest\Api\V2010\Account\QueueList {
-        return $this->api->v2010->account->queues;
-    }
-
-    /**
-     * @param string $sid The unique string that identifies this resource
-     */
-    protected function contextQueues(string $sid): \Twilio\Rest\Api\V2010\Account\QueueContext {
-        return $this->api->v2010->account->queues($sid);
-    }
-
-    protected function getRecordings(): \Twilio\Rest\Api\V2010\Account\RecordingList {
-        return $this->api->v2010->account->recordings;
-    }
-
-    /**
-     * @param string $sid The unique string that identifies the resource
-     */
-    protected function contextRecordings(string $sid): \Twilio\Rest\Api\V2010\Account\RecordingContext {
-        return $this->api->v2010->account->recordings($sid);
-    }
-
-    protected function getSigningKeys(): \Twilio\Rest\Api\V2010\Account\SigningKeyList {
-        return $this->api->v2010->account->signingKeys;
-    }
+//     public function getAccount(): \Twilio\Rest\Api\V2010\AccountContext {
+//         return $this->api->v2010->account;
+//     }
+//
+//     protected function getAddresses(): \Twilio\Rest\Api\V2010\Account\AddressList {
+//         return $this->api->v2010->account->addresses;
+//     }
+//
+//     /**
+//      * @param string $sid The unique string that identifies the resource
+//      */
+//     protected function contextAddresses(string $sid): \Twilio\Rest\Api\V2010\Account\AddressContext {
+//         return $this->api->v2010->account->addresses($sid);
+//     }
+//
+//     protected function getApplications(): \Twilio\Rest\Api\V2010\Account\ApplicationList {
+//         return $this->api->v2010->account->applications;
+//     }
+//
+//     /**
+//      * @param string $sid The unique string that identifies the resource
+//      */
+//     protected function contextApplications(string $sid): \Twilio\Rest\Api\V2010\Account\ApplicationContext {
+//         return $this->api->v2010->account->applications($sid);
+//     }
+//
+//     protected function getAuthorizedConnectApps(): \Twilio\Rest\Api\V2010\Account\AuthorizedConnectAppList {
+//         return $this->api->v2010->account->authorizedConnectApps;
+//     }
+//
+//     /**
+//      * @param string $connectAppSid The SID of the Connect App to fetch
+//      */
+//     protected function contextAuthorizedConnectApps(string $connectAppSid): \Twilio\Rest\Api\V2010\Account\AuthorizedConnectAppContext {
+//         return $this->api->v2010->account->authorizedConnectApps($connectAppSid);
+//     }
+//
+//     protected function getAvailablePhoneNumbers(): \Twilio\Rest\Api\V2010\Account\AvailablePhoneNumberCountryList {
+//         return $this->api->v2010->account->availablePhoneNumbers;
+//     }
+//
+//     /**
+//      * @param string $countryCode The ISO country code of the country to fetch
+//      *                            available phone number information about
+//      */
+//     protected function contextAvailablePhoneNumbers(string $countryCode): \Twilio\Rest\Api\V2010\Account\AvailablePhoneNumberCountryContext {
+//         return $this->api->v2010->account->availablePhoneNumbers($countryCode);
+//     }
+//
+//     protected function getBalance(): \Twilio\Rest\Api\V2010\Account\BalanceList {
+//         return $this->api->v2010->account->balance;
+//     }
+//
+//     protected function getCalls(): \Twilio\Rest\Api\V2010\Account\CallList {
+//         return $this->api->v2010->account->calls;
+//     }
+//
+//     /**
+//      * @param string $sid The SID of the Call resource to fetch
+//      */
+//     protected function contextCalls(string $sid): \Twilio\Rest\Api\V2010\Account\CallContext {
+//         return $this->api->v2010->account->calls($sid);
+//     }
+//
+//     protected function getConferences(): \Twilio\Rest\Api\V2010\Account\ConferenceList {
+//         return $this->api->v2010->account->conferences;
+//     }
+//
+//     /**
+//      * @param string $sid The unique string that identifies this resource
+//      */
+//     protected function contextConferences(string $sid): \Twilio\Rest\Api\V2010\Account\ConferenceContext {
+//         return $this->api->v2010->account->conferences($sid);
+//     }
+//
+//     protected function getConnectApps(): \Twilio\Rest\Api\V2010\Account\ConnectAppList {
+//         return $this->api->v2010->account->connectApps;
+//     }
+//
+//     /**
+//      * @param string $sid The unique string that identifies the resource
+//      */
+//     protected function contextConnectApps(string $sid): \Twilio\Rest\Api\V2010\Account\ConnectAppContext {
+//         return $this->api->v2010->account->connectApps($sid);
+//     }
+//
+//     protected function getIncomingPhoneNumbers(): \Twilio\Rest\Api\V2010\Account\IncomingPhoneNumberList {
+//         return $this->api->v2010->account->incomingPhoneNumbers;
+//     }
+//
+//     /**
+//      * @param string $sid The unique string that identifies the resource
+//      */
+//     protected function contextIncomingPhoneNumbers(string $sid): \Twilio\Rest\Api\V2010\Account\IncomingPhoneNumberContext {
+//         return $this->api->v2010->account->incomingPhoneNumbers($sid);
+//     }
+//
+//     protected function getKeys(): \Twilio\Rest\Api\V2010\Account\KeyList {
+//         return $this->api->v2010->account->keys;
+//     }
+//
+//     /**
+//      * @param string $sid The unique string that identifies the resource
+//      */
+//     protected function contextKeys(string $sid): \Twilio\Rest\Api\V2010\Account\KeyContext {
+//         return $this->api->v2010->account->keys($sid);
+//     }
+//
+//     protected function getMessages(): \Twilio\Rest\Api\V2010\Account\MessageList {
+//         return $this->api->v2010->account->messages;
+//     }
+//
+//     /**
+//      * @param string $sid The unique string that identifies the resource
+//      */
+//     protected function contextMessages(string $sid): \Twilio\Rest\Api\V2010\Account\MessageContext {
+//         return $this->api->v2010->account->messages($sid);
+//     }
+//
+//     protected function getNewKeys(): \Twilio\Rest\Api\V2010\Account\NewKeyList {
+//         return $this->api->v2010->account->newKeys;
+//     }
+//
+//     protected function getNewSigningKeys(): \Twilio\Rest\Api\V2010\Account\NewSigningKeyList {
+//         return $this->api->v2010->account->newSigningKeys;
+//     }
+//
+//     protected function getNotifications(): \Twilio\Rest\Api\V2010\Account\NotificationList {
+//         return $this->api->v2010->account->notifications;
+//     }
+//
+//     /**
+//      * @param string $sid The unique string that identifies the resource
+//      */
+//     protected function contextNotifications(string $sid): \Twilio\Rest\Api\V2010\Account\NotificationContext {
+//         return $this->api->v2010->account->notifications($sid);
+//     }
+//
+//     protected function getOutgoingCallerIds(): \Twilio\Rest\Api\V2010\Account\OutgoingCallerIdList {
+//         return $this->api->v2010->account->outgoingCallerIds;
+//     }
+//
+//     /**
+//      * @param string $sid The unique string that identifies the resource
+//      */
+//     protected function contextOutgoingCallerIds(string $sid): \Twilio\Rest\Api\V2010\Account\OutgoingCallerIdContext {
+//         return $this->api->v2010->account->outgoingCallerIds($sid);
+//     }
+//
+//     protected function getQueues(): \Twilio\Rest\Api\V2010\Account\QueueList {
+//         return $this->api->v2010->account->queues;
+//     }
+//
+//     /**
+//      * @param string $sid The unique string that identifies this resource
+//      */
+//     protected function contextQueues(string $sid): \Twilio\Rest\Api\V2010\Account\QueueContext {
+//         return $this->api->v2010->account->queues($sid);
+//     }
+//
+//     protected function getRecordings(): \Twilio\Rest\Api\V2010\Account\RecordingList {
+//         return $this->api->v2010->account->recordings;
+//     }
+//
+//     /**
+//      * @param string $sid The unique string that identifies the resource
+//      */
+//     protected function contextRecordings(string $sid): \Twilio\Rest\Api\V2010\Account\RecordingContext {
+//         return $this->api->v2010->account->recordings($sid);
+//     }
+//
+//     protected function getSigningKeys(): \Twilio\Rest\Api\V2010\Account\SigningKeyList {
+//         return $this->api->v2010->account->signingKeys;
+//     }
 
     /**
      * @param string $sid The sid
      */
-    protected function contextSigningKeys(string $sid): \Twilio\Rest\Api\V2010\Account\SigningKeyContext {
-        return $this->api->v2010->account->signingKeys($sid);
-    }
+//     protected function contextSigningKeys(string $sid): \Twilio\Rest\Api\V2010\Account\SigningKeyContext {
+//         return $this->api->v2010->account->signingKeys($sid);
+//     }
+//
+//     protected function getSip(): \Twilio\Rest\Api\V2010\Account\SipList {
+//         return $this->api->v2010->account->sip;
+//     }
+//
+//     protected function getShortCodes(): \Twilio\Rest\Api\V2010\Account\ShortCodeList {
+//         return $this->api->v2010->account->shortCodes;
+//     }
+//
+//     /**
+//      * @param string $sid The unique string that identifies this resource
+//      */
+//     protected function contextShortCodes(string $sid): \Twilio\Rest\Api\V2010\Account\ShortCodeContext {
+//         return $this->api->v2010->account->shortCodes($sid);
+//     }
+//
+//     protected function getTokens(): \Twilio\Rest\Api\V2010\Account\TokenList {
+//         return $this->api->v2010->account->tokens;
+//     }
 
-    protected function getSip(): \Twilio\Rest\Api\V2010\Account\SipList {
-        return $this->api->v2010->account->sip;
-    }
+//     protected function getTranscriptions(): \Twilio\Rest\Api\V2010\Account\TranscriptionList {
+//         return $this->api->v2010->account->transcriptions;
+//     }
+//
+//     /**
+//      * @param string $sid The unique string that identifies the resource
+//      */
+//     protected function contextTranscriptions(string $sid): \Twilio\Rest\Api\V2010\Account\TranscriptionContext {
+//         return $this->api->v2010->account->transcriptions($sid);
+//     }
+//
+//     protected function getUsage(): \Twilio\Rest\Api\V2010\Account\UsageList {
+//         return $this->api->v2010->account->usage;
+//     }
+//
+//     protected function getValidationRequests(): \Twilio\Rest\Api\V2010\Account\ValidationRequestList {
+//         return $this->api->v2010->account->validationRequests;
+//     }
 
-    protected function getShortCodes(): \Twilio\Rest\Api\V2010\Account\ShortCodeList {
-        return $this->api->v2010->account->shortCodes;
-    }
-
-    /**
-     * @param string $sid The unique string that identifies this resource
-     */
-    protected function contextShortCodes(string $sid): \Twilio\Rest\Api\V2010\Account\ShortCodeContext {
-        return $this->api->v2010->account->shortCodes($sid);
-    }
-
-    protected function getTokens(): \Twilio\Rest\Api\V2010\Account\TokenList {
-        return $this->api->v2010->account->tokens;
-    }
-
-    protected function getTranscriptions(): \Twilio\Rest\Api\V2010\Account\TranscriptionList {
-        return $this->api->v2010->account->transcriptions;
-    }
-
-    /**
-     * @param string $sid The unique string that identifies the resource
-     */
-    protected function contextTranscriptions(string $sid): \Twilio\Rest\Api\V2010\Account\TranscriptionContext {
-        return $this->api->v2010->account->transcriptions($sid);
-    }
-
-    protected function getUsage(): \Twilio\Rest\Api\V2010\Account\UsageList {
-        return $this->api->v2010->account->usage;
-    }
-
-    protected function getValidationRequests(): \Twilio\Rest\Api\V2010\Account\ValidationRequestList {
-        return $this->api->v2010->account->validationRequests;
-    }
-
-    /**
-     * Access the Autopilot Twilio Domain
-     *
-     * @return Autopilot Autopilot Twilio Domain
-     */
-    protected function getAutopilot(): Autopilot {
-        if (!$this->_autopilot) {
-            $this->_autopilot = new Autopilot($this);
-        }
-        return $this->_autopilot;
-    }
-
-    /**
-     * Access the Chat Twilio Domain
-     *
-     * @return Chat Chat Twilio Domain
-     */
-    protected function getChat(): Chat {
-        if (!$this->_chat) {
-            $this->_chat = new Chat($this);
-        }
-        return $this->_chat;
-    }
-
-    /**
-     * Access the Conversations Twilio Domain
-     *
-     * @return Conversations Conversations Twilio Domain
-     */
-    protected function getConversations(): Conversations {
-        if (!$this->_conversations) {
-            $this->_conversations = new Conversations($this);
-        }
-        return $this->_conversations;
-    }
-
-    /**
-     * Access the Events Twilio Domain
-     *
-     * @return Events Events Twilio Domain
-     */
-    protected function getEvents(): Events {
-        if (!$this->_events) {
-            $this->_events = new Events($this);
-        }
-        return $this->_events;
-    }
-
-    /**
-     * Access the FlexApi Twilio Domain
-     *
-     * @return FlexApi FlexApi Twilio Domain
-     */
-    protected function getFlexApi(): FlexApi {
-        if (!$this->_flexApi) {
-            $this->_flexApi = new FlexApi($this);
-        }
-        return $this->_flexApi;
-    }
-
-    /**
-     * Access the FrontlineApi Twilio Domain
-     *
-     * @return FrontlineApi FrontlineApi Twilio Domain
-     */
-    protected function getFrontlineApi(): FrontlineApi {
-        if (!$this->_frontlineApi) {
-            $this->_frontlineApi = new FrontlineApi($this);
-        }
-        return $this->_frontlineApi;
-    }
-
-    /**
-     * Access the Insights Twilio Domain
-     *
-     * @return Insights Insights Twilio Domain
-     */
-    protected function getInsights(): Insights {
-        if (!$this->_insights) {
-            $this->_insights = new Insights($this);
-        }
-        return $this->_insights;
-    }
-
-    /**
-     * Access the IpMessaging Twilio Domain
-     *
-     * @return IpMessaging IpMessaging Twilio Domain
-     */
-    protected function getIpMessaging(): IpMessaging {
-        if (!$this->_ipMessaging) {
-            $this->_ipMessaging = new IpMessaging($this);
-        }
-        return $this->_ipMessaging;
-    }
-
-    /**
-     * Access the Lookups Twilio Domain
-     *
-     * @return Lookups Lookups Twilio Domain
-     */
-    protected function getLookups(): Lookups {
-        if (!$this->_lookups) {
-            $this->_lookups = new Lookups($this);
-        }
-        return $this->_lookups;
-    }
-
-    /**
-     * Access the Media Twilio Domain
-     *
-     * @return Media Media Twilio Domain
-     */
-    protected function getMedia(): Media {
-        if (!$this->_media) {
-            $this->_media = new Media($this);
-        }
-        return $this->_media;
-    }
-
-    /**
-     * Access the Messaging Twilio Domain
-     *
-     * @return Messaging Messaging Twilio Domain
-     */
-    protected function getMessaging(): Messaging {
-        if (!$this->_messaging) {
-            $this->_messaging = new Messaging($this);
-        }
-        return $this->_messaging;
-    }
-
-    /**
-     * Access the Monitor Twilio Domain
-     *
-     * @return Monitor Monitor Twilio Domain
-     */
-    protected function getMonitor(): Monitor {
-        if (!$this->_monitor) {
-            $this->_monitor = new Monitor($this);
-        }
-        return $this->_monitor;
-    }
-
-    /**
-     * Access the Notify Twilio Domain
-     *
-     * @return Notify Notify Twilio Domain
-     */
-    protected function getNotify(): Notify {
-        if (!$this->_notify) {
-            $this->_notify = new Notify($this);
-        }
-        return $this->_notify;
-    }
-
-    /**
-     * Access the Numbers Twilio Domain
-     *
-     * @return Numbers Numbers Twilio Domain
-     */
-    protected function getNumbers(): Numbers {
-        if (!$this->_numbers) {
-            $this->_numbers = new Numbers($this);
-        }
-        return $this->_numbers;
-    }
-
-    /**
-     * Access the Preview Twilio Domain
-     *
-     * @return Preview Preview Twilio Domain
-     */
-    protected function getPreview(): Preview {
-        if (!$this->_preview) {
-            $this->_preview = new Preview($this);
-        }
-        return $this->_preview;
-    }
-
-    /**
-     * Access the Pricing Twilio Domain
-     *
-     * @return Pricing Pricing Twilio Domain
-     */
-    protected function getPricing(): Pricing {
-        if (!$this->_pricing) {
-            $this->_pricing = new Pricing($this);
-        }
-        return $this->_pricing;
-    }
-
-    /**
-     * Access the Proxy Twilio Domain
-     *
-     * @return Proxy Proxy Twilio Domain
-     */
-    protected function getProxy(): Proxy {
-        if (!$this->_proxy) {
-            $this->_proxy = new Proxy($this);
-        }
-        return $this->_proxy;
-    }
-
-    /**
-     * Access the Routes Twilio Domain
-     *
-     * @return Routes Routes Twilio Domain
-     */
-    protected function getRoutes(): Routes {
-        if (!$this->_routes) {
-            $this->_routes = new Routes($this);
-        }
-        return $this->_routes;
-    }
-
-    /**
-     * Access the Serverless Twilio Domain
-     *
-     * @return Serverless Serverless Twilio Domain
-     */
-    protected function getServerless(): Serverless {
-        if (!$this->_serverless) {
-            $this->_serverless = new Serverless($this);
-        }
-        return $this->_serverless;
-    }
-
-    /**
-     * Access the Studio Twilio Domain
-     *
-     * @return Studio Studio Twilio Domain
-     */
-    protected function getStudio(): Studio {
-        if (!$this->_studio) {
-            $this->_studio = new Studio($this);
-        }
-        return $this->_studio;
-    }
-
-    /**
-     * Access the Sync Twilio Domain
-     *
-     * @return Sync Sync Twilio Domain
-     */
-    protected function getSync(): Sync {
-        if (!$this->_sync) {
-            $this->_sync = new Sync($this);
-        }
-        return $this->_sync;
-    }
-
-    /**
-     * Access the Taskrouter Twilio Domain
-     *
-     * @return Taskrouter Taskrouter Twilio Domain
-     */
-    protected function getTaskrouter(): Taskrouter {
-        if (!$this->_taskrouter) {
-            $this->_taskrouter = new Taskrouter($this);
-        }
-        return $this->_taskrouter;
-    }
-
-    /**
-     * Access the Trunking Twilio Domain
-     *
-     * @return Trunking Trunking Twilio Domain
-     */
-    protected function getTrunking(): Trunking {
-        if (!$this->_trunking) {
-            $this->_trunking = new Trunking($this);
-        }
-        return $this->_trunking;
-    }
-
-    /**
-     * Access the Trusthub Twilio Domain
-     *
-     * @return Trusthub Trusthub Twilio Domain
-     */
-    protected function getTrusthub(): Trusthub {
-        if (!$this->_trusthub) {
-            $this->_trusthub = new Trusthub($this);
-        }
-        return $this->_trusthub;
-    }
-
-    /**
-     * Access the Verify Twilio Domain
-     *
-     * @return Verify Verify Twilio Domain
-     */
-    protected function getVerify(): Verify {
-        if (!$this->_verify) {
-            $this->_verify = new Verify($this);
-        }
-        return $this->_verify;
-    }
-
-    /**
-     * Access the Video Twilio Domain
-     *
-     * @return Video Video Twilio Domain
-     */
-    protected function getVideo(): Video {
-        if (!$this->_video) {
-            $this->_video = new Video($this);
-        }
-        return $this->_video;
-    }
-
-    /**
-     * Access the Voice Twilio Domain
-     *
-     * @return Voice Voice Twilio Domain
-     */
-    protected function getVoice(): Voice {
-        if (!$this->_voice) {
-            $this->_voice = new Voice($this);
-        }
-        return $this->_voice;
-    }
-
-    /**
-     * Access the Wireless Twilio Domain
-     *
-     * @return Wireless Wireless Twilio Domain
-     */
-    protected function getWireless(): Wireless {
-        if (!$this->_wireless) {
-            $this->_wireless = new Wireless($this);
-        }
-        return $this->_wireless;
-    }
-
-    /**
-     * Access the Supersim Twilio Domain
-     *
-     * @return Supersim Supersim Twilio Domain
-     */
-    protected function getSupersim(): Supersim {
-        if (!$this->_supersim) {
-            $this->_supersim = new Supersim($this);
-        }
-        return $this->_supersim;
-    }
-
-    /**
-     * Access the Bulkexports Twilio Domain
-     *
-     * @return Bulkexports Bulkexports Twilio Domain
-     */
-    protected function getBulkexports(): Bulkexports {
-        if (!$this->_bulkexports) {
-            $this->_bulkexports = new Bulkexports($this);
-        }
-        return $this->_bulkexports;
-    }
-
-    /**
-     * Access the Microvisor Twilio Domain
-     *
-     * @return Microvisor Microvisor Twilio Domain
-     */
-    protected function getMicrovisor(): Microvisor {
-        if (!$this->_microvisor) {
-            $this->_microvisor = new Microvisor($this);
-        }
-        return $this->_microvisor;
-    }
+//     /**
+//      * Access the Autopilot Twilio Domain
+//      *
+//      * @return Autopilot Autopilot Twilio Domain
+//      */
+//     protected function getAutopilot(): Autopilot {
+//         if (!$this->_autopilot) {
+//             $this->_autopilot = new Autopilot($this);
+//         }
+//         return $this->_autopilot;
+//     }
+//
+//     /**
+//      * Access the Chat Twilio Domain
+//      *
+//      * @return Chat Chat Twilio Domain
+//      */
+//     protected function getChat(): Chat {
+//         if (!$this->_chat) {
+//             $this->_chat = new Chat($this);
+//         }
+//         return $this->_chat;
+//     }
+//
+//     /**
+//      * Access the Conversations Twilio Domain
+//      *
+//      * @return Conversations Conversations Twilio Domain
+//      */
+//     protected function getConversations(): Conversations {
+//         if (!$this->_conversations) {
+//             $this->_conversations = new Conversations($this);
+//         }
+//         return $this->_conversations;
+//     }
+//
+//     /**
+//      * Access the Events Twilio Domain
+//      *
+//      * @return Events Events Twilio Domain
+//      */
+//     protected function getEvents(): Events {
+//         if (!$this->_events) {
+//             $this->_events = new Events($this);
+//         }
+//         return $this->_events;
+//     }
+//
+//     /**
+//      * Access the FlexApi Twilio Domain
+//      *
+//      * @return FlexApi FlexApi Twilio Domain
+//      */
+//     protected function getFlexApi(): FlexApi {
+//         if (!$this->_flexApi) {
+//             $this->_flexApi = new FlexApi($this);
+//         }
+//         return $this->_flexApi;
+//     }
+//
+//     /**
+//      * Access the FrontlineApi Twilio Domain
+//      *
+//      * @return FrontlineApi FrontlineApi Twilio Domain
+//      */
+//     protected function getFrontlineApi(): FrontlineApi {
+//         if (!$this->_frontlineApi) {
+//             $this->_frontlineApi = new FrontlineApi($this);
+//         }
+//         return $this->_frontlineApi;
+//     }
+//
+//     /**
+//      * Access the Insights Twilio Domain
+//      *
+//      * @return Insights Insights Twilio Domain
+//      */
+//     protected function getInsights(): Insights {
+//         if (!$this->_insights) {
+//             $this->_insights = new Insights($this);
+//         }
+//         return $this->_insights;
+//     }
+//
+//     /**
+//      * Access the IpMessaging Twilio Domain
+//      *
+//      * @return IpMessaging IpMessaging Twilio Domain
+//      */
+//     protected function getIpMessaging(): IpMessaging {
+//         if (!$this->_ipMessaging) {
+//             $this->_ipMessaging = new IpMessaging($this);
+//         }
+//         return $this->_ipMessaging;
+//     }
+//
+//     /**
+//      * Access the Lookups Twilio Domain
+//      *
+//      * @return Lookups Lookups Twilio Domain
+//      */
+//     protected function getLookups(): Lookups {
+//         if (!$this->_lookups) {
+//             $this->_lookups = new Lookups($this);
+//         }
+//         return $this->_lookups;
+//     }
+//
+//     /**
+//      * Access the Media Twilio Domain
+//      *
+//      * @return Media Media Twilio Domain
+//      */
+//     protected function getMedia(): Media {
+//         if (!$this->_media) {
+//             $this->_media = new Media($this);
+//         }
+//         return $this->_media;
+//     }
+//
+//     /**
+//      * Access the Messaging Twilio Domain
+//      *
+//      * @return Messaging Messaging Twilio Domain
+//      */
+//     protected function getMessaging(): Messaging {
+//         if (!$this->_messaging) {
+//             $this->_messaging = new Messaging($this);
+//         }
+//         return $this->_messaging;
+//     }
+//
+//     /**
+//      * Access the Monitor Twilio Domain
+//      *
+//      * @return Monitor Monitor Twilio Domain
+//      */
+//     protected function getMonitor(): Monitor {
+//         if (!$this->_monitor) {
+//             $this->_monitor = new Monitor($this);
+//         }
+//         return $this->_monitor;
+//     }
+//
+//     /**
+//      * Access the Notify Twilio Domain
+//      *
+//      * @return Notify Notify Twilio Domain
+//      */
+//     protected function getNotify(): Notify {
+//         if (!$this->_notify) {
+//             $this->_notify = new Notify($this);
+//         }
+//         return $this->_notify;
+//     }
+//
+//     /**
+//      * Access the Numbers Twilio Domain
+//      *
+//      * @return Numbers Numbers Twilio Domain
+//      */
+//     protected function getNumbers(): Numbers {
+//         if (!$this->_numbers) {
+//             $this->_numbers = new Numbers($this);
+//         }
+//         return $this->_numbers;
+//     }
+//
+//     /**
+//      * Access the Preview Twilio Domain
+//      *
+//      * @return Preview Preview Twilio Domain
+//      */
+//     protected function getPreview(): Preview {
+//         if (!$this->_preview) {
+//             $this->_preview = new Preview($this);
+//         }
+//         return $this->_preview;
+//     }
+//
+//     /**
+//      * Access the Pricing Twilio Domain
+//      *
+//      * @return Pricing Pricing Twilio Domain
+//      */
+//     protected function getPricing(): Pricing {
+//         if (!$this->_pricing) {
+//             $this->_pricing = new Pricing($this);
+//         }
+//         return $this->_pricing;
+//     }
+//
+//     /**
+//      * Access the Proxy Twilio Domain
+//      *
+//      * @return Proxy Proxy Twilio Domain
+//      */
+//     protected function getProxy(): Proxy {
+//         if (!$this->_proxy) {
+//             $this->_proxy = new Proxy($this);
+//         }
+//         return $this->_proxy;
+//     }
+//
+//     /**
+//      * Access the Routes Twilio Domain
+//      *
+//      * @return Routes Routes Twilio Domain
+//      */
+//     protected function getRoutes(): Routes {
+//         if (!$this->_routes) {
+//             $this->_routes = new Routes($this);
+//         }
+//         return $this->_routes;
+//     }
+//
+//     /**
+//      * Access the Serverless Twilio Domain
+//      *
+//      * @return Serverless Serverless Twilio Domain
+//      */
+//     protected function getServerless(): Serverless {
+//         if (!$this->_serverless) {
+//             $this->_serverless = new Serverless($this);
+//         }
+//         return $this->_serverless;
+//     }
+//
+//     /**
+//      * Access the Studio Twilio Domain
+//      *
+//      * @return Studio Studio Twilio Domain
+//      */
+//     protected function getStudio(): Studio {
+//         if (!$this->_studio) {
+//             $this->_studio = new Studio($this);
+//         }
+//         return $this->_studio;
+//     }
+//
+//     /**
+//      * Access the Sync Twilio Domain
+//      *
+//      * @return Sync Sync Twilio Domain
+//      */
+//     protected function getSync(): Sync {
+//         if (!$this->_sync) {
+//             $this->_sync = new Sync($this);
+//         }
+//         return $this->_sync;
+//     }
+//
+//     /**
+//      * Access the Taskrouter Twilio Domain
+//      *
+//      * @return Taskrouter Taskrouter Twilio Domain
+//      */
+//     protected function getTaskrouter(): Taskrouter {
+//         if (!$this->_taskrouter) {
+//             $this->_taskrouter = new Taskrouter($this);
+//         }
+//         return $this->_taskrouter;
+//     }
+//
+//     /**
+//      * Access the Trunking Twilio Domain
+//      *
+//      * @return Trunking Trunking Twilio Domain
+//      */
+//     protected function getTrunking(): Trunking {
+//         if (!$this->_trunking) {
+//             $this->_trunking = new Trunking($this);
+//         }
+//         return $this->_trunking;
+//     }
+//
+//     /**
+//      * Access the Trusthub Twilio Domain
+//      *
+//      * @return Trusthub Trusthub Twilio Domain
+//      */
+//     protected function getTrusthub(): Trusthub {
+//         if (!$this->_trusthub) {
+//             $this->_trusthub = new Trusthub($this);
+//         }
+//         return $this->_trusthub;
+//     }
+//
+//     /**
+//      * Access the Verify Twilio Domain
+//      *
+//      * @return Verify Verify Twilio Domain
+//      */
+//     protected function getVerify(): Verify {
+//         if (!$this->_verify) {
+//             $this->_verify = new Verify($this);
+//         }
+//         return $this->_verify;
+//     }
+//
+//     /**
+//      * Access the Video Twilio Domain
+//      *
+//      * @return Video Video Twilio Domain
+//      */
+//     protected function getVideo(): Video {
+//         if (!$this->_video) {
+//             $this->_video = new Video($this);
+//         }
+//         return $this->_video;
+//     }
+//
+//     /**
+//      * Access the Voice Twilio Domain
+//      *
+//      * @return Voice Voice Twilio Domain
+//      */
+//     protected function getVoice(): Voice {
+//         if (!$this->_voice) {
+//             $this->_voice = new Voice($this);
+//         }
+//         return $this->_voice;
+//     }
+//
+//     /**
+//      * Access the Wireless Twilio Domain
+//      *
+//      * @return Wireless Wireless Twilio Domain
+//      */
+//     protected function getWireless(): Wireless {
+//         if (!$this->_wireless) {
+//             $this->_wireless = new Wireless($this);
+//         }
+//         return $this->_wireless;
+//     }
+//
+//     /**
+//      * Access the Supersim Twilio Domain
+//      *
+//      * @return Supersim Supersim Twilio Domain
+//      */
+//     protected function getSupersim(): Supersim {
+//         if (!$this->_supersim) {
+//             $this->_supersim = new Supersim($this);
+//         }
+//         return $this->_supersim;
+//     }
+//
+//     /**
+//      * Access the Bulkexports Twilio Domain
+//      *
+//      * @return Bulkexports Bulkexports Twilio Domain
+//      */
+//     protected function getBulkexports(): Bulkexports {
+//         if (!$this->_bulkexports) {
+//             $this->_bulkexports = new Bulkexports($this);
+//         }
+//         return $this->_bulkexports;
+//     }
+//
+//     /**
+//      * Access the Microvisor Twilio Domain
+//      *
+//      * @return Microvisor Microvisor Twilio Domain
+//      */
+//     protected function getMicrovisor(): Microvisor {
+//         if (!$this->_microvisor) {
+//             $this->_microvisor = new Microvisor($this);
+//         }
+//         return $this->_microvisor;
+//     }
 
     /**
      * Magic getter to lazy load domains
