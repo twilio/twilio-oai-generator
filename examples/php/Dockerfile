@@ -9,16 +9,6 @@ WORKDIR /twilio
 ENV XDEBUG_MODE=coverage
 ENV PATH="vendor/bin:$PATH"
 
-#RUN rm -rf src/Twilio/Rest/*
-#COPY src/Twilio/Rest src/Twilio/Rest
-#
-#RUN rm -rf tests/Twilio/Integration/
-#COPY tests/Twilio/Integration tests/Twilio/Integration
-#
-#RUN rm -rf tests/Twilio/Unit/*
-##RUN echo $(ls tests/Twilio/)
-#COPY tests/Twilio/Unit tests/Twilio/Unit
-#
 COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
 RUN composer install --prefer-dist
 
