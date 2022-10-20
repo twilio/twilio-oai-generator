@@ -3,7 +3,7 @@ set -e
 
 cd examples/prism
 docker-compose build --pull
-docker-compose up -d --force-recreate --remove-orphans
+docker-compose up --force-recreate --remove-orphans
 
 function wait_for() {
   echo -n "Waiting for tests to complete"
