@@ -29,6 +29,7 @@ namespace Twilio.Rest.Api.V2010.Account
     public class CallResource : Resource
     {
     
+        [JsonConverter(typeof(StringEnumConverter))]
         public sealed class StatusEnum : StringEnum
         {
             private StatusEnum(string value) : base(value) {}
@@ -91,7 +92,7 @@ namespace Twilio.Rest.Api.V2010.Account
         #endif
 
         /// <summary> create </summary>
-                /// <param name="requiredStringProperty">  </param>
+        /// <param name="requiredStringProperty">  </param>
         /// <param name="pathAccountSid">  </param>
         /// <param name="testArrayOfStrings">  </param>
         /// <param name="testArrayOfUri">  </param>
@@ -110,7 +111,7 @@ namespace Twilio.Rest.Api.V2010.Account
 
         #if !NET35
         /// <summary> create </summary>
-                /// <param name="requiredStringProperty">  </param>
+        /// <param name="requiredStringProperty">  </param>
         /// <param name="pathAccountSid">  </param>
         /// <param name="testArrayOfStrings">  </param>
         /// <param name="testArrayOfUri">  </param>
@@ -127,11 +128,6 @@ namespace Twilio.Rest.Api.V2010.Account
             return await CreateAsync(options, client);
         }
         #endif
-
-
-
-
-
 
 
 
@@ -164,7 +160,7 @@ namespace Twilio.Rest.Api.V2010.Account
         /// <summary> delete </summary>
         /// <param name="options"> Delete Call parameters </param>
         /// <param name="client"> Client to make requests to Twilio </param>
-        /// <returns> Task that resolves to A single instance of Call </returns>
+        /// <returns> A single instance of Call </returns>
         public static bool Delete(DeleteCallOptions options, ITwilioRestClient client = null)
         {
             client = client ?? TwilioClient.GetRestClient();
@@ -173,6 +169,10 @@ namespace Twilio.Rest.Api.V2010.Account
         }
 
         #if !NET35
+        /// <summary> delete </summary>
+        /// <param name="options"> Delete Call parameters </param>
+        /// <param name="client"> Client to make requests to Twilio </param>
+        /// <returns> Task that resolves to A single instance of Call </returns>
         public static async System.Threading.Tasks.Task<bool> DeleteAsync(DeleteCallOptions options,
                                                                           ITwilioRestClient client = null)
         {
@@ -182,6 +182,11 @@ namespace Twilio.Rest.Api.V2010.Account
         }
         #endif
 
+        /// <summary> delete </summary>
+        /// <param name="pathTestInteger"> INTEGER ID param!!! </param>
+        /// <param name="pathAccountSid">  </param>
+        /// <param name="client"> Client to make requests to Twilio </param>
+        /// <returns> A single instance of Call </returns>
         public static bool Delete(int? pathTestInteger, string pathAccountSid = null, ITwilioRestClient client = null)
         {
             var options = new DeleteCallOptions(pathTestInteger)      { PathAccountSid = pathAccountSid }   ;
@@ -189,20 +194,18 @@ namespace Twilio.Rest.Api.V2010.Account
         }
 
         #if !NET35
+        /// <summary> delete </summary>
+        /// <param name="pathTestInteger"> INTEGER ID param!!! </param>
+        /// <param name="pathAccountSid">  </param>
+        /// <param name="client"> Client to make requests to Twilio </param>
+        /// <returns> Task that resolves to A single instance of Call </returns>
         public static async System.Threading.Tasks.Task<bool> DeleteAsync(int? pathTestInteger, string pathAccountSid = null, ITwilioRestClient client = null)
         {
             var options = new DeleteCallOptions(pathTestInteger)  { PathAccountSid = pathAccountSid };
             return await DeleteAsync(options, client);
         }
         #endif
-
-
-
-
-
-
         
-
         private static Request BuildFetchRequest(FetchCallOptions options, ITwilioRestClient client)
         {
             
@@ -248,11 +251,14 @@ namespace Twilio.Rest.Api.V2010.Account
         }
         #endif
         /// <summary> fetch </summary>
-                /// <param name="pathTestInteger"> INTEGER ID param!!! </param>
+        /// <param name="pathTestInteger"> INTEGER ID param!!! </param>
         /// <param name="pathAccountSid">  </param>
         /// <param name="client"> Client to make requests to Twilio </param>
         /// <returns> A single instance of Call </returns>
-        public static CallResource Fetch(int? pathTestInteger, string pathAccountSid = null, ITwilioRestClient client = null)
+        public static CallResource Fetch(
+                                         int? pathTestInteger, 
+                                         string pathAccountSid = null, 
+                                         ITwilioRestClient client = null)
         {
             var options = new FetchCallOptions(pathTestInteger){ PathAccountSid = pathAccountSid };
             return Fetch(options, client);
@@ -260,7 +266,7 @@ namespace Twilio.Rest.Api.V2010.Account
 
         #if !NET35
         /// <summary> fetch </summary>
-                /// <param name="pathTestInteger"> INTEGER ID param!!! </param>
+        /// <param name="pathTestInteger"> INTEGER ID param!!! </param>
         /// <param name="pathAccountSid">  </param>
         /// <param name="client"> Client to make requests to Twilio </param>
         /// <returns> Task that resolves to A single instance of Call </returns>
@@ -270,8 +276,6 @@ namespace Twilio.Rest.Api.V2010.Account
             return await FetchAsync(options, client);
         }
         #endif
-
-
     
         /// <summary>
         /// Converts a JSON string into a CallResource object
@@ -329,8 +333,11 @@ namespace Twilio.Rest.Api.V2010.Account
 
         
         [JsonProperty("test_enum")]
-        [JsonConverter(typeof(StringEnumConverter))]
         public CallResource.StatusEnum TestEnum { get; private set; }
+
+        ///<summary> A2P Messaging Profile Bundle BundleSid </summary> 
+        [JsonProperty("a2p_profile_bundle_sid")]
+        public string A2PProfileBundleSid { get; private set; }
 
         ///<summary> The test_array_of_integers </summary> 
         [JsonProperty("test_array_of_integers")]
@@ -346,7 +353,6 @@ namespace Twilio.Rest.Api.V2010.Account
 
         ///<summary> Permissions authorized to the app </summary> 
         [JsonProperty("test_array_of_enum")]
-        [JsonConverter(typeof(StringEnumConverter))]
         public List<CallResource.StatusEnum> TestArrayOfEnum { get; private set; }
 
 

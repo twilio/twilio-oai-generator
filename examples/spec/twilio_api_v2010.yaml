@@ -58,6 +58,13 @@ components:
           $ref: '#/components/schemas/test_enum_status'
           nullable: true
           type: string
+        a2p_profile_bundle_sid:
+          type: string
+          minLength: 34
+          maxLength: 34
+          pattern: ^BU[0-9a-fA-F]{32}$
+          nullable: true
+          description: A2P Messaging Profile Bundle BundleSid
         test_array_of_integers:
           items:
             type: integer
@@ -99,6 +106,7 @@ components:
           voice: true
         test_number_float: 100.22
         test_enum: "completed"
+        a2p_profile_bundle_sid: "BU0987654321abcdefABCDEFABCDEFABCD"
   securitySchemes:
     accountSid_authToken:
       scheme: basic
@@ -429,15 +437,16 @@ paths:
     x-twilio:
       parent: /Accounts.json
       pathType: instance
-  /2010-04-01/Accounts/{AccountSid}/Calls/FeedbackSummary.json:
-    description: A nested resource without operations
+  /2010-04-01/Accounts/{AccountSid}/Calls/Feedback/Summary.json:
+    description: A nested resource with sub-dirs and without operations
     servers:
       - url: https://api.twilio.com
     x-twilio:
       className: feedback_call_summary
+      mountName: feedback_call_summary
       parent: /Accounts/{AccountSid}/Calls.json
       pathType: list
-  /2010-04-01/Accounts/{AccountSid}/Calls/FeedbackSummary/{Sid}.json:
+  /2010-04-01/Accounts/{AccountSid}/Calls/Feedback/Summary/{Sid}.json:
     description: A resource that can only be updated
     post:
       operationId: UpdateCallFeedbackSummary
@@ -460,6 +469,11 @@ paths:
           application/x-www-form-urlencoded:
             schema:
               properties:
+                AccountSid:
+                  type: string
+                  minLength: 34
+                  maxLength: 34
+                  pattern: ^AC[0-9a-fA-F]{32}$
                 EndDate:
                   format: date
                   type: string
@@ -493,5 +507,6 @@ paths:
       - url: https://api.twilio.com
     x-twilio:
       className: feedback_call_summary
+      mountName: feedback_call_summary
       parent: /Accounts/{AccountSid}/Calls.json
       pathType: instance

@@ -1,9 +1,8 @@
 package com.twilio.oai;
 
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
+import lombok.RequiredArgsConstructor;
 
 public class Inflector {
 
@@ -24,26 +23,28 @@ public class Inflector {
         return word.chars().allMatch(Character::isUpperCase);
     }
 
-     class ExpressionRule {
-        private  final Map<Pattern, String> pluralExpressionList= new HashMap<>();
-        private  final List<String> irregulars = new ArrayList<>();
-        private  final Map<String, String> wildCardMapping = new HashMap<>();
+     static class ExpressionRule {
+        private final List<PluralRule> pluralRules = new ArrayList<>();
+        private final List<String> irregulars = new ArrayList<>();
+        private final Map<String, String> wildCardMapping = new HashMap<>();
 
-        public ExpressionRule() {
-            this.initIrregulars();
-            this.initRules();
-            this.initWildCardMapping();
-        }
+         @RequiredArgsConstructor
+         private static class PluralRule {
+             private final String expression;
+             private final String replacement;
+         }
 
-        public void addRule(String expression, String replacement) {
-            pluralExpressionList.put(Pattern.compile(expression, Pattern.CASE_INSENSITIVE), replacement);
-        }
+         public ExpressionRule() {
+             this.initIrregulars();
+             this.initRules();
+             this.initWildCardMapping();
+         }
 
-        public void addIrregulars(String word) {
-            irregulars.add(word);
-        }
-        public void initRules() {
-            this.addRule("s$", "");
+         public void addRule(String expression, String replacement) {
+             pluralRules.add(new PluralRule(expression, replacement));
+         }
+
+         public void initRules() {
             this.addRule("(s|si|u)s$", "$1s"); // '-us' and '-ss' are already singular
             this.addRule("(n)ews$", "$1ews");
             this.addRule("([ti])a$", "$1um");
@@ -72,49 +73,42 @@ public class Inflector {
             this.addRule("(vert|ind)ices$", "$1ex");
             this.addRule("(matr)ices$", "$1ix");
             this.addRule("(quiz)zes$", "$1");
+            this.addRule("s$", "");
         }
 
-        private void initIrregulars() {
-            this.addIrregulars("AuthTypes");
-            this.addIrregulars("AuthTypeCalls");
-            this.addIrregulars("AuthTypeTegistrations");
-            this.addIrregulars("DialingPermissions");
-            this.addIrregulars("Media");
-        }
+         private void initIrregulars() {
+             irregulars.add("AuthTypes");
+             irregulars.add("AuthTypeCalls");
+             irregulars.add("AuthTypeRegistrations");
+             irregulars.add("Aws");
+             irregulars.add("BuildStatus");
+             irregulars.add("DialingPermissions");
+             irregulars.add("Media");
+         }
 
-        public boolean isIrregular(String word) {
+         public boolean isIrregular(String word) {
             return this.irregulars.contains(word);
         }
 
-        public String getReplacementString(String word) {
-            for (Map.Entry<Pattern, String> patternEntry : this.pluralExpressionList.entrySet()) {
-                Matcher matcher = patternEntry.getKey().matcher(word);
-                if (matcher.find())
-                    return matcher.replaceAll(patternEntry.getValue());
-            }
-            return word;
-        }
+         public String getReplacementString(String word) {
+             for (final PluralRule rule : this.pluralRules) {
+                 final String replaced = word.replaceAll("(?i)" + rule.expression, rule.replacement);
+                 if (!replaced.equals(word)) {
+                     return replaced;
+                 }
+             }
+             return word;
+         }
 
-        public boolean isWildCard(String wordStr) {
-            return wildCardMapping.containsKey(wordStr);
-        }
+         public boolean isWildCard(String wordStr) {
+             return wildCardMapping.containsKey(wordStr);
+         }
 
          public String getWildCardMapping(String wordStr) {
-            return wildCardMapping.get(wordStr);
+             return wildCardMapping.get(wordStr);
          }
 
          public void initWildCardMapping() {
-             wildCardMapping.put("Aws", "Aws");
-             wildCardMapping.put("Addresses", "Address");
-             wildCardMapping.put("IpAddresses", "IpAddress");
-             wildCardMapping.put("Queries", "Query");
-             wildCardMapping.put("Countries", "Country");
-             wildCardMapping.put("Policies", "Policy");
-             wildCardMapping.put("ConnectionPolicies", "ConnectionPolicy");
-             wildCardMapping.put("CallSummaries", "CallSummary");
-             wildCardMapping.put("BuildStatus", "BuildStatus");
-             wildCardMapping.put("Activities", "Activity");
-             wildCardMapping.put("Entities", "Entity");
              wildCardMapping.put("ESimProfiles", "EsimProfile");
          }
      }

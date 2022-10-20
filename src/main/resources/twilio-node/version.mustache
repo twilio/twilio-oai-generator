@@ -2,7 +2,7 @@
 import {{domainName}}Base from "../{{domainName}}Base";
 import Version from "../../base/Version";
 {{#versionResources}}
-import { {{name}}ListInstance } from "./{{apiVersion}}/{{filename}}";
+import { {{importName}} } from "./{{apiVersion}}/{{filename}}";
 {{/versionResources}}
 
 export default class {{apiVersionClass}} extends Version {
@@ -10,7 +10,7 @@ export default class {{apiVersionClass}} extends Version {
    * Initialize the {{apiVersionClass}} version of {{domainName}}
    *
    {{#versionResources}}
-   * @property { Twilio.{{domainName}}.{{apiVersionClass}}.{{name}}ListInstance } {{mountName}} - {{mountName}} resource
+   * @property { Twilio.{{domainName}}.{{apiVersionClass}}.{{name}} } {{mountName}} - {{mountName}} resource
    {{/versionResources}}
    *
    * @param { Twilio.{{domainName}} } domain - The Twilio domain
@@ -20,12 +20,12 @@ export default class {{apiVersionClass}} extends Version {
   }
 
   {{#versionResources}}
-  protected _{{mountName}}?: {{name}}ListInstance;
+  protected _{{mountName}}?: {{name}};
   {{/versionResources}}
 
   {{#versionResources}}
-  get {{mountName}}(): {{name}}ListInstance {
-    this._{{mountName}} = this._{{mountName}} || {{name}}ListInstance(this);
+  get {{mountName}}(): {{name}} {
+    this._{{mountName}} = this._{{mountName}} || {{name}}(this);
     return this._{{mountName}};
   }
 

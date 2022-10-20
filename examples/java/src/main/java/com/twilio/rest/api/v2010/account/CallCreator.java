@@ -50,15 +50,15 @@ import java.net.URI;
 
 public class CallCreator extends Creator<Call>{
     private String requiredStringProperty;
-    private String accountSid;
+    private String pathAccountSid;
     private List<String> testArrayOfStrings;
     private List<URI> testArrayOfUri;
 
     public CallCreator(final String requiredStringProperty) {
         this.requiredStringProperty = requiredStringProperty;
     }
-    public CallCreator(final String accountSid, final String requiredStringProperty) {
-        this.accountSid = accountSid;
+    public CallCreator(final String pathAccountSid, final String requiredStringProperty) {
+        this.pathAccountSid = pathAccountSid;
         this.requiredStringProperty = requiredStringProperty;
     }
 
@@ -89,8 +89,8 @@ public class CallCreator extends Creator<Call>{
     public Call create(final TwilioRestClient client){
         String path = "/2010-04-01/Accounts/{AccountSid}/Calls.json";
 
-        this.accountSid = this.accountSid == null ? client.getAccountSid() : this.accountSid;
-        path = path.replace("{"+"AccountSid"+"}", this.accountSid.toString());
+        this.pathAccountSid = this.pathAccountSid == null ? client.getAccountSid() : this.pathAccountSid;
+        path = path.replace("{"+"AccountSid"+"}", this.pathAccountSid.toString());
         path = path.replace("{"+"RequiredStringProperty"+"}", this.requiredStringProperty.toString());
 
         Request request = new Request(

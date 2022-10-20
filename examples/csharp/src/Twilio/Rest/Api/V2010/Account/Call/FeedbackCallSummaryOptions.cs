@@ -39,6 +39,9 @@ namespace Twilio.Rest.Api.V2010.Account.Call
         
         public string PathAccountSid { get; set; }
 
+        
+        public string AccountSid { get; set; }
+
 
 
         /// <summary> Construct a new UpdateCallFeedbackSummaryOptions </summary>
@@ -63,6 +66,10 @@ namespace Twilio.Rest.Api.V2010.Account.Call
             if (StartDate != null)
             {
                 p.Add(new KeyValuePair<string, string>("StartDate", StartDate.Value.ToString("yyyy-MM-dd")));
+            }
+            if (AccountSid != null)
+            {
+                p.Add(new KeyValuePair<string, string>("AccountSid", AccountSid));
             }
             return p;
         }

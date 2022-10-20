@@ -44,19 +44,20 @@ import java.util.Objects;
 import lombok.ToString;
 
 public class FeedbackCallSummaryUpdater extends Updater<FeedbackCallSummary>{
-    private String sid;
+    private String pathSid;
     private LocalDate endDate;
     private LocalDate startDate;
+    private String pathAccountSid;
     private String accountSid;
 
-    public FeedbackCallSummaryUpdater(final String sid, final LocalDate endDate, final LocalDate startDate){
-        this.sid = sid;
+    public FeedbackCallSummaryUpdater(final String pathSid, final LocalDate endDate, final LocalDate startDate){
+        this.pathSid = pathSid;
         this.endDate = endDate;
         this.startDate = startDate;
     }
-    public FeedbackCallSummaryUpdater(final String accountSid, final String sid, final LocalDate endDate, final LocalDate startDate){
-        this.accountSid = accountSid;
-        this.sid = sid;
+    public FeedbackCallSummaryUpdater(final String pathAccountSid, final String pathSid, final LocalDate endDate, final LocalDate startDate){
+        this.pathAccountSid = pathAccountSid;
+        this.pathSid = pathSid;
         this.endDate = endDate;
         this.startDate = startDate;
     }
@@ -69,14 +70,18 @@ public class FeedbackCallSummaryUpdater extends Updater<FeedbackCallSummary>{
         this.startDate = startDate;
         return this;
     }
+    public FeedbackCallSummaryUpdater setAccountSid(final String accountSid){
+        this.accountSid = accountSid;
+        return this;
+    }
 
     @Override
     public FeedbackCallSummary update(final TwilioRestClient client){
-        String path = "/2010-04-01/Accounts/{AccountSid}/Calls/FeedbackSummary/{Sid}.json";
+        String path = "/2010-04-01/Accounts/{AccountSid}/Calls/Feedback/Summary/{Sid}.json";
 
-        this.accountSid = this.accountSid == null ? client.getAccountSid() : this.accountSid;
-        path = path.replace("{"+"AccountSid"+"}", this.accountSid.toString());
-        path = path.replace("{"+"Sid"+"}", this.sid.toString());
+        this.pathAccountSid = this.pathAccountSid == null ? client.getAccountSid() : this.pathAccountSid;
+        path = path.replace("{"+"AccountSid"+"}", this.pathAccountSid.toString());
+        path = path.replace("{"+"Sid"+"}", this.pathSid.toString());
         path = path.replace("{"+"EndDate"+"}", this.endDate.toString());
         path = path.replace("{"+"StartDate"+"}", this.startDate.toString());
 
@@ -100,6 +105,10 @@ public class FeedbackCallSummaryUpdater extends Updater<FeedbackCallSummary>{
         return FeedbackCallSummary.fromJson(response.getStream(), client.getObjectMapper());
     }
     private void addPostParams(final Request request) {
+        if (accountSid != null) {
+            request.addPostParam("AccountSid", accountSid);
+    
+        }
         if (endDate != null) {
             request.addPostParam("EndDate", DateConverter.dateStringFromLocalDate(endDate));
 
