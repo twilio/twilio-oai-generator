@@ -9,7 +9,7 @@ WORKDIR /twilio
 ENV XDEBUG_MODE=coverage
 ENV PATH="vendor/bin:$PATH"
 
-RUN rm -rf src/Twilio/Rest/*/
+RUN rm -rf src/Twilio/Rest/*
 COPY src/Twilio/Rest src/Twilio/Rest
 
 RUN rm -rf tests/Twilio/Integration/

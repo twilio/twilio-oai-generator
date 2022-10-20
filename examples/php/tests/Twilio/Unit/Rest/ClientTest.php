@@ -221,40 +221,40 @@ class ClientTest extends UnitTest {
         $this->assertEquals('debug', $client->getLogLevel());
     }
 
-//     public function testDebugLogging(): void {
-//         $capturedLogging = tmpfile();
-//         ini_set('error_log', stream_get_meta_data($capturedLogging)['uri']);
-//         $client = new Client('username', 'password', null, null, null, [
-//             Client::ENV_LOG => 'debug'
-//         ]);
-//         $client->request('GET', 'http://api.twilio.com', [], [], ['test-header' => 'test header value'], 'test-user', 'test-password');
-//         $this->assertStringContainsString('test header value', stream_get_contents($capturedLogging));
-//     }
+    public function testDebugLogging(): void {
+        $capturedLogging = tmpfile();
+        ini_set('error_log', stream_get_meta_data($capturedLogging)['uri']);
+        $client = new Client('username', 'password', null, null, null, [
+            Client::ENV_LOG => 'debug'
+        ]);
+        $client->request('GET', 'http://api.twilio.com', [], [], ['test-header' => 'test header value'], 'test-user', 'test-password');
+        $this->assertStringContainsString('test header value', stream_get_contents($capturedLogging));
+    }
 
-//     public function testAuthorizationHeaderRemoval(): void {
-//         $capturedLogging = tmpfile();
-//         ini_set('error_log', stream_get_meta_data($capturedLogging)['uri']);
-//         $client = new Client('username', 'password', null, null, null, [
-//             Client::ENV_LOG => 'debug'
-//         ]);
-//         $client->request('GET', 'http://api.twilio.com', [], [], ['Authorization-header' => 'auth header value','test-header' => 'test header value'], 'test-user', 'test-password');
-//         $this->assertStringNotContainsString('Authorization-header', stream_get_contents($capturedLogging));
-//     }
+    public function testAuthorizationHeaderRemoval(): void {
+        $capturedLogging = tmpfile();
+        ini_set('error_log', stream_get_meta_data($capturedLogging)['uri']);
+        $client = new Client('username', 'password', null, null, null, [
+            Client::ENV_LOG => 'debug'
+        ]);
+        $client->request('GET', 'http://api.twilio.com', [], [], ['Authorization-header' => 'auth header value','test-header' => 'test header value'], 'test-user', 'test-password');
+        $this->assertStringNotContainsString('Authorization-header', stream_get_contents($capturedLogging));
+    }
 
-//     public function testDefaultUserAgent(): void {
-//         $client = new Client('username', 'password');
-//         $client->request('GET', 'https://api.twilio.com');
-//         $userAgent = $client->getHttpClient()->{'lastRequest'}[CURLOPT_HTTPHEADER][0];
-//         $this->assertRegExp('/^User-Agent: twilio-php\/[0-9.]+(-rc\.[0-9]+)?\s\(\w+\s\w+\)\sPHP\/[^\s]+$/',$userAgent);
-//     }
+    public function testDefaultUserAgent(): void {
+        $client = new Client('username', 'password');
+        $client->request('GET', 'https://api.twilio.com');
+        $userAgent = $client->getHttpClient()->{'lastRequest'}[CURLOPT_HTTPHEADER][0];
+        $this->assertRegExp('/^User-Agent: twilio-php\/[0-9.]+(-rc\.[0-9]+)?\s\(\w+\s\w+\)\sPHP\/[^\s]+$/',$userAgent);
+    }
 
-//     public function testUserAgentExtensionsWhenSet(): void {
-//         $expectedExtensions = ['twilio-run/2.0.0-test', 'flex-plugin/3.4.0'];
-//         $client = new Client('username', 'password', null,null,null,null,$expectedExtensions);
-//         $client->request('GET', 'https://api.twilio.com');
-//         $userAgent = $client->getHttpClient()->{'lastRequest'}[CURLOPT_HTTPHEADER][0];
-//         $userAgentExtensions = array_slice(explode(" ",$userAgent),-count($expectedExtensions));
-//         $this->assertEquals($userAgentExtensions,$expectedExtensions);
-//     }
+    public function testUserAgentExtensionsWhenSet(): void {
+        $expectedExtensions = ['twilio-run/2.0.0-test', 'flex-plugin/3.4.0'];
+        $client = new Client('username', 'password', null,null,null,null,$expectedExtensions);
+        $client->request('GET', 'https://api.twilio.com');
+        $userAgent = $client->getHttpClient()->{'lastRequest'}[CURLOPT_HTTPHEADER][0];
+        $userAgentExtensions = array_slice(explode(" ",$userAgent),-count($expectedExtensions));
+        $this->assertEquals($userAgentExtensions,$expectedExtensions);
+    }
 
 }
