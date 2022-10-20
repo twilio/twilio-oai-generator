@@ -29,6 +29,7 @@ namespace Twilio.Rest.Api.V2010.Account.Call
     public class FeedbackCallSummaryResource : Resource
     {
     
+        [JsonConverter(typeof(StringEnumConverter))]
         public sealed class StatusEnum : StringEnum
         {
             private StatusEnum(string value) : base(value) {}
@@ -50,7 +51,7 @@ namespace Twilio.Rest.Api.V2010.Account.Call
         private static Request BuildUpdateRequest(UpdateFeedbackCallSummaryOptions options, ITwilioRestClient client)
         {
             
-            string path = "/2010-04-01/Accounts/{AccountSid}/Calls/FeedbackSummary/{Sid}.json";
+            string path = "/2010-04-01/Accounts/{AccountSid}/Calls/Feedback/Summary/{Sid}.json";
 
             string PathAccountSid = options.PathAccountSid ?? client.AccountSid;
             path = path.Replace("{"+"AccountSid"+"}", PathAccountSid);
@@ -97,6 +98,7 @@ namespace Twilio.Rest.Api.V2010.Account.Call
         /// <param name="endDate">  </param>
         /// <param name="startDate">  </param>
         /// <param name="pathAccountSid">  </param>
+        /// <param name="accountSid">  </param>
         /// <param name="client"> Client to make requests to Twilio </param>
         /// <returns> A single instance of FeedbackCallSummary </returns>
         public static FeedbackCallSummaryResource Update(
@@ -104,9 +106,10 @@ namespace Twilio.Rest.Api.V2010.Account.Call
                                           DateTime? endDate,
                                           DateTime? startDate,
                                           string pathAccountSid = null,
+                                          string accountSid = null,
                                           ITwilioRestClient client = null)
         {
-            var options = new UpdateFeedbackCallSummaryOptions(pathSid, endDate, startDate){ PathAccountSid = pathAccountSid };
+            var options = new UpdateFeedbackCallSummaryOptions(pathSid, endDate, startDate){ PathAccountSid = pathAccountSid, AccountSid = accountSid };
             return Update(options, client);
         }
 
@@ -116,6 +119,7 @@ namespace Twilio.Rest.Api.V2010.Account.Call
         /// <param name="endDate">  </param>
         /// <param name="startDate">  </param>
         /// <param name="pathAccountSid">  </param>
+        /// <param name="accountSid">  </param>
         /// <param name="client"> Client to make requests to Twilio </param>
         /// <returns> Task that resolves to A single instance of FeedbackCallSummary </returns>
         public static async System.Threading.Tasks.Task<FeedbackCallSummaryResource> UpdateAsync(
@@ -123,9 +127,10 @@ namespace Twilio.Rest.Api.V2010.Account.Call
                                                                               DateTime? endDate,
                                                                               DateTime? startDate,
                                                                               string pathAccountSid = null,
+                                                                              string accountSid = null,
                                                                               ITwilioRestClient client = null)
         {
-            var options = new UpdateFeedbackCallSummaryOptions(pathSid, endDate, startDate){ PathAccountSid = pathAccountSid };
+            var options = new UpdateFeedbackCallSummaryOptions(pathSid, endDate, startDate){ PathAccountSid = pathAccountSid, AccountSid = accountSid };
             return await UpdateAsync(options, client);
         }
         #endif
@@ -186,8 +191,11 @@ namespace Twilio.Rest.Api.V2010.Account.Call
 
         
         [JsonProperty("test_enum")]
-        [JsonConverter(typeof(StringEnumConverter))]
         public FeedbackCallSummaryResource.StatusEnum TestEnum { get; private set; }
+
+        ///<summary> A2P Messaging Profile Bundle BundleSid </summary> 
+        [JsonProperty("a2p_profile_bundle_sid")]
+        public string A2PProfileBundleSid { get; private set; }
 
         ///<summary> The test_array_of_integers </summary> 
         [JsonProperty("test_array_of_integers")]
@@ -203,7 +211,6 @@ namespace Twilio.Rest.Api.V2010.Account.Call
 
         ///<summary> Permissions authorized to the app </summary> 
         [JsonProperty("test_array_of_enum")]
-        [JsonConverter(typeof(StringEnumConverter))]
         public List<FeedbackCallSummaryResource.StatusEnum> TestArrayOfEnum { get; private set; }
 
 

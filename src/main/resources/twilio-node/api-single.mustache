@@ -8,7 +8,7 @@ const deserialize = require("{{apiVersionPath}}/../../base/deserialize");
 const serialize = require("{{apiVersionPath}}/../../base/serialize");
 {{#resources}}
 {{#dependents}}
-import { {{name}}ListInstance } from "./{{apiFilename}}/{{filename}}";
+import { {{importName}} } from "./{{apiFilename}}/{{filename}}";
 {{/dependents}}
 {{/resources}}
 {{#resources}}
@@ -44,7 +44,7 @@ export interface {{resourceName}} {
   {{/instanceResource}}
 
   {{#dependents}}
-  {{mountName}}: {{name}}ListInstance;
+  {{mountName}}: {{name}};
   {{/dependents}}
 
 {{#operations}}
@@ -59,12 +59,18 @@ export interface {{resourceName}} {
 }
 
 {{#parentResourceName}}
+export interface {{resourceName}}Solution {
+{{#resourcePathParams}}
+  {{paramName}}?: {{{dataType}}};
+{{/resourcePathParams}}
+}
+
 export class {{resourceName}}Impl implements {{resourceName}} {
-  protected _solution: {{name}}Solution;
+  protected _solution: {{resourceName}}Solution;
   protected _uri: string;
 
   {{#dependents}}
-  protected _{{mountName}}?: {{name}}ListInstance;
+  protected _{{mountName}}?: {{name}};
   {{/dependents}}
 
   constructor(protected _version: {{apiVersionClass}}{{#resourcePathParams}}, {{paramName}}: {{{dataType}}}{{/resourcePathParams}}) {
@@ -73,8 +79,8 @@ export class {{resourceName}}Impl implements {{resourceName}} {
   }
 
   {{#dependents}}
-  get {{mountName}}(): {{name}}ListInstance {
-    this._{{mountName}} = this._{{mountName}} || {{name}}ListInstance(this._version{{#resourcePathParams}}, this._solution.{{paramName}}{{/resourcePathParams}});
+  get {{mountName}}(): {{name}} {
+    this._{{mountName}} = this._{{mountName}} || {{name}}(this._version{{#resourcePathParams}}, this._solution.{{paramName}}{{/resourcePathParams}});
     return this._{{mountName}};
   }
 
@@ -100,6 +106,12 @@ export class {{resourceName}}Impl implements {{resourceName}} {
 }
 {{/parentResourceName}}
 {{^parentResourceName}}
+export interface {{name}}Solution {
+{{#resourcePathParams}}
+  {{paramName}}?: {{{dataType}}};
+{{/resourcePathParams}}
+}
+
 interface {{resourceName}}Impl extends {{resourceName}} {}
 class {{resourceName}}Impl implements {{resourceName}} {
   _version?: {{apiVersionClass}};
@@ -107,7 +119,7 @@ class {{resourceName}}Impl implements {{resourceName}} {
   _uri?: string;
 
   {{#dependents}}
-  _{{mountName}}?: {{name}}ListInstance;
+  _{{mountName}}?: {{name}};
   {{/dependents}}
 }
 
@@ -131,7 +143,7 @@ export function {{resourceName}}(version: {{apiVersionClass}}{{#resourcePathPara
   Object.defineProperty(instance, "{{mountName}}", {
     get: function {{mountName}}() {
       if (!this._{{mountName}}) {
-        this._{{mountName}} = {{name}}ListInstance(this._version{{#resourcePathParams}}, this._solution.{{paramName}}{{/resourcePathParams}});
+        this._{{mountName}} = {{name}}(this._version{{#resourcePathParams}}, this._solution.{{paramName}}{{/resourcePathParams}});
       }
       return this._{{mountName}};
     }

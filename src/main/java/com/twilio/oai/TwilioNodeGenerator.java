@@ -20,6 +20,7 @@ import org.openapitools.codegen.model.ModelMap;
 import org.openapitools.codegen.model.ModelsMap;
 import org.openapitools.codegen.model.OperationsMap;
 
+import static com.twilio.oai.common.ApplicationConstants.LIST_INSTANCE;
 import static com.twilio.oai.common.ApplicationConstants.PATH_SEPARATOR_PLACEHOLDER;
 
 public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
@@ -142,7 +143,7 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
                     co.vendorExtensions.put("x-is-delete-operation", true);
                 }
             } else {
-                resourceName = itemName + "ListInstance";
+                resourceName = itemName + LIST_INSTANCE;
                 if (httpMethod == HttpMethod.POST) {
                     addOperationName(co, "Create");
                 } else if (httpMethod == HttpMethod.GET) {
@@ -190,6 +191,16 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
                     .forEach(operation -> directoryStructureService.addDependent(dependentMap,
                                                                                  dependent.getName(),
                                                                                  operation)));
+            dependentMap
+                .values()
+                .stream()
+                .map(DirectoryStructureService.DependentResource.class::cast)
+                .forEach(dependent -> {
+                    if (dependent.getName().equals(instanceName)) {
+                        dependent.setName(instanceName + "Import");
+                        dependent.setImportName(instanceName + " as " + dependent.getName());
+                    }
+                });
 
             if (isInstanceOperation || (!hasInstanceOperations && httpMethod == HttpMethod.POST)) {
                 co.responses
