@@ -15,12 +15,12 @@ use Twilio\Http\Client as HttpClient;
 use Twilio\Http\CurlClient;
 use Twilio\Security\RequestValidator;
 use Twilio\VersionInfo;
-
-/**
- * A client for accessing the Twilio API.
- *
- * @property Api $api
- */
+//
+// /**
+//  * A client for accessing the Twilio API.
+//  *
+//  * @property Api $api
+//  */
 class Client {
 //     const ENV_ACCOUNT_SID = 'TWILIO_ACCOUNT_SID';
 //     const ENV_AUTH_TOKEN = 'TWILIO_AUTH_TOKEN';
@@ -352,10 +352,10 @@ class Client {
 //         return $this->_api;
 //     }
 
-    /**
-     * @return \Twilio\Rest\Api\V2010\AccountContext Account provided as the
-     *                                               authenticating account
-     */
+//     /**
+//      * @return \Twilio\Rest\Api\V2010\AccountContext Account provided as the
+//      *                                               authenticating account
+//      */
 //     public function getAccount(): \Twilio\Rest\Api\V2010\AccountContext {
 //         return $this->api->v2010->account;
 //     }
@@ -948,13 +948,13 @@ class Client {
 //         return $this->_microvisor;
 //     }
 
-    /**
-     * Magic getter to lazy load domains
-     *
-     * @param string $name Domain to return
-     * @return \Twilio\Domain The requested domain
-     * @throws TwilioException For unknown domains
-     */
+//     /**
+//      * Magic getter to lazy load domains
+//      *
+//      * @param string $name Domain to return
+//      * @return \Twilio\Domain The requested domain
+//      * @throws TwilioException For unknown domains
+//      */
 //     public function __get(string $name) {
 //         $method = 'get' . \ucfirst($name);
 //         if (\method_exists($this, $method)) {
