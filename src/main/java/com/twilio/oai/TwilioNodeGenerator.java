@@ -129,6 +129,7 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
 
             co.returnType = instanceName;
 
+            // Anything that ends with {sid} -> account/sid for example
             if (isInstanceOperation) {
                 resourceName = itemName + "Context";
                 parentResourceName = itemName + "ListInstance";
@@ -191,7 +192,7 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
                                                                                  dependent.getName(),
                                                                                  operation)));
 
-            if (isInstanceOperation || (!hasInstanceOperations && httpMethod == HttpMethod.POST)) {
+            if (isInstanceOperation || (!hasInstanceOperations )) {
                 co.responses
                     .stream()
                     .map(response -> response.dataType)
