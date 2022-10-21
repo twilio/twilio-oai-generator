@@ -12,7 +12,7 @@ use Twilio\Tests\Holodeck;
 use Twilio\Tests\Request;
 use Twilio\Tests\Unit\UnitTest;
 
-class ClientTest extends UnitTest {
+class PhpUnitTest extends UnitTest {
 
     public function testDummyTest(): void {
 
