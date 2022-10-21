@@ -9,13 +9,13 @@
 
 namespace Twilio\Rest;
 
-use Twilio\Domain;
-use Twilio\Exceptions\TwilioException;
+// use Twilio\Domain;
+// use Twilio\Exceptions\TwilioException;
 // use Twilio\Rest\Api\V2010;
 
 /*
  */
-class Api extends Domain {
+class Api { //extends Domain {
 //     protected $_v2010;
 //
 //     /**

@@ -9,12 +9,12 @@
 
 namespace Twilio\Rest;
 
-use Twilio\Exceptions\ConfigurationException;
-use Twilio\Exceptions\TwilioException;
-use Twilio\Http\Client as HttpClient;
-use Twilio\Http\CurlClient;
-use Twilio\Security\RequestValidator;
-use Twilio\VersionInfo;
+// use Twilio\Exceptions\ConfigurationException;
+// use Twilio\Exceptions\TwilioException;
+// use Twilio\Http\Client as HttpClient;
+// use Twilio\Http\CurlClient;
+// use Twilio\Security\RequestValidator;
+// use Twilio\VersionInfo;
 //
 // /**
 //  * A client for accessing the Twilio API.
