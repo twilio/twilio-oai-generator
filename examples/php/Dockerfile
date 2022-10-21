@@ -6,7 +6,7 @@ RUN apt-get install -y git
 RUN git clone https://github.com/twilio/twilio-php.git twilio
 WORKDIR /twilio
 
-RUN rm -rf src/Twilio/Rest/*/
+RUN rm -rf src/Twilio/Rest/*
 COPY src/Twilio/Rest src/Twilio/Rest
 
 RUN rm -rf tests/Twilio/Integration/
