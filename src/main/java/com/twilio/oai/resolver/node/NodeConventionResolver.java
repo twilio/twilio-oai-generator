@@ -44,6 +44,9 @@ public class NodeConventionResolver {
 
     public CodegenModel resolveComplexType(CodegenModel model, Map<String, String> modelFormatMap){
         for (CodegenProperty prop: model.vars) {
+            if (prop.complexType != null) {
+                prop.dataType = prop.isArray ? "Array<object>" : "object";
+            }
             if(modelFormatMap.containsKey(prop.complexType)) {
                 boolean hasProperty =  conventionMap.get(Segments.SEGMENT_PROPERTIES.getSegment()).
                         containsKey(StringUtils.underscore(modelFormatMap.get(prop.complexType)));
@@ -55,15 +58,16 @@ public class NodeConventionResolver {
                         prop.dataType = "Array<" + prop.dataType + ">";
                     }
 
+                    // Add custom object import path
                     model.vendorExtensions.computeIfAbsent("x-imports", k -> new ArrayList<>());
-                    Map<String, String> obj = (Map<String, String>) conventionMap.get(Segments.SEGMENT_LIBRARY.getSegment()).
+                    Map<String, String> propMap = (Map<String, String>) conventionMap.get(Segments.SEGMENT_LIBRARY.getSegment()).
                             get(StringUtils.underscore(modelFormatMap.get(prop.complexType)));
                     ArrayList<Map<String, String>> imports = (ArrayList<Map<String, String>>) model.vendorExtensions.get("x-imports");
-                    Map<String, String> objectImport = new HashMap<>();
-                    objectImport.put("name", prop.dataType);
-                    objectImport.put("path", obj.get(prop.dataType));
                     if (!importAlreadyExists(prop.dataType, imports)) {
-                        imports.add(objectImport);
+                        Map<String, String> customObjectImport = new HashMap<>();
+                        customObjectImport.put("name", prop.dataType);
+                        customObjectImport.put("path", propMap.get(prop.dataType));
+                        imports.add(customObjectImport);
                     }
                 }
             }

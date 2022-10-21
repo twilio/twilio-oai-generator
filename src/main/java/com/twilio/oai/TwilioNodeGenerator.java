@@ -217,8 +217,9 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
                     .map(response -> response.dataType)
                     .filter(Objects::nonNull)
                     .map(this::getModel)
-                    .flatMap(Optional::stream).map(conventionResolver::resolveModel)
-                    .map(this::resolveComplexType).map(item -> conventionResolver.resolveComplexType(item, modelFormatMap))
+                    .flatMap(Optional::stream)
+                    .map(conventionResolver::resolveModel)
+                    .map(item -> conventionResolver.resolveComplexType(item, modelFormatMap))
                     .forEach(model -> {
                         model.setName(itemName);
                         resource.put("responseModel", model);
@@ -281,15 +282,6 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
                 model.getVars().forEach(property -> addModel(resource, property.dataType));
             }
         });
-    }
-
-    private CodegenModel resolveComplexType(CodegenModel item) {
-        for (CodegenProperty prop : item.vars) {
-            if (prop.complexType != null) {
-                prop.dataType = prop.isArray ? "Array<object>" : "object";
-            }
-        }
-        return item;
     }
 
     private void addSerializeVendorExtension(CodegenParameter param) {

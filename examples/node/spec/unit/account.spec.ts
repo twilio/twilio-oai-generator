@@ -94,7 +94,6 @@ describe("account", () => {
           },
         ],
       });
-    // May need to pass in values for the testObject / anything else ?
     const params: AccountListInstancePageOptions = {
       dateCreatedBefore: new Date("2022-12-25"),
       dateCreatedAfter: new Date("2022-01-01"),
