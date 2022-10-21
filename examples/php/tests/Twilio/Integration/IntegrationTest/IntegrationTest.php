@@ -9,11 +9,11 @@
 
 namespace Twilio\Tests\Integration\IntegrationTest;
 
-use Twilio\Exceptions\DeserializeException;
-use Twilio\Exceptions\TwilioException;
-use Twilio\Http\Response;
+// use Twilio\Exceptions\DeserializeException;
+// use Twilio\Exceptions\TwilioException;
+// use Twilio\Http\Response;
 use Twilio\Tests\HolodeckTestCase;
-use Twilio\Tests\Request;
+// use Twilio\Tests\Request;
 
 class IntegrationTest extends HolodeckTestCase {
     public function testDummyTest(): void {
