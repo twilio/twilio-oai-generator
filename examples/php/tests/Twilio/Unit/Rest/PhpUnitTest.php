@@ -15,7 +15,6 @@ use Twilio\Tests\Unit\UnitTest;
 class PhpUnitTest extends UnitTest {
 
     public function testDummyTest(): void {
-
         $this->assertTrue(true);
     }
 
