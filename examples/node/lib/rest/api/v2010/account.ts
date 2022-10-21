@@ -161,8 +161,12 @@ export interface AccountContext {
   [inspect.custom](_depth: any, options: InspectOptions): any;
 }
 
+export interface AccountContextSolution {
+  sid?: string;
+}
+
 export class AccountContextImpl implements AccountContext {
-  protected _solution: AccountSolution;
+  protected _solution: AccountContextSolution;
   protected _uri: string;
 
   protected _calls?: CallListInstance;
@@ -284,7 +288,7 @@ interface AccountResource {
 }
 
 export class AccountInstance {
-  protected _solution: AccountSolution;
+  protected _solution: AccountContextSolution;
   protected _context?: AccountContext;
 
   constructor(
@@ -417,9 +421,6 @@ export class AccountInstance {
   [inspect.custom](_depth: any, options: InspectOptions) {
     return inspect(this.toJSON(), options);
   }
-}
-export interface AccountSolution {
-  sid?: string;
 }
 
 export class AccountPage extends Page<
@@ -612,6 +613,8 @@ export interface AccountListInstance {
   toJSON(): any;
   [inspect.custom](_depth: any, options: InspectOptions): any;
 }
+
+export interface AccountSolution {}
 
 interface AccountListInstanceImpl extends AccountListInstance {}
 class AccountListInstanceImpl implements AccountListInstance {

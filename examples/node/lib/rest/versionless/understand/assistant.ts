@@ -60,6 +60,8 @@ export interface AssistantListInstance {
   [inspect.custom](_depth: any, options: InspectOptions): any;
 }
 
+export interface AssistantSolution {}
+
 interface AssistantListInstanceImpl extends AssistantListInstance {}
 class AssistantListInstanceImpl implements AssistantListInstance {
   _version?: Understand;
@@ -139,15 +141,10 @@ interface AssistantResource {
 }
 
 export class AssistantInstance {
-  protected _solution: AssistantSolution;
-  protected _context?: AssistantListInstance;
-
   constructor(protected _version: Understand, payload: AssistantPayload) {
     this.accountSid = payload.account_sid;
     this.friendlyName = payload.friendly_name;
     this.sid = payload.sid;
-
-    this._solution = {};
   }
 
   /**
@@ -180,7 +177,6 @@ export class AssistantInstance {
     return inspect(this.toJSON(), options);
   }
 }
-export interface AssistantSolution {}
 
 export class AssistantPage extends Page<
   Understand,
