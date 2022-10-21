@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1666334098">
-  <project timestamp="1666334098">
+<coverage generated="1666336089">
+  <project timestamp="1666336089">
     <file name="/twilio/src/Twilio/Deserialize.php">
       <class name="Twilio\Deserialize" namespace="global">
         <metrics complexity="3" methods="1" coveredmethods="1" conditionals="0" coveredconditionals="0" statements="4" coveredstatements="4" elements="5" coveredelements="5"/>
@@ -14,21 +14,21 @@
     </file>
     <file name="/twilio/src/Twilio/Domain.php">
       <class name="Twilio\Domain" namespace="global">
-        <metrics complexity="5" methods="5" coveredmethods="3" conditionals="0" coveredconditionals="0" statements="7" coveredstatements="5" elements="12" coveredelements="8"/>
+        <metrics complexity="5" methods="5" coveredmethods="1" conditionals="0" coveredconditionals="0" statements="7" coveredstatements="2" elements="12" coveredelements="3"/>
       </class>
-      <line num="30" type="method" name="__construct" visibility="public" complexity="1" crap="1" count="111"/>
-      <line num="31" type="stmt" count="111"/>
-      <line num="32" type="stmt" count="111"/>
+      <line num="30" type="method" name="__construct" visibility="public" complexity="1" crap="1" count="104"/>
+      <line num="31" type="stmt" count="104"/>
+      <line num="32" type="stmt" count="104"/>
       <line num="41" type="method" name="absoluteUrl" visibility="public" complexity="1" crap="2" count="0"/>
       <line num="42" type="stmt" count="0"/>
-      <line num="58" type="method" name="request" visibility="public" complexity="1" crap="1" count="7"/>
-      <line num="62" type="stmt" count="7"/>
-      <line num="63" type="stmt" count="7"/>
-      <line num="75" type="method" name="getClient" visibility="public" complexity="1" crap="1" count="3"/>
-      <line num="76" type="stmt" count="3"/>
+      <line num="58" type="method" name="request" visibility="public" complexity="1" crap="2" count="0"/>
+      <line num="62" type="stmt" count="0"/>
+      <line num="63" type="stmt" count="0"/>
+      <line num="75" type="method" name="getClient" visibility="public" complexity="1" crap="2" count="0"/>
+      <line num="76" type="stmt" count="0"/>
       <line num="79" type="method" name="__toString" visibility="public" complexity="1" crap="2" count="0"/>
       <line num="80" type="stmt" count="0"/>
-      <metrics loc="83" ncloc="49" classes="1" methods="5" coveredmethods="3" conditionals="0" coveredconditionals="0" statements="7" coveredstatements="5" elements="12" coveredelements="8"/>
+      <metrics loc="83" ncloc="49" classes="1" methods="5" coveredmethods="1" conditionals="0" coveredconditionals="0" statements="7" coveredstatements="2" elements="12" coveredelements="3"/>
     </file>
     <file name="/twilio/src/Twilio/Exceptions/ConfigurationException.php">
       <class name="Twilio\Exceptions\ConfigurationException" namespace="global">
@@ -56,20 +56,20 @@
     </file>
     <file name="/twilio/src/Twilio/Exceptions/RestException.php">
       <class name="Twilio\Exceptions\RestException" namespace="global">
-        <metrics complexity="4" methods="4" coveredmethods="4" conditionals="0" coveredconditionals="0" statements="7" coveredstatements="7" elements="11" coveredelements="11"/>
+        <metrics complexity="4" methods="4" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="8" coveredstatements="0" elements="12" coveredelements="0"/>
       </class>
-      <line num="22" type="method" name="__construct" visibility="public" complexity="1" crap="1" count="3"/>
-      <line num="23" type="stmt" count="3"/>
-      <line num="24" type="stmt" count="3"/>
-      <line num="25" type="stmt" count="3"/>
-      <line num="26" type="stmt" count="3"/>
-      <line num="33" type="method" name="getStatusCode" visibility="public" complexity="1" crap="1" count="3"/>
-      <line num="34" type="stmt" count="3"/>
-      <line num="41" type="method" name="getMoreInfo" visibility="public" complexity="1" crap="1" count="3"/>
-      <line num="42" type="stmt" count="3"/>
-      <line num="49" type="method" name="getDetails" visibility="public" complexity="1" crap="1" count="3"/>
-      <line num="50" type="stmt" count="3"/>
-      <metrics loc="53" ncloc="31" classes="1" methods="4" coveredmethods="4" conditionals="0" coveredconditionals="0" statements="7" coveredstatements="7" elements="11" coveredelements="11"/>
+      <line num="22" type="method" name="__construct" visibility="public" complexity="1" crap="2" count="0"/>
+      <line num="23" type="stmt" count="0"/>
+      <line num="24" type="stmt" count="0"/>
+      <line num="25" type="stmt" count="0"/>
+      <line num="26" type="stmt" count="0"/>
+      <line num="33" type="method" name="getStatusCode" visibility="public" complexity="1" crap="2" count="0"/>
+      <line num="34" type="stmt" count="0"/>
+      <line num="41" type="method" name="getMoreInfo" visibility="public" complexity="1" crap="2" count="0"/>
+      <line num="42" type="stmt" count="0"/>
+      <line num="49" type="method" name="getDetails" visibility="public" complexity="1" crap="2" count="0"/>
+      <line num="50" type="stmt" count="0"/>
+      <metrics loc="53" ncloc="31" classes="1" methods="4" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="8" coveredstatements="0" elements="12" coveredelements="0"/>
     </file>
     <file name="/twilio/src/Twilio/Exceptions/TwilioException.php">
       <class name="Twilio\Exceptions\TwilioException" namespace="global">
@@ -270,14 +270,14 @@
       <class name="Twilio\Http\Response" namespace="global">
         <metrics complexity="6" methods="6" coveredmethods="4" conditionals="0" coveredconditionals="0" statements="8" coveredstatements="6" elements="14" coveredelements="10"/>
       </class>
-      <line num="12" type="method" name="__construct" visibility="public" complexity="1" crap="1" count="12"/>
-      <line num="13" type="stmt" count="12"/>
-      <line num="14" type="stmt" count="12"/>
-      <line num="15" type="stmt" count="12"/>
-      <line num="21" type="method" name="getContent" visibility="public" complexity="1" crap="1" count="11"/>
-      <line num="22" type="stmt" count="11"/>
-      <line num="25" type="method" name="getStatusCode" visibility="public" complexity="1" crap="1" count="11"/>
-      <line num="26" type="stmt" count="11"/>
+      <line num="12" type="method" name="__construct" visibility="public" complexity="1" crap="1" count="5"/>
+      <line num="13" type="stmt" count="5"/>
+      <line num="14" type="stmt" count="5"/>
+      <line num="15" type="stmt" count="5"/>
+      <line num="21" type="method" name="getContent" visibility="public" complexity="1" crap="1" count="4"/>
+      <line num="22" type="stmt" count="4"/>
+      <line num="25" type="method" name="getStatusCode" visibility="public" complexity="1" crap="1" count="4"/>
+      <line num="26" type="stmt" count="4"/>
       <line num="29" type="method" name="getHeaders" visibility="public" complexity="1" crap="1" count="4"/>
       <line num="30" type="stmt" count="4"/>
       <line num="33" type="method" name="ok" visibility="public" complexity="1" crap="2" count="0"/>
@@ -884,16 +884,16 @@
     </file>
     <file name="/twilio/src/Twilio/Page.php">
       <class name="Twilio\Page" namespace="global">
-        <metrics complexity="36" methods="17" coveredmethods="8" conditionals="0" coveredconditionals="0" statements="57" coveredstatements="28" elements="74" coveredelements="36"/>
+        <metrics complexity="36" methods="17" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="57" coveredstatements="0" elements="74" coveredelements="0"/>
       </class>
-      <line num="33" type="method" name="__construct" visibility="public" complexity="1" crap="1" count="3"/>
-      <line num="34" type="stmt" count="3"/>
-      <line num="36" type="stmt" count="3"/>
-      <line num="37" type="stmt" count="3"/>
-      <line num="38" type="stmt" count="3"/>
-      <line num="39" type="stmt" count="3"/>
-      <line num="42" type="method" name="processResponse" visibility="protected" complexity="5" crap="20.15" count="3"/>
-      <line num="43" type="stmt" count="3"/>
+      <line num="33" type="method" name="__construct" visibility="public" complexity="1" crap="2" count="0"/>
+      <line num="34" type="stmt" count="0"/>
+      <line num="36" type="stmt" count="0"/>
+      <line num="37" type="stmt" count="0"/>
+      <line num="38" type="stmt" count="0"/>
+      <line num="39" type="stmt" count="0"/>
+      <line num="42" type="method" name="processResponse" visibility="protected" complexity="5" crap="30" count="0"/>
+      <line num="43" type="stmt" count="0"/>
       <line num="44" type="stmt" count="0"/>
       <line num="45" type="stmt" count="0"/>
       <line num="47" type="stmt" count="0"/>
@@ -905,22 +905,22 @@
       <line num="54" type="stmt" count="0"/>
       <line num="55" type="stmt" count="0"/>
       <line num="58" type="stmt" count="0"/>
-      <line num="60" type="stmt" count="3"/>
+      <line num="60" type="stmt" count="0"/>
       <line num="63" type="method" name="isPagingEol" visibility="protected" complexity="3" crap="12" count="0"/>
       <line num="64" type="stmt" count="0"/>
-      <line num="67" type="method" name="hasMeta" visibility="protected" complexity="2" crap="2" count="3"/>
-      <line num="68" type="stmt" count="3"/>
-      <line num="71" type="method" name="getMeta" visibility="protected" complexity="2" crap="2" count="3"/>
-      <line num="72" type="stmt" count="3"/>
-      <line num="75" type="method" name="loadPage" visibility="protected" complexity="4" crap="4.77" count="3"/>
-      <line num="76" type="stmt" count="3"/>
-      <line num="77" type="stmt" count="3"/>
+      <line num="67" type="method" name="hasMeta" visibility="protected" complexity="2" crap="6" count="0"/>
+      <line num="68" type="stmt" count="0"/>
+      <line num="71" type="method" name="getMeta" visibility="protected" complexity="2" crap="6" count="0"/>
+      <line num="72" type="stmt" count="0"/>
+      <line num="75" type="method" name="loadPage" visibility="protected" complexity="4" crap="20" count="0"/>
+      <line num="76" type="stmt" count="0"/>
+      <line num="77" type="stmt" count="0"/>
       <line num="78" type="stmt" count="0"/>
-      <line num="81" type="stmt" count="3"/>
-      <line num="82" type="stmt" count="3"/>
-      <line num="83" type="stmt" count="3"/>
-      <line num="85" type="stmt" count="3"/>
-      <line num="86" type="stmt" count="3"/>
+      <line num="81" type="stmt" count="0"/>
+      <line num="82" type="stmt" count="0"/>
+      <line num="83" type="stmt" count="0"/>
+      <line num="85" type="stmt" count="0"/>
+      <line num="86" type="stmt" count="0"/>
       <line num="90" type="stmt" count="0"/>
       <line num="91" type="stmt" count="0"/>
       <line num="94" type="stmt" count="0"/>
@@ -930,17 +930,17 @@
       <line num="100" type="stmt" count="0"/>
       <line num="101" type="stmt" count="0"/>
       <line num="103" type="stmt" count="0"/>
-      <line num="106" type="method" name="getNextPageUrl" visibility="public" complexity="4" crap="4.13" count="3"/>
-      <line num="107" type="stmt" count="3"/>
+      <line num="106" type="method" name="getNextPageUrl" visibility="public" complexity="4" crap="20" count="0"/>
+      <line num="107" type="stmt" count="0"/>
       <line num="108" type="stmt" count="0"/>
-      <line num="109" type="stmt" count="3"/>
-      <line num="110" type="stmt" count="3"/>
-      <line num="112" type="stmt" count="1"/>
-      <line num="115" type="method" name="nextPage" visibility="public" complexity="2" crap="2" count="3"/>
-      <line num="116" type="stmt" count="3"/>
-      <line num="117" type="stmt" count="1"/>
-      <line num="120" type="stmt" count="3"/>
-      <line num="121" type="stmt" count="3"/>
+      <line num="109" type="stmt" count="0"/>
+      <line num="110" type="stmt" count="0"/>
+      <line num="112" type="stmt" count="0"/>
+      <line num="115" type="method" name="nextPage" visibility="public" complexity="2" crap="6" count="0"/>
+      <line num="116" type="stmt" count="0"/>
+      <line num="117" type="stmt" count="0"/>
+      <line num="120" type="stmt" count="0"/>
+      <line num="121" type="stmt" count="0"/>
       <line num="124" type="method" name="previousPage" visibility="public" complexity="2" crap="6" count="0"/>
       <line num="125" type="stmt" count="0"/>
       <line num="126" type="stmt" count="0"/>
@@ -948,54 +948,25 @@
       <line num="130" type="stmt" count="0"/>
       <line num="140" type="method" name="current" visibility="public" complexity="1" crap="2" count="0"/>
       <line num="141" type="stmt" count="0"/>
-      <line num="150" type="method" name="next" visibility="public" complexity="1" crap="1" count="3"/>
-      <line num="151" type="stmt" count="3"/>
+      <line num="150" type="method" name="next" visibility="public" complexity="1" crap="2" count="0"/>
+      <line num="151" type="stmt" count="0"/>
       <line num="161" type="method" name="key" visibility="public" complexity="1" crap="2" count="0"/>
       <line num="162" type="stmt" count="0"/>
-      <line num="172" type="method" name="valid" visibility="public" complexity="1" crap="1" count="3"/>
-      <line num="173" type="stmt" count="3"/>
-      <line num="182" type="method" name="rewind" visibility="public" complexity="1" crap="1" count="3"/>
-      <line num="183" type="stmt" count="3"/>
-      <line num="187" type="method" name="getVersion" visibility="public" complexity="1" crap="1" count="3"/>
-      <line num="188" type="stmt" count="3"/>
+      <line num="172" type="method" name="valid" visibility="public" complexity="1" crap="2" count="0"/>
+      <line num="173" type="stmt" count="0"/>
+      <line num="182" type="method" name="rewind" visibility="public" complexity="1" crap="2" count="0"/>
+      <line num="183" type="stmt" count="0"/>
+      <line num="187" type="method" name="getVersion" visibility="public" complexity="1" crap="2" count="0"/>
+      <line num="188" type="stmt" count="0"/>
       <line num="191" type="method" name="__toString" visibility="public" complexity="1" crap="2" count="0"/>
       <line num="192" type="stmt" count="0"/>
-      <metrics loc="196" ncloc="162" classes="1" methods="17" coveredmethods="8" conditionals="0" coveredconditionals="0" statements="57" coveredstatements="28" elements="74" coveredelements="36"/>
+      <metrics loc="196" ncloc="162" classes="1" methods="17" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="57" coveredstatements="0" elements="74" coveredelements="0"/>
     </file>
     <file name="/twilio/src/Twilio/Rest/Accounts.php">
       <class name="Twilio\Rest\Accounts" namespace="global">
-        <metrics complexity="13" methods="10" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="19" coveredstatements="0" elements="29" coveredelements="0"/>
+        <metrics complexity="0" methods="0" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" elements="0" coveredelements="0"/>
       </class>
-      <line num="32" type="method" name="__construct" visibility="public" complexity="1" crap="2" count="0"/>
-      <line num="33" type="stmt" count="0"/>
-      <line num="35" type="stmt" count="0"/>
-      <line num="41" type="method" name="getV1" visibility="protected" complexity="2" crap="6" count="0"/>
-      <line num="42" type="stmt" count="0"/>
-      <line num="43" type="stmt" count="0"/>
-      <line num="45" type="stmt" count="0"/>
-      <line num="55" type="method" name="__get" visibility="public" complexity="2" crap="6" count="0"/>
-      <line num="56" type="stmt" count="0"/>
-      <line num="57" type="stmt" count="0"/>
-      <line num="58" type="stmt" count="0"/>
-      <line num="61" type="stmt" count="0"/>
-      <line num="72" type="method" name="__call" visibility="public" complexity="2" crap="6" count="0"/>
-      <line num="73" type="stmt" count="0"/>
-      <line num="74" type="stmt" count="0"/>
-      <line num="75" type="stmt" count="0"/>
-      <line num="78" type="stmt" count="0"/>
-      <line num="81" type="method" name="getAuthTokenPromotion" visibility="protected" complexity="1" crap="2" count="0"/>
-      <line num="82" type="stmt" count="0"/>
-      <line num="85" type="method" name="contextAuthTokenPromotion" visibility="protected" complexity="1" crap="2" count="0"/>
-      <line num="86" type="stmt" count="0"/>
-      <line num="89" type="method" name="getCredentials" visibility="protected" complexity="1" crap="2" count="0"/>
-      <line num="90" type="stmt" count="0"/>
-      <line num="93" type="method" name="getSecondaryAuthToken" visibility="protected" complexity="1" crap="2" count="0"/>
-      <line num="94" type="stmt" count="0"/>
-      <line num="97" type="method" name="contextSecondaryAuthToken" visibility="protected" complexity="1" crap="2" count="0"/>
-      <line num="98" type="stmt" count="0"/>
-      <line num="106" type="method" name="__toString" visibility="public" complexity="1" crap="2" count="0"/>
-      <line num="107" type="stmt" count="0"/>
-      <metrics loc="109" ncloc="67" classes="1" methods="10" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="19" coveredstatements="0" elements="29" coveredelements="0"/>
+      <metrics loc="109" ncloc="11" classes="0" methods="0" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" elements="0" coveredelements="0"/>
     </file>
     <file name="/twilio/src/Twilio/Rest/Api.php">
       <class name="Twilio\Rest\Api" namespace="global">
@@ -1221,120 +1192,9 @@
     </file>
     <file name="/twilio/src/Twilio/Rest/Client.php">
       <class name="Twilio\Rest\Client" namespace="global">
-        <metrics complexity="54" methods="19" coveredmethods="2" conditionals="0" coveredconditionals="0" statements="92" coveredstatements="33" elements="111" coveredelements="35"/>
+        <metrics complexity="0" methods="0" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" elements="0" coveredelements="0"/>
       </class>
-      <line num="166" type="method" name="__construct" visibility="public" complexity="7" crap="7.18" count="111"/>
-      <line num="167" type="stmt" count="111"/>
-      <line num="169" type="stmt" count="111"/>
-      <line num="170" type="stmt" count="111"/>
-      <line num="171" type="stmt" count="111"/>
-      <line num="172" type="stmt" count="111"/>
-      <line num="173" type="stmt" count="111"/>
-      <line num="174" type="stmt" count="111"/>
-      <line num="176" type="stmt" count="111"/>
-      <line num="177" type="stmt" count="0"/>
-      <line num="180" type="stmt" count="111"/>
-      <line num="182" type="stmt" count="111"/>
-      <line num="183" type="stmt" count="111"/>
-      <line num="185" type="stmt" count="0"/>
-      <line num="196" type="method" name="getArg" visibility="public" complexity="3" crap="3.07" count="111"/>
-      <line num="197" type="stmt" count="111"/>
-      <line num="198" type="stmt" count="111"/>
-      <line num="201" type="stmt" count="111"/>
-      <line num="202" type="stmt" count="0"/>
-      <line num="205" type="stmt" count="111"/>
-      <line num="222" type="method" name="request" visibility="public" complexity="14" crap="48.88" count="7"/>
-      <line num="223" type="stmt" count="7"/>
-      <line num="224" type="stmt" count="7"/>
-      <line num="225" type="stmt" count="7"/>
-      <line num="227" type="stmt" count="7"/>
-      <line num="228" type="stmt" count="7"/>
-      <line num="230" type="stmt" count="7"/>
-      <line num="232" type="stmt" count="7"/>
-      <line num="233" type="stmt" count="0"/>
-      <line num="236" type="stmt" count="7"/>
-      <line num="237" type="stmt" count="7"/>
-      <line num="240" type="stmt" count="7"/>
-      <line num="242" type="stmt" count="7"/>
-      <line num="243" type="stmt" count="0"/>
-      <line num="244" type="stmt" count="0"/>
-      <line num="245" type="stmt" count="0"/>
-      <line num="246" type="stmt" count="0"/>
-      <line num="247" type="stmt" count="0"/>
-      <line num="249" type="stmt" count="0"/>
-      <line num="250" type="stmt" count="0"/>
-      <line num="252" type="stmt" count="0"/>
-      <line num="253" type="stmt" count="0"/>
-      <line num="254" type="stmt" count="0"/>
-      <line num="255" type="stmt" count="0"/>
-      <line num="258" type="stmt" count="0"/>
-      <line num="261" type="stmt" count="7"/>
-      <line num="272" type="stmt" count="7"/>
-      <line num="273" type="stmt" count="0"/>
-      <line num="274" type="stmt" count="0"/>
-      <line num="275" type="stmt" count="0"/>
-      <line num="276" type="stmt" count="0"/>
-      <line num="277" type="stmt" count="0"/>
-      <line num="281" type="stmt" count="7"/>
-      <line num="290" type="method" name="buildUri" visibility="public" complexity="10" crap="78.70" count="7"/>
-      <line num="291" type="stmt" count="7"/>
-      <line num="292" type="stmt" count="7"/>
-      <line num="295" type="stmt" count="0"/>
-      <line num="296" type="stmt" count="0"/>
-      <line num="297" type="stmt" count="0"/>
-      <line num="298" type="stmt" count="0"/>
-      <line num="299" type="stmt" count="0"/>
-      <line num="300" type="stmt" count="0"/>
-      <line num="301" type="stmt" count="0"/>
-      <line num="302" type="stmt" count="0"/>
-      <line num="303" type="stmt" count="0"/>
-      <line num="304" type="stmt" count="0"/>
-      <line num="305" type="stmt" count="0"/>
-      <line num="308" type="stmt" count="0"/>
-      <line num="309" type="stmt" count="0"/>
-      <line num="312" type="stmt" count="0"/>
-      <line num="313" type="stmt" count="0"/>
-      <line num="321" type="method" name="getUsername" visibility="public" complexity="1" crap="2" count="0"/>
-      <line num="322" type="stmt" count="0"/>
-      <line num="330" type="method" name="getPassword" visibility="public" complexity="1" crap="2" count="0"/>
-      <line num="331" type="stmt" count="0"/>
-      <line num="339" type="method" name="getAccountSid" visibility="public" complexity="1" crap="2" count="0"/>
-      <line num="340" type="stmt" count="0"/>
-      <line num="348" type="method" name="getRegion" visibility="public" complexity="1" crap="2" count="0"/>
-      <line num="349" type="stmt" count="0"/>
-      <line num="357" type="method" name="getEdge" visibility="public" complexity="1" crap="2" count="0"/>
-      <line num="358" type="stmt" count="0"/>
-      <line num="366" type="method" name="setEdge" visibility="public" complexity="1" crap="2" count="0"/>
-      <line num="367" type="stmt" count="0"/>
-      <line num="375" type="method" name="getHttpClient" visibility="public" complexity="1" crap="1" count="7"/>
-      <line num="376" type="stmt" count="7"/>
-      <line num="384" type="method" name="setHttpClient" visibility="public" complexity="1" crap="2" count="0"/>
-      <line num="385" type="stmt" count="0"/>
-      <line num="393" type="method" name="getLogLevel" visibility="public" complexity="1" crap="1" count="7"/>
-      <line num="394" type="stmt" count="7"/>
-      <line num="402" type="method" name="setLogLevel" visibility="public" complexity="1" crap="2" count="0"/>
-      <line num="403" type="stmt" count="0"/>
-      <line num="411" type="method" name="getAccounts" visibility="protected" complexity="2" crap="6" count="0"/>
-      <line num="412" type="stmt" count="0"/>
-      <line num="413" type="stmt" count="0"/>
-      <line num="415" type="stmt" count="0"/>
-      <line num="1033" type="method" name="__get" visibility="public" complexity="2" crap="6" count="0"/>
-      <line num="1034" type="stmt" count="0"/>
-      <line num="1035" type="stmt" count="0"/>
-      <line num="1036" type="stmt" count="0"/>
-      <line num="1039" type="stmt" count="0"/>
-      <line num="1050" type="method" name="__call" visibility="public" complexity="2" crap="6" count="0"/>
-      <line num="1051" type="stmt" count="0"/>
-      <line num="1052" type="stmt" count="0"/>
-      <line num="1053" type="stmt" count="0"/>
-      <line num="1056" type="stmt" count="0"/>
-      <line num="1064" type="method" name="__toString" visibility="public" complexity="1" crap="2" count="0"/>
-      <line num="1065" type="stmt" count="0"/>
-      <line num="1074" type="method" name="validateSslCertificate" visibility="public" complexity="3" crap="12" count="0"/>
-      <line num="1075" type="stmt" count="0"/>
-      <line num="1077" type="stmt" count="0"/>
-      <line num="1078" type="stmt" count="0"/>
-      <metrics loc="1081" ncloc="267" classes="1" methods="19" coveredmethods="2" conditionals="0" coveredconditionals="0" statements="92" coveredstatements="33" elements="111" coveredelements="35"/>
+      <metrics loc="1081" ncloc="20" classes="0" methods="0" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" elements="0" coveredelements="0"/>
     </file>
     <file name="/twilio/src/Twilio/Rest/Conversations.php">
       <class name="Twilio\Rest\Conversations" namespace="global">
@@ -2631,45 +2491,45 @@
     </file>
     <file name="/twilio/src/Twilio/Stream.php">
       <class name="Twilio\Stream" namespace="global">
-        <metrics complexity="18" methods="8" coveredmethods="5" conditionals="0" coveredconditionals="0" statements="28" coveredstatements="25" elements="36" coveredelements="30"/>
+        <metrics complexity="18" methods="8" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="28" coveredstatements="0" elements="36" coveredelements="0"/>
       </class>
-      <line num="15" type="method" name="__construct" visibility="public" complexity="1" crap="1" count="3"/>
-      <line num="16" type="stmt" count="3"/>
-      <line num="17" type="stmt" count="3"/>
-      <line num="18" type="stmt" count="3"/>
-      <line num="19" type="stmt" count="3"/>
-      <line num="20" type="stmt" count="3"/>
-      <line num="21" type="stmt" count="3"/>
+      <line num="15" type="method" name="__construct" visibility="public" complexity="1" crap="2" count="0"/>
+      <line num="16" type="stmt" count="0"/>
+      <line num="17" type="stmt" count="0"/>
+      <line num="18" type="stmt" count="0"/>
+      <line num="19" type="stmt" count="0"/>
+      <line num="20" type="stmt" count="0"/>
+      <line num="21" type="stmt" count="0"/>
       <line num="31" type="method" name="current" visibility="public" complexity="1" crap="2" count="0"/>
       <line num="32" type="stmt" count="0"/>
-      <line num="41" type="method" name="next" visibility="public" complexity="4" crap="4.02" count="3"/>
-      <line num="42" type="stmt" count="3"/>
-      <line num="43" type="stmt" count="3"/>
-      <line num="45" type="stmt" count="3"/>
-      <line num="46" type="stmt" count="1"/>
-      <line num="49" type="stmt" count="3"/>
-      <line num="50" type="stmt" count="3"/>
+      <line num="41" type="method" name="next" visibility="public" complexity="4" crap="20" count="0"/>
+      <line num="42" type="stmt" count="0"/>
+      <line num="43" type="stmt" count="0"/>
+      <line num="45" type="stmt" count="0"/>
+      <line num="46" type="stmt" count="0"/>
+      <line num="49" type="stmt" count="0"/>
+      <line num="50" type="stmt" count="0"/>
       <line num="51" type="stmt" count="0"/>
-      <line num="53" type="stmt" count="3"/>
-      <line num="54" type="stmt" count="3"/>
+      <line num="53" type="stmt" count="0"/>
+      <line num="54" type="stmt" count="0"/>
       <line num="65" type="method" name="key" visibility="public" complexity="1" crap="2" count="0"/>
       <line num="66" type="stmt" count="0"/>
-      <line num="76" type="method" name="valid" visibility="public" complexity="4" crap="4" count="3"/>
-      <line num="77" type="stmt" count="3"/>
-      <line num="86" type="method" name="rewind" visibility="public" complexity="1" crap="1" count="3"/>
-      <line num="87" type="stmt" count="3"/>
-      <line num="88" type="stmt" count="3"/>
-      <line num="89" type="stmt" count="3"/>
-      <line num="90" type="stmt" count="3"/>
-      <line num="93" type="method" name="overLimit" visibility="protected" complexity="3" crap="3" count="3"/>
-      <line num="94" type="stmt" count="3"/>
-      <line num="95" type="stmt" count="3"/>
-      <line num="96" type="stmt" count="3"/>
-      <line num="99" type="method" name="overPageLimit" visibility="protected" complexity="3" crap="3" count="3"/>
-      <line num="100" type="stmt" count="3"/>
-      <line num="101" type="stmt" count="3"/>
-      <line num="102" type="stmt" count="3"/>
-      <metrics loc="106" ncloc="73" classes="1" methods="8" coveredmethods="5" conditionals="0" coveredconditionals="0" statements="28" coveredstatements="25" elements="36" coveredelements="30"/>
+      <line num="76" type="method" name="valid" visibility="public" complexity="4" crap="20" count="0"/>
+      <line num="77" type="stmt" count="0"/>
+      <line num="86" type="method" name="rewind" visibility="public" complexity="1" crap="2" count="0"/>
+      <line num="87" type="stmt" count="0"/>
+      <line num="88" type="stmt" count="0"/>
+      <line num="89" type="stmt" count="0"/>
+      <line num="90" type="stmt" count="0"/>
+      <line num="93" type="method" name="overLimit" visibility="protected" complexity="3" crap="12" count="0"/>
+      <line num="94" type="stmt" count="0"/>
+      <line num="95" type="stmt" count="0"/>
+      <line num="96" type="stmt" count="0"/>
+      <line num="99" type="method" name="overPageLimit" visibility="protected" complexity="3" crap="12" count="0"/>
+      <line num="100" type="stmt" count="0"/>
+      <line num="101" type="stmt" count="0"/>
+      <line num="102" type="stmt" count="0"/>
+      <metrics loc="106" ncloc="73" classes="1" methods="8" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="28" coveredstatements="0" elements="36" coveredelements="0"/>
     </file>
     <file name="/twilio/src/Twilio/TaskRouter/WorkflowConfiguration.php">
       <class name="Twilio\TaskRouter\WorkflowConfiguration" namespace="global">
@@ -3913,33 +3773,33 @@
     </file>
     <file name="/twilio/src/Twilio/Version.php">
       <class name="Twilio\Version" namespace="global">
-        <metrics complexity="29" methods="14" coveredmethods="10" conditionals="0" coveredconditionals="0" statements="40" coveredstatements="27" elements="54" coveredelements="37"/>
+        <metrics complexity="29" methods="14" coveredmethods="5" conditionals="0" coveredconditionals="0" statements="40" coveredstatements="10" elements="54" coveredelements="15"/>
       </class>
-      <line num="28" type="method" name="__construct" visibility="public" complexity="1" crap="1" count="111"/>
-      <line num="29" type="stmt" count="111"/>
-      <line num="30" type="stmt" count="111"/>
+      <line num="28" type="method" name="__construct" visibility="public" complexity="1" crap="1" count="104"/>
+      <line num="29" type="stmt" count="104"/>
+      <line num="30" type="stmt" count="104"/>
       <line num="38" type="method" name="absoluteUrl" visibility="public" complexity="1" crap="1" count="48"/>
       <line num="39" type="stmt" count="48"/>
-      <line num="47" type="method" name="relativeUri" visibility="public" complexity="1" crap="1" count="103"/>
-      <line num="48" type="stmt" count="103"/>
-      <line num="51" type="method" name="request" visibility="public" complexity="1" crap="1" count="7"/>
-      <line num="55" type="stmt" count="7"/>
-      <line num="56" type="stmt" count="7"/>
-      <line num="79" type="method" name="exception" visibility="protected" complexity="4" crap="4" count="3"/>
-      <line num="80" type="stmt" count="3"/>
-      <line num="82" type="stmt" count="3"/>
-      <line num="83" type="stmt" count="3"/>
-      <line num="84" type="stmt" count="2"/>
-      <line num="85" type="stmt" count="2"/>
-      <line num="86" type="stmt" count="2"/>
-      <line num="87" type="stmt" count="2"/>
-      <line num="88" type="stmt" count="2"/>
-      <line num="91" type="stmt" count="1"/>
-      <line num="97" type="method" name="fetch" visibility="public" complexity="3" crap="3" count="4"/>
-      <line num="101" type="stmt" count="4"/>
-      <line num="113" type="stmt" count="4"/>
-      <line num="114" type="stmt" count="3"/>
-      <line num="117" type="stmt" count="1"/>
+      <line num="47" type="method" name="relativeUri" visibility="public" complexity="1" crap="1" count="96"/>
+      <line num="48" type="stmt" count="96"/>
+      <line num="51" type="method" name="request" visibility="public" complexity="1" crap="2" count="0"/>
+      <line num="55" type="stmt" count="0"/>
+      <line num="56" type="stmt" count="0"/>
+      <line num="79" type="method" name="exception" visibility="protected" complexity="4" crap="20" count="0"/>
+      <line num="80" type="stmt" count="0"/>
+      <line num="82" type="stmt" count="0"/>
+      <line num="83" type="stmt" count="0"/>
+      <line num="84" type="stmt" count="0"/>
+      <line num="85" type="stmt" count="0"/>
+      <line num="86" type="stmt" count="0"/>
+      <line num="87" type="stmt" count="0"/>
+      <line num="88" type="stmt" count="0"/>
+      <line num="91" type="stmt" count="0"/>
+      <line num="97" type="method" name="fetch" visibility="public" complexity="3" crap="12" count="0"/>
+      <line num="101" type="stmt" count="0"/>
+      <line num="113" type="stmt" count="0"/>
+      <line num="114" type="stmt" count="0"/>
+      <line num="117" type="stmt" count="0"/>
       <line num="123" type="method" name="update" visibility="public" complexity="3" crap="12" count="0"/>
       <line num="127" type="stmt" count="0"/>
       <line num="138" type="stmt" count="0"/>
@@ -3956,28 +3816,28 @@
       <line num="175" type="stmt" count="7"/>
       <line num="178" type="stmt" count="7"/>
       <line num="179" type="stmt" count="7"/>
-      <line num="184" type="method" name="page" visibility="public" complexity="1" crap="1" count="3"/>
-      <line num="188" type="stmt" count="3"/>
-      <line num="200" type="method" name="stream" visibility="public" complexity="1" crap="1" count="3"/>
-      <line num="201" type="stmt" count="3"/>
+      <line num="184" type="method" name="page" visibility="public" complexity="1" crap="2" count="0"/>
+      <line num="188" type="stmt" count="0"/>
+      <line num="200" type="method" name="stream" visibility="public" complexity="1" crap="2" count="0"/>
+      <line num="201" type="stmt" count="0"/>
       <line num="207" type="method" name="create" visibility="public" complexity="3" crap="12" count="0"/>
       <line num="211" type="stmt" count="0"/>
       <line num="222" type="stmt" count="0"/>
       <line num="223" type="stmt" count="0"/>
       <line num="226" type="stmt" count="0"/>
-      <line num="229" type="method" name="getDomain" visibility="public" complexity="1" crap="1" count="55"/>
-      <line num="230" type="stmt" count="55"/>
+      <line num="229" type="method" name="getDomain" visibility="public" complexity="1" crap="1" count="48"/>
+      <line num="230" type="stmt" count="48"/>
       <line num="233" type="method" name="__toString" visibility="public" complexity="1" crap="2" count="0"/>
       <line num="234" type="stmt" count="0"/>
-      <metrics loc="237" ncloc="191" classes="1" methods="14" coveredmethods="10" conditionals="0" coveredconditionals="0" statements="40" coveredstatements="27" elements="54" coveredelements="37"/>
+      <metrics loc="237" ncloc="191" classes="1" methods="14" coveredmethods="5" conditionals="0" coveredconditionals="0" statements="40" coveredstatements="10" elements="54" coveredelements="15"/>
     </file>
     <file name="/twilio/src/Twilio/VersionInfo.php">
       <class name="Twilio\VersionInfo" namespace="global">
-        <metrics complexity="1" methods="1" coveredmethods="1" conditionals="0" coveredconditionals="0" statements="1" coveredstatements="1" elements="2" coveredelements="2"/>
+        <metrics complexity="1" methods="1" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="1" coveredstatements="0" elements="2" coveredelements="0"/>
       </class>
-      <line num="12" type="method" name="string" visibility="public" complexity="1" crap="1" count="7"/>
-      <line num="13" type="stmt" count="7"/>
-      <metrics loc="16" ncloc="16" classes="1" methods="1" coveredmethods="1" conditionals="0" coveredconditionals="0" statements="1" coveredstatements="1" elements="2" coveredelements="2"/>
+      <line num="12" type="method" name="string" visibility="public" complexity="1" crap="2" count="0"/>
+      <line num="13" type="stmt" count="0"/>
+      <metrics loc="16" ncloc="16" classes="1" methods="1" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="1" coveredstatements="0" elements="2" coveredelements="0"/>
     </file>
     <file name="/twilio/src/Twilio/autoload.php">
       <class name="SplClassLoader" namespace="global">
@@ -4016,6 +3876,6 @@
       <line num="146" type="stmt" count="0"/>
       <metrics loc="147" ncloc="63" classes="1" methods="10" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="21" coveredstatements="0" elements="31" coveredelements="0"/>
     </file>
-    <metrics files="137" loc="13812" ncloc="7611" classes="129" methods="1086" coveredmethods="149" conditionals="0" coveredconditionals="0" statements="2212" coveredstatements="689" elements="3298" coveredelements="838"/>
+    <metrics files="137" loc="13812" ncloc="7308" classes="127" methods="1057" coveredmethods="122" conditionals="0" coveredconditionals="0" statements="2102" coveredstatements="575" elements="3159" coveredelements="697"/>
   </project>
 </coverage>

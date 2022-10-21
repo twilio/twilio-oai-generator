@@ -12,7 +12,7 @@ use Twilio\Tests\Holodeck;
 use Twilio\Tests\Request;
 use Twilio\Tests\Unit\UnitTest;
 
-class IntegrationTest extends UnitTest {
+class IntegrationTest  {
 
     public function testDummyTest(): void {
 
