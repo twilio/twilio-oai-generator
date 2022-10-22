@@ -12,8 +12,8 @@ COPY src/Twilio/Rest src/Twilio/Rest
 RUN rm -rf tests/Twilio/Integration/
 COPY tests/Twilio/Integration tests/Twilio/Integration
 
-RUN rm -rf tests/Twilio/Unit
-COPY tests/Twilio/Unit tests/Twilio/Unit/
+RUN rm -rf tests/Twilio/Unit/Rest
+COPY tests/Twilio/Unit/Rest tests/Twilio/Unit/Rest
 
 ENV XDEBUG_MODE=coverage
 ENV PATH="vendor/bin:$PATH"

@@ -1,6 +1,7 @@
 package com.twilio.oai;
 
 import org.openapitools.codegen.languages.PhpClientCodegen;
+import org.openapitools.codegen.model.ModelsMap;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -18,11 +19,17 @@ public class TwilioPhpGenerator extends PhpClientCodegen {
     public void processOpts() {
         super.processOpts();
 
+        apiTemplateFiles.clear();
         apiTestTemplateFiles.clear();
         modelTestTemplateFiles.clear();
         apiDocTemplateFiles.clear();
         modelDocTemplateFiles.clear();
         twilioCodegen.processOpts();
+    }
+
+    @Override
+    public Map<String, ModelsMap> postProcessAllModels(Map<String, ModelsMap> objs) {
+        return new HashMap<>();
     }
 
 
