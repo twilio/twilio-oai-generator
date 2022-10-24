@@ -37,13 +37,13 @@ describe("account", () => {
     const scope = nock("http://api.twilio.com")
       .post("/2010-04-01/Accounts/123.json")
       .query({
-        Status: "closed",
+        Status: "stopped",
       })
-      .reply(200, { account_sid: "123", status: "closed" });
+      .reply(200, { account_sid: "123", status: "stopped" });
 
     return twilio.api.v2010
       .accounts("123")
-      .update({ status: "closed" })
+      .update({ status: "stopped" })
       .then(() => scope.done());
   });
 

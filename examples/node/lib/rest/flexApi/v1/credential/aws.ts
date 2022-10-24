@@ -29,7 +29,6 @@ export interface AWSContextUpdateOptions {
   testString?: string;
   testBoolean?: boolean;
 }
-
 /**
  * Options to pass to each
  *

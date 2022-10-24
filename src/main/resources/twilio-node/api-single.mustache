@@ -13,8 +13,8 @@ const serialize = require("{{apiVersionPath}}/../../base/serialize");
 import { {{importName}} } from "./{{apiFilename}}/{{filename}}";
 {{/dependents}}
 {{/resources}}
-{{#resources}}
 {{>model}}
+{{#resources}}
 {{#operations}}
 {{#hasParams}}
 {{#vendorExtensions.x-is-list-operation}}{{>listOperationsOptions}}{{/vendorExtensions.x-is-list-operation}}
