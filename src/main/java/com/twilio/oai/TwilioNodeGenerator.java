@@ -142,7 +142,6 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
             co.returnType = instanceName;
 
             updateCodeOperationParams(co);
-
             if (isInstanceOperation) {
                 resourceName = itemName + "Context";
                 parentResourceName = itemName + "ListInstance";

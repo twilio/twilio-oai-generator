@@ -80,7 +80,6 @@ describe("account", () => {
         end: 0,
         previous_page_uri:
           "/2010-04-01/Accounts.json?FriendlyName=friendly_name&Status=active&PageSize=50&Page=0",
-        // accounts: [],
         uri: "/2010-04-01/Accounts.json?FriendlyName=friendly_name&Status=active&PageSize=50&Page=0",
         page_size: 50,
         start: 0,

@@ -44,9 +44,6 @@ public class NodeConventionResolver {
 
     public CodegenModel resolveComplexType(CodegenModel model, Map<String, String> modelFormatMap){
         for (CodegenProperty prop: model.vars) {
-//            if (prop.complexType != null) {
-//                prop.dataType = prop.isArray ? "Array<object>" : "object";
-//            }
             if(modelFormatMap.containsKey(prop.complexType)) {
                 boolean hasProperty =  conventionMap.get(Segments.SEGMENT_PROPERTIES.getSegment()).
                         containsKey(StringUtils.underscore(modelFormatMap.get(prop.complexType)));
