@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Stack;
 
 public class CodegenModelContainerDataTypeResolver implements Resolver<CodegenProperty> {
-    
+
     private CodegenModelDataTypeResolver codegenModelDataTypeResolver;
     private List<? extends LanguageDataType> languageDataTypes;
 
