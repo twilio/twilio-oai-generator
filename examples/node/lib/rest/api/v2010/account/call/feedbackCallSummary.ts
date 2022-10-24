@@ -22,10 +22,12 @@ const serialize = require("../../../../../base/serialize");
  *
  * @property { string } endDate
  * @property { string } startDate
+ * @property { string } [accountSid2]
  */
 export interface FeedbackCallSummaryContextUpdateOptions {
   endDate: string;
   startDate: string;
+  accountSid2?: string;
 }
 
 export interface FeedbackCallSummaryListInstance {
@@ -37,6 +39,10 @@ export interface FeedbackCallSummaryListInstance {
    */
   toJSON(): any;
   [inspect.custom](_depth: any, options: InspectOptions): any;
+}
+
+export interface FeedbackCallSummarySolution {
+  accountSid?: string;
 }
 
 interface FeedbackCallSummaryListInstanceImpl
@@ -62,7 +68,7 @@ export function FeedbackCallSummaryListInstance(
 
   instance._version = version;
   instance._solution = { accountSid };
-  instance._uri = `/Accounts/${accountSid}/Calls/FeedbackSummary.json`;
+  instance._uri = `/Accounts/${accountSid}/Calls/Feedback/Summary.json`;
 
   instance.toJSON = function toJSON() {
     return this._solution;
@@ -100,15 +106,20 @@ export interface FeedbackCallSummaryContext {
   [inspect.custom](_depth: any, options: InspectOptions): any;
 }
 
+export interface FeedbackCallSummaryContextSolution {
+  accountSid?: string;
+  sid?: string;
+}
+
 export class FeedbackCallSummaryContextImpl
   implements FeedbackCallSummaryContext
 {
-  protected _solution: FeedbackCallSummarySolution;
+  protected _solution: FeedbackCallSummaryContextSolution;
   protected _uri: string;
 
   constructor(protected _version: V2010, accountSid: string, sid: string) {
     this._solution = { accountSid, sid };
-    this._uri = `/Accounts/${accountSid}/Calls/FeedbackSummary/${sid}.json`;
+    this._uri = `/Accounts/${accountSid}/Calls/Feedback/Summary/${sid}.json`;
   }
 
   update(params: any, callback?: any): Promise<FeedbackCallSummaryInstance> {
@@ -126,6 +137,8 @@ export class FeedbackCallSummaryContextImpl
 
     const data: any = {};
 
+    if (params.accountSid2 !== undefined)
+      data["AccountSid"] = params.accountSid2;
     data["EndDate"] = serialize.iso8601Date(params.endDate);
     data["StartDate"] = serialize.iso8601Date(params.startDate);
 
@@ -184,6 +197,7 @@ interface FeedbackCallSummaryResource {
   price_unit?: string | null;
   test_number_float?: number | null;
   test_enum?: object;
+  a2p_profile_bundle_sid?: string | null;
   test_array_of_integers?: Array<number>;
   test_array_of_array_of_integers?: Array<Array<number>>;
   test_array_of_objects?: Array<object> | null;
@@ -191,7 +205,7 @@ interface FeedbackCallSummaryResource {
 }
 
 export class FeedbackCallSummaryInstance {
-  protected _solution: FeedbackCallSummarySolution;
+  protected _solution: FeedbackCallSummaryContextSolution;
   protected _context?: FeedbackCallSummaryContext;
 
   constructor(
@@ -210,6 +224,7 @@ export class FeedbackCallSummaryInstance {
     this.priceUnit = payload.price_unit;
     this.testNumberFloat = payload.test_number_float;
     this.testEnum = payload.test_enum;
+    this.a2pProfileBundleSid = payload.a2p_profile_bundle_sid;
     this.testArrayOfIntegers = payload.test_array_of_integers;
     this.testArrayOfArrayOfIntegers = payload.test_array_of_array_of_integers;
     this.testArrayOfObjects = payload.test_array_of_objects;
@@ -228,6 +243,10 @@ export class FeedbackCallSummaryInstance {
   priceUnit?: string | null;
   testNumberFloat?: number | null;
   testEnum?: object;
+  /**
+   * A2P Messaging Profile Bundle BundleSid
+   */
+  a2pProfileBundleSid?: string | null;
   testArrayOfIntegers?: Array<number>;
   testArrayOfArrayOfIntegers?: Array<Array<number>>;
   testArrayOfObjects?: Array<object> | null;
@@ -280,6 +299,7 @@ export class FeedbackCallSummaryInstance {
       priceUnit: this.priceUnit,
       testNumberFloat: this.testNumberFloat,
       testEnum: this.testEnum,
+      a2pProfileBundleSid: this.a2pProfileBundleSid,
       testArrayOfIntegers: this.testArrayOfIntegers,
       testArrayOfArrayOfIntegers: this.testArrayOfArrayOfIntegers,
       testArrayOfObjects: this.testArrayOfObjects,

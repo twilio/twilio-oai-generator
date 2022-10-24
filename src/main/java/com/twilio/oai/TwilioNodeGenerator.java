@@ -20,6 +20,7 @@ import org.openapitools.codegen.model.ModelMap;
 import org.openapitools.codegen.model.ModelsMap;
 import org.openapitools.codegen.model.OperationsMap;
 
+import static com.twilio.oai.common.ApplicationConstants.LIST_INSTANCE;
 import static com.twilio.oai.common.ApplicationConstants.PATH_SEPARATOR_PLACEHOLDER;
 
 public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
@@ -106,7 +107,6 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
     public OperationsMap postProcessOperationsWithModels(final OperationsMap objs, List<ModelMap> allModels) {
         final OperationsMap results = super.postProcessOperationsWithModels(objs, allModels);
         final List<CodegenOperation> opList = directoryStructureService.processOperations(results);
-        boolean hasPaginationOperation = false;
         if (directoryStructureService.isVersionLess()) {
             apiTemplateFiles.put(VERSION_TEMPLATE, FILENAME_EXTENSION);
         }
@@ -116,9 +116,11 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
         final boolean hasInstanceOperations = opList.stream().anyMatch(PathUtils::isInstanceOperation);
 
         // iterate over the operation and perhaps modify something
+        boolean hasPaginationOperation = false;
         for (final CodegenOperation co : opList) {
             // Group operations by resource.
             final String[] filePathArray = co.baseName.split(PATH_SEPARATOR_PLACEHOLDER);
+
             final String itemName = filePathArray[filePathArray.length - 1];
             final String instanceName = itemName + "Instance";
             co.returnType = instanceName;
@@ -186,6 +188,16 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
                     .forEach(operation -> directoryStructureService.addDependent(dependentMap,
                                                                                  dependent.getName(),
                                                                                  operation)));
+            dependentMap
+                .values()
+                .stream()
+                .map(DirectoryStructureService.DependentResource.class::cast)
+                .forEach(dependent -> {
+                    if (dependent.getName().equals(instanceName)) {
+                        dependent.setName(instanceName + "Import");
+                        dependent.setImportName(instanceName + " as " + dependent.getName());
+                    }
+                });
 
             if (isInstanceOperation || (!hasInstanceOperations )) {
                 co.responses

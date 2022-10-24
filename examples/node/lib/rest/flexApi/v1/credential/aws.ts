@@ -131,8 +131,12 @@ export interface AWSContext {
   [inspect.custom](_depth: any, options: InspectOptions): any;
 }
 
+export interface AWSContextSolution {
+  sid?: string;
+}
+
 export class AWSContextImpl implements AWSContext {
-  protected _solution: AWSSolution;
+  protected _solution: AWSContextSolution;
   protected _uri: string;
 
   constructor(protected _version: V1, sid: string) {
@@ -239,7 +243,7 @@ interface AWSResource {
 }
 
 export class AWSInstance {
-  protected _solution: AWSSolution;
+  protected _solution: AWSContextSolution;
   protected _context?: AWSContext;
 
   constructor(protected _version: V1, payload: AWSPayload, sid?: string) {
@@ -467,6 +471,8 @@ export interface AWSListInstance {
   toJSON(): any;
   [inspect.custom](_depth: any, options: InspectOptions): any;
 }
+
+export interface AWSSolution {}
 
 interface AWSListInstanceImpl extends AWSListInstance {}
 class AWSListInstanceImpl implements AWSListInstance {

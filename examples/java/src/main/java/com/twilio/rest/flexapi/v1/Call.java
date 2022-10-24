@@ -78,8 +78,8 @@ public class Call extends Resource {
 
 
 
-    public static CallUpdater updater(final String sid){
-        return new CallUpdater(sid);
+    public static CallUpdater updater(final String pathSid){
+        return new CallUpdater(pathSid);
     }
 
     /**
