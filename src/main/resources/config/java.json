@@ -10,6 +10,10 @@
       "java.time.ZonedDateTime",
       "com.twilio.converter.DateConverter"
     ],
+    "date_time_rfc_2822": [
+      "java.time.ZonedDateTime",
+      "com.twilio.converter.DateConverter"
+    ],
     "date_or_time": [
       "java.time.ZonedDateTime",
       "com.twilio.converter.DateConverter"
@@ -46,6 +50,7 @@
     "date": "LocalDate",
     "date_range": "LocalDate",
     "date_time": "ZonedDateTime",
+    "date_time_rfc_2822": "ZonedDateTime",
     "date_or_time": "ZonedDateTime",
     "date_time_range": "ZonedDateTime",
     "decimal": "BigDecimal",
