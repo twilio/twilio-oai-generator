@@ -83,11 +83,11 @@ export interface AWSContext {
    *
    * @param { function } [callback] - Callback to handle processed record
    *
-   * @returns { Promise } Resolves to processed AWSInstance
+   * @returns { Promise } Resolves to processed boolean
    */
   remove(
-    callback?: (error: Error | null, item?: AWSInstance) => any
-  ): Promise<AWSInstance>;
+    callback?: (error: Error | null, item?: boolean) => any
+  ): Promise<boolean>;
 
   /**
    * Fetch a AWSInstance
@@ -144,17 +144,12 @@ export class AWSContextImpl implements AWSContext {
     this._uri = `/Credentials/AWS/${sid}`;
   }
 
-  remove(callback?: any): Promise<AWSInstance> {
+  remove(callback?: any): Promise<boolean> {
     let operationVersion = this._version,
       operationPromise = operationVersion.remove({
         uri: this._uri,
         method: "delete",
       });
-
-    operationPromise = operationPromise.then(
-      (payload) =>
-        new AWSInstance(operationVersion, payload, this._solution.sid)
-    );
 
     operationPromise = this._version.setPromiseCallback(
       operationPromise,
@@ -271,11 +266,11 @@ export class AWSInstance {
    *
    * @param { function } [callback] - Callback to handle processed record
    *
-   * @returns { Promise } Resolves to processed AWSInstance
+   * @returns { Promise } Resolves to processed boolean
    */
   remove(
-    callback?: (error: Error | null, item?: AWSInstance) => any
-  ): Promise<AWSInstance> {
+    callback?: (error: Error | null, item?: boolean) => any
+  ): Promise<boolean> {
     return this._proxy.remove(callback);
   }
 
@@ -335,9 +330,6 @@ export class AWSInstance {
   [inspect.custom](_depth: any, options: InspectOptions) {
     return inspect(this.toJSON(), options);
   }
-}
-export interface AWSSolution {
-  sid?: string;
 }
 
 export interface AWSListInstance {

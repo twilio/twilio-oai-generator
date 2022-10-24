@@ -90,9 +90,4 @@ export class {{name}}Instance {
     return inspect(this.toJSON(), options);
   }
 }
-export interface {{name}}Solution {
-  {{#resourcePathParams}}
-  {{paramName}}?: {{{dataType}}};
-  {{/resourcePathParams}}
-}
 {{/responseModel}}

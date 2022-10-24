@@ -122,11 +122,11 @@ export interface AccountContext {
    *
    * @param { function } [callback] - Callback to handle processed record
    *
-   * @returns { Promise } Resolves to processed AccountInstance
+   * @returns { Promise } Resolves to processed boolean
    */
   remove(
-    callback?: (error: Error | null, item?: AccountInstance) => any
-  ): Promise<AccountInstance>;
+    callback?: (error: Error | null, item?: boolean) => any
+  ): Promise<boolean>;
 
   /**
    * Fetch a AccountInstance
@@ -181,17 +181,12 @@ export class AccountContextImpl implements AccountContext {
     return this._calls;
   }
 
-  remove(callback?: any): Promise<AccountInstance> {
+  remove(callback?: any): Promise<boolean> {
     let operationVersion = this._version,
       operationPromise = operationVersion.remove({
         uri: this._uri,
         method: "delete",
       });
-
-    operationPromise = operationPromise.then(
-      (payload) =>
-        new AccountInstance(operationVersion, payload, this._solution.sid)
-    );
 
     operationPromise = this._version.setPromiseCallback(
       operationPromise,
@@ -353,11 +348,11 @@ export class AccountInstance {
    *
    * @param { function } [callback] - Callback to handle processed record
    *
-   * @returns { Promise } Resolves to processed AccountInstance
+   * @returns { Promise } Resolves to processed boolean
    */
   remove(
-    callback?: (error: Error | null, item?: AccountInstance) => any
-  ): Promise<AccountInstance> {
+    callback?: (error: Error | null, item?: boolean) => any
+  ): Promise<boolean> {
     return this._proxy.remove(callback);
   }
 
@@ -425,9 +420,6 @@ export class AccountInstance {
   [inspect.custom](_depth: any, options: InspectOptions) {
     return inspect(this.toJSON(), options);
   }
-}
-export interface AccountSolution {
-  sid?: string;
 }
 
 export interface AccountListInstance {

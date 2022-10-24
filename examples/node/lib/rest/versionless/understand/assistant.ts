@@ -173,4 +173,3 @@ export class AssistantInstance {
     return inspect(this.toJSON(), options);
   }
 }
-export interface AssistantSolution {}

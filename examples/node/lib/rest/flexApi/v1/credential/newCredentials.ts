@@ -212,4 +212,3 @@ export class NewCredentialsInstance {
     return inspect(this.toJSON(), options);
   }
 }
-export interface NewCredentialsSolution {}

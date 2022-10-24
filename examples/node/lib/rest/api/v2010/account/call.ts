@@ -169,11 +169,11 @@ export interface CallContext {
    *
    * @param { function } [callback] - Callback to handle processed record
    *
-   * @returns { Promise } Resolves to processed CallInstance
+   * @returns { Promise } Resolves to processed boolean
    */
   remove(
-    callback?: (error: Error | null, item?: CallInstance) => any
-  ): Promise<CallInstance>;
+    callback?: (error: Error | null, item?: boolean) => any
+  ): Promise<boolean>;
 
   /**
    * Fetch a CallInstance
@@ -211,22 +211,12 @@ export class CallContextImpl implements CallContext {
     this._uri = `/Accounts/${accountSid}/Calls/${testInteger}.json`;
   }
 
-  remove(callback?: any): Promise<CallInstance> {
+  remove(callback?: any): Promise<boolean> {
     let operationVersion = this._version,
       operationPromise = operationVersion.remove({
         uri: this._uri,
         method: "delete",
       });
-
-    operationPromise = operationPromise.then(
-      (payload) =>
-        new CallInstance(
-          operationVersion,
-          payload,
-          this._solution.accountSid,
-          this._solution.testInteger
-        )
-    );
 
     operationPromise = this._version.setPromiseCallback(
       operationPromise,
@@ -363,11 +353,11 @@ export class CallInstance {
    *
    * @param { function } [callback] - Callback to handle processed record
    *
-   * @returns { Promise } Resolves to processed CallInstance
+   * @returns { Promise } Resolves to processed boolean
    */
   remove(
-    callback?: (error: Error | null, item?: CallInstance) => any
-  ): Promise<CallInstance> {
+    callback?: (error: Error | null, item?: boolean) => any
+  ): Promise<boolean> {
     return this._proxy.remove(callback);
   }
 
@@ -412,8 +402,4 @@ export class CallInstance {
   [inspect.custom](_depth: any, options: InspectOptions) {
     return inspect(this.toJSON(), options);
   }
-}
-export interface CallSolution {
-  accountSid?: string;
-  testInteger?: number;
 }

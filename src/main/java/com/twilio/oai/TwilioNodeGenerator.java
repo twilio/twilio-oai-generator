@@ -139,6 +139,8 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
                 addOperationName(co, "Update");
             } else if (co.nickname.startsWith("delete")) {
                 addOperationName(co, "Remove");
+                co.returnType = "boolean";
+                co.vendorExtensions.put("x-is-delete-operation", true);
             } else if (co.nickname.startsWith("create")) {
                 addOperationName(co, "Create");
             } else if (co.nickname.startsWith("fetch")) {

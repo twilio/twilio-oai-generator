@@ -311,7 +311,3 @@ export class FeedbackCallSummaryInstance {
     return inspect(this.toJSON(), options);
   }
 }
-export interface FeedbackCallSummarySolution {
-  accountSid?: string;
-  sid?: string;
-}

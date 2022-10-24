@@ -164,9 +164,6 @@ export class FleetInstance {
     return inspect(this.toJSON(), options);
   }
 }
-export interface FleetSolution {
-  sid?: string;
-}
 
 export interface FleetListInstance {
   (sid: string): FleetContext;

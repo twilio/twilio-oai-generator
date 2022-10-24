@@ -179,6 +179,3 @@ export class CallInstance {
     return inspect(this.toJSON(), options);
   }
 }
-export interface CallSolution {
-  sid?: string;
-}
