@@ -119,12 +119,10 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
         for (final CodegenOperation co : opList) {
             // Group operations by resource.
             final String[] filePathArray = co.baseName.split(PATH_SEPARATOR_PLACEHOLDER);
-
             final String itemName = filePathArray[filePathArray.length - 1];
             final String instanceName = itemName + "Instance";
             co.returnType = instanceName;
             final boolean isInstanceOperation = PathUtils.isInstanceOperation(co);
-            final HttpMethod httpMethod = HttpMethod.fromString(co.httpMethod);
 
             String resourceName;
             String parentResourceName = null;
@@ -226,7 +224,6 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
 
         results.put("resources", resources.values());
         results.put("hasPaginationOperation", hasPaginationOperation);
-
 
         return results;
     }

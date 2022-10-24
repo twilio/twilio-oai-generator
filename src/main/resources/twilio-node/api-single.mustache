@@ -1,8 +1,10 @@
 {{>licenseInfo}}
 
 import { inspect, InspectOptions } from "util";
-{{#hasPaginationOperation}}import Page from "{{apiVersionPath}}/../../base/Page";{{/hasPaginationOperation}}
+{{#hasPaginationOperation}}
+import Page from "{{apiVersionPath}}/../../base/Page";
 import Response from "{{apiVersionPath}}/../../http/response";
+{{/hasPaginationOperation}}
 import {{apiVersionClass}} from "{{apiVersionPath}}/{{apiVersionClass}}";
 const deserialize = require("{{apiVersionPath}}/../../base/deserialize");
 const serialize = require("{{apiVersionPath}}/../../base/serialize");

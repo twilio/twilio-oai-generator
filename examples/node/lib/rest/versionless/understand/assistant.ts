@@ -13,8 +13,6 @@
  */
 
 import { inspect, InspectOptions } from "util";
-
-import Response from "../../../http/response";
 import Understand from "../Understand";
 const deserialize = require("../../../base/deserialize");
 const serialize = require("../../../base/serialize");
