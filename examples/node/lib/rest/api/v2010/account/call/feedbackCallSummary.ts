@@ -21,6 +21,26 @@ const serialize = require("../../../../../base/serialize");
 
 import PhoneNumberCapabilities from "../../../../../interfaces";
 
+type TestStatus =
+  | "in-progress"
+  | "paused"
+  | "stopped"
+  | "processing"
+  | "completed"
+  | "absent";
+
+export class TestResponseObjectTestObject {
+  "fax"?: boolean;
+  "mms"?: boolean;
+  "sms"?: boolean;
+  "voice"?: boolean;
+}
+
+export class TestResponseObjectTestArrayOfObjects {
+  "count"?: number;
+  "description"?: string;
+}
+
 /**
  * Options to pass to update a FeedbackCallSummaryInstance
  *
@@ -202,12 +222,12 @@ interface FeedbackCallSummaryResource {
   test_number?: number | null;
   price_unit?: string | null;
   test_number_float?: number | null;
-  test_enum?: object;
+  test_enum?: TestStatus;
   a2p_profile_bundle_sid?: string | null;
   test_array_of_integers?: Array<number>;
   test_array_of_array_of_integers?: Array<Array<number>>;
-  test_array_of_objects?: Array<object> | null;
-  test_array_of_enum?: Array<object> | null;
+  test_array_of_objects?: Array<TestResponseObjectTestArrayOfObjects> | null;
+  test_array_of_enum?: Array<TestStatus> | null;
 }
 
 export class FeedbackCallSummaryInstance {
@@ -248,18 +268,18 @@ export class FeedbackCallSummaryInstance {
   testNumber?: number | null;
   priceUnit?: string | null;
   testNumberFloat?: number | null;
-  testEnum?: object;
+  testEnum?: TestStatus;
   /**
    * A2P Messaging Profile Bundle BundleSid
    */
   a2pProfileBundleSid?: string | null;
   testArrayOfIntegers?: Array<number>;
   testArrayOfArrayOfIntegers?: Array<Array<number>>;
-  testArrayOfObjects?: Array<object> | null;
+  testArrayOfObjects?: Array<TestResponseObjectTestArrayOfObjects> | null;
   /**
    * Permissions authorized to the app
    */
-  testArrayOfEnum?: Array<object> | null;
+  testArrayOfEnum?: Array<TestStatus> | null;
 
   private get _proxy(): FeedbackCallSummaryContext {
     this._context =

@@ -12,8 +12,8 @@ import { {{importName}} } from "./{{apiFilename}}/{{filename}}";
 {{/dependents}}
 {{>imports}}
 {{/resources}}
-{{#resources}}
 {{>model}}
+{{#resources}}
 {{#operations}}
 {{#hasParams}}
 {{#vendorExtensions.x-is-list-operation}}{{>listOperationsOptions}}{{/vendorExtensions.x-is-list-operation}}

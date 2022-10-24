@@ -16,6 +16,7 @@ import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenOperation;
 import org.openapitools.codegen.CodegenParameter;
 import org.openapitools.codegen.CodegenProperty;
+import org.openapitools.codegen.IJsonSchemaValidationProperties;
 import org.openapitools.codegen.SupportingFile;
 import org.openapitools.codegen.languages.TypeScriptNodeClientCodegen;
 import org.openapitools.codegen.model.ModelMap;
@@ -105,6 +106,8 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
         }
 
         Utility.setComplexDataMapping(this.allModels, this.modelFormatMap);
+        this.allModels.forEach(model -> model.setClassname(removeEnumName(model.getClassname())));
+
         // Return an empty collection so no model files get generated.
         return new HashMap<>();
     }
@@ -120,6 +123,7 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
         }
 
         final Map<String, Object> resources = new HashMap<>();
+        final Map<String, CodegenModel> models = new HashMap<>();
 
         final boolean hasInstanceOperations = opList.stream().anyMatch(PathUtils::isInstanceOperation);
 
@@ -179,6 +183,7 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
 
             updateResourcePath(resource, co);
 
+            co.allParams.forEach(param -> param.dataType = resolveModelDataType(param, param.dataType, models));
             co.allParams.removeAll(co.pathParams);
             co.requiredParams.removeAll(co.pathParams);
             co.hasParams = !co.allParams.isEmpty();
@@ -186,10 +191,6 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
             co.queryParams.forEach(this::addSerializeVendorExtension);
             co.formParams.forEach(this::addSerializeVendorExtension);
             co.httpMethod = co.httpMethod.toLowerCase();
-
-            if (co.bodyParam != null) {
-                addModel(resource, co.bodyParam.dataType);
-            }
 
             final Map<String, Object> dependentMap = PathUtils.getStringMap(resource, "dependents");
             resourceTree
@@ -221,6 +222,8 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
                     .map(conventionResolver::resolveModel)
                     .map(item -> conventionResolver.resolveComplexType(item, modelFormatMap))
                     .forEach(model -> {
+                        model.vars.forEach(prop -> prop.dataType = resolveModelDataType(prop, prop.dataType, models));
+
                         model.setName(itemName);
                         resource.put("responseModel", model);
 
@@ -243,13 +246,31 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
                 parentResource.put("instanceResource", resource);
             }
 
-            PathUtils.flattenStringMap(resource, "models");
             PathUtils.flattenStringMap(resource, "dependents");
         });
 
         results.put("resources", resources.values());
+        results.put("models", models.values());
 
         return results;
+    }
+
+    private String resolveModelDataType(final IJsonSchemaValidationProperties prop,
+                                        final String dataType,
+                                        final Map<String, CodegenModel> models) {
+        final String modelDataType = removeEnumName(dataType);
+
+        if (prop.getComplexType() != null) {
+            addModel(models, removeEnumName(prop.getComplexType()));
+        } else {
+            addModel(models, modelDataType);
+        }
+
+        return modelDataType;
+    }
+
+    private String removeEnumName(final String dataType) {
+        return dataType.replace("Enum", "");
     }
 
     @SuppressWarnings("unchecked")
@@ -276,10 +297,10 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
         resource.put("resourcePathParams", resourcePathParams);
     }
 
-    private void addModel(final Map<String, Object> resource, final String dataType) {
+    private void addModel(final Map<String, CodegenModel> models, final String dataType) {
         getModel(dataType).ifPresent(model -> {
-            if (PathUtils.getStringMap(resource, "models").putIfAbsent(model.getClassname(), model) == null) {
-                model.getVars().forEach(property -> addModel(resource, property.dataType));
+            if (models.putIfAbsent(model.getClassname(), model) == null) {
+                model.getVars().forEach(property -> addModel(models, property.dataType));
             }
         });
     }

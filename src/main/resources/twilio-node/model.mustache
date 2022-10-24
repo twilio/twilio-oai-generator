@@ -17,29 +17,8 @@ export class {{classname}} {{#parent}}extends {{{parent}}} {{/parent}}{
 {{/vars}}
 }
 
-{{#hasEnums}}
-export namespace {{classname}} {
-{{#vars}}
-{{#isEnum}}
-  export enum {{enumName}} {
-    {{#allowableValues}}
-    {{#enumVars}}
-    {{name}} = <any> {{{value}}}{{^-last}},{{/-last}}
-    {{/enumVars}}
-    {{/allowableValues}}
-  }
-{{/isEnum}}
-{{/vars}}
-}
-{{/hasEnums}}
 {{/isEnum}}
 {{#isEnum}}
-export enum {{classname}} {
-  {{#allowableValues}}
-  {{#enumVars}}
-  {{name}} = <any> {{{value}}}{{^-last}},{{/-last}}
-  {{/enumVars}}
-  {{/allowableValues}}
-}
+type {{classname}} = {{#allowableValues}}{{#enumVars}}{{{value}}}{{^-last}}|{{/-last}}{{/enumVars}}{{/allowableValues}};
 {{/isEnum}}
 {{/models}}

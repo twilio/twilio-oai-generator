@@ -19,6 +19,14 @@ import V1 from "../../V1";
 const deserialize = require("../../../../base/deserialize");
 const serialize = require("../../../../base/serialize");
 
+type TestStatus =
+  | "in-progress"
+  | "paused"
+  | "stopped"
+  | "processing"
+  | "completed"
+  | "absent";
+
 /**
  * Options to pass to create a NewCredentialsInstance
  *
@@ -33,7 +41,7 @@ const serialize = require("../../../../base/serialize");
  * @property { object } [testObject]
  * @property { Date } [testDateTime]
  * @property { Date } [testDate]
- * @property { TestEnumStatus } [testEnum]
+ * @property { TestStatus } [testEnum]
  * @property { Array<object> } [testObjectArray]
  * @property { any } [testAnyType]
  * @property { Array<string> } [permissions] A comma-separated list of the permissions you will request from the users of this ConnectApp.  Can include: &#x60;get-all&#x60; and &#x60;post-all&#x60;.
@@ -50,7 +58,7 @@ export interface NewCredentialsListInstanceCreateOptions {
   testObject?: object;
   testDateTime?: Date;
   testDate?: Date;
-  testEnum?: TestEnumStatus;
+  testEnum?: TestStatus;
   testObjectArray?: Array<object>;
   testAnyType?: any;
   permissions?: Array<string>;
