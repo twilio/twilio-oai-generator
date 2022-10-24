@@ -44,5 +44,5 @@ OUT_DIR=examples/java/src/main/java/com/twilio/rest
 generate twilio-java
 
 OUT_DIR=examples/node/lib/rest
-generate twilio-node
+generate twilio-node --global-property skipFormModel=false
 docker-run examples/node/Dockerfile-prettier
