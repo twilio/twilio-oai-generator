@@ -29,11 +29,7 @@ public class CodegenModelComplexResolver implements Resolver<CodegenProperty> {
             String complexType = modelFormatMap.get(property.complexType);
 
             if (propertyMap.containsKey(complexType)) {
-                if (property.containerType != null && property.containerType.equals("array")) {
-                    property.dataType = listStart + propertyMap.get(complexType) + listEnd;
-                } else {
-                    property.dataType = (String)propertyMap.get(complexType);
-                }
+                property.dataType = (String)propertyMap.get(complexType);
             }
         }
         return property;

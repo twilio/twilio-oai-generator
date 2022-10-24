@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Stack;
 
 public class CodegenModelContainerDataTypeResolver implements Resolver<CodegenProperty> {
+    
     private CodegenModelDataTypeResolver codegenModelDataTypeResolver;
     private List<? extends LanguageDataType> languageDataTypes;
 
@@ -28,6 +29,13 @@ public class CodegenModelContainerDataTypeResolver implements Resolver<CodegenPr
         return codegenProperty;
     }
 
+    /**
+     * Unwraps the container type(s) from the underlying property datatype and adds the container type(s) to the given
+     * containerTypes stack. Returns the underlying property datatype (i.e. "List<IceServer>" -> "IceServer").
+     * @param codegenProperty
+     * @param containerTypes
+     * @return
+     */
     private String unwrapContainerType(CodegenProperty codegenProperty,Stack<String> containerTypes) {
         String codegenPropertyDataType = "";
         codegenPropertyDataType = codegenProperty.dataType;
@@ -54,6 +62,12 @@ public class CodegenModelContainerDataTypeResolver implements Resolver<CodegenPr
         return codegenPropertyDataType;
     }
 
+    /**
+     * Rewraps the property dataType with the container types in the given stack. Sets the property dataType to the
+     * rewrapped value (i.e. "IceServer" -> "List<IceServer>").
+     * @param codegenProperty
+     * @param containerTypes
+     */
     private static void rewrapContainerType(CodegenProperty codegenProperty,Stack<String> containerTypes) {
         String currentContainerType = "";
         while(!containerTypes.empty()) {

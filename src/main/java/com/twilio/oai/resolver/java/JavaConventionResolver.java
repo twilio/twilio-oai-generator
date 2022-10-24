@@ -14,14 +14,14 @@ import org.openapitools.codegen.CodegenProperty;
 
 public class JavaConventionResolver {
     private final String VENDOR_PREFIX = "x-";
-    private final String PREFIXED_COLLAPSIBLE_MAP = "prefixed_collapsible_map";
+    private final String PREFIXED_COLLAPSIBLE_MAP = "prefixed-collapsible-map";
     private final String X_PREFIXED_COLLAPSIBLE_MAP = "x-prefixed-collapsible-map";
     private final String HYPHEN = "-";
     private final String OBJECT = "object";
 
     private final String LIST_OBJECT = "List<Object>";
 
-    private final String PHONE_NUMBER_FORMAT = "phone_number";
+    private final String PHONE_NUMBER_FORMAT = "phone-number";
 
     private final String X_IS_PHONE_NUMBER_FORMAT = "x-is-phone-number-format";
 
