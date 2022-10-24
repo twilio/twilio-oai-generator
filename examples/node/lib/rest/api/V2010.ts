@@ -34,5 +34,4 @@ export default class V2010 extends Version {
     this._accounts = this._accounts || AccountListInstance(this);
     return this._accounts;
   }
-
 }

@@ -83,11 +83,11 @@ export interface AWSContext {
    *
    * @param { function } [callback] - Callback to handle processed record
    *
-   * @returns { Promise } Resolves to processed boolean
+   * @returns { Promise } Resolves to processed AWSInstance
    */
   remove(
     callback?: (error: Error | null, item?: AWSInstance) => any
-  ): Promise<boolean>;
+  ): Promise<AWSInstance>;
 
   /**
    * Fetch a AWSInstance
@@ -140,12 +140,17 @@ export class AWSContextImpl implements AWSContext {
     this._uri = `/Credentials/AWS/${sid}`;
   }
 
-  remove(callback?: any): Promise<boolean> {
+  remove(callback?: any): Promise<AWSInstance> {
     let operationVersion = this._version,
       operationPromise = operationVersion.remove({
         uri: this._uri,
         method: "delete",
       });
+
+    operationPromise = operationPromise.then(
+      (payload) =>
+        new AWSInstance(operationVersion, payload, this._solution.sid)
+    );
 
     operationPromise = this._version.setPromiseCallback(
       operationPromise,
@@ -262,11 +267,11 @@ export class AWSInstance {
    *
    * @param { function } [callback] - Callback to handle processed record
    *
-   * @returns { Promise } Resolves to processed boolean
+   * @returns { Promise } Resolves to processed AWSInstance
    */
   remove(
     callback?: (error: Error | null, item?: AWSInstance) => any
-  ): Promise<boolean> {
+  ): Promise<AWSInstance> {
     return this._proxy.remove(callback);
   }
 
@@ -329,32 +334,6 @@ export class AWSInstance {
 }
 export interface AWSSolution {
   sid?: string;
-}
-
-export class AWSPage extends Page<V1, AWSPayload, AWSResource, AWSInstance> {
-  /**
-   * Initialize the AWSPage
-   *
-   * @param version - Version of the resource
-   * @param response - Response from the API
-   * @param solution - Path solution
-   */
-  constructor(version: V1, response: Response<string>, solution: AWSSolution) {
-    super(version, response, solution);
-  }
-
-  /**
-   * Build an instance of AWSInstance
-   *
-   * @param payload - Payload response from the API
-   */
-  getInstance(payload: AWSPayload): AWSInstance {
-    return new AWSInstance(this._version, payload, this._solution.sid);
-  }
-
-  [inspect.custom](depth: any, options: InspectOptions) {
-    return inspect(this.toJSON(), options);
-  }
 }
 
 export interface AWSListInstance {
@@ -578,4 +557,30 @@ export function AWSListInstance(version: V1): AWSListInstance {
   };
 
   return instance;
+}
+
+export class AWSPage extends Page<V1, AWSPayload, AWSResource, AWSInstance> {
+  /**
+   * Initialize the AWSPage
+   *
+   * @param version - Version of the resource
+   * @param response - Response from the API
+   * @param solution - Path solution
+   */
+  constructor(version: V1, response: Response<string>, solution: AWSSolution) {
+    super(version, response, solution);
+  }
+
+  /**
+   * Build an instance of AWSInstance
+   *
+   * @param payload - Payload response from the API
+   */
+  getInstance(payload: AWSPayload): AWSInstance {
+    return new AWSInstance(this._version, payload);
+  }
+
+  [inspect.custom](depth: any, options: InspectOptions) {
+    return inspect(this.toJSON(), options);
+  }
 }

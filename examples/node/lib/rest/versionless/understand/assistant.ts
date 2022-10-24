@@ -13,7 +13,7 @@
  */
 
 import { inspect, InspectOptions } from "util";
-import Page from "../../../base/Page";
+
 import Response from "../../../http/response";
 import Understand from "../Understand";
 const deserialize = require("../../../base/deserialize");
@@ -128,9 +128,7 @@ export function AssistantListInstance(
   return instance;
 }
 
-interface AssistantPayload
-  extends AssistantResource,
-    Page.TwilioResponsePayload {}
+interface AssistantPayload extends AssistantResource {}
 
 interface AssistantResource {
   account_sid?: string | null;
@@ -181,38 +179,3 @@ export class AssistantInstance {
   }
 }
 export interface AssistantSolution {}
-
-export class AssistantPage extends Page<
-  Understand,
-  AssistantPayload,
-  AssistantResource,
-  AssistantInstance
-> {
-  /**
-   * Initialize the AssistantPage
-   *
-   * @param version - Version of the resource
-   * @param response - Response from the API
-   * @param solution - Path solution
-   */
-  constructor(
-    version: Understand,
-    response: Response<string>,
-    solution: AssistantSolution
-  ) {
-    super(version, response, solution);
-  }
-
-  /**
-   * Build an instance of AssistantInstance
-   *
-   * @param payload - Payload response from the API
-   */
-  getInstance(payload: AssistantPayload): AssistantInstance {
-    return new AssistantInstance(this._version, payload);
-  }
-
-  [inspect.custom](depth: any, options: InspectOptions) {
-    return inspect(this.toJSON(), options);
-  }
-}

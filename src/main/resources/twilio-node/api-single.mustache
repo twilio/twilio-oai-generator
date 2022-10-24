@@ -1,7 +1,7 @@
 {{>licenseInfo}}
 
 import { inspect, InspectOptions } from "util";
-import Page from "{{apiVersionPath}}/../../base/Page";
+{{#hasPaginationOperation}}import Page from "{{apiVersionPath}}/../../base/Page";{{/hasPaginationOperation}}
 import Response from "{{apiVersionPath}}/../../http/response";
 import {{apiVersionClass}} from "{{apiVersionPath}}/{{apiVersionClass}}";
 const deserialize = require("{{apiVersionPath}}/../../base/deserialize");
@@ -158,5 +158,5 @@ export function {{resourceName}}(version: {{apiVersionClass}}{{#resourcePathPara
 }
 {{/parentResourceName}}
 {{>responseModel}}
-{{>pagination}}
+{{#hasPaginationOperation}}{{>pagination}}{{/hasPaginationOperation}}
 {{/resources}}

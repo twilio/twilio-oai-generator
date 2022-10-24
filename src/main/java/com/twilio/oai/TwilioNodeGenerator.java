@@ -106,7 +106,7 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
     public OperationsMap postProcessOperationsWithModels(final OperationsMap objs, List<ModelMap> allModels) {
         final OperationsMap results = super.postProcessOperationsWithModels(objs, allModels);
         final List<CodegenOperation> opList = directoryStructureService.processOperations(results);
-
+        boolean hasPaginationOperation = false;
         if (directoryStructureService.isVersionLess()) {
             apiTemplateFiles.put(VERSION_TEMPLATE, FILENAME_EXTENSION);
         }
@@ -122,35 +122,32 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
 
             final String itemName = filePathArray[filePathArray.length - 1];
             final String instanceName = itemName + "Instance";
+            co.returnType = instanceName;
             final boolean isInstanceOperation = PathUtils.isInstanceOperation(co);
             final HttpMethod httpMethod = HttpMethod.fromString(co.httpMethod);
+
             String resourceName;
             String parentResourceName = null;
-
-            co.returnType = instanceName;
-
-            // Anything that ends with {sid} -> account/sid for example
             if (isInstanceOperation) {
                 resourceName = itemName + "Context";
                 parentResourceName = itemName + "ListInstance";
-                if (httpMethod == HttpMethod.GET) {
-                    addOperationName(co, "Fetch");
-                } else if (httpMethod == HttpMethod.POST) {
-                    addOperationName(co, "Update");
-                } else if (httpMethod == HttpMethod.DELETE) {
-                    addOperationName(co, "Remove");
-                    co.returnType = "boolean";
-                    co.vendorExtensions.put("x-is-delete-operation", true);
-                }
             } else {
                 resourceName = itemName + "ListInstance";
-                if (httpMethod == HttpMethod.POST) {
-                    addOperationName(co, "Create");
-                } else if (httpMethod == HttpMethod.GET) {
-                    addOperationName(co, "Page");
-                    co.returnType = itemName + "Page";
-                    co.vendorExtensions.put("x-is-list-operation", true);
-                }
+            }
+
+            if (co.nickname.startsWith("update")) {
+                addOperationName(co, "Update");
+            } else if (co.nickname.startsWith("delete")) {
+                addOperationName(co, "Remove");
+            } else if (co.nickname.startsWith("create")) {
+                addOperationName(co, "Create");
+            } else if (co.nickname.startsWith("fetch")) {
+                addOperationName(co, "Fetch");
+            } else if (co.nickname.startsWith("list")){
+                hasPaginationOperation = true;
+                co.returnType = itemName + "Page";
+                co.vendorExtensions.put("x-is-list-operation", true);
+                addOperationName(co, "Page");
             }
 
             final Map<String, Object> resource = PathUtils.getStringMap(resources, resourceName);
@@ -228,6 +225,8 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
         });
 
         results.put("resources", resources.values());
+        results.put("hasPaginationOperation", hasPaginationOperation);
+
 
         return results;
     }
