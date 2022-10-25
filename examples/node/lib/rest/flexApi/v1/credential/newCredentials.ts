@@ -38,7 +38,7 @@ type TestStatus =
  * @property { number } [testNumberInt64]
  * @property { object } [testObject]
  * @property { Date } [testDateTime]
- * @property { string } [testDate]
+ * @property { Date } [testDate]
  * @property { TestStatus } [testEnum]
  * @property { Array<object> } [testObjectArray]
  * @property { any } [testAnyType]
@@ -55,7 +55,7 @@ export interface NewCredentialsListInstanceCreateOptions {
   testNumberInt64?: number;
   testObject?: object;
   testDateTime?: Date;
-  testDate?: string;
+  testDate?: Date;
   testEnum?: TestStatus;
   testObjectArray?: Array<object>;
   testAnyType?: any;

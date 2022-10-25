@@ -19,6 +19,7 @@ import V2010 from "../V2010";
 const deserialize = require("../../../base/deserialize");
 const serialize = require("../../../base/serialize");
 import { CallListInstance } from "./account/call";
+import PhoneNumberCapabilities from "../../../interfaces";
 
 type TestStatus =
   | "in-progress"
@@ -67,7 +68,7 @@ export interface AccountListInstanceCreateOptions {
  * Options to pass to each
  *
  * @property { Date } [dateCreated]
- * @property { string } [dateTest]
+ * @property { Date } [dateTest]
  * @property { Date } [dateCreatedBefore]
  * @property { Date } [dateCreatedAfter]
  * @property { number } [pageSize]
@@ -82,7 +83,7 @@ export interface AccountListInstanceCreateOptions {
  */
 export interface AccountListInstanceEachOptions {
   dateCreated?: Date;
-  dateTest?: string;
+  dateTest?: Date;
   dateCreatedBefore?: Date;
   dateCreatedAfter?: Date;
   pageSize?: number;
@@ -95,7 +96,7 @@ export interface AccountListInstanceEachOptions {
  * Options to pass to list
  *
  * @property { Date } [dateCreated]
- * @property { string } [dateTest]
+ * @property { Date } [dateTest]
  * @property { Date } [dateCreatedBefore]
  * @property { Date } [dateCreatedAfter]
  * @property { number } [pageSize]
@@ -106,7 +107,7 @@ export interface AccountListInstanceEachOptions {
  */
 export interface AccountListInstanceOptions {
   dateCreated?: Date;
-  dateTest?: string;
+  dateTest?: Date;
   dateCreatedBefore?: Date;
   dateCreatedAfter?: Date;
   pageSize?: number;
@@ -117,7 +118,7 @@ export interface AccountListInstanceOptions {
  * Options to pass to page
  *
  * @property { Date } [dateCreated]
- * @property { string } [dateTest]
+ * @property { Date } [dateTest]
  * @property { Date } [dateCreatedBefore]
  * @property { Date } [dateCreatedAfter]
  * @property { number } [pageSize]
@@ -126,7 +127,7 @@ export interface AccountListInstanceOptions {
  */
 export interface AccountListInstancePageOptions {
   dateCreated?: Date;
-  dateTest?: string;
+  dateTest?: Date;
   dateCreatedBefore?: Date;
   dateCreatedAfter?: Date;
   pageSize?: number;
@@ -293,7 +294,7 @@ interface AccountResource {
   sid?: string | null;
   test_string?: string | null;
   test_integer?: number | null;
-  test_object?: TestResponseObjectTestObject | null;
+  test_object?: PhoneNumberCapabilities | null;
   test_date_time?: string | null;
   test_number?: number | null;
   price_unit?: string | null;
@@ -338,7 +339,7 @@ export class AccountInstance {
   sid?: string | null;
   testString?: string | null;
   testInteger?: number | null;
-  testObject?: TestResponseObjectTestObject | null;
+  testObject?: PhoneNumberCapabilities | null;
   testDateTime?: string | null;
   testNumber?: number | null;
   priceUnit?: string | null;

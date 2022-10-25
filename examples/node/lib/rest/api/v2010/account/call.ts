@@ -18,6 +18,8 @@ const deserialize = require("../../../../base/deserialize");
 const serialize = require("../../../../base/serialize");
 import { FeedbackCallSummaryListInstance } from "./call/feedbackCallSummary";
 
+import PhoneNumberCapabilities from "../../../../interfaces";
+
 type TestStatus =
   | "in-progress"
   | "paused"
@@ -290,7 +292,7 @@ interface CallResource {
   sid?: string | null;
   test_string?: string | null;
   test_integer?: number | null;
-  test_object?: TestResponseObjectTestObject | null;
+  test_object?: PhoneNumberCapabilities | null;
   test_date_time?: string | null;
   test_number?: number | null;
   price_unit?: string | null;
@@ -339,7 +341,7 @@ export class CallInstance {
   sid?: string | null;
   testString?: string | null;
   testInteger?: number | null;
-  testObject?: TestResponseObjectTestObject | null;
+  testObject?: PhoneNumberCapabilities | null;
   testDateTime?: string | null;
   testNumber?: number | null;
   priceUnit?: string | null;

@@ -2,6 +2,8 @@ package com.twilio.oai;
 
 import com.twilio.oai.common.EnumConstants;
 import com.twilio.oai.resolver.node.NodeCaseResolver;
+import com.twilio.oai.common.Utility;
+import com.twilio.oai.resolver.node.NodeConventionResolver;
 import com.twilio.oai.resource.IResourceTree;
 import com.twilio.oai.resource.ResourceMap;
 
@@ -36,6 +38,10 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
         additionalProperties,
         resourceTree,
         new NodeCaseResolver());
+
+    private final Map<String, String> modelFormatMap = new HashMap<>();
+    private final NodeConventionResolver conventionResolver = new NodeConventionResolver();
+
     private final List<CodegenModel> allModels = new ArrayList<>();
 
     public TwilioNodeGenerator() {
@@ -99,6 +105,7 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
                 .collect(Collectors.toCollection(() -> this.allModels));
         }
 
+        Utility.setComplexDataMapping(this.allModels, this.modelFormatMap);
         this.allModels.forEach(model -> model.setClassname(removeEnumName(model.getClassname())));
 
         // Return an empty collection so no model files get generated.
@@ -132,6 +139,10 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
 
             String resourceName;
             String parentResourceName = null;
+
+            co.returnType = instanceName;
+
+            updateCodeOperationParams(co);
             if (isInstanceOperation) {
                 resourceName = itemName + "Context";
                 parentResourceName = itemName + "ListInstance";
@@ -209,6 +220,8 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
                     .filter(Objects::nonNull)
                     .map(this::getModel)
                     .flatMap(Optional::stream)
+                    .map(conventionResolver::resolveModel)
+                    .map(item -> conventionResolver.resolveComplexType(item, modelFormatMap))
                     .forEach(model -> {
                         model.vars.forEach(prop -> prop.dataType = resolveModelDataType(prop, prop.dataType, models));
 
@@ -345,6 +358,29 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
     private void addOperationName(final CodegenOperation operation, final String name) {
         operation.vendorExtensions.put("x-name", name);
         operation.vendorExtensions.put("x-name-lower", name.toLowerCase());
+    }
+
+    private void updateCodeOperationParams(final CodegenOperation co) {
+        co.allParams = co.allParams
+                .stream()
+                .map(conventionResolver::resolveParameter)
+                .map(Optional::get)
+                .collect(Collectors.toList());
+        co.pathParams = co.pathParams
+                .stream()
+                .map(conventionResolver::resolveParameter)
+                .map(Optional::get)
+                .collect(Collectors.toList());
+        co.optionalParams = co.optionalParams
+                .stream()
+                .map(conventionResolver::resolveParameter)
+                .map(Optional::get)
+                .collect(Collectors.toList());
+        co.requiredParams = co.requiredParams
+                .stream()
+                .map(conventionResolver::resolveParameter)
+                .map(Optional::get)
+                .collect(Collectors.toList());
     }
 
     @Override
