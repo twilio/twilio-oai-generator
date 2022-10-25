@@ -100,8 +100,7 @@ describe("account", () => {
     return twilio.api.v2010.accounts
       .page(params)
       .then((accountPage) => {
-        console.log(accountPage);
-        expect(accountPage.nextPageUrl).toEqual(
+        expect(accountPage.getNextPageUrl()).toEqual(
           "http://api.twilio.com/2010-04-01/Accounts.json?FriendlyName=friendly_name&Status=active&PageSize=50&Page=50"
         );
         expect(accountPage.instances[0].testObject.mms).toEqual(true);
