@@ -19,6 +19,8 @@ import V2010 from "../../../V2010";
 const deserialize = require("../../../../../base/deserialize");
 const serialize = require("../../../../../base/serialize");
 
+import PhoneNumberCapabilities from "../../../../../interfaces";
+
 type TestStatus =
   | "in-progress"
   | "paused"
@@ -42,13 +44,13 @@ export class TestResponseObjectTestArrayOfObjects {
 /**
  * Options to pass to update a FeedbackCallSummaryInstance
  *
- * @property { string } endDate
- * @property { string } startDate
+ * @property { Date } endDate
+ * @property { Date } startDate
  * @property { string } [accountSid2]
  */
 export interface FeedbackCallSummaryContextUpdateOptions {
-  endDate: string;
-  startDate: string;
+  endDate: Date;
+  startDate: Date;
   accountSid2?: string;
 }
 
@@ -215,7 +217,7 @@ interface FeedbackCallSummaryResource {
   sid?: string | null;
   test_string?: string | null;
   test_integer?: number | null;
-  test_object?: TestResponseObjectTestObject | null;
+  test_object?: PhoneNumberCapabilities | null;
   test_date_time?: string | null;
   test_number?: number | null;
   price_unit?: string | null;
@@ -261,7 +263,7 @@ export class FeedbackCallSummaryInstance {
   sid?: string | null;
   testString?: string | null;
   testInteger?: number | null;
-  testObject?: TestResponseObjectTestObject | null;
+  testObject?: PhoneNumberCapabilities | null;
   testDateTime?: string | null;
   testNumber?: number | null;
   priceUnit?: string | null;
