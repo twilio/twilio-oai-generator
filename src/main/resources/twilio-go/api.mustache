@@ -32,7 +32,7 @@ func (params *{{{nickname}}}Params) Set{{paramName}}({{paramName}} {{{dataType}}
 {{/optionalParams}}
 {{/hasOptionalParams}}
 
-{{^vendorExtensions.x-is-list-operation}}
+{{^vendorExtensions.x-is-read-operation}}
 {{#notes}}
 // {{notes}}
 {{/notes}}
@@ -73,8 +73,8 @@ func (c *ApiService) {{{nickname}}}({{#allParams}}{{#required}}{{paramName}} {{{
     return nil
 {{/returnType}}
 }
-{{/vendorExtensions.x-is-list-operation}}
-{{#vendorExtensions.x-is-list-operation}}
+{{/vendorExtensions.x-is-read-operation}}
+{{#vendorExtensions.x-is-read-operation}}
 // Retrieve a single page of {{{vendorExtensions.x-domain-name}}} records from the API. Request is executed immediately.
 func (c *ApiService) Page{{{vendorExtensions.x-domain-name}}}({{#allParams}}{{#required}}{{paramName}} {{{dataType}}}{{^last}}, {{/last}}{{/required}}{{/allParams}}params *{{{nickname}}}Params, pageToken, pageNumber string) (*{{{returnContainer}}}, error) {
     path := "{{{path}}}"
@@ -189,6 +189,6 @@ func (c *ApiService) getNext{{{returnContainer}}}(nextPageUrl string) (interface
     return ps, nil
 }
 
-{{/vendorExtensions.x-is-list-operation}}
+{{/vendorExtensions.x-is-read-operation}}
 {{/operation}}
 {{/operations}}

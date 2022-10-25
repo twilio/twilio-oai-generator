@@ -1,5 +1,7 @@
 package com.twilio.oai;
 
+import com.twilio.oai.common.EnumConstants;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EnumSet;
@@ -24,6 +26,8 @@ import org.openapitools.codegen.model.ModelsMap;
 import org.openapitools.codegen.model.OperationMap;
 import org.openapitools.codegen.model.OperationsMap;
 import org.openapitools.codegen.utils.ModelUtils;
+
+import static com.twilio.oai.common.EnumConstants.Operation;
 
 public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
 
@@ -67,16 +71,6 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
         private final String requirement;
     }
 
-    @AllArgsConstructor
-    private enum ResourceOperation {
-        CREATE("Create"),
-        FETCH("Fetch"),
-        UPDATE("Update"),
-        DELETE("Delete");
-
-        private final String prefix;
-    }
-
     public TwilioTerraformGenerator() {
         super();
 
@@ -86,6 +80,11 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
     @Override
     public void processOpts() {
         super.processOpts();
+
+        if (additionalProperties.get("apiVersion").equals("v2010")) {
+            additionalProperties.remove("apiVersion");
+            additionalProperties.remove("apiVersionClass");
+        }
 
         supportingFiles.add(new SupportingFile("README.mustache", "README.md"));
     }
@@ -98,6 +97,7 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
         return new HashMap<>();
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public OperationsMap postProcessOperationsWithModels(final OperationsMap objs, List<ModelMap> allModels) {
         final OperationsMap results = super.postProcessOperationsWithModels(objs, allModels);
@@ -127,9 +127,9 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
             resource.put("nameInSnakeCase", toSnakeCase(resourceName));
             resourceOperationList.add(co);
 
-            populateCrudOperations(resource, co);
-            resource.put("hasUpdate", resource
-                    .containsKey(ResourceOperation.UPDATE.name()));
+            twilioCodegen.populateCrudOperations(resource, co);
+
+            resource.put("hasUpdate", resource.containsKey(EnumConstants.Operation.UPDATE.name()));
 
             this.addParamVendorExtensions(co.allParams);
             this.addParamVendorExtensions(co.pathParams);
@@ -149,9 +149,9 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
             i.hasNext(); ) {
             final Map<String, Object> resource = i.next().getValue();
 
-            final CodegenOperation createOperation = getCodegenOperation(resource, ResourceOperation.CREATE);
-            final CodegenOperation updateOperation = getCodegenOperation(resource, ResourceOperation.UPDATE);
-            final CodegenOperation fetchOperation = getCodegenOperation(resource, ResourceOperation.FETCH);
+            final CodegenOperation createOperation = getCodegenOperation(resource, Operation.CREATE);
+            final CodegenOperation updateOperation = getCodegenOperation(resource, Operation.UPDATE);
+            final CodegenOperation fetchOperation = getCodegenOperation(resource, Operation.FETCH);
 
             // Use the parameters for creating the resource as the resource schema.
             resource.put("schema", getResourceSchema(createOperation, updateOperation, fetchOperation));
@@ -207,46 +207,14 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
             System.exit(0);
         }
 
-        final String inputSpecPattern = ".+?_(.+?)_(v[0-9]+)\\.(.+)";
-        final String inputSpecOriginal = getInputSpec();
-        // /path/to/spec/twilio_api_v2010.yaml -> twilio_api_v2010.yaml
-        final String inputSpec = inputSpecOriginal.substring(inputSpecOriginal.lastIndexOf("/") + 1);
-
-        final String product = inputSpec.replaceAll(inputSpecPattern, "$1");
-        final String productVersion = inputSpec.replaceAll(inputSpecPattern, "$2");
-        final String clientPath = String.format("rest/%s/%s", product, productVersion);
-        final boolean isV2010Api = productVersion.contains("2010");
-        final String clientService = isV2010Api ? StringHelper.camelize(product) : StringHelper.camelize(product + "_" + productVersion);
-
-        results.put("product", product);
-        results.put("productVersion", productVersion);
-        results.put("isV2010Api", isV2010Api);
-        results.put("clientService", clientService);
-        results.put("clientPath", clientPath);
         results.put("resources", resources.values());
 
         return results;
     }
 
-    private void populateCrudOperations(final Map<String, Object> resource, final CodegenOperation operation) {
-        if (operation.nickname.startsWith(ResourceOperation.CREATE.prefix)) {
-            operation.vendorExtensions.put("x-is-create-operation", true);
-            resource.put(ResourceOperation.CREATE.name(), operation);
-        } else if (operation.nickname.startsWith(ResourceOperation.FETCH.prefix)) {
-            operation.vendorExtensions.put("x-is-read-operation", true);
-            resource.put(ResourceOperation.FETCH.name(), operation);
-        } else if (operation.nickname.startsWith(ResourceOperation.UPDATE.prefix)) {
-            operation.vendorExtensions.put("x-is-update-operation", true);
-            resource.put(ResourceOperation.UPDATE.name(), operation);
-        } else if (operation.nickname.startsWith(ResourceOperation.DELETE.prefix)) {
-            operation.vendorExtensions.put("x-is-delete-operation", true);
-            resource.put(ResourceOperation.DELETE.name(), operation);
-        }
-    }
-
     private void removeNonCrudResources(final Map<String, Map<String, Object>> resources) {
-        // Remove resources that do not have at least create, read and delete operations
-        var resourceOps = EnumSet.complementOf(EnumSet.of(ResourceOperation.UPDATE));
+        // Remove resources that do not have at least create, fetch, and delete operations.
+        var resourceOps = EnumSet.complementOf(EnumSet.of(Operation.UPDATE, Operation.READ));
         resources
             .entrySet()
             .removeIf(resource -> Arrays
@@ -255,7 +223,7 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
     }
 
     private CodegenOperation getCodegenOperation(final Map<String, Object> resource,
-                                                 final ResourceOperation resourceOperation) {
+                                                 final Operation resourceOperation) {
         return (CodegenOperation) resource.get(resourceOperation.name());
     }
 
