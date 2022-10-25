@@ -3,6 +3,7 @@ package com.twilio.oai.resolver.common;
 import com.twilio.oai.common.LanguageDataType;
 import com.twilio.oai.resolver.Resolver;
 import org.openapitools.codegen.CodegenModel;
+import org.openapitools.codegen.CodegenParameter;
 import org.openapitools.codegen.CodegenProperty;
 
 import java.util.HashMap;
@@ -35,7 +36,7 @@ public class CodegenModelResolver implements Resolver<CodegenModel> {
         codegenModelDataTypeResolver.setModelFormatMap(modelFormatMap);
         codegenModelDataTypeResolver.setConventionMap(conventionMap);
         for (CodegenProperty property : model.vars) {
-            if (isContainerType(property)) {
+            if (property.isContainer) {
                 codegenModelContainerDataTypeResolver.resolve(property);
             } else {
                 codegenModelDataTypeResolver.resolve(property);
@@ -43,15 +44,6 @@ public class CodegenModelResolver implements Resolver<CodegenModel> {
         }
 
         return model;
-    }
-
-    private boolean isContainerType(CodegenProperty codegenProperty) {
-        for (LanguageDataType dataType : languageDataTypes) {
-            if (codegenProperty.dataType != null && codegenProperty.dataType.startsWith(dataType.getValue())) {
-                return true;
-            }
-        }
-        return false;
     }
 
     public void setModelFormatMap(Map<String, String> modelFormatMap) {

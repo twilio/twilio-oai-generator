@@ -29,21 +29,12 @@ public class CodegenParameterResolver implements Resolver<CodegenParameter> {
 
         codegenParameterDataTypeResolver.setConventionMap(conventionMap);
 
-        if (isContainerType(parameter)) {
+        if (parameter.isContainer) {
             codegenParameterContainerDataTypeResolver.resolve(parameter);
         } else {
             codegenParameterDataTypeResolver.resolve(parameter);
         }
 
         return parameter;
-    }
-
-    private boolean isContainerType(CodegenParameter parameter) {
-        for (LanguageDataType dataType : languageDataTypes) {
-            if (parameter.dataType != null && parameter.dataType.startsWith(dataType.getValue())) {
-                return true;
-            }
-        }
-        return false;
     }
 }
