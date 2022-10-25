@@ -19,7 +19,7 @@ public class Utility {
             try {
                 JsonNode jsonNode = objectMapper.readTree(item.modelJson);
                 if (jsonNode.get("type").textValue().equals("object") && jsonNode.has("format")) {
-                    modelFormatMap.put(item.classFilename, jsonNode.get("format").textValue());
+                    modelFormatMap.put(item.classname, jsonNode.get("format").textValue());
                 }
             } catch (JsonProcessingException e) {
                 e.printStackTrace();

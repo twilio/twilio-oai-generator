@@ -13,11 +13,17 @@
  */
 
 import { inspect, InspectOptions } from "util";
-import Page from "../../../../base/Page";
-import Response from "../../../../http/response";
 import V1 from "../../V1";
 const deserialize = require("../../../../base/deserialize");
 const serialize = require("../../../../base/serialize");
+
+type TestStatus =
+  | "in-progress"
+  | "paused"
+  | "stopped"
+  | "processing"
+  | "completed"
+  | "absent";
 
 /**
  * Options to pass to create a NewCredentialsInstance
@@ -32,8 +38,8 @@ const serialize = require("../../../../base/serialize");
  * @property { number } [testNumberInt64]
  * @property { object } [testObject]
  * @property { Date } [testDateTime]
- * @property { string } [testDate]
- * @property { TestEnumStatus } [testEnum]
+ * @property { Date } [testDate]
+ * @property { TestStatus } [testEnum]
  * @property { Array<object> } [testObjectArray]
  * @property { any } [testAnyType]
  * @property { Array<string> } [permissions] A comma-separated list of the permissions you will request from the users of this ConnectApp.  Can include: &#x60;get-all&#x60; and &#x60;post-all&#x60;.
@@ -49,8 +55,8 @@ export interface NewCredentialsListInstanceCreateOptions {
   testNumberInt64?: number;
   testObject?: object;
   testDateTime?: Date;
-  testDate?: string;
-  testEnum?: TestEnumStatus;
+  testDate?: Date;
+  testEnum?: TestStatus;
   testObjectArray?: Array<object>;
   testAnyType?: any;
   permissions?: Array<string>;
@@ -174,9 +180,7 @@ export function NewCredentialsListInstance(
   return instance;
 }
 
-interface NewCredentialsPayload
-  extends NewCredentialsResource,
-    Page.TwilioResponsePayload {}
+interface NewCredentialsPayload extends NewCredentialsResource {}
 
 interface NewCredentialsResource {
   account_sid?: string | null;
@@ -213,41 +217,6 @@ export class NewCredentialsInstance {
   }
 
   [inspect.custom](_depth: any, options: InspectOptions) {
-    return inspect(this.toJSON(), options);
-  }
-}
-
-export class NewCredentialsPage extends Page<
-  V1,
-  NewCredentialsPayload,
-  NewCredentialsResource,
-  NewCredentialsInstance
-> {
-  /**
-   * Initialize the NewCredentialsPage
-   *
-   * @param version - Version of the resource
-   * @param response - Response from the API
-   * @param solution - Path solution
-   */
-  constructor(
-    version: V1,
-    response: Response<string>,
-    solution: NewCredentialsSolution
-  ) {
-    super(version, response, solution);
-  }
-
-  /**
-   * Build an instance of NewCredentialsInstance
-   *
-   * @param payload - Payload response from the API
-   */
-  getInstance(payload: NewCredentialsPayload): NewCredentialsInstance {
-    return new NewCredentialsInstance(this._version, payload);
-  }
-
-  [inspect.custom](depth: any, options: InspectOptions) {
     return inspect(this.toJSON(), options);
   }
 }

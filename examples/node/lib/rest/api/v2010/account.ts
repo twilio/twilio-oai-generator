@@ -19,15 +19,36 @@ import V2010 from "../V2010";
 const deserialize = require("../../../base/deserialize");
 const serialize = require("../../../base/serialize");
 import { CallListInstance } from "./account/call";
+import PhoneNumberCapabilities from "../../../interfaces";
+
+type TestStatus =
+  | "in-progress"
+  | "paused"
+  | "stopped"
+  | "processing"
+  | "completed"
+  | "absent";
+
+export class TestResponseObjectTestObject {
+  "fax"?: boolean;
+  "mms"?: boolean;
+  "sms"?: boolean;
+  "voice"?: boolean;
+}
+
+export class TestResponseObjectTestArrayOfObjects {
+  "count"?: number;
+  "description"?: string;
+}
 
 /**
  * Options to pass to update a AccountInstance
  *
- * @property { TestEnumStatus } status
+ * @property { TestStatus } status
  * @property { string } [pauseBehavior]
  */
 export interface AccountContextUpdateOptions {
-  status: TestEnumStatus;
+  status: TestStatus;
   pauseBehavior?: string;
 }
 
@@ -47,7 +68,7 @@ export interface AccountListInstanceCreateOptions {
  * Options to pass to each
  *
  * @property { Date } [dateCreated]
- * @property { string } [dateTest]
+ * @property { Date } [dateTest]
  * @property { Date } [dateCreatedBefore]
  * @property { Date } [dateCreatedAfter]
  * @property { number } [pageSize]
@@ -62,7 +83,7 @@ export interface AccountListInstanceCreateOptions {
  */
 export interface AccountListInstanceEachOptions {
   dateCreated?: Date;
-  dateTest?: string;
+  dateTest?: Date;
   dateCreatedBefore?: Date;
   dateCreatedAfter?: Date;
   pageSize?: number;
@@ -75,7 +96,7 @@ export interface AccountListInstanceEachOptions {
  * Options to pass to list
  *
  * @property { Date } [dateCreated]
- * @property { string } [dateTest]
+ * @property { Date } [dateTest]
  * @property { Date } [dateCreatedBefore]
  * @property { Date } [dateCreatedAfter]
  * @property { number } [pageSize]
@@ -86,7 +107,7 @@ export interface AccountListInstanceEachOptions {
  */
 export interface AccountListInstanceOptions {
   dateCreated?: Date;
-  dateTest?: string;
+  dateTest?: Date;
   dateCreatedBefore?: Date;
   dateCreatedAfter?: Date;
   pageSize?: number;
@@ -97,7 +118,7 @@ export interface AccountListInstanceOptions {
  * Options to pass to page
  *
  * @property { Date } [dateCreated]
- * @property { string } [dateTest]
+ * @property { Date } [dateTest]
  * @property { Date } [dateCreatedBefore]
  * @property { Date } [dateCreatedAfter]
  * @property { number } [pageSize]
@@ -106,7 +127,7 @@ export interface AccountListInstanceOptions {
  */
 export interface AccountListInstancePageOptions {
   dateCreated?: Date;
-  dateTest?: string;
+  dateTest?: Date;
   dateCreatedBefore?: Date;
   dateCreatedAfter?: Date;
   pageSize?: number;
@@ -273,17 +294,17 @@ interface AccountResource {
   sid?: string | null;
   test_string?: string | null;
   test_integer?: number | null;
-  test_object?: object | null;
+  test_object?: PhoneNumberCapabilities | null;
   test_date_time?: string | null;
   test_number?: number | null;
   price_unit?: string | null;
   test_number_float?: number | null;
-  test_enum?: object;
+  test_enum?: TestStatus;
   a2p_profile_bundle_sid?: string | null;
   test_array_of_integers?: Array<number>;
   test_array_of_array_of_integers?: Array<Array<number>>;
-  test_array_of_objects?: Array<object> | null;
-  test_array_of_enum?: Array<object> | null;
+  test_array_of_objects?: Array<TestResponseObjectTestArrayOfObjects> | null;
+  test_array_of_enum?: Array<TestStatus> | null;
 }
 
 export class AccountInstance {
@@ -318,23 +339,23 @@ export class AccountInstance {
   sid?: string | null;
   testString?: string | null;
   testInteger?: number | null;
-  testObject?: object | null;
+  testObject?: PhoneNumberCapabilities | null;
   testDateTime?: string | null;
   testNumber?: number | null;
   priceUnit?: string | null;
   testNumberFloat?: number | null;
-  testEnum?: object;
+  testEnum?: TestStatus;
   /**
    * A2P Messaging Profile Bundle BundleSid
    */
   a2pProfileBundleSid?: string | null;
   testArrayOfIntegers?: Array<number>;
   testArrayOfArrayOfIntegers?: Array<Array<number>>;
-  testArrayOfObjects?: Array<object> | null;
+  testArrayOfObjects?: Array<TestResponseObjectTestArrayOfObjects> | null;
   /**
    * Permissions authorized to the app
    */
-  testArrayOfEnum?: Array<object> | null;
+  testArrayOfEnum?: Array<TestStatus> | null;
 
   private get _proxy(): AccountContext {
     this._context =
@@ -418,41 +439,6 @@ export class AccountInstance {
   }
 
   [inspect.custom](_depth: any, options: InspectOptions) {
-    return inspect(this.toJSON(), options);
-  }
-}
-
-export class AccountPage extends Page<
-  V2010,
-  AccountPayload,
-  AccountResource,
-  AccountInstance
-> {
-  /**
-   * Initialize the AccountPage
-   *
-   * @param version - Version of the resource
-   * @param response - Response from the API
-   * @param solution - Path solution
-   */
-  constructor(
-    version: V2010,
-    response: Response<string>,
-    solution: AccountSolution
-  ) {
-    super(version, response, solution);
-  }
-
-  /**
-   * Build an instance of AccountInstance
-   *
-   * @param payload - Payload response from the API
-   */
-  getInstance(payload: AccountPayload): AccountInstance {
-    return new AccountInstance(this._version, payload, this._solution.sid);
-  }
-
-  [inspect.custom](depth: any, options: InspectOptions) {
     return inspect(this.toJSON(), options);
   }
 }
@@ -759,4 +745,39 @@ export function AccountListInstance(version: V2010): AccountListInstance {
   };
 
   return instance;
+}
+
+export class AccountPage extends Page<
+  V2010,
+  AccountPayload,
+  AccountResource,
+  AccountInstance
+> {
+  /**
+   * Initialize the AccountPage
+   *
+   * @param version - Version of the resource
+   * @param response - Response from the API
+   * @param solution - Path solution
+   */
+  constructor(
+    version: V2010,
+    response: Response<string>,
+    solution: AccountSolution
+  ) {
+    super(version, response, solution);
+  }
+
+  /**
+   * Build an instance of AccountInstance
+   *
+   * @param payload - Payload response from the API
+   */
+  getInstance(payload: AccountPayload): AccountInstance {
+    return new AccountInstance(this._version, payload);
+  }
+
+  [inspect.custom](depth: any, options: InspectOptions) {
+    return inspect(this.toJSON(), options);
+  }
 }

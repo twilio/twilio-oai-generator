@@ -13,12 +13,32 @@
  */
 
 import { inspect, InspectOptions } from "util";
-import Page from "../../../../base/Page";
-import Response from "../../../../http/response";
 import V2010 from "../../V2010";
 const deserialize = require("../../../../base/deserialize");
 const serialize = require("../../../../base/serialize");
 import { FeedbackCallSummaryListInstance } from "./call/feedbackCallSummary";
+
+import PhoneNumberCapabilities from "../../../../interfaces";
+
+type TestStatus =
+  | "in-progress"
+  | "paused"
+  | "stopped"
+  | "processing"
+  | "completed"
+  | "absent";
+
+export class TestResponseObjectTestObject {
+  "fax"?: boolean;
+  "mms"?: boolean;
+  "sms"?: boolean;
+  "voice"?: boolean;
+}
+
+export class TestResponseObjectTestArrayOfObjects {
+  "count"?: number;
+  "description"?: string;
+}
 
 /**
  * Options to pass to create a CallInstance
@@ -265,24 +285,24 @@ export class CallContextImpl implements CallContext {
   }
 }
 
-interface CallPayload extends CallResource, Page.TwilioResponsePayload {}
+interface CallPayload extends CallResource {}
 
 interface CallResource {
   account_sid?: string | null;
   sid?: string | null;
   test_string?: string | null;
   test_integer?: number | null;
-  test_object?: object | null;
+  test_object?: PhoneNumberCapabilities | null;
   test_date_time?: string | null;
   test_number?: number | null;
   price_unit?: string | null;
   test_number_float?: number | null;
-  test_enum?: object;
+  test_enum?: TestStatus;
   a2p_profile_bundle_sid?: string | null;
   test_array_of_integers?: Array<number>;
   test_array_of_array_of_integers?: Array<Array<number>>;
-  test_array_of_objects?: Array<object> | null;
-  test_array_of_enum?: Array<object> | null;
+  test_array_of_objects?: Array<TestResponseObjectTestArrayOfObjects> | null;
+  test_array_of_enum?: Array<TestStatus> | null;
 }
 
 export class CallInstance {
@@ -321,23 +341,23 @@ export class CallInstance {
   sid?: string | null;
   testString?: string | null;
   testInteger?: number | null;
-  testObject?: object | null;
+  testObject?: PhoneNumberCapabilities | null;
   testDateTime?: string | null;
   testNumber?: number | null;
   priceUnit?: string | null;
   testNumberFloat?: number | null;
-  testEnum?: object;
+  testEnum?: TestStatus;
   /**
    * A2P Messaging Profile Bundle BundleSid
    */
   a2pProfileBundleSid?: string | null;
   testArrayOfIntegers?: Array<number>;
   testArrayOfArrayOfIntegers?: Array<Array<number>>;
-  testArrayOfObjects?: Array<object> | null;
+  testArrayOfObjects?: Array<TestResponseObjectTestArrayOfObjects> | null;
   /**
    * Permissions authorized to the app
    */
-  testArrayOfEnum?: Array<object> | null;
+  testArrayOfEnum?: Array<TestStatus> | null;
 
   private get _proxy(): CallContext {
     this._context =
@@ -402,46 +422,6 @@ export class CallInstance {
   }
 
   [inspect.custom](_depth: any, options: InspectOptions) {
-    return inspect(this.toJSON(), options);
-  }
-}
-
-export class CallPage extends Page<
-  V2010,
-  CallPayload,
-  CallResource,
-  CallInstance
-> {
-  /**
-   * Initialize the CallPage
-   *
-   * @param version - Version of the resource
-   * @param response - Response from the API
-   * @param solution - Path solution
-   */
-  constructor(
-    version: V2010,
-    response: Response<string>,
-    solution: CallSolution
-  ) {
-    super(version, response, solution);
-  }
-
-  /**
-   * Build an instance of CallInstance
-   *
-   * @param payload - Payload response from the API
-   */
-  getInstance(payload: CallPayload): CallInstance {
-    return new CallInstance(
-      this._version,
-      payload,
-      this._solution.accountSid,
-      this._solution.testInteger
-    );
-  }
-
-  [inspect.custom](depth: any, options: InspectOptions) {
     return inspect(this.toJSON(), options);
   }
 }
