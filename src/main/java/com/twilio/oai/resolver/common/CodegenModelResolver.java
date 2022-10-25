@@ -13,18 +13,15 @@ public class CodegenModelResolver implements Resolver<CodegenModel> {
 
     private Map<String, Map<String, Object>> conventionMap;
     private List<? extends LanguageDataType> languageDataTypes;
-    private String className;
     private Map<String, String> modelFormatMap = new HashMap<>();
     private CodegenModelDataTypeResolver codegenModelDataTypeResolver;
     private CodegenModelContainerDataTypeResolver codegenModelContainerDataTypeResolver;
 
     public CodegenModelResolver(Map<String, Map<String, Object>> conventionMap,
-                                List<? extends LanguageDataType> languageDataTypes,
-                                String listStart,
-                                String listEnd) {
+                                List<? extends LanguageDataType> languageDataTypes) {
         this.conventionMap = conventionMap;
         this.languageDataTypes = languageDataTypes;
-        codegenModelDataTypeResolver = new CodegenModelDataTypeResolver(listStart, listEnd);
+        codegenModelDataTypeResolver = new CodegenModelDataTypeResolver(=);
         codegenModelContainerDataTypeResolver = new CodegenModelContainerDataTypeResolver(codegenModelDataTypeResolver,
                 languageDataTypes);
     }
@@ -35,10 +32,9 @@ public class CodegenModelResolver implements Resolver<CodegenModel> {
             return null;
         }
 
+        codegenModelDataTypeResolver.setModelFormatMap(modelFormatMap);
+        codegenModelDataTypeResolver.setConventionMap(conventionMap);
         for (CodegenProperty property : model.vars) {
-            codegenModelDataTypeResolver.setModelFormatMap(modelFormatMap);
-            codegenModelDataTypeResolver.setConventionMap(conventionMap);
-
             if (isContainerType(property)) {
                 codegenModelContainerDataTypeResolver.resolve(property);
             } else {
@@ -56,10 +52,6 @@ public class CodegenModelResolver implements Resolver<CodegenModel> {
             }
         }
         return false;
-    }
-
-    public void setClassName(String className) {
-        this.className = className;
     }
 
     public void setModelFormatMap(Map<String, String> modelFormatMap) {

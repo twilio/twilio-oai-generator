@@ -32,9 +32,7 @@ public class JavaConventionResolver {
     public JavaConventionResolver(Map<String, Map<String, Object>> conventionMap) {
         this.conventionMap = conventionMap;
         codegenModelResolver = new CodegenModelResolver(conventionMap,
-                Arrays.asList(EnumConstants.JavaDataTypes.values()),
-                EnumConstants.JavaDataTypes.LIST.getValue(),
-                ApplicationConstants.LIST_END);
+                Arrays.asList(EnumConstants.JavaDataTypes.values()));
         codegenParameterResolver = new CodegenParameterResolver(conventionMap,
                 Arrays.asList(EnumConstants.JavaDataTypes.values()));
     }

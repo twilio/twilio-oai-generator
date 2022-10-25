@@ -1,8 +1,6 @@
 package com.twilio.oai;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
 
@@ -49,7 +47,7 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
         new JavaCaseResolver());
     private final List<CodegenModel> allModels = new ArrayList<>();
     private final Map<String, String> modelFormatMap = new HashMap<>();
-    private final JavaConventionResolver conventionResolver = new JavaConventionResolver(getConventionalMap());
+    private final JavaConventionResolver conventionResolver = new JavaConventionResolver(getConventionMap());
 
     public TwilioJavaGenerator() {
         super();
@@ -328,7 +326,7 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
         return results;
     }
 
-    private Map<String, Map<String, Object>> getConventionalMap() {
+    private Map<String, Map<String, Object>> getConventionMap() {
         try {
             return new ObjectMapper().readValue(Thread.currentThread().getContextClassLoader().getResourceAsStream(ApplicationConstants.CONFIG_JAVA_JSON_PATH), new TypeReference<Map<String, Map<String, Object>>>(){});
         } catch (Exception e) {

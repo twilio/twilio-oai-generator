@@ -11,13 +11,8 @@ public class CodegenModelComplexResolver implements Resolver<CodegenProperty> {
 
     private Map<String, Map<String, Object>> conventionMap;
     private Map<String, String> modelFormatMap = new HashMap<>();
-    private String listStart;
-    private String listEnd;
 
-    public CodegenModelComplexResolver(final String listStart, final String listEnd) {
-        this.listStart = listStart;
-        this.listEnd = listEnd;
-    }
+    public CodegenModelComplexResolver() {}
 
     public CodegenProperty resolve(CodegenProperty property){
         if (this.modelFormatMap.isEmpty()) {
@@ -35,7 +30,7 @@ public class CodegenModelComplexResolver implements Resolver<CodegenProperty> {
         return property;
     }
 
-    public void setConventionalMap(Map<String, Map<String, Object>> conventionMap) {
+    public void setConventionMap(Map<String, Map<String, Object>> conventionMap) {
         this.conventionMap = conventionMap;
     }
 

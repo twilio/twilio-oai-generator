@@ -16,8 +16,8 @@ public class CodegenModelDataTypeResolver implements Resolver<CodegenProperty> {
     private CodegenModelComplexResolver codegenModelComplexResolver;
     private  Map<String, String> modelFormatMap = new HashMap<>();
 
-    public CodegenModelDataTypeResolver(final String listStart, final String listEnd) {
-        codegenModelComplexResolver = new CodegenModelComplexResolver(listStart, listEnd);
+    public CodegenModelDataTypeResolver() {
+        codegenModelComplexResolver = new CodegenModelComplexResolver();
     }
 
     public CodegenProperty resolve(CodegenProperty property) {
@@ -27,7 +27,7 @@ public class CodegenModelDataTypeResolver implements Resolver<CodegenProperty> {
 
         if (property.complexType != null && modelFormatMap.containsKey(property.complexType)) {
             codegenModelComplexResolver.setModelFormatMap(modelFormatMap);
-            codegenModelComplexResolver.setConventionalMap(conventionMap);
+            codegenModelComplexResolver.setConventionMap(conventionMap);
             codegenModelComplexResolver.resolve(property);
         }
 
