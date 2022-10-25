@@ -21,7 +21,7 @@ public class CodegenModelResolver implements Resolver<CodegenModel> {
                                 List<? extends LanguageDataType> languageDataTypes) {
         this.conventionMap = conventionMap;
         this.languageDataTypes = languageDataTypes;
-        codegenModelDataTypeResolver = new CodegenModelDataTypeResolver(=);
+        codegenModelDataTypeResolver = new CodegenModelDataTypeResolver();
         codegenModelContainerDataTypeResolver = new CodegenModelContainerDataTypeResolver(codegenModelDataTypeResolver,
                 languageDataTypes);
     }
