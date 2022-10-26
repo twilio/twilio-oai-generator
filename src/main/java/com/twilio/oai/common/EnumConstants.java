@@ -31,8 +31,24 @@ public class EnumConstants {
 
     @Getter
     @RequiredArgsConstructor
-    public enum CsharpDataTypes {
+    public enum CsharpDataTypes implements LanguageDataType {
         LIST("List<");
+
+        private final String value;
+    }
+
+    @Getter
+    @RequiredArgsConstructor
+    public enum JavaDataTypes implements LanguageDataType {
+        LIST("List<");
+
+        private final String value;
+    }
+
+    @Getter
+    @RequiredArgsConstructor
+    public enum NodeDataTypes implements LanguageDataType {
+        LIST("Array<");
 
         private final String value;
     }
