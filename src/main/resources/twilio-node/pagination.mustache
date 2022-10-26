@@ -1,5 +1,5 @@
 {{#operations}}
-{{#vendorExtensions.x-is-list-operation}}
+{{#vendorExtensions.x-is-read-operation}}
 export class {{name}}Page extends Page<{{apiVersionClass}}, {{name}}Payload, {{name}}Resource, {{name}}Instance> {
 /**
 * Initialize the {{name}}Page
@@ -31,5 +31,5 @@ constructor(version: {{apiVersionClass}}, response: Response<string>, solution: 
     return inspect(this.toJSON(), options);
     }
     }
-{{/vendorExtensions.x-is-list-operation}}
+{{/vendorExtensions.x-is-read-operation}}
 {{/operations}}

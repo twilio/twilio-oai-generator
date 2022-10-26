@@ -23,12 +23,11 @@ import org.openapitools.codegen.model.ModelMap;
 import org.openapitools.codegen.model.ModelsMap;
 import org.openapitools.codegen.model.OperationsMap;
 
-import static com.twilio.oai.common.ApplicationConstants.LIST_INSTANCE;
 import static com.twilio.oai.common.ApplicationConstants.PATH_SEPARATOR_PLACEHOLDER;
+import static com.twilio.oai.resource.Resource.IGNORE_EXTENSION_NAME;
 
 public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
 
-    public static final String IGNORE_EXTENSION_NAME = "x-ignore";
     public static final String VERSION_TEMPLATE = "version.mustache";
     public static final String FILENAME_EXTENSION = ".ts";
 
@@ -155,7 +154,6 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
             } else if (co.nickname.startsWith("delete")) {
                 addOperationName(co, "Remove");
                 co.returnType = "boolean";
-                co.vendorExtensions.put("x-is-delete-operation", true);
             } else if (co.nickname.startsWith("create")) {
                 addOperationName(co, "Create");
             } else if (co.nickname.startsWith("fetch")) {
@@ -163,7 +161,6 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
             } else if (co.nickname.startsWith("list")){
                 hasPaginationOperation = true;
                 co.returnType = itemName + "Page";
-                co.vendorExtensions.put("x-is-list-operation", true);
                 addOperationName(co, "Page");
             }
 
@@ -183,6 +180,7 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
             resource.put("instanceName", instanceName);
 
             updateResourcePath(resource, co);
+            twilioCodegen.populateCrudOperations(resource, co);
 
             co.allParams.forEach(param -> param.dataType = resolveModelDataType(param, param.dataType, models));
             co.allParams.removeAll(co.pathParams);
