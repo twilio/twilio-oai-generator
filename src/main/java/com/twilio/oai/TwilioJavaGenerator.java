@@ -13,7 +13,6 @@ import com.twilio.oai.resolver.java.JavaConventionResolver;
 import com.twilio.oai.resource.ResourceMap;
 
 import io.swagger.v3.oas.models.OpenAPI;
-import lombok.AllArgsConstructor;
 import org.openapitools.codegen.*;
 import org.openapitools.codegen.languages.JavaClientCodegen;
 import org.openapitools.codegen.model.ModelMap;
@@ -220,7 +219,9 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
 
         final Map<String, Map<String, Object>> resources = new LinkedHashMap<>();
 
-        String recordKey = getRecordKey(opList, this.allModels);
+        final String recordKey = getRecordKey(opList, this.allModels);
+        results.put("recordKey", recordKey);
+
         List<CodegenModel> responseModels = new ArrayList<>();
         apiTemplateFiles.remove("updater.mustache");
         apiTemplateFiles.remove("creator.mustache");
@@ -236,40 +237,34 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
             List<String> filePathArray = new ArrayList<>(Arrays.asList(co.baseName.split(PATH_SEPARATOR_PLACEHOLDER)));
             String resourceName = filePathArray.remove(filePathArray.size()-1);
             final Map<String, Object> resource = resources.computeIfAbsent(resourceName, k -> new LinkedHashMap<>());
-            populateCrudOperations(resource, co);
+            twilioCodegen.populateCrudOperations(resource, co);
             updateCodeOperationParams(co, resourceName);
             if (co.nickname.startsWith("update")) {
                 resource.put("hasUpdate", true);
                 addOperationName(co, "Update");
-                co.vendorExtensions.put("x-is-update-operation", true);
                 resource.put("signatureListUpdate", generateSignatureList(co));
                 apiTemplateFiles.put("updater.mustache", "Updater.java");
             } else if (co.nickname.startsWith("delete")) {
                 resource.put("hasDelete", true);
                 addOperationName(co, "Remove");
-                co.vendorExtensions.put("x-is-delete-operation", true);
                 resource.put("signatureListDelete", generateSignatureList(co));
                 apiTemplateFiles.put("deleter.mustache", "Deleter.java");
                 addDeleteHeaderEnums(co, responseModels);
             } else if (co.nickname.startsWith("create")) {
                 resource.put("hasCreate", true);
-                co.vendorExtensions.put("x-is-create-operation", true);
                 addOperationName(co, "Create");
                 resource.put("signatureListCreate", generateSignatureList(co));
                 apiTemplateFiles.put("creator.mustache", "Creator.java");
             } else if (co.nickname.startsWith("fetch")) {
                 resource.put("hasFetch", true);
                 resource.put("signatureListFetch", generateSignatureList(co));
-                co.vendorExtensions.put("x-is-fetch-operation", true);
                 addOperationName(co, "Fetch");
                 apiTemplateFiles.put("fetcher.mustache", "Fetcher.java");
             } else {
                 resource.put("hasRead", true);
-                co.vendorExtensions.put("x-is-read-operation", true);
                 addOperationName(co, "Page");
                 resource.put("signatureListRead", generateSignatureList(co));
                 apiTemplateFiles.put("reader.mustache", "Reader.java");
-
             }
 
             final ArrayList<CodegenOperation> resourceOperationList =
@@ -304,8 +299,6 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
                   CodegenModel responseModel = processEnumVarsForAll(model, co, resourceName);
                   responseModels.add(responseModel);
               });
-
-            results.put("recordKey", getRecordKey(opList, this.allModels));
 
             if (!filePathArray.isEmpty()) {
                 final String packagePath = filePathArray
@@ -499,16 +492,6 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
         return recordKey;
     }
 
-    @AllArgsConstructor
-    private enum Operation {
-        CREATE("create"),
-        FETCH("fetch"),
-        UPDATE("update"),
-        DELETE("delete");
-
-        private final String prefix;
-    }
-
     /**
      * keep track of signature list that would contain different combinations of signatures for constructor generation (since Account sid is optional, so different constructor are needed)
      */
@@ -558,22 +541,6 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
 
     private <T> List<T> addAllToList(List<T> ... list) {
         return Arrays.stream(list).flatMap(List<T>::stream).collect(Collectors.toList());
-    }
-
-    private void populateCrudOperations(final Map<String, Object> resource, final CodegenOperation operation) {
-        if (operation.nickname.startsWith(Operation.CREATE.prefix)) {
-            operation.vendorExtensions.put("x-is-create-operation", true);
-            resource.put(Operation.CREATE.name(), operation);
-        } else if (operation.nickname.startsWith(Operation.FETCH.prefix)) {
-            operation.vendorExtensions.put("x-is-fetch-operation", true);
-            resource.put(Operation.FETCH.name(), operation);
-        } else if (operation.nickname.startsWith(Operation.UPDATE.prefix)) {
-            operation.vendorExtensions.put("x-is-update-operation", true);
-            resource.put(Operation.UPDATE.name(), operation);
-        } else if (operation.nickname.startsWith(Operation.DELETE.prefix)) {
-            operation.vendorExtensions.put("x-is-delete-operation", true);
-            resource.put(Operation.DELETE.name(), operation);
-        }
     }
 
     private void addModel(final Map<String, Object> resource, final String dataType) {

@@ -24,7 +24,7 @@ public abstract class AbstractTwilioGoGenerator extends GoClientCodegen {
 
     public static final String VENDOR_EXTENSION_ACCOUNT_SID = "x-is-account-sid";
 
-    private final TwilioCodegenAdapter twilioCodegen;
+    protected final TwilioCodegenAdapter twilioCodegen;
 
     protected AbstractTwilioGoGenerator() {
         super();
