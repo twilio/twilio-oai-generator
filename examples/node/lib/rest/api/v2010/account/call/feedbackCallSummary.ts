@@ -171,7 +171,7 @@ export class FeedbackCallSummaryContextImpl
       operationPromise = operationVersion.update({
         uri: this._uri,
         method: "post",
-        params: data,
+        data,
         headers,
       });
 
