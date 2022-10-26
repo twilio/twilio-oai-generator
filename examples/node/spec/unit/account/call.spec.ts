@@ -13,8 +13,7 @@ describe("call", () => {
 
   it("should create a call", () => {
     const scope = nock("http://api.twilio.com")
-      .post("/2010-04-01/Accounts/123/Calls.json")
-      .query({
+      .post("/2010-04-01/Accounts/123/Calls.json", {
         RequiredStringProperty: "radda radda",
       })
       .reply(201, {
@@ -59,8 +58,7 @@ describe("call", () => {
 
   it("should create a feedback summary", () => {
     const scope = nock("http://api.twilio.com")
-      .post("/2010-04-01/Accounts/123/Calls/Feedback/Summary/456.json")
-      .query({
+      .post("/2010-04-01/Accounts/123/Calls/Feedback/Summary/456.json", {
         EndDate: "2022-08-01",
         StartDate: "2022-08-01",
       })

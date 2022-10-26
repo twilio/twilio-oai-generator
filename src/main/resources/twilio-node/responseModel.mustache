@@ -62,7 +62,6 @@ export class {{name}}Instance {
     return this._proxy.{{vendorExtensions.x-name-lower}}({{#hasParams}}params, {{/hasParams}}callback);
   }
   {{/operations}}
-  {{/parentResourceName}}
   {{#dependents}}
 
   /**
@@ -72,6 +71,7 @@ export class {{name}}Instance {
     return this._proxy.{{mountName}};
   }
   {{/dependents}}
+  {{/parentResourceName}}
 
   /**
    * Provide a user-friendly representation

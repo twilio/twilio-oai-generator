@@ -257,7 +257,7 @@ export class AccountContextImpl implements AccountContext {
       operationPromise = operationVersion.update({
         uri: this._uri,
         method: "post",
-        params: data,
+        data,
         headers,
       });
 
@@ -649,7 +649,7 @@ export function AccountListInstance(version: V2010): AccountListInstance {
       operationPromise = operationVersion.create({
         uri: this._uri,
         method: "post",
-        params: data,
+        data,
         headers,
       });
 
