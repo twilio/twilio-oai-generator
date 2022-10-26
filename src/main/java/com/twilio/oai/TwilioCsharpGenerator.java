@@ -2,7 +2,6 @@ package com.twilio.oai;
 
 import com.twilio.oai.common.ApplicationConstants;
 import com.twilio.oai.common.EnumConstants;
-import com.twilio.oai.common.ReservedKeyword;
 import com.twilio.oai.common.Serializer;
 import com.twilio.oai.common.Utility;
 import com.twilio.oai.mlambdas.TitleCaseLambda;
@@ -111,17 +110,20 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
         final Map<String, Map<String, Object>> resources = new LinkedHashMap<>();
         final List<CodegenModel> responseModels = new ArrayList<>();
 
+        final String recordKey = getRecordKey(opList, this.allModels);
+        results.put("recordKey", recordKey);
+
         final Map<String, IJsonSchemaValidationProperties> enums = new HashMap<>();
         resolver.setEnums(enums);
 
         for (final CodegenOperation co : opList) {
-            String path = co.path;
             String[] filePathArray = co.baseName.split(ApplicationConstants.PATH_SEPARATOR_PLACEHOLDER);
             String resourceName = filePathArray[filePathArray.length - 1];
             resolver.setClassName(resourceName);
             Map<String, Object> resource = resources.computeIfAbsent(resourceName, k -> new LinkedHashMap<>());
-            populateCrudOperations(co);
-            resolveCodeOperationParams(co, opList, results, responseModels);
+
+            twilioCodegen.populateCrudOperations(resource, co);
+            resolveCodeOperationParams(co, recordKey, responseModels);
 
             // Add operations key to resource
             final ArrayList<CodegenOperation> resourceOperationList = (ArrayList<CodegenOperation>) resource.computeIfAbsent("operations", k -> new ArrayList<>());
@@ -137,7 +139,7 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
 
             // Remove PageSize from optionalParams
             co.optionalParams = co.optionalParams.stream().filter(parameter -> !parameter.paramName.equals("PageSize")).collect(Collectors.toList());
-            resource.put("path", path);
+            resource.put("path", co.path);
             resource.put("resourceName", resourceName);
             resource.put("resourceConstant", "Resource");
             handleImports(resource, enums, arrayParamsPresent);
@@ -290,11 +292,9 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
         for (CodegenModel codegenModel: responseModels) {
             for (CodegenProperty property: codegenModel.vars) {
                 property.nameInCamelCase = StringHelper.camelize(property.nameInSnakeCase);
-                ReservedKeyword.Csharp[] reservedKeyWords = ReservedKeyword.Csharp.values();
-                Optional<ReservedKeyword.Csharp> result = Arrays.stream(reservedKeyWords)
-                        .filter(value -> value.getValue().equals(property.nameInCamelCase))
-                        .findAny();
-                if (result.isPresent()) {
+                if (Arrays
+                    .stream(EnumConstants.Operation.values())
+                    .anyMatch(value -> value.getValue().equals(property.nameInCamelCase))) {
                     property.nameInCamelCase = "_" + property.nameInCamelCase;
                 }
                 distinctResponseModels.add(property);
@@ -310,7 +310,7 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
         }
     }
 
-    private void resolveCodeOperationParams(final CodegenOperation co, List<CodegenOperation> opList, OperationsMap results, List<CodegenModel> responseModels) {
+    private void resolveCodeOperationParams(final CodegenOperation co, final String recordKey, List<CodegenModel> responseModels) {
         resolver.resolve(co.pathParams);
         resolver.resolve(co.queryParams);
         resolver.resolve(co.optionalParams);
@@ -323,7 +323,6 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
             co.vendorExtensions.put("x-required-param-exist", true);
         }
 
-        String recordKey = getRecordKey(opList, this.allModels);
         co.vendorExtensions.put("x-non-path-params", getNonPathParams(co.allParams));
 
         // Used in GetHeaderParams
@@ -344,8 +343,6 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
             resolver.resolve(responseModel.get());
             responseModels.add(responseModel.get()); // Check for DeleteCall (delete operation)
         }
-
-        results.put("recordKey", recordKey);
     }
 
     // Sanitizing URL path similar to java codegen.
@@ -393,30 +390,6 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
             }
         }
         return recordKey;
-    }
-
-    private void populateCrudOperations(final CodegenOperation operation) {
-        String summary;
-        if (operation.nickname.startsWith(EnumConstants.Operation.CREATE.getValue())) {
-            operation.vendorExtensions.put("x-is-create-operation", true);
-            summary = "create";
-        } else if (operation.nickname.startsWith(EnumConstants.Operation.FETCH.getValue())) {
-            operation.vendorExtensions.put("x-is-fetch-operation", true);
-            summary = "fetch";
-        } else if (operation.nickname.startsWith(EnumConstants.Operation.UPDATE.getValue())) {
-            operation.vendorExtensions.put("x-is-update-operation", true);
-            summary = "update";
-        } else if (operation.nickname.startsWith(EnumConstants.Operation.DELETE.getValue())) {
-            operation.vendorExtensions.put("x-is-delete-operation", true);
-            summary = "delete";
-        } else {
-            operation.vendorExtensions.put("x-is-read-operation", true);
-            summary = "read";
-        }
-        if (operation.notes != null && !operation.notes.isEmpty()) {
-            summary = operation.notes;
-        }
-        operation.vendorExtensions.put("x-generate-comment", summary);
     }
 
     @Override

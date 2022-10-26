@@ -3,6 +3,8 @@ package com.twilio.oai;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
@@ -79,9 +81,7 @@ public class TwilioGoGenerator extends AbstractTwilioGoGenerator {
             property.isEnum = property.dataFormat == null;
             property.isNullable = true;
         }
-
     }
-
 
     private void processEnumParameters(final CodegenParameter parameter) {
         if (parameter.dataType.startsWith("[]") && parameter.dataType.contains("Enum")) {
@@ -99,42 +99,38 @@ public class TwilioGoGenerator extends AbstractTwilioGoGenerator {
         }
     }
 
-
-    @SuppressWarnings("unchecked")
     @Override
     public OperationsMap postProcessOperationsWithModels(final OperationsMap objs, List<ModelMap> allModels) {
         final OperationsMap results = super.postProcessOperationsWithModels(objs, allModels);
         final OperationMap ops = results.getOperations();
         final List<CodegenOperation> opList = ops.getOperation();
+
+        final Map<String, CodegenModel> models = allModels
+            .stream()
+            .map(m -> m.get("model"))
+            .map(CodegenModel.class::cast)
+            .collect(Collectors.toMap(CodegenModel::getName, Function.identity()));
+
+        // get the model for the return type
+        final Optional<CodegenModel> returnModel = opList
+            .stream()
+            .filter(op -> models.containsKey(op.returnType))
+            .map(op -> models.get(op.returnType))
+            .findFirst();
+
         for (final CodegenOperation co : opList) {
+            twilioCodegen.populateCrudOperations(new HashMap<>(), co);
+
             if (co.nickname.startsWith("List")) {
                 // make sure the format matches the other methods
                 co.vendorExtensions.put("x-domain-name", co.nickname.replaceFirst("List", ""));
-                co.vendorExtensions.put("x-is-list-operation", true);
-
-                Map<String, CodegenModel> models = new HashMap<>();
-
-                // get all models for the operation
-                allModels
-                        .forEach(m -> {
-                            CodegenModel model = (CodegenModel) ((Map<String, Object>) m).get("model");
-                            models.put(model.name, model);
-                        });
-
-                CodegenModel returnModel = null;
-                // get the model for the return type
-                for (CodegenOperation op : opList) {
-                    if (models.containsKey(op.returnType)) {
-                        returnModel = models.get(op.returnType);
-                    }
-                }
 
                 // filter the fields in the model and get only the array typed field. Also, make sure there is only one field of type list/array
-                if (returnModel != null) {
-                    CodegenProperty field = returnModel.allVars
-                            .stream()
-                            .filter(v -> v.dataType.startsWith("[]"))
-                            .collect(toSingleton());
+                if (returnModel.isPresent()) {
+                    CodegenProperty field = returnModel.get().allVars
+                        .stream()
+                        .filter(v -> v.dataType.startsWith("[]"))
+                        .collect(toSingleton());
 
                     co.returnContainer = co.returnType;
                     co.returnType = field.dataType;
