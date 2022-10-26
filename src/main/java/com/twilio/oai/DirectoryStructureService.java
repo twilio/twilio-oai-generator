@@ -47,10 +47,12 @@ public class DirectoryStructureService {
     @Builder
     public static class DependentResource {
         private String version;
-        private String name;
+        private String type;
+        private String className;
         private String importName;
         private String mountName;
         private String filename;
+        private String param;
     }
 
     public void configure(final OpenAPI openAPI) {
@@ -99,7 +101,8 @@ public class DirectoryStructureService {
         final Resource.Aliases resourceAliases = getResourceAliases(path, operation);
         final DependentResource dependent = new DependentResource.DependentResourceBuilder()
             .version(PathUtils.getFirstPathPart(path))
-            .name(resourceAliases.getClassName() + LIST_INSTANCE)
+            .type(resourceAliases.getClassName() + LIST_INSTANCE)
+            .className(resourceAliases.getClassName() + LIST_INSTANCE)
             .importName(resourceAliases.getClassName() + LIST_INSTANCE)
             .mountName(caseResolver.pathOperation(resourceAliases.getMountName()))
             .filename(caseResolver.filenameOperation(resourceAliases.getClassName()))
@@ -146,6 +149,18 @@ public class DirectoryStructureService {
             .filter(resource -> resource.getVersion().equals(version))
             .collect(Collectors.toList());
         additionalProperties.put(VERSION_RESOURCES, versionResources);
+
+        if (additionalProperties.get("apiVersion").equals("v2010")) {
+            final String name = "Account";
+            versionResources.add(new DependentResource.DependentResourceBuilder()
+                                     .type(name + "Context")
+                                     .className(name + LIST_INSTANCE)
+                                     .importName(name + "Context")
+                                     .mountName(caseResolver.pathOperation(name))
+                                     .filename(caseResolver.filenameOperation(name))
+                                     .param(caseResolver.pathOperation(name + "Sid"))
+                                     .build());
+        }
 
         return operations;
     }

@@ -198,16 +198,16 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
                     .getPathItem()
                     .readOperations()
                     .forEach(operation -> directoryStructureService.addDependent(dependentMap,
-                                                                                 dependent.getName(),
-                                                                                 operation)));
+                                                                                 dependent.getName(), operation)));
             dependentMap
                 .values()
                 .stream()
                 .map(DirectoryStructureService.DependentResource.class::cast)
                 .forEach(dependent -> {
-                    if (dependent.getName().equals(instanceName)) {
-                        dependent.setName(instanceName + "Import");
-                        dependent.setImportName(instanceName + " as " + dependent.getName());
+                    if (dependent.getType().equals(instanceName)) {
+                        dependent.setType(instanceName + "Import");
+                        dependent.setClassName(instanceName + "Import");
+                        dependent.setImportName(instanceName + " as " + dependent.getType());
                     }
                 });
 
