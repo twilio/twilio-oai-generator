@@ -243,7 +243,7 @@ export function FleetListInstance(version: DeployedDevices): FleetListInstance {
       operationPromise = operationVersion.create({
         uri: this._uri,
         method: "post",
-        params: data,
+        data,
         headers,
       });
 

@@ -22,8 +22,7 @@ describe("credential", () => {
 
   it("should create new aws credentials", () => {
     const scope = nock("http://flex-api.twilio.com")
-      .post("/v1/Credentials/AWS")
-      .query({
+      .post("/v1/Credentials/AWS", {
         TestString: "testing!!!",
         TestEnum: "completed",
       })

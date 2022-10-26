@@ -44,8 +44,8 @@ describe("Integration tests", () => {
 
   it("should update call feedback summary", async () => {
     const params: FeedbackCallSummaryContextUpdateOptions = {
-      endDate: "strDate",
-      startDate: "strDate",
+      endDate: "2020-12-31",
+      startDate: "2020-01-01",
     };
     const result = await client.api.v2010
       .accounts(accountSid)

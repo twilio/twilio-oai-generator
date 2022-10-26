@@ -99,7 +99,7 @@ export function AssistantListInstance(
       operationPromise = operationVersion.create({
         uri: this._uri,
         method: "post",
-        params: data,
+        data,
         headers,
       });
 

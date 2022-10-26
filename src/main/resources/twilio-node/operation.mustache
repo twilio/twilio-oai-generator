@@ -22,7 +22,6 @@
     }
 
   {{/hasRequiredParams}}
-  {{^bodyParam}}
     const data: any = {};
 
     {{#queryParams}}
@@ -45,7 +44,6 @@
     if (params.page !== undefined) data['Page'] = params.pageNumber;
     if (params.pageToken !== undefined) data['PageToken'] = params.pageToken;
     {{/vendorExtensions.x-is-read-operation}}
-    {{/bodyParam}}
 
     const headers: any = {};
     {{#consumes}}
@@ -59,7 +57,7 @@
     {{/hasParams}}
 
     let operationVersion = {{#parentResourceName}}this._version{{/parentResourceName}}{{^parentResourceName}}version{{/parentResourceName}},
-        operationPromise = operationVersion.{{vendorExtensions.x-name-lower}}({ uri: this._uri, method: '{{httpMethod}}'{{#hasParams}}{{#bodyParam}}, body: params{{/bodyParam}}{{^bodyParam}}, params: data{{/bodyParam}}, headers{{/hasParams}} });
+        operationPromise = operationVersion.{{vendorExtensions.x-name-lower}}({ uri: this._uri, method: '{{httpMethod}}'{{#hasParams}}, {{^isBodyAllowed}}params: {{/isBodyAllowed}}data, headers{{/hasParams}} });
     {{^vendorExtensions.x-is-read-operation}}{{^vendorExtensions.x-is-delete-operation}}
     operationPromise = operationPromise.then(payload => new {{instanceName}}(operationVersion, payload{{#resourcePathParams}}, this._solution.{{paramName}}{{/resourcePathParams}}));
     {{/vendorExtensions.x-is-delete-operation}}{{/vendorExtensions.x-is-read-operation}}

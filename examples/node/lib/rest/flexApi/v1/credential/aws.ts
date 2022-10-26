@@ -197,7 +197,7 @@ export class AWSContextImpl implements AWSContext {
       operationPromise = operationVersion.update({
         uri: this._uri,
         method: "post",
-        params: data,
+        data,
         headers,
       });
 

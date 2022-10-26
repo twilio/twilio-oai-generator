@@ -38,8 +38,7 @@ describe("account", () => {
 
   it("should update an account", () => {
     const scope = nock("http://api.twilio.com")
-      .post("/2010-04-01/Accounts/123.json")
-      .query({
+      .post("/2010-04-01/Accounts/123.json", {
         Status: "stopped",
       })
       .reply(200, { account_sid: "123", status: "stopped" });
