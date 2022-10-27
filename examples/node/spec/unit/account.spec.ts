@@ -25,6 +25,21 @@ describe("account", () => {
       .then(() => scope.done());
   });
 
+  // On-hold until RC base changes made.
+  xit("should have an account shortcut", () => {
+    const scope = nock("http://api.twilio.com")
+      .post(`/2010-04-01/Accounts/${accountSid}/Calls.json`, {
+        RequiredStringProperty: "phone home",
+      })
+      .reply(201, { sid: "123" });
+
+    return twilio.api.v2010.account.calls
+      .create({
+        requiredStringProperty: "phone home",
+      })
+      .then(() => scope.done());
+  });
+
   it("should fetch an account", () => {
     const scope = nock("http://api.twilio.com")
       .get("/2010-04-01/Accounts/123.json")
