@@ -47,7 +47,7 @@ export interface {{resourceName}} {
   {{/instanceResource}}
 
   {{#dependents}}
-  {{mountName}}: {{name}};
+  {{mountName}}: {{type}};
   {{/dependents}}
 
 {{#operations}}
@@ -73,7 +73,7 @@ export class {{resourceName}}Impl implements {{resourceName}} {
   protected _uri: string;
 
   {{#dependents}}
-  protected _{{mountName}}?: {{name}};
+  protected _{{mountName}}?: {{type}};
   {{/dependents}}
 
   constructor(protected _version: {{apiVersionClass}}{{#resourcePathParams}}, {{paramName}}: {{{dataType}}}{{/resourcePathParams}}) {
@@ -82,8 +82,8 @@ export class {{resourceName}}Impl implements {{resourceName}} {
   }
 
   {{#dependents}}
-  get {{mountName}}(): {{name}} {
-    this._{{mountName}} = this._{{mountName}} || {{name}}(this._version{{#resourcePathParams}}, this._solution.{{paramName}}{{/resourcePathParams}});
+  get {{mountName}}(): {{type}} {
+    this._{{mountName}} = this._{{mountName}} || {{className}}(this._version{{#resourcePathParams}}, this._solution.{{paramName}}{{/resourcePathParams}});
     return this._{{mountName}};
   }
 
@@ -122,7 +122,7 @@ class {{resourceName}}Impl implements {{resourceName}} {
   _uri?: string;
 
   {{#dependents}}
-  _{{mountName}}?: {{name}};
+  _{{mountName}}?: {{type}};
   {{/dependents}}
 }
 
@@ -146,7 +146,7 @@ export function {{resourceName}}(version: {{apiVersionClass}}{{#resourcePathPara
   Object.defineProperty(instance, "{{mountName}}", {
     get: function {{mountName}}() {
       if (!this._{{mountName}}) {
-        this._{{mountName}} = {{name}}(this._version{{#resourcePathParams}}, this._solution.{{paramName}}{{/resourcePathParams}});
+        this._{{mountName}} = {{className}}(this._version{{#resourcePathParams}}, this._solution.{{paramName}}{{/resourcePathParams}});
       }
       return this._{{mountName}};
     }
