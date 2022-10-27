@@ -45,26 +45,11 @@ public class ResourceMap implements IResourceTree {
      */
     @Override
     public List<Resource> dependents(final String name) {
-        // First get a list of all the descendants.
-        final List<Resource> descendants = urlResourceMap
+        return urlResourceMap
             .values()
             .stream()
-            .filter(resource -> isDescendent(name, resource.getName()))
+            .filter(resource -> name.equals(resource.getParentResource(this).map(Resource::getName).orElse(null)))
             .collect(Collectors.toList());
-
-        // Then filter out any that are descendents of any descendants.
-        return descendants
-            .stream()
-            .filter(descendent -> descendants
-                .stream()
-                .noneMatch(current -> isDescendent(current.getName(), descendent.getName())))
-            .collect(Collectors.toList());
-    }
-
-    private boolean isDescendent(final String resource, final String descendent) {
-        return PathUtils
-            .removePathParamIds(descendent)
-            .matches(PathUtils.escapeRegex(PathUtils.removePathParamIds(resource) + "/[^{]+"));
     }
 
     @Override
