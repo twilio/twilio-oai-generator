@@ -22,7 +22,6 @@
     }
 
   {{/hasRequiredParams}}
-  {{^bodyParam}}
     const data: any = {};
 
     {{#queryParams}}
@@ -41,11 +40,10 @@
     {{^required}}if (params.{{paramName}} !== undefined) {{/required}}data['{{{baseName}}}'] = params.{{paramName}};
     {{/vendorExtensions.x-serialize}}
     {{/formParams}}
-    {{#vendorExtensions.x-is-list-operation}}
+    {{#vendorExtensions.x-is-read-operation}}
     if (params.page !== undefined) data['Page'] = params.pageNumber;
     if (params.pageToken !== undefined) data['PageToken'] = params.pageToken;
-    {{/vendorExtensions.x-is-list-operation}}
-    {{/bodyParam}}
+    {{/vendorExtensions.x-is-read-operation}}
 
     const headers: any = {};
     {{#consumes}}
@@ -59,18 +57,18 @@
     {{/hasParams}}
 
     let operationVersion = {{#parentResourceName}}this._version{{/parentResourceName}}{{^parentResourceName}}version{{/parentResourceName}},
-        operationPromise = operationVersion.{{vendorExtensions.x-name-lower}}({ uri: this._uri, method: '{{httpMethod}}'{{#hasParams}}{{#bodyParam}}, body: params{{/bodyParam}}{{^bodyParam}}, params: data{{/bodyParam}}, headers{{/hasParams}} });
-    {{^vendorExtensions.x-is-list-operation}}{{^vendorExtensions.x-is-delete-operation}}
+        operationPromise = operationVersion.{{vendorExtensions.x-name-lower}}({ uri: this._uri, method: '{{httpMethod}}'{{#hasParams}}, {{^isBodyAllowed}}params: {{/isBodyAllowed}}data, headers{{/hasParams}} });
+    {{^vendorExtensions.x-is-read-operation}}{{^vendorExtensions.x-is-delete-operation}}
     operationPromise = operationPromise.then(payload => new {{instanceName}}(operationVersion, payload{{#resourcePathParams}}, this._solution.{{paramName}}{{/resourcePathParams}}));
-    {{/vendorExtensions.x-is-delete-operation}}{{/vendorExtensions.x-is-list-operation}}
-    {{#vendorExtensions.x-is-list-operation}}
+    {{/vendorExtensions.x-is-delete-operation}}{{/vendorExtensions.x-is-read-operation}}
+    {{#vendorExtensions.x-is-read-operation}}
     operationPromise = operationPromise.then(payload => new {{returnType}}(operationVersion, payload, this._solution));
-    {{/vendorExtensions.x-is-list-operation}}
+    {{/vendorExtensions.x-is-read-operation}}
 
     operationPromise = this._version.setPromiseCallback(operationPromise,callback);
     return operationPromise;
 
-  {{#vendorExtensions.x-is-list-operation}}
+  {{#vendorExtensions.x-is-read-operation}}
   }
   instance.each = instance._version.each;
   instance.list = instance._version.list;
@@ -82,5 +80,4 @@
     operationPromise = this._version.setPromiseCallback(operationPromise,callback);
     return operationPromise;
   }
-  {{/vendorExtensions.x-is-list-operation}}
-
+  {{/vendorExtensions.x-is-read-operation}}

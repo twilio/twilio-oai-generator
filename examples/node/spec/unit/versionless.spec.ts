@@ -13,8 +13,7 @@ describe("versionless", () => {
 
   it("should create a deployed devices fleet", () => {
     const scope = nock("http://versionless.twilio.com")
-      .post("/DeployedDevices/Fleets")
-      .query({
+      .post("/DeployedDevices/Fleets", {
         FriendlyName: "Friend-o",
       })
       .reply(201, { sid: "123" });

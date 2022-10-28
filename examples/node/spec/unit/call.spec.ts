@@ -1,5 +1,6 @@
 "use strict";
 import nock from "nock";
+import { TestStatus } from "../../lib/rest/flexApi/v1/credential/newCredentials";
 import Twilio from "../../lib/rest/Twilio";
 
 describe("credential", () => {
@@ -11,11 +12,24 @@ describe("credential", () => {
     nock.cleanAll();
   });
 
-  it("should update an aws credential", () => {
+  it("should update a voice call", () => {
     const scope = nock("http://flex-api.twilio.com")
       .post("/v1/Voice/123")
       .reply(200, { sid: "123" });
 
     return twilio.flexApi.v1.calls("123").update(() => scope.done());
+  });
+
+  it("should create new aws credentials", () => {
+    const scope = nock("http://flex-api.twilio.com")
+      .post("/v1/Credentials/AWS", {
+        TestString: "testing!!!",
+        TestEnum: "completed",
+      })
+      .reply(201, { sid: "123" });
+
+    return twilio.flexApi.v1.credentials.newCredentials
+      .create({ testString: "testing!!!", testEnum: "completed" })
+      .then(() => scope.done());
   });
 });

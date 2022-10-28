@@ -2,6 +2,8 @@ package com.twilio.oai;
 
 import com.twilio.oai.common.EnumConstants;
 import com.twilio.oai.resolver.node.NodeCaseResolver;
+import com.twilio.oai.common.Utility;
+import com.twilio.oai.resolver.node.NodeConventionResolver;
 import com.twilio.oai.resource.IResourceTree;
 import com.twilio.oai.resource.ResourceMap;
 
@@ -14,18 +16,18 @@ import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenOperation;
 import org.openapitools.codegen.CodegenParameter;
 import org.openapitools.codegen.CodegenProperty;
+import org.openapitools.codegen.IJsonSchemaValidationProperties;
 import org.openapitools.codegen.SupportingFile;
 import org.openapitools.codegen.languages.TypeScriptNodeClientCodegen;
 import org.openapitools.codegen.model.ModelMap;
 import org.openapitools.codegen.model.ModelsMap;
 import org.openapitools.codegen.model.OperationsMap;
 
-import static com.twilio.oai.common.ApplicationConstants.LIST_INSTANCE;
 import static com.twilio.oai.common.ApplicationConstants.PATH_SEPARATOR_PLACEHOLDER;
+import static com.twilio.oai.resource.Resource.IGNORE_EXTENSION_NAME;
 
 public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
 
-    public static final String IGNORE_EXTENSION_NAME = "x-ignore";
     public static final String VERSION_TEMPLATE = "version.mustache";
     public static final String FILENAME_EXTENSION = ".ts";
 
@@ -35,6 +37,10 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
         additionalProperties,
         resourceTree,
         new NodeCaseResolver());
+
+    private final Map<String, String> modelFormatMap = new HashMap<>();
+    private final NodeConventionResolver conventionResolver = new NodeConventionResolver();
+
     private final List<CodegenModel> allModels = new ArrayList<>();
 
     public TwilioNodeGenerator() {
@@ -98,6 +104,9 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
                 .collect(Collectors.toCollection(() -> this.allModels));
         }
 
+        Utility.setComplexDataMapping(this.allModels, this.modelFormatMap);
+        this.allModels.forEach(model -> model.setClassname(removeEnumName(model.getClassname())));
+
         // Return an empty collection so no model files get generated.
         return new HashMap<>();
     }
@@ -107,50 +116,52 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
     public OperationsMap postProcessOperationsWithModels(final OperationsMap objs, List<ModelMap> allModels) {
         final OperationsMap results = super.postProcessOperationsWithModels(objs, allModels);
         final List<CodegenOperation> opList = directoryStructureService.processOperations(results);
-
         if (directoryStructureService.isVersionLess()) {
             apiTemplateFiles.put(VERSION_TEMPLATE, FILENAME_EXTENSION);
         }
 
         final Map<String, Object> resources = new HashMap<>();
+        final Map<String, CodegenModel> models = new HashMap<>();
 
         final boolean hasInstanceOperations = opList.stream().anyMatch(PathUtils::isInstanceOperation);
 
         // iterate over the operation and perhaps modify something
+        boolean hasPaginationOperation = false;
         for (final CodegenOperation co : opList) {
             // Group operations by resource.
             final String[] filePathArray = co.baseName.split(PATH_SEPARATOR_PLACEHOLDER);
 
             final String itemName = filePathArray[filePathArray.length - 1];
             final String instanceName = itemName + "Instance";
+            co.returnType = instanceName;
             final boolean isInstanceOperation = PathUtils.isInstanceOperation(co);
-            final HttpMethod httpMethod = HttpMethod.fromString(co.httpMethod);
+
             String resourceName;
             String parentResourceName = null;
 
             co.returnType = instanceName;
 
+            updateCodeOperationParams(co);
             if (isInstanceOperation) {
                 resourceName = itemName + "Context";
                 parentResourceName = itemName + "ListInstance";
-                if (httpMethod == HttpMethod.GET) {
-                    addOperationName(co, "Fetch");
-                } else if (httpMethod == HttpMethod.POST) {
-                    addOperationName(co, "Update");
-                } else if (httpMethod == HttpMethod.DELETE) {
-                    addOperationName(co, "Remove");
-                    co.returnType = "boolean";
-                    co.vendorExtensions.put("x-is-delete-operation", true);
-                }
             } else {
-                resourceName = itemName + LIST_INSTANCE;
-                if (httpMethod == HttpMethod.POST) {
-                    addOperationName(co, "Create");
-                } else if (httpMethod == HttpMethod.GET) {
-                    addOperationName(co, "Page");
-                    co.returnType = itemName + "Page";
-                    co.vendorExtensions.put("x-is-list-operation", true);
-                }
+                resourceName = itemName + "ListInstance";
+            }
+
+            if (co.nickname.startsWith("update")) {
+                addOperationName(co, "Update");
+            } else if (co.nickname.startsWith("delete")) {
+                addOperationName(co, "Remove");
+                co.returnType = "boolean";
+            } else if (co.nickname.startsWith("create")) {
+                addOperationName(co, "Create");
+            } else if (co.nickname.startsWith("fetch")) {
+                addOperationName(co, "Fetch");
+            } else if (co.nickname.startsWith("list")){
+                hasPaginationOperation = true;
+                co.returnType = itemName + "Page";
+                addOperationName(co, "Page");
             }
 
             final Map<String, Object> resource = PathUtils.getStringMap(resources, resourceName);
@@ -169,7 +180,9 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
             resource.put("instanceName", instanceName);
 
             updateResourcePath(resource, co);
+            twilioCodegen.populateCrudOperations(resource, co);
 
+            co.allParams.forEach(param -> param.dataType = resolveModelDataType(param, param.dataType, models));
             co.allParams.removeAll(co.pathParams);
             co.requiredParams.removeAll(co.pathParams);
             co.hasParams = !co.allParams.isEmpty();
@@ -177,10 +190,6 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
             co.queryParams.forEach(this::addSerializeVendorExtension);
             co.formParams.forEach(this::addSerializeVendorExtension);
             co.httpMethod = co.httpMethod.toLowerCase();
-
-            if (co.bodyParam != null) {
-                addModel(resource, co.bodyParam.dataType);
-            }
 
             final Map<String, Object> dependentMap = PathUtils.getStringMap(resource, "dependents");
             resourceTree
@@ -196,21 +205,25 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
                 .stream()
                 .map(DirectoryStructureService.DependentResource.class::cast)
                 .forEach(dependent -> {
-                    if (dependent.getName().equals(instanceName)) {
-                        dependent.setName(instanceName + "Import");
-                        dependent.setImportName(instanceName + " as " + dependent.getName());
+                    if (dependent.getType().equals(instanceName)) {
+                        dependent.setType(instanceName + "Import");
+                        dependent.setClassName(instanceName + "Import");
+                        dependent.setImportName(instanceName + " as " + dependent.getType());
                     }
                 });
 
-            if (isInstanceOperation || (!hasInstanceOperations && httpMethod == HttpMethod.POST)) {
+            if (isInstanceOperation || (!hasInstanceOperations )) {
                 co.responses
                     .stream()
                     .map(response -> response.dataType)
                     .filter(Objects::nonNull)
                     .map(this::getModel)
                     .flatMap(Optional::stream)
-                    .map(this::resolveComplexType)
+                    .map(conventionResolver::resolveModel)
+                    .map(item -> conventionResolver.resolveComplexType(item, modelFormatMap))
                     .forEach(model -> {
+                        model.vars.forEach(prop -> prop.dataType = resolveModelDataType(prop, prop.dataType, models));
+
                         model.setName(itemName);
                         resource.put("responseModel", model);
 
@@ -233,13 +246,31 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
                 parentResource.put("instanceResource", resource);
             }
 
-            PathUtils.flattenStringMap(resource, "models");
             PathUtils.flattenStringMap(resource, "dependents");
         });
 
         results.put("resources", resources.values());
-
+        results.put("hasPaginationOperation", hasPaginationOperation);
+        results.put("models", models.values());
         return results;
+    }
+
+    private String resolveModelDataType(final IJsonSchemaValidationProperties prop,
+                                        final String dataType,
+                                        final Map<String, CodegenModel> models) {
+        final String modelDataType = removeEnumName(dataType);
+
+        if (prop.getComplexType() != null) {
+            addModel(models, removeEnumName(prop.getComplexType()));
+        } else {
+            addModel(models, modelDataType);
+        }
+
+        return modelDataType;
+    }
+
+    private String removeEnumName(final String dataType) {
+        return dataType.replace("Enum", "");
     }
 
     @SuppressWarnings("unchecked")
@@ -266,21 +297,12 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
         resource.put("resourcePathParams", resourcePathParams);
     }
 
-    private void addModel(final Map<String, Object> resource, final String dataType) {
+    private void addModel(final Map<String, CodegenModel> models, final String dataType) {
         getModel(dataType).ifPresent(model -> {
-            if (PathUtils.getStringMap(resource, "models").putIfAbsent(model.getClassname(), model) == null) {
-                model.getVars().forEach(property -> addModel(resource, property.dataType));
+            if (models.putIfAbsent(model.getClassname(), model) == null) {
+                model.getVars().forEach(property -> addModel(models, property.dataType));
             }
         });
-    }
-
-    private CodegenModel resolveComplexType(CodegenModel item) {
-        for (CodegenProperty prop : item.vars) {
-            if (prop.complexType != null) {
-                prop.dataType = prop.isArray ? "Array<object>" : "object";
-            }
-        }
-        return item;
     }
 
     private void addSerializeVendorExtension(CodegenParameter param) {
@@ -335,6 +357,29 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
     private void addOperationName(final CodegenOperation operation, final String name) {
         operation.vendorExtensions.put("x-name", name);
         operation.vendorExtensions.put("x-name-lower", name.toLowerCase());
+    }
+
+    private void updateCodeOperationParams(final CodegenOperation co) {
+        co.allParams = co.allParams
+                .stream()
+                .map(conventionResolver::resolveParameter)
+                .map(Optional::get)
+                .collect(Collectors.toList());
+        co.pathParams = co.pathParams
+                .stream()
+                .map(conventionResolver::resolveParameter)
+                .map(Optional::get)
+                .collect(Collectors.toList());
+        co.optionalParams = co.optionalParams
+                .stream()
+                .map(conventionResolver::resolveParameter)
+                .map(Optional::get)
+                .collect(Collectors.toList());
+        co.requiredParams = co.requiredParams
+                .stream()
+                .map(conventionResolver::resolveParameter)
+                .map(Optional::get)
+                .collect(Collectors.toList());
     }
 
     @Override

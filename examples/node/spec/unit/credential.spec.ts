@@ -13,8 +13,7 @@ describe("credential", () => {
 
   it("should create a new set of credentials", () => {
     const scope = nock("http://flex-api.twilio.com")
-      .post("/v1/Credentials/AWS")
-      .query({
+      .post("/v1/Credentials/AWS", {
         TestString: "I'm New Here",
       })
       .reply(201, { sid: "123" });

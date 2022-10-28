@@ -29,7 +29,6 @@ export interface AWSContextUpdateOptions {
   testString?: string;
   testBoolean?: boolean;
 }
-
 /**
  * Options to pass to each
  *
@@ -198,7 +197,7 @@ export class AWSContextImpl implements AWSContext {
       operationPromise = operationVersion.update({
         uri: this._uri,
         method: "post",
-        params: data,
+        data,
         headers,
       });
 
@@ -328,32 +327,6 @@ export class AWSInstance {
   }
 
   [inspect.custom](_depth: any, options: InspectOptions) {
-    return inspect(this.toJSON(), options);
-  }
-}
-
-export class AWSPage extends Page<V1, AWSPayload, AWSResource, AWSInstance> {
-  /**
-   * Initialize the AWSPage
-   *
-   * @param version - Version of the resource
-   * @param response - Response from the API
-   * @param solution - Path solution
-   */
-  constructor(version: V1, response: Response<string>, solution: AWSSolution) {
-    super(version, response, solution);
-  }
-
-  /**
-   * Build an instance of AWSInstance
-   *
-   * @param payload - Payload response from the API
-   */
-  getInstance(payload: AWSPayload): AWSInstance {
-    return new AWSInstance(this._version, payload, this._solution.sid);
-  }
-
-  [inspect.custom](depth: any, options: InspectOptions) {
     return inspect(this.toJSON(), options);
   }
 }
@@ -581,4 +554,30 @@ export function AWSListInstance(version: V1): AWSListInstance {
   };
 
   return instance;
+}
+
+export class AWSPage extends Page<V1, AWSPayload, AWSResource, AWSInstance> {
+  /**
+   * Initialize the AWSPage
+   *
+   * @param version - Version of the resource
+   * @param response - Response from the API
+   * @param solution - Path solution
+   */
+  constructor(version: V1, response: Response<string>, solution: AWSSolution) {
+    super(version, response, solution);
+  }
+
+  /**
+   * Build an instance of AWSInstance
+   *
+   * @param payload - Payload response from the API
+   */
+  getInstance(payload: AWSPayload): AWSInstance {
+    return new AWSInstance(this._version, payload);
+  }
+
+  [inspect.custom](depth: any, options: InspectOptions) {
+    return inspect(this.toJSON(), options);
+  }
 }

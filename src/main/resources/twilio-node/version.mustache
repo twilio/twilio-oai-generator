@@ -10,7 +10,7 @@ export default class {{apiVersionClass}} extends Version {
    * Initialize the {{apiVersionClass}} version of {{domainName}}
    *
    {{#versionResources}}
-   * @property { Twilio.{{domainName}}.{{apiVersionClass}}.{{name}} } {{mountName}} - {{mountName}} resource
+   * @property { Twilio.{{domainName}}.{{apiVersionClass}}.{{type}} } {{mountName}} - {{mountName}} resource
    {{/versionResources}}
    *
    * @param { Twilio.{{domainName}} } domain - The Twilio domain
@@ -20,12 +20,12 @@ export default class {{apiVersionClass}} extends Version {
   }
 
   {{#versionResources}}
-  protected _{{mountName}}?: {{name}};
+  protected _{{mountName}}?: {{type}};
   {{/versionResources}}
 
   {{#versionResources}}
-  get {{mountName}}(): {{name}} {
-    this._{{mountName}} = this._{{mountName}} || {{name}}(this);
+  get {{mountName}}(): {{type}} {
+    this._{{mountName}} = this._{{mountName}} || {{className}}(this){{#param}}(this.domain.twilio.{{.}}){{/param}};
     return this._{{mountName}};
   }
 

@@ -1,6 +1,9 @@
 "use strict";
 import nock from "nock";
-import { AccountListInstancePageOptions } from "../../lib/rest/api/v2010/account";
+import {
+  AccountInstance,
+  AccountListInstancePageOptions,
+} from "../../lib/rest/api/v2010/account";
 import Twilio from "../../lib/rest/Twilio";
 
 describe("account", () => {
@@ -22,6 +25,21 @@ describe("account", () => {
       .then(() => scope.done());
   });
 
+  // On-hold until RC base changes made.
+  xit("should have an account shortcut", () => {
+    const scope = nock("http://api.twilio.com")
+      .post(`/2010-04-01/Accounts/${accountSid}/Calls.json`, {
+        RequiredStringProperty: "phone home",
+      })
+      .reply(201, { sid: "123" });
+
+    return twilio.api.v2010.account.calls
+      .create({
+        requiredStringProperty: "phone home",
+      })
+      .then(() => scope.done());
+  });
+
   it("should fetch an account", () => {
     const scope = nock("http://api.twilio.com")
       .get("/2010-04-01/Accounts/123.json")
@@ -35,15 +53,14 @@ describe("account", () => {
 
   it("should update an account", () => {
     const scope = nock("http://api.twilio.com")
-      .post("/2010-04-01/Accounts/123.json")
-      .query({
-        Status: "closed",
+      .post("/2010-04-01/Accounts/123.json", {
+        Status: "stopped",
       })
-      .reply(200, { account_sid: "123", status: "closed" });
+      .reply(200, { account_sid: "123", status: "stopped" });
 
     return twilio.api.v2010
       .accounts("123")
-      .update({ status: "closed" })
+      .update({ status: "stopped" })
       .then(() => scope.done());
   });
 
@@ -59,6 +76,12 @@ describe("account", () => {
   });
 
   it("should get account pages in between dates", () => {
+    const phoneNumberCapabilities = {
+      mms: true,
+      sms: false,
+      voice: false,
+      fax: false,
+    };
     const scope = nock("http://api.twilio.com")
       .get("/2010-04-01/Accounts.json")
       .query({
@@ -71,13 +94,18 @@ describe("account", () => {
         end: 0,
         previous_page_uri:
           "/2010-04-01/Accounts.json?FriendlyName=friendly_name&Status=active&PageSize=50&Page=0",
-        accounts: [],
         uri: "/2010-04-01/Accounts.json?FriendlyName=friendly_name&Status=active&PageSize=50&Page=0",
         page_size: 50,
         start: 0,
         next_page_uri:
           "/2010-04-01/Accounts.json?FriendlyName=friendly_name&Status=active&PageSize=50&Page=50",
         page: 0,
+        payload: [
+          {
+            test_object: phoneNumberCapabilities,
+            test_number: 1,
+          },
+        ],
       });
     const params: AccountListInstancePageOptions = {
       dateCreatedBefore: new Date("2022-12-25"),
@@ -85,11 +113,13 @@ describe("account", () => {
     };
     return twilio.api.v2010.accounts
       .page(params)
-      .then((accountPage) =>
+      .then((accountPage) => {
         expect(accountPage.getNextPageUrl()).toEqual(
           "http://api.twilio.com/2010-04-01/Accounts.json?FriendlyName=friendly_name&Status=active&PageSize=50&Page=50"
-        )
-      )
+        );
+        expect(accountPage.instances[0].testObject.mms).toEqual(true);
+        expect(accountPage.instances[0].testObject.sms).toEqual(false);
+      })
       .then(() => scope.done());
   });
 });

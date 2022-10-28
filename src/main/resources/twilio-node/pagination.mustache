@@ -1,0 +1,35 @@
+{{#operations}}
+{{#vendorExtensions.x-is-read-operation}}
+export class {{name}}Page extends Page<{{apiVersionClass}}, {{name}}Payload, {{name}}Resource, {{name}}Instance> {
+/**
+* Initialize the {{name}}Page
+*
+* @param version - Version of the resource
+* @param response - Response from the API
+* @param solution - Path solution
+*/
+constructor(version: {{apiVersionClass}}, response: Response<string>, solution: {{name}}Solution) {
+    super(version, response, solution);
+    }
+
+    /**
+    * Build an instance of {{name}}Instance
+    *
+    * @param payload - Payload response from the API
+    */
+    getInstance(payload: {{name}}Payload): {{name}}Instance {
+    return new {{name}}Instance(
+    this._version,
+    payload,
+{{#resourcePathParams}}
+        this._solution.{{paramName}},
+{{/resourcePathParams}}
+    );
+    }
+
+    [inspect.custom](depth: any, options: InspectOptions) {
+    return inspect(this.toJSON(), options);
+    }
+    }
+{{/vendorExtensions.x-is-read-operation}}
+{{/operations}}

@@ -30,23 +30,27 @@ def generate(openapi_spec_path: str, output_path: str, language: str, domain: st
     full_path, domain_name, api_version = get_domain_info(openapi_spec_path, domain, is_file)
     parent_dir = Path(__file__).parent.parent
 
-    to_generate = 'terraform-provider-twilio' if language == 'terraform' else f'twilio-{language}'
     sub_dir = subdirectories.get(language, 'rest')
     output_path = os.path.join(output_path, sub_dir)
-    run_openapi_generator(parent_dir, to_generate, output_path, full_path)
+    run_openapi_generator(parent_dir, language, output_path, full_path)
     if language == 'java':
         remove_unused_imports(output_path, 'java')
 
 
-def run_openapi_generator(parent_dir: str, to_generate: str, output_path: str, full_path: str) -> None:
+def run_openapi_generator(parent_dir: str, language: str, output_path: str, full_path: str) -> None:
+    to_generate = 'terraform-provider-twilio' if language == 'terraform' else f'twilio-{language}'
+
     command = f'cd {parent_dir} && java -cp ./openapi-generator-cli.jar:target/twilio-openapi-generator.jar ' \
               f'org.openapitools.codegen.OpenAPIGenerator generate -g {to_generate} ' \
               f'--inline-schema-name-defaults arrayItemSuffix="" ' \
               f'-i {full_path} ' \
-              f'-o {output_path} ' \
-              f'> /dev/null'  # Suppress stdout
+              f'-o {output_path}'
+
+    if language in {'node'}:
+        command += ' --global-property skipFormModel=false'
+
     print(f'Generating {output_path} from {full_path}')
-    if os.system(command) != 0:
+    if os.system(command + '> /dev/null') != 0:  # Suppress stdout
         raise RuntimeError()
     print(f'Code generation completed at {output_path}')
 
