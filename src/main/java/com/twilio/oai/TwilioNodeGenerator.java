@@ -120,8 +120,8 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
             apiTemplateFiles.put(VERSION_TEMPLATE, FILENAME_EXTENSION);
         }
 
-        final Map<String, Object> resources = new HashMap<>();
-        final Map<String, CodegenModel> models = new HashMap<>();
+        final Map<String, Object> resources = new TreeMap<>();
+        final Map<String, CodegenModel> models = new TreeMap<>();
 
         final boolean hasInstanceOperations = opList.stream().anyMatch(PathUtils::isInstanceOperation);
 

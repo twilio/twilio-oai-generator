@@ -21,13 +21,10 @@ const serialize = require("../../../base/serialize");
 import { CallListInstance } from "./account/call";
 import PhoneNumberCapabilities from "../../../interfaces";
 
-type TestStatus =
-  | "in-progress"
-  | "paused"
-  | "stopped"
-  | "processing"
-  | "completed"
-  | "absent";
+export class TestResponseObjectTestArrayOfObjects {
+  "count"?: number;
+  "description"?: string;
+}
 
 export class TestResponseObjectTestObject {
   "fax"?: boolean;
@@ -36,10 +33,13 @@ export class TestResponseObjectTestObject {
   "voice"?: boolean;
 }
 
-export class TestResponseObjectTestArrayOfObjects {
-  "count"?: number;
-  "description"?: string;
-}
+type TestStatus =
+  | "in-progress"
+  | "paused"
+  | "stopped"
+  | "processing"
+  | "completed"
+  | "absent";
 
 /**
  * Options to pass to update a AccountInstance
