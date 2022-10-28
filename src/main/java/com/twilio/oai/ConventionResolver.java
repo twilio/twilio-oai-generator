@@ -26,6 +26,7 @@ public class ConventionResolver {
     final static String CONFIG_JAVA_JSON_PATH = "config/java.json";
 
     final static String LIST_PREFIX = "list-";
+    private static final String HTTP_METHOD = "http-method";
 
     public static Optional<CodegenModel> resolve(Optional<CodegenModel> model) {
         for (CodegenProperty property : model.get().vars) {
@@ -83,6 +84,10 @@ public class ConventionResolver {
         }
         if( PHONE_NUMBER_FORMAT.equals(parameter.dataFormat)) {
             parameter.vendorExtensions.put(X_IS_PHONE_NUMBER_FORMAT, true);
+        }
+        if (HTTP_METHOD.equals(parameter.dataFormat)) {
+            parameter.isEnum = false;
+            parameter.allowableValues = null;
         }
         parameter.paramName = StringUtils.camelize(parameter.paramName, true);
         return Optional.of(parameter);

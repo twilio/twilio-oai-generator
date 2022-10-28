@@ -23,4 +23,6 @@ Name | Type | Requirement | Description
 **test_array_of_strings** | list(string) | Optional | 
 **test_array_of_uri** | list(string) | Optional | 
 **test_integer** | int | *Computed* | INTEGER ID param!!!
+**test_uri** | string | Optional | 
+**test_method** | string | Optional | The HTTP method that we should use to request the &#x60;TestUri&#x60;.
 

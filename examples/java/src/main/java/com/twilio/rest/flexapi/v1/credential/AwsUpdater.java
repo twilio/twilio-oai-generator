@@ -31,6 +31,7 @@ import com.twilio.converter.DateConverter;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigDecimal;
 import java.net.URI;
 import java.time.ZonedDateTime;
 import java.time.LocalDate;

@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-package com.twilio.rest.flexapi.v1;
+package com.twilio.rest.api.v2010.account;
 
 import com.twilio.base.Updater;
 import com.twilio.converter.Promoter;
@@ -58,24 +58,57 @@ import lombok.ToString;
 
 
 public class CallUpdater extends Updater<Call>{
-    private String sid;
+    private Integer testInteger;
+    private URI testUri;
+    private HttpMethod testMethod;
+    private String accountSid;
+    private String requiredStringProperty;
 
-    public CallUpdater(final String sid){
-        this.sid = sid;
+    public CallUpdater(final Integer testInteger, final URI testUri, final HttpMethod testMethod){
+        this.testInteger = testInteger;
+        this.testUri = testUri;
+        this.testMethod = testMethod;
+    }
+    public CallUpdater(final String accountSid, final Integer testInteger, final URI testUri, final HttpMethod testMethod){
+        this.accountSid = accountSid;
+        this.testInteger = testInteger;
+        this.testUri = testUri;
+        this.testMethod = testMethod;
     }
 
+    public CallUpdater setTestUri(final URI testUri){
+        this.testUri = testUri;
+        return this;
+    }
+
+    public CallUpdater setTestUri(final String testUri){
+        return setTestUri(Promoter.uriFromString(testUri));
+    }
+    public CallUpdater setTestMethod(final HttpMethod testMethod){
+        this.testMethod = testMethod;
+        return this;
+    }
+    public CallUpdater setRequiredStringProperty(final String requiredStringProperty){
+        this.requiredStringProperty = requiredStringProperty;
+        return this;
+    }
 
     @Override
     public Call update(final TwilioRestClient client){
-        String path = "/v1/Voice/{Sid}";
+        String path = "/2010-04-01/Accounts/{AccountSid}/Calls/{TestInteger}.json";
 
-        path = path.replace("{"+"Sid"+"}", this.sid.toString());
+        this.accountSid = this.accountSid == null ? client.getAccountSid() : this.accountSid;
+        path = path.replace("{"+"AccountSid"+"}", this.accountSid.toString());
+        path = path.replace("{"+"TestInteger"+"}", this.testInteger.toString());
+        path = path.replace("{"+"TestUri"+"}", this.testUri.toString());
+        path = path.replace("{"+"TestMethod"+"}", this.testMethod.toString());
 
         Request request = new Request(
             HttpMethod.POST,
-            Domains.FLEXAPI.toString(),
+            Domains.API.toString(),
             path
         );
+        addPostParams(request);
         Response response = client.request(request);
         if (response == null) {
             throw new ApiConnectionException("Call update failed: Unable to connect to server");
@@ -88,5 +121,19 @@ public class CallUpdater extends Updater<Call>{
         }
 
         return Call.fromJson(response.getStream(), client.getObjectMapper());
+    }
+    private void addPostParams(final Request request) {
+        if (requiredStringProperty != null) {
+            request.addPostParam("RequiredStringProperty", requiredStringProperty);
+    
+        }
+        if (testUri != null) {
+            request.addPostParam("TestUri", testUri.toString());
+    
+        }
+        if (testMethod != null) {
+            request.addPostParam("TestMethod", testMethod.toString());
+    
+        }
     }
 }

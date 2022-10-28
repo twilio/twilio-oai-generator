@@ -110,5 +110,46 @@ namespace Twilio.Rest.Api.V2010.Account
     }
 
 
+    public class UpdateCallOptions : IOptions<CallResource>
+    {
+    
+        public int? PathTestInteger { get; }
+        public Uri TestUri { get; }
+        public CallResource.TestMethodEnum TestMethod { get; }
+        public string PathAccountSid { get; set; }
+        public string RequiredStringProperty { get; set; }
+
+
+        public UpdateCallOptions(int? pathTestInteger, Uri testUri, CallResource.TestMethodEnum testMethod)
+        {
+            PathTestInteger = pathTestInteger;
+            TestUri = testUri;
+            TestMethod = testMethod;
+        }
+
+        
+        public  List<KeyValuePair<string, string>> GetParams()
+        {
+            var p = new List<KeyValuePair<string, string>>();
+
+            if (TestUri != null)
+            {
+                p.Add(new KeyValuePair<string, string>("TestUri", Serializers.Url(TestUri)));
+            }
+            if (TestMethod != null)
+            {
+                p.Add(new KeyValuePair<string, string>("TestMethod", TestMethod.ToString()));
+            }
+            if (RequiredStringProperty != null)
+            {
+                p.Add(new KeyValuePair<string, string>("RequiredStringProperty", RequiredStringProperty));
+            }
+            return p;
+        }
+        
+
+    }
+
+
 }
 

@@ -440,6 +440,9 @@ namespace Twilio.Rest.Api.V2010
         [JsonProperty("test_number_float")]
         public float? TestNumberFloat { get; private set; }
 
+        [JsonProperty("test_number_decimal")]
+        public decimal? TestNumberDecimal { get; private set; }
+
         [JsonProperty("test_enum")]
         [JsonConverter(typeof(StringEnumConverter))]
         public AccountResource.StatusEnum TestEnum { get; private set; }

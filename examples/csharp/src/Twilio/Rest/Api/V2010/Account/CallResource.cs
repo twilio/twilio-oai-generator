@@ -45,6 +45,22 @@ namespace Twilio.Rest.Api.V2010.Account
             public static readonly StatusEnum Completed = new StatusEnum("completed");
             public static readonly StatusEnum Absent = new StatusEnum("absent");
         }
+        public sealed class TestMethodEnum : StringEnum
+        {
+            private TestMethodEnum(string value) : base(value) {}
+            public TestMethodEnum() {}
+            public static implicit operator TestMethodEnum(string value)
+            {
+                return new TestMethodEnum(value);
+            }
+            public static readonly TestMethodEnum HEAD = new TestMethodEnum("HEAD");
+            public static readonly TestMethodEnum GET = new TestMethodEnum("GET");
+            public static readonly TestMethodEnum POST = new TestMethodEnum("POST");
+            public static readonly TestMethodEnum PATCH = new TestMethodEnum("PATCH");
+            public static readonly TestMethodEnum PUT = new TestMethodEnum("PUT");
+            public static readonly TestMethodEnum DELETE = new TestMethodEnum("DELETE");
+
+        }
 
         
         private static Request BuildCreateRequest(CreateCallOptions options, ITwilioRestClient client)
@@ -226,6 +242,74 @@ namespace Twilio.Rest.Api.V2010.Account
         #endif
 
 
+
+
+
+
+        
+        private static Request BuildUpdateRequest(UpdateCallOptions options, ITwilioRestClient client)
+        {
+            
+            string path = "/2010-04-01/Accounts/{AccountSid}/Calls/{TestInteger}.json";
+
+            string PathAccountSid = options.PathAccountSid ?? client.AccountSid;
+            path = path.Replace("{"+"AccountSid"+"}", PathAccountSid);
+            string PathTestInteger = options.PathTestInteger.ToString();
+            path = path.Replace("{"+"TestInteger"+"}", PathTestInteger);
+
+
+            return new Request(
+                HttpMethod.Post,
+                Rest.Domain.Api,
+                path,
+                postParams: options.GetParams(),
+                headerParams: null
+            );
+        }
+
+
+        public static CallResource Update(UpdateCallOptions options, ITwilioRestClient client = null)
+        {
+            client = client ?? TwilioClient.GetRestClient();
+            var response = client.Request(BuildUpdateRequest(options, client));
+            return FromJson(response.Content);
+        }
+
+        #if !NET35
+        public static async System.Threading.Tasks.Task<CallResource> UpdateAsync(UpdateCallOptions options,
+                                                                                                          ITwilioRestClient client = null)
+        {
+            client = client ?? TwilioClient.GetRestClient();
+            var response = await client.RequestAsync(BuildUpdateRequest(options, client));
+            return FromJson(response.Content);
+        }
+        #endif
+
+        public static CallResource Update(
+                                          int? pathTestInteger,
+                                          Uri testUri,
+                                          CallResource.TestMethodEnum testMethod,
+                                          string pathAccountSid = null,
+                                          string requiredStringProperty = null,
+                                          ITwilioRestClient client = null)
+        {
+            var options = new UpdateCallOptions(pathTestInteger, testUri, testMethod){ PathAccountSid = pathAccountSid, RequiredStringProperty = requiredStringProperty };
+            return Update(options, client);
+        }
+
+        #if !NET35
+        public static async System.Threading.Tasks.Task<CallResource> UpdateAsync(
+                                                                              int? pathTestInteger,
+                                                                              Uri testUri,
+                                                                              CallResource.TestMethodEnum testMethod,
+                                                                              string pathAccountSid = null,
+                                                                              string requiredStringProperty = null,
+                                                                              ITwilioRestClient client = null)
+        {
+            var options = new UpdateCallOptions(pathTestInteger, testUri, testMethod){ PathAccountSid = pathAccountSid, RequiredStringProperty = requiredStringProperty };
+            return await UpdateAsync(options, client);
+        }
+        #endif
     
         public static Page<CallResource> GetPage(string targetUrl, ITwilioRestClient client)
         {
@@ -302,6 +386,9 @@ namespace Twilio.Rest.Api.V2010.Account
 
         [JsonProperty("test_number_float")]
         public float? TestNumberFloat { get; private set; }
+
+        [JsonProperty("test_number_decimal")]
+        public decimal? TestNumberDecimal { get; private set; }
 
         [JsonProperty("test_enum")]
         [JsonConverter(typeof(StringEnumConverter))]

@@ -187,6 +187,7 @@ interface FeedbackCallSummaryResource {
   test_number?: number | null;
   price_unit?: string | null;
   test_number_float?: number | null;
+  test_number_decimal?: object | null;
   test_enum?: object;
   test_array_of_integers?: Array<number>;
   test_array_of_array_of_integers?: Array<Array<number>>;
@@ -213,6 +214,7 @@ export class FeedbackCallSummaryInstance {
     this.testNumber = payload.test_number;
     this.priceUnit = payload.price_unit;
     this.testNumberFloat = payload.test_number_float;
+    this.testNumberDecimal = payload.test_number_decimal;
     this.testEnum = payload.test_enum;
     this.testArrayOfIntegers = payload.test_array_of_integers;
     this.testArrayOfArrayOfIntegers = payload.test_array_of_array_of_integers;
@@ -231,6 +233,7 @@ export class FeedbackCallSummaryInstance {
   testNumber?: number | null;
   priceUnit?: string | null;
   testNumberFloat?: number | null;
+  testNumberDecimal?: object | null;
   testEnum?: object;
   testArrayOfIntegers?: Array<number>;
   testArrayOfArrayOfIntegers?: Array<Array<number>>;
@@ -283,6 +286,7 @@ export class FeedbackCallSummaryInstance {
       testNumber: this.testNumber,
       priceUnit: this.priceUnit,
       testNumberFloat: this.testNumberFloat,
+      testNumberDecimal: this.testNumberDecimal,
       testEnum: this.testEnum,
       testArrayOfIntegers: this.testArrayOfIntegers,
       testArrayOfArrayOfIntegers: this.testArrayOfArrayOfIntegers,

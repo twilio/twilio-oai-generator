@@ -39,6 +39,7 @@ Class | Method | HTTP request | Description
 *AccountsCallsApi* | [**CreateCall**](docs/AccountsCallsApi.md#createcall) | **Post** /2010-04-01/Accounts/{AccountSid}/Calls.json | 
 *AccountsCallsApi* | [**DeleteCall**](docs/AccountsCallsApi.md#deletecall) | **Delete** /2010-04-01/Accounts/{AccountSid}/Calls/{TestInteger}.json | 
 *AccountsCallsApi* | [**FetchCall**](docs/AccountsCallsApi.md#fetchcall) | **Get** /2010-04-01/Accounts/{AccountSid}/Calls/{TestInteger}.json | 
+*AccountsCallsApi* | [**UpdateCall**](docs/AccountsCallsApi.md#updatecall) | **Post** /2010-04-01/Accounts/{AccountSid}/Calls/{TestInteger}.json | 
 *AccountsCallsFeedbackSummaryApi* | [**UpdateCallFeedbackSummary**](docs/AccountsCallsFeedbackSummaryApi.md#updatecallfeedbacksummary) | **Post** /2010-04-01/Accounts/{AccountSid}/Calls/FeedbackSummary/{Sid}.json | 
 
 

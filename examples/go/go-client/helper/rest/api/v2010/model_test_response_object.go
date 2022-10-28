@@ -31,6 +31,7 @@ type TestResponseObject struct {
 	TestNumber                 *float32                                `json:"test_number,omitempty"`
 	PriceUnit                  *string                                 `json:"price_unit,omitempty"`
 	TestNumberFloat            *float32                                `json:"test_number_float,omitempty"`
+	TestNumberDecimal          *float64                                `json:"test_number_decimal,omitempty"`
 	TestEnum                   *string                                 `json:"test_enum,omitempty"`
 	TestArrayOfIntegers        []int                                   `json:"test_array_of_integers,omitempty"`
 	TestArrayOfArrayOfIntegers [][]int                                 `json:"test_array_of_array_of_integers,omitempty"`
@@ -50,6 +51,7 @@ func (response *TestResponseObject) UnmarshalJSON(bytes []byte) (err error) {
 		TestNumber                 *interface{}                            `json:"test_number"`
 		PriceUnit                  *string                                 `json:"price_unit"`
 		TestNumberFloat            *interface{}                            `json:"test_number_float"`
+		TestNumberDecimal          *float64                                `json:"test_number_decimal"`
 		TestEnum                   *string                                 `json:"test_enum"`
 		TestArrayOfIntegers        []int                                   `json:"test_array_of_integers"`
 		TestArrayOfArrayOfIntegers [][]int                                 `json:"test_array_of_array_of_integers"`
@@ -69,6 +71,7 @@ func (response *TestResponseObject) UnmarshalJSON(bytes []byte) (err error) {
 		TestObject:                 raw.TestObject,
 		TestDateTime:               raw.TestDateTime,
 		PriceUnit:                  raw.PriceUnit,
+		TestNumberDecimal:          raw.TestNumberDecimal,
 		TestEnum:                   raw.TestEnum,
 		TestArrayOfIntegers:        raw.TestArrayOfIntegers,
 		TestArrayOfArrayOfIntegers: raw.TestArrayOfArrayOfIntegers,
