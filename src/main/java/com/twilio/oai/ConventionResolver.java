@@ -85,6 +85,7 @@ public class ConventionResolver {
         if( PHONE_NUMBER_FORMAT.equals(parameter.dataFormat)) {
             parameter.vendorExtensions.put(X_IS_PHONE_NUMBER_FORMAT, true);
         }
+        // prevent http method format type to be considered as enum
         if (HTTP_METHOD.equals(parameter.dataFormat)) {
             parameter.isEnum = false;
             parameter.allowableValues = null;
