@@ -16,12 +16,12 @@ import { inspect, InspectOptions } from "util";
 import V1 from "../V1";
 const deserialize = require("../../../base/deserialize");
 const serialize = require("../../../base/serialize");
-import { NewCredentialsListInstance } from "./credential/newCredentials";
 import { AWSListInstance } from "./credential/aws";
+import { NewCredentialsListInstance } from "./credential/newCredentials";
 
 export interface CredentialListInstance {
-  newCredentials: NewCredentialsListInstance;
   aws: AWSListInstance;
+  newCredentials: NewCredentialsListInstance;
 
   /**
    * Provide a user-friendly representation
@@ -38,8 +38,8 @@ class CredentialListInstanceImpl implements CredentialListInstance {
   _solution?: CredentialSolution;
   _uri?: string;
 
-  _newCredentials?: NewCredentialsListInstance;
   _aws?: AWSListInstance;
+  _newCredentials?: NewCredentialsListInstance;
 }
 
 export function CredentialListInstance(version: V1): CredentialListInstance {
@@ -49,21 +49,21 @@ export function CredentialListInstance(version: V1): CredentialListInstance {
   instance._solution = {};
   instance._uri = `/Credentials`;
 
-  Object.defineProperty(instance, "newCredentials", {
-    get: function newCredentials() {
-      if (!this._newCredentials) {
-        this._newCredentials = NewCredentialsListInstance(this._version);
-      }
-      return this._newCredentials;
-    },
-  });
-
   Object.defineProperty(instance, "aws", {
     get: function aws() {
       if (!this._aws) {
         this._aws = AWSListInstance(this._version);
       }
       return this._aws;
+    },
+  });
+
+  Object.defineProperty(instance, "newCredentials", {
+    get: function newCredentials() {
+      if (!this._newCredentials) {
+        this._newCredentials = NewCredentialsListInstance(this._version);
+      }
+      return this._newCredentials;
     },
   });
 

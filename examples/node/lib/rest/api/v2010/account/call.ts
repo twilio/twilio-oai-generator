@@ -16,17 +16,14 @@ import { inspect, InspectOptions } from "util";
 import V2010 from "../../V2010";
 const deserialize = require("../../../../base/deserialize");
 const serialize = require("../../../../base/serialize");
-import { FeedbackCallSummaryListInstance } from "./call/feedbackCallSummary";
-
 import PhoneNumberCapabilities from "../../../../interfaces";
 
-type TestStatus =
-  | "in-progress"
-  | "paused"
-  | "stopped"
-  | "processing"
-  | "completed"
-  | "absent";
+import { FeedbackCallSummaryListInstance } from "./call/feedbackCallSummary";
+
+export class TestResponseObjectTestArrayOfObjects {
+  "count"?: number;
+  "description"?: string;
+}
 
 export class TestResponseObjectTestObject {
   "fax"?: boolean;
@@ -35,10 +32,13 @@ export class TestResponseObjectTestObject {
   "voice"?: boolean;
 }
 
-export class TestResponseObjectTestArrayOfObjects {
-  "count"?: number;
-  "description"?: string;
-}
+type TestStatus =
+  | "in-progress"
+  | "paused"
+  | "stopped"
+  | "processing"
+  | "completed"
+  | "absent";
 
 /**
  * Options to pass to create a CallInstance
@@ -51,138 +51,6 @@ export interface CallListInstanceCreateOptions {
   requiredStringProperty: string;
   testArrayOfStrings?: Array<string>;
   testArrayOfUri?: Array<string>;
-}
-
-export interface CallListInstance {
-  (testInteger: number): CallContext;
-  get(testInteger: number): CallContext;
-
-  feedbackCallSummary: FeedbackCallSummaryListInstance;
-
-  /**
-   * Create a CallInstance
-   *
-   * @param { CallListInstanceCreateOptions } params - Parameter for request
-   * @param { function } [callback] - Callback to handle processed record
-   *
-   * @returns { Promise } Resolves to processed CallInstance
-   */
-  create(
-    params: CallListInstanceCreateOptions,
-    callback?: (error: Error | null, item?: CallInstance) => any
-  ): Promise<CallInstance>;
-  create(params: any, callback?: any): Promise<CallInstance>;
-
-  /**
-   * Provide a user-friendly representation
-   */
-  toJSON(): any;
-  [inspect.custom](_depth: any, options: InspectOptions): any;
-}
-
-export interface CallSolution {
-  accountSid?: string;
-}
-
-interface CallListInstanceImpl extends CallListInstance {}
-class CallListInstanceImpl implements CallListInstance {
-  _version?: V2010;
-  _solution?: CallSolution;
-  _uri?: string;
-
-  _feedbackCallSummary?: FeedbackCallSummaryListInstance;
-}
-
-export function CallListInstance(
-  version: V2010,
-  accountSid: string
-): CallListInstance {
-  const instance = ((testInteger) =>
-    instance.get(testInteger)) as CallListInstanceImpl;
-
-  instance.get = function get(testInteger): CallContext {
-    return new CallContextImpl(version, accountSid, testInteger);
-  };
-
-  instance._version = version;
-  instance._solution = { accountSid };
-  instance._uri = `/Accounts/${accountSid}/Calls.json`;
-
-  Object.defineProperty(instance, "feedbackCallSummary", {
-    get: function feedbackCallSummary() {
-      if (!this._feedbackCallSummary) {
-        this._feedbackCallSummary = FeedbackCallSummaryListInstance(
-          this._version,
-          this._solution.accountSid
-        );
-      }
-      return this._feedbackCallSummary;
-    },
-  });
-
-  instance.create = function create(
-    params: any,
-    callback?: any
-  ): Promise<CallInstance> {
-    if (params === null || params === undefined) {
-      throw new Error('Required parameter "params" missing.');
-    }
-
-    if (
-      params.requiredStringProperty === null ||
-      params.requiredStringProperty === undefined
-    ) {
-      throw new Error(
-        'Required parameter "params.requiredStringProperty" missing.'
-      );
-    }
-
-    const data: any = {};
-
-    data["RequiredStringProperty"] = params.requiredStringProperty;
-    if (params.testArrayOfStrings !== undefined)
-      data["TestArrayOfStrings"] = serialize.map(
-        params.testArrayOfStrings,
-        (e) => e
-      );
-    if (params.testArrayOfUri !== undefined)
-      data["TestArrayOfUri"] = serialize.map(params.testArrayOfUri, (e) => e);
-
-    const headers: any = {};
-    headers["Content-Type"] = "application/x-www-form-urlencoded";
-
-    let operationVersion = version,
-      operationPromise = operationVersion.create({
-        uri: this._uri,
-        method: "post",
-        data,
-        headers,
-      });
-
-    operationPromise = operationPromise.then(
-      (payload) =>
-        new CallInstance(operationVersion, payload, this._solution.accountSid)
-    );
-
-    operationPromise = this._version.setPromiseCallback(
-      operationPromise,
-      callback
-    );
-    return operationPromise;
-  };
-
-  instance.toJSON = function toJSON() {
-    return this._solution;
-  };
-
-  instance[inspect.custom] = function inspectImpl(
-    _depth: any,
-    options: InspectOptions
-  ) {
-    return inspect(this.toJSON(), options);
-  };
-
-  return instance;
 }
 
 export interface CallContext {
@@ -424,4 +292,136 @@ export class CallInstance {
   [inspect.custom](_depth: any, options: InspectOptions) {
     return inspect(this.toJSON(), options);
   }
+}
+
+export interface CallListInstance {
+  (testInteger: number): CallContext;
+  get(testInteger: number): CallContext;
+
+  feedbackCallSummary: FeedbackCallSummaryListInstance;
+
+  /**
+   * Create a CallInstance
+   *
+   * @param { CallListInstanceCreateOptions } params - Parameter for request
+   * @param { function } [callback] - Callback to handle processed record
+   *
+   * @returns { Promise } Resolves to processed CallInstance
+   */
+  create(
+    params: CallListInstanceCreateOptions,
+    callback?: (error: Error | null, item?: CallInstance) => any
+  ): Promise<CallInstance>;
+  create(params: any, callback?: any): Promise<CallInstance>;
+
+  /**
+   * Provide a user-friendly representation
+   */
+  toJSON(): any;
+  [inspect.custom](_depth: any, options: InspectOptions): any;
+}
+
+export interface CallSolution {
+  accountSid?: string;
+}
+
+interface CallListInstanceImpl extends CallListInstance {}
+class CallListInstanceImpl implements CallListInstance {
+  _version?: V2010;
+  _solution?: CallSolution;
+  _uri?: string;
+
+  _feedbackCallSummary?: FeedbackCallSummaryListInstance;
+}
+
+export function CallListInstance(
+  version: V2010,
+  accountSid: string
+): CallListInstance {
+  const instance = ((testInteger) =>
+    instance.get(testInteger)) as CallListInstanceImpl;
+
+  instance.get = function get(testInteger): CallContext {
+    return new CallContextImpl(version, accountSid, testInteger);
+  };
+
+  instance._version = version;
+  instance._solution = { accountSid };
+  instance._uri = `/Accounts/${accountSid}/Calls.json`;
+
+  Object.defineProperty(instance, "feedbackCallSummary", {
+    get: function feedbackCallSummary() {
+      if (!this._feedbackCallSummary) {
+        this._feedbackCallSummary = FeedbackCallSummaryListInstance(
+          this._version,
+          this._solution.accountSid
+        );
+      }
+      return this._feedbackCallSummary;
+    },
+  });
+
+  instance.create = function create(
+    params: any,
+    callback?: any
+  ): Promise<CallInstance> {
+    if (params === null || params === undefined) {
+      throw new Error('Required parameter "params" missing.');
+    }
+
+    if (
+      params.requiredStringProperty === null ||
+      params.requiredStringProperty === undefined
+    ) {
+      throw new Error(
+        'Required parameter "params.requiredStringProperty" missing.'
+      );
+    }
+
+    const data: any = {};
+
+    data["RequiredStringProperty"] = params.requiredStringProperty;
+    if (params.testArrayOfStrings !== undefined)
+      data["TestArrayOfStrings"] = serialize.map(
+        params.testArrayOfStrings,
+        (e) => e
+      );
+    if (params.testArrayOfUri !== undefined)
+      data["TestArrayOfUri"] = serialize.map(params.testArrayOfUri, (e) => e);
+
+    const headers: any = {};
+    headers["Content-Type"] = "application/x-www-form-urlencoded";
+
+    let operationVersion = version,
+      operationPromise = operationVersion.create({
+        uri: this._uri,
+        method: "post",
+        data,
+        headers,
+      });
+
+    operationPromise = operationPromise.then(
+      (payload) =>
+        new CallInstance(operationVersion, payload, this._solution.accountSid)
+    );
+
+    operationPromise = this._version.setPromiseCallback(
+      operationPromise,
+      callback
+    );
+    return operationPromise;
+  };
+
+  instance.toJSON = function toJSON() {
+    return this._solution;
+  };
+
+  instance[inspect.custom] = function inspectImpl(
+    _depth: any,
+    options: InspectOptions
+  ) {
+    return inspect(this.toJSON(), options);
+  };
+
+  return instance;
 }

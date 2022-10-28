@@ -17,51 +17,6 @@ import V1 from "../V1";
 const deserialize = require("../../../base/deserialize");
 const serialize = require("../../../base/serialize");
 
-export interface CallListInstance {
-  (sid: string): CallContext;
-  get(sid: string): CallContext;
-
-  /**
-   * Provide a user-friendly representation
-   */
-  toJSON(): any;
-  [inspect.custom](_depth: any, options: InspectOptions): any;
-}
-
-export interface CallSolution {}
-
-interface CallListInstanceImpl extends CallListInstance {}
-class CallListInstanceImpl implements CallListInstance {
-  _version?: V1;
-  _solution?: CallSolution;
-  _uri?: string;
-}
-
-export function CallListInstance(version: V1): CallListInstance {
-  const instance = ((sid) => instance.get(sid)) as CallListInstanceImpl;
-
-  instance.get = function get(sid): CallContext {
-    return new CallContextImpl(version, sid);
-  };
-
-  instance._version = version;
-  instance._solution = {};
-  instance._uri = `/Voice`;
-
-  instance.toJSON = function toJSON() {
-    return this._solution;
-  };
-
-  instance[inspect.custom] = function inspectImpl(
-    _depth: any,
-    options: InspectOptions
-  ) {
-    return inspect(this.toJSON(), options);
-  };
-
-  return instance;
-}
-
 export interface CallContext {
   /**
    * Update a CallInstance
@@ -178,4 +133,49 @@ export class CallInstance {
   [inspect.custom](_depth: any, options: InspectOptions) {
     return inspect(this.toJSON(), options);
   }
+}
+
+export interface CallListInstance {
+  (sid: string): CallContext;
+  get(sid: string): CallContext;
+
+  /**
+   * Provide a user-friendly representation
+   */
+  toJSON(): any;
+  [inspect.custom](_depth: any, options: InspectOptions): any;
+}
+
+export interface CallSolution {}
+
+interface CallListInstanceImpl extends CallListInstance {}
+class CallListInstanceImpl implements CallListInstance {
+  _version?: V1;
+  _solution?: CallSolution;
+  _uri?: string;
+}
+
+export function CallListInstance(version: V1): CallListInstance {
+  const instance = ((sid) => instance.get(sid)) as CallListInstanceImpl;
+
+  instance.get = function get(sid): CallContext {
+    return new CallContextImpl(version, sid);
+  };
+
+  instance._version = version;
+  instance._solution = {};
+  instance._uri = `/Voice`;
+
+  instance.toJSON = function toJSON() {
+    return this._solution;
+  };
+
+  instance[inspect.custom] = function inspectImpl(
+    _depth: any,
+    options: InspectOptions
+  ) {
+    return inspect(this.toJSON(), options);
+  };
+
+  return instance;
 }

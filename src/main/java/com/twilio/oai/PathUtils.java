@@ -1,9 +1,9 @@
 package com.twilio.oai;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.TreeMap;
 
 import com.google.common.collect.Streams;
 import io.swagger.v3.oas.models.PathItem;
@@ -67,7 +67,7 @@ public class PathUtils {
 
     @SuppressWarnings("unchecked")
     public static Map<String, Object> getStringMap(final Map<String, Object> resource, final String key) {
-        return (Map<String, Object>) resource.computeIfAbsent(key, k -> new HashMap<>());
+        return (Map<String, Object>) resource.computeIfAbsent(key, k -> new TreeMap<>());
     }
 
     @SuppressWarnings("unchecked")
