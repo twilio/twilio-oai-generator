@@ -41,6 +41,19 @@ type TestStatus =
   | "absent";
 
 /**
+ * Options to pass to update a CallInstance
+ *
+ * @property { string } testUri
+ * @property { string } testMethod The HTTP method that we should use to request the &#x60;TestUri&#x60;.
+ * @property { string } [requiredStringProperty]
+ */
+export interface CallContextUpdateOptions {
+  testUri: string;
+  testMethod: string;
+  requiredStringProperty?: string;
+}
+
+/**
  * Options to pass to create a CallInstance
  *
  * @property { string } requiredStringProperty
@@ -75,6 +88,20 @@ export interface CallContext {
   fetch(
     callback?: (error: Error | null, item?: CallInstance) => any
   ): Promise<CallInstance>;
+
+  /**
+   * Update a CallInstance
+   *
+   * @param { CallContextUpdateOptions } params - Parameter for request
+   * @param { function } [callback] - Callback to handle processed record
+   *
+   * @returns { Promise } Resolves to processed CallInstance
+   */
+  update(
+    params: CallContextUpdateOptions,
+    callback?: (error: Error | null, item?: CallInstance) => any
+  ): Promise<CallInstance>;
+  update(params: any, callback?: any): Promise<CallInstance>;
 
   /**
    * Provide a user-friendly representation
@@ -139,6 +166,54 @@ export class CallContextImpl implements CallContext {
     return operationPromise;
   }
 
+  update(params: any, callback?: any): Promise<CallInstance> {
+    if (params === null || params === undefined) {
+      throw new Error('Required parameter "params" missing.');
+    }
+
+    if (params.testUri === null || params.testUri === undefined) {
+      throw new Error('Required parameter "params.testUri" missing.');
+    }
+
+    if (params.testMethod === null || params.testMethod === undefined) {
+      throw new Error('Required parameter "params.testMethod" missing.');
+    }
+
+    const data: any = {};
+
+    if (params.requiredStringProperty !== undefined)
+      data["RequiredStringProperty"] = params.requiredStringProperty;
+    data["TestUri"] = params.testUri;
+    data["TestMethod"] = params.testMethod;
+
+    const headers: any = {};
+    headers["Content-Type"] = "application/x-www-form-urlencoded";
+
+    let operationVersion = this._version,
+      operationPromise = operationVersion.update({
+        uri: this._uri,
+        method: "post",
+        data,
+        headers,
+      });
+
+    operationPromise = operationPromise.then(
+      (payload) =>
+        new CallInstance(
+          operationVersion,
+          payload,
+          this._solution.accountSid,
+          this._solution.testInteger
+        )
+    );
+
+    operationPromise = this._version.setPromiseCallback(
+      operationPromise,
+      callback
+    );
+    return operationPromise;
+  }
+
   /**
    * Provide a user-friendly representation
    *
@@ -165,6 +240,7 @@ interface CallResource {
   test_number?: number | null;
   price_unit?: string | null;
   test_number_float?: number | null;
+  test_number_decimal?: Decimal | null;
   test_enum?: TestStatus;
   a2p_profile_bundle_sid?: string | null;
   test_array_of_integers?: Array<number>;
@@ -192,6 +268,7 @@ export class CallInstance {
     this.testNumber = payload.test_number;
     this.priceUnit = payload.price_unit;
     this.testNumberFloat = payload.test_number_float;
+    this.testNumberDecimal = payload.test_number_decimal;
     this.testEnum = payload.test_enum;
     this.a2pProfileBundleSid = payload.a2p_profile_bundle_sid;
     this.testArrayOfIntegers = payload.test_array_of_integers;
@@ -214,6 +291,7 @@ export class CallInstance {
   testNumber?: number | null;
   priceUnit?: string | null;
   testNumberFloat?: number | null;
+  testNumberDecimal?: Decimal | null;
   testEnum?: TestStatus;
   /**
    * A2P Messaging Profile Bundle BundleSid
@@ -265,6 +343,22 @@ export class CallInstance {
   }
 
   /**
+   * Update a CallInstance
+   *
+   * @param { CallContextUpdateOptions } params - Parameter for request
+   * @param { function } [callback] - Callback to handle processed record
+   *
+   * @returns { Promise } Resolves to processed CallInstance
+   */
+  update(
+    params: CallContextUpdateOptions,
+    callback?: (error: Error | null, item?: CallInstance) => any
+  ): Promise<CallInstance>;
+  update(params: any, callback?: any): Promise<CallInstance> {
+    return this._proxy.update(params, callback);
+  }
+
+  /**
    * Provide a user-friendly representation
    *
    * @returns Object
@@ -280,6 +374,7 @@ export class CallInstance {
       testNumber: this.testNumber,
       priceUnit: this.priceUnit,
       testNumberFloat: this.testNumberFloat,
+      testNumberDecimal: this.testNumberDecimal,
       testEnum: this.testEnum,
       a2pProfileBundleSid: this.a2pProfileBundleSid,
       testArrayOfIntegers: this.testArrayOfIntegers,

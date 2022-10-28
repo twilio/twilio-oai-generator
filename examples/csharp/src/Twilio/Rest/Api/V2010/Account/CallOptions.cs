@@ -137,17 +137,30 @@ namespace Twilio.Rest.Api.V2010.Account
     }
 
 
+    /// <summary> update </summary>
     public class UpdateCallOptions : IOptions<CallResource>
     {
     
+        ///<summary> INTEGER ID param!!! </summary> 
         public int? PathTestInteger { get; }
+
+        
         public Uri TestUri { get; }
-        public CallResource.TestMethodEnum TestMethod { get; }
+
+        ///<summary> The HTTP method that we should use to request the `TestUri`. </summary> 
+        public Twilio.Http.HttpMethod TestMethod { get; }
+
+        
         public string PathAccountSid { get; set; }
+
+        
         public string RequiredStringProperty { get; set; }
 
 
-        public UpdateCallOptions(int? pathTestInteger, Uri testUri, CallResource.TestMethodEnum testMethod)
+
+        /// <summary> Construct a new UpdateCallOptions </summary>
+        /// <param name="pathTestInteger"> INTEGER ID param!!! </param>        /// <param name="testUri">  </param>        /// <param name="testMethod"> The HTTP method that we should use to request the &#x60;TestUri&#x60;. </param>
+        public UpdateCallOptions(int? pathTestInteger, Uri testUri, Twilio.Http.HttpMethod testMethod)
         {
             PathTestInteger = pathTestInteger;
             TestUri = testUri;
@@ -155,6 +168,7 @@ namespace Twilio.Rest.Api.V2010.Account
         }
 
         
+        /// <summary> Generate the necessary parameters </summary>
         public  List<KeyValuePair<string, string>> GetParams()
         {
             var p = new List<KeyValuePair<string, string>>();
