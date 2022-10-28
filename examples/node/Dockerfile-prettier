@@ -2,4 +2,4 @@ FROM node:lts
 
 RUN npm i -g prettier
 
-CMD prettier -w /local
+CMD prettier -w /local '!local/coverage'

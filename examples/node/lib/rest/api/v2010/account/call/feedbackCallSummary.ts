@@ -16,16 +16,12 @@ import { inspect, InspectOptions } from "util";
 import V2010 from "../../../V2010";
 const deserialize = require("../../../../../base/deserialize");
 const serialize = require("../../../../../base/serialize");
-
 import PhoneNumberCapabilities from "../../../../../interfaces";
 
-type TestStatus =
-  | "in-progress"
-  | "paused"
-  | "stopped"
-  | "processing"
-  | "completed"
-  | "absent";
+export class TestResponseObjectTestArrayOfObjects {
+  "count"?: number;
+  "description"?: string;
+}
 
 export class TestResponseObjectTestObject {
   "fax"?: boolean;
@@ -34,10 +30,13 @@ export class TestResponseObjectTestObject {
   "voice"?: boolean;
 }
 
-export class TestResponseObjectTestArrayOfObjects {
-  "count"?: number;
-  "description"?: string;
-}
+type TestStatus =
+  | "in-progress"
+  | "paused"
+  | "stopped"
+  | "processing"
+  | "completed"
+  | "absent";
 
 /**
  * Options to pass to update a FeedbackCallSummaryInstance
@@ -50,60 +49,6 @@ export interface FeedbackCallSummaryContextUpdateOptions {
   endDate: Date;
   startDate: Date;
   accountSid2?: string;
-}
-
-export interface FeedbackCallSummaryListInstance {
-  (sid: string): FeedbackCallSummaryContext;
-  get(sid: string): FeedbackCallSummaryContext;
-
-  /**
-   * Provide a user-friendly representation
-   */
-  toJSON(): any;
-  [inspect.custom](_depth: any, options: InspectOptions): any;
-}
-
-export interface FeedbackCallSummarySolution {
-  accountSid?: string;
-}
-
-interface FeedbackCallSummaryListInstanceImpl
-  extends FeedbackCallSummaryListInstance {}
-class FeedbackCallSummaryListInstanceImpl
-  implements FeedbackCallSummaryListInstance
-{
-  _version?: V2010;
-  _solution?: FeedbackCallSummarySolution;
-  _uri?: string;
-}
-
-export function FeedbackCallSummaryListInstance(
-  version: V2010,
-  accountSid: string
-): FeedbackCallSummaryListInstance {
-  const instance = ((sid) =>
-    instance.get(sid)) as FeedbackCallSummaryListInstanceImpl;
-
-  instance.get = function get(sid): FeedbackCallSummaryContext {
-    return new FeedbackCallSummaryContextImpl(version, accountSid, sid);
-  };
-
-  instance._version = version;
-  instance._solution = { accountSid };
-  instance._uri = `/Accounts/${accountSid}/Calls/Feedback/Summary.json`;
-
-  instance.toJSON = function toJSON() {
-    return this._solution;
-  };
-
-  instance[inspect.custom] = function inspectImpl(
-    _depth: any,
-    options: InspectOptions
-  ) {
-    return inspect(this.toJSON(), options);
-  };
-
-  return instance;
 }
 
 export interface FeedbackCallSummaryContext {
@@ -332,4 +277,58 @@ export class FeedbackCallSummaryInstance {
   [inspect.custom](_depth: any, options: InspectOptions) {
     return inspect(this.toJSON(), options);
   }
+}
+
+export interface FeedbackCallSummaryListInstance {
+  (sid: string): FeedbackCallSummaryContext;
+  get(sid: string): FeedbackCallSummaryContext;
+
+  /**
+   * Provide a user-friendly representation
+   */
+  toJSON(): any;
+  [inspect.custom](_depth: any, options: InspectOptions): any;
+}
+
+export interface FeedbackCallSummarySolution {
+  accountSid?: string;
+}
+
+interface FeedbackCallSummaryListInstanceImpl
+  extends FeedbackCallSummaryListInstance {}
+class FeedbackCallSummaryListInstanceImpl
+  implements FeedbackCallSummaryListInstance
+{
+  _version?: V2010;
+  _solution?: FeedbackCallSummarySolution;
+  _uri?: string;
+}
+
+export function FeedbackCallSummaryListInstance(
+  version: V2010,
+  accountSid: string
+): FeedbackCallSummaryListInstance {
+  const instance = ((sid) =>
+    instance.get(sid)) as FeedbackCallSummaryListInstanceImpl;
+
+  instance.get = function get(sid): FeedbackCallSummaryContext {
+    return new FeedbackCallSummaryContextImpl(version, accountSid, sid);
+  };
+
+  instance._version = version;
+  instance._solution = { accountSid };
+  instance._uri = `/Accounts/${accountSid}/Calls/Feedback/Summary.json`;
+
+  instance.toJSON = function toJSON() {
+    return this._solution;
+  };
+
+  instance[inspect.custom] = function inspectImpl(
+    _depth: any,
+    options: InspectOptions
+  ) {
+    return inspect(this.toJSON(), options);
+  };
+
+  return instance;
 }
