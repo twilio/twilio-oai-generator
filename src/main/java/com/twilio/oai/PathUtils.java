@@ -40,16 +40,8 @@ public class PathUtils {
         return path.replaceAll("\\.[^/]+$", "");
     }
 
-    public static String removePathParamIds(final String path) {
-        return removeExtension(path).replaceAll("\\{[^}]+", "{");
-    }
-
     public static String removeTrailingPathParam(final String path) {
         return path.replaceFirst("/\\{[^}]+}[^/]*$", "");
-    }
-
-    public static String escapeRegex(final String regex) {
-        return regex.replace("{", "\\{");
     }
 
     public static String fetchLastElement(final String path, final String delimiter) {
