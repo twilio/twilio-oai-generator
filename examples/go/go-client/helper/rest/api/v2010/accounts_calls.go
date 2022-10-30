@@ -15,6 +15,7 @@
 package openapi
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"net/url"
@@ -51,6 +52,10 @@ func (params *CreateCallParams) SetTestArrayOfUri(TestArrayOfUri []string) *Crea
 }
 
 func (c *ApiService) CreateCall(params *CreateCallParams) (*TestResponseObject, error) {
+	return c.CreateCallWithCtx(context.TODO(), params)
+}
+
+func (c *ApiService) CreateCallWithCtx(ctx context.Context, params *CreateCallParams) (*TestResponseObject, error) {
 	path := "/2010-04-01/Accounts/{AccountSid}/Calls.json"
 	if params != nil && params.PathAccountSid != nil {
 		path = strings.Replace(path, "{"+"AccountSid"+"}", *params.PathAccountSid, -1)
@@ -75,7 +80,7 @@ func (c *ApiService) CreateCall(params *CreateCallParams) (*TestResponseObject, 
 		}
 	}
 
-	resp, err := c.requestHandler.Post(c.baseURL+path, data, headers)
+	resp, err := c.requestHandler.Post(ctx, c.baseURL+path, data, headers)
 	if err != nil {
 		return nil, err
 	}
@@ -102,6 +107,10 @@ func (params *DeleteCallParams) SetPathAccountSid(PathAccountSid string) *Delete
 }
 
 func (c *ApiService) DeleteCall(TestInteger int, params *DeleteCallParams) error {
+	return c.DeleteCallWithCtx(context.TODO(), TestInteger, params)
+}
+
+func (c *ApiService) DeleteCallWithCtx(ctx context.Context, TestInteger int, params *DeleteCallParams) error {
 	path := "/2010-04-01/Accounts/{AccountSid}/Calls/{TestInteger}.json"
 	if params != nil && params.PathAccountSid != nil {
 		path = strings.Replace(path, "{"+"AccountSid"+"}", *params.PathAccountSid, -1)
@@ -113,7 +122,7 @@ func (c *ApiService) DeleteCall(TestInteger int, params *DeleteCallParams) error
 	data := url.Values{}
 	headers := make(map[string]interface{})
 
-	resp, err := c.requestHandler.Delete(c.baseURL+path, data, headers)
+	resp, err := c.requestHandler.Delete(ctx, c.baseURL+path, data, headers)
 	if err != nil {
 		return err
 	}
@@ -135,6 +144,10 @@ func (params *FetchCallParams) SetPathAccountSid(PathAccountSid string) *FetchCa
 }
 
 func (c *ApiService) FetchCall(TestInteger int, params *FetchCallParams) (*TestResponseObject, error) {
+	return c.FetchCallWithCtx(context.TODO(), TestInteger, params)
+}
+
+func (c *ApiService) FetchCallWithCtx(ctx context.Context, TestInteger int, params *FetchCallParams) (*TestResponseObject, error) {
 	path := "/2010-04-01/Accounts/{AccountSid}/Calls/{TestInteger}.json"
 	if params != nil && params.PathAccountSid != nil {
 		path = strings.Replace(path, "{"+"AccountSid"+"}", *params.PathAccountSid, -1)
@@ -146,7 +159,7 @@ func (c *ApiService) FetchCall(TestInteger int, params *FetchCallParams) (*TestR
 	data := url.Values{}
 	headers := make(map[string]interface{})
 
-	resp, err := c.requestHandler.Get(c.baseURL+path, data, headers)
+	resp, err := c.requestHandler.Get(ctx, c.baseURL+path, data, headers)
 	if err != nil {
 		return nil, err
 	}
