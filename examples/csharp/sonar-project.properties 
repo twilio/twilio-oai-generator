@@ -1,0 +1,7 @@
+sonar.projectKey=twilio_twilio-oai-generator-csharp
+sonar.projectName=twilio_twilio-oai-generator-csharp
+sonar.organization=twilio
+sonar.sources=src
+sonar.tests=tests
+sonar.php.coverage.reportPaths=csharp_coverage.xml
+sonar.php.tests.reportPath=execution-result.xml
