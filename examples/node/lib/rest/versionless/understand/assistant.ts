@@ -89,8 +89,8 @@ export function AssistantListInstance(
 
     const data: any = {};
 
-    if (params.friendlyName !== undefined)
-      data["FriendlyName"] = params.friendlyName;
+    if (params["friendlyName"] !== undefined)
+      data["FriendlyName"] = params["friendlyName"];
 
     const headers: any = {};
     headers["Content-Type"] = "application/x-www-form-urlencoded";

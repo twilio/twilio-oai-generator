@@ -68,7 +68,7 @@ export interface AccountListInstanceCreateOptions {
  * Options to pass to each
  *
  * @property { Date } [dateCreated]
- * @property { Date } [dateTest]
+ * @property { Date } [date.test]
  * @property { Date } [dateCreatedBefore]
  * @property { Date } [dateCreatedAfter]
  * @property { number } [pageSize]
@@ -83,7 +83,7 @@ export interface AccountListInstanceCreateOptions {
  */
 export interface AccountListInstanceEachOptions {
   dateCreated?: Date;
-  dateTest?: Date;
+  "date.test"?: Date;
   dateCreatedBefore?: Date;
   dateCreatedAfter?: Date;
   pageSize?: number;
@@ -96,7 +96,7 @@ export interface AccountListInstanceEachOptions {
  * Options to pass to list
  *
  * @property { Date } [dateCreated]
- * @property { Date } [dateTest]
+ * @property { Date } [date.test]
  * @property { Date } [dateCreatedBefore]
  * @property { Date } [dateCreatedAfter]
  * @property { number } [pageSize]
@@ -107,7 +107,7 @@ export interface AccountListInstanceEachOptions {
  */
 export interface AccountListInstanceOptions {
   dateCreated?: Date;
-  dateTest?: Date;
+  "date.test"?: Date;
   dateCreatedBefore?: Date;
   dateCreatedAfter?: Date;
   pageSize?: number;
@@ -118,7 +118,7 @@ export interface AccountListInstanceOptions {
  * Options to pass to page
  *
  * @property { Date } [dateCreated]
- * @property { Date } [dateTest]
+ * @property { Date } [date.test]
  * @property { Date } [dateCreatedBefore]
  * @property { Date } [dateCreatedAfter]
  * @property { number } [pageSize]
@@ -127,7 +127,7 @@ export interface AccountListInstanceOptions {
  */
 export interface AccountListInstancePageOptions {
   dateCreated?: Date;
-  dateTest?: Date;
+  "date.test"?: Date;
   dateCreatedBefore?: Date;
   dateCreatedAfter?: Date;
   pageSize?: number;
@@ -240,15 +240,15 @@ export class AccountContextImpl implements AccountContext {
       throw new Error('Required parameter "params" missing.');
     }
 
-    if (params.status === null || params.status === undefined) {
-      throw new Error('Required parameter "params.status" missing.');
+    if (params["status"] === null || params["status"] === undefined) {
+      throw new Error("Required parameter \"params['status']\" missing.");
     }
 
     const data: any = {};
 
-    if (params.pauseBehavior !== undefined)
-      data["PauseBehavior"] = params.pauseBehavior;
-    data["Status"] = params.status;
+    if (params["pauseBehavior"] !== undefined)
+      data["PauseBehavior"] = params["pauseBehavior"];
+    data["Status"] = params["status"];
 
     const headers: any = {};
     headers["Content-Type"] = "application/x-www-form-urlencoded";
@@ -632,18 +632,18 @@ export function AccountListInstance(version: V2010): AccountListInstance {
 
     const data: any = {};
 
-    if (params.recordingStatusCallback !== undefined)
-      data["RecordingStatusCallback"] = params.recordingStatusCallback;
-    if (params.recordingStatusCallbackEvent !== undefined)
+    if (params["recordingStatusCallback"] !== undefined)
+      data["RecordingStatusCallback"] = params["recordingStatusCallback"];
+    if (params["recordingStatusCallbackEvent"] !== undefined)
       data["RecordingStatusCallbackEvent"] = serialize.map(
-        params.recordingStatusCallbackEvent,
+        params["recordingStatusCallbackEvent"],
         (e) => e
       );
 
     const headers: any = {};
     headers["Content-Type"] = "application/x-www-form-urlencoded";
-    if (params.xTwilioWebhookEnabled !== undefined)
-      headers["X-Twilio-Webhook-Enabled"] = params.xTwilioWebhookEnabled;
+    if (params["xTwilioWebhookEnabled"] !== undefined)
+      headers["X-Twilio-Webhook-Enabled"] = params["xTwilioWebhookEnabled"];
 
     let operationVersion = version,
       operationPromise = operationVersion.create({
@@ -677,17 +677,19 @@ export function AccountListInstance(version: V2010): AccountListInstance {
 
     const data: any = {};
 
-    if (params.dateCreated !== undefined)
-      data["DateCreated"] = serialize.iso8601DateTime(params.dateCreated);
-    if (params.dateTest !== undefined)
-      data["Date.Test"] = serialize.iso8601Date(params.dateTest);
-    if (params.dateCreatedBefore !== undefined)
+    if (params["dateCreated"] !== undefined)
+      data["DateCreated"] = serialize.iso8601DateTime(params["dateCreated"]);
+    if (params["date.test"] !== undefined)
+      data["Date.Test"] = serialize.iso8601Date(params["date.test"]);
+    if (params["dateCreatedBefore"] !== undefined)
       data["DateCreated<"] = serialize.iso8601DateTime(
-        params.dateCreatedBefore
+        params["dateCreatedBefore"]
       );
-    if (params.dateCreatedAfter !== undefined)
-      data["DateCreated>"] = serialize.iso8601DateTime(params.dateCreatedAfter);
-    if (params.pageSize !== undefined) data["PageSize"] = params.pageSize;
+    if (params["dateCreatedAfter"] !== undefined)
+      data["DateCreated>"] = serialize.iso8601DateTime(
+        params["dateCreatedAfter"]
+      );
+    if (params["pageSize"] !== undefined) data["PageSize"] = params["pageSize"];
     if (params.page !== undefined) data["Page"] = params.pageNumber;
     if (params.pageToken !== undefined) data["PageToken"] = params.pageToken;
 

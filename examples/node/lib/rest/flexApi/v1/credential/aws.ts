@@ -186,9 +186,10 @@ export class AWSContextImpl implements AWSContext {
 
     const data: any = {};
 
-    if (params.testString !== undefined) data["TestString"] = params.testString;
-    if (params.testBoolean !== undefined)
-      data["TestBoolean"] = serialize.bool(params.testBoolean);
+    if (params["testString"] !== undefined)
+      data["TestString"] = params["testString"];
+    if (params["testBoolean"] !== undefined)
+      data["TestBoolean"] = serialize.bool(params["testBoolean"]);
 
     const headers: any = {};
     headers["Content-Type"] = "application/x-www-form-urlencoded";
@@ -496,7 +497,7 @@ export function AWSListInstance(version: V1): AWSListInstance {
 
     const data: any = {};
 
-    if (params.pageSize !== undefined) data["PageSize"] = params.pageSize;
+    if (params["pageSize"] !== undefined) data["PageSize"] = params["pageSize"];
     if (params.page !== undefined) data["Page"] = params.pageNumber;
     if (params.pageToken !== undefined) data["PageToken"] = params.pageToken;
 
