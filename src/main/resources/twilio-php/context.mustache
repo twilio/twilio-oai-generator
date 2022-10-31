@@ -1,0 +1,73 @@
+{{#resources}}
+<?php
+
+{{>licenseInfo}}
+
+namespace Twilio\Rest\Api\V2010;
+
+{{>imports}}
+/**
+{{#allParams}}
+* @property {{dataType}} ${{paramName}};
+{{/allParams}}
+*/
+class {{name}}Context extends InstanceContext {
+
+    {{#requiredParams}}
+    public function __construct(Version $version {{#.}}, {{{dataType}}} ${{paramName}}{{/.}}) {
+        parent::__construct($version);
+
+        // Path Solution
+        $this->solution = ['accountSid' => $accountSid, 'callSid' => $callSid, 'sid' => $sid, ];
+        $this->uri = '/Accounts/' . \rawurlencode($accountSid) . '/Calls/' . \rawurlencode($callSid) . '/Notifications/' . \rawurlencode($sid) . '.json';
+    }
+    {{/requiredParams}}
+
+    {{#vendorExtensions.x-is-list-operator}}
+    public function fetch(): NotificationInstance {
+        $payload = $this->version->fetch('GET', $this->uri);
+
+        return new NotificationInstance(
+        $this->version,
+        $payload,
+        $this->solution['accountSid'],
+        $this->solution['callSid'],
+        $this->solution['sid']
+        );
+    }
+    {{/vendorExtensions.x-is-list-operator}}
+
+    {{#vendorExtensions.x-is-update-operator}}
+    public function update(string $status, array $options = []): RecordingInstance {
+        $options = new Values($options);
+
+        $data = Values::of(['Status' => $status, 'PauseBehavior' => $options['pauseBehavior'], ]);
+
+        $payload = $this->version->update('POST', $this->uri, [], $data);
+
+        return new RecordingInstance(
+        $this->version,
+        $payload,
+        $this->solution['accountSid'],
+        $this->solution['callSid'],
+        $this->solution['sid']
+        );
+    }
+    {{/vendorExtensions.x-is-update-operator}}
+
+    {{#vendorExtensions.x-is-delete-operator}}
+    public function delete(): bool {
+        return $this->version->delete('DELETE', $this->uri);
+    }
+    {{/vendorExtensions.x-is-delete-operator}}
+
+    public function __toString(): string {
+        $context = [];
+        foreach ($this->solution as $key => $value) {
+        $context[] = "$key=$value";
+        }
+        return '[Twilio.Api.V2010.NotificationContext ' . \implode(' ', $context) . ']';
+    }
+}
+
+{{/resources}}
