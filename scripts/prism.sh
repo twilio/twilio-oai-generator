@@ -8,7 +8,8 @@ for library in ${LIBRARIES}; do
 done
 
 cd examples/prism
-docker-compose up -d --build --pull always --force-recreate --remove-orphans "${testing_services[@]}"
+docker-compose build --pull "${testing_services[@]}"
+docker-compose up -d --force-recreate --remove-orphans "${testing_services[@]}"
 
 function wait_for() {
   echo -n "Waiting for tests to complete"
