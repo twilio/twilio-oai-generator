@@ -31,6 +31,15 @@ public class EnumConstants {
 
     @Getter
     @RequiredArgsConstructor
+    public enum PathType {
+        LIST("list"),
+        INSTANCE("instance");
+
+        private final String value;
+    }
+
+    @Getter
+    @RequiredArgsConstructor
     public enum CsharpDataTypes implements LanguageDataType {
         LIST("List<");
 
