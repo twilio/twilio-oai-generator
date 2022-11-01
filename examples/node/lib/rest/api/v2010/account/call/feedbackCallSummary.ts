@@ -94,20 +94,20 @@ export class FeedbackCallSummaryContextImpl
       throw new Error('Required parameter "params" missing.');
     }
 
-    if (params.endDate === null || params.endDate === undefined) {
-      throw new Error('Required parameter "params.endDate" missing.');
+    if (params["endDate"] === null || params["endDate"] === undefined) {
+      throw new Error("Required parameter \"params['endDate']\" missing.");
     }
 
-    if (params.startDate === null || params.startDate === undefined) {
-      throw new Error('Required parameter "params.startDate" missing.');
+    if (params["startDate"] === null || params["startDate"] === undefined) {
+      throw new Error("Required parameter \"params['startDate']\" missing.");
     }
 
     const data: any = {};
 
-    if (params.accountSid2 !== undefined)
-      data["AccountSid"] = params.accountSid2;
-    data["EndDate"] = serialize.iso8601Date(params.endDate);
-    data["StartDate"] = serialize.iso8601Date(params.startDate);
+    if (params["accountSid2"] !== undefined)
+      data["AccountSid"] = params["accountSid2"];
+    data["EndDate"] = serialize.iso8601Date(params["endDate"]);
+    data["StartDate"] = serialize.iso8601Date(params["startDate"]);
 
     const headers: any = {};
     headers["Content-Type"] = "application/x-www-form-urlencoded";

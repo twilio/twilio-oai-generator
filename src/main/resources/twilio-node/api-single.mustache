@@ -30,7 +30,7 @@ import { {{importName}} } from "./{{apiFilename}}/{{filename}}";
  */
 export interface {{resourceName}}{{vendorExtensions.x-name}}Options {
   {{#allParams}}
-  {{paramName}}{{^required}}?{{/required}}: {{{dataType}}};
+  "{{paramName}}"{{^required}}?{{/required}}: {{{dataType}}};
   {{/allParams}}
 }
 {{/bodyParam}}
@@ -64,7 +64,7 @@ export interface {{resourceName}} {
 {{#parentResourceName}}
 export interface {{resourceName}}Solution {
 {{#resourcePathParams}}
-  {{paramName}}?: {{{dataType}}};
+  "{{paramName}}"?: {{{dataType}}};
 {{/resourcePathParams}}
 }
 

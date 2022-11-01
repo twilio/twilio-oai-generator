@@ -110,39 +110,43 @@ export function NewCredentialsListInstance(
       throw new Error('Required parameter "params" missing.');
     }
 
-    if (params.testString === null || params.testString === undefined) {
-      throw new Error('Required parameter "params.testString" missing.');
+    if (params["testString"] === null || params["testString"] === undefined) {
+      throw new Error("Required parameter \"params['testString']\" missing.");
     }
 
     const data: any = {};
 
-    data["TestString"] = params.testString;
-    if (params.testBoolean !== undefined)
-      data["TestBoolean"] = serialize.bool(params.testBoolean);
-    if (params.testInteger !== undefined)
-      data["TestInteger"] = params.testInteger;
-    if (params.testNumber !== undefined) data["TestNumber"] = params.testNumber;
-    if (params.testNumberFloat !== undefined)
-      data["TestNumberFloat"] = params.testNumberFloat;
-    if (params.testNumberDouble !== undefined)
-      data["TestNumberDouble"] = params.testNumberDouble;
-    if (params.testNumberInt32 !== undefined)
-      data["TestNumberInt32"] = params.testNumberInt32;
-    if (params.testNumberInt64 !== undefined)
-      data["TestNumberInt64"] = params.testNumberInt64;
-    if (params.testObject !== undefined)
-      data["TestObject"] = serialize.object(params.testObject);
-    if (params.testDateTime !== undefined)
-      data["TestDateTime"] = serialize.iso8601DateTime(params.testDateTime);
-    if (params.testDate !== undefined)
-      data["TestDate"] = serialize.iso8601Date(params.testDate);
-    if (params.testEnum !== undefined) data["TestEnum"] = params.testEnum;
-    if (params.testObjectArray !== undefined)
-      data["TestObjectArray"] = serialize.map(params.testObjectArray, (e) => e);
-    if (params.testAnyType !== undefined)
-      data["TestAnyType"] = params.testAnyType;
-    if (params.permissions !== undefined)
-      data["Permissions"] = serialize.map(params.permissions, (e) => e);
+    data["TestString"] = params["testString"];
+    if (params["testBoolean"] !== undefined)
+      data["TestBoolean"] = serialize.bool(params["testBoolean"]);
+    if (params["testInteger"] !== undefined)
+      data["TestInteger"] = params["testInteger"];
+    if (params["testNumber"] !== undefined)
+      data["TestNumber"] = params["testNumber"];
+    if (params["testNumberFloat"] !== undefined)
+      data["TestNumberFloat"] = params["testNumberFloat"];
+    if (params["testNumberDouble"] !== undefined)
+      data["TestNumberDouble"] = params["testNumberDouble"];
+    if (params["testNumberInt32"] !== undefined)
+      data["TestNumberInt32"] = params["testNumberInt32"];
+    if (params["testNumberInt64"] !== undefined)
+      data["TestNumberInt64"] = params["testNumberInt64"];
+    if (params["testObject"] !== undefined)
+      data["TestObject"] = serialize.object(params["testObject"]);
+    if (params["testDateTime"] !== undefined)
+      data["TestDateTime"] = serialize.iso8601DateTime(params["testDateTime"]);
+    if (params["testDate"] !== undefined)
+      data["TestDate"] = serialize.iso8601Date(params["testDate"]);
+    if (params["testEnum"] !== undefined) data["TestEnum"] = params["testEnum"];
+    if (params["testObjectArray"] !== undefined)
+      data["TestObjectArray"] = serialize.map(
+        params["testObjectArray"],
+        (e) => e
+      );
+    if (params["testAnyType"] !== undefined)
+      data["TestAnyType"] = params["testAnyType"];
+    if (params["permissions"] !== undefined)
+      data["Permissions"] = serialize.map(params["permissions"], (e) => e);
 
     const headers: any = {};
     headers["Content-Type"] = "application/x-www-form-urlencoded";

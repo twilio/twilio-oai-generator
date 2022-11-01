@@ -394,6 +394,9 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
 
     @Override
     public String toParamName(final String name) {
-        return super.toVarName(twilioCodegen.toParamName(name));
+        return Arrays
+            .stream(twilioCodegen.toParamName(name).split("\\."))
+            .map(input -> StringHelper.camelize(input, true))
+            .collect(Collectors.joining("."));
     }
 }
