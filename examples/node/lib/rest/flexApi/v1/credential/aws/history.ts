@@ -17,7 +17,7 @@ import V1 from "../../../V1";
 const deserialize = require("../../../../../base/deserialize");
 const serialize = require("../../../../../base/serialize");
 
-export interface HistoryListInstance {
+export interface HistoryContext {
   /**
    * Fetch a HistoryInstance
    *
@@ -36,29 +36,21 @@ export interface HistoryListInstance {
   [inspect.custom](_depth: any, options: InspectOptions): any;
 }
 
-export interface HistorySolution {
+export interface HistoryContextSolution {
   sid?: string;
 }
 
-interface HistoryListInstanceImpl extends HistoryListInstance {}
-class HistoryListInstanceImpl implements HistoryListInstance {
-  _version?: V1;
-  _solution?: HistorySolution;
-  _uri?: string;
-}
+export class HistoryContextImpl implements HistoryContext {
+  protected _solution: HistoryContextSolution;
+  protected _uri: string;
 
-export function HistoryListInstance(
-  version: V1,
-  sid: string
-): HistoryListInstance {
-  const instance = {} as HistoryListInstanceImpl;
+  constructor(protected _version: V1, sid: string) {
+    this._solution = { sid };
+    this._uri = `/Credentials/AWS/${sid}/History`;
+  }
 
-  instance._version = version;
-  instance._solution = { sid };
-  instance._uri = `/Credentials/AWS/${sid}/History`;
-
-  instance.fetch = function fetch(callback?: any): Promise<HistoryInstance> {
-    let operationVersion = version,
+  fetch(callback?: any): Promise<HistoryInstance> {
+    let operationVersion = this._version,
       operationPromise = operationVersion.fetch({
         uri: this._uri,
         method: "get",
@@ -74,20 +66,20 @@ export function HistoryListInstance(
       callback
     );
     return operationPromise;
-  };
+  }
 
-  instance.toJSON = function toJSON() {
+  /**
+   * Provide a user-friendly representation
+   *
+   * @returns Object
+   */
+  toJSON() {
     return this._solution;
-  };
+  }
 
-  instance[inspect.custom] = function inspectImpl(
-    _depth: any,
-    options: InspectOptions
-  ) {
+  [inspect.custom](_depth: any, options: InspectOptions) {
     return inspect(this.toJSON(), options);
-  };
-
-  return instance;
+  }
 }
 
 interface HistoryPayload extends HistoryResource {}
@@ -100,17 +92,42 @@ interface HistoryResource {
 }
 
 export class HistoryInstance {
+  protected _solution: HistoryContextSolution;
+  protected _context?: HistoryContext;
+
   constructor(protected _version: V1, payload: HistoryPayload, sid?: string) {
     this.accountSid = payload.account_sid;
     this.sid = payload.sid;
     this.testString = payload.test_string;
     this.testInteger = deserialize.integer(payload.test_integer);
+
+    this._solution = { sid: sid || this.sid };
   }
 
   accountSid?: string | null;
   sid?: string | null;
   testString?: string | null;
   testInteger?: number | null;
+
+  private get _proxy(): HistoryContext {
+    this._context =
+      this._context ||
+      new HistoryContextImpl(this._version, this._solution.sid);
+    return this._context;
+  }
+
+  /**
+   * Fetch a HistoryInstance
+   *
+   * @param { function } [callback] - Callback to handle processed record
+   *
+   * @returns { Promise } Resolves to processed HistoryInstance
+   */
+  fetch(
+    callback?: (error: Error | null, item?: HistoryInstance) => any
+  ): Promise<HistoryInstance> {
+    return this._proxy.fetch(callback);
+  }
 
   /**
    * Provide a user-friendly representation
@@ -129,4 +146,54 @@ export class HistoryInstance {
   [inspect.custom](_depth: any, options: InspectOptions) {
     return inspect(this.toJSON(), options);
   }
+}
+
+export interface HistoryListInstance {
+  (): HistoryContext;
+  get(): HistoryContext;
+
+  /**
+   * Provide a user-friendly representation
+   */
+  toJSON(): any;
+  [inspect.custom](_depth: any, options: InspectOptions): any;
+}
+
+export interface Solution {
+  sid?: string;
+}
+
+interface HistoryListInstanceImpl extends HistoryListInstance {}
+class HistoryListInstanceImpl implements HistoryListInstance {
+  _version?: V1;
+  _solution?: Solution;
+  _uri?: string;
+}
+
+export function HistoryListInstance(
+  version: V1,
+  sid: string
+): HistoryListInstance {
+  const instance = (() => instance.get()) as HistoryListInstanceImpl;
+
+  instance.get = function get(): HistoryContext {
+    return new HistoryContextImpl(version, sid);
+  };
+
+  instance._version = version;
+  instance._solution = { sid };
+  instance._uri = `/Credentials/AWS/${sid}/History`;
+
+  instance.toJSON = function toJSON() {
+    return this._solution;
+  };
+
+  instance[inspect.custom] = function inspectImpl(
+    _depth: any,
+    options: InspectOptions
+  ) {
+    return inspect(this.toJSON(), options);
+  };
+
+  return instance;
 }

@@ -20,4 +20,9 @@ public class ApplicationConstants {
     public static final String OBJECT = "Object";
 
     public static final String LIST_INSTANCE = "ListInstance";
+    public static final String DEPENDENTS = "dependents";
+
+    public static final String TWILIO_EXTENSION_NAME = "x-twilio";
+    public static final String PATH_TYPE_EXTENSION_NAME = "x-path-type";
+    public static final String IGNORE_EXTENSION_NAME = "x-ignore";
 }

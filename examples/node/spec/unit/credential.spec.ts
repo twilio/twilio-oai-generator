@@ -52,7 +52,8 @@ describe("credential", () => {
 
     return twilio.flexApi.v1.credentials
       .aws("123")
-      .history.fetch()
+      .history()
+      .fetch()
       .then(() => scope.done());
   });
 });

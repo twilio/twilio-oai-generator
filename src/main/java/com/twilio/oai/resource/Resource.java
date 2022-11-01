@@ -14,13 +14,16 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+import static com.twilio.oai.common.ApplicationConstants.IGNORE_EXTENSION_NAME;
+import static com.twilio.oai.common.ApplicationConstants.PATH_TYPE_EXTENSION_NAME;
+import static com.twilio.oai.common.ApplicationConstants.TWILIO_EXTENSION_NAME;
+import static com.twilio.oai.common.EnumConstants.PathType;
+
 @Getter
 @RequiredArgsConstructor
 public class Resource {
     // Some characters that are not allowed in API paths.
     public static final String SEPARATOR = ":";
-    public static final String TWILIO_EXTENSION_NAME = "x-twilio";
-    public static final String IGNORE_EXTENSION_NAME = "x-ignore";
 
     private final String listTag;
     private final String name;
@@ -69,6 +72,7 @@ public class Resource {
     private void addIgnoreOperationIfNone(final PathItem pathItem, final Operation operation) {
         if (pathItem.readOperations().isEmpty()) {
             pathItem.setGet(new Operation());
+            pathItem.getGet().addExtension(PATH_TYPE_EXTENSION_NAME, PathType.LIST.getValue());
             pathItem.getGet().addExtension(IGNORE_EXTENSION_NAME, true);
 
             // Copy the parameters from the given operation. These will be used to fill out the path params in case

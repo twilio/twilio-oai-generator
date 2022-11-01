@@ -29,7 +29,7 @@ import com.google.common.collect.ImmutableMap;
 import com.samskivert.mustache.Mustache.Lambda;
 
 import static com.twilio.oai.common.ApplicationConstants.PATH_SEPARATOR_PLACEHOLDER;
-import static com.twilio.oai.resource.Resource.TWILIO_EXTENSION_NAME;
+import static com.twilio.oai.common.ApplicationConstants.TWILIO_EXTENSION_NAME;
 
 public class TwilioJavaGenerator extends JavaClientCodegen {
 
