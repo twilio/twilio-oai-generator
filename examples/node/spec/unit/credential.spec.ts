@@ -44,4 +44,15 @@ describe("credential", () => {
         scope.done();
       });
   });
+
+  it("should fetch a nested aws credential history instance", () => {
+    const scope = nock("http://flex-api.twilio.com")
+      .get("/v1/Credentials/AWS/123/History")
+      .reply(200, { sid: "123" });
+
+    return twilio.flexApi.v1.credentials
+      .aws("123")
+      .history.fetch()
+      .then(() => scope.done());
+  });
 });
