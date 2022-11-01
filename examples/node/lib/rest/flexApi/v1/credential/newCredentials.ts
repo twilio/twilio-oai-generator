@@ -144,7 +144,7 @@ export function NewCredentialsListInstance(
         (e) => e
       );
     if (params["testAnyType"] !== undefined)
-      data["TestAnyType"] = params["testAnyType"];
+      data["TestAnyType"] = serialize.object(params["testAnyType"]);
     if (params["permissions"] !== undefined)
       data["Permissions"] = serialize.map(params["permissions"], (e) => e);
 
