@@ -23,8 +23,9 @@ import org.openapitools.codegen.model.ModelMap;
 import org.openapitools.codegen.model.ModelsMap;
 import org.openapitools.codegen.model.OperationsMap;
 
+import static com.twilio.oai.common.ApplicationConstants.DEPENDENTS;
+import static com.twilio.oai.common.ApplicationConstants.IGNORE_EXTENSION_NAME;
 import static com.twilio.oai.common.ApplicationConstants.PATH_SEPARATOR_PLACEHOLDER;
-import static com.twilio.oai.resource.Resource.IGNORE_EXTENSION_NAME;
 
 public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
 
@@ -111,7 +112,6 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
         return new HashMap<>();
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public OperationsMap postProcessOperationsWithModels(final OperationsMap objs, List<ModelMap> allModels) {
         final OperationsMap results = super.postProcessOperationsWithModels(objs, allModels);
@@ -191,7 +191,7 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
             co.formParams.forEach(this::addSerializeVendorExtension);
             co.httpMethod = co.httpMethod.toLowerCase();
 
-            final Map<String, Object> dependentMap = PathUtils.getStringMap(resource, "dependents");
+            final Map<String, Object> dependentMap = PathUtils.getStringMap(resource, DEPENDENTS);
             resourceTree
                 .dependents(co.path)
                 .forEach(dependent -> dependent
@@ -239,15 +239,30 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
             }
         }
 
-        resources.values().stream().map(resource -> (Map<String, Object>) resource).forEach(resource -> {
+        for (final String resourceName : resources.keySet()) {
+            final Map<String, Object> resource = PathUtils.getStringMap(resources, resourceName);
             final String parentResourceName = (String) resource.get("parentResourceName");
             if (parentResourceName != null) {
+                final boolean parentExists = resources.containsKey(parentResourceName);
                 final Map<String, Object> parentResource = PathUtils.getStringMap(resources, parentResourceName);
                 parentResource.put("instanceResource", resource);
+
+                if (!parentExists) {
+                    parentResource.put("resourceName", parentResourceName);
+
+                    // If the parent doesn't exist, move this resource's dependents onto it.
+                    final Map<String, Object> dependents = PathUtils.getStringMap(resource, DEPENDENTS);
+                    resource.remove(DEPENDENTS);
+                    parentResource.put(DEPENDENTS, dependents.values());
+
+                    // Fill out the parent's path and params using any of resource's operations.
+                    updateResourcePath(parentResource, getOperations(resource).get(0));
+                    getOperations(parentResource);
+                }
             }
 
-            PathUtils.flattenStringMap(resource, "dependents");
-        });
+            PathUtils.flattenStringMap(resource, DEPENDENTS);
+        }
 
         results.put("resources", resources.values());
         results.put("hasPaginationOperation", hasPaginationOperation);
@@ -284,12 +299,17 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
         final List<CodegenParameter> resourcePathParams = new ArrayList<>();
 
         String path = PathUtils.removeFirstPart(operation.path);
+        final String pathWithoutExtension = PathUtils.removeExtension(path);
         for (final CodegenParameter pathParam : operation.pathParams) {
             final String target = "{" + pathParam.baseName + "}";
 
             if (path.contains(target)) {
                 path = path.replace(target, "${" + pathParam.paramName + "}");
                 resourcePathParams.add(pathParam);
+
+                if (pathWithoutExtension.endsWith(target)) {
+                    resource.put("trailingPathParam", pathParam);
+                }
             }
         }
 

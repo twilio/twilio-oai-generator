@@ -11,7 +11,9 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.openapitools.codegen.CodegenOperation;
 
-import static com.twilio.oai.resource.Resource.TWILIO_EXTENSION_NAME;
+import static com.twilio.oai.common.ApplicationConstants.PATH_TYPE_EXTENSION_NAME;
+import static com.twilio.oai.common.ApplicationConstants.TWILIO_EXTENSION_NAME;
+import static com.twilio.oai.common.EnumConstants.PathType;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class PathUtils {
@@ -58,7 +60,7 @@ public class PathUtils {
     }
 
     public static boolean isInstanceOperation(final CodegenOperation operation) {
-        return isInstancePath(operation.path);
+        return operation.vendorExtensions.get(PATH_TYPE_EXTENSION_NAME).equals(PathType.INSTANCE.getValue());
     }
 
     public static boolean isInstancePath(final String path) {
