@@ -275,6 +275,33 @@ paths:
     x-twilio:
       parent: /Credentials
       pathType: instance
+  /v1/Credentials/AWS/{Sid}/History:
+    description: A nested instance resource under an instance resource
+    get:
+      operationId: FetchCredentialHistory
+      parameters:
+        - in: path
+          name: Sid
+          required: true
+          schema:
+            maxLength: 34
+            minLength: 34
+            pattern: ^CR[0-9a-fA-F]{32}$
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/test.response_object'
+          description: OK
+      security:
+        - accountSid_authToken: [ ]
+    servers:
+      - url: https://flex-api.twilio.com
+    x-twilio:
+      parent: /Credentials/AWS/{Sid}
+      pathType: instance
   /v1/Voice/{Sid}:
     description: An instance resource with no parent
     post:
