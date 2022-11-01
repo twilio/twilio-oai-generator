@@ -25,8 +25,7 @@ describe("account", () => {
       .then(() => scope.done());
   });
 
-  // On-hold until RC base changes made.
-  xit("should have an account shortcut", () => {
+  it("should have an account shortcut", () => {
     const scope = nock("http://api.twilio.com")
       .post(`/2010-04-01/Accounts/${accountSid}/Calls.json`, {
         RequiredStringProperty: "phone home",
