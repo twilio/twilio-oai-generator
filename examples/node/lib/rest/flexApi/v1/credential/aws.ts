@@ -18,6 +18,7 @@ import Response from "../../../../http/response";
 import V1 from "../../V1";
 const deserialize = require("../../../../base/deserialize");
 const serialize = require("../../../../base/serialize");
+import { HistoryListInstance } from "./aws/history";
 
 /**
  * Options to pass to update a AWSInstance
@@ -77,6 +78,8 @@ export interface AWSListInstancePageOptions {
 }
 
 export interface AWSContext {
+  history: HistoryListInstance;
+
   /**
    * Remove a AWSInstance
    *
@@ -138,9 +141,17 @@ export class AWSContextImpl implements AWSContext {
   protected _solution: AWSContextSolution;
   protected _uri: string;
 
+  protected _history?: HistoryListInstance;
+
   constructor(protected _version: V1, sid: string) {
     this._solution = { sid };
     this._uri = `/Credentials/AWS/${sid}`;
+  }
+
+  get history(): HistoryListInstance {
+    this._history =
+      this._history || HistoryListInstance(this._version, this._solution.sid);
+    return this._history;
   }
 
   remove(callback?: any): Promise<boolean> {
@@ -311,6 +322,13 @@ export class AWSInstance {
   ): Promise<AWSInstance>;
   update(params?: any, callback?: any): Promise<AWSInstance> {
     return this._proxy.update(params, callback);
+  }
+
+  /**
+   * Access the history.
+   */
+  history(): HistoryListInstance {
+    return this._proxy.history;
   }
 
   /**
