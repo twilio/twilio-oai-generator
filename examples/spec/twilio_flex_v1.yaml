@@ -173,6 +173,8 @@ paths:
                       - post-all
                     type: string
                   type: array
+                SomeA2PThing:
+                  type: string
               required:
                 - TestString
               title: CreateCredentialAwsRequest
