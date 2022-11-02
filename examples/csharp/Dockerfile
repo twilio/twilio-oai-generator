@@ -26,6 +26,7 @@ COPY unit-test/Rest test/Twilio.Test/
 
 RUN dotnet restore
 RUN	dotnet build Twilio.sln
+RUN dotnet add package coverlet.msbuild
 CMD ["/bin/bash", "-c", "set -o pipefail && sleep 10 && dotnet test test/Twilio.Test/Twilio.Test.csproj --no-build 2>&1  /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput='/local/coverage.opencover.xml' | tee /local/test-report.out"]
 
 RUN apt-get -y install build-essential
