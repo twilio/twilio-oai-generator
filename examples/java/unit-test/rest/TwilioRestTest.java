@@ -758,12 +758,6 @@ public class TwilioRestTest {
         new CallCreator(ACCOUNT_SID, "123").create(twilioRestClient);
     }
 
-    @Test(expected = ApiConnectionException.class)
-    public void testHttpMethodAsRequiredParam() {
-        when(twilioRestClient.request(Mockito.any())).thenReturn(null);
-        new com.twilio.rest.api.v2010.account.CallUpdater(ACCOUNT_SID,123, URI.create("https://validurl.com"), HttpMethod.POST)
-                .update(twilioRestClient);
-    }
     @Test(expected = ApiException.class)
     public void testCallCreatorResponseNotSuccess() {
         Response response = new Response("{\"account_sid\":\"SID\", \"call_sid\":\"PNXXXXY\"}", 404);
