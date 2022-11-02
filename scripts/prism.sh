@@ -34,7 +34,8 @@ function check_status() {
 }
 
 
-testing_services=("csharp-test")
+testing_services=("go-client-test" "java-test" "node-test" "csharp-test")
 wait_for "${testing_services[@]}"
 check_status "${testing_services[@]}"
+docker-compose down
 exit $EXIT_CODE
