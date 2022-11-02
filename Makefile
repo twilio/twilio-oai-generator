@@ -14,4 +14,4 @@ generate: install
 	bash scripts/generate.sh
 
 test-docker: generate
-	SONAR_TOKEN=${SONAR_TOKEN} bash scripts/prism.sh
+    bash scripts/prism.sh $(SONAR_TOKEN)
