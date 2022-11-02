@@ -11,11 +11,11 @@ RUN dotnet tool install --global dotnet-sonarscanner \
 
 RUN dotnet tool list -g
 ENV PATH="${PATH}:/root/.dotnet/tools"
-ENV SONAR_TOKEN=$SONAR_TOKEN
+ENV SONAR_TOKEN=sqp_d5d54319dfad10d2d99be1ce04d3e9d157e78455
 
 RUN mkdir /app
 WORKDIR /app
-RUN git clone --depth 1 https://github.com/twilio/twilio-csharp.git
+RUN git clone --depth 1 https://github.com/twilio/twilio-csharp.git -b asabu_csharp_pranalysis_test
 WORKDIR /app/twilio-csharp
 
 RUN rm -rf src/Twilio/Rest/*/
