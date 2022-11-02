@@ -11,11 +11,11 @@ RUN dotnet tool install --global dotnet-sonarscanner \
 
 RUN dotnet tool list -g
 ENV PATH="${PATH}:/root/.dotnet/tools"
-ENV SONAR_TOKEN=sqp_d5d54319dfad10d2d99be1ce04d3e9d157e78455
+ENV SONAR_TOKEN=$SONAR_TOKEN
 
 RUN mkdir /app
 WORKDIR /app
-RUN git clone --depth 1 https://github.com/twilio/twilio-csharp.git -b asabu_csharp_pranalysis_test
+RUN git clone --depth 1 https://github.com/twilio/twilio-csharp.git
 WORKDIR /app/twilio-csharp
 
 RUN rm -rf src/Twilio/Rest/*/
@@ -30,4 +30,4 @@ CMD ["/bin/bash", "-c", "set -o pipefail && sleep 10 && dotnet test test/Twilio.
 
 RUN apt-get -y install build-essential
 RUN echo  SONAR_TOKEN $SONAR_TOKEN
-RUN if [[ "$SONAR_TOKEN" = "" ]] ; then echo Skipping sonar analysis ;  else make cover PROJECT_NAME=twilio_twilio-oai-generator-csharp SONAR_SOURCES="/d:sonar.sources=src/Twilio/Rest/**/*.* /d:sonar.tests=test/Twilio.Test/**/*.*" ; fi
+RUN if [ "$SONAR_TOKEN" = "" ] ; then echo Skipping sonar analysis ;  else make cover PROJECT_NAME=twilio_twilio-oai-generator-csharp SONAR_SOURCES="/d:sonar.sources=src/Twilio/Rest/**/*.* /d:sonar.tests=test/Twilio.Test/**/*.*" ; fi
