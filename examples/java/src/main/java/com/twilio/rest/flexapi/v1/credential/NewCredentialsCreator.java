@@ -65,6 +65,7 @@ public class NewCredentialsCreator extends Creator<NewCredentials>{
     private List<Map<String, Object>> testObjectArray;
     private Map<String, Object> testAnyType;
     private List<NewCredentials.Permissions> permissions;
+    private String someA2PThing;
 
     public NewCredentialsCreator(final String testString, final Integer testInteger, final Float testNumberFloat) {
         this.testString = testString;
@@ -152,6 +153,10 @@ public class NewCredentialsCreator extends Creator<NewCredentials>{
     }
     public NewCredentialsCreator setPermissions(final NewCredentials.Permissions permissions){
         return setPermissions(Promoter.listOfOne(permissions));
+    }
+    public NewCredentialsCreator setSomeA2PThing(final String someA2PThing){
+        this.someA2PThing = someA2PThing;
+        return this;
     }
 
     @Override
@@ -242,6 +247,10 @@ public class NewCredentialsCreator extends Creator<NewCredentials>{
             for (NewCredentials.Permissions prop : permissions) {
                 request.addPostParam("Permissions", prop.toString());
             }
+    
+        }
+        if (someA2PThing != null) {
+            request.addPostParam("SomeA2PThing", someA2PThing);
     
         }
     }

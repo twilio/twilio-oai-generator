@@ -73,6 +73,9 @@ namespace Twilio.Rest.FlexApi.V1.Credential
         ///<summary> A comma-separated list of the permissions you will request from the users of this ConnectApp.  Can include: `get-all` and `post-all`. </summary> 
         public List<NewCredentialsResource.PermissionsEnum> Permissions { get; set; }
 
+        
+        public string SomeA2PThing { get; set; }
+
 
         /// <summary> Construct a new CreateCredentialAwsOptions </summary>
         /// <param name="testString">  </param>
@@ -148,6 +151,10 @@ namespace Twilio.Rest.FlexApi.V1.Credential
             if (Permissions != null)
             {
                 p.AddRange(Permissions.Select(Permissions => new KeyValuePair<string, string>("Permissions", Permissions.ToString())));
+            }
+            if (SomeA2PThing != null)
+            {
+                p.Add(new KeyValuePair<string, string>("SomeA2PThing", SomeA2PThing));
             }
             return p;
         }
