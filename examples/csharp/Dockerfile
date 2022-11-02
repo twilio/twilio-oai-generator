@@ -22,7 +22,7 @@ RUN rm -rf src/Twilio/Rest/*/
 COPY src/Twilio/Rest src/Twilio/Rest
 
 RUN rm -rf test/Twilio.Test/*/
-COPY unit-test/Rest integrationTest/Rest test/Twilio.Test/
+COPY unit-test/Rest test/Twilio.Test/
 
 RUN dotnet restore
 RUN	dotnet build Twilio.sln
