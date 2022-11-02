@@ -11,15 +11,21 @@ describe("credential", () => {
     nock.cleanAll();
   });
 
-  it("should create a new set of credentials", () => {
+  it("should create a new set of aws credentials", () => {
     const scope = nock("http://flex-api.twilio.com")
       .post("/v1/Credentials/AWS", {
         TestString: "I'm New Here",
+        TestEnum: "completed",
+        TestAnyType: '{"hear":"me"}',
       })
       .reply(201, { sid: "123" });
 
     return twilio.flexApi.v1.credentials.newCredentials
-      .create({ testString: "I'm New Here" })
+      .create({
+        testString: "I'm New Here",
+        testEnum: "completed",
+        testAnyType: { hear: "me" },
+      })
       .then(() => scope.done());
   });
 

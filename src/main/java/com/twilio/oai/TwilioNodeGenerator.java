@@ -342,6 +342,9 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
                 param.vendorExtensions.put("x-serialize", "serialize.object");
             }
         }
+        if (param.isAnyType) {
+            param.vendorExtensions.put("x-serialize", "serialize.object");
+        }
         if (param.isBoolean) {
             param.vendorExtensions.put("x-serialize", "serialize.bool");
         }
