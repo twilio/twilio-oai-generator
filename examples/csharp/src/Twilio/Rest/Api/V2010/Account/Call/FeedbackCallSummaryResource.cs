@@ -189,10 +189,6 @@ namespace Twilio.Rest.Api.V2010.Account.Call
         [JsonProperty("test_number_float")]
         public float? TestNumberFloat { get; private set; }
 
-        ///<summary> The test_number_decimal </summary> 
-        [JsonProperty("test_number_decimal")]
-        public decimal? TestNumberDecimal { get; private set; }
-
         
         [JsonProperty("test_enum")]
         public FeedbackCallSummaryResource.StatusEnum TestEnum { get; private set; }

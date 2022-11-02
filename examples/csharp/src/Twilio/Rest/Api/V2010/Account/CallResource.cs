@@ -276,93 +276,6 @@ namespace Twilio.Rest.Api.V2010.Account
             return await FetchAsync(options, client);
         }
         #endif
-        
-        private static Request BuildUpdateRequest(UpdateCallOptions options, ITwilioRestClient client)
-        {
-            
-            string path = "/2010-04-01/Accounts/{AccountSid}/Calls/{TestInteger}.json";
-
-            string PathAccountSid = options.PathAccountSid ?? client.AccountSid;
-            path = path.Replace("{"+"AccountSid"+"}", PathAccountSid);
-            string PathTestInteger = options.PathTestInteger.ToString();
-            path = path.Replace("{"+"TestInteger"+"}", PathTestInteger);
-
-
-            return new Request(
-                HttpMethod.Post,
-                Rest.Domain.Api,
-                path,
-                postParams: options.GetParams(),
-                headerParams: null
-            );
-        }
-
-        /// <summary> update </summary>
-        /// <param name="options"> Update Call parameters </param>
-        /// <param name="client"> Client to make requests to Twilio </param>
-        /// <returns> A single instance of Call </returns>
-        public static CallResource Update(UpdateCallOptions options, ITwilioRestClient client = null)
-        {
-            client = client ?? TwilioClient.GetRestClient();
-            var response = client.Request(BuildUpdateRequest(options, client));
-            return FromJson(response.Content);
-        }
-
-        /// <summary> update </summary>
-        /// <param name="options"> Update Call parameters </param>
-        /// <param name="client"> Client to make requests to Twilio </param>
-        /// <returns> Task that resolves to A single instance of Call </returns>
-        #if !NET35
-        public static async System.Threading.Tasks.Task<CallResource> UpdateAsync(UpdateCallOptions options,
-                                                                                                          ITwilioRestClient client = null)
-        {
-            client = client ?? TwilioClient.GetRestClient();
-            var response = await client.RequestAsync(BuildUpdateRequest(options, client));
-            return FromJson(response.Content);
-        }
-        #endif
-
-        /// <summary> update </summary>
-        /// <param name="pathTestInteger"> INTEGER ID param!!! </param>
-        /// <param name="testUri">  </param>
-        /// <param name="testMethod"> The HTTP method that we should use to request the `TestUri`. </param>
-        /// <param name="pathAccountSid">  </param>
-        /// <param name="requiredStringProperty">  </param>
-        /// <param name="client"> Client to make requests to Twilio </param>
-        /// <returns> A single instance of Call </returns>
-        public static CallResource Update(
-                                          int? pathTestInteger,
-                                          Uri testUri,
-                                          Twilio.Http.HttpMethod testMethod,
-                                          string pathAccountSid = null,
-                                          string requiredStringProperty = null,
-                                          ITwilioRestClient client = null)
-        {
-            var options = new UpdateCallOptions(pathTestInteger, testUri, testMethod){ PathAccountSid = pathAccountSid, RequiredStringProperty = requiredStringProperty };
-            return Update(options, client);
-        }
-
-        #if !NET35
-        /// <summary> update </summary>
-        /// <param name="pathTestInteger"> INTEGER ID param!!! </param>
-        /// <param name="testUri">  </param>
-        /// <param name="testMethod"> The HTTP method that we should use to request the `TestUri`. </param>
-        /// <param name="pathAccountSid">  </param>
-        /// <param name="requiredStringProperty">  </param>
-        /// <param name="client"> Client to make requests to Twilio </param>
-        /// <returns> Task that resolves to A single instance of Call </returns>
-        public static async System.Threading.Tasks.Task<CallResource> UpdateAsync(
-                                                                              int? pathTestInteger,
-                                                                              Uri testUri,
-                                                                              Twilio.Http.HttpMethod testMethod,
-                                                                              string pathAccountSid = null,
-                                                                              string requiredStringProperty = null,
-                                                                              ITwilioRestClient client = null)
-        {
-            var options = new UpdateCallOptions(pathTestInteger, testUri, testMethod){ PathAccountSid = pathAccountSid, RequiredStringProperty = requiredStringProperty };
-            return await UpdateAsync(options, client);
-        }
-        #endif
     
         /// <summary>
         /// Converts a JSON string into a CallResource object
@@ -417,10 +330,6 @@ namespace Twilio.Rest.Api.V2010.Account
         ///<summary> The test_number_float </summary> 
         [JsonProperty("test_number_float")]
         public float? TestNumberFloat { get; private set; }
-
-        ///<summary> The test_number_decimal </summary> 
-        [JsonProperty("test_number_decimal")]
-        public decimal? TestNumberDecimal { get; private set; }
 
         
         [JsonProperty("test_enum")]

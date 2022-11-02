@@ -140,16 +140,13 @@ func ResourceAccountsCalls() *schema.Resource {
 	return &schema.Resource{
 		CreateContext: createAccountsCalls,
 		ReadContext:   readAccountsCalls,
-		UpdateContext: updateAccountsCalls,
 		DeleteContext: deleteAccountsCalls,
 		Schema: map[string]*schema.Schema{
-			"required_string_property": AsString(SchemaRequired),
-			"path_account_sid":         AsString(SchemaComputedOptional),
+			"required_string_property": AsString(SchemaForceNewRequired),
+			"path_account_sid":         AsString(SchemaForceNewOptional),
 			"test_array_of_strings":    AsList(AsString(SchemaForceNewOptional), SchemaForceNewOptional),
 			"test_array_of_uri":        AsList(AsString(SchemaForceNewOptional), SchemaForceNewOptional),
 			"test_integer":             AsInt(SchemaComputed),
-			"test_uri":                 AsString(SchemaComputedOptional),
-			"test_method":              AsString(SchemaComputedOptional),
 		},
 		Importer: &schema.ResourceImporter{
 			StateContext: func(ctx context.Context, d *schema.ResourceData, m interface{}) ([]*schema.ResourceData, error) {
@@ -178,9 +175,13 @@ func createAccountsCalls(ctx context.Context, d *schema.ResourceData, m interfac
 	idParts := []string{}
 	idParts = append(idParts, IntToString(*r.TestInteger))
 	d.SetId(strings.Join(idParts, "/"))
-	d.Set("test_integer", *r.TestInteger)
 
-	return updateAccountsCalls(ctx, d, m)
+	err = MarshalSchema(d, r)
+	if err != nil {
+		return diag.FromErr(err)
+	}
+
+	return nil
 }
 
 func deleteAccountsCalls(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
@@ -235,26 +236,6 @@ func parseAccountsCallsImportId(importId string, d *schema.ResourceData) error {
 		return nil
 	}
 	d.Set("test_integer", testInteger)
-
-	return nil
-}
-func updateAccountsCalls(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-	params := UpdateCallParams{}
-	if err := UnmarshalSchema(&params, d); err != nil {
-		return diag.FromErr(err)
-	}
-
-	testInteger := d.Get("test_integer").(int)
-
-	r, err := m.(*client.Config).Client.Api.UpdateCall(testInteger, &params)
-	if err != nil {
-		return diag.FromErr(err)
-	}
-
-	err = MarshalSchema(d, r)
-	if err != nil {
-		return diag.FromErr(err)
-	}
 
 	return nil
 }
