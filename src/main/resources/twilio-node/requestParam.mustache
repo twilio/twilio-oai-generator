@@ -1,6 +1,6 @@
     {{^required}}if (params["{{paramName}}"] !== undefined){{/required}}
     {{#vendorExtensions.x-serialize}}
-    data["{{{baseName}}}"] = {{.}}(params["{{paramName}}"]{{#vendorExtensions.x-is-array}}, ((e) => e){{/vendorExtensions.x-is-array}}{{#vendorExtensions.x-prefixed-collapsible-map}}, "{{.}}"{{/vendorExtensions.x-prefixed-collapsible-map}});
+    data["{{{baseName}}}"] = {{.}}(params["{{paramName}}"]{{#vendorExtensions.x-is-array}}, (e => (e)){{/vendorExtensions.x-is-array}}{{#vendorExtensions.x-prefixed-collapsible-map}}, "{{.}}"{{/vendorExtensions.x-prefixed-collapsible-map}});
     {{/vendorExtensions.x-serialize}}
     {{^vendorExtensions.x-serialize}}
     data["{{{baseName}}}"] = params["{{paramName}}"];
