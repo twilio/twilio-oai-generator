@@ -56,7 +56,7 @@ func {{#vendorExtensions.x-is-create-operation}}create{{/vendorExtensions.x-is-c
     {{/allParams}}
 
     {{#vendorExtensions.x-is-create-operation}}
-        r, err := m.(*client.Config).Client.{{domainName}}{{apiVersionClass}}.{{nickname}}({{#pathParams}}{{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^-last}}, {{/-last}}{{/pathParams}}{{#vendorExtensions.x-has-optional-params}}{{#hasPathParams}}, {{/hasPathParams}}&params{{/vendorExtensions.x-has-optional-params}});
+        r, err := m.(*client.Config).Client.{{domainName}}{{apiVersionClass}}.{{nickname}}({{#pathParams}}{{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^-last}}, {{/-last}}{{/pathParams}}{{#vendorExtensions.x-has-optional-params}}{{#hasPathParams}}, {{/hasPathParams}}&params{{/vendorExtensions.x-has-optional-params}})
         if err != nil {
             return diag.FromErr(err)
         }
