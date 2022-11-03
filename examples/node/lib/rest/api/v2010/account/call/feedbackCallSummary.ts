@@ -102,11 +102,13 @@ export class FeedbackCallSummaryContextImpl
       throw new Error("Required parameter \"params['startDate']\" missing.");
     }
 
-    const data: any = {};
+    let data: any = {};
 
     if (params["accountSid2"] !== undefined)
       data["AccountSid"] = params["accountSid2"];
+
     data["EndDate"] = serialize.iso8601Date(params["endDate"]);
+
     data["StartDate"] = serialize.iso8601Date(params["startDate"]);
 
     const headers: any = {};

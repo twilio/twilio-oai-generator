@@ -244,10 +244,11 @@ export class AccountContextImpl implements AccountContext {
       throw new Error("Required parameter \"params['status']\" missing.");
     }
 
-    const data: any = {};
+    let data: any = {};
 
     if (params["pauseBehavior"] !== undefined)
       data["PauseBehavior"] = params["pauseBehavior"];
+
     data["Status"] = params["status"];
 
     const headers: any = {};
@@ -630,7 +631,7 @@ export function AccountListInstance(version: V2010): AccountListInstance {
       params = params || {};
     }
 
-    const data: any = {};
+    let data: any = {};
 
     if (params["recordingStatusCallback"] !== undefined)
       data["RecordingStatusCallback"] = params["recordingStatusCallback"];
@@ -675,7 +676,7 @@ export function AccountListInstance(version: V2010): AccountListInstance {
       params = params || {};
     }
 
-    const data: any = {};
+    let data: any = {};
 
     if (params["dateCreated"] !== undefined)
       data["DateCreated"] = serialize.iso8601DateTime(params["dateCreated"]);
@@ -690,6 +691,7 @@ export function AccountListInstance(version: V2010): AccountListInstance {
         params["dateCreatedAfter"]
       );
     if (params["pageSize"] !== undefined) data["PageSize"] = params["pageSize"];
+
     if (params.page !== undefined) data["Page"] = params.pageNumber;
     if (params.pageToken !== undefined) data["PageToken"] = params.pageToken;
 

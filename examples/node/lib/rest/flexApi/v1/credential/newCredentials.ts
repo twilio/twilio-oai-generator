@@ -116,7 +116,7 @@ export function NewCredentialsListInstance(
       throw new Error("Required parameter \"params['testString']\" missing.");
     }
 
-    const data: any = {};
+    let data: any = {};
 
     data["TestString"] = params["testString"];
     if (params["testBoolean"] !== undefined)

@@ -378,7 +378,7 @@ export function CallListInstance(
       );
     }
 
-    const data: any = {};
+    let data: any = {};
 
     data["RequiredStringProperty"] = params["requiredStringProperty"];
     if (params["testArrayOfStrings"] !== undefined)

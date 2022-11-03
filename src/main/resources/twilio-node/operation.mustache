@@ -22,24 +22,10 @@
     }
 
   {{/hasRequiredParams}}
-    const data: any = {};
+    let data: any = {};
 
-    {{#queryParams}}
-    {{#vendorExtensions.x-serialize}}
-    {{^required}}if (params["{{paramName}}"] !== undefined) {{/required}}data["{{{baseName}}}"] = {{vendorExtensions.x-serialize}}(params["{{paramName}}"]{{#vendorExtensions.x-is-array}}, ((e) => e){{/vendorExtensions.x-is-array}}{{#vendorExtensions.x-prefixed-collapsible-map}}, "{{vendorExtensions.x-prefixed-collapsible-map}}"{{/vendorExtensions.x-prefixed-collapsible-map}});
-    {{/vendorExtensions.x-serialize}}
-    {{^vendorExtensions.x-serialize}}
-    {{^required}}if (params["{{paramName}}"] !== undefined) {{/required}}data["{{{baseName}}}"] = params["{{paramName}}"];
-    {{/vendorExtensions.x-serialize}}
-    {{/queryParams}}
-    {{#formParams}}
-    {{#vendorExtensions.x-serialize}}
-    {{^required}}if (params["{{paramName}}"] !== undefined) {{/required}}data["{{{baseName}}}"] = {{vendorExtensions.x-serialize}}(params["{{paramName}}"]{{#vendorExtensions.x-is-array}}, ((e) => e){{/vendorExtensions.x-is-array}}{{#vendorExtensions.x-prefixed-collapsible-map}}, "{{vendorExtensions.x-prefixed-collapsible-map}}"{{/vendorExtensions.x-prefixed-collapsible-map}});
-    {{/vendorExtensions.x-serialize}}
-    {{^vendorExtensions.x-serialize}}
-    {{^required}}if (params["{{paramName}}"] !== undefined) {{/required}}data["{{{baseName}}}"] = params["{{paramName}}"];
-    {{/vendorExtensions.x-serialize}}
-    {{/formParams}}
+    {{#queryParams}}{{>requestParam}}{{/queryParams}}
+    {{#formParams}}{{>requestParam}}{{/formParams}}
     {{#vendorExtensions.x-is-read-operation}}
     if (params.page !== undefined) data["Page"] = params.pageNumber;
     if (params.pageToken !== undefined) data["PageToken"] = params.pageToken;

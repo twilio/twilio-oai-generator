@@ -195,7 +195,7 @@ export class AwsContextImpl implements AwsContext {
       params = params || {};
     }
 
-    const data: any = {};
+    let data: any = {};
 
     if (params["testString"] !== undefined)
       data["TestString"] = params["testString"];
@@ -513,9 +513,10 @@ export function AwsListInstance(version: V1): AwsListInstance {
       params = params || {};
     }
 
-    const data: any = {};
+    let data: any = {};
 
     if (params["pageSize"] !== undefined) data["PageSize"] = params["pageSize"];
+
     if (params.page !== undefined) data["Page"] = params.pageNumber;
     if (params.pageToken !== undefined) data["PageToken"] = params.pageToken;
 

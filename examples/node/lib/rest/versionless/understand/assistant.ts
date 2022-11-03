@@ -87,7 +87,7 @@ export function AssistantListInstance(
       params = params || {};
     }
 
-    const data: any = {};
+    let data: any = {};
 
     if (params["friendlyName"] !== undefined)
       data["FriendlyName"] = params["friendlyName"];

@@ -231,7 +231,7 @@ export function FleetListInstance(version: DeployedDevices): FleetListInstance {
       params = params || {};
     }
 
-    const data: any = {};
+    let data: any = {};
 
     if (params["friendlyName"] !== undefined)
       data["FriendlyName"] = params["friendlyName"];
