@@ -70,6 +70,9 @@ namespace Twilio.Rest.FlexApi.V1.Credential
         
         public object TestAnyType { get; set; }
 
+        
+        public List<object> TestAnyArray { get; set; }
+
         ///<summary> A comma-separated list of the permissions you will request from the users of this ConnectApp.  Can include: `get-all` and `post-all`. </summary> 
         public List<NewCredentialsResource.PermissionsEnum> Permissions { get; set; }
 
@@ -83,6 +86,7 @@ namespace Twilio.Rest.FlexApi.V1.Credential
         {
             TestString = testString;
             TestObjectArray = new List<object>();
+            TestAnyArray = new List<object>();
             Permissions = new List<NewCredentialsResource.PermissionsEnum>();
         }
 
@@ -147,6 +151,10 @@ namespace Twilio.Rest.FlexApi.V1.Credential
             if (TestAnyType != null)
             {
                 p.Add(new KeyValuePair<string, string>("TestAnyType", Serializers.JsonObject(TestAnyType)));
+            }
+            if (TestAnyArray != null)
+            {
+                p.AddRange(TestAnyArray.Select(TestAnyArray => new KeyValuePair<string, string>("TestAnyArray", Serializers.JsonObject(TestAnyArray))));
             }
             if (Permissions != null)
             {

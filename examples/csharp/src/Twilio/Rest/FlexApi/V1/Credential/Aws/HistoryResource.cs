@@ -75,24 +75,27 @@ namespace Twilio.Rest.FlexApi.V1.Credential.Aws
         #endif
         /// <summary> fetch </summary>
         /// <param name="pathSid">  </param>
+        /// <param name="addOnsData">  </param>
         /// <param name="client"> Client to make requests to Twilio </param>
         /// <returns> A single instance of History </returns>
         public static HistoryResource Fetch(
                                          string pathSid, 
+                                         Dictionary<string, object> addOnsData = null, 
                                          ITwilioRestClient client = null)
         {
-            var options = new FetchHistoryOptions(pathSid){  };
+            var options = new FetchHistoryOptions(pathSid){ AddOnsData = addOnsData };
             return Fetch(options, client);
         }
 
         #if !NET35
         /// <summary> fetch </summary>
         /// <param name="pathSid">  </param>
+        /// <param name="addOnsData">  </param>
         /// <param name="client"> Client to make requests to Twilio </param>
         /// <returns> Task that resolves to A single instance of History </returns>
-        public static async System.Threading.Tasks.Task<HistoryResource> FetchAsync(string pathSid, ITwilioRestClient client = null)
+        public static async System.Threading.Tasks.Task<HistoryResource> FetchAsync(string pathSid, Dictionary<string, object> addOnsData = null, ITwilioRestClient client = null)
         {
-            var options = new FetchHistoryOptions(pathSid){  };
+            var options = new FetchHistoryOptions(pathSid){ AddOnsData = addOnsData };
             return await FetchAsync(options, client);
         }
         #endif

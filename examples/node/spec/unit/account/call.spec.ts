@@ -61,13 +61,18 @@ describe("call", () => {
       .post("/2010-04-01/Accounts/123/Calls/Feedback/Summary/456.json", {
         EndDate: "2022-08-01",
         StartDate: "2022-08-01",
+        AccountSid: "other-account",
       })
       .reply(201, { test_array: [{ count: 4 }] });
 
     return twilio.api.v2010
       .accounts("123")
       .calls.feedbackCallSummary("456")
-      .update({ endDate: "2022-08-01", startDate: "2022-08-01" })
+      .update({
+        endDate: "2022-08-01",
+        startDate: "2022-08-01",
+        accountSid: "other-account",
+      })
       .then(() => scope.done());
   });
 });

@@ -163,6 +163,9 @@ paths:
                     type: object
                   type: array
                 TestAnyType: { }
+                TestAnyArray:
+                  items: {}
+                  type: array
                 Permissions:
                   description: 'A comma-separated list of the permissions you will
                                       request from the users of this ConnectApp.  Can include: `get-all`
@@ -290,6 +293,11 @@ paths:
             minLength: 34
             pattern: ^CR[0-9a-fA-F]{32}$
             type: string
+        - in: query
+          name: AddOnsData
+          schema:
+            type: object
+            format: prefixed-collapsible-map-AddOns
       responses:
         '200':
           content:

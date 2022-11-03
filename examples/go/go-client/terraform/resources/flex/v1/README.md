@@ -19,6 +19,7 @@ Name | Type | Requirement | Description
 **test_enum** | string | Optional | 
 **test_object_array** | list(string) | Optional | 
 **test_any_type** | string | Optional | 
+**test_any_array** | list(string) | Optional | 
 **permissions** | list(string) | Optional | A comma-separated list of the permissions you will request from the users of this ConnectApp.  Can include: &#x60;get-all&#x60; and &#x60;post-all&#x60;.
 **some_a2_pthing** | string | Optional | 
 **sid** | string | *Computed* | 

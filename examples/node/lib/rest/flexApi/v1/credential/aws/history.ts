@@ -17,6 +17,15 @@ import V1 from "../../../V1";
 const deserialize = require("../../../../../base/deserialize");
 const serialize = require("../../../../../base/serialize");
 
+/**
+ * Options to pass to fetch a HistoryInstance
+ *
+ * @property { object } [addOnsData]
+ */
+export interface HistoryContextFetchOptions {
+  addOnsData?: object;
+}
+
 export interface HistoryContext {
   /**
    * Fetch a HistoryInstance
@@ -28,6 +37,19 @@ export interface HistoryContext {
   fetch(
     callback?: (error: Error | null, item?: HistoryInstance) => any
   ): Promise<HistoryInstance>;
+  /**
+   * Fetch a HistoryInstance
+   *
+   * @param { HistoryContextFetchOptions } params - Parameter for request
+   * @param { function } [callback] - Callback to handle processed record
+   *
+   * @returns { Promise } Resolves to processed HistoryInstance
+   */
+  fetch(
+    params: HistoryContextFetchOptions,
+    callback?: (error: Error | null, item?: HistoryInstance) => any
+  ): Promise<HistoryInstance>;
+  fetch(params?: any, callback?: any): Promise<HistoryInstance>;
 
   /**
    * Provide a user-friendly representation
@@ -49,11 +71,30 @@ export class HistoryContextImpl implements HistoryContext {
     this._uri = `/Credentials/AWS/${sid}/History`;
   }
 
-  fetch(callback?: any): Promise<HistoryInstance> {
+  fetch(params?: any, callback?: any): Promise<HistoryInstance> {
+    if (typeof params === "function") {
+      callback = params;
+      params = {};
+    } else {
+      params = params || {};
+    }
+
+    let data: any = {};
+
+    if (params["addOnsData"] !== undefined)
+      data = {
+        ...data,
+        ...serialize.prefixedCollapsibleMap(params["addOnsData"], "AddOns"),
+      };
+
+    const headers: any = {};
+
     let operationVersion = this._version,
       operationPromise = operationVersion.fetch({
         uri: this._uri,
         method: "get",
+        params: data,
+        headers,
       });
 
     operationPromise = operationPromise.then(
@@ -125,8 +166,21 @@ export class HistoryInstance {
    */
   fetch(
     callback?: (error: Error | null, item?: HistoryInstance) => any
-  ): Promise<HistoryInstance> {
-    return this._proxy.fetch(callback);
+  ): Promise<HistoryInstance>;
+  /**
+   * Fetch a HistoryInstance
+   *
+   * @param { HistoryContextFetchOptions } params - Parameter for request
+   * @param { function } [callback] - Callback to handle processed record
+   *
+   * @returns { Promise } Resolves to processed HistoryInstance
+   */
+  fetch(
+    params: HistoryContextFetchOptions,
+    callback?: (error: Error | null, item?: HistoryInstance) => any
+  ): Promise<HistoryInstance>;
+  fetch(params?: any, callback?: any): Promise<HistoryInstance> {
+    return this._proxy.fetch(params, callback);
   }
 
   /**
