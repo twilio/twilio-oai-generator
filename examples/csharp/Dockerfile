@@ -7,11 +7,11 @@ RUN apt-get update \
          openjdk-11-jre
 
 RUN dotnet tool install --global dotnet-sonarscanner \
-    && dotnet tool install --global dotnet-reportgenerator-globaltool --version 5.1.10
+    && dotnet tool install --global dotnet-reportgenerator-globaltool --version 4.8.12
 
 RUN dotnet tool list -g
 ENV PATH="${PATH}:/root/.dotnet/tools"
-ENV SONAR_TOKEN=sqp_c53dc09c64298f571479e7dc8dc3298ea96d8a76
+ENV SONAR_TOKEN=$SONAR_TOKEN
 
 RUN mkdir /app
 WORKDIR /app
