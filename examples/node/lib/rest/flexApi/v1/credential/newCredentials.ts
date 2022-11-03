@@ -43,6 +43,7 @@ type TestStatus =
  * @property { Array<object> } [testObjectArray]
  * @property { any } [testAnyType]
  * @property { Array<string> } [permissions] A comma-separated list of the permissions you will request from the users of this ConnectApp.  Can include: &#x60;get-all&#x60; and &#x60;post-all&#x60;.
+ * @property { string } [someA2PThing]
  */
 export interface NewCredentialsListInstanceCreateOptions {
   testString: string;
@@ -60,6 +61,7 @@ export interface NewCredentialsListInstanceCreateOptions {
   testObjectArray?: Array<object>;
   testAnyType?: any;
   permissions?: Array<string>;
+  someA2PThing?: string;
 }
 
 export interface NewCredentialsListInstance {
@@ -147,6 +149,8 @@ export function NewCredentialsListInstance(
       data["TestAnyType"] = serialize.object(params["testAnyType"]);
     if (params["permissions"] !== undefined)
       data["Permissions"] = serialize.map(params["permissions"], (e) => e);
+    if (params["someA2PThing"] !== undefined)
+      data["SomeA2PThing"] = params["someA2PThing"];
 
     const headers: any = {};
     headers["Content-Type"] = "application/x-www-form-urlencoded";

@@ -98,14 +98,14 @@ public class Resource {
         final Optional<Aliases> className = getResourceNamesFromExtensions(pathItem.getExtensions());
 
         return className.orElseGet(() -> {
-            final String mountName = PathUtils.fetchLastElement(listTag, SEPARATOR);
+            final String mountName = StringHelper.camelize(PathUtils.fetchLastElement(listTag, SEPARATOR));
             return new Aliases(inflector.singular(mountName), mountName);
         });
     }
 
     private Optional<Aliases> getResourceNamesFromExtensions(final Map<String, Object> extensions) {
-        final Optional<String> classNameOpt = getTwilioStringExtension(extensions, "className");
-        final Optional<String> mountNameOpt = getTwilioStringExtension(extensions, "mountName");
+        final Optional<String> classNameOpt = getTwilioExtension(extensions, "className");
+        final Optional<String> mountNameOpt = getTwilioExtension(extensions, "mountName");
 
         if (classNameOpt.isPresent() || mountNameOpt.isPresent()) {
             final String mountName = mountNameOpt.orElse(PathUtils.fetchLastElement(listTag, SEPARATOR));
@@ -117,14 +117,7 @@ public class Resource {
         return Optional.empty();
     }
 
-    private Optional<String> getTwilioStringExtension(final Map<String, Object> extensions,
-                                                      final String extensionName) {
-        return Optional
-            .ofNullable(extensions)
-            .map(ext -> ext.get(TWILIO_EXTENSION_NAME))
-            .map(Map.class::cast)
-            .map(xTwilio -> xTwilio.get(extensionName))
-            .map(String.class::cast)
-            .map(StringHelper::camelize);
+    private Optional<String> getTwilioExtension(final Map<String, Object> extensions, final String extensionName) {
+        return PathUtils.getTwilioExtension(extensions, extensionName).map(StringHelper::camelize);
     }
 }

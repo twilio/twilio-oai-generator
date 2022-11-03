@@ -51,8 +51,12 @@ public class PathUtils {
     }
 
     public static Optional<String> getTwilioExtension(final PathItem pathItem, final String extensionKey) {
+        return getTwilioExtension(pathItem.getExtensions(), extensionKey);
+    }
+
+    public static Optional<String> getTwilioExtension(final Map<String, Object> extensions, final String extensionKey) {
         return Optional
-            .ofNullable(pathItem.getExtensions())
+            .ofNullable(extensions)
             .map(ext -> ext.get(TWILIO_EXTENSION_NAME))
             .map(Map.class::cast)
             .map(xTwilio -> xTwilio.get(extensionKey))

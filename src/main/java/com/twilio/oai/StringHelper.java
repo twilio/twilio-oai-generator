@@ -20,6 +20,7 @@ public class StringHelper {
             .stream(inputWord
                         .replaceAll("([a-z])([A-Z])", "$1_$2")
                         .replaceAll("(\\d)([A-Za-z])", "$1_$2")
+                        .replaceAll("([A-Z])([A-Z][a-z])", "$1_$2")
                         .split("[_.-]"))
             .map(String::toLowerCase)
             .map(StringHelper::toFirstLetterCaps)
