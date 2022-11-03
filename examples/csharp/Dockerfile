@@ -7,15 +7,15 @@ RUN apt-get update \
          openjdk-11-jre
 
 RUN dotnet tool install --global dotnet-sonarscanner \
-    && dotnet tool install --global dotnet-reportgenerator-globaltool --version 4.8.12
+    && dotnet tool install --global dotnet-reportgenerator-globaltool --version 5.1.10
 
 RUN dotnet tool list -g
 ENV PATH="${PATH}:/root/.dotnet/tools"
-ENV SONAR_TOKEN=$SONAR_TOKEN
+ENV SONAR_TOKEN=sqp_c53dc09c64298f571479e7dc8dc3298ea96d8a76
 
 RUN mkdir /app
 WORKDIR /app
-RUN git clone --depth 1 https://github.com/twilio/twilio-csharp.git
+RUN git clone --depth 1 https://github.com/twilio/twilio-csharp.git -b asabu_csharp_pranalysis_test
 WORKDIR /app/twilio-csharp
 
 RUN rm -rf src/Twilio/Rest/*/
@@ -29,4 +29,4 @@ RUN	dotnet build Twilio.sln
 CMD ["/bin/bash", "-c", "set -o pipefail && sleep 10 && dotnet test test/Twilio.Test/Twilio.Test.csproj --no-build 2>&1 | tee /local/test-report.out"]
 
 RUN apt-get -y install build-essential
-RUN if [ "$SONAR_TOKEN" = "" ] ; then echo Skipping sonar analysis ;  else make cover PROJECT_NAME=twilio_twilio-oai-generator-csharp SONAR_SOURCES="/d:sonar.tests=test/Twilio.Test/**/*.*" ; fi
+RUN if [ "$SONAR_TOKEN" = "" ] ; then echo Skipping sonar analysis ;  else make cover PROJECT_NAME=twilio_twilio-oai-generator-csharp SONAR_SOURCES="/d:sonar.inclusions=src/Twilio/Rest/**/* /d:sonar.cs.analyzeGeneratedCode=true /d:sonar.exclusions=test/Twilio.Test/**/*" ; fi
