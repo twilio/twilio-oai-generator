@@ -15,7 +15,7 @@ ENV SONAR_TOKEN=$SONAR_TOKEN
 
 RUN mkdir /app
 WORKDIR /app
-RUN git clone --depth 1 https://github.com/twilio/twilio-csharp.git -b asabu_csharp_pranalysis_test
+RUN git clone --depth 1 https://github.com/twilio/twilio-csharp.git
 WORKDIR /app/twilio-csharp
 
 RUN rm -rf src/Twilio/Rest/*/
