@@ -6,9 +6,8 @@ cd examples/prism
 if [ "$LANG" = "" ]; then
   docker-compose build --pull
   docker-compose up -d --force-recreate --remove-orphans
-fi
 
-if [ "$LANG" = "php" ]; then
+else
   docker-compose build --pull ${LANG}-test
   docker-compose up -d --force-recreate --remove-orphans ${LANG}-test
 fi
@@ -44,9 +43,8 @@ function check_status() {
 testing_services=()
 if [ "$LANG" = "" ]; then
   testing_services=("go-client-test" "java-test" "node-test" "csharp-test")
-fi
-if [ "$LANG" = "php" ]; then
-  testing_services=("php-test")
+else
+  testing_services=("$LANG-test")
 fi
 wait_for "${testing_services[@]}"
 check_status "${testing_services[@]}"
