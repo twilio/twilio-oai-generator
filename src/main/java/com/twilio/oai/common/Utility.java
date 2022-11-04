@@ -2,6 +2,7 @@ package com.twilio.oai.common;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -9,6 +10,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.experimental.UtilityClass;
 import org.openapitools.codegen.CodegenModel;
+import org.openapitools.codegen.model.ModelMap;
+import org.openapitools.codegen.model.ModelsMap;
 
 @UtilityClass
 public class Utility {
@@ -34,5 +37,16 @@ public class Utility {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public void addModelsToLocalModelList(final Map<String, ModelsMap> modelMap, List<CodegenModel> localModels){
+        for (final ModelsMap mods : modelMap.values()) {
+            final List<ModelMap> modList = mods.getModels();
+            modList
+                    .stream()
+                    .map(ModelMap::getModel)
+                    .map(CodegenModel.class::cast)
+                    .collect(Collectors.toCollection(() -> localModels));
+        }
     }
 }

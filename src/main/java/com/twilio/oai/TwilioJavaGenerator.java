@@ -204,16 +204,7 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
     public Map<String, ModelsMap> postProcessAllModels(final Map<String, ModelsMap> allModels) {
         final Map<String, ModelsMap> results = super.postProcessAllModels(allModels);
 
-        for (final ModelsMap mods : results.values()) {
-            final List<ModelMap> modList = mods.getModels();
-
-            // Add all the models to the local models list.
-            modList
-                    .stream()
-                    .map(ModelMap::getModel)
-                    .map(CodegenModel.class::cast)
-                    .collect(Collectors.toCollection(() -> this.allModels));
-        }
+        Utility.addModelsToLocalModelList(results, this.allModels);
         Utility.setComplexDataMapping(this.allModels, this.modelFormatMap);
         // Return an empty collection so no model files get generated.
         return new HashMap<>();
