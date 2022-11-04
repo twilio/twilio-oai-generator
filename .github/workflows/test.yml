@@ -14,7 +14,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        baseDirectory: [ '', '/php' ]
+        language: [ '', 'php' ]
     runs-on: ubuntu-latest
     timeout-minutes: 20
     env:
@@ -42,7 +42,7 @@ jobs:
         run: make test
 
       - name: Run helper tests and sonar analysis
-        run: make test-docker SONAR_TOKEN=${{ secrets.SONAR_TOKEN }}
+        run: make test-docker SONAR_TOKEN=${{ secrets.SONAR_TOKEN }} LANG={{ matrix.language }}
 
       - name: Show git status and fail on diff
         run: |
@@ -57,7 +57,7 @@ jobs:
         uses: SonarSource/sonarcloud-github-action@master
         if: (github.event_name == 'pull_request' || github.ref_type == 'branch') && !github.event.pull_request.head.repo.fork
         with:
-          projectBaseDir: examples${{ matrix.baseDirectory }}
+          projectBaseDir: examples/${{ matrix.language }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

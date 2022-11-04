@@ -1,9 +1,10 @@
 #!/bin/bash
 set -e
 
+LANG=$1
 cd examples/prism
-docker-compose build --pull
-docker-compose up -d --force-recreate --remove-orphans
+docker-compose build --pull ${LANG}
+docker-compose up -d --force-recreate --remove-orphans ${LANG}
 
 function wait_for() {
   echo -n "Waiting for tests to complete"
@@ -33,8 +34,13 @@ function check_status() {
   done
 }
 
-
-testing_services=("go-client-test" "java-test" "node-test" "csharp-test" "php-test")
+testing_services=()
+if [ "$LANG" = "" ]; then
+  testing_services=("go-client-test" "java-test" "node-test" "csharp-test")
+fi
+if [ "$LANG" = "php" ]; then
+  testing_services=("php-test")
+fi
 wait_for "${testing_services[@]}"
 check_status "${testing_services[@]}"
 docker-compose down
