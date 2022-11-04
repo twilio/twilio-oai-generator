@@ -249,6 +249,7 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
 
                 if (!parentExists) {
                     parentResource.put("resourceName", parentResourceName);
+                    parentResource.put("name", resource.get("name"));
 
                     // If the parent doesn't exist, move this resource's dependents onto it.
                     final Map<String, Object> dependents = PathUtils.getStringMap(resource, DEPENDENTS);

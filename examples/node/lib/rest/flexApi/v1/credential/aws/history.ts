@@ -213,14 +213,14 @@ export interface HistoryListInstance {
   [inspect.custom](_depth: any, options: InspectOptions): any;
 }
 
-export interface Solution {
+export interface HistorySolution {
   sid?: string;
 }
 
 interface HistoryListInstanceImpl extends HistoryListInstance {}
 class HistoryListInstanceImpl implements HistoryListInstance {
   _version?: V1;
-  _solution?: Solution;
+  _solution?: HistorySolution;
   _uri?: string;
 }
 
