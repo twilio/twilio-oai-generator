@@ -14,7 +14,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        baseDirectory: [ 'examples', 'examples/php' ]
+        baseDirectory: [ '', '/php' ]
     runs-on: ubuntu-latest
     timeout-minutes: 20
     env:
@@ -57,7 +57,7 @@ jobs:
         uses: SonarSource/sonarcloud-github-action@master
         if: (github.event_name == 'pull_request' || github.ref_type == 'branch') && !github.event.pull_request.head.repo.fork
         with:
-          projectBaseDir: ${{ matrix.baseDirectory }}
+          projectBaseDir: examples${{ matrix.baseDirectory }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
