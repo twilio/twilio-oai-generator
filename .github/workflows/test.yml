@@ -11,9 +11,6 @@ on:
 
 jobs:
   test:
-    strategy:
-      matrix:
-        baseDirectory: [ 'examples', 'examples/php' ]
     runs-on: ubuntu-latest
     timeout-minutes: 20
     env:
@@ -54,6 +51,9 @@ jobs:
 
       - name: Install SonarCloud scanner and run analysis
         uses: SonarSource/sonarcloud-github-action@master
+        strategy:
+          matrix:
+            baseDirectory: [ 'examples', 'examples/php' ]
         if: (github.event_name == 'pull_request' || github.ref_type == 'branch') && !github.event.pull_request.head.repo.fork
         with:
           projectBaseDir: ${{ matrix.baseDirectory }}
