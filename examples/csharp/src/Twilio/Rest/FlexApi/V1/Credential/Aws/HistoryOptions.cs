@@ -30,6 +30,9 @@ namespace Twilio.Rest.FlexApi.V1.Credential.Aws
         
         public string PathSid { get; }
 
+        
+        public Dictionary<string, object> AddOnsData { get; set; }
+
 
 
         /// <summary> Construct a new FetchCredentialHistoryOptions </summary>
@@ -45,6 +48,10 @@ namespace Twilio.Rest.FlexApi.V1.Credential.Aws
         {
             var p = new List<KeyValuePair<string, string>>();
 
+            if (AddOnsData != null)
+            {
+                p.AddRange(PrefixedCollapsibleMap.Serialize(AddOnsData, "AddOns"));
+            }
             return p;
         }
         

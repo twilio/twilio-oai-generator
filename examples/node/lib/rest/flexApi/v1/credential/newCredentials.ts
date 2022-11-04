@@ -42,6 +42,7 @@ type TestStatus =
  * @property { TestStatus } [testEnum]
  * @property { Array<object> } [testObjectArray]
  * @property { any } [testAnyType]
+ * @property { Array<any> } [testAnyArray]
  * @property { Array<string> } [permissions] A comma-separated list of the permissions you will request from the users of this ConnectApp.  Can include: &#x60;get-all&#x60; and &#x60;post-all&#x60;.
  * @property { string } [someA2PThing]
  */
@@ -60,6 +61,7 @@ export interface NewCredentialsListInstanceCreateOptions {
   testEnum?: TestStatus;
   testObjectArray?: Array<object>;
   testAnyType?: any;
+  testAnyArray?: Array<any>;
   permissions?: Array<string>;
   someA2PThing?: string;
 }
@@ -147,6 +149,10 @@ export function NewCredentialsListInstance(
       );
     if (params["testAnyType"] !== undefined)
       data["TestAnyType"] = serialize.object(params["testAnyType"]);
+    if (params["testAnyArray"] !== undefined)
+      data["TestAnyArray"] = serialize.map(params["testAnyArray"], (e) =>
+        serialize.object(e)
+      );
     if (params["permissions"] !== undefined)
       data["Permissions"] = serialize.map(params["permissions"], (e) => e);
     if (params["someA2PThing"] !== undefined)

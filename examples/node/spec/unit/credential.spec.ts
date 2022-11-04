@@ -18,6 +18,7 @@ describe("credential", () => {
         TestString: "I'm New Here",
         TestEnum: "completed",
         TestAnyType: '{"hear":"me"}',
+        TestAnyArray: ['{"any":"thing"}', '{"another":"thing"}'],
         SomeA2PThing: "caps",
       })
       .reply(201, { sid: "123" });
@@ -27,6 +28,7 @@ describe("credential", () => {
         testString: "I'm New Here",
         testEnum: "completed",
         testAnyType: { hear: "me" },
+        testAnyArray: [{ any: "thing" }, { another: "thing" }],
         someA2PThing: "caps",
       })
       .then(() => scope.done());
@@ -58,11 +60,18 @@ describe("credential", () => {
     it("should fetch a nested aws credential history instance", () => {
       const scope = nock("http://flex-api.twilio.com")
         .get("/v1/Credentials/AWS/123/History")
+        .query({
+          "AddOns.twilio.segment": "engage",
+        })
         .reply(200, { sid: "123" });
 
       return aws
         .history()
-        .fetch()
+        .fetch({
+          addOnsData: {
+            "twilio.segment": "engage",
+          },
+        })
         .then(() => scope.done());
     });
   });

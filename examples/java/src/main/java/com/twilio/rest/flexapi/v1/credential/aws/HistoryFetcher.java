@@ -46,11 +46,16 @@ import lombok.ToString;
 
 public class HistoryFetcher extends Fetcher<History> {
     private String pathSid;
+    private Map<String, Object> addOnsData;
 
     public HistoryFetcher(final String pathSid){
         this.pathSid = pathSid;
     }
 
+    public HistoryFetcher setAddOnsData(final Map<String, Object> addOnsData){
+        this.addOnsData = addOnsData;
+        return this;
+    }
 
     @Override
     public History fetch(final TwilioRestClient client) {
@@ -63,6 +68,7 @@ public class HistoryFetcher extends Fetcher<History> {
             Domains.FLEXAPI.toString(),
             path
         );
+        addQueryParams(request);
         Response response = client.request(request);
 
         if (response == null) {
@@ -76,5 +82,13 @@ public class HistoryFetcher extends Fetcher<History> {
         }
 
         return History.fromJson(response.getStream(), client.getObjectMapper());
+    }
+    private void addQueryParams(final Request request) {
+        if (addOnsData != null) {
+            Map<String, String> params = PrefixedCollapsibleMap.serialize(addOnsData, "AddOns");
+            for (Map.Entry<String, String> entry : params.entrySet()) {
+                request.addQueryParam(entry.getKey(), entry.getValue());
+            }
+        }
     }
 }

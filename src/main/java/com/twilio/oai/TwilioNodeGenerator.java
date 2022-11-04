@@ -336,7 +336,7 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
             if (param.dataFormat != null && param.dataFormat.startsWith("prefixed-collapsible-map")) {
                 param.vendorExtensions.put("x-serialize", "serialize.prefixedCollapsibleMap");
                 String[] formatArray = param.dataFormat.split("-");
-                param.vendorExtensions.put("x-prefixed-collapsible-map", formatArray[formatArray.length-1]);
+                param.vendorExtensions.put("x-multi-name", formatArray[formatArray.length-1]);
             }
             else {
                 param.vendorExtensions.put("x-serialize", "serialize.object");
@@ -351,7 +351,8 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
 
         if (param.isArray) {
             param.vendorExtensions.put("x-serialize", "serialize.map");
-            param.vendorExtensions.put("x-is-array", true);
+            final String transform = param.baseType.equals("any") ? "serialize.object" : "";
+            param.vendorExtensions.put("x-transform", transform);
         }
     }
 

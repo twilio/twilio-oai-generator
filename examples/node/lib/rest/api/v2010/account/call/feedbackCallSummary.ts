@@ -43,12 +43,12 @@ type TestStatus =
  *
  * @property { Date } endDate
  * @property { Date } startDate
- * @property { string } [accountSid2]
+ * @property { string } [accountSid]
  */
 export interface FeedbackCallSummaryContextUpdateOptions {
   endDate: Date;
   startDate: Date;
-  accountSid2?: string;
+  accountSid?: string;
 }
 
 export interface FeedbackCallSummaryContext {
@@ -104,8 +104,8 @@ export class FeedbackCallSummaryContextImpl
 
     let data: any = {};
 
-    if (params["accountSid2"] !== undefined)
-      data["AccountSid"] = params["accountSid2"];
+    if (params["accountSid"] !== undefined)
+      data["AccountSid"] = params["accountSid"];
 
     data["EndDate"] = serialize.iso8601Date(params["endDate"]);
 

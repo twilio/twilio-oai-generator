@@ -20,12 +20,33 @@ import (
 	"strings"
 )
 
-func (c *ApiService) FetchCredentialHistory(Sid string) (*TestResponseObject, error) {
+// Optional parameters for the method 'FetchCredentialHistory'
+type FetchCredentialHistoryParams struct {
+	//
+	AddOnsData *map[string]interface{} `json:"AddOnsData,omitempty"`
+}
+
+func (params *FetchCredentialHistoryParams) SetAddOnsData(AddOnsData map[string]interface{}) *FetchCredentialHistoryParams {
+	params.AddOnsData = &AddOnsData
+	return params
+}
+
+func (c *ApiService) FetchCredentialHistory(Sid string, params *FetchCredentialHistoryParams) (*TestResponseObject, error) {
 	path := "/v1/Credentials/AWS/{Sid}/History"
 	path = strings.Replace(path, "{"+"Sid"+"}", Sid, -1)
 
 	data := url.Values{}
 	headers := make(map[string]interface{})
+
+	if params != nil && params.AddOnsData != nil {
+		v, err := json.Marshal(params.AddOnsData)
+
+		if err != nil {
+			return nil, err
+		}
+
+		data.Set("AddOnsData", string(v))
+	}
 
 	resp, err := c.requestHandler.Get(c.baseURL+path, data, headers)
 	if err != nil {
