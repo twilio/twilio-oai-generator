@@ -101,14 +101,4 @@ public class PathUtilsTest {
         CodegenOperation nonInstanceCo = new CodegenOperation();
         assertFalse(PathUtils.isInstanceOperation(nonInstanceCo));
     }
-
-    @Test
-    public void testIsInstancePath(){
-        final String instancePath = "some/instance/path/{param}.json";
-        assertTrue(PathUtils.isInstancePath(instancePath));
-
-        final String nonInstancePath = "some/non/instance/path.json";
-        assertFalse(PathUtils.isInstancePath(nonInstancePath));
-
-    }
 }
