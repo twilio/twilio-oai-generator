@@ -3,8 +3,15 @@ set -e
 
 LANG=$1
 cd examples/prism
-docker-compose build --pull ${LANG}
-docker-compose up -d --force-recreate --remove-orphans ${LANG}
+if [ "$LANG" = "" ]; then
+  docker-compose build --pull
+  docker-compose up -d --force-recreate --remove-orphans
+fi
+
+if [ "$LANG" = "php" ]; then
+  docker-compose build --pull ${LANG}-test
+  docker-compose up -d --force-recreate --remove-orphans ${LANG}-test
+fi
 
 function wait_for() {
   echo -n "Waiting for tests to complete"
