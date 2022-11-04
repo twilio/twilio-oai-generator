@@ -37,14 +37,6 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
         TerraformSchemaOptions options;
         TerraformSchema innerSchema;
 
-        public String getFullType() {
-            if (innerSchema != null) {
-                return String.format("%s(%s)", dataType, innerSchema.getFullType());
-            }
-
-            return dataType;
-        }
-
         public String getFunc() {
             if (innerSchema != null) {
                 return String.format("As%s(%s, %s)",
