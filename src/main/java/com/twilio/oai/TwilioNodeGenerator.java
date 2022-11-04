@@ -144,18 +144,18 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
             }
 
             if (co.nickname.startsWith("update")) {
-                addOperationName(co, "Update");
+                Utility.addOperationName(co, "Update");
             } else if (co.nickname.startsWith("delete")) {
-                addOperationName(co, "Remove");
+                Utility.addOperationName(co, "Remove");
                 co.returnType = "boolean";
             } else if (co.nickname.startsWith("create")) {
-                addOperationName(co, "Create");
+                Utility.addOperationName(co, "Create");
             } else if (co.nickname.startsWith("fetch")) {
-                addOperationName(co, "Fetch");
+                Utility.addOperationName(co, "Fetch");
             } else if (co.nickname.startsWith("list")){
                 hasPaginationOperation = true;
                 co.returnType = itemName + "Page";
-                addOperationName(co, "Page");
+                Utility.addOperationName(co, "Page");
             }
 
             final Map<String, Object> resource = PathUtils.getStringMap(resources, resourceName);

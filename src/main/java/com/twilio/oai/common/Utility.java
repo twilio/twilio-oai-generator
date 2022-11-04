@@ -9,7 +9,9 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.experimental.UtilityClass;
+import org.mozilla.javascript.optimizer.Codegen;
 import org.openapitools.codegen.CodegenModel;
+import org.openapitools.codegen.CodegenOperation;
 import org.openapitools.codegen.model.ModelMap;
 import org.openapitools.codegen.model.ModelsMap;
 
@@ -48,5 +50,10 @@ public class Utility {
                     .map(CodegenModel.class::cast)
                     .collect(Collectors.toCollection(() -> localModels));
         }
+    }
+
+    public void addOperationName(final CodegenOperation operation, final String name){
+        operation.vendorExtensions.put("x-name", name);
+        operation.vendorExtensions.put("x-name-lower", name.toLowerCase());
     }
 }

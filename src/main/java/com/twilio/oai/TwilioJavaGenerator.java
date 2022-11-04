@@ -238,28 +238,28 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
             updateCodeOperationParams(co, resourceName);
             if (co.nickname.startsWith("update")) {
                 resource.put("hasUpdate", true);
-                addOperationName(co, "Update");
+                Utility.addOperationName(co, "Update");
                 resource.put("signatureListUpdate", generateSignatureList(co));
                 apiTemplateFiles.put("updater.mustache", "Updater.java");
             } else if (co.nickname.startsWith("delete")) {
                 resource.put("hasDelete", true);
-                addOperationName(co, "Remove");
+                Utility.addOperationName(co, "Remove");
                 resource.put("signatureListDelete", generateSignatureList(co));
                 apiTemplateFiles.put("deleter.mustache", "Deleter.java");
                 addDeleteHeaderEnums(co, responseModels);
             } else if (co.nickname.startsWith("create")) {
                 resource.put("hasCreate", true);
-                addOperationName(co, "Create");
+                Utility.addOperationName(co, "Create");
                 resource.put("signatureListCreate", generateSignatureList(co));
                 apiTemplateFiles.put("creator.mustache", "Creator.java");
             } else if (co.nickname.startsWith("fetch")) {
                 resource.put("hasFetch", true);
                 resource.put("signatureListFetch", generateSignatureList(co));
-                addOperationName(co, "Fetch");
+                Utility.addOperationName(co, "Fetch");
                 apiTemplateFiles.put("fetcher.mustache", "Fetcher.java");
             } else {
                 resource.put("hasRead", true);
-                addOperationName(co, "Page");
+                Utility.addOperationName(co, "Page");
                 resource.put("signatureListRead", generateSignatureList(co));
                 apiTemplateFiles.put("reader.mustache", "Reader.java");
             }
@@ -553,10 +553,10 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
         return allModels.stream().filter(model -> model.getClassname().equals(modelName)).findFirst();
     }
 
-    private void addOperationName(final CodegenOperation operation, final String name) {
-        operation.vendorExtensions.put("x-name", name);
-        operation.vendorExtensions.put("x-name-lower", name.toLowerCase());
-    }
+//    private void addOperationName(final CodegenOperation operation, final String name) {
+//        operation.vendorExtensions.put("x-name", name);
+//        operation.vendorExtensions.put("x-name-lower", name.toLowerCase());
+//    }
 
     private long calculateSerialVersionUid(final List<CodegenProperty> modelProperties){
         String signature = calculateSignature(modelProperties);
