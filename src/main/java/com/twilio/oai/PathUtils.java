@@ -10,7 +10,9 @@ import io.swagger.v3.oas.models.PathItem;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.openapitools.codegen.CodegenOperation;
+import org.openapitools.codegen.CodegenParameter;
 
+import static com.twilio.oai.common.ApplicationConstants.IS_PARENT_PARAM_EXTENSION_NAME;
 import static com.twilio.oai.common.ApplicationConstants.PATH_TYPE_EXTENSION_NAME;
 import static com.twilio.oai.common.ApplicationConstants.TWILIO_EXTENSION_NAME;
 import static com.twilio.oai.common.EnumConstants.PathType;
@@ -67,8 +69,8 @@ public class PathUtils {
         return operation.vendorExtensions.get(PATH_TYPE_EXTENSION_NAME).equals(PathType.INSTANCE.getValue());
     }
 
-    public static boolean isInstancePath(final String path) {
-        return PathUtils.removeExtension(path).endsWith("}");
+    public static boolean isParentParam(final CodegenParameter param) {
+        return (boolean) param.vendorExtensions.getOrDefault(IS_PARENT_PARAM_EXTENSION_NAME, false);
     }
 
     @SuppressWarnings("unchecked")

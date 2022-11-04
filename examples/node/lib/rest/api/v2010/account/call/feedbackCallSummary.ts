@@ -319,7 +319,7 @@ export function FeedbackCallSummaryListInstance(
 
   instance._version = version;
   instance._solution = { accountSid };
-  instance._uri = `/Accounts/${accountSid}/Calls/Feedback/Summary.json`;
+  instance._uri = ``;
 
   instance.toJSON = function toJSON() {
     return this._solution;

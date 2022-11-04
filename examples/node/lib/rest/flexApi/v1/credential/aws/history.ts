@@ -236,7 +236,7 @@ export function HistoryListInstance(
 
   instance._version = version;
   instance._solution = { sid };
-  instance._uri = `/Credentials/AWS/${sid}/History`;
+  instance._uri = ``;
 
   instance.toJSON = function toJSON() {
     return this._solution;
