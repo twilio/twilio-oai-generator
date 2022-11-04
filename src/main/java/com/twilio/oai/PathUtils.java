@@ -1,11 +1,9 @@
 package com.twilio.oai;
 
-import java.util.Arrays;
 import java.util.Map;
 import java.util.Optional;
 import java.util.TreeMap;
 
-import com.google.common.collect.Streams;
 import io.swagger.v3.oas.models.PathItem;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -47,7 +45,7 @@ public class PathUtils {
     }
 
     public static String fetchLastElement(final String path, final String delimiter) {
-        return Streams.findLast(Arrays.stream(path.split(delimiter))).get();
+        return path.substring(path.lastIndexOf(delimiter)+1);
     }
 
     public static Optional<String> getTwilioExtension(final PathItem pathItem, final String extensionKey) {
@@ -64,7 +62,7 @@ public class PathUtils {
     }
 
     public static boolean isInstanceOperation(final CodegenOperation operation) {
-        return operation.vendorExtensions.get(PATH_TYPE_EXTENSION_NAME).equals(PathType.INSTANCE.getValue());
+        return operation.vendorExtensions.getOrDefault(PATH_TYPE_EXTENSION_NAME, "").equals(PathType.INSTANCE.getValue());
     }
 
     public static boolean isInstancePath(final String path) {
