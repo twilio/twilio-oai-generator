@@ -12,6 +12,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import io.swagger.v3.oas.models.OpenAPI;
+import jdk.jshell.execution.Util;
 import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenOperation;
 import org.openapitools.codegen.CodegenParameter;
@@ -97,17 +98,7 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
     public Map<String, ModelsMap> postProcessAllModels(final Map<String, ModelsMap> allModels) {
         final Map<String, ModelsMap> results = super.postProcessAllModels(allModels);
 
-        for (final ModelsMap mods : results.values()) {
-            final List<ModelMap> modList = mods.getModels();
-
-            // Add all the models to the local models list.
-            modList
-                .stream()
-                .map(ModelMap::getModel)
-                .map(CodegenModel.class::cast)
-                .collect(Collectors.toCollection(() -> this.allModels));
-        }
-
+        Utility.addModelsToLocalModelList(results, this.allModels);
         Utility.setComplexDataMapping(this.allModels, this.modelFormatMap);
         this.allModels.forEach(model -> model.setClassname(removeEnumName(model.getClassname())));
 
