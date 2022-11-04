@@ -11,6 +11,9 @@ on:
 
 jobs:
   test:
+    strategy:
+      matrix:
+        baseDirectory: [ 'examples', 'examples/php' ]
     runs-on: ubuntu-latest
     timeout-minutes: 20
     env:
@@ -48,19 +51,6 @@ jobs:
 
       - name: Remove pom file  # Otherwise, the Sonar action fails and recommends using the Maven plugin
         run: rm pom.xml
-
-  sonar-analysis:
-    runs-on: ubuntu-latest
-    needs: [ test ]
-    strategy:
-      fail-fast: false
-      matrix:
-        baseDirectory: [ 'examples', 'examples/php' ]
-    steps:
-      - name: Checkout twilio-oai-generator
-        uses: actions/checkout@v2
-        with:
-          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
 
       - name: Install SonarCloud scanner and run analysis
         uses: SonarSource/sonarcloud-github-action@master
