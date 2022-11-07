@@ -447,7 +447,7 @@ paths:
       parent: /Accounts/{AccountSid}/Calls.json
       pathType: list
   /2010-04-01/Accounts/{AccountSid}/Calls/Feedback/Summary/{Sid}.json:
-    description: A resource that can only be updated
+    description: A resource that can only be updated and which has a parent path that needs resolution
     post:
       operationId: UpdateCallFeedbackSummary
       parameters:
@@ -508,5 +508,5 @@ paths:
     x-twilio:
       className: feedback_call_summary
       mountName: feedback_call_summary
-      parent: /Accounts/{AccountSid}/Calls.json
+      parent: /Accounts/{AccountSid}/Calls/{TestInteger}.json
       pathType: instance
