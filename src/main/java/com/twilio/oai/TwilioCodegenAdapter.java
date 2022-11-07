@@ -33,6 +33,7 @@ public class TwilioCodegenAdapter {
         // Remove the "API" suffix from the API filenames.
         codegen.setApiNameSuffix("");
         codegen.setApiPackage("");
+        codegen.setEnsureUniqueParams(false);
 
         originalOutputDir = codegen.getOutputDir();
         setDomain(getInputSpecDomain());

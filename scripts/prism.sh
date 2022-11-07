@@ -1,9 +1,16 @@
 #!/bin/bash
 set -e
 
+LIBRARIES=${LIBRARIES:-go java node csharp}
+
+for library in ${LIBRARIES}; do
+  testing_services+=("${library}-test")
+done
+
 cd examples/prism
-docker-compose build --pull --build-arg SONAR_TOKEN=$1
-docker-compose up -d --force-recreate --remove-orphans
+docker-compose build --pull "${testing_services[@]}"
+docker-compose up -d --force-recreate --remove-orphans "${testing_services[@]}"
+
 
 function wait_for() {
   echo -n "Waiting for tests to complete"
@@ -22,8 +29,7 @@ function wait_for() {
 
 EXIT_CODE=0
 function check_status() {
-  docker_test_services=("$@")
-  for docker_test_service in "${docker_test_services[@]}"; do
+  for docker_test_service in "$@"; do
     if [[ $(docker-compose ps -q "$docker_test_service" | xargs docker inspect -f "{{.State.ExitCode}}") -ne 0 ]]; then
       EXIT_CODE=$(($EXIT_CODE || $(docker-compose ps -q "$docker_test_service" | xargs docker inspect -f "{{.State.ExitCode}}")))
       echo "Failed $docker_test_service with EXIT code $(docker-compose ps -q "$docker_test_service" | xargs docker inspect -f "{{.State.ExitCode}}")"
@@ -33,8 +39,6 @@ function check_status() {
   done
 }
 
-
-testing_services=("go-client-test" "java-test" "node-test" "csharp-test")
 wait_for "${testing_services[@]}"
 check_status "${testing_services[@]}"
 docker-compose down

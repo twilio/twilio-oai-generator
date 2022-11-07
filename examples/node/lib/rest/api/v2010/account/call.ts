@@ -16,7 +16,7 @@ import { inspect, InspectOptions } from "util";
 import V2010 from "../../V2010";
 const deserialize = require("../../../../base/deserialize");
 const serialize = require("../../../../base/serialize");
-import PhoneNumberCapabilities from "../../../../interfaces";
+import { PhoneNumberCapabilities } from "../../../../interfaces";
 
 import { FeedbackCallSummaryListInstance } from "./call/feedbackCallSummary";
 
@@ -370,24 +370,27 @@ export function CallListInstance(
     }
 
     if (
-      params.requiredStringProperty === null ||
-      params.requiredStringProperty === undefined
+      params["requiredStringProperty"] === null ||
+      params["requiredStringProperty"] === undefined
     ) {
       throw new Error(
-        'Required parameter "params.requiredStringProperty" missing.'
+        "Required parameter \"params['requiredStringProperty']\" missing."
       );
     }
 
-    const data: any = {};
+    let data: any = {};
 
-    data["RequiredStringProperty"] = params.requiredStringProperty;
-    if (params.testArrayOfStrings !== undefined)
+    data["RequiredStringProperty"] = params["requiredStringProperty"];
+    if (params["testArrayOfStrings"] !== undefined)
       data["TestArrayOfStrings"] = serialize.map(
-        params.testArrayOfStrings,
+        params["testArrayOfStrings"],
         (e) => e
       );
-    if (params.testArrayOfUri !== undefined)
-      data["TestArrayOfUri"] = serialize.map(params.testArrayOfUri, (e) => e);
+    if (params["testArrayOfUri"] !== undefined)
+      data["TestArrayOfUri"] = serialize.map(
+        params["testArrayOfUri"],
+        (e) => e
+      );
 
     const headers: any = {};
     headers["Content-Type"] = "application/x-www-form-urlencoded";

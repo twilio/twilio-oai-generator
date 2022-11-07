@@ -23,8 +23,9 @@ import org.openapitools.codegen.model.ModelMap;
 import org.openapitools.codegen.model.ModelsMap;
 import org.openapitools.codegen.model.OperationsMap;
 
+import static com.twilio.oai.common.ApplicationConstants.DEPENDENTS;
+import static com.twilio.oai.common.ApplicationConstants.IGNORE_EXTENSION_NAME;
 import static com.twilio.oai.common.ApplicationConstants.PATH_SEPARATOR_PLACEHOLDER;
-import static com.twilio.oai.resource.Resource.IGNORE_EXTENSION_NAME;
 
 public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
 
@@ -62,7 +63,7 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
         twilioCodegen.setDomain(StringHelper.camelize(domain, true));
 
         openAPI.getPaths().forEach(resourceTree::addResource);
-        resourceTree.getResources().forEach(resource -> resource.updateFamily(openAPI, resourceTree));
+        resourceTree.getResources().forEach(resource -> resource.updateFamily(resourceTree));
 
         directoryStructureService.configure(openAPI);
 
@@ -111,7 +112,6 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
         return new HashMap<>();
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public OperationsMap postProcessOperationsWithModels(final OperationsMap objs, List<ModelMap> allModels) {
         final OperationsMap results = super.postProcessOperationsWithModels(objs, allModels);
@@ -191,7 +191,7 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
             co.formParams.forEach(this::addSerializeVendorExtension);
             co.httpMethod = co.httpMethod.toLowerCase();
 
-            final Map<String, Object> dependentMap = PathUtils.getStringMap(resource, "dependents");
+            final Map<String, Object> dependentMap = PathUtils.getStringMap(resource, DEPENDENTS);
             resourceTree
                 .dependents(co.path)
                 .forEach(dependent -> dependent
@@ -239,15 +239,39 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
             }
         }
 
-        resources.values().stream().map(resource -> (Map<String, Object>) resource).forEach(resource -> {
+        for (final String resourceName : resources.keySet()) {
+            final Map<String, Object> resource = PathUtils.getStringMap(resources, resourceName);
             final String parentResourceName = (String) resource.get("parentResourceName");
             if (parentResourceName != null) {
+                final boolean parentExists = resources.containsKey(parentResourceName);
                 final Map<String, Object> parentResource = PathUtils.getStringMap(resources, parentResourceName);
                 parentResource.put("instanceResource", resource);
+
+                if (!parentExists) {
+                    parentResource.put("resourceName", parentResourceName);
+                    parentResource.put("name", resource.get("name"));
+
+                    final List<CodegenParameter> resourcePathParams = getOperations(resource).get(0).pathParams;
+
+                    // If the resource has only "parent params", move its dependents onto the parent.
+                    if (resourcePathParams.stream().allMatch(PathUtils::isParentParam)) {
+                        final Map<String, Object> dependents = PathUtils.getStringMap(resource, DEPENDENTS);
+                        resource.remove(DEPENDENTS);
+                        parentResource.put(DEPENDENTS, dependents.values());
+                    }
+
+                    // Fill out the parent's path params with any "parent params".
+                    parentResource.put("resourcePathParams",
+                                       resourcePathParams
+                                           .stream()
+                                           .filter(PathUtils::isParentParam)
+                                           .collect(Collectors.toList()));
+                    getOperations(parentResource);
+                }
             }
 
-            PathUtils.flattenStringMap(resource, "dependents");
-        });
+            PathUtils.flattenStringMap(resource, DEPENDENTS);
+        }
 
         results.put("resources", resources.values());
         results.put("hasPaginationOperation", hasPaginationOperation);
@@ -316,11 +340,14 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
             if (param.dataFormat != null && param.dataFormat.startsWith("prefixed-collapsible-map")) {
                 param.vendorExtensions.put("x-serialize", "serialize.prefixedCollapsibleMap");
                 String[] formatArray = param.dataFormat.split("-");
-                param.vendorExtensions.put("x-prefixed-collapsible-map", formatArray[formatArray.length-1]);
+                param.vendorExtensions.put("x-multi-name", formatArray[formatArray.length-1]);
             }
             else {
                 param.vendorExtensions.put("x-serialize", "serialize.object");
             }
+        }
+        if (param.isAnyType) {
+            param.vendorExtensions.put("x-serialize", "serialize.object");
         }
         if (param.isBoolean) {
             param.vendorExtensions.put("x-serialize", "serialize.bool");
@@ -328,7 +355,8 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
 
         if (param.isArray) {
             param.vendorExtensions.put("x-serialize", "serialize.map");
-            param.vendorExtensions.put("x-is-array", true);
+            final String transform = param.baseType.equals("any") ? "serialize.object" : "";
+            param.vendorExtensions.put("x-transform", transform);
         }
     }
 
@@ -394,6 +422,9 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
 
     @Override
     public String toParamName(final String name) {
-        return super.toVarName(twilioCodegen.toParamName(name));
+        return Arrays
+            .stream(twilioCodegen.toParamName(name).split("\\."))
+            .map(input -> StringHelper.camelize(input, true))
+            .collect(Collectors.joining("."));
     }
 }

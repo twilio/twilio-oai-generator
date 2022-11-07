@@ -34,6 +34,7 @@ import com.twilio.converter.Converter;
 import java.time.ZonedDateTime;
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigDecimal;
 import java.net.URI;
 import java.time.format.DateTimeFormatter;
 import com.twilio.converter.DateConverter;
@@ -63,7 +64,9 @@ public class NewCredentialsCreator extends Creator<NewCredentials>{
     private NewCredentials.Status testEnum;
     private List<Map<String, Object>> testObjectArray;
     private Map<String, Object> testAnyType;
+    private List<Map<String, Object>> testAnyArray;
     private List<NewCredentials.Permissions> permissions;
+    private String someA2PThing;
 
     public NewCredentialsCreator(final String testString, final Integer testInteger, final Float testNumberFloat) {
         this.testString = testString;
@@ -145,12 +148,23 @@ public class NewCredentialsCreator extends Creator<NewCredentials>{
         this.testAnyType = testAnyType;
         return this;
     }
+    public NewCredentialsCreator setTestAnyArray(final List<Map<String, Object>> testAnyArray){
+        this.testAnyArray = testAnyArray;
+        return this;
+    }
+    public NewCredentialsCreator setTestAnyArray(final Map<String, Object> testAnyArray){
+        return setTestAnyArray(Promoter.listOfOne(testAnyArray));
+    }
     public NewCredentialsCreator setPermissions(final List<NewCredentials.Permissions> permissions){
         this.permissions = permissions;
         return this;
     }
     public NewCredentialsCreator setPermissions(final NewCredentials.Permissions permissions){
         return setPermissions(Promoter.listOfOne(permissions));
+    }
+    public NewCredentialsCreator setSomeA2PThing(final String someA2PThing){
+        this.someA2PThing = someA2PThing;
+        return this;
     }
 
     @Override
@@ -237,10 +251,20 @@ public class NewCredentialsCreator extends Creator<NewCredentials>{
             request.addPostParam("TestAnyType",  Converter.mapToJson(testAnyType));
     
         }
+        if (testAnyArray != null) {
+            for (Map<String, Object> prop : testAnyArray) {
+                request.addPostParam("TestAnyArray", Converter.mapToJson(prop));
+            }
+    
+        }
         if (permissions != null) {
             for (NewCredentials.Permissions prop : permissions) {
                 request.addPostParam("Permissions", prop.toString());
             }
+    
+        }
+        if (someA2PThing != null) {
+            request.addPostParam("SomeA2PThing", someA2PThing);
     
         }
     }
