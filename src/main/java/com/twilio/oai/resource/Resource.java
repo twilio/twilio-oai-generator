@@ -45,9 +45,21 @@ public class Resource {
     }
 
     public Optional<Resource> getParentResource(final IResourceTree resourceTree) {
-        return PathUtils
-            .getTwilioExtension(pathItem, "parent")
-            .flatMap(parent -> resourceTree.findResource(parent, false));
+        return PathUtils.getTwilioExtension(pathItem, "parent").flatMap(parent -> {
+            final String path = PathUtils.removeFirstPart(name);
+
+            // If our parent's path is not a prefix to our own path, attempt to resolve it by removing the trailing
+            // path param.
+            if (!PathUtils.isPathPrefix(path, parent)) {
+                final String parentPrefix = PathUtils.removeTrailingPathParam(parent);
+
+                if (PathUtils.isPathPrefix(path, parentPrefix)) {
+                    parent = parentPrefix;
+                }
+            }
+
+            return resourceTree.findResource(parent, false);
+        });
     }
 
     public void updateFamily(final IResourceTree resourceTree) {

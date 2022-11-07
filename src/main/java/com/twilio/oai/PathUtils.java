@@ -46,8 +46,16 @@ public class PathUtils {
         return path.replaceFirst("/\\{[^}]+}[^/]*$", "");
     }
 
+    public static boolean isPathPrefix(final String path, final String prefix) {
+        return removeExtension(removePathParamIds(path)).startsWith(removeExtension(removePathParamIds(prefix)));
+    }
+
+    public static String removePathParamIds(final String path) {
+        return path.replaceAll("\\{[^}]+}", "{}");
+    }
+
     public static String fetchLastElement(final String path, final String delimiter) {
-        return path.substring(path.lastIndexOf(delimiter)+1);
+        return path.substring(path.lastIndexOf(delimiter) + 1);
     }
 
     public static Optional<String> getTwilioExtension(final PathItem pathItem, final String extensionKey) {
@@ -64,7 +72,9 @@ public class PathUtils {
     }
 
     public static boolean isInstanceOperation(final CodegenOperation operation) {
-        return operation.vendorExtensions.getOrDefault(PATH_TYPE_EXTENSION_NAME, "").equals(PathType.INSTANCE.getValue());
+        return operation.vendorExtensions
+            .getOrDefault(PATH_TYPE_EXTENSION_NAME, "")
+            .equals(PathType.INSTANCE.getValue());
     }
 
     public static boolean isParentParam(final CodegenParameter param) {
