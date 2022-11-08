@@ -1,6 +1,7 @@
 package client
 
 import (
+	"context"
 	"net/http"
 	"net/url"
 	"time"
@@ -37,6 +38,6 @@ func (tc *TestClient) getParsedUrl(path string) *url.URL {
 	return parsedUrl
 }
 
-func (tc *TestClient) SendRequest(method string, rawURL string, data url.Values, headers map[string]interface{}) (*http.Response, error) {
-	return tc.Client.SendRequest(method, tc.getParsedUrl(rawURL).String(), data, headers)
+func (tc *TestClient) SendRequestWithCtx(context context.Context, method string, rawURL string, data url.Values, headers map[string]interface{}) (*http.Response, error) {
+	return tc.Client.SendRequestWithCtx(context, method, tc.getParsedUrl(rawURL).String(), data, headers)
 }
