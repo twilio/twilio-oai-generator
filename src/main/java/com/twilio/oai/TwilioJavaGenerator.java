@@ -220,11 +220,7 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
         results.put("recordKey", recordKey);
 
         List<CodegenModel> responseModels = new ArrayList<>();
-        apiTemplateFiles.remove("updater.mustache");
-        apiTemplateFiles.remove("creator.mustache");
-        apiTemplateFiles.remove("deleter.mustache");
-        apiTemplateFiles.remove("reader.mustache");
-        apiTemplateFiles.remove("fetcher.mustache");
+        removeApiTemplateFiles();
         resetAllModelVendorExtensions();
 
         // iterate over the operation and perhaps modify something
@@ -315,6 +311,14 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
         results.put("resources", resources.values());
 
         return results;
+    }
+
+    private void removeApiTemplateFiles(){
+        apiTemplateFiles.remove("updater.mustache");
+        apiTemplateFiles.remove("creator.mustache");
+        apiTemplateFiles.remove("deleter.mustache");
+        apiTemplateFiles.remove("reader.mustache");
+        apiTemplateFiles.remove("fetcher.mustache");
     }
 
     private Map<String, Map<String, Object>> getConventionMap() {

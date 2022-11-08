@@ -124,7 +124,6 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
         for (final CodegenOperation co : opList) {
             // Group operations by resource.
             final String[] filePathArray = co.baseName.split(PATH_SEPARATOR_PLACEHOLDER);
-
             final String itemName = filePathArray[filePathArray.length - 1];
             final String instanceName = itemName + "Instance";
             co.returnType = instanceName;
@@ -132,9 +131,6 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
 
             String resourceName;
             String parentResourceName = null;
-
-            co.returnType = instanceName;
-
             updateCodeOperationParams(co);
             if (isInstanceOperation) {
                 resourceName = itemName + "Context";
@@ -143,6 +139,7 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
                 resourceName = itemName + "ListInstance";
             }
 
+            // Update operation names
             if (co.nickname.startsWith("update")) {
                 Utility.addOperationName(co, "Update");
             } else if (co.nickname.startsWith("delete")) {
@@ -370,11 +367,6 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
 
     private Optional<CodegenModel> getModel(final String modelName) {
         return allModels.stream().filter(model -> model.getClassname().equals(modelName)).findFirst();
-    }
-
-    private void addOperationName(final CodegenOperation operation, final String name) {
-        operation.vendorExtensions.put("x-name", name);
-        operation.vendorExtensions.put("x-name-lower", name.toLowerCase());
     }
 
     private void updateCodeOperationParams(final CodegenOperation co) {
