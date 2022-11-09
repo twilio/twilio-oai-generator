@@ -18,6 +18,7 @@ public class ApplicationConstants {
     public static final String LIST_END = ">";
 
     public static final String OBJECT = "Object";
+    public static final String ARRAY = "array";
 
     public static final String LIST_INSTANCE = "ListInstance";
     public static final String DEPENDENTS = "dependents";
@@ -25,5 +26,8 @@ public class ApplicationConstants {
     public static final String TWILIO_EXTENSION_NAME = "x-twilio";
     public static final String PATH_TYPE_EXTENSION_NAME = "x-path-type";
     public static final String IGNORE_EXTENSION_NAME = "x-ignore";
+    public static final String SERIALIZE_EXTENSION_NAME = "x-serialize";
+    public static final String DESERIALIZE_EXTENSION_NAME = "x-deserialize";
+    public static final String REF_ENUM_EXTENSION_NAME = "x-ref-enum";
     public static final String IS_PARENT_PARAM_EXTENSION_NAME = "x-is-parent-param";
 }
