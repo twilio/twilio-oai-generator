@@ -5,6 +5,7 @@ if [ "$LANG" = "" ]; then
   LIBRARIES=${LIBRARIES:-go java node csharp}
 else
   LIBRARIES=${LIBRARIES:-$LANG}
+fi
 
 for library in ${LIBRARIES}; do
   testing_services+=("${library}-test")
