@@ -168,7 +168,7 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
 
 
     /**
-     * Function to pre process query parameters
+     * Function to pre-process query parameters
      * There are some combination of query parameters, if present needs to be treated different
      * This function identifies and label them and remove some query params from the original list
      * returns finalQueryParamList - Modified query parameters list
@@ -210,7 +210,7 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
         return new HashMap<>();
     }
 
-
+    @SuppressWarnings("unchecked")
     @Override
     public OperationsMap postProcessOperationsWithModels(final OperationsMap objs, List<ModelMap> allModels) {
         final OperationsMap results = super.postProcessOperationsWithModels(objs, allModels);
@@ -346,6 +346,7 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
         }
     }
 
+    @SuppressWarnings("unchecked")
     private CodegenModel processEnumVarsForAll(CodegenModel model, CodegenOperation co,  String resourceName) {
         List<CodegenProperty> enumProperties = new ArrayList<>();
         model.vars.forEach(item -> {
@@ -421,6 +422,7 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
        return allParams.stream().filter(param -> !param.isPathParam).collect(Collectors.toList());
     }
 
+    @SuppressWarnings("unchecked")
     private CodegenModel getConcatenatedResponseModel(List<CodegenModel> responseModels) {
         CodegenModel codegenModel = new CodegenModel();
         codegenModel.allowableValues = new HashMap<>();
@@ -580,11 +582,11 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
             MessageDigest md = MessageDigest.getInstance("MD5");
             byte[] messageDigest = md.digest(input.getBytes());
             BigInteger bigInteger = new BigInteger(BIG_INTEGER_CONSTANT, messageDigest);
-            String hashtext = bigInteger.toString(BASE_SIXTEEN);
-            while (hashtext.length() < OVERFLOW_CHECKER) {
-                hashtext = "0" + hashtext;
+            String hashText = bigInteger.toString(BASE_SIXTEEN);
+            while (hashText.length() < OVERFLOW_CHECKER) {
+                hashText = "0" + hashText;
             }
-            return hashtext;
+            return hashText;
         }
         catch (NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
@@ -649,6 +651,7 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
         return lambdaBuilder;
     }
 
+    @SuppressWarnings("unchecked")
     private CodegenParameter resolveEnumParameter(CodegenParameter parameter, String resourceName) {
         if( parameter.isEnum && !parameter.vendorExtensions.containsKey(REF_ENUM_EXTENSION_NAME)) {
             parameter.enumName = StringHelper.camelize(parameter.enumName);
