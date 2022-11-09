@@ -932,8 +932,8 @@ public class TwilioRestTest {
 
     @Test
     public void testCallGetters() {
-        String json = "{\"accountSid\": \"a123\", \"sid\": \"123\", \"testInteger\": 123, \"testNumber\": 123.1, \"testNumberFloat\": 123.2, \"testEnum\": \"paused\"}";
-        String jsonDuplicate = "{\"accountSid\": \"a123\", \"sid\": \"123\", \"testInteger\": 123, \"testNumber\": 123.1, \"testNumberFloat\": 123.2, \"testEnum\": \"paused\"}";
+        String json = "{\"accountSid\": \"a123\", \"sid\": \"123\", \"testInteger\": 123, \"testNumber\": 123.1, \"testNumberFloat\": 123.2, \"testNumberDecimal\": 123.13, \"testEnum\": \"paused\"}";
+        String jsonDuplicate = "{\"accountSid\": \"a123\", \"sid\": \"123\", \"testInteger\": 123, \"testNumber\": 123.1, \"testNumberFloat\": 123.2, \"testNumberDecimal\": 123.13, \"testEnum\": \"paused\"}";
         Call call = Call.fromJson(json, objectMapper);
         Call callDuplicate = Call.fromJson(jsonDuplicate, objectMapper);
 
@@ -945,6 +945,7 @@ public class TwilioRestTest {
         assertEquals(BigDecimal.valueOf(123.1), call.getTestNumber());
         assertNull(call.getPriceUnit());
         assertEquals(Float.valueOf("123.2"), call.getTestNumberFloat());
+        assertEquals(BigDecimal.valueOf(123.13), call.getTestNumberDecimal());
         assertEquals("paused", call.getTestEnum().toString());
         assertNull(call.getTestArrayOfIntegers());
         assertNull(call.getTestArrayOfArrayOfIntegers());
@@ -1000,8 +1001,8 @@ public class TwilioRestTest {
 
     @Test
     public void testAccountGetters() {
-        String json = "{\"accountSid\": \"a123\", \"sid\": \"123\", \"testInteger\": 123, \"testNumber\": 123.1, \"testNumberFloat\": 123.2, \"testEnum\": \"paused\"}";
-        String jsonDuplicate = "{\"accountSid\": \"a123\", \"sid\": \"123\", \"testInteger\": 123, \"testNumber\": 123.1, \"testNumberFloat\": 123.2, \"testEnum\": \"paused\"}";
+        String json = "{\"accountSid\": \"a123\", \"sid\": \"123\", \"testInteger\": 123, \"testNumber\": 123.1, \"testNumberFloat\": 123.2, \"testNumberDecimal\": 123.13, \"testEnum\": \"paused\"}";
+        String jsonDuplicate = "{\"accountSid\": \"a123\", \"sid\": \"123\", \"testInteger\": 123, \"testNumber\": 123.1, \"testNumberFloat\": 123.2, \"testNumberDecimal\": 123.13, \"testEnum\": \"paused\"}";
         Account account = Account.fromJson(json, objectMapper);
         Account accountDuplicate = Account.fromJson(jsonDuplicate, objectMapper);
 
@@ -1013,6 +1014,7 @@ public class TwilioRestTest {
         assertEquals(BigDecimal.valueOf(123.1), account.getTestNumber());
         assertNull(account.getPriceUnit());
         assertEquals(Float.valueOf("123.2"), account.getTestNumberFloat());
+        assertEquals(BigDecimal.valueOf(123.13), account.getTestNumberDecimal());
         assertEquals(Account.Status.PAUSED.toString(), account.getTestEnum().toString());
         assertNull(account.getTestArrayOfIntegers());
         assertNull(account.getTestArrayOfArrayOfIntegers());
@@ -1154,8 +1156,8 @@ public class TwilioRestTest {
 
     @Test
     public void testFeedbackCallSummaryObjectCreationFromString() {
-        String json = "{\"accountSid\": \"a123\", \"sid\": \"123\", \"testInteger\": 123, \"testNumber\": 123.1, \"testNumberFloat\": 123.2, \"testEnum\": \"paused\"}";
-        String jsonDuplicate = "{\"accountSid\": \"a123\", \"sid\": \"123\", \"testInteger\": 123, \"testNumber\": 123.1, \"testNumberFloat\": 123.2, \"testEnum\": \"paused\"}";
+        String json = "{\"accountSid\": \"a123\", \"sid\": \"123\", \"testInteger\": 123, \"testNumber\": 123.1, \"testNumberDecimal\": 123.13, \"testNumberFloat\": 123.2, \"testEnum\": \"paused\"}";
+        String jsonDuplicate = "{\"accountSid\": \"a123\", \"sid\": \"123\", \"testInteger\": 123, \"testNumber\": 123.1, \"testNumberDecimal\": 123.13,  \"testNumberFloat\": 123.2, \"testEnum\": \"paused\"}";
 
         FeedbackCallSummary feedbackCallSummary = FeedbackCallSummary.fromJson(json, objectMapper);
         FeedbackCallSummary feedbackCallSummaryDuplicate = FeedbackCallSummary.fromJson(new ByteArrayInputStream(jsonDuplicate.getBytes()), objectMapper);
@@ -1166,6 +1168,7 @@ public class TwilioRestTest {
         assertEquals(Integer.valueOf("123"), feedbackCallSummary.getTestInteger());
         assertNull(feedbackCallSummary.getTestDateTime());
         assertEquals(BigDecimal.valueOf(123.1), feedbackCallSummary.getTestNumber());
+        assertEquals(BigDecimal.valueOf(123.13), feedbackCallSummary.getTestNumberDecimal());
         assertNull(feedbackCallSummary.getPriceUnit());
         assertEquals(Float.valueOf("123.2"), feedbackCallSummary.getTestNumberFloat());
         assertEquals(FeedbackCallSummary.Status.PAUSED.toString(), feedbackCallSummary.getTestEnum().toString());
