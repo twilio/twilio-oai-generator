@@ -5,6 +5,7 @@ import com.twilio.oai.resource.IResourceTree;
 import com.twilio.oai.resource.Resource;
 
 import java.io.File;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -22,7 +23,11 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenOperation;
+import org.openapitools.codegen.CodegenProperty;
+import org.openapitools.codegen.model.ModelMap;
+import org.openapitools.codegen.model.ModelsMap;
 import org.openapitools.codegen.model.OperationMap;
 import org.openapitools.codegen.model.OperationsMap;
 
@@ -196,5 +201,17 @@ public class DirectoryStructureService {
         pathParts.add(caseResolver.filenameOperation(filename));
 
         return String.join(File.separator, pathParts);
+    }
+
+    public Optional<CodegenModel> getModelCoPath(final String modelName, CodegenOperation codegenOperation, String recordKey, List<CodegenModel> allModels) {
+        if (codegenOperation.vendorExtensions.containsKey("x-is-read-operation") && (boolean)codegenOperation.vendorExtensions.get("x-is-read-operation")) {
+            Optional<CodegenModel> coModel = allModels.stream().filter(model -> model.getClassname().equals(modelName)).findFirst();
+            if (coModel.isEmpty()) {
+                return Optional.empty();
+            }
+            CodegenProperty property = coModel.get().vars.stream().filter(prop -> prop.baseName.equals(recordKey)).findFirst().get();
+            return allModels.stream().filter(model -> model.getClassname().equals(property.complexType)).findFirst();
+        }
+        return allModels.stream().filter(model -> model.getClassname().equals(modelName)).findFirst();
     }
 }

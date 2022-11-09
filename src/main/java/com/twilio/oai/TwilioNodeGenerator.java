@@ -26,12 +26,13 @@ import org.openapitools.codegen.model.OperationsMap;
 import static com.twilio.oai.common.ApplicationConstants.DEPENDENTS;
 import static com.twilio.oai.common.ApplicationConstants.IGNORE_EXTENSION_NAME;
 import static com.twilio.oai.common.ApplicationConstants.PATH_SEPARATOR_PLACEHOLDER;
+import static com.twilio.oai.common.ApplicationConstants.SERIALIZE_EXTENSION_NAME;
+import static com.twilio.oai.common.ApplicationConstants.DESERIALIZE_EXTENSION_NAME;
 
 public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
 
-    public static final String VERSION_TEMPLATE = "version.mustache";
-    public static final String FILENAME_EXTENSION = ".ts";
-
+    private static final String VERSION_TEMPLATE = "version.mustache";
+    private static final String FILENAME_EXTENSION = ".ts";
     private final TwilioCodegenAdapter twilioCodegen;
     private final IResourceTree resourceTree = new ResourceMap(new Inflector());
     private final DirectoryStructureService directoryStructureService = new DirectoryStructureService(
@@ -94,17 +95,7 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
     public Map<String, ModelsMap> postProcessAllModels(final Map<String, ModelsMap> allModels) {
         final Map<String, ModelsMap> results = super.postProcessAllModels(allModels);
 
-        for (final ModelsMap mods : results.values()) {
-            final List<ModelMap> modList = mods.getModels();
-
-            // Add all the models to the local models list.
-            modList
-                .stream()
-                .map(ModelMap::getModel)
-                .map(CodegenModel.class::cast)
-                .collect(Collectors.toCollection(() -> this.allModels));
-        }
-
+        Utility.addModelsToLocalModelList(results, this.allModels);
         Utility.setComplexDataMapping(this.allModels, this.modelFormatMap);
         this.allModels.forEach(model -> model.setClassname(removeEnumName(model.getClassname())));
 
@@ -331,30 +322,30 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
 
     private void addSerializeVendorExtension(CodegenParameter param) {
         if (param.isDate) {
-            param.vendorExtensions.put("x-serialize", "serialize.iso8601Date");
+            param.vendorExtensions.put(SERIALIZE_EXTENSION_NAME, "serialize.iso8601Date");
         }
         if (param.isDateTime) {
-            param.vendorExtensions.put("x-serialize", "serialize.iso8601DateTime");
+            param.vendorExtensions.put(SERIALIZE_EXTENSION_NAME, "serialize.iso8601DateTime");
         }
         if (param.isFreeFormObject) {
             if (param.dataFormat != null && param.dataFormat.startsWith("prefixed-collapsible-map")) {
-                param.vendorExtensions.put("x-serialize", "serialize.prefixedCollapsibleMap");
+                param.vendorExtensions.put(SERIALIZE_EXTENSION_NAME, "serialize.prefixedCollapsibleMap");
                 String[] formatArray = param.dataFormat.split("-");
                 param.vendorExtensions.put("x-multi-name", formatArray[formatArray.length-1]);
             }
             else {
-                param.vendorExtensions.put("x-serialize", "serialize.object");
+                param.vendorExtensions.put(SERIALIZE_EXTENSION_NAME, "serialize.object");
             }
         }
         if (param.isAnyType) {
-            param.vendorExtensions.put("x-serialize", "serialize.object");
+            param.vendorExtensions.put(SERIALIZE_EXTENSION_NAME, "serialize.object");
         }
         if (param.isBoolean) {
-            param.vendorExtensions.put("x-serialize", "serialize.bool");
+            param.vendorExtensions.put(SERIALIZE_EXTENSION_NAME, "serialize.bool");
         }
 
         if (param.isArray) {
-            param.vendorExtensions.put("x-serialize", "serialize.map");
+            param.vendorExtensions.put(SERIALIZE_EXTENSION_NAME, "serialize.map");
             final String transform = param.baseType.equals("any") ? "serialize.object" : "";
             param.vendorExtensions.put("x-transform", transform);
         }
@@ -362,19 +353,19 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
 
     private void addDeserializeVendorExtension(CodegenProperty variable) {
         if (variable.dataFormat != null && variable.dataFormat.equals("date")) {
-            variable.vendorExtensions.put("x-deserialize", "deserialize.iso8601Date");
+            variable.vendorExtensions.put(DESERIALIZE_EXTENSION_NAME, "deserialize.iso8601Date");
         }
         if (variable.dataFormat != null && variable.dataFormat.equals("date-time")) {
-            variable.vendorExtensions.put("x-deserialize", "deserialize.iso8601DateTime");
+            variable.vendorExtensions.put(DESERIALIZE_EXTENSION_NAME, "deserialize.iso8601DateTime");
         }
         if (variable.dataFormat != null && variable.dataFormat.equals("date-time-rfc-2822")) {
-            variable.vendorExtensions.put("x-deserialize", "deserialize.rfc2822DateTime");
+            variable.vendorExtensions.put(DESERIALIZE_EXTENSION_NAME, "deserialize.rfc2822DateTime");
         }
         if (variable.isInteger) {
-            variable.vendorExtensions.put("x-deserialize", "deserialize.integer");
+            variable.vendorExtensions.put(DESERIALIZE_EXTENSION_NAME, "deserialize.integer");
         }
         if (variable.isDecimal) {
-            variable.vendorExtensions.put("x-deserialize", "deserialize.decimal");
+            variable.vendorExtensions.put(DESERIALIZE_EXTENSION_NAME, "deserialize.decimal");
         }
     }
 
@@ -391,21 +382,25 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
         co.allParams = co.allParams
                 .stream()
                 .map(conventionResolver::resolveParameter)
+                .filter(Optional::isPresent)
                 .map(Optional::get)
                 .collect(Collectors.toList());
         co.pathParams = co.pathParams
                 .stream()
                 .map(conventionResolver::resolveParameter)
+                .filter(Optional::isPresent)
                 .map(Optional::get)
                 .collect(Collectors.toList());
         co.optionalParams = co.optionalParams
                 .stream()
                 .map(conventionResolver::resolveParameter)
+                .filter(Optional::isPresent)
                 .map(Optional::get)
                 .collect(Collectors.toList());
         co.requiredParams = co.requiredParams
                 .stream()
                 .map(conventionResolver::resolveParameter)
+                .filter(Optional::isPresent)
                 .map(Optional::get)
                 .collect(Collectors.toList());
     }
