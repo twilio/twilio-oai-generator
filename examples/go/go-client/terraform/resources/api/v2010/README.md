@@ -5,12 +5,12 @@
 
 Name | Type | Requirement | Description
 --- | --- | --- | ---
-**x_twilio_webhook_enabled** |  | Optional | 
-**recording_status_callback** |  | Optional | 
-**recording_status_callback_event** |  | Optional | 
-**sid** |  | *Computed* | 
-**status** |  | Optional | 
-**pause_behavior** |  | Optional | 
+**x_twilio_webhook_enabled** | string | Optional | 
+**recording_status_callback** | string | Optional | 
+**recording_status_callback_event** | list(string) | Optional | 
+**sid** | string | *Computed* | 
+**status** | string | Optional | 
+**pause_behavior** | string | Optional | 
 
 ## twilio_api_accounts_calls
 
@@ -18,9 +18,9 @@ Name | Type | Requirement | Description
 
 Name | Type | Requirement | Description
 --- | --- | --- | ---
-**required_string_property** |  | **Required** | 
-**path_account_sid** |  | Optional | 
-**test_array_of_strings** |  | Optional | 
-**test_array_of_uri** |  | Optional | 
-**test_integer** |  | *Computed* | INTEGER ID param!!!
+**required_string_property** | string | **Required** | 
+**path_account_sid** | string | Optional | 
+**test_array_of_strings** | list(string) | Optional | 
+**test_array_of_uri** | list(string) | Optional | 
+**test_integer** | int | *Computed* | INTEGER ID param!!!
 
