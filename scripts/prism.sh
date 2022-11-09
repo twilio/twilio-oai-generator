@@ -11,6 +11,7 @@ cd examples/prism
 docker-compose build --pull "${testing_services[@]}"
 docker-compose up -d --force-recreate --remove-orphans "${testing_services[@]}"
 
+
 function wait_for() {
   echo -n "Waiting for tests to complete"
   for docker_test_service in "$@"; do

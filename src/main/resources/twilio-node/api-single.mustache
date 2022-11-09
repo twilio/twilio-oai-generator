@@ -42,8 +42,8 @@ export interface {{resourceName}}{{vendorExtensions.x-name}}Options {
 
 export interface {{resourceName}} {
   {{#instanceResource}}
-  ({{#trailingPathParam}}{{paramName}}: {{dataType}}{{/trailingPathParam}}): {{resourceName}};
-  get({{#trailingPathParam}}{{paramName}}: {{dataType}}{{/trailingPathParam}}): {{resourceName}};
+  ({{#resourcePathParams}}{{^vendorExtensions.x-is-parent-param}}{{paramName}}: {{dataType}}{{^-last}}, {{/-last}}{{/vendorExtensions.x-is-parent-param}}{{/resourcePathParams}}): {{resourceName}};
+  get({{#resourcePathParams}}{{^vendorExtensions.x-is-parent-param}}{{paramName}}: {{dataType}}{{^-last}}, {{/-last}}{{/vendorExtensions.x-is-parent-param}}{{/resourcePathParams}}): {{resourceName}};
   {{/instanceResource}}
 
   {{#dependents}}
@@ -128,9 +128,9 @@ class {{resourceName}}Impl implements {{resourceName}} {
 
 export function {{resourceName}}(version: {{apiVersionClass}}{{#resourcePathParams}}, {{paramName}}: {{{dataType}}}{{/resourcePathParams}}): {{resourceName}} {
   {{#instanceResource}}
-  const instance = (({{#trailingPathParam}}{{paramName}}{{/trailingPathParam}}) => instance.get({{#trailingPathParam}}{{paramName}}{{/trailingPathParam}})) as {{parentResourceName}}Impl;
+  const instance = (({{#resourcePathParams}}{{^vendorExtensions.x-is-parent-param}}{{paramName}}{{^-last}}, {{/-last}}{{/vendorExtensions.x-is-parent-param}}{{/resourcePathParams}}) => instance.get({{#resourcePathParams}}{{^vendorExtensions.x-is-parent-param}}{{paramName}}{{^-last}}, {{/-last}}{{/vendorExtensions.x-is-parent-param}}{{/resourcePathParams}})) as {{parentResourceName}}Impl;
 
-  instance.get = function get({{#trailingPathParam}}{{paramName}}{{/trailingPathParam}}): {{resourceName}} {
+  instance.get = function get({{#resourcePathParams}}{{^vendorExtensions.x-is-parent-param}}{{paramName}}{{^-last}}, {{/-last}}{{/vendorExtensions.x-is-parent-param}}{{/resourcePathParams}}): {{resourceName}} {
     return new {{resourceName}}Impl(version{{#resourcePathParams}}, {{paramName}}{{/resourcePathParams}});
   }
   {{/instanceResource}}

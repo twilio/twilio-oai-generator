@@ -16,7 +16,7 @@ import { inspect, InspectOptions } from "util";
 import V2010 from "../../../V2010";
 const deserialize = require("../../../../../base/deserialize");
 const serialize = require("../../../../../base/serialize");
-import PhoneNumberCapabilities from "../../../../../interfaces";
+import { PhoneNumberCapabilities } from "../../../../../interfaces";
 
 export class TestResponseObjectTestArrayOfObjects {
   "count"?: number;
@@ -319,7 +319,7 @@ export function FeedbackCallSummaryListInstance(
 
   instance._version = version;
   instance._solution = { accountSid };
-  instance._uri = `/Accounts/${accountSid}/Calls/Feedback/Summary.json`;
+  instance._uri = ``;
 
   instance.toJSON = function toJSON() {
     return this._solution;

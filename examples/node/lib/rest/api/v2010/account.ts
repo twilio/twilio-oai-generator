@@ -19,7 +19,7 @@ import V2010 from "../V2010";
 const deserialize = require("../../../base/deserialize");
 const serialize = require("../../../base/serialize");
 import { CallListInstance } from "./account/call";
-import PhoneNumberCapabilities from "../../../interfaces";
+import { PhoneNumberCapabilities } from "../../../interfaces";
 
 export class TestResponseObjectTestArrayOfObjects {
   "count"?: number;

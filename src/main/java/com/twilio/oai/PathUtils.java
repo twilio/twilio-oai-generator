@@ -1,16 +1,16 @@
 package com.twilio.oai;
 
-import java.util.Arrays;
 import java.util.Map;
 import java.util.Optional;
 import java.util.TreeMap;
 
-import com.google.common.collect.Streams;
 import io.swagger.v3.oas.models.PathItem;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.openapitools.codegen.CodegenOperation;
+import org.openapitools.codegen.CodegenParameter;
 
+import static com.twilio.oai.common.ApplicationConstants.IS_PARENT_PARAM_EXTENSION_NAME;
 import static com.twilio.oai.common.ApplicationConstants.PATH_TYPE_EXTENSION_NAME;
 import static com.twilio.oai.common.ApplicationConstants.TWILIO_EXTENSION_NAME;
 import static com.twilio.oai.common.EnumConstants.PathType;
@@ -46,8 +46,16 @@ public class PathUtils {
         return path.replaceFirst("/\\{[^}]+}[^/]*$", "");
     }
 
+    public static boolean isPathPrefix(final String path, final String prefix) {
+        return removeExtension(removePathParamIds(path)).startsWith(removeExtension(removePathParamIds(prefix)));
+    }
+
+    public static String removePathParamIds(final String path) {
+        return path.replaceAll("\\{[^}]+}", "{}");
+    }
+
     public static String fetchLastElement(final String path, final String delimiter) {
-        return Streams.findLast(Arrays.stream(path.split(delimiter))).get();
+        return path.substring(path.lastIndexOf(delimiter) + 1);
     }
 
     public static Optional<String> getTwilioExtension(final PathItem pathItem, final String extensionKey) {
@@ -64,11 +72,13 @@ public class PathUtils {
     }
 
     public static boolean isInstanceOperation(final CodegenOperation operation) {
-        return operation.vendorExtensions.get(PATH_TYPE_EXTENSION_NAME).equals(PathType.INSTANCE.getValue());
+        return operation.vendorExtensions
+            .getOrDefault(PATH_TYPE_EXTENSION_NAME, "")
+            .equals(PathType.INSTANCE.getValue());
     }
 
-    public static boolean isInstancePath(final String path) {
-        return PathUtils.removeExtension(path).endsWith("}");
+    public static boolean isParentParam(final CodegenParameter param) {
+        return (boolean) param.vendorExtensions.getOrDefault(IS_PARENT_PARAM_EXTENSION_NAME, false);
     }
 
     @SuppressWarnings("unchecked")
