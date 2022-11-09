@@ -12,7 +12,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import io.swagger.v3.oas.models.OpenAPI;
-import jdk.jshell.execution.Util;
 import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenOperation;
 import org.openapitools.codegen.CodegenParameter;
