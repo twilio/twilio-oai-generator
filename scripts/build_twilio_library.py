@@ -43,6 +43,7 @@ def run_openapi_generator(parent_dir: str, language: str, output_path: str, full
     command = f'cd {parent_dir} && java -cp ./openapi-generator-cli.jar:target/twilio-openapi-generator.jar ' \
               f'org.openapitools.codegen.OpenAPIGenerator generate -g {to_generate} ' \
               f'--inline-schema-name-defaults arrayItemSuffix="" ' \
+              f'--global-property apiTests=false ' \
               f'-i {full_path} ' \
               f'-o {output_path}'
 

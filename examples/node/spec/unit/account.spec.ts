@@ -25,8 +25,7 @@ describe("account", () => {
       .then(() => scope.done());
   });
 
-  // On-hold until RC base changes made.
-  xit("should have an account shortcut", () => {
+  it("should have an account shortcut", () => {
     const scope = nock("http://api.twilio.com")
       .post(`/2010-04-01/Accounts/${accountSid}/Calls.json`, {
         RequiredStringProperty: "phone home",
@@ -85,6 +84,7 @@ describe("account", () => {
     const scope = nock("http://api.twilio.com")
       .get("/2010-04-01/Accounts.json")
       .query({
+        "Date.Test": "2022-06-01",
         "DateCreated<": "2022-12-25T00:00:00Z",
         "DateCreated>": "2022-01-01T00:00:00Z",
       })
@@ -108,6 +108,7 @@ describe("account", () => {
         ],
       });
     const params: AccountListInstancePageOptions = {
+      "date.test": new Date("2022-06-01"),
       dateCreatedBefore: new Date("2022-12-25"),
       dateCreatedAfter: new Date("2022-01-01"),
     };

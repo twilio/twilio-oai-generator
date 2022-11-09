@@ -6,8 +6,8 @@
 
     {{#requiredParams}}
     {{^isBodyParam}}
-    if (params.{{paramName}} === null || params.{{paramName}} === undefined) {
-      throw new Error('Required parameter "params.{{paramName}}" missing.');
+    if (params["{{paramName}}"] === null || params["{{paramName}}"] === undefined) {
+      throw new Error('Required parameter "params[\'{{paramName}}\']" missing.');
     }
 
     {{/isBodyParam}}
@@ -22,42 +22,28 @@
     }
 
   {{/hasRequiredParams}}
-    const data: any = {};
+    let data: any = {};
 
-    {{#queryParams}}
-    {{#vendorExtensions.x-serialize}}
-    {{^required}}if (params.{{paramName}} !== undefined) {{/required}}data['{{{baseName}}}'] = {{vendorExtensions.x-serialize}}(params.{{paramName}}{{#vendorExtensions.x-is-array}}, ((e) => e){{/vendorExtensions.x-is-array}}{{#vendorExtensions.x-prefixed-collapsible-map}}, "{{vendorExtensions.x-prefixed-collapsible-map}}"{{/vendorExtensions.x-prefixed-collapsible-map}});
-    {{/vendorExtensions.x-serialize}}
-    {{^vendorExtensions.x-serialize}}
-    {{^required}}if (params.{{paramName}} !== undefined) {{/required}}data['{{{baseName}}}'] = params.{{paramName}};
-    {{/vendorExtensions.x-serialize}}
-    {{/queryParams}}
-    {{#formParams}}
-    {{#vendorExtensions.x-serialize}}
-    {{^required}}if (params.{{paramName}} !== undefined) {{/required}}data['{{{baseName}}}'] = {{vendorExtensions.x-serialize}}(params.{{paramName}}{{#vendorExtensions.x-is-array}}, ((e) => e){{/vendorExtensions.x-is-array}}{{#vendorExtensions.x-prefixed-collapsible-map}}, "{{vendorExtensions.x-prefixed-collapsible-map}}"{{/vendorExtensions.x-prefixed-collapsible-map}});
-    {{/vendorExtensions.x-serialize}}
-    {{^vendorExtensions.x-serialize}}
-    {{^required}}if (params.{{paramName}} !== undefined) {{/required}}data['{{{baseName}}}'] = params.{{paramName}};
-    {{/vendorExtensions.x-serialize}}
-    {{/formParams}}
+    {{#queryParams}}{{>requestParam}}{{/queryParams}}
+    {{#formParams}}{{>requestParam}}{{/formParams}}
     {{#vendorExtensions.x-is-read-operation}}
-    if (params.page !== undefined) data['Page'] = params.pageNumber;
-    if (params.pageToken !== undefined) data['PageToken'] = params.pageToken;
+    if (params.page !== undefined) data["Page"] = params.pageNumber;
+    if (params.pageToken !== undefined) data["PageToken"] = params.pageToken;
     {{/vendorExtensions.x-is-read-operation}}
 
     const headers: any = {};
     {{#consumes}}
     {{#-first}}
-    headers['Content-Type'] = '{{{mediaType}}}'
+    headers["Content-Type"] = "{{{mediaType}}}"
     {{/-first}}
     {{/consumes}}
     {{#headerParams}}
-    if (params.{{paramName}} !== undefined) headers['{{{baseName}}}'] = params.{{paramName}};
+    if (params["{{paramName}}"] !== undefined) headers["{{{baseName}}}"] = params["{{paramName}}"];
     {{/headerParams}}
     {{/hasParams}}
 
     let operationVersion = {{#parentResourceName}}this._version{{/parentResourceName}}{{^parentResourceName}}version{{/parentResourceName}},
-        operationPromise = operationVersion.{{vendorExtensions.x-name-lower}}({ uri: this._uri, method: '{{httpMethod}}'{{#hasParams}}, {{^isBodyAllowed}}params: {{/isBodyAllowed}}data, headers{{/hasParams}} });
+        operationPromise = operationVersion.{{vendorExtensions.x-name-lower}}({ uri: this._uri, method: "{{httpMethod}}"{{#hasParams}}, {{^isBodyAllowed}}params: {{/isBodyAllowed}}data, headers{{/hasParams}} });
     {{^vendorExtensions.x-is-read-operation}}{{^vendorExtensions.x-is-delete-operation}}
     operationPromise = operationPromise.then(payload => new {{instanceName}}(operationVersion, payload{{#resourcePathParams}}, this._solution.{{paramName}}{{/resourcePathParams}}));
     {{/vendorExtensions.x-is-delete-operation}}{{/vendorExtensions.x-is-read-operation}}
@@ -74,7 +60,7 @@
   instance.list = instance._version.list;
 
   instance.getPage = function getPage(targetUrl?: any, callback?: any): Promise<{{returnType}}> {
-    let operationPromise = this._version._domain.twilio.request({method: '{{httpMethod}}', uri: targetUrl});
+    let operationPromise = this._version._domain.twilio.request({method: "{{httpMethod}}", uri: targetUrl});
 
     operationPromise = operationPromise.then(payload => new {{returnType}}(this._version, payload, this._solution));
     operationPromise = this._version.setPromiseCallback(operationPromise,callback);

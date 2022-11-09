@@ -54,8 +54,12 @@ type CreateCredentialAwsParams struct {
 	TestObjectArray *[]map[string]interface{} `json:"TestObjectArray,omitempty"`
 	//
 	TestAnyType *interface{} `json:"TestAnyType,omitempty"`
+	//
+	TestAnyArray *[]interface{} `json:"TestAnyArray,omitempty"`
 	// A comma-separated list of the permissions you will request from the users of this ConnectApp.  Can include: `get-all` and `post-all`.
 	Permissions *[]string `json:"Permissions,omitempty"`
+	//
+	SomeA2PThing *string `json:"SomeA2PThing,omitempty"`
 }
 
 func (params *CreateCredentialAwsParams) SetTestString(TestString string) *CreateCredentialAwsParams {
@@ -114,8 +118,16 @@ func (params *CreateCredentialAwsParams) SetTestAnyType(TestAnyType interface{})
 	params.TestAnyType = &TestAnyType
 	return params
 }
+func (params *CreateCredentialAwsParams) SetTestAnyArray(TestAnyArray []interface{}) *CreateCredentialAwsParams {
+	params.TestAnyArray = &TestAnyArray
+	return params
+}
 func (params *CreateCredentialAwsParams) SetPermissions(Permissions []string) *CreateCredentialAwsParams {
 	params.Permissions = &Permissions
+	return params
+}
+func (params *CreateCredentialAwsParams) SetSomeA2PThing(SomeA2PThing string) *CreateCredentialAwsParams {
+	params.SomeA2PThing = &SomeA2PThing
 	return params
 }
 
@@ -187,10 +199,24 @@ func (c *ApiService) CreateCredentialAws(params *CreateCredentialAwsParams) (*Te
 
 		data.Set("TestAnyType", string(v))
 	}
+	if params != nil && params.TestAnyArray != nil {
+		for _, item := range *params.TestAnyArray {
+			v, err := json.Marshal(item)
+
+			if err != nil {
+				return nil, err
+			}
+
+			data.Add("TestAnyArray", string(v))
+		}
+	}
 	if params != nil && params.Permissions != nil {
 		for _, item := range *params.Permissions {
 			data.Add("Permissions", item)
 		}
+	}
+	if params != nil && params.SomeA2PThing != nil {
+		data.Set("SomeA2PThing", *params.SomeA2PThing)
 	}
 
 	resp, err := c.requestHandler.Post(c.baseURL+path, data, headers)

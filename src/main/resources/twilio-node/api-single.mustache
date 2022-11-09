@@ -30,7 +30,7 @@ import { {{importName}} } from "./{{apiFilename}}/{{filename}}";
  */
 export interface {{resourceName}}{{vendorExtensions.x-name}}Options {
   {{#allParams}}
-  {{paramName}}{{^required}}?{{/required}}: {{{dataType}}};
+  "{{paramName}}"{{^required}}?{{/required}}: {{{dataType}}};
   {{/allParams}}
 }
 {{/bodyParam}}
@@ -42,8 +42,8 @@ export interface {{resourceName}}{{vendorExtensions.x-name}}Options {
 
 export interface {{resourceName}} {
   {{#instanceResource}}
-  ({{#resourcePathParams}}{{#-last}}{{paramName}}: {{dataType}}{{/-last}}{{/resourcePathParams}}): {{resourceName}};
-  get({{#resourcePathParams}}{{#-last}}{{paramName}}: {{dataType}}{{/-last}}{{/resourcePathParams}}): {{resourceName}};
+  ({{#resourcePathParams}}{{^vendorExtensions.x-is-parent-param}}{{paramName}}: {{dataType}}{{^-last}}, {{/-last}}{{/vendorExtensions.x-is-parent-param}}{{/resourcePathParams}}): {{resourceName}};
+  get({{#resourcePathParams}}{{^vendorExtensions.x-is-parent-param}}{{paramName}}: {{dataType}}{{^-last}}, {{/-last}}{{/vendorExtensions.x-is-parent-param}}{{/resourcePathParams}}): {{resourceName}};
   {{/instanceResource}}
 
   {{#dependents}}
@@ -64,7 +64,7 @@ export interface {{resourceName}} {
 {{#parentResourceName}}
 export interface {{resourceName}}Solution {
 {{#resourcePathParams}}
-  {{paramName}}?: {{{dataType}}};
+  "{{paramName}}"?: {{{dataType}}};
 {{/resourcePathParams}}
 }
 
@@ -128,9 +128,9 @@ class {{resourceName}}Impl implements {{resourceName}} {
 
 export function {{resourceName}}(version: {{apiVersionClass}}{{#resourcePathParams}}, {{paramName}}: {{{dataType}}}{{/resourcePathParams}}): {{resourceName}} {
   {{#instanceResource}}
-  const instance = (({{#resourcePathParams}}{{#-last}}{{paramName}}{{/-last}}{{/resourcePathParams}}) => instance.get({{#resourcePathParams}}{{#-last}}{{paramName}}{{/-last}}{{/resourcePathParams}})) as {{parentResourceName}}Impl;
+  const instance = (({{#resourcePathParams}}{{^vendorExtensions.x-is-parent-param}}{{paramName}}{{^-last}}, {{/-last}}{{/vendorExtensions.x-is-parent-param}}{{/resourcePathParams}}) => instance.get({{#resourcePathParams}}{{^vendorExtensions.x-is-parent-param}}{{paramName}}{{^-last}}, {{/-last}}{{/vendorExtensions.x-is-parent-param}}{{/resourcePathParams}})) as {{parentResourceName}}Impl;
 
-  instance.get = function get({{#resourcePathParams}}{{#-last}}{{paramName}}{{/-last}}{{/resourcePathParams}}): {{resourceName}} {
+  instance.get = function get({{#resourcePathParams}}{{^vendorExtensions.x-is-parent-param}}{{paramName}}{{^-last}}, {{/-last}}{{/vendorExtensions.x-is-parent-param}}{{/resourcePathParams}}): {{resourceName}} {
     return new {{resourceName}}Impl(version{{#resourcePathParams}}, {{paramName}}{{/resourcePathParams}});
   }
   {{/instanceResource}}

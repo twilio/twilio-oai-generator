@@ -163,6 +163,9 @@ paths:
                     type: object
                   type: array
                 TestAnyType: { }
+                TestAnyArray:
+                  items: {}
+                  type: array
                 Permissions:
                   description: 'A comma-separated list of the permissions you will
                                       request from the users of this ConnectApp.  Can include: `get-all`
@@ -173,6 +176,8 @@ paths:
                       - post-all
                     type: string
                   type: array
+                SomeA2PThing:
+                  type: string
               required:
                 - TestString
               title: CreateCredentialAwsRequest
@@ -274,6 +279,38 @@ paths:
       - url: https://flex-api.twilio.com
     x-twilio:
       parent: /Credentials
+      pathType: instance
+  /v1/Credentials/AWS/{Sid}/History:
+    description: A nested instance resource under an instance resource
+    get:
+      operationId: FetchCredentialHistory
+      parameters:
+        - in: path
+          name: Sid
+          required: true
+          schema:
+            maxLength: 34
+            minLength: 34
+            pattern: ^CR[0-9a-fA-F]{32}$
+            type: string
+        - in: query
+          name: AddOnsData
+          schema:
+            type: object
+            format: prefixed-collapsible-map-AddOns
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/test.response_object'
+          description: OK
+      security:
+        - accountSid_authToken: [ ]
+    servers:
+      - url: https://flex-api.twilio.com
+    x-twilio:
+      parent: /Credentials/AWS/{Sid}
       pathType: instance
   /v1/Voice/{Sid}:
     description: An instance resource with no parent

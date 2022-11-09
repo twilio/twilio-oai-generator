@@ -115,7 +115,9 @@ namespace Twilio.Rest.FlexApi.V1.Credential
         /// <param name="testEnum">  </param>
         /// <param name="testObjectArray">  </param>
         /// <param name="testAnyType">  </param>
+        /// <param name="testAnyArray">  </param>
         /// <param name="permissions"> A comma-separated list of the permissions you will request from the users of this ConnectApp.  Can include: `get-all` and `post-all`. </param>
+        /// <param name="someA2PThing">  </param>
         /// <param name="client"> Client to make requests to Twilio </param>
         /// <returns> A single instance of NewCredentials </returns>
         public static NewCredentialsResource Create(
@@ -133,10 +135,12 @@ namespace Twilio.Rest.FlexApi.V1.Credential
                                           NewCredentialsResource.StatusEnum testEnum = null,
                                           List<object> testObjectArray = null,
                                           object testAnyType = null,
+                                          List<object> testAnyArray = null,
                                           List<NewCredentialsResource.PermissionsEnum> permissions = null,
+                                          string someA2PThing = null,
                                           ITwilioRestClient client = null)
         {
-            var options = new CreateNewCredentialsOptions(testString){  TestInteger = testInteger, TestDate = testDate, TestNumberFloat = testNumberFloat, TestObject = testObject, TestBoolean = testBoolean, TestNumber = testNumber, TestNumberDouble = testNumberDouble, TestNumberInt32 = testNumberInt32, TestNumberInt64 = testNumberInt64, TestDateTime = testDateTime, TestEnum = testEnum, TestObjectArray = testObjectArray, TestAnyType = testAnyType, Permissions = permissions };
+            var options = new CreateNewCredentialsOptions(testString){  TestInteger = testInteger, TestDate = testDate, TestNumberFloat = testNumberFloat, TestObject = testObject, TestBoolean = testBoolean, TestNumber = testNumber, TestNumberDouble = testNumberDouble, TestNumberInt32 = testNumberInt32, TestNumberInt64 = testNumberInt64, TestDateTime = testDateTime, TestEnum = testEnum, TestObjectArray = testObjectArray, TestAnyType = testAnyType, TestAnyArray = testAnyArray, Permissions = permissions, SomeA2PThing = someA2PThing };
             return Create(options, client);
         }
 
@@ -156,7 +160,9 @@ namespace Twilio.Rest.FlexApi.V1.Credential
         /// <param name="testEnum">  </param>
         /// <param name="testObjectArray">  </param>
         /// <param name="testAnyType">  </param>
+        /// <param name="testAnyArray">  </param>
         /// <param name="permissions"> A comma-separated list of the permissions you will request from the users of this ConnectApp.  Can include: `get-all` and `post-all`. </param>
+        /// <param name="someA2PThing">  </param>
         /// <param name="client"> Client to make requests to Twilio </param>
         /// <returns> Task that resolves to A single instance of NewCredentials </returns>
         public static async System.Threading.Tasks.Task<NewCredentialsResource> CreateAsync(
@@ -174,10 +180,12 @@ namespace Twilio.Rest.FlexApi.V1.Credential
                                                                                   NewCredentialsResource.StatusEnum testEnum = null,
                                                                                   List<object> testObjectArray = null,
                                                                                   object testAnyType = null,
+                                                                                  List<object> testAnyArray = null,
                                                                                   List<NewCredentialsResource.PermissionsEnum> permissions = null,
+                                                                                  string someA2PThing = null,
                                                                                   ITwilioRestClient client = null)
         {
-        var options = new CreateNewCredentialsOptions(testString){  TestInteger = testInteger, TestDate = testDate, TestNumberFloat = testNumberFloat, TestObject = testObject, TestBoolean = testBoolean, TestNumber = testNumber, TestNumberDouble = testNumberDouble, TestNumberInt32 = testNumberInt32, TestNumberInt64 = testNumberInt64, TestDateTime = testDateTime, TestEnum = testEnum, TestObjectArray = testObjectArray, TestAnyType = testAnyType, Permissions = permissions };
+        var options = new CreateNewCredentialsOptions(testString){  TestInteger = testInteger, TestDate = testDate, TestNumberFloat = testNumberFloat, TestObject = testObject, TestBoolean = testBoolean, TestNumber = testNumber, TestNumberDouble = testNumberDouble, TestNumberInt32 = testNumberInt32, TestNumberInt64 = testNumberInt64, TestDateTime = testDateTime, TestEnum = testEnum, TestObjectArray = testObjectArray, TestAnyType = testAnyType, TestAnyArray = testAnyArray, Permissions = permissions, SomeA2PThing = someA2PThing };
             return await CreateAsync(options, client);
         }
         #endif

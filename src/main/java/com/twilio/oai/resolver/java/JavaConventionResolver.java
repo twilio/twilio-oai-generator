@@ -16,6 +16,7 @@ public class JavaConventionResolver {
     private final String VENDOR_PREFIX = "x-";
     private final String PREFIXED_COLLAPSIBLE_MAP = "prefixed-collapsible-map";
     private final String X_PREFIXED_COLLAPSIBLE_MAP = "x-prefixed-collapsible-map";
+    private static final String HTTP_METHOD = "http-method";
     private final String HYPHEN = "-";
     private final String OBJECT = "object";
 
@@ -86,6 +87,11 @@ public class JavaConventionResolver {
 
         if( PHONE_NUMBER_FORMAT.equals(parameter.dataFormat)) {
             parameter.vendorExtensions.put(X_IS_PHONE_NUMBER_FORMAT, true);
+        }
+        // prevent http method format type to be considered as enum
+        if (HTTP_METHOD.equals(parameter.dataFormat)) {
+            parameter.isEnum = false;
+            parameter.allowableValues = null;
         }
         parameter.paramName = StringHelper.toFirstLetterLower(parameter.paramName);
         return parameter;

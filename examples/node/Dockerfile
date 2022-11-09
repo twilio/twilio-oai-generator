@@ -11,4 +11,4 @@ COPY lib lib
 COPY spec spec
 
 # pipefail prevents errors in a pipeline from being masked.
-CMD ["/bin/bash", "-c", "set -o pipefail && sleep 10 && npm install && npm run test:javascript 2>&1 | tee /local/test-report.out && cp -r coverage /local"]
+CMD ["/bin/bash", "-c", "set -o pipefail && sleep 10 && make install test 2>&1 | tee /local/test-report.out && cp -r coverage /local"]

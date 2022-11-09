@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-package com.twilio.rest.flexapi.v1.credential;
+package com.twilio.rest.flexapi.v1.credential.aws;
 
 import com.twilio.base.Fetcher;
 import com.twilio.converter.Promoter;
@@ -44,17 +44,22 @@ import java.util.Objects;
 
 import lombok.ToString;
 
-public class AwsFetcher extends Fetcher<Aws> {
+public class HistoryFetcher extends Fetcher<History> {
     private String pathSid;
+    private Map<String, Object> addOnsData;
 
-    public AwsFetcher(final String pathSid){
+    public HistoryFetcher(final String pathSid){
         this.pathSid = pathSid;
     }
 
+    public HistoryFetcher setAddOnsData(final Map<String, Object> addOnsData){
+        this.addOnsData = addOnsData;
+        return this;
+    }
 
     @Override
-    public Aws fetch(final TwilioRestClient client) {
-        String path = "/v1/Credentials/AWS/{Sid}";
+    public History fetch(final TwilioRestClient client) {
+        String path = "/v1/Credentials/AWS/{Sid}/History";
 
         path = path.replace("{"+"Sid"+"}", this.pathSid.toString());
 
@@ -63,10 +68,11 @@ public class AwsFetcher extends Fetcher<Aws> {
             Domains.FLEXAPI.toString(),
             path
         );
+        addQueryParams(request);
         Response response = client.request(request);
 
         if (response == null) {
-        throw new ApiConnectionException("Aws fetch failed: Unable to connect to server");
+        throw new ApiConnectionException("History fetch failed: Unable to connect to server");
         } else if (!TwilioRestClient.SUCCESS.test(response.getStatusCode())) {
             RestException restException = RestException.fromJson(response.getStream(), client.getObjectMapper());
             if (restException == null) {
@@ -75,6 +81,14 @@ public class AwsFetcher extends Fetcher<Aws> {
             throw new ApiException(restException);
         }
 
-        return Aws.fromJson(response.getStream(), client.getObjectMapper());
+        return History.fromJson(response.getStream(), client.getObjectMapper());
+    }
+    private void addQueryParams(final Request request) {
+        if (addOnsData != null) {
+            Map<String, String> params = PrefixedCollapsibleMap.serialize(addOnsData, "AddOns");
+            for (Map.Entry<String, String> entry : params.entrySet()) {
+                request.addQueryParam(entry.getKey(), entry.getValue());
+            }
+        }
     }
 }

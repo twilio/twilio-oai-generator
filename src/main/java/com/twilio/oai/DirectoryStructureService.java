@@ -29,6 +29,7 @@ import org.openapitools.codegen.model.OperationsMap;
 import static com.twilio.oai.common.ApplicationConstants.ACCOUNT_SID_FORMAT;
 import static com.twilio.oai.common.ApplicationConstants.LIST_INSTANCE;
 import static com.twilio.oai.common.ApplicationConstants.PATH_SEPARATOR_PLACEHOLDER;
+import static com.twilio.oai.common.ApplicationConstants.PATH_TYPE_EXTENSION_NAME;
 
 @RequiredArgsConstructor
 public class DirectoryStructureService {
@@ -63,6 +64,7 @@ public class DirectoryStructureService {
 
         openAPI.getPaths().forEach(resourceTree::addResource);
         openAPI.getPaths().forEach((name, path) -> {
+            final Optional<String> pathType = PathUtils.getTwilioExtension(path, "pathType");
             updateAccountSidParam(path);
             path.readOperations().forEach(operation -> {
                 // Group operations together by tag. This gives us one file/post-process per resource.
@@ -77,6 +79,11 @@ public class DirectoryStructureService {
                 if (!tag.contains(PATH_SEPARATOR_PLACEHOLDER)) {
                     addDependent(versionResources, name, operation);
                 }
+
+                pathType.ifPresent(type -> Optional
+                    .ofNullable(operation.getExtensions())
+                    .ifPresentOrElse(ext -> ext.putIfAbsent(PATH_TYPE_EXTENSION_NAME, type),
+                                     () -> operation.addExtension(PATH_TYPE_EXTENSION_NAME, type)));
             });
         });
     }

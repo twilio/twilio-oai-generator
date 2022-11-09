@@ -16,7 +16,7 @@
  */
 export interface {{resourceName}}EachOptions {
   {{#allParams}}
-  {{paramName}}{{^required}}?{{/required}}: {{{dataType}}};
+  "{{paramName}}"{{^required}}?{{/required}}: {{{dataType}}};
   {{/allParams}}
   callback?: (item: {{instanceName}}, done: (err?: Error) => void) => void;
   done?: Function;
@@ -36,7 +36,7 @@ export interface {{resourceName}}EachOptions {
  */
 export interface {{resourceName}}Options {
   {{#allParams}}
-  {{paramName}}{{^required}}?{{/required}}: {{{dataType}}};
+  "{{paramName}}"{{^required}}?{{/required}}: {{{dataType}}};
   {{/allParams}}
   limit?: number;
 }
@@ -52,7 +52,7 @@ export interface {{resourceName}}Options {
  */
 export interface {{resourceName}}PageOptions {
   {{#allParams}}
-  {{paramName}}{{^required}}?{{/required}}: {{{dataType}}};
+  "{{paramName}}"{{^required}}?{{/required}}: {{{dataType}}};
   {{/allParams}}
   pageNumber?: number;
   pageToken?: string;

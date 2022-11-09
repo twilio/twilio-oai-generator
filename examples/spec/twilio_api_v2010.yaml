@@ -377,7 +377,7 @@ paths:
     servers:
       - url: https://api.twilio.com
     x-twilio:
-      parent: /Accounts.json
+      parent: /Accounts/{Sid}.json
       pathType: list
   /2010-04-01/Accounts/{AccountSid}/Calls/{TestInteger}.json:
     description: A nested resource instance that cannot be updated
@@ -435,7 +435,7 @@ paths:
     servers:
       - url: https://api.twilio.com
     x-twilio:
-      parent: /Accounts.json
+      parent: /Accounts/{Sid}.json
       pathType: instance
   /2010-04-01/Accounts/{AccountSid}/Calls/Feedback/Summary.json:
     description: A nested resource with sub-dirs and without operations
@@ -447,7 +447,7 @@ paths:
       parent: /Accounts/{AccountSid}/Calls.json
       pathType: list
   /2010-04-01/Accounts/{AccountSid}/Calls/Feedback/Summary/{Sid}.json:
-    description: A resource that can only be updated
+    description: A resource that can only be updated and which has a parent path that needs resolution
     post:
       operationId: UpdateCallFeedbackSummary
       parameters:
@@ -508,5 +508,5 @@ paths:
     x-twilio:
       className: feedback_call_summary
       mountName: feedback_call_summary
-      parent: /Accounts/{AccountSid}/Calls.json
+      parent: /Accounts/{AccountSid}/Calls/{TestInteger}.json
       pathType: instance
