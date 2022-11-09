@@ -29,12 +29,10 @@ import static com.twilio.oai.common.ApplicationConstants.PATH_SEPARATOR_PLACEHOL
 import static com.twilio.oai.common.ApplicationConstants.SERIALIZE_EXTENSION_NAME;
 import static com.twilio.oai.common.ApplicationConstants.DESERIALIZE_EXTENSION_NAME;
 
-
 public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
 
-    public static final String VERSION_TEMPLATE = "version.mustache";
-    public static final String FILENAME_EXTENSION = ".ts";
-
+    private static final String VERSION_TEMPLATE = "version.mustache";
+    private static final String FILENAME_EXTENSION = ".ts";
     private final TwilioCodegenAdapter twilioCodegen;
     private final IResourceTree resourceTree = new ResourceMap(new Inflector());
     private final DirectoryStructureService directoryStructureService = new DirectoryStructureService(

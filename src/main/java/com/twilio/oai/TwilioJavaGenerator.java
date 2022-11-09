@@ -28,12 +28,7 @@ import java.security.NoSuchAlgorithmException;
 import com.google.common.collect.ImmutableMap;
 import com.samskivert.mustache.Mustache.Lambda;
 
-import static com.twilio.oai.common.ApplicationConstants.PATH_SEPARATOR_PLACEHOLDER;
-import static com.twilio.oai.common.ApplicationConstants.TWILIO_EXTENSION_NAME;
-import static com.twilio.oai.common.ApplicationConstants.LIST_START;
-import static com.twilio.oai.common.ApplicationConstants.REF_ENUM_EXTENSION_NAME;
-
-
+import static com.twilio.oai.common.ApplicationConstants.*;
 
 public class TwilioJavaGenerator extends JavaClientCodegen {
 
@@ -44,7 +39,6 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
     private static final String URI = "uri";
     private static final String ENUM_VARS = "enumVars";
     private static final String VALUES = "values";
-    private static final String ARRAY = "array";
 
     private final TwilioCodegenAdapter twilioCodegen;
     private final DirectoryStructureService directoryStructureService = new DirectoryStructureService(
