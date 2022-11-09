@@ -51,20 +51,27 @@ import java.net.URI;
 
 public class CallCreator extends Creator<Call>{
     private String requiredStringProperty;
+    private HttpMethod testMethod;
     private String pathAccountSid;
     private List<String> testArrayOfStrings;
     private List<URI> testArrayOfUri;
 
-    public CallCreator(final String requiredStringProperty) {
+    public CallCreator(final String requiredStringProperty, final HttpMethod testMethod) {
         this.requiredStringProperty = requiredStringProperty;
+        this.testMethod = testMethod;
     }
-    public CallCreator(final String pathAccountSid, final String requiredStringProperty) {
+    public CallCreator(final String pathAccountSid, final String requiredStringProperty, final HttpMethod testMethod) {
         this.pathAccountSid = pathAccountSid;
         this.requiredStringProperty = requiredStringProperty;
+        this.testMethod = testMethod;
     }
 
     public CallCreator setRequiredStringProperty(final String requiredStringProperty){
         this.requiredStringProperty = requiredStringProperty;
+        return this;
+    }
+    public CallCreator setTestMethod(final HttpMethod testMethod){
+        this.testMethod = testMethod;
         return this;
     }
     public CallCreator setTestArrayOfStrings(final List<String> testArrayOfStrings){
@@ -93,6 +100,7 @@ public class CallCreator extends Creator<Call>{
         this.pathAccountSid = this.pathAccountSid == null ? client.getAccountSid() : this.pathAccountSid;
         path = path.replace("{"+"AccountSid"+"}", this.pathAccountSid.toString());
         path = path.replace("{"+"RequiredStringProperty"+"}", this.requiredStringProperty.toString());
+        path = path.replace("{"+"TestMethod"+"}", this.testMethod.toString());
 
         Request request = new Request(
             HttpMethod.POST,
@@ -128,6 +136,10 @@ public class CallCreator extends Creator<Call>{
             for (URI prop : testArrayOfUri) {
                 request.addPostParam("TestArrayOfUri", prop.toString());
             }
+    
+        }
+        if (testMethod != null) {
+            request.addPostParam("TestMethod", testMethod.toString());
     
         }
     }

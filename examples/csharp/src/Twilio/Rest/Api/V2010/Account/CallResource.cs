@@ -93,6 +93,7 @@ namespace Twilio.Rest.Api.V2010.Account
 
         /// <summary> create </summary>
         /// <param name="requiredStringProperty">  </param>
+        /// <param name="testMethod"> The HTTP method that we should use to request the `TestArrayOfUri`. </param>
         /// <param name="pathAccountSid">  </param>
         /// <param name="testArrayOfStrings">  </param>
         /// <param name="testArrayOfUri">  </param>
@@ -100,18 +101,20 @@ namespace Twilio.Rest.Api.V2010.Account
         /// <returns> A single instance of Call </returns>
         public static CallResource Create(
                                           string requiredStringProperty,
+                                          Twilio.Http.HttpMethod testMethod,
                                           string pathAccountSid = null,
                                           List<string> testArrayOfStrings = null,
                                           List<Uri> testArrayOfUri = null,
                                           ITwilioRestClient client = null)
         {
-            var options = new CreateCallOptions(requiredStringProperty){  PathAccountSid = pathAccountSid, TestArrayOfStrings = testArrayOfStrings, TestArrayOfUri = testArrayOfUri };
+            var options = new CreateCallOptions(requiredStringProperty, testMethod){  PathAccountSid = pathAccountSid, TestArrayOfStrings = testArrayOfStrings, TestArrayOfUri = testArrayOfUri };
             return Create(options, client);
         }
 
         #if !NET35
         /// <summary> create </summary>
         /// <param name="requiredStringProperty">  </param>
+        /// <param name="testMethod"> The HTTP method that we should use to request the `TestArrayOfUri`. </param>
         /// <param name="pathAccountSid">  </param>
         /// <param name="testArrayOfStrings">  </param>
         /// <param name="testArrayOfUri">  </param>
@@ -119,12 +122,13 @@ namespace Twilio.Rest.Api.V2010.Account
         /// <returns> Task that resolves to A single instance of Call </returns>
         public static async System.Threading.Tasks.Task<CallResource> CreateAsync(
                                                                                   string requiredStringProperty,
+                                                                                  Twilio.Http.HttpMethod testMethod,
                                                                                   string pathAccountSid = null,
                                                                                   List<string> testArrayOfStrings = null,
                                                                                   List<Uri> testArrayOfUri = null,
                                                                                   ITwilioRestClient client = null)
         {
-        var options = new CreateCallOptions(requiredStringProperty){  PathAccountSid = pathAccountSid, TestArrayOfStrings = testArrayOfStrings, TestArrayOfUri = testArrayOfUri };
+        var options = new CreateCallOptions(requiredStringProperty, testMethod){  PathAccountSid = pathAccountSid, TestArrayOfStrings = testArrayOfStrings, TestArrayOfUri = testArrayOfUri };
             return await CreateAsync(options, client);
         }
         #endif
@@ -330,6 +334,10 @@ namespace Twilio.Rest.Api.V2010.Account
         ///<summary> The test_number_float </summary> 
         [JsonProperty("test_number_float")]
         public float? TestNumberFloat { get; private set; }
+
+        ///<summary> The test_number_decimal </summary> 
+        [JsonProperty("test_number_decimal")]
+        public decimal? TestNumberDecimal { get; private set; }
 
         
         [JsonProperty("test_enum")]

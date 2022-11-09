@@ -31,6 +31,8 @@ type CreateCallParams struct {
 	TestArrayOfStrings *[]string `json:"TestArrayOfStrings,omitempty"`
 	//
 	TestArrayOfUri *[]string `json:"TestArrayOfUri,omitempty"`
+	// The HTTP method that we should use to request the `TestArrayOfUri`.
+	TestMethod *string `json:"TestMethod,omitempty"`
 }
 
 func (params *CreateCallParams) SetPathAccountSid(PathAccountSid string) *CreateCallParams {
@@ -47,6 +49,10 @@ func (params *CreateCallParams) SetTestArrayOfStrings(TestArrayOfStrings []strin
 }
 func (params *CreateCallParams) SetTestArrayOfUri(TestArrayOfUri []string) *CreateCallParams {
 	params.TestArrayOfUri = &TestArrayOfUri
+	return params
+}
+func (params *CreateCallParams) SetTestMethod(TestMethod string) *CreateCallParams {
+	params.TestMethod = &TestMethod
 	return params
 }
 
@@ -73,6 +79,9 @@ func (c *ApiService) CreateCall(params *CreateCallParams) (*TestResponseObject, 
 		for _, item := range *params.TestArrayOfUri {
 			data.Add("TestArrayOfUri", item)
 		}
+	}
+	if params != nil && params.TestMethod != nil {
+		data.Set("TestMethod", *params.TestMethod)
 	}
 
 	resp, err := c.requestHandler.Post(c.baseURL+path, data, headers)

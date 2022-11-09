@@ -755,7 +755,7 @@ public class TwilioRestTest {
     @Test(expected = ApiConnectionException.class)
     public void testCallCreatorResponseNull() {
         when(twilioRestClient.request(Mockito.any())).thenReturn(null);
-        new CallCreator(ACCOUNT_SID, "123").create(twilioRestClient);
+        new CallCreator(ACCOUNT_SID, "123", HttpMethod.POST).create(twilioRestClient);
     }
 
     @Test(expected = ApiException.class)
@@ -764,13 +764,13 @@ public class TwilioRestTest {
         when(twilioRestClient.request(Mockito.any())).thenReturn(response);
         when(twilioRestClient.getAccountSid()).thenReturn(ACCOUNT_SID);
         when(twilioRestClient.getObjectMapper()).thenReturn(new ObjectMapper());
-        new CallCreator("123").setTestArrayOfStrings(Arrays.asList("value1", "value2")).create(twilioRestClient);
+        new CallCreator("123", HttpMethod.POST).setTestArrayOfStrings(Arrays.asList("value1", "value2")).create(twilioRestClient);
     }
 
     @Test
     public void testCallCrud() {
-        CallCreator callCreator = Call.creator("123");
-        CallCreator callCreatorAccountSid = Call.creator(ACCOUNT_SID,"123");
+        CallCreator callCreator = Call.creator("123", HttpMethod.POST);
+        CallCreator callCreatorAccountSid = Call.creator(ACCOUNT_SID,"123", HttpMethod.POST);
         assertNotNull(callCreator);
         assertNotNull(callCreatorAccountSid);
 
@@ -788,7 +788,7 @@ public class TwilioRestTest {
     @Test(expected = ApiConnectionException.class)
     public void testShouldAcceptSingleObjectForList() {
         when(twilioRestClient.request(Mockito.any())).thenReturn(null);
-        CallCreator callCreator=new CallCreator(ACCOUNT_SID, "testString");
+        CallCreator callCreator=new CallCreator(ACCOUNT_SID, "testString", HttpMethod.POST);
         callCreator.setTestArrayOfStrings( "Hello" );
         callCreator.setTestArrayOfUri("http://example-uri.com");
         callCreator.create(twilioRestClient);
