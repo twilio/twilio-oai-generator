@@ -1,7 +1,6 @@
 #!/bin/bash
 set -e
 
-LANG=$1
 function generate() {
   find "$OUT_DIR"/*/ ! -name "*_test.go" -type f -delete || true
 
@@ -23,7 +22,7 @@ function docker-run() {
     "$(docker build -f "$(basename "$1")" -q .)"
   popd
 }
-if [ "$LANG" = "" ]; then
+if [ "$LANGUAGES" = "" ]; then
   OUT_DIR=examples/go/go-client/helper/rest
   generate twilio-go
 
@@ -49,7 +48,7 @@ if [ "$LANG" = "" ]; then
   docker-run examples/node/Dockerfile-prettier
 fi
 
-if [ "$LANG" = "php" ]; then
+if [[ "php" == *"$LANGUAGES"* ]];then
   OUT_DIR=examples/php/src/Twilio/Rest
   generate twilio-php
 fi

@@ -1,13 +1,9 @@
 #!/bin/bash
 set -e
-LANG=$2
-if [ "$LANG" = "" ]; then
-  LIBRARIES=${LIBRARIES:-go java node csharp}
-else
-  LIBRARIES=${LIBRARIES:-$LANG}
-fi
 
-for library in ${LIBRARIES}; do
+LANGUAGES=${LANGUAGES:-go java node csharp php}
+
+for library in ${LANGUAGES}; do
   testing_services+=("${library}-test")
 done
 

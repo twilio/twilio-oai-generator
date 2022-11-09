@@ -42,7 +42,7 @@ jobs:
         run: make test
 
       - name: Run helper tests and sonar analysis
-        run: make test-docker SONAR_TOKEN=${{ secrets.SONAR_TOKEN }} LANG=${{ matrix.language }}
+        run: make test-docker SONAR_TOKEN=${{ secrets.SONAR_TOKEN }} LANGUAGES=${{ matrix.language }}
 
       - name: Show git status and fail on diff
         run: |

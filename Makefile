@@ -11,7 +11,7 @@ test:
 	mvn clean test
 
 generate: install
-	bash scripts/generate.sh $(LANG)
+	bash scripts/generate.sh
 
 test-docker: generate
-	bash scripts/prism.sh $(SONAR_TOKEN) $(LANG)
+	bash scripts/prism.sh $(SONAR_TOKEN)
