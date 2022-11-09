@@ -1,7 +1,9 @@
 package com.twilio.oai.common;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -52,8 +54,10 @@ public class Utility {
         }
     }
 
-    public void addOperationName(final CodegenOperation operation, final String name){
-        operation.vendorExtensions.put("x-name", name);
-        operation.vendorExtensions.put("x-name-lower", name.toLowerCase());
+    @SuppressWarnings("unchecked")
+    public ArrayList<CodegenOperation> getOperations(final Map<String, Object> resource) {
+        return (ArrayList<CodegenOperation>) resource.computeIfAbsent(
+                "operations",
+                k -> new ArrayList<>());
     }
 }

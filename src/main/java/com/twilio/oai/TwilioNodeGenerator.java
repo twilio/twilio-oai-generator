@@ -12,7 +12,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import io.swagger.v3.oas.models.OpenAPI;
-import jdk.jshell.execution.Util;
 import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenOperation;
 import org.openapitools.codegen.CodegenParameter;
@@ -141,22 +140,22 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
 
             // Update operation names
             if (co.nickname.startsWith("update")) {
-                Utility.addOperationName(co, "Update");
+                addOperationName(co, "Update");
             } else if (co.nickname.startsWith("delete")) {
-                Utility.addOperationName(co, "Remove");
+                addOperationName(co, "Remove");
                 co.returnType = "boolean";
             } else if (co.nickname.startsWith("create")) {
-                Utility.addOperationName(co, "Create");
+                addOperationName(co, "Create");
             } else if (co.nickname.startsWith("fetch")) {
-                Utility.addOperationName(co, "Fetch");
+                addOperationName(co, "Fetch");
             } else if (co.nickname.startsWith("list")){
                 hasPaginationOperation = true;
                 co.returnType = itemName + "Page";
-                Utility.addOperationName(co, "Page");
+                addOperationName(co, "Page");
             }
 
             final Map<String, Object> resource = PathUtils.getStringMap(resources, resourceName);
-            final ArrayList<CodegenOperation> resourceOperationList = getOperations(resource);
+            final ArrayList<CodegenOperation> resourceOperationList = Utility.getOperations(resource);
             final boolean ignoreOperation = Optional
                 .ofNullable(co.vendorExtensions.get(IGNORE_EXTENSION_NAME))
                 .map(Boolean.class::cast)
@@ -247,8 +246,8 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
                     parentResource.put(DEPENDENTS, dependents.values());
 
                     // Fill out the parent's path and params using any of resource's operations.
-                    updateResourcePath(parentResource, getOperations(resource).get(0));
-                    getOperations(parentResource);
+                    updateResourcePath(parentResource, Utility.getOperations(resource).get(0));
+                    Utility.getOperations(parentResource);
                 }
             }
 
@@ -259,6 +258,11 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
         results.put("hasPaginationOperation", hasPaginationOperation);
         results.put("models", models.values());
         return results;
+    }
+
+    public void addOperationName(final CodegenOperation operation, final String name){
+        operation.vendorExtensions.put("x-name", name);
+        operation.vendorExtensions.put("x-name-lower", name.toLowerCase());
     }
 
     private String resolveModelDataType(final IJsonSchemaValidationProperties prop,
@@ -277,13 +281,6 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
 
     private String removeEnumName(final String dataType) {
         return dataType.replace("Enum", "");
-    }
-
-    @SuppressWarnings("unchecked")
-    private ArrayList<CodegenOperation> getOperations(final Map<String, Object> resource) {
-        return (ArrayList<CodegenOperation>) resource.computeIfAbsent(
-            "operations",
-            k -> new ArrayList<>());
     }
 
     private void updateResourcePath(final Map<String, Object> resource, final CodegenOperation operation) {

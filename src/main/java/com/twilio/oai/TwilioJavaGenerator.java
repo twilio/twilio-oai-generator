@@ -234,36 +234,28 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
             updateCodeOperationParams(co, resourceName);
             if (co.nickname.startsWith("update")) {
                 resource.put("hasUpdate", true);
-                Utility.addOperationName(co, "Update");
                 resource.put("signatureListUpdate", generateSignatureList(co));
                 apiTemplateFiles.put("updater.mustache", "Updater.java");
             } else if (co.nickname.startsWith("delete")) {
                 resource.put("hasDelete", true);
-                Utility.addOperationName(co, "Remove");
                 resource.put("signatureListDelete", generateSignatureList(co));
                 apiTemplateFiles.put("deleter.mustache", "Deleter.java");
                 addDeleteHeaderEnums(co, responseModels);
             } else if (co.nickname.startsWith("create")) {
                 resource.put("hasCreate", true);
-                Utility.addOperationName(co, "Create");
                 resource.put("signatureListCreate", generateSignatureList(co));
                 apiTemplateFiles.put("creator.mustache", "Creator.java");
             } else if (co.nickname.startsWith("fetch")) {
                 resource.put("hasFetch", true);
                 resource.put("signatureListFetch", generateSignatureList(co));
-                Utility.addOperationName(co, "Fetch");
                 apiTemplateFiles.put("fetcher.mustache", "Fetcher.java");
             } else {
                 resource.put("hasRead", true);
-                Utility.addOperationName(co, "Page");
                 resource.put("signatureListRead", generateSignatureList(co));
                 apiTemplateFiles.put("reader.mustache", "Reader.java");
             }
 
-            final ArrayList<CodegenOperation> resourceOperationList =
-                    (ArrayList<CodegenOperation>) resource.computeIfAbsent(
-                            "operations",
-                            k -> new ArrayList<>());
+            final ArrayList<CodegenOperation> resourceOperationList = Utility.getOperations(resource);
             resourceOperationList.add(co);
             resource.put("path", path);
             resource.put("resourceName", resourceName);
@@ -557,10 +549,6 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
         return allModels.stream().filter(model -> model.getClassname().equals(modelName)).findFirst();
     }
 
-//    private void addOperationName(final CodegenOperation operation, final String name) {
-//        operation.vendorExtensions.put("x-name", name);
-//        operation.vendorExtensions.put("x-name-lower", name.toLowerCase());
-//    }
 
     private long calculateSerialVersionUid(final List<CodegenProperty> modelProperties){
         String signature = calculateSignature(modelProperties);
