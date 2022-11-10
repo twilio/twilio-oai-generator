@@ -19,7 +19,7 @@ import V2010 from "../V2010";
 const deserialize = require("../../../base/deserialize");
 const serialize = require("../../../base/serialize");
 import { CallListInstance } from "./account/call";
-import PhoneNumberCapabilities from "../../../interfaces";
+import { PhoneNumberCapabilities } from "../../../interfaces";
 
 export class TestResponseObjectTestArrayOfObjects {
   "count"?: number;
@@ -300,6 +300,7 @@ interface AccountResource {
   test_number?: number | null;
   price_unit?: string | null;
   test_number_float?: number | null;
+  test_number_decimal?: Decimal | null;
   test_enum?: TestStatus;
   a2p_profile_bundle_sid?: string | null;
   test_array_of_integers?: Array<number>;
@@ -326,6 +327,7 @@ export class AccountInstance {
     this.testNumber = payload.test_number;
     this.priceUnit = payload.price_unit;
     this.testNumberFloat = payload.test_number_float;
+    this.testNumberDecimal = payload.test_number_decimal;
     this.testEnum = payload.test_enum;
     this.a2pProfileBundleSid = payload.a2p_profile_bundle_sid;
     this.testArrayOfIntegers = payload.test_array_of_integers;
@@ -345,6 +347,7 @@ export class AccountInstance {
   testNumber?: number | null;
   priceUnit?: string | null;
   testNumberFloat?: number | null;
+  testNumberDecimal?: Decimal | null;
   testEnum?: TestStatus;
   /**
    * A2P Messaging Profile Bundle BundleSid
@@ -430,6 +433,7 @@ export class AccountInstance {
       testNumber: this.testNumber,
       priceUnit: this.priceUnit,
       testNumberFloat: this.testNumberFloat,
+      testNumberDecimal: this.testNumberDecimal,
       testEnum: this.testEnum,
       a2pProfileBundleSid: this.a2pProfileBundleSid,
       testArrayOfIntegers: this.testArrayOfIntegers,

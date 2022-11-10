@@ -37,6 +37,14 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
         TerraformSchemaOptions options;
         TerraformSchema innerSchema;
 
+        public String getFullType() {
+            if (innerSchema != null) {
+                return String.format("%s(%s)", dataType, innerSchema.getFullType());
+            }
+
+            return dataType;
+        }
+
         public String getFunc() {
             if (innerSchema != null) {
                 return String.format("As%s(%s, %s)",
@@ -301,7 +309,7 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
                 return new TerraformSchema(dataType, schemaOptions, null);
             default:
                 // At the time of writing terraform SDK doesn't support dynamic types and this is inconvenient since
-                // some properties of type "object" can be array or a map. (Eg: errors and links in the studio flows)
+                // some properties of type "object" can be an array or a map. (Eg: errors and links in the studio flows)
                 // Letting the type objects be as Strings in the terraform provider and then json encoding in the
                 // provider is the current workaround.
                 return new TerraformSchema("string", schemaOptions, null);
@@ -315,7 +323,7 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
     }
 
     private String toSnakeCase(final String string) {
-        return string.replaceAll("[^a-zA-Z0-9]+", "_").replaceAll("([a-z\\d])([A-Z])", "$1_$2").toLowerCase();
+        return string.replaceAll("[^a-zA-Z\\d]+", "_").replaceAll("([a-z\\d])([A-Z])", "$1_$2").toLowerCase();
     }
 
     /**

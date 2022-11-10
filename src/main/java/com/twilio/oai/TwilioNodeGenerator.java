@@ -29,12 +29,10 @@ import static com.twilio.oai.common.ApplicationConstants.PATH_SEPARATOR_PLACEHOL
 import static com.twilio.oai.common.ApplicationConstants.SERIALIZE_EXTENSION_NAME;
 import static com.twilio.oai.common.ApplicationConstants.DESERIALIZE_EXTENSION_NAME;
 
-
 public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
 
-    public static final String VERSION_TEMPLATE = "version.mustache";
-    public static final String FILENAME_EXTENSION = ".ts";
-
+    private static final String VERSION_TEMPLATE = "version.mustache";
+    private static final String FILENAME_EXTENSION = ".ts";
     private final TwilioCodegenAdapter twilioCodegen;
     private final IResourceTree resourceTree = new ResourceMap(new Inflector());
     private final DirectoryStructureService directoryStructureService = new DirectoryStructureService(
@@ -66,7 +64,7 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
         twilioCodegen.setDomain(StringHelper.camelize(domain, true));
 
         openAPI.getPaths().forEach(resourceTree::addResource);
-        resourceTree.getResources().forEach(resource -> resource.updateFamily(openAPI, resourceTree));
+        resourceTree.getResources().forEach(resource -> resource.updateFamily(resourceTree));
 
         directoryStructureService.configure(openAPI);
 
@@ -123,6 +121,7 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
         for (final CodegenOperation co : opList) {
             // Group operations by resource.
             final String[] filePathArray = co.baseName.split(PATH_SEPARATOR_PLACEHOLDER);
+
             final String itemName = filePathArray[filePathArray.length - 1];
             final String instanceName = itemName + "Instance";
             co.returnType = instanceName;
@@ -138,7 +137,6 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
                 resourceName = itemName + "ListInstance";
             }
 
-            // Update operation names
             if (co.nickname.startsWith("update")) {
                 addOperationName(co, "Update");
             } else if (co.nickname.startsWith("delete")) {
@@ -239,14 +237,23 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
 
                 if (!parentExists) {
                     parentResource.put("resourceName", parentResourceName);
+                    parentResource.put("name", resource.get("name"));
 
-                    // If the parent doesn't exist, move this resource's dependents onto it.
-                    final Map<String, Object> dependents = PathUtils.getStringMap(resource, DEPENDENTS);
-                    resource.remove(DEPENDENTS);
-                    parentResource.put(DEPENDENTS, dependents.values());
+                    final List<CodegenParameter> resourcePathParams = Utility.getOperations(resource).get(0).pathParams;
 
-                    // Fill out the parent's path and params using any of resource's operations.
-                    updateResourcePath(parentResource, Utility.getOperations(resource).get(0));
+                    // If the resource has only "parent params", move its dependents onto the parent.
+                    if (resourcePathParams.stream().allMatch(PathUtils::isParentParam)) {
+                        final Map<String, Object> dependents = PathUtils.getStringMap(resource, DEPENDENTS);
+                        resource.remove(DEPENDENTS);
+                        parentResource.put(DEPENDENTS, dependents.values());
+                    }
+
+                    // Fill out the parent's path params with any "parent params".
+                    parentResource.put("resourcePathParams",
+                                       resourcePathParams
+                                           .stream()
+                                           .filter(PathUtils::isParentParam)
+                                           .collect(Collectors.toList()));
                     Utility.getOperations(parentResource);
                 }
             }
@@ -287,17 +294,12 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
         final List<CodegenParameter> resourcePathParams = new ArrayList<>();
 
         String path = PathUtils.removeFirstPart(operation.path);
-        final String pathWithoutExtension = PathUtils.removeExtension(path);
         for (final CodegenParameter pathParam : operation.pathParams) {
             final String target = "{" + pathParam.baseName + "}";
 
             if (path.contains(target)) {
                 path = path.replace(target, "${" + pathParam.paramName + "}");
                 resourcePathParams.add(pathParam);
-
-                if (pathWithoutExtension.endsWith(target)) {
-                    resource.put("trailingPathParam", pathParam);
-                }
             }
         }
 

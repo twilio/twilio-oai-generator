@@ -25,6 +25,7 @@ describe("Integration tests", () => {
   it("should create a call ", async () => {
     const params: CallListInstanceCreateOptions = {
       requiredStringProperty: "str",
+      testMethod: "POST",
     };
     const result = await client.api.v2010
       .accounts(accountSid)

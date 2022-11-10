@@ -5,17 +5,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.experimental.UtilityClass;
-import org.mozilla.javascript.optimizer.Codegen;
 import org.openapitools.codegen.CodegenModel;
-import org.openapitools.codegen.CodegenOperation;
 import org.openapitools.codegen.model.ModelMap;
 import org.openapitools.codegen.model.ModelsMap;
+import org.openapitools.codegen.CodegenOperation;
 
 @UtilityClass
 public class Utility {
@@ -53,6 +53,7 @@ public class Utility {
                     .collect(Collectors.toCollection(() -> localModels));
         }
     }
+
 
     @SuppressWarnings("unchecked")
     public ArrayList<CodegenOperation> getOperations(final Map<String, Object> resource) {
