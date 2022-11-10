@@ -1,6 +1,10 @@
 #!/bin/bash
 set -e
 
+function should-generate() {
+  [ "$LANGUAGES" = "" ] || [[ "$LANGUAGES" == *$1* ]]
+}
+
 function generate() {
   find "$OUT_DIR"/*/ ! -name "*_test.go" -type f -delete || true
 
@@ -22,7 +26,8 @@ function docker-run() {
     "$(docker build -f "$(basename "$1")" -q .)"
   popd
 }
-if [ "$LANGUAGES" = "" ]; then
+
+if should-generate go; then
   OUT_DIR=examples/go/go-client/helper/rest
   generate twilio-go
 
@@ -36,19 +41,25 @@ if [ "$LANGUAGES" = "" ]; then
   done
 
   docker-run examples/go/Dockerfile-goimports
+fi
 
+if should-generate csharp; then
   OUT_DIR=examples/csharp/src/Twilio/Rest
   generate twilio-csharp
+fi
 
+if should-generate java; then
   OUT_DIR=examples/java/src/main/java/com/twilio/rest
   generate twilio-java
+fi
 
+if should-generate node; then
   OUT_DIR=examples/node/lib/rest
   generate twilio-node --global-property skipFormModel=false
   docker-run examples/node/Dockerfile-prettier
 fi
 
-if [[ "php" == *"$LANGUAGES"* ]];then
+if should-generate php; then
   OUT_DIR=examples/php/src/Twilio/Rest
   generate twilio-php
 fi
