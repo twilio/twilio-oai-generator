@@ -99,10 +99,10 @@ func TestSchemaCall(t *testing.T) {
 	assert.Contains(t, resource.Schema, "path_account_sid")
 
 	for paramName, paramSchema := range resource.Schema {
-		required := paramName == "required_string_property"
+		required := paramName == "required_string_property" || paramName == "test_method"
 		forceNew := paramName != "test_integer"
-		computed := paramName != "required_string_property"
-		optional := paramName != "test_integer" && paramName != "required_string_property"
+		computed := !required
+		optional := paramName != "test_integer" && !required
 
 		assert.Equal(t, required, paramSchema.Required, fmt.Sprintf("schema.Required iff required_string_property: %s", paramName))
 		assert.Equal(t, forceNew, paramSchema.ForceNew, fmt.Sprintf("schema.ForceNew iff not test_integer: %s", paramName))

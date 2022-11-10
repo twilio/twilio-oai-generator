@@ -1406,7 +1406,7 @@ namespace Twilio.Tests.Rest
             string pathAccountSid = "PathAccountSid";
             List<string> testArrayOfStrings = new List<string>() { "testElement1", "testElement2" };
 
-            var createCall = new CreateCallOptions(requiredStringProperty: requiredStringProperty) {PathAccountSid = pathAccountSid,TestArrayOfStrings = testArrayOfStrings };
+            var createCall = new CreateCallOptions(requiredStringProperty: requiredStringProperty, testMethod: HttpMethod.Post) {PathAccountSid = pathAccountSid,TestArrayOfStrings = testArrayOfStrings };
             Assert.IsNotNull(createCall);
             Assert.IsNotNull(createCall.PathAccountSid);
             Assert.AreEqual(pathAccountSid, createCall.PathAccountSid);
@@ -1423,7 +1423,7 @@ namespace Twilio.Tests.Rest
             string pathAccountSid = "PathAccountSid";
             List<string> testArrayOfStrings = new List<string>() { "testElement1", "testElement2" };
 
-            var createCall = new CreateCallOptions(requiredStringProperty: requiredStringProperty) { PathAccountSid = pathAccountSid, TestArrayOfStrings = testArrayOfStrings };
+            var createCall = new CreateCallOptions(requiredStringProperty: requiredStringProperty, testMethod: HttpMethod.Post) { PathAccountSid = pathAccountSid, TestArrayOfStrings = testArrayOfStrings };
             Assert.IsNotNull(createCall);
 
             var param = createCall.GetParams();
@@ -1641,7 +1641,7 @@ namespace Twilio.Tests.Rest
                                           System.Net.HttpStatusCode.Created,
                                           "{\"account_sid\": \"ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"sid\": \"ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"a2p_profile_bundle_sid\": \"BU0987654321abcdefABCDEFABCDEFABCD\"}"
                                       ));
-             var response = CallResource.Create(requiredStringProperty: "requiredPart", client: twilioRestClient);
+             var response = CallResource.Create(requiredStringProperty: "requiredPart", testMethod: HttpMethod.Post, client: twilioRestClient);
              Assert.NotNull(response);
              Assert.AreEqual("BU0987654321abcdefABCDEFABCDEFABCD", response.A2PProfileBundleSid);
         }
