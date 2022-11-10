@@ -54,6 +54,9 @@ components:
           nullable: true
           type: number
           format: float
+        test_number_decimal:
+          nullable: true
+          type: decimal
         test_enum:
           $ref: '#/components/schemas/test_enum_status'
           nullable: true
@@ -358,8 +361,21 @@ paths:
                     format: uri
                     type: string
                   type: array
+                TestMethod:
+                  type: string
+                  format: http-method
+                  enum:
+                    - HEAD
+                    - GET
+                    - POST
+                    - PATCH
+                    - PUT
+                    - DELETE
+                  description: 'The HTTP method that we should use to request the
+                                                                            `TestArrayOfUri`.'
               required:
                 - RequiredStringProperty
+                - TestMethod
               title: CreateCallRequest
               type: object
       responses:

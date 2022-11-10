@@ -29,12 +29,14 @@ describe("account", () => {
     const scope = nock("http://api.twilio.com")
       .post(`/2010-04-01/Accounts/${accountSid}/Calls.json`, {
         RequiredStringProperty: "phone home",
+        TestMethod: "post",
       })
       .reply(201, { sid: "123" });
 
     return twilio.api.v2010.account.calls
       .create({
         requiredStringProperty: "phone home",
+        testMethod: "post",
       })
       .then(() => scope.done());
   });

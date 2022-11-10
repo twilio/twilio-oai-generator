@@ -15,9 +15,11 @@ describe("call", () => {
     const scope = nock("http://api.twilio.com")
       .post("/2010-04-01/Accounts/123/Calls.json", {
         RequiredStringProperty: "radda radda",
+        TestMethod: "post",
       })
       .reply(201, {
         requiredStringProperty: "radda radda",
+        testMethod: "post",
         account_sid: "123",
         sid: 1,
       });
@@ -26,6 +28,7 @@ describe("call", () => {
       .accounts("123")
       .calls.create({
         requiredStringProperty: "radda radda",
+        testMethod: "post",
         account_sid: "123",
         sid: 1,
       })

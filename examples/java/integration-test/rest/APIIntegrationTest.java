@@ -2,6 +2,7 @@ package com.twilio.rest;
 
 import com.twilio.Twilio;
 import com.twilio.base.Page;
+import com.twilio.http.HttpMethod;
 import com.twilio.http.NetworkHttpClient;
 import com.twilio.http.TwilioRestClient.Builder;
 import com.twilio.rest.api.v2010.Account;
@@ -49,7 +50,7 @@ public class APIIntegrationTest {
 
     @Test
     public void testPost() {
-        Call call = new CallCreator(ACCOUNT_SID, "testString").create();
+        Call call = new CallCreator(ACCOUNT_SID, "testString", HttpMethod.POST).create();
         assertEquals("Ahoy", call.getTestString());
         assertNotNull(call);
     }
