@@ -101,7 +101,6 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
         return directoryStructureService.toApiFilename(super.toApiFilename(name));
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public OperationsMap postProcessOperationsWithModels(final OperationsMap objs, List<ModelMap> allModels) {
         final OperationsMap results = super.postProcessOperationsWithModels(objs, allModels);

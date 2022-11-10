@@ -204,7 +204,6 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
         return new HashMap<>();
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public OperationsMap postProcessOperationsWithModels(final OperationsMap objs, List<ModelMap> allModels) {
         final OperationsMap results = super.postProcessOperationsWithModels(objs, allModels);
@@ -311,7 +310,7 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
 
     private Map<String, Map<String, Object>> getConventionMap() {
         try {
-            return new ObjectMapper().readValue(Thread.currentThread().getContextClassLoader().getResourceAsStream(ApplicationConstants.CONFIG_JAVA_JSON_PATH), new TypeReference<Map<String, Map<String, Object>>>(){});
+            return new ObjectMapper().readValue(Thread.currentThread().getContextClassLoader().getResourceAsStream(ApplicationConstants.CONFIG_JAVA_JSON_PATH), new TypeReference<>(){});
         } catch (Exception e) {
             e.printStackTrace();
         }

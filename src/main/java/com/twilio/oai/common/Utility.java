@@ -1,10 +1,9 @@
 package com.twilio.oai.common;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
 import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -36,11 +35,12 @@ public class Utility {
 
     public static Map<String, Map<String, Object>> getConventionalMap() {
         try {
-            return new ObjectMapper().readValue(Thread.currentThread().getContextClassLoader().getResourceAsStream(ApplicationConstants.CONFIG_CSHARP_JSON_PATH), new TypeReference<Map<String, Map<String, Object>>>(){});
+            return new ObjectMapper().readValue(Thread.currentThread().getContextClassLoader().getResourceAsStream(ApplicationConstants.CONFIG_CSHARP_JSON_PATH), new TypeReference<>() {
+            });
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return null;
+        return Collections.emptyMap();
     }
 
     public void addModelsToLocalModelList(final Map<String, ModelsMap> modelMap, List<CodegenModel> localModels){
@@ -53,7 +53,6 @@ public class Utility {
                     .collect(Collectors.toCollection(() -> localModels));
         }
     }
-
 
     @SuppressWarnings("unchecked")
     public ArrayList<CodegenOperation> getOperations(final Map<String, Object> resource) {
