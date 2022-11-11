@@ -2,12 +2,15 @@ import fnmatch
 import os
 import re
 
-IMPORT_RE_JAVA = re.compile(r'^\s*import\s+[\w\.]+\.(\w+)\s*;\s*(?://.*)?$')
-IMPORT_RE_PHP = re.compile(r'^\s*use\s+[\w\\]+\\(\w+)\s*\w*\s*(\w*);\s*(?://.*)?$')
-
 LANGUAGE_REGEX_MAP = {
-    "java": "*.java",
-    "php": "*.php"
+    "java": {
+        "pattern": "*.java",
+        "regex": re.compile(r'^\s*import\s+[\w\.]+\.(\w+)\s*;\s*(?://.*)?$')
+    },
+    "php": {
+        "pattern": "*.php",
+        "regex": re.compile(r'^\s*use\s+[\w\\]+\\(\w+)\s*\w*\s*(\w*);\s*(?://.*)?$')
+    }
 }
 
 
@@ -18,17 +21,13 @@ def locate(pattern, root=os.curdir):
 
 
 def remove_unused_imports(root_dir, language):
-    for filename in locate(LANGUAGE_REGEX_MAP[language], root_dir):
+    for filename in locate(LANGUAGE_REGEX_MAP[language]["pattern"], root_dir):
         import_lines = {}
         other_lines = []
-        IMPORT_RE= ""
         with open(filename) as f:
             all_lines = f.readlines()
         for n, line in enumerate(all_lines):
-            if language == 'java':
-                IMPORT_RE=IMPORT_RE_JAVA
-            if language == 'php':
-                IMPORT_RE=IMPORT_RE_PHP
+            IMPORT_RE=LANGUAGE_REGEX_MAP[language]["regex"]
             m = IMPORT_RE.match(line)
             if m:
                 if " as " in line:
