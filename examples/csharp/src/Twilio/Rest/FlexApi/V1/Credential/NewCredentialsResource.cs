@@ -65,7 +65,6 @@ namespace Twilio.Rest.FlexApi.V1.Credential
             string path = "/v1/Credentials/AWS";
 
 
-
             return new Request(
                 HttpMethod.Post,
                 Rest.Domain.FlexApi,
@@ -189,10 +188,6 @@ namespace Twilio.Rest.FlexApi.V1.Credential
             return await CreateAsync(options, client);
         }
         #endif
-
-
-
-
     
         /// <summary>
         /// Converts a JSON string into a NewCredentialsResource object

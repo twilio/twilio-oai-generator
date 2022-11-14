@@ -39,7 +39,6 @@ namespace Twilio.Rest.FlexApi.V1.Credential.Aws
             string PathSid = options.PathSid;
             path = path.Replace("{"+"Sid"+"}", PathSid);
 
-
             return new Request(
                 HttpMethod.Get,
                 Rest.Domain.FlexApi,

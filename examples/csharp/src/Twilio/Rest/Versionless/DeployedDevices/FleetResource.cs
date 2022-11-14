@@ -37,7 +37,6 @@ namespace Twilio.Rest.Versionless.DeployedDevices
             string path = "/DeployedDevices/Fleets";
 
 
-
             return new Request(
                 HttpMethod.Post,
                 Rest.Domain.Versionless,
@@ -97,10 +96,6 @@ namespace Twilio.Rest.Versionless.DeployedDevices
             return await CreateAsync(options, client);
         }
         #endif
-
-
-
-
         
         private static Request BuildFetchRequest(FetchFleetOptions options, ITwilioRestClient client)
         {
@@ -109,7 +104,6 @@ namespace Twilio.Rest.Versionless.DeployedDevices
 
             string PathSid = options.PathSid;
             path = path.Replace("{"+"Sid"+"}", PathSid);
-
 
             return new Request(
                 HttpMethod.Get,
