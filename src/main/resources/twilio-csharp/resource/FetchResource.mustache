@@ -2,7 +2,6 @@
         private static Request BuildFetchRequest(Fetch{{resourceName}}Options options, ITwilioRestClient client)
         {
             {{>resource/GeneratePath}}
-
             return new Request(
                 HttpMethod.Get,
                 Rest.Domain.{{domainPackage}},

@@ -66,7 +66,6 @@ namespace Twilio.Rest.Api.V2010
             string path = "/2010-04-01/Accounts.json";
 
 
-
             return new Request(
                 HttpMethod.Post,
                 Rest.Domain.Api,
@@ -134,10 +133,6 @@ namespace Twilio.Rest.Api.V2010
             return await CreateAsync(options, client);
         }
         #endif
-
-
-
-
         
         /// <summary> delete </summary>
         /// <param name="options"> Delete Account parameters </param>
@@ -150,7 +145,6 @@ namespace Twilio.Rest.Api.V2010
 
             string PathSid = options.PathSid ?? client.AccountSid;
             path = path.Replace("{"+"Sid"+"}", PathSid);
-
 
             return new Request(
                 HttpMethod.Delete,
@@ -216,7 +210,6 @@ namespace Twilio.Rest.Api.V2010
             string PathSid = options.PathSid ?? client.AccountSid;
             path = path.Replace("{"+"Sid"+"}", PathSid);
 
-
             return new Request(
                 HttpMethod.Get,
                 Rest.Domain.Api,
@@ -278,7 +271,6 @@ namespace Twilio.Rest.Api.V2010
         {
             
             string path = "/2010-04-01/Accounts.json";
-
 
 
             return new Request(
@@ -410,8 +402,6 @@ namespace Twilio.Rest.Api.V2010
             return Page<AccountResource>.FromJson("accounts", response.Content);
         }
 
-
-
         
         private static Request BuildUpdateRequest(UpdateAccountOptions options, ITwilioRestClient client)
         {
@@ -420,7 +410,6 @@ namespace Twilio.Rest.Api.V2010
 
             string PathSid = options.PathSid ?? client.AccountSid;
             path = path.Replace("{"+"Sid"+"}", PathSid);
-
 
             return new Request(
                 HttpMethod.Post,
