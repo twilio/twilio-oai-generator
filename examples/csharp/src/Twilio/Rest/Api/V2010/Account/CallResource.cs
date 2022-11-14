@@ -56,7 +56,6 @@ namespace Twilio.Rest.Api.V2010.Account
             string PathAccountSid = options.PathAccountSid ?? client.AccountSid;
             path = path.Replace("{"+"AccountSid"+"}", PathAccountSid);
 
-
             return new Request(
                 HttpMethod.Post,
                 Rest.Domain.Api,
@@ -132,10 +131,6 @@ namespace Twilio.Rest.Api.V2010.Account
             return await CreateAsync(options, client);
         }
         #endif
-
-
-
-
         
         /// <summary> delete </summary>
         /// <param name="options"> Delete Call parameters </param>
@@ -150,7 +145,6 @@ namespace Twilio.Rest.Api.V2010.Account
             path = path.Replace("{"+"AccountSid"+"}", PathAccountSid);
             string PathTestInteger = options.PathTestInteger.ToString();
             path = path.Replace("{"+"TestInteger"+"}", PathTestInteger);
-
 
             return new Request(
                 HttpMethod.Delete,
@@ -219,7 +213,6 @@ namespace Twilio.Rest.Api.V2010.Account
             path = path.Replace("{"+"AccountSid"+"}", PathAccountSid);
             string PathTestInteger = options.PathTestInteger.ToString();
             path = path.Replace("{"+"TestInteger"+"}", PathTestInteger);
-
 
             return new Request(
                 HttpMethod.Get,
