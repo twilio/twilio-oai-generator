@@ -21,7 +21,7 @@ WORKDIR /app/twilio-csharp
 RUN rm -rf src/Twilio/Rest/*/
 COPY src/Twilio/Rest src/Twilio/Rest
 
-RUN rm -rf test/Twilio.Test/*/
+RUN rm -rf test/Twilio.Test/*/ test/Twilio.Test/*Cluster*
 COPY unit-test/Rest integrationTest/Rest test/Twilio.Test/
 
 RUN dotnet restore

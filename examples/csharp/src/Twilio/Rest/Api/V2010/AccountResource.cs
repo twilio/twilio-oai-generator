@@ -281,7 +281,7 @@ namespace Twilio.Rest.Api.V2010
                 headerParams: null
             );
         }
-        /// <summary> read </summary>
+        /// <summary> This operation's summary has a special character </summary>
         /// <param name="options"> Read Account parameters </param>
         /// <param name="client"> Client to make requests to Twilio </param>
         /// <returns> A single instance of Account </returns>
@@ -294,7 +294,7 @@ namespace Twilio.Rest.Api.V2010
         }
 
         #if !NET35
-        /// <summary> read </summary>
+        /// <summary> This operation's summary has a special character </summary>
         /// <param name="options"> Read Account parameters </param>
         /// <param name="client"> Client to make requests to Twilio </param>
         /// <returns> Task that resolves to A single instance of Account </returns>
@@ -308,7 +308,7 @@ namespace Twilio.Rest.Api.V2010
             return new ResourceSet<AccountResource>(page, options, client);
         }
         #endif
-        /// <summary> read </summary>
+        /// <summary> This operation's summary has a special character </summary>
         /// <param name="dateCreated">  </param>
         /// <param name="dateTest">  </param>
         /// <param name="dateCreatedBefore">  </param>
@@ -331,7 +331,7 @@ namespace Twilio.Rest.Api.V2010
         }
 
         #if !NET35
-        /// <summary> read </summary>
+        /// <summary> This operation's summary has a special character </summary>
         /// <param name="dateCreated">  </param>
         /// <param name="dateTest">  </param>
         /// <param name="dateCreatedBefore">  </param>
