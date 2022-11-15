@@ -14,7 +14,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        language: [ 'go', 'java', 'node', 'php' ]
+        language: [ 'csharp', 'go', 'java', 'node', 'php' ]
+        sonar_language: ['go', 'java', 'node', 'php']
     runs-on: ubuntu-latest
     timeout-minutes: 20
     env:
@@ -44,9 +45,6 @@ jobs:
       - name: Run helper tests and sonar analysis
         run: make test-docker SONAR_TOKEN=${{ secrets.SONAR_TOKEN }} LANGUAGES=${{ matrix.language }}
 
-      - name: Run helper tests and sonar analysis for csharp
-        run: make test-docker SONAR_TOKEN=${{ secrets.SONAR_TOKEN }} LANGUAGES=csharp
-
       - name: Show git status and fail on diff
         run: |
           git status
@@ -60,7 +58,7 @@ jobs:
         uses: SonarSource/sonarcloud-github-action@master
         if: (github.event_name == 'pull_request' || github.ref_type == 'branch') && !github.event.pull_request.head.repo.fork
         with:
-          projectBaseDir: examples/${{ matrix.language }}
+          projectBaseDir: examples/${{ matrix.sonar_language }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
