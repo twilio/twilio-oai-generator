@@ -1,7 +1,7 @@
 
 {{#responseModel}}
     {{#isEnum}}
-        {{#description}}///<summary> {{description}} </summary> {{/description}}
+        {{#description}}///<summary> {{{description}}} </summary> {{/description}}
         [JsonProperty("{{baseName}}")]
         {{^required}}
         public {{{dataType}}} {{nameInCamelCase}} { get; private set; }
