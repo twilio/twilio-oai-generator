@@ -32,6 +32,7 @@ import org.openapitools.codegen.model.OperationMap;
 import org.openapitools.codegen.model.OperationsMap;
 
 import static com.twilio.oai.common.ApplicationConstants.ACCOUNT_SID_FORMAT;
+import static com.twilio.oai.common.ApplicationConstants.ARRAY;
 import static com.twilio.oai.common.ApplicationConstants.LIST_INSTANCE;
 import static com.twilio.oai.common.ApplicationConstants.PATH_SEPARATOR_PLACEHOLDER;
 import static com.twilio.oai.common.ApplicationConstants.PATH_TYPE_EXTENSION_NAME;
@@ -201,6 +202,24 @@ public class DirectoryStructureService {
         pathParts.add(caseResolver.filenameOperation(filename));
 
         return String.join(File.separator, pathParts);
+    }
+
+    public String getRecordKey(final List<CodegenOperation> opList, final List<CodegenModel> models) {
+        return opList
+            .stream()
+            .filter(co -> co.operationId.toLowerCase().startsWith("list"))
+            .map(co -> getModelByClassname(models, co.returnType))
+            .map(Optional::orElseThrow)
+            .map(CodegenModel::getAllVars)
+            .flatMap(Collection::stream)
+            .filter(v -> v.openApiType.equals(ARRAY))
+            .map(v -> v.baseName)
+            .findFirst()
+            .orElse("");
+    }
+
+    private Optional<CodegenModel> getModelByClassname(final List<CodegenModel> models, final String classname) {
+        return models.stream().filter(model -> model.classname.equals(classname)).findFirst();
     }
 
     public Optional<CodegenModel> getModelCoPath(final String modelName, CodegenOperation codegenOperation, String recordKey, List<CodegenModel> allModels) {
