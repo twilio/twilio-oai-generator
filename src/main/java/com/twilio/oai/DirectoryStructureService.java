@@ -5,7 +5,6 @@ import com.twilio.oai.resource.IResourceTree;
 import com.twilio.oai.resource.Resource;
 
 import java.io.File;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -26,8 +25,6 @@ import lombok.RequiredArgsConstructor;
 import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenOperation;
 import org.openapitools.codegen.CodegenProperty;
-import org.openapitools.codegen.model.ModelMap;
-import org.openapitools.codegen.model.ModelsMap;
 import org.openapitools.codegen.model.OperationMap;
 import org.openapitools.codegen.model.OperationsMap;
 
@@ -79,6 +76,7 @@ public class DirectoryStructureService {
                     productMap.put(tag, PathUtils.getFirstPathPart(name));
                 }
 
+                operation.setTags(null);
                 operation.addTagsItem(tag);
 
                 if (!tag.contains(PATH_SEPARATOR_PLACEHOLDER)) {

@@ -132,6 +132,8 @@ paths:
     description: A top-level resource
     get:
       operationId: ListAccount
+      tags:
+        - TagThatShouldBeRemoved
       parameters:
         - in: query
           name: DateCreated
