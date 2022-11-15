@@ -24,7 +24,8 @@ public class Utility {
             ObjectMapper objectMapper = new ObjectMapper();
             try {
                 JsonNode jsonNode = objectMapper.readTree(item.modelJson);
-                if (jsonNode.get("type").textValue().equals("object") && jsonNode.has("format")) {
+                if (jsonNode.has("type") && jsonNode.has("format") &&
+                    jsonNode.get("type").textValue().equals("object")) {
                     modelFormatMap.put(item.classname, jsonNode.get("format").textValue());
                 }
             } catch (JsonProcessingException e) {
