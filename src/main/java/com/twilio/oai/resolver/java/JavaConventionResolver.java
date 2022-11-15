@@ -88,8 +88,8 @@ public class JavaConventionResolver {
         if( PHONE_NUMBER_FORMAT.equals(parameter.dataFormat)) {
             parameter.vendorExtensions.put(X_IS_PHONE_NUMBER_FORMAT, true);
         }
-        // prevent http method format type to be considered as enum
-        if (HTTP_METHOD.equals(parameter.dataFormat)) {
+        // prevent special format properties to be considered as enum
+        if (conventionMap.get(Segments.SEGMENT_PROPERTIES.getSegment()).containsKey(parameter.dataFormat)) {
             parameter.isEnum = false;
             parameter.allowableValues = null;
         }
