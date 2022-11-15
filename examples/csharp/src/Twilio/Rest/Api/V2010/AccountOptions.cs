@@ -114,7 +114,7 @@ namespace Twilio.Rest.Api.V2010
     }
 
 
-    /// <summary> read </summary>
+    /// <summary> This operation's summary has a special character </summary>
     public class ReadAccountOptions : ReadOptions<AccountResource>
     {
     
