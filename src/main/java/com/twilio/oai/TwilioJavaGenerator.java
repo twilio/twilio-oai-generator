@@ -209,11 +209,10 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
     public OperationsMap postProcessOperationsWithModels(final OperationsMap objs, List<ModelMap> allModels) {
         final OperationsMap results = super.postProcessOperationsWithModels(objs, allModels);
         final List<CodegenOperation> opList = directoryStructureService.processOperations(results);
+        final String recordKey = directoryStructureService.getRecordKey(opList, this.allModels);
+        results.put("recordKey", recordKey);
 
         final Map<String, Map<String, Object>> resources = new LinkedHashMap<>();
-
-        final String recordKey = getRecordKey(opList, this.allModels);
-        results.put("recordKey", recordKey);
 
         List<CodegenModel> responseModels = new ArrayList<>();
         apiTemplateFiles.remove("updater.mustache");
@@ -459,21 +458,6 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
 
         codegenModel.setVars(codegenProperties);
         return codegenModel;
-    }
-
-    private String getRecordKey(List<CodegenOperation> opList, List<CodegenModel> models) {
-        String recordKey =  "";
-        for (CodegenOperation co: opList) {
-            for(CodegenModel model: models) {
-                if(model.name.equals(co.returnType)) {
-                    recordKey = model.allVars
-                            .stream()
-                            .filter(v -> v.openApiType.equals(ARRAY))
-                            .collect(Collectors.toList()).get(0).baseName;
-                }
-            }
-        }
-        return recordKey;
     }
 
     /**
