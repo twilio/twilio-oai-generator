@@ -53,14 +53,7 @@ jobs:
       - name: Remove pom file  # Otherwise, the Sonar action fails and recommends using the Maven plugin
         run: rm pom.xml
 
-      - name: Install SonarCloud scanner and run analysis
-        uses: SonarSource/sonarcloud-github-action@master
-        if: (github.event_name == 'pull_request' || github.ref_type == 'branch') && !github.event.pull_request.head.repo.fork && ${{ matrix.language }}!='csharp'
-        with:
-          projectBaseDir: examples/${{ matrix.language }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
 
   notify-on-failure:
     name: Slack notify on failure
