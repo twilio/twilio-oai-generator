@@ -37,7 +37,6 @@ namespace Twilio.Rest.Versionless.Understand
             string path = "/understand/Assistants";
 
 
-
             return new Request(
                 HttpMethod.Post,
                 Rest.Domain.Versionless,
@@ -97,10 +96,6 @@ namespace Twilio.Rest.Versionless.Understand
             return await CreateAsync(options, client);
         }
         #endif
-
-
-
-
     
         /// <summary>
         /// Converts a JSON string into a AssistantResource object

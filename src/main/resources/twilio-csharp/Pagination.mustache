@@ -45,4 +45,3 @@
             var response = client.Request(request);
             return Page<{{resourceName}}{{resourceConstant}}>.FromJson("{{recordKey}}", response.Content);
         }
-

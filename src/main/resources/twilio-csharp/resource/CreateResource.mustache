@@ -2,7 +2,6 @@
         private static Request BuildCreateRequest(Create{{resourceName}}Options options, ITwilioRestClient client)
         {
             {{>resource/GeneratePath}}
-
             return new Request(
                 HttpMethod.Post,
                 Rest.Domain.{{domainPackage}},
@@ -58,6 +57,3 @@
             return await CreateAsync(options, client);
         }
         #endif
-
-
-

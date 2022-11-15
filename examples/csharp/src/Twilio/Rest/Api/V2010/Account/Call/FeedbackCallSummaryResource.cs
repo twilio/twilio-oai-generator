@@ -58,7 +58,6 @@ namespace Twilio.Rest.Api.V2010.Account.Call
             string PathSid = options.PathSid;
             path = path.Replace("{"+"Sid"+"}", PathSid);
 
-
             return new Request(
                 HttpMethod.Post,
                 Rest.Domain.Api,

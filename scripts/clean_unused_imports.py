@@ -2,10 +2,15 @@ import fnmatch
 import os
 import re
 
-IMPORT_RE = re.compile(r'^\s*import\s+[\w\.]+\.(\w+)\s*;\s*(?://.*)?$')
-
 LANGUAGE_REGEX_MAP = {
-    "java": "*.java"
+    "java": {
+        "pattern": "*.java",
+        "regex": re.compile(r'^\s*import\s+[\w\.]+\.(\w+)\s*;\s*(?://.*)?$')
+    },
+    "php": {
+        "pattern": "*.php",
+        "regex": re.compile(r'^\s*use\s+[\w\\]+\\(\w+)\s*\w*\s*(\w*);\s*(?://.*)?$')
+    }
 }
 
 
@@ -16,15 +21,19 @@ def locate(pattern, root=os.curdir):
 
 
 def remove_unused_imports(root_dir, language):
-    for filename in locate(LANGUAGE_REGEX_MAP[language], root_dir):
+    for filename in locate(LANGUAGE_REGEX_MAP[language]["pattern"], root_dir):
         import_lines = {}
         other_lines = []
         with open(filename) as f:
             all_lines = f.readlines()
         for n, line in enumerate(all_lines):
+            IMPORT_RE=LANGUAGE_REGEX_MAP[language]["regex"]
             m = IMPORT_RE.match(line)
             if m:
-                import_lines[n] = m.group(1)
+                if " as " in line:
+                    import_lines[n] = m.group(2)
+                else:
+                    import_lines[n] = m.group(1)
             else:
                 other_lines.append(line)
         other_code = ''.join(other_lines)
