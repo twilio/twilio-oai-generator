@@ -8,7 +8,7 @@ for library in ${LANGUAGES}; do
 done
 
 cd examples/prism
-docker-compose build --pull "${testing_services[@]}"
+docker-compose build --build-arg SONAR_TOKEN=$1 --pull "${testing_services[@]}"
 docker-compose up -d --force-recreate --remove-orphans "${testing_services[@]}"
 
 function wait_for() {
