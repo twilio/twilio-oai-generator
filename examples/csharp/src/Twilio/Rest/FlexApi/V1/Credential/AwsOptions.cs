@@ -34,6 +34,7 @@ namespace Twilio.Rest.FlexApi.V1.Credential
 
         /// <summary> Construct a new DeleteCredentialAwsOptions </summary>
         /// <param name="pathSid">  </param>
+
         public DeleteAwsOptions(string pathSid)
         {
             PathSid = pathSid;
@@ -63,6 +64,7 @@ namespace Twilio.Rest.FlexApi.V1.Credential
 
         /// <summary> Construct a new FetchCredentialAwsOptions </summary>
         /// <param name="pathSid">  </param>
+
         public FetchAwsOptions(string pathSid)
         {
             PathSid = pathSid;
@@ -121,6 +123,7 @@ namespace Twilio.Rest.FlexApi.V1.Credential
 
         /// <summary> Construct a new UpdateCredentialAwsOptions </summary>
         /// <param name="pathSid">  </param>
+
         public UpdateAwsOptions(string pathSid)
         {
             PathSid = pathSid;
