@@ -34,7 +34,6 @@ namespace Twilio.Rest.FlexApi.V1
 
         /// <summary> Construct a new UpdateCallOptions </summary>
         /// <param name="pathSid">  </param>
-
         public UpdateCallOptions(string pathSid)
         {
             PathSid = pathSid;
