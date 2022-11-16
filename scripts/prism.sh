@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-LANGUAGES=${LANGUAGES:-go java node csharp php}
+LANGUAGES=${LANGUAGES:-csharp go java node php}
 
 for library in ${LANGUAGES}; do
   testing_services+=("${library}-test")
