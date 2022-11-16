@@ -82,6 +82,7 @@ namespace Twilio.Rest.FlexApi.V1.Credential
 
         /// <summary> Construct a new CreateCredentialAwsOptions </summary>
         /// <param name="testString">  </param>
+
         public CreateNewCredentialsOptions(string testString)
         {
             TestString = testString;
