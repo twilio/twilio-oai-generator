@@ -106,12 +106,11 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
     public OperationsMap postProcessOperationsWithModels(final OperationsMap objs, List<ModelMap> allModels) {
         final OperationsMap results = super.postProcessOperationsWithModels(objs, allModels);
         final List<CodegenOperation> opList = directoryStructureService.processOperations(results);
+        final String recordKey = directoryStructureService.getRecordKey(opList, this.allModels);
+        results.put("recordKey", recordKey);
 
         final Map<String, Map<String, Object>> resources = new LinkedHashMap<>();
         final List<CodegenModel> responseModels = new ArrayList<>();
-
-        final String recordKey = getRecordKey(opList, this.allModels);
-        results.put("recordKey", recordKey);
 
         final Map<String, IJsonSchemaValidationProperties> enums = new HashMap<>();
         resolver.setEnums(enums);
@@ -353,22 +352,6 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
         resolver.setModelFormatMap(modelFormatMap);
         // Return an empty collection so no model files get generated.
         return new HashMap<>();
-    }
-
-
-    private String getRecordKey(List<CodegenOperation> opList, List<CodegenModel> models) {
-        String recordKey =  "";
-        for (CodegenOperation co: opList) {
-            for(CodegenModel model: models) {
-                if(model.name.equals(co.returnType)) {
-                    recordKey = model.allVars
-                            .stream()
-                            .filter(v -> v.openApiType.equals("array"))
-                            .collect(Collectors.toList()).get(0).baseName;
-                }
-            }
-        }
-        return recordKey;
     }
 
     @Override
