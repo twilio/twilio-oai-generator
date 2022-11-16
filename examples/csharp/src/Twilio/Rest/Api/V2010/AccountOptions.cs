@@ -194,7 +194,6 @@ namespace Twilio.Rest.Api.V2010
 
         /// <summary> Construct a new UpdateAccountOptions </summary>
         /// <param name="status">  </param>
-
         public UpdateAccountOptions(AccountResource.StatusEnum status)
         {
             Status = status;

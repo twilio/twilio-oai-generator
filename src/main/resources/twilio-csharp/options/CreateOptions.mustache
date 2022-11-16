@@ -4,8 +4,7 @@
     {
         {{>options/Params}}
     {{#vendorExtensions.x-required-param-exist}}
-        {{>options/MethodsComments}}
-        public Create{{resourceName}}Options({{#requiredParams}}{{{dataType}}} {{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^-last}}, {{/-last}}{{/requiredParams}})
+        {{>options/MethodsComments}}        public Create{{resourceName}}Options({{#requiredParams}}{{{dataType}}} {{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^-last}}, {{/-last}}{{/requiredParams}})
         {
         {{#requiredParams}}
             {{paramName}} = {{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}};
