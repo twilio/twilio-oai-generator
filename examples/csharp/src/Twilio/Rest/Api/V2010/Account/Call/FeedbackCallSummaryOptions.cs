@@ -48,7 +48,6 @@ namespace Twilio.Rest.Api.V2010.Account.Call
         /// <param name="pathSid">  </param>
         /// <param name="endDate">  </param>
         /// <param name="startDate">  </param>
-
         public UpdateFeedbackCallSummaryOptions(string pathSid, DateTime? endDate, DateTime? startDate)
         {
             PathSid = pathSid;
