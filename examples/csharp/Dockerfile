@@ -11,7 +11,7 @@ RUN dotnet tool install --global dotnet-sonarscanner \
 
 RUN dotnet tool list -g
 ENV PATH="${PATH}:/root/.dotnet/tools"
-ENV SONAR_TOKEN=sqp_ee3dd4235c80f69dfa5a051eb7e3c3210f5ac43a
+ENV SONAR_TOKEN=$SONAR_TOKEN
 
 RUN mkdir /app
 WORKDIR /app
