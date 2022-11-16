@@ -59,6 +59,7 @@ namespace Twilio.Rest.Versionless.DeployedDevices
 
         /// <summary> Construct a new FetchDeployedDevicesFleetOptions </summary>
         /// <param name="pathSid">  </param>
+
         public FetchFleetOptions(string pathSid)
         {
             PathSid = pathSid;
