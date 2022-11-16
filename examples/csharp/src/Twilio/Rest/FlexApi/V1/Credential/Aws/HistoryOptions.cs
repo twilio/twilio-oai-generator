@@ -37,6 +37,7 @@ namespace Twilio.Rest.FlexApi.V1.Credential.Aws
 
         /// <summary> Construct a new FetchCredentialHistoryOptions </summary>
         /// <param name="pathSid">  </param>
+
         public FetchHistoryOptions(string pathSid)
         {
             PathSid = pathSid;
