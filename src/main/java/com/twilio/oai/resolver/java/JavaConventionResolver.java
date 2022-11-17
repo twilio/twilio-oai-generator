@@ -52,8 +52,7 @@ public class JavaConventionResolver {
                 }
             }
 
-            // Converts property.nameInSnakeCase to all lowercase
-            property.nameInSnakeCase = property.nameInSnakeCase.toLowerCase(Locale.ROOT);
+            property.nameInSnakeCase = StringHelper.toSnakeCase(property.name);
 
             // Merges the vendorExtensions map with the existing property's vendor extensions
             vendorExtensions.forEach(
