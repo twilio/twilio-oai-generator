@@ -13,7 +13,7 @@ docker-compose up -d --force-recreate --remove-orphans "${testing_services[@]}"
 
 function wait_for() {
   echo -n "Waiting for tests to complete"
-  for language in "$@"; do
+  for language in ${LANGUAGES}; do
     while true; do
       if [[ "$(docker-compose ps -q "${language}-test" | xargs docker inspect -f "{{.State.Status}}")" != "exited" ]]; then
         echo -n "."
@@ -28,7 +28,7 @@ function wait_for() {
 
 EXIT_CODE=0
 function check_status() {
-  for language in "$@"; do
+  for language in ${LANGUAGES}; do
     docker_test_service="${language}-test"
     if [[ $(docker-compose ps -q "$docker_test_service" | xargs docker inspect -f "{{.State.ExitCode}}") -ne 0 ]]; then
       EXIT_CODE=$(($EXIT_CODE || $(docker-compose ps -q "$docker_test_service" | xargs docker inspect -f "{{.State.ExitCode}}")))
@@ -40,7 +40,7 @@ function check_status() {
   done
 }
 
-wait_for "${LANGUAGES}"
-check_status "${LANGUAGES}"
+wait_for
+check_status
 docker-compose down
 exit $EXIT_CODE
