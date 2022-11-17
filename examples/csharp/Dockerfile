@@ -1,17 +1,16 @@
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
-ARG SONAR_TOKEN=""
+ENV PATH="${PATH}:/root/.dotnet/tools"
+
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
+         build-essential \
          git \
          mono-complete \
          openjdk-11-jre
 
 RUN dotnet tool install --global dotnet-sonarscanner \
-    && dotnet tool install --global dotnet-reportgenerator-globaltool --version 4.8.12
-
-RUN dotnet tool list -g
-ENV PATH="${PATH}:/root/.dotnet/tools"
-ENV SONAR_TOKEN=$SONAR_TOKEN
+ && dotnet tool install --global dotnet-reportgenerator-globaltool --version 4.8.12 \
+ && dotnet tool list -g
 
 RUN mkdir /app
 WORKDIR /app
@@ -24,9 +23,11 @@ COPY src/Twilio/Rest src/Twilio/Rest
 RUN rm -rf test/Twilio.Test/*/ test/Twilio.Test/*Cluster*
 COPY unit-test/Rest integrationTest/Rest test/Twilio.Test/
 
-RUN dotnet restore
-RUN	dotnet build Twilio.sln
-CMD ["/bin/bash", "-c", "set -o pipefail && sleep 10 && dotnet test test/Twilio.Test/Twilio.Test.csproj --no-build 2>&1 | tee /local/test-report.out"]
+RUN make install
 
-RUN apt-get -y install build-essential
-CMD if [ "$SONAR_TOKEN" = "" ] ; then echo Skipping sonar analysis ;  else make cover PROJECT_NAME=twilio_twilio-oai-generator-csharp SONAR_SOURCES="/d:sonar.inclusions=src/Twilio/Rest/**/* /d:sonar.cs.analyzeGeneratedCode=true /d:sonar.exclusions=test/Twilio.Test/**/*" ; fi
+COPY test.sh .
+ARG SONAR_TOKEN
+ENV SONAR_TOKEN=$SONAR_TOKEN
+
+# pipefail prevents errors in a pipeline from being masked.
+CMD ["/bin/bash", "-c", "set -o pipefail && /app/twilio-csharp/test.sh 2>&1 | tee /local/test-report.out"]
