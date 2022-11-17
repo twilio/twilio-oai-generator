@@ -124,7 +124,7 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
                 k -> new ArrayList<>());
 
             resource.put("name", resourceName);
-            resource.put("nameInSnakeCase", toSnakeCase(resourceName));
+            resource.put("nameInSnakeCase", StringHelper.toSnakeCase(resourceName));
             resourceOperationList.add(co);
 
             twilioCodegen.populateCrudOperations(resource, co);
@@ -179,7 +179,7 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
                     // 'sid'). We assume it's the last path parameter for the fetch/update/delete operation.
                     final CodegenParameter idParameter = fetchOperation.pathParams.get(
                             fetchOperation.pathParams.size() - 1);
-                    final String idParameterSnakeCase = toSnakeCase(idParameter.paramName);
+                    final String idParameterSnakeCase = StringHelper.toSnakeCase(idParameter.paramName);
 
                     // If the resource ID parameter is not part of the operation response body, remove the resource.
                     if (!properties.containsKey(idParameterSnakeCase)) {
@@ -277,7 +277,7 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
         final TerraformSchema terraformSchema = buildTerraformSchema(codegenParameter, schemaOptions);
 
         codegenParameter.vendorExtensions.put("x-terraform-schema", terraformSchema);
-        codegenParameter.vendorExtensions.put("x-name-in-snake-case", this.toSnakeCase(codegenParameter.baseName));
+        codegenParameter.vendorExtensions.put("x-name-in-snake-case", StringHelper.toSnakeCase(codegenParameter.baseName));
     }
 
     private Set<String> getParamNames(final List<CodegenParameter> parameters) {
@@ -317,13 +317,9 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
     }
 
     private void addParamVendorExtensions(final List<CodegenParameter> params) {
-        params.forEach(p -> p.vendorExtensions.put("x-name-in-snake-case", this.toSnakeCase(p.paramName)));
+        params.forEach(p -> p.vendorExtensions.put("x-name-in-snake-case", StringHelper.toSnakeCase(p.paramName)));
         params.forEach(p -> p.vendorExtensions.put("x-util-name", p.isFreeFormObject ? "Object" : "String"));
         params.forEach(p -> p.vendorExtensions.put("x-index", params.indexOf(p)));
-    }
-
-    private String toSnakeCase(final String string) {
-        return string.replaceAll("[^a-zA-Z\\d]+", "_").replaceAll("([a-z\\d])([A-Z])", "$1_$2").toLowerCase();
     }
 
     /**
