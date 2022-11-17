@@ -45,7 +45,8 @@ namespace Twilio.Rest.Api.V2010.Account
 
 
         /// <summary> Construct a new CreateCallOptions </summary>
-        /// <param name="requiredStringProperty">  </param>        /// <param name="testMethod"> The HTTP method that we should use to request the `TestArrayOfUri`. </param>
+        /// <param name="requiredStringProperty">  </param>
+        /// <param name="testMethod"> The HTTP method that we should use to request the `TestArrayOfUri`. </param>
         public CreateCallOptions(string requiredStringProperty, Twilio.Http.HttpMethod testMethod)
         {
             RequiredStringProperty = requiredStringProperty;

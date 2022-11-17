@@ -84,6 +84,7 @@ public class Inflector {
              irregulars.add("BuildStatus");
              irregulars.add("DialingPermissions");
              irregulars.add("Media");
+             irregulars.add("GoodData");
          }
 
          public boolean isIrregular(String word) {
