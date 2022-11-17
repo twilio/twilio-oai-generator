@@ -44,6 +44,9 @@ jobs:
       - name: Run helper tests and sonar analysis
         run: make test-docker SONAR_TOKEN=${{ secrets.SONAR_TOKEN }} LANGUAGES=${{ matrix.language }}
 
+      - name: Docker logs
+        run: docker logs prism-csharp-test-1
+
       - name: Show git status and fail on diff
         run: |
           git status
