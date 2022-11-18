@@ -5,7 +5,6 @@ using Twilio;
 using Twilio.Rest.Api.V2010;
 using Twilio.Rest.Api.V2010.Account;
 using Twilio.Rest.Api.V2010.Account.Call;
-using System.Diagnostics;
 
 namespace Twilio.Tests.Rest
 {
