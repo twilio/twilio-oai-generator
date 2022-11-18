@@ -34,7 +34,7 @@ func (params *{{{nickname}}}Params) Set{{paramName}}({{paramName}} {{{dataType}}
 
 {{^vendorExtensions.x-is-read-operation}}
 {{#notes}}
-// {{notes}}
+// {{{notes}}}
 {{/notes}}
 func (c *ApiService) {{{nickname}}}({{#allParams}}{{#required}}{{paramName}} {{{dataType}}}{{^last}}, {{/last}}{{/required}}{{/allParams}}{{#hasOptionalParams}}params *{{{nickname}}}Params{{/hasOptionalParams}}) ({{#returnType}}*{{{returnType}}}, {{/returnType}}error) {
     path := "{{{path}}}"
