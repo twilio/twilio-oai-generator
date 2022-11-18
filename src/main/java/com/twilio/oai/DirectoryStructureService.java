@@ -1,5 +1,6 @@
 package com.twilio.oai;
 
+import com.twilio.oai.common.Utility;
 import com.twilio.oai.resolver.CaseResolver;
 import com.twilio.oai.resource.IResourceTree;
 import com.twilio.oai.resource.Resource;
@@ -25,11 +26,13 @@ import lombok.RequiredArgsConstructor;
 import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenOperation;
 import org.openapitools.codegen.CodegenProperty;
+import org.openapitools.codegen.model.ModelsMap;
 import org.openapitools.codegen.model.OperationMap;
 import org.openapitools.codegen.model.OperationsMap;
 
 import static com.twilio.oai.common.ApplicationConstants.ACCOUNT_SID_FORMAT;
 import static com.twilio.oai.common.ApplicationConstants.ARRAY;
+import static com.twilio.oai.common.ApplicationConstants.ENUM_VARS;
 import static com.twilio.oai.common.ApplicationConstants.LIST_INSTANCE;
 import static com.twilio.oai.common.ApplicationConstants.PATH_SEPARATOR_PLACEHOLDER;
 import static com.twilio.oai.common.ApplicationConstants.PATH_TYPE_EXTENSION_NAME;
@@ -46,6 +49,8 @@ public class DirectoryStructureService {
     @Getter
     private boolean isVersionLess = false;
     private final Map<String, String> productMap = new HashMap<>();
+
+    private final List<CodegenModel> allModels = new ArrayList<>();
 
     @Data
     @Builder
@@ -135,6 +140,12 @@ public class DirectoryStructureService {
             .map(version -> version.isEmpty() ? null : version);
     }
 
+    public void postProcessAllModels(final Map<String, ModelsMap> models, final Map<String, String> modelFormatMap) {
+        Utility.addModelsToLocalModelList(models, allModels);
+        Utility.setComplexDataMapping(allModels, modelFormatMap);
+        allModels.forEach(model -> model.setClassname(model.getClassname().replace("Enum", "")));
+    }
+
     public List<CodegenOperation> processOperations(final OperationsMap results) {
         final OperationMap ops = results.getOperations();
         final List<CodegenOperation> operations = ops.getOperation();
@@ -173,6 +184,8 @@ public class DirectoryStructureService {
                                      .build());
         }
 
+        allModels.forEach(item -> item.getVendorExtensions().remove(ENUM_VARS));
+
         return operations;
     }
 
@@ -202,11 +215,11 @@ public class DirectoryStructureService {
         return String.join(File.separator, pathParts);
     }
 
-    public String getRecordKey(final List<CodegenOperation> opList, final List<CodegenModel> models) {
+    public String getRecordKey(final List<CodegenOperation> opList) {
         return opList
             .stream()
             .filter(co -> co.operationId.toLowerCase().startsWith("list"))
-            .map(co -> getModelByClassname(models, co.returnType))
+            .map(co -> getModelByClassname(co.returnType))
             .map(Optional::orElseThrow)
             .map(CodegenModel::getAllVars)
             .flatMap(Collection::stream)
@@ -216,19 +229,34 @@ public class DirectoryStructureService {
             .orElse("");
     }
 
-    private Optional<CodegenModel> getModelByClassname(final List<CodegenModel> models, final String classname) {
-        return models.stream().filter(model -> model.classname.equals(classname)).findFirst();
+    public Optional<CodegenModel> getModelCoPath(final String className,
+                                                 final CodegenOperation codegenOperation,
+                                                 final String recordKey) {
+        if ((boolean) codegenOperation.vendorExtensions.getOrDefault("x-is-read-operation", false)) {
+            return allModels
+                .stream()
+                .filter(model -> model.getClassname().equals(className))
+                .map(CodegenModel::getVars)
+                .flatMap(Collection::stream)
+                .filter(prop -> prop.baseName.equals(recordKey))
+                .map(CodegenProperty::getComplexType)
+                .map(this::getModelByClassname)
+                .findFirst()
+                .orElseThrow();
+        }
+
+        return getModelByClassname(className);
     }
 
-    public Optional<CodegenModel> getModelCoPath(final String modelName, CodegenOperation codegenOperation, String recordKey, List<CodegenModel> allModels) {
-        if (codegenOperation.vendorExtensions.containsKey("x-is-read-operation") && (boolean)codegenOperation.vendorExtensions.get("x-is-read-operation")) {
-            Optional<CodegenModel> coModel = allModels.stream().filter(model -> model.getClassname().equals(modelName)).findFirst();
-            if (coModel.isEmpty()) {
-                return Optional.empty();
+    public void addModel(final Map<String, CodegenModel> models, final String classname) {
+        getModelByClassname(classname).ifPresent(model -> {
+            if (models.putIfAbsent(model.getClassname(), model) == null) {
+                model.getVars().forEach(property -> addModel(models, property.dataType));
             }
-            CodegenProperty property = coModel.get().vars.stream().filter(prop -> prop.baseName.equals(recordKey)).findFirst().get();
-            return allModels.stream().filter(model -> model.getClassname().equals(property.complexType)).findFirst();
-        }
-        return allModels.stream().filter(model -> model.getClassname().equals(modelName)).findFirst();
+        });
+    }
+
+    public Optional<CodegenModel> getModelByClassname(final String classname) {
+        return allModels.stream().filter(model -> model.classname.equals(classname)).findFirst();
     }
 }

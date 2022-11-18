@@ -6,7 +6,6 @@ import com.google.common.collect.Lists;
 
 import com.twilio.oai.common.ApplicationConstants;
 import com.twilio.oai.common.EnumConstants;
-import com.twilio.oai.common.Utility;
 import com.twilio.oai.mlambdas.ReplaceHyphenLambda;
 import com.twilio.oai.resolver.java.JavaCaseResolver;
 import com.twilio.oai.resolver.java.JavaConventionResolver;
@@ -37,7 +36,6 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
     private static final int BIG_INTEGER_CONSTANT = 1;
     private static final int SERIAL_UID_LENGTH = 12;
     private static final String URI = "uri";
-    private static final String ENUM_VARS = "enumVars";
     private static final String VALUES = "values";
 
     private final TwilioCodegenAdapter twilioCodegen;
@@ -45,7 +43,6 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
         additionalProperties,
         new ResourceMap(new Inflector()),
         new JavaCaseResolver());
-    private final List<CodegenModel> allModels = new ArrayList<>();
     private final Map<String, String> modelFormatMap = new HashMap<>();
     private final JavaConventionResolver conventionResolver = new JavaConventionResolver(getConventionMap());
 
@@ -198,8 +195,8 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
     public Map<String, ModelsMap> postProcessAllModels(final Map<String, ModelsMap> allModels) {
         final Map<String, ModelsMap> results = super.postProcessAllModels(allModels);
 
-        Utility.addModelsToLocalModelList(results, this.allModels);
-        Utility.setComplexDataMapping(this.allModels, this.modelFormatMap);
+        directoryStructureService.postProcessAllModels(results, modelFormatMap);
+
         // Return an empty collection so no model files get generated.
         return new HashMap<>();
     }
@@ -209,7 +206,7 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
     public OperationsMap postProcessOperationsWithModels(final OperationsMap objs, List<ModelMap> allModels) {
         final OperationsMap results = super.postProcessOperationsWithModels(objs, allModels);
         final List<CodegenOperation> opList = directoryStructureService.processOperations(results);
-        final String recordKey = directoryStructureService.getRecordKey(opList, this.allModels);
+        final String recordKey = directoryStructureService.getRecordKey(opList);
         results.put("recordKey", recordKey);
 
         final Map<String, Map<String, Object>> resources = new LinkedHashMap<>();
@@ -220,7 +217,6 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
         apiTemplateFiles.remove("deleter.mustache");
         apiTemplateFiles.remove("reader.mustache");
         apiTemplateFiles.remove("fetcher.mustache");
-        resetAllModelVendorExtensions();
 
         // iterate over the operation and perhaps modify something
         for (final CodegenOperation co : opList) {
@@ -276,14 +272,11 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
             resource.put("serialVersionUID",1);
             co.vendorExtensions.put("x-non-path-params", getNonPathParams(co.allParams));
 
-            if (co.bodyParam != null) {
-                addModel(resource, co.bodyParam.dataType);
-            }
             co.responses
               .stream()
               .map(response -> response.dataType)
               .filter(Objects::nonNull)
-              .map(modelName -> directoryStructureService.getModelCoPath(modelName, co, recordKey, this.allModels))
+              .map(modelName -> directoryStructureService.getModelCoPath(modelName, co, recordKey))
               .filter(Optional::isPresent)
               .map(item -> conventionResolver.resolve(item.get()))
               .map(item -> conventionResolver.resolveComplexType(item, modelFormatMap))
@@ -304,7 +297,6 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
 
         for (final Map<String, Object> resource : resources.values()) {
             resource.put("responseModel", getConcatenatedResponseModel(responseModels));
-            PathUtils.flattenStringMap(resource, "models");
         }
 
         results.put("resources", resources.values());
@@ -319,10 +311,6 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
             e.printStackTrace();
         }
         return Collections.emptyMap();
-    }
-
-    private void resetAllModelVendorExtensions() {
-        allModels.forEach(item -> item.getVendorExtensions().remove(ENUM_VARS));
     }
 
     private void addDeleteHeaderEnums(CodegenOperation co, List<CodegenModel> responseModels) {
@@ -509,18 +497,6 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
 
     private <T> List<T> addAllToList(List<T> ... list) {
         return Arrays.stream(list).flatMap(List<T>::stream).collect(Collectors.toList());
-    }
-
-    private void addModel(final Map<String, Object> resource, final String dataType) {
-        getModel(dataType).ifPresent(model -> {
-            if (PathUtils.getStringMap(resource, "models").putIfAbsent(model.getClassname(), model) == null) {
-                model.getVars().forEach(property -> addModel(resource, property.dataType));
-            }
-        });
-    }
-
-    private Optional<CodegenModel> getModel(final String modelName) {
-        return allModels.stream().filter(model -> model.getClassname().equals(modelName)).findFirst();
     }
 
     private void addOperationName(final CodegenOperation operation, final String name) {
