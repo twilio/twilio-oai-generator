@@ -5,6 +5,7 @@ using Twilio;
 using Twilio.Rest.Api.V2010;
 using Twilio.Rest.Api.V2010.Account;
 using Twilio.Rest.Api.V2010.Account.Call;
+using System.Diagnostics;
 
 namespace Twilio.Tests.Rest
 {
@@ -59,7 +60,7 @@ namespace Twilio.Tests.Rest
         [Test]
         public void TestPost()
         {
-            var call = CallResource.Create("testString", ACCOUNT_SID);
+            var call = CallResource.Create("testString", Twilio.Http.HttpMethod.Post , ACCOUNT_SID);
             Assert.NotNull(call);
             Assert.AreEqual("Ahoy", call.TestString);
         }
