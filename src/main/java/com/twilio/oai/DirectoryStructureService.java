@@ -5,14 +5,7 @@ import com.twilio.oai.resource.IResourceTree;
 import com.twilio.oai.resource.Resource;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import io.swagger.v3.oas.models.OpenAPI;
@@ -39,8 +32,8 @@ public class DirectoryStructureService {
     public static final String VERSION_RESOURCES = "versionResources";
     public static final String ALL_VERSION_RESOURCES = VERSION_RESOURCES + "All";
 
-    private final Map<String, Object> additionalProperties;
-    private final IResourceTree resourceTree;
+    public final Map<String, Object> additionalProperties;
+    public final IResourceTree resourceTree;
     private final CaseResolver caseResolver;
 
     @Getter
@@ -59,6 +52,14 @@ public class DirectoryStructureService {
         private String param;
     }
 
+    @Data
+    @Builder
+    public static class ContextResource {
+        private String paramName;
+        private String filename;
+        private String mountName;
+        private String parent;
+    }
     public void configure(final OpenAPI openAPI) {
         final Map<String, Object> versionResources = PathUtils.getStringMap(additionalProperties,
                                                                             ALL_VERSION_RESOURCES);
@@ -119,6 +120,22 @@ public class DirectoryStructureService {
             .filename(caseResolver.filenameOperation(resourceAliases.getClassName()))
             .build();
         resourcesMap.put(resourceAliases.getClassName(), dependent);
+    }
+
+    public void addContextdependents(final List<Object> resourcesList, final String path, final Operation operation){
+        final Resource.Aliases resourceAliases = getResourceAliases(path, operation);
+        List<String> filePathArray=resourceTree.ancestors(path, operation);
+        String parent=String.join("\\",filePathArray);
+        int idx=path.lastIndexOf("{");
+        String paramName=path.substring(idx+1,path.length()-1);
+        final ContextResource dependent = new ContextResource.ContextResourceBuilder()
+                .paramName(paramName)
+                .mountName(caseResolver.pathOperation(resourceAliases.getMountName()))
+                .filename(caseResolver.filenameOperation(resourceAliases.getClassName()))
+                .parent(parent)
+                .build();
+        if(!resourcesList.contains(dependent))
+            resourcesList.add(dependent);
     }
 
     private Resource.Aliases getResourceAliases(final String path, final Operation operation) {

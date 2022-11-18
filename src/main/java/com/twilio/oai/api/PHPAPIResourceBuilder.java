@@ -7,8 +7,11 @@ import com.twilio.oai.StringHelper;
 import com.twilio.oai.common.EnumConstants;
 
 import com.twilio.oai.resolver.php.IResolver;
+import com.twilio.oai.resource.Resource;
 import com.twilio.oai.template.ITemplate;
 import com.twilio.oai.template.PHPAPITemplate;
+import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.PathItem;
 import org.openapitools.codegen.*;
 
 import java.util.*;
@@ -28,6 +31,12 @@ public class PHPAPIResourceBuilder implements IAPIResourceBuilder {
     private ITemplate phpTemplate;
     private APIResources apiResource ;
     private List<CodegenModel> allModels;
+    private final HashMap<String,List<Object>> contextResourcesMap=new HashMap<>();
+    private final List<Object> contextResourcesList =new ArrayList<>();
+
+    public PHPAPIResourceBuilder(ITemplate template){
+        this.phpTemplate=template;
+    }
 
     public PHPAPIResourceBuilder(ITemplate template, List<CodegenOperation> codegenOperations, List<CodegenModel> allModels) {
         this.phpTemplate = template;
@@ -132,6 +141,68 @@ public class PHPAPIResourceBuilder implements IAPIResourceBuilder {
     public IAPIResourceBuilder setAdditionalProps(DirectoryStructureService directoryStructureService) {
         this.apiResource.setVersion(directoryStructureService.getApiVersionClass().get());
         return this;
+    }
+
+    public void setVersionTemplate(final OpenAPI openAPI, String domain, DirectoryStructureService directoryStructureService){
+        List<Resource> context_list = filter_contextResources(openAPI,domain,directoryStructureService);
+        setContextResources(context_list,directoryStructureService);
+        phpTemplate.add(PHPAPITemplate.TEMPLATE_TYPE_VERSION);
+    }
+
+    private List<Resource> filter_contextResources(final OpenAPI openAPI, String domain, DirectoryStructureService directoryStructureService){
+        if(domain.equals("api"))
+            getApiDependents(directoryStructureService);
+
+        List<Resource> context_list=new ArrayList<>();
+        Map<String, PathItem> pathMap =openAPI.getPaths();
+
+        for (String pathKey: pathMap.keySet()){
+            String pathkey=pathKey;
+            if(domain.equals("api")){
+                pathkey=pathKey.split(".json")[0];
+            }
+            if(pathkey.endsWith("}")) {
+                PathItem path = pathMap.get(pathKey);
+                Optional<String> parentKey=PathUtils.getTwilioExtension(path,"parent");
+                if (!parentKey.isPresent()) {
+                    context_list.add(new Resource(null,pathkey,path,null));
+                } else{
+                    String parentkey=parentKey.get();
+                    if(domain.equals("api")){
+                        parentkey="/2010-04-01"+parentkey;
+                    }
+                    if(pathMap.containsKey(parentkey)){
+                        path = pathMap.get(parentkey);
+                        Optional<String> parentKey2=PathUtils.getTwilioExtension(path,"parent");
+                        if (!parentKey2.isPresent()) {
+                            context_list.add(new Resource(null, pathkey, path, null));
+                        }}}}}
+        return context_list;
+    }
+
+    private void getApiDependents(DirectoryStructureService directoryStructureService) {
+        final List<Object> dependentList = new ArrayList<>();
+        String pathkey="/2010-04-01/Accounts/{Sid}.json";
+        directoryStructureService.resourceTree.dependents(pathkey)
+                .forEach(dependent -> dependent
+                .getPathItem()
+                .readOperations()
+                .forEach(operation -> directoryStructureService.addContextdependents(dependentList,
+                        dependent.getName(),
+                        operation)));
+        directoryStructureService.additionalProperties.put("isApiDomain","true");
+        directoryStructureService.additionalProperties.put("apiDependents",dependentList);
+    }
+
+    private void setContextResources(List<Resource> context_list, DirectoryStructureService directoryStructureService){
+        context_list.forEach(dependent -> dependent
+                .getPathItem()
+                .readOperations()
+                .forEach(operation -> directoryStructureService.addContextdependents(contextResourcesList,
+                        dependent.getName(),
+                        operation)));
+        contextResourcesMap.put("versionDependents",contextResourcesList);
+        phpTemplate.addContextResources(contextResourcesMap);
     }
 
     private String getName(CodegenOperation operation) {

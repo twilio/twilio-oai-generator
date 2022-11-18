@@ -29,6 +29,7 @@ public class TwilioPhpGenerator extends PhpClientCodegen {
     private final Map<String, String> modelFormatMap = new HashMap<>();
     private IAPIResourceBuilder phpAPIResource = null;
     private IConventionMapper conventionMapper =  new LanguageConventionResolver(PHP_CONVENTIONAL_MAP_PATH);
+    private PHPAPIResourceBuilder phpapiResourceBuilder=new PHPAPIResourceBuilder(new PHPAPITemplate(this));
 
     public TwilioPhpGenerator() {
         super();
@@ -51,6 +52,19 @@ public class TwilioPhpGenerator extends PhpClientCodegen {
         final String domain = twilioCodegen.getDomainFromOpenAPI(openAPI);
         twilioCodegen.setDomain(domain);
         directoryStructureService.configure(openAPI);
+        directoryStructureService.resourceTree.getResources().forEach(resource -> resource.updateFamily(directoryStructureService.resourceTree));
+        boolean hasVersion=checkForVersion(openAPI);
+        if (hasVersion) {
+            phpapiResourceBuilder.setVersionTemplate(openAPI,domain,directoryStructureService);
+        }
+    }
+
+    private boolean checkForVersion(OpenAPI openAPI) {
+        Set<String> pathKey =openAPI.getPaths().keySet();
+        for(String key:pathKey){
+            return key.matches("/[v1-9](.*)");
+        }
+        return false;
     }
 
     @Override
