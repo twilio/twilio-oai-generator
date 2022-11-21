@@ -74,12 +74,12 @@ import com.twilio.type.SubscribeRule;
 public class Assistant extends Resource {
     private static final long serialVersionUID = 190231528314786L;
 
-    public static AssistantCreator creator(){
-        return new AssistantCreator();
+
+
+
+    public static AssistantReader reader(){
+        return new AssistantReader();
     }
-
-
-
 
 
     /**
