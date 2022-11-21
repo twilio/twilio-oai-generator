@@ -30,4 +30,4 @@ ARG SONAR_TOKEN
 ENV SONAR_TOKEN=$SONAR_TOKEN
 
 # pipefail prevents errors in a pipeline from being masked.
-CMD ["/bin/bash", "-c", "set -o pipefail && chmod u+r+x test.sh && /app/twilio-csharp/test.sh 2>&1 | tee /local/test-report.out"]
+CMD ["/bin/bash", "-c", "set -o pipefail && /app/twilio-csharp/test.sh 2>&1 | tee /local/test-report.out"]
