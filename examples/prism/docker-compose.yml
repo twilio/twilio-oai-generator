@@ -23,6 +23,8 @@ services:
   csharp-test:
     build:
       context: ../csharp
+      args:
+        - SONAR_TOKEN
     volumes:
       - ../csharp:/local
     depends_on:
