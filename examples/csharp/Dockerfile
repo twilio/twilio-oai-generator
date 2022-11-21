@@ -16,7 +16,7 @@ RUN mkdir /app
 WORKDIR /app
 RUN git clone --depth 1 https://github.com/twilio/twilio-csharp.git
 WORKDIR /app/twilio-csharp
-RUN chmod u+r+x /app/twilio-csharp/test.sh
+RUN chmod u+r+x test.sh
 
 RUN rm -rf src/Twilio/Rest/*/
 COPY src/Twilio/Rest src/Twilio/Rest
