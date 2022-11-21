@@ -20,7 +20,12 @@ use Twilio\Version;
 
 /**
 {{#versionResources}}
+{{^param}}
+ * @property {{filename}}List ${{#lambda.camelcase}}{{mountName}}{{/lambda.camelcase}}
+{{/param}}
+{{#param}}
  * @property {{importName}} ${{#lambda.camelcase}}{{mountName}}{{/lambda.camelcase}}
+{{/param}}
 {{/versionResources}}
 {{#apiDependents}}
  * @property \Twilio\Rest\{{domainName}}\{{apiVersionClass}}\Account\{{filename}}List ${{#lambda.camelcase}}{{mountName}}{{/lambda.camelcase}}
