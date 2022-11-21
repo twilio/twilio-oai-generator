@@ -78,25 +78,43 @@ paths:
     x-twilio:
       pathType: instance
   /understand/Assistants:
-    description: A path for a different product.
-    post:
-      operationId: CreateUnderstandAssistant
-      requestBody:
-        content:
-          application/x-www-form-urlencoded:
-            schema:
-              type: object
-              title: CreateUnderstandAssistantRequest
-              properties:
-                FriendlyName:
-                  type: string
+    description: A path for a different product which has no instance operations.
+    get:
+      operationId: ListUnderstandAssistants
       responses:
-        '201':
+        '200':
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/versionless.fleet'
-          description: Created
+                properties:
+                  assistants:
+                    items:
+                      $ref: '#/components/schemas/versionless.fleet'
+                    type: array
+                  meta:
+                    properties:
+                      first_page_url:
+                        format: uri
+                        type: string
+                      key:
+                        type: string
+                      next_page_url:
+                        format: uri
+                        type: string
+                      page:
+                        type: integer
+                      page_size:
+                        type: integer
+                      previous_page_url:
+                        format: uri
+                        type: string
+                      url:
+                        format: uri
+                        type: string
+                    type: object
+                title: ListUnderstandAssistantsResponse
+                type: object
+          description: OK
       security:
         - accountSid_authToken: []
     servers:
