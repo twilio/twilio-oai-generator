@@ -12,7 +12,7 @@ import static com.twilio.oai.common.ApplicationConstants.PATH_SEPARATOR_PLACEHOL
 
 public class APIResources {
     private String apiName;
-    private String path;
+    private String apiPath;
     private String recordKey;
     private String version;
     private List<CodegenProperty> responseModels = new ArrayList<>();
@@ -24,7 +24,7 @@ public class APIResources {
         apiOperations = apiResourceBuilder.codegenOperationList;
         metaProperties = apiResourceBuilder.metaAPIProperties;
         apiName = getName(apiOperations.get(0));
-        path = apiOperations.get(0).path;
+        apiPath = apiResourceBuilder.apiPath;
         version = apiResourceBuilder.version;
         responseModels = apiResourceBuilder.apiResponseModels;
         recordKey = apiResourceBuilder.recordKey;

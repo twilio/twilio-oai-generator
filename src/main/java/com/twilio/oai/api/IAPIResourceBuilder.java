@@ -10,5 +10,6 @@ public interface IAPIResourceBuilder {
     IAPIResourceBuilder operations(ISchemaResolver<CodegenParameter> codegenParameterIResolver);
     IAPIResourceBuilder responseModel(ISchemaResolver<CodegenProperty> codegenPropertyIResolver);
     IAPIResourceBuilder additionalProps(DirectoryStructureService directoryStructureService);
+    IAPIResourceBuilder apiPath();
     APIResources build();
 }

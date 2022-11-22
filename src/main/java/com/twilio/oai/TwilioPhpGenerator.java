@@ -78,6 +78,7 @@ public class TwilioPhpGenerator extends PhpClientCodegen {
 
     private APIResources processCodegenOperations(List<CodegenOperation> opList) {
         return new PHPAPIResourceBuilder(new PHPAPIActionTemplate(this), opList, this.allModels)
+                .apiPath()
                 .additionalProps(directoryStructureService)
                 .template()
                 .operations(new PhpParameterResolver(conventionMapper))

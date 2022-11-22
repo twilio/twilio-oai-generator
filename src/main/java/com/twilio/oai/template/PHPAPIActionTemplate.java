@@ -45,7 +45,7 @@ public class PHPAPIActionTemplate implements IAPIActionTemplate {
                 new AbstractMap.SimpleEntry<>("list", Arrays.asList("list.mustache", "List.php")),
                 new AbstractMap.SimpleEntry<>("context", Arrays.asList("context.mustache", "Context.php")),
                 new AbstractMap.SimpleEntry<>("instance", Arrays.asList("instance.mustache", "Instance.php")),
-                new AbstractMap.SimpleEntry<>("options", Arrays.asList("options.mustache", "options.php")),
+                new AbstractMap.SimpleEntry<>("options", Arrays.asList("options.mustache", "Options.php")),
                 new AbstractMap.SimpleEntry<>("page", Arrays.asList("page.mustache", "Page.php"))
         );
     }

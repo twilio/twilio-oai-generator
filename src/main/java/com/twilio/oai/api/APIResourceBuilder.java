@@ -31,6 +31,7 @@ public class APIResourceBuilder implements IAPIResourceBuilder {
     protected Map<String, Object> metaAPIProperties = new HashMap<>();
     protected String version = "";
     protected String recordKey = "";
+    protected String apiPath ="";
 
     public APIResourceBuilder(IAPIActionTemplate template, List<CodegenOperation> codegenOperations, List<CodegenModel> allModels) {
         this.phpTemplate = template;
@@ -95,6 +96,12 @@ public class APIResourceBuilder implements IAPIResourceBuilder {
     }
 
     @Override
+    public IAPIResourceBuilder apiPath() {
+        apiPath = codegenOperationList.get(0).path;
+        return this;
+    }
+
+    @Override
     public APIResources build() {
         return new APIResources(this);
     }
@@ -119,6 +126,7 @@ public class APIResourceBuilder implements IAPIResourceBuilder {
             operationMap.put("x-name", API_OPERATION_READ);
             operationMap.put("x-is-read-operation", true);
         }
+        metaAPIProperties.put("x-is-list-operation","true");
         metaAPIProperties.put(META_LIST_PARAMETER_KEY, operation.allParams);
     }
 
@@ -133,6 +141,7 @@ public class APIResourceBuilder implements IAPIResourceBuilder {
             operationMap.put("x-name", API_OPERATION_DELETE);
             operation.vendorExtensions.put("x-is-delete-operation", true);
         }
+        metaAPIProperties.put("x-is-context-operation","true");
         metaAPIProperties.put(META_CONTEXT_PARAMETER_KEY, operation.allParams);
     }
 

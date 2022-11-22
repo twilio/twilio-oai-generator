@@ -18,9 +18,9 @@ class {{apiName}}List extends ListResource {
     public function __construct(Version $version{{#requiredPathParams}}, {{{dataType}}} ${{baseName}} {{/requiredPathParams}}) {
         parent::__construct($version);
         $this->solution = [{{#requiredPathParams}}'{{paramName}}' => ${{baseName}}{{^-last}}, {{/-last}}  {{/requiredPathParams}}];
-        {{#requiredPathParams.0}}
-        $this->uri = {{#requiredPathParams}}'/{{#lambda.titlecase}}{{baseName}}{{/lambda.titlecase}}/' . \rawurlencode(${{baseName}}) {{#-last}} . '/{{name}}.json' {{/-last}} {{^-last}} . {{/-last}}{{/requiredPathParams}};
-        {{/requiredPathParams.0}}
+        {{#metaProperties.x-is-list-operation}}
+        $this->uri = {{{apiPath}}};
+        {{/metaProperties.x-is-list-operation}}
     }
 
     {{#apiOperations}}
