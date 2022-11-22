@@ -14,7 +14,8 @@
 
 package com.twilio.rest.versionless.understand;
 
-import com.twilio.base.Creator;
+import com.twilio.base.Reader;
+import com.twilio.base.ResourceSet;
 import com.twilio.converter.Promoter;
 import com.twilio.exception.ApiConnectionException;
 import com.twilio.converter.PrefixedCollapsibleMap;
@@ -26,11 +27,8 @@ import com.twilio.http.Request;
 import com.twilio.http.Response;
 import com.twilio.http.TwilioRestClient;
 import com.twilio.rest.Domains;
-import java.math.BigDecimal;
-import java.util.List;
-import java.util.Map;
+import com.twilio.base.Page;
 import java.time.LocalDate;
-import com.twilio.converter.Converter;
 import java.time.ZonedDateTime;
 import java.io.IOException;
 import java.io.InputStream;
@@ -47,33 +45,34 @@ import java.util.Objects;
 
 import lombok.ToString;
 
-import java.net.URI;
+public class AssistantReader extends Reader<Assistant> {
 
-public class AssistantCreator extends Creator<Assistant>{
-    private String friendlyName;
-
-    public AssistantCreator() {
+    public AssistantReader(){
     }
 
-    public AssistantCreator setFriendlyName(final String friendlyName){
-        this.friendlyName = friendlyName;
-        return this;
-    }
 
     @Override
-    public Assistant create(final TwilioRestClient client){
+    public ResourceSet<Assistant> read(final TwilioRestClient client) {
+        return new ResourceSet<>(this, client, firstPage(client));
+    }
+
+    public Page<Assistant> firstPage(final TwilioRestClient client) {
         String path = "/understand/Assistants";
 
-
         Request request = new Request(
-            HttpMethod.POST,
+            HttpMethod.GET,
             Domains.VERSIONLESS.toString(),
             path
         );
-        addPostParams(request);
+
+        return pageForRequest(client, request);
+    }
+
+    private Page<Assistant> pageForRequest(final TwilioRestClient client, final Request request) {
         Response response = client.request(request);
+
         if (response == null) {
-            throw new ApiConnectionException("Assistant creation failed: Unable to connect to server");
+            throw new ApiConnectionException("Assistant read failed: Unable to connect to server");
         } else if (!TwilioRestClient.SUCCESS.test(response.getStatusCode())) {
             RestException restException = RestException.fromJson(response.getStream(), client.getObjectMapper());
             if (restException == null) {
@@ -82,12 +81,40 @@ public class AssistantCreator extends Creator<Assistant>{
             throw new ApiException(restException);
         }
 
-        return Assistant.fromJson(response.getStream(), client.getObjectMapper());
+        return Page.fromJson(
+            "assistants",
+            response.getContent(),
+            Assistant.class,
+            client.getObjectMapper()
+        );
     }
-    private void addPostParams(final Request request) {
-        if (friendlyName != null) {
-            request.addPostParam("FriendlyName", friendlyName);
-    
-        }
+
+    @Override
+    public Page<Assistant> previousPage(final Page<Assistant> page, final TwilioRestClient client) {
+        Request request = new Request(
+            HttpMethod.GET,
+            page.getPreviousPageUrl(Domains.VERSIONLESS.toString())
+        );
+        return pageForRequest(client, request);
+    }
+
+
+    @Override
+    public Page<Assistant> nextPage(final Page<Assistant> page, final TwilioRestClient client) {
+        Request request = new Request(
+            HttpMethod.GET,
+            page.getNextPageUrl(Domains.VERSIONLESS.toString())
+        );
+        return pageForRequest(client, request);
+    }
+
+    @Override
+    public Page<Assistant> getPage(final String targetUrl, final TwilioRestClient client) {
+        Request request = new Request(
+            HttpMethod.GET,
+            targetUrl
+        );
+
+        return pageForRequest(client, request);
     }
 }
