@@ -102,6 +102,7 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
     public OperationsMap postProcessOperationsWithModels(final OperationsMap objs, List<ModelMap> allModels) {
         final OperationsMap results = super.postProcessOperationsWithModels(objs, allModels);
         final List<CodegenOperation> opList = directoryStructureService.processOperations(results);
+        final String recordKey = directoryStructureService.getRecordKey(opList);
         if (directoryStructureService.isVersionLess()) {
             apiTemplateFiles.put(VERSION_TEMPLATE, FILENAME_EXTENSION);
         }
@@ -203,7 +204,7 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
                     .stream()
                     .map(response -> response.dataType)
                     .filter(Objects::nonNull)
-                    .map(directoryStructureService::getModelByClassname)
+                    .map(modelName -> directoryStructureService.getModelCoPath(modelName, co, recordKey))
                     .flatMap(Optional::stream)
                     .map(conventionResolver::resolveModel)
                     .map(item -> conventionResolver.resolveComplexType(item, modelFormatMap))
