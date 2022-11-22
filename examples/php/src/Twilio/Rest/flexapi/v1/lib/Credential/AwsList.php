@@ -31,12 +31,11 @@ class AwsList extends ListResource {
      * @param Version $version Version that contains the resource
      * @param string $sid
      */
-    public function __construct(Version $version, string $Sid ) {
+    public function __construct(Version $version, string $sid ) {
         parent::__construct($version);
-        $this->solution = ['sid' => $Sid  ];
-        $this->uri = '/Sid/' . \rawurlencode($Sid)  . '/.json'  ;
+        $this->solution = ['sid' => $sid  ];
+        $this->uri = '/Credentials/AWS';
     }
-
     
     
     
@@ -133,21 +132,20 @@ class AwsList extends ListResource {
 
     
     
-
     /**
-    * Constructs a AwsContext
-    *
-    * @param string $sid The unique string that identifies the resource
-    */
+     * Constructs a AwsContext
+     *
+     * @param string $sid The unique string that identifies the resource
+     */
     public function getContext(string $sid): AwsContext {
         return new AwsContext($this->version);
     }
 
     /**
-    * Provide a friendly representation
-    *
-    * @return string Machine friendly representation
-    */
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
     public function __toString(): string {
         return '[Twilio.FlexApi.V1.AwsList]';
     }

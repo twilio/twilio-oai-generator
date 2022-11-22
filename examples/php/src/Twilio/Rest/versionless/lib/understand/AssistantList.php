@@ -33,16 +33,16 @@ class AssistantList extends ListResource {
     public function __construct(Version $version) {
         parent::__construct($version);
         $this->solution = [];
+        $this->uri = '/understand/Assistants';
     }
-
-        /**
+    
+    /**
     * Create the AssistantInstance
     *
     * @param array|Options $options Optional Arguments
     * @return AccountInstance Created AccountInstance
     * @throws TwilioException When an HTTP error occurs.
     */
-
     public function create( array $options = []): AssistantInstance {
         $options = new Values($options);
 
@@ -59,21 +59,20 @@ class AssistantList extends ListResource {
     }
 
     
-
     /**
-    * Constructs a AssistantContext
-    *
-    * @param string $sid The unique string that identifies the resource
-    */
+     * Constructs a AssistantContext
+     *
+     * @param string $sid The unique string that identifies the resource
+     */
     public function getContext(string $sid): AssistantContext {
         return new AssistantContext($this->version);
     }
 
     /**
-    * Provide a friendly representation
-    *
-    * @return string Machine friendly representation
-    */
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
     public function __toString(): string {
         return '[Twilio.Versionless.Understand.AssistantList]';
     }

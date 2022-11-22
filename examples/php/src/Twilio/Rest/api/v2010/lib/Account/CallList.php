@@ -29,23 +29,22 @@ class CallList extends ListResource {
      * Construct the CallList
      *
      * @param Version $version Version that contains the resource
-     * @param string $account_sid
-     * @param int $test_integer
+     * @param string $accountSid
+     * @param int $testInteger
      */
-    public function __construct(Version $version, string $AccountSid , int $TestInteger ) {
+    public function __construct(Version $version, string $accountSid , int $testInteger ) {
         parent::__construct($version);
-        $this->solution = ['account_sid' => $AccountSid,   'test_integer' => $TestInteger  ];
-        $this->uri = '/AccountSid/' . \rawurlencode($AccountSid)   . '/TestInteger/' . \rawurlencode($TestInteger)  . '/.json'  ;
+        $this->solution = ['account_sid' => $accountSid,   'test_integer' => $testInteger  ];
+        $this->uri = '/Accounts/' . \rawurlencode($accountSid) . '/Calls.json';
     }
-
-        /**
+    
+    /**
     * Create the CallInstance
     *
     * @param array|Options $options Optional Arguments
     * @return AccountInstance Created AccountInstance
     * @throws TwilioException When an HTTP error occurs.
     */
-
     public function create(string $required_string_property ,string $test_method , array $options = []): CallInstance {
         $options = new Values($options);
 
@@ -72,21 +71,20 @@ class CallList extends ListResource {
     
     
     
-
     /**
-    * Constructs a CallContext
-    *
-    * @param string $sid The unique string that identifies the resource
-    */
+     * Constructs a CallContext
+     *
+     * @param string $sid The unique string that identifies the resource
+     */
     public function getContext(string $sid): CallContext {
         return new CallContext($this->version);
     }
 
     /**
-    * Provide a friendly representation
-    *
-    * @return string Machine friendly representation
-    */
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
     public function __toString(): string {
         return '[Twilio.Api.V2010.CallList]';
     }

@@ -31,20 +31,19 @@ class AccountList extends ListResource {
      * @param Version $version Version that contains the resource
      * @param string $sid
      */
-    public function __construct(Version $version, string $Sid ) {
+    public function __construct(Version $version, string $sid ) {
         parent::__construct($version);
-        $this->solution = ['sid' => $Sid  ];
-        $this->uri = '/Sid/' . \rawurlencode($Sid)  . '/.json'  ;
+        $this->solution = ['sid' => $sid  ];
+        $this->uri = '/Accounts.json';
     }
-
-        /**
+    
+    /**
     * Create the AccountInstance
     *
     * @param array|Options $options Optional Arguments
     * @return AccountInstance Created AccountInstance
     * @throws TwilioException When an HTTP error occurs.
     */
-
     public function create( array $options = []): AccountInstance {
         $options = new Values($options);
 
@@ -163,21 +162,20 @@ class AccountList extends ListResource {
 
     
     
-
     /**
-    * Constructs a AccountContext
-    *
-    * @param string $sid The unique string that identifies the resource
-    */
+     * Constructs a AccountContext
+     *
+     * @param string $sid The unique string that identifies the resource
+     */
     public function getContext(string $sid): AccountContext {
         return new AccountContext($this->version);
     }
 
     /**
-    * Provide a friendly representation
-    *
-    * @return string Machine friendly representation
-    */
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
     public function __toString(): string {
         return '[Twilio.Api.V2010.AccountList]';
     }

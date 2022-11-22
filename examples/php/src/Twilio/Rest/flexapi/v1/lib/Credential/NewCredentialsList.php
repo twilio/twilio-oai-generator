@@ -33,16 +33,16 @@ class NewCredentialsList extends ListResource {
     public function __construct(Version $version) {
         parent::__construct($version);
         $this->solution = [];
+        $this->uri = '/Credentials/AWS';
     }
-
-        /**
+    
+    /**
     * Create the NewCredentialsInstance
     *
     * @param array|Options $options Optional Arguments
     * @return AccountInstance Created AccountInstance
     * @throws TwilioException When an HTTP error occurs.
     */
-
     public function create(string $test_string , array $options = []): NewCredentialsInstance {
         $options = new Values($options);
 
@@ -76,21 +76,20 @@ class NewCredentialsList extends ListResource {
     }
 
     
-
     /**
-    * Constructs a NewCredentialsContext
-    *
-    * @param string $sid The unique string that identifies the resource
-    */
+     * Constructs a NewCredentialsContext
+     *
+     * @param string $sid The unique string that identifies the resource
+     */
     public function getContext(string $sid): NewCredentialsContext {
         return new NewCredentialsContext($this->version);
     }
 
     /**
-    * Provide a friendly representation
-    *
-    * @return string Machine friendly representation
-    */
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
     public function __toString(): string {
         return '[Twilio.FlexApi.V1.NewCredentialsList]';
     }
