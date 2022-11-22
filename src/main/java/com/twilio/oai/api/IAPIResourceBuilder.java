@@ -1,14 +1,14 @@
 package com.twilio.oai.api;
 
 import com.twilio.oai.DirectoryStructureService;
-import com.twilio.oai.resolver.IResolver;
+import com.twilio.oai.resolver.ISchemaResolver;
 import org.openapitools.codegen.CodegenParameter;
 import org.openapitools.codegen.CodegenProperty;
 
 public interface IAPIResourceBuilder {
-    IAPIResourceBuilder setTemplate();
-    IAPIResourceBuilder setOperations(IResolver<CodegenParameter> codegenParameterIResolver);
-    IAPIResourceBuilder setResponseModel(IResolver<CodegenProperty> codegenPropertyIResolver);
-    IAPIResourceBuilder setAdditionalProps(DirectoryStructureService directoryStructureService);
+    IAPIResourceBuilder template();
+    IAPIResourceBuilder operations(ISchemaResolver<CodegenParameter> codegenParameterIResolver);
+    IAPIResourceBuilder responseModel(ISchemaResolver<CodegenProperty> codegenPropertyIResolver);
+    IAPIResourceBuilder additionalProps(DirectoryStructureService directoryStructureService);
     APIResources build();
 }

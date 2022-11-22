@@ -4,7 +4,7 @@ import org.openapitools.codegen.CodegenConfig;
 
 import java.util.*;
 
-public class PHPAPITemplate implements ITemplate {
+public class PHPAPIActionTemplate implements IAPIActionTemplate {
     public final static String TEMPLATE_TYPE_LIST = "list";
     public final static String TEMPLATE_TYPE_CONTEXT = "context";
     public final static String TEMPLATE_TYPE_OPTIONS = "options";
@@ -14,7 +14,7 @@ public class PHPAPITemplate implements ITemplate {
     private final Map<String, List<String>> templates = mapping();
     CodegenConfig codegen ;
 
-    public PHPAPITemplate(CodegenConfig defaultCodegen) {
+    public PHPAPIActionTemplate(CodegenConfig defaultCodegen) {
         this.codegen = initialise(defaultCodegen);
     }
 

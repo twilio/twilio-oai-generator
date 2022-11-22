@@ -2,14 +2,10 @@ package com.twilio.oai.api;
 
 import com.twilio.oai.DirectoryStructureService;
 import com.twilio.oai.HttpMethod;
-import com.twilio.oai.PathUtils;
 import com.twilio.oai.StringHelper;
 import com.twilio.oai.common.EnumConstants;
-import com.twilio.oai.resolver.IResolver;
-import com.twilio.oai.resolver.php.PhpParameterResolver;
-import com.twilio.oai.resolver.php.PhpPropertyResolver;
-import com.twilio.oai.template.ITemplate;
-import com.twilio.oai.template.PHPAPITemplate;
+import com.twilio.oai.resolver.ISchemaResolver;
+import com.twilio.oai.template.IAPIActionTemplate;
 import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenOperation;
 import org.openapitools.codegen.CodegenParameter;
@@ -17,8 +13,6 @@ import org.openapitools.codegen.CodegenProperty;
 
 import java.util.*;
 import java.util.stream.Collectors;
-
-import static com.twilio.oai.common.ApplicationConstants.PATH_SEPARATOR_PLACEHOLDER;
 
 public class APIResourceBuilder implements IAPIResourceBuilder {
     public final static String API_OPERATION_READ = "Read";
@@ -29,7 +23,7 @@ public class APIResourceBuilder implements IAPIResourceBuilder {
     public final static String META_LIST_PARAMETER_KEY = "x-list-parameters";
     public final static String META_CONTEXT_PARAMETER_KEY = "x-context-parameters";
 
-    protected ITemplate phpTemplate;
+    protected IAPIActionTemplate phpTemplate;
     protected List<CodegenModel> allModels;
     protected List<CodegenOperation> codegenOperationList;
     protected TreeSet<CodegenParameter> requiredPathParams = new TreeSet<>((cp1, cp2) -> cp1.baseName.compareTo(cp2.baseName));
@@ -38,7 +32,7 @@ public class APIResourceBuilder implements IAPIResourceBuilder {
     protected String version = "";
     protected String recordKey = "";
 
-    public APIResourceBuilder(ITemplate template, List<CodegenOperation> codegenOperations, List<CodegenModel> allModels) {
+    public APIResourceBuilder(IAPIActionTemplate template, List<CodegenOperation> codegenOperations, List<CodegenModel> allModels) {
         this.phpTemplate = template;
         this.codegenOperationList = codegenOperations;
         this.allModels = allModels;
@@ -46,7 +40,7 @@ public class APIResourceBuilder implements IAPIResourceBuilder {
     }
 
     @Override
-    public APIResourceBuilder setOperations(IResolver<CodegenParameter> codegenParameterIResolver) {
+    public APIResourceBuilder operations(ISchemaResolver<CodegenParameter> codegenParameterIResolver) {
         this.codegenOperationList.stream().forEach(codegenOperation -> {
             codegenOperation.pathParams = codegenOperation.pathParams.stream().map(item ->
                     codegenParameterIResolver.resolve(item)).collect(Collectors.toList());
@@ -68,7 +62,7 @@ public class APIResourceBuilder implements IAPIResourceBuilder {
     }
 
     @Override
-    public APIResourceBuilder setResponseModel(IResolver<CodegenProperty> codegenPropertyIResolver) {
+    public APIResourceBuilder responseModel(ISchemaResolver<CodegenProperty> codegenPropertyIResolver) {
         codegenOperationList.stream().forEach(codegenOperation -> {
             List<CodegenModel> responseModels = new ArrayList<>();
             codegenOperation.responses
@@ -90,12 +84,12 @@ public class APIResourceBuilder implements IAPIResourceBuilder {
     }
 
     @Override
-    public APIResourceBuilder setTemplate() {
+    public APIResourceBuilder template() {
         return this;
     }
 
     @Override
-    public APIResourceBuilder setAdditionalProps(DirectoryStructureService directoryStructureService) {
+    public APIResourceBuilder additionalProps(DirectoryStructureService directoryStructureService) {
         version = directoryStructureService.getApiVersionClass().get();
         return this;
     }

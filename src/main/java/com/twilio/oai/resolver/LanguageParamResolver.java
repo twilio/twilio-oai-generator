@@ -3,16 +3,14 @@ package com.twilio.oai.resolver;
 import com.twilio.oai.StringHelper;
 import com.twilio.oai.resolver.php.IConventionMapper;
 import com.twilio.oai.resolver.php.LanguageConventionResolver;
+import lombok.AllArgsConstructor;
 import org.openapitools.codegen.CodegenParameter;
 
-public class LanguageParamResolver implements IResolver<CodegenParameter> {
+@AllArgsConstructor
+public class LanguageParamResolver implements ISchemaResolver<CodegenParameter> {
     protected IConventionMapper mapper;
     public final static String SERIALIZE_VEND_EXT = "x-serialize";
     public final static String DESERIALIZE_VEND_EXT = "x-deserialize";
-
-    public LanguageParamResolver(IConventionMapper mapper) {
-        this.mapper = mapper;
-    }
 
     @Override
     public CodegenParameter resolve(CodegenParameter codegenParameter) {
@@ -23,15 +21,13 @@ public class LanguageParamResolver implements IResolver<CodegenParameter> {
         return codegenParameter;
     }
 
-    @Override
-    public void resolveProperties(CodegenParameter codegenParameter) {
+    protected void resolveProperties(CodegenParameter codegenParameter) {
         if (mapper.properties().containsKey(codegenParameter.dataFormat)) {
             codegenParameter.dataType = (String) mapper.properties().get(codegenParameter.dataFormat);
         }
     }
 
-    @Override
-    public void resolveSerialize(CodegenParameter codegenParameter) {
+    protected void resolveSerialize(CodegenParameter codegenParameter) {
         boolean hasProperty = mapper.serialize().containsKey(codegenParameter.dataFormat);
         if (hasProperty) {
             codegenParameter.vendorExtensions.put(SERIALIZE_VEND_EXT, (String) mapper.serialize().get(codegenParameter.dataFormat));
@@ -44,8 +40,7 @@ public class LanguageParamResolver implements IResolver<CodegenParameter> {
         }
     }
 
-    @Override
-    public void resolveDeSerialize(CodegenParameter codegenParameter) {
+    protected void resolveDeSerialize(CodegenParameter codegenParameter) {
         if (mapper.deserialize().containsKey(codegenParameter.dataFormat)) {
             codegenParameter.vendorExtensions.put(DESERIALIZE_VEND_EXT, (String) mapper.deserialize().get(codegenParameter.dataFormat));
             codegenParameter.vendorExtensions.put(DESERIALIZE_VEND_EXT + LanguageConventionResolver.HYPHEN + codegenParameter.dataType, true);
@@ -58,9 +53,7 @@ public class LanguageParamResolver implements IResolver<CodegenParameter> {
     }
 
 
-
-    @Override
-    public void resolvePrefixedMap(CodegenParameter codegenParameter) {
+    protected void resolvePrefixedMap(CodegenParameter codegenParameter) {
         if (codegenParameter.dataFormat != null && codegenParameter.dataFormat
                 .startsWith(LanguageConventionResolver.PREFIXED_COLLAPSIBLE_MAP)) {
             String[] split_format_array = codegenParameter.dataFormat.split(LanguageConventionResolver.HYPHEN);

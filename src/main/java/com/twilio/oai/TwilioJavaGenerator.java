@@ -222,7 +222,6 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
         apiTemplateFiles.remove("fetcher.mustache");
         resetAllModelVendorExtensions();
 
-        String tempName = opList.get(0).baseName;
         // iterate over the operation and perhaps modify something
         for (final CodegenOperation co : opList) {
             // Group operations by resource.

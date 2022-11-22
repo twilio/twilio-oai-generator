@@ -370,8 +370,7 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
     }
 
     private Optional<CodegenModel> getModel(final String modelName) {
-        Optional<CodegenModel> first = allModels.stream().filter(model -> model.getClassname().equals(modelName)).findFirst();
-        return first;
+        return allModels.stream().filter(model -> model.getClassname().equals(modelName)).findFirst();
     }
 
     private void addOperationName(final CodegenOperation operation, final String name) {
