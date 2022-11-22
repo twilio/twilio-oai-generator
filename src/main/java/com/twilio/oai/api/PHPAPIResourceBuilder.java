@@ -1,5 +1,6 @@
 package com.twilio.oai.api;
 
+import com.twilio.oai.PathUtils;
 import com.twilio.oai.template.IAPIActionTemplate;
 import com.twilio.oai.template.PHPAPIActionTemplate;
 import org.openapitools.codegen.*;
@@ -34,32 +35,29 @@ public class PHPAPIResourceBuilder extends APIResourceBuilder {
     @Override
     public IAPIResourceBuilder apiPath() {
         super.apiPath();
-        String path=apiPath;
         List<CodegenOperation> opr = codegenOperationList.stream().filter(op -> !isInstanceOperation(op)).collect(Collectors.toList());
-        if (!opr.isEmpty())
+        if (!opr.isEmpty()) {
             apiPath = opr.get(0).path;
-        Pattern pattern = Pattern.compile("/[v1-9]+[^/]+");
-        Matcher matcher = pattern.matcher(apiPath);
+        }
+        String path = apiPath;
+        String regex = "/[v1-9]+[^/]+";
+        Matcher matcher = Pattern.compile(regex).matcher(apiPath);
         if (matcher.find()) {
-            path = apiPath.split("/[v1-9]+[^/]+")[1];
+            path = PathUtils.removeFirstPart(apiPath);
         }
-//        path = apiPath.split("/[v1-9]+[^/]+")[1];
-        int idx = 0;
-        String url = "";
-        while (idx < path.length()) {
-            if (path.substring(idx).contains("{")) {
-                url += "\'" + path.substring(idx, path.indexOf('{', idx)) + "\'";
-                idx = path.indexOf('{', idx) + 1;
-                String temp = path.substring(idx, path.indexOf('}', idx));
-                temp = Character.toLowerCase(temp.charAt(0)) + temp.substring(1);
-                url += " . \\rawurlencode($" + temp + ") . ";
-                idx = path.indexOf('}', idx) + 1;
-            } else {
-                url += "\'" + path.substring(idx) + "\'";
-                break;
-            }
-        }
-        apiPath = url;
+        path = lowerCasePathParam(path);
+        apiPath = replaceBraces(path);
+
         return this;
+    }
+
+    private String lowerCasePathParam(String path) {
+        return Pattern.compile("\\{([\\w])").matcher(path)
+                .replaceAll(match -> "{"+match.group(1).toLowerCase());
+    }
+
+    private String replaceBraces(String path) {
+        path = path.replaceAll("[{]", "' . \\rawurlencode(\\$");
+        return path.replaceAll("[}]",") . '");
     }
 }

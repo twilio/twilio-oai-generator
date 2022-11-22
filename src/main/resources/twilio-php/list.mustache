@@ -19,7 +19,7 @@ class {{apiName}}List extends ListResource {
         parent::__construct($version);
         $this->solution = [{{#requiredPathParams}}'{{paramName}}' => ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}{{^-last}}, {{/-last}}  {{/requiredPathParams}}];
         {{#metaProperties.x-is-list-operation}}
-        $this->uri = {{{apiPath}}};
+        $this->uri = '{{{apiPath}}}';
         {{/metaProperties.x-is-list-operation}}
     }
     {{#apiOperations}}
