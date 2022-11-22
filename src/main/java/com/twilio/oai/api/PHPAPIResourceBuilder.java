@@ -57,7 +57,7 @@ public class PHPAPIResourceBuilder extends APIResourceBuilder {
     }
 
     private String replaceBraces(String path) {
-        path = path.replaceAll("[{]", "' . \\rawurlencode(\\$");
+        path = path.replaceAll("[{]", "' . \\\\rawurlencode(\\$");
         return path.replaceAll("[}]",") . '");
     }
 }
