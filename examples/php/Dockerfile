@@ -15,11 +15,8 @@ WORKDIR /twilio
 RUN rm -rf src/Twilio/Rest/*
 COPY src/Twilio/Rest src/Twilio/Rest
 
-RUN rm -rf tests/Twilio/Integration/
-COPY tests/Twilio/Integration tests/Twilio/Integration
-
-RUN rm -rf tests/Twilio/Unit/Rest
-#COPY tests/Twilio/Unit/Rest tests/Twilio/Unit/Rest
+RUN rm -rf tests/Twilio/Integration/Rest
+COPY tests/Twilio/Integration/Rest tests/Twilio/Integration/Rest
 
 RUN make install
 
