@@ -1,6 +1,6 @@
 package com.twilio.oai.template;
 
-public interface IAPIActionTemplate {
+public interface IApiActionTemplate {
     void clean();
     void add(String template);
 }

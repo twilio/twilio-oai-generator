@@ -5,7 +5,7 @@ import com.twilio.oai.HttpMethod;
 import com.twilio.oai.StringHelper;
 import com.twilio.oai.common.EnumConstants;
 import com.twilio.oai.resolver.ISchemaResolver;
-import com.twilio.oai.template.IAPIActionTemplate;
+import com.twilio.oai.template.IApiActionTemplate;
 import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenOperation;
 import org.openapitools.codegen.CodegenParameter;
@@ -14,7 +14,7 @@ import org.openapitools.codegen.CodegenProperty;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class APIResourceBuilder implements IAPIResourceBuilder {
+public abstract class ApiResourceBuilder implements IApiResourceBuilder {
     public final static String API_OPERATION_READ = "Read";
     public final static String API_OPERATION_CREATE = "Create";
     public final static String API_OPERATION_FETCH = "Fetch";
@@ -23,25 +23,25 @@ public class APIResourceBuilder implements IAPIResourceBuilder {
     public final static String META_LIST_PARAMETER_KEY = "x-list-parameters";
     public final static String META_CONTEXT_PARAMETER_KEY = "x-context-parameters";
 
-    protected IAPIActionTemplate phpTemplate;
+    protected IApiActionTemplate template;
     protected List<CodegenModel> allModels;
     protected List<CodegenOperation> codegenOperationList;
     protected TreeSet<CodegenParameter> requiredPathParams = new TreeSet<>((cp1, cp2) -> cp1.baseName.compareTo(cp2.baseName));
-    protected  List<CodegenProperty> apiResponseModels = new ArrayList<>();
+    protected List<CodegenProperty> apiResponseModels = new ArrayList<>();
     protected Map<String, Object> metaAPIProperties = new HashMap<>();
     protected String version = "";
     protected String recordKey = "";
     protected String apiPath ="";
 
-    public APIResourceBuilder(IAPIActionTemplate template, List<CodegenOperation> codegenOperations, List<CodegenModel> allModels) {
-        this.phpTemplate = template;
+    public ApiResourceBuilder(IApiActionTemplate template, List<CodegenOperation> codegenOperations, List<CodegenModel> allModels) {
+        this.template = template;
         this.codegenOperationList = codegenOperations;
         this.allModels = allModels;
         this.recordKey = findRecordKey();
     }
 
     @Override
-    public APIResourceBuilder operations(ISchemaResolver<CodegenParameter> codegenParameterIResolver) {
+    public ApiResourceBuilder updateOperations(ISchemaResolver<CodegenParameter> codegenParameterIResolver) {
         this.codegenOperationList.stream().forEach(codegenOperation -> {
             codegenOperation.pathParams = codegenOperation.pathParams.stream().map(item ->
                     codegenParameterIResolver.resolve(item)).collect(Collectors.toList());
@@ -63,7 +63,7 @@ public class APIResourceBuilder implements IAPIResourceBuilder {
     }
 
     @Override
-    public APIResourceBuilder responseModel(ISchemaResolver<CodegenProperty> codegenPropertyIResolver) {
+    public ApiResourceBuilder updateResponseModel(ISchemaResolver<CodegenProperty> codegenPropertyIResolver) {
         codegenOperationList.stream().forEach(codegenOperation -> {
             List<CodegenModel> responseModels = new ArrayList<>();
             codegenOperation.responses
@@ -85,25 +85,20 @@ public class APIResourceBuilder implements IAPIResourceBuilder {
     }
 
     @Override
-    public APIResourceBuilder template() {
-        return this;
-    }
-
-    @Override
-    public APIResourceBuilder additionalProps(DirectoryStructureService directoryStructureService) {
+    public ApiResourceBuilder updateAdditionalProps(DirectoryStructureService directoryStructureService) {
         version = directoryStructureService.getApiVersionClass().get();
         return this;
     }
 
     @Override
-    public IAPIResourceBuilder apiPath() {
+    public IApiResourceBuilder updateApiPath() {
         apiPath = codegenOperationList.get(0).path;
         return this;
     }
 
     @Override
-    public APIResources build() {
-        return new APIResources(this);
+    public ApiResources build() {
+        return new ApiResources(this);
     }
 
     private Map<String, Object> mapOperation(CodegenOperation operation) {

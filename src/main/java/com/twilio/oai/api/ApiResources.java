@@ -1,16 +1,14 @@
 package com.twilio.oai.api;
 
-import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenOperation;
 import org.openapitools.codegen.CodegenParameter;
 import org.openapitools.codegen.CodegenProperty;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static com.twilio.oai.common.ApplicationConstants.PATH_SEPARATOR_PLACEHOLDER;
 
-public class APIResources {
+public class ApiResources {
     private String apiName;
     private String apiPath;
     private String recordKey;
@@ -20,7 +18,7 @@ public class APIResources {
     private List<CodegenOperation> apiOperations = new ArrayList<>();
     private Map<String, Object> metaProperties = new HashMap();
 
-    public APIResources(APIResourceBuilder apiResourceBuilder) {
+    public ApiResources(ApiResourceBuilder apiResourceBuilder) {
         apiOperations = apiResourceBuilder.codegenOperationList;
         metaProperties = apiResourceBuilder.metaAPIProperties;
         apiName = getName(apiOperations.get(0));

@@ -1,40 +1,39 @@
 package com.twilio.oai.api;
 
 import com.twilio.oai.PathUtils;
-import com.twilio.oai.template.IAPIActionTemplate;
-import com.twilio.oai.template.PHPAPIActionTemplate;
+import com.twilio.oai.template.IApiActionTemplate;
+import com.twilio.oai.template.PhpApiActionTemplate;
 import org.openapitools.codegen.*;
 
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.regex.*;
 
-public class PHPAPIResourceBuilder extends APIResourceBuilder {
+public class PhpApiResourceBuilder extends ApiResourceBuilder {
 
-    public PHPAPIResourceBuilder(IAPIActionTemplate template, List<CodegenOperation> codegenOperations, List<CodegenModel> allModels) {
+    public PhpApiResourceBuilder(IApiActionTemplate template, List<CodegenOperation> codegenOperations, List<CodegenModel> allModels) {
         super(template, codegenOperations, allModels);
     }
 
     @Override
-    public PHPAPIResourceBuilder template() {
-        super.template();
+    public PhpApiResourceBuilder updateTemplate() {
         codegenOperationList.stream().forEach(codegenOperation -> {
-            phpTemplate.clean();
+            template.clean();
             if (super.isInstanceOperation(codegenOperation)) {
-                phpTemplate.add(PHPAPIActionTemplate.TEMPLATE_TYPE_CONTEXT);
+                template.add(PhpApiActionTemplate.TEMPLATE_TYPE_CONTEXT);
             } else {
-                phpTemplate.add(PHPAPIActionTemplate.TEMPLATE_TYPE_PAGE);
-                phpTemplate.add(PHPAPIActionTemplate.TEMPLATE_TYPE_OPTIONS);
+                template.add(PhpApiActionTemplate.TEMPLATE_TYPE_PAGE);
+                template.add(PhpApiActionTemplate.TEMPLATE_TYPE_OPTIONS);
             }
-            phpTemplate.add(PHPAPIActionTemplate.TEMPLATE_TYPE_LIST);
-            phpTemplate.add(PHPAPIActionTemplate.TEMPLATE_TYPE_INSTANCE);
+            template.add(PhpApiActionTemplate.TEMPLATE_TYPE_LIST);
+            template.add(PhpApiActionTemplate.TEMPLATE_TYPE_INSTANCE);
         });
         return this;
     }
 
     @Override
-    public IAPIResourceBuilder apiPath() {
-        super.apiPath();
+    public IApiResourceBuilder updateApiPath() {
+        super.updateApiPath();
         List<CodegenOperation> opr = codegenOperationList.stream().filter(op -> !isInstanceOperation(op)).collect(Collectors.toList());
         if (!opr.isEmpty()) {
             apiPath = opr.get(0).path;

@@ -1,12 +1,12 @@
 package com.twilio.oai;
 
-import com.twilio.oai.api.APIResources;
-import com.twilio.oai.api.PHPAPIResourceBuilder;
+import com.twilio.oai.api.ApiResources;
+import com.twilio.oai.api.PhpApiResourceBuilder;
 import com.twilio.oai.common.EnumConstants;
 import com.twilio.oai.common.Utility;
 import com.twilio.oai.resolver.php.*;
 import com.twilio.oai.resource.ResourceMap;
-import com.twilio.oai.template.PHPAPIActionTemplate;
+import com.twilio.oai.template.PhpApiActionTemplate;
 import io.swagger.v3.oas.models.OpenAPI;
 import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenOperation;
@@ -66,7 +66,7 @@ public class TwilioPhpGenerator extends PhpClientCodegen {
     public OperationsMap postProcessOperationsWithModels(final OperationsMap objs, List<ModelMap> allModels) {
         final OperationsMap results = super.postProcessOperationsWithModels(objs, allModels);
         final List<CodegenOperation> opList = directoryStructureService.processOperations(results);
-        APIResources apiResources = processCodegenOperations(opList);
+        ApiResources apiResources = processCodegenOperations(opList);
         results.put("resources", apiResources);
         return results;
     }
@@ -76,13 +76,13 @@ public class TwilioPhpGenerator extends PhpClientCodegen {
         return EnumConstants.Generator.TWILIO_PHP.getValue();
     }
 
-    private APIResources processCodegenOperations(List<CodegenOperation> opList) {
-        return new PHPAPIResourceBuilder(new PHPAPIActionTemplate(this), opList, this.allModels)
-                .apiPath()
-                .additionalProps(directoryStructureService)
-                .template()
-                .operations(new PhpParameterResolver(conventionMapper))
-                .responseModel(new PhpPropertyResolver(conventionMapper))
+    private ApiResources processCodegenOperations(List<CodegenOperation> opList) {
+        return new PhpApiResourceBuilder(new PhpApiActionTemplate(this), opList, this.allModels)
+                .updateApiPath()
+                .updateAdditionalProps(directoryStructureService)
+                .updateTemplate()
+                .updateOperations(new PhpParameterResolver(conventionMapper))
+                .updateResponseModel(new PhpPropertyResolver(conventionMapper))
                 .build();
     }
 }
