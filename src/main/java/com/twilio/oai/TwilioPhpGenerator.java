@@ -10,6 +10,8 @@ import com.twilio.oai.template.PhpApiActionTemplate;
 import io.swagger.v3.oas.models.OpenAPI;
 import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenOperation;
+import org.openapitools.codegen.DefaultCodegen;
+import org.openapitools.codegen.DefaultGenerator;
 import org.openapitools.codegen.languages.PhpClientCodegen;
 import org.openapitools.codegen.model.ModelMap;
 import org.openapitools.codegen.model.ModelsMap;
@@ -18,6 +20,7 @@ import org.openapitools.codegen.model.OperationsMap;
 import java.util.*;
 
 public class TwilioPhpGenerator extends PhpClientCodegen {
+
     private String PHP_CONVENTIONAL_MAP_PATH = "config/" + EnumConstants.Generator.TWILIO_PHP.getValue() + ".json";
     private final TwilioCodegenAdapter twilioCodegen;
     private final DirectoryStructureService directoryStructureService = new DirectoryStructureService(
@@ -35,6 +38,7 @@ public class TwilioPhpGenerator extends PhpClientCodegen {
 
     @Override
     public String toApiFilename(final String name) {
+
         return directoryStructureService.toApiFilename(super.toApiFilename(name));
     }
 
@@ -46,8 +50,12 @@ public class TwilioPhpGenerator extends PhpClientCodegen {
 
     @Override
     public void processOpenAPI(final OpenAPI openAPI) {
-        final String domain = twilioCodegen.getDomainFromOpenAPI(openAPI);
+        final String domain = StringHelper.camelize(twilioCodegen.getDomainFromOpenAPI(openAPI));
+        final String version = StringHelper.camelize((String) additionalProperties.get("apiVersionClass"));
         twilioCodegen.setDomain(domain);
+        twilioCodegen.setOutputDir(domain, version);
+        setSrcBasePath("");
+
         directoryStructureService.configure(openAPI);
     }
 
