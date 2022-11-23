@@ -1,0 +1,24 @@
+{{#resources}}
+<?php
+
+{{>licenseInfo}}
+
+namespace Twilio\Rest\Api\V2010;
+
+{{>imports}}
+/**
+{{#allParams}}
+* @property {{dataType}} ${{paramName}};
+{{/allParams}}
+*/
+class {{name}}Context extends InstanceContext {
+
+    {{#requiredParams}}
+    public function __construct(Version $version {{#.}}, {{{dataType}}} ${{paramName}}{{/.}}) {
+        parent::__construct($version);
+    }
+    {{/requiredParams}}
+
+}
+
+{{/resources}}

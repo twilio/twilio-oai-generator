@@ -10,7 +10,10 @@ public class EnumConstants {
     public enum Generator {
         TWILIO_CSHARP("twilio-csharp"),
         TWILIO_JAVA("twilio-java"),
-        TWILIO_NODE("twilio-node");
+        TWILIO_NODE("twilio-node"),
+        TWILIO_PHP("twilio-php"),
+        TWILIO_GO("twilio-go"),
+        TWILIO_TERRAFORM("terraform-provider-twilio");
 
         private final String value;
     }

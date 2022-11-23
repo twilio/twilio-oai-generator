@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
+import com.twilio.oai.common.EnumConstants;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.io.FileUtils;
 import org.junit.BeforeClass;
@@ -26,7 +27,12 @@ import static org.junit.Assert.assertFalse;
 public class TwilioGeneratorTest {
     @Parameterized.Parameters
     public static Collection<String> generators() {
-        return Arrays.asList("twilio-csharp", "twilio-go", "twilio-java", "twilio-node", "terraform-provider-twilio", "twilio-php");
+        return Arrays.asList(EnumConstants.Generator.TWILIO_JAVA.getValue(),
+                EnumConstants.Generator.TWILIO_GO.getValue(),
+                EnumConstants.Generator.TWILIO_CSHARP.getValue(),
+                EnumConstants.Generator.TWILIO_TERRAFORM.getValue(),
+                EnumConstants.Generator.TWILIO_PHP.getValue(),
+                EnumConstants.Generator.TWILIO_NODE.getValue());
     }
 
     private final String generatorName;

@@ -1,0 +1,62 @@
+{{#vendorExtensions.x-is-create-operation}}
+
+    /**
+    * Create the {{apiName}}Instance
+    *
+    * @param array|Options $options Optional Arguments
+    * @return AccountInstance Created AccountInstance
+    * @throws TwilioException When an HTTP error occurs.
+    */
+    public function create({{#requiredParams}}{{dataType}} ${{paramName}} {{^last}},{{/last}}{{/requiredParams}} array $options = []): {{apiName}}Instance {
+        $options = new Values($options);
+
+        $data = Values::of([
+            {{#requiredParams}}
+            {{^vendorExtensions.x-serialize}}
+            '{{baseName}}' => ${{paramName}},
+            {{/vendorExtensions.x-serialize}}
+            {{#vendorExtensions.x-serialize}}
+            {{^vendorExtensions.x-serialize-map}}
+            '{{baseName}}' => {{vendorExtensions.x-serialize}}(${{paramName}}),
+            {{/vendorExtensions.x-serialize-map}}
+            {{#vendorExtensions.x-serialize-map}}
+            '{{baseName}}' => {{vendorExtensions.x-serialize}}(${{paramName}},function($e) { return $e; }),
+            {{/vendorExtensions.x-serialize-map}}
+            {{/vendorExtensions.x-serialize}}
+            {{/requiredParams}}
+            {{#optionalParams}}
+            {{^vendorExtensions.x-serialize}}
+            '{{baseName}}' => $options['{{#lambda.titlecase}}{{baseName}}{{/lambda.titlecase}}'],
+            {{/vendorExtensions.x-serialize}}
+            {{#vendorExtensions.x-serialize}}
+            {{^vendorExtensions.x-serialize-map}}
+            '{{baseName}}' => {{vendorExtensions.x-serialize}}($options['{{#lambda.titlecase}}{{baseName}}{{/lambda.titlecase}}']),
+            {{/vendorExtensions.x-serialize-map}}
+            {{#vendorExtensions.x-serialize-map}}
+            '{{baseName}}' => {{vendorExtensions.x-serialize}}($options['{{#lambda.titlecase}}{{baseName}}{{/lambda.titlecase}}'], function($e) { return $e; }),
+            {{/vendorExtensions.x-serialize-map}}
+            {{/vendorExtensions.x-serialize}}
+            {{/optionalParams}}
+        ]);
+        {{#requiredParams}}
+        {{#vendorExtensions.x-prefixed-collapsible-map}}
+            $data = \array_merge($data, {{vendorExtensions.x-prefixed-collapsible-map}}($options['{{#lambda.titlecase}}{{baseName}}{{/lambda.titlecase}}'], 'AddOns'));
+        {{/vendorExtensions.x-prefixed-collapsible-map}}
+        {{/requiredParams}}
+        {{#optionalParams}}
+        {{#vendorExtensions.x-prefixed-collapsible-map}}
+            $data = \array_merge($data, {{vendorExtensions.x-prefixed-collapsible-map}}($options['{{#lambda.titlecase}}{{baseName}}{{/lambda.titlecase}}'], 'AddOns'));
+        {{/vendorExtensions.x-prefixed-collapsible-map}}
+        {{/optionalParams}}
+
+        $payload = $this->version->create('POST', $this->uri, [], $data);
+
+        return new {{apiName}}Instance(
+            $this->version,
+            $payload,
+            {{#requiredParams}}
+            $this->solution['{{paramName}}'],
+            {{/requiredParams}}
+        );
+    }
+{{/vendorExtensions.x-is-create-operation}}

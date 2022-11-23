@@ -1,0 +1,44 @@
+{
+  "library": {
+
+  },
+
+  "properties": {
+    "_": "string",
+    "date_or_time": "\\DateTime",
+    "date_time": "\\DateTime",
+    "date": "\\DateTime",
+    "date-time-rfc-2822": "\\DateTime",
+    "string-map": "array",
+    "uri-map": "array",
+    "object": "array",
+    "boolean": "bool",
+    "integer": "int"
+  },
+
+  "serialize": {
+    "_": "%s",
+    "object": "Serialize::jsonObject",
+    "prefixed_collapsible_map": "Serialize::prefixedCollapsibleMap",
+    "date": "Serialize::iso8601Date",
+    "date-inequality": "Serialize::iso8601Date",
+    "date-time": "Serialize::iso8601DateTime",
+    "date-or-time": "Serialize::iso8601DateTime",
+    "date-time-inequality": "Serialize::iso8601DateTime",
+    "bool": "Serialize::booleanToString"
+  },
+
+  "deserialize": {
+    "_": "%s",
+    "date-time": "Deserialize::dateTime",
+    "date-or-time": "Deserialize::dateTime",
+    "date-time-inequality": "Deserialize::dateTime",
+    "date": "Deserialize::dateTime",
+    "date-inequality": "Deserialize::dateTime"
+  },
+
+  "cardinality": {
+    "_": "single",
+    "prefixed-collapsible-map": "multi"
+  }
+}

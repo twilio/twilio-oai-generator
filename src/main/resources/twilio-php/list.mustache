@@ -1,0 +1,47 @@
+{{#resources}}
+<?php
+
+{{>licenseInfo}}
+namespace Twilio\Rest\{{domainName}}\{{version}};
+
+{{>imports}}
+
+class {{apiName}}List extends ListResource {
+    /**
+     * Construct the {{apiName}}List
+     *
+     * @param Version $version Version that contains the resource
+     {{#requiredPathParams}}
+     * @param {{{dataType}}} ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}
+     {{/requiredPathParams}}
+     */
+    public function __construct(Version $version{{#requiredPathParams}}, {{{dataType}}} ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}} {{/requiredPathParams}}) {
+        parent::__construct($version);
+        $this->solution = [{{#requiredPathParams}}'{{paramName}}' => ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}{{^-last}}, {{/-last}}  {{/requiredPathParams}}];
+        {{#metaProperties.x-is-list-operation}}
+        $this->uri = '{{{apiPath}}}';
+        {{/metaProperties.x-is-list-operation}}
+    }
+    {{#apiOperations}}
+    {{>listCreate}}
+    {{>listRead}}
+    {{/apiOperations}}
+    /**
+     * Constructs a {{apiName}}Context
+     *
+     * @param string $sid The unique string that identifies the resource
+     */
+    public function getContext(string $sid): {{apiName}}Context {
+        return new {{apiName}}Context($this->version);
+    }
+
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string {
+        return '[Twilio.{{domainName}}.{{version}}.{{#lambda.titlecase}}{{apiName}}{{/lambda.titlecase}}List]';
+    }
+}
+{{/resources}}
