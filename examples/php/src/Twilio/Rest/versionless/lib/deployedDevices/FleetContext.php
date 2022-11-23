@@ -29,15 +29,5 @@ use Twilio\Version;
 class Context extends InstanceContext {
 
 
-
-
-
-    public function __toString(): string {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-        $context[] = "$key=$value";
-        }
-        return '[Twilio.Api.V2010.NotificationContext ' . \implode(' ', $context) . ']';
-    }
 }
 
