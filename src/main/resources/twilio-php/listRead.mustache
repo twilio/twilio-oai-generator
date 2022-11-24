@@ -61,14 +61,14 @@
         $params = Values::of([
             {{#optionalParams}}
             {{^vendorExtensions.x-serialize}}
-            '{{baseName}}' => $options['{{#lambda.titlecase}}{{baseName}}{{/lambda.titlecase}}'],
+            '{{baseName}}' => $options['{{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}'],
             {{/vendorExtensions.x-serialize}}
             {{#vendorExtensions.x-serialize}}
             {{^vendorExtensions.x-serialize-map}}
-            '{{baseName}}' => {{vendorExtensions.x-serialize}}($options['{{#lambda.titlecase}}{{baseName}}{{/lambda.titlecase}}']),
+            '{{{baseName}}}' => {{vendorExtensions.x-serialize}}($options['{{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}']),
             {{/vendorExtensions.x-serialize-map}}
             {{#vendorExtensions.x-serialize-map}}
-            '{{baseName}}' => {{vendorExtensions.x-serialize}}($options['{{#lambda.titlecase}}{{baseName}}{{/lambda.titlecase}}'], function($e) { return $e; }),
+            '{{{baseName}}}' => {{vendorExtensions.x-serialize}}($options['{{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}'], function($e) { return $e; }),
             {{/vendorExtensions.x-serialize-map}}
             {{/vendorExtensions.x-serialize}}
             {{/optionalParams}}

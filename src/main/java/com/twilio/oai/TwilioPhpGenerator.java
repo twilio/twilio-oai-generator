@@ -76,6 +76,9 @@ public class TwilioPhpGenerator extends PhpClientCodegen {
         return EnumConstants.Generator.TWILIO_PHP.getValue();
     }
 
+    @Override
+    public String toParamName(final String name){return twilioCodegen.toParamName(name);}
+
     private ApiResources processCodegenOperations(List<CodegenOperation> opList) {
         return new PhpApiResourceBuilder(new PhpApiActionTemplate(this), opList, this.allModels)
                 .updateApiPath()
