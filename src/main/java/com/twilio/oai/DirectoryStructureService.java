@@ -42,8 +42,8 @@ public class DirectoryStructureService {
     public static final String VERSION_RESOURCES = "versionResources";
     public static final String ALL_VERSION_RESOURCES = VERSION_RESOURCES + "All";
 
-    private final Map<String, Object> additionalProperties;
-    private final IResourceTree resourceTree;
+    public final Map<String, Object> additionalProperties;
+    public final IResourceTree resourceTree;
     private final CaseResolver caseResolver;
 
     @Getter
@@ -62,6 +62,15 @@ public class DirectoryStructureService {
         private String mountName;
         private String filename;
         private String param;
+    }
+
+    @Data
+    @Builder
+    public static class ContextResource {
+        private String paramName;
+        private String filename;
+        private String mountName;
+        private String parent;
     }
 
     public void configure(final OpenAPI openAPI) {
@@ -124,6 +133,20 @@ public class DirectoryStructureService {
             .filename(caseResolver.filenameOperation(resourceAliases.getClassName()))
             .build();
         resourcesMap.put(resourceAliases.getClassName(), dependent);
+    }
+
+    public void addContextdependents(final List<Object> resourceList, final String path, final Operation operation){
+        final Resource.Aliases resourceAliases = getResourceAliases(path, operation);
+        String parent = String.join("\\", resourceTree.ancestors(path, operation));
+        String paramName = path.substring(path.lastIndexOf("{") + 1, path.lastIndexOf("}"));
+        final ContextResource dependent = new ContextResource.ContextResourceBuilder()
+                .paramName(paramName)
+                .mountName(caseResolver.pathOperation(resourceAliases.getMountName()))
+                .filename(caseResolver.filenameOperation(resourceAliases.getClassName()))
+                .parent(parent)
+                .build();
+        if (!resourceList.contains(dependent))
+            resourceList.add(dependent);
     }
 
     private Resource.Aliases getResourceAliases(final String path, final Operation operation) {
