@@ -41,9 +41,10 @@ import static com.twilio.oai.common.ApplicationConstants.PATH_TYPE_EXTENSION_NAM
 public class DirectoryStructureService {
     public static final String VERSION_RESOURCES = "versionResources";
     public static final String ALL_VERSION_RESOURCES = VERSION_RESOURCES + "All";
-
-    public final Map<String, Object> additionalProperties;
-    public final IResourceTree resourceTree;
+    @Getter
+    private final Map<String, Object> additionalProperties;
+    @Getter
+    private final IResourceTree resourceTree;
     private final CaseResolver caseResolver;
 
     @Getter
@@ -104,6 +105,11 @@ public class DirectoryStructureService {
                                      () -> operation.addExtension(PATH_TYPE_EXTENSION_NAME, type)));
             });
         });
+    }
+
+    public void configureResourceFamily(OpenAPI openAPI) {
+        openAPI.getPaths().forEach(resourceTree::addResource);
+        resourceTree.getResources().forEach(resource -> resource.updateFamily(resourceTree));
     }
 
     // If account sid is present in path param, it is stored in x-is-account-sid.

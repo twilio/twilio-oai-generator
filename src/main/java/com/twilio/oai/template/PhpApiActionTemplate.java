@@ -40,14 +40,12 @@ public class PhpApiActionTemplate implements IApiActionTemplate {
     @Override
     public void add(String template) {
         List<String> templateStrings = templates.get(template);
-        if (template == "version") {
-            addVersionTemplate(templateStrings);
-            return;
-        }
         codegen.apiTemplateFiles().put(templateStrings.get(0), templateStrings.get(1));
     }
 
-    private void addVersionTemplate(List<String> templateStrings) {
+    @Override
+    public void addSupportVersion() {
+        List<String> templateStrings = templates.get(TEMPLATE_TYPE_VERSION);
         String apiVersionClass = codegen.additionalProperties().get("apiVersionClass").toString();
         if (apiVersionClass != null)
             codegen.supportingFiles().add(new SupportingFile(templateStrings.get(0),
