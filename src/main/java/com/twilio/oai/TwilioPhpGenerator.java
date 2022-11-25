@@ -48,8 +48,9 @@ public class TwilioPhpGenerator extends PhpClientCodegen {
     public void processOpenAPI(final OpenAPI openAPI) {
         final String domain = twilioCodegen.getDomainFromOpenAPI(openAPI);
         twilioCodegen.setDomain(domain);
-        directoryStructureService.configure(openAPI);
+        openAPI.getPaths().forEach(directoryStructureService.resourceTree::addResource);
         directoryStructureService.resourceTree.getResources().forEach(resource -> resource.updateFamily(directoryStructureService.resourceTree));
+        directoryStructureService.configure(openAPI);
         if (!directoryStructureService.isVersionLess()) {
             new PhpApiResourceBuilder(new PhpApiActionTemplate(this), new ArrayList<>(), new ArrayList<>())
                     .setVersionTemplate(openAPI, domain, directoryStructureService);
