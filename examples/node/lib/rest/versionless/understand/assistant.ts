@@ -19,29 +19,45 @@ import Understand from "../Understand";
 const deserialize = require("../../../base/deserialize");
 const serialize = require("../../../base/serialize");
 
-export class ListUnderstandAssistantsResponseMeta {
-  "firstPageUrl"?: string;
-  "key"?: string;
-  "nextPageUrl"?: string;
-  "page"?: number;
-  "pageSize"?: number;
-  "previousPageUrl"?: string;
-  "url"?: string;
+/**
+ * Options to pass to each
+ *
+ * @property { Function } [callback] -
+ *                         Function to process each record. If this and a positional
+ *                         callback are passed, this one will be used
+ * @property { Function } [done] - Function to be called upon completion of streaming
+ * @property { number } [limit] -
+ *                         Upper limit for the number of records to return.
+ *                         each() guarantees never to return more than limit.
+ *                         Default is no limit
+ */
+export interface AssistantListInstanceEachOptions {
+  callback?: (item: AssistantInstance, done: (err?: Error) => void) => void;
+  done?: Function;
+  limit?: number;
 }
 
-export class VersionlessFleet {
-  /**
-   * The unique SID that identifies this Account.
-   */
-  "accountSid"?: string | null;
-  /**
-   * A human readable description for this Fleet.
-   */
-  "friendlyName"?: string | null;
-  /**
-   * A string that uniquely identifies this Fleet.
-   */
-  "sid"?: string | null;
+/**
+ * Options to pass to list
+ *
+ * @property { number } [limit] -
+ *                         Upper limit for the number of records to return.
+ *                         list() guarantees never to return more than limit.
+ *                         Default is no limit
+ */
+export interface AssistantListInstanceOptions {
+  limit?: number;
+}
+
+/**
+ * Options to pass to page
+ *
+ * @property { number } [pageNumber] - Page Number, this value is simply for client state
+ * @property { string } [pageToken] - PageToken provided by the API
+ */
+export interface AssistantListInstancePageOptions {
+  pageNumber?: number;
+  pageToken?: string;
 }
 
 export interface AssistantListInstance {
@@ -249,18 +265,30 @@ interface AssistantPayload
     Page.TwilioResponsePayload {}
 
 interface AssistantResource {
-  assistants?: Array<VersionlessFleet>;
-  meta?: ListUnderstandAssistantsResponseMeta;
+  account_sid?: string | null;
+  friendly_name?: string | null;
+  sid?: string | null;
 }
 
 export class AssistantInstance {
   constructor(protected _version: Understand, payload: AssistantPayload) {
-    this.assistants = payload.assistants;
-    this.meta = payload.meta;
+    this.accountSid = payload.account_sid;
+    this.friendlyName = payload.friendly_name;
+    this.sid = payload.sid;
   }
 
-  assistants?: Array<VersionlessFleet>;
-  meta?: ListUnderstandAssistantsResponseMeta;
+  /**
+   * The unique SID that identifies this Account.
+   */
+  accountSid?: string | null;
+  /**
+   * A human readable description for this Fleet.
+   */
+  friendlyName?: string | null;
+  /**
+   * A string that uniquely identifies this Fleet.
+   */
+  sid?: string | null;
 
   /**
    * Provide a user-friendly representation
@@ -269,8 +297,9 @@ export class AssistantInstance {
    */
   toJSON() {
     return {
-      assistants: this.assistants,
-      meta: this.meta,
+      accountSid: this.accountSid,
+      friendlyName: this.friendlyName,
+      sid: this.sid,
     };
   }
 

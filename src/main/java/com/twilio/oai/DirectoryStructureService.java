@@ -41,8 +41,9 @@ import static com.twilio.oai.common.ApplicationConstants.PATH_TYPE_EXTENSION_NAM
 public class DirectoryStructureService {
     public static final String VERSION_RESOURCES = "versionResources";
     public static final String ALL_VERSION_RESOURCES = VERSION_RESOURCES + "All";
-
+    @Getter
     private final Map<String, Object> additionalProperties;
+    @Getter
     private final IResourceTree resourceTree;
     private final CaseResolver caseResolver;
 
@@ -62,6 +63,15 @@ public class DirectoryStructureService {
         private String mountName;
         private String filename;
         private String param;
+    }
+
+    @Data
+    @Builder
+    public static class ContextResource {
+        private String paramName;
+        private String filename;
+        private String mountName;
+        private String parent;
     }
 
     public void configure(final OpenAPI openAPI) {
@@ -97,6 +107,11 @@ public class DirectoryStructureService {
         });
     }
 
+    public void configureResourceFamily(OpenAPI openAPI) {
+        openAPI.getPaths().forEach(resourceTree::addResource);
+        resourceTree.getResources().forEach(resource -> resource.updateFamily(resourceTree));
+    }
+
     // If account sid is present in path param, it is stored in x-is-account-sid.
     private void updateAccountSidParam(final PathItem pathMap) {
         pathMap
@@ -124,6 +139,20 @@ public class DirectoryStructureService {
             .filename(caseResolver.filenameOperation(resourceAliases.getClassName()))
             .build();
         resourcesMap.put(resourceAliases.getClassName(), dependent);
+    }
+
+    public void addContextdependents(final List<Object> resourceList, final String path, final Operation operation){
+        final Resource.Aliases resourceAliases = getResourceAliases(path, operation);
+        String parent = String.join("\\", resourceTree.ancestors(path, operation));
+        String paramName = path.substring(path.lastIndexOf("{") + 1, path.lastIndexOf("}"));
+        final ContextResource dependent = new ContextResource.ContextResourceBuilder()
+                .paramName(paramName)
+                .mountName(caseResolver.pathOperation(resourceAliases.getMountName()))
+                .filename(caseResolver.filenameOperation(resourceAliases.getClassName()))
+                .parent(parent)
+                .build();
+        if (!resourceList.contains(dependent))
+            resourceList.add(dependent);
     }
 
     private Resource.Aliases getResourceAliases(final String path, final Operation operation) {

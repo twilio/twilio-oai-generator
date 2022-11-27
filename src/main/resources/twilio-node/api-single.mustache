@@ -17,10 +17,9 @@ import { {{importName}} } from "./{{apiFilename}}/{{filename}}";
 {{>model}}
 {{#resources}}
 {{#operations}}
-{{#hasParams}}
 {{#vendorExtensions.x-is-read-operation}}{{>listOperationsOptions}}{{/vendorExtensions.x-is-read-operation}}
+{{#hasParams}}
 {{^vendorExtensions.x-is-read-operation}}
-{{^bodyParam}}
 /**
  * Options to pass to {{vendorExtensions.x-name-lower}} a {{instanceName}}
  *
@@ -33,7 +32,6 @@ export interface {{resourceName}}{{vendorExtensions.x-name}}Options {
   "{{paramName}}"{{^required}}?{{/required}}: {{{dataType}}};
   {{/allParams}}
 }
-{{/bodyParam}}
 {{/vendorExtensions.x-is-read-operation}}
 {{/hasParams}}
 {{/operations}}

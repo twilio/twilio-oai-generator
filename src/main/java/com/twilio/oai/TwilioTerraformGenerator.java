@@ -4,16 +4,20 @@ import com.twilio.oai.common.EnumConstants;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.EnumSet;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import io.swagger.v3.oas.models.media.ComposedSchema;
 import io.swagger.v3.oas.models.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Value;
@@ -171,10 +175,6 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
                 .map(Schema.class::cast)
                 .findFirst()
                 .ifPresent(schema -> {
-                    final Map<String, Schema<?>> properties = ModelUtils
-                        .getReferencedSchema(this.openAPI, schema)
-                        .getProperties();
-
                     // We need to find the parameter to be used as the Terraform resource ID (as it's not always the
                     // 'sid'). We assume it's the last path parameter for the fetch/update/delete operation.
                     final CodegenParameter idParameter = fetchOperation.pathParams.get(
@@ -182,7 +182,7 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
                     final String idParameterSnakeCase = StringHelper.toSnakeCase(idParameter.paramName);
 
                     // If the resource ID parameter is not part of the operation response body, remove the resource.
-                    if (!properties.containsKey(idParameterSnakeCase)) {
+                    if (!getSchemaPropertyNames(schema).contains(idParameterSnakeCase)) {
                         i.remove();
                     }
 
@@ -210,6 +210,26 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
         results.put("resources", resources.values());
 
         return results;
+    }
+
+    private Set<String> getSchemaPropertyNames(final Schema<?> schema) {
+        final Schema<?> actualSchema = ModelUtils.getReferencedSchema(this.openAPI, schema);
+
+        final Set<String> propertyNames = Optional
+            .ofNullable(actualSchema.getProperties())
+            .map(Map::keySet)
+            .orElse(new HashSet<>());
+
+        if (actualSchema instanceof ComposedSchema) {
+            ModelUtils
+                .getInterfaces((ComposedSchema) actualSchema)
+                .stream()
+                .map(this::getSchemaPropertyNames)
+                .flatMap(Collection::stream)
+                .collect(Collectors.toCollection(() -> propertyNames));
+        }
+
+        return propertyNames;
     }
 
     private void removeNonCrudResources(final Map<String, Map<String, Object>> resources) {
