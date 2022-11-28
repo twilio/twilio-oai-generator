@@ -45,7 +45,6 @@ public class TwilioPythonGenerator extends PythonClientCodegen {
     //need to figure out how python OAI generator is using engine
     @Override
     public void processOpts() {
-//        super.processOpts();
         twilioCodegen.processOpts();
         apiTemplateFiles.clear();
         modelTemplateFiles.clear();
@@ -53,9 +52,8 @@ public class TwilioPythonGenerator extends PythonClientCodegen {
         modelTestTemplateFiles.clear();
         modelDocTemplateFiles.clear();
         apiDocTemplateFiles.clear();
-
-        supportingFiles.add(new SupportingFile(INIT_TEMPLATE,
-                "__init__" + FILENAME_EXTENSION));
+//        supportingFiles.add(new SupportingFile(INIT_TEMPLATE,
+//                "__init__" + FILENAME_EXTENSION));
     }
 
 
@@ -68,7 +66,7 @@ public class TwilioPythonGenerator extends PythonClientCodegen {
         resourceTree.getResources().forEach(resource -> resource.updateFamily(resourceTree));
 
         directoryStructureService.configure(openAPI);
-        apiTemplateFiles.put(INIT_TEMPLATE, FILENAME_EXTENSION);
+        apiTemplateFiles.put("api-single.mustache", FILENAME_EXTENSION);
 
     }
 

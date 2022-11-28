@@ -1,8 +1,8 @@
 {{>licenseInfo}}
-from twilio.{{domainName}}Base import {{domainName}};
+from twilio.{{domainName}}Base import {{domainName}}
 from twilio.base.domain import Domain
 {{#versionResources}}
-    from twilio.{{apiVersion}}.{{filename}} import { {{importName}} };
+    from twilio.{{apiVersion}}.{{filename}} import { {{importName}} }
 {{/versionResources}}
 
 class {{domainName}}(Domain):

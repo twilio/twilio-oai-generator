@@ -64,7 +64,7 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
 
         twilioCodegen.processOpts();
 
-        apiTemplateFiles.put("api.mustache", ".java");
+        apiTemplateFiles.put("api-single.mustache", ".java");
     }
 
     @Override
