@@ -1,6 +1,7 @@
 package com.twilio.oai;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -32,6 +33,7 @@ public class TwilioGeneratorTest {
                 EnumConstants.Generator.TWILIO_CSHARP.getValue(),
                 EnumConstants.Generator.TWILIO_TERRAFORM.getValue(),
                 EnumConstants.Generator.TWILIO_PHP.getValue(),
+                EnumConstants.Generator.TWILIO_PYTHON.getValue(),
                 EnumConstants.Generator.TWILIO_NODE.getValue());
     }
 
