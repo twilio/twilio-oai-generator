@@ -11,16 +11,21 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+
 from twilio.VersionlessBase import Versionless;
 from twilio.base.domain import Domain
+
     from twilio.understand.assistant import { AssistantListInstance };
+
 
 class Versionless(Domain):
 def __init__ (self,twilio):
 """
 Initialize the Understand version of Versionless
 
+
     @property { Twilio.Versionless.Understand. } assistants - assistants resource
+
 
 @param { Twilio.Versionless } domain - The Twilio domain
 """
@@ -37,7 +42,6 @@ if self._Understand is None:
 self._Understand
 return self._Understand
 
-#<!-- add logic to add or all the properties and return paths -->
 def __repr__(self):
 """
 Provide a friendly representation

@@ -45,7 +45,7 @@ public class TwilioPythonGenerator extends PythonClientCodegen {
     //need to figure out how python OAI generator is using engine
     @Override
     public void processOpts() {
-        super.processOpts();
+//        super.processOpts();
         twilioCodegen.processOpts();
         apiTemplateFiles.clear();
         modelTemplateFiles.clear();
@@ -53,9 +53,11 @@ public class TwilioPythonGenerator extends PythonClientCodegen {
         modelTestTemplateFiles.clear();
         modelDocTemplateFiles.clear();
         apiDocTemplateFiles.clear();
-        apiTemplateFiles.put("api.mustache",".py");
 
+        supportingFiles.add(new SupportingFile(INIT_TEMPLATE,
+                "__init__" + FILENAME_EXTENSION));
     }
+
 
     @Override
     public void processOpenAPI(final OpenAPI openAPI) {
@@ -66,6 +68,7 @@ public class TwilioPythonGenerator extends PythonClientCodegen {
         resourceTree.getResources().forEach(resource -> resource.updateFamily(resourceTree));
 
         directoryStructureService.configure(openAPI);
+        apiTemplateFiles.put(INIT_TEMPLATE, FILENAME_EXTENSION);
 
     }
 
@@ -75,7 +78,6 @@ public class TwilioPythonGenerator extends PythonClientCodegen {
             return apiFileFolder() + File.separator + directoryStructureService.getApiVersionClass().orElseThrow() +
                     FILENAME_EXTENSION;
         }
-
         return super.apiFilename(templateName, tag);
     }
 
@@ -100,10 +102,10 @@ public class TwilioPythonGenerator extends PythonClientCodegen {
     public OperationsMap postProcessOperationsWithModels(final OperationsMap objs, List<ModelMap> allModels) {
         final OperationsMap results = objs;
         final List<CodegenOperation> opList = directoryStructureService.processOperations(results);
-        //WHY CAN'T IT FIND licenseInfo.handlebars
-        if (directoryStructureService.isVersionLess()) {
-            apiTemplateFiles.put(INIT_TEMPLATE, FILENAME_EXTENSION);
-        }
+        //renames to handlebars now
+//        if (directoryStructureService.isVersionLess()) {
+//            apiTemplateFiles.put(INIT_TEMPLATE, FILENAME_EXTENSION);
+//        }
 
         final Map<String, Object> resources = new TreeMap<>();
         final Map<String, CodegenModel> models = new TreeMap<>();
