@@ -358,31 +358,11 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
         operation.vendorExtensions.put("x-name-lower", name.toLowerCase());
     }
 
-    private void updateCodeOperationParams(final CodegenOperation co) {
-        co.allParams = co.allParams
-                .stream()
-                .map(conventionResolver::resolveParameter)
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .collect(Collectors.toList());
-        co.pathParams = co.pathParams
-                .stream()
-                .map(conventionResolver::resolveParameter)
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .collect(Collectors.toList());
-        co.optionalParams = co.optionalParams
-                .stream()
-                .map(conventionResolver::resolveParameter)
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .collect(Collectors.toList());
-        co.requiredParams = co.requiredParams
-                .stream()
-                .map(conventionResolver::resolveParameter)
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .collect(Collectors.toList());
+    private void updateCodeOperationParams(final CodegenOperation operation) {
+        operation.allParams.forEach(conventionResolver::resolveParameter);
+        operation.pathParams.forEach(conventionResolver::resolveParameter);
+        operation.optionalParams.forEach(conventionResolver::resolveParameter);
+        operation.requiredParams.forEach(conventionResolver::resolveParameter);
     }
 
     @Override
