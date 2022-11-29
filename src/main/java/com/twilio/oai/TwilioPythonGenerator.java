@@ -52,8 +52,6 @@ public class TwilioPythonGenerator extends PythonClientCodegen {
         modelTestTemplateFiles.clear();
         modelDocTemplateFiles.clear();
         apiDocTemplateFiles.clear();
-//        supportingFiles.add(new SupportingFile(INIT_TEMPLATE,
-//                "__init__" + FILENAME_EXTENSION));
     }
 
 
@@ -67,7 +65,8 @@ public class TwilioPythonGenerator extends PythonClientCodegen {
 
         directoryStructureService.configure(openAPI);
         apiTemplateFiles.put("api-single.mustache", FILENAME_EXTENSION);
-
+        supportingFiles.add(new SupportingFile(INIT_TEMPLATE,
+        "__init__" + FILENAME_EXTENSION));
     }
 
     @Override
@@ -100,10 +99,6 @@ public class TwilioPythonGenerator extends PythonClientCodegen {
     public OperationsMap postProcessOperationsWithModels(final OperationsMap objs, List<ModelMap> allModels) {
         final OperationsMap results = objs;
         final List<CodegenOperation> opList = directoryStructureService.processOperations(results);
-        //renames to handlebars now
-//        if (directoryStructureService.isVersionLess()) {
-//            apiTemplateFiles.put(INIT_TEMPLATE, FILENAME_EXTENSION);
-//        }
 
         final Map<String, Object> resources = new TreeMap<>();
         final Map<String, CodegenModel> models = new TreeMap<>();

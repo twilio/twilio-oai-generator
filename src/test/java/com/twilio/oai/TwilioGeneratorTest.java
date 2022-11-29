@@ -5,8 +5,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
-import com.twilio.oai.common.EnumConstants;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.io.FileUtils;
 import org.junit.BeforeClass;
@@ -17,6 +17,7 @@ import org.openapitools.codegen.ClientOptInput;
 import org.openapitools.codegen.DefaultGenerator;
 import org.openapitools.codegen.config.CodegenConfigurator;
 
+import static com.twilio.oai.common.EnumConstants.Generator;
 import static org.junit.Assert.assertFalse;
 
 /**
@@ -27,17 +28,18 @@ import static org.junit.Assert.assertFalse;
 @RunWith(Parameterized.class)
 public class TwilioGeneratorTest {
     @Parameterized.Parameters
-    public static Collection<String> generators() {
-        return Arrays.asList(EnumConstants.Generator.TWILIO_JAVA.getValue(),
-                EnumConstants.Generator.TWILIO_GO.getValue(),
-                EnumConstants.Generator.TWILIO_CSHARP.getValue(),
-                EnumConstants.Generator.TWILIO_TERRAFORM.getValue(),
-                EnumConstants.Generator.TWILIO_PHP.getValue(),
-                EnumConstants.Generator.TWILIO_PYTHON.getValue(),
-                EnumConstants.Generator.TWILIO_NODE.getValue());
+    public static Collection<Generator> generators() {
+        return Arrays.asList(Generator.TWILIO_CSHARP,
+                             Generator.TWILIO_GO,
+                             Generator.TWILIO_JAVA,
+                             Generator.TWILIO_NODE,
+                             Generator.TWILIO_PHP,
+                             Generator.TWILIO_PYTHON,
+                             Generator.TWILIO_TERRAFORM);
+
     }
 
-    private final String generatorName;
+    private final Generator generator;
 
     @BeforeClass
     public static void setUp() {
@@ -47,9 +49,12 @@ public class TwilioGeneratorTest {
     @Test
     public void launchGenerator() {
         final CodegenConfigurator configurator = new CodegenConfigurator()
-            .setGeneratorName(generatorName)
+            .setGeneratorName(generator.getValue())
             .setInputSpec("examples/spec/twilio_api_v2010.yaml")
-            .setOutputDir("codegen/" + generatorName);
+            .setOutputDir("codegen/" + generator.getValue())
+            .setInlineSchemaNameDefaults(Map.of("arrayItemSuffix", ""))
+            .addGlobalProperty("apiTests", "false")
+            .addGlobalProperty("apiDocs", "false");
 
         final ClientOptInput clientOptInput = configurator.toClientOptInput();
         DefaultGenerator generator = new DefaultGenerator();

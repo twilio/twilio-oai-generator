@@ -27,6 +27,7 @@ public class PhpApiActionTemplate implements IApiActionTemplate {
         codegen.modelTestTemplateFiles().clear();
         codegen.apiDocTemplateFiles().clear();
         codegen.modelDocTemplateFiles().clear();
+
         return codegen;
     }
 

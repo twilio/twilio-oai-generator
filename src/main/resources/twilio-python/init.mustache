@@ -1,38 +1,42 @@
 {{>licenseInfo}}
-from twilio.{{domainName}}Base import {{domainName}}
 from twilio.base.domain import Domain
-{{#versionResources}}
-    from twilio.{{apiVersion}}.{{filename}} import { {{importName}} }
-{{/versionResources}}
+from twilio.rest.{{domainName}}.{{apiVersion}} import {{apiVersionClass}}
 
 class {{domainName}}(Domain):
-def __init__ (self,twilio):
-"""
-Initialize the {{apiVersionClass}} version of {{domainName}}
+    def __init__(self, twilio):
+        """
+        Initialize the {{domainName}} Domain
 
-{{#versionResources}}
-    @property { Twilio.{{domainName}}.{{apiVersionClass}}.{{name}} } {{mountName}} - {{mountName}} resource
-{{/versionResources}}
+        :returns: Domain for {{domainName}}
+        :rtype: twilio.rest.{{apiVersion}}.{{domainName}}
+        """
+        super({{domainName}}, self).__init__(twilio)
+        self.base_url = 'https://{{domainName}}.twilio.com'
+        self._{{apiVersionClass}} = None
 
-@param { Twilio.{{domainName}} } domain - The Twilio domain
-"""
-super({{domainName}}, self).__init__(twilio)
-self.base_url = 'https://{{domainName}}.twilio.com'
-self._{{apiVersionClass}}
+    @property
+    def {{apiVersionClass}}(self):
+        """
+        :returns: Versions {{apiVersion}} of {{domainName}}
+        :rtype: twilio.rest.{{domainName}}.{{apiVersion}}
+        """
+        if self._{{apiVersionClass}} is None:
+            self._{{apiVersionClass}} = {{apiVersionClass}}(self)
+        return self._{{apiVersionClass}}
+    {{#versionResources}}
 
-@property
-def {{apiVersionClass}}(self):
-"""
-documentation needs to be added later
-"""
-if self._{{apiVersionClass}} is None:
-self._{{apiVersionClass}}
-return self._{{apiVersionClass}}
+    @property
+    def {{mountName}}(self):
+        """
+        :rtype: twilio.rest.{{apiVersion}}.{{mountName}}
+        """
+        return self.{{apiVersion}}.{{mountName}}
+    {{/versionResources}}
 
-def __repr__(self):
-"""
-Provide a friendly representation
-:returns: Machine friendly representation
-:rtype: str
-"""
-return "<Twilio.{{domainName}}>"
+    def __repr__(self):
+        """
+        Provide a friendly representation
+        :returns: Machine friendly representation
+        :rtype: str
+        """
+        return '<Twilio.{{domainName}}>'
