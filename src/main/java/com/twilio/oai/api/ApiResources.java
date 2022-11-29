@@ -3,6 +3,7 @@ package com.twilio.oai.api;
 import org.openapitools.codegen.CodegenOperation;
 import org.openapitools.codegen.CodegenParameter;
 import org.openapitools.codegen.CodegenProperty;
+import org.openapitools.codegen.utils.StringUtils;
 
 import java.util.*;
 
@@ -23,7 +24,7 @@ public class ApiResources {
         metaProperties = apiResourceBuilder.metaAPIProperties;
         apiName = getName(apiOperations.get(0));
         apiPath = apiResourceBuilder.apiPath;
-        version = apiResourceBuilder.version;
+        version = StringUtils.camelize(apiResourceBuilder.version);
         responseModels = apiResourceBuilder.apiResponseModels;
         recordKey = apiResourceBuilder.recordKey;
         requiredPathParams = new ArrayList<>(apiResourceBuilder.requiredPathParams);

@@ -6,12 +6,12 @@ import com.twilio.oai.resolver.CaseResolver;
 public class PhpCaseResolver implements CaseResolver {
     @Override
     public String productOperation(final String product) {
-        return StringHelper.camelize(product, true);
+        return StringHelper.toFirstLetterCaps(product);
     }
 
     @Override
     public String pathOperation(final String pathPart) {
-        return StringHelper.camelize(pathPart);
+        return StringHelper.toFirstLetterCaps(pathPart);
     }
 
     @Override

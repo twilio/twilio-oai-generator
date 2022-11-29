@@ -24,7 +24,7 @@ import { {{importName}} } from "./{{apiFilename}}/{{filename}}";
  * Options to pass to {{vendorExtensions.x-name-lower}} a {{instanceName}}
  *
  {{#allParams}}
- * @property { {{{dataType}}} } {{^required}}[{{/required}}{{paramName}}{{^required}}]{{/required}} {{description}}
+ * @property { {{{dataType}}} } {{^required}}[{{/required}}{{paramName}}{{^required}}]{{/required}} {{{description}}}
  {{/allParams}}
  */
 export interface {{resourceName}}{{vendorExtensions.x-name}}Options {
