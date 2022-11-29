@@ -1,5 +1,7 @@
 package com.twilio.oai.common;
 
+import java.io.File;
+
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
@@ -10,8 +12,10 @@ public class ApplicationConstants {
     // Unique string devoid of symbols.
     public static final String PATH_SEPARATOR_PLACEHOLDER = "1234567890";
 
-    public static final String CONFIG_JAVA_JSON_PATH = "config/java.json";
-    public static final String CONFIG_CSHARP_JSON_PATH = "config/csharp.json";
+    public static final String CONFIG_PATH = "config";
+    public static final String CONFIG_CSHARP_JSON_PATH = CONFIG_PATH + File.separator + "csharp.json";
+    public static final String CONFIG_JAVA_JSON_PATH = CONFIG_PATH + File.separator + "java.json";
+    public static final String CONFIG_NODE_JSON_PATH = CONFIG_PATH + File.separator + "node.json";
 
     public static final String LIST_START = "List<";
 

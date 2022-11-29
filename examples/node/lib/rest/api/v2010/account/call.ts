@@ -25,13 +25,6 @@ export class TestResponseObjectTestArrayOfObjects {
   "description"?: string;
 }
 
-export class TestResponseObjectTestObject {
-  "fax"?: boolean;
-  "mms"?: boolean;
-  "sms"?: boolean;
-  "voice"?: boolean;
-}
-
 type TestStatus =
   | "in-progress"
   | "paused"
