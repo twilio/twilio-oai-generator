@@ -11,5 +11,6 @@ public interface IApiResourceBuilder {
     IApiResourceBuilder updateResponseModel(ISchemaResolver<CodegenProperty> codegenPropertyIResolver);
     IApiResourceBuilder updateAdditionalProps(DirectoryStructureService directoryStructureService);
     IApiResourceBuilder updateApiPath();
+    IApiResourceBuilder setImports(DirectoryStructureService directoryStructureService);
     ApiResources build();
 }

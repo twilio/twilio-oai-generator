@@ -3,22 +3,148 @@
 
 {{>licenseInfo}}
 
-namespace Twilio\Rest\Api\V2010;
+namespace Twilio\Rest\{{domainName}}\{{apiVersionClass}}{{namespaceSubPart}};
 
 {{>imports}}
+
+{{#apiOperations}}
+{{^vendorExtensions.x-is-create-operation}}
+{{^vendorExtensions.x-is-read-operation}}
+    {{#vendorExtensions.importProperties.0}}
 /**
-{{#allParams}}
-* @property {{dataType}} ${{paramName}};
-{{/allParams}}
-*/
-class {{name}}Context extends InstanceContext {
+    {{/vendorExtensions.importProperties.0}}
+    {{#vendorExtensions.importProperties}}
+ * @property {{filename}}List ${{#lambda.camelcase}}{{mountName}}{{/lambda.camelcase}}
+    {{#-last}}
+    {{^vendorExtensions.importMethods}}
+ */
+    {{/vendorExtensions.importMethods}}
+    {{/-last}}
+    {{/vendorExtensions.importProperties}}
+    {{#vendorExtensions.importMethods}}
+    {{#-first}}
+    {{^vendorExtensions.importProperties}}
+/**
+    {{/vendorExtensions.importProperties}}
+    {{/-first}}
+ * @method \Twilio\Rest\{{domainName}}\{{apiVersionClass}}\{{parent}}Context {{#lambda.camelcase}}{{mountName}}{{/lambda.camelcase}}(string ${{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}})
+    {{#-last}}
+ */
+    {{/-last}}
+    {{/vendorExtensions.importMethods}}
+{{/vendorExtensions.x-is-read-operation}}
+{{/vendorExtensions.x-is-create-operation}}
+{{/apiOperations}}
 
-    {{#requiredParams}}
-    public function __construct(Version $version {{#.}}, {{{dataType}}} ${{paramName}}{{/.}}) {
+class {{apiName}}Context extends InstanceContext {
+    {{#apiOperations}}
+    {{#vendorExtensions.importProperties}}
+    protected $_{{#lambda.camelcase}}{{mountName}}{{/lambda.camelcase}};
+    {{/vendorExtensions.importProperties}}
+    {{/apiOperations}}
+
+    /**
+     * Initialize the {{apiName}}Context
+     *
+     * @param Version $version Version that contains the resource
+     {{#requiredPathParamsContext}}
+     * @param {{{dataType}}} ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}} {{description}}
+     {{/requiredPathParamsContext}}
+     */
+    public function __construct(Version $version{{#requiredPathParamsContext}}, ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}} {{/requiredPathParamsContext}}) {
         parent::__construct($version);
+
+        // Path Solution
+        $this->solution = [{{#requiredPathParamsContext}}'{{paramName}}' => ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}},  {{/requiredPathParamsContext}}];
+        {{#metaProperties.x-is-context-operation}}
+
+        $this->uri = '{{{apiContextPath}}}';
+        {{/metaProperties.x-is-context-operation}}
     }
-    {{/requiredParams}}
+{{#apiOperations}}{{>contextFetch}}{{>contextDelete}}{{>contextUpdate}}{{/apiOperations}}
+    {{#apiOperations}}
+    {{^vendorExtensions.x-is-create-operation}}
+    {{^vendorExtensions.x-is-read-operation}}
+    {{#vendorExtensions.importProperties}}
+    /**
+     * Access the {{#lambda.camelcase}}{{mountName}}{{/lambda.camelcase}}
+     */
+    protected function get{{#lambda.titlecase}}{{mountName}}{{/lambda.titlecase}}(): {{filename}}List {
+        if (!$this->_{{#lambda.camelcase}}{{mountName}}{{/lambda.camelcase}}) {
+            $this->_{{#lambda.camelcase}}{{mountName}}{{/lambda.camelcase}} = new {{filename}}List(
+                $this->version
+                {{#optionalParams}}
+                {{#isPathParam}}
+                , $this->solution['{{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}']
+                {{/isPathParam}}
+                {{/optionalParams}}
+                {{#requiredParams}}
+                {{#isPathParam}}
+                , $this->solution['{{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}']
+                {{/isPathParam}}
+                {{/requiredParams}}
+            );
+        }
 
+        return $this->_{{#lambda.camelcase}}{{mountName}}{{/lambda.camelcase}};
+    }
+
+    {{/vendorExtensions.importProperties}}
+    {{/vendorExtensions.x-is-read-operation}}
+    {{/vendorExtensions.x-is-create-operation}}
+    {{/apiOperations}}
+{{#apiOperations}}
+    {{^vendorExtensions.x-is-create-operation}}
+    {{^vendorExtensions.x-is-read-operation}}
+    {{#vendorExtensions.importProperties.0}}
+    /**
+     * Magic getter to lazy load subresources
+     *
+     * @param string $name Subresource to return
+     * @return ListResource The requested subresource
+     * @throws TwilioException For unknown subresources
+     */
+    public function __get(string $name): ListResource {
+        if (\property_exists($this, '_' . $name)) {
+            $method = 'get' . \ucfirst($name);
+            return $this->$method();
+        }
+
+        throw new TwilioException('Unknown subresource ' . $name);
+    }
+
+    /**
+     * Magic caller to get resource contexts
+     *
+     * @param string $name Resource to return
+     * @param array $arguments Context parameters
+     * @return InstanceContext The requested resource context
+     * @throws TwilioException For unknown resource
+     */
+    public function __call(string $name, array $arguments): InstanceContext {
+        $property = $this->$name;
+        if (\method_exists($property, 'getContext')) {
+            return \call_user_func_array(array($property, 'getContext'), $arguments);
+        }
+
+        throw new TwilioException('Resource does not have a context');
+    }
+
+    {{/vendorExtensions.importProperties.0}}
+    {{/vendorExtensions.x-is-read-operation}}
+    {{/vendorExtensions.x-is-create-operation}}
+    {{/apiOperations}}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string {
+        $context = [];
+        foreach ($this->solution as $key => $value) {
+            $context[] = "$key=$value";
+        }
+        return '[Twilio.{{domainName}}.{{apiVersionClass}}.{{apiName}}Context ' . \implode(' ', $context) . ']';
+    }
 }
-
 {{/resources}}

@@ -15,7 +15,7 @@
  */
 
 
-namespace Twilio\Rest\Api\V2010;
+namespace Twilio\Rest\FlexApi\V1;
 
 use Twilio\Exceptions\TwilioException;
 use Twilio\ListResource;
@@ -23,11 +23,54 @@ use Twilio\Options;
 use Twilio\Stream;
 use Twilio\Values;
 use Twilio\Version;
+use Twilio\InstanceContext;
+use Twilio\Deserialize;
+use Twilio\Serialize;
 
-/**
-*/
-class Context extends InstanceContext {
 
 
+class CallContext extends InstanceContext {
+
+    /**
+     * Initialize the CallContext
+     *
+     * @param Version $version Version that contains the resource
+     * @param string $sid 
+     */
+    public function __construct(Version $version, $sid ) {
+        parent::__construct($version);
+
+        // Path Solution
+        $this->solution = ['sid' => $sid,  ];
+
+        $this->uri = '/Voice/' . \rawurlencode($sid) . '';
+    }
+
+    /**
+    * Update the CallInstance
+    *
+    * @return CallInstance Updated CallInstance
+    * @throws TwilioException When an HTTP error occurs.
+    */
+    public function update(): CallInstance {
+        $data = Values::of([
+        ]);
+
+        $payload = $this->version->update('POST', $this->uri, [], $data);
+
+        return new CallInstance($this->version, $payload, $this->solution['sid']);
+    }
+
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string {
+        $context = [];
+        foreach ($this->solution as $key => $value) {
+            $context[] = "$key=$value";
+        }
+        return '[Twilio.FlexApi.V1.CallContext ' . \implode(' ', $context) . ']';
+    }
 }
-

@@ -22,18 +22,32 @@ use Twilio\Options;
 use Twilio\Stream;
 use Twilio\Values;
 use Twilio\Version;
+use Twilio\InstanceContext;
+use Twilio\Deserialize;
+use Twilio\Serialize;
+use Twilio\Rest\FlexApi\V1\Credential\AwsList;
+use Twilio\Rest\FlexApi\V1\Credential\NewCredentialsList;
 
+
+/**
+ * @property AwsList $aws
+ * @property NewCredentialsList $newCredentials
+ * @method \Twilio\Rest\FlexApi\V1\Credential\AwsContext aws(string $sid)
+ */
 
 class CredentialList extends ListResource {
     /**
      * Construct the CredentialList
      *
      * @param Version $version Version that contains the resource
-     * @param string $sid
+     * @param string $sid 
      */
     public function __construct(Version $version, string $sid ) {
         parent::__construct($version);
-        $this->solution = ['sid' => $sid  ];
+
+        // Path Solution
+        $this->solution = ['sid' => $sid, ];
+
         $this->uri = '/Credentials';
     }
     

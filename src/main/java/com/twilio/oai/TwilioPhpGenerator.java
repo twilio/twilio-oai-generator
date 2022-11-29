@@ -96,6 +96,7 @@ public class TwilioPhpGenerator extends PhpClientCodegen {
                 .updateTemplate()
                 .updateOperations(new PhpParameterResolver(conventionMapper))
                 .updateResponseModel(new PhpPropertyResolver(conventionMapper))
+                .setImports(directoryStructureService)
                 .build();
     }
 }

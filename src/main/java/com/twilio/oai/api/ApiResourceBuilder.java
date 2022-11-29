@@ -27,11 +27,16 @@ public abstract class ApiResourceBuilder implements IApiResourceBuilder {
     protected List<CodegenModel> allModels;
     protected List<CodegenOperation> codegenOperationList;
     protected TreeSet<CodegenParameter> requiredPathParams = new TreeSet<>((cp1, cp2) -> cp1.baseName.compareTo(cp2.baseName));
+    protected TreeSet<CodegenParameter> requiredPathParamsList = new TreeSet<>((cp1, cp2) -> cp1.baseName.compareTo(cp2.baseName));
+    protected TreeSet<CodegenParameter> requiredPathParamsContext = new TreeSet<>((cp1, cp2) -> cp1.baseName.compareTo(cp2.baseName));
     protected List<CodegenProperty> apiResponseModels = new ArrayList<>();
     protected Map<String, Object> metaAPIProperties = new HashMap<>();
     protected String version = "";
     protected String recordKey = "";
     protected String apiPath ="";
+    protected String apiListPath = "";
+    protected String apiContextPath = "";
+    protected String namespaceSubPart = "";
 
     public ApiResourceBuilder(IApiActionTemplate template, List<CodegenOperation> codegenOperations, List<CodegenModel> allModels) {
         this.template = template;
@@ -58,6 +63,11 @@ public abstract class ApiResourceBuilder implements IApiResourceBuilder {
 
             requiredPathParams.addAll(codegenOperation.pathParams);
             codegenOperation.vendorExtensions = mapOperation(codegenOperation);
+
+            codegenOperation.vendorExtensions.put("hasRequiredFormParams",
+                    (codegenOperation.requiredParams.stream().anyMatch(param-> param.isFormParam)));
+            codegenOperation.vendorExtensions.put("hasOptionalFormParams",
+                    (codegenOperation.optionalParams.stream().anyMatch(param-> param.isFormParam)));
         });
         return this;
     }
@@ -121,7 +131,7 @@ public abstract class ApiResourceBuilder implements IApiResourceBuilder {
             operationMap.put("x-name", API_OPERATION_READ);
             operationMap.put("x-is-read-operation", true);
         }
-        metaAPIProperties.put("x-is-list-operation","true");
+        metaAPIProperties.put("x-is-list-operation", "true");
         metaAPIProperties.put(META_LIST_PARAMETER_KEY, operation.allParams);
     }
 
@@ -134,9 +144,9 @@ public abstract class ApiResourceBuilder implements IApiResourceBuilder {
             operationMap.put("x-is-update-operation", true);
         } else if (httpMethod == HttpMethod.DELETE) {
             operationMap.put("x-name", API_OPERATION_DELETE);
-            operation.vendorExtensions.put("x-is-delete-operation", true);
+            operationMap.put("x-is-delete-operation", true);
         }
-        metaAPIProperties.put("x-is-context-operation","true");
+        metaAPIProperties.put("x-is-context-operation", "true");
         metaAPIProperties.put(META_CONTEXT_PARAMETER_KEY, operation.allParams);
     }
 
@@ -174,7 +184,7 @@ public abstract class ApiResourceBuilder implements IApiResourceBuilder {
         boolean is_fetch = operation.nickname.startsWith(EnumConstants.Operation.FETCH.getValue().toLowerCase(Locale.ROOT));
         boolean is_update = operation.nickname.startsWith(EnumConstants.Operation.UPDATE.getValue().toLowerCase(Locale.ROOT));
         boolean is_delete = operation.nickname.startsWith(EnumConstants.Operation.DELETE.getValue().toLowerCase(Locale.ROOT));
-        if(is_fetch || is_update || is_delete) {
+        if (is_fetch || is_update || is_delete) {
             return true;
         }
         return false;
@@ -188,7 +198,7 @@ public abstract class ApiResourceBuilder implements IApiResourceBuilder {
                     continue;
                 }
                 String[] split = co.returnType.split("\\\\");
-                String returnTypeStr = split[split.length-1];
+                String returnTypeStr = split[split.length - 1];
                 if (model.name.equals(returnTypeStr)) {
                     recordKey = model.allVars
                             .stream()
