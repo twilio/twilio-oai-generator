@@ -13,18 +13,15 @@
 """
 
 from twilio.base.domain import Domain
-
-from twilio.v1.call import CallListInstance
-
-from twilio.v1.credential import CredentialListInstance
-
+from twilio.rest.FlexApi.v1 import V1
 
 class FlexApi(Domain):
-    def __init__ (self,twilio):
+    def __init__(self, twilio):
         """
-        Initialize the V1 version of FlexApi
-        @property { Twilio.FlexApi.V1. } calls - calls resource@property { Twilio.FlexApi.V1. } credentials - credentials resource
-        @param { Twilio.FlexApi } domain - The Twilio domain
+        Initialize the FlexApi Domain
+
+        :returns: Domain for FlexApi
+        :rtype: twilio.rest.v1.FlexApi
         """
         super(FlexApi, self).__init__(twilio)
         self.base_url = 'https://FlexApi.twilio.com'
@@ -33,18 +30,29 @@ class FlexApi(Domain):
     @property
     def V1(self):
         """
-        documentation needs to be added later
+        :returns: Versions v1 of FlexApi
+        :rtype: twilio.rest.FlexApi.v1
         """
         if self._V1 is None:
-            self._V1
+            self._V1 = V1(self)
         return self._V1
     
-    
-        CallListInstance
-    
-        CredentialListInstance
+
+    @property
+    def calls(self):
+        """
+        :rtype: twilio.rest.v1.calls
+        """
+        return self.v1.calls
     
 
+    @property
+    def credentials(self):
+        """
+        :rtype: twilio.rest.v1.credentials
+        """
+        return self.v1.credentials
+    
 
     def __repr__(self):
         """

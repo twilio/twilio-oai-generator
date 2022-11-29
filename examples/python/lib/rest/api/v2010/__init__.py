@@ -13,18 +13,15 @@
 """
 
 from twilio.base.domain import Domain
-
-from twilio.v2010.account import AccountListInstance
-
-from twilio.v2010.account import AccountContext
-
+from twilio.rest.Api.v2010 import V2010
 
 class Api(Domain):
-    def __init__ (self,twilio):
+    def __init__(self, twilio):
         """
-        Initialize the V2010 version of Api
-        @property { Twilio.Api.V2010. } accounts - accounts resource@property { Twilio.Api.V2010. } account - account resource
-        @param { Twilio.Api } domain - The Twilio domain
+        Initialize the Api Domain
+
+        :returns: Domain for Api
+        :rtype: twilio.rest.v2010.Api
         """
         super(Api, self).__init__(twilio)
         self.base_url = 'https://Api.twilio.com'
@@ -33,18 +30,29 @@ class Api(Domain):
     @property
     def V2010(self):
         """
-        documentation needs to be added later
+        :returns: Versions v2010 of Api
+        :rtype: twilio.rest.Api.v2010
         """
         if self._V2010 is None:
-            self._V2010
+            self._V2010 = V2010(self)
         return self._V2010
     
-    
-        AccountListInstance
-    
-        AccountContext
+
+    @property
+    def accounts(self):
+        """
+        :rtype: twilio.rest.v2010.accounts
+        """
+        return self.v2010.accounts
     
 
+    @property
+    def account(self):
+        """
+        :rtype: twilio.rest.v2010.account
+        """
+        return self.v2010.account
+    
 
     def __repr__(self):
         """

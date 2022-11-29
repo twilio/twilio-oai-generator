@@ -1,15 +1,14 @@
 {{>licenseInfo}}
 from twilio.base.domain import Domain
-{{#versionResources}}
-from twilio.{{apiVersion}}.{{filename}} import {{{importName}}}
-{{/versionResources}}
+from twilio.rest.{{domainName}}.{{apiVersion}} import {{apiVersionClass}}
 
 class {{domainName}}(Domain):
-    def __init__ (self,twilio):
+    def __init__(self, twilio):
         """
-        Initialize the {{apiVersionClass}} version of {{domainName}}
-        {{#versionResources}}@property { Twilio.{{domainName}}.{{apiVersionClass}}.{{name}} } {{mountName}} - {{mountName}} resource{{/versionResources}}
-        @param { Twilio.{{domainName}} } domain - The Twilio domain
+        Initialize the {{domainName}} Domain
+
+        :returns: Domain for {{domainName}}
+        :rtype: twilio.rest.{{apiVersion}}.{{domainName}}
         """
         super({{domainName}}, self).__init__(twilio)
         self.base_url = 'https://{{domainName}}.twilio.com'
@@ -18,18 +17,21 @@ class {{domainName}}(Domain):
     @property
     def {{apiVersionClass}}(self):
         """
-        documentation needs to be added later
+        :returns: Versions {{apiVersion}} of {{domainName}}
+        :rtype: twilio.rest.{{domainName}}.{{apiVersion}}
         """
         if self._{{apiVersionClass}} is None:
-            self._{{apiVersionClass}}
+            self._{{apiVersionClass}} = {{apiVersionClass}}(self)
         return self._{{apiVersionClass}}
-    {{#resources}}
-        {{resourceName}}
-    {{/resources}}
     {{#versionResources}}
-        {{importName}}
-    {{/versionResources}}
 
+    @property
+    def {{mountName}}(self):
+        """
+        :rtype: twilio.rest.{{apiVersion}}.{{mountName}}
+        """
+        return self.{{apiVersion}}.{{mountName}}
+    {{/versionResources}}
 
     def __repr__(self):
         """

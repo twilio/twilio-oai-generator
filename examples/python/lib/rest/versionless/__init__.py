@@ -13,16 +13,15 @@
 """
 
 from twilio.base.domain import Domain
-
-from twilio.deployed_devices.fleet import FleetListInstance
-
+from twilio.rest.Versionless.deployed_devices import DeployedDevices
 
 class Versionless(Domain):
-    def __init__ (self,twilio):
+    def __init__(self, twilio):
         """
-        Initialize the DeployedDevices version of Versionless
-        @property { Twilio.Versionless.DeployedDevices. } fleets - fleets resource
-        @param { Twilio.Versionless } domain - The Twilio domain
+        Initialize the Versionless Domain
+
+        :returns: Domain for Versionless
+        :rtype: twilio.rest.deployed_devices.Versionless
         """
         super(Versionless, self).__init__(twilio)
         self.base_url = 'https://Versionless.twilio.com'
@@ -31,16 +30,21 @@ class Versionless(Domain):
     @property
     def DeployedDevices(self):
         """
-        documentation needs to be added later
+        :returns: Versions deployed_devices of Versionless
+        :rtype: twilio.rest.Versionless.deployed_devices
         """
         if self._DeployedDevices is None:
-            self._DeployedDevices
+            self._DeployedDevices = DeployedDevices(self)
         return self._DeployedDevices
     
-    
-        FleetListInstance
-    
 
+    @property
+    def fleets(self):
+        """
+        :rtype: twilio.rest.deployed_devices.fleets
+        """
+        return self.deployed_devices.fleets
+    
 
     def __repr__(self):
         """
