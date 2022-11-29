@@ -27,4 +27,13 @@ class {{resourceName}}(ListResource):
         self._{{mountName}} = None
         {{/dependents}}
 
+    def __repr__(self):
+        """
+        Provide a friendly representation
+        :returns: Machine friendly representation
+        :rtype: str
+        """
+    context = ' '.join('{}={}'.format(k, v) for k, v in self._solution.items())
+    return '<Twilio.Api.{{apiVersionClass}}.{{resourceName}} {}>'.format(context)
+
 {{/resources}}
