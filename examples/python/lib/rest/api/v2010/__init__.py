@@ -14,41 +14,42 @@
 
 from twilio.base.domain import Domain
 
-from twilio.v2010.account import { AccountListInstance }
+from twilio.v2010.account import AccountListInstance
 
-from twilio.v2010.account import { AccountContext }
+from twilio.v2010.account import AccountContext
 
 
 class Api(Domain):
-def __init__ (self,twilio):
-"""
-Initialize the V2010 version of Api
+    def __init__ (self,twilio):
+        """
+        Initialize the V2010 version of Api
+        @property { Twilio.Api.V2010. } accounts - accounts resource@property { Twilio.Api.V2010. } account - account resource
+        @param { Twilio.Api } domain - The Twilio domain
+        """
+        super(Api, self).__init__(twilio)
+        self.base_url = 'https://Api.twilio.com'
+        self._V2010 = None
+
+    @property
+    def V2010(self):
+        """
+        documentation needs to be added later
+        """
+        if self._V2010 is None:
+            self._V2010
+        return self._V2010
+    
+    
+        AccountListInstance
+    
+        AccountContext
+    
 
 
-    @property { Twilio.Api.V2010. } accounts - accounts resource
-
-    @property { Twilio.Api.V2010. } account - account resource
-
-
-@param { Twilio.Api } domain - The Twilio domain
-"""
-super(Api, self).__init__(twilio)
-self.base_url = 'https://Api.twilio.com'
-self._V2010
-
-@property
-def V2010(self):
-"""
-documentation needs to be added later
-"""
-if self._V2010 is None:
-self._V2010
-return self._V2010
-
-def __repr__(self):
-"""
-Provide a friendly representation
-:returns: Machine friendly representation
-:rtype: str
-"""
-return "<Twilio.Api>"
+    def __repr__(self):
+        """
+        Provide a friendly representation
+        :returns: Machine friendly representation
+        :rtype: str
+        """
+        return '<Twilio.Api>'

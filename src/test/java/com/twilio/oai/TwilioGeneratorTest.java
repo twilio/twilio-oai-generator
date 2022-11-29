@@ -28,13 +28,8 @@ import static org.junit.Assert.assertFalse;
 public class TwilioGeneratorTest {
     @Parameterized.Parameters
     public static Collection<String> generators() {
-        return Arrays.asList(EnumConstants.Generator.TWILIO_JAVA.getValue(),
-                EnumConstants.Generator.TWILIO_GO.getValue(),
-                EnumConstants.Generator.TWILIO_CSHARP.getValue(),
-                EnumConstants.Generator.TWILIO_TERRAFORM.getValue(),
-                EnumConstants.Generator.TWILIO_PHP.getValue(),
-                EnumConstants.Generator.TWILIO_PYTHON.getValue(),
-                EnumConstants.Generator.TWILIO_NODE.getValue());
+        return Arrays.asList(
+                EnumConstants.Generator.TWILIO_PYTHON.getValue());
     }
 
     private final String generatorName;

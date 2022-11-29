@@ -14,37 +14,38 @@
 
 from twilio.base.domain import Domain
 
-from twilio.deployed_devices.fleet import { FleetListInstance }
+from twilio.deployed_devices.fleet import FleetListInstance
 
 
 class Versionless(Domain):
-def __init__ (self,twilio):
-"""
-Initialize the DeployedDevices version of Versionless
+    def __init__ (self,twilio):
+        """
+        Initialize the DeployedDevices version of Versionless
+        @property { Twilio.Versionless.DeployedDevices. } fleets - fleets resource
+        @param { Twilio.Versionless } domain - The Twilio domain
+        """
+        super(Versionless, self).__init__(twilio)
+        self.base_url = 'https://Versionless.twilio.com'
+        self._DeployedDevices = None
+
+    @property
+    def DeployedDevices(self):
+        """
+        documentation needs to be added later
+        """
+        if self._DeployedDevices is None:
+            self._DeployedDevices
+        return self._DeployedDevices
+    
+    
+        FleetListInstance
+    
 
 
-    @property { Twilio.Versionless.DeployedDevices. } fleets - fleets resource
-
-
-@param { Twilio.Versionless } domain - The Twilio domain
-"""
-super(Versionless, self).__init__(twilio)
-self.base_url = 'https://Versionless.twilio.com'
-self._DeployedDevices
-
-@property
-def DeployedDevices(self):
-"""
-documentation needs to be added later
-"""
-if self._DeployedDevices is None:
-self._DeployedDevices
-return self._DeployedDevices
-
-def __repr__(self):
-"""
-Provide a friendly representation
-:returns: Machine friendly representation
-:rtype: str
-"""
-return "<Twilio.Versionless>"
+    def __repr__(self):
+        """
+        Provide a friendly representation
+        :returns: Machine friendly representation
+        :rtype: str
+        """
+        return '<Twilio.Versionless>'
