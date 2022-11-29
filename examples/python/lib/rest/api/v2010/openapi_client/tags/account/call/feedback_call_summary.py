@@ -12,3 +12,40 @@
  * Do not edit the class manually.
  */
 
+
+from twilio.base import deserialize
+from twilio.base import serialize
+from twilio.base import values
+from twilio.base.instance_context import InstanceContext
+from twilio.base.instance_resource import InstanceResource
+from twilio.base.list_resource import ListResource
+from twilio.base.page import Page
+
+
+
+class FeedbackCallSummaryContext(ListResource):
+    def __init__(self, version: V2010, account_sid: str, sid: str):
+        # TODO: needs comments
+        super(FeedbackCallSummaryContext, self).__init__(version)
+
+        # Path Solution
+        self._solution = { account_sid, sid,  }
+        self._uri = '/Accounts/${account_sid}/Calls/Feedback/Summary/${sid}.json'
+
+        # Components
+        
+
+
+
+class FeedbackCallSummaryListInstance(ListResource):
+    def __init__(self, version: V2010, account_sid: str):
+        # TODO: needs comments
+        super(FeedbackCallSummaryListInstance, self).__init__(version)
+
+        # Path Solution
+        self._solution = { account_sid,  }
+        self._uri = ''
+
+        # Components
+        
+

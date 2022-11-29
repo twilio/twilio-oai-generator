@@ -12,3 +12,42 @@
  * Do not edit the class manually.
  */
 
+
+from twilio.base import deserialize
+from twilio.base import serialize
+from twilio.base import values
+from twilio.base.instance_context import InstanceContext
+from twilio.base.instance_resource import InstanceResource
+from twilio.base.list_resource import ListResource
+from twilio.base.page import Page
+
+
+
+class CallContext(ListResource):
+    def __init__(self, version: V2010, account_sid: str, test_integer: int):
+        # TODO: needs comments
+        super(CallContext, self).__init__(version)
+
+        # Path Solution
+        self._solution = { account_sid, test_integer,  }
+        self._uri = '/Accounts/${account_sid}/Calls/${test_integer}.json'
+
+        # Components
+        
+
+
+
+class CallListInstance(ListResource):
+    def __init__(self, version: V2010, account_sid: str):
+        # TODO: needs comments
+        super(CallListInstance, self).__init__(version)
+
+        # Path Solution
+        self._solution = { account_sid,  }
+        self._uri = '/Accounts/${account_sid}/Calls.json'
+
+        # Components
+        
+        self._feedback_call_summary = None
+        
+

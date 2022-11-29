@@ -12,3 +12,30 @@
  * Do not edit the class manually.
  */
 
+
+from twilio.base import deserialize
+from twilio.base import serialize
+from twilio.base import values
+from twilio.base.instance_context import InstanceContext
+from twilio.base.instance_resource import InstanceResource
+from twilio.base.list_resource import ListResource
+from twilio.base.page import Page
+
+
+
+class CredentialListInstance(ListResource):
+    def __init__(self, version: V1):
+        # TODO: needs comments
+        super(CredentialListInstance, self).__init__(version)
+
+        # Path Solution
+        self._solution = {  }
+        self._uri = '/Credentials'
+
+        # Components
+        
+        self._aws = None
+        
+        self._new_credentials = None
+        
+

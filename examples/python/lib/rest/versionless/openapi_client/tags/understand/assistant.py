@@ -12,3 +12,26 @@
  * Do not edit the class manually.
  */
 
+
+from twilio.base import deserialize
+from twilio.base import serialize
+from twilio.base import values
+from twilio.base.instance_context import InstanceContext
+from twilio.base.instance_resource import InstanceResource
+from twilio.base.list_resource import ListResource
+from twilio.base.page import Page
+
+
+
+class AssistantListInstance(ListResource):
+    def __init__(self, version: Understand):
+        # TODO: needs comments
+        super(AssistantListInstance, self).__init__(version)
+
+        # Path Solution
+        self._solution = {  }
+        self._uri = '/Assistants'
+
+        # Components
+        
+
