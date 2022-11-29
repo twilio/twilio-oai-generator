@@ -15,7 +15,6 @@ import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenOperation;
 import org.openapitools.codegen.CodegenParameter;
 import org.openapitools.codegen.CodegenProperty;
-import org.openapitools.codegen.IJsonSchemaValidationProperties;
 import org.openapitools.codegen.SupportingFile;
 import org.openapitools.codegen.languages.TypeScriptNodeClientCodegen;
 import org.openapitools.codegen.model.ModelMap;
@@ -169,7 +168,7 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
             updateResourcePath(resource, co);
             twilioCodegen.populateCrudOperations(resource, co);
 
-            co.allParams.forEach(param -> param.dataType = resolveModelDataType(param, param.dataType, models));
+            co.allParams.forEach(param -> addModel(param.baseType, param.dataType, models));
             co.allParams.removeAll(co.pathParams);
             co.requiredParams.removeAll(co.pathParams);
             co.hasParams = !co.allParams.isEmpty();
@@ -209,7 +208,7 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
                     .map(conventionResolver::resolveModel)
                     .map(item -> conventionResolver.resolveComplexType(item, modelFormatMap))
                     .forEach(model -> {
-                        model.vars.forEach(prop -> prop.dataType = resolveModelDataType(prop, prop.dataType, models));
+                        model.vars.forEach(prop -> addModel(prop.complexType, prop.dataType, models));
 
                         model.setName(itemName);
                         resource.put("responseModel", model);
@@ -262,22 +261,8 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
         return results;
     }
 
-    private String resolveModelDataType(final IJsonSchemaValidationProperties prop,
-                                        final String dataType,
-                                        final Map<String, CodegenModel> models) {
-        final String modelDataType = removeEnumName(dataType);
-
-        if (prop.getComplexType() != null) {
-            directoryStructureService.addModel(models, removeEnumName(prop.getComplexType()));
-        } else {
-            directoryStructureService.addModel(models, modelDataType);
-        }
-
-        return modelDataType;
-    }
-
-    private String removeEnumName(final String dataType) {
-        return dataType.replace("Enum", "");
+    private void addModel(final String complexType, final String dataType, final Map<String, CodegenModel> models) {
+        directoryStructureService.addModel(models, complexType != null ? complexType : dataType);
     }
 
     @SuppressWarnings("unchecked")

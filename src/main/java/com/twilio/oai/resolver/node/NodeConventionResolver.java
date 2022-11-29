@@ -5,6 +5,7 @@ import com.twilio.oai.Segments;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -20,36 +21,34 @@ public class NodeConventionResolver {
 
     public void resolveParameter(final CodegenParameter codegenParameter) {
         if (codegenParameter.dataFormat != null) {
-            boolean hasProperty = conventionMap.get(Segments.SEGMENT_PROPERTIES.getSegment()).containsKey(StringUtils.underscore(codegenParameter.dataFormat));
-            if (hasProperty) {
-                codegenParameter.dataType = (String) conventionMap.get(Segments.SEGMENT_PROPERTIES.getSegment()).get(StringUtils.underscore(codegenParameter.dataFormat));
-            }
+            getDataType(StringUtils.underscore(codegenParameter.dataFormat)).ifPresent(dataType -> codegenParameter.dataType = dataType);
         }
+
+        codegenParameter.dataType = removeEnumName(codegenParameter.dataType);
+        codegenParameter.baseType = removeEnumName(codegenParameter.baseType);
     }
 
     public CodegenModel resolveModel(CodegenModel model) {
         for (CodegenProperty property : model.vars) {
             if (property.dataFormat != null) {
-                boolean hasProperty = conventionMap.get(Segments.SEGMENT_PROPERTIES.getSegment()).containsKey(StringUtils.underscore(property.dataFormat));
-                if (hasProperty) {
-                    property.dataType = (String)conventionMap.get(Segments.SEGMENT_PROPERTIES.getSegment()).get(StringUtils.underscore(property.dataFormat));
-                }
+                getDataType(StringUtils.underscore(property.dataFormat)).ifPresent(dataType -> property.dataType = dataType);
             }
+
+            property.dataType = removeEnumName(property.dataType);
+            property.complexType = removeEnumName(property.complexType);
         }
+
         return model;
     }
 
     @SuppressWarnings("unchecked")
     public CodegenModel resolveComplexType(CodegenModel model, Map<String, String> modelFormatMap) {
-        for (CodegenProperty prop: model.vars) {
+        for (final CodegenProperty prop : model.vars) {
             if (modelFormatMap.containsKey(prop.complexType)) {
                 final String propertyName = StringUtils.underscore(modelFormatMap.get(prop.complexType));
-                boolean hasProperty = conventionMap.get(Segments.SEGMENT_PROPERTIES.getSegment()).
-                        containsKey(propertyName);
-                if (hasProperty) {
-                    prop.dataType = (String) conventionMap
-                        .get(Segments.SEGMENT_PROPERTIES.getSegment())
-                        .get(propertyName);
+
+                getDataType(propertyName).ifPresent(dataType -> {
+                    prop.dataType = dataType;
                     prop.complexType = null;
 
                     if (prop.containerType != null && prop.containerType.equals("array")) {
@@ -69,7 +68,7 @@ public class NodeConventionResolver {
                         customObjectImport.put("path", propMap.get(prop.dataType));
                         imports.add(customObjectImport);
                     }
-                }
+                });
             }
         }
         return model;
@@ -81,5 +80,19 @@ public class NodeConventionResolver {
         } catch (final Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private Optional<String> getDataType(final String dataFormat) {
+        final Map<String, Object> properties = conventionMap.get(Segments.SEGMENT_PROPERTIES.getSegment());
+
+        if (properties.containsKey(dataFormat)) {
+            return Optional.of((String) properties.get(dataFormat));
+        }
+
+        return Optional.empty();
+    }
+
+    private String removeEnumName(final String dataType) {
+        return dataType == null ? null : dataType.replace("Enum", "");
     }
 }
