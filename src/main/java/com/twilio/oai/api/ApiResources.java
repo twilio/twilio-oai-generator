@@ -12,14 +12,10 @@ import static com.twilio.oai.common.ApplicationConstants.PATH_SEPARATOR_PLACEHOL
 public class ApiResources {
     private String apiName;
     private String apiPath;
-    private String apiListPath;
-    private String apiContextPath;
     private String recordKey;
     private String version;
     private List<CodegenProperty> responseModels = new ArrayList<>();
     private List<CodegenParameter> requiredPathParams = new ArrayList<>();
-    private List<CodegenParameter> requiredPathParamsList = new ArrayList<>();
-    private List<CodegenParameter> requiredPathParamsContext = new ArrayList<>();
     private List<CodegenOperation> apiOperations = new ArrayList<>();
     private Map<String, Object> metaProperties = new HashMap();
     private String namespaceSubPart;
@@ -29,14 +25,10 @@ public class ApiResources {
         metaProperties = apiResourceBuilder.metaAPIProperties;
         apiName = getName(apiOperations.get(0));
         apiPath = apiResourceBuilder.apiPath;
-        apiListPath = apiResourceBuilder.apiListPath;
-        apiContextPath = apiResourceBuilder.apiContextPath;
         version = StringUtils.camelize(apiResourceBuilder.version);
         responseModels = apiResourceBuilder.apiResponseModels;
         recordKey = apiResourceBuilder.recordKey;
         requiredPathParams = new ArrayList<>(apiResourceBuilder.requiredPathParams);
-        requiredPathParamsList = new ArrayList<>(apiResourceBuilder.requiredPathParamsList);
-        requiredPathParamsContext = new ArrayList<>(apiResourceBuilder.requiredPathParamsContext);
         namespaceSubPart = apiResourceBuilder.namespaceSubPart;
     }
 

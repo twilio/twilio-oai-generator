@@ -12,5 +12,5 @@ public interface IApiResourceBuilder {
     IApiResourceBuilder updateAdditionalProps(DirectoryStructureService directoryStructureService);
     IApiResourceBuilder updateApiPath();
     IApiResourceBuilder setImports(DirectoryStructureService directoryStructureService);
-    ApiResources build();
+    <T extends ApiResources> T build();
 }

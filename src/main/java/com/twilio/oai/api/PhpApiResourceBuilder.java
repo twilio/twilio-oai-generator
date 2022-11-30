@@ -16,6 +16,11 @@ import static com.twilio.oai.common.ApplicationConstants.PATH_SEPARATOR_PLACEHOL
 public class PhpApiResourceBuilder extends ApiResourceBuilder {
     private HashSet<String> pathSet = new HashSet<>();
 
+    protected String apiListPath = "";
+    protected String apiContextPath = "";
+    protected TreeSet<CodegenParameter> requiredPathParamsList = new TreeSet<>((cp1, cp2) -> cp1.baseName.compareTo(cp2.baseName));
+    protected TreeSet<CodegenParameter> requiredPathParamsContext = new TreeSet<>((cp1, cp2) -> cp1.baseName.compareTo(cp2.baseName));
+
     public PhpApiResourceBuilder(IApiActionTemplate template, List<CodegenOperation> codegenOperations, List<CodegenModel> allModels) {
         super(template, codegenOperations, allModels);
     }
@@ -37,6 +42,10 @@ public class PhpApiResourceBuilder extends ApiResourceBuilder {
             template.add(PhpApiActionTemplate.TEMPLATE_TYPE_INSTANCE);
         });
         return this;
+    }
+    @Override
+    public PhpApiResources build() {
+        return new PhpApiResources(this);
     }
 
     @Override

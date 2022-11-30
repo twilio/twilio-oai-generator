@@ -144,10 +144,7 @@ public class DirectoryStructureService {
     public void addContextdependents(final List<Object> resourceList, final String path, final Operation operation){
         final Resource.Aliases resourceAliases = getResourceAliases(path, operation);
         String parent = String.join("\\", resourceTree.ancestors(path, operation));
-        String paramName = "";
-        if(path.lastIndexOf("{")!=-1){
-            paramName = path.substring(path.lastIndexOf("{") + 1, path.lastIndexOf("}"));
-        }
+        String paramName = PathUtils.fetchlastPathParam(path,"{", "}");
         final ContextResource dependent = new ContextResource.ContextResourceBuilder()
                 .paramName(paramName)
                 .mountName(caseResolver.pathOperation(resourceAliases.getMountName()))

@@ -27,15 +27,11 @@ public abstract class ApiResourceBuilder implements IApiResourceBuilder {
     protected List<CodegenModel> allModels;
     protected List<CodegenOperation> codegenOperationList;
     protected TreeSet<CodegenParameter> requiredPathParams = new TreeSet<>((cp1, cp2) -> cp1.baseName.compareTo(cp2.baseName));
-    protected TreeSet<CodegenParameter> requiredPathParamsList = new TreeSet<>((cp1, cp2) -> cp1.baseName.compareTo(cp2.baseName));
-    protected TreeSet<CodegenParameter> requiredPathParamsContext = new TreeSet<>((cp1, cp2) -> cp1.baseName.compareTo(cp2.baseName));
     protected List<CodegenProperty> apiResponseModels = new ArrayList<>();
     protected Map<String, Object> metaAPIProperties = new HashMap<>();
     protected String version = "";
     protected String recordKey = "";
     protected String apiPath ="";
-    protected String apiListPath = "";
-    protected String apiContextPath = "";
     protected String namespaceSubPart = "";
 
     public ApiResourceBuilder(IApiActionTemplate template, List<CodegenOperation> codegenOperations, List<CodegenModel> allModels) {
@@ -63,11 +59,6 @@ public abstract class ApiResourceBuilder implements IApiResourceBuilder {
 
             requiredPathParams.addAll(codegenOperation.pathParams);
             codegenOperation.vendorExtensions = mapOperation(codegenOperation);
-
-            codegenOperation.vendorExtensions.put("hasRequiredFormParams",
-                    (codegenOperation.requiredParams.stream().anyMatch(param-> param.isFormParam)));
-            codegenOperation.vendorExtensions.put("hasOptionalFormParams",
-                    (codegenOperation.optionalParams.stream().anyMatch(param-> param.isFormParam)));
         });
         return this;
     }
@@ -119,7 +110,10 @@ public abstract class ApiResourceBuilder implements IApiResourceBuilder {
         } else {
             applyListOperation(operation, operationMap, httpMethod);
         }
-
+        operationMap.put("hasRequiredFormParams",
+                (operation.requiredParams.stream().anyMatch(param-> param.isFormParam)));
+        operationMap.put("hasOptionalFormParams",
+                (operation.optionalParams.stream().anyMatch(param-> param.isFormParam)));
         return operationMap;
     }
 
