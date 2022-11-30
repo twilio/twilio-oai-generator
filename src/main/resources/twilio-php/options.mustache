@@ -3,12 +3,16 @@
 
 {{>licenseInfo}}
 
-namespace Twilio\Rest\Api\V2010;
+namespace Twilio\Rest\{{domainName}}\{{version}};
 
 {{>imports}}
 
 abstract class {{apiName}}Options {
 
+    {{#apiOperations}}
+    {{>optionsCreate}}
+    {{>optionsUpdate}}
+    {{/apiOperations}}
 
 }
 

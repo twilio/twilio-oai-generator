@@ -61,7 +61,7 @@
         $params = Values::of([
             {{#optionalParams}}
             {{^vendorExtensions.x-serialize}}
-            '{{baseName}}' => $options['{{#lambda.titlecase}}{{baseName}}{{/lambda.titlecase}}'],
+            {{^isPathParam}}'{{baseName}}' => $options['{{#lambda.titlecase}}{{baseName}}{{/lambda.titlecase}}'],{{/isPathParam}}
             {{/vendorExtensions.x-serialize}}
             {{#vendorExtensions.x-serialize}}
             {{^vendorExtensions.x-serialize-map}}
