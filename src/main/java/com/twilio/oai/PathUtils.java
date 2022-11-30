@@ -59,7 +59,7 @@ public class PathUtils {
     }
 
     public static String fetchlastPathParam(final String path, final String beginningDelimiter, final String endingDelimiter) {
-        if(path.lastIndexOf("{")!=-1)
+        if(path.lastIndexOf(beginningDelimiter)!=-1)
             return path.substring(path.lastIndexOf(beginningDelimiter) + 1, path.lastIndexOf(endingDelimiter));
 
         return "";
