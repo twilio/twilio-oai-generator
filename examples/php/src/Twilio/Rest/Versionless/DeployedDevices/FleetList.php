@@ -22,6 +22,10 @@ use Twilio\Options;
 use Twilio\Stream;
 use Twilio\Values;
 use Twilio\Version;
+use Twilio\InstanceContext;
+use Twilio\Deserialize;
+use Twilio\Serialize;
+
 
 
 class FleetList extends ListResource {
@@ -29,33 +33,36 @@ class FleetList extends ListResource {
      * Construct the FleetList
      *
      * @param Version $version Version that contains the resource
-     * @param string $sid
      */
-    public function __construct(Version $version, string $sid ) {
+    public function __construct(Version $version) {
         parent::__construct($version);
-        $this->solution = ['sid' => $sid  ];
+
+        // Path Solution
+        $this->solution = [];
+
         $this->uri = '/DeployedDevices/Fleets';
     }
     
     /**
-    * Create the FleetInstance
-    *
-    * @param array|Options $options Optional Arguments
-    * @return AccountInstance Created AccountInstance
-    * @throws TwilioException When an HTTP error occurs.
-    */
-    public function create( array $options = []): FleetInstance {
+     * Create the FleetInstance
+     *
+     * @param array|Options $options Optional Arguments
+     * @return FleetInstance Created FleetInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function create(array $options = []): FleetInstance {
         $options = new Values($options);
 
+
         $data = Values::of([
-            'FriendlyName' => $options['FriendlyName'],
+            'FriendlyName' => $options['friendlyName'],
         ]);
 
         $payload = $this->version->create('POST', $this->uri, [], $data);
 
         return new FleetInstance(
             $this->version,
-            $payload,
+            $payload
         );
     }
 

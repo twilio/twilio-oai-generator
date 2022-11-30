@@ -15,7 +15,7 @@
  */
 
 
-namespace Twilio\Rest\Api\V2010;
+namespace Twilio\Rest\FlexApi\V1;
 
 use Twilio\Exceptions\TwilioException;
 use Twilio\ListResource;
@@ -23,11 +23,40 @@ use Twilio\Options;
 use Twilio\Stream;
 use Twilio\Values;
 use Twilio\Version;
+use Twilio\InstanceContext;
+use Twilio\Deserialize;
+use Twilio\Serialize;
+use Twilio\Rest\FlexApi\V1\Credential\AwsList;
+use Twilio\Rest\FlexApi\V1\Credential\NewCredentialsList;
 
-/**
-*/
-class Context extends InstanceContext {
 
 
+class CredentialContext extends InstanceContext {
+    protected $_aws;
+    protected $_newCredentials;
+
+    /**
+     * Initialize the CredentialContext
+     *
+     * @param Version $version Version that contains the resource
+     */
+    public function __construct(Version $version) {
+        parent::__construct($version);
+
+        // Path Solution
+        $this->solution = [];
+    }
+
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string {
+        $context = [];
+        foreach ($this->solution as $key => $value) {
+            $context[] = "$key=$value";
+        }
+        return '[Twilio.FlexApi.V1.CredentialContext ' . \implode(' ', $context) . ']';
+    }
 }
-

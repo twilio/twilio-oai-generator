@@ -2,24 +2,58 @@
 <?php
 
 {{>licenseInfo}}
-namespace Twilio\Rest\{{domainName}}\{{version}};
+namespace Twilio\Rest\{{domainName}}\{{version}}{{namespaceSubPart}};
 
 {{>imports}}
+
+{{#apiOperations}}
+{{^vendorExtensions.x-is-delete-operation}}
+{{^vendorExtensions.x-is-fetch-operation}}
+{{^vendorExtensions.x-is-update-operation}}
+    {{#vendorExtensions.importProperties.0}}
+/**
+    {{/vendorExtensions.importProperties.0}}
+    {{#vendorExtensions.importProperties}}
+ * @property {{filename}}List ${{#lambda.camelcase}}{{mountName}}{{/lambda.camelcase}}
+    {{#-last}}
+    {{^vendorExtensions.importMethods}}
+ */
+    {{/vendorExtensions.importMethods}}
+    {{/-last}}
+    {{/vendorExtensions.importProperties}}
+    {{#vendorExtensions.importMethods}}
+    {{#-first}}
+    {{^vendorExtensions.importProperties}}
+/**
+    {{/vendorExtensions.importProperties}}
+    {{/-first}}
+ * @method \Twilio\Rest\{{domainName}}\{{apiVersionClass}}\{{parent}}Context {{#lambda.camelcase}}{{mountName}}{{/lambda.camelcase}}(string ${{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}})
+    {{#-last}}
+ */
+    {{/-last}}
+    {{/vendorExtensions.importMethods}}
+{{/vendorExtensions.x-is-update-operation}}
+{{/vendorExtensions.x-is-fetch-operation}}
+{{/vendorExtensions.x-is-delete-operation}}
+{{/apiOperations}}
 
 class {{apiName}}List extends ListResource {
     /**
      * Construct the {{apiName}}List
      *
      * @param Version $version Version that contains the resource
-     {{#requiredPathParams}}
-     * @param {{{dataType}}} ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}
-     {{/requiredPathParams}}
+     {{#requiredPathParamsList}}
+     * @param {{{dataType}}} ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}} {{description}}
+     {{/requiredPathParamsList}}
      */
-    public function __construct(Version $version{{#requiredPathParams}}, {{{dataType}}} ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}} {{/requiredPathParams}}) {
+    public function __construct(Version $version{{#requiredPathParamsList}}, {{{dataType}}} ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}} {{/requiredPathParamsList}}) {
         parent::__construct($version);
-        $this->solution = [{{#requiredPathParams}}'{{paramName}}' => ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}{{^-last}}, {{/-last}}  {{/requiredPathParams}}];
+
+        // Path Solution
+        $this->solution = [{{#requiredPathParamsList}}'{{paramName}}' => ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}, {{/requiredPathParamsList}}];
         {{#metaProperties.x-is-list-operation}}
-        $this->uri = '{{{apiPath}}}';
+
+        $this->uri = '{{{apiListPath}}}';
         {{/metaProperties.x-is-list-operation}}
     }
     {{#apiOperations}}
