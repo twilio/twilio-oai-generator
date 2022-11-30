@@ -25,13 +25,6 @@ export class TestResponseObjectTestArrayOfObjects {
   "description"?: string;
 }
 
-export class TestResponseObjectTestObject {
-  "fax"?: boolean;
-  "mms"?: boolean;
-  "sms"?: boolean;
-  "voice"?: boolean;
-}
-
 type TestStatus =
   | "in-progress"
   | "paused"
@@ -44,7 +37,7 @@ type TestStatus =
  * Options to pass to create a CallInstance
  *
  * @property { string } requiredStringProperty
- * @property { string } testMethod The HTTP method that we should use to request the &#x60;TestArrayOfUri&#x60;.
+ * @property { string } testMethod The HTTP method that we should use to request the `TestArrayOfUri`.
  * @property { Array<string> } [testArrayOfStrings]
  * @property { Array<string> } [testArrayOfUri]
  */
