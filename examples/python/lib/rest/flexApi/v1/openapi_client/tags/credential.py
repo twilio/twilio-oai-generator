@@ -20,8 +20,7 @@ from twilio.base.instance_context import InstanceContext
 from twilio.base.instance_resource import InstanceResource
 from twilio.base.list_resource import ListResource
 
-# TODO: needs dependent imports
-
+from twilio.rest.credential.aws import AwsListInstancefrom twilio.rest.credential.new_credentials import NewCredentialsListInstance
 
 
 class CredentialListInstance(ListResource):
@@ -43,7 +42,9 @@ class CredentialListInstance(ListResource):
         :returns: Machine friendly representation
         :rtype: str
         """
+        # TODO: update so that contexts aren't returned for page or list resources
         context = ' '.join('{}={}'.format(k, v) for k, v in self._solution.items())
         return '<Twilio.Api.V1.CredentialListInstance {}>'.format(context)
+
 
 

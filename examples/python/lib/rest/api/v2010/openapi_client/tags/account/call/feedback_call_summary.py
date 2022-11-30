@@ -20,7 +20,6 @@ from twilio.base.instance_context import InstanceContext
 from twilio.base.instance_resource import InstanceResource
 from twilio.base.list_resource import ListResource
 
-# TODO: needs dependent imports
 
 
 
@@ -35,11 +34,14 @@ class FeedbackCallSummaryContext(InstanceContext):
         
         
         def update(self, body):
+            # TODO: template based on type of operation
             data = values.of({
                 'body': body,
             })
 
-            return data
+            payload = self._version.create(method='post', uri=self._uri, data=data, )
+
+            return FeedbackCallSummaryContext(self._version, payload, body=self._solution['body'])
         
 
     def __repr__(self):
@@ -48,8 +50,43 @@ class FeedbackCallSummaryContext(InstanceContext):
         :returns: Machine friendly representation
         :rtype: str
         """
+        # TODO: update so that contexts aren't returned for page or list resources
         context = ' '.join('{}={}'.format(k, v) for k, v in self._solution.items())
         return '<Twilio.Api.V2010.FeedbackCallSummaryContext {}>'.format(context)
+
+
+class FeedbackCallSummaryInstance(InstanceResource):
+    def __init__(self, version, payload, account_sid: str, sid: str):
+        super(FeedbackCallSummaryInstance, self).__init__(version)
+        self._properties = {
+            'account_sid' = payload.get('account_sid'),'sid' = payload.get('sid'),'test_string' = payload.get('test_string'),'test_integer' = payload.get('test_integer'),'test_object' = payload.get('test_object'),'test_date_time' = payload.get('test_date_time'),'test_number' = payload.get('test_number'),'price_unit' = payload.get('price_unit'),'test_number_float' = payload.get('test_number_float'),'test_number_decimal' = payload.get('test_number_decimal'),'test_enum' = payload.get('test_enum'),'a2p_profile_bundle_sid' = payload.get('a2p_profile_bundle_sid'),'test_array_of_integers' = payload.get('test_array_of_integers'),'test_array_of_array_of_integers' = payload.get('test_array_of_array_of_integers'),'test_array_of_objects' = payload.get('test_array_of_objects'),'test_array_of_enum' = payload.get('test_array_of_enum'),
+        }
+
+        self._context = None
+        self._solution = {
+            'account_sid': account_sid or self._properties['account_sid']'sid': sid or self._properties['sid']
+        }
+
+    @property
+    def _proxy(self):
+        if self._context is None:
+            self._context = FeedbackCallSummaryContext(
+                self._version,
+                account_sid=self._solution['account_sid'],sid=self._solution['sid'],
+            )
+        return self._context
+
+    
+
+    def __repr__(self):
+        """
+        Provide a friendly representation
+        :returns: Machine friendly representation
+        :rtype: str
+        """
+        context = ' '.join('{}={}'.format(k, v) for k, v in self._solution.items())
+        return '<Twilio.Api.V2010.FeedbackCallSummaryInstance {}>'.format(context)
+
 
 
 
@@ -70,7 +107,9 @@ class FeedbackCallSummaryListInstance():
         :returns: Machine friendly representation
         :rtype: str
         """
+        # TODO: update so that contexts aren't returned for page or list resources
         context = ' '.join('{}={}'.format(k, v) for k, v in self._solution.items())
         return '<Twilio.Api.V2010.FeedbackCallSummaryListInstance {}>'.format(context)
+
 
 

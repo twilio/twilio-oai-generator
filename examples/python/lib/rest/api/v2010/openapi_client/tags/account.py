@@ -22,8 +22,7 @@ from twilio.base.list_resource import ListResource
 
 from twilio.base.page import Page
 
-# TODO: needs dependent imports
-
+from twilio.rest.account.call import CallListInstance
 
 
 class AccountContext(InstanceContext):
@@ -38,25 +37,34 @@ class AccountContext(InstanceContext):
         self._calls = None
         
         def remove(self):
+            # TODO: template based on type of operation
             data = values.of({
                 
             })
 
-            return data
+            payload = self._version.create(method='delete', uri=self._uri, data=data, )
+
+            return AccountContext(self._version, payload, )
         
         def fetch(self):
+            # TODO: template based on type of operation
             data = values.of({
                 
             })
 
-            return data
+            payload = self._version.create(method='get', uri=self._uri, data=data, )
+
+            return AccountContext(self._version, payload, )
         
         def update(self, body):
+            # TODO: template based on type of operation
             data = values.of({
                 'body': body,
             })
 
-            return data
+            payload = self._version.create(method='post', uri=self._uri, data=data, )
+
+            return AccountContext(self._version, payload, body=self._solution['body'])
         
 
     def __repr__(self):
@@ -65,8 +73,47 @@ class AccountContext(InstanceContext):
         :returns: Machine friendly representation
         :rtype: str
         """
+        # TODO: update so that contexts aren't returned for page or list resources
         context = ' '.join('{}={}'.format(k, v) for k, v in self._solution.items())
         return '<Twilio.Api.V2010.AccountContext {}>'.format(context)
+
+
+class AccountInstance(InstanceResource):
+    def __init__(self, version, payload, sid: str):
+        super(AccountInstance, self).__init__(version)
+        self._properties = {
+            'account_sid' = payload.get('account_sid'),'sid' = payload.get('sid'),'test_string' = payload.get('test_string'),'test_integer' = payload.get('test_integer'),'test_object' = payload.get('test_object'),'test_date_time' = payload.get('test_date_time'),'test_number' = payload.get('test_number'),'price_unit' = payload.get('price_unit'),'test_number_float' = payload.get('test_number_float'),'test_number_decimal' = payload.get('test_number_decimal'),'test_enum' = payload.get('test_enum'),'a2p_profile_bundle_sid' = payload.get('a2p_profile_bundle_sid'),'test_array_of_integers' = payload.get('test_array_of_integers'),'test_array_of_array_of_integers' = payload.get('test_array_of_array_of_integers'),'test_array_of_objects' = payload.get('test_array_of_objects'),'test_array_of_enum' = payload.get('test_array_of_enum'),
+        }
+
+        self._context = None
+        self._solution = {
+            'sid': sid or self._properties['sid']
+        }
+
+    @property
+    def _proxy(self):
+        if self._context is None:
+            self._context = AccountContext(
+                self._version,
+                sid=self._solution['sid'],
+            )
+        return self._context
+
+    
+    @property
+    def calls(self):
+        return self._proxy.calls
+    
+
+    def __repr__(self):
+        """
+        Provide a friendly representation
+        :returns: Machine friendly representation
+        :rtype: str
+        """
+        context = ' '.join('{}={}'.format(k, v) for k, v in self._solution.items())
+        return '<Twilio.Api.V2010.AccountInstance {}>'.format(context)
+
 
 
 
@@ -81,18 +128,24 @@ class AccountListInstance(ListResource):
         
         
         def create(self, x_twilio_webhook_enabled, body):
+            # TODO: template based on type of operation
             data = values.of({
                 'x_twilio_webhook_enabled': x_twilio_webhook_enabled,'body': body,
             })
 
-            return data
+            payload = self._version.create(method='post', uri=self._uri, data=data, )
+
+            return AccountListInstance(self._version, payload, x_twilio_webhook_enabled=self._solution['x_twilio_webhook_enabled']body=self._solution['body'])
         
         def page(self, date_created, date_test, date_created, date_created, page_size):
+            # TODO: template based on type of operation
             data = values.of({
                 'date_created': date_created,'date_test': date_test,'date_created': date_created,'date_created': date_created,'page_size': page_size,
             })
 
-            return data
+            payload = self._version.create(method='get', uri=self._uri, data=data, )
+
+            return AccountListInstance(self._version, payload, date_created=self._solution['date_created']date_test=self._solution['date_test']date_created=self._solution['date_created']date_created=self._solution['date_created']page_size=self._solution['page_size'])
         
 
     def __repr__(self):
@@ -101,7 +154,9 @@ class AccountListInstance(ListResource):
         :returns: Machine friendly representation
         :rtype: str
         """
+        # TODO: update so that contexts aren't returned for page or list resources
         context = ' '.join('{}={}'.format(k, v) for k, v in self._solution.items())
         return '<Twilio.Api.V2010.AccountListInstance {}>'.format(context)
+
 
 

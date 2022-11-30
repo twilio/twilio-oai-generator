@@ -22,7 +22,6 @@ from twilio.base.list_resource import ListResource
 
 from twilio.base.page import Page
 
-# TODO: needs dependent imports
 
 
 
@@ -37,11 +36,14 @@ class AssistantListInstance(ListResource):
         
         
         def page(self):
+            # TODO: template based on type of operation
             data = values.of({
                 
             })
 
-            return data
+            payload = self._version.create(method='get', uri=self._uri, data=data, )
+
+            return AssistantListInstance(self._version, payload, )
         
 
     def __repr__(self):
@@ -50,7 +52,9 @@ class AssistantListInstance(ListResource):
         :returns: Machine friendly representation
         :rtype: str
         """
+        # TODO: update so that contexts aren't returned for page or list resources
         context = ' '.join('{}={}'.format(k, v) for k, v in self._solution.items())
         return '<Twilio.Api.Understand.AssistantListInstance {}>'.format(context)
+
 
 

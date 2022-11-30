@@ -20,7 +20,6 @@ from twilio.base.instance_context import InstanceContext
 from twilio.base.instance_resource import InstanceResource
 from twilio.base.list_resource import ListResource
 
-# TODO: needs dependent imports
 
 
 
@@ -35,11 +34,14 @@ class FleetContext(InstanceContext):
         
         
         def fetch(self):
+            # TODO: template based on type of operation
             data = values.of({
                 
             })
 
-            return data
+            payload = self._version.create(method='get', uri=self._uri, data=data, )
+
+            return FleetContext(self._version, payload, )
         
 
     def __repr__(self):
@@ -48,8 +50,43 @@ class FleetContext(InstanceContext):
         :returns: Machine friendly representation
         :rtype: str
         """
+        # TODO: update so that contexts aren't returned for page or list resources
         context = ' '.join('{}={}'.format(k, v) for k, v in self._solution.items())
         return '<Twilio.Api.DeployedDevices.FleetContext {}>'.format(context)
+
+
+class FleetInstance(InstanceResource):
+    def __init__(self, version, payload, sid: str):
+        super(FleetInstance, self).__init__(version)
+        self._properties = {
+            'account_sid' = payload.get('account_sid'),'friendly_name' = payload.get('friendly_name'),'sid' = payload.get('sid'),
+        }
+
+        self._context = None
+        self._solution = {
+            'sid': sid or self._properties['sid']
+        }
+
+    @property
+    def _proxy(self):
+        if self._context is None:
+            self._context = FleetContext(
+                self._version,
+                sid=self._solution['sid'],
+            )
+        return self._context
+
+    
+
+    def __repr__(self):
+        """
+        Provide a friendly representation
+        :returns: Machine friendly representation
+        :rtype: str
+        """
+        context = ' '.join('{}={}'.format(k, v) for k, v in self._solution.items())
+        return '<Twilio.Api.DeployedDevices.FleetInstance {}>'.format(context)
+
 
 
 
@@ -64,11 +101,14 @@ class FleetListInstance(ListResource):
         
         
         def create(self, body):
+            # TODO: template based on type of operation
             data = values.of({
                 'body': body,
             })
 
-            return data
+            payload = self._version.create(method='post', uri=self._uri, data=data, )
+
+            return FleetListInstance(self._version, payload, body=self._solution['body'])
         
 
     def __repr__(self):
@@ -77,7 +117,9 @@ class FleetListInstance(ListResource):
         :returns: Machine friendly representation
         :rtype: str
         """
+        # TODO: update so that contexts aren't returned for page or list resources
         context = ' '.join('{}={}'.format(k, v) for k, v in self._solution.items())
         return '<Twilio.Api.DeployedDevices.FleetListInstance {}>'.format(context)
+
 
 

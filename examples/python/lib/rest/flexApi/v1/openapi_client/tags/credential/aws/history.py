@@ -20,7 +20,6 @@ from twilio.base.instance_context import InstanceContext
 from twilio.base.instance_resource import InstanceResource
 from twilio.base.list_resource import ListResource
 
-# TODO: needs dependent imports
 
 
 
@@ -35,11 +34,14 @@ class HistoryContext(InstanceContext):
         
         
         def fetch(self, add_ons_data):
+            # TODO: template based on type of operation
             data = values.of({
                 'add_ons_data': add_ons_data,
             })
 
-            return data
+            payload = self._version.create(method='get', uri=self._uri, data=data, )
+
+            return HistoryContext(self._version, payload, add_ons_data=self._solution['add_ons_data'])
         
 
     def __repr__(self):
@@ -48,8 +50,43 @@ class HistoryContext(InstanceContext):
         :returns: Machine friendly representation
         :rtype: str
         """
+        # TODO: update so that contexts aren't returned for page or list resources
         context = ' '.join('{}={}'.format(k, v) for k, v in self._solution.items())
         return '<Twilio.Api.V1.HistoryContext {}>'.format(context)
+
+
+class HistoryInstance(InstanceResource):
+    def __init__(self, version, payload, sid: str):
+        super(HistoryInstance, self).__init__(version)
+        self._properties = {
+            'account_sid' = payload.get('account_sid'),'sid' = payload.get('sid'),'test_string' = payload.get('test_string'),'test_integer' = payload.get('test_integer'),
+        }
+
+        self._context = None
+        self._solution = {
+            'sid': sid or self._properties['sid']
+        }
+
+    @property
+    def _proxy(self):
+        if self._context is None:
+            self._context = HistoryContext(
+                self._version,
+                sid=self._solution['sid'],
+            )
+        return self._context
+
+    
+
+    def __repr__(self):
+        """
+        Provide a friendly representation
+        :returns: Machine friendly representation
+        :rtype: str
+        """
+        context = ' '.join('{}={}'.format(k, v) for k, v in self._solution.items())
+        return '<Twilio.Api.V1.HistoryInstance {}>'.format(context)
+
 
 
 
@@ -70,7 +107,9 @@ class HistoryListInstance():
         :returns: Machine friendly representation
         :rtype: str
         """
+        # TODO: update so that contexts aren't returned for page or list resources
         context = ' '.join('{}={}'.format(k, v) for k, v in self._solution.items())
         return '<Twilio.Api.V1.HistoryListInstance {}>'.format(context)
+
 
 

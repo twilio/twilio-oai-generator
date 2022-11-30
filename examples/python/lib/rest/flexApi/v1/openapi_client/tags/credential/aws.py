@@ -22,8 +22,7 @@ from twilio.base.list_resource import ListResource
 
 from twilio.base.page import Page
 
-# TODO: needs dependent imports
-
+from twilio.rest.aws.history import HistoryListInstance
 
 
 class AwsContext(InstanceContext):
@@ -38,25 +37,34 @@ class AwsContext(InstanceContext):
         self._history = None
         
         def remove(self):
+            # TODO: template based on type of operation
             data = values.of({
                 
             })
 
-            return data
+            payload = self._version.create(method='delete', uri=self._uri, data=data, )
+
+            return AwsContext(self._version, payload, )
         
         def fetch(self):
+            # TODO: template based on type of operation
             data = values.of({
                 
             })
 
-            return data
+            payload = self._version.create(method='get', uri=self._uri, data=data, )
+
+            return AwsContext(self._version, payload, )
         
         def update(self, body):
+            # TODO: template based on type of operation
             data = values.of({
                 'body': body,
             })
 
-            return data
+            payload = self._version.create(method='post', uri=self._uri, data=data, )
+
+            return AwsContext(self._version, payload, body=self._solution['body'])
         
 
     def __repr__(self):
@@ -65,8 +73,47 @@ class AwsContext(InstanceContext):
         :returns: Machine friendly representation
         :rtype: str
         """
+        # TODO: update so that contexts aren't returned for page or list resources
         context = ' '.join('{}={}'.format(k, v) for k, v in self._solution.items())
         return '<Twilio.Api.V1.AwsContext {}>'.format(context)
+
+
+class AwsInstance(InstanceResource):
+    def __init__(self, version, payload, sid: str):
+        super(AwsInstance, self).__init__(version)
+        self._properties = {
+            'account_sid' = payload.get('account_sid'),'sid' = payload.get('sid'),'test_string' = payload.get('test_string'),'test_integer' = payload.get('test_integer'),
+        }
+
+        self._context = None
+        self._solution = {
+            'sid': sid or self._properties['sid']
+        }
+
+    @property
+    def _proxy(self):
+        if self._context is None:
+            self._context = AwsContext(
+                self._version,
+                sid=self._solution['sid'],
+            )
+        return self._context
+
+    
+    @property
+    def history(self):
+        return self._proxy.history
+    
+
+    def __repr__(self):
+        """
+        Provide a friendly representation
+        :returns: Machine friendly representation
+        :rtype: str
+        """
+        context = ' '.join('{}={}'.format(k, v) for k, v in self._solution.items())
+        return '<Twilio.Api.V1.AwsInstance {}>'.format(context)
+
 
 
 
@@ -81,11 +128,14 @@ class AwsListInstance(ListResource):
         
         
         def page(self, page_size):
+            # TODO: template based on type of operation
             data = values.of({
                 'page_size': page_size,
             })
 
-            return data
+            payload = self._version.create(method='get', uri=self._uri, data=data, )
+
+            return AwsListInstance(self._version, payload, page_size=self._solution['page_size'])
         
 
     def __repr__(self):
@@ -94,7 +144,9 @@ class AwsListInstance(ListResource):
         :returns: Machine friendly representation
         :rtype: str
         """
+        # TODO: update so that contexts aren't returned for page or list resources
         context = ' '.join('{}={}'.format(k, v) for k, v in self._solution.items())
         return '<Twilio.Api.V1.AwsListInstance {}>'.format(context)
+
 
 

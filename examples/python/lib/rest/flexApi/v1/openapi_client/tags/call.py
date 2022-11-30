@@ -20,7 +20,6 @@ from twilio.base.instance_context import InstanceContext
 from twilio.base.instance_resource import InstanceResource
 from twilio.base.list_resource import ListResource
 
-# TODO: needs dependent imports
 
 
 
@@ -35,11 +34,14 @@ class CallContext(InstanceContext):
         
         
         def update(self):
+            # TODO: template based on type of operation
             data = values.of({
                 
             })
 
-            return data
+            payload = self._version.create(method='post', uri=self._uri, data=data, )
+
+            return CallContext(self._version, payload, )
         
 
     def __repr__(self):
@@ -48,8 +50,10 @@ class CallContext(InstanceContext):
         :returns: Machine friendly representation
         :rtype: str
         """
+        # TODO: update so that contexts aren't returned for page or list resources
         context = ' '.join('{}={}'.format(k, v) for k, v in self._solution.items())
         return '<Twilio.Api.V1.CallContext {}>'.format(context)
+
 
 
 
@@ -70,7 +74,9 @@ class CallListInstance():
         :returns: Machine friendly representation
         :rtype: str
         """
+        # TODO: update so that contexts aren't returned for page or list resources
         context = ' '.join('{}={}'.format(k, v) for k, v in self._solution.items())
         return '<Twilio.Api.V1.CallListInstance {}>'.format(context)
+
 
 
