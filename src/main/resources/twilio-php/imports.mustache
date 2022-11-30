@@ -11,4 +11,7 @@ use Twilio\Serialize;
 {{#vendorExtensions.importProperties}}
 use Twilio\Rest\{{domainName}}\{{apiVersionClass}}\{{parent}}List;
 {{/vendorExtensions.importProperties}}
+{{#vendorExtensions.x-is-read-operation}}
+use Twilio\Rest\{{domainName}}\{{apiVersionClass}}\{{apiName}}Page;
+{{/vendorExtensions.x-is-read-operation}}
 {{/apiOperations}}

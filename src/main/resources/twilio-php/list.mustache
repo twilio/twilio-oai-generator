@@ -78,7 +78,7 @@ class {{apiName}}List extends ListResource {
      * @param string $sid The unique string that identifies the resource
      */
     public function getContext(string $sid): {{apiName}}Context {
-        return new {{apiName}}Context($this->version);
+        return new {{apiName}}Context($this->version, $sid);
     }
 
     {{#apiOperations}}

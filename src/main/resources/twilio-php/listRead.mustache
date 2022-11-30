@@ -42,10 +42,10 @@
     * @return Stream stream of results
     */
 
-    public function stream(int $limit = null, $pageSize = null): Stream {
+    public function stream({{#queryParams.1}}array $options = [], {{/queryParams.1}}int $limit = null, $pageSize = null): Stream {
         $limits = $this->version->readLimits($limit, $pageSize);
 
-        $page = $this->page($limits['pageSize']);
+        $page = $this->page({{#queryParams.1}} $options , {{/queryParams.1}}$limits['pageSize']);
 
         return $this->version->stream($page, $limits['limit'], $limits['pageLimit']);
     }
@@ -60,7 +60,11 @@
     * @return {{apiName}}Page Page of {{apiName}}Instance
     */
 
-    public function page(array $options = [], $pageSize = Values::NONE, string $pageToken = Values::NONE, $pageNumber = Values::NONE): {{apiName}}Page {
+    public function page({{#queryParams.1}}array $options = [], {{/queryParams.1}} $pageSize = Values::NONE, string $pageToken = Values::NONE, $pageNumber = Values::NONE): {{apiName}}Page {
+        {{#queryParams.1}}
+        $options = new Values($options);
+        {{/queryParams.1}}
+
         $params = Values::of([
             {{#optionalParams}}
             {{^vendorExtensions.x-serialize}}
