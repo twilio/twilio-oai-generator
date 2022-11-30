@@ -32,8 +32,6 @@ use Twilio\Rest\FlexApi\V1\Credential\NewCredentialsList;
 
 
 class CredentialContext extends InstanceContext {
-    protected $_aws;
-    protected $_newCredentials;
 
     /**
      * Initialize the CredentialContext

@@ -29,6 +29,7 @@ use Twilio\Serialize;
 
 
 class NewCredentialsList extends ListResource {
+
     /**
      * Construct the NewCredentialsList
      *

@@ -29,6 +29,7 @@ use Twilio\Serialize;
 
 
 class FleetList extends ListResource {
+
     /**
      * Construct the FleetList
      *

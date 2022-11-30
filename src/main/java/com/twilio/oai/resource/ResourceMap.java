@@ -28,7 +28,7 @@ public class ResourceMap implements IResourceTree {
     public List<String> ancestors(final String resourceName, final Operation operation) {
         final Resource resource = findResource(resourceName).orElseThrow();
         final List<String> ancestorList = new ArrayList<>();
-        ancestorList.add(resource.getResourceAliases(operation).getClassName());
+        ancestorList.add((operation == null ? resource.getResourceAliases() : resource.getResourceAliases(operation)).getClassName());
 
         Optional<Resource> parent = resource.getParentResource(this);
         while (parent.isPresent()) {

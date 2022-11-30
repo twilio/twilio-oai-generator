@@ -29,6 +29,7 @@ use Twilio\Serialize;
 
 
 class FeedbackCallSummaryList extends ListResource {
+
     /**
      * Construct the FeedbackCallSummaryList
      *
