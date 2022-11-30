@@ -38,7 +38,7 @@ class {{resourceName}}({{#isListResource}}ListResource{{/isListResource}}{{#isCo
         :returns: Machine friendly representation
         :rtype: str
         """
-    context = ' '.join('{}={}'.format(k, v) for k, v in self._solution.items())
-    return '<Twilio.Api.{{apiVersionClass}}.{{resourceName}} {}>'.format(context)
+        context = ' '.join('{}={}'.format(k, v) for k, v in self._solution.items())
+        return '<Twilio.Api.{{apiVersionClass}}.{{resourceName}} {}>'.format(context)
 
 {{/resources}}
