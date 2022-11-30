@@ -92,6 +92,8 @@ public class PhpApiResourceBuilder extends ApiResourceBuilder {
                 .forEach(opr -> directoryStructureService.addContextdependents(dependentList,
                         dependent.getName(),
                         opr)));
+        resourceList.stream().filter(dependent -> dependent.getPathItem().readOperations().isEmpty()).
+                forEach(dep -> directoryStructureService.addContextdependents(dependentList, dep.getName(), null));
     }
 
     private String formatPath(String path) {

@@ -38,9 +38,13 @@ namespace Twilio\Rest\{{domainName}}\{{apiVersionClass}}{{namespaceSubPart}};
 
 class {{apiName}}Context extends InstanceContext {
     {{#apiOperations}}
+    {{^vendorExtensions.x-is-create-operation}}
+    {{^vendorExtensions.x-is-read-operation}}
     {{#vendorExtensions.importProperties}}
     protected $_{{#lambda.camelcase}}{{mountName}}{{/lambda.camelcase}};
     {{/vendorExtensions.importProperties}}
+    {{/vendorExtensions.x-is-read-operation}}
+    {{/vendorExtensions.x-is-create-operation}}
     {{/apiOperations}}
 
     /**

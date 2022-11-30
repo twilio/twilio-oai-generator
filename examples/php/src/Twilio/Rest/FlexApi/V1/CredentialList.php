@@ -36,6 +36,9 @@ use Twilio\Rest\FlexApi\V1\Credential\NewCredentialsList;
  */
 
 class CredentialList extends ListResource {
+    protected $_aws = null;
+    protected $_newCredentials = null;
+
     /**
      * Construct the CredentialList
      *
@@ -146,6 +149,67 @@ class CredentialList extends ListResource {
      */
     public function getContext(string $sid): CredentialContext {
         return new CredentialContext($this->version);
+    }
+
+    /**
+     * Access the aws
+     */
+    protected function getAws(): AwsList {
+        if (!$this->_aws) {
+            $this->_aws = new AwsList(
+                $this->version
+                , $this->solution['sid']
+            );
+        }
+
+        return $this->_aws;
+    }
+
+    /**
+     * Access the newCredentials
+     */
+    protected function getNewCredentials(): NewCredentialsList {
+        if (!$this->_newCredentials) {
+            $this->_newCredentials = new NewCredentialsList(
+                $this->version
+                , $this->solution['sid']
+            );
+        }
+
+        return $this->_newCredentials;
+    }
+
+    /**
+     * Magic getter to lazy load subresources
+     *
+     * @param string $name Subresource to return
+     * @return ListResource The requested subresource
+     * @throws TwilioException For unknown subresources
+     */
+    public function __get(string $name): ListResource {
+        if (\property_exists($this, '_' . $name)) {
+            $method = 'get' . \ucfirst($name);
+            return $this->$method();
+        }
+
+        throw new TwilioException('Unknown subresource ' . $name);
+    }
+
+    /**
+     * Magic caller to get resource contexts
+     *
+     * @param string $name Resource to return
+     * @param array $arguments Context parameters
+     * @return InstanceContext The requested resource context
+     * @throws TwilioException For unknown resource
+     */
+    public function __call(string $name, array $arguments): InstanceContext {
+        $property = $this->$name;
+        if (\method_exists($property, 'getContext')) {
+            return \call_user_func_array(array($property, 'getContext'), $arguments);
+        }
+
+        throw new TwilioException('Resource does not have a context');
     }
 
     /**

@@ -29,6 +29,7 @@ use Twilio\Serialize;
 
 
 class CallList extends ListResource {
+
     /**
      * Construct the CallList
      *

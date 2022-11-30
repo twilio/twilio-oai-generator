@@ -38,6 +38,18 @@ namespace Twilio\Rest\{{domainName}}\{{version}}{{namespaceSubPart}};
 {{/apiOperations}}
 
 class {{apiName}}List extends ListResource {
+    {{#apiOperations}}
+    {{^vendorExtensions.x-is-delete-operation}}
+    {{^vendorExtensions.x-is-fetch-operation}}
+    {{^vendorExtensions.x-is-update-operation}}
+    {{#vendorExtensions.importProperties}}
+    protected $_{{#lambda.camelcase}}{{mountName}}{{/lambda.camelcase}} = null;
+    {{/vendorExtensions.importProperties}}
+    {{/vendorExtensions.x-is-update-operation}}
+    {{/vendorExtensions.x-is-fetch-operation}}
+    {{/vendorExtensions.x-is-delete-operation}}
+    {{/apiOperations}}
+
     /**
      * Construct the {{apiName}}List
      *
@@ -69,6 +81,77 @@ class {{apiName}}List extends ListResource {
         return new {{apiName}}Context($this->version);
     }
 
+    {{#apiOperations}}
+    {{^vendorExtensions.x-is-delete-operation}}
+    {{^vendorExtensions.x-is-fetch-operation}}
+    {{^vendorExtensions.x-is-update-operation}}
+    {{#vendorExtensions.importProperties}}
+    /**
+     * Access the {{#lambda.camelcase}}{{mountName}}{{/lambda.camelcase}}
+     */
+    protected function get{{#lambda.titlecase}}{{mountName}}{{/lambda.titlecase}}(): {{filename}}List {
+        if (!$this->_{{#lambda.camelcase}}{{mountName}}{{/lambda.camelcase}}) {
+            $this->_{{#lambda.camelcase}}{{mountName}}{{/lambda.camelcase}} = new {{filename}}List(
+                $this->version
+                {{#requiredParams}}
+                {{#isPathParam}}
+                , $this->solution['{{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}']
+                {{/isPathParam}}
+                {{/requiredParams}}
+            );
+        }
+
+        return $this->_{{#lambda.camelcase}}{{mountName}}{{/lambda.camelcase}};
+    }
+
+    {{/vendorExtensions.importProperties}}
+    {{/vendorExtensions.x-is-update-operation}}
+    {{/vendorExtensions.x-is-fetch-operation}}
+    {{/vendorExtensions.x-is-delete-operation}}
+    {{/apiOperations}}
+{{#apiOperations}}
+    {{^vendorExtensions.x-is-delete-operation}}
+    {{^vendorExtensions.x-is-fetch-operation}}
+    {{^vendorExtensions.x-is-update-operation}}
+    {{#vendorExtensions.importProperties.0}}
+    /**
+     * Magic getter to lazy load subresources
+     *
+     * @param string $name Subresource to return
+     * @return ListResource The requested subresource
+     * @throws TwilioException For unknown subresources
+     */
+    public function __get(string $name): ListResource {
+        if (\property_exists($this, '_' . $name)) {
+            $method = 'get' . \ucfirst($name);
+            return $this->$method();
+        }
+
+        throw new TwilioException('Unknown subresource ' . $name);
+    }
+
+    /**
+     * Magic caller to get resource contexts
+     *
+     * @param string $name Resource to return
+     * @param array $arguments Context parameters
+     * @return InstanceContext The requested resource context
+     * @throws TwilioException For unknown resource
+     */
+    public function __call(string $name, array $arguments): InstanceContext {
+        $property = $this->$name;
+        if (\method_exists($property, 'getContext')) {
+            return \call_user_func_array(array($property, 'getContext'), $arguments);
+        }
+
+        throw new TwilioException('Resource does not have a context');
+    }
+
+    {{/vendorExtensions.importProperties.0}}
+    {{/vendorExtensions.x-is-update-operation}}
+    {{/vendorExtensions.x-is-fetch-operation}}
+    {{/vendorExtensions.x-is-delete-operation}}
+{{/apiOperations}}
     /**
      * Provide a friendly representation
      *

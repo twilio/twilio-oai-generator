@@ -29,6 +29,7 @@ use Twilio\Serialize;
 
 
 class AssistantList extends ListResource {
+
     /**
      * Construct the AssistantList
      *

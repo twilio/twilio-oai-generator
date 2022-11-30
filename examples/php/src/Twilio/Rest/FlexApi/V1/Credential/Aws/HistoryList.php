@@ -29,6 +29,7 @@ use Twilio\Serialize;
 
 
 class HistoryList extends ListResource {
+
     /**
      * Construct the HistoryList
      *

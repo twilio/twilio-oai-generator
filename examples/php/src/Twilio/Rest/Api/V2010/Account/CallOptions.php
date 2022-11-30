@@ -26,6 +26,7 @@ use Twilio\Version;
 use Twilio\InstanceContext;
 use Twilio\Deserialize;
 use Twilio\Serialize;
+use Twilio\Rest\Api\V2010\Account\Call\FeedbackCallSummaryList;
 
 
 abstract class CallOptions {
