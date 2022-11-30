@@ -128,16 +128,16 @@ public class TwilioPythonGenerator extends PythonClientCodegen {
                 resourceName = itemName + "ListInstance";
             }
 
-            if (co.nickname.startsWith("update")) {
+            if (co.operationIdCamelCase.startsWith("Update")) {
                 addOperationName(co, "Update");
-            } else if (co.nickname.startsWith("delete")) {
+            } else if (co.operationIdCamelCase.startsWith("Delete")) {
                 addOperationName(co, "Remove");
                 co.returnType = "boolean";
-            } else if (co.nickname.startsWith("create")) {
+            } else if (co.operationIdCamelCase.startsWith("Create")) {
                 addOperationName(co, "Create");
-            } else if (co.nickname.startsWith("fetch")) {
+            } else if (co.operationIdCamelCase.startsWith("Fetch")) {
                 addOperationName(co, "Fetch");
-            } else if (co.nickname.startsWith("list")){
+            } else if (co.operationIdCamelCase.startsWith("List")){
                 hasPaginationOperation = true;
                 co.returnType = itemName + "Page";
                 addOperationName(co, "Page");
@@ -218,6 +218,18 @@ public class TwilioPythonGenerator extends PythonClientCodegen {
         for (final String resourceName : resources.keySet()) {
             final Map<String, Object> resource = PathUtils.getStringMap(resources, resourceName);
             final String parentResourceName = (String) resource.get("parentResourceName");
+            if (resourceName.endsWith("ListInstance")) {
+                resource.put("isListResource", true);
+            }
+            else if (resourceName.endsWith("Context")) {
+                resource.put("isContextResource", true);
+            }
+            else if (resourceName.endsWith("Page")) {
+                resource.put("isPageResource", true);
+            }
+            else {
+                resource.put("isInstanceResource", true);
+            }
             if (parentResourceName != null) {
                 final boolean parentExists = resources.containsKey(parentResourceName);
                 final Map<String, Object> parentResource = PathUtils.getStringMap(resources, parentResourceName);
