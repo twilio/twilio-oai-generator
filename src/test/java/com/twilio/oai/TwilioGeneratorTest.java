@@ -36,7 +36,6 @@ public class TwilioGeneratorTest {
                              Generator.TWILIO_PHP,
                              Generator.TWILIO_PYTHON,
                              Generator.TWILIO_TERRAFORM);
-
     }
 
     private final Generator generator;
