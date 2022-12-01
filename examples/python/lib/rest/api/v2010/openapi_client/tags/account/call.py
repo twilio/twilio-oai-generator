@@ -106,15 +106,13 @@ class CallListInstance(ListResource):
         self._feedback_call_summary = None
         
         def create(self, body):
-            
             data = values.of({
-            'body': body,
+                'body': body,
             })
 
             payload = self._version.create(method='post', uri=self._uri, data=data, )
 
             return CallInstance(self._version, payload, account_sid=self._solution['account_sid'])
-            
             
             
             

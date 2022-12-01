@@ -34,15 +34,13 @@ class NewCredentialsListInstance(ListResource):
         
         
         def create(self, body):
-            
             data = values.of({
-            'body': body,
+                'body': body,
             })
 
             payload = self._version.create(method='post', uri=self._uri, data=data, )
 
             return NewCredentialsInstance(self._version, payload, )
-            
             
             
             

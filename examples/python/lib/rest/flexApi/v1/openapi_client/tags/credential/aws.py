@@ -52,7 +52,13 @@ class AwsContext(InstanceContext):
         
         def update(self, body):
             
-            update = True
+            data = values.of({
+                'body': body,
+            })
+
+            payload = self._version.update(method='post', uri=self._uri, data=data, )
+
+            return AwsInstance(self._version, payload, sid=self._solution['sid'])
             
             
             
@@ -90,7 +96,6 @@ class AwsInstance(InstanceResource):
             )
         return self._context
 
-    
     @property
     def history(self):
         return self._proxy.history
@@ -123,7 +128,13 @@ class AwsListInstance(ListResource):
             
             
             
-            page = True
+            data = values.of({
+                'page_size': page_size,
+            })
+
+            payload = self._version.create(method='get', uri=self._uri, data=data, )
+
+            return AwsPage(self._version, payload, )
         
 
     def __repr__(self):

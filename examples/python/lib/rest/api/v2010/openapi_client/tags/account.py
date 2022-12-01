@@ -52,7 +52,13 @@ class AccountContext(InstanceContext):
         
         def update(self, body):
             
-            update = True
+            data = values.of({
+                'body': body,
+            })
+
+            payload = self._version.update(method='post', uri=self._uri, data=data, )
+
+            return AccountInstance(self._version, payload, sid=self._solution['sid'])
             
             
             
@@ -90,7 +96,6 @@ class AccountInstance(InstanceResource):
             )
         return self._context
 
-    
     @property
     def calls(self):
         return self._proxy.calls
@@ -119,15 +124,13 @@ class AccountListInstance(ListResource):
         
         
         def create(self, x_twilio_webhook_enabled, body):
-            
             data = values.of({
-            'x_twilio_webhook_enabled': x_twilio_webhook_enabled,'body': body,
+                'x_twilio_webhook_enabled': x_twilio_webhook_enabled,'body': body,
             })
 
             payload = self._version.create(method='post', uri=self._uri, data=data, )
 
             return AccountInstance(self._version, payload, )
-            
             
             
             
@@ -138,7 +141,13 @@ class AccountListInstance(ListResource):
             
             
             
-            page = True
+            data = values.of({
+                'date_created': date_created,'date_test': date_test,'date_created': date_created,'date_created': date_created,'page_size': page_size,
+            })
+
+            payload = self._version.create(method='get', uri=self._uri, data=data, )
+
+            return AccountPage(self._version, payload, )
         
 
     def __repr__(self):

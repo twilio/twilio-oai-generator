@@ -40,7 +40,13 @@ class AssistantListInstance(ListResource):
             
             
             
-            page = True
+            data = values.of({
+                
+            })
+
+            payload = self._version.create(method='get', uri=self._uri, data=data, )
+
+            return AssistantPage(self._version, payload, )
         
 
     def __repr__(self):

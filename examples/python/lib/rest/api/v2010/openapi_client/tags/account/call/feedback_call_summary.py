@@ -35,7 +35,13 @@ class FeedbackCallSummaryContext(InstanceContext):
         
         def update(self, body):
             
-            update = True
+            data = values.of({
+                'body': body,
+            })
+
+            payload = self._version.update(method='post', uri=self._uri, data=data, )
+
+            return FeedbackCallSummaryInstance(self._version, payload, account_sid=self._solution['account_sid']sid=self._solution['sid'])
             
             
             

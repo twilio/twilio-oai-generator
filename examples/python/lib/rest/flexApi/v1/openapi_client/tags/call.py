@@ -35,7 +35,13 @@ class CallContext(InstanceContext):
         
         def update(self):
             
-            update = True
+            data = values.of({
+                
+            })
+
+            payload = self._version.update(method='post', uri=self._uri, data=data, )
+
+            return CallInstance(self._version, payload, sid=self._solution['sid'])
             
             
             
