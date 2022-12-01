@@ -3,17 +3,11 @@ components:
     versionless.fleet:
       type: object
       properties:
-        account_sid:
+        name:
           type: string
-          minLength: 34
-          maxLength: 34
-          pattern: ^AC[0-9a-fA-F]{32}$
-          nullable: true
-          description: The unique SID that identifies this Account.
-        friendly_name:
-          description: A human readable description for this Fleet.
-          nullable: true
-          type: string
+    versionless.fleet.instance:
+      type: object
+      properties:
         sid:
           type: string
           minLength: 34
@@ -21,6 +15,10 @@ components:
           pattern: ^TH[0-9a-fA-F]{32}$
           nullable: true
           description: A string that uniquely identifies this Fleet.
+        friendly_name:
+          description: A human readable description for this Fleet.
+          nullable: true
+          type: string
   securitySchemes:
     accountSid_authToken:
       scheme: basic
@@ -69,7 +67,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/versionless.fleet'
+                $ref: '#/components/schemas/versionless.fleet.instance'
           description: OK
       security:
       - accountSid_authToken: []
@@ -89,7 +87,7 @@ paths:
                 properties:
                   assistants:
                     items:
-                      $ref: '#/components/schemas/versionless.fleet'
+                      $ref: '#/components/schemas/versionless.fleet.instance'
                     type: array
                   meta:
                     properties:

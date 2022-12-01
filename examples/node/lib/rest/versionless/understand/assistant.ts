@@ -265,30 +265,24 @@ interface AssistantPayload
     Page.TwilioResponsePayload {}
 
 interface AssistantResource {
-  account_sid?: string | null;
-  friendly_name?: string | null;
   sid?: string | null;
+  friendly_name?: string | null;
 }
 
 export class AssistantInstance {
   constructor(protected _version: Understand, payload: AssistantPayload) {
-    this.accountSid = payload.account_sid;
-    this.friendlyName = payload.friendly_name;
     this.sid = payload.sid;
+    this.friendlyName = payload.friendly_name;
   }
 
-  /**
-   * The unique SID that identifies this Account.
-   */
-  accountSid?: string | null;
-  /**
-   * A human readable description for this Fleet.
-   */
-  friendlyName?: string | null;
   /**
    * A string that uniquely identifies this Fleet.
    */
   sid?: string | null;
+  /**
+   * A human readable description for this Fleet.
+   */
+  friendlyName?: string | null;
 
   /**
    * Provide a user-friendly representation
@@ -297,9 +291,8 @@ export class AssistantInstance {
    */
   toJSON() {
     return {
-      accountSid: this.accountSid,
-      friendlyName: this.friendlyName,
       sid: this.sid,
+      friendlyName: this.friendlyName,
     };
   }
 
