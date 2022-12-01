@@ -15,7 +15,7 @@
  */
 
 
-namespace Twilio\Rest\Api\V2010;
+namespace Twilio\Rest\Versionless\Understand\;;
 
 use Twilio\Exceptions\TwilioException;
 use Twilio\ListResource;
@@ -31,6 +31,13 @@ use Twilio\Serialize;
 abstract class AssistantOptions {
 
 
+
+
+
 }
+
+
+
+
 
 

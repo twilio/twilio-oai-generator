@@ -15,7 +15,7 @@
  */
 
 
-namespace Twilio\Rest\Api\V2010;
+namespace Twilio\Rest\Versionless\DeployedDevices\;;
 
 use Twilio\Exceptions\TwilioException;
 use Twilio\ListResource;
@@ -30,7 +30,70 @@ use Twilio\Serialize;
 
 abstract class FleetOptions {
 
+    /**
+
+    * @param  $friendly_name Friendly_name
+
+    * @return CreateFleetOptions Options builder
+    */
+    public static function create(
+        string  $friendly_name = Values::NONE,): CreateFleetOptions {
+        return new CreateFleetOptions($friendly_name,);
+    }
+
+
+
+
+
+
+
+
+
 
 }
+
+
+class CreateFleetOptions extends Options {
+    /**
+
+    * @param  $friendly_name Friendly_name
+
+    */
+    public function __construct(
+        string  $friendly_name = Values::NONE,) {
+        
+        $this->options['friendly_name'] = $friendly_name;
+        
+    }
+
+    
+    /**
+    * @param string $friendly_name The Friendly_name
+    * @return $this Fluent Builder
+    */
+    public function setFriendly_name(string $friendly_name): self {
+        $this->options['friendly_name'] = $friendly_name;
+    return $this;
+    }
+    
+
+    /**
+    * Provide a friendly representation
+    *
+    * @return string Machine friendly representation
+    */
+    public function __toString(): string {
+        $options = \http_build_query(Values::of($this->options), '', ' ');
+        return '[Twilio.Versionless.DeployedDevices..CreateFleetOptions ' . $options . ']';
+    }
+}
+
+
+
+
+
+
+
+
 
 

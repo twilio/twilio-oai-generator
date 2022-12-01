@@ -15,7 +15,7 @@
  */
 
 
-namespace Twilio\Rest\Api\V2010;
+namespace Twilio\Rest\FlexApi\V1\;;
 
 use Twilio\Exceptions\TwilioException;
 use Twilio\ListResource;
@@ -33,6 +33,13 @@ use Twilio\Rest\FlexApi\V1\Credential\NewCredentialsList;
 abstract class CredentialOptions {
 
 
+
+
+
 }
+
+
+
+
 
 

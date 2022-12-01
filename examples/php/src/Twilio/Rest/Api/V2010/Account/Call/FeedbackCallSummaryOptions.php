@@ -15,7 +15,7 @@
  */
 
 
-namespace Twilio\Rest\Api\V2010;
+namespace Twilio\Rest\Api\V2010\\Account\Call;;
 
 use Twilio\Exceptions\TwilioException;
 use Twilio\ListResource;
@@ -31,6 +31,58 @@ use Twilio\Serialize;
 abstract class FeedbackCallSummaryOptions {
 
 
+
+    /**
+
+    * @param  $account_sid Account_sid
+
+    * @return UpdateFeedbackCallSummaryOptions Options builder
+    */
+    public static function update(
+        string  $account_sid = Values::NONE,): UpdateFeedbackCallSummaryOptions {
+        return new UpdateFeedbackCallSummaryOptions($account_sid,$account_sid,);
+    }
+
+
+
 }
+
+
+
+
+class UpdateFeedbackCallSummaryOptions extends Options {
+    /**
+
+    * @param  $account_sid Account_sid
+
+    */
+    public function __construct(
+        string  $account_sid = Values::NONE,) {
+        
+        $this->options['account_sid'] = $account_sid;
+        
+    }
+
+    
+    /**
+    * @param string $account_sid The Account_sid
+    * @return $this Fluent Builder
+    */
+    public function setAccount_sid(string $account_sid): self {
+        $this->options['account_sid'] = $account_sid;
+    return $this;
+    }
+
+    /**
+    * Provide a friendly representation
+    *
+    * @return string Machine friendly representation
+    */
+    public function __toString(): string {
+        $options = \http_build_query(Values::of($this->options), '', ' ');
+        return '[Twilio.Api.V2010.\Account\Call.UpdateFeedbackCallSummaryOptions ' . $options . ']';
+    }
+}
+
 
 

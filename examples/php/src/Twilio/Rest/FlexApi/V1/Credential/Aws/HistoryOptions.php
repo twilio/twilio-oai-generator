@@ -15,7 +15,7 @@
  */
 
 
-namespace Twilio\Rest\Api\V2010;
+namespace Twilio\Rest\FlexApi\V1\\Credential\Aws;;
 
 use Twilio\Exceptions\TwilioException;
 use Twilio\ListResource;
@@ -31,6 +31,59 @@ use Twilio\Serialize;
 abstract class HistoryOptions {
 
 
+
+
+
+    /**
+
+    * @param  $add_ons_data Add_ons_data
+
+    * @return FetchHistoryOptions Options builder
+    */
+    public static function fetch(
+          $add_ons_data = Values::NONE,): FetchHistoryOptions {
+        return new FetchHistoryOptions($add_ons_data,);
+    }
+
 }
 
+
+
+
+
+
+class FetchHistoryOptions extends Options {
+    /**
+
+    * @param  $add_ons_data Add_ons_data
+
+    */
+    public function __construct(
+          $add_ons_data = Values::NONE,) {
+        
+        $this->options['add_ons_data'] = $add_ons_data;
+        
+    }
+
+    
+    /**
+    * @param  $add_ons_data The Add_ons_data
+    * @return $this Fluent Builder
+    */
+    public function setAdd_ons_data(string $add_ons_data): self {
+        $this->options['add_ons_data'] = $add_ons_data;
+    return $this;
+    }
+
+
+    /**
+    * Provide a friendly representation
+    *
+    * @return string Machine friendly representation
+    */
+    public function __toString(): string {
+        $options = \http_build_query(Values::of($this->options), '', ' ');
+        return '[Twilio.FlexApi.V1.\Credential\Aws.FetchHistoryOptions ' . $options . ']';
+    }
+}
 

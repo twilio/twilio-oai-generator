@@ -15,7 +15,7 @@
  */
 
 
-namespace Twilio\Rest\Api\V2010;
+namespace Twilio\Rest\Api\V2010\\Account;;
 
 use Twilio\Exceptions\TwilioException;
 use Twilio\ListResource;
@@ -31,7 +31,155 @@ use Twilio\Rest\Api\V2010\Account\Call\FeedbackCallSummaryList;
 
 abstract class CallOptions {
 
+    /**
+
+    * @param  $test_array_of_strings Test_array_of_strings
+
+    * @param  $test_array_of_uri Test_array_of_uri
+
+    * @return CreateCallOptions Options builder
+    */
+    public static function create(
+        string[]  $test_array_of_strings = Array::NONE,
+        string[]  $test_array_of_uri = Array::NONE,): CreateCallOptions {
+        return new CreateCallOptions($account_sid,$test_array_of_strings,$test_array_of_uri,);
+    }
+
+
+
+
+
+
+
+
+
+    /**
+
+    * @return DeleteCallOptions Options builder
+    */
+    public static function delete(): DeleteCallOptions {
+        return new DeleteCallOptions($account_sid,);
+    }
+
+
+
+
+
+
+
+    /**
+
+    * @return FetchCallOptions Options builder
+    */
+    public static function fetch(): FetchCallOptions {
+        return new FetchCallOptions($account_sid,);
+    }
 
 }
 
+
+class CreateCallOptions extends Options {
+    /**
+
+    * @param  $test_array_of_strings Test_array_of_strings
+
+    * @param  $test_array_of_uri Test_array_of_uri
+
+    */
+    public function __construct(
+        string[]  $test_array_of_strings = Array::NONE,
+        string[]  $test_array_of_uri = Array::NONE,) {
+        
+        $this->options['test_array_of_strings'] = $test_array_of_strings;
+        
+        $this->options['test_array_of_uri'] = $test_array_of_uri;
+        
+    }
+
+    
+    /**
+    * @param string[] $test_array_of_strings The Test_array_of_strings
+    * @return $this Fluent Builder
+    */
+    public function setTest_array_of_strings(string $test_array_of_strings): self {
+        $this->options['test_array_of_strings'] = $test_array_of_strings;
+    return $this;
+    }
+    
+    /**
+    * @param string[] $test_array_of_uri The Test_array_of_uri
+    * @return $this Fluent Builder
+    */
+    public function setTest_array_of_uri(string $test_array_of_uri): self {
+        $this->options['test_array_of_uri'] = $test_array_of_uri;
+    return $this;
+    }
+    
+
+    /**
+    * Provide a friendly representation
+    *
+    * @return string Machine friendly representation
+    */
+    public function __toString(): string {
+        $options = \http_build_query(Values::of($this->options), '', ' ');
+        return '[Twilio.Api.V2010.\Account.CreateCallOptions ' . $options . ']';
+    }
+}
+
+
+
+
+
+
+
+
+
+class DeleteCallOptions extends Options {
+    /**
+
+    */
+    public function __construct() {
+        
+    }
+
+    
+
+    /**
+    * Provide a friendly representation
+    *
+    * @return string Machine friendly representation
+    */
+    public function __toString(): string {
+        $options = \http_build_query(Values::of($this->options), '', ' ');
+        return '[Twilio.Api.V2010.\Account.DeleteCallOptions ' . $options . ']';
+    }
+}
+
+
+
+
+
+
+
+class FetchCallOptions extends Options {
+    /**
+
+    */
+    public function __construct() {
+        
+    }
+
+    
+
+    /**
+    * Provide a friendly representation
+    *
+    * @return string Machine friendly representation
+    */
+    public function __toString(): string {
+        $options = \http_build_query(Values::of($this->options), '', ' ');
+        return '[Twilio.Api.V2010.\Account.FetchCallOptions ' . $options . ']';
+    }
+}
 

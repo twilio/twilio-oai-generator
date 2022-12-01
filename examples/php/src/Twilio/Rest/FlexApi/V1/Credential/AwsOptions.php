@@ -15,7 +15,7 @@
  */
 
 
-namespace Twilio\Rest\Api\V2010;
+namespace Twilio\Rest\FlexApi\V1\\Credential;;
 
 use Twilio\Exceptions\TwilioException;
 use Twilio\ListResource;
@@ -31,6 +31,151 @@ use Twilio\Serialize;
 abstract class AwsOptions {
 
 
+
+
+
+
+
+
+
+
+
+
+    /**
+
+    * @param  $page_size Page_size
+
+    * @return ReadAwsOptions Options builder
+    */
+    public static function read(
+        int  $page_size = Values::NONE,): ReadAwsOptions {
+        return new ReadAwsOptions($page_size,);
+    }
+
+
+
+
+
+
+
+    /**
+
+    * @param  $test_string Test_string
+
+    * @param  $test_boolean Test_boolean
+
+    * @return UpdateAwsOptions Options builder
+    */
+    public static function update(
+        string  $test_string = Values::NONE,
+        bool  $test_boolean = Values::NONE,): UpdateAwsOptions {
+        return new UpdateAwsOptions($test_string,$test_boolean,);
+    }
+
+
+
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+class ReadAwsOptions extends Options {
+    /**
+
+    * @param  $page_size Page_size
+
+    */
+    public function __construct(
+        int  $page_size = Values::NONE,) {
+        
+        $this->options['page_size'] = $page_size;
+        
+    }
+
+    
+    /**
+    * @param int $page_size The Page_size
+    * @return $this Fluent Builder
+    */
+    public function setPage_size(string $page_size): self {
+        $this->options['page_size'] = $page_size;
+    return $this;
+    }
+
+
+    /**
+    * Provide a friendly representation
+    *
+    * @return string Machine friendly representation
+    */
+    public function __toString(): string {
+        $options = \http_build_query(Values::of($this->options), '', ' ');
+        return '[Twilio.FlexApi.V1.\Credential.ReadAwsOptions ' . $options . ']';
+    }
+}
+
+
+
+
+
+
+
+class UpdateAwsOptions extends Options {
+    /**
+
+    * @param  $test_string Test_string
+
+    * @param  $test_boolean Test_boolean
+
+    */
+    public function __construct(
+        string  $test_string = Values::NONE,
+        bool  $test_boolean = Values::NONE,) {
+        
+        $this->options['test_string'] = $test_string;
+        
+        $this->options['test_boolean'] = $test_boolean;
+        
+    }
+
+    
+    /**
+    * @param string $test_string The Test_string
+    * @return $this Fluent Builder
+    */
+    public function setTest_string(string $test_string): self {
+        $this->options['test_string'] = $test_string;
+    return $this;
+    }
+
+    /**
+    * @param bool $test_boolean The Test_boolean
+    * @return $this Fluent Builder
+    */
+    public function setTest_boolean(string $test_boolean): self {
+        $this->options['test_boolean'] = $test_boolean;
+    return $this;
+    }
+
+    /**
+    * Provide a friendly representation
+    *
+    * @return string Machine friendly representation
+    */
+    public function __toString(): string {
+        $options = \http_build_query(Values::of($this->options), '', ' ');
+        return '[Twilio.FlexApi.V1.\Credential.UpdateAwsOptions ' . $options . ']';
+    }
+}
+
 
 

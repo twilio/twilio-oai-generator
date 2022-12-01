@@ -15,7 +15,7 @@
  */
 
 
-namespace Twilio\Rest\Api\V2010;
+namespace Twilio\Rest\Api\V2010\;;
 
 use Twilio\Exceptions\TwilioException;
 use Twilio\ListResource;
@@ -31,7 +31,351 @@ use Twilio\Rest\Api\V2010\Account\CallList;
 
 abstract class AccountOptions {
 
+    /**
+
+    * @param  $x_twilio_webhook_enabled X_twilio_webhook_enabled
+
+    * @param  $recording_status_callback Recording_status_callback
+
+    * @param  $recording_status_callback_event Recording_status_callback_event
+
+    * @return CreateAccountOptions Options builder
+    */
+    public static function create(
+        string  $x_twilio_webhook_enabled = Values::NONE,
+        string  $recording_status_callback = Values::NONE,
+        string[]  $recording_status_callback_event = Array::NONE,): CreateAccountOptions {
+        return new CreateAccountOptions($x_twilio_webhook_enabled,$recording_status_callback,$recording_status_callback_event,);
+    }
+
+
+
+
+
+
+
+
+
+    /**
+
+    * @return DeleteAccountOptions Options builder
+    */
+    public static function delete(): DeleteAccountOptions {
+        return new DeleteAccountOptions($sid,);
+    }
+
+
+
+
+
+
+
+    /**
+
+    * @return FetchAccountOptions Options builder
+    */
+    public static function fetch(): FetchAccountOptions {
+        return new FetchAccountOptions($sid,);
+    }
+
+
+
+    /**
+
+    * @param  $date_created Date_created
+
+    * @param  $date_test Date_test
+
+    * @param  $date_created Date_created
+
+    * @param  $date_created Date_created
+
+    * @param  $page_size Page_size
+
+    * @return ReadAccountOptions Options builder
+    */
+    public static function read(
+        \DateTime  $date_created = Values::NONE,
+        \DateTime  $date_test = Values::NONE,
+        \DateTime  $date_created = Values::NONE,
+        \DateTime  $date_created = Values::NONE,
+        int  $page_size = Values::NONE,): ReadAccountOptions {
+        return new ReadAccountOptions($date_created,$date_test,$date_created,$date_created,$page_size,);
+    }
+
+
+
+
+
+
+
+    /**
+
+    * @param  $pause_behavior Pause_behavior
+
+    * @return UpdateAccountOptions Options builder
+    */
+    public static function update(
+        string  $pause_behavior = Values::NONE,): UpdateAccountOptions {
+        return new UpdateAccountOptions($sid,$pause_behavior,);
+    }
+
+
 
 }
+
+
+class CreateAccountOptions extends Options {
+    /**
+
+    * @param  $x_twilio_webhook_enabled X_twilio_webhook_enabled
+
+    * @param  $recording_status_callback Recording_status_callback
+
+    * @param  $recording_status_callback_event Recording_status_callback_event
+
+    */
+    public function __construct(
+        string  $x_twilio_webhook_enabled = Values::NONE,
+        string  $recording_status_callback = Values::NONE,
+        string[]  $recording_status_callback_event = Array::NONE,) {
+        
+        $this->options['x_twilio_webhook_enabled'] = $x_twilio_webhook_enabled;
+        
+        $this->options['recording_status_callback'] = $recording_status_callback;
+        
+        $this->options['recording_status_callback_event'] = $recording_status_callback_event;
+        
+    }
+
+    
+    /**
+    * @param string $x_twilio_webhook_enabled The X_twilio_webhook_enabled
+    * @return $this Fluent Builder
+    */
+    public function setX_twilio_webhook_enabled(string $x_twilio_webhook_enabled): self {
+        $this->options['x_twilio_webhook_enabled'] = $x_twilio_webhook_enabled;
+    return $this;
+    }
+    
+    /**
+    * @param string $recording_status_callback The Recording_status_callback
+    * @return $this Fluent Builder
+    */
+    public function setRecording_status_callback(string $recording_status_callback): self {
+        $this->options['recording_status_callback'] = $recording_status_callback;
+    return $this;
+    }
+    
+    /**
+    * @param string[] $recording_status_callback_event The Recording_status_callback_event
+    * @return $this Fluent Builder
+    */
+    public function setRecording_status_callback_event(string $recording_status_callback_event): self {
+        $this->options['recording_status_callback_event'] = $recording_status_callback_event;
+    return $this;
+    }
+    
+
+    /**
+    * Provide a friendly representation
+    *
+    * @return string Machine friendly representation
+    */
+    public function __toString(): string {
+        $options = \http_build_query(Values::of($this->options), '', ' ');
+        return '[Twilio.Api.V2010..CreateAccountOptions ' . $options . ']';
+    }
+}
+
+
+
+
+
+
+
+
+
+class DeleteAccountOptions extends Options {
+    /**
+
+    */
+    public function __construct() {
+        
+    }
+
+    
+
+    /**
+    * Provide a friendly representation
+    *
+    * @return string Machine friendly representation
+    */
+    public function __toString(): string {
+        $options = \http_build_query(Values::of($this->options), '', ' ');
+        return '[Twilio.Api.V2010..DeleteAccountOptions ' . $options . ']';
+    }
+}
+
+
+
+
+
+
+
+class FetchAccountOptions extends Options {
+    /**
+
+    */
+    public function __construct() {
+        
+    }
+
+    
+
+    /**
+    * Provide a friendly representation
+    *
+    * @return string Machine friendly representation
+    */
+    public function __toString(): string {
+        $options = \http_build_query(Values::of($this->options), '', ' ');
+        return '[Twilio.Api.V2010..FetchAccountOptions ' . $options . ']';
+    }
+}
+
+
+
+class ReadAccountOptions extends Options {
+    /**
+
+    * @param  $date_created Date_created
+
+    * @param  $date_test Date_test
+
+    * @param  $date_created Date_created
+
+    * @param  $date_created Date_created
+
+    * @param  $page_size Page_size
+
+    */
+    public function __construct(
+        \DateTime  $date_created = Values::NONE,
+        \DateTime  $date_test = Values::NONE,
+        \DateTime  $date_created = Values::NONE,
+        \DateTime  $date_created = Values::NONE,
+        int  $page_size = Values::NONE,) {
+        
+        $this->options['date_created'] = $date_created;
+        
+        $this->options['date_test'] = $date_test;
+        
+        $this->options['date_created'] = $date_created;
+        
+        $this->options['date_created'] = $date_created;
+        
+        $this->options['page_size'] = $page_size;
+        
+    }
+
+    
+    /**
+    * @param \DateTime $date_created The Date_created
+    * @return $this Fluent Builder
+    */
+    public function setDate_created(string $date_created): self {
+        $this->options['date_created'] = $date_created;
+    return $this;
+    }
+
+    /**
+    * @param \DateTime $date_test The Date_test
+    * @return $this Fluent Builder
+    */
+    public function setDate_test(string $date_test): self {
+        $this->options['date_test'] = $date_test;
+    return $this;
+    }
+
+    /**
+    * @param \DateTime $date_created The Date_created
+    * @return $this Fluent Builder
+    */
+    public function setDate_created(string $date_created): self {
+        $this->options['date_created'] = $date_created;
+    return $this;
+    }
+
+    /**
+    * @param \DateTime $date_created The Date_created
+    * @return $this Fluent Builder
+    */
+    public function setDate_created(string $date_created): self {
+        $this->options['date_created'] = $date_created;
+    return $this;
+    }
+
+    /**
+    * @param int $page_size The Page_size
+    * @return $this Fluent Builder
+    */
+    public function setPage_size(string $page_size): self {
+        $this->options['page_size'] = $page_size;
+    return $this;
+    }
+
+
+    /**
+    * Provide a friendly representation
+    *
+    * @return string Machine friendly representation
+    */
+    public function __toString(): string {
+        $options = \http_build_query(Values::of($this->options), '', ' ');
+        return '[Twilio.Api.V2010..ReadAccountOptions ' . $options . ']';
+    }
+}
+
+
+
+
+
+
+
+class UpdateAccountOptions extends Options {
+    /**
+
+    * @param  $pause_behavior Pause_behavior
+
+    */
+    public function __construct(
+        string  $pause_behavior = Values::NONE,) {
+        
+        $this->options['pause_behavior'] = $pause_behavior;
+        
+    }
+
+    
+    /**
+    * @param string $pause_behavior The Pause_behavior
+    * @return $this Fluent Builder
+    */
+    public function setPause_behavior(string $pause_behavior): self {
+        $this->options['pause_behavior'] = $pause_behavior;
+    return $this;
+    }
+
+    /**
+    * Provide a friendly representation
+    *
+    * @return string Machine friendly representation
+    */
+    public function __toString(): string {
+        $options = \http_build_query(Values::of($this->options), '', ' ');
+        return '[Twilio.Api.V2010..UpdateAccountOptions ' . $options . ']';
+    }
+}
+
 
 
