@@ -56,7 +56,7 @@ class FleetList extends ListResource {
 
 
         $data = Values::of([
-            'FriendlyName' => $options['friendlyName'],
+            'Name' => $options['name'],
         ]);
 
         $payload = $this->version->create('POST', $this->uri, [], $data);

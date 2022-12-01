@@ -119,8 +119,6 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
 
             final String itemName = filePathArray[filePathArray.length - 1];
             final String instanceName = itemName + "Instance";
-            co.returnType = instanceName;
-            final boolean isInstanceOperation = PathUtils.isInstanceOperation(co);
 
             String resourceName;
             String parentResourceName = null;
@@ -128,7 +126,7 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
             co.returnType = instanceName;
 
             updateCodeOperationParams(co);
-            if (isInstanceOperation) {
+            if (PathUtils.isInstanceOperation(co)) {
                 resourceName = itemName + "Context";
                 parentResourceName = itemName + "ListInstance";
             } else {
@@ -197,33 +195,31 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
                         dependent.setImportName(instanceName + " as " + dependent.getType());
                     }
                 });
-
-            if (isInstanceOperation || (!hasInstanceOperations)) {
-                co.responses
-                    .stream()
-                    .map(response -> response.dataType)
-                    .filter(Objects::nonNull)
-                    .map(modelName -> directoryStructureService.getModelCoPath(modelName, co, recordKey))
-                    .flatMap(Optional::stream)
-                    .map(conventionResolver::resolveModel)
-                    .map(item -> conventionResolver.resolveComplexType(item, modelFormatMap))
-                    .forEach(model -> {
-                        model.vars.forEach(prop -> addModel(prop.complexType, prop.dataType, models));
-
-                        model.setName(itemName);
-                        resource.put("responseModel", model);
-
-                        model.getVars().forEach(variable -> {
-                            variable.vendorExtensions.put("x-name", itemName + variable.getNameInCamelCase());
-                            addDeserializeVendorExtension(variable);
-                        });
-                    });
-            }
         }
 
         for (final String resourceName : resources.keySet()) {
             final Map<String, Object> resource = PathUtils.getStringMap(resources, resourceName);
+
+            final String name = (String) resource.get("name");
             final String parentResourceName = (String) resource.get("parentResourceName");
+            final List<CodegenOperation> operations = getOperations(resource);
+
+            // Build the response model for this resource.
+            operations
+                .stream()
+                .filter(operation -> !hasInstanceOperations || PathUtils.isInstanceOperation(operation))
+                .flatMap(operation -> getResponseModel(operation, recordKey).stream())
+                .forEach(responseModel -> {
+                    resource.put("responseModel", responseModel);
+                    responseModel.getVars().forEach(prop -> addModel(prop.complexType, prop.dataType, models));
+
+                    final List<CodegenModel> allResponseModels = opList
+                        .stream()
+                        .flatMap(co -> getResponseModel(co, recordKey).stream())
+                        .collect(Collectors.toList());
+                    updateResponseModels(responseModel, allResponseModels, name);
+                });
+
             if (parentResourceName != null) {
                 final boolean parentExists = resources.containsKey(parentResourceName);
                 final Map<String, Object> parentResource = PathUtils.getStringMap(resources, parentResourceName);
@@ -231,9 +227,9 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
 
                 if (!parentExists) {
                     parentResource.put("resourceName", parentResourceName);
-                    parentResource.put("name", resource.get("name"));
+                    parentResource.put("name", name);
 
-                    final List<CodegenParameter> resourcePathParams = getOperations(resource).get(0).pathParams;
+                    final List<CodegenParameter> resourcePathParams = operations.get(0).pathParams;
 
                     // If the resource has only "parent params", move its dependents onto the parent.
                     if (resourcePathParams.stream().allMatch(PathUtils::isParentParam)) {
@@ -259,6 +255,38 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
         results.put("hasPaginationOperation", hasPaginationOperation);
         results.put("models", models.values());
         return results;
+    }
+
+    private Optional<CodegenModel> getResponseModel(final CodegenOperation operation, final String recordKey) {
+        return operation.responses
+            .stream()
+            .map(response -> response.dataType)
+            .filter(Objects::nonNull)
+            .flatMap(modelName -> directoryStructureService.getModelCoPath(modelName, operation, recordKey).stream())
+            .map(conventionResolver::resolveModel)
+            .map(item -> conventionResolver.resolveComplexType(item, modelFormatMap))
+            .findFirst();
+    }
+
+    private void updateResponseModels(final CodegenModel responseModel,
+                                      final List<CodegenModel> allModels,
+                                      final String itemName) {
+        allModels.forEach(model -> {
+            model.setName(itemName);
+            model.getVars().forEach(variable -> {
+                variable.vendorExtensions.put("x-name", itemName + variable.getNameInCamelCase());
+                addDeserializeVendorExtension(variable);
+            });
+
+            if (model != responseModel) {
+                // Merge any vars from the model that aren't part of the response model.
+                model.getVars().forEach(variable -> {
+                    if (responseModel.getVars().stream().noneMatch(v -> v.getName().equals(variable.getName()))) {
+                        responseModel.getVars().add(variable);
+                    }
+                });
+            }
+        });
     }
 
     private void addModel(final String complexType, final String dataType, final Map<String, CodegenModel> models) {
