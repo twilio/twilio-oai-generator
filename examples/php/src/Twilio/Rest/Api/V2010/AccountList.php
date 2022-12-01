@@ -22,42 +22,50 @@ use Twilio\Options;
 use Twilio\Stream;
 use Twilio\Values;
 use Twilio\Version;
+use Twilio\InstanceContext;
+use Twilio\Deserialize;
+use Twilio\Serialize;
+use Twilio\Rest\Api\V2010\Account\CallList;
+
 
 
 class AccountList extends ListResource {
+
     /**
      * Construct the AccountList
      *
      * @param Version $version Version that contains the resource
-     * @param string $sid
      */
-    public function __construct(Version $version, string $sid ) {
+    public function __construct(Version $version) {
         parent::__construct($version);
-        $this->solution = ['sid' => $sid  ];
+
+        // Path Solution
+        $this->solution = [];
+
         $this->uri = '/Accounts.json';
     }
     
     /**
-    * Create the AccountInstance
-    *
-    * @param array|Options $options Optional Arguments
-    * @return AccountInstance Created AccountInstance
-    * @throws TwilioException When an HTTP error occurs.
-    */
-    public function create( array $options = []): AccountInstance {
+     * Create the AccountInstance
+     *
+     * @param array|Options $options Optional Arguments
+     * @return AccountInstance Created AccountInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function create(array $options = []): AccountInstance {
         $options = new Values($options);
 
+
         $data = Values::of([
-            'X-Twilio-Webhook-Enabled' => $options['X-Twilio-Webhook-Enabled'],
-            'RecordingStatusCallback' => $options['RecordingStatusCallback'],
-            'RecordingStatusCallbackEvent' => Serialize::map($options['RecordingStatusCallbackEvent'], function($e) { return $e; }),
+            'RecordingStatusCallback' => $options['recordingStatusCallback'],
+            'RecordingStatusCallbackEvent' => Serialize::map($options['recordingStatusCallbackEvent'], function($e) { return $e; }),
         ]);
 
         $payload = $this->version->create('POST', $this->uri, [], $data);
 
         return new AccountInstance(
             $this->version,
-            $payload,
+            $payload
         );
     }
 
@@ -73,6 +81,7 @@ class AccountList extends ListResource {
     * Unlike stream(), this operation is eager and will load `limit` records into
     * memory before returning.
     *
+    * @param array|Options $options Optional Arguments
     * @param int $limit Upper limit for the number of records to return. read()
     *                   guarantees to never return more than limit.  Default is no
     *                   limit
@@ -84,8 +93,8 @@ class AccountList extends ListResource {
     * @return AccountInstance[] Array of results
     */
 
-    public function read(int $limit = null, $pageSize = null): array {
-        return \iterator_to_array($this->stream($limit, $pageSize), false);
+    public function read(array $options = [], int $limit = null, $pageSize = null): array {
+        return \iterator_to_array($this->stream($options, $limit, $pageSize), false);
     }
 
     /**

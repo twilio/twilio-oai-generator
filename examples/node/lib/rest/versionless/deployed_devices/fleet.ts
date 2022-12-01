@@ -94,9 +94,8 @@ export class FleetContextImpl implements FleetContext {
 interface FleetPayload extends FleetResource {}
 
 interface FleetResource {
-  account_sid?: string | null;
-  friendly_name?: string | null;
   sid?: string | null;
+  friendly_name?: string | null;
 }
 
 export class FleetInstance {
@@ -108,25 +107,20 @@ export class FleetInstance {
     payload: FleetPayload,
     sid?: string
   ) {
-    this.accountSid = payload.account_sid;
-    this.friendlyName = payload.friendly_name;
     this.sid = payload.sid;
+    this.friendlyName = payload.friendly_name;
 
     this._solution = { sid: sid || this.sid };
   }
 
   /**
-   * The unique SID that identifies this Account.
+   * A string that uniquely identifies this Fleet.
    */
-  accountSid?: string | null;
+  sid?: string | null;
   /**
    * A human readable description for this Fleet.
    */
   friendlyName?: string | null;
-  /**
-   * A string that uniquely identifies this Fleet.
-   */
-  sid?: string | null;
 
   private get _proxy(): FleetContext {
     this._context =
@@ -154,9 +148,8 @@ export class FleetInstance {
    */
   toJSON() {
     return {
-      accountSid: this.accountSid,
-      friendlyName: this.friendlyName,
       sid: this.sid,
+      friendlyName: this.friendlyName,
     };
   }
 

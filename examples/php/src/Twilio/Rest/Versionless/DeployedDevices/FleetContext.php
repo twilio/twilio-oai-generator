@@ -15,7 +15,7 @@
  */
 
 
-namespace Twilio\Rest\Api\V2010;
+namespace Twilio\Rest\Versionless\DeployedDevices;
 
 use Twilio\Exceptions\TwilioException;
 use Twilio\ListResource;
@@ -23,11 +23,52 @@ use Twilio\Options;
 use Twilio\Stream;
 use Twilio\Values;
 use Twilio\Version;
+use Twilio\InstanceContext;
+use Twilio\Deserialize;
+use Twilio\Serialize;
 
-/**
-*/
-class Context extends InstanceContext {
 
 
+class FleetContext extends InstanceContext {
+
+    /**
+     * Initialize the FleetContext
+     *
+     * @param Version $version Version that contains the resource
+     * @param string $sid 
+     */
+    public function __construct(Version $version, $sid ) {
+        parent::__construct($version);
+
+        // Path Solution
+        $this->solution = ['sid' => $sid,  ];
+
+        $this->uri = '/DeployedDevices/Fleets/' . \rawurlencode($sid) . '';
+    }
+
+    /**
+     * Fetch the FleetInstance
+     *
+     * @return FleetInstance Fetched FleetInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function fetch(): FleetInstance {
+
+        $payload = $this->version->fetch('GET', $this->uri);
+
+        return new FleetInstance($this->version, $payload, $this->solution['sid']);
+    }
+
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string {
+        $context = [];
+        foreach ($this->solution as $key => $value) {
+            $context[] = "$key=$value";
+        }
+        return '[Twilio.Versionless.DeployedDevices.FleetContext ' . \implode(' ', $context) . ']';
+    }
 }
-

@@ -32,6 +32,7 @@ public abstract class ApiResourceBuilder implements IApiResourceBuilder {
     protected String version = "";
     protected String recordKey = "";
     protected String apiPath ="";
+    protected String namespaceSubPart = "";
 
     public ApiResourceBuilder(IApiActionTemplate template, List<CodegenOperation> codegenOperations, List<CodegenModel> allModels) {
         this.template = template;
@@ -109,7 +110,10 @@ public abstract class ApiResourceBuilder implements IApiResourceBuilder {
         } else {
             applyListOperation(operation, operationMap, httpMethod);
         }
-
+        operationMap.put("hasRequiredFormParams",
+                (operation.requiredParams.stream().anyMatch(param-> param.isFormParam)));
+        operationMap.put("hasOptionalFormParams",
+                (operation.optionalParams.stream().anyMatch(param-> param.isFormParam)));
         return operationMap;
     }
 
@@ -121,7 +125,7 @@ public abstract class ApiResourceBuilder implements IApiResourceBuilder {
             operationMap.put("x-name", API_OPERATION_READ);
             operationMap.put("x-is-read-operation", true);
         }
-        metaAPIProperties.put("x-is-list-operation","true");
+        metaAPIProperties.put("x-is-list-operation", "true");
         metaAPIProperties.put(META_LIST_PARAMETER_KEY, operation.allParams);
     }
 
@@ -134,9 +138,9 @@ public abstract class ApiResourceBuilder implements IApiResourceBuilder {
             operationMap.put("x-is-update-operation", true);
         } else if (httpMethod == HttpMethod.DELETE) {
             operationMap.put("x-name", API_OPERATION_DELETE);
-            operation.vendorExtensions.put("x-is-delete-operation", true);
+            operationMap.put("x-is-delete-operation", true);
         }
-        metaAPIProperties.put("x-is-context-operation","true");
+        metaAPIProperties.put("x-is-context-operation", "true");
         metaAPIProperties.put(META_CONTEXT_PARAMETER_KEY, operation.allParams);
     }
 
@@ -174,7 +178,7 @@ public abstract class ApiResourceBuilder implements IApiResourceBuilder {
         boolean is_fetch = operation.nickname.startsWith(EnumConstants.Operation.FETCH.getValue().toLowerCase(Locale.ROOT));
         boolean is_update = operation.nickname.startsWith(EnumConstants.Operation.UPDATE.getValue().toLowerCase(Locale.ROOT));
         boolean is_delete = operation.nickname.startsWith(EnumConstants.Operation.DELETE.getValue().toLowerCase(Locale.ROOT));
-        if(is_fetch || is_update || is_delete) {
+        if (is_fetch || is_update || is_delete) {
             return true;
         }
         return false;
@@ -188,7 +192,7 @@ public abstract class ApiResourceBuilder implements IApiResourceBuilder {
                     continue;
                 }
                 String[] split = co.returnType.split("\\\\");
-                String returnTypeStr = split[split.length-1];
+                String returnTypeStr = split[split.length - 1];
                 if (model.name.equals(returnTypeStr)) {
                     recordKey = model.allVars
                             .stream()

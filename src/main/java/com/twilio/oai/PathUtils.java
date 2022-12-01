@@ -58,6 +58,13 @@ public class PathUtils {
         return path.substring(path.lastIndexOf(delimiter) + 1);
     }
 
+    public static String fetchlastPathParam(final String path, final String beginningDelimiter, final String endingDelimiter) {
+        if(path.lastIndexOf(beginningDelimiter)!=-1)
+            return path.substring(path.lastIndexOf(beginningDelimiter) + 1, path.lastIndexOf(endingDelimiter));
+
+        return "";
+    }
+
     public static Optional<String> getTwilioExtension(final PathItem pathItem, final String extensionKey) {
         return getTwilioExtension(pathItem.getExtensions(), extensionKey);
     }

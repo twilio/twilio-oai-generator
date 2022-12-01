@@ -14,7 +14,7 @@
  * Do not edit the class manually.
  */
 
-namespace Twilio\Rest\Api\V2010;
+namespace Twilio\Rest\Api\V2010\Account\Call;
 
 use Twilio\Exceptions\TwilioException;
 use Twilio\ListResource;
@@ -22,19 +22,24 @@ use Twilio\Options;
 use Twilio\Stream;
 use Twilio\Values;
 use Twilio\Version;
+use Twilio\InstanceContext;
+use Twilio\Deserialize;
+use Twilio\Serialize;
+
 
 
 class FeedbackCallSummaryList extends ListResource {
+
     /**
      * Construct the FeedbackCallSummaryList
      *
      * @param Version $version Version that contains the resource
-     * @param string $accountSid
-     * @param string $sid
      */
-    public function __construct(Version $version, string $accountSid , string $sid ) {
+    public function __construct(Version $version) {
         parent::__construct($version);
-        $this->solution = ['account_sid' => $accountSid,   'sid' => $sid  ];
+
+        // Path Solution
+        $this->solution = [];
     }
     
     

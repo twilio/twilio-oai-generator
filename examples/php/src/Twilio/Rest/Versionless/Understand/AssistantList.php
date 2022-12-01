@@ -22,9 +22,14 @@ use Twilio\Options;
 use Twilio\Stream;
 use Twilio\Values;
 use Twilio\Version;
+use Twilio\InstanceContext;
+use Twilio\Deserialize;
+use Twilio\Serialize;
+
 
 
 class AssistantList extends ListResource {
+
     /**
      * Construct the AssistantList
      *
@@ -32,7 +37,10 @@ class AssistantList extends ListResource {
      */
     public function __construct(Version $version) {
         parent::__construct($version);
+
+        // Path Solution
         $this->solution = [];
+
         $this->uri = '/understand/Assistants';
     }
     

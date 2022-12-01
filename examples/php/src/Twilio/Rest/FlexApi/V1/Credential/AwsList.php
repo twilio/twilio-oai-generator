@@ -14,7 +14,7 @@
  * Do not edit the class manually.
  */
 
-namespace Twilio\Rest\FlexApi\V1;
+namespace Twilio\Rest\FlexApi\V1\Credential;
 
 use Twilio\Exceptions\TwilioException;
 use Twilio\ListResource;
@@ -22,18 +22,25 @@ use Twilio\Options;
 use Twilio\Stream;
 use Twilio\Values;
 use Twilio\Version;
+use Twilio\InstanceContext;
+use Twilio\Deserialize;
+use Twilio\Serialize;
+
 
 
 class AwsList extends ListResource {
+
     /**
      * Construct the AwsList
      *
      * @param Version $version Version that contains the resource
-     * @param string $sid
      */
-    public function __construct(Version $version, string $sid ) {
+    public function __construct(Version $version) {
         parent::__construct($version);
-        $this->solution = ['sid' => $sid  ];
+
+        // Path Solution
+        $this->solution = [];
+
         $this->uri = '/Credentials/AWS';
     }
     

@@ -1,0 +1,53 @@
+{{#vendorExtensions.x-is-fetch-operation}}
+
+    /**
+     * Fetch the {{apiName}}Instance
+     *
+     {{#queryParams.0}}
+     * @param array|Options $options Optional Arguments
+     {{/queryParams.0}}
+     {{#headerParams.0}}
+     * @param array|Options $options Optional Arguments
+     {{/headerParams.0}}
+     * @return {{apiName}}Instance Fetched {{apiName}}Instance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function fetch({{#queryParams.0}}array $options = []{{/queryParams.0}}{{#headerParams.0}}array $options = []{{/headerParams.0}}): {{apiName}}Instance {
+        {{#queryParams.0}}
+        $options = new Values($options);
+
+        $params = Values::of([
+            {{#queryParams}}
+            {{^vendorExtensions.x-serialize}}
+            {{^vendorExtensions.x-prefixed-collapsible-map}}
+            '{{baseName}}' => $options['{{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}'],
+            {{/vendorExtensions.x-prefixed-collapsible-map}}
+            {{/vendorExtensions.x-serialize}}
+            {{#vendorExtensions.x-serialize}}
+            {{^vendorExtensions.x-serialize-map}}
+            '{{baseName}}' => {{vendorExtensions.x-serialize}}($options['{{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}']),
+            {{/vendorExtensions.x-serialize-map}}
+            {{#vendorExtensions.x-serialize-map}}
+            '{{baseName}}' => {{vendorExtensions.x-serialize}}($options['{{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}'], function($e) { return $e; }),
+            {{/vendorExtensions.x-serialize-map}}
+            {{/vendorExtensions.x-serialize}}
+            {{/queryParams}}
+        ]);
+        {{#queryParams}}
+        {{#vendorExtensions.x-prefixed-collapsible-map}}
+        $params = \array_merge($params, Serialize::prefixedCollapsibleMap($options['{{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}'], 'AddOns'));
+        {{/vendorExtensions.x-prefixed-collapsible-map}}
+        {{/queryParams}}
+        {{/queryParams.0}}
+
+        {{#headerParams.0}}
+        $options = new Values($options);
+
+        $headers = Values::of([{{#headerParams}}'{{baseName}}' => $options['{{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}'], {{/headerParams}}]);
+
+        {{/headerParams.0}}
+        $payload = $this->version->fetch('GET', $this->uri{{#queryParams.0}}, $params{{/queryParams.0}}{{#headerParams.0}}, [], [], $headers{{/headerParams.0}});
+
+        return new {{apiName}}Instance($this->version, $payload{{#optionalParams}}{{#isPathParam}}, $this->solution['{{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}']{{/isPathParam}}{{/optionalParams}}{{#requiredParams}}, $this->solution['{{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}']{{/requiredParams}});
+    }
+{{/vendorExtensions.x-is-fetch-operation}}
