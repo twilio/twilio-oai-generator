@@ -34,22 +34,23 @@ class FeedbackCallSummaryList extends ListResource {
      * Construct the FeedbackCallSummaryList
      *
      * @param Version $version Version that contains the resource
+     * @param string $accountSid 
      */
-    public function __construct(Version $version) {
+    public function __construct(Version $version, string $accountSid ) {
         parent::__construct($version);
 
         // Path Solution
-        $this->solution = [];
+        $this->solution = ['account_sid' => $accountSid, ];
     }
     
     
     /**
      * Constructs a FeedbackCallSummaryContext
      *
-     * @param string $sid The unique string that identifies the resource
+     * @param string $sid 
      */
     public function getContext(string $sid): FeedbackCallSummaryContext {
-        return new FeedbackCallSummaryContext($this->version);
+        return new FeedbackCallSummaryContext($this->version, $sid);
     }
 
     /**

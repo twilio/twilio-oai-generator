@@ -88,9 +88,8 @@ class NewCredentialsList extends ListResource {
     /**
      * Constructs a NewCredentialsContext
      *
-     * @param string $sid The unique string that identifies the resource
      */
-    public function getContext(string $sid): NewCredentialsContext {
+    public function getContext(): NewCredentialsContext {
         return new NewCredentialsContext($this->version);
     }
 

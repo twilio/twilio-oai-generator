@@ -88,10 +88,10 @@ class CallList extends ListResource {
     /**
      * Constructs a CallContext
      *
-     * @param string $sid The unique string that identifies the resource
+     * @param int $testInteger INTEGER ID param!!!
      */
-    public function getContext(string $sid): CallContext {
-        return new CallContext($this->version);
+    public function getContext(int $testInteger): CallContext {
+        return new CallContext($this->version, $testInteger);
     }
 
     /**

@@ -26,6 +26,7 @@ use Twilio\InstanceContext;
 use Twilio\Deserialize;
 use Twilio\Serialize;
 use Twilio\Rest\Api\V2010\Account\CallList;
+use Twilio\Rest\Api\V2010\AccountPage;
 
 
 
@@ -116,10 +117,10 @@ class AccountList extends ListResource {
     * @return Stream stream of results
     */
 
-    public function stream(int $limit = null, $pageSize = null): Stream {
+    public function stream(array $options = [], int $limit = null, $pageSize = null): Stream {
         $limits = $this->version->readLimits($limit, $pageSize);
 
-        $page = $this->page($limits['pageSize']);
+        $page = $this->page( $options , $limits['pageSize']);
 
         return $this->version->stream($page, $limits['limit'], $limits['pageLimit']);
     }
@@ -134,7 +135,9 @@ class AccountList extends ListResource {
     * @return AccountPage Page of AccountInstance
     */
 
-    public function page(array $options = [], $pageSize = Values::NONE, string $pageToken = Values::NONE, $pageNumber = Values::NONE): AccountPage {
+    public function page(array $options = [],  $pageSize = Values::NONE, string $pageToken = Values::NONE, $pageNumber = Values::NONE): AccountPage {
+        $options = new Values($options);
+
         $params = Values::of([
             'DateCreated' => Serialize::iso8601DateTime($options['DateCreated']),
             'Date.Test' => Serialize::iso8601Date($options['Date.Test']),
@@ -174,10 +177,10 @@ class AccountList extends ListResource {
     /**
      * Constructs a AccountContext
      *
-     * @param string $sid The unique string that identifies the resource
+     * @param string $sid 
      */
     public function getContext(string $sid): AccountContext {
-        return new AccountContext($this->version);
+        return new AccountContext($this->version, $sid);
     }
 
     /**

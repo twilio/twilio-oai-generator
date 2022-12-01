@@ -25,6 +25,7 @@ use Twilio\Version;
 use Twilio\InstanceContext;
 use Twilio\Deserialize;
 use Twilio\Serialize;
+use Twilio\Rest\FlexApi\V1\AwsPage;
 
 
 
@@ -106,7 +107,8 @@ class AwsList extends ListResource {
     * @return AwsPage Page of AwsInstance
     */
 
-    public function page(array $options = [], $pageSize = Values::NONE, string $pageToken = Values::NONE, $pageNumber = Values::NONE): AwsPage {
+    public function page( $pageSize = Values::NONE, string $pageToken = Values::NONE, $pageNumber = Values::NONE): AwsPage {
+
         $params = Values::of([
             'PageSize' => $options['PageSize'],
             'PageToken' => $pageToken,
@@ -142,10 +144,10 @@ class AwsList extends ListResource {
     /**
      * Constructs a AwsContext
      *
-     * @param string $sid The unique string that identifies the resource
+     * @param string $sid 
      */
     public function getContext(string $sid): AwsContext {
-        return new AwsContext($this->version);
+        return new AwsContext($this->version, $sid);
     }
 
     /**

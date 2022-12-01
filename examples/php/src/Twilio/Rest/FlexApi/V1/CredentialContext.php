@@ -28,6 +28,7 @@ use Twilio\Deserialize;
 use Twilio\Serialize;
 use Twilio\Rest\FlexApi\V1\Credential\AwsList;
 use Twilio\Rest\FlexApi\V1\Credential\NewCredentialsList;
+use Twilio\Rest\FlexApi\V1\CredentialPage;
 
 
 
@@ -37,12 +38,13 @@ class CredentialContext extends InstanceContext {
      * Initialize the CredentialContext
      *
      * @param Version $version Version that contains the resource
+     * @param string $sid 
      */
-    public function __construct(Version $version) {
+    public function __construct(Version $version, $sid ) {
         parent::__construct($version);
 
         // Path Solution
-        $this->solution = [];
+        $this->solution = ['sid' => $sid,  ];
     }
 
     /**

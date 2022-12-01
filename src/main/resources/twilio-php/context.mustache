@@ -27,7 +27,7 @@ namespace Twilio\Rest\{{domainName}}\{{apiVersionClass}}{{namespaceSubPart}};
 /**
     {{/vendorExtensions.importProperties}}
     {{/-first}}
- * @method \Twilio\Rest\{{domainName}}\{{apiVersionClass}}\{{parent}}Context {{#lambda.camelcase}}{{mountName}}{{/lambda.camelcase}}(string ${{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}})
+ * @method \Twilio\Rest\{{domainName}}\{{apiVersionClass}}\{{parent}}Context {{#lambda.camelcase}}{{mountName}}{{/lambda.camelcase}}({{#params}}string ${{#lambda.camelcase}}{{.}}{{/lambda.camelcase}}{{^-last}}, {{/-last}}{{/params}})
     {{#-last}}
  */
     {{/-last}}
@@ -51,15 +51,15 @@ class {{apiName}}Context extends InstanceContext {
      * Initialize the {{apiName}}Context
      *
      * @param Version $version Version that contains the resource
-     {{#requiredPathParamsContext}}
+     {{#requiredPathParams}}
      * @param {{{dataType}}} ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}} {{description}}
-     {{/requiredPathParamsContext}}
+     {{/requiredPathParams}}
      */
-    public function __construct(Version $version{{#requiredPathParamsContext}}, ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}} {{/requiredPathParamsContext}}) {
+    public function __construct(Version $version{{#requiredPathParams}}, ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}} {{/requiredPathParams}}) {
         parent::__construct($version);
 
         // Path Solution
-        $this->solution = [{{#requiredPathParamsContext}}'{{paramName}}' => ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}},  {{/requiredPathParamsContext}}];
+        $this->solution = [{{#requiredPathParams}}'{{paramName}}' => ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}},  {{/requiredPathParams}}];
         {{#metaProperties.x-is-context-operation}}
 
         $this->uri = '{{{apiContextPath}}}';

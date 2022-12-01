@@ -15,10 +15,12 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.Operation;
 import io.swagger.v3.oas.models.PathItem;
+import io.swagger.v3.oas.models.parameters.Parameter;
 import lombok.Builder;
 import lombok.Data;
 import lombok.Getter;
@@ -68,7 +70,7 @@ public class DirectoryStructureService {
     @Data
     @Builder
     public static class ContextResource {
-        private String paramName;
+        private List<String> params;
         private String filename;
         private String mountName;
         private String parent;
@@ -144,15 +146,32 @@ public class DirectoryStructureService {
     public void addContextdependents(final List<Object> resourceList, final String path, final Operation operation){
         final Resource.Aliases resourceAliases = getResourceAliases(path, operation);
         String parent = String.join("\\", resourceTree.ancestors(path, operation));
-        String paramName = PathUtils.fetchlastPathParam(path,"{", "}");
+        List<String> params = fetchNonParentPathParams(operation);
+
         final ContextResource dependent = new ContextResource.ContextResourceBuilder()
-                .paramName(paramName)
+                .params(params)
                 .mountName(caseResolver.pathOperation(resourceAliases.getMountName()))
                 .filename(caseResolver.filenameOperation(resourceAliases.getClassName()))
                 .parent(parent)
                 .build();
         if (!resourceList.contains(dependent))
             resourceList.add(dependent);
+    }
+
+    private List<String> fetchNonParentPathParams(Operation operation){
+        if(operation != null){
+            List<Parameter> pathparams = Optional.ofNullable(operation.getParameters())
+                    .map(Collection::stream).orElse(Stream.empty())
+                    .filter(param->Objects.nonNull(param.getIn())).filter(parameter -> PathUtils.isPathParam(parameter))
+                    .collect(Collectors.toList());
+            List<String> params = pathparams.stream().filter(parameter -> Objects.isNull(parameter.getExtensions()))
+                    .map(parameter -> parameter.getName()).collect(Collectors.toList());
+            params.addAll(pathparams.stream().filter(parameter -> Objects.nonNull(parameter.getExtensions()))
+                    .filter(parameter -> !PathUtils.isParentParam(parameter))
+                    .map(parameter -> parameter.getName()).collect(Collectors.toList()));
+            return params;
+        }
+        return null;
     }
 
     private Resource.Aliases getResourceAliases(final String path, final Operation operation) {

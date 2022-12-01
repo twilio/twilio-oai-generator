@@ -26,10 +26,11 @@ use Twilio\Version;
 use Twilio\InstanceContext;
 use Twilio\Deserialize;
 use Twilio\Serialize;
+use Twilio\Rest\FlexApi\V1\AwsPage;
 
 
 /**
- * @method \Twilio\Rest\FlexApi\V1\Credential\Aws\HistoryContext history(string $sid)
+ * @method \Twilio\Rest\FlexApi\V1\Credential\Aws\HistoryContext history()
  */
 
 class AwsContext extends InstanceContext {

@@ -119,4 +119,18 @@ class TwilioRestTest extends HolodeckTestCase {
         ));
     }
 
+    public function testShouldMakeValidApiCallToAccountFetcher(): void{
+        $this->holodeck->mock(new Response(500, ''));
+
+        try {
+            $this->twilio->api->v2010->accounts("AC222222222222222222222222222222")->fetch();
+        } catch (DeserializeException $e) {}
+        catch (TwilioException $e) {}
+
+        $this->assertRequest(new Request(
+            'get',
+            "https://api.twilio.com/2010-04-01/Accounts/AC222222222222222222222222222222.json"
+        ));
+    }
+
 }

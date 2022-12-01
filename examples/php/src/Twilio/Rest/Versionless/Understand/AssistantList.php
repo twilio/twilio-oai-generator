@@ -25,6 +25,7 @@ use Twilio\Version;
 use Twilio\InstanceContext;
 use Twilio\Deserialize;
 use Twilio\Serialize;
+use Twilio\Rest\Versionless\Understand\AssistantPage;
 
 
 
@@ -102,7 +103,8 @@ class AssistantList extends ListResource {
     * @return AssistantPage Page of AssistantInstance
     */
 
-    public function page(array $options = [], $pageSize = Values::NONE, string $pageToken = Values::NONE, $pageNumber = Values::NONE): AssistantPage {
+    public function page( $pageSize = Values::NONE, string $pageToken = Values::NONE, $pageNumber = Values::NONE): AssistantPage {
+
         $params = Values::of([
             'PageToken' => $pageToken,
             'Page' => $pageNumber,
@@ -135,9 +137,8 @@ class AssistantList extends ListResource {
     /**
      * Constructs a AssistantContext
      *
-     * @param string $sid The unique string that identifies the resource
      */
-    public function getContext(string $sid): AssistantContext {
+    public function getContext(): AssistantContext {
         return new AssistantContext($this->version);
     }
 

@@ -34,21 +34,21 @@ class HistoryList extends ListResource {
      * Construct the HistoryList
      *
      * @param Version $version Version that contains the resource
+     * @param string $sid 
      */
-    public function __construct(Version $version) {
+    public function __construct(Version $version, string $sid ) {
         parent::__construct($version);
 
         // Path Solution
-        $this->solution = [];
+        $this->solution = ['sid' => $sid, ];
     }
     
     
     /**
      * Constructs a HistoryContext
      *
-     * @param string $sid The unique string that identifies the resource
      */
-    public function getContext(string $sid): HistoryContext {
+    public function getContext(): HistoryContext {
         return new HistoryContext($this->version);
     }
 

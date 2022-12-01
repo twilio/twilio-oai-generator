@@ -73,10 +73,10 @@ class FleetList extends ListResource {
     /**
      * Constructs a FleetContext
      *
-     * @param string $sid The unique string that identifies the resource
+     * @param string $sid 
      */
     public function getContext(string $sid): FleetContext {
-        return new FleetContext($this->version);
+        return new FleetContext($this->version, $sid);
     }
 
     /**

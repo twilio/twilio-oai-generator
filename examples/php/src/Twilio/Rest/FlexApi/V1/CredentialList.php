@@ -27,6 +27,7 @@ use Twilio\Deserialize;
 use Twilio\Serialize;
 use Twilio\Rest\FlexApi\V1\Credential\AwsList;
 use Twilio\Rest\FlexApi\V1\Credential\NewCredentialsList;
+use Twilio\Rest\FlexApi\V1\CredentialPage;
 
 
 /**
@@ -43,13 +44,12 @@ class CredentialList extends ListResource {
      * Construct the CredentialList
      *
      * @param Version $version Version that contains the resource
-     * @param string $sid 
      */
-    public function __construct(Version $version, string $sid ) {
+    public function __construct(Version $version) {
         parent::__construct($version);
 
         // Path Solution
-        $this->solution = ['sid' => $sid, ];
+        $this->solution = [];
 
         $this->uri = '/Credentials';
     }
@@ -112,7 +112,8 @@ class CredentialList extends ListResource {
     * @return CredentialPage Page of CredentialInstance
     */
 
-    public function page(array $options = [], $pageSize = Values::NONE, string $pageToken = Values::NONE, $pageNumber = Values::NONE): CredentialPage {
+    public function page( $pageSize = Values::NONE, string $pageToken = Values::NONE, $pageNumber = Values::NONE): CredentialPage {
+
         $params = Values::of([
             'PageToken' => $pageToken,
             'Page' => $pageNumber,
@@ -145,10 +146,10 @@ class CredentialList extends ListResource {
     /**
      * Constructs a CredentialContext
      *
-     * @param string $sid The unique string that identifies the resource
+     * @param string $sid 
      */
     public function getContext(string $sid): CredentialContext {
-        return new CredentialContext($this->version);
+        return new CredentialContext($this->version, $sid);
     }
 
     /**

@@ -27,7 +27,7 @@ namespace Twilio\Rest\{{domainName}}\{{version}}{{namespaceSubPart}};
 /**
     {{/vendorExtensions.importProperties}}
     {{/-first}}
- * @method \Twilio\Rest\{{domainName}}\{{apiVersionClass}}\{{parent}}Context {{#lambda.camelcase}}{{mountName}}{{/lambda.camelcase}}(string ${{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}})
+ * @method \Twilio\Rest\{{domainName}}\{{apiVersionClass}}\{{parent}}Context {{#lambda.camelcase}}{{mountName}}{{/lambda.camelcase}}({{#params}}string ${{#lambda.camelcase}}{{.}}{{/lambda.camelcase}}{{^-last}}, {{/-last}}{{/params}})
     {{#-last}}
  */
     {{/-last}}
@@ -54,15 +54,17 @@ class {{apiName}}List extends ListResource {
      * Construct the {{apiName}}List
      *
      * @param Version $version Version that contains the resource
-     {{#requiredPathParamsList}}
+     {{#requiredPathParams}}
+     {{#vendorExtensions.x-is-parent-param}}
      * @param {{{dataType}}} ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}} {{description}}
-     {{/requiredPathParamsList}}
+     {{/vendorExtensions.x-is-parent-param}}
+     {{/requiredPathParams}}
      */
-    public function __construct(Version $version{{#requiredPathParamsList}}, {{{dataType}}} ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}} {{/requiredPathParamsList}}) {
+    public function __construct(Version $version{{#requiredPathParams}}{{#vendorExtensions.x-is-parent-param}}, {{{dataType}}} ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}} {{/vendorExtensions.x-is-parent-param}}{{/requiredPathParams}}) {
         parent::__construct($version);
 
         // Path Solution
-        $this->solution = [{{#requiredPathParamsList}}'{{paramName}}' => ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}, {{/requiredPathParamsList}}];
+        $this->solution = [{{#requiredPathParams}}{{#vendorExtensions.x-is-parent-param}}'{{paramName}}' => ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}, {{/vendorExtensions.x-is-parent-param}}{{/requiredPathParams}}];
         {{#metaProperties.x-is-list-operation}}
 
         $this->uri = '{{{apiListPath}}}';
@@ -75,10 +77,14 @@ class {{apiName}}List extends ListResource {
     /**
      * Constructs a {{apiName}}Context
      *
-     * @param string $sid The unique string that identifies the resource
+     {{#requiredPathParams}}
+     {{^vendorExtensions.x-is-parent-param}}
+     * @param {{{dataType}}} ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}} {{description}}
+     {{/vendorExtensions.x-is-parent-param}}
+     {{/requiredPathParams}}
      */
-    public function getContext(string $sid): {{apiName}}Context {
-        return new {{apiName}}Context($this->version, $sid);
+    public function getContext({{#requiredPathParams}}{{^vendorExtensions.x-is-parent-param}}{{{dataType}}} ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}{{^-last}}, {{/-last}}{{/vendorExtensions.x-is-parent-param}}{{/requiredPathParams}}): {{apiName}}Context {
+        return new {{apiName}}Context($this->version{{#requiredPathParams}}{{^vendorExtensions.x-is-parent-param}}, ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}{{/vendorExtensions.x-is-parent-param}}{{/requiredPathParams}});
     }
 
     {{#apiOperations}}

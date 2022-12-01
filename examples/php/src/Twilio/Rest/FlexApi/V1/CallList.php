@@ -46,10 +46,10 @@ class CallList extends ListResource {
     /**
      * Constructs a CallContext
      *
-     * @param string $sid The unique string that identifies the resource
+     * @param string $sid 
      */
     public function getContext(string $sid): CallContext {
-        return new CallContext($this->version);
+        return new CallContext($this->version, $sid);
     }
 
     /**

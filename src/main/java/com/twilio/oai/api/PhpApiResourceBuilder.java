@@ -18,8 +18,6 @@ public class PhpApiResourceBuilder extends ApiResourceBuilder {
 
     protected String apiListPath = "";
     protected String apiContextPath = "";
-    protected TreeSet<CodegenParameter> requiredPathParamsList = new TreeSet<>((cp1, cp2) -> cp1.baseName.compareTo(cp2.baseName));
-    protected TreeSet<CodegenParameter> requiredPathParamsContext = new TreeSet<>((cp1, cp2) -> cp1.baseName.compareTo(cp2.baseName));
 
     public PhpApiResourceBuilder(IApiActionTemplate template, List<CodegenOperation> codegenOperations, List<CodegenModel> allModels) {
         super(template, codegenOperations, allModels);
@@ -31,10 +29,8 @@ public class PhpApiResourceBuilder extends ApiResourceBuilder {
             updateNamespaceSubPart(codegenOperation);
             template.clean();
             if (super.isInstanceOperation(codegenOperation)) {
-                requiredPathParamsContext.addAll(codegenOperation.pathParams);
                 template.add(PhpApiActionTemplate.TEMPLATE_TYPE_CONTEXT);
             } else {
-                requiredPathParamsList.addAll(codegenOperation.pathParams);
                 template.add(PhpApiActionTemplate.TEMPLATE_TYPE_PAGE);
                 template.add(PhpApiActionTemplate.TEMPLATE_TYPE_OPTIONS);
             }
