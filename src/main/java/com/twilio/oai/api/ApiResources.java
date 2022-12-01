@@ -18,6 +18,7 @@ public class ApiResources {
     private List<CodegenParameter> requiredPathParams = new ArrayList<>();
     private List<CodegenOperation> apiOperations = new ArrayList<>();
     private Map<String, Object> metaProperties = new HashMap();
+    private String namespaceSubPart;
 
     public ApiResources(ApiResourceBuilder apiResourceBuilder) {
         apiOperations = apiResourceBuilder.codegenOperationList;
@@ -28,6 +29,7 @@ public class ApiResources {
         responseModels = apiResourceBuilder.apiResponseModels;
         recordKey = apiResourceBuilder.recordKey;
         requiredPathParams = new ArrayList<>(apiResourceBuilder.requiredPathParams);
+        namespaceSubPart = apiResourceBuilder.namespaceSubPart;
     }
 
     private String getName(CodegenOperation operation) {

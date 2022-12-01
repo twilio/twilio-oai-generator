@@ -14,7 +14,7 @@
  * Do not edit the class manually.
  */
 
-namespace Twilio\Rest\FlexApi\V1;
+namespace Twilio\Rest\FlexApi\V1\Credential;
 
 use Twilio\Exceptions\TwilioException;
 use Twilio\ListResource;
@@ -22,9 +22,14 @@ use Twilio\Options;
 use Twilio\Stream;
 use Twilio\Values;
 use Twilio\Version;
+use Twilio\InstanceContext;
+use Twilio\Deserialize;
+use Twilio\Serialize;
+
 
 
 class NewCredentialsList extends ListResource {
+
     /**
      * Construct the NewCredentialsList
      *
@@ -32,46 +37,50 @@ class NewCredentialsList extends ListResource {
      */
     public function __construct(Version $version) {
         parent::__construct($version);
+
+        // Path Solution
         $this->solution = [];
+
         $this->uri = '/Credentials/AWS';
     }
     
     /**
-    * Create the NewCredentialsInstance
-    *
-    * @param array|Options $options Optional Arguments
-    * @return AccountInstance Created AccountInstance
-    * @throws TwilioException When an HTTP error occurs.
-    */
-    public function create(string $test_string , array $options = []): NewCredentialsInstance {
+     * Create the NewCredentialsInstance
+     *
+     * @param string $testString 
+     * @param array|Options $options Optional Arguments
+     * @return NewCredentialsInstance Created NewCredentialsInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function create(string $testString, array $options = []): NewCredentialsInstance {
         $options = new Values($options);
 
+
         $data = Values::of([
-            'TestString' => $test_string,
-            'TestBoolean' => Serialize::booleanToString($options['TestBoolean']),
-            'TestInteger' => $options['TestInteger'],
-            'TestNumber' => $options['TestNumber'],
-            'TestNumberFloat' => $options['TestNumberFloat'],
-            'TestNumberDouble' => $options['TestNumberDouble'],
-            'TestNumberInt32' => $options['TestNumberInt32'],
-            'TestNumberInt64' => $options['TestNumberInt64'],
-            'TestObject' => Serialize::jsonObject($options['TestObject']),
-            'TestDateTime' => Serialize::iso8601DateTime($options['TestDateTime']),
-            'TestDate' => Serialize::iso8601Date($options['TestDate']),
-            'TestEnum' => $options['TestEnum'],
-            'TestObjectArray' => Serialize::map($options['TestObjectArray'], function($e) { return $e; }),
-            'TestAnyType' => $options['TestAnyType'],
-            'TestAnyArray' => Serialize::map($options['TestAnyArray'], function($e) { return $e; }),
-            'Permissions' => Serialize::map($options['Permissions'], function($e) { return $e; }),
-            'SomeA2PThing' => $options['SomeA2PThing'],
+            'TestString' => $testString,
+            'TestBoolean' => Serialize::booleanToString($options['testBoolean']),
+            'TestInteger' => $options['testInteger'],
+            'TestNumber' => $options['testNumber'],
+            'TestNumberFloat' => $options['testNumberFloat'],
+            'TestNumberDouble' => $options['testNumberDouble'],
+            'TestNumberInt32' => $options['testNumberInt32'],
+            'TestNumberInt64' => $options['testNumberInt64'],
+            'TestObject' => Serialize::jsonObject($options['testObject']),
+            'TestDateTime' => Serialize::iso8601DateTime($options['testDateTime']),
+            'TestDate' => Serialize::iso8601Date($options['testDate']),
+            'TestEnum' => $options['testEnum'],
+            'TestObjectArray' => Serialize::map($options['testObjectArray'], function($e) { return $e; }),
+            'TestAnyType' => $options['testAnyType'],
+            'TestAnyArray' => Serialize::map($options['testAnyArray'], function($e) { return $e; }),
+            'Permissions' => Serialize::map($options['permissions'], function($e) { return $e; }),
+            'SomeA2PThing' => $options['someA2PThing'],
         ]);
 
         $payload = $this->version->create('POST', $this->uri, [], $data);
 
         return new NewCredentialsInstance(
             $this->version,
-            $payload,
-            $this->solution['test_string'],
+            $payload
         );
     }
 

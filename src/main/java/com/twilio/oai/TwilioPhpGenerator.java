@@ -1,7 +1,7 @@
 package com.twilio.oai;
 
-import com.twilio.oai.api.ApiResources;
 import com.twilio.oai.api.PhpApiResourceBuilder;
+import com.twilio.oai.api.PhpApiResources;
 import com.twilio.oai.api.PhpDomainBuilder;
 import com.twilio.oai.common.EnumConstants;
 import com.twilio.oai.common.Utility;
@@ -79,7 +79,7 @@ public class TwilioPhpGenerator extends PhpClientCodegen {
     public OperationsMap postProcessOperationsWithModels(final OperationsMap objs, List<ModelMap> allModels) {
         final OperationsMap results = super.postProcessOperationsWithModels(objs, allModels);
         final List<CodegenOperation> opList = directoryStructureService.processOperations(results);
-        ApiResources apiResources = processCodegenOperations(opList);
+        PhpApiResources apiResources = processCodegenOperations(opList);
         results.put("resources", apiResources);
         return results;
     }
@@ -89,13 +89,14 @@ public class TwilioPhpGenerator extends PhpClientCodegen {
         return EnumConstants.Generator.TWILIO_PHP.getValue();
     }
 
-    private ApiResources processCodegenOperations(List<CodegenOperation> opList) {
+    private PhpApiResources processCodegenOperations(List<CodegenOperation> opList) {
         return new PhpApiResourceBuilder(phpApiActionTemplate, opList, this.allModels)
                 .updateApiPath()
                 .updateAdditionalProps(directoryStructureService)
                 .updateTemplate()
                 .updateOperations(new PhpParameterResolver(conventionMapper))
                 .updateResponseModel(new PhpPropertyResolver(conventionMapper))
+                .setImports(directoryStructureService)
                 .build();
     }
 }

@@ -5,6 +5,9 @@
     * Unlike stream(), this operation is eager and will load `limit` records into
     * memory before returning.
     *
+    {{#queryParams.1}}
+    * @param array|Options $options Optional Arguments
+    {{/queryParams.1}}
     * @param int $limit Upper limit for the number of records to return. read()
     *                   guarantees to never return more than limit.  Default is no
     *                   limit
@@ -16,8 +19,8 @@
     * @return {{apiName}}Instance[] Array of results
     */
 
-    public function read(int $limit = null, $pageSize = null): array {
-        return \iterator_to_array($this->stream($limit, $pageSize), false);
+    public function read({{#queryParams.1}}array $options = [], {{/queryParams.1}}int $limit = null, $pageSize = null): array {
+        return \iterator_to_array($this->stream({{#queryParams.1}}$options, {{/queryParams.1}}$limit, $pageSize), false);
     }
 
     /**

@@ -15,7 +15,7 @@
  */
 
 
-namespace Twilio\Rest\Api\V2010;
+namespace Twilio\Rest\Api\V2010\Account;
 
 use Twilio\Exceptions\TwilioException;
 use Twilio\ListResource;
@@ -23,11 +23,64 @@ use Twilio\Options;
 use Twilio\Stream;
 use Twilio\Values;
 use Twilio\Version;
+use Twilio\InstanceContext;
+use Twilio\Deserialize;
+use Twilio\Serialize;
+use Twilio\Rest\Api\V2010\Account\Call\FeedbackCallSummaryList;
 
-/**
-*/
-class Context extends InstanceContext {
 
 
+class CallContext extends InstanceContext {
+
+    /**
+     * Initialize the CallContext
+     *
+     * @param Version $version Version that contains the resource
+     * @param string $accountSid 
+     * @param int $testInteger INTEGER ID param!!!
+     */
+    public function __construct(Version $version, $accountSid , $testInteger ) {
+        parent::__construct($version);
+
+        // Path Solution
+        $this->solution = ['account_sid' => $accountSid,  'test_integer' => $testInteger,  ];
+
+        $this->uri = '/Accounts/' . \rawurlencode($accountSid) . '/Calls/' . \rawurlencode($testInteger) . '.json';
+    }
+
+    /**
+     * Delete the CallInstance
+     *
+     * @return bool True if delete succeeds, false otherwise
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function delete(): bool {
+        return $this->version->delete('DELETE', $this->uri);
+    }
+
+    /**
+     * Fetch the CallInstance
+     *
+     * @return CallInstance Fetched CallInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function fetch(): CallInstance {
+
+        $payload = $this->version->fetch('GET', $this->uri);
+
+        return new CallInstance($this->version, $payload, $this->solution['accountSid'], $this->solution['testInteger']);
+    }
+
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string {
+        $context = [];
+        foreach ($this->solution as $key => $value) {
+            $context[] = "$key=$value";
+        }
+        return '[Twilio.Api.V2010.CallContext ' . \implode(' ', $context) . ']';
+    }
 }
-

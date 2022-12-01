@@ -23,6 +23,11 @@ use Twilio\Options;
 use Twilio\Stream;
 use Twilio\Values;
 use Twilio\Version;
+use Twilio\InstanceContext;
+use Twilio\Deserialize;
+use Twilio\Serialize;
+use Twilio\Rest\FlexApi\V1\Credential\AwsList;
+use Twilio\Rest\FlexApi\V1\Credential\NewCredentialsList;
 
 
 abstract class CredentialOptions {

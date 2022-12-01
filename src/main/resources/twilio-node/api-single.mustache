@@ -24,7 +24,7 @@ import { {{importName}} } from "./{{apiFilename}}/{{filename}}";
  * Options to pass to {{vendorExtensions.x-name-lower}} a {{instanceName}}
  *
  {{#allParams}}
- * @property { {{{dataType}}} } {{^required}}[{{/required}}{{paramName}}{{^required}}]{{/required}} {{description}}
+ * @property { {{{dataType}}} } {{^required}}[{{/required}}{{paramName}}{{^required}}]{{/required}} {{{description}}}
  {{/allParams}}
  */
 export interface {{resourceName}}{{vendorExtensions.x-name}}Options {
@@ -40,8 +40,8 @@ export interface {{resourceName}}{{vendorExtensions.x-name}}Options {
 
 export interface {{resourceName}} {
   {{#instanceResource}}
-  ({{#resourcePathParams}}{{^vendorExtensions.x-is-parent-param}}{{paramName}}: {{dataType}}{{^-last}}, {{/-last}}{{/vendorExtensions.x-is-parent-param}}{{/resourcePathParams}}): {{resourceName}};
-  get({{#resourcePathParams}}{{^vendorExtensions.x-is-parent-param}}{{paramName}}: {{dataType}}{{^-last}}, {{/-last}}{{/vendorExtensions.x-is-parent-param}}{{/resourcePathParams}}): {{resourceName}};
+  ({{#resourcePathParams}}{{^vendorExtensions.x-is-parent-param}}{{paramName}}: {{dataType}}, {{/vendorExtensions.x-is-parent-param}}{{/resourcePathParams}}): {{resourceName}};
+  get({{#resourcePathParams}}{{^vendorExtensions.x-is-parent-param}}{{paramName}}: {{dataType}}, {{/vendorExtensions.x-is-parent-param}}{{/resourcePathParams}}): {{resourceName}};
   {{/instanceResource}}
 
   {{#dependents}}
@@ -75,7 +75,7 @@ export class {{resourceName}}Impl implements {{resourceName}} {
   {{/dependents}}
 
   constructor(protected _version: {{apiVersionClass}}{{#resourcePathParams}}, {{paramName}}: {{{dataType}}}{{/resourcePathParams}}) {
-    this._solution = { {{#resourcePathParams}}{{paramName}}{{^-last}}, {{/-last}}{{/resourcePathParams}} };
+    this._solution = { {{#resourcePathParams}}{{paramName}}, {{/resourcePathParams}} };
     this._uri = `{{path}}`;
   }
 
@@ -126,9 +126,9 @@ class {{resourceName}}Impl implements {{resourceName}} {
 
 export function {{resourceName}}(version: {{apiVersionClass}}{{#resourcePathParams}}, {{paramName}}: {{{dataType}}}{{/resourcePathParams}}): {{resourceName}} {
   {{#instanceResource}}
-  const instance = (({{#resourcePathParams}}{{^vendorExtensions.x-is-parent-param}}{{paramName}}{{^-last}}, {{/-last}}{{/vendorExtensions.x-is-parent-param}}{{/resourcePathParams}}) => instance.get({{#resourcePathParams}}{{^vendorExtensions.x-is-parent-param}}{{paramName}}{{^-last}}, {{/-last}}{{/vendorExtensions.x-is-parent-param}}{{/resourcePathParams}})) as {{parentResourceName}}Impl;
+  const instance = (({{#resourcePathParams}}{{^vendorExtensions.x-is-parent-param}}{{paramName}}, {{/vendorExtensions.x-is-parent-param}}{{/resourcePathParams}}) => instance.get({{#resourcePathParams}}{{^vendorExtensions.x-is-parent-param}}{{paramName}}, {{/vendorExtensions.x-is-parent-param}}{{/resourcePathParams}})) as {{parentResourceName}}Impl;
 
-  instance.get = function get({{#resourcePathParams}}{{^vendorExtensions.x-is-parent-param}}{{paramName}}{{^-last}}, {{/-last}}{{/vendorExtensions.x-is-parent-param}}{{/resourcePathParams}}): {{resourceName}} {
+  instance.get = function get({{#resourcePathParams}}{{^vendorExtensions.x-is-parent-param}}{{paramName}}, {{/vendorExtensions.x-is-parent-param}}{{/resourcePathParams}}): {{resourceName}} {
     return new {{resourceName}}Impl(version{{#resourcePathParams}}, {{paramName}}{{/resourcePathParams}});
   }
   {{/instanceResource}}
@@ -137,7 +137,7 @@ export function {{resourceName}}(version: {{apiVersionClass}}{{#resourcePathPara
   {{/instanceResource}}
 
   instance._version = version;
-  instance._solution = { {{#resourcePathParams}}{{paramName}}{{^-last}}, {{/-last}}{{/resourcePathParams}} };
+  instance._solution = { {{#resourcePathParams}}{{paramName}}, {{/resourcePathParams}} };
   instance._uri = `{{path}}`;
 
   {{#dependents}}

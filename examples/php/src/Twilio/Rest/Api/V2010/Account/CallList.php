@@ -14,7 +14,7 @@
  * Do not edit the class manually.
  */
 
-namespace Twilio\Rest\Api\V2010;
+namespace Twilio\Rest\Api\V2010\Account;
 
 use Twilio\Exceptions\TwilioException;
 use Twilio\ListResource;
@@ -22,47 +22,61 @@ use Twilio\Options;
 use Twilio\Stream;
 use Twilio\Values;
 use Twilio\Version;
+use Twilio\InstanceContext;
+use Twilio\Deserialize;
+use Twilio\Serialize;
+use Twilio\Rest\Api\V2010\Account\Call\FeedbackCallSummaryList;
 
+
+/**
+ * @property FeedbackCallSummaryList $feedbackCallSummary
+ * @method \Twilio\Rest\Api\V2010\Account\Call\FeedbackCallSummaryContext feedbackCallSummary(string $sid)
+ */
 
 class CallList extends ListResource {
+    protected $_feedbackCallSummary = null;
+
     /**
      * Construct the CallList
      *
      * @param Version $version Version that contains the resource
-     * @param string $accountSid
-     * @param int $testInteger
+     * @param string $accountSid 
      */
-    public function __construct(Version $version, string $accountSid , int $testInteger ) {
+    public function __construct(Version $version, string $accountSid ) {
         parent::__construct($version);
-        $this->solution = ['account_sid' => $accountSid,   'test_integer' => $testInteger  ];
+
+        // Path Solution
+        $this->solution = ['account_sid' => $accountSid, ];
+
         $this->uri = '/Accounts/' . \rawurlencode($accountSid) . '/Calls.json';
     }
     
     /**
-    * Create the CallInstance
-    *
-    * @param array|Options $options Optional Arguments
-    * @return AccountInstance Created AccountInstance
-    * @throws TwilioException When an HTTP error occurs.
-    */
-    public function create(string $required_string_property ,string $test_method , array $options = []): CallInstance {
+     * Create the CallInstance
+     *
+     * @param string $requiredStringProperty 
+     * @param string $testMethod The HTTP method that we should use to request the &#x60;TestArrayOfUri&#x60;.
+     * @param array|Options $options Optional Arguments
+     * @return CallInstance Created CallInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function create(string $requiredStringProperty, string $testMethod, array $options = []): CallInstance {
         $options = new Values($options);
 
+
         $data = Values::of([
-            'RequiredStringProperty' => $required_string_property,
-            'TestMethod' => $test_method,
-            'AccountSid' => $options['AccountSid'],
-            'TestArrayOfStrings' => Serialize::map($options['TestArrayOfStrings'], function($e) { return $e; }),
-            'TestArrayOfUri' => Serialize::map($options['TestArrayOfUri'], function($e) { return $e; }),
+            'RequiredStringProperty' => $requiredStringProperty,
+            'TestMethod' => $testMethod,
+            'TestArrayOfStrings' => Serialize::map($options['testArrayOfStrings'], function($e) { return $e; }),
+            'TestArrayOfUri' => Serialize::map($options['testArrayOfUri'], function($e) { return $e; }),
         ]);
 
         $payload = $this->version->create('POST', $this->uri, [], $data);
 
         return new CallInstance(
             $this->version,
-            $payload,
-            $this->solution['required_string_property'],
-            $this->solution['test_method'],
+            $payload
+            , $this->solution['accountSid']
         );
     }
 
@@ -78,6 +92,52 @@ class CallList extends ListResource {
      */
     public function getContext(string $sid): CallContext {
         return new CallContext($this->version);
+    }
+
+    /**
+     * Access the feedbackCallSummary
+     */
+    protected function getFeedbackCallSummary(): FeedbackCallSummaryList {
+        if (!$this->_feedbackCallSummary) {
+            $this->_feedbackCallSummary = new FeedbackCallSummaryList(
+                $this->version
+            );
+        }
+
+        return $this->_feedbackCallSummary;
+    }
+
+    /**
+     * Magic getter to lazy load subresources
+     *
+     * @param string $name Subresource to return
+     * @return ListResource The requested subresource
+     * @throws TwilioException For unknown subresources
+     */
+    public function __get(string $name): ListResource {
+        if (\property_exists($this, '_' . $name)) {
+            $method = 'get' . \ucfirst($name);
+            return $this->$method();
+        }
+
+        throw new TwilioException('Unknown subresource ' . $name);
+    }
+
+    /**
+     * Magic caller to get resource contexts
+     *
+     * @param string $name Resource to return
+     * @param array $arguments Context parameters
+     * @return InstanceContext The requested resource context
+     * @throws TwilioException For unknown resource
+     */
+    public function __call(string $name, array $arguments): InstanceContext {
+        $property = $this->$name;
+        if (\method_exists($property, 'getContext')) {
+            return \call_user_func_array(array($property, 'getContext'), $arguments);
+        }
+
+        throw new TwilioException('Resource does not have a context');
     }
 
     /**

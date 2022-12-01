@@ -1,0 +1,21 @@
+{{#vendorExtensions.x-is-delete-operation}}
+
+    /**
+     * Delete the {{apiName}}Instance
+     *
+    {{#headerParams.0}}
+     * @param array|Options $options Optional Arguments
+    {{/headerParams.0}}
+     * @return bool True if delete succeeds, false otherwise
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function delete({{#headerParams.0}}array $options = []{{/headerParams.0}}): bool {
+        {{#headerParams.0}}
+        $options = new Values($options);
+
+        $headers = Values::of([{{#headerParams}}'{{baseName}}' => $options['{{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}'], {{/headerParams}}]);
+
+        {{/headerParams.0}}
+        return $this->version->delete('DELETE', $this->uri{{#headerParams.0}}, [], [], $headers{{/headerParams.0}});
+    }
+{{/vendorExtensions.x-is-delete-operation}}

@@ -38,7 +38,7 @@ export class {{name}}Instance {
     {{/vars}}
 
     {{#parentResourceName}}
-    this._solution = { {{#resourcePathParams}}{{paramName}}{{#-last}}: {{paramName}} || this.{{paramName}}{{/-last}}{{^-last}}, {{/-last}}{{/resourcePathParams}} };
+    this._solution = { {{#resourcePathParams}}{{paramName}}{{#-last}}: {{paramName}} || this.{{paramName}}{{/-last}}, {{/resourcePathParams}} };
     {{/parentResourceName}}
   }
 
@@ -81,7 +81,7 @@ export class {{name}}Instance {
   toJSON() {
     return {
       {{#vars}}
-      {{name}}: this.{{name}}{{^-last}}, {{/-last}}
+      {{name}}: this.{{name}},
       {{/vars}}
     }
   }
