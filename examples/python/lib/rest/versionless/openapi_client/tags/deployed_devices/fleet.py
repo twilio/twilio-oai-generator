@@ -66,9 +66,8 @@ class FleetInstance(InstanceResource):
     def __init__(self, version, payload, sid: str):
         super(FleetInstance, self).__init__(version)
         self._properties = { 
-            'account_sid' = payload.get('account_sid'),
-            'friendly_name' = payload.get('friendly_name'),
             'sid' = payload.get('sid'),
+            'friendly_name' = payload.get('friendly_name'),
         }
 
         self._context = None
