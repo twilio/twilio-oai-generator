@@ -1,0 +1,9 @@
+{{#vendorExtensions.x-is-update-operation}}{{#hasOptionalParams}}
+    /**
+{{>options/optionParamComments}}
+    * @return Update{{apiName}}Options Options builder
+    */
+    public static function update({{>options/optionMethodArgs}}): Update{{apiName}}Options {
+        return new Update{{apiName}}Options({{#optionalParams}}${{paramName}},{{/optionalParams}});
+    }
+{{/hasOptionalParams}}{{/vendorExtensions.x-is-update-operation}}

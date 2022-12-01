@@ -1,0 +1,2 @@
+{{#optionalParams}}{{^isPathParam}}
+        {{^isArray}}{{dataType}}  ${{paramName}} = Values::NONE,{{/isArray}}{{#isArray}}{{dataType}}  ${{paramName}} = Array::NONE,{{/isArray}}{{/isPathParam}}{{/optionalParams}}

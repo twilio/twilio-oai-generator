@@ -1,0 +1,9 @@
+{{#vendorExtensions.x-is-delete-operation}}{{#hasOptionalParams}}
+    /**
+{{>options/optionParamComments}}
+    * @return Delete{{apiName}}Options Options builder
+    */
+    public static function delete({{>options/optionMethodArgs}}): Delete{{apiName}}Options {
+        return new Delete{{apiName}}Options({{#optionalParams}}${{paramName}},{{/optionalParams}});
+    }
+{{/hasOptionalParams}}{{/vendorExtensions.x-is-delete-operation}}

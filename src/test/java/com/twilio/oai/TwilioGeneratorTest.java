@@ -59,18 +59,4 @@ public class TwilioGeneratorTest {
 
         assertFalse(output.isEmpty());
     }
-
-    @Test
-    public void launchPhpGenerator() {
-        final CodegenConfigurator configurator = new CodegenConfigurator()
-                .setGeneratorName(EnumConstants.Generator.TWILIO_PHP.getValue())
-                .setInputSpec("/Users/rprakash/code/codegen-twilio/twilio-oai/spec/json/twilio_autopilot_v1.json")
-                .setOutputDir("codegen/" + EnumConstants.Generator.TWILIO_PHP.getValue());
-
-        final ClientOptInput clientOptInput = configurator.toClientOptInput();
-        DefaultGenerator generator = new DefaultGenerator();
-        final List<File> output = generator.opts(clientOptInput).generate();
-
-        assertFalse(output.isEmpty());
-    }
 }

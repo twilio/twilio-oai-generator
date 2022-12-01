@@ -1,0 +1,8 @@
+{{#optionalParams}}{{^isPathParam}}
+    {{#description}}
+    * @param {{dataType}} ${{paramName}} {{description}}
+    {{/description}}
+    {{^description}}
+    * @param {{datatype}} ${{paramName}} {{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}
+    {{/description}}
+{{/isPathParam}}{{/optionalParams}}

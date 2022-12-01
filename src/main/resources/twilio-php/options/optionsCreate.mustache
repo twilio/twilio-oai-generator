@@ -1,0 +1,9 @@
+{{#vendorExtensions.x-is-create-operation}}{{#hasOptionalParams}}
+    /**
+{{>options/optionParamComments}}
+    * @return Create{{apiName}}Options Options builder
+    */
+    public static function create({{>options/optionMethodArgs}}): Create{{apiName}}Options {
+        return new Create{{apiName}}Options({{#optionalParams}}${{paramName}},{{/optionalParams}});
+    }
+{{/hasOptionalParams}}{{/vendorExtensions.x-is-create-operation}}

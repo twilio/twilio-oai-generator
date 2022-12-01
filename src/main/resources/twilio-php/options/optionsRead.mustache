@@ -1,0 +1,9 @@
+{{#vendorExtensions.x-is-read-operation}}{{#hasOptionalParams}}
+    /**
+{{>options/optionParamComments}}
+    * @return Read{{apiName}}Options Options builder
+    */
+    public static function read({{>options/optionMethodArgs}}): Read{{apiName}}Options {
+        return new Read{{apiName}}Options({{#optionalParams}}${{paramName}},{{/optionalParams}});
+    }
+{{/hasOptionalParams}}{{/vendorExtensions.x-is-read-operation}}

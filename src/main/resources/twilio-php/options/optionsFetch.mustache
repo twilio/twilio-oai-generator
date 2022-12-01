@@ -1,0 +1,9 @@
+{{#vendorExtensions.x-is-fetch-operation}}{{#hasOptionalParams}}
+    /**
+{{>options/optionParamComments}}
+    * @return Fetch{{apiName}}Options Options builder
+    */
+    public static function fetch({{>options/optionMethodArgs}}): Fetch{{apiName}}Options {
+        return new Fetch{{apiName}}Options({{#optionalParams}}${{paramName}},{{/optionalParams}});
+    }
+{{/hasOptionalParams}}{{/vendorExtensions.x-is-fetch-operation}}

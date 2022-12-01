@@ -8,19 +8,20 @@ namespace Twilio\Rest\{{domainName}}\{{version}}\{{namespaceSubPart}};;
 {{>imports}}
 
 abstract class {{apiName}}Options {
-
-    {{#apiOperations}}
-    {{>optionsCreate}}
-    {{>optionsRead}}
-    {{>optionsUpdate}}
-    {{/apiOperations}}
-
+{{#apiOperations}}
+{{>options/optionsCreate}}
+{{>options/optionsRead}}
+{{>options/optionsUpdate}}
+{{>options/optionsDelete}}
+{{>options/optionsFetch}}
+{{/apiOperations}}
 }
 
 {{#apiOperations}}
-{{>optionsCreateClass}}
-{{>optionsReadClass}}
-{{>optionsUpdateClass}}
+{{>options/optionsCreateClass}}
+{{>options/optionsReadClass}}
+{{>options/optionsUpdateClass}}
+{{>options/optionsDeleteClass}}
+{{>options/optionsFetchClass}}
 {{/apiOperations}}
-
 {{/resources}}

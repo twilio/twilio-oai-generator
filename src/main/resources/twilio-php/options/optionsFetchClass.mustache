@@ -1,0 +1,30 @@
+{{#vendorExtensions.x-is-fetch-operation}}{{#hasOptionalParams}}
+class Fetch{{apiName}}Options extends Options {
+    /**
+{{>options/optionParamComments}}
+    */
+    public function __construct({{>options/optionMethodArgs}}) {
+        {{#optionalParams}}{{^isPathParam}}
+        $this->options['{{paramName}}'] = ${{paramName}};
+        {{/isPathParam}}{{/optionalParams}}
+    }
+
+    {{#optionalParams}}{{^isPathParam}}
+{{>options/optionClassSetterComment}}
+    public function set{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}(string ${{paramName}}): self {
+        $this->options['{{paramName}}'] = ${{paramName}};
+    return $this;
+    }
+{{/isPathParam}}{{/optionalParams}}
+
+    /**
+    * Provide a friendly representation
+    *
+    * @return string Machine friendly representation
+    */
+    public function __toString(): string {
+        $options = \http_build_query(Values::of($this->options), '', ' ');
+        return '[Twilio.{{domainName}}.{{version}}{{#namespaceSubPart}}.{{namespaceSubPart}}{{/namespaceSubPart}}.Fetch{{apiName}}Options ' . $options . ']';
+    }
+}
+{{/hasOptionalParams}}{{/vendorExtensions.x-is-fetch-operation}}
