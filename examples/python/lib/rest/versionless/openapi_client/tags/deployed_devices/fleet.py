@@ -34,14 +34,11 @@ class FleetContext(InstanceContext):
         
         
         def fetch(self):
-            # TODO: template based on type of operation
-            data = values.of({
-                
-            })
-
-            payload = self._version.create(method='get', uri=self._uri, data=data, )
-
-            return FleetContext(self._version, payload, )
+            
+            
+            fetch = True
+            
+            
         
 
     def __repr__(self):
@@ -101,14 +98,19 @@ class FleetListInstance(ListResource):
         
         
         def create(self, body):
-            # TODO: template based on type of operation
+            
             data = values.of({
-                'body': body,
+            'body': body,
             })
 
             payload = self._version.create(method='post', uri=self._uri, data=data, )
 
-            return FleetListInstance(self._version, payload, body=self._solution['body'])
+            return FleetInstance(self._version, payload, )
+            
+            
+            
+            
+            
         
 
     def __repr__(self):

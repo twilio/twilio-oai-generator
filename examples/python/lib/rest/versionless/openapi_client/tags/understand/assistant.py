@@ -36,14 +36,11 @@ class AssistantListInstance(ListResource):
         
         
         def page(self):
-            # TODO: template based on type of operation
-            data = values.of({
-                
-            })
-
-            payload = self._version.create(method='get', uri=self._uri, data=data, )
-
-            return AssistantListInstance(self._version, payload, )
+            
+            
+            
+            
+            page = True
         
 
     def __repr__(self):

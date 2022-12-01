@@ -34,14 +34,11 @@ class CallContext(InstanceContext):
         
         
         def update(self):
-            # TODO: template based on type of operation
-            data = values.of({
-                
-            })
-
-            payload = self._version.create(method='post', uri=self._uri, data=data, )
-
-            return CallContext(self._version, payload, )
+            
+            update = True
+            
+            
+            
         
 
     def __repr__(self):

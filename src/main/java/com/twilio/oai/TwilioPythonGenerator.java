@@ -129,17 +129,22 @@ public class TwilioPythonGenerator extends PythonClientCodegen {
             }
 
             if (co.operationIdCamelCase.startsWith("Update")) {
+                co.vendorExtensions.put("x-is-update", true);
                 addOperationName(co, "Update");
             } else if (co.operationIdCamelCase.startsWith("Delete")) {
-                addOperationName(co, "Remove");
+                co.vendorExtensions.put("x-is-delete", true);
+                addOperationName(co, "Delete");
                 co.returnType = "boolean";
             } else if (co.operationIdCamelCase.startsWith("Create")) {
+                co.vendorExtensions.put("x-is-create", true);
                 addOperationName(co, "Create");
             } else if (co.operationIdCamelCase.startsWith("Fetch")) {
+                co.vendorExtensions.put("x-is-fetch", true);
                 addOperationName(co, "Fetch");
             } else if (co.operationIdCamelCase.startsWith("List")){
                 hasPaginationOperation = true;
                 co.returnType = itemName + "Page";
+                co.vendorExtensions.put("x-is-page", true);
                 addOperationName(co, "Page");
             }
 

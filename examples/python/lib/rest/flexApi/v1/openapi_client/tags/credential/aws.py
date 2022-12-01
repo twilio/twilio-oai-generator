@@ -36,35 +36,26 @@ class AwsContext(InstanceContext):
         
         self._history = None
         
-        def remove(self):
-            # TODO: template based on type of operation
-            data = values.of({
-                
-            })
-
-            payload = self._version.create(method='delete', uri=self._uri, data=data, )
-
-            return AwsContext(self._version, payload, )
+        def delete(self):
+            
+            
+            
+            delete = True
+            
         
         def fetch(self):
-            # TODO: template based on type of operation
-            data = values.of({
-                
-            })
-
-            payload = self._version.create(method='get', uri=self._uri, data=data, )
-
-            return AwsContext(self._version, payload, )
+            
+            
+            fetch = True
+            
+            
         
         def update(self, body):
-            # TODO: template based on type of operation
-            data = values.of({
-                'body': body,
-            })
-
-            payload = self._version.create(method='post', uri=self._uri, data=data, )
-
-            return AwsContext(self._version, payload, body=self._solution['body'])
+            
+            update = True
+            
+            
+            
         
 
     def __repr__(self):
@@ -128,14 +119,11 @@ class AwsListInstance(ListResource):
         
         
         def page(self, page_size):
-            # TODO: template based on type of operation
-            data = values.of({
-                'page_size': page_size,
-            })
-
-            payload = self._version.create(method='get', uri=self._uri, data=data, )
-
-            return AwsListInstance(self._version, payload, page_size=self._solution['page_size'])
+            
+            
+            
+            
+            page = True
         
 
     def __repr__(self):

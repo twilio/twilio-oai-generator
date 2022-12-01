@@ -24,14 +24,19 @@ class {{resourceName}}({{#isListResource}}ListResource{{/isListResource}}{{#isCo
         self._{{mountName}} = None{{/dependents}}
         {{#operations}}
         def {{vendorExtensions.x-name-lower}}(self{{#allParams}}, {{paramName}}{{/allParams}}):
-            # TODO: template based on type of operation
+            {{#vendorExtensions.x-is-create}}
             data = values.of({
-                {{#allParams}}'{{paramName}}': {{paramName}},{{/allParams}}
+            {{#allParams}}'{{paramName}}': {{paramName}},{{/allParams}}
             })
 
             payload = self._version.create(method='{{httpMethod}}', uri=self._uri, data=data, )
 
-            return {{resourceName}}(self._version, payload, {{#allParams}}{{paramName}}=self._solution['{{paramName}}']{{/allParams}})
+            return {{name}}Instance(self._version, payload, {{#resourcePathParams}}{{paramName}}=self._solution['{{paramName}}']{{/resourcePathParams}})
+            {{/vendorExtensions.x-is-create}}
+            {{#vendorExtensions.x-is-update}}update = True{{/vendorExtensions.x-is-update}}
+            {{#vendorExtensions.x-is-fetch}}fetch = True{{/vendorExtensions.x-is-fetch}}
+            {{#vendorExtensions.x-is-delete}}delete = True{{/vendorExtensions.x-is-delete}}
+            {{#vendorExtensions.x-is-page}}page = True{{/vendorExtensions.x-is-page}}
         {{/operations}}
 
     def __repr__(self):

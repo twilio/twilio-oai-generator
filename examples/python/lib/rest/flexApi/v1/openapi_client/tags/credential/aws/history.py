@@ -34,14 +34,11 @@ class HistoryContext(InstanceContext):
         
         
         def fetch(self, add_ons_data):
-            # TODO: template based on type of operation
-            data = values.of({
-                'add_ons_data': add_ons_data,
-            })
-
-            payload = self._version.create(method='get', uri=self._uri, data=data, )
-
-            return HistoryContext(self._version, payload, add_ons_data=self._solution['add_ons_data'])
+            
+            
+            fetch = True
+            
+            
         
 
     def __repr__(self):

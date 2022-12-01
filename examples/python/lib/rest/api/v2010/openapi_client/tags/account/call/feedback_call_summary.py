@@ -34,14 +34,11 @@ class FeedbackCallSummaryContext(InstanceContext):
         
         
         def update(self, body):
-            # TODO: template based on type of operation
-            data = values.of({
-                'body': body,
-            })
-
-            payload = self._version.create(method='post', uri=self._uri, data=data, )
-
-            return FeedbackCallSummaryContext(self._version, payload, body=self._solution['body'])
+            
+            update = True
+            
+            
+            
         
 
     def __repr__(self):

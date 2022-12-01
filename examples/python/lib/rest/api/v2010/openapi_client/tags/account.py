@@ -36,35 +36,26 @@ class AccountContext(InstanceContext):
         
         self._calls = None
         
-        def remove(self):
-            # TODO: template based on type of operation
-            data = values.of({
-                
-            })
-
-            payload = self._version.create(method='delete', uri=self._uri, data=data, )
-
-            return AccountContext(self._version, payload, )
+        def delete(self):
+            
+            
+            
+            delete = True
+            
         
         def fetch(self):
-            # TODO: template based on type of operation
-            data = values.of({
-                
-            })
-
-            payload = self._version.create(method='get', uri=self._uri, data=data, )
-
-            return AccountContext(self._version, payload, )
+            
+            
+            fetch = True
+            
+            
         
         def update(self, body):
-            # TODO: template based on type of operation
-            data = values.of({
-                'body': body,
-            })
-
-            payload = self._version.create(method='post', uri=self._uri, data=data, )
-
-            return AccountContext(self._version, payload, body=self._solution['body'])
+            
+            update = True
+            
+            
+            
         
 
     def __repr__(self):
@@ -128,24 +119,26 @@ class AccountListInstance(ListResource):
         
         
         def create(self, x_twilio_webhook_enabled, body):
-            # TODO: template based on type of operation
+            
             data = values.of({
-                'x_twilio_webhook_enabled': x_twilio_webhook_enabled,'body': body,
+            'x_twilio_webhook_enabled': x_twilio_webhook_enabled,'body': body,
             })
 
             payload = self._version.create(method='post', uri=self._uri, data=data, )
 
-            return AccountListInstance(self._version, payload, x_twilio_webhook_enabled=self._solution['x_twilio_webhook_enabled']body=self._solution['body'])
+            return AccountInstance(self._version, payload, )
+            
+            
+            
+            
+            
         
         def page(self, date_created, date_test, date_created, date_created, page_size):
-            # TODO: template based on type of operation
-            data = values.of({
-                'date_created': date_created,'date_test': date_test,'date_created': date_created,'date_created': date_created,'page_size': page_size,
-            })
-
-            payload = self._version.create(method='get', uri=self._uri, data=data, )
-
-            return AccountListInstance(self._version, payload, date_created=self._solution['date_created']date_test=self._solution['date_test']date_created=self._solution['date_created']date_created=self._solution['date_created']page_size=self._solution['page_size'])
+            
+            
+            
+            
+            page = True
         
 
     def __repr__(self):

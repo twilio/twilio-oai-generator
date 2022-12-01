@@ -33,25 +33,19 @@ class CallContext(InstanceContext):
         self._uri = '/Accounts/${account_sid}/Calls/${test_integer}.json'
         
         
-        def remove(self):
-            # TODO: template based on type of operation
-            data = values.of({
-                
-            })
-
-            payload = self._version.create(method='delete', uri=self._uri, data=data, )
-
-            return CallContext(self._version, payload, )
+        def delete(self):
+            
+            
+            
+            delete = True
+            
         
         def fetch(self):
-            # TODO: template based on type of operation
-            data = values.of({
-                
-            })
-
-            payload = self._version.create(method='get', uri=self._uri, data=data, )
-
-            return CallContext(self._version, payload, )
+            
+            
+            fetch = True
+            
+            
         
 
     def __repr__(self):
@@ -112,14 +106,19 @@ class CallListInstance(ListResource):
         self._feedback_call_summary = None
         
         def create(self, body):
-            # TODO: template based on type of operation
+            
             data = values.of({
-                'body': body,
+            'body': body,
             })
 
             payload = self._version.create(method='post', uri=self._uri, data=data, )
 
-            return CallListInstance(self._version, payload, body=self._solution['body'])
+            return CallInstance(self._version, payload, account_sid=self._solution['account_sid'])
+            
+            
+            
+            
+            
         
 
     def __repr__(self):

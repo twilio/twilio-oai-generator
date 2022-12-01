@@ -34,14 +34,19 @@ class NewCredentialsListInstance(ListResource):
         
         
         def create(self, body):
-            # TODO: template based on type of operation
+            
             data = values.of({
-                'body': body,
+            'body': body,
             })
 
             payload = self._version.create(method='post', uri=self._uri, data=data, )
 
-            return NewCredentialsListInstance(self._version, payload, body=self._solution['body'])
+            return NewCredentialsInstance(self._version, payload, )
+            
+            
+            
+            
+            
         
 
     def __repr__(self):
