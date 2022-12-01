@@ -2,7 +2,7 @@ package com.twilio.oai;
 
 import com.twilio.oai.common.EnumConstants;
 import com.twilio.oai.common.Utility;
-import com.twilio.oai.resolver.node.NodeConventionResolver;
+import com.twilio.oai.resolver.python.PythonConventionResolver;
 import com.twilio.oai.resolver.python.PythonCaseResolver;
 import com.twilio.oai.resource.IResourceTree;
 import com.twilio.oai.resource.ResourceMap;
@@ -32,7 +32,7 @@ public class TwilioPythonGenerator extends PythonClientCodegen {
     private final List<CodegenModel> allModels = new ArrayList<>();
     private final Map<String, String> modelFormatMap = new HashMap<>();
     //PYTHON CHANGE
-    private final NodeConventionResolver conventionResolver = new NodeConventionResolver();
+    private final PythonConventionResolver conventionResolver = new PythonConventionResolver();
 
 
 
