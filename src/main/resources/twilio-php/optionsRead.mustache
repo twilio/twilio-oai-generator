@@ -1,0 +1,10 @@
+{{#vendorExtensions.x-is-read-operation}}
+    /**
+    * @param string $friendlyName The string that identifies the Application
+    *                             resources to read
+    * @return ReadApplicationOptions Options builder
+    */
+    public static function read({{#optionalParams}}{{dataType}}  ${{paramName}} = Values::NONE,{{/optionalParams}}): Read{{apiName}}Options {
+        return new Read{{apiName}}Options({{#optionalParams}}${{paramName}},{{/optionalParams}});
+    }
+{{/vendorExtensions.x-is-read-operation}}

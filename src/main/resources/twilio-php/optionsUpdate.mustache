@@ -1,7 +1,5 @@
 {{#vendorExtensions.x-is-update-operation}}
-
     /**
-
     * @param string $friendlyName A string to describe the resource
     * @param bool $logQueries Whether queries should be logged and kept after
     *                         training
@@ -18,7 +16,6 @@
     * @return UpdateAssistantOptions Options builder
     */
     public static function update({{#optionalParams}}{{dataType}}  ${{paramName}} = Values::NONE,{{/optionalParams}}): Update{{apiName}}Options {
-        return new Update{{apiName}}Options({{#optionalParams}}{{^vendorExtensions.x-serialize}}${{paramName}},{{/vendorExtensions.x-serialize}}{{/optionalParams}});
+        return new Update{{apiName}}Options({{#optionalParams}}${{paramName}},{{/optionalParams}});
     }
-
 {{/vendorExtensions.x-is-update-operation}}

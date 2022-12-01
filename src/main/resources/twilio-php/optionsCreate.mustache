@@ -8,6 +8,6 @@
     * @return CreateAddressOptions Options builder
     */
     public static function create({{#optionalParams}}{{dataType}}  ${{paramName}} = Values::NONE,{{/optionalParams}}): Create{{apiName}}Options {
-    return new Create{{apiName}}Options({{#optionalParams}}{{^vendorExtensions.x-serialize}}${{paramName}},{{/vendorExtensions.x-serialize}}{{/optionalParams}});
+        return new Create{{apiName}}Options({{#optionalParams}}${{paramName}},{{/optionalParams}});
     }
 {{/vendorExtensions.x-is-create-operation}}
