@@ -166,7 +166,7 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
             updateResourcePath(resource, co);
             twilioCodegen.populateCrudOperations(resource, co);
 
-            co.allParams.forEach(param -> addModel(param.baseType, param.dataType, models));
+            co.allParams.forEach(param -> directoryStructureService.addModel(models, param.baseType, param.dataType));
             co.allParams.removeAll(co.pathParams);
             co.requiredParams.removeAll(co.pathParams);
             co.hasParams = !co.allParams.isEmpty();
@@ -211,7 +211,11 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
                 .flatMap(operation -> getResponseModel(operation, recordKey).stream())
                 .forEach(responseModel -> {
                     resource.put("responseModel", responseModel);
-                    responseModel.getVars().forEach(prop -> addModel(prop.complexType, prop.dataType, models));
+                    responseModel
+                        .getVars()
+                        .forEach(variable -> directoryStructureService.addModel(models,
+                                                                                variable.complexType,
+                                                                                variable.dataType));
 
                     final List<CodegenModel> allResponseModels = opList
                         .stream()
@@ -287,10 +291,6 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
                 });
             }
         });
-    }
-
-    private void addModel(final String complexType, final String dataType, final Map<String, CodegenModel> models) {
-        directoryStructureService.addModel(models, complexType != null ? complexType : dataType);
     }
 
     @SuppressWarnings("unchecked")
