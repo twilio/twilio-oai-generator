@@ -22,4 +22,26 @@ describe("versionless", () => {
       .create({ friendlyName: "Friend-o" })
       .then(() => scope.done());
   });
+
+  it("should page the understand assistants", () => {
+    const scope = nock("http://versionless.twilio.com")
+      .get("/understand/Assistants")
+      .reply(200, {
+        assistants: [
+          {
+            friendly_name: "flea",
+          },
+        ],
+        meta: {
+          key: "assistants",
+        },
+      });
+
+    return twilio.versionless.understand.assistants
+      .page()
+      .then((assistantPage) => {
+        expect(assistantPage.instances[0].friendlyName).toEqual("flea");
+      })
+      .then(() => scope.done());
+  });
 });

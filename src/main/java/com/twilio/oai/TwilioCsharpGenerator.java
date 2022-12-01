@@ -45,7 +45,6 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
         additionalProperties,
         new ResourceMap(new Inflector()),
         new CSharpCaseResolver());
-    private final List<CodegenModel> allModels = new ArrayList<>();
     private final Map<String, String> modelFormatMap = new HashMap<>();
 
     CSharpResolver resolver = new CSharpResolver();
@@ -105,7 +104,7 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
     public OperationsMap postProcessOperationsWithModels(final OperationsMap objs, List<ModelMap> allModels) {
         final OperationsMap results = super.postProcessOperationsWithModels(objs, allModels);
         final List<CodegenOperation> opList = directoryStructureService.processOperations(results);
-        final String recordKey = directoryStructureService.getRecordKey(opList, this.allModels);
+        final String recordKey = directoryStructureService.getRecordKey(opList);
         results.put("recordKey", recordKey);
 
         final Map<String, Map<String, Object>> resources = new LinkedHashMap<>();
@@ -145,7 +144,6 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
 
         for (final Map<String, Object> resource : resources.values()) {
             resource.put("responseModel", getDistinctResponseModel(responseModels));
-            PathUtils.flattenStringMap(resource, "models");
         }
 
         List<IJsonSchemaValidationProperties> enumList = new ArrayList<>(resolver.getEnums().values());
@@ -321,7 +319,7 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
         // Resolve Response Model
         for (CodegenResponse response : co.responses) {
             String modelName = response.dataType;
-            Optional<CodegenModel> responseModel = directoryStructureService.getModelCoPath(modelName, co, recordKey, this.allModels);
+            Optional<CodegenModel> responseModel = directoryStructureService.getModelCoPath(modelName, co, recordKey);
             if (responseModel.isEmpty()) {
                 continue;
             }
@@ -346,8 +344,7 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
     public Map<String, ModelsMap> postProcessAllModels(final Map<String, ModelsMap> allModels) {
         final Map<String, ModelsMap> results = super.postProcessAllModels(allModels);
 
-        Utility.addModelsToLocalModelList(results, this.allModels);
-        Utility.setComplexDataMapping(this.allModels, this.modelFormatMap);
+        directoryStructureService.postProcessAllModels(results, modelFormatMap);
         resolver.setModelFormatMap(modelFormatMap);
         // Return an empty collection so no model files get generated.
         return new HashMap<>();

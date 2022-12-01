@@ -14,3 +14,4 @@ __pycache__
 
 **/execution-result.xml
 **/php_coverage.xml
+*.iml

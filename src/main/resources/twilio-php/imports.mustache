@@ -1,0 +1,14 @@
+use Twilio\Exceptions\TwilioException;
+use Twilio\ListResource;
+use Twilio\Options;
+use Twilio\Stream;
+use Twilio\Values;
+use Twilio\Version;
+use Twilio\InstanceContext;
+use Twilio\Deserialize;
+use Twilio\Serialize;
+{{#apiOperations}}
+{{#vendorExtensions.importProperties}}
+use Twilio\Rest\{{domainName}}\{{apiVersionClass}}\{{parent}}List;
+{{/vendorExtensions.importProperties}}
+{{/apiOperations}}

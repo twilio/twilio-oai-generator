@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Stream;
 
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.Operation;
@@ -64,12 +65,10 @@ public abstract class AbstractTwilioGoGenerator extends GoClientCodegen {
     public void processOpenAPI(final OpenAPI openAPI) {
         super.processOpenAPI(openAPI);
 
-        openAPI
-            .getPaths()
-            .values()
-            .stream()
-            .map(PathItem::readOperations)
-            .flatMap(Collection::stream)
+        // Clear out any tags present. We want all operations in a single API file.
+        getOperationStream(openAPI).forEach(operation -> operation.setTags(null));
+
+        getOperationStream(openAPI)
             .map(Operation::getParameters)
             .filter(Objects::nonNull)
             .flatMap(Collection::stream)
@@ -80,6 +79,10 @@ public abstract class AbstractTwilioGoGenerator extends GoClientCodegen {
                 param.in("query");
                 param.addExtension(VENDOR_EXTENSION_ACCOUNT_SID, true);
             });
+    }
+
+    private Stream<Operation> getOperationStream(final OpenAPI openAPI) {
+        return openAPI.getPaths().values().stream().map(PathItem::readOperations).flatMap(Collection::stream);
     }
 
     @Override
@@ -102,6 +105,7 @@ public abstract class AbstractTwilioGoGenerator extends GoClientCodegen {
         return super.toVarName(name);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public OperationsMap postProcessOperationsWithModels(final OperationsMap objs, List<ModelMap> allModels) {
         final OperationMap objectMap = objs.getOperations();

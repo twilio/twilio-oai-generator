@@ -1,11 +1,11 @@
 package com.twilio.oai;
 
+import com.twilio.oai.common.Utility;
 import com.twilio.oai.resolver.CaseResolver;
 import com.twilio.oai.resource.IResourceTree;
 import com.twilio.oai.resource.Resource;
 
 import java.io.File;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -26,13 +26,13 @@ import lombok.RequiredArgsConstructor;
 import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenOperation;
 import org.openapitools.codegen.CodegenProperty;
-import org.openapitools.codegen.model.ModelMap;
 import org.openapitools.codegen.model.ModelsMap;
 import org.openapitools.codegen.model.OperationMap;
 import org.openapitools.codegen.model.OperationsMap;
 
 import static com.twilio.oai.common.ApplicationConstants.ACCOUNT_SID_FORMAT;
 import static com.twilio.oai.common.ApplicationConstants.ARRAY;
+import static com.twilio.oai.common.ApplicationConstants.ENUM_VARS;
 import static com.twilio.oai.common.ApplicationConstants.LIST_INSTANCE;
 import static com.twilio.oai.common.ApplicationConstants.PATH_SEPARATOR_PLACEHOLDER;
 import static com.twilio.oai.common.ApplicationConstants.PATH_TYPE_EXTENSION_NAME;
@@ -41,14 +41,17 @@ import static com.twilio.oai.common.ApplicationConstants.PATH_TYPE_EXTENSION_NAM
 public class DirectoryStructureService {
     public static final String VERSION_RESOURCES = "versionResources";
     public static final String ALL_VERSION_RESOURCES = VERSION_RESOURCES + "All";
-
+    @Getter
     private final Map<String, Object> additionalProperties;
+    @Getter
     private final IResourceTree resourceTree;
     private final CaseResolver caseResolver;
 
     @Getter
     private boolean isVersionLess = false;
     private final Map<String, String> productMap = new HashMap<>();
+
+    private final List<CodegenModel> allModels = new ArrayList<>();
 
     @Data
     @Builder
@@ -60,6 +63,15 @@ public class DirectoryStructureService {
         private String mountName;
         private String filename;
         private String param;
+    }
+
+    @Data
+    @Builder
+    public static class ContextResource {
+        private String paramName;
+        private String filename;
+        private String mountName;
+        private String parent;
     }
 
     public void configure(final OpenAPI openAPI) {
@@ -80,6 +92,7 @@ public class DirectoryStructureService {
                     productMap.put(tag, PathUtils.getFirstPathPart(name));
                 }
 
+                operation.setTags(null);
                 operation.addTagsItem(tag);
 
                 if (!tag.contains(PATH_SEPARATOR_PLACEHOLDER)) {
@@ -92,6 +105,11 @@ public class DirectoryStructureService {
                                      () -> operation.addExtension(PATH_TYPE_EXTENSION_NAME, type)));
             });
         });
+    }
+
+    public void configureResourceFamily(OpenAPI openAPI) {
+        openAPI.getPaths().forEach(resourceTree::addResource);
+        resourceTree.getResources().forEach(resource -> resource.updateFamily(resourceTree));
     }
 
     // If account sid is present in path param, it is stored in x-is-account-sid.
@@ -123,6 +141,20 @@ public class DirectoryStructureService {
         resourcesMap.put(resourceAliases.getClassName(), dependent);
     }
 
+    public void addContextdependents(final List<Object> resourceList, final String path, final Operation operation){
+        final Resource.Aliases resourceAliases = getResourceAliases(path, operation);
+        String parent = String.join("\\", resourceTree.ancestors(path, operation));
+        String paramName = PathUtils.fetchlastPathParam(path,"{", "}");
+        final ContextResource dependent = new ContextResource.ContextResourceBuilder()
+                .paramName(paramName)
+                .mountName(caseResolver.pathOperation(resourceAliases.getMountName()))
+                .filename(caseResolver.filenameOperation(resourceAliases.getClassName()))
+                .parent(parent)
+                .build();
+        if (!resourceList.contains(dependent))
+            resourceList.add(dependent);
+    }
+
     private Resource.Aliases getResourceAliases(final String path, final Operation operation) {
         return resourceTree
             .findResource(path)
@@ -135,6 +167,12 @@ public class DirectoryStructureService {
             .of(additionalProperties.get("apiVersionClass"))
             .map(String.class::cast)
             .map(version -> version.isEmpty() ? null : version);
+    }
+
+    public void postProcessAllModels(final Map<String, ModelsMap> models, final Map<String, String> modelFormatMap) {
+        Utility.addModelsToLocalModelList(models, allModels);
+        Utility.setComplexDataMapping(allModels, modelFormatMap);
+        allModels.forEach(model -> model.setClassname(model.getClassname().replace("Enum", "")));
     }
 
     public List<CodegenOperation> processOperations(final OperationsMap results) {
@@ -175,6 +213,8 @@ public class DirectoryStructureService {
                                      .build());
         }
 
+        allModels.forEach(item -> item.getVendorExtensions().remove(ENUM_VARS));
+
         return operations;
     }
 
@@ -204,11 +244,11 @@ public class DirectoryStructureService {
         return String.join(File.separator, pathParts);
     }
 
-    public String getRecordKey(final List<CodegenOperation> opList, final List<CodegenModel> models) {
+    public String getRecordKey(final List<CodegenOperation> opList) {
         return opList
             .stream()
             .filter(co -> co.operationId.toLowerCase().startsWith("list"))
-            .map(co -> getModelByClassname(models, co.returnType))
+            .map(co -> getModelByClassname(co.returnType))
             .map(Optional::orElseThrow)
             .map(CodegenModel::getAllVars)
             .flatMap(Collection::stream)
@@ -218,19 +258,34 @@ public class DirectoryStructureService {
             .orElse("");
     }
 
-    private Optional<CodegenModel> getModelByClassname(final List<CodegenModel> models, final String classname) {
-        return models.stream().filter(model -> model.classname.equals(classname)).findFirst();
+    public Optional<CodegenModel> getModelCoPath(final String className,
+                                                 final CodegenOperation codegenOperation,
+                                                 final String recordKey) {
+        if ((boolean) codegenOperation.vendorExtensions.getOrDefault("x-is-read-operation", false)) {
+            return allModels
+                .stream()
+                .filter(model -> model.getClassname().equals(className))
+                .map(CodegenModel::getVars)
+                .flatMap(Collection::stream)
+                .filter(prop -> prop.baseName.equals(recordKey))
+                .map(CodegenProperty::getComplexType)
+                .map(this::getModelByClassname)
+                .findFirst()
+                .orElseThrow();
+        }
+
+        return getModelByClassname(className);
     }
 
-    public Optional<CodegenModel> getModelCoPath(final String modelName, CodegenOperation codegenOperation, String recordKey, List<CodegenModel> allModels) {
-        if (codegenOperation.vendorExtensions.containsKey("x-is-read-operation") && (boolean)codegenOperation.vendorExtensions.get("x-is-read-operation")) {
-            Optional<CodegenModel> coModel = allModels.stream().filter(model -> model.getClassname().equals(modelName)).findFirst();
-            if (coModel.isEmpty()) {
-                return Optional.empty();
+    public void addModel(final Map<String, CodegenModel> models, final String classname) {
+        getModelByClassname(classname).ifPresent(model -> {
+            if (models.putIfAbsent(model.getClassname(), model) == null) {
+                model.getVars().forEach(property -> addModel(models, property.dataType));
             }
-            CodegenProperty property = coModel.get().vars.stream().filter(prop -> prop.baseName.equals(recordKey)).findFirst().get();
-            return allModels.stream().filter(model -> model.getClassname().equals(property.complexType)).findFirst();
-        }
-        return allModels.stream().filter(model -> model.getClassname().equals(modelName)).findFirst();
+        });
+    }
+
+    public Optional<CodegenModel> getModelByClassname(final String classname) {
+        return allModels.stream().filter(model -> model.classname.equals(classname)).findFirst();
     }
 }

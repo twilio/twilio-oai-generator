@@ -31,71 +31,121 @@ namespace Twilio.Rest.Versionless.Understand
     
 
         
-        private static Request BuildCreateRequest(CreateAssistantOptions options, ITwilioRestClient client)
+        private static Request BuildReadRequest(ReadAssistantOptions options, ITwilioRestClient client)
         {
             
             string path = "/understand/Assistants";
 
 
             return new Request(
-                HttpMethod.Post,
+                HttpMethod.Get,
                 Rest.Domain.Versionless,
                 path,
-                postParams: options.GetParams(),
+                queryParams: options.GetParams(),
                 headerParams: null
             );
         }
-
-        /// <summary> create </summary>
-        /// <param name="options"> Create Assistant parameters </param>
+        /// <summary> read </summary>
+        /// <param name="options"> Read Assistant parameters </param>
         /// <param name="client"> Client to make requests to Twilio </param>
         /// <returns> A single instance of Assistant </returns>
-        public static AssistantResource Create(CreateAssistantOptions options, ITwilioRestClient client = null)
+        public static ResourceSet<AssistantResource> Read(ReadAssistantOptions options, ITwilioRestClient client = null)
         {
             client = client ?? TwilioClient.GetRestClient();
-            var response = client.Request(BuildCreateRequest(options, client));
-            return FromJson(response.Content);
+            var response = client.Request(BuildReadRequest(options, client));
+            var page = Page<AssistantResource>.FromJson("assistants", response.Content);
+            return new ResourceSet<AssistantResource>(page, options, client);
         }
 
         #if !NET35
-        /// <summary> create </summary>
-        /// <param name="options"> Create Assistant parameters </param>
+        /// <summary> read </summary>
+        /// <param name="options"> Read Assistant parameters </param>
         /// <param name="client"> Client to make requests to Twilio </param>
         /// <returns> Task that resolves to A single instance of Assistant </returns>
-        public static async System.Threading.Tasks.Task<AssistantResource> CreateAsync(CreateAssistantOptions options,
-        ITwilioRestClient client = null)
+        public static async System.Threading.Tasks.Task<ResourceSet<AssistantResource>> ReadAsync(ReadAssistantOptions options,
+                                                                                             ITwilioRestClient client = null)
         {
             client = client ?? TwilioClient.GetRestClient();
-            var response = await client.RequestAsync(BuildCreateRequest(options, client));
-            return FromJson(response.Content);
+            var response = await client.RequestAsync(BuildReadRequest(options, client));
+
+            var page = Page<AssistantResource>.FromJson("assistants", response.Content);
+            return new ResourceSet<AssistantResource>(page, options, client);
         }
         #endif
-
-        /// <summary> create </summary>
-        /// <param name="friendlyName">  </param>
+        /// <summary> read </summary>
         /// <param name="client"> Client to make requests to Twilio </param>
+        /// <param name="limit"> Record limit </param>
         /// <returns> A single instance of Assistant </returns>
-        public static AssistantResource Create(
-                                          string friendlyName = null,
-                                          ITwilioRestClient client = null)
+        public static ResourceSet<AssistantResource> Read(
+                                                     long? limit = null,
+                                                     ITwilioRestClient client = null)
         {
-            var options = new CreateAssistantOptions(){  FriendlyName = friendlyName };
-            return Create(options, client);
+            var options = new ReadAssistantOptions(){ Limit = limit};
+            return Read(options, client);
         }
 
         #if !NET35
-        /// <summary> create </summary>
-        /// <param name="friendlyName">  </param>
+        /// <summary> read </summary>
         /// <param name="client"> Client to make requests to Twilio </param>
+        /// <param name="limit"> Record limit </param>
         /// <returns> Task that resolves to A single instance of Assistant </returns>
-        public static async System.Threading.Tasks.Task<AssistantResource> CreateAsync(
-                                                                                  string friendlyName = null,
-                                                                                  ITwilioRestClient client = null)
+        public static async System.Threading.Tasks.Task<ResourceSet<AssistantResource>> ReadAsync(
+                                                                                             long? limit = null,
+                                                                                             ITwilioRestClient client = null)
         {
-        var options = new CreateAssistantOptions(){  FriendlyName = friendlyName };
-            return await CreateAsync(options, client);
+            var options = new ReadAssistantOptions(){ Limit = limit};
+            return await ReadAsync(options, client);
         }
         #endif
+
+        
+        /// <summary> Fetch the target page of records </summary>
+        /// <param name="targetUrl"> API-generated URL for the requested results page </param>
+        /// <param name="client"> Client to make requests to Twilio </param>
+        /// <returns> The target page of records </returns>
+        public static Page<AssistantResource> GetPage(string targetUrl, ITwilioRestClient client)
+        {
+            client = client ?? TwilioClient.GetRestClient();
+
+            var request = new Request(
+                HttpMethod.Get,
+                targetUrl
+            );
+
+            var response = client.Request(request);
+            return Page<AssistantResource>.FromJson("assistants", response.Content);
+        }
+
+        /// <summary> Fetch the next page of records </summary>
+        /// <param name="page"> current page of records </param>
+        /// <param name="client"> Client to make requests to Twilio </param>
+        /// <returns> The next page of records </returns>
+        public static Page<AssistantResource> NextPage(Page<AssistantResource> page, ITwilioRestClient client)
+        {
+            var request = new Request(
+                HttpMethod.Get,
+                page.GetNextPageUrl(Rest.Domain.Api)
+            );
+
+            var response = client.Request(request);
+            return Page<AssistantResource>.FromJson("assistants", response.Content);
+        }
+
+        /// <summary> Fetch the previous page of records </summary>
+        /// <param name="page"> current page of records </param>
+        /// <param name="client"> Client to make requests to Twilio </param>
+        /// <returns> The previous page of records </returns>
+        public static Page<AssistantResource> PreviousPage(Page<AssistantResource> page, ITwilioRestClient client)
+        {
+            var request = new Request(
+                HttpMethod.Get,
+                page.GetPreviousPageUrl(Rest.Domain.Api)
+            );
+
+            var response = client.Request(request);
+            return Page<AssistantResource>.FromJson("assistants", response.Content);
+        }
+
     
         /// <summary>
         /// Converts a JSON string into a AssistantResource object

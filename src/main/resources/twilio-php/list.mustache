@@ -1,0 +1,164 @@
+{{#resources}}
+<?php
+
+{{>licenseInfo}}
+namespace Twilio\Rest\{{domainName}}\{{version}}{{namespaceSubPart}};
+
+{{>imports}}
+
+{{#apiOperations}}
+{{^vendorExtensions.x-is-delete-operation}}
+{{^vendorExtensions.x-is-fetch-operation}}
+{{^vendorExtensions.x-is-update-operation}}
+    {{#vendorExtensions.importProperties.0}}
+/**
+    {{/vendorExtensions.importProperties.0}}
+    {{#vendorExtensions.importProperties}}
+ * @property {{filename}}List ${{#lambda.camelcase}}{{mountName}}{{/lambda.camelcase}}
+    {{#-last}}
+    {{^vendorExtensions.importMethods}}
+ */
+    {{/vendorExtensions.importMethods}}
+    {{/-last}}
+    {{/vendorExtensions.importProperties}}
+    {{#vendorExtensions.importMethods}}
+    {{#-first}}
+    {{^vendorExtensions.importProperties}}
+/**
+    {{/vendorExtensions.importProperties}}
+    {{/-first}}
+ * @method \Twilio\Rest\{{domainName}}\{{apiVersionClass}}\{{parent}}Context {{#lambda.camelcase}}{{mountName}}{{/lambda.camelcase}}(string ${{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}})
+    {{#-last}}
+ */
+    {{/-last}}
+    {{/vendorExtensions.importMethods}}
+{{/vendorExtensions.x-is-update-operation}}
+{{/vendorExtensions.x-is-fetch-operation}}
+{{/vendorExtensions.x-is-delete-operation}}
+{{/apiOperations}}
+
+class {{apiName}}List extends ListResource {
+    {{#apiOperations}}
+    {{^vendorExtensions.x-is-delete-operation}}
+    {{^vendorExtensions.x-is-fetch-operation}}
+    {{^vendorExtensions.x-is-update-operation}}
+    {{#vendorExtensions.importProperties}}
+    protected $_{{#lambda.camelcase}}{{mountName}}{{/lambda.camelcase}} = null;
+    {{/vendorExtensions.importProperties}}
+    {{/vendorExtensions.x-is-update-operation}}
+    {{/vendorExtensions.x-is-fetch-operation}}
+    {{/vendorExtensions.x-is-delete-operation}}
+    {{/apiOperations}}
+
+    /**
+     * Construct the {{apiName}}List
+     *
+     * @param Version $version Version that contains the resource
+     {{#requiredPathParamsList}}
+     * @param {{{dataType}}} ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}} {{description}}
+     {{/requiredPathParamsList}}
+     */
+    public function __construct(Version $version{{#requiredPathParamsList}}, {{{dataType}}} ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}} {{/requiredPathParamsList}}) {
+        parent::__construct($version);
+
+        // Path Solution
+        $this->solution = [{{#requiredPathParamsList}}'{{paramName}}' => ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}, {{/requiredPathParamsList}}];
+        {{#metaProperties.x-is-list-operation}}
+
+        $this->uri = '{{{apiListPath}}}';
+        {{/metaProperties.x-is-list-operation}}
+    }
+    {{#apiOperations}}
+    {{>listCreate}}
+    {{>listRead}}
+    {{/apiOperations}}
+    /**
+     * Constructs a {{apiName}}Context
+     *
+     * @param string $sid The unique string that identifies the resource
+     */
+    public function getContext(string $sid): {{apiName}}Context {
+        return new {{apiName}}Context($this->version);
+    }
+
+    {{#apiOperations}}
+    {{^vendorExtensions.x-is-delete-operation}}
+    {{^vendorExtensions.x-is-fetch-operation}}
+    {{^vendorExtensions.x-is-update-operation}}
+    {{#vendorExtensions.importProperties}}
+    /**
+     * Access the {{#lambda.camelcase}}{{mountName}}{{/lambda.camelcase}}
+     */
+    protected function get{{#lambda.titlecase}}{{mountName}}{{/lambda.titlecase}}(): {{filename}}List {
+        if (!$this->_{{#lambda.camelcase}}{{mountName}}{{/lambda.camelcase}}) {
+            $this->_{{#lambda.camelcase}}{{mountName}}{{/lambda.camelcase}} = new {{filename}}List(
+                $this->version
+                {{#requiredParams}}
+                {{#isPathParam}}
+                , $this->solution['{{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}']
+                {{/isPathParam}}
+                {{/requiredParams}}
+            );
+        }
+
+        return $this->_{{#lambda.camelcase}}{{mountName}}{{/lambda.camelcase}};
+    }
+
+    {{/vendorExtensions.importProperties}}
+    {{/vendorExtensions.x-is-update-operation}}
+    {{/vendorExtensions.x-is-fetch-operation}}
+    {{/vendorExtensions.x-is-delete-operation}}
+    {{/apiOperations}}
+{{#apiOperations}}
+    {{^vendorExtensions.x-is-delete-operation}}
+    {{^vendorExtensions.x-is-fetch-operation}}
+    {{^vendorExtensions.x-is-update-operation}}
+    {{#vendorExtensions.importProperties.0}}
+    /**
+     * Magic getter to lazy load subresources
+     *
+     * @param string $name Subresource to return
+     * @return ListResource The requested subresource
+     * @throws TwilioException For unknown subresources
+     */
+    public function __get(string $name): ListResource {
+        if (\property_exists($this, '_' . $name)) {
+            $method = 'get' . \ucfirst($name);
+            return $this->$method();
+        }
+
+        throw new TwilioException('Unknown subresource ' . $name);
+    }
+
+    /**
+     * Magic caller to get resource contexts
+     *
+     * @param string $name Resource to return
+     * @param array $arguments Context parameters
+     * @return InstanceContext The requested resource context
+     * @throws TwilioException For unknown resource
+     */
+    public function __call(string $name, array $arguments): InstanceContext {
+        $property = $this->$name;
+        if (\method_exists($property, 'getContext')) {
+            return \call_user_func_array(array($property, 'getContext'), $arguments);
+        }
+
+        throw new TwilioException('Resource does not have a context');
+    }
+
+    {{/vendorExtensions.importProperties.0}}
+    {{/vendorExtensions.x-is-update-operation}}
+    {{/vendorExtensions.x-is-fetch-operation}}
+    {{/vendorExtensions.x-is-delete-operation}}
+{{/apiOperations}}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string {
+        return '[Twilio.{{domainName}}.{{version}}.{{#lambda.titlecase}}{{apiName}}{{/lambda.titlecase}}List]';
+    }
+}
+{{/resources}}
