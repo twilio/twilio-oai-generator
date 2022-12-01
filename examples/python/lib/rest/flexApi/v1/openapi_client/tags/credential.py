@@ -42,9 +42,7 @@ class CredentialListInstance(ListResource):
         :returns: Machine friendly representation
         :rtype: str
         """
-        # TODO: update so that contexts aren't returned for page or list resources
-        context = ' '.join('{}={}'.format(k, v) for k, v in self._solution.items())
-        return '<Twilio.Api.V1.CredentialListInstance {}>'.format(context)
+        return '<Twilio.Api.V1.CredentialListInstance>'
 
 
 

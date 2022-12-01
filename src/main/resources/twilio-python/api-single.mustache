@@ -37,9 +37,27 @@ class {{resourceName}}({{#isListResource}}ListResource{{/isListResource}}{{#isCo
 
             payload = self._version.update(method='{{httpMethod}}', uri=self._uri, data=data, )
 
-            return {{name}}Instance(self._version, payload, {{#resourcePathParams}}{{paramName}}=self._solution['{{paramName}}']{{/resourcePathParams}}){{/vendorExtensions.x-is-update}}
-            {{#vendorExtensions.x-is-fetch}}fetch = True{{/vendorExtensions.x-is-fetch}}
-            {{#vendorExtensions.x-is-delete}}delete = True{{/vendorExtensions.x-is-delete}}
+            return {{name}}Instance(self._version, payload, {{#resourcePathParams}}{{paramName}}=self._solution['{{paramName}}'], {{/resourcePathParams}}){{/vendorExtensions.x-is-update}}
+            {{#vendorExtensions.x-is-fetch}}"""
+            Fetch the {{name}}Instance
+
+            :returns: The fetched {{name}}Instance
+            #TODO: add rtype docs
+            """
+            payload = self._version.fetch(method='GET', uri=self._uri, )
+            return {{name}}Instance(
+                self._version,
+                payload,
+                {{#resourcePathParams}}{{paramName}}{{/resourcePathParams}}=self._solution[{{#resourcePathParams}}'{{paramName}}'{{/resourcePathParams}}],
+            )
+            {{/vendorExtensions.x-is-fetch}}
+            {{#vendorExtensions.x-is-delete}}"""
+            Deletes the {{name}}Instance
+
+            :returns: True if delete succeeds, False otherwise
+            :rtype: bool
+            """
+            return self._version.delete(method='DELETE', uri=self._uri, ){{/vendorExtensions.x-is-delete}}
             {{#vendorExtensions.x-is-page}}data = values.of({
                 {{#allParams}}'{{paramName}}': {{paramName}},{{/allParams}}
             })
@@ -55,16 +73,14 @@ class {{resourceName}}({{#isListResource}}ListResource{{/isListResource}}{{#isCo
         :returns: Machine friendly representation
         :rtype: str
         """
-        # TODO: update so that contexts aren't returned for page or list resources
-        context = ' '.join('{}={}'.format(k, v) for k, v in self._solution.items())
-        return '<Twilio.Api.{{apiVersionClass}}.{{resourceName}} {}>'.format(context)
+        return '<Twilio.Api.{{apiVersionClass}}.{{resourceName}}>'
 
 {{#responseModel}}
 class {{name}}Instance(InstanceResource):
     def __init__(self, version, payload{{#resourcePathParams}}, {{paramName}}: {{{dataType}}}{{/resourcePathParams}}):
         super({{name}}Instance, self).__init__(version)
-        self._properties = {
-            {{#vars}}'{{name}}' = payload.get('{{baseName}}'),{{/vars}}
+        self._properties = { {{#vars}}
+            '{{name}}' = payload.get('{{baseName}}'),{{/vars}}
         }
 
         self._context = None

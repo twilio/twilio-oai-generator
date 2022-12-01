@@ -36,7 +36,19 @@ class FleetContext(InstanceContext):
         def fetch(self):
             
             
-            fetch = True
+            """
+            Fetch the FleetInstance
+
+            :returns: The fetched FleetInstance
+            #TODO: add rtype docs
+            """
+            payload = self._version.fetch(method='GET', uri=self._uri, )
+            return FleetInstance(
+                self._version,
+                payload,
+                sid=self._solution['sid'],
+            )
+            
             
             
         
@@ -47,16 +59,16 @@ class FleetContext(InstanceContext):
         :returns: Machine friendly representation
         :rtype: str
         """
-        # TODO: update so that contexts aren't returned for page or list resources
-        context = ' '.join('{}={}'.format(k, v) for k, v in self._solution.items())
-        return '<Twilio.Api.DeployedDevices.FleetContext {}>'.format(context)
+        return '<Twilio.Api.DeployedDevices.FleetContext>'
 
 
 class FleetInstance(InstanceResource):
     def __init__(self, version, payload, sid: str):
         super(FleetInstance, self).__init__(version)
-        self._properties = {
-            'account_sid' = payload.get('account_sid'),'friendly_name' = payload.get('friendly_name'),'sid' = payload.get('sid'),
+        self._properties = { 
+            'account_sid' = payload.get('account_sid'),
+            'friendly_name' = payload.get('friendly_name'),
+            'sid' = payload.get('sid'),
         }
 
         self._context = None
@@ -117,9 +129,7 @@ class FleetListInstance(ListResource):
         :returns: Machine friendly representation
         :rtype: str
         """
-        # TODO: update so that contexts aren't returned for page or list resources
-        context = ' '.join('{}={}'.format(k, v) for k, v in self._solution.items())
-        return '<Twilio.Api.DeployedDevices.FleetListInstance {}>'.format(context)
+        return '<Twilio.Api.DeployedDevices.FleetListInstance>'
 
 
 

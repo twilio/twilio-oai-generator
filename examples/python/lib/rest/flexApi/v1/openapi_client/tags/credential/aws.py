@@ -40,13 +40,31 @@ class AwsContext(InstanceContext):
             
             
             
-            delete = True
+            """
+            Deletes the AwsInstance
+
+            :returns: True if delete succeeds, False otherwise
+            :rtype: bool
+            """
+            return self._version.delete(method='DELETE', uri=self._uri, )
             
         
         def fetch(self):
             
             
-            fetch = True
+            """
+            Fetch the AwsInstance
+
+            :returns: The fetched AwsInstance
+            #TODO: add rtype docs
+            """
+            payload = self._version.fetch(method='GET', uri=self._uri, )
+            return AwsInstance(
+                self._version,
+                payload,
+                sid=self._solution['sid'],
+            )
+            
             
             
         
@@ -58,7 +76,7 @@ class AwsContext(InstanceContext):
 
             payload = self._version.update(method='post', uri=self._uri, data=data, )
 
-            return AwsInstance(self._version, payload, sid=self._solution['sid'])
+            return AwsInstance(self._version, payload, sid=self._solution['sid'], )
             
             
             
@@ -70,16 +88,17 @@ class AwsContext(InstanceContext):
         :returns: Machine friendly representation
         :rtype: str
         """
-        # TODO: update so that contexts aren't returned for page or list resources
-        context = ' '.join('{}={}'.format(k, v) for k, v in self._solution.items())
-        return '<Twilio.Api.V1.AwsContext {}>'.format(context)
+        return '<Twilio.Api.V1.AwsContext>'
 
 
 class AwsInstance(InstanceResource):
     def __init__(self, version, payload, sid: str):
         super(AwsInstance, self).__init__(version)
-        self._properties = {
-            'account_sid' = payload.get('account_sid'),'sid' = payload.get('sid'),'test_string' = payload.get('test_string'),'test_integer' = payload.get('test_integer'),
+        self._properties = { 
+            'account_sid' = payload.get('account_sid'),
+            'sid' = payload.get('sid'),
+            'test_string' = payload.get('test_string'),
+            'test_integer' = payload.get('test_integer'),
         }
 
         self._context = None
@@ -143,9 +162,7 @@ class AwsListInstance(ListResource):
         :returns: Machine friendly representation
         :rtype: str
         """
-        # TODO: update so that contexts aren't returned for page or list resources
-        context = ' '.join('{}={}'.format(k, v) for k, v in self._solution.items())
-        return '<Twilio.Api.V1.AwsListInstance {}>'.format(context)
+        return '<Twilio.Api.V1.AwsListInstance>'
 
 
 

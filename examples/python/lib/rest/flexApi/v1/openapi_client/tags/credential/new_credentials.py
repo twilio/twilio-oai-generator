@@ -53,16 +53,17 @@ class NewCredentialsListInstance(ListResource):
         :returns: Machine friendly representation
         :rtype: str
         """
-        # TODO: update so that contexts aren't returned for page or list resources
-        context = ' '.join('{}={}'.format(k, v) for k, v in self._solution.items())
-        return '<Twilio.Api.V1.NewCredentialsListInstance {}>'.format(context)
+        return '<Twilio.Api.V1.NewCredentialsListInstance>'
 
 
 class NewCredentialsInstance(InstanceResource):
     def __init__(self, version, payload):
         super(NewCredentialsInstance, self).__init__(version)
-        self._properties = {
-            'account_sid' = payload.get('account_sid'),'sid' = payload.get('sid'),'test_string' = payload.get('test_string'),'test_integer' = payload.get('test_integer'),
+        self._properties = { 
+            'account_sid' = payload.get('account_sid'),
+            'sid' = payload.get('sid'),
+            'test_string' = payload.get('test_string'),
+            'test_integer' = payload.get('test_integer'),
         }
 
         self._context = None

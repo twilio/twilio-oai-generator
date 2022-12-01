@@ -41,7 +41,7 @@ class CallContext(InstanceContext):
 
             payload = self._version.update(method='post', uri=self._uri, data=data, )
 
-            return CallInstance(self._version, payload, sid=self._solution['sid'])
+            return CallInstance(self._version, payload, sid=self._solution['sid'], )
             
             
             
@@ -53,9 +53,7 @@ class CallContext(InstanceContext):
         :returns: Machine friendly representation
         :rtype: str
         """
-        # TODO: update so that contexts aren't returned for page or list resources
-        context = ' '.join('{}={}'.format(k, v) for k, v in self._solution.items())
-        return '<Twilio.Api.V1.CallContext {}>'.format(context)
+        return '<Twilio.Api.V1.CallContext>'
 
 
 
@@ -77,9 +75,7 @@ class CallListInstance():
         :returns: Machine friendly representation
         :rtype: str
         """
-        # TODO: update so that contexts aren't returned for page or list resources
-        context = ' '.join('{}={}'.format(k, v) for k, v in self._solution.items())
-        return '<Twilio.Api.V1.CallListInstance {}>'.format(context)
+        return '<Twilio.Api.V1.CallListInstance>'
 
 
 

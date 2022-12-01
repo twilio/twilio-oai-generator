@@ -27,7 +27,7 @@ public class TwilioPythonGenerator extends PythonClientCodegen {
             additionalProperties,
             resourceTree,
             new PythonCaseResolver());
-    private static final String INIT_TEMPLATE = "init.mustache";
+    private static final String INIT_TEMPLATE = "version.mustache";
     private static final String FILENAME_EXTENSION = ".py";
     private final List<CodegenModel> allModels = new ArrayList<>();
     private final Map<String, String> modelFormatMap = new HashMap<>();

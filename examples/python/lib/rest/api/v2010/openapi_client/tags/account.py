@@ -40,13 +40,31 @@ class AccountContext(InstanceContext):
             
             
             
-            delete = True
+            """
+            Deletes the AccountInstance
+
+            :returns: True if delete succeeds, False otherwise
+            :rtype: bool
+            """
+            return self._version.delete(method='DELETE', uri=self._uri, )
             
         
         def fetch(self):
             
             
-            fetch = True
+            """
+            Fetch the AccountInstance
+
+            :returns: The fetched AccountInstance
+            #TODO: add rtype docs
+            """
+            payload = self._version.fetch(method='GET', uri=self._uri, )
+            return AccountInstance(
+                self._version,
+                payload,
+                sid=self._solution['sid'],
+            )
+            
             
             
         
@@ -58,7 +76,7 @@ class AccountContext(InstanceContext):
 
             payload = self._version.update(method='post', uri=self._uri, data=data, )
 
-            return AccountInstance(self._version, payload, sid=self._solution['sid'])
+            return AccountInstance(self._version, payload, sid=self._solution['sid'], )
             
             
             
@@ -70,16 +88,29 @@ class AccountContext(InstanceContext):
         :returns: Machine friendly representation
         :rtype: str
         """
-        # TODO: update so that contexts aren't returned for page or list resources
-        context = ' '.join('{}={}'.format(k, v) for k, v in self._solution.items())
-        return '<Twilio.Api.V2010.AccountContext {}>'.format(context)
+        return '<Twilio.Api.V2010.AccountContext>'
 
 
 class AccountInstance(InstanceResource):
     def __init__(self, version, payload, sid: str):
         super(AccountInstance, self).__init__(version)
-        self._properties = {
-            'account_sid' = payload.get('account_sid'),'sid' = payload.get('sid'),'test_string' = payload.get('test_string'),'test_integer' = payload.get('test_integer'),'test_object' = payload.get('test_object'),'test_date_time' = payload.get('test_date_time'),'test_number' = payload.get('test_number'),'price_unit' = payload.get('price_unit'),'test_number_float' = payload.get('test_number_float'),'test_number_decimal' = payload.get('test_number_decimal'),'test_enum' = payload.get('test_enum'),'a2p_profile_bundle_sid' = payload.get('a2p_profile_bundle_sid'),'test_array_of_integers' = payload.get('test_array_of_integers'),'test_array_of_array_of_integers' = payload.get('test_array_of_array_of_integers'),'test_array_of_objects' = payload.get('test_array_of_objects'),'test_array_of_enum' = payload.get('test_array_of_enum'),
+        self._properties = { 
+            'account_sid' = payload.get('account_sid'),
+            'sid' = payload.get('sid'),
+            'test_string' = payload.get('test_string'),
+            'test_integer' = payload.get('test_integer'),
+            'test_object' = payload.get('test_object'),
+            'test_date_time' = payload.get('test_date_time'),
+            'test_number' = payload.get('test_number'),
+            'price_unit' = payload.get('price_unit'),
+            'test_number_float' = payload.get('test_number_float'),
+            'test_number_decimal' = payload.get('test_number_decimal'),
+            'test_enum' = payload.get('test_enum'),
+            'a2p_profile_bundle_sid' = payload.get('a2p_profile_bundle_sid'),
+            'test_array_of_integers' = payload.get('test_array_of_integers'),
+            'test_array_of_array_of_integers' = payload.get('test_array_of_array_of_integers'),
+            'test_array_of_objects' = payload.get('test_array_of_objects'),
+            'test_array_of_enum' = payload.get('test_array_of_enum'),
         }
 
         self._context = None
@@ -156,9 +187,7 @@ class AccountListInstance(ListResource):
         :returns: Machine friendly representation
         :rtype: str
         """
-        # TODO: update so that contexts aren't returned for page or list resources
-        context = ' '.join('{}={}'.format(k, v) for k, v in self._solution.items())
-        return '<Twilio.Api.V2010.AccountListInstance {}>'.format(context)
+        return '<Twilio.Api.V2010.AccountListInstance>'
 
 
 

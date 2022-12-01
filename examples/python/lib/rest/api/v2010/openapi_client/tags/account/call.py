@@ -37,13 +37,31 @@ class CallContext(InstanceContext):
             
             
             
-            delete = True
+            """
+            Deletes the CallInstance
+
+            :returns: True if delete succeeds, False otherwise
+            :rtype: bool
+            """
+            return self._version.delete(method='DELETE', uri=self._uri, )
             
         
         def fetch(self):
             
             
-            fetch = True
+            """
+            Fetch the CallInstance
+
+            :returns: The fetched CallInstance
+            #TODO: add rtype docs
+            """
+            payload = self._version.fetch(method='GET', uri=self._uri, )
+            return CallInstance(
+                self._version,
+                payload,
+                account_sidtest_integer=self._solution['account_sid''test_integer'],
+            )
+            
             
             
         
@@ -54,16 +72,29 @@ class CallContext(InstanceContext):
         :returns: Machine friendly representation
         :rtype: str
         """
-        # TODO: update so that contexts aren't returned for page or list resources
-        context = ' '.join('{}={}'.format(k, v) for k, v in self._solution.items())
-        return '<Twilio.Api.V2010.CallContext {}>'.format(context)
+        return '<Twilio.Api.V2010.CallContext>'
 
 
 class CallInstance(InstanceResource):
     def __init__(self, version, payload, account_sid: str, test_integer: int):
         super(CallInstance, self).__init__(version)
-        self._properties = {
-            'account_sid' = payload.get('account_sid'),'sid' = payload.get('sid'),'test_string' = payload.get('test_string'),'test_integer' = payload.get('test_integer'),'test_object' = payload.get('test_object'),'test_date_time' = payload.get('test_date_time'),'test_number' = payload.get('test_number'),'price_unit' = payload.get('price_unit'),'test_number_float' = payload.get('test_number_float'),'test_number_decimal' = payload.get('test_number_decimal'),'test_enum' = payload.get('test_enum'),'a2p_profile_bundle_sid' = payload.get('a2p_profile_bundle_sid'),'test_array_of_integers' = payload.get('test_array_of_integers'),'test_array_of_array_of_integers' = payload.get('test_array_of_array_of_integers'),'test_array_of_objects' = payload.get('test_array_of_objects'),'test_array_of_enum' = payload.get('test_array_of_enum'),
+        self._properties = { 
+            'account_sid' = payload.get('account_sid'),
+            'sid' = payload.get('sid'),
+            'test_string' = payload.get('test_string'),
+            'test_integer' = payload.get('test_integer'),
+            'test_object' = payload.get('test_object'),
+            'test_date_time' = payload.get('test_date_time'),
+            'test_number' = payload.get('test_number'),
+            'price_unit' = payload.get('price_unit'),
+            'test_number_float' = payload.get('test_number_float'),
+            'test_number_decimal' = payload.get('test_number_decimal'),
+            'test_enum' = payload.get('test_enum'),
+            'a2p_profile_bundle_sid' = payload.get('a2p_profile_bundle_sid'),
+            'test_array_of_integers' = payload.get('test_array_of_integers'),
+            'test_array_of_array_of_integers' = payload.get('test_array_of_array_of_integers'),
+            'test_array_of_objects' = payload.get('test_array_of_objects'),
+            'test_array_of_enum' = payload.get('test_array_of_enum'),
         }
 
         self._context = None
@@ -125,9 +156,7 @@ class CallListInstance(ListResource):
         :returns: Machine friendly representation
         :rtype: str
         """
-        # TODO: update so that contexts aren't returned for page or list resources
-        context = ' '.join('{}={}'.format(k, v) for k, v in self._solution.items())
-        return '<Twilio.Api.V2010.CallListInstance {}>'.format(context)
+        return '<Twilio.Api.V2010.CallListInstance>'
 
 
 
