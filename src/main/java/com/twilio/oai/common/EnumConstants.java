@@ -12,6 +12,7 @@ public class EnumConstants {
         TWILIO_JAVA("twilio-java"),
         TWILIO_NODE("twilio-node"),
         TWILIO_PHP("twilio-php"),
+        TWILIO_PYTHON("twilio-python"),
         TWILIO_GO("twilio-go"),
         TWILIO_TERRAFORM("terraform-provider-twilio");
 

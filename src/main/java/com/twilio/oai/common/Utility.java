@@ -55,6 +55,10 @@ public class Utility {
         }
     }
 
+    public String removeEnumName(final String dataType) {
+        return dataType == null ? null : dataType.replace("Enum", "");
+    }
+
     @SuppressWarnings("unchecked")
     public ArrayList<CodegenOperation> getOperations(final Map<String, Object> resource) {
         return (ArrayList<CodegenOperation>) resource.computeIfAbsent(
