@@ -15,7 +15,7 @@
             {{^isMap}}
             if ({{paramName}} != null)
             {
-                p.Add(new KeyValuePair<string, string>("{{paramName}}", {{{vendorExtensions.x-param-to-string}}}));
+                p.Add(new KeyValuePair<string, string>("{{baseName}}", {{{vendorExtensions.x-param-to-string}}}));
             }
             {{/isMap}}
             {{/isArray}}
