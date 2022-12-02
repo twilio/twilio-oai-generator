@@ -40,14 +40,11 @@
     "date_time<rfc2822>": "deserialize.rfc2822_datetime({value})",
     "date_time_inequality<rfc2822>": "deserialize.rfc2822_datetime({value})",
     "decimal": "deserialize.decimal({value})",
-    "integer": "deserialize.integer({value})",
+    "integer": "deserialize.integer({value})"
   },
 
   "cardinality": {
     "_": "single",
     "prefixed_collapsible_map": "multi"
-  },
-
-  "promotions": {
   }
 }
