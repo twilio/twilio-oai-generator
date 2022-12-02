@@ -80,7 +80,7 @@ class {{name}}Instance(InstanceResource):
     def __init__(self, version, payload{{#resourcePathParams}}, {{paramName}}: {{{dataType}}}{{/resourcePathParams}}):
         super({{name}}Instance, self).__init__(version)
         self._properties = { {{#vars}}
-            '{{name}}' = payload.get('{{baseName}}'),{{/vars}}
+            '{{name}}' = payload.get('{{{baseName}}}'),{{/vars}}
         }
 
         self._context = None

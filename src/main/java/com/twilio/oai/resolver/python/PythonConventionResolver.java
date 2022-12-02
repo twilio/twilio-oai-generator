@@ -3,8 +3,8 @@ package com.twilio.oai.resolver.python;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.twilio.oai.Segments;
+import com.twilio.oai.common.Utility;
 import org.openapitools.codegen.CodegenModel;
-import org.openapitools.codegen.CodegenParameter;
 import org.openapitools.codegen.CodegenProperty;
 import org.openapitools.codegen.utils.StringUtils;
 
@@ -18,14 +18,6 @@ import static com.twilio.oai.common.ApplicationConstants.CONFIG_NODE_JSON_PATH;
 public class PythonConventionResolver{
     private final Map<String, Map<String, Object>> conventionMap = getConventionalMap();
 
-    public void resolveParameter(final CodegenParameter codegenParameter) {
-        if (codegenParameter.dataFormat != null) {
-            getDataType(StringUtils.underscore(codegenParameter.dataFormat)).ifPresent(dataType -> codegenParameter.dataType = dataType);
-        }
-
-        codegenParameter.dataType = removeEnumName(codegenParameter.dataType);
-        codegenParameter.baseType = removeEnumName(codegenParameter.baseType);
-    }
 
     public CodegenModel resolveModel(CodegenModel model) {
         for (CodegenProperty property : model.vars) {
@@ -33,8 +25,8 @@ public class PythonConventionResolver{
                 getDataType(StringUtils.underscore(property.dataFormat)).ifPresent(dataType -> property.dataType = dataType);
             }
 
-            property.dataType = removeEnumName(property.dataType);
-            property.complexType = removeEnumName(property.complexType);
+            property.dataType = Utility.removeEnumName(property.dataType);
+            property.complexType = Utility.removeEnumName(property.complexType);
         }
 
         return model;
@@ -89,9 +81,5 @@ public class PythonConventionResolver{
         }
 
         return Optional.empty();
-    }
-
-    private String removeEnumName(final String dataType) {
-        return dataType == null ? null : dataType.replace("Enum", "");
     }
 }

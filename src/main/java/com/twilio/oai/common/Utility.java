@@ -50,4 +50,8 @@ public class Utility {
                     .collect(Collectors.toCollection(() -> localModels));
         }
     }
+
+    public String removeEnumName(final String dataType) {
+        return dataType == null ? null : dataType.replace("Enum", "");
+    }
 }
