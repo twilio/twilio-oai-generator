@@ -10,6 +10,7 @@ import org.openapitools.codegen.*;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.regex.*;
+import java.util.stream.Stream;
 
 import static com.twilio.oai.common.ApplicationConstants.PATH_SEPARATOR_PLACEHOLDER;
 
@@ -71,6 +72,8 @@ public class PhpApiResourceBuilder extends ApiResourceBuilder {
                         .collect(Collectors.toList());
                 dependents.removeIf(dep -> methodDependents.contains(dep));
                 List<Resource> propertyDependents = dependents;
+                propertyDependents.addAll(Optional.ofNullable(methodDependents.stream()).orElse(Stream.empty()).filter(dep ->
+                        !dep.getName().endsWith("}") && !dep.getName().endsWith("}.json")).collect(Collectors.toList()));
                 List<Object> dependentProperties = new ArrayList<>();
                 List<Object> dependentMethods = new ArrayList<>();
                 updateDependents(directoryStructureService, methodDependents, dependentMethods);
