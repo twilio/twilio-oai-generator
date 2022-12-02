@@ -1,5 +1,7 @@
 package com.twilio.oai.common;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -12,6 +14,7 @@ import lombok.experimental.UtilityClass;
 import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.model.ModelMap;
 import org.openapitools.codegen.model.ModelsMap;
+import org.openapitools.codegen.CodegenOperation;
 
 @UtilityClass
 public class Utility {
@@ -33,11 +36,12 @@ public class Utility {
 
     public static Map<String, Map<String, Object>> getConventionalMap() {
         try {
-            return new ObjectMapper().readValue(Thread.currentThread().getContextClassLoader().getResourceAsStream(ApplicationConstants.CONFIG_CSHARP_JSON_PATH), new TypeReference<Map<String, Map<String, Object>>>(){});
+            return new ObjectMapper().readValue(Thread.currentThread().getContextClassLoader().getResourceAsStream(ApplicationConstants.CONFIG_CSHARP_JSON_PATH), new TypeReference<>() {
+            });
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return null;
+        return Collections.emptyMap();
     }
 
     public void addModelsToLocalModelList(final Map<String, ModelsMap> modelMap, List<CodegenModel> localModels){
@@ -54,4 +58,10 @@ public class Utility {
     public String removeEnumName(final String dataType) {
         return dataType == null ? null : dataType.replace("Enum", "");
     }
-}
+
+    @SuppressWarnings("unchecked")
+    public ArrayList<CodegenOperation> getOperations(final Map<String, Object> resource) {
+        return (ArrayList<CodegenOperation>) resource.computeIfAbsent(
+                "operations",
+                k -> new ArrayList<>());
+    }

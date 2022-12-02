@@ -149,7 +149,7 @@ public class TwilioPythonGenerator extends PythonClientCodegen {
             }
 
             final Map<String, Object> resource = PathUtils.getStringMap(resources, resourceName);
-            final ArrayList<CodegenOperation> resourceOperationList = getOperations(resource);
+            final ArrayList<CodegenOperation> resourceOperationList = Utility.getOperations(resource);
             final boolean ignoreOperation = Optional
                     .ofNullable(co.vendorExtensions.get(IGNORE_EXTENSION_NAME))
                     .map(Boolean.class::cast)
@@ -284,12 +284,6 @@ public class TwilioPythonGenerator extends PythonClientCodegen {
     private void addOperationName(final CodegenOperation operation, final String name) {
         operation.vendorExtensions.put("x-name", name);
         operation.vendorExtensions.put("x-name-lower", name.toLowerCase());
-    }
-
-    private ArrayList<CodegenOperation> getOperations(final Map<String, Object> resource) {
-        return (ArrayList<CodegenOperation>) resource.computeIfAbsent(
-                "operations",
-                k -> new ArrayList<>());
     }
 
     private void updateResourcePath(final Map<String, Object> resource, final CodegenOperation operation) {
