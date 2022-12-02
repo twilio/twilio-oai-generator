@@ -31,7 +31,6 @@ use Twilio\Serialize;
 
 
 class FleetContext extends InstanceContext {
-
     /**
      * Initialize the FleetContext
      *

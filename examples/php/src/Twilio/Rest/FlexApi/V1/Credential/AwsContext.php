@@ -35,7 +35,6 @@ use Twilio\Rest\FlexApi\V1\AwsPage;
  */
 
 class AwsContext extends InstanceContext {
-
     /**
      * Initialize the AwsContext
      *
@@ -75,12 +74,12 @@ class AwsContext extends InstanceContext {
     }
 
     /**
-    * Update the AwsInstance
-    *
-    * @param array|Options $options Optional Arguments
-    * @return AwsInstance Updated AwsInstance
-    * @throws TwilioException When an HTTP error occurs.
-    */
+     * Update the AwsInstance
+     *
+     * @param array|Options $options Optional Arguments
+     * @return AwsInstance Updated AwsInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
     public function update(array $options = []): AwsInstance {
         $options = new Values($options);
 
@@ -91,7 +90,11 @@ class AwsContext extends InstanceContext {
 
         $payload = $this->version->update('POST', $this->uri, [], $data);
 
-        return new AwsInstance($this->version, $payload, $this->solution['sid']);
+        return new AwsInstance(
+            $this->version,
+            $payload
+            , $this->solution['sid']
+        );
     }
 
     /**

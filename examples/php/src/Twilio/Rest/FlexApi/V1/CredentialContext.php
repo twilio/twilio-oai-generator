@@ -34,7 +34,6 @@ use Twilio\Rest\FlexApi\V1\CredentialPage;
 
 
 class CredentialContext extends InstanceContext {
-
     /**
      * Initialize the CredentialContext
      *

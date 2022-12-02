@@ -31,7 +31,6 @@ use Twilio\Rest\Versionless\Understand\AssistantPage;
 
 
 class AssistantList extends ListResource {
-
     /**
      * Construct the AssistantList
      *

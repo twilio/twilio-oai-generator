@@ -32,7 +32,6 @@ use Twilio\Rest\Api\V2010\AccountPage;
 
 
 class AccountList extends ListResource {
-
     /**
      * Construct the AccountList
      *
@@ -57,14 +56,14 @@ class AccountList extends ListResource {
     public function create(array $options = []): AccountInstance {
         $options = new Values($options);
 
-
         $data = Values::of([
             'RecordingStatusCallback' => $options['recordingStatusCallback'],
             'RecordingStatusCallbackEvent' => Serialize::map($options['recordingStatusCallbackEvent'], function($e) { return $e; }),
         ]);
-        $headers = Values::of(["X-Twilio-Webhook-Enabled" => $options["xTwilioWebhookEnabled"] ]);
 
-        $payload = $this->version->create('POST', $this->uri, [], $data  ,$headers );
+        $headers = Values::of(['X-Twilio-Webhook-Enabled' => $options['xTwilioWebhookEnabled']]);
+
+        $payload = $this->version->create('POST', $this->uri, [], $data, $headers);
 
         return new AccountInstance(
             $this->version,

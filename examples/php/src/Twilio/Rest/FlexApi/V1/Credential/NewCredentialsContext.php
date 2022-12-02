@@ -31,7 +31,6 @@ use Twilio\Serialize;
 
 
 class NewCredentialsContext extends InstanceContext {
-
     /**
      * Initialize the NewCredentialsContext
      *

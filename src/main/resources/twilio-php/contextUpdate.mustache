@@ -1,23 +1,34 @@
 {{#vendorExtensions.x-is-update-operation}}
 
     /**
-    * Update the {{apiName}}Instance
-    *
-    {{#requiredParams}}
-    {{#isFormParam}}
-    * @param {{dataType}} ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}} {{description}}
-    {{/isFormParam}}
-    {{/requiredParams}}
-    {{#vendorExtensions.hasOptionalFormParams}}
-    * @param array|Options $options Optional Arguments
-    {{/vendorExtensions.hasOptionalFormParams}}
-    * @return {{apiName}}Instance Updated {{apiName}}Instance
-    * @throws TwilioException When an HTTP error occurs.
-    */
-    public function update({{#requiredParams}}{{#isFormParam}}{{dataType}} ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}{{^-last}}, {{/-last}}{{/isFormParam}}{{/requiredParams}}{{#vendorExtensions.hasOptionalFormParams}}{{#vendorExtensions.hasRequiredFormParams}}, {{/vendorExtensions.hasRequiredFormParams}}array $options = []{{/vendorExtensions.hasOptionalFormParams}}): {{apiName}}Instance {
+     * Update the {{apiName}}Instance
+     *
+     {{#requiredParams}}
+     {{#isFormParam}}
+     * @param {{dataType}} ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}} {{description}}
+     {{/isFormParam}}
+     {{/requiredParams}}
+     {{#vendorExtensions.hasOptionalFormParams}}
+     * @param array|Options $options Optional Arguments
+     {{/vendorExtensions.hasOptionalFormParams}}
+     {{^vendorExtensions.hasOptionalFormParams}}
+     {{#headerParams.0}}
+     * @param array|Options $options Optional Arguments
+     {{/headerParams.0}}
+     {{/vendorExtensions.hasOptionalFormParams}}
+     * @return {{apiName}}Instance Updated {{apiName}}Instance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function update({{#requiredParams}}{{#isFormParam}}{{{dataType}}} ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}{{^-last}}, {{/-last}}{{/isFormParam}}{{/requiredParams}}{{#vendorExtensions.hasOptionalFormParams}}{{#vendorExtensions.hasRequiredFormParams}}, {{/vendorExtensions.hasRequiredFormParams}}array $options = []{{/vendorExtensions.hasOptionalFormParams}}{{^vendorExtensions.hasOptionalFormParams}}{{#headerParams.0}}, array $options = []{{/headerParams.0}}{{/vendorExtensions.hasOptionalFormParams}}): {{apiName}}Instance {
         {{#vendorExtensions.hasOptionalFormParams}}
         $options = new Values($options);
 
+        {{/vendorExtensions.hasOptionalFormParams}}
+        {{^vendorExtensions.hasOptionalFormParams}}
+        {{#headerParams.0}}
+        $options = new Values($options);
+
+        {{/headerParams.0}}
         {{/vendorExtensions.hasOptionalFormParams}}
         $data = Values::of([
             {{#requiredParams}}
@@ -52,18 +63,39 @@
             {{/optionalParams}}
         ]);
         {{#requiredParams}}
+        {{#isFormParam}}
         {{#vendorExtensions.x-prefixed-collapsible-map}}
-            $data = \array_merge($data, Serialize::prefixedCollapsibleMap($options['{{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}'], 'AddOns'));
+        $data = \array_merge($data, Serialize::prefixedCollapsibleMap($options['{{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}'], 'AddOns'));
         {{/vendorExtensions.x-prefixed-collapsible-map}}
+        {{/isFormParam}}
         {{/requiredParams}}
         {{#optionalParams}}
+        {{#isFormParam}}
         {{#vendorExtensions.x-prefixed-collapsible-map}}
-            $data = \array_merge($data, Serialize::prefixedCollapsibleMap($options['{{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}'], 'AddOns'));
+        $data = \array_merge($data, Serialize::prefixedCollapsibleMap($options['{{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}'], 'AddOns'));
         {{/vendorExtensions.x-prefixed-collapsible-map}}
+        {{/isFormParam}}
         {{/optionalParams}}
 
-        $payload = $this->version->update('POST', $this->uri, [], $data);
+    {{#headerParams.0}}
+        $headers = Values::of([{{#headerParams}}'{{baseName}}' => $options['{{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}']{{^-last}}, {{/-last}}{{/headerParams}}]);
 
-        return new {{apiName}}Instance($this->version, $payload{{#optionalParams}}{{#isPathParam}}, $this->solution['{{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}']{{/isPathParam}}{{/optionalParams}}{{#requiredParams}}{{#isPathParam}}, $this->solution['{{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}']{{/isPathParam}}{{/requiredParams}});
+    {{/headerParams.0}}
+        $payload = $this->version->update('POST', $this->uri, [], $data{{#headerParams.0}}, $headers{{/headerParams.0}});
+
+        return new {{apiName}}Instance(
+            $this->version,
+            $payload
+            {{#optionalParams}}
+            {{#isPathParam}}
+            , $this->solution['{{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}']
+            {{/isPathParam}}
+            {{/optionalParams}}
+            {{#requiredParams}}
+            {{#isPathParam}}
+            , $this->solution['{{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}']
+            {{/isPathParam}}
+            {{/requiredParams}}
+        );
     }
 {{/vendorExtensions.x-is-update-operation}}

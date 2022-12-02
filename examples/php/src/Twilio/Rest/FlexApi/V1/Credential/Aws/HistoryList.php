@@ -30,7 +30,6 @@ use Twilio\Serialize;
 
 
 class HistoryList extends ListResource {
-
     /**
      * Construct the HistoryList
      *
@@ -50,7 +49,7 @@ class HistoryList extends ListResource {
      *
      */
     public function getContext(): HistoryContext {
-        return new HistoryContext($this->version);
+        return new HistoryContext($this->version, $this->solution['sid']);
     }
 
     /**

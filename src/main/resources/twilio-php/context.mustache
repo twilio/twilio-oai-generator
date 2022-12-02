@@ -42,11 +42,13 @@ class {{apiName}}Context extends InstanceContext {
     {{^vendorExtensions.x-is-read-operation}}
     {{#vendorExtensions.importProperties}}
     protected $_{{#lambda.camelcase}}{{mountName}}{{/lambda.camelcase}};
+    {{#-last}}
+
+    {{/-last}}
     {{/vendorExtensions.importProperties}}
     {{/vendorExtensions.x-is-read-operation}}
     {{/vendorExtensions.x-is-create-operation}}
     {{/apiOperations}}
-
     /**
      * Initialize the {{apiName}}Context
      *
@@ -59,7 +61,7 @@ class {{apiName}}Context extends InstanceContext {
         parent::__construct($version);
 
         // Path Solution
-        $this->solution = [{{#requiredPathParams}}'{{paramName}}' => ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}},  {{/requiredPathParams}}];
+        $this->solution = [{{#requiredPathParams}}'{{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}' => ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}},  {{/requiredPathParams}}];
         {{#metaProperties.x-is-context-operation}}
 
         $this->uri = '{{{apiContextPath}}}';
@@ -77,16 +79,9 @@ class {{apiName}}Context extends InstanceContext {
         if (!$this->_{{#lambda.camelcase}}{{mountName}}{{/lambda.camelcase}}) {
             $this->_{{#lambda.camelcase}}{{mountName}}{{/lambda.camelcase}} = new {{filename}}List(
                 $this->version
-                {{#optionalParams}}
-                {{#isPathParam}}
+                {{#requiredPathParams}}
                 , $this->solution['{{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}']
-                {{/isPathParam}}
-                {{/optionalParams}}
-                {{#requiredParams}}
-                {{#isPathParam}}
-                , $this->solution['{{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}']
-                {{/isPathParam}}
-                {{/requiredParams}}
+                {{/requiredPathParams}}
             );
         }
 

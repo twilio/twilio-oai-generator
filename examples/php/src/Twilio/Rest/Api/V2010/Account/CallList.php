@@ -47,7 +47,7 @@ class CallList extends ListResource {
         parent::__construct($version);
 
         // Path Solution
-        $this->solution = ['account_sid' => $accountSid, ];
+        $this->solution = ['accountSid' => $accountSid, ];
 
         $this->uri = '/Accounts/' . \rawurlencode($accountSid) . '/Calls.json';
     }
@@ -64,7 +64,6 @@ class CallList extends ListResource {
     public function create(string $requiredStringProperty, string $testMethod, array $options = []): CallInstance {
         $options = new Values($options);
 
-
         $data = Values::of([
             'RequiredStringProperty' => $requiredStringProperty,
             'TestMethod' => $testMethod,
@@ -72,7 +71,7 @@ class CallList extends ListResource {
             'TestArrayOfUri' => Serialize::map($options['testArrayOfUri'], function($e) { return $e; }),
         ]);
 
-        $payload = $this->version->create('POST', $this->uri, [], $data );
+        $payload = $this->version->create('POST', $this->uri, [], $data);
 
         return new CallInstance(
             $this->version,
@@ -92,7 +91,7 @@ class CallList extends ListResource {
      * @param int $testInteger INTEGER ID param!!!
      */
     public function getContext(int $testInteger): CallContext {
-        return new CallContext($this->version, $testInteger);
+        return new CallContext($this->version, $this->solution['accountSid'], $testInteger);
     }
 
     /**
@@ -102,6 +101,7 @@ class CallList extends ListResource {
         if (!$this->_feedbackCallSummary) {
             $this->_feedbackCallSummary = new FeedbackCallSummaryList(
                 $this->version
+                , $this->solution['accountSid']
             );
         }
 

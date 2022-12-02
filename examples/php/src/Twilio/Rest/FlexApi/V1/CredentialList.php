@@ -160,7 +160,6 @@ class CredentialList extends ListResource {
         if (!$this->_aws) {
             $this->_aws = new AwsList(
                 $this->version
-                , $this->solution['sid']
             );
         }
 
@@ -174,7 +173,6 @@ class CredentialList extends ListResource {
         if (!$this->_newCredentials) {
             $this->_newCredentials = new NewCredentialsList(
                 $this->version
-                , $this->solution['sid']
             );
         }
 

@@ -30,7 +30,6 @@ use Twilio\Serialize;
 
 
 class FleetList extends ListResource {
-
     /**
      * Construct the FleetList
      *
@@ -55,12 +54,11 @@ class FleetList extends ListResource {
     public function create(array $options = []): FleetInstance {
         $options = new Values($options);
 
-
         $data = Values::of([
             'FriendlyName' => $options['friendlyName'],
         ]);
 
-        $payload = $this->version->create('POST', $this->uri, [], $data );
+        $payload = $this->version->create('POST', $this->uri, [], $data);
 
         return new FleetInstance(
             $this->version,

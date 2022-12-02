@@ -30,7 +30,6 @@ use Twilio\Serialize;
 
 
 class FeedbackCallSummaryList extends ListResource {
-
     /**
      * Construct the FeedbackCallSummaryList
      *
@@ -41,7 +40,7 @@ class FeedbackCallSummaryList extends ListResource {
         parent::__construct($version);
 
         // Path Solution
-        $this->solution = ['account_sid' => $accountSid, ];
+        $this->solution = ['accountSid' => $accountSid, ];
     }
     
     
@@ -51,7 +50,7 @@ class FeedbackCallSummaryList extends ListResource {
      * @param string $sid 
      */
     public function getContext(string $sid): FeedbackCallSummaryContext {
-        return new FeedbackCallSummaryContext($this->version, $sid);
+        return new FeedbackCallSummaryContext($this->version, $this->solution['accountSid'], $sid);
     }
 
     /**

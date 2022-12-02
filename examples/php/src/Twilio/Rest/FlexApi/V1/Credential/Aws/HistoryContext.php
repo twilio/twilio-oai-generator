@@ -31,7 +31,6 @@ use Twilio\Serialize;
 
 
 class HistoryContext extends InstanceContext {
-
     /**
      * Initialize the HistoryContext
      *

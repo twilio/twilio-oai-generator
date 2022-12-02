@@ -98,4 +98,38 @@ class TwilioRestTest extends HolodeckTestCase {
         ));
     }
 
+    public function testShouldMakeValidApiCallToCallFetcher(): void{
+        $this->holodeck->mock(new Response(200, '{
+                "account_sid": "AC222222222222222222222222222222",
+                "sid": "ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                "test_string": "Test String"
+            }'));
+
+        $response = $this->twilio->api->v2010->accounts("AC222222222222222222222222222222")->calls(34)->fetch();
+
+        $this->assertNotNull($response);
+    }
+
+    public function testShouldSerializeDateTime(): void{
+        $this->holodeck->mock(new Response(200, '{
+                "account_sid": "AC222222222222222222222222222222",
+                "sid": "ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                "test_string": "Test String",
+                "start_date": "2022-12-01",
+                "end_date": "2022-12-04"
+            }'));
+
+        $response = $this->twilio->api->v2010->accounts("AC222222222222222222222222222222")->calls
+            ->feedbackCallSummary("FSXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")->
+                update(new \DateTime('2022-12-04'), new \DateTime('2022-12-01'));
+
+        $this->assertNotNull($response);
+        $this->assertRequest(new Request(
+            'post',
+            'https://api.twilio.com/2010-04-01/Accounts/AC222222222222222222222222222222/Calls/Feedback/Summary/FSXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX.json',
+            [],
+            ['StartDate' => '2022-12-01', 'EndDate' => '2022-12-04']
+        ));
+    }
+
 }

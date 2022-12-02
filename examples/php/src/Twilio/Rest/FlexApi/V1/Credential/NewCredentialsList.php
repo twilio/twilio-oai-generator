@@ -30,7 +30,6 @@ use Twilio\Serialize;
 
 
 class NewCredentialsList extends ListResource {
-
     /**
      * Construct the NewCredentialsList
      *
@@ -56,7 +55,6 @@ class NewCredentialsList extends ListResource {
     public function create(string $testString, array $options = []): NewCredentialsInstance {
         $options = new Values($options);
 
-
         $data = Values::of([
             'TestString' => $testString,
             'TestBoolean' => Serialize::booleanToString($options['testBoolean']),
@@ -77,7 +75,7 @@ class NewCredentialsList extends ListResource {
             'SomeA2PThing' => $options['someA2PThing'],
         ]);
 
-        $payload = $this->version->create('POST', $this->uri, [], $data );
+        $payload = $this->version->create('POST', $this->uri, [], $data);
 
         return new NewCredentialsInstance(
             $this->version,

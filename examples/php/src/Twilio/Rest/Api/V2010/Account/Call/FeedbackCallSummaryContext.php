@@ -31,7 +31,6 @@ use Twilio\Serialize;
 
 
 class FeedbackCallSummaryContext extends InstanceContext {
-
     /**
      * Initialize the FeedbackCallSummaryContext
      *
@@ -43,20 +42,20 @@ class FeedbackCallSummaryContext extends InstanceContext {
         parent::__construct($version);
 
         // Path Solution
-        $this->solution = ['account_sid' => $accountSid,  'sid' => $sid,  ];
+        $this->solution = ['accountSid' => $accountSid,  'sid' => $sid,  ];
 
         $this->uri = '/Accounts/' . \rawurlencode($accountSid) . '/Calls/Feedback/Summary/' . \rawurlencode($sid) . '.json';
     }
 
     /**
-    * Update the FeedbackCallSummaryInstance
-    *
-    * @param \DateTime $endDate 
-    * @param \DateTime $startDate 
-    * @param array|Options $options Optional Arguments
-    * @return FeedbackCallSummaryInstance Updated FeedbackCallSummaryInstance
-    * @throws TwilioException When an HTTP error occurs.
-    */
+     * Update the FeedbackCallSummaryInstance
+     *
+     * @param \DateTime $endDate 
+     * @param \DateTime $startDate 
+     * @param array|Options $options Optional Arguments
+     * @return FeedbackCallSummaryInstance Updated FeedbackCallSummaryInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
     public function update(\DateTime $endDate, \DateTime $startDate, array $options = []): FeedbackCallSummaryInstance {
         $options = new Values($options);
 
@@ -68,7 +67,12 @@ class FeedbackCallSummaryContext extends InstanceContext {
 
         $payload = $this->version->update('POST', $this->uri, [], $data);
 
-        return new FeedbackCallSummaryInstance($this->version, $payload, $this->solution['accountSid'], $this->solution['sid']);
+        return new FeedbackCallSummaryInstance(
+            $this->version,
+            $payload
+            , $this->solution['accountSid']
+            , $this->solution['sid']
+        );
     }
 
     /**

@@ -31,7 +31,6 @@ use Twilio\Rest\FlexApi\V1\AwsPage;
 
 
 class AwsList extends ListResource {
-
     /**
      * Construct the AwsList
      *

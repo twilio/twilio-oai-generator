@@ -78,13 +78,13 @@ class AccountContext extends InstanceContext {
     }
 
     /**
-    * Update the AccountInstance
-    *
-    * @param string $status 
-    * @param array|Options $options Optional Arguments
-    * @return AccountInstance Updated AccountInstance
-    * @throws TwilioException When an HTTP error occurs.
-    */
+     * Update the AccountInstance
+     *
+     * @param string $status 
+     * @param array|Options $options Optional Arguments
+     * @return AccountInstance Updated AccountInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
     public function update(string $status, array $options = []): AccountInstance {
         $options = new Values($options);
 
@@ -95,7 +95,11 @@ class AccountContext extends InstanceContext {
 
         $payload = $this->version->update('POST', $this->uri, [], $data);
 
-        return new AccountInstance($this->version, $payload, $this->solution['sid']);
+        return new AccountInstance(
+            $this->version,
+            $payload
+            , $this->solution['sid']
+        );
     }
 
     /**

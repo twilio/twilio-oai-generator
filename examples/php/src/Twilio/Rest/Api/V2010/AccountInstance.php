@@ -51,13 +51,16 @@ use Twilio\Rest\Api\V2010\AccountPage;
  */
 
 class AccountInstance extends InstanceResource {
+    protected $_calls;
+
     /**
      * Initialize the AccountInstance
      *
      * @param Version $version Version that contains the resource
      * @param mixed[] $payload The response payload
+     * @param string $sid 
      */
-    public function __construct(Version $version, array $payload) {
+    public function __construct(Version $version, array $payload, string $sid = null) {
         parent::__construct($version);
 
         // Marshaled Properties
@@ -80,61 +83,72 @@ class AccountInstance extends InstanceResource {
             'testArrayOfEnum' => Values::array_get($payload, 'test_array_of_enum'),
         ];
 
-        $this->solution = [];
+        $this->solution = ['sid' => $sid ?: $this->properties['sid'], ];
     }
 
     /**
-    * Generate an instance context for the instance, the context is capable of
-    * performing various actions.  All instance actions are proxied to the context
-    *
-    * @return FeedbackContext Context for this FeedbackInstance
-    */
+     * Generate an instance context for the instance, the context is capable of
+     * performing various actions.  All instance actions are proxied to the context
+     *
+     * @return AccountContext Context for this AccountInstance
+     */
     protected function proxy(): AccountContext {
         if (!$this->context) {
-            $this->context = new AccountContext($this->version );
+            $this->context = new AccountContext(
+                $this->version,
+                $this->solution['sid']
+            );
         }
+
         return $this->context;
     }
 
     /**
-    * Fetch the AccountInstance
-    *
-    * @return AccountInstance Fetched AccountInstance
-    * @throws TwilioException When an HTTP error occurs.
-    */
+     * Delete the AccountInstance
+     *
+     * @return bool True if delete succeeds, false otherwise
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function delete(): bool {
+        return $this->proxy()->delete();
+    }
+
+    /**
+     * Fetch the AccountInstance
+     *
+     * @return AccountInstance Fetched AccountInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
     public function fetch(): AccountInstance {
         return $this->proxy()->fetch();
     }
 
     /**
-    * Create the AccountInstance
-    *
-    * @param int $qualityScore The call quality expressed as an integer from 1 to 5
-    * @param array|Options $options Optional Arguments
-    * @return AccountInstance Created AccountInstance
-    * @throws TwilioException When an HTTP error occurs.
-    */
-    public function create(int $qualityScore, array $options = []): AccountInstance {
-        return $this->proxy()->create($qualityScore, $options);
+     * Update the AccountInstance
+     *
+     * @param string $status 
+     * @param array|Options $options Optional Arguments
+     * @return AccountInstance Updated AccountInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function update(string $status, array $options = []): AccountInstance {
+        return $this->proxy()->update($status, $options);
     }
 
     /**
-    * Update the AccountInstance
-    *
-    * @param array|Options $options Optional Arguments
-    * @return AccountInstance Updated AccountInstance
-    * @throws TwilioException When an HTTP error occurs.
-    */
-    public function update(array $options = []): FeedbackInstance {
-        return $this->proxy()->update($options);
+     * Access the calls
+     */
+    protected function getCalls(): CallList {
+        return $this->proxy()->calls;
     }
+
     /**
-    * Magic getter to access properties
-    *
-    * @param string $name Property to access
-    * @return mixed The requested property
-    * @throws TwilioException For unknown properties
-    */
+     * Magic getter to access properties
+     *
+     * @param string $name Property to access
+     * @return mixed The requested property
+     * @throws TwilioException For unknown properties
+     */
     public function __get(string $name) {
         if (\array_key_exists($name, $this->properties)) {
             return $this->properties[$name];
@@ -149,10 +163,10 @@ class AccountInstance extends InstanceResource {
     }
 
     /**
-    * Provide a friendly representation
-    *
-    * @return string Machine friendly representation
-    */
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
     public function __toString(): string {
         $context = [];
         foreach ($this->solution as $key => $value) {
