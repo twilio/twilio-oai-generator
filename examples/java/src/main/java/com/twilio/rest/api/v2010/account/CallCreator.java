@@ -55,6 +55,7 @@ public class CallCreator extends Creator<Call>{
     private String pathAccountSid;
     private List<String> testArrayOfStrings;
     private List<URI> testArrayOfUri;
+    private String messagingBindingProxyAddress;
 
     public CallCreator(final String requiredStringProperty, final HttpMethod testMethod) {
         this.requiredStringProperty = requiredStringProperty;
@@ -91,6 +92,10 @@ public class CallCreator extends Creator<Call>{
 
     public CallCreator setTestArrayOfUri(final String testArrayOfUri){
         return setTestArrayOfUri(Promoter.uriFromString(testArrayOfUri));
+    }
+    public CallCreator setMessagingBindingProxyAddress(final String messagingBindingProxyAddress){
+        this.messagingBindingProxyAddress = messagingBindingProxyAddress;
+        return this;
     }
 
     @Override
@@ -136,6 +141,10 @@ public class CallCreator extends Creator<Call>{
             for (URI prop : testArrayOfUri) {
                 request.addPostParam("TestArrayOfUri", prop.toString());
             }
+    
+        }
+        if (messagingBindingProxyAddress != null) {
+            request.addPostParam("MessagingBinding.ProxyAddress", messagingBindingProxyAddress);
     
         }
         if (testMethod != null) {

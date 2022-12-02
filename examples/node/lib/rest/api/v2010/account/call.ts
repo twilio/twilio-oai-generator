@@ -40,12 +40,14 @@ type TestStatus =
  * @property { string } testMethod The HTTP method that we should use to request the `TestArrayOfUri`.
  * @property { Array<string> } [testArrayOfStrings]
  * @property { Array<string> } [testArrayOfUri]
+ * @property { string } [messagingBinding.proxyAddress] The address of the Twilio phone number (or WhatsApp number) that the participant is in contact with. This field, together with participant address, is only null when the participant is interacting from an SDK endpoint (see the \\\'identity\\\' field).
  */
 export interface CallListInstanceCreateOptions {
   requiredStringProperty: string;
   testMethod: string;
   testArrayOfStrings?: Array<string>;
   testArrayOfUri?: Array<string>;
+  "messagingBinding.proxyAddress"?: string;
 }
 
 export interface CallContext {
@@ -394,6 +396,9 @@ export function CallListInstance(
         params["testArrayOfUri"],
         (e) => e
       );
+    if (params["messagingBinding.proxyAddress"] !== undefined)
+      data["MessagingBinding.ProxyAddress"] =
+        params["messagingBinding.proxyAddress"];
 
     data["TestMethod"] = params["testMethod"];
 

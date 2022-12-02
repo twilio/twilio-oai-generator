@@ -31,6 +31,8 @@ type CreateCallParams struct {
 	TestArrayOfStrings *[]string `json:"TestArrayOfStrings,omitempty"`
 	//
 	TestArrayOfUri *[]string `json:"TestArrayOfUri,omitempty"`
+	// The address of the Twilio phone number (or WhatsApp number) that the participant is in contact with. This field, together with participant address, is only null when the participant is interacting from an SDK endpoint (see the 'identity' field).
+	MessagingBindingProxyAddress *string `json:"MessagingBinding.ProxyAddress,omitempty"`
 	// The HTTP method that we should use to request the `TestArrayOfUri`.
 	TestMethod *string `json:"TestMethod,omitempty"`
 }
@@ -49,6 +51,10 @@ func (params *CreateCallParams) SetTestArrayOfStrings(TestArrayOfStrings []strin
 }
 func (params *CreateCallParams) SetTestArrayOfUri(TestArrayOfUri []string) *CreateCallParams {
 	params.TestArrayOfUri = &TestArrayOfUri
+	return params
+}
+func (params *CreateCallParams) SetMessagingBindingProxyAddress(MessagingBindingProxyAddress string) *CreateCallParams {
+	params.MessagingBindingProxyAddress = &MessagingBindingProxyAddress
 	return params
 }
 func (params *CreateCallParams) SetTestMethod(TestMethod string) *CreateCallParams {
@@ -79,6 +85,9 @@ func (c *ApiService) CreateCall(params *CreateCallParams) (*TestResponseObject, 
 		for _, item := range *params.TestArrayOfUri {
 			data.Add("TestArrayOfUri", item)
 		}
+	}
+	if params != nil && params.MessagingBindingProxyAddress != nil {
+		data.Set("MessagingBinding.ProxyAddress", *params.MessagingBindingProxyAddress)
 	}
 	if params != nil && params.TestMethod != nil {
 		data.Set("TestMethod", *params.TestMethod)

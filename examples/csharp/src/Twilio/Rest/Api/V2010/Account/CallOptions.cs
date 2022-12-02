@@ -43,6 +43,9 @@ namespace Twilio.Rest.Api.V2010.Account
         
         public List<Uri> TestArrayOfUri { get; set; }
 
+        ///<summary> The address of the Twilio phone number (or WhatsApp number) that the participant is in contact with. This field, together with participant address, is only null when the participant is interacting from an SDK endpoint (see the 'identity' field). </summary> 
+        public string MessagingBindingProxyAddress { get; set; }
+
 
         /// <summary> Construct a new CreateCallOptions </summary>
         /// <param name="requiredStringProperty">  </param>
@@ -76,6 +79,10 @@ namespace Twilio.Rest.Api.V2010.Account
             if (TestArrayOfUri != null)
             {
                 p.AddRange(TestArrayOfUri.Select(TestArrayOfUri => new KeyValuePair<string, string>("TestArrayOfUri", Serializers.Url(TestArrayOfUri))));
+            }
+            if (MessagingBindingProxyAddress != null)
+            {
+                p.Add(new KeyValuePair<string, string>("MessagingBinding.ProxyAddress", MessagingBindingProxyAddress));
             }
             return p;
         }

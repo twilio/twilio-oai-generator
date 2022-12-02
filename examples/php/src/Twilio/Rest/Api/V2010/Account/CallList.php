@@ -69,6 +69,7 @@ class CallList extends ListResource {
             'TestMethod' => $testMethod,
             'TestArrayOfStrings' => Serialize::map($options['testArrayOfStrings'], function($e) { return $e; }),
             'TestArrayOfUri' => Serialize::map($options['testArrayOfUri'], function($e) { return $e; }),
+            'MessagingBinding.ProxyAddress' => $options['messagingBindingProxyAddress'],
         ]);
 
         $payload = $this->version->create('POST', $this->uri, [], $data);
