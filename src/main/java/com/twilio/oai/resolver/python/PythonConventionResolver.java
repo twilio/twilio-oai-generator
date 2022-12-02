@@ -13,7 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-import static com.twilio.oai.common.ApplicationConstants.CONFIG_NODE_JSON_PATH;
+import static com.twilio.oai.common.ApplicationConstants.CONFIG_PYTHON_JSON_PATH;
 
 public class PythonConventionResolver{
     private final Map<String, Map<String, Object>> conventionMap = getConventionalMap();
@@ -67,7 +67,7 @@ public class PythonConventionResolver{
 
     private Map<String, Map<String, Object>> getConventionalMap() {
         try {
-            return new ObjectMapper().readValue(Thread.currentThread().getContextClassLoader().getResourceAsStream(CONFIG_NODE_JSON_PATH), new TypeReference<>() {});
+            return new ObjectMapper().readValue(Thread.currentThread().getContextClassLoader().getResourceAsStream(CONFIG_PYTHON_JSON_PATH), new TypeReference<>() {});
         } catch (final Exception e) {
             throw new RuntimeException(e);
         }
