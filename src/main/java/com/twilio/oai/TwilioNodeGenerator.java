@@ -120,6 +120,7 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
 
             final String itemName = filePathArray[filePathArray.length - 1];
             final String instanceName = itemName + "Instance";
+            co.returnType = instanceName;
 
             String resourceName;
             String parentResourceName = null;
@@ -200,7 +201,7 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
 
             final String name = (String) resource.get("name");
             final String parentResourceName = (String) resource.get("parentResourceName");
-            final List<CodegenOperation> operations = getOperations(resource);
+            final List<CodegenOperation> operations = Utility.getOperations(resource);
 
             // Build the response model for this resource.
             operations
