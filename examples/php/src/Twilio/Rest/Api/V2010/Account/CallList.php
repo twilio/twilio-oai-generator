@@ -46,7 +46,7 @@ class CallList extends ListResource {
         parent::__construct($version);
 
         // Path Solution
-        $this->solution = ['account_sid' => $accountSid, ];
+        $this->solution = ['accountSid' => $accountSid, ];
 
         $this->uri = '/Accounts/' . \rawurlencode($accountSid) . '/Calls.json';
     }
@@ -67,8 +67,8 @@ class CallList extends ListResource {
         $data = Values::of([
             'RequiredStringProperty' => $requiredStringProperty,
             'TestMethod' => $testMethod,
-            'TestArrayOfStrings' => Serialize::map($options['testArrayOfStrings'], function($e) { return $e; }),
-            'TestArrayOfUri' => Serialize::map($options['testArrayOfUri'], function($e) { return $e; }),
+            'TestArrayOfStrings' => $options['testArrayOfStrings'],
+            'TestArrayOfUri' => $options['testArrayOfUri'],
         ]);
 
         $payload = $this->version->create('POST', $this->uri, [], $data);

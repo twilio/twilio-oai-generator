@@ -58,7 +58,7 @@ class AccountList extends ListResource {
 
         $data = Values::of([
             'RecordingStatusCallback' => $options['recordingStatusCallback'],
-            'RecordingStatusCallbackEvent' => Serialize::map($options['recordingStatusCallbackEvent'], function($e) { return $e; }),
+            'RecordingStatusCallbackEvent' => $options['recordingStatusCallbackEvent'],
         ]);
 
         $payload = $this->version->create('POST', $this->uri, [], $data);

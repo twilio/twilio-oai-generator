@@ -37,7 +37,8 @@ public class PhpApiResourceBuilder extends ApiResourceBuilder {
             } else {
                 requiredPathParamsList.addAll(codegenOperation.pathParams);
                 template.add(PhpApiActionTemplate.TEMPLATE_TYPE_PAGE);
-                template.add(PhpApiActionTemplate.TEMPLATE_TYPE_OPTIONS);
+                if((boolean)codegenOperation.vendorExtensions.get("hasOptionFileParams"))
+                    template.add(PhpApiActionTemplate.TEMPLATE_TYPE_OPTIONS);
             }
             template.add(PhpApiActionTemplate.TEMPLATE_TYPE_LIST);
             template.add(PhpApiActionTemplate.TEMPLATE_TYPE_INSTANCE);
