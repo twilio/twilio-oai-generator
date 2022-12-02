@@ -1,33 +1,23 @@
-package com.twilio.oai.resolver.node;
+package com.twilio.oai.resolver.python;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.twilio.oai.Segments;
+import com.twilio.oai.common.Utility;
+import org.openapitools.codegen.CodegenModel;
+import org.openapitools.codegen.CodegenProperty;
+import org.openapitools.codegen.utils.StringUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.twilio.oai.common.Utility;
-import org.openapitools.codegen.CodegenModel;
-import org.openapitools.codegen.CodegenParameter;
-import org.openapitools.codegen.CodegenProperty;
-import org.openapitools.codegen.utils.StringUtils;
-
 import static com.twilio.oai.common.ApplicationConstants.CONFIG_NODE_JSON_PATH;
 
-public class NodeConventionResolver {
+public class PythonConventionResolver{
     private final Map<String, Map<String, Object>> conventionMap = getConventionalMap();
 
-    public void resolveParameter(final CodegenParameter codegenParameter) {
-        if (codegenParameter.dataFormat != null) {
-            getDataType(StringUtils.underscore(codegenParameter.dataFormat)).ifPresent(dataType -> codegenParameter.dataType = dataType);
-        }
-
-        codegenParameter.dataType = Utility.removeEnumName(codegenParameter.dataType);
-        codegenParameter.baseType = Utility.removeEnumName(codegenParameter.baseType);
-    }
 
     public CodegenModel resolveModel(CodegenModel model) {
         for (CodegenProperty property : model.vars) {
@@ -60,9 +50,9 @@ public class NodeConventionResolver {
                     Map<String, String> propMap = (Map<String, String>) conventionMap.get(Segments.SEGMENT_LIBRARY.getSegment()).
                             get(propertyName);
                     ArrayList<Map<String, String>> imports =
-                        (ArrayList<Map<String, String>>) model.vendorExtensions.computeIfAbsent(
-                        "x-imports",
-                        k -> new ArrayList<>());
+                            (ArrayList<Map<String, String>>) model.vendorExtensions.computeIfAbsent(
+                                    "x-imports",
+                                    k -> new ArrayList<>());
                     if (imports.stream().noneMatch(item -> prop.dataType.equals(item.get("name")))) {
                         Map<String, String> customObjectImport = new HashMap<>();
                         customObjectImport.put("name", prop.dataType);
