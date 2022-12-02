@@ -25,6 +25,7 @@ use Twilio\Version;
 use Twilio\InstanceContext;
 use Twilio\Deserialize;
 use Twilio\Serialize;
+use Twilio\ListResource;
 use Twilio\Rest\Api\V2010\Account\CallList;
 use Twilio\Rest\Api\V2010\AccountPage;
 
@@ -61,8 +62,9 @@ class AccountList extends ListResource {
             'RecordingStatusCallback' => $options['recordingStatusCallback'],
             'RecordingStatusCallbackEvent' => Serialize::map($options['recordingStatusCallbackEvent'], function($e) { return $e; }),
         ]);
+        $headers = Values::of(["X-Twilio-Webhook-Enabled" => $options["xTwilioWebhookEnabled"] ]);
 
-        $payload = $this->version->create('POST', $this->uri, [], $data);
+        $payload = $this->version->create('POST', $this->uri, [], $data  ,$headers );
 
         return new AccountInstance(
             $this->version,

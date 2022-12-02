@@ -25,6 +25,7 @@ use Twilio\Version;
 use Twilio\InstanceContext;
 use Twilio\Deserialize;
 use Twilio\Serialize;
+use Twilio\ListResource;
 use Twilio\Rest\Api\V2010\Account\Call\FeedbackCallSummaryList;
 
 
@@ -71,7 +72,7 @@ class CallList extends ListResource {
             'TestArrayOfUri' => Serialize::map($options['testArrayOfUri'], function($e) { return $e; }),
         ]);
 
-        $payload = $this->version->create('POST', $this->uri, [], $data);
+        $payload = $this->version->create('POST', $this->uri, [], $data );
 
         return new CallInstance(
             $this->version,

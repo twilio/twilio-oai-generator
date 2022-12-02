@@ -25,6 +25,7 @@ use Twilio\Version;
 use Twilio\InstanceContext;
 use Twilio\Deserialize;
 use Twilio\Serialize;
+use Twilio\ListResource;
 
 
 
@@ -59,7 +60,7 @@ class FleetList extends ListResource {
             'FriendlyName' => $options['friendlyName'],
         ]);
 
-        $payload = $this->version->create('POST', $this->uri, [], $data);
+        $payload = $this->version->create('POST', $this->uri, [], $data );
 
         return new FleetInstance(
             $this->version,

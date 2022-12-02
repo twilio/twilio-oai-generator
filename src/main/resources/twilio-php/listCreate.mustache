@@ -50,20 +50,23 @@
             {{/isFormParam}}
             {{/optionalParams}}
         ]);
+        {{#headerParams.0}}
+        $headers = Values::of([{{#headerParams}}"{{baseName}}" => $options["{{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}"]{{^-last}}, {{/-last}}{{/headerParams}} ]);
+        {{/headerParams.0}}
         {{#requiredParams}}
         {{#vendorExtensions.x-prefixed-collapsible-map}}
-            $data = \array_merge($data, Serialize::prefixedCollapsibleMap($options['{{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}'], 'AddOns'));
+        $data = \array_merge($data, Serialize::prefixedCollapsibleMap($options['{{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}'], 'AddOns'));
         {{/vendorExtensions.x-prefixed-collapsible-map}}
         {{/requiredParams}}
         {{#optionalParams}}
         {{#isFormParam}}
         {{#vendorExtensions.x-prefixed-collapsible-map}}
-            $data = \array_merge($data, Serialize::prefixedCollapsibleMap($options['{{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}'], 'AddOns'));
+        $data = \array_merge($data, Serialize::prefixedCollapsibleMap($options['{{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}'], 'AddOns'));
         {{/vendorExtensions.x-prefixed-collapsible-map}}
         {{/isFormParam}}
         {{/optionalParams}}
 
-        $payload = $this->version->create('POST', $this->uri, [], $data);
+        $payload = $this->version->create('POST', $this->uri, [], $data {{#headerParams.0}} ,$headers {{/headerParams.0}});
 
         return new {{apiName}}Instance(
             $this->version,

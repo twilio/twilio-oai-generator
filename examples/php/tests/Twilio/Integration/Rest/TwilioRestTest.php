@@ -32,7 +32,6 @@ class TwilioRestTest extends HolodeckTestCase {
         ));
     }
 
-
     public function testShouldCreateAccount(): void {
         $this->holodeck->mock(new Response(
             200,
@@ -54,7 +53,7 @@ class TwilioRestTest extends HolodeckTestCase {
             'post',
             'https://api.twilio.com/2010-04-01/Accounts.json',
             null,
-            array()
+            []
         ));
     }
 
@@ -74,62 +73,28 @@ class TwilioRestTest extends HolodeckTestCase {
 
 
     public function testShouldAddHeader(): void {
-        $this->markTestSkipped('WIP.');
-        $this->holodeck->mock(new Response(500, ''));
-
+        $this->holodeck->mock(new Response(200,
+            '
+            {
+                "account_sid": "ACXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+            }
+            '
+        ));
         try {
-            $this->twilio->api->v2010->accounts->create();
+            $this->twilio->api->v2010->accounts->create([
+                "xTwilioWebhookEnabled" => true,
+                "recordingStatusCallback" => "https://validurl.com",
+                "recordingStatusCallbackEvent" => ""
+            ]);
         } catch (DeserializeException $e) {}
         catch (TwilioException $e) {}
 
         $this->assertRequest(new Request(
             'post',
-            'https://api.twilio.com/2010-04-01/Accounts.json'
-        ));
-    }
-
-
-    public function testShouldAddQueryParams(): void {
-        $this->markTestSkipped('WIP.');
-        $this->holodeck->mock(new Response(500, ''));
-
-        try {
-            $this->twilio->api->v2010->accounts->read();
-        } catch (DeserializeException $e) {}
-        catch (TwilioException $e) {}
-
-        $this->assertRequest(new Request(
-            'get',
-            'https://api.twilio.com/2010-04-01/Accounts.json'
-        ));
-    }
-
-    public function testShouldMakeCreateRequest(): void {
-        $this->markTestSkipped('WIP.');
-        $this->holodeck->mock(new Response(500, ''));
-
-        try {
-            $this->twilio->api->v2010->accounts->create();
-        } catch (DeserializeException $e) {}
-        catch (TwilioException $e) {}
-
-        $this->assertRequest(new Request(
-            'post',
-            'https://api.twilio.com/2010-04-01/Accounts.json'
-        ));
-    }
-
-    public function testShouldMakeValidApiCallToAccountFetcher(): void{
-        $this->holodeck->mock(new Response(500, ''));
-
-        try {
-            $this->twilio->api->v2010->accounts("AC222222222222222222222222222222")->fetch();
-        } catch (DeserializeException $e) {}
-        catch (TwilioException $e) {}
-
-        $this->assertRequest(new Request(
-            'get',
-            "https://api.twilio.com/2010-04-01/Accounts/AC222222222222222222222222222222.json"
+            'https://api.twilio.com/2010-04-01/Accounts.json',
+            [],
+            ['RecordingStatusCallback' => 'https://validurl.com', 'RecordingStatusCallbackEvent' => ''],
+            ["X-Twilio-Webhook-Enabled" => true]
         ));
     }
 

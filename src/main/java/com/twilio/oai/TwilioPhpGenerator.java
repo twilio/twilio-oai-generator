@@ -1,10 +1,13 @@
 package com.twilio.oai;
 
+import com.google.common.collect.ImmutableMap;
+import com.samskivert.mustache.Mustache;
 import com.twilio.oai.api.PhpApiResourceBuilder;
 import com.twilio.oai.api.PhpApiResources;
 import com.twilio.oai.api.PhpDomainBuilder;
 import com.twilio.oai.common.EnumConstants;
 import com.twilio.oai.common.Utility;
+import com.twilio.oai.mlambdas.ReplaceHyphenLambda;
 import com.twilio.oai.resolver.php.*;
 import com.twilio.oai.resource.ResourceMap;
 import com.twilio.oai.template.IApiActionTemplate;
@@ -31,6 +34,7 @@ public class TwilioPhpGenerator extends PhpClientCodegen {
     private final Map<String, String> modelFormatMap = new HashMap<>();
     private IConventionMapper conventionMapper = new LanguageConventionResolver(PHP_CONVENTIONAL_MAP_PATH);
     private IApiActionTemplate phpApiActionTemplate = new PhpApiActionTemplate(this);
+
     public TwilioPhpGenerator() {
         super();
         twilioCodegen = new TwilioCodegenAdapter(this, getName());
@@ -60,7 +64,7 @@ public class TwilioPhpGenerator extends PhpClientCodegen {
         directoryStructureService.configure(openAPI);
         if (!directoryStructureService.isVersionLess()) {
             new PhpDomainBuilder(phpApiActionTemplate)
-                    .setVersionTemplate(openAPI,directoryStructureService);
+                    .setVersionTemplate(openAPI, directoryStructureService);
         }
     }
 

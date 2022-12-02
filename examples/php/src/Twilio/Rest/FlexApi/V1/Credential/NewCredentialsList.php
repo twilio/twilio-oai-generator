@@ -25,6 +25,7 @@ use Twilio\Version;
 use Twilio\InstanceContext;
 use Twilio\Deserialize;
 use Twilio\Serialize;
+use Twilio\ListResource;
 
 
 
@@ -76,7 +77,7 @@ class NewCredentialsList extends ListResource {
             'SomeA2PThing' => $options['someA2PThing'],
         ]);
 
-        $payload = $this->version->create('POST', $this->uri, [], $data);
+        $payload = $this->version->create('POST', $this->uri, [], $data );
 
         return new NewCredentialsInstance(
             $this->version,
