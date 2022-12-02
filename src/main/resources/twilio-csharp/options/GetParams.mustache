@@ -15,7 +15,7 @@
             {{^isMap}}
             if ({{paramName}} != null)
             {
-                p.Add(new KeyValuePair<string, string>("{{baseName}}", {{{vendorExtensions.x-param-to-string}}}));
+                p.Add(new KeyValuePair<string, string>("{{{baseName}}}", {{{vendorExtensions.x-param-to-string}}}));
             }
             {{/isMap}}
             {{/isArray}}
@@ -31,13 +31,13 @@
             {{#vendorExtensions.x-before}}
                 if ({{paramName}} != null)
                 {
-                    p.Add(new KeyValuePair<string, string>("{{baseName}}", {{{vendorExtensions.x-param-to-string}}}));
+                    p.Add(new KeyValuePair<string, string>("{{{baseName}}}", {{{vendorExtensions.x-param-to-string}}}));
                 }
             {{/vendorExtensions.x-before}}
             {{#vendorExtensions.x-after}}
                 if ({{paramName}} != null)
                 {
-                    p.Add(new KeyValuePair<string, string>("{{baseName}}", {{{vendorExtensions.x-param-to-string}}}));
+                    p.Add(new KeyValuePair<string, string>("{{{baseName}}}", {{{vendorExtensions.x-param-to-string}}}));
                 }
             {{/vendorExtensions.x-after}}
 
