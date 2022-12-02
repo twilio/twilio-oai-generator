@@ -147,11 +147,11 @@ namespace Twilio.Rest.Api.V2010
             {
                 if (DateCreatedBefore != null)
                 {
-                    p.Add(new KeyValuePair<string, string>("DateCreated<", Serializers.DateTimeIso8601(DateCreatedBefore)));
+                    p.Add(new KeyValuePair<string, string>("DateCreated&lt;", Serializers.DateTimeIso8601(DateCreatedBefore)));
                 }
                 if (DateCreatedAfter != null)
                 {
-                    p.Add(new KeyValuePair<string, string>("DateCreated>", Serializers.DateTimeIso8601(DateCreatedAfter)));
+                    p.Add(new KeyValuePair<string, string>("DateCreated&gt;", Serializers.DateTimeIso8601(DateCreatedAfter)));
                 }
 
             }

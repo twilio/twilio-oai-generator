@@ -364,12 +364,6 @@ paths:
                     format: uri
                     type: string
                   type: array
-                MessagingBinding.ProxyAddress:
-                  type: string
-                  description: The address of the Twilio phone number (or WhatsApp
-                    number) that the participant is in contact with. This field, together
-                    with participant address, is only null when the participant is
-                    interacting from an SDK endpoint (see the 'identity' field).
                 TestMethod:
                   type: string
                   format: http-method

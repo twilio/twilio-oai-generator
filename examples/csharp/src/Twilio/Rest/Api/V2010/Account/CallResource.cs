@@ -96,7 +96,6 @@ namespace Twilio.Rest.Api.V2010.Account
         /// <param name="pathAccountSid">  </param>
         /// <param name="testArrayOfStrings">  </param>
         /// <param name="testArrayOfUri">  </param>
-        /// <param name="messagingBindingProxyAddress"> The address of the Twilio phone number (or WhatsApp number) that the participant is in contact with. This field, together with participant address, is only null when the participant is interacting from an SDK endpoint (see the 'identity' field). </param>
         /// <param name="client"> Client to make requests to Twilio </param>
         /// <returns> A single instance of Call </returns>
         public static CallResource Create(
@@ -105,10 +104,9 @@ namespace Twilio.Rest.Api.V2010.Account
                                           string pathAccountSid = null,
                                           List<string> testArrayOfStrings = null,
                                           List<Uri> testArrayOfUri = null,
-                                          string messagingBindingProxyAddress = null,
                                           ITwilioRestClient client = null)
         {
-            var options = new CreateCallOptions(requiredStringProperty, testMethod){  PathAccountSid = pathAccountSid, TestArrayOfStrings = testArrayOfStrings, TestArrayOfUri = testArrayOfUri, MessagingBindingProxyAddress = messagingBindingProxyAddress };
+            var options = new CreateCallOptions(requiredStringProperty, testMethod){  PathAccountSid = pathAccountSid, TestArrayOfStrings = testArrayOfStrings, TestArrayOfUri = testArrayOfUri };
             return Create(options, client);
         }
 
@@ -119,7 +117,6 @@ namespace Twilio.Rest.Api.V2010.Account
         /// <param name="pathAccountSid">  </param>
         /// <param name="testArrayOfStrings">  </param>
         /// <param name="testArrayOfUri">  </param>
-        /// <param name="messagingBindingProxyAddress"> The address of the Twilio phone number (or WhatsApp number) that the participant is in contact with. This field, together with participant address, is only null when the participant is interacting from an SDK endpoint (see the 'identity' field). </param>
         /// <param name="client"> Client to make requests to Twilio </param>
         /// <returns> Task that resolves to A single instance of Call </returns>
         public static async System.Threading.Tasks.Task<CallResource> CreateAsync(
@@ -128,10 +125,9 @@ namespace Twilio.Rest.Api.V2010.Account
                                                                                   string pathAccountSid = null,
                                                                                   List<string> testArrayOfStrings = null,
                                                                                   List<Uri> testArrayOfUri = null,
-                                                                                  string messagingBindingProxyAddress = null,
                                                                                   ITwilioRestClient client = null)
         {
-        var options = new CreateCallOptions(requiredStringProperty, testMethod){  PathAccountSid = pathAccountSid, TestArrayOfStrings = testArrayOfStrings, TestArrayOfUri = testArrayOfUri, MessagingBindingProxyAddress = messagingBindingProxyAddress };
+        var options = new CreateCallOptions(requiredStringProperty, testMethod){  PathAccountSid = pathAccountSid, TestArrayOfStrings = testArrayOfStrings, TestArrayOfUri = testArrayOfUri };
             return await CreateAsync(options, client);
         }
         #endif

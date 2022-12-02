@@ -23,6 +23,5 @@ Name | Type | Requirement | Description
 **path_account_sid** | string | Optional | 
 **test_array_of_strings** | list(string) | Optional | 
 **test_array_of_uri** | list(string) | Optional | 
-**messaging_binding_proxy_address** | string | Optional | The address of the Twilio phone number (or WhatsApp number) that the participant is in contact with. This field, together with participant address, is only null when the participant is interacting from an SDK endpoint (see the 'identity' field).
 **test_integer** | int | *Computed* | INTEGER ID param!!!
 
