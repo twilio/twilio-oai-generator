@@ -244,7 +244,7 @@ public class TwilioPythonGenerator extends PythonClientCodegen {
                     parentResource.put("resourceName", parentResourceName);
                     parentResource.put("name", resource.get("name"));
 
-                    final List<CodegenParameter> resourcePathParams = getOperations(resource).get(0).pathParams;
+                    final List<CodegenParameter> resourcePathParams = Utility.getOperations(resource).get(0).pathParams;
 
                     // If the resource has only "parent params", move its dependents onto the parent.
                     if (resourcePathParams.stream().allMatch(PathUtils::isParentParam)) {
@@ -259,7 +259,7 @@ public class TwilioPythonGenerator extends PythonClientCodegen {
                                     .stream()
                                     .filter(PathUtils::isParentParam)
                                     .collect(Collectors.toList()));
-                    getOperations(parentResource);
+                    Utility.getOperations(parentResource);
                 }
             }
 
