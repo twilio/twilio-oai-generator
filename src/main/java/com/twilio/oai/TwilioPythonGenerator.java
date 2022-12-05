@@ -87,9 +87,7 @@ public class TwilioPythonGenerator extends PythonClientCodegen {
     public Map<String, ModelsMap> postProcessAllModels(final Map<String, ModelsMap> allModels) {
         final Map<String, ModelsMap> results = super.postProcessAllModels(allModels);
 
-        Utility.addModelsToLocalModelList(results, this.allModels);
-        Utility.setComplexDataMapping(this.allModels, this.modelFormatMap);
-        this.allModels.forEach(model -> model.setClassname(removeEnumName(model.getClassname())));
+        directoryStructureService.postProcessAllModels(results, modelFormatMap);
 
         // Return an empty collection so no model files get generated.
         return new HashMap<>();
@@ -166,7 +164,7 @@ public class TwilioPythonGenerator extends PythonClientCodegen {
             updateResourcePath(resource, co);
             twilioCodegen.populateCrudOperations(resource, co);
 
-            co.allParams.forEach(param -> param.dataType = resolveModelDataType(param, param.dataType, models));
+            co.allParams.forEach(param -> addModel(param.baseType, param.dataType, models));
             co.allParams.removeAll(co.pathParams);
             co.requiredParams.removeAll(co.pathParams);
             co.hasParams = !co.allParams.isEmpty();
@@ -199,12 +197,12 @@ public class TwilioPythonGenerator extends PythonClientCodegen {
                         .stream()
                         .map(response -> response.dataType)
                         .filter(Objects::nonNull)
-                        .map(this::getModel)
+                        .map(directoryStructureService::getModelByClassname)
                         .flatMap(Optional::stream)
                         .map(conventionResolver::resolveModel)
                         .map(item -> conventionResolver.resolveComplexType(item, modelFormatMap))
                         .forEach(model -> {
-                            model.vars.forEach(prop -> prop.dataType = resolveModelDataType(prop, prop.dataType, models));
+                            model.vars.forEach(prop -> addModel(prop.complexType, prop.dataType, models));
 
                             model.setName(itemName);
                             resource.put("responseModel", model);
@@ -302,27 +300,8 @@ public class TwilioPythonGenerator extends PythonClientCodegen {
         resource.put("path", path);
         resource.put("resourcePathParams", resourcePathParams);
     }
-    private String resolveModelDataType(final IJsonSchemaValidationProperties prop,
-                                        final String dataType,
-                                        final Map<String, CodegenModel> models) {
-        final String modelDataType = removeEnumName(dataType);
 
-        if (prop.getComplexType() != null) {
-            addModel(models, removeEnumName(prop.getComplexType()));
-        } else {
-            addModel(models, modelDataType);
-        }
-
-        return modelDataType;
-    }
-    private void addModel(final Map<String, CodegenModel> models, final String dataType) {
-        getModel(dataType).ifPresent(model -> {
-            if (models.putIfAbsent(model.getClassname(), model) == null) {
-                model.getVars().forEach(property -> addModel(models, property.dataType));
-            }
-        });
-    }
-    private Optional<CodegenModel> getModel(final String modelName) {
-        return allModels.stream().filter(model -> model.getClassname().equals(modelName)).findFirst();
+    private void addModel(final String complexType, final String dataType, final Map<String, CodegenModel> models) {
+        directoryStructureService.addModel(models, complexType, dataType);
     }
 }
