@@ -36,7 +36,7 @@ paths:
           application/x-www-form-urlencoded:
             schema:
               properties:
-                FriendlyName:
+                Name:
                   type: string
               title: CreateDeployedDevicesFleetRequest
               type: object

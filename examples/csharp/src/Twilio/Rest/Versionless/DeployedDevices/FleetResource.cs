@@ -72,27 +72,27 @@ namespace Twilio.Rest.Versionless.DeployedDevices
         #endif
 
         /// <summary> create </summary>
-        /// <param name="friendlyName">  </param>
+        /// <param name="name">  </param>
         /// <param name="client"> Client to make requests to Twilio </param>
         /// <returns> A single instance of Fleet </returns>
         public static FleetResource Create(
-                                          string friendlyName = null,
+                                          string name = null,
                                           ITwilioRestClient client = null)
         {
-            var options = new CreateFleetOptions(){  FriendlyName = friendlyName };
+            var options = new CreateFleetOptions(){  Name = name };
             return Create(options, client);
         }
 
         #if !NET35
         /// <summary> create </summary>
-        /// <param name="friendlyName">  </param>
+        /// <param name="name">  </param>
         /// <param name="client"> Client to make requests to Twilio </param>
         /// <returns> Task that resolves to A single instance of Fleet </returns>
         public static async System.Threading.Tasks.Task<FleetResource> CreateAsync(
-                                                                                  string friendlyName = null,
+                                                                                  string name = null,
                                                                                   ITwilioRestClient client = null)
         {
-        var options = new CreateFleetOptions(){  FriendlyName = friendlyName };
+        var options = new CreateFleetOptions(){  Name = name };
             return await CreateAsync(options, client);
         }
         #endif
