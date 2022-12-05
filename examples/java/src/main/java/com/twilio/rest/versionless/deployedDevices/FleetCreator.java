@@ -50,13 +50,13 @@ import lombok.ToString;
 import java.net.URI;
 
 public class FleetCreator extends Creator<Fleet>{
-    private String friendlyName;
+    private String name;
 
     public FleetCreator() {
     }
 
-    public FleetCreator setFriendlyName(final String friendlyName){
-        this.friendlyName = friendlyName;
+    public FleetCreator setName(final String name){
+        this.name = name;
         return this;
     }
 
@@ -85,8 +85,8 @@ public class FleetCreator extends Creator<Fleet>{
         return Fleet.fromJson(response.getStream(), client.getObjectMapper());
     }
     private void addPostParams(final Request request) {
-        if (friendlyName != null) {
-            request.addPostParam("FriendlyName", friendlyName);
+        if (name != null) {
+            request.addPostParam("Name", name);
     
         }
     }

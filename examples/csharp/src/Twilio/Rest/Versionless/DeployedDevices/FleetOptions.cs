@@ -29,7 +29,7 @@ namespace Twilio.Rest.Versionless.DeployedDevices
     {
         
         
-        public string FriendlyName { get; set; }
+        public string Name { get; set; }
 
 
 
@@ -39,9 +39,9 @@ namespace Twilio.Rest.Versionless.DeployedDevices
         {
             var p = new List<KeyValuePair<string, string>>();
 
-            if (FriendlyName != null)
+            if (Name != null)
             {
-                p.Add(new KeyValuePair<string, string>("FriendlyName", FriendlyName));
+                p.Add(new KeyValuePair<string, string>("Name", Name));
             }
             return p;
         }
