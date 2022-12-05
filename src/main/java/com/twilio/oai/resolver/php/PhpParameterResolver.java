@@ -18,7 +18,7 @@ public class PhpParameterResolver extends LanguageParamResolver {
     public void resolveProperties(CodegenParameter codegenParameter) {
         super.resolveProperties(codegenParameter);
         if (codegenParameter.dataType.equalsIgnoreCase(LanguageConventionResolver.MIXED)) {
-            codegenParameter.dataType = "string";
+            codegenParameter.dataType = "array";
         }
         if (codegenParameter.dataType.equalsIgnoreCase(LanguageConventionResolver.OBJECT) ||
                 codegenParameter.dataType.equals(LanguageConventionResolver.LIST_OBJECT)) {
