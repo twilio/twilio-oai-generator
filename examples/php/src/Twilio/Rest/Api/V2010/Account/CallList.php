@@ -67,8 +67,8 @@ class CallList extends ListResource {
         $data = Values::of([
             'RequiredStringProperty' => $requiredStringProperty,
             'TestMethod' => $testMethod,
-            'TestArrayOfStrings' => $options['testArrayOfStrings'],
-            'TestArrayOfUri' => $options['testArrayOfUri'],
+            'TestArrayOfStrings' => Serialize::map($options['testArrayOfStrings'], function($e) { return $e; }),
+            'TestArrayOfUri' => Serialize::map($options['testArrayOfUri'], function($e) { return $e; }),
         ]);
 
         $payload = $this->version->create('POST', $this->uri, [], $data);

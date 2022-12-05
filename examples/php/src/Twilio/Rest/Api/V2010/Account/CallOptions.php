@@ -29,8 +29,8 @@ use Twilio\Rest\Api\V2010\Account\Call\FeedbackCallSummaryList;
 
 abstract class CallOptions {
     /**
-    * @param array $testArrayOfStrings  
-    * @param array $testArrayOfUri  
+    * @param string[] $testArrayOfStrings  
+    * @param string[] $testArrayOfUri  
     * @return CreateCallOptions Options builder
     */
     public static function create(array  $testArrayOfStrings=Values::ARRAY_NONE,array  $testArrayOfUri=Values::ARRAY_NONE): CreateCallOptions {
@@ -43,8 +43,8 @@ abstract class CallOptions {
 
 class CreateCallOptions extends Options {
     /**
-    * @param array $testArrayOfStrings 
-    * @param array $testArrayOfUri 
+    * @param string[] $testArrayOfStrings 
+    * @param string[] $testArrayOfUri 
     */
     public function __construct(array  $testArrayOfStrings=Values::ARRAY_NONE,array  $testArrayOfUri=Values::ARRAY_NONE) {
         $this->options['testArrayOfStrings'] = $testArrayOfStrings;
@@ -52,7 +52,7 @@ class CreateCallOptions extends Options {
     }
 
     /**
-    * @param array $testArrayOfStrings 
+    * @param string[] $testArrayOfStrings 
     * @return $this Fluent Builder
     */
     public function setTestArrayOfStrings(array $testArrayOfStrings): self {
@@ -60,7 +60,7 @@ class CreateCallOptions extends Options {
         return $this;
     }
     /**
-    * @param array $testArrayOfUri 
+    * @param string[] $testArrayOfUri 
     * @return $this Fluent Builder
     */
     public function setTestArrayOfUri(array $testArrayOfUri): self {

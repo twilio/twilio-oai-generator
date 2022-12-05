@@ -39,10 +39,10 @@ abstract class NewCredentialsOptions {
     * @param \DateTime $testDateTime  
     * @param \DateTime $testDate  
     * @param string $testEnum  
-    * @param array $testObjectArray  
+    * @param object[] $testObjectArray  
     * @param array $testAnyType  
-    * @param array $testAnyArray  
-    * @param array $permissions A comma-separated list of the permissions you will request from the users of this ConnectApp.  Can include: &#x60;get-all&#x60; and &#x60;post-all&#x60;. 
+    * @param mixed[] $testAnyArray  
+    * @param string[] $permissions A comma-separated list of the permissions you will request from the users of this ConnectApp.  Can include: &#x60;get-all&#x60; and &#x60;post-all&#x60;. 
     * @param string $someA2PThing  
     * @return CreateNewCredentialsOptions Options builder
     */
@@ -65,10 +65,10 @@ class CreateNewCredentialsOptions extends Options {
     * @param \DateTime $testDateTime 
     * @param \DateTime $testDate 
     * @param string $testEnum 
-    * @param array $testObjectArray 
+    * @param object[] $testObjectArray 
     * @param array $testAnyType 
-    * @param array $testAnyArray 
-    * @param array $permissions A comma-separated list of the permissions you will request from the users of this ConnectApp.  Can include: &#x60;get-all&#x60; and &#x60;post-all&#x60;.
+    * @param mixed[] $testAnyArray 
+    * @param string[] $permissions A comma-separated list of the permissions you will request from the users of this ConnectApp.  Can include: &#x60;get-all&#x60; and &#x60;post-all&#x60;.
     * @param string $someA2PThing 
     */
     public function __construct(bool  $testBoolean=Values::NONE,int  $testInteger=Values::NONE,float  $testNumber=Values::NONE,float  $testNumberFloat=Values::NONE,float  $testNumberDouble=Values::NONE,float  $testNumberInt32=Values::NONE,int  $testNumberInt64=Values::NONE,array  $testObject=Values::NONE,\DateTime  $testDateTime=Values::NONE,\DateTime  $testDate=Values::NONE,string  $testEnum=Values::NONE,array  $testObjectArray=Values::ARRAY_NONE,array  $testAnyType=Values::NONE,array  $testAnyArray=Values::ARRAY_NONE,array  $permissions=Values::ARRAY_NONE,string  $someA2PThing=Values::NONE) {
@@ -179,7 +179,7 @@ class CreateNewCredentialsOptions extends Options {
         return $this;
     }
     /**
-    * @param array $testObjectArray 
+    * @param object[] $testObjectArray 
     * @return $this Fluent Builder
     */
     public function setTestObjectArray(array $testObjectArray): self {
@@ -195,7 +195,7 @@ class CreateNewCredentialsOptions extends Options {
         return $this;
     }
     /**
-    * @param array $testAnyArray 
+    * @param mixed[] $testAnyArray 
     * @return $this Fluent Builder
     */
     public function setTestAnyArray(array $testAnyArray): self {
@@ -203,7 +203,7 @@ class CreateNewCredentialsOptions extends Options {
         return $this;
     }
     /**
-    * @param array $permissions A comma-separated list of the permissions you will request from the users of this ConnectApp.  Can include: &#x60;get-all&#x60; and &#x60;post-all&#x60;.
+    * @param string[] $permissions A comma-separated list of the permissions you will request from the users of this ConnectApp.  Can include: &#x60;get-all&#x60; and &#x60;post-all&#x60;.
     * @return $this Fluent Builder
     */
     public function setPermissions(array $permissions): self {

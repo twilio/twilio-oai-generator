@@ -27,9 +27,6 @@ public class PhpParameterResolver extends LanguageParamResolver {
         if (codegenParameter.dataType.contains("Enum")) {
             codegenParameter.dataType = "string";
         }
-        if(codegenParameter.isArray){
-            codegenParameter.dataType = "array";
-        }
     }
 
     @Override

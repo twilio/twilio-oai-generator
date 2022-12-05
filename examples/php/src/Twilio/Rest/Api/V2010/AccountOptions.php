@@ -31,7 +31,7 @@ abstract class AccountOptions {
     /**
     * @param string $xTwilioWebhookEnabled  
     * @param string $recordingStatusCallback  
-    * @param array $recordingStatusCallbackEvent  
+    * @param string[] $recordingStatusCallbackEvent  
     * @return CreateAccountOptions Options builder
     */
     public static function create(string  $xTwilioWebhookEnabled=Values::NONE,string  $recordingStatusCallback=Values::NONE,array  $recordingStatusCallbackEvent=Values::ARRAY_NONE): CreateAccountOptions {
@@ -65,7 +65,7 @@ class CreateAccountOptions extends Options {
     /**
     * @param string $xTwilioWebhookEnabled 
     * @param string $recordingStatusCallback 
-    * @param array $recordingStatusCallbackEvent 
+    * @param string[] $recordingStatusCallbackEvent 
     */
     public function __construct(string  $xTwilioWebhookEnabled=Values::NONE,string  $recordingStatusCallback=Values::NONE,array  $recordingStatusCallbackEvent=Values::ARRAY_NONE) {
         $this->options['xTwilioWebhookEnabled'] = $xTwilioWebhookEnabled;
@@ -90,7 +90,7 @@ class CreateAccountOptions extends Options {
         return $this;
     }
     /**
-    * @param array $recordingStatusCallbackEvent 
+    * @param string[] $recordingStatusCallbackEvent 
     * @return $this Fluent Builder
     */
     public function setRecordingStatusCallbackEvent(array $recordingStatusCallbackEvent): self {

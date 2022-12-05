@@ -69,10 +69,10 @@ class NewCredentialsList extends ListResource {
             'TestDateTime' => Serialize::iso8601DateTime($options['testDateTime']),
             'TestDate' => Serialize::iso8601Date($options['testDate']),
             'TestEnum' => $options['testEnum'],
-            'TestObjectArray' => $options['testObjectArray'],
+            'TestObjectArray' => Serialize::map($options['testObjectArray'], function($e) { return $e; }),
             'TestAnyType' => $options['testAnyType'],
-            'TestAnyArray' => $options['testAnyArray'],
-            'Permissions' => $options['permissions'],
+            'TestAnyArray' => Serialize::map($options['testAnyArray'], function($e) { return $e; }),
+            'Permissions' => Serialize::map($options['permissions'], function($e) { return $e; }),
             'SomeA2PThing' => $options['someA2PThing'],
         ]);
 

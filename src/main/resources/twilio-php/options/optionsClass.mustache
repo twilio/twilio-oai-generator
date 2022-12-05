@@ -14,7 +14,7 @@ class {{vendorExtensions.x-name}}{{apiName}}Options extends Options {
     * @param {{dataType}} ${{paramName}} {{description}}
     * @return $this Fluent Builder
     */
-    public function set{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}({{dataType}} ${{paramName}}): self {
+    public function set{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}({{^isArray}}{{dataType}} ${{paramName}}{{/isArray}}{{#isArray}}array ${{paramName}}{{/isArray}}): self {
         $this->options['{{paramName}}'] = ${{paramName}};
         return $this;
     }
