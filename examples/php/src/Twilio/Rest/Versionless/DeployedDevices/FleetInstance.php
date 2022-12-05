@@ -30,9 +30,8 @@ use Twilio\Serialize;
 
 
 /**
- * @property string $accountSid
- * @property string $friendlyName
  * @property string $sid
+ * @property string $friendlyName
  */
 
 class FleetInstance extends InstanceResource {
@@ -48,9 +47,8 @@ class FleetInstance extends InstanceResource {
 
         // Marshaled Properties
         $this->properties = [
-            'accountSid' => Values::array_get($payload, 'account_sid'),
-            'friendlyName' => Values::array_get($payload, 'friendly_name'),
             'sid' => Values::array_get($payload, 'sid'),
+            'friendlyName' => Values::array_get($payload, 'friendly_name'),
         ];
 
         $this->solution = ['sid' => $sid ?: $this->properties['sid'], ];

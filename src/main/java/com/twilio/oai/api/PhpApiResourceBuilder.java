@@ -2,6 +2,7 @@ package com.twilio.oai.api;
 
 import com.twilio.oai.DirectoryStructureService;
 import com.twilio.oai.PathUtils;
+import com.twilio.oai.resolver.ISchemaResolver;
 import com.twilio.oai.resource.Resource;
 import com.twilio.oai.template.IApiActionTemplate;
 import com.twilio.oai.template.PhpApiActionTemplate;
@@ -33,7 +34,8 @@ public class PhpApiResourceBuilder extends ApiResourceBuilder {
                 template.add(PhpApiActionTemplate.TEMPLATE_TYPE_CONTEXT);
             } else {
                 template.add(PhpApiActionTemplate.TEMPLATE_TYPE_PAGE);
-                template.add(PhpApiActionTemplate.TEMPLATE_TYPE_OPTIONS);
+                if((boolean)codegenOperation.vendorExtensions.get("hasOptionFileParams"))
+                    template.add(PhpApiActionTemplate.TEMPLATE_TYPE_OPTIONS);
             }
             template.add(PhpApiActionTemplate.TEMPLATE_TYPE_LIST);
             template.add(PhpApiActionTemplate.TEMPLATE_TYPE_INSTANCE);
@@ -123,6 +125,32 @@ public class PhpApiResourceBuilder extends ApiResourceBuilder {
                     .stream()
                     .collect(Collectors.joining("\\"));
             namespaceSubPart = "\\" + namespacePath;
+        }
+    }
+
+    @Override
+    public ApiResourceBuilder updateOperations(ISchemaResolver<CodegenParameter> codegenParameterIResolver){
+        ApiResourceBuilder apiResourceBuilder = super.updateOperations(codegenParameterIResolver);
+        this.addOptionFileParams(apiResourceBuilder);
+        return apiResourceBuilder;
+    }
+
+    private void addOptionFileParams(ApiResourceBuilder apiResourceBuilder){
+        for(CodegenOperation operation:apiResourceBuilder.codegenOperationList){
+            List<CodegenParameter> optionFileParams = new ArrayList<>();
+            for(CodegenParameter param:operation.optionalParams){
+                if(!param.isPathParam){
+                    param.vendorExtensions.put("optionFileSeparator",",");
+                    if(!(boolean)operation.vendorExtensions.getOrDefault("x-is-read-operation",false)){
+                        optionFileParams.add(param);
+                    } else if(!param.baseName.equals("PageSize")){
+                        optionFileParams.add(param);
+                    }
+                }
+            }
+            if(!optionFileParams.isEmpty()) optionFileParams.get(optionFileParams.size()-1).vendorExtensions.put("optionFileSeparator","");
+            operation.vendorExtensions.put("optionFileParams",optionFileParams);
+            operation.vendorExtensions.put("hasOptionFileParams",!optionFileParams.isEmpty());
         }
     }
 }

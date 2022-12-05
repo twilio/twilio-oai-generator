@@ -180,17 +180,17 @@ namespace Twilio.Rest.Versionless.DeployedDevices
         }
 
     
-        ///<summary> The unique SID that identifies this Account. </summary> 
-        [JsonProperty("account_sid")]
-        public string AccountSid { get; private set; }
-
-        ///<summary> A human readable description for this Fleet. </summary> 
-        [JsonProperty("friendly_name")]
-        public string FriendlyName { get; private set; }
+        ///<summary> The name </summary> 
+        [JsonProperty("name")]
+        public string Name { get; private set; }
 
         ///<summary> A string that uniquely identifies this Fleet. </summary> 
         [JsonProperty("sid")]
         public string Sid { get; private set; }
+
+        ///<summary> A human readable description for this Fleet. </summary> 
+        [JsonProperty("friendly_name")]
+        public string FriendlyName { get; private set; }
 
 
 

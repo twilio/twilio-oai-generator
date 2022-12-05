@@ -93,13 +93,18 @@ public class TwilioPhpGenerator extends PhpClientCodegen {
         return EnumConstants.Generator.TWILIO_PHP.getValue();
     }
 
+    @Override
+    public String toParamName(final String name) {
+        return StringHelper.camelize(twilioCodegen.toParamName(name));
+    }
+
     private PhpApiResources processCodegenOperations(List<CodegenOperation> opList) {
         return new PhpApiResourceBuilder(phpApiActionTemplate, opList, this.allModels)
                 .updateApiPath()
                 .updateAdditionalProps(directoryStructureService)
-                .updateTemplate()
                 .updateOperations(new PhpParameterResolver(conventionMapper))
                 .updateResponseModel(new PhpPropertyResolver(conventionMapper))
+                .updateTemplate()
                 .setImports(directoryStructureService)
                 .build();
     }

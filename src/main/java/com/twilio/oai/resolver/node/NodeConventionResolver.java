@@ -9,6 +9,7 @@ import java.util.Optional;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.twilio.oai.common.Utility;
 import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenParameter;
 import org.openapitools.codegen.CodegenProperty;
@@ -24,8 +25,8 @@ public class NodeConventionResolver {
             getDataType(StringUtils.underscore(codegenParameter.dataFormat)).ifPresent(dataType -> codegenParameter.dataType = dataType);
         }
 
-        codegenParameter.dataType = removeEnumName(codegenParameter.dataType);
-        codegenParameter.baseType = removeEnumName(codegenParameter.baseType);
+        codegenParameter.dataType = Utility.removeEnumName(codegenParameter.dataType);
+        codegenParameter.baseType = Utility.removeEnumName(codegenParameter.baseType);
     }
 
     public CodegenModel resolveModel(CodegenModel model) {
@@ -34,8 +35,8 @@ public class NodeConventionResolver {
                 getDataType(StringUtils.underscore(property.dataFormat)).ifPresent(dataType -> property.dataType = dataType);
             }
 
-            property.dataType = removeEnumName(property.dataType);
-            property.complexType = removeEnumName(property.complexType);
+            property.dataType = Utility.removeEnumName(property.dataType);
+            property.complexType = Utility.removeEnumName(property.complexType);
         }
 
         return model;
@@ -90,9 +91,5 @@ public class NodeConventionResolver {
         }
 
         return Optional.empty();
-    }
-
-    private String removeEnumName(final String dataType) {
-        return dataType == null ? null : dataType.replace("Enum", "");
     }
 }
