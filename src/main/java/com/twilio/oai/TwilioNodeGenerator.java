@@ -2,6 +2,7 @@ package com.twilio.oai;
 
 import com.twilio.oai.common.EnumConstants;
 import com.twilio.oai.resolver.node.NodeCaseResolver;
+import com.twilio.oai.common.Utility;
 import com.twilio.oai.resolver.node.NodeConventionResolver;
 import com.twilio.oai.resource.IResourceTree;
 import com.twilio.oai.resource.ResourceMap;
@@ -124,9 +125,6 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
 
             String resourceName;
             String parentResourceName = null;
-
-            co.returnType = instanceName;
-
             updateCodeOperationParams(co);
             if (isInstanceOperation) {
                 resourceName = itemName + "Context";
@@ -151,7 +149,7 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
             }
 
             final Map<String, Object> resource = PathUtils.getStringMap(resources, resourceName);
-            final ArrayList<CodegenOperation> resourceOperationList = getOperations(resource);
+            final ArrayList<CodegenOperation> resourceOperationList = Utility.getOperations(resource);
             final boolean ignoreOperation = Optional
                 .ofNullable(co.vendorExtensions.get(IGNORE_EXTENSION_NAME))
                 .map(Boolean.class::cast)
@@ -233,7 +231,7 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
                     parentResource.put("resourceName", parentResourceName);
                     parentResource.put("name", resource.get("name"));
 
-                    final List<CodegenParameter> resourcePathParams = getOperations(resource).get(0).pathParams;
+                    final List<CodegenParameter> resourcePathParams = Utility.getOperations(resource).get(0).pathParams;
 
                     // If the resource has only "parent params", move its dependents onto the parent.
                     if (resourcePathParams.stream().allMatch(PathUtils::isParentParam)) {
@@ -248,7 +246,7 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
                                            .stream()
                                            .filter(PathUtils::isParentParam)
                                            .collect(Collectors.toList()));
-                    getOperations(parentResource);
+                    Utility.getOperations(parentResource);
                 }
             }
 
@@ -263,13 +261,6 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
 
     private void addModel(final String complexType, final String dataType, final Map<String, CodegenModel> models) {
         directoryStructureService.addModel(models, complexType != null ? complexType : dataType);
-    }
-
-    @SuppressWarnings("unchecked")
-    private ArrayList<CodegenOperation> getOperations(final Map<String, Object> resource) {
-        return (ArrayList<CodegenOperation>) resource.computeIfAbsent(
-            "operations",
-            k -> new ArrayList<>());
     }
 
     private void updateResourcePath(final Map<String, Object> resource, final CodegenOperation operation) {

@@ -63,3 +63,8 @@ if should-generate php; then
   OUT_DIR=examples/php/src/Twilio/Rest
   generate twilio-php
 fi
+
+if should-generate python; then
+  OUT_DIR=examples/python/lib/rest
+  generate twilio-python
+fi

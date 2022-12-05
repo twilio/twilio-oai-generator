@@ -3,6 +3,7 @@ package com.twilio.oai;
 import com.twilio.oai.common.ApplicationConstants;
 import com.twilio.oai.common.EnumConstants;
 import com.twilio.oai.common.Serializer;
+import com.twilio.oai.common.Utility;
 import com.twilio.oai.mlambdas.TitleCaseLambda;
 import com.twilio.oai.resolver.csharp.CSharpCaseResolver;
 import com.twilio.oai.resolver.csharp.CSharpResolver;
@@ -99,7 +100,6 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
         return directoryStructureService.toApiFilename(super.toApiFilename(name));
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public OperationsMap postProcessOperationsWithModels(final OperationsMap objs, List<ModelMap> allModels) {
         final OperationsMap results = super.postProcessOperationsWithModels(objs, allModels);
@@ -123,7 +123,7 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
             resolveCodeOperationParams(co, recordKey, responseModels);
 
             // Add operations key to resource
-            final ArrayList<CodegenOperation> resourceOperationList = (ArrayList<CodegenOperation>) resource.computeIfAbsent("operations", k -> new ArrayList<>());
+            final ArrayList<CodegenOperation> resourceOperationList = Utility.getOperations(resource);
             resourceOperationList.add(co);
 
             boolean arrayParamsPresent = hasArrayParams(co.allParams);
