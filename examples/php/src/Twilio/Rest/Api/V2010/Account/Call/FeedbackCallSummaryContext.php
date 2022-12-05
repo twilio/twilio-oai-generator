@@ -42,7 +42,7 @@ class FeedbackCallSummaryContext extends InstanceContext {
         parent::__construct($version);
 
         // Path Solution
-        $this->solution = ['account_sid' => $accountSid,  'sid' => $sid,  ];
+        $this->solution = ['accountSid' => $accountSid,  'sid' => $sid,  ];
 
         $this->uri = '/Accounts/' . \rawurlencode($accountSid) . '/Calls/Feedback/Summary/' . \rawurlencode($sid) . '.json';
     }
