@@ -1,11 +1,9 @@
 {{#responseModel}}
-{{#hasEnums}}
 {{#vars}}
 {{#isEnum}}
 export type {{vendorExtensions.x-name}} = {{#allowableValues}}{{#enumVars}}{{{value}}}{{^-last}}|{{/-last}}{{/enumVars}}{{/allowableValues}};
 {{/isEnum}}
 {{/vars}}
-{{/hasEnums}}
 
 interface {{name}}Payload extends {{name}}Resource{{#hasPaginationOperation}}, Page.TwilioResponsePayload {{/hasPaginationOperation}}{
 }
@@ -27,7 +25,7 @@ export class {{name}}Instance {
   protected _context?: {{resourceName}};
   {{/parentResourceName}}
 
-  constructor(protected _version: {{apiVersionClass}}, payload: {{name}}Payload{{#resourcePathParams}}, {{paramName}}{{#-last}}?{{/-last}}: {{{dataType}}}{{/resourcePathParams}}) {
+  constructor(protected _version: {{apiVersionClass}}, payload: {{name}}Payload{{#resourcePathParams}}, {{paramName}}{{^vendorExtensions.x-is-parent-param}}?{{/vendorExtensions.x-is-parent-param}}: {{{dataType}}}{{/resourcePathParams}}) {
     {{#vars}}
     {{#vendorExtensions.x-deserialize}}
     this.{{name}} = {{vendorExtensions.x-deserialize}}(payload.{{baseName}});
@@ -38,7 +36,7 @@ export class {{name}}Instance {
     {{/vars}}
 
     {{#parentResourceName}}
-    this._solution = { {{#resourcePathParams}}{{paramName}}{{#-last}}: {{paramName}} || this.{{paramName}}{{/-last}}, {{/resourcePathParams}} };
+    this._solution = { {{#resourcePathParams}}{{paramName}}{{^vendorExtensions.x-is-parent-param}}: {{paramName}} || this.{{paramName}}{{/vendorExtensions.x-is-parent-param}}, {{/resourcePathParams}} };
     {{/parentResourceName}}
   }
 
