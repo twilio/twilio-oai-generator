@@ -302,6 +302,6 @@ public class TwilioPythonGenerator extends PythonClientCodegen {
     }
 
     private void addModel(final String complexType, final String dataType, final Map<String, CodegenModel> models) {
-        directoryStructureService.addModel(models, complexType != null ? complexType : dataType);
+        directoryStructureService.addModel(models, complexType, dataType);
     }
 }
