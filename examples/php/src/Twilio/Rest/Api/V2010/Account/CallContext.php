@@ -43,7 +43,7 @@ class CallContext extends InstanceContext {
         parent::__construct($version);
 
         // Path Solution
-        $this->solution = ['account_sid' => $accountSid,  'test_integer' => $testInteger,  ];
+        $this->solution = ['accountSid' => $accountSid,  'testInteger' => $testInteger,  ];
 
         $this->uri = '/Accounts/' . \rawurlencode($accountSid) . '/Calls/' . \rawurlencode($testInteger) . '.json';
     }
