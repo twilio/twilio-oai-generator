@@ -8,7 +8,7 @@
             {{#isArray}}
             if ({{paramName}} != null)
             {
-                p.AddRange({{paramName}}.Select({{paramName}} => new KeyValuePair<string, string>("{{paramName}}", {{{vendorExtensions.x-param-to-string}}})));
+                p.AddRange({{{baseName}}}.Select({{{baseName}}} => new KeyValuePair<string, string>("{{{baseName}}}", {{{vendorExtensions.x-param-to-string}}})));
             }
             {{/isArray}}
             {{^isArray}}
@@ -22,7 +22,7 @@
             {{#isMap}}
             if ({{paramName}} != null)
             {
-                p.AddRange(PrefixedCollapsibleMap.Serialize({{paramName}}, "{{{vendorExtensions.x-map-value}}}"));
+                p.AddRange(PrefixedCollapsibleMap.Serialize({{{baseName}}}, "{{{vendorExtensions.x-map-value}}}"));
             }
             {{/isMap}}
             {{#vendorExtensions.x-before-or-after}}
