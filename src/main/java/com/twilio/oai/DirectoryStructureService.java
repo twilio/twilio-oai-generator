@@ -247,7 +247,7 @@ public class DirectoryStructureService {
     public String getRecordKey(final List<CodegenOperation> opList) {
         return opList
             .stream()
-            .filter(co -> (co.operationId.toLowerCase().startsWith("list")) || co.operationIdLowerCase.startsWith("list"))
+            .filter(co -> co.operationId.toLowerCase().startsWith("list"))
             .map(co -> getModelByClassname(co.returnType))
             .map(Optional::orElseThrow)
             .map(CodegenModel::getAllVars)

@@ -197,7 +197,7 @@ public class TwilioPythonGenerator extends PythonClientCodegen {
                         .stream()
                         .map(response -> response.dataType)
                         .filter(Objects::nonNull)
-                        .map(modelName -> directoryStructureService.getModelByClassname(modelName))
+                        .map(directoryStructureService::getModelByClassname)
                         .flatMap(Optional::stream)
                         .map(conventionResolver::resolveModel)
                         .map(item -> conventionResolver.resolveComplexType(item, modelFormatMap))
