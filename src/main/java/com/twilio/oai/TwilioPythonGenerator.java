@@ -87,9 +87,7 @@ public class TwilioPythonGenerator extends PythonClientCodegen {
     public Map<String, ModelsMap> postProcessAllModels(final Map<String, ModelsMap> allModels) {
         final Map<String, ModelsMap> results = super.postProcessAllModels(allModels);
 
-        Utility.addModelsToLocalModelList(results, this.allModels);
-        Utility.setComplexDataMapping(this.allModels, this.modelFormatMap);
-        this.allModels.forEach(model -> model.setClassname(removeEnumName(model.getClassname())));
+        directoryStructureService.postProcessAllModels(results, modelFormatMap);
 
         // Return an empty collection so no model files get generated.
         return new HashMap<>();
@@ -99,7 +97,6 @@ public class TwilioPythonGenerator extends PythonClientCodegen {
     public OperationsMap postProcessOperationsWithModels(final OperationsMap objs, List<ModelMap> allModels) {
         final OperationsMap results = objs;
         final List<CodegenOperation> opList = directoryStructureService.processOperations(results);
-        final String recordKey = directoryStructureService.getRecordKey(opList);
 
         final Map<String, Object> resources = new TreeMap<>();
         final Map<String, CodegenModel> models = new TreeMap<>();
@@ -200,7 +197,7 @@ public class TwilioPythonGenerator extends PythonClientCodegen {
                         .stream()
                         .map(response -> response.dataType)
                         .filter(Objects::nonNull)
-                        .map(modelName -> directoryStructureService.getModelCoPath(modelName, co, recordKey))
+                        .map(modelName -> directoryStructureService.getModelByClassname(modelName))
                         .flatMap(Optional::stream)
                         .map(conventionResolver::resolveModel)
                         .map(item -> conventionResolver.resolveComplexType(item, modelFormatMap))
