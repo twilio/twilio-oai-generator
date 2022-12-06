@@ -16,6 +16,7 @@ import { inspect, InspectOptions } from "util";
 import V2010 from "../../V2010";
 const deserialize = require("../../../../base/deserialize");
 const serialize = require("../../../../base/serialize");
+import { isValidPathParam } from "../../../../base/utility";
 import { PhoneNumberCapabilities } from "../../../../interfaces";
 
 import { FeedbackCallSummaryListInstance } from "./call/feedbackCallSummary";
@@ -92,6 +93,14 @@ export class CallContextImpl implements CallContext {
     accountSid: string,
     testInteger: number
   ) {
+    if (!isValidPathParam(accountSid)) {
+      throw new Error("Parameter 'accountSid' is not valid.");
+    }
+
+    if (!isValidPathParam(testInteger)) {
+      throw new Error("Parameter 'testInteger' is not valid.");
+    }
+
     this._solution = { accountSid, testInteger };
     this._uri = `/Accounts/${accountSid}/Calls/${testInteger}.json`;
   }
@@ -337,6 +346,10 @@ export function CallListInstance(
   version: V2010,
   accountSid: string
 ): CallListInstance {
+  if (!isValidPathParam(accountSid)) {
+    throw new Error("Parameter 'accountSid' is not valid.");
+  }
+
   const instance = ((testInteger) =>
     instance.get(testInteger)) as CallListInstanceImpl;
 

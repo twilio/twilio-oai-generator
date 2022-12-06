@@ -16,6 +16,7 @@ import { inspect, InspectOptions } from "util";
 import V2010 from "../../../V2010";
 const deserialize = require("../../../../../base/deserialize");
 const serialize = require("../../../../../base/serialize");
+import { isValidPathParam } from "../../../../../base/utility";
 import { PhoneNumberCapabilities } from "../../../../../interfaces";
 
 export class TestResponseObjectTestArrayOfObjects {
@@ -78,6 +79,14 @@ export class FeedbackCallSummaryContextImpl
   protected _uri: string;
 
   constructor(protected _version: V2010, accountSid: string, sid: string) {
+    if (!isValidPathParam(accountSid)) {
+      throw new Error("Parameter 'accountSid' is not valid.");
+    }
+
+    if (!isValidPathParam(sid)) {
+      throw new Error("Parameter 'sid' is not valid.");
+    }
+
     this._solution = { accountSid, sid };
     this._uri = `/Accounts/${accountSid}/Calls/Feedback/Summary/${sid}.json`;
   }
@@ -307,6 +316,10 @@ export function FeedbackCallSummaryListInstance(
   version: V2010,
   accountSid: string
 ): FeedbackCallSummaryListInstance {
+  if (!isValidPathParam(accountSid)) {
+    throw new Error("Parameter 'accountSid' is not valid.");
+  }
+
   const instance = ((sid) =>
     instance.get(sid)) as FeedbackCallSummaryListInstanceImpl;
 
