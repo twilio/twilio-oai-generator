@@ -8,7 +8,7 @@
         {{#isArray}}
         if ({{paramName}} != null)
         {
-            p.AddRange({{paramName}}.Select({{paramName}} => new KeyValuePair<string, string>("{{baseName}}", {{{vendorExtensions.x-param-to-string}}})));
+            p.AddRange({{paramName}}.Select({{paramName}} => new KeyValuePair<string, string>("{{{baseName}}}", {{{vendorExtensions.x-param-to-string}}})));
         }
         {{/isArray}}
         {{^isArray}}
