@@ -7,9 +7,7 @@ namespace Twilio\Rest\{{domainName}}\{{version}}{{namespaceSubPart}};
 {{>imports}}
 
 {{#apiOperations}}
-{{^vendorExtensions.x-is-delete-operation}}
-{{^vendorExtensions.x-is-fetch-operation}}
-{{^vendorExtensions.x-is-update-operation}}
+{{^vendorExtensions.x-is-context-operation}}
     {{#vendorExtensions.importProperties.0}}
 /**
     {{/vendorExtensions.importProperties.0}}
@@ -32,25 +30,19 @@ namespace Twilio\Rest\{{domainName}}\{{version}}{{namespaceSubPart}};
  */
     {{/-last}}
     {{/vendorExtensions.importMethods}}
-{{/vendorExtensions.x-is-update-operation}}
-{{/vendorExtensions.x-is-fetch-operation}}
-{{/vendorExtensions.x-is-delete-operation}}
+{{/vendorExtensions.x-is-context-operation}}
 {{/apiOperations}}
 
 class {{apiName}}List extends ListResource {
     {{#apiOperations}}
-    {{^vendorExtensions.x-is-delete-operation}}
-    {{^vendorExtensions.x-is-fetch-operation}}
-    {{^vendorExtensions.x-is-update-operation}}
+    {{^vendorExtensions.x-is-context-operation}}
     {{#vendorExtensions.importProperties}}
     protected $_{{#lambda.camelcase}}{{mountName}}{{/lambda.camelcase}} = null;
     {{#-last}}
 
     {{/-last}}
     {{/vendorExtensions.importProperties}}
-    {{/vendorExtensions.x-is-update-operation}}
-    {{/vendorExtensions.x-is-fetch-operation}}
-    {{/vendorExtensions.x-is-delete-operation}}
+    {{/vendorExtensions.x-is-context-operation}}
     {{/apiOperations}}
     /**
      * Construct the {{apiName}}List
@@ -72,10 +64,11 @@ class {{apiName}}List extends ListResource {
         $this->uri = '{{{apiListPath}}}';
         {{/metaProperties.x-is-list-operation}}
     }
-    {{#apiOperations}}
-    {{>listCreate}}
-    {{>listRead}}
-    {{/apiOperations}}
+
+{{#apiOperations}}{{#metaProperties.hasReadOperation}}{{#vendorExtensions.x-is-create-operation}}{{>method}}
+{{>contextMethod}}
+
+{{/vendorExtensions.x-is-create-operation}}{{/metaProperties.hasReadOperation}}{{>listRead}}{{/apiOperations}}
     /**
      * Constructs a {{apiName}}Context
      *
@@ -90,9 +83,7 @@ class {{apiName}}List extends ListResource {
     }
 
     {{#apiOperations}}
-    {{^vendorExtensions.x-is-delete-operation}}
-    {{^vendorExtensions.x-is-fetch-operation}}
-    {{^vendorExtensions.x-is-update-operation}}
+    {{^vendorExtensions.x-is-context-operation}}
     {{#vendorExtensions.importProperties}}
     /**
      * Access the {{#lambda.camelcase}}{{mountName}}{{/lambda.camelcase}}
@@ -113,14 +104,10 @@ class {{apiName}}List extends ListResource {
     }
 
     {{/vendorExtensions.importProperties}}
-    {{/vendorExtensions.x-is-update-operation}}
-    {{/vendorExtensions.x-is-fetch-operation}}
-    {{/vendorExtensions.x-is-delete-operation}}
+    {{/vendorExtensions.x-is-context-operation}}
     {{/apiOperations}}
 {{#apiOperations}}
-    {{^vendorExtensions.x-is-delete-operation}}
-    {{^vendorExtensions.x-is-fetch-operation}}
-    {{^vendorExtensions.x-is-update-operation}}
+    {{^vendorExtensions.x-is-context-operation}}
     {{#vendorExtensions.importProperties.0}}
     /**
      * Magic getter to lazy load subresources
@@ -156,9 +143,7 @@ class {{apiName}}List extends ListResource {
     }
 
     {{/vendorExtensions.importProperties.0}}
-    {{/vendorExtensions.x-is-update-operation}}
-    {{/vendorExtensions.x-is-fetch-operation}}
-    {{/vendorExtensions.x-is-delete-operation}}
+    {{/vendorExtensions.x-is-context-operation}}
 {{/apiOperations}}
     /**
      * Provide a friendly representation

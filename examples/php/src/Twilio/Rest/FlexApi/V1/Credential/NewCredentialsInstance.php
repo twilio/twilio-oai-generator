@@ -58,6 +58,18 @@ class NewCredentialsInstance extends InstanceResource {
     }
 
     /**
+     * Create the NewCredentialsInstance
+     *
+     * @param string $testString 
+     * @param array|Options $options Optional Arguments
+     * @return NewCredentialsInstance Created NewCredentialsInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function create(string $testString, array $options = []): NewCredentialsInstance {
+        return $this->proxy()->create($testString, $options);
+    }
+
+    /**
      * Magic getter to access properties
      *
      * @param string $name Property to access

@@ -42,8 +42,8 @@ class FeedbackCallSummaryList extends ListResource {
         // Path Solution
         $this->solution = ['accountSid' => $accountSid, ];
     }
-    
-    
+
+
     /**
      * Constructs a FeedbackCallSummaryContext
      *

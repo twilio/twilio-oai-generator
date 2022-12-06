@@ -110,8 +110,12 @@ public abstract class ApiResourceBuilder implements IApiResourceBuilder {
         } else {
             applyListOperation(operation, operationMap, httpMethod);
         }
-        operationMap.put("hasRequiredFormParams",
-                (operation.requiredParams.stream().anyMatch(param-> param.isFormParam)));
+        operationMap.put("hasRequiredNonPathParams",
+                (operation.requiredParams.stream().anyMatch(param -> !param.isPathParam)));
+        operationMap.put("hasOptionalQueryParams",
+                (operation.optionalParams.stream().anyMatch(param -> param.isQueryParam)));
+        operationMap.put("hasOptionalHeaderParams",
+                (operation.optionalParams.stream().anyMatch(param -> param.isHeaderParam)));
         operationMap.put("hasOptionalFormParams",
                 (operation.optionalParams.stream().anyMatch(param-> param.isFormParam)));
         return operationMap;
@@ -123,8 +127,10 @@ public abstract class ApiResourceBuilder implements IApiResourceBuilder {
             operationMap.put("x-is-create-operation", true);
         } else if (httpMethod == HttpMethod.GET) {
             operationMap.put("x-name", API_OPERATION_READ);
+            metaAPIProperties.put("hasReadOperation","true");
             operationMap.put("x-is-read-operation", true);
         }
+        operationMap.put("x-is-list-operation","true");
         metaAPIProperties.put("x-is-list-operation", "true");
         metaAPIProperties.put(META_LIST_PARAMETER_KEY, operation.allParams);
     }
@@ -140,6 +146,7 @@ public abstract class ApiResourceBuilder implements IApiResourceBuilder {
             operationMap.put("x-name", API_OPERATION_DELETE);
             operationMap.put("x-is-delete-operation", true);
         }
+        operationMap.put("x-is-context-operation","true");
         metaAPIProperties.put("x-is-context-operation", "true");
         metaAPIProperties.put(META_CONTEXT_PARAMETER_KEY, operation.allParams);
     }

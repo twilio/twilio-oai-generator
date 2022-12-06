@@ -8,8 +8,7 @@ namespace Twilio\Rest\{{domainName}}\{{apiVersionClass}}{{namespaceSubPart}};
 {{>imports}}
 
 {{#apiOperations}}
-{{^vendorExtensions.x-is-create-operation}}
-{{^vendorExtensions.x-is-read-operation}}
+{{^vendorExtensions.x-is-list-operation}}
     {{#vendorExtensions.importProperties.0}}
 /**
     {{/vendorExtensions.importProperties.0}}
@@ -32,22 +31,19 @@ namespace Twilio\Rest\{{domainName}}\{{apiVersionClass}}{{namespaceSubPart}};
  */
     {{/-last}}
     {{/vendorExtensions.importMethods}}
-{{/vendorExtensions.x-is-read-operation}}
-{{/vendorExtensions.x-is-create-operation}}
+{{/vendorExtensions.x-is-list-operation}}
 {{/apiOperations}}
 
 class {{apiName}}Context extends InstanceContext {
     {{#apiOperations}}
-    {{^vendorExtensions.x-is-create-operation}}
-    {{^vendorExtensions.x-is-read-operation}}
+    {{^vendorExtensions.x-is-list-operation}}
     {{#vendorExtensions.importProperties}}
     protected $_{{#lambda.camelcase}}{{mountName}}{{/lambda.camelcase}};
     {{#-last}}
 
     {{/-last}}
     {{/vendorExtensions.importProperties}}
-    {{/vendorExtensions.x-is-read-operation}}
-    {{/vendorExtensions.x-is-create-operation}}
+    {{/vendorExtensions.x-is-list-operation}}
     {{/apiOperations}}
     /**
      * Initialize the {{apiName}}Context
@@ -67,10 +63,20 @@ class {{apiName}}Context extends InstanceContext {
         $this->uri = '{{{apiContextPath}}}';
         {{/metaProperties.x-is-context-operation}}
     }
-{{#apiOperations}}{{>contextFetch}}{{>contextDelete}}{{>contextUpdate}}{{/apiOperations}}
+
+{{#apiOperations}}{{#vendorExtensions.x-is-context-operation}}{{>method}}
+{{>contextMethod}}
+
+{{/vendorExtensions.x-is-context-operation}}
+{{^metaProperties.hasReadOperation}}
+{{#vendorExtensions.x-is-create-operation}}{{>method}}
+{{>contextMethod}}
+
+{{/vendorExtensions.x-is-create-operation}}
+{{/metaProperties.hasReadOperation}}
+{{/apiOperations}}
     {{#apiOperations}}
-    {{^vendorExtensions.x-is-create-operation}}
-    {{^vendorExtensions.x-is-read-operation}}
+    {{^vendorExtensions.x-is-list-operation}}
     {{#vendorExtensions.importProperties}}
     /**
      * Access the {{#lambda.camelcase}}{{mountName}}{{/lambda.camelcase}}
@@ -89,12 +95,10 @@ class {{apiName}}Context extends InstanceContext {
     }
 
     {{/vendorExtensions.importProperties}}
-    {{/vendorExtensions.x-is-read-operation}}
-    {{/vendorExtensions.x-is-create-operation}}
+    {{/vendorExtensions.x-is-list-operation}}
     {{/apiOperations}}
 {{#apiOperations}}
-    {{^vendorExtensions.x-is-create-operation}}
-    {{^vendorExtensions.x-is-read-operation}}
+    {{^vendorExtensions.x-is-list-operation}}
     {{#vendorExtensions.importProperties.0}}
     /**
      * Magic getter to lazy load subresources
@@ -130,8 +134,7 @@ class {{apiName}}Context extends InstanceContext {
     }
 
     {{/vendorExtensions.importProperties.0}}
-    {{/vendorExtensions.x-is-read-operation}}
-    {{/vendorExtensions.x-is-create-operation}}
+    {{/vendorExtensions.x-is-list-operation}}
     {{/apiOperations}}
     /**
      * Provide a friendly representation

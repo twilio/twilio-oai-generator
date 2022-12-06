@@ -17,16 +17,14 @@ namespace Twilio\Rest\{{domainName}}\{{version}}{{namespaceSubPart}};
 
 class {{apiName}}Instance extends InstanceResource {
 {{#apiOperations}}
-    {{^vendorExtensions.x-is-create-operation}}
-    {{^vendorExtensions.x-is-read-operation}}
+    {{^vendorExtensions.x-is-list-operation}}
     {{#vendorExtensions.importProperties}}
     protected $_{{#lambda.camelcase}}{{mountName}}{{/lambda.camelcase}};
     {{#-last}}
 
     {{/-last}}
     {{/vendorExtensions.importProperties}}
-    {{/vendorExtensions.x-is-read-operation}}
-    {{/vendorExtensions.x-is-create-operation}}
+    {{/vendorExtensions.x-is-list-operation}}
 {{/apiOperations}}
     /**
      * Initialize the {{apiName}}Instance
@@ -74,68 +72,21 @@ class {{apiName}}Instance extends InstanceResource {
 
 {{/metaProperties.x-is-context-operation}}
 {{#apiOperations}}
-{{#vendorExtensions.x-is-fetch-operation}}
-    /**
-     * Fetch the {{apiName}}Instance
-     *
-     {{#queryParams.0}}
-     * @param array|Options $options Optional Arguments
-     {{/queryParams.0}}
-     {{#headerParams.0}}
-     * @param array|Options $options Optional Arguments
-     {{/headerParams.0}}
-     * @return {{apiName}}Instance Fetched {{apiName}}Instance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function fetch({{#queryParams.0}}array $options = []{{/queryParams.0}}{{#headerParams.0}}array $options = []{{/headerParams.0}}): {{apiName}}Instance {
-        return $this->proxy()->fetch({{#queryParams.0}}$options{{/queryParams.0}}{{#headerParams.0}}$options{{/headerParams.0}});
+{{#vendorExtensions.x-is-context-operation}}{{>method}}
+        return $this->proxy()->{{#lambda.camelcase}}{{vendorExtensions.x-name}}{{/lambda.camelcase}}({{#requiredParams}}{{^isPathParam}}${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}{{^-last}}, {{/-last}}{{/isPathParam}}{{/requiredParams}}{{#vendorExtensions.hasRequiredNonPathParams}}{{#vendorExtensions.hasOptionalQueryParams}}, {{/vendorExtensions.hasOptionalQueryParams}}{{^vendorExtensions.hasOptionalQueryParams}}{{#vendorExtensions.hasOptionalFormParams}}, {{/vendorExtensions.hasOptionalFormParams}}{{/vendorExtensions.hasOptionalQueryParams}}{{^vendorExtensions.hasOptionalQueryParams}}{{^vendorExtensions.hasOptionalFormParams}}{{#vendorExtensions.hasOptionalHeaderParams}}, {{/vendorExtensions.hasOptionalHeaderParams}}{{/vendorExtensions.hasOptionalFormParams}}{{/vendorExtensions.hasOptionalQueryParams}}{{/vendorExtensions.hasRequiredNonPathParams}}{{#vendorExtensions.hasOptionalQueryParams}}$options{{/vendorExtensions.hasOptionalQueryParams}}{{^vendorExtensions.hasOptionalQueryParams}}{{#vendorExtensions.hasOptionalFormParams}}$options{{/vendorExtensions.hasOptionalFormParams}}{{/vendorExtensions.hasOptionalQueryParams}}{{^vendorExtensions.hasOptionalQueryParams}}{{^vendorExtensions.hasOptionalFormParams}}{{#vendorExtensions.hasOptionalHeaderParams}},$options{{/vendorExtensions.hasOptionalHeaderParams}}{{/vendorExtensions.hasOptionalFormParams}}{{/vendorExtensions.hasOptionalQueryParams}});
     }
 
-{{/vendorExtensions.x-is-fetch-operation}}
-{{#vendorExtensions.x-is-delete-operation}}
-    /**
-     * Delete the {{apiName}}Instance
-     *
-     {{#headerParams.0}}
-     * @param array|Options $options Optional Arguments
-     {{/headerParams.0}}
-     * @return bool True if delete succeeds, false otherwise
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function delete({{#headerParams.0}}array $options = []{{/headerParams.0}}): bool {
-        return $this->proxy()->delete({{#headerParams.0}}$options{{/headerParams.0}});
+{{/vendorExtensions.x-is-context-operation}}
+{{^metaProperties.hasReadOperation}}
+{{#vendorExtensions.x-is-create-operation}}{{>method}}
+        return $this->proxy()->{{#lambda.camelcase}}{{vendorExtensions.x-name}}{{/lambda.camelcase}}({{#requiredParams}}{{^isPathParam}}${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}{{^-last}}, {{/-last}}{{/isPathParam}}{{/requiredParams}}{{#vendorExtensions.hasRequiredNonPathParams}}{{#vendorExtensions.hasOptionalQueryParams}}, {{/vendorExtensions.hasOptionalQueryParams}}{{^vendorExtensions.hasOptionalQueryParams}}{{#vendorExtensions.hasOptionalFormParams}}, {{/vendorExtensions.hasOptionalFormParams}}{{/vendorExtensions.hasOptionalQueryParams}}{{^vendorExtensions.hasOptionalQueryParams}}{{^vendorExtensions.hasOptionalFormParams}}{{#vendorExtensions.hasOptionalHeaderParams}}, {{/vendorExtensions.hasOptionalHeaderParams}}{{/vendorExtensions.hasOptionalFormParams}}{{/vendorExtensions.hasOptionalQueryParams}}{{/vendorExtensions.hasRequiredNonPathParams}}{{#vendorExtensions.hasOptionalQueryParams}}$options{{/vendorExtensions.hasOptionalQueryParams}}{{^vendorExtensions.hasOptionalQueryParams}}{{#vendorExtensions.hasOptionalFormParams}}$options{{/vendorExtensions.hasOptionalFormParams}}{{/vendorExtensions.hasOptionalQueryParams}}{{^vendorExtensions.hasOptionalQueryParams}}{{^vendorExtensions.hasOptionalFormParams}}{{#vendorExtensions.hasOptionalHeaderParams}},$options{{/vendorExtensions.hasOptionalHeaderParams}}{{/vendorExtensions.hasOptionalFormParams}}{{/vendorExtensions.hasOptionalQueryParams}});
     }
 
-{{/vendorExtensions.x-is-delete-operation}}
-{{#vendorExtensions.x-is-update-operation}}
-    /**
-     * Update the {{apiName}}Instance
-     *
-     {{#requiredParams}}
-     {{#isFormParam}}
-     * @param {{dataType}} ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}} {{description}}
-     {{/isFormParam}}
-     {{/requiredParams}}
-     {{#vendorExtensions.hasOptionalFormParams}}
-     * @param array|Options $options Optional Arguments
-     {{/vendorExtensions.hasOptionalFormParams}}
-     {{^vendorExtensions.hasOptionalFormParams}}
-     {{#headerParams.0}}
-     * @param array|Options $options Optional Arguments
-     {{/headerParams.0}}
-     {{/vendorExtensions.hasOptionalFormParams}}
-     * @return {{apiName}}Instance Updated {{apiName}}Instance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function update({{#requiredParams}}{{#isFormParam}}{{{dataType}}} ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}{{^-last}}, {{/-last}}{{/isFormParam}}{{/requiredParams}}{{#vendorExtensions.hasOptionalFormParams}}{{#vendorExtensions.hasRequiredFormParams}}, {{/vendorExtensions.hasRequiredFormParams}}array $options = []{{/vendorExtensions.hasOptionalFormParams}}{{^vendorExtensions.hasOptionalFormParams}}{{#headerParams.0}}, array $options = []{{/headerParams.0}}{{/vendorExtensions.hasOptionalFormParams}}): {{apiName}}Instance {
-        return $this->proxy()->update({{#requiredParams}}{{#isFormParam}}${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}{{^-last}}, {{/-last}}{{/isFormParam}}{{/requiredParams}}{{#vendorExtensions.hasOptionalFormParams}}{{#vendorExtensions.hasRequiredFormParams}}, {{/vendorExtensions.hasRequiredFormParams}}$options{{/vendorExtensions.hasOptionalFormParams}}{{^vendorExtensions.hasOptionalFormParams}}{{#headerParams.0}}, $options{{/headerParams.0}}{{/vendorExtensions.hasOptionalFormParams}});
-    }
-
-{{/vendorExtensions.x-is-update-operation}}
+{{/vendorExtensions.x-is-create-operation}}
+{{/metaProperties.hasReadOperation}}
 {{/apiOperations}}
 {{#apiOperations}}
-    {{^vendorExtensions.x-is-create-operation}}
-    {{^vendorExtensions.x-is-read-operation}}
+    {{^vendorExtensions.x-is-list-operation}}
     {{#vendorExtensions.importProperties}}
     /**
      * Access the {{#lambda.camelcase}}{{mountName}}{{/lambda.camelcase}}
@@ -145,8 +96,7 @@ class {{apiName}}Instance extends InstanceResource {
     }
 
     {{/vendorExtensions.importProperties}}
-    {{/vendorExtensions.x-is-read-operation}}
-    {{/vendorExtensions.x-is-create-operation}}
+    {{/vendorExtensions.x-is-list-operation}}
 {{/apiOperations}}
     /**
      * Magic getter to access properties

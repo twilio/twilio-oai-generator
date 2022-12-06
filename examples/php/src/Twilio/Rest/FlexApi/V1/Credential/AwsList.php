@@ -45,12 +45,7 @@ class AwsList extends ListResource {
 
         $this->uri = '/Credentials/AWS';
     }
-    
-    
-    
-    
-    
-    
+
     /**
     * Reads AwsInstance records from the API as a list.
     * Unlike stream(), this operation is eager and will load `limit` records into
@@ -140,8 +135,6 @@ class AwsList extends ListResource {
     }
 
 
-    
-    
     /**
      * Constructs a AwsContext
      *

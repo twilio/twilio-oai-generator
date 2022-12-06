@@ -44,8 +44,7 @@ class AssistantList extends ListResource {
 
         $this->uri = '/understand/Assistants';
     }
-    
-    
+
     /**
     * Reads AssistantInstance records from the API as a list.
     * Unlike stream(), this operation is eager and will load `limit` records into

@@ -47,16 +47,41 @@ class FleetContext extends InstanceContext {
     }
 
     /**
+     * Create the FleetInstance
+     *
+     * @param array|Options $options Optional Arguments
+     * @return FleetInstance Created FleetInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function create(array $options = []): FleetInstance {
+        $options = new Values($options);
+
+        $data = Values::of([
+            'FriendlyName' => $options['friendlyName'],
+        ]);
+
+        $payload = $this->version->create('POST', $this->uri, [], $data);
+
+        return new FleetInstance(
+            $this->version,
+            $payload
+        );
+    }
+
+    /**
      * Fetch the FleetInstance
      *
      * @return FleetInstance Fetched FleetInstance
      * @throws TwilioException When an HTTP error occurs.
      */
     public function fetch(): FleetInstance {
-
         $payload = $this->version->fetch('GET', $this->uri);
 
-        return new FleetInstance($this->version, $payload, $this->solution['sid']);
+        return new FleetInstance(
+            $this->version,
+            $payload
+            , $this->solution['sid']
+        );
     }
 
     /**
