@@ -116,10 +116,10 @@ public class JavaApiResourceBuilder extends ApiResourceBuilder{
 
     @Override
     public ApiResourceBuilder updateResponseModel(ISchemaResolver<CodegenProperty> codegenPropertyIResolver, Resolver<CodegenModel> codegenModelResolver) {
+        List<CodegenModel> responseModels = new ArrayList<>();
         codegenOperationList.stream().forEach(co -> {
             List<String> filePathArray = new ArrayList<>(Arrays.asList(co.baseName.split(PATH_SEPARATOR_PLACEHOLDER)));
             String resourceName = filePathArray.remove(filePathArray.size()-1);
-            List<CodegenModel> responseModels = new ArrayList<>();
             co.responses
                     .stream()
                     .map(response -> response.dataType)
@@ -134,9 +134,9 @@ public class JavaApiResourceBuilder extends ApiResourceBuilder{
                         responseModels.add(responseModel);
                         this.serialVersionUID = calculateSerialVersionUid(item.vars);
                     });
-            this.responseModel = getConcatenatedResponseModel(responseModels);
-            this.apiResponseModels = getDistinctResponseModel(responseModels);
         });
+        this.apiResponseModels = getDistinctResponseModel(responseModels);
+        this.responseModel = getConcatenatedResponseModel(responseModels);
         return this;
     }
 
