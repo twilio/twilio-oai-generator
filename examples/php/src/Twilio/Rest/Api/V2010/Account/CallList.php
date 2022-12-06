@@ -18,6 +18,7 @@ namespace Twilio\Rest\Api\V2010\Account;
 
 use Twilio\Exceptions\TwilioException;
 use Twilio\ListResource;
+use Twilio\InstanceResource;
 use Twilio\Options;
 use Twilio\Stream;
 use Twilio\Values;
@@ -50,48 +51,15 @@ class CallList extends ListResource {
 
         $this->uri = '/Accounts/' . \rawurlencode($accountSid) . '/Calls.json';
     }
-    
-    /**
-     * Create the CallInstance
-     *
-     * @param string $requiredStringProperty 
-     * @param string $testMethod The HTTP method that we should use to request the &#x60;TestArrayOfUri&#x60;.
-     * @param array|Options $options Optional Arguments
-     * @return CallInstance Created CallInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function create(string $requiredStringProperty, string $testMethod, array $options = []): CallInstance {
-        $options = new Values($options);
 
 
-        $data = Values::of([
-            'RequiredStringProperty' => $requiredStringProperty,
-            'TestMethod' => $testMethod,
-            'TestArrayOfStrings' => Serialize::map($options['testArrayOfStrings'], function($e) { return $e; }),
-            'TestArrayOfUri' => Serialize::map($options['testArrayOfUri'], function($e) { return $e; }),
-        ]);
-
-        $payload = $this->version->create('POST', $this->uri, [], $data);
-
-        return new CallInstance(
-            $this->version,
-            $payload
-            , $this->solution['accountSid']
-        );
-    }
-
-    
-    
-    
-    
-    
     /**
      * Constructs a CallContext
      *
-     * @param string $sid The unique string that identifies the resource
+     * @param int $testInteger INTEGER ID param!!!
      */
-    public function getContext(string $sid): CallContext {
-        return new CallContext($this->version);
+    public function getContext(int $testInteger): CallContext {
+        return new CallContext($this->version, $this->solution['accountSid'], $testInteger);
     }
 
     /**
@@ -101,6 +69,7 @@ class CallList extends ListResource {
         if (!$this->_feedbackCallSummary) {
             $this->_feedbackCallSummary = new FeedbackCallSummaryList(
                 $this->version
+                , $this->solution['accountSid']
             );
         }
 

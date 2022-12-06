@@ -19,6 +19,7 @@ namespace Twilio\Rest\FlexApi\V1\Credential\Aws;
 
 use Twilio\Exceptions\TwilioException;
 use Twilio\ListResource;
+use Twilio\InstanceResource;
 use Twilio\Options;
 use Twilio\Stream;
 use Twilio\Values;
@@ -30,7 +31,6 @@ use Twilio\Serialize;
 
 
 class HistoryContext extends InstanceContext {
-
     /**
      * Initialize the HistoryContext
      *
@@ -62,7 +62,11 @@ class HistoryContext extends InstanceContext {
 
         $payload = $this->version->fetch('GET', $this->uri, $params);
 
-        return new HistoryInstance($this->version, $payload, $this->solution['sid']);
+        return new HistoryInstance(
+            $this->version,
+            $payload
+            , $this->solution['sid']
+        );
     }
 
     /**

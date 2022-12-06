@@ -11,6 +11,7 @@ import org.openapitools.codegen.*;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.regex.*;
+import java.util.stream.Stream;
 
 import static com.twilio.oai.common.ApplicationConstants.PATH_SEPARATOR_PLACEHOLDER;
 
@@ -19,8 +20,6 @@ public class PhpApiResourceBuilder extends ApiResourceBuilder {
 
     protected String apiListPath = "";
     protected String apiContextPath = "";
-    protected TreeSet<CodegenParameter> requiredPathParamsList = new TreeSet<>((cp1, cp2) -> cp1.baseName.compareTo(cp2.baseName));
-    protected TreeSet<CodegenParameter> requiredPathParamsContext = new TreeSet<>((cp1, cp2) -> cp1.baseName.compareTo(cp2.baseName));
 
     public PhpApiResourceBuilder(IApiActionTemplate template, List<CodegenOperation> codegenOperations, List<CodegenModel> allModels) {
         super(template, codegenOperations, allModels);
@@ -32,12 +31,10 @@ public class PhpApiResourceBuilder extends ApiResourceBuilder {
             updateNamespaceSubPart(codegenOperation);
             template.clean();
             if (super.isInstanceOperation(codegenOperation)) {
-                requiredPathParamsContext.addAll(codegenOperation.pathParams);
                 template.add(PhpApiActionTemplate.TEMPLATE_TYPE_CONTEXT);
             } else {
-                requiredPathParamsList.addAll(codegenOperation.pathParams);
                 template.add(PhpApiActionTemplate.TEMPLATE_TYPE_PAGE);
-                if((boolean)codegenOperation.vendorExtensions.get("hasOptionFileParams"))
+                if ((boolean) codegenOperation.vendorExtensions.get("hasOptionFileParams"))
                     template.add(PhpApiActionTemplate.TEMPLATE_TYPE_OPTIONS);
             }
             template.add(PhpApiActionTemplate.TEMPLATE_TYPE_LIST);
@@ -45,6 +42,7 @@ public class PhpApiResourceBuilder extends ApiResourceBuilder {
         });
         return this;
     }
+
     @Override
     public PhpApiResources build() {
         return new PhpApiResources(this);
@@ -77,6 +75,8 @@ public class PhpApiResourceBuilder extends ApiResourceBuilder {
                         .collect(Collectors.toList());
                 dependents.removeIf(dep -> methodDependents.contains(dep));
                 List<Resource> propertyDependents = dependents;
+                propertyDependents.addAll(Optional.ofNullable(methodDependents.stream()).orElse(Stream.empty()).filter(dep ->
+                        !dep.getName().endsWith("}") && !dep.getName().endsWith("}.json")).collect(Collectors.toList()));
                 List<Object> dependentProperties = new ArrayList<>();
                 List<Object> dependentMethods = new ArrayList<>();
                 updateDependents(directoryStructureService, methodDependents, dependentMethods);
@@ -130,28 +130,29 @@ public class PhpApiResourceBuilder extends ApiResourceBuilder {
     }
 
     @Override
-    public ApiResourceBuilder updateOperations(ISchemaResolver<CodegenParameter> codegenParameterIResolver){
+    public ApiResourceBuilder updateOperations(ISchemaResolver<CodegenParameter> codegenParameterIResolver) {
         ApiResourceBuilder apiResourceBuilder = super.updateOperations(codegenParameterIResolver);
         this.addOptionFileParams(apiResourceBuilder);
         return apiResourceBuilder;
     }
 
-    private void addOptionFileParams(ApiResourceBuilder apiResourceBuilder){
-        for(CodegenOperation operation:apiResourceBuilder.codegenOperationList){
+    private void addOptionFileParams(ApiResourceBuilder apiResourceBuilder) {
+        for (CodegenOperation operation : apiResourceBuilder.codegenOperationList) {
             List<CodegenParameter> optionFileParams = new ArrayList<>();
-            for(CodegenParameter param:operation.optionalParams){
-                if(!param.isPathParam){
-                    param.vendorExtensions.put("optionFileSeparator",",");
-                    if(!(boolean)operation.vendorExtensions.getOrDefault("x-is-read-operation",false)){
+            for (CodegenParameter param : operation.optionalParams) {
+                if (!param.isPathParam) {
+                    param.vendorExtensions.put("optionFileSeparator", ",");
+                    if (!(boolean) operation.vendorExtensions.getOrDefault("x-is-read-operation", false)) {
                         optionFileParams.add(param);
-                    } else if(!param.baseName.equals("PageSize")){
+                    } else if (!param.baseName.equals("PageSize")) {
                         optionFileParams.add(param);
                     }
                 }
             }
-            if(!optionFileParams.isEmpty()) optionFileParams.get(optionFileParams.size()-1).vendorExtensions.put("optionFileSeparator","");
-            operation.vendorExtensions.put("optionFileParams",optionFileParams);
-            operation.vendorExtensions.put("hasOptionFileParams",!optionFileParams.isEmpty());
+            if (!optionFileParams.isEmpty())
+                optionFileParams.get(optionFileParams.size() - 1).vendorExtensions.put("optionFileSeparator", "");
+            operation.vendorExtensions.put("optionFileParams", optionFileParams);
+            operation.vendorExtensions.put("hasOptionFileParams", !optionFileParams.isEmpty());
         }
     }
 }

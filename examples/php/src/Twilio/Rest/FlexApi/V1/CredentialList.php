@@ -18,6 +18,7 @@ namespace Twilio\Rest\FlexApi\V1;
 
 use Twilio\Exceptions\TwilioException;
 use Twilio\ListResource;
+use Twilio\InstanceResource;
 use Twilio\Options;
 use Twilio\Stream;
 use Twilio\Values;
@@ -43,18 +44,16 @@ class CredentialList extends ListResource {
      * Construct the CredentialList
      *
      * @param Version $version Version that contains the resource
-     * @param string $sid 
      */
-    public function __construct(Version $version, string $sid ) {
+    public function __construct(Version $version) {
         parent::__construct($version);
 
         // Path Solution
-        $this->solution = ['sid' => $sid, ];
+        $this->solution = [];
 
         $this->uri = '/Credentials';
     }
-    
-    
+
     /**
     * Reads CredentialInstance records from the API as a list.
     * Unlike stream(), this operation is eager and will load `limit` records into
@@ -112,7 +111,8 @@ class CredentialList extends ListResource {
     * @return CredentialPage Page of CredentialInstance
     */
 
-    public function page(array $options = [], $pageSize = Values::NONE, string $pageToken = Values::NONE, $pageNumber = Values::NONE): CredentialPage {
+    public function page( $pageSize = Values::NONE, string $pageToken = Values::NONE, $pageNumber = Values::NONE): CredentialPage {
+
         $params = Values::of([
             'PageToken' => $pageToken,
             'Page' => $pageNumber,
@@ -145,10 +145,10 @@ class CredentialList extends ListResource {
     /**
      * Constructs a CredentialContext
      *
-     * @param string $sid The unique string that identifies the resource
+     * @param string $sid 
      */
     public function getContext(string $sid): CredentialContext {
-        return new CredentialContext($this->version);
+        return new CredentialContext($this->version, $sid);
     }
 
     /**
@@ -158,7 +158,6 @@ class CredentialList extends ListResource {
         if (!$this->_aws) {
             $this->_aws = new AwsList(
                 $this->version
-                , $this->solution['sid']
             );
         }
 
@@ -172,7 +171,6 @@ class CredentialList extends ListResource {
         if (!$this->_newCredentials) {
             $this->_newCredentials = new NewCredentialsList(
                 $this->version
-                , $this->solution['sid']
             );
         }
 

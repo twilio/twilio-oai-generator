@@ -19,6 +19,7 @@ namespace Twilio\Rest\FlexApi\V1;
 
 use Twilio\Exceptions\TwilioException;
 use Twilio\ListResource;
+use Twilio\InstanceResource;
 use Twilio\Options;
 use Twilio\Stream;
 use Twilio\Values;
@@ -30,7 +31,6 @@ use Twilio\Serialize;
 
 
 class CallContext extends InstanceContext {
-
     /**
      * Initialize the CallContext
      *
@@ -47,18 +47,19 @@ class CallContext extends InstanceContext {
     }
 
     /**
-    * Update the CallInstance
-    *
-    * @return CallInstance Updated CallInstance
-    * @throws TwilioException When an HTTP error occurs.
-    */
+     * Update the CallInstance
+     *
+     * @return CallInstance Updated CallInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
     public function update(): CallInstance {
-        $data = Values::of([
-        ]);
+        $payload = $this->version->update('POST', $this->uri);
 
-        $payload = $this->version->update('POST', $this->uri, [], $data);
-
-        return new CallInstance($this->version, $payload, $this->solution['sid']);
+        return new CallInstance(
+            $this->version,
+            $payload
+            , $this->solution['sid']
+        );
     }
 
     /**

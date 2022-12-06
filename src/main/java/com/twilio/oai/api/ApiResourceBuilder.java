@@ -26,7 +26,7 @@ public abstract class ApiResourceBuilder implements IApiResourceBuilder {
     protected IApiActionTemplate template;
     protected List<CodegenModel> allModels;
     protected List<CodegenOperation> codegenOperationList;
-    protected TreeSet<CodegenParameter> requiredPathParams = new TreeSet<>((cp1, cp2) -> cp1.baseName.compareTo(cp2.baseName));
+    protected List<CodegenParameter> requiredPathParams = new ArrayList<>();
     protected List<CodegenProperty> apiResponseModels = new ArrayList<>();
     protected Map<String, Object> metaAPIProperties = new HashMap<>();
     protected String version = "";
@@ -57,7 +57,10 @@ public abstract class ApiResourceBuilder implements IApiResourceBuilder {
             codegenOperation.optionalParams = codegenOperation.optionalParams.stream()
                     .map(item -> codegenParameterIResolver.resolve(item)).collect(Collectors.toList());
 
-            requiredPathParams.addAll(codegenOperation.pathParams);
+            codegenOperation.pathParams.stream().filter(codegenParameter ->
+               !requiredPathParams.stream().anyMatch(param -> param.baseName.equals(codegenParameter.baseName))
+            ).collect(Collectors.toList()).forEach(param -> requiredPathParams.add(param));
+
             codegenOperation.vendorExtensions = mapOperation(codegenOperation);
         });
         return this;
@@ -110,8 +113,12 @@ public abstract class ApiResourceBuilder implements IApiResourceBuilder {
         } else {
             applyListOperation(operation, operationMap, httpMethod);
         }
-        operationMap.put("hasRequiredFormParams",
-                (operation.requiredParams.stream().anyMatch(param-> param.isFormParam)));
+        operationMap.put("hasRequiredNonPathParams",
+                (operation.requiredParams.stream().anyMatch(param -> !param.isPathParam)));
+        operationMap.put("hasOptionalQueryParams",
+                (operation.optionalParams.stream().anyMatch(param -> param.isQueryParam)));
+        operationMap.put("hasOptionalHeaderParams",
+                (operation.optionalParams.stream().anyMatch(param -> param.isHeaderParam)));
         operationMap.put("hasOptionalFormParams",
                 (operation.optionalParams.stream().anyMatch(param-> param.isFormParam)));
         return operationMap;
@@ -123,8 +130,10 @@ public abstract class ApiResourceBuilder implements IApiResourceBuilder {
             operationMap.put("x-is-create-operation", true);
         } else if (httpMethod == HttpMethod.GET) {
             operationMap.put("x-name", API_OPERATION_READ);
+            metaAPIProperties.put("hasReadOperation","true");
             operationMap.put("x-is-read-operation", true);
         }
+        operationMap.put("x-is-list-operation","true");
         metaAPIProperties.put("x-is-list-operation", "true");
         metaAPIProperties.put(META_LIST_PARAMETER_KEY, operation.allParams);
     }
@@ -140,6 +149,7 @@ public abstract class ApiResourceBuilder implements IApiResourceBuilder {
             operationMap.put("x-name", API_OPERATION_DELETE);
             operationMap.put("x-is-delete-operation", true);
         }
+        operationMap.put("x-is-context-operation","true");
         metaAPIProperties.put("x-is-context-operation", "true");
         metaAPIProperties.put(META_CONTEXT_PARAMETER_KEY, operation.allParams);
     }

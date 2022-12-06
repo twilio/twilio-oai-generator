@@ -1,5 +1,4 @@
 {{#vendorExtensions.x-is-read-operation}}
-
     /**
     * Reads {{apiName}}Instance records from the API as a list.
     * Unlike stream(), this operation is eager and will load `limit` records into
@@ -42,10 +41,10 @@
     * @return Stream stream of results
     */
 
-    public function stream(int $limit = null, $pageSize = null): Stream {
+    public function stream({{#queryParams.1}}array $options = [], {{/queryParams.1}}int $limit = null, $pageSize = null): Stream {
         $limits = $this->version->readLimits($limit, $pageSize);
 
-        $page = $this->page($limits['pageSize']);
+        $page = $this->page({{#queryParams.1}} $options , {{/queryParams.1}}$limits['pageSize']);
 
         return $this->version->stream($page, $limits['limit'], $limits['pageLimit']);
     }
@@ -60,21 +59,25 @@
     * @return {{apiName}}Page Page of {{apiName}}Instance
     */
 
-    public function page(array $options = [], $pageSize = Values::NONE, string $pageToken = Values::NONE, $pageNumber = Values::NONE): {{apiName}}Page {
+    public function page({{#queryParams.1}}array $options = [], {{/queryParams.1}} $pageSize = Values::NONE, string $pageToken = Values::NONE, $pageNumber = Values::NONE): {{apiName}}Page {
+        {{#queryParams.1}}
+        $options = new Values($options);
+        {{/queryParams.1}}
+
         $params = Values::of([
-            {{#optionalParams}}
+            {{#vendorExtensions.optionFileParams}}
             {{^vendorExtensions.x-serialize}}
-            '{{baseName}}' => $options['{{#lambda.titlecase}}{{baseName}}{{/lambda.titlecase}}'],
+            '{{{baseName}}}' => $options['{{paramName}}'],
             {{/vendorExtensions.x-serialize}}
             {{#vendorExtensions.x-serialize}}
             {{^vendorExtensions.x-serialize-map}}
-            '{{baseName}}' => {{vendorExtensions.x-serialize}}($options['{{#lambda.titlecase}}{{baseName}}{{/lambda.titlecase}}']),
+            '{{{baseName}}}' => {{vendorExtensions.x-serialize}}($options['{{paramName}}']),
             {{/vendorExtensions.x-serialize-map}}
             {{#vendorExtensions.x-serialize-map}}
-            '{{baseName}}' => {{vendorExtensions.x-serialize}}($options['{{#lambda.titlecase}}{{baseName}}{{/lambda.titlecase}}'], function($e) { return $e; }),
+            '{{{baseName}}}' => {{vendorExtensions.x-serialize}}($options['{{paramName}}'], function($e) { return $e; }),
             {{/vendorExtensions.x-serialize-map}}
             {{/vendorExtensions.x-serialize}}
-            {{/optionalParams}}
+            {{/vendorExtensions.optionFileParams}}
             'PageToken' => $pageToken,
             'Page' => $pageNumber,
             'PageSize' => $pageSize,

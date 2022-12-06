@@ -1,7 +1,7 @@
 {{#resources}}
 <?php
-
-namespace Twilio\Rest\Accounts\V1\Credential;
+{{>licenseInfo}}
+namespace Twilio\Rest\{{domainName}}\{{version}}{{namespaceSubPart}};
 
 use Twilio\Http\Response;
 use Twilio\Page;
@@ -22,10 +22,10 @@ class {{apiName}}Page extends Page {
 
     /**
     * @param array $payload Payload response from the API
-    * @return AwsInstance \Twilio\Rest\{{domainName}}\{{version}}\Credential\{{apiName}}Instance
+    * @return {{apiName}}Instance \Twilio\Rest\{{domainName}}\{{version}}{{namespaceSubPart}}\{{apiName}}Instance
     */
-    public function buildInstance(array $payload): AwsInstance {
-        return new AwsInstance($this->version, $payload);
+    public function buildInstance(array $payload): {{apiName}}Instance {
+        return new {{apiName}}Instance($this->version, $payload{{#requiredPathParams}}{{#vendorExtensions.x-is-parent-param}}, $this->solution['{{paramName}}']{{/vendorExtensions.x-is-parent-param}}{{/requiredPathParams}});
     }
 
     /**

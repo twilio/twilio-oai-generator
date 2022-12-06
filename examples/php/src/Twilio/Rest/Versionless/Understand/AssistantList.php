@@ -18,6 +18,7 @@ namespace Twilio\Rest\Versionless\Understand;
 
 use Twilio\Exceptions\TwilioException;
 use Twilio\ListResource;
+use Twilio\InstanceResource;
 use Twilio\Options;
 use Twilio\Stream;
 use Twilio\Values;
@@ -29,7 +30,6 @@ use Twilio\Serialize;
 
 
 class AssistantList extends ListResource {
-
     /**
      * Construct the AssistantList
      *
@@ -43,8 +43,7 @@ class AssistantList extends ListResource {
 
         $this->uri = '/understand/Assistants';
     }
-    
-    
+
     /**
     * Reads AssistantInstance records from the API as a list.
     * Unlike stream(), this operation is eager and will load `limit` records into
@@ -102,7 +101,8 @@ class AssistantList extends ListResource {
     * @return AssistantPage Page of AssistantInstance
     */
 
-    public function page(array $options = [], $pageSize = Values::NONE, string $pageToken = Values::NONE, $pageNumber = Values::NONE): AssistantPage {
+    public function page( $pageSize = Values::NONE, string $pageToken = Values::NONE, $pageNumber = Values::NONE): AssistantPage {
+
         $params = Values::of([
             'PageToken' => $pageToken,
             'Page' => $pageNumber,
@@ -135,9 +135,8 @@ class AssistantList extends ListResource {
     /**
      * Constructs a AssistantContext
      *
-     * @param string $sid The unique string that identifies the resource
      */
-    public function getContext(string $sid): AssistantContext {
+    public function getContext(): AssistantContext {
         return new AssistantContext($this->version);
     }
 

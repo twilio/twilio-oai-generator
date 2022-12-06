@@ -31,7 +31,7 @@ use Twilio\Version;
  * @property \Twilio\Rest\{{domainName}}\{{apiVersionClass}}\Account\{{filename}}List ${{#lambda.camelcase}}{{mountName}}{{/lambda.camelcase}}
 {{/apiDependents}}
 {{#versionDependents}}
- * @method \Twilio\Rest\{{domainName}}\{{apiVersionClass}}\{{parent}}Context {{#lambda.camelcase}}{{mountName}}{{/lambda.camelcase}}(string ${{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}})
+ * @method \Twilio\Rest\{{domainName}}\{{apiVersionClass}}\{{parent}}Context {{#lambda.camelcase}}{{mountName}}{{/lambda.camelcase}}({{#params}}string ${{#lambda.camelcase}}{{.}}{{/lambda.camelcase}}{{^-last}}, {{/-last}}{{/params}})
 {{/versionDependents}}
  */
 

@@ -53,8 +53,8 @@ public class PhpDomainBuilder {
                         parentkey = "/2010-04-01" + parentkey;
                     }
                     if (pathMap.containsKey(parentkey)) {
-                        path = pathMap.get(parentkey);
-                        Optional<String> parentKey2 = PathUtils.getTwilioExtension(path, "parent");
+                        PathItem pathParent = pathMap.get(parentkey);
+                        Optional<String> parentKey2 = PathUtils.getTwilioExtension(pathParent, "parent");
                         if (!parentKey2.isPresent()) {
                             context_list.add(new Resource(null, pathkey, path, null));
                         }

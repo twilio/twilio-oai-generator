@@ -18,6 +18,7 @@ namespace Twilio\Rest\FlexApi\V1\Credential\Aws;
 
 use Twilio\Exceptions\TwilioException;
 use Twilio\ListResource;
+use Twilio\InstanceResource;
 use Twilio\Options;
 use Twilio\Stream;
 use Twilio\Values;
@@ -29,27 +30,26 @@ use Twilio\Serialize;
 
 
 class HistoryList extends ListResource {
-
     /**
      * Construct the HistoryList
      *
      * @param Version $version Version that contains the resource
+     * @param string $sid 
      */
-    public function __construct(Version $version) {
+    public function __construct(Version $version, string $sid ) {
         parent::__construct($version);
 
         // Path Solution
-        $this->solution = [];
+        $this->solution = ['sid' => $sid, ];
     }
-    
-    
+
+
     /**
      * Constructs a HistoryContext
      *
-     * @param string $sid The unique string that identifies the resource
      */
-    public function getContext(string $sid): HistoryContext {
-        return new HistoryContext($this->version);
+    public function getContext(): HistoryContext {
+        return new HistoryContext($this->version, $this->solution['sid']);
     }
 
     /**

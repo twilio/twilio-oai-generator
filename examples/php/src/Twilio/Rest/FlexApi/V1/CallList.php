@@ -18,6 +18,7 @@ namespace Twilio\Rest\FlexApi\V1;
 
 use Twilio\Exceptions\TwilioException;
 use Twilio\ListResource;
+use Twilio\InstanceResource;
 use Twilio\Options;
 use Twilio\Stream;
 use Twilio\Values;
@@ -29,7 +30,6 @@ use Twilio\Serialize;
 
 
 class CallList extends ListResource {
-
     /**
      * Construct the CallList
      *
@@ -41,15 +41,15 @@ class CallList extends ListResource {
         // Path Solution
         $this->solution = [];
     }
-    
-    
+
+
     /**
      * Constructs a CallContext
      *
-     * @param string $sid The unique string that identifies the resource
+     * @param string $sid 
      */
     public function getContext(string $sid): CallContext {
-        return new CallContext($this->version);
+        return new CallContext($this->version, $sid);
     }
 
     /**

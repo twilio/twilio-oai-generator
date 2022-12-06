@@ -18,6 +18,7 @@ namespace Twilio\Rest\Versionless\DeployedDevices;
 
 use Twilio\Exceptions\TwilioException;
 use Twilio\ListResource;
+use Twilio\InstanceResource;
 use Twilio\Options;
 use Twilio\Stream;
 use Twilio\Values;
@@ -29,7 +30,6 @@ use Twilio\Serialize;
 
 
 class FleetList extends ListResource {
-
     /**
      * Construct the FleetList
      *
@@ -43,40 +43,15 @@ class FleetList extends ListResource {
 
         $this->uri = '/DeployedDevices/Fleets';
     }
-    
-    /**
-     * Create the FleetInstance
-     *
-     * @param array|Options $options Optional Arguments
-     * @return FleetInstance Created FleetInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function create(array $options = []): FleetInstance {
-        $options = new Values($options);
 
 
-        $data = Values::of([
-            'Name' => $options['name'],
-        ]);
-
-        $payload = $this->version->create('POST', $this->uri, [], $data);
-
-        return new FleetInstance(
-            $this->version,
-            $payload
-        );
-    }
-
-    
-    
-    
     /**
      * Constructs a FleetContext
      *
-     * @param string $sid The unique string that identifies the resource
+     * @param string $sid 
      */
     public function getContext(string $sid): FleetContext {
-        return new FleetContext($this->version);
+        return new FleetContext($this->version, $sid);
     }
 
     /**
