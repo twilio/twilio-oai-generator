@@ -28,7 +28,6 @@ use Twilio\Deserialize;
 use Twilio\Serialize;
 use Twilio\Rest\FlexApi\V1\Credential\AwsList;
 use Twilio\Rest\FlexApi\V1\Credential\NewCredentialsList;
-use Twilio\Rest\FlexApi\V1\CredentialPage;
 
 
 /**
