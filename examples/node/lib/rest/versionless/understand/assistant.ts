@@ -18,6 +18,7 @@ import Response from "../../../http/response";
 import Understand from "../Understand";
 const deserialize = require("../../../base/deserialize");
 const serialize = require("../../../base/serialize");
+import { isValidPathParam } from "../../../base/utility";
 
 /**
  * Options to pass to each

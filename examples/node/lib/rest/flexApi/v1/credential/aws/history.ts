@@ -16,6 +16,7 @@ import { inspect, InspectOptions } from "util";
 import V1 from "../../../V1";
 const deserialize = require("../../../../../base/deserialize");
 const serialize = require("../../../../../base/serialize");
+import { isValidPathParam } from "../../../../../base/utility";
 
 /**
  * Options to pass to fetch a HistoryInstance
@@ -67,6 +68,10 @@ export class HistoryContextImpl implements HistoryContext {
   protected _uri: string;
 
   constructor(protected _version: V1, sid: string) {
+    if (!isValidPathParam(sid)) {
+      throw new Error("Parameter 'sid' is not valid.");
+    }
+
     this._solution = { sid };
     this._uri = `/Credentials/AWS/${sid}/History`;
   }
@@ -228,6 +233,10 @@ export function HistoryListInstance(
   version: V1,
   sid: string
 ): HistoryListInstance {
+  if (!isValidPathParam(sid)) {
+    throw new Error("Parameter 'sid' is not valid.");
+  }
+
   const instance = (() => instance.get()) as HistoryListInstanceImpl;
 
   instance.get = function get(): HistoryContext {

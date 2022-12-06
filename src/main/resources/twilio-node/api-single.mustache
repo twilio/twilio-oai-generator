@@ -8,6 +8,7 @@ import Response from "{{apiVersionPath}}/../../http/response";
 import {{apiVersionClass}} from "{{apiVersionPath}}/{{apiVersionClass}}";
 const deserialize = require("{{apiVersionPath}}/../../base/deserialize");
 const serialize = require("{{apiVersionPath}}/../../base/serialize");
+import { isValidPathParam } from "{{apiVersionPath}}/../../base/utility";
 {{#resources}}
 {{#dependents}}
 import { {{importName}} } from "./{{apiFilename}}/{{filename}}";
@@ -75,6 +76,12 @@ export class {{resourceName}}Impl implements {{resourceName}} {
   {{/dependents}}
 
   constructor(protected _version: {{apiVersionClass}}{{#resourcePathParams}}, {{paramName}}: {{{dataType}}}{{/resourcePathParams}}) {
+    {{#resourcePathParams}}
+    if (!isValidPathParam({{paramName}})) {
+      throw new Error('Parameter \'{{paramName}}\' is not valid.');
+    }
+
+    {{/resourcePathParams}}
     this._solution = { {{#resourcePathParams}}{{paramName}}, {{/resourcePathParams}} };
     this._uri = `{{path}}`;
   }
@@ -125,6 +132,12 @@ class {{resourceName}}Impl implements {{resourceName}} {
 }
 
 export function {{resourceName}}(version: {{apiVersionClass}}{{#resourcePathParams}}, {{paramName}}: {{{dataType}}}{{/resourcePathParams}}): {{resourceName}} {
+  {{#resourcePathParams}}
+  if (!isValidPathParam({{paramName}})) {
+    throw new Error('Parameter \'{{paramName}}\' is not valid.');
+  }
+
+  {{/resourcePathParams}}
   {{#instanceResource}}
   const instance = (({{#resourcePathParams}}{{^vendorExtensions.x-is-parent-param}}{{paramName}}, {{/vendorExtensions.x-is-parent-param}}{{/resourcePathParams}}) => instance.get({{#resourcePathParams}}{{^vendorExtensions.x-is-parent-param}}{{paramName}}, {{/vendorExtensions.x-is-parent-param}}{{/resourcePathParams}})) as {{parentResourceName}}Impl;
 

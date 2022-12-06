@@ -313,9 +313,9 @@ namespace Twilio.Tests.Rest
             var list = new List<KeyValuePair<string, string>>();
             list.Add(new KeyValuePair<string, string>("DateCreated<",formattedDateTime ));
             list.Add(new KeyValuePair<string, string>("DateCreated>",formattedDateTime ));
-            list.Add(new KeyValuePair<string, string>("DateTest", formattedDate));
-            list.Add(new KeyValuePair<string, string>("DateCreatedBefore",formattedDateTime ));
-            list.Add(new KeyValuePair<string, string>("DateCreatedAfter",formattedDateTime ));
+            list.Add(new KeyValuePair<string, string>("Date.Test", formattedDate));
+            list.Add(new KeyValuePair<string, string>("DateCreated<",formattedDateTime ));
+            list.Add(new KeyValuePair<string, string>("DateCreated>",formattedDateTime ));
             list.Add(new KeyValuePair<string, string>("PageSize", "4"));
 
             var request1 = new Request(
@@ -367,7 +367,7 @@ namespace Twilio.Tests.Rest
             string formattedDateTime = Serializers.DateTimeIso8601(currentDateTime);
             var list = new List<KeyValuePair<string, string>>();
             list.Add(new KeyValuePair<string, string>("DateCreated",formattedDateTime ));
-            list.Add(new KeyValuePair<string, string>("DateTest", formattedDate));
+            list.Add(new KeyValuePair<string, string>("Date.Test", formattedDate));
             list.Add(new KeyValuePair<string, string>("PageSize", "4"));
 
             var request1 = new Request(
@@ -417,7 +417,7 @@ namespace Twilio.Tests.Rest
             string formattedDateTime = Serializers.DateTimeIso8601(currentDateTime);
             var list = new List<KeyValuePair<string, string>>();
             list.Add(new KeyValuePair<string, string>("DateCreated",formattedDateTime ));
-            list.Add(new KeyValuePair<string, string>("DateTest", formattedDate));
+            list.Add(new KeyValuePair<string, string>("Date.Test", formattedDate));
             list.Add(new KeyValuePair<string, string>("PageSize", "4"));
 
             var request1 = new Request(
@@ -615,7 +615,7 @@ namespace Twilio.Tests.Rest
             string formattedDateTime = Serializers.DateTimeIso8601(currentDateTime);
             var list = new List<KeyValuePair<string, string>>();
             list.Add(new KeyValuePair<string, string>("DateCreated",formattedDateTime ));
-            list.Add(new KeyValuePair<string, string>("DateTest", formattedDate));
+            list.Add(new KeyValuePair<string, string>("Date.Test", formattedDate));
             list.Add(new KeyValuePair<string, string>("PageSize", "4"));
 
             var request1 = new Request(
