@@ -82,9 +82,6 @@ public class Fleet extends Resource {
         return new FleetFetcher(pathSid);
     }
 
-
-
-
     /**
     * Converts a JSON String into a Fleet object using the provided ObjectMapper.
     *

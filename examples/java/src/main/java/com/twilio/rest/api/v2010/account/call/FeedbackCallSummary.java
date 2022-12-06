@@ -72,11 +72,7 @@ import com.twilio.type.SubscribeRule;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @ToString
 public class FeedbackCallSummary extends Resource {
-    private static final long serialVersionUID = 22261732607075L;
-
-
-
-
+    private static final long serialVersionUID = 105046036135596L;
 
     public static FeedbackCallSummaryUpdater updater(final String pathSid, final LocalDate endDate, final LocalDate startDate){
         return new FeedbackCallSummaryUpdater(pathSid, endDate, startDate);

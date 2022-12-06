@@ -87,10 +87,6 @@ public class NewCredentials extends Resource {
         return new NewCredentialsCreator(testString, testDate, testObject);
     }
 
-
-
-
-
     /**
     * Converts a JSON String into a NewCredentials object using the provided ObjectMapper.
     *
