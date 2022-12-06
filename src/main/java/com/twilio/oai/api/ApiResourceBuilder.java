@@ -102,7 +102,7 @@ public abstract class ApiResourceBuilder implements IApiResourceBuilder {
         return new ApiResources(this);
     }
 
-    private Map<String, Object> mapOperation(CodegenOperation operation) {
+    protected Map<String, Object> mapOperation(CodegenOperation operation) {
         Map<String, Object> operationMap = new HashMap<>();
         final HttpMethod httpMethod = HttpMethod.fromString(operation.httpMethod);
         if (isInstanceOperation(operation)) {
@@ -158,7 +158,7 @@ public abstract class ApiResourceBuilder implements IApiResourceBuilder {
         return allModels.stream().filter(model -> model.getClassname().equals(extractedModelName)).findFirst();
     }
 
-    private List<CodegenProperty> getDistinctResponseModel(List<CodegenModel> responseModels) {
+    protected List<CodegenProperty> getDistinctResponseModel(List<CodegenModel> responseModels) {
         Set<CodegenProperty> distinctResponseModels = new LinkedHashSet<>();
         for (CodegenModel codegenModel : responseModels) {
             for (CodegenProperty property : codegenModel.vars) {
@@ -184,7 +184,7 @@ public abstract class ApiResourceBuilder implements IApiResourceBuilder {
         return false;
     }
 
-    private String findRecordKey() {
+    protected String findRecordKey() {
         String recordKey = "";
         for (CodegenOperation co : this.codegenOperationList) {
             for (CodegenModel model : allModels) {

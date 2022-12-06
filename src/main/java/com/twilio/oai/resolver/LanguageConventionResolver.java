@@ -1,4 +1,4 @@
-package com.twilio.oai.resolver.php;
+package com.twilio.oai.resolver;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -46,6 +46,15 @@ public class LanguageConventionResolver implements IConventionMapper {
     @Override
     public Map<String, Object> libraries() {
         return conventionalMap.get(Segments.SEGMENT_LIBRARY.getSegment());
+    }
+
+    @Override
+    public Map<String, Object> hydrate() {
+        return conventionalMap.get(Segments.SEGMENT_HYDRATE.getSegment());
+    }
+    @Override
+    public Map<String, Object> promotions() {
+        return conventionalMap.get(Segments.SEGMENT_PROMOTIONS.getSegment());
     }
 
     private Map<String, Map<String, Object>> getConventionalMap(String conventionalFilePath) {

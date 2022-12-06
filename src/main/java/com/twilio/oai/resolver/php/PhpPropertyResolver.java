@@ -1,10 +1,12 @@
 package com.twilio.oai.resolver.php;
 
+import com.twilio.oai.resolver.IConventionMapper;
+import com.twilio.oai.resolver.LanguageConventionResolver;
 import com.twilio.oai.resolver.LanguagePropertyResolver;
 import org.openapitools.codegen.CodegenProperty;
 
 
-import static com.twilio.oai.resolver.LanguageParamResolver.SERIALIZE_VEND_EXT;
+import static com.twilio.oai.common.ApplicationConstants.SERIALIZE_VEND_EXT;
 import static com.twilio.oai.resolver.php.PhpParameterResolver.SERALIZE_ARRAY_MAP;
 
 public class PhpPropertyResolver extends LanguagePropertyResolver {

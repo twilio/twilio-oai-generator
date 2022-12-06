@@ -5,6 +5,8 @@ import com.twilio.oai.api.PhpApiResources;
 import com.twilio.oai.api.PhpDomainBuilder;
 import com.twilio.oai.common.EnumConstants;
 import com.twilio.oai.common.Utility;
+import com.twilio.oai.resolver.IConventionMapper;
+import com.twilio.oai.resolver.LanguageConventionResolver;
 import com.twilio.oai.resolver.php.*;
 import com.twilio.oai.resource.ResourceMap;
 import com.twilio.oai.template.IApiActionTemplate;

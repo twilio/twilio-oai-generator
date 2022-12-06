@@ -1,14 +1,12 @@
 package com.twilio.oai.resolver.common;
 
-import com.twilio.oai.Segments;
 import com.twilio.oai.resolver.Resolver;
+import com.twilio.oai.resolver.IConventionMapper;
 import org.openapitools.codegen.CodegenParameter;
-
-import java.util.Map;
 
 public class CodegenParameterDataTypeResolver implements Resolver<CodegenParameter> {
 
-    private Map<String, Map<String, Object>> conventionMap;
+    private IConventionMapper mapper;
 
     public CodegenParameter resolve(CodegenParameter parameter) {
         assignDataType(parameter);
@@ -16,16 +14,14 @@ public class CodegenParameterDataTypeResolver implements Resolver<CodegenParamet
     }
 
     private void assignDataType(CodegenParameter parameter){
-        String propertyFieldName = Segments.SEGMENT_PROPERTIES.getSegment();
-
-        if (conventionMap.get(propertyFieldName).containsKey(parameter.dataFormat)) {
-            parameter.dataType = (String) conventionMap.get(propertyFieldName).get(parameter.dataFormat);
-        } else if (conventionMap.get(propertyFieldName).containsKey(parameter.dataType)) {
-            parameter.dataType = (String) conventionMap.get(propertyFieldName).get(parameter.dataType);
+        if (mapper.properties().containsKey(parameter.dataFormat)) {
+            parameter.dataType = (String) mapper.properties().get(parameter.dataFormat);
+        } else if (mapper.properties().containsKey(parameter.dataType)) {
+            parameter.dataType = (String) mapper.properties().get(parameter.dataType);
         }
     }
 
-    public void setConventionMap(Map<String, Map<String, Object>> conventionMap) {
-        this.conventionMap = conventionMap;
+    public void setMapper(IConventionMapper mapper) {
+        this.mapper = mapper;
     }
 }

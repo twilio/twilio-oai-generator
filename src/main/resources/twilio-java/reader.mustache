@@ -1,6 +1,6 @@
 {{>licenseInfo}}
 {{#resources}}
-package com.twilio.rest.{{domainPackage}}.{{apiVersion}}{{packageSubPart}};
+package com.twilio.rest.{{domainPackage}}.{{apiVersion}}{{namespaceSubPart}};
 
 import com.twilio.base.Reader;
 import com.twilio.base.ResourceSet;
@@ -35,36 +35,35 @@ import java.util.Objects;
 
 import lombok.ToString;
 
-{{#hasRead}}
-{{#operations}}
+{{#apiOperations}}
 {{#vendorExtensions.x-is-read-operation}}
-public class {{resourceName}}Reader extends Reader<{{resourceName}}> {
+public class {{apiName}}Reader extends Reader<{{apiName}}> {
 {{#allParams}}
     private {{{dataType}}} {{paramName}};
 {{/allParams}}
 
-{{#signatureListRead}}
-    public {{resourceName}}Reader({{#.}}final {{{dataType}}} {{paramName}}{{^-last}}, {{/-last}}{{/.}}){
+{{#vendorExtensions.x-signature-list}}
+    public {{apiName}}Reader({{#.}}final {{{dataType}}} {{paramName}}{{^-last}}, {{/-last}}{{/.}}){
     {{#.}}
         this.{{paramName}} = {{paramName}};
     {{/.}}
     }
-{{/signatureListRead}}
+{{/vendorExtensions.x-signature-list}}
 
 {{#vendorExtensions.x-non-path-params}}
-    public {{resourceName}}Reader set{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}(final {{{dataType}}} {{paramName}}){
+    public {{apiName}}Reader set{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}(final {{{dataType}}} {{paramName}}){
         this.{{paramName}} = {{paramName}};
         return this;
     }
 {{#isArray}}
-    public {{resourceName}}Reader set{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}(final {{{baseType}}} {{paramName}}){
+    public {{apiName}}Reader set{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}(final {{{baseType}}} {{paramName}}){
         return set{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}(Promoter.listOfOne({{paramName}}));
     }
 {{/isArray}}
 {{#vendorExtensions.x-promotions}}
 {{#entrySet}}
 
-    public {{resourceName}}Reader set{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}(final {{#lambda.titlecase}}{{key}}{{/lambda.titlecase}} {{paramName}}){
+    public {{apiName}}Reader set{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}(final {{#lambda.titlecase}}{{key}}{{/lambda.titlecase}} {{paramName}}){
         return set{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}({{value}});
     }
 {{/entrySet}}
@@ -72,11 +71,11 @@ public class {{resourceName}}Reader extends Reader<{{resourceName}}> {
 {{/vendorExtensions.x-non-path-params}}
 
     @Override
-    public ResourceSet<{{resourceName}}> read(final TwilioRestClient client) {
+    public ResourceSet<{{apiName}}> read(final TwilioRestClient client) {
         return new ResourceSet<>(this, client, firstPage(client));
     }
 
-    public Page<{{resourceName}}> firstPage(final TwilioRestClient client) {
+    public Page<{{apiName}}> firstPage(final TwilioRestClient client) {
         String path = "{{{path}}}";
         {{#allParams}}
         {{#vendorExtensions.x-is-account-sid}}
@@ -106,11 +105,11 @@ public class {{resourceName}}Reader extends Reader<{{resourceName}}> {
         return pageForRequest(client, request);
     }
 
-    private Page<{{resourceName}}> pageForRequest(final TwilioRestClient client, final Request request) {
+    private Page<{{apiName}}> pageForRequest(final TwilioRestClient client, final Request request) {
         Response response = client.request(request);
 
         if (response == null) {
-            throw new ApiConnectionException("{{resourceName}} read failed: Unable to connect to server");
+            throw new ApiConnectionException("{{apiName}} read failed: Unable to connect to server");
         } else if (!TwilioRestClient.SUCCESS.test(response.getStatusCode())) {
             RestException restException = RestException.fromJson(response.getStream(), client.getObjectMapper());
             if (restException == null) {
@@ -122,13 +121,13 @@ public class {{resourceName}}Reader extends Reader<{{resourceName}}> {
         return Page.fromJson(
             "{{recordKey}}",
             response.getContent(),
-            {{resourceName}}.class,
+            {{apiName}}.class,
             client.getObjectMapper()
         );
     }
 
     @Override
-    public Page<{{resourceName}}> previousPage(final Page<{{resourceName}}> page, final TwilioRestClient client) {
+    public Page<{{apiName}}> previousPage(final Page<{{apiName}}> page, final TwilioRestClient client) {
         Request request = new Request(
             HttpMethod.GET,
             page.getPreviousPageUrl(Domains.{{#lambda.uppercase}}{{domainName}}{{/lambda.uppercase}}.toString())
@@ -138,7 +137,7 @@ public class {{resourceName}}Reader extends Reader<{{resourceName}}> {
 
 
     @Override
-    public Page<{{resourceName}}> nextPage(final Page<{{resourceName}}> page, final TwilioRestClient client) {
+    public Page<{{apiName}}> nextPage(final Page<{{apiName}}> page, final TwilioRestClient client) {
         Request request = new Request(
             HttpMethod.GET,
             page.getNextPageUrl(Domains.{{#lambda.uppercase}}{{domainName}}{{/lambda.uppercase}}.toString())
@@ -147,7 +146,7 @@ public class {{resourceName}}Reader extends Reader<{{resourceName}}> {
     }
 
     @Override
-    public Page<{{resourceName}}> getPage(final String targetUrl, final TwilioRestClient client) {
+    public Page<{{apiName}}> getPage(final String targetUrl, final TwilioRestClient client) {
         Request request = new Request(
             HttpMethod.GET,
             targetUrl
@@ -166,6 +165,5 @@ public class {{resourceName}}Reader extends Reader<{{resourceName}}> {
 {{/queryParams.0}}
 }
 {{/vendorExtensions.x-is-read-operation}}
-{{/operations}}
-{{/hasRead}}
+{{/apiOperations}}
 {{/resources}}
