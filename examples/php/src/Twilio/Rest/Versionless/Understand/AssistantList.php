@@ -42,7 +42,7 @@ class AssistantList extends ListResource {
         // Path Solution
         $this->solution = [];
 
-        $this->uri = '/Assistants';
+        $this->uri = '/understand/Assistants';
     }
     
     

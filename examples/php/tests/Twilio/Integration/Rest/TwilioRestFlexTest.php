@@ -1,8 +1,6 @@
 <?php
 
 
-
-
 namespace Twilio\Tests\Integration\Rest;
 
 use Twilio\Exceptions\ConfigurationException;
@@ -17,17 +15,19 @@ use Twilio\Tests\Request;
 use Twilio\Tests\Unit\UnitTest;
 
 
+class TwilioFlexRestTest extends HolodeckTestCase
+{
 
-class TwilioFlexRestTest extends HolodeckTestCase {
-
-    public function testShouldPrefixedMap(): void {
+    public function testShouldPrefixedMap(): void
+    {
         $this->markTestSkipped('WIP.');
         $this->holodeck->mock(new Response(500, ''));
 
         try {
             $this->twilio->flexApi->v1->credentials("1234")->aws("")->history("")->fetch();
-        } catch (DeserializeException $e) {}
-        catch (TwilioException $e) {}
+        } catch (DeserializeException $e) {
+        } catch (TwilioException $e) {
+        }
 
         $this->assertRequest(new Request(
             'post',
@@ -35,13 +35,15 @@ class TwilioFlexRestTest extends HolodeckTestCase {
         ));
     }
 
-    public function testReadRequestCredentials(): void {
+    public function testReadRequestCredentials(): void
+    {
         $this->holodeck->mock(new Response(500, ''));
 
         try {
             $this->twilio->flexApi->v1->credentials->read();
-        } catch (DeserializeException $e) {}
-        catch (TwilioException $e) {}
+        } catch (DeserializeException $e) {
+        } catch (TwilioException $e) {
+        }
 
         $this->assertRequest(new Request(
             'get',
@@ -49,7 +51,8 @@ class TwilioFlexRestTest extends HolodeckTestCase {
         ));
     }
 
-    public function testReadEmptyResponseCredentials(): void {
+    public function testReadEmptyResponseCredentials(): void
+    {
         $this->holodeck->mock(new Response(
             200,
             '
