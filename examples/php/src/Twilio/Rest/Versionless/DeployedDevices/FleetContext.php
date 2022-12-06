@@ -57,7 +57,7 @@ class FleetContext extends InstanceContext {
         $options = new Values($options);
 
         $data = Values::of([
-            'FriendlyName' => $options['friendlyName'],
+            'Name' => $options['name'],
         ]);
 
         $payload = $this->version->create('POST', $this->uri, [], $data);
