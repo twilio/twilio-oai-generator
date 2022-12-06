@@ -14,7 +14,7 @@
         {{^isArray}}
         if ({{paramName}} != null)
         {
-            p.Add(new KeyValuePair<string, string>("{{baseName}}", {{{vendorExtensions.x-param-to-string}}}));
+            p.Add(new KeyValuePair<string, string>("{{{baseName}}}", {{{vendorExtensions.x-param-to-string}}}));
         }
         {{/isArray}}
     {{/vendorExtensions.x-header-params}}
