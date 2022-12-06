@@ -26,7 +26,7 @@ public abstract class ApiResourceBuilder implements IApiResourceBuilder {
     protected IApiActionTemplate template;
     protected List<CodegenModel> allModels;
     protected List<CodegenOperation> codegenOperationList;
-    protected TreeSet<CodegenParameter> requiredPathParams = new TreeSet<>((cp1, cp2) -> cp1.baseName.compareTo(cp2.baseName));
+    protected List<CodegenParameter> requiredPathParams = new ArrayList<>();
     protected List<CodegenProperty> apiResponseModels = new ArrayList<>();
     protected Map<String, Object> metaAPIProperties = new HashMap<>();
     protected String version = "";
@@ -57,7 +57,10 @@ public abstract class ApiResourceBuilder implements IApiResourceBuilder {
             codegenOperation.optionalParams = codegenOperation.optionalParams.stream()
                     .map(item -> codegenParameterIResolver.resolve(item)).collect(Collectors.toList());
 
-            requiredPathParams.addAll(codegenOperation.pathParams);
+            codegenOperation.pathParams.stream().filter(codegenParameter ->
+               !requiredPathParams.stream().anyMatch(param -> param.baseName.equals(codegenParameter.baseName))
+            ).collect(Collectors.toList()).forEach(param -> requiredPathParams.add(param));
+
             codegenOperation.vendorExtensions = mapOperation(codegenOperation);
         });
         return this;
