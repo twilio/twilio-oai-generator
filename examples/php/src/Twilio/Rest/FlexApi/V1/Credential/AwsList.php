@@ -111,7 +111,6 @@ class AwsList extends ListResource {
     public function page( $pageSize = Values::NONE, string $pageToken = Values::NONE, $pageNumber = Values::NONE): AwsPage {
 
         $params = Values::of([
-            'PageSize' => $options['PageSize'],
             'PageToken' => $pageToken,
             'Page' => $pageNumber,
             'PageSize' => $pageSize,

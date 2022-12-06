@@ -140,11 +140,10 @@ class AccountList extends ListResource {
         $options = new Values($options);
 
         $params = Values::of([
-            'DateCreated' => Serialize::iso8601DateTime($options['DateCreated']),
-            'Date.Test' => Serialize::iso8601Date($options['Date.Test']),
-            'DateCreated&lt;' => Serialize::iso8601DateTime($options['DateCreated&lt;']),
-            'DateCreated&gt;' => Serialize::iso8601DateTime($options['DateCreated&gt;']),
-            'PageSize' => $options['PageSize'],
+            'DateCreated' => Serialize::iso8601DateTime($options['dateCreated']),
+            'Date.Test' => Serialize::iso8601Date($options['dateTest']),
+            'DateCreated<' => Serialize::iso8601DateTime($options['dateCreatedBefore']),
+            'DateCreated>' => Serialize::iso8601DateTime($options['dateCreatedAfter']),
             'PageToken' => $pageToken,
             'Page' => $pageNumber,
             'PageSize' => $pageSize,

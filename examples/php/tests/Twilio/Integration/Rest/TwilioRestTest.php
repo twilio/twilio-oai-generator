@@ -15,7 +15,6 @@ use Twilio\Tests\Request;
 use Twilio\Tests\Unit\UnitTest;
 
 
-
 class TwilioRestTest extends HolodeckTestCase {
 
     public function testShouldMakeValidCall(): void {
@@ -157,4 +156,138 @@ class TwilioRestTest extends HolodeckTestCase {
         ));
     }
 
+    public function testReadRequest(): void {
+        $this->holodeck->mock(new Response(500, ''));
+
+        try {
+            $this->twilio->api->v2010->accounts->read();
+        } catch (DeserializeException $e) {}
+        catch (TwilioException $e) {}
+
+        $this->assertRequest(new Request(
+            'get',
+            'https://api.twilio.com/2010-04-01/Accounts.json'
+        ));
+    }
+
+    public function testReadEmptyResponse(): void {
+        $this->holodeck->mock(new Response(
+            200,
+            '
+            {
+                "first_page_uri": "/2010-04-01/Accounts.json?Page=0",
+                "end": 0,
+                "previous_page_uri": null,
+                "accounts": [],
+                "uri": "/2010-04-01/Accounts.json?Page=0",
+                "page_size": 50,
+                "start": 0,
+                "next_page_uri": null,
+                "page": 0
+            }
+            '
+        ));
+
+        $actual = $this->twilio->api->v2010->accounts->read();
+
+        $this->assertNotNull($actual);
+    }
+
+    public function testReadFullResponse(): void {
+        $this->holodeck->mock(new Response(
+            200,
+            '
+            {
+                "first_page_uri": "/2010-04-01/Accounts.json?FriendlyName=friendly_name&Status=active&PageSize=50&Page=0",
+                "end": 0,
+                "previous_page_uri": null,
+                "accounts": [
+                   {
+                        "account_sid": "account_sid",
+                        "test_date_time": "Thu, 30 Jul 2015 20:00:00 +0000",
+                        "test_string": "Test  String",
+                        "sid": "ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+                    } 
+                ],
+                "uri": "/2010-04-01/Accounts.json?DateCreated=date_created",
+                "page_size": 50,
+                "start": 0,
+                "next_page_uri": null,
+                "page": 0
+            }
+            '
+        ));
+        $actual = $this->twilio->api->v2010->accounts->read();
+        $this->assertGreaterThan(0, \count($actual));
+    }
+
+    public function testReadStringMessage(): void {
+        $this->holodeck->mock(new Response(
+            200,
+            '
+            {
+                "first_page_uri": "/2010-04-01/Accounts.json?FriendlyName=friendly_name&Status=active&PageSize=50&Page=0",
+                "end": 0,
+                "previous_page_uri": null,
+                "accounts": [
+                   {
+                        "account_sid": "account_sid",
+                        "test_date_time": "Thu, 30 Jul 2015 20:00:00 +0000",
+                        "test_string": "Test  String",
+                        "sid": "ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+                    } 
+                ],
+                "uri": "/2010-04-01/Accounts.json?DateCreated=date_created",
+                "page_size": 50,
+                "start": 0,
+                "next_page_uri": null,
+                "page": 0
+            }
+            '
+        ));
+        $actual = $this->twilio->api->v2010->accounts->read();
+        $val = array_values($actual)[0];
+        $this->assertEquals(
+            $val->testString,
+            "Test  String",
+        );
+    }
+
+    public function testShouldPrefixedMapReadDateRange(): void {
+
+        $this->holodeck->mock(new Response(200,
+            '
+            {
+                "first_page_uri": "/2010-04-01/Accounts.json",
+                "end": 0,
+                "previous_page_uri": null,
+                "accounts": [
+                   {
+                        "account_sid": "account_sid",
+                        "test_date_time": "Thu, 30 Jul 2015 20:00:00 +0000",
+                        "test_string": "Test  String",
+                        "sid": "ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+                    } 
+                ],
+                "uri": "/2010-04-01/Accounts.json?DateCreated=date_created",
+                "page_size": 50,
+                "start": 0,
+                "next_page_uri": null,
+                "page": 0
+            }
+            '
+        ));
+
+        $actual = $this->twilio->api->v2010->accounts->read(
+            [
+                'dateCreatedBefore' => "2011-05-21",
+                'dateCreatedAfter' => "2012-01-01"
+            ]);
+        $this->assertNotNull($actual);
+        $this->assertRequest(new Request(
+            'get',
+            "https://api.twilio.com/2010-04-01/Accounts.json",
+            ['DateCreated<' => '2011-05-21', 'DateCreated>' => "2012-01-01"]
+        ));
+    }
 }
