@@ -71,10 +71,13 @@ class AccountContext extends InstanceContext {
      * @throws TwilioException When an HTTP error occurs.
      */
     public function fetch(): AccountInstance {
-
         $payload = $this->version->fetch('GET', $this->uri);
 
-        return new AccountInstance($this->version, $payload, $this->solution['sid']);
+        return new AccountInstance(
+            $this->version,
+            $payload
+            , $this->solution['sid']
+        );
     }
 
     /**

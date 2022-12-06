@@ -54,8 +54,7 @@ class CredentialList extends ListResource {
 
         $this->uri = '/Credentials';
     }
-    
-    
+
     /**
     * Reads CredentialInstance records from the API as a list.
     * Unlike stream(), this operation is eager and will load `limit` records into

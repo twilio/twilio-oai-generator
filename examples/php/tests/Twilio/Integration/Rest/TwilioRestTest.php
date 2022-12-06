@@ -15,18 +15,16 @@ use Twilio\Tests\Request;
 use Twilio\Tests\Unit\UnitTest;
 
 
-class TwilioRestTest extends HolodeckTestCase
-{
 
-    public function testShouldMakeValidCall(): void
-    {
+class TwilioRestTest extends HolodeckTestCase {
+
+    public function testShouldMakeValidCall(): void {
         $this->holodeck->mock(new Response(500, ''));
 
         try {
             $this->twilio->api->v2010->accounts->create();
-        } catch (DeserializeException $e) {
-        } catch (TwilioException $e) {
-        }
+        } catch (DeserializeException $e) {}
+        catch (TwilioException $e) {}
 
         $this->assertRequest(new Request(
             'post',
@@ -34,8 +32,7 @@ class TwilioRestTest extends HolodeckTestCase
         ));
     }
 
-    public function testShouldCreateAccount(): void
-    {
+    public function testShouldCreateAccount(): void {
         $this->holodeck->mock(new Response(
             200,
             '
@@ -49,9 +46,8 @@ class TwilioRestTest extends HolodeckTestCase
 
         try {
             $this->twilio->api->v2010->accounts->create();
-        } catch (DeserializeException $e) {
-        } catch (TwilioException $e) {
-        }
+        } catch (DeserializeException $e) {}
+        catch (TwilioException $e) {}
 
         $this->assertRequest(new Request(
             'post',
@@ -61,15 +57,13 @@ class TwilioRestTest extends HolodeckTestCase
         ));
     }
 
-    public function testShouldDeleteAccountResource(): void
-    {
+    public function testShouldDeleteAccountResource(): void {
         $this->holodeck->mock(new Response(200, ''));
 
         try {
             $this->twilio->api->v2010->accounts("ACXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")->delete();
-        } catch (DeserializeException $e) {
-        } catch (TwilioException $e) {
-        }
+        } catch (DeserializeException $e) {}
+        catch (TwilioException $e) {}
 
         $this->assertRequest(new Request(
             'delete',
@@ -78,8 +72,7 @@ class TwilioRestTest extends HolodeckTestCase
     }
 
 
-    public function testShouldAddHeader(): void
-    {
+    public function testShouldAddHeader(): void {
         $this->holodeck->mock(new Response(200,
             '
             {
@@ -93,9 +86,8 @@ class TwilioRestTest extends HolodeckTestCase
                 "recordingStatusCallback" => "https://validurl.com",
                 "recordingStatusCallbackEvent" => ""
             ]);
-        } catch (DeserializeException $e) {
-        } catch (TwilioException $e) {
-        }
+        } catch (DeserializeException $e) {}
+        catch (TwilioException $e) {}
 
         $this->assertRequest(new Request(
             'post',
@@ -106,8 +98,7 @@ class TwilioRestTest extends HolodeckTestCase
         ));
     }
 
-    public function testShouldMakeValidApiCallToCallFetcher(): void
-    {
+    public function testShouldMakeValidApiCallToCallFetcher(): void{
         $this->holodeck->mock(new Response(200, '{
                 "account_sid": "AC222222222222222222222222222222",
                 "sid": "ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
@@ -119,8 +110,7 @@ class TwilioRestTest extends HolodeckTestCase
         $this->assertNotNull($response);
     }
 
-    public function testShouldSerializeDateTime(): void
-    {
+    public function testShouldSerializeDateTime(): void{
         $this->holodeck->mock(new Response(200, '{
                 "account_sid": "AC222222222222222222222222222222",
                 "sid": "ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
@@ -139,32 +129,6 @@ class TwilioRestTest extends HolodeckTestCase
             'https://api.twilio.com/2010-04-01/Accounts/AC222222222222222222222222222222/Calls/Feedback/Summary/FSXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX.json',
             [],
             ['StartDate' => '2022-12-01', 'EndDate' => '2022-12-04']
-        ));
-    }
-
-    public function testShouldSerializePrefixedMap(): void
-    {
-
-        $this->holodeck->mock(new Response(200,
-            '{
-                "account_sid": "AC222222222222222222222222222222",
-                "sid": "ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-                "test_string": "Test String"
-            }'
-        ));
-
-        $actual = $this->twilio->flexApi->v1->credentials->aws("AC222222222222222222222222222222")->history()->
-        fetch(["addOnsData" => [
-            "status" => "successful",
-            "message" => "hi"
-        ]]);
-
-        $this->assertNotNull($actual);
-
-        $this->assertRequest(new Request(
-            'get',
-            'https://flex-api.twilio.com/v1/Credentials/AWS/AC222222222222222222222222222222/History',
-            ['AddOns.status' => 'successful', 'AddOns.message' => 'hi']
         ));
     }
 

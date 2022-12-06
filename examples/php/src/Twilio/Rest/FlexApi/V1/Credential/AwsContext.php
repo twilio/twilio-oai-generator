@@ -71,10 +71,13 @@ class AwsContext extends InstanceContext {
      * @throws TwilioException When an HTTP error occurs.
      */
     public function fetch(): AwsInstance {
-
         $payload = $this->version->fetch('GET', $this->uri);
 
-        return new AwsInstance($this->version, $payload, $this->solution['sid']);
+        return new AwsInstance(
+            $this->version,
+            $payload
+            , $this->solution['sid']
+        );
     }
 
     /**

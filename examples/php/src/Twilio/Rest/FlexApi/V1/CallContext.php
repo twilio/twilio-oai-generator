@@ -53,10 +53,7 @@ class CallContext extends InstanceContext {
      * @throws TwilioException When an HTTP error occurs.
      */
     public function update(): CallInstance {
-        $data = Values::of([
-        ]);
-
-        $payload = $this->version->update('POST', $this->uri, [], $data);
+        $payload = $this->version->update('POST', $this->uri);
 
         return new CallInstance(
             $this->version,

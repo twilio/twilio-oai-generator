@@ -62,7 +62,11 @@ class HistoryContext extends InstanceContext {
 
         $payload = $this->version->fetch('GET', $this->uri, $params);
 
-        return new HistoryInstance($this->version, $payload, $this->solution['sid']);
+        return new HistoryInstance(
+            $this->version,
+            $payload
+            , $this->solution['sid']
+        );
     }
 
     /**

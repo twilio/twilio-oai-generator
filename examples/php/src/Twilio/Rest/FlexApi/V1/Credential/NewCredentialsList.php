@@ -43,47 +43,8 @@ class NewCredentialsList extends ListResource {
 
         $this->uri = '/Credentials/AWS';
     }
-    
-    /**
-     * Create the NewCredentialsInstance
-     *
-     * @param string $testString 
-     * @param array|Options $options Optional Arguments
-     * @return NewCredentialsInstance Created NewCredentialsInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function create(string $testString, array $options = []): NewCredentialsInstance {
-        $options = new Values($options);
 
-        $data = Values::of([
-            'TestString' => $testString,
-            'TestBoolean' => Serialize::booleanToString($options['testBoolean']),
-            'TestInteger' => $options['testInteger'],
-            'TestNumber' => $options['testNumber'],
-            'TestNumberFloat' => $options['testNumberFloat'],
-            'TestNumberDouble' => $options['testNumberDouble'],
-            'TestNumberInt32' => $options['testNumberInt32'],
-            'TestNumberInt64' => $options['testNumberInt64'],
-            'TestObject' => Serialize::jsonObject($options['testObject']),
-            'TestDateTime' => Serialize::iso8601DateTime($options['testDateTime']),
-            'TestDate' => Serialize::iso8601Date($options['testDate']),
-            'TestEnum' => $options['testEnum'],
-            'TestObjectArray' => Serialize::map($options['testObjectArray'], function($e) { return $e; }),
-            'TestAnyType' => $options['testAnyType'],
-            'TestAnyArray' => Serialize::map($options['testAnyArray'], function($e) { return $e; }),
-            'Permissions' => Serialize::map($options['permissions'], function($e) { return $e; }),
-            'SomeA2PThing' => $options['someA2PThing'],
-        ]);
 
-        $payload = $this->version->create('POST', $this->uri, [], $data);
-
-        return new NewCredentialsInstance(
-            $this->version,
-            $payload
-        );
-    }
-
-    
     /**
      * Constructs a NewCredentialsContext
      *

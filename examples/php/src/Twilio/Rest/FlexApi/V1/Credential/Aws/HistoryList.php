@@ -42,8 +42,8 @@ class HistoryList extends ListResource {
         // Path Solution
         $this->solution = ['sid' => $sid, ];
     }
-    
-    
+
+
     /**
      * Constructs a HistoryContext
      *

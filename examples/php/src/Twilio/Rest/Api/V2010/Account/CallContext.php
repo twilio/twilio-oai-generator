@@ -49,6 +49,34 @@ class CallContext extends InstanceContext {
     }
 
     /**
+     * Create the CallInstance
+     *
+     * @param string $requiredStringProperty 
+     * @param string $testMethod The HTTP method that we should use to request the &#x60;TestArrayOfUri&#x60;.
+     * @param array|Options $options Optional Arguments
+     * @return CallInstance Created CallInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function create(string $requiredStringProperty, string $testMethod, array $options = []): CallInstance {
+        $options = new Values($options);
+
+        $data = Values::of([
+            'RequiredStringProperty' => $requiredStringProperty,
+            'TestMethod' => $testMethod,
+            'TestArrayOfStrings' => Serialize::map($options['testArrayOfStrings'], function($e) { return $e; }),
+            'TestArrayOfUri' => Serialize::map($options['testArrayOfUri'], function($e) { return $e; }),
+        ]);
+
+        $payload = $this->version->create('POST', $this->uri, [], $data);
+
+        return new CallInstance(
+            $this->version,
+            $payload
+            , $this->solution['accountSid']
+        );
+    }
+
+    /**
      * Delete the CallInstance
      *
      * @return bool True if delete succeeds, false otherwise
@@ -65,10 +93,14 @@ class CallContext extends InstanceContext {
      * @throws TwilioException When an HTTP error occurs.
      */
     public function fetch(): CallInstance {
-
         $payload = $this->version->fetch('GET', $this->uri);
 
-        return new CallInstance($this->version, $payload, $this->solution['accountSid'], $this->solution['testInteger']);
+        return new CallInstance(
+            $this->version,
+            $payload
+            , $this->solution['accountSid']
+            , $this->solution['testInteger']
+        );
     }
 
     /**

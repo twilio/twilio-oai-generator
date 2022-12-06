@@ -45,7 +45,7 @@ class AccountList extends ListResource {
 
         $this->uri = '/Accounts.json';
     }
-    
+
     /**
      * Create the AccountInstance
      *
@@ -71,13 +71,6 @@ class AccountList extends ListResource {
         );
     }
 
-    
-    
-    
-    
-    
-    
-    
     /**
     * Reads AccountInstance records from the API as a list.
     * Unlike stream(), this operation is eager and will load `limit` records into
@@ -172,8 +165,6 @@ class AccountList extends ListResource {
     }
 
 
-    
-    
     /**
      * Constructs a AccountContext
      *
