@@ -20,10 +20,10 @@ const serialize = require("../../../base/serialize");
 /**
  * Options to pass to create a FleetInstance
  *
- * @property { string } [friendlyName]
+ * @property { string } [name]
  */
 export interface FleetListInstanceCreateOptions {
-  friendlyName?: string;
+  name?: string;
 }
 
 export interface FleetContext {
@@ -96,6 +96,7 @@ interface FleetPayload extends FleetResource {}
 interface FleetResource {
   sid?: string | null;
   friendly_name?: string | null;
+  name?: string;
 }
 
 export class FleetInstance {
@@ -109,6 +110,7 @@ export class FleetInstance {
   ) {
     this.sid = payload.sid;
     this.friendlyName = payload.friendly_name;
+    this.name = payload.name;
 
     this._solution = { sid: sid || this.sid };
   }
@@ -121,6 +123,7 @@ export class FleetInstance {
    * A human readable description for this Fleet.
    */
   friendlyName?: string | null;
+  name?: string;
 
   private get _proxy(): FleetContext {
     this._context =
@@ -150,6 +153,7 @@ export class FleetInstance {
     return {
       sid: this.sid,
       friendlyName: this.friendlyName,
+      name: this.name,
     };
   }
 
@@ -226,8 +230,7 @@ export function FleetListInstance(version: DeployedDevices): FleetListInstance {
 
     let data: any = {};
 
-    if (params["friendlyName"] !== undefined)
-      data["FriendlyName"] = params["friendlyName"];
+    if (params["name"] !== undefined) data["Name"] = params["name"];
 
     const headers: any = {};
     headers["Content-Type"] = "application/x-www-form-urlencoded";

@@ -296,10 +296,10 @@ public class DirectoryStructureService {
         return getModelByClassname(className);
     }
 
-    public void addModel(final Map<String, CodegenModel> models, final String classname) {
-        getModelByClassname(classname).ifPresent(model -> {
+    public void addModel(final Map<String, CodegenModel> models, final String complexType, final String dataType) {
+        getModelByClassname(complexType != null ? complexType : dataType).ifPresent(model -> {
             if (models.putIfAbsent(model.getClassname(), model) == null) {
-                model.getVars().forEach(property -> addModel(models, property.dataType));
+                model.getVars().forEach(property -> addModel(models, property.complexType, property.dataType));
             }
         });
     }

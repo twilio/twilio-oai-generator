@@ -29,11 +29,11 @@ use Twilio\Serialize;
 
 abstract class FleetOptions {
     /**
-    * @param string $friendlyName  
+    * @param string $name  
     * @return CreateFleetOptions Options builder
     */
-    public static function create(string  $friendlyName=Values::NONE): CreateFleetOptions {
-        return new CreateFleetOptions($friendlyName);
+    public static function create(string  $name=Values::NONE): CreateFleetOptions {
+        return new CreateFleetOptions($name);
     }
 
 
@@ -41,18 +41,18 @@ abstract class FleetOptions {
 
 class CreateFleetOptions extends Options {
     /**
-    * @param string $friendlyName 
+    * @param string $name 
     */
-    public function __construct(string  $friendlyName=Values::NONE) {
-        $this->options['friendlyName'] = $friendlyName;
+    public function __construct(string  $name=Values::NONE) {
+        $this->options['name'] = $name;
     }
 
     /**
-    * @param string $friendlyName 
+    * @param string $name 
     * @return $this Fluent Builder
     */
-    public function setFriendlyName(string $friendlyName): self {
-        $this->options['friendlyName'] = $friendlyName;
+    public function setName(string $name): self {
+        $this->options['name'] = $name;
         return $this;
     }
 
