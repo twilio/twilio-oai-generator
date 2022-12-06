@@ -1,0 +1,9 @@
+{{#vendorExtensions.hasOptionFileParams}}
+    /**{{#vendorExtensions.optionFileParams}}
+    * @param {{dataType}} ${{paramName}} {{description}} {{/vendorExtensions.optionFileParams}}
+    * @return {{vendorExtensions.x-name}}{{apiName}}Options Options builder
+    */
+    public static function {{#lambda.camelcase}}{{vendorExtensions.x-name}}{{/lambda.camelcase}}({{>options/optionMethodArgs}}): {{vendorExtensions.x-name}}{{apiName}}Options {
+        return new {{vendorExtensions.x-name}}{{apiName}}Options({{#vendorExtensions.optionFileParams}}${{paramName}}{{vendorExtensions.optionFileSeparator}}{{/vendorExtensions.optionFileParams}});
+    }
+{{/vendorExtensions.hasOptionFileParams}}

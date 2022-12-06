@@ -16,6 +16,7 @@ public class ApplicationConstants {
     public static final String CONFIG_CSHARP_JSON_PATH = CONFIG_PATH + File.separator + "csharp.json";
     public static final String CONFIG_JAVA_JSON_PATH = CONFIG_PATH + File.separator + "java.json";
     public static final String CONFIG_NODE_JSON_PATH = CONFIG_PATH + File.separator + "node.json";
+    public static final String CONFIG_PYTHON_JSON_PATH = CONFIG_PATH + File.separator + "python.json";
 
     public static final String LIST_START = "List<";
 

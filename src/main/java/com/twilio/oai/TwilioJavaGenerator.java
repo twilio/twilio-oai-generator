@@ -6,6 +6,7 @@ import com.google.common.collect.Lists;
 
 import com.twilio.oai.common.ApplicationConstants;
 import com.twilio.oai.common.EnumConstants;
+import com.twilio.oai.common.Utility;
 import com.twilio.oai.mlambdas.ReplaceHyphenLambda;
 import com.twilio.oai.resolver.java.JavaCaseResolver;
 import com.twilio.oai.resolver.java.JavaConventionResolver;
@@ -36,6 +37,7 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
     private static final int BIG_INTEGER_CONSTANT = 1;
     private static final int SERIAL_UID_LENGTH = 12;
     private static final String URI = "uri";
+    private static final String ENUM_VARS = "enumVars";
     private static final String VALUES = "values";
 
     private final TwilioCodegenAdapter twilioCodegen;
@@ -201,7 +203,6 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
         return new HashMap<>();
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public OperationsMap postProcessOperationsWithModels(final OperationsMap objs, List<ModelMap> allModels) {
         final OperationsMap results = super.postProcessOperationsWithModels(objs, allModels);
@@ -212,11 +213,7 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
         final Map<String, Map<String, Object>> resources = new LinkedHashMap<>();
 
         List<CodegenModel> responseModels = new ArrayList<>();
-        apiTemplateFiles.remove("updater.mustache");
-        apiTemplateFiles.remove("creator.mustache");
-        apiTemplateFiles.remove("deleter.mustache");
-        apiTemplateFiles.remove("reader.mustache");
-        apiTemplateFiles.remove("fetcher.mustache");
+        removeApiTemplateFiles();
 
         // iterate over the operation and perhaps modify something
         for (final CodegenOperation co : opList) {
@@ -229,36 +226,28 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
             updateCodeOperationParams(co, resourceName);
             if (co.nickname.startsWith("update")) {
                 resource.put("hasUpdate", true);
-                addOperationName(co, "Update");
                 resource.put("signatureListUpdate", generateSignatureList(co));
                 apiTemplateFiles.put("updater.mustache", "Updater.java");
             } else if (co.nickname.startsWith("delete")) {
                 resource.put("hasDelete", true);
-                addOperationName(co, "Remove");
                 resource.put("signatureListDelete", generateSignatureList(co));
                 apiTemplateFiles.put("deleter.mustache", "Deleter.java");
                 addDeleteHeaderEnums(co, responseModels);
             } else if (co.nickname.startsWith("create")) {
                 resource.put("hasCreate", true);
-                addOperationName(co, "Create");
                 resource.put("signatureListCreate", generateSignatureList(co));
                 apiTemplateFiles.put("creator.mustache", "Creator.java");
             } else if (co.nickname.startsWith("fetch")) {
                 resource.put("hasFetch", true);
                 resource.put("signatureListFetch", generateSignatureList(co));
-                addOperationName(co, "Fetch");
                 apiTemplateFiles.put("fetcher.mustache", "Fetcher.java");
             } else {
                 resource.put("hasRead", true);
-                addOperationName(co, "Page");
                 resource.put("signatureListRead", generateSignatureList(co));
                 apiTemplateFiles.put("reader.mustache", "Reader.java");
             }
 
-            final ArrayList<CodegenOperation> resourceOperationList =
-                    (ArrayList<CodegenOperation>) resource.computeIfAbsent(
-                            "operations",
-                            k -> new ArrayList<>());
+            final ArrayList<CodegenOperation> resourceOperationList = Utility.getOperations(resource);
             resourceOperationList.add(co);
             resource.put("path", path);
             resource.put("resourceName", resourceName);
@@ -304,9 +293,17 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
         return results;
     }
 
+    private void removeApiTemplateFiles(){
+        apiTemplateFiles.remove("updater.mustache");
+        apiTemplateFiles.remove("creator.mustache");
+        apiTemplateFiles.remove("deleter.mustache");
+        apiTemplateFiles.remove("reader.mustache");
+        apiTemplateFiles.remove("fetcher.mustache");
+    }
+
     private Map<String, Map<String, Object>> getConventionMap() {
         try {
-            return new ObjectMapper().readValue(Thread.currentThread().getContextClassLoader().getResourceAsStream(ApplicationConstants.CONFIG_JAVA_JSON_PATH), new TypeReference<Map<String, Map<String, Object>>>(){});
+            return new ObjectMapper().readValue(Thread.currentThread().getContextClassLoader().getResourceAsStream(ApplicationConstants.CONFIG_JAVA_JSON_PATH), new TypeReference<>(){});
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -497,11 +494,6 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
 
     private <T> List<T> addAllToList(List<T> ... list) {
         return Arrays.stream(list).flatMap(List<T>::stream).collect(Collectors.toList());
-    }
-
-    private void addOperationName(final CodegenOperation operation, final String name) {
-        operation.vendorExtensions.put("x-name", name);
-        operation.vendorExtensions.put("x-name-lower", name.toLowerCase());
     }
 
     private long calculateSerialVersionUid(final List<CodegenProperty> modelProperties){

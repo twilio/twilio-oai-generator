@@ -46,7 +46,7 @@ class CallList extends ListResource {
         parent::__construct($version);
 
         // Path Solution
-        $this->solution = ['account_sid' => $accountSid, ];
+        $this->solution = ['accountSid' => $accountSid, ];
 
         $this->uri = '/Accounts/' . \rawurlencode($accountSid) . '/Calls.json';
     }
