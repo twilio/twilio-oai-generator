@@ -22,9 +22,9 @@ public class CodegenModelDataTypeResolver implements Resolver<CodegenProperty> {
     }
 
     public CodegenProperty resolve(CodegenProperty property) {
-        assignDataType(property);
         // Exceptional case, data format does not exist for Object type.
         assignDataTypeObjectForNullDataFormat(property);
+        assignDataType(property);
 
         if (property.complexType != null && modelFormatMap.containsKey(property.complexType)) {
             codegenModelComplexResolver.setModelFormatMap(modelFormatMap);
