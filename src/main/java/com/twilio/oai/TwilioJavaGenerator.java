@@ -195,15 +195,15 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
         return "Generates the twilio-java helper library.";
     }
 
-     private JavaApiResources processCodegenOperations(List<CodegenOperation> opList) {
+    private JavaApiResources processCodegenOperations(List<CodegenOperation> opList) {
         CodegenModelResolver codegenModelResolver = new CodegenModelResolver(conventionMapper,
-                Arrays.asList(EnumConstants.JavaDataTypes.values()));
+            Arrays.asList(EnumConstants.JavaDataTypes.values()));
         codegenModelResolver.setModelFormatMap(modelFormatMap);
         return  new JavaApiResourceBuilder(apiActionTemplate, opList, this.allModels, directoryStructureService, conventionMapper)
-                .updateApiPath()
-                .updateTemplate()
-                .updateOperations(new JavaParameterResolver(conventionMapper))
-                .updateResponseModel(new JavaPropertyResolver(conventionMapper), codegenModelResolver)
-                .build();
-     }
+            .updateApiPath()
+            .updateTemplate()
+            .updateOperations(new JavaParameterResolver(conventionMapper))
+            .updateResponseModel(new JavaPropertyResolver(conventionMapper), codegenModelResolver)
+            .build();
+    }
 }
