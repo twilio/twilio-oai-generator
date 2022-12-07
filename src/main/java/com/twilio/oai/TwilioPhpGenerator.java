@@ -33,6 +33,7 @@ public class TwilioPhpGenerator extends PhpClientCodegen {
     private final Map<String, String> modelFormatMap = new HashMap<>();
     private IConventionMapper conventionMapper = new LanguageConventionResolver(PHP_CONVENTIONAL_MAP_PATH);
     private IApiActionTemplate phpApiActionTemplate = new PhpApiActionTemplate(this);
+
     public TwilioPhpGenerator() {
         super();
         twilioCodegen = new TwilioCodegenAdapter(this, getName());
@@ -62,7 +63,7 @@ public class TwilioPhpGenerator extends PhpClientCodegen {
         directoryStructureService.configure(openAPI);
         if (!directoryStructureService.isVersionLess()) {
             new PhpDomainBuilder(phpApiActionTemplate)
-                    .setVersionTemplate(openAPI,directoryStructureService);
+                    .setVersionTemplate(openAPI, directoryStructureService);
         }
     }
 

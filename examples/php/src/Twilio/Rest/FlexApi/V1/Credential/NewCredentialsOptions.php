@@ -17,6 +17,7 @@ namespace Twilio\Rest\FlexApi\V1\Credential;
 
 use Twilio\Exceptions\TwilioException;
 use Twilio\ListResource;
+use Twilio\InstanceResource;
 use Twilio\Options;
 use Twilio\Stream;
 use Twilio\Values;

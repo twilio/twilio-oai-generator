@@ -19,6 +19,7 @@ namespace Twilio\Rest\Api\V2010\Account;
 
 use Twilio\Exceptions\TwilioException;
 use Twilio\ListResource;
+use Twilio\InstanceResource;
 use Twilio\Options;
 use Twilio\Stream;
 use Twilio\Values;
@@ -31,7 +32,6 @@ use Twilio\Rest\Api\V2010\Account\Call\FeedbackCallSummaryList;
 
 
 class CallContext extends InstanceContext {
-
     /**
      * Initialize the CallContext
      *
@@ -46,6 +46,34 @@ class CallContext extends InstanceContext {
         $this->solution = ['accountSid' => $accountSid,  'testInteger' => $testInteger,  ];
 
         $this->uri = '/Accounts/' . \rawurlencode($accountSid) . '/Calls/' . \rawurlencode($testInteger) . '.json';
+    }
+
+    /**
+     * Create the CallInstance
+     *
+     * @param string $requiredStringProperty 
+     * @param string $testMethod The HTTP method that we should use to request the &#x60;TestArrayOfUri&#x60;.
+     * @param array|Options $options Optional Arguments
+     * @return CallInstance Created CallInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function create(string $requiredStringProperty, string $testMethod, array $options = []): CallInstance {
+        $options = new Values($options);
+
+        $data = Values::of([
+            'RequiredStringProperty' => $requiredStringProperty,
+            'TestMethod' => $testMethod,
+            'TestArrayOfStrings' => Serialize::map($options['testArrayOfStrings'], function($e) { return $e; }),
+            'TestArrayOfUri' => Serialize::map($options['testArrayOfUri'], function($e) { return $e; }),
+        ]);
+
+        $payload = $this->version->create('POST', $this->uri, [], $data);
+
+        return new CallInstance(
+            $this->version,
+            $payload
+            , $this->solution['accountSid']
+        );
     }
 
     /**
@@ -65,10 +93,14 @@ class CallContext extends InstanceContext {
      * @throws TwilioException When an HTTP error occurs.
      */
     public function fetch(): CallInstance {
-
         $payload = $this->version->fetch('GET', $this->uri);
 
-        return new CallInstance($this->version, $payload, $this->solution['accountSid'], $this->solution['testInteger']);
+        return new CallInstance(
+            $this->version,
+            $payload
+            , $this->solution['accountSid']
+            , $this->solution['testInteger']
+        );
     }
 
     /**

@@ -7,9 +7,7 @@ namespace Twilio\Rest\{{domainName}}\{{version}}{{namespaceSubPart}};
 {{>imports}}
 
 {{#apiOperations}}
-{{^vendorExtensions.x-is-delete-operation}}
-{{^vendorExtensions.x-is-fetch-operation}}
-{{^vendorExtensions.x-is-update-operation}}
+{{^vendorExtensions.x-is-context-operation}}
     {{#vendorExtensions.importProperties.0}}
 /**
     {{/vendorExtensions.importProperties.0}}
@@ -27,64 +25,65 @@ namespace Twilio\Rest\{{domainName}}\{{version}}{{namespaceSubPart}};
 /**
     {{/vendorExtensions.importProperties}}
     {{/-first}}
- * @method \Twilio\Rest\{{domainName}}\{{apiVersionClass}}\{{parent}}Context {{#lambda.camelcase}}{{mountName}}{{/lambda.camelcase}}(string ${{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}})
+ * @method \Twilio\Rest\{{domainName}}\{{apiVersionClass}}\{{parent}}Context {{#lambda.camelcase}}{{mountName}}{{/lambda.camelcase}}({{#params}}string ${{#lambda.camelcase}}{{.}}{{/lambda.camelcase}}{{^-last}}, {{/-last}}{{/params}})
     {{#-last}}
  */
     {{/-last}}
     {{/vendorExtensions.importMethods}}
-{{/vendorExtensions.x-is-update-operation}}
-{{/vendorExtensions.x-is-fetch-operation}}
-{{/vendorExtensions.x-is-delete-operation}}
+{{/vendorExtensions.x-is-context-operation}}
 {{/apiOperations}}
 
 class {{apiName}}List extends ListResource {
     {{#apiOperations}}
-    {{^vendorExtensions.x-is-delete-operation}}
-    {{^vendorExtensions.x-is-fetch-operation}}
-    {{^vendorExtensions.x-is-update-operation}}
+    {{^vendorExtensions.x-is-context-operation}}
     {{#vendorExtensions.importProperties}}
     protected $_{{#lambda.camelcase}}{{mountName}}{{/lambda.camelcase}} = null;
-    {{/vendorExtensions.importProperties}}
-    {{/vendorExtensions.x-is-update-operation}}
-    {{/vendorExtensions.x-is-fetch-operation}}
-    {{/vendorExtensions.x-is-delete-operation}}
-    {{/apiOperations}}
+    {{#-last}}
 
+    {{/-last}}
+    {{/vendorExtensions.importProperties}}
+    {{/vendorExtensions.x-is-context-operation}}
+    {{/apiOperations}}
     /**
      * Construct the {{apiName}}List
      *
      * @param Version $version Version that contains the resource
-     {{#requiredPathParamsList}}
+     {{#requiredPathParams}}
+     {{#vendorExtensions.x-is-parent-param}}
      * @param {{{dataType}}} ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}} {{description}}
-     {{/requiredPathParamsList}}
+     {{/vendorExtensions.x-is-parent-param}}
+     {{/requiredPathParams}}
      */
-    public function __construct(Version $version{{#requiredPathParamsList}}, {{{dataType}}} ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}} {{/requiredPathParamsList}}) {
+    public function __construct(Version $version{{#requiredPathParams}}{{#vendorExtensions.x-is-parent-param}}, {{{dataType}}} ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}} {{/vendorExtensions.x-is-parent-param}}{{/requiredPathParams}}) {
         parent::__construct($version);
 
         // Path Solution
-        $this->solution = [{{#requiredPathParamsList}}'{{paramName}}' => ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}, {{/requiredPathParamsList}}];
+        $this->solution = [{{#requiredPathParams}}{{#vendorExtensions.x-is-parent-param}}'{{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}' => ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}, {{/vendorExtensions.x-is-parent-param}}{{/requiredPathParams}}];
         {{#metaProperties.x-is-list-operation}}
 
         $this->uri = '{{{apiListPath}}}';
         {{/metaProperties.x-is-list-operation}}
     }
-    {{#apiOperations}}
-    {{>listCreate}}
-    {{>listRead}}
-    {{/apiOperations}}
+
+{{#apiOperations}}{{#metaProperties.hasReadOperation}}{{#vendorExtensions.x-is-create-operation}}{{>method}}
+{{>contextMethod}}
+
+{{/vendorExtensions.x-is-create-operation}}{{/metaProperties.hasReadOperation}}{{>listRead}}{{/apiOperations}}
     /**
      * Constructs a {{apiName}}Context
      *
-     * @param string $sid The unique string that identifies the resource
+     {{#requiredPathParams}}
+     {{^vendorExtensions.x-is-parent-param}}
+     * @param {{{dataType}}} ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}} {{description}}
+     {{/vendorExtensions.x-is-parent-param}}
+     {{/requiredPathParams}}
      */
-    public function getContext(string $sid): {{apiName}}Context {
-        return new {{apiName}}Context($this->version);
+    public function getContext({{#requiredPathParams}}{{^vendorExtensions.x-is-parent-param}}{{{dataType}}} ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}{{^-last}}, {{/-last}}{{/vendorExtensions.x-is-parent-param}}{{/requiredPathParams}}): {{apiName}}Context {
+        return new {{apiName}}Context($this->version{{#requiredPathParams}}{{#vendorExtensions.x-is-parent-param}}, $this->solution['{{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}']{{/vendorExtensions.x-is-parent-param}}{{/requiredPathParams}}{{#requiredPathParams}}{{^vendorExtensions.x-is-parent-param}}, ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}{{/vendorExtensions.x-is-parent-param}}{{/requiredPathParams}});
     }
 
     {{#apiOperations}}
-    {{^vendorExtensions.x-is-delete-operation}}
-    {{^vendorExtensions.x-is-fetch-operation}}
-    {{^vendorExtensions.x-is-update-operation}}
+    {{^vendorExtensions.x-is-context-operation}}
     {{#vendorExtensions.importProperties}}
     /**
      * Access the {{#lambda.camelcase}}{{mountName}}{{/lambda.camelcase}}
@@ -93,11 +92,11 @@ class {{apiName}}List extends ListResource {
         if (!$this->_{{#lambda.camelcase}}{{mountName}}{{/lambda.camelcase}}) {
             $this->_{{#lambda.camelcase}}{{mountName}}{{/lambda.camelcase}} = new {{filename}}List(
                 $this->version
-                {{#requiredParams}}
-                {{#isPathParam}}
+                {{#requiredPathParams}}
+                {{#vendorExtensions.x-is-parent-param}}
                 , $this->solution['{{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}']
-                {{/isPathParam}}
-                {{/requiredParams}}
+                {{/vendorExtensions.x-is-parent-param}}
+                {{/requiredPathParams}}
             );
         }
 
@@ -105,14 +104,10 @@ class {{apiName}}List extends ListResource {
     }
 
     {{/vendorExtensions.importProperties}}
-    {{/vendorExtensions.x-is-update-operation}}
-    {{/vendorExtensions.x-is-fetch-operation}}
-    {{/vendorExtensions.x-is-delete-operation}}
+    {{/vendorExtensions.x-is-context-operation}}
     {{/apiOperations}}
 {{#apiOperations}}
-    {{^vendorExtensions.x-is-delete-operation}}
-    {{^vendorExtensions.x-is-fetch-operation}}
-    {{^vendorExtensions.x-is-update-operation}}
+    {{^vendorExtensions.x-is-context-operation}}
     {{#vendorExtensions.importProperties.0}}
     /**
      * Magic getter to lazy load subresources
@@ -148,9 +143,7 @@ class {{apiName}}List extends ListResource {
     }
 
     {{/vendorExtensions.importProperties.0}}
-    {{/vendorExtensions.x-is-update-operation}}
-    {{/vendorExtensions.x-is-fetch-operation}}
-    {{/vendorExtensions.x-is-delete-operation}}
+    {{/vendorExtensions.x-is-context-operation}}
 {{/apiOperations}}
     /**
      * Provide a friendly representation
