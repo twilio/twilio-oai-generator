@@ -13,6 +13,7 @@ public class LanguageConventionResolver implements IConventionMapper {
     public static final String HYPHEN = "-";
     public static final String OBJECT = "object";
     public static final String MIXED = "mixed";
+    public static final String MIXED_ARRAY = "mixed[]";
 
     public static final String LIST_OBJECT = "List<Object>";
 
