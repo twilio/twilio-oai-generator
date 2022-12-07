@@ -74,13 +74,9 @@ import com.twilio.type.SubscribeRule;
 public class Assistant extends Resource {
     private static final long serialVersionUID = 163787776958144L;
 
-
-
-
     public static AssistantReader reader(){
         return new AssistantReader();
     }
-
 
     /**
     * Converts a JSON String into a Assistant object using the provided ObjectMapper.

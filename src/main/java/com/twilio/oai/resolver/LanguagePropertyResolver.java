@@ -1,16 +1,16 @@
 package com.twilio.oai.resolver;
 
-import com.twilio.oai.resolver.php.IConventionMapper;
-import com.twilio.oai.resolver.php.LanguageConventionResolver;
-import com.twilio.oai.resolver.php.PhpParameterResolver;
 import lombok.AllArgsConstructor;
 import org.openapitools.codegen.CodegenProperty;
 import org.openapitools.codegen.utils.CamelizeOption;
 import org.openapitools.codegen.utils.StringUtils;
 
+import static com.twilio.oai.common.ApplicationConstants.DESERIALIZE_VEND_EXT;
+import static com.twilio.oai.common.ApplicationConstants.SERIALIZE_VEND_EXT;
+
 @AllArgsConstructor
 public class LanguagePropertyResolver implements ISchemaResolver<CodegenProperty> {
-    private IConventionMapper mapper ;
+    protected IConventionMapper mapper ;
 
     @Override
     public CodegenProperty resolve( CodegenProperty codegenProperty) {
@@ -31,14 +31,14 @@ public class LanguagePropertyResolver implements ISchemaResolver<CodegenProperty
     protected void resolveSerialize(CodegenProperty codegenProperty) {
         boolean hasProperty = mapper.serialize().containsKey(codegenProperty.dataFormat);
         if (hasProperty) {
-            codegenProperty.vendorExtensions.put(PhpParameterResolver.SERIALIZE_VEND_EXT,(String)mapper.serialize().get(codegenProperty.dataFormat));
+            codegenProperty.vendorExtensions.put(SERIALIZE_VEND_EXT,(String)mapper.serialize().get(codegenProperty.dataFormat));
         }
     }
 
     protected void resolveDeSerialize(CodegenProperty codegenProperty) {
         boolean hasProperty = mapper.deserialize().containsKey(codegenProperty.dataFormat);
         if (hasProperty) {
-            codegenProperty.vendorExtensions.put(PhpParameterResolver.DESERIALIZE_VEND_EXT, (String)mapper.deserialize().get(codegenProperty.dataFormat));
+            codegenProperty.vendorExtensions.put(DESERIALIZE_VEND_EXT, (String)mapper.deserialize().get(codegenProperty.dataFormat));
         }
     }
 

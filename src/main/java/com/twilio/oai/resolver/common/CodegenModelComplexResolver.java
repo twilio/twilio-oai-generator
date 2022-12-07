@@ -1,7 +1,7 @@
 package com.twilio.oai.resolver.common;
 
-import com.twilio.oai.Segments;
 import com.twilio.oai.resolver.Resolver;
+import com.twilio.oai.resolver.IConventionMapper;
 import org.openapitools.codegen.CodegenProperty;
 
 import java.util.HashMap;
@@ -9,7 +9,7 @@ import java.util.Map;
 
 public class CodegenModelComplexResolver implements Resolver<CodegenProperty> {
 
-    private Map<String, Map<String, Object>> conventionMap;
+    private IConventionMapper mapper;
     private Map<String, String> modelFormatMap = new HashMap<>();
 
     public CodegenModelComplexResolver() {}
@@ -20,7 +20,7 @@ public class CodegenModelComplexResolver implements Resolver<CodegenProperty> {
         }
 
         if (modelFormatMap.containsKey(property.complexType)) {
-            Map<String, Object> propertyMap = conventionMap.get(Segments.SEGMENT_PROPERTIES.getSegment());
+            Map<String, Object> propertyMap = mapper.properties();
             String complexType = modelFormatMap.get(property.complexType);
 
             if (propertyMap.containsKey(complexType)) {
@@ -30,8 +30,8 @@ public class CodegenModelComplexResolver implements Resolver<CodegenProperty> {
         return property;
     }
 
-    public void setConventionMap(Map<String, Map<String, Object>> conventionMap) {
-        this.conventionMap = conventionMap;
+    public void setMapper(IConventionMapper mapper) {
+        this.mapper = mapper;
     }
 
     public void setModelFormatMap(final Map<String, String> modelFormatMap) {

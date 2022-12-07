@@ -2,21 +2,21 @@ package com.twilio.oai.resolver.common;
 
 import com.twilio.oai.common.LanguageDataType;
 import com.twilio.oai.resolver.Resolver;
+import com.twilio.oai.resolver.IConventionMapper;
 import org.openapitools.codegen.CodegenParameter;
 
 import java.util.List;
-import java.util.Map;
 
 public class CodegenParameterResolver implements Resolver<CodegenParameter> {
 
-    private final Map<String, Map<String, Object>> conventionMap;
+    private final IConventionMapper mapper;
     private List<? extends LanguageDataType> languageDataTypes;
     private CodegenParameterDataTypeResolver codegenParameterDataTypeResolver = new CodegenParameterDataTypeResolver();
     private CodegenParameterContainerDataTypeResolver codegenParameterContainerDataTypeResolver;
 
-    public CodegenParameterResolver(Map<String, Map<String, Object>> conventionMap,
+    public CodegenParameterResolver(IConventionMapper mapper,
                                     List<? extends LanguageDataType> languageDataTypes) {
-        this.conventionMap = conventionMap;
+        this.mapper = mapper;
         this.languageDataTypes = languageDataTypes;
         codegenParameterContainerDataTypeResolver = new CodegenParameterContainerDataTypeResolver(codegenParameterDataTypeResolver,
                 languageDataTypes);
@@ -27,7 +27,7 @@ public class CodegenParameterResolver implements Resolver<CodegenParameter> {
             return null;
         }
 
-        codegenParameterDataTypeResolver.setConventionMap(conventionMap);
+        codegenParameterDataTypeResolver.setMapper(mapper);
 
         if (parameter.isContainer) {
             codegenParameterContainerDataTypeResolver.resolve(parameter);

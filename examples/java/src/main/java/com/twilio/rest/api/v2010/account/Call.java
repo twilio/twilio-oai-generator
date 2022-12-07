@@ -81,13 +81,6 @@ public class Call extends Resource {
         return new CallCreator(pathAccountSid, requiredStringProperty, testMethod);
     }
 
-    public static CallFetcher fetcher(final Integer pathTestInteger){
-        return new CallFetcher(pathTestInteger);
-    }
-    public static CallFetcher fetcher(final String pathAccountSid, final Integer pathTestInteger){
-        return new CallFetcher(pathAccountSid, pathTestInteger);
-    }
-
     public static CallDeleter deleter(final Integer pathTestInteger){
         return new CallDeleter(pathTestInteger);
     }
@@ -95,7 +88,12 @@ public class Call extends Resource {
         return new CallDeleter(pathAccountSid, pathTestInteger);
     }
 
-
+    public static CallFetcher fetcher(final Integer pathTestInteger){
+        return new CallFetcher(pathTestInteger);
+    }
+    public static CallFetcher fetcher(final String pathAccountSid, final Integer pathTestInteger){
+        return new CallFetcher(pathAccountSid, pathTestInteger);
+    }
 
     /**
     * Converts a JSON String into a Call object using the provided ObjectMapper.

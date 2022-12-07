@@ -1,5 +1,8 @@
 package com.twilio.oai.common;
 
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -18,6 +21,10 @@ import org.openapitools.codegen.CodegenOperation;
 
 @UtilityClass
 public class Utility {
+
+    private static final int OVERFLOW_CHECKER = 32;
+    public static final int BASE_SIXTEEN = 16;
+    private static final int BIG_INTEGER_CONSTANT = 1;
 
     public void setComplexDataMapping(final List<CodegenModel> allModels, Map<String, String> modelFormatMap) {
         allModels.forEach(item -> {
@@ -64,5 +71,21 @@ public class Utility {
         return (ArrayList<CodegenOperation>) resource.computeIfAbsent(
                 "operations",
                 k -> new ArrayList<>());
+    }
+
+    public String getMd5(String input){
+        try {
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            byte[] messageDigest = md.digest(input.getBytes());
+            BigInteger bigInteger = new BigInteger(BIG_INTEGER_CONSTANT, messageDigest);
+            String hashText = bigInteger.toString(BASE_SIXTEEN);
+            while (hashText.length() < OVERFLOW_CHECKER) {
+                hashText = "0" + hashText;
+            }
+            return hashText;
+        }
+        catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
