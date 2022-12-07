@@ -17,14 +17,14 @@ namespace Twilio\Rest\{{domainName}}\{{version}}{{namespaceSubPart}};
 
 class {{apiName}}Instance extends InstanceResource {
 {{#apiOperations}}
-    {{^vendorExtensions.x-is-list-operation}}
+    {{#vendorExtensions.x-is-context-operation}}
     {{#vendorExtensions.importProperties}}
     protected $_{{#lambda.camelcase}}{{mountName}}{{/lambda.camelcase}};
     {{#-last}}
 
     {{/-last}}
     {{/vendorExtensions.importProperties}}
-    {{/vendorExtensions.x-is-list-operation}}
+    {{/vendorExtensions.x-is-context-operation}}
 {{/apiOperations}}
     /**
      * Initialize the {{apiName}}Instance
@@ -91,7 +91,7 @@ class {{apiName}}Instance extends InstanceResource {
 {{/metaProperties.hasReadOperation}}
 {{/apiOperations}}
 {{#apiOperations}}
-    {{^vendorExtensions.x-is-list-operation}}
+    {{#vendorExtensions.x-is-context-operation}}
     {{#vendorExtensions.importProperties}}
     /**
      * Access the {{#lambda.camelcase}}{{mountName}}{{/lambda.camelcase}}
@@ -101,7 +101,7 @@ class {{apiName}}Instance extends InstanceResource {
     }
 
     {{/vendorExtensions.importProperties}}
-    {{/vendorExtensions.x-is-list-operation}}
+    {{/vendorExtensions.x-is-context-operation}}
 {{/apiOperations}}
     /**
      * Magic getter to access properties

@@ -68,8 +68,8 @@ class NewCredentialsContext extends InstanceContext {
             'TestDate' => Serialize::iso8601Date($options['testDate']),
             'TestEnum' => $options['testEnum'],
             'TestObjectArray' => Serialize::map($options['testObjectArray'], function($e) { return $e; }),
-            'TestAnyType' => $options['testAnyType'],
-            'TestAnyArray' => Serialize::map($options['testAnyArray'], function($e) { return $e; }),
+            'TestAnyType' => Serialize::jsonObject($options['testAnyType']),
+            'TestAnyArray' => Serialize::map($options['testAnyArray'], function($e) { return Serialize::jsonObject($e); }),
             'Permissions' => Serialize::map($options['permissions'], function($e) { return $e; }),
             'SomeA2PThing' => $options['someA2PThing'],
         ]);

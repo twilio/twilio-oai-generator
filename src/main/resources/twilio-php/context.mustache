@@ -8,7 +8,7 @@ namespace Twilio\Rest\{{domainName}}\{{apiVersionClass}}{{namespaceSubPart}};
 {{>imports}}
 
 {{#apiOperations}}
-{{^vendorExtensions.x-is-list-operation}}
+{{#vendorExtensions.x-is-context-operation}}
     {{#vendorExtensions.importProperties.0}}
 /**
     {{/vendorExtensions.importProperties.0}}
@@ -31,19 +31,19 @@ namespace Twilio\Rest\{{domainName}}\{{apiVersionClass}}{{namespaceSubPart}};
  */
     {{/-last}}
     {{/vendorExtensions.importMethods}}
-{{/vendorExtensions.x-is-list-operation}}
+{{/vendorExtensions.x-is-context-operation}}
 {{/apiOperations}}
 
 class {{apiName}}Context extends InstanceContext {
     {{#apiOperations}}
-    {{^vendorExtensions.x-is-list-operation}}
+    {{#vendorExtensions.x-is-context-operation}}
     {{#vendorExtensions.importProperties}}
     protected $_{{#lambda.camelcase}}{{mountName}}{{/lambda.camelcase}};
     {{#-last}}
 
     {{/-last}}
     {{/vendorExtensions.importProperties}}
-    {{/vendorExtensions.x-is-list-operation}}
+    {{/vendorExtensions.x-is-context-operation}}
     {{/apiOperations}}
     /**
      * Initialize the {{apiName}}Context
@@ -76,7 +76,7 @@ class {{apiName}}Context extends InstanceContext {
 {{/metaProperties.hasReadOperation}}
 {{/apiOperations}}
     {{#apiOperations}}
-    {{^vendorExtensions.x-is-list-operation}}
+    {{#vendorExtensions.x-is-context-operation}}
     {{#vendorExtensions.importProperties}}
     /**
      * Access the {{#lambda.camelcase}}{{mountName}}{{/lambda.camelcase}}
@@ -95,10 +95,10 @@ class {{apiName}}Context extends InstanceContext {
     }
 
     {{/vendorExtensions.importProperties}}
-    {{/vendorExtensions.x-is-list-operation}}
+    {{/vendorExtensions.x-is-context-operation}}
     {{/apiOperations}}
 {{#apiOperations}}
-    {{^vendorExtensions.x-is-list-operation}}
+    {{#vendorExtensions.x-is-context-operation}}
     {{#vendorExtensions.importProperties.0}}
     /**
      * Magic getter to lazy load subresources
@@ -134,7 +134,7 @@ class {{apiName}}Context extends InstanceContext {
     }
 
     {{/vendorExtensions.importProperties.0}}
-    {{/vendorExtensions.x-is-list-operation}}
+    {{/vendorExtensions.x-is-context-operation}}
     {{/apiOperations}}
     /**
      * Provide a friendly representation

@@ -7,7 +7,7 @@ namespace Twilio\Rest\{{domainName}}\{{version}}{{namespaceSubPart}};
 {{>imports}}
 
 {{#apiOperations}}
-{{^vendorExtensions.x-is-context-operation}}
+{{#vendorExtensions.x-is-list-operation}}
     {{#vendorExtensions.importProperties.0}}
 /**
     {{/vendorExtensions.importProperties.0}}
@@ -30,19 +30,19 @@ namespace Twilio\Rest\{{domainName}}\{{version}}{{namespaceSubPart}};
  */
     {{/-last}}
     {{/vendorExtensions.importMethods}}
-{{/vendorExtensions.x-is-context-operation}}
+{{/vendorExtensions.x-is-list-operation}}
 {{/apiOperations}}
 
 class {{apiName}}List extends ListResource {
     {{#apiOperations}}
-    {{^vendorExtensions.x-is-context-operation}}
+    {{#vendorExtensions.x-is-list-operation}}
     {{#vendorExtensions.importProperties}}
     protected $_{{#lambda.camelcase}}{{mountName}}{{/lambda.camelcase}} = null;
     {{#-last}}
 
     {{/-last}}
     {{/vendorExtensions.importProperties}}
-    {{/vendorExtensions.x-is-context-operation}}
+    {{/vendorExtensions.x-is-list-operation}}
     {{/apiOperations}}
     /**
      * Construct the {{apiName}}List
@@ -83,7 +83,7 @@ class {{apiName}}List extends ListResource {
     }
 
     {{#apiOperations}}
-    {{^vendorExtensions.x-is-context-operation}}
+    {{#vendorExtensions.x-is-list-operation}}
     {{#vendorExtensions.importProperties}}
     /**
      * Access the {{#lambda.camelcase}}{{mountName}}{{/lambda.camelcase}}
@@ -104,10 +104,10 @@ class {{apiName}}List extends ListResource {
     }
 
     {{/vendorExtensions.importProperties}}
-    {{/vendorExtensions.x-is-context-operation}}
+    {{/vendorExtensions.x-is-list-operation}}
     {{/apiOperations}}
 {{#apiOperations}}
-    {{^vendorExtensions.x-is-context-operation}}
+    {{#vendorExtensions.x-is-list-operation}}
     {{#vendorExtensions.importProperties.0}}
     /**
      * Magic getter to lazy load subresources
@@ -143,7 +143,7 @@ class {{apiName}}List extends ListResource {
     }
 
     {{/vendorExtensions.importProperties.0}}
-    {{/vendorExtensions.x-is-context-operation}}
+    {{/vendorExtensions.x-is-list-operation}}
 {{/apiOperations}}
     /**
      * Provide a friendly representation

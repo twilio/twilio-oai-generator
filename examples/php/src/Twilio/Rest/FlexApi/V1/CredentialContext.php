@@ -37,13 +37,12 @@ class CredentialContext extends InstanceContext {
      * Initialize the CredentialContext
      *
      * @param Version $version Version that contains the resource
-     * @param string $sid 
      */
-    public function __construct(Version $version, $sid ) {
+    public function __construct(Version $version) {
         parent::__construct($version);
 
         // Path Solution
-        $this->solution = ['sid' => $sid,  ];
+        $this->solution = [];
     }
 
     /**
