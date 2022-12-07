@@ -15,10 +15,11 @@
  */
 
 
-namespace Twilio\Rest\Api\V2010;
+namespace Twilio\Rest\FlexApi\V1\Credential;
 
 use Twilio\Exceptions\TwilioException;
 use Twilio\ListResource;
+use Twilio\InstanceResource;
 use Twilio\Options;
 use Twilio\Stream;
 use Twilio\Values;
@@ -57,57 +58,24 @@ class NewCredentialsInstance extends InstanceResource {
     }
 
     /**
-    * Generate an instance context for the instance, the context is capable of
-    * performing various actions.  All instance actions are proxied to the context
-    *
-    * @return FeedbackContext Context for this FeedbackInstance
-    */
-    protected function proxy(): NewCredentialsContext {
-        if (!$this->context) {
-            $this->context = new NewCredentialsContext($this->version );
-        }
-        return $this->context;
+     * Create the NewCredentialsInstance
+     *
+     * @param string $testString 
+     * @param array|Options $options Optional Arguments
+     * @return NewCredentialsInstance Created NewCredentialsInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function create(string $testString, array $options = []): NewCredentialsInstance {
+        return $this->proxy()->create($testString, $options);
     }
 
     /**
-    * Fetch the NewCredentialsInstance
-    *
-    * @return NewCredentialsInstance Fetched NewCredentialsInstance
-    * @throws TwilioException When an HTTP error occurs.
-    */
-    public function fetch(): NewCredentialsInstance {
-        return $this->proxy()->fetch();
-    }
-
-    /**
-    * Create the NewCredentialsInstance
-    *
-    * @param int $qualityScore The call quality expressed as an integer from 1 to 5
-    * @param array|Options $options Optional Arguments
-    * @return NewCredentialsInstance Created NewCredentialsInstance
-    * @throws TwilioException When an HTTP error occurs.
-    */
-    public function create(int $qualityScore, array $options = []): NewCredentialsInstance {
-        return $this->proxy()->create($qualityScore, $options);
-    }
-
-    /**
-    * Update the NewCredentialsInstance
-    *
-    * @param array|Options $options Optional Arguments
-    * @return NewCredentialsInstance Updated NewCredentialsInstance
-    * @throws TwilioException When an HTTP error occurs.
-    */
-    public function update(array $options = []): FeedbackInstance {
-        return $this->proxy()->update($options);
-    }
-    /**
-    * Magic getter to access properties
-    *
-    * @param string $name Property to access
-    * @return mixed The requested property
-    * @throws TwilioException For unknown properties
-    */
+     * Magic getter to access properties
+     *
+     * @param string $name Property to access
+     * @return mixed The requested property
+     * @throws TwilioException For unknown properties
+     */
     public function __get(string $name) {
         if (\array_key_exists($name, $this->properties)) {
             return $this->properties[$name];
@@ -122,16 +90,12 @@ class NewCredentialsInstance extends InstanceResource {
     }
 
     /**
-    * Provide a friendly representation
-    *
-    * @return string Machine friendly representation
-    */
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
     public function __toString(): string {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.FlexApi.V1.NewCredentialsInstance ' . \implode(' ', $context) . ']';
+        return '[Twilio.FlexApi.V1.NewCredentialsInstance]';
     }
 }
 

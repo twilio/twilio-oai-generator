@@ -1,6 +1,6 @@
 {{>licenseInfo}}
 {{#resources}}
-package com.twilio.rest.{{domainPackage}}.{{apiVersion}}{{packageSubPart}};
+package com.twilio.rest.{{domainPackage}}.{{apiVersion}}{{namespaceSubPart}};
 
 import com.twilio.base.Updater;
 import com.twilio.converter.Promoter;
@@ -34,36 +34,35 @@ import java.util.Objects;
 
 import lombok.ToString;
 
-{{#hasUpdate}}
-{{#operations}}
+{{#apiOperations}}
 {{#vendorExtensions.x-is-update-operation}}
-public class {{resourceName}}Updater extends Updater<{{resourceName}}>{
+public class {{apiName}}Updater extends Updater<{{apiName}}>{
 {{#allParams}}
     private {{{dataType}}} {{paramName}};
 {{/allParams}}
 
-{{#signatureListUpdate}}
-    public {{resourceName}}Updater({{#.}}final {{{dataType}}} {{paramName}}{{^-last}}, {{/-last}}{{/.}}){
+{{#vendorExtensions.x-signature-list}}
+    public {{apiName}}Updater({{#.}}final {{{dataType}}} {{paramName}}{{^-last}}, {{/-last}}{{/.}}){
     {{#.}}
         this.{{paramName}} = {{paramName}};
     {{/.}}
     }
-{{/signatureListUpdate}}
+{{/vendorExtensions.x-signature-list}}
 
 {{#vendorExtensions.x-non-path-params}}
-    public {{resourceName}}Updater set{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}(final {{{dataType}}} {{paramName}}){
+    public {{apiName}}Updater set{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}(final {{{dataType}}} {{paramName}}){
         this.{{paramName}} = {{paramName}};
         return this;
     }
 {{#isArray}}
-    public {{resourceName}}Updater set{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}(final {{{baseType}}} {{paramName}}){
+    public {{apiName}}Updater set{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}(final {{{baseType}}} {{paramName}}){
         return set{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}(Promoter.listOfOne({{paramName}}));
     }
 {{/isArray}}
 {{#vendorExtensions.x-promotions}}
 {{#entrySet}}
 
-    public {{resourceName}}Updater set{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}(final {{#lambda.titlecase}}{{key}}{{/lambda.titlecase}} {{paramName}}){
+    public {{apiName}}Updater set{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}(final {{#lambda.titlecase}}{{key}}{{/lambda.titlecase}} {{paramName}}){
         return set{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}({{value}});
     }
 {{/entrySet}}
@@ -71,7 +70,7 @@ public class {{resourceName}}Updater extends Updater<{{resourceName}}>{
 {{/vendorExtensions.x-non-path-params}}
 
     @Override
-    public {{resourceName}} update(final TwilioRestClient client){
+    public {{apiName}} update(final TwilioRestClient client){
 {{>generate_uri}}
         Request request = new Request(
             HttpMethod.POST,
@@ -89,7 +88,7 @@ public class {{resourceName}}Updater extends Updater<{{resourceName}}>{
         {{/headerParams.0}}
         Response response = client.request(request);
         if (response == null) {
-            throw new ApiConnectionException("{{resourceName}} update failed: Unable to connect to server");
+            throw new ApiConnectionException("{{apiName}} update failed: Unable to connect to server");
         } else if (!TwilioRestClient.SUCCESS.test(response.getStatusCode())) {
             RestException restException = RestException.fromJson(response.getStream(), client.getObjectMapper());
             if (restException == null) {
@@ -98,7 +97,7 @@ public class {{resourceName}}Updater extends Updater<{{resourceName}}>{
             throw new ApiException(restException);
         }
 
-        return {{resourceName}}.fromJson(response.getStream(), client.getObjectMapper());
+        return {{apiName}}.fromJson(response.getStream(), client.getObjectMapper());
     }
 {{#formParams.0}}
 {{>postParams}}
@@ -111,6 +110,5 @@ public class {{resourceName}}Updater extends Updater<{{resourceName}}>{
 {{/queryParams.0}}
 }
 {{/vendorExtensions.x-is-update-operation}}
-{{/operations}}
-{{/hasUpdate}}
+{{/apiOperations}}
 {{/resources}}

@@ -1,6 +1,6 @@
 {{>licenseInfo}}
 {{#resources}}
-package com.twilio.rest.{{domainPackage}}.{{apiVersion}}{{packageSubPart}};
+package com.twilio.rest.{{domainPackage}}.{{apiVersion}}{{namespaceSubPart}};
 
 import com.twilio.base.Deleter;
 import com.twilio.converter.Promoter;
@@ -33,36 +33,35 @@ import java.util.Objects;
 
 import lombok.ToString;
 
-{{#hasDelete}}
-{{#operations}}
+{{#apiOperations}}
 {{#vendorExtensions.x-is-delete-operation}}
-public class {{resourceName}}Deleter extends Deleter<{{resourceName}}> {
+public class {{apiName}}Deleter extends Deleter<{{apiName}}> {
 {{#allParams}}
     private {{{dataType}}} {{paramName}};
 {{/allParams}}
 
-{{#signatureListDelete}}
-    public {{resourceName}}Deleter({{#.}}final {{{dataType}}} {{paramName}}{{^-last}}, {{/-last}}{{/.}}){
+{{#vendorExtensions.x-signature-list}}
+    public {{apiName}}Deleter({{#.}}final {{{dataType}}} {{paramName}}{{^-last}}, {{/-last}}{{/.}}){
     {{#.}}
         this.{{paramName}} = {{paramName}};
     {{/.}}
     }
-{{/signatureListDelete}}
+{{/vendorExtensions.x-signature-list}}
 
 {{#vendorExtensions.x-non-path-params}}
-    public {{resourceName}}Deleter set{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}(final {{{dataType}}} {{paramName}}){
+    public {{apiName}}Deleter set{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}(final {{{dataType}}} {{paramName}}){
         this.{{paramName}} = {{paramName}};
         return this;
     }
 {{#isArray}}
-    public {{resourceName}}Deleter set{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}(final {{{baseType}}} {{paramName}}){
+    public {{apiName}}Deleter set{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}(final {{{baseType}}} {{paramName}}){
         return set{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}(Promoter.listOfOne({{paramName}}));
     }
 {{/isArray}}
 {{#vendorExtensions.x-promotions}}
 {{#entrySet}}
 
-    public {{resourceName}}Deleter set{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}(final {{#lambda.titlecase}}{{key}}{{/lambda.titlecase}} {{paramName}}){
+    public {{apiName}}Deleter set{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}(final {{#lambda.titlecase}}{{key}}{{/lambda.titlecase}} {{paramName}}){
         return set{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}({{value}});
     }
 {{/entrySet}}
@@ -89,7 +88,7 @@ public class {{resourceName}}Deleter extends Deleter<{{resourceName}}> {
         Response response = client.request(request);
 
         if (response == null) {
-            throw new ApiConnectionException("{{resourceName}} delete failed: Unable to connect to server");
+            throw new ApiConnectionException("{{apiName}} delete failed: Unable to connect to server");
         } else if (!TwilioRestClient.SUCCESS.test(response.getStatusCode())) {
             RestException restException = RestException.fromJson(response.getStream(), client.getObjectMapper());
             if (restException == null) {
@@ -110,6 +109,5 @@ public class {{resourceName}}Deleter extends Deleter<{{resourceName}}> {
 {{/queryParams.0}}
 }
 {{/vendorExtensions.x-is-delete-operation}}
-{{/operations}}
-{{/hasDelete}}
+{{/apiOperations}}
 {{/resources}}

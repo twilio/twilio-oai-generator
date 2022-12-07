@@ -19,6 +19,7 @@ namespace Twilio\Rest\FlexApi\V1;
 
 use Twilio\Exceptions\TwilioException;
 use Twilio\ListResource;
+use Twilio\InstanceResource;
 use Twilio\Options;
 use Twilio\Stream;
 use Twilio\Values;
@@ -32,17 +33,17 @@ use Twilio\Rest\FlexApi\V1\Credential\NewCredentialsList;
 
 
 class CredentialContext extends InstanceContext {
-
     /**
      * Initialize the CredentialContext
      *
      * @param Version $version Version that contains the resource
+     * @param string $sid 
      */
-    public function __construct(Version $version) {
+    public function __construct(Version $version, $sid ) {
         parent::__construct($version);
 
         // Path Solution
-        $this->solution = [];
+        $this->solution = ['sid' => $sid,  ];
     }
 
     /**

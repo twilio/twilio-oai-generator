@@ -6,7 +6,6 @@ import com.samskivert.mustache.Template;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.util.Locale;
 
 /**
  * Converts text in a fragment to title case.
@@ -44,7 +43,7 @@ public class ReplaceHyphenLambda implements Mustache.Lambda  {
         this.delimiter = delimiter;
     }
 
-    private String titleCase(final String input) {
+    private String replaceCase(final String input) {
         return input.replaceAll("-","_");
     }
 
@@ -52,7 +51,7 @@ public class ReplaceHyphenLambda implements Mustache.Lambda  {
     public void execute(Template.Fragment fragment, Writer writer) throws IOException {
         String text = fragment.execute();
         if (delimiter == null) {
-            writer.write(titleCase(text));
+            writer.write(replaceCase(text));
             return;
         }
 
@@ -61,7 +60,7 @@ public class ReplaceHyphenLambda implements Mustache.Lambda  {
         String[] parts = text.split("\\Q" + delimiter + "\\E");
         for (int i = 0; i < parts.length; i++) {
             String part = parts[i];
-            writer.write(titleCase(part));
+            writer.write(replaceCase(part));
             if (i != parts.length - 1) {
                 writer.write(delimiter);
             }

@@ -78,18 +78,18 @@ public class Account extends Resource {
         return new AccountCreator();
     }
 
-    public static AccountFetcher fetcher(){
-        return new AccountFetcher();
-    }
-    public static AccountFetcher fetcher(final String pathSid){
-        return new AccountFetcher(pathSid);
-    }
-
     public static AccountDeleter deleter(){
         return new AccountDeleter();
     }
     public static AccountDeleter deleter(final String pathSid){
         return new AccountDeleter(pathSid);
+    }
+
+    public static AccountFetcher fetcher(){
+        return new AccountFetcher();
+    }
+    public static AccountFetcher fetcher(final String pathSid){
+        return new AccountFetcher(pathSid);
     }
 
     public static AccountReader reader(){

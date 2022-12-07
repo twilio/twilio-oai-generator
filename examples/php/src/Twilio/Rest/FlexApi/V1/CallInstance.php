@@ -15,10 +15,11 @@
  */
 
 
-namespace Twilio\Rest\Api\V2010;
+namespace Twilio\Rest\FlexApi\V1;
 
 use Twilio\Exceptions\TwilioException;
 use Twilio\ListResource;
+use Twilio\InstanceResource;
 use Twilio\Options;
 use Twilio\Stream;
 use Twilio\Values;
@@ -38,8 +39,9 @@ class CallInstance extends InstanceResource {
      *
      * @param Version $version Version that contains the resource
      * @param mixed[] $payload The response payload
+     * @param string $sid 
      */
-    public function __construct(Version $version, array $payload) {
+    public function __construct(Version $version, array $payload, string $sid = null) {
         parent::__construct($version);
 
         // Marshaled Properties
@@ -47,61 +49,43 @@ class CallInstance extends InstanceResource {
             'sid' => Values::array_get($payload, 'sid'),
         ];
 
-        $this->solution = [];
+        $this->solution = ['sid' => $sid ?: $this->properties['sid'], ];
     }
 
     /**
-    * Generate an instance context for the instance, the context is capable of
-    * performing various actions.  All instance actions are proxied to the context
-    *
-    * @return FeedbackContext Context for this FeedbackInstance
-    */
+     * Generate an instance context for the instance, the context is capable of
+     * performing various actions.  All instance actions are proxied to the context
+     *
+     * @return CallContext Context for this CallInstance
+     */
     protected function proxy(): CallContext {
         if (!$this->context) {
-            $this->context = new CallContext($this->version );
+            $this->context = new CallContext(
+                $this->version,
+                $this->solution['sid']
+            );
         }
+
         return $this->context;
     }
 
     /**
-    * Fetch the CallInstance
-    *
-    * @return CallInstance Fetched CallInstance
-    * @throws TwilioException When an HTTP error occurs.
-    */
-    public function fetch(): CallInstance {
-        return $this->proxy()->fetch();
+     * Update the CallInstance
+     *
+     * @return CallInstance Updated CallInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function update(): CallInstance {
+        return $this->proxy()->update();
     }
 
     /**
-    * Create the CallInstance
-    *
-    * @param int $qualityScore The call quality expressed as an integer from 1 to 5
-    * @param array|Options $options Optional Arguments
-    * @return CallInstance Created CallInstance
-    * @throws TwilioException When an HTTP error occurs.
-    */
-    public function create(int $qualityScore, array $options = []): CallInstance {
-        return $this->proxy()->create($qualityScore, $options);
-    }
-
-    /**
-    * Update the CallInstance
-    *
-    * @param array|Options $options Optional Arguments
-    * @return CallInstance Updated CallInstance
-    * @throws TwilioException When an HTTP error occurs.
-    */
-    public function update(array $options = []): FeedbackInstance {
-        return $this->proxy()->update($options);
-    }
-    /**
-    * Magic getter to access properties
-    *
-    * @param string $name Property to access
-    * @return mixed The requested property
-    * @throws TwilioException For unknown properties
-    */
+     * Magic getter to access properties
+     *
+     * @param string $name Property to access
+     * @return mixed The requested property
+     * @throws TwilioException For unknown properties
+     */
     public function __get(string $name) {
         if (\array_key_exists($name, $this->properties)) {
             return $this->properties[$name];
@@ -116,10 +100,10 @@ class CallInstance extends InstanceResource {
     }
 
     /**
-    * Provide a friendly representation
-    *
-    * @return string Machine friendly representation
-    */
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
     public function __toString(): string {
         $context = [];
         foreach ($this->solution as $key => $value) {

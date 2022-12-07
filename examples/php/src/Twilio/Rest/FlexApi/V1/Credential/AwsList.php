@@ -18,6 +18,7 @@ namespace Twilio\Rest\FlexApi\V1\Credential;
 
 use Twilio\Exceptions\TwilioException;
 use Twilio\ListResource;
+use Twilio\InstanceResource;
 use Twilio\Options;
 use Twilio\Stream;
 use Twilio\Values;
@@ -25,11 +26,11 @@ use Twilio\Version;
 use Twilio\InstanceContext;
 use Twilio\Deserialize;
 use Twilio\Serialize;
+use Twilio\Rest\FlexApi\V1\Credential\Aws\HistoryList;
 
 
 
 class AwsList extends ListResource {
-
     /**
      * Construct the AwsList
      *
@@ -43,12 +44,7 @@ class AwsList extends ListResource {
 
         $this->uri = '/Credentials/AWS';
     }
-    
-    
-    
-    
-    
-    
+
     /**
     * Reads AwsInstance records from the API as a list.
     * Unlike stream(), this operation is eager and will load `limit` records into
@@ -106,9 +102,9 @@ class AwsList extends ListResource {
     * @return AwsPage Page of AwsInstance
     */
 
-    public function page(array $options = [], $pageSize = Values::NONE, string $pageToken = Values::NONE, $pageNumber = Values::NONE): AwsPage {
+    public function page( $pageSize = Values::NONE, string $pageToken = Values::NONE, $pageNumber = Values::NONE): AwsPage {
+
         $params = Values::of([
-            'PageSize' => $options['PageSize'],
             'PageToken' => $pageToken,
             'Page' => $pageNumber,
             'PageSize' => $pageSize,
@@ -137,15 +133,13 @@ class AwsList extends ListResource {
     }
 
 
-    
-    
     /**
      * Constructs a AwsContext
      *
-     * @param string $sid The unique string that identifies the resource
+     * @param string $sid 
      */
     public function getContext(string $sid): AwsContext {
-        return new AwsContext($this->version);
+        return new AwsContext($this->version, $sid);
     }
 
     /**

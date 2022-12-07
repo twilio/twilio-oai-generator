@@ -15,10 +15,11 @@
  */
 
 
-namespace Twilio\Rest\Api\V2010;
+namespace Twilio\Rest\FlexApi\V1\Credential;
 
 use Twilio\Exceptions\TwilioException;
 use Twilio\ListResource;
+use Twilio\InstanceResource;
 use Twilio\Options;
 use Twilio\Stream;
 use Twilio\Values;
@@ -26,6 +27,7 @@ use Twilio\Version;
 use Twilio\InstanceContext;
 use Twilio\Deserialize;
 use Twilio\Serialize;
+use Twilio\Rest\FlexApi\V1\Credential\Aws\HistoryList;
 
 
 /**
@@ -36,13 +38,16 @@ use Twilio\Serialize;
  */
 
 class AwsInstance extends InstanceResource {
+    protected $_history;
+
     /**
      * Initialize the AwsInstance
      *
      * @param Version $version Version that contains the resource
      * @param mixed[] $payload The response payload
+     * @param string $sid 
      */
-    public function __construct(Version $version, array $payload) {
+    public function __construct(Version $version, array $payload, string $sid = null) {
         parent::__construct($version);
 
         // Marshaled Properties
@@ -53,61 +58,71 @@ class AwsInstance extends InstanceResource {
             'testInteger' => Values::array_get($payload, 'test_integer'),
         ];
 
-        $this->solution = [];
+        $this->solution = ['sid' => $sid ?: $this->properties['sid'], ];
     }
 
     /**
-    * Generate an instance context for the instance, the context is capable of
-    * performing various actions.  All instance actions are proxied to the context
-    *
-    * @return FeedbackContext Context for this FeedbackInstance
-    */
+     * Generate an instance context for the instance, the context is capable of
+     * performing various actions.  All instance actions are proxied to the context
+     *
+     * @return AwsContext Context for this AwsInstance
+     */
     protected function proxy(): AwsContext {
         if (!$this->context) {
-            $this->context = new AwsContext($this->version );
+            $this->context = new AwsContext(
+                $this->version,
+                $this->solution['sid']
+            );
         }
+
         return $this->context;
     }
 
     /**
-    * Fetch the AwsInstance
-    *
-    * @return AwsInstance Fetched AwsInstance
-    * @throws TwilioException When an HTTP error occurs.
-    */
+     * Delete the AwsInstance
+     *
+     * @return bool True if delete succeeds, false otherwise
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function delete(): bool {
+        return $this->proxy()->delete();
+    }
+
+    /**
+     * Fetch the AwsInstance
+     *
+     * @return AwsInstance Fetched AwsInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
     public function fetch(): AwsInstance {
         return $this->proxy()->fetch();
     }
 
     /**
-    * Create the AwsInstance
-    *
-    * @param int $qualityScore The call quality expressed as an integer from 1 to 5
-    * @param array|Options $options Optional Arguments
-    * @return AwsInstance Created AwsInstance
-    * @throws TwilioException When an HTTP error occurs.
-    */
-    public function create(int $qualityScore, array $options = []): AwsInstance {
-        return $this->proxy()->create($qualityScore, $options);
+     * Update the AwsInstance
+     *
+     * @param array|Options $options Optional Arguments
+     * @return AwsInstance Updated AwsInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function update(array $options = []): AwsInstance {
+        return $this->proxy()->update($options);
     }
 
     /**
-    * Update the AwsInstance
-    *
-    * @param array|Options $options Optional Arguments
-    * @return AwsInstance Updated AwsInstance
-    * @throws TwilioException When an HTTP error occurs.
-    */
-    public function update(array $options = []): FeedbackInstance {
-        return $this->proxy()->update($options);
+     * Access the history
+     */
+    protected function getHistory(): HistoryList {
+        return $this->proxy()->history;
     }
+
     /**
-    * Magic getter to access properties
-    *
-    * @param string $name Property to access
-    * @return mixed The requested property
-    * @throws TwilioException For unknown properties
-    */
+     * Magic getter to access properties
+     *
+     * @param string $name Property to access
+     * @return mixed The requested property
+     * @throws TwilioException For unknown properties
+     */
     public function __get(string $name) {
         if (\array_key_exists($name, $this->properties)) {
             return $this->properties[$name];
@@ -122,10 +137,10 @@ class AwsInstance extends InstanceResource {
     }
 
     /**
-    * Provide a friendly representation
-    *
-    * @return string Machine friendly representation
-    */
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
     public function __toString(): string {
         $context = [];
         foreach ($this->solution as $key => $value) {

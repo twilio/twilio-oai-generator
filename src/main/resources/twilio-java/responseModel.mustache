@@ -31,7 +31,7 @@
 {{/vars}}
 
     @JsonCreator
-    private {{resourceName}}({{#vars}}
+    private {{apiName}}({{#vars}}
         @JsonProperty("{{{nameInSnakeCase}}}")
         {{#vendorExtensions.hydrate}}
         final String {{{name}}}{{^-last}},{{/-last}}
@@ -76,7 +76,7 @@
             return false;
         }
 
-        {{resourceName}} other = ({{resourceName}}) o;
+        {{apiName}} other = ({{apiName}}) o;
 
         return {{#vars}}Objects.equals({{name}}, other.{{name}}) {{^-last}}&& {{/-last}} {{/vars}};
     }

@@ -1,6 +1,6 @@
 {{>licenseInfo}}
 {{#resources}}
-package com.twilio.rest.{{domainPackage}}.{{apiVersion}}{{packageSubPart}};
+package com.twilio.rest.{{domainPackage}}.{{apiVersion}}{{namespaceSubPart}};
 
 import com.twilio.base.Fetcher;
 import com.twilio.converter.Promoter;
@@ -34,36 +34,35 @@ import java.util.Objects;
 
 import lombok.ToString;
 
-{{#hasFetch}}
-{{#operations}}
+{{#apiOperations}}
 {{#vendorExtensions.x-is-fetch-operation}}
-public class {{resourceName}}Fetcher extends Fetcher<{{resourceName}}> {
+public class {{apiName}}Fetcher extends Fetcher<{{apiName}}> {
 {{#allParams}}
     private {{{dataType}}} {{paramName}};
 {{/allParams}}
 
-{{#signatureListFetch}}
-    public {{resourceName}}Fetcher({{#.}}final {{{dataType}}} {{paramName}}{{^-last}}, {{/-last}}{{/.}}){
+{{#vendorExtensions.x-signature-list}}
+    public {{apiName}}Fetcher({{#.}}final {{{dataType}}} {{paramName}}{{^-last}}, {{/-last}}{{/.}}){
     {{#.}}
         this.{{paramName}} = {{paramName}};
     {{/.}}
     }
-{{/signatureListFetch}}
+{{/vendorExtensions.x-signature-list}}
 
 {{#vendorExtensions.x-non-path-params}}
-    public {{resourceName}}Fetcher set{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}(final {{{dataType}}} {{paramName}}){
+    public {{apiName}}Fetcher set{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}(final {{{dataType}}} {{paramName}}){
         this.{{paramName}} = {{paramName}};
         return this;
     }
 {{#isArray}}
-    public {{resourceName}}Fetcher set{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}(final {{{baseType}}} {{paramName}}){
+    public {{apiName}}Fetcher set{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}(final {{{baseType}}} {{paramName}}){
         return set{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}(Promoter.listOfOne({{paramName}}));
     }
 {{/isArray}}
 {{#vendorExtensions.x-promotions}}
 {{#entrySet}}
 
-    public {{resourceName}}Fetcher set{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}(final {{#lambda.titlecase}}{{key}}{{/lambda.titlecase}} {{paramName}}){
+    public {{apiName}}Fetcher set{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}(final {{#lambda.titlecase}}{{key}}{{/lambda.titlecase}} {{paramName}}){
         return set{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}({{value}});
     }
 {{/entrySet}}
@@ -71,7 +70,7 @@ public class {{resourceName}}Fetcher extends Fetcher<{{resourceName}}> {
 {{/vendorExtensions.x-non-path-params}}
 
     @Override
-    public {{resourceName}} fetch(final TwilioRestClient client) {
+    public {{apiName}} fetch(final TwilioRestClient client) {
 {{>generate_uri}}
         Request request = new Request(
             HttpMethod.GET,
@@ -90,7 +89,7 @@ public class {{resourceName}}Fetcher extends Fetcher<{{resourceName}}> {
         Response response = client.request(request);
 
         if (response == null) {
-        throw new ApiConnectionException("{{resourceName}} fetch failed: Unable to connect to server");
+        throw new ApiConnectionException("{{apiName}} fetch failed: Unable to connect to server");
         } else if (!TwilioRestClient.SUCCESS.test(response.getStatusCode())) {
             RestException restException = RestException.fromJson(response.getStream(), client.getObjectMapper());
             if (restException == null) {
@@ -99,7 +98,7 @@ public class {{resourceName}}Fetcher extends Fetcher<{{resourceName}}> {
             throw new ApiException(restException);
         }
 
-        return {{resourceName}}.fromJson(response.getStream(), client.getObjectMapper());
+        return {{apiName}}.fromJson(response.getStream(), client.getObjectMapper());
     }
 {{#formParams.0}}
 {{>postParams}}
@@ -112,6 +111,5 @@ public class {{resourceName}}Fetcher extends Fetcher<{{resourceName}}> {
 {{/queryParams.0}}
 }
 {{/vendorExtensions.x-is-fetch-operation}}
-{{/operations}}
-{{/hasFetch}}
+{{/apiOperations}}
 {{/resources}}

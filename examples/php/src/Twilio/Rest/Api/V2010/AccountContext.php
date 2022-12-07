@@ -19,6 +19,7 @@ namespace Twilio\Rest\Api\V2010;
 
 use Twilio\Exceptions\TwilioException;
 use Twilio\ListResource;
+use Twilio\InstanceResource;
 use Twilio\Options;
 use Twilio\Stream;
 use Twilio\Values;
@@ -69,20 +70,23 @@ class AccountContext extends InstanceContext {
      * @throws TwilioException When an HTTP error occurs.
      */
     public function fetch(): AccountInstance {
-
         $payload = $this->version->fetch('GET', $this->uri);
 
-        return new AccountInstance($this->version, $payload, $this->solution['sid']);
+        return new AccountInstance(
+            $this->version,
+            $payload
+            , $this->solution['sid']
+        );
     }
 
     /**
-    * Update the AccountInstance
-    *
-    * @param string $status 
-    * @param array|Options $options Optional Arguments
-    * @return AccountInstance Updated AccountInstance
-    * @throws TwilioException When an HTTP error occurs.
-    */
+     * Update the AccountInstance
+     *
+     * @param string $status 
+     * @param array|Options $options Optional Arguments
+     * @return AccountInstance Updated AccountInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
     public function update(string $status, array $options = []): AccountInstance {
         $options = new Values($options);
 
@@ -93,7 +97,11 @@ class AccountContext extends InstanceContext {
 
         $payload = $this->version->update('POST', $this->uri, [], $data);
 
-        return new AccountInstance($this->version, $payload, $this->solution['sid']);
+        return new AccountInstance(
+            $this->version,
+            $payload
+            , $this->solution['sid']
+        );
     }
 
     /**

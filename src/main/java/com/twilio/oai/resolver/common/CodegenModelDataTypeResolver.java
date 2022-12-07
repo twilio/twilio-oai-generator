@@ -2,6 +2,7 @@ package com.twilio.oai.resolver.common;
 
 import com.twilio.oai.Segments;
 import com.twilio.oai.resolver.Resolver;
+import com.twilio.oai.resolver.IConventionMapper;
 import org.openapitools.codegen.CodegenProperty;
 
 import java.util.HashMap;
@@ -12,7 +13,7 @@ import static com.twilio.oai.common.ApplicationConstants.OBJECT;
 
 public class CodegenModelDataTypeResolver implements Resolver<CodegenProperty> {
 
-    private Map<String, Map<String, Object>> conventionMap;
+    private IConventionMapper mapper;
     private CodegenModelComplexResolver codegenModelComplexResolver;
     private  Map<String, String> modelFormatMap = new HashMap<>();
 
@@ -21,13 +22,13 @@ public class CodegenModelDataTypeResolver implements Resolver<CodegenProperty> {
     }
 
     public CodegenProperty resolve(CodegenProperty property) {
-        assignDataType(property);
         // Exceptional case, data format does not exist for Object type.
         assignDataTypeObjectForNullDataFormat(property);
+        assignDataType(property);
 
         if (property.complexType != null && modelFormatMap.containsKey(property.complexType)) {
             codegenModelComplexResolver.setModelFormatMap(modelFormatMap);
-            codegenModelComplexResolver.setConventionMap(conventionMap);
+            codegenModelComplexResolver.setMapper(mapper);
             codegenModelComplexResolver.resolve(property);
         }
 
@@ -37,10 +38,10 @@ public class CodegenModelDataTypeResolver implements Resolver<CodegenProperty> {
     private void assignDataType(CodegenProperty property) {
         String propertyFieldName = Segments.SEGMENT_PROPERTIES.getSegment();
 
-        if (conventionMap.get(propertyFieldName).containsKey(property.dataFormat)) {
-            property.dataType = (String)conventionMap.get(propertyFieldName).get(property.dataFormat);
-        } else if (conventionMap.get(propertyFieldName).containsKey(property.dataType)) {
-            property.dataType = (String)conventionMap.get(propertyFieldName).get(property.dataType);
+        if (mapper.properties().containsKey(property.dataFormat)) {
+            property.dataType = (String)mapper.properties().get(property.dataFormat);
+        } else if (mapper.properties().containsKey(property.dataType)) {
+            property.dataType = (String)mapper.properties().get(property.dataType);
         }
     }
 
@@ -54,8 +55,8 @@ public class CodegenModelDataTypeResolver implements Resolver<CodegenProperty> {
         }
     }
 
-    public void setConventionMap(Map<String, Map<String, Object>> conventionMap) {
-        this.conventionMap = conventionMap;
+    public void setMapper(IConventionMapper mapper) {
+        this.mapper = mapper;
     }
 
     public void setModelFormatMap(final Map<String, String> modelFormatMap) {

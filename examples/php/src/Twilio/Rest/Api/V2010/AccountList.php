@@ -18,6 +18,7 @@ namespace Twilio\Rest\Api\V2010;
 
 use Twilio\Exceptions\TwilioException;
 use Twilio\ListResource;
+use Twilio\InstanceResource;
 use Twilio\Options;
 use Twilio\Stream;
 use Twilio\Values;
@@ -30,7 +31,6 @@ use Twilio\Rest\Api\V2010\Account\CallList;
 
 
 class AccountList extends ListResource {
-
     /**
      * Construct the AccountList
      *
@@ -44,7 +44,7 @@ class AccountList extends ListResource {
 
         $this->uri = '/Accounts.json';
     }
-    
+
     /**
      * Create the AccountInstance
      *
@@ -55,13 +55,14 @@ class AccountList extends ListResource {
     public function create(array $options = []): AccountInstance {
         $options = new Values($options);
 
-
         $data = Values::of([
             'RecordingStatusCallback' => $options['recordingStatusCallback'],
             'RecordingStatusCallbackEvent' => Serialize::map($options['recordingStatusCallbackEvent'], function($e) { return $e; }),
         ]);
 
-        $payload = $this->version->create('POST', $this->uri, [], $data);
+        $headers = Values::of(['X-Twilio-Webhook-Enabled' => $options['xTwilioWebhookEnabled']]);
+
+        $payload = $this->version->create('POST', $this->uri, [], $data, $headers);
 
         return new AccountInstance(
             $this->version,
@@ -69,13 +70,6 @@ class AccountList extends ListResource {
         );
     }
 
-    
-    
-    
-    
-    
-    
-    
     /**
     * Reads AccountInstance records from the API as a list.
     * Unlike stream(), this operation is eager and will load `limit` records into
@@ -116,10 +110,10 @@ class AccountList extends ListResource {
     * @return Stream stream of results
     */
 
-    public function stream(int $limit = null, $pageSize = null): Stream {
+    public function stream(array $options = [], int $limit = null, $pageSize = null): Stream {
         $limits = $this->version->readLimits($limit, $pageSize);
 
-        $page = $this->page($limits['pageSize']);
+        $page = $this->page( $options , $limits['pageSize']);
 
         return $this->version->stream($page, $limits['limit'], $limits['pageLimit']);
     }
@@ -134,13 +128,14 @@ class AccountList extends ListResource {
     * @return AccountPage Page of AccountInstance
     */
 
-    public function page(array $options = [], $pageSize = Values::NONE, string $pageToken = Values::NONE, $pageNumber = Values::NONE): AccountPage {
+    public function page(array $options = [],  $pageSize = Values::NONE, string $pageToken = Values::NONE, $pageNumber = Values::NONE): AccountPage {
+        $options = new Values($options);
+
         $params = Values::of([
-            'DateCreated' => Serialize::iso8601DateTime($options['DateCreated']),
-            'Date.Test' => Serialize::iso8601Date($options['Date.Test']),
-            'DateCreated&lt;' => Serialize::iso8601DateTime($options['DateCreated&lt;']),
-            'DateCreated&gt;' => Serialize::iso8601DateTime($options['DateCreated&gt;']),
-            'PageSize' => $options['PageSize'],
+            'DateCreated' => Serialize::iso8601DateTime($options['dateCreated']),
+            'Date.Test' => Serialize::iso8601Date($options['dateTest']),
+            'DateCreated<' => Serialize::iso8601DateTime($options['dateCreatedBefore']),
+            'DateCreated>' => Serialize::iso8601DateTime($options['dateCreatedAfter']),
             'PageToken' => $pageToken,
             'Page' => $pageNumber,
             'PageSize' => $pageSize,
@@ -169,15 +164,13 @@ class AccountList extends ListResource {
     }
 
 
-    
-    
     /**
      * Constructs a AccountContext
      *
-     * @param string $sid The unique string that identifies the resource
+     * @param string $sid 
      */
     public function getContext(string $sid): AccountContext {
-        return new AccountContext($this->version);
+        return new AccountContext($this->version, $sid);
     }
 
     /**
