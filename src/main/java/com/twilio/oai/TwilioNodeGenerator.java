@@ -203,12 +203,13 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
             final String parentResourceName = (String) resource.get("parentResourceName");
             final List<CodegenOperation> operations = Utility.getOperations(resource);
 
-            // Build the response model for this resource.
-            operations
-                .stream()
-                .filter(operation -> !hasInstanceOperations || PathUtils.isInstanceOperation(operation))
-                .flatMap(operation -> getResponseModel(operation, recordKey).stream())
-                .forEach(responseModel -> {
+            if (parentResourceName != null || !hasInstanceOperations) {
+                final List<CodegenModel> allResponseModels = opList
+                    .stream()
+                    .flatMap(co -> getResponseModel(co, recordKey).stream())
+                    .collect(Collectors.toList());
+
+                allResponseModels.stream().findFirst().ifPresent(responseModel -> {
                     resource.put("responseModel", responseModel);
                     responseModel
                         .getVars()
@@ -222,12 +223,9 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
 
                         });
 
-                    final List<CodegenModel> allResponseModels = opList
-                        .stream()
-                        .flatMap(co -> getResponseModel(co, recordKey).stream())
-                        .collect(Collectors.toList());
                     updateResponseModels(responseModel, allResponseModels, name);
                 });
+            }
 
             if (parentResourceName != null) {
                 final boolean parentExists = resources.containsKey(parentResourceName);

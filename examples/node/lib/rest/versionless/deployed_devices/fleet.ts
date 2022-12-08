@@ -99,9 +99,9 @@ export class FleetContextImpl implements FleetContext {
 interface FleetPayload extends FleetResource {}
 
 interface FleetResource {
+  name?: string;
   sid?: string | null;
   friendly_name?: string | null;
-  name?: string;
 }
 
 export class FleetInstance {
@@ -113,13 +113,14 @@ export class FleetInstance {
     payload: FleetPayload,
     sid?: string
   ) {
+    this.name = payload.name;
     this.sid = payload.sid;
     this.friendlyName = payload.friendly_name;
-    this.name = payload.name;
 
     this._solution = { sid: sid || this.sid };
   }
 
+  name?: string;
   /**
    * A string that uniquely identifies this Fleet.
    */
@@ -128,7 +129,6 @@ export class FleetInstance {
    * A human readable description for this Fleet.
    */
   friendlyName?: string | null;
-  name?: string;
 
   private get _proxy(): FleetContext {
     this._context =
@@ -156,9 +156,9 @@ export class FleetInstance {
    */
   toJSON() {
     return {
+      name: this.name,
       sid: this.sid,
       friendlyName: this.friendlyName,
-      name: this.name,
     };
   }
 
