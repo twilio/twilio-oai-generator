@@ -212,9 +212,15 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
                     resource.put("responseModel", responseModel);
                     responseModel
                         .getVars()
-                        .forEach(variable -> directoryStructureService.addModel(models,
-                                                                                variable.complexType,
-                                                                                variable.dataType));
+                        .forEach(variable -> {
+                            directoryStructureService.addModel(models,
+                                    variable.complexType,
+                                    variable.dataType);
+                            if (variable.baseName.equals("uri")) {
+                                responseModel.vendorExtensions.put("x-omit-uri", true);
+                            }
+
+                        });
 
                     final List<CodegenModel> allResponseModels = opList
                         .stream()

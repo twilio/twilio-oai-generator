@@ -275,10 +275,6 @@ public class TwilioPythonGenerator extends PythonClientCodegen {
         return EnumConstants.Generator.TWILIO_PYTHON.getValue();
     }
 
-    //HELPER FUNCTIONS
-    private String removeEnumName(final String dataType) {
-        return dataType.replace("Enum", "");
-    }
     private void addOperationName(final CodegenOperation operation, final String name) {
         operation.vendorExtensions.put("x-name", name);
         operation.vendorExtensions.put("x-name-lower", name.toLowerCase());
