@@ -58,22 +58,17 @@ class {{apiName}}Context extends InstanceContext {
 
         // Path Solution
         $this->solution = [{{#requiredPathParams}}'{{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}' => ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}},  {{/requiredPathParams}}];
-        {{#metaProperties.x-is-context-operation}}
+        {{#metaProperties.hasInstanceOperation}}
 
         $this->uri = '{{{apiContextPath}}}';
-        {{/metaProperties.x-is-context-operation}}
+        {{/metaProperties.hasInstanceOperation}}
     }
 
-{{#apiOperations}}{{#vendorExtensions.x-is-context-operation}}{{>method}}
+{{#apiOperations}}
+{{#vendorExtensions.instanceOperation}}{{>method}}
 {{>contextMethod}}
 
-{{/vendorExtensions.x-is-context-operation}}
-{{^metaProperties.hasReadOperation}}
-{{#vendorExtensions.x-is-create-operation}}{{>method}}
-{{>contextMethod}}
-
-{{/vendorExtensions.x-is-create-operation}}
-{{/metaProperties.hasReadOperation}}
+{{/vendorExtensions.instanceOperation}}
 {{/apiOperations}}
     {{#apiOperations}}
     {{#vendorExtensions.x-is-context-operation}}

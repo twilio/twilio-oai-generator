@@ -68,7 +68,7 @@ public abstract class ApiResourceBuilder implements IApiResourceBuilder {
                 ).collect(Collectors.toList()).forEach(param -> requiredPathParams.add(param));
             }
 
-            codegenOperation.vendorExtensions = mapOperation(codegenOperation);
+            codegenOperation.vendorExtensions.putAll(mapOperation(codegenOperation));
         });
         return this;
     }

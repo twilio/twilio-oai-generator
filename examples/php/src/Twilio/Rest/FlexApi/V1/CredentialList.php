@@ -52,7 +52,6 @@ class CredentialList extends ListResource {
         $this->solution = [];
     }
 
-
     /**
      * Constructs a CredentialContext
      *

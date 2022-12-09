@@ -17,7 +17,8 @@ import static com.twilio.oai.common.ApplicationConstants.PATH_SEPARATOR_PLACEHOL
 
 public class PhpApiResourceBuilder extends ApiResourceBuilder {
     private HashSet<String> pathSet = new HashSet<>();
-
+    private final List<CodegenOperation> listOperations = new ArrayList<>();
+    private final List<CodegenOperation> instanceOperations = new ArrayList<>();
     protected String apiListPath = "";
     protected String apiContextPath = "";
 
@@ -27,11 +28,13 @@ public class PhpApiResourceBuilder extends ApiResourceBuilder {
 
     @Override
     public PhpApiResourceBuilder updateTemplate() {
+        setOperations();
         codegenOperationList.stream().forEach(codegenOperation -> {
             updateNamespaceSubPart(codegenOperation);
             template.clean();
-            if (super.isInstanceOperation(codegenOperation)) {
-                template.add(PhpApiActionTemplate.TEMPLATE_TYPE_CONTEXT);
+            if (super.isInstanceOperation(codegenOperation)){
+                if( metaAPIProperties.containsKey("hasInstanceOperation"))
+                    template.add(PhpApiActionTemplate.TEMPLATE_TYPE_CONTEXT);
             } else {
                 template.add(PhpApiActionTemplate.TEMPLATE_TYPE_PAGE);
                 if ((boolean) codegenOperation.vendorExtensions.get("hasOptionFileParams"))
@@ -51,13 +54,10 @@ public class PhpApiResourceBuilder extends ApiResourceBuilder {
     @Override
     public IApiResourceBuilder updateApiPath() {
         super.updateApiPath();
-        List<CodegenOperation> oprList = codegenOperationList.stream().filter(op -> !isInstanceOperation(op)).collect(Collectors.toList());
-        List<CodegenOperation> oprContext = codegenOperationList.stream().filter(op -> isInstanceOperation(op)).collect(Collectors.toList());
-
-        if (!oprContext.isEmpty())
-            apiContextPath = oprContext.get(0).path;
-        if (!oprList.isEmpty())
-            apiListPath = oprList.get(0).path;
+        if (!instanceOperations.isEmpty())
+            apiContextPath = instanceOperations.get(0).path;
+        if (!listOperations.isEmpty())
+            apiListPath = listOperations.get(0).path;
 
         apiContextPath = formatPath(apiContextPath);
         apiListPath = formatPath(apiListPath);
@@ -105,7 +105,12 @@ public class PhpApiResourceBuilder extends ApiResourceBuilder {
             path = PathUtils.removeFirstPart(path);
         }
         path = lowerCasePathParam(path);
+        path = formatDate(path);
         return replaceBraces(path);
+    }
+
+    private String formatDate(String path) {
+        return Pattern.compile("\\{date}").matcher(path).replaceAll("{date->format('Y-m-d')}");
     }
 
     private String lowerCasePathParam(String path) {
@@ -154,5 +159,22 @@ public class PhpApiResourceBuilder extends ApiResourceBuilder {
             operation.vendorExtensions.put("optionFileParams", optionFileParams);
             operation.vendorExtensions.put("hasOptionFileParams", !optionFileParams.isEmpty());
         }
+    }
+
+    private void setOperations() {
+        codegenOperationList.stream().filter(operation -> !operation.vendorExtensions.containsKey("x-ignore")).forEach(codegenOperation -> {
+            Optional<String> pathType = Optional.ofNullable(codegenOperation.vendorExtensions.get("x-path-type").toString());
+            if (pathType.isPresent()) {
+                if (pathType.get().equals("list")) {
+                    listOperations.add(codegenOperation);
+                    codegenOperation.vendorExtensions.put("listOperation", true);
+                    metaAPIProperties.put("hasListOperation", true);
+                } else {
+                    instanceOperations.add(codegenOperation);
+                    codegenOperation.vendorExtensions.put("instanceOperation", true);
+                    metaAPIProperties.put("hasInstanceOperation", true);
+                }
+            }
+        });
     }
 }
