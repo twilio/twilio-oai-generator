@@ -28,6 +28,7 @@ public class JavaApiResourceBuilder extends ApiResourceBuilder{
     private static final int SERIAL_UID_LENGTH = 12;
     protected CodegenModel responseModel;
     protected long serialVersionUID;
+    private Set<CodegenModel> headerParamModelList;
 
     private final DirectoryStructureService directoryStructureService;
     private final JavaConventionResolver conventionResolver;
@@ -58,13 +59,16 @@ public class JavaApiResourceBuilder extends ApiResourceBuilder{
 
     @Override
     public ApiResourceBuilder updateOperations(ISchemaResolver<CodegenParameter> codegenParameterIResolver) {
+        headerParamModelList = new HashSet<>();
         this.codegenOperationList.stream().forEach(co -> {
             List<String> filePathArray = new ArrayList<>(Arrays.asList(co.baseName.split(PATH_SEPARATOR_PLACEHOLDER)));
             String resourceName = filePathArray.remove(filePathArray.size()-1);
+
             co.allParams = co.allParams.stream()
                     .map(codegenParameterIResolver::resolve)
                     .map(item -> conventionResolver.resolveEnumParameter(item, resourceName))
                     .collect(Collectors.toList());
+            co.allParams.forEach(this::updateHeaderParamsList);
             co.pathParams = co.pathParams.stream()
                     .map(codegenParameterIResolver::resolve)
                     .map(item -> conventionResolver.resolveEnumParameter(item, resourceName))
@@ -109,6 +113,17 @@ public class JavaApiResourceBuilder extends ApiResourceBuilder{
         return this;
     }
 
+    private void updateHeaderParamsList(CodegenParameter cp) {
+        List<CodegenProperty> codegenProperties = new ArrayList<>();
+        if (cp.isEnum && cp.isHeaderParam) {
+            codegenProperties.add(createCodeGenPropertyFromParameter(cp));
+        }
+        if (!codegenProperties.isEmpty()) {
+            CodegenModel codegenModel = new CodegenModel();
+            codegenModel.vendorExtensions.put(ENUM_VARS, codegenProperties);
+            headerParamModelList.add(codegenModel);
+        }
+    }
     @Override
     public IApiResourceBuilder setImports(DirectoryStructureService directoryStructureService) {
         return null;
@@ -132,6 +147,7 @@ public class JavaApiResourceBuilder extends ApiResourceBuilder{
                                 codegenPropertyIResolver.resolve(v)).collect(Collectors.toList());
                         CodegenModel responseModel = processEnumProperty(item, co, resourceName);
                         responseModels.add(responseModel);
+                        responseModels.addAll(headerParamModelList);
                         this.serialVersionUID = calculateSerialVersionUid(item.vars);
                     });
         });
