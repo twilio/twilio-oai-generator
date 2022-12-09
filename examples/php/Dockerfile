@@ -6,7 +6,7 @@ RUN apt-get update -y && apt-get install -y git zip
 ENV XDEBUG_MODE=coverage
 ENV PATH="vendor/bin:$PATH"
 
-RUN pecl install xdebug
+RUN pecl install xdebug-2.9.0
 RUN pecl install pcov && docker-php-ext-enable pcov
 
 RUN git clone https://github.com/twilio/twilio-php.git twilio
