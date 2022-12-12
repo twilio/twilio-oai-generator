@@ -110,7 +110,7 @@ namespace Twilio.Rest.FlexApi.V1.Credential
             }
             if (TestNumber != null)
             {
-                p.Add(new KeyValuePair<string, string>("TestNumber", TestNumber.ToString()));
+                p.Add(new KeyValuePair<string, string>("TestNumber", TestNumber.Value.ToString()));
             }
             if (TestNumberFloat != null)
             {
@@ -122,7 +122,7 @@ namespace Twilio.Rest.FlexApi.V1.Credential
             }
             if (TestNumberInt32 != null)
             {
-                p.Add(new KeyValuePair<string, string>("TestNumberInt32", TestNumberInt32.ToString()));
+                p.Add(new KeyValuePair<string, string>("TestNumberInt32", TestNumberInt32.Value.ToString()));
             }
             if (TestNumberInt64 != null)
             {
