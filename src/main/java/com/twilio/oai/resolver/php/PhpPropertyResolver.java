@@ -19,8 +19,11 @@ public class PhpPropertyResolver extends LanguagePropertyResolver {
     @Override
     public  void resolveProperties(CodegenProperty codegenProperty) {
         super.resolveProperties(codegenProperty);
-        if(codegenProperty.dataFormat != null || codegenProperty.dataType.equals(LanguageConventionResolver.MIXED)) {
-            codegenProperty.dataType = "string";
+        if(codegenProperty.dataType.equals(LanguageConventionResolver.MIXED)) {
+            codegenProperty.dataType = "array";
+        }
+        if (codegenProperty.dataType.equalsIgnoreCase(LanguageConventionResolver.MIXED_ARRAY)) {
+            codegenProperty.dataType = "array[]";
         }
         if (codegenProperty.dataType.equals("float")) {
             codegenProperty.dataType = "string";
@@ -35,20 +38,6 @@ public class PhpPropertyResolver extends LanguagePropertyResolver {
                 codegenProperty.dataType = "string";
             }
         }
-    }
-
-    @Override
-    public void resolveSerialize(CodegenProperty codegenProperty) {
-        super.resolveSerialize(codegenProperty);
-        if (codegenProperty.dataType.contains("[]")) {
-            codegenProperty.vendorExtensions.put(SERIALIZE_VEND_EXT, SERALIZE_ARRAY_MAP);
-            codegenProperty.vendorExtensions.put(SERIALIZE_VEND_EXT + LanguageConventionResolver.HYPHEN + MAP_STRING, true);
-        }
-    }
-
-    @Override
-    public void resolveDeSerialize(CodegenProperty codegenProperty) {
-        super.resolveDeSerialize(codegenProperty);
     }
 
 }

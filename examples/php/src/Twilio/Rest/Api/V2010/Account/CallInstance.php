@@ -36,7 +36,7 @@ use Twilio\Rest\Api\V2010\Account\Call\FeedbackCallSummaryList;
  * @property string $testString
  * @property int $testInteger
  * @property string $testObject
- * @property string $testDateTime
+ * @property \DateTime $testDateTime
  * @property string $testNumber
  * @property string $priceUnit
  * @property string $testNumberFloat
@@ -68,7 +68,7 @@ class CallInstance extends InstanceResource {
             'testString' => Values::array_get($payload, 'test_string'),
             'testInteger' => Values::array_get($payload, 'test_integer'),
             'testObject' => Values::array_get($payload, 'test_object'),
-            'testDateTime' => Values::array_get($payload, 'test_date_time'),
+            'testDateTime' => Deserialize::dateTime(Values::array_get($payload, 'test_date_time')),
             'testNumber' => Values::array_get($payload, 'test_number'),
             'priceUnit' => Values::array_get($payload, 'price_unit'),
             'testNumberFloat' => Values::array_get($payload, 'test_number_float'),
@@ -100,19 +100,6 @@ class CallInstance extends InstanceResource {
         }
 
         return $this->context;
-    }
-
-    /**
-     * Create the CallInstance
-     *
-     * @param string $requiredStringProperty 
-     * @param string $testMethod The HTTP method that we should use to request the &#x60;TestArrayOfUri&#x60;.
-     * @param array|Options $options Optional Arguments
-     * @return CallInstance Created CallInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function create(string $requiredStringProperty, string $testMethod, array $options = []): CallInstance {
-        return $this->proxy()->create($requiredStringProperty, $testMethod, $options);
     }
 
     /**

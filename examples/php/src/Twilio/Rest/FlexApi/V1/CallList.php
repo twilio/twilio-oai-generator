@@ -42,7 +42,6 @@ class CallList extends ListResource {
         $this->solution = [];
     }
 
-
     /**
      * Constructs a CallContext
      *

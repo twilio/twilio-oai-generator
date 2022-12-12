@@ -6,6 +6,7 @@ import com.twilio.oai.resolver.ISchemaResolver;
 import com.twilio.oai.resource.Resource;
 import com.twilio.oai.template.IApiActionTemplate;
 import com.twilio.oai.template.PhpApiActionTemplate;
+import io.swagger.v3.oas.models.OpenAPI;
 import org.openapitools.codegen.*;
 
 import java.util.*;
@@ -17,7 +18,8 @@ import static com.twilio.oai.common.ApplicationConstants.PATH_SEPARATOR_PLACEHOL
 
 public class PhpApiResourceBuilder extends ApiResourceBuilder {
     private HashSet<String> pathSet = new HashSet<>();
-
+    private final List<CodegenOperation> listOperations = new ArrayList<>();
+    private final List<CodegenOperation> instanceOperations = new ArrayList<>();
     protected String apiListPath = "";
     protected String apiContextPath = "";
 
@@ -30,13 +32,11 @@ public class PhpApiResourceBuilder extends ApiResourceBuilder {
         codegenOperationList.stream().forEach(codegenOperation -> {
             updateNamespaceSubPart(codegenOperation);
             template.clean();
-            if (super.isInstanceOperation(codegenOperation)) {
+            if (metaAPIProperties.containsKey("hasInstanceOperation") && !codegenOperation.vendorExtensions.containsKey("x-ignore"))
                 template.add(PhpApiActionTemplate.TEMPLATE_TYPE_CONTEXT);
-            } else {
-                template.add(PhpApiActionTemplate.TEMPLATE_TYPE_PAGE);
-                if ((boolean) codegenOperation.vendorExtensions.get("hasOptionFileParams"))
-                    template.add(PhpApiActionTemplate.TEMPLATE_TYPE_OPTIONS);
-            }
+            if ((boolean) codegenOperation.vendorExtensions.getOrDefault("hasOptionFileParams", false))
+                template.add(PhpApiActionTemplate.TEMPLATE_TYPE_OPTIONS);
+            template.add(PhpApiActionTemplate.TEMPLATE_TYPE_PAGE);
             template.add(PhpApiActionTemplate.TEMPLATE_TYPE_LIST);
             template.add(PhpApiActionTemplate.TEMPLATE_TYPE_INSTANCE);
         });
@@ -51,13 +51,10 @@ public class PhpApiResourceBuilder extends ApiResourceBuilder {
     @Override
     public IApiResourceBuilder updateApiPath() {
         super.updateApiPath();
-        List<CodegenOperation> oprList = codegenOperationList.stream().filter(op -> !isInstanceOperation(op)).collect(Collectors.toList());
-        List<CodegenOperation> oprContext = codegenOperationList.stream().filter(op -> isInstanceOperation(op)).collect(Collectors.toList());
-
-        if (!oprContext.isEmpty())
-            apiContextPath = oprContext.get(0).path;
-        if (!oprList.isEmpty())
-            apiListPath = oprList.get(0).path;
+        if (!instanceOperations.isEmpty())
+            apiContextPath = instanceOperations.get(0).path;
+        if (!listOperations.isEmpty())
+            apiListPath = listOperations.get(0).path;
 
         apiContextPath = formatPath(apiContextPath);
         apiListPath = formatPath(apiListPath);
@@ -81,8 +78,13 @@ public class PhpApiResourceBuilder extends ApiResourceBuilder {
                 List<Object> dependentMethods = new ArrayList<>();
                 updateDependents(directoryStructureService, methodDependents, dependentMethods);
                 updateDependents(directoryStructureService, propertyDependents, dependentProperties);
-                operation.vendorExtensions.put("importProperties", dependentProperties);
-                operation.vendorExtensions.put("importMethods", dependentMethods);
+                if(operation.path.endsWith("}") || operation.path.endsWith("}.json")) {
+                    metaAPIProperties.put("contextImportProperties", dependentProperties);
+                    metaAPIProperties.put("contextImportMethods", dependentMethods);
+                } else {
+                    metaAPIProperties.put("listImportProperties", dependentProperties);
+                    metaAPIProperties.put("listImportMethods", dependentMethods);
+                }
                 pathSet.add(operation.path);
             }
         });
@@ -99,13 +101,14 @@ public class PhpApiResourceBuilder extends ApiResourceBuilder {
     }
 
     private String formatPath(String path) {
-        String regex = "/[v1-9]+[^/]+";
-        Matcher matcher = Pattern.compile(regex).matcher(path);
-        if (matcher.find()) {
-            path = PathUtils.removeFirstPart(path);
-        }
+        path = PathUtils.removeFirstPart(path);
         path = lowerCasePathParam(path);
+        path = formatDate(path);
         return replaceBraces(path);
+    }
+
+    private String formatDate(String path) {
+        return Pattern.compile("\\{date}").matcher(path).replaceAll("{date->format('Y-m-d')}");
     }
 
     private String lowerCasePathParam(String path) {
@@ -133,11 +136,13 @@ public class PhpApiResourceBuilder extends ApiResourceBuilder {
     public ApiResourceBuilder updateOperations(ISchemaResolver<CodegenParameter> codegenParameterIResolver) {
         ApiResourceBuilder apiResourceBuilder = super.updateOperations(codegenParameterIResolver);
         this.addOptionFileParams(apiResourceBuilder);
+        categorizeOperations();
         return apiResourceBuilder;
     }
 
     private void addOptionFileParams(ApiResourceBuilder apiResourceBuilder) {
         for (CodegenOperation operation : apiResourceBuilder.codegenOperationList) {
+            if (operation.vendorExtensions.containsKey("x-ignore")) continue;
             List<CodegenParameter> optionFileParams = new ArrayList<>();
             for (CodegenParameter param : operation.optionalParams) {
                 if (!param.isPathParam) {
@@ -154,5 +159,31 @@ public class PhpApiResourceBuilder extends ApiResourceBuilder {
             operation.vendorExtensions.put("optionFileParams", optionFileParams);
             operation.vendorExtensions.put("hasOptionFileParams", !optionFileParams.isEmpty());
         }
+    }
+
+    private void categorizeOperations() {
+        codegenOperationList.stream().filter(operation -> !operation.vendorExtensions.containsKey("x-ignore")).forEach(codegenOperation -> {
+            Optional<String> pathType = Optional.ofNullable(codegenOperation.vendorExtensions.get("x-path-type").toString());
+            if (pathType.isPresent()) {
+                if (pathType.get().equals("list")) {
+                    listOperations.add(codegenOperation);
+                    codegenOperation.vendorExtensions.put("listOperation", true);
+                    metaAPIProperties.put("hasListOperation", true);
+                } else {
+                    instanceOperations.add(codegenOperation);
+                    codegenOperation.vendorExtensions.put("instanceOperation", true);
+                    metaAPIProperties.put("hasInstanceOperation", true);
+                }
+            }
+        });
+    }
+
+    public IApiResourceBuilder addVersionLessTemplates(OpenAPI openAPI, DirectoryStructureService directoryStructureService) {
+        if (directoryStructureService.isVersionLess()) {
+            String version = PathUtils.getFirstPathPart(codegenOperationList.get(0).path);
+            PhpDomainBuilder.setContextResources(directoryStructureService, version);
+            template.addSupportVersion();
+        }
+        return this;
     }
 }

@@ -16,16 +16,12 @@ namespace Twilio\Rest\{{domainName}}\{{version}}{{namespaceSubPart}};
 {{/responseModels.0}}
 
 class {{apiName}}Instance extends InstanceResource {
-{{#apiOperations}}
-    {{^vendorExtensions.x-is-list-operation}}
-    {{#vendorExtensions.importProperties}}
+{{#metaProperties.contextImportProperties}}
     protected $_{{#lambda.camelcase}}{{mountName}}{{/lambda.camelcase}};
     {{#-last}}
 
     {{/-last}}
-    {{/vendorExtensions.importProperties}}
-    {{/vendorExtensions.x-is-list-operation}}
-{{/apiOperations}}
+{{/metaProperties.contextImportProperties}}
     /**
      * Initialize the {{apiName}}Instance
      *
@@ -42,7 +38,12 @@ class {{apiName}}Instance extends InstanceResource {
         // Marshaled Properties
         $this->properties = [
             {{#responseModels}}
+            {{^vendorExtensions.x-deserialize}}
             '{{baseName}}' => Values::array_get($payload, '{{name}}'),
+            {{/vendorExtensions.x-deserialize}}
+            {{#vendorExtensions.x-deserialize}}
+            '{{baseName}}' => {{.}}(Values::array_get($payload, '{{name}}')),
+            {{/vendorExtensions.x-deserialize}}
             {{/responseModels}}
         ];
 
@@ -72,22 +73,13 @@ class {{apiName}}Instance extends InstanceResource {
 
 {{/metaProperties.x-is-context-operation}}
 {{#apiOperations}}
-{{#vendorExtensions.x-is-context-operation}}{{>method}}
+{{#vendorExtensions.instanceOperation}}{{>method}}
         return $this->proxy()->{{#lambda.camelcase}}{{vendorExtensions.x-name}}{{/lambda.camelcase}}({{#requiredParams}}{{^isPathParam}}${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}{{^-last}}, {{/-last}}{{/isPathParam}}{{/requiredParams}}{{#vendorExtensions.hasRequiredNonPathParams}}{{#vendorExtensions.hasOptionalQueryParams}}, {{/vendorExtensions.hasOptionalQueryParams}}{{^vendorExtensions.hasOptionalQueryParams}}{{#vendorExtensions.hasOptionalFormParams}}, {{/vendorExtensions.hasOptionalFormParams}}{{/vendorExtensions.hasOptionalQueryParams}}{{^vendorExtensions.hasOptionalQueryParams}}{{^vendorExtensions.hasOptionalFormParams}}{{#vendorExtensions.hasOptionalHeaderParams}}, {{/vendorExtensions.hasOptionalHeaderParams}}{{/vendorExtensions.hasOptionalFormParams}}{{/vendorExtensions.hasOptionalQueryParams}}{{/vendorExtensions.hasRequiredNonPathParams}}{{#vendorExtensions.hasOptionalQueryParams}}$options{{/vendorExtensions.hasOptionalQueryParams}}{{^vendorExtensions.hasOptionalQueryParams}}{{#vendorExtensions.hasOptionalFormParams}}$options{{/vendorExtensions.hasOptionalFormParams}}{{/vendorExtensions.hasOptionalQueryParams}}{{^vendorExtensions.hasOptionalQueryParams}}{{^vendorExtensions.hasOptionalFormParams}}{{#vendorExtensions.hasOptionalHeaderParams}}$options{{/vendorExtensions.hasOptionalHeaderParams}}{{/vendorExtensions.hasOptionalFormParams}}{{/vendorExtensions.hasOptionalQueryParams}});
     }
 
-{{/vendorExtensions.x-is-context-operation}}
-{{^metaProperties.hasReadOperation}}
-{{#vendorExtensions.x-is-create-operation}}{{>method}}
-        return $this->proxy()->{{#lambda.camelcase}}{{vendorExtensions.x-name}}{{/lambda.camelcase}}({{#requiredParams}}{{^isPathParam}}${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}{{^-last}}, {{/-last}}{{/isPathParam}}{{/requiredParams}}{{#vendorExtensions.hasRequiredNonPathParams}}{{#vendorExtensions.hasOptionalQueryParams}}, {{/vendorExtensions.hasOptionalQueryParams}}{{^vendorExtensions.hasOptionalQueryParams}}{{#vendorExtensions.hasOptionalFormParams}}, {{/vendorExtensions.hasOptionalFormParams}}{{/vendorExtensions.hasOptionalQueryParams}}{{^vendorExtensions.hasOptionalQueryParams}}{{^vendorExtensions.hasOptionalFormParams}}{{#vendorExtensions.hasOptionalHeaderParams}}, {{/vendorExtensions.hasOptionalHeaderParams}}{{/vendorExtensions.hasOptionalFormParams}}{{/vendorExtensions.hasOptionalQueryParams}}{{/vendorExtensions.hasRequiredNonPathParams}}{{#vendorExtensions.hasOptionalQueryParams}}$options{{/vendorExtensions.hasOptionalQueryParams}}{{^vendorExtensions.hasOptionalQueryParams}}{{#vendorExtensions.hasOptionalFormParams}}$options{{/vendorExtensions.hasOptionalFormParams}}{{/vendorExtensions.hasOptionalQueryParams}}{{^vendorExtensions.hasOptionalQueryParams}}{{^vendorExtensions.hasOptionalFormParams}}{{#vendorExtensions.hasOptionalHeaderParams}}$options{{/vendorExtensions.hasOptionalHeaderParams}}{{/vendorExtensions.hasOptionalFormParams}}{{/vendorExtensions.hasOptionalQueryParams}});
-    }
-
-{{/vendorExtensions.x-is-create-operation}}
-{{/metaProperties.hasReadOperation}}
+{{/vendorExtensions.instanceOperation}}
 {{/apiOperations}}
-{{#apiOperations}}
-    {{^vendorExtensions.x-is-list-operation}}
-    {{#vendorExtensions.importProperties}}
+{{#metaProperties.contextImportProperties}}
     /**
      * Access the {{#lambda.camelcase}}{{mountName}}{{/lambda.camelcase}}
      */
@@ -95,9 +87,7 @@ class {{apiName}}Instance extends InstanceResource {
         return $this->proxy()->{{#lambda.camelcase}}{{mountName}}{{/lambda.camelcase}};
     }
 
-    {{/vendorExtensions.importProperties}}
-    {{/vendorExtensions.x-is-list-operation}}
-{{/apiOperations}}
+{{/metaProperties.contextImportProperties}}
     /**
      * Magic getter to access properties
      *

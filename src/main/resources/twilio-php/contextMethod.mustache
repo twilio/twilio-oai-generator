@@ -28,7 +28,7 @@
             '{{baseName}}' => {{vendorExtensions.x-serialize}}(${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}),
             {{/vendorExtensions.x-serialize-map}}
             {{#vendorExtensions.x-serialize-map}}
-            '{{baseName}}' => {{vendorExtensions.x-serialize}}(${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}, function($e) { return $e; }),
+            '{{baseName}}' => {{vendorExtensions.x-serialize}}(${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}, function($e) { return {{^vendorExtensions.x-serialize-array-of-array}}$e{{/vendorExtensions.x-serialize-array-of-array}}{{#vendorExtensions.x-serialize-array-of-array}}{{.}}($e){{/vendorExtensions.x-serialize-array-of-array}}; }),
             {{/vendorExtensions.x-serialize-map}}
             {{/vendorExtensions.x-serialize}}
             {{/required}}
@@ -45,7 +45,7 @@
             '{{baseName}}' => {{vendorExtensions.x-serialize}}($options['{{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}']),
             {{/vendorExtensions.x-serialize-map}}
             {{#vendorExtensions.x-serialize-map}}
-            '{{baseName}}' => {{vendorExtensions.x-serialize}}($options['{{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}'], function($e) { return $e; }),
+            '{{baseName}}' => {{vendorExtensions.x-serialize}}($options['{{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}'], function($e) { return {{^vendorExtensions.x-serialize-array-of-array}}$e{{/vendorExtensions.x-serialize-array-of-array}}{{#vendorExtensions.x-serialize-array-of-array}}{{.}}($e){{/vendorExtensions.x-serialize-array-of-array}}; }),
             {{/vendorExtensions.x-serialize-map}}
             {{/vendorExtensions.x-serialize}}
             {{/required}}
@@ -79,7 +79,7 @@
             '{{baseName}}' => {{vendorExtensions.x-serialize}}(${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}),
             {{/vendorExtensions.x-serialize-map}}
             {{#vendorExtensions.x-serialize-map}}
-            '{{baseName}}' => {{vendorExtensions.x-serialize}}(${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}},function($e) { return $e; }),
+            '{{baseName}}' => {{vendorExtensions.x-serialize}}(${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}},function($e) { return {{^vendorExtensions.x-serialize-array-of-array}}$e{{/vendorExtensions.x-serialize-array-of-array}}{{#vendorExtensions.x-serialize-array-of-array}}{{.}}($e){{/vendorExtensions.x-serialize-array-of-array}}; }),
             {{/vendorExtensions.x-serialize-map}}
             {{/vendorExtensions.x-serialize}}
             {{/isFormParam}}
@@ -94,7 +94,7 @@
             '{{baseName}}' => {{vendorExtensions.x-serialize}}($options['{{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}']),
             {{/vendorExtensions.x-serialize-map}}
             {{#vendorExtensions.x-serialize-map}}
-            '{{baseName}}' => {{vendorExtensions.x-serialize}}($options['{{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}'], function($e) { return $e; }),
+            '{{baseName}}' => {{vendorExtensions.x-serialize}}($options['{{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}'], function($e) { return {{^vendorExtensions.x-serialize-array-of-array}}$e{{/vendorExtensions.x-serialize-array-of-array}}{{#vendorExtensions.x-serialize-array-of-array}}{{.}}($e){{/vendorExtensions.x-serialize-array-of-array}}; }),
             {{/vendorExtensions.x-serialize-map}}
             {{/vendorExtensions.x-serialize}}
             {{/isFormParam}}
