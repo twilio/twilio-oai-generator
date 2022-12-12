@@ -43,7 +43,6 @@ class FeedbackCallSummaryList extends ListResource {
         $this->solution = ['accountSid' => $accountSid, ];
     }
 
-
     /**
      * Constructs a FeedbackCallSummaryContext
      *

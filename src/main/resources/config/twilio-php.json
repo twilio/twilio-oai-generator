@@ -34,7 +34,8 @@
     "date-or-time": "Deserialize::dateTime",
     "date-time-inequality": "Deserialize::dateTime",
     "date": "Deserialize::dateTime",
-    "date-inequality": "Deserialize::dateTime"
+    "date-inequality": "Deserialize::dateTime",
+    "date-time-rfc-2822": "Deserialize::dateTime"
   },
 
   "cardinality": {

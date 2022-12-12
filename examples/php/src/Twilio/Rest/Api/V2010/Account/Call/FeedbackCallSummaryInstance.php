@@ -35,7 +35,7 @@ use Twilio\Serialize;
  * @property string $testString
  * @property int $testInteger
  * @property string $testObject
- * @property string $testDateTime
+ * @property \DateTime $testDateTime
  * @property string $testNumber
  * @property string $priceUnit
  * @property string $testNumberFloat
@@ -67,7 +67,7 @@ class FeedbackCallSummaryInstance extends InstanceResource {
             'testString' => Values::array_get($payload, 'test_string'),
             'testInteger' => Values::array_get($payload, 'test_integer'),
             'testObject' => Values::array_get($payload, 'test_object'),
-            'testDateTime' => Values::array_get($payload, 'test_date_time'),
+            'testDateTime' => Deserialize::dateTime(Values::array_get($payload, 'test_date_time')),
             'testNumber' => Values::array_get($payload, 'test_number'),
             'priceUnit' => Values::array_get($payload, 'price_unit'),
             'testNumberFloat' => Values::array_get($payload, 'test_number_float'),

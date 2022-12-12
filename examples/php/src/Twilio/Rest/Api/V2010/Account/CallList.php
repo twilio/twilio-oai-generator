@@ -52,6 +52,33 @@ class CallList extends ListResource {
         $this->uri = '/Accounts/' . \rawurlencode($accountSid) . '/Calls.json';
     }
 
+    /**
+     * Create the CallInstance
+     *
+     * @param string $requiredStringProperty 
+     * @param string $testMethod The HTTP method that we should use to request the &#x60;TestArrayOfUri&#x60;.
+     * @param array|Options $options Optional Arguments
+     * @return CallInstance Created CallInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function create(string $requiredStringProperty, string $testMethod, array $options = []): CallInstance {
+        $options = new Values($options);
+
+        $data = Values::of([
+            'RequiredStringProperty' => $requiredStringProperty,
+            'TestMethod' => $testMethod,
+            'TestArrayOfStrings' => Serialize::map($options['testArrayOfStrings'], function($e) { return $e; }),
+            'TestArrayOfUri' => Serialize::map($options['testArrayOfUri'], function($e) { return $e; }),
+        ]);
+
+        $payload = $this->version->create('POST', $this->uri, [], $data);
+
+        return new CallInstance(
+            $this->version,
+            $payload
+            , $this->solution['accountSid']
+        );
+    }
 
     /**
      * Constructs a CallContext

@@ -43,7 +43,6 @@ class HistoryList extends ListResource {
         $this->solution = ['sid' => $sid, ];
     }
 
-
     /**
      * Constructs a HistoryContext
      *

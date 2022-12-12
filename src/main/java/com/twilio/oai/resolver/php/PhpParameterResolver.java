@@ -10,7 +10,8 @@ import static com.twilio.oai.resolver.php.PhpPropertyResolver.MAP_STRING;
 
 public class PhpParameterResolver extends LanguageParamResolver {
     public final static String SERALIZE_ARRAY_MAP = "Serialize::map";
-
+    public final static String SERALIZE_ARRAY_JSON_OBJECT = "Serialize::jsonObject";
+    public final static String ARRAY_OF_ARRAY_STRING = "array-of-array";
     public PhpParameterResolver(IConventionMapper mapper) {
         super(mapper);
     }
@@ -20,6 +21,9 @@ public class PhpParameterResolver extends LanguageParamResolver {
         super.resolveProperties(codegenParameter);
         if (codegenParameter.dataType.equalsIgnoreCase(LanguageConventionResolver.MIXED)) {
             codegenParameter.dataType = "array";
+        }
+        if (codegenParameter.dataType.equalsIgnoreCase(LanguageConventionResolver.MIXED_ARRAY)) {
+            codegenParameter.dataType = "array[]";
         }
         if (codegenParameter.dataType.equalsIgnoreCase(LanguageConventionResolver.OBJECT) ||
                 codegenParameter.dataType.equals(LanguageConventionResolver.LIST_OBJECT)) {
@@ -36,6 +40,12 @@ public class PhpParameterResolver extends LanguageParamResolver {
         if (codegenParameter.dataType != null && codegenParameter.dataType.contains("[]")) {
             codegenParameter.vendorExtensions.put(SERIALIZE_VEND_EXT, SERALIZE_ARRAY_MAP);
             codegenParameter.vendorExtensions.put(SERIALIZE_VEND_EXT + LanguageConventionResolver.HYPHEN + MAP_STRING, true);
+            if(codegenParameter.dataType.contains("array")) {
+                codegenParameter.vendorExtensions.put(SERIALIZE_VEND_EXT + LanguageConventionResolver.HYPHEN + ARRAY_OF_ARRAY_STRING, SERALIZE_ARRAY_JSON_OBJECT);
+            }
+        }
+        if (codegenParameter.dataType != null && codegenParameter.dataType.equals("array")) {
+            codegenParameter.vendorExtensions.put(SERIALIZE_VEND_EXT, SERALIZE_ARRAY_JSON_OBJECT);
         }
     }
 }
