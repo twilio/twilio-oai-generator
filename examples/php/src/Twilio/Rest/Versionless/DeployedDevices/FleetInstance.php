@@ -74,17 +74,6 @@ class FleetInstance extends InstanceResource {
     }
 
     /**
-     * Create the FleetInstance
-     *
-     * @param array|Options $options Optional Arguments
-     * @return FleetInstance Created FleetInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function create(array $options = []): FleetInstance {
-        return $this->proxy()->create($options);
-    }
-
-    /**
      * Fetch the FleetInstance
      *
      * @return FleetInstance Fetched FleetInstance

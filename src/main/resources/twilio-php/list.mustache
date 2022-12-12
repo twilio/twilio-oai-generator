@@ -6,44 +6,36 @@ namespace Twilio\Rest\{{domainName}}\{{version}}{{namespaceSubPart}};
 
 {{>imports}}
 
-{{#apiOperations}}
-{{#vendorExtensions.x-is-list-operation}}
-    {{#vendorExtensions.importProperties.0}}
+{{#metaProperties.listImportProperties.0}}
 /**
-    {{/vendorExtensions.importProperties.0}}
-    {{#vendorExtensions.importProperties}}
+{{/metaProperties.listImportProperties.0}}
+{{#metaProperties.listImportProperties}}
  * @property {{filename}}List ${{#lambda.camelcase}}{{mountName}}{{/lambda.camelcase}}
     {{#-last}}
-    {{^vendorExtensions.importMethods}}
+    {{^metaProperties.listImportMethods}}
  */
-    {{/vendorExtensions.importMethods}}
+    {{/metaProperties.listImportMethods}}
     {{/-last}}
-    {{/vendorExtensions.importProperties}}
-    {{#vendorExtensions.importMethods}}
+{{/metaProperties.listImportProperties}}
+{{#metaProperties.listImportMethods}}
     {{#-first}}
-    {{^vendorExtensions.importProperties}}
+    {{^metaProperties.listImportProperties}}
 /**
-    {{/vendorExtensions.importProperties}}
+    {{/metaProperties.listImportProperties}}
     {{/-first}}
  * @method \Twilio\Rest\{{domainName}}\{{apiVersionClass}}\{{parent}}Context {{#lambda.camelcase}}{{mountName}}{{/lambda.camelcase}}({{#params}}string ${{#lambda.camelcase}}{{.}}{{/lambda.camelcase}}{{^-last}}, {{/-last}}{{/params}})
     {{#-last}}
  */
     {{/-last}}
-    {{/vendorExtensions.importMethods}}
-{{/vendorExtensions.x-is-list-operation}}
-{{/apiOperations}}
+{{/metaProperties.listImportMethods}}
 
 class {{apiName}}List extends ListResource {
-    {{#apiOperations}}
-    {{#vendorExtensions.x-is-list-operation}}
-    {{#vendorExtensions.importProperties}}
+    {{#metaProperties.listImportProperties}}
     protected $_{{#lambda.camelcase}}{{mountName}}{{/lambda.camelcase}} = null;
     {{#-last}}
 
     {{/-last}}
-    {{/vendorExtensions.importProperties}}
-    {{/vendorExtensions.x-is-list-operation}}
-    {{/apiOperations}}
+    {{/metaProperties.listImportProperties}}
     /**
      * Construct the {{apiName}}List
      *
@@ -89,9 +81,7 @@ class {{apiName}}List extends ListResource {
         return new {{apiName}}Context($this->version{{#requiredPathParams}}{{#vendorExtensions.x-is-parent-param}}, $this->solution['{{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}']{{/vendorExtensions.x-is-parent-param}}{{/requiredPathParams}}{{#requiredPathParams}}{{^vendorExtensions.x-is-parent-param}}, ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}{{/vendorExtensions.x-is-parent-param}}{{/requiredPathParams}});
     }
 
-    {{#apiOperations}}
-    {{#vendorExtensions.x-is-list-operation}}
-    {{#vendorExtensions.importProperties}}
+    {{#metaProperties.listImportProperties}}
     /**
      * Access the {{#lambda.camelcase}}{{mountName}}{{/lambda.camelcase}}
      */
@@ -110,12 +100,8 @@ class {{apiName}}List extends ListResource {
         return $this->_{{#lambda.camelcase}}{{mountName}}{{/lambda.camelcase}};
     }
 
-    {{/vendorExtensions.importProperties}}
-    {{/vendorExtensions.x-is-list-operation}}
-    {{/apiOperations}}
-{{#apiOperations}}
-    {{#vendorExtensions.x-is-list-operation}}
-    {{#vendorExtensions.importProperties.0}}
+    {{/metaProperties.listImportProperties}}
+    {{#metaProperties.listImportProperties.0}}
     /**
      * Magic getter to lazy load subresources
      *
@@ -149,9 +135,7 @@ class {{apiName}}List extends ListResource {
         throw new TwilioException('Resource does not have a context');
     }
 
-    {{/vendorExtensions.importProperties.0}}
-    {{/vendorExtensions.x-is-list-operation}}
-{{/apiOperations}}
+    {{/metaProperties.listImportProperties.0}}
     /**
      * Provide a friendly representation
      *

@@ -7,44 +7,36 @@ namespace Twilio\Rest\{{domainName}}\{{apiVersionClass}}{{namespaceSubPart}};
 
 {{>imports}}
 
-{{#apiOperations}}
-{{#vendorExtensions.x-is-context-operation}}
-    {{#vendorExtensions.importProperties.0}}
+{{#metaProperties.contextImportProperties.0}}
 /**
-    {{/vendorExtensions.importProperties.0}}
-    {{#vendorExtensions.importProperties}}
+{{/metaProperties.contextImportProperties.0}}
+{{#metaProperties.contextImportProperties}}
  * @property {{filename}}List ${{#lambda.camelcase}}{{mountName}}{{/lambda.camelcase}}
     {{#-last}}
-    {{^vendorExtensions.importMethods}}
+    {{^metaProperties.contextImportMethods}}
  */
-    {{/vendorExtensions.importMethods}}
+    {{/metaProperties.contextImportMethods}}
     {{/-last}}
-    {{/vendorExtensions.importProperties}}
-    {{#vendorExtensions.importMethods}}
+{{/metaProperties.contextImportProperties}}
+    {{#metaProperties.contextImportMethods}}
     {{#-first}}
-    {{^vendorExtensions.importProperties}}
+    {{^metaProperties.contextImportProperties}}
 /**
-    {{/vendorExtensions.importProperties}}
+    {{/metaProperties.contextImportProperties}}
     {{/-first}}
  * @method \Twilio\Rest\{{domainName}}\{{apiVersionClass}}\{{parent}}Context {{#lambda.camelcase}}{{mountName}}{{/lambda.camelcase}}({{#params}}string ${{#lambda.camelcase}}{{.}}{{/lambda.camelcase}}{{^-last}}, {{/-last}}{{/params}})
     {{#-last}}
  */
     {{/-last}}
-    {{/vendorExtensions.importMethods}}
-{{/vendorExtensions.x-is-context-operation}}
-{{/apiOperations}}
+{{/metaProperties.contextImportMethods}}
 
 class {{apiName}}Context extends InstanceContext {
-    {{#apiOperations}}
-    {{#vendorExtensions.x-is-context-operation}}
-    {{#vendorExtensions.importProperties}}
+    {{#metaProperties.contextImportProperties}}
     protected $_{{#lambda.camelcase}}{{mountName}}{{/lambda.camelcase}};
     {{#-last}}
 
     {{/-last}}
-    {{/vendorExtensions.importProperties}}
-    {{/vendorExtensions.x-is-context-operation}}
-    {{/apiOperations}}
+    {{/metaProperties.contextImportProperties}}
     /**
      * Initialize the {{apiName}}Context
      *
@@ -70,9 +62,7 @@ class {{apiName}}Context extends InstanceContext {
 
 {{/vendorExtensions.instanceOperation}}
 {{/apiOperations}}
-    {{#apiOperations}}
-    {{#vendorExtensions.x-is-context-operation}}
-    {{#vendorExtensions.importProperties}}
+    {{#metaProperties.contextImportProperties}}
     /**
      * Access the {{#lambda.camelcase}}{{mountName}}{{/lambda.camelcase}}
      */
@@ -89,12 +79,8 @@ class {{apiName}}Context extends InstanceContext {
         return $this->_{{#lambda.camelcase}}{{mountName}}{{/lambda.camelcase}};
     }
 
-    {{/vendorExtensions.importProperties}}
-    {{/vendorExtensions.x-is-context-operation}}
-    {{/apiOperations}}
-{{#apiOperations}}
-    {{#vendorExtensions.x-is-context-operation}}
-    {{#vendorExtensions.importProperties.0}}
+    {{/metaProperties.contextImportProperties}}
+    {{#metaProperties.contextImportProperties.0}}
     /**
      * Magic getter to lazy load subresources
      *
@@ -128,9 +114,7 @@ class {{apiName}}Context extends InstanceContext {
         throw new TwilioException('Resource does not have a context');
     }
 
-    {{/vendorExtensions.importProperties.0}}
-    {{/vendorExtensions.x-is-context-operation}}
-    {{/apiOperations}}
+    {{/metaProperties.contextImportProperties.0}}
     /**
      * Provide a friendly representation
      *

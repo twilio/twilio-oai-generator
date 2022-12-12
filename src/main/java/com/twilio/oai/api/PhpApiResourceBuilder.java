@@ -78,8 +78,13 @@ public class PhpApiResourceBuilder extends ApiResourceBuilder {
                 List<Object> dependentMethods = new ArrayList<>();
                 updateDependents(directoryStructureService, methodDependents, dependentMethods);
                 updateDependents(directoryStructureService, propertyDependents, dependentProperties);
-                operation.vendorExtensions.put("importProperties", dependentProperties);
-                operation.vendorExtensions.put("importMethods", dependentMethods);
+                if(operation.path.endsWith("}") || operation.path.endsWith("}.json")) {
+                    metaAPIProperties.put("contextImportProperties", dependentProperties);
+                    metaAPIProperties.put("contextImportMethods", dependentMethods);
+                } else {
+                    metaAPIProperties.put("listImportProperties", dependentProperties);
+                    metaAPIProperties.put("listImportMethods", dependentMethods);
+                }
                 pathSet.add(operation.path);
             }
         });

@@ -103,19 +103,6 @@ class CallInstance extends InstanceResource {
     }
 
     /**
-     * Create the CallInstance
-     *
-     * @param string $requiredStringProperty 
-     * @param string $testMethod The HTTP method that we should use to request the &#x60;TestArrayOfUri&#x60;.
-     * @param array|Options $options Optional Arguments
-     * @return CallInstance Created CallInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function create(string $requiredStringProperty, string $testMethod, array $options = []): CallInstance {
-        return $this->proxy()->create($requiredStringProperty, $testMethod, $options);
-    }
-
-    /**
      * Delete the CallInstance
      *
      * @return bool True if delete succeeds, false otherwise
