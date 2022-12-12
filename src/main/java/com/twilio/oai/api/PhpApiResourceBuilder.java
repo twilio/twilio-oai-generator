@@ -32,14 +32,11 @@ public class PhpApiResourceBuilder extends ApiResourceBuilder {
         codegenOperationList.stream().forEach(codegenOperation -> {
             updateNamespaceSubPart(codegenOperation);
             template.clean();
-            if (super.isInstanceOperation(codegenOperation)){
-                if( metaAPIProperties.containsKey("hasInstanceOperation"))
-                    template.add(PhpApiActionTemplate.TEMPLATE_TYPE_CONTEXT);
-            } else {
-                template.add(PhpApiActionTemplate.TEMPLATE_TYPE_PAGE);
-                if ((boolean) codegenOperation.vendorExtensions.get("hasOptionFileParams"))
-                    template.add(PhpApiActionTemplate.TEMPLATE_TYPE_OPTIONS);
-            }
+            if (metaAPIProperties.containsKey("hasInstanceOperation") && !codegenOperation.vendorExtensions.containsKey("x-ignore"))
+                template.add(PhpApiActionTemplate.TEMPLATE_TYPE_CONTEXT);
+            if ((boolean) codegenOperation.vendorExtensions.getOrDefault("hasOptionFileParams", false))
+                template.add(PhpApiActionTemplate.TEMPLATE_TYPE_OPTIONS);
+            template.add(PhpApiActionTemplate.TEMPLATE_TYPE_PAGE);
             template.add(PhpApiActionTemplate.TEMPLATE_TYPE_LIST);
             template.add(PhpApiActionTemplate.TEMPLATE_TYPE_INSTANCE);
         });
@@ -140,6 +137,7 @@ public class PhpApiResourceBuilder extends ApiResourceBuilder {
 
     private void addOptionFileParams(ApiResourceBuilder apiResourceBuilder) {
         for (CodegenOperation operation : apiResourceBuilder.codegenOperationList) {
+            if (operation.vendorExtensions.containsKey("x-ignore")) continue;
             List<CodegenParameter> optionFileParams = new ArrayList<>();
             for (CodegenParameter param : operation.optionalParams) {
                 if (!param.isPathParam) {
@@ -176,11 +174,11 @@ public class PhpApiResourceBuilder extends ApiResourceBuilder {
     }
 
     public IApiResourceBuilder addVersionLessTemplates(OpenAPI openAPI, DirectoryStructureService directoryStructureService) {
-        if(directoryStructureService.isVersionLess()) {
+        if (directoryStructureService.isVersionLess()) {
             String version = PathUtils.getFirstPathPart(codegenOperationList.get(0).path);
             PhpDomainBuilder.setContextResources(directoryStructureService, version);
             template.addSupportVersion();
         }
-        return  this;
+        return this;
     }
 }
