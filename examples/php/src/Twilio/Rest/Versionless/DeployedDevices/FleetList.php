@@ -41,7 +41,7 @@ class FleetList extends ListResource {
         // Path Solution
         $this->solution = [];
 
-        $this->uri = '/DeployedDevices/Fleets';
+        $this->uri = '/Fleets';
     }
 
     /**

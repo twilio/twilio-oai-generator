@@ -6,6 +6,7 @@ import com.twilio.oai.resolver.ISchemaResolver;
 import com.twilio.oai.resource.Resource;
 import com.twilio.oai.template.IApiActionTemplate;
 import com.twilio.oai.template.PhpApiActionTemplate;
+import io.swagger.v3.oas.models.OpenAPI;
 import org.openapitools.codegen.*;
 
 import java.util.*;
@@ -28,7 +29,6 @@ public class PhpApiResourceBuilder extends ApiResourceBuilder {
 
     @Override
     public PhpApiResourceBuilder updateTemplate() {
-        setOperations();
         codegenOperationList.stream().forEach(codegenOperation -> {
             updateNamespaceSubPart(codegenOperation);
             template.clean();
@@ -99,11 +99,7 @@ public class PhpApiResourceBuilder extends ApiResourceBuilder {
     }
 
     private String formatPath(String path) {
-        String regex = "/[v1-9]+[^/]+";
-        Matcher matcher = Pattern.compile(regex).matcher(path);
-        if (matcher.find()) {
-            path = PathUtils.removeFirstPart(path);
-        }
+        path = PathUtils.removeFirstPart(path);
         path = lowerCasePathParam(path);
         path = formatDate(path);
         return replaceBraces(path);
@@ -138,6 +134,7 @@ public class PhpApiResourceBuilder extends ApiResourceBuilder {
     public ApiResourceBuilder updateOperations(ISchemaResolver<CodegenParameter> codegenParameterIResolver) {
         ApiResourceBuilder apiResourceBuilder = super.updateOperations(codegenParameterIResolver);
         this.addOptionFileParams(apiResourceBuilder);
+        categorizeOperations();
         return apiResourceBuilder;
     }
 
@@ -161,7 +158,7 @@ public class PhpApiResourceBuilder extends ApiResourceBuilder {
         }
     }
 
-    private void setOperations() {
+    private void categorizeOperations() {
         codegenOperationList.stream().filter(operation -> !operation.vendorExtensions.containsKey("x-ignore")).forEach(codegenOperation -> {
             Optional<String> pathType = Optional.ofNullable(codegenOperation.vendorExtensions.get("x-path-type").toString());
             if (pathType.isPresent()) {
@@ -176,5 +173,14 @@ public class PhpApiResourceBuilder extends ApiResourceBuilder {
                 }
             }
         });
+    }
+
+    public IApiResourceBuilder addVersionLessTemplates(OpenAPI openAPI, DirectoryStructureService directoryStructureService) {
+        if(directoryStructureService.isVersionLess()) {
+            String version = PathUtils.getFirstPathPart(codegenOperationList.get(0).path);
+            PhpDomainBuilder.setContextResources(directoryStructureService, version);
+            template.addSupportVersion();
+        }
+        return  this;
     }
 }

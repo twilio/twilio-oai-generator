@@ -15,8 +15,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class PhpDomainBuilder {
-    private final List<Object> contextResourcesList = new ArrayList<>();
-    private final List<Object> dependentList = new ArrayList<>();
+    private static final List<Object> contextResourcesList = new ArrayList<>();
+    private static final List<Object> dependentList = new ArrayList<>();
     private IApiActionTemplate template;
 
     public PhpDomainBuilder(IApiActionTemplate template) {
@@ -24,17 +24,31 @@ public class PhpDomainBuilder {
     }
 
     public void setVersionTemplate(final OpenAPI openAPI, DirectoryStructureService directoryStructureService) {
-        List<Resource> context_list = filter_contextResources(openAPI, directoryStructureService);
-        setContextResources(context_list, directoryStructureService);
+        filter_contextResources(openAPI, directoryStructureService);
+        if (directoryStructureService.isVersionLess()) return;
+        setContextResources(directoryStructureService, null);
         template.addSupportVersion();
     }
 
-    private List<Resource> filter_contextResources(final OpenAPI openAPI, DirectoryStructureService directoryStructureService) {
+    public static void setContextResources(DirectoryStructureService directoryStructureService, String version) {
+        if (version == null) {
+            directoryStructureService.getAdditionalProperties().put("versionDependents", contextResourcesList);
+            return;
+        }
+        directoryStructureService.getAdditionalProperties().put("versionDependents",
+                contextResourcesList.stream()
+                        .map(DirectoryStructureService.ContextResource.class::cast)
+                        .filter(contextResource -> contextResource.getVersion().equals(version))
+                        .collect(Collectors.toList())
+        );
+    }
+
+    private void filter_contextResources(final OpenAPI openAPI, DirectoryStructureService directoryStructureService) {
         Object domain = directoryStructureService.getAdditionalProperties().get("domainName");
         if (domain.equals("Api"))
             getApiDependents(directoryStructureService);
 
-        List<Resource> context_list = new ArrayList<>();
+        List<Resource> dependents = new ArrayList<>();
         Map<String, PathItem> pathMap = openAPI.getPaths();
 
         for (String pathKey : pathMap.keySet()) {
@@ -46,7 +60,7 @@ public class PhpDomainBuilder {
                 PathItem path = pathMap.get(pathKey);
                 Optional<String> parentKey = PathUtils.getTwilioExtension(path, "parent");
                 if (!parentKey.isPresent()) {
-                    context_list.add(new Resource(null, pathkey, path, null));
+                    dependents.add(new Resource(null, pathkey, path, null));
                 } else {
                     String parentkey = parentKey.get();
                     if (domain.equals("Api")) {
@@ -56,13 +70,14 @@ public class PhpDomainBuilder {
                         PathItem pathParent = pathMap.get(parentkey);
                         Optional<String> parentKey2 = PathUtils.getTwilioExtension(pathParent, "parent");
                         if (!parentKey2.isPresent()) {
-                            context_list.add(new Resource(null, pathkey, path, null));
+                            dependents.add(new Resource(null, pathkey, path, null));
                         }
                     }
                 }
             }
         }
-        return context_list;
+
+        addResources(dependents, directoryStructureService, contextResourcesList);
     }
 
     private void getApiDependents(DirectoryStructureService directoryStructureService) {
@@ -70,23 +85,17 @@ public class PhpDomainBuilder {
         List<Resource> dependents = directoryStructureService.getResourceTree().dependents(pathkey)
                 .stream().filter(dep -> !dep.getName().endsWith("}.json"))
                 .collect(Collectors.toList());
+        addResources(dependents, directoryStructureService, dependentList);
+        directoryStructureService.getAdditionalProperties().put("isApiDomain", "true");
+        directoryStructureService.getAdditionalProperties().put("apiDependents", dependentList);
+    }
+
+    private void addResources(List<Resource> dependents, DirectoryStructureService directoryStructureService, List<Object> dependentList) {
         dependents.forEach(dependent -> dependent
                 .getPathItem()
                 .readOperations()
                 .forEach(operation -> directoryStructureService.addContextdependents(dependentList,
                         dependent.getName(),
                         operation)));
-        directoryStructureService.getAdditionalProperties().put("isApiDomain", "true");
-        directoryStructureService.getAdditionalProperties().put("apiDependents", dependentList);
-    }
-
-    private void setContextResources(List<Resource> context_list, DirectoryStructureService directoryStructureService) {
-        context_list.forEach(dependent -> dependent
-                .getPathItem()
-                .readOperations()
-                .forEach(operation -> directoryStructureService.addContextdependents(contextResourcesList,
-                        dependent.getName(),
-                        operation)));
-        directoryStructureService.getAdditionalProperties().put("versionDependents", contextResourcesList);
     }
 }

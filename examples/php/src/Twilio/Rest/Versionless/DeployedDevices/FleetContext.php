@@ -43,7 +43,7 @@ class FleetContext extends InstanceContext {
         // Path Solution
         $this->solution = ['sid' => $sid,  ];
 
-        $this->uri = '/DeployedDevices/Fleets/' . \rawurlencode($sid) . '';
+        $this->uri = '/Fleets/' . \rawurlencode($sid) . '';
     }
 
     /**

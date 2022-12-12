@@ -19,7 +19,11 @@ import org.openapitools.codegen.model.ModelMap;
 import org.openapitools.codegen.model.ModelsMap;
 import org.openapitools.codegen.model.OperationsMap;
 
+import java.io.File;
 import java.util.*;
+
+import static com.twilio.oai.template.PhpApiActionTemplate.TEMPLATE_TYPE_VERSION;
+import static com.twilio.oai.template.PhpApiActionTemplate.templates;
 
 public class TwilioPhpGenerator extends PhpClientCodegen {
 
@@ -37,6 +41,15 @@ public class TwilioPhpGenerator extends PhpClientCodegen {
     public TwilioPhpGenerator() {
         super();
         twilioCodegen = new TwilioCodegenAdapter(this, getName());
+    }
+
+    @Override
+    public String apiFilename(final String templateName, final String tag) {
+        if (directoryStructureService.isVersionLess() && templateName.equals(templates.get(TEMPLATE_TYPE_VERSION).get(0))) {
+            return apiFileFolder() + File.separator + directoryStructureService.getApiVersionClass().orElseThrow() +
+                    templates.get(TEMPLATE_TYPE_VERSION).get(1);
+        }
+        return super.apiFilename(templateName, tag);
     }
 
     @Override
@@ -61,10 +74,9 @@ public class TwilioPhpGenerator extends PhpClientCodegen {
 
         directoryStructureService.configureResourceFamily(openAPI);
         directoryStructureService.configure(openAPI);
-        if (!directoryStructureService.isVersionLess()) {
-            new PhpDomainBuilder(phpApiActionTemplate)
-                    .setVersionTemplate(openAPI, directoryStructureService);
-        }
+
+        new PhpDomainBuilder(phpApiActionTemplate)
+                .setVersionTemplate(openAPI, directoryStructureService);
     }
 
     @Override
@@ -99,6 +111,7 @@ public class TwilioPhpGenerator extends PhpClientCodegen {
 
     private PhpApiResources processCodegenOperations(List<CodegenOperation> opList) {
         return new PhpApiResourceBuilder(phpApiActionTemplate, opList, this.allModels)
+                .addVersionLessTemplates(openAPI, directoryStructureService)
                 .updateAdditionalProps(directoryStructureService)
                 .updateOperations(new PhpParameterResolver(conventionMapper))
                 .updateResponseModel(new PhpPropertyResolver(conventionMapper))
