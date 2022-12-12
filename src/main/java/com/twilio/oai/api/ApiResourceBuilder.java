@@ -28,7 +28,7 @@ public abstract class ApiResourceBuilder implements IApiResourceBuilder {
     protected List<CodegenModel> allModels;
     protected List<CodegenOperation> codegenOperationList;
     protected List<CodegenParameter> requiredPathParams = new ArrayList<>();
-    protected List<CodegenProperty> apiResponseModels = new ArrayList<>();
+    protected Set<CodegenProperty> apiResponseModels = new LinkedHashSet<>();
     protected Map<String, Object> metaAPIProperties = new HashMap<>();
     protected String version = "";
     protected String recordKey = "";
@@ -90,7 +90,7 @@ public abstract class ApiResourceBuilder implements IApiResourceBuilder {
                                 codegenPropertyIResolver.resolve(v)).collect(Collectors.toList());
                         responseModels.add(item);
                     });
-            this.apiResponseModels = getDistinctResponseModel(responseModels);
+            this.apiResponseModels.addAll(getDistinctResponseModel(responseModels));
         });
         return this;
     }
@@ -181,7 +181,7 @@ public abstract class ApiResourceBuilder implements IApiResourceBuilder {
         return allModels.stream().filter(model -> model.getClassname().equals(extractedModelName)).findFirst();
     }
 
-    protected List<CodegenProperty> getDistinctResponseModel(List<CodegenModel> responseModels) {
+    protected Set<CodegenProperty> getDistinctResponseModel(List<CodegenModel> responseModels) {
         Set<CodegenProperty> distinctResponseModels = new LinkedHashSet<>();
         for (CodegenModel codegenModel : responseModels) {
             for (CodegenProperty property : codegenModel.vars) {
@@ -194,7 +194,7 @@ public abstract class ApiResourceBuilder implements IApiResourceBuilder {
                 distinctResponseModels.add(property);
             }
         }
-        return new LinkedList<>(distinctResponseModels);
+        return distinctResponseModels;
     }
 
     protected boolean isInstanceOperation(CodegenOperation operation) {
