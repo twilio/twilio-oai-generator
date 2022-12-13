@@ -98,6 +98,13 @@ public class PhpApiResourceBuilder extends ApiResourceBuilder {
                         opr)));
         resourceList.stream().filter(dependent -> dependent.getPathItem().readOperations().isEmpty()).
                 forEach(dep -> directoryStructureService.addContextdependents(dependentList, dep.getName(), null));
+
+        dependentList.stream().map(DirectoryStructureService.ContextResource.class::cast)
+                .map(contextResource -> {
+                    if (contextResource.getParent().matches("(.*)Function\\\\(.*)"))
+                        contextResource.setParent(contextResource.getParent().replaceAll("\\\\Function\\\\", "\\\\TwilioFunction\\\\"));
+                    return (Object) contextResource;
+                }).collect(Collectors.toList());
     }
 
     private String formatPath(String path) {
@@ -130,6 +137,8 @@ public class PhpApiResourceBuilder extends ApiResourceBuilder {
                     .collect(Collectors.joining("\\"));
             namespaceSubPart = "\\" + namespacePath;
         }
+        namespaceSubPart = namespaceSubPart.replaceAll("\\\\Function$", "\\\\TwilioFunction");
+        namespaceSubPart = namespaceSubPart.replaceAll("\\\\Function[\\\\]", "\\\\TwilioFunction\\\\");
     }
 
     @Override
