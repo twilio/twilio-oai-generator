@@ -37,7 +37,6 @@ namespace Twilio.Rest.Versionless.DeployedDevices
             string path = "/DeployedDevices/Fleets";
 
 
-
             return new Request(
                 HttpMethod.Post,
                 Rest.Domain.Versionless,
@@ -73,34 +72,30 @@ namespace Twilio.Rest.Versionless.DeployedDevices
         #endif
 
         /// <summary> create </summary>
-        /// <param name="friendlyName">  </param>
+        /// <param name="name">  </param>
         /// <param name="client"> Client to make requests to Twilio </param>
         /// <returns> A single instance of Fleet </returns>
         public static FleetResource Create(
-                                          string friendlyName = null,
+                                          string name = null,
                                           ITwilioRestClient client = null)
         {
-            var options = new CreateFleetOptions(){  FriendlyName = friendlyName };
+            var options = new CreateFleetOptions(){  Name = name };
             return Create(options, client);
         }
 
         #if !NET35
         /// <summary> create </summary>
-        /// <param name="friendlyName">  </param>
+        /// <param name="name">  </param>
         /// <param name="client"> Client to make requests to Twilio </param>
         /// <returns> Task that resolves to A single instance of Fleet </returns>
         public static async System.Threading.Tasks.Task<FleetResource> CreateAsync(
-                                                                                  string friendlyName = null,
+                                                                                  string name = null,
                                                                                   ITwilioRestClient client = null)
         {
-        var options = new CreateFleetOptions(){  FriendlyName = friendlyName };
+        var options = new CreateFleetOptions(){  Name = name };
             return await CreateAsync(options, client);
         }
         #endif
-
-
-
-
         
         private static Request BuildFetchRequest(FetchFleetOptions options, ITwilioRestClient client)
         {
@@ -109,7 +104,6 @@ namespace Twilio.Rest.Versionless.DeployedDevices
 
             string PathSid = options.PathSid;
             path = path.Replace("{"+"Sid"+"}", PathSid);
-
 
             return new Request(
                 HttpMethod.Get,
@@ -186,17 +180,17 @@ namespace Twilio.Rest.Versionless.DeployedDevices
         }
 
     
-        ///<summary> The unique SID that identifies this Account. </summary> 
-        [JsonProperty("account_sid")]
-        public string AccountSid { get; private set; }
-
-        ///<summary> A human readable description for this Fleet. </summary> 
-        [JsonProperty("friendly_name")]
-        public string FriendlyName { get; private set; }
+        ///<summary> The name </summary> 
+        [JsonProperty("name")]
+        public string Name { get; private set; }
 
         ///<summary> A string that uniquely identifies this Fleet. </summary> 
         [JsonProperty("sid")]
         public string Sid { get; private set; }
+
+        ///<summary> A human readable description for this Fleet. </summary> 
+        [JsonProperty("friendly_name")]
+        public string FriendlyName { get; private set; }
 
 
 

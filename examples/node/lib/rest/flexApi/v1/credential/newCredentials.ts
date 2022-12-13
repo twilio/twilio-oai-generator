@@ -16,6 +16,7 @@ import { inspect, InspectOptions } from "util";
 import V1 from "../../V1";
 const deserialize = require("../../../../base/deserialize");
 const serialize = require("../../../../base/serialize");
+import { isValidPathParam } from "../../../../base/utility";
 
 type TestStatus =
   | "in-progress"
@@ -43,7 +44,7 @@ type TestStatus =
  * @property { Array<object> } [testObjectArray]
  * @property { any } [testAnyType]
  * @property { Array<any> } [testAnyArray]
- * @property { Array<string> } [permissions] A comma-separated list of the permissions you will request from the users of this ConnectApp.  Can include: &#x60;get-all&#x60; and &#x60;post-all&#x60;.
+ * @property { Array<string> } [permissions] A comma-separated list of the permissions you will request from the users of this ConnectApp.  Can include: `get-all` and `post-all`.
  * @property { string } [someA2PThing]
  */
 export interface NewCredentialsListInstanceCreateOptions {

@@ -16,6 +16,7 @@ import { inspect, InspectOptions } from "util";
 import V2010 from "../../V2010";
 const deserialize = require("../../../../base/deserialize");
 const serialize = require("../../../../base/serialize");
+import { isValidPathParam } from "../../../../base/utility";
 import { PhoneNumberCapabilities } from "../../../../interfaces";
 
 import { FeedbackCallSummaryListInstance } from "./call/feedbackCallSummary";
@@ -23,13 +24,6 @@ import { FeedbackCallSummaryListInstance } from "./call/feedbackCallSummary";
 export class TestResponseObjectTestArrayOfObjects {
   "count"?: number;
   "description"?: string;
-}
-
-export class TestResponseObjectTestObject {
-  "fax"?: boolean;
-  "mms"?: boolean;
-  "sms"?: boolean;
-  "voice"?: boolean;
 }
 
 type TestStatus =
@@ -44,11 +38,13 @@ type TestStatus =
  * Options to pass to create a CallInstance
  *
  * @property { string } requiredStringProperty
+ * @property { string } testMethod The HTTP method that we should use to request the `TestArrayOfUri`.
  * @property { Array<string> } [testArrayOfStrings]
  * @property { Array<string> } [testArrayOfUri]
  */
 export interface CallListInstanceCreateOptions {
   requiredStringProperty: string;
+  testMethod: string;
   testArrayOfStrings?: Array<string>;
   testArrayOfUri?: Array<string>;
 }
@@ -97,6 +93,14 @@ export class CallContextImpl implements CallContext {
     accountSid: string,
     testInteger: number
   ) {
+    if (!isValidPathParam(accountSid)) {
+      throw new Error("Parameter 'accountSid' is not valid.");
+    }
+
+    if (!isValidPathParam(testInteger)) {
+      throw new Error("Parameter 'testInteger' is not valid.");
+    }
+
     this._solution = { accountSid, testInteger };
     this._uri = `/Accounts/${accountSid}/Calls/${testInteger}.json`;
   }
@@ -165,6 +169,7 @@ interface CallResource {
   test_number?: number | null;
   price_unit?: string | null;
   test_number_float?: number | null;
+  test_number_decimal?: Decimal | null;
   test_enum?: TestStatus;
   a2p_profile_bundle_sid?: string | null;
   test_array_of_integers?: Array<number>;
@@ -192,6 +197,7 @@ export class CallInstance {
     this.testNumber = payload.test_number;
     this.priceUnit = payload.price_unit;
     this.testNumberFloat = payload.test_number_float;
+    this.testNumberDecimal = payload.test_number_decimal;
     this.testEnum = payload.test_enum;
     this.a2pProfileBundleSid = payload.a2p_profile_bundle_sid;
     this.testArrayOfIntegers = payload.test_array_of_integers;
@@ -214,6 +220,7 @@ export class CallInstance {
   testNumber?: number | null;
   priceUnit?: string | null;
   testNumberFloat?: number | null;
+  testNumberDecimal?: Decimal | null;
   testEnum?: TestStatus;
   /**
    * A2P Messaging Profile Bundle BundleSid
@@ -280,6 +287,7 @@ export class CallInstance {
       testNumber: this.testNumber,
       priceUnit: this.priceUnit,
       testNumberFloat: this.testNumberFloat,
+      testNumberDecimal: this.testNumberDecimal,
       testEnum: this.testEnum,
       a2pProfileBundleSid: this.a2pProfileBundleSid,
       testArrayOfIntegers: this.testArrayOfIntegers,
@@ -338,6 +346,10 @@ export function CallListInstance(
   version: V2010,
   accountSid: string
 ): CallListInstance {
+  if (!isValidPathParam(accountSid)) {
+    throw new Error("Parameter 'accountSid' is not valid.");
+  }
+
   const instance = ((testInteger) =>
     instance.get(testInteger)) as CallListInstanceImpl;
 
@@ -378,6 +390,10 @@ export function CallListInstance(
       );
     }
 
+    if (params["testMethod"] === null || params["testMethod"] === undefined) {
+      throw new Error("Required parameter \"params['testMethod']\" missing.");
+    }
+
     let data: any = {};
 
     data["RequiredStringProperty"] = params["requiredStringProperty"];
@@ -391,6 +407,8 @@ export function CallListInstance(
         params["testArrayOfUri"],
         (e) => e
       );
+
+    data["TestMethod"] = params["testMethod"];
 
     const headers: any = {};
     headers["Content-Type"] = "application/x-www-form-urlencoded";

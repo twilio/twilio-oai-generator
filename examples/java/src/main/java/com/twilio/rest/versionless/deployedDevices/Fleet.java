@@ -72,7 +72,7 @@ import com.twilio.type.SubscribeRule;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @ToString
 public class Fleet extends Resource {
-    private static final long serialVersionUID = 190231528314786L;
+    private static final long serialVersionUID = 163787776958144L;
 
     public static FleetCreator creator(){
         return new FleetCreator();
@@ -81,9 +81,6 @@ public class Fleet extends Resource {
     public static FleetFetcher fetcher(final String pathSid){
         return new FleetFetcher(pathSid);
     }
-
-
-
 
     /**
     * Converts a JSON String into a Fleet object using the provided ObjectMapper.
@@ -122,34 +119,34 @@ public class Fleet extends Resource {
         }
     }
 
-    private final String accountSid;
-    private final String friendlyName;
+    private final String name;
     private final String sid;
+    private final String friendlyName;
 
     @JsonCreator
     private Fleet(
-        @JsonProperty("account_sid")
-        final String accountSid,
-
-        @JsonProperty("friendly_name")
-        final String friendlyName,
+        @JsonProperty("name")
+        final String name,
 
         @JsonProperty("sid")
-        final String sid
+        final String sid,
+
+        @JsonProperty("friendly_name")
+        final String friendlyName
     ) {
-        this.accountSid = accountSid;
-        this.friendlyName = friendlyName;
+        this.name = name;
         this.sid = sid;
+        this.friendlyName = friendlyName;
     }
 
-        public final String getAccountSid() {
-            return this.accountSid;
-        }
-        public final String getFriendlyName() {
-            return this.friendlyName;
+        public final String getName() {
+            return this.name;
         }
         public final String getSid() {
             return this.sid;
+        }
+        public final String getFriendlyName() {
+            return this.friendlyName;
         }
 
     @Override
@@ -164,12 +161,12 @@ public class Fleet extends Resource {
 
         Fleet other = (Fleet) o;
 
-        return Objects.equals(accountSid, other.accountSid) &&  Objects.equals(friendlyName, other.friendlyName) &&  Objects.equals(sid, other.sid)  ;
+        return Objects.equals(name, other.name) &&  Objects.equals(sid, other.sid) &&  Objects.equals(friendlyName, other.friendlyName)  ;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(accountSid, friendlyName, sid);
+        return Objects.hash(name, sid, friendlyName);
     }
 
 }

@@ -13,43 +13,175 @@
  */
 
 import { inspect, InspectOptions } from "util";
+import Page from "../../../base/Page";
+import Response from "../../../http/response";
 import Understand from "../Understand";
 const deserialize = require("../../../base/deserialize");
 const serialize = require("../../../base/serialize");
+import { isValidPathParam } from "../../../base/utility";
 
 /**
- * Options to pass to create a AssistantInstance
+ * Options to pass to each
  *
- * @property { string } [friendlyName]
+ * @property { Function } [callback] -
+ *                         Function to process each record. If this and a positional
+ *                         callback are passed, this one will be used
+ * @property { Function } [done] - Function to be called upon completion of streaming
+ * @property { number } [limit] -
+ *                         Upper limit for the number of records to return.
+ *                         each() guarantees never to return more than limit.
+ *                         Default is no limit
  */
-export interface AssistantListInstanceCreateOptions {
-  friendlyName?: string;
+export interface AssistantListInstanceEachOptions {
+  callback?: (item: AssistantInstance, done: (err?: Error) => void) => void;
+  done?: Function;
+  limit?: number;
+}
+
+/**
+ * Options to pass to list
+ *
+ * @property { number } [limit] -
+ *                         Upper limit for the number of records to return.
+ *                         list() guarantees never to return more than limit.
+ *                         Default is no limit
+ */
+export interface AssistantListInstanceOptions {
+  limit?: number;
+}
+
+/**
+ * Options to pass to page
+ *
+ * @property { number } [pageNumber] - Page Number, this value is simply for client state
+ * @property { string } [pageToken] - PageToken provided by the API
+ */
+export interface AssistantListInstancePageOptions {
+  pageNumber?: number;
+  pageToken?: string;
 }
 
 export interface AssistantListInstance {
   /**
-   * Create a AssistantInstance
+   * Streams AssistantInstance records from the API.
    *
-   * @param { function } [callback] - Callback to handle processed record
+   * This operation lazily loads records as efficiently as possible until the limit
+   * is reached.
    *
-   * @returns { Promise } Resolves to processed AssistantInstance
+   * The results are passed into the callback function, so this operation is memory
+   * efficient.
+   *
+   * If a function is passed as the first argument, it will be used as the callback
+   * function.
+   *
+   * @param { function } [callback] - Function to process each record
    */
-  create(
-    callback?: (error: Error | null, item?: AssistantInstance) => any
-  ): Promise<AssistantInstance>;
+  each(
+    callback?: (item: AssistantInstance, done: (err?: Error) => void) => void
+  ): void;
   /**
-   * Create a AssistantInstance
+   * Streams AssistantInstance records from the API.
    *
-   * @param { AssistantListInstanceCreateOptions } params - Parameter for request
-   * @param { function } [callback] - Callback to handle processed record
+   * This operation lazily loads records as efficiently as possible until the limit
+   * is reached.
    *
-   * @returns { Promise } Resolves to processed AssistantInstance
+   * The results are passed into the callback function, so this operation is memory
+   * efficient.
+   *
+   * If a function is passed as the first argument, it will be used as the callback
+   * function.
+   *
+   * @param { AssistantListInstanceEachOptions } [params] - Options for request
+   * @param { function } [callback] - Function to process each record
    */
-  create(
-    params: AssistantListInstanceCreateOptions,
-    callback?: (error: Error | null, item?: AssistantInstance) => any
-  ): Promise<AssistantInstance>;
-  create(params?: any, callback?: any): Promise<AssistantInstance>;
+  each(
+    params?: AssistantListInstanceEachOptions,
+    callback?: (item: AssistantInstance, done: (err?: Error) => void) => void
+  ): void;
+  each(params?: any, callback?: any): void;
+  /**
+   * Retrieve a single target page of AssistantInstance records from the API.
+   *
+   * The request is executed immediately.
+   *
+   * If a function is passed as the first argument, it will be used as the callback
+   * function.
+   *
+   * @param { function } [callback] - Callback to handle list of records
+   */
+  getPage(
+    callback?: (error: Error | null, items: AssistantPage) => any
+  ): Promise<AssistantPage>;
+  /**
+   * Retrieve a single target page of AssistantInstance records from the API.
+   *
+   * The request is executed immediately.
+   *
+   * If a function is passed as the first argument, it will be used as the callback
+   * function.
+   *
+   * @param { string } [targetUrl] - API-generated URL for the requested results page
+   * @param { function } [callback] - Callback to handle list of records
+   */
+  getPage(
+    targetUrl?: string,
+    callback?: (error: Error | null, items: AssistantPage) => any
+  ): Promise<AssistantPage>;
+  getPage(params?: any, callback?: any): Promise<AssistantPage>;
+  /**
+   * Lists AssistantInstance records from the API as a list.
+   *
+   * If a function is passed as the first argument, it will be used as the callback
+   * function.
+   *
+   * @param { function } [callback] - Callback to handle list of records
+   */
+  list(
+    callback?: (error: Error | null, items: AssistantInstance[]) => any
+  ): Promise<AssistantInstance[]>;
+  /**
+   * Lists AssistantInstance records from the API as a list.
+   *
+   * If a function is passed as the first argument, it will be used as the callback
+   * function.
+   *
+   * @param { AssistantListInstanceOptions } [params] - Options for request
+   * @param { function } [callback] - Callback to handle list of records
+   */
+  list(
+    params?: AssistantListInstanceOptions,
+    callback?: (error: Error | null, items: AssistantInstance[]) => any
+  ): Promise<AssistantInstance[]>;
+  list(params?: any, callback?: any): Promise<AssistantInstance[]>;
+  /**
+   * Retrieve a single page of AssistantInstance records from the API.
+   *
+   * The request is executed immediately.
+   *
+   * If a function is passed as the first argument, it will be used as the callback
+   * function.
+   *
+   * @param { function } [callback] - Callback to handle list of records
+   */
+  page(
+    callback?: (error: Error | null, items: AssistantPage) => any
+  ): Promise<AssistantPage>;
+  /**
+   * Retrieve a single page of AssistantInstance records from the API.
+   *
+   * The request is executed immediately.
+   *
+   * If a function is passed as the first argument, it will be used as the callback
+   * function.
+   *
+   * @param { AssistantListInstancePageOptions } [params] - Options for request
+   * @param { function } [callback] - Callback to handle list of records
+   */
+  page(
+    params: AssistantListInstancePageOptions,
+    callback?: (error: Error | null, items: AssistantPage) => any
+  ): Promise<AssistantPage>;
+  page(params?: any, callback?: any): Promise<AssistantPage>;
 
   /**
    * Provide a user-friendly representation
@@ -76,37 +208,38 @@ export function AssistantListInstance(
   instance._solution = {};
   instance._uri = `/Assistants`;
 
-  instance.create = function create(
-    params?: any,
-    callback?: any
-  ): Promise<AssistantInstance> {
-    if (typeof params === "function") {
-      callback = params;
-      params = {};
-    } else {
-      params = params || {};
-    }
-
-    let data: any = {};
-
-    if (params["friendlyName"] !== undefined)
-      data["FriendlyName"] = params["friendlyName"];
-
-    const headers: any = {};
-    headers["Content-Type"] = "application/x-www-form-urlencoded";
-
+  instance.page = function page(callback?: any): Promise<AssistantPage> {
     let operationVersion = version,
-      operationPromise = operationVersion.create({
+      operationPromise = operationVersion.page({
         uri: this._uri,
-        method: "post",
-        data,
-        headers,
+        method: "get",
       });
 
     operationPromise = operationPromise.then(
-      (payload) => new AssistantInstance(operationVersion, payload)
+      (payload) => new AssistantPage(operationVersion, payload, this._solution)
     );
 
+    operationPromise = this._version.setPromiseCallback(
+      operationPromise,
+      callback
+    );
+    return operationPromise;
+  };
+  instance.each = instance._version.each;
+  instance.list = instance._version.list;
+
+  instance.getPage = function getPage(
+    targetUrl?: any,
+    callback?: any
+  ): Promise<AssistantPage> {
+    let operationPromise = this._version._domain.twilio.request({
+      method: "get",
+      uri: targetUrl,
+    });
+
+    operationPromise = operationPromise.then(
+      (payload) => new AssistantPage(this._version, payload, this._solution)
+    );
     operationPromise = this._version.setPromiseCallback(
       operationPromise,
       callback
@@ -128,33 +261,29 @@ export function AssistantListInstance(
   return instance;
 }
 
-interface AssistantPayload extends AssistantResource {}
+interface AssistantPayload
+  extends AssistantResource,
+    Page.TwilioResponsePayload {}
 
 interface AssistantResource {
-  account_sid?: string | null;
-  friendly_name?: string | null;
   sid?: string | null;
+  friendly_name?: string | null;
 }
 
 export class AssistantInstance {
   constructor(protected _version: Understand, payload: AssistantPayload) {
-    this.accountSid = payload.account_sid;
-    this.friendlyName = payload.friendly_name;
     this.sid = payload.sid;
+    this.friendlyName = payload.friendly_name;
   }
 
-  /**
-   * The unique SID that identifies this Account.
-   */
-  accountSid?: string | null;
-  /**
-   * A human readable description for this Fleet.
-   */
-  friendlyName?: string | null;
   /**
    * A string that uniquely identifies this Fleet.
    */
   sid?: string | null;
+  /**
+   * A human readable description for this Fleet.
+   */
+  friendlyName?: string | null;
 
   /**
    * Provide a user-friendly representation
@@ -163,13 +292,47 @@ export class AssistantInstance {
    */
   toJSON() {
     return {
-      accountSid: this.accountSid,
-      friendlyName: this.friendlyName,
       sid: this.sid,
+      friendlyName: this.friendlyName,
     };
   }
 
   [inspect.custom](_depth: any, options: InspectOptions) {
+    return inspect(this.toJSON(), options);
+  }
+}
+
+export class AssistantPage extends Page<
+  Understand,
+  AssistantPayload,
+  AssistantResource,
+  AssistantInstance
+> {
+  /**
+   * Initialize the AssistantPage
+   *
+   * @param version - Version of the resource
+   * @param response - Response from the API
+   * @param solution - Path solution
+   */
+  constructor(
+    version: Understand,
+    response: Response<string>,
+    solution: AssistantSolution
+  ) {
+    super(version, response, solution);
+  }
+
+  /**
+   * Build an instance of AssistantInstance
+   *
+   * @param payload - Payload response from the API
+   */
+  getInstance(payload: AssistantPayload): AssistantInstance {
+    return new AssistantInstance(this._version, payload);
+  }
+
+  [inspect.custom](depth: any, options: InspectOptions) {
     return inspect(this.toJSON(), options);
   }
 }

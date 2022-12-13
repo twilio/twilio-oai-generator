@@ -54,6 +54,9 @@ components:
           nullable: true
           type: number
           format: float
+        test_number_decimal:
+          nullable: true
+          type: decimal
         test_enum:
           $ref: '#/components/schemas/test_enum_status'
           nullable: true
@@ -128,7 +131,10 @@ paths:
   /2010-04-01/Accounts.json:
     description: A top-level resource
     get:
+      description: This operation's summary has a special character
       operationId: ListAccount
+      tags:
+        - TagThatShouldBeRemoved
       parameters:
         - in: query
           name: DateCreated
@@ -358,8 +364,21 @@ paths:
                     format: uri
                     type: string
                   type: array
+                TestMethod:
+                  type: string
+                  format: http-method
+                  enum:
+                    - HEAD
+                    - GET
+                    - POST
+                    - PATCH
+                    - PUT
+                    - DELETE
+                  description: 'The HTTP method that we should use to request the
+                                                                            `TestArrayOfUri`.'
               required:
                 - RequiredStringProperty
+                - TestMethod
               title: CreateCallRequest
               type: object
       responses:

@@ -4,8 +4,7 @@ import re
 from pathlib import Path
 from typing import Tuple
 
-from clean_java_imports import remove_unused_imports
-
+from clean_unused_imports import remove_unused_imports
 '''
 Subdirectories map for maintaining directory
 structures specific to language style.
@@ -13,8 +12,9 @@ structures specific to language style.
 subdirectories = {
     'terraform': 'twilio/resources',
     'csharp': 'Rest',
+    'php': 'Rest'
 }
-
+CLEANUP_IMPORT_LANGUAGES = ['java', 'php']
 
 def build(openapi_spec_path: str, output_path: str, language: str) -> None:
     if os.path.isfile(openapi_spec_path):
@@ -32,8 +32,8 @@ def generate(openapi_spec_path: str, output_path: str, language: str, domain: st
     sub_dir = subdirectories.get(language, 'rest')
     output_path = os.path.join(output_path, sub_dir)
     run_openapi_generator(parent_dir, language, output_path, full_path)
-    if language == 'java':
-        remove_unused_imports(output_path, 'java')
+    if language in CLEANUP_IMPORT_LANGUAGES:
+        remove_unused_imports(output_path, language)
 
 
 def run_openapi_generator(parent_dir: str, language: str, output_path: str, full_path: str) -> None:
@@ -76,6 +76,6 @@ if __name__ == '__main__':
     parser.add_argument('spec_path', type=str, help='path to open api specs')
     parser.add_argument('output_path', type=str, help='path to output the generated code')
     parser.add_argument('-l', '--lang', type=str, help='generate Twilio library from twilio-oai',
-                        choices=['go', 'terraform', 'java', 'node', 'csharp'], required=True)
+                        choices=['go', 'terraform', 'java', 'node', 'csharp', 'php'], required=True)
     args = parser.parse_args()
     build(args.spec_path, args.output_path, args.lang)

@@ -1,6 +1,6 @@
 {{>licenseInfo}}
 {{#resources}}
-package com.twilio.rest.{{domainPackage}}.{{apiVersion}}{{packageSubPart}};
+package com.twilio.rest.{{domainPackage}}.{{apiVersion}}{{namespaceSubPart}};
 
 import com.twilio.base.Creator;
 import com.twilio.converter.Promoter;
@@ -39,36 +39,35 @@ import lombok.ToString;
 
 import java.net.URI;
 
-{{#hasCreate}}
-{{#operations}}
+{{#apiOperations}}
 {{#vendorExtensions.x-is-create-operation}}
-public class {{resourceName}}Creator extends Creator<{{resourceName}}>{
+public class {{apiName}}Creator extends Creator<{{apiName}}>{
 {{#allParams}}
     private {{{dataType}}} {{paramName}};
 {{/allParams}}
 
-{{#signatureListCreate}}
-    public {{resourceName}}Creator({{#.}}final {{{dataType}}} {{paramName}}{{^-last}}, {{/-last}}{{/.}}) {
+{{#vendorExtensions.x-signature-list}}
+    public {{apiName}}Creator({{#.}}final {{{dataType}}} {{paramName}}{{^-last}}, {{/-last}}{{/.}}) {
     {{#.}}
         this.{{paramName}} = {{paramName}};
     {{/.}}
     }
-{{/signatureListCreate}}
+{{/vendorExtensions.x-signature-list}}
 
 {{#vendorExtensions.x-non-path-params}}
-    public {{resourceName}}Creator set{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}(final {{{dataType}}} {{paramName}}){
+    public {{apiName}}Creator set{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}(final {{{dataType}}} {{paramName}}){
         this.{{paramName}} = {{paramName}};
         return this;
     }
 {{#isArray}}
-    public {{resourceName}}Creator set{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}(final {{{baseType}}} {{paramName}}){
+    public {{apiName}}Creator set{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}(final {{{baseType}}} {{paramName}}){
         return set{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}(Promoter.listOfOne({{paramName}}));
     }
 {{/isArray}}
 {{#vendorExtensions.x-promotions}}
 {{#entrySet}}
 
-    public {{resourceName}}Creator set{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}(final {{#lambda.titlecase}}{{key}}{{/lambda.titlecase}} {{paramName}}){
+    public {{apiName}}Creator set{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}(final {{#lambda.titlecase}}{{key}}{{/lambda.titlecase}} {{paramName}}){
         return set{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}({{value}});
     }
 {{/entrySet}}
@@ -76,7 +75,7 @@ public class {{resourceName}}Creator extends Creator<{{resourceName}}>{
 {{/vendorExtensions.x-non-path-params}}
 
     @Override
-    public {{resourceName}} create(final TwilioRestClient client){
+    public {{apiName}} create(final TwilioRestClient client){
 {{>generate_uri}}
         Request request = new Request(
             HttpMethod.POST,
@@ -94,7 +93,7 @@ public class {{resourceName}}Creator extends Creator<{{resourceName}}>{
         {{/headerParams.0}}
         Response response = client.request(request);
         if (response == null) {
-            throw new ApiConnectionException("{{resourceName}} creation failed: Unable to connect to server");
+            throw new ApiConnectionException("{{apiName}} creation failed: Unable to connect to server");
         } else if (!TwilioRestClient.SUCCESS.test(response.getStatusCode())) {
             RestException restException = RestException.fromJson(response.getStream(), client.getObjectMapper());
             if (restException == null) {
@@ -103,7 +102,7 @@ public class {{resourceName}}Creator extends Creator<{{resourceName}}>{
             throw new ApiException(restException);
         }
 
-        return {{resourceName}}.fromJson(response.getStream(), client.getObjectMapper());
+        return {{apiName}}.fromJson(response.getStream(), client.getObjectMapper());
     }
 {{#formParams.0}}
 {{>postParams}}
@@ -116,6 +115,5 @@ public class {{resourceName}}Creator extends Creator<{{resourceName}}>{
 {{/queryParams.0}}
 }
 {{/vendorExtensions.x-is-create-operation}}
-{{/operations}}
-{{/hasCreate}}
+{{/apiOperations}}
 {{/resources}}

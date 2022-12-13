@@ -313,9 +313,9 @@ namespace Twilio.Tests.Rest
             var list = new List<KeyValuePair<string, string>>();
             list.Add(new KeyValuePair<string, string>("DateCreated<",formattedDateTime ));
             list.Add(new KeyValuePair<string, string>("DateCreated>",formattedDateTime ));
-            list.Add(new KeyValuePair<string, string>("DateTest", formattedDate));
-            list.Add(new KeyValuePair<string, string>("DateCreatedBefore",formattedDateTime ));
-            list.Add(new KeyValuePair<string, string>("DateCreatedAfter",formattedDateTime ));
+            list.Add(new KeyValuePair<string, string>("Date.Test", formattedDate));
+            list.Add(new KeyValuePair<string, string>("DateCreated<",formattedDateTime ));
+            list.Add(new KeyValuePair<string, string>("DateCreated>",formattedDateTime ));
             list.Add(new KeyValuePair<string, string>("PageSize", "4"));
 
             var request1 = new Request(
@@ -367,7 +367,7 @@ namespace Twilio.Tests.Rest
             string formattedDateTime = Serializers.DateTimeIso8601(currentDateTime);
             var list = new List<KeyValuePair<string, string>>();
             list.Add(new KeyValuePair<string, string>("DateCreated",formattedDateTime ));
-            list.Add(new KeyValuePair<string, string>("DateTest", formattedDate));
+            list.Add(new KeyValuePair<string, string>("Date.Test", formattedDate));
             list.Add(new KeyValuePair<string, string>("PageSize", "4"));
 
             var request1 = new Request(
@@ -417,7 +417,7 @@ namespace Twilio.Tests.Rest
             string formattedDateTime = Serializers.DateTimeIso8601(currentDateTime);
             var list = new List<KeyValuePair<string, string>>();
             list.Add(new KeyValuePair<string, string>("DateCreated",formattedDateTime ));
-            list.Add(new KeyValuePair<string, string>("DateTest", formattedDate));
+            list.Add(new KeyValuePair<string, string>("Date.Test", formattedDate));
             list.Add(new KeyValuePair<string, string>("PageSize", "4"));
 
             var request1 = new Request(
@@ -615,7 +615,7 @@ namespace Twilio.Tests.Rest
             string formattedDateTime = Serializers.DateTimeIso8601(currentDateTime);
             var list = new List<KeyValuePair<string, string>>();
             list.Add(new KeyValuePair<string, string>("DateCreated",formattedDateTime ));
-            list.Add(new KeyValuePair<string, string>("DateTest", formattedDate));
+            list.Add(new KeyValuePair<string, string>("Date.Test", formattedDate));
             list.Add(new KeyValuePair<string, string>("PageSize", "4"));
 
             var request1 = new Request(
@@ -1406,7 +1406,7 @@ namespace Twilio.Tests.Rest
             string pathAccountSid = "PathAccountSid";
             List<string> testArrayOfStrings = new List<string>() { "testElement1", "testElement2" };
 
-            var createCall = new CreateCallOptions(requiredStringProperty: requiredStringProperty) {PathAccountSid = pathAccountSid,TestArrayOfStrings = testArrayOfStrings };
+            var createCall = new CreateCallOptions(requiredStringProperty: requiredStringProperty, testMethod: HttpMethod.Post) {PathAccountSid = pathAccountSid,TestArrayOfStrings = testArrayOfStrings };
             Assert.IsNotNull(createCall);
             Assert.IsNotNull(createCall.PathAccountSid);
             Assert.AreEqual(pathAccountSid, createCall.PathAccountSid);
@@ -1423,7 +1423,7 @@ namespace Twilio.Tests.Rest
             string pathAccountSid = "PathAccountSid";
             List<string> testArrayOfStrings = new List<string>() { "testElement1", "testElement2" };
 
-            var createCall = new CreateCallOptions(requiredStringProperty: requiredStringProperty) { PathAccountSid = pathAccountSid, TestArrayOfStrings = testArrayOfStrings };
+            var createCall = new CreateCallOptions(requiredStringProperty: requiredStringProperty, testMethod: HttpMethod.Post) { PathAccountSid = pathAccountSid, TestArrayOfStrings = testArrayOfStrings };
             Assert.IsNotNull(createCall);
 
             var param = createCall.GetParams();
@@ -1641,7 +1641,7 @@ namespace Twilio.Tests.Rest
                                           System.Net.HttpStatusCode.Created,
                                           "{\"account_sid\": \"ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"sid\": \"ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"a2p_profile_bundle_sid\": \"BU0987654321abcdefABCDEFABCDEFABCD\"}"
                                       ));
-             var response = CallResource.Create(requiredStringProperty: "requiredPart", client: twilioRestClient);
+             var response = CallResource.Create(requiredStringProperty: "requiredPart", testMethod: HttpMethod.Post, client: twilioRestClient);
              Assert.NotNull(response);
              Assert.AreEqual("BU0987654321abcdefABCDEFABCDEFABCD", response.A2PProfileBundleSid);
         }

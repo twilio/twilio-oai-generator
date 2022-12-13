@@ -23,30 +23,24 @@ using Twilio.Converters;
 
 namespace Twilio.Rest.Versionless.Understand
 {
-
-    /// <summary> create </summary>
-    public class CreateAssistantOptions : IOptions<AssistantResource>
+    /// <summary> read </summary>
+    public class ReadAssistantOptions : ReadOptions<AssistantResource>
     {
-        
-        
-        public string FriendlyName { get; set; }
+    
 
 
 
         
         /// <summary> Generate the necessary parameters </summary>
-        public  List<KeyValuePair<string, string>> GetParams()
+        public  override List<KeyValuePair<string, string>> GetParams()
         {
             var p = new List<KeyValuePair<string, string>>();
 
-            if (FriendlyName != null)
-            {
-                p.Add(new KeyValuePair<string, string>("FriendlyName", FriendlyName));
-            }
             return p;
         }
         
 
     }
+
 }
 

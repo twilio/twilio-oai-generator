@@ -5,6 +5,7 @@ import java.util.Optional;
 import java.util.TreeMap;
 
 import io.swagger.v3.oas.models.PathItem;
+import io.swagger.v3.oas.models.parameters.Parameter;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.openapitools.codegen.CodegenOperation;
@@ -89,5 +90,13 @@ public class PathUtils {
     @SuppressWarnings("unchecked")
     public static void flattenStringMap(final Map<String, Object> resource, final String key) {
         resource.computeIfPresent(key, (k, dependents) -> ((Map<String, Object>) dependents).values());
+    }
+
+    public static boolean isParentParam(final Parameter parameter) {
+        return (boolean) parameter.getExtensions().getOrDefault(IS_PARENT_PARAM_EXTENSION_NAME, false);
+    }
+
+    public static boolean isPathParam(final Parameter parameter) {
+        return (boolean) parameter.getIn().equals("path");
     }
 }

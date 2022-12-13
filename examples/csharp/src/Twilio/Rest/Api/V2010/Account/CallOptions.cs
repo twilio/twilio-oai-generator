@@ -31,6 +31,9 @@ namespace Twilio.Rest.Api.V2010.Account
         
         public string RequiredStringProperty { get; }
 
+        ///<summary> The HTTP method that we should use to request the `TestArrayOfUri`. </summary> 
+        public Twilio.Http.HttpMethod TestMethod { get; }
+
         
         public string PathAccountSid { get; set; }
 
@@ -43,9 +46,11 @@ namespace Twilio.Rest.Api.V2010.Account
 
         /// <summary> Construct a new CreateCallOptions </summary>
         /// <param name="requiredStringProperty">  </param>
-        public CreateCallOptions(string requiredStringProperty)
+        /// <param name="testMethod"> The HTTP method that we should use to request the `TestArrayOfUri`. </param>
+        public CreateCallOptions(string requiredStringProperty, Twilio.Http.HttpMethod testMethod)
         {
             RequiredStringProperty = requiredStringProperty;
+            TestMethod = testMethod;
             TestArrayOfStrings = new List<string>();
             TestArrayOfUri = new List<Uri>();
         }
@@ -59,6 +64,10 @@ namespace Twilio.Rest.Api.V2010.Account
             if (RequiredStringProperty != null)
             {
                 p.Add(new KeyValuePair<string, string>("RequiredStringProperty", RequiredStringProperty));
+            }
+            if (TestMethod != null)
+            {
+                p.Add(new KeyValuePair<string, string>("TestMethod", TestMethod.ToString()));
             }
             if (TestArrayOfStrings != null)
             {

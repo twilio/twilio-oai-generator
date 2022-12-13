@@ -1,9 +1,8 @@
-{{^bodyParam}}
 /**
  * Options to pass to each
  *
  {{#allParams}}
- * @property { {{{dataType}}} } {{^required}}[{{/required}}{{paramName}}{{^required}}]{{/required}} {{description}}
+ * @property { {{{dataType}}} } {{^required}}[{{/required}}{{paramName}}{{^required}}]{{/required}} {{{description}}}
  {{/allParams}}
  * @property { Function } [callback] -
  *                         Function to process each record. If this and a positional
@@ -27,7 +26,7 @@ export interface {{resourceName}}EachOptions {
  * Options to pass to list
  *
  {{#allParams}}
- * @property { {{{dataType}}} } {{^required}}[{{/required}}{{paramName}}{{^required}}]{{/required}} {{description}}
+ * @property { {{{dataType}}} } {{^required}}[{{/required}}{{paramName}}{{^required}}]{{/required}} {{{description}}}
  {{/allParams}}
  * @property { number } [limit] -
  *                         Upper limit for the number of records to return.
@@ -45,7 +44,7 @@ export interface {{resourceName}}Options {
  * Options to pass to page
  *
  {{#allParams}}
- * @property { {{{dataType}}} } {{^required}}[{{/required}}{{paramName}}{{^required}}]{{/required}} {{description}}
+ * @property { {{{dataType}}} } {{^required}}[{{/required}}{{paramName}}{{^required}}]{{/required}} {{{description}}}
  {{/allParams}}
  * @property { number } [pageNumber] - Page Number, this value is simply for client state
  * @property { string } [pageToken] - PageToken provided by the API
@@ -57,5 +56,3 @@ export interface {{resourceName}}PageOptions {
   pageNumber?: number;
   pageToken?: string;
 }
-
-{{/bodyParam}}

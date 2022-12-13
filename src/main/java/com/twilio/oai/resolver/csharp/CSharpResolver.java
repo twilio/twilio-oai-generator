@@ -12,7 +12,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
-public class CSharpResolver {
+public class CSharpResolver  {
     private CodegenModelResolver codegenModelResolver;
     private CodegenParameterResolver codegenParameterResolver;
     private EnumsResolver enumsResolver;

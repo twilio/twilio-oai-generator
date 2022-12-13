@@ -4,13 +4,16 @@ import java.util.*;
 
 import com.twilio.oai.Segments;
 import com.twilio.oai.StringHelper;
-import com.twilio.oai.common.ApplicationConstants;
 import com.twilio.oai.common.EnumConstants;
 import com.twilio.oai.resolver.common.CodegenModelResolver;
 import com.twilio.oai.resolver.common.CodegenParameterResolver;
+import com.twilio.oai.resolver.IConventionMapper;
 import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenParameter;
 import org.openapitools.codegen.CodegenProperty;
+
+import static com.twilio.oai.common.ApplicationConstants.*;
+import static com.twilio.oai.common.ApplicationConstants.ENUM_VARS;
 
 public class JavaConventionResolver {
     private final String VENDOR_PREFIX = "x-";
@@ -26,15 +29,17 @@ public class JavaConventionResolver {
 
     private final String X_IS_PHONE_NUMBER_FORMAT = "x-is-phone-number-format";
 
-    private Map<String, Map<String, Object>> conventionMap;
+    private IConventionMapper conventionMapper;
     private CodegenModelResolver codegenModelResolver;
     private CodegenParameterResolver codegenParameterResolver;
 
-    public JavaConventionResolver(Map<String, Map<String, Object>> conventionMap) {
-        this.conventionMap = conventionMap;
-        codegenModelResolver = new CodegenModelResolver(conventionMap,
+    private static final String VALUES = "values";
+
+    public JavaConventionResolver(IConventionMapper conventionMapper) {
+        this.conventionMapper = conventionMapper;
+        codegenModelResolver = new CodegenModelResolver(conventionMapper,
                 Arrays.asList(EnumConstants.JavaDataTypes.values()));
-        codegenParameterResolver = new CodegenParameterResolver(conventionMap,
+        codegenParameterResolver = new CodegenParameterResolver(conventionMapper,
                 Arrays.asList(EnumConstants.JavaDataTypes.values()));
     }
 
@@ -44,7 +49,7 @@ public class JavaConventionResolver {
             Map<String, Map<String, Object>> vendorExtensions = new HashMap<>();
 
             for (Segments segment: Segments.values()) {
-                Map<String, Object> segmentMap = conventionMap.get(segment.getSegment());
+                Map<String, Object> segmentMap = getMapperByType(segment);
                 if (segmentMap.containsKey(property.dataFormat)) {
                     Map<String, Object> segmentElements = new HashMap<>();
                     segmentElements.put(VENDOR_PREFIX + property.dataFormat, String.format(segmentMap.get(property.dataFormat).toString() , property.name));
@@ -52,8 +57,7 @@ public class JavaConventionResolver {
                 }
             }
 
-            // Converts property.nameInSnakeCase to all lowercase
-            property.nameInSnakeCase = property.nameInSnakeCase.toLowerCase(Locale.ROOT);
+            property.nameInSnakeCase = StringHelper.toSnakeCase(property.name);
 
             // Merges the vendorExtensions map with the existing property's vendor extensions
             vendorExtensions.forEach(
@@ -63,22 +67,40 @@ public class JavaConventionResolver {
         return model;
     }
 
+    Map<String, Object> getMapperByType(Segments segments) {
+        switch (segments){
+            case SEGMENT_PROPERTIES:
+                return conventionMapper.properties();
+            case SEGMENT_LIBRARY:
+                return conventionMapper.libraries();
+            case SEGMENT_DESERIALIZE:
+                return conventionMapper.deserialize();
+            case SEGMENT_SERIALIZE:
+                return conventionMapper.serialize();
+            case SEGMENT_PROMOTIONS:
+                return conventionMapper.promotions();
+            case SEGMENT_HYDRATE:
+                return conventionMapper.hydrate();
+        }
+        return null;
+
+    }
+
     public CodegenParameter resolveParameter(CodegenParameter parameter) {
         if(parameter.dataType.equalsIgnoreCase(OBJECT) || parameter.dataType.equals(LIST_OBJECT)) {
             if (parameter.dataType.equals(LIST_OBJECT)) {
-                parameter.dataType = "List<" + conventionMap.get(Segments.SEGMENT_PROPERTIES.getSegment()).get(OBJECT)+ ">";
-                parameter.baseType = "" + conventionMap.get(Segments.SEGMENT_PROPERTIES.getSegment()).get(OBJECT);
+                parameter.dataType = "List<" + conventionMapper.properties().get(OBJECT)+ ">";
+                parameter.baseType = "" + conventionMapper.properties().get(OBJECT);
             } else {
-                parameter.dataType = (String) conventionMap.get(Segments.SEGMENT_PROPERTIES.getSegment()).get(OBJECT);
+                parameter.dataType = (String) conventionMapper.properties().get(OBJECT);
             }
             parameter.isFreeFormObject = true;
         }
 
-        boolean hasPromotion = conventionMap.get(Segments.SEGMENT_PROMOTIONS.getSegment()).containsKey(parameter.dataFormat);
+        boolean hasPromotion = conventionMapper.promotions().containsKey(parameter.dataFormat);
         if (hasPromotion) {
             // cloning to prevent update in source map
-            HashMap<String, String> promotionsMap = new HashMap<>((Map) conventionMap
-                    .get(Segments.SEGMENT_PROMOTIONS.getSegment()).get(parameter.dataFormat));
+            HashMap<String, String> promotionsMap = new HashMap<>((Map) conventionMapper.promotions().get(parameter.dataFormat));
             promotionsMap.replaceAll((dataType, value) -> String.format(value, parameter.paramName) );
             parameter.vendorExtensions.put("x-promotions", promotionsMap);
         }
@@ -88,8 +110,8 @@ public class JavaConventionResolver {
         if( PHONE_NUMBER_FORMAT.equals(parameter.dataFormat)) {
             parameter.vendorExtensions.put(X_IS_PHONE_NUMBER_FORMAT, true);
         }
-        // prevent http method format type to be considered as enum
-        if (HTTP_METHOD.equals(parameter.dataFormat)) {
+        // prevent special format properties to be considered as enum
+        if (conventionMapper.properties().containsKey(parameter.dataFormat)) {
             parameter.isEnum = false;
             parameter.allowableValues = null;
         }
@@ -98,9 +120,9 @@ public class JavaConventionResolver {
     }
 
     public CodegenParameter resolveParamTypes(CodegenParameter codegenParameter) {
-        boolean hasProperty = conventionMap.get(Segments.SEGMENT_PROPERTIES.getSegment()).containsKey(codegenParameter.dataFormat);
+        boolean hasProperty = conventionMapper.properties().containsKey(codegenParameter.dataFormat);
         if (hasProperty) {
-            codegenParameter.dataType = (String) conventionMap.get(Segments.SEGMENT_PROPERTIES.getSegment()).get(codegenParameter.dataFormat);
+            codegenParameter.dataType = (String) conventionMapper.properties().get(codegenParameter.dataFormat);
         }
         return codegenParameter;
     }
@@ -109,7 +131,7 @@ public class JavaConventionResolver {
         if (parameter.dataFormat != null && parameter.dataFormat.startsWith(PREFIXED_COLLAPSIBLE_MAP)) {
             String[] split_format_array = parameter.dataFormat.split(HYPHEN);
             parameter.vendorExtensions.put(X_PREFIXED_COLLAPSIBLE_MAP, split_format_array[split_format_array.length - 1]);
-            parameter.dataType = (String)conventionMap.get(Segments.SEGMENT_PROPERTIES.getSegment()).get(PREFIXED_COLLAPSIBLE_MAP);
+            parameter.dataType = (String)conventionMapper.properties().get(PREFIXED_COLLAPSIBLE_MAP);
         }
         parameter.paramName = StringHelper.toFirstLetterLower(parameter.paramName);
         return parameter;
@@ -120,5 +142,35 @@ public class JavaConventionResolver {
         codegenModelResolver.setModelFormatMap(modelFormatMap);
         codegenModelResolver.resolve(item);
         return item;
+    }
+
+     @SuppressWarnings("unchecked")
+    public CodegenParameter resolveEnumParameter(CodegenParameter parameter, String resourceName) {
+        if( parameter.isEnum && !parameter.vendorExtensions.containsKey(REF_ENUM_EXTENSION_NAME)) {
+            parameter.enumName = StringHelper.camelize(parameter.enumName);
+            if (parameter.items != null && parameter.items.allowableValues != null && parameter.items.allowableValues.containsKey(VALUES)) {
+                parameter.dataType = LIST_START + resourceName+"."+ parameter.enumName + LIST_END;
+                parameter.baseType = resourceName + "." + parameter.enumName;
+            } else {
+                parameter.dataType = resourceName + "." + parameter.enumName;
+            }
+
+            return parameter;
+        }
+        if (parameter.items != null && parameter.items.allowableValues != null && parameter.items.allowableValues.containsKey(VALUES) ) {
+            parameter.isEnum = true;
+            parameter.enumName = parameter.baseType;
+            parameter._enum = (List<String>) parameter.items.allowableValues.get(VALUES);
+            parameter.dataType = LIST_START + resourceName + "." + parameter.baseType + LIST_END;
+            parameter.baseType = resourceName + "." + parameter.baseType;
+            parameter.allowableValues = parameter.items.allowableValues;
+        }
+        if (parameter.allowableValues != null && parameter.allowableValues.containsKey(ENUM_VARS)) {
+            parameter.isEnum = true;
+            parameter._enum = (List<String>) parameter.allowableValues.get(VALUES);
+            parameter.enumName = parameter.dataType;
+            parameter.dataType = resourceName + "." + parameter.dataType;
+        }
+        return parameter;
     }
 }

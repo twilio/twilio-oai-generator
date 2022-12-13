@@ -2,7 +2,7 @@ package com.twilio.oai;
 
 import java.util.Arrays;
 
-enum HttpMethod {
+public enum HttpMethod {
     DELETE,
     GET,
     PATCH,

@@ -43,7 +43,6 @@ namespace Twilio.Rest.FlexApi.V1.Credential
             string PathSid = options.PathSid;
             path = path.Replace("{"+"Sid"+"}", PathSid);
 
-
             return new Request(
                 HttpMethod.Delete,
                 Rest.Domain.FlexApi,
@@ -108,7 +107,6 @@ namespace Twilio.Rest.FlexApi.V1.Credential
             string PathSid = options.PathSid;
             path = path.Replace("{"+"Sid"+"}", PathSid);
 
-
             return new Request(
                 HttpMethod.Get,
                 Rest.Domain.FlexApi,
@@ -170,7 +168,6 @@ namespace Twilio.Rest.FlexApi.V1.Credential
         {
             
             string path = "/v1/Credentials/AWS";
-
 
 
             return new Request(
@@ -286,8 +283,6 @@ namespace Twilio.Rest.FlexApi.V1.Credential
             return Page<AwsResource>.FromJson("credentials", response.Content);
         }
 
-
-
         
         private static Request BuildUpdateRequest(UpdateAwsOptions options, ITwilioRestClient client)
         {
@@ -296,7 +291,6 @@ namespace Twilio.Rest.FlexApi.V1.Credential
 
             string PathSid = options.PathSid;
             path = path.Replace("{"+"Sid"+"}", PathSid);
-
 
             return new Request(
                 HttpMethod.Post,

@@ -58,7 +58,6 @@ namespace Twilio.Rest.Api.V2010.Account.Call
             string PathSid = options.PathSid;
             path = path.Replace("{"+"Sid"+"}", PathSid);
 
-
             return new Request(
                 HttpMethod.Post,
                 Rest.Domain.Api,
@@ -188,6 +187,10 @@ namespace Twilio.Rest.Api.V2010.Account.Call
         ///<summary> The test_number_float </summary> 
         [JsonProperty("test_number_float")]
         public float? TestNumberFloat { get; private set; }
+
+        ///<summary> The test_number_decimal </summary> 
+        [JsonProperty("test_number_decimal")]
+        public decimal? TestNumberDecimal { get; private set; }
 
         
         [JsonProperty("test_enum")]

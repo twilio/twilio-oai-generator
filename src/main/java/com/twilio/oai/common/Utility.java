@@ -1,7 +1,13 @@
 package com.twilio.oai.common;
 
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -9,16 +15,24 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.experimental.UtilityClass;
 import org.openapitools.codegen.CodegenModel;
+import org.openapitools.codegen.model.ModelMap;
+import org.openapitools.codegen.model.ModelsMap;
+import org.openapitools.codegen.CodegenOperation;
 
 @UtilityClass
 public class Utility {
+
+    private static final int OVERFLOW_CHECKER = 32;
+    public static final int BASE_SIXTEEN = 16;
+    private static final int BIG_INTEGER_CONSTANT = 1;
 
     public void setComplexDataMapping(final List<CodegenModel> allModels, Map<String, String> modelFormatMap) {
         allModels.forEach(item -> {
             ObjectMapper objectMapper = new ObjectMapper();
             try {
                 JsonNode jsonNode = objectMapper.readTree(item.modelJson);
-                if (jsonNode.get("type").textValue().equals("object") && jsonNode.has("format")) {
+                if (jsonNode.has("type") && jsonNode.has("format") &&
+                    jsonNode.get("type").textValue().equals("object")) {
                     modelFormatMap.put(item.classname, jsonNode.get("format").textValue());
                 }
             } catch (JsonProcessingException e) {
@@ -29,10 +43,49 @@ public class Utility {
 
     public static Map<String, Map<String, Object>> getConventionalMap() {
         try {
-            return new ObjectMapper().readValue(Thread.currentThread().getContextClassLoader().getResourceAsStream(ApplicationConstants.CONFIG_CSHARP_JSON_PATH), new TypeReference<Map<String, Map<String, Object>>>(){});
+            return new ObjectMapper().readValue(Thread.currentThread().getContextClassLoader().getResourceAsStream(ApplicationConstants.CONFIG_CSHARP_JSON_PATH), new TypeReference<>() {
+            });
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return null;
+        return Collections.emptyMap();
+    }
+
+    public void addModelsToLocalModelList(final Map<String, ModelsMap> modelMap, List<CodegenModel> localModels){
+        for (final ModelsMap mods : modelMap.values()) {
+            final List<ModelMap> modList = mods.getModels();
+            modList
+                    .stream()
+                    .map(ModelMap::getModel)
+                    .map(CodegenModel.class::cast)
+                    .collect(Collectors.toCollection(() -> localModels));
+        }
+    }
+
+    public String removeEnumName(final String dataType) {
+        return dataType == null ? null : dataType.replace("Enum", "");
+    }
+
+    @SuppressWarnings("unchecked")
+    public ArrayList<CodegenOperation> getOperations(final Map<String, Object> resource) {
+        return (ArrayList<CodegenOperation>) resource.computeIfAbsent(
+                "operations",
+                k -> new ArrayList<>());
+    }
+
+    public String getMd5(String input){
+        try {
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            byte[] messageDigest = md.digest(input.getBytes());
+            BigInteger bigInteger = new BigInteger(BIG_INTEGER_CONSTANT, messageDigest);
+            String hashText = bigInteger.toString(BASE_SIXTEEN);
+            while (hashText.length() < OVERFLOW_CHECKER) {
+                hashText = "0" + hashText;
+            }
+            return hashText;
+        }
+        catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

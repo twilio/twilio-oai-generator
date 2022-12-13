@@ -1,22 +1,21 @@
 #!/bin/bash
 set -e
 
-LIBRARIES=${LIBRARIES:-go java node csharp}
+LANGUAGES=${LANGUAGES:-go java node csharp php}
 
-for library in ${LIBRARIES}; do
-  testing_services+=("${library}-test")
+for language in ${LANGUAGES}; do
+  testing_services+=("${language}-test")
 done
 
 cd examples/prism
 docker-compose build --pull "${testing_services[@]}"
 docker-compose up -d --force-recreate --remove-orphans "${testing_services[@]}"
 
-
 function wait_for() {
   echo -n "Waiting for tests to complete"
-  for docker_test_service in "$@"; do
+  for language in ${LANGUAGES}; do
     while true; do
-      if [[ "$(docker-compose ps -q "$docker_test_service" | xargs docker inspect -f "{{.State.Status}}")" != "exited" ]]; then
+      if [[ "$(docker-compose ps -q "${language}-test" | xargs docker inspect -f "{{.State.Status}}")" != "exited" ]]; then
         echo -n "."
         sleep 10
       else
@@ -29,17 +28,19 @@ function wait_for() {
 
 EXIT_CODE=0
 function check_status() {
-  for docker_test_service in "$@"; do
+  for language in ${LANGUAGES}; do
+    docker_test_service="${language}-test"
     if [[ $(docker-compose ps -q "$docker_test_service" | xargs docker inspect -f "{{.State.ExitCode}}") -ne 0 ]]; then
       EXIT_CODE=$(($EXIT_CODE || $(docker-compose ps -q "$docker_test_service" | xargs docker inspect -f "{{.State.ExitCode}}")))
-      echo "Failed $docker_test_service with EXIT code $(docker-compose ps -q "$docker_test_service" | xargs docker inspect -f "{{.State.ExitCode}}")"
+      echo "Failed $language with EXIT code $(docker-compose ps -q "$docker_test_service" | xargs docker inspect -f "{{.State.ExitCode}}")"
+      cat "../${language}/test-report.out"
     else
-      echo "$docker_test_service completed successfully"
+      echo "$language completed successfully"
     fi
   done
 }
 
-wait_for "${testing_services[@]}"
-check_status "${testing_services[@]}"
+wait_for
+check_status
 docker-compose down
 exit $EXIT_CODE

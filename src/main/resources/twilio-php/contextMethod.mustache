@@ -1,0 +1,144 @@
+        {{#vendorExtensions.hasOptionalQueryParams}}
+        $options = new Values($options);
+
+        {{/vendorExtensions.hasOptionalQueryParams}}
+        {{^vendorExtensions.hasOptionalQueryParams}}
+        {{#vendorExtensions.hasOptionalFormParams}}
+        $options = new Values($options);
+
+        {{/vendorExtensions.hasOptionalFormParams}}
+        {{^vendorExtensions.hasOptionalFormParams}}
+        {{#vendorExtensions.hasOptionalHeaderParams}}
+        $options = new Values($options);
+
+        {{/vendorExtensions.hasOptionalHeaderParams}}
+        {{/vendorExtensions.hasOptionalFormParams}}
+        {{/vendorExtensions.hasOptionalQueryParams}}
+    {{#queryParams.0}}
+        $params = Values::of([
+            {{#queryParams}}
+            {{#required}}
+            {{^vendorExtensions.x-serialize}}
+            {{^vendorExtensions.x-prefixed-collapsible-map}}
+            '{{baseName}}' => ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}},
+            {{/vendorExtensions.x-prefixed-collapsible-map}}
+            {{/vendorExtensions.x-serialize}}
+            {{#vendorExtensions.x-serialize}}
+            {{^vendorExtensions.x-serialize-map}}
+            '{{baseName}}' => {{vendorExtensions.x-serialize}}(${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}),
+            {{/vendorExtensions.x-serialize-map}}
+            {{#vendorExtensions.x-serialize-map}}
+            '{{baseName}}' => {{vendorExtensions.x-serialize}}(${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}, function($e) { return {{^vendorExtensions.x-serialize-array-of-array}}$e{{/vendorExtensions.x-serialize-array-of-array}}{{#vendorExtensions.x-serialize-array-of-array}}{{.}}($e){{/vendorExtensions.x-serialize-array-of-array}}; }),
+            {{/vendorExtensions.x-serialize-map}}
+            {{/vendorExtensions.x-serialize}}
+            {{/required}}
+            {{/queryParams}}
+            {{#queryParams}}
+            {{^required}}
+            {{^vendorExtensions.x-serialize}}
+            {{^vendorExtensions.x-prefixed-collapsible-map}}
+            '{{baseName}}' => $options['{{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}'],
+            {{/vendorExtensions.x-prefixed-collapsible-map}}
+            {{/vendorExtensions.x-serialize}}
+            {{#vendorExtensions.x-serialize}}
+            {{^vendorExtensions.x-serialize-map}}
+            '{{baseName}}' => {{vendorExtensions.x-serialize}}($options['{{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}']),
+            {{/vendorExtensions.x-serialize-map}}
+            {{#vendorExtensions.x-serialize-map}}
+            '{{baseName}}' => {{vendorExtensions.x-serialize}}($options['{{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}'], function($e) { return {{^vendorExtensions.x-serialize-array-of-array}}$e{{/vendorExtensions.x-serialize-array-of-array}}{{#vendorExtensions.x-serialize-array-of-array}}{{.}}($e){{/vendorExtensions.x-serialize-array-of-array}}; }),
+            {{/vendorExtensions.x-serialize-map}}
+            {{/vendorExtensions.x-serialize}}
+            {{/required}}
+            {{/queryParams}}
+        ]);
+        {{#queryParams}}
+        {{#required}}
+        {{#vendorExtensions.x-prefixed-collapsible-map}}
+        $params = \array_merge($params, Serialize::prefixedCollapsibleMap(${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}, 'AddOns'));
+        {{/vendorExtensions.x-prefixed-collapsible-map}}
+        {{/required}}
+        {{/queryParams}}
+        {{#queryParams}}
+        {{^required}}
+        {{#vendorExtensions.x-prefixed-collapsible-map}}
+        $params = \array_merge($params, Serialize::prefixedCollapsibleMap($options['{{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}'], 'AddOns'));
+        {{/vendorExtensions.x-prefixed-collapsible-map}}
+        {{/required}}
+        {{/queryParams}}
+
+    {{/queryParams.0}}
+    {{#formParams.0}}
+        $data = Values::of([
+            {{#requiredParams}}
+            {{#isFormParam}}
+            {{^vendorExtensions.x-serialize}}
+            '{{baseName}}' => ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}},
+            {{/vendorExtensions.x-serialize}}
+            {{#vendorExtensions.x-serialize}}
+            {{^vendorExtensions.x-serialize-map}}
+            '{{baseName}}' => {{vendorExtensions.x-serialize}}(${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}),
+            {{/vendorExtensions.x-serialize-map}}
+            {{#vendorExtensions.x-serialize-map}}
+            '{{baseName}}' => {{vendorExtensions.x-serialize}}(${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}},function($e) { return {{^vendorExtensions.x-serialize-array-of-array}}$e{{/vendorExtensions.x-serialize-array-of-array}}{{#vendorExtensions.x-serialize-array-of-array}}{{.}}($e){{/vendorExtensions.x-serialize-array-of-array}}; }),
+            {{/vendorExtensions.x-serialize-map}}
+            {{/vendorExtensions.x-serialize}}
+            {{/isFormParam}}
+            {{/requiredParams}}
+            {{#optionalParams}}
+            {{#isFormParam}}
+            {{^vendorExtensions.x-serialize}}
+            '{{baseName}}' => $options['{{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}'],
+            {{/vendorExtensions.x-serialize}}
+            {{#vendorExtensions.x-serialize}}
+            {{^vendorExtensions.x-serialize-map}}
+            '{{baseName}}' => {{vendorExtensions.x-serialize}}($options['{{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}']),
+            {{/vendorExtensions.x-serialize-map}}
+            {{#vendorExtensions.x-serialize-map}}
+            '{{baseName}}' => {{vendorExtensions.x-serialize}}($options['{{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}'], function($e) { return {{^vendorExtensions.x-serialize-array-of-array}}$e{{/vendorExtensions.x-serialize-array-of-array}}{{#vendorExtensions.x-serialize-array-of-array}}{{.}}($e){{/vendorExtensions.x-serialize-array-of-array}}; }),
+            {{/vendorExtensions.x-serialize-map}}
+            {{/vendorExtensions.x-serialize}}
+            {{/isFormParam}}
+            {{/optionalParams}}
+        ]);
+        {{#requiredParams}}
+        {{#isFormParam}}
+        {{#vendorExtensions.x-prefixed-collapsible-map}}
+        $data = \array_merge($data, Serialize::prefixedCollapsibleMap($options['{{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}'], 'AddOns'));
+        {{/vendorExtensions.x-prefixed-collapsible-map}}
+        {{/isFormParam}}
+        {{/requiredParams}}
+        {{#optionalParams}}
+        {{#isFormParam}}
+        {{#vendorExtensions.x-prefixed-collapsible-map}}
+        $data = \array_merge($data, Serialize::prefixedCollapsibleMap($options['{{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}'], 'AddOns'));
+        {{/vendorExtensions.x-prefixed-collapsible-map}}
+        {{/isFormParam}}
+        {{/optionalParams}}
+
+    {{/formParams.0}}
+    {{#headerParams.0}}
+        $headers = Values::of([{{#headerParams}}{{#required}}'{{baseName}}' => ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}{{^-last}}, {{/-last}}{{/required}}{{/headerParams}}{{#headerParams}}{{^required}}'{{baseName}}' => $options['{{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}']{{^-last}}, {{/-last}}{{/required}}{{/headerParams}}]);
+
+    {{/headerParams.0}}
+    {{^vendorExtensions.x-is-delete-operation}}
+        $payload = $this->version->{{#lambda.camelcase}}{{vendorExtensions.x-name}}{{/lambda.camelcase}}('{{httpMethod}}', $this->uri{{#queryParams.0}}{{^formParams}}{{^headerParams}}, $params{{/headerParams}}{{/formParams}}{{/queryParams.0}}{{^queryParams}}{{#formParams.0}}{{^headerParams}}, [], $data{{/headerParams}}{{/formParams.0}}{{/queryParams}}{{#queryParams.0}}{{#formParams.0}}{{^headerParams}}, $params, $data{{/headerParams}}{{/formParams.0}}{{/queryParams.0}}{{#queryParams.0}}{{#formParams.0}}{{#headerParams.0}}, $params, $data, $headers{{/headerParams.0}}{{/formParams.0}}{{/queryParams.0}}{{#queryParams.0}}{{^formParams}}{{#headerParams.0}}, $params, [], $headers{{/headerParams.0}}{{/formParams}}{{/queryParams.0}}{{^queryParams}}{{#formParams.0}}{{#headerParams.0}}, [], $data, $headers{{/headerParams.0}}{{/formParams.0}}{{/queryParams}}{{^queryParams}}{{^formParams}}{{#headerParams.0}}, [], [], $headers{{/headerParams.0}}{{/formParams}}{{/queryParams}});
+
+        return new {{apiName}}Instance(
+            $this->version,
+            $payload
+            {{#optionalParams}}
+            {{#isPathParam}}
+            , $this->solution['{{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}']
+            {{/isPathParam}}
+            {{/optionalParams}}
+            {{#requiredParams}}
+            {{#isPathParam}}
+            , $this->solution['{{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}']
+            {{/isPathParam}}
+            {{/requiredParams}}
+        );
+    {{/vendorExtensions.x-is-delete-operation}}
+    {{#vendorExtensions.x-is-delete-operation}}
+        return $this->version->{{#lambda.camelcase}}{{vendorExtensions.x-name}}{{/lambda.camelcase}}('{{#httpMethod}}{{.}}{{/httpMethod}}', $this->uri{{#queryParams.0}}{{^formParams}}{{^headerParams}}, $params{{/headerParams}}{{/formParams}}{{/queryParams.0}}{{^queryParams}}{{#formParams.0}}{{^headerParams}}, [], $data{{/headerParams}}{{/formParams.0}}{{/queryParams}}{{#queryParams.0}}{{#formParams.0}}{{^headerParams}}, $params, $data{{/headerParams}}{{/formParams.0}}{{/queryParams.0}}{{#queryParams.0}}{{#formParams.0}}{{#headerParams.0}}, $params, $data, $headers{{/headerParams.0}}{{/formParams.0}}{{/queryParams.0}}{{#queryParams.0}}{{^formParams}}{{#headerParams.0}}, $params, [], $headers{{/headerParams.0}}{{/formParams}}{{/queryParams.0}}{{^queryParams}}{{#formParams.0}}{{#headerParams.0}}, [], $data, $headers{{/headerParams.0}}{{/formParams.0}}{{/queryParams}}{{^queryParams}}{{^formParams}}{{#headerParams.0}}, [], [], $headers{{/headerParams.0}}{{/formParams}}{{/queryParams}});
+    {{/vendorExtensions.x-is-delete-operation}}
+    }

@@ -3,17 +3,11 @@ components:
     versionless.fleet:
       type: object
       properties:
-        account_sid:
+        name:
           type: string
-          minLength: 34
-          maxLength: 34
-          pattern: ^AC[0-9a-fA-F]{32}$
-          nullable: true
-          description: The unique SID that identifies this Account.
-        friendly_name:
-          description: A human readable description for this Fleet.
-          nullable: true
-          type: string
+    versionless.fleet.instance:
+      type: object
+      properties:
         sid:
           type: string
           minLength: 34
@@ -21,6 +15,10 @@ components:
           pattern: ^TH[0-9a-fA-F]{32}$
           nullable: true
           description: A string that uniquely identifies this Fleet.
+        friendly_name:
+          description: A human readable description for this Fleet.
+          nullable: true
+          type: string
   securitySchemes:
     accountSid_authToken:
       scheme: basic
@@ -38,7 +36,7 @@ paths:
           application/x-www-form-urlencoded:
             schema:
               properties:
-                FriendlyName:
+                Name:
                   type: string
               title: CreateDeployedDevicesFleetRequest
               type: object
@@ -69,7 +67,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/versionless.fleet'
+                $ref: '#/components/schemas/versionless.fleet.instance'
           description: OK
       security:
       - accountSid_authToken: []
@@ -78,25 +76,43 @@ paths:
     x-twilio:
       pathType: instance
   /understand/Assistants:
-    description: A path for a different product.
-    post:
-      operationId: CreateUnderstandAssistant
-      requestBody:
-        content:
-          application/x-www-form-urlencoded:
-            schema:
-              type: object
-              title: CreateUnderstandAssistantRequest
-              properties:
-                FriendlyName:
-                  type: string
+    description: A path for a different product which has no instance operations.
+    get:
+      operationId: ListUnderstandAssistants
       responses:
-        '201':
+        '200':
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/versionless.fleet'
-          description: Created
+                properties:
+                  assistants:
+                    items:
+                      $ref: '#/components/schemas/versionless.fleet.instance'
+                    type: array
+                  meta:
+                    properties:
+                      first_page_url:
+                        format: uri
+                        type: string
+                      key:
+                        type: string
+                      next_page_url:
+                        format: uri
+                        type: string
+                      page:
+                        type: integer
+                      page_size:
+                        type: integer
+                      previous_page_url:
+                        format: uri
+                        type: string
+                      url:
+                        format: uri
+                        type: string
+                    type: object
+                title: ListUnderstandAssistantsResponse
+                type: object
+          description: OK
       security:
         - accountSid_authToken: []
     servers:

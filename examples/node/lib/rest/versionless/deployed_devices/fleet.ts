@@ -16,14 +16,15 @@ import { inspect, InspectOptions } from "util";
 import DeployedDevices from "../DeployedDevices";
 const deserialize = require("../../../base/deserialize");
 const serialize = require("../../../base/serialize");
+import { isValidPathParam } from "../../../base/utility";
 
 /**
  * Options to pass to create a FleetInstance
  *
- * @property { string } [friendlyName]
+ * @property { string } [name]
  */
 export interface FleetListInstanceCreateOptions {
-  friendlyName?: string;
+  name?: string;
 }
 
 export interface FleetContext {
@@ -54,6 +55,10 @@ export class FleetContextImpl implements FleetContext {
   protected _uri: string;
 
   constructor(protected _version: DeployedDevices, sid: string) {
+    if (!isValidPathParam(sid)) {
+      throw new Error("Parameter 'sid' is not valid.");
+    }
+
     this._solution = { sid };
     this._uri = `/Fleets/${sid}`;
   }
@@ -94,9 +99,9 @@ export class FleetContextImpl implements FleetContext {
 interface FleetPayload extends FleetResource {}
 
 interface FleetResource {
-  account_sid?: string | null;
-  friendly_name?: string | null;
+  name?: string;
   sid?: string | null;
+  friendly_name?: string | null;
 }
 
 export class FleetInstance {
@@ -108,25 +113,22 @@ export class FleetInstance {
     payload: FleetPayload,
     sid?: string
   ) {
-    this.accountSid = payload.account_sid;
-    this.friendlyName = payload.friendly_name;
+    this.name = payload.name;
     this.sid = payload.sid;
+    this.friendlyName = payload.friendly_name;
 
     this._solution = { sid: sid || this.sid };
   }
 
-  /**
-   * The unique SID that identifies this Account.
-   */
-  accountSid?: string | null;
-  /**
-   * A human readable description for this Fleet.
-   */
-  friendlyName?: string | null;
+  name?: string;
   /**
    * A string that uniquely identifies this Fleet.
    */
   sid?: string | null;
+  /**
+   * A human readable description for this Fleet.
+   */
+  friendlyName?: string | null;
 
   private get _proxy(): FleetContext {
     this._context =
@@ -154,9 +156,9 @@ export class FleetInstance {
    */
   toJSON() {
     return {
-      accountSid: this.accountSid,
-      friendlyName: this.friendlyName,
+      name: this.name,
       sid: this.sid,
+      friendlyName: this.friendlyName,
     };
   }
 
@@ -233,8 +235,7 @@ export function FleetListInstance(version: DeployedDevices): FleetListInstance {
 
     let data: any = {};
 
-    if (params["friendlyName"] !== undefined)
-      data["FriendlyName"] = params["friendlyName"];
+    if (params["name"] !== undefined) data["Name"] = params["name"];
 
     const headers: any = {};
     headers["Content-Type"] = "application/x-www-form-urlencoded";

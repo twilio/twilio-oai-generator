@@ -72,15 +72,11 @@ import com.twilio.type.SubscribeRule;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @ToString
 public class Assistant extends Resource {
-    private static final long serialVersionUID = 190231528314786L;
+    private static final long serialVersionUID = 163787776958144L;
 
-    public static AssistantCreator creator(){
-        return new AssistantCreator();
+    public static AssistantReader reader(){
+        return new AssistantReader();
     }
-
-
-
-
 
     /**
     * Converts a JSON String into a Assistant object using the provided ObjectMapper.
@@ -119,34 +115,26 @@ public class Assistant extends Resource {
         }
     }
 
-    private final String accountSid;
-    private final String friendlyName;
     private final String sid;
+    private final String friendlyName;
 
     @JsonCreator
     private Assistant(
-        @JsonProperty("account_sid")
-        final String accountSid,
+        @JsonProperty("sid")
+        final String sid,
 
         @JsonProperty("friendly_name")
-        final String friendlyName,
-
-        @JsonProperty("sid")
-        final String sid
+        final String friendlyName
     ) {
-        this.accountSid = accountSid;
-        this.friendlyName = friendlyName;
         this.sid = sid;
+        this.friendlyName = friendlyName;
     }
 
-        public final String getAccountSid() {
-            return this.accountSid;
+        public final String getSid() {
+            return this.sid;
         }
         public final String getFriendlyName() {
             return this.friendlyName;
-        }
-        public final String getSid() {
-            return this.sid;
         }
 
     @Override
@@ -161,12 +149,12 @@ public class Assistant extends Resource {
 
         Assistant other = (Assistant) o;
 
-        return Objects.equals(accountSid, other.accountSid) &&  Objects.equals(friendlyName, other.friendlyName) &&  Objects.equals(sid, other.sid)  ;
+        return Objects.equals(sid, other.sid) &&  Objects.equals(friendlyName, other.friendlyName)  ;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(accountSid, friendlyName, sid);
+        return Objects.hash(sid, friendlyName);
     }
 
 }

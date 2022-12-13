@@ -16,18 +16,12 @@ import { inspect, InspectOptions } from "util";
 import V2010 from "../../../V2010";
 const deserialize = require("../../../../../base/deserialize");
 const serialize = require("../../../../../base/serialize");
+import { isValidPathParam } from "../../../../../base/utility";
 import { PhoneNumberCapabilities } from "../../../../../interfaces";
 
 export class TestResponseObjectTestArrayOfObjects {
   "count"?: number;
   "description"?: string;
-}
-
-export class TestResponseObjectTestObject {
-  "fax"?: boolean;
-  "mms"?: boolean;
-  "sms"?: boolean;
-  "voice"?: boolean;
 }
 
 type TestStatus =
@@ -85,6 +79,14 @@ export class FeedbackCallSummaryContextImpl
   protected _uri: string;
 
   constructor(protected _version: V2010, accountSid: string, sid: string) {
+    if (!isValidPathParam(accountSid)) {
+      throw new Error("Parameter 'accountSid' is not valid.");
+    }
+
+    if (!isValidPathParam(sid)) {
+      throw new Error("Parameter 'sid' is not valid.");
+    }
+
     this._solution = { accountSid, sid };
     this._uri = `/Accounts/${accountSid}/Calls/Feedback/Summary/${sid}.json`;
   }
@@ -165,6 +167,7 @@ interface FeedbackCallSummaryResource {
   test_number?: number | null;
   price_unit?: string | null;
   test_number_float?: number | null;
+  test_number_decimal?: Decimal | null;
   test_enum?: TestStatus;
   a2p_profile_bundle_sid?: string | null;
   test_array_of_integers?: Array<number>;
@@ -192,6 +195,7 @@ export class FeedbackCallSummaryInstance {
     this.testNumber = payload.test_number;
     this.priceUnit = payload.price_unit;
     this.testNumberFloat = payload.test_number_float;
+    this.testNumberDecimal = payload.test_number_decimal;
     this.testEnum = payload.test_enum;
     this.a2pProfileBundleSid = payload.a2p_profile_bundle_sid;
     this.testArrayOfIntegers = payload.test_array_of_integers;
@@ -211,6 +215,7 @@ export class FeedbackCallSummaryInstance {
   testNumber?: number | null;
   priceUnit?: string | null;
   testNumberFloat?: number | null;
+  testNumberDecimal?: Decimal | null;
   testEnum?: TestStatus;
   /**
    * A2P Messaging Profile Bundle BundleSid
@@ -267,6 +272,7 @@ export class FeedbackCallSummaryInstance {
       testNumber: this.testNumber,
       priceUnit: this.priceUnit,
       testNumberFloat: this.testNumberFloat,
+      testNumberDecimal: this.testNumberDecimal,
       testEnum: this.testEnum,
       a2pProfileBundleSid: this.a2pProfileBundleSid,
       testArrayOfIntegers: this.testArrayOfIntegers,
@@ -310,6 +316,10 @@ export function FeedbackCallSummaryListInstance(
   version: V2010,
   accountSid: string
 ): FeedbackCallSummaryListInstance {
+  if (!isValidPathParam(accountSid)) {
+    throw new Error("Parameter 'accountSid' is not valid.");
+  }
+
   const instance = ((sid) =>
     instance.get(sid)) as FeedbackCallSummaryListInstanceImpl;
 

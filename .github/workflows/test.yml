@@ -11,25 +11,29 @@ on:
 
 jobs:
   test:
+    strategy:
+      fail-fast: false
+      matrix:
+        language: [ 'csharp', 'go', 'java', 'node', 'php' ]
     runs-on: ubuntu-latest
     timeout-minutes: 20
     env:
       DOCKER_LOGIN: ${{ secrets.DOCKER_USERNAME && secrets.DOCKER_AUTH_TOKEN }}
     steps:
       - name: Checkout twilio-oai-generator
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
 
       - name: Set up Java 11
-        uses: actions/setup-java@v2
+        uses: actions/setup-java@v3
         with:
           distribution: 'zulu'
           java-version: '11'
 
       - name: Login to Docker Hub
         if: env.DOCKER_LOGIN
-        uses: docker/login-action@v1
+        uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_AUTH_TOKEN }}
@@ -38,7 +42,7 @@ jobs:
         run: make test
 
       - name: Run helper tests and sonar analysis
-        run: make test-docker SONAR_TOKEN=${{ secrets.SONAR_TOKEN }}
+        run: make test-docker SONAR_TOKEN=${{ secrets.SONAR_TOKEN }} LANGUAGES=${{ matrix.language }}
 
       - name: Show git status and fail on diff
         run: |
@@ -51,9 +55,9 @@ jobs:
 
       - name: Install SonarCloud scanner and run analysis
         uses: SonarSource/sonarcloud-github-action@master
-        if: (github.event_name == 'pull_request' || github.ref_type == 'branch') && !github.event.pull_request.head.repo.fork
+        if: (github.event_name == 'pull_request' || github.ref_type == 'branch') && !github.event.pull_request.head.repo.fork && startsWith(matrix.language, 'csharp') != true
         with:
-          projectBaseDir: examples
+          projectBaseDir: examples/${{ matrix.language }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

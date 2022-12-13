@@ -2,4 +2,6 @@ com.twilio.oai.TwilioCsharpGenerator
 com.twilio.oai.TwilioGoGenerator
 com.twilio.oai.TwilioJavaGenerator
 com.twilio.oai.TwilioNodeGenerator
+com.twilio.oai.TwilioPhpGenerator
+com.twilio.oai.TwilioPythonGenerator
 com.twilio.oai.TwilioTerraformGenerator

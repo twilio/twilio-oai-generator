@@ -23,6 +23,8 @@ services:
   csharp-test:
     build:
       context: ../csharp
+      args:
+        - SONAR_TOKEN
     volumes:
       - ../csharp:/local
     depends_on:
@@ -35,6 +37,16 @@ services:
       context: ../node
     volumes:
       - ../node:/local
+    depends_on:
+      - prism_api_v2010
+      - prism_flex_v1
+      - prism_versionless
+
+  php-test:
+    build:
+      context: ../php
+    volumes:
+      - ../php:/local
     depends_on:
       - prism_api_v2010
       - prism_flex_v1

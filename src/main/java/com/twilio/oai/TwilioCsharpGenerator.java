@@ -45,7 +45,6 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
         additionalProperties,
         new ResourceMap(new Inflector()),
         new CSharpCaseResolver());
-    private final List<CodegenModel> allModels = new ArrayList<>();
     private final Map<String, String> modelFormatMap = new HashMap<>();
 
     CSharpResolver resolver = new CSharpResolver();
@@ -101,17 +100,15 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
         return directoryStructureService.toApiFilename(super.toApiFilename(name));
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public OperationsMap postProcessOperationsWithModels(final OperationsMap objs, List<ModelMap> allModels) {
         final OperationsMap results = super.postProcessOperationsWithModels(objs, allModels);
         final List<CodegenOperation> opList = directoryStructureService.processOperations(results);
+        final String recordKey = directoryStructureService.getRecordKey(opList);
+        results.put("recordKey", recordKey);
 
         final Map<String, Map<String, Object>> resources = new LinkedHashMap<>();
         final List<CodegenModel> responseModels = new ArrayList<>();
-
-        final String recordKey = getRecordKey(opList, this.allModels);
-        results.put("recordKey", recordKey);
 
         final Map<String, IJsonSchemaValidationProperties> enums = new HashMap<>();
         resolver.setEnums(enums);
@@ -126,7 +123,7 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
             resolveCodeOperationParams(co, recordKey, responseModels);
 
             // Add operations key to resource
-            final ArrayList<CodegenOperation> resourceOperationList = (ArrayList<CodegenOperation>) resource.computeIfAbsent("operations", k -> new ArrayList<>());
+            final ArrayList<CodegenOperation> resourceOperationList = Utility.getOperations(resource);
             resourceOperationList.add(co);
 
             boolean arrayParamsPresent = hasArrayParams(co.allParams);
@@ -147,7 +144,6 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
 
         for (final Map<String, Object> resource : resources.values()) {
             resource.put("responseModel", getDistinctResponseModel(responseModels));
-            PathUtils.flattenStringMap(resource, "models");
         }
 
         List<IJsonSchemaValidationProperties> enumList = new ArrayList<>(resolver.getEnums().values());
@@ -274,19 +270,6 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
         return lambdaBuilder;
     }
 
-    private Optional<CodegenModel> getModelCoPath(final String modelName, CodegenOperation codegenOperation, String recordKey) {
-        if (codegenOperation.vendorExtensions.containsKey("x-is-read-operation") && (boolean)codegenOperation.vendorExtensions.get("x-is-read-operation")) {
-            Optional<CodegenModel> coModel = allModels.stream().filter(model -> model.getClassname().equals(modelName)).findFirst();
-            if (coModel.isEmpty()) {
-                return Optional.empty();
-            }
-            CodegenProperty property = coModel.get().vars.stream().filter(prop -> prop.baseName.equals(recordKey)).findFirst().get();
-            return allModels.stream().filter(model -> model.getClassname().equals(property.complexType)).findFirst();
-        }
-        return allModels.stream().filter(model -> model.getClassname().equals(modelName)).findFirst();
-    }
-
-
     private List<CodegenProperty> getDistinctResponseModel(List<CodegenModel> responseModels) {
         Set<CodegenProperty> distinctResponseModels = new LinkedHashSet<>();
         for (CodegenModel codegenModel: responseModels) {
@@ -303,6 +286,7 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
         return new LinkedList<>(distinctResponseModels);
     }
 
+    @Override
     public void postProcessParameter(CodegenParameter parameter) {
         super.postProcessParameter(parameter);
         if (parameter.isPathParam) {
@@ -335,7 +319,7 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
         // Resolve Response Model
         for (CodegenResponse response : co.responses) {
             String modelName = response.dataType;
-            Optional<CodegenModel> responseModel = getModelCoPath(modelName,co, recordKey);
+            Optional<CodegenModel> responseModel = directoryStructureService.getModelCoPath(modelName, co, recordKey);
             if (responseModel.isEmpty()) {
                 continue;
             }
@@ -360,36 +344,10 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
     public Map<String, ModelsMap> postProcessAllModels(final Map<String, ModelsMap> allModels) {
         final Map<String, ModelsMap> results = super.postProcessAllModels(allModels);
 
-        for (final ModelsMap mods : results.values()) {
-            final List<ModelMap> modList = mods.getModels();
-
-            // Add all the models to the local models list.
-            modList
-                    .stream()
-                    .map(ModelMap::getModel)
-                    .map(CodegenModel.class::cast)
-                    .collect(Collectors.toCollection(() -> this.allModels));
-        }
-        Utility.setComplexDataMapping(this.allModels, this.modelFormatMap);
+        directoryStructureService.postProcessAllModels(results, modelFormatMap);
         resolver.setModelFormatMap(modelFormatMap);
         // Return an empty collection so no model files get generated.
         return new HashMap<>();
-    }
-
-
-    private String getRecordKey(List<CodegenOperation> opList, List<CodegenModel> models) {
-        String recordKey =  "";
-        for (CodegenOperation co: opList) {
-            for(CodegenModel model: models) {
-                if(model.name.equals(co.returnType)) {
-                    recordKey = model.allVars
-                            .stream()
-                            .filter(v -> v.openApiType.equals("array"))
-                            .collect(Collectors.toList()).get(0).baseName;
-                }
-            }
-        }
-        return recordKey;
     }
 
     @Override

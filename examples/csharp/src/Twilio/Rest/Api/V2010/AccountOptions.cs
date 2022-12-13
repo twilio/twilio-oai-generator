@@ -114,7 +114,7 @@ namespace Twilio.Rest.Api.V2010
     }
 
 
-    /// <summary> read </summary>
+    /// <summary> This operation's summary has a special character </summary>
     public class ReadAccountOptions : ReadOptions<AccountResource>
     {
     
@@ -157,15 +157,15 @@ namespace Twilio.Rest.Api.V2010
             }
             if (DateTest != null)
             {
-                p.Add(new KeyValuePair<string, string>("DateTest", DateTest.Value.ToString("yyyy-MM-dd")));
+                p.Add(new KeyValuePair<string, string>("Date.Test", DateTest.Value.ToString("yyyy-MM-dd")));
             }
             if (DateCreatedBefore != null)
             {
-                p.Add(new KeyValuePair<string, string>("DateCreatedBefore", Serializers.DateTimeIso8601(DateCreatedBefore)));
+                p.Add(new KeyValuePair<string, string>("DateCreated<", Serializers.DateTimeIso8601(DateCreatedBefore)));
             }
             if (DateCreatedAfter != null)
             {
-                p.Add(new KeyValuePair<string, string>("DateCreatedAfter", Serializers.DateTimeIso8601(DateCreatedAfter)));
+                p.Add(new KeyValuePair<string, string>("DateCreated>", Serializers.DateTimeIso8601(DateCreatedAfter)));
             }
             if (PageSize != null)
             {

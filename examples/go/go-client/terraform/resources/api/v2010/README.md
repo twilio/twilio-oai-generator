@@ -19,6 +19,7 @@ Name | Type | Requirement | Description
 Name | Type | Requirement | Description
 --- | --- | --- | ---
 **required_string_property** | string | **Required** | 
+**test_method** | string | **Required** | The HTTP method that we should use to request the `TestArrayOfUri`.
 **path_account_sid** | string | Optional | 
 **test_array_of_strings** | list(string) | Optional | 
 **test_array_of_uri** | list(string) | Optional | 

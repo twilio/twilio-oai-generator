@@ -59,7 +59,7 @@ namespace Twilio.Tests.Rest
         [Test]
         public void TestPost()
         {
-            var call = CallResource.Create("testString", ACCOUNT_SID);
+            var call = CallResource.Create("testString", Twilio.Http.HttpMethod.Post , ACCOUNT_SID);
             Assert.NotNull(call);
             Assert.AreEqual("Ahoy", call.TestString);
         }

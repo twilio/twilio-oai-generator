@@ -14,12 +14,52 @@ describe("versionless", () => {
   it("should create a deployed devices fleet", () => {
     const scope = nock("http://versionless.twilio.com")
       .post("/DeployedDevices/Fleets", {
-        FriendlyName: "Friend-o",
+        Name: "Otis",
       })
-      .reply(201, { sid: "123" });
+      .reply(201, { name: "Otis" });
 
     return twilio.versionless.deployed_devices.fleets
-      .create({ friendlyName: "Friend-o" })
+      .create({ name: "Otis" })
+      .then((fleetInstance) => {
+        expect(fleetInstance.name).toEqual("Otis");
+        scope.done();
+      });
+  });
+
+  it("should fetch a deployed devices fleet", () => {
+    const scope = nock("http://versionless.twilio.com")
+      .get("/DeployedDevices/Fleets/123")
+      .reply(200, { sid: "123", friendly_name: "Friend-o" });
+
+    return twilio.versionless.deployed_devices
+      .fleets("123")
+      .fetch()
+      .then((fleetInstance) => {
+        expect(fleetInstance.sid).toEqual("123");
+        expect(fleetInstance.friendlyName).toEqual("Friend-o");
+        scope.done();
+      });
+  });
+
+  it("should page the understand assistants", () => {
+    const scope = nock("http://versionless.twilio.com")
+      .get("/understand/Assistants")
+      .reply(200, {
+        assistants: [
+          {
+            friendly_name: "flea",
+          },
+        ],
+        meta: {
+          key: "assistants",
+        },
+      });
+
+    return twilio.versionless.understand.assistants
+      .page()
+      .then((assistantPage) => {
+        expect(assistantPage.instances[0].friendlyName).toEqual("flea");
+      })
       .then(() => scope.done());
   });
 });
