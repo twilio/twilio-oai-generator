@@ -14,7 +14,7 @@ public class PhpApiActionTemplate implements IApiActionTemplate {
     public final static String TEMPLATE_TYPE_PAGE = "page";
     public final static String TEMPLATE_TYPE_VERSION = "version";
 
-    private final Map<String, List<String>> templates = mapping();
+    public final static Map<String, List<String>> templates = mapping();
     CodegenConfig codegen;
 
     public PhpApiActionTemplate(CodegenConfig defaultCodegen) {
@@ -49,13 +49,18 @@ public class PhpApiActionTemplate implements IApiActionTemplate {
         List<String> templateStrings = templates.get(TEMPLATE_TYPE_VERSION);
         String apiVersionClass = codegen.additionalProperties().get("apiVersionClass").toString();
         if (apiVersionClass != null)
-            codegen.supportingFiles().add(new SupportingFile(templateStrings.get(0),
-                    ".." + File.separator +
-                            apiVersionClass +
-                            templateStrings.get(1)));
+            if (apiVersionClass.startsWith("V")) {
+                codegen.supportingFiles().add(new SupportingFile(templateStrings.get(0),
+                        ".." + File.separator +
+                                apiVersionClass +
+                                templateStrings.get(1)));
+            } else {
+                codegen.apiTemplateFiles().put(templateStrings.get(0), templateStrings.get(1));
+                codegen.apiFilename(templateStrings.get(0), apiVersionClass);
+            }
     }
 
-    private Map<String, List<String>> mapping() {
+    private static Map<String, List<String>> mapping() {
         return Map.ofEntries(
                 new AbstractMap.SimpleEntry<>(TEMPLATE_TYPE_LIST, Arrays.asList(TEMPLATE_TYPE_LIST + ".mustache", "List.php")),
                 new AbstractMap.SimpleEntry<>(TEMPLATE_TYPE_CONTEXT, Arrays.asList(TEMPLATE_TYPE_CONTEXT + ".mustache", "Context.php")),

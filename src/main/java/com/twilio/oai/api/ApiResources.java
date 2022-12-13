@@ -26,7 +26,7 @@ public class ApiResources {
         apiName = getName(apiOperations.get(0));
         apiPath = apiResourceBuilder.apiPath;
         version = StringUtils.camelize(apiResourceBuilder.version);
-        responseModels = apiResourceBuilder.apiResponseModels;
+        responseModels = new ArrayList<>(apiResourceBuilder.apiResponseModels);
         recordKey = apiResourceBuilder.recordKey;
         requiredPathParams = new ArrayList<>(apiResourceBuilder.requiredPathParams);
         namespaceSubPart = apiResourceBuilder.namespaceSubPart;

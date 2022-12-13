@@ -30,6 +30,7 @@ use Twilio\Serialize;
 
 
 /**
+ * @property string $name
  * @property string $sid
  * @property string $friendlyName
  */
@@ -47,6 +48,7 @@ class FleetInstance extends InstanceResource {
 
         // Marshaled Properties
         $this->properties = [
+            'name' => Values::array_get($payload, 'name'),
             'sid' => Values::array_get($payload, 'sid'),
             'friendlyName' => Values::array_get($payload, 'friendly_name'),
         ];
@@ -69,17 +71,6 @@ class FleetInstance extends InstanceResource {
         }
 
         return $this->context;
-    }
-
-    /**
-     * Create the FleetInstance
-     *
-     * @param array|Options $options Optional Arguments
-     * @return FleetInstance Created FleetInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function create(array $options = []): FleetInstance {
-        return $this->proxy()->create($options);
     }
 
     /**
