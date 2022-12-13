@@ -48,7 +48,7 @@ public class JavaParameterResolver extends LanguageParamResolver {
             // cloning to prevent update in source map
             HashMap<String, String> promotionsMap = new HashMap<>((Map) mapper.promotions().get(parameter.dataFormat));
             promotionsMap.replaceAll((dataType, value) -> String.format(value, parameter.paramName) );
-            parameter.vendorExtensions.put(ApplicationConstants.PROMOTION_EXTENTION_NAME, promotionsMap);
+            parameter.vendorExtensions.put(ApplicationConstants.PROMOTION_EXTENSION_NAME, promotionsMap);
         }
 
         codegenParameterResolver.resolve(parameter);

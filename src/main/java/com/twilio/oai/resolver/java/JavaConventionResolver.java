@@ -6,7 +6,6 @@ import com.twilio.oai.Segments;
 import com.twilio.oai.StringHelper;
 import com.twilio.oai.common.EnumConstants;
 import com.twilio.oai.resolver.common.CodegenModelResolver;
-import com.twilio.oai.resolver.common.CodegenParameterResolver;
 import com.twilio.oai.resolver.IConventionMapper;
 import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenParameter;
@@ -19,27 +18,16 @@ public class JavaConventionResolver {
     private final String VENDOR_PREFIX = "x-";
     private final String PREFIXED_COLLAPSIBLE_MAP = "prefixed-collapsible-map";
     private final String X_PREFIXED_COLLAPSIBLE_MAP = "x-prefixed-collapsible-map";
-    private static final String HTTP_METHOD = "http-method";
     private final String HYPHEN = "-";
-    private final String OBJECT = "object";
 
-    private final String LIST_OBJECT = "List<Object>";
-
-    private final String PHONE_NUMBER_FORMAT = "phone-number";
-
-    private final String X_IS_PHONE_NUMBER_FORMAT = "x-is-phone-number-format";
-
-    private IConventionMapper conventionMapper;
-    private CodegenModelResolver codegenModelResolver;
-    private CodegenParameterResolver codegenParameterResolver;
+    private final IConventionMapper conventionMapper;
+    private final CodegenModelResolver codegenModelResolver;
 
     private static final String VALUES = "values";
 
     public JavaConventionResolver(IConventionMapper conventionMapper) {
         this.conventionMapper = conventionMapper;
-        codegenModelResolver = new CodegenModelResolver(conventionMapper,
-                Arrays.asList(EnumConstants.JavaDataTypes.values()));
-        codegenParameterResolver = new CodegenParameterResolver(conventionMapper,
+        codegenModelResolver = new CodegenModelResolver(conventionMapper, null,
                 Arrays.asList(EnumConstants.JavaDataTypes.values()));
     }
 
@@ -86,47 +74,6 @@ public class JavaConventionResolver {
 
     }
 
-    public CodegenParameter resolveParameter(CodegenParameter parameter) {
-        if(parameter.dataType.equalsIgnoreCase(OBJECT) || parameter.dataType.equals(LIST_OBJECT)) {
-            if (parameter.dataType.equals(LIST_OBJECT)) {
-                parameter.dataType = "List<" + conventionMapper.properties().get(OBJECT)+ ">";
-                parameter.baseType = "" + conventionMapper.properties().get(OBJECT);
-            } else {
-                parameter.dataType = (String) conventionMapper.properties().get(OBJECT);
-            }
-            parameter.isFreeFormObject = true;
-        }
-
-        boolean hasPromotion = conventionMapper.promotions().containsKey(parameter.dataFormat);
-        if (hasPromotion) {
-            // cloning to prevent update in source map
-            HashMap<String, String> promotionsMap = new HashMap<>((Map) conventionMapper.promotions().get(parameter.dataFormat));
-            promotionsMap.replaceAll((dataType, value) -> String.format(value, parameter.paramName) );
-            parameter.vendorExtensions.put("x-promotions", promotionsMap);
-        }
-
-        codegenParameterResolver.resolve(parameter);
-
-        if( PHONE_NUMBER_FORMAT.equals(parameter.dataFormat)) {
-            parameter.vendorExtensions.put(X_IS_PHONE_NUMBER_FORMAT, true);
-        }
-        // prevent special format properties to be considered as enum
-        if (conventionMapper.properties().containsKey(parameter.dataFormat)) {
-            parameter.isEnum = false;
-            parameter.allowableValues = null;
-        }
-        parameter.paramName = StringHelper.toFirstLetterLower(parameter.paramName);
-        return parameter;
-    }
-
-    public CodegenParameter resolveParamTypes(CodegenParameter codegenParameter) {
-        boolean hasProperty = conventionMapper.properties().containsKey(codegenParameter.dataFormat);
-        if (hasProperty) {
-            codegenParameter.dataType = (String) conventionMapper.properties().get(codegenParameter.dataFormat);
-        }
-        return codegenParameter;
-    }
-
     public CodegenParameter prefixedCollapsibleMap(CodegenParameter parameter) {
         if (parameter.dataFormat != null && parameter.dataFormat.startsWith(PREFIXED_COLLAPSIBLE_MAP)) {
             String[] split_format_array = parameter.dataFormat.split(HYPHEN);
@@ -135,13 +82,6 @@ public class JavaConventionResolver {
         }
         parameter.paramName = StringHelper.toFirstLetterLower(parameter.paramName);
         return parameter;
-    }
-
-    // Resolves the dataType for a property if the property.complexType is in the given modelFormatMap
-    public CodegenModel resolveComplexType(CodegenModel item, Map<String, String> modelFormatMap) {
-        codegenModelResolver.setModelFormatMap(modelFormatMap);
-        codegenModelResolver.resolve(item);
-        return item;
     }
 
      @SuppressWarnings("unchecked")

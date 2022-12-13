@@ -3,6 +3,7 @@ package com.twilio.oai;
 import com.twilio.oai.api.JavaApiResourceBuilder;
 import com.twilio.oai.api.JavaApiResources;
 import com.twilio.oai.common.EnumConstants;
+import com.twilio.oai.common.Utility;
 import com.twilio.oai.mlambdas.ReplaceHyphenLambda;
 import com.twilio.oai.resolver.LanguageConventionResolver;
 import com.twilio.oai.resolver.common.CodegenModelResolver;
@@ -29,12 +30,6 @@ import static com.twilio.oai.common.ApplicationConstants.*;
 
 public class TwilioJavaGenerator extends JavaClientCodegen {
 
-    private static final int OVERFLOW_CHECKER = 32;
-    private static final int BASE_SIXTEEN = 16;
-    private static final int BIG_INTEGER_CONSTANT = 1;
-    private static final int SERIAL_UID_LENGTH = 12;
-    private static final String URI = "uri";
-    private static final String ENUM_VARS = "enumVars";
     private static final String VALUES = "values";
 
     private final TwilioCodegenAdapter twilioCodegen;
@@ -133,6 +128,7 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
     public Map<String, ModelsMap> postProcessAllModels(final Map<String, ModelsMap> allModels) {
         final Map<String, ModelsMap> results = super.postProcessAllModels(allModels);
 
+        Utility.addModelsToLocalModelList(results, this.allModels);
         directoryStructureService.postProcessAllModels(results, modelFormatMap);
 
         // Return an empty collection so no model files get generated.
@@ -146,36 +142,6 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
         JavaApiResources apiResources = processCodegenOperations(opList);
         results.put("resources", apiResources);
         return results;
-    }
-
-    private void addDeleteHeaderEnums(CodegenOperation co, List<CodegenModel> responseModels) {
-        List<CodegenProperty> codegenProperties = new ArrayList<>();
-        for (CodegenParameter cp: co.allParams) {
-            if (cp.isEnum && cp.isHeaderParam) {
-                codegenProperties.add(createCodeGenPropertyFromParameter(cp));
-            }
-        }
-        if (!codegenProperties.isEmpty()) {
-            CodegenModel codegenModel = new CodegenModel();
-            codegenModel.vendorExtensions.put(ENUM_VARS, codegenProperties);
-            responseModels.add(codegenModel);
-        }
-    }
-
-    private CodegenProperty createCodeGenPropertyFromParameter(CodegenParameter co) {
-        CodegenProperty property = new CodegenProperty();
-        property.isEnum = co.isEnum;
-        property.baseName = co.baseName;
-        property.enumName = co.enumName;
-        property.allowableValues = co.allowableValues;
-        property.dataType = co.dataType;
-        property.vendorExtensions = co.vendorExtensions;
-        property.datatypeWithEnum = co.datatypeWithEnum;
-        property.complexType = co.getComplexType();
-        property.name = co.paramName;
-        property.nameInCamelCase = co.baseName.replace("-","");
-        property.nameInSnakeCase = co.baseName.replace("-","_").toLowerCase();
-        return property;
     }
 
     @Override
@@ -196,10 +162,9 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
     }
 
     private JavaApiResources processCodegenOperations(List<CodegenOperation> opList) {
-        CodegenModelResolver codegenModelResolver = new CodegenModelResolver(conventionMapper,
+        CodegenModelResolver codegenModelResolver = new CodegenModelResolver(conventionMapper, modelFormatMap,
             Arrays.asList(EnumConstants.JavaDataTypes.values()));
-        codegenModelResolver.setModelFormatMap(modelFormatMap);
-        return  new JavaApiResourceBuilder(apiActionTemplate, opList, this.allModels, directoryStructureService, conventionMapper)
+        return new JavaApiResourceBuilder(apiActionTemplate, opList, this.allModels, conventionMapper)
             .updateApiPath()
             .updateTemplate()
             .updateOperations(new JavaParameterResolver(conventionMapper))

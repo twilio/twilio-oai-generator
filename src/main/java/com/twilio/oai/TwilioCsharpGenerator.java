@@ -119,7 +119,7 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
             resolver.setClassName(resourceName);
             Map<String, Object> resource = resources.computeIfAbsent(resourceName, k -> new LinkedHashMap<>());
 
-            twilioCodegen.populateCrudOperations(resource, co);
+            Utility.populateCrudOperations(co);
             resolveCodeOperationParams(co, recordKey, responseModels);
 
             // Add operations key to resource

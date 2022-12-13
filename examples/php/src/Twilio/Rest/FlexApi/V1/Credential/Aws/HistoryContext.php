@@ -57,6 +57,7 @@ class HistoryContext extends InstanceContext {
         $options = new Values($options);
 
         $params = Values::of([
+            'AddOnsData' => Serialize::prefixedCollapsibleMap($options['addOnsData']),
         ]);
         $params = \array_merge($params, Serialize::prefixedCollapsibleMap($options['addOnsData'], 'AddOns'));
 

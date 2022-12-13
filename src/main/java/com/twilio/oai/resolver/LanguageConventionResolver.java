@@ -1,13 +1,14 @@
 package com.twilio.oai.resolver;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.twilio.oai.Segments;
 
+import java.util.HashSet;
 import java.util.Map;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 public class LanguageConventionResolver implements IConventionMapper {
-    public static final String VENDOR_PREFIX = "x-";
     public static final String PREFIXED_COLLAPSIBLE_MAP = "prefixed-collapsible-map";
     public static final String X_PREFIXED_COLLAPSIBLE_MAP = "x-prefixed-collapsible-map";
     public static final String HYPHEN = "-";
@@ -17,17 +18,23 @@ public class LanguageConventionResolver implements IConventionMapper {
 
     public static final String LIST_OBJECT = "List<Object>";
 
-    public static final String PHONE_NUMBER_FORMAT = "phone-number";
+    private final Map<String, Map<String, Object>> conventionalMap;
 
-    public static final String X_IS_PHONE_NUMBER_FORMAT = "x-is-phone-number-format";
-
-    public static final String LIST_PREFIX = "list-";
-
-    private Map<String, Map<String, Object>> conventionalMap ;
     public LanguageConventionResolver(String langConventionFilePath) {
         this.conventionalMap = getConventionalMap(langConventionFilePath);
+        convertDataTypeKeys();
     }
 
+    private void convertDataTypeKeys() {
+        conventionalMap.values().forEach(properties -> new HashSet<>(properties.keySet()).forEach(key -> {
+            final Object value = properties.remove(key);
+            properties.put(key
+                               .replaceAll("[^a-zA-Z\\d]+", "-")
+                               .replaceAll("([A-Za-z])(\\d)", "$1-$2")
+                               .replaceAll("-+$", ""), value);
+            properties.putIfAbsent(key.replaceAll("<.*", "").replace("_", "-"), value);
+        }));
+    }
 
     @Override
     public Map<String, Object> properties() {

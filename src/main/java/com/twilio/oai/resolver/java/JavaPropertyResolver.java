@@ -12,8 +12,6 @@ import java.util.Map;
 import static com.twilio.oai.common.ApplicationConstants.VENDOR_PREFIX;
 
 public class JavaPropertyResolver extends LanguagePropertyResolver {
-   public final static String MAP_STRING = "map";
-
     public JavaPropertyResolver(IConventionMapper mapper) {
         super(mapper);
     }
@@ -40,8 +38,8 @@ public class JavaPropertyResolver extends LanguagePropertyResolver {
         );
     }
 
-        Map<String, Object> getMapperByType(Segments segments) {
-        switch (segments){
+    Map<String, Object> getMapperByType(Segments segments) {
+        switch (segments) {
             case SEGMENT_PROPERTIES:
                 return mapper.properties();
             case SEGMENT_LIBRARY:
@@ -57,15 +55,6 @@ public class JavaPropertyResolver extends LanguagePropertyResolver {
         }
         return null;
 
-    }
-
-    @Override
-    public void resolveSerialize(CodegenProperty codegenProperty) {
-        super.resolveSerialize(codegenProperty);
-/*        if (codegenProperty.dataType.contains("[]")) {
-            codegenProperty.vendorExtensions.put(SERIALIZE_VEND_EXT, SERALIZE_ARRAY_MAP);
-            codegenProperty.vendorExtensions.put(SERIALIZE_VEND_EXT + LanguageConventionResolver.HYPHEN + MAP_STRING, true);
-        }*/
     }
 
     @Override

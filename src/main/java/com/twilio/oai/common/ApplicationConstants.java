@@ -32,12 +32,10 @@ public class ApplicationConstants {
     public static final String TWILIO_EXTENSION_NAME = "x-twilio";
     public static final String PATH_TYPE_EXTENSION_NAME = "x-path-type";
     public static final String IGNORE_EXTENSION_NAME = "x-ignore";
-    public static final String SERIALIZE_EXTENSION_NAME = "x-serialize";
-    public static final String DESERIALIZE_EXTENSION_NAME = "x-deserialize";
     public static final String REF_ENUM_EXTENSION_NAME = "x-ref-enum";
     public static final String IS_PARENT_PARAM_EXTENSION_NAME = "x-is-parent-param";
-    public static final String PROMOTION_EXTENTION_NAME = "x-promotions";
+    public static final String PROMOTION_EXTENSION_NAME = "x-promotions";
     public static final String VENDOR_PREFIX = "x-";
-    public final static String SERIALIZE_VEND_EXT = "x-serialize";
-    public final static String DESERIALIZE_VEND_EXT = "x-deserialize";
+    public static final String SERIALIZE_VEND_EXT = "x-serialize";
+    public static final String DESERIALIZE_VEND_EXT = "x-deserialize";
 }

@@ -1,15 +1,15 @@
 package com.twilio.oai.resolver;
 
+import com.twilio.oai.common.Utility;
+
 import lombok.AllArgsConstructor;
 import org.openapitools.codegen.CodegenProperty;
-import org.openapitools.codegen.utils.CamelizeOption;
-import org.openapitools.codegen.utils.StringUtils;
 
 import static com.twilio.oai.common.ApplicationConstants.DESERIALIZE_VEND_EXT;
 import static com.twilio.oai.common.ApplicationConstants.SERIALIZE_VEND_EXT;
 
 @AllArgsConstructor
-public class LanguagePropertyResolver implements ISchemaResolver<CodegenProperty> {
+public class LanguagePropertyResolver extends Resolver<CodegenProperty> {
     protected IConventionMapper mapper ;
 
     @Override
@@ -18,28 +18,31 @@ public class LanguagePropertyResolver implements ISchemaResolver<CodegenProperty
         resolveSerialize(codegenProperty);
         resolveDeSerialize(codegenProperty);
         resolvePrefixedMap(codegenProperty);
-        codegenProperty.baseName = StringUtils.camelize(codegenProperty.baseName, CamelizeOption.LOWERCASE_FIRST_CHAR);
+
+        codegenProperty.dataType = Utility.removeEnumName(codegenProperty.dataType);
+        codegenProperty.complexType = Utility.removeEnumName(codegenProperty.complexType);
+
         return codegenProperty;
     }
 
     protected void resolveProperties(CodegenProperty codegenProperty) {
-        if (mapper.properties().containsKey(codegenProperty.dataFormat)) {
-            codegenProperty.dataType = (String) mapper.properties().get(codegenProperty.dataFormat);
+        if (codegenProperty.dataFormat != null) {
+            getMapperValue(codegenProperty.dataFormat, mapper.properties()).ifPresent(dataType -> codegenProperty.dataType = dataType);
         }
     }
 
     protected void resolveSerialize(CodegenProperty codegenProperty) {
-        boolean hasProperty = mapper.serialize().containsKey(codegenProperty.dataFormat);
-        if (hasProperty) {
-            codegenProperty.vendorExtensions.put(SERIALIZE_VEND_EXT,(String)mapper.serialize().get(codegenProperty.dataFormat));
-        }
+        getMapperValue(getDataType(codegenProperty),
+                       mapper.serialize()).ifPresent(serialize -> codegenProperty.vendorExtensions.put(
+            SERIALIZE_VEND_EXT,
+            serialize.split("\\(")[0]));
     }
 
     protected void resolveDeSerialize(CodegenProperty codegenProperty) {
-        boolean hasProperty = mapper.deserialize().containsKey(codegenProperty.dataFormat);
-        if (hasProperty) {
-            codegenProperty.vendorExtensions.put(DESERIALIZE_VEND_EXT, (String)mapper.deserialize().get(codegenProperty.dataFormat));
-        }
+        getMapperValue(getDataType(codegenProperty),
+                       mapper.deserialize()).ifPresent(deserialize -> codegenProperty.vendorExtensions.put(
+            DESERIALIZE_VEND_EXT,
+            deserialize.split("\\(")[0]));
     }
 
     protected void resolvePrefixedMap(CodegenProperty codegenProperty) {

@@ -4,7 +4,7 @@ import com.twilio.oai.resolver.Resolver;
 import com.twilio.oai.resolver.IConventionMapper;
 import org.openapitools.codegen.CodegenParameter;
 
-public class CodegenParameterDataTypeResolver implements Resolver<CodegenParameter> {
+public class CodegenParameterDataTypeResolver extends Resolver<CodegenParameter> {
 
     private IConventionMapper mapper;
 

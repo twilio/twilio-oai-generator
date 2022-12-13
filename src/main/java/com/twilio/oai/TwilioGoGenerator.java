@@ -1,5 +1,7 @@
 package com.twilio.oai;
 
+import com.twilio.oai.common.Utility;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -119,7 +121,7 @@ public class TwilioGoGenerator extends AbstractTwilioGoGenerator {
             .findFirst();
 
         for (final CodegenOperation co : opList) {
-            twilioCodegen.populateCrudOperations(new HashMap<>(), co);
+            Utility.populateCrudOperations(co);
 
             if (co.nickname.startsWith("List")) {
                 // make sure the format matches the other methods
