@@ -37,11 +37,12 @@ class TwilioRestIntegrationTest extends TestCase
         $this->assertEquals(4, $result->testArrayOfObjects[0]["count"]);
     }
 
-//    public function testCreateCall(): void {
-//        $client = new Client($this->accountSid, $this->authToken);
-//        $call = $client->api->v2010->accounts($this->accountSid)->calls->create("requiredStringProperty","GET");
-//        $this->assertEquals("CR12345678123456781234567812345678", $call->sid);
-//        $this->assertEquals("Ahoy", $call->testString);
-//
-//    }
+    public function testCreateCall(): void
+    {
+        $client = new Client($this->accountSid, $this->authToken);
+        $call = $client->api->v2010->accounts($this->accountSid)->calls->create("requiredStringProperty", "GET");
+        $this->assertEquals("CR12345678123456781234567812345678", $call->sid);
+        $this->assertEquals("Ahoy", $call->testString);
+
+    }
 }
