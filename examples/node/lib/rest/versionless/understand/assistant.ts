@@ -13,7 +13,7 @@
  */
 
 import { inspect, InspectOptions } from "util";
-import Page from "../../../base/Page";
+import Page, { TwilioResponsePayload } from "../../../base/Page";
 import Response from "../../../http/response";
 import Understand from "../Understand";
 const deserialize = require("../../../base/deserialize");
@@ -261,9 +261,7 @@ export function AssistantListInstance(
   return instance;
 }
 
-interface AssistantPayload
-  extends AssistantResource,
-    Page.TwilioResponsePayload {}
+interface AssistantPayload extends AssistantResource, TwilioResponsePayload {}
 
 interface AssistantResource {
   sid?: string | null;
