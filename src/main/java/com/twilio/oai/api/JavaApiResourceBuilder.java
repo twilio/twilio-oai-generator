@@ -5,7 +5,6 @@ import com.twilio.oai.DirectoryStructureService;
 import com.twilio.oai.StringHelper;
 import com.twilio.oai.common.EnumConstants;
 import com.twilio.oai.common.Utility;
-import com.twilio.oai.resolver.IConventionMapper;
 import com.twilio.oai.resolver.Resolver;
 import com.twilio.oai.resolver.java.JavaConventionResolver;
 import com.twilio.oai.template.IApiActionTemplate;
@@ -30,10 +29,9 @@ public class JavaApiResourceBuilder extends ApiResourceBuilder{
     private Set<CodegenModel> headerParamModelList;
 
     private final JavaConventionResolver conventionResolver;
-    public JavaApiResourceBuilder(IApiActionTemplate template, List<CodegenOperation> codegenOperations, List<CodegenModel> allModels,
-                                  IConventionMapper mapper) {
+    public JavaApiResourceBuilder(IApiActionTemplate template, List<CodegenOperation> codegenOperations, List<CodegenModel> allModels) {
         super(template, codegenOperations, allModels);
-        this.conventionResolver = new JavaConventionResolver(mapper);
+        this.conventionResolver = new JavaConventionResolver();
     }
     @Override
     public IApiResourceBuilder updateTemplate() {
@@ -74,19 +72,16 @@ public class JavaApiResourceBuilder extends ApiResourceBuilder{
                 .forEach(param -> param.paramName = "path"+param.paramName);
             co.queryParams = co.queryParams.stream()
                     .map(codegenParameterIResolver::resolve)
-                    .map(conventionResolver::prefixedCollapsibleMap)
                     .map(item -> conventionResolver.resolveEnumParameter(item, resourceName))
                     .collect(Collectors.toList());
             co.queryParams = preProcessQueryParameters(co);
             co.formParams = co.formParams.stream()
                     .map(codegenParameterIResolver::resolve)
-                    .map(conventionResolver::prefixedCollapsibleMap)
                     .map(item -> conventionResolver.resolveEnumParameter(item, resourceName))
                     .collect(Collectors.toList());
             processDataTypesForParams(co.formParams);
             co.headerParams = co.headerParams.stream()
                     .map(codegenParameterIResolver::resolve)
-                    .map(conventionResolver::prefixedCollapsibleMap)
                     .map(item -> conventionResolver.resolveEnumParameter(item, resourceName))
                     .collect(Collectors.toList());
             co.optionalParams = co.optionalParams

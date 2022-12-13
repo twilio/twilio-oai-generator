@@ -25,13 +25,6 @@ public class JavaParameterResolver extends LanguageParamResolver {
     }
 
     @Override
-    public CodegenParameter resolve(CodegenParameter codegenParameter) {
-        resolveProperties(codegenParameter);
-        resolveSerialize(codegenParameter);
-        resolveDeSerialize(codegenParameter);
-        return codegenParameter;
-    }
-    @Override
     public void resolveProperties(CodegenParameter parameter) {
         if(parameter.dataType.equalsIgnoreCase(OBJECT) || parameter.dataType.equals(LIST_OBJECT)) {
             if (parameter.dataType.equals(LIST_OBJECT)) {

@@ -164,7 +164,7 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
     private JavaApiResources processCodegenOperations(List<CodegenOperation> opList) {
         CodegenModelResolver codegenModelResolver = new CodegenModelResolver(conventionMapper, modelFormatMap,
             Arrays.asList(EnumConstants.JavaDataTypes.values()));
-        return new JavaApiResourceBuilder(apiActionTemplate, opList, this.allModels, conventionMapper)
+        return new JavaApiResourceBuilder(apiActionTemplate, opList, this.allModels)
             .updateApiPath()
             .updateTemplate()
             .updateOperations(new JavaParameterResolver(conventionMapper))
