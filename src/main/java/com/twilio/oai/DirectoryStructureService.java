@@ -70,6 +70,7 @@ public class DirectoryStructureService {
     @Data
     @Builder
     public static class ContextResource {
+        private String version;
         private List<String> params;
         private String filename;
         private String mountName;
@@ -149,6 +150,7 @@ public class DirectoryStructureService {
         List<String> params = fetchNonParentPathParams(operation);
 
         final ContextResource dependent = new ContextResource.ContextResourceBuilder()
+                .version(PathUtils.getFirstPathPart(path))
                 .params(params)
                 .mountName(caseResolver.pathOperation(resourceAliases.getMountName()))
                 .filename(caseResolver.filenameOperation(resourceAliases.getClassName()))

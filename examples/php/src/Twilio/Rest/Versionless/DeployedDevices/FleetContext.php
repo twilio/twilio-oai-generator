@@ -43,29 +43,7 @@ class FleetContext extends InstanceContext {
         // Path Solution
         $this->solution = ['sid' => $sid,  ];
 
-        $this->uri = '/DeployedDevices/Fleets/' . \rawurlencode($sid) . '';
-    }
-
-    /**
-     * Create the FleetInstance
-     *
-     * @param array|Options $options Optional Arguments
-     * @return FleetInstance Created FleetInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function create(array $options = []): FleetInstance {
-        $options = new Values($options);
-
-        $data = Values::of([
-            'Name' => $options['name'],
-        ]);
-
-        $payload = $this->version->create('POST', $this->uri, [], $data);
-
-        return new FleetInstance(
-            $this->version,
-            $payload
-        );
+        $this->uri = '/Fleets/' . \rawurlencode($sid) . '';
     }
 
     /**

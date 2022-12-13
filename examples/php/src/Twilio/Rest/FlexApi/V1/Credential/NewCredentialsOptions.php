@@ -42,7 +42,7 @@ abstract class NewCredentialsOptions {
     * @param string $testEnum  
     * @param object[] $testObjectArray  
     * @param array $testAnyType  
-    * @param mixed[] $testAnyArray  
+    * @param array[] $testAnyArray  
     * @param string[] $permissions A comma-separated list of the permissions you will request from the users of this ConnectApp.  Can include: &#x60;get-all&#x60; and &#x60;post-all&#x60;. 
     * @param string $someA2PThing  
     * @return CreateNewCredentialsOptions Options builder
@@ -68,7 +68,7 @@ class CreateNewCredentialsOptions extends Options {
     * @param string $testEnum 
     * @param object[] $testObjectArray 
     * @param array $testAnyType 
-    * @param mixed[] $testAnyArray 
+    * @param array[] $testAnyArray 
     * @param string[] $permissions A comma-separated list of the permissions you will request from the users of this ConnectApp.  Can include: &#x60;get-all&#x60; and &#x60;post-all&#x60;.
     * @param string $someA2PThing 
     */
@@ -196,7 +196,7 @@ class CreateNewCredentialsOptions extends Options {
         return $this;
     }
     /**
-    * @param mixed[] $testAnyArray 
+    * @param array[] $testAnyArray 
     * @return $this Fluent Builder
     */
     public function setTestAnyArray(array $testAnyArray): self {
