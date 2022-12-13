@@ -5,8 +5,9 @@ export type {{vendorExtensions.x-name}} = {{#allowableValues}}{{#enumVars}}{{{va
 {{/isEnum}}
 {{/vars}}
 
-interface {{name}}Payload extends {{name}}Resource{{#hasPaginationOperation}}, TwilioResponsePayload {{/hasPaginationOperation}}{
-}
+interface {{name}}Payload extends {{^hasPaginationOperation}}{{name}}Resource {}{{/hasPaginationOperation}}{{#hasPaginationOperation}}TwilioResponsePayload {
+    {{vendorExtensions.x-record-key}}: {{name}}Resource[];
+}{{/hasPaginationOperation}}
 
 interface {{name}}Resource {
   {{#vars}}

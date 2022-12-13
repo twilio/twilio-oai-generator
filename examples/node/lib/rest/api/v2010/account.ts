@@ -286,7 +286,9 @@ export class AccountContextImpl implements AccountContext {
   }
 }
 
-interface AccountPayload extends AccountResource, TwilioResponsePayload {}
+interface AccountPayload extends TwilioResponsePayload {
+  accounts: AccountResource[];
+}
 
 interface AccountResource {
   account_sid?: string | null;

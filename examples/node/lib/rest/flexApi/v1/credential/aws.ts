@@ -244,7 +244,9 @@ export class AwsContextImpl implements AwsContext {
   }
 }
 
-interface AwsPayload extends AwsResource, TwilioResponsePayload {}
+interface AwsPayload extends TwilioResponsePayload {
+  credentials: AwsResource[];
+}
 
 interface AwsResource {
   account_sid?: string | null;

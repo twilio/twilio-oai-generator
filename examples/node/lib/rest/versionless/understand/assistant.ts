@@ -261,7 +261,9 @@ export function AssistantListInstance(
   return instance;
 }
 
-interface AssistantPayload extends AssistantResource, TwilioResponsePayload {}
+interface AssistantPayload extends TwilioResponsePayload {
+  assistants: AssistantResource[];
+}
 
 interface AssistantResource {
   sid?: string | null;
