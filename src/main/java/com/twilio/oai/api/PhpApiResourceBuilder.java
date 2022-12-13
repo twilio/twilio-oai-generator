@@ -13,6 +13,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.regex.*;
 import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 import static com.twilio.oai.common.ApplicationConstants.PATH_SEPARATOR_PLACEHOLDER;
 
@@ -66,7 +67,10 @@ public class PhpApiResourceBuilder extends ApiResourceBuilder {
     public ApiResourceBuilder setImports(DirectoryStructureService directoryStructureService) {
         codegenOperationList.stream().forEach(operation -> {
             if (!pathSet.contains(operation.path)) {
-                List<Resource> dependents = directoryStructureService.getResourceTree().dependents(operation.path);
+                List<Resource> dependents = StreamSupport.stream(directoryStructureService.getResourceTree().getResources().spliterator(), false)
+                        .filter(resource -> PathUtils.removeFirstPart(operation.path).equals(PathUtils.getTwilioExtension(resource.getPathItem(), "parent").orElse(null)))
+                        .collect(Collectors.toList());
+
                 List<Resource> methodDependents = dependents.stream().filter(dep ->
                                 PathUtils.getTwilioExtension(dep.getPathItem(), "pathType").get().equals("instance"))
                         .collect(Collectors.toList());
@@ -98,6 +102,13 @@ public class PhpApiResourceBuilder extends ApiResourceBuilder {
                         opr)));
         resourceList.stream().filter(dependent -> dependent.getPathItem().readOperations().isEmpty()).
                 forEach(dep -> directoryStructureService.addContextdependents(dependentList, dep.getName(), null));
+
+        dependentList.stream().map(DirectoryStructureService.ContextResource.class::cast)
+                .map(contextResource -> {
+                    if (contextResource.getParent().matches("(.*)Function\\\\(.*)"))
+                        contextResource.setParent(contextResource.getParent().replaceAll("\\\\Function\\\\", "\\\\TwilioFunction\\\\"));
+                    return (Object) contextResource;
+                }).collect(Collectors.toList());
     }
 
     private String formatPath(String path) {
@@ -130,6 +141,8 @@ public class PhpApiResourceBuilder extends ApiResourceBuilder {
                     .collect(Collectors.joining("\\"));
             namespaceSubPart = "\\" + namespacePath;
         }
+        namespaceSubPart = namespaceSubPart.replaceAll("\\\\Function$", "\\\\TwilioFunction");
+        namespaceSubPart = namespaceSubPart.replaceAll("\\\\Function[\\\\]", "\\\\TwilioFunction\\\\");
     }
 
     @Override

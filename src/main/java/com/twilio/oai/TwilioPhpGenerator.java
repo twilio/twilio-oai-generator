@@ -55,7 +55,9 @@ public class TwilioPhpGenerator extends PhpClientCodegen {
     @Override
     public String toApiFilename(final String name) {
 
-        return directoryStructureService.toApiFilename(super.toApiFilename(name));
+        String apiFileName = directoryStructureService.toApiFilename(super.toApiFilename(name));
+        apiFileName = apiFileName.replaceAll("/Function/", "/TwilioFunction/");
+        return apiFileName;
     }
 
     @Override

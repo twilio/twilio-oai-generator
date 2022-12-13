@@ -31,7 +31,6 @@ use Twilio\Rest\Api\V2010\Account\Call\FeedbackCallSummaryList;
 
 /**
  * @property FeedbackCallSummaryList $feedbackCallSummary
- * @method \Twilio\Rest\Api\V2010\Account\Call\FeedbackCallSummaryContext feedbackCallSummary(string $sid)
  */
 
 class CallList extends ListResource {
