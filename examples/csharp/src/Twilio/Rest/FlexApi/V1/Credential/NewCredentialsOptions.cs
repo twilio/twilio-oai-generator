@@ -122,7 +122,7 @@ namespace Twilio.Rest.FlexApi.V1.Credential
             }
             if (TestNumberInt32 != null)
             {
-                p.Add(new KeyValuePair<string, string>("TestNumberInt32", TestNumberInt32.Value.ToString()));
+                p.Add(new KeyValuePair<string, string>("TestNumberInt32", TestNumberInt32.ToString()));
             }
             if (TestNumberInt64 != null)
             {
