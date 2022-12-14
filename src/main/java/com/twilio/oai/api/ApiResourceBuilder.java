@@ -1,7 +1,6 @@
 package com.twilio.oai.api;
 
 import com.twilio.oai.DirectoryStructureService;
-import com.twilio.oai.HttpMethod;
 import com.twilio.oai.PathUtils;
 import com.twilio.oai.StringHelper;
 import com.twilio.oai.common.EnumConstants;
@@ -120,14 +119,27 @@ public abstract class ApiResourceBuilder implements IApiResourceBuilder {
         metaAPIProperties.put(operationType, operation);
 
         Map<String, Object> operationMap = operation.vendorExtensions;
-        final HttpMethod httpMethod = HttpMethod.fromString(operation.httpMethod);
         if (PathUtils.isInstanceOperation(operation)) {
-            applyInstanceOperation(operation, operationMap, httpMethod);
-            operationMap.put("x-is-context-operation","true");
+            applyInstanceOperation(operation, operationMap);
+            operationMap.put("x-is-context-operation", "true");
         } else {
-            applyListOperation(operation, operationMap, httpMethod);
-            operationMap.put("x-is-list-operation","true");
+            applyListOperation(operation, operationMap);
+            operationMap.put("x-is-list-operation", "true");
         }
+
+        if (operation.nickname.startsWith("update")) {
+            addOperationName(operation, API_OPERATION_UPDATE);
+        } else if (operation.nickname.startsWith("delete")) {
+            addOperationName(operation, API_OPERATION_DELETE);
+        } else if (operation.nickname.startsWith("create")) {
+            addOperationName(operation, API_OPERATION_CREATE);
+        } else if (operation.nickname.startsWith("fetch")) {
+            addOperationName(operation, API_OPERATION_FETCH);
+        } else if (operation.nickname.startsWith("list")) {
+            addOperationName(operation, API_OPERATION_READ);
+            metaAPIProperties.put("hasReadOperation", "true");
+        }
+
         operationMap.put("hasRequiredNonPathParams",
                 (operation.requiredParams.stream().anyMatch(param -> !param.isPathParam)));
         operationMap.put("hasOptionalQueryParams",
@@ -139,49 +151,29 @@ public abstract class ApiResourceBuilder implements IApiResourceBuilder {
         return operationMap;
     }
 
-    private void applyListOperation(CodegenOperation operation, Map<String, Object> operationMap, HttpMethod httpMethod) {
+    private void applyListOperation(CodegenOperation operation, Map<String, Object> operationMap) {
         if(!operation.vendorExtensions.containsKey("x-ignore")) {
-            if (httpMethod == HttpMethod.POST) {
-                operationMap.put("x-name", API_OPERATION_CREATE);
-            } else if (httpMethod == HttpMethod.GET) {
-                operationMap.put("x-name", API_OPERATION_READ);
-                metaAPIProperties.put("hasReadOperation","true");
-            }
             operationMap.put("x-resource-name", getApiName() + "ListInstance");
             metaAPIProperties.put("x-is-list-operation", "true");
             metaAPIProperties.put(META_LIST_PARAMETER_KEY, operation.allParams);
         }
     }
 
-    private void applyInstanceOperation(CodegenOperation operation, Map<String, Object> operationMap, HttpMethod httpMethod) {
+    private void applyInstanceOperation(CodegenOperation operation, Map<String, Object> operationMap) {
         if(!operation.vendorExtensions.containsKey("x-ignore")) {
-            if (httpMethod == HttpMethod.GET) {
-                operationMap.put("x-name", API_OPERATION_FETCH);
-            } else if (httpMethod == HttpMethod.POST) {
-                operationMap.put("x-name", API_OPERATION_UPDATE);
-            } else if (httpMethod == HttpMethod.DELETE) {
-                operationMap.put("x-name", API_OPERATION_DELETE);
-            }
             operationMap.put("x-resource-name", getApiName() + "Context");
             metaAPIProperties.put("x-is-context-operation", "true");
             metaAPIProperties.put(META_CONTEXT_PARAMETER_KEY, operation.allParams);
         }
     }
 
+    private void addOperationName(final CodegenOperation operation, final String name) {
+        operation.vendorExtensions.put("x-name", name);
+        operation.vendorExtensions.put("x-name-lower", name.toLowerCase());
+    }
+
     public Optional<CodegenModel> getModel(final String className, final CodegenOperation codegenOperation) {
         return Utility.getModel(allModels, className, recordKey, codegenOperation);
-    }
-
-    public Optional<CodegenModel> getModelByClassname(final String classname) {
-        return Utility.getModelByClassname(allModels, classname);
-    }
-
-    public void addModel(final Map<String, CodegenModel> models, final String complexType, final String dataType) {
-        getModelByClassname(complexType != null ? complexType : dataType).ifPresent(model -> {
-            if (models.putIfAbsent(model.getClassname(), model) == null) {
-                model.getVars().forEach(property -> addModel(models, property.complexType, property.dataType));
-            }
-        });
     }
 
     protected Set<CodegenProperty> getDistinctResponseModel(List<CodegenModel> responseModels) {
