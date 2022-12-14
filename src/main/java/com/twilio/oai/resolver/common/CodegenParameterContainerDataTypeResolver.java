@@ -7,7 +7,7 @@ import org.openapitools.codegen.CodegenParameter;
 
 import java.util.List;
 
-public class CodegenParameterContainerDataTypeResolver implements Resolver<CodegenParameter> {
+public class CodegenParameterContainerDataTypeResolver extends Resolver<CodegenParameter> {
 
     private CodegenParameterDataTypeResolver codegenParameterDataTypeResolver;
     private List<? extends LanguageDataType> languageDataTypes;

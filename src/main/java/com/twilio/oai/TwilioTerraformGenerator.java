@@ -1,6 +1,7 @@
 package com.twilio.oai;
 
 import com.twilio.oai.common.EnumConstants;
+import com.twilio.oai.common.Utility;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -131,7 +132,8 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
             resource.put("nameInSnakeCase", StringHelper.toSnakeCase(resourceName));
             resourceOperationList.add(co);
 
-            twilioCodegen.populateCrudOperations(resource, co);
+            final String operationType = Utility.populateCrudOperations(co);
+            resource.put(operationType, co);
 
             resource.put("hasUpdate", resource.containsKey(EnumConstants.Operation.UPDATE.name()));
 

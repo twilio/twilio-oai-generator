@@ -14,7 +14,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.openapitools.codegen.CodegenParameter;
 import org.openapitools.codegen.IJsonSchemaValidationProperties;
 
-public class CodegenParameterResolver implements Resolver<CodegenParameter> {
+public class CodegenParameterResolver extends Resolver<CodegenParameter> {
     private final Map<String, Map<String, Object>> conventionMap;
     private String className;
     private boolean hasEnumsInResource = false;

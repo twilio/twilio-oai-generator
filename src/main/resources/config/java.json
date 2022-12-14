@@ -73,7 +73,7 @@
     "phone-number": "com.twilio.type.PhoneNumber",
     "phone-number-capabilities": "PhoneNumberCapabilities",
     "phone-number-price": "PhoneNumberPrice",
-    "prefixed-collapsible-map": "Map<String, String>",
+    "prefixed-collapsible-map": "Map<String, Object>",
     "outbound-prefix-price-with-origin": "OutboundPrefixPriceWithOrigin",
     "string-map": "Map<String, String>",
     "twiml": "com.twilio.type.Twiml",

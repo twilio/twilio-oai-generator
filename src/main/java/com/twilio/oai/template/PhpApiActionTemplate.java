@@ -1,20 +1,22 @@
 package com.twilio.oai.template;
 
+import java.io.File;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+
 import org.openapitools.codegen.CodegenConfig;
 import org.openapitools.codegen.SupportingFile;
 
-import java.io.File;
-import java.util.*;
-
 public class PhpApiActionTemplate implements IApiActionTemplate {
-    public final static String TEMPLATE_TYPE_LIST = "list";
-    public final static String TEMPLATE_TYPE_CONTEXT = "context";
-    public final static String TEMPLATE_TYPE_OPTIONS = "options";
-    public final static String TEMPLATE_TYPE_INSTANCE = "instance";
-    public final static String TEMPLATE_TYPE_PAGE = "page";
-    public final static String TEMPLATE_TYPE_VERSION = "version";
+    public static final String TEMPLATE_TYPE_LIST = "list";
+    public static final String TEMPLATE_TYPE_CONTEXT = "context";
+    public static final String TEMPLATE_TYPE_OPTIONS = "options";
+    public static final String TEMPLATE_TYPE_INSTANCE = "instance";
+    public static final String TEMPLATE_TYPE_PAGE = "page";
+    public static final String TEMPLATE_TYPE_VERSION = "version";
 
-    public final static Map<String, List<String>> templates = mapping();
+    public static final Map<String, List<String>> templates = mapping();
     CodegenConfig codegen;
 
     public PhpApiActionTemplate(CodegenConfig defaultCodegen) {
@@ -61,13 +63,17 @@ public class PhpApiActionTemplate implements IApiActionTemplate {
     }
 
     private static Map<String, List<String>> mapping() {
-        return Map.ofEntries(
-                new AbstractMap.SimpleEntry<>(TEMPLATE_TYPE_LIST, Arrays.asList(TEMPLATE_TYPE_LIST + ".mustache", "List.php")),
-                new AbstractMap.SimpleEntry<>(TEMPLATE_TYPE_CONTEXT, Arrays.asList(TEMPLATE_TYPE_CONTEXT + ".mustache", "Context.php")),
-                new AbstractMap.SimpleEntry<>(TEMPLATE_TYPE_INSTANCE, Arrays.asList(TEMPLATE_TYPE_INSTANCE + ".mustache", "Instance.php")),
-                new AbstractMap.SimpleEntry<>(TEMPLATE_TYPE_OPTIONS, Arrays.asList(TEMPLATE_TYPE_OPTIONS + ".mustache", "Options.php")),
-                new AbstractMap.SimpleEntry<>(TEMPLATE_TYPE_PAGE, Arrays.asList(TEMPLATE_TYPE_PAGE + ".mustache", "Page.php")),
-                new AbstractMap.SimpleEntry<>(TEMPLATE_TYPE_VERSION, Arrays.asList(TEMPLATE_TYPE_VERSION + ".mustache", ".php"))
-        );
+        return Map.of(TEMPLATE_TYPE_LIST,
+                      Arrays.asList(TEMPLATE_TYPE_LIST + ".mustache", "List.php"),
+                      TEMPLATE_TYPE_CONTEXT,
+                      Arrays.asList(TEMPLATE_TYPE_CONTEXT + ".mustache", "Context.php"),
+                      TEMPLATE_TYPE_INSTANCE,
+                      Arrays.asList(TEMPLATE_TYPE_INSTANCE + ".mustache", "Instance.php"),
+                      TEMPLATE_TYPE_OPTIONS,
+                      Arrays.asList(TEMPLATE_TYPE_OPTIONS + ".mustache", "Options.php"),
+                      TEMPLATE_TYPE_PAGE,
+                      Arrays.asList(TEMPLATE_TYPE_PAGE + ".mustache", "Page.php"),
+                      TEMPLATE_TYPE_VERSION,
+                      Arrays.asList(TEMPLATE_TYPE_VERSION + ".mustache", ".php"));
     }
 }
