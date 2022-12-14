@@ -3,7 +3,6 @@ package com.twilio.oai.api;
 import com.twilio.oai.DirectoryStructureService;
 import com.twilio.oai.PathUtils;
 import com.twilio.oai.StringHelper;
-import com.twilio.oai.common.EnumConstants;
 import com.twilio.oai.common.Utility;
 import com.twilio.oai.resolver.Resolver;
 import com.twilio.oai.template.IApiActionTemplate;
@@ -16,13 +15,9 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.twilio.oai.common.ApplicationConstants.PATH_SEPARATOR_PLACEHOLDER;
+import static com.twilio.oai.common.EnumConstants.Operation;
 
 public abstract class ApiResourceBuilder implements IApiResourceBuilder {
-    public static final String API_OPERATION_READ = "Read";
-    public static final String API_OPERATION_CREATE = "Create";
-    public static final String API_OPERATION_FETCH = "Fetch";
-    public static final String API_OPERATION_UPDATE = "Update";
-    public static final String API_OPERATION_DELETE = "Delete";
     public static final String META_LIST_PARAMETER_KEY = "x-list-parameters";
     public static final String META_CONTEXT_PARAMETER_KEY = "x-context-parameters";
 
@@ -128,16 +123,15 @@ public abstract class ApiResourceBuilder implements IApiResourceBuilder {
         }
 
         if (operation.nickname.startsWith("update")) {
-            addOperationName(operation, API_OPERATION_UPDATE);
+            addOperationName(operation, Operation.UPDATE.getValue());
         } else if (operation.nickname.startsWith("delete")) {
-            addOperationName(operation, API_OPERATION_DELETE);
+            addOperationName(operation, Operation.DELETE.getValue());
         } else if (operation.nickname.startsWith("create")) {
-            addOperationName(operation, API_OPERATION_CREATE);
+            addOperationName(operation, Operation.CREATE.getValue());
         } else if (operation.nickname.startsWith("fetch")) {
-            addOperationName(operation, API_OPERATION_FETCH);
+            addOperationName(operation, Operation.FETCH.getValue());
         } else if (operation.nickname.startsWith("list")) {
-            addOperationName(operation, API_OPERATION_READ);
-            metaAPIProperties.put("hasReadOperation", "true");
+            addOperationName(operation, Operation.READ.getValue());
         }
 
         operationMap.put("hasRequiredNonPathParams",
@@ -182,8 +176,8 @@ public abstract class ApiResourceBuilder implements IApiResourceBuilder {
             for (CodegenProperty property : codegenModel.vars) {
                 property.nameInCamelCase = StringHelper.camelize(property.nameInSnakeCase);
                 if (Arrays
-                        .stream(EnumConstants.Operation.values())
-                        .anyMatch(value -> value.getValue().equals(property.nameInCamelCase))) {
+                    .stream(Operation.values())
+                    .anyMatch(value -> value.getValue().equals(property.nameInCamelCase))) {
                     property.nameInCamelCase = "_" + property.nameInCamelCase;
                 }
                 distinctResponseModels.add(property);
