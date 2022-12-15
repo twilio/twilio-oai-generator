@@ -271,7 +271,7 @@ interface AssistantResource {
 }
 
 export class AssistantInstance {
-  constructor(protected _version: Understand, payload: AssistantPayload) {
+  constructor(protected _version: Understand, payload: AssistantResource) {
     this.sid = payload.sid;
     this.friendlyName = payload.friendly_name;
   }
@@ -328,7 +328,7 @@ export class AssistantPage extends Page<
    *
    * @param payload - Payload response from the API
    */
-  getInstance(payload: AssistantPayload): AssistantInstance {
+  getInstance(payload: AssistantResource): AssistantInstance {
     return new AssistantInstance(this._version, payload);
   }
 

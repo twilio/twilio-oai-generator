@@ -26,7 +26,7 @@ export class {{name}}Instance {
   protected _context?: {{resourceName}};
   {{/parentResourceName}}
 
-  constructor(protected _version: {{apiVersionClass}}, payload: {{name}}Payload{{#resourcePathParams}}, {{paramName}}{{^vendorExtensions.x-is-parent-param}}?{{/vendorExtensions.x-is-parent-param}}: {{{dataType}}}{{/resourcePathParams}}) {
+  constructor(protected _version: {{apiVersionClass}}, payload: {{name}}Resource{{#resourcePathParams}}, {{paramName}}{{^vendorExtensions.x-is-parent-param}}?{{/vendorExtensions.x-is-parent-param}}: {{{dataType}}}{{/resourcePathParams}}) {
     {{#vars}}
     {{#vendorExtensions.x-deserialize}}
     this.{{name}} = {{vendorExtensions.x-deserialize}}(payload.{{baseName}});

@@ -184,7 +184,7 @@ export class CallInstance {
 
   constructor(
     protected _version: V2010,
-    payload: CallPayload,
+    payload: CallResource,
     accountSid: string,
     testInteger?: number
   ) {

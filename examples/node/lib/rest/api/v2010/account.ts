@@ -315,7 +315,7 @@ export class AccountInstance {
 
   constructor(
     protected _version: V2010,
-    payload: AccountPayload,
+    payload: AccountResource,
     sid?: string
   ) {
     this.accountSid = payload.account_sid;
@@ -781,7 +781,7 @@ export class AccountPage extends Page<
    *
    * @param payload - Payload response from the API
    */
-  getInstance(payload: AccountPayload): AccountInstance {
+  getInstance(payload: AccountResource): AccountInstance {
     return new AccountInstance(this._version, payload);
   }
 
