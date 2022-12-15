@@ -216,6 +216,7 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
                     .collect(Collectors.toList());
 
                 allResponseModels.stream().findFirst().ifPresent(responseModel -> {
+                    responseModel.vendorExtensions.put("x-record-key", recordKey);
                     resource.put("responseModel", responseModel);
                     responseModel
                         .getVars()

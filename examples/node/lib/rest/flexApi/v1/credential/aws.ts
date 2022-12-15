@@ -244,7 +244,9 @@ export class AwsContextImpl implements AwsContext {
   }
 }
 
-interface AwsPayload extends AwsResource, TwilioResponsePayload {}
+interface AwsPayload extends TwilioResponsePayload {
+  credentials: AwsResource[];
+}
 
 interface AwsResource {
   account_sid?: string | null;
@@ -257,7 +259,7 @@ export class AwsInstance {
   protected _solution: AwsContextSolution;
   protected _context?: AwsContext;
 
-  constructor(protected _version: V1, payload: AwsPayload, sid?: string) {
+  constructor(protected _version: V1, payload: AwsResource, sid?: string) {
     this.accountSid = payload.account_sid;
     this.sid = payload.sid;
     this.testString = payload.test_string;
@@ -598,7 +600,7 @@ export class AwsPage extends Page<V1, AwsPayload, AwsResource, AwsInstance> {
    *
    * @param payload - Payload response from the API
    */
-  getInstance(payload: AwsPayload): AwsInstance {
+  getInstance(payload: AwsResource): AwsInstance {
     return new AwsInstance(this._version, payload);
   }
 

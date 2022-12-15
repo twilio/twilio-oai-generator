@@ -141,7 +141,7 @@ export class HistoryInstance {
   protected _solution: HistoryContextSolution;
   protected _context?: HistoryContext;
 
-  constructor(protected _version: V1, payload: HistoryPayload, sid: string) {
+  constructor(protected _version: V1, payload: HistoryResource, sid: string) {
     this.accountSid = payload.account_sid;
     this.sid = payload.sid;
     this.testString = payload.test_string;
