@@ -8,7 +8,7 @@ import org.openapitools.codegen.CodegenProperty;
 import java.util.List;
 import java.util.Stack;
 
-public class CodegenModelContainerDataTypeResolver implements Resolver<CodegenProperty> {
+public class CodegenModelContainerDataTypeResolver extends Resolver<CodegenProperty> {
 
     private CodegenModelDataTypeResolver codegenModelDataTypeResolver;
     private List<? extends LanguageDataType> languageDataTypes;

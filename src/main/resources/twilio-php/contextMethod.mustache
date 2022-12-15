@@ -18,10 +18,9 @@
         $params = Values::of([
             {{#queryParams}}
             {{#required}}
-            {{^vendorExtensions.x-serialize}}
             {{^vendorExtensions.x-prefixed-collapsible-map}}
+            {{^vendorExtensions.x-serialize}}
             '{{baseName}}' => ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}},
-            {{/vendorExtensions.x-prefixed-collapsible-map}}
             {{/vendorExtensions.x-serialize}}
             {{#vendorExtensions.x-serialize}}
             {{^vendorExtensions.x-serialize-map}}
@@ -31,14 +30,14 @@
             '{{baseName}}' => {{vendorExtensions.x-serialize}}(${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}, function($e) { return {{^vendorExtensions.x-serialize-array-of-array}}$e{{/vendorExtensions.x-serialize-array-of-array}}{{#vendorExtensions.x-serialize-array-of-array}}{{.}}($e){{/vendorExtensions.x-serialize-array-of-array}}; }),
             {{/vendorExtensions.x-serialize-map}}
             {{/vendorExtensions.x-serialize}}
+            {{/vendorExtensions.x-prefixed-collapsible-map}}
             {{/required}}
             {{/queryParams}}
             {{#queryParams}}
             {{^required}}
-            {{^vendorExtensions.x-serialize}}
             {{^vendorExtensions.x-prefixed-collapsible-map}}
+            {{^vendorExtensions.x-serialize}}
             '{{baseName}}' => $options['{{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}'],
-            {{/vendorExtensions.x-prefixed-collapsible-map}}
             {{/vendorExtensions.x-serialize}}
             {{#vendorExtensions.x-serialize}}
             {{^vendorExtensions.x-serialize-map}}
@@ -48,6 +47,7 @@
             '{{baseName}}' => {{vendorExtensions.x-serialize}}($options['{{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}'], function($e) { return {{^vendorExtensions.x-serialize-array-of-array}}$e{{/vendorExtensions.x-serialize-array-of-array}}{{#vendorExtensions.x-serialize-array-of-array}}{{.}}($e){{/vendorExtensions.x-serialize-array-of-array}}; }),
             {{/vendorExtensions.x-serialize-map}}
             {{/vendorExtensions.x-serialize}}
+            {{/vendorExtensions.x-prefixed-collapsible-map}}
             {{/required}}
             {{/queryParams}}
         ]);
@@ -71,6 +71,7 @@
         $data = Values::of([
             {{#requiredParams}}
             {{#isFormParam}}
+            {{^vendorExtensions.x-prefixed-collapsible-map}}
             {{^vendorExtensions.x-serialize}}
             '{{baseName}}' => ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}},
             {{/vendorExtensions.x-serialize}}
@@ -82,10 +83,12 @@
             '{{baseName}}' => {{vendorExtensions.x-serialize}}(${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}},function($e) { return {{^vendorExtensions.x-serialize-array-of-array}}$e{{/vendorExtensions.x-serialize-array-of-array}}{{#vendorExtensions.x-serialize-array-of-array}}{{.}}($e){{/vendorExtensions.x-serialize-array-of-array}}; }),
             {{/vendorExtensions.x-serialize-map}}
             {{/vendorExtensions.x-serialize}}
+            {{/vendorExtensions.x-prefixed-collapsible-map}}
             {{/isFormParam}}
             {{/requiredParams}}
             {{#optionalParams}}
             {{#isFormParam}}
+            {{^vendorExtensions.x-prefixed-collapsible-map}}
             {{^vendorExtensions.x-serialize}}
             '{{baseName}}' => $options['{{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}'],
             {{/vendorExtensions.x-serialize}}
@@ -97,6 +100,7 @@
             '{{baseName}}' => {{vendorExtensions.x-serialize}}($options['{{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}'], function($e) { return {{^vendorExtensions.x-serialize-array-of-array}}$e{{/vendorExtensions.x-serialize-array-of-array}}{{#vendorExtensions.x-serialize-array-of-array}}{{.}}($e){{/vendorExtensions.x-serialize-array-of-array}}; }),
             {{/vendorExtensions.x-serialize-map}}
             {{/vendorExtensions.x-serialize}}
+            {{/vendorExtensions.x-prefixed-collapsible-map}}
             {{/isFormParam}}
             {{/optionalParams}}
         ]);

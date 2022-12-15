@@ -42,7 +42,7 @@ use Twilio\Rest\Api\V2010\Account\Call\FeedbackCallSummaryList;
  * @property string $testNumberFloat
  * @property string $testNumberDecimal
  * @property string $testEnum
- * @property string $a2pProfileBundleSid
+ * @property string $a2PProfileBundleSid
  * @property int[] $testArrayOfIntegers
  * @property int[][] $testArrayOfArrayOfIntegers
  * @property string[] $testArrayOfObjects
@@ -74,7 +74,7 @@ class CallInstance extends InstanceResource {
             'testNumberFloat' => Values::array_get($payload, 'test_number_float'),
             'testNumberDecimal' => Values::array_get($payload, 'test_number_decimal'),
             'testEnum' => Values::array_get($payload, 'test_enum'),
-            'a2pProfileBundleSid' => Values::array_get($payload, 'a2p_profile_bundle_sid'),
+            'a2PProfileBundleSid' => Values::array_get($payload, 'a2p_profile_bundle_sid'),
             'testArrayOfIntegers' => Values::array_get($payload, 'test_array_of_integers'),
             'testArrayOfArrayOfIntegers' => Values::array_get($payload, 'test_array_of_array_of_integers'),
             'testArrayOfObjects' => Values::array_get($payload, 'test_array_of_objects'),

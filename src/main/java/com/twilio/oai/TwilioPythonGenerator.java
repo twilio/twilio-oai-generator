@@ -87,6 +87,7 @@ public class TwilioPythonGenerator extends PythonClientCodegen {
     public Map<String, ModelsMap> postProcessAllModels(final Map<String, ModelsMap> allModels) {
         final Map<String, ModelsMap> results = super.postProcessAllModels(allModels);
 
+        Utility.addModelsToLocalModelList(results, this.allModels);
         directoryStructureService.postProcessAllModels(results, modelFormatMap);
 
         // Return an empty collection so no model files get generated.
@@ -162,7 +163,9 @@ public class TwilioPythonGenerator extends PythonClientCodegen {
             resource.put("instanceName", instanceName);
 
             updateResourcePath(resource, co);
-            twilioCodegen.populateCrudOperations(resource, co);
+
+            final String operationType = Utility.populateCrudOperations(co);
+            resource.put(operationType, co);
 
             co.allParams.forEach(param -> addModel(param.baseType, param.dataType, models));
             co.allParams.removeAll(co.pathParams);
@@ -177,9 +180,11 @@ public class TwilioPythonGenerator extends PythonClientCodegen {
                     .forEach(dependent -> dependent
                             .getPathItem()
                             .readOperations()
-                            .forEach(operation -> directoryStructureService.addDependent(dependentMap,
-                                    dependent.getName(),
-                                    operation)));
+                            .forEach(operation -> {
+                                final DirectoryStructureService.DependentResource dependentResource =
+                                    directoryStructureService.generateDependent(dependent.getName(), operation);
+                                dependentMap.put(dependentResource.getFilename(), dependentResource);
+                            }));
             dependentMap
                     .values()
                     .stream()
@@ -197,7 +202,7 @@ public class TwilioPythonGenerator extends PythonClientCodegen {
                         .stream()
                         .map(response -> response.dataType)
                         .filter(Objects::nonNull)
-                        .map(directoryStructureService::getModelByClassname)
+                        .map(classname -> Utility.getModelByClassname(this.allModels, classname))
                         .flatMap(Optional::stream)
                         .map(conventionResolver::resolveModel)
                         .map(item -> conventionResolver.resolveComplexType(item, modelFormatMap))
@@ -276,9 +281,6 @@ public class TwilioPythonGenerator extends PythonClientCodegen {
     }
 
     //HELPER FUNCTIONS
-    private String removeEnumName(final String dataType) {
-        return dataType.replace("Enum", "");
-    }
     private void addOperationName(final CodegenOperation operation, final String name) {
         operation.vendorExtensions.put("x-name", name);
         operation.vendorExtensions.put("x-name-lower", name.toLowerCase());
@@ -302,6 +304,6 @@ public class TwilioPythonGenerator extends PythonClientCodegen {
     }
 
     private void addModel(final String complexType, final String dataType, final Map<String, CodegenModel> models) {
-        directoryStructureService.addModel(models, complexType, dataType);
+        Utility.addModel(allModels, models, complexType, dataType);
     }
 }

@@ -8,7 +8,7 @@ import org.openapitools.codegen.CodegenParameter;
 
 import java.util.HashSet;
 
-public class CodegenParameterContainerDataTypeResolver implements Resolver<CodegenParameter> {
+public class CodegenParameterContainerDataTypeResolver extends Resolver<CodegenParameter> {
     private CodegenParameterDataTypeResolver codegenParameterDataTypeResolver;
 
     public CodegenParameterContainerDataTypeResolver(CodegenParameterDataTypeResolver codegenParameterDataTypeResolver) {

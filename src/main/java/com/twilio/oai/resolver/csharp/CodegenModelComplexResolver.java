@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 
-public class CodegenModelComplexResolver implements Resolver<CodegenProperty> {
+public class CodegenModelComplexResolver extends Resolver<CodegenProperty> {
     private  Map<String, String> modelFormatMap = new HashMap<>();
     private Map<String, Map<String, Object>> conventionMap;
     private HashSet<String> enumsDict;
