@@ -7,12 +7,12 @@ import org.openapitools.codegen.CodegenParameter;
 
 import java.util.List;
 
-public class CodegenParameterResolver implements Resolver<CodegenParameter> {
+public class CodegenParameterResolver extends Resolver<CodegenParameter> {
 
     private final IConventionMapper mapper;
     private List<? extends LanguageDataType> languageDataTypes;
-    private CodegenParameterDataTypeResolver codegenParameterDataTypeResolver = new CodegenParameterDataTypeResolver();
-    private CodegenParameterContainerDataTypeResolver codegenParameterContainerDataTypeResolver;
+    private final CodegenParameterDataTypeResolver codegenParameterDataTypeResolver = new CodegenParameterDataTypeResolver();
+    private final CodegenParameterContainerDataTypeResolver codegenParameterContainerDataTypeResolver;
 
     public CodegenParameterResolver(IConventionMapper mapper,
                                     List<? extends LanguageDataType> languageDataTypes) {

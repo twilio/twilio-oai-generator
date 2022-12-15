@@ -25,13 +25,6 @@ public class JavaParameterResolver extends LanguageParamResolver {
     }
 
     @Override
-    public CodegenParameter resolve(CodegenParameter codegenParameter) {
-        resolveProperties(codegenParameter);
-        resolveSerialize(codegenParameter);
-        resolveDeSerialize(codegenParameter);
-        return codegenParameter;
-    }
-    @Override
     public void resolveProperties(CodegenParameter parameter) {
         if(parameter.dataType.equalsIgnoreCase(OBJECT) || parameter.dataType.equals(LIST_OBJECT)) {
             if (parameter.dataType.equals(LIST_OBJECT)) {
@@ -48,7 +41,7 @@ public class JavaParameterResolver extends LanguageParamResolver {
             // cloning to prevent update in source map
             HashMap<String, String> promotionsMap = new HashMap<>((Map) mapper.promotions().get(parameter.dataFormat));
             promotionsMap.replaceAll((dataType, value) -> String.format(value, parameter.paramName) );
-            parameter.vendorExtensions.put(ApplicationConstants.PROMOTION_EXTENTION_NAME, promotionsMap);
+            parameter.vendorExtensions.put(ApplicationConstants.PROMOTION_EXTENSION_NAME, promotionsMap);
         }
 
         codegenParameterResolver.resolve(parameter);

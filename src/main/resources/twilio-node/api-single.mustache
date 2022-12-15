@@ -2,7 +2,7 @@
 
 import { inspect, InspectOptions } from "util";
 {{#hasPaginationOperation}}
-import Page from "{{apiVersionPath}}/../../base/Page";
+import Page, { TwilioResponsePayload } from "{{apiVersionPath}}/../../base/Page";
 import Response from "{{apiVersionPath}}/../../http/response";
 {{/hasPaginationOperation}}
 import {{apiVersionClass}} from "{{apiVersionPath}}/{{apiVersionClass}}";

@@ -117,6 +117,7 @@
         "object": "Serializers.JsonObject(%s)",
         "bool?": "%s.Value.ToString().ToLower()",
         "decimal": "%s.Value.ToString()",
+        "decimal?": "%s.Value.ToString()",
         "int?": "%s.ToString()",
         "long?": "%s.Value.ToString()"
     },

@@ -27,7 +27,7 @@ import static com.twilio.oai.template.PhpApiActionTemplate.templates;
 
 public class TwilioPhpGenerator extends PhpClientCodegen {
 
-    private String PHP_CONVENTIONAL_MAP_PATH = "config/" + EnumConstants.Generator.TWILIO_PHP.getValue() + ".json";
+    private static final String PHP_CONVENTIONAL_MAP_PATH = "config/" + EnumConstants.Generator.TWILIO_PHP.getValue() + ".json";
     private final TwilioCodegenAdapter twilioCodegen;
     private final DirectoryStructureService directoryStructureService = new DirectoryStructureService(
             additionalProperties,
@@ -35,8 +35,8 @@ public class TwilioPhpGenerator extends PhpClientCodegen {
             new PhpCaseResolver());
     private final List<CodegenModel> allModels = new ArrayList<>();
     private final Map<String, String> modelFormatMap = new HashMap<>();
-    private IConventionMapper conventionMapper = new LanguageConventionResolver(PHP_CONVENTIONAL_MAP_PATH);
-    private IApiActionTemplate phpApiActionTemplate = new PhpApiActionTemplate(this);
+    private final IConventionMapper conventionMapper = new LanguageConventionResolver(PHP_CONVENTIONAL_MAP_PATH);
+    private final IApiActionTemplate phpApiActionTemplate = new PhpApiActionTemplate(this);
 
     public TwilioPhpGenerator() {
         super();
@@ -55,7 +55,9 @@ public class TwilioPhpGenerator extends PhpClientCodegen {
     @Override
     public String toApiFilename(final String name) {
 
-        return directoryStructureService.toApiFilename(super.toApiFilename(name));
+        String apiFileName = directoryStructureService.toApiFilename(super.toApiFilename(name));
+        apiFileName = apiFileName.replaceAll("/Function/", "/TwilioFunction/");
+        return apiFileName;
     }
 
     @Override

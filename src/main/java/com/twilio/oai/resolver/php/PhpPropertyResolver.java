@@ -1,19 +1,26 @@
 package com.twilio.oai.resolver.php;
 
+import com.twilio.oai.StringHelper;
 import com.twilio.oai.resolver.IConventionMapper;
 import com.twilio.oai.resolver.LanguageConventionResolver;
 import com.twilio.oai.resolver.LanguagePropertyResolver;
+
 import org.openapitools.codegen.CodegenProperty;
 
-
-import static com.twilio.oai.common.ApplicationConstants.SERIALIZE_VEND_EXT;
-import static com.twilio.oai.resolver.php.PhpParameterResolver.SERALIZE_ARRAY_MAP;
-
 public class PhpPropertyResolver extends LanguagePropertyResolver {
-    public final static String MAP_STRING = "map";
+    public static final String MAP_STRING = "map";
 
     public PhpPropertyResolver(IConventionMapper mapper) {
         super(mapper);
+    }
+
+    @Override
+    public CodegenProperty resolve(final CodegenProperty codegenProperty) {
+        super.resolve(codegenProperty);
+
+        codegenProperty.baseName = StringHelper.camelize(codegenProperty.baseName, true);
+
+        return codegenProperty;
     }
 
     @Override
@@ -39,5 +46,4 @@ public class PhpPropertyResolver extends LanguagePropertyResolver {
             }
         }
     }
-
 }

@@ -6,10 +6,13 @@ import java.util.List;
 import java.util.Map;
 
 public abstract class AbstractApiActionTemplate implements IApiActionTemplate {
-    private final Map<String, List<String>> templates = mapping();
-    CodegenConfig codegen ;
+    public static final String API_TEMPLATE = "api";
+    public static final String VERSION_TEMPLATE = "version";
 
-    public AbstractApiActionTemplate(CodegenConfig defaultCodegen) {
+    private final Map<String, List<String>> templates = mapping();
+    protected final CodegenConfig codegen;
+
+    protected AbstractApiActionTemplate(CodegenConfig defaultCodegen) {
         this.codegen = initialise(defaultCodegen);
     }
 
@@ -23,8 +26,8 @@ public abstract class AbstractApiActionTemplate implements IApiActionTemplate {
     }
     @Override
     public void clean() {
-        for (Map.Entry<String, List<String>> entry: templates.entrySet()) {
-            codegen.apiTemplateFiles().remove(entry.getValue().get(0));
+        for (final List<String> entry: templates.values()) {
+            codegen.apiTemplateFiles().remove(entry.get(0));
         }
     }
 
@@ -33,6 +36,5 @@ public abstract class AbstractApiActionTemplate implements IApiActionTemplate {
         List<String> templateStrings = templates.get(template);
         codegen.apiTemplateFiles().put(templateStrings.get(0), templateStrings.get(1));
     }
-    public abstract Map<String, List<String>> mapping();
-
+    protected abstract Map<String, List<String>> mapping();
 }
