@@ -1,22 +1,13 @@
 package com.twilio.oai.resolver;
 
-import java.util.Map;
-import java.util.Optional;
-
 import org.openapitools.codegen.CodegenParameter;
 import org.openapitools.codegen.CodegenProperty;
 import org.openapitools.codegen.IJsonSchemaValidationProperties;
 
+import static com.twilio.oai.common.ApplicationConstants.OBJECT;
+
 public abstract class Resolver<T extends IJsonSchemaValidationProperties> {
     public abstract T resolve(T arg);
-
-    protected Optional<String> getMapperValue(final String key, Map<String, Object> properties) {
-        if (properties.containsKey(key)) {
-            return Optional.of((String) properties.get(key));
-        }
-
-        return Optional.empty();
-    }
 
     protected String getDataType(final CodegenParameter codegenParameter) {
         if (codegenParameter.dataFormat != null) {
@@ -28,12 +19,7 @@ public abstract class Resolver<T extends IJsonSchemaValidationProperties> {
         }
 
         if (codegenParameter.isAnyType || codegenParameter.isFreeFormObject) {
-            return "object";
-        }
-
-        if ("decimal".equalsIgnoreCase(codegenParameter.dataType)) {
-            // TODO Fix after refactor.
-            return null;
+            return OBJECT;
         }
 
         return codegenParameter.dataType;
@@ -49,12 +35,7 @@ public abstract class Resolver<T extends IJsonSchemaValidationProperties> {
         }
 
         if (codegenProperty.isAnyType || codegenProperty.isFreeFormObject) {
-            return "object";
-        }
-
-        if ("decimal".equalsIgnoreCase(codegenProperty.dataType)) {
-            // TODO Fix after refactor.
-            return null;
+            return OBJECT;
         }
 
         return codegenProperty.openApiType;

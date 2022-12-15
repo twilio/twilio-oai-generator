@@ -37,11 +37,11 @@ public class CodegenModelDataTypeResolver extends Resolver<CodegenProperty> {
     private void assignDataType(CodegenProperty property) {
         String propertyFieldName = Segments.SEGMENT_PROPERTIES.getSegment();
 
-        if (mapper.properties().containsKey(property.dataFormat)) {
-            property.dataType = (String)mapper.properties().get(property.dataFormat);
-        } else if (mapper.properties().containsKey(property.dataType)) {
-            property.dataType = (String)mapper.properties().get(property.dataType);
-        }
+        mapper
+            .properties()
+            .getString(property.dataFormat)
+            .or(() -> mapper.properties().getString(property.dataType))
+            .ifPresent(dataType -> property.dataType = dataType);
     }
 
     private void assignDataTypeObjectForNullDataFormat(CodegenProperty property){

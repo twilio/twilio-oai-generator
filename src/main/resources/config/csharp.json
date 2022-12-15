@@ -51,7 +51,7 @@
         "string-map": "Dictionary<string, string>",
         "phone-number": "Types.PhoneNumber",
         "twiml": "Types.Twiml",
-        "ice-servers": "IceServer",
+        "ice-server": "IceServer",
         "subscribe-rule": "SubscribeRule",
         "recording-rule": "RecordingRule",
         "phone-number-capabilities": "PhoneNumberCapabilities",

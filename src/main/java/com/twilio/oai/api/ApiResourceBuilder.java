@@ -161,12 +161,12 @@ public abstract class ApiResourceBuilder implements IApiResourceBuilder {
         }
     }
 
-    private void addOperationName(final CodegenOperation operation, final String name) {
+    protected void addOperationName(final CodegenOperation operation, final String name) {
         operation.vendorExtensions.put("x-name", name);
         operation.vendorExtensions.put("x-name-lower", name.toLowerCase());
     }
 
-    public Optional<CodegenModel> getModel(final String className, final CodegenOperation codegenOperation) {
+    protected Optional<CodegenModel> getModel(final String className, final CodegenOperation codegenOperation) {
         return Utility.getModel(allModels, className, recordKey, codegenOperation);
     }
 
