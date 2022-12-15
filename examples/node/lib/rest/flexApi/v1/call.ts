@@ -97,7 +97,7 @@ export class CallInstance {
   protected _solution: CallContextSolution;
   protected _context?: CallContext;
 
-  constructor(protected _version: V1, payload: CallPayload, sid?: string) {
+  constructor(protected _version: V1, payload: CallResource, sid?: string) {
     this.sid = payload.sid;
 
     this._solution = { sid: sid || this.sid };

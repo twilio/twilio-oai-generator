@@ -205,7 +205,7 @@ interface NewCredentialsResource {
 }
 
 export class NewCredentialsInstance {
-  constructor(protected _version: V1, payload: NewCredentialsPayload) {
+  constructor(protected _version: V1, payload: NewCredentialsResource) {
     this.accountSid = payload.account_sid;
     this.sid = payload.sid;
     this.testString = payload.test_string;

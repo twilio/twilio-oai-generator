@@ -182,7 +182,7 @@ export class FeedbackCallSummaryInstance {
 
   constructor(
     protected _version: V2010,
-    payload: FeedbackCallSummaryPayload,
+    payload: FeedbackCallSummaryResource,
     accountSid: string,
     sid?: string
   ) {

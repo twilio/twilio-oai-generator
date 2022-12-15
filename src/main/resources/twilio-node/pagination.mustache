@@ -17,7 +17,7 @@ constructor(version: {{apiVersionClass}}, response: Response<string>, solution: 
     *
     * @param payload - Payload response from the API
     */
-    getInstance(payload: {{name}}Payload): {{name}}Instance {
+    getInstance(payload: {{name}}Resource): {{name}}Instance {
     return new {{name}}Instance(
     this._version,
     payload,
