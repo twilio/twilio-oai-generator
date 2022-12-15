@@ -6,23 +6,18 @@ import com.twilio.oai.resolver.IConventionMapper;
 import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenProperty;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class CodegenModelResolver implements Resolver<CodegenModel> {
+public class CodegenModelResolver extends Resolver<CodegenModel> {
+    private final List<? extends LanguageDataType> languageDataTypes;
+    private final CodegenModelDataTypeResolver codegenModelDataTypeResolver;
+    private final CodegenModelContainerDataTypeResolver codegenModelContainerDataTypeResolver;
 
-    private IConventionMapper mapper;
-    private List<? extends LanguageDataType> languageDataTypes;
-    private Map<String, String> modelFormatMap = new HashMap<>();
-    private CodegenModelDataTypeResolver codegenModelDataTypeResolver;
-    private CodegenModelContainerDataTypeResolver codegenModelContainerDataTypeResolver;
-
-    public CodegenModelResolver(IConventionMapper mapper,
+    public CodegenModelResolver(IConventionMapper mapper, Map<String, String> modelFormatMap,
                                 List<? extends LanguageDataType> languageDataTypes) {
-        this.mapper = mapper;
         this.languageDataTypes = languageDataTypes;
-        codegenModelDataTypeResolver = new CodegenModelDataTypeResolver();
+        codegenModelDataTypeResolver = new CodegenModelDataTypeResolver(mapper, modelFormatMap);
         codegenModelContainerDataTypeResolver = new CodegenModelContainerDataTypeResolver(codegenModelDataTypeResolver,
                 languageDataTypes);
     }
@@ -33,8 +28,6 @@ public class CodegenModelResolver implements Resolver<CodegenModel> {
             return null;
         }
 
-        codegenModelDataTypeResolver.setModelFormatMap(modelFormatMap);
-        codegenModelDataTypeResolver.setMapper(mapper);
         for (CodegenProperty property : model.vars) {
             if (property.isContainer) {
                 codegenModelContainerDataTypeResolver.resolve(property);
@@ -44,9 +37,5 @@ public class CodegenModelResolver implements Resolver<CodegenModel> {
         }
 
         return model;
-    }
-
-    public void setModelFormatMap(Map<String, String> modelFormatMap) {
-        this.modelFormatMap = modelFormatMap;
     }
 }

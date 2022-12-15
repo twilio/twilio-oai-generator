@@ -58,6 +58,7 @@ class {{apiName}}List extends ListResource {
     }
 
 {{#apiOperations}}
+{{^vendorExtensions.x-ignore}}
 {{#vendorExtensions.listOperation}}
 {{^vendorExtensions.x-is-read-operation}}{{>method}}
 {{>contextMethod}}
@@ -67,6 +68,7 @@ class {{apiName}}List extends ListResource {
 {{#vendorExtensions.x-is-read-operation}}
 {{>listRead}}
 {{/vendorExtensions.x-is-read-operation}}
+{{/vendorExtensions.x-ignore}}
 {{/apiOperations}}
     /**
      * Constructs a {{apiName}}Context

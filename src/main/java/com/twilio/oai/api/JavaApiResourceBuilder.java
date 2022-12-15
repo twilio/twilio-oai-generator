@@ -5,8 +5,6 @@ import com.twilio.oai.DirectoryStructureService;
 import com.twilio.oai.StringHelper;
 import com.twilio.oai.common.EnumConstants;
 import com.twilio.oai.common.Utility;
-import com.twilio.oai.resolver.IConventionMapper;
-import com.twilio.oai.resolver.ISchemaResolver;
 import com.twilio.oai.resolver.Resolver;
 import com.twilio.oai.resolver.java.JavaConventionResolver;
 import com.twilio.oai.template.IApiActionTemplate;
@@ -30,20 +28,15 @@ public class JavaApiResourceBuilder extends ApiResourceBuilder{
     protected long serialVersionUID;
     private Set<CodegenModel> headerParamModelList;
 
-    private final DirectoryStructureService directoryStructureService;
     private final JavaConventionResolver conventionResolver;
-    public JavaApiResourceBuilder(IApiActionTemplate template, List<CodegenOperation> codegenOperations, List<CodegenModel> allModels,
-                                  DirectoryStructureService directoryStructureService, IConventionMapper mapper) {
+    public JavaApiResourceBuilder(IApiActionTemplate template, List<CodegenOperation> codegenOperations, List<CodegenModel> allModels) {
         super(template, codegenOperations, allModels);
-        this.directoryStructureService = directoryStructureService;
-        this.recordKey = directoryStructureService.getRecordKey(codegenOperationList);
-        this.conventionResolver = new JavaConventionResolver(mapper);
+        this.conventionResolver = new JavaConventionResolver();
     }
     @Override
     public IApiResourceBuilder updateTemplate() {
         template.clean();
-        codegenOperationList.stream().forEach(codegenOperation -> {
-
+        codegenOperationList.forEach(codegenOperation -> {
             updateNamespaceSubPart(codegenOperation);
             EnumConstants.Operation operationsName = Arrays
             .stream(EnumConstants.Operation.values())
@@ -58,9 +51,9 @@ public class JavaApiResourceBuilder extends ApiResourceBuilder{
     }
 
     @Override
-    public ApiResourceBuilder updateOperations(ISchemaResolver<CodegenParameter> codegenParameterIResolver) {
+    public ApiResourceBuilder updateOperations(Resolver<CodegenParameter> codegenParameterIResolver) {
         headerParamModelList = new HashSet<>();
-        this.codegenOperationList.stream().forEach(co -> {
+        this.codegenOperationList.forEach(co -> {
             List<String> filePathArray = new ArrayList<>(Arrays.asList(co.baseName.split(PATH_SEPARATOR_PLACEHOLDER)));
             String resourceName = filePathArray.remove(filePathArray.size()-1);
 
@@ -79,19 +72,16 @@ public class JavaApiResourceBuilder extends ApiResourceBuilder{
                 .forEach(param -> param.paramName = "path"+param.paramName);
             co.queryParams = co.queryParams.stream()
                     .map(codegenParameterIResolver::resolve)
-                    .map(conventionResolver::prefixedCollapsibleMap)
                     .map(item -> conventionResolver.resolveEnumParameter(item, resourceName))
                     .collect(Collectors.toList());
             co.queryParams = preProcessQueryParameters(co);
             co.formParams = co.formParams.stream()
                     .map(codegenParameterIResolver::resolve)
-                    .map(conventionResolver::prefixedCollapsibleMap)
                     .map(item -> conventionResolver.resolveEnumParameter(item, resourceName))
                     .collect(Collectors.toList());
             processDataTypesForParams(co.formParams);
             co.headerParams = co.headerParams.stream()
                     .map(codegenParameterIResolver::resolve)
-                    .map(conventionResolver::prefixedCollapsibleMap)
                     .map(item -> conventionResolver.resolveEnumParameter(item, resourceName))
                     .collect(Collectors.toList());
             co.optionalParams = co.optionalParams
@@ -130,23 +120,21 @@ public class JavaApiResourceBuilder extends ApiResourceBuilder{
     }
 
     @Override
-    public ApiResourceBuilder updateResponseModel(ISchemaResolver<CodegenProperty> codegenPropertyIResolver, Resolver<CodegenModel> codegenModelResolver) {
+    public ApiResourceBuilder updateResponseModel(Resolver<CodegenProperty> codegenPropertyIResolver, Resolver<CodegenModel> codegenModelResolver) {
         List<CodegenModel> responseModels = new ArrayList<>();
-        codegenOperationList.stream().forEach(co -> {
+        codegenOperationList.forEach(co -> {
             List<String> filePathArray = new ArrayList<>(Arrays.asList(co.baseName.split(PATH_SEPARATOR_PLACEHOLDER)));
             String resourceName = filePathArray.remove(filePathArray.size()-1);
             co.responses
                     .stream()
                     .map(response -> response.dataType)
                     .filter(Objects::nonNull)
-                    .map(modelName -> directoryStructureService.getModelCoPath(modelName, co, recordKey))
+                    .map(modelName -> getModel(modelName, co))
                     .flatMap(Optional::stream)
                     .forEach(item -> {
                         codegenModelResolver.resolve(item);
-                        item.vars = item.vars.stream().map(v ->
-                                codegenPropertyIResolver.resolve(v)).collect(Collectors.toList());
-                        CodegenModel responseModel = processEnumProperty(item, co, resourceName);
-                        responseModels.add(responseModel);
+                        item.vars.forEach(codegenPropertyIResolver::resolve);
+                        responseModels.add(processEnumProperty(item, co, resourceName));
                         responseModels.addAll(headerParamModelList);
                         this.serialVersionUID = calculateSerialVersionUid(item.vars);
                     });
@@ -309,21 +297,6 @@ public class JavaApiResourceBuilder extends ApiResourceBuilder{
     @Override
     protected Map<String, Object> mapOperation(CodegenOperation co) {
         Map<String, Object> operationMap = super.mapOperation(co);
-        final EnumConstants.Operation method = Arrays
-            .stream(EnumConstants.Operation.values())
-            .filter(item -> co.nickname.toLowerCase().startsWith(item.getValue().toLowerCase()))
-            .findFirst()
-            .orElse(EnumConstants.Operation.READ);
-
-        operationMap.put("x-is-" + method.name().toLowerCase() + "-operation", true);
-        metaAPIProperties.put(method.name(), co);
-
-        String summary = co.notes;
-        if (summary == null || summary.isEmpty()) {
-            summary = method.name().toLowerCase();
-        }
-
-        operationMap.put("x-generate-comment", summary);
         operationMap.put(SIGNATURE_LIST, generateSignatureList(co));
         operationMap.put("x-non-path-params", getNonPathParams(co.allParams));
         return operationMap;

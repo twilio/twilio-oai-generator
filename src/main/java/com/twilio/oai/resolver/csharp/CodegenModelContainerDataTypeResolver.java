@@ -9,8 +9,8 @@ import org.openapitools.codegen.CodegenProperty;
 import java.util.HashSet;
 import java.util.Stack;
 
-public class CodegenModelContainerDataTypeResolver implements Resolver<CodegenProperty> {
-    private CodegenModelDataTypeResolver codegenModelDataTypeResolver;
+public class CodegenModelContainerDataTypeResolver extends Resolver<CodegenProperty> {
+    private final CodegenModelDataTypeResolver codegenModelDataTypeResolver;
 
     public CodegenModelContainerDataTypeResolver(CodegenModelDataTypeResolver codegenModelDataTypeResolver) {
         this.codegenModelDataTypeResolver = codegenModelDataTypeResolver;

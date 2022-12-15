@@ -1,6 +1,8 @@
 package com.twilio.oai.resolver;
 
 import com.twilio.oai.StringHelper;
+import com.twilio.oai.common.Utility;
+
 import lombok.AllArgsConstructor;
 import org.openapitools.codegen.CodegenParameter;
 
@@ -8,9 +10,8 @@ import static com.twilio.oai.common.ApplicationConstants.DESERIALIZE_VEND_EXT;
 import static com.twilio.oai.common.ApplicationConstants.SERIALIZE_VEND_EXT;
 
 @AllArgsConstructor
-public class LanguageParamResolver implements ISchemaResolver<CodegenParameter> {
+public class LanguageParamResolver extends Resolver<CodegenParameter> {
     protected IConventionMapper mapper;
-
 
     @Override
     public CodegenParameter resolve(CodegenParameter codegenParameter) {
@@ -18,40 +19,32 @@ public class LanguageParamResolver implements ISchemaResolver<CodegenParameter> 
         resolvePrefixedMap(codegenParameter);
         resolveSerialize(codegenParameter);
         resolveDeSerialize(codegenParameter);
+
+        codegenParameter.dataType = Utility.removeEnumName(codegenParameter.dataType);
+        codegenParameter.baseType = Utility.removeEnumName(codegenParameter.baseType);
+
         return codegenParameter;
     }
 
     protected void resolveProperties(CodegenParameter codegenParameter) {
-        if (mapper.properties().containsKey(codegenParameter.dataFormat)) {
-            codegenParameter.dataType = (String) mapper.properties().get(codegenParameter.dataFormat);
+        if (codegenParameter.dataFormat != null) {
+            getMapperValue(codegenParameter.dataFormat, mapper.properties()).ifPresent(dataType -> codegenParameter.dataType = dataType);
         }
     }
 
     protected void resolveSerialize(CodegenParameter codegenParameter) {
-        boolean hasProperty = mapper.serialize().containsKey(codegenParameter.dataFormat);
-        if (hasProperty) {
-            codegenParameter.vendorExtensions.put(SERIALIZE_VEND_EXT, (String) mapper.serialize().get(codegenParameter.dataFormat));
-            codegenParameter.vendorExtensions.put(SERIALIZE_VEND_EXT + LanguageConventionResolver.HYPHEN + codegenParameter.dataFormat, true);
-        }
-        boolean hasType = mapper.serialize().containsKey(codegenParameter.dataType);
-        if (hasType) {
-            codegenParameter.vendorExtensions.put(SERIALIZE_VEND_EXT, (String) mapper.serialize().get(codegenParameter.dataType));
-            codegenParameter.vendorExtensions.put(SERIALIZE_VEND_EXT + LanguageConventionResolver.HYPHEN + codegenParameter.dataType, true);
-        }
+        getMapperValue(getDataType(codegenParameter),
+                       mapper.serialize()).ifPresent(serialize -> codegenParameter.vendorExtensions.put(
+            SERIALIZE_VEND_EXT,
+            serialize.split("\\(")[0]));
     }
 
     protected void resolveDeSerialize(CodegenParameter codegenParameter) {
-        if (mapper.deserialize().containsKey(codegenParameter.dataFormat)) {
-            codegenParameter.vendorExtensions.put(DESERIALIZE_VEND_EXT, mapper.deserialize().get(codegenParameter.dataFormat));
-            codegenParameter.vendorExtensions.put(DESERIALIZE_VEND_EXT + LanguageConventionResolver.HYPHEN + codegenParameter.dataType, true);
-        }
-
-        if (mapper.deserialize().containsKey(codegenParameter.dataType)) {
-            codegenParameter.vendorExtensions.put(DESERIALIZE_VEND_EXT, mapper.serialize().get(codegenParameter.dataType));
-            codegenParameter.vendorExtensions.put(DESERIALIZE_VEND_EXT + LanguageConventionResolver.HYPHEN + codegenParameter.dataType, true);
-        }
+        getMapperValue(getDataType(codegenParameter),
+                       mapper.deserialize()).ifPresent(deserialize -> codegenParameter.vendorExtensions.put(
+            DESERIALIZE_VEND_EXT,
+            deserialize.split("\\(")[0]));
     }
-
 
     protected void resolvePrefixedMap(CodegenParameter codegenParameter) {
         if (codegenParameter.dataFormat != null && codegenParameter.dataFormat

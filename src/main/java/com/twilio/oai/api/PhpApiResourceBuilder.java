@@ -2,7 +2,7 @@ package com.twilio.oai.api;
 
 import com.twilio.oai.DirectoryStructureService;
 import com.twilio.oai.PathUtils;
-import com.twilio.oai.resolver.ISchemaResolver;
+import com.twilio.oai.resolver.Resolver;
 import com.twilio.oai.resource.Resource;
 import com.twilio.oai.template.IApiActionTemplate;
 import com.twilio.oai.template.PhpApiActionTemplate;
@@ -18,7 +18,7 @@ import java.util.stream.StreamSupport;
 import static com.twilio.oai.common.ApplicationConstants.PATH_SEPARATOR_PLACEHOLDER;
 
 public class PhpApiResourceBuilder extends ApiResourceBuilder {
-    private HashSet<String> pathSet = new HashSet<>();
+    private final HashSet<String> pathSet = new HashSet<>();
     private final List<CodegenOperation> listOperations = new ArrayList<>();
     private final List<CodegenOperation> instanceOperations = new ArrayList<>();
     protected String apiListPath = "";
@@ -30,7 +30,7 @@ public class PhpApiResourceBuilder extends ApiResourceBuilder {
 
     @Override
     public PhpApiResourceBuilder updateTemplate() {
-        codegenOperationList.stream().forEach(codegenOperation -> {
+        codegenOperationList.forEach(codegenOperation -> {
             updateNamespaceSubPart(codegenOperation);
             template.clean();
             if (metaAPIProperties.containsKey("hasInstanceOperation") && !codegenOperation.vendorExtensions.containsKey("x-ignore"))
@@ -65,7 +65,7 @@ public class PhpApiResourceBuilder extends ApiResourceBuilder {
 
     @Override
     public ApiResourceBuilder setImports(DirectoryStructureService directoryStructureService) {
-        codegenOperationList.stream().forEach(operation -> {
+        codegenOperationList.forEach(operation -> {
             if (!pathSet.contains(operation.path)) {
                 List<Resource> dependents = StreamSupport.stream(directoryStructureService.getResourceTree().getResources().spliterator(), false)
                         .filter(resource -> PathUtils.removeFirstPart(operation.path).equals(PathUtils.getTwilioExtension(resource.getPathItem(), "parent").orElse(null)))
@@ -74,14 +74,13 @@ public class PhpApiResourceBuilder extends ApiResourceBuilder {
                 List<Resource> methodDependents = dependents.stream().filter(dep ->
                                 PathUtils.getTwilioExtension(dep.getPathItem(), "pathType").get().equals("instance"))
                         .collect(Collectors.toList());
-                dependents.removeIf(dep -> methodDependents.contains(dep));
-                List<Resource> propertyDependents = dependents;
-                propertyDependents.addAll(Optional.ofNullable(methodDependents.stream()).orElse(Stream.empty()).filter(dep ->
+                dependents.removeIf(methodDependents::contains);
+                dependents.addAll(Optional.ofNullable(methodDependents.stream()).orElse(Stream.empty()).filter(dep ->
                         !dep.getName().endsWith("}") && !dep.getName().endsWith("}.json")).collect(Collectors.toList()));
                 List<Object> dependentProperties = new ArrayList<>();
                 List<Object> dependentMethods = new ArrayList<>();
                 updateDependents(directoryStructureService, methodDependents, dependentMethods);
-                updateDependents(directoryStructureService, propertyDependents, dependentProperties);
+                updateDependents(directoryStructureService, dependents, dependentProperties);
                 if(operation.path.endsWith("}") || operation.path.endsWith("}.json")) {
                     metaAPIProperties.put("contextImportProperties", dependentProperties);
                     metaAPIProperties.put("contextImportMethods", dependentMethods);
@@ -123,22 +122,20 @@ public class PhpApiResourceBuilder extends ApiResourceBuilder {
     }
 
     private String lowerCasePathParam(String path) {
-        return Pattern.compile("\\{([\\w])").matcher(path)
+        return Pattern.compile("\\{(\\w)").matcher(path)
                 .replaceAll(match -> "{" + match.group(1).toLowerCase());
     }
 
     private String replaceBraces(String path) {
-        path = path.replaceAll("[{]", "' . \\\\rawurlencode(\\$");
-        return path.replaceAll("[}]", ") . '");
+        path = path.replace("{", "' . \\rawurlencode($");
+        return path.replace("}", ") . '");
     }
 
     private void updateNamespaceSubPart(CodegenOperation codegenOperation) {
         List<String> filePathArray = new ArrayList<>(Arrays.asList(codegenOperation.baseName.split(PATH_SEPARATOR_PLACEHOLDER)));
         filePathArray = filePathArray.subList(0, filePathArray.size() - 1);
         if (!filePathArray.isEmpty()) {
-            final String namespacePath = filePathArray
-                    .stream()
-                    .collect(Collectors.joining("\\"));
+            final String namespacePath = String.join("\\", filePathArray);
             namespaceSubPart = "\\" + namespacePath;
         }
         namespaceSubPart = namespaceSubPart.replaceAll("\\\\Function$", "\\\\TwilioFunction");
@@ -146,7 +143,7 @@ public class PhpApiResourceBuilder extends ApiResourceBuilder {
     }
 
     @Override
-    public ApiResourceBuilder updateOperations(ISchemaResolver<CodegenParameter> codegenParameterIResolver) {
+    public ApiResourceBuilder updateOperations(Resolver<CodegenParameter> codegenParameterIResolver) {
         ApiResourceBuilder apiResourceBuilder = super.updateOperations(codegenParameterIResolver);
         this.addOptionFileParams(apiResourceBuilder);
         categorizeOperations();
@@ -160,9 +157,8 @@ public class PhpApiResourceBuilder extends ApiResourceBuilder {
             for (CodegenParameter param : operation.optionalParams) {
                 if (!param.isPathParam) {
                     param.vendorExtensions.put("optionFileSeparator", ",");
-                    if (!(boolean) operation.vendorExtensions.getOrDefault("x-is-read-operation", false)) {
-                        optionFileParams.add(param);
-                    } else if (!param.baseName.equals("PageSize")) {
+                    if (!(boolean) operation.vendorExtensions.getOrDefault("x-is-read-operation", false) ||
+                        !param.baseName.equals("PageSize")) {
                         optionFileParams.add(param);
                     }
                 }

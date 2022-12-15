@@ -13,7 +13,7 @@ import java.util.Map;
 import static com.twilio.oai.common.ApplicationConstants.LIST_START;
 import static com.twilio.oai.common.ApplicationConstants.OBJECT;
 
-public class CodegenModelDataTypeResolver implements Resolver<CodegenProperty> {
+public class CodegenModelDataTypeResolver extends Resolver<CodegenProperty> {
     private Map<String, Map<String, Object>> conventionMap;
     private Map<String, IJsonSchemaValidationProperties> enums;
     private CodegenModelComplexResolver codegenModelComplexResolver = new CodegenModelComplexResolver();

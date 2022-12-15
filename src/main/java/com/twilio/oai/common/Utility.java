@@ -4,20 +4,24 @@ import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.experimental.UtilityClass;
 import org.openapitools.codegen.CodegenModel;
+import org.openapitools.codegen.CodegenOperation;
+import org.openapitools.codegen.CodegenProperty;
 import org.openapitools.codegen.model.ModelMap;
 import org.openapitools.codegen.model.ModelsMap;
-import org.openapitools.codegen.CodegenOperation;
+
+import static com.twilio.oai.common.ApplicationConstants.ARRAY;
 
 @UtilityClass
 public class Utility {
@@ -28,15 +32,9 @@ public class Utility {
 
     public void setComplexDataMapping(final List<CodegenModel> allModels, Map<String, String> modelFormatMap) {
         allModels.forEach(item -> {
-            ObjectMapper objectMapper = new ObjectMapper();
-            try {
-                JsonNode jsonNode = objectMapper.readTree(item.modelJson);
-                if (jsonNode.has("type") && jsonNode.has("format") &&
-                    jsonNode.get("type").textValue().equals("object")) {
-                    modelFormatMap.put(item.classname, jsonNode.get("format").textValue());
-                }
-            } catch (JsonProcessingException e) {
-                e.printStackTrace();
+            if (item.getDataType() != null && item.getFormat() != null &&
+                item.getDataType().equalsIgnoreCase("object")) {
+                modelFormatMap.put(item.classname, item.getFormat());
             }
         });
     }
@@ -87,5 +85,71 @@ public class Utility {
         catch (NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public String populateCrudOperations(final CodegenOperation operation) {
+        final EnumConstants.Operation method = Arrays
+            .stream(EnumConstants.Operation.values())
+            .filter(item -> operation.nickname.toLowerCase().startsWith(item.getValue().toLowerCase()))
+            .findFirst()
+            .orElse(EnumConstants.Operation.READ);
+
+        operation.vendorExtensions.put("x-is-" + method.name().toLowerCase() + "-operation", true);
+
+        String summary = operation.notes;
+        if (summary == null || summary.isEmpty()) {
+            summary = method.name().toLowerCase();
+        }
+
+        operation.vendorExtensions.put("x-generate-comment", summary);
+
+        return method.name();
+    }
+
+    public String getRecordKey(final List<CodegenModel> models, final List<CodegenOperation> codegenOperationList) {
+        return codegenOperationList
+            .stream()
+            .filter(co -> co.operationId.toLowerCase().startsWith("list"))
+            .map(co -> getModelByClassname(models, co.returnBaseType))
+            .map(Optional::orElseThrow)
+            .map(CodegenModel::getAllVars)
+            .flatMap(Collection::stream)
+            .filter(v -> v.openApiType.equals(ARRAY))
+            .map(v -> v.baseName)
+            .findFirst()
+            .orElse(null);
+    }
+
+    public Optional<CodegenModel> getModel(final List<CodegenModel> models,
+                                           final String className,
+                                           final String recordKey,
+                                           final CodegenOperation codegenOperation) {
+        if (recordKey != null &&
+            (boolean) codegenOperation.vendorExtensions.getOrDefault("x-is-read-operation", false)) {
+            return models
+                .stream()
+                .filter(model -> model.getClassname().equals(className))
+                .map(CodegenModel::getVars)
+                .flatMap(Collection::stream)
+                .filter(prop -> prop.baseName.equals(recordKey))
+                .map(CodegenProperty::getComplexType)
+                .map(classname -> getModelByClassname(models, classname))
+                .findFirst()
+                .orElseThrow();
+        }
+
+        return getModelByClassname(models, className);
+    }
+
+    public Optional<CodegenModel> getModelByClassname(final List<CodegenModel> models, final String classname) {
+        return models.stream().filter(model -> model.classname.equals(classname)).findFirst();
+    }
+
+    public void addModel(final List<CodegenModel> allModels, final Map<String, CodegenModel> models, final String complexType, final String dataType) {
+        getModelByClassname(allModels, complexType != null ? complexType : dataType).ifPresent(model -> {
+            if (models.putIfAbsent(model.getClassname(), model) == null) {
+                model.getVars().forEach(property -> addModel(allModels, models, property.complexType, property.dataType));
+            }
+        });
     }
 }

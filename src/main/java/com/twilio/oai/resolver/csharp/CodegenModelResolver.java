@@ -9,12 +9,11 @@ import com.twilio.oai.resolver.Resolver;
 import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenProperty;
 import org.openapitools.codegen.IJsonSchemaValidationProperties;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 
 
-public class CodegenModelResolver implements Resolver<CodegenModel> {
+public class CodegenModelResolver extends Resolver<CodegenModel> {
 
     private final Map<String, Map<String, Object>> conventionMap;
     private String className;

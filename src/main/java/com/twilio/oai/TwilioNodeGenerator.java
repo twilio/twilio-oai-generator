@@ -25,8 +25,8 @@ import org.openapitools.codegen.model.OperationsMap;
 import static com.twilio.oai.common.ApplicationConstants.DEPENDENTS;
 import static com.twilio.oai.common.ApplicationConstants.IGNORE_EXTENSION_NAME;
 import static com.twilio.oai.common.ApplicationConstants.PATH_SEPARATOR_PLACEHOLDER;
-import static com.twilio.oai.common.ApplicationConstants.SERIALIZE_EXTENSION_NAME;
-import static com.twilio.oai.common.ApplicationConstants.DESERIALIZE_EXTENSION_NAME;
+import static com.twilio.oai.common.ApplicationConstants.SERIALIZE_VEND_EXT;
+import static com.twilio.oai.common.ApplicationConstants.DESERIALIZE_VEND_EXT;
 
 public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
 
@@ -39,6 +39,7 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
         resourceTree,
         new NodeCaseResolver());
 
+    private final List<CodegenModel> allModels = new ArrayList<>();
     private final Map<String, String> modelFormatMap = new HashMap<>();
     private final NodeConventionResolver conventionResolver = new NodeConventionResolver();
 
@@ -92,6 +93,7 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
     public Map<String, ModelsMap> postProcessAllModels(final Map<String, ModelsMap> allModels) {
         final Map<String, ModelsMap> results = super.postProcessAllModels(allModels);
 
+        Utility.addModelsToLocalModelList(results, this.allModels);
         directoryStructureService.postProcessAllModels(results, modelFormatMap);
 
         // Return an empty collection so no model files get generated.
@@ -163,9 +165,11 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
             resource.put("instanceName", instanceName);
 
             updateResourcePath(resource, co);
-            twilioCodegen.populateCrudOperations(resource, co);
 
-            co.allParams.forEach(param -> directoryStructureService.addModel(models, param.baseType, param.dataType));
+            final String operationType = Utility.populateCrudOperations(co);
+            resource.put(operationType, co);
+
+            co.allParams.forEach(param -> Utility.addModel(this.allModels, models, param.baseType, param.dataType));
             co.allParams.removeAll(co.pathParams);
             co.requiredParams.removeAll(co.pathParams);
             co.hasParams = !co.allParams.isEmpty();
@@ -180,9 +184,11 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
                 .forEach(dependent -> dependent
                     .getPathItem()
                     .readOperations()
-                    .forEach(operation -> directoryStructureService.addDependent(dependentMap,
-                                                                                 dependent.getName(),
-                                                                                 operation)));
+                    .forEach(operation -> {
+                        final DirectoryStructureService.DependentResource dependentResource =
+                            directoryStructureService.generateDependent(dependent.getName(), operation);
+                        dependentMap.put(dependentResource.getFilename(), dependentResource);
+                    }));
             dependentMap
                 .values()
                 .stream()
@@ -214,9 +220,10 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
                     resource.put("responseModel", responseModel);
                     responseModel
                         .getVars()
-                        .forEach(variable -> directoryStructureService.addModel(models,
-                                                                                variable.complexType,
-                                                                                variable.dataType));
+                        .forEach(variable -> Utility.addModel(this.allModels,
+                                                              models,
+                                                              variable.complexType,
+                                                              variable.dataType));
 
                     updateResponseModels(responseModel, allResponseModels, name);
                 });
@@ -310,30 +317,30 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
 
     private void addSerializeVendorExtension(CodegenParameter param) {
         if (param.isDate) {
-            param.vendorExtensions.put(SERIALIZE_EXTENSION_NAME, "serialize.iso8601Date");
+            param.vendorExtensions.put(SERIALIZE_VEND_EXT, "serialize.iso8601Date");
         }
         if (param.isDateTime) {
-            param.vendorExtensions.put(SERIALIZE_EXTENSION_NAME, "serialize.iso8601DateTime");
+            param.vendorExtensions.put(SERIALIZE_VEND_EXT, "serialize.iso8601DateTime");
         }
         if (param.isFreeFormObject) {
             if (param.dataFormat != null && param.dataFormat.startsWith("prefixed-collapsible-map")) {
-                param.vendorExtensions.put(SERIALIZE_EXTENSION_NAME, "serialize.prefixedCollapsibleMap");
+                param.vendorExtensions.put(SERIALIZE_VEND_EXT, "serialize.prefixedCollapsibleMap");
                 String[] formatArray = param.dataFormat.split("-");
                 param.vendorExtensions.put("x-multi-name", formatArray[formatArray.length-1]);
             }
             else {
-                param.vendorExtensions.put(SERIALIZE_EXTENSION_NAME, "serialize.object");
+                param.vendorExtensions.put(SERIALIZE_VEND_EXT, "serialize.object");
             }
         }
         if (param.isAnyType) {
-            param.vendorExtensions.put(SERIALIZE_EXTENSION_NAME, "serialize.object");
+            param.vendorExtensions.put(SERIALIZE_VEND_EXT, "serialize.object");
         }
         if (param.isBoolean) {
-            param.vendorExtensions.put(SERIALIZE_EXTENSION_NAME, "serialize.bool");
+            param.vendorExtensions.put(SERIALIZE_VEND_EXT, "serialize.bool");
         }
 
         if (param.isArray) {
-            param.vendorExtensions.put(SERIALIZE_EXTENSION_NAME, "serialize.map");
+            param.vendorExtensions.put(SERIALIZE_VEND_EXT, "serialize.map");
             final String transform = param.baseType.equals("any") ? "serialize.object" : "";
             param.vendorExtensions.put("x-transform", transform);
         }
@@ -341,19 +348,19 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
 
     private void addDeserializeVendorExtension(CodegenProperty variable) {
         if (variable.dataFormat != null && variable.dataFormat.equals("date")) {
-            variable.vendorExtensions.put(DESERIALIZE_EXTENSION_NAME, "deserialize.iso8601Date");
+            variable.vendorExtensions.put(DESERIALIZE_VEND_EXT, "deserialize.iso8601Date");
         }
         if (variable.dataFormat != null && variable.dataFormat.equals("date-time")) {
-            variable.vendorExtensions.put(DESERIALIZE_EXTENSION_NAME, "deserialize.iso8601DateTime");
+            variable.vendorExtensions.put(DESERIALIZE_VEND_EXT, "deserialize.iso8601DateTime");
         }
         if (variable.dataFormat != null && variable.dataFormat.equals("date-time-rfc-2822")) {
-            variable.vendorExtensions.put(DESERIALIZE_EXTENSION_NAME, "deserialize.rfc2822DateTime");
+            variable.vendorExtensions.put(DESERIALIZE_VEND_EXT, "deserialize.rfc2822DateTime");
         }
         if (variable.isInteger) {
-            variable.vendorExtensions.put(DESERIALIZE_EXTENSION_NAME, "deserialize.integer");
+            variable.vendorExtensions.put(DESERIALIZE_VEND_EXT, "deserialize.integer");
         }
         if (variable.isDecimal) {
-            variable.vendorExtensions.put(DESERIALIZE_EXTENSION_NAME, "deserialize.decimal");
+            variable.vendorExtensions.put(DESERIALIZE_VEND_EXT, "deserialize.decimal");
         }
     }
 

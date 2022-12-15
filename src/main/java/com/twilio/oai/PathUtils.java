@@ -97,6 +97,6 @@ public class PathUtils {
     }
 
     public static boolean isPathParam(final Parameter parameter) {
-        return (boolean) parameter.getIn().equals("path");
+        return parameter.getIn().equals("path");
     }
 }
