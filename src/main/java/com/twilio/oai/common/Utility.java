@@ -22,6 +22,7 @@ import org.openapitools.codegen.model.ModelMap;
 import org.openapitools.codegen.model.ModelsMap;
 
 import static com.twilio.oai.common.ApplicationConstants.ARRAY;
+import static com.twilio.oai.common.ApplicationConstants.OBJECT;
 
 @UtilityClass
 public class Utility {
@@ -32,8 +33,7 @@ public class Utility {
 
     public void setComplexDataMapping(final List<CodegenModel> allModels, Map<String, String> modelFormatMap) {
         allModels.forEach(item -> {
-            if (item.getDataType() != null && item.getFormat() != null &&
-                item.getDataType().equalsIgnoreCase("object")) {
+            if (item.getFormat() != null && OBJECT.equalsIgnoreCase(item.getDataType())) {
                 modelFormatMap.put(item.classname, item.getFormat());
             }
         });
@@ -65,7 +65,7 @@ public class Utility {
     }
 
     @SuppressWarnings("unchecked")
-    public ArrayList<CodegenOperation> getOperations(final Map<String, Object> resource) {
+    public List<CodegenOperation> getOperations(final Map<String, Object> resource) {
         return (ArrayList<CodegenOperation>) resource.computeIfAbsent(
                 "operations",
                 k -> new ArrayList<>());
@@ -124,8 +124,7 @@ public class Utility {
                                            final String className,
                                            final String recordKey,
                                            final CodegenOperation codegenOperation) {
-        if (recordKey != null &&
-            (boolean) codegenOperation.vendorExtensions.getOrDefault("x-is-read-operation", false)) {
+        if ((boolean) codegenOperation.vendorExtensions.getOrDefault("x-is-read-operation", false)) {
             return models
                 .stream()
                 .filter(model -> model.getClassname().equals(className))

@@ -23,15 +23,14 @@ public class CodegenModelComplexResolver extends Resolver<CodegenProperty> {
         }
 
         if (modelFormatMap.containsKey(property.complexType)) {
-            Map<String, Object> propertyMap = mapper.properties();
             String complexType = modelFormatMap.get(property.complexType);
 
-            if (propertyMap.containsKey(complexType)) {
-                property.dataType = (String) propertyMap.get(complexType);
+            mapper.properties().getString(complexType).ifPresent(dataType -> {
+                property.dataType = dataType;
                 property.complexType = null;
 
-                property.vendorExtensions.put("x-import", mapper.libraries().get(complexType));
-            }
+                property.vendorExtensions.put("x-import", mapper.libraries().get(complexType).orElseThrow());
+            });
         }
         return property;
     }

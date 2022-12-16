@@ -26,8 +26,4 @@ public class JavaApiActionTemplate extends AbstractApiActionTemplate {
                       API_TEMPLATE,
                       Arrays.asList("api.mustache", ".java"));
     }
-
-    @Override
-    public void addSupportVersion() {
-    }
 }

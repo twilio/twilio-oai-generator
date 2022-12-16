@@ -5,6 +5,7 @@ import com.twilio.oai.resolver.LanguageConventionResolver;
 import com.twilio.oai.resolver.LanguageParamResolver;
 import org.openapitools.codegen.CodegenParameter;
 
+import static com.twilio.oai.common.ApplicationConstants.OBJECT;
 import static com.twilio.oai.common.ApplicationConstants.SERIALIZE_VEND_EXT;
 import static com.twilio.oai.resolver.php.PhpPropertyResolver.MAP_STRING;
 
@@ -25,7 +26,7 @@ public class PhpParameterResolver extends LanguageParamResolver {
         if (codegenParameter.dataType.equalsIgnoreCase(LanguageConventionResolver.MIXED_ARRAY)) {
             codegenParameter.dataType = "array[]";
         }
-        if (codegenParameter.dataType.equalsIgnoreCase(LanguageConventionResolver.OBJECT) ||
+        if (codegenParameter.dataType.equalsIgnoreCase(OBJECT) ||
                 codegenParameter.dataType.equals(LanguageConventionResolver.LIST_OBJECT)) {
             codegenParameter.dataType = "array";
         }

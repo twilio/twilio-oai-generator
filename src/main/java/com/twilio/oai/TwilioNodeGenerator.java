@@ -150,7 +150,7 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
             }
 
             final Map<String, Object> resource = PathUtils.getStringMap(resources, resourceName);
-            final ArrayList<CodegenOperation> resourceOperationList = Utility.getOperations(resource);
+            final List<CodegenOperation> resourceOperationList = Utility.getOperations(resource);
             final boolean ignoreOperation = Optional
                 .ofNullable(co.vendorExtensions.get(IGNORE_EXTENSION_NAME))
                 .map(Boolean.class::cast)
