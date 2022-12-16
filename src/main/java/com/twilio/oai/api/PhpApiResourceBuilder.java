@@ -30,9 +30,11 @@ public class PhpApiResourceBuilder extends ApiResourceBuilder {
 
     @Override
     public PhpApiResourceBuilder updateTemplate() {
+        template.clean();
+        template.addSupportVersion();
+
         codegenOperationList.forEach(codegenOperation -> {
             updateNamespaceSubPart(codegenOperation);
-            template.clean();
             if (metaAPIProperties.containsKey("hasInstanceOperation") && !codegenOperation.vendorExtensions.containsKey("x-ignore"))
                 template.add(PhpApiActionTemplate.TEMPLATE_TYPE_CONTEXT);
             if ((boolean) codegenOperation.vendorExtensions.getOrDefault("hasOptionFileParams", false))
@@ -191,7 +193,6 @@ public class PhpApiResourceBuilder extends ApiResourceBuilder {
         if (directoryStructureService.isVersionLess()) {
             String version = PathUtils.getFirstPathPart(codegenOperationList.get(0).path);
             PhpDomainBuilder.setContextResources(directoryStructureService, version);
-            template.addSupportVersion();
         }
         return this;
     }
