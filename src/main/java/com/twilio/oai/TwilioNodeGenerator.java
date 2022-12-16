@@ -1,38 +1,39 @@
 package com.twilio.oai;
 
+import com.twilio.oai.api.NodeApiResourceBuilder;
+import com.twilio.oai.api.NodeApiResources;
 import com.twilio.oai.common.EnumConstants;
-import com.twilio.oai.resolver.node.NodeCaseResolver;
 import com.twilio.oai.common.Utility;
-import com.twilio.oai.resolver.node.NodeConventionResolver;
+import com.twilio.oai.resolver.IConventionMapper;
+import com.twilio.oai.resolver.LanguageConventionResolver;
+import com.twilio.oai.resolver.LanguagePropertyResolver;
+import com.twilio.oai.resolver.common.CodegenModelResolver;
+import com.twilio.oai.resolver.node.NodeCaseResolver;
+import com.twilio.oai.resolver.node.NodeParameterResolver;
 import com.twilio.oai.resource.IResourceTree;
 import com.twilio.oai.resource.ResourceMap;
+import com.twilio.oai.template.NodeApiActionTemplate;
 
-import java.io.File;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import io.swagger.v3.oas.models.OpenAPI;
 import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenOperation;
-import org.openapitools.codegen.CodegenParameter;
-import org.openapitools.codegen.CodegenProperty;
-import org.openapitools.codegen.SupportingFile;
 import org.openapitools.codegen.languages.TypeScriptNodeClientCodegen;
 import org.openapitools.codegen.model.ModelMap;
 import org.openapitools.codegen.model.ModelsMap;
 import org.openapitools.codegen.model.OperationsMap;
 
-import static com.twilio.oai.common.ApplicationConstants.DEPENDENTS;
-import static com.twilio.oai.common.ApplicationConstants.IGNORE_EXTENSION_NAME;
-import static com.twilio.oai.common.ApplicationConstants.PATH_SEPARATOR_PLACEHOLDER;
-import static com.twilio.oai.common.ApplicationConstants.SERIALIZE_VEND_EXT;
-import static com.twilio.oai.common.ApplicationConstants.DESERIALIZE_VEND_EXT;
+import static com.twilio.oai.common.ApplicationConstants.CONFIG_NODE_JSON_PATH;
 
 public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
-
-    private static final String VERSION_TEMPLATE = "version.mustache";
-    private static final String FILENAME_EXTENSION = ".ts";
     private final TwilioCodegenAdapter twilioCodegen;
+    private final NodeApiActionTemplate actionTemplate = new NodeApiActionTemplate(this);
     private final IResourceTree resourceTree = new ResourceMap(new Inflector());
     private final DirectoryStructureService directoryStructureService = new DirectoryStructureService(
         additionalProperties,
@@ -41,11 +42,9 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
 
     private final List<CodegenModel> allModels = new ArrayList<>();
     private final Map<String, String> modelFormatMap = new HashMap<>();
-    private final NodeConventionResolver conventionResolver = new NodeConventionResolver();
 
     public TwilioNodeGenerator() {
         super();
-
         twilioCodegen = new TwilioCodegenAdapter(this, getName());
     }
 
@@ -65,23 +64,11 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
         resourceTree.getResources().forEach(resource -> resource.updateFamily(resourceTree));
 
         directoryStructureService.configure(openAPI);
-
-        directoryStructureService
-            .getApiVersionClass()
-            .ifPresent(apiVersionClass -> supportingFiles.add(new SupportingFile(VERSION_TEMPLATE,
-                                                                                 ".." + File.separator +
-                                                                                     apiVersionClass +
-                                                                                     FILENAME_EXTENSION)));
     }
 
     @Override
     public String apiFilename(final String templateName, final String tag) {
-        if (directoryStructureService.isVersionLess() && templateName.equals(VERSION_TEMPLATE)) {
-            return apiFileFolder() + File.separator + directoryStructureService.getApiVersionClass().orElseThrow() +
-                FILENAME_EXTENSION;
-        }
-
-        return super.apiFilename(templateName, tag);
+        return actionTemplate.apiFilename(templateName, super.apiFilename(templateName, tag));
     }
 
     @Override
@@ -104,276 +91,23 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
     public OperationsMap postProcessOperationsWithModels(final OperationsMap objs, List<ModelMap> allModels) {
         final OperationsMap results = super.postProcessOperationsWithModels(objs, allModels);
         final List<CodegenOperation> opList = directoryStructureService.processOperations(results);
-        final String recordKey = directoryStructureService.getRecordKey(opList);
-        if (directoryStructureService.isVersionLess()) {
-            apiTemplateFiles.put(VERSION_TEMPLATE, FILENAME_EXTENSION);
-        }
 
-        final Map<String, Object> resources = new TreeMap<>();
-        final Map<String, CodegenModel> models = new TreeMap<>();
-
-        final boolean hasInstanceOperations = opList.stream().anyMatch(PathUtils::isInstanceOperation);
-
-        // iterate over the operation and perhaps modify something
-        boolean hasPaginationOperation = false;
-        for (final CodegenOperation co : opList) {
-            // Group operations by resource.
-            final String[] filePathArray = co.baseName.split(PATH_SEPARATOR_PLACEHOLDER);
-
-            final String itemName = filePathArray[filePathArray.length - 1];
-            final String instanceName = itemName + "Instance";
-            co.returnType = instanceName;
-
-            String resourceName;
-            String parentResourceName = null;
-            updateCodeOperationParams(co);
-            if (PathUtils.isInstanceOperation(co)) {
-                resourceName = itemName + "Context";
-                parentResourceName = itemName + "ListInstance";
-            } else {
-                resourceName = itemName + "ListInstance";
-            }
-
-            if (co.nickname.startsWith("update")) {
-                addOperationName(co, "Update");
-            } else if (co.nickname.startsWith("delete")) {
-                addOperationName(co, "Remove");
-                co.returnType = "boolean";
-            } else if (co.nickname.startsWith("create")) {
-                addOperationName(co, "Create");
-            } else if (co.nickname.startsWith("fetch")) {
-                addOperationName(co, "Fetch");
-            } else if (co.nickname.startsWith("list")){
-                hasPaginationOperation = true;
-                co.returnType = itemName + "Page";
-                addOperationName(co, "Page");
-            }
-
-            final Map<String, Object> resource = PathUtils.getStringMap(resources, resourceName);
-            final List<CodegenOperation> resourceOperationList = Utility.getOperations(resource);
-            final boolean ignoreOperation = Optional
-                .ofNullable(co.vendorExtensions.get(IGNORE_EXTENSION_NAME))
-                .map(Boolean.class::cast)
-                .orElse(false);
-
-            if (!ignoreOperation) {
-                resourceOperationList.add(co);
-            }
-            resource.put("name", itemName);
-            resource.put("resourceName", resourceName);
-            resource.put("parentResourceName", parentResourceName);
-            resource.put("instanceName", instanceName);
-
-            updateResourcePath(resource, co);
-
-            final String operationType = Utility.populateCrudOperations(co);
-            resource.put(operationType, co);
-
-            co.allParams.forEach(param -> Utility.addModel(this.allModels, models, param.baseType, param.dataType));
-            co.allParams.removeAll(co.pathParams);
-            co.requiredParams.removeAll(co.pathParams);
-            co.hasParams = !co.allParams.isEmpty();
-            co.hasRequiredParams = !co.requiredParams.isEmpty();
-            co.queryParams.forEach(this::addSerializeVendorExtension);
-            co.formParams.forEach(this::addSerializeVendorExtension);
-            co.httpMethod = co.httpMethod.toLowerCase();
-
-            final Map<String, Object> dependentMap = PathUtils.getStringMap(resource, DEPENDENTS);
-            resourceTree
-                .dependents(co.path)
-                .forEach(dependent -> dependent
-                    .getPathItem()
-                    .readOperations()
-                    .forEach(operation -> {
-                        final DirectoryStructureService.DependentResource dependentResource =
-                            directoryStructureService.generateDependent(dependent.getName(), operation);
-                        dependentMap.put(dependentResource.getFilename(), dependentResource);
-                    }));
-            dependentMap
-                .values()
-                .stream()
-                .map(DirectoryStructureService.DependentResource.class::cast)
-                .forEach(dependent -> {
-                    if (dependent.getType().equals(instanceName)) {
-                        dependent.setType(instanceName + "Import");
-                        dependent.setClassName(instanceName + "Import");
-                        dependent.setImportName(instanceName + " as " + dependent.getType());
-                    }
-                });
-        }
-
-        for (final String resourceName : resources.keySet()) {
-            final Map<String, Object> resource = PathUtils.getStringMap(resources, resourceName);
-
-            final String name = (String) resource.get("name");
-            final String parentResourceName = (String) resource.get("parentResourceName");
-            final List<CodegenOperation> operations = Utility.getOperations(resource);
-
-            if (parentResourceName != null || !hasInstanceOperations) {
-                final List<CodegenModel> allResponseModels = opList
-                    .stream()
-                    .flatMap(co -> getResponseModel(co, recordKey).stream())
-                    .collect(Collectors.toList());
-
-                allResponseModels.stream().findFirst().ifPresent(responseModel -> {
-                    responseModel.vendorExtensions.put("x-record-key", recordKey);
-                    resource.put("responseModel", responseModel);
-                    responseModel
-                        .getVars()
-                        .forEach(variable -> Utility.addModel(this.allModels,
-                                                              models,
-                                                              variable.complexType,
-                                                              variable.dataType));
-
-                    updateResponseModels(responseModel, allResponseModels, name);
-                });
-            }
-
-            if (parentResourceName != null) {
-                final boolean parentExists = resources.containsKey(parentResourceName);
-                final Map<String, Object> parentResource = PathUtils.getStringMap(resources, parentResourceName);
-                parentResource.put("instanceResource", resource);
-
-                if (!parentExists) {
-                    parentResource.put("resourceName", parentResourceName);
-                    parentResource.put("name", name);
-
-                    final List<CodegenParameter> resourcePathParams = operations.get(0).pathParams;
-
-                    // If the resource has only "parent params", move its dependents onto the parent.
-                    if (resourcePathParams.stream().allMatch(PathUtils::isParentParam)) {
-                        final Map<String, Object> dependents = PathUtils.getStringMap(resource, DEPENDENTS);
-                        resource.remove(DEPENDENTS);
-                        parentResource.put(DEPENDENTS, dependents.values());
-                    }
-
-                    // Fill out the parent's path params with any "parent params".
-                    parentResource.put("resourcePathParams",
-                                       resourcePathParams
-                                           .stream()
-                                           .filter(PathUtils::isParentParam)
-                                           .collect(Collectors.toList()));
-                    Utility.getOperations(parentResource);
-                }
-            }
-
-            PathUtils.flattenStringMap(resource, DEPENDENTS);
-        }
-
-        results.put("resources", resources.values());
-        results.put("hasPaginationOperation", hasPaginationOperation);
-        results.put("models", models.values());
+        results.put("resources", generateResources(opList));
         return results;
     }
 
-    private Optional<CodegenModel> getResponseModel(final CodegenOperation operation, final String recordKey) {
-        return operation.responses
-            .stream()
-            .map(response -> response.dataType)
-            .filter(Objects::nonNull)
-            .flatMap(modelName -> directoryStructureService.getModelCoPath(modelName, operation, recordKey).stream())
-            .map(conventionResolver::resolveModel)
-            .map(item -> conventionResolver.resolveComplexType(item, modelFormatMap))
-            .findFirst();
-    }
+    private NodeApiResources generateResources(final List<CodegenOperation> opList) {
+        final IConventionMapper conventionMapper = new LanguageConventionResolver(CONFIG_NODE_JSON_PATH);
+        final CodegenModelResolver codegenModelResolver = new CodegenModelResolver(conventionMapper,
+                                                                                   modelFormatMap,
+                                                                                   List.of(EnumConstants.NodeDataTypes.values()));
 
-    private void updateResponseModels(final CodegenModel responseModel,
-                                      final List<CodegenModel> allModels,
-                                      final String itemName) {
-        allModels.forEach(model -> {
-            model.setName(itemName);
-            model.getVars().forEach(variable -> {
-                variable.vendorExtensions.put("x-name", itemName + variable.getNameInCamelCase());
-                addDeserializeVendorExtension(variable);
-            });
-
-            if (model != responseModel) {
-                // Merge any vars from the model that aren't part of the response model.
-                model.getVars().forEach(variable -> {
-                    if (responseModel.getVars().stream().noneMatch(v -> v.getName().equals(variable.getName()))) {
-                        responseModel.getVars().add(variable);
-                    }
-                });
-            }
-        });
-    }
-
-    private void updateResourcePath(final Map<String, Object> resource, final CodegenOperation operation) {
-        final List<CodegenParameter> resourcePathParams = new ArrayList<>();
-
-        String path = PathUtils.removeFirstPart(operation.path);
-        for (final CodegenParameter pathParam : operation.pathParams) {
-            final String target = "{" + pathParam.baseName + "}";
-
-            if (path.contains(target)) {
-                path = path.replace(target, "${" + pathParam.paramName + "}");
-                resourcePathParams.add(pathParam);
-            }
-        }
-
-        resource.put("path", path);
-        resource.put("resourcePathParams", resourcePathParams);
-    }
-
-    private void addSerializeVendorExtension(CodegenParameter param) {
-        if (param.isDate) {
-            param.vendorExtensions.put(SERIALIZE_VEND_EXT, "serialize.iso8601Date");
-        }
-        if (param.isDateTime) {
-            param.vendorExtensions.put(SERIALIZE_VEND_EXT, "serialize.iso8601DateTime");
-        }
-        if (param.isFreeFormObject) {
-            if (param.dataFormat != null && param.dataFormat.startsWith("prefixed-collapsible-map")) {
-                param.vendorExtensions.put(SERIALIZE_VEND_EXT, "serialize.prefixedCollapsibleMap");
-                String[] formatArray = param.dataFormat.split("-");
-                param.vendorExtensions.put("x-multi-name", formatArray[formatArray.length-1]);
-            }
-            else {
-                param.vendorExtensions.put(SERIALIZE_VEND_EXT, "serialize.object");
-            }
-        }
-        if (param.isAnyType) {
-            param.vendorExtensions.put(SERIALIZE_VEND_EXT, "serialize.object");
-        }
-        if (param.isBoolean) {
-            param.vendorExtensions.put(SERIALIZE_VEND_EXT, "serialize.bool");
-        }
-
-        if (param.isArray) {
-            param.vendorExtensions.put(SERIALIZE_VEND_EXT, "serialize.map");
-            final String transform = param.baseType.equals("any") ? "serialize.object" : "";
-            param.vendorExtensions.put("x-transform", transform);
-        }
-    }
-
-    private void addDeserializeVendorExtension(CodegenProperty variable) {
-        if (variable.dataFormat != null && variable.dataFormat.equals("date")) {
-            variable.vendorExtensions.put(DESERIALIZE_VEND_EXT, "deserialize.iso8601Date");
-        }
-        if (variable.dataFormat != null && variable.dataFormat.equals("date-time")) {
-            variable.vendorExtensions.put(DESERIALIZE_VEND_EXT, "deserialize.iso8601DateTime");
-        }
-        if (variable.dataFormat != null && variable.dataFormat.equals("date-time-rfc-2822")) {
-            variable.vendorExtensions.put(DESERIALIZE_VEND_EXT, "deserialize.rfc2822DateTime");
-        }
-        if (variable.isInteger) {
-            variable.vendorExtensions.put(DESERIALIZE_VEND_EXT, "deserialize.integer");
-        }
-        if (variable.isDecimal) {
-            variable.vendorExtensions.put(DESERIALIZE_VEND_EXT, "deserialize.decimal");
-        }
-    }
-
-    private void addOperationName(final CodegenOperation operation, final String name) {
-        operation.vendorExtensions.put("x-name", name);
-        operation.vendorExtensions.put("x-name-lower", name.toLowerCase());
-    }
-
-    private void updateCodeOperationParams(final CodegenOperation operation) {
-        operation.allParams.forEach(conventionResolver::resolveParameter);
-        operation.pathParams.forEach(conventionResolver::resolveParameter);
-        operation.optionalParams.forEach(conventionResolver::resolveParameter);
-        operation.requiredParams.forEach(conventionResolver::resolveParameter);
+        return new NodeApiResourceBuilder(actionTemplate, opList, allModels, directoryStructureService)
+            .updateApiPath()
+            .updateTemplate()
+            .updateOperations(new NodeParameterResolver(conventionMapper))
+            .updateResponseModel(new LanguagePropertyResolver(conventionMapper), codegenModelResolver)
+            .build();
     }
 
     @Override

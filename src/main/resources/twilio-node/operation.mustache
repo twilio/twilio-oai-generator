@@ -42,10 +42,10 @@
     {{/headerParams}}
     {{/hasParams}}
 
-    let operationVersion = {{#parentResourceName}}this._version{{/parentResourceName}}{{^parentResourceName}}version{{/parentResourceName}},
+    let operationVersion = {{#vendorExtensions.x-is-context-operation}}this._version{{/vendorExtensions.x-is-context-operation}}{{#vendorExtensions.x-is-list-operation}}version{{/vendorExtensions.x-is-list-operation}},
         operationPromise = operationVersion.{{vendorExtensions.x-name-lower}}({ uri: this._uri, method: "{{httpMethod}}"{{#hasParams}}, {{^isBodyAllowed}}params: {{/isBodyAllowed}}data, headers{{/hasParams}} });
     {{^vendorExtensions.x-is-read-operation}}{{^vendorExtensions.x-is-delete-operation}}
-    operationPromise = operationPromise.then(payload => new {{instanceName}}(operationVersion, payload{{#resourcePathParams}}, this._solution.{{paramName}}{{/resourcePathParams}}));
+    operationPromise = operationPromise.then(payload => new {{instanceName}}(operationVersion, payload{{#vendorExtensions.x-is-context-operation}}{{#instancePathParams}}, this._solution.{{paramName}}{{/instancePathParams}}{{/vendorExtensions.x-is-context-operation}}{{#vendorExtensions.x-is-list-operation}}{{#listPathParams}}, this._solution.{{paramName}}{{/listPathParams}}{{/vendorExtensions.x-is-list-operation}}));
     {{/vendorExtensions.x-is-delete-operation}}{{/vendorExtensions.x-is-read-operation}}
     {{#vendorExtensions.x-is-read-operation}}
     operationPromise = operationPromise.then(payload => new {{returnType}}(operationVersion, payload, this._solution));

@@ -4,7 +4,6 @@ import com.twilio.oai.Segments;
 import com.twilio.oai.common.Utility;
 
 import org.openapitools.codegen.CodegenModel;
-import org.openapitools.codegen.CodegenParameter;
 import org.openapitools.codegen.CodegenProperty;
 import org.openapitools.codegen.utils.StringUtils;
 
@@ -18,15 +17,6 @@ import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 public class FluentConventionResolver {
-    public void resolveParameter(final CodegenParameter codegenParameter, Map<String, Map<String, Object>> conventionMap) {
-        if (codegenParameter.dataFormat != null) {
-            getDataType(StringUtils.underscore(codegenParameter.dataFormat), conventionMap).ifPresent(dataType -> codegenParameter.dataType = dataType);
-        }
-
-        codegenParameter.dataType = Utility.removeEnumName(codegenParameter.dataType);
-        codegenParameter.baseType = Utility.removeEnumName(codegenParameter.baseType);
-    }
-
     public CodegenModel resolveModel(CodegenModel model, Map<String, Map<String, Object>> conventionMap) {
         for (CodegenProperty property : model.vars) {
             if (property.dataFormat != null) {
@@ -82,5 +72,4 @@ public class FluentConventionResolver {
 
         return Optional.empty();
     }
-
 }
