@@ -16,7 +16,7 @@ import org.openapitools.codegen.CodegenParameter;
 import static com.twilio.oai.common.ApplicationConstants.IGNORE_EXTENSION_NAME;
 import static java.util.function.Predicate.not;
 
-public class NodeApiResources extends ApiResources {
+public class FluentApiResources extends ApiResources {
     private String instanceName;
     private String instancePath;
     private String listPath;
@@ -26,7 +26,7 @@ public class NodeApiResources extends ApiResources {
     private Collection<CodegenModel> models;
     private Collection<DirectoryStructureService.DependentResource> dependents;
 
-    public NodeApiResources(final NodeApiResourceBuilder apiResourceBuilder) {
+    public FluentApiResources(final FluentApiResourceBuilder apiResourceBuilder) {
         super(apiResourceBuilder);
         instanceName = apiName + "Instance";
         instancePath = apiResourceBuilder.instancePath;

@@ -199,7 +199,7 @@ public abstract class ApiResourceBuilder implements IApiResourceBuilder {
     }
 
     public boolean hasPaginationOperation() {
-        return codegenOperationList.stream().anyMatch(co -> co.nickname.toLowerCase().startsWith("list"));
+        return codegenOperationList.stream().anyMatch(co -> co.operationId.toLowerCase().startsWith("list"));
     }
 
     public String getApiName() {

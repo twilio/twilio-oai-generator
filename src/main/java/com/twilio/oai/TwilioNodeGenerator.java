@@ -1,7 +1,7 @@
 package com.twilio.oai;
 
+import com.twilio.oai.api.ApiResources;
 import com.twilio.oai.api.NodeApiResourceBuilder;
-import com.twilio.oai.api.NodeApiResources;
 import com.twilio.oai.common.EnumConstants;
 import com.twilio.oai.common.Utility;
 import com.twilio.oai.resolver.IConventionMapper;
@@ -96,7 +96,7 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
         return results;
     }
 
-    private NodeApiResources generateResources(final List<CodegenOperation> opList) {
+    private ApiResources generateResources(final List<CodegenOperation> opList) {
         final IConventionMapper conventionMapper = new LanguageConventionResolver(CONFIG_NODE_JSON_PATH);
         final CodegenModelResolver codegenModelResolver = new CodegenModelResolver(conventionMapper,
                                                                                    modelFormatMap,

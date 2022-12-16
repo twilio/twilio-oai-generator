@@ -163,6 +163,11 @@ public abstract class FluentApiResourceBuilder extends ApiResourceBuilder {
     }
 
     @Override
+    public FluentApiResources build() {
+        return new FluentApiResources(this);
+    }
+
+    @Override
     public IApiResourceBuilder setImports(final DirectoryStructureService directoryStructureService) {
         return this;
     }

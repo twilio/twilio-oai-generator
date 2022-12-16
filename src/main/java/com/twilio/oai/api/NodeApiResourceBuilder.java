@@ -49,9 +49,4 @@ public class NodeApiResourceBuilder extends FluentApiResourceBuilder {
 
         return this;
     }
-
-    @Override
-    public NodeApiResources build() {
-        return new NodeApiResources(this);
-    }
 }
