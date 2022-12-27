@@ -17,7 +17,7 @@ import V2010 from "../../../V2010";
 const deserialize = require("../../../../../base/deserialize");
 const serialize = require("../../../../../base/serialize");
 import { isValidPathParam } from "../../../../../base/utility";
-import { PhoneNumberCapabilities } from "../../../../../interfaces";
+import { PhoneNumberCapabilities } from "../../../../../../lib/interfaces";
 
 export class TestResponseObjectTestArrayOfObjects {
   "count"?: number;
@@ -163,11 +163,11 @@ interface FeedbackCallSummaryResource {
   test_string?: string | null;
   test_integer?: number | null;
   test_object?: PhoneNumberCapabilities | null;
-  test_date_time?: string | null;
+  test_date_time?: Date | null;
   test_number?: number | null;
   price_unit?: string | null;
   test_number_float?: number | null;
-  test_number_decimal?: Decimal | null;
+  test_number_decimal?: number | null;
   test_enum?: TestStatus;
   a2p_profile_bundle_sid?: string | null;
   test_array_of_integers?: Array<number>;
@@ -195,7 +195,7 @@ export class FeedbackCallSummaryInstance {
     this.testNumber = payload.test_number;
     this.priceUnit = payload.price_unit;
     this.testNumberFloat = payload.test_number_float;
-    this.testNumberDecimal = payload.test_number_decimal;
+    this.testNumberDecimal = deserialize.decimal(payload.test_number_decimal);
     this.testEnum = payload.test_enum;
     this.a2pProfileBundleSid = payload.a2p_profile_bundle_sid;
     this.testArrayOfIntegers = payload.test_array_of_integers;
@@ -211,11 +211,11 @@ export class FeedbackCallSummaryInstance {
   testString?: string | null;
   testInteger?: number | null;
   testObject?: PhoneNumberCapabilities | null;
-  testDateTime?: string | null;
+  testDateTime?: Date | null;
   testNumber?: number | null;
   priceUnit?: string | null;
   testNumberFloat?: number | null;
-  testNumberDecimal?: Decimal | null;
+  testNumberDecimal?: number | null;
   testEnum?: TestStatus;
   /**
    * A2P Messaging Profile Bundle BundleSid

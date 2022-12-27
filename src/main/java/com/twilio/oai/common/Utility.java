@@ -9,6 +9,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -90,7 +91,7 @@ public class Utility {
     public String populateCrudOperations(final CodegenOperation operation) {
         final EnumConstants.Operation method = Arrays
             .stream(EnumConstants.Operation.values())
-            .filter(item -> operation.nickname.toLowerCase().startsWith(item.getValue().toLowerCase()))
+            .filter(item -> operation.operationId.toLowerCase().startsWith(item.getValue().toLowerCase()))
             .findFirst()
             .orElse(EnumConstants.Operation.READ);
 
@@ -110,8 +111,8 @@ public class Utility {
         return codegenOperationList
             .stream()
             .filter(co -> co.operationId.toLowerCase().startsWith("list"))
-            .map(co -> getModelByClassname(models, co.returnBaseType))
-            .map(Optional::orElseThrow)
+            .map(co -> getModelByClassname(models, co.returnBaseType).orElse(null))
+            .filter(Objects::nonNull)
             .map(CodegenModel::getAllVars)
             .flatMap(Collection::stream)
             .filter(v -> v.openApiType.equals(ARRAY))
@@ -124,7 +125,8 @@ public class Utility {
                                            final String className,
                                            final String recordKey,
                                            final CodegenOperation codegenOperation) {
-        if ((boolean) codegenOperation.vendorExtensions.getOrDefault("x-is-read-operation", false)) {
+        if (recordKey != null &&
+            (boolean) codegenOperation.vendorExtensions.getOrDefault("x-is-read-operation", false)) {
             return models
                 .stream()
                 .filter(model -> model.getClassname().equals(className))

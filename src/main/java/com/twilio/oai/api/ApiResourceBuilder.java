@@ -122,15 +122,15 @@ public abstract class ApiResourceBuilder implements IApiResourceBuilder {
             operationMap.put("x-is-list-operation", "true");
         }
 
-        if (operation.nickname.startsWith("update")) {
+        if (operation.operationId.startsWith("update")) {
             addOperationName(operation, Operation.UPDATE.getValue());
-        } else if (operation.nickname.startsWith("delete")) {
+        } else if (operation.operationId.startsWith("delete")) {
             addOperationName(operation, Operation.DELETE.getValue());
-        } else if (operation.nickname.startsWith("create")) {
+        } else if (operation.operationId.startsWith("create")) {
             addOperationName(operation, Operation.CREATE.getValue());
-        } else if (operation.nickname.startsWith("fetch")) {
+        } else if (operation.operationId.startsWith("fetch")) {
             addOperationName(operation, Operation.FETCH.getValue());
-        } else if (operation.nickname.startsWith("list")) {
+        } else if (operation.operationId.startsWith("list")) {
             addOperationName(operation, Operation.READ.getValue());
         }
 
@@ -170,6 +170,18 @@ public abstract class ApiResourceBuilder implements IApiResourceBuilder {
         return Utility.getModel(allModels, className, recordKey, codegenOperation);
     }
 
+    protected Optional<CodegenModel> getModelByClassname(final String classname) {
+        return Utility.getModelByClassname(allModels, classname);
+    }
+
+    protected void addModel(final Map<String, CodegenModel> models, final String complexType, final String dataType) {
+        getModelByClassname(complexType != null ? complexType : dataType).ifPresent(model -> {
+            if (models.putIfAbsent(model.getClassname(), model) == null) {
+                model.getVars().forEach(property -> addModel(models, property.complexType, property.dataType));
+            }
+        });
+    }
+
     protected Set<CodegenProperty> getDistinctResponseModel(List<CodegenModel> responseModels) {
         Set<CodegenProperty> distinctResponseModels = new LinkedHashSet<>();
         for (CodegenModel codegenModel : responseModels) {
@@ -187,7 +199,7 @@ public abstract class ApiResourceBuilder implements IApiResourceBuilder {
     }
 
     public boolean hasPaginationOperation() {
-        return codegenOperationList.stream().anyMatch(co -> co.nickname.toLowerCase().startsWith("list"));
+        return codegenOperationList.stream().anyMatch(co -> co.operationId.toLowerCase().startsWith("list"));
     }
 
     public String getApiName() {
