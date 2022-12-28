@@ -190,10 +190,11 @@ export interface FleetListInstance {
    * @returns { Promise } Resolves to processed FleetInstance
    */
   create(
-    params: FleetListInstanceCreateOptions,
+    params?:
+      | FleetListInstanceCreateOptions
+      | ((error: Error | null, item?: FleetInstance) => any),
     callback?: (error: Error | null, item?: FleetInstance) => any
   ): Promise<FleetInstance>;
-  create(params?: any, callback?: any): Promise<FleetInstance>;
 
   /**
    * Provide a user-friendly representation
@@ -223,8 +224,10 @@ export function FleetListInstance(version: DeployedDevices): FleetListInstance {
   instance._uri = `/Fleets`;
 
   instance.create = function create(
-    params?: any,
-    callback?: any
+    params?:
+      | FleetListInstanceCreateOptions
+      | ((error: Error | null, item?: FleetInstance) => any),
+    callback?: (error: Error | null, item?: FleetInstance) => any
   ): Promise<FleetInstance> {
     if (typeof params === "function") {
       callback = params;

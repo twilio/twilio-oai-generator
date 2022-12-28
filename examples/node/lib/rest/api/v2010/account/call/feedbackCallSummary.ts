@@ -58,7 +58,6 @@ export interface FeedbackCallSummaryContext {
     params: FeedbackCallSummaryContextUpdateOptions,
     callback?: (error: Error | null, item?: FeedbackCallSummaryInstance) => any
   ): Promise<FeedbackCallSummaryInstance>;
-  update(params: any, callback?: any): Promise<FeedbackCallSummaryInstance>;
 
   /**
    * Provide a user-friendly representation
@@ -251,8 +250,7 @@ export class FeedbackCallSummaryInstance {
   update(
     params: FeedbackCallSummaryContextUpdateOptions,
     callback?: (error: Error | null, item?: FeedbackCallSummaryInstance) => any
-  ): Promise<FeedbackCallSummaryInstance>;
-  update(params: any, callback?: any): Promise<FeedbackCallSummaryInstance> {
+  ): Promise<FeedbackCallSummaryInstance> {
     return this._proxy.update(params, callback);
   }
 

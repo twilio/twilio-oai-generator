@@ -319,7 +319,6 @@ export interface CallListInstance {
     params: CallListInstanceCreateOptions,
     callback?: (error: Error | null, item?: CallInstance) => any
   ): Promise<CallInstance>;
-  create(params: any, callback?: any): Promise<CallInstance>;
 
   /**
    * Provide a user-friendly representation
@@ -373,8 +372,8 @@ export function CallListInstance(
   });
 
   instance.create = function create(
-    params: any,
-    callback?: any
+    params: CallListInstanceCreateOptions,
+    callback?: (error: Error | null, item?: CallInstance) => any
   ): Promise<CallInstance> {
     if (params === null || params === undefined) {
       throw new Error('Required parameter "params" missing.');

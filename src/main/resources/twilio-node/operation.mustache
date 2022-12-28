@@ -59,7 +59,7 @@
   instance.each = instance._version.each;
   instance.list = instance._version.list;
 
-  instance.getPage = function getPage(targetUrl?: any, callback?: any): Promise<{{returnType}}> {
+  instance.getPage = function getPage(targetUrl: string, callback?: (error: Error | null, items: {{returnType}}) => any): Promise<{{returnType}}> {
     let operationPromise = this._version._domain.twilio.request({method: "{{httpMethod}}", uri: targetUrl});
 
     operationPromise = operationPromise.then(payload => new {{returnType}}(this._version, payload, this._solution));

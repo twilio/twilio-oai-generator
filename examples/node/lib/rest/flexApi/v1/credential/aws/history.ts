@@ -47,10 +47,11 @@ export interface HistoryContext {
    * @returns { Promise } Resolves to processed HistoryInstance
    */
   fetch(
-    params: HistoryContextFetchOptions,
+    params?:
+      | HistoryContextFetchOptions
+      | ((error: Error | null, item?: HistoryInstance) => any),
     callback?: (error: Error | null, item?: HistoryInstance) => any
   ): Promise<HistoryInstance>;
-  fetch(params?: any, callback?: any): Promise<HistoryInstance>;
 
   /**
    * Provide a user-friendly representation
@@ -181,10 +182,11 @@ export class HistoryInstance {
    * @returns { Promise } Resolves to processed HistoryInstance
    */
   fetch(
-    params: HistoryContextFetchOptions,
+    params?:
+      | HistoryContextFetchOptions
+      | ((error: Error | null, item?: HistoryInstance) => any),
     callback?: (error: Error | null, item?: HistoryInstance) => any
-  ): Promise<HistoryInstance>;
-  fetch(params?: any, callback?: any): Promise<HistoryInstance> {
+  ): Promise<HistoryInstance> {
     return this._proxy.fetch(params, callback);
   }
 
