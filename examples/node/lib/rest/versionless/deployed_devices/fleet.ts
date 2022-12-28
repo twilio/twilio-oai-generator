@@ -110,7 +110,7 @@ export class FleetInstance {
 
   constructor(
     protected _version: DeployedDevices,
-    payload: FleetPayload,
+    payload: FleetResource,
     sid?: string
   ) {
     this.name = payload.name;

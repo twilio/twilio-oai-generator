@@ -1,7 +1,8 @@
 package com.twilio.oai.resolver.common;
 
-import com.twilio.oai.resolver.Resolver;
 import com.twilio.oai.resolver.IConventionMapper;
+import com.twilio.oai.resolver.Resolver;
+
 import org.openapitools.codegen.CodegenParameter;
 
 public class CodegenParameterDataTypeResolver extends Resolver<CodegenParameter> {
@@ -13,12 +14,12 @@ public class CodegenParameterDataTypeResolver extends Resolver<CodegenParameter>
         return parameter;
     }
 
-    private void assignDataType(CodegenParameter parameter){
-        if (mapper.properties().containsKey(parameter.dataFormat)) {
-            parameter.dataType = (String) mapper.properties().get(parameter.dataFormat);
-        } else if (mapper.properties().containsKey(parameter.dataType)) {
-            parameter.dataType = (String) mapper.properties().get(parameter.dataType);
-        }
+    private void assignDataType(CodegenParameter parameter) {
+        mapper
+            .properties()
+            .getString(parameter.dataFormat)
+            .or(() -> mapper.properties().getString(parameter.dataType))
+            .ifPresent(dataType -> parameter.dataType = dataType);
     }
 
     public void setMapper(IConventionMapper mapper) {

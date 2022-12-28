@@ -1,7 +1,7 @@
 package com.twilio.oai.resolver.python;
 
-import com.twilio.oai.StringHelper;
 import com.twilio.oai.resolver.CaseResolver;
+
 import org.openapitools.codegen.utils.StringUtils;
 
 public class PythonCaseResolver implements CaseResolver {

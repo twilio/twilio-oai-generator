@@ -4,6 +4,8 @@ import com.twilio.oai.Segments;
 import com.twilio.oai.StringHelper;
 import com.twilio.oai.resolver.LanguagePropertyResolver;
 import com.twilio.oai.resolver.IConventionMapper;
+import com.twilio.oai.resolver.ConfigurationSegment;
+
 import org.openapitools.codegen.CodegenProperty;
 
 import java.util.HashMap;
@@ -21,13 +23,13 @@ public class JavaPropertyResolver extends LanguagePropertyResolver {
         super.resolveProperties(property);
         Map<String, Map<String, Object>> vendorExtensions = new HashMap<>();
 
-        for (Segments segment: Segments.values()) {
-            Map<String, Object> segmentMap = getMapperByType(segment);
-            if (segmentMap.containsKey(property.dataFormat)) {
+        for (Segments segment : Segments.values()) {
+            getMapperByType(segment).get(property.dataFormat).ifPresent(value -> {
                 Map<String, Object> segmentElements = new HashMap<>();
-                segmentElements.put(VENDOR_PREFIX + property.dataFormat, String.format(segmentMap.get(property.dataFormat).toString() , property.name));
+                segmentElements.put(VENDOR_PREFIX + property.dataFormat,
+                                    value.toString().replaceAll("\\{.*}", property.name));
                 vendorExtensions.put(segment.getSegment(), segmentElements);
-            }
+            });
         }
 
         property.nameInSnakeCase = StringHelper.toSnakeCase(property.name);
@@ -38,7 +40,7 @@ public class JavaPropertyResolver extends LanguagePropertyResolver {
         );
     }
 
-    Map<String, Object> getMapperByType(Segments segments) {
+    ConfigurationSegment getMapperByType(Segments segments) {
         switch (segments) {
             case SEGMENT_PROPERTIES:
                 return mapper.properties();

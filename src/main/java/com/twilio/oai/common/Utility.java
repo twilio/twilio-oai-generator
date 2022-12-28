@@ -9,6 +9,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -22,6 +23,7 @@ import org.openapitools.codegen.model.ModelMap;
 import org.openapitools.codegen.model.ModelsMap;
 
 import static com.twilio.oai.common.ApplicationConstants.ARRAY;
+import static com.twilio.oai.common.ApplicationConstants.OBJECT;
 
 @UtilityClass
 public class Utility {
@@ -32,8 +34,7 @@ public class Utility {
 
     public void setComplexDataMapping(final List<CodegenModel> allModels, Map<String, String> modelFormatMap) {
         allModels.forEach(item -> {
-            if (item.getDataType() != null && item.getFormat() != null &&
-                item.getDataType().equalsIgnoreCase("object")) {
+            if (item.getFormat() != null && OBJECT.equalsIgnoreCase(item.getDataType())) {
                 modelFormatMap.put(item.classname, item.getFormat());
             }
         });
@@ -65,7 +66,7 @@ public class Utility {
     }
 
     @SuppressWarnings("unchecked")
-    public ArrayList<CodegenOperation> getOperations(final Map<String, Object> resource) {
+    public List<CodegenOperation> getOperations(final Map<String, Object> resource) {
         return (ArrayList<CodegenOperation>) resource.computeIfAbsent(
                 "operations",
                 k -> new ArrayList<>());
@@ -90,7 +91,7 @@ public class Utility {
     public String populateCrudOperations(final CodegenOperation operation) {
         final EnumConstants.Operation method = Arrays
             .stream(EnumConstants.Operation.values())
-            .filter(item -> operation.nickname.toLowerCase().startsWith(item.getValue().toLowerCase()))
+            .filter(item -> operation.operationId.toLowerCase().startsWith(item.getValue().toLowerCase()))
             .findFirst()
             .orElse(EnumConstants.Operation.READ);
 
@@ -110,8 +111,8 @@ public class Utility {
         return codegenOperationList
             .stream()
             .filter(co -> co.operationId.toLowerCase().startsWith("list"))
-            .map(co -> getModelByClassname(models, co.returnBaseType))
-            .map(Optional::orElseThrow)
+            .map(co -> getModelByClassname(models, co.returnBaseType).orElse(null))
+            .filter(Objects::nonNull)
             .map(CodegenModel::getAllVars)
             .flatMap(Collection::stream)
             .filter(v -> v.openApiType.equals(ARRAY))
