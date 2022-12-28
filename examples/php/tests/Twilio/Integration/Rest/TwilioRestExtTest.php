@@ -9,9 +9,11 @@ use Twilio\Http\Response;
 use Twilio\Tests\HolodeckTestCase;
 use Twilio\Tests\Request;
 
-class TwilioRestExtTest extends HolodeckTestCase {
+class TwilioRestExtTest extends HolodeckTestCase
+{
 
-    public function testShouldMakeAccountFetchCall(): void {
+    public function testShouldMakeAccountFetchCall(): void
+    {
         $this->holodeck->mock(new Response(200, '
         {
                 "account_sid": "ACXXXXXXXXXXXXXXXXXXXXXXXXXXX",
@@ -22,8 +24,9 @@ class TwilioRestExtTest extends HolodeckTestCase {
 
         try {
             $actual = $this->twilio->api->v2010->accounts("ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")->fetch();
-        } catch (DeserializeException $e) {}
-        catch (TwilioException $e) {}
+        } catch (DeserializeException $e) {
+        } catch (TwilioException $e) {
+        }
 
         $this->assertRequest(new Request(
             'get',
@@ -34,7 +37,8 @@ class TwilioRestExtTest extends HolodeckTestCase {
         $this->assertEquals($actual->testString, "Test String");
     }
 
-    public function testShouldMakeFetchCallToAccountCall(): void{
+    public function testShouldMakeFetchCallToAccountCall(): void
+    {
         $this->holodeck->mock(new Response(200, '{
                 "account_sid": "AC222222222222222222222222222222",
                 "sid": "ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
@@ -55,7 +59,8 @@ class TwilioRestExtTest extends HolodeckTestCase {
         $this->assertEquals($response->testString, "Test String");
     }
 
-    public function testShouldMakeDeleteCallToAccountCall(): void{
+    public function testShouldMakeDeleteCallToAccountCall(): void
+    {
         $this->holodeck->mock(new Response(204, '{
                 "account_sid": "AC222222222222222222222222222222",
                 "sid": "ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
@@ -72,7 +77,8 @@ class TwilioRestExtTest extends HolodeckTestCase {
         $this->assertTrue($response);
     }
 
-    public function testShouldMakeUpdateCallToFeedbackCallSummary(): void {
+    public function testShouldMakeUpdateCallToFeedbackCallSummary(): void
+    {
         $this->holodeck->mock(new Response(200, '{
                 "account_sid": "AC222222222222222222222222222222",
                 "sid": "ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
