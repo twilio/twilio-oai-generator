@@ -117,9 +117,9 @@ namespace Twilio.Rest.FlexApi.V1
         }
 
     
-        ///<summary> The sid </summary> 
+        ///<summary> Non-string path parameter in the response. </summary> 
         [JsonProperty("sid")]
-        public string Sid { get; private set; }
+        public int? Sid { get; private set; }
 
 
 

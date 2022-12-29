@@ -17,6 +17,7 @@ import org.openapitools.codegen.CodegenOperation;
 import org.openapitools.codegen.CodegenParameter;
 import org.openapitools.codegen.CodegenProperty;
 
+import static com.twilio.oai.common.ApplicationConstants.STRING;
 import static com.twilio.oai.template.AbstractApiActionTemplate.API_TEMPLATE;
 
 public abstract class FluentApiResourceBuilder extends ApiResourceBuilder {
@@ -144,6 +145,13 @@ public abstract class FluentApiResourceBuilder extends ApiResourceBuilder {
                 model.getVars().forEach(variable -> {
                     codegenPropertyResolver.resolve(variable);
                     variable.vendorExtensions.put("x-name", resourceName + variable.getNameInCamelCase());
+
+                    instancePathParams
+                        .stream()
+                        .filter(param -> param.paramName.equals(variable.name))
+                        .filter(param -> param.dataType.equals(STRING))
+                        .filter(param -> !param.dataType.equals(variable.dataType))
+                        .forEach(param -> param.vendorExtensions.put("x-stringify", true));
                 });
 
                 if (model != responseModel) {

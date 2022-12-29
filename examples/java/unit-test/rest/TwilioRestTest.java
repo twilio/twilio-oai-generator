@@ -1126,7 +1126,7 @@ public class TwilioRestTest {
             .updater("sidUpdated")
             .update(twilioRestClient);
 
-        assertEquals("123", updatedCall.getSid());
+        assertEquals(new Integer(123), updatedCall.getSid());
     }
 
     @Test
