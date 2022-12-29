@@ -36,6 +36,27 @@ class Versionless extends Domain {
         $this->baseUrl = 'https://versionless.twilio.com';
 
     }
+
+    /**
+     * @return PreviewUnderstand Version understand of preview
+     */
+    protected function getUnderstand(): Understand {
+        if (!$this->_understand) {
+            $this->_understand = new Understand($this);
+        }
+        return $this->_understand;
+    }
+
+    /**
+     * @return PreviewDeployedDevices Version deployedDevices of preview
+     */
+    protected function getDeployedDevices(): DeployedDevices {
+        if (!$this->_deployedDevices) {
+            $this->_deployedDevices = new DeployedDevices($this);
+        }
+        return $this->_deployedDevices;
+    }
+
     /**
      * Magic getter to lazy load version
      *
@@ -69,21 +90,12 @@ class Versionless extends Domain {
         throw new TwilioException('Unknown context ' . $name);
     }
 
-
-    protected function getUnderstand(): \Twilio\Rest\Versionless\Understand {
-        return $this->understand;
-    }
-
     protected function getAssistants(): \Twilio\Rest\Versionless\Understand\AssistantList {
         return $this->assistants;
     }
 
     protected function getFleets(): \Twilio\Rest\Versionless\DeployedDevices\FleetList {
         return $this->fleets;
-    }
-
-    protected function getDeployedDevices(): \Twilio\Rest\Versionless\DeployedDevices {
-        return $this->deployedDevices;
     }
 
     /**

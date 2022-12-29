@@ -149,5 +149,118 @@ class TwilioFlexRestTest extends HolodeckTestCase
         $this->assertEquals($response->testString, "Test String");
     }
 
+    public function testLimitsInReadGivesCorrectNumberOfResponse(): void
+    {
+        $this->holodeck->mock(new Response(200,
+            '
+            {
+              "meta":{
+                "first_page_uri": "/v1/Credentials/AWS",
+                "end": 0,
+                "previous_page_uri": null,
+                "uri": "/v1/Credentials/AWS",
+                "page_size": 50,
+                "start": 0,
+                "next_page_uri": null,
+                "page": 0 ,
+                "key":"credentials"
+              },
+              "credentials":[{
+               "sid": "CR12345678123456781234567812345678",
+               "test_string": "Ahoy"
+              },
+              {
+               "sid": "CR123456781234567812345678321456789",
+               "test_string": "Second Response"
+              },
+              {
+               "sid": "CR12345678123456781234567812345678",
+               "test_string": "Third Response"
+              },
+              {
+               "sid": "CR12345678123456781234567812345678",
+               "test_string": "Fourth Response"
+              }]
+            }
+            '
+        ));
+        $actual = $this->twilio->flexApi->v1->credentials->aws->read($limit = 3);
+        $this->assertNotNull($actual);
+        $this->assertEquals(3, count($actual));
+        $this->assertEquals("Ahoy", $actual[0]->testString);
+        $this->assertEquals("Second Response", $actual[1]->testString);
+        $this->assertEquals("Third Response", $actual[2]->testString);
+    }
 
+    public function testPageReturnsValidPageUrls(): void
+    {
+        $this->holodeck->mock(new Response(200,
+            '
+            {
+              "meta":{
+                "first_page_url": "/v1/Credentials/AWS",
+                "end": 0,
+                "previous_page_url": "https://flex-api.twilio.com/v1/Credentials/AWS/page=1",
+                "uri": "/v1/Credentials/AWS",
+                "page_size": 3,
+                "start": 0,
+                "next_page_url": "https://flex-api.twilio.com/v1/Credentials/AWS/page=3",
+                "page": 0 ,
+                "key":"credentials"
+              },
+              "credentials":[{
+               "sid": "CR12345678123456781234567812345678",
+               "test_string": "Ahoy"
+              }]
+            }
+            '
+        ));
+        $actual = $this->twilio->flexApi->v1->credentials->aws->page($pageSize = 3);
+        $this->assertNotNull($actual);
+        $this->assertEquals("https://flex-api.twilio.com/v1/Credentials/AWS/page=3", $actual->getNextPageUrl());
+        $this->assertEquals("https://flex-api.twilio.com/v1/Credentials/AWS/page=1", $actual->getPreviousPageUrl());
+    }
+
+    public function testValidPageSizeInResponse(): void
+    {
+        $this->holodeck->mock(new Response(200,
+            '
+            {
+              "meta":{
+                "first_page_uri": "/v1/Credentials/AWS",
+                "end": 0,
+                "previous_page_uri": null,
+                "uri": "/v1/Credentials/AWS",
+                "page_size": 3,
+                "start": 0,
+                "next_page_uri": null,
+                "page": 0 ,
+                "key":"credentials"
+              },
+              "credentials":[{
+               "sid": "CR12345678123456781234567812345678",
+               "test_string": "Ahoy"
+              },
+              {
+               "sid": "CR123456781234567812345678321456789",
+               "test_string": "Second Response"
+              },
+              {
+               "sid": "CR12345678123456781234567812345678",
+               "test_string": "Third Response"
+              },
+              {
+               "sid": "CR12345678123456781234567812345678",
+               "test_string": "Fourth Response"
+              }]
+            }
+            '
+        ));
+        $actual = $this->twilio->flexApi->v1->credentials->aws->read($pageSize = 3);
+        $this->assertNotNull($actual);
+        $this->assertEquals(3, count($actual));
+        $this->assertEquals("Ahoy", $actual[0]->testString);
+        $this->assertEquals("Second Response", $actual[1]->testString);
+        $this->assertEquals("Third Response", $actual[2]->testString);
+    }
 }
