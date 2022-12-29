@@ -6,6 +6,7 @@ import com.twilio.oai.resolver.LanguageParamResolver;
 
 import org.openapitools.codegen.CodegenParameter;
 
+import static com.twilio.oai.common.ApplicationConstants.ARRAY;
 import static com.twilio.oai.common.ApplicationConstants.OBJECT;
 import static com.twilio.oai.common.ApplicationConstants.SERIALIZE_VEND_EXT;
 import static com.twilio.oai.common.ApplicationConstants.STRING;
@@ -24,14 +25,14 @@ public class PhpParameterResolver extends LanguageParamResolver {
     public void resolveProperties(CodegenParameter codegenParameter) {
         super.resolveProperties(codegenParameter);
         if (codegenParameter.dataType.equalsIgnoreCase(LanguageConventionResolver.MIXED)) {
-            codegenParameter.dataType = "array";
+            codegenParameter.dataType = ARRAY;
         }
         if (codegenParameter.dataType.equalsIgnoreCase(LanguageConventionResolver.MIXED_ARRAY)) {
-            codegenParameter.dataType = "array[]";
+            codegenParameter.dataType = ARRAY + "[]";
         }
         if (codegenParameter.dataType.equalsIgnoreCase(OBJECT) ||
             codegenParameter.dataType.equals(LanguageConventionResolver.LIST_OBJECT)) {
-            codegenParameter.dataType = "array";
+            codegenParameter.dataType = ARRAY;
         }
         if (codegenParameter.dataType.contains("Enum")) {
             codegenParameter.dataType = STRING;
@@ -44,11 +45,11 @@ public class PhpParameterResolver extends LanguageParamResolver {
         if (codegenParameter.dataType != null && codegenParameter.dataType.contains("[]")) {
             codegenParameter.vendorExtensions.put(SERIALIZE_VEND_EXT, SERIALIZE_ARRAY_MAP);
             codegenParameter.vendorExtensions.put(SERIALIZE_VEND_EXT + LanguageConventionResolver.HYPHEN + MAP_STRING, true);
-            if(codegenParameter.dataType.contains("array")) {
+            if (codegenParameter.dataType.contains(ARRAY)) {
                 codegenParameter.vendorExtensions.put(SERIALIZE_VEND_EXT + LanguageConventionResolver.HYPHEN + ARRAY_OF_ARRAY_STRING, SERIALIZE_ARRAY_JSON_OBJECT);
             }
         }
-        if (codegenParameter.dataType != null && codegenParameter.dataType.equals("array")) {
+        if (codegenParameter.dataType != null && codegenParameter.dataType.equals(ARRAY)) {
             codegenParameter.vendorExtensions.put(SERIALIZE_VEND_EXT, SERIALIZE_ARRAY_JSON_OBJECT);
         }
     }
