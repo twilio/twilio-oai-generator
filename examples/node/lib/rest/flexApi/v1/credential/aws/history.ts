@@ -69,7 +69,7 @@ export class HistoryContextImpl implements HistoryContext {
 
   fetch(params?: any, callback?: any): Promise<HistoryInstance> {
     if (typeof params === "function") {
-      callback = params;
+      callback = params as (error: Error | null, item?: HistoryInstance) => any;
       params = {};
     } else {
       params = params || {};
