@@ -30,7 +30,7 @@ use Twilio\Serialize;
 
 
 /**
- * @property string $sid
+ * @property int $sid
  */
 
 class CallInstance extends InstanceResource {

@@ -288,7 +288,7 @@ public class JavaApiResourceBuilder extends ApiResourceBuilder{
 
             if(!specialTypes.contains(cp.dataType) && !cp.vendorExtensions.containsKey("x-prefixed-collapsible-map") && !cp.isArray){
                 cp.vendorExtensions.put("x-is-other-data-type", true);
-            } else if (cp.isArray && cp.baseType.equalsIgnoreCase("String")) {
+            } else if (cp.isArray && cp.baseType.equalsIgnoreCase(STRING)) {
                 cp.vendorExtensions.put("x-is-string-array", true);
             }
 
@@ -306,6 +306,7 @@ public class JavaApiResourceBuilder extends ApiResourceBuilder{
        return allParams.stream().filter(param -> !param.isPathParam).collect(Collectors.toList());
     }
 
+    @SuppressWarnings("unchecked")
     private ArrayList<List<CodegenParameter>> generateSignatureList(final CodegenOperation co) {
         CodegenParameter accountSidParam = null;
         List<List<CodegenParameter>> conditionalCodegenParam = new ArrayList<>();

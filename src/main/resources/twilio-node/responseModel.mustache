@@ -28,16 +28,11 @@ export class {{instanceName}} {
 
   constructor(protected _version: {{apiVersionClass}}, payload: {{apiName}}Resource{{#instancePathParams}}, {{paramName}}{{^vendorExtensions.x-is-parent-param}}?{{/vendorExtensions.x-is-parent-param}}: {{{dataType}}}{{/instancePathParams}}) {
     {{#vars}}
-    {{#vendorExtensions.x-deserialize}}
     this.{{name}} = {{vendorExtensions.x-deserialize}}(payload.{{baseName}});
-    {{/vendorExtensions.x-deserialize}}
-    {{^vendorExtensions.x-deserialize}}
-    this.{{name}} = payload.{{baseName}};
-    {{/vendorExtensions.x-deserialize}}
     {{/vars}}
 
     {{#instancePath}}
-    this._solution = { {{#instancePathParams}}{{paramName}}{{^vendorExtensions.x-is-parent-param}}: {{paramName}} || this.{{paramName}}{{/vendorExtensions.x-is-parent-param}}, {{/instancePathParams}} };
+    this._solution = { {{#instancePathParams}}{{paramName}}{{^vendorExtensions.x-is-parent-param}}: {{paramName}} || this.{{paramName}}{{#vendorExtensions.x-stringify}}.toString(){{/vendorExtensions.x-stringify}}{{/vendorExtensions.x-is-parent-param}}, {{/instancePathParams}} };
     {{/instancePath}}
   }
 
