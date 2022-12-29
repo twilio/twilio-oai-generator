@@ -1,4 +1,4 @@
-{{^hasRequiredParams}}
+{{^hasParams}}
   /**
    * {{vendorExtensions.x-name}} a {{instanceName}}
    *
@@ -7,7 +7,7 @@
    * @returns { Promise } Resolves to processed {{returnType}}
    */
   {{vendorExtensions.x-name-lower}}(callback?: (error: Error | null, item?: {{returnType}}) => any): Promise<{{returnType}}>{{#hasParams}};{{/hasParams}}
-{{/hasRequiredParams}}
+{{/hasParams}}
 {{#hasParams}}
   /**
    * {{vendorExtensions.x-name}} a {{instanceName}}

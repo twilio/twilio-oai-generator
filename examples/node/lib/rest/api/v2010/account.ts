@@ -453,16 +453,6 @@ export interface AccountListInstance {
   /**
    * Create a AccountInstance
    *
-   * @param { function } [callback] - Callback to handle processed record
-   *
-   * @returns { Promise } Resolves to processed AccountInstance
-   */
-  create(
-    callback?: (error: Error | null, item?: AccountInstance) => any
-  ): Promise<AccountInstance>;
-  /**
-   * Create a AccountInstance
-   *
    * @param { AccountListInstanceCreateOptions } params - Parameter for request
    * @param { function } [callback] - Callback to handle processed record
    *

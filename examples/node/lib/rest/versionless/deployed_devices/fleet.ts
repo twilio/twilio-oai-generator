@@ -174,16 +174,6 @@ export interface FleetListInstance {
   /**
    * Create a FleetInstance
    *
-   * @param { function } [callback] - Callback to handle processed record
-   *
-   * @returns { Promise } Resolves to processed FleetInstance
-   */
-  create(
-    callback?: (error: Error | null, item?: FleetInstance) => any
-  ): Promise<FleetInstance>;
-  /**
-   * Create a FleetInstance
-   *
    * @param { FleetListInstanceCreateOptions } params - Parameter for request
    * @param { function } [callback] - Callback to handle processed record
    *

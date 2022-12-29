@@ -31,16 +31,6 @@ export interface HistoryContext {
   /**
    * Fetch a HistoryInstance
    *
-   * @param { function } [callback] - Callback to handle processed record
-   *
-   * @returns { Promise } Resolves to processed HistoryInstance
-   */
-  fetch(
-    callback?: (error: Error | null, item?: HistoryInstance) => any
-  ): Promise<HistoryInstance>;
-  /**
-   * Fetch a HistoryInstance
-   *
    * @param { HistoryContextFetchOptions } params - Parameter for request
    * @param { function } [callback] - Callback to handle processed record
    *
@@ -163,16 +153,6 @@ export class HistoryInstance {
     return this._context;
   }
 
-  /**
-   * Fetch a HistoryInstance
-   *
-   * @param { function } [callback] - Callback to handle processed record
-   *
-   * @returns { Promise } Resolves to processed HistoryInstance
-   */
-  fetch(
-    callback?: (error: Error | null, item?: HistoryInstance) => any
-  ): Promise<HistoryInstance>;
   /**
    * Fetch a HistoryInstance
    *
