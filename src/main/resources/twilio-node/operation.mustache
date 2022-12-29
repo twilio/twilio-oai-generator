@@ -27,7 +27,7 @@
     {{#queryParams}}{{>requestParam}}{{/queryParams}}
     {{#formParams}}{{>requestParam}}{{/formParams}}
     {{#vendorExtensions.x-is-read-operation}}
-    if (params.page !== undefined) data["Page"] = params.pageNumber;
+    if (params.pageNumber !== undefined) data["Page"] = params.pageNumber;
     if (params.pageToken !== undefined) data["PageToken"] = params.pageToken;
     {{/vendorExtensions.x-is-read-operation}}
 
