@@ -18,7 +18,6 @@ public class LanguageParamResolver extends Resolver<CodegenParameter> {
         resolveProperties(codegenParameter);
         resolvePrefixedMap(codegenParameter);
         resolveSerialize(codegenParameter);
-        resolveDeSerialize(codegenParameter);
 
         codegenParameter.dataType = Utility.removeEnumName(codegenParameter.dataType);
         codegenParameter.baseType = Utility.removeEnumName(codegenParameter.baseType);
@@ -27,23 +26,18 @@ public class LanguageParamResolver extends Resolver<CodegenParameter> {
     }
 
     protected void resolveProperties(CodegenParameter codegenParameter) {
-        if (codegenParameter.dataFormat != null) {
-            getMapperValue(codegenParameter.dataFormat, mapper.properties()).ifPresent(dataType -> codegenParameter.dataType = dataType);
-        }
+        mapper
+            .properties()
+            .getString(codegenParameter.dataFormat)
+            .ifPresent(dataType -> codegenParameter.dataType = dataType);
     }
 
     protected void resolveSerialize(CodegenParameter codegenParameter) {
-        getMapperValue(getDataType(codegenParameter),
-                       mapper.serialize()).ifPresent(serialize -> codegenParameter.vendorExtensions.put(
-            SERIALIZE_VEND_EXT,
-            serialize.split("\\(")[0]));
-    }
-
-    protected void resolveDeSerialize(CodegenParameter codegenParameter) {
-        getMapperValue(getDataType(codegenParameter),
-                       mapper.deserialize()).ifPresent(deserialize -> codegenParameter.vendorExtensions.put(
-            DESERIALIZE_VEND_EXT,
-            deserialize.split("\\(")[0]));
+        mapper
+            .serialize()
+            .getString(getDataType(codegenParameter))
+            .ifPresent(serialize -> codegenParameter.vendorExtensions.put(SERIALIZE_VEND_EXT,
+                                                                          serialize.split("\\(")[0]));
     }
 
     protected void resolvePrefixedMap(CodegenParameter codegenParameter) {
@@ -52,8 +46,8 @@ public class LanguageParamResolver extends Resolver<CodegenParameter> {
             String[] split_format_array = codegenParameter.dataFormat.split(LanguageConventionResolver.HYPHEN);
             codegenParameter.vendorExtensions.put(LanguageConventionResolver.X_PREFIXED_COLLAPSIBLE_MAP,
                     split_format_array[split_format_array.length - 1]);
-            codegenParameter.dataType = (String) mapper.properties()
-                    .get(LanguageConventionResolver.PREFIXED_COLLAPSIBLE_MAP);
+            codegenParameter.dataType = mapper.properties()
+                    .getString(LanguageConventionResolver.PREFIXED_COLLAPSIBLE_MAP).orElse(null);
         }
         codegenParameter.paramName = StringHelper.toFirstLetterLower(codegenParameter.paramName);
     }

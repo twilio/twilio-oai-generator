@@ -33,7 +33,7 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
     private static final String VALUES = "values";
 
     private final TwilioCodegenAdapter twilioCodegen;
-    private final IApiActionTemplate apiActionTemplate;
+    private final IApiActionTemplate apiActionTemplate = new JavaApiActionTemplate(this);
     private final DirectoryStructureService directoryStructureService = new DirectoryStructureService(
         additionalProperties,
         new ResourceMap(new Inflector()),
@@ -44,7 +44,6 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
 
     public TwilioJavaGenerator() {
         super();
-        apiActionTemplate = new JavaApiActionTemplate(this);
         twilioCodegen = new TwilioCodegenAdapter(this, getName());
         sourceFolder = "";
     }

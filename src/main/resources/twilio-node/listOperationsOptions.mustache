@@ -13,7 +13,7 @@
  *                         each() guarantees never to return more than limit.
  *                         Default is no limit
  */
-export interface {{resourceName}}EachOptions {
+export interface {{vendorExtensions.x-resource-name}}EachOptions {
   {{#allParams}}
   "{{paramName}}"{{^required}}?{{/required}}: {{{dataType}}};
   {{/allParams}}
@@ -33,7 +33,7 @@ export interface {{resourceName}}EachOptions {
  *                         list() guarantees never to return more than limit.
  *                         Default is no limit
  */
-export interface {{resourceName}}Options {
+export interface {{vendorExtensions.x-resource-name}}Options {
   {{#allParams}}
   "{{paramName}}"{{^required}}?{{/required}}: {{{dataType}}};
   {{/allParams}}
@@ -49,7 +49,7 @@ export interface {{resourceName}}Options {
  * @property { number } [pageNumber] - Page Number, this value is simply for client state
  * @property { string } [pageToken] - PageToken provided by the API
  */
-export interface {{resourceName}}PageOptions {
+export interface {{vendorExtensions.x-resource-name}}PageOptions {
   {{#allParams}}
   "{{paramName}}"{{^required}}?{{/required}}: {{{dataType}}};
   {{/allParams}}

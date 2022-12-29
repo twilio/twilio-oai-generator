@@ -123,7 +123,7 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
             resolveCodeOperationParams(co, recordKey, responseModels);
 
             // Add operations key to resource
-            final ArrayList<CodegenOperation> resourceOperationList = Utility.getOperations(resource);
+            final List<CodegenOperation> resourceOperationList = Utility.getOperations(resource);
             resourceOperationList.add(co);
 
             boolean arrayParamsPresent = hasArrayParams(co.allParams);

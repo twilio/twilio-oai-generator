@@ -6,8 +6,6 @@ import com.twilio.oai.resource.Resource;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.PathItem;
 
-import com.twilio.oai.template.IApiActionTemplate;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -17,17 +15,11 @@ import java.util.stream.Collectors;
 public class PhpDomainBuilder {
     private static final List<Object> contextResourcesList = new ArrayList<>();
     private static final List<Object> dependentList = new ArrayList<>();
-    private IApiActionTemplate template;
-
-    public PhpDomainBuilder(IApiActionTemplate template) {
-        this.template = template;
-    }
 
     public void setVersionTemplate(final OpenAPI openAPI, DirectoryStructureService directoryStructureService) {
         filter_contextResources(openAPI, directoryStructureService);
         if (directoryStructureService.isVersionLess()) return;
         setContextResources(directoryStructureService, null);
-        template.addSupportVersion();
     }
 
     public static void setContextResources(DirectoryStructureService directoryStructureService, String version) {

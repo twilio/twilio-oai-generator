@@ -1,9 +1,11 @@
 package com.twilio.oai.template;
 
-import org.openapitools.codegen.CodegenConfig;
-
+import java.io.File;
 import java.util.List;
 import java.util.Map;
+
+import org.openapitools.codegen.CodegenConfig;
+import org.openapitools.codegen.SupportingFile;
 
 public abstract class AbstractApiActionTemplate implements IApiActionTemplate {
     public static final String API_TEMPLATE = "api";
@@ -24,9 +26,10 @@ public abstract class AbstractApiActionTemplate implements IApiActionTemplate {
         codegen.modelDocTemplateFiles().clear();
         return codegen;
     }
+
     @Override
     public void clean() {
-        for (final List<String> entry: templates.values()) {
+        for (final List<String> entry : templates.values()) {
             codegen.apiTemplateFiles().remove(entry.get(0));
         }
     }
@@ -36,5 +39,37 @@ public abstract class AbstractApiActionTemplate implements IApiActionTemplate {
         List<String> templateStrings = templates.get(template);
         codegen.apiTemplateFiles().put(templateStrings.get(0), templateStrings.get(1));
     }
+
+    @Override
+    public void addSupportVersion() {
+        final List<String> templateStrings = templates.get(VERSION_TEMPLATE);
+        final String apiVersionClass = codegen.additionalProperties().get("apiVersionClass").toString();
+
+        if (apiVersionClass.startsWith("V")) {
+            codegen
+                .supportingFiles()
+                .add(new SupportingFile(templateStrings.get(0),
+                                        ".." + File.separator + getVersionFilename(apiVersionClass) +
+                                            templateStrings.get(1)));
+        } else {
+            codegen.apiTemplateFiles().put(templateStrings.get(0), templateStrings.get(1));
+        }
+    }
+
+    protected String getVersionFilename(final String apiVersionClass) {
+        return apiVersionClass;
+    }
+
+    public String apiFilename(final String templateName, final String filename) {
+        final List<String> templateStrings = templates.get(VERSION_TEMPLATE);
+        final String apiVersionClass = codegen.additionalProperties().get("apiVersionClass").toString();
+
+        if (apiVersionClass != null && templateName.equals(templateStrings.get(0))) {
+            return codegen.apiFileFolder() + File.separator + apiVersionClass + templateStrings.get(1);
+        }
+
+        return filename;
+    }
+
     protected abstract Map<String, List<String>> mapping();
 }
