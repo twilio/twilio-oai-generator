@@ -46,6 +46,7 @@ public class Inflector {
             this.addRule("((a)naly|(b)a|(d)iagno|(p)arenthe|(p)rogno|(s)ynop|(t)he)ses$", "$1$2sis");
             this.addRule("(^analy)ses$", "$1sis");
             this.addRule("(^analy)sis$", "$1sis"); // already singular, but ends in 's'
+            this.addRule("(primitive)s$", "$1"); // singular of primitive is not primitife
             this.addRule("([^f])ves$", "$1fe");
             this.addRule("(hive)s$", "$1");
             this.addRule("(tive)s$", "$1");
