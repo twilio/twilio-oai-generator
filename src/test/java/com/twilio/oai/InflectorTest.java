@@ -17,7 +17,6 @@ public class InflectorTest {
         assertEquals("YourData", inflector.singular("YourData"));
         assertEquals("Ox", inflector.singular("Oxen"));
         assertEquals("Primitive", inflector.singular("Primitives"));
-
     }
 
     @Test
