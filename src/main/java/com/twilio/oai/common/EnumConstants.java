@@ -14,7 +14,8 @@ public class EnumConstants {
         TWILIO_PHP("twilio-php"),
         TWILIO_PYTHON("twilio-python"),
         TWILIO_GO("twilio-go"),
-        TWILIO_TERRAFORM("terraform-provider-twilio");
+        TWILIO_TERRAFORM("terraform-provider-twilio"),
+        TWILIO_RUBY("twilio-ruby");
 
         private final String value;
     }
