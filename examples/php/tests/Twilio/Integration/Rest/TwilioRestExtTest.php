@@ -23,7 +23,11 @@ class TwilioRestExtTest extends HolodeckTestCase
         '));
 
         try {
-            $actual = $this->twilio->api->v2010->accounts("ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")->fetch();
+            $accountContext = $this->twilio->api->v2010->accounts("ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+            $this->assertEquals("[Twilio.Api.V2010.AccountContext sid=ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa]", $accountContext->__toString());
+
+            $actual = $accountContext->fetch();
+            $this->assertEquals("[Twilio.Api.V2010.AccountInstance sid=ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa]", $actual->__toString());
         } catch (DeserializeException $e) {
         } catch (TwilioException $e) {
         }
@@ -35,6 +39,16 @@ class TwilioRestExtTest extends HolodeckTestCase
         $this->assertEquals($actual->sid, "ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
         $this->assertEquals($actual->accountSid, "ACXXXXXXXXXXXXXXXXXXXXXXXXXXX");
         $this->assertEquals($actual->testString, "Test String");
+
+        $this->holodeck->mock(new Response(200, '
+        {
+                "account_sid": "ACXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+                "sid": "ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                "test_string": "Test String"
+        }
+        '));
+        $instanceResponse = $actual->fetch();
+        $this->assertNotNull($instanceResponse);
     }
 
     public function testShouldMakeFetchCallToAccountCall(): void
@@ -42,12 +56,17 @@ class TwilioRestExtTest extends HolodeckTestCase
         $this->holodeck->mock(new Response(200, '{
                 "account_sid": "AC222222222222222222222222222222",
                 "sid": "ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-                "test_string": "Test String"
+                "test_string": "Test String",
+                "test_integer": 2
             }'));
 
-        $response = $this->twilio->api->v2010->accounts("ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")->calls->create("example", "example");
+        $callList = $this->twilio->api->v2010->accounts("ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")->calls;
+        $this->assertEquals("[Twilio.Api.V2010.CallList]", $callList->__toString());
+
+        $response = $callList->create("example", "example");
 
         $this->assertNotNull($response);
+        $this->assertEquals("[Twilio.Api.V2010.CallInstance accountSid=ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa testInteger=2]", $response->__toString());
         $this->assertRequest(new Request(
             'post',
             'https://api.twilio.com/2010-04-01/Accounts/ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/Calls.json',
@@ -92,6 +111,31 @@ class TwilioRestExtTest extends HolodeckTestCase
         $this->assertEquals($response->testString, "Test String");
         $this->assertEquals($response->accountSid, "AC222222222222222222222222222222");
         $this->assertEquals($response->sid, "ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+
+    }
+
+    public function testShouldMakeUpdateAccountCall(): void
+    {
+        $this->holodeck->mock(new Response(200, '{
+                "account_sid": "AC222222222222222222222222222222",
+                "sid": "ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                "test_string": "Test String"
+            }'));
+
+        $response = $this->twilio->api->v2010->accounts("AC222222222222222222222222222222")->update("stopped");
+
+        $this->assertNotNull($response);
+        $this->assertEquals($response->testString, "Test String");
+        $this->assertEquals($response->accountSid, "AC222222222222222222222222222222");
+        $this->assertEquals($response->sid, "ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+
+        $this->holodeck->mock(new Response(200, '{
+                "account_sid": "AC222222222222222222222222222222",
+                "sid": "ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                "test_string": "Test String"
+            }'));
+        $instanceResponse = $response->update("stopped");
+        $this->assertNotNull($instanceResponse);
 
     }
 }

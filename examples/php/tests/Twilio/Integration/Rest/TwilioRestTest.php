@@ -44,7 +44,11 @@ class TwilioRestTest extends HolodeckTestCase
         ));
 
         try {
-            $response = $this->twilio->api->v2010->accounts->create();
+            $accountList = $this->twilio->api->v2010->accounts;
+            $this->assertEquals("[Twilio.Api.V2010.AccountList]", $accountList->__toString());
+
+            $response = $accountList->create();
+            $this->assertEquals("[Twilio.Api.V2010.AccountInstance sid=ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa]", $response->__toString());
         } catch (DeserializeException $e) {
         } catch (TwilioException $e) {
         }
@@ -65,7 +69,10 @@ class TwilioRestTest extends HolodeckTestCase
         $this->holodeck->mock(new Response(204, ''));
 
         try {
-            $actual = $this->twilio->api->v2010->accounts("ACXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")->delete();
+            $accountContext = $this->twilio->api->v2010->accounts("ACXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
+            $this->assertEquals("[Twilio.Api.V2010.AccountContext sid=ACXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX]", $accountContext->__toString());
+
+            $actual = $accountContext->delete();
             $this->assertTrue($actual);
         } catch (DeserializeException $e) {
         } catch (TwilioException $e) {
@@ -114,9 +121,13 @@ class TwilioRestTest extends HolodeckTestCase
                 "test_string": "Test String"
             }'));
 
-        $response = $this->twilio->api->v2010->accounts("AC222222222222222222222222222222")->calls(34)->fetch();
+        $callContext = $this->twilio->api->v2010->accounts("AC222222222222222222222222222222")->calls(34);
+        $this->assertEquals("[Twilio.Api.V2010.CallContext accountSid=AC222222222222222222222222222222 testInteger=34]", $callContext->__toString());
+
+        $response = $callContext->fetch();
 
         $this->assertNotNull($response);
+        $this->assertEquals("[Twilio.Api.V2010.CallInstance accountSid=AC222222222222222222222222222222 testInteger=34]", $response->__toString());
         $this->assertRequest(new Request(
             'get',
             'https://api.twilio.com/2010-04-01/Accounts/AC222222222222222222222222222222/Calls/34.json',
@@ -126,6 +137,14 @@ class TwilioRestTest extends HolodeckTestCase
         $this->assertEquals($response->accountSid, "AC222222222222222222222222222222");
         $this->assertEquals($response->sid, "ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
         $this->assertEquals($response->testString, "Test String");
+
+        $this->holodeck->mock(new Response(200, '{
+                "account_sid": "AC222222222222222222222222222222",
+                "sid": "ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                "test_string": "Test String"
+            }'));
+        $instanceResponse = $response->fetch();
+        $this->assertNotNull($instanceResponse);
     }
 
     public function testShouldSerializeDateTime(): void
@@ -138,11 +157,13 @@ class TwilioRestTest extends HolodeckTestCase
                 "end_date": "2022-12-04"
             }'));
 
-        $response = $this->twilio->api->v2010->accounts("AC222222222222222222222222222222")->calls
-            ->feedbackCallSummary("FSXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")->
-            update(new \DateTime('2022-12-04'), new \DateTime('2022-12-01'));
+        $feedbackCallSummaryContext = $this->twilio->api->v2010->accounts("AC222222222222222222222222222222")->calls->feedbackCallSummary("FSXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
+        $this->assertEquals("[Twilio.Api.V2010.FeedbackCallSummaryContext accountSid=AC222222222222222222222222222222 sid=FSXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX]", $feedbackCallSummaryContext->__toString());
+
+        $response = $feedbackCallSummaryContext->update(new \DateTime('2022-12-04'), new \DateTime('2022-12-01'));
 
         $this->assertNotNull($response);
+        $this->assertEquals("[Twilio.Api.V2010.FeedbackCallSummaryInstance accountSid=AC222222222222222222222222222222 sid=FSXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX]", $response->__toString());
         $this->assertRequest(new Request(
             'post',
             'https://api.twilio.com/2010-04-01/Accounts/AC222222222222222222222222222222/Calls/Feedback/Summary/FSXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX.json',
@@ -152,6 +173,17 @@ class TwilioRestTest extends HolodeckTestCase
         $this->assertEquals($response->accountSid, "AC222222222222222222222222222222");
         $this->assertEquals($response->sid, "ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
         $this->assertEquals($response->testString, "Test String");
+
+        $this->holodeck->mock(new Response(200, '{
+                "account_sid": "AC222222222222222222222222222222",
+                "sid": "ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                "test_string": "Test String",
+                "start_date": "2022-12-01",
+                "end_date": "2022-12-04"
+            }'));
+        $instanceResponse = $response->update(new \DateTime('2022-12-04'), new \DateTime('2022-12-01'));
+        $this->assertNotNull($instanceResponse);
+        $this->assertEquals($instanceResponse->testString, "Test String");
     }
 
     public function testReadWhenRequestFails(): void

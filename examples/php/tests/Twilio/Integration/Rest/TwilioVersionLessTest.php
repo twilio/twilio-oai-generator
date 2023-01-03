@@ -24,7 +24,9 @@ class TwilioVersionLessTest extends HolodeckTestCase
         }
         '));
         try {
-            $response = $this->twilio->versionless->understand->assistants->read();
+            $assistantList = $this->twilio->versionless->understand->assistants;
+            $this->assertEquals("[Twilio.Versionless.Understand.AssistantList]", $assistantList->__toString());
+            $response = $assistantList->read();
             $this->assertNotNull($response);
             $this->assertEquals($response[0]->sid, "123");
             $this->assertEquals($response[0]->friendlyName, "Friendly Assistant");
@@ -49,13 +51,11 @@ class TwilioVersionLessTest extends HolodeckTestCase
         }
         '));
         try {
-            $response = $this->twilio->versionless->deployedDevices->fleets->create();
+            $fleetList = $this->twilio->versionless->deployedDevices->fleets;
+            $this->assertEquals("[Twilio.Versionless.DeployedDevices.FleetList]", $fleetList->__toString());
+            $response = $fleetList->create();
             $this->assertEquals($response->sid, "123");
             $this->assertEquals($response->friendlyName, "Friendly Fleet");
-//            $this->assertEquals($response->sid, "123");
-//            $this->assertEquals($response->name, "Fleet Name");
-
-
         } catch (DeserializeException $e) {
         } catch (TwilioException $e) {
         }
@@ -75,8 +75,11 @@ class TwilioVersionLessTest extends HolodeckTestCase
         }
         '));
         try {
-            $response = $this->twilio->versionless->deployedDevices->fleets("123")->fetch();
+            $fleetContext = $this->twilio->versionless->deployedDevices->fleets("123");
+            $this->assertEquals("[Twilio.Versionless.DeployedDevices.FleetContext sid=123]", $fleetContext->__toString());
+            $response = $fleetContext->fetch();
             $this->assertNotNull($response);
+            $this->assertEquals("[Twilio.Versionless.DeployedDevices.FleetInstance sid=123]", $response->__toString());
             $this->assertEquals($response->friendlyName, "Friendly Assistant");
             $this->assertEquals($response->sid, "123");
         } catch (DeserializeException $e) {
@@ -87,5 +90,15 @@ class TwilioVersionLessTest extends HolodeckTestCase
             'get',
             'https://versionless.twilio.com/DeployedDevices/Fleets/123'
         ));
+
+        $this->holodeck->mock(new Response(200, '
+        {
+        "sid": "123",
+        "friendly_name": "Friendly Assistant"
+        }
+        '));
+        $instanceResponse = $response->fetch();
+        $this->assertNotNull($instanceResponse);
+        $this->assertEquals($instanceResponse->friendlyName, "Friendly Assistant");
     }
 }
