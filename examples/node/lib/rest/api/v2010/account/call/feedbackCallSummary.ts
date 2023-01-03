@@ -68,8 +68,8 @@ export interface FeedbackCallSummaryContext {
 }
 
 export interface FeedbackCallSummaryContextSolution {
-  accountSid?: string;
-  sid?: string;
+  accountSid: string;
+  sid: string;
 }
 
 export class FeedbackCallSummaryContextImpl
@@ -116,9 +116,10 @@ export class FeedbackCallSummaryContextImpl
     const headers: any = {};
     headers["Content-Type"] = "application/x-www-form-urlencoded";
 
-    let operationVersion = this._version,
+    const instance = this;
+    let operationVersion = instance._version,
       operationPromise = operationVersion.update({
-        uri: this._uri,
+        uri: instance._uri,
         method: "post",
         data,
         headers,
@@ -129,12 +130,12 @@ export class FeedbackCallSummaryContextImpl
         new FeedbackCallSummaryInstance(
           operationVersion,
           payload,
-          this._solution.accountSid,
-          this._solution.sid
+          instance._solution.accountSid,
+          instance._solution.sid
         )
     );
 
-    operationPromise = this._version.setPromiseCallback(
+    operationPromise = instance._version.setPromiseCallback(
       operationPromise,
       callback
     );
@@ -287,7 +288,15 @@ export class FeedbackCallSummaryInstance {
   }
 }
 
+export interface FeedbackCallSummarySolution {
+  accountSid?: string;
+}
+
 export interface FeedbackCallSummaryListInstance {
+  _version: V2010;
+  _solution: FeedbackCallSummarySolution;
+  _uri: string;
+
   (sid: string): FeedbackCallSummaryContext;
   get(sid: string): FeedbackCallSummaryContext;
 
@@ -296,20 +305,6 @@ export interface FeedbackCallSummaryListInstance {
    */
   toJSON(): any;
   [inspect.custom](_depth: any, options: InspectOptions): any;
-}
-
-export interface FeedbackCallSummarySolution {
-  accountSid?: string;
-}
-
-interface FeedbackCallSummaryListInstanceImpl
-  extends FeedbackCallSummaryListInstance {}
-class FeedbackCallSummaryListInstanceImpl
-  implements FeedbackCallSummaryListInstance
-{
-  _version?: V2010;
-  _solution?: FeedbackCallSummarySolution;
-  _uri?: string;
 }
 
 export function FeedbackCallSummaryListInstance(
@@ -321,7 +316,7 @@ export function FeedbackCallSummaryListInstance(
   }
 
   const instance = ((sid) =>
-    instance.get(sid)) as FeedbackCallSummaryListInstanceImpl;
+    instance.get(sid)) as FeedbackCallSummaryListInstance;
 
   instance.get = function get(sid): FeedbackCallSummaryContext {
     return new FeedbackCallSummaryContextImpl(version, accountSid, sid);
@@ -332,14 +327,14 @@ export function FeedbackCallSummaryListInstance(
   instance._uri = ``;
 
   instance.toJSON = function toJSON() {
-    return this._solution;
+    return instance._solution;
   };
 
   instance[inspect.custom] = function inspectImpl(
     _depth: any,
     options: InspectOptions
   ) {
-    return inspect(this.toJSON(), options);
+    return inspect(instance.toJSON(), options);
   };
 
   return instance;

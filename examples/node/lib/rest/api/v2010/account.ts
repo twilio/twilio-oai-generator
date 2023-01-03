@@ -176,7 +176,7 @@ export interface AccountContext {
 }
 
 export interface AccountContextSolution {
-  sid?: string;
+  sid: string;
 }
 
 export class AccountContextImpl implements AccountContext {
@@ -201,13 +201,14 @@ export class AccountContextImpl implements AccountContext {
   }
 
   remove(callback?: any): Promise<boolean> {
-    let operationVersion = this._version,
+    const instance = this;
+    let operationVersion = instance._version,
       operationPromise = operationVersion.remove({
-        uri: this._uri,
+        uri: instance._uri,
         method: "delete",
       });
 
-    operationPromise = this._version.setPromiseCallback(
+    operationPromise = instance._version.setPromiseCallback(
       operationPromise,
       callback
     );
@@ -215,18 +216,19 @@ export class AccountContextImpl implements AccountContext {
   }
 
   fetch(callback?: any): Promise<AccountInstance> {
-    let operationVersion = this._version,
+    const instance = this;
+    let operationVersion = instance._version,
       operationPromise = operationVersion.fetch({
-        uri: this._uri,
+        uri: instance._uri,
         method: "get",
       });
 
     operationPromise = operationPromise.then(
       (payload) =>
-        new AccountInstance(operationVersion, payload, this._solution.sid)
+        new AccountInstance(operationVersion, payload, instance._solution.sid)
     );
 
-    operationPromise = this._version.setPromiseCallback(
+    operationPromise = instance._version.setPromiseCallback(
       operationPromise,
       callback
     );
@@ -252,9 +254,10 @@ export class AccountContextImpl implements AccountContext {
     const headers: any = {};
     headers["Content-Type"] = "application/x-www-form-urlencoded";
 
-    let operationVersion = this._version,
+    const instance = this;
+    let operationVersion = instance._version,
       operationPromise = operationVersion.update({
-        uri: this._uri,
+        uri: instance._uri,
         method: "post",
         data,
         headers,
@@ -262,10 +265,10 @@ export class AccountContextImpl implements AccountContext {
 
     operationPromise = operationPromise.then(
       (payload) =>
-        new AccountInstance(operationVersion, payload, this._solution.sid)
+        new AccountInstance(operationVersion, payload, instance._solution.sid)
     );
 
-    operationPromise = this._version.setPromiseCallback(
+    operationPromise = instance._version.setPromiseCallback(
       operationPromise,
       callback
     );
@@ -448,7 +451,13 @@ export class AccountInstance {
   }
 }
 
+export interface AccountSolution {}
+
 export interface AccountListInstance {
+  _version: V2010;
+  _solution: AccountSolution;
+  _uri: string;
+
   (sid: string): AccountContext;
   get(sid: string): AccountContext;
 
@@ -604,17 +613,8 @@ export interface AccountListInstance {
   [inspect.custom](_depth: any, options: InspectOptions): any;
 }
 
-export interface AccountSolution {}
-
-interface AccountListInstanceImpl extends AccountListInstance {}
-class AccountListInstanceImpl implements AccountListInstance {
-  _version?: V2010;
-  _solution?: AccountSolution;
-  _uri?: string;
-}
-
 export function AccountListInstance(version: V2010): AccountListInstance {
-  const instance = ((sid) => instance.get(sid)) as AccountListInstanceImpl;
+  const instance = ((sid) => instance.get(sid)) as AccountListInstance;
 
   instance.get = function get(sid): AccountContext {
     return new AccountContextImpl(version, sid);
@@ -652,7 +652,7 @@ export function AccountListInstance(version: V2010): AccountListInstance {
 
     let operationVersion = version,
       operationPromise = operationVersion.create({
-        uri: this._uri,
+        uri: instance._uri,
         method: "post",
         data,
         headers,
@@ -662,7 +662,7 @@ export function AccountListInstance(version: V2010): AccountListInstance {
       (payload) => new AccountInstance(operationVersion, payload)
     );
 
-    operationPromise = this._version.setPromiseCallback(
+    operationPromise = instance._version.setPromiseCallback(
       operationPromise,
       callback
     );
@@ -703,17 +703,18 @@ export function AccountListInstance(version: V2010): AccountListInstance {
 
     let operationVersion = version,
       operationPromise = operationVersion.page({
-        uri: this._uri,
+        uri: instance._uri,
         method: "get",
         params: data,
         headers,
       });
 
     operationPromise = operationPromise.then(
-      (payload) => new AccountPage(operationVersion, payload, this._solution)
+      (payload) =>
+        new AccountPage(operationVersion, payload, instance._solution)
     );
 
-    operationPromise = this._version.setPromiseCallback(
+    operationPromise = instance._version.setPromiseCallback(
       operationPromise,
       callback
     );
@@ -726,30 +727,28 @@ export function AccountListInstance(version: V2010): AccountListInstance {
     targetUrl?: any,
     callback?: any
   ): Promise<AccountPage> {
-    let operationPromise = this._version._domain.twilio.request({
+    const operationPromise = instance._version._domain.twilio.request({
       method: "get",
       uri: targetUrl,
     });
 
-    operationPromise = operationPromise.then(
-      (payload) => new AccountPage(this._version, payload, this._solution)
+    let pagePromise = operationPromise.then(
+      (payload) =>
+        new AccountPage(instance._version, payload, instance._solution)
     );
-    operationPromise = this._version.setPromiseCallback(
-      operationPromise,
-      callback
-    );
-    return operationPromise;
+    pagePromise = instance._version.setPromiseCallback(pagePromise, callback);
+    return pagePromise;
   };
 
   instance.toJSON = function toJSON() {
-    return this._solution;
+    return instance._solution;
   };
 
   instance[inspect.custom] = function inspectImpl(
     _depth: any,
     options: InspectOptions
   ) {
-    return inspect(this.toJSON(), options);
+    return inspect(instance.toJSON(), options);
   };
 
   return instance;

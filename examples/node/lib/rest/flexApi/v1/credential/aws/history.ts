@@ -60,7 +60,7 @@ export interface HistoryContext {
 }
 
 export interface HistoryContextSolution {
-  sid?: string;
+  sid: string;
 }
 
 export class HistoryContextImpl implements HistoryContext {
@@ -94,9 +94,10 @@ export class HistoryContextImpl implements HistoryContext {
 
     const headers: any = {};
 
-    let operationVersion = this._version,
+    const instance = this;
+    let operationVersion = instance._version,
       operationPromise = operationVersion.fetch({
-        uri: this._uri,
+        uri: instance._uri,
         method: "get",
         params: data,
         headers,
@@ -104,10 +105,10 @@ export class HistoryContextImpl implements HistoryContext {
 
     operationPromise = operationPromise.then(
       (payload) =>
-        new HistoryInstance(operationVersion, payload, this._solution.sid)
+        new HistoryInstance(operationVersion, payload, instance._solution.sid)
     );
 
-    operationPromise = this._version.setPromiseCallback(
+    operationPromise = instance._version.setPromiseCallback(
       operationPromise,
       callback
     );
@@ -207,7 +208,15 @@ export class HistoryInstance {
   }
 }
 
+export interface HistorySolution {
+  sid?: string;
+}
+
 export interface HistoryListInstance {
+  _version: V1;
+  _solution: HistorySolution;
+  _uri: string;
+
   (): HistoryContext;
   get(): HistoryContext;
 
@@ -218,17 +227,6 @@ export interface HistoryListInstance {
   [inspect.custom](_depth: any, options: InspectOptions): any;
 }
 
-export interface HistorySolution {
-  sid?: string;
-}
-
-interface HistoryListInstanceImpl extends HistoryListInstance {}
-class HistoryListInstanceImpl implements HistoryListInstance {
-  _version?: V1;
-  _solution?: HistorySolution;
-  _uri?: string;
-}
-
 export function HistoryListInstance(
   version: V1,
   sid: string
@@ -237,7 +235,7 @@ export function HistoryListInstance(
     throw new Error("Parameter 'sid' is not valid.");
   }
 
-  const instance = (() => instance.get()) as HistoryListInstanceImpl;
+  const instance = (() => instance.get()) as HistoryListInstance;
 
   instance.get = function get(): HistoryContext {
     return new HistoryContextImpl(version, sid);
@@ -248,14 +246,14 @@ export function HistoryListInstance(
   instance._uri = ``;
 
   instance.toJSON = function toJSON() {
-    return this._solution;
+    return instance._solution;
   };
 
   instance[inspect.custom] = function inspectImpl(
     _depth: any,
     options: InspectOptions
   ) {
-    return inspect(this.toJSON(), options);
+    return inspect(instance.toJSON(), options);
   };
 
   return instance;
