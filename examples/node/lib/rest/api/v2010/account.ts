@@ -199,7 +199,9 @@ export class AccountContextImpl implements AccountContext {
     return this._calls;
   }
 
-  remove(callback?: any): Promise<boolean> {
+  remove(
+    callback?: (error: Error | null, item?: boolean) => any
+  ): Promise<boolean> {
     let operationVersion = this._version,
       operationPromise = operationVersion.remove({
         uri: this._uri,
@@ -213,7 +215,9 @@ export class AccountContextImpl implements AccountContext {
     return operationPromise;
   }
 
-  fetch(callback?: any): Promise<AccountInstance> {
+  fetch(
+    callback?: (error: Error | null, item?: AccountInstance) => any
+  ): Promise<AccountInstance> {
     let operationVersion = this._version,
       operationPromise = operationVersion.fetch({
         uri: this._uri,
@@ -232,7 +236,12 @@ export class AccountContextImpl implements AccountContext {
     return operationPromise;
   }
 
-  update(params: any, callback?: any): Promise<AccountInstance> {
+  update(
+    params:
+      | AccountContextUpdateOptions
+      | ((error: Error | null, item?: AccountInstance) => any),
+    callback?: (error: Error | null, item?: AccountInstance) => any
+  ): Promise<AccountInstance> {
     if (params === null || params === undefined) {
       throw new Error('Required parameter "params" missing.');
     }
@@ -453,15 +462,23 @@ export interface AccountListInstance {
   /**
    * Create a AccountInstance
    *
+   * @param { function } [callback] - Callback to handle processed record
+   *
+   * @returns { Promise } Resolves to processed AccountInstance
+   */
+  create(
+    callback?: (error: Error | null, item?: AccountInstance) => any
+  ): Promise<AccountInstance>;
+  /**
+   * Create a AccountInstance
+   *
    * @param { AccountListInstanceCreateOptions } params - Parameter for request
    * @param { function } [callback] - Callback to handle processed record
    *
    * @returns { Promise } Resolves to processed AccountInstance
    */
   create(
-    params?:
-      | AccountListInstanceCreateOptions
-      | ((error: Error | null, item?: AccountInstance) => any),
+    params: AccountListInstanceCreateOptions,
     callback?: (error: Error | null, item?: AccountInstance) => any
   ): Promise<AccountInstance>;
 
@@ -481,9 +498,10 @@ export interface AccountListInstance {
    * @param { function } [callback] - Function to process each record
    */
   each(
-    params?:
-      | AccountListInstanceEachOptions
-      | ((item: AccountInstance, done: (err?: Error) => void) => void),
+    callback?: (item: AccountInstance, done: (err?: Error) => void) => void
+  ): void;
+  each(
+    params: AccountListInstanceEachOptions,
     callback?: (item: AccountInstance, done: (err?: Error) => void) => void
   ): void;
   /**
@@ -508,9 +526,10 @@ export interface AccountListInstance {
    * @param { function } [callback] - Callback to handle list of records
    */
   list(
-    params?:
-      | AccountListInstanceOptions
-      | ((error: Error | null, items: AccountInstance[]) => any),
+    callback?: (error: Error | null, items: AccountInstance[]) => any
+  ): Promise<AccountInstance[]>;
+  list(
+    params: AccountListInstanceOptions,
     callback?: (error: Error | null, items: AccountInstance[]) => any
   ): Promise<AccountInstance[]>;
   /**
@@ -525,9 +544,10 @@ export interface AccountListInstance {
    * @param { function } [callback] - Callback to handle list of records
    */
   page(
-    params?:
-      | AccountListInstancePageOptions
-      | ((error: Error | null, items: AccountPage) => any),
+    callback?: (error: Error | null, items: AccountPage) => any
+  ): Promise<AccountPage>;
+  page(
+    params: AccountListInstancePageOptions,
     callback?: (error: Error | null, items: AccountPage) => any
   ): Promise<AccountPage>;
 

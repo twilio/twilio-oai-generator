@@ -13,7 +13,8 @@
    * @param { {{vendorExtensions.x-resource-name}}EachOptions } [params] - Options for request
    * @param { function } [callback] - Function to process each record
    */
-  each(params?: {{vendorExtensions.x-resource-name}}EachOptions | ((item: {{instanceName}}, done: (err?: Error) => void) => void), callback?: (item: {{instanceName}}, done: (err?: Error) => void) => void): void;
+  each(callback?: (item: {{instanceName}}, done: (err?: Error) => void) => void): void;
+  each(params: {{vendorExtensions.x-resource-name}}EachOptions, callback?: (item: {{instanceName}}, done: (err?: Error) => void) => void): void;
   /**
    * Retrieve a single target page of {{instanceName}} records from the API.
    *
@@ -32,7 +33,8 @@
    * @param { {{vendorExtensions.x-resource-name}}Options } [params] - Options for request
    * @param { function } [callback] - Callback to handle list of records
    */
-  list(params?: {{vendorExtensions.x-resource-name}}Options | ((error: Error | null, items: {{instanceName}}[]) => any), callback?: (error: Error | null, items: {{instanceName}}[]) => any): Promise<{{instanceName}}[]>;
+  list(callback?: (error: Error | null, items: {{instanceName}}[]) => any): Promise<{{instanceName}}[]>;
+  list(params: {{vendorExtensions.x-resource-name}}Options, callback?: (error: Error | null, items: {{instanceName}}[]) => any): Promise<{{instanceName}}[]>;
   /**
    * Retrieve a single page of {{instanceName}} records from the API.
    *
@@ -44,4 +46,5 @@
    * @param { {{vendorExtensions.x-resource-name}}PageOptions } [params] - Options for request
    * @param { function } [callback] - Callback to handle list of records
    */
-  page(params?: {{vendorExtensions.x-resource-name}}PageOptions | ((error: Error | null, items: {{returnType}}) => any), callback?: (error: Error | null, items: {{returnType}}) => any): Promise<{{returnType}}>;
+  page(callback?: (error: Error | null, items: {{returnType}}) => any): Promise<{{returnType}}>;
+  page(params: {{vendorExtensions.x-resource-name}}PageOptions, callback?: (error: Error | null, items: {{returnType}}) => any): Promise<{{returnType}}>;

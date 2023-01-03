@@ -31,15 +31,23 @@ export interface HistoryContext {
   /**
    * Fetch a HistoryInstance
    *
+   * @param { function } [callback] - Callback to handle processed record
+   *
+   * @returns { Promise } Resolves to processed HistoryInstance
+   */
+  fetch(
+    callback?: (error: Error | null, item?: HistoryInstance) => any
+  ): Promise<HistoryInstance>;
+  /**
+   * Fetch a HistoryInstance
+   *
    * @param { HistoryContextFetchOptions } params - Parameter for request
    * @param { function } [callback] - Callback to handle processed record
    *
    * @returns { Promise } Resolves to processed HistoryInstance
    */
   fetch(
-    params?:
-      | HistoryContextFetchOptions
-      | ((error: Error | null, item?: HistoryInstance) => any),
+    params: HistoryContextFetchOptions,
     callback?: (error: Error | null, item?: HistoryInstance) => any
   ): Promise<HistoryInstance>;
 
@@ -67,7 +75,12 @@ export class HistoryContextImpl implements HistoryContext {
     this._uri = `/Credentials/AWS/${sid}/History`;
   }
 
-  fetch(params?: any, callback?: any): Promise<HistoryInstance> {
+  fetch(
+    params?:
+      | HistoryContextFetchOptions
+      | ((error: Error | null, item?: HistoryInstance) => any),
+    callback?: (error: Error | null, item?: HistoryInstance) => any
+  ): Promise<HistoryInstance> {
     if (typeof params === "function") {
       callback = params as (error: Error | null, item?: HistoryInstance) => any;
       params = {};
@@ -162,9 +175,7 @@ export class HistoryInstance {
    * @returns { Promise } Resolves to processed HistoryInstance
    */
   fetch(
-    params?:
-      | HistoryContextFetchOptions
-      | ((error: Error | null, item?: HistoryInstance) => any),
+    params?: HistoryContextFetchOptions,
     callback?: (error: Error | null, item?: HistoryInstance) => any
   ): Promise<HistoryInstance> {
     return this._proxy.fetch(params, callback);

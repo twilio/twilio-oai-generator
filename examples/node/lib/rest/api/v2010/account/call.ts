@@ -104,7 +104,9 @@ export class CallContextImpl implements CallContext {
     this._uri = `/Accounts/${accountSid}/Calls/${testInteger}.json`;
   }
 
-  remove(callback?: any): Promise<boolean> {
+  remove(
+    callback?: (error: Error | null, item?: boolean) => any
+  ): Promise<boolean> {
     let operationVersion = this._version,
       operationPromise = operationVersion.remove({
         uri: this._uri,
@@ -118,7 +120,9 @@ export class CallContextImpl implements CallContext {
     return operationPromise;
   }
 
-  fetch(callback?: any): Promise<CallInstance> {
+  fetch(
+    callback?: (error: Error | null, item?: CallInstance) => any
+  ): Promise<CallInstance> {
     let operationVersion = this._version,
       operationPromise = operationVersion.fetch({
         uri: this._uri,

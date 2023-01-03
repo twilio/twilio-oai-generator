@@ -90,7 +90,12 @@ export class FeedbackCallSummaryContextImpl
     this._uri = `/Accounts/${accountSid}/Calls/Feedback/Summary/${sid}.json`;
   }
 
-  update(params: any, callback?: any): Promise<FeedbackCallSummaryInstance> {
+  update(
+    params:
+      | FeedbackCallSummaryContextUpdateOptions
+      | ((error: Error | null, item?: FeedbackCallSummaryInstance) => any),
+    callback?: (error: Error | null, item?: FeedbackCallSummaryInstance) => any
+  ): Promise<FeedbackCallSummaryInstance> {
     if (params === null || params === undefined) {
       throw new Error('Required parameter "params" missing.');
     }

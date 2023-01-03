@@ -53,7 +53,7 @@ export class {{instanceName}} {
   {{#operations}}
   {{#vendorExtensions.x-is-context-operation}}
 
-{{>operationSignature}}     {
+{{>responseModelOperationSignature}}     {
     return this._proxy.{{vendorExtensions.x-name-lower}}({{#hasParams}}params, {{/hasParams}}callback);
   }
   {{/vendorExtensions.x-is-context-operation}}

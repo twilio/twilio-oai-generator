@@ -78,9 +78,10 @@ export interface AssistantListInstance {
    * @param { function } [callback] - Function to process each record
    */
   each(
-    params?:
-      | AssistantListInstanceEachOptions
-      | ((item: AssistantInstance, done: (err?: Error) => void) => void),
+    callback?: (item: AssistantInstance, done: (err?: Error) => void) => void
+  ): void;
+  each(
+    params: AssistantListInstanceEachOptions,
     callback?: (item: AssistantInstance, done: (err?: Error) => void) => void
   ): void;
   /**
@@ -105,9 +106,10 @@ export interface AssistantListInstance {
    * @param { function } [callback] - Callback to handle list of records
    */
   list(
-    params?:
-      | AssistantListInstanceOptions
-      | ((error: Error | null, items: AssistantInstance[]) => any),
+    callback?: (error: Error | null, items: AssistantInstance[]) => any
+  ): Promise<AssistantInstance[]>;
+  list(
+    params: AssistantListInstanceOptions,
     callback?: (error: Error | null, items: AssistantInstance[]) => any
   ): Promise<AssistantInstance[]>;
   /**
@@ -122,9 +124,10 @@ export interface AssistantListInstance {
    * @param { function } [callback] - Callback to handle list of records
    */
   page(
-    params?:
-      | AssistantListInstancePageOptions
-      | ((error: Error | null, items: AssistantPage) => any),
+    callback?: (error: Error | null, items: AssistantPage) => any
+  ): Promise<AssistantPage>;
+  page(
+    params: AssistantListInstancePageOptions,
     callback?: (error: Error | null, items: AssistantPage) => any
   ): Promise<AssistantPage>;
 

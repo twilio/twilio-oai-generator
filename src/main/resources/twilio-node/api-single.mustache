@@ -91,7 +91,7 @@ export class {{apiName}}ContextImpl implements {{apiName}}Context {
   {{/dependents}}
   {{#operations}}
   {{#vendorExtensions.x-is-context-operation}}
-  {{vendorExtensions.x-name-lower}}({{#hasParams}}params{{^hasRequiredParams}}?{{/hasRequiredParams}}: any, {{/hasParams}}callback?: any): Promise<{{returnType}}> {
+  {{vendorExtensions.x-name-lower}}({{#hasParams}}params{{^hasRequiredParams}}?{{/hasRequiredParams}}: {{#bodyParam}}{{dataType}}{{/bodyParam}}{{^bodyParam}}{{vendorExtensions.x-resource-name}}{{vendorExtensions.x-name}}Options{{/bodyParam}}  | ((error: Error | null, item?: {{returnType}}) => any), {{/hasParams}}callback?: (error: Error | null, item?: {{returnType}}) => any): Promise<{{returnType}}> {
   {{>operation}}
   }
 
