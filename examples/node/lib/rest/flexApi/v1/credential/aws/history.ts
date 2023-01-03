@@ -169,13 +169,28 @@ export class HistoryInstance {
   /**
    * Fetch a HistoryInstance
    *
+   * @param { function } [callback] - Callback to handle processed record
+   *
+   * @returns { Promise } Resolves to processed HistoryInstance
+   */
+  fetch(
+    callback?: (error: Error | null, item?: HistoryInstance) => any
+  ): Promise<HistoryInstance>;
+  /**
+   * Fetch a HistoryInstance
+   *
    * @param { HistoryContextFetchOptions } params - Parameter for request
    * @param { function } [callback] - Callback to handle processed record
    *
    * @returns { Promise } Resolves to processed HistoryInstance
    */
   fetch(
-    params?: HistoryContextFetchOptions,
+    params: HistoryContextFetchOptions,
+    callback?: (error: Error | null, item?: HistoryInstance) => any
+  ): Promise<HistoryInstance>;
+
+  fetch(
+    params?: any,
     callback?: (error: Error | null, item?: HistoryInstance) => any
   ): Promise<HistoryInstance> {
     return this._proxy.fetch(params, callback);

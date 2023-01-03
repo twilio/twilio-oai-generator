@@ -255,6 +255,11 @@ export class FeedbackCallSummaryInstance {
   update(
     params: FeedbackCallSummaryContextUpdateOptions,
     callback?: (error: Error | null, item?: FeedbackCallSummaryInstance) => any
+  ): Promise<FeedbackCallSummaryInstance>;
+
+  update(
+    params?: any,
+    callback?: (error: Error | null, item?: FeedbackCallSummaryInstance) => any
   ): Promise<FeedbackCallSummaryInstance> {
     return this._proxy.update(params, callback);
   }

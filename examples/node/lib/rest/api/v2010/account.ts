@@ -413,6 +413,11 @@ export class AccountInstance {
   update(
     params: AccountContextUpdateOptions,
     callback?: (error: Error | null, item?: AccountInstance) => any
+  ): Promise<AccountInstance>;
+
+  update(
+    params?: any,
+    callback?: (error: Error | null, item?: AccountInstance) => any
   ): Promise<AccountInstance> {
     return this._proxy.update(params, callback);
   }
