@@ -79,6 +79,13 @@ paths:
     description: A path for a different product which has no instance operations.
     get:
       operationId: ListUnderstandAssistants
+      parameters:
+        - in: query
+          name: PageSize
+          schema:
+            maximum: 1000
+            minimum: 1
+            type: integer
       responses:
         '200':
           content:

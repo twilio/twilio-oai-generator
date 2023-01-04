@@ -36,6 +36,10 @@ namespace Twilio.Rest.Versionless.Understand
         {
             var p = new List<KeyValuePair<string, string>>();
 
+            if (PageSize != null)
+            {
+                p.Add(new KeyValuePair<string, string>("PageSize", PageSize.ToString()));
+            }
             return p;
         }
         

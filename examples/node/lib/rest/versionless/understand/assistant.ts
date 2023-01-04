@@ -23,6 +23,7 @@ import { isValidPathParam } from "../../../base/utility";
 /**
  * Options to pass to each
  *
+ * @property { number } [pageSize]
  * @property { Function } [callback] -
  *                         Function to process each record. If this and a positional
  *                         callback are passed, this one will be used
@@ -33,6 +34,7 @@ import { isValidPathParam } from "../../../base/utility";
  *                         Default is no limit
  */
 export interface AssistantListInstanceEachOptions {
+  pageSize?: number;
   callback?: (item: AssistantInstance, done: (err?: Error) => void) => void;
   done?: Function;
   limit?: number;
@@ -41,22 +43,26 @@ export interface AssistantListInstanceEachOptions {
 /**
  * Options to pass to list
  *
+ * @property { number } [pageSize]
  * @property { number } [limit] -
  *                         Upper limit for the number of records to return.
  *                         list() guarantees never to return more than limit.
  *                         Default is no limit
  */
 export interface AssistantListInstanceOptions {
+  pageSize?: number;
   limit?: number;
 }
 
 /**
  * Options to pass to page
  *
+ * @property { number } [pageSize]
  * @property { number } [pageNumber] - Page Number, this value is simply for client state
  * @property { string } [pageToken] - PageToken provided by the API
  */
 export interface AssistantListInstancePageOptions {
+  pageSize?: number;
   pageNumber?: number;
   pageToken?: string;
 }
@@ -157,12 +163,33 @@ export function AssistantListInstance(
   instance._uri = `/Assistants`;
 
   instance.page = function page(
+    params?:
+      | AssistantListInstancePageOptions
+      | ((error: Error | null, item?: AssistantPage) => any),
     callback?: (error: Error | null, item?: AssistantPage) => any
   ): Promise<AssistantPage> {
+    if (typeof params === "function") {
+      callback = params as (error: Error | null, item?: AssistantPage) => any;
+      params = {};
+    } else {
+      params = params || {};
+    }
+
+    let data: any = {};
+
+    if (params["pageSize"] !== undefined) data["PageSize"] = params["pageSize"];
+
+    if (params.pageNumber !== undefined) data["Page"] = params.pageNumber;
+    if (params.pageToken !== undefined) data["PageToken"] = params.pageToken;
+
+    const headers: any = {};
+
     let operationVersion = version,
       operationPromise = operationVersion.page({
         uri: this._uri,
         method: "get",
+        params: data,
+        headers,
       });
 
     operationPromise = operationPromise.then(
