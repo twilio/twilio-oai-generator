@@ -2,9 +2,9 @@
   /**
    * {{vendorExtensions.x-name}} a {{instanceName}}
    *
-   * @param { function } [callback] - Callback to handle processed record
+   * @param callback - Callback to handle processed record
    *
-   * @returns { Promise } Resolves to processed {{returnType}}
+   * @returns Resolves to processed {{returnType}}
    */
   {{vendorExtensions.x-name-lower}}(callback?: (error: Error | null, item?: {{returnType}}) => any): Promise<{{returnType}}>{{#hasParams}};{{/hasParams}}
 {{/hasRequiredParams}}
@@ -13,14 +13,14 @@
    * {{vendorExtensions.x-name}} a {{instanceName}}
    *
   {{#bodyParam}}
-   * @param { {{dataType}} } params - Body for request
+   * @param params - Body for request
   {{/bodyParam}}
   {{^bodyParam}}
-   * @param { {{vendorExtensions.x-resource-name}}{{vendorExtensions.x-name}}Options } params - Parameter for request
+   * @param params - Parameter for request
   {{/bodyParam}}
-   * @param { function } [callback] - Callback to handle processed record
+   * @param callback - Callback to handle processed record
    *
-   * @returns { Promise } Resolves to processed {{instanceName}}
+   * @returns Resolves to processed {{instanceName}}
    */
   {{vendorExtensions.x-name-lower}}(params: {{#bodyParam}}{{dataType}}{{/bodyParam}}{{^bodyParam}}{{vendorExtensions.x-resource-name}}{{vendorExtensions.x-name}}Options{{/bodyParam}}, callback?: (error: Error | null, item?: {{returnType}}) => any): Promise<{{returnType}}>;
   {{vendorExtensions.x-name-lower}}(params{{^hasRequiredParams}}?{{/hasRequiredParams}}: any, callback?: any): Promise<{{returnType}}>

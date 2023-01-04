@@ -21,13 +21,10 @@ import { {{importName}} } from "./{{apiFilename}}/{{filename}}";
 {{^vendorExtensions.x-is-read-operation}}
 /**
  * Options to pass to {{vendorExtensions.x-name-lower}} a {{instanceName}}
- *
- {{#allParams}}
- * @property { {{{dataType}}} } {{^required}}[{{/required}}{{paramName}}{{^required}}]{{/required}} {{{description}}}
- {{/allParams}}
  */
 export interface {{vendorExtensions.x-resource-name}}{{vendorExtensions.x-name}}Options {
   {{#allParams}}
+  /** {{{description}}} */
   "{{paramName}}"{{^required}}?{{/required}}: {{{dataType}}};
   {{/allParams}}
 }
