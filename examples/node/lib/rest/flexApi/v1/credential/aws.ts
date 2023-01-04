@@ -23,58 +23,46 @@ import { HistoryListInstance } from "./aws/history";
 
 /**
  * Options to pass to update a AwsInstance
- *
- * @property { string } [testString]
- * @property { boolean } [testBoolean]
  */
 export interface AwsContextUpdateOptions {
+  /**  */
   testString?: string;
+  /**  */
   testBoolean?: boolean;
 }
 /**
  * Options to pass to each
- *
- * @property { number } [pageSize]
- * @property { Function } [callback] -
- *                         Function to process each record. If this and a positional
- *                         callback are passed, this one will be used
- * @property { Function } [done] - Function to be called upon completion of streaming
- * @property { number } [limit] -
- *                         Upper limit for the number of records to return.
- *                         each() guarantees never to return more than limit.
- *                         Default is no limit
  */
 export interface AwsListInstanceEachOptions {
+  /**  */
   pageSize?: number;
+  /** Function to process each record. If this and a positional callback are passed, this one will be used */
   callback?: (item: AwsInstance, done: (err?: Error) => void) => void;
+  /** Function to be called upon completion of streaming */
   done?: Function;
+  /** Upper limit for the number of records to return. each() guarantees never to return more than limit. Default is no limit */
   limit?: number;
 }
 
 /**
  * Options to pass to list
- *
- * @property { number } [pageSize]
- * @property { number } [limit] -
- *                         Upper limit for the number of records to return.
- *                         list() guarantees never to return more than limit.
- *                         Default is no limit
  */
 export interface AwsListInstanceOptions {
+  /**  */
   pageSize?: number;
+  /** Upper limit for the number of records to return. list() guarantees never to return more than limit. Default is no limit */
   limit?: number;
 }
 
 /**
  * Options to pass to page
- *
- * @property { number } [pageSize]
- * @property { number } [pageNumber] - Page Number, this value is simply for client state
- * @property { string } [pageToken] - PageToken provided by the API
  */
 export interface AwsListInstancePageOptions {
+  /**  */
   pageSize?: number;
+  /** Page Number, this value is simply for client state */
   pageNumber?: number;
+  /** PageToken provided by the API */
   pageToken?: string;
 }
 
@@ -84,9 +72,9 @@ export interface AwsContext {
   /**
    * Remove a AwsInstance
    *
-   * @param { function } [callback] - Callback to handle processed record
+   * @param callback - Callback to handle processed record
    *
-   * @returns { Promise } Resolves to processed boolean
+   * @returns Resolves to processed boolean
    */
   remove(
     callback?: (error: Error | null, item?: boolean) => any
@@ -95,9 +83,9 @@ export interface AwsContext {
   /**
    * Fetch a AwsInstance
    *
-   * @param { function } [callback] - Callback to handle processed record
+   * @param callback - Callback to handle processed record
    *
-   * @returns { Promise } Resolves to processed AwsInstance
+   * @returns Resolves to processed AwsInstance
    */
   fetch(
     callback?: (error: Error | null, item?: AwsInstance) => any
@@ -106,9 +94,9 @@ export interface AwsContext {
   /**
    * Update a AwsInstance
    *
-   * @param { function } [callback] - Callback to handle processed record
+   * @param callback - Callback to handle processed record
    *
-   * @returns { Promise } Resolves to processed AwsInstance
+   * @returns Resolves to processed AwsInstance
    */
   update(
     callback?: (error: Error | null, item?: AwsInstance) => any
@@ -116,10 +104,10 @@ export interface AwsContext {
   /**
    * Update a AwsInstance
    *
-   * @param { AwsContextUpdateOptions } params - Parameter for request
-   * @param { function } [callback] - Callback to handle processed record
+   * @param params - Parameter for request
+   * @param callback - Callback to handle processed record
    *
-   * @returns { Promise } Resolves to processed AwsInstance
+   * @returns Resolves to processed AwsInstance
    */
   update(
     params: AwsContextUpdateOptions,
@@ -282,9 +270,9 @@ export class AwsInstance {
   /**
    * Remove a AwsInstance
    *
-   * @param { function } [callback] - Callback to handle processed record
+   * @param callback - Callback to handle processed record
    *
-   * @returns { Promise } Resolves to processed boolean
+   * @returns Resolves to processed boolean
    */
   remove(
     callback?: (error: Error | null, item?: boolean) => any
@@ -295,9 +283,9 @@ export class AwsInstance {
   /**
    * Fetch a AwsInstance
    *
-   * @param { function } [callback] - Callback to handle processed record
+   * @param callback - Callback to handle processed record
    *
-   * @returns { Promise } Resolves to processed AwsInstance
+   * @returns Resolves to processed AwsInstance
    */
   fetch(
     callback?: (error: Error | null, item?: AwsInstance) => any
@@ -308,9 +296,9 @@ export class AwsInstance {
   /**
    * Update a AwsInstance
    *
-   * @param { function } [callback] - Callback to handle processed record
+   * @param callback - Callback to handle processed record
    *
-   * @returns { Promise } Resolves to processed AwsInstance
+   * @returns Resolves to processed AwsInstance
    */
   update(
     callback?: (error: Error | null, item?: AwsInstance) => any
@@ -318,10 +306,10 @@ export class AwsInstance {
   /**
    * Update a AwsInstance
    *
-   * @param { AwsContextUpdateOptions } params - Parameter for request
-   * @param { function } [callback] - Callback to handle processed record
+   * @param params - Parameter for request
+   * @param callback - Callback to handle processed record
    *
-   * @returns { Promise } Resolves to processed AwsInstance
+   * @returns Resolves to processed AwsInstance
    */
   update(
     params: AwsContextUpdateOptions,

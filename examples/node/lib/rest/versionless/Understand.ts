@@ -20,16 +20,16 @@ export default class Understand extends Version {
   /**
    * Initialize the Understand version of Versionless
    *
-   * @property { Twilio.Versionless.Understand.AssistantListInstance } assistants - assistants resource
-   *
-   * @param { Twilio.Versionless } domain - The Twilio domain
+   * @param domain - The Twilio (Twilio.Versionless) domain
    */
   constructor(domain: VersionlessBase) {
     super(domain, "understand");
   }
 
+  /** assistants - { Twilio.Versionless.Understand.AssistantListInstance } resource */
   protected _assistants?: AssistantListInstance;
 
+  /** Getter for assistants resource */
   get assistants(): AssistantListInstance {
     this._assistants = this._assistants || AssistantListInstance(this);
     return this._assistants;

@@ -20,10 +20,9 @@ import { isValidPathParam } from "../../../base/utility";
 
 /**
  * Options to pass to create a FleetInstance
- *
- * @property { string } [name]
  */
 export interface FleetListInstanceCreateOptions {
+  /**  */
   name?: string;
 }
 
@@ -31,9 +30,9 @@ export interface FleetContext {
   /**
    * Fetch a FleetInstance
    *
-   * @param { function } [callback] - Callback to handle processed record
+   * @param callback - Callback to handle processed record
    *
-   * @returns { Promise } Resolves to processed FleetInstance
+   * @returns Resolves to processed FleetInstance
    */
   fetch(
     callback?: (error: Error | null, item?: FleetInstance) => any
@@ -139,9 +138,9 @@ export class FleetInstance {
   /**
    * Fetch a FleetInstance
    *
-   * @param { function } [callback] - Callback to handle processed record
+   * @param callback - Callback to handle processed record
    *
-   * @returns { Promise } Resolves to processed FleetInstance
+   * @returns Resolves to processed FleetInstance
    */
   fetch(
     callback?: (error: Error | null, item?: FleetInstance) => any
@@ -174,9 +173,9 @@ export interface FleetListInstance {
   /**
    * Create a FleetInstance
    *
-   * @param { function } [callback] - Callback to handle processed record
+   * @param callback - Callback to handle processed record
    *
-   * @returns { Promise } Resolves to processed FleetInstance
+   * @returns Resolves to processed FleetInstance
    */
   create(
     callback?: (error: Error | null, item?: FleetInstance) => any
@@ -184,10 +183,10 @@ export interface FleetListInstance {
   /**
    * Create a FleetInstance
    *
-   * @param { FleetListInstanceCreateOptions } params - Parameter for request
-   * @param { function } [callback] - Callback to handle processed record
+   * @param params - Parameter for request
+   * @param callback - Callback to handle processed record
    *
-   * @returns { Promise } Resolves to processed FleetInstance
+   * @returns Resolves to processed FleetInstance
    */
   create(
     params: FleetListInstanceCreateOptions,
