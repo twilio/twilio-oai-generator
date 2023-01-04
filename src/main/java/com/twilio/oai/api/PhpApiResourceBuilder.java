@@ -2,6 +2,7 @@ package com.twilio.oai.api;
 
 import com.twilio.oai.DirectoryStructureService;
 import com.twilio.oai.PathUtils;
+import com.twilio.oai.StringHelper;
 import com.twilio.oai.resolver.Resolver;
 import com.twilio.oai.resource.Resource;
 import com.twilio.oai.template.IApiActionTemplate;
@@ -159,6 +160,7 @@ public class PhpApiResourceBuilder extends ApiResourceBuilder {
         for (CodegenOperation operation : apiResourceBuilder.codegenOperationList) {
             if (operation.vendorExtensions.containsKey("x-ignore")) continue;
             List<CodegenParameter> optionFileParams = new ArrayList<>();
+            List<CodegenParameter> optionalQueryParams = new ArrayList<>();
             List<CodegenParameter> optionalFormParams = new ArrayList<>();
             List<CodegenParameter> optionalHeaderParams = new ArrayList<>();
             Set<String> conditionalParamSet = extractConditionalParams(operation);
@@ -174,7 +176,7 @@ public class PhpApiResourceBuilder extends ApiResourceBuilder {
                         param.vendorExtensions.put("optionFileSeparator", ",");
                         if (!(boolean) operation.vendorExtensions.getOrDefault("x-is-read-operation", false) ||
                                 !param.baseName.equals("PageSize")) {
-                            optionFileParams.add(param);
+                            optionalQueryParams.add(param);
                         }
                     } else if (param.isFormParam) {
                         param.vendorExtensions.put("optionFileSeparator", ",");
@@ -185,6 +187,7 @@ public class PhpApiResourceBuilder extends ApiResourceBuilder {
                     }
                 }
             }
+            optionFileParams.addAll(optionalQueryParams);
             optionFileParams.addAll(optionalFormParams);
             optionFileParams.addAll(optionalHeaderParams);
             if (!optionFileParams.isEmpty())
@@ -269,7 +272,8 @@ public class PhpApiResourceBuilder extends ApiResourceBuilder {
             List<List<String>> conditionalParams = (List<List<String>>) conditional.get();
             for (List<String> paramList : conditionalParams) {
                 for (String conditionalParam : paramList) {
-                    String[] wordList = conditionalParam.toLowerCase().split("_");
+                    conditionalParam = StringHelper.toFirstLetterLower(conditionalParam);
+                    String[] wordList = conditionalParam.split("_");
                     conditionalParam = "";
                     for (String word : wordList) {
                         conditionalParam += Character.toUpperCase(word.charAt(0)) + word.substring(1);

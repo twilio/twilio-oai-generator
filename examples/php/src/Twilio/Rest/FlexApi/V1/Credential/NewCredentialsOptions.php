@@ -28,16 +28,16 @@ use Twilio\Serialize;
 
 abstract class NewCredentialsOptions {
     /**
-     * @param bool $testBoolean  
      * @param int $testInteger  
-     * @param string $testNumber  
      * @param string $testNumberFloat  
+     * @param array $testObject  
+     * @param \DateTime $testDate  
+     * @param bool $testBoolean  
+     * @param string $testNumber  
      * @param string $testNumberDouble  
      * @param string $testNumberInt32  
      * @param int $testNumberInt64  
-     * @param array $testObject  
      * @param \DateTime $testDateTime  
-     * @param \DateTime $testDate  
      * @param string $testEnum  
      * @param object[] $testObjectArray  
      * @param array $testAnyType  
@@ -46,24 +46,24 @@ abstract class NewCredentialsOptions {
      * @param string $someA2PThing  
      * @return CreateNewCredentialsOptions Options builder
      */
-    public static function create(bool $testBoolean = Values::NONE, int $testInteger = Values::NONE, string $testNumber = Values::NONE, string $testNumberFloat = Values::NONE, string $testNumberDouble = Values::NONE, string $testNumberInt32 = Values::NONE, int $testNumberInt64 = Values::NONE, array $testObject = Values::NONE, \DateTime $testDateTime = Values::NONE, \DateTime $testDate = Values::NONE, string $testEnum = Values::NONE, array $testObjectArray = Values::ARRAY_NONE, array $testAnyType = Values::ARRAY_NONE, array $testAnyArray = Values::ARRAY_NONE, array $permissions = Values::ARRAY_NONE, string $someA2PThing = Values::NONE): CreateNewCredentialsOptions {
-        return new CreateNewCredentialsOptions($testBoolean, $testInteger, $testNumber, $testNumberFloat, $testNumberDouble, $testNumberInt32, $testNumberInt64, $testObject, $testDateTime, $testDate, $testEnum, $testObjectArray, $testAnyType, $testAnyArray, $permissions, $someA2PThing);
+    public static function create(int $testInteger = Values::NONE, string $testNumberFloat = Values::NONE, array $testObject = Values::NONE, \DateTime $testDate = Values::NONE, bool $testBoolean = Values::NONE, string $testNumber = Values::NONE, string $testNumberDouble = Values::NONE, string $testNumberInt32 = Values::NONE, int $testNumberInt64 = Values::NONE, \DateTime $testDateTime = Values::NONE, string $testEnum = Values::NONE, array $testObjectArray = Values::ARRAY_NONE, array $testAnyType = Values::ARRAY_NONE, array $testAnyArray = Values::ARRAY_NONE, array $permissions = Values::ARRAY_NONE, string $someA2PThing = Values::NONE): CreateNewCredentialsOptions {
+        return new CreateNewCredentialsOptions($testInteger, $testNumberFloat, $testObject, $testDate, $testBoolean, $testNumber, $testNumberDouble, $testNumberInt32, $testNumberInt64, $testDateTime, $testEnum, $testObjectArray, $testAnyType, $testAnyArray, $permissions, $someA2PThing);
     }
 
 }
 
 class CreateNewCredentialsOptions extends Options {
     /**
-     * @param bool $testBoolean 
      * @param int $testInteger 
-     * @param string $testNumber 
      * @param string $testNumberFloat 
+     * @param array $testObject 
+     * @param \DateTime $testDate 
+     * @param bool $testBoolean 
+     * @param string $testNumber 
      * @param string $testNumberDouble 
      * @param string $testNumberInt32 
      * @param int $testNumberInt64 
-     * @param array $testObject 
      * @param \DateTime $testDateTime 
-     * @param \DateTime $testDate 
      * @param string $testEnum 
      * @param object[] $testObjectArray 
      * @param array $testAnyType 
@@ -71,32 +71,23 @@ class CreateNewCredentialsOptions extends Options {
      * @param string[] $permissions A comma-separated list of the permissions you will request from the users of this ConnectApp.  Can include: `get-all` and `post-all`.
      * @param string $someA2PThing 
      */
-    public function __construct(bool $testBoolean = Values::NONE, int $testInteger = Values::NONE, string $testNumber = Values::NONE, string $testNumberFloat = Values::NONE, string $testNumberDouble = Values::NONE, string $testNumberInt32 = Values::NONE, int $testNumberInt64 = Values::NONE, array $testObject = Values::NONE, \DateTime $testDateTime = Values::NONE, \DateTime $testDate = Values::NONE, string $testEnum = Values::NONE, array $testObjectArray = Values::ARRAY_NONE, array $testAnyType = Values::ARRAY_NONE, array $testAnyArray = Values::ARRAY_NONE, array $permissions = Values::ARRAY_NONE, string $someA2PThing = Values::NONE) {
-        $this->options['testBoolean'] = $testBoolean;
+    public function __construct(int $testInteger = Values::NONE, string $testNumberFloat = Values::NONE, array $testObject = Values::NONE, \DateTime $testDate = Values::NONE, bool $testBoolean = Values::NONE, string $testNumber = Values::NONE, string $testNumberDouble = Values::NONE, string $testNumberInt32 = Values::NONE, int $testNumberInt64 = Values::NONE, \DateTime $testDateTime = Values::NONE, string $testEnum = Values::NONE, array $testObjectArray = Values::ARRAY_NONE, array $testAnyType = Values::ARRAY_NONE, array $testAnyArray = Values::ARRAY_NONE, array $permissions = Values::ARRAY_NONE, string $someA2PThing = Values::NONE) {
         $this->options['testInteger'] = $testInteger;
-        $this->options['testNumber'] = $testNumber;
         $this->options['testNumberFloat'] = $testNumberFloat;
+        $this->options['testObject'] = $testObject;
+        $this->options['testDate'] = $testDate;
+        $this->options['testBoolean'] = $testBoolean;
+        $this->options['testNumber'] = $testNumber;
         $this->options['testNumberDouble'] = $testNumberDouble;
         $this->options['testNumberInt32'] = $testNumberInt32;
         $this->options['testNumberInt64'] = $testNumberInt64;
-        $this->options['testObject'] = $testObject;
         $this->options['testDateTime'] = $testDateTime;
-        $this->options['testDate'] = $testDate;
         $this->options['testEnum'] = $testEnum;
         $this->options['testObjectArray'] = $testObjectArray;
         $this->options['testAnyType'] = $testAnyType;
         $this->options['testAnyArray'] = $testAnyArray;
         $this->options['permissions'] = $permissions;
         $this->options['someA2PThing'] = $someA2PThing;
-    }
-
-    /**
-     * @param bool $testBoolean 
-     * @return $this Fluent Builder
-     */
-    public function setTestBoolean(bool $testBoolean): self {
-        $this->options['testBoolean'] = $testBoolean;
-        return $this;
     }
 
     /**
@@ -109,20 +100,47 @@ class CreateNewCredentialsOptions extends Options {
     }
 
     /**
-     * @param string $testNumber 
-     * @return $this Fluent Builder
-     */
-    public function setTestNumber(string $testNumber): self {
-        $this->options['testNumber'] = $testNumber;
-        return $this;
-    }
-
-    /**
      * @param string $testNumberFloat 
      * @return $this Fluent Builder
      */
     public function setTestNumberFloat(string $testNumberFloat): self {
         $this->options['testNumberFloat'] = $testNumberFloat;
+        return $this;
+    }
+
+    /**
+     * @param array $testObject 
+     * @return $this Fluent Builder
+     */
+    public function setTestObject(array $testObject): self {
+        $this->options['testObject'] = $testObject;
+        return $this;
+    }
+
+    /**
+     * @param \DateTime $testDate 
+     * @return $this Fluent Builder
+     */
+    public function setTestDate(\DateTime $testDate): self {
+        $this->options['testDate'] = $testDate;
+        return $this;
+    }
+
+    /**
+     * @param bool $testBoolean 
+     * @return $this Fluent Builder
+     */
+    public function setTestBoolean(bool $testBoolean): self {
+        $this->options['testBoolean'] = $testBoolean;
+        return $this;
+    }
+
+    /**
+     * @param string $testNumber 
+     * @return $this Fluent Builder
+     */
+    public function setTestNumber(string $testNumber): self {
+        $this->options['testNumber'] = $testNumber;
         return $this;
     }
 
@@ -154,29 +172,11 @@ class CreateNewCredentialsOptions extends Options {
     }
 
     /**
-     * @param array $testObject 
-     * @return $this Fluent Builder
-     */
-    public function setTestObject(array $testObject): self {
-        $this->options['testObject'] = $testObject;
-        return $this;
-    }
-
-    /**
      * @param \DateTime $testDateTime 
      * @return $this Fluent Builder
      */
     public function setTestDateTime(\DateTime $testDateTime): self {
         $this->options['testDateTime'] = $testDateTime;
-        return $this;
-    }
-
-    /**
-     * @param \DateTime $testDate 
-     * @return $this Fluent Builder
-     */
-    public function setTestDate(\DateTime $testDate): self {
-        $this->options['testDate'] = $testDate;
         return $this;
     }
 
