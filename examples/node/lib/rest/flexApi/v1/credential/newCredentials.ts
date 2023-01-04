@@ -28,42 +28,41 @@ type TestStatus =
 
 /**
  * Options to pass to create a NewCredentialsInstance
- *
- * @property { string } testString
- * @property { boolean } [testBoolean]
- * @property { number } [testInteger]
- * @property { number } [testNumber]
- * @property { number } [testNumberFloat]
- * @property { number } [testNumberDouble]
- * @property { number } [testNumberInt32]
- * @property { number } [testNumberInt64]
- * @property { object } [testObject]
- * @property { Date } [testDateTime]
- * @property { Date } [testDate]
- * @property { TestStatus } [testEnum]
- * @property { Array<object> } [testObjectArray]
- * @property { any } [testAnyType]
- * @property { Array<any> } [testAnyArray]
- * @property { Array<string> } [permissions] A comma-separated list of the permissions you will request from the users of this ConnectApp.  Can include: `get-all` and `post-all`.
- * @property { string } [someA2PThing]
  */
 export interface NewCredentialsListInstanceCreateOptions {
+  /**  */
   testString: string;
+  /**  */
   testBoolean?: boolean;
+  /**  */
   testInteger?: number;
+  /**  */
   testNumber?: number;
+  /**  */
   testNumberFloat?: number;
+  /**  */
   testNumberDouble?: number;
+  /**  */
   testNumberInt32?: number;
+  /**  */
   testNumberInt64?: number;
+  /**  */
   testObject?: object;
+  /**  */
   testDateTime?: Date;
+  /**  */
   testDate?: Date;
+  /**  */
   testEnum?: TestStatus;
+  /**  */
   testObjectArray?: Array<object>;
+  /**  */
   testAnyType?: any;
+  /**  */
   testAnyArray?: Array<any>;
+  /** A comma-separated list of the permissions you will request from the users of this ConnectApp.  Can include: `get-all` and `post-all`. */
   permissions?: Array<string>;
+  /**  */
   someA2PThing?: string;
 }
 
@@ -71,10 +70,10 @@ export interface NewCredentialsListInstance {
   /**
    * Create a NewCredentialsInstance
    *
-   * @param { NewCredentialsListInstanceCreateOptions } params - Parameter for request
-   * @param { function } [callback] - Callback to handle processed record
+   * @param params - Parameter for request
+   * @param callback - Callback to handle processed record
    *
-   * @returns { Promise } Resolves to processed NewCredentialsInstance
+   * @returns Resolves to processed NewCredentialsInstance
    */
   create(
     params: NewCredentialsListInstanceCreateOptions,

@@ -35,16 +35,15 @@ type TestStatus =
 
 /**
  * Options to pass to create a CallInstance
- *
- * @property { string } requiredStringProperty
- * @property { string } testMethod The HTTP method that we should use to request the `TestArrayOfUri`.
- * @property { Array<string> } [testArrayOfStrings]
- * @property { Array<string> } [testArrayOfUri]
  */
 export interface CallListInstanceCreateOptions {
+  /**  */
   requiredStringProperty: string;
+  /** The HTTP method that we should use to request the `TestArrayOfUri`. */
   testMethod: string;
+  /**  */
   testArrayOfStrings?: Array<string>;
+  /**  */
   testArrayOfUri?: Array<string>;
 }
 
@@ -52,9 +51,9 @@ export interface CallContext {
   /**
    * Remove a CallInstance
    *
-   * @param { function } [callback] - Callback to handle processed record
+   * @param callback - Callback to handle processed record
    *
-   * @returns { Promise } Resolves to processed boolean
+   * @returns Resolves to processed boolean
    */
   remove(
     callback?: (error: Error | null, item?: boolean) => any
@@ -63,9 +62,9 @@ export interface CallContext {
   /**
    * Fetch a CallInstance
    *
-   * @param { function } [callback] - Callback to handle processed record
+   * @param callback - Callback to handle processed record
    *
-   * @returns { Promise } Resolves to processed CallInstance
+   * @returns Resolves to processed CallInstance
    */
   fetch(
     callback?: (error: Error | null, item?: CallInstance) => any
@@ -247,9 +246,9 @@ export class CallInstance {
   /**
    * Remove a CallInstance
    *
-   * @param { function } [callback] - Callback to handle processed record
+   * @param callback - Callback to handle processed record
    *
-   * @returns { Promise } Resolves to processed boolean
+   * @returns Resolves to processed boolean
    */
   remove(
     callback?: (error: Error | null, item?: boolean) => any
@@ -260,9 +259,9 @@ export class CallInstance {
   /**
    * Fetch a CallInstance
    *
-   * @param { function } [callback] - Callback to handle processed record
+   * @param callback - Callback to handle processed record
    *
-   * @returns { Promise } Resolves to processed CallInstance
+   * @returns Resolves to processed CallInstance
    */
   fetch(
     callback?: (error: Error | null, item?: CallInstance) => any
@@ -310,10 +309,10 @@ export interface CallListInstance {
   /**
    * Create a CallInstance
    *
-   * @param { CallListInstanceCreateOptions } params - Parameter for request
-   * @param { function } [callback] - Callback to handle processed record
+   * @param params - Parameter for request
+   * @param callback - Callback to handle processed record
    *
-   * @returns { Promise } Resolves to processed CallInstance
+   * @returns Resolves to processed CallInstance
    */
   create(
     params: CallListInstanceCreateOptions,
