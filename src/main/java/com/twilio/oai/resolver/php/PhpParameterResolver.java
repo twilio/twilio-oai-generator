@@ -16,6 +16,7 @@ public class PhpParameterResolver extends LanguageParamResolver {
     public static final String SERIALIZE_ARRAY_MAP = "Serialize::map";
     public static final String SERIALIZE_ARRAY_JSON_OBJECT = "Serialize::jsonObject";
     public static final String ARRAY_OF_ARRAY_STRING = "array-of-array";
+    public static final String FLOAT = "float";
 
     public PhpParameterResolver(IConventionMapper mapper) {
         super(mapper);
@@ -26,9 +27,11 @@ public class PhpParameterResolver extends LanguageParamResolver {
         super.resolveProperties(codegenParameter);
         if (codegenParameter.dataType.equalsIgnoreCase(LanguageConventionResolver.MIXED)) {
             codegenParameter.dataType = ARRAY;
+            codegenParameter.isArray = true;
         }
         if (codegenParameter.dataType.equalsIgnoreCase(LanguageConventionResolver.MIXED_ARRAY)) {
             codegenParameter.dataType = ARRAY + "[]";
+            codegenParameter.isArray = true;
         }
         if (codegenParameter.dataType.equalsIgnoreCase(OBJECT) ||
             codegenParameter.dataType.equals(LanguageConventionResolver.LIST_OBJECT)) {
