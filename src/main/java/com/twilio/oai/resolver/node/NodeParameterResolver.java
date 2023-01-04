@@ -27,6 +27,12 @@ public class NodeParameterResolver extends LanguageParamResolver {
             codegenParameter.vendorExtensions.put("x-transform", transform);
         }
 
+        // Feature to allow desired methods to accept TwiMl objects
+        if (codegenParameter.paramName.equalsIgnoreCase("twiml")){
+            codegenParameter.dataType = "TwiMl | string";
+            codegenParameter.vendorExtensions.put("x-isTwiml", true);
+        }
+
         return codegenParameter;
     }
 }
