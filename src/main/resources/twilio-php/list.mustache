@@ -28,7 +28,6 @@ namespace Twilio\Rest\{{domainName}}\{{version}}{{namespaceSubPart}};
  */
     {{/-last}}
 {{/metaProperties.listImportMethods}}
-
 class {{apiName}}List extends ListResource {
     {{#metaProperties.listImportProperties}}
     protected $_{{#lambda.camelcase}}{{mountName}}{{/lambda.camelcase}} = null;
@@ -42,7 +41,7 @@ class {{apiName}}List extends ListResource {
      * @param Version $version Version that contains the resource
      {{#requiredPathParams}}
      {{#vendorExtensions.x-is-parent-param}}
-     * @param {{{dataType}}} ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}} {{description}}
+     * @param {{{dataType}}} ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}} {{{description}}}
      {{/vendorExtensions.x-is-parent-param}}
      {{/requiredPathParams}}
      */
