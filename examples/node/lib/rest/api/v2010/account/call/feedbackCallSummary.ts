@@ -34,14 +34,13 @@ type TestStatus =
 
 /**
  * Options to pass to update a FeedbackCallSummaryInstance
- *
- * @property { Date } endDate
- * @property { Date } startDate
- * @property { string } [accountSid]
  */
 export interface FeedbackCallSummaryContextUpdateOptions {
+  /**  */
   endDate: Date;
+  /**  */
   startDate: Date;
+  /**  */
   accountSid?: string;
 }
 
@@ -49,10 +48,10 @@ export interface FeedbackCallSummaryContext {
   /**
    * Update a FeedbackCallSummaryInstance
    *
-   * @param { FeedbackCallSummaryContextUpdateOptions } params - Parameter for request
-   * @param { function } [callback] - Callback to handle processed record
+   * @param params - Parameter for request
+   * @param callback - Callback to handle processed record
    *
-   * @returns { Promise } Resolves to processed FeedbackCallSummaryInstance
+   * @returns Resolves to processed FeedbackCallSummaryInstance
    */
   update(
     params: FeedbackCallSummaryContextUpdateOptions,
@@ -244,10 +243,10 @@ export class FeedbackCallSummaryInstance {
   /**
    * Update a FeedbackCallSummaryInstance
    *
-   * @param { FeedbackCallSummaryContextUpdateOptions } params - Parameter for request
-   * @param { function } [callback] - Callback to handle processed record
+   * @param params - Parameter for request
+   * @param callback - Callback to handle processed record
    *
-   * @returns { Promise } Resolves to processed FeedbackCallSummaryInstance
+   * @returns Resolves to processed FeedbackCallSummaryInstance
    */
   update(
     params: FeedbackCallSummaryContextUpdateOptions,

@@ -22,9 +22,9 @@ export interface CallContext {
   /**
    * Update a CallInstance
    *
-   * @param { function } [callback] - Callback to handle processed record
+   * @param callback - Callback to handle processed record
    *
-   * @returns { Promise } Resolves to processed CallInstance
+   * @returns Resolves to processed CallInstance
    */
   update(
     callback?: (error: Error | null, item?: CallInstance) => any
@@ -118,9 +118,9 @@ export class CallInstance {
   /**
    * Update a CallInstance
    *
-   * @param { function } [callback] - Callback to handle processed record
+   * @param callback - Callback to handle processed record
    *
-   * @returns { Promise } Resolves to processed CallInstance
+   * @returns Resolves to processed CallInstance
    */
   update(
     callback?: (error: Error | null, item?: CallInstance) => any

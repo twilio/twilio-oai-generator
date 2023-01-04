@@ -20,10 +20,9 @@ import { isValidPathParam } from "../../../../../base/utility";
 
 /**
  * Options to pass to fetch a HistoryInstance
- *
- * @property { object } [addOnsData]
  */
 export interface HistoryContextFetchOptions {
+  /**  */
   addOnsData?: object;
 }
 
@@ -31,9 +30,9 @@ export interface HistoryContext {
   /**
    * Fetch a HistoryInstance
    *
-   * @param { function } [callback] - Callback to handle processed record
+   * @param callback - Callback to handle processed record
    *
-   * @returns { Promise } Resolves to processed HistoryInstance
+   * @returns Resolves to processed HistoryInstance
    */
   fetch(
     callback?: (error: Error | null, item?: HistoryInstance) => any
@@ -41,10 +40,10 @@ export interface HistoryContext {
   /**
    * Fetch a HistoryInstance
    *
-   * @param { HistoryContextFetchOptions } params - Parameter for request
-   * @param { function } [callback] - Callback to handle processed record
+   * @param params - Parameter for request
+   * @param callback - Callback to handle processed record
    *
-   * @returns { Promise } Resolves to processed HistoryInstance
+   * @returns Resolves to processed HistoryInstance
    */
   fetch(
     params: HistoryContextFetchOptions,
@@ -166,9 +165,9 @@ export class HistoryInstance {
   /**
    * Fetch a HistoryInstance
    *
-   * @param { function } [callback] - Callback to handle processed record
+   * @param callback - Callback to handle processed record
    *
-   * @returns { Promise } Resolves to processed HistoryInstance
+   * @returns Resolves to processed HistoryInstance
    */
   fetch(
     callback?: (error: Error | null, item?: HistoryInstance) => any
@@ -176,10 +175,10 @@ export class HistoryInstance {
   /**
    * Fetch a HistoryInstance
    *
-   * @param { HistoryContextFetchOptions } params - Parameter for request
-   * @param { function } [callback] - Callback to handle processed record
+   * @param params - Parameter for request
+   * @param callback - Callback to handle processed record
    *
-   * @returns { Promise } Resolves to processed HistoryInstance
+   * @returns Resolves to processed HistoryInstance
    */
   fetch(
     params: HistoryContextFetchOptions,
