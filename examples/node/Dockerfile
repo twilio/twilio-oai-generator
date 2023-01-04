@@ -3,7 +3,7 @@ FROM node:lts
 WORKDIR /app
 RUN git clone https://github.com/twilio/twilio-node.git
 WORKDIR /app/twilio-node/
-RUN git fetch && git checkout instance-refactor && git pull # to be reverted before merging
+RUN git fetch && git checkout 4.0.0-rc && git pull
 
 RUN rm -rf lib/rest/ spec/
 
