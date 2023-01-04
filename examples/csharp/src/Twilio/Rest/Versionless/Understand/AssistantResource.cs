@@ -73,7 +73,7 @@ namespace Twilio.Rest.Versionless.Understand
         }
         #endif
         /// <summary> read </summary>
-        /// <param name="pageSize">  </param>
+        /// <param name="pageSize"> How many resources to return in each list page. The default is 50, and the maximum is 1000. </param>
         /// <param name="client"> Client to make requests to Twilio </param>
         /// <param name="limit"> Record limit </param>
         /// <returns> A single instance of Assistant </returns>
@@ -88,7 +88,7 @@ namespace Twilio.Rest.Versionless.Understand
 
         #if !NET35
         /// <summary> read </summary>
-        /// <param name="pageSize">  </param>
+        /// <param name="pageSize"> How many resources to return in each list page. The default is 50, and the maximum is 1000. </param>
         /// <param name="client"> Client to make requests to Twilio </param>
         /// <param name="limit"> Record limit </param>
         /// <returns> Task that resolves to A single instance of Assistant </returns>
