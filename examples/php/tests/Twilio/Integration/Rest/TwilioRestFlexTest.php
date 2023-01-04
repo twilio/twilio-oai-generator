@@ -22,19 +22,31 @@ class TwilioFlexRestTest extends HolodeckTestCase
             }'
         ));
 
-        $actual = $this->twilio->flexApi->v1->credentials->aws("AC222222222222222222222222222222")->history()->
-        fetch(["addOnsData" => [
+        $historyContext = $this->twilio->flexApi->v1->credentials->aws("AC222222222222222222222222222222")->history();
+        $this->assertEquals("[Twilio.FlexApi.V1.HistoryContext sid=AC222222222222222222222222222222]", $historyContext->__toString());
+        $actual = $historyContext->fetch(["addOnsData" => [
             "status" => "successful",
             "message" => "hi"
         ]]);
 
         $this->assertNotNull($actual);
 
+        $this->assertEquals("[Twilio.FlexApi.V1.HistoryInstance sid=AC222222222222222222222222222222]", $actual->__toString());
         $this->assertRequest(new Request(
             'get',
             'https://flex-api.twilio.com/v1/Credentials/AWS/AC222222222222222222222222222222/History',
             ['AddOns.status' => 'successful', 'AddOns.message' => 'hi']
         ));
+
+        $this->holodeck->mock(new Response(200,
+            '{
+                "account_sid": "AC222222222222222222222222222222",
+                "sid": "ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                "test_string": "Test String"
+            }'
+        ));
+        $instanceResponse = $actual->fetch();
+        $this->assertNotNull($instanceResponse);
     }
 
     public function testShouldMakeDeleteCallToAWS(): void
@@ -44,7 +56,9 @@ class TwilioFlexRestTest extends HolodeckTestCase
             ''
         ));
 
-        $actual = $this->twilio->flexApi->v1->credentials->aws("123")->delete();
+        $awsContext = $this->twilio->flexApi->v1->credentials->aws("123");
+        $this->assertEquals("[Twilio.FlexApi.V1.AwsContext sid=123]", $awsContext->__toString());
+        $actual = $awsContext->delete();
 
         $this->assertNotNull($actual);
         $this->assertTrue($actual);
@@ -64,9 +78,12 @@ class TwilioFlexRestTest extends HolodeckTestCase
             '
         ));
 
-        $actual = $this->twilio->flexApi->v1->credentials->newCredentials->create("test String");
+        $newCredentialsList = $this->twilio->flexApi->v1->credentials->newCredentials;
+        $this->assertEquals("[Twilio.FlexApi.V1.NewCredentialsList]", $newCredentialsList->__toString());
+        $actual = $newCredentialsList->create("test String");
 
         $this->assertNotNull($actual);
+        $this->assertEquals("[Twilio.FlexApi.V1.NewCredentialsInstance]", $actual->__toString());
         $this->assertRequest(new Request('post',
             'https://flex-api.twilio.com/v1/Credentials/AWS',
             [],
@@ -96,7 +113,10 @@ class TwilioFlexRestTest extends HolodeckTestCase
             }
             '
         ));
-        $actual = $this->twilio->flexApi->v1->credentials->aws->read();
+        $awsList = $this->twilio->flexApi->v1->credentials->aws;
+        $this->assertEquals("[Twilio.FlexApi.V1.AwsList]", $awsList->__toString());
+
+        $actual = $awsList->read();
         $this->assertNotNull($actual);
         $this->assertEquals("Ahoy", $actual[0]->testString);
     }
@@ -109,9 +129,12 @@ class TwilioFlexRestTest extends HolodeckTestCase
                 "test_string": "Test String"
             }'));
 
-        $response = $this->twilio->flexApi->v1->credentials->aws("ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")->fetch();
+        $awsContext = $this->twilio->flexApi->v1->credentials->aws("ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+        $this->assertEquals("[Twilio.FlexApi.V1.AwsContext sid=ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa]", $awsContext->__toString());
+        $response = $awsContext->fetch();
 
         $this->assertNotNull($response);
+        $this->assertEquals("[Twilio.FlexApi.V1.AwsInstance sid=ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa]", $response->__toString());
         $this->assertRequest(new Request(
             'get',
             'https://flex-api.twilio.com/v1/Credentials/AWS/ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
@@ -121,6 +144,15 @@ class TwilioFlexRestTest extends HolodeckTestCase
         $this->assertEquals("AC222222222222222222222222222222", $response->accountSid);
         $this->assertEquals("ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", $response->sid);
         $this->assertEquals("Test String", $response->testString);
+
+        $this->holodeck->mock(new Response(200, '{
+                "account_sid": "AC222222222222222222222222222222",
+                "sid": "ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                "test_string": "Test String"
+            }'));
+        $instanceResponse = $response->fetch();
+        $this->assertNotNull($instanceResponse);
+        $this->assertEquals("Test String", $instanceResponse->testString);
     }
 
     public function testForValidAwsCredentialUpdate(): void
@@ -147,6 +179,15 @@ class TwilioFlexRestTest extends HolodeckTestCase
         $this->assertEquals($response->accountSid, "AC222222222222222222222222222222");
         $this->assertEquals($response->sid, "ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
         $this->assertEquals($response->testString, "Test String");
+
+        $this->holodeck->mock(new Response(200, '{
+                "account_sid": "AC222222222222222222222222222222",
+                "sid": "ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                "test_string": "Test String"
+            }'));
+        $instanceResponse = $response->update();
+        $this->assertNotNull($instanceResponse);
+        $this->assertEquals($instanceResponse->accountSid, "AC222222222222222222222222222222");
     }
 
     public function testLimitsInReadGivesCorrectNumberOfResponse(): void
@@ -263,4 +304,29 @@ class TwilioFlexRestTest extends HolodeckTestCase
         $this->assertEquals("Second Response", $actual[1]->testString);
         $this->assertEquals("Third Response", $actual[2]->testString);
     }
+
+    public function testShouldMakeUpdateCallToCredentialCall(): void
+    {
+        $this->holodeck->mock(new Response(204,'{
+                "account_sid": "AC222222222222222222222222222222",
+                "sid": "ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                "test_string": "Test String"
+            }'));
+
+        $callContext = $this->twilio->flexApi->v1->calls("ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+        $this->assertEquals("[Twilio.FlexApi.V1.CallContext sid=ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa]", $callContext->__toString());
+
+        $response = $callContext->update();
+        $this->assertNotNull($response);
+        $this->assertEquals("[Twilio.FlexApi.V1.CallInstance sid=ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa]", $response->__toString());
+
+        $this->holodeck->mock(new Response(204,'{
+                "account_sid": "AC222222222222222222222222222222",
+                "sid": "ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                "test_string": "Test String"
+            }'));
+        $instanceResponse = $response->update();
+        $this->assertNotNull($instanceResponse);
+    }
+
 }
