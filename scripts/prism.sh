@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-LANGUAGES=${LANGUAGES:-go java node csharp php}
+LANGUAGES=${LANGUAGES:-go java node csharp php ruby}
 
 for language in ${LANGUAGES}; do
   testing_services+=("${language}-test")
