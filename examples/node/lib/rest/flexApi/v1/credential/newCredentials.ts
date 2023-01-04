@@ -195,10 +195,10 @@ export function NewCredentialsListInstance(
 interface NewCredentialsPayload extends NewCredentialsResource {}
 
 interface NewCredentialsResource {
-  account_sid?: string | null;
-  sid?: string | null;
-  test_string?: string | null;
-  test_integer?: number | null;
+  account_sid: string;
+  sid: string;
+  test_string: string;
+  test_integer: number;
 }
 
 export class NewCredentialsInstance {
@@ -209,10 +209,10 @@ export class NewCredentialsInstance {
     this.testInteger = deserialize.integer(payload.test_integer);
   }
 
-  accountSid?: string | null;
-  sid?: string | null;
-  testString?: string | null;
-  testInteger?: number | null;
+  accountSid: string;
+  sid: string;
+  testString: string;
+  testInteger: number;
 
   /**
    * Provide a user-friendly representation

@@ -262,8 +262,8 @@ interface AssistantPayload extends TwilioResponsePayload {
 }
 
 interface AssistantResource {
-  sid?: string | null;
-  friendly_name?: string | null;
+  sid: string;
+  friendly_name: string;
 }
 
 export class AssistantInstance {
@@ -275,11 +275,11 @@ export class AssistantInstance {
   /**
    * A string that uniquely identifies this Fleet.
    */
-  sid?: string | null;
+  sid: string;
   /**
    * A human readable description for this Fleet.
    */
-  friendlyName?: string | null;
+  friendlyName: string;
 
   /**
    * Provide a user-friendly representation

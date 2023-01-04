@@ -91,7 +91,7 @@ export class CallContextImpl implements CallContext {
 interface CallPayload extends CallResource {}
 
 interface CallResource {
-  sid?: number | null;
+  sid: number;
 }
 
 export class CallInstance {
@@ -107,7 +107,7 @@ export class CallInstance {
   /**
    * Non-string path parameter in the response.
    */
-  sid?: number | null;
+  sid: number;
 
   private get _proxy(): CallContext {
     this._context =

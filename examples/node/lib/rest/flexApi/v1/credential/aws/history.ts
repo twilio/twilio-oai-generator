@@ -132,10 +132,10 @@ export class HistoryContextImpl implements HistoryContext {
 interface HistoryPayload extends HistoryResource {}
 
 interface HistoryResource {
-  account_sid?: string | null;
-  sid?: string | null;
-  test_string?: string | null;
-  test_integer?: number | null;
+  account_sid: string;
+  sid: string;
+  test_string: string;
+  test_integer: number;
 }
 
 export class HistoryInstance {
@@ -151,10 +151,10 @@ export class HistoryInstance {
     this._solution = { sid };
   }
 
-  accountSid?: string | null;
-  sid?: string | null;
-  testString?: string | null;
-  testInteger?: number | null;
+  accountSid: string;
+  sid: string;
+  testString: string;
+  testInteger: number;
 
   private get _proxy(): HistoryContext {
     this._context =
@@ -209,7 +209,7 @@ export class HistoryInstance {
 }
 
 export interface HistorySolution {
-  sid?: string;
+  sid: string;
 }
 
 export interface HistoryListInstance {

@@ -252,10 +252,10 @@ interface AwsPayload extends TwilioResponsePayload {
 }
 
 interface AwsResource {
-  account_sid?: string | null;
-  sid?: string | null;
-  test_string?: string | null;
-  test_integer?: number | null;
+  account_sid: string;
+  sid: string;
+  test_string: string;
+  test_integer: number;
 }
 
 export class AwsInstance {
@@ -271,10 +271,10 @@ export class AwsInstance {
     this._solution = { sid: sid || this.sid };
   }
 
-  accountSid?: string | null;
-  sid?: string | null;
-  testString?: string | null;
-  testInteger?: number | null;
+  accountSid: string;
+  sid: string;
+  testString: string;
+  testInteger: number;
 
   private get _proxy(): AwsContext {
     this._context =

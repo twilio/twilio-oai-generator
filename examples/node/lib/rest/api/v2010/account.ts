@@ -294,22 +294,22 @@ interface AccountPayload extends TwilioResponsePayload {
 }
 
 interface AccountResource {
-  account_sid?: string | null;
-  sid?: string | null;
-  test_string?: string | null;
-  test_integer?: number | null;
-  test_object?: PhoneNumberCapabilities | null;
-  test_date_time?: Date | null;
-  test_number?: number | null;
-  price_unit?: string | null;
-  test_number_float?: number | null;
-  test_number_decimal?: number | null;
-  test_enum?: TestStatus;
-  a2p_profile_bundle_sid?: string | null;
-  test_array_of_integers?: Array<number>;
-  test_array_of_array_of_integers?: Array<Array<number>>;
-  test_array_of_objects?: Array<TestResponseObjectTestArrayOfObjects> | null;
-  test_array_of_enum?: Array<TestStatus> | null;
+  account_sid: string;
+  sid: string;
+  test_string: string;
+  test_integer: number;
+  test_object: PhoneNumberCapabilities;
+  test_date_time: Date;
+  test_number: number;
+  price_unit: string;
+  test_number_float: number;
+  test_number_decimal: number;
+  test_enum: TestStatus;
+  a2p_profile_bundle_sid: string;
+  test_array_of_integers: Array<number>;
+  test_array_of_array_of_integers: Array<Array<number>>;
+  test_array_of_objects: Array<TestResponseObjectTestArrayOfObjects>;
+  test_array_of_enum: Array<TestStatus>;
 }
 
 export class AccountInstance {
@@ -341,28 +341,28 @@ export class AccountInstance {
     this._solution = { sid: sid || this.sid };
   }
 
-  accountSid?: string | null;
-  sid?: string | null;
-  testString?: string | null;
-  testInteger?: number | null;
-  testObject?: PhoneNumberCapabilities | null;
-  testDateTime?: Date | null;
-  testNumber?: number | null;
-  priceUnit?: string | null;
-  testNumberFloat?: number | null;
-  testNumberDecimal?: number | null;
-  testEnum?: TestStatus;
+  accountSid: string;
+  sid: string;
+  testString: string;
+  testInteger: number;
+  testObject: PhoneNumberCapabilities;
+  testDateTime: Date;
+  testNumber: number;
+  priceUnit: string;
+  testNumberFloat: number;
+  testNumberDecimal: number;
+  testEnum: TestStatus;
   /**
    * A2P Messaging Profile Bundle BundleSid
    */
-  a2pProfileBundleSid?: string | null;
-  testArrayOfIntegers?: Array<number>;
-  testArrayOfArrayOfIntegers?: Array<Array<number>>;
-  testArrayOfObjects?: Array<TestResponseObjectTestArrayOfObjects> | null;
+  a2pProfileBundleSid: string;
+  testArrayOfIntegers: Array<number>;
+  testArrayOfArrayOfIntegers: Array<Array<number>>;
+  testArrayOfObjects: Array<TestResponseObjectTestArrayOfObjects>;
   /**
    * Permissions authorized to the app
    */
-  testArrayOfEnum?: Array<TestStatus> | null;
+  testArrayOfEnum: Array<TestStatus>;
 
   private get _proxy(): AccountContext {
     this._context =
