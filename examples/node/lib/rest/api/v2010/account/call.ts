@@ -396,12 +396,12 @@ export function CallListInstance(
     if (params["testArrayOfStrings"] !== undefined)
       data["TestArrayOfStrings"] = serialize.map(
         params["testArrayOfStrings"],
-        (e) => e
+        (e: string) => e
       );
     if (params["testArrayOfUri"] !== undefined)
       data["TestArrayOfUri"] = serialize.map(
         params["testArrayOfUri"],
-        (e) => e
+        (e: string) => e
       );
 
     data["TestMethod"] = params["testMethod"];
