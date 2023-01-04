@@ -50,7 +50,13 @@ export interface AssistantListInstancePageOptions {
   pageToken?: string;
 }
 
+export interface AssistantSolution {}
+
 export interface AssistantListInstance {
+  _version: Understand;
+  _solution: AssistantSolution;
+  _uri: string;
+
   /**
    * Streams AssistantInstance records from the API.
    *
@@ -179,19 +185,10 @@ export interface AssistantListInstance {
   [inspect.custom](_depth: any, options: InspectOptions): any;
 }
 
-export interface AssistantSolution {}
-
-interface AssistantListInstanceImpl extends AssistantListInstance {}
-class AssistantListInstanceImpl implements AssistantListInstance {
-  _version?: Understand;
-  _solution?: AssistantSolution;
-  _uri?: string;
-}
-
 export function AssistantListInstance(
   version: Understand
 ): AssistantListInstance {
-  const instance = {} as AssistantListInstanceImpl;
+  const instance = {} as AssistantListInstance;
 
   instance._version = version;
   instance._solution = {};
@@ -200,15 +197,16 @@ export function AssistantListInstance(
   instance.page = function page(callback?: any): Promise<AssistantPage> {
     let operationVersion = version,
       operationPromise = operationVersion.page({
-        uri: this._uri,
+        uri: instance._uri,
         method: "get",
       });
 
     operationPromise = operationPromise.then(
-      (payload) => new AssistantPage(operationVersion, payload, this._solution)
+      (payload) =>
+        new AssistantPage(operationVersion, payload, instance._solution)
     );
 
-    operationPromise = this._version.setPromiseCallback(
+    operationPromise = instance._version.setPromiseCallback(
       operationPromise,
       callback
     );
@@ -221,30 +219,28 @@ export function AssistantListInstance(
     targetUrl?: any,
     callback?: any
   ): Promise<AssistantPage> {
-    let operationPromise = this._version._domain.twilio.request({
+    const operationPromise = instance._version._domain.twilio.request({
       method: "get",
       uri: targetUrl,
     });
 
-    operationPromise = operationPromise.then(
-      (payload) => new AssistantPage(this._version, payload, this._solution)
+    let pagePromise = operationPromise.then(
+      (payload) =>
+        new AssistantPage(instance._version, payload, instance._solution)
     );
-    operationPromise = this._version.setPromiseCallback(
-      operationPromise,
-      callback
-    );
-    return operationPromise;
+    pagePromise = instance._version.setPromiseCallback(pagePromise, callback);
+    return pagePromise;
   };
 
   instance.toJSON = function toJSON() {
-    return this._solution;
+    return instance._solution;
   };
 
   instance[inspect.custom] = function inspectImpl(
     _depth: any,
     options: InspectOptions
   ) {
-    return inspect(this.toJSON(), options);
+    return inspect(instance.toJSON(), options);
   };
 
   return instance;
@@ -255,8 +251,8 @@ interface AssistantPayload extends TwilioResponsePayload {
 }
 
 interface AssistantResource {
-  sid?: string | null;
-  friendly_name?: string | null;
+  sid: string;
+  friendly_name: string;
 }
 
 export class AssistantInstance {
@@ -268,11 +264,11 @@ export class AssistantInstance {
   /**
    * A string that uniquely identifies this Fleet.
    */
-  sid?: string | null;
+  sid: string;
   /**
    * A human readable description for this Fleet.
    */
-  friendlyName?: string | null;
+  friendlyName: string;
 
   /**
    * Provide a user-friendly representation

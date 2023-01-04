@@ -66,7 +66,13 @@ export interface NewCredentialsListInstanceCreateOptions {
   someA2PThing?: string;
 }
 
+export interface NewCredentialsSolution {}
+
 export interface NewCredentialsListInstance {
+  _version: V1;
+  _solution: NewCredentialsSolution;
+  _uri: string;
+
   /**
    * Create a NewCredentialsInstance
    *
@@ -88,19 +94,10 @@ export interface NewCredentialsListInstance {
   [inspect.custom](_depth: any, options: InspectOptions): any;
 }
 
-export interface NewCredentialsSolution {}
-
-interface NewCredentialsListInstanceImpl extends NewCredentialsListInstance {}
-class NewCredentialsListInstanceImpl implements NewCredentialsListInstance {
-  _version?: V1;
-  _solution?: NewCredentialsSolution;
-  _uri?: string;
-}
-
 export function NewCredentialsListInstance(
   version: V1
 ): NewCredentialsListInstance {
-  const instance = {} as NewCredentialsListInstanceImpl;
+  const instance = {} as NewCredentialsListInstance;
 
   instance._version = version;
   instance._solution = {};
@@ -163,7 +160,7 @@ export function NewCredentialsListInstance(
 
     let operationVersion = version,
       operationPromise = operationVersion.create({
-        uri: this._uri,
+        uri: instance._uri,
         method: "post",
         data,
         headers,
@@ -173,7 +170,7 @@ export function NewCredentialsListInstance(
       (payload) => new NewCredentialsInstance(operationVersion, payload)
     );
 
-    operationPromise = this._version.setPromiseCallback(
+    operationPromise = instance._version.setPromiseCallback(
       operationPromise,
       callback
     );
@@ -181,14 +178,14 @@ export function NewCredentialsListInstance(
   };
 
   instance.toJSON = function toJSON() {
-    return this._solution;
+    return instance._solution;
   };
 
   instance[inspect.custom] = function inspectImpl(
     _depth: any,
     options: InspectOptions
   ) {
-    return inspect(this.toJSON(), options);
+    return inspect(instance.toJSON(), options);
   };
 
   return instance;
@@ -197,10 +194,10 @@ export function NewCredentialsListInstance(
 interface NewCredentialsPayload extends NewCredentialsResource {}
 
 interface NewCredentialsResource {
-  account_sid?: string | null;
-  sid?: string | null;
-  test_string?: string | null;
-  test_integer?: number | null;
+  account_sid: string;
+  sid: string;
+  test_string: string;
+  test_integer: number;
 }
 
 export class NewCredentialsInstance {
@@ -211,10 +208,10 @@ export class NewCredentialsInstance {
     this.testInteger = deserialize.integer(payload.test_integer);
   }
 
-  accountSid?: string | null;
-  sid?: string | null;
-  testString?: string | null;
-  testInteger?: number | null;
+  accountSid: string;
+  sid: string;
+  testString: string;
+  testInteger: number;
 
   /**
    * Provide a user-friendly representation

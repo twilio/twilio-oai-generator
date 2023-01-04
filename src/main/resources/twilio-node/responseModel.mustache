@@ -11,7 +11,7 @@ interface {{apiName}}Payload extends {{^hasPaginationOperation}}{{apiName}}Resou
 
 interface {{apiName}}Resource {
   {{#vars}}
-  {{baseName}}{{^required}}?{{/required}}: {{#isEnum}}{{{vendorExtensions.x-name}}}{{/isEnum}}{{^isEnum}}{{{dataType}}}{{#isNullable}} | null{{/isNullable}}{{/isEnum}};
+  {{baseName}}: {{#isEnum}}{{{vendorExtensions.x-name}}}{{/isEnum}}{{^isEnum}}{{{dataType}}}{{/isEnum}};
   {{/vars}}
 }
 
@@ -42,7 +42,7 @@ export class {{instanceName}} {
    * {{{description}}}
    */
   {{/description}}
-  {{name}}{{^required}}?{{/required}}: {{#isEnum}}{{{vendorExtensions.x-name}}}{{/isEnum}}{{^isEnum}}{{{dataType}}}{{#isNullable}} | null{{/isNullable}}{{/isEnum}};
+  {{name}}: {{#isEnum}}{{{vendorExtensions.x-name}}}{{/isEnum}}{{^isEnum}}{{{dataType}}}{{/isEnum}};
   {{/vars}}
   {{#instancePath}}
 
