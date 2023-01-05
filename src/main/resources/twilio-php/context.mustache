@@ -29,7 +29,6 @@ namespace Twilio\Rest\{{domainName}}\{{apiVersionClass}}{{namespaceSubPart}};
  */
     {{/-last}}
 {{/metaProperties.contextImportMethods}}
-
 class {{apiName}}Context extends InstanceContext {
     {{#metaProperties.contextImportProperties}}
     protected $_{{#lambda.camelcase}}{{mountName}}{{/lambda.camelcase}};
@@ -42,7 +41,7 @@ class {{apiName}}Context extends InstanceContext {
      *
      * @param Version $version Version that contains the resource
      {{#requiredPathParams}}
-     * @param {{{dataType}}} ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}} {{description}}
+     * @param {{{dataType}}} ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}} {{{description}}}
      {{/requiredPathParams}}
      */
     public function __construct(Version $version{{#requiredPathParams}}, ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}} {{/requiredPathParams}}) {
