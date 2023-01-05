@@ -46,10 +46,15 @@ import java.util.Objects;
 import lombok.ToString;
 
 public class AssistantReader extends Reader<Assistant> {
+    private Integer pageSize;
 
     public AssistantReader(){
     }
 
+    public AssistantReader setPageSize(final Integer pageSize){
+        this.pageSize = pageSize;
+        return this;
+    }
 
     @Override
     public ResourceSet<Assistant> read(final TwilioRestClient client) {
@@ -65,6 +70,7 @@ public class AssistantReader extends Reader<Assistant> {
             path
         );
 
+        addQueryParams(request);
         return pageForRequest(client, request);
     }
 
@@ -116,5 +122,15 @@ public class AssistantReader extends Reader<Assistant> {
         );
 
         return pageForRequest(client, request);
+    }
+    private void addQueryParams(final Request request) {
+        if (pageSize != null) {
+    
+            request.addQueryParam("PageSize", pageSize.toString());
+        }
+
+        if(getPageSize() != null) {
+            request.addQueryParam("PageSize", Integer.toString(getPageSize()));
+        }
     }
 }

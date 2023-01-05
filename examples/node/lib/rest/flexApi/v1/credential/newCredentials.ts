@@ -85,7 +85,6 @@ export interface NewCredentialsListInstance {
     params: NewCredentialsListInstanceCreateOptions,
     callback?: (error: Error | null, item?: NewCredentialsInstance) => any
   ): Promise<NewCredentialsInstance>;
-  create(params: any, callback?: any): Promise<NewCredentialsInstance>;
 
   /**
    * Provide a user-friendly representation
@@ -104,8 +103,8 @@ export function NewCredentialsListInstance(
   instance._uri = `/Credentials/AWS`;
 
   instance.create = function create(
-    params: any,
-    callback?: any
+    params: NewCredentialsListInstanceCreateOptions,
+    callback?: (error: Error | null, items: NewCredentialsInstance) => any
   ): Promise<NewCredentialsInstance> {
     if (params === null || params === undefined) {
       throw new Error('Required parameter "params" missing.');
