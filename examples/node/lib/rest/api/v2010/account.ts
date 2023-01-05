@@ -590,7 +590,7 @@ export function AccountListInstance(version: V2010): AccountListInstance {
     if (params["recordingStatusCallbackEvent"] !== undefined)
       data["RecordingStatusCallbackEvent"] = serialize.map(
         params["recordingStatusCallbackEvent"],
-        (e) => e
+        (e: string) => e
       );
 
     const headers: any = {};

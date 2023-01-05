@@ -9,6 +9,7 @@ import org.openapitools.codegen.CodegenProperty;
 
 import static com.twilio.oai.common.ApplicationConstants.ARRAY;
 import static com.twilio.oai.common.ApplicationConstants.STRING;
+import static com.twilio.oai.resolver.php.PhpParameterResolver.FLOAT;
 
 public class PhpPropertyResolver extends LanguagePropertyResolver {
     public static final String MAP_STRING = "map";
@@ -31,9 +32,11 @@ public class PhpPropertyResolver extends LanguagePropertyResolver {
         super.resolveProperties(codegenProperty);
         if (codegenProperty.dataType.equals(LanguageConventionResolver.MIXED)) {
             codegenProperty.dataType = ARRAY;
+            codegenProperty.isArray = true;
         }
         if (codegenProperty.dataType.equalsIgnoreCase(LanguageConventionResolver.MIXED_ARRAY)) {
             codegenProperty.dataType = ARRAY + "[]";
+            codegenProperty.isArray = true;
         }
         if (codegenProperty.dataType.equals("float")) {
             codegenProperty.dataType = STRING;
@@ -41,7 +44,7 @@ public class PhpPropertyResolver extends LanguagePropertyResolver {
         if (codegenProperty.dataType.equals(LanguageConventionResolver.LIST_OBJECT)) {
             codegenProperty.dataType = ARRAY;
         }
-        if (codegenProperty.dataType.contains("Enum") || codegenProperty.complexType != null) {
+        if (codegenProperty.dataType.contains("Enum") || codegenProperty.complexType != null || codegenProperty.dataType == FLOAT) {
             if (codegenProperty.openApiType.equals(ARRAY)) {
                 codegenProperty.dataType = STRING + "[]";
             } else {
