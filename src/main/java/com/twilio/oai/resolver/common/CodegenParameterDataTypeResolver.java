@@ -14,7 +14,7 @@ public class CodegenParameterDataTypeResolver extends Resolver<CodegenParameter>
         return parameter;
     }
 
-    private void assignDataType(CodegenParameter parameter) {
+    protected void assignDataType(CodegenParameter parameter) {
         mapper
             .properties()
             .getString(parameter.dataFormat)

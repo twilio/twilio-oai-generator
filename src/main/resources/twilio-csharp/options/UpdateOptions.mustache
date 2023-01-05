@@ -1,10 +1,10 @@
     {{>Summary}}
-    public class Update{{resourceName}}Options : IOptions<{{resourceName}}{{resourceConstant}}>
+    public class Update{{apiName}}Options : IOptions<{{apiName}}{{resourceConstant}}>
     {
     {{>options/Params}}
 
     {{#vendorExtensions.x-required-param-exist}}
-        {{>options/MethodsComments}}        public Update{{resourceName}}Options({{#requiredParams}}{{{dataType}}} {{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^-last}}, {{/-last}}{{/requiredParams}})
+        {{>options/MethodsComments}}        public Update{{apiName}}Options({{#requiredParams}}{{{dataType}}} {{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^-last}}, {{/-last}}{{/requiredParams}})
         {
         {{#requiredParams}}
             {{paramName}} = {{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}};

@@ -1,12 +1,24 @@
 package com.twilio.oai;
 
+import com.twilio.oai.api.CsharpApiResourceBuilder;
+import com.twilio.oai.api.CsharpApiResources;
+import com.twilio.oai.api.JavaApiResourceBuilder;
+import com.twilio.oai.api.JavaApiResources;
 import com.twilio.oai.common.ApplicationConstants;
 import com.twilio.oai.common.EnumConstants;
 import com.twilio.oai.common.Serializer;
 import com.twilio.oai.common.Utility;
 import com.twilio.oai.mlambdas.TitleCaseLambda;
+import com.twilio.oai.resolver.IConventionMapper;
+import com.twilio.oai.resolver.LanguageConventionResolver;
+import com.twilio.oai.resolver.common.CodegenModelResolver;
 import com.twilio.oai.resolver.csharp.CSharpCaseResolver;
 import com.twilio.oai.resolver.csharp.CSharpResolver;
+import com.twilio.oai.resolver.csharp_new.CsharpParameterResolver;
+import com.twilio.oai.resolver.csharp_new.CsharpPropertyResolver;
+import com.twilio.oai.resolver.csharp_new.OperationCache;
+import com.twilio.oai.resolver.java.JavaParameterResolver;
+import com.twilio.oai.resolver.java.JavaPropertyResolver;
 import com.twilio.oai.resource.ResourceMap;
 
 import java.util.ArrayList;
@@ -23,6 +35,8 @@ import java.util.stream.Collectors;
 
 import com.google.common.collect.ImmutableMap;
 import com.samskivert.mustache.Mustache;
+import com.twilio.oai.template.IApiActionTemplate;
+import com.twilio.oai.template.JavaApiActionTemplate;
 import io.swagger.v3.oas.models.OpenAPI;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -37,6 +51,9 @@ import org.openapitools.codegen.model.ModelMap;
 import org.openapitools.codegen.model.ModelsMap;
 import org.openapitools.codegen.model.OperationsMap;
 
+import static com.twilio.oai.common.ApplicationConstants.CONFIG_CSHARP_JSON_PATH;
+import static com.twilio.oai.common.ApplicationConstants.CONFIG_JAVA_JSON_PATH;
+
 @Slf4j
 public class TwilioCsharpGenerator extends CSharpClientCodegen {
 
@@ -46,8 +63,23 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
         new ResourceMap(new Inflector()),
         new CSharpCaseResolver());
     private final Map<String, String> modelFormatMap = new HashMap<>();
+    private final List<CodegenModel> allModels = new ArrayList<>();
 
     CSharpResolver resolver = new CSharpResolver();
+
+    private final IConventionMapper conventionMapper = new LanguageConventionResolver(CONFIG_CSHARP_JSON_PATH);
+    private final IApiActionTemplate apiActionTemplate = new JavaApiActionTemplate(this);
+
+    private CsharpApiResources processCodegenOperations(List<CodegenOperation> opList) {
+        CodegenModelResolver codegenModelResolver = new CodegenModelResolver(conventionMapper, modelFormatMap,
+                Arrays.asList(EnumConstants.CsharpDataTypes.values()));
+        return new CsharpApiResourceBuilder(apiActionTemplate, opList, this.allModels)
+                .updateApiPath()
+                .updateTemplate()
+                .updateOperations(new CsharpParameterResolver(conventionMapper))
+                .updateResponseModel(new CsharpPropertyResolver(conventionMapper), codegenModelResolver)
+                .build();
+    }
 
     public TwilioCsharpGenerator() {
         super();
@@ -64,14 +96,14 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
 
         twilioCodegen.processOpts();
 
-        apiTestTemplateFiles.clear();
-        apiDocTemplateFiles.clear();
-        apiTemplateFiles.clear();
+//        apiTestTemplateFiles.clear();
+//        apiDocTemplateFiles.clear();
+//        apiTemplateFiles.clear();
         apiTemplateFiles.put("Resource.mustache", "Resource.cs");
         apiTemplateFiles.put("Options.mustache", "Options.cs");
-        modelTemplateFiles.clear();
-        modelTestTemplateFiles.clear();
-        modelDocTemplateFiles.clear();
+//        modelTemplateFiles.clear();
+//        modelTestTemplateFiles.clear();
+//        modelDocTemplateFiles.clear();
 
         filesMetadataFilename = "";
         versionMetadataFilename = "";
@@ -104,7 +136,13 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
     public OperationsMap postProcessOperationsWithModels(final OperationsMap objs, List<ModelMap> allModels) {
         final OperationsMap results = super.postProcessOperationsWithModels(objs, allModels);
         final List<CodegenOperation> opList = directoryStructureService.processOperations(results);
-        final String recordKey = directoryStructureService.getRecordKey(opList);
+        CsharpApiResources apiResources = processCodegenOperations(opList);
+        results.put("resources", apiResources);
+        // End
+        return results;
+
+        // start
+/*        final String recordKey = directoryStructureService.getRecordKey(opList);
         results.put("recordKey", recordKey);
 
         final Map<String, Map<String, Object>> resources = new LinkedHashMap<>();
@@ -148,8 +186,9 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
 
         List<IJsonSchemaValidationProperties> enumList = new ArrayList<>(resolver.getEnums().values());
         results.put("enums", enumList);
-        results.put("resources", resources.values());
-        return results;
+        results.put("resources", resources.values());*/
+
+
     }
 
     private void generatePackage(final CodegenOperation co, final Map<String, Object> resource) {
@@ -344,8 +383,10 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
     public Map<String, ModelsMap> postProcessAllModels(final Map<String, ModelsMap> allModels) {
         final Map<String, ModelsMap> results = super.postProcessAllModels(allModels);
 
+        Utility.addModelsToLocalModelList(results, this.allModels);
         directoryStructureService.postProcessAllModels(results, modelFormatMap);
-        resolver.setModelFormatMap(modelFormatMap);
+        // TODO: Remove this
+        //resolver.setModelFormatMap(modelFormatMap);
         // Return an empty collection so no model files get generated.
         return new HashMap<>();
     }

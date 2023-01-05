@@ -1,5 +1,5 @@
 
-{{#responseModel}}
+{{#responseModels}}
     {{#isEnum}}
         {{#description}}///<summary> {{{description}}} </summary> {{/description}}
         [JsonProperty("{{baseName}}")]
@@ -24,4 +24,4 @@
         {{/required}}
     {{/isEnum}}
 
-{{/responseModel}}
+{{/responseModels}}

@@ -1,10 +1,10 @@
     {{>Summary}}
-    public class Read{{resourceName}}Options : ReadOptions<{{resourceName}}{{resourceConstant}}>
+    public class Read{{apiName}}Options : ReadOptions<{{apiName}}{{resourceConstant}}>
     {
     {{>options/Params}}
 
     {{#vendorExtensions.x-required-param-exist}}
-        {{>options/MethodsComments}}        public Read{{resourceName}}Options({{#requiredParams}}{{{dataType}}} {{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^-last}}, {{/-last}}{{/requiredParams}})
+        {{>options/MethodsComments}}        public Read{{apiName}}Options({{#requiredParams}}{{{dataType}}} {{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^-last}}, {{/-last}}{{/requiredParams}})
         {
         {{#requiredParams}}
             {{paramName}} = {{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}};
