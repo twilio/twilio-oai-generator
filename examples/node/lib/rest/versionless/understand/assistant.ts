@@ -22,46 +22,41 @@ import { isValidPathParam } from "../../../base/utility";
 
 /**
  * Options to pass to each
- *
- * @property { Function } [callback] -
- *                         Function to process each record. If this and a positional
- *                         callback are passed, this one will be used
- * @property { Function } [done] - Function to be called upon completion of streaming
- * @property { number } [limit] -
- *                         Upper limit for the number of records to return.
- *                         each() guarantees never to return more than limit.
- *                         Default is no limit
  */
 export interface AssistantListInstanceEachOptions {
+  /** Function to process each record. If this and a positional callback are passed, this one will be used */
   callback?: (item: AssistantInstance, done: (err?: Error) => void) => void;
+  /** Function to be called upon completion of streaming */
   done?: Function;
+  /** Upper limit for the number of records to return. each() guarantees never to return more than limit. Default is no limit */
   limit?: number;
 }
 
 /**
  * Options to pass to list
- *
- * @property { number } [limit] -
- *                         Upper limit for the number of records to return.
- *                         list() guarantees never to return more than limit.
- *                         Default is no limit
  */
 export interface AssistantListInstanceOptions {
+  /** Upper limit for the number of records to return. list() guarantees never to return more than limit. Default is no limit */
   limit?: number;
 }
 
 /**
  * Options to pass to page
- *
- * @property { number } [pageNumber] - Page Number, this value is simply for client state
- * @property { string } [pageToken] - PageToken provided by the API
  */
 export interface AssistantListInstancePageOptions {
+  /** Page Number, this value is simply for client state */
   pageNumber?: number;
+  /** PageToken provided by the API */
   pageToken?: string;
 }
 
+export interface AssistantSolution {}
+
 export interface AssistantListInstance {
+  _version: Understand;
+  _solution: AssistantSolution;
+  _uri: string;
+
   /**
    * Streams AssistantInstance records from the API.
    *
@@ -190,19 +185,10 @@ export interface AssistantListInstance {
   [inspect.custom](_depth: any, options: InspectOptions): any;
 }
 
-export interface AssistantSolution {}
-
-interface AssistantListInstanceImpl extends AssistantListInstance {}
-class AssistantListInstanceImpl implements AssistantListInstance {
-  _version?: Understand;
-  _solution?: AssistantSolution;
-  _uri?: string;
-}
-
 export function AssistantListInstance(
   version: Understand
 ): AssistantListInstance {
-  const instance = {} as AssistantListInstanceImpl;
+  const instance = {} as AssistantListInstance;
 
   instance._version = version;
   instance._solution = {};
@@ -211,15 +197,16 @@ export function AssistantListInstance(
   instance.page = function page(callback?: any): Promise<AssistantPage> {
     let operationVersion = version,
       operationPromise = operationVersion.page({
-        uri: this._uri,
+        uri: instance._uri,
         method: "get",
       });
 
     operationPromise = operationPromise.then(
-      (payload) => new AssistantPage(operationVersion, payload, this._solution)
+      (payload) =>
+        new AssistantPage(operationVersion, payload, instance._solution)
     );
 
-    operationPromise = this._version.setPromiseCallback(
+    operationPromise = instance._version.setPromiseCallback(
       operationPromise,
       callback
     );
@@ -232,30 +219,28 @@ export function AssistantListInstance(
     targetUrl?: any,
     callback?: any
   ): Promise<AssistantPage> {
-    let operationPromise = this._version._domain.twilio.request({
+    const operationPromise = instance._version._domain.twilio.request({
       method: "get",
       uri: targetUrl,
     });
 
-    operationPromise = operationPromise.then(
-      (payload) => new AssistantPage(this._version, payload, this._solution)
+    let pagePromise = operationPromise.then(
+      (payload) =>
+        new AssistantPage(instance._version, payload, instance._solution)
     );
-    operationPromise = this._version.setPromiseCallback(
-      operationPromise,
-      callback
-    );
-    return operationPromise;
+    pagePromise = instance._version.setPromiseCallback(pagePromise, callback);
+    return pagePromise;
   };
 
   instance.toJSON = function toJSON() {
-    return this._solution;
+    return instance._solution;
   };
 
   instance[inspect.custom] = function inspectImpl(
     _depth: any,
     options: InspectOptions
   ) {
-    return inspect(this.toJSON(), options);
+    return inspect(instance.toJSON(), options);
   };
 
   return instance;
@@ -266,8 +251,8 @@ interface AssistantPayload extends TwilioResponsePayload {
 }
 
 interface AssistantResource {
-  sid?: string | null;
-  friendly_name?: string | null;
+  sid: string;
+  friendly_name: string;
 }
 
 export class AssistantInstance {
@@ -279,11 +264,11 @@ export class AssistantInstance {
   /**
    * A string that uniquely identifies this Fleet.
    */
-  sid?: string | null;
+  sid: string;
   /**
    * A human readable description for this Fleet.
    */
-  friendlyName?: string | null;
+  friendlyName: string;
 
   /**
    * Provide a user-friendly representation

@@ -20,10 +20,9 @@ import { isValidPathParam } from "../../../base/utility";
 
 /**
  * Options to pass to create a FleetInstance
- *
- * @property { string } [name]
  */
 export interface FleetListInstanceCreateOptions {
+  /**  */
   name?: string;
 }
 
@@ -31,9 +30,9 @@ export interface FleetContext {
   /**
    * Fetch a FleetInstance
    *
-   * @param { function } [callback] - Callback to handle processed record
+   * @param callback - Callback to handle processed record
    *
-   * @returns { Promise } Resolves to processed FleetInstance
+   * @returns Resolves to processed FleetInstance
    */
   fetch(
     callback?: (error: Error | null, item?: FleetInstance) => any
@@ -47,7 +46,7 @@ export interface FleetContext {
 }
 
 export interface FleetContextSolution {
-  sid?: string;
+  sid: string;
 }
 
 export class FleetContextImpl implements FleetContext {
@@ -64,18 +63,19 @@ export class FleetContextImpl implements FleetContext {
   }
 
   fetch(callback?: any): Promise<FleetInstance> {
-    let operationVersion = this._version,
+    const instance = this;
+    let operationVersion = instance._version,
       operationPromise = operationVersion.fetch({
-        uri: this._uri,
+        uri: instance._uri,
         method: "get",
       });
 
     operationPromise = operationPromise.then(
       (payload) =>
-        new FleetInstance(operationVersion, payload, this._solution.sid)
+        new FleetInstance(operationVersion, payload, instance._solution.sid)
     );
 
-    operationPromise = this._version.setPromiseCallback(
+    operationPromise = instance._version.setPromiseCallback(
       operationPromise,
       callback
     );
@@ -99,9 +99,9 @@ export class FleetContextImpl implements FleetContext {
 interface FleetPayload extends FleetResource {}
 
 interface FleetResource {
-  name?: string;
-  sid?: string | null;
-  friendly_name?: string | null;
+  name: string;
+  sid: string;
+  friendly_name: string;
 }
 
 export class FleetInstance {
@@ -120,15 +120,15 @@ export class FleetInstance {
     this._solution = { sid: sid || this.sid };
   }
 
-  name?: string;
+  name: string;
   /**
    * A string that uniquely identifies this Fleet.
    */
-  sid?: string | null;
+  sid: string;
   /**
    * A human readable description for this Fleet.
    */
-  friendlyName?: string | null;
+  friendlyName: string;
 
   private get _proxy(): FleetContext {
     this._context =
@@ -139,9 +139,9 @@ export class FleetInstance {
   /**
    * Fetch a FleetInstance
    *
-   * @param { function } [callback] - Callback to handle processed record
+   * @param callback - Callback to handle processed record
    *
-   * @returns { Promise } Resolves to processed FleetInstance
+   * @returns Resolves to processed FleetInstance
    */
   fetch(
     callback?: (error: Error | null, item?: FleetInstance) => any
@@ -167,16 +167,22 @@ export class FleetInstance {
   }
 }
 
+export interface FleetSolution {}
+
 export interface FleetListInstance {
+  _version: DeployedDevices;
+  _solution: FleetSolution;
+  _uri: string;
+
   (sid: string): FleetContext;
   get(sid: string): FleetContext;
 
   /**
    * Create a FleetInstance
    *
-   * @param { function } [callback] - Callback to handle processed record
+   * @param callback - Callback to handle processed record
    *
-   * @returns { Promise } Resolves to processed FleetInstance
+   * @returns Resolves to processed FleetInstance
    */
   create(
     callback?: (error: Error | null, item?: FleetInstance) => any
@@ -184,10 +190,10 @@ export interface FleetListInstance {
   /**
    * Create a FleetInstance
    *
-   * @param { FleetListInstanceCreateOptions } params - Parameter for request
-   * @param { function } [callback] - Callback to handle processed record
+   * @param params - Parameter for request
+   * @param callback - Callback to handle processed record
    *
-   * @returns { Promise } Resolves to processed FleetInstance
+   * @returns Resolves to processed FleetInstance
    */
   create(
     params: FleetListInstanceCreateOptions,
@@ -202,17 +208,8 @@ export interface FleetListInstance {
   [inspect.custom](_depth: any, options: InspectOptions): any;
 }
 
-export interface FleetSolution {}
-
-interface FleetListInstanceImpl extends FleetListInstance {}
-class FleetListInstanceImpl implements FleetListInstance {
-  _version?: DeployedDevices;
-  _solution?: FleetSolution;
-  _uri?: string;
-}
-
 export function FleetListInstance(version: DeployedDevices): FleetListInstance {
-  const instance = ((sid) => instance.get(sid)) as FleetListInstanceImpl;
+  const instance = ((sid) => instance.get(sid)) as FleetListInstance;
 
   instance.get = function get(sid): FleetContext {
     return new FleetContextImpl(version, sid);
@@ -242,7 +239,7 @@ export function FleetListInstance(version: DeployedDevices): FleetListInstance {
 
     let operationVersion = version,
       operationPromise = operationVersion.create({
-        uri: this._uri,
+        uri: instance._uri,
         method: "post",
         data,
         headers,
@@ -252,7 +249,7 @@ export function FleetListInstance(version: DeployedDevices): FleetListInstance {
       (payload) => new FleetInstance(operationVersion, payload)
     );
 
-    operationPromise = this._version.setPromiseCallback(
+    operationPromise = instance._version.setPromiseCallback(
       operationPromise,
       callback
     );
@@ -260,14 +257,14 @@ export function FleetListInstance(version: DeployedDevices): FleetListInstance {
   };
 
   instance.toJSON = function toJSON() {
-    return this._solution;
+    return instance._solution;
   };
 
   instance[inspect.custom] = function inspectImpl(
     _depth: any,
     options: InspectOptions
   ) {
-    return inspect(this.toJSON(), options);
+    return inspect(instance.toJSON(), options);
   };
 
   return instance;

@@ -20,8 +20,16 @@ import { isValidPathParam } from "../../../base/utility";
 import { AwsListInstance } from "./credential/aws";
 import { NewCredentialsListInstance } from "./credential/newCredentials";
 
+export interface CredentialSolution {}
+
 export interface CredentialListInstance {
+  _version: V1;
+  _solution: CredentialSolution;
+  _uri: string;
+
+  _aws?: AwsListInstance;
   aws: AwsListInstance;
+  _newCredentials?: NewCredentialsListInstance;
   newCredentials: NewCredentialsListInstance;
 
   /**
@@ -31,20 +39,8 @@ export interface CredentialListInstance {
   [inspect.custom](_depth: any, options: InspectOptions): any;
 }
 
-export interface CredentialSolution {}
-
-interface CredentialListInstanceImpl extends CredentialListInstance {}
-class CredentialListInstanceImpl implements CredentialListInstance {
-  _version?: V1;
-  _solution?: CredentialSolution;
-  _uri?: string;
-
-  _aws?: AwsListInstance;
-  _newCredentials?: NewCredentialsListInstance;
-}
-
 export function CredentialListInstance(version: V1): CredentialListInstance {
-  const instance = {} as CredentialListInstanceImpl;
+  const instance = {} as CredentialListInstance;
 
   instance._version = version;
   instance._solution = {};
@@ -52,31 +48,33 @@ export function CredentialListInstance(version: V1): CredentialListInstance {
 
   Object.defineProperty(instance, "aws", {
     get: function aws() {
-      if (!this._aws) {
-        this._aws = AwsListInstance(this._version);
+      if (!instance._aws) {
+        instance._aws = AwsListInstance(instance._version);
       }
-      return this._aws;
+      return instance._aws;
     },
   });
 
   Object.defineProperty(instance, "newCredentials", {
     get: function newCredentials() {
-      if (!this._newCredentials) {
-        this._newCredentials = NewCredentialsListInstance(this._version);
+      if (!instance._newCredentials) {
+        instance._newCredentials = NewCredentialsListInstance(
+          instance._version
+        );
       }
-      return this._newCredentials;
+      return instance._newCredentials;
     },
   });
 
   instance.toJSON = function toJSON() {
-    return this._solution;
+    return instance._solution;
   };
 
   instance[inspect.custom] = function inspectImpl(
     _depth: any,
     options: InspectOptions
   ) {
-    return inspect(this.toJSON(), options);
+    return inspect(instance.toJSON(), options);
   };
 
   return instance;
