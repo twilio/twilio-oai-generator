@@ -35,16 +35,15 @@ type TestStatus =
 
 /**
  * Options to pass to create a CallInstance
- *
- * @property { string } requiredStringProperty
- * @property { string } testMethod The HTTP method that we should use to request the `TestArrayOfUri`.
- * @property { Array<string> } [testArrayOfStrings]
- * @property { Array<string> } [testArrayOfUri]
  */
 export interface CallListInstanceCreateOptions {
+  /**  */
   requiredStringProperty: string;
+  /** The HTTP method that we should use to request the `TestArrayOfUri`. */
   testMethod: string;
+  /**  */
   testArrayOfStrings?: Array<string>;
+  /**  */
   testArrayOfUri?: Array<string>;
 }
 
@@ -52,9 +51,9 @@ export interface CallContext {
   /**
    * Remove a CallInstance
    *
-   * @param { function } [callback] - Callback to handle processed record
+   * @param callback - Callback to handle processed record
    *
-   * @returns { Promise } Resolves to processed boolean
+   * @returns Resolves to processed boolean
    */
   remove(
     callback?: (error: Error | null, item?: boolean) => any
@@ -63,9 +62,9 @@ export interface CallContext {
   /**
    * Fetch a CallInstance
    *
-   * @param { function } [callback] - Callback to handle processed record
+   * @param callback - Callback to handle processed record
    *
-   * @returns { Promise } Resolves to processed CallInstance
+   * @returns Resolves to processed CallInstance
    */
   fetch(
     callback?: (error: Error | null, item?: CallInstance) => any
@@ -79,8 +78,8 @@ export interface CallContext {
 }
 
 export interface CallContextSolution {
-  accountSid?: string;
-  testInteger?: number;
+  accountSid: string;
+  testInteger: number;
 }
 
 export class CallContextImpl implements CallContext {
@@ -105,13 +104,14 @@ export class CallContextImpl implements CallContext {
   }
 
   remove(callback?: any): Promise<boolean> {
-    let operationVersion = this._version,
+    const instance = this;
+    let operationVersion = instance._version,
       operationPromise = operationVersion.remove({
-        uri: this._uri,
+        uri: instance._uri,
         method: "delete",
       });
 
-    operationPromise = this._version.setPromiseCallback(
+    operationPromise = instance._version.setPromiseCallback(
       operationPromise,
       callback
     );
@@ -119,9 +119,10 @@ export class CallContextImpl implements CallContext {
   }
 
   fetch(callback?: any): Promise<CallInstance> {
-    let operationVersion = this._version,
+    const instance = this;
+    let operationVersion = instance._version,
       operationPromise = operationVersion.fetch({
-        uri: this._uri,
+        uri: instance._uri,
         method: "get",
       });
 
@@ -130,12 +131,12 @@ export class CallContextImpl implements CallContext {
         new CallInstance(
           operationVersion,
           payload,
-          this._solution.accountSid,
-          this._solution.testInteger
+          instance._solution.accountSid,
+          instance._solution.testInteger
         )
     );
 
-    operationPromise = this._version.setPromiseCallback(
+    operationPromise = instance._version.setPromiseCallback(
       operationPromise,
       callback
     );
@@ -159,22 +160,22 @@ export class CallContextImpl implements CallContext {
 interface CallPayload extends CallResource {}
 
 interface CallResource {
-  account_sid?: string | null;
-  sid?: string | null;
-  test_string?: string | null;
-  test_integer?: number | null;
-  test_object?: PhoneNumberCapabilities | null;
-  test_date_time?: Date | null;
-  test_number?: number | null;
-  price_unit?: string | null;
-  test_number_float?: number | null;
-  test_number_decimal?: number | null;
-  test_enum?: TestStatus;
-  a2p_profile_bundle_sid?: string | null;
-  test_array_of_integers?: Array<number>;
-  test_array_of_array_of_integers?: Array<Array<number>>;
-  test_array_of_objects?: Array<TestResponseObjectTestArrayOfObjects> | null;
-  test_array_of_enum?: Array<TestStatus> | null;
+  account_sid: string;
+  sid: string;
+  test_string: string;
+  test_integer: number;
+  test_object: PhoneNumberCapabilities;
+  test_date_time: Date;
+  test_number: number;
+  price_unit: string;
+  test_number_float: number;
+  test_number_decimal: number;
+  test_enum: TestStatus;
+  a2p_profile_bundle_sid: string;
+  test_array_of_integers: Array<number>;
+  test_array_of_array_of_integers: Array<Array<number>>;
+  test_array_of_objects: Array<TestResponseObjectTestArrayOfObjects>;
+  test_array_of_enum: Array<TestStatus>;
 }
 
 export class CallInstance {
@@ -210,28 +211,28 @@ export class CallInstance {
     };
   }
 
-  accountSid?: string | null;
-  sid?: string | null;
-  testString?: string | null;
-  testInteger?: number | null;
-  testObject?: PhoneNumberCapabilities | null;
-  testDateTime?: Date | null;
-  testNumber?: number | null;
-  priceUnit?: string | null;
-  testNumberFloat?: number | null;
-  testNumberDecimal?: number | null;
-  testEnum?: TestStatus;
+  accountSid: string;
+  sid: string;
+  testString: string;
+  testInteger: number;
+  testObject: PhoneNumberCapabilities;
+  testDateTime: Date;
+  testNumber: number;
+  priceUnit: string;
+  testNumberFloat: number;
+  testNumberDecimal: number;
+  testEnum: TestStatus;
   /**
    * A2P Messaging Profile Bundle BundleSid
    */
-  a2pProfileBundleSid?: string | null;
-  testArrayOfIntegers?: Array<number>;
-  testArrayOfArrayOfIntegers?: Array<Array<number>>;
-  testArrayOfObjects?: Array<TestResponseObjectTestArrayOfObjects> | null;
+  a2pProfileBundleSid: string;
+  testArrayOfIntegers: Array<number>;
+  testArrayOfArrayOfIntegers: Array<Array<number>>;
+  testArrayOfObjects: Array<TestResponseObjectTestArrayOfObjects>;
   /**
    * Permissions authorized to the app
    */
-  testArrayOfEnum?: Array<TestStatus> | null;
+  testArrayOfEnum: Array<TestStatus>;
 
   private get _proxy(): CallContext {
     this._context =
@@ -247,9 +248,9 @@ export class CallInstance {
   /**
    * Remove a CallInstance
    *
-   * @param { function } [callback] - Callback to handle processed record
+   * @param callback - Callback to handle processed record
    *
-   * @returns { Promise } Resolves to processed boolean
+   * @returns Resolves to processed boolean
    */
   remove(
     callback?: (error: Error | null, item?: boolean) => any
@@ -260,9 +261,9 @@ export class CallInstance {
   /**
    * Fetch a CallInstance
    *
-   * @param { function } [callback] - Callback to handle processed record
+   * @param callback - Callback to handle processed record
    *
-   * @returns { Promise } Resolves to processed CallInstance
+   * @returns Resolves to processed CallInstance
    */
   fetch(
     callback?: (error: Error | null, item?: CallInstance) => any
@@ -301,19 +302,28 @@ export class CallInstance {
   }
 }
 
+export interface CallSolution {
+  accountSid: string;
+}
+
 export interface CallListInstance {
+  _version: V2010;
+  _solution: CallSolution;
+  _uri: string;
+
   (testInteger: number): CallContext;
   get(testInteger: number): CallContext;
 
+  _feedbackCallSummary?: FeedbackCallSummaryListInstance;
   feedbackCallSummary: FeedbackCallSummaryListInstance;
 
   /**
    * Create a CallInstance
    *
-   * @param { CallListInstanceCreateOptions } params - Parameter for request
-   * @param { function } [callback] - Callback to handle processed record
+   * @param params - Parameter for request
+   * @param callback - Callback to handle processed record
    *
-   * @returns { Promise } Resolves to processed CallInstance
+   * @returns Resolves to processed CallInstance
    */
   create(
     params: CallListInstanceCreateOptions,
@@ -328,19 +338,6 @@ export interface CallListInstance {
   [inspect.custom](_depth: any, options: InspectOptions): any;
 }
 
-export interface CallSolution {
-  accountSid?: string;
-}
-
-interface CallListInstanceImpl extends CallListInstance {}
-class CallListInstanceImpl implements CallListInstance {
-  _version?: V2010;
-  _solution?: CallSolution;
-  _uri?: string;
-
-  _feedbackCallSummary?: FeedbackCallSummaryListInstance;
-}
-
 export function CallListInstance(
   version: V2010,
   accountSid: string
@@ -350,7 +347,7 @@ export function CallListInstance(
   }
 
   const instance = ((testInteger) =>
-    instance.get(testInteger)) as CallListInstanceImpl;
+    instance.get(testInteger)) as CallListInstance;
 
   instance.get = function get(testInteger): CallContext {
     return new CallContextImpl(version, accountSid, testInteger);
@@ -362,13 +359,13 @@ export function CallListInstance(
 
   Object.defineProperty(instance, "feedbackCallSummary", {
     get: function feedbackCallSummary() {
-      if (!this._feedbackCallSummary) {
-        this._feedbackCallSummary = FeedbackCallSummaryListInstance(
-          this._version,
-          this._solution.accountSid
+      if (!instance._feedbackCallSummary) {
+        instance._feedbackCallSummary = FeedbackCallSummaryListInstance(
+          instance._version,
+          instance._solution.accountSid
         );
       }
-      return this._feedbackCallSummary;
+      return instance._feedbackCallSummary;
     },
   });
 
@@ -414,7 +411,7 @@ export function CallListInstance(
 
     let operationVersion = version,
       operationPromise = operationVersion.create({
-        uri: this._uri,
+        uri: instance._uri,
         method: "post",
         data,
         headers,
@@ -422,10 +419,14 @@ export function CallListInstance(
 
     operationPromise = operationPromise.then(
       (payload) =>
-        new CallInstance(operationVersion, payload, this._solution.accountSid)
+        new CallInstance(
+          operationVersion,
+          payload,
+          instance._solution.accountSid
+        )
     );
 
-    operationPromise = this._version.setPromiseCallback(
+    operationPromise = instance._version.setPromiseCallback(
       operationPromise,
       callback
     );
@@ -433,14 +434,14 @@ export function CallListInstance(
   };
 
   instance.toJSON = function toJSON() {
-    return this._solution;
+    return instance._solution;
   };
 
   instance[inspect.custom] = function inspectImpl(
     _depth: any,
     options: InspectOptions
   ) {
-    return inspect(this.toJSON(), options);
+    return inspect(instance.toJSON(), options);
   };
 
   return instance;
