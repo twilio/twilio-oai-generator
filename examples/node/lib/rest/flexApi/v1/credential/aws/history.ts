@@ -23,7 +23,7 @@ import { isValidPathParam } from "../../../../../base/utility";
  */
 export interface HistoryContextFetchOptions {
   /**  */
-  addOnsData?: object;
+  addOnsData?: Record<string, object>;
 }
 
 export interface HistoryContext {
