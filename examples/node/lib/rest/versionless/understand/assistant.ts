@@ -154,7 +154,7 @@ export function AssistantListInstance(
       | ((error: Error | null, items: AssistantPage) => any),
     callback?: (error: Error | null, items: AssistantPage) => any
   ): Promise<AssistantPage> {
-    if (typeof params === "function") {
+    if (params instanceof Function) {
       callback = params;
       params = {};
     } else {

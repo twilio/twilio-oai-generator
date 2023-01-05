@@ -80,7 +80,7 @@ export class HistoryContextImpl implements HistoryContext {
       | ((error: Error | null, item?: HistoryInstance) => any),
     callback?: (error: Error | null, item?: HistoryInstance) => any
   ): Promise<HistoryInstance> {
-    if (typeof params === "function") {
+    if (params instanceof Function) {
       callback = params;
       params = {};
     } else {

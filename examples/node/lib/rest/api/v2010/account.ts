@@ -576,7 +576,7 @@ export function AccountListInstance(version: V2010): AccountListInstance {
       | ((error: Error | null, items: AccountInstance) => any),
     callback?: (error: Error | null, items: AccountInstance) => any
   ): Promise<AccountInstance> {
-    if (typeof params === "function") {
+    if (params instanceof Function) {
       callback = params;
       params = {};
     } else {
@@ -623,7 +623,7 @@ export function AccountListInstance(version: V2010): AccountListInstance {
       | ((error: Error | null, items: AccountPage) => any),
     callback?: (error: Error | null, items: AccountPage) => any
   ): Promise<AccountPage> {
-    if (typeof params === "function") {
+    if (params instanceof Function) {
       callback = params;
       params = {};
     } else {
