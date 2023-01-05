@@ -374,7 +374,7 @@ export function CallListInstance(
 
   instance.create = function create(
     params: CallListInstanceCreateOptions,
-    callback?: (error: Error | null, item?: CallInstance) => any
+    callback?: (error: Error | null, items: CallInstance) => any
   ): Promise<CallInstance> {
     if (params === null || params === undefined) {
       throw new Error('Required parameter "params" missing.');

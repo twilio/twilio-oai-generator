@@ -223,11 +223,11 @@ export function FleetListInstance(version: DeployedDevices): FleetListInstance {
   instance.create = function create(
     params?:
       | FleetListInstanceCreateOptions
-      | ((error: Error | null, item?: FleetInstance) => any),
-    callback?: (error: Error | null, item?: FleetInstance) => any
+      | ((error: Error | null, items: FleetInstance) => any),
+    callback?: (error: Error | null, items: FleetInstance) => any
   ): Promise<FleetInstance> {
     if (typeof params === "function") {
-      callback = params as (error: Error | null, item?: FleetInstance) => any;
+      callback = params;
       params = {};
     } else {
       params = params || {};

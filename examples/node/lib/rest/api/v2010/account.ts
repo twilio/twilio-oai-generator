@@ -573,11 +573,11 @@ export function AccountListInstance(version: V2010): AccountListInstance {
   instance.create = function create(
     params?:
       | AccountListInstanceCreateOptions
-      | ((error: Error | null, item?: AccountInstance) => any),
-    callback?: (error: Error | null, item?: AccountInstance) => any
+      | ((error: Error | null, items: AccountInstance) => any),
+    callback?: (error: Error | null, items: AccountInstance) => any
   ): Promise<AccountInstance> {
     if (typeof params === "function") {
-      callback = params as (error: Error | null, item?: AccountInstance) => any;
+      callback = params;
       params = {};
     } else {
       params = params || {};
@@ -620,11 +620,11 @@ export function AccountListInstance(version: V2010): AccountListInstance {
   instance.page = function page(
     params?:
       | AccountListInstancePageOptions
-      | ((error: Error | null, item?: AccountPage) => any),
-    callback?: (error: Error | null, item?: AccountPage) => any
+      | ((error: Error | null, items: AccountPage) => any),
+    callback?: (error: Error | null, items: AccountPage) => any
   ): Promise<AccountPage> {
     if (typeof params === "function") {
-      callback = params as (error: Error | null, item?: AccountPage) => any;
+      callback = params;
       params = {};
     } else {
       params = params || {};

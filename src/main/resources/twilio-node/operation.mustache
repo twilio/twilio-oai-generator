@@ -15,7 +15,7 @@
   {{/hasRequiredParams}}
   {{^hasRequiredParams}}
     if (typeof params === "function") {
-      callback = params as (error: Error | null, item?: {{returnType}}) => any;
+      callback = params;
       params = {};
     } else {
       params = params || {};

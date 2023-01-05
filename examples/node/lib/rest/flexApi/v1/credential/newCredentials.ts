@@ -104,7 +104,7 @@ export function NewCredentialsListInstance(
 
   instance.create = function create(
     params: NewCredentialsListInstanceCreateOptions,
-    callback?: (error: Error | null, item?: NewCredentialsInstance) => any
+    callback?: (error: Error | null, items: NewCredentialsInstance) => any
   ): Promise<NewCredentialsInstance> {
     if (params === null || params === undefined) {
       throw new Error('Required parameter "params" missing.');

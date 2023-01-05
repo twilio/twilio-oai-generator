@@ -151,11 +151,11 @@ export function AssistantListInstance(
   instance.page = function page(
     params?:
       | AssistantListInstancePageOptions
-      | ((error: Error | null, item?: AssistantPage) => any),
-    callback?: (error: Error | null, item?: AssistantPage) => any
+      | ((error: Error | null, items: AssistantPage) => any),
+    callback?: (error: Error | null, items: AssistantPage) => any
   ): Promise<AssistantPage> {
     if (typeof params === "function") {
-      callback = params as (error: Error | null, item?: AssistantPage) => any;
+      callback = params;
       params = {};
     } else {
       params = params || {};
