@@ -90,9 +90,7 @@ export class FeedbackCallSummaryContextImpl
   }
 
   update(
-    params:
-      | FeedbackCallSummaryContextUpdateOptions
-      | ((error: Error | null, item?: FeedbackCallSummaryInstance) => any),
+    params: FeedbackCallSummaryContextUpdateOptions,
     callback?: (error: Error | null, item?: FeedbackCallSummaryInstance) => any
   ): Promise<FeedbackCallSummaryInstance> {
     if (params === null || params === undefined) {
