@@ -226,9 +226,7 @@ export class AccountContextImpl implements AccountContext {
   }
 
   update(
-    params:
-      | AccountContextUpdateOptions
-      | ((error: Error | null, item?: AccountInstance) => any),
+    params: AccountContextUpdateOptions,
     callback?: (error: Error | null, item?: AccountInstance) => any
   ): Promise<AccountInstance> {
     if (params === null || params === undefined) {
