@@ -18,11 +18,11 @@ public class CsharpEnumResolver {
 
     public CsharpEnumResolver() {}
 
-    public void resolve(CodegenParameter parameter, String className) {
-
+    public CodegenParameter resolve(CodegenParameter parameter) {
+        String className = OperationCache.className;
         String property = Segments.SEGMENT_PROPERTIES.getSegment();
         if (conventionMap.get(property).containsKey(parameter.dataFormat) || conventionMap.get(property).containsKey(parameter.dataType)) {
-            return;
+            return parameter;
         }
         if (parameter.dataType.contains("Enum")) { // parameter.dataType.contains(className) &&
             parameter.isEnum = true;
@@ -45,15 +45,17 @@ public class CsharpEnumResolver {
             }
             OperationCache.enums.putIfAbsent(parameter.enumName, parameter);
         }
+        return parameter;
     }
 
-    public void resolve(CodegenProperty codegenProperty, String className) {
+    public CodegenProperty resolve(CodegenProperty codegenProperty) {
         if (codegenProperty == null) {
-            return;
+            return codegenProperty;
         }
         if (codegenProperty.complexType == null || !codegenProperty.complexType.contains("Enum")) {
-            return;
+            return codegenProperty;
         }
+        String className = OperationCache.className;
         codegenProperty.isEnum = true;
         String[] value = codegenProperty.complexType.split("Enum");
         codegenProperty.enumName = value[value.length-1] + "Enum";
@@ -66,11 +68,12 @@ public class CsharpEnumResolver {
         codegenProperty.dataType = className + "Resource." + codegenProperty.enumName;
         codegenProperty.vendorExtensions.put("x-jsonConverter", "StringEnumConverter");
         OperationCache.enums.put(codegenProperty.enumName, codegenProperty);
+        return codegenProperty;
     }
 
-    public void resolve(CodegenModel codegenModel, String className) {
+    public void resolve(CodegenModel codegenModel) {
         for (CodegenProperty codegenProperty : codegenModel.vars) {
-            resolve(codegenProperty, className);
+            resolve(codegenProperty);
         }
     }
 }

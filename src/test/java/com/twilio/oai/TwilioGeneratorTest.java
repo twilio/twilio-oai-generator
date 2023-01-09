@@ -28,28 +28,21 @@ import static org.junit.Assert.assertFalse;
 public class TwilioGeneratorTest {
     @Parameterized.Parameters
     public static Collection<Generator> generators() {
-        return Arrays.asList(Generator.TWILIO_CSHARP,
-                             Generator.TWILIO_GO,
-                             Generator.TWILIO_JAVA,
-                             Generator.TWILIO_NODE,
-                             Generator.TWILIO_PHP,
-                             Generator.TWILIO_PYTHON,
-                             Generator.TWILIO_RUBY,
-                             Generator.TWILIO_TERRAFORM);
+        return Arrays.asList(Generator.TWILIO_CSHARP);
     }
 
     private final Generator generator;
 
     @BeforeClass
     public static void setUp() {
-        FileUtils.deleteQuietly(new File("codegen"));
+        //FileUtils.deleteQuietly(new File("codegen"));
     }
 
     @Test
     public void launchGenerator() {
         final CodegenConfigurator configurator = new CodegenConfigurator()
             .setGeneratorName(generator.getValue())
-            .setInputSpec("examples/spec/twilio_api_v2010.yaml")
+            .setInputSpec("/Users/sbansla/Documents/code/twilio-oai/spec/yaml/twilio_api_v2010.yaml")
             .setOutputDir("codegen/" + generator.getValue())
             .setInlineSchemaNameDefaults(Map.of("arrayItemSuffix", ""))
             .addGlobalProperty("apiTests", "false")

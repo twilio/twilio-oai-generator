@@ -8,6 +8,7 @@ import org.openapitools.codegen.IJsonSchemaValidationProperties;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class CsharpApiResources extends ApiResources {
     public CodegenModel responseModel;
@@ -16,13 +17,14 @@ public class CsharpApiResources extends ApiResources {
     public boolean hasEnumsInResource;
     public boolean hasArrayParams;
     public String resourceConstant="Resource";
-
-    public List<CodegenParameter> requestBodyParams;
+    public Map<String, CsharpOperationApiResources> operationApi; // Composition
+    public Map<String, List<CodegenParameter>> requestBodyParams;
 
     public CsharpApiResources(CsharpApiResourceBuilder apiResourceBuilder) {
         super(apiResourceBuilder);
         this.responseModel = apiResourceBuilder.responseModel;
         this.requestBodyParams = apiResourceBuilder.requestBodyParams;
         enums = new ArrayList<>(OperationCache.enums.values());
+        operationApi = new HashMap<>(apiResourceBuilder.operationApi);
     }
 }

@@ -13,19 +13,24 @@ public class CsharpParameterResolver extends LanguageParamResolver {
 
     private final CodegenParameterResolver codegenParameterResolver;
 
-    // Resolve Enums here
-    private final CsharpEnumResolver csharpEnumResolver;
-
     public CsharpParameterResolver(IConventionMapper mapper) {
         super(mapper);
         codegenParameterResolver = new CodegenParameterResolver(mapper, Arrays.asList(EnumConstants.CsharpDataTypes.values()));
-        csharpEnumResolver = new CsharpEnumResolver();
+    }
+
+    @Override
+    public CodegenParameter resolve(CodegenParameter codegenParameter) {
+        resolveProperties(codegenParameter);
+        return codegenParameter;
     }
 
     @Override
     public void resolveProperties(CodegenParameter parameter) {
         codegenParameterResolver.resolve(parameter);
-        csharpEnumResolver.resolve(parameter, OperationCache.className);
+    }
+
+    protected void resolvePrefixedMap(CodegenParameter codegenParameter) {
+
     }
 
 

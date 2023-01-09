@@ -109,7 +109,11 @@
         "date-or-time": "Serializers.DateTimeIso8601(%s)",
         "date-time": "Serializers.DateTimeIso8601(%s)",
         "date": "%s.Value.ToString(\"yyyy-MM-dd\")",
-        "prefixed-collapsible-map": "PrefixedCollapsibleMap.Serialize(%s, %s)"
+        "prefixed-collapsible-map": "PrefixedCollapsibleMap.Serialize(%s, %s)",
+        "bool?": "%s.Value.ToString().ToLower()",
+        "decimal?": "%s.Value.ToString()",
+        "int?": "%s.ToString()",
+        "long?": "%s.Value.ToString()"
     },
 
     "serialize_dataType": {

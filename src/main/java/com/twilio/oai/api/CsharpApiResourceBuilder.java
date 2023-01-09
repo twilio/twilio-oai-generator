@@ -4,12 +4,15 @@ import com.twilio.oai.DirectoryStructureService;
 import com.twilio.oai.StringHelper;
 import com.twilio.oai.common.ApplicationConstants;
 import com.twilio.oai.common.EnumConstants;
+import com.twilio.oai.common.LanguageDataType;
 import com.twilio.oai.common.Utility;
 import com.twilio.oai.resolver.Resolver;
 import com.twilio.oai.resolver.csharp_new.CsharpEnumResolver;
+import com.twilio.oai.resolver.csharp_new.CsharpSerializer;
 import com.twilio.oai.resolver.csharp_new.OperationCache;
 import com.twilio.oai.template.IApiActionTemplate;
 import org.apache.commons.lang3.StringUtils;
+import org.checkerframework.checker.units.qual.C;
 import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenOperation;
 import org.openapitools.codegen.CodegenParameter;
@@ -22,6 +25,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -36,15 +40,19 @@ public class CsharpApiResourceBuilder extends ApiResourceBuilder {
 
     public CodegenModel responseModel;
 
-    public List<CodegenParameter> requestBodyParams;
+    public Map<String, List<CodegenParameter>> requestBodyParams = new HashMap<>();
 
     private final CsharpEnumResolver csharpEnumResolver;
+    CsharpSerializer csharpSerializer;
 
-    public static Map<String, Object> operationCache = new HashMap<>();
+    Map<String, CsharpOperationApiResources> operationApi = new HashMap<>();
 
-    public CsharpApiResourceBuilder(IApiActionTemplate template, List<CodegenOperation> codegenOperations, List<CodegenModel> allModels) {
+    public CsharpApiResourceBuilder(IApiActionTemplate template, List<CodegenOperation> codegenOperations,
+                                    List<CodegenModel> allModels, CsharpEnumResolver csharpEnumResolver,
+                                    CsharpSerializer csharpSerializer) {
         super(template, codegenOperations, allModels);
-        this.csharpEnumResolver = new CsharpEnumResolver();
+        this.csharpEnumResolver = csharpEnumResolver;
+        this.csharpSerializer = csharpSerializer;
     }
 
     @Override
@@ -76,22 +84,18 @@ public class CsharpApiResourceBuilder extends ApiResourceBuilder {
 //            operationCache.put("className", className);
 //            operationCache.put("enums", new HashMap<String, IJsonSchemaValidationProperties>());
             OperationCache.className = className;
+            CsharpOperationApiResources operationApiResources = new CsharpOperationApiResources();
 
             co.allParams = co.allParams.stream()
                     .map(codegenParameterIResolver::resolve)
+                    .map(csharpEnumResolver::resolve)
+                    .map(csharpSerializer::serialize)
                     .collect(Collectors.toList());
 
             co.pathParams = co.pathParams.stream()
                     .map(codegenParameterIResolver::resolve)
+                    .map(csharpSerializer::serialize)
                     .collect(Collectors.toList());
-
-            co.pathParams = co.pathParams.stream()
-                    .map(codegenParameterIResolver::resolve)
-                    .collect(Collectors.toList());
-
-            co.pathParams.stream()
-                    .map(codegenParameterIResolver::resolve)
-                    .forEach(param -> param.paramName = "Path"+param.paramName);
 
             co.queryParams = co.queryParams.stream()
                     .map(codegenParameterIResolver::resolve)
@@ -109,6 +113,9 @@ public class CsharpApiResourceBuilder extends ApiResourceBuilder {
                     .map(codegenParameterIResolver::resolve)
                     .collect(Collectors.toList());
 
+            if (!co.requiredParams.isEmpty()) {
+                operationApiResources.setHasRequiredParameters(true);
+            }
             requiredPathParams.addAll(co.pathParams);
             co.vendorExtensions = mapOperation(co);
             requestBodyArgument(co);
@@ -117,11 +124,42 @@ public class CsharpApiResourceBuilder extends ApiResourceBuilder {
         return this;
     }
 
+    // Here operation specific variables can be set.
     @Override
     protected Map<String, Object> mapOperation(CodegenOperation co) {
         Map<String, Object> operationMap = super.mapOperation(co);
         operationMap.put("x-non-path-params", getNonPathParams(co.allParams));
+        operationMap.put("x-required-param-exist", !co.requiredParams.isEmpty());
+        operationMap.put("x-getparams", generateGetParams(co));
         return operationMap;
+    }
+
+    private LinkedList<CodegenParameter> generateGetParams(CodegenOperation co) {
+        LinkedHashMap<String, CodegenParameter> getParams = new LinkedHashMap<>();
+        return co.allParams.stream()
+                .filter(Objects::nonNull)
+                .map(parameter -> maintainOrder(parameter, getParams))
+                .filter(parameter -> !parameter.isPathParam && !parameter.isHeaderParam)
+                .collect(Collectors.toCollection(LinkedList::new));
+    }
+
+    public CodegenParameter maintainOrder(CodegenParameter parameter, LinkedHashMap<String, CodegenParameter> getParams) {
+        if (parameter.paramName.endsWith("Before")) {
+            CodegenParameter parent = getParams.get(StringUtils.chomp(parameter.paramName, "Before"));
+            if (parent != null) {
+                parent.vendorExtensions.put("x-before", parameter);
+                parent.vendorExtensions.put("x-before-or-after", true);
+            }
+        } else if (parameter.paramName.endsWith("After")) {
+            CodegenParameter parent = getParams.get(StringUtils.chomp(parameter.paramName, "After"));
+            if (parent != null) {
+                parent.vendorExtensions.put("x-after", parameter);
+                parent.vendorExtensions.put("x-before-or-after", true);
+            }
+        } else {
+            getParams.put(parameter.paramName, parameter);
+        }
+        return parameter;
     }
 
     private List<CodegenParameter> getNonPathParams(List<CodegenParameter> allParams) {
@@ -130,6 +168,7 @@ public class CsharpApiResourceBuilder extends ApiResourceBuilder {
 
     @Override
     public ApiResourceBuilder updateResponseModel(Resolver<CodegenProperty> codegenPropertyIResolver, Resolver<CodegenModel> codegenModelResolver) {
+        // TODO: Pass this from twiliocsharpgenerator
         CsharpEnumResolver csharpEnumResolver =  new CsharpEnumResolver();
         List<CodegenModel> responseModels = new ArrayList<>();
         codegenOperationList.forEach(co -> {
@@ -140,7 +179,7 @@ public class CsharpApiResourceBuilder extends ApiResourceBuilder {
                     continue;
                 }
                 codegenModelResolver.resolve(responseModel.get());
-                csharpEnumResolver.resolve(responseModel.get(), OperationCache.className);
+                csharpEnumResolver.resolve(responseModel.get());
                 responseModels.add(responseModel.get()); // Check for DeleteCall (delete operation)
             }
         });
@@ -229,8 +268,13 @@ public class CsharpApiResourceBuilder extends ApiResourceBuilder {
         if (co.operationId.startsWith("List") || co.operationId.startsWith("Fetch")) {
             optionalParameters.forEach(parameter -> requestBodyArgument.put(parameter.paramName, parameter));
         }
-        //co.vendorExtensions.put("x-request-body-param", new ArrayList<>(requestBodyArgument.values()));
-        this.requestBodyParams = new ArrayList<>(requestBodyArgument.values());
+
+        co.vendorExtensions.put("x-request-body-param", new ArrayList<>(requestBodyArgument.values()));
+        for (CodegenParameter codegenParameter: requestBodyArgument.values()) {
+            if (codegenParameter.paramName.contains("Status")) {
+                System.out.println("Hey found it...");
+            }
+        }
     }
 
     private void rearrangeBeforeAfter(final List<CodegenParameter> parameters) {

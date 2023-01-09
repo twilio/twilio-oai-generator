@@ -14,8 +14,10 @@ import com.twilio.oai.resolver.LanguageConventionResolver;
 import com.twilio.oai.resolver.common.CodegenModelResolver;
 import com.twilio.oai.resolver.csharp.CSharpCaseResolver;
 import com.twilio.oai.resolver.csharp.CSharpResolver;
+import com.twilio.oai.resolver.csharp_new.CsharpEnumResolver;
 import com.twilio.oai.resolver.csharp_new.CsharpParameterResolver;
 import com.twilio.oai.resolver.csharp_new.CsharpPropertyResolver;
+import com.twilio.oai.resolver.csharp_new.CsharpSerializer;
 import com.twilio.oai.resolver.csharp_new.OperationCache;
 import com.twilio.oai.resolver.java.JavaParameterResolver;
 import com.twilio.oai.resolver.java.JavaPropertyResolver;
@@ -40,6 +42,7 @@ import com.twilio.oai.template.JavaApiActionTemplate;
 import io.swagger.v3.oas.models.OpenAPI;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.checkerframework.checker.units.qual.C;
 import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenOperation;
 import org.openapitools.codegen.CodegenParameter;
@@ -73,7 +76,9 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
     private CsharpApiResources processCodegenOperations(List<CodegenOperation> opList) {
         CodegenModelResolver codegenModelResolver = new CodegenModelResolver(conventionMapper, modelFormatMap,
                 Arrays.asList(EnumConstants.CsharpDataTypes.values()));
-        return new CsharpApiResourceBuilder(apiActionTemplate, opList, this.allModels)
+        CsharpSerializer csharpSerializer = new CsharpSerializer(Arrays.asList(EnumConstants.CsharpDataTypes.values()));
+        CsharpEnumResolver csharpEnumResolver = new CsharpEnumResolver();
+        return new CsharpApiResourceBuilder(apiActionTemplate, opList, this.allModels, csharpEnumResolver, csharpSerializer)
                 .updateApiPath()
                 .updateTemplate()
                 .updateOperations(new CsharpParameterResolver(conventionMapper))
