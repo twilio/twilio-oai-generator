@@ -40,11 +40,6 @@ public class TwilioRubyGenerator extends RubyClientCodegen {
     public void processOpenAPI(final OpenAPI openAPI) {
         final String domain = twilioCodegen.getDomainFromOpenAPI(openAPI);
         twilioCodegen.setDomain(StringHelper.camelize(domain, true));
-
-//        final String version = StringHelper.camelize((String) additionalProperties.get("apiVersionClass"));
-//        twilioCodegen.setDomain(domain);
-//        twilioCodegen.setOutputDir(domain, version);
-
         openAPI.getPaths().forEach(resourceTree::addResource);
         resourceTree.getResources().forEach(resource -> resource.updateFamily(resourceTree));
         setGemName("");
@@ -54,10 +49,6 @@ public class TwilioRubyGenerator extends RubyClientCodegen {
 
     @Override
     public String apiFilename(final String templateName, final String tag) {
-//        if (directoryStructureService.isVersionLess() && templateName.equals(rubyApiActionTemplate.get(TEMPLATE_TYPE_VERSION).get(0))) {
-//            return apiFileFolder() + File.separator + directoryStructureService.getApiVersionClass().orElseThrow() +
-//                    rubyApiActionTemplate.get(TEMPLATE_TYPE_VERSION).get(1);
-//        }
         String filename = rubyApiActionTemplate.apiFilename(templateName, super.apiFilename(templateName, tag));
         return filename;
     }
