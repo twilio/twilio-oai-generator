@@ -28,59 +28,63 @@ type TestStatus =
 
 /**
  * Options to pass to create a NewCredentialsInstance
- *
- * @property { string } testString
- * @property { boolean } [testBoolean]
- * @property { number } [testInteger]
- * @property { number } [testNumber]
- * @property { number } [testNumberFloat]
- * @property { number } [testNumberDouble]
- * @property { number } [testNumberInt32]
- * @property { number } [testNumberInt64]
- * @property { object } [testObject]
- * @property { Date } [testDateTime]
- * @property { Date } [testDate]
- * @property { TestStatus } [testEnum]
- * @property { Array<object> } [testObjectArray]
- * @property { any } [testAnyType]
- * @property { Array<any> } [testAnyArray]
- * @property { Array<string> } [permissions] A comma-separated list of the permissions you will request from the users of this ConnectApp.  Can include: `get-all` and `post-all`.
- * @property { string } [someA2PThing]
  */
 export interface NewCredentialsListInstanceCreateOptions {
+  /**  */
   testString: string;
+  /**  */
   testBoolean?: boolean;
+  /**  */
   testInteger?: number;
+  /**  */
   testNumber?: number;
+  /**  */
   testNumberFloat?: number;
+  /**  */
   testNumberDouble?: number;
+  /**  */
   testNumberInt32?: number;
+  /**  */
   testNumberInt64?: number;
-  testObject?: object;
+  /**  */
+  testObject?: Record<string, object>;
+  /**  */
   testDateTime?: Date;
+  /**  */
   testDate?: Date;
+  /**  */
   testEnum?: TestStatus;
+  /**  */
   testObjectArray?: Array<object>;
+  /**  */
   testAnyType?: any;
+  /**  */
   testAnyArray?: Array<any>;
+  /** A comma-separated list of the permissions you will request from the users of this ConnectApp.  Can include: `get-all` and `post-all`. */
   permissions?: Array<string>;
+  /**  */
   someA2PThing?: string;
 }
 
+export interface NewCredentialsSolution {}
+
 export interface NewCredentialsListInstance {
+  _version: V1;
+  _solution: NewCredentialsSolution;
+  _uri: string;
+
   /**
    * Create a NewCredentialsInstance
    *
-   * @param { NewCredentialsListInstanceCreateOptions } params - Parameter for request
-   * @param { function } [callback] - Callback to handle processed record
+   * @param params - Parameter for request
+   * @param callback - Callback to handle processed record
    *
-   * @returns { Promise } Resolves to processed NewCredentialsInstance
+   * @returns Resolves to processed NewCredentialsInstance
    */
   create(
     params: NewCredentialsListInstanceCreateOptions,
     callback?: (error: Error | null, item?: NewCredentialsInstance) => any
   ): Promise<NewCredentialsInstance>;
-  create(params: any, callback?: any): Promise<NewCredentialsInstance>;
 
   /**
    * Provide a user-friendly representation
@@ -89,27 +93,18 @@ export interface NewCredentialsListInstance {
   [inspect.custom](_depth: any, options: InspectOptions): any;
 }
 
-export interface NewCredentialsSolution {}
-
-interface NewCredentialsListInstanceImpl extends NewCredentialsListInstance {}
-class NewCredentialsListInstanceImpl implements NewCredentialsListInstance {
-  _version?: V1;
-  _solution?: NewCredentialsSolution;
-  _uri?: string;
-}
-
 export function NewCredentialsListInstance(
   version: V1
 ): NewCredentialsListInstance {
-  const instance = {} as NewCredentialsListInstanceImpl;
+  const instance = {} as NewCredentialsListInstance;
 
   instance._version = version;
   instance._solution = {};
   instance._uri = `/Credentials/AWS`;
 
   instance.create = function create(
-    params: any,
-    callback?: any
+    params: NewCredentialsListInstanceCreateOptions,
+    callback?: (error: Error | null, items: NewCredentialsInstance) => any
   ): Promise<NewCredentialsInstance> {
     if (params === null || params === undefined) {
       throw new Error('Required parameter "params" missing.');
@@ -146,16 +141,19 @@ export function NewCredentialsListInstance(
     if (params["testObjectArray"] !== undefined)
       data["TestObjectArray"] = serialize.map(
         params["testObjectArray"],
-        (e) => e
+        (e: object) => e
       );
     if (params["testAnyType"] !== undefined)
       data["TestAnyType"] = serialize.object(params["testAnyType"]);
     if (params["testAnyArray"] !== undefined)
-      data["TestAnyArray"] = serialize.map(params["testAnyArray"], (e) =>
+      data["TestAnyArray"] = serialize.map(params["testAnyArray"], (e: any) =>
         serialize.object(e)
       );
     if (params["permissions"] !== undefined)
-      data["Permissions"] = serialize.map(params["permissions"], (e) => e);
+      data["Permissions"] = serialize.map(
+        params["permissions"],
+        (e: string) => e
+      );
     if (params["someA2PThing"] !== undefined)
       data["SomeA2PThing"] = params["someA2PThing"];
 
@@ -164,7 +162,7 @@ export function NewCredentialsListInstance(
 
     let operationVersion = version,
       operationPromise = operationVersion.create({
-        uri: this._uri,
+        uri: instance._uri,
         method: "post",
         data,
         headers,
@@ -174,7 +172,7 @@ export function NewCredentialsListInstance(
       (payload) => new NewCredentialsInstance(operationVersion, payload)
     );
 
-    operationPromise = this._version.setPromiseCallback(
+    operationPromise = instance._version.setPromiseCallback(
       operationPromise,
       callback
     );
@@ -182,14 +180,14 @@ export function NewCredentialsListInstance(
   };
 
   instance.toJSON = function toJSON() {
-    return this._solution;
+    return instance._solution;
   };
 
   instance[inspect.custom] = function inspectImpl(
     _depth: any,
     options: InspectOptions
   ) {
-    return inspect(this.toJSON(), options);
+    return inspect(instance.toJSON(), options);
   };
 
   return instance;
@@ -198,10 +196,10 @@ export function NewCredentialsListInstance(
 interface NewCredentialsPayload extends NewCredentialsResource {}
 
 interface NewCredentialsResource {
-  account_sid?: string | null;
-  sid?: string | null;
-  test_string?: string | null;
-  test_integer?: number | null;
+  account_sid: string;
+  sid: string;
+  test_string: string;
+  test_integer: number;
 }
 
 export class NewCredentialsInstance {
@@ -212,10 +210,10 @@ export class NewCredentialsInstance {
     this.testInteger = deserialize.integer(payload.test_integer);
   }
 
-  accountSid?: string | null;
-  sid?: string | null;
-  testString?: string | null;
-  testInteger?: number | null;
+  accountSid: string;
+  sid: string;
+  testString: string;
+  testInteger: number;
 
   /**
    * Provide a user-friendly representation

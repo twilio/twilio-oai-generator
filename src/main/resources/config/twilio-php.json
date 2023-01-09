@@ -12,7 +12,8 @@
     "uri_map": "array",
     "object": "array",
     "boolean": "bool",
-    "integer": "int"
+    "integer": "int",
+    "prefixed-collapsible-map": "string"
   },
 
   "serialize": {
