@@ -1,0 +1,23 @@
+
+    {{#vendorExtensions.x-header-params-exists}}
+    /// <summary> Generate the necessary header parameters </summary>
+    public List<KeyValuePair<string, string>> GetHeaderParams()
+    {
+        var p = new List<KeyValuePair<string, string>>();
+    {{#vendorExtensions.x-header-params}}
+        {{#isArray}}
+        if ({{paramName}} != null)
+        {
+            p.AddRange({{paramName}}.Select({{paramName}} => new KeyValuePair<string, string>("{{{baseName}}}", {{{vendorExtensions.x-param-to-string}}})));
+        }
+        {{/isArray}}
+        {{^isArray}}
+        if ({{paramName}} != null)
+        {
+            p.Add(new KeyValuePair<string, string>("{{{baseName}}}", {{{vendorExtensions.x-param-to-string}}}));
+        }
+        {{/isArray}}
+    {{/vendorExtensions.x-header-params}}
+        return p;
+    }
+    {{/vendorExtensions.x-header-params-exists}}

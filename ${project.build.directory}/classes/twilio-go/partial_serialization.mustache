@@ -1,0 +1,58 @@
+{{#queryParams}}
+{{#vendorExtensions.x-is-account-sid}}
+if params != nil && params.PathAccountSid != nil {
+    path = strings.Replace(path, "{"+"AccountSid"+"}", *params.PathAccountSid, -1)
+} else {
+    path = strings.Replace(path, "{"+"AccountSid"+"}", c.requestHandler.Client.AccountSid(), -1)
+}
+{{/vendorExtensions.x-is-account-sid}}
+{{/queryParams}}
+{{#pathParams}}
+    path = strings.Replace(path, "{"+"{{paramName}}"+"}", {{^isString}}fmt.Sprint({{/isString}}{{paramName}}{{^isString}}){{/isString}}, -1)
+{{/pathParams}}
+
+data := url.Values{}
+headers := make(map[string]interface{})
+
+{{#hasOptionalParams}}
+{{#optionalParams}}
+{{^vendorExtensions.x-is-account-sid}}
+{{^isHeaderParam}}
+{{^vendorExtensions.x-custom}}
+if params != nil && params.{{paramName}} != nil {
+{{#isArray}}
+    for _, item  := range *params.{{paramName}} {
+{{#items.vendorExtensions.x-marshal}}
+        v, err := json.Marshal(item)
+
+        if err != nil {
+            return nil, err
+        }
+
+        data.Add("{{{baseName}}}", string(v))
+{{/items.vendorExtensions.x-marshal}}
+{{^items.vendorExtensions.x-marshal}}
+        data.Add("{{{baseName}}}", item)
+{{/items.vendorExtensions.x-marshal}}
+    }
+{{/isArray}}
+{{^isArray}}
+{{#vendorExtensions.x-marshal}}
+    v, err := json.Marshal(params.{{paramName}})
+
+    if err != nil {
+        return nil, err
+    }
+
+    data.Set("{{{baseName}}}", string(v))
+{{/vendorExtensions.x-marshal}}
+{{^vendorExtensions.x-marshal}}
+    data.Set("{{{baseName}}}", {{^isString}}fmt.Sprint({{/isString}}{{#isDateTime}}({{/isDateTime}}*params.{{paramName}}{{^isString}}{{#isDateTime}}).Format(time.RFC3339){{/isDateTime}}){{/isString}})
+{{/vendorExtensions.x-marshal}}
+{{/isArray}}
+}
+{{/vendorExtensions.x-custom}}
+{{/isHeaderParam}}
+{{/vendorExtensions.x-is-account-sid}}
+{{/optionalParams}}
+{{/hasOptionalParams}}

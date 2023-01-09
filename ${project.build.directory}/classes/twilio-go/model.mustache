@@ -1,0 +1,19 @@
+{{>partial_header}}
+package {{packageName}}
+{{#models}}
+import (
+	"encoding/json"
+	"github.com/twilio/twilio-go/client"
+{{#imports}}
+	"{{import}}"
+{{/imports}}
+)
+{{#model}}
+{{#isEnum}}
+{{>model_enum}}
+{{/isEnum}}
+{{^isEnum}}
+{{>model_simple}}
+{{/isEnum}}
+{{/model}}
+{{/models}}

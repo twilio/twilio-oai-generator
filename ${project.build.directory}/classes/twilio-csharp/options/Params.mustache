@@ -1,0 +1,11 @@
+
+{{#requiredParams}}
+        {{#description}}///<summary> {{{description}}} </summary> {{/description}}
+        public {{{dataType}}} {{paramName}} { get; }
+
+{{/requiredParams}}
+{{#optionalParams}}
+        {{#description}}///<summary> {{{description}}} </summary> {{/description}}
+        public {{{dataType}}} {{paramName}} { get; set; }
+
+{{/optionalParams}}

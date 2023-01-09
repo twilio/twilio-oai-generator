@@ -1,0 +1,22 @@
+{{#models}}{{#model}}# {{classname}}
+
+{{^isEnum}}
+## Properties
+
+Name | Type | Description | Notes
+------------ | ------------- | ------------- | -------------
+{{#allVars}}**{{name}}** | {{#isNullable}}Pointer to {{/isNullable}}{{#isPrimitiveType}}**{{{vendorExtensions.x-go-base-type}}}**{{/isPrimitiveType}}{{^isPrimitiveType}}[**{{{vendorExtensions.x-go-base-type}}}**]({{complexType}}.md){{/isPrimitiveType}} | {{{description}}} |{{^required}}{{^isNullable}}[optional] {{/isNullable}}{{/required}}{{#isReadOnly}}[readonly] {{/isReadOnly}}{{#defaultValue}}[default to {{{.}}}]{{/defaultValue}}
+{{/allVars}}
+{{/isEnum}}
+{{#isEnum}}
+## Enum
+
+Name | Type | Notes
+------------ | ------------- | -------------
+{{#allowableValues}}{{#enumVars}}**{{name}}** | {{dataType}} | (value: `{{{value}}}`)
+{{/enumVars}}{{/allowableValues}}
+{{/isEnum}}
+
+[[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
+
+{{/model}}{{/models}}

@@ -1,0 +1,12 @@
+    {{^required}}if (params["{{paramName}}"] !== undefined){{/required}}
+    {{#vendorExtensions.x-prefixed-collapsible-map}}
+    data = {...data, ...{{vendorExtensions.x-serialize}}(params["{{paramName}}"], "{{.}}")};
+    {{/vendorExtensions.x-prefixed-collapsible-map}}
+    {{^vendorExtensions.x-prefixed-collapsible-map}}
+    {{#vendorExtensions.x-serialize}}
+    data["{{{baseName}}}"] = {{.}}(params["{{paramName}}"]{{#vendorExtensions.x-transform}}, (e: {{baseType}}) => {{.}}{{/vendorExtensions.x-transform}});
+    {{/vendorExtensions.x-serialize}}
+    {{^vendorExtensions.x-serialize}}
+    data["{{{baseName}}}"] = params["{{paramName}}"];
+    {{/vendorExtensions.x-serialize}}
+    {{/vendorExtensions.x-prefixed-collapsible-map}}

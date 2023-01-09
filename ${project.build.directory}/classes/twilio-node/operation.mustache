@@ -1,0 +1,72 @@
+{{#hasParams}}
+  {{#hasRequiredParams}}
+    if (params === null || params === undefined) {
+      throw new Error('Required parameter "params" missing.');
+    }
+
+    {{#requiredParams}}
+    {{^isBodyParam}}
+    if (params["{{paramName}}"] === null || params["{{paramName}}"] === undefined) {
+      throw new Error('Required parameter "params[\'{{paramName}}\']" missing.');
+    }
+
+    {{/isBodyParam}}
+    {{/requiredParams}}
+  {{/hasRequiredParams}}
+  {{^hasRequiredParams}}
+    if (params instanceof Function) {
+      callback = params;
+      params = {};
+    } else {
+      params = params || {};
+    }
+
+  {{/hasRequiredParams}}
+    let data: any = {};
+
+    {{#queryParams}}{{>requestParam}}{{/queryParams}}
+    {{#formParams}}{{>requestParam}}{{/formParams}}
+    {{#vendorExtensions.x-is-read-operation}}
+    if (params.pageNumber !== undefined) data["Page"] = params.pageNumber;
+    if (params.pageToken !== undefined) data["PageToken"] = params.pageToken;
+    {{/vendorExtensions.x-is-read-operation}}
+
+    const headers: any = {};
+    {{#consumes}}
+    {{#-first}}
+    headers["Content-Type"] = "{{{mediaType}}}"
+    {{/-first}}
+    {{/consumes}}
+    {{#headerParams}}
+    if (params["{{paramName}}"] !== undefined) headers["{{{baseName}}}"] = params["{{paramName}}"];
+    {{/headerParams}}
+{{/hasParams}}
+
+    {{#vendorExtensions.x-is-context-operation}}
+    const instance = this;
+    {{/vendorExtensions.x-is-context-operation}}
+    let operationVersion = {{#vendorExtensions.x-is-context-operation}}instance._version{{/vendorExtensions.x-is-context-operation}}{{#vendorExtensions.x-is-list-operation}}version{{/vendorExtensions.x-is-list-operation}},
+        operationPromise = operationVersion.{{vendorExtensions.x-name-lower}}({ uri: instance._uri, method: "{{httpMethod}}"{{#hasParams}}, {{^isBodyAllowed}}params: {{/isBodyAllowed}}data, headers{{/hasParams}} });
+    {{^vendorExtensions.x-is-read-operation}}{{^vendorExtensions.x-is-delete-operation}}
+    operationPromise = operationPromise.then(payload => new {{instanceName}}(operationVersion, payload{{#vendorExtensions.x-is-context-operation}}{{#instancePathParams}}, instance._solution.{{paramName}}{{/instancePathParams}}{{/vendorExtensions.x-is-context-operation}}{{#vendorExtensions.x-is-list-operation}}{{#listPathParams}}, instance._solution.{{paramName}}{{/listPathParams}}{{/vendorExtensions.x-is-list-operation}}));
+    {{/vendorExtensions.x-is-delete-operation}}{{/vendorExtensions.x-is-read-operation}}
+    {{#vendorExtensions.x-is-read-operation}}
+    operationPromise = operationPromise.then(payload => new {{returnType}}(operationVersion, payload, instance._solution));
+    {{/vendorExtensions.x-is-read-operation}}
+
+    operationPromise = instance._version.setPromiseCallback(operationPromise,callback);
+    return operationPromise;
+
+  {{#vendorExtensions.x-is-read-operation}}
+  }
+  instance.each = instance._version.each;
+  instance.list = instance._version.list;
+
+  instance.getPage = function getPage(targetUrl: string, callback?: (error: Error | null, items: {{returnType}}) => any): Promise<{{returnType}}> {
+    const operationPromise = instance._version._domain.twilio.request({method: "{{httpMethod}}", uri: targetUrl});
+
+    let pagePromise = operationPromise.then(payload => new {{returnType}}(instance._version, payload, instance._solution));
+    pagePromise = instance._version.setPromiseCallback(pagePromise, callback);
+    return pagePromise;
+  }
+  {{/vendorExtensions.x-is-read-operation}}

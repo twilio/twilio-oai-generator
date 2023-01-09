@@ -1,0 +1,40 @@
+{{#resources}}
+<?php
+{{>licenseInfo}}
+namespace Twilio\Rest\{{domainName}}\{{version}}{{namespaceSubPart}};
+
+use Twilio\Http\Response;
+use Twilio\Page;
+use Twilio\Version;
+
+class {{apiName}}Page extends Page {
+    /**
+     * @param Version $version Version that contains the resource
+     * @param Response $response Response from the API
+     * @param array $solution The context solution
+     */
+    public function __construct(Version $version, Response $response, array $solution) {
+        parent::__construct($version, $response);
+
+        // Path Solution
+        $this->solution = $solution;
+    }
+
+    /**
+     * @param array $payload Payload response from the API
+     * @return {{apiName}}Instance \Twilio\Rest\{{domainName}}\{{version}}{{namespaceSubPart}}\{{apiName}}Instance
+     */
+    public function buildInstance(array $payload): {{apiName}}Instance {
+        return new {{apiName}}Instance($this->version, $payload{{#requiredPathParams}}{{#vendorExtensions.x-is-parent-param}}, $this->solution['{{paramName}}']{{/vendorExtensions.x-is-parent-param}}{{/requiredPathParams}});
+    }
+
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string {
+        return '[Twilio.{{domainName}}.{{version}}.{{apiName}}Page]';
+    }
+}
+{{/resources}}

@@ -1,0 +1,147 @@
+{{>partial_header}}
+package {{packageName}}
+
+import (
+    "context"
+    "github.com/hashicorp/terraform-plugin-sdk/v2/diag"
+    "github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+    "github.com/twilio/terraform-provider-twilio/client"
+    . "github.com/twilio/terraform-provider-twilio/core"
+    . "github.com/twilio/twilio-go/rest/{{domainPackage}}/{{clientVersion}}"
+)
+
+{{#resources}}
+func Resource{{name}}() *schema.Resource {
+    return &schema.Resource{
+        CreateContext: create{{name}},
+        ReadContext: read{{name}},
+{{#hasUpdate}}
+        UpdateContext: update{{name}},
+{{/hasUpdate}}
+        DeleteContext: delete{{name}},
+        Schema: map[string]*schema.Schema{
+            {{#schema}}
+            "{{{vendorExtensions.x-name-in-snake-case}}}": {{{vendorExtensions.x-terraform-schema.func}}},
+            {{/schema}}
+        },
+        Importer: &schema.ResourceImporter{
+            StateContext: func(ctx context.Context, d *schema.ResourceData, m interface{}) ([]*schema.ResourceData, error) {
+                err := parse{{name}}ImportId(d.Id(), d)
+                if err != nil {
+                    return nil, err
+                }
+
+                return []*schema.ResourceData{d}, nil
+            },
+        },
+    }
+}
+
+{{#operations}}
+{{#operation}}
+func {{#vendorExtensions.x-is-create-operation}}create{{/vendorExtensions.x-is-create-operation}}{{#vendorExtensions.x-is-fetch-operation}}read{{/vendorExtensions.x-is-fetch-operation}}{{#vendorExtensions.x-is-update-operation}}update{{/vendorExtensions.x-is-update-operation}}{{#vendorExtensions.x-is-delete-operation}}delete{{/vendorExtensions.x-is-delete-operation}}{{name}}(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+    {{#vendorExtensions.x-has-optional-params}}
+    params := {{nickname}}Params{}
+    if err := UnmarshalSchema(&params, d); err != nil {
+        return diag.FromErr(err)
+    }
+    {{/vendorExtensions.x-has-optional-params}}
+
+    {{#allParams}}
+    {{#isPathParam}}
+    {{#required}}
+    {{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}} := d.Get("{{vendorExtensions.x-name-in-snake-case}}").({{dataType}})
+    {{/required}}
+    {{/isPathParam}}
+    {{/allParams}}
+
+    {{#vendorExtensions.x-is-create-operation}}
+        r, err := m.(*client.Config).Client.{{domainName}}{{apiVersionClass}}.{{nickname}}({{#pathParams}}{{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^-last}}, {{/-last}}{{/pathParams}}{{#vendorExtensions.x-has-optional-params}}{{#hasPathParams}}, {{/hasPathParams}}&params{{/vendorExtensions.x-has-optional-params}})
+        if err != nil {
+            return diag.FromErr(err)
+        }
+
+        idParts := []string{ {{#allParams}}{{#isPathParam}}{{#required}}{{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^-last}}, {{/-last}}{{/required}}{{/isPathParam}}{{/allParams}} }
+        idParts = append(idParts, {{vendorExtensions.x-resource-id-conversion-func}}(*r.{{vendorExtensions.x-resource-id}}))
+        d.SetId(strings.Join(idParts, "/"))
+        {{#vendorExtensions.x-update-after-create}}
+            d.Set("{{vendorExtensions.x-resource-id-in-snake-case}}", *r.{{vendorExtensions.x-resource-id}})
+
+            return update{{name}}(ctx, d, m)
+        {{/vendorExtensions.x-update-after-create}}
+        {{^vendorExtensions.x-update-after-create}}
+
+            err = MarshalSchema(d, r)
+            if err != nil {
+                return diag.FromErr(err)
+            }
+
+            return nil
+        {{/vendorExtensions.x-update-after-create}}
+    {{/vendorExtensions.x-is-create-operation}}
+    {{#vendorExtensions.x-is-fetch-operation}}
+        r, err := m.(*client.Config).Client.{{domainName}}{{apiVersionClass}}.{{nickname}}({{#pathParams}}{{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^-last}}, {{/-last}}{{/pathParams}}{{#vendorExtensions.x-has-optional-params}}{{#hasPathParams}}, {{/hasPathParams}}&params{{/vendorExtensions.x-has-optional-params}})
+        if err != nil {
+            return diag.FromErr(err)
+        }
+
+        err = MarshalSchema(d, r)
+        if err != nil {
+            return diag.FromErr(err)
+        }
+
+        return nil
+    {{/vendorExtensions.x-is-fetch-operation}}
+    {{#vendorExtensions.x-is-update-operation}}
+        r, err := m.(*client.Config).Client.{{domainName}}{{apiVersionClass}}.{{nickname}}({{#pathParams}}{{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^-last}}, {{/-last}}{{/pathParams}}{{#vendorExtensions.x-has-optional-params}}{{#hasPathParams}}, {{/hasPathParams}}&params{{/vendorExtensions.x-has-optional-params}})
+        if err != nil {
+            return diag.FromErr(err)
+        }
+
+        err = MarshalSchema(d, r)
+        if err != nil {
+            return diag.FromErr(err)
+        }
+
+        return nil
+    {{/vendorExtensions.x-is-update-operation}}
+    {{#vendorExtensions.x-is-delete-operation}}
+        err := m.(*client.Config).Client.{{domainName}}{{apiVersionClass}}.{{nickname}}({{#pathParams}}{{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^-last}}, {{/-last}}{{/pathParams}}{{#vendorExtensions.x-has-optional-params}}{{#hasPathParams}}, {{/hasPathParams}}&params{{/vendorExtensions.x-has-optional-params}})
+        if err != nil {
+            return diag.FromErr(err)
+        }
+
+        d.SetId("")
+
+        return nil
+    {{/vendorExtensions.x-is-delete-operation}}
+}
+
+{{#vendorExtensions.x-is-fetch-operation}}
+func parse{{name}}ImportId(importId string, d *schema.ResourceData) error {
+    importParts := strings.Split(importId, "/")
+    errStr := "invalid import ID (%q), expected {{#pathParams}}{{vendorExtensions.x-name-in-snake-case}}{{^-last}}/{{/-last}}{{/pathParams}}"
+
+    if len(importParts) != {{#pathParams}}{{#-last}}{{-index}}{{/-last}}{{/pathParams}} {
+        return fmt.Errorf(errStr, importId)
+    }
+
+    {{#pathParams}}
+    {{#vendorExtensions.x-conversion-func}}
+        {{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}, err := {{vendorExtensions.x-conversion-func}}(importParts[{{vendorExtensions.x-index}}])
+        if err != nil {
+            return nil
+        }
+        d.Set("{{vendorExtensions.x-name-in-snake-case}}", {{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}})
+    {{/vendorExtensions.x-conversion-func}}
+    {{^vendorExtensions.x-conversion-func}}
+        d.Set("{{vendorExtensions.x-name-in-snake-case}}", importParts[{{vendorExtensions.x-index}}])
+    {{/vendorExtensions.x-conversion-func}}
+    {{/pathParams}}
+
+    return nil
+}
+{{/vendorExtensions.x-is-fetch-operation}}
+{{/operation}}
+{{/operations}}
+{{/resources}}

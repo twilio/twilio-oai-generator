@@ -1,0 +1,48 @@
+{{#queryParams}}
+    {{#vendorExtensions.x-has-before-and-after}}
+{{>dateTimeGroupParams}}
+    {{/vendorExtensions.x-has-before-and-after}}
+    {{^vendorExtensions.x-has-before-and-after}}
+        {{#vendorExtensions.x-prefixed-collapsible-map}}
+        {{>prefixedCollapsibleMapQParams}}
+        {{/vendorExtensions.x-prefixed-collapsible-map}}
+        {{^vendorExtensions.x-prefixed-collapsible-map}}
+        if ({{paramName}} != null) {
+            {{#isArray}}
+            {{#isEnum}}
+            for ({{baseType}} prop : {{paramName}}) {
+                request.addQueryParam("{{baseName}}", prop.toString());
+            }
+        }
+            {{/isEnum}}
+            {{^isEnum}}
+            {{#vendorExtensions.x-is-string-array}}
+            for ({{baseType}} prop : {{paramName}}) {
+                request.addQueryParam("{{baseName}}", prop);
+            }
+        }
+            {{/vendorExtensions.x-is-string-array}}
+            {{^vendorExtensions.x-is-string-array}}
+            for ({{baseType}} prop : {{paramName}}) {
+                request.addQueryParam("{{baseName}}", prop.toString());
+            }
+        }
+            {{/vendorExtensions.x-is-string-array}}
+            {{/isEnum}}
+            {{/isArray}}
+            {{^isArray}}
+    {{>dateParams}}
+            {{#vendorExtensions.x-is-other-data-type}}
+            request.addQueryParam("{{baseName}}", {{paramName}}.toString());
+        }
+            {{/vendorExtensions.x-is-other-data-type}}
+            {{^vendorExtensions.x-is-other-data-type}}
+            {{#isString}}
+            request.addQueryParam("{{baseName}}", {{paramName}});
+        }
+            {{/isString}}
+            {{/vendorExtensions.x-is-other-data-type}}
+        {{/isArray}}
+        {{/vendorExtensions.x-prefixed-collapsible-map}}
+    {{/vendorExtensions.x-has-before-and-after}}
+{{/queryParams}}
