@@ -34,7 +34,6 @@ use Twilio\Version;
  * @method \Twilio\Rest\{{domainName}}\{{apiVersionClass}}\{{parent}}Context {{#lambda.camelcase}}{{mountName}}{{/lambda.camelcase}}({{#params}}string ${{#lambda.camelcase}}{{.}}{{/lambda.camelcase}}{{^-last}}, {{/-last}}{{/params}})
 {{/versionDependents}}
  */
-
 class {{apiVersionClass}} extends Version {
 {{#versionResources}}
 {{^param}}
