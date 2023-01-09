@@ -23,6 +23,7 @@ public class ApiResources {
     Map<String, Object> metaProperties;
     String namespaceSubPart;
     boolean hasPaginationOperation;
+    boolean hasTwimlType;
 
     public ApiResources(ApiResourceBuilder apiResourceBuilder) {
         apiOperations = apiResourceBuilder.codegenOperationList;
@@ -35,5 +36,6 @@ public class ApiResources {
         requiredPathParams = new ArrayList<>(apiResourceBuilder.requiredPathParams);
         namespaceSubPart = apiResourceBuilder.namespaceSubPart;
         hasPaginationOperation = apiResourceBuilder.hasPaginationOperation();
+        hasTwimlType = apiResourceBuilder.hasTwimlType();
     }
 }

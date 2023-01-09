@@ -29,7 +29,7 @@ public class NodeParameterResolver extends LanguageParamResolver {
 
         // Feature to allow desired methods to accept TwiMl objects
         if (codegenParameter.paramName.equalsIgnoreCase("twiml")){
-            codegenParameter.dataType = "TwiMl | string";
+            codegenParameter.dataType = "TwiML | string";
             codegenParameter.vendorExtensions.put("x-isTwiml", true);
         }
 
