@@ -19,6 +19,8 @@ public class ApplicationConstants {
     public static final String CONFIG_PYTHON_JSON_PATH = CONFIG_PATH + File.separator + "python.json";
     public static final String CONFIG_RUBY_JSON_PATH = CONFIG_PATH + File.separator + "ruby.json";
 
+    public static final String CONFIG_RUBY_JSON_PATH = CONFIG_PATH + File.separator + "ruby.json";
+
     public static final String LIST_START = "List<";
 
     public static final String LIST_END = ">";
