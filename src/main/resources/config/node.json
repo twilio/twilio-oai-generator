@@ -34,7 +34,7 @@
         "date_or_time": "serialize.iso8601DateTime({value})",
         "date_time_inequality": "serialize.iso8601DateTime({value})",
         "prefixed_collapsible_map": "serialize.prefixedCollapsibleMap({value}, {trait})",
-        "twiml": "serialize.stringify({value})"
+        "twiml": "serialize.twiml({value})"
     },
 
     "deserialize": {
