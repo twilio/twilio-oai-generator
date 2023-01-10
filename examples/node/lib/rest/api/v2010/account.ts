@@ -594,7 +594,7 @@ export function AccountListInstance(version: V2010): AccountListInstance {
         (e: string) => e
       );
     if (params["twiml"] !== undefined)
-      data["Twiml"] = params["twiml"].toString();
+      data["Twiml"] = serialize.stringify(params["twiml"]);
 
     const headers: any = {};
     headers["Content-Type"] = "application/x-www-form-urlencoded";

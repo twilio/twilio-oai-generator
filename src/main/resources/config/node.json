@@ -20,7 +20,8 @@
         "phone_number_capabilities": "PhoneNumberCapabilities",
         "prefixed_collapsible_map": "Record<string, object>",
         "string_map": "Record<string, string>",
-        "uri_map": "Record<string, string>"
+        "uri_map": "Record<string, string>",
+        "twiml": "TwiML | string"
     },
 
     "serialize": {
@@ -32,7 +33,8 @@
         "date_time": "serialize.iso8601DateTime({value})",
         "date_or_time": "serialize.iso8601DateTime({value})",
         "date_time_inequality": "serialize.iso8601DateTime({value})",
-        "prefixed_collapsible_map": "serialize.prefixedCollapsibleMap({value}, {trait})"
+        "prefixed_collapsible_map": "serialize.prefixedCollapsibleMap({value}, {trait})",
+        "twiml": "serialize.stringify({value})"
     },
 
     "deserialize": {

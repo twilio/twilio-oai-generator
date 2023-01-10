@@ -203,7 +203,7 @@ public abstract class ApiResourceBuilder implements IApiResourceBuilder {
     }
 
     public boolean hasTwimlType(){
-        return codegenOperationList.stream().anyMatch(co -> co.allParams.stream().anyMatch(codegenParameter -> codegenParameter.vendorExtensions.containsKey("x-isTwiml")));
+        return codegenOperationList.stream().anyMatch(co -> co.allParams.stream().anyMatch(codegenParameter -> "twiml".equalsIgnoreCase(codegenParameter.dataFormat)));
     }
 
     public String getApiName() {
