@@ -10,6 +10,7 @@ import com.twilio.oai.resolver.Resolver;
 import com.twilio.oai.resolver.csharp_new.CsharpEnumResolver;
 import com.twilio.oai.resolver.csharp_new.CsharpSerializer;
 import com.twilio.oai.resolver.csharp_new.OperationCache;
+import com.twilio.oai.template.CsharpApiActionTemplate;
 import com.twilio.oai.template.IApiActionTemplate;
 import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.units.qual.C;
@@ -27,6 +28,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -58,16 +60,30 @@ public class CsharpApiResourceBuilder extends ApiResourceBuilder {
     @Override
     public IApiResourceBuilder updateTemplate() {
         template.clean();
-        codegenOperationList.forEach(codegenOperation -> {
-            updateNamespaceSubPart(codegenOperation);
-
-        });
+        codegenOperationList.forEach(codegenOperation -> updateNamespaceSubPart(codegenOperation));
+        template.add(CsharpApiActionTemplate.TEMPLATE_TYPE_OPTIONS);
+        template.add(CsharpApiActionTemplate.TEMPLATE_TYPE_RESOURCE);
         return this;
     }
 
     @Override
     public IApiResourceBuilder setImports(DirectoryStructureService directoryStructureService) {
-        return null;
+        codegenOperationList.forEach(operation -> {
+            boolean arrayExists = operation.allParams.stream()
+                    .filter(parameter -> parameter.isArray)
+                    .count() > 0;
+            if (arrayExists) {
+                metaAPIProperties.put("options-array-exist", arrayExists);
+            }
+
+            boolean enumExists = operation.allParams.stream()
+                    .filter(parameter -> parameter.isEnum)
+                    .count() > 0;
+            if (enumExists) {
+                metaAPIProperties.put("enum-exist", enumExists);
+            }
+        });
+        return this;
     }
 
     @Override
@@ -77,14 +93,11 @@ public class CsharpApiResourceBuilder extends ApiResourceBuilder {
 
     @Override
     public ApiResourceBuilder updateOperations(Resolver<CodegenParameter> codegenParameterIResolver) { // CsharpParameterResolver
+        //super.updateOperations(codegenParameterIResolver);
         OperationCache.clear();
         this.codegenOperationList.forEach(co -> {
             List<String> filePathArray = new ArrayList<>(Arrays.asList(co.baseName.split(PATH_SEPARATOR_PLACEHOLDER)));
-            String className = filePathArray.remove(filePathArray.size() - 1);
-//            operationCache.put("className", className);
-//            operationCache.put("enums", new HashMap<String, IJsonSchemaValidationProperties>());
-            OperationCache.className = className;
-            CsharpOperationApiResources operationApiResources = new CsharpOperationApiResources();
+            OperationCache.className = filePathArray.remove(filePathArray.size() - 1);;
 
             co.allParams = co.allParams.stream()
                     .map(codegenParameterIResolver::resolve)
@@ -94,28 +107,32 @@ public class CsharpApiResourceBuilder extends ApiResourceBuilder {
 
             co.pathParams = co.pathParams.stream()
                     .map(codegenParameterIResolver::resolve)
+                    .map(csharpEnumResolver::resolve)
                     .map(csharpSerializer::serialize)
                     .collect(Collectors.toList());
 
             co.queryParams = co.queryParams.stream()
                     .map(codegenParameterIResolver::resolve)
+                    .map(csharpEnumResolver::resolve)
                     .collect(Collectors.toList());
 
             co.formParams = co.formParams.stream()
                     .map(codegenParameterIResolver::resolve)
+                    .map(csharpEnumResolver::resolve)
+                    .map(csharpSerializer::serialize)
                     .collect(Collectors.toList());
 
             co.optionalParams = co.optionalParams.stream()
                     .map(codegenParameterIResolver::resolve)
+                    .map(csharpEnumResolver::resolve)
                     .collect(Collectors.toList());
 
             co.requiredParams = co.requiredParams.stream()
                     .map(codegenParameterIResolver::resolve)
+                    .map(csharpEnumResolver::resolve)
+                    .map(csharpSerializer::serialize)
                     .collect(Collectors.toList());
 
-            if (!co.requiredParams.isEmpty()) {
-                operationApiResources.setHasRequiredParameters(true);
-            }
             requiredPathParams.addAll(co.pathParams);
             co.vendorExtensions = mapOperation(co);
             requestBodyArgument(co);
@@ -138,28 +155,33 @@ public class CsharpApiResourceBuilder extends ApiResourceBuilder {
         LinkedHashMap<String, CodegenParameter> getParams = new LinkedHashMap<>();
         return co.allParams.stream()
                 .filter(Objects::nonNull)
-                .map(parameter -> maintainOrder(parameter, getParams))
+                .filter(parameter -> maintainOrder(parameter, getParams))
                 .filter(parameter -> !parameter.isPathParam && !parameter.isHeaderParam)
                 .collect(Collectors.toCollection(LinkedList::new));
     }
 
-    public CodegenParameter maintainOrder(CodegenParameter parameter, LinkedHashMap<String, CodegenParameter> getParams) {
+    // Expected order for variable: Date, Date, DateBefore, DateAfter (used in GetParams method)
+    private boolean maintainOrder(CodegenParameter parameter, LinkedHashMap<String, CodegenParameter> getParams) {
         if (parameter.paramName.endsWith("Before")) {
             CodegenParameter parent = getParams.get(StringUtils.chomp(parameter.paramName, "Before"));
             if (parent != null) {
                 parent.vendorExtensions.put("x-before", parameter);
                 parent.vendorExtensions.put("x-before-or-after", true);
+                // Skip Variable ending with Before and if its prefix exists
+                return false;
             }
         } else if (parameter.paramName.endsWith("After")) {
             CodegenParameter parent = getParams.get(StringUtils.chomp(parameter.paramName, "After"));
             if (parent != null) {
                 parent.vendorExtensions.put("x-after", parameter);
                 parent.vendorExtensions.put("x-before-or-after", true);
+                // Skip Variable ending with After and if its prefix exists
+                return false;
             }
         } else {
             getParams.put(parameter.paramName, parameter);
         }
-        return parameter;
+        return true;
     }
 
     private List<CodegenParameter> getNonPathParams(List<CodegenParameter> allParams) {
@@ -257,6 +279,7 @@ public class CsharpApiResourceBuilder extends ApiResourceBuilder {
         rearrangeBeforeAfter(co.pathParams);
         rearrangeBeforeAfter(conditionalParameters);
         rearrangeBeforeAfter(optionalParameters);
+        co.optionalParams = co.optionalParams.stream().filter(parameter -> !parameter.paramName.equals("PageSize")).collect(Collectors.toList());
 
         // Add to vendor extension
         LinkedHashMap<String, CodegenParameter> requestBodyArgument = new LinkedHashMap<>();
@@ -270,11 +293,6 @@ public class CsharpApiResourceBuilder extends ApiResourceBuilder {
         }
 
         co.vendorExtensions.put("x-request-body-param", new ArrayList<>(requestBodyArgument.values()));
-        for (CodegenParameter codegenParameter: requestBodyArgument.values()) {
-            if (codegenParameter.paramName.contains("Status")) {
-                System.out.println("Hey found it...");
-            }
-        }
     }
 
     private void rearrangeBeforeAfter(final List<CodegenParameter> parameters) {

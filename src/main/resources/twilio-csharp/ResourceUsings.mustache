@@ -6,4 +6,4 @@ using Twilio.Clients;
 using Twilio.Converters;
 using Twilio.Exceptions;
 using Twilio.Http;
-{{#resources}}{{#hasEnumsInResource}}using Twilio.Types;{{/hasEnumsInResource}}{{/resources}}
+{{#metaProperties}}{{#enum-exist}}using Twilio.Types;{{/enum-exist}}{{/metaProperties}}

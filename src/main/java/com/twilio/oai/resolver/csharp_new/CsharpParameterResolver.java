@@ -27,6 +27,7 @@ public class CsharpParameterResolver extends LanguageParamResolver {
     @Override
     public void resolveProperties(CodegenParameter parameter) {
         codegenParameterResolver.resolve(parameter);
+        // my code
     }
 
     protected void resolvePrefixedMap(CodegenParameter codegenParameter) {

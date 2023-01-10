@@ -15,7 +15,7 @@ public class CsharpApiResources extends ApiResources {
     List<IJsonSchemaValidationProperties> enums;
     public boolean hasEnumsInOptions;
     public boolean hasEnumsInResource;
-    public boolean hasArrayParams;
+    public boolean hasArrayInResource;
     public String resourceConstant="Resource";
     public Map<String, CsharpOperationApiResources> operationApi; // Composition
     public Map<String, List<CodegenParameter>> requestBodyParams;

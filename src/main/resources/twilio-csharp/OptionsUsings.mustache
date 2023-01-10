@@ -2,5 +2,5 @@ using System;
 using System.Collections.Generic;
 using Twilio.Base;
 using Twilio.Converters;
-{{#resources}}{{#hasArrayParams}}using System.Linq;{{/hasArrayParams}}{{/resources}}
-{{#resources}}{{#hasEnumsInOptions}}using Twilio.Types;{{/hasEnumsInOptions}}{{/resources}}
+{{#metaProperties}}{{#options-array-exist}}using System.Linq;{{/options-array-exist}}{{/metaProperties}}
+{{#metaProperties}}{{#enum-exist}}using Twilio.Types;{{/enum-exist}}{{/metaProperties}}

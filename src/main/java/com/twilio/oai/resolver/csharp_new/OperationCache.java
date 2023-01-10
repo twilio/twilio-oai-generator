@@ -9,6 +9,7 @@ public final class OperationCache {
         className = new String();
         store.clear();
         enums.clear();
+        isEnumPresent = false;
     }
 
     public static String className;

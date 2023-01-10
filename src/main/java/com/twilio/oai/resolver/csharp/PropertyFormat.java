@@ -11,6 +11,7 @@ public class PropertyFormat implements DataSanitizer<CodegenProperty> {
         if (property.dataFormat == null) return;
         if (property.isMap) {
             List<String> splitDataFormat = new ArrayList<>(List.of(property.dataFormat.split("-")));
+            property.vendorExtensions.put("x-map-value", splitDataFormat.get(splitDataFormat.size()-1));
             splitDataFormat.remove(splitDataFormat.size()-1);
             property.dataFormat = String.join("-", splitDataFormat);
         }
