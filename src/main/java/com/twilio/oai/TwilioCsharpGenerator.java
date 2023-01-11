@@ -174,7 +174,8 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
     private void generateGetParams(CodegenOperation co) {
         LinkedList<CodegenParameter> headerParams = new LinkedList<>();
         for (CodegenParameter codegenParameter: co.allParams) {
-            if (!codegenParameter.isPathParam && !codegenParameter.isHeaderParam) {
+            if (!codegenParameter.isPathParam && !codegenParameter.isHeaderParam
+                    && !(Boolean) codegenParameter.vendorExtensions.getOrDefault("x-ignore-in-header", false)) {
                 headerParams.add(codegenParameter);
             }
         }
