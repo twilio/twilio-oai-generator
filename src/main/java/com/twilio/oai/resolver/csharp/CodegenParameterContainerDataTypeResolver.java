@@ -4,16 +4,15 @@ import com.twilio.oai.StringHelper;
 import com.twilio.oai.common.ApplicationConstants;
 import com.twilio.oai.common.EnumConstants;
 import com.twilio.oai.resolver.Resolver;
+
+import java.util.Set;
+
+import lombok.RequiredArgsConstructor;
 import org.openapitools.codegen.CodegenParameter;
 
-import java.util.HashSet;
-
+@RequiredArgsConstructor
 public class CodegenParameterContainerDataTypeResolver extends Resolver<CodegenParameter> {
-    private CodegenParameterDataTypeResolver codegenParameterDataTypeResolver;
-
-    public CodegenParameterContainerDataTypeResolver(CodegenParameterDataTypeResolver codegenParameterDataTypeResolver) {
-        this.codegenParameterDataTypeResolver = codegenParameterDataTypeResolver;
-    }
+    private final CodegenParameterDataTypeResolver codegenParameterDataTypeResolver;
 
     public CodegenParameter resolve(CodegenParameter parameter){
         String unwrappedContainer = unwrapContainerType(parameter);
@@ -24,7 +23,7 @@ public class CodegenParameterContainerDataTypeResolver extends Resolver<CodegenP
     }
 
     private void setHasEnumParamsVendorExtension(CodegenParameter parameter){
-        HashSet<String> enumsDict = codegenParameterDataTypeResolver.getEnumsDict();
+        Set<String> enumsDict = codegenParameterDataTypeResolver.getEnumsDict();
         if(StringHelper.existInSetIgnoreCase(parameter.dataType, enumsDict)){//List of enums present
             parameter.vendorExtensions.put("x-has-enum-params", true);
         }

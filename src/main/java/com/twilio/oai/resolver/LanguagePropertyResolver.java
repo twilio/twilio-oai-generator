@@ -6,14 +6,13 @@ import lombok.AllArgsConstructor;
 import org.openapitools.codegen.CodegenProperty;
 
 import static com.twilio.oai.common.ApplicationConstants.DESERIALIZE_VEND_EXT;
-import static com.twilio.oai.common.ApplicationConstants.SERIALIZE_VEND_EXT;
 
 @AllArgsConstructor
 public class LanguagePropertyResolver extends Resolver<CodegenProperty> {
-    protected IConventionMapper mapper ;
+    protected IConventionMapper mapper;
 
     @Override
-    public CodegenProperty resolve( CodegenProperty codegenProperty) {
+    public CodegenProperty resolve(CodegenProperty codegenProperty) {
         resolveProperties(codegenProperty);
         resolveDeSerialize(codegenProperty);
         resolvePrefixedMap(codegenProperty);

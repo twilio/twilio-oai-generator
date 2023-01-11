@@ -5,17 +5,13 @@ import com.twilio.oai.resolver.Resolver;
 
 import java.util.Map;
 
+import lombok.RequiredArgsConstructor;
 import org.openapitools.codegen.CodegenProperty;
 
+@RequiredArgsConstructor
 public class CodegenModelComplexResolver extends Resolver<CodegenProperty> {
-
     private final IConventionMapper mapper;
     private final Map<String, String> modelFormatMap;
-
-    public CodegenModelComplexResolver(final IConventionMapper mapper, final Map<String, String> modelFormatMap) {
-        this.mapper = mapper;
-        this.modelFormatMap = modelFormatMap;
-    }
 
     public CodegenProperty resolve(CodegenProperty property) {
         if (this.modelFormatMap.isEmpty()) {

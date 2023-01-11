@@ -3,21 +3,26 @@ package com.twilio.oai.resolver.csharp;
 import com.twilio.oai.Segments;
 import com.twilio.oai.StringHelper;
 import com.twilio.oai.resolver.Resolver;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
 import org.openapitools.codegen.CodegenParameter;
 import org.openapitools.codegen.IJsonSchemaValidationProperties;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-
 import static com.twilio.oai.common.ApplicationConstants.OBJECT;
 
+@Setter
 public class CodegenParameterDataTypeResolver extends Resolver<CodegenParameter> {
     private Map<String, Map<String, Object>> conventionMap;
     private Map<String, IJsonSchemaValidationProperties> enums;
     private String className;
-    private HashSet<String> enumsDict;
+    @Getter
+    private Set<String> enumsDict;
 
     public CodegenParameter resolve(CodegenParameter parameter) {
         new ParameterFormat().sanitize(parameter);
@@ -71,27 +76,6 @@ public class CodegenParameterDataTypeResolver extends Resolver<CodegenParameter>
             parameter.dataType = (String) conventionMap.get(property).get(parameter.dataFormat);
         } else if (conventionMap.get(property).containsKey(parameter.dataType)) {
             parameter.dataType = (String) conventionMap.get(property).get(parameter.dataType);
-
         }
-    }
-
-    public void setEnums(Map<String, IJsonSchemaValidationProperties> enums) {
-        this.enums = enums;
-    }
-
-    public void setClassName(String className) {
-        this.className = className;
-    }
-
-    public void setConventionMap(Map<String, Map<String, Object>> conventionMap) {
-        this.conventionMap = conventionMap;
-    }
-
-    public void setEnumsDict(HashSet<String> enumsDict) {
-        this.enumsDict = enumsDict;
-    }
-
-    public HashSet<String> getEnumsDict() {
-        return enumsDict;
     }
 }
