@@ -4,14 +4,13 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Map;
 
+import lombok.Getter;
+
 public class EnumsResolver {
 
     private final Map<String, Map<String, Object>> conventionMap;
-    private HashSet<String> enumsDict = new HashSet<>();
-
-    public HashSet<String> getEnumsDict() {
-        return enumsDict;
-    }
+    @Getter
+    private final HashSet<String> enumsDict = new HashSet<>();
 
     public EnumsResolver(Map<String, Map<String, Object>> conventionMap) {
         this.conventionMap = conventionMap;
@@ -36,6 +35,4 @@ public class EnumsResolver {
             }
         });
     }
-
-
 }
