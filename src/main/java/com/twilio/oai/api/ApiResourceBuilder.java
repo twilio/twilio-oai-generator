@@ -202,10 +202,6 @@ public abstract class ApiResourceBuilder implements IApiResourceBuilder {
         return codegenOperationList.stream().anyMatch(co -> co.operationId.toLowerCase().startsWith("list"));
     }
 
-    public boolean hasTwimlType(){
-        return codegenOperationList.stream().anyMatch(co -> co.allParams.stream().anyMatch(codegenParameter -> "twiml".equalsIgnoreCase(codegenParameter.dataFormat)));
-    }
-
     public String getApiName() {
         final List<String> filePathArray = new ArrayList<>(Arrays.asList(codegenOperationList.get(0).baseName.split(
             PATH_SEPARATOR_PLACEHOLDER)));
