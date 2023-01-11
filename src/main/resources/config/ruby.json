@@ -1,0 +1,34 @@
+{
+  "library": {
+  },
+
+  "properties": {
+    "_": "String",
+    "date": "Date",
+    "date_inequality": "Date",
+    "date_time": "DateTime",
+    "date_or_time": "Date",
+    "date_time_inequality": "Date",
+    "decimal": "Float",
+    "integer": "Integer",
+    "long": "Integer",
+    "object": "Object",
+    "string_map": "object"
+  },
+
+  "serialize": {
+    "_": "{value}"
+  },
+
+  "deserialize": {
+    "_": "{value}"
+  },
+
+  "cardinality": {
+    "_": "single",
+    "prefixed_collapsible_map": "multi"
+  },
+
+  "promotions": {
+  }
+}

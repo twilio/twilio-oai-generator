@@ -20,16 +20,16 @@ export default class DeployedDevices extends Version {
   /**
    * Initialize the DeployedDevices version of Versionless
    *
-   * @property { Twilio.Versionless.DeployedDevices.FleetListInstance } fleets - fleets resource
-   *
-   * @param { Twilio.Versionless } domain - The Twilio domain
+   * @param domain - The Twilio (Twilio.Versionless) domain
    */
   constructor(domain: VersionlessBase) {
     super(domain, "DeployedDevices");
   }
 
+  /** fleets - { Twilio.Versionless.DeployedDevices.FleetListInstance } resource */
   protected _fleets?: FleetListInstance;
 
+  /** Getter for fleets resource */
   get fleets(): FleetListInstance {
     this._fleets = this._fleets || FleetListInstance(this);
     return this._fleets;

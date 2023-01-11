@@ -5,12 +5,13 @@ export type {{vendorExtensions.x-name}} = {{#allowableValues}}{{#enumVars}}{{{va
 {{/isEnum}}
 {{/vars}}
 
-interface {{name}}Payload extends {{name}}Resource{{#hasPaginationOperation}}, Page.TwilioResponsePayload {{/hasPaginationOperation}}{
-}
+interface {{apiName}}Payload extends {{^hasPaginationOperation}}{{apiName}}Resource {}{{/hasPaginationOperation}}{{#hasPaginationOperation}}TwilioResponsePayload {
+    {{recordKey}}: {{apiName}}Resource[];
+}{{/hasPaginationOperation}}
 
-interface {{name}}Resource {
+interface {{apiName}}Resource {
   {{#vars}}
-  {{baseName}}{{^required}}?{{/required}}: {{#isEnum}}{{{vendorExtensions.x-name}}}{{/isEnum}}{{^isEnum}}{{{dataType}}}{{#isNullable}} | null{{/isNullable}}{{/isEnum}};
+  {{baseName}}: {{#isEnum}}{{{vendorExtensions.x-name}}}{{/isEnum}}{{^isEnum}}{{{dataType}}}{{/isEnum}};
   {{/vars}}
 }
 
@@ -19,25 +20,20 @@ interface {{name}}Resource {
  * {{{description}}}
  */
 {{/description}}
-export class {{name}}Instance {
-  {{#parentResourceName}}
-  protected _solution: {{resourceName}}Solution;
-  protected _context?: {{resourceName}};
-  {{/parentResourceName}}
+export class {{instanceName}} {
+  {{#instancePath}}
+  protected _solution: {{apiName}}ContextSolution;
+  protected _context?: {{apiName}}Context;
+  {{/instancePath}}
 
-  constructor(protected _version: {{apiVersionClass}}, payload: {{name}}Payload{{#resourcePathParams}}, {{paramName}}{{^vendorExtensions.x-is-parent-param}}?{{/vendorExtensions.x-is-parent-param}}: {{{dataType}}}{{/resourcePathParams}}) {
+  constructor(protected _version: {{apiVersionClass}}, payload: {{apiName}}Resource{{#instancePathParams}}, {{paramName}}{{^vendorExtensions.x-is-parent-param}}?{{/vendorExtensions.x-is-parent-param}}: {{{dataType}}}{{/instancePathParams}}) {
     {{#vars}}
-    {{#vendorExtensions.x-deserialize}}
     this.{{name}} = {{vendorExtensions.x-deserialize}}(payload.{{baseName}});
-    {{/vendorExtensions.x-deserialize}}
-    {{^vendorExtensions.x-deserialize}}
-    this.{{name}} = payload.{{baseName}};
-    {{/vendorExtensions.x-deserialize}}
     {{/vars}}
 
-    {{#parentResourceName}}
-    this._solution = { {{#resourcePathParams}}{{paramName}}{{^vendorExtensions.x-is-parent-param}}: {{paramName}} || this.{{paramName}}{{/vendorExtensions.x-is-parent-param}}, {{/resourcePathParams}} };
-    {{/parentResourceName}}
+    {{#instancePath}}
+    this._solution = { {{#instancePathParams}}{{paramName}}{{^vendorExtensions.x-is-parent-param}}: {{paramName}} || this.{{paramName}}{{#vendorExtensions.x-stringify}}.toString(){{/vendorExtensions.x-stringify}}{{/vendorExtensions.x-is-parent-param}}, {{/instancePathParams}} };
+    {{/instancePath}}
   }
 
   {{#vars}}
@@ -46,21 +42,27 @@ export class {{name}}Instance {
    * {{{description}}}
    */
   {{/description}}
-  {{name}}{{^required}}?{{/required}}: {{#isEnum}}{{{vendorExtensions.x-name}}}{{/isEnum}}{{^isEnum}}{{{dataType}}}{{#isNullable}} | null{{/isNullable}}{{/isEnum}};
+  {{name}}: {{#isEnum}}{{{vendorExtensions.x-name}}}{{/isEnum}}{{^isEnum}}{{{dataType}}}{{/isEnum}};
   {{/vars}}
-  {{#parentResourceName}}
+  {{#instancePath}}
 
-  private get _proxy(): {{resourceName}} {
-    this._context = this._context || new {{resourceName}}Impl(this._version{{#resourcePathParams}}, this._solution.{{paramName}}{{/resourcePathParams}});
+  private get _proxy(): {{apiName}}Context {
+    this._context = this._context || new {{apiName}}ContextImpl(this._version{{#instancePathParams}}, this._solution.{{paramName}}{{/instancePathParams}});
     return this._context;
   }
   {{#operations}}
+  {{#vendorExtensions.x-is-context-operation}}
 
-{{>operationSignature}}     {
+{{>operationSignature}}
+{{#hasParams}}
+    {{vendorExtensions.x-name-lower}}(params?: any, callback?: (error: Error | null, item?: {{returnType}}) => any): Promise<{{returnType}}>
+{{/hasParams}}    {
     return this._proxy.{{vendorExtensions.x-name-lower}}({{#hasParams}}params, {{/hasParams}}callback);
   }
+  {{/vendorExtensions.x-is-context-operation}}
   {{/operations}}
   {{#dependents}}
+  {{#instanceDependent}}
 
   /**
    * Access the {{mountName}}.
@@ -68,8 +70,9 @@ export class {{name}}Instance {
   {{mountName}}(): {{type}} {
     return this._proxy.{{mountName}};
   }
+  {{/instanceDependent}}
   {{/dependents}}
-  {{/parentResourceName}}
+  {{/instancePath}}
 
   /**
    * Provide a user-friendly representation

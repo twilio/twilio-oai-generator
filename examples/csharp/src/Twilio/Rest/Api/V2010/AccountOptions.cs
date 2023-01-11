@@ -153,19 +153,10 @@ namespace Twilio.Rest.Api.V2010
                 {
                     p.Add(new KeyValuePair<string, string>("DateCreated>", Serializers.DateTimeIso8601(DateCreatedAfter)));
                 }
-
             }
             if (DateTest != null)
             {
                 p.Add(new KeyValuePair<string, string>("Date.Test", DateTest.Value.ToString("yyyy-MM-dd")));
-            }
-            if (DateCreatedBefore != null)
-            {
-                p.Add(new KeyValuePair<string, string>("DateCreated<", Serializers.DateTimeIso8601(DateCreatedBefore)));
-            }
-            if (DateCreatedAfter != null)
-            {
-                p.Add(new KeyValuePair<string, string>("DateCreated>", Serializers.DateTimeIso8601(DateCreatedAfter)));
             }
             if (PageSize != null)
             {

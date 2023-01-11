@@ -10,7 +10,6 @@ import org.openapitools.codegen.CodegenParameter;
 
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Map;
 
 public class JavaParameterResolver extends LanguageParamResolver {
     public static final String OBJECT = "object";
@@ -25,31 +24,26 @@ public class JavaParameterResolver extends LanguageParamResolver {
     }
 
     @Override
-    public CodegenParameter resolve(CodegenParameter codegenParameter) {
-        resolveProperties(codegenParameter);
-        resolveSerialize(codegenParameter);
-        resolveDeSerialize(codegenParameter);
-        return codegenParameter;
-    }
-    @Override
     public void resolveProperties(CodegenParameter parameter) {
         if(parameter.dataType.equalsIgnoreCase(OBJECT) || parameter.dataType.equals(LIST_OBJECT)) {
+            final String objectType = mapper.properties().getString(OBJECT).orElseThrow();
+
             if (parameter.dataType.equals(LIST_OBJECT)) {
-                parameter.dataType = ApplicationConstants.LIST_START + mapper.properties().get(OBJECT)+ ApplicationConstants.LIST_END ;
-                parameter.baseType = "" + mapper.properties().get(OBJECT);
+                parameter.dataType = ApplicationConstants.LIST_START + objectType + ApplicationConstants.LIST_END;
+                parameter.baseType = objectType;
             } else {
-                parameter.dataType = (String) mapper.properties().get(OBJECT);
+                parameter.dataType = objectType;
             }
+
             parameter.isFreeFormObject = true;
         }
 
-        boolean hasPromotion = mapper.promotions().containsKey(parameter.dataFormat);
-        if (hasPromotion) {
+        mapper.promotions().getMap(parameter.dataFormat).ifPresent(promotions -> {
             // cloning to prevent update in source map
-            HashMap<String, String> promotionsMap = new HashMap<>((Map) mapper.promotions().get(parameter.dataFormat));
-            promotionsMap.replaceAll((dataType, value) -> String.format(value, parameter.paramName) );
-            parameter.vendorExtensions.put(ApplicationConstants.PROMOTION_EXTENTION_NAME, promotionsMap);
-        }
+            HashMap<String, String> promotionsMap = new HashMap<>(promotions);
+            promotionsMap.replaceAll((dataType, value) -> value.replaceAll("\\{.*}", parameter.paramName) );
+            parameter.vendorExtensions.put(ApplicationConstants.PROMOTION_EXTENSION_NAME, promotionsMap);
+        });
 
         codegenParameterResolver.resolve(parameter);
 
@@ -57,10 +51,10 @@ public class JavaParameterResolver extends LanguageParamResolver {
             parameter.vendorExtensions.put(X_IS_PHONE_NUMBER_FORMAT, true);
         }
         // prevent special format properties to be considered as enum
-        if (mapper.properties().containsKey(parameter.dataFormat)) {
+        mapper.properties().get(parameter.dataFormat).ifPresent(prop -> {
             parameter.isEnum = false;
             parameter.allowableValues = null;
-        }
+        });
         parameter.paramName = StringHelper.toFirstLetterLower(parameter.paramName);
     }
 }

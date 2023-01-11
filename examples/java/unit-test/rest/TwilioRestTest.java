@@ -212,6 +212,7 @@ public class TwilioRestTest {
         assertNotNull(account);
         assertNotNull(mockRequest.getQueryParams().get("DateCreated"));
         assertNotNull(mockRequest.getQueryParams().get("PageSize"));
+        assertEquals(account.getPageSize().toString(), mockRequest.getQueryParams().get("PageSize").get(0));
     }
 
     @Test
@@ -302,6 +303,21 @@ public class TwilioRestTest {
         });
         assertEquals("Ahoy", testStringValues.get(0));
         assertEquals("Matey", testStringValues.get(1));
+    }
+
+    @Test
+    public void testPageSize() {
+        Request mockRequest = new Request(
+            HttpMethod.GET,
+            "flex-api",
+            "/v1/Credentials/AWS"
+        );
+        mockRequest.addQueryParam("PageSize", "2");
+        String url = "https://flex-api.twilio.com/v1/Credentials/AWS";
+        String testResponse =  "{\"credentials\":[{\"sid\":\"CR12345678123456781234567812345678\", \"test_string\":\"Ahoy\", \"test_object\":{\"mms\": true, \"sms\":false, \"voice\": false, \"fax\":true}}, {\"sid\":\"CR12345678123456781234567812345678\", \"test_string\":\"Hello\", \"test_object\":{\"mms\": true, \"sms\":false, \"voice\": false, \"fax\":true}}], \"meta\": {\"url\":\"" + url + "\", \"next_page_url\":\"" + url + "?PageSize=5" + "\", \"previous_page_url\":\"" + url + "?PageSize=3" + "\", \"first_page_url\":\"" + url + "?PageSize=1" + "\", \"page_size\":2}}";
+        when(twilioRestClient.request(mockRequest)).thenReturn(new Response(testResponse, 200));
+         ResourceSet<Aws> awsResourceSet = new AwsReader().pageSize(2).read(twilioRestClient);
+         assertEquals("2", Integer.toString(awsResourceSet.getPageSize()));
     }
 
     @Test
@@ -1110,7 +1126,7 @@ public class TwilioRestTest {
             .updater("sidUpdated")
             .update(twilioRestClient);
 
-        assertEquals("123", updatedCall.getSid());
+        assertEquals(new Integer(123), updatedCall.getSid());
     }
 
     @Test

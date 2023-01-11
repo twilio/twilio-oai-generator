@@ -1,4 +1,3 @@
-    private void addQueryParams(final Request request) {
 {{#queryParams}}
     {{#vendorExtensions.x-has-before-and-after}}
 {{>dateTimeGroupParams}}
@@ -31,7 +30,7 @@
             {{/vendorExtensions.x-is-string-array}}
             {{/isEnum}}
             {{/isArray}}
-        {{^isArray}}
+            {{^isArray}}
     {{>dateParams}}
             {{#vendorExtensions.x-is-other-data-type}}
             request.addQueryParam("{{baseName}}", {{paramName}}.toString());
@@ -47,4 +46,3 @@
         {{/vendorExtensions.x-prefixed-collapsible-map}}
     {{/vendorExtensions.x-has-before-and-after}}
 {{/queryParams}}
-    }

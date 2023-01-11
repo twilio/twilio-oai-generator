@@ -164,7 +164,7 @@ paths:
                   type: array
                 TestAnyType: { }
                 TestAnyArray:
-                  items: {}
+                  items: { }
                   type: array
                 Permissions:
                   description: 'A comma-separated list of the permissions you will
@@ -329,8 +329,9 @@ paths:
               schema:
                 properties:
                   sid:
+                    description: Non-string path parameter in the response.
                     nullable: true
-                    type: string
+                    type: integer
                 type: object
           description: OK
       security:

@@ -1,43 +1,55 @@
 package com.twilio.oai.resolver.php;
 
+import com.twilio.oai.StringHelper;
 import com.twilio.oai.resolver.IConventionMapper;
 import com.twilio.oai.resolver.LanguageConventionResolver;
 import com.twilio.oai.resolver.LanguagePropertyResolver;
+
 import org.openapitools.codegen.CodegenProperty;
 
-
-import static com.twilio.oai.common.ApplicationConstants.SERIALIZE_VEND_EXT;
-import static com.twilio.oai.resolver.php.PhpParameterResolver.SERALIZE_ARRAY_MAP;
+import static com.twilio.oai.common.ApplicationConstants.ARRAY;
+import static com.twilio.oai.common.ApplicationConstants.STRING;
+import static com.twilio.oai.resolver.php.PhpParameterResolver.FLOAT;
 
 public class PhpPropertyResolver extends LanguagePropertyResolver {
-    public final static String MAP_STRING = "map";
+    public static final String MAP_STRING = "map";
 
     public PhpPropertyResolver(IConventionMapper mapper) {
         super(mapper);
     }
 
     @Override
-    public  void resolveProperties(CodegenProperty codegenProperty) {
+    public CodegenProperty resolve(final CodegenProperty codegenProperty) {
+        super.resolve(codegenProperty);
+
+        codegenProperty.baseName = StringHelper.camelize(codegenProperty.baseName, true);
+
+        return codegenProperty;
+    }
+
+    @Override
+    public void resolveProperties(CodegenProperty codegenProperty) {
         super.resolveProperties(codegenProperty);
-        if(codegenProperty.dataType.equals(LanguageConventionResolver.MIXED)) {
-            codegenProperty.dataType = "array";
+        if (codegenProperty.dataType.equals(LanguageConventionResolver.MIXED)) {
+            codegenProperty.dataType = ARRAY;
+            codegenProperty.isArray = true;
         }
         if (codegenProperty.dataType.equalsIgnoreCase(LanguageConventionResolver.MIXED_ARRAY)) {
-            codegenProperty.dataType = "array[]";
+            codegenProperty.dataType = ARRAY + "[]";
+            codegenProperty.isArray = true;
         }
         if (codegenProperty.dataType.equals("float")) {
-            codegenProperty.dataType = "string";
+            codegenProperty.dataType = STRING;
         }
-        if(codegenProperty.dataType.equals(LanguageConventionResolver.LIST_OBJECT)) {
-            codegenProperty.dataType = "array";
+        if (codegenProperty.dataType.equals(LanguageConventionResolver.LIST_OBJECT)) {
+            codegenProperty.dataType = ARRAY;
         }
-        if (codegenProperty.dataType.contains("Enum") || codegenProperty.complexType != null) {
-            if(codegenProperty.openApiType.equals("array")) {
-                codegenProperty.dataType = "string[]";
+        if (codegenProperty.dataType.contains("Enum") || codegenProperty.complexType != null || codegenProperty.dataType == FLOAT) {
+            if (codegenProperty.openApiType.equals(ARRAY)) {
+                codegenProperty.dataType = STRING + "[]";
             } else {
-                codegenProperty.dataType = "string";
+                codegenProperty.dataType = STRING;
             }
         }
     }
-
 }

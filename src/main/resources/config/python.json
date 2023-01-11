@@ -1,24 +1,33 @@
 {
   "library": {
-    "phone_number_capabilities": {
-      "PhoneNumberCapabilities": "interfaces"
+    "date": {
+      "datetime": ["date"]
+    },
+    "date_inequality": {
+      "datetime": ["date"]
+    },
+    "date_time": {
+      "datetime": ["datetime"]
+    },
+    "date_or_time": {
+      "datetime": ["datetime"]
+    },
+    "date_time_inequality": {
+      "datetime": ["datetime"]
     }
   },
 
   "properties": {
-    "_": "str",
-    "date": "datetime.date",
-    "date_inequality": "datetime.date",
-    "date_time": "datetime.datetime",
-    "date_or_time": "datetime.datetime",
-    "date_time_inequality": "datetime.datetime",
-    "decimal": "float",
+    "_": "unicode",
     "boolean": "bool",
-    "integer": "int",
-    "object": "object",
-    "phone_number_capabilities": "PhoneNumberCapabilities",
-    "prefixed_collapsible_map": "object",
-    "string_map": "object"
+    "date": "date",
+    "date_inequality": "date",
+    "date_time": "datetime",
+    "date_or_time": "datetime",
+    "date_time_inequality": "datetime",
+    "object": "dict",
+    "prefixed_collapsible_map": "dict",
+    "string_map": "dict"
   },
 
   "serialize": {
@@ -40,11 +49,16 @@
     "date_time<rfc2822>": "deserialize.rfc2822_datetime({value})",
     "date_time_inequality<rfc2822>": "deserialize.rfc2822_datetime({value})",
     "decimal": "deserialize.decimal({value})",
-    "integer": "deserialize.integer({value})"
+    "integer": "deserialize.integer({value})",
+    "long": "deserialize.integer({value})"
   },
 
   "cardinality": {
     "_": "single",
     "prefixed_collapsible_map": "multi"
+  },
+
+  "promotions": {
+
   }
 }

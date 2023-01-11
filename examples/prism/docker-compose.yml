@@ -52,6 +52,16 @@ services:
       - prism_flex_v1
       - prism_versionless
 
+  ruby-test:
+    build:
+      context: ../ruby
+    volumes:
+      - ../ruby:/local
+    depends_on:
+      - prism_api_v2010
+      - prism_flex_v1
+      - prism_versionless
+
   prism_api_v2010:
     image: stoplight/prism:4.10.3
     volumes:

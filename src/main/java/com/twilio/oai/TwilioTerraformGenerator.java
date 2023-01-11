@@ -1,6 +1,7 @@
 package com.twilio.oai;
 
 import com.twilio.oai.common.EnumConstants;
+import com.twilio.oai.common.Utility;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -31,6 +32,7 @@ import org.openapitools.codegen.model.OperationMap;
 import org.openapitools.codegen.model.OperationsMap;
 import org.openapitools.codegen.utils.ModelUtils;
 
+import static com.twilio.oai.common.ApplicationConstants.STRING;
 import static com.twilio.oai.common.EnumConstants.Operation;
 
 public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
@@ -78,7 +80,7 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
     public TwilioTerraformGenerator() {
         super();
 
-        typeMapping.put("object", "string");
+        typeMapping.put("object", STRING);
     }
 
     @Override
@@ -131,7 +133,8 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
             resource.put("nameInSnakeCase", StringHelper.toSnakeCase(resourceName));
             resourceOperationList.add(co);
 
-            twilioCodegen.populateCrudOperations(resource, co);
+            final String operationType = Utility.populateCrudOperations(co);
+            resource.put(operationType, co);
 
             resource.put("hasUpdate", resource.containsKey(EnumConstants.Operation.UPDATE.name()));
 
@@ -332,13 +335,12 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
                 // some properties of type "object" can be an array or a map. (Eg: errors and links in the studio flows)
                 // Letting the type objects be as Strings in the terraform provider and then json encoding in the
                 // provider is the current workaround.
-                return new TerraformSchema("string", schemaOptions, null);
+                return new TerraformSchema(STRING, schemaOptions, null);
         }
     }
 
     private void addParamVendorExtensions(final List<CodegenParameter> params) {
         params.forEach(p -> p.vendorExtensions.put("x-name-in-snake-case", StringHelper.toSnakeCase(p.paramName)));
-        params.forEach(p -> p.vendorExtensions.put("x-util-name", p.isFreeFormObject ? "Object" : "String"));
         params.forEach(p -> p.vendorExtensions.put("x-index", params.indexOf(p)));
     }
 

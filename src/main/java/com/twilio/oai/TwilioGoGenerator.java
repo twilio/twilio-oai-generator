@@ -1,6 +1,7 @@
 package com.twilio.oai;
 
-import java.util.HashMap;
+import com.twilio.oai.common.Utility;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -20,6 +21,8 @@ import org.openapitools.codegen.model.ModelMap;
 import org.openapitools.codegen.model.ModelsMap;
 import org.openapitools.codegen.model.OperationMap;
 import org.openapitools.codegen.model.OperationsMap;
+
+import static com.twilio.oai.common.ApplicationConstants.STRING;
 
 public class TwilioGoGenerator extends AbstractTwilioGoGenerator {
 
@@ -71,13 +74,13 @@ public class TwilioGoGenerator extends AbstractTwilioGoGenerator {
         if (property.dataType.startsWith("[]") && property.dataType.contains("Enum")) {
             property._enum = (List<String>) property.items.allowableValues.get("values");
             property.allowableValues = property.items.allowableValues;
-            property.dataType = "[]string";
+            property.dataType = "[]" + STRING;
             property.isEnum = property.dataFormat == null;
             property.isNullable = true;
         } else if (property.dataType.contains("Enum")) {
             String[] value = property.dataType.split("Enum");
             property.datatypeWithEnum = value[value.length-1];
-            property.dataType = "string";
+            property.dataType = STRING;
             property.isEnum = property.dataFormat == null;
             property.isNullable = true;
         }
@@ -87,13 +90,13 @@ public class TwilioGoGenerator extends AbstractTwilioGoGenerator {
         if (parameter.dataType.startsWith("[]") && parameter.dataType.contains("Enum")) {
             parameter._enum = (List<String>) parameter.items.allowableValues.get("values");
             parameter.allowableValues = parameter.items.allowableValues;
-            parameter.dataType = "[]string";
+            parameter.dataType = "[]" + STRING;
             parameter.isEnum = parameter.dataFormat == null;
             parameter.isNullable = true;
         } else if (parameter.dataType.contains("Enum")) {
             String[] value = parameter.dataType.split("Enum");
             parameter.datatypeWithEnum = value[value.length-1];
-            parameter.dataType = "string";
+            parameter.dataType = STRING;
             parameter.isEnum = parameter.dataFormat == null;
             parameter.isNullable = true;
         }
@@ -119,7 +122,7 @@ public class TwilioGoGenerator extends AbstractTwilioGoGenerator {
             .findFirst();
 
         for (final CodegenOperation co : opList) {
-            twilioCodegen.populateCrudOperations(new HashMap<>(), co);
+            Utility.populateCrudOperations(co);
 
             if (co.nickname.startsWith("List")) {
                 // make sure the format matches the other methods

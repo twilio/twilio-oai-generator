@@ -1,61 +1,59 @@
 package com.twilio.oai.resolver;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.twilio.oai.Segments;
 
 import java.util.Map;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 public class LanguageConventionResolver implements IConventionMapper {
-    public static final String VENDOR_PREFIX = "x-";
     public static final String PREFIXED_COLLAPSIBLE_MAP = "prefixed-collapsible-map";
     public static final String X_PREFIXED_COLLAPSIBLE_MAP = "x-prefixed-collapsible-map";
     public static final String HYPHEN = "-";
-    public static final String OBJECT = "object";
     public static final String MIXED = "mixed";
     public static final String MIXED_ARRAY = "mixed[]";
 
     public static final String LIST_OBJECT = "List<Object>";
 
-    public static final String PHONE_NUMBER_FORMAT = "phone-number";
+    private final Map<String, Map<String, Object>> conventionalMap;
 
-    public static final String X_IS_PHONE_NUMBER_FORMAT = "x-is-phone-number-format";
-
-    public static final String LIST_PREFIX = "list-";
-
-    private Map<String, Map<String, Object>> conventionalMap ;
     public LanguageConventionResolver(String langConventionFilePath) {
         this.conventionalMap = getConventionalMap(langConventionFilePath);
     }
 
-
     @Override
-    public Map<String, Object> properties() {
-        return conventionalMap.get(Segments.SEGMENT_PROPERTIES.getSegment());
+    public ConfigurationSegment properties() {
+        return getSegment(Segments.SEGMENT_PROPERTIES);
     }
 
     @Override
-    public Map<String, Object> serialize() {
-        return conventionalMap.get(Segments.SEGMENT_SERIALIZE.getSegment());
+    public ConfigurationSegment serialize() {
+        return getSegment(Segments.SEGMENT_SERIALIZE);
     }
 
     @Override
-    public Map<String, Object> deserialize() {
-        return conventionalMap.get(Segments.SEGMENT_DESERIALIZE.getSegment());
+    public ConfigurationSegment deserialize() {
+        return getSegment(Segments.SEGMENT_DESERIALIZE);
     }
 
     @Override
-    public Map<String, Object> libraries() {
-        return conventionalMap.get(Segments.SEGMENT_LIBRARY.getSegment());
+    public ConfigurationSegment libraries() {
+        return getSegment(Segments.SEGMENT_LIBRARY);
     }
 
     @Override
-    public Map<String, Object> hydrate() {
-        return conventionalMap.get(Segments.SEGMENT_HYDRATE.getSegment());
+    public ConfigurationSegment hydrate() {
+        return getSegment(Segments.SEGMENT_HYDRATE);
     }
+
     @Override
-    public Map<String, Object> promotions() {
-        return conventionalMap.get(Segments.SEGMENT_PROMOTIONS.getSegment());
+    public ConfigurationSegment promotions() {
+        return getSegment(Segments.SEGMENT_PROMOTIONS);
+    }
+
+    private ConfigurationSegment getSegment(final Segments segmentType) {
+        return new ConfigurationSegment(conventionalMap.get(segmentType.getSegment()));
     }
 
     private Map<String, Map<String, Object>> getConventionalMap(String conventionalFilePath) {

@@ -16,5 +16,6 @@ package openapi
 
 // UpdateCall200Response struct for UpdateCall200Response
 type UpdateCall200Response struct {
-	Sid *string `json:"sid,omitempty"`
+	// Non-string path parameter in the response.
+	Sid *int `json:"sid,omitempty"`
 }

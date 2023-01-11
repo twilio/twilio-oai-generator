@@ -1,57 +1,47 @@
 {{>licenseInfo}}
+{{#resources}}
 
 import { inspect, InspectOptions } from "util";
 {{#hasPaginationOperation}}
-import Page from "{{apiVersionPath}}/../../base/Page";
+import Page, { TwilioResponsePayload } from "{{apiVersionPath}}/../../base/Page";
 import Response from "{{apiVersionPath}}/../../http/response";
 {{/hasPaginationOperation}}
 import {{apiVersionClass}} from "{{apiVersionPath}}/{{apiVersionClass}}";
 const deserialize = require("{{apiVersionPath}}/../../base/deserialize");
 const serialize = require("{{apiVersionPath}}/../../base/serialize");
 import { isValidPathParam } from "{{apiVersionPath}}/../../base/utility";
-{{#resources}}
 {{#dependents}}
 import { {{importName}} } from "./{{apiFilename}}/{{filename}}";
 {{/dependents}}
 {{>imports}}
-{{/resources}}
 {{>model}}
-{{#resources}}
 {{#operations}}
 {{#vendorExtensions.x-is-read-operation}}{{>listOperationsOptions}}{{/vendorExtensions.x-is-read-operation}}
 {{#hasParams}}
 {{^vendorExtensions.x-is-read-operation}}
 /**
  * Options to pass to {{vendorExtensions.x-name-lower}} a {{instanceName}}
- *
- {{#allParams}}
- * @property { {{{dataType}}} } {{^required}}[{{/required}}{{paramName}}{{^required}}]{{/required}} {{{description}}}
- {{/allParams}}
  */
-export interface {{resourceName}}{{vendorExtensions.x-name}}Options {
+export interface {{vendorExtensions.x-resource-name}}{{vendorExtensions.x-name}}Options {
   {{#allParams}}
+  /** {{{description}}} */
   "{{paramName}}"{{^required}}?{{/required}}: {{{dataType}}};
   {{/allParams}}
 }
 {{/vendorExtensions.x-is-read-operation}}
 {{/hasParams}}
 {{/operations}}
-{{/resources}}
-{{#resources}}
 
-export interface {{resourceName}} {
-  {{#instanceResource}}
-  ({{#resourcePathParams}}{{^vendorExtensions.x-is-parent-param}}{{paramName}}: {{dataType}}, {{/vendorExtensions.x-is-parent-param}}{{/resourcePathParams}}): {{resourceName}};
-  get({{#resourcePathParams}}{{^vendorExtensions.x-is-parent-param}}{{paramName}}: {{dataType}}, {{/vendorExtensions.x-is-parent-param}}{{/resourcePathParams}}): {{resourceName}};
-  {{/instanceResource}}
-
+{{#instancePath}}
+export interface {{apiName}}Context {
   {{#dependents}}
+  {{#instanceDependent}}
   {{mountName}}: {{type}};
+  {{/instanceDependent}}
   {{/dependents}}
 
 {{#operations}}
-{{^vendorExtensions.x-is-read-operation}}{{>operationSignature}}{{/vendorExtensions.x-is-read-operation}}
-{{#vendorExtensions.x-is-read-operation}}{{>listInterfaceFunctions}}{{/vendorExtensions.x-is-read-operation}}
+{{#vendorExtensions.x-is-context-operation}}{{>operationSignature}}{{/vendorExtensions.x-is-context-operation}}
 {{/operations}}
   /**
    * Provide a user-friendly representation
@@ -60,45 +50,50 @@ export interface {{resourceName}} {
   [inspect.custom](_depth: any, options: InspectOptions): any;
 }
 
-{{#parentResourceName}}
-export interface {{resourceName}}Solution {
-{{#resourcePathParams}}
-  "{{paramName}}"?: {{{dataType}}};
-{{/resourcePathParams}}
+export interface {{apiName}}ContextSolution {
+{{#instancePathParams}}
+  "{{paramName}}": {{{dataType}}};
+{{/instancePathParams}}
 }
 
-export class {{resourceName}}Impl implements {{resourceName}} {
-  protected _solution: {{resourceName}}Solution;
+export class {{apiName}}ContextImpl implements {{apiName}}Context {
+  protected _solution: {{apiName}}ContextSolution;
   protected _uri: string;
 
   {{#dependents}}
+  {{#instanceDependent}}
   protected _{{mountName}}?: {{type}};
+  {{/instanceDependent}}
   {{/dependents}}
 
-  constructor(protected _version: {{apiVersionClass}}{{#resourcePathParams}}, {{paramName}}: {{{dataType}}}{{/resourcePathParams}}) {
-    {{#resourcePathParams}}
+  constructor(protected _version: {{apiVersionClass}}{{#instancePathParams}}, {{paramName}}: {{{dataType}}}{{/instancePathParams}}) {
+    {{#instancePathParams}}
     if (!isValidPathParam({{paramName}})) {
       throw new Error('Parameter \'{{paramName}}\' is not valid.');
     }
 
-    {{/resourcePathParams}}
-    this._solution = { {{#resourcePathParams}}{{paramName}}, {{/resourcePathParams}} };
-    this._uri = `{{path}}`;
+    {{/instancePathParams}}
+    this._solution = { {{#instancePathParams}}{{paramName}}, {{/instancePathParams}} };
+    this._uri = `{{instancePath}}`;
   }
 
   {{#dependents}}
+  {{#instanceDependent}}
   get {{mountName}}(): {{type}} {
-    this._{{mountName}} = this._{{mountName}} || {{className}}(this._version{{#resourcePathParams}}, this._solution.{{paramName}}{{/resourcePathParams}});
+    this._{{mountName}} = this._{{mountName}} || {{className}}(this._version{{#instancePathParams}}, this._solution.{{paramName}}{{/instancePathParams}});
     return this._{{mountName}};
   }
 
+  {{/instanceDependent}}
   {{/dependents}}
   {{#operations}}
-  {{vendorExtensions.x-name-lower}}({{#hasParams}}params{{^hasRequiredParams}}?{{/hasRequiredParams}}: any, {{/hasParams}}callback?: any): Promise<{{returnType}}> {
+  {{#vendorExtensions.x-is-context-operation}}
+  {{vendorExtensions.x-name-lower}}({{#hasParams}}params{{^hasRequiredParams}}?{{/hasRequiredParams}}: {{#bodyParam}}{{dataType}}{{/bodyParam}}{{^bodyParam}}{{vendorExtensions.x-resource-name}}{{vendorExtensions.x-name}}Options{{/bodyParam}}{{^hasRequiredParams}} | ((error: Error | null, item?: {{returnType}}) => any){{/hasRequiredParams}}, {{/hasParams}}callback?: (error: Error | null, item?: {{returnType}}) => any): Promise<{{returnType}}> {
   {{>operation}}
   }
 
-{{/operations}}
+  {{/vendorExtensions.x-is-context-operation}}
+  {{/operations}}
   /**
    * Provide a user-friendly representation
    *
@@ -112,79 +107,99 @@ export class {{resourceName}}Impl implements {{resourceName}} {
     return inspect(this.toJSON(), options);
   }
 }
-{{/parentResourceName}}
-{{^parentResourceName}}
-export interface {{name}}Solution {
-{{#resourcePathParams}}
-  {{paramName}}?: {{{dataType}}};
-{{/resourcePathParams}}
+
+{{>responseModel}}
+{{/instancePath}}
+
+export interface {{apiName}}Solution {
+  {{#listPathParams}}
+  {{paramName}}: {{{dataType}}};
+  {{/listPathParams}}
 }
 
-interface {{resourceName}}Impl extends {{resourceName}} {}
-class {{resourceName}}Impl implements {{resourceName}} {
-  _version?: {{apiVersionClass}};
-  _solution?: {{name}}Solution;
-  _uri?: string;
+export interface {{apiName}}ListInstance {
+  _version: {{apiVersionClass}};
+  _solution: {{apiName}}Solution;
+  _uri: string;
+
+  {{#instancePath}}
+  ({{#instancePathParams}}{{^vendorExtensions.x-is-parent-param}}{{paramName}}: {{dataType}}, {{/vendorExtensions.x-is-parent-param}}{{/instancePathParams}}): {{apiName}}Context;
+  get({{#instancePathParams}}{{^vendorExtensions.x-is-parent-param}}{{paramName}}: {{dataType}}, {{/vendorExtensions.x-is-parent-param}}{{/instancePathParams}}): {{apiName}}Context;
+  {{/instancePath}}
 
   {{#dependents}}
+  {{^instanceDependent}}
   _{{mountName}}?: {{type}};
+  {{mountName}}: {{type}};
+  {{/instanceDependent}}
   {{/dependents}}
+
+{{#operations}}
+{{^vendorExtensions.x-is-read-operation}}{{#vendorExtensions.x-is-list-operation}}{{>operationSignature}}{{/vendorExtensions.x-is-list-operation}}{{/vendorExtensions.x-is-read-operation}}
+{{#vendorExtensions.x-is-read-operation}}{{>listInterfaceFunctions}}{{/vendorExtensions.x-is-read-operation}}
+{{/operations}}
+  /**
+   * Provide a user-friendly representation
+   */
+  toJSON(): any;
+  [inspect.custom](_depth: any, options: InspectOptions): any;
 }
 
-export function {{resourceName}}(version: {{apiVersionClass}}{{#resourcePathParams}}, {{paramName}}: {{{dataType}}}{{/resourcePathParams}}): {{resourceName}} {
-  {{#resourcePathParams}}
+export function {{apiName}}ListInstance(version: {{apiVersionClass}}{{#listPathParams}}, {{paramName}}: {{{dataType}}}{{/listPathParams}}): {{apiName}}ListInstance {
+  {{#listPathParams}}
   if (!isValidPathParam({{paramName}})) {
     throw new Error('Parameter \'{{paramName}}\' is not valid.');
   }
 
-  {{/resourcePathParams}}
-  {{#instanceResource}}
-  const instance = (({{#resourcePathParams}}{{^vendorExtensions.x-is-parent-param}}{{paramName}}, {{/vendorExtensions.x-is-parent-param}}{{/resourcePathParams}}) => instance.get({{#resourcePathParams}}{{^vendorExtensions.x-is-parent-param}}{{paramName}}, {{/vendorExtensions.x-is-parent-param}}{{/resourcePathParams}})) as {{parentResourceName}}Impl;
+  {{/listPathParams}}
+  {{#instancePath}}
+  const instance = (({{#instancePathParams}}{{^vendorExtensions.x-is-parent-param}}{{paramName}}, {{/vendorExtensions.x-is-parent-param}}{{/instancePathParams}}) => instance.get({{#instancePathParams}}{{^vendorExtensions.x-is-parent-param}}{{paramName}}, {{/vendorExtensions.x-is-parent-param}}{{/instancePathParams}})) as {{apiName}}ListInstance;
 
-  instance.get = function get({{#resourcePathParams}}{{^vendorExtensions.x-is-parent-param}}{{paramName}}, {{/vendorExtensions.x-is-parent-param}}{{/resourcePathParams}}): {{resourceName}} {
-    return new {{resourceName}}Impl(version{{#resourcePathParams}}, {{paramName}}{{/resourcePathParams}});
+  instance.get = function get({{#instancePathParams}}{{^vendorExtensions.x-is-parent-param}}{{paramName}}, {{/vendorExtensions.x-is-parent-param}}{{/instancePathParams}}): {{apiName}}Context {
+    return new {{apiName}}ContextImpl(version{{#instancePathParams}}, {{paramName}}{{/instancePathParams}});
   }
-  {{/instanceResource}}
-  {{^instanceResource}}
-  const instance = {} as {{resourceName}}Impl;
-  {{/instanceResource}}
+  {{/instancePath}}
+  {{^instancePath}}
+  const instance = {} as {{apiName}}ListInstance;
+  {{/instancePath}}
 
   instance._version = version;
-  instance._solution = { {{#resourcePathParams}}{{paramName}}, {{/resourcePathParams}} };
-  instance._uri = `{{path}}`;
+  instance._solution = { {{#listPathParams}}{{paramName}}, {{/listPathParams}} };
+  instance._uri = `{{listPath}}`;
 
   {{#dependents}}
+  {{^instanceDependent}}
   Object.defineProperty(instance, "{{mountName}}", {
     get: function {{mountName}}() {
-      if (!this._{{mountName}}) {
-        this._{{mountName}} = {{className}}(this._version{{#resourcePathParams}}, this._solution.{{paramName}}{{/resourcePathParams}});
+      if (!instance._{{mountName}}) {
+        instance._{{mountName}} = {{className}}(instance._version{{#listPathParams}}, instance._solution.{{paramName}}{{/listPathParams}});
       }
-      return this._{{mountName}};
+      return instance._{{mountName}};
     }
   });
 
+  {{/instanceDependent}}
   {{/dependents}}
 {{#operations}}
-  instance.{{vendorExtensions.x-name-lower}} = function {{vendorExtensions.x-name-lower}}({{#hasParams}}params{{^hasRequiredParams}}?{{/hasRequiredParams}}: any, {{/hasParams}}callback?: any): Promise<{{returnType}}> {
+{{#vendorExtensions.x-is-list-operation}}
+  instance.{{vendorExtensions.x-name-lower}} = function {{vendorExtensions.x-name-lower}}({{#hasParams}}params{{^hasRequiredParams}}?{{/hasRequiredParams}}: {{#bodyParam}}{{dataType}}{{/bodyParam}}{{^bodyParam}}{{vendorExtensions.x-resource-name}}{{vendorExtensions.x-name}}Options{{/bodyParam}}{{^hasRequiredParams}} | ((error: Error | null, items: {{returnType}}) => any){{/hasRequiredParams}},{{/hasParams}} callback?: (error: Error | null, items: {{returnType}}) => any): Promise<{{returnType}}> {
 {{>operation}}
 {{^vendorExtensions.x-is-read-operation}}
     }
 {{/vendorExtensions.x-is-read-operation}}
 
+{{/vendorExtensions.x-is-list-operation}}
 {{/operations}}
   instance.toJSON = function toJSON() {
-    return this._solution;
+    return instance._solution;
   }
 
   instance[inspect.custom] = function inspectImpl(_depth: any, options: InspectOptions) {
-    return inspect(this.toJSON(), options);
+    return inspect(instance.toJSON(), options);
   }
 
   return instance;
 }
-{{/parentResourceName}}
-{{>responseModel}}
-{{/resources}}
-{{#resources}}
+{{^instancePath}}{{>responseModel}}{{/instancePath}}
 {{#hasPaginationOperation}}{{>pagination}}{{/hasPaginationOperation}}
 {{/resources}}

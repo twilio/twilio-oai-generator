@@ -14,8 +14,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.Operation;
@@ -27,13 +27,11 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenOperation;
-import org.openapitools.codegen.CodegenProperty;
 import org.openapitools.codegen.model.ModelsMap;
 import org.openapitools.codegen.model.OperationMap;
 import org.openapitools.codegen.model.OperationsMap;
 
 import static com.twilio.oai.common.ApplicationConstants.ACCOUNT_SID_FORMAT;
-import static com.twilio.oai.common.ApplicationConstants.ARRAY;
 import static com.twilio.oai.common.ApplicationConstants.ENUM_VARS;
 import static com.twilio.oai.common.ApplicationConstants.LIST_INSTANCE;
 import static com.twilio.oai.common.ApplicationConstants.PATH_SEPARATOR_PLACEHOLDER;
@@ -65,6 +63,7 @@ public class DirectoryStructureService {
         private String mountName;
         private String filename;
         private String param;
+        private boolean instanceDependent;
     }
 
     @Data
@@ -78,8 +77,7 @@ public class DirectoryStructureService {
     }
 
     public void configure(final OpenAPI openAPI) {
-        final Map<String, Object> versionResources = PathUtils.getStringMap(additionalProperties,
-                                                                            ALL_VERSION_RESOURCES);
+        final Map<String, DependentResource> versionResources = getVersionResourcesMap();
 
         isVersionLess = additionalProperties.get("apiVersion").equals("");
 
@@ -99,7 +97,8 @@ public class DirectoryStructureService {
                 operation.addTagsItem(tag);
 
                 if (!tag.contains(PATH_SEPARATOR_PLACEHOLDER)) {
-                    addDependent(versionResources, name, operation);
+                    final DependentResource dependent = generateDependent(name, operation);
+                    versionResources.put(dependent.getFilename(), dependent);
                 }
 
                 pathType.ifPresent(type -> Optional
@@ -108,6 +107,12 @@ public class DirectoryStructureService {
                                      () -> operation.addExtension(PATH_TYPE_EXTENSION_NAME, type)));
             });
         });
+    }
+
+    @SuppressWarnings("unchecked")
+    public Map<String, DependentResource> getVersionResourcesMap() {
+        return (Map<String, DependentResource>) additionalProperties.computeIfAbsent(ALL_VERSION_RESOURCES,
+                                                                                     k -> new TreeMap<>());
     }
 
     public void configureResourceFamily(OpenAPI openAPI) {
@@ -131,9 +136,9 @@ public class DirectoryStructureService {
             });
     }
 
-    public void addDependent(final Map<String, Object> resourcesMap, final String path, final Operation operation) {
+    public DependentResource generateDependent(final String path, final Operation operation) {
         final Resource.Aliases resourceAliases = getResourceAliases(path, operation);
-        final DependentResource dependent = new DependentResource.DependentResourceBuilder()
+        return new DependentResource.DependentResourceBuilder()
             .version(PathUtils.getFirstPathPart(path))
             .type(resourceAliases.getClassName() + LIST_INSTANCE)
             .className(resourceAliases.getClassName() + LIST_INSTANCE)
@@ -141,10 +146,9 @@ public class DirectoryStructureService {
             .mountName(caseResolver.pathOperation(resourceAliases.getMountName()))
             .filename(caseResolver.filenameOperation(resourceAliases.getClassName()))
             .build();
-        resourcesMap.put(resourceAliases.getClassName(), dependent);
     }
 
-    public void addContextdependents(final List<Object> resourceList, final String path, final Operation operation){
+    public void addContextdependents(final List<Object> resourceList, final String path, final Operation operation) {
         final Resource.Aliases resourceAliases = getResourceAliases(path, operation);
         String parent = String.join("\\", resourceTree.ancestors(path, operation));
         List<String> params = fetchNonParentPathParams(operation);
@@ -162,15 +166,15 @@ public class DirectoryStructureService {
 
     private List<String> fetchNonParentPathParams(Operation operation){
         if(operation != null){
-            List<Parameter> pathparams = Optional.ofNullable(operation.getParameters())
-                    .map(Collection::stream).orElse(Stream.empty())
-                    .filter(param->Objects.nonNull(param.getIn())).filter(parameter -> PathUtils.isPathParam(parameter))
+            List<Parameter> pathParams = Optional.ofNullable(operation.getParameters())
+                    .stream().flatMap(Collection::stream)
+                    .filter(param -> Objects.nonNull(param.getIn())).filter(PathUtils::isPathParam)
                     .collect(Collectors.toList());
-            List<String> params = pathparams.stream().filter(parameter -> Objects.isNull(parameter.getExtensions()))
-                    .map(parameter -> parameter.getName()).collect(Collectors.toList());
-            params.addAll(pathparams.stream().filter(parameter -> Objects.nonNull(parameter.getExtensions()))
+            List<String> params = pathParams.stream().filter(parameter -> Objects.isNull(parameter.getExtensions()))
+                    .map(Parameter::getName).collect(Collectors.toList());
+            params.addAll(pathParams.stream().filter(parameter -> Objects.nonNull(parameter.getExtensions()))
                     .filter(parameter -> !PathUtils.isParentParam(parameter))
-                    .map(parameter -> parameter.getName()).collect(Collectors.toList()));
+                    .map(Parameter::getName).collect(Collectors.toList()));
             return params;
         }
         return null;
@@ -213,11 +217,9 @@ public class DirectoryStructureService {
             additionalProperties.put("apiVersionClass", StringHelper.camelize(version));
         }
 
-        final List<Object> versionResources = PathUtils
-            .getStringMap(additionalProperties, ALL_VERSION_RESOURCES)
+        final List<DependentResource> versionResources = getVersionResourcesMap()
             .values()
             .stream()
-            .map(DependentResource.class::cast)
             .filter(resource -> resource.getVersion().equals(version))
             .collect(Collectors.toList());
         additionalProperties.put(VERSION_RESOURCES, versionResources);
@@ -266,47 +268,12 @@ public class DirectoryStructureService {
     }
 
     public String getRecordKey(final List<CodegenOperation> opList) {
-        return opList
-            .stream()
-            .filter(co -> co.operationId.toLowerCase().startsWith("list"))
-            .map(co -> getModelByClassname(co.returnType))
-            .map(Optional::orElseThrow)
-            .map(CodegenModel::getAllVars)
-            .flatMap(Collection::stream)
-            .filter(v -> v.openApiType.equals(ARRAY))
-            .map(v -> v.baseName)
-            .findFirst()
-            .orElse("");
+        return Utility.getRecordKey(allModels, opList);
     }
 
     public Optional<CodegenModel> getModelCoPath(final String className,
                                                  final CodegenOperation codegenOperation,
                                                  final String recordKey) {
-        if ((boolean) codegenOperation.vendorExtensions.getOrDefault("x-is-read-operation", false)) {
-            return allModels
-                .stream()
-                .filter(model -> model.getClassname().equals(className))
-                .map(CodegenModel::getVars)
-                .flatMap(Collection::stream)
-                .filter(prop -> prop.baseName.equals(recordKey))
-                .map(CodegenProperty::getComplexType)
-                .map(this::getModelByClassname)
-                .findFirst()
-                .orElseThrow();
-        }
-
-        return getModelByClassname(className);
-    }
-
-    public void addModel(final Map<String, CodegenModel> models, final String complexType, final String dataType) {
-        getModelByClassname(complexType != null ? complexType : dataType).ifPresent(model -> {
-            if (models.putIfAbsent(model.getClassname(), model) == null) {
-                model.getVars().forEach(property -> addModel(models, property.complexType, property.dataType));
-            }
-        });
-    }
-
-    public Optional<CodegenModel> getModelByClassname(final String classname) {
-        return allModels.stream().filter(model -> model.classname.equals(classname)).findFirst();
+        return Utility.getModel(allModels, className, recordKey, codegenOperation);
     }
 }

@@ -72,7 +72,7 @@ import com.twilio.type.SubscribeRule;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @ToString
 public class Call extends Resource {
-    private static final long serialVersionUID = 145080881849338L;
+    private static final long serialVersionUID = 9929770204306L;
 
     public static CallUpdater updater(final String pathSid){
         return new CallUpdater(pathSid);
@@ -115,17 +115,17 @@ public class Call extends Resource {
         }
     }
 
-    private final String sid;
+    private final Integer sid;
 
     @JsonCreator
     private Call(
         @JsonProperty("sid")
-        final String sid
+        final Integer sid
     ) {
         this.sid = sid;
     }
 
-        public final String getSid() {
+        public final Integer getSid() {
             return this.sid;
         }
 

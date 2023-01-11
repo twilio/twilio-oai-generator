@@ -1,5 +1,9 @@
 {{#responseModel}}
-{{#vendorExtensions.x-imports}}
-import { {{name}} } from "{{apiVersionPath}}/../../{{path}}";
-{{/vendorExtensions.x-imports}}
+{{#vars}}
+{{#vendorExtensions.x-import}}
+{{#entrySet}}
+import { {{key}} } from "{{apiVersionPath}}/../../../{{value}}";
+{{/entrySet}}
+{{/vendorExtensions.x-import}}
+{{/vars}}
 {{/responseModel}}

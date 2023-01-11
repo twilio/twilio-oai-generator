@@ -17,7 +17,7 @@ import V2010 from "../../../V2010";
 const deserialize = require("../../../../../base/deserialize");
 const serialize = require("../../../../../base/serialize");
 import { isValidPathParam } from "../../../../../base/utility";
-import { PhoneNumberCapabilities } from "../../../../../interfaces";
+import { PhoneNumberCapabilities } from "../../../../../../lib/interfaces";
 
 export class TestResponseObjectTestArrayOfObjects {
   "count"?: number;
@@ -34,14 +34,13 @@ type TestStatus =
 
 /**
  * Options to pass to update a FeedbackCallSummaryInstance
- *
- * @property { Date } endDate
- * @property { Date } startDate
- * @property { string } [accountSid]
  */
 export interface FeedbackCallSummaryContextUpdateOptions {
+  /**  */
   endDate: Date;
+  /**  */
   startDate: Date;
+  /**  */
   accountSid?: string;
 }
 
@@ -49,16 +48,15 @@ export interface FeedbackCallSummaryContext {
   /**
    * Update a FeedbackCallSummaryInstance
    *
-   * @param { FeedbackCallSummaryContextUpdateOptions } params - Parameter for request
-   * @param { function } [callback] - Callback to handle processed record
+   * @param params - Parameter for request
+   * @param callback - Callback to handle processed record
    *
-   * @returns { Promise } Resolves to processed FeedbackCallSummaryInstance
+   * @returns Resolves to processed FeedbackCallSummaryInstance
    */
   update(
     params: FeedbackCallSummaryContextUpdateOptions,
     callback?: (error: Error | null, item?: FeedbackCallSummaryInstance) => any
   ): Promise<FeedbackCallSummaryInstance>;
-  update(params: any, callback?: any): Promise<FeedbackCallSummaryInstance>;
 
   /**
    * Provide a user-friendly representation
@@ -68,8 +66,8 @@ export interface FeedbackCallSummaryContext {
 }
 
 export interface FeedbackCallSummaryContextSolution {
-  accountSid?: string;
-  sid?: string;
+  accountSid: string;
+  sid: string;
 }
 
 export class FeedbackCallSummaryContextImpl
@@ -91,7 +89,10 @@ export class FeedbackCallSummaryContextImpl
     this._uri = `/Accounts/${accountSid}/Calls/Feedback/Summary/${sid}.json`;
   }
 
-  update(params: any, callback?: any): Promise<FeedbackCallSummaryInstance> {
+  update(
+    params: FeedbackCallSummaryContextUpdateOptions,
+    callback?: (error: Error | null, item?: FeedbackCallSummaryInstance) => any
+  ): Promise<FeedbackCallSummaryInstance> {
     if (params === null || params === undefined) {
       throw new Error('Required parameter "params" missing.');
     }
@@ -116,9 +117,10 @@ export class FeedbackCallSummaryContextImpl
     const headers: any = {};
     headers["Content-Type"] = "application/x-www-form-urlencoded";
 
-    let operationVersion = this._version,
+    const instance = this;
+    let operationVersion = instance._version,
       operationPromise = operationVersion.update({
-        uri: this._uri,
+        uri: instance._uri,
         method: "post",
         data,
         headers,
@@ -129,12 +131,12 @@ export class FeedbackCallSummaryContextImpl
         new FeedbackCallSummaryInstance(
           operationVersion,
           payload,
-          this._solution.accountSid,
-          this._solution.sid
+          instance._solution.accountSid,
+          instance._solution.sid
         )
     );
 
-    operationPromise = this._version.setPromiseCallback(
+    operationPromise = instance._version.setPromiseCallback(
       operationPromise,
       callback
     );
@@ -158,22 +160,22 @@ export class FeedbackCallSummaryContextImpl
 interface FeedbackCallSummaryPayload extends FeedbackCallSummaryResource {}
 
 interface FeedbackCallSummaryResource {
-  account_sid?: string | null;
-  sid?: string | null;
-  test_string?: string | null;
-  test_integer?: number | null;
-  test_object?: PhoneNumberCapabilities | null;
-  test_date_time?: string | null;
-  test_number?: number | null;
-  price_unit?: string | null;
-  test_number_float?: number | null;
-  test_number_decimal?: Decimal | null;
-  test_enum?: TestStatus;
-  a2p_profile_bundle_sid?: string | null;
-  test_array_of_integers?: Array<number>;
-  test_array_of_array_of_integers?: Array<Array<number>>;
-  test_array_of_objects?: Array<TestResponseObjectTestArrayOfObjects> | null;
-  test_array_of_enum?: Array<TestStatus> | null;
+  account_sid: string;
+  sid: string;
+  test_string: string;
+  test_integer: number;
+  test_object: PhoneNumberCapabilities;
+  test_date_time: Date;
+  test_number: number;
+  price_unit: string;
+  test_number_float: number;
+  test_number_decimal: number;
+  test_enum: TestStatus;
+  a2p_profile_bundle_sid: string;
+  test_array_of_integers: Array<number>;
+  test_array_of_array_of_integers: Array<Array<number>>;
+  test_array_of_objects: Array<TestResponseObjectTestArrayOfObjects>;
+  test_array_of_enum: Array<TestStatus>;
 }
 
 export class FeedbackCallSummaryInstance {
@@ -182,7 +184,7 @@ export class FeedbackCallSummaryInstance {
 
   constructor(
     protected _version: V2010,
-    payload: FeedbackCallSummaryPayload,
+    payload: FeedbackCallSummaryResource,
     accountSid: string,
     sid?: string
   ) {
@@ -195,7 +197,7 @@ export class FeedbackCallSummaryInstance {
     this.testNumber = payload.test_number;
     this.priceUnit = payload.price_unit;
     this.testNumberFloat = payload.test_number_float;
-    this.testNumberDecimal = payload.test_number_decimal;
+    this.testNumberDecimal = deserialize.decimal(payload.test_number_decimal);
     this.testEnum = payload.test_enum;
     this.a2pProfileBundleSid = payload.a2p_profile_bundle_sid;
     this.testArrayOfIntegers = payload.test_array_of_integers;
@@ -206,28 +208,28 @@ export class FeedbackCallSummaryInstance {
     this._solution = { accountSid, sid: sid || this.sid };
   }
 
-  accountSid?: string | null;
-  sid?: string | null;
-  testString?: string | null;
-  testInteger?: number | null;
-  testObject?: PhoneNumberCapabilities | null;
-  testDateTime?: string | null;
-  testNumber?: number | null;
-  priceUnit?: string | null;
-  testNumberFloat?: number | null;
-  testNumberDecimal?: Decimal | null;
-  testEnum?: TestStatus;
+  accountSid: string;
+  sid: string;
+  testString: string;
+  testInteger: number;
+  testObject: PhoneNumberCapabilities;
+  testDateTime: Date;
+  testNumber: number;
+  priceUnit: string;
+  testNumberFloat: number;
+  testNumberDecimal: number;
+  testEnum: TestStatus;
   /**
    * A2P Messaging Profile Bundle BundleSid
    */
-  a2pProfileBundleSid?: string | null;
-  testArrayOfIntegers?: Array<number>;
-  testArrayOfArrayOfIntegers?: Array<Array<number>>;
-  testArrayOfObjects?: Array<TestResponseObjectTestArrayOfObjects> | null;
+  a2pProfileBundleSid: string;
+  testArrayOfIntegers: Array<number>;
+  testArrayOfArrayOfIntegers: Array<Array<number>>;
+  testArrayOfObjects: Array<TestResponseObjectTestArrayOfObjects>;
   /**
    * Permissions authorized to the app
    */
-  testArrayOfEnum?: Array<TestStatus> | null;
+  testArrayOfEnum: Array<TestStatus>;
 
   private get _proxy(): FeedbackCallSummaryContext {
     this._context =
@@ -243,16 +245,20 @@ export class FeedbackCallSummaryInstance {
   /**
    * Update a FeedbackCallSummaryInstance
    *
-   * @param { FeedbackCallSummaryContextUpdateOptions } params - Parameter for request
-   * @param { function } [callback] - Callback to handle processed record
+   * @param params - Parameter for request
+   * @param callback - Callback to handle processed record
    *
-   * @returns { Promise } Resolves to processed FeedbackCallSummaryInstance
+   * @returns Resolves to processed FeedbackCallSummaryInstance
    */
   update(
     params: FeedbackCallSummaryContextUpdateOptions,
     callback?: (error: Error | null, item?: FeedbackCallSummaryInstance) => any
   ): Promise<FeedbackCallSummaryInstance>;
-  update(params: any, callback?: any): Promise<FeedbackCallSummaryInstance> {
+
+  update(
+    params?: any,
+    callback?: (error: Error | null, item?: FeedbackCallSummaryInstance) => any
+  ): Promise<FeedbackCallSummaryInstance> {
     return this._proxy.update(params, callback);
   }
 
@@ -287,7 +293,15 @@ export class FeedbackCallSummaryInstance {
   }
 }
 
+export interface FeedbackCallSummarySolution {
+  accountSid: string;
+}
+
 export interface FeedbackCallSummaryListInstance {
+  _version: V2010;
+  _solution: FeedbackCallSummarySolution;
+  _uri: string;
+
   (sid: string): FeedbackCallSummaryContext;
   get(sid: string): FeedbackCallSummaryContext;
 
@@ -296,20 +310,6 @@ export interface FeedbackCallSummaryListInstance {
    */
   toJSON(): any;
   [inspect.custom](_depth: any, options: InspectOptions): any;
-}
-
-export interface FeedbackCallSummarySolution {
-  accountSid?: string;
-}
-
-interface FeedbackCallSummaryListInstanceImpl
-  extends FeedbackCallSummaryListInstance {}
-class FeedbackCallSummaryListInstanceImpl
-  implements FeedbackCallSummaryListInstance
-{
-  _version?: V2010;
-  _solution?: FeedbackCallSummarySolution;
-  _uri?: string;
 }
 
 export function FeedbackCallSummaryListInstance(
@@ -321,7 +321,7 @@ export function FeedbackCallSummaryListInstance(
   }
 
   const instance = ((sid) =>
-    instance.get(sid)) as FeedbackCallSummaryListInstanceImpl;
+    instance.get(sid)) as FeedbackCallSummaryListInstance;
 
   instance.get = function get(sid): FeedbackCallSummaryContext {
     return new FeedbackCallSummaryContextImpl(version, accountSid, sid);
@@ -332,14 +332,14 @@ export function FeedbackCallSummaryListInstance(
   instance._uri = ``;
 
   instance.toJSON = function toJSON() {
-    return this._solution;
+    return instance._solution;
   };
 
   instance[inspect.custom] = function inspectImpl(
     _depth: any,
     options: InspectOptions
   ) {
-    return inspect(this.toJSON(), options);
+    return inspect(instance.toJSON(), options);
   };
 
   return instance;

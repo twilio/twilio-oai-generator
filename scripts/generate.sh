@@ -65,6 +65,11 @@ if should-generate php; then
 fi
 
 if should-generate python; then
-  OUT_DIR=examples/python/lib/rest
+  OUT_DIR=examples/python/twilio/rest
   generate twilio-python
+fi
+
+if should-generate ruby; then
+  OUT_DIR=examples/ruby/lib/twilio-ruby/rest
+  generate twilio-ruby
 fi

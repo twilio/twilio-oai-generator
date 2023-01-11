@@ -28,7 +28,6 @@ namespace Twilio\Rest\{{domainName}}\{{version}}{{namespaceSubPart}};
  */
     {{/-last}}
 {{/metaProperties.listImportMethods}}
-
 class {{apiName}}List extends ListResource {
     {{#metaProperties.listImportProperties}}
     protected $_{{#lambda.camelcase}}{{mountName}}{{/lambda.camelcase}} = null;
@@ -42,7 +41,7 @@ class {{apiName}}List extends ListResource {
      * @param Version $version Version that contains the resource
      {{#requiredPathParams}}
      {{#vendorExtensions.x-is-parent-param}}
-     * @param {{{dataType}}} ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}} {{description}}
+     * @param {{{dataType}}} ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}} {{{description}}}
      {{/vendorExtensions.x-is-parent-param}}
      {{/requiredPathParams}}
      */
@@ -58,6 +57,7 @@ class {{apiName}}List extends ListResource {
     }
 
 {{#apiOperations}}
+{{^vendorExtensions.x-ignore}}
 {{#vendorExtensions.listOperation}}
 {{^vendorExtensions.x-is-read-operation}}{{>method}}
 {{>contextMethod}}
@@ -67,13 +67,15 @@ class {{apiName}}List extends ListResource {
 {{#vendorExtensions.x-is-read-operation}}
 {{>listRead}}
 {{/vendorExtensions.x-is-read-operation}}
+{{/vendorExtensions.x-ignore}}
 {{/apiOperations}}
+{{#metaProperties.hasInstanceOperation}}
     /**
      * Constructs a {{apiName}}Context
-     *
      {{#requiredPathParams}}
      {{^vendorExtensions.x-is-parent-param}}
-     * @param {{{dataType}}} ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}} {{description}}
+     *
+     * @param {{{dataType}}} ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}} {{{description}}}
      {{/vendorExtensions.x-is-parent-param}}
      {{/requiredPathParams}}
      */
@@ -81,6 +83,7 @@ class {{apiName}}List extends ListResource {
         return new {{apiName}}Context($this->version{{#requiredPathParams}}{{#vendorExtensions.x-is-parent-param}}, $this->solution['{{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}']{{/vendorExtensions.x-is-parent-param}}{{/requiredPathParams}}{{#requiredPathParams}}{{^vendorExtensions.x-is-parent-param}}, ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}{{/vendorExtensions.x-is-parent-param}}{{/requiredPathParams}});
     }
 
+{{/metaProperties.hasInstanceOperation}}
     {{#metaProperties.listImportProperties}}
     /**
      * Access the {{#lambda.camelcase}}{{mountName}}{{/lambda.camelcase}}
@@ -101,15 +104,15 @@ class {{apiName}}List extends ListResource {
     }
 
     {{/metaProperties.listImportProperties}}
-    {{#metaProperties.listImportProperties.0}}
+{{#metaProperties.listImportProperties.0}}
     /**
      * Magic getter to lazy load subresources
      *
      * @param string $name Subresource to return
-     * @return ListResource The requested subresource
+     * @return \Twilio\ListResource The requested subresource
      * @throws TwilioException For unknown subresources
      */
-    public function __get(string $name): ListResource {
+    public function __get(string $name) {
         if (\property_exists($this, '_' . $name)) {
             $method = 'get' . \ucfirst($name);
             return $this->$method();
@@ -135,7 +138,44 @@ class {{apiName}}List extends ListResource {
         throw new TwilioException('Resource does not have a context');
     }
 
-    {{/metaProperties.listImportProperties.0}}
+{{/metaProperties.listImportProperties.0}}
+{{^metaProperties.listImportProperties.0}}
+{{#metaProperties.listImportMethods.0}}
+    /**
+     * Magic getter to lazy load subresources
+     *
+     * @param string $name Subresource to return
+     * @return \Twilio\ListResource The requested subresource
+     * @throws TwilioException For unknown subresources
+     */
+    public function __get(string $name) {
+        if (\property_exists($this, '_' . $name)) {
+            $method = 'get' . \ucfirst($name);
+            return $this->$method();
+        }
+
+        throw new TwilioException('Unknown subresource ' . $name);
+    }
+
+    /**
+     * Magic caller to get resource contexts
+     *
+     * @param string $name Resource to return
+     * @param array $arguments Context parameters
+     * @return InstanceContext The requested resource context
+     * @throws TwilioException For unknown resource
+     */
+    public function __call(string $name, array $arguments): InstanceContext {
+        $property = $this->$name;
+        if (\method_exists($property, 'getContext')) {
+            return \call_user_func_array(array($property, 'getContext'), $arguments);
+        }
+
+        throw new TwilioException('Resource does not have a context');
+    }
+
+{{/metaProperties.listImportMethods.0}}
+{{/metaProperties.listImportProperties.0}}
     /**
      * Provide a friendly representation
      *

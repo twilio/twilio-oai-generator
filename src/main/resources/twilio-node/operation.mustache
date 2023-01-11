@@ -14,7 +14,7 @@
     {{/requiredParams}}
   {{/hasRequiredParams}}
   {{^hasRequiredParams}}
-    if (typeof params === "function") {
+    if (params instanceof Function) {
       callback = params;
       params = {};
     } else {
@@ -27,7 +27,7 @@
     {{#queryParams}}{{>requestParam}}{{/queryParams}}
     {{#formParams}}{{>requestParam}}{{/formParams}}
     {{#vendorExtensions.x-is-read-operation}}
-    if (params.page !== undefined) data["Page"] = params.pageNumber;
+    if (params.pageNumber !== undefined) data["Page"] = params.pageNumber;
     if (params.pageToken !== undefined) data["PageToken"] = params.pageToken;
     {{/vendorExtensions.x-is-read-operation}}
 
@@ -40,18 +40,21 @@
     {{#headerParams}}
     if (params["{{paramName}}"] !== undefined) headers["{{{baseName}}}"] = params["{{paramName}}"];
     {{/headerParams}}
-    {{/hasParams}}
+{{/hasParams}}
 
-    let operationVersion = {{#parentResourceName}}this._version{{/parentResourceName}}{{^parentResourceName}}version{{/parentResourceName}},
-        operationPromise = operationVersion.{{vendorExtensions.x-name-lower}}({ uri: this._uri, method: "{{httpMethod}}"{{#hasParams}}, {{^isBodyAllowed}}params: {{/isBodyAllowed}}data, headers{{/hasParams}} });
+    {{#vendorExtensions.x-is-context-operation}}
+    const instance = this;
+    {{/vendorExtensions.x-is-context-operation}}
+    let operationVersion = {{#vendorExtensions.x-is-context-operation}}instance._version{{/vendorExtensions.x-is-context-operation}}{{#vendorExtensions.x-is-list-operation}}version{{/vendorExtensions.x-is-list-operation}},
+        operationPromise = operationVersion.{{vendorExtensions.x-name-lower}}({ uri: instance._uri, method: "{{httpMethod}}"{{#hasParams}}, {{^isBodyAllowed}}params: {{/isBodyAllowed}}data, headers{{/hasParams}} });
     {{^vendorExtensions.x-is-read-operation}}{{^vendorExtensions.x-is-delete-operation}}
-    operationPromise = operationPromise.then(payload => new {{instanceName}}(operationVersion, payload{{#resourcePathParams}}, this._solution.{{paramName}}{{/resourcePathParams}}));
+    operationPromise = operationPromise.then(payload => new {{instanceName}}(operationVersion, payload{{#vendorExtensions.x-is-context-operation}}{{#instancePathParams}}, instance._solution.{{paramName}}{{/instancePathParams}}{{/vendorExtensions.x-is-context-operation}}{{#vendorExtensions.x-is-list-operation}}{{#listPathParams}}, instance._solution.{{paramName}}{{/listPathParams}}{{/vendorExtensions.x-is-list-operation}}));
     {{/vendorExtensions.x-is-delete-operation}}{{/vendorExtensions.x-is-read-operation}}
     {{#vendorExtensions.x-is-read-operation}}
-    operationPromise = operationPromise.then(payload => new {{returnType}}(operationVersion, payload, this._solution));
+    operationPromise = operationPromise.then(payload => new {{returnType}}(operationVersion, payload, instance._solution));
     {{/vendorExtensions.x-is-read-operation}}
 
-    operationPromise = this._version.setPromiseCallback(operationPromise,callback);
+    operationPromise = instance._version.setPromiseCallback(operationPromise,callback);
     return operationPromise;
 
   {{#vendorExtensions.x-is-read-operation}}
@@ -59,11 +62,11 @@
   instance.each = instance._version.each;
   instance.list = instance._version.list;
 
-  instance.getPage = function getPage(targetUrl?: any, callback?: any): Promise<{{returnType}}> {
-    let operationPromise = this._version._domain.twilio.request({method: "{{httpMethod}}", uri: targetUrl});
+  instance.getPage = function getPage(targetUrl: string, callback?: (error: Error | null, items: {{returnType}}) => any): Promise<{{returnType}}> {
+    const operationPromise = instance._version._domain.twilio.request({method: "{{httpMethod}}", uri: targetUrl});
 
-    operationPromise = operationPromise.then(payload => new {{returnType}}(this._version, payload, this._solution));
-    operationPromise = this._version.setPromiseCallback(operationPromise,callback);
-    return operationPromise;
+    let pagePromise = operationPromise.then(payload => new {{returnType}}(instance._version, payload, instance._solution));
+    pagePromise = instance._version.setPromiseCallback(pagePromise, callback);
+    return pagePromise;
   }
   {{/vendorExtensions.x-is-read-operation}}

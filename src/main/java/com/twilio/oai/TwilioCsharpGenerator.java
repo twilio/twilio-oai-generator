@@ -119,11 +119,11 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
             resolver.setClassName(resourceName);
             Map<String, Object> resource = resources.computeIfAbsent(resourceName, k -> new LinkedHashMap<>());
 
-            twilioCodegen.populateCrudOperations(resource, co);
+            Utility.populateCrudOperations(co);
             resolveCodeOperationParams(co, recordKey, responseModels);
 
             // Add operations key to resource
-            final ArrayList<CodegenOperation> resourceOperationList = Utility.getOperations(resource);
+            final List<CodegenOperation> resourceOperationList = Utility.getOperations(resource);
             resourceOperationList.add(co);
 
             boolean arrayParamsPresent = hasArrayParams(co.allParams);
@@ -174,7 +174,8 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
     private void generateGetParams(CodegenOperation co) {
         LinkedList<CodegenParameter> headerParams = new LinkedList<>();
         for (CodegenParameter codegenParameter: co.allParams) {
-            if (!codegenParameter.isPathParam && !codegenParameter.isHeaderParam) {
+            if (!codegenParameter.isPathParam && !codegenParameter.isHeaderParam
+                    && !(Boolean) codegenParameter.vendorExtensions.getOrDefault("x-ignore-in-header", false)) {
                 headerParams.add(codegenParameter);
             }
         }

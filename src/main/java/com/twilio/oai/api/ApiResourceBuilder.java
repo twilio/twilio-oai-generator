@@ -1,11 +1,10 @@
 package com.twilio.oai.api;
 
 import com.twilio.oai.DirectoryStructureService;
-import com.twilio.oai.HttpMethod;
 import com.twilio.oai.PathUtils;
 import com.twilio.oai.StringHelper;
-import com.twilio.oai.common.EnumConstants;
-import com.twilio.oai.resolver.ISchemaResolver;
+import com.twilio.oai.common.Utility;
+import com.twilio.oai.resolver.Resolver;
 import com.twilio.oai.template.IApiActionTemplate;
 import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenOperation;
@@ -15,14 +14,12 @@ import org.openapitools.codegen.CodegenProperty;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static com.twilio.oai.common.ApplicationConstants.PATH_SEPARATOR_PLACEHOLDER;
+import static com.twilio.oai.common.EnumConstants.Operation;
+
 public abstract class ApiResourceBuilder implements IApiResourceBuilder {
-    public final static String API_OPERATION_READ = "Read";
-    public final static String API_OPERATION_CREATE = "Create";
-    public final static String API_OPERATION_FETCH = "Fetch";
-    public final static String API_OPERATION_UPDATE = "Update";
-    public final static String API_OPERATION_DELETE = "Delete";
-    public final static String META_LIST_PARAMETER_KEY = "x-list-parameters";
-    public final static String META_CONTEXT_PARAMETER_KEY = "x-context-parameters";
+    public static final String META_LIST_PARAMETER_KEY = "x-list-parameters";
+    public static final String META_CONTEXT_PARAMETER_KEY = "x-context-parameters";
 
     protected IApiActionTemplate template;
     protected List<CodegenModel> allModels;
@@ -31,41 +28,43 @@ public abstract class ApiResourceBuilder implements IApiResourceBuilder {
     protected Set<CodegenProperty> apiResponseModels = new LinkedHashSet<>();
     protected Map<String, Object> metaAPIProperties = new HashMap<>();
     protected String version = "";
-    protected String recordKey = "";
+    protected final String recordKey;
     protected String apiPath ="";
     protected String namespaceSubPart = "";
 
-    public ApiResourceBuilder(IApiActionTemplate template, List<CodegenOperation> codegenOperations, List<CodegenModel> allModels) {
+    protected ApiResourceBuilder(IApiActionTemplate template, List<CodegenOperation> codegenOperations, List<CodegenModel> allModels) {
         this.template = template;
         this.codegenOperationList = codegenOperations;
         this.allModels = allModels;
-        this.recordKey = findRecordKey();
+        this.recordKey = Utility.getRecordKey(allModels, codegenOperations);
     }
 
     @Override
-    public ApiResourceBuilder updateOperations(ISchemaResolver<CodegenParameter> codegenParameterIResolver) {
-        this.codegenOperationList.stream().forEach(codegenOperation -> {
-            codegenOperation.pathParams = codegenOperation.pathParams.stream().map(item ->
-                    codegenParameterIResolver.resolve(item)).collect(Collectors.toList());
-            codegenOperation.allParams = codegenOperation.allParams.stream().map(item ->
-                    codegenParameterIResolver.resolve(item)).collect(Collectors.toList());
-            codegenOperation.queryParams = codegenOperation.queryParams.stream().map(item ->
-                    codegenParameterIResolver.resolve(item)).collect(Collectors.toList());
-            codegenOperation.bodyParams = codegenOperation.bodyParams.stream().map(item ->
-                    codegenParameterIResolver.resolve(item)).collect(Collectors.toList());
-            codegenOperation.requiredParams = codegenOperation.requiredParams.stream()
-                    .map(item -> codegenParameterIResolver.resolve(item)).collect(Collectors.toList());
-            codegenOperation.optionalParams = codegenOperation.optionalParams.stream()
-                    .map(item -> codegenParameterIResolver.resolve(item)).collect(Collectors.toList());
+    public ApiResourceBuilder updateOperations(Resolver<CodegenParameter> codegenParameterIResolver) {
+        this.codegenOperationList.forEach(codegenOperation -> {
+            codegenOperation.pathParams.forEach(codegenParameterIResolver::resolve);
+            codegenOperation.allParams.forEach(codegenParameterIResolver::resolve);
+            codegenOperation.queryParams.forEach(codegenParameterIResolver::resolve);
+            codegenOperation.formParams.forEach(codegenParameterIResolver::resolve);
+            codegenOperation.bodyParams.forEach(codegenParameterIResolver::resolve);
+            codegenOperation.requiredParams.forEach(codegenParameterIResolver::resolve);
+            codegenOperation.optionalParams.forEach(codegenParameterIResolver::resolve);
 
-            if(codegenOperation.vendorExtensions.containsKey("x-ignore")) {
-                codegenOperation.pathParams.stream().filter(codegenParameter -> PathUtils.isParentParam(codegenParameter)).filter(codegenParameter ->
-                        !requiredPathParams.stream().anyMatch(param -> param.baseName.equals(codegenParameter.baseName))
-                ).collect(Collectors.toList()).forEach(param -> requiredPathParams.add(param));
+            if (codegenOperation.vendorExtensions.containsKey("x-ignore")) {
+                requiredPathParams.addAll(codegenOperation.pathParams
+                                              .stream()
+                                              .filter(PathUtils::isParentParam)
+                                              .filter(codegenParameter -> requiredPathParams
+                                                  .stream()
+                                                  .noneMatch(param -> param.baseName.equals(codegenParameter.baseName)))
+                                              .collect(Collectors.toList()));
             } else {
-                codegenOperation.pathParams.stream().filter(codegenParameter ->
-                        !requiredPathParams.stream().anyMatch(param -> param.baseName.equals(codegenParameter.baseName))
-                ).collect(Collectors.toList()).forEach(param -> requiredPathParams.add(param));
+                requiredPathParams.addAll(codegenOperation.pathParams
+                                              .stream()
+                                              .filter(codegenParameter -> requiredPathParams
+                                                  .stream()
+                                                  .noneMatch(param -> param.baseName.equals(codegenParameter.baseName)))
+                                              .collect(Collectors.toList()));
             }
 
             codegenOperation.vendorExtensions.putAll(mapOperation(codegenOperation));
@@ -74,20 +73,18 @@ public abstract class ApiResourceBuilder implements IApiResourceBuilder {
     }
 
     @Override
-    public ApiResourceBuilder updateResponseModel(ISchemaResolver<CodegenProperty> codegenPropertyIResolver) {
-        codegenOperationList.stream().forEach(codegenOperation -> {
+    public ApiResourceBuilder updateResponseModel(Resolver<CodegenProperty> codegenPropertyResolver) {
+        codegenOperationList.forEach(codegenOperation -> {
             List<CodegenModel> responseModels = new ArrayList<>();
             codegenOperation.responses
                     .stream()
-                    .map(response -> response.dataType)
+                    .map(response -> response.baseType)
                     .filter(Objects::nonNull)
-                    .map(modelName -> this.getModel(modelName, codegenOperation, allModels))
+                    .map(modelName -> this.getModel(modelName, codegenOperation))
                     .flatMap(Optional::stream)
                     .forEach(item -> {
-                        item.vars = item.vars.stream().map(v ->
-                                codegenPropertyIResolver.resolve(v)).collect(Collectors.toList());
-                        item.allVars = item.allVars.stream().map(v ->
-                                codegenPropertyIResolver.resolve(v)).collect(Collectors.toList());
+                        item.vars.forEach(codegenPropertyResolver::resolve);
+                        item.allVars.forEach(codegenPropertyResolver::resolve);
                         responseModels.add(item);
                     });
             this.apiResponseModels.addAll(getDistinctResponseModel(responseModels));
@@ -113,15 +110,30 @@ public abstract class ApiResourceBuilder implements IApiResourceBuilder {
     }
 
     protected Map<String, Object> mapOperation(CodegenOperation operation) {
-        Map<String, Object> operationMap = new HashMap<>();
-        final HttpMethod httpMethod = HttpMethod.fromString(operation.httpMethod);
-        if (isInstanceOperation(operation)) {
-            applyInstanceOperation(operation, operationMap, httpMethod);
-            operationMap.put("x-is-context-operation","true");
+        final String operationType = Utility.populateCrudOperations(operation);
+        metaAPIProperties.put(operationType, operation);
+
+        Map<String, Object> operationMap = operation.vendorExtensions;
+        if (PathUtils.isInstanceOperation(operation)) {
+            applyInstanceOperation(operation, operationMap);
+            operationMap.put("x-is-context-operation", "true");
         } else {
-            applyListOperation(operation, operationMap, httpMethod);
-            operationMap.put("x-is-list-operation","true");
+            applyListOperation(operation, operationMap);
+            operationMap.put("x-is-list-operation", "true");
         }
+
+        if (operation.operationId.startsWith("update")) {
+            addOperationName(operation, Operation.UPDATE.getValue());
+        } else if (operation.operationId.startsWith("delete")) {
+            addOperationName(operation, Operation.DELETE.getValue());
+        } else if (operation.operationId.startsWith("create")) {
+            addOperationName(operation, Operation.CREATE.getValue());
+        } else if (operation.operationId.startsWith("fetch")) {
+            addOperationName(operation, Operation.FETCH.getValue());
+        } else if (operation.operationId.startsWith("list")) {
+            addOperationName(operation, Operation.READ.getValue());
+        }
+
         operationMap.put("hasRequiredNonPathParams",
                 (operation.requiredParams.stream().anyMatch(param -> !param.isPathParam)));
         operationMap.put("hasOptionalQueryParams",
@@ -133,52 +145,41 @@ public abstract class ApiResourceBuilder implements IApiResourceBuilder {
         return operationMap;
     }
 
-    private void applyListOperation(CodegenOperation operation, Map<String, Object> operationMap, HttpMethod httpMethod) {
-
+    private void applyListOperation(CodegenOperation operation, Map<String, Object> operationMap) {
         if(!operation.vendorExtensions.containsKey("x-ignore")) {
-            if (httpMethod == HttpMethod.POST) {
-                operationMap.put("x-name", API_OPERATION_CREATE);
-                operationMap.put("x-is-create-operation", true);
-            } else if (httpMethod == HttpMethod.GET) {
-                operationMap.put("x-name", API_OPERATION_READ);
-                metaAPIProperties.put("hasReadOperation","true");
-                operationMap.put("x-is-read-operation", true);
-            }
+            operationMap.put("x-resource-name", getApiName() + "ListInstance");
             metaAPIProperties.put("x-is-list-operation", "true");
             metaAPIProperties.put(META_LIST_PARAMETER_KEY, operation.allParams);
         }
     }
 
-    private void applyInstanceOperation(CodegenOperation operation, Map<String, Object> operationMap, HttpMethod httpMethod) {
-
+    private void applyInstanceOperation(CodegenOperation operation, Map<String, Object> operationMap) {
         if(!operation.vendorExtensions.containsKey("x-ignore")) {
-            if (httpMethod == HttpMethod.GET) {
-                operationMap.put("x-name", API_OPERATION_FETCH);
-                operationMap.put("x-is-fetch-operation", true);
-            } else if (httpMethod == HttpMethod.POST) {
-                operationMap.put("x-name", API_OPERATION_UPDATE);
-                operationMap.put("x-is-update-operation", true);
-            } else if (httpMethod == HttpMethod.DELETE) {
-                operationMap.put("x-name", API_OPERATION_DELETE);
-                operationMap.put("x-is-delete-operation", true);
-            }
+            operationMap.put("x-resource-name", getApiName() + "Context");
             metaAPIProperties.put("x-is-context-operation", "true");
             metaAPIProperties.put(META_CONTEXT_PARAMETER_KEY, operation.allParams);
         }
     }
 
-    private Optional<CodegenModel> getModel(final String modelName, CodegenOperation codegenOperation, List<CodegenModel> allModels) {
-        String[] modelNames = modelName.split("\\\\");
-        String extractedModelName = modelNames[modelNames.length - 1];
-        if (codegenOperation.vendorExtensions.containsKey("x-is-read-operation") && (boolean) codegenOperation.vendorExtensions.get("x-is-read-operation")) {
-            Optional<CodegenModel> coModel = allModels.stream().filter(model -> model.getClassname().equals(extractedModelName)).findFirst();
-            if (coModel.isEmpty()) {
-                return Optional.empty();
+    protected void addOperationName(final CodegenOperation operation, final String name) {
+        operation.vendorExtensions.put("x-name", name);
+        operation.vendorExtensions.put("x-name-lower", name.toLowerCase());
+    }
+
+    protected Optional<CodegenModel> getModel(final String className, final CodegenOperation codegenOperation) {
+        return Utility.getModel(allModels, className, recordKey, codegenOperation);
+    }
+
+    protected Optional<CodegenModel> getModelByClassname(final String classname) {
+        return Utility.getModelByClassname(allModels, classname);
+    }
+
+    protected void addModel(final Map<String, CodegenModel> models, final String complexType, final String dataType) {
+        getModelByClassname(complexType != null ? complexType : dataType).ifPresent(model -> {
+            if (models.putIfAbsent(model.getClassname(), model) == null) {
+                model.getVars().forEach(property -> addModel(models, property.complexType, property.dataType));
             }
-            CodegenProperty property = coModel.get().vars.stream().filter(prop -> prop.baseName.equals(findRecordKey())).findFirst().get();
-            return allModels.stream().filter(model -> model.getClassname().equals(property.complexType)).findFirst();
-        }
-        return allModels.stream().filter(model -> model.getClassname().equals(extractedModelName)).findFirst();
+        });
     }
 
     protected Set<CodegenProperty> getDistinctResponseModel(List<CodegenModel> responseModels) {
@@ -187,8 +188,8 @@ public abstract class ApiResourceBuilder implements IApiResourceBuilder {
             for (CodegenProperty property : codegenModel.vars) {
                 property.nameInCamelCase = StringHelper.camelize(property.nameInSnakeCase);
                 if (Arrays
-                        .stream(EnumConstants.Operation.values())
-                        .anyMatch(value -> value.getValue().equals(property.nameInCamelCase))) {
+                    .stream(Operation.values())
+                    .anyMatch(value -> value.getValue().equals(property.nameInCamelCase))) {
                     property.nameInCamelCase = "_" + property.nameInCamelCase;
                 }
                 distinctResponseModels.add(property);
@@ -197,34 +198,13 @@ public abstract class ApiResourceBuilder implements IApiResourceBuilder {
         return distinctResponseModels;
     }
 
-    protected boolean isInstanceOperation(CodegenOperation operation) {
-        boolean is_fetch = operation.nickname.startsWith(EnumConstants.Operation.FETCH.getValue().toLowerCase(Locale.ROOT));
-        boolean is_update = operation.nickname.startsWith(EnumConstants.Operation.UPDATE.getValue().toLowerCase(Locale.ROOT));
-        boolean is_delete = operation.nickname.startsWith(EnumConstants.Operation.DELETE.getValue().toLowerCase(Locale.ROOT));
-        if (is_fetch || is_update || is_delete) {
-            return true;
-        }
-        return false;
+    public boolean hasPaginationOperation() {
+        return codegenOperationList.stream().anyMatch(co -> co.operationId.toLowerCase().startsWith("list"));
     }
 
-    protected String findRecordKey() {
-        String recordKey = "";
-        for (CodegenOperation co : this.codegenOperationList) {
-            for (CodegenModel model : allModels) {
-                if (co.returnType == null) {
-                    continue;
-                }
-                String[] split = co.returnType.split("\\\\");
-                String returnTypeStr = split[split.length - 1];
-                if (model.name.equals(returnTypeStr)) {
-                    recordKey = model.allVars
-                            .stream()
-                            .filter(v -> v.openApiType.equals("array"))
-                            .collect(Collectors.toList()).get(0).baseName;
-                }
-            }
-        }
-        return recordKey;
+    public String getApiName() {
+        final List<String> filePathArray = new ArrayList<>(Arrays.asList(codegenOperationList.get(0).baseName.split(
+            PATH_SEPARATOR_PLACEHOLDER)));
+        return filePathArray.remove(filePathArray.size() - 1);
     }
-
 }
