@@ -21,7 +21,7 @@ const serialize = require("../../../base/serialize");
 import { isValidPathParam } from "../../../base/utility";
 import { CallListInstance } from "./account/call";
 import { PhoneNumberCapabilities } from "../../../../lib/interfaces";
-import TwiML from "../../../twiml/TwiML";
+import TwiML from "../../../../lib/twiml/TwiML";
 
 export class TestResponseObjectTestArrayOfObjects {
   "count"?: number;
