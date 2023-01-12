@@ -103,16 +103,18 @@ namespace Twilio.Rest.Api.V2010
         /// <summary> create </summary>
         /// <param name="recordingStatusCallback">  </param>
         /// <param name="recordingStatusCallbackEvent">  </param>
+        /// <param name="twiml">  </param>
         /// <param name="xTwilioWebhookEnabled">  </param>
         /// <param name="client"> Client to make requests to Twilio </param>
         /// <returns> A single instance of Account </returns>
         public static AccountResource Create(
                                           Uri recordingStatusCallback = null,
                                           List<string> recordingStatusCallbackEvent = null,
+                                          Types.Twiml twiml = null,
                                           AccountResource.XTwilioWebhookEnabledEnum xTwilioWebhookEnabled = null,
                                           ITwilioRestClient client = null)
         {
-            var options = new CreateAccountOptions(){  RecordingStatusCallback = recordingStatusCallback, RecordingStatusCallbackEvent = recordingStatusCallbackEvent, XTwilioWebhookEnabled = xTwilioWebhookEnabled };
+            var options = new CreateAccountOptions(){  RecordingStatusCallback = recordingStatusCallback, RecordingStatusCallbackEvent = recordingStatusCallbackEvent, Twiml = twiml, XTwilioWebhookEnabled = xTwilioWebhookEnabled };
             return Create(options, client);
         }
 
@@ -120,16 +122,18 @@ namespace Twilio.Rest.Api.V2010
         /// <summary> create </summary>
         /// <param name="recordingStatusCallback">  </param>
         /// <param name="recordingStatusCallbackEvent">  </param>
+        /// <param name="twiml">  </param>
         /// <param name="xTwilioWebhookEnabled">  </param>
         /// <param name="client"> Client to make requests to Twilio </param>
         /// <returns> Task that resolves to A single instance of Account </returns>
         public static async System.Threading.Tasks.Task<AccountResource> CreateAsync(
                                                                                   Uri recordingStatusCallback = null,
                                                                                   List<string> recordingStatusCallbackEvent = null,
+                                                                                  Types.Twiml twiml = null,
                                                                                   AccountResource.XTwilioWebhookEnabledEnum xTwilioWebhookEnabled = null,
                                                                                   ITwilioRestClient client = null)
         {
-        var options = new CreateAccountOptions(){  RecordingStatusCallback = recordingStatusCallback, RecordingStatusCallbackEvent = recordingStatusCallbackEvent, XTwilioWebhookEnabled = xTwilioWebhookEnabled };
+        var options = new CreateAccountOptions(){  RecordingStatusCallback = recordingStatusCallback, RecordingStatusCallbackEvent = recordingStatusCallbackEvent, Twiml = twiml, XTwilioWebhookEnabled = xTwilioWebhookEnabled };
             return await CreateAsync(options, client);
         }
         #endif

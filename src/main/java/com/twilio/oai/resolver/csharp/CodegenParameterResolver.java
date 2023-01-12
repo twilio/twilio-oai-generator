@@ -5,25 +5,27 @@ import com.twilio.oai.common.ApplicationConstants;
 import com.twilio.oai.common.EnumConstants;
 import com.twilio.oai.resolver.Resolver;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.Setter;
 import org.openapitools.codegen.CodegenParameter;
 import org.openapitools.codegen.IJsonSchemaValidationProperties;
 
+@Setter
 public class CodegenParameterResolver extends Resolver<CodegenParameter> {
     private final Map<String, Map<String, Object>> conventionMap;
     private String className;
     private boolean hasEnumsInResource = false;
     private boolean hasEnumsInOptions = false;
 
-    private HashSet<String> enumsDict;
-    private CodegenParameterDataTypeResolver codegenParameterDataTypeResolver = new CodegenParameterDataTypeResolver();
+    private Set<String> enumsDict;
+    private final CodegenParameterDataTypeResolver codegenParameterDataTypeResolver = new CodegenParameterDataTypeResolver();
 
-    private CodegenParameterContainerDataTypeResolver codegenParameterContainerDataTypeResolver = new CodegenParameterContainerDataTypeResolver(codegenParameterDataTypeResolver);
+    private final CodegenParameterContainerDataTypeResolver codegenParameterContainerDataTypeResolver = new CodegenParameterContainerDataTypeResolver(codegenParameterDataTypeResolver);
     private Map<String, IJsonSchemaValidationProperties> enums;
     public CodegenParameterResolver() {
         conventionMap = getConventionalMap();
@@ -76,35 +78,15 @@ public class CodegenParameterResolver extends Resolver<CodegenParameter> {
         return null;
     }
 
-    public void setClassName(String className) {
-        this.className = className;
-    }
-
     public Map<String, IJsonSchemaValidationProperties> getEnums() {
         return enums;
-    }
-
-    public void setEnums(Map<String, IJsonSchemaValidationProperties> enums) {
-        this.enums = enums;
     }
 
     public boolean isHasEnumsInResource() {
         return hasEnumsInResource;
     }
 
-    public void setHasEnumsInResource(boolean hasEnumsInResource) {
-        this.hasEnumsInResource = hasEnumsInResource;
-    }
-
     public boolean isHasEnumsInOptions() {
         return hasEnumsInOptions;
-    }
-
-    public void setHasEnumsInOptions(boolean hasEnumsInOptions) {
-        this.hasEnumsInOptions = hasEnumsInOptions;
-    }
-
-    public void setEnumsDict(HashSet<String> enumsDict) {
-        this.enumsDict = enumsDict;
     }
 }

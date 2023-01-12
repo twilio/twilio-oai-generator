@@ -2,7 +2,6 @@ package com.twilio.oai;
 
 import java.util.Map;
 import java.util.Optional;
-import java.util.TreeMap;
 
 import io.swagger.v3.oas.models.PathItem;
 import io.swagger.v3.oas.models.parameters.Parameter;
@@ -80,16 +79,6 @@ public class PathUtils {
 
     public static boolean isParentParam(final CodegenParameter param) {
         return (boolean) param.vendorExtensions.getOrDefault(IS_PARENT_PARAM_EXTENSION_NAME, false);
-    }
-
-    @SuppressWarnings("unchecked")
-    public static Map<String, Object> getStringMap(final Map<String, Object> resource, final String key) {
-        return (Map<String, Object>) resource.computeIfAbsent(key, k -> new TreeMap<>());
-    }
-
-    @SuppressWarnings("unchecked")
-    public static void flattenStringMap(final Map<String, Object> resource, final String key) {
-        resource.computeIfPresent(key, (k, dependents) -> ((Map<String, Object>) dependents).values());
     }
 
     public static boolean isParentParam(final Parameter parameter) {

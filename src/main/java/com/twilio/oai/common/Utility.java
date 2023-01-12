@@ -145,12 +145,4 @@ public class Utility {
     public Optional<CodegenModel> getModelByClassname(final List<CodegenModel> models, final String classname) {
         return models.stream().filter(model -> model.classname.equals(classname)).findFirst();
     }
-
-    public void addModel(final List<CodegenModel> allModels, final Map<String, CodegenModel> models, final String complexType, final String dataType) {
-        getModelByClassname(allModels, complexType != null ? complexType : dataType).ifPresent(model -> {
-            if (models.putIfAbsent(model.getClassname(), model) == null) {
-                model.getVars().forEach(property -> addModel(allModels, models, property.complexType, property.dataType));
-            }
-        });
-    }
 }

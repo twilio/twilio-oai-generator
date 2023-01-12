@@ -3,23 +3,28 @@ package com.twilio.oai.resolver.csharp;
 import com.twilio.oai.Segments;
 import com.twilio.oai.StringHelper;
 import com.twilio.oai.resolver.Resolver;
-import org.openapitools.codegen.CodegenProperty;
-import org.openapitools.codegen.IJsonSchemaValidationProperties;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
+
+import lombok.Getter;
+import lombok.Setter;
+import org.openapitools.codegen.CodegenProperty;
+import org.openapitools.codegen.IJsonSchemaValidationProperties;
 
 import static com.twilio.oai.common.ApplicationConstants.LIST_START;
 import static com.twilio.oai.common.ApplicationConstants.OBJECT;
 
+@Setter
 public class CodegenModelDataTypeResolver extends Resolver<CodegenProperty> {
+    private final CodegenModelComplexResolver codegenModelComplexResolver = new CodegenModelComplexResolver();
     private Map<String, Map<String, Object>> conventionMap;
     private Map<String, IJsonSchemaValidationProperties> enums;
-    private CodegenModelComplexResolver codegenModelComplexResolver = new CodegenModelComplexResolver();
     private String className;
-    private  Map<String, String> modelFormatMap = new HashMap<>();
-    private HashSet<String> enumsDict;
+    private Map<String, String> modelFormatMap = new HashMap<>();
+    @Getter
+    private Set<String> enumsDict;
 
     public CodegenProperty resolve(CodegenProperty codegenProperty){
 
@@ -32,7 +37,7 @@ public class CodegenModelDataTypeResolver extends Resolver<CodegenProperty> {
         } else if (codegenProperty.complexType != null && modelFormatMap.containsKey(codegenProperty.complexType)) {
 
             codegenModelComplexResolver.setModelFormatMap(modelFormatMap);
-            codegenModelComplexResolver.setConventionalMap(conventionMap);
+            codegenModelComplexResolver.setConventionMap(conventionMap);
             codegenModelComplexResolver.setEnumsDict(enumsDict);
             codegenModelComplexResolver.resolve(codegenProperty);
         }
@@ -82,24 +87,5 @@ public class CodegenModelDataTypeResolver extends Resolver<CodegenProperty> {
         codegenProperty.dataType = className + "Resource." + codegenProperty.enumName;
         codegenProperty.vendorExtensions.put("x-jsonConverter", "StringEnumConverter");
         enums.put(codegenProperty.enumName, codegenProperty);
-    }
-    public void setClassName(String className){
-        this.className = className;
-    }
-
-    public void setEnums(Map<String, IJsonSchemaValidationProperties> enums) {
-        this.enums = enums;
-    }
-    public void setModelFormatMap(final Map<String, String> modelFormatMap) {
-        this.modelFormatMap = new HashMap<>(modelFormatMap);
-    }
-    public void setConventionMap(Map<String, Map<String, Object>> conventionMap) {
-        this.conventionMap = conventionMap;
-    }
-    public void setEnumsDict(HashSet<String> enumsDict){
-        this.enumsDict = enumsDict;
-    }
-    public HashSet<String> getEnumsDict() {
-        return enumsDict;
     }
 }
