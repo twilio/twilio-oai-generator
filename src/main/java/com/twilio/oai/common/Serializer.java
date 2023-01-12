@@ -69,12 +69,14 @@ public class Serializer {
             if (parent != null) {
                 parent.vendorExtensions.put("x-before", codegenParameter);
                 parent.vendorExtensions.put("x-before-or-after", true);
+                codegenParameter.vendorExtensions.put("x-ignore-in-header", true);
             }
         } else if (codegenParameter.paramName.endsWith("After")) {
             CodegenParameter parent = getParams.get(StringUtils.chomp(codegenParameter.paramName, "After"));
             if (parent != null) {
                 parent.vendorExtensions.put("x-after", codegenParameter);
                 parent.vendorExtensions.put("x-before-or-after", true);
+                codegenParameter.vendorExtensions.put("x-ignore-in-header", true);
             }
         } else {
             getParams.put(codegenParameter.paramName, codegenParameter);

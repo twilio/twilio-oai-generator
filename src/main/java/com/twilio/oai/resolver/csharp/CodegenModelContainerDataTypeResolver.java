@@ -4,10 +4,11 @@ import com.twilio.oai.StringHelper;
 import com.twilio.oai.common.ApplicationConstants;
 import com.twilio.oai.common.EnumConstants;
 import com.twilio.oai.resolver.Resolver;
-import org.openapitools.codegen.CodegenProperty;
 
-import java.util.HashSet;
+import java.util.Set;
 import java.util.Stack;
+
+import org.openapitools.codegen.CodegenProperty;
 
 public class CodegenModelContainerDataTypeResolver extends Resolver<CodegenProperty> {
     private final CodegenModelDataTypeResolver codegenModelDataTypeResolver;
@@ -17,7 +18,6 @@ public class CodegenModelContainerDataTypeResolver extends Resolver<CodegenPrope
     }
 
     public CodegenProperty resolve(CodegenProperty codegenProperty){
-
         Stack<String> containerTypes = new Stack<>();
 
         codegenProperty.dataType = unwrapContainerType(codegenProperty,containerTypes);
@@ -30,7 +30,7 @@ public class CodegenModelContainerDataTypeResolver extends Resolver<CodegenPrope
     }
 
     public void setHasEnumParamsVendorExtension(CodegenProperty codegenProperty){
-        HashSet<String> enumsDict = codegenModelDataTypeResolver.getEnumsDict();
+        Set<String> enumsDict = codegenModelDataTypeResolver.getEnumsDict();
         if(StringHelper.existInSetIgnoreCase(codegenProperty.dataType, enumsDict)){//List of enums present
             codegenProperty.vendorExtensions.put("x-has-enum-params", true);
         }
@@ -69,5 +69,4 @@ public class CodegenModelContainerDataTypeResolver extends Resolver<CodegenPrope
             codegenProperty.dataType = currentContainerType + codegenProperty.dataType + ApplicationConstants.LIST_END;
         }
     }
-
 }
