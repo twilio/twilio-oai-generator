@@ -11,4 +11,5 @@ public class RubyApiResourceBuilder extends FluentApiResourceBuilder {
     public RubyApiResourceBuilder(final IApiActionTemplate template, final List<CodegenOperation> codegenOperations, final List<CodegenModel> allModels, final DirectoryStructureService directoryStructureService) {
         super(template, codegenOperations, allModels, directoryStructureService);
     }
+
 }
