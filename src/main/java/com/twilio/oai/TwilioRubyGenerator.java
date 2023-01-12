@@ -85,7 +85,7 @@ public class TwilioRubyGenerator extends RubyClientCodegen {
     }
 
     private ApiResources generateResources(final List<CodegenOperation> opList) {
-        updateApiVersion(directoryStructureService);
+//        updateApiVersion(directoryStructureService);
         return new RubyApiResourceBuilder(rubyApiActionTemplate, opList, allModels, directoryStructureService)
                 .updateApiPath()
                 .updateTemplate()
