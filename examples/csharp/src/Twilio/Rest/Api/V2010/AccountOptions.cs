@@ -18,7 +18,7 @@ using System.Collections.Generic;
 using Twilio.Base;
 using Twilio.Converters;
 using System.Linq;
-
+using Twilio.Types;
 
 
 namespace Twilio.Rest.Api.V2010
@@ -37,6 +37,9 @@ namespace Twilio.Rest.Api.V2010
         
         public List<string> RecordingStatusCallbackEvent { get; set; }
 
+        
+        public Types.Twiml Twiml { get; set; }
+
 
 
         
@@ -52,6 +55,10 @@ namespace Twilio.Rest.Api.V2010
             if (RecordingStatusCallbackEvent != null)
             {
                 p.AddRange(RecordingStatusCallbackEvent.Select(RecordingStatusCallbackEvent => new KeyValuePair<string, string>("RecordingStatusCallbackEvent", RecordingStatusCallbackEvent)));
+            }
+            if (Twiml != null)
+            {
+                p.Add(new KeyValuePair<string, string>("Twiml", Twiml.ToString()));
             }
             return p;
         }
