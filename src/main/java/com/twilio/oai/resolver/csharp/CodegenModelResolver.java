@@ -1,30 +1,32 @@
 package com.twilio.oai.resolver.csharp;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.twilio.oai.StringHelper;
 import com.twilio.oai.common.ApplicationConstants;
 import com.twilio.oai.common.EnumConstants;
 import com.twilio.oai.resolver.Resolver;
+
+import java.util.Map;
+import java.util.Set;
+
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.Setter;
 import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenProperty;
 import org.openapitools.codegen.IJsonSchemaValidationProperties;
-import java.util.HashSet;
-import java.util.Map;
 
-
+@Setter
 public class CodegenModelResolver extends Resolver<CodegenModel> {
-
     private final Map<String, Map<String, Object>> conventionMap;
     private String className;
     private boolean hasEnumsInResource = false;
     private boolean hasEnumsInOptions = false;
 
-    private HashSet<String> enumsDict;
+    private Set<String> enumsDict;
     private Map<String, IJsonSchemaValidationProperties> enums;
-    private  Map<String, String> modelFormatMap;
-    private CodegenModelDataTypeResolver codegenModelDataTypeResolver = new CodegenModelDataTypeResolver();
-    private CodegenModelContainerDataTypeResolver codegenModelContainerDataTypeResolver = new CodegenModelContainerDataTypeResolver(codegenModelDataTypeResolver);
+    private Map<String, String> modelFormatMap;
+    private final CodegenModelDataTypeResolver codegenModelDataTypeResolver = new CodegenModelDataTypeResolver();
+    private final CodegenModelContainerDataTypeResolver codegenModelContainerDataTypeResolver = new CodegenModelContainerDataTypeResolver(codegenModelDataTypeResolver);
     public CodegenModelResolver(){
         conventionMap = getConventionalMap();
     }
@@ -79,21 +81,8 @@ public class CodegenModelResolver extends Resolver<CodegenModel> {
         return null;
     }
 
-    public void setClassName(String className) {
-        this.className = className;
-    }
-
     public Map<String, IJsonSchemaValidationProperties> getEnums() {
         return enums;
-    }
-
-    public void setEnums(Map<String, IJsonSchemaValidationProperties> enums) {
-        this.enums = enums;
-    }
-
-
-    public void setHasEnumsInResource(boolean hasEnumsInResource) {
-        this.hasEnumsInResource = hasEnumsInResource;
     }
 
     public boolean isHasEnumsInOptions() {
@@ -101,17 +90,5 @@ public class CodegenModelResolver extends Resolver<CodegenModel> {
     }
     public boolean isHasEnumsInResource() {
         return hasEnumsInResource;
-    }
-
-    public void setHasEnumsInOptions(boolean hasEnumsInOptions) {
-        this.hasEnumsInOptions = hasEnumsInOptions;
-    }
-
-    public void setEnumsDict(HashSet<String> enumsDict) {
-        this.enumsDict = enumsDict;
-    }
-
-    public void setModelFormatMap(Map<String, String> modelFormatMap) {
-        this.modelFormatMap = modelFormatMap;
     }
 }

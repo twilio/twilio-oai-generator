@@ -1,11 +1,11 @@
 package com.twilio.oai.resolver.common;
 
-import com.twilio.oai.Segments;
-import com.twilio.oai.resolver.Resolver;
 import com.twilio.oai.resolver.IConventionMapper;
-import org.openapitools.codegen.CodegenProperty;
+import com.twilio.oai.resolver.Resolver;
 
 import java.util.Map;
+
+import org.openapitools.codegen.CodegenProperty;
 
 import static com.twilio.oai.common.ApplicationConstants.LIST_START;
 import static com.twilio.oai.common.ApplicationConstants.OBJECT;
@@ -35,8 +35,6 @@ public class CodegenModelDataTypeResolver extends Resolver<CodegenProperty> {
     }
 
     private void assignDataType(CodegenProperty property) {
-        String propertyFieldName = Segments.SEGMENT_PROPERTIES.getSegment();
-
         mapper
             .properties()
             .getString(property.dataFormat)
