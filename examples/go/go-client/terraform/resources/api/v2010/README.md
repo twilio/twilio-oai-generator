@@ -8,6 +8,7 @@ Name | Type | Requirement | Description
 **x_twilio_webhook_enabled** | string | Optional | 
 **recording_status_callback** | string | Optional | 
 **recording_status_callback_event** | list(string) | Optional | 
+**twiml** | string | Optional | 
 **sid** | string | *Computed* | 
 **status** | string | Optional | 
 **pause_behavior** | string | Optional | 
