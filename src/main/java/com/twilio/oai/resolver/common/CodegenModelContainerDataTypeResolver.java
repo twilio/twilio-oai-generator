@@ -3,21 +3,17 @@ package com.twilio.oai.resolver.common;
 import com.twilio.oai.common.ApplicationConstants;
 import com.twilio.oai.common.LanguageDataType;
 import com.twilio.oai.resolver.Resolver;
+
+import lombok.RequiredArgsConstructor;
 import org.openapitools.codegen.CodegenProperty;
 
 import java.util.List;
 import java.util.Stack;
 
+@RequiredArgsConstructor
 public class CodegenModelContainerDataTypeResolver extends Resolver<CodegenProperty> {
-
-    private CodegenModelDataTypeResolver codegenModelDataTypeResolver;
-    private List<? extends LanguageDataType> languageDataTypes;
-
-    public CodegenModelContainerDataTypeResolver(CodegenModelDataTypeResolver codegenModelDataTypeResolver,
-                                                 List<? extends LanguageDataType> languageDataTypes) {
-        this.codegenModelDataTypeResolver = codegenModelDataTypeResolver;
-        this.languageDataTypes = languageDataTypes;
-    }
+    private final CodegenModelDataTypeResolver codegenModelDataTypeResolver;
+    private final List<? extends LanguageDataType> languageDataTypes;
 
     public CodegenProperty resolve(CodegenProperty codegenProperty) {
         Stack<String> containerTypes = new Stack<>();

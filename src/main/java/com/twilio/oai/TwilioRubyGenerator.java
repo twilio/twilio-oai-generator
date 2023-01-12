@@ -2,7 +2,13 @@ package com.twilio.oai;
 
 import com.twilio.oai.api.ApiResources;
 import com.twilio.oai.api.RubyApiResourceBuilder;
+import com.twilio.oai.common.EnumConstants;
 import com.twilio.oai.common.Utility;
+import com.twilio.oai.resolver.IConventionMapper;
+import com.twilio.oai.resolver.LanguageConventionResolver;
+import com.twilio.oai.resolver.LanguageParamResolver;
+import com.twilio.oai.resolver.LanguagePropertyResolver;
+import com.twilio.oai.resolver.common.CodegenModelResolver;
 import com.twilio.oai.resolver.ruby.RubyCaseResolver;
 import com.twilio.oai.resource.IResourceTree;
 import com.twilio.oai.resource.ResourceMap;
@@ -19,6 +25,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static com.twilio.oai.common.ApplicationConstants.CONFIG_RUBY_JSON_PATH;
 
 public class TwilioRubyGenerator extends RubyClientCodegen {
     private final TwilioCodegenAdapter twilioCodegen;
@@ -49,8 +57,7 @@ public class TwilioRubyGenerator extends RubyClientCodegen {
 
     @Override
     public String apiFilename(final String templateName, final String tag) {
-        String filename = rubyApiActionTemplate.apiFilename(templateName, super.apiFilename(templateName, tag));
-        return filename;
+        return rubyApiActionTemplate.apiFilename(templateName, super.apiFilename(templateName, tag));
     }
 
     @Override
@@ -72,9 +79,9 @@ public class TwilioRubyGenerator extends RubyClientCodegen {
     @Override
     public void processOpts() {
         super.processOpts();
+
         twilioCodegen.processOpts();
     }
-
 
     @Override
     public OperationsMap postProcessOperationsWithModels(final OperationsMap objs, List<ModelMap> allModels) {
@@ -86,9 +93,15 @@ public class TwilioRubyGenerator extends RubyClientCodegen {
 
     private ApiResources generateResources(final List<CodegenOperation> opList) {
         updateApiVersion(directoryStructureService);
+        final IConventionMapper conventionMapper = new LanguageConventionResolver(CONFIG_RUBY_JSON_PATH);
+        final CodegenModelResolver codegenModelResolver = new CodegenModelResolver(conventionMapper,
+                modelFormatMap,
+                List.of(EnumConstants.RubyDataTypes.values()));
         return new RubyApiResourceBuilder(rubyApiActionTemplate, opList, allModels, directoryStructureService)
                 .updateApiPath()
+                .updateOperations(new LanguageParamResolver(conventionMapper))
                 .updateTemplate()
+                .updateResponseModel(new LanguagePropertyResolver(conventionMapper), codegenModelResolver)
                 .build();
     }
 
@@ -102,3 +115,4 @@ public class TwilioRubyGenerator extends RubyClientCodegen {
         return "twilio-ruby";
     }
 }
+
