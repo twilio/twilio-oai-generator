@@ -6,7 +6,6 @@ import com.twilio.oai.common.Utility;
 import lombok.AllArgsConstructor;
 import org.openapitools.codegen.CodegenParameter;
 
-import static com.twilio.oai.common.ApplicationConstants.DESERIALIZE_VEND_EXT;
 import static com.twilio.oai.common.ApplicationConstants.SERIALIZE_VEND_EXT;
 
 @AllArgsConstructor
