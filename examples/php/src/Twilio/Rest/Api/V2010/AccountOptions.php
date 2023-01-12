@@ -31,11 +31,12 @@ abstract class AccountOptions {
     /**
      * @param string $recordingStatusCallback  
      * @param string[] $recordingStatusCallbackEvent  
+     * @param string $twiml  
      * @param string $xTwilioWebhookEnabled  
      * @return CreateAccountOptions Options builder
      */
-    public static function create(string $recordingStatusCallback = Values::NONE, array $recordingStatusCallbackEvent = Values::ARRAY_NONE, string $xTwilioWebhookEnabled = Values::NONE): CreateAccountOptions {
-        return new CreateAccountOptions($recordingStatusCallback, $recordingStatusCallbackEvent, $xTwilioWebhookEnabled);
+    public static function create(string $recordingStatusCallback = Values::NONE, array $recordingStatusCallbackEvent = Values::ARRAY_NONE, string $twiml = Values::NONE, string $xTwilioWebhookEnabled = Values::NONE): CreateAccountOptions {
+        return new CreateAccountOptions($recordingStatusCallback, $recordingStatusCallbackEvent, $twiml, $xTwilioWebhookEnabled);
     }
 
 
@@ -65,11 +66,13 @@ class CreateAccountOptions extends Options {
     /**
      * @param string $recordingStatusCallback 
      * @param string[] $recordingStatusCallbackEvent 
+     * @param string $twiml 
      * @param string $xTwilioWebhookEnabled 
      */
-    public function __construct(string $recordingStatusCallback = Values::NONE, array $recordingStatusCallbackEvent = Values::ARRAY_NONE, string $xTwilioWebhookEnabled = Values::NONE) {
+    public function __construct(string $recordingStatusCallback = Values::NONE, array $recordingStatusCallbackEvent = Values::ARRAY_NONE, string $twiml = Values::NONE, string $xTwilioWebhookEnabled = Values::NONE) {
         $this->options['recordingStatusCallback'] = $recordingStatusCallback;
         $this->options['recordingStatusCallbackEvent'] = $recordingStatusCallbackEvent;
+        $this->options['twiml'] = $twiml;
         $this->options['xTwilioWebhookEnabled'] = $xTwilioWebhookEnabled;
     }
 
@@ -88,6 +91,15 @@ class CreateAccountOptions extends Options {
      */
     public function setRecordingStatusCallbackEvent(array $recordingStatusCallbackEvent): self {
         $this->options['recordingStatusCallbackEvent'] = $recordingStatusCallbackEvent;
+        return $this;
+    }
+
+    /**
+     * @param string $twiml 
+     * @return $this Fluent Builder
+     */
+    public function setTwiml(string $twiml): self {
+        $this->options['twiml'] = $twiml;
         return $this;
     }
 

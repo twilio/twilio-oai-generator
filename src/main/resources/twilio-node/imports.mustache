@@ -7,3 +7,12 @@ import { {{key}} } from "{{apiVersionPath}}/../../../{{value}}";
 {{/vendorExtensions.x-import}}
 {{/vars}}
 {{/responseModel}}
+{{#operations}}
+{{#allParams}}
+{{#vendorExtensions.x-import}}
+{{#entrySet}}
+import {{key}} from "{{apiVersionPath}}/../../../{{value}}";
+{{/entrySet}}
+{{/vendorExtensions.x-import}}
+{{/allParams}}
+{{/operations}}
