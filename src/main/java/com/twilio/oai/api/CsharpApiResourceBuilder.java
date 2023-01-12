@@ -5,6 +5,7 @@ import com.twilio.oai.StringHelper;
 import com.twilio.oai.common.EnumConstants;
 import com.twilio.oai.common.Utility;
 import com.twilio.oai.resolver.Resolver;
+import com.twilio.oai.resolver.common.ContainerResolver;
 import com.twilio.oai.resolver.csharp_new.CsharpEnumResolver;
 import com.twilio.oai.resolver.csharp_new.CsharpSerializer;
 import com.twilio.oai.resolver.csharp_new.OperationCache;
@@ -31,6 +32,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static com.twilio.oai.common.ApplicationConstants.PATH_SEPARATOR_PLACEHOLDER;
 
@@ -65,12 +67,35 @@ public class CsharpApiResourceBuilder extends ApiResourceBuilder {
     @Override
     public IApiResourceBuilder setImports(DirectoryStructureService directoryStructureService) {
         codegenOperationList.forEach(operation -> {
+            // Check parameter used in instance variable options class.
             boolean arrayExists = operation.allParams.stream()
+                    .filter(parameter -> !parameter.required)
+                    .filter(parameter -> parameter.isArray)
+                    .count() > 0;
+
+            // Check parameter used in getParams method.
+            arrayExists = arrayExists || ((List<CodegenParameter>)operation.vendorExtensions.get("x-getparams")).stream()
                     .filter(parameter -> parameter.isArray)
                     .count() > 0;
             if (arrayExists) {
-                metaAPIProperties.put("options-array-exist", arrayExists);
+                metaAPIProperties.put("options-array-exist", true);
             }
+
+//            boolean enumExistsInOptions = operation.requiredParams.stream()
+//                            .filter(parameter -> (parameter.isEnum || parameter.paramName.contains("Enum")))
+//                            .count() > 0;
+//            enumExistsInOptions =  enumExistsInOptions || operation.optionalParams.stream()
+//                    .filter(parameter -> (parameter.isEnum || parameter.paramName.contains("Enum")))
+//                    .count() > 0;
+//            boolean enumExistsInOptions = operation.allParams.stream()
+//                    .filter(parameter -> !parameter.required)
+//                    .filter(parameter -> parameter.isEnum)
+//                    .count() > 0;
+//            enumExistsInOptions = enumExistsInOptions || ((List<CodegenParameter>)operation.vendorExtensions.get("x-getparams")).stream()
+//                    .filter(parameter -> parameter.isEnum)
+//                    .count() > 0;
+            if (OperationCache.isEnumPresentInOptions)
+                metaAPIProperties.put("enum-exist-options", true);
 
             metaAPIProperties.put("enum-exist", OperationCache.isEnumPresentInResource);
         });

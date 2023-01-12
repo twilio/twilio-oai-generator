@@ -52,4 +52,12 @@ public class ContainerResolver {
         }
         return unwrappedContainer;
     }
+
+    public String getUnwrappedDataType(String dataType) {
+        String unwrappedContainer = getContainer(dataType);
+        if (StringUtils.isBlank(unwrappedContainer)) return dataType;
+        dataType = dataType.replace(unwrappedContainer, "");
+        dataType = dataType.substring(0, dataType.length()-1);
+        return dataType;
+    }
 }

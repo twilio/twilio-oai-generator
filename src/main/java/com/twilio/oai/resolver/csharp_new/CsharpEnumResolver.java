@@ -27,12 +27,20 @@ public class CsharpEnumResolver {
         String property = Segments.SEGMENT_PROPERTIES.getSegment();
         if (conventionMap.get(property).containsKey(parameter.dataFormat) || conventionMap.get(property).containsKey(parameter.dataType)) {
             containerResolver.reWrapContainerType(parameter, unrappedContainer);
+            // If the dataformat library is Twilio.Types, import enum into the resource.
+            if (parameter.dataFormat != null) {
+                Object importStm = conventionMap.get("library").get(StringHelper.toSnakeCase(parameter.dataFormat));
+                if (importStm != null && importStm instanceof String && importStm.equals("Twilio.Types")) {
+                    OperationCache.isEnumPresentInOptions = true;
+                }
+            }
             return parameter;
         }
         if (parameter.dataType.contains("Enum")) { // parameter.dataType.contains(className) &&
             parameter.isEnum = true;
             String[] value = parameter.dataType.split("Enum");
             parameter.enumName = value[value.length-1] + "Enum";
+            // In case enum is an array
             if (parameter.items != null) {
                 parameter.items.enumName = value[value.length-1] + "Enum";
             }
@@ -46,6 +54,7 @@ public class CsharpEnumResolver {
             OperationCache.isEnumPresentInResource = true;
         } else if (parameter.isEnum) {
             parameter.dataType = className + "Resource." + parameter.enumName;
+            // In case enum is an array
             if (parameter.items != null) {
                 parameter.items.enumName = parameter.enumName;
             }
@@ -65,6 +74,7 @@ public class CsharpEnumResolver {
             if (codegenProperty.dataType != null) {
                 Object importStm = conventionMap.get("library").get(StringHelper.toSnakeCase(codegenProperty.dataType));
                 if (importStm != null && importStm instanceof String && importStm.equals("Twilio.Types")) {
+                    // If the datatype library is Twilio.Types, import enum into the resource.
                     OperationCache.isEnumPresentInResource = true;
                 }
             }
@@ -75,15 +85,14 @@ public class CsharpEnumResolver {
         codegenProperty.isEnum = true;
         String[] value = codegenProperty.complexType.split("Enum");
         codegenProperty.enumName = value[value.length-1] + "Enum";
+        // In case enum is an array
         if (codegenProperty.items != null) {
             codegenProperty.items.enumName = value[value.length-1] + "Enum";
-        }
-        if (OperationCache.enums == null) {
-            OperationCache.enums = new HashMap<>();
         }
         codegenProperty.dataType = className + "Resource." + codegenProperty.enumName;
         codegenProperty.vendorExtensions.put("x-jsonConverter", "StringEnumConverter");
         OperationCache.enums.put(codegenProperty.enumName, codegenProperty);
+        // Import enum into the resource if it contains enum class.
         OperationCache.isEnumPresentInResource = true;
         containerResolver.reWrapContainerType(codegenProperty, unrappedContainer);
         return codegenProperty;
