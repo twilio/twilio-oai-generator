@@ -14,6 +14,7 @@ import com.twilio.oai.resolver.LanguageConventionResolver;
 import com.twilio.oai.resolver.common.CodegenModelResolver;
 import com.twilio.oai.resolver.csharp.CSharpCaseResolver;
 import com.twilio.oai.resolver.csharp.CSharpResolver;
+import com.twilio.oai.resolver.csharp_new.CsharpCodegenModelDataTypeResolver;
 import com.twilio.oai.resolver.csharp_new.CsharpEnumResolver;
 import com.twilio.oai.resolver.csharp_new.CsharpParameterResolver;
 import com.twilio.oai.resolver.csharp_new.CsharpPropertyResolver;
@@ -77,13 +78,17 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
     private CsharpApiResources processCodegenOperations(List<CodegenOperation> opList) {
         CodegenModelResolver codegenModelResolver = new CodegenModelResolver(conventionMapper, modelFormatMap,
                 Arrays.asList(EnumConstants.CsharpDataTypes.values()));
+
+        CsharpCodegenModelDataTypeResolver csharpCodegenModelDataTypeResolver = new CsharpCodegenModelDataTypeResolver(conventionMapper, modelFormatMap);
+        codegenModelResolver.setCodegenModelDataTypeResolver(csharpCodegenModelDataTypeResolver);
+
         CsharpSerializer csharpSerializer = new CsharpSerializer(Arrays.asList(EnumConstants.CsharpDataTypes.values()));
         CsharpEnumResolver csharpEnumResolver = new CsharpEnumResolver();
         return new CsharpApiResourceBuilder(apiActionTemplate, opList, this.allModels, csharpEnumResolver, csharpSerializer)
                 .updateApiPath()
                 .updateTemplate()
                 .updateOperations(new CsharpParameterResolver(conventionMapper))
-                .updateResponseModel(new CsharpPropertyResolver(conventionMapper), codegenModelResolver)
+                .updateResponseModel(new CsharpCodegenModelDataTypeResolver(conventionMapper, modelFormatMap), codegenModelResolver)
                 .setImports(directoryStructureService)
                 .build();
     }

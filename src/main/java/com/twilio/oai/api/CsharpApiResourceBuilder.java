@@ -2,9 +2,7 @@ package com.twilio.oai.api;
 
 import com.twilio.oai.DirectoryStructureService;
 import com.twilio.oai.StringHelper;
-import com.twilio.oai.common.ApplicationConstants;
 import com.twilio.oai.common.EnumConstants;
-import com.twilio.oai.common.LanguageDataType;
 import com.twilio.oai.common.Utility;
 import com.twilio.oai.resolver.Resolver;
 import com.twilio.oai.resolver.csharp_new.CsharpEnumResolver;
@@ -13,22 +11,21 @@ import com.twilio.oai.resolver.csharp_new.OperationCache;
 import com.twilio.oai.template.CsharpApiActionTemplate;
 import com.twilio.oai.template.IApiActionTemplate;
 import org.apache.commons.lang3.StringUtils;
-import org.checkerframework.checker.units.qual.C;
 import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenOperation;
 import org.openapitools.codegen.CodegenParameter;
 import org.openapitools.codegen.CodegenProperty;
 import org.openapitools.codegen.CodegenResponse;
-import org.openapitools.codegen.IJsonSchemaValidationProperties;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -36,7 +33,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import static com.twilio.oai.common.ApplicationConstants.PATH_SEPARATOR_PLACEHOLDER;
-import static com.twilio.oai.template.AbstractApiActionTemplate.API_TEMPLATE;
 
 public class CsharpApiResourceBuilder extends ApiResourceBuilder {
 
@@ -76,12 +72,7 @@ public class CsharpApiResourceBuilder extends ApiResourceBuilder {
                 metaAPIProperties.put("options-array-exist", arrayExists);
             }
 
-            boolean enumExists = operation.allParams.stream()
-                    .filter(parameter -> parameter.isEnum)
-                    .count() > 0;
-            if (enumExists) {
-                metaAPIProperties.put("enum-exist", enumExists);
-            }
+            metaAPIProperties.put("enum-exist", OperationCache.isEnumPresentInResource);
         });
         return this;
     }
@@ -133,6 +124,12 @@ public class CsharpApiResourceBuilder extends ApiResourceBuilder {
                     .map(csharpSerializer::serialize)
                     .collect(Collectors.toList());
 
+            co.headerParams = co.headerParams.stream()
+                    .map(codegenParameterIResolver::resolve)
+                    .map(csharpEnumResolver::resolve)
+                    .map(csharpSerializer::serialize)
+                    .collect(Collectors.toList());
+
             requiredPathParams.addAll(co.pathParams);
             co.vendorExtensions = mapOperation(co);
             requestBodyArgument(co);
@@ -146,7 +143,9 @@ public class CsharpApiResourceBuilder extends ApiResourceBuilder {
     protected Map<String, Object> mapOperation(CodegenOperation co) {
         Map<String, Object> operationMap = super.mapOperation(co);
         operationMap.put("x-non-path-params", getNonPathParams(co.allParams));
-        operationMap.put("x-required-param-exist", !co.requiredParams.isEmpty());
+        operationMap.put("x-required-param-exist", !co.requiredParams.isEmpty()); // TODO: Rename this
+        operationMap.put("x-header-params-exists", !co.headerParams.isEmpty());
+        operationMap.put("x-header-params", co.headerParams);
         operationMap.put("x-getparams", generateGetParams(co));
         return operationMap;
     }
@@ -200,6 +199,7 @@ public class CsharpApiResourceBuilder extends ApiResourceBuilder {
                 if (responseModel.isEmpty()) {
                     continue;
                 }
+                //response.items.vars.forEach(codegenPropertyIResolver::resolve);
                 codegenModelResolver.resolve(responseModel.get());
                 csharpEnumResolver.resolve(responseModel.get());
                 responseModels.add(responseModel.get()); // Check for DeleteCall (delete operation)

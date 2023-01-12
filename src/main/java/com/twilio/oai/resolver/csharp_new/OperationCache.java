@@ -9,12 +9,15 @@ public final class OperationCache {
         className = new String();
         store.clear();
         enums.clear();
-        isEnumPresent = false;
+        isEnumPresentInResource = false;
+        isEnumPresentInOptions = false;
     }
 
     public static String className;
 
-    public static boolean isEnumPresent; // TODO: Used in import
+    public static boolean isEnumPresentInResource; // TODO: Used in import
+
+    public static boolean isEnumPresentInOptions;
     public static HashMap<String, Object> store = new HashMap<>();
 
     public static HashMap<String, IJsonSchemaValidationProperties> enums = new HashMap<>();

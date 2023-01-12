@@ -11,7 +11,7 @@ import java.util.Map;
 
 public class CodegenModelResolver extends Resolver<CodegenModel> {
     private final List<? extends LanguageDataType> languageDataTypes;
-    private final CodegenModelDataTypeResolver codegenModelDataTypeResolver;
+    private CodegenModelDataTypeResolver codegenModelDataTypeResolver;
     private final CodegenModelContainerDataTypeResolver codegenModelContainerDataTypeResolver;
 
     public CodegenModelResolver(IConventionMapper mapper, Map<String, String> modelFormatMap,
@@ -37,5 +37,9 @@ public class CodegenModelResolver extends Resolver<CodegenModel> {
         }
 
         return model;
+    }
+
+    public void setCodegenModelDataTypeResolver(CodegenModelDataTypeResolver codegenModelDataTypeResolver) {
+        this.codegenModelDataTypeResolver = codegenModelDataTypeResolver;
     }
 }
