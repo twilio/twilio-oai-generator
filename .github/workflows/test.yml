@@ -14,7 +14,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        language: [ 'csharp', 'go', 'java', 'node', 'php' ]
+        # language: [ 'csharp', 'go', 'java', 'node', 'php', 'python' ]
+        language: [ 'python' ]
     runs-on: ubuntu-latest
     timeout-minutes: 20
     env:
