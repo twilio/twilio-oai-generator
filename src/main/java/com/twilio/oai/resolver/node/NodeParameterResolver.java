@@ -27,9 +27,7 @@ public class NodeParameterResolver extends LanguageParamResolver {
             codegenParameter.vendorExtensions.put("x-transform", transform);
         }
 
-        if (mapper.libraries().getMap(codegenParameter.dataFormat).isPresent()){
-            codegenParameter.vendorExtensions.put("x-import", mapper.libraries().get(codegenParameter.dataFormat).orElseThrow());
-        }
+        mapper.libraries().getMap(codegenParameter.dataFormat).ifPresent(imports -> codegenParameter.vendorExtensions.put("x-import", mapper.libraries().get(codegenParameter.dataFormat).orElseThrow()));
 
         return codegenParameter;
     }
