@@ -12,10 +12,10 @@ RUN rm -rf twilio/rest tests
 COPY twilio/rest twilio/rest
 COPY tests tests
 
-# COPY requirements.txt ./
+# Install requirements
 RUN pip install --no-cache-dir -r requirements.txt
 RUN pip install pytest
-RUN pytest tests
 
-#CMD ["/bin/bash", "-c", "set -o pipefail && sleep 5 && ls -ltr && make test-install"]
+# pipefail prevents errors in a pipeline from being masked
+CMD ["/bin/bash", "-c", "set -o pipefail && pytest tests"]
 
