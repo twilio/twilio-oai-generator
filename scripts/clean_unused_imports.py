@@ -59,8 +59,8 @@ def remove_duplicate_imports(root_dir, language):
         lines_to_remove = []
         for n, line in enumerate(all_lines):
             IMPORT_RE=LANGUAGE_REGEX_MAP[language]["regex"]
-            m = IMPORT_RE.match(line) # IMPORT FOUND!
-            if m and line in all_lines[:n]:
+            import_found = IMPORT_RE.match(line)
+            if import_found and line in all_lines[:n]:
                 lines_to_remove.append(line)
 
         for line in lines_to_remove:
