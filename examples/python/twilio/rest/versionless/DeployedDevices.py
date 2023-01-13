@@ -13,7 +13,7 @@
 """
 
 from twilio.base.domain import Domain
-from twilio.rest.Versionless.deployed_devices import DeployedDevices
+from twilio.rest.versionless.deployed_devices import DeployedDevices
 
 class Versionless(Domain):
     def __init__(self, twilio):

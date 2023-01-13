@@ -13,7 +13,7 @@
 """
 
 from twilio.base.domain import Domain
-from twilio.rest.FlexApi.v1 import V1
+from twilio.rest.flexApi.v1 import V1
 
 class FlexApi(Domain):
     def __init__(self, twilio):

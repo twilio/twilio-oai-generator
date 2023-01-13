@@ -13,7 +13,7 @@
 """
 
 from twilio.base.domain import Domain
-from twilio.rest.Versionless.understand import Understand
+from twilio.rest.versionless.understand import Understand
 
 class Versionless(Domain):
     def __init__(self, twilio):
