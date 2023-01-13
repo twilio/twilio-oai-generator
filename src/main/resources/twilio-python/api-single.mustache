@@ -18,7 +18,7 @@ class {{apiName}}Context(InstanceContext):
         super().__init__(version)
 
         # Path Solution
-        self._solution = { {{#instancePathParams}}{{paramName}}, {{/instancePathParams}} }
+        self._solution = { {{#instancePathParams}}'{{paramName}}': {{paramName}}, {{/instancePathParams}} }
         self._uri = '{{instancePath}}'
         {{#dependents}}{{#instanceDependent}}
         self._{{mountName}} = None{{/instanceDependent}}{{/dependents}}
@@ -106,11 +106,11 @@ class {{apiName}}ListInstance(ListResource):
         super().__init__(version)
 
         # Path Solution
-        self._solution = { {{#listPathParams}}{{paramName}}, {{/listPathParams}} }
+        self._solution = { {{#listPathParams}}'{{paramName}}': {{paramName}}, {{/listPathParams}} }
         self._uri = '{{listPath}}'
         {{#dependents}}{{^instanceDependent}}
         self._{{mountName}} = None{{/instanceDependent}}{{/dependents}}
-        {{#operations}}{{#vendorExtensions.x-is-list-operation}}
+    {{#operations}}{{#vendorExtensions.x-is-list-operation}}
     def {{vendorExtensions.x-name-lower}}(self{{#allParams}}, {{paramName}}{{/allParams}}):
         {{#vendorExtensions.x-is-create-operation}}data = values.of({
             {{#allParams}}'{{paramName}}': {{paramName}},{{/allParams}}
