@@ -67,7 +67,7 @@ class {{apiName}}Instance(InstanceResource):
     def __init__(self, version, payload{{#instancePathParams}}, {{paramName}}: {{{dataType}}}{{/instancePathParams}}):
         super({{apiName}}Instance, self).__init__(version)
         self._properties = { {{#vars}}
-            '{{name}}' = payload.get('{{{baseName}}}'),{{/vars}}
+            '{{name}}' : payload.get('{{{baseName}}}'),{{/vars}}
         }
 
         self._context = None
