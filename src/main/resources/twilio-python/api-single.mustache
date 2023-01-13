@@ -22,36 +22,36 @@ class {{apiName}}Context(InstanceContext):
         self._uri = '{{instancePath}}'
         {{#dependents}}{{#instanceDependent}}
         self._{{mountName}} = None{{/instanceDependent}}{{/dependents}}
-        {{#operations}}{{#vendorExtensions.x-is-context-operation}}
-        def {{vendorExtensions.x-name-lower}}(self{{#allParams}}, {{paramName}}{{/allParams}}):
-            {{#vendorExtensions.x-is-update-operation}}data = values.of({
-                {{#allParams}}'{{paramName}}': {{paramName}},{{/allParams}}
-            })
+    {{#operations}}{{#vendorExtensions.x-is-context-operation}}
+    def {{vendorExtensions.x-name-lower}}(self{{#allParams}}, {{paramName}}{{/allParams}}):
+        {{#vendorExtensions.x-is-update-operation}}data = values.of({
+            {{#allParams}}'{{paramName}}': {{paramName}},{{/allParams}}
+        })
 
-            payload = self._version.update(method='{{httpMethod}}', uri=self._uri, data=data, )
+        payload = self._version.update(method='{{httpMethod}}', uri=self._uri, data=data, )
 
-            return {{apiName}}Instance(self._version, payload, {{#instancePathParams}}{{paramName}}=self._solution['{{paramName}}'], {{/instancePathParams}}){{/vendorExtensions.x-is-update-operation}}
-            {{#vendorExtensions.x-is-fetch-operation}}"""
-            Fetch the {{apiName}}Instance
+        return {{apiName}}Instance(self._version, payload, {{#instancePathParams}}{{paramName}}=self._solution['{{paramName}}'], {{/instancePathParams}}){{/vendorExtensions.x-is-update-operation}}
+        {{#vendorExtensions.x-is-fetch-operation}}"""
+        Fetch the {{apiName}}Instance
 
-            :returns: The fetched {{apiName}}Instance
-            #TODO: add rtype docs
-            """
-            payload = self._version.fetch(method='GET', uri=self._uri, )
-            return {{apiName}}Instance(
-                self._version,
-                payload,
-                {{#instancePathParams}}{{paramName}}{{/instancePathParams}}=self._solution[{{#instancePathParams}}'{{paramName}}'{{/instancePathParams}}],
-            )
-            {{/vendorExtensions.x-is-fetch-operation}}
-            {{#vendorExtensions.x-is-delete-operation}}"""
-            Deletes the {{apiName}}Instance
+        :returns: The fetched {{apiName}}Instance
+        #TODO: add rtype docs
+        """
+        payload = self._version.fetch(method='GET', uri=self._uri, )
+        return {{apiName}}Instance(
+            self._version,
+            payload,
+            {{#instancePathParams}}{{paramName}}{{/instancePathParams}}=self._solution[{{#instancePathParams}}'{{paramName}}'{{/instancePathParams}}],
+        )
+        {{/vendorExtensions.x-is-fetch-operation}}
+        {{#vendorExtensions.x-is-delete-operation}}"""
+        Deletes the {{apiName}}Instance
 
-            :returns: True if delete succeeds, False otherwise
-            :rtype: bool
-            """
-            return self._version.delete(method='DELETE', uri=self._uri, ){{/vendorExtensions.x-is-delete-operation}}
-        {{/vendorExtensions.x-is-context-operation}}{{/operations}}
+        :returns: True if delete succeeds, False otherwise
+        :rtype: bool
+        """
+        return self._version.delete(method='DELETE', uri=self._uri, ){{/vendorExtensions.x-is-delete-operation}}
+    {{/vendorExtensions.x-is-context-operation}}{{/operations}}
 
     def __repr__(self):
         """
@@ -111,22 +111,22 @@ class {{apiName}}ListInstance(ListResource):
         {{#dependents}}{{^instanceDependent}}
         self._{{mountName}} = None{{/instanceDependent}}{{/dependents}}
         {{#operations}}{{#vendorExtensions.x-is-list-operation}}
-        def {{vendorExtensions.x-name-lower}}(self{{#allParams}}, {{paramName}}{{/allParams}}):
-            {{#vendorExtensions.x-is-create-operation}}data = values.of({
-                {{#allParams}}'{{paramName}}': {{paramName}},{{/allParams}}
-            })
+    def {{vendorExtensions.x-name-lower}}(self{{#allParams}}, {{paramName}}{{/allParams}}):
+        {{#vendorExtensions.x-is-create-operation}}data = values.of({
+            {{#allParams}}'{{paramName}}': {{paramName}},{{/allParams}}
+        })
 
-            payload = self._version.create(method='{{httpMethod}}', uri=self._uri, data=data, )
+        payload = self._version.create(method='{{httpMethod}}', uri=self._uri, data=data, )
 
-            return {{apiName}}Instance(self._version, payload, {{#listPathParams}}{{paramName}}=self._solution['{{paramName}}']{{/listPathParams}}){{/vendorExtensions.x-is-create-operation}}
-            {{#vendorExtensions.x-is-read-operation}}data = values.of({
-                {{#allParams}}'{{paramName}}': {{paramName}},{{/allParams}}
-            })
+        return {{apiName}}Instance(self._version, payload, {{#listPathParams}}{{paramName}}=self._solution['{{paramName}}']{{/listPathParams}}){{/vendorExtensions.x-is-create-operation}}
+        {{#vendorExtensions.x-is-read-operation}}data = values.of({
+            {{#allParams}}'{{paramName}}': {{paramName}},{{/allParams}}
+        })
 
-            payload = self._version.create(method='{{httpMethod}}', uri=self._uri, data=data, )
+        payload = self._version.create(method='{{httpMethod}}', uri=self._uri, data=data, )
 
-            return {{apiName}}Page(self._version, payload, {{#listPathParams}}{{paramName}}=self._solution['{{paramName}}']{{/listPathParams}}){{/vendorExtensions.x-is-read-operation}}
-        {{/vendorExtensions.x-is-list-operation}}{{/operations}}
+        return {{apiName}}Page(self._version, payload, {{#listPathParams}}{{paramName}}=self._solution['{{paramName}}']{{/listPathParams}}){{/vendorExtensions.x-is-read-operation}}
+    {{/vendorExtensions.x-is-list-operation}}{{/operations}}
 
     def __repr__(self):
         """
