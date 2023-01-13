@@ -9,12 +9,15 @@ public class CodegenParameterDataTypeResolver extends Resolver<CodegenParameter>
 
     private IConventionMapper mapper;
 
+    public CodegenParameterDataTypeResolver(IConventionMapper mapper) {
+        this.mapper = mapper;
+    }
     public CodegenParameter resolve(CodegenParameter parameter) {
         assignDataType(parameter);
         return parameter;
     }
 
-    protected void assignDataType(CodegenParameter parameter) {
+    private void assignDataType(CodegenParameter parameter) {
         mapper
             .properties()
             .getString(parameter.dataFormat)

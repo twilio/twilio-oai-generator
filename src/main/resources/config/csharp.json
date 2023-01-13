@@ -116,16 +116,6 @@
         "long?": "%s.Value.ToString()"
     },
 
-    "serialize_dataType": {
-        "string": "%s",
-        "object": "Serializers.JsonObject(%s)",
-        "bool?": "%s.Value.ToString().ToLower()",
-        "decimal": "%s.Value.ToString()",
-        "decimal?": "%s.Value.ToString()",
-        "int?": "%s.ToString()",
-        "long?": "%s.Value.ToString()"
-    },
-
     "cardinality": {
         "_": "single",
         "prefixed_collapsible_map": "multi"

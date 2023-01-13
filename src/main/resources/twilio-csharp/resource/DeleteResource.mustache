@@ -11,7 +11,7 @@
                 Rest.Domain.{{domainPackage}},
                 path,
                 queryParams: options.GetParams(),
-                headerParams: {{^vendorExtensions.hasOptionalHeaderParams}}null{{/vendorExtensions.hasOptionalHeaderParams}}{{#vendorExtensions.x-header-params-exists}}options.GetHeaderParams(){{/vendorExtensions.x-header-params-exists}}
+                headerParams: {{^vendorExtensions.hasOptionalHeaderParams}}null{{/vendorExtensions.hasOptionalHeaderParams}}{{#vendorExtensions.x-header-param-exists}}options.GetHeaderParams(){{/vendorExtensions.x-header-param-exists}}
             );
         }
 

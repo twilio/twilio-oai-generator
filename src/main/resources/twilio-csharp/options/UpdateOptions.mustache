@@ -3,7 +3,7 @@
     {
     {{>options/Params}}
 
-    {{#vendorExtensions.x-required-param-exist}}
+    {{#vendorExtensions.x-required-param-exists}}
         {{>options/MethodsComments}}        public Update{{apiName}}Options({{#requiredParams}}{{{dataType}}} {{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^-last}}, {{/-last}}{{/requiredParams}})
         {
         {{#requiredParams}}
@@ -17,7 +17,7 @@
             {{/required}}
         {{/allParams}}
         }
-    {{/vendorExtensions.x-required-param-exist}}
+    {{/vendorExtensions.x-required-param-exists}}
 
         {{>options/GetParams}}
         {{>options/HeaderParams}}
