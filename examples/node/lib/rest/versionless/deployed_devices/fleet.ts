@@ -62,7 +62,9 @@ export class FleetContextImpl implements FleetContext {
     this._uri = `/Fleets/${sid}`;
   }
 
-  fetch(callback?: any): Promise<FleetInstance> {
+  fetch(
+    callback?: (error: Error | null, item?: FleetInstance) => any
+  ): Promise<FleetInstance> {
     const instance = this;
     let operationVersion = instance._version,
       operationPromise = operationVersion.fetch({
@@ -199,7 +201,6 @@ export interface FleetListInstance {
     params: FleetListInstanceCreateOptions,
     callback?: (error: Error | null, item?: FleetInstance) => any
   ): Promise<FleetInstance>;
-  create(params?: any, callback?: any): Promise<FleetInstance>;
 
   /**
    * Provide a user-friendly representation
@@ -220,10 +221,12 @@ export function FleetListInstance(version: DeployedDevices): FleetListInstance {
   instance._uri = `/Fleets`;
 
   instance.create = function create(
-    params?: any,
-    callback?: any
+    params?:
+      | FleetListInstanceCreateOptions
+      | ((error: Error | null, items: FleetInstance) => any),
+    callback?: (error: Error | null, items: FleetInstance) => any
   ): Promise<FleetInstance> {
-    if (typeof params === "function") {
+    if (params instanceof Function) {
       callback = params;
       params = {};
     } else {

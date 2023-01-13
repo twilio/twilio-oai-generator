@@ -54,7 +54,9 @@ export class CallContextImpl implements CallContext {
     this._uri = `/Voice/${sid}`;
   }
 
-  update(callback?: any): Promise<CallInstance> {
+  update(
+    callback?: (error: Error | null, item?: CallInstance) => any
+  ): Promise<CallInstance> {
     const instance = this;
     let operationVersion = instance._version,
       operationPromise = operationVersion.update({

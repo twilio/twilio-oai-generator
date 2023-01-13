@@ -36,6 +36,7 @@ func ResourceAccounts() *schema.Resource {
 			"x_twilio_webhook_enabled":        AsString(SchemaForceNewOptional),
 			"recording_status_callback":       AsString(SchemaForceNewOptional),
 			"recording_status_callback_event": AsList(AsString(SchemaForceNewOptional), SchemaForceNewOptional),
+			"twiml":                           AsString(SchemaForceNewOptional),
 			"sid":                             AsString(SchemaComputed),
 			"status":                          AsString(SchemaComputedOptional),
 			"pause_behavior":                  AsString(SchemaComputedOptional),

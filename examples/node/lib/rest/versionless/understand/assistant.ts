@@ -24,6 +24,8 @@ import { isValidPathParam } from "../../../base/utility";
  * Options to pass to each
  */
 export interface AssistantListInstanceEachOptions {
+  /** How many resources to return in each list page. The default is 50, and the maximum is 1000. */
+  pageSize?: number;
   /** Function to process each record. If this and a positional callback are passed, this one will be used */
   callback?: (item: AssistantInstance, done: (err?: Error) => void) => void;
   /** Function to be called upon completion of streaming */
@@ -36,6 +38,8 @@ export interface AssistantListInstanceEachOptions {
  * Options to pass to list
  */
 export interface AssistantListInstanceOptions {
+  /** How many resources to return in each list page. The default is 50, and the maximum is 1000. */
+  pageSize?: number;
   /** Upper limit for the number of records to return. list() guarantees never to return more than limit. Default is no limit */
   limit?: number;
 }
@@ -44,6 +48,8 @@ export interface AssistantListInstanceOptions {
  * Options to pass to page
  */
 export interface AssistantListInstancePageOptions {
+  /** How many resources to return in each list page. The default is 50, and the maximum is 1000. */
+  pageSize?: number;
   /** Page Number, this value is simply for client state */
   pageNumber?: number;
   /** PageToken provided by the API */
@@ -69,71 +75,28 @@ export interface AssistantListInstance {
    * If a function is passed as the first argument, it will be used as the callback
    * function.
    *
-   * @param { function } [callback] - Function to process each record
-   */
-  each(
-    callback?: (item: AssistantInstance, done: (err?: Error) => void) => void
-  ): void;
-  /**
-   * Streams AssistantInstance records from the API.
-   *
-   * This operation lazily loads records as efficiently as possible until the limit
-   * is reached.
-   *
-   * The results are passed into the callback function, so this operation is memory
-   * efficient.
-   *
-   * If a function is passed as the first argument, it will be used as the callback
-   * function.
-   *
    * @param { AssistantListInstanceEachOptions } [params] - Options for request
    * @param { function } [callback] - Function to process each record
    */
   each(
-    params?: AssistantListInstanceEachOptions,
     callback?: (item: AssistantInstance, done: (err?: Error) => void) => void
   ): void;
-  each(params?: any, callback?: any): void;
+  each(
+    params: AssistantListInstanceEachOptions,
+    callback?: (item: AssistantInstance, done: (err?: Error) => void) => void
+  ): void;
   /**
    * Retrieve a single target page of AssistantInstance records from the API.
    *
    * The request is executed immediately.
-   *
-   * If a function is passed as the first argument, it will be used as the callback
-   * function.
-   *
-   * @param { function } [callback] - Callback to handle list of records
-   */
-  getPage(
-    callback?: (error: Error | null, items: AssistantPage) => any
-  ): Promise<AssistantPage>;
-  /**
-   * Retrieve a single target page of AssistantInstance records from the API.
-   *
-   * The request is executed immediately.
-   *
-   * If a function is passed as the first argument, it will be used as the callback
-   * function.
    *
    * @param { string } [targetUrl] - API-generated URL for the requested results page
    * @param { function } [callback] - Callback to handle list of records
    */
   getPage(
-    targetUrl?: string,
+    targetUrl: string,
     callback?: (error: Error | null, items: AssistantPage) => any
   ): Promise<AssistantPage>;
-  getPage(params?: any, callback?: any): Promise<AssistantPage>;
-  /**
-   * Lists AssistantInstance records from the API as a list.
-   *
-   * If a function is passed as the first argument, it will be used as the callback
-   * function.
-   *
-   * @param { function } [callback] - Callback to handle list of records
-   */
-  list(
-    callback?: (error: Error | null, items: AssistantInstance[]) => any
-  ): Promise<AssistantInstance[]>;
   /**
    * Lists AssistantInstance records from the API as a list.
    *
@@ -144,23 +107,12 @@ export interface AssistantListInstance {
    * @param { function } [callback] - Callback to handle list of records
    */
   list(
-    params?: AssistantListInstanceOptions,
     callback?: (error: Error | null, items: AssistantInstance[]) => any
   ): Promise<AssistantInstance[]>;
-  list(params?: any, callback?: any): Promise<AssistantInstance[]>;
-  /**
-   * Retrieve a single page of AssistantInstance records from the API.
-   *
-   * The request is executed immediately.
-   *
-   * If a function is passed as the first argument, it will be used as the callback
-   * function.
-   *
-   * @param { function } [callback] - Callback to handle list of records
-   */
-  page(
-    callback?: (error: Error | null, items: AssistantPage) => any
-  ): Promise<AssistantPage>;
+  list(
+    params: AssistantListInstanceOptions,
+    callback?: (error: Error | null, items: AssistantInstance[]) => any
+  ): Promise<AssistantInstance[]>;
   /**
    * Retrieve a single page of AssistantInstance records from the API.
    *
@@ -173,10 +125,12 @@ export interface AssistantListInstance {
    * @param { function } [callback] - Callback to handle list of records
    */
   page(
+    callback?: (error: Error | null, items: AssistantPage) => any
+  ): Promise<AssistantPage>;
+  page(
     params: AssistantListInstancePageOptions,
     callback?: (error: Error | null, items: AssistantPage) => any
   ): Promise<AssistantPage>;
-  page(params?: any, callback?: any): Promise<AssistantPage>;
 
   /**
    * Provide a user-friendly representation
@@ -194,11 +148,34 @@ export function AssistantListInstance(
   instance._solution = {};
   instance._uri = `/Assistants`;
 
-  instance.page = function page(callback?: any): Promise<AssistantPage> {
+  instance.page = function page(
+    params?:
+      | AssistantListInstancePageOptions
+      | ((error: Error | null, items: AssistantPage) => any),
+    callback?: (error: Error | null, items: AssistantPage) => any
+  ): Promise<AssistantPage> {
+    if (params instanceof Function) {
+      callback = params;
+      params = {};
+    } else {
+      params = params || {};
+    }
+
+    let data: any = {};
+
+    if (params["pageSize"] !== undefined) data["PageSize"] = params["pageSize"];
+
+    if (params.pageNumber !== undefined) data["Page"] = params.pageNumber;
+    if (params.pageToken !== undefined) data["PageToken"] = params.pageToken;
+
+    const headers: any = {};
+
     let operationVersion = version,
       operationPromise = operationVersion.page({
         uri: instance._uri,
         method: "get",
+        params: data,
+        headers,
       });
 
     operationPromise = operationPromise.then(
@@ -216,8 +193,8 @@ export function AssistantListInstance(
   instance.list = instance._version.list;
 
   instance.getPage = function getPage(
-    targetUrl?: any,
-    callback?: any
+    targetUrl: string,
+    callback?: (error: Error | null, items: AssistantPage) => any
   ): Promise<AssistantPage> {
     const operationPromise = instance._version._domain.twilio.request({
       method: "get",

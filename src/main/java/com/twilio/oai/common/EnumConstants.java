@@ -66,4 +66,12 @@ public class EnumConstants {
 
         private final String value;
     }
+
+    @Getter
+    @RequiredArgsConstructor
+    public enum RubyDataTypes implements LanguageDataType {
+        LIST("Array<");
+
+        private final String value;
+    }
 }

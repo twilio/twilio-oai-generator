@@ -73,27 +73,31 @@ namespace Twilio.Rest.Versionless.Understand
         }
         #endif
         /// <summary> read </summary>
+        /// <param name="pageSize"> How many resources to return in each list page. The default is 50, and the maximum is 1000. </param>
         /// <param name="client"> Client to make requests to Twilio </param>
         /// <param name="limit"> Record limit </param>
         /// <returns> A single instance of Assistant </returns>
         public static ResourceSet<AssistantResource> Read(
+                                                     int? pageSize = null,
                                                      long? limit = null,
                                                      ITwilioRestClient client = null)
         {
-            var options = new ReadAssistantOptions(){ Limit = limit};
+            var options = new ReadAssistantOptions(){ PageSize = pageSize, Limit = limit};
             return Read(options, client);
         }
 
         #if !NET35
         /// <summary> read </summary>
+        /// <param name="pageSize"> How many resources to return in each list page. The default is 50, and the maximum is 1000. </param>
         /// <param name="client"> Client to make requests to Twilio </param>
         /// <param name="limit"> Record limit </param>
         /// <returns> Task that resolves to A single instance of Assistant </returns>
         public static async System.Threading.Tasks.Task<ResourceSet<AssistantResource>> ReadAsync(
+                                                                                             int? pageSize = null,
                                                                                              long? limit = null,
                                                                                              ITwilioRestClient client = null)
         {
-            var options = new ReadAssistantOptions(){ Limit = limit};
+            var options = new ReadAssistantOptions(){ PageSize = pageSize, Limit = limit};
             return await ReadAsync(options, client);
         }
         #endif

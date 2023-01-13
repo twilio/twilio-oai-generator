@@ -47,7 +47,7 @@ export interface NewCredentialsListInstanceCreateOptions {
   /**  */
   testNumberInt64?: number;
   /**  */
-  testObject?: object;
+  testObject?: Record<string, object>;
   /**  */
   testDateTime?: Date;
   /**  */
@@ -85,7 +85,6 @@ export interface NewCredentialsListInstance {
     params: NewCredentialsListInstanceCreateOptions,
     callback?: (error: Error | null, item?: NewCredentialsInstance) => any
   ): Promise<NewCredentialsInstance>;
-  create(params: any, callback?: any): Promise<NewCredentialsInstance>;
 
   /**
    * Provide a user-friendly representation
@@ -104,8 +103,8 @@ export function NewCredentialsListInstance(
   instance._uri = `/Credentials/AWS`;
 
   instance.create = function create(
-    params: any,
-    callback?: any
+    params: NewCredentialsListInstanceCreateOptions,
+    callback?: (error: Error | null, items: NewCredentialsInstance) => any
   ): Promise<NewCredentialsInstance> {
     if (params === null || params === undefined) {
       throw new Error('Required parameter "params" missing.');
@@ -142,16 +141,19 @@ export function NewCredentialsListInstance(
     if (params["testObjectArray"] !== undefined)
       data["TestObjectArray"] = serialize.map(
         params["testObjectArray"],
-        (e) => e
+        (e: object) => e
       );
     if (params["testAnyType"] !== undefined)
       data["TestAnyType"] = serialize.object(params["testAnyType"]);
     if (params["testAnyArray"] !== undefined)
-      data["TestAnyArray"] = serialize.map(params["testAnyArray"], (e) =>
+      data["TestAnyArray"] = serialize.map(params["testAnyArray"], (e: any) =>
         serialize.object(e)
       );
     if (params["permissions"] !== undefined)
-      data["Permissions"] = serialize.map(params["permissions"], (e) => e);
+      data["Permissions"] = serialize.map(
+        params["permissions"],
+        (e: string) => e
+      );
     if (params["someA2PThing"] !== undefined)
       data["SomeA2PThing"] = params["someA2PThing"];
 

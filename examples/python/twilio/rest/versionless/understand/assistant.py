@@ -37,10 +37,10 @@ class AssistantListInstance(ListResource):
         self._uri = '/Assistants'
         
         
-        def page(self):
+        def page(self, page_size):
             
             data = values.of({
-                
+                'page_size': page_size,
             })
 
             payload = self._version.create(method='get', uri=self._uri, data=data, )

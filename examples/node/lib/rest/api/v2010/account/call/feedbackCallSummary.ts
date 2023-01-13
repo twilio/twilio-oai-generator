@@ -57,7 +57,6 @@ export interface FeedbackCallSummaryContext {
     params: FeedbackCallSummaryContextUpdateOptions,
     callback?: (error: Error | null, item?: FeedbackCallSummaryInstance) => any
   ): Promise<FeedbackCallSummaryInstance>;
-  update(params: any, callback?: any): Promise<FeedbackCallSummaryInstance>;
 
   /**
    * Provide a user-friendly representation
@@ -90,7 +89,10 @@ export class FeedbackCallSummaryContextImpl
     this._uri = `/Accounts/${accountSid}/Calls/Feedback/Summary/${sid}.json`;
   }
 
-  update(params: any, callback?: any): Promise<FeedbackCallSummaryInstance> {
+  update(
+    params: FeedbackCallSummaryContextUpdateOptions,
+    callback?: (error: Error | null, item?: FeedbackCallSummaryInstance) => any
+  ): Promise<FeedbackCallSummaryInstance> {
     if (params === null || params === undefined) {
       throw new Error('Required parameter "params" missing.');
     }
@@ -252,7 +254,11 @@ export class FeedbackCallSummaryInstance {
     params: FeedbackCallSummaryContextUpdateOptions,
     callback?: (error: Error | null, item?: FeedbackCallSummaryInstance) => any
   ): Promise<FeedbackCallSummaryInstance>;
-  update(params: any, callback?: any): Promise<FeedbackCallSummaryInstance> {
+
+  update(
+    params?: any,
+    callback?: (error: Error | null, item?: FeedbackCallSummaryInstance) => any
+  ): Promise<FeedbackCallSummaryInstance> {
     return this._proxy.update(params, callback);
   }
 

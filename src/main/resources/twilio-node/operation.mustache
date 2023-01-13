@@ -14,7 +14,7 @@
     {{/requiredParams}}
   {{/hasRequiredParams}}
   {{^hasRequiredParams}}
-    if (typeof params === "function") {
+    if (params instanceof Function) {
       callback = params;
       params = {};
     } else {
@@ -27,7 +27,7 @@
     {{#queryParams}}{{>requestParam}}{{/queryParams}}
     {{#formParams}}{{>requestParam}}{{/formParams}}
     {{#vendorExtensions.x-is-read-operation}}
-    if (params.page !== undefined) data["Page"] = params.pageNumber;
+    if (params.pageNumber !== undefined) data["Page"] = params.pageNumber;
     if (params.pageToken !== undefined) data["PageToken"] = params.pageToken;
     {{/vendorExtensions.x-is-read-operation}}
 
@@ -62,7 +62,7 @@
   instance.each = instance._version.each;
   instance.list = instance._version.list;
 
-  instance.getPage = function getPage(targetUrl?: any, callback?: any): Promise<{{returnType}}> {
+  instance.getPage = function getPage(targetUrl: string, callback?: (error: Error | null, items: {{returnType}}) => any): Promise<{{returnType}}> {
     const operationPromise = instance._version._domain.twilio.request({method: "{{httpMethod}}", uri: targetUrl});
 
     let pagePromise = operationPromise.then(payload => new {{returnType}}(instance._version, payload, instance._solution));

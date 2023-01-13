@@ -103,7 +103,9 @@ export class CallContextImpl implements CallContext {
     this._uri = `/Accounts/${accountSid}/Calls/${testInteger}.json`;
   }
 
-  remove(callback?: any): Promise<boolean> {
+  remove(
+    callback?: (error: Error | null, item?: boolean) => any
+  ): Promise<boolean> {
     const instance = this;
     let operationVersion = instance._version,
       operationPromise = operationVersion.remove({
@@ -118,7 +120,9 @@ export class CallContextImpl implements CallContext {
     return operationPromise;
   }
 
-  fetch(callback?: any): Promise<CallInstance> {
+  fetch(
+    callback?: (error: Error | null, item?: CallInstance) => any
+  ): Promise<CallInstance> {
     const instance = this;
     let operationVersion = instance._version,
       operationPromise = operationVersion.fetch({
@@ -329,7 +333,6 @@ export interface CallListInstance {
     params: CallListInstanceCreateOptions,
     callback?: (error: Error | null, item?: CallInstance) => any
   ): Promise<CallInstance>;
-  create(params: any, callback?: any): Promise<CallInstance>;
 
   /**
    * Provide a user-friendly representation
@@ -370,8 +373,8 @@ export function CallListInstance(
   });
 
   instance.create = function create(
-    params: any,
-    callback?: any
+    params: CallListInstanceCreateOptions,
+    callback?: (error: Error | null, items: CallInstance) => any
   ): Promise<CallInstance> {
     if (params === null || params === undefined) {
       throw new Error('Required parameter "params" missing.');
@@ -396,12 +399,12 @@ export function CallListInstance(
     if (params["testArrayOfStrings"] !== undefined)
       data["TestArrayOfStrings"] = serialize.map(
         params["testArrayOfStrings"],
-        (e) => e
+        (e: string) => e
       );
     if (params["testArrayOfUri"] !== undefined)
       data["TestArrayOfUri"] = serialize.map(
         params["testArrayOfUri"],
-        (e) => e
+        (e: string) => e
       );
 
     data["TestMethod"] = params["testMethod"];
