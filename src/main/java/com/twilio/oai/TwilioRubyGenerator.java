@@ -21,10 +21,7 @@ import org.openapitools.codegen.model.ModelMap;
 import org.openapitools.codegen.model.ModelsMap;
 import org.openapitools.codegen.model.OperationsMap;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static com.twilio.oai.common.ApplicationConstants.CONFIG_RUBY_JSON_PATH;
 
@@ -81,6 +78,7 @@ public class TwilioRubyGenerator extends RubyClientCodegen {
         super.processOpts();
 
         twilioCodegen.processOpts();
+
     }
 
     @Override
@@ -107,7 +105,7 @@ public class TwilioRubyGenerator extends RubyClientCodegen {
 
     private void updateApiVersion(DirectoryStructureService directoryStructureService){
         String apiVersionClass = (String)directoryStructureService.getAdditionalProperties().get("apiVersionClass");
-        directoryStructureService.getAdditionalProperties().put("apiVersionClass",StringHelper.toSnakeCase(apiVersionClass));
+        directoryStructureService.getAdditionalProperties().put("apiVersionClass",StringHelper.camelize(apiVersionClass));
     }
 
     @Override
