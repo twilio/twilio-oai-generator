@@ -14,6 +14,7 @@ import com.twilio.oai.resource.IResourceTree;
 import com.twilio.oai.resource.ResourceMap;
 import com.twilio.oai.template.RubyApiActionTemplate;
 import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.PathItem;
 import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenOperation;
 import org.openapitools.codegen.languages.RubyClientCodegen;
@@ -50,6 +51,8 @@ public class TwilioRubyGenerator extends RubyClientCodegen {
         setGemName("");
         this.libFolder = "";
         directoryStructureService.configure(openAPI);
+        Map<String, PathItem> pathMap = openAPI.getPaths();
+        RubyApiResourceBuilder.configureAdditionalProps(pathMap, domain, directoryStructureService);
     }
 
     @Override
@@ -95,6 +98,7 @@ public class TwilioRubyGenerator extends RubyClientCodegen {
         final CodegenModelResolver codegenModelResolver = new CodegenModelResolver(conventionMapper,
                 modelFormatMap,
                 List.of(EnumConstants.RubyDataTypes.values()));
+
         return new RubyApiResourceBuilder(rubyApiActionTemplate, opList, allModels, directoryStructureService)
                 .updateApiPath()
                 .updateOperations(new LanguageParamResolver(conventionMapper))

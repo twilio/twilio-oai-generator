@@ -148,7 +148,7 @@ public class DirectoryStructureService {
             .importName(resourceAliases.getClassName() + LIST_INSTANCE)
             .mountName(caseResolver.pathOperation(resourceAliases.getMountName()))
             .filename(caseResolver.filenameOperation(resourceAliases.getClassName()))
-                .pathParams(params)
+            .pathParams(params)
             .build();
     }
 
@@ -170,18 +170,19 @@ public class DirectoryStructureService {
 
 
     private List<String> fetchNonParentPathParamNames(Operation operation){
-        List<String> params = new ArrayList<>();
-        if (null == operation) return params;
-        List<Parameter> pathParams = Optional.ofNullable(operation.getParameters())
+        if(operation != null){
+            List<Parameter> pathParams = Optional.ofNullable(operation.getParameters())
                     .stream().flatMap(Collection::stream)
                     .filter(param -> Objects.nonNull(param.getIn())).filter(PathUtils::isPathParam)
                     .collect(Collectors.toList());
-        params = pathParams.stream().filter(parameter -> Objects.isNull(parameter.getExtensions()))
+            List<String> params = pathParams.stream().filter(parameter -> Objects.isNull(parameter.getExtensions()))
                     .map(Parameter::getName).collect(Collectors.toList());
-        params.addAll(pathParams.stream().filter(parameter -> Objects.nonNull(parameter.getExtensions()))
+            params.addAll(pathParams.stream().filter(parameter -> Objects.nonNull(parameter.getExtensions()))
                     .filter(parameter -> !PathUtils.isParentParam(parameter))
                     .map(Parameter::getName).collect(Collectors.toList()));
-        return params;
+            return params;
+        }
+        return null;
     }
 
     private List<Parameter> fetchNonParentPathParams(Operation operation){
@@ -196,7 +197,6 @@ public class DirectoryStructureService {
         params.addAll(pathParams.stream().filter(parameter -> Objects.nonNull(parameter.getExtensions()))
                     .filter(parameter -> !PathUtils.isParentParam(parameter))
                     .collect(Collectors.toList()));
-
         return params;
     }
 
