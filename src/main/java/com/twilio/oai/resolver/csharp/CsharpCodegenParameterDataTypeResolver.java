@@ -10,12 +10,9 @@ import java.util.Optional;
 
 public class CsharpCodegenParameterDataTypeResolver extends CodegenParameterDataTypeResolver {
 
-    private final IConventionMapper mapper;
-
     private final CsharpSerializer csharpSerializer;
     public CsharpCodegenParameterDataTypeResolver(IConventionMapper mapper, CsharpSerializer csharpSerializer) {
         super(mapper);
-        this.mapper = mapper;
         this.csharpSerializer = csharpSerializer;
     }
 
@@ -27,7 +24,7 @@ public class CsharpCodegenParameterDataTypeResolver extends CodegenParameterData
         return parameter;
     }
 
-    public CodegenParameter resolveEnum(CodegenParameter parameter) {
+    private CodegenParameter resolveEnum(CodegenParameter parameter) {
         if (!mapper.properties().getString(parameter.dataFormat).isEmpty()) {
             // If the dataformat found in libraries(csharp.json) is Twilio.Types, import enum into the options file.
             Optional importStm = mapper.libraries().get(StringHelper.toSnakeCase(parameter.dataFormat).replaceAll("_", "-"));

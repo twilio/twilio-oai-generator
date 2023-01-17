@@ -1,11 +1,13 @@
 package com.twilio.oai.resolver.csharp;
 
 import com.twilio.oai.resolver.IConventionMapper;
+import lombok.RequiredArgsConstructor;
 import org.openapitools.codegen.CodegenParameter;
 
 import java.util.Optional;
 
 // Resolves datatype to string and stores to "x-param-to-string" in vendorExtensions
+@RequiredArgsConstructor
 public class CsharpSerializer {
 
     private final ParameterFormat parameterFormat;
@@ -25,8 +27,7 @@ public class CsharpSerializer {
                 : mapper.serialize().get(parameter.dataType);
 
         // If not found, set to default format
-        String serializedFormat = optionalSerializedFormat.isPresent() ? (String) optionalSerializedFormat.get()
-                : (String) mapper.serialize().get("-").get();
+        String serializedFormat = (String) optionalSerializedFormat.orElse(mapper.serialize().get("-").get());
 
         // Replace "%s" with paramName
         serializedFormat = parameter.isMap ? String.format(serializedFormat, parameter.paramName, parameter.vendorExtensions.get("x-map-value"))

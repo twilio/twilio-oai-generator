@@ -11,11 +11,9 @@ import java.util.Optional;
 
 // Overriding default behavior and adding "x-jsonConverter" to enum
 public class CsharpCodegenModelDataTypeResolver extends CodegenModelDataTypeResolver {
-    private final IConventionMapper mapper;
 
     public CsharpCodegenModelDataTypeResolver(IConventionMapper mapper, Map<String, String> modelFormatMap) {
         super(mapper, modelFormatMap);
-        this.mapper = mapper;
     }
 
     public CodegenProperty resolve(CodegenProperty property) {
