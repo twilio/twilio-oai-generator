@@ -125,7 +125,7 @@ class {{apiName}}ListInstance(ListResource):
 
         payload = self._version.create(method='{{httpMethod}}', uri=self._uri, data=data, )
 
-        return {{apiName}}Page(self._version, payload, {{#listPathParams}}{{paramName}}=self._solution['{{paramName}}']{{/listPathParams}}){{/vendorExtensions.x-is-read-operation}}
+        return {{apiName}}Page(self._version, payload, {{#listPathParams}}{{paramName}}=self._solution['{{paramName}}'], {{/listPathParams}}){{/vendorExtensions.x-is-read-operation}}
     {{/vendorExtensions.x-is-list-operation}}{{/operations}}
 
     def __repr__(self):
