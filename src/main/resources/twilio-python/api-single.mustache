@@ -72,7 +72,7 @@ class {{apiName}}Instance(InstanceResource):
 
         self._context = None
         self._solution = {
-            {{#instancePathParams}}'{{paramName}}': {{paramName}} or self._properties['{{paramName}}']{{/instancePathParams}}
+            {{#instancePathParams}}'{{paramName}}': {{paramName}} or self._properties['{{paramName}}'],{{/instancePathParams}}
         }
 
     @property
