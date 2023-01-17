@@ -111,6 +111,7 @@ class {{apiName}}ListInstance(ListResource):
         {{#dependents}}{{^instanceDependent}}
         self._{{mountName}} = None{{/instanceDependent}}{{/dependents}}
     {{#operations}}{{#vendorExtensions.x-is-list-operation}}
+    """
     def {{vendorExtensions.x-name-lower}}(self{{#allParams}}, {{paramName}}{{/allParams}}):
         {{#vendorExtensions.x-is-create-operation}}data = values.of({
             {{#allParams}}'{{paramName}}': {{paramName}},{{/allParams}}
@@ -126,6 +127,7 @@ class {{apiName}}ListInstance(ListResource):
         payload = self._version.create(method='{{httpMethod}}', uri=self._uri, data=data, )
 
         return {{apiName}}Page(self._version, payload, {{#listPathParams}}{{paramName}}=self._solution['{{paramName}}'], {{/listPathParams}}){{/vendorExtensions.x-is-read-operation}}
+    """
     {{/vendorExtensions.x-is-list-operation}}{{/operations}}
 
     def __repr__(self):
