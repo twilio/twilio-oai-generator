@@ -22,7 +22,10 @@ import org.openapitools.codegen.model.ModelMap;
 import org.openapitools.codegen.model.ModelsMap;
 import org.openapitools.codegen.model.OperationsMap;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static com.twilio.oai.common.ApplicationConstants.CONFIG_RUBY_JSON_PATH;
 
@@ -94,7 +97,7 @@ public class TwilioRubyGenerator extends RubyClientCodegen {
     private ApiResources generateResources(final List<CodegenOperation> opList) {
         updateApiVersion(directoryStructureService);
         final IConventionMapper conventionMapper = new LanguageConventionResolver(CONFIG_RUBY_JSON_PATH);
-         final CodegenModelResolver codegenModelResolver = new CodegenModelResolver(conventionMapper,
+        final CodegenModelResolver codegenModelResolver = new CodegenModelResolver(conventionMapper,
                 modelFormatMap,
                 List.of(EnumConstants.RubyDataTypes.values()));
 
