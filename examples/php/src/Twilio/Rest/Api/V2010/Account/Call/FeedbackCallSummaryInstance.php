@@ -27,6 +27,7 @@ use Twilio\Version;
 use Twilio\InstanceContext;
 use Twilio\Deserialize;
 use Twilio\Serialize;
+use Twilio\Base\PhoneNumberCapabilities;
 
 
 /**
@@ -34,7 +35,7 @@ use Twilio\Serialize;
  * @property string $sid
  * @property string $testString
  * @property int $testInteger
- * @property string $testObject
+ * @property PhoneNumberCapabilities $testObject
  * @property \DateTime $testDateTime
  * @property string $testNumber
  * @property string $priceUnit
@@ -65,7 +66,7 @@ class FeedbackCallSummaryInstance extends InstanceResource {
             'sid' => Values::array_get($payload, 'sid'),
             'testString' => Values::array_get($payload, 'test_string'),
             'testInteger' => Values::array_get($payload, 'test_integer'),
-            'testObject' => Values::array_get($payload, 'test_object'),
+            'testObject' => Deserialize::phoneNumberCapabilities(Values::array_get($payload, 'test_object')),
             'testDateTime' => Deserialize::dateTime(Values::array_get($payload, 'test_date_time')),
             'testNumber' => Values::array_get($payload, 'test_number'),
             'priceUnit' => Values::array_get($payload, 'price_unit'),

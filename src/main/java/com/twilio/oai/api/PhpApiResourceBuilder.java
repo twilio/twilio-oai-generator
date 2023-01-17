@@ -284,4 +284,36 @@ public class PhpApiResourceBuilder extends ApiResourceBuilder {
         }
         return conditionalParamSet;
     }
+
+    @Override
+    public ApiResourceBuilder updateResponseModel(Resolver<CodegenProperty> codegenPropertyResolver) {
+        codegenOperationList.forEach(codegenOperation -> {
+            List<CodegenModel> responseModels = new ArrayList<>();
+            codegenOperation.responses
+                    .stream()
+                    .map(response -> response.baseType)
+                    .filter(Objects::nonNull)
+                    .map(modelName -> this.getModel(modelName, codegenOperation))
+                    .flatMap(Optional::stream)
+                    .forEach(item -> {
+                        item.allVars.stream().filter(var -> var.isModel && var.dataFormat == null).forEach(this::setDataFormatForNestedProperties);
+                        item.vars.stream().filter(var -> var.isModel && var.dataFormat == null).forEach(this::setDataFormatForNestedProperties);
+                        item.vars.forEach(codegenPropertyResolver::resolve);
+                        item.allVars.forEach(codegenPropertyResolver::resolve);
+                        responseModels.add(item);
+                    });
+            this.apiResponseModels.addAll(getDistinctResponseModel(responseModels));
+        });
+        return this;
+    }
+
+    private void setDataFormatForNestedProperties(CodegenProperty codegenProperty) {
+        String ref = codegenProperty.getRef();
+        ref = ref.replaceFirst("#/components/schemas/", "");
+        Optional<CodegenModel> model = this.getModelbyName(ref);
+        if (model.isPresent()) {
+            CodegenModel item = model.get();
+            codegenProperty.dataFormat = item.getFormat();
+        }
+    }
 }
