@@ -31,17 +31,18 @@ public class CsharpCodegenModelDataTypeResolver extends CodegenModelDataTypeReso
             return null;
         }
 
+        OperationStore operationStore = OperationStore.getInstance();
         if (property.complexType == null || !property.complexType.contains("Enum")) {
             if (property.dataType != null) {
                 Optional importStm = mapper.libraries().get(StringHelper.toSnakeCase(property.dataType).replaceAll("_", "-"));
                 if (!importStm.isEmpty() && importStm.get() instanceof String && importStm.get().equals("Twilio.Types")) {
                     // If the datatype found in libraries(csharp.json) is Twilio.Types, import enum into the resource file.
-                    OperationStore.isEnumPresentInResource = true;
+                    operationStore.setEnumPresentInResource(true);
                 }
             }
             return property;
         }
-        String className = OperationStore.className;
+        String className = OperationStore.getInstance().getClassName();
         property.isEnum = true;
         String[] value = property.complexType.split(ApplicationConstants.ENUM);
         property.enumName = value[value.length-1] + ApplicationConstants.ENUM;
@@ -51,9 +52,9 @@ public class CsharpCodegenModelDataTypeResolver extends CodegenModelDataTypeReso
         }
         property.dataType = className + ApplicationConstants.RESOURCE + ApplicationConstants.DOT + property.enumName;
         property.vendorExtensions.put("x-jsonConverter", "StringEnumConverter"); // TODO: Remove this.
-        OperationStore.enums.put(property.enumName, property);
+        operationStore.getEnums().put(property.enumName, property);
         // Import enum into the resource if it contains enum class.
-        OperationStore.isEnumPresentInResource = true;
+        operationStore.setEnumPresentInResource(true);
         return property;
     }
 }

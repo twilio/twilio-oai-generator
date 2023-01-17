@@ -59,7 +59,8 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
     }
 
     private CsharpApiResources processCodegenOperations(List<CodegenOperation> opList) {
-        OperationStore.clear();
+        OperationStore operationStore = OperationStore.getInstance();
+        operationStore.clear();
 
         /*
          * Info: There are 2 types of resolver CodegenModelResolver, CodegenParameterResolver.

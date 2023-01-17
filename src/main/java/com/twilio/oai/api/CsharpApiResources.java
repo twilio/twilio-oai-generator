@@ -8,12 +8,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CsharpApiResources extends ApiResources {
-    List<IJsonSchemaValidationProperties> enums;
+    List<IJsonSchemaValidationProperties> enums = new ArrayList<>(OperationStore.getInstance().getEnums().values());
 
     public String resourceConstant = ApplicationConstants.RESOURCE;
 
-    public CsharpApiResources(CsharpApiResourceBuilder apiResourceBuilder) {
+    public CsharpApiResources(ApiResourceBuilder apiResourceBuilder) {
         super(apiResourceBuilder);
-        enums = new ArrayList<>(OperationStore.enums.values());
     }
 }

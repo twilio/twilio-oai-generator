@@ -29,7 +29,7 @@ public class CsharpCodegenParameterDataTypeResolver extends CodegenParameterData
             // If the dataformat found in libraries(csharp.json) is Twilio.Types, import enum into the options file.
             Optional importStm = mapper.libraries().get(StringHelper.toSnakeCase(parameter.dataFormat).replaceAll("_", "-"));
             if (!importStm.isEmpty() && importStm.get() instanceof String && importStm.get().equals("Twilio.Types")) {
-                OperationStore.isEnumPresentInOptions = true;
+                OperationStore.getInstance().setEnumPresentInOptions(true);
             }
             return parameter;
         }
@@ -49,10 +49,10 @@ public class CsharpCodegenParameterDataTypeResolver extends CodegenParameterData
         if (parameter.items != null) {
             parameter.items.enumName = parameter.enumName;
         }
-        parameter.dataType = OperationStore.className + ApplicationConstants.RESOURCE + ApplicationConstants.DOT + parameter.enumName;
+        parameter.dataType = OperationStore.getInstance().getClassName() + ApplicationConstants.RESOURCE + ApplicationConstants.DOT + parameter.enumName;
         // Using enums to avoid duplicate enum creation
-        OperationStore.enums.putIfAbsent(parameter.enumName, parameter);
-        OperationStore.isEnumPresentInResource = true;
+        OperationStore.getInstance().getEnums().putIfAbsent(parameter.enumName, parameter);
+        OperationStore.getInstance().setEnumPresentInResource(true);
     }
 
 

@@ -62,10 +62,10 @@ public class CsharpApiResourceBuilder extends ApiResourceBuilder {
                 metaAPIProperties.put("array-exists-options", true);
             }
         });
-        if (OperationStore.isEnumPresentInOptions)
+        if (OperationStore.getInstance().isEnumPresentInOptions())
             metaAPIProperties.put("enum-exists-options", true);
 
-        if (OperationStore.isEnumPresentInResource)
+        if (OperationStore.getInstance().isEnumPresentInResource())
             metaAPIProperties.put("enum-exists-resource", true);
         return this;
     }
@@ -170,7 +170,7 @@ public class CsharpApiResourceBuilder extends ApiResourceBuilder {
 
     private void updateNamespaceSubPart(CodegenOperation codegenOperation) {
         List<String> filePathArray = new ArrayList<>(Arrays.asList(codegenOperation.baseName.split(PATH_SEPARATOR_PLACEHOLDER)));
-        OperationStore.className = filePathArray.remove(filePathArray.size()-1);
+        OperationStore.getInstance().setClassName(filePathArray.remove(filePathArray.size()-1));
         if (!filePathArray.isEmpty()) {
             final String namespacePath = filePathArray
                     .stream()
