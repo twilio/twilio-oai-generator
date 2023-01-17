@@ -241,6 +241,9 @@ paths:
                   items:
                     type: string
                   type: array
+                Twiml:
+                  type: string
+                  format: twiml
               title: CreateAccountRequest
               type: object
       responses:

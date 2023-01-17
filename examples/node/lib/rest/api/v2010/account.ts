@@ -21,6 +21,7 @@ const serialize = require("../../../base/serialize");
 import { isValidPathParam } from "../../../base/utility";
 import { CallListInstance } from "./account/call";
 import { PhoneNumberCapabilities } from "../../../../lib/interfaces";
+import TwiML from "../../../../lib/twiml/TwiML";
 
 export class TestResponseObjectTestArrayOfObjects {
   "count"?: number;
@@ -55,6 +56,8 @@ export interface AccountListInstanceCreateOptions {
   recordingStatusCallback?: string;
   /**  */
   recordingStatusCallbackEvent?: Array<string>;
+  /**  */
+  twiml?: TwiML | string;
 }
 /**
  * Options to pass to each
@@ -590,6 +593,8 @@ export function AccountListInstance(version: V2010): AccountListInstance {
         params["recordingStatusCallbackEvent"],
         (e: string) => e
       );
+    if (params["twiml"] !== undefined)
+      data["Twiml"] = serialize.twiml(params["twiml"]);
 
     const headers: any = {};
     headers["Content-Type"] = "application/x-www-form-urlencoded";
