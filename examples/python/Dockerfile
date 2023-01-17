@@ -17,5 +17,5 @@ RUN pip install --no-cache-dir -r requirements.txt
 RUN pip install pytest
 
 # pipefail prevents errors in a pipeline from being masked
-CMD ["/bin/bash", "-c", "set -o pipefail && python3 -m pytest tests 2>&1 | tee /local/test-report.out"]
+CMD ["/bin/bash", "-c", "set -o pipefail && pytest tests 2>&1 | tee /local/test-report.out"]
 
