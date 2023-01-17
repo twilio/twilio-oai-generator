@@ -57,6 +57,7 @@ class AccountList extends ListResource {
         $data = Values::of([
             'RecordingStatusCallback' => $options['recordingStatusCallback'],
             'RecordingStatusCallbackEvent' => Serialize::map($options['recordingStatusCallbackEvent'], function($e) { return $e; }),
+            'Twiml' => $options['twiml'],
         ]);
 
         $headers = Values::of(['X-Twilio-Webhook-Enabled' => $options['xTwilioWebhookEnabled']]);

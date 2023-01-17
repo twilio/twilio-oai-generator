@@ -79,7 +79,6 @@ public class TwilioRubyGenerator extends RubyClientCodegen {
     @Override
     public void processOpts() {
         super.processOpts();
-
         twilioCodegen.processOpts();
 
     }
@@ -95,7 +94,7 @@ public class TwilioRubyGenerator extends RubyClientCodegen {
     private ApiResources generateResources(final List<CodegenOperation> opList) {
         updateApiVersion(directoryStructureService);
         final IConventionMapper conventionMapper = new LanguageConventionResolver(CONFIG_RUBY_JSON_PATH);
-        final CodegenModelResolver codegenModelResolver = new CodegenModelResolver(conventionMapper,
+         final CodegenModelResolver codegenModelResolver = new CodegenModelResolver(conventionMapper,
                 modelFormatMap,
                 List.of(EnumConstants.RubyDataTypes.values()));
 
@@ -117,4 +116,3 @@ public class TwilioRubyGenerator extends RubyClientCodegen {
         return "twilio-ruby";
     }
 }
-

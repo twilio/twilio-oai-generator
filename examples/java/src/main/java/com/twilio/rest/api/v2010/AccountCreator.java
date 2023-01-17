@@ -53,6 +53,7 @@ public class AccountCreator extends Creator<Account>{
     private Account.XTwilioWebhookEnabled xTwilioWebhookEnabled;
     private URI recordingStatusCallback;
     private List<String> recordingStatusCallbackEvent;
+    private com.twilio.type.Twiml twiml;
 
     public AccountCreator() {
     }
@@ -75,6 +76,14 @@ public class AccountCreator extends Creator<Account>{
     }
     public AccountCreator setRecordingStatusCallbackEvent(final String recordingStatusCallbackEvent){
         return setRecordingStatusCallbackEvent(Promoter.listOfOne(recordingStatusCallbackEvent));
+    }
+    public AccountCreator setTwiml(final com.twilio.type.Twiml twiml){
+        this.twiml = twiml;
+        return this;
+    }
+
+    public AccountCreator setTwiml(final String twiml){
+        return setTwiml(Promoter.twimlFromString(twiml));
     }
 
     @Override
@@ -111,6 +120,10 @@ public class AccountCreator extends Creator<Account>{
             for (String prop : recordingStatusCallbackEvent) {
                 request.addPostParam("RecordingStatusCallbackEvent", prop);
             }
+    
+        }
+        if (twiml != null) {
+            request.addPostParam("Twiml", twiml.toString());
     
         }
     }

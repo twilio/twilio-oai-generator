@@ -32,6 +32,8 @@ type CreateAccountParams struct {
 	RecordingStatusCallback *string `json:"RecordingStatusCallback,omitempty"`
 	//
 	RecordingStatusCallbackEvent *[]string `json:"RecordingStatusCallbackEvent,omitempty"`
+	//
+	Twiml *string `json:"Twiml,omitempty"`
 }
 
 func (params *CreateAccountParams) SetXTwilioWebhookEnabled(XTwilioWebhookEnabled string) *CreateAccountParams {
@@ -44,6 +46,10 @@ func (params *CreateAccountParams) SetRecordingStatusCallback(RecordingStatusCal
 }
 func (params *CreateAccountParams) SetRecordingStatusCallbackEvent(RecordingStatusCallbackEvent []string) *CreateAccountParams {
 	params.RecordingStatusCallbackEvent = &RecordingStatusCallbackEvent
+	return params
+}
+func (params *CreateAccountParams) SetTwiml(Twiml string) *CreateAccountParams {
+	params.Twiml = &Twiml
 	return params
 }
 
@@ -60,6 +66,9 @@ func (c *ApiService) CreateAccount(params *CreateAccountParams) (*TestResponseOb
 		for _, item := range *params.RecordingStatusCallbackEvent {
 			data.Add("RecordingStatusCallbackEvent", item)
 		}
+	}
+	if params != nil && params.Twiml != nil {
+		data.Set("Twiml", *params.Twiml)
 	}
 
 	if params != nil && params.XTwilioWebhookEnabled != nil {

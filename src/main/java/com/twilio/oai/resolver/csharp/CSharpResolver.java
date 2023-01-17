@@ -11,15 +11,15 @@ import org.openapitools.codegen.IJsonSchemaValidationProperties;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class CSharpResolver  {
-    private CodegenModelResolver codegenModelResolver;
-    private CodegenParameterResolver codegenParameterResolver;
-    private EnumsResolver enumsResolver;
-    private HashSet<String> enumsDict;
+    private final CodegenModelResolver codegenModelResolver;
+    private final CodegenParameterResolver codegenParameterResolver;
+    private final EnumsResolver enumsResolver;
+    private final Set<String> enumsDict;
     private final Map<String, Map<String, Object>> conventionMap;
 
-    String className;
     Map<String, IJsonSchemaValidationProperties> enums;
 
     public CSharpResolver() {

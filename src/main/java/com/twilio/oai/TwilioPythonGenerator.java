@@ -14,6 +14,7 @@ import com.twilio.oai.resource.IResourceTree;
 import com.twilio.oai.resource.ResourceMap;
 import com.twilio.oai.template.PythonApiActionTemplate;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -43,6 +44,7 @@ public class TwilioPythonGenerator extends PythonClientCodegen {
     public TwilioPythonGenerator() {
         super();
         twilioCodegen = new TwilioCodegenAdapter(this, getName());
+        packageName = "";
     }
 
     @Override
@@ -59,6 +61,11 @@ public class TwilioPythonGenerator extends PythonClientCodegen {
         resourceTree.getResources().forEach(resource -> resource.updateFamily(resourceTree));
 
         directoryStructureService.configure(openAPI);
+    }
+
+    @Override
+    public String apiFileFolder() {
+        return outputFolder + File.separatorChar + packagePath() + File.separatorChar + apiPackage();
     }
 
     @Override
