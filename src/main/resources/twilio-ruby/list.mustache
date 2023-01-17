@@ -8,14 +8,11 @@
                         # Path Solution
                         @solution = { {{#listPathParams}}{{paramName}}: {{paramName}},{{/listPathParams}} }
                         {{#listPath}}@uri = "{{listPath}}"{{/listPath}}
-
                         {{#componentContextClasses}}#Components{{/componentContextClasses}}
                         {{#componentContextClasses}}
                         @{{mountName}} = nil
                         {{/componentContextClasses}}
                     end
-
-
                 {{#operations}}{{#vendorExtensions.x-is-create-operation}}
                     ##
                     # Create the {{apiName}}Instance
@@ -34,7 +31,7 @@
 
                         payload = @version.create('POST', @uri, data: data)
 
-                        {{apiname}}Instance.new(@version, payload, {{#listPathParams}} {{paramName}}: @solution[:{{paramName}}],{{/listPathParams}})
+                        {{apiName}}Instance.new(@version, payload, {{#listPathParams}} {{paramName}}: @solution[:{{paramName}}],{{/listPathParams}})
                     end
                     {{/vendorExtensions.x-is-create-operation}}{{/operations}}
                     {{#operations}}{{#vendorExtensions.x-is-read-operation}}

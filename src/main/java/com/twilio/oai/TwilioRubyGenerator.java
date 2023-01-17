@@ -44,7 +44,7 @@ public class TwilioRubyGenerator extends RubyClientCodegen {
     @Override
     public void processOpenAPI(final OpenAPI openAPI) {
         final String domain = twilioCodegen.getDomainFromOpenAPI(openAPI);
-        twilioCodegen.setDomain(StringHelper.camelize(domain, true));
+        twilioCodegen.setDomain(StringHelper.toSnakeCase(domain));
         openAPI.getPaths().forEach(resourceTree::addResource);
         resourceTree.getResources().forEach(resource -> resource.updateFamily(resourceTree));
         setGemName("");
