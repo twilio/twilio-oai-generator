@@ -30,7 +30,8 @@ class {{apiName}}Context(InstanceContext):
 
         payload = self._version.update(method='{{httpMethod}}', uri=self._uri, data=data, )
 
-        return {{apiName}}Instance(self._version, payload, {{#instancePathParams}}{{paramName}}=self._solution['{{paramName}}'], {{/instancePathParams}}){{/vendorExtensions.x-is-update-operation}}
+        return {{apiName}}Instance(self._version, payload, {{#instancePathParams}}{{paramName}}=self._solution['{{paramName}}'], {{/instancePathParams}})
+        {{/vendorExtensions.x-is-update-operation}}
         {{#vendorExtensions.x-is-fetch-operation}}"""
         Fetch the {{apiName}}Instance
 
@@ -38,12 +39,10 @@ class {{apiName}}Context(InstanceContext):
         #TODO: add rtype docs
         """
         payload = self._version.fetch(method='GET', uri=self._uri, )
-        return {{apiName}}Instance(
-            self._version,
-            payload,
-            {{#instancePathParams}}{{paramName}}{{/instancePathParams}}=self._solution[{{#instancePathParams}}'{{paramName}}'{{/instancePathParams}}],
-        )
+
+        return {{apiName}}Instance(self._version, payload, {{#instancePathParams}}{{paramName}}=self._solution['{{paramName}}'], {{/instancePathParams}})
         {{/vendorExtensions.x-is-fetch-operation}}
+
         {{#vendorExtensions.x-is-delete-operation}}"""
         Deletes the {{apiName}}Instance
 
