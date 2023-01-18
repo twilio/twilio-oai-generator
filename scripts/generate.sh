@@ -6,7 +6,7 @@ function should-generate() {
 }
 
 function generate() {
-  find "$OUT_DIR"/*/ ! -name "*_test.go" -type f -delete || true
+  find -E "$OUT_DIR"/*/* ! -name "*_test.go" ! -regex "$OUT_DIR/[^/]+/__init__.py" -type f -delete || true
 
   for api_spec in examples/spec/*; do
     java -cp ./openapi-generator-cli.jar:target/twilio-openapi-generator.jar \

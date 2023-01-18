@@ -13,14 +13,6 @@ public class PythonApiActionTemplate extends AbstractApiActionTemplate {
 
     @Override
     public Map<String, List<String>> mapping() {
-        return Map.of(API_TEMPLATE,
-                      Arrays.asList("api-single.mustache", ".py"),
-                      VERSION_TEMPLATE,
-                      Arrays.asList("version.mustache", ".py"));
-    }
-
-    @Override
-    protected String getVersionFilename(final String apiVersionClass) {
-        return "__init__";
+        return Map.of(API_TEMPLATE, Arrays.asList("api-single.mustache", ".py"));
     }
 }
