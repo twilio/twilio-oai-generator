@@ -54,8 +54,8 @@ public class TwilioRubyGenerator extends RubyClientCodegen {
         setGemName("");
         this.libFolder = "";
         directoryStructureService.configure(openAPI);
-        Map<String, PathItem> pathMap = openAPI.getPaths();
-        RubyApiResourceBuilder.configureAdditionalProps(pathMap, domain, directoryStructureService);
+        final Map<String, PathItem> pathMap = openAPI.getPaths();
+        directoryStructureService.configureAdditionalProps(pathMap, domain, directoryStructureService);
     }
 
     @Override

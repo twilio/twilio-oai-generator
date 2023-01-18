@@ -16,17 +16,17 @@ module Twilio
             {{#versionResources}}
                 {{#pathParams}}
                 ##
-                # @param [String] {{name}} {{description}}
-                # @return [Twilio::REST::{{domainName}}::{{apiVersionClass}}::{{#lambda.camelcase}}{{filename}}{{/lambda.camelcase}}Context] if {{name}} was passed.
+                # @param [String] {{#lambda.lowercase}}{{name}}{{/lambda.lowercase}} {{description}}
+                # @return [Twilio::REST::{{domainName}}::{{apiVersionClass}}::{{resourceName}}Context] if {{#lambda.camelcase}}{{name}}{{/lambda.camelcase}} was passed.
                 # @return [Twilio::REST::{{domainName}}::{{apiVersionClass}}::{{#lambda.camelcase}}{{filename}}{{/lambda.camelcase}}List]
                 def {{mountName}}({{#pathParams}}{{#lambda.camelcase}}{{name}} {{/lambda.camelcase}}=:unset{{/pathParams}})
-                    if {{name}}.nil?
+                    if {{#lambda.lowercase}}{{name}}{{/lambda.lowercase}}.nil?
                         raise ArgumentError, '{{#lambda.camelcase}}{{name}} {{/lambda.camelcase}} cannot be nil'
                     end
-                    if {{#lambda.camelcase}}{{name}} {{/lambda.camelcase}} == :unset
-                        @{{mountName}} ||= {{#lambda.camelcase}}{{mountName}}{{/lambda.camelcase}}List.new self
+                    if {{#lambda.lowercase}}{{name}} {{/lambda.lowercase}} == :unset
+                        @{{mountName}} ||= {{resourceName}}List.new self
                     else
-                        {{#lambda.camelcase}}{{mountName}}{{/lambda.camelcase}}Context.new(self, {{name}})
+                        {{resourceName}}Context.new(self, {{#lambda.lowercase}}{{name}}{{/lambda.lowercase}})
                     end
                 end
                 {{/pathParams}}
@@ -34,7 +34,7 @@ module Twilio
                 ##
                 # @return [Twilio::REST::{{domainName}}::{{apiVersionClass}}::{{#lambda.camelcase}}{{mountName}}{{/lambda.camelcase}}Context]
                 def {{mountName}}
-                    @{{mountName}} ||= {{#lambda.camelcase}}{{mountName}}{{/lambda.camelcase}}List.new self
+                    @{{mountName}} ||= {{resourceName}}List.new self
                 end
                 {{/pathParams}}
             {{/versionResources}}

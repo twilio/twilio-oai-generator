@@ -53,6 +53,7 @@ public class DirectoryStructureService {
     private final Map<String, String> productMap = new HashMap<>();
 
     private final List<CodegenModel> allModels = new ArrayList<>();
+    private final List<Object> dependentList = new ArrayList<>();
 
     @Data
     @Builder
@@ -66,6 +67,7 @@ public class DirectoryStructureService {
         private String param;
         private boolean instanceDependent;
         private List<Parameter> pathParams;
+        private String resourceName;
     }
 
     @Data
@@ -100,15 +102,23 @@ public class DirectoryStructureService {
 
                 if (!tag.contains(PATH_SEPARATOR_PLACEHOLDER)) {
                     final DependentResource dependent = generateDependent(name, operation);
-                    versionResources.put(dependent.getFilename(), dependent);
+                    addVersionResources(dependent, versionResources);
                 }
-
                 pathType.ifPresent(type -> Optional
-                    .ofNullable(operation.getExtensions())
-                    .ifPresentOrElse(ext -> ext.putIfAbsent(PATH_TYPE_EXTENSION_NAME, type),
-                                     () -> operation.addExtension(PATH_TYPE_EXTENSION_NAME, type)));
-            });
+                        .ofNullable(operation.getExtensions())
+                        .ifPresentOrElse(ext -> ext.putIfAbsent(PATH_TYPE_EXTENSION_NAME, type),
+                                () -> operation.addExtension(PATH_TYPE_EXTENSION_NAME, type)));
+            }
         });
+    }
+    public void addVersionResources(DependentResource dependent, Map<String, DependentResource> versionResources) {
+        if (versionResources.containsKey(dependent.getFilename())){
+            DependentResource existingDependent = versionResources.get(dependent.getFilename());
+            if(existingDependent.getPathParams().size() == 0)
+                versionResources.put(dependent.getFilename(), dependent);
+        } else {
+            versionResources.put(dependent.getFilename(), dependent);
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -149,40 +159,24 @@ public class DirectoryStructureService {
             .mountName(caseResolver.pathOperation(resourceAliases.getMountName()))
             .filename(caseResolver.filenameOperation(resourceAliases.getClassName()))
             .pathParams(params)
+             .resourceName(resourceAliases.getClassName())
             .build();
     }
 
     public void addContextdependents(final List<Object> resourceList, final String path, final Operation operation) {
         final Resource.Aliases resourceAliases = getResourceAliases(path, operation);
         String parent = String.join("\\", resourceTree.ancestors(path, operation));
-        List<String> params = fetchNonParentPathParamNames(operation);
-
+        List<Parameter> pathParamsList = fetchNonParentPathParams(operation);
+        List<String> pathParamNamesList = pathParamsList.stream().map(Parameter::getName).collect(Collectors.toList());
         final ContextResource dependent = new ContextResource.ContextResourceBuilder()
                 .version(PathUtils.getFirstPathPart(path))
-                .params(params)
+                .params(pathParamNamesList)
                 .mountName(caseResolver.pathOperation(resourceAliases.getMountName()))
                 .filename(caseResolver.filenameOperation(resourceAliases.getClassName()))
                 .parent(parent)
                 .build();
         if (!resourceList.contains(dependent))
             resourceList.add(dependent);
-    }
-
-
-    private List<String> fetchNonParentPathParamNames(Operation operation){
-        if(operation != null){
-            List<Parameter> pathParams = Optional.ofNullable(operation.getParameters())
-                    .stream().flatMap(Collection::stream)
-                    .filter(param -> Objects.nonNull(param.getIn())).filter(PathUtils::isPathParam)
-                    .collect(Collectors.toList());
-            List<String> params = pathParams.stream().filter(parameter -> Objects.isNull(parameter.getExtensions()))
-                    .map(Parameter::getName).collect(Collectors.toList());
-            params.addAll(pathParams.stream().filter(parameter -> Objects.nonNull(parameter.getExtensions()))
-                    .filter(parameter -> !PathUtils.isParentParam(parameter))
-                    .map(Parameter::getName).collect(Collectors.toList()));
-            return params;
-        }
-        return null;
     }
 
     private List<Parameter> fetchNonParentPathParams(Operation operation){
@@ -253,6 +247,7 @@ public class DirectoryStructureService {
                                      .mountName(caseResolver.pathOperation(name))
                                      .filename(caseResolver.filenameOperation(name))
                                      .param(caseResolver.pathOperation(name + "Sid"))
+                                    .resourceName(name)
                                      .build());
         }
 
@@ -295,5 +290,43 @@ public class DirectoryStructureService {
                                                  final CodegenOperation codegenOperation,
                                                  final String recordKey) {
         return Utility.getModel(allModels, className, recordKey, codegenOperation);
+    }
+
+    public void configureAdditionalProps(Map<String, PathItem> pathMap, String domain, DirectoryStructureService directoryStructureService){
+
+        List<Resource> dependents = new ArrayList<>();
+        if (domain.equals("api")){
+            additionalProperties.put("isApiDomain", "true");
+        }
+        for (String pathKey : pathMap.keySet()) {
+            String pathKeyCache = domain.equals("api") ? pathKey.split(".json")[0] : pathKey;
+            if (pathKeyCache.endsWith("}")) {
+                PathItem currPath = pathMap.get(pathKey);
+                Optional<String> parentKey = PathUtils.getTwilioExtension(currPath, "parent");
+                if (!parentKey.isPresent()) {
+                    dependents.add(new Resource(null, pathKeyCache, currPath, null));
+                } else {
+                    String currParentKey = domain.equals("api")? "/2010-04-01" + parentKey.get() : parentKey.get();
+
+                    if (pathMap.containsKey(currParentKey)) {
+                        PathItem pathParent = pathMap.get(currParentKey);
+                        Optional<String> parentKey2 = PathUtils.getTwilioExtension(pathParent, "parent");
+                        if (!parentKey2.isPresent()) {
+                            dependents.add(new Resource(null, pathKeyCache, currPath, null));
+                        }
+                    }
+                }
+            }
+        }
+        dependents.forEach(dependent -> dependent
+                .getPathItem()
+                .readOperations()
+                .forEach(operation -> directoryStructureService.addContextdependents(dependentList,
+                        dependent.getName(),
+                        operation)));
+        additionalProperties.put("versionDependents",
+                dependentList
+        );
+
     }
 }
