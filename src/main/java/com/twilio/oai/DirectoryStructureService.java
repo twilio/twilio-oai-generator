@@ -108,7 +108,7 @@ public class DirectoryStructureService {
                         .ofNullable(operation.getExtensions())
                         .ifPresentOrElse(ext -> ext.putIfAbsent(PATH_TYPE_EXTENSION_NAME, type),
                                 () -> operation.addExtension(PATH_TYPE_EXTENSION_NAME, type)));
-            }
+            });
         });
     }
     public void addVersionResources(DependentResource dependent, Map<String, DependentResource> versionResources) {
