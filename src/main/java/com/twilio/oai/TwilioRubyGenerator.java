@@ -92,7 +92,12 @@ public class TwilioRubyGenerator extends RubyClientCodegen {
     private RubyApiResources generateResources(final List<CodegenOperation> opList) {
         final IConventionMapper conventionMapper = new LanguageConventionResolver(CONFIG_RUBY_JSON_PATH);
         final CodegenModelResolver codegenModelResolver = new CodegenModelResolver(conventionMapper, modelFormatMap, List.of(EnumConstants.RubyDataTypes.values()));
-        return new RubyApiResourceBuilder(rubyApiActionTemplate, opList, allModels, directoryStructureService, openAPI).updateApiPath().updateOperations(new RubyParameterResolver(conventionMapper)).updateTemplate().updateResponseModel(new LanguagePropertyResolver(conventionMapper), codegenModelResolver).build();
+        return new RubyApiResourceBuilder(rubyApiActionTemplate, opList, allModels, directoryStructureService, openAPI)
+                .updateApiPath()
+                .updateOperations(new RubyParameterResolver(conventionMapper))
+                .updateTemplate()
+                .updateResponseModel(new LanguagePropertyResolver(conventionMapper), codegenModelResolver)
+                .build();
     }
 
     @Override

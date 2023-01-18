@@ -13,7 +13,7 @@
                         @{{mountName}} = nil
                         {{/componentContextClasses}}
                     end
-                {{#operations}}{{#vendorExtensions.x-is-create-operation}}
+                {{#operations}}{{#vendorExtensions.x-is-create-operation}}{{#hasParams}}
                     ##
                     # Create the {{apiName}}Instance
                     {{#allParams}}
@@ -22,18 +22,19 @@
                     # @return [{{apiName}}Instance] Created {{apiName}}Instance
                     def create({{#allParams}}{{>params}}{{/allParams}})
                         data = Twilio::Values.of(
-                        {{#allParams}}{{^vendorExtensions.x-serialize}}'{{{baseName}}}' => {{paramName}},
-                        {{/vendorExtensions.x-serialize}}
-                {{#vendorExtensions.x-serialize}}'{{{baseName}}}' =>  {{vendorExtensions.x-serialize}}({{paramName}}) { |e| e },
-                        {{/vendorExtensions.x-serialize}}
-                     {{/allParams}}
-                    })
+                            {{#allParams}}{{^vendorExtensions.x-serialize}}
+                            '{{{baseName}}}' => {{paramName}},
+                            {{/vendorExtensions.x-serialize}}{{#vendorExtensions.x-serialize}}
+                            '{{{baseName}}}' =>  {{vendorExtensions.x-serialize}}({{paramName}}) { |e| e },
+                            {{/vendorExtensions.x-serialize}}
+                        {{/allParams}}
+                        })
 
                         payload = @version.create('POST', @uri, data: data)
 
                         {{apiName}}Instance.new(@version, payload, {{#listPathParams}} {{paramName}}: @solution[:{{paramName}}],{{/listPathParams}})
                     end
-                    {{/vendorExtensions.x-is-create-operation}}{{/operations}}
+                    {{/hasParams}}{{/vendorExtensions.x-is-create-operation}}{{/operations}}
                     {{#operations}}{{#vendorExtensions.x-is-read-operation}}
                     ##
                     # Lists {{apiName}}Instance records from the API as a list.
@@ -42,6 +43,12 @@
                     {{#readParams}}
                     # @param [{{dataType}}] {{paramName}} {{description}}
                     {{/readParams}}
+                    # @param [Integer] limit Upper limit for the number of records to return. stream()
+                    #    guarantees to never return more than limit.  Default is no limit
+                    # @param [Integer] page_size Number of records to fetch per request, when
+                    #    not set will use the default value of 50 records.  If no page_size is defined
+                    #    but a limit is defined, stream() will attempt to read the limit with the most
+                    #    efficient page size, i.e. min(limit, 1000)
                     # @return [Array] Array of up to limit results
                     def list({{#readParams}}{{>params}}{{/readParams}} limit: nil, page_size: nil)
                         self.stream(
@@ -58,8 +65,14 @@
                     # This operation lazily loads records as efficiently as possible until the limit
                     # is reached.
                     {{#readParams}}
-                        # @param [{{dataType}}] {{paramName}} {{description}}
+                    # @param [{{dataType}}] {{paramName}} {{description}}
                     {{/readParams}}
+                    # @param [Integer] limit Upper limit for the number of records to return. stream()
+                    #    guarantees to never return more than limit.  Default is no limit
+                    # @param [Integer] page_size Number of records to fetch per request, when
+                    #    not set will use the default value of 50 records.  If no page_size is defined
+                    #    but a limit is defined, stream() will attempt to read the limit with the most
+                    #    efficient page size, i.e. min(limit, 1000)
                     # @return [Enumerable] Enumerable that will yield up to limit results
                     def stream({{#readParams}}{{>params}}{{/readParams}} limit: nil, page_size: nil)
                         limits = @version.read_limits(limit, page_size)
@@ -91,17 +104,19 @@
                     # Retrieve a single page of {{apiName}}Instance records from the API.
                     # Request is executed immediately.
                     {{#readParams}}
-                        # @param [{{dataType}}] {{paramName}} {{description}}
+                    # @param [{{dataType}}] {{paramName}} {{description}}
                     {{/readParams}}
+                    # @param [String] page_token PageToken provided by the API
+                    # @param [Integer] page_number Page Number, this value is simply for client state
+                    # @param [Integer] page_size Number of records to return, defaults to 50
                     # @return [Page] Page of {{apiName}}Instance
                     def page({{#readParams}}{{>params}}{{/readParams}} page_token: :unset, page_number: :unset, page_size: :unset)
                         params = Twilio::Values.of({
-                {{#readParams}}
-                    {{^vendorExtensions.x-serialize}}'{{{baseName}}}' => {{paramName}},
-                    {{/vendorExtensions.x-serialize}}
-                    {{#vendorExtensions.x-serialize}}'{{{baseName}}}' =>  {{vendorExtensions.x-serialize}}({{paramName}}),
-                    {{/vendorExtensions.x-serialize}}
-                {{/readParams}}
+                            {{#readParams}}{{^vendorExtensions.x-serialize}}
+                            '{{{baseName}}}' => {{paramName}},
+                            {{/vendorExtensions.x-serialize}}{{#vendorExtensions.x-serialize}}
+                            '{{{baseName}}}' =>  {{vendorExtensions.x-serialize}}({{paramName}}),
+                            {{/vendorExtensions.x-serialize}}{{/readParams}}
                             'PageToken' => page_token,
                             'Page' => page_number,
                             'PageSize' => page_size,
@@ -109,7 +124,7 @@
 
                         response = @version.page('GET', @uri, params: params)
 
-                    {{apiName}}Page.new(@version, response, @solution)
+                        {{apiName}}Page.new(@version, response, @solution)
                     end
 
                     ##
