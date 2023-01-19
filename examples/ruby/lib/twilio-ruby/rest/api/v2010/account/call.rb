@@ -37,7 +37,11 @@ module Twilio
                     # @param [Array&lt;String&gt;] test_array_of_strings 
                     # @param [Array&lt;String&gt;] test_array_of_uri 
                     # @return [CallInstance] Created CallInstance
-                    def create(required_string_property: nil,test_method: nil,test_array_of_strings: :unset,test_array_of_uri: :unset)
+                    def create(required_string_property: nil,
+						test_method: nil,
+						test_array_of_strings: :unset,
+						test_array_of_uri: :unset
+					)
                         data = Twilio::Values.of(
                             
                             'RequiredStringProperty' => required_string_property,

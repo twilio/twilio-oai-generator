@@ -34,7 +34,8 @@ module Twilio
                     # Create the FleetInstance
                     # @param [String] name 
                     # @return [FleetInstance] Created FleetInstance
-                    def create(name: :unset)
+                    def create(name: :unset
+					)
                         data = Twilio::Values.of(
                             
                             'Name' => name,

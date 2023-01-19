@@ -46,10 +46,10 @@ public class RubyApiResourceBuilder extends FluentApiResourceBuilder {
         for (CodegenOperation operation : apiResourceBuilder.codegenOperationList) {
             if ((boolean) operation.vendorExtensions.getOrDefault("x-is-create-operation", false)) {
                 for (CodegenParameter param : operation.allParams) {
-                    param.vendorExtensions.put("separator", ",");
+                    param.vendorExtensions.put("separator", ",\n\t\t\t\t\t\t");
                 }
                 if (!operation.allParams.isEmpty())
-                    operation.allParams.get(operation.allParams.size() - 1).vendorExtensions.put("separator", "");
+                    operation.allParams.get(operation.allParams.size() - 1).vendorExtensions.put("separator", "\n\t\t\t\t\t");
             }
         }
     }

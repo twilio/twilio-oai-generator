@@ -50,7 +50,24 @@ module Twilio
                     # @param [Array&lt;String&gt;] permissions A comma-separated list of the permissions you will request from the users of this ConnectApp.  Can include: &#x60;get-all&#x60; and &#x60;post-all&#x60;.
                     # @param [String] some_a2p_thing 
                     # @return [NewCredentialsInstance] Created NewCredentialsInstance
-                    def create(test_string: nil,test_boolean: :unset,test_integer: :unset,test_number: :unset,test_number_float: :unset,test_number_double: :unset,test_number_int32: :unset,test_number_int64: :unset,test_object: :unset,test_date_time: :unset,test_date: :unset,test_enum: :unset,test_object_array: :unset,test_any_type: :unset,test_any_array: :unset,permissions: :unset,some_a2p_thing: :unset)
+                    def create(test_string: nil,
+						test_boolean: :unset,
+						test_integer: :unset,
+						test_number: :unset,
+						test_number_float: :unset,
+						test_number_double: :unset,
+						test_number_int32: :unset,
+						test_number_int64: :unset,
+						test_object: :unset,
+						test_date_time: :unset,
+						test_date: :unset,
+						test_enum: :unset,
+						test_object_array: :unset,
+						test_any_type: :unset,
+						test_any_array: :unset,
+						permissions: :unset,
+						some_a2p_thing: :unset
+					)
                         data = Twilio::Values.of(
                             
                             'TestString' => test_string,
