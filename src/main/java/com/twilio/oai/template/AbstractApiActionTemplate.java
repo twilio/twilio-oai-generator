@@ -43,6 +43,11 @@ public abstract class AbstractApiActionTemplate implements IApiActionTemplate {
     @Override
     public void addSupportVersion() {
         final List<String> templateStrings = templates.get(VERSION_TEMPLATE);
+
+        if (templateStrings == null) {
+            return;
+        }
+
         final String apiVersionClass = codegen.additionalProperties().get("apiVersionClass").toString();
 
         if (apiVersionClass.startsWith("V")) {
@@ -64,7 +69,7 @@ public abstract class AbstractApiActionTemplate implements IApiActionTemplate {
         final List<String> templateStrings = templates.get(VERSION_TEMPLATE);
         final String apiVersionClass = codegen.additionalProperties().get("apiVersion").toString();
 
-        if (apiVersionClass != null && templateName.equals(templateStrings.get(0))) {
+        if (apiVersionClass != null && templateStrings != null && templateName.equals(templateStrings.get(0))) {
             return codegen.apiFileFolder() + File.separator + apiVersionClass + templateStrings.get(1);
         }
 

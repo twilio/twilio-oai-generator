@@ -17,6 +17,7 @@ import java.util.Map;
 import java.util.Optional;
 
 public class RubyApiResourceBuilder extends FluentApiResourceBuilder {
+
     List<CodegenParameter> readParams;
     List<Object> componentContextClasses = new ArrayList<>();
     final OpenAPI openApi;
