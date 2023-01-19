@@ -109,9 +109,9 @@ public class TwilioRubyGenerator extends RubyClientCodegen {
                 .build();
     }
 
-    private void updateApiVersion(DirectoryStructureService directoryStructureService){
-        String apiVersionClass = (String)directoryStructureService.getAdditionalProperties().get("apiVersionClass");
-        directoryStructureService.getAdditionalProperties().put("apiVersionClass",StringHelper.camelize(apiVersionClass));
+    private void updateApiVersion(DirectoryStructureService directoryStructureService) {
+        String apiVersionClass = (String) directoryStructureService.getAdditionalProperties().get("apiVersionClass");
+        directoryStructureService.getAdditionalProperties().put("apiVersionClass", StringHelper.camelize(apiVersionClass));
     }
 
     @Override

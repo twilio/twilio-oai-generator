@@ -159,7 +159,7 @@ public class DirectoryStructureService {
             .mountName(caseResolver.pathOperation(resourceAliases.getMountName()))
             .filename(caseResolver.filenameOperation(resourceAliases.getClassName()))
             .pathParams(params)
-             .resourceName(resourceAliases.getClassName())
+            .resourceName(resourceAliases.getClassName())
             .build();
     }
 
