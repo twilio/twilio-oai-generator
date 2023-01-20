@@ -15,17 +15,17 @@
 
 module Twilio
     module REST
-        class Api < Domain
-            class V2010 < Version
-                class FeedbackCallSummaryList < ListResource
+        class FlexApi < Domain
+            class V1 < Version
+                class HistoryList < ListResource
                     ##
-                    # Initialize the FeedbackCallSummaryList
+                    # Initialize the HistoryList
                     # @param [Version] version Version that contains the resource
-                    # @return [FeedbackCallSummaryList] FeedbackCallSummaryList
-                    def initialize(version, account_sid)
+                    # @return [HistoryList] HistoryList
+                    def initialize(version, sid)
                         super(version)
                         # Path Solution
-                        @solution = { account_sid: account_sid, }
+                        @solution = { sid: sid, }
                         
                         
                     end
@@ -35,7 +35,7 @@ module Twilio
 
                     # Provide a user friendly representation
                     def to_s
-                        '#<Twilio.Api.V2010.FeedbackCallSummaryList>'
+                        '#<Twilio.FlexApi.V1.HistoryList>'
                     end
                 end
             end

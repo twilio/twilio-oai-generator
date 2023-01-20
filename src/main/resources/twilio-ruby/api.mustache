@@ -1,2 +1,13 @@
+{{#resources}}
 {{>licenseInfo}}
 
+module Twilio
+    module REST
+        class {{domainName}} < Domain
+            class {{apiVersionClass}} < Version
+{{>list}}
+            end
+        end
+    end
+end
+{{/resources}}

@@ -13,3 +13,48 @@
 #
 
 
+module Twilio
+    module REST
+        class Versionless < Domain
+            class DeployedDevices < Version
+                class FleetList < ListResource
+                    ##
+                    # Initialize the FleetList
+                    # @param [Version] version Version that contains the resource
+                    # @return [FleetList] FleetList
+                    def initialize(version)
+                        super(version)
+                        # Path Solution
+                        @solution = {  }
+                        @uri = "/Fleets"
+                        
+                    end
+                
+                    ##
+                    # Create the FleetInstance
+                    # @param [String] name 
+                    # @return [FleetInstance] Created FleetInstance
+                    def create(name: :unset
+					)
+                        data = Twilio::Values.of(
+                            
+                            'Name' => name,
+                                                    })
+
+                        payload = @version.create('POST', @uri, data: data)
+
+                        FleetInstance.new(@version, payload, )
+                    end
+                    
+                    
+                    ##
+
+                    # Provide a user friendly representation
+                    def to_s
+                        '#<Twilio.Versionless.DeployedDevices.FleetList>'
+                    end
+                end
+            end
+        end
+    end
+end
