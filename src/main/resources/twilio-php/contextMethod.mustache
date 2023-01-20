@@ -20,14 +20,17 @@
             {{#required}}
             {{^vendorExtensions.x-prefixed-collapsible-map}}
             {{^vendorExtensions.x-serialize}}
-            '{{baseName}}' => ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}},
+            '{{baseName}}' =>
+                ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}},
             {{/vendorExtensions.x-serialize}}
             {{#vendorExtensions.x-serialize}}
             {{^vendorExtensions.x-serialize-map}}
-            '{{baseName}}' => {{vendorExtensions.x-serialize}}(${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}),
+            '{{baseName}}' =>
+                {{vendorExtensions.x-serialize}}(${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}),
             {{/vendorExtensions.x-serialize-map}}
             {{#vendorExtensions.x-serialize-map}}
-            '{{baseName}}' => {{vendorExtensions.x-serialize}}(${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}, function($e) { return {{^vendorExtensions.x-serialize-array-of-array}}$e{{/vendorExtensions.x-serialize-array-of-array}}{{#vendorExtensions.x-serialize-array-of-array}}{{.}}($e){{/vendorExtensions.x-serialize-array-of-array}}; }),
+            '{{baseName}}' =>
+                {{vendorExtensions.x-serialize}}(${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}, function ($e) { return {{^vendorExtensions.x-serialize-array-of-array}}$e{{/vendorExtensions.x-serialize-array-of-array}}{{#vendorExtensions.x-serialize-array-of-array}}{{.}}($e){{/vendorExtensions.x-serialize-array-of-array}}; }),
             {{/vendorExtensions.x-serialize-map}}
             {{/vendorExtensions.x-serialize}}
             {{/vendorExtensions.x-prefixed-collapsible-map}}
@@ -37,14 +40,17 @@
             {{^required}}
             {{^vendorExtensions.x-prefixed-collapsible-map}}
             {{^vendorExtensions.x-serialize}}
-            '{{baseName}}' => $options['{{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}'],
+            '{{baseName}}' =>
+                $options['{{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}'],
             {{/vendorExtensions.x-serialize}}
             {{#vendorExtensions.x-serialize}}
             {{^vendorExtensions.x-serialize-map}}
-            '{{baseName}}' => {{vendorExtensions.x-serialize}}($options['{{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}']),
+            '{{baseName}}' =>
+                {{vendorExtensions.x-serialize}}($options['{{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}']),
             {{/vendorExtensions.x-serialize-map}}
             {{#vendorExtensions.x-serialize-map}}
-            '{{baseName}}' => {{vendorExtensions.x-serialize}}($options['{{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}'], function($e) { return {{^vendorExtensions.x-serialize-array-of-array}}$e{{/vendorExtensions.x-serialize-array-of-array}}{{#vendorExtensions.x-serialize-array-of-array}}{{.}}($e){{/vendorExtensions.x-serialize-array-of-array}}; }),
+            '{{baseName}}' =>
+                {{vendorExtensions.x-serialize}}($options['{{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}'], function($e) { return {{^vendorExtensions.x-serialize-array-of-array}}$e{{/vendorExtensions.x-serialize-array-of-array}}{{#vendorExtensions.x-serialize-array-of-array}}{{.}}($e){{/vendorExtensions.x-serialize-array-of-array}}; }),
             {{/vendorExtensions.x-serialize-map}}
             {{/vendorExtensions.x-serialize}}
             {{/vendorExtensions.x-prefixed-collapsible-map}}
@@ -73,14 +79,17 @@
             {{#isFormParam}}
             {{^vendorExtensions.x-prefixed-collapsible-map}}
             {{^vendorExtensions.x-serialize}}
-            '{{baseName}}' => ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}},
+            '{{baseName}}' =>
+                ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}},
             {{/vendorExtensions.x-serialize}}
             {{#vendorExtensions.x-serialize}}
             {{^vendorExtensions.x-serialize-map}}
-            '{{baseName}}' => {{vendorExtensions.x-serialize}}(${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}),
+            '{{baseName}}' =>
+                {{vendorExtensions.x-serialize}}(${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}),
             {{/vendorExtensions.x-serialize-map}}
             {{#vendorExtensions.x-serialize-map}}
-            '{{baseName}}' => {{vendorExtensions.x-serialize}}(${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}},function($e) { return {{^vendorExtensions.x-serialize-array-of-array}}$e{{/vendorExtensions.x-serialize-array-of-array}}{{#vendorExtensions.x-serialize-array-of-array}}{{.}}($e){{/vendorExtensions.x-serialize-array-of-array}}; }),
+            '{{baseName}}' =>
+                {{vendorExtensions.x-serialize}}(${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}},function($e) { return {{^vendorExtensions.x-serialize-array-of-array}}$e{{/vendorExtensions.x-serialize-array-of-array}}{{#vendorExtensions.x-serialize-array-of-array}}{{.}}($e){{/vendorExtensions.x-serialize-array-of-array}}; }),
             {{/vendorExtensions.x-serialize-map}}
             {{/vendorExtensions.x-serialize}}
             {{/vendorExtensions.x-prefixed-collapsible-map}}
@@ -90,14 +99,17 @@
             {{#isFormParam}}
             {{^vendorExtensions.x-prefixed-collapsible-map}}
             {{^vendorExtensions.x-serialize}}
-            '{{baseName}}' => $options['{{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}'],
+            '{{baseName}}' =>
+                $options['{{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}'],
             {{/vendorExtensions.x-serialize}}
             {{#vendorExtensions.x-serialize}}
             {{^vendorExtensions.x-serialize-map}}
-            '{{baseName}}' => {{vendorExtensions.x-serialize}}($options['{{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}']),
+            '{{baseName}}' =>
+                {{vendorExtensions.x-serialize}}($options['{{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}']),
             {{/vendorExtensions.x-serialize-map}}
             {{#vendorExtensions.x-serialize-map}}
-            '{{baseName}}' => {{vendorExtensions.x-serialize}}($options['{{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}'], function($e) { return {{^vendorExtensions.x-serialize-array-of-array}}$e{{/vendorExtensions.x-serialize-array-of-array}}{{#vendorExtensions.x-serialize-array-of-array}}{{.}}($e){{/vendorExtensions.x-serialize-array-of-array}}; }),
+            '{{baseName}}' =>
+                {{vendorExtensions.x-serialize}}($options['{{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}'], function($e) { return {{^vendorExtensions.x-serialize-array-of-array}}$e{{/vendorExtensions.x-serialize-array-of-array}}{{#vendorExtensions.x-serialize-array-of-array}}{{.}}($e){{/vendorExtensions.x-serialize-array-of-array}}; }),
             {{/vendorExtensions.x-serialize-map}}
             {{/vendorExtensions.x-serialize}}
             {{/vendorExtensions.x-prefixed-collapsible-map}}
@@ -121,7 +133,8 @@
 
     {{/formParams.0}}
     {{#headerParams.0}}
-        $headers = Values::of([{{#headerParams}}{{#required}}'{{baseName}}' => ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}{{^-last}}, {{/-last}}{{/required}}{{/headerParams}}{{#headerParams}}{{^required}}'{{baseName}}' => $options['{{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}']{{^-last}}, {{/-last}}{{/required}}{{/headerParams}}]);
+        $headers = Values::of([{{#headerParams}}{{#required}}'{{baseName}}' =>
+            ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}{{^-last}}, {{/-last}}{{/required}}{{/headerParams}}{{#headerParams}}{{^required}}'{{baseName}}' => $options['{{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}']{{^-last}}, {{/-last}}{{/required}}{{/headerParams}}]);
 
     {{/headerParams.0}}
     {{^vendorExtensions.x-is-delete-operation}}
@@ -129,15 +142,15 @@
 
         return new {{apiName}}Instance(
             $this->version,
-            $payload
+            $payload,
             {{#optionalParams}}
             {{#isPathParam}}
-            , $this->solution['{{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}']
+            $this->solution['{{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}'],
             {{/isPathParam}}
             {{/optionalParams}}
             {{#requiredParams}}
             {{#isPathParam}}
-            , $this->solution['{{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}']
+            $this->solution['{{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}'],
             {{/isPathParam}}
             {{/requiredParams}}
         );

@@ -17,7 +17,8 @@
      *                        efficient page size, i.e. min(limit, 1000)
      * @return {{apiName}}Instance[] Array of results
      */
-    public function read({{#queryParams.1}}array $options = [], {{/queryParams.1}}int $limit = null, $pageSize = null): array {
+    public function read({{#queryParams.1}}array $options = [], {{/queryParams.1}}int $limit = null, $pageSize = null): array
+    {
         return \iterator_to_array($this->stream({{#queryParams.1}}$options, {{/queryParams.1}}$limit, $pageSize), false);
     }
 
@@ -42,7 +43,8 @@
      *                        efficient page size, i.e. min(limit, 1000)
      * @return Stream stream of results
      */
-    public function stream({{#queryParams.1}}array $options = [], {{/queryParams.1}}int $limit = null, $pageSize = null): Stream {
+    public function stream({{#queryParams.1}}array $options = [], {{/queryParams.1}}int $limit = null, $pageSize = null): Stream
+    {
         $limits = $this->version->readLimits($limit, $pageSize);
 
         $page = $this->page({{#queryParams.1}}$options, {{/queryParams.1}}$limits['pageSize']);
@@ -59,7 +61,13 @@
      * @param mixed $pageNumber Page Number, this value is simply for client state
      * @return {{apiName}}Page Page of {{apiName}}Instance
      */
-    public function page({{#queryParams.1}}array $options = [], {{/queryParams.1}}$pageSize = Values::NONE, string $pageToken = Values::NONE, $pageNumber = Values::NONE): {{apiName}}Page {
+    public function page(
+        {{#queryParams.1}}array $options = [],
+        {{/queryParams.1}}$pageSize = Values::NONE,
+        string $pageToken = Values::NONE,
+        $pageNumber = Values::NONE
+    ): {{apiName}}Page
+    {
         {{#queryParams.1}}
         $options = new Values($options);
         {{/queryParams.1}}
@@ -67,14 +75,17 @@
         $params = Values::of([
             {{#vendorExtensions.optionFileParams}}
             {{^vendorExtensions.x-serialize}}
-            '{{{baseName}}}' => $options['{{paramName}}'],
+            '{{{baseName}}}' =>
+                $options['{{paramName}}'],
             {{/vendorExtensions.x-serialize}}
             {{#vendorExtensions.x-serialize}}
             {{^vendorExtensions.x-serialize-map}}
-            '{{{baseName}}}' => {{vendorExtensions.x-serialize}}($options['{{paramName}}']),
+            '{{{baseName}}}' =>
+                {{vendorExtensions.x-serialize}}($options['{{paramName}}']),
             {{/vendorExtensions.x-serialize-map}}
             {{#vendorExtensions.x-serialize-map}}
-            '{{{baseName}}}' => {{vendorExtensions.x-serialize}}($options['{{paramName}}'], function($e) { return $e; }),
+            '{{{baseName}}}' =>
+                {{vendorExtensions.x-serialize}}($options['{{paramName}}'], function ($e) { return $e; }),
             {{/vendorExtensions.x-serialize-map}}
             {{/vendorExtensions.x-serialize}}
             {{/vendorExtensions.optionFileParams}}
@@ -95,7 +106,8 @@
      * @param string $targetUrl API-generated URL for the requested results page
      * @return {{apiName}}Page Page of {{apiName}}Instance
      */
-    public function getPage(string $targetUrl): {{apiName}}Page {
+    public function getPage(string $targetUrl): {{apiName}}Page
+    {
         $response = $this->version->getDomain()->getClient()->request(
             'GET',
             $targetUrl

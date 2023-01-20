@@ -34,7 +34,8 @@ use Twilio\Version;
  * @method \Twilio\Rest\{{domainName}}\{{apiVersionClass}}\{{parent}}Context {{#lambda.camelcase}}{{mountName}}{{/lambda.camelcase}}({{#params}}string ${{#lambda.camelcase}}{{.}}{{/lambda.camelcase}}{{^-last}}, {{/-last}}{{/params}})
 {{/versionDependents}}
  */
-class {{apiVersionClass}} extends Version {
+class {{apiVersionClass}} extends Version
+{
 {{#versionResources}}
 {{^param}}
     protected $_{{#lambda.camelcase}}{{mountName}}{{/lambda.camelcase}};
@@ -52,14 +53,16 @@ class {{apiVersionClass}} extends Version {
      *
      * @param Domain $domain Domain that contains the version
      */
-    public function __construct(Domain $domain) {
+    public function __construct(Domain $domain)
+    {
         parent::__construct($domain);
         $this->version = '{{version}}';
     }
 
 {{#versionResources}}
     {{^param}}
-    protected function get{{mountName}}(): {{filename}}List {
+    protected function get{{mountName}}(): {{filename}}List
+    {
         if (!$this->_{{#lambda.camelcase}}{{mountName}}{{/lambda.camelcase}}) {
             $this->_{{#lambda.camelcase}}{{mountName}}{{/lambda.camelcase}} = new {{filename}}List($this);
         }
@@ -71,7 +74,8 @@ class {{apiVersionClass}} extends Version {
     /**
      * @return {{importName}} {{filename}} provided as the authenticating account
      */
-    protected function get{{mountName}}(): {{importName}} {
+    protected function get{{mountName}}(): {{importName}}
+    {
         if (!$this->_{{#lambda.camelcase}}{{mountName}}{{/lambda.camelcase}}) {
             $this->_{{#lambda.camelcase}}{{mountName}}{{/lambda.camelcase}} = new {{importName}}(
                 $this,
@@ -90,13 +94,15 @@ class {{apiVersionClass}} extends Version {
      * @param AccountContext|AccountInstance $account account to use as the primary
      *                                                account
      */
-    public function setAccount($account): void {
+    public function setAccount($account): void
+    {
         $this->_account = $account;
     }
 
 {{/isApiDomain}}
 {{#apiDependents}}
-    protected function get{{mountName}}(): \Twilio\Rest\{{domainName}}\{{apiVersionClass}}\{{parent}}List {
+    protected function get{{mountName}}(): \Twilio\Rest\{{domainName}}\{{apiVersionClass}}\{{parent}}List
+    {
         return $this->account->{{#lambda.camelcase}}{{mountName}}{{/lambda.camelcase}};
     }
 
@@ -108,7 +114,8 @@ class {{apiVersionClass}} extends Version {
      * @return \Twilio\ListResource The requested resource
      * @throws TwilioException For unknown resource
      */
-    public function __get(string $name) {
+    public function __get(string $name)
+    {
         $method = 'get' . \ucfirst($name);
         if (\method_exists($this, $method)) {
             return $this->$method();
@@ -125,7 +132,8 @@ class {{apiVersionClass}} extends Version {
      * @return InstanceContext The requested resource context
      * @throws TwilioException For unknown resource
      */
-    public function __call(string $name, array $arguments): InstanceContext {
+    public function __call(string $name, array $arguments): InstanceContext
+    {
         $property = $this->$name;
         if (\method_exists($property, 'getContext')) {
             return \call_user_func_array(array($property, 'getContext'), $arguments);
@@ -139,7 +147,8 @@ class {{apiVersionClass}} extends Version {
      *
      * @return string Machine friendly representation
      */
-    public function __toString(): string {
+    public function __toString(): string
+    {
         return '[Twilio.{{domainName}}.{{apiVersionClass}}]';
     }
 }
