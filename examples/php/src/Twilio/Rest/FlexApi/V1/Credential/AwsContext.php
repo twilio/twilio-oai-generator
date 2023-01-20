@@ -34,20 +34,25 @@ use Twilio\Rest\FlexApi\V1\Credential\Aws\HistoryList;
  * @property HistoryList $history
  * @method \Twilio\Rest\FlexApi\V1\Credential\Aws\HistoryContext history()
  */
-class AwsContext extends InstanceContext {
+class AwsContext extends InstanceContext
+    {
     protected $_history;
 
     /**
      * Initialize the AwsContext
      *
      * @param Version $version Version that contains the resource
-     * @param string $sid 
+     * @param string $sid
      */
-    public function __construct(Version $version, $sid ) {
+    public function __construct(Version $version, $sid)
+    {
         parent::__construct($version);
 
         // Path Solution
-        $this->solution = ['sid' => $sid,  ];
+        $this->solution = [
+        'sid' =>
+            $sid,
+        ];
 
         $this->uri = '/Credentials/AWS/' . \rawurlencode($sid) . '';
     }
@@ -58,9 +63,12 @@ class AwsContext extends InstanceContext {
      * @return bool True if delete succeeds, false otherwise
      * @throws TwilioException When an HTTP error occurs.
      */
-    public function delete(): bool {
+    public function delete(): bool
+    {
+
         return $this->version->delete('DELETE', $this->uri);
     }
+
 
     /**
      * Fetch the AwsInstance
@@ -68,15 +76,18 @@ class AwsContext extends InstanceContext {
      * @return AwsInstance Fetched AwsInstance
      * @throws TwilioException When an HTTP error occurs.
      */
-    public function fetch(): AwsInstance {
+    public function fetch(): AwsInstance
+    {
+
         $payload = $this->version->fetch('GET', $this->uri);
 
         return new AwsInstance(
             $this->version,
-            $payload
-            , $this->solution['sid']
+            $payload,
+            $this->solution['sid'],
         );
     }
+
 
     /**
      * Update the AwsInstance
@@ -85,31 +96,37 @@ class AwsContext extends InstanceContext {
      * @return AwsInstance Updated AwsInstance
      * @throws TwilioException When an HTTP error occurs.
      */
-    public function update(array $options = []): AwsInstance {
+    public function update(array $options = []): AwsInstance
+    {
+
         $options = new Values($options);
 
         $data = Values::of([
-            'TestString' => $options['testString'],
-            'TestBoolean' => Serialize::booleanToString($options['testBoolean']),
+            'TestString' =>
+                $options['testString'],
+            'TestBoolean' =>
+                Serialize::booleanToString($options['testBoolean']),
         ]);
 
         $payload = $this->version->update('POST', $this->uri, [], $data);
 
         return new AwsInstance(
             $this->version,
-            $payload
-            , $this->solution['sid']
+            $payload,
+            $this->solution['sid'],
         );
     }
+
 
     /**
      * Access the history
      */
-    protected function getHistory(): HistoryList {
+    protected function getHistory(): HistoryList
+    {
         if (!$this->_history) {
             $this->_history = new HistoryList(
-                $this->version
-                , $this->solution['sid']
+                $this->version,
+                $this->solution['sid'],
             );
         }
 
@@ -123,7 +140,8 @@ class AwsContext extends InstanceContext {
      * @return ListResource The requested subresource
      * @throws TwilioException For unknown subresources
      */
-    public function __get(string $name): ListResource {
+    public function __get(string $name): ListResource
+    {
         if (\property_exists($this, '_' . $name)) {
             $method = 'get' . \ucfirst($name);
             return $this->$method();
@@ -140,7 +158,8 @@ class AwsContext extends InstanceContext {
      * @return InstanceContext The requested resource context
      * @throws TwilioException For unknown resource
      */
-    public function __call(string $name, array $arguments): InstanceContext {
+    public function __call(string $name, array $arguments): InstanceContext
+    {
         $property = $this->$name;
         if (\method_exists($property, 'getContext')) {
             return \call_user_func_array(array($property, 'getContext'), $arguments);
@@ -154,7 +173,8 @@ class AwsContext extends InstanceContext {
      *
      * @return string Machine friendly representation
      */
-    public function __toString(): string {
+    public function __toString(): string
+    {
         $context = [];
         foreach ($this->solution as $key => $value) {
             $context[] = "$key=$value";

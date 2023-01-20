@@ -47,16 +47,18 @@ use Twilio\Serialize;
  * @property string[] $testArrayOfObjects
  * @property string[] $testArrayOfEnum
  */
-class FeedbackCallSummaryInstance extends InstanceResource {
+class FeedbackCallSummaryInstance extends InstanceResource
+{
     /**
      * Initialize the FeedbackCallSummaryInstance
      *
      * @param Version $version Version that contains the resource
      * @param mixed[] $payload The response payload
-     * @param string $accountSid 
-     * @param string $sid 
+     * @param string $accountSid
+     * @param string $sid
      */
-    public function __construct(Version $version, array $payload, string $accountSid, string $sid = null) {
+    public function __construct(Version $version, array $payload, string $accountSid, string $sid = null)
+    {
         parent::__construct($version);
 
         // Marshaled Properties
@@ -88,7 +90,8 @@ class FeedbackCallSummaryInstance extends InstanceResource {
      *
      * @return FeedbackCallSummaryContext Context for this FeedbackCallSummaryInstance
      */
-    protected function proxy(): FeedbackCallSummaryContext {
+    protected function proxy(): FeedbackCallSummaryContext
+    {
         if (!$this->context) {
             $this->context = new FeedbackCallSummaryContext(
                 $this->version,
@@ -103,13 +106,15 @@ class FeedbackCallSummaryInstance extends InstanceResource {
     /**
      * Update the FeedbackCallSummaryInstance
      *
-     * @param \DateTime $endDate 
-     * @param \DateTime $startDate 
+     * @param \DateTime $endDate
+     * @param \DateTime $startDate
      * @param array|Options $options Optional Arguments
      * @return FeedbackCallSummaryInstance Updated FeedbackCallSummaryInstance
      * @throws TwilioException When an HTTP error occurs.
      */
-    public function update(\DateTime $endDate, \DateTime $startDate, array $options = []): FeedbackCallSummaryInstance {
+    public function update(\DateTime $endDate, \DateTime $startDate, array $options = []): FeedbackCallSummaryInstance
+    {
+
         return $this->proxy()->update($endDate, $startDate, $options);
     }
 
@@ -120,7 +125,8 @@ class FeedbackCallSummaryInstance extends InstanceResource {
      * @return mixed The requested property
      * @throws TwilioException For unknown properties
      */
-    public function __get(string $name) {
+    public function __get(string $name)
+    {
         if (\array_key_exists($name, $this->properties)) {
             return $this->properties[$name];
         }
@@ -138,7 +144,8 @@ class FeedbackCallSummaryInstance extends InstanceResource {
      *
      * @return string Machine friendly representation
      */
-    public function __toString(): string {
+    public function __toString(): string
+    {
         $context = [];
         foreach ($this->solution as $key => $value) {
             $context[] = "$key=$value";
