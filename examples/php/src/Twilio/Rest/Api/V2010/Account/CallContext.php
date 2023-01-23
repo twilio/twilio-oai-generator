@@ -59,8 +59,8 @@ class CallContext extends InstanceContext
         ];
 
         $this->uri = '/Accounts/' . \rawurlencode($accountSid)
-		.'/Calls/' . \rawurlencode($testInteger)
-		.'.json';
+        .'/Calls/' . \rawurlencode($testInteger)
+        .'.json';
     }
 
     /**

@@ -57,7 +57,7 @@ class CallList extends ListResource
         ];
 
         $this->uri = '/Accounts/' . \rawurlencode($accountSid)
-		.'/Calls.json';
+        .'/Calls.json';
     }
 
     /**

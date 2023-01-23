@@ -51,7 +51,7 @@ class CallContext extends InstanceContext
         ];
 
         $this->uri = '/Voice/' . \rawurlencode($sid)
-		.'';
+        .'';
     }
 
     /**

@@ -58,7 +58,7 @@ class AwsContext extends InstanceContext
         ];
 
         $this->uri = '/Credentials/AWS/' . \rawurlencode($sid)
-		.'';
+        .'';
     }
 
     /**

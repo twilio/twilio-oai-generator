@@ -51,7 +51,7 @@ class FleetContext extends InstanceContext
         ];
 
         $this->uri = '/Fleets/' . \rawurlencode($sid)
-		.'';
+        .'';
     }
 
     /**

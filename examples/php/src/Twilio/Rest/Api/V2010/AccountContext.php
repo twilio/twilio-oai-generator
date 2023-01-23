@@ -58,7 +58,7 @@ class AccountContext extends InstanceContext
         ];
 
         $this->uri = '/Accounts/' . \rawurlencode($sid)
-		.'.json';
+        .'.json';
     }
 
     /**
