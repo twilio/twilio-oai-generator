@@ -30,22 +30,22 @@ use Twilio\Serialize;
 
 
 /**
- * @property string $accountSid
- * @property string $sid
- * @property string $testString
- * @property int $testInteger
- * @property string $testObject
- * @property \DateTime $testDateTime
- * @property string $testNumber
- * @property string $priceUnit
- * @property string $testNumberFloat
- * @property string $testNumberDecimal
+ * @property string|null $accountSid
+ * @property string|null $sid
+ * @property string|null $testString
+ * @property int|null $testInteger
+ * @property string|null $testObject
+ * @property \DateTime|null $testDateTime
+ * @property string|null $testNumber
+ * @property string|null $priceUnit
+ * @property string|null $testNumberFloat
+ * @property string|null $testNumberDecimal
  * @property string $testEnum
- * @property string $a2PProfileBundleSid
+ * @property string|null $a2PProfileBundleSid
  * @property int[] $testArrayOfIntegers
  * @property int[][] $testArrayOfArrayOfIntegers
- * @property string[] $testArrayOfObjects
- * @property string[] $testArrayOfEnum
+ * @property string[]|null $testArrayOfObjects
+ * @property string[]|null $testArrayOfEnum
  */
 class FeedbackCallSummaryInstance extends InstanceResource {
     /**

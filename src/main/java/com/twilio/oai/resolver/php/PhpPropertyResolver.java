@@ -51,5 +51,8 @@ public class PhpPropertyResolver extends LanguagePropertyResolver {
                 codegenProperty.dataType = STRING;
             }
         }
+        if(codegenProperty.isNullable && !codegenProperty.required && !codegenProperty.dataType.contains("|null")){
+            codegenProperty.dataType = codegenProperty.dataType + "|null";
+        }
     }
 }

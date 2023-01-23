@@ -31,8 +31,8 @@ use Twilio\Serialize;
 
 /**
  * @property string $name
- * @property string $sid
- * @property string $friendlyName
+ * @property string|null $sid
+ * @property string|null $friendlyName
  */
 class FleetInstance extends InstanceResource {
     /**
