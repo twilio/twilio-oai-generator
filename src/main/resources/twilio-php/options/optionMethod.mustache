@@ -4,10 +4,11 @@
      * @return {{vendorExtensions.x-name}}{{apiName}}Options Options builder
      */
     public static function {{#lambda.camelcase}}{{vendorExtensions.x-name}}{{/lambda.camelcase}}(
-    {{>options/optionMethodArgs}}
+        {{>options/optionMethodArgs}}
     ): {{vendorExtensions.x-name}}{{apiName}}Options
     {
         return new {{vendorExtensions.x-name}}{{apiName}}Options({{#vendorExtensions.optionFileParams}}
-            ${{paramName}}{{vendorExtensions.optionFileSeparator}}{{^-last}}{{/-last}}{{/vendorExtensions.optionFileParams}});
+            ${{paramName}}{{vendorExtensions.optionFileSeparator}}{{^-last}}{{/-last}}{{/vendorExtensions.optionFileParams}}
+        );
     }
 {{/vendorExtensions.hasOptionFileParams}}

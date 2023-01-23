@@ -36,12 +36,14 @@ class AwsList extends ListResource
      *
      * @param Version $version Version that contains the resource
      */
-    public function __construct(Version $version)
+    public function __construct(
+        Version $version)
         {
         parent::__construct($version);
 
         // Path Solution
-        $this->solution = [        ];
+        $this->solution = [
+        ];
 
         $this->uri = '/Credentials/AWS';
     }
@@ -143,9 +145,14 @@ class AwsList extends ListResource
      *
      * @param string $sid
      */
-    public function getContext(string $sid): AwsContext
+    public function getContext(
+        string $sid
+        
+    ): AwsContext
     {
-        return new AwsContext($this->version, $sid
+        return new AwsContext(
+            $this->version,
+            $sid
         );
     }
 

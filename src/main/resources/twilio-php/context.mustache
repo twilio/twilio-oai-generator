@@ -45,15 +45,18 @@ class {{apiName}}Context extends InstanceContext
      * @param {{{dataType}}} ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}{{#description}} {{{description}}}{{/description}}
      {{/requiredPathParams}}
      */
-    public function __construct(Version $version{{#requiredPathParams}}, ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}{{/requiredPathParams}})
+    public function __construct(
+        Version $version{{#requiredPathParams}},
+        ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}{{/requiredPathParams}}
+    )
     {
         parent::__construct($version);
 
         // Path Solution
         $this->solution = [{{#requiredPathParams}}
         '{{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}' =>
-            ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}},
-        {{/requiredPathParams}}];
+            ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}},{{/requiredPathParams}}
+        ];
         {{#metaProperties.hasInstanceOperation}}
 
         $this->uri = '{{{apiContextPath}}}';

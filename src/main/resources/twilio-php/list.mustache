@@ -46,7 +46,8 @@ class {{apiName}}List extends ListResource
      {{/vendorExtensions.x-is-parent-param}}
      {{/requiredPathParams}}
      */
-    public function __construct(Version $version{{#requiredPathParams}}{{#vendorExtensions.x-is-parent-param}},
+    public function __construct(
+        Version $version{{#requiredPathParams}}{{#vendorExtensions.x-is-parent-param}},
         {{{dataType}}} ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}
         {{/vendorExtensions.x-is-parent-param}}{{/requiredPathParams}})
         {
@@ -56,8 +57,8 @@ class {{apiName}}List extends ListResource
         $this->solution = [{{#requiredPathParams}}{{#vendorExtensions.x-is-parent-param}}
         '{{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}' =>
             ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}},
-        {{/vendorExtensions.x-is-parent-param}}
-        {{/requiredPathParams}}];
+        {{/vendorExtensions.x-is-parent-param}}{{/requiredPathParams}}
+        ];
         {{#metaProperties.hasListOperation}}
 
         $this->uri = '{{{apiListPath}}}';
@@ -87,11 +88,16 @@ class {{apiName}}List extends ListResource
      {{/vendorExtensions.x-is-parent-param}}
      {{/requiredPathParams}}
      */
-    public function getContext({{#requiredPathParams}}{{^vendorExtensions.x-is-parent-param}}{{{dataType}}} ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}{{^-last}}, {{/-last}}{{/vendorExtensions.x-is-parent-param}}{{/requiredPathParams}}): {{apiName}}Context
+    public function getContext(
+        {{#requiredPathParams}}{{^vendorExtensions.x-is-parent-param}}{{{dataType}}} ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}
+        {{^-last}}, {{/-last}}{{/vendorExtensions.x-is-parent-param}}{{/requiredPathParams}}
+    ): {{apiName}}Context
     {
-        return new {{apiName}}Context($this->version{{#requiredPathParams}}{{#vendorExtensions.x-is-parent-param}},
-        $this->solution['{{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}']{{/vendorExtensions.x-is-parent-param}}{{/requiredPathParams}}{{#requiredPathParams}}{{^vendorExtensions.x-is-parent-param}}, ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}
-        {{/vendorExtensions.x-is-parent-param}}{{/requiredPathParams}});
+        return new {{apiName}}Context(
+            $this->version{{#requiredPathParams}}{{#vendorExtensions.x-is-parent-param}},
+            $this->solution['{{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}']{{/vendorExtensions.x-is-parent-param}}{{/requiredPathParams}}{{#requiredPathParams}}{{^vendorExtensions.x-is-parent-param}},
+            ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}{{/vendorExtensions.x-is-parent-param}}{{/requiredPathParams}}
+        );
     }
 
 {{/metaProperties.hasInstanceOperation}}
@@ -103,15 +109,11 @@ class {{apiName}}List extends ListResource
     {
         if (!$this->_{{#lambda.camelcase}}{{mountName}}{{/lambda.camelcase}}) {
             $this->_{{#lambda.camelcase}}{{mountName}}{{/lambda.camelcase}} = new {{filename}}List(
-                $this->version
-                {{#requiredPathParams}}
-                {{#vendorExtensions.x-is-parent-param}}
-                , $this->solution['{{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}']
-                {{/vendorExtensions.x-is-parent-param}}
-                {{/requiredPathParams}}
+                $this->version{{#requiredPathParams}}{{#vendorExtensions.x-is-parent-param}},
+                $this->solution['{{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}']
+                {{/vendorExtensions.x-is-parent-param}}{{/requiredPathParams}}
             );
         }
-
         return $this->_{{#lambda.camelcase}}{{mountName}}{{/lambda.camelcase}};
     }
 

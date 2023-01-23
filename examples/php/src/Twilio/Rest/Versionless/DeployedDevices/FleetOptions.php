@@ -33,13 +33,14 @@ abstract class FleetOptions
      * @return CreateFleetOptions Options builder
      */
     public static function create(
+        
         string $name = Values::NONE
-    
 
     ): CreateFleetOptions
     {
         return new CreateFleetOptions(
-            $name);
+            $name
+        );
     }
 
 
@@ -51,8 +52,8 @@ class CreateFleetOptions extends Options
      * @param string $name
      */
     public function __construct(
+        
         string $name = Values::NONE
-    
 
     )
     {

@@ -37,7 +37,10 @@ class CallContext extends InstanceContext
      * @param Version $version Version that contains the resource
      * @param string $sid
      */
-    public function __construct(Version $version, $sid)
+    public function __construct(
+        Version $version,
+        $sid
+    )
     {
         parent::__construct($version);
 
@@ -47,7 +50,8 @@ class CallContext extends InstanceContext
             $sid,
         ];
 
-        $this->uri = '/Voice/' . \rawurlencode($sid) . '';
+        $this->uri = '/Voice/' . \rawurlencode($sid)
+		.'';
     }
 
     /**

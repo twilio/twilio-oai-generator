@@ -38,7 +38,11 @@ class FeedbackCallSummaryContext extends InstanceContext
      * @param string $accountSid
      * @param string $sid
      */
-    public function __construct(Version $version, $accountSid, $sid)
+    public function __construct(
+        Version $version,
+        $accountSid,
+        $sid
+    )
     {
         parent::__construct($version);
 
@@ -46,12 +50,13 @@ class FeedbackCallSummaryContext extends InstanceContext
         $this->solution = [
         'accountSid' =>
             $accountSid,
-        
         'sid' =>
             $sid,
         ];
 
-        $this->uri = '/Accounts/' . \rawurlencode($accountSid) . '/Calls/Feedback/Summary/' . \rawurlencode($sid) . '.json';
+        $this->uri = '/Accounts/' . \rawurlencode($accountSid)
+		.'/Calls/Feedback/Summary/' . \rawurlencode($sid)
+		.'.json';
     }
 
     /**

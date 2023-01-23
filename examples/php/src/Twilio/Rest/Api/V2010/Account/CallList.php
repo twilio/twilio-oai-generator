@@ -42,7 +42,8 @@ class CallList extends ListResource
      * @param Version $version Version that contains the resource
      * @param string $accountSid
      */
-    public function __construct(Version $version,
+    public function __construct(
+        Version $version,
         string $accountSid
         )
         {
@@ -52,9 +53,11 @@ class CallList extends ListResource
         $this->solution = [
         'accountSid' =>
             $accountSid,
-                ];
+        
+        ];
 
-        $this->uri = '/Accounts/' . \rawurlencode($accountSid) . '/Calls.json';
+        $this->uri = '/Accounts/' . \rawurlencode($accountSid)
+		.'/Calls.json';
     }
 
     /**
@@ -77,9 +80,9 @@ class CallList extends ListResource
             'TestMethod' =>
                 $testMethod,
             'TestArrayOfStrings' =>
-                Serialize::map($options['testArrayOfStrings'], function($e) { return $e; }),
+                Serialize::map($options['testArrayOfStrings'], function ($e) { return $e; }),
             'TestArrayOfUri' =>
-                Serialize::map($options['testArrayOfUri'], function($e) { return $e; }),
+                Serialize::map($options['testArrayOfUri'], function ($e) { return $e; }),
         ]);
 
         $payload = $this->version->create('POST', $this->uri, [], $data);
@@ -97,10 +100,15 @@ class CallList extends ListResource
      *
      * @param int $testInteger INTEGER ID param!!!
      */
-    public function getContext(int $testInteger): CallContext
+    public function getContext(
+        int $testInteger
+        
+    ): CallContext
     {
-        return new CallContext($this->version,
-        $this->solution['accountSid'], $testInteger
+        return new CallContext(
+            $this->version,
+            $this->solution['accountSid'],
+            $testInteger
         );
     }
 
@@ -111,11 +119,11 @@ class CallList extends ListResource
     {
         if (!$this->_feedbackCallSummary) {
             $this->_feedbackCallSummary = new FeedbackCallSummaryList(
-                $this->version
-                , $this->solution['accountSid']
+                $this->version,
+                $this->solution['accountSid']
+                
             );
         }
-
         return $this->_feedbackCallSummary;
     }
 

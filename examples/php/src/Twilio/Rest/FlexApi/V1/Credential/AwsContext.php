@@ -44,7 +44,10 @@ class AwsContext extends InstanceContext
      * @param Version $version Version that contains the resource
      * @param string $sid
      */
-    public function __construct(Version $version, $sid)
+    public function __construct(
+        Version $version,
+        $sid
+    )
     {
         parent::__construct($version);
 
@@ -54,7 +57,8 @@ class AwsContext extends InstanceContext
             $sid,
         ];
 
-        $this->uri = '/Credentials/AWS/' . \rawurlencode($sid) . '';
+        $this->uri = '/Credentials/AWS/' . \rawurlencode($sid)
+		.'';
     }
 
     /**

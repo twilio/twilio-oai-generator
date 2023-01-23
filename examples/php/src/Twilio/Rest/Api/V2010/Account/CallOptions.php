@@ -36,14 +36,15 @@ abstract class CallOptions
      */
     public static function create(
         
-    array $testArrayOfStrings = Values::ARRAY_NONE,    
-    array $testArrayOfUri = Values::ARRAY_NONE
+        array $testArrayOfStrings = Values::ARRAY_NONE,
+        array $testArrayOfUri = Values::ARRAY_NONE
 
     ): CreateCallOptions
     {
         return new CreateCallOptions(
             $testArrayOfStrings,
-            $testArrayOfUri);
+            $testArrayOfUri
+        );
     }
 
 
@@ -58,8 +59,8 @@ class CreateCallOptions extends Options
      */
     public function __construct(
         
-    array $testArrayOfStrings = Values::ARRAY_NONE,    
-    array $testArrayOfUri = Values::ARRAY_NONE
+        array $testArrayOfStrings = Values::ARRAY_NONE,
+        array $testArrayOfUri = Values::ARRAY_NONE
 
     )
     {

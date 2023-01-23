@@ -36,12 +36,14 @@ class AccountList extends ListResource
      *
      * @param Version $version Version that contains the resource
      */
-    public function __construct(Version $version)
+    public function __construct(
+        Version $version)
         {
         parent::__construct($version);
 
         // Path Solution
-        $this->solution = [        ];
+        $this->solution = [
+        ];
 
         $this->uri = '/Accounts.json';
     }
@@ -62,7 +64,7 @@ class AccountList extends ListResource
             'RecordingStatusCallback' =>
                 $options['recordingStatusCallback'],
             'RecordingStatusCallbackEvent' =>
-                Serialize::map($options['recordingStatusCallbackEvent'], function($e) { return $e; }),
+                Serialize::map($options['recordingStatusCallbackEvent'], function ($e) { return $e; }),
             'Twiml' =>
                 $options['twiml'],
         ]);
@@ -187,9 +189,14 @@ class AccountList extends ListResource
      *
      * @param string $sid
      */
-    public function getContext(string $sid): AccountContext
+    public function getContext(
+        string $sid
+        
+    ): AccountContext
     {
-        return new AccountContext($this->version, $sid
+        return new AccountContext(
+            $this->version,
+            $sid
         );
     }
 

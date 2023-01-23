@@ -35,12 +35,14 @@ class FleetList extends ListResource
      *
      * @param Version $version Version that contains the resource
      */
-    public function __construct(Version $version)
+    public function __construct(
+        Version $version)
         {
         parent::__construct($version);
 
         // Path Solution
-        $this->solution = [        ];
+        $this->solution = [
+        ];
 
         $this->uri = '/Fleets';
     }
@@ -76,9 +78,14 @@ class FleetList extends ListResource
      *
      * @param string $sid
      */
-    public function getContext(string $sid): FleetContext
+    public function getContext(
+        string $sid
+        
+    ): FleetContext
     {
-        return new FleetContext($this->version, $sid
+        return new FleetContext(
+            $this->version,
+            $sid
         );
     }
 

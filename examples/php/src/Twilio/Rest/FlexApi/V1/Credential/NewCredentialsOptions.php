@@ -48,6 +48,7 @@ abstract class NewCredentialsOptions
      * @return CreateNewCredentialsOptions Options builder
      */
     public static function create(
+        
         int $testInteger = Values::NONE,
         string $testNumberFloat = Values::NONE,
         array $testObject = Values::NONE,
@@ -59,12 +60,11 @@ abstract class NewCredentialsOptions
         int $testNumberInt64 = Values::NONE,
         \DateTime $testDateTime = Values::NONE,
         string $testEnum = Values::NONE,
-        
-    array $testObjectArray = Values::ARRAY_NONE,    
-    array $testAnyType = Values::ARRAY_NONE,    
-    array $testAnyArray = Values::ARRAY_NONE,    
-    array $permissions = Values::ARRAY_NONE,    string $someA2PThing = Values::NONE
-    
+        array $testObjectArray = Values::ARRAY_NONE,
+        array $testAnyType = Values::ARRAY_NONE,
+        array $testAnyArray = Values::ARRAY_NONE,
+        array $permissions = Values::ARRAY_NONE,
+        string $someA2PThing = Values::NONE
 
     ): CreateNewCredentialsOptions
     {
@@ -84,7 +84,8 @@ abstract class NewCredentialsOptions
             $testAnyType,
             $testAnyArray,
             $permissions,
-            $someA2PThing);
+            $someA2PThing
+        );
     }
 
 }
@@ -110,6 +111,7 @@ class CreateNewCredentialsOptions extends Options
      * @param string $someA2PThing
      */
     public function __construct(
+        
         int $testInteger = Values::NONE,
         string $testNumberFloat = Values::NONE,
         array $testObject = Values::NONE,
@@ -121,12 +123,11 @@ class CreateNewCredentialsOptions extends Options
         int $testNumberInt64 = Values::NONE,
         \DateTime $testDateTime = Values::NONE,
         string $testEnum = Values::NONE,
-        
-    array $testObjectArray = Values::ARRAY_NONE,    
-    array $testAnyType = Values::ARRAY_NONE,    
-    array $testAnyArray = Values::ARRAY_NONE,    
-    array $permissions = Values::ARRAY_NONE,    string $someA2PThing = Values::NONE
-    
+        array $testObjectArray = Values::ARRAY_NONE,
+        array $testAnyType = Values::ARRAY_NONE,
+        array $testAnyArray = Values::ARRAY_NONE,
+        array $permissions = Values::ARRAY_NONE,
+        string $someA2PThing = Values::NONE
 
     )
     {

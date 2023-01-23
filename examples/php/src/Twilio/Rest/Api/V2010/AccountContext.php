@@ -44,7 +44,10 @@ class AccountContext extends InstanceContext
      * @param Version $version Version that contains the resource
      * @param string $sid
      */
-    public function __construct(Version $version, $sid)
+    public function __construct(
+        Version $version,
+        $sid
+    )
     {
         parent::__construct($version);
 
@@ -54,7 +57,8 @@ class AccountContext extends InstanceContext
             $sid,
         ];
 
-        $this->uri = '/Accounts/' . \rawurlencode($sid) . '.json';
+        $this->uri = '/Accounts/' . \rawurlencode($sid)
+		.'.json';
     }
 
     /**

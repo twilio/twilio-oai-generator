@@ -133,7 +133,7 @@ public class PhpApiResourceBuilder extends ApiResourceBuilder {
 
     private String replaceBraces(String path) {
         path = path.replace("{", "' . \\rawurlencode($");
-        return path.replace("}", ") . '");
+        return path.replace("}", ")\n\t\t.'");
     }
 
     private void updateNamespaceSubPart(CodegenOperation codegenOperation) {

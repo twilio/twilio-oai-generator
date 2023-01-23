@@ -35,12 +35,14 @@ class CallList extends ListResource
      *
      * @param Version $version Version that contains the resource
      */
-    public function __construct(Version $version)
+    public function __construct(
+        Version $version)
         {
         parent::__construct($version);
 
         // Path Solution
-        $this->solution = [        ];
+        $this->solution = [
+        ];
     }
 
     /**
@@ -48,9 +50,14 @@ class CallList extends ListResource
      *
      * @param string $sid
      */
-    public function getContext(string $sid): CallContext
+    public function getContext(
+        string $sid
+        
+    ): CallContext
     {
-        return new CallContext($this->version, $sid
+        return new CallContext(
+            $this->version,
+            $sid
         );
     }
 

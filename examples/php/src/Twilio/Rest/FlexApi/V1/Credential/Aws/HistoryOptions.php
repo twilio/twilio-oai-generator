@@ -33,13 +33,14 @@ abstract class HistoryOptions
      * @return FetchHistoryOptions Options builder
      */
     public static function fetch(
+        
         string $addOnsData = Values::NONE
-    
 
     ): FetchHistoryOptions
     {
         return new FetchHistoryOptions(
-            $addOnsData);
+            $addOnsData
+        );
     }
 
 }
@@ -50,8 +51,8 @@ class FetchHistoryOptions extends Options
      * @param string $addOnsData
      */
     public function __construct(
+        
         string $addOnsData = Values::NONE
-    
 
     )
     {

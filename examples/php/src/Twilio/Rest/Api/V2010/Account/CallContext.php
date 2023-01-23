@@ -42,7 +42,11 @@ class CallContext extends InstanceContext
      * @param string $accountSid
      * @param int $testInteger INTEGER ID param!!!
      */
-    public function __construct(Version $version, $accountSid, $testInteger)
+    public function __construct(
+        Version $version,
+        $accountSid,
+        $testInteger
+    )
     {
         parent::__construct($version);
 
@@ -50,12 +54,13 @@ class CallContext extends InstanceContext
         $this->solution = [
         'accountSid' =>
             $accountSid,
-        
         'testInteger' =>
             $testInteger,
         ];
 
-        $this->uri = '/Accounts/' . \rawurlencode($accountSid) . '/Calls/' . \rawurlencode($testInteger) . '.json';
+        $this->uri = '/Accounts/' . \rawurlencode($accountSid)
+		.'/Calls/' . \rawurlencode($testInteger)
+		.'.json';
     }
 
     /**

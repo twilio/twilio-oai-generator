@@ -35,12 +35,14 @@ class NewCredentialsList extends ListResource
      *
      * @param Version $version Version that contains the resource
      */
-    public function __construct(Version $version)
+    public function __construct(
+        Version $version)
         {
         parent::__construct($version);
 
         // Path Solution
-        $this->solution = [];
+        $this->solution = [
+        ];
 
         $this->uri = '/Credentials/AWS';
     }
@@ -84,13 +86,13 @@ class NewCredentialsList extends ListResource
             'TestEnum' =>
                 $options['testEnum'],
             'TestObjectArray' =>
-                Serialize::map($options['testObjectArray'], function($e) { return $e; }),
+                Serialize::map($options['testObjectArray'], function ($e) { return $e; }),
             'TestAnyType' =>
                 Serialize::jsonObject($options['testAnyType']),
             'TestAnyArray' =>
-                Serialize::map($options['testAnyArray'], function($e) { return Serialize::jsonObject($e); }),
+                Serialize::map($options['testAnyArray'], function ($e) { return Serialize::jsonObject($e); }),
             'Permissions' =>
-                Serialize::map($options['permissions'], function($e) { return $e; }),
+                Serialize::map($options['permissions'], function ($e) { return $e; }),
             'SomeA2PThing' =>
                 $options['someA2PThing'],
         ]);

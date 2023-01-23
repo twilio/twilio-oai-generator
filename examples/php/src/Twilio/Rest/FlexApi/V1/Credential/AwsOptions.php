@@ -38,15 +38,16 @@ abstract class AwsOptions
      * @return UpdateAwsOptions Options builder
      */
     public static function update(
+        
         string $testString = Values::NONE,
         bool $testBoolean = Values::NONE
-    
 
     ): UpdateAwsOptions
     {
         return new UpdateAwsOptions(
             $testString,
-            $testBoolean);
+            $testBoolean
+        );
     }
 
 }
@@ -61,9 +62,9 @@ class UpdateAwsOptions extends Options
      * @param bool $testBoolean
      */
     public function __construct(
+        
         string $testString = Values::NONE,
         bool $testBoolean = Values::NONE
-    
 
     )
     {

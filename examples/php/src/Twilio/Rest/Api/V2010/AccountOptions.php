@@ -37,11 +37,11 @@ abstract class AccountOptions
      * @return CreateAccountOptions Options builder
      */
     public static function create(
-        string $recordingStatusCallback = Values::NONE,
         
-    array $recordingStatusCallbackEvent = Values::ARRAY_NONE,    string $twiml = Values::NONE,
+        string $recordingStatusCallback = Values::NONE,
+        array $recordingStatusCallbackEvent = Values::ARRAY_NONE,
+        string $twiml = Values::NONE,
         string $xTwilioWebhookEnabled = Values::NONE
-    
 
     ): CreateAccountOptions
     {
@@ -49,7 +49,8 @@ abstract class AccountOptions
             $recordingStatusCallback,
             $recordingStatusCallbackEvent,
             $twiml,
-            $xTwilioWebhookEnabled);
+            $xTwilioWebhookEnabled
+        );
     }
 
 
@@ -62,11 +63,11 @@ abstract class AccountOptions
      * @return ReadAccountOptions Options builder
      */
     public static function read(
+        
         \DateTime $dateCreated = Values::NONE,
         \DateTime $dateTest = Values::NONE,
         \DateTime $dateCreatedBefore = Values::NONE,
         \DateTime $dateCreatedAfter = Values::NONE
-    
 
     ): ReadAccountOptions
     {
@@ -74,7 +75,8 @@ abstract class AccountOptions
             $dateCreated,
             $dateTest,
             $dateCreatedBefore,
-            $dateCreatedAfter);
+            $dateCreatedAfter
+        );
     }
 
     /**
@@ -82,13 +84,14 @@ abstract class AccountOptions
      * @return UpdateAccountOptions Options builder
      */
     public static function update(
+        
         string $pauseBehavior = Values::NONE
-    
 
     ): UpdateAccountOptions
     {
         return new UpdateAccountOptions(
-            $pauseBehavior);
+            $pauseBehavior
+        );
     }
 
 }
@@ -102,11 +105,11 @@ class CreateAccountOptions extends Options
      * @param string $xTwilioWebhookEnabled
      */
     public function __construct(
-        string $recordingStatusCallback = Values::NONE,
         
-    array $recordingStatusCallbackEvent = Values::ARRAY_NONE,    string $twiml = Values::NONE,
+        string $recordingStatusCallback = Values::NONE,
+        array $recordingStatusCallbackEvent = Values::ARRAY_NONE,
+        string $twiml = Values::NONE,
         string $xTwilioWebhookEnabled = Values::NONE
-    
 
     )
     {
@@ -179,11 +182,11 @@ class ReadAccountOptions extends Options
      * @param \DateTime $dateCreatedAfter
      */
     public function __construct(
+        
         \DateTime $dateCreated = Values::NONE,
         \DateTime $dateTest = Values::NONE,
         \DateTime $dateCreatedBefore = Values::NONE,
         \DateTime $dateCreatedAfter = Values::NONE
-    
 
     )
     {
@@ -251,8 +254,8 @@ class UpdateAccountOptions extends Options
      * @param string $pauseBehavior
      */
     public function __construct(
+        
         string $pauseBehavior = Values::NONE
-    
 
     )
     {

@@ -33,13 +33,14 @@ abstract class FeedbackCallSummaryOptions
      * @return UpdateFeedbackCallSummaryOptions Options builder
      */
     public static function update(
+        
         string $accountSid = Values::NONE
-    
 
     ): UpdateFeedbackCallSummaryOptions
     {
         return new UpdateFeedbackCallSummaryOptions(
-            $accountSid);
+            $accountSid
+        );
     }
 
 }
@@ -50,8 +51,8 @@ class UpdateFeedbackCallSummaryOptions extends Options
      * @param string $accountSid
      */
     public function __construct(
+        
         string $accountSid = Values::NONE
-    
 
     )
     {

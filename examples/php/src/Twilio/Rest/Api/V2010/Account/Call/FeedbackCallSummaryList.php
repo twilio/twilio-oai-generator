@@ -36,7 +36,8 @@ class FeedbackCallSummaryList extends ListResource
      * @param Version $version Version that contains the resource
      * @param string $accountSid
      */
-    public function __construct(Version $version,
+    public function __construct(
+        Version $version,
         string $accountSid
         )
         {
@@ -46,7 +47,8 @@ class FeedbackCallSummaryList extends ListResource
         $this->solution = [
         'accountSid' =>
             $accountSid,
-                ];
+        
+        ];
     }
 
     /**
@@ -54,10 +56,15 @@ class FeedbackCallSummaryList extends ListResource
      *
      * @param string $sid
      */
-    public function getContext(string $sid): FeedbackCallSummaryContext
+    public function getContext(
+        string $sid
+        
+    ): FeedbackCallSummaryContext
     {
-        return new FeedbackCallSummaryContext($this->version,
-        $this->solution['accountSid'], $sid
+        return new FeedbackCallSummaryContext(
+            $this->version,
+            $this->solution['accountSid'],
+            $sid
         );
     }
 
