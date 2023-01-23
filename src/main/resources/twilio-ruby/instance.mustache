@@ -1,0 +1,96 @@
+
+                class {{apiName}}Instance < InstanceResource
+                    ##
+                    # Initialize the {{apiName}}Instance
+                    # @param [Version] version Version that contains the resource
+                    # @param [Hash] payload payload that contains response from Twilio
+                    # @param [String] account_sid The SID of the
+                    #   {Account}[https://www.twilio.com/docs/iam/api/account] that created this {{apiName}}
+                    #   resource.
+                    # @param [String] sid The SID of the Call resource to fetch.
+                    # @return [{{apiName}}Instance] {{apiName}}Instance
+                    def initialize(version{{#responseModel}}{{#hasVars}}, payload{{/hasVars}}{{/responseModel}} {{#requiredPathParams}}, {{paramName}}: nil{{/requiredPathParams}})
+                        super(version)
+
+                        # Marshaled Properties
+                        {{#responseModel}}{{#hasVars}}@properties = { {{/hasVars}}{{/responseModel}}
+                        {{#responseModel}}{{#vars}}{{^vendorExtensions.x-deserialize}}
+                            '{{{baseName}}}' => payload['{{{baseName}}}'],
+                        {{/vendorExtensions.x-deserialize}}{{#vendorExtensions.x-deserialize}}
+                            '{{{baseName}}}' => {{{.}}}(payload['{{name}}']),
+                        {{/vendorExtensions.x-deserialize}}{{/vars}}{{/responseModel}}
+                        {{#responseModel}}{{#hasVars}} } {{/hasVars}}{{/responseModel}}
+                        # Context
+                        @instance_context = nil
+                        @params = { {{#requiredPathParams}}'{{paramName}}' => {{paramName}} {{#vendorExtensions.isInstanceParam}} || @properties['{{paramName}}'] {{/vendorExtensions.isInstanceParam}} ,{{/requiredPathParams}} }
+                    end
+
+                    ##
+                    # Generate an instance context for the instance, the context is capable of
+                    # performing various actions.  All instance actions are proxied to the context
+                    # @return [{{apiName}}Context] CallContext for this CallInstance
+                    def context
+                        unless @instance_context
+                            @instance_context = {{apiName}}Context.new(@version {{#requiredPathParams}}, @params['{{paramName}}']{{/requiredPathParams}})
+                        end
+                        @instance_context
+                    end
+
+                    {{#responseModel}}{{#vars}}
+                    ##
+                    # @return [{{{dataType}}}] {{description}}
+                    def {{name}}
+                        @properties['{{name}}']
+                    end
+                    {{/vars}}{{/responseModel}}
+                    {{#operations}}{{#vendorExtensions.x-is-delete-operation}}
+                    ##
+                    # Delete the {{apiName}}Instance
+                    # @return [Boolean] true if delete succeeds, false otherwise
+                    def delete
+                        context.delete
+                    end
+                    {{/vendorExtensions.x-is-delete-operation}}{{/operations}}
+                    {{#operations}}{{#vendorExtensions.x-is-fetch-operation}}
+                    ##
+                    # Fetch the {{apiName}}Instance
+                    # @return [{{apiName}}Instance] Fetched {{apiName}}Instance
+                    def fetch
+                        context.fetch
+                    end
+                    {{/vendorExtensions.x-is-fetch-operation}}{{/operations}}
+                    {{#operations}}{{#vendorExtensions.x-is-update-operation}}
+                    ##
+                    # Update the {{apiName}}Instance
+                    {{#allParams}}
+                    # @param [{{dataType}}] {{paramName}} {{description}}
+                    {{/allParams}}
+                    # @return [{{apiName}}Instance] Updated {{apiName}}Instance
+                    def update({{#allParams}}{{paramName}}: :unset {{vendorExtensions.separator}} {{/allParams}})
+                        context.update({{#allParams}}
+                            {{paramName}}: {{paramName}}, {{/allParams}})
+                     end
+                    {{/vendorExtensions.x-is-update-operation}}{{/operations}}
+
+                    {{#dependents}}
+                    ##
+                    # Access the {{mountName}}
+                    # @return [{{mountName}}] {{mountName}}
+                    def {{mountName}}
+                        context.{{mountName}}
+                    end
+                    {{/dependents}}
+                    ##
+                    # Provide a user friendly representation
+                    def to_s
+                        values = @params.map{|k, v| "#{k}: #{v}"}.join(" ")
+                        "<Twilio.{{domainName}}.{{apiVersionClass}}.{{apiName}}Instance #{values}>"
+                    end
+
+                    ##
+                    # Provide a detailed, user friendly representation
+                    def inspect
+                        values = @properties.map{|k, v| "#{k}: #{v}"}.join(" ")
+                        "<Twilio.{{domainName}}.{{apiVersionClass}}.{{apiName}}Instance #{values}>"
+                    end
+                end

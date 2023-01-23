@@ -39,6 +39,8 @@ public class RubyApiResourceBuilder extends FluentApiResourceBuilder {
         this.createReadParams((RubyApiResourceBuilder) apiResourceBuilder);
         this.addContextDataForComponents();
         this.updateListPath();
+        this.addUpdateParamsSeparator(apiResourceBuilder);
+        this.updateRequiredPathParams(apiResourceBuilder);
         return apiResourceBuilder;
     }
 
@@ -101,5 +103,25 @@ public class RubyApiResourceBuilder extends FluentApiResourceBuilder {
 
     private void updateListPath() {
         if (listPath != null) listPath = listPath.replace("${", "#{@solution[:").replace("}", "]}");
+    }
+
+    private void updateRequiredPathParams(ApiResourceBuilder apiResourceBuilder) {
+        if (!apiResourceBuilder.requiredPathParams.isEmpty()) {
+            for (CodegenParameter param : apiResourceBuilder.requiredPathParams) {
+                param.vendorExtensions.put("isInstanceParam", !param.paramName.equals("account_sid"));
+            }
+        }
+    }
+
+    private void addUpdateParamsSeparator(ApiResourceBuilder apiResourceBuilder) {
+        for (CodegenOperation operation : apiResourceBuilder.codegenOperationList) {
+            if ((boolean) operation.vendorExtensions.getOrDefault("x-is-update-operation", false)) {
+                for (CodegenParameter param : operation.allParams) {
+                    param.vendorExtensions.put("separator", ",");
+                }
+                if (!operation.allParams.isEmpty())
+                    operation.allParams.get(operation.allParams.size() - 1).vendorExtensions.put("separator", "");
+            }
+        }
     }
 }
