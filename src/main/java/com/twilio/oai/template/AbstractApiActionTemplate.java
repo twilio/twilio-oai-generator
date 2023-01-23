@@ -67,10 +67,11 @@ public abstract class AbstractApiActionTemplate implements IApiActionTemplate {
 
     public String apiFilename(final String templateName, final String filename) {
         final List<String> templateStrings = templates.get(VERSION_TEMPLATE);
-        final String apiVersionClass = codegen.additionalProperties().get("apiVersion").toString();
+        final String apiVersionClass = codegen.additionalProperties().get("apiVersionClass").toString();
 
         if (apiVersionClass != null && templateStrings != null && templateName.equals(templateStrings.get(0))) {
-            return codegen.apiFileFolder() + File.separator + apiVersionClass + templateStrings.get(1);
+            return codegen.apiFileFolder() + File.separator + getVersionFilename(apiVersionClass) +
+                templateStrings.get(1);
         }
 
         return filename;
