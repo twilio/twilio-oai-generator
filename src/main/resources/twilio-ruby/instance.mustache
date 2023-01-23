@@ -11,15 +11,10 @@
                     # @return [{{apiName}}Instance] {{apiName}}Instance
                     def initialize(version{{#responseModel}}{{#hasVars}}, payload{{/hasVars}}{{/responseModel}} {{#requiredPathParams}}, {{paramName}}: nil{{/requiredPathParams}})
                         super(version)
-
-                        # Marshaled Properties
-                        {{#responseModel}}{{#hasVars}}@properties = { {{/hasVars}}{{/responseModel}}
-                        {{#responseModel}}{{#vars}}{{^vendorExtensions.x-deserialize}}
-                            '{{{baseName}}}' => payload['{{{baseName}}}'],
-                        {{/vendorExtensions.x-deserialize}}{{#vendorExtensions.x-deserialize}}
-                            '{{{baseName}}}' => {{{.}}}(payload['{{name}}']),
-                        {{/vendorExtensions.x-deserialize}}{{/vars}}{{/responseModel}}
-                        {{#responseModel}}{{#hasVars}} } {{/hasVars}}{{/responseModel}}
+                        {{#responseModel}}{{#hasVars}}# Marshaled Properties
+                        @properties = { {{/hasVars}}{{/responseModel}}
+                            {{#responseModel}}{{#vars}}{{name}} => {{{vendorExtensions.instance-property}}},
+                            {{/vars}}{{/responseModel}}{{#responseModel}}{{#hasVars}} } {{/hasVars}}{{/responseModel}}
                         # Context
                         @instance_context = nil
                         @params = { {{#requiredPathParams}}'{{paramName}}' => {{paramName}} {{#vendorExtensions.isInstanceParam}} || @properties['{{paramName}}'] {{/vendorExtensions.isInstanceParam}} ,{{/requiredPathParams}} }
@@ -35,7 +30,6 @@
                         end
                         @instance_context
                     end
-
                     {{#responseModel}}{{#vars}}
                     ##
                     # @return [{{{dataType}}}] {{description}}
@@ -71,7 +65,6 @@
                             {{paramName}}: {{paramName}}, {{/allParams}})
                      end
                     {{/vendorExtensions.x-is-update-operation}}{{/operations}}
-
                     {{#dependents}}
                     ##
                     # Access the {{mountName}}

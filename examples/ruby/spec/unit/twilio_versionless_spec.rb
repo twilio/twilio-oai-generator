@@ -27,6 +27,32 @@ describe "Fleets" do
         actual = @client.versionless.deployed_devices.fleets.create("example")
         expect(actual).to_not eq(nil)
     end
+    it "can fetch" do
+        @holodeck.mock(Twilio::Response.new(500,''))
+        expect{
+            @client.versionless.deployed_devices.fleets('ACXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX').fetch()
+        }.to raise_exception(Twilio::Rest::TwilioError)
+
+        expect(
+        @holodeck.has_request?(Holodeck::Request.new(
+            method: 'get',
+            url: 'https://versionless.twilio.com/DeployedDevices/Fleets/ACXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
+        ))).to eq(true)
+    end
+
+    it "receives fetch responses" do
+        @holodeck.mock(Twilio::Response.new(
+        200,
+        %q[
+            {
+                "sid": "CXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+                "friendly_name": "Ahoy"
+            }
+        ]))
+
+        actual = @client.versionless.deployed_devices.fleets('ACXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX').fetch()
+        expect(actual).to_not eq(nil)
+    end
 end
 describe "Assistant" do
     it "can read" do

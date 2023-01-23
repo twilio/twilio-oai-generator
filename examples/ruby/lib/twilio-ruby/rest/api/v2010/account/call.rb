@@ -66,6 +66,187 @@ module Twilio
                         '#<Twilio.Api.V2010.CallList>'
                     end
                 end
+
+                class CallInstance < InstanceResource
+                    ##
+                    # Initialize the CallInstance
+                    # @param [Version] version Version that contains the resource
+                    # @param [Hash] payload payload that contains response from Twilio
+                    # @param [String] account_sid The SID of the
+                    #   {Account}[https://www.twilio.com/docs/iam/api/account] that created this Call
+                    #   resource.
+                    # @param [String] sid The SID of the Call resource to fetch.
+                    # @return [CallInstance] CallInstance
+                    def initialize(version, payload , account_sid: nil, test_integer: nil)
+                        super(version)
+                        # Marshaled Properties
+                        @properties = { 
+                            account_sid => payload[account_sid],
+                            sid => payload[sid],
+                            test_string => payload[test_string],
+                            test_integer => payload[test_integer] == nil ? payload[test_integer] : payload[test_integer].to_i,
+                            test_object => payload[test_object],
+                            test_date_time => Twilio.deserialize_rfc2822(payload[test_date_time]),
+                            test_number => payload[test_number],
+                            price_unit => payload[price_unit],
+                            test_number_float => payload[test_number_float],
+                            test_number_decimal => payload[test_number_decimal] == nil ? payload[test_number_decimal] : payload[test_number_decimal].to_f,
+                            test_enum => payload[test_enum],
+                            a2p_profile_bundle_sid => payload[a2p_profile_bundle_sid],
+                            test_array_of_integers => payload[test_array_of_integers],
+                            test_array_of_array_of_integers => payload[test_array_of_array_of_integers],
+                            test_array_of_objects => payload[test_array_of_objects],
+                            test_array_of_enum => payload[test_array_of_enum],
+                             } 
+                        # Context
+                        @instance_context = nil
+                        @params = { 'account_sid' => account_sid  ,'test_integer' => test_integer  || @properties['test_integer']  , }
+                    end
+
+                    ##
+                    # Generate an instance context for the instance, the context is capable of
+                    # performing various actions.  All instance actions are proxied to the context
+                    # @return [CallContext] CallContext for this CallInstance
+                    def context
+                        unless @instance_context
+                            @instance_context = CallContext.new(@version , @params['account_sid'], @params['test_integer'])
+                        end
+                        @instance_context
+                    end
+                    
+                    ##
+                    # @return [String] 
+                    def account_sid
+                        @properties['account_sid']
+                    end
+                    
+                    ##
+                    # @return [String] 
+                    def sid
+                        @properties['sid']
+                    end
+                    
+                    ##
+                    # @return [String] 
+                    def test_string
+                        @properties['test_string']
+                    end
+                    
+                    ##
+                    # @return [Integer] 
+                    def test_integer
+                        @properties['test_integer']
+                    end
+                    
+                    ##
+                    # @return [TestResponseObjectTestObject] 
+                    def test_object
+                        @properties['test_object']
+                    end
+                    
+                    ##
+                    # @return [Time] 
+                    def test_date_time
+                        @properties['test_date_time']
+                    end
+                    
+                    ##
+                    # @return [Float] 
+                    def test_number
+                        @properties['test_number']
+                    end
+                    
+                    ##
+                    # @return [String] 
+                    def price_unit
+                        @properties['price_unit']
+                    end
+                    
+                    ##
+                    # @return [Float] 
+                    def test_number_float
+                        @properties['test_number_float']
+                    end
+                    
+                    ##
+                    # @return [Float] 
+                    def test_number_decimal
+                        @properties['test_number_decimal']
+                    end
+                    
+                    ##
+                    # @return [TestStatus] 
+                    def test_enum
+                        @properties['test_enum']
+                    end
+                    
+                    ##
+                    # @return [String] A2P Messaging Profile Bundle BundleSid
+                    def a2p_profile_bundle_sid
+                        @properties['a2p_profile_bundle_sid']
+                    end
+                    
+                    ##
+                    # @return [Array<Integer>] 
+                    def test_array_of_integers
+                        @properties['test_array_of_integers']
+                    end
+                    
+                    ##
+                    # @return [Array<Array<Integer>>] 
+                    def test_array_of_array_of_integers
+                        @properties['test_array_of_array_of_integers']
+                    end
+                    
+                    ##
+                    # @return [Array<TestResponseObjectTestArrayOfObjects>] 
+                    def test_array_of_objects
+                        @properties['test_array_of_objects']
+                    end
+                    
+                    ##
+                    # @return [Array<TestStatus>] Permissions authorized to the app
+                    def test_array_of_enum
+                        @properties['test_array_of_enum']
+                    end
+                    
+                    
+                    ##
+                    # Delete the CallInstance
+                    # @return [Boolean] true if delete succeeds, false otherwise
+                    def delete
+                        context.delete
+                    end
+                    
+                    
+                    ##
+                    # Fetch the CallInstance
+                    # @return [CallInstance] Fetched CallInstance
+                    def fetch
+                        context.fetch
+                    end
+                    
+                    
+                    ##
+                    # Access the feedback_call_summary
+                    # @return [feedback_call_summary] feedback_call_summary
+                    def feedback_call_summary
+                        context.feedback_call_summary
+                    end
+                    ##
+                    # Provide a user friendly representation
+                    def to_s
+                        values = @params.map{|k, v| "#{k}: #{v}"}.join(" ")
+                        "<Twilio.Api.V2010.CallInstance #{values}>"
+                    end
+
+                    ##
+                    # Provide a detailed, user friendly representation
+                    def inspect
+                        values = @properties.map{|k, v| "#{k}: #{v}"}.join(" ")
+                        "<Twilio.Api.V2010.CallInstance #{values}>"
+                    end
+                end
             end
         end
     end

@@ -10,11 +10,14 @@ import io.swagger.v3.oas.models.PathItem;
 import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenOperation;
 import org.openapitools.codegen.CodegenParameter;
+import org.openapitools.codegen.CodegenProperty;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+
+import static com.twilio.oai.common.ApplicationConstants.DESERIALIZE_VEND_EXT;
 
 public class RubyApiResourceBuilder extends FluentApiResourceBuilder {
 
@@ -35,14 +38,24 @@ public class RubyApiResourceBuilder extends FluentApiResourceBuilder {
     @Override
     public ApiResourceBuilder updateOperations(Resolver<CodegenParameter> codegenParameterIResolver) {
         ApiResourceBuilder apiResourceBuilder = super.updateOperations(codegenParameterIResolver);
-        this.addCreateSeparator(apiResourceBuilder);
-        this.createReadParams((RubyApiResourceBuilder) apiResourceBuilder);
-        this.addContextDataForComponents();
-        this.updateListPath();
-        this.addUpdateParamsSeparator(apiResourceBuilder);
-        this.updateRequiredPathParams(apiResourceBuilder);
+        addCreateSeparator(apiResourceBuilder);
+        createReadParams((RubyApiResourceBuilder) apiResourceBuilder);
+        addContextDataForComponents();
+        updateListPath();
+        addUpdateParamsSeparator(apiResourceBuilder);
+        updateRequiredPathParams(apiResourceBuilder);
         return apiResourceBuilder;
     }
+
+    @Override
+    public RubyApiResourceBuilder updateResponseModel(final Resolver<CodegenProperty> codegenPropertyResolver,
+                                                  final Resolver<CodegenModel> codegenModelResolver){
+        return ((RubyApiResourceBuilder) super
+                .updateResponseModel(codegenPropertyResolver,codegenModelResolver))
+                .updateVars();
+    }
+
+
 
     private void addCreateSeparator(ApiResourceBuilder apiResourceBuilder) {
         for (CodegenOperation operation : apiResourceBuilder.codegenOperationList) {
@@ -123,5 +136,15 @@ public class RubyApiResourceBuilder extends FluentApiResourceBuilder {
                     operation.allParams.get(operation.allParams.size() - 1).vendorExtensions.put("separator", "");
             }
         }
+    }
+
+    private RubyApiResourceBuilder updateVars(){
+        if(responseModel != null && responseModel.vars != null)
+            for(CodegenProperty property: responseModel.vars){
+                String instanceProperty = (String)property.vendorExtensions.getOrDefault(DESERIALIZE_VEND_EXT,"{value}");
+                property.vendorExtensions
+                        .put("instance-property",instanceProperty.replaceAll("\\{value\\}","payload[" + property.name +"]"));
+            }
+        return this;
     }
 }

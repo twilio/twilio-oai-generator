@@ -38,6 +38,90 @@ module Twilio
                         '#<Twilio.FlexApi.V1.HistoryList>'
                     end
                 end
+
+                class HistoryInstance < InstanceResource
+                    ##
+                    # Initialize the HistoryInstance
+                    # @param [Version] version Version that contains the resource
+                    # @param [Hash] payload payload that contains response from Twilio
+                    # @param [String] account_sid The SID of the
+                    #   {Account}[https://www.twilio.com/docs/iam/api/account] that created this History
+                    #   resource.
+                    # @param [String] sid The SID of the Call resource to fetch.
+                    # @return [HistoryInstance] HistoryInstance
+                    def initialize(version, payload , sid: nil)
+                        super(version)
+                        # Marshaled Properties
+                        @properties = { 
+                            account_sid => payload[account_sid],
+                            sid => payload[sid],
+                            test_string => payload[test_string],
+                            test_integer => payload[test_integer] == nil ? payload[test_integer] : payload[test_integer].to_i,
+                             } 
+                        # Context
+                        @instance_context = nil
+                        @params = { 'sid' => sid  || @properties['sid']  , }
+                    end
+
+                    ##
+                    # Generate an instance context for the instance, the context is capable of
+                    # performing various actions.  All instance actions are proxied to the context
+                    # @return [HistoryContext] CallContext for this CallInstance
+                    def context
+                        unless @instance_context
+                            @instance_context = HistoryContext.new(@version , @params['sid'])
+                        end
+                        @instance_context
+                    end
+                    
+                    ##
+                    # @return [String] 
+                    def account_sid
+                        @properties['account_sid']
+                    end
+                    
+                    ##
+                    # @return [String] 
+                    def sid
+                        @properties['sid']
+                    end
+                    
+                    ##
+                    # @return [String] 
+                    def test_string
+                        @properties['test_string']
+                    end
+                    
+                    ##
+                    # @return [Integer] 
+                    def test_integer
+                        @properties['test_integer']
+                    end
+                    
+                    
+                    
+                    ##
+                    # Fetch the HistoryInstance
+                    # @return [HistoryInstance] Fetched HistoryInstance
+                    def fetch
+                        context.fetch
+                    end
+                    
+                    
+                    ##
+                    # Provide a user friendly representation
+                    def to_s
+                        values = @params.map{|k, v| "#{k}: #{v}"}.join(" ")
+                        "<Twilio.FlexApi.V1.HistoryInstance #{values}>"
+                    end
+
+                    ##
+                    # Provide a detailed, user friendly representation
+                    def inspect
+                        values = @properties.map{|k, v| "#{k}: #{v}"}.join(" ")
+                        "<Twilio.FlexApi.V1.HistoryInstance #{values}>"
+                    end
+                end
             end
         end
     end
