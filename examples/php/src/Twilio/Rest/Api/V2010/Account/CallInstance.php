@@ -57,7 +57,7 @@ class CallInstance extends InstanceResource
      * @param Version $version Version that contains the resource
      * @param mixed[] $payload The response payload
      * @param string $accountSid
-     * @param int $testIntegerINTEGER ID param!!!
+     * @param int $testInteger INTEGER ID param!!!
      */
     public function __construct(Version $version, array $payload, string $accountSid, int $testInteger = null)
     {

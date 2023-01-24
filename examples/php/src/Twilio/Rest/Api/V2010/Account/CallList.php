@@ -65,7 +65,7 @@ class CallList extends ListResource
      * Create the CallInstance
      *
      * @param string $requiredStringProperty
-     * @param string $testMethodThe HTTP method that we should use to request the `TestArrayOfUri`.
+     * @param string $testMethod The HTTP method that we should use to request the `TestArrayOfUri`.
      * @param array|Options $options Optional Arguments
      * @return CallInstance Created CallInstance
      * @throws TwilioException When an HTTP error occurs.

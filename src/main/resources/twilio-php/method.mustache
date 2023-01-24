@@ -3,7 +3,7 @@
      *
      {{#requiredParams}}
      {{^isPathParam}}
-     * @param {{{dataType}}} ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}{{{description}}}
+     * @param {{{dataType}}} ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}{{#description}} {{{description}}}{{/description}}
      {{/isPathParam}}
      {{/requiredParams}}
      {{#vendorExtensions.hasOptionalQueryParams}}
