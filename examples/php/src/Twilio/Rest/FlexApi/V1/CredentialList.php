@@ -35,7 +35,8 @@ use Twilio\Rest\FlexApi\V1\Credential\NewCredentialsList;
  * @property NewCredentialsList $newCredentials
  * @method \Twilio\Rest\FlexApi\V1\Credential\AwsContext aws(string $sid)
  */
-class CredentialList extends ListResource {
+class CredentialList extends ListResource
+    {
     protected $_aws = null;
     protected $_newCredentials = null;
 
@@ -44,36 +45,39 @@ class CredentialList extends ListResource {
      *
      * @param Version $version Version that contains the resource
      */
-    public function __construct(Version $version) {
+    public function __construct(
+        Version $version)
+        {
         parent::__construct($version);
 
         // Path Solution
-        $this->solution = [];
+        $this->solution = [
+        ];
     }
 
     /**
      * Access the aws
      */
-    protected function getAws(): AwsList {
+    protected function getAws(): AwsList
+    {
         if (!$this->_aws) {
             $this->_aws = new AwsList(
                 $this->version
             );
         }
-
         return $this->_aws;
     }
 
     /**
      * Access the newCredentials
      */
-    protected function getNewCredentials(): NewCredentialsList {
+    protected function getNewCredentials(): NewCredentialsList
+    {
         if (!$this->_newCredentials) {
             $this->_newCredentials = new NewCredentialsList(
                 $this->version
             );
         }
-
         return $this->_newCredentials;
     }
 
@@ -84,7 +88,8 @@ class CredentialList extends ListResource {
      * @return \Twilio\ListResource The requested subresource
      * @throws TwilioException For unknown subresources
      */
-    public function __get(string $name) {
+    public function __get(string $name)
+    {
         if (\property_exists($this, '_' . $name)) {
             $method = 'get' . \ucfirst($name);
             return $this->$method();
@@ -101,7 +106,8 @@ class CredentialList extends ListResource {
      * @return InstanceContext The requested resource context
      * @throws TwilioException For unknown resource
      */
-    public function __call(string $name, array $arguments): InstanceContext {
+    public function __call(string $name, array $arguments): InstanceContext
+    {
         $property = $this->$name;
         if (\method_exists($property, 'getContext')) {
             return \call_user_func_array(array($property, 'getContext'), $arguments);
@@ -115,7 +121,8 @@ class CredentialList extends ListResource {
      *
      * @return string Machine friendly representation
      */
-    public function __toString(): string {
+    public function __toString(): string
+    {
         return '[Twilio.FlexApi.V1.CredentialList]';
     }
 }

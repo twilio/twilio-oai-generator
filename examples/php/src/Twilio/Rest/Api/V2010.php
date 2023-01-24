@@ -30,7 +30,8 @@ use Twilio\Version;
  * @method \Twilio\Rest\Api\V2010\AccountContext accounts(string $sid)
  * @method \Twilio\Rest\Api\V2010\Account\CallContext calls(string $testInteger)
  */
-class V2010 extends Version {
+class V2010 extends Version
+{
     protected $_accounts;
     protected $_account = null;
     protected $_calls = null;
@@ -40,12 +41,14 @@ class V2010 extends Version {
      *
      * @param Domain $domain Domain that contains the version
      */
-    public function __construct(Domain $domain) {
+    public function __construct(Domain $domain)
+    {
         parent::__construct($domain);
         $this->version = '2010-04-01';
     }
 
-    protected function getAccounts(): AccountList {
+    protected function getAccounts(): AccountList
+    {
         if (!$this->_accounts) {
             $this->_accounts = new AccountList($this);
         }
@@ -55,7 +58,8 @@ class V2010 extends Version {
     /**
      * @return AccountContext Account provided as the authenticating account
      */
-    protected function getAccount(): AccountContext {
+    protected function getAccount(): AccountContext
+    {
         if (!$this->_account) {
             $this->_account = new AccountContext(
                 $this,
@@ -71,11 +75,13 @@ class V2010 extends Version {
      * @param AccountContext|AccountInstance $account account to use as the primary
      *                                                account
      */
-    public function setAccount($account): void {
+    public function setAccount($account): void
+    {
         $this->_account = $account;
     }
 
-    protected function getCalls(): \Twilio\Rest\Api\V2010\Account\CallList {
+    protected function getCalls(): \Twilio\Rest\Api\V2010\Account\CallList
+    {
         return $this->account->calls;
     }
 
@@ -86,7 +92,8 @@ class V2010 extends Version {
      * @return \Twilio\ListResource The requested resource
      * @throws TwilioException For unknown resource
      */
-    public function __get(string $name) {
+    public function __get(string $name)
+    {
         $method = 'get' . \ucfirst($name);
         if (\method_exists($this, $method)) {
             return $this->$method();
@@ -103,7 +110,8 @@ class V2010 extends Version {
      * @return InstanceContext The requested resource context
      * @throws TwilioException For unknown resource
      */
-    public function __call(string $name, array $arguments): InstanceContext {
+    public function __call(string $name, array $arguments): InstanceContext
+    {
         $property = $this->$name;
         if (\method_exists($property, 'getContext')) {
             return \call_user_func_array(array($property, 'getContext'), $arguments);
@@ -117,7 +125,8 @@ class V2010 extends Version {
      *
      * @return string Machine friendly representation
      */
-    public function __toString(): string {
+    public function __toString(): string
+    {
         return '[Twilio.Api.V2010]';
     }
 }

@@ -26,52 +26,111 @@ use Twilio\InstanceContext;
 use Twilio\Deserialize;
 use Twilio\Serialize;
 
-abstract class NewCredentialsOptions {
+abstract class NewCredentialsOptions
+{
     /**
-     * @param int $testInteger  
-     * @param string $testNumberFloat  
-     * @param array $testObject  
-     * @param \DateTime $testDate  
-     * @param bool $testBoolean  
-     * @param string $testNumber  
-     * @param string $testNumberDouble  
-     * @param string $testNumberInt32  
-     * @param int $testNumberInt64  
-     * @param \DateTime $testDateTime  
-     * @param string $testEnum  
-     * @param object[] $testObjectArray  
-     * @param array $testAnyType  
-     * @param array[] $testAnyArray  
-     * @param string[] $permissions A comma-separated list of the permissions you will request from the users of this ConnectApp.  Can include: `get-all` and `post-all`. 
-     * @param string $someA2PThing  
+     * @param int $testInteger
+     * @param string $testNumberFloat
+     * @param array $testObject
+     * @param \DateTime $testDate
+     * @param bool $testBoolean
+     * @param string $testNumber
+     * @param string $testNumberDouble
+     * @param string $testNumberInt32
+     * @param int $testNumberInt64
+     * @param \DateTime $testDateTime
+     * @param string $testEnum
+     * @param object[] $testObjectArray
+     * @param array $testAnyType
+     * @param array[] $testAnyArray
+     * @param string[] $permissions A comma-separated list of the permissions you will request from the users of this ConnectApp.  Can include: `get-all` and `post-all`.
+     * @param string $someA2PThing
      * @return CreateNewCredentialsOptions Options builder
      */
-    public static function create(int $testInteger = Values::NONE, string $testNumberFloat = Values::NONE, array $testObject = Values::NONE, \DateTime $testDate = Values::NONE, bool $testBoolean = Values::NONE, string $testNumber = Values::NONE, string $testNumberDouble = Values::NONE, string $testNumberInt32 = Values::NONE, int $testNumberInt64 = Values::NONE, \DateTime $testDateTime = Values::NONE, string $testEnum = Values::NONE, array $testObjectArray = Values::ARRAY_NONE, array $testAnyType = Values::ARRAY_NONE, array $testAnyArray = Values::ARRAY_NONE, array $permissions = Values::ARRAY_NONE, string $someA2PThing = Values::NONE): CreateNewCredentialsOptions {
-        return new CreateNewCredentialsOptions($testInteger, $testNumberFloat, $testObject, $testDate, $testBoolean, $testNumber, $testNumberDouble, $testNumberInt32, $testNumberInt64, $testDateTime, $testEnum, $testObjectArray, $testAnyType, $testAnyArray, $permissions, $someA2PThing);
+    public static function create(
+        
+        int $testInteger = Values::NONE,
+        string $testNumberFloat = Values::NONE,
+        array $testObject = Values::NONE,
+        \DateTime $testDate = Values::NONE,
+        bool $testBoolean = Values::NONE,
+        string $testNumber = Values::NONE,
+        string $testNumberDouble = Values::NONE,
+        string $testNumberInt32 = Values::NONE,
+        int $testNumberInt64 = Values::NONE,
+        \DateTime $testDateTime = Values::NONE,
+        string $testEnum = Values::NONE,
+        array $testObjectArray = Values::ARRAY_NONE,
+        array $testAnyType = Values::ARRAY_NONE,
+        array $testAnyArray = Values::ARRAY_NONE,
+        array $permissions = Values::ARRAY_NONE,
+        string $someA2PThing = Values::NONE
+
+    ): CreateNewCredentialsOptions
+    {
+        return new CreateNewCredentialsOptions(
+            $testInteger,
+            $testNumberFloat,
+            $testObject,
+            $testDate,
+            $testBoolean,
+            $testNumber,
+            $testNumberDouble,
+            $testNumberInt32,
+            $testNumberInt64,
+            $testDateTime,
+            $testEnum,
+            $testObjectArray,
+            $testAnyType,
+            $testAnyArray,
+            $permissions,
+            $someA2PThing
+        );
     }
 
 }
 
-class CreateNewCredentialsOptions extends Options {
+class CreateNewCredentialsOptions extends Options
+    {
     /**
-     * @param int $testInteger 
-     * @param string $testNumberFloat 
-     * @param array $testObject 
-     * @param \DateTime $testDate 
-     * @param bool $testBoolean 
-     * @param string $testNumber 
-     * @param string $testNumberDouble 
-     * @param string $testNumberInt32 
-     * @param int $testNumberInt64 
-     * @param \DateTime $testDateTime 
-     * @param string $testEnum 
-     * @param object[] $testObjectArray 
-     * @param array $testAnyType 
-     * @param array[] $testAnyArray 
+     * @param int $testInteger
+     * @param string $testNumberFloat
+     * @param array $testObject
+     * @param \DateTime $testDate
+     * @param bool $testBoolean
+     * @param string $testNumber
+     * @param string $testNumberDouble
+     * @param string $testNumberInt32
+     * @param int $testNumberInt64
+     * @param \DateTime $testDateTime
+     * @param string $testEnum
+     * @param object[] $testObjectArray
+     * @param array $testAnyType
+     * @param array[] $testAnyArray
      * @param string[] $permissions A comma-separated list of the permissions you will request from the users of this ConnectApp.  Can include: `get-all` and `post-all`.
-     * @param string $someA2PThing 
+     * @param string $someA2PThing
      */
-    public function __construct(int $testInteger = Values::NONE, string $testNumberFloat = Values::NONE, array $testObject = Values::NONE, \DateTime $testDate = Values::NONE, bool $testBoolean = Values::NONE, string $testNumber = Values::NONE, string $testNumberDouble = Values::NONE, string $testNumberInt32 = Values::NONE, int $testNumberInt64 = Values::NONE, \DateTime $testDateTime = Values::NONE, string $testEnum = Values::NONE, array $testObjectArray = Values::ARRAY_NONE, array $testAnyType = Values::ARRAY_NONE, array $testAnyArray = Values::ARRAY_NONE, array $permissions = Values::ARRAY_NONE, string $someA2PThing = Values::NONE) {
+    public function __construct(
+        
+        int $testInteger = Values::NONE,
+        string $testNumberFloat = Values::NONE,
+        array $testObject = Values::NONE,
+        \DateTime $testDate = Values::NONE,
+        bool $testBoolean = Values::NONE,
+        string $testNumber = Values::NONE,
+        string $testNumberDouble = Values::NONE,
+        string $testNumberInt32 = Values::NONE,
+        int $testNumberInt64 = Values::NONE,
+        \DateTime $testDateTime = Values::NONE,
+        string $testEnum = Values::NONE,
+        array $testObjectArray = Values::ARRAY_NONE,
+        array $testAnyType = Values::ARRAY_NONE,
+        array $testAnyArray = Values::ARRAY_NONE,
+        array $permissions = Values::ARRAY_NONE,
+        string $someA2PThing = Values::NONE
+
+    )
+    {
         $this->options['testInteger'] = $testInteger;
         $this->options['testNumberFloat'] = $testNumberFloat;
         $this->options['testObject'] = $testObject;
@@ -91,127 +150,141 @@ class CreateNewCredentialsOptions extends Options {
     }
 
     /**
-     * @param int $testInteger 
+     * @param int $testInteger
      * @return $this Fluent Builder
      */
-    public function setTestInteger(int $testInteger): self {
+    public function setTestInteger(int $testInteger): self
+    {
         $this->options['testInteger'] = $testInteger;
         return $this;
     }
 
     /**
-     * @param string $testNumberFloat 
+     * @param string $testNumberFloat
      * @return $this Fluent Builder
      */
-    public function setTestNumberFloat(string $testNumberFloat): self {
+    public function setTestNumberFloat(string $testNumberFloat): self
+    {
         $this->options['testNumberFloat'] = $testNumberFloat;
         return $this;
     }
 
     /**
-     * @param array $testObject 
+     * @param array $testObject
      * @return $this Fluent Builder
      */
-    public function setTestObject(array $testObject): self {
+    public function setTestObject(array $testObject): self
+    {
         $this->options['testObject'] = $testObject;
         return $this;
     }
 
     /**
-     * @param \DateTime $testDate 
+     * @param \DateTime $testDate
      * @return $this Fluent Builder
      */
-    public function setTestDate(\DateTime $testDate): self {
+    public function setTestDate(\DateTime $testDate): self
+    {
         $this->options['testDate'] = $testDate;
         return $this;
     }
 
     /**
-     * @param bool $testBoolean 
+     * @param bool $testBoolean
      * @return $this Fluent Builder
      */
-    public function setTestBoolean(bool $testBoolean): self {
+    public function setTestBoolean(bool $testBoolean): self
+    {
         $this->options['testBoolean'] = $testBoolean;
         return $this;
     }
 
     /**
-     * @param string $testNumber 
+     * @param string $testNumber
      * @return $this Fluent Builder
      */
-    public function setTestNumber(string $testNumber): self {
+    public function setTestNumber(string $testNumber): self
+    {
         $this->options['testNumber'] = $testNumber;
         return $this;
     }
 
     /**
-     * @param string $testNumberDouble 
+     * @param string $testNumberDouble
      * @return $this Fluent Builder
      */
-    public function setTestNumberDouble(string $testNumberDouble): self {
+    public function setTestNumberDouble(string $testNumberDouble): self
+    {
         $this->options['testNumberDouble'] = $testNumberDouble;
         return $this;
     }
 
     /**
-     * @param string $testNumberInt32 
+     * @param string $testNumberInt32
      * @return $this Fluent Builder
      */
-    public function setTestNumberInt32(string $testNumberInt32): self {
+    public function setTestNumberInt32(string $testNumberInt32): self
+    {
         $this->options['testNumberInt32'] = $testNumberInt32;
         return $this;
     }
 
     /**
-     * @param int $testNumberInt64 
+     * @param int $testNumberInt64
      * @return $this Fluent Builder
      */
-    public function setTestNumberInt64(int $testNumberInt64): self {
+    public function setTestNumberInt64(int $testNumberInt64): self
+    {
         $this->options['testNumberInt64'] = $testNumberInt64;
         return $this;
     }
 
     /**
-     * @param \DateTime $testDateTime 
+     * @param \DateTime $testDateTime
      * @return $this Fluent Builder
      */
-    public function setTestDateTime(\DateTime $testDateTime): self {
+    public function setTestDateTime(\DateTime $testDateTime): self
+    {
         $this->options['testDateTime'] = $testDateTime;
         return $this;
     }
 
     /**
-     * @param string $testEnum 
+     * @param string $testEnum
      * @return $this Fluent Builder
      */
-    public function setTestEnum(string $testEnum): self {
+    public function setTestEnum(string $testEnum): self
+    {
         $this->options['testEnum'] = $testEnum;
         return $this;
     }
 
     /**
-     * @param object[] $testObjectArray 
+     * @param object[] $testObjectArray
      * @return $this Fluent Builder
      */
-    public function setTestObjectArray(array $testObjectArray): self {
+    public function setTestObjectArray(array $testObjectArray): self
+    {
         $this->options['testObjectArray'] = $testObjectArray;
         return $this;
     }
 
     /**
-     * @param array $testAnyType 
+     * @param array $testAnyType
      * @return $this Fluent Builder
      */
-    public function setTestAnyType(array $testAnyType): self {
+    public function setTestAnyType(array $testAnyType): self
+    {
         $this->options['testAnyType'] = $testAnyType;
         return $this;
     }
 
     /**
-     * @param array[] $testAnyArray 
+     * @param array[] $testAnyArray
      * @return $this Fluent Builder
      */
-    public function setTestAnyArray(array $testAnyArray): self {
+    public function setTestAnyArray(array $testAnyArray): self
+    {
         $this->options['testAnyArray'] = $testAnyArray;
         return $this;
     }
@@ -222,16 +295,18 @@ class CreateNewCredentialsOptions extends Options {
      * @param string[] $permissions A comma-separated list of the permissions you will request from the users of this ConnectApp.  Can include: `get-all` and `post-all`.
      * @return $this Fluent Builder
      */
-    public function setPermissions(array $permissions): self {
+    public function setPermissions(array $permissions): self
+    {
         $this->options['permissions'] = $permissions;
         return $this;
     }
 
     /**
-     * @param string $someA2PThing 
+     * @param string $someA2PThing
      * @return $this Fluent Builder
      */
-    public function setSomeA2PThing(string $someA2PThing): self {
+    public function setSomeA2PThing(string $someA2PThing): self
+    {
         $this->options['someA2PThing'] = $someA2PThing;
         return $this;
     }
@@ -241,7 +316,8 @@ class CreateNewCredentialsOptions extends Options {
      *
      * @return string Machine friendly representation
      */
-    public function __toString(): string {
+    public function __toString(): string
+    {
         $options = \http_build_query(Values::of($this->options), '', ' ');
         return '[Twilio.FlexApi.V1.CreateNewCredentialsOptions ' . $options . ']';
     }

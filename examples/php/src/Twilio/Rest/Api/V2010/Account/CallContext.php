@@ -33,21 +33,34 @@ use Twilio\Rest\Api\V2010\Account\Call\FeedbackCallSummaryList;
 /**
  * @method \Twilio\Rest\Api\V2010\Account\Call\FeedbackCallSummaryContext feedbackCallSummary(string $sid)
  */
-class CallContext extends InstanceContext {
+class CallContext extends InstanceContext
+    {
     /**
      * Initialize the CallContext
      *
      * @param Version $version Version that contains the resource
-     * @param string $accountSid 
+     * @param string $accountSid
      * @param int $testInteger INTEGER ID param!!!
      */
-    public function __construct(Version $version, $accountSid , $testInteger ) {
+    public function __construct(
+        Version $version,
+        $accountSid,
+        $testInteger
+    )
+    {
         parent::__construct($version);
 
         // Path Solution
-        $this->solution = ['accountSid' => $accountSid,  'testInteger' => $testInteger,  ];
+        $this->solution = [
+        'accountSid' =>
+            $accountSid,
+        'testInteger' =>
+            $testInteger,
+        ];
 
-        $this->uri = '/Accounts/' . \rawurlencode($accountSid) . '/Calls/' . \rawurlencode($testInteger) . '.json';
+        $this->uri = '/Accounts/' . \rawurlencode($accountSid)
+        .'/Calls/' . \rawurlencode($testInteger)
+        .'.json';
     }
 
     /**
@@ -56,9 +69,12 @@ class CallContext extends InstanceContext {
      * @return bool True if delete succeeds, false otherwise
      * @throws TwilioException When an HTTP error occurs.
      */
-    public function delete(): bool {
+    public function delete(): bool
+    {
+
         return $this->version->delete('DELETE', $this->uri);
     }
+
 
     /**
      * Fetch the CallInstance
@@ -66,16 +82,19 @@ class CallContext extends InstanceContext {
      * @return CallInstance Fetched CallInstance
      * @throws TwilioException When an HTTP error occurs.
      */
-    public function fetch(): CallInstance {
+    public function fetch(): CallInstance
+    {
+
         $payload = $this->version->fetch('GET', $this->uri);
 
         return new CallInstance(
             $this->version,
-            $payload
-            , $this->solution['accountSid']
-            , $this->solution['testInteger']
+            $payload,
+            $this->solution['accountSid'],
+            $this->solution['testInteger'],
         );
     }
+
 
     /**
      * Magic getter to lazy load subresources
@@ -84,7 +103,8 @@ class CallContext extends InstanceContext {
      * @return ListResource The requested subresource
      * @throws TwilioException For unknown subresources
      */
-    public function __get(string $name): ListResource {
+    public function __get(string $name): ListResource
+    {
         if (\property_exists($this, '_' . $name)) {
             $method = 'get' . \ucfirst($name);
             return $this->$method();
@@ -101,7 +121,8 @@ class CallContext extends InstanceContext {
      * @return InstanceContext The requested resource context
      * @throws TwilioException For unknown resource
      */
-    public function __call(string $name, array $arguments): InstanceContext {
+    public function __call(string $name, array $arguments): InstanceContext
+    {
         $property = $this->$name;
         if (\method_exists($property, 'getContext')) {
             return \call_user_func_array(array($property, 'getContext'), $arguments);
@@ -115,7 +136,8 @@ class CallContext extends InstanceContext {
      *
      * @return string Machine friendly representation
      */
-    public function __toString(): string {
+    public function __toString(): string
+    {
         $context = [];
         foreach ($this->solution as $key => $value) {
             $context[] = "$key=$value";
