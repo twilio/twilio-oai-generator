@@ -15,27 +15,41 @@
 
 module Twilio
     module REST
-        class Api < Domain
-            class V2010 < Version
-                class FeedbackCallSummaryList < ListResource
+        class FlexApi < Domain
+            class V1 < Version
+                class CredentialList < ListResource
                     ##
-                    # Initialize the FeedbackCallSummaryList
+                    # Initialize the CredentialList
                     # @param [Version] version Version that contains the resource
-                    # @return [FeedbackCallSummaryList] FeedbackCallSummaryList
-                    def initialize(version, account_sid)
+                    # @return [CredentialList] CredentialList
+                    def initialize(version)
                         super(version)
                         # Path Solution
-                        @solution = { account_sid: account_sid, }
-                        
-                        
+                        @solution = {  }
+                        @uri = "/Credentials"
+                        #Components
+                        @aws = nil
                     end
                 
                     
                     ##
+                ##
+                # Access the aws
+                # @return [AwsList]
+                # @return [AwsContext] if sid was passed.
+                def aws(sid=:unset)
+                    raise ArgumentError, 'sid cannot be nil' if sid.nil?
+
+                    if sid != :unset
+                        return AwsContext.new(@version,sid )
+                    end
+
+                    @aws ||= AwsList.new(@version )
+                end
 
                     # Provide a user friendly representation
                     def to_s
-                        '#<Twilio.Api.V2010.FeedbackCallSummaryList>'
+                        '#<Twilio.FlexApi.V1.CredentialList>'
                     end
                 end
             end

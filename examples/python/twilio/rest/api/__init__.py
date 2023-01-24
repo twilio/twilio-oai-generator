@@ -1,5 +1,5 @@
 from twilio.base.domain import Domain
-from twilio.rest.Api.v2010 import V2010
+from twilio.rest.api.v2010 import V2010
 
 
 class Api(Domain):

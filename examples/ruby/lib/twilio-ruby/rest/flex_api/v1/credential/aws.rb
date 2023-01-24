@@ -15,58 +15,26 @@
 
 module Twilio
     module REST
-        class Api < Domain
-            class V2010 < Version
-                class AccountList < ListResource
+        class FlexApi < Domain
+            class V1 < Version
+                class AwsList < ListResource
                     ##
-                    # Initialize the AccountList
+                    # Initialize the AwsList
                     # @param [Version] version Version that contains the resource
-                    # @return [AccountList] AccountList
+                    # @return [AwsList] AwsList
                     def initialize(version)
                         super(version)
                         # Path Solution
                         @solution = {  }
-                        @uri = "/Accounts.json"
+                        @uri = "/Credentials/AWS"
                         
                     end
                 
-                    ##
-                    # Create the AccountInstance
-                    # @param [String] x_twilio_webhook_enabled 
-                    # @param [String] recording_status_callback 
-                    # @param [Array&lt;String&gt;] recording_status_callback_event 
-                    # @param [String] twiml 
-                    # @return [AccountInstance] Created AccountInstance
-                    def create(x_twilio_webhook_enabled: :unset,
-						recording_status_callback: :unset,
-						recording_status_callback_event: :unset,
-						twiml: :unset
-					)
-                        data = Twilio::Values.of(
-                            
-                            'X-Twilio-Webhook-Enabled' => x_twilio_webhook_enabled,
-                            
-                            'RecordingStatusCallback' => recording_status_callback,
-                            
-                            'RecordingStatusCallbackEvent' =>  Twilio.serialize_list(recording_status_callback_event) { |e| e },
-
-                            'Twiml' => twiml,
-                                                    })
-
-                        payload = @version.create('POST', @uri, data: data)
-
-                        AccountInstance.new(@version, payload, )
-                    end
-                    
                     
                     ##
-                    # Lists AccountInstance records from the API as a list.
+                    # Lists AwsInstance records from the API as a list.
                     # Unlike stream(), this operation is eager and will load `limit` records into
                     # memory before returning.
-                    # @param [Time] date_created 
-                    # @param [Date] date_test 
-                    # @param [Time] date_created_before 
-                    # @param [Time] date_created_after 
                     # @param [Integer] limit Upper limit for the number of records to return. stream()
                     #    guarantees to never return more than limit.  Default is no limit
                     # @param [Integer] page_size Number of records to fetch per request, when
@@ -74,12 +42,8 @@ module Twilio
                     #    but a limit is defined, stream() will attempt to read the limit with the most
                     #    efficient page size, i.e. min(limit, 1000)
                     # @return [Array] Array of up to limit results
-                    def list(date_created: :unset,date_test: :unset,date_created_before: :unset,date_created_after: :unset, limit: nil, page_size: nil)
+                    def list( limit: nil, page_size: nil)
                         self.stream(
-                            date_created: date_created,
-                            date_test: date_test,
-                            date_created_before: date_created_before,
-                            date_created_after: date_created_after,
                             limit: limit,
                             page_size: page_size
                         ).entries
@@ -89,10 +53,6 @@ module Twilio
                     # Streams Instance records from the API as an Enumerable.
                     # This operation lazily loads records as efficiently as possible until the limit
                     # is reached.
-                    # @param [Time] date_created 
-                    # @param [Date] date_test 
-                    # @param [Time] date_created_before 
-                    # @param [Time] date_created_after 
                     # @param [Integer] limit Upper limit for the number of records to return. stream()
                     #    guarantees to never return more than limit.  Default is no limit
                     # @param [Integer] page_size Number of records to fetch per request, when
@@ -100,21 +60,17 @@ module Twilio
                     #    but a limit is defined, stream() will attempt to read the limit with the most
                     #    efficient page size, i.e. min(limit, 1000)
                     # @return [Enumerable] Enumerable that will yield up to limit results
-                    def stream(date_created: :unset,date_test: :unset,date_created_before: :unset,date_created_after: :unset, limit: nil, page_size: nil)
+                    def stream( limit: nil, page_size: nil)
                         limits = @version.read_limits(limit, page_size)
 
                         page = self.page(
-                            date_created: date_created,
-                            date_test: date_test,
-                            date_created_before: date_created_before,
-                            date_created_after: date_created_after,
                             page_size: limits[:page_size], )
 
                         @version.stream(page, limit: limits[:limit], page_limit: limits[:page_limit])
                     end
 
                     ##
-                    # When passed a block, yields AccountInstance records from the API.
+                    # When passed a block, yields AwsInstance records from the API.
                     # This operation lazily loads records as efficiently as possible until the limit
                     # is reached.
                     def each
@@ -128,26 +84,14 @@ module Twilio
                     end
 
                     ##
-                    # Retrieve a single page of AccountInstance records from the API.
+                    # Retrieve a single page of AwsInstance records from the API.
                     # Request is executed immediately.
-                    # @param [Time] date_created 
-                    # @param [Date] date_test 
-                    # @param [Time] date_created_before 
-                    # @param [Time] date_created_after 
                     # @param [String] page_token PageToken provided by the API
                     # @param [Integer] page_number Page Number, this value is simply for client state
                     # @param [Integer] page_size Number of records to return, defaults to 50
-                    # @return [Page] Page of AccountInstance
-                    def page(date_created: :unset,date_test: :unset,date_created_before: :unset,date_created_after: :unset, page_token: :unset, page_number: :unset, page_size: :unset)
+                    # @return [Page] Page of AwsInstance
+                    def page( page_token: :unset, page_number: :unset, page_size: :unset)
                         params = Twilio::Values.of({
-                            
-                            'DateCreated' =>   Twilio.serialize_iso8601_datetime(date_created),
-                            
-                            'Date.Test' =>  Twilio.serialize_iso8601_date(date_test),
-                            
-                            'DateCreated<' =>   Twilio.serialize_iso8601_datetime(date_created_before),
-                            
-                            'DateCreated>' =>   Twilio.serialize_iso8601_datetime(date_created_after),
                             
                             'PageToken' => page_token,
                             'Page' => page_number,
@@ -156,27 +100,27 @@ module Twilio
 
                         response = @version.page('GET', @uri, params: params)
 
-                        AccountPage.new(@version, response, @solution)
+                        AwsPage.new(@version, response, @solution)
                     end
 
                     ##
-                    # Retrieve a single page of AccountInstance records from the API.
+                    # Retrieve a single page of AwsInstance records from the API.
                     # Request is executed immediately.
                     # @param [String] target_url API-generated URL for the requested results page
-                    # @return [Page] Page of AccountInstance
+                    # @return [Page] Page of AwsInstance
                     def get_page(target_url)
                         response = @version.domain.request(
                             'GET',
                             target_url
                         )
-                    AccountPage.new(@version, response, @solution)
+                    AwsPage.new(@version, response, @solution)
                     end
                     
                     ##
 
                     # Provide a user friendly representation
                     def to_s
-                        '#<Twilio.Api.V2010.AccountList>'
+                        '#<Twilio.FlexApi.V1.AwsList>'
                     end
                 end
             end
