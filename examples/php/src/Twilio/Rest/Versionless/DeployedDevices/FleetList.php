@@ -26,6 +26,7 @@ use Twilio\Version;
 use Twilio\InstanceContext;
 use Twilio\Deserialize;
 use Twilio\Serialize;
+use Twilio\Base\PhoneNumberCapabilities;
 
 
 class FleetList extends ListResource
