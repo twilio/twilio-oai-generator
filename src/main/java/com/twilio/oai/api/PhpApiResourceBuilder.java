@@ -21,6 +21,7 @@ import static com.twilio.oai.common.ApplicationConstants.PATH_SEPARATOR_PLACEHOL
 import static com.twilio.oai.common.ApplicationConstants.TWILIO_EXTENSION_NAME;
 
 public class PhpApiResourceBuilder extends ApiResourceBuilder {
+    public final static String TAB_WHITESPACES = "    ";
     private final HashSet<String> pathSet = new HashSet<>();
     private final List<CodegenOperation> listOperations = new ArrayList<>();
     private final List<CodegenOperation> instanceOperations = new ArrayList<>();
@@ -133,7 +134,7 @@ public class PhpApiResourceBuilder extends ApiResourceBuilder {
 
     private String replaceBraces(String path) {
         path = path.replace("{", "' . \\rawurlencode($");
-        return path.replace("}", ") . '");
+        return path.replace("}", ")\n" + TAB_WHITESPACES + TAB_WHITESPACES + ".'");
     }
 
     private void updateNamespaceSubPart(CodegenOperation codegenOperation) {

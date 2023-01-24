@@ -35,22 +35,31 @@ use Twilio\Rest\Api\V2010\Account\CallList;
  * @property CallList $calls
  * @method \Twilio\Rest\Api\V2010\Account\CallContext calls(string $testInteger)
  */
-class AccountContext extends InstanceContext {
+class AccountContext extends InstanceContext
+    {
     protected $_calls;
 
     /**
      * Initialize the AccountContext
      *
      * @param Version $version Version that contains the resource
-     * @param string $sid 
+     * @param string $sid
      */
-    public function __construct(Version $version, $sid ) {
+    public function __construct(
+        Version $version,
+        $sid
+    )
+    {
         parent::__construct($version);
 
         // Path Solution
-        $this->solution = ['sid' => $sid,  ];
+        $this->solution = [
+        'sid' =>
+            $sid,
+        ];
 
-        $this->uri = '/Accounts/' . \rawurlencode($sid) . '.json';
+        $this->uri = '/Accounts/' . \rawurlencode($sid)
+        .'.json';
     }
 
     /**
@@ -59,9 +68,12 @@ class AccountContext extends InstanceContext {
      * @return bool True if delete succeeds, false otherwise
      * @throws TwilioException When an HTTP error occurs.
      */
-    public function delete(): bool {
+    public function delete(): bool
+    {
+
         return $this->version->delete('DELETE', $this->uri);
     }
+
 
     /**
      * Fetch the AccountInstance
@@ -69,49 +81,58 @@ class AccountContext extends InstanceContext {
      * @return AccountInstance Fetched AccountInstance
      * @throws TwilioException When an HTTP error occurs.
      */
-    public function fetch(): AccountInstance {
+    public function fetch(): AccountInstance
+    {
+
         $payload = $this->version->fetch('GET', $this->uri);
 
         return new AccountInstance(
             $this->version,
-            $payload
-            , $this->solution['sid']
+            $payload,
+            $this->solution['sid'],
         );
     }
+
 
     /**
      * Update the AccountInstance
      *
-     * @param string $status 
+     * @param string $status
      * @param array|Options $options Optional Arguments
      * @return AccountInstance Updated AccountInstance
      * @throws TwilioException When an HTTP error occurs.
      */
-    public function update(string $status, array $options = []): AccountInstance {
+    public function update(string $status, array $options = []): AccountInstance
+    {
+
         $options = new Values($options);
 
         $data = Values::of([
-            'Status' => $status,
-            'PauseBehavior' => $options['pauseBehavior'],
+            'Status' =>
+                $status,
+            'PauseBehavior' =>
+                $options['pauseBehavior'],
         ]);
 
         $payload = $this->version->update('POST', $this->uri, [], $data);
 
         return new AccountInstance(
             $this->version,
-            $payload
-            , $this->solution['sid']
+            $payload,
+            $this->solution['sid'],
         );
     }
+
 
     /**
      * Access the calls
      */
-    protected function getCalls(): CallList {
+    protected function getCalls(): CallList
+    {
         if (!$this->_calls) {
             $this->_calls = new CallList(
-                $this->version
-                , $this->solution['sid']
+                $this->version,
+                $this->solution['sid'],
             );
         }
 
@@ -125,7 +146,8 @@ class AccountContext extends InstanceContext {
      * @return ListResource The requested subresource
      * @throws TwilioException For unknown subresources
      */
-    public function __get(string $name): ListResource {
+    public function __get(string $name): ListResource
+    {
         if (\property_exists($this, '_' . $name)) {
             $method = 'get' . \ucfirst($name);
             return $this->$method();
@@ -142,7 +164,8 @@ class AccountContext extends InstanceContext {
      * @return InstanceContext The requested resource context
      * @throws TwilioException For unknown resource
      */
-    public function __call(string $name, array $arguments): InstanceContext {
+    public function __call(string $name, array $arguments): InstanceContext
+    {
         $property = $this->$name;
         if (\method_exists($property, 'getContext')) {
             return \call_user_func_array(array($property, 'getContext'), $arguments);
@@ -156,7 +179,8 @@ class AccountContext extends InstanceContext {
      *
      * @return string Machine friendly representation
      */
-    public function __toString(): string {
+    public function __toString(): string
+    {
         $context = [];
         foreach ($this->solution as $key => $value) {
             $context[] = "$key=$value";

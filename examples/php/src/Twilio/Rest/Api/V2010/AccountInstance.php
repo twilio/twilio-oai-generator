@@ -49,7 +49,8 @@ use Twilio\Rest\Api\V2010\Account\CallList;
  * @property string[] $testArrayOfObjects
  * @property string[] $testArrayOfEnum
  */
-class AccountInstance extends InstanceResource {
+class AccountInstance extends InstanceResource
+{
     protected $_calls;
 
     /**
@@ -57,9 +58,10 @@ class AccountInstance extends InstanceResource {
      *
      * @param Version $version Version that contains the resource
      * @param mixed[] $payload The response payload
-     * @param string $sid 
+     * @param string $sid
      */
-    public function __construct(Version $version, array $payload, string $sid = null) {
+    public function __construct(Version $version, array $payload, string $sid = null)
+    {
         parent::__construct($version);
 
         // Marshaled Properties
@@ -91,7 +93,8 @@ class AccountInstance extends InstanceResource {
      *
      * @return AccountContext Context for this AccountInstance
      */
-    protected function proxy(): AccountContext {
+    protected function proxy(): AccountContext
+    {
         if (!$this->context) {
             $this->context = new AccountContext(
                 $this->version,
@@ -108,7 +111,9 @@ class AccountInstance extends InstanceResource {
      * @return bool True if delete succeeds, false otherwise
      * @throws TwilioException When an HTTP error occurs.
      */
-    public function delete(): bool {
+    public function delete(): bool
+    {
+
         return $this->proxy()->delete();
     }
 
@@ -118,26 +123,31 @@ class AccountInstance extends InstanceResource {
      * @return AccountInstance Fetched AccountInstance
      * @throws TwilioException When an HTTP error occurs.
      */
-    public function fetch(): AccountInstance {
+    public function fetch(): AccountInstance
+    {
+
         return $this->proxy()->fetch();
     }
 
     /**
      * Update the AccountInstance
      *
-     * @param string $status 
+     * @param string $status
      * @param array|Options $options Optional Arguments
      * @return AccountInstance Updated AccountInstance
      * @throws TwilioException When an HTTP error occurs.
      */
-    public function update(string $status, array $options = []): AccountInstance {
+    public function update(string $status, array $options = []): AccountInstance
+    {
+
         return $this->proxy()->update($status, $options);
     }
 
     /**
      * Access the calls
      */
-    protected function getCalls(): CallList {
+    protected function getCalls(): CallList
+    {
         return $this->proxy()->calls;
     }
 
@@ -148,7 +158,8 @@ class AccountInstance extends InstanceResource {
      * @return mixed The requested property
      * @throws TwilioException For unknown properties
      */
-    public function __get(string $name) {
+    public function __get(string $name)
+    {
         if (\array_key_exists($name, $this->properties)) {
             return $this->properties[$name];
         }
@@ -166,7 +177,8 @@ class AccountInstance extends InstanceResource {
      *
      * @return string Machine friendly representation
      */
-    public function __toString(): string {
+    public function __toString(): string
+    {
         $context = [];
         foreach ($this->solution as $key => $value) {
             $context[] = "$key=$value";

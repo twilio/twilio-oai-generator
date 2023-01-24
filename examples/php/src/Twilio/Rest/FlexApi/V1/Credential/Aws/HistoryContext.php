@@ -30,20 +30,29 @@ use Twilio\Serialize;
 use Twilio\Base\PhoneNumberCapabilities;
 
 
-class HistoryContext extends InstanceContext {
+class HistoryContext extends InstanceContext
+    {
     /**
      * Initialize the HistoryContext
      *
      * @param Version $version Version that contains the resource
-     * @param string $sid 
+     * @param string $sid
      */
-    public function __construct(Version $version, $sid ) {
+    public function __construct(
+        Version $version,
+        $sid
+    )
+    {
         parent::__construct($version);
 
         // Path Solution
-        $this->solution = ['sid' => $sid,  ];
+        $this->solution = [
+        'sid' =>
+            $sid,
+        ];
 
-        $this->uri = '/Credentials/AWS/' . \rawurlencode($sid) . '/History';
+        $this->uri = '/Credentials/AWS/' . \rawurlencode($sid)
+        .'/History';
     }
 
     /**
@@ -53,7 +62,9 @@ class HistoryContext extends InstanceContext {
      * @return HistoryInstance Fetched HistoryInstance
      * @throws TwilioException When an HTTP error occurs.
      */
-    public function fetch(array $options = []): HistoryInstance {
+    public function fetch(array $options = []): HistoryInstance
+    {
+
         $options = new Values($options);
 
         $params = Values::of([
@@ -64,17 +75,19 @@ class HistoryContext extends InstanceContext {
 
         return new HistoryInstance(
             $this->version,
-            $payload
-            , $this->solution['sid']
+            $payload,
+            $this->solution['sid'],
         );
     }
+
 
     /**
      * Provide a friendly representation
      *
      * @return string Machine friendly representation
      */
-    public function __toString(): string {
+    public function __toString(): string
+    {
         $context = [];
         foreach ($this->solution as $key => $value) {
             $context[] = "$key=$value";

@@ -13,3 +13,60 @@
 #
 
 
+module Twilio
+    module REST
+        class Api < Domain
+            class V2010 < Version
+                class CallList < ListResource
+                    ##
+                    # Initialize the CallList
+                    # @param [Version] version Version that contains the resource
+                    # @return [CallList] CallList
+                    def initialize(version, account_sid)
+                        super(version)
+                        # Path Solution
+                        @solution = { account_sid: account_sid, }
+                        @uri = "/Accounts/#{@solution[:account_sid]}/Calls.json"
+                        
+                    end
+                
+                    ##
+                    # Create the CallInstance
+                    # @param [String] required_string_property 
+                    # @param [String] test_method The HTTP method that we should use to request the &#x60;TestArrayOfUri&#x60;.
+                    # @param [Array&lt;String&gt;] test_array_of_strings 
+                    # @param [Array&lt;String&gt;] test_array_of_uri 
+                    # @return [CallInstance] Created CallInstance
+                    def create(required_string_property: nil,
+						test_method: nil,
+						test_array_of_strings: :unset,
+						test_array_of_uri: :unset
+					)
+                        data = Twilio::Values.of(
+                            
+                            'RequiredStringProperty' => required_string_property,
+                            
+                            'TestMethod' => test_method,
+                            
+                            'TestArrayOfStrings' =>  Twilio.serialize_list(test_array_of_strings) { |e| e },
+
+                            'TestArrayOfUri' =>  Twilio.serialize_list(test_array_of_uri) { |e| e },
+                        })
+
+                        payload = @version.create('POST', @uri, data: data)
+
+                        CallInstance.new(@version, payload,  account_sid: @solution[:account_sid],)
+                    end
+                    
+                    
+                    ##
+
+                    # Provide a user friendly representation
+                    def to_s
+                        '#<Twilio.Api.V2010.CallList>'
+                    end
+                end
+            end
+        end
+    end
+end

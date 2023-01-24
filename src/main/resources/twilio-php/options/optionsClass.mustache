@@ -1,9 +1,13 @@
 {{#vendorExtensions.hasOptionFileParams}}
-class {{vendorExtensions.x-name}}{{apiName}}Options extends Options {
+class {{vendorExtensions.x-name}}{{apiName}}Options extends Options
+    {
     /**{{#vendorExtensions.optionFileParams}}
-     * @param {{dataType}} ${{paramName}} {{{description}}}{{/vendorExtensions.optionFileParams}}
+     * @param {{dataType}} ${{paramName}}{{#description}} {{{description}}}{{/description}}{{/vendorExtensions.optionFileParams}}
      */
-    public function __construct({{>options/optionMethodArgs}}) {
+    public function __construct(
+        {{>options/optionMethodArgs}}
+    )
+    {
     {{#vendorExtensions.optionFileParams}}
         $this->options['{{paramName}}'] = ${{paramName}};
     {{/vendorExtensions.optionFileParams}}
@@ -15,10 +19,11 @@ class {{vendorExtensions.x-name}}{{apiName}}Options extends Options {
      * {{{description}}}
      *
     {{/description}}
-     * @param {{dataType}} ${{paramName}} {{{description}}}
+     * @param {{dataType}} ${{paramName}}{{#description}} {{{description}}}{{/description}}
      * @return $this Fluent Builder
      */
-    public function set{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}({{^isArray}}{{dataType}} ${{paramName}}{{/isArray}}{{#isArray}}array ${{paramName}}{{/isArray}}): self {
+    public function set{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}({{^isArray}}{{dataType}} ${{paramName}}{{/isArray}}{{#isArray}}array ${{paramName}}{{/isArray}}): self
+    {
         $this->options['{{paramName}}'] = ${{paramName}};
         return $this;
     }
@@ -29,7 +34,8 @@ class {{vendorExtensions.x-name}}{{apiName}}Options extends Options {
      *
      * @return string Machine friendly representation
      */
-    public function __toString(): string {
+    public function __toString(): string
+    {
         $options = \http_build_query(Values::of($this->options), '', ' ');
         return '[Twilio.{{domainName}}.{{version}}.{{vendorExtensions.x-name}}{{apiName}}Options ' . $options . ']';
     }

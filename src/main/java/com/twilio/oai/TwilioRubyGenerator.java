@@ -2,6 +2,7 @@ package com.twilio.oai;
 
 import com.twilio.oai.api.ApiResources;
 import com.twilio.oai.api.RubyApiResourceBuilder;
+import com.twilio.oai.api.RubyApiResources;
 import com.twilio.oai.common.EnumConstants;
 import com.twilio.oai.common.Utility;
 import com.twilio.oai.resolver.IConventionMapper;
@@ -10,10 +11,12 @@ import com.twilio.oai.resolver.LanguageParamResolver;
 import com.twilio.oai.resolver.LanguagePropertyResolver;
 import com.twilio.oai.resolver.common.CodegenModelResolver;
 import com.twilio.oai.resolver.ruby.RubyCaseResolver;
+import com.twilio.oai.resolver.ruby.RubyParameterResolver;
 import com.twilio.oai.resource.IResourceTree;
 import com.twilio.oai.resource.ResourceMap;
 import com.twilio.oai.template.RubyApiActionTemplate;
 import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.PathItem;
 import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenOperation;
 import org.openapitools.codegen.languages.RubyClientCodegen;
@@ -47,12 +50,14 @@ public class TwilioRubyGenerator extends RubyClientCodegen {
     @Override
     public void processOpenAPI(final OpenAPI openAPI) {
         final String domain = twilioCodegen.getDomainFromOpenAPI(openAPI);
-        twilioCodegen.setDomain(StringHelper.camelize(domain, true));
+        twilioCodegen.setDomain(StringHelper.toSnakeCase(domain));
         openAPI.getPaths().forEach(resourceTree::addResource);
         resourceTree.getResources().forEach(resource -> resource.updateFamily(resourceTree));
         setGemName("");
         this.libFolder = "";
         directoryStructureService.configure(openAPI);
+        final Map<String, PathItem> pathMap = openAPI.getPaths();
+        directoryStructureService.configureAdditionalProps(pathMap, domain, directoryStructureService);
     }
 
     @Override
@@ -91,23 +96,22 @@ public class TwilioRubyGenerator extends RubyClientCodegen {
         return results;
     }
 
-    private ApiResources generateResources(final List<CodegenOperation> opList) {
-        updateApiVersion(directoryStructureService);
+    private RubyApiResources generateResources(final List<CodegenOperation> opList) {
         final IConventionMapper conventionMapper = new LanguageConventionResolver(CONFIG_RUBY_JSON_PATH);
         final CodegenModelResolver codegenModelResolver = new CodegenModelResolver(conventionMapper,
                 modelFormatMap,
                 List.of(EnumConstants.RubyDataTypes.values()));
-        return new RubyApiResourceBuilder(rubyApiActionTemplate, opList, allModels, directoryStructureService)
+        return new RubyApiResourceBuilder(rubyApiActionTemplate, opList, allModels, directoryStructureService, openAPI)
                 .updateApiPath()
-                .updateOperations(new LanguageParamResolver(conventionMapper))
+                .updateOperations(new RubyParameterResolver(conventionMapper))
                 .updateTemplate()
                 .updateResponseModel(new LanguagePropertyResolver(conventionMapper), codegenModelResolver)
                 .build();
     }
 
-    private void updateApiVersion(DirectoryStructureService directoryStructureService){
-        String apiVersionClass = (String)directoryStructureService.getAdditionalProperties().get("apiVersionClass");
-        directoryStructureService.getAdditionalProperties().put("apiVersionClass",StringHelper.toSnakeCase(apiVersionClass));
+    @Override
+    public String toParamName(final String name) {
+        return StringHelper.toSnakeCase(twilioCodegen.toParamName(name));
     }
 
     @Override

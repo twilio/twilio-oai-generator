@@ -34,14 +34,16 @@ use Twilio\Base\PhoneNumberCapabilities;
  * @property string $sid
  * @property string $friendlyName
  */
-class AssistantInstance extends InstanceResource {
+class AssistantInstance extends InstanceResource
+{
     /**
      * Initialize the AssistantInstance
      *
      * @param Version $version Version that contains the resource
      * @param mixed[] $payload The response payload
      */
-    public function __construct(Version $version, array $payload) {
+    public function __construct(Version $version, array $payload)
+    {
         parent::__construct($version);
 
         // Marshaled Properties
@@ -60,7 +62,8 @@ class AssistantInstance extends InstanceResource {
      * @return mixed The requested property
      * @throws TwilioException For unknown properties
      */
-    public function __get(string $name) {
+    public function __get(string $name)
+    {
         if (\array_key_exists($name, $this->properties)) {
             return $this->properties[$name];
         }
@@ -78,7 +81,8 @@ class AssistantInstance extends InstanceResource {
      *
      * @return string Machine friendly representation
      */
-    public function __toString(): string {
+    public function __toString(): string
+    {
         return '[Twilio.Versionless.Understand.AssistantInstance]';
     }
 }

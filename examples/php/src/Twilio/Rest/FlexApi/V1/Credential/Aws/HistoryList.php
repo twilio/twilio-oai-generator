@@ -29,25 +29,40 @@ use Twilio\Serialize;
 use Twilio\Base\PhoneNumberCapabilities;
 
 
-class HistoryList extends ListResource {
+class HistoryList extends ListResource
+    {
     /**
      * Construct the HistoryList
      *
      * @param Version $version Version that contains the resource
-     * @param string $sid 
+     * @param string $sid
      */
-    public function __construct(Version $version, string $sid ) {
+    public function __construct(
+        Version $version,
+        string $sid
+        )
+        {
         parent::__construct($version);
 
         // Path Solution
-        $this->solution = ['sid' => $sid, ];
+        $this->solution = [
+        'sid' =>
+            $sid,
+        
+        ];
     }
 
     /**
      * Constructs a HistoryContext
      */
-    public function getContext(): HistoryContext {
-        return new HistoryContext($this->version, $this->solution['sid']);
+    public function getContext(
+        
+    ): HistoryContext
+    {
+        return new HistoryContext(
+            $this->version,
+            $this->solution['sid']
+        );
     }
 
     /**
@@ -55,7 +70,8 @@ class HistoryList extends ListResource {
      *
      * @return string Machine friendly representation
      */
-    public function __toString(): string {
+    public function __toString(): string
+    {
         return '[Twilio.FlexApi.V1.HistoryList]';
     }
 }
