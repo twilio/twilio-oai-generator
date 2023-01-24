@@ -29,20 +29,29 @@ use Twilio\Deserialize;
 use Twilio\Serialize;
 
 
-class CallContext extends InstanceContext {
+class CallContext extends InstanceContext
+    {
     /**
      * Initialize the CallContext
      *
      * @param Version $version Version that contains the resource
-     * @param string $sid 
+     * @param string $sid
      */
-    public function __construct(Version $version, $sid ) {
+    public function __construct(
+        Version $version,
+        $sid
+    )
+    {
         parent::__construct($version);
 
         // Path Solution
-        $this->solution = ['sid' => $sid,  ];
+        $this->solution = [
+        'sid' =>
+            $sid,
+        ];
 
-        $this->uri = '/Voice/' . \rawurlencode($sid) . '';
+        $this->uri = '/Voice/' . \rawurlencode($sid)
+        .'';
     }
 
     /**
@@ -51,22 +60,26 @@ class CallContext extends InstanceContext {
      * @return CallInstance Updated CallInstance
      * @throws TwilioException When an HTTP error occurs.
      */
-    public function update(): CallInstance {
+    public function update(): CallInstance
+    {
+
         $payload = $this->version->update('POST', $this->uri);
 
         return new CallInstance(
             $this->version,
-            $payload
-            , $this->solution['sid']
+            $payload,
+            $this->solution['sid'],
         );
     }
+
 
     /**
      * Provide a friendly representation
      *
      * @return string Machine friendly representation
      */
-    public function __toString(): string {
+    public function __toString(): string
+    {
         $context = [];
         foreach ($this->solution as $key => $value) {
             $context[] = "$key=$value";
