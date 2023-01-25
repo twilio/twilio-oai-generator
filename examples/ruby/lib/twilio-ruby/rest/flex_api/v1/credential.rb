@@ -52,6 +52,34 @@ module Twilio
                         '#<Twilio.FlexApi.V1.CredentialList>'
                     end
                 end
+                class CredentialPage < Page
+                    ##
+                    # Initialize the CredentialPage
+                    # @param [Version] version Version that contains the resource
+                    # @param [Response] response Response from the API
+                    # @param [Hash] solution Path solution for the resource
+                    # @return [CredentialPage] CredentialPage
+                    def initialize(version, response, solution)
+                        super(version, response)
+
+                        # Path Solution
+                        @solution = solution
+                    end
+
+                    ##
+                    # Build an instance of CredentialInstance
+                    # @param [Hash] payload Payload response from the API
+                    # @return [CredentialInstance] CredentialInstance
+                    def get_instance(payload)
+                        CredentialInstance.new(@version, payload)
+                    end
+
+                    ##
+                    # Provide a user friendly representation
+                    def to_s
+                        '<Twilio.FlexApi.V1.CredentialPage>'
+                    end
+                end
             end
         end
     end

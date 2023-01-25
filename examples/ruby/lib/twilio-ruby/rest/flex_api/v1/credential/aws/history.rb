@@ -38,6 +38,34 @@ module Twilio
                         '#<Twilio.FlexApi.V1.HistoryList>'
                     end
                 end
+                class HistoryPage < Page
+                    ##
+                    # Initialize the HistoryPage
+                    # @param [Version] version Version that contains the resource
+                    # @param [Response] response Response from the API
+                    # @param [Hash] solution Path solution for the resource
+                    # @return [HistoryPage] HistoryPage
+                    def initialize(version, response, solution)
+                        super(version, response)
+
+                        # Path Solution
+                        @solution = solution
+                    end
+
+                    ##
+                    # Build an instance of HistoryInstance
+                    # @param [Hash] payload Payload response from the API
+                    # @return [HistoryInstance] HistoryInstance
+                    def get_instance(payload)
+                        HistoryInstance.new(@version, payload, sid: @solution[:sid])
+                    end
+
+                    ##
+                    # Provide a user friendly representation
+                    def to_s
+                        '<Twilio.FlexApi.V1.HistoryPage>'
+                    end
+                end
             end
         end
     end

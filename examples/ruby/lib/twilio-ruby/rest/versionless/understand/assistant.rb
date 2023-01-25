@@ -123,6 +123,34 @@ module Twilio
                         '#<Twilio.Versionless.Understand.AssistantList>'
                     end
                 end
+                class AssistantPage < Page
+                    ##
+                    # Initialize the AssistantPage
+                    # @param [Version] version Version that contains the resource
+                    # @param [Response] response Response from the API
+                    # @param [Hash] solution Path solution for the resource
+                    # @return [AssistantPage] AssistantPage
+                    def initialize(version, response, solution)
+                        super(version, response)
+
+                        # Path Solution
+                        @solution = solution
+                    end
+
+                    ##
+                    # Build an instance of AssistantInstance
+                    # @param [Hash] payload Payload response from the API
+                    # @return [AssistantInstance] AssistantInstance
+                    def get_instance(payload)
+                        AssistantInstance.new(@version, payload)
+                    end
+
+                    ##
+                    # Provide a user friendly representation
+                    def to_s
+                        '<Twilio.Versionless.Understand.AssistantPage>'
+                    end
+                end
             end
         end
     end
