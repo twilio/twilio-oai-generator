@@ -13,7 +13,8 @@
     "object": "array",
     "boolean": "bool",
     "integer": "int",
-    "prefixed-collapsible-map": "string"
+    "prefixed-collapsible-map": "string",
+    "phone_number_capabilities": "PhoneNumberCapabilities"
   },
 
   "serialize": {
@@ -34,7 +35,8 @@
     "date_or_time": "Deserialize::dateTime({value})",
     "date_time_inequality": "Deserialize::dateTime({value})",
     "date": "Deserialize::dateTime({value})",
-    "date_inequality": "Deserialize::dateTime({value})"
+    "date_inequality": "Deserialize::dateTime({value})",
+    "phone_number_capabilities": "Deserialize::phoneNumberCapabilities({value})"
   },
 
   "cardinality": {

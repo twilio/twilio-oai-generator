@@ -27,6 +27,7 @@ use Twilio\Version;
 use Twilio\InstanceContext;
 use Twilio\Deserialize;
 use Twilio\Serialize;
+use Twilio\Base\PhoneNumberCapabilities;
 use Twilio\Rest\Api\V2010\Account\Call\FeedbackCallSummaryList;
 
 
@@ -35,7 +36,7 @@ use Twilio\Rest\Api\V2010\Account\Call\FeedbackCallSummaryList;
  * @property string $sid
  * @property string $testString
  * @property int $testInteger
- * @property string $testObject
+ * @property PhoneNumberCapabilities $testObject
  * @property \DateTime $testDateTime
  * @property string $testNumber
  * @property string $priceUnit
@@ -56,7 +57,7 @@ class CallInstance extends InstanceResource
      * @param Version $version Version that contains the resource
      * @param mixed[] $payload The response payload
      * @param string $accountSid
-     * @param int $testIntegerINTEGER ID param!!!
+     * @param int $testInteger INTEGER ID param!!!
      */
     public function __construct(Version $version, array $payload, string $accountSid, int $testInteger = null)
     {
@@ -68,7 +69,7 @@ class CallInstance extends InstanceResource
             'sid' => Values::array_get($payload, 'sid'),
             'testString' => Values::array_get($payload, 'test_string'),
             'testInteger' => Values::array_get($payload, 'test_integer'),
-            'testObject' => Values::array_get($payload, 'test_object'),
+            'testObject' => Deserialize::phoneNumberCapabilities(Values::array_get($payload, 'test_object')),
             'testDateTime' => Deserialize::dateTime(Values::array_get($payload, 'test_date_time')),
             'testNumber' => Values::array_get($payload, 'test_number'),
             'priceUnit' => Values::array_get($payload, 'price_unit'),
