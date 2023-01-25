@@ -118,6 +118,34 @@ module Twilio
                         '#<Twilio.FlexApi.V1.NewCredentialsList>'
                     end
                 end
+                class NewCredentialsPage < Page
+                    ##
+                    # Initialize the NewCredentialsPage
+                    # @param [Version] version Version that contains the resource
+                    # @param [Response] response Response from the API
+                    # @param [Hash] solution Path solution for the resource
+                    # @return [NewCredentialsPage] NewCredentialsPage
+                    def initialize(version, response, solution)
+                        super(version, response)
+
+                        # Path Solution
+                        @solution = solution
+                    end
+
+                    ##
+                    # Build an instance of NewCredentialsInstance
+                    # @param [Hash] payload Payload response from the API
+                    # @return [NewCredentialsInstance] NewCredentialsInstance
+                    def get_instance(payload)
+                        NewCredentialsInstance.new(@version, payload)
+                    end
+
+                    ##
+                    # Provide a user friendly representation
+                    def to_s
+                        '<Twilio.FlexApi.V1.NewCredentialsPage>'
+                    end
+                end
             end
         end
     end

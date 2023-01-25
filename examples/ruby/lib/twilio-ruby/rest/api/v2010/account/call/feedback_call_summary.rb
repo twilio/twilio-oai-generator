@@ -38,6 +38,34 @@ module Twilio
                         '#<Twilio.Api.V2010.FeedbackCallSummaryList>'
                     end
                 end
+                class FeedbackCallSummaryPage < Page
+                    ##
+                    # Initialize the FeedbackCallSummaryPage
+                    # @param [Version] version Version that contains the resource
+                    # @param [Response] response Response from the API
+                    # @param [Hash] solution Path solution for the resource
+                    # @return [FeedbackCallSummaryPage] FeedbackCallSummaryPage
+                    def initialize(version, response, solution)
+                        super(version, response)
+
+                        # Path Solution
+                        @solution = solution
+                    end
+
+                    ##
+                    # Build an instance of FeedbackCallSummaryInstance
+                    # @param [Hash] payload Payload response from the API
+                    # @return [FeedbackCallSummaryInstance] FeedbackCallSummaryInstance
+                    def get_instance(payload)
+                        FeedbackCallSummaryInstance.new(@version, payload, account_sid: @solution[:account_sid])
+                    end
+
+                    ##
+                    # Provide a user friendly representation
+                    def to_s
+                        '<Twilio.Api.V2010.FeedbackCallSummaryPage>'
+                    end
+                end
             end
         end
     end

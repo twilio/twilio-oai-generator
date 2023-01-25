@@ -27,6 +27,7 @@ use Twilio\Version;
 use Twilio\InstanceContext;
 use Twilio\Deserialize;
 use Twilio\Serialize;
+use Twilio\Base\PhoneNumberCapabilities;
 use Twilio\Rest\FlexApi\V1\Credential\AwsList;
 use Twilio\Rest\FlexApi\V1\Credential\NewCredentialsList;
 

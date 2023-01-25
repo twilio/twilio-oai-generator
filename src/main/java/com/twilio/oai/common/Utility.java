@@ -145,4 +145,8 @@ public class Utility {
     public Optional<CodegenModel> getModelByClassname(final List<CodegenModel> models, final String classname) {
         return models.stream().filter(model -> model.classname.equals(classname)).findFirst();
     }
+
+    public Optional<CodegenModel> getModelByName(final List<CodegenModel> models, final String modelname) {
+        return models.stream().filter(model -> model.name.equals(modelname)).findFirst();
+    }
 }

@@ -38,6 +38,34 @@ module Twilio
                         '#<Twilio.FlexApi.V1.CallList>'
                     end
                 end
+                class CallPage < Page
+                    ##
+                    # Initialize the CallPage
+                    # @param [Version] version Version that contains the resource
+                    # @param [Response] response Response from the API
+                    # @param [Hash] solution Path solution for the resource
+                    # @return [CallPage] CallPage
+                    def initialize(version, response, solution)
+                        super(version, response)
+
+                        # Path Solution
+                        @solution = solution
+                    end
+
+                    ##
+                    # Build an instance of CallInstance
+                    # @param [Hash] payload Payload response from the API
+                    # @return [CallInstance] CallInstance
+                    def get_instance(payload)
+                        CallInstance.new(@version, payload)
+                    end
+
+                    ##
+                    # Provide a user friendly representation
+                    def to_s
+                        '<Twilio.FlexApi.V1.CallPage>'
+                    end
+                end
             end
         end
     end
