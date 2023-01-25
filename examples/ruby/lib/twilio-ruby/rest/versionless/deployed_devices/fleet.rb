@@ -54,6 +54,34 @@ module Twilio
                         '#<Twilio.Versionless.DeployedDevices.FleetList>'
                     end
                 end
+                class FleetPage < Page
+                    ##
+                    # Initialize the FleetPage
+                    # @param [Version] version Version that contains the resource
+                    # @param [Response] response Response from the API
+                    # @param [Hash] solution Path solution for the resource
+                    # @return [FleetPage] FleetPage
+                    def initialize(version, response, solution)
+                        super(version, response)
+
+                        # Path Solution
+                        @solution = solution
+                    end
+
+                    ##
+                    # Build an instance of FleetInstance
+                    # @param [Hash] payload Payload response from the API
+                    # @return [FleetInstance] FleetInstance
+                    def get_instance(payload)
+                        FleetInstance.new(@version, payload)
+                    end
+
+                    ##
+                    # Provide a user friendly representation
+                    def to_s
+                        '<Twilio.Versionless.DeployedDevices.FleetPage>'
+                    end
+                end
             end
         end
     end

@@ -123,6 +123,34 @@ module Twilio
                         '#<Twilio.FlexApi.V1.AwsList>'
                     end
                 end
+                class AwsPage < Page
+                    ##
+                    # Initialize the AwsPage
+                    # @param [Version] version Version that contains the resource
+                    # @param [Response] response Response from the API
+                    # @param [Hash] solution Path solution for the resource
+                    # @return [AwsPage] AwsPage
+                    def initialize(version, response, solution)
+                        super(version, response)
+
+                        # Path Solution
+                        @solution = solution
+                    end
+
+                    ##
+                    # Build an instance of AwsInstance
+                    # @param [Hash] payload Payload response from the API
+                    # @return [AwsInstance] AwsInstance
+                    def get_instance(payload)
+                        AwsInstance.new(@version, payload)
+                    end
+
+                    ##
+                    # Provide a user friendly representation
+                    def to_s
+                        '<Twilio.FlexApi.V1.AwsPage>'
+                    end
+                end
             end
         end
     end

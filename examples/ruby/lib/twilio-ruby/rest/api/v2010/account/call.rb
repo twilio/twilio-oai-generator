@@ -66,6 +66,34 @@ module Twilio
                         '#<Twilio.Api.V2010.CallList>'
                     end
                 end
+                class CallPage < Page
+                    ##
+                    # Initialize the CallPage
+                    # @param [Version] version Version that contains the resource
+                    # @param [Response] response Response from the API
+                    # @param [Hash] solution Path solution for the resource
+                    # @return [CallPage] CallPage
+                    def initialize(version, response, solution)
+                        super(version, response)
+
+                        # Path Solution
+                        @solution = solution
+                    end
+
+                    ##
+                    # Build an instance of CallInstance
+                    # @param [Hash] payload Payload response from the API
+                    # @return [CallInstance] CallInstance
+                    def get_instance(payload)
+                        CallInstance.new(@version, payload, account_sid: @solution[:account_sid])
+                    end
+
+                    ##
+                    # Provide a user friendly representation
+                    def to_s
+                        '<Twilio.Api.V2010.CallPage>'
+                    end
+                end
             end
         end
     end

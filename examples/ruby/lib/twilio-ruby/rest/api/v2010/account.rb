@@ -179,6 +179,34 @@ module Twilio
                         '#<Twilio.Api.V2010.AccountList>'
                     end
                 end
+                class AccountPage < Page
+                    ##
+                    # Initialize the AccountPage
+                    # @param [Version] version Version that contains the resource
+                    # @param [Response] response Response from the API
+                    # @param [Hash] solution Path solution for the resource
+                    # @return [AccountPage] AccountPage
+                    def initialize(version, response, solution)
+                        super(version, response)
+
+                        # Path Solution
+                        @solution = solution
+                    end
+
+                    ##
+                    # Build an instance of AccountInstance
+                    # @param [Hash] payload Payload response from the API
+                    # @return [AccountInstance] AccountInstance
+                    def get_instance(payload)
+                        AccountInstance.new(@version, payload)
+                    end
+
+                    ##
+                    # Provide a user friendly representation
+                    def to_s
+                        '<Twilio.Api.V2010.AccountPage>'
+                    end
+                end
             end
         end
     end
