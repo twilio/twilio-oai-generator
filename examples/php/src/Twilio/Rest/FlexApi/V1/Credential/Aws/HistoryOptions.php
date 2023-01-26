@@ -55,8 +55,7 @@ class FetchHistoryOptions extends Options
         
         string $addOnsData = Values::NONE
 
-    )
-    {
+    ) {
         $this->options['addOnsData'] = $addOnsData;
     }
 

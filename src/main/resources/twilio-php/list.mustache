@@ -48,9 +48,8 @@ class {{apiName}}List extends ListResource
      */
     public function __construct(
         Version $version{{#requiredPathParams}}{{#vendorExtensions.x-is-parent-param}},
-        {{{dataType}}} ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}
-        {{/vendorExtensions.x-is-parent-param}}{{/requiredPathParams}})
-        {
+        {{{dataType}}} ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}{{/vendorExtensions.x-is-parent-param}}{{/requiredPathParams}}
+    ) {
         parent::__construct($version);
 
         // Path Solution
@@ -110,8 +109,7 @@ class {{apiName}}List extends ListResource
         if (!$this->_{{#lambda.camelcase}}{{mountName}}{{/lambda.camelcase}}) {
             $this->_{{#lambda.camelcase}}{{mountName}}{{/lambda.camelcase}} = new {{filename}}List(
                 $this->version{{#requiredPathParams}}{{#vendorExtensions.x-is-parent-param}},
-                $this->solution['{{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}']
-                {{/vendorExtensions.x-is-parent-param}}{{/requiredPathParams}}
+                $this->solution['{{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}']{{/vendorExtensions.x-is-parent-param}}{{/requiredPathParams}}
             );
         }
         return $this->_{{#lambda.camelcase}}{{mountName}}{{/lambda.camelcase}};
