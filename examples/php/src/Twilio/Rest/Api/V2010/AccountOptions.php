@@ -112,8 +112,7 @@ class CreateAccountOptions extends Options
         string $twiml = Values::NONE,
         string $xTwilioWebhookEnabled = Values::NONE
 
-    )
-    {
+    ) {
         $this->options['recordingStatusCallback'] = $recordingStatusCallback;
         $this->options['recordingStatusCallbackEvent'] = $recordingStatusCallbackEvent;
         $this->options['twiml'] = $twiml;
@@ -189,8 +188,7 @@ class ReadAccountOptions extends Options
         \DateTime $dateCreatedBefore = Values::NONE,
         \DateTime $dateCreatedAfter = Values::NONE
 
-    )
-    {
+    ) {
         $this->options['dateCreated'] = $dateCreated;
         $this->options['dateTest'] = $dateTest;
         $this->options['dateCreatedBefore'] = $dateCreatedBefore;
@@ -258,8 +256,7 @@ class UpdateAccountOptions extends Options
         
         string $pauseBehavior = Values::NONE
 
-    )
-    {
+    ) {
         $this->options['pauseBehavior'] = $pauseBehavior;
     }
 

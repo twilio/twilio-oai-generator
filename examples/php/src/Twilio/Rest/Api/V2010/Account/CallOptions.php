@@ -63,8 +63,7 @@ class CreateCallOptions extends Options
         array $testArrayOfStrings = Values::ARRAY_NONE,
         array $testArrayOfUri = Values::ARRAY_NONE
 
-    )
-    {
+    ) {
         $this->options['testArrayOfStrings'] = $testArrayOfStrings;
         $this->options['testArrayOfUri'] = $testArrayOfUri;
     }

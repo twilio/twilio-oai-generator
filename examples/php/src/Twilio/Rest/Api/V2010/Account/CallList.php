@@ -46,8 +46,7 @@ class CallList extends ListResource
     public function __construct(
         Version $version,
         string $accountSid
-        )
-        {
+    ) {
         parent::__construct($version);
 
         // Path Solution
@@ -91,7 +90,7 @@ class CallList extends ListResource
         return new CallInstance(
             $this->version,
             $payload,
-            $this->solution['accountSid'],
+            $this->solution['accountSid']
         );
     }
 
@@ -122,7 +121,6 @@ class CallList extends ListResource
             $this->_feedbackCallSummary = new FeedbackCallSummaryList(
                 $this->version,
                 $this->solution['accountSid']
-                
             );
         }
         return $this->_feedbackCallSummary;
