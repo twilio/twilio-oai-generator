@@ -21,6 +21,7 @@ import static com.twilio.oai.common.ApplicationConstants.PATH_SEPARATOR_PLACEHOL
 import static com.twilio.oai.common.ApplicationConstants.TWILIO_EXTENSION_NAME;
 
 public class PhpApiResourceBuilder extends ApiResourceBuilder {
+    public final static String TAB_WHITESPACES = "    ";
     private final HashSet<String> pathSet = new HashSet<>();
     private final List<CodegenOperation> listOperations = new ArrayList<>();
     private final List<CodegenOperation> instanceOperations = new ArrayList<>();
@@ -133,7 +134,7 @@ public class PhpApiResourceBuilder extends ApiResourceBuilder {
 
     private String replaceBraces(String path) {
         path = path.replace("{", "' . \\rawurlencode($");
-        return path.replace("}", ") . '");
+        return path.replace("}", ")\n" + TAB_WHITESPACES + TAB_WHITESPACES + ".'");
     }
 
     private void updateNamespaceSubPart(CodegenOperation codegenOperation) {
@@ -283,5 +284,37 @@ public class PhpApiResourceBuilder extends ApiResourceBuilder {
             }
         }
         return conditionalParamSet;
+    }
+
+    @Override
+    public ApiResourceBuilder updateResponseModel(Resolver<CodegenProperty> codegenPropertyResolver) {
+        codegenOperationList.forEach(codegenOperation -> {
+            List<CodegenModel> responseModels = new ArrayList<>();
+            codegenOperation.responses
+                    .stream()
+                    .map(response -> response.baseType)
+                    .filter(Objects::nonNull)
+                    .map(modelName -> this.getModel(modelName, codegenOperation))
+                    .flatMap(Optional::stream)
+                    .forEach(item -> {
+                        item.allVars.stream().filter(var -> var.isModel && var.dataFormat == null).forEach(this::setDataFormatForNestedProperties);
+                        item.vars.stream().filter(var -> var.isModel && var.dataFormat == null).forEach(this::setDataFormatForNestedProperties);
+                        item.vars.forEach(codegenPropertyResolver::resolve);
+                        item.allVars.forEach(codegenPropertyResolver::resolve);
+                        responseModels.add(item);
+                    });
+            this.apiResponseModels.addAll(getDistinctResponseModel(responseModels));
+        });
+        return this;
+    }
+
+    private void setDataFormatForNestedProperties(CodegenProperty codegenProperty) {
+        String ref = codegenProperty.getRef();
+        ref = ref.replaceFirst("#/components/schemas/", "");
+        Optional<CodegenModel> model = this.getModelbyName(ref);
+        if (model.isPresent()) {
+            CodegenModel item = model.get();
+            codegenProperty.dataFormat = item.getFormat();
+        }
     }
 }

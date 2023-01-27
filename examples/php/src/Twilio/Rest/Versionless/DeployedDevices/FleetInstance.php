@@ -27,6 +27,7 @@ use Twilio\Version;
 use Twilio\InstanceContext;
 use Twilio\Deserialize;
 use Twilio\Serialize;
+use Twilio\Base\PhoneNumberCapabilities;
 
 
 /**
@@ -34,15 +35,17 @@ use Twilio\Serialize;
  * @property string $sid
  * @property string $friendlyName
  */
-class FleetInstance extends InstanceResource {
+class FleetInstance extends InstanceResource
+{
     /**
      * Initialize the FleetInstance
      *
      * @param Version $version Version that contains the resource
      * @param mixed[] $payload The response payload
-     * @param string $sid 
+     * @param string $sid
      */
-    public function __construct(Version $version, array $payload, string $sid = null) {
+    public function __construct(Version $version, array $payload, string $sid = null)
+    {
         parent::__construct($version);
 
         // Marshaled Properties
@@ -61,7 +64,8 @@ class FleetInstance extends InstanceResource {
      *
      * @return FleetContext Context for this FleetInstance
      */
-    protected function proxy(): FleetContext {
+    protected function proxy(): FleetContext
+    {
         if (!$this->context) {
             $this->context = new FleetContext(
                 $this->version,
@@ -78,7 +82,9 @@ class FleetInstance extends InstanceResource {
      * @return FleetInstance Fetched FleetInstance
      * @throws TwilioException When an HTTP error occurs.
      */
-    public function fetch(): FleetInstance {
+    public function fetch(): FleetInstance
+    {
+
         return $this->proxy()->fetch();
     }
 
@@ -89,7 +95,8 @@ class FleetInstance extends InstanceResource {
      * @return mixed The requested property
      * @throws TwilioException For unknown properties
      */
-    public function __get(string $name) {
+    public function __get(string $name)
+    {
         if (\array_key_exists($name, $this->properties)) {
             return $this->properties[$name];
         }
@@ -107,7 +114,8 @@ class FleetInstance extends InstanceResource {
      *
      * @return string Machine friendly representation
      */
-    public function __toString(): string {
+    public function __toString(): string
+    {
         $context = [];
         foreach ($this->solution as $key => $value) {
             $context[] = "$key=$value";

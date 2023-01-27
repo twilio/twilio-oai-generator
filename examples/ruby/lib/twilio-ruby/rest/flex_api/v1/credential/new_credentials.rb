@@ -118,81 +118,32 @@ module Twilio
                         '#<Twilio.FlexApi.V1.NewCredentialsList>'
                     end
                 end
-
-                class NewCredentialsInstance < InstanceResource
+                class NewCredentialsPage < Page
                     ##
-                    # Initialize the NewCredentialsInstance
+                    # Initialize the NewCredentialsPage
                     # @param [Version] version Version that contains the resource
-                    # @param [Hash] payload payload that contains response from Twilio
-                    # @param [String] account_sid The SID of the
-                    #   {Account}[https://www.twilio.com/docs/iam/api/account] that created this NewCredentials
-                    #   resource.
-                    # @param [String] sid The SID of the Call resource to fetch.
-                    # @return [NewCredentialsInstance] NewCredentialsInstance
-                    def initialize(version, payload )
-                        super(version)
-                        # Marshaled Properties
-                        @properties = { 
-                            account_sid => payload[account_sid],
-                            sid => payload[sid],
-                            test_string => payload[test_string],
-                            test_integer => payload[test_integer] == nil ? payload[test_integer] : payload[test_integer].to_i,
-                             } 
-                        # Context
-                        @instance_context = nil
-                        @params = {  }
+                    # @param [Response] response Response from the API
+                    # @param [Hash] solution Path solution for the resource
+                    # @return [NewCredentialsPage] NewCredentialsPage
+                    def initialize(version, response, solution)
+                        super(version, response)
+
+                        # Path Solution
+                        @solution = solution
                     end
 
                     ##
-                    # Generate an instance context for the instance, the context is capable of
-                    # performing various actions.  All instance actions are proxied to the context
-                    # @return [NewCredentialsContext] CallContext for this CallInstance
-                    def context
-                        unless @instance_context
-                            @instance_context = NewCredentialsContext.new(@version )
-                        end
-                        @instance_context
+                    # Build an instance of NewCredentialsInstance
+                    # @param [Hash] payload Payload response from the API
+                    # @return [NewCredentialsInstance] NewCredentialsInstance
+                    def get_instance(payload)
+                        NewCredentialsInstance.new(@version, payload)
                     end
-                    
-                    ##
-                    # @return [String] 
-                    def account_sid
-                        @properties['account_sid']
-                    end
-                    
-                    ##
-                    # @return [String] 
-                    def sid
-                        @properties['sid']
-                    end
-                    
-                    ##
-                    # @return [String] 
-                    def test_string
-                        @properties['test_string']
-                    end
-                    
-                    ##
-                    # @return [Integer] 
-                    def test_integer
-                        @properties['test_integer']
-                    end
-                    
-                    
-                    
-                    
+
                     ##
                     # Provide a user friendly representation
                     def to_s
-                        values = @params.map{|k, v| "#{k}: #{v}"}.join(" ")
-                        "<Twilio.FlexApi.V1.NewCredentialsInstance #{values}>"
-                    end
-
-                    ##
-                    # Provide a detailed, user friendly representation
-                    def inspect
-                        values = @properties.map{|k, v| "#{k}: #{v}"}.join(" ")
-                        "<Twilio.FlexApi.V1.NewCredentialsInstance #{values}>"
+                        '<Twilio.FlexApi.V1.NewCredentialsPage>'
                     end
                 end
             end

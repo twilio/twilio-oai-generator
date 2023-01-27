@@ -25,31 +25,47 @@ use Twilio\Version;
 use Twilio\InstanceContext;
 use Twilio\Deserialize;
 use Twilio\Serialize;
+use Twilio\Base\PhoneNumberCapabilities;
 
-abstract class FeedbackCallSummaryOptions {
+abstract class FeedbackCallSummaryOptions
+{
     /**
-     * @param string $accountSid  
+     * @param string $accountSid
      * @return UpdateFeedbackCallSummaryOptions Options builder
      */
-    public static function update(string $accountSid = Values::NONE): UpdateFeedbackCallSummaryOptions {
-        return new UpdateFeedbackCallSummaryOptions($accountSid);
+    public static function update(
+        
+        string $accountSid = Values::NONE
+
+    ): UpdateFeedbackCallSummaryOptions
+    {
+        return new UpdateFeedbackCallSummaryOptions(
+            $accountSid
+        );
     }
 
 }
 
-class UpdateFeedbackCallSummaryOptions extends Options {
+class UpdateFeedbackCallSummaryOptions extends Options
+    {
     /**
-     * @param string $accountSid 
+     * @param string $accountSid
      */
-    public function __construct(string $accountSid = Values::NONE) {
+    public function __construct(
+        
+        string $accountSid = Values::NONE
+
+    )
+    {
         $this->options['accountSid'] = $accountSid;
     }
 
     /**
-     * @param string $accountSid 
+     * @param string $accountSid
      * @return $this Fluent Builder
      */
-    public function setAccountSid(string $accountSid): self {
+    public function setAccountSid(string $accountSid): self
+    {
         $this->options['accountSid'] = $accountSid;
         return $this;
     }
@@ -59,7 +75,8 @@ class UpdateFeedbackCallSummaryOptions extends Options {
      *
      * @return string Machine friendly representation
      */
-    public function __toString(): string {
+    public function __toString(): string
+    {
         $options = \http_build_query(Values::of($this->options), '', ' ');
         return '[Twilio.Api.V2010.UpdateFeedbackCallSummaryOptions ' . $options . ']';
     }

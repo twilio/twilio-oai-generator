@@ -38,67 +38,32 @@ module Twilio
                         '#<Twilio.FlexApi.V1.CallList>'
                     end
                 end
-
-                class CallInstance < InstanceResource
+                class CallPage < Page
                     ##
-                    # Initialize the CallInstance
+                    # Initialize the CallPage
                     # @param [Version] version Version that contains the resource
-                    # @param [Hash] payload payload that contains response from Twilio
-                    # @param [String] account_sid The SID of the
-                    #   {Account}[https://www.twilio.com/docs/iam/api/account] that created this Call
-                    #   resource.
-                    # @param [String] sid The SID of the Call resource to fetch.
-                    # @return [CallInstance] CallInstance
-                    def initialize(version, payload , sid: nil)
-                        super(version)
-                        # Marshaled Properties
-                        @properties = { 
-                            sid => payload[sid] == nil ? payload[sid] : payload[sid].to_i,
-                             } 
-                        # Context
-                        @instance_context = nil
-                        @params = { 'sid' => sid  || @properties['sid']  , }
+                    # @param [Response] response Response from the API
+                    # @param [Hash] solution Path solution for the resource
+                    # @return [CallPage] CallPage
+                    def initialize(version, response, solution)
+                        super(version, response)
+
+                        # Path Solution
+                        @solution = solution
                     end
 
                     ##
-                    # Generate an instance context for the instance, the context is capable of
-                    # performing various actions.  All instance actions are proxied to the context
-                    # @return [CallContext] CallContext for this CallInstance
-                    def context
-                        unless @instance_context
-                            @instance_context = CallContext.new(@version , @params['sid'])
-                        end
-                        @instance_context
+                    # Build an instance of CallInstance
+                    # @param [Hash] payload Payload response from the API
+                    # @return [CallInstance] CallInstance
+                    def get_instance(payload)
+                        CallInstance.new(@version, payload)
                     end
-                    
-                    ##
-                    # @return [Integer] Non-string path parameter in the response.
-                    def sid
-                        @properties['sid']
-                    end
-                    
-                    
-                    
-                    
-                    ##
-                    # Update the CallInstance
-                    # @return [CallInstance] Updated CallInstance
-                    def update()
-                        context.update()
-                     end
-                    
+
                     ##
                     # Provide a user friendly representation
                     def to_s
-                        values = @params.map{|k, v| "#{k}: #{v}"}.join(" ")
-                        "<Twilio.FlexApi.V1.CallInstance #{values}>"
-                    end
-
-                    ##
-                    # Provide a detailed, user friendly representation
-                    def inspect
-                        values = @properties.map{|k, v| "#{k}: #{v}"}.join(" ")
-                        "<Twilio.FlexApi.V1.CallInstance #{values}>"
+                        '<Twilio.FlexApi.V1.CallPage>'
                     end
                 end
             end

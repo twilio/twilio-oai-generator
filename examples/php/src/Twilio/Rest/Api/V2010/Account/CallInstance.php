@@ -27,6 +27,7 @@ use Twilio\Version;
 use Twilio\InstanceContext;
 use Twilio\Deserialize;
 use Twilio\Serialize;
+use Twilio\Base\PhoneNumberCapabilities;
 use Twilio\Rest\Api\V2010\Account\Call\FeedbackCallSummaryList;
 
 
@@ -35,7 +36,7 @@ use Twilio\Rest\Api\V2010\Account\Call\FeedbackCallSummaryList;
  * @property string $sid
  * @property string $testString
  * @property int $testInteger
- * @property string $testObject
+ * @property PhoneNumberCapabilities $testObject
  * @property \DateTime $testDateTime
  * @property string $testNumber
  * @property string $priceUnit
@@ -48,16 +49,18 @@ use Twilio\Rest\Api\V2010\Account\Call\FeedbackCallSummaryList;
  * @property string[] $testArrayOfObjects
  * @property string[] $testArrayOfEnum
  */
-class CallInstance extends InstanceResource {
+class CallInstance extends InstanceResource
+{
     /**
      * Initialize the CallInstance
      *
      * @param Version $version Version that contains the resource
      * @param mixed[] $payload The response payload
-     * @param string $accountSid 
+     * @param string $accountSid
      * @param int $testInteger INTEGER ID param!!!
      */
-    public function __construct(Version $version, array $payload, string $accountSid, int $testInteger = null) {
+    public function __construct(Version $version, array $payload, string $accountSid, int $testInteger = null)
+    {
         parent::__construct($version);
 
         // Marshaled Properties
@@ -66,7 +69,7 @@ class CallInstance extends InstanceResource {
             'sid' => Values::array_get($payload, 'sid'),
             'testString' => Values::array_get($payload, 'test_string'),
             'testInteger' => Values::array_get($payload, 'test_integer'),
-            'testObject' => Values::array_get($payload, 'test_object'),
+            'testObject' => Deserialize::phoneNumberCapabilities(Values::array_get($payload, 'test_object')),
             'testDateTime' => Deserialize::dateTime(Values::array_get($payload, 'test_date_time')),
             'testNumber' => Values::array_get($payload, 'test_number'),
             'priceUnit' => Values::array_get($payload, 'price_unit'),
@@ -89,7 +92,8 @@ class CallInstance extends InstanceResource {
      *
      * @return CallContext Context for this CallInstance
      */
-    protected function proxy(): CallContext {
+    protected function proxy(): CallContext
+    {
         if (!$this->context) {
             $this->context = new CallContext(
                 $this->version,
@@ -107,7 +111,9 @@ class CallInstance extends InstanceResource {
      * @return bool True if delete succeeds, false otherwise
      * @throws TwilioException When an HTTP error occurs.
      */
-    public function delete(): bool {
+    public function delete(): bool
+    {
+
         return $this->proxy()->delete();
     }
 
@@ -117,7 +123,9 @@ class CallInstance extends InstanceResource {
      * @return CallInstance Fetched CallInstance
      * @throws TwilioException When an HTTP error occurs.
      */
-    public function fetch(): CallInstance {
+    public function fetch(): CallInstance
+    {
+
         return $this->proxy()->fetch();
     }
 
@@ -128,7 +136,8 @@ class CallInstance extends InstanceResource {
      * @return mixed The requested property
      * @throws TwilioException For unknown properties
      */
-    public function __get(string $name) {
+    public function __get(string $name)
+    {
         if (\array_key_exists($name, $this->properties)) {
             return $this->properties[$name];
         }
@@ -146,7 +155,8 @@ class CallInstance extends InstanceResource {
      *
      * @return string Machine friendly representation
      */
-    public function __toString(): string {
+    public function __toString(): string
+    {
         $context = [];
         foreach ($this->solution as $key => $value) {
             $context[] = "$key=$value";

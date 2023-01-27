@@ -26,28 +26,40 @@ use Twilio\Version;
 use Twilio\InstanceContext;
 use Twilio\Deserialize;
 use Twilio\Serialize;
+use Twilio\Base\PhoneNumberCapabilities;
 
 
-class CallList extends ListResource {
+class CallList extends ListResource
+    {
     /**
      * Construct the CallList
      *
      * @param Version $version Version that contains the resource
      */
-    public function __construct(Version $version) {
+    public function __construct(
+        Version $version)
+        {
         parent::__construct($version);
 
         // Path Solution
-        $this->solution = [];
+        $this->solution = [
+        ];
     }
 
     /**
      * Constructs a CallContext
      *
-     * @param string $sid 
+     * @param string $sid
      */
-    public function getContext(string $sid): CallContext {
-        return new CallContext($this->version, $sid);
+    public function getContext(
+        string $sid
+        
+    ): CallContext
+    {
+        return new CallContext(
+            $this->version,
+            $sid
+        );
     }
 
     /**
@@ -55,7 +67,8 @@ class CallList extends ListResource {
      *
      * @return string Machine friendly representation
      */
-    public function __toString(): string {
+    public function __toString(): string
+    {
         return '[Twilio.FlexApi.V1.CallList]';
     }
 }

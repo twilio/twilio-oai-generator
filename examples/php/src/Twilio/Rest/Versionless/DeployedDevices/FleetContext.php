@@ -27,22 +27,32 @@ use Twilio\Version;
 use Twilio\InstanceContext;
 use Twilio\Deserialize;
 use Twilio\Serialize;
+use Twilio\Base\PhoneNumberCapabilities;
 
 
-class FleetContext extends InstanceContext {
+class FleetContext extends InstanceContext
+    {
     /**
      * Initialize the FleetContext
      *
      * @param Version $version Version that contains the resource
-     * @param string $sid 
+     * @param string $sid
      */
-    public function __construct(Version $version, $sid ) {
+    public function __construct(
+        Version $version,
+        $sid
+    )
+    {
         parent::__construct($version);
 
         // Path Solution
-        $this->solution = ['sid' => $sid,  ];
+        $this->solution = [
+        'sid' =>
+            $sid,
+        ];
 
-        $this->uri = '/Fleets/' . \rawurlencode($sid) . '';
+        $this->uri = '/Fleets/' . \rawurlencode($sid)
+        .'';
     }
 
     /**
@@ -51,22 +61,26 @@ class FleetContext extends InstanceContext {
      * @return FleetInstance Fetched FleetInstance
      * @throws TwilioException When an HTTP error occurs.
      */
-    public function fetch(): FleetInstance {
+    public function fetch(): FleetInstance
+    {
+
         $payload = $this->version->fetch('GET', $this->uri);
 
         return new FleetInstance(
             $this->version,
-            $payload
-            , $this->solution['sid']
+            $payload,
+            $this->solution['sid'],
         );
     }
+
 
     /**
      * Provide a friendly representation
      *
      * @return string Machine friendly representation
      */
-    public function __toString(): string {
+    public function __toString(): string
+    {
         $context = [];
         foreach ($this->solution as $key => $value) {
             $context[] = "$key=$value";
