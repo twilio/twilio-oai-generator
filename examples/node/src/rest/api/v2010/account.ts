@@ -20,8 +20,8 @@ const deserialize = require("../../../base/deserialize");
 const serialize = require("../../../base/serialize");
 import { isValidPathParam } from "../../../base/utility";
 import { CallListInstance } from "./account/call";
-import { PhoneNumberCapabilities } from "../../../../lib/interfaces";
-import TwiML from "../../../../lib/twiml/TwiML";
+import { PhoneNumberCapabilities } from "../../../../src/interfaces";
+import TwiML from "../../../../src/twiml/TwiML";
 
 export class TestResponseObjectTestArrayOfObjects {
   "count"?: number;
