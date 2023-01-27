@@ -31,7 +31,7 @@ use Twilio\Base\PhoneNumberCapabilities;
 
 
 /**
- * @property int $sid
+ * @property int|null $sid
  */
 class CallInstance extends InstanceResource
 {
