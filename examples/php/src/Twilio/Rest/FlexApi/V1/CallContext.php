@@ -41,8 +41,7 @@ class CallContext extends InstanceContext
     public function __construct(
         Version $version,
         $sid
-    )
-    {
+    ) {
         parent::__construct($version);
 
         // Path Solution
@@ -69,7 +68,7 @@ class CallContext extends InstanceContext
         return new CallInstance(
             $this->version,
             $payload,
-            $this->solution['sid'],
+            $this->solution['sid']
         );
     }
 

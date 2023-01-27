@@ -55,8 +55,7 @@ class UpdateFeedbackCallSummaryOptions extends Options
         
         string $accountSid = Values::NONE
 
-    )
-    {
+    ) {
         $this->options['accountSid'] = $accountSid;
     }
 

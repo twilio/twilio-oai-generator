@@ -47,8 +47,7 @@ class CallContext extends InstanceContext
         Version $version,
         $accountSid,
         $testInteger
-    )
-    {
+    ) {
         parent::__construct($version);
 
         // Path Solution
@@ -92,7 +91,7 @@ class CallContext extends InstanceContext
             $this->version,
             $payload,
             $this->solution['accountSid'],
-            $this->solution['testInteger'],
+            $this->solution['testInteger']
         );
     }
 

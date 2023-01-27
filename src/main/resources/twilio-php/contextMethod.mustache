@@ -142,17 +142,9 @@
 
         return new {{apiName}}Instance(
             $this->version,
-            $payload,
-            {{#optionalParams}}
-            {{#isPathParam}}
-            $this->solution['{{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}'],
-            {{/isPathParam}}
-            {{/optionalParams}}
-            {{#requiredParams}}
-            {{#isPathParam}}
-            $this->solution['{{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}'],
-            {{/isPathParam}}
-            {{/requiredParams}}
+            $payload{{#optionalParams}}{{#isPathParam}},
+            $this->solution['{{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}']{{/isPathParam}}{{/optionalParams}}{{#requiredParams}}{{#isPathParam}},
+            $this->solution['{{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}']{{/isPathParam}}{{/requiredParams}}
         );
     {{/vendorExtensions.x-is-delete-operation}}
     {{#vendorExtensions.x-is-delete-operation}}
