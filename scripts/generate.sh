@@ -54,7 +54,7 @@ if should-generate java; then
 fi
 
 if should-generate node; then
-  OUT_DIR=examples/node/lib/rest
+  OUT_DIR=examples/node/src/rest
   generate twilio-node --global-property skipFormModel=false
   docker-run examples/node/Dockerfile-prettier
 fi

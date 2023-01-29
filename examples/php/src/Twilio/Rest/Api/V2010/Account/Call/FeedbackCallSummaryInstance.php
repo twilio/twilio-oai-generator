@@ -27,36 +27,39 @@ use Twilio\Version;
 use Twilio\InstanceContext;
 use Twilio\Deserialize;
 use Twilio\Serialize;
+use Twilio\Base\PhoneNumberCapabilities;
 
 
 /**
- * @property string $accountSid
- * @property string $sid
- * @property string $testString
- * @property int $testInteger
- * @property string $testObject
- * @property \DateTime $testDateTime
- * @property string $testNumber
- * @property string $priceUnit
- * @property string $testNumberFloat
- * @property string $testNumberDecimal
+ * @property string|null $accountSid
+ * @property string|null $sid
+ * @property string|null $testString
+ * @property int|null $testInteger
+ * @property PhoneNumberCapabilities|null $testObject
+ * @property \DateTime|null $testDateTime
+ * @property string|null $testNumber
+ * @property string|null $priceUnit
+ * @property string|null $testNumberFloat
+ * @property string|null $testNumberDecimal
  * @property string $testEnum
- * @property string $a2PProfileBundleSid
+ * @property string|null $a2PProfileBundleSid
  * @property int[] $testArrayOfIntegers
  * @property int[][] $testArrayOfArrayOfIntegers
- * @property string[] $testArrayOfObjects
- * @property string[] $testArrayOfEnum
+ * @property string[]|null $testArrayOfObjects
+ * @property string[]|null $testArrayOfEnum
  */
-class FeedbackCallSummaryInstance extends InstanceResource {
+class FeedbackCallSummaryInstance extends InstanceResource
+{
     /**
      * Initialize the FeedbackCallSummaryInstance
      *
      * @param Version $version Version that contains the resource
      * @param mixed[] $payload The response payload
-     * @param string $accountSid 
-     * @param string $sid 
+     * @param string $accountSid
+     * @param string $sid
      */
-    public function __construct(Version $version, array $payload, string $accountSid, string $sid = null) {
+    public function __construct(Version $version, array $payload, string $accountSid, string $sid = null)
+    {
         parent::__construct($version);
 
         // Marshaled Properties
@@ -65,7 +68,7 @@ class FeedbackCallSummaryInstance extends InstanceResource {
             'sid' => Values::array_get($payload, 'sid'),
             'testString' => Values::array_get($payload, 'test_string'),
             'testInteger' => Values::array_get($payload, 'test_integer'),
-            'testObject' => Values::array_get($payload, 'test_object'),
+            'testObject' => Deserialize::phoneNumberCapabilities(Values::array_get($payload, 'test_object')),
             'testDateTime' => Deserialize::dateTime(Values::array_get($payload, 'test_date_time')),
             'testNumber' => Values::array_get($payload, 'test_number'),
             'priceUnit' => Values::array_get($payload, 'price_unit'),
@@ -88,7 +91,8 @@ class FeedbackCallSummaryInstance extends InstanceResource {
      *
      * @return FeedbackCallSummaryContext Context for this FeedbackCallSummaryInstance
      */
-    protected function proxy(): FeedbackCallSummaryContext {
+    protected function proxy(): FeedbackCallSummaryContext
+    {
         if (!$this->context) {
             $this->context = new FeedbackCallSummaryContext(
                 $this->version,
@@ -103,13 +107,15 @@ class FeedbackCallSummaryInstance extends InstanceResource {
     /**
      * Update the FeedbackCallSummaryInstance
      *
-     * @param \DateTime $endDate 
-     * @param \DateTime $startDate 
+     * @param \DateTime $endDate
+     * @param \DateTime $startDate
      * @param array|Options $options Optional Arguments
      * @return FeedbackCallSummaryInstance Updated FeedbackCallSummaryInstance
      * @throws TwilioException When an HTTP error occurs.
      */
-    public function update(\DateTime $endDate, \DateTime $startDate, array $options = []): FeedbackCallSummaryInstance {
+    public function update(\DateTime $endDate, \DateTime $startDate, array $options = []): FeedbackCallSummaryInstance
+    {
+
         return $this->proxy()->update($endDate, $startDate, $options);
     }
 
@@ -120,7 +126,8 @@ class FeedbackCallSummaryInstance extends InstanceResource {
      * @return mixed The requested property
      * @throws TwilioException For unknown properties
      */
-    public function __get(string $name) {
+    public function __get(string $name)
+    {
         if (\array_key_exists($name, $this->properties)) {
             return $this->properties[$name];
         }
@@ -138,7 +145,8 @@ class FeedbackCallSummaryInstance extends InstanceResource {
      *
      * @return string Machine friendly representation
      */
-    public function __toString(): string {
+    public function __toString(): string
+    {
         $context = [];
         foreach ($this->solution as $key => $value) {
             $context[] = "$key=$value";

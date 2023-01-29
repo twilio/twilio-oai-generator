@@ -174,6 +174,9 @@ public abstract class ApiResourceBuilder implements IApiResourceBuilder {
     protected Optional<CodegenModel> getModelByClassname(final String classname) {
         return Utility.getModelByClassname(allModels, classname);
     }
+    protected Optional<CodegenModel> getModelbyName(final String name){
+        return Utility.getModelByName(allModels, name);
+    }
 
     protected void addModel(final Map<String, CodegenModel> models, final String complexType, final String dataType) {
         getModelByClassname(complexType != null ? complexType : dataType).ifPresent(model -> {

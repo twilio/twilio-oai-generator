@@ -25,19 +25,30 @@ use Twilio\Version;
 use Twilio\InstanceContext;
 use Twilio\Deserialize;
 use Twilio\Serialize;
+use Twilio\Base\PhoneNumberCapabilities;
 use Twilio\Rest\FlexApi\V1\Credential\Aws\HistoryList;
 
-abstract class AwsOptions {
+abstract class AwsOptions
+{
 
 
 
     /**
-     * @param string $testString  
-     * @param bool $testBoolean  
+     * @param string $testString
+     * @param bool $testBoolean
      * @return UpdateAwsOptions Options builder
      */
-    public static function update(string $testString = Values::NONE, bool $testBoolean = Values::NONE): UpdateAwsOptions {
-        return new UpdateAwsOptions($testString, $testBoolean);
+    public static function update(
+        
+        string $testString = Values::NONE,
+        bool $testBoolean = Values::NONE
+
+    ): UpdateAwsOptions
+    {
+        return new UpdateAwsOptions(
+            $testString,
+            $testBoolean
+        );
     }
 
 }
@@ -45,30 +56,38 @@ abstract class AwsOptions {
 
 
 
-class UpdateAwsOptions extends Options {
+class UpdateAwsOptions extends Options
+    {
     /**
-     * @param string $testString 
-     * @param bool $testBoolean 
+     * @param string $testString
+     * @param bool $testBoolean
      */
-    public function __construct(string $testString = Values::NONE, bool $testBoolean = Values::NONE) {
+    public function __construct(
+        
+        string $testString = Values::NONE,
+        bool $testBoolean = Values::NONE
+
+    ) {
         $this->options['testString'] = $testString;
         $this->options['testBoolean'] = $testBoolean;
     }
 
     /**
-     * @param string $testString 
+     * @param string $testString
      * @return $this Fluent Builder
      */
-    public function setTestString(string $testString): self {
+    public function setTestString(string $testString): self
+    {
         $this->options['testString'] = $testString;
         return $this;
     }
 
     /**
-     * @param bool $testBoolean 
+     * @param bool $testBoolean
      * @return $this Fluent Builder
      */
-    public function setTestBoolean(bool $testBoolean): self {
+    public function setTestBoolean(bool $testBoolean): self
+    {
         $this->options['testBoolean'] = $testBoolean;
         return $this;
     }
@@ -78,7 +97,8 @@ class UpdateAwsOptions extends Options {
      *
      * @return string Machine friendly representation
      */
-    public function __toString(): string {
+    public function __toString(): string
+    {
         $options = \http_build_query(Values::of($this->options), '', ' ');
         return '[Twilio.FlexApi.V1.UpdateAwsOptions ' . $options . ']';
     }
