@@ -52,8 +52,7 @@ module Twilio
                         '#<Twilio.FlexApi.V1.CredentialList>'
                     end
                 end
-                ##
-                # PLEASE NOTE that this class contains preview products that are subject to change. Use them with caution. If you currently do not have developer preview access, please contact help@twilio.com.
+
                 class CredentialContext < InstanceContext
                     ##
                     # Initialize the CredentialContext
