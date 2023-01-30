@@ -31,8 +31,8 @@ use Twilio\Base\PhoneNumberCapabilities;
 
 
 /**
- * @property string $sid
- * @property string $friendlyName
+ * @property string|null $sid
+ * @property string|null $friendlyName
  */
 class AssistantInstance extends InstanceResource
 {

@@ -67,8 +67,7 @@ class UpdateAwsOptions extends Options
         string $testString = Values::NONE,
         bool $testBoolean = Values::NONE
 
-    )
-    {
+    ) {
         $this->options['testString'] = $testString;
         $this->options['testBoolean'] = $testBoolean;
     }

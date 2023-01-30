@@ -48,8 +48,7 @@ class AccountContext extends InstanceContext
     public function __construct(
         Version $version,
         $sid
-    )
-    {
+    ) {
         parent::__construct($version);
 
         // Path Solution
@@ -89,7 +88,7 @@ class AccountContext extends InstanceContext
         return new AccountInstance(
             $this->version,
             $payload,
-            $this->solution['sid'],
+            $this->solution['sid']
         );
     }
 
@@ -119,7 +118,7 @@ class AccountContext extends InstanceContext
         return new AccountInstance(
             $this->version,
             $payload,
-            $this->solution['sid'],
+            $this->solution['sid']
         );
     }
 
@@ -132,7 +131,7 @@ class AccountContext extends InstanceContext
         if (!$this->_calls) {
             $this->_calls = new CallList(
                 $this->version,
-                $this->solution['sid'],
+                $this->solution['sid']
             );
         }
 

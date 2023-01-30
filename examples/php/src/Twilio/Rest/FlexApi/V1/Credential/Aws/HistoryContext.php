@@ -41,8 +41,7 @@ class HistoryContext extends InstanceContext
     public function __construct(
         Version $version,
         $sid
-    )
-    {
+    ) {
         parent::__construct($version);
 
         // Path Solution
@@ -76,7 +75,7 @@ class HistoryContext extends InstanceContext
         return new HistoryInstance(
             $this->version,
             $payload,
-            $this->solution['sid'],
+            $this->solution['sid']
         );
     }
 

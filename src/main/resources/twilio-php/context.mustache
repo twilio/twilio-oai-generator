@@ -48,8 +48,7 @@ class {{apiName}}Context extends InstanceContext
     public function __construct(
         Version $version{{#requiredPathParams}},
         ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}{{/requiredPathParams}}
-    )
-    {
+    ) {
         parent::__construct($version);
 
         // Path Solution
@@ -77,10 +76,8 @@ class {{apiName}}Context extends InstanceContext
     {
         if (!$this->_{{#lambda.camelcase}}{{mountName}}{{/lambda.camelcase}}) {
             $this->_{{#lambda.camelcase}}{{mountName}}{{/lambda.camelcase}} = new {{filename}}List(
-                $this->version,
-                {{#requiredPathParams}}
-                $this->solution['{{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}'],
-                {{/requiredPathParams}}
+                $this->version{{#requiredPathParams}},
+                $this->solution['{{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}']{{/requiredPathParams}}
             );
         }
 

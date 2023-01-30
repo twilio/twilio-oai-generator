@@ -41,8 +41,7 @@ class FleetContext extends InstanceContext
     public function __construct(
         Version $version,
         $sid
-    )
-    {
+    ) {
         parent::__construct($version);
 
         // Path Solution
@@ -69,7 +68,7 @@ class FleetContext extends InstanceContext
         return new FleetInstance(
             $this->version,
             $payload,
-            $this->solution['sid'],
+            $this->solution['sid']
         );
     }
 

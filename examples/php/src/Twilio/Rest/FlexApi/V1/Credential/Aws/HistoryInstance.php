@@ -31,10 +31,10 @@ use Twilio\Base\PhoneNumberCapabilities;
 
 
 /**
- * @property string $accountSid
- * @property string $sid
- * @property string $testString
- * @property int $testInteger
+ * @property string|null $accountSid
+ * @property string|null $sid
+ * @property string|null $testString
+ * @property int|null $testInteger
  */
 class HistoryInstance extends InstanceResource
 {

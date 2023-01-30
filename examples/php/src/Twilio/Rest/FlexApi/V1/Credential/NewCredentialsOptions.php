@@ -130,8 +130,7 @@ class CreateNewCredentialsOptions extends Options
         array $permissions = Values::ARRAY_NONE,
         string $someA2PThing = Values::NONE
 
-    )
-    {
+    ) {
         $this->options['testInteger'] = $testInteger;
         $this->options['testNumberFloat'] = $testNumberFloat;
         $this->options['testObject'] = $testObject;

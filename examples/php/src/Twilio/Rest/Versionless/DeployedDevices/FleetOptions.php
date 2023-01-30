@@ -56,8 +56,7 @@ class CreateFleetOptions extends Options
         
         string $name = Values::NONE
 
-    )
-    {
+    ) {
         $this->options['name'] = $name;
     }
 

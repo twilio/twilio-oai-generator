@@ -6,8 +6,7 @@ class {{vendorExtensions.x-name}}{{apiName}}Options extends Options
      */
     public function __construct(
         {{>options/optionMethodArgs}}
-    )
-    {
+    ) {
     {{#vendorExtensions.optionFileParams}}
         $this->options['{{paramName}}'] = ${{paramName}};
     {{/vendorExtensions.optionFileParams}}
