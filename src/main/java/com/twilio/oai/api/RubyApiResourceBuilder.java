@@ -42,7 +42,6 @@ public class RubyApiResourceBuilder extends FluentApiResourceBuilder {
         this.updatePaths();
         this.createContextParamsList(apiResourceBuilder.codegenOperationList);
         this.addInstanceOperations();
-        this.createMaturityDescription(apiResourceBuilder.codegenOperationList);
         return apiResourceBuilder;
     }
 
@@ -103,12 +102,15 @@ public class RubyApiResourceBuilder extends FluentApiResourceBuilder {
         });
     }
 
+
+
     private void addContextDataForComponents() {
         List<Resource> dependents = new ArrayList<>();
         dependents = getDependentInfo(dependents);
         if (!dependents.isEmpty())
             dependents.forEach(dependent -> dependent.getPathItem().readOperations().forEach(operation -> directoryStructureService.addContextdependents(componentContextClasses, dependent.getName(), operation)));
     }
+
 
     private List<Resource> getDependentInfo(List<Resource> dependents) {
         Object domain = directoryStructureService.getAdditionalProperties().get("domainName");
@@ -134,6 +136,7 @@ public class RubyApiResourceBuilder extends FluentApiResourceBuilder {
         return dependents;
     }
 
+
     private void updatePaths() {
         if (listPath != null) listPath = listPath.replace("${", "#{@solution[:").replace("}", "]}");
         if (instancePath != null) instancePath = instancePath.replace("${", "#{@solution[:").replace("}", "]}");
@@ -148,16 +151,6 @@ public class RubyApiResourceBuilder extends FluentApiResourceBuilder {
                     metaAPIProperties.put("hasInstanceOperation", true);
             }
         });
-    }
-
-    private void createMaturityDescription(List<CodegenOperation> opList) {
-        Set<String> typesOfProducts = new HashSet<>();
-        for (CodegenOperation op : opList) {
-            List<String> vals= (List<String>) op.vendorExtensions.get("x-maturity");
-            if(vals!= null ) typesOfProducts.addAll(vals);
-        }
-        if(typesOfProducts.contains("Beta")) metaAPIProperties.put("x-maturity-desc", "PLEASE NOTE that this class contains beta products that are subject to change. Use them with caution.");
-        if(typesOfProducts.contains("Preview")) metaAPIProperties.put("x-maturity-desc", "PLEASE NOTE that this class contains preview products that are subject to change. Use them with caution. If you currently do not have developer preview access, please contact help@twilio.com.");
     }
 
 }
