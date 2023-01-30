@@ -17,7 +17,9 @@ module Twilio
     module REST
         class FlexApi < Domain
             class V1 < Version
-                class AwsList < ListResource
+             class CredentialContext < InstanceContext
+            
+                     class AwsList < ListResource
                     ##
                     # Initialize the AwsList
                     # @param [Version] version Version that contains the resource
@@ -235,8 +237,10 @@ module Twilio
                         '<Twilio.FlexApi.V1.AwsPage>'
                     end
                 end
-
+             end
             end
         end
     end
 end
+
+

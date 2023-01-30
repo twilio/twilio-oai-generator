@@ -108,7 +108,6 @@ module Twilio
                         '<Twilio.FlexApi.V1.CallPage>'
                     end
                 end
-
             end
         end
     end

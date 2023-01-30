@@ -17,7 +17,9 @@ module Twilio
     module REST
         class Api < Domain
             class V2010 < Version
-                class CallList < ListResource
+             class AccountContext < InstanceContext
+            
+                     class CallList < ListResource
                     ##
                     # Initialize the CallList
                     # @param [Version] version Version that contains the resource
@@ -163,8 +165,10 @@ module Twilio
                         '<Twilio.Api.V2010.CallPage>'
                     end
                 end
-
+             end
             end
         end
     end
 end
+
+

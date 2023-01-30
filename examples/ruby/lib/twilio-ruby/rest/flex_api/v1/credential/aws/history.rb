@@ -17,7 +17,10 @@ module Twilio
     module REST
         class FlexApi < Domain
             class V1 < Version
-                class HistoryList < ListResource
+             class CredentialContext < InstanceContext
+             class AwsContext < InstanceContext
+            
+                     class HistoryList < ListResource
                     ##
                     # Initialize the HistoryList
                     # @param [Version] version Version that contains the resource
@@ -111,8 +114,11 @@ module Twilio
                         '<Twilio.FlexApi.V1.HistoryPage>'
                     end
                 end
-
+             end
+             end
             end
         end
     end
 end
+
+

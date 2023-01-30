@@ -124,7 +124,6 @@ module Twilio
                         '<Twilio.Versionless.DeployedDevices.FleetPage>'
                     end
                 end
-
             end
         end
     end

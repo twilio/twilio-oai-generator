@@ -17,7 +17,10 @@ module Twilio
     module REST
         class Api < Domain
             class V2010 < Version
-                class FeedbackCallSummaryList < ListResource
+             class AccountContext < InstanceContext
+             class CallContext < InstanceContext
+            
+                     class FeedbackCallSummaryList < ListResource
                     ##
                     # Initialize the FeedbackCallSummaryList
                     # @param [Version] version Version that contains the resource
@@ -118,8 +121,11 @@ module Twilio
                         '<Twilio.Api.V2010.FeedbackCallSummaryPage>'
                     end
                 end
-
+             end
+             end
             end
         end
     end
 end
+
+

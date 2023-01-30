@@ -17,7 +17,9 @@ module Twilio
     module REST
         class FlexApi < Domain
             class V1 < Version
-                class NewCredentialsList < ListResource
+             class CredentialContext < InstanceContext
+            
+                     class NewCredentialsList < ListResource
                     ##
                     # Initialize the NewCredentialsList
                     # @param [Version] version Version that contains the resource
@@ -176,8 +178,10 @@ module Twilio
                         '<Twilio.FlexApi.V1.NewCredentialsPage>'
                     end
                 end
-
+             end
             end
         end
     end
 end
+
+

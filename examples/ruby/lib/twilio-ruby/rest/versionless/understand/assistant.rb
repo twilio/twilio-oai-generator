@@ -181,7 +181,6 @@ module Twilio
                         '<Twilio.Versionless.Understand.AssistantPage>'
                     end
                 end
-
             end
         end
     end

@@ -292,7 +292,6 @@ module Twilio
                         '<Twilio.Api.V2010.AccountPage>'
                     end
                 end
-
             end
         end
     end

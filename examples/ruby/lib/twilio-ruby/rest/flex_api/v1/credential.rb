@@ -110,7 +110,6 @@ module Twilio
                         '<Twilio.FlexApi.V1.CredentialPage>'
                     end
                 end
-
             end
         end
     end
