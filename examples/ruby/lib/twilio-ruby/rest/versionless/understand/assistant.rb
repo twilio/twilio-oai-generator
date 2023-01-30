@@ -79,8 +79,8 @@ module Twilio
                         page = self.page(page_size: limits[:page_size], )
 
                         @version.stream(page,
-                        limit: limits[:limit],
-                        page_limit: limits[:page_limit]).each {|x| yield x}
+                            limit: limits[:limit],
+                            page_limit: limits[:page_limit]).each {|x| yield x}
                     end
 
                     ##
@@ -166,8 +166,8 @@ module Twilio
                         super(version)
                         # Marshaled Properties
                         @properties = { 
-                            sid => payload[sid],
-                            friendly_name => payload[friendly_name],
+                            'sid' => payload['sid'],
+                            'friendly_name' => payload['friendly_name'],
                              } 
                         # Context
                         @instance_context = nil

@@ -81,7 +81,7 @@ module Twilio
                         super(version)
                         # Marshaled Properties
                         @properties = { 
-                            sid => payload[sid] == nil ? payload[sid] : payload[sid].to_i,
+                            'sid' => payload['sid'] == nil ? payload['sid'] : payload['sid'].to_i,
                              } 
                         # Context
                         @instance_context = nil

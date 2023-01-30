@@ -13,7 +13,7 @@
                         super(version)
                         {{#responseModel}}{{#hasVars}}# Marshaled Properties
                         @properties = { {{/hasVars}}{{/responseModel}}
-                            {{#responseModel}}{{#vars}}{{name}} => {{{vendorExtensions.instance-property}}},
+                            {{#responseModel}}{{#vars}}'{{name}}' => {{{vendorExtensions.instance-property}}},
                             {{/vars}}{{/responseModel}}{{#responseModel}}{{#hasVars}} } {{/hasVars}}{{/responseModel}}
                         # Context
                         @instance_context = nil

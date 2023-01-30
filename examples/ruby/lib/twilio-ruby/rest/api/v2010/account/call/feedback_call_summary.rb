@@ -81,22 +81,22 @@ module Twilio
                         super(version)
                         # Marshaled Properties
                         @properties = { 
-                            account_sid => payload[account_sid],
-                            sid => payload[sid],
-                            test_string => payload[test_string],
-                            test_integer => payload[test_integer] == nil ? payload[test_integer] : payload[test_integer].to_i,
-                            test_object => payload[test_object],
-                            test_date_time => Twilio.deserialize_rfc2822(payload[test_date_time]),
-                            test_number => payload[test_number],
-                            price_unit => payload[price_unit],
-                            test_number_float => payload[test_number_float],
-                            test_number_decimal => payload[test_number_decimal] == nil ? payload[test_number_decimal] : payload[test_number_decimal].to_f,
-                            test_enum => payload[test_enum],
-                            a2p_profile_bundle_sid => payload[a2p_profile_bundle_sid],
-                            test_array_of_integers => payload[test_array_of_integers],
-                            test_array_of_array_of_integers => payload[test_array_of_array_of_integers],
-                            test_array_of_objects => payload[test_array_of_objects],
-                            test_array_of_enum => payload[test_array_of_enum],
+                            'account_sid' => payload['account_sid'],
+                            'sid' => payload['sid'],
+                            'test_string' => payload['test_string'],
+                            'test_integer' => payload['test_integer'] == nil ? payload['test_integer'] : payload['test_integer'].to_i,
+                            'test_object' => payload['test_object'],
+                            'test_date_time' => Twilio.deserialize_rfc2822(payload['test_date_time']),
+                            'test_number' => payload['test_number'],
+                            'price_unit' => payload['price_unit'],
+                            'test_number_float' => payload['test_number_float'],
+                            'test_number_decimal' => payload['test_number_decimal'] == nil ? payload['test_number_decimal'] : payload['test_number_decimal'].to_f,
+                            'test_enum' => payload['test_enum'],
+                            'a2p_profile_bundle_sid' => payload['a2p_profile_bundle_sid'],
+                            'test_array_of_integers' => payload['test_array_of_integers'],
+                            'test_array_of_array_of_integers' => payload['test_array_of_array_of_integers'],
+                            'test_array_of_objects' => payload['test_array_of_objects'],
+                            'test_array_of_enum' => payload['test_array_of_enum'],
                              } 
                         # Context
                         @instance_context = nil

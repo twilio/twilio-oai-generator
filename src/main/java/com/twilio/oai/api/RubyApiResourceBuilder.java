@@ -24,7 +24,7 @@ public class RubyApiResourceBuilder extends FluentApiResourceBuilder {
     List<CodegenParameter> readParams;
     List<Object> componentContextClasses = new ArrayList<>();
     final OpenAPI openApi;
-
+    private static final  String SEPARATOR = "separator";
     public RubyApiResourceBuilder(final IApiActionTemplate template, final List<CodegenOperation> codegenOperations, final List<CodegenModel> allModels, final DirectoryStructureService directoryStructureService, final OpenAPI openApi) {
         super(template, codegenOperations, allModels, directoryStructureService);
         this.openApi = openApi;
@@ -61,10 +61,10 @@ public class RubyApiResourceBuilder extends FluentApiResourceBuilder {
         for (CodegenOperation operation : apiResourceBuilder.codegenOperationList) {
             if ((boolean) operation.vendorExtensions.getOrDefault("x-is-create-operation", false)) {
                 for (CodegenParameter param : operation.allParams) {
-                    param.vendorExtensions.put("separator", ",\n\t\t\t\t\t\t");
+                    param.vendorExtensions.put(SEPARATOR, ",\n\t\t\t\t\t\t");
                 }
                 if (!operation.allParams.isEmpty())
-                    operation.allParams.get(operation.allParams.size() - 1).vendorExtensions.put("separator", "\n\t\t\t\t\t");
+                    operation.allParams.get(operation.allParams.size() - 1).vendorExtensions.put(SEPARATOR, "\n\t\t\t\t\t");
             }
         }
     }
@@ -75,7 +75,7 @@ public class RubyApiResourceBuilder extends FluentApiResourceBuilder {
             if ((boolean) operation.vendorExtensions.getOrDefault("x-is-read-operation", false)) {
                 for (CodegenParameter param : operation.allParams) {
                     if (!param.paramName.equals("page_size")) {
-                        param.vendorExtensions.put("separator", ",");
+                        param.vendorExtensions.put(SEPARATOR, ",");
                         readParams.add(param);
                     }
                 }
@@ -85,33 +85,30 @@ public class RubyApiResourceBuilder extends FluentApiResourceBuilder {
 
     private void addContextDataForComponents() {
         List<Resource> dependents = new ArrayList<>();
-        dependents = getDependentInfo(dependents);
+        getDependentInfo(dependents);
         if (!dependents.isEmpty())
             dependents.forEach(dependent -> dependent.getPathItem().readOperations().forEach(operation -> directoryStructureService.addContextdependents(componentContextClasses, dependent.getName(), operation)));
     }
 
-    private List<Resource> getDependentInfo(List<Resource> dependents) {
+    private void getDependentInfo(List<Resource> dependents) {
         Object domain = directoryStructureService.getAdditionalProperties().get("domainName");
         Map<String, PathItem> pathMap = openApi.getPaths();
         String apiPathWithoutVersion = apiPath.substring(apiPath.indexOf("/", 1));
-        for (String pathKey : pathMap.keySet()) {
-            String pathkey = pathKey;
+        for (var entrySet : pathMap.entrySet()) {
+            String pathkey = entrySet.getKey();
             if (domain.equals("Api")) {
-                pathkey = pathKey.split(".json")[0];
+                pathkey = entrySet.getKey().split(".json")[0];
                 apiPathWithoutVersion = apiPathWithoutVersion.split(".json")[0];
             }
-            PathItem path = pathMap.get(pathKey);
+            PathItem path = entrySet.getValue();
             Optional<String> parentKey = PathUtils.getTwilioExtension(path, "parent");
-            if (parentKey.isPresent() && (pathKey.endsWith("}") || pathKey.endsWith("}.json"))) {
+            if (parentKey.isPresent() && (entrySet.getKey().endsWith("}") || entrySet.getKey().endsWith("}.json"))) {
                 String parentKeyValue = domain.equals("Api") ? parentKey.get().split(".json")[0] : parentKey.get();
-                if (!parentKeyValue.endsWith("}")) {
-                    if (parentKeyValue.equals(apiPathWithoutVersion)) {
+                if (!parentKeyValue.endsWith("}") && parentKeyValue.equals(apiPathWithoutVersion)) {
                         dependents.add(new Resource(null, pathkey, path, null));
-                    }
                 }
             }
         }
-        return dependents;
     }
 
     private void updateListPath() {
@@ -130,10 +127,10 @@ public class RubyApiResourceBuilder extends FluentApiResourceBuilder {
         for (CodegenOperation operation : apiResourceBuilder.codegenOperationList) {
             if ((boolean) operation.vendorExtensions.getOrDefault("x-is-update-operation", false)) {
                 for (CodegenParameter param : operation.allParams) {
-                    param.vendorExtensions.put("separator", ",");
+                    param.vendorExtensions.put(SEPARATOR, ",");
                 }
                 if (!operation.allParams.isEmpty())
-                    operation.allParams.get(operation.allParams.size() - 1).vendorExtensions.put("separator", "");
+                    operation.allParams.get(operation.allParams.size() - 1).vendorExtensions.put(SEPARATOR, "");
             }
         }
     }
@@ -143,7 +140,7 @@ public class RubyApiResourceBuilder extends FluentApiResourceBuilder {
             for(CodegenProperty property: responseModel.vars){
                 String instanceProperty = (String)property.vendorExtensions.getOrDefault(DESERIALIZE_VEND_EXT,"{value}");
                 property.vendorExtensions
-                        .put("instance-property",instanceProperty.replaceAll("\\{value\\}","payload[" + property.name +"]"));
+                        .put("instance-property",instanceProperty.replace("{value}","payload['" + property.name +"']"));
             }
         return this;
     }

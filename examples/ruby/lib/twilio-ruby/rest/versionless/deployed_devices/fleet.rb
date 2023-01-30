@@ -97,9 +97,9 @@ module Twilio
                         super(version)
                         # Marshaled Properties
                         @properties = { 
-                            name => payload[name],
-                            sid => payload[sid],
-                            friendly_name => payload[friendly_name],
+                            'name' => payload['name'],
+                            'sid' => payload['sid'],
+                            'friendly_name' => payload['friendly_name'],
                              } 
                         # Context
                         @instance_context = nil
