@@ -5,12 +5,16 @@ module Twilio
     module REST
         class {{domainName}} < Domain
             class {{apiVersionClass}} < Version
+{{#hasParents}}
+{{>parentContext}}
+{{/hasParents}}
+{{^hasParents}}
 {{>list}}
 {{>context}}
 {{>page}}
-
             end
         end
     end
 end
+{{/hasParents}}
 {{/resources}}

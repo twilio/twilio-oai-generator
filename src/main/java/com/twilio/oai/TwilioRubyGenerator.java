@@ -1,13 +1,11 @@
 package com.twilio.oai;
 
-import com.twilio.oai.api.ApiResources;
 import com.twilio.oai.api.RubyApiResourceBuilder;
 import com.twilio.oai.api.RubyApiResources;
 import com.twilio.oai.common.EnumConstants;
 import com.twilio.oai.common.Utility;
 import com.twilio.oai.resolver.IConventionMapper;
 import com.twilio.oai.resolver.LanguageConventionResolver;
-import com.twilio.oai.resolver.LanguageParamResolver;
 import com.twilio.oai.resolver.LanguagePropertyResolver;
 import com.twilio.oai.resolver.common.CodegenModelResolver;
 import com.twilio.oai.resolver.ruby.RubyCaseResolver;
@@ -84,7 +82,6 @@ public class TwilioRubyGenerator extends RubyClientCodegen {
     @Override
     public void processOpts() {
         super.processOpts();
-
         twilioCodegen.processOpts();
     }
 
@@ -93,6 +90,11 @@ public class TwilioRubyGenerator extends RubyClientCodegen {
         final OperationsMap results = super.postProcessOperationsWithModels(objs, allModels);
         final List<CodegenOperation> opList = directoryStructureService.processOperations(results);
         results.put("resources", generateResources(opList));
+        String[] parentDir = directoryStructureService.fetchParentDirectory(opList);
+        if(parentDir.length > 1){
+            results.put("hasParents", "true");
+            results.put("parentDir", parentDir);
+        }
         return results;
     }
 
