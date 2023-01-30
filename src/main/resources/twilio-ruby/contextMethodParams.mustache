@@ -28,23 +28,28 @@
                                 '{{baseName}}' => {{vendorExtensions.x-serialize}}{{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}},
                             {{/vendorExtensions.x-serialize-map}}
                             {{#vendorExtensions.x-serialize-map}}
-                                '{{baseName}}' => {{vendorExtensions.x-serialize}}{{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}, function($e) { return {{^vendorExtensions.x-serialize-array-of-array}}$e{{/vendorExtensions.x-serialize-array-of-array}}{{#vendorExtensions.x-serialize-array-of-array}}{{.}}($e){{/vendorExtensions.x-serialize-array-of-array}}; }),
+                                '{{baseName}}' => {{vendorExtensions.x-serialize}}{{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}},
                             {{/vendorExtensions.x-serialize-map}}
                         {{/vendorExtensions.x-serialize}}
                         {{/vendorExtensions.x-prefixed-collapsible-map}}
                         {{/required}}
                         {{/queryParams}}
                         ])
-                        {{#queryParams}}{{#required}}
+                        {{#queryParams}}
+                        {{#required}}
                         {{#vendorExtensions.x-prefixed-collapsible-map}}
                         params.merge!(Twilio.prefixed_collapsible_map({{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}, 'AddOns'))
                         {{/vendorExtensions.x-prefixed-collapsible-map}}
-                        {{/required}}{{/queryParams}}
-                        {{#queryParams}}{{^required}}
+                        {{/required}}
+                        {{/queryParams}}
+                        {{#queryParams}}
+                        {{^required}}
                         {{#vendorExtensions.x-prefixed-collapsible-map}}
                         params.merge!(Twilio.prefixed_collapsible_map({{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}, 'AddOns'))
                         {{/vendorExtensions.x-prefixed-collapsible-map}}
-                        {{/required}}{{/queryParams}}{{/queryParams.0}}
+                        {{/required}}
+                        {{/queryParams}}
+                        {{/queryParams.0}}
                         {{#formParams.0}}
                         data = Twilio::Values.of({
                         {{#requiredParams}}
@@ -93,7 +98,8 @@
                         {{#isFormParam}}
                         {{#vendorExtensions.x-prefixed-collapsible-map}}
                         params.merge!(Twilio.prefixed_collapsible_map({{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}, 'AddOns'))
-                        {{/vendorExtensions.x-prefixed-collapsible-map}}{{/isFormParam}}{{/optionalParams}}{{/formParams.0}}
+                        {{/vendorExtensions.x-prefixed-collapsible-map}}{{/isFormParam}}{{/optionalParams}}
+                        {{/formParams.0}}
                         {{#headerParams.0}}
                         headers = Twilio::Values.of({ {{#headerParams}}{{#required}}'{{baseName}}' => {{paramName}}, {{/required}}{{/headerParams}}{{#headerParams}}{{^required}}'{{baseName}}' => {{paramName}}, {{/required}}{{/headerParams}}})
                         {{/headerParams.0}}

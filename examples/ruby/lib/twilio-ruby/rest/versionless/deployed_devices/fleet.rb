@@ -54,6 +54,49 @@ module Twilio
                         '#<Twilio.Versionless.DeployedDevices.FleetList>'
                     end
                 end
+                ##
+                # PLEASE NOTE that this class contains preview products that are subject to change. Use them with caution. If you currently do not have developer preview access, please contact help@twilio.com.
+                class FleetContext < InstanceContext
+                    ##
+                    # Initialize the FleetContext
+                    # @param [Version] version Version that contains the resource
+                    # @param [String] sid 
+                    # @return [FleetContext] FleetContext
+                    def initialize(version, sid)
+                        super(version)
+
+                        # Path Solution
+                        @solution = { sid: sid,  }
+                        @uri = "/Fleets/#{@solution[:sid]}"
+
+                        # Dependents
+                    end
+                    ##
+                    # Fetch the FleetInstance
+                    # @return [FleetInstance]
+                    Fetched FleetInstance
+                    def fetch
+
+                        payload = @version.fetch('GET',@uri )
+                        FleetInstance.new(@version, payload, )
+                    end
+
+
+                    ##
+                    # Provide a user friendly representation
+                    def to_s
+                        context = @solution.map {|k, v| "#{k}: #{v}"}.join(',')
+                        "#<Twilio.Versionless.DeployedDevices.FleetContext #{context}>"
+                    end
+
+                    ##
+                    # Provide a detailed, user friendly representation
+                    def inspect
+                        context = @solution.map {|k, v| "#{k}: #{v}"}.join(',')
+                        "#<Twilio.Versionless.DeployedDevices.FleetContext #{context}>"
+                    end
+                end
+
                 class FleetPage < Page
                     ##
                     # Initialize the FleetPage
@@ -82,6 +125,7 @@ module Twilio
                         '<Twilio.Versionless.DeployedDevices.FleetPage>'
                     end
                 end
+
             end
         end
     end

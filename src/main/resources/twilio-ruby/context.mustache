@@ -12,9 +12,10 @@
                         super(version)
 
                         # Path Solution
-                        @solution = { {{#instancePathParams}}{{paramName}}: {{paramName}},{{/instancePathParams}} }
+                        @solution = { {{#instancePathParams}}{{paramName}}: {{paramName}}, {{/instancePathParams}} }
                         {{#instancePath}}
-                        @uri = "{{instancePath}}"{{/instancePath}}
+                        @uri = "{{instancePath}}"
+                        {{/instancePath}}
 
                         # Dependents
                         {{#metaProperties.contextImportProperties}}
@@ -23,8 +24,8 @@
                     end
                     {{#apiOperations}}
                     {{#vendorExtensions.instanceOperation}}
-                    {{>methods}}
-                        {{>contextMethodParams}}
+{{>methods}}
+{{>contextMethodParams}}
                     {{/vendorExtensions.instanceOperation}}
                     {{/apiOperations}}
                     {{#metaProperties.contextImportMethods}}

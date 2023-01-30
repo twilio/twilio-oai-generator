@@ -38,6 +38,52 @@ module Twilio
                         '#<Twilio.FlexApi.V1.HistoryList>'
                     end
                 end
+                ##
+                # PLEASE NOTE that this class contains preview products that are subject to change. Use them with caution. If you currently do not have developer preview access, please contact help@twilio.com.
+                class HistoryContext < InstanceContext
+                    ##
+                    # Initialize the HistoryContext
+                    # @param [Version] version Version that contains the resource
+                    # @param [String] sid 
+                    # @return [HistoryContext] HistoryContext
+                    def initialize(version, sid)
+                        super(version)
+
+                        # Path Solution
+                        @solution = { sid: sid,  }
+                        @uri = "/Credentials/AWS/#{@solution[:sid]}/History"
+
+                        # Dependents
+                    end
+                    ##
+                    # Fetch the HistoryInstance
+                    # @return [HistoryInstance]
+                    Fetched HistoryInstance
+                    def fetch(add_ons_data: :unset )
+
+                        params = Twilio::Values.of({
+                        ])
+                        params.merge!(Twilio.prefixed_collapsible_map(addOnsData, 'AddOns'))
+                        payload = @version.fetch('GET',@uri,params : params  )
+                        HistoryInstance.new(@version, payload,  sid: @solution[:sid],)
+                    end
+
+
+                    ##
+                    # Provide a user friendly representation
+                    def to_s
+                        context = @solution.map {|k, v| "#{k}: #{v}"}.join(',')
+                        "#<Twilio.FlexApi.V1.HistoryContext #{context}>"
+                    end
+
+                    ##
+                    # Provide a detailed, user friendly representation
+                    def inspect
+                        context = @solution.map {|k, v| "#{k}: #{v}"}.join(',')
+                        "#<Twilio.FlexApi.V1.HistoryContext #{context}>"
+                    end
+                end
+
                 class HistoryPage < Page
                     ##
                     # Initialize the HistoryPage
@@ -66,6 +112,7 @@ module Twilio
                         '<Twilio.FlexApi.V1.HistoryPage>'
                     end
                 end
+
             end
         end
     end
