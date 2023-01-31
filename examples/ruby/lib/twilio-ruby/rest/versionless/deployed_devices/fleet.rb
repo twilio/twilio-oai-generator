@@ -54,6 +54,48 @@ module Twilio
                         '#<Twilio.Versionless.DeployedDevices.FleetList>'
                     end
                 end
+
+                class FleetContext < InstanceContext
+                    ##
+                    # Initialize the FleetContext
+                    # @param [Version] version Version that contains the resource
+                    # @param [String] sid 
+                    # @return [FleetContext] FleetContext
+                    def initialize(version, sid)
+                        super(version)
+
+                        # Path Solution
+                        @solution = { sid: sid,  }
+                        @uri = "/Fleets/#{@solution[:sid]}"
+
+                        # Dependents
+                    end
+                    ##
+                    # Fetch the FleetInstance
+                    # @return [FleetInstance]
+                    Fetched FleetInstance
+                    def fetch
+
+                        payload = @version.fetch('GET',@uri )
+                        FleetInstance.new(@version, payload, )
+                    end
+
+
+                    ##
+                    # Provide a user friendly representation
+                    def to_s
+                        context = @solution.map {|k, v| "#{k}: #{v}"}.join(',')
+                        "#<Twilio.Versionless.DeployedDevices.FleetContext #{context}>"
+                    end
+
+                    ##
+                    # Provide a detailed, user friendly representation
+                    def inspect
+                        context = @solution.map {|k, v| "#{k}: #{v}"}.join(',')
+                        "#<Twilio.Versionless.DeployedDevices.FleetContext #{context}>"
+                    end
+                end
+
                 class FleetPage < Page
                     ##
                     # Initialize the FleetPage

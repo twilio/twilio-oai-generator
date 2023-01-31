@@ -74,7 +74,9 @@ public class PhpApiResourceBuilder extends ApiResourceBuilder {
         codegenOperationList.forEach(operation -> {
             if (!pathSet.contains(operation.path)) {
                 List<Resource> dependents = StreamSupport.stream(directoryStructureService.getResourceTree().getResources().spliterator(), false)
-                        .filter(resource -> PathUtils.removeFirstPart(operation.path).equals(PathUtils.getTwilioExtension(resource.getPathItem(), "parent").orElse(null)))
+                        .filter(resource -> PathUtils.removeFirstPart(operation.path)
+                                .equals(PathUtils.getTwilioExtension(resource.getPathItem(), "parent")
+                                        .orElse(null)))
                         .collect(Collectors.toList());
 
                 List<Resource> methodDependents = dependents.stream().filter(dep ->
@@ -100,21 +102,6 @@ public class PhpApiResourceBuilder extends ApiResourceBuilder {
         return this;
     }
 
-    private static void updateDependents(DirectoryStructureService directoryStructureService, List<Resource> resourceList, List<Object> dependentList) {
-        resourceList.forEach(dependent -> dependent.getPathItem().readOperations()
-                .forEach(opr -> directoryStructureService.addContextdependents(dependentList,
-                        dependent.getName(),
-                        opr)));
-        resourceList.stream().filter(dependent -> dependent.getPathItem().readOperations().isEmpty()).
-                forEach(dep -> directoryStructureService.addContextdependents(dependentList, dep.getName(), null));
-
-        dependentList.stream().map(DirectoryStructureService.ContextResource.class::cast)
-                .map(contextResource -> {
-                    if (contextResource.getParent().matches("(.*)Function\\\\(.*)"))
-                        contextResource.setParent(contextResource.getParent().replaceAll("\\\\Function\\\\", "\\\\TwilioFunction\\\\"));
-                    return (Object) contextResource;
-                }).collect(Collectors.toList());
-    }
 
     private String formatPath(String path) {
         path = PathUtils.removeFirstPart(path);

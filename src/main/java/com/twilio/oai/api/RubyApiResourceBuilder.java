@@ -11,16 +11,18 @@ import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenOperation;
 import org.openapitools.codegen.CodegenParameter;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
+
 
 public class RubyApiResourceBuilder extends FluentApiResourceBuilder {
 
     List<CodegenParameter> readParams;
     List<Object> componentContextClasses = new ArrayList<>();
     final OpenAPI openApi;
+    private final List<CodegenOperation> instanceOperations = new ArrayList<>();
 
     public RubyApiResourceBuilder(final IApiActionTemplate template, final List<CodegenOperation> codegenOperations, final List<CodegenModel> allModels, final DirectoryStructureService directoryStructureService, final OpenAPI openApi) {
         super(template, codegenOperations, allModels, directoryStructureService);
@@ -38,7 +40,10 @@ public class RubyApiResourceBuilder extends FluentApiResourceBuilder {
         this.addCreateSeparator(apiResourceBuilder);
         this.createReadParams((RubyApiResourceBuilder) apiResourceBuilder);
         this.addContextDataForComponents();
-        this.updateListPath();
+        this.updatePaths();
+        this.createContextParamsList(apiResourceBuilder.codegenOperationList);
+        this.addInstanceOperations();
+        this.createMaturityDescription(apiResourceBuilder.codegenOperationList);
         return apiResourceBuilder;
     }
 
@@ -68,12 +73,46 @@ public class RubyApiResourceBuilder extends FluentApiResourceBuilder {
         }
     }
 
+    private void createContextParamsList(List<CodegenOperation> opList){
+        HashSet<String> seenOps = new HashSet<>();
+        opList.forEach(operation -> {
+            if(!seenOps.contains(operation.path)) {
+                List<Object> dependentPropertiesList = new ArrayList<>();
+                List<Object> dependentMethods = new ArrayList<>();
+
+                List<Resource> dependents = StreamSupport.stream(directoryStructureService.getResourceTree().getResources().spliterator(), false)
+                        .filter(resource -> PathUtils.removeFirstPart(operation.path)
+                                .equals(PathUtils.getTwilioExtension(resource.getPathItem(), "parent")
+                                        .orElse(null)))
+                        .collect(Collectors.toList());
+                List<Resource> methodDependents = dependents.stream().filter(dep ->
+                                PathUtils.getTwilioExtension(dep.getPathItem(), "pathType").get().equals("instance"))
+                        .collect(Collectors.toList());
+                dependents.removeIf(methodDependents::contains);
+                dependents.addAll(Optional.ofNullable(methodDependents.stream()).orElse(Stream.empty()).filter(dep ->
+                        !dep.getName().endsWith("}") && !dep.getName().endsWith("}.json")).collect(Collectors.toList()));
+
+                updateDependents(directoryStructureService, dependents, dependentPropertiesList);
+                updateDependents(directoryStructureService, methodDependents, dependentMethods);
+                if (operation.path.endsWith("}") || operation.path.endsWith("}.json")) {
+                    metaAPIProperties.put("contextImportProperties", dependentPropertiesList);
+                    metaAPIProperties.put("contextImportMethods", dependentMethods);
+
+                }
+                seenOps.add(operation.path);
+            }
+        });
+    }
+
+
+
     private void addContextDataForComponents() {
         List<Resource> dependents = new ArrayList<>();
         dependents = getDependentInfo(dependents);
         if (!dependents.isEmpty())
             dependents.forEach(dependent -> dependent.getPathItem().readOperations().forEach(operation -> directoryStructureService.addContextdependents(componentContextClasses, dependent.getName(), operation)));
     }
+
 
     private List<Resource> getDependentInfo(List<Resource> dependents) {
         Object domain = directoryStructureService.getAdditionalProperties().get("domainName");
@@ -99,7 +138,32 @@ public class RubyApiResourceBuilder extends FluentApiResourceBuilder {
         return dependents;
     }
 
-    private void updateListPath() {
+
+    private void updatePaths() {
         if (listPath != null) listPath = listPath.replace("${", "#{@solution[:").replace("}", "]}");
+        if (instancePath != null) instancePath = instancePath.replace("${", "#{@solution[:").replace("}", "]}");
     }
+
+    private void addInstanceOperations() {
+        codegenOperationList.stream().filter(operation -> !operation.vendorExtensions.containsKey("x-ignore")).forEach(codegenOperation -> {
+            Optional<String> pathType = Optional.ofNullable(codegenOperation.vendorExtensions.get("x-path-type").toString());
+            if (pathType.isPresent() && !pathType.get().equals("list")) {
+                    instanceOperations.add(codegenOperation);
+                    codegenOperation.vendorExtensions.put("instanceOperation", true);
+                    metaAPIProperties.put("hasInstanceOperation", true);
+            }
+        });
+    }
+    private void createMaturityDescription(List<CodegenOperation> opList) {
+        Set<String> typesOfProducts = new HashSet<>();
+        for (CodegenOperation op : opList) {
+            List<String> values= (List<String>) op.vendorExtensions.get("x-maturity");
+            if(values!= null ) typesOfProducts.addAll(values);
+        }
+        if(typesOfProducts.contains("Beta")) metaAPIProperties.put("x-maturity-desc", "PLEASE NOTE that this class contains beta products that are subject to change. Use them with caution.");
+        if(typesOfProducts.contains("Preview")) metaAPIProperties.put("x-maturity-desc", "PLEASE NOTE that this class contains preview products that are subject to change. Use them with caution. If you currently do not have developer preview access, please contact help@twilio.com.");
+    }
+
+
+
 }

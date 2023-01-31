@@ -5,6 +5,7 @@ import com.twilio.oai.PathUtils;
 import com.twilio.oai.StringHelper;
 import com.twilio.oai.common.Utility;
 import com.twilio.oai.resolver.Resolver;
+import com.twilio.oai.resource.Resource;
 import com.twilio.oai.template.IApiActionTemplate;
 import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenOperation;
@@ -209,5 +210,21 @@ public abstract class ApiResourceBuilder implements IApiResourceBuilder {
         final List<String> filePathArray = new ArrayList<>(Arrays.asList(codegenOperationList.get(0).baseName.split(
             PATH_SEPARATOR_PLACEHOLDER)));
         return filePathArray.remove(filePathArray.size() - 1);
+    }
+
+    static void updateDependents(DirectoryStructureService directoryStructureService, List<Resource> resourceList, List<Object> dependentList) {
+        resourceList.forEach(dependent -> dependent.getPathItem().readOperations()
+                .forEach(opr -> directoryStructureService.addContextdependents(dependentList,
+                        dependent.getName(),
+                        opr)));
+        resourceList.stream().filter(dependent -> dependent.getPathItem().readOperations().isEmpty()).
+                forEach(dep -> directoryStructureService.addContextdependents(dependentList, dep.getName(), null));
+
+        dependentList.stream().map(DirectoryStructureService.ContextResource.class::cast)
+                .map(contextResource -> {
+                    if (contextResource.getParent().matches("(.*)Function\\\\(.*)"))
+                        contextResource.setParent(contextResource.getParent().replaceAll("\\\\Function\\\\", "\\\\TwilioFunction\\\\"));
+                    return (Object) contextResource;
+                }).collect(Collectors.toList());
     }
 }

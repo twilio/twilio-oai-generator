@@ -17,7 +17,10 @@ module Twilio
     module REST
         class Api < Domain
             class V2010 < Version
-                class FeedbackCallSummaryList < ListResource
+             class AccountContext < InstanceContext
+             class CallContext < InstanceContext
+            
+                     class FeedbackCallSummaryList < ListResource
                     ##
                     # Initialize the FeedbackCallSummaryList
                     # @param [Version] version Version that contains the resource
@@ -38,6 +41,58 @@ module Twilio
                         '#<Twilio.Api.V2010.FeedbackCallSummaryList>'
                     end
                 end
+
+                class FeedbackCallSummaryContext < InstanceContext
+                    ##
+                    # Initialize the FeedbackCallSummaryContext
+                    # @param [Version] version Version that contains the resource
+                    # @param [String] account_sid 
+                    # @param [String] sid 
+                    # @return [FeedbackCallSummaryContext] FeedbackCallSummaryContext
+                    def initialize(version, account_sid, sid)
+                        super(version)
+
+                        # Path Solution
+                        @solution = { account_sid: account_sid, sid: sid,  }
+                        @uri = "/Accounts/#{@solution[:account_sid]}/Calls/Feedback/Summary/#{@solution[:sid]}.json"
+
+                        # Dependents
+                    end
+                    ##
+                    # Update the FeedbackCallSummaryInstance
+                    # @param [Date] end_date 
+                    # @param [Date] start_date 
+                     # @param [String] account_sid 
+                    # @return [FeedbackCallSummaryInstance]
+                    Updated FeedbackCallSummaryInstance
+                    def update(end_date: nil , start_date: nil , account_sid: :unset )
+
+                        data = Twilio::Values.of({
+                         'EndDate' => Twilio.serialize_iso8601_date(end_date),
+                         'StartDate' => Twilio.serialize_iso8601_date(start_date),
+                        'AccountSid' => account_sid,
+                        })
+
+                        payload = @version.update('POST',@uri, data: data  )
+                        FeedbackCallSummaryInstance.new(@version, payload,  account_sid: @solution[:account_sid],)
+                    end
+
+
+                    ##
+                    # Provide a user friendly representation
+                    def to_s
+                        context = @solution.map {|k, v| "#{k}: #{v}"}.join(',')
+                        "#<Twilio.Api.V2010.FeedbackCallSummaryContext #{context}>"
+                    end
+
+                    ##
+                    # Provide a detailed, user friendly representation
+                    def inspect
+                        context = @solution.map {|k, v| "#{k}: #{v}"}.join(',')
+                        "#<Twilio.Api.V2010.FeedbackCallSummaryContext #{context}>"
+                    end
+                end
+
                 class FeedbackCallSummaryPage < Page
                     ##
                     # Initialize the FeedbackCallSummaryPage
@@ -66,7 +121,11 @@ module Twilio
                         '<Twilio.Api.V2010.FeedbackCallSummaryPage>'
                     end
                 end
+             end
+             end
             end
         end
     end
 end
+
+

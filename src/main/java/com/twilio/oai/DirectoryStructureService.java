@@ -329,4 +329,9 @@ public class DirectoryStructureService {
         );
 
     }
+    public String[] fetchParentDirectory(final List<CodegenOperation> opList){
+        System.out.println(opList.get(0).baseName);
+        String[] filePathArray = opList.get(0).baseName.split(PATH_SEPARATOR_PLACEHOLDER);
+        return filePathArray;
+    }
 }
