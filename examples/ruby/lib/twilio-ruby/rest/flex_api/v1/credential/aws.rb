@@ -81,8 +81,8 @@ module Twilio
                         page = self.page(page_size: limits[:page_size], )
 
                         @version.stream(page,
-                        limit: limits[:limit],
-                        page_limit: limits[:page_limit]).each {|x| yield x}
+                            limit: limits[:limit],
+                            page_limit: limits[:page_limit]).each {|x| yield x}
                     end
 
                     ##
@@ -166,7 +166,7 @@ module Twilio
                      # @param [Boolean] test_boolean 
                     # @return [AwsInstance]
                     Updated AwsInstance
-                    def update(test_string: :unset , test_boolean: :unset )
+                    def update(test_string: :unset, , test_boolean: :unset )
 
                         data = Twilio::Values.of({
                         'TestString' => test_string,
@@ -235,6 +235,113 @@ module Twilio
                     # Provide a user friendly representation
                     def to_s
                         '<Twilio.FlexApi.V1.AwsPage>'
+                    end
+                end
+                class AwsInstance < InstanceResource
+                    ##
+                    # Initialize the AwsInstance
+                    # @param [Version] version Version that contains the resource
+                    # @param [Hash] payload payload that contains response from Twilio
+                    # @param [String] account_sid The SID of the
+                    #   {Account}[https://www.twilio.com/docs/iam/api/account] that created this Aws
+                    #   resource.
+                    # @param [String] sid The SID of the Call resource to fetch.
+                    # @return [AwsInstance] AwsInstance
+                    def initialize(version, payload , sid: nil)
+                        super(version)
+                        # Marshaled Properties
+                        @properties = { 
+                            'account_sid' => payload['account_sid'],
+                            'sid' => payload['sid'],
+                            'test_string' => payload['test_string'],
+                            'test_integer' => payload['test_integer'] == nil ? payload['test_integer'] : payload['test_integer'].to_i,
+                             } 
+                        # Context
+                        @instance_context = nil
+                        @params = { 'sid' => sid  || @properties['sid']  , }
+                    end
+
+                    ##
+                    # Generate an instance context for the instance, the context is capable of
+                    # performing various actions.  All instance actions are proxied to the context
+                    # @return [AwsContext] CallContext for this CallInstance
+                    def context
+                        unless @instance_context
+                            @instance_context = AwsContext.new(@version , @params['sid'])
+                        end
+                        @instance_context
+                    end
+                    
+                    ##
+                    # @return [String] 
+                    def account_sid
+                        @properties['account_sid']
+                    end
+                    
+                    ##
+                    # @return [String] 
+                    def sid
+                        @properties['sid']
+                    end
+                    
+                    ##
+                    # @return [String] 
+                    def test_string
+                        @properties['test_string']
+                    end
+                    
+                    ##
+                    # @return [Integer] 
+                    def test_integer
+                        @properties['test_integer']
+                    end
+                    
+                    
+                    ##
+                    # Delete the AwsInstance
+                    # @return [Boolean] true if delete succeeds, false otherwise
+                    def delete
+                        context.delete
+                    end
+                    
+                    
+                    ##
+                    # Fetch the AwsInstance
+                    # @return [AwsInstance] Fetched AwsInstance
+                    def fetch
+                        context.fetch
+                    end
+                    
+                    
+                    ##
+                    # Update the AwsInstance
+                    # @param [String] test_string 
+                    # @param [Boolean] test_boolean 
+                    # @return [AwsInstance] Updated AwsInstance
+                    def update(test_string: :unset , test_boolean: :unset  )
+                        context.update(
+                            test_string: test_string, 
+                            test_boolean: test_boolean, )
+                     end
+                    
+                    ##
+                    # Access the history
+                    # @return [history] history
+                    def history
+                        context.history
+                    end
+                    ##
+                    # Provide a user friendly representation
+                    def to_s
+                        values = @params.map{|k, v| "#{k}: #{v}"}.join(" ")
+                        "<Twilio.FlexApi.V1.AwsInstance #{values}>"
+                    end
+
+                    ##
+                    # Provide a detailed, user friendly representation
+                    def inspect
+                        values = @properties.map{|k, v| "#{k}: #{v}"}.join(" ")
+                        "<Twilio.FlexApi.V1.AwsInstance #{values}>"
                     end
                 end
              end

@@ -79,8 +79,8 @@ module Twilio
                         page = self.page(page_size: limits[:page_size], )
 
                         @version.stream(page,
-                        limit: limits[:limit],
-                        page_limit: limits[:page_limit]).each {|x| yield x}
+                            limit: limits[:limit],
+                            page_limit: limits[:page_limit]).each {|x| yield x}
                     end
 
                     ##
@@ -179,6 +179,68 @@ module Twilio
                     # Provide a user friendly representation
                     def to_s
                         '<Twilio.Versionless.Understand.AssistantPage>'
+                    end
+                end
+                class AssistantInstance < InstanceResource
+                    ##
+                    # Initialize the AssistantInstance
+                    # @param [Version] version Version that contains the resource
+                    # @param [Hash] payload payload that contains response from Twilio
+                    # @param [String] account_sid The SID of the
+                    #   {Account}[https://www.twilio.com/docs/iam/api/account] that created this Assistant
+                    #   resource.
+                    # @param [String] sid The SID of the Call resource to fetch.
+                    # @return [AssistantInstance] AssistantInstance
+                    def initialize(version, payload )
+                        super(version)
+                        # Marshaled Properties
+                        @properties = { 
+                            'sid' => payload['sid'],
+                            'friendly_name' => payload['friendly_name'],
+                             } 
+                        # Context
+                        @instance_context = nil
+                        @params = {  }
+                    end
+
+                    ##
+                    # Generate an instance context for the instance, the context is capable of
+                    # performing various actions.  All instance actions are proxied to the context
+                    # @return [AssistantContext] CallContext for this CallInstance
+                    def context
+                        unless @instance_context
+                            @instance_context = AssistantContext.new(@version )
+                        end
+                        @instance_context
+                    end
+                    
+                    ##
+                    # @return [String] A string that uniquely identifies this Fleet.
+                    def sid
+                        @properties['sid']
+                    end
+                    
+                    ##
+                    # @return [String] A human readable description for this Fleet.
+                    def friendly_name
+                        @properties['friendly_name']
+                    end
+                    
+                    
+                    
+                    
+                    ##
+                    # Provide a user friendly representation
+                    def to_s
+                        values = @params.map{|k, v| "#{k}: #{v}"}.join(" ")
+                        "<Twilio.Versionless.Understand.AssistantInstance #{values}>"
+                    end
+
+                    ##
+                    # Provide a detailed, user friendly representation
+                    def inspect
+                        values = @properties.map{|k, v| "#{k}: #{v}"}.join(" ")
+                        "<Twilio.Versionless.Understand.AssistantInstance #{values}>"
                     end
                 end
             end

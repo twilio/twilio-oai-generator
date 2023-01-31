@@ -110,6 +110,65 @@ module Twilio
                         '<Twilio.FlexApi.V1.CredentialPage>'
                     end
                 end
+                class CredentialInstance < InstanceResource
+                    ##
+                    # Initialize the CredentialInstance
+                    # @param [Version] version Version that contains the resource
+                    # @param [Hash] payload payload that contains response from Twilio
+                    # @param [String] account_sid The SID of the
+                    #   {Account}[https://www.twilio.com/docs/iam/api/account] that created this Credential
+                    #   resource.
+                    # @param [String] sid The SID of the Call resource to fetch.
+                    # @return [CredentialInstance] CredentialInstance
+                    def initialize(version )
+                        super(version)
+                        
+                            
+                        # Context
+                        @instance_context = nil
+                        @params = {  }
+                    end
+
+                    ##
+                    # Generate an instance context for the instance, the context is capable of
+                    # performing various actions.  All instance actions are proxied to the context
+                    # @return [CredentialContext] CallContext for this CallInstance
+                    def context
+                        unless @instance_context
+                            @instance_context = CredentialContext.new(@version )
+                        end
+                        @instance_context
+                    end
+                    
+                    
+                    
+                    
+                    ##
+                    # Access the aws
+                    # @return [aws] aws
+                    def aws
+                        context.aws
+                    end
+                    ##
+                    # Access the new_credentials
+                    # @return [new_credentials] new_credentials
+                    def new_credentials
+                        context.new_credentials
+                    end
+                    ##
+                    # Provide a user friendly representation
+                    def to_s
+                        values = @params.map{|k, v| "#{k}: #{v}"}.join(" ")
+                        "<Twilio.FlexApi.V1.CredentialInstance #{values}>"
+                    end
+
+                    ##
+                    # Provide a detailed, user friendly representation
+                    def inspect
+                        values = @properties.map{|k, v| "#{k}: #{v}"}.join(" ")
+                        "<Twilio.FlexApi.V1.CredentialInstance #{values}>"
+                    end
+                end
             end
         end
     end

@@ -73,4 +73,134 @@ describe "Aws" do
             actual = @client.flex_api.v1.credential.aws.create("example","post")
             expect(actual).to_not eq(nil)
     end
+    if "can delete" do
+        @holodeck.mock(Twilio::Response.new(500, ''))
+        expect {
+            @client.flex_api.v1.credential.aws('ACXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX').delete()
+        }.to raise_exception(Twilio::Rest::TwilioError)
+
+         expect(
+            @holodeck.has_request?(Holodeck::Request.new(
+                method: 'delete',
+                url: 'https://flex-api.twilio.com/v1/Credentials/AWS/ACXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
+            ))).to eq(true)
+    end
+
+    it "receives delete responses" do
+        @holodeck.mock(Twilio::Response.new(
+            204,
+            nil
+        ))
+
+        actual = @client.flex_api.v1.credential.aws('ACXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX').delete()
+        expect(actual).to eq(true)
+    end
+    it "can fetch" do
+        @holodeck.mock(Twilio::Response.new(500,''))
+        expect{
+            @client.flex_api.v1.credential.aws('ACXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX').fetch()
+        }.to raise_exception(Twilio::Rest::TwilioError)
+
+        expect(
+        @holodeck.has_request?(Holodeck::Request.new(
+            method: 'get',
+            url: 'https://flex-api.twilio.com/v1/Credentials/AWS/ACXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
+        ))).to eq(true)
+    end
+
+    it "receives fetch responses" do
+        @holodeck.mock(Twilio::Response.new(
+        200,
+        %q[
+            {
+                "sid": "CXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+                "test_string": "Ahoy"
+            }
+        ]))
+
+        actual = @client.flex_api.v1.credential.aws('ACXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX').fetch()
+        expect(actual).to_not eq(nil)
+    end
+    it "can update" do
+        @holodeck.mock(Twilio::Response.new(500,''))
+        expect {
+            @client.flex_api.v1.credential.aws('ACXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX').update()
+        }.to raise_exception(Twilio::Rest::TwilioError)
+
+        expect(
+            @holodeck.has_request?(Holodeck::Request.new(
+                method: 'post',
+                url: 'https://flex-api.twilio.com/v1/Credentials/AWS/ACXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
+            ))).to eq(true)
+    end
+
+    it "receives update responses" do
+        @holodeck.mock(Twilio::Response.new(
+        200,
+        %q[
+            {
+                "sid": "ACXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+                "test_string": "Ahoy"
+            }
+        ]))
+        actual = @client.flex_api.v1.credential.aws('ACXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX').update()
+        expect(actual).to_not eq(nil)
+    end
+end
+
+describe "History" do
+    it "can fetch" do
+        @holodeck.mock(Twilio::Response.new(500,''))
+        expect{
+            @client.flex_api.v1.credential.aws('ACXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX').history.fetch()
+        }.to raise_exception(Twilio::Rest::TwilioError)
+
+        expect(
+        @holodeck.has_request?(Holodeck::Request.new(
+            method: 'get',
+            url: 'https://flex-api.twilio.com/v1/Credentials/AWS/ACXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX/History'
+        ))).to eq(true)
+    end
+
+    it "receives fetch responses" do
+        @holodeck.mock(Twilio::Response.new(
+        200,
+        %q[
+            {
+                "sid": "ACXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+                "test_string": "Ahoy"
+            }
+        ]))
+
+        actual = @client.flex_api.v1.credential.aws('ACXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX').history.fetch()
+        expect(actual).to_not eq(nil)
+    end
+end
+
+describe "Call" do
+    it "can update" do
+        @holodeck.mock(Twilio::Response.new(500,''))
+        expect {
+            @client.flex_api.v1.call('ACXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX').update()
+        }.to raise_exception(Twilio::Rest::TwilioError)
+
+        expect(
+            @holodeck.has_request?(Holodeck::Request.new(
+                method: 'post',
+                url: 'https://flex-api.twilio.com/v1/Voice/ACXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
+            ))).to eq(true)
+    end
+
+    it "receives update responses" do
+        @holodeck.mock(Twilio::Response.new(
+        200,
+        %q[
+            {
+                "sid": "ACXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+                "test_string": "Ahoy"
+            }
+        ]))
+        actual = @client.flex_api.v1.call('ACXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX').update()
+        expect(actual).to_not eq(nil)
+    end
 end
