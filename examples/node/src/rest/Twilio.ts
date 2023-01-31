@@ -1,10 +1,9 @@
-import { BaseTwilio, RequestOpts, ClientOpts } from "../base/BaseTwilio";
-import RequestClient from "../base/RequestClient";
+import { Client, ClientOpts } from "../base/BaseTwilio";
 import ApiBase from "./ApiBase";
 import FlexApiBase from "./FlexApiBase";
 import VersionlessBase from "./VersionlessBase";
 
-class Twilio extends BaseTwilio {
+class Twilio extends Client {
   constructor(username?: string, password?: string, opts?: ClientOpts) {
     super(username, password, opts);
   }
