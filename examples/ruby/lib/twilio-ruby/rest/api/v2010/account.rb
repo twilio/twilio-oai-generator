@@ -179,6 +179,91 @@ module Twilio
                         '#<Twilio.Api.V2010.AccountList>'
                     end
                 end
+
+                class AccountContext < InstanceContext
+                    ##
+                    # Initialize the AccountContext
+                    # @param [Version] version Version that contains the resource
+                    # @param [String] sid 
+                    # @return [AccountContext] AccountContext
+                    def initialize(version, sid)
+                        super(version)
+
+                        # Path Solution
+                        @solution = { sid: sid,  }
+                        @uri = "/Accounts/#{@solution[:sid]}.json"
+
+                        # Dependents
+                        @calls = nil
+                    end
+                    ##
+                    # Delete the AccountInstance
+                    # @return [Boolean] True if delete succeeds, false otherwise
+                    def delete
+
+                        @version.delete('DELETE', @uri, )
+                    end
+
+                    ##
+                    # Fetch the AccountInstance
+                    # @return [AccountInstance]
+                    Fetched AccountInstance
+                    def fetch
+
+                        payload = @version.fetch('GET',@uri )
+                        AccountInstance.new(@version, payload, )
+                    end
+
+                    ##
+                    # Update the AccountInstance
+                    # @param [TestStatus] status 
+                     # @param [String] pause_behavior 
+                    # @return [AccountInstance]
+                    Updated AccountInstance
+                    def update(status: nil, , pause_behavior: :unset )
+
+                        data = Twilio::Values.of({
+                          'Status' => status,
+                        'PauseBehavior' => pause_behavior,
+                        })
+
+                        payload = @version.update('POST',@uri, data: data  )
+                        AccountInstance.new(@version, payload, )
+                    end
+
+                    ##
+                    # Access the calls
+                    # @return [CallsList]
+                    # @return [CallContext] if sid was passed.
+                    def calls(test_integer=:unset)
+                        raise ArgumentError, 'test_integer cannot be nil' if test_integer.nil?
+                        if test_integer != :unset
+                            return CallsContext.new(@version,test_integer )
+                        end
+                        unless @calls
+                            @calls = CallList.new(
+                                @version
+                                )
+                        end
+
+                     @calls
+                    end
+
+                    ##
+                    # Provide a user friendly representation
+                    def to_s
+                        context = @solution.map {|k, v| "#{k}: #{v}"}.join(',')
+                        "#<Twilio.Api.V2010.AccountContext #{context}>"
+                    end
+
+                    ##
+                    # Provide a detailed, user friendly representation
+                    def inspect
+                        context = @solution.map {|k, v| "#{k}: #{v}"}.join(',')
+                        "#<Twilio.Api.V2010.AccountContext #{context}>"
+                    end
+                end
+
                 class AccountPage < Page
                     ##
                     # Initialize the AccountPage
@@ -207,7 +292,6 @@ module Twilio
                         '<Twilio.Api.V2010.AccountPage>'
                     end
                 end
-
                 class AccountInstance < InstanceResource
                     ##
                     # Initialize the AccountInstance

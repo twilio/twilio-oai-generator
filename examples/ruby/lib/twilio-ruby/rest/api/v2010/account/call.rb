@@ -17,7 +17,9 @@ module Twilio
     module REST
         class Api < Domain
             class V2010 < Version
-                class CallList < ListResource
+             class AccountContext < InstanceContext
+            
+                     class CallList < ListResource
                     ##
                     # Initialize the CallList
                     # @param [Version] version Version that contains the resource
@@ -66,6 +68,75 @@ module Twilio
                         '#<Twilio.Api.V2010.CallList>'
                     end
                 end
+
+                class CallContext < InstanceContext
+                    ##
+                    # Initialize the CallContext
+                    # @param [Version] version Version that contains the resource
+                    # @param [String] account_sid 
+                    # @param [Integer] test_integer INTEGER ID param!!!
+                    # @return [CallContext] CallContext
+                    def initialize(version, account_sid, test_integer)
+                        super(version)
+
+                        # Path Solution
+                        @solution = { account_sid: account_sid, test_integer: test_integer,  }
+                        @uri = "/Accounts/#{@solution[:account_sid]}/Calls/#{@solution[:test_integer]}.json"
+
+                        # Dependents
+                    end
+                    ##
+                    # Delete the CallInstance
+                    # @return [Boolean] True if delete succeeds, false otherwise
+                    def delete
+
+                        @version.delete('DELETE', @uri, )
+                    end
+
+                    ##
+                    # Fetch the CallInstance
+                    # @return [CallInstance]
+                    Fetched CallInstance
+                    def fetch
+
+                        payload = @version.fetch('GET',@uri )
+                        CallInstance.new(@version, payload,  account_sid: @solution[:account_sid],)
+                    end
+
+                    ##
+                    # Access the feedback_call_summary
+                    # @return [Feedback_call_summaryList]
+                    # @return [Feedback_call_summaryContext] if sid was passed.
+                    def feedback_call_summary(sid=:unset)
+                        raise ArgumentError, 'sid cannot be nil' if sid.nil?
+                        if sid != :unset
+                            return Feedback_call_summaryContext.new(@version, @solution[:account_sid],sid )
+                        end
+                        unless @feedback_call_summary
+                            @feedback_call_summary = Feedback_call_summaryList.new(
+                                @version,
+                                account_sid: @solution[:account_sid],
+                                )
+                        end
+
+                     @feedback_call_summary
+                    end
+
+                    ##
+                    # Provide a user friendly representation
+                    def to_s
+                        context = @solution.map {|k, v| "#{k}: #{v}"}.join(',')
+                        "#<Twilio.Api.V2010.CallContext #{context}>"
+                    end
+
+                    ##
+                    # Provide a detailed, user friendly representation
+                    def inspect
+                        context = @solution.map {|k, v| "#{k}: #{v}"}.join(',')
+                        "#<Twilio.Api.V2010.CallContext #{context}>"
+                    end
+                end
+
                 class CallPage < Page
                     ##
                     # Initialize the CallPage
@@ -94,7 +165,6 @@ module Twilio
                         '<Twilio.Api.V2010.CallPage>'
                     end
                 end
-
                 class CallInstance < InstanceResource
                     ##
                     # Initialize the CallInstance
@@ -275,7 +345,10 @@ module Twilio
                         "<Twilio.Api.V2010.CallInstance #{values}>"
                     end
                 end
+             end
             end
         end
     end
 end
+
+

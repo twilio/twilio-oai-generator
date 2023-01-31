@@ -17,7 +17,9 @@ module Twilio
     module REST
         class FlexApi < Domain
             class V1 < Version
-                class NewCredentialsList < ListResource
+             class CredentialContext < InstanceContext
+            
+                     class NewCredentialsList < ListResource
                     ##
                     # Initialize the NewCredentialsList
                     # @param [Version] version Version that contains the resource
@@ -118,6 +120,36 @@ module Twilio
                         '#<Twilio.FlexApi.V1.NewCredentialsList>'
                     end
                 end
+
+                class NewCredentialsContext < InstanceContext
+                    ##
+                    # Initialize the NewCredentialsContext
+                    # @param [Version] version Version that contains the resource
+                    # @return [NewCredentialsContext] NewCredentialsContext
+                    def initialize(version)
+                        super(version)
+
+                        # Path Solution
+                        @solution = {  }
+
+                        # Dependents
+                    end
+
+                    ##
+                    # Provide a user friendly representation
+                    def to_s
+                        context = @solution.map {|k, v| "#{k}: #{v}"}.join(',')
+                        "#<Twilio.FlexApi.V1.NewCredentialsContext #{context}>"
+                    end
+
+                    ##
+                    # Provide a detailed, user friendly representation
+                    def inspect
+                        context = @solution.map {|k, v| "#{k}: #{v}"}.join(',')
+                        "#<Twilio.FlexApi.V1.NewCredentialsContext #{context}>"
+                    end
+                end
+
                 class NewCredentialsPage < Page
                     ##
                     # Initialize the NewCredentialsPage
@@ -146,7 +178,6 @@ module Twilio
                         '<Twilio.FlexApi.V1.NewCredentialsPage>'
                     end
                 end
-
                 class NewCredentialsInstance < InstanceResource
                     ##
                     # Initialize the NewCredentialsInstance
@@ -223,7 +254,10 @@ module Twilio
                         "<Twilio.FlexApi.V1.NewCredentialsInstance #{values}>"
                     end
                 end
+             end
             end
         end
     end
 end
+
+

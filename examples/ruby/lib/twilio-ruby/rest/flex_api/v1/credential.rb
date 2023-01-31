@@ -52,6 +52,36 @@ module Twilio
                         '#<Twilio.FlexApi.V1.CredentialList>'
                     end
                 end
+
+                class CredentialContext < InstanceContext
+                    ##
+                    # Initialize the CredentialContext
+                    # @param [Version] version Version that contains the resource
+                    # @return [CredentialContext] CredentialContext
+                    def initialize(version)
+                        super(version)
+
+                        # Path Solution
+                        @solution = {  }
+
+                        # Dependents
+                    end
+
+                    ##
+                    # Provide a user friendly representation
+                    def to_s
+                        context = @solution.map {|k, v| "#{k}: #{v}"}.join(',')
+                        "#<Twilio.FlexApi.V1.CredentialContext #{context}>"
+                    end
+
+                    ##
+                    # Provide a detailed, user friendly representation
+                    def inspect
+                        context = @solution.map {|k, v| "#{k}: #{v}"}.join(',')
+                        "#<Twilio.FlexApi.V1.CredentialContext #{context}>"
+                    end
+                end
+
                 class CredentialPage < Page
                     ##
                     # Initialize the CredentialPage
@@ -80,7 +110,6 @@ module Twilio
                         '<Twilio.FlexApi.V1.CredentialPage>'
                     end
                 end
-
                 class CredentialInstance < InstanceResource
                     ##
                     # Initialize the CredentialInstance

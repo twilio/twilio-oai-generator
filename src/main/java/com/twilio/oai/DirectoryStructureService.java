@@ -4,19 +4,6 @@ import com.twilio.oai.common.Utility;
 import com.twilio.oai.resolver.CaseResolver;
 import com.twilio.oai.resource.IResourceTree;
 import com.twilio.oai.resource.Resource;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.TreeMap;
-import java.util.stream.Collectors;
-
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.Operation;
 import io.swagger.v3.oas.models.PathItem;
@@ -31,11 +18,11 @@ import org.openapitools.codegen.model.ModelsMap;
 import org.openapitools.codegen.model.OperationMap;
 import org.openapitools.codegen.model.OperationsMap;
 
-import static com.twilio.oai.common.ApplicationConstants.ACCOUNT_SID_FORMAT;
-import static com.twilio.oai.common.ApplicationConstants.ENUM_VARS;
-import static com.twilio.oai.common.ApplicationConstants.LIST_INSTANCE;
-import static com.twilio.oai.common.ApplicationConstants.PATH_SEPARATOR_PLACEHOLDER;
-import static com.twilio.oai.common.ApplicationConstants.PATH_TYPE_EXTENSION_NAME;
+import java.io.File;
+import java.util.*;
+import java.util.stream.Collectors;
+
+import static com.twilio.oai.common.ApplicationConstants.*;
 
 @RequiredArgsConstructor
 public class DirectoryStructureService {
@@ -111,10 +98,11 @@ public class DirectoryStructureService {
             });
         });
     }
+
     public void addVersionResources(DependentResource dependent, Map<String, DependentResource> versionResources) {
-        if (versionResources.containsKey(dependent.getFilename())){
+        if (versionResources.containsKey(dependent.getFilename())) {
             DependentResource existingDependent = versionResources.get(dependent.getFilename());
-            if(existingDependent.getPathParams().size() == 0)
+            if (existingDependent.getPathParams().size() == 0)
                 versionResources.put(dependent.getFilename(), dependent);
         } else {
             versionResources.put(dependent.getFilename(), dependent);
@@ -124,7 +112,7 @@ public class DirectoryStructureService {
     @SuppressWarnings("unchecked")
     public Map<String, DependentResource> getVersionResourcesMap() {
         return (Map<String, DependentResource>) additionalProperties.computeIfAbsent(ALL_VERSION_RESOURCES,
-                                                                                     k -> new TreeMap<>());
+                k -> new TreeMap<>());
     }
 
     public void configureResourceFamily(OpenAPI openAPI) {
@@ -135,32 +123,32 @@ public class DirectoryStructureService {
     // If account sid is present in path param, it is stored in x-is-account-sid.
     private void updateAccountSidParam(final PathItem pathMap) {
         pathMap
-            .readOperations()
-            .stream()
-            .map(Operation::getParameters)
-            .filter(Objects::nonNull)
-            .flatMap(Collection::stream)
-            .filter(param -> param.getIn().equals("path") &&
-                (ACCOUNT_SID_FORMAT.equals(param.getSchema().getPattern())))
-            .forEach(param -> {
-                param.required(false);
-                param.addExtension("x-is-account-sid", true);
-            });
+                .readOperations()
+                .stream()
+                .map(Operation::getParameters)
+                .filter(Objects::nonNull)
+                .flatMap(Collection::stream)
+                .filter(param -> param.getIn().equals("path") &&
+                        (ACCOUNT_SID_FORMAT.equals(param.getSchema().getPattern())))
+                .forEach(param -> {
+                    param.required(false);
+                    param.addExtension("x-is-account-sid", true);
+                });
     }
 
     public DependentResource generateDependent(final String path, final Operation operation) {
         final Resource.Aliases resourceAliases = getResourceAliases(path, operation);
         List<Parameter> params = fetchNonParentPathParams(operation);
         return new DependentResource.DependentResourceBuilder()
-            .version(PathUtils.getFirstPathPart(path))
-            .type(resourceAliases.getClassName() + LIST_INSTANCE)
-            .className(resourceAliases.getClassName() + LIST_INSTANCE)
-            .importName(resourceAliases.getClassName() + LIST_INSTANCE)
-            .mountName(caseResolver.pathOperation(resourceAliases.getMountName()))
-            .filename(caseResolver.filenameOperation(resourceAliases.getClassName()))
-            .pathParams(params)
-            .resourceName(resourceAliases.getClassName())
-            .build();
+                .version(PathUtils.getFirstPathPart(path))
+                .type(resourceAliases.getClassName() + LIST_INSTANCE)
+                .className(resourceAliases.getClassName() + LIST_INSTANCE)
+                .importName(resourceAliases.getClassName() + LIST_INSTANCE)
+                .mountName(caseResolver.pathOperation(resourceAliases.getMountName()))
+                .filename(caseResolver.filenameOperation(resourceAliases.getClassName()))
+                .pathParams(params)
+                .resourceName(resourceAliases.getClassName())
+                .build();
     }
 
     public void addContextdependents(final List<Object> resourceList, final String path, final Operation operation) {
@@ -179,7 +167,7 @@ public class DirectoryStructureService {
             resourceList.add(dependent);
     }
 
-    private List<Parameter> fetchNonParentPathParams(Operation operation){
+    private List<Parameter> fetchNonParentPathParams(Operation operation) {
         List<Parameter> params = new ArrayList<>();
         if (null == operation) return params;
         List<Parameter> pathParams = Optional.ofNullable(operation.getParameters())
@@ -189,23 +177,23 @@ public class DirectoryStructureService {
         params = pathParams.stream().filter(parameter -> Objects.isNull(parameter.getExtensions()))
                 .collect(Collectors.toList());
         params.addAll(pathParams.stream().filter(parameter -> Objects.nonNull(parameter.getExtensions()))
-                    .filter(parameter -> !PathUtils.isParentParam(parameter))
-                    .collect(Collectors.toList()));
+                .filter(parameter -> !PathUtils.isParentParam(parameter))
+                .collect(Collectors.toList()));
         return params;
     }
 
     private Resource.Aliases getResourceAliases(final String path, final Operation operation) {
         return resourceTree
-            .findResource(path)
-            .map(resource -> operation == null ? resource.getResourceAliases() : resource.getResourceAliases(operation))
-            .orElseThrow();
+                .findResource(path)
+                .map(resource -> operation == null ? resource.getResourceAliases() : resource.getResourceAliases(operation))
+                .orElseThrow();
     }
 
     public Optional<String> getApiVersionClass() {
         return Optional
-            .of(additionalProperties.get("apiVersionClass"))
-            .map(String.class::cast)
-            .map(version -> version.isEmpty() ? null : version);
+                .of(additionalProperties.get("apiVersionClass"))
+                .map(String.class::cast)
+                .map(version -> version.isEmpty() ? null : version);
     }
 
     public void postProcessAllModels(final Map<String, ModelsMap> models, final Map<String, String> modelFormatMap) {
@@ -223,8 +211,8 @@ public class DirectoryStructureService {
         additionalProperties.put("version", version);
         additionalProperties.put("apiVersionPath", getRelativeRoot(firstOperation.baseName));
         additionalProperties.put("apiFilename",
-                                 caseResolver.pathOperation(getResourceAliases(firstOperation.path,
-                                                                               null).getClassName()));
+                caseResolver.pathOperation(getResourceAliases(firstOperation.path,
+                        null).getClassName()));
 
         if (isVersionLess) {
             additionalProperties.put(API_VERSION, caseResolver.productOperation(version));
@@ -232,23 +220,23 @@ public class DirectoryStructureService {
         }
 
         final List<DependentResource> versionResources = getVersionResourcesMap()
-            .values()
-            .stream()
-            .filter(resource -> resource.getVersion().equals(version))
-            .collect(Collectors.toList());
+                .values()
+                .stream()
+                .filter(resource -> resource.getVersion().equals(version))
+                .collect(Collectors.toList());
         additionalProperties.put(VERSION_RESOURCES, versionResources);
 
         if (additionalProperties.get(API_VERSION).equals("v2010")) {
             final String name = "Account";
             versionResources.add(new DependentResource.DependentResourceBuilder()
-                                     .type(name + "Context")
-                                     .className(name + LIST_INSTANCE)
-                                     .importName(name + "Context")
-                                     .mountName(caseResolver.pathOperation(name))
-                                     .filename(caseResolver.filenameOperation(name))
-                                     .param(caseResolver.pathOperation(name + "Sid"))
-                                    .resourceName(name)
-                                     .build());
+                    .type(name + "Context")
+                    .className(name + LIST_INSTANCE)
+                    .importName(name + "Context")
+                    .mountName(caseResolver.pathOperation(name))
+                    .filename(caseResolver.filenameOperation(name))
+                    .param(caseResolver.pathOperation(name + "Sid"))
+                    .resourceName(name)
+                    .build());
         }
 
         allModels.forEach(item -> item.getVendorExtensions().remove(ENUM_VARS));
@@ -258,9 +246,9 @@ public class DirectoryStructureService {
 
     protected String getRelativeRoot(final String tag) {
         return Arrays
-            .stream(tag.split(PATH_SEPARATOR_PLACEHOLDER))
-            .map(part -> "..")
-            .collect(Collectors.joining(File.separator));
+                .stream(tag.split(PATH_SEPARATOR_PLACEHOLDER))
+                .map(part -> "..")
+                .collect(Collectors.joining(File.separator));
     }
 
     /**
@@ -292,10 +280,10 @@ public class DirectoryStructureService {
         return Utility.getModel(allModels, className, recordKey, codegenOperation);
     }
 
-    public void configureAdditionalProps(Map<String, PathItem> pathMap, String domain, DirectoryStructureService directoryStructureService){
+    public void configureAdditionalProps(Map<String, PathItem> pathMap, String domain, DirectoryStructureService directoryStructureService) {
 
         List<Resource> dependents = new ArrayList<>();
-        if (domain.equals("api")){
+        if (domain.equals("api")) {
             additionalProperties.put("isApiDomain", "true");
         }
         for (String pathKey : pathMap.keySet()) {
@@ -306,7 +294,7 @@ public class DirectoryStructureService {
                 if (!parentKey.isPresent()) {
                     dependents.add(new Resource(null, pathKeyCache, currPath, null));
                 } else {
-                    String currParentKey = domain.equals("api")? "/2010-04-01" + parentKey.get() : parentKey.get();
+                    String currParentKey = domain.equals("api") ? "/2010-04-01" + parentKey.get() : parentKey.get();
 
                     if (pathMap.containsKey(currParentKey)) {
                         PathItem pathParent = pathMap.get(currParentKey);
@@ -328,5 +316,10 @@ public class DirectoryStructureService {
                 dependentList
         );
 
+    }
+
+    public String[] fetchParentDirectory(final List<CodegenOperation> opList) {
+        String[] filePathArray = opList.get(0).baseName.split(PATH_SEPARATOR_PLACEHOLDER);
+        return filePathArray;
     }
 }

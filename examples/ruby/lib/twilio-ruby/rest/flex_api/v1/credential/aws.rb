@@ -17,7 +17,9 @@ module Twilio
     module REST
         class FlexApi < Domain
             class V1 < Version
-                class AwsList < ListResource
+             class CredentialContext < InstanceContext
+            
+                     class AwsList < ListResource
                     ##
                     # Initialize the AwsList
                     # @param [Version] version Version that contains the resource
@@ -123,6 +125,90 @@ module Twilio
                         '#<Twilio.FlexApi.V1.AwsList>'
                     end
                 end
+
+                class AwsContext < InstanceContext
+                    ##
+                    # Initialize the AwsContext
+                    # @param [Version] version Version that contains the resource
+                    # @param [String] sid 
+                    # @return [AwsContext] AwsContext
+                    def initialize(version, sid)
+                        super(version)
+
+                        # Path Solution
+                        @solution = { sid: sid,  }
+                        @uri = "/Credentials/AWS/#{@solution[:sid]}"
+
+                        # Dependents
+                        @history = nil
+                    end
+                    ##
+                    # Delete the AwsInstance
+                    # @return [Boolean] True if delete succeeds, false otherwise
+                    def delete
+
+                        @version.delete('DELETE', @uri, )
+                    end
+
+                    ##
+                    # Fetch the AwsInstance
+                    # @return [AwsInstance]
+                    Fetched AwsInstance
+                    def fetch
+
+                        payload = @version.fetch('GET',@uri )
+                        AwsInstance.new(@version, payload, )
+                    end
+
+                    ##
+                    # Update the AwsInstance
+                     # @param [String] test_string 
+                     # @param [Boolean] test_boolean 
+                    # @return [AwsInstance]
+                    Updated AwsInstance
+                    def update(test_string: :unset, , test_boolean: :unset )
+
+                        data = Twilio::Values.of({
+                        'TestString' => test_string,
+                        'TestBoolean' => test_boolean,
+                        })
+
+                        payload = @version.update('POST',@uri, data: data  )
+                        AwsInstance.new(@version, payload, )
+                    end
+
+                    ##
+                    # Access the history
+                    # @return [HistoryList]
+                    # @return [HistoryContext] if sid was passed.
+                    def history()
+                        if 
+                            return HistoryContext.new(@version)
+                        end
+                        unless @history
+                            @history = HistoryList.new(
+                                @version
+                                )
+                        end
+
+                     @history
+                    end
+
+                    ##
+                    # Provide a user friendly representation
+                    def to_s
+                        context = @solution.map {|k, v| "#{k}: #{v}"}.join(',')
+                        "#<Twilio.FlexApi.V1.AwsContext #{context}>"
+                    end
+
+                    ##
+                    # Provide a detailed, user friendly representation
+                    def inspect
+                        context = @solution.map {|k, v| "#{k}: #{v}"}.join(',')
+                        "#<Twilio.FlexApi.V1.AwsContext #{context}>"
+                    end
+                end
+
                 class AwsPage < Page
                     ##
                     # Initialize the AwsPage
@@ -151,7 +237,6 @@ module Twilio
                         '<Twilio.FlexApi.V1.AwsPage>'
                     end
                 end
-
                 class AwsInstance < InstanceResource
                     ##
                     # Initialize the AwsInstance
@@ -259,7 +344,10 @@ module Twilio
                         "<Twilio.FlexApi.V1.AwsInstance #{values}>"
                     end
                 end
+             end
             end
         end
     end
 end
+
+

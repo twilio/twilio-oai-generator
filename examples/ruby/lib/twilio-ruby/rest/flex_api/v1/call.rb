@@ -38,6 +38,48 @@ module Twilio
                         '#<Twilio.FlexApi.V1.CallList>'
                     end
                 end
+
+                class CallContext < InstanceContext
+                    ##
+                    # Initialize the CallContext
+                    # @param [Version] version Version that contains the resource
+                    # @param [String] sid 
+                    # @return [CallContext] CallContext
+                    def initialize(version, sid)
+                        super(version)
+
+                        # Path Solution
+                        @solution = { sid: sid,  }
+                        @uri = "/Voice/#{@solution[:sid]}"
+
+                        # Dependents
+                    end
+                    ##
+                    # Update the CallInstance
+                    # @return [CallInstance]
+                    Updated CallInstance
+                    def update
+
+                        payload = @version.update('POST',@uri )
+                        CallInstance.new(@version, payload, )
+                    end
+
+
+                    ##
+                    # Provide a user friendly representation
+                    def to_s
+                        context = @solution.map {|k, v| "#{k}: #{v}"}.join(',')
+                        "#<Twilio.FlexApi.V1.CallContext #{context}>"
+                    end
+
+                    ##
+                    # Provide a detailed, user friendly representation
+                    def inspect
+                        context = @solution.map {|k, v| "#{k}: #{v}"}.join(',')
+                        "#<Twilio.FlexApi.V1.CallContext #{context}>"
+                    end
+                end
+
                 class CallPage < Page
                     ##
                     # Initialize the CallPage
@@ -66,7 +108,6 @@ module Twilio
                         '<Twilio.FlexApi.V1.CallPage>'
                     end
                 end
-
                 class CallInstance < InstanceResource
                     ##
                     # Initialize the CallInstance

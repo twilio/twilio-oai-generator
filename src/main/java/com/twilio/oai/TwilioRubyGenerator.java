@@ -32,8 +32,7 @@ import static com.twilio.oai.common.ApplicationConstants.CONFIG_RUBY_JSON_PATH;
 public class TwilioRubyGenerator extends RubyClientCodegen {
     private final TwilioCodegenAdapter twilioCodegen;
     private final IResourceTree resourceTree = new ResourceMap(new Inflector());
-    private final DirectoryStructureService directoryStructureService = new DirectoryStructureService(
-            additionalProperties, resourceTree, new RubyCaseResolver());
+    private final DirectoryStructureService directoryStructureService = new DirectoryStructureService(additionalProperties, resourceTree, new RubyCaseResolver());
     private final List<CodegenModel> allModels = new ArrayList<>();
     private final Map<String, String> modelFormatMap = new HashMap<>();
     private final RubyApiActionTemplate rubyApiActionTemplate = new RubyApiActionTemplate(this);
@@ -89,20 +88,18 @@ public class TwilioRubyGenerator extends RubyClientCodegen {
         final OperationsMap results = super.postProcessOperationsWithModels(objs, allModels);
         final List<CodegenOperation> opList = directoryStructureService.processOperations(results);
         results.put("resources", generateResources(opList));
+        String[] parentDir = directoryStructureService.fetchParentDirectory(opList);
+        if (parentDir.length > 1) {
+            results.put("hasParents", "true");
+            results.put("parentDir", parentDir);
+        }
         return results;
     }
 
     private RubyApiResources generateResources(final List<CodegenOperation> opList) {
         final IConventionMapper conventionMapper = new LanguageConventionResolver(CONFIG_RUBY_JSON_PATH);
-        final CodegenModelResolver codegenModelResolver = new CodegenModelResolver(conventionMapper,
-                                                                modelFormatMap,
-                                                                List.of(EnumConstants.RubyDataTypes.values()));
-        return new RubyApiResourceBuilder(rubyApiActionTemplate, opList, allModels, directoryStructureService, openAPI)
-                .updateApiPath()
-                .updateOperations(new RubyParameterResolver(conventionMapper))
-                .updateTemplate()
-                .updateResponseModel(new RubyPropertyResolver(conventionMapper), codegenModelResolver)
-                .build();
+        final CodegenModelResolver codegenModelResolver = new CodegenModelResolver(conventionMapper, modelFormatMap, List.of(EnumConstants.RubyDataTypes.values()));
+        return new RubyApiResourceBuilder(rubyApiActionTemplate, opList, allModels, directoryStructureService, openAPI).updateApiPath().updateOperations(new RubyParameterResolver(conventionMapper)).updateTemplate().updateResponseModel(new RubyPropertyResolver(conventionMapper), codegenModelResolver).build();
     }
 
     @Override

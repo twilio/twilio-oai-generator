@@ -1,0 +1,18 @@
+            {{#parentDir}}
+            {{^-last}} class {{.}}Context < InstanceContext
+            {{/-last}}
+            {{/parentDir}}
+
+     {{>list}}
+{{>context}}
+{{>page}}
+{{>instance}}
+            {{#parentDir}}
+{{^-last}}             end
+{{/-last}}
+            {{/parentDir}}
+            end
+        end
+    end
+end
+
