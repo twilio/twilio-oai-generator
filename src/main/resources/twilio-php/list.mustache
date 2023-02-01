@@ -28,8 +28,8 @@ namespace Twilio\Rest\{{domainName}}\{{version}}{{namespaceSubPart}};
  */
     {{/-last}}
 {{/metaProperties.listImportMethods}}
-
-class {{apiName}}List extends ListResource {
+class {{apiName}}List extends ListResource
+    {
     {{#metaProperties.listImportProperties}}
     protected $_{{#lambda.camelcase}}{{mountName}}{{/lambda.camelcase}} = null;
     {{#-last}}
@@ -42,15 +42,22 @@ class {{apiName}}List extends ListResource {
      * @param Version $version Version that contains the resource
      {{#requiredPathParams}}
      {{#vendorExtensions.x-is-parent-param}}
-     * @param {{{dataType}}} ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}} {{description}}
+     * @param {{{dataType}}} ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}{{#description}} {{{description}}}{{/description}}
      {{/vendorExtensions.x-is-parent-param}}
      {{/requiredPathParams}}
      */
-    public function __construct(Version $version{{#requiredPathParams}}{{#vendorExtensions.x-is-parent-param}}, {{{dataType}}} ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}} {{/vendorExtensions.x-is-parent-param}}{{/requiredPathParams}}) {
+    public function __construct(
+        Version $version{{#requiredPathParams}}{{#vendorExtensions.x-is-parent-param}},
+        {{{dataType}}} ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}{{/vendorExtensions.x-is-parent-param}}{{/requiredPathParams}}
+    ) {
         parent::__construct($version);
 
         // Path Solution
-        $this->solution = [{{#requiredPathParams}}{{#vendorExtensions.x-is-parent-param}}'{{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}' => ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}, {{/vendorExtensions.x-is-parent-param}}{{/requiredPathParams}}];
+        $this->solution = [{{#requiredPathParams}}{{#vendorExtensions.x-is-parent-param}}
+        '{{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}' =>
+            ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}},
+        {{/vendorExtensions.x-is-parent-param}}{{/requiredPathParams}}
+        ];
         {{#metaProperties.hasListOperation}}
 
         $this->uri = '{{{apiListPath}}}';
@@ -70,43 +77,119 @@ class {{apiName}}List extends ListResource {
 {{/vendorExtensions.x-is-read-operation}}
 {{/vendorExtensions.x-ignore}}
 {{/apiOperations}}
+{{#metaProperties.hasInstanceOperation}}
     /**
      * Constructs a {{apiName}}Context
-     *
      {{#requiredPathParams}}
      {{^vendorExtensions.x-is-parent-param}}
-     * @param {{{dataType}}} ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}} {{description}}
+     *
+     * @param {{{dataType}}} ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}{{#description}} {{{description}}}{{/description}}
      {{/vendorExtensions.x-is-parent-param}}
      {{/requiredPathParams}}
      */
-    public function getContext({{#requiredPathParams}}{{^vendorExtensions.x-is-parent-param}}{{{dataType}}} ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}{{^-last}}, {{/-last}}{{/vendorExtensions.x-is-parent-param}}{{/requiredPathParams}}): {{apiName}}Context {
-        return new {{apiName}}Context($this->version{{#requiredPathParams}}{{#vendorExtensions.x-is-parent-param}}, $this->solution['{{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}']{{/vendorExtensions.x-is-parent-param}}{{/requiredPathParams}}{{#requiredPathParams}}{{^vendorExtensions.x-is-parent-param}}, ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}{{/vendorExtensions.x-is-parent-param}}{{/requiredPathParams}});
+    public function getContext(
+        {{#requiredPathParams}}{{^vendorExtensions.x-is-parent-param}}{{{dataType}}} ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}
+        {{^-last}}, {{/-last}}{{/vendorExtensions.x-is-parent-param}}{{/requiredPathParams}}
+    ): {{apiName}}Context
+    {
+        return new {{apiName}}Context(
+            $this->version{{#requiredPathParams}}{{#vendorExtensions.x-is-parent-param}},
+            $this->solution['{{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}']{{/vendorExtensions.x-is-parent-param}}{{/requiredPathParams}}{{#requiredPathParams}}{{^vendorExtensions.x-is-parent-param}},
+            ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}{{/vendorExtensions.x-is-parent-param}}{{/requiredPathParams}}
+        );
     }
 
+{{/metaProperties.hasInstanceOperation}}
     {{#metaProperties.listImportProperties}}
     /**
      * Access the {{#lambda.camelcase}}{{mountName}}{{/lambda.camelcase}}
      */
-    protected function get{{#lambda.titlecase}}{{mountName}}{{/lambda.titlecase}}(): {{filename}}List {
+    protected function get{{#lambda.titlecase}}{{mountName}}{{/lambda.titlecase}}(): {{filename}}List
+    {
         if (!$this->_{{#lambda.camelcase}}{{mountName}}{{/lambda.camelcase}}) {
             $this->_{{#lambda.camelcase}}{{mountName}}{{/lambda.camelcase}} = new {{filename}}List(
-                $this->version
-                {{#requiredPathParams}}
-                {{#vendorExtensions.x-is-parent-param}}
-                , $this->solution['{{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}']
-                {{/vendorExtensions.x-is-parent-param}}
-                {{/requiredPathParams}}
+                $this->version{{#requiredPathParams}}{{#vendorExtensions.x-is-parent-param}},
+                $this->solution['{{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}']{{/vendorExtensions.x-is-parent-param}}{{/requiredPathParams}}
             );
         }
-
         return $this->_{{#lambda.camelcase}}{{mountName}}{{/lambda.camelcase}};
     }
 
     {{/metaProperties.listImportProperties}}
-{{#metaProperties.listImportProperties.0}}{{>magicGetterandCaller}}
+{{#metaProperties.listImportProperties.0}}
+    /**
+     * Magic getter to lazy load subresources
+     *
+     * @param string $name Subresource to return
+     * @return \Twilio\ListResource The requested subresource
+     * @throws TwilioException For unknown subresources
+     */
+    public function __get(string $name)
+    {
+        if (\property_exists($this, '_' . $name)) {
+            $method = 'get' . \ucfirst($name);
+            return $this->$method();
+        }
+
+        throw new TwilioException('Unknown subresource ' . $name);
+    }
+
+    /**
+     * Magic caller to get resource contexts
+     *
+     * @param string $name Resource to return
+     * @param array $arguments Context parameters
+     * @return InstanceContext The requested resource context
+     * @throws TwilioException For unknown resource
+     */
+    public function __call(string $name, array $arguments): InstanceContext
+    {
+        $property = $this->$name;
+        if (\method_exists($property, 'getContext')) {
+            return \call_user_func_array(array($property, 'getContext'), $arguments);
+        }
+
+        throw new TwilioException('Resource does not have a context');
+    }
+
 {{/metaProperties.listImportProperties.0}}
 {{^metaProperties.listImportProperties.0}}
-{{#metaProperties.listImportMethods.0}}{{>magicGetterandCaller}}
+{{#metaProperties.listImportMethods.0}}
+    /**
+     * Magic getter to lazy load subresources
+     *
+     * @param string $name Subresource to return
+     * @return \Twilio\ListResource The requested subresource
+     * @throws TwilioException For unknown subresources
+     */
+    public function __get(string $name)
+    {
+        if (\property_exists($this, '_' . $name)) {
+            $method = 'get' . \ucfirst($name);
+            return $this->$method();
+        }
+
+        throw new TwilioException('Unknown subresource ' . $name);
+    }
+
+    /**
+     * Magic caller to get resource contexts
+     *
+     * @param string $name Resource to return
+     * @param array $arguments Context parameters
+     * @return InstanceContext The requested resource context
+     * @throws TwilioException For unknown resource
+     */
+    public function __call(string $name, array $arguments): InstanceContext
+    {
+        $property = $this->$name;
+        if (\method_exists($property, 'getContext')) {
+            return \call_user_func_array(array($property, 'getContext'), $arguments);
+        }
+
+        throw new TwilioException('Resource does not have a context');
+    }
+
 {{/metaProperties.listImportMethods.0}}
 {{/metaProperties.listImportProperties.0}}
     /**
@@ -114,7 +197,8 @@ class {{apiName}}List extends ListResource {
      *
      * @return string Machine friendly representation
      */
-    public function __toString(): string {
+    public function __toString(): string
+    {
         return '[Twilio.{{domainName}}.{{version}}.{{#lambda.titlecase}}{{apiName}}{{/lambda.titlecase}}List]';
     }
 }

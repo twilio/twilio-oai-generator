@@ -6,7 +6,7 @@ function should-generate() {
 }
 
 function generate() {
-  find "$OUT_DIR"/*/ ! -name "*_test.go" -type f -delete || true
+  find -E "$OUT_DIR"/*/* ! -name "*_test.go" ! -regex "$OUT_DIR/[^/]+/__init__.py" -type f -delete || true
 
   for api_spec in examples/spec/*; do
     java -cp ./openapi-generator-cli.jar:target/twilio-openapi-generator.jar \
@@ -54,7 +54,7 @@ if should-generate java; then
 fi
 
 if should-generate node; then
-  OUT_DIR=examples/node/lib/rest
+  OUT_DIR=examples/node/src/rest
   generate twilio-node --global-property skipFormModel=false
   docker-run examples/node/Dockerfile-prettier
 fi
@@ -65,7 +65,7 @@ if should-generate php; then
 fi
 
 if should-generate python; then
-  OUT_DIR=examples/python/lib/rest
+  OUT_DIR=examples/python/twilio/rest
   generate twilio-python
 fi
 

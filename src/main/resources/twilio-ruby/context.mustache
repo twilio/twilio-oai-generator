@@ -1,0 +1,70 @@
+
+{{#metaProperties.x-maturity-desc}}
+                ##
+                #{{metaProperties.x-maturity-desc}}
+{{/metaProperties.x-maturity-desc}}
+                class {{apiName}}Context < InstanceContext
+                    ##
+                    # Initialize the {{apiName}}Context
+                    # @param [Version] version Version that contains the resource
+                    {{#instancePathParams}}
+                    # @param [{{dataType}}] {{paramName}} {{description}}
+                    {{/instancePathParams}}
+                    # @return [{{apiName}}Context] {{apiName}}Context
+                    def initialize(version{{#instancePathParams}}, {{paramName}}{{/instancePathParams}})
+                        super(version)
+
+                        # Path Solution
+                        @solution = { {{#instancePathParams}}{{paramName}}: {{paramName}}, {{/instancePathParams}} }
+                        {{#instancePath}}
+                        @uri = "{{instancePath}}"
+                        {{/instancePath}}
+
+                        # Dependents
+                        {{#metaProperties.contextImportProperties}}
+                        @{{mountName}} = nil
+                        {{/metaProperties.contextImportProperties}}
+                    end
+                    {{#apiOperations}}
+                    {{#vendorExtensions.instanceOperation}}
+{{>methods}}
+{{>contextMethodParams}}
+                    {{/vendorExtensions.instanceOperation}}
+                    {{/apiOperations}}
+                    {{#metaProperties.contextImportMethods}}
+                    ##
+                    # Access the {{mountName}}
+                    # @return [{{#lambda.titlecase}}{{mountName}}{{/lambda.titlecase}}List]
+                    # @return [{{#lambda.titlecase}}{{filename}}{{/lambda.titlecase}}Context] if sid was passed.
+                    def {{mountName}}({{#params}}{{#lambda.snakecase}}{{.}}{{/lambda.snakecase}}=:unset{{/params}})
+                        {{#params}}
+                        raise ArgumentError, '{{#lambda.snakecase}}{{.}}{{/lambda.snakecase}} cannot be nil' if {{#lambda.snakecase}}{{.}}{{/lambda.snakecase}}.nil?
+                        {{/params}}
+                        if {{#params}}{{#lambda.snakecase}}{{.}}{{/lambda.snakecase}} != :unset{{/params}}
+                            return {{#lambda.titlecase}}{{mountName}}{{/lambda.titlecase}}Context.new(@version{{#listPathParams}}, @solution[:{{paramName}}]{{/listPathParams}}{{#params}},{{#lambda.snakecase}}{{.}}{{/lambda.snakecase}} {{/params}})
+                        end
+                        unless @{{mountName}}
+                            @{{mountName}} = {{#lambda.titlecase}}{{filename}}{{/lambda.titlecase}}List.new(
+                                @version{{#listPathParams}},
+                                {{paramName}}: @solution[:{{paramName}}],{{/listPathParams}}
+                                )
+                        end
+
+                     @{{mountName}}
+                    end
+                    {{/metaProperties.contextImportMethods}}
+
+                    ##
+                    # Provide a user friendly representation
+                    def to_s
+                        context = @solution.map {|k, v| "#{k}: #{v}"}.join(',')
+                        "#<Twilio.{{domainName}}.{{apiVersionClass}}.{{apiName}}Context #{context}>"
+                    end
+
+                    ##
+                    # Provide a detailed, user friendly representation
+                    def inspect
+                        context = @solution.map {|k, v| "#{k}: #{v}"}.join(',')
+                        "#<Twilio.{{domainName}}.{{apiVersionClass}}.{{apiName}}Context #{context}>"
+                    end
+                end

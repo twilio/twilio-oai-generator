@@ -29,8 +29,8 @@ namespace Twilio\Rest\{{domainName}}\{{apiVersionClass}}{{namespaceSubPart}};
  */
     {{/-last}}
 {{/metaProperties.contextImportMethods}}
-
-class {{apiName}}Context extends InstanceContext {
+class {{apiName}}Context extends InstanceContext
+    {
     {{#metaProperties.contextImportProperties}}
     protected $_{{#lambda.camelcase}}{{mountName}}{{/lambda.camelcase}};
     {{#-last}}
@@ -42,14 +42,20 @@ class {{apiName}}Context extends InstanceContext {
      *
      * @param Version $version Version that contains the resource
      {{#requiredPathParams}}
-     * @param {{{dataType}}} ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}} {{description}}
+     * @param {{{dataType}}} ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}{{#description}} {{{description}}}{{/description}}
      {{/requiredPathParams}}
      */
-    public function __construct(Version $version{{#requiredPathParams}}, ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}} {{/requiredPathParams}}) {
+    public function __construct(
+        Version $version{{#requiredPathParams}},
+        ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}{{/requiredPathParams}}
+    ) {
         parent::__construct($version);
 
         // Path Solution
-        $this->solution = [{{#requiredPathParams}}'{{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}' => ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}},  {{/requiredPathParams}}];
+        $this->solution = [{{#requiredPathParams}}
+        '{{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}' =>
+            ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}},{{/requiredPathParams}}
+        ];
         {{#metaProperties.hasInstanceOperation}}
 
         $this->uri = '{{{apiContextPath}}}';
@@ -66,13 +72,12 @@ class {{apiName}}Context extends InstanceContext {
     /**
      * Access the {{#lambda.camelcase}}{{mountName}}{{/lambda.camelcase}}
      */
-    protected function get{{#lambda.titlecase}}{{mountName}}{{/lambda.titlecase}}(): {{filename}}List {
+    protected function get{{#lambda.titlecase}}{{mountName}}{{/lambda.titlecase}}(): {{filename}}List
+    {
         if (!$this->_{{#lambda.camelcase}}{{mountName}}{{/lambda.camelcase}}) {
             $this->_{{#lambda.camelcase}}{{mountName}}{{/lambda.camelcase}} = new {{filename}}List(
-                $this->version
-                {{#requiredPathParams}}
-                , $this->solution['{{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}']
-                {{/requiredPathParams}}
+                $this->version{{#requiredPathParams}},
+                $this->solution['{{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}']{{/requiredPathParams}}
             );
         }
 
@@ -91,7 +96,8 @@ class {{apiName}}Context extends InstanceContext {
      *
      * @return string Machine friendly representation
      */
-    public function __toString(): string {
+    public function __toString(): string
+    {
         $context = [];
         foreach ($this->solution as $key => $value) {
             $context[] = "$key=$value";

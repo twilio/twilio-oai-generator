@@ -9,9 +9,11 @@ import org.openapitools.codegen.CodegenProperty;
 
 import static com.twilio.oai.common.ApplicationConstants.ARRAY;
 import static com.twilio.oai.common.ApplicationConstants.STRING;
+import static com.twilio.oai.resolver.php.PhpParameterResolver.FLOAT;
 
 public class PhpPropertyResolver extends LanguagePropertyResolver {
     public static final String MAP_STRING = "map";
+    public static final String OPEN_API_STRING = "OpenAPI";
 
     public PhpPropertyResolver(IConventionMapper mapper) {
         super(mapper);
@@ -31,11 +33,13 @@ public class PhpPropertyResolver extends LanguagePropertyResolver {
         super.resolveProperties(codegenProperty);
         if (codegenProperty.dataType.equals(LanguageConventionResolver.MIXED)) {
             codegenProperty.dataType = ARRAY;
+            codegenProperty.isArray = true;
         }
         if (codegenProperty.dataType.equalsIgnoreCase(LanguageConventionResolver.MIXED_ARRAY)) {
             codegenProperty.dataType = ARRAY + "[]";
+            codegenProperty.isArray = true;
         }
-        if (codegenProperty.dataType.equals("float")) {
+        if (codegenProperty.dataType.equals(FLOAT)) {
             codegenProperty.dataType = STRING;
         }
         if (codegenProperty.dataType.equals(LanguageConventionResolver.LIST_OBJECT)) {
@@ -44,9 +48,12 @@ public class PhpPropertyResolver extends LanguagePropertyResolver {
         if (codegenProperty.dataType.contains("Enum") || codegenProperty.complexType != null) {
             if (codegenProperty.openApiType.equals(ARRAY)) {
                 codegenProperty.dataType = STRING + "[]";
-            } else {
+            } else if (codegenProperty.openApiType.equals(STRING) || codegenProperty.dataType.contains(OPEN_API_STRING)) {
                 codegenProperty.dataType = STRING;
             }
+        }
+        if(codegenProperty.isNullable && !codegenProperty.required && !codegenProperty.dataType.contains("|null")){
+            codegenProperty.dataType = codegenProperty.dataType + "|null";
         }
     }
 }

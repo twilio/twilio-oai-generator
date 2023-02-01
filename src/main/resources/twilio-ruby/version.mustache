@@ -1,0 +1,70 @@
+{{>licenseInfo}}
+module Twilio
+    module REST
+        class {{domainName}}
+            class {{apiVersionClass}} < Version
+                ##
+                # Initialize the {{apiVersionClass}} version of {{domainName}}
+                def initialize(domain)
+                    super
+                    @version = '{{version}}'
+                {{#versionResources}}
+                    @{{mountName}} = nil
+                {{/versionResources}}
+                end
+
+            {{#versionResources}}
+                {{#pathParams}}
+                ##
+                # @param [String] {{#lambda.lowercase}}{{name}}{{/lambda.lowercase}} {{description}}
+                # @return [Twilio::REST::{{domainName}}::{{apiVersionClass}}::{{resourceName}}Context] if {{#lambda.camelcase}}{{name}}{{/lambda.camelcase}} was passed.
+                # @return [Twilio::REST::{{domainName}}::{{apiVersionClass}}::{{#lambda.camelcase}}{{filename}}{{/lambda.camelcase}}List]
+                def {{mountName}}({{#pathParams}}{{#lambda.camelcase}}{{name}} {{/lambda.camelcase}}=:unset{{/pathParams}})
+                    if {{#lambda.lowercase}}{{name}}{{/lambda.lowercase}}.nil?
+                        raise ArgumentError, '{{#lambda.camelcase}}{{name}} {{/lambda.camelcase}} cannot be nil'
+                    end
+                    if {{#lambda.lowercase}}{{name}} {{/lambda.lowercase}} == :unset
+                        @{{mountName}} ||= {{resourceName}}List.new self
+                    else
+                        {{resourceName}}Context.new(self, {{#lambda.lowercase}}{{name}}{{/lambda.lowercase}})
+                    end
+                end
+                {{/pathParams}}
+                {{^pathParams}}
+                ##
+                # @return [Twilio::REST::{{domainName}}::{{apiVersionClass}}::{{#lambda.camelcase}}{{mountName}}{{/lambda.camelcase}}Context]
+                def {{mountName}}
+                    @{{mountName}} ||= {{resourceName}}List.new self
+                end
+                {{/pathParams}}
+            {{/versionResources}}
+
+            {{#isApiDomain}}
+                {{#param}}
+                ##
+                # {{filename}} provided as the authenticating account
+                def {{mountName}}
+                    @{{mountName}} ||= {{importName}}.new(self, @domain.client.{{param}})
+                end
+                {{/param}}
+
+                ##
+                # Setter to override the primary account
+                def account=(value)
+                    @account = value
+                end
+                {{#versionDependents}}
+                def {{mountName}}{{#params}}({{#lambda.camelcase}}{{.}}{{/lambda.camelcase}} =:unset){{/params}}
+                    self.account.{{mountName}}({{#params}}{{#lambda.camelcase}}{{.}}{{/lambda.camelcase}}{{/params}})
+                end
+                {{/versionDependents}}
+            {{/isApiDomain}}
+                ##
+                # Provide a user friendly representation
+                def to_s
+                    '<Twilio::REST::{{domainName}}::{{apiVersionClass}}>';
+                end
+            end
+        end
+    end
+end

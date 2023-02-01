@@ -5,6 +5,7 @@ import com.twilio.oai.PathUtils;
 import com.twilio.oai.StringHelper;
 import com.twilio.oai.common.Utility;
 import com.twilio.oai.resolver.Resolver;
+import com.twilio.oai.resource.Resource;
 import com.twilio.oai.template.IApiActionTemplate;
 import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenOperation;
@@ -29,7 +30,7 @@ public abstract class ApiResourceBuilder implements IApiResourceBuilder {
     protected Map<String, Object> metaAPIProperties = new HashMap<>();
     protected String version = "";
     protected final String recordKey;
-    protected String apiPath ="";
+    protected String apiPath = "";
     protected String namespaceSubPart = "";
 
     protected ApiResourceBuilder(IApiActionTemplate template, List<CodegenOperation> codegenOperations, List<CodegenModel> allModels) {
@@ -52,19 +53,19 @@ public abstract class ApiResourceBuilder implements IApiResourceBuilder {
 
             if (codegenOperation.vendorExtensions.containsKey("x-ignore")) {
                 requiredPathParams.addAll(codegenOperation.pathParams
-                                              .stream()
-                                              .filter(PathUtils::isParentParam)
-                                              .filter(codegenParameter -> requiredPathParams
-                                                  .stream()
-                                                  .noneMatch(param -> param.baseName.equals(codegenParameter.baseName)))
-                                              .collect(Collectors.toList()));
+                        .stream()
+                        .filter(PathUtils::isParentParam)
+                        .filter(codegenParameter -> requiredPathParams
+                                .stream()
+                                .noneMatch(param -> param.baseName.equals(codegenParameter.baseName)))
+                        .collect(Collectors.toList()));
             } else {
                 requiredPathParams.addAll(codegenOperation.pathParams
-                                              .stream()
-                                              .filter(codegenParameter -> requiredPathParams
-                                                  .stream()
-                                                  .noneMatch(param -> param.baseName.equals(codegenParameter.baseName)))
-                                              .collect(Collectors.toList()));
+                        .stream()
+                        .filter(codegenParameter -> requiredPathParams
+                                .stream()
+                                .noneMatch(param -> param.baseName.equals(codegenParameter.baseName)))
+                        .collect(Collectors.toList()));
             }
 
             codegenOperation.vendorExtensions.putAll(mapOperation(codegenOperation));
@@ -141,12 +142,12 @@ public abstract class ApiResourceBuilder implements IApiResourceBuilder {
         operationMap.put("hasOptionalHeaderParams",
                 (operation.optionalParams.stream().anyMatch(param -> param.isHeaderParam)));
         operationMap.put("hasOptionalFormParams",
-                (operation.optionalParams.stream().anyMatch(param-> param.isFormParam)));
+                (operation.optionalParams.stream().anyMatch(param -> param.isFormParam)));
         return operationMap;
     }
 
     private void applyListOperation(CodegenOperation operation, Map<String, Object> operationMap) {
-        if(!operation.vendorExtensions.containsKey("x-ignore")) {
+        if (!operation.vendorExtensions.containsKey("x-ignore")) {
             operationMap.put("x-resource-name", getApiName() + "ListInstance");
             metaAPIProperties.put("x-is-list-operation", "true");
             metaAPIProperties.put(META_LIST_PARAMETER_KEY, operation.allParams);
@@ -154,7 +155,7 @@ public abstract class ApiResourceBuilder implements IApiResourceBuilder {
     }
 
     private void applyInstanceOperation(CodegenOperation operation, Map<String, Object> operationMap) {
-        if(!operation.vendorExtensions.containsKey("x-ignore")) {
+        if (!operation.vendorExtensions.containsKey("x-ignore")) {
             operationMap.put("x-resource-name", getApiName() + "Context");
             metaAPIProperties.put("x-is-context-operation", "true");
             metaAPIProperties.put(META_CONTEXT_PARAMETER_KEY, operation.allParams);
@@ -174,6 +175,10 @@ public abstract class ApiResourceBuilder implements IApiResourceBuilder {
         return Utility.getModelByClassname(allModels, classname);
     }
 
+    protected Optional<CodegenModel> getModelbyName(final String name) {
+        return Utility.getModelByName(allModels, name);
+    }
+
     protected void addModel(final Map<String, CodegenModel> models, final String complexType, final String dataType) {
         getModelByClassname(complexType != null ? complexType : dataType).ifPresent(model -> {
             if (models.putIfAbsent(model.getClassname(), model) == null) {
@@ -188,8 +193,8 @@ public abstract class ApiResourceBuilder implements IApiResourceBuilder {
             for (CodegenProperty property : codegenModel.vars) {
                 property.nameInCamelCase = StringHelper.camelize(property.nameInSnakeCase);
                 if (Arrays
-                    .stream(Operation.values())
-                    .anyMatch(value -> value.getValue().equals(property.nameInCamelCase))) {
+                        .stream(Operation.values())
+                        .anyMatch(value -> value.getValue().equals(property.nameInCamelCase))) {
                     property.nameInCamelCase = "_" + property.nameInCamelCase;
                 }
                 distinctResponseModels.add(property);
@@ -204,7 +209,23 @@ public abstract class ApiResourceBuilder implements IApiResourceBuilder {
 
     public String getApiName() {
         final List<String> filePathArray = new ArrayList<>(Arrays.asList(codegenOperationList.get(0).baseName.split(
-            PATH_SEPARATOR_PLACEHOLDER)));
+                PATH_SEPARATOR_PLACEHOLDER)));
         return filePathArray.remove(filePathArray.size() - 1);
+    }
+
+    static void updateDependents(DirectoryStructureService directoryStructureService, List<Resource> resourceList, List<Object> dependentList) {
+        resourceList.forEach(dependent -> dependent.getPathItem().readOperations()
+                .forEach(opr -> directoryStructureService.addContextdependents(dependentList,
+                        dependent.getName(),
+                        opr)));
+        resourceList.stream().filter(dependent -> dependent.getPathItem().readOperations().isEmpty()).
+                forEach(dep -> directoryStructureService.addContextdependents(dependentList, dep.getName(), null));
+
+        dependentList.stream().map(DirectoryStructureService.ContextResource.class::cast)
+                .map(contextResource -> {
+                    if (contextResource.getParent().matches("(.*)Function\\\\(.*)"))
+                        contextResource.setParent(contextResource.getParent().replaceAll("\\\\Function\\\\", "\\\\TwilioFunction\\\\"));
+                    return (Object) contextResource;
+                }).collect(Collectors.toList());
     }
 }

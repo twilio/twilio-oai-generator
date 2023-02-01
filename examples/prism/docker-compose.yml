@@ -62,6 +62,16 @@ services:
       - prism_flex_v1
       - prism_versionless
 
+  python-test:
+    build:
+      context: ../python
+    volumes:
+      - ../python:/local
+    depends_on:
+      - prism_api_v2010
+      - prism_flex_v1
+      - prism_versionless
+
   prism_api_v2010:
     image: stoplight/prism:4.10.3
     volumes:

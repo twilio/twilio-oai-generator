@@ -1,0 +1,28 @@
+                class {{apiName}}Page < Page
+                    ##
+                    # Initialize the {{apiName}}Page
+                    # @param [Version] version Version that contains the resource
+                    # @param [Response] response Response from the API
+                    # @param [Hash] solution Path solution for the resource
+                    # @return [{{apiName}}Page] {{apiName}}Page
+                    def initialize(version, response, solution)
+                        super(version, response)
+
+                        # Path Solution
+                        @solution = solution
+                    end
+
+                    ##
+                    # Build an instance of {{apiName}}Instance
+                    # @param [Hash] payload Payload response from the API
+                    # @return [{{apiName}}Instance] {{apiName}}Instance
+                    def get_instance(payload)
+                        {{apiName}}Instance.new(@version, payload{{#listPathParams}}, {{paramName}}: @solution[:{{paramName}}]{{/listPathParams}})
+                    end
+
+                    ##
+                    # Provide a user friendly representation
+                    def to_s
+                        '<Twilio.{{domainName}}.{{apiVersionClass}}.{{apiName}}Page>'
+                    end
+                end

@@ -1,0 +1,21 @@
+{{#resources}}
+{{>licenseInfo}}
+
+module Twilio
+    module REST
+        class {{domainName}} < Domain
+            class {{apiVersionClass}} < Version
+{{#hasParents}}
+{{>parentContext}}
+{{/hasParents}}
+{{^hasParents}}
+{{>list}}
+{{>context}}
+{{>page}}
+{{>instance}}
+            end
+        end
+    end
+end
+{{/hasParents}}
+{{/resources}}
