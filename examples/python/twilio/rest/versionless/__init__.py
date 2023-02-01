@@ -13,9 +13,32 @@
 """
 
 from twilio.base.version import Version
-# TODO: add other imports
+from twilio.base.domain import Domain
+from twilio.rest.versionless.deployed_devices.fleet import FleetListInstance
 
-class V(Version):
-    def __init__(self, domain):
-        pass
 
+class DeployedDevices(Version):
+
+    def __init__(self, domain: Domain):
+        """
+        Initialize the DeployedDevices version of versionless
+
+        :param domain: The Twilio.versionless domain
+        """
+        super().__init__(domain)
+        self.version = 'DeployedDevices'
+        self._fleets = None
+        
+    @property
+    def fleets(self) -> FleetListInstance:
+        if self._fleets is None:
+            self._fleets = FleetListInstance(self)
+        return self._fleets
+
+    def __repr__(self) -> str:
+        """
+        Provide a friendly representation
+        :returns: Machine friendly representation
+        :rtype: str
+        """
+        return '<Twilio.versionless.DeployedDevices>'

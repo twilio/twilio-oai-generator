@@ -1,8 +1,31 @@
 {{>licenseInfo}}
 from twilio.base.version import Version
-# TODO: add other imports
+from twilio.base.domain import Domain
+{{#versionResources}}from twilio.rest.{{domainPackage}}.{{apiVersion}}.{{filename}} import {{importName}}
+{{/versionResources}}
 
-class V(Version):
-    def __init__(self, domain):
-        pass
+class {{apiVersionClass}}(Version):
 
+    def __init__(self, domain: Domain):
+        """
+        Initialize the {{apiVersionClass}} version of {{domainPackage}}
+
+        :param domain: The Twilio.{{domainPackage}} domain
+        """
+        super().__init__(domain)
+        self.version = '{{version}}'
+        {{#versionResources}}self._{{mountName}} = None
+        {{/versionResources}}
+    {{#versionResources}}@property
+    def {{mountName}}(self) -> {{importName}}:
+        if self._{{mountName}} is None:
+            self._{{mountName}} = {{importName}}(self{{#param}}, self.domain.twilio.{{param}}{{/param}})
+        return self._{{mountName}}
+
+    {{/versionResources}}def __repr__(self) -> str:
+        """
+        Provide a friendly representation
+        :returns: Machine friendly representation
+        :rtype: str
+        """
+        return '<Twilio.{{domainPackage}}.{{apiVersionClass}}>'

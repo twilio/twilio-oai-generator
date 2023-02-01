@@ -13,9 +13,40 @@
 """
 
 from twilio.base.version import Version
-# TODO: add other imports
+from twilio.base.domain import Domain
+from twilio.rest.api.v2010.account import AccountListInstance
+from twilio.rest.api.v2010.account import AccountContext
 
-class V(Version):
-    def __init__(self, domain):
-        pass
 
+class V2010(Version):
+
+    def __init__(self, domain: Domain):
+        """
+        Initialize the V2010 version of api
+
+        :param domain: The Twilio.api domain
+        """
+        super().__init__(domain)
+        self.version = '2010-04-01'
+        self._accounts = None
+        self._account = None
+        
+    @property
+    def accounts(self) -> AccountListInstance:
+        if self._accounts is None:
+            self._accounts = AccountListInstance(self)
+        return self._accounts
+
+    @property
+    def account(self) -> AccountContext:
+        if self._account is None:
+            self._account = AccountContext(self, self.domain.twilio.account_sid)
+        return self._account
+
+    def __repr__(self) -> str:
+        """
+        Provide a friendly representation
+        :returns: Machine friendly representation
+        :rtype: str
+        """
+        return '<Twilio.api.V2010>'

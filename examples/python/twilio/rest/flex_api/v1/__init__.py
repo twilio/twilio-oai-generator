@@ -13,9 +13,40 @@
 """
 
 from twilio.base.version import Version
-# TODO: add other imports
+from twilio.base.domain import Domain
+from twilio.rest.flex_api.v1.call import CallListInstance
+from twilio.rest.flex_api.v1.credential import CredentialListInstance
 
-class V(Version):
-    def __init__(self, domain):
-        pass
 
+class V1(Version):
+
+    def __init__(self, domain: Domain):
+        """
+        Initialize the V1 version of flex_api
+
+        :param domain: The Twilio.flex_api domain
+        """
+        super().__init__(domain)
+        self.version = 'v1'
+        self._calls = None
+        self._credentials = None
+        
+    @property
+    def calls(self) -> CallListInstance:
+        if self._calls is None:
+            self._calls = CallListInstance(self)
+        return self._calls
+
+    @property
+    def credentials(self) -> CredentialListInstance:
+        if self._credentials is None:
+            self._credentials = CredentialListInstance(self)
+        return self._credentials
+
+    def __repr__(self) -> str:
+        """
+        Provide a friendly representation
+        :returns: Machine friendly representation
+        :rtype: str
+        """
+        return '<Twilio.flex_api.V1>'
