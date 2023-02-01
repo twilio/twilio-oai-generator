@@ -40,12 +40,12 @@ func Resource{{name}}() *schema.Resource {
 {{#operations}}
 {{#operation}}
 func {{#vendorExtensions.x-is-create-operation}}create{{/vendorExtensions.x-is-create-operation}}{{#vendorExtensions.x-is-fetch-operation}}read{{/vendorExtensions.x-is-fetch-operation}}{{#vendorExtensions.x-is-update-operation}}update{{/vendorExtensions.x-is-update-operation}}{{#vendorExtensions.x-is-delete-operation}}delete{{/vendorExtensions.x-is-delete-operation}}{{name}}(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-    {{#vendorExtensions.x-has-optional-params}}
+    {{#hasOptionalParams}}
     params := {{nickname}}Params{}
     if err := UnmarshalSchema(&params, d); err != nil {
         return diag.FromErr(err)
     }
-    {{/vendorExtensions.x-has-optional-params}}
+    {{/hasOptionalParams}}
 
     {{#allParams}}
     {{#isPathParam}}
@@ -56,7 +56,7 @@ func {{#vendorExtensions.x-is-create-operation}}create{{/vendorExtensions.x-is-c
     {{/allParams}}
 
     {{#vendorExtensions.x-is-create-operation}}
-        r, err := m.(*client.Config).Client.{{domainName}}{{apiVersionClass}}.{{nickname}}({{#pathParams}}{{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^-last}}, {{/-last}}{{/pathParams}}{{#vendorExtensions.x-has-optional-params}}{{#hasPathParams}}, {{/hasPathParams}}&params{{/vendorExtensions.x-has-optional-params}})
+        r, err := m.(*client.Config).Client.{{domainName}}{{apiVersionClass}}.{{nickname}}({{#pathParams}}{{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^-last}}, {{/-last}}{{/pathParams}}{{#hasOptionalParams}}{{#hasPathParams}}, {{/hasPathParams}}&params{{/hasOptionalParams}})
         if err != nil {
             return diag.FromErr(err)
         }
@@ -80,7 +80,7 @@ func {{#vendorExtensions.x-is-create-operation}}create{{/vendorExtensions.x-is-c
         {{/vendorExtensions.x-update-after-create}}
     {{/vendorExtensions.x-is-create-operation}}
     {{#vendorExtensions.x-is-fetch-operation}}
-        r, err := m.(*client.Config).Client.{{domainName}}{{apiVersionClass}}.{{nickname}}({{#pathParams}}{{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^-last}}, {{/-last}}{{/pathParams}}{{#vendorExtensions.x-has-optional-params}}{{#hasPathParams}}, {{/hasPathParams}}&params{{/vendorExtensions.x-has-optional-params}})
+        r, err := m.(*client.Config).Client.{{domainName}}{{apiVersionClass}}.{{nickname}}({{#pathParams}}{{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^-last}}, {{/-last}}{{/pathParams}}{{#hasOptionalParams}}{{#hasPathParams}}, {{/hasPathParams}}&params{{/hasOptionalParams}})
         if err != nil {
             return diag.FromErr(err)
         }
@@ -93,7 +93,7 @@ func {{#vendorExtensions.x-is-create-operation}}create{{/vendorExtensions.x-is-c
         return nil
     {{/vendorExtensions.x-is-fetch-operation}}
     {{#vendorExtensions.x-is-update-operation}}
-        r, err := m.(*client.Config).Client.{{domainName}}{{apiVersionClass}}.{{nickname}}({{#pathParams}}{{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^-last}}, {{/-last}}{{/pathParams}}{{#vendorExtensions.x-has-optional-params}}{{#hasPathParams}}, {{/hasPathParams}}&params{{/vendorExtensions.x-has-optional-params}})
+        r, err := m.(*client.Config).Client.{{domainName}}{{apiVersionClass}}.{{nickname}}({{#pathParams}}{{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^-last}}, {{/-last}}{{/pathParams}}{{#hasOptionalParams}}{{#hasPathParams}}, {{/hasPathParams}}&params{{/hasOptionalParams}})
         if err != nil {
             return diag.FromErr(err)
         }
@@ -106,7 +106,7 @@ func {{#vendorExtensions.x-is-create-operation}}create{{/vendorExtensions.x-is-c
         return nil
     {{/vendorExtensions.x-is-update-operation}}
     {{#vendorExtensions.x-is-delete-operation}}
-        err := m.(*client.Config).Client.{{domainName}}{{apiVersionClass}}.{{nickname}}({{#pathParams}}{{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^-last}}, {{/-last}}{{/pathParams}}{{#vendorExtensions.x-has-optional-params}}{{#hasPathParams}}, {{/hasPathParams}}&params{{/vendorExtensions.x-has-optional-params}})
+        err := m.(*client.Config).Client.{{domainName}}{{apiVersionClass}}.{{nickname}}({{#pathParams}}{{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^-last}}, {{/-last}}{{/pathParams}}{{#hasOptionalParams}}{{#hasPathParams}}, {{/hasPathParams}}&params{{/hasOptionalParams}})
         if err != nil {
             return diag.FromErr(err)
         }
