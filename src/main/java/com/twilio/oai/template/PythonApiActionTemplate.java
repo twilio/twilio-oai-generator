@@ -1,5 +1,6 @@
 package com.twilio.oai.template;
 
+import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -13,6 +14,24 @@ public class PythonApiActionTemplate extends AbstractApiActionTemplate {
 
     @Override
     public Map<String, List<String>> mapping() {
-        return Map.of(API_TEMPLATE, Arrays.asList("api-single.mustache", ".py"));
+        return Map.of(API_TEMPLATE,
+                     Arrays.asList("api-single.mustache", ".py"),
+                     VERSION_TEMPLATE,
+                     Arrays.asList("version.mustache", ".py"));
+    }
+
+    @Override
+    protected String getVersionFilename(final String apiVersionClass){
+        return "__init__";
+    }
+
+    @Override
+    public void addSupportVersion(){
+        super.addSupportVersion();
+    }
+
+    @Override
+    protected String getDestinationFilename(String apiVersionClass, String fileExtension){
+        return "." + File.separator + getVersionFilename(apiVersionClass) + fileExtension;
     }
 }

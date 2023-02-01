@@ -53,12 +53,15 @@ public abstract class AbstractApiActionTemplate implements IApiActionTemplate {
         if (apiVersionClass.startsWith("V")) {
             codegen
                 .supportingFiles()
-                .add(new SupportingFile(templateStrings.get(0),
-                                        ".." + File.separator + getVersionFilename(apiVersionClass) +
-                                            templateStrings.get(1)));
+                    .add(new SupportingFile(templateStrings.get(0),
+                            getDestinationFilename(apiVersionClass, templateStrings.get(1))));
         } else {
             codegen.apiTemplateFiles().put(templateStrings.get(0), templateStrings.get(1));
         }
+    }
+
+    protected String getDestinationFilename(String apiVersionClass, String fileExtension){
+        return ".." + File.separator + getVersionFilename(apiVersionClass) + fileExtension;
     }
 
     protected String getVersionFilename(final String apiVersionClass) {
