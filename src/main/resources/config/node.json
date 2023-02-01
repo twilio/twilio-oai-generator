@@ -1,10 +1,10 @@
 {
     "library": {
         "phone_number_capabilities": {
-            "PhoneNumberCapabilities": "src/interfaces"
+            "PhoneNumberCapabilities": "interfaces"
         },
         "twiml": {
-            "TwiML": "src/twiml/TwiML"
+            "TwiML": "twiml/TwiML"
         }
     },
 
