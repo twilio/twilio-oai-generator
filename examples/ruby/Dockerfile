@@ -1,4 +1,4 @@
-FROM ruby:2.7
+FROM ruby:3.0
 
 RUN apt-get update -y && apt-get install -y git
 
@@ -8,4 +8,4 @@ WORKDIR /app/twilio-ruby/
 
 
 # pipefail prevents errors in a pipeline from being masked.
-CMD ["/bin/bash", "-c", "set -o pipefail && sleep 10 && make install test 2>&1 | tee /local/test-report.out"]
+CMD ["/bin/bash", "-c", "set -o pipefail && sleep 10 && make install test 2>&1 | tee /local/test-report.out && cp -r coverage /local"]
