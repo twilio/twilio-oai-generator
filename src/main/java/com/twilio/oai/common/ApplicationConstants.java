@@ -39,4 +39,5 @@ public class ApplicationConstants {
     public static final String VENDOR_PREFIX = "x-";
     public static final String SERIALIZE_VEND_EXT = "x-serialize";
     public static final String DESERIALIZE_VEND_EXT = "x-deserialize";
+    public static final String ACCOUNT_SID_VEND_EXT = "x-is-account-sid";
 }
