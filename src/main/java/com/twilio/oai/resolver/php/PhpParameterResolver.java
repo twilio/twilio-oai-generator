@@ -40,6 +40,9 @@ public class PhpParameterResolver extends LanguageParamResolver {
         if (codegenParameter.dataType.contains("Enum") || codegenParameter.dataType == FLOAT) {
             codegenParameter.dataType = STRING;
         }
+        if (codegenParameter.dataType.equals(STRING)) {
+            codegenParameter.isString = true;
+        }
     }
 
     @Override

@@ -1,3 +1,6 @@
-{{#vendorExtensions.optionFileParams}}{{^isArray}}
-        {{dataType}} ${{paramName}} = Values::NONE{{vendorExtensions.optionFileSeparator}}{{/isArray}}{{#isArray}}
-        array ${{paramName}} = Values::ARRAY_NONE{{vendorExtensions.optionFileSeparator}}{{/isArray}}{{/vendorExtensions.optionFileParams}}
+{{#vendorExtensions.optionFileParams}}{{#isString}}{{^isArray}}{{^isDate}}{{^isDateTime}}
+        {{dataType}} ${{paramName}} = Values::NONE{{vendorExtensions.optionFileSeparator}}{{/isDateTime}}{{/isDate}}{{/isArray}}{{/isString}}{{^isArray}}{{^isDate}}{{^isDateTime}}{{^isString}}
+        {{dataType}} ${{paramName}} = Values::{{#lambda.uppercase}}{{dataType}}{{/lambda.uppercase}}_NONE{{vendorExtensions.optionFileSeparator}}{{/isString}}{{/isDateTime}}{{/isDate}}{{/isArray}}{{#isArray}}
+        array ${{paramName}} = Values::ARRAY_NONE{{vendorExtensions.optionFileSeparator}}{{/isArray}}{{#isDate}}
+        {{dataType}} ${{paramName}} = null{{vendorExtensions.optionFileSeparator}}{{/isDate}}{{#isDateTime}}
+        {{dataType}} ${{paramName}} = null{{vendorExtensions.optionFileSeparator}}{{/isDateTime}}{{/vendorExtensions.optionFileParams}}
