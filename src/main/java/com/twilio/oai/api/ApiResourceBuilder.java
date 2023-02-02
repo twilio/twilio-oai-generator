@@ -106,6 +106,11 @@ public abstract class ApiResourceBuilder implements IApiResourceBuilder {
     }
 
     @Override
+    public ApiResourceBuilder updateVersionImports(){
+        return this;
+    }
+
+    @Override
     public ApiResources build() {
         return new ApiResources(this);
     }

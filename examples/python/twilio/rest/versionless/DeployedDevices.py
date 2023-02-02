@@ -14,7 +14,7 @@
 
 from twilio.base.version import Version
 from twilio.base.domain import Domain
-from twilio.rest.versionless.deployed_devices.fleet import FleetListInstance
+from twilio.rest.versionless.deployed_devices.fleet import FleetList
 
 
 class DeployedDevices(Version):
@@ -30,9 +30,9 @@ class DeployedDevices(Version):
         self._fleets = None
         
     @property
-    def fleets(self) -> FleetListInstance:
+    def fleets(self) -> FleetList:
         if self._fleets is None:
-            self._fleets = FleetListInstance(self)
+            self._fleets = FleetList(self)
         return self._fleets
 
     def __repr__(self) -> str:

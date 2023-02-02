@@ -14,7 +14,7 @@
 
 from twilio.base.version import Version
 from twilio.base.domain import Domain
-from twilio.rest.versionless.understand.assistant import AssistantListInstance
+from twilio.rest.versionless.understand.assistant import AssistantList
 
 
 class Understand(Version):
@@ -30,9 +30,9 @@ class Understand(Version):
         self._assistants = None
         
     @property
-    def assistants(self) -> AssistantListInstance:
+    def assistants(self) -> AssistantList:
         if self._assistants is None:
-            self._assistants = AssistantListInstance(self)
+            self._assistants = AssistantList(self)
         return self._assistants
 
     def __repr__(self) -> str:

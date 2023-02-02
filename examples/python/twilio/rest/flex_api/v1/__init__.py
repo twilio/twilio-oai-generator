@@ -14,8 +14,8 @@
 
 from twilio.base.version import Version
 from twilio.base.domain import Domain
-from twilio.rest.flex_api.v1.call import CallListInstance
-from twilio.rest.flex_api.v1.credential import CredentialListInstance
+from twilio.rest.flex_api.v1.call import CallList
+from twilio.rest.flex_api.v1.credential import CredentialList
 
 
 class V1(Version):
@@ -32,15 +32,15 @@ class V1(Version):
         self._credentials = None
         
     @property
-    def calls(self) -> CallListInstance:
+    def calls(self) -> CallList:
         if self._calls is None:
-            self._calls = CallListInstance(self)
+            self._calls = CallList(self)
         return self._calls
 
     @property
-    def credentials(self) -> CredentialListInstance:
+    def credentials(self) -> CredentialList:
         if self._credentials is None:
-            self._credentials = CredentialListInstance(self)
+            self._credentials = CredentialList(self)
         return self._credentials
 
     def __repr__(self) -> str:

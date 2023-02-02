@@ -4,6 +4,8 @@ import com.twilio.oai.DirectoryStructureService;
 import com.twilio.oai.resolver.Resolver;
 import com.twilio.oai.template.IApiActionTemplate;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.openapitools.codegen.CodegenModel;
@@ -28,8 +30,19 @@ public class PythonApiResourceBuilder extends FluentApiResourceBuilder {
             if (co.operationId.startsWith("list")) {
                 addOperationName(co, "Page");
             }
-        }
 
+            dependents.values().forEach(dependent -> {
+                dependent.setImportName(dependent.getImportName().replace("Instance", ""));
+            });
+
+        }
+        return this;
+    }
+
+    @Override
+    public ApiResourceBuilder updateVersionImports(){
+        ArrayList<DirectoryStructureService.DependentResource> versionResources = (ArrayList<DirectoryStructureService.DependentResource>) this.directoryStructureService.getAdditionalProperties().get("versionResources");
+        versionResources.forEach(versionResource -> versionResource.setImportName(versionResource.getImportName().replace("Instance", "")));
         return this;
     }
 }

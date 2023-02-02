@@ -23,7 +23,7 @@ from twilio.base.version import Version
 
 from twilio.base.page import Page
 
-# from twilio.rest.account.call import CallListInstance
+# from twilio.rest.account.call import CallList
 
 
 class AccountContext(InstanceContext):
