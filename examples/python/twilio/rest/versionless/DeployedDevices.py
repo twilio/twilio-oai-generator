@@ -41,4 +41,4 @@ class DeployedDevices(Version):
         :returns: Machine friendly representation
         :rtype: str
         """
-        return '<Twilio.versionless.DeployedDevices>'
+        return '<Twilio.Versionless.DeployedDevices>'
