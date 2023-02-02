@@ -1,6 +1,5 @@
 package com.twilio.oai.template;
 
-import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -22,7 +21,7 @@ public class PythonApiActionTemplate extends AbstractApiActionTemplate {
 
     @Override
     protected String getVersionFilename(final String apiVersionClass){
-        if (apiVersionClass.startsWith("V")){
+        if (apiVersionClass.startsWith("V")) {
             return "__init__";
         }
         return apiVersionClass;
@@ -30,6 +29,6 @@ public class PythonApiActionTemplate extends AbstractApiActionTemplate {
 
     @Override
     protected String getDestinationFilename(String apiVersionClass, String fileExtension){
-        return "." + File.separator + getVersionFilename(apiVersionClass) + fileExtension;
+        return getVersionFilename(apiVersionClass) + fileExtension;
     }
 }
