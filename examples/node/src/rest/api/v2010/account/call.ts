@@ -18,7 +18,7 @@ const deserialize = require("../../../../base/deserialize");
 const serialize = require("../../../../base/serialize");
 import { isValidPathParam } from "../../../../base/utility";
 import { FeedbackCallSummaryListInstance } from "./call/feedbackCallSummary";
-import { PhoneNumberCapabilities } from "../../../../../src/interfaces";
+import { PhoneNumberCapabilities } from "../../../../interfaces";
 
 export class TestResponseObjectTestArrayOfObjects {
   "count"?: number;
