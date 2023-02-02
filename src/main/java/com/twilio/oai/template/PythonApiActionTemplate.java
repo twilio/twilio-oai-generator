@@ -22,12 +22,10 @@ public class PythonApiActionTemplate extends AbstractApiActionTemplate {
 
     @Override
     protected String getVersionFilename(final String apiVersionClass){
-        return "__init__";
-    }
-
-    @Override
-    public void addSupportVersion(){
-        super.addSupportVersion();
+        if (apiVersionClass.startsWith("V")){
+            return "__init__";
+        }
+        return apiVersionClass;
     }
 
     @Override
