@@ -21,8 +21,7 @@ from twilio.base.instance_resource import InstanceResource
 from twilio.base.list_resource import ListResource
 from twilio.base.version import Version
 
-# from twilio.rest.call.feedback_call_summary import FeedbackCallSummaryList
-
+# from twilio.rest.call.feedback_call_summary import FeedbackCallSummaryListInstance
 
 
 class CallContext(InstanceContext):
