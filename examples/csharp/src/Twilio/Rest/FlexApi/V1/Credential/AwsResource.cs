@@ -207,8 +207,8 @@ namespace Twilio.Rest.FlexApi.V1.Credential
         #endif
         /// <summary> read </summary>
         /// <param name="pageSize">  </param>
-        /// <param name="client"> Client to make requests to Twilio </param>
         /// <param name="limit"> Record limit </param>
+        /// <param name="client"> Client to make requests to Twilio </param>
         /// <returns> A single instance of Aws </returns>
         public static ResourceSet<AwsResource> Read(
                                                      int? pageSize = null,
@@ -222,8 +222,8 @@ namespace Twilio.Rest.FlexApi.V1.Credential
         #if !NET35
         /// <summary> read </summary>
         /// <param name="pageSize">  </param>
-        /// <param name="client"> Client to make requests to Twilio </param>
         /// <param name="limit"> Record limit </param>
+        /// <param name="client"> Client to make requests to Twilio </param>
         /// <returns> Task that resolves to A single instance of Aws </returns>
         public static async System.Threading.Tasks.Task<ResourceSet<AwsResource>> ReadAsync(
                                                                                              int? pageSize = null,

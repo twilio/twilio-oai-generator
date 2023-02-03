@@ -30,6 +30,7 @@ public class DirectoryStructureService {
     public static final String VERSION_RESOURCES = "versionResources";
     public static final String ALL_VERSION_RESOURCES = VERSION_RESOURCES + "All";
     public static final String API_VERSION = "apiVersion";
+    public static final List<String> PAGINATION_PARAMS = List.of("PageToken", "Page");
     @Getter
     private final Map<String, Object> additionalProperties;
     @Getter
@@ -39,7 +40,6 @@ public class DirectoryStructureService {
     @Getter
     private boolean isVersionLess = false;
     private final Map<String, String> productMap = new HashMap<>();
-
     private final List<CodegenModel> allModels = new ArrayList<>();
     private final List<Object> dependentList = new ArrayList<>();
 
@@ -94,6 +94,7 @@ public class DirectoryStructureService {
                 }
 
                 updateAccountSidParam(operation);
+                updatePaginationParams(operation);
 
                 pathType.ifPresent(type -> Optional
                         .ofNullable(operation.getExtensions())
@@ -132,6 +133,17 @@ public class DirectoryStructureService {
                 param.required(false);
                 param.addExtension(ACCOUNT_SID_VEND_EXT, true);
             });
+    }
+
+    /**
+     * Remove certain pagination parameters which are not supported in all clients.
+     */
+    private void updatePaginationParams(final Operation operation) {
+        Optional
+            .ofNullable(operation.getParameters())
+            .ifPresent(params -> params.removeIf(param -> PAGINATION_PARAMS
+                .stream()
+                .anyMatch(name -> param.getName().equalsIgnoreCase(name))));
     }
 
     private Stream<Parameter> getParamStream(final Operation operation) {

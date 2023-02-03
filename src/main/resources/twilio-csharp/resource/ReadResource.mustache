@@ -38,7 +38,6 @@
         }
         #endif
         {{>Summary}}{{>resource/MethodsComments}}
-        /// <param name="limit"> Record limit </param>
         {{>resource/ReturnComments}}
         public static ResourceSet<{{resourceName}}{{resourceConstant}}> Read({{#vendorExtensions.x-request-body-param}}
                                                      {{{dataType}}} {{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^required}} = null{{/required}},{{/vendorExtensions.x-request-body-param}}
@@ -51,7 +50,6 @@
 
         #if !NET35
         {{>Summary}}{{>resource/MethodsComments}}
-        /// <param name="limit"> Record limit </param>
         {{>resource/ReturnCommentsAsync}}
         public static async System.Threading.Tasks.Task<ResourceSet<{{resourceName}}{{resourceConstant}}>> ReadAsync({{#vendorExtensions.x-request-body-param}}
                                                                                              {{{dataType}}} {{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^required}} = null{{/required}},{{/vendorExtensions.x-request-body-param}}
