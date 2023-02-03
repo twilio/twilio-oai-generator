@@ -9,11 +9,14 @@ import com.twilio.oai.template.IApiActionTemplate;
 import com.twilio.oai.template.PhpApiActionTemplate;
 import io.swagger.v3.oas.models.OpenAPI;
 import org.apache.commons.lang3.StringUtils;
-import org.openapitools.codegen.*;
+import org.openapitools.codegen.CodegenModel;
+import org.openapitools.codegen.CodegenOperation;
+import org.openapitools.codegen.CodegenParameter;
+import org.openapitools.codegen.CodegenProperty;
 
 import java.util.*;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-import java.util.regex.*;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
@@ -21,6 +24,7 @@ import static com.twilio.oai.common.ApplicationConstants.PATH_SEPARATOR_PLACEHOL
 import static com.twilio.oai.common.ApplicationConstants.TWILIO_EXTENSION_NAME;
 
 public class PhpApiResourceBuilder extends ApiResourceBuilder {
+    public final static String TAB_WHITESPACES = "    ";
     private final HashSet<String> pathSet = new HashSet<>();
     private final List<CodegenOperation> listOperations = new ArrayList<>();
     private final List<CodegenOperation> instanceOperations = new ArrayList<>();
@@ -73,7 +77,9 @@ public class PhpApiResourceBuilder extends ApiResourceBuilder {
         codegenOperationList.forEach(operation -> {
             if (!pathSet.contains(operation.path)) {
                 List<Resource> dependents = StreamSupport.stream(directoryStructureService.getResourceTree().getResources().spliterator(), false)
-                        .filter(resource -> PathUtils.removeFirstPart(operation.path).equals(PathUtils.getTwilioExtension(resource.getPathItem(), "parent").orElse(null)))
+                        .filter(resource -> PathUtils.removeFirstPart(operation.path)
+                                .equals(PathUtils.getTwilioExtension(resource.getPathItem(), "parent")
+                                        .orElse(null)))
                         .collect(Collectors.toList());
 
                 List<Resource> methodDependents = dependents.stream().filter(dep ->
@@ -99,21 +105,6 @@ public class PhpApiResourceBuilder extends ApiResourceBuilder {
         return this;
     }
 
-    private static void updateDependents(DirectoryStructureService directoryStructureService, List<Resource> resourceList, List<Object> dependentList) {
-        resourceList.forEach(dependent -> dependent.getPathItem().readOperations()
-                .forEach(opr -> directoryStructureService.addContextdependents(dependentList,
-                        dependent.getName(),
-                        opr)));
-        resourceList.stream().filter(dependent -> dependent.getPathItem().readOperations().isEmpty()).
-                forEach(dep -> directoryStructureService.addContextdependents(dependentList, dep.getName(), null));
-
-        dependentList.stream().map(DirectoryStructureService.ContextResource.class::cast)
-                .map(contextResource -> {
-                    if (contextResource.getParent().matches("(.*)Function\\\\(.*)"))
-                        contextResource.setParent(contextResource.getParent().replaceAll("\\\\Function\\\\", "\\\\TwilioFunction\\\\"));
-                    return (Object) contextResource;
-                }).collect(Collectors.toList());
-    }
 
     private String formatPath(String path) {
         path = PathUtils.removeFirstPart(path);
@@ -133,7 +124,7 @@ public class PhpApiResourceBuilder extends ApiResourceBuilder {
 
     private String replaceBraces(String path) {
         path = path.replace("{", "' . \\rawurlencode($");
-        return path.replace("}", ") . '");
+        return path.replace("}", ")\n" + TAB_WHITESPACES + TAB_WHITESPACES + ".'");
     }
 
     private void updateNamespaceSubPart(CodegenOperation codegenOperation) {
@@ -283,5 +274,37 @@ public class PhpApiResourceBuilder extends ApiResourceBuilder {
             }
         }
         return conditionalParamSet;
+    }
+
+    @Override
+    public ApiResourceBuilder updateResponseModel(Resolver<CodegenProperty> codegenPropertyResolver) {
+        codegenOperationList.forEach(codegenOperation -> {
+            List<CodegenModel> responseModels = new ArrayList<>();
+            codegenOperation.responses
+                    .stream()
+                    .map(response -> response.baseType)
+                    .filter(Objects::nonNull)
+                    .map(modelName -> this.getModel(modelName, codegenOperation))
+                    .flatMap(Optional::stream)
+                    .forEach(item -> {
+                        item.allVars.stream().filter(var -> var.isModel && var.dataFormat == null).forEach(this::setDataFormatForNestedProperties);
+                        item.vars.stream().filter(var -> var.isModel && var.dataFormat == null).forEach(this::setDataFormatForNestedProperties);
+                        item.vars.forEach(codegenPropertyResolver::resolve);
+                        item.allVars.forEach(codegenPropertyResolver::resolve);
+                        responseModels.add(item);
+                    });
+            this.apiResponseModels.addAll(getDistinctResponseModel(responseModels));
+        });
+        return this;
+    }
+
+    private void setDataFormatForNestedProperties(CodegenProperty codegenProperty) {
+        String ref = codegenProperty.getRef();
+        ref = ref.replaceFirst("#/components/schemas/", "");
+        Optional<CodegenModel> model = this.getModelbyName(ref);
+        if (model.isPresent()) {
+            CodegenModel item = model.get();
+            codegenProperty.dataFormat = item.getFormat();
+        }
     }
 }

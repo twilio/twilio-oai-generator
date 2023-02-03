@@ -14,7 +14,8 @@ namespace Twilio\Rest\{{domainName}}\{{version}}{{namespaceSubPart}};
 {{/responseModels}}
  */
 {{/responseModels.0}}
-class {{apiName}}Instance extends InstanceResource {
+class {{apiName}}Instance extends InstanceResource
+{
 {{#metaProperties.contextImportProperties}}
     protected $_{{#lambda.camelcase}}{{mountName}}{{/lambda.camelcase}};
     {{#-last}}
@@ -27,10 +28,11 @@ class {{apiName}}Instance extends InstanceResource {
      * @param Version $version Version that contains the resource
      * @param mixed[] $payload The response payload
      {{#requiredPathParams}}
-     * @param {{{dataType}}} ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}} {{{description}}}
+     * @param {{{dataType}}} ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}{{#description}} {{{description}}}{{/description}}
      {{/requiredPathParams}}
      */
-    public function __construct(Version $version, array $payload{{#requiredPathParams}}{{#vendorExtensions.x-is-parent-param}}, {{{dataType}}} ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}{{/vendorExtensions.x-is-parent-param}}{{^vendorExtensions.x-is-parent-param}}, {{{dataType}}} ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}} = null{{/vendorExtensions.x-is-parent-param}}{{/requiredPathParams}}) {
+    public function __construct(Version $version, array $payload{{#requiredPathParams}}{{#vendorExtensions.x-is-parent-param}}, {{{dataType}}} ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}{{/vendorExtensions.x-is-parent-param}}{{^vendorExtensions.x-is-parent-param}}, {{{dataType}}} ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}} = null{{/vendorExtensions.x-is-parent-param}}{{/requiredPathParams}})
+    {
         parent::__construct($version);
 
     {{#responseModels.0}}
@@ -57,7 +59,8 @@ class {{apiName}}Instance extends InstanceResource {
      *
      * @return {{apiName}}Context Context for this {{apiName}}Instance
      */
-    protected function proxy(): {{apiName}}Context {
+    protected function proxy(): {{apiName}}Context
+    {
         if (!$this->context) {
             $this->context = new {{apiName}}Context(
                 $this->version{{#requiredPathParams.0}},{{/requiredPathParams.0}}
@@ -82,7 +85,8 @@ class {{apiName}}Instance extends InstanceResource {
     /**
      * Access the {{#lambda.camelcase}}{{mountName}}{{/lambda.camelcase}}
      */
-    protected function get{{#lambda.titlecase}}{{mountName}}{{/lambda.titlecase}}(): {{filename}}List {
+    protected function get{{#lambda.titlecase}}{{mountName}}{{/lambda.titlecase}}(): {{filename}}List
+    {
         return $this->proxy()->{{#lambda.camelcase}}{{mountName}}{{/lambda.camelcase}};
     }
 
@@ -94,7 +98,8 @@ class {{apiName}}Instance extends InstanceResource {
      * @return mixed The requested property
      * @throws TwilioException For unknown properties
      */
-    public function __get(string $name) {
+    public function __get(string $name)
+    {
         if (\array_key_exists($name, $this->properties)) {
             return $this->properties[$name];
         }
@@ -112,7 +117,8 @@ class {{apiName}}Instance extends InstanceResource {
      *
      * @return string Machine friendly representation
      */
-    public function __toString(): string {
+    public function __toString(): string
+    {
         {{#metaProperties.x-is-context-operation}}
         $context = [];
         foreach ($this->solution as $key => $value) {

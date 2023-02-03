@@ -26,19 +26,24 @@ use Twilio\Version;
 use Twilio\InstanceContext;
 use Twilio\Deserialize;
 use Twilio\Serialize;
+use Twilio\Base\PhoneNumberCapabilities;
 
 
-class FleetList extends ListResource {
+class FleetList extends ListResource
+    {
     /**
      * Construct the FleetList
      *
      * @param Version $version Version that contains the resource
      */
-    public function __construct(Version $version) {
+    public function __construct(
+        Version $version
+    ) {
         parent::__construct($version);
 
         // Path Solution
-        $this->solution = [];
+        $this->solution = [
+        ];
 
         $this->uri = '/Fleets';
     }
@@ -50,11 +55,14 @@ class FleetList extends ListResource {
      * @return FleetInstance Created FleetInstance
      * @throws TwilioException When an HTTP error occurs.
      */
-    public function create(array $options = []): FleetInstance {
+    public function create(array $options = []): FleetInstance
+    {
+
         $options = new Values($options);
 
         $data = Values::of([
-            'Name' => $options['name'],
+            'Name' =>
+                $options['name'],
         ]);
 
         $payload = $this->version->create('POST', $this->uri, [], $data);
@@ -65,13 +73,21 @@ class FleetList extends ListResource {
         );
     }
 
+
     /**
      * Constructs a FleetContext
      *
-     * @param string $sid 
+     * @param string $sid
      */
-    public function getContext(string $sid): FleetContext {
-        return new FleetContext($this->version, $sid);
+    public function getContext(
+        string $sid
+        
+    ): FleetContext
+    {
+        return new FleetContext(
+            $this->version,
+            $sid
+        );
     }
 
     /**
@@ -79,7 +95,8 @@ class FleetList extends ListResource {
      *
      * @return string Machine friendly representation
      */
-    public function __toString(): string {
+    public function __toString(): string
+    {
         return '[Twilio.Versionless.DeployedDevices.FleetList]';
     }
 }

@@ -311,7 +311,7 @@ public class JavaApiResourceBuilder extends ApiResourceBuilder{
         CodegenParameter accountSidParam = null;
         List<List<CodegenParameter>> conditionalCodegenParam = new ArrayList<>();
         Optional<CodegenParameter> optionalParam = co.allParams.stream()
-                .filter(param -> param.vendorExtensions.containsKey("x-is-account-sid")).findAny();
+                .filter(param -> param.vendorExtensions.containsKey(ACCOUNT_SID_VEND_EXT)).findAny();
         if(optionalParam.isPresent()){
             accountSidParam = optionalParam.get();
         }

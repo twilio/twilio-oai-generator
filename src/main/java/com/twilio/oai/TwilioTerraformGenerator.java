@@ -144,7 +144,7 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
             this.addParamVendorExtensions(co.bodyParams);
 
             if (!co.optionalParams.isEmpty() || co.requiredParams.stream().anyMatch(p -> !p.isPathParam) ||
-                co.allParams.stream().anyMatch(p -> (boolean) p.vendorExtensions.getOrDefault(VENDOR_EXTENSION_ACCOUNT_SID, false))) {
+                co.allParams.stream().anyMatch(p -> p.paramName.equals("PathAccountSid"))) {
                 co.vendorExtensions.put("x-has-optional-params", true);
             }
         }
