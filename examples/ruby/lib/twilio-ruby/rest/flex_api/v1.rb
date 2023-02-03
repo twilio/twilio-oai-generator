@@ -28,12 +28,12 @@ module Twilio
                 ##
                 # @param [String] sid 
                 # @return [Twilio::REST::FlexApi::V1::CallContext] if sid was passed.
-                # @return [Twilio::REST::FlexApi::V1::callList]
+                # @return [Twilio::REST::FlexApi::V1::CallList]
                 def calls(sid=:unset)
                     if sid.nil?
                         raise ArgumentError, 'sid cannot be nil'
                     end
-                    if sid  == :unset
+                    if sid == :unset
                         @calls ||= CallList.new self
                     else
                         CallContext.new(self, sid)
@@ -42,12 +42,12 @@ module Twilio
                 ##
                 # @param [String] sid 
                 # @return [Twilio::REST::FlexApi::V1::CredentialContext] if sid was passed.
-                # @return [Twilio::REST::FlexApi::V1::credentialList]
+                # @return [Twilio::REST::FlexApi::V1::CredentialList]
                 def credentials(sid=:unset)
                     if sid.nil?
                         raise ArgumentError, 'sid cannot be nil'
                     end
-                    if sid  == :unset
+                    if sid == :unset
                         @credentials ||= CredentialList.new self
                     else
                         CredentialContext.new(self, sid)

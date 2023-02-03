@@ -21,7 +21,7 @@
                     {{/allParams}}
                     # @return [{{apiName}}Instance] Created {{apiName}}Instance
                     def create({{#allParams}}{{>params}}{{/allParams}})
-                        data = Twilio::Values.of(
+                        data = Twilio::Values.of({
                             {{#allParams}}{{^vendorExtensions.x-serialize}}
                             '{{{baseName}}}' => {{paramName}},
                             {{/vendorExtensions.x-serialize}}{{#vendorExtensions.x-serialize}}

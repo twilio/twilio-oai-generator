@@ -63,9 +63,8 @@ module Twilio
                     # @param [Date] end_date 
                     # @param [Date] start_date 
                      # @param [String] account_sid 
-                    # @return [FeedbackCallSummaryInstance]
-                    Updated FeedbackCallSummaryInstance
-                    def update(end_date: nil, , start_date: nil, , account_sid: :unset )
+                    # @return [FeedbackCallSummaryInstance] Updated FeedbackCallSummaryInstance
+                    def update(end_date: nil, start_date: nil, account_sid: :unset)
 
                         data = Twilio::Values.of({
                          'EndDate' => Twilio.serialize_iso8601_date(end_date),

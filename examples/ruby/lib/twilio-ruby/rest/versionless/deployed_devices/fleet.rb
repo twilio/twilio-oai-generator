@@ -36,7 +36,7 @@ module Twilio
                     # @return [FleetInstance] Created FleetInstance
                     def create(name: :unset
 					)
-                        data = Twilio::Values.of(
+                        data = Twilio::Values.of({
                             
                             'Name' => name,
                                                     })
@@ -72,8 +72,7 @@ module Twilio
                     end
                     ##
                     # Fetch the FleetInstance
-                    # @return [FleetInstance]
-                    Fetched FleetInstance
+                    # @return [FleetInstance] Fetched FleetInstance
                     def fetch
 
                         payload = @version.fetch('GET',@uri )

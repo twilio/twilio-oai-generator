@@ -56,8 +56,7 @@ module Twilio
                     end
                     ##
                     # Update the CallInstance
-                    # @return [CallInstance]
-                    Updated CallInstance
+                    # @return [CallInstance] Updated CallInstance
                     def update
 
                         payload = @version.update('POST',@uri )

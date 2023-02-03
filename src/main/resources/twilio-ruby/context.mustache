@@ -36,17 +36,20 @@
                     # Access the {{mountName}}
                     # @return [{{#lambda.titlecase}}{{mountName}}{{/lambda.titlecase}}List]
                     # @return [{{#lambda.titlecase}}{{filename}}{{/lambda.titlecase}}Context] if sid was passed.
-                    def {{mountName}}({{#params}}{{#lambda.snakecase}}{{.}}{{/lambda.snakecase}}=:unset{{/params}})
+                    def {{mountName}}({{#params}}{{#lambda.snakecase}}{{.}}{{/lambda.snakecase}}=:unset{{^-last}}, {{/-last}}{{/params}})
                         {{#params}}
                         raise ArgumentError, '{{#lambda.snakecase}}{{.}}{{/lambda.snakecase}} cannot be nil' if {{#lambda.snakecase}}{{.}}{{/lambda.snakecase}}.nil?
-                        {{/params}}
-                        if {{#params}}{{#lambda.snakecase}}{{.}}{{/lambda.snakecase}} != :unset{{/params}}
-                            return {{#lambda.titlecase}}{{mountName}}{{/lambda.titlecase}}Context.new(@version{{#listPathParams}}, @solution[:{{paramName}}]{{/listPathParams}}{{#params}},{{#lambda.snakecase}}{{.}}{{/lambda.snakecase}} {{/params}})
+
+                        if {{#lambda.snakecase}}{{.}}{{/lambda.snakecase}} != :unset
+                            return {{#lambda.titlecase}}{{filename}}{{/lambda.titlecase}}Context.new(@version{{#requiredPathParams}}, @solution[:{{paramName}}]{{/requiredPathParams}}{{#params}},{{#lambda.snakecase}}{{.}}{{/lambda.snakecase}} {{/params}})
                         end
+                        {{/params}}
                         unless @{{mountName}}
                             @{{mountName}} = {{#lambda.titlecase}}{{filename}}{{/lambda.titlecase}}List.new(
-                                @version{{#listPathParams}},
-                                {{paramName}}: @solution[:{{paramName}}],{{/listPathParams}}
+                                @version{{#requiredPathParams}},{{^-last}}
+                                {{paramName}}: @solution[:{{paramName}}]{{/-last}}{{#-last}}
+                                {{#lambda.snakecase}}{{apiName}}{{/lambda.snakecase}}_{{paramName}}: @solution[:{{paramName}}]
+                                {{/-last}}{{/requiredPathParams}}
                                 )
                         end
 

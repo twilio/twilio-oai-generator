@@ -70,7 +70,7 @@ module Twilio
 						permissions: :unset,
 						some_a2p_thing: :unset
 					)
-                        data = Twilio::Values.of(
+                        data = Twilio::Values.of({
                             
                             'TestString' => test_string,
                             

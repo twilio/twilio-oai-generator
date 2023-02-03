@@ -44,7 +44,7 @@ module Twilio
 						test_array_of_strings: :unset,
 						test_array_of_uri: :unset
 					)
-                        data = Twilio::Values.of(
+                        data = Twilio::Values.of({
                             
                             'RequiredStringProperty' => required_string_property,
                             
@@ -95,8 +95,7 @@ module Twilio
 
                     ##
                     # Fetch the CallInstance
-                    # @return [CallInstance]
-                    Fetched CallInstance
+                    # @return [CallInstance] Fetched CallInstance
                     def fetch
 
                         payload = @version.fetch('GET',@uri )
@@ -109,13 +108,16 @@ module Twilio
                     # @return [Feedback_call_summaryContext] if sid was passed.
                     def feedback_call_summary(sid=:unset)
                         raise ArgumentError, 'sid cannot be nil' if sid.nil?
+
                         if sid != :unset
-                            return Feedback_call_summaryContext.new(@version, @solution[:account_sid],sid )
+                            return Feedback_call_summaryContext.new(@version, @solution[:account_sid], @solution[:test_integer],sid )
                         end
                         unless @feedback_call_summary
                             @feedback_call_summary = Feedback_call_summaryList.new(
                                 @version,
                                 account_sid: @solution[:account_sid],
+                                call_test_integer: @solution[:test_integer]
+                                
                                 )
                         end
 

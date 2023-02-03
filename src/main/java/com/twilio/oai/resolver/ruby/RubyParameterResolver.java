@@ -21,6 +21,9 @@ public class RubyParameterResolver extends LanguageParamResolver {
         if (codegenParameter.dataType.equals("Time")) {
             codegenParameter.vendorExtensions.put(SERIALIZE_VEND_EXT, " Twilio.serialize_iso8601_datetime");
         }
+        if (codegenParameter.paramName.equals("end")){
+            codegenParameter.paramName = "end_";
+        }
         return codegenParameter;
     }
 }

@@ -59,14 +59,13 @@ module Twilio
                     end
                     ##
                     # Fetch the HistoryInstance
-                    # @return [HistoryInstance]
-                    Fetched HistoryInstance
-                    def fetch(add_ons_data: :unset )
+                    # @return [HistoryInstance] Fetched HistoryInstance
+                    def fetch(add_ons_data: :unset)
 
                         params = Twilio::Values.of({
-                        ])
-                        params.merge!(Twilio.prefixed_collapsible_map(addOnsData, 'AddOns'))
-                        payload = @version.fetch('GET',@uri,params : params  )
+                        })
+                        params.merge!(Twilio.prefixed_collapsible_map(add_ons_data, 'AddOns'))
+                        payload = @version.fetch('GET',@uri,params: params  )
                         HistoryInstance.new(@version, payload,  sid: @solution[:sid],)
                     end
 

@@ -42,7 +42,7 @@ module Twilio
 						recording_status_callback_event: :unset,
 						twiml: :unset
 					)
-                        data = Twilio::Values.of(
+                        data = Twilio::Values.of({
                             
                             'X-Twilio-Webhook-Enabled' => x_twilio_webhook_enabled,
                             
@@ -206,8 +206,7 @@ module Twilio
 
                     ##
                     # Fetch the AccountInstance
-                    # @return [AccountInstance]
-                    Fetched AccountInstance
+                    # @return [AccountInstance] Fetched AccountInstance
                     def fetch
 
                         payload = @version.fetch('GET',@uri )
@@ -218,9 +217,8 @@ module Twilio
                     # Update the AccountInstance
                     # @param [TestStatus] status 
                      # @param [String] pause_behavior 
-                    # @return [AccountInstance]
-                    Updated AccountInstance
-                    def update(status: nil, , pause_behavior: :unset )
+                    # @return [AccountInstance] Updated AccountInstance
+                    def update(status: nil, pause_behavior: :unset)
 
                         data = Twilio::Values.of({
                           'Status' => status,
@@ -237,12 +235,15 @@ module Twilio
                     # @return [CallContext] if sid was passed.
                     def calls(test_integer=:unset)
                         raise ArgumentError, 'test_integer cannot be nil' if test_integer.nil?
+
                         if test_integer != :unset
-                            return CallsContext.new(@version,test_integer )
+                            return CallContext.new(@version, @solution[:sid],test_integer )
                         end
                         unless @calls
                             @calls = CallList.new(
-                                @version
+                                @version,
+                                account_sid: @solution[:sid]
+                                
                                 )
                         end
 
