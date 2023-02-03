@@ -28,7 +28,6 @@ public class PythonApiResourceBuilder extends FluentApiResourceBuilder {
             if (co.operationId.startsWith("list")) {
                 addOperationName(co, "Page");
             }
-
         }
         return this;
     }
