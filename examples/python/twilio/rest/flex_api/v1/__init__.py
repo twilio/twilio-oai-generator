@@ -22,7 +22,7 @@ class V1(Version):
 
     def __init__(self, domain: Domain):
         """
-        Initialize the V1 version of flex_api
+        Initialize the V1 version of FlexApi
 
         :param domain: The Twilio.flex_api domain
         """
@@ -32,15 +32,15 @@ class V1(Version):
         self._credentials = None
         
     @property
-    def calls(self) -> CallList:
+    def calls(self) -> CallListInstance:
         if self._calls is None:
-            self._calls = CallList(self)
+            self._calls = CallListInstance(self)
         return self._calls
 
     @property
-    def credentials(self) -> CredentialList:
+    def credentials(self) -> CredentialListInstance:
         if self._credentials is None:
-            self._credentials = CredentialList(self)
+            self._credentials = CredentialListInstance(self)
         return self._credentials
 
     def __repr__(self) -> str:

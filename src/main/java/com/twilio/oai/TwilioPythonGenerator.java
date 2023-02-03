@@ -107,7 +107,6 @@ public class TwilioPythonGenerator extends PythonClientCodegen {
             .updateTemplate()
             .updateOperations(new LanguageParamResolver(conventionMapper))
             .updateResponseModel(new LanguagePropertyResolver(conventionMapper), codegenModelResolver)
-            .updateVersionImports()
             .build();
     }
 

@@ -21,7 +21,7 @@ class DeployedDevices(Version):
 
     def __init__(self, domain: Domain):
         """
-        Initialize the DeployedDevices version of versionless
+        Initialize the DeployedDevices version of Versionless
 
         :param domain: The Twilio.versionless domain
         """
@@ -30,9 +30,9 @@ class DeployedDevices(Version):
         self._fleets = None
         
     @property
-    def fleets(self) -> FleetList:
+    def fleets(self) -> FleetListInstance:
         if self._fleets is None:
-            self._fleets = FleetList(self)
+            self._fleets = FleetListInstance(self)
         return self._fleets
 
     def __repr__(self) -> str:

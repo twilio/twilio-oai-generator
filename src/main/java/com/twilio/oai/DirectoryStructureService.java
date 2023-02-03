@@ -56,6 +56,7 @@ public class DirectoryStructureService {
         private boolean instanceDependent;
         private List<Parameter> pathParams;
         private String resourceName;
+        private String listName;
     }
 
     @Data
@@ -145,6 +146,7 @@ public class DirectoryStructureService {
                 .type(resourceAliases.getClassName() + LIST_INSTANCE)
                 .className(resourceAliases.getClassName() + LIST_INSTANCE)
                 .importName(resourceAliases.getClassName() + LIST_INSTANCE)
+                .listName(resourceAliases.getClassName() + LIST)
                 .mountName(caseResolver.pathOperation(resourceAliases.getMountName()))
                 .filename(caseResolver.filenameOperation(resourceAliases.getClassName()))
                 .pathParams(params)
@@ -233,6 +235,7 @@ public class DirectoryStructureService {
                     .type(name + "Context")
                     .className(name + LIST_INSTANCE)
                     .importName(name + "Context")
+                    .listName(name + "Context") // Special case for Python
                     .mountName(caseResolver.pathOperation(name))
                     .filename(caseResolver.filenameOperation(name))
                     .param(caseResolver.pathOperation(name + "Sid"))

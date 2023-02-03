@@ -21,7 +21,7 @@ class Understand(Version):
 
     def __init__(self, domain: Domain):
         """
-        Initialize the Understand version of versionless
+        Initialize the Understand version of Versionless
 
         :param domain: The Twilio.versionless domain
         """
@@ -30,9 +30,9 @@ class Understand(Version):
         self._assistants = None
         
     @property
-    def assistants(self) -> AssistantList:
+    def assistants(self) -> AssistantListInstance:
         if self._assistants is None:
-            self._assistants = AssistantList(self)
+            self._assistants = AssistantListInstance(self)
         return self._assistants
 
     def __repr__(self) -> str:
