@@ -21,7 +21,9 @@ from twilio.base.instance_resource import InstanceResource
 from twilio.base.list_resource import ListResource
 from twilio.base.version import Version
 
-# from twilio.rest.credential.aws import AwsListInstancefrom twilio.rest.credential.new_credentials import NewCredentialsListInstance
+# from twilio.rest.credential.aws import AwsList
+from twilio.rest.credential.new_credentials import NewCredentialsList
+
 
 
 
