@@ -28,11 +28,6 @@ public class PythonApiResourceBuilder extends FluentApiResourceBuilder {
             if (co.operationId.startsWith("list")) {
                 addOperationName(co, "Page");
             }
-
-            dependents.values().forEach(dependent -> {
-                dependent.setImportName(dependent.getImportName().replace("Instance", ""));
-            });
-
         }
         return this;
     }
