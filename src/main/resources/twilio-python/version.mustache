@@ -17,9 +17,9 @@ class {{apiVersionClass}}(Version):
         {{#versionResources}}self._{{mountName}} = None
         {{/versionResources}}
     {{#versionResources}}@property
-    def {{mountName}}(self) -> {{importName}}:
+    def {{mountName}}(self) -> {{listName}}:
         if self._{{mountName}} is None:
-            self._{{mountName}} = {{importName}}(self{{#param}}, self.domain.twilio.{{param}}{{/param}})
+            self._{{mountName}} = {{listName}}(self{{#param}}, self.domain.twilio.{{param}}{{/param}})
         return self._{{mountName}}
 
     {{/versionResources}}def __repr__(self) -> str:

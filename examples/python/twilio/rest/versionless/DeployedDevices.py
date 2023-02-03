@@ -30,9 +30,9 @@ class DeployedDevices(Version):
         self._fleets = None
         
     @property
-    def fleets(self) -> FleetListInstance:
+    def fleets(self) -> FleetList:
         if self._fleets is None:
-            self._fleets = FleetListInstance(self)
+            self._fleets = FleetList(self)
         return self._fleets
 
     def __repr__(self) -> str:

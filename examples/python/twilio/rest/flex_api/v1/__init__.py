@@ -32,15 +32,15 @@ class V1(Version):
         self._credentials = None
         
     @property
-    def calls(self) -> CallListInstance:
+    def calls(self) -> CallList:
         if self._calls is None:
-            self._calls = CallListInstance(self)
+            self._calls = CallList(self)
         return self._calls
 
     @property
-    def credentials(self) -> CredentialListInstance:
+    def credentials(self) -> CredentialList:
         if self._credentials is None:
-            self._credentials = CredentialListInstance(self)
+            self._credentials = CredentialList(self)
         return self._credentials
 
     def __repr__(self) -> str:

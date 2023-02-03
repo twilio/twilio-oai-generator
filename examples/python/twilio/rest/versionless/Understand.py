@@ -30,9 +30,9 @@ class Understand(Version):
         self._assistants = None
         
     @property
-    def assistants(self) -> AssistantListInstance:
+    def assistants(self) -> AssistantList:
         if self._assistants is None:
-            self._assistants = AssistantListInstance(self)
+            self._assistants = AssistantList(self)
         return self._assistants
 
     def __repr__(self) -> str:
