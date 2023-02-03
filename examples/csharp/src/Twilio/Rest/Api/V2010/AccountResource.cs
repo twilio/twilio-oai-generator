@@ -318,8 +318,8 @@ namespace Twilio.Rest.Api.V2010
         /// <param name="dateCreatedBefore">  </param>
         /// <param name="dateCreatedAfter">  </param>
         /// <param name="pageSize">  </param>
-        /// <param name="client"> Client to make requests to Twilio </param>
         /// <param name="limit"> Record limit </param>
+        /// <param name="client"> Client to make requests to Twilio </param>
         /// <returns> A single instance of Account </returns>
         public static ResourceSet<AccountResource> Read(
                                                      DateTime? dateCreated = null,
@@ -341,8 +341,8 @@ namespace Twilio.Rest.Api.V2010
         /// <param name="dateCreatedBefore">  </param>
         /// <param name="dateCreatedAfter">  </param>
         /// <param name="pageSize">  </param>
-        /// <param name="client"> Client to make requests to Twilio </param>
         /// <param name="limit"> Record limit </param>
+        /// <param name="client"> Client to make requests to Twilio </param>
         /// <returns> Task that resolves to A single instance of Account </returns>
         public static async System.Threading.Tasks.Task<ResourceSet<AccountResource>> ReadAsync(
                                                                                              DateTime? dateCreated = null,
