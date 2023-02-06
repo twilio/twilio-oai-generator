@@ -14,7 +14,7 @@
 
 module Twilio
     module REST
-        class Versionless
+        class VersionlessBase
             class Understand < Version
                 ##
                 # Initialize the Understand version of Versionless
