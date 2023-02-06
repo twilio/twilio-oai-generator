@@ -30,8 +30,7 @@ module Twilio
                         
                     end
                 
-                    
-                    ##
+
 
                     # Provide a user friendly representation
                     def to_s
@@ -52,7 +51,7 @@ module Twilio
                         @solution = { sid: sid,  }
                         @uri = "/Voice/#{@solution[:sid]}"
 
-                        # Dependents
+                        
                     end
                     ##
                     # Update the CallInstance

@@ -25,7 +25,7 @@ module Twilio
                     # Initialize the HistoryList
                     # @param [Version] version Version that contains the resource
                     # @return [HistoryList] HistoryList
-                    def initialize(version, sid)
+                    def initialize(version, sid: nil)
                         super(version)
                         # Path Solution
                         @solution = { sid: sid, }
@@ -33,8 +33,7 @@ module Twilio
                         
                     end
                 
-                    
-                    ##
+
 
                     # Provide a user friendly representation
                     def to_s
@@ -55,12 +54,14 @@ module Twilio
                         @solution = { sid: sid,  }
                         @uri = "/Credentials/AWS/#{@solution[:sid]}/History"
 
-                        # Dependents
+                        
                     end
                     ##
                     # Fetch the HistoryInstance
+                    # @param [Hash] add_ons_data 
                     # @return [HistoryInstance] Fetched HistoryInstance
-                    def fetch(add_ons_data: :unset)
+                    def fetch(
+                        add_ons_data: :unset)
 
                         params = Twilio::Values.of({
                         })

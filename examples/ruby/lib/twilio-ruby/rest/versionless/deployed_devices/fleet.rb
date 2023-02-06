@@ -29,25 +29,23 @@ module Twilio
                         @uri = "/Fleets"
                         
                     end
-                
                     ##
                     # Create the FleetInstance
                     # @param [String] name 
                     # @return [FleetInstance] Created FleetInstance
-                    def create(name: :unset
-					)
+                    def create(
+                        name: :unset)
+
                         data = Twilio::Values.of({
-                            
-                            'Name' => name,
-                                                    })
+                        'Name' => name,
+                        })
 
-                        payload = @version.create('POST', @uri, data: data)
-
+                        payload = @version.create('POST',@uri, data: data  )
                         FleetInstance.new(@version, payload, )
                     end
-                    
-                    
-                    ##
+
+                
+
 
                     # Provide a user friendly representation
                     def to_s
@@ -68,7 +66,7 @@ module Twilio
                         @solution = { sid: sid,  }
                         @uri = "/Fleets/#{@solution[:sid]}"
 
-                        # Dependents
+                        
                     end
                     ##
                     # Fetch the FleetInstance

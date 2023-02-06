@@ -29,7 +29,6 @@ module Twilio
                         @uri = "/Accounts.json"
                         
                     end
-                
                     ##
                     # Create the AccountInstance
                     # @param [String] x_twilio_webhook_enabled 
@@ -37,28 +36,24 @@ module Twilio
                     # @param [Array&lt;String&gt;] recording_status_callback_event 
                     # @param [String] twiml 
                     # @return [AccountInstance] Created AccountInstance
-                    def create(x_twilio_webhook_enabled: :unset,
-						recording_status_callback: :unset,
-						recording_status_callback_event: :unset,
-						twiml: :unset
-					)
+                    def create(
+                        x_twilio_webhook_enabled: :unset, 
+                        recording_status_callback: :unset, 
+                        recording_status_callback_event: :unset, 
+                        twiml: :unset)
+
                         data = Twilio::Values.of({
-                            
-                            'X-Twilio-Webhook-Enabled' => x_twilio_webhook_enabled,
-                            
-                            'RecordingStatusCallback' => recording_status_callback,
-                            
-                            'RecordingStatusCallbackEvent' =>  Twilio.serialize_list(recording_status_callback_event) { |e| e },
+                        'RecordingStatusCallback' => recording_status_callback,
+                        'RecordingStatusCallbackEvent' => Twilio.serialize_list(recording_status_callback_event),
+                        'Twiml' => twiml,
+                        })
 
-                            'Twiml' => twiml,
-                                                    })
-
-                        payload = @version.create('POST', @uri, data: data)
-
+                        headers = Twilio::Values.of({ 'X-Twilio-Webhook-Enabled' => x_twilio_webhook_enabled, })
+                        payload = @version.create('POST',@uri , data: data, headers: headers)
                         AccountInstance.new(@version, payload, )
                     end
-                    
-                    
+
+                
                     ##
                     # Lists AccountInstance records from the API as a list.
                     # Unlike stream(), this operation is eager and will load `limit` records into
@@ -172,7 +167,7 @@ module Twilio
                     AccountPage.new(@version, response, @solution)
                     end
                     
-                    ##
+
 
                     # Provide a user friendly representation
                     def to_s
@@ -216,9 +211,11 @@ module Twilio
                     ##
                     # Update the AccountInstance
                     # @param [TestStatus] status 
-                     # @param [String] pause_behavior 
+                    # @param [String] pause_behavior 
                     # @return [AccountInstance] Updated AccountInstance
-                    def update(status: nil, pause_behavior: :unset)
+                    def update(
+                        status: nil, 
+                        pause_behavior: :unset)
 
                         data = Twilio::Values.of({
                           'Status' => status,
@@ -231,14 +228,16 @@ module Twilio
 
                     ##
                     # Access the calls
-                    # @return [CallsList]
+                    # @return [CallList]
                     # @return [CallContext] if sid was passed.
                     def calls(test_integer=:unset)
+
                         raise ArgumentError, 'test_integer cannot be nil' if test_integer.nil?
 
                         if test_integer != :unset
                             return CallContext.new(@version, @solution[:sid],test_integer )
                         end
+
                         unless @calls
                             @calls = CallList.new(
                                 @version,

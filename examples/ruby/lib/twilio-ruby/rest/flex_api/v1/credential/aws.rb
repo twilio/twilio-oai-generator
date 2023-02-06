@@ -32,7 +32,6 @@ module Twilio
                         
                     end
                 
-                    
                     ##
                     # Lists AwsInstance records from the API as a list.
                     # Unlike stream(), this operation is eager and will load `limit` records into
@@ -118,7 +117,7 @@ module Twilio
                     AwsPage.new(@version, response, @solution)
                     end
                     
-                    ##
+
 
                     # Provide a user friendly representation
                     def to_s
@@ -161,10 +160,12 @@ module Twilio
 
                     ##
                     # Update the AwsInstance
-                     # @param [String] test_string 
-                     # @param [Boolean] test_boolean 
+                    # @param [String] test_string 
+                    # @param [Boolean] test_boolean 
                     # @return [AwsInstance] Updated AwsInstance
-                    def update(test_string: :unset, test_boolean: :unset)
+                    def update(
+                        test_string: :unset, 
+                        test_boolean: :unset)
 
                         data = Twilio::Values.of({
                         'TestString' => test_string,
@@ -178,17 +179,12 @@ module Twilio
                     ##
                     # Access the history
                     # @return [HistoryList]
-                    # @return [HistoryContext] if sid was passed.
-                    def history()
-                        unless @history
-                            @history = HistoryList.new(
+                    # @return [HistoryContext]
+                    def history
+                        HistoryContext.new(
                                 @version,
-                                aws_sid: @solution[:sid]
-                                
+                                @solution[:sid]
                                 )
-                        end
-
-                     @history
                     end
 
                     ##

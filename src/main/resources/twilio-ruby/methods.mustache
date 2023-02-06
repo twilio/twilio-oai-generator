@@ -1,46 +1,13 @@
                     ##
                     # {{vendorExtensions.x-name}} the {{apiName}}Instance
-                    {{#requiredParams}}
-                    {{^isPathParam}}
+                    {{#allParams}}
                     # @param [{{dataType}}] {{paramName}} {{description}}
-                    {{/isPathParam}}
-                    {{/requiredParams}}
-                    {{#vendorExtensions.hasOptionalQueryParams}}
-                    {{/vendorExtensions.hasOptionalQueryParams}}
-                    {{^vendorExtensions.hasOptionalQueryParams}}
-                    {{#vendorExtensions.hasOptionalFormParams}}
-                    {{#formParams.0}}
-                    {{#optionalParams}}
-                    {{#isFormParam}}
-                    {{^vendorExtensions.x-prefixed-collapsible-map}}
-                    {{^vendorExtensions.x-serialize}}
-                     # @param [{{dataType}}] {{paramName}} {{description}}
-                     {{/vendorExtensions.x-serialize}}
-                      {{#vendorExtensions.x-serialize}}
-                      {{^vendorExtensions.x-serialize-map}}
-                     # @param [{{dataType}}] {{paramName}} {{description}}{{/vendorExtensions.x-serialize-map}}
-                      {{#vendorExtensions.x-serialize-map}}
-                     # @param [{{dataType}}] {{paramName}} {{description}}{{/vendorExtensions.x-serialize-map}}
-                     {{/vendorExtensions.x-serialize}}
-                     {{/vendorExtensions.x-prefixed-collapsible-map}}
-                    {{/isFormParam}}
-                    {{/optionalParams}}
-                    {{/formParams.0}}
-                    {{/vendorExtensions.hasOptionalFormParams}}
-                    {{^vendorExtensions.hasOptionalFormParams}}
-                    {{#vendorExtensions.hasOptionalHeaderParams}}
-                    {{#headerParams.0}}
-                    {{#isHeaderParam}}
-                    # @param [{{dataType}}] {{paramName}} {{description}}
-                    {{/isHeaderParam}}
-                    {{/headerParams.0}}
-                    {{/vendorExtensions.hasOptionalHeaderParams}}
-                    {{/vendorExtensions.hasOptionalFormParams}}
-                    {{/vendorExtensions.hasOptionalQueryParams}}
+                    {{/allParams}}
                     {{^vendorExtensions.x-is-delete-operation}}
                     # @return [{{apiName}}Instance] {{#vendorExtensions.x-is-fetch-operation}}{{vendorExtensions.x-name}}ed{{/vendorExtensions.x-is-fetch-operation}}{{^vendorExtensions.x-is-fetch-operation}}{{vendorExtensions.x-name}}d{{/vendorExtensions.x-is-fetch-operation}} {{apiName}}Instance
 {{/vendorExtensions.x-is-delete-operation}}
                     {{#vendorExtensions.x-is-delete-operation}}
                     # @return [Boolean] True if delete succeeds, false otherwise
 {{/vendorExtensions.x-is-delete-operation}}
-                    def {{#lambda.camelcase}}{{vendorExtensions.x-name}}{{/lambda.camelcase}}{{#hasParams}}({{#allParams}}{{paramName}}: {{#required}}nil{{/required}}{{^required}}:unset{{/required}}{{^-last}}, {{/-last}}{{/allParams}}){{/hasParams}}
+                    def {{#lambda.camelcase}}{{vendorExtensions.x-name}}{{/lambda.camelcase}}{{#hasParams}}({{#allParams}}
+                        {{paramName}}: {{#required}}nil{{/required}}{{^required}}:unset{{/required}}{{^-last}}, {{/-last}}{{/allParams}}){{/hasParams}}

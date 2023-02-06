@@ -24,14 +24,14 @@ module Twilio
                     # Initialize the CallList
                     # @param [Version] version Version that contains the resource
                     # @return [CallList] CallList
-                    def initialize(version, account_sid)
+                    def initialize(version, account_sid: nil)
                         super(version)
                         # Path Solution
                         @solution = { account_sid: account_sid, }
                         @uri = "/Accounts/#{@solution[:account_sid]}/Calls.json"
-                        
+                        # Components
+                        @feedback_call_summary = nil
                     end
-                
                     ##
                     # Create the CallInstance
                     # @param [String] required_string_property 
@@ -39,29 +39,32 @@ module Twilio
                     # @param [Array&lt;String&gt;] test_array_of_strings 
                     # @param [Array&lt;String&gt;] test_array_of_uri 
                     # @return [CallInstance] Created CallInstance
-                    def create(required_string_property: nil,
-						test_method: nil,
-						test_array_of_strings: :unset,
-						test_array_of_uri: :unset
-					)
-                        data = Twilio::Values.of({
-                            
-                            'RequiredStringProperty' => required_string_property,
-                            
-                            'TestMethod' => test_method,
-                            
-                            'TestArrayOfStrings' =>  Twilio.serialize_list(test_array_of_strings) { |e| e },
+                    def create(
+                        required_string_property: nil, 
+                        test_method: nil, 
+                        test_array_of_strings: :unset, 
+                        test_array_of_uri: :unset)
 
-                            'TestArrayOfUri' =>  Twilio.serialize_list(test_array_of_uri) { |e| e },
+                        data = Twilio::Values.of({
+                          'RequiredStringProperty' => required_string_property,
+                          'TestMethod' => test_method,
+                        'TestArrayOfStrings' => Twilio.serialize_list(test_array_of_strings),
+                        'TestArrayOfUri' => Twilio.serialize_list(test_array_of_uri),
                         })
 
-                        payload = @version.create('POST', @uri, data: data)
-
+                        payload = @version.create('POST',@uri, data: data  )
                         CallInstance.new(@version, payload,  account_sid: @solution[:account_sid],)
                     end
-                    
-                    
-                    ##
+
+                
+
+                ##
+                # Access the feedback_call_summary
+                # @return [FeedbackCallSummaryList]
+                # @return [FeedbackCallSummaryContext]
+                def feedback_call_summary
+                    @feedback_call_summary ||= FeedbackCallSummaryList.new(@version, account_sid: @solution[:account_sid] )
+                end
 
                     # Provide a user friendly representation
                     def to_s
@@ -84,6 +87,7 @@ module Twilio
                         @uri = "/Accounts/#{@solution[:account_sid]}/Calls/#{@solution[:test_integer]}.json"
 
                         # Dependents
+                        @feedback_call_summary = nil
                     end
                     ##
                     # Delete the CallInstance
@@ -104,16 +108,18 @@ module Twilio
 
                     ##
                     # Access the feedback_call_summary
-                    # @return [Feedback_call_summaryList]
-                    # @return [Feedback_call_summaryContext] if sid was passed.
+                    # @return [FeedbackCallSummaryList]
+                    # @return [FeedbackCallSummaryContext] if sid was passed.
                     def feedback_call_summary(sid=:unset)
+
                         raise ArgumentError, 'sid cannot be nil' if sid.nil?
 
                         if sid != :unset
-                            return Feedback_call_summaryContext.new(@version, @solution[:account_sid], @solution[:test_integer],sid )
+                            return FeedbackCallSummaryContext.new(@version, @solution[:account_sid], @solution[:test_integer],sid )
                         end
+
                         unless @feedback_call_summary
-                            @feedback_call_summary = Feedback_call_summaryList.new(
+                            @feedback_call_summary = FeedbackCallSummaryList.new(
                                 @version,
                                 account_sid: @solution[:account_sid],
                                 call_test_integer: @solution[:test_integer]
