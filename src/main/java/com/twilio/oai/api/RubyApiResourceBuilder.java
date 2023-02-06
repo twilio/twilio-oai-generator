@@ -24,7 +24,6 @@ public class RubyApiResourceBuilder extends FluentApiResourceBuilder {
     List<CodegenParameter> readParams;
     List<Object> componentContextClasses = new ArrayList<>();
     final OpenAPI openApi;
-    private final List<CodegenOperation> instanceOperations = new ArrayList<>();
     private static final String SEPARATOR = "separator";
 
     public RubyApiResourceBuilder(final IApiActionTemplate template, final List<CodegenOperation> codegenOperations, final List<CodegenModel> allModels, final DirectoryStructureService directoryStructureService, final OpenAPI openApi) {
