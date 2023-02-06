@@ -14,7 +14,7 @@
 
 module Twilio
     module REST
-        class FlexApi
+        class FlexApiBase
             class V1 < Version
                 ##
                 # Initialize the V1 version of FlexApi

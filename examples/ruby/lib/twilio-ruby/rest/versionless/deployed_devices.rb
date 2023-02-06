@@ -14,7 +14,7 @@
 
 module Twilio
     module REST
-        class Versionless
+        class VersionlessBase
             class DeployedDevices < Version
                 ##
                 # Initialize the DeployedDevices version of Versionless

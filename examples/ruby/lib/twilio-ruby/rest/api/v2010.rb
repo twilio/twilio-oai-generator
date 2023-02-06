@@ -14,7 +14,7 @@
 
 module Twilio
     module REST
-        class Api
+        class ApiBase
             class V2010 < Version
                 ##
                 # Initialize the V2010 version of Api
