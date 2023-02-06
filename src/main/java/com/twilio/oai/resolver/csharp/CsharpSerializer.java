@@ -2,6 +2,7 @@ package com.twilio.oai.resolver.csharp;
 
 import com.twilio.oai.resolver.IConventionMapper;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.openapitools.codegen.CodegenParameter;
 
 import java.util.Optional;
@@ -23,7 +24,7 @@ public class CsharpSerializer {
         parameterFormat.sanitize(parameter);
 
         // Look for dataformat or datatype in csharp.json (serialize).
-        Optional<Object> optionalSerializedFormat = parameter.dataFormat != null ? mapper.serialize().get(parameter.dataFormat)
+        Optional<Object> optionalSerializedFormat = StringUtils.isNotBlank(parameter.dataFormat) ? mapper.serialize().get(parameter.dataFormat)
                 : mapper.serialize().get(parameter.dataType);
 
         // If not found, set to default format
