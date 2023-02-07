@@ -7,9 +7,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ParameterFormat implements DataSanitizer<CodegenParameter> {
-    public void sanitize(CodegenParameter parameter){
+    public void sanitize(CodegenParameter parameter) {
         if (parameter.dataFormat == null) return;
         if (parameter.isMap) {
+            // Example: dataformat = prefixed-collapsible-map-AddOns
             List<String> splitDataFormat = new ArrayList<>(List.of(parameter.dataFormat.split("-")));
             parameter.vendorExtensions.put("x-map-value", splitDataFormat.get(splitDataFormat.size()-1));
             splitDataFormat.remove(splitDataFormat.size()-1);
