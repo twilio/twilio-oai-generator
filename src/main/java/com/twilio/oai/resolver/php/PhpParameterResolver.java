@@ -37,11 +37,14 @@ public class PhpParameterResolver extends LanguageParamResolver {
             codegenParameter.dataType.equals(LanguageConventionResolver.LIST_OBJECT)) {
             codegenParameter.dataType = ARRAY;
         }
-        if (codegenParameter.dataType.contains("Enum") || codegenParameter.dataType == FLOAT) {
+        if (codegenParameter.dataType.contains("Enum") || codegenParameter.dataType.equals(FLOAT)) {
             codegenParameter.dataType = STRING;
         }
         if (codegenParameter.dataType.equals(STRING)) {
             codegenParameter.isString = true;
+        }
+        if (codegenParameter.isArray) {
+            codegenParameter.isString = false;
         }
     }
 
