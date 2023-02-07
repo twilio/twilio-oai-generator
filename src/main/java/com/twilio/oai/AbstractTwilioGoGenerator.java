@@ -1,5 +1,8 @@
 package com.twilio.oai;
 
+import com.twilio.oai.resolver.go.GoCaseResolver;
+import com.twilio.oai.resource.ResourceMap;
+
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -14,6 +17,7 @@ import io.swagger.v3.oas.models.responses.ApiResponse;
 import io.swagger.v3.oas.models.responses.ApiResponses;
 import org.openapitools.codegen.CodegenConstants;
 import org.openapitools.codegen.CodegenOperation;
+import org.openapitools.codegen.CodegenParameter;
 import org.openapitools.codegen.CodegenProperty;
 import org.openapitools.codegen.languages.GoClientCodegen;
 import org.openapitools.codegen.model.ModelMap;
@@ -21,11 +25,14 @@ import org.openapitools.codegen.model.ModelsMap;
 import org.openapitools.codegen.model.OperationMap;
 import org.openapitools.codegen.model.OperationsMap;
 
+import static com.twilio.oai.common.ApplicationConstants.ACCOUNT_SID_VEND_EXT;
+
 public abstract class AbstractTwilioGoGenerator extends GoClientCodegen {
-
-    public static final String VENDOR_EXTENSION_ACCOUNT_SID = "x-is-account-sid";
-
     protected final TwilioCodegenAdapter twilioCodegen;
+    protected final DirectoryStructureService directoryStructureService = new DirectoryStructureService(
+        additionalProperties,
+        new ResourceMap(new Inflector()),
+        new GoCaseResolver());
 
     protected AbstractTwilioGoGenerator() {
         super();
@@ -65,9 +72,6 @@ public abstract class AbstractTwilioGoGenerator extends GoClientCodegen {
     public void processOpenAPI(final OpenAPI openAPI) {
         super.processOpenAPI(openAPI);
 
-        // Clear out any tags present. We want all operations in a single API file.
-        getOperationStream(openAPI).forEach(operation -> operation.setTags(null));
-
         getOperationStream(openAPI)
             .map(Operation::getParameters)
             .filter(Objects::nonNull)
@@ -77,8 +81,13 @@ public abstract class AbstractTwilioGoGenerator extends GoClientCodegen {
                 param.setName("PathAccountSid");
                 param.required(false);
                 param.in("query");
-                param.addExtension(VENDOR_EXTENSION_ACCOUNT_SID, true);
+                param.addExtension(ACCOUNT_SID_VEND_EXT, true);
             });
+
+        directoryStructureService.configure(openAPI);
+
+        // Clear out any tags present. We want all operations in a single API file.
+        getOperationStream(openAPI).forEach(operation -> operation.setTags(null));
     }
 
     private Stream<Operation> getOperationStream(final OpenAPI openAPI) {
@@ -136,6 +145,14 @@ public abstract class AbstractTwilioGoGenerator extends GoClientCodegen {
     @Override
     public Map<String, ModelsMap> postProcessAllModels(final Map<String, ModelsMap> allModels) {
         return filterOutEnumResults(super.postProcessAllModels(allModels));
+    }
+
+    @Override
+    public void postProcessParameter(final CodegenParameter parameter) {
+        super.postProcessParameter(parameter);
+
+        // Make sure required non-path params get into the options block.
+        parameter.required = parameter.required || parameter.isPathParam;
     }
 
     @Override
