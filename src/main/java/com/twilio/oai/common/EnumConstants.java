@@ -74,4 +74,12 @@ public class EnumConstants {
 
         private final String value;
     }
+
+    @Getter
+    @RequiredArgsConstructor
+    public enum ParameterMaps {
+        PREFIXED_COLLAPSIBLE_MAP("prefixed-collapsible-map");
+
+        private final String value;
+    }
 }
