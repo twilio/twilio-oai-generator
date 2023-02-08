@@ -64,14 +64,22 @@
                             {{paramName}}: {{paramName}}, {{/allParams}})
                      end
                     {{/vendorExtensions.x-is-update-operation}}{{/operations}}
-                    {{#dependents}}
+                    {{#metaProperties.contextImportProperties}}
                     ##
                     # Access the {{mountName}}
                     # @return [{{mountName}}] {{mountName}}
                     def {{mountName}}
                         context.{{mountName}}
                     end
-                    {{/dependents}}
+                    {{/metaProperties.contextImportProperties}}
+                    {{#metaProperties.contextImportMethods}}
+                    ##
+                    # Access the {{mountName}}
+                    # @return [{{mountName}}] {{mountName}}
+                    def {{mountName}}
+                        context.{{mountName}}
+                    end
+                    {{/metaProperties.contextImportMethods}}
                     ##
                     # Provide a user friendly representation
                     def to_s

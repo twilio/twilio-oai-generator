@@ -28,12 +28,12 @@ module Twilio
                 ##
                 # @param [String] sid 
                 # @return [Twilio::REST::Api::V2010::AccountContext] if sid was passed.
-                # @return [Twilio::REST::Api::V2010::accountList]
+                # @return [Twilio::REST::Api::V2010::AccountList]
                 def accounts(sid=:unset)
                     if sid.nil?
                         raise ArgumentError, 'sid cannot be nil'
                     end
-                    if sid  == :unset
+                    if sid == :unset
                         @accounts ||= AccountList.new self
                     else
                         AccountContext.new(self, sid)

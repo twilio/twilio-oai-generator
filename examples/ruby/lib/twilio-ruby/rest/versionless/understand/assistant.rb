@@ -30,7 +30,6 @@ module Twilio
                         
                     end
                 
-                    
                     ##
                     # Lists AssistantInstance records from the API as a list.
                     # Unlike stream(), this operation is eager and will load `limit` records into
@@ -116,7 +115,7 @@ module Twilio
                     AssistantPage.new(@version, response, @solution)
                     end
                     
-                    ##
+
 
                     # Provide a user friendly representation
                     def to_s
@@ -135,7 +134,7 @@ module Twilio
                         # Path Solution
                         @solution = {  }
 
-                        # Dependents
+                        
                     end
 
                     ##

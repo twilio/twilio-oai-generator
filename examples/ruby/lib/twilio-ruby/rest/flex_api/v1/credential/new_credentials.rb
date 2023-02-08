@@ -31,7 +31,6 @@ module Twilio
                         @uri = "/Credentials/AWS"
                         
                     end
-                
                     ##
                     # Create the NewCredentialsInstance
                     # @param [String] test_string 
@@ -52,68 +51,51 @@ module Twilio
                     # @param [Array&lt;String&gt;] permissions A comma-separated list of the permissions you will request from the users of this ConnectApp.  Can include: &#x60;get-all&#x60; and &#x60;post-all&#x60;.
                     # @param [String] some_a2p_thing 
                     # @return [NewCredentialsInstance] Created NewCredentialsInstance
-                    def create(test_string: nil,
-						test_boolean: :unset,
-						test_integer: :unset,
-						test_number: :unset,
-						test_number_float: :unset,
-						test_number_double: :unset,
-						test_number_int32: :unset,
-						test_number_int64: :unset,
-						test_object: :unset,
-						test_date_time: :unset,
-						test_date: :unset,
-						test_enum: :unset,
-						test_object_array: :unset,
-						test_any_type: :unset,
-						test_any_array: :unset,
-						permissions: :unset,
-						some_a2p_thing: :unset
-					)
-                        data = Twilio::Values.of(
-                            
-                            'TestString' => test_string,
-                            
-                            'TestBoolean' => test_boolean,
-                            
-                            'TestInteger' => test_integer,
-                            
-                            'TestNumber' => test_number,
-                            
-                            'TestNumberFloat' => test_number_float,
-                            
-                            'TestNumberDouble' => test_number_double,
-                            
-                            'TestNumberInt32' => test_number_int32,
-                            
-                            'TestNumberInt64' => test_number_int64,
-                            
-                            'TestObject' =>  Twilio.serialize_object(test_object) { |e| e },
+                    def create(
+                        test_string: nil, 
+                        test_boolean: :unset, 
+                        test_integer: :unset, 
+                        test_number: :unset, 
+                        test_number_float: :unset, 
+                        test_number_double: :unset, 
+                        test_number_int32: :unset, 
+                        test_number_int64: :unset, 
+                        test_object: :unset, 
+                        test_date_time: :unset, 
+                        test_date: :unset, 
+                        test_enum: :unset, 
+                        test_object_array: :unset, 
+                        test_any_type: :unset, 
+                        test_any_array: :unset, 
+                        permissions: :unset, 
+                        some_a2p_thing: :unset)
 
-                            'TestDateTime' =>   Twilio.serialize_iso8601_datetime(test_date_time) { |e| e },
+                        data = Twilio::Values.of({
+                          'TestString' => test_string,
+                        'TestBoolean' => test_boolean,
+                        'TestInteger' => test_integer,
+                        'TestNumber' => test_number,
+                        'TestNumberFloat' => test_number_float,
+                        'TestNumberDouble' => test_number_double,
+                        'TestNumberInt32' => test_number_int32,
+                        'TestNumberInt64' => test_number_int64,
+                        'TestObject' => Twilio.serialize_object(test_object),
+                        'TestDateTime' =>  Twilio.serialize_iso8601_datetime(test_date_time),
+                        'TestDate' => Twilio.serialize_iso8601_date(test_date),
+                        'TestEnum' => test_enum,
+                        'TestObjectArray' => Twilio.serialize_list(test_object_array),
+                        'TestAnyType' => Twilio.serialize_object(test_any_type),
+                        'TestAnyArray' => Twilio.serialize_list(test_any_array),
+                        'Permissions' => Twilio.serialize_list(permissions),
+                        'SomeA2PThing' => some_a2p_thing,
+                        })
 
-                            'TestDate' =>  Twilio.serialize_iso8601_date(test_date) { |e| e },
-
-                            'TestEnum' => test_enum,
-                            
-                            'TestObjectArray' =>  Twilio.serialize_list(test_object_array) { |e| e },
-
-                            'TestAnyType' =>  Twilio.serialize_object(test_any_type) { |e| e },
-
-                            'TestAnyArray' =>  Twilio.serialize_list(test_any_array) { |e| e },
-
-                            'Permissions' =>  Twilio.serialize_list(permissions) { |e| e },
-
-                            'SomeA2PThing' => some_a2p_thing,
-                                                    })
-
-                        payload = @version.create('POST', @uri, data: data)
-
+                        payload = @version.create('POST',@uri, data: data  )
                         NewCredentialsInstance.new(@version, payload, )
                     end
-                    
-                    
-                    ##
+
+                
+
 
                     # Provide a user friendly representation
                     def to_s
@@ -132,7 +114,7 @@ module Twilio
                         # Path Solution
                         @solution = {  }
 
-                        # Dependents
+                        
                     end
 
                     ##

@@ -25,7 +25,7 @@ module Twilio
                     # Initialize the FeedbackCallSummaryList
                     # @param [Version] version Version that contains the resource
                     # @return [FeedbackCallSummaryList] FeedbackCallSummaryList
-                    def initialize(version, account_sid)
+                    def initialize(version, account_sid: nil)
                         super(version)
                         # Path Solution
                         @solution = { account_sid: account_sid, }
@@ -33,8 +33,7 @@ module Twilio
                         
                     end
                 
-                    
-                    ##
+
 
                     # Provide a user friendly representation
                     def to_s
@@ -56,16 +55,18 @@ module Twilio
                         @solution = { account_sid: account_sid, sid: sid,  }
                         @uri = "/Accounts/#{@solution[:account_sid]}/Calls/Feedback/Summary/#{@solution[:sid]}.json"
 
-                        # Dependents
+                        
                     end
                     ##
                     # Update the FeedbackCallSummaryInstance
                     # @param [Date] end_date 
                     # @param [Date] start_date 
-                     # @param [String] account_sid 
-                    # @return [FeedbackCallSummaryInstance]
-                    Updated FeedbackCallSummaryInstance
-                    def update(end_date: nil, , start_date: nil, , account_sid: :unset )
+                    # @param [String] account_sid 
+                    # @return [FeedbackCallSummaryInstance] Updated FeedbackCallSummaryInstance
+                    def update(
+                        end_date: nil, 
+                        start_date: nil, 
+                        account_sid: :unset)
 
                         data = Twilio::Values.of({
                          'EndDate' => Twilio.serialize_iso8601_date(end_date),

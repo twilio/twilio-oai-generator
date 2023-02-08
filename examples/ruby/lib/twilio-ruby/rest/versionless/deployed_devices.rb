@@ -27,12 +27,12 @@ module Twilio
                 ##
                 # @param [String] sid 
                 # @return [Twilio::REST::Versionless::DeployedDevices::FleetContext] if sid was passed.
-                # @return [Twilio::REST::Versionless::DeployedDevices::fleetList]
+                # @return [Twilio::REST::Versionless::DeployedDevices::FleetList]
                 def fleets(sid=:unset)
                     if sid.nil?
                         raise ArgumentError, 'sid cannot be nil'
                     end
-                    if sid  == :unset
+                    if sid == :unset
                         @fleets ||= FleetList.new self
                     else
                         FleetContext.new(self, sid)
