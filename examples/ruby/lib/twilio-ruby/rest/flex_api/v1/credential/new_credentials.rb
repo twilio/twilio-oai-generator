@@ -17,8 +17,8 @@ module Twilio
     module REST
         class FlexApi < Domain
             class V1 < Version
-             class CredentialContext < InstanceContext
-            
+                class CredentialList < ListResource
+
                      class NewCredentialsList < ListResource
                     ##
                     # Initialize the NewCredentialsList
@@ -102,36 +102,6 @@ module Twilio
                         '#<Twilio.FlexApi.V1.NewCredentialsList>'
                     end
                 end
-
-                class NewCredentialsContext < InstanceContext
-                    ##
-                    # Initialize the NewCredentialsContext
-                    # @param [Version] version Version that contains the resource
-                    # @return [NewCredentialsContext] NewCredentialsContext
-                    def initialize(version)
-                        super(version)
-
-                        # Path Solution
-                        @solution = {  }
-
-                        
-                    end
-
-                    ##
-                    # Provide a user friendly representation
-                    def to_s
-                        context = @solution.map {|k, v| "#{k}: #{v}"}.join(',')
-                        "#<Twilio.FlexApi.V1.NewCredentialsContext #{context}>"
-                    end
-
-                    ##
-                    # Provide a detailed, user friendly representation
-                    def inspect
-                        context = @solution.map {|k, v| "#{k}: #{v}"}.join(',')
-                        "#<Twilio.FlexApi.V1.NewCredentialsContext #{context}>"
-                    end
-                end
-
                 class NewCredentialsPage < Page
                     ##
                     # Initialize the NewCredentialsPage

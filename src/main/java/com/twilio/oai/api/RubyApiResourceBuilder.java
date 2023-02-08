@@ -22,7 +22,8 @@ import static com.twilio.oai.common.ApplicationConstants.DESERIALIZE_VEND_EXT;
 public class RubyApiResourceBuilder extends FluentApiResourceBuilder {
 
     List<CodegenParameter> readParams;
-    List<Object> componentContextClasses = new ArrayList<>();
+    List<String[]> parentDir = new ArrayList<>();
+    boolean hasParents = false;
     final OpenAPI openApi;
     private static final String SEPARATOR = "separator";
 
@@ -33,6 +34,7 @@ public class RubyApiResourceBuilder extends FluentApiResourceBuilder {
 
     @Override
     public RubyApiResources build() {
+        fetchParentDirectory();
         return new RubyApiResources(this);
     }
 
@@ -40,7 +42,6 @@ public class RubyApiResourceBuilder extends FluentApiResourceBuilder {
     public ApiResourceBuilder updateOperations(Resolver<CodegenParameter> codegenParameterIResolver) {
         ApiResourceBuilder apiResourceBuilder = super.updateOperations(codegenParameterIResolver);
         createReadParams((RubyApiResourceBuilder) apiResourceBuilder);
-        addContextDataForComponents();
         updatePaths();
         addUpdateParamsSeparator(apiResourceBuilder);
         updateRequiredPathParams(apiResourceBuilder);
@@ -67,34 +68,6 @@ public class RubyApiResourceBuilder extends FluentApiResourceBuilder {
                         param.vendorExtensions.put(SEPARATOR, ",");
                         readParams.add(param);
                     }
-                }
-            }
-        }
-    }
-
-    private void addContextDataForComponents() {
-        List<Resource> dependents = new ArrayList<>();
-        getDependentInfo(dependents);
-        if (!dependents.isEmpty())
-            dependents.forEach(dependent -> dependent.getPathItem().readOperations().forEach(operation -> directoryStructureService.addContextdependents(componentContextClasses, dependent.getName(), operation)));
-    }
-
-    private void getDependentInfo(List<Resource> dependents) {
-        Object domain = directoryStructureService.getAdditionalProperties().get("domainName");
-        Map<String, PathItem> pathMap = openApi.getPaths();
-        String apiPathWithoutVersion = apiPath.substring(apiPath.indexOf("/", 1));
-        for (var entrySet : pathMap.entrySet()) {
-            String pathkey = entrySet.getKey();
-            if (domain.equals("Api")) {
-                pathkey = entrySet.getKey().split(".json")[0];
-                apiPathWithoutVersion = apiPathWithoutVersion.split(".json")[0];
-            }
-            PathItem path = entrySet.getValue();
-            Optional<String> parentKey = PathUtils.getTwilioExtension(path, "parent");
-            if (parentKey.isPresent() && (entrySet.getKey().endsWith("}") || entrySet.getKey().endsWith("}.json"))) {
-                String parentKeyValue = domain.equals("Api") ? parentKey.get().split(".json")[0] : parentKey.get();
-                if (!parentKeyValue.endsWith("}") && parentKeyValue.equals(apiPathWithoutVersion)) {
-                    dependents.add(new Resource(null, pathkey, path, null));
                 }
             }
         }
@@ -186,5 +159,44 @@ public class RubyApiResourceBuilder extends FluentApiResourceBuilder {
                         .put("instance-property", instanceProperty.replace("{value}", "payload['" + property.name + "']"));
             }
         return this;
+    }
+
+    public void fetchParentDirectory() {
+        String path = codegenOperationList.get(0).path;
+        List<String> parentFiles = new ArrayList<>();
+        final Resource resource = directoryStructureService.getResourceTree().findResource(path).orElseThrow();
+        Optional<Resource> parent = getParent(resource);
+        while (parent.isPresent()) {
+            Resource parentResource = parent.get();
+            Optional<String> pathType = PathUtils.getTwilioExtension(parentResource.getPathItem(), "pathType");
+            if (pathType.isPresent()) {
+                String pathtype = pathType.get();
+                if (pathtype.equals("instance")) {
+                    parentFiles.add(0, parentResource.getResourceAliases().getClassName() + "Context");
+                } else
+                    parentFiles.add(0, parentResource.getResourceAliases().getClassName() + "List");
+            } else
+                parentFiles.add(0, parentResource.getResourceAliases().getClassName());
+            parent = getParent(parentResource);
+        }
+
+        for (String file : parentFiles) {
+            if (file.endsWith("List")) {
+                parentDir.add(new String[]{file, "ListResource"});
+            } else {
+                parentDir.add(new String[]{file, "InstanceContext"});
+            }
+            hasParents = true;
+        }
+    }
+
+    private Optional<Resource> getParent(Resource resource) {
+        PathItem pathItem = resource.getPathItem();
+        Optional<String> optionalParent = PathUtils.getTwilioExtension(pathItem, "parent");
+        if (optionalParent.isPresent()) {
+            String parentPath = optionalParent.get();
+            return directoryStructureService.getResourceTree().findResource(parentPath, false);
+        }
+        return Optional.empty();
     }
 }

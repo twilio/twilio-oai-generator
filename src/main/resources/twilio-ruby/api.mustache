@@ -10,7 +10,9 @@ module Twilio
 {{/hasParents}}
 {{^hasParents}}
 {{>list}}
+{{#metaProperties.hasInstanceOperation}}
 {{>context}}
+{{/metaProperties.hasInstanceOperation}}
 {{>page}}
 {{>instance}}
             end

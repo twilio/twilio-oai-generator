@@ -17,9 +17,9 @@ module Twilio
     module REST
         class FlexApi < Domain
             class V1 < Version
-             class CredentialContext < InstanceContext
-             class AwsContext < InstanceContext
-            
+                class CredentialList < ListResource
+                class AwsContext < InstanceContext
+
                      class HistoryList < ListResource
                     ##
                     # Initialize the HistoryList

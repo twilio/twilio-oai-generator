@@ -17,8 +17,8 @@ module Twilio
     module REST
         class Api < Domain
             class V2010 < Version
-             class AccountContext < InstanceContext
-            
+                class AccountContext < InstanceContext
+
                      class CallList < ListResource
                     ##
                     # Initialize the CallList

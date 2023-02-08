@@ -1,15 +1,15 @@
             {{#parentDir}}
-            {{^-last}} class {{.}}Context < InstanceContext
-            {{/-last}}
+                class {{0}} < {{1}}
             {{/parentDir}}
 
      {{>list}}
+{{#metaProperties.hasInstanceOperation}}
 {{>context}}
+{{/metaProperties.hasInstanceOperation}}
 {{>page}}
 {{>instance}}
             {{#parentDir}}
-{{^-last}}             end
-{{/-last}}
+             end
             {{/parentDir}}
             end
         end
