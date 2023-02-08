@@ -24,7 +24,6 @@ public class RubyApiResourceBuilder extends FluentApiResourceBuilder {
     List<CodegenParameter> readParams;
     List<Object> componentContextClasses = new ArrayList<>();
     final OpenAPI openApi;
-    private final List<CodegenOperation> instanceOperations = new ArrayList<>();
     private static final String SEPARATOR = "separator";
 
     public RubyApiResourceBuilder(final IApiActionTemplate template, final List<CodegenOperation> codegenOperations, final List<CodegenModel> allModels, final DirectoryStructureService directoryStructureService, final OpenAPI openApi) {
@@ -40,14 +39,13 @@ public class RubyApiResourceBuilder extends FluentApiResourceBuilder {
     @Override
     public ApiResourceBuilder updateOperations(Resolver<CodegenParameter> codegenParameterIResolver) {
         ApiResourceBuilder apiResourceBuilder = super.updateOperations(codegenParameterIResolver);
-        addCreateSeparator(apiResourceBuilder);
         createReadParams((RubyApiResourceBuilder) apiResourceBuilder);
         addContextDataForComponents();
         updatePaths();
         addUpdateParamsSeparator(apiResourceBuilder);
         updateRequiredPathParams(apiResourceBuilder);
         createContextParamsList(apiResourceBuilder.codegenOperationList);
-        addInstanceOperations();
+        categorizeOperations();
         createMaturityDescription(apiResourceBuilder.codegenOperationList);
         return apiResourceBuilder;
     }
@@ -58,18 +56,6 @@ public class RubyApiResourceBuilder extends FluentApiResourceBuilder {
         return ((RubyApiResourceBuilder) super
                 .updateResponseModel(codegenPropertyResolver, codegenModelResolver))
                 .updateVars();
-    }
-
-    private void addCreateSeparator(ApiResourceBuilder apiResourceBuilder) {
-        for (CodegenOperation operation : apiResourceBuilder.codegenOperationList) {
-            if ((boolean) operation.vendorExtensions.getOrDefault("x-is-create-operation", false)) {
-                for (CodegenParameter param : operation.allParams) {
-                    param.vendorExtensions.put(SEPARATOR, ",\n\t\t\t\t\t\t");
-                }
-                if (!operation.allParams.isEmpty())
-                    operation.allParams.get(operation.allParams.size() - 1).vendorExtensions.put(SEPARATOR, "\n\t\t\t\t\t");
-            }
-        }
     }
 
     private void createReadParams(RubyApiResourceBuilder apiResourceBuilder) {
@@ -140,23 +126,22 @@ public class RubyApiResourceBuilder extends FluentApiResourceBuilder {
 
                 updateDependents(directoryStructureService, dependents, dependentPropertiesList);
                 updateDependents(directoryStructureService, methodDependents, dependentMethods);
+                dependentPropertiesList.removeAll(dependentPropertiesList.stream()
+                        .map(DirectoryStructureService.ContextResource.class::cast)
+                        .filter(dependent -> dependentMethods.stream()
+                                .map(DirectoryStructureService.ContextResource.class::cast).anyMatch(
+                                        methodDependent -> methodDependent.getMountName().equals(dependent.getMountName()))
+
+                        ).collect(Collectors.toList()));
                 if (operation.path.endsWith("}") || operation.path.endsWith("}.json")) {
                     metaAPIProperties.put("contextImportProperties", dependentPropertiesList);
                     metaAPIProperties.put("contextImportMethods", dependentMethods);
 
+                } else {
+                    metaAPIProperties.put("listImportProperties", dependentPropertiesList);
+                    metaAPIProperties.put("listImportMethods", dependentMethods);
                 }
                 seenOps.add(operation.path);
-            }
-        });
-    }
-
-    private void addInstanceOperations() {
-        codegenOperationList.stream().filter(operation -> !operation.vendorExtensions.containsKey("x-ignore")).forEach(codegenOperation -> {
-            Optional<String> pathType = Optional.ofNullable(codegenOperation.vendorExtensions.get("x-path-type").toString());
-            if (pathType.isPresent() && !pathType.get().equals("list")) {
-                instanceOperations.add(codegenOperation);
-                codegenOperation.vendorExtensions.put("instanceOperation", true);
-                metaAPIProperties.put("hasInstanceOperation", true);
             }
         });
     }

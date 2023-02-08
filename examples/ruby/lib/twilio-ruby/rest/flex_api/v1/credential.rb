@@ -27,12 +27,19 @@ module Twilio
                         # Path Solution
                         @solution = {  }
                         @uri = "/Credentials"
-                        #Components
+                        # Components
+                        @new_credentials = nil
                         @aws = nil
                     end
                 
-                    
-                    ##
+
+                ##
+                # Access the new_credentials
+                # @return [NewCredentialsList]
+                # @return [NewCredentialsContext]
+                def new_credentials
+                    @new_credentials ||= NewCredentialsList.new(@version )
+                end
                 ##
                 # Access the aws
                 # @return [AwsList]
@@ -64,7 +71,7 @@ module Twilio
                         # Path Solution
                         @solution = {  }
 
-                        # Dependents
+                        
                     end
 
                     ##
@@ -143,18 +150,6 @@ module Twilio
                     
                     
                     
-                    ##
-                    # Access the aws
-                    # @return [aws] aws
-                    def aws
-                        context.aws
-                    end
-                    ##
-                    # Access the new_credentials
-                    # @return [new_credentials] new_credentials
-                    def new_credentials
-                        context.new_credentials
-                    end
                     ##
                     # Provide a user friendly representation
                     def to_s
