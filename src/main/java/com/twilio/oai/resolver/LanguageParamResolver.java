@@ -1,6 +1,7 @@
 package com.twilio.oai.resolver;
 
 import com.twilio.oai.StringHelper;
+import com.twilio.oai.common.ApplicationConstants;
 import com.twilio.oai.common.Utility;
 
 import lombok.AllArgsConstructor;
@@ -41,12 +42,12 @@ public class LanguageParamResolver extends Resolver<CodegenParameter> {
 
     protected void resolvePrefixedMap(CodegenParameter codegenParameter) {
         if (codegenParameter.dataFormat != null && codegenParameter.dataFormat
-                .startsWith(LanguageConventionResolver.PREFIXED_COLLAPSIBLE_MAP)) {
+                .startsWith(ApplicationConstants.PREFIXED_COLLAPSIBLE_MAP)) {
             String[] split_format_array = codegenParameter.dataFormat.split(LanguageConventionResolver.HYPHEN);
             codegenParameter.vendorExtensions.put(LanguageConventionResolver.X_PREFIXED_COLLAPSIBLE_MAP,
                     split_format_array[split_format_array.length - 1]);
             codegenParameter.dataType = mapper.properties()
-                    .getString(LanguageConventionResolver.PREFIXED_COLLAPSIBLE_MAP).orElse(null);
+                    .getString(ApplicationConstants.PREFIXED_COLLAPSIBLE_MAP).orElse(null);
         }
         codegenParameter.paramName = StringHelper.toFirstLetterLower(codegenParameter.paramName);
     }

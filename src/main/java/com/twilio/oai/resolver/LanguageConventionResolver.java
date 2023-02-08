@@ -6,9 +6,9 @@ import java.util.Map;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.twilio.oai.common.ApplicationConstants;
 
 public class LanguageConventionResolver implements IConventionMapper {
-    public static final String PREFIXED_COLLAPSIBLE_MAP = "prefixed-collapsible-map";
     public static final String X_PREFIXED_COLLAPSIBLE_MAP = "x-prefixed-collapsible-map";
     public static final String HYPHEN = "-";
     public static final String MIXED = "mixed";

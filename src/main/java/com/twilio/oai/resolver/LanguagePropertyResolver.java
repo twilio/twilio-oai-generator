@@ -1,5 +1,6 @@
 package com.twilio.oai.resolver;
 
+import com.twilio.oai.common.ApplicationConstants;
 import com.twilio.oai.common.Utility;
 
 import lombok.AllArgsConstructor;
@@ -39,10 +40,10 @@ public class LanguagePropertyResolver extends Resolver<CodegenProperty> {
     }
 
     protected void resolvePrefixedMap(CodegenProperty codegenProperty) {
-        if (codegenProperty.dataFormat != null && codegenProperty.dataFormat.startsWith(LanguageConventionResolver.PREFIXED_COLLAPSIBLE_MAP)) {
+        if (codegenProperty.dataFormat != null && codegenProperty.dataFormat.startsWith(ApplicationConstants.PREFIXED_COLLAPSIBLE_MAP)) {
             String[] split_format_array = codegenProperty.dataFormat.split(LanguageConventionResolver.HYPHEN);
             codegenProperty.vendorExtensions.put(LanguageConventionResolver.X_PREFIXED_COLLAPSIBLE_MAP, split_format_array[split_format_array.length - 1]);
-            codegenProperty.dataType = mapper.properties().getString(LanguageConventionResolver.PREFIXED_COLLAPSIBLE_MAP).orElseThrow();
+            codegenProperty.dataType = mapper.properties().getString(ApplicationConstants.PREFIXED_COLLAPSIBLE_MAP).orElseThrow();
         }
     }
 }

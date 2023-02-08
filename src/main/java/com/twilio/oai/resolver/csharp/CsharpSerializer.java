@@ -31,7 +31,7 @@ public class CsharpSerializer {
         String serializedFormat = (String) optionalSerializedFormat.orElse(mapper.serialize().get("-").get());
 
         // Replace "%s" with paramName
-        serializedFormat = parameter.isMap ? String.format(serializedFormat, parameter.paramName, parameter.vendorExtensions.get("x-map-value"))
+        serializedFormat = (boolean)parameter.vendorExtensions.getOrDefault("x-parameter-map", false) ? String.format(serializedFormat, parameter.paramName, parameter.vendorExtensions.get("x-map-value"))
                     : String.format(serializedFormat, parameter.paramName);
 
         parameter.vendorExtensions.put("x-param-to-string", serializedFormat);
