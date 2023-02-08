@@ -38,7 +38,7 @@ module Twilio
                 ##
                 # @return [Twilio::REST::{{domainName}}::{{apiVersionClass}}::{{#lambda.camelcase}}{{mountName}}{{/lambda.camelcase}}Context]
                 def {{mountName}}
-                    @{{mountName}} ||= {{resourceName}}List.new self
+                    @{{mountName}} ||= {{resourceName}}Context.new self
                 end
                 {{/pathParams}}
             {{/versionResources}}
