@@ -32,7 +32,6 @@ module Twilio
                         
                     end
                 
-                    
                     ##
                     # Lists AwsInstance records from the API as a list.
                     # Unlike stream(), this operation is eager and will load `limit` records into
@@ -118,7 +117,7 @@ module Twilio
                     AwsPage.new(@version, response, @solution)
                     end
                     
-                    ##
+
 
                     # Provide a user friendly representation
                     def to_s
@@ -152,8 +151,7 @@ module Twilio
 
                     ##
                     # Fetch the AwsInstance
-                    # @return [AwsInstance]
-                    Fetched AwsInstance
+                    # @return [AwsInstance] Fetched AwsInstance
                     def fetch
 
                         payload = @version.fetch('GET',@uri )
@@ -162,11 +160,12 @@ module Twilio
 
                     ##
                     # Update the AwsInstance
-                     # @param [String] test_string 
-                     # @param [Boolean] test_boolean 
-                    # @return [AwsInstance]
-                    Updated AwsInstance
-                    def update(test_string: :unset, , test_boolean: :unset )
+                    # @param [String] test_string 
+                    # @param [Boolean] test_boolean 
+                    # @return [AwsInstance] Updated AwsInstance
+                    def update(
+                        test_string: :unset, 
+                        test_boolean: :unset)
 
                         data = Twilio::Values.of({
                         'TestString' => test_string,
@@ -180,18 +179,12 @@ module Twilio
                     ##
                     # Access the history
                     # @return [HistoryList]
-                    # @return [HistoryContext] if sid was passed.
-                    def history()
-                        if 
-                            return HistoryContext.new(@version)
-                        end
-                        unless @history
-                            @history = HistoryList.new(
-                                @version
+                    # @return [HistoryContext]
+                    def history
+                        HistoryContext.new(
+                                @version,
+                                @solution[:sid]
                                 )
-                        end
-
-                     @history
                     end
 
                     ##
