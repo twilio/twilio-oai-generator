@@ -12,7 +12,7 @@ import static com.twilio.oai.common.ApplicationConstants.OBJECT;
 
 public class CodegenModelDataTypeResolver extends Resolver<CodegenProperty> {
 
-    private final IConventionMapper mapper;
+    protected final IConventionMapper mapper;
     private final CodegenModelComplexResolver codegenModelComplexResolver;
     private final Map<String, String> modelFormatMap;
 

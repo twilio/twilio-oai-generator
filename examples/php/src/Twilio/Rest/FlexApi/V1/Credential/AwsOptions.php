@@ -41,7 +41,7 @@ abstract class AwsOptions
     public static function update(
         
         string $testString = Values::NONE,
-        bool $testBoolean = Values::NONE
+        bool $testBoolean = Values::BOOL_NONE
 
     ): UpdateAwsOptions
     {
@@ -65,7 +65,7 @@ class UpdateAwsOptions extends Options
     public function __construct(
         
         string $testString = Values::NONE,
-        bool $testBoolean = Values::NONE
+        bool $testBoolean = Values::BOOL_NONE
 
     ) {
         $this->options['testString'] = $testString;

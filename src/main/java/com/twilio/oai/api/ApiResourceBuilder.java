@@ -7,6 +7,7 @@ import com.twilio.oai.common.Utility;
 import com.twilio.oai.resolver.Resolver;
 import com.twilio.oai.resource.Resource;
 import com.twilio.oai.template.IApiActionTemplate;
+import org.apache.commons.lang3.StringUtils;
 import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenOperation;
 import org.openapitools.codegen.CodegenParameter;
@@ -125,15 +126,15 @@ public abstract class ApiResourceBuilder implements IApiResourceBuilder {
             operationMap.put("x-is-list-operation", "true");
         }
 
-        if (operation.operationId.startsWith("update")) {
+        if (StringUtils.startsWithIgnoreCase(operation.operationId, "update")) {
             addOperationName(operation, Operation.UPDATE.getValue());
-        } else if (operation.operationId.startsWith("delete")) {
+        } else if (StringUtils.startsWithIgnoreCase(operation.operationId, "delete")) {
             addOperationName(operation, Operation.DELETE.getValue());
-        } else if (operation.operationId.startsWith("create")) {
+        } else if (StringUtils.startsWithIgnoreCase(operation.operationId, "create")) {
             addOperationName(operation, Operation.CREATE.getValue());
-        } else if (operation.operationId.startsWith("fetch")) {
+        } else if (StringUtils.startsWithIgnoreCase(operation.operationId, "fetch")) {
             addOperationName(operation, Operation.FETCH.getValue());
-        } else if (operation.operationId.startsWith("list")) {
+        } else if (StringUtils.startsWithIgnoreCase(operation.operationId, "list")) {
             addOperationName(operation, Operation.READ.getValue());
         }
 
