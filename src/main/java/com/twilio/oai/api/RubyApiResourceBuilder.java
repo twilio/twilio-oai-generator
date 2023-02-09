@@ -25,7 +25,6 @@ public class RubyApiResourceBuilder extends FluentApiResourceBuilder {
     List<String[]> parentDir = new ArrayList<>();
     boolean hasParents = false;
     final OpenAPI openApi;
-    private static final String SEPARATOR = "separator";
 
     public RubyApiResourceBuilder(final IApiActionTemplate template, final List<CodegenOperation> codegenOperations, final List<CodegenModel> allModels, final DirectoryStructureService directoryStructureService, final OpenAPI openApi) {
         super(template, codegenOperations, allModels, directoryStructureService);
@@ -43,7 +42,6 @@ public class RubyApiResourceBuilder extends FluentApiResourceBuilder {
         ApiResourceBuilder apiResourceBuilder = super.updateOperations(codegenParameterIResolver);
         createReadParams((RubyApiResourceBuilder) apiResourceBuilder);
         updatePaths();
-        addUpdateParamsSeparator(apiResourceBuilder);
         updateRequiredPathParams(apiResourceBuilder);
         createContextParamsList(apiResourceBuilder.codegenOperationList);
         categorizeOperations();
@@ -65,7 +63,6 @@ public class RubyApiResourceBuilder extends FluentApiResourceBuilder {
             if ((boolean) operation.vendorExtensions.getOrDefault("x-is-read-operation", false)) {
                 for (CodegenParameter param : operation.allParams) {
                     if (!param.paramName.equals("page_size")) {
-                        param.vendorExtensions.put(SEPARATOR, ",");
                         readParams.add(param);
                     }
                 }
@@ -135,18 +132,6 @@ public class RubyApiResourceBuilder extends FluentApiResourceBuilder {
         if (!apiResourceBuilder.requiredPathParams.isEmpty()) {
             for (CodegenParameter param : apiResourceBuilder.requiredPathParams) {
                 param.vendorExtensions.put("isInstanceParam", !param.paramName.equals("account_sid"));
-            }
-        }
-    }
-
-    private void addUpdateParamsSeparator(ApiResourceBuilder apiResourceBuilder) {
-        for (CodegenOperation operation : apiResourceBuilder.codegenOperationList) {
-            if ((boolean) operation.vendorExtensions.getOrDefault("x-is-update-operation", false)) {
-                for (CodegenParameter param : operation.allParams) {
-                    param.vendorExtensions.put(SEPARATOR, ",");
-                }
-                if (!operation.allParams.isEmpty())
-                    operation.allParams.get(operation.allParams.size() - 1).vendorExtensions.put(SEPARATOR, "");
             }
         }
     }
