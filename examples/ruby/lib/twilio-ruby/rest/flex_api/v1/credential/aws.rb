@@ -146,7 +146,7 @@ module Twilio
                     # @return [Boolean] True if delete succeeds, false otherwise
                     def delete
 
-                        @version.delete('DELETE', @uri, )
+                        @version.delete('DELETE', @uri)
                     end
 
                     ##
@@ -154,8 +154,12 @@ module Twilio
                     # @return [AwsInstance] Fetched AwsInstance
                     def fetch
 
-                        payload = @version.fetch('GET', @uri )
-                        AwsInstance.new(@version, payload, )
+                        payload = @version.fetch('GET', @uri)
+                        AwsInstance.new(
+                            @version,
+                            payload,
+                            sid: @solution[:sid],
+                        )
                     end
 
                     ##
@@ -165,15 +169,20 @@ module Twilio
                     # @return [AwsInstance] Updated AwsInstance
                     def update(
                         test_string: :unset, 
-                        test_boolean: :unset)
+                        test_boolean: :unset
+                    )
 
                         data = Twilio::Values.of({
-                        'TestString' => test_string,
-                        'TestBoolean' => test_boolean,
+                            'TestString' => test_string,
+                            'TestBoolean' => test_boolean,
                         })
 
-                        payload = @version.update('POST', @uri, data: data  )
-                        AwsInstance.new(@version, payload, )
+                        payload = @version.update('POST', @uri, data: data)
+                        AwsInstance.new(
+                            @version,
+                            payload,
+                            sid: @solution[:sid],
+                        )
                     end
 
                     ##
@@ -242,13 +251,15 @@ module Twilio
                     # @return [AwsInstance] AwsInstance
                     def initialize(version, payload , sid: nil)
                         super(version)
+                        
                         # Marshaled Properties
                         @properties = { 
                             'account_sid' => payload['account_sid'],
                             'sid' => payload['sid'],
                             'test_string' => payload['test_string'],
                             'test_integer' => payload['test_integer'] == nil ? payload['test_integer'] : payload['test_integer'].to_i,
-                             } 
+                        }
+
                         # Context
                         @instance_context = nil
                         @params = { 'sid' => sid  || @properties['sid']  , }
@@ -289,40 +300,45 @@ module Twilio
                         @properties['test_integer']
                     end
                     
-                    
                     ##
                     # Delete the AwsInstance
-                    # @return [Boolean] true if delete succeeds, false otherwise
+                    # @return [Boolean] True if delete succeeds, false otherwise
                     def delete
+
                         context.delete
                     end
-                    
-                    
+
                     ##
                     # Fetch the AwsInstance
                     # @return [AwsInstance] Fetched AwsInstance
                     def fetch
+
                         context.fetch
                     end
-                    
-                    
+
                     ##
                     # Update the AwsInstance
                     # @param [String] test_string 
                     # @param [Boolean] test_boolean 
                     # @return [AwsInstance] Updated AwsInstance
-                    def update(test_string: :unset ,  test_boolean: :unset  )
+                    def update(
+                        test_string: :unset, 
+                        test_boolean: :unset
+                    )
+
                         context.update(
                             test_string: test_string, 
-                            test_boolean: test_boolean, )
-                     end
-                    
+                            test_boolean: test_boolean, 
+                        )
+                    end
+
                     ##
                     # Access the history
                     # @return [history] history
                     def history
                         context.history
                     end
+
                     ##
                     # Provide a user friendly representation
                     def to_s

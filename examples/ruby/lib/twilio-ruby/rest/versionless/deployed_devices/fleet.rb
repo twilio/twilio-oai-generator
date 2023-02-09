@@ -34,14 +34,18 @@ module Twilio
                     # @param [String] name 
                     # @return [FleetInstance] Created FleetInstance
                     def create(
-                        name: :unset)
+                        name: :unset
+                    )
 
                         data = Twilio::Values.of({
-                        'Name' => name,
+                            'Name' => name,
                         })
 
-                        payload = @version.create('POST', @uri, data: data  )
-                        FleetInstance.new(@version, payload, )
+                        payload = @version.create('POST', @uri, data: data)
+                        FleetInstance.new(
+                            @version,
+                            payload,
+                        )
                     end
 
                 
@@ -73,8 +77,12 @@ module Twilio
                     # @return [FleetInstance] Fetched FleetInstance
                     def fetch
 
-                        payload = @version.fetch('GET', @uri )
-                        FleetInstance.new(@version, payload, )
+                        payload = @version.fetch('GET', @uri)
+                        FleetInstance.new(
+                            @version,
+                            payload,
+                            sid: @solution[:sid],
+                        )
                     end
 
 
@@ -133,12 +141,14 @@ module Twilio
                     # @return [FleetInstance] FleetInstance
                     def initialize(version, payload , sid: nil)
                         super(version)
+                        
                         # Marshaled Properties
                         @properties = { 
                             'name' => payload['name'],
                             'sid' => payload['sid'],
                             'friendly_name' => payload['friendly_name'],
-                             } 
+                        }
+
                         # Context
                         @instance_context = nil
                         @params = { 'sid' => sid  || @properties['sid']  , }
@@ -173,16 +183,14 @@ module Twilio
                         @properties['friendly_name']
                     end
                     
-                    
-                    
                     ##
                     # Fetch the FleetInstance
                     # @return [FleetInstance] Fetched FleetInstance
                     def fetch
+
                         context.fetch
                     end
-                    
-                    
+
                     ##
                     # Provide a user friendly representation
                     def to_s

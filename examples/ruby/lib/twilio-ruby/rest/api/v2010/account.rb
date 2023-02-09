@@ -31,26 +31,30 @@ module Twilio
                     end
                     ##
                     # Create the AccountInstance
-                    # @param [String] x_twilio_webhook_enabled 
                     # @param [String] recording_status_callback 
                     # @param [Array&lt;String&gt;] recording_status_callback_event 
                     # @param [String] twiml 
+                    # @param [String] x_twilio_webhook_enabled 
                     # @return [AccountInstance] Created AccountInstance
                     def create(
-                        x_twilio_webhook_enabled: :unset, 
                         recording_status_callback: :unset, 
                         recording_status_callback_event: :unset, 
-                        twiml: :unset)
+                        twiml: :unset, 
+                        x_twilio_webhook_enabled: :unset
+                    )
 
                         data = Twilio::Values.of({
-                        'RecordingStatusCallback' => recording_status_callback,
-                        'RecordingStatusCallbackEvent' => Twilio.serialize_list(recording_status_callback_event),
-                        'Twiml' => twiml,
+                            'RecordingStatusCallback' => recording_status_callback,
+                            'RecordingStatusCallbackEvent' => Twilio.serialize_list(recording_status_callback_event),
+                            'Twiml' => twiml,
                         })
 
                         headers = Twilio::Values.of({ 'X-Twilio-Webhook-Enabled' => x_twilio_webhook_enabled, })
-                        payload = @version.create('POST', @uri , data: data, headers: headers)
-                        AccountInstance.new(@version, payload, )
+                        payload = @version.create('POST', @uri, data: data, headers: headers)
+                        AccountInstance.new(
+                            @version,
+                            payload,
+                        )
                     end
 
                 
@@ -196,7 +200,7 @@ module Twilio
                     # @return [Boolean] True if delete succeeds, false otherwise
                     def delete
 
-                        @version.delete('DELETE', @uri, )
+                        @version.delete('DELETE', @uri)
                     end
 
                     ##
@@ -204,26 +208,35 @@ module Twilio
                     # @return [AccountInstance] Fetched AccountInstance
                     def fetch
 
-                        payload = @version.fetch('GET', @uri )
-                        AccountInstance.new(@version, payload, )
+                        payload = @version.fetch('GET', @uri)
+                        AccountInstance.new(
+                            @version,
+                            payload,
+                            sid: @solution[:sid],
+                        )
                     end
 
                     ##
                     # Update the AccountInstance
-                    # @param [TestStatus] status 
                     # @param [String] pause_behavior 
+                    # @param [TestStatus] status 
                     # @return [AccountInstance] Updated AccountInstance
                     def update(
-                        status: nil, 
-                        pause_behavior: :unset)
+                        pause_behavior: :unset, 
+                        status: nil
+                    )
 
                         data = Twilio::Values.of({
-                          'Status' => status,
-                        'PauseBehavior' => pause_behavior,
+                            'Status' => status,
+                            'PauseBehavior' => pause_behavior,
                         })
 
-                        payload = @version.update('POST', @uri, data: data  )
-                        AccountInstance.new(@version, payload, )
+                        payload = @version.update('POST', @uri, data: data)
+                        AccountInstance.new(
+                            @version,
+                            payload,
+                            sid: @solution[:sid],
+                        )
                     end
 
                     ##
@@ -304,6 +317,7 @@ module Twilio
                     # @return [AccountInstance] AccountInstance
                     def initialize(version, payload , sid: nil)
                         super(version)
+                        
                         # Marshaled Properties
                         @properties = { 
                             'account_sid' => payload['account_sid'],
@@ -322,7 +336,8 @@ module Twilio
                             'test_array_of_array_of_integers' => payload['test_array_of_array_of_integers'],
                             'test_array_of_objects' => payload['test_array_of_objects'],
                             'test_array_of_enum' => payload['test_array_of_enum'],
-                             } 
+                        }
+
                         # Context
                         @instance_context = nil
                         @params = { 'sid' => sid  || @properties['sid']  , }
@@ -435,40 +450,45 @@ module Twilio
                         @properties['test_array_of_enum']
                     end
                     
-                    
                     ##
                     # Delete the AccountInstance
-                    # @return [Boolean] true if delete succeeds, false otherwise
+                    # @return [Boolean] True if delete succeeds, false otherwise
                     def delete
+
                         context.delete
                     end
-                    
-                    
+
                     ##
                     # Fetch the AccountInstance
                     # @return [AccountInstance] Fetched AccountInstance
                     def fetch
+
                         context.fetch
                     end
-                    
-                    
+
                     ##
                     # Update the AccountInstance
-                    # @param [TestStatus] status 
                     # @param [String] pause_behavior 
+                    # @param [TestStatus] status 
                     # @return [AccountInstance] Updated AccountInstance
-                    def update(status: :unset ,  pause_behavior: :unset  )
+                    def update(
+                        pause_behavior: :unset, 
+                        status: nil
+                    )
+
                         context.update(
+                            pause_behavior: pause_behavior, 
                             status: status, 
-                            pause_behavior: pause_behavior, )
-                     end
-                    
+                        )
+                    end
+
                     ##
                     # Access the calls
                     # @return [calls] calls
                     def calls
                         context.calls
                     end
+
                     ##
                     # Provide a user friendly representation
                     def to_s

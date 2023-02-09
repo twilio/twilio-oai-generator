@@ -40,6 +40,7 @@ public class RubyApiResourceBuilder extends FluentApiResourceBuilder {
     @Override
     public ApiResourceBuilder updateOperations(Resolver<CodegenParameter> codegenParameterIResolver) {
         ApiResourceBuilder apiResourceBuilder = super.updateOperations(codegenParameterIResolver);
+        resolveHeaderParams(codegenParameterIResolver);
         createReadParams((RubyApiResourceBuilder) apiResourceBuilder);
         updatePaths();
         updateRequiredPathParams(apiResourceBuilder);
@@ -55,6 +56,12 @@ public class RubyApiResourceBuilder extends FluentApiResourceBuilder {
         return ((RubyApiResourceBuilder) super
                 .updateResponseModel(codegenPropertyResolver, codegenModelResolver))
                 .updateVars();
+    }
+
+    private void resolveHeaderParams(Resolver<CodegenParameter> codegenParameterIResolver) {
+        codegenOperationList.forEach(codegenOperation -> {
+            codegenOperation.headerParams.forEach(codegenParameterIResolver::resolve);
+        });
     }
 
     private void createReadParams(RubyApiResourceBuilder apiResourceBuilder) {
@@ -146,7 +153,7 @@ public class RubyApiResourceBuilder extends FluentApiResourceBuilder {
         return this;
     }
 
-    public void fetchParentDirectory() {
+    private void fetchParentDirectory() {
         String path = codegenOperationList.get(0).path;
         List<String> parentFiles = new ArrayList<>();
         final Resource resource = directoryStructureService.getResourceTree().findResource(path).orElseThrow();

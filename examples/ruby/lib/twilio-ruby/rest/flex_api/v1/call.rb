@@ -58,8 +58,12 @@ module Twilio
                     # @return [CallInstance] Updated CallInstance
                     def update
 
-                        payload = @version.update('POST', @uri )
-                        CallInstance.new(@version, payload, )
+                        payload = @version.update('POST', @uri)
+                        CallInstance.new(
+                            @version,
+                            payload,
+                            sid: @solution[:sid],
+                        )
                     end
 
 
@@ -118,10 +122,12 @@ module Twilio
                     # @return [CallInstance] CallInstance
                     def initialize(version, payload , sid: nil)
                         super(version)
+                        
                         # Marshaled Properties
                         @properties = { 
                             'sid' => payload['sid'] == nil ? payload['sid'] : payload['sid'].to_i,
-                             } 
+                        }
+
                         # Context
                         @instance_context = nil
                         @params = { 'sid' => sid  || @properties['sid']  , }
@@ -144,16 +150,14 @@ module Twilio
                         @properties['sid']
                     end
                     
-                    
-                    
-                    
                     ##
                     # Update the CallInstance
                     # @return [CallInstance] Updated CallInstance
-                    def update()
-                        context.update()
-                     end
-                    
+                    def update
+
+                        context.update
+                    end
+
                     ##
                     # Provide a user friendly representation
                     def to_s
