@@ -39,7 +39,7 @@
                     #    but a limit is defined, stream() will attempt to read the limit with the most
                     #    efficient page size, i.e. min(limit, 1000)
                     # @return [Array] Array of up to limit results
-                    def list({{#readParams}}{{>params}}{{/readParams}} limit: nil, page_size: nil)
+                    def list({{#readParams.0}}{{#readParams}}{{>params}}{{/readParams}}, {{/readParams.0}}limit: nil, page_size: nil)
                         self.stream(
                     {{#readParams}}
                             {{paramName}}: {{paramName}},
@@ -63,7 +63,7 @@
                     #    but a limit is defined, stream() will attempt to read the limit with the most
                     #    efficient page size, i.e. min(limit, 1000)
                     # @return [Enumerable] Enumerable that will yield up to limit results
-                    def stream({{#readParams}}{{>params}}{{/readParams}} limit: nil, page_size: nil)
+                    def stream({{#readParams.0}}{{#readParams}}{{>params}}{{/readParams}}, {{/readParams.0}}limit: nil, page_size: nil)
                         limits = @version.read_limits(limit, page_size)
 
                         page = self.page(
@@ -99,7 +99,7 @@
                     # @param [Integer] page_number Page Number, this value is simply for client state
                     # @param [Integer] page_size Number of records to return, defaults to 50
                     # @return [Page] Page of {{apiName}}Instance
-                    def page({{#readParams}}{{>params}}{{/readParams}} page_token: :unset, page_number: :unset, page_size: :unset)
+                    def page({{#readParams.0}}{{#readParams}}{{>params}}{{/readParams}}, {{/readParams.0}}page_token: :unset, page_number: :unset, page_size: :unset)
                         params = Twilio::Values.of({
                             {{#readParams}}{{^vendorExtensions.x-serialize}}
                             '{{{baseName}}}' => {{paramName}},
@@ -145,7 +145,7 @@
                 {{#params}}
                 # @return [{{#lambda.titlecase}}{{#lambda.camelcase}}{{filename}}{{/lambda.camelcase}}{{/lambda.titlecase}}List]
                 # @return [{{#lambda.titlecase}}{{#lambda.camelcase}}{{filename}}{{/lambda.camelcase}}{{/lambda.titlecase}}Context] if sid was passed.
-                def {{mountName}}({{#params}}{{#lambda.snakecase}}{{.}}{{/lambda.snakecase}}=:unset{{/params}})
+                def {{mountName}}{{#params.0}}({{#params}}{{#lambda.snakecase}}{{.}}{{/lambda.snakecase}}=:unset{{/params}}){{/params.0}}
                 {{#params}}
                     raise ArgumentError, '{{#lambda.snakecase}}{{.}}{{/lambda.snakecase}} cannot be nil' if {{#lambda.snakecase}}{{.}}{{/lambda.snakecase}}.nil?
                 {{/params}}
