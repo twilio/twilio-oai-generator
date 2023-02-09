@@ -59,7 +59,7 @@
                     # @param [{{dataType}}] {{paramName}} {{description}}
                     {{/allParams}}
                     # @return [{{apiName}}Instance] Updated {{apiName}}Instance
-                    def update({{#allParams}}{{paramName}}: :unset {{vendorExtensions.separator}} {{/allParams}})
+                    def update({{#allParams}}{{paramName}}: :unset {{^-last}}, {{/-last}} {{/allParams}})
                         context.update({{#allParams}}
                             {{paramName}}: {{paramName}}, {{/allParams}})
                      end
