@@ -65,10 +65,10 @@ abstract class AccountOptions
      */
     public static function read(
         
-        \DateTime $dateCreated = Values::NONE,
-        \DateTime $dateTest = Values::NONE,
-        \DateTime $dateCreatedBefore = Values::NONE,
-        \DateTime $dateCreatedAfter = Values::NONE
+        \DateTime $dateCreated = null,
+        \DateTime $dateTest = null,
+        \DateTime $dateCreatedBefore = null,
+        \DateTime $dateCreatedAfter = null
 
     ): ReadAccountOptions
     {
@@ -183,10 +183,10 @@ class ReadAccountOptions extends Options
      */
     public function __construct(
         
-        \DateTime $dateCreated = Values::NONE,
-        \DateTime $dateTest = Values::NONE,
-        \DateTime $dateCreatedBefore = Values::NONE,
-        \DateTime $dateCreatedAfter = Values::NONE
+        \DateTime $dateCreated = null,
+        \DateTime $dateTest = null,
+        \DateTime $dateCreatedBefore = null,
+        \DateTime $dateCreatedAfter = null
 
     ) {
         $this->options['dateCreated'] = $dateCreated;

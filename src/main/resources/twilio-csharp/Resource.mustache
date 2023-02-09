@@ -1,15 +1,15 @@
 {{>LicenseInfo}}
 
+{{#resources}}
 {{>ResourceUsings}}
 
-{{#resources}}
 
-namespace Twilio.Rest.{{domainPackage}}.{{apiVersionClass}}{{packageSubPart}}
+namespace Twilio.Rest.{{domainPackage}}.{{apiVersionClass}}{{namespaceSubPart}}
 {
-    public class {{resourceName}}{{resourceConstant}} : {{resourceConstant}}
+    public class {{apiName}}{{resourceConstant}} : {{resourceConstant}}
     {
     {{>resource/Enum}}
-    {{#operations}}
+    {{#apiOperations}}
     {{#vendorExtensions.x-is-create-operation}}
         {{>resource/CreateResource}}
     {{/vendorExtensions.x-is-create-operation}}
@@ -25,12 +25,12 @@ namespace Twilio.Rest.{{domainPackage}}.{{apiVersionClass}}{{packageSubPart}}
     {{#vendorExtensions.x-is-update-operation}}
         {{>resource/UpdateResource}}
     {{/vendorExtensions.x-is-update-operation}}
-    {{/operations}}
+    {{/apiOperations}}
     {{>FromJson}}
 
     {{>resource/ResponseModel}}
 
-        private {{resourceName}}{{resourceConstant}}() {
+        private {{apiName}}{{resourceConstant}}() {
 
         }
     }

@@ -12,19 +12,19 @@
             }
             {{/isArray}}
             {{^isArray}}
-            {{^isMap}}
+            {{^vendorExtensions.x-parameter-map}}
             if ({{paramName}} != null)
             {
                 p.Add(new KeyValuePair<string, string>("{{{baseName}}}", {{{vendorExtensions.x-param-to-string}}}));
             }
-            {{/isMap}}
-            {{/isArray}}
-            {{#isMap}}
+            {{/vendorExtensions.x-parameter-map}}
+            {{#vendorExtensions.x-parameter-map}}
             if ({{paramName}} != null)
             {
                 p.AddRange(PrefixedCollapsibleMap.Serialize({{{baseName}}}, "{{{vendorExtensions.x-map-value}}}"));
             }
-            {{/isMap}}
+            {{/vendorExtensions.x-parameter-map}}
+            {{/isArray}}
             {{#vendorExtensions.x-before-or-after}}
             else
             {

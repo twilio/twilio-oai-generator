@@ -1,5 +1,6 @@
 package com.twilio.oai.resolver;
 
+import com.twilio.oai.common.ApplicationConstants;
 import org.openapitools.codegen.CodegenParameter;
 import org.openapitools.codegen.CodegenProperty;
 import org.openapitools.codegen.IJsonSchemaValidationProperties;
@@ -11,8 +12,8 @@ public abstract class Resolver<T extends IJsonSchemaValidationProperties> {
 
     protected String getDataType(final CodegenParameter codegenParameter) {
         if (codegenParameter.dataFormat != null) {
-            if (codegenParameter.dataFormat.startsWith(LanguageConventionResolver.PREFIXED_COLLAPSIBLE_MAP)) {
-                return LanguageConventionResolver.PREFIXED_COLLAPSIBLE_MAP;
+            if (codegenParameter.dataFormat.startsWith(ApplicationConstants.PREFIXED_COLLAPSIBLE_MAP)) {
+                return ApplicationConstants.PREFIXED_COLLAPSIBLE_MAP;
             }
 
             return codegenParameter.dataFormat;
@@ -27,8 +28,8 @@ public abstract class Resolver<T extends IJsonSchemaValidationProperties> {
 
     protected String getDataType(final CodegenProperty codegenProperty) {
         if (codegenProperty.dataFormat != null) {
-            if (codegenProperty.dataFormat.startsWith(LanguageConventionResolver.PREFIXED_COLLAPSIBLE_MAP)) {
-                return LanguageConventionResolver.PREFIXED_COLLAPSIBLE_MAP;
+            if (codegenProperty.dataFormat.startsWith(ApplicationConstants.PREFIXED_COLLAPSIBLE_MAP)) {
+                return ApplicationConstants.PREFIXED_COLLAPSIBLE_MAP;
             }
 
             return codegenProperty.dataFormat;

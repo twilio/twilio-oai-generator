@@ -10,15 +10,18 @@ import java.util.List;
 import java.util.Map;
 
 public class CodegenModelResolver extends Resolver<CodegenModel> {
-    private final List<? extends LanguageDataType> languageDataTypes;
     private final CodegenModelDataTypeResolver codegenModelDataTypeResolver;
     private final CodegenModelContainerDataTypeResolver codegenModelContainerDataTypeResolver;
 
     public CodegenModelResolver(IConventionMapper mapper, Map<String, String> modelFormatMap,
                                 List<? extends LanguageDataType> languageDataTypes) {
-        this.languageDataTypes = languageDataTypes;
-        codegenModelDataTypeResolver = new CodegenModelDataTypeResolver(mapper, modelFormatMap);
-        codegenModelContainerDataTypeResolver = new CodegenModelContainerDataTypeResolver(codegenModelDataTypeResolver,
+        this(languageDataTypes, new CodegenModelDataTypeResolver(mapper, modelFormatMap));
+    }
+
+    public CodegenModelResolver(List<? extends LanguageDataType> languageDataTypes,
+                                CodegenModelDataTypeResolver codegenModelDataTypeResolver) {
+        this.codegenModelDataTypeResolver = codegenModelDataTypeResolver;
+        this.codegenModelContainerDataTypeResolver = new CodegenModelContainerDataTypeResolver(codegenModelDataTypeResolver,
                 languageDataTypes);
     }
 

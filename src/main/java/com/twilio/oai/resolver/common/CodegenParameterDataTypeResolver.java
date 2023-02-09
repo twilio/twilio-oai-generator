@@ -7,9 +7,12 @@ import lombok.Setter;
 import org.openapitools.codegen.CodegenParameter;
 
 public class CodegenParameterDataTypeResolver extends Resolver<CodegenParameter> {
-    @Setter
-    private IConventionMapper mapper;
 
+    protected final IConventionMapper mapper;
+
+    public CodegenParameterDataTypeResolver(IConventionMapper mapper) {
+        this.mapper = mapper;
+    }
     public CodegenParameter resolve(CodegenParameter parameter) {
         assignDataType(parameter);
         return parameter;
