@@ -9,22 +9,25 @@
  # Do not edit the class manually.
 # frozen_string_literal: true
 
-
 module Twilio
   module REST
-    class ApiBase < Domain
+    class FlexApiBase < Domain
 
       ##
-      # Initialize api domain
+      # Initialize flexApi domain
       #
       # @param twilio - The twilio client
       #
       def initialize(twilio)
-        super
-        @base_url =  "https://api.twilio.com"
-        @host = "api"
+        super(twilio)
+        @base_url =  "https://flex-api.twilio.com"
+        @host = "flex-api"
         @port = 443
+
+        # Versions
+        @v1 = nil
       end
+
     end
   end
 end

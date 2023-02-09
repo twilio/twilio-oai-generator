@@ -9,21 +9,24 @@
  # Do not edit the class manually.
 # frozen_string_literal: true
 
-
 module Twilio
   module REST
-    class ApiBase < Domain
+    class VersionlessBase < Domain
 
       ##
-      # Initialize api domain
+      # Initialize versionless domain
       #
       # @param twilio - The twilio client
       #
       def initialize(twilio)
-        super
-        @base_url =  "https://api.twilio.com"
-        @host = "api"
+        super(twilio)
+        @base_url =  "https://versionless.twilio.com"
+        @host = "versionless"
         @port = 443
+
+        # Versions
+        @deployed_devices = nil
+        @understand = nil
       end
     end
   end
