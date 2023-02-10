@@ -47,6 +47,7 @@ public class RubyApiResourceBuilder extends FluentApiResourceBuilder {
         createContextParamsList(apiResourceBuilder.codegenOperationList);
         categorizeOperations();
         createMaturityDescription(apiResourceBuilder.codegenOperationList);
+        updateVersionDependents();
         return apiResourceBuilder;
     }
 
@@ -185,6 +186,46 @@ public class RubyApiResourceBuilder extends FluentApiResourceBuilder {
                 property.vendorExtensions
                         .put("instance-property", instanceProperty.replace("{value}", "payload['" + property.name + "']"));
             }
+        return this;
+    }
+
+    private void addResources(List<Resource> dependents, DirectoryStructureService directoryStructureService, List<Object> dependentList) {
+        dependents.forEach(dependent -> dependent
+                .getPathItem()
+                .readOperations()
+                .forEach(operation -> directoryStructureService.addContextdependents(dependentList,
+                        dependent.getName(),
+                        operation)));
+    }
+
+    private boolean dependentExist(String mountName,List<Object> versionDependents){
+        for(var versionDependent:versionDependents){
+            if(((DirectoryStructureService.ContextResource)versionDependent).getMountName().equals(mountName)){
+                return true;
+            }
+        }
+        return false;
+    }
+    private ApiResourceBuilder updateVersionDependents(){
+        List<Object> dependentList = new ArrayList<>();
+        String pathkey = "/2010-04-01/Accounts/{Sid}.json";
+        List<Resource> dependents = directoryStructureService.getResourceTree().dependents(pathkey)
+                .stream().filter(dep -> !dep.getName().endsWith("}.json"))
+                .collect(Collectors.toList());
+        addResources(dependents, directoryStructureService, dependentList);
+        var versionDependents = (List<Object>)directoryStructureService.getAdditionalProperties().getOrDefault("versionDependents",null);
+        if(versionDependents == null) return this;
+        for(var dependent:dependentList){
+            if(!dependentExist(((DirectoryStructureService.ContextResource)dependent).getMountName(),versionDependents)){
+                versionDependents.add(dependent);
+            }
+        }
+        Collections.sort(versionDependents,(d1,d2) -> {
+            var m1 = ((DirectoryStructureService.ContextResource)d1).getMountName();
+            var m2 = ((DirectoryStructureService.ContextResource)d2).getMountName();
+            return m1.compareTo(m2);
+        });
+        directoryStructureService.getAdditionalProperties().put("versionDependents",versionDependents);
         return this;
     }
 }

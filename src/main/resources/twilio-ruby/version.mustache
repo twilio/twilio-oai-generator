@@ -58,8 +58,8 @@ module Twilio
                     @account = value
                 end
                 {{#versionDependents}}
-                def {{mountName}}{{#params}}({{#lambda.camelcase}}{{.}}{{/lambda.camelcase}} =:unset){{/params}}
-                    self.account.{{mountName}}({{#params}}{{#lambda.camelcase}}{{.}}{{/lambda.camelcase}}{{/params}})
+                def {{mountName}}{{#params}}({{#lambda.snakecase}}{{.}}{{/lambda.snakecase}} =:unset){{/params}}
+                    self.account.{{mountName}}({{#params}}{{#lambda.snakecase}}{{.}}{{/lambda.snakecase}}{{/params}})
                 end
                 {{/versionDependents}}
             {{/isApiDomain}}
