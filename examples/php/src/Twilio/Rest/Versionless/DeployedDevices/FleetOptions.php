@@ -25,32 +25,47 @@ use Twilio\Version;
 use Twilio\InstanceContext;
 use Twilio\Deserialize;
 use Twilio\Serialize;
+use Twilio\Base\PhoneNumberCapabilities;
 
-abstract class FleetOptions {
+abstract class FleetOptions
+{
     /**
-     * @param string $name  
+     * @param string $name
      * @return CreateFleetOptions Options builder
      */
-    public static function create(string $name = Values::NONE): CreateFleetOptions {
-        return new CreateFleetOptions($name);
+    public static function create(
+        
+        string $name = Values::NONE
+
+    ): CreateFleetOptions
+    {
+        return new CreateFleetOptions(
+            $name
+        );
     }
 
 
 }
 
-class CreateFleetOptions extends Options {
+class CreateFleetOptions extends Options
+    {
     /**
-     * @param string $name 
+     * @param string $name
      */
-    public function __construct(string $name = Values::NONE) {
+    public function __construct(
+        
+        string $name = Values::NONE
+
+    ) {
         $this->options['name'] = $name;
     }
 
     /**
-     * @param string $name 
+     * @param string $name
      * @return $this Fluent Builder
      */
-    public function setName(string $name): self {
+    public function setName(string $name): self
+    {
         $this->options['name'] = $name;
         return $this;
     }
@@ -60,7 +75,8 @@ class CreateFleetOptions extends Options {
      *
      * @return string Machine friendly representation
      */
-    public function __toString(): string {
+    public function __toString(): string
+    {
         $options = \http_build_query(Values::of($this->options), '', ' ');
         return '[Twilio.Versionless.DeployedDevices.CreateFleetOptions ' . $options . ']';
     }

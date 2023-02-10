@@ -1,0 +1,113 @@
+                        {{#queryParams.0}}
+                        params = Twilio::Values.of({
+                        {{#queryParams}}
+                        {{#required}}
+                        {{^vendorExtensions.x-prefixed-collapsible-map}}
+                        {{^vendorExtensions.x-serialize}}
+                            '{{baseName}}' => {{paramName}},
+                        {{/vendorExtensions.x-serialize}}
+                        {{#vendorExtensions.x-serialize}}
+                            {{^vendorExtensions.x-serialize-map}}
+                                '{{baseName}}' => {{vendorExtensions.x-serialize}}({{paramName}}),
+                            {{/vendorExtensions.x-serialize-map}}
+                            {{#vendorExtensions.x-serialize-map}}
+                                '{{baseName}}' => {{vendorExtensions.x-serialize}}({{paramName}}, {{^vendorExtensions.x-serialize-array-of-array}}{{/vendorExtensions.x-serialize-array-of-array}}{{#vendorExtensions.x-serialize-array-of-array}}{{.}}{{/vendorExtensions.x-serialize-array-of-array}},
+                            {{/vendorExtensions.x-serialize-map}}
+                        {{/vendorExtensions.x-serialize}}
+                        {{/vendorExtensions.x-prefixed-collapsible-map}}
+                        {{/required}}
+                        {{/queryParams}}
+                        {{#queryParams}}
+                        {{^required}}
+                        {{^vendorExtensions.x-prefixed-collapsible-map}}
+                        {{^vendorExtensions.x-serialize}}
+                            '{{baseName}}' => {{paramName}},
+                        {{/vendorExtensions.x-serialize}}
+                        {{#vendorExtensions.x-serialize}}
+                            {{^vendorExtensions.x-serialize-map}}
+                                '{{baseName}}' => {{vendorExtensions.x-serialize}}({{paramName}}),
+                            {{/vendorExtensions.x-serialize-map}}
+                            {{#vendorExtensions.x-serialize-map}}
+                                '{{baseName}}' => {{vendorExtensions.x-serialize}}({{paramName}}),
+                            {{/vendorExtensions.x-serialize-map}}
+                        {{/vendorExtensions.x-serialize}}
+                        {{/vendorExtensions.x-prefixed-collapsible-map}}
+                        {{/required}}
+                        {{/queryParams}}
+                        })
+                        {{#queryParams}}
+                        {{#required}}
+                        {{#vendorExtensions.x-prefixed-collapsible-map}}
+                        params.merge!(Twilio.prefixed_collapsible_map({{paramName}}, 'AddOns'))
+                        {{/vendorExtensions.x-prefixed-collapsible-map}}
+                        {{/required}}
+                        {{/queryParams}}
+                        {{#queryParams}}
+                        {{^required}}
+                        {{#vendorExtensions.x-prefixed-collapsible-map}}
+                        params.merge!(Twilio.prefixed_collapsible_map({{paramName}}, 'AddOns'))
+                        {{/vendorExtensions.x-prefixed-collapsible-map}}
+                        {{/required}}
+                        {{/queryParams}}
+                        {{/queryParams.0}}
+                        {{#formParams.0}}
+                        data = Twilio::Values.of({
+                        {{#requiredParams}}
+                        {{#isFormParam}}
+                        {{^vendorExtensions.x-prefixed-collapsible-map}}
+                        {{^vendorExtensions.x-serialize}}
+                          '{{baseName}}' => {{paramName}},
+                        {{/vendorExtensions.x-serialize}}
+                        {{#vendorExtensions.x-serialize}}
+                         {{^vendorExtensions.x-serialize-map}}
+                         '{{baseName}}' => {{vendorExtensions.x-serialize}}({{paramName}}),
+                         {{/vendorExtensions.x-serialize-map}}
+                        {{#vendorExtensions.x-serialize-map}}
+                         '{{baseName}}' => {{paramName}}
+                        {{/vendorExtensions.x-serialize-map}}
+                        {{/vendorExtensions.x-serialize}}
+                        {{/vendorExtensions.x-prefixed-collapsible-map}}
+                        {{/isFormParam}}
+                        {{/requiredParams}}
+                        {{#optionalParams}}
+                        {{#isFormParam}}
+                        {{^vendorExtensions.x-prefixed-collapsible-map}}
+                        {{^vendorExtensions.x-serialize}}
+                        '{{baseName}}' => {{paramName}},
+                        {{/vendorExtensions.x-serialize}}
+                        {{#vendorExtensions.x-serialize}}
+                         {{^vendorExtensions.x-serialize-map}}
+                        '{{baseName}}' => {{vendorExtensions.x-serialize}}({{paramName}}),
+                         {{/vendorExtensions.x-serialize-map}}
+                         {{#vendorExtensions.x-serialize-map}}
+                        '{{baseName}}' => {{vendorExtensions.x-serialize}}({{paramName}}),
+                         {{/vendorExtensions.x-serialize-map}}
+                        {{/vendorExtensions.x-serialize}}
+                        {{/vendorExtensions.x-prefixed-collapsible-map}}
+                        {{/isFormParam}}
+                        {{/optionalParams}}
+                        })
+                        {{#requiredParams}}
+                        {{#isFormParam}}
+                        {{#vendorExtensions.x-prefixed-collapsible-map}}
+                        params.merge!(Twilio.prefixed_collapsible_map({{paramName}}, 'AddOns'))
+                        {{/vendorExtensions.x-prefixed-collapsible-map}}
+                        {{/isFormParam}}
+                        {{/requiredParams}}
+                        {{#optionalParams}}
+                        {{#isFormParam}}
+                        {{#vendorExtensions.x-prefixed-collapsible-map}}
+                        params.merge!(Twilio.prefixed_collapsible_map({{paramName}}, 'AddOns'))
+                        {{/vendorExtensions.x-prefixed-collapsible-map}}{{/isFormParam}}{{/optionalParams}}
+                        {{/formParams.0}}
+                        {{#headerParams.0}}
+                        headers = Twilio::Values.of({ {{#headerParams}}{{#required}}'{{baseName}}' => {{paramName}}, {{/required}}{{/headerParams}}{{#headerParams}}{{^required}}'{{baseName}}' => {{paramName}}, {{/required}}{{/headerParams}}})
+                        {{/headerParams.0}}
+                        {{^vendorExtensions.x-is-delete-operation}}
+                        payload = @version.{{#lambda.camelcase}}{{vendorExtensions.x-name}}{{/lambda.camelcase}}('{{httpMethod}}', @uri{{#queryParams.0}}{{^formParams}}{{^headerParams}},params: params{{/headerParams}}{{/formParams}}{{/queryParams.0}}{{^queryParams}}{{#formParams.0}}{{^headerParams}}, data: data {{/headerParams}}{{/formParams.0}}{{/queryParams}}{{#queryParams.0}}{{#formParams.0}}{{^headerParams}}, params: params, data: data {{/headerParams}}{{/formParams.0}}{{/queryParams.0}}{{#queryParams.0}}{{#formParams.0}}{{#headerParams.0}}, params: params, data: data, headers: headers{{/headerParams.0}}{{/formParams.0}}{{/queryParams.0}} {{#queryParams.0}} {{^formParams}}{{#headerParams.0}}, params: params, headers: headers{{/headerParams.0}}{{/formParams}}{{/queryParams.0}}{{^queryParams}}{{#formParams.0}}{{#headerParams.0}}, data: data, headers: headers{{/headerParams.0}}{{/formParams.0}}{{/queryParams}}{{^queryParams}}{{^formParams}}{{#headerParams.0}}, headers: headers{{/headerParams.0}}{{/formParams}}{{/queryParams}})
+                        {{apiName}}Instance.new(@version, payload, {{#listPathParams}} {{paramName}}: @solution[:{{paramName}}],{{/listPathParams}})
+                        {{/vendorExtensions.x-is-delete-operation}}
+                        {{#vendorExtensions.x-is-delete-operation}}
+                        @version.{{#lambda.camelcase}}{{vendorExtensions.x-name}}{{/lambda.camelcase}}('{{#httpMethod}}{{.}}{{/httpMethod}}', @uri, {{#queryParams.0}}{{#formParams.0}}{{^headerParams}}, params, data{{/headerParams}}{{/formParams.0}}{{/queryParams.0}}{{#queryParams.0}}{{#formParams.0}}{{#headerParams.0}}, $params, $data, $headers{{/headerParams.0}}{{/formParams.0}}{{/queryParams.0}}{{#queryParams.0}}{{^formParams}}{{#headerParams.0}}, $params, [], $headers{{/headerParams.0}}{{/formParams}}{{/queryParams.0}}{{^queryParams}}{{#formParams.0}}{{#headerParams.0}}, [], $data, $headers{{/headerParams.0}}{{/formParams.0}}{{/queryParams}}{{^queryParams}}{{^formParams}}{{#headerParams.0}} headers: headers{{/headerParams.0}}{{/formParams}}{{/queryParams}})
+                        {{/vendorExtensions.x-is-delete-operation}}
+                    end

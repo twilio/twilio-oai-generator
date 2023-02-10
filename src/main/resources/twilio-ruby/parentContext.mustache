@@ -1,0 +1,18 @@
+            {{#parentDir}}
+                class {{0}} < {{1}}
+            {{/parentDir}}
+
+     {{>list}}
+{{#metaProperties.hasInstanceOperation}}
+{{>context}}
+{{/metaProperties.hasInstanceOperation}}
+{{>page}}
+{{>instance}}
+            {{#parentDir}}
+             end
+            {{/parentDir}}
+            end
+        end
+    end
+end
+

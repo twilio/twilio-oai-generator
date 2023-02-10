@@ -25,31 +25,46 @@ use Twilio\Version;
 use Twilio\InstanceContext;
 use Twilio\Deserialize;
 use Twilio\Serialize;
+use Twilio\Base\PhoneNumberCapabilities;
 
-abstract class HistoryOptions {
+abstract class HistoryOptions
+{
     /**
-     * @param string $addOnsData  
+     * @param string $addOnsData
      * @return FetchHistoryOptions Options builder
      */
-    public static function fetch(string $addOnsData = Values::NONE): FetchHistoryOptions {
-        return new FetchHistoryOptions($addOnsData);
+    public static function fetch(
+        
+        string $addOnsData = Values::NONE
+
+    ): FetchHistoryOptions
+    {
+        return new FetchHistoryOptions(
+            $addOnsData
+        );
     }
 
 }
 
-class FetchHistoryOptions extends Options {
+class FetchHistoryOptions extends Options
+    {
     /**
-     * @param string $addOnsData 
+     * @param string $addOnsData
      */
-    public function __construct(string $addOnsData = Values::NONE) {
+    public function __construct(
+        
+        string $addOnsData = Values::NONE
+
+    ) {
         $this->options['addOnsData'] = $addOnsData;
     }
 
     /**
-     * @param string $addOnsData 
+     * @param string $addOnsData
      * @return $this Fluent Builder
      */
-    public function setAddOnsData(string $addOnsData): self {
+    public function setAddOnsData(string $addOnsData): self
+    {
         $this->options['addOnsData'] = $addOnsData;
         return $this;
     }
@@ -59,7 +74,8 @@ class FetchHistoryOptions extends Options {
      *
      * @return string Machine friendly representation
      */
-    public function __toString(): string {
+    public function __toString(): string
+    {
         $options = \http_build_query(Values::of($this->options), '', ' ');
         return '[Twilio.FlexApi.V1.FetchHistoryOptions ' . $options . ']';
     }

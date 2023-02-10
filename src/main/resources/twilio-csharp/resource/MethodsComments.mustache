@@ -1,5 +1,8 @@
 
-{{#vendorExtensions.x-request-body-param}}
+        {{#vendorExtensions.x-request-body-param}}
         /// <param name="{{#lambda.camelcase}} {{paramName}} {{/lambda.camelcase}}"> {{{description}}} </param>
         {{/vendorExtensions.x-request-body-param}}
+        {{#vendorExtensions.x-is-read-operation}}
+        /// <param name="limit"> Record limit </param>
+        {{/vendorExtensions.x-is-read-operation}}
         /// <param name="client"> Client to make requests to Twilio </param>

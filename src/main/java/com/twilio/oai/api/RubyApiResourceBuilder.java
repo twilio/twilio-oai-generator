@@ -10,16 +10,20 @@ import io.swagger.v3.oas.models.PathItem;
 import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenOperation;
 import org.openapitools.codegen.CodegenParameter;
+import org.openapitools.codegen.CodegenProperty;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
+
+import static com.twilio.oai.common.ApplicationConstants.DESERIALIZE_VEND_EXT;
 
 public class RubyApiResourceBuilder extends FluentApiResourceBuilder {
 
     List<CodegenParameter> readParams;
-    List<Object> componentContextClasses = new ArrayList<>();
+    List<String[]> parentDir = new ArrayList<>();
+    boolean hasParents = false;
     final OpenAPI openApi;
 
     public RubyApiResourceBuilder(final IApiActionTemplate template, final List<CodegenOperation> codegenOperations, final List<CodegenModel> allModels, final DirectoryStructureService directoryStructureService, final OpenAPI openApi) {
@@ -29,29 +33,28 @@ public class RubyApiResourceBuilder extends FluentApiResourceBuilder {
 
     @Override
     public RubyApiResources build() {
+        fetchParentDirectory();
         return new RubyApiResources(this);
     }
 
     @Override
     public ApiResourceBuilder updateOperations(Resolver<CodegenParameter> codegenParameterIResolver) {
         ApiResourceBuilder apiResourceBuilder = super.updateOperations(codegenParameterIResolver);
-        this.addCreateSeparator(apiResourceBuilder);
-        this.createReadParams((RubyApiResourceBuilder) apiResourceBuilder);
-        this.addContextDataForComponents();
-        this.updateListPath();
+        createReadParams((RubyApiResourceBuilder) apiResourceBuilder);
+        updatePaths();
+        updateRequiredPathParams(apiResourceBuilder);
+        createContextParamsList(apiResourceBuilder.codegenOperationList);
+        categorizeOperations();
+        createMaturityDescription(apiResourceBuilder.codegenOperationList);
         return apiResourceBuilder;
     }
 
-    private void addCreateSeparator(ApiResourceBuilder apiResourceBuilder) {
-        for (CodegenOperation operation : apiResourceBuilder.codegenOperationList) {
-            if ((boolean) operation.vendorExtensions.getOrDefault("x-is-create-operation", false)) {
-                for (CodegenParameter param : operation.allParams) {
-                    param.vendorExtensions.put("separator", ",\n\t\t\t\t\t\t");
-                }
-                if (!operation.allParams.isEmpty())
-                    operation.allParams.get(operation.allParams.size() - 1).vendorExtensions.put("separator", "\n\t\t\t\t\t");
-            }
-        }
+    @Override
+    public RubyApiResourceBuilder updateResponseModel(final Resolver<CodegenProperty> codegenPropertyResolver,
+                                                      final Resolver<CodegenModel> codegenModelResolver) {
+        return ((RubyApiResourceBuilder) super
+                .updateResponseModel(codegenPropertyResolver, codegenModelResolver))
+                .updateVars();
     }
 
     private void createReadParams(RubyApiResourceBuilder apiResourceBuilder) {
@@ -60,7 +63,6 @@ public class RubyApiResourceBuilder extends FluentApiResourceBuilder {
             if ((boolean) operation.vendorExtensions.getOrDefault("x-is-read-operation", false)) {
                 for (CodegenParameter param : operation.allParams) {
                     if (!param.paramName.equals("page_size")) {
-                        param.vendorExtensions.put("separator", ",");
                         readParams.add(param);
                     }
                 }
@@ -68,38 +70,118 @@ public class RubyApiResourceBuilder extends FluentApiResourceBuilder {
         }
     }
 
-    private void addContextDataForComponents() {
-        List<Resource> dependents = new ArrayList<>();
-        dependents = getDependentInfo(dependents);
-        if (!dependents.isEmpty())
-            dependents.forEach(dependent -> dependent.getPathItem().readOperations().forEach(operation -> directoryStructureService.addContextdependents(componentContextClasses, dependent.getName(), operation)));
+    private void updatePaths() {
+        if (listPath != null) listPath = listPath.replace("${", "#{@solution[:").replace("}", "]}");
+        if (instancePath != null) instancePath = instancePath.replace("${", "#{@solution[:").replace("}", "]}");
     }
 
-    private List<Resource> getDependentInfo(List<Resource> dependents) {
-        Object domain = directoryStructureService.getAdditionalProperties().get("domainName");
-        Map<String, PathItem> pathMap = openApi.getPaths();
-        String apiPathWithoutVersion = apiPath.substring(apiPath.indexOf("/", 1));
-        for (String pathKey : pathMap.keySet()) {
-            String pathkey = pathKey;
-            if (domain.equals("Api")) {
-                pathkey = pathKey.split(".json")[0];
-                apiPathWithoutVersion = apiPathWithoutVersion.split(".json")[0];
-            }
-            PathItem path = pathMap.get(pathKey);
-            Optional<String> parentKey = PathUtils.getTwilioExtension(path, "parent");
-            if (parentKey.isPresent() && (pathKey.endsWith("}") || pathKey.endsWith("}.json"))) {
-                String parentKeyValue = domain.equals("Api") ? parentKey.get().split(".json")[0] : parentKey.get();
-                if (!parentKeyValue.endsWith("}")) {
-                    if (parentKeyValue.equals(apiPathWithoutVersion)) {
-                        dependents.add(new Resource(null, pathkey, path, null));
-                    }
+    private void createContextParamsList(List<CodegenOperation> opList) {
+        HashSet<String> seenOps = new HashSet<>();
+        opList.forEach(operation -> {
+            if (!seenOps.contains(operation.path)) {
+                List<Object> dependentPropertiesList = new ArrayList<>();
+                List<Object> dependentMethods = new ArrayList<>();
+
+                List<Resource> dependents = StreamSupport.stream(directoryStructureService.getResourceTree().getResources().spliterator(), false)
+                        .filter(resource -> PathUtils.removeFirstPart(operation.path)
+                                .equals(PathUtils.getTwilioExtension(resource.getPathItem(), "parent")
+                                        .orElse(null)))
+                        .collect(Collectors.toList());
+                List<Resource> methodDependents = dependents.stream().filter(dep ->
+                                PathUtils.getTwilioExtension(dep.getPathItem(), "pathType").get().equals("instance"))
+                        .collect(Collectors.toList());
+                dependents.removeIf(methodDependents::contains);
+                dependents.addAll(Optional.ofNullable(methodDependents.stream()).orElse(Stream.empty()).filter(dep ->
+                        !dep.getName().endsWith("}") && !dep.getName().endsWith("}.json")).collect(Collectors.toList()));
+
+                updateDependents(directoryStructureService, dependents, dependentPropertiesList);
+                updateDependents(directoryStructureService, methodDependents, dependentMethods);
+                dependentPropertiesList.removeAll(dependentPropertiesList.stream()
+                        .map(DirectoryStructureService.ContextResource.class::cast)
+                        .filter(dependent -> dependentMethods.stream()
+                                .map(DirectoryStructureService.ContextResource.class::cast).anyMatch(
+                                        methodDependent -> methodDependent.getMountName().equals(dependent.getMountName()))
+
+                        ).collect(Collectors.toList()));
+                if (operation.path.endsWith("}") || operation.path.endsWith("}.json")) {
+                    metaAPIProperties.put("contextImportProperties", dependentPropertiesList);
+                    metaAPIProperties.put("contextImportMethods", dependentMethods);
+
+                } else {
+                    metaAPIProperties.put("listImportProperties", dependentPropertiesList);
+                    metaAPIProperties.put("listImportMethods", dependentMethods);
                 }
+                seenOps.add(operation.path);
+            }
+        });
+    }
+
+    private void createMaturityDescription(List<CodegenOperation> opList) {
+        Set<String> typesOfProducts = new HashSet<>();
+        for (CodegenOperation op : opList) {
+            List<String> values = (List<String>) op.vendorExtensions.get("x-maturity");
+            if (values != null) typesOfProducts.addAll(values);
+        }
+        if (typesOfProducts.contains("Beta"))
+            metaAPIProperties.put("x-maturity-desc", "PLEASE NOTE that this class contains beta products that are subject to change. Use them with caution.");
+        if (typesOfProducts.contains("Preview"))
+            metaAPIProperties.put("x-maturity-desc", "PLEASE NOTE that this class contains preview products that are subject to change. Use them with caution. If you currently do not have developer preview access, please contact help@twilio.com.");
+    }
+
+    private void updateRequiredPathParams(ApiResourceBuilder apiResourceBuilder) {
+        if (!apiResourceBuilder.requiredPathParams.isEmpty()) {
+            for (CodegenParameter param : apiResourceBuilder.requiredPathParams) {
+                param.vendorExtensions.put("isInstanceParam", !param.paramName.equals("account_sid"));
             }
         }
-        return dependents;
     }
 
-    private void updateListPath() {
-        if (listPath != null) listPath = listPath.replace("${", "#{@solution[:").replace("}", "]}");
+    private RubyApiResourceBuilder updateVars() {
+        if (responseModel != null && responseModel.vars != null)
+            for (CodegenProperty property : responseModel.vars) {
+                String instanceProperty = (String) property.vendorExtensions.getOrDefault(DESERIALIZE_VEND_EXT, "{value}");
+                property.vendorExtensions
+                        .put("instance-property", instanceProperty.replace("{value}", "payload['" + property.name + "']"));
+            }
+        return this;
+    }
+
+    public void fetchParentDirectory() {
+        String path = codegenOperationList.get(0).path;
+        List<String> parentFiles = new ArrayList<>();
+        final Resource resource = directoryStructureService.getResourceTree().findResource(path).orElseThrow();
+        Optional<Resource> parent = getParent(resource);
+        while (parent.isPresent()) {
+            Resource parentResource = parent.get();
+            Optional<String> pathType = PathUtils.getTwilioExtension(parentResource.getPathItem(), "pathType");
+            if (pathType.isPresent()) {
+                String pathtype = pathType.get();
+                if (pathtype.equals("instance")) {
+                    parentFiles.add(0, parentResource.getResourceAliases().getClassName() + "Context");
+                } else
+                    parentFiles.add(0, parentResource.getResourceAliases().getClassName() + "List");
+            } else
+                parentFiles.add(0, parentResource.getResourceAliases().getClassName());
+            parent = getParent(parentResource);
+        }
+
+        for (String file : parentFiles) {
+            if (file.endsWith("List")) {
+                parentDir.add(new String[]{file, "ListResource"});
+            } else {
+                parentDir.add(new String[]{file, "InstanceContext"});
+            }
+            hasParents = true;
+        }
+    }
+
+    private Optional<Resource> getParent(Resource resource) {
+        PathItem pathItem = resource.getPathItem();
+        Optional<String> optionalParent = PathUtils.getTwilioExtension(pathItem, "parent");
+        if (optionalParent.isPresent()) {
+            String parentPath = optionalParent.get();
+            return directoryStructureService.getResourceTree().findResource(parentPath, false);
+        }
+        return Optional.empty();
     }
 }

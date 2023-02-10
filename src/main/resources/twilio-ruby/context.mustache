@@ -1,0 +1,105 @@
+
+{{#metaProperties.x-maturity-desc}}
+                ##
+                #{{metaProperties.x-maturity-desc}}
+{{/metaProperties.x-maturity-desc}}
+                class {{apiName}}Context < InstanceContext
+                    ##
+                    # Initialize the {{apiName}}Context
+                    # @param [Version] version Version that contains the resource
+                    {{#instancePathParams}}
+                    # @param [{{dataType}}] {{paramName}} {{description}}
+                    {{/instancePathParams}}
+                    # @return [{{apiName}}Context] {{apiName}}Context
+                    def initialize(version{{#instancePathParams}}, {{paramName}}{{/instancePathParams}})
+                        super(version)
+
+                        # Path Solution
+                        @solution = { {{#instancePathParams}}{{paramName}}: {{paramName}}, {{/instancePathParams}} }
+                        {{#instancePath}}
+                        @uri = "{{instancePath}}"
+                        {{/instancePath}}
+
+                        {{#metaProperties.contextImportProperties.0}}# Dependents{{/metaProperties.contextImportProperties.0}}{{^metaProperties.contextImportProperties}}{{#metaProperties.contextImportMethods.0}}# Dependents{{/metaProperties.contextImportMethods.0}}{{/metaProperties.contextImportProperties}}
+                        {{#metaProperties.contextImportProperties}}
+                        @{{mountName}} = nil
+                        {{/metaProperties.contextImportProperties}}
+                        {{#metaProperties.contextImportMethods}}
+                        @{{mountName}} = nil
+                        {{/metaProperties.contextImportMethods}}
+                    end
+                    {{#apiOperations}}
+                    {{#vendorExtensions.instanceOperation}}
+{{>methods}}
+{{>contextMethodParams}}
+                    {{/vendorExtensions.instanceOperation}}
+                    {{/apiOperations}}
+                    {{#metaProperties.contextImportProperties}}
+                    ##
+                    # Access the {{mountName}}
+                    # @return [{{#lambda.titlecase}}{{#lambda.camelcase}}{{filename}}{{/lambda.camelcase}}{{/lambda.titlecase}}List]
+                    # @return [{{#lambda.titlecase}}{{#lambda.camelcase}}{{filename}}{{/lambda.camelcase}}{{/lambda.titlecase}}Context]
+                    def {{mountName}}
+                      unless @{{mountName}}
+                        @{{mountName}} = {{#lambda.titlecase}}{{#lambda.camelcase}}{{filename}}{{/lambda.camelcase}}{{/lambda.titlecase}}List.new(
+                                @version{{#requiredPathParams}},{{^-last}}
+                                {{paramName}}: @solution[:{{paramName}}]{{/-last}}{{#-last}}
+                                {{#lambda.snakecase}}{{apiName}}{{/lambda.snakecase}}_{{paramName}}: @solution[:{{paramName}}]
+                                {{/-last}}{{/requiredPathParams}}
+                                )
+                      end
+
+                      @{{mountName}}
+                    end
+                    {{/metaProperties.contextImportProperties}}
+                    {{#metaProperties.contextImportMethods}}
+                    ##
+                    # Access the {{mountName}}
+                    # @return [{{#lambda.titlecase}}{{#lambda.camelcase}}{{filename}}{{/lambda.camelcase}}{{/lambda.titlecase}}List]
+                    {{#params}}
+                    # @return [{{#lambda.titlecase}}{{#lambda.camelcase}}{{filename}}{{/lambda.camelcase}}{{/lambda.titlecase}}Context] if sid was passed.
+                    def {{mountName}}({{#params}}{{#lambda.snakecase}}{{.}}{{/lambda.snakecase}}=:unset{{^-last}}, {{/-last}}{{/params}})
+
+                        raise ArgumentError, '{{#lambda.snakecase}}{{.}}{{/lambda.snakecase}} cannot be nil' if {{#lambda.snakecase}}{{.}}{{/lambda.snakecase}}.nil?
+
+                        if {{#lambda.snakecase}}{{.}}{{/lambda.snakecase}} != :unset
+                            return {{#lambda.titlecase}}{{#lambda.camelcase}}{{filename}}{{/lambda.camelcase}}{{/lambda.titlecase}}Context.new(@version{{#requiredPathParams}}, @solution[:{{paramName}}]{{/requiredPathParams}}{{#params}},{{#lambda.snakecase}}{{.}}{{/lambda.snakecase}} {{/params}})
+                        end
+
+                        unless @{{mountName}}
+                            @{{mountName}} = {{#lambda.titlecase}}{{#lambda.camelcase}}{{filename}}{{/lambda.camelcase}}{{/lambda.titlecase}}List.new(
+                                @version{{#requiredPathParams}},{{^-last}}
+                                {{paramName}}: @solution[:{{paramName}}]{{/-last}}{{#-last}}
+                                {{#lambda.snakecase}}{{apiName}}{{/lambda.snakecase}}_{{paramName}}: @solution[:{{paramName}}]
+                                {{/-last}}{{/requiredPathParams}}
+                                )
+                        end
+
+                     @{{mountName}}
+                    end
+                    {{/params}}
+                    {{^params}}
+                    # @return [{{#lambda.titlecase}}{{#lambda.camelcase}}{{filename}}{{/lambda.camelcase}}{{/lambda.titlecase}}Context]
+                    def {{mountName}}
+                        {{#lambda.titlecase}}{{#lambda.camelcase}}{{filename}}{{/lambda.camelcase}}{{/lambda.titlecase}}Context.new(
+                                @version{{#requiredPathParams}},
+                                @solution[:{{paramName}}]{{/requiredPathParams}}
+                                )
+                    end
+                    {{/params}}
+                    {{/metaProperties.contextImportMethods}}
+
+                    ##
+                    # Provide a user friendly representation
+                    def to_s
+                        context = @solution.map {|k, v| "#{k}: #{v}"}.join(',')
+                        "#<Twilio.{{domainName}}.{{apiVersionClass}}.{{apiName}}Context #{context}>"
+                    end
+
+                    ##
+                    # Provide a detailed, user friendly representation
+                    def inspect
+                        context = @solution.map {|k, v| "#{k}: #{v}"}.join(',')
+                        "#<Twilio.{{domainName}}.{{apiVersionClass}}.{{apiName}}Context #{context}>"
+                    end
+                end

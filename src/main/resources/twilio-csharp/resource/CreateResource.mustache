@@ -1,5 +1,5 @@
 
-        private static Request BuildCreateRequest(Create{{resourceName}}Options options, ITwilioRestClient client)
+        private static Request BuildCreateRequest(Create{{apiName}}Options options, ITwilioRestClient client)
         {
             {{>resource/GeneratePath}}
             return new Request(
@@ -7,15 +7,15 @@
                 Rest.Domain.{{domainPackage}},
                 path,
                 postParams: options.GetParams(),
-                headerParams: {{^vendorExtensions.x-header-params-exists}}null{{/vendorExtensions.x-header-params-exists}}{{#vendorExtensions.x-header-params-exists}}options.GetHeaderParams(){{/vendorExtensions.x-header-params-exists}}
+                headerParams: {{^vendorExtensions.hasOptionalHeaderParams}}null{{/vendorExtensions.hasOptionalHeaderParams}}{{#vendorExtensions.hasOptionalHeaderParams}}options.GetHeaderParams(){{/vendorExtensions.hasOptionalHeaderParams}}
             );
         }
 
         {{>Summary}}
-        /// <param name="options"> Create {{resourceName}} parameters </param>
+        /// <param name="options"> Create {{apiName}} parameters </param>
         /// <param name="client"> Client to make requests to Twilio </param>
         {{>resource/ReturnComments}}
-        public static {{resourceName}}{{resourceConstant}} Create(Create{{resourceName}}Options options, ITwilioRestClient client = null)
+        public static {{apiName}}{{resourceConstant}} Create(Create{{apiName}}Options options, ITwilioRestClient client = null)
         {
             client = client ?? TwilioClient.GetRestClient();
             var response = client.Request(BuildCreateRequest(options, client));
@@ -24,10 +24,10 @@
 
         #if !NET35
         {{>Summary}}
-        /// <param name="options"> Create {{resourceName}} parameters </param>
+        /// <param name="options"> Create {{apiName}} parameters </param>
         /// <param name="client"> Client to make requests to Twilio </param>
         {{>resource/ReturnCommentsAsync}}
-        public static async System.Threading.Tasks.Task<{{resourceName}}{{resourceConstant}}> CreateAsync(Create{{resourceName}}Options options,
+        public static async System.Threading.Tasks.Task<{{apiName}}{{resourceConstant}}> CreateAsync(Create{{apiName}}Options options,
         ITwilioRestClient client = null)
         {
             client = client ?? TwilioClient.GetRestClient();
@@ -38,22 +38,22 @@
 
         {{>Summary}}{{>resource/MethodsComments}}
         {{>resource/ReturnComments}}
-        public static {{resourceName}}{{resourceConstant}} Create({{#vendorExtensions.x-request-body-param}}
+        public static {{apiName}}{{resourceConstant}} Create({{#vendorExtensions.x-request-body-param}}
                                           {{{dataType}}} {{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^required}} = null{{/required}},{{/vendorExtensions.x-request-body-param}}
                                           ITwilioRestClient client = null)
         {
-            var options = new Create{{resourceName}}Options({{#requiredParams}}{{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^-last}}, {{/-last}}{{/requiredParams}}){ {{#vendorExtensions.x-request-body-param}}{{^required}} {{paramName}} = {{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^-last}},{{/-last}}{{/required}}{{/vendorExtensions.x-request-body-param}} };
+            var options = new Create{{apiName}}Options({{#requiredParams}}{{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^-last}}, {{/-last}}{{/requiredParams}}){ {{#vendorExtensions.x-request-body-param}}{{^required}} {{paramName}} = {{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^-last}},{{/-last}}{{/required}}{{/vendorExtensions.x-request-body-param}} };
             return Create(options, client);
         }
 
         #if !NET35
         {{>Summary}}{{>resource/MethodsComments}}
         {{>resource/ReturnCommentsAsync}}
-        public static async System.Threading.Tasks.Task<{{resourceName}}{{resourceConstant}}> CreateAsync({{#vendorExtensions.x-request-body-param}}
+        public static async System.Threading.Tasks.Task<{{apiName}}{{resourceConstant}}> CreateAsync({{#vendorExtensions.x-request-body-param}}
                                                                                   {{{dataType}}} {{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^required}} = null{{/required}},{{/vendorExtensions.x-request-body-param}}
                                                                                   ITwilioRestClient client = null)
         {
-        var options = new Create{{resourceName}}Options({{#requiredParams}}{{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^-last}}, {{/-last}}{{/requiredParams}}){ {{#vendorExtensions.x-request-body-param}}{{^required}} {{paramName}} = {{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^-last}},{{/-last}}{{/required}}{{/vendorExtensions.x-request-body-param}} };
+        var options = new Create{{apiName}}Options({{#requiredParams}}{{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^-last}}, {{/-last}}{{/requiredParams}}){ {{#vendorExtensions.x-request-body-param}}{{^required}} {{paramName}} = {{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^-last}},{{/-last}}{{/required}}{{/vendorExtensions.x-request-body-param}} };
             return await CreateAsync(options, client);
         }
         #endif

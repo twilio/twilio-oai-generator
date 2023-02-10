@@ -1,5 +1,5 @@
 
-    {{#vendorExtensions.x-header-params-exists}}
+    {{#vendorExtensions.x-header-param-exists}}
     /// <summary> Generate the necessary header parameters </summary>
     public List<KeyValuePair<string, string>> GetHeaderParams()
     {
@@ -20,4 +20,4 @@
     {{/vendorExtensions.x-header-params}}
         return p;
     }
-    {{/vendorExtensions.x-header-params-exists}}
+    {{/vendorExtensions.x-header-param-exists}}

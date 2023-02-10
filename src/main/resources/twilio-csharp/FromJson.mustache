@@ -1,14 +1,14 @@
 
         /// <summary>
-        /// Converts a JSON string into a {{resourceName}}{{resourceConstant}} object
+        /// Converts a JSON string into a {{apiName}}{{resourceConstant}} object
         /// </summary>
         /// <param name="json"> Raw JSON string </param>
-        /// <returns> {{resourceName}}{{resourceConstant}} object represented by the provided JSON </returns>
-        public static {{resourceName}}{{resourceConstant}} FromJson(string json)
+        /// <returns> {{apiName}}{{resourceConstant}} object represented by the provided JSON </returns>
+        public static {{apiName}}{{resourceConstant}} FromJson(string json)
         {
             try
             {
-                return JsonConvert.DeserializeObject<{{resourceName}}{{resourceConstant}}>(json);
+                return JsonConvert.DeserializeObject<{{apiName}}{{resourceConstant}}>(json);
             }
             catch (JsonException e)
             {

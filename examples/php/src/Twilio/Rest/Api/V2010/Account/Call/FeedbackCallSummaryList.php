@@ -26,29 +26,46 @@ use Twilio\Version;
 use Twilio\InstanceContext;
 use Twilio\Deserialize;
 use Twilio\Serialize;
+use Twilio\Base\PhoneNumberCapabilities;
 
 
-class FeedbackCallSummaryList extends ListResource {
+class FeedbackCallSummaryList extends ListResource
+    {
     /**
      * Construct the FeedbackCallSummaryList
      *
      * @param Version $version Version that contains the resource
-     * @param string $accountSid 
+     * @param string $accountSid
      */
-    public function __construct(Version $version, string $accountSid ) {
+    public function __construct(
+        Version $version,
+        string $accountSid
+    ) {
         parent::__construct($version);
 
         // Path Solution
-        $this->solution = ['accountSid' => $accountSid, ];
+        $this->solution = [
+        'accountSid' =>
+            $accountSid,
+        
+        ];
     }
 
     /**
      * Constructs a FeedbackCallSummaryContext
      *
-     * @param string $sid 
+     * @param string $sid
      */
-    public function getContext(string $sid): FeedbackCallSummaryContext {
-        return new FeedbackCallSummaryContext($this->version, $this->solution['accountSid'], $sid);
+    public function getContext(
+        string $sid
+        
+    ): FeedbackCallSummaryContext
+    {
+        return new FeedbackCallSummaryContext(
+            $this->version,
+            $this->solution['accountSid'],
+            $sid
+        );
     }
 
     /**
@@ -56,7 +73,8 @@ class FeedbackCallSummaryList extends ListResource {
      *
      * @return string Machine friendly representation
      */
-    public function __toString(): string {
+    public function __toString(): string
+    {
         return '[Twilio.Api.V2010.FeedbackCallSummaryList]';
     }
 }

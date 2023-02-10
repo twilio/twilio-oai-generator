@@ -26,20 +26,25 @@ use Twilio\Version;
 use Twilio\InstanceContext;
 use Twilio\Deserialize;
 use Twilio\Serialize;
+use Twilio\Base\PhoneNumberCapabilities;
 use Twilio\Rest\FlexApi\V1\Credential\Aws\HistoryList;
 
 
-class AwsList extends ListResource {
+class AwsList extends ListResource
+    {
     /**
      * Construct the AwsList
      *
      * @param Version $version Version that contains the resource
      */
-    public function __construct(Version $version) {
+    public function __construct(
+        Version $version
+    ) {
         parent::__construct($version);
 
         // Path Solution
-        $this->solution = [];
+        $this->solution = [
+        ];
 
         $this->uri = '/Credentials/AWS';
     }
@@ -59,7 +64,8 @@ class AwsList extends ListResource {
      *                        efficient page size, i.e. min(limit, 1000)
      * @return AwsInstance[] Array of results
      */
-    public function read(int $limit = null, $pageSize = null): array {
+    public function read(int $limit = null, $pageSize = null): array
+    {
         return \iterator_to_array($this->stream($limit, $pageSize), false);
     }
 
@@ -81,7 +87,8 @@ class AwsList extends ListResource {
      *                        efficient page size, i.e. min(limit, 1000)
      * @return Stream stream of results
      */
-    public function stream(int $limit = null, $pageSize = null): Stream {
+    public function stream(int $limit = null, $pageSize = null): Stream
+    {
         $limits = $this->version->readLimits($limit, $pageSize);
 
         $page = $this->page($limits['pageSize']);
@@ -98,7 +105,12 @@ class AwsList extends ListResource {
      * @param mixed $pageNumber Page Number, this value is simply for client state
      * @return AwsPage Page of AwsInstance
      */
-    public function page($pageSize = Values::NONE, string $pageToken = Values::NONE, $pageNumber = Values::NONE): AwsPage {
+    public function page(
+        $pageSize = Values::NONE,
+        string $pageToken = Values::NONE,
+        $pageNumber = Values::NONE
+    ): AwsPage
+    {
 
         $params = Values::of([
             'PageToken' => $pageToken,
@@ -118,7 +130,8 @@ class AwsList extends ListResource {
      * @param string $targetUrl API-generated URL for the requested results page
      * @return AwsPage Page of AwsInstance
      */
-    public function getPage(string $targetUrl): AwsPage {
+    public function getPage(string $targetUrl): AwsPage
+    {
         $response = $this->version->getDomain()->getClient()->request(
             'GET',
             $targetUrl
@@ -131,10 +144,17 @@ class AwsList extends ListResource {
     /**
      * Constructs a AwsContext
      *
-     * @param string $sid 
+     * @param string $sid
      */
-    public function getContext(string $sid): AwsContext {
-        return new AwsContext($this->version, $sid);
+    public function getContext(
+        string $sid
+        
+    ): AwsContext
+    {
+        return new AwsContext(
+            $this->version,
+            $sid
+        );
     }
 
     /**
@@ -142,7 +162,8 @@ class AwsList extends ListResource {
      *
      * @return string Machine friendly representation
      */
-    public function __toString(): string {
+    public function __toString(): string
+    {
         return '[Twilio.FlexApi.V1.AwsList]';
     }
 }

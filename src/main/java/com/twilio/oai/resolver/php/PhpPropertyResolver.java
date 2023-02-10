@@ -13,6 +13,7 @@ import static com.twilio.oai.resolver.php.PhpParameterResolver.FLOAT;
 
 public class PhpPropertyResolver extends LanguagePropertyResolver {
     public static final String MAP_STRING = "map";
+    public static final String OPEN_API_STRING = "OpenAPI";
 
     public PhpPropertyResolver(IConventionMapper mapper) {
         super(mapper);
@@ -38,18 +39,21 @@ public class PhpPropertyResolver extends LanguagePropertyResolver {
             codegenProperty.dataType = ARRAY + "[]";
             codegenProperty.isArray = true;
         }
-        if (codegenProperty.dataType.equals("float")) {
+        if (codegenProperty.dataType.equals(FLOAT)) {
             codegenProperty.dataType = STRING;
         }
         if (codegenProperty.dataType.equals(LanguageConventionResolver.LIST_OBJECT)) {
             codegenProperty.dataType = ARRAY;
         }
-        if (codegenProperty.dataType.contains("Enum") || codegenProperty.complexType != null || codegenProperty.dataType == FLOAT) {
+        if (codegenProperty.dataType.contains("Enum") || codegenProperty.complexType != null) {
             if (codegenProperty.openApiType.equals(ARRAY)) {
                 codegenProperty.dataType = STRING + "[]";
-            } else {
+            } else if (codegenProperty.openApiType.equals(STRING) || codegenProperty.dataType.contains(OPEN_API_STRING)) {
                 codegenProperty.dataType = STRING;
             }
+        }
+        if(codegenProperty.isNullable && !codegenProperty.required && !codegenProperty.dataType.contains("|null")){
+            codegenProperty.dataType = codegenProperty.dataType + "|null";
         }
     }
 }

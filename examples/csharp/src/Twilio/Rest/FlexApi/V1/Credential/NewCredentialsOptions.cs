@@ -130,7 +130,7 @@ namespace Twilio.Rest.FlexApi.V1.Credential
             }
             if (TestObject != null)
             {
-                p.Add(new KeyValuePair<string, string>("TestObject", TestObject.ToString()));
+                p.Add(new KeyValuePair<string, string>("TestObject", Serializers.JsonObject(TestObject)));
             }
             if (TestDateTime != null)
             {
