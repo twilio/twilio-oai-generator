@@ -13,6 +13,26 @@ module Twilio
                 {{/versionResources}}
                 end
 
+            {{#isApiDomain}}
+                {{#param}}
+                ##
+                # {{filename}} provided as the authenticating account
+                def {{mountName}}
+                    @{{mountName}} ||= {{importName}}.new(self, @domain.client.{{param}})
+                end
+                {{/param}}
+
+                ##
+                # Setter to override the primary account
+                def account=(value)
+                    @account = value
+                end
+                {{#versionDependents}}
+                def {{mountName}}{{#params}}({{#lambda.camelcase}}{{.}}{{/lambda.camelcase}} =:unset){{/params}}
+                    self.account.{{mountName}}({{#params}}{{#lambda.camelcase}}{{.}}{{/lambda.camelcase}}{{/params}})
+                end
+                {{/versionDependents}}
+            {{/isApiDomain}}
             {{#versionResources}}
                 {{#pathParams}}
                 ##
@@ -38,31 +58,10 @@ module Twilio
                 ##
                 # @return [Twilio::REST::{{domainName}}::{{apiVersionClass}}::{{#lambda.camelcase}}{{mountName}}{{/lambda.camelcase}}Context]
                 def {{mountName}}
-                    @{{mountName}} ||= {{resourceName}}List.new self
+                    @{{mountName}} ||= {{resourceName}}Context.new self
                 end
                 {{/pathParams}}
             {{/versionResources}}
-
-            {{#isApiDomain}}
-                {{#param}}
-                ##
-                # {{filename}} provided as the authenticating account
-                def {{mountName}}
-                    @{{mountName}} ||= {{importName}}.new(self, @domain.client.{{param}})
-                end
-                {{/param}}
-
-                ##
-                # Setter to override the primary account
-                def account=(value)
-                    @account = value
-                end
-                {{#versionDependents}}
-                def {{mountName}}{{#params}}({{#lambda.snakecase}}{{.}}{{/lambda.snakecase}} =:unset){{/params}}
-                    self.account.{{mountName}}({{#params}}{{#lambda.snakecase}}{{.}}{{/lambda.snakecase}}{{/params}})
-                end
-                {{/versionDependents}}
-            {{/isApiDomain}}
                 ##
                 # Provide a user friendly representation
                 def to_s

@@ -45,4 +45,6 @@ public class ApplicationConstants {
     public static final String RESOURCE = "Resource";
     public static final String DOT = ".";
     public static final String ACCOUNT_SID_VEND_EXT = "x-is-account-sid";
+
+    public static final String PREFIXED_COLLAPSIBLE_MAP = "prefixed-collapsible-map";
 }

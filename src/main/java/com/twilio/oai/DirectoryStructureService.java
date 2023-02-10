@@ -333,9 +333,4 @@ public class DirectoryStructureService {
         );
 
     }
-
-    public String[] fetchParentDirectory(final List<CodegenOperation> opList) {
-        String[] filePathArray = opList.get(0).baseName.split(PATH_SEPARATOR_PLACEHOLDER);
-        return filePathArray;
-    }
 }

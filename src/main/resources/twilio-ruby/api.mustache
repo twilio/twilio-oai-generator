@@ -3,14 +3,16 @@
 
 module Twilio
     module REST
-        class {{domainName}} < Domain
+        class {{domainName}} < {{domainName}}Base
             class {{apiVersionClass}} < Version
 {{#hasParents}}
 {{>parentContext}}
 {{/hasParents}}
 {{^hasParents}}
 {{>list}}
+{{#metaProperties.hasInstanceOperation}}
 {{>context}}
+{{/metaProperties.hasInstanceOperation}}
 {{>page}}
 {{>instance}}
             end
