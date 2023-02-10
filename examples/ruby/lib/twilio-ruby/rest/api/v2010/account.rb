@@ -32,7 +32,7 @@ module Twilio
                     ##
                     # Create the AccountInstance
                     # @param [String] recording_status_callback 
-                    # @param [Array&lt;String&gt;] recording_status_callback_event 
+                    # @param [Array[String]] recording_status_callback_event 
                     # @param [String] twiml 
                     # @param [String] x_twilio_webhook_enabled 
                     # @return [AccountInstance] Created AccountInstance
@@ -45,7 +45,7 @@ module Twilio
 
                         data = Twilio::Values.of({
                             'RecordingStatusCallback' => recording_status_callback,
-                            'RecordingStatusCallbackEvent' => Twilio.serialize_list(recording_status_callback_event),
+                            'RecordingStatusCallbackEvent' => Twilio.serialize_list(recording_status_callback_event) { |e| e },
                             'Twiml' => twiml,
                         })
 
@@ -140,13 +140,13 @@ module Twilio
                     def page(date_created: :unset, date_test: :unset, date_created_before: :unset, date_created_after: :unset, page_token: :unset, page_number: :unset, page_size: :unset)
                         params = Twilio::Values.of({
                             
-                            'DateCreated' =>   Twilio.serialize_iso8601_datetime(date_created),
+                            'DateCreated' =>  Twilio.serialize_iso8601_datetime(date_created),
                             
                             'Date.Test' =>  Twilio.serialize_iso8601_date(date_test),
                             
-                            'DateCreated<' =>   Twilio.serialize_iso8601_datetime(date_created_before),
+                            'DateCreated<' =>  Twilio.serialize_iso8601_datetime(date_created_before),
                             
-                            'DateCreated>' =>   Twilio.serialize_iso8601_datetime(date_created_after),
+                            'DateCreated>' =>  Twilio.serialize_iso8601_datetime(date_created_after),
                             
                             'PageToken' => page_token,
                             'Page' => page_number,
@@ -373,7 +373,7 @@ module Twilio
                     end
                     
                     ##
-                    # @return [Integer] 
+                    # @return [String] 
                     def test_integer
                         @properties['test_integer']
                     end
@@ -427,13 +427,13 @@ module Twilio
                     end
                     
                     ##
-                    # @return [Array<Integer>] 
+                    # @return [Array<String>] 
                     def test_array_of_integers
                         @properties['test_array_of_integers']
                     end
                     
                     ##
-                    # @return [Array<Array<Integer>>] 
+                    # @return [Array<Array<String>>] 
                     def test_array_of_array_of_integers
                         @properties['test_array_of_array_of_integers']
                     end

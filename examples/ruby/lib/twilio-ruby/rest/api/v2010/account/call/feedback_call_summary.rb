@@ -196,7 +196,7 @@ module Twilio
                     end
                     
                     ##
-                    # @return [Integer] 
+                    # @return [String] 
                     def test_integer
                         @properties['test_integer']
                     end
@@ -250,13 +250,13 @@ module Twilio
                     end
                     
                     ##
-                    # @return [Array<Integer>] 
+                    # @return [Array<String>] 
                     def test_array_of_integers
                         @properties['test_array_of_integers']
                     end
                     
                     ##
-                    # @return [Array<Array<Integer>>] 
+                    # @return [Array<Array<String>>] 
                     def test_array_of_array_of_integers
                         @properties['test_array_of_array_of_integers']
                     end

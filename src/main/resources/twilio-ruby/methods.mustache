@@ -1,13 +1,13 @@
                     ##
                     # {{vendorExtensions.x-name}} the {{apiName}}Instance
                     {{#queryParams}}
-                    # @param [{{dataType}}] {{paramName}} {{description}}
+                    # @param [{{dataType}}] {{paramName}} {{{description}}}
                     {{/queryParams}}
                     {{#formParams}}
-                    # @param [{{dataType}}] {{paramName}} {{description}}
+                    # @param [{{dataType}}] {{paramName}} {{{description}}}
                     {{/formParams}}
                     {{#headerParams}}
-                    # @param [{{dataType}}] {{paramName}} {{description}}
+                    # @param [{{dataType}}] {{paramName}} {{{description}}}
                     {{/headerParams}}
                     {{^vendorExtensions.x-is-delete-operation}}
                     # @return [{{apiName}}Instance] {{#vendorExtensions.x-is-fetch-operation}}{{vendorExtensions.x-name}}ed{{/vendorExtensions.x-is-fetch-operation}}{{^vendorExtensions.x-is-fetch-operation}}{{vendorExtensions.x-name}}d{{/vendorExtensions.x-is-fetch-operation}} {{apiName}}Instance

@@ -7,12 +7,12 @@
                             '{{baseName}}' => {{paramName}},
                         {{/vendorExtensions.x-serialize}}
                         {{#vendorExtensions.x-serialize}}
-                            {{^vendorExtensions.x-serialize-map}}
+                            {{^isArray}}
                             '{{baseName}}' => {{vendorExtensions.x-serialize}}({{paramName}}),
-                            {{/vendorExtensions.x-serialize-map}}
-                            {{#vendorExtensions.x-serialize-map}}
-                            '{{baseName}}' => {{vendorExtensions.x-serialize}}({{paramName}}, {{^vendorExtensions.x-serialize-array-of-array}}{{/vendorExtensions.x-serialize-array-of-array}}{{#vendorExtensions.x-serialize-array-of-array}}{{.}}{{/vendorExtensions.x-serialize-array-of-array}},
-                            {{/vendorExtensions.x-serialize-map}}
+                            {{/isArray}}
+                            {{#isArray}}
+                            '{{baseName}}' => {{vendorExtensions.x-serialize}}({{paramName}}) { |e| {{^vendorExtensions.x-is-array-of-objects}}e{{/vendorExtensions.x-is-array-of-objects}}{{#vendorExtensions.x-is-array-of-objects}}{{.}}{{/vendorExtensions.x-is-array-of-objects}} },
+                            {{/isArray}}
                         {{/vendorExtensions.x-serialize}}
                         {{/vendorExtensions.x-prefixed-collapsible-map}}
                         {{/required}}
@@ -24,12 +24,12 @@
                             '{{baseName}}' => {{paramName}},
                         {{/vendorExtensions.x-serialize}}
                         {{#vendorExtensions.x-serialize}}
-                            {{^vendorExtensions.x-serialize-map}}
+                            {{^isArray}}
                             '{{baseName}}' => {{vendorExtensions.x-serialize}}({{paramName}}),
-                            {{/vendorExtensions.x-serialize-map}}
-                            {{#vendorExtensions.x-serialize-map}}
-                            '{{baseName}}' => {{vendorExtensions.x-serialize}}({{paramName}}),
-                            {{/vendorExtensions.x-serialize-map}}
+                            {{/isArray}}
+                            {{#isArray}}
+                            '{{baseName}}' => {{vendorExtensions.x-serialize}}({{paramName}}) { |e| {{^vendorExtensions.x-is-array-of-objects}}e{{/vendorExtensions.x-is-array-of-objects}}{{#vendorExtensions.x-is-array-of-objects}}{{.}}{{/vendorExtensions.x-is-array-of-objects}} },
+                            {{/isArray}}
                         {{/vendorExtensions.x-serialize}}
                         {{/vendorExtensions.x-prefixed-collapsible-map}}
                         {{/required}}
@@ -59,12 +59,12 @@
                             '{{baseName}}' => {{paramName}},
                         {{/vendorExtensions.x-serialize}}
                         {{#vendorExtensions.x-serialize}}
-                            {{^vendorExtensions.x-serialize-map}}
+                            {{^isArray}}
                             '{{baseName}}' => {{vendorExtensions.x-serialize}}({{paramName}}),
-                            {{/vendorExtensions.x-serialize-map}}
-                            {{#vendorExtensions.x-serialize-map}}
-                            '{{baseName}}' => {{paramName}}
-                            {{/vendorExtensions.x-serialize-map}}
+                            {{/isArray}}
+                            {{#isArray}}
+                            '{{baseName}}' => {{vendorExtensions.x-serialize}}({{paramName}}) { |e| {{^vendorExtensions.x-is-array-of-objects}}e{{/vendorExtensions.x-is-array-of-objects}}{{#vendorExtensions.x-is-array-of-objects}}{{.}}{{/vendorExtensions.x-is-array-of-objects}} },
+                            {{/isArray}}
                         {{/vendorExtensions.x-serialize}}
                         {{/vendorExtensions.x-prefixed-collapsible-map}}
                         {{/isFormParam}}
@@ -76,12 +76,12 @@
                             '{{baseName}}' => {{paramName}},
                         {{/vendorExtensions.x-serialize}}
                         {{#vendorExtensions.x-serialize}}
-                            {{^vendorExtensions.x-serialize-map}}
+                            {{^isArray}}
                             '{{baseName}}' => {{vendorExtensions.x-serialize}}({{paramName}}),
-                            {{/vendorExtensions.x-serialize-map}}
-                            {{#vendorExtensions.x-serialize-map}}
-                            '{{baseName}}' => {{vendorExtensions.x-serialize}}({{paramName}}),
-                            {{/vendorExtensions.x-serialize-map}}
+                            {{/isArray}}
+                            {{#isArray}}
+                            '{{baseName}}' => {{vendorExtensions.x-serialize}}({{paramName}}) { |e| {{^vendorExtensions.x-is-array-of-objects}}e{{/vendorExtensions.x-is-array-of-objects}}{{#vendorExtensions.x-is-array-of-objects}}{{.}}{{/vendorExtensions.x-is-array-of-objects}} },
+                            {{/isArray}}
                         {{/vendorExtensions.x-serialize}}
                         {{/vendorExtensions.x-prefixed-collapsible-map}}
                         {{/isFormParam}}

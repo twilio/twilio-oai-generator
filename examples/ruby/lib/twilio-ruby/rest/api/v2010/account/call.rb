@@ -35,9 +35,9 @@ module Twilio
                     ##
                     # Create the CallInstance
                     # @param [String] required_string_property 
-                    # @param [Array&lt;String&gt;] test_array_of_strings 
-                    # @param [Array&lt;String&gt;] test_array_of_uri 
-                    # @param [String] test_method The HTTP method that we should use to request the &#x60;TestArrayOfUri&#x60;.
+                    # @param [Array[String]] test_array_of_strings 
+                    # @param [Array[String]] test_array_of_uri 
+                    # @param [String] test_method The HTTP method that we should use to request the `TestArrayOfUri`.
                     # @return [CallInstance] Created CallInstance
                     def create(
                         required_string_property: nil, 
@@ -49,8 +49,8 @@ module Twilio
                         data = Twilio::Values.of({
                             'RequiredStringProperty' => required_string_property,
                             'TestMethod' => test_method,
-                            'TestArrayOfStrings' => Twilio.serialize_list(test_array_of_strings),
-                            'TestArrayOfUri' => Twilio.serialize_list(test_array_of_uri),
+                            'TestArrayOfStrings' => Twilio.serialize_list(test_array_of_strings) { |e| e },
+                            'TestArrayOfUri' => Twilio.serialize_list(test_array_of_uri) { |e| e },
                         })
 
                         payload = @version.create('POST', @uri, data: data)
@@ -251,7 +251,7 @@ module Twilio
                     end
                     
                     ##
-                    # @return [Integer] 
+                    # @return [String] 
                     def test_integer
                         @properties['test_integer']
                     end
@@ -305,13 +305,13 @@ module Twilio
                     end
                     
                     ##
-                    # @return [Array<Integer>] 
+                    # @return [Array<String>] 
                     def test_array_of_integers
                         @properties['test_array_of_integers']
                     end
                     
                     ##
-                    # @return [Array<Array<Integer>>] 
+                    # @return [Array<Array<String>>] 
                     def test_array_of_array_of_integers
                         @properties['test_array_of_array_of_integers']
                     end

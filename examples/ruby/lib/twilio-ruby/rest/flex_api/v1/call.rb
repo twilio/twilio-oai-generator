@@ -145,7 +145,7 @@ module Twilio
                     end
                     
                     ##
-                    # @return [Integer] Non-string path parameter in the response.
+                    # @return [String] Non-string path parameter in the response.
                     def sid
                         @properties['sid']
                     end

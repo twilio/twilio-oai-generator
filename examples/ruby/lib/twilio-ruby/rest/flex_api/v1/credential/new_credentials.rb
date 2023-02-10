@@ -45,10 +45,10 @@ module Twilio
                     # @param [Time] test_date_time 
                     # @param [Date] test_date 
                     # @param [TestStatus] test_enum 
-                    # @param [Array&lt;Object&gt;] test_object_array 
+                    # @param [Array[Hash]] test_object_array 
                     # @param [Object] test_any_type 
-                    # @param [Array&lt;Object&gt;] test_any_array 
-                    # @param [Array&lt;String&gt;] permissions A comma-separated list of the permissions you will request from the users of this ConnectApp.  Can include: &#x60;get-all&#x60; and &#x60;post-all&#x60;.
+                    # @param [Array[Hash]] test_any_array 
+                    # @param [Array[String]] permissions A comma-separated list of the permissions you will request from the users of this ConnectApp.  Can include: `get-all` and `post-all`.
                     # @param [String] some_a2p_thing 
                     # @return [NewCredentialsInstance] Created NewCredentialsInstance
                     def create(
@@ -81,13 +81,13 @@ module Twilio
                             'TestNumberInt32' => test_number_int32,
                             'TestNumberInt64' => test_number_int64,
                             'TestObject' => Twilio.serialize_object(test_object),
-                            'TestDateTime' =>  Twilio.serialize_iso8601_datetime(test_date_time),
+                            'TestDateTime' => Twilio.serialize_iso8601_datetime(test_date_time),
                             'TestDate' => Twilio.serialize_iso8601_date(test_date),
                             'TestEnum' => test_enum,
-                            'TestObjectArray' => Twilio.serialize_list(test_object_array),
+                            'TestObjectArray' => Twilio.serialize_list(test_object_array) { |e| Twilio.serialize_object(e) },
                             'TestAnyType' => Twilio.serialize_object(test_any_type),
-                            'TestAnyArray' => Twilio.serialize_list(test_any_array),
-                            'Permissions' => Twilio.serialize_list(permissions),
+                            'TestAnyArray' => Twilio.serialize_list(test_any_array) { |e| Twilio.serialize_object(e) },
+                            'Permissions' => Twilio.serialize_list(permissions) { |e| e },
                             'SomeA2PThing' => some_a2p_thing,
                         })
 
@@ -176,7 +176,7 @@ module Twilio
                     end
                     
                     ##
-                    # @return [Integer] 
+                    # @return [String] 
                     def test_integer
                         @properties['test_integer']
                     end
