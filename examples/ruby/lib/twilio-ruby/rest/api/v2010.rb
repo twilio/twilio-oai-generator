@@ -31,11 +31,8 @@ module Twilio
                 def account=(value)
                     @account = value
                 end
-                def accounts(sid =:unset)
-                    self.account.accounts(sid)
-                end
-                def calls(testInteger =:unset)
-                    self.account.calls(testInteger)
+                def calls(test_integer =:unset)
+                    self.account.calls(test_integer)
                 end
                 ##
                 # @param [String] sid 
@@ -52,9 +49,9 @@ module Twilio
                     end
                 end
                 ##
-                # @return [Twilio::REST::Api::V2010::accountContext]
+                # @return [Twilio::REST::Api::V2010::AccountList]
                 def account
-                    @account ||= AccountContext.new self
+                    @account ||= AccountList.new self
                 end
                 ##
                 # Provide a user friendly representation

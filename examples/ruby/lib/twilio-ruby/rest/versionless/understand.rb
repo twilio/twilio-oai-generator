@@ -25,9 +25,9 @@ module Twilio
                 end
 
                 ##
-                # @return [Twilio::REST::Versionless::Understand::assistantsContext]
+                # @return [Twilio::REST::Versionless::Understand::AssistantList]
                 def assistants
-                    @assistants ||= AssistantContext.new self
+                    @assistants ||= AssistantList.new self
                 end
                 ##
                 # Provide a user friendly representation

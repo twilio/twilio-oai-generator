@@ -46,7 +46,7 @@ public class RubyApiResourceBuilder extends FluentApiResourceBuilder {
         createContextParamsList(apiResourceBuilder.codegenOperationList);
         categorizeOperations();
         createMaturityDescription(apiResourceBuilder.codegenOperationList);
-        updateVersionDependents();
+        updateVersionData();
         return apiResourceBuilder;
     }
 
@@ -185,6 +185,7 @@ public class RubyApiResourceBuilder extends FluentApiResourceBuilder {
         }
         return Optional.empty();
     }
+
     private void addResources(List<Resource> dependents, DirectoryStructureService directoryStructureService, List<Object> dependentList) {
         dependents.forEach(dependent -> dependent
                 .getPathItem()
@@ -194,34 +195,53 @@ public class RubyApiResourceBuilder extends FluentApiResourceBuilder {
                         operation)));
     }
 
-    private boolean dependentExist(String mountName,List<Object> versionDependents){
-        for(var versionDependent:versionDependents){
-            if(((DirectoryStructureService.ContextResource)versionDependent).getMountName().equals(mountName)){
+    private boolean dependentExist(String mountName, List<DirectoryStructureService.ContextResource> versionDependents) {
+        for (var versionDependent : versionDependents) {
+            if (versionDependent.getMountName().equals(mountName)) {
                 return true;
             }
         }
         return false;
     }
-    private ApiResourceBuilder updateVersionDependents(){
+
+    private void updateVersionResources() {
+        var versionResources = (List<Object>) directoryStructureService.getAdditionalProperties().getOrDefault("versionResources", null);
+        if (versionResources != null) {
+            for (var versionResource : versionResources) {
+                if (((DirectoryStructureService.DependentResource) versionResource).getResourceName().equals(getApiName())) {
+                    ((DirectoryStructureService.DependentResource) versionResource).setInstanceDependent((boolean) metaAPIProperties.getOrDefault("hasInstanceOperation", false));
+                }
+            }
+        }
+        directoryStructureService.getAdditionalProperties().put("versionResources", versionResources);
+    }
+
+    private void updateVersionDependents() {
         List<Object> dependentList = new ArrayList<>();
         String pathkey = "/2010-04-01/Accounts/{Sid}.json";
         List<Resource> dependents = directoryStructureService.getResourceTree().dependents(pathkey)
                 .stream().filter(dep -> !dep.getName().endsWith("}.json"))
                 .collect(Collectors.toList());
         addResources(dependents, directoryStructureService, dependentList);
-        var versionDependents = (List<Object>)directoryStructureService.getAdditionalProperties().getOrDefault("versionDependents",null);
-        if(versionDependents == null) return this;
-        for(var dependent:dependentList){
-            if(!dependentExist(((DirectoryStructureService.ContextResource)dependent).getMountName(),versionDependents)){
-                versionDependents.add(dependent);
+        var versionDependents = (List<DirectoryStructureService.ContextResource>) directoryStructureService.getAdditionalProperties().getOrDefault("versionDependents", null);
+        if (versionDependents == null) return;
+
+        //remove accounts from versionDependents for Api domain
+        versionDependents = versionDependents.stream().filter((dependent) -> !dependent.getMountName().equals("accounts")).collect(Collectors.toList());
+        //add dependents from dependents list if not already present
+        for (var dependent : dependentList) {
+            if (!dependentExist(((DirectoryStructureService.ContextResource) dependent).getMountName(), versionDependents)) {
+                versionDependents.add((DirectoryStructureService.ContextResource) dependent);
             }
         }
-        Collections.sort(versionDependents,(d1,d2) -> {
-            var m1 = ((DirectoryStructureService.ContextResource)d1).getMountName();
-            var m2 = ((DirectoryStructureService.ContextResource)d2).getMountName();
-            return m1.compareTo(m2);
-        });
-        directoryStructureService.getAdditionalProperties().put("versionDependents",versionDependents);
+        //sort versionDependents alphabetically
+        Collections.sort(versionDependents, Comparator.comparing(DirectoryStructureService.ContextResource::getMountName));
+        directoryStructureService.getAdditionalProperties().put("versionDependents", versionDependents);
+    }
+
+    private ApiResourceBuilder updateVersionData() {
+        updateVersionResources();
+        updateVersionDependents();
         return this;
     }
 }
