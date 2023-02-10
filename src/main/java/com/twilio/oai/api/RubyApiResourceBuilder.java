@@ -6,6 +6,7 @@ import com.twilio.oai.resolver.Resolver;
 import com.twilio.oai.resource.Resource;
 import com.twilio.oai.template.IApiActionTemplate;
 import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.Operation;
 import io.swagger.v3.oas.models.PathItem;
 import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenOperation;
@@ -110,7 +111,7 @@ public class RubyApiResourceBuilder extends FluentApiResourceBuilder {
                                         methodDependent -> methodDependent.getMountName().equals(dependent.getMountName()))
 
                         ).collect(Collectors.toList()));
-                if (operation.path.endsWith("}") || operation.path.endsWith("}.json")) {
+                if (PathUtils.isInstanceOperation(operation)) {
                     metaAPIProperties.put("contextImportProperties", dependentPropertiesList);
                     metaAPIProperties.put("contextImportMethods", dependentMethods);
 
@@ -164,7 +165,12 @@ public class RubyApiResourceBuilder extends FluentApiResourceBuilder {
             if (pathType.isPresent()) {
                 String pathtype = pathType.get();
                 if (pathtype.equals("instance")) {
-                    parentFiles.add(0, parentResource.getResourceAliases().getClassName() + "Context");
+                    List<Operation> ops = parentResource.getPathItem().readOperations();
+
+                    if (ops.isEmpty() || ops.get(0).getExtensions().containsKey("x-ignore"))
+                        parentFiles.add(0, parentResource.getResourceAliases().getClassName() + "List");
+                    else
+                        parentFiles.add(0, parentResource.getResourceAliases().getClassName() + "Context");
                 } else
                     parentFiles.add(0, parentResource.getResourceAliases().getClassName() + "List");
             } else
