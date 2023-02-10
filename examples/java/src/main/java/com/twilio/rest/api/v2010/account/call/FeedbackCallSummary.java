@@ -48,10 +48,7 @@ import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
-
-
 import java.util.Map;
 import java.time.LocalDate;
 import java.math.BigDecimal;
@@ -80,7 +77,6 @@ public class FeedbackCallSummary extends Resource {
     public static FeedbackCallSummaryUpdater updater(final String pathAccountSid, final String pathSid, final LocalDate endDate, final LocalDate startDate){
         return new FeedbackCallSummaryUpdater(pathAccountSid, pathSid, endDate, startDate);
     }
-
     /**
     * Converts a JSON String into a FeedbackCallSummary object using the provided ObjectMapper.
     *
@@ -131,6 +127,7 @@ public class FeedbackCallSummary extends Resource {
             this.value = value;
         }
 
+        @Override
         public String toString() {
             return value;
         }

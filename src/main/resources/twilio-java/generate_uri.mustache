@@ -1,14 +1,19 @@
 {{#vendorExtensions.parentUrl}}
-        String path = "{{{vendorExtensions.parentUrl}}}";
+        String path =  String.format("%s", "{{{vendorExtensions.parentUrl}}}");
 {{/vendorExtensions.parentUrl}}
 {{^vendorExtensions.parentUrl}}
-        String path = "{{{path}}}";
+        String path = String.format("%s", "{{{path}}}");
 {{/vendorExtensions.parentUrl}}
 
 {{#allParams}}
     {{#vendorExtensions.x-is-account-sid}}
         this.{{paramName}} = this.{{paramName}} == null ? client.getAccountSid() : this.{{paramName}};
+        {{#isString}}
+        path = path.replace("{"+"{{#lambda.titlecase}}{{baseName}}{{/lambda.titlecase}}"+"}", this.{{paramName}});
+        {{/isString}}
+        {{^isString}}
         path = path.replace("{"+"{{#lambda.titlecase}}{{baseName}}{{/lambda.titlecase}}"+"}", this.{{paramName}}.toString());
+        {{/isString}}
     {{/vendorExtensions.x-is-account-sid}}
 {{/allParams}}
 {{#requiredParams}}
@@ -16,6 +21,12 @@
         path = path.replace("{"+"{{#lambda.titlecase}}{{baseName}}{{/lambda.titlecase}}"+"}", this.{{paramName}}.encode("utf-8"));
     {{/vendorExtensions.x-is-phone-number-format}}
     {{^vendorExtensions.x-is-phone-number-format}}
+        {{#isString}}
+        path = path.replace("{"+"{{#lambda.titlecase}}{{baseName}}{{/lambda.titlecase}}"+"}", this.{{paramName}});
+        {{/isString}}
+        {{^isString}}
         path = path.replace("{"+"{{#lambda.titlecase}}{{baseName}}{{/lambda.titlecase}}"+"}", this.{{paramName}}.toString());
+        {{/isString}}
+
     {{/vendorExtensions.x-is-phone-number-format}}
 {{/requiredParams}}

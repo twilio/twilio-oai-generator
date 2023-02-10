@@ -18,6 +18,7 @@ public class CodegenParameterContainerDataTypeResolver extends Resolver<CodegenP
         String unwrappedContainer = unwrapContainerType(parameter);
         codegenParameterDataTypeResolver.resolve(parameter);
         rewrapContainerType(parameter, unwrappedContainer);
+        parameter.isString = false;
         return parameter;
     }
 

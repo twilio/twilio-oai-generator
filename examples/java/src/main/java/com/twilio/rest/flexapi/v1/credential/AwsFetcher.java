@@ -54,9 +54,10 @@ public class AwsFetcher extends Fetcher<Aws> {
 
     @Override
     public Aws fetch(final TwilioRestClient client) {
-        String path = "/v1/Credentials/AWS/{Sid}";
+        String path = String.format("%s", "/v1/Credentials/AWS/{Sid}");
 
-        path = path.replace("{"+"Sid"+"}", this.pathSid.toString());
+        path = path.replace("{"+"Sid"+"}", this.pathSid);
+
 
         Request request = new Request(
             HttpMethod.GET,

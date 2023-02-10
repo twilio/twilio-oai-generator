@@ -54,9 +54,10 @@ public class FleetFetcher extends Fetcher<Fleet> {
 
     @Override
     public Fleet fetch(final TwilioRestClient client) {
-        String path = "/DeployedDevices/Fleets/{Sid}";
+        String path = String.format("%s", "/DeployedDevices/Fleets/{Sid}");
 
-        path = path.replace("{"+"Sid"+"}", this.pathSid.toString());
+        path = path.replace("{"+"Sid"+"}", this.pathSid);
+
 
         Request request = new Request(
             HttpMethod.GET,

@@ -54,9 +54,10 @@ public class CallUpdater extends Updater<Call>{
 
     @Override
     public Call update(final TwilioRestClient client){
-        String path = "/v1/Voice/{Sid}";
+        String path = String.format("%s", "/v1/Voice/{Sid}");
 
-        path = path.replace("{"+"Sid"+"}", this.pathSid.toString());
+        path = path.replace("{"+"Sid"+"}", this.pathSid);
+
 
         Request request = new Request(
             HttpMethod.POST,

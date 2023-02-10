@@ -1,48 +1,56 @@
     private void addPostParams(final Request request) {
 {{#formParams}}
-        if ({{paramName}} != null) {
     {{#isFreeFormObject}}
         {{#isArray}}
+        if ({{paramName}} != null) {
             for (Map<String, Object> prop : {{paramName}}) {
                 request.addPostParam("{{baseName}}", Converter.mapToJson(prop));
             }
+        }
         {{/isArray}}
         {{^isArray}}
+        if ({{paramName}} != null) {
             request.addPostParam("{{baseName}}",  Converter.mapToJson({{paramName}}));
+        }
         {{/isArray}}
     {{/isFreeFormObject}}
     {{^isFreeFormObject}}
     {{#isArray}}
         {{#isEnum}}
+        if ({{paramName}} != null) {
             for ({{baseType}} prop : {{paramName}}) {
-                request.addPostParam("{{#lambda.titlecase}}{{{paramName}}}{{/lambda.titlecase}}", prop.toString());
+                request.addPostParam("{{#lambda.titlecase}}{{{paramName}}}{{/lambda.titlecase}}", String.valueOf(prop));
             }
+        }
         {{/isEnum}}
         {{^isEnum}}
         {{#vendorExtensions.x-is-string-array}}
+        if ({{paramName}} != null) {
             for ({{baseType}} prop : {{paramName}}) {
                 request.addPostParam("{{baseName}}", prop);
             }
+        }
         {{/vendorExtensions.x-is-string-array}}
         {{^vendorExtensions.x-is-string-array}}
+        if ({{paramName}} != null) {
             for ({{baseType}} prop : {{paramName}}) {
-                request.addPostParam("{{baseName}}", prop.toString());
+                request.addPostParam("{{baseName}}", String.valueOf(prop));
             }
+        }
         {{/vendorExtensions.x-is-string-array}}
         {{/isEnum}}
     {{/isArray}}
     {{^isArray}}
     {{#vendorExtensions.x-is-other-data-type}}
-            request.addPostParam("{{#lambda.titlecase}}{{{paramName}}}{{/lambda.titlecase}}", {{paramName}}.toString());
+        request.addPostParam("{{#lambda.titlecase}}{{{paramName}}}{{/lambda.titlecase}}", String.valueOf({{paramName}}));
     {{/vendorExtensions.x-is-other-data-type}}
     {{^vendorExtensions.x-is-other-data-type}}
     {{#isString}}
-            request.addPostParam("{{baseName}}", {{paramName}});
+        request.addPostParam("{{baseName}}", String.valueOf({{paramName}}));
     {{/isString}}
     {{/vendorExtensions.x-is-other-data-type}}
     {{/isArray}}
     {{/isFreeFormObject}}
     {{>dateParams}}
-        }
 {{/formParams}}
     }

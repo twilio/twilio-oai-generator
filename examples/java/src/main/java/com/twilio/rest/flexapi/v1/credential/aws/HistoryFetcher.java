@@ -59,9 +59,10 @@ public class HistoryFetcher extends Fetcher<History> {
 
     @Override
     public History fetch(final TwilioRestClient client) {
-        String path = "/v1/Credentials/AWS/{Sid}/History";
+        String path = String.format("%s", "/v1/Credentials/AWS/{Sid}/History");
 
-        path = path.replace("{"+"Sid"+"}", this.pathSid.toString());
+        path = path.replace("{"+"Sid"+"}", this.pathSid);
+
 
         Request request = new Request(
             HttpMethod.GET,

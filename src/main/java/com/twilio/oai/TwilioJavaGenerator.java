@@ -75,11 +75,13 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
             String lastValue = value[value.length-1];
             parameter.dataType = LIST_START+lastValue;
             parameter.baseType = lastValue.substring(0, lastValue.length()-1);
+            parameter.isString = false;
         } else if(parameter.dataType.contains("Enum")) {
-             parameter.vendorExtensions.put(REF_ENUM_EXTENSION_NAME, true);
+            parameter.vendorExtensions.put(REF_ENUM_EXTENSION_NAME, true);
             String[] value = parameter.dataType.split("Enum");
             parameter.dataType = value[value.length-1];
             parameter.baseType = value[value.length-1];
+            parameter.isString = false;
         }
         else if (parameter.isEnum) {
             parameter.enumName = parameter.paramName;

@@ -154,10 +154,8 @@ public class AccountReader extends Reader<Account> {
             request.addQueryParam("Date.Test", DateConverter.dateStringFromLocalDate(dateTest));
         }
 
-        if (pageSize != null) {
     
-            request.addQueryParam("PageSize", pageSize.toString());
-        }
+            request.addQueryParam("PageSize", String.valueOf(pageSize));
 
         if(getPageSize() != null) {
             request.addQueryParam("PageSize", Integer.toString(getPageSize()));

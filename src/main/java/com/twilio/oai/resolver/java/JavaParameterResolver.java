@@ -36,6 +36,7 @@ public class JavaParameterResolver extends LanguageParamResolver {
             }
 
             parameter.isFreeFormObject = true;
+            parameter.isString = false;
         }
 
         mapper.promotions().getMap(parameter.dataFormat).ifPresent(promotions -> {

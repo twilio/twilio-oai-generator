@@ -48,10 +48,7 @@ import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
-
-
 import java.util.Map;
 import java.time.LocalDate;
 import java.math.BigDecimal;
@@ -73,7 +70,6 @@ import com.twilio.type.SubscribeRule;
 @ToString
 public class NewCredentials extends Resource {
     private static final long serialVersionUID = 234000032744450L;
-
     public static NewCredentialsCreator creator(final String testString, final Integer testInteger, final Float testNumberFloat){
         return new NewCredentialsCreator(testString, testInteger, testNumberFloat);
     }
@@ -133,6 +129,7 @@ public class NewCredentials extends Resource {
             this.value = value;
         }
 
+        @Override
         public String toString() {
             return value;
         }
@@ -156,6 +153,7 @@ public class NewCredentials extends Resource {
             this.value = value;
         }
 
+        @Override
         public String toString() {
             return value;
         }

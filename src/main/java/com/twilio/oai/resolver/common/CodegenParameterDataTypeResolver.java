@@ -20,6 +20,6 @@ public class CodegenParameterDataTypeResolver extends Resolver<CodegenParameter>
             .properties()
             .getString(parameter.dataFormat)
             .or(() -> mapper.properties().getString(parameter.dataType))
-            .ifPresent(dataType -> parameter.dataType = dataType);
+            .ifPresent(dataType -> {parameter.dataType = dataType; parameter.isString = false;});
     }
 }

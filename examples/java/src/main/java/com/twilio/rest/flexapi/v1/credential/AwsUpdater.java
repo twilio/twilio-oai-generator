@@ -64,9 +64,10 @@ public class AwsUpdater extends Updater<Aws>{
 
     @Override
     public Aws update(final TwilioRestClient client){
-        String path = "/v1/Credentials/AWS/{Sid}";
+        String path = String.format("%s", "/v1/Credentials/AWS/{Sid}");
 
-        path = path.replace("{"+"Sid"+"}", this.pathSid.toString());
+        path = path.replace("{"+"Sid"+"}", this.pathSid);
+
 
         Request request = new Request(
             HttpMethod.POST,
@@ -88,13 +89,10 @@ public class AwsUpdater extends Updater<Aws>{
         return Aws.fromJson(response.getStream(), client.getObjectMapper());
     }
     private void addPostParams(final Request request) {
-        if (testString != null) {
-            request.addPostParam("TestString", testString);
+        request.addPostParam("TestString", String.valueOf(testString));
     
-        }
-        if (testBoolean != null) {
-            request.addPostParam("TestBoolean", testBoolean.toString());
+        request.addPostParam("TestBoolean", String.valueOf(testBoolean));
     
-        }
     }
+
 }

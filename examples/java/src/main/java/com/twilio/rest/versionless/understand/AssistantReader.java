@@ -124,10 +124,8 @@ public class AssistantReader extends Reader<Assistant> {
         return pageForRequest(client, request);
     }
     private void addQueryParams(final Request request) {
-        if (pageSize != null) {
     
-            request.addQueryParam("PageSize", pageSize.toString());
-        }
+            request.addQueryParam("PageSize", String.valueOf(pageSize));
 
         if(getPageSize() != null) {
             request.addQueryParam("PageSize", Integer.toString(getPageSize()));
