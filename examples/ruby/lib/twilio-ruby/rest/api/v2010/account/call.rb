@@ -35,25 +35,30 @@ module Twilio
                     ##
                     # Create the CallInstance
                     # @param [String] required_string_property 
-                    # @param [String] test_method The HTTP method that we should use to request the &#x60;TestArrayOfUri&#x60;.
-                    # @param [Array&lt;String&gt;] test_array_of_strings 
-                    # @param [Array&lt;String&gt;] test_array_of_uri 
+                    # @param [Array[String]] test_array_of_strings 
+                    # @param [Array[String]] test_array_of_uri 
+                    # @param [String] test_method The HTTP method that we should use to request the `TestArrayOfUri`.
                     # @return [CallInstance] Created CallInstance
                     def create(
                         required_string_property: nil, 
-                        test_method: nil, 
                         test_array_of_strings: :unset, 
-                        test_array_of_uri: :unset)
+                        test_array_of_uri: :unset, 
+                        test_method: nil
+                    )
 
                         data = Twilio::Values.of({
-                          'RequiredStringProperty' => required_string_property,
-                          'TestMethod' => test_method,
-                        'TestArrayOfStrings' => Twilio.serialize_list(test_array_of_strings),
-                        'TestArrayOfUri' => Twilio.serialize_list(test_array_of_uri),
+                            'RequiredStringProperty' => required_string_property,
+                            'TestMethod' => test_method,
+                            'TestArrayOfStrings' => Twilio.serialize_list(test_array_of_strings) { |e| e },
+                            'TestArrayOfUri' => Twilio.serialize_list(test_array_of_uri) { |e| e },
                         })
 
-                        payload = @version.create('POST', @uri, data: data  )
-                        CallInstance.new(@version, payload,  account_sid: @solution[:account_sid],)
+                        payload = @version.create('POST', @uri, data: data)
+                        CallInstance.new(
+                            @version,
+                            payload,
+                            account_sid: @solution[:account_sid],
+                        )
                     end
 
                 
@@ -77,7 +82,7 @@ module Twilio
                     # Initialize the CallContext
                     # @param [Version] version Version that contains the resource
                     # @param [String] account_sid 
-                    # @param [Integer] test_integer INTEGER ID param!!!
+                    # @param [String] test_integer INTEGER ID param!!!
                     # @return [CallContext] CallContext
                     def initialize(version, account_sid, test_integer)
                         super(version)
@@ -94,7 +99,7 @@ module Twilio
                     # @return [Boolean] True if delete succeeds, false otherwise
                     def delete
 
-                        @version.delete('DELETE', @uri, )
+                        @version.delete('DELETE', @uri)
                     end
 
                     ##
@@ -102,8 +107,13 @@ module Twilio
                     # @return [CallInstance] Fetched CallInstance
                     def fetch
 
-                        payload = @version.fetch('GET', @uri )
-                        CallInstance.new(@version, payload,  account_sid: @solution[:account_sid],)
+                        payload = @version.fetch('GET', @uri)
+                        CallInstance.new(
+                            @version,
+                            payload,
+                            account_sid: @solution[:account_sid],
+                            test_integer: @solution[:test_integer],
+                        )
                     end
 
                     ##
@@ -185,6 +195,7 @@ module Twilio
                     # @return [CallInstance] CallInstance
                     def initialize(version, payload , account_sid: nil, test_integer: nil)
                         super(version)
+                        
                         # Marshaled Properties
                         @properties = { 
                             'account_sid' => payload['account_sid'],
@@ -203,7 +214,8 @@ module Twilio
                             'test_array_of_array_of_integers' => payload['test_array_of_array_of_integers'],
                             'test_array_of_objects' => payload['test_array_of_objects'],
                             'test_array_of_enum' => payload['test_array_of_enum'],
-                             } 
+                        }
+
                         # Context
                         @instance_context = nil
                         @params = { 'account_sid' => account_sid  ,'test_integer' => test_integer  || @properties['test_integer']  , }
@@ -239,7 +251,7 @@ module Twilio
                     end
                     
                     ##
-                    # @return [Integer] 
+                    # @return [String] 
                     def test_integer
                         @properties['test_integer']
                     end
@@ -293,13 +305,13 @@ module Twilio
                     end
                     
                     ##
-                    # @return [Array<Integer>] 
+                    # @return [Array<String>] 
                     def test_array_of_integers
                         @properties['test_array_of_integers']
                     end
                     
                     ##
-                    # @return [Array<Array<Integer>>] 
+                    # @return [Array<Array<String>>] 
                     def test_array_of_array_of_integers
                         @properties['test_array_of_array_of_integers']
                     end
@@ -316,29 +328,29 @@ module Twilio
                         @properties['test_array_of_enum']
                     end
                     
-                    
                     ##
                     # Delete the CallInstance
-                    # @return [Boolean] true if delete succeeds, false otherwise
+                    # @return [Boolean] True if delete succeeds, false otherwise
                     def delete
+
                         context.delete
                     end
-                    
-                    
+
                     ##
                     # Fetch the CallInstance
                     # @return [CallInstance] Fetched CallInstance
                     def fetch
+
                         context.fetch
                     end
-                    
-                    
+
                     ##
                     # Access the feedback_call_summary
                     # @return [feedback_call_summary] feedback_call_summary
                     def feedback_call_summary
                         context.feedback_call_summary
                     end
+
                     ##
                     # Provide a user friendly representation
                     def to_s

@@ -61,13 +61,18 @@ module Twilio
                     # @param [Hash] add_ons_data 
                     # @return [HistoryInstance] Fetched HistoryInstance
                     def fetch(
-                        add_ons_data: :unset)
+                        add_ons_data: :unset
+                    )
 
                         params = Twilio::Values.of({
                         })
                         params.merge!(Twilio.prefixed_collapsible_map(add_ons_data, 'AddOns'))
-                        payload = @version.fetch('GET', @uri,params: params  )
-                        HistoryInstance.new(@version, payload,  sid: @solution[:sid],)
+                        payload = @version.fetch('GET', @uri, params: params)
+                        HistoryInstance.new(
+                            @version,
+                            payload,
+                            sid: @solution[:sid],
+                        )
                     end
 
 
@@ -126,13 +131,15 @@ module Twilio
                     # @return [HistoryInstance] HistoryInstance
                     def initialize(version, payload , sid: nil)
                         super(version)
+                        
                         # Marshaled Properties
                         @properties = { 
                             'account_sid' => payload['account_sid'],
                             'sid' => payload['sid'],
                             'test_string' => payload['test_string'],
                             'test_integer' => payload['test_integer'] == nil ? payload['test_integer'] : payload['test_integer'].to_i,
-                             } 
+                        }
+
                         # Context
                         @instance_context = nil
                         @params = { 'sid' => sid  || @properties['sid']  , }
@@ -168,21 +175,24 @@ module Twilio
                     end
                     
                     ##
-                    # @return [Integer] 
+                    # @return [String] 
                     def test_integer
                         @properties['test_integer']
                     end
                     
-                    
-                    
                     ##
                     # Fetch the HistoryInstance
+                    # @param [Hash] add_ons_data 
                     # @return [HistoryInstance] Fetched HistoryInstance
-                    def fetch
-                        context.fetch
+                    def fetch(
+                        add_ons_data: :unset
+                    )
+
+                        context.fetch(
+                            add_ons_data: add_ons_data, 
+                        )
                     end
-                    
-                    
+
                     ##
                     # Provide a user friendly representation
                     def to_s

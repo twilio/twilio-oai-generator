@@ -30,7 +30,7 @@
                     # Unlike stream(), this operation is eager and will load `limit` records into
                     # memory before returning.
                     {{#readParams}}
-                    # @param [{{dataType}}] {{paramName}} {{description}}
+                    # @param [{{dataType}}] {{paramName}} {{{description}}}
                     {{/readParams}}
                     # @param [Integer] limit Upper limit for the number of records to return. stream()
                     #    guarantees to never return more than limit.  Default is no limit
@@ -54,7 +54,7 @@
                     # This operation lazily loads records as efficiently as possible until the limit
                     # is reached.
                     {{#readParams}}
-                    # @param [{{dataType}}] {{paramName}} {{description}}
+                    # @param [{{dataType}}] {{paramName}} {{{description}}}
                     {{/readParams}}
                     # @param [Integer] limit Upper limit for the number of records to return. stream()
                     #    guarantees to never return more than limit.  Default is no limit
@@ -93,7 +93,7 @@
                     # Retrieve a single page of {{apiName}}Instance records from the API.
                     # Request is executed immediately.
                     {{#readParams}}
-                    # @param [{{dataType}}] {{paramName}} {{description}}
+                    # @param [{{dataType}}] {{paramName}} {{{description}}}
                     {{/readParams}}
                     # @param [String] page_token PageToken provided by the API
                     # @param [Integer] page_number Page Number, this value is simply for client state

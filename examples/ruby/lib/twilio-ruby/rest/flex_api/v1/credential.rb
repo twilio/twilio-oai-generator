@@ -100,38 +100,19 @@ module Twilio
                     def initialize(version )
                         super(version)
                         
-                            
-                        # Context
-                        @instance_context = nil
-                        @params = {  }
                     end
 
-                    ##
-                    # Generate an instance context for the instance, the context is capable of
-                    # performing various actions.  All instance actions are proxied to the context
-                    # @return [CredentialContext] CallContext for this CallInstance
-                    def context
-                        unless @instance_context
-                            @instance_context = CredentialContext.new(@version )
-                        end
-                        @instance_context
-                    end
-                    
-                    
-                    
                     
                     ##
                     # Provide a user friendly representation
                     def to_s
-                        values = @params.map{|k, v| "#{k}: #{v}"}.join(" ")
-                        "<Twilio.FlexApi.V1.CredentialInstance #{values}>"
+                        "<Twilio.FlexApi.V1.CredentialInstance>"
                     end
 
                     ##
                     # Provide a detailed, user friendly representation
                     def inspect
-                        values = @properties.map{|k, v| "#{k}: #{v}"}.join(" ")
-                        "<Twilio.FlexApi.V1.CredentialInstance #{values}>"
+                        "<Twilio.FlexApi.V1.CredentialInstance>"
                     end
                 end
             end

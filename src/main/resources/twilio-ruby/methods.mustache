@@ -1,13 +1,22 @@
                     ##
                     # {{vendorExtensions.x-name}} the {{apiName}}Instance
-                    {{#allParams}}
-                    # @param [{{dataType}}] {{paramName}} {{description}}
-                    {{/allParams}}
+                    {{#queryParams}}
+                    # @param [{{dataType}}] {{paramName}} {{{description}}}
+                    {{/queryParams}}
+                    {{#formParams}}
+                    # @param [{{dataType}}] {{paramName}} {{{description}}}
+                    {{/formParams}}
+                    {{#headerParams}}
+                    # @param [{{dataType}}] {{paramName}} {{{description}}}
+                    {{/headerParams}}
                     {{^vendorExtensions.x-is-delete-operation}}
                     # @return [{{apiName}}Instance] {{#vendorExtensions.x-is-fetch-operation}}{{vendorExtensions.x-name}}ed{{/vendorExtensions.x-is-fetch-operation}}{{^vendorExtensions.x-is-fetch-operation}}{{vendorExtensions.x-name}}d{{/vendorExtensions.x-is-fetch-operation}} {{apiName}}Instance
 {{/vendorExtensions.x-is-delete-operation}}
                     {{#vendorExtensions.x-is-delete-operation}}
                     # @return [Boolean] True if delete succeeds, false otherwise
 {{/vendorExtensions.x-is-delete-operation}}
-                    def {{#lambda.camelcase}}{{vendorExtensions.x-name}}{{/lambda.camelcase}}{{#hasParams}}({{#allParams}}
-                        {{paramName}}: {{#required}}nil{{/required}}{{^required}}:unset{{/required}}{{^-last}}, {{/-last}}{{/allParams}}){{/hasParams}}
+                    def {{#lambda.camelcase}}{{vendorExtensions.x-name}}{{/lambda.camelcase}}{{#hasParams}}({{#queryParams}}
+                        {{paramName}}: {{#required}}nil{{/required}}{{^required}}:unset{{/required}}{{^-last}}, {{/-last}}{{/queryParams}}{{#formParams.0}}{{#queryParams.0}}, {{/queryParams.0}}{{/formParams.0}}{{#formParams}}
+                        {{paramName}}: {{#required}}nil{{/required}}{{^required}}:unset{{/required}}{{^-last}}, {{/-last}}{{/formParams}}{{#headerParams.0}}{{#queryParams.0}}, {{/queryParams.0}}{{^queryParams.0}}{{#formParams.0}}, {{/formParams.0}}{{/queryParams.0}}{{/headerParams.0}}{{#headerParams}}
+                        {{paramName}}: {{#required}}nil{{/required}}{{^required}}:unset{{/required}}{{^-last}}, {{/-last}}{{/headerParams}}
+                    ){{/hasParams}}

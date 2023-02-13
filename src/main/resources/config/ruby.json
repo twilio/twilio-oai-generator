@@ -27,7 +27,8 @@
     "date_time_inequality": "Time",
     "object": "Hash",
     "prefixed_collapsible_map": "Hash",
-    "string_map": "Hash"
+    "string_map": "Hash",
+    "integer": "String"
   },
 
   "serialize": {
