@@ -14,6 +14,11 @@ module Twilio
                 end
 
             {{#isApiDomain}}
+                ##
+                # Account provided as the authenticating account
+                def account
+                    @account ||= AccountContext.new(self, @domain.client.account_sid)
+                end
                 {{#param}}
                 ##
                 # {{filename}} provided as the authenticating account
@@ -28,12 +33,13 @@ module Twilio
                     @account = value
                 end
                 {{#versionDependents}}
-                def {{mountName}}{{#params}}({{#lambda.camelcase}}{{.}}{{/lambda.camelcase}} =:unset){{/params}}
-                    self.account.{{mountName}}({{#params}}{{#lambda.camelcase}}{{.}}{{/lambda.camelcase}}{{/params}})
+                def {{mountName}}{{#params}}({{#lambda.snakecase}}{{.}}{{/lambda.snakecase}} =:unset){{/params}}
+                    self.account.{{mountName}}({{#params}}{{#lambda.snakecase}}{{.}}{{/lambda.snakecase}}{{/params}})
                 end
                 {{/versionDependents}}
             {{/isApiDomain}}
             {{#versionResources}}
+                {{#instanceDependent}}
                 {{#pathParams}}
                 ##
                 {{#pathParams}}
@@ -61,6 +67,14 @@ module Twilio
                     @{{mountName}} ||= {{resourceName}}Context.new self
                 end
                 {{/pathParams}}
+                {{/instanceDependent}}
+                {{^instanceDependent}}
+                ##
+                # @return [Twilio::REST::{{domainName}}::{{apiVersionClass}}::{{resourceName}}List]
+                def {{mountName}}
+                    @{{mountName}} ||= {{resourceName}}List.new self
+                end
+                {{/instanceDependent}}
             {{/versionResources}}
                 ##
                 # Provide a user friendly representation

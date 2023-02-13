@@ -40,18 +40,9 @@ module Twilio
                     end
                 end
                 ##
-                # @param [String] sid 
-                # @return [Twilio::REST::FlexApi::V1::CredentialContext] if sid was passed.
                 # @return [Twilio::REST::FlexApi::V1::CredentialList]
-                def credentials(sid=:unset)
-                    if sid.nil?
-                        raise ArgumentError, 'sid cannot be nil'
-                    end
-                    if sid == :unset
-                        @credentials ||= CredentialList.new self
-                    else
-                        CredentialContext.new(self, sid)
-                    end
+                def credentials
+                    @credentials ||= CredentialList.new self
                 end
                 ##
                 # Provide a user friendly representation

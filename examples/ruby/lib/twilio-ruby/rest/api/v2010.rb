@@ -22,20 +22,21 @@ module Twilio
                     super
                     @version = '2010-04-01'
                     @accounts = nil
-                    @account = nil
                 end
 
+                ##
+                # Account provided as the authenticating account
+                def account
+                    @account ||= AccountContext.new(self, @domain.client.account_sid)
+                end
 
                 ##
                 # Setter to override the primary account
                 def account=(value)
                     @account = value
                 end
-                def accounts(sid =:unset)
-                    self.account.accounts(sid)
-                end
-                def calls(testInteger =:unset)
-                    self.account.calls(testInteger)
+                def calls(test_integer =:unset)
+                    self.account.calls(test_integer)
                 end
                 ##
                 # @param [String] sid 
@@ -50,11 +51,6 @@ module Twilio
                     else
                         AccountContext.new(self, sid)
                     end
-                end
-                ##
-                # @return [Twilio::REST::Api::V2010::accountContext]
-                def account
-                    @account ||= AccountContext.new self
                 end
                 ##
                 # Provide a user friendly representation
