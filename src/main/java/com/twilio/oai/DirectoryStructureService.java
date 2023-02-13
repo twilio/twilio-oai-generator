@@ -21,6 +21,7 @@ import org.openapitools.codegen.model.OperationsMap;
 import java.io.File;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static com.twilio.oai.common.ApplicationConstants.*;
 
@@ -29,6 +30,7 @@ public class DirectoryStructureService {
     public static final String VERSION_RESOURCES = "versionResources";
     public static final String ALL_VERSION_RESOURCES = VERSION_RESOURCES + "All";
     public static final String API_VERSION = "apiVersion";
+    public static final List<String> PAGINATION_PARAMS = List.of("PageToken", "Page");
     @Getter
     private final Map<String, Object> additionalProperties;
     @Getter
@@ -38,7 +40,6 @@ public class DirectoryStructureService {
     @Getter
     private boolean isVersionLess = false;
     private final Map<String, String> productMap = new HashMap<>();
-
     private final List<CodegenModel> allModels = new ArrayList<>();
     private final List<Object> dependentList = new ArrayList<>();
 
@@ -70,12 +71,11 @@ public class DirectoryStructureService {
     public void configure(final OpenAPI openAPI) {
         final Map<String, DependentResource> versionResources = getVersionResourcesMap();
 
-        isVersionLess = additionalProperties.get(API_VERSION).equals("");
+        isVersionLess = additionalProperties.getOrDefault(API_VERSION, "").equals("");
 
         openAPI.getPaths().forEach(resourceTree::addResource);
         openAPI.getPaths().forEach((name, path) -> {
             final Optional<String> pathType = PathUtils.getTwilioExtension(path, "pathType");
-            updateAccountSidParam(path);
             path.readOperations().forEach(operation -> {
                 // Group operations together by tag. This gives us one file/post-process per resource.
                 final String tag = String.join(PATH_SEPARATOR_PLACEHOLDER, resourceTree.ancestors(name, operation));
@@ -91,6 +91,10 @@ public class DirectoryStructureService {
                     final DependentResource dependent = generateDependent(name, operation);
                     addVersionResources(dependent, versionResources);
                 }
+
+                updateAccountSidParam(operation);
+                updatePaginationParams(operation);
+
                 pathType.ifPresent(type -> Optional
                         .ofNullable(operation.getExtensions())
                         .ifPresentOrElse(ext -> ext.putIfAbsent(PATH_TYPE_EXTENSION_NAME, type),
@@ -120,20 +124,29 @@ public class DirectoryStructureService {
         resourceTree.getResources().forEach(resource -> resource.updateFamily(resourceTree));
     }
 
-    // If account sid is present in path param, it is stored in x-is-account-sid.
-    private void updateAccountSidParam(final PathItem pathMap) {
-        pathMap
-                .readOperations()
+    private void updateAccountSidParam(final Operation operation) {
+        // If account sid is present in path param, it is stored in x-is-account-sid.
+        getParamStream(operation)
+            .filter(param -> param.getIn().equals("path") && ACCOUNT_SID_FORMAT.equals(param.getSchema().getPattern()))
+            .forEach(param -> {
+                param.required(false);
+                param.addExtension(ACCOUNT_SID_VEND_EXT, true);
+            });
+    }
+
+    /**
+     * Remove certain pagination parameters which are not supported in all clients.
+     */
+    private void updatePaginationParams(final Operation operation) {
+        Optional
+            .ofNullable(operation.getParameters())
+            .ifPresent(params -> params.removeIf(param -> PAGINATION_PARAMS
                 .stream()
-                .map(Operation::getParameters)
-                .filter(Objects::nonNull)
-                .flatMap(Collection::stream)
-                .filter(param -> param.getIn().equals("path") &&
-                        (ACCOUNT_SID_FORMAT.equals(param.getSchema().getPattern())))
-                .forEach(param -> {
-                    param.required(false);
-                    param.addExtension("x-is-account-sid", true);
-                });
+                .anyMatch(name -> param.getName().equalsIgnoreCase(name))));
+    }
+
+    private Stream<Parameter> getParamStream(final Operation operation) {
+        return Optional.ofNullable(operation.getParameters()).stream().flatMap(Collection::stream);
     }
 
     public DependentResource generateDependent(final String path, final Operation operation) {
