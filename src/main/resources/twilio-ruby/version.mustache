@@ -14,6 +14,11 @@ module Twilio
                 end
 
             {{#isApiDomain}}
+                ##
+                # Account provided as the authenticating account
+                def account
+                    @account ||= AccountContext.new(self, @domain.client.account_sid)
+                end
                 {{#param}}
                 ##
                 # {{filename}} provided as the authenticating account

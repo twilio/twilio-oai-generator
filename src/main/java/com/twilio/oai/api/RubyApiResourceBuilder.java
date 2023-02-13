@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
+import static com.twilio.oai.DirectoryStructureService.VERSION_RESOURCES;
 import static com.twilio.oai.common.ApplicationConstants.DESERIALIZE_VEND_EXT;
 
 public class RubyApiResourceBuilder extends FluentApiResourceBuilder {
@@ -205,15 +206,18 @@ public class RubyApiResourceBuilder extends FluentApiResourceBuilder {
     }
 
     private void updateVersionResources() {
-        var versionResources = (List<Object>) directoryStructureService.getAdditionalProperties().getOrDefault("versionResources", null);
+        var versionResources = (List<DirectoryStructureService.DependentResource>) directoryStructureService.getAdditionalProperties().getOrDefault("versionResources", null);
         if (versionResources != null) {
             for (var versionResource : versionResources) {
-                if (((DirectoryStructureService.DependentResource) versionResource).getResourceName().equals(getApiName())) {
-                    ((DirectoryStructureService.DependentResource) versionResource).setInstanceDependent((boolean) metaAPIProperties.getOrDefault("hasInstanceOperation", false));
+                //here "hasInstanceOperation" may be either null or false, so only set if it is true
+                if (versionResource.getResourceName().equals(getApiName()) && (boolean) metaAPIProperties.getOrDefault("hasInstanceOperation", false)) {
+                    versionResource.setInstanceDependent(true);
                 }
             }
+            var domain = (String) directoryStructureService.getAdditionalProperties().get("domainName");
+            versionResources = versionResources.stream().filter((resource) -> !(resource.getMountName().equals("account") && domain.equals("Api"))).collect(Collectors.toList());
         }
-        directoryStructureService.getAdditionalProperties().put("versionResources", versionResources);
+        directoryStructureService.getAdditionalProperties().put(VERSION_RESOURCES, versionResources);
     }
 
     private void updateVersionDependents() {
@@ -240,8 +244,8 @@ public class RubyApiResourceBuilder extends FluentApiResourceBuilder {
     }
 
     private ApiResourceBuilder updateVersionData() {
-        updateVersionResources();
         updateVersionDependents();
+        updateVersionResources();
         return this;
     }
 }
