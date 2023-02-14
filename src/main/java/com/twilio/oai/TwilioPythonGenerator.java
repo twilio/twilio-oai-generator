@@ -11,7 +11,6 @@ import com.twilio.oai.resolver.LanguagePropertyResolver;
 import com.twilio.oai.resolver.common.CodegenModelResolver;
 import com.twilio.oai.resolver.python.PythonCaseResolver;
 import com.twilio.oai.resource.IResourceTree;
-import com.twilio.oai.resource.Resource;
 import com.twilio.oai.resource.ResourceMap;
 import com.twilio.oai.template.PythonApiActionTemplate;
 
@@ -22,10 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 import io.swagger.v3.oas.models.OpenAPI;
-import io.swagger.v3.oas.models.Operation;
 import io.swagger.v3.oas.models.PathItem;
-import io.swagger.v3.oas.models.Paths;
-
 import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenOperation;
 import org.openapitools.codegen.languages.PythonClientCodegen;
@@ -75,32 +71,24 @@ public class TwilioPythonGenerator extends PythonClientCodegen {
 
     @Override
     public String apiFilename(final String templateName, final String tag) {
-        Paths pathMap = this.openAPI.getPaths();
-        Boolean isInitFile = false;
-        for (Map.Entry<String, PathItem> pathsEntry : pathMap.entrySet()) {
-            String resourcePath = pathsEntry.getKey();
-            PathItem path = pathsEntry.getValue();
-            // See if the resource's tag exists in any operation tags, and if the associated resource has dependents
-            Operation curOp = path.getGet() != null ? path.getGet() : path.getPost() != null ? path.getPost() :
-                    path.getHead() != null ? path.getHead() : path.getPut() != null ? path.getPut() :
-                    path.getDelete() != null ? path.getDelete() : path.getPatch() != null ? path.getPatch() :
-                    path.getOptions() != null ? path.getOptions() : path.getTrace();
-            if (curOp != null) {
-                List<String> opTags = curOp.getTags();
-                if (opTags.contains(tag)) {
-                    List<Resource> dependents = resourceTree.dependents(resourcePath);
-                    if (dependents.size() > 0) {
-                        isInitFile = true;
-                        break;
-                    }
-                }
+        boolean isInitFile = false;
+
+        for (final Map.Entry<String, PathItem> pathsEntry : this.openAPI.getPaths().entrySet()) {
+            final String resourcePath = pathsEntry.getKey();
+            final PathItem path = pathsEntry.getValue();
+
+            if (!resourceTree.dependents(resourcePath).isEmpty() &&
+                path.readOperations().stream().anyMatch(operation -> operation.getTags().contains(tag))) {
+                isInitFile = true;
+                break;
             }
         }
-        String result = actionTemplate.apiFilename(templateName, super.apiFilename(templateName, tag));
+
+        String filename = actionTemplate.apiFilename(templateName, super.apiFilename(templateName, tag));
         if (isInitFile) {
-            result = result.substring(0, result.length()-3) + File.separator + "__init__.py";
+            filename = PathUtils.removeExtension(filename) + File.separator + "__init__.py";
         }
-        return result;
+        return filename;
     }
 
     @Override
