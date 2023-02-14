@@ -1,0 +1,41 @@
+{{#operations}}
+{{#vendorExtensions.x-is-read-operation}}
+class {{apiName}}Page(Page):
+
+    def __init__(self, version, response, solution):
+        """
+        Initialize the {{apiName}}Page
+
+        :param Version version: Version that contains the resource
+        :param Response response: Response from the API
+
+        :returns: twilio.rest.{{domainPackage}}.{{apiVersion}}.{{apiFilename}}.{{apiName}}Page
+        :rtype: twilio.rest.{{domainPackage}}.{{apiVersion}}.{{apiFilename}}.{{apiName}}Page
+        """
+        super().__init__(version, response)
+
+        # Path solution
+        self._solution = solution
+
+    def get_instance(self, payload):
+        """
+        Build an instance of {{instanceName}}
+
+        :param dict payload: Payload response from the API
+
+        :returns: twilio.rest.{{domainPackage}}.{{apiVersion}}.{{apiFilename}}.{{instanceName}}
+        :rtype: twilio.rest.{{domainPackage}}.{{apiVersion}}.{{apiFilename}}.{{instanceName}}
+        """
+        return {{instanceName}}(self._version, payload{{#instancePathParams}}, {{paramName}}=self._solution['{{paramName}}']{{/instancePathParams}})
+
+    def __repr__(self):
+        """
+        Provide a friendly representation
+
+        :returns: Machine friendly representation
+        :rtype: str
+        """
+        return '<Twilio.{{domainName}}.{{apiVersionClass}}.{{apiName}}Page>'
+
+{{/vendorExtensions.x-is-read-operation}}
+{{/operations}}
