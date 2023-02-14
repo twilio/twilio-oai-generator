@@ -59,23 +59,29 @@ module Twilio
                     end
                     ##
                     # Update the FeedbackCallSummaryInstance
+                    # @param [String] account_sid 
                     # @param [Date] end_date 
                     # @param [Date] start_date 
-                    # @param [String] account_sid 
                     # @return [FeedbackCallSummaryInstance] Updated FeedbackCallSummaryInstance
                     def update(
+                        account_sid: :unset, 
                         end_date: nil, 
-                        start_date: nil, 
-                        account_sid: :unset)
+                        start_date: nil
+                    )
 
                         data = Twilio::Values.of({
-                         'EndDate' => Twilio.serialize_iso8601_date(end_date),
-                         'StartDate' => Twilio.serialize_iso8601_date(start_date),
-                        'AccountSid' => account_sid,
+                            'EndDate' => Twilio.serialize_iso8601_date(end_date),
+                            'StartDate' => Twilio.serialize_iso8601_date(start_date),
+                            'AccountSid' => account_sid,
                         })
 
-                        payload = @version.update('POST', @uri, data: data  )
-                        FeedbackCallSummaryInstance.new(@version, payload,  account_sid: @solution[:account_sid],)
+                        payload = @version.update('POST', @uri, data: data)
+                        FeedbackCallSummaryInstance.new(
+                            @version,
+                            payload,
+                            account_sid: @solution[:account_sid],
+                            sid: @solution[:sid],
+                        )
                     end
 
 
@@ -134,6 +140,7 @@ module Twilio
                     # @return [FeedbackCallSummaryInstance] FeedbackCallSummaryInstance
                     def initialize(version, payload , account_sid: nil, sid: nil)
                         super(version)
+                        
                         # Marshaled Properties
                         @properties = { 
                             'account_sid' => payload['account_sid'],
@@ -152,7 +159,8 @@ module Twilio
                             'test_array_of_array_of_integers' => payload['test_array_of_array_of_integers'],
                             'test_array_of_objects' => payload['test_array_of_objects'],
                             'test_array_of_enum' => payload['test_array_of_enum'],
-                             } 
+                        }
+
                         # Context
                         @instance_context = nil
                         @params = { 'account_sid' => account_sid  ,'sid' => sid  || @properties['sid']  , }
@@ -188,7 +196,7 @@ module Twilio
                     end
                     
                     ##
-                    # @return [Integer] 
+                    # @return [String] 
                     def test_integer
                         @properties['test_integer']
                     end
@@ -242,13 +250,13 @@ module Twilio
                     end
                     
                     ##
-                    # @return [Array<Integer>] 
+                    # @return [Array<String>] 
                     def test_array_of_integers
                         @properties['test_array_of_integers']
                     end
                     
                     ##
-                    # @return [Array<Array<Integer>>] 
+                    # @return [Array<Array<String>>] 
                     def test_array_of_array_of_integers
                         @properties['test_array_of_array_of_integers']
                     end
@@ -265,22 +273,25 @@ module Twilio
                         @properties['test_array_of_enum']
                     end
                     
-                    
-                    
-                    
                     ##
                     # Update the FeedbackCallSummaryInstance
+                    # @param [String] account_sid 
                     # @param [Date] end_date 
                     # @param [Date] start_date 
-                    # @param [String] account_sid 
                     # @return [FeedbackCallSummaryInstance] Updated FeedbackCallSummaryInstance
-                    def update(end_date: :unset ,  start_date: :unset ,  account_sid: :unset  )
+                    def update(
+                        account_sid: :unset, 
+                        end_date: nil, 
+                        start_date: nil
+                    )
+
                         context.update(
+                            account_sid: account_sid, 
                             end_date: end_date, 
                             start_date: start_date, 
-                            account_sid: account_sid, )
-                     end
-                    
+                        )
+                    end
+
                     ##
                     # Provide a user friendly representation
                     def to_s

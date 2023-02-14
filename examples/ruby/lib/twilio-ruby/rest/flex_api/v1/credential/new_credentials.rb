@@ -35,20 +35,20 @@ module Twilio
                     # Create the NewCredentialsInstance
                     # @param [String] test_string 
                     # @param [Boolean] test_boolean 
-                    # @param [Integer] test_integer 
+                    # @param [String] test_integer 
                     # @param [Float] test_number 
                     # @param [Float] test_number_float 
                     # @param [Float] test_number_double 
                     # @param [Float] test_number_int32 
-                    # @param [Integer] test_number_int64 
+                    # @param [String] test_number_int64 
                     # @param [Hash] test_object 
                     # @param [Time] test_date_time 
                     # @param [Date] test_date 
                     # @param [TestStatus] test_enum 
-                    # @param [Array&lt;Object&gt;] test_object_array 
+                    # @param [Array[Hash]] test_object_array 
                     # @param [Object] test_any_type 
-                    # @param [Array&lt;Object&gt;] test_any_array 
-                    # @param [Array&lt;String&gt;] permissions A comma-separated list of the permissions you will request from the users of this ConnectApp.  Can include: &#x60;get-all&#x60; and &#x60;post-all&#x60;.
+                    # @param [Array[Hash]] test_any_array 
+                    # @param [Array[String]] permissions A comma-separated list of the permissions you will request from the users of this ConnectApp.  Can include: `get-all` and `post-all`.
                     # @param [String] some_a2p_thing 
                     # @return [NewCredentialsInstance] Created NewCredentialsInstance
                     def create(
@@ -68,30 +68,34 @@ module Twilio
                         test_any_type: :unset, 
                         test_any_array: :unset, 
                         permissions: :unset, 
-                        some_a2p_thing: :unset)
+                        some_a2p_thing: :unset
+                    )
 
                         data = Twilio::Values.of({
-                          'TestString' => test_string,
-                        'TestBoolean' => test_boolean,
-                        'TestInteger' => test_integer,
-                        'TestNumber' => test_number,
-                        'TestNumberFloat' => test_number_float,
-                        'TestNumberDouble' => test_number_double,
-                        'TestNumberInt32' => test_number_int32,
-                        'TestNumberInt64' => test_number_int64,
-                        'TestObject' => Twilio.serialize_object(test_object),
-                        'TestDateTime' =>  Twilio.serialize_iso8601_datetime(test_date_time),
-                        'TestDate' => Twilio.serialize_iso8601_date(test_date),
-                        'TestEnum' => test_enum,
-                        'TestObjectArray' => Twilio.serialize_list(test_object_array),
-                        'TestAnyType' => Twilio.serialize_object(test_any_type),
-                        'TestAnyArray' => Twilio.serialize_list(test_any_array),
-                        'Permissions' => Twilio.serialize_list(permissions),
-                        'SomeA2PThing' => some_a2p_thing,
+                            'TestString' => test_string,
+                            'TestBoolean' => test_boolean,
+                            'TestInteger' => test_integer,
+                            'TestNumber' => test_number,
+                            'TestNumberFloat' => test_number_float,
+                            'TestNumberDouble' => test_number_double,
+                            'TestNumberInt32' => test_number_int32,
+                            'TestNumberInt64' => test_number_int64,
+                            'TestObject' => Twilio.serialize_object(test_object),
+                            'TestDateTime' => Twilio.serialize_iso8601_datetime(test_date_time),
+                            'TestDate' => Twilio.serialize_iso8601_date(test_date),
+                            'TestEnum' => test_enum,
+                            'TestObjectArray' => Twilio.serialize_list(test_object_array) { |e| Twilio.serialize_object(e) },
+                            'TestAnyType' => Twilio.serialize_object(test_any_type),
+                            'TestAnyArray' => Twilio.serialize_list(test_any_array) { |e| Twilio.serialize_object(e) },
+                            'Permissions' => Twilio.serialize_list(permissions) { |e| e },
+                            'SomeA2PThing' => some_a2p_thing,
                         })
 
-                        payload = @version.create('POST', @uri, data: data  )
-                        NewCredentialsInstance.new(@version, payload, )
+                        payload = @version.create('POST', @uri, data: data)
+                        NewCredentialsInstance.new(
+                            @version,
+                            payload,
+                        )
                     end
 
                 
@@ -142,28 +146,16 @@ module Twilio
                     # @return [NewCredentialsInstance] NewCredentialsInstance
                     def initialize(version, payload )
                         super(version)
+                        
                         # Marshaled Properties
                         @properties = { 
                             'account_sid' => payload['account_sid'],
                             'sid' => payload['sid'],
                             'test_string' => payload['test_string'],
                             'test_integer' => payload['test_integer'] == nil ? payload['test_integer'] : payload['test_integer'].to_i,
-                             } 
-                        # Context
-                        @instance_context = nil
-                        @params = {  }
+                        }
                     end
 
-                    ##
-                    # Generate an instance context for the instance, the context is capable of
-                    # performing various actions.  All instance actions are proxied to the context
-                    # @return [NewCredentialsContext] CallContext for this CallInstance
-                    def context
-                        unless @instance_context
-                            @instance_context = NewCredentialsContext.new(@version )
-                        end
-                        @instance_context
-                    end
                     
                     ##
                     # @return [String] 
@@ -184,26 +176,21 @@ module Twilio
                     end
                     
                     ##
-                    # @return [Integer] 
+                    # @return [String] 
                     def test_integer
                         @properties['test_integer']
                     end
                     
-                    
-                    
-                    
                     ##
                     # Provide a user friendly representation
                     def to_s
-                        values = @params.map{|k, v| "#{k}: #{v}"}.join(" ")
-                        "<Twilio.FlexApi.V1.NewCredentialsInstance #{values}>"
+                        "<Twilio.FlexApi.V1.NewCredentialsInstance>"
                     end
 
                     ##
                     # Provide a detailed, user friendly representation
                     def inspect
-                        values = @properties.map{|k, v| "#{k}: #{v}"}.join(" ")
-                        "<Twilio.FlexApi.V1.NewCredentialsInstance #{values}>"
+                        "<Twilio.FlexApi.V1.NewCredentialsInstance>"
                     end
                 end
              end

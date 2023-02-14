@@ -8,7 +8,7 @@
                     # Initialize the {{apiName}}Context
                     # @param [Version] version Version that contains the resource
                     {{#instancePathParams}}
-                    # @param [{{dataType}}] {{paramName}} {{description}}
+                    # @param [{{dataType}}] {{paramName}} {{{description}}}
                     {{/instancePathParams}}
                     # @return [{{apiName}}Context] {{apiName}}Context
                     def initialize(version{{#instancePathParams}}, {{paramName}}{{/instancePathParams}})

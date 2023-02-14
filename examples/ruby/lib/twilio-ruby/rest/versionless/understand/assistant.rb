@@ -162,26 +162,14 @@ module Twilio
                     # @return [AssistantInstance] AssistantInstance
                     def initialize(version, payload )
                         super(version)
+                        
                         # Marshaled Properties
                         @properties = { 
                             'sid' => payload['sid'],
                             'friendly_name' => payload['friendly_name'],
-                             } 
-                        # Context
-                        @instance_context = nil
-                        @params = {  }
+                        }
                     end
 
-                    ##
-                    # Generate an instance context for the instance, the context is capable of
-                    # performing various actions.  All instance actions are proxied to the context
-                    # @return [AssistantContext] CallContext for this CallInstance
-                    def context
-                        unless @instance_context
-                            @instance_context = AssistantContext.new(@version )
-                        end
-                        @instance_context
-                    end
                     
                     ##
                     # @return [String] A string that uniquely identifies this Fleet.
@@ -195,21 +183,16 @@ module Twilio
                         @properties['friendly_name']
                     end
                     
-                    
-                    
-                    
                     ##
                     # Provide a user friendly representation
                     def to_s
-                        values = @params.map{|k, v| "#{k}: #{v}"}.join(" ")
-                        "<Twilio.Versionless.Understand.AssistantInstance #{values}>"
+                        "<Twilio.Versionless.Understand.AssistantInstance>"
                     end
 
                     ##
                     # Provide a detailed, user friendly representation
                     def inspect
-                        values = @properties.map{|k, v| "#{k}: #{v}"}.join(" ")
-                        "<Twilio.Versionless.Understand.AssistantInstance #{values}>"
+                        "<Twilio.Versionless.Understand.AssistantInstance>"
                     end
                 end
             end

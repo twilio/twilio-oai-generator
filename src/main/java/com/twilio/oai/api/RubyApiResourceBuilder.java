@@ -6,6 +6,7 @@ import com.twilio.oai.resolver.Resolver;
 import com.twilio.oai.resource.Resource;
 import com.twilio.oai.template.IApiActionTemplate;
 import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.Operation;
 import io.swagger.v3.oas.models.PathItem;
 import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenOperation;
@@ -17,6 +18,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
+import static com.twilio.oai.DirectoryStructureService.VERSION_RESOURCES;
 import static com.twilio.oai.common.ApplicationConstants.DESERIALIZE_VEND_EXT;
 
 public class RubyApiResourceBuilder extends FluentApiResourceBuilder {
@@ -40,12 +42,14 @@ public class RubyApiResourceBuilder extends FluentApiResourceBuilder {
     @Override
     public ApiResourceBuilder updateOperations(Resolver<CodegenParameter> codegenParameterIResolver) {
         ApiResourceBuilder apiResourceBuilder = super.updateOperations(codegenParameterIResolver);
+        resolveHeaderParams(codegenParameterIResolver);
         createReadParams((RubyApiResourceBuilder) apiResourceBuilder);
         updatePaths();
         updateRequiredPathParams(apiResourceBuilder);
         createContextParamsList(apiResourceBuilder.codegenOperationList);
         categorizeOperations();
         createMaturityDescription(apiResourceBuilder.codegenOperationList);
+        updateVersionData();
         return apiResourceBuilder;
     }
 
@@ -55,6 +59,12 @@ public class RubyApiResourceBuilder extends FluentApiResourceBuilder {
         return ((RubyApiResourceBuilder) super
                 .updateResponseModel(codegenPropertyResolver, codegenModelResolver))
                 .updateVars();
+    }
+
+    private void resolveHeaderParams(Resolver<CodegenParameter> codegenParameterIResolver) {
+        codegenOperationList.forEach(codegenOperation -> {
+            codegenOperation.headerParams.forEach(codegenParameterIResolver::resolve);
+        });
     }
 
     private void createReadParams(RubyApiResourceBuilder apiResourceBuilder) {
@@ -103,7 +113,7 @@ public class RubyApiResourceBuilder extends FluentApiResourceBuilder {
                                         methodDependent -> methodDependent.getMountName().equals(dependent.getMountName()))
 
                         ).collect(Collectors.toList()));
-                if (operation.path.endsWith("}") || operation.path.endsWith("}.json")) {
+                if (PathUtils.isInstanceOperation(operation)) {
                     metaAPIProperties.put("contextImportProperties", dependentPropertiesList);
                     metaAPIProperties.put("contextImportMethods", dependentMethods);
 
@@ -146,7 +156,7 @@ public class RubyApiResourceBuilder extends FluentApiResourceBuilder {
         return this;
     }
 
-    public void fetchParentDirectory() {
+    private void fetchParentDirectory() {
         String path = codegenOperationList.get(0).path;
         List<String> parentFiles = new ArrayList<>();
         final Resource resource = directoryStructureService.getResourceTree().findResource(path).orElseThrow();
@@ -157,7 +167,12 @@ public class RubyApiResourceBuilder extends FluentApiResourceBuilder {
             if (pathType.isPresent()) {
                 String pathtype = pathType.get();
                 if (pathtype.equals("instance")) {
-                    parentFiles.add(0, parentResource.getResourceAliases().getClassName() + "Context");
+                    List<Operation> ops = parentResource.getPathItem().readOperations();
+
+                    if (ops.isEmpty() || ops.get(0).getExtensions().containsKey("x-ignore"))
+                        parentFiles.add(0, parentResource.getResourceAliases().getClassName() + "List");
+                    else
+                        parentFiles.add(0, parentResource.getResourceAliases().getClassName() + "Context");
                 } else
                     parentFiles.add(0, parentResource.getResourceAliases().getClassName() + "List");
             } else
@@ -183,5 +198,67 @@ public class RubyApiResourceBuilder extends FluentApiResourceBuilder {
             return directoryStructureService.getResourceTree().findResource(parentPath, false);
         }
         return Optional.empty();
+    }
+
+    private void addResources(List<Resource> dependents, DirectoryStructureService directoryStructureService, List<Object> dependentList) {
+        dependents.forEach(dependent -> dependent
+                .getPathItem()
+                .readOperations()
+                .forEach(operation -> directoryStructureService.addContextdependents(dependentList,
+                        dependent.getName(),
+                        operation)));
+    }
+
+    private boolean dependentExist(String mountName, List<DirectoryStructureService.ContextResource> versionDependents) {
+        for (var versionDependent : versionDependents) {
+            if (versionDependent.getMountName().equals(mountName)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void updateVersionResources() {
+        var versionResources = (List<DirectoryStructureService.DependentResource>) directoryStructureService.getAdditionalProperties().getOrDefault("versionResources", null);
+        if (versionResources != null) {
+            for (var versionResource : versionResources) {
+                //here "hasInstanceOperation" may be either null or false, so only set if it is true
+                if (versionResource.getResourceName().equals(getApiName()) && (boolean) metaAPIProperties.getOrDefault("hasInstanceOperation", false)) {
+                    versionResource.setInstanceDependent(true);
+                }
+            }
+            var domain = (String) directoryStructureService.getAdditionalProperties().get("domainName");
+            versionResources = versionResources.stream().filter((resource) -> !(resource.getMountName().equals("account") && domain.equals("Api"))).collect(Collectors.toList());
+        }
+        directoryStructureService.getAdditionalProperties().put(VERSION_RESOURCES, versionResources);
+    }
+
+    private void updateVersionDependents() {
+        List<Object> dependentList = new ArrayList<>();
+        String pathkey = "/2010-04-01/Accounts/{Sid}.json";
+        List<Resource> dependents = directoryStructureService.getResourceTree().dependents(pathkey)
+                .stream().filter(dep -> !dep.getName().endsWith("}.json"))
+                .collect(Collectors.toList());
+        addResources(dependents, directoryStructureService, dependentList);
+        var versionDependents = (List<DirectoryStructureService.ContextResource>) directoryStructureService.getAdditionalProperties().getOrDefault("versionDependents", null);
+        if (versionDependents == null) return;
+
+        //remove accounts from versionDependents for Api domain
+        versionDependents = versionDependents.stream().filter((dependent) -> !dependent.getMountName().equals("accounts")).collect(Collectors.toList());
+        //add dependents from dependents list if not already present
+        for (var dependent : dependentList) {
+            if (!dependentExist(((DirectoryStructureService.ContextResource) dependent).getMountName(), versionDependents)) {
+                versionDependents.add((DirectoryStructureService.ContextResource) dependent);
+            }
+        }
+        //sort versionDependents alphabetically
+        Collections.sort(versionDependents, Comparator.comparing(DirectoryStructureService.ContextResource::getMountName));
+        directoryStructureService.getAdditionalProperties().put("versionDependents", versionDependents);
+    }
+
+    private ApiResourceBuilder updateVersionData() {
+        updateVersionDependents();
+        updateVersionResources();
+        return this;
     }
 }
