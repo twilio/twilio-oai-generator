@@ -132,4 +132,9 @@ public class TwilioPythonGenerator extends PythonClientCodegen {
     public String getName() {
         return EnumConstants.Generator.TWILIO_PYTHON.getValue();
     }
+
+    @Override
+    public String toParamName(final String name){
+        return super.toParamName(twilioCodegen.toParamName(name));
+    }
 }

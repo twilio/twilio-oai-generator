@@ -1,0 +1,90 @@
+{{#operations}}
+    {{#vendorExtensions.x-is-read-operation}}
+    def stream(self, {{#allParams}}{{#startsWith paramName text='page_size'}}{{else}}{{paramName}}=values.unset, {{/startsWith}}{{/allParams}}limit=None, page_size=None):
+        """
+        Streams {{instanceName}} records from the API as a generator stream.
+        This operation lazily loads records as efficiently as possible until the limit
+        is reached.
+        The results are returned as a generator, so this operation is memory efficient.
+        {{#allParams}}{{#startsWith paramName text='page_size'}}{{else}}
+        :param {{dataType}} {{paramName}}: {{{description}}}{{/startsWith}}{{/allParams}}
+        :param int limit: Upper limit for the number of records to return. stream()
+                          guarantees to never return more than limit.  Default is no limit
+        :param int page_size: Number of records to fetch per request, when not set will use
+                              the default value of 50 records.  If no page_size is defined
+                              but a limit is defined, stream() will attempt to read the
+                              limit with the most efficient page size, i.e. min(limit, 1000)
+
+        :returns: Generator that will yield up to limit results
+        :rtype: list[twilio.rest.{{domainPackage}}.{{apiVersion}}.{{apiFilename}}.{{instanceName}}]
+        """
+        limits = self._version.read_limits(limit, page_size)
+        page = self.page({{#allParams}}{{#startsWith paramName text='page_size'}}{{else}}
+            {{paramName}}={{paramName}},{{/startsWith}}{{/allParams}}
+            page_size=limits['page_size']
+        )
+
+        return self._version.stream(page, limits['limit'])
+
+    def list(self, {{#allParams}}{{#startsWith paramName text='page_size'}}{{else}}{{paramName}}=values.unset, {{/startsWith}}{{/allParams}}limit=None, page_size=None):
+        """
+        Lists {{instanceName}} records from the API as a list.
+        Unlike stream(), this operation is eager and will load `limit` records into
+        memory before returning.
+        {{#allParams}}{{#startsWith paramName text='page_size'}}{{else}}
+        :param {{dataType}} {{paramName}}: {{{description}}}{{/startsWith}}{{/allParams}}
+        :param int limit: Upper limit for the number of records to return. list() guarantees
+                          never to return more than limit.  Default is no limit
+        :param int page_size: Number of records to fetch per request, when not set will use
+                              the default value of 50 records.  If no page_size is defined
+                              but a limit is defined, list() will attempt to read the limit
+                              with the most efficient page size, i.e. min(limit, 1000)
+
+        :returns: Generator that will yield up to limit results
+        :rtype: list[twilio.rest.{{domainPackage}}.{{apiVersion}}.{{apiFilename}}.{{instanceName}}]
+        """
+        return list(self.stream(
+            {{#allParams}}{{#startsWith paramName text='page_size'}}{{else}}{{paramName}}={{paramName}},
+            {{/startsWith}}{{/allParams}}limit=limit,
+            page_size=page_size,
+        ))
+
+    def page(self, {{#allParams}}{{#startsWith paramName text='page_size'}}{{else}}{{paramName}}=values.unset, {{/startsWith}}{{/allParams}}page_token=values.unset, page_number=values.unset, page_size=values.unset):
+        """
+        Retrieve a single page of {{instanceName}} records from the API.
+        Request is executed immediately
+        {{#allParams}}{{#startsWith paramName text='page_size'}}{{else}}
+        :param {{dataType}} {{paramName}}: {{{description}}}{{/startsWith}}{{/allParams}}
+        :param str page_token: PageToken provided by the API
+        :param int page_number: Page Number, this value is simply for client state
+        :param int page_size: Number of records to return, defaults to 50
+
+        :returns: Page of {{instanceName}}
+        :rtype: twilio.rest.{{domainPackage}}.{{apiVersion}}.{{apiFilename}}.{{apiName}}Page
+        """
+        data = values.of({ {{#allParams}}{{#startsWith paramName text='page_size'}}{{else}}
+            '{{baseName}}': {{paramName}},{{/startsWith}}{{/allParams}}
+            'PageToken': page_token,
+            'Page': page_number,
+            'PageSize': page_size,
+        })
+
+        response = self._version.page(method='GET', uri=self._uri, params=data)
+        return {{apiName}}Page(self._version, response, self._solution)
+
+    def get_page(self, target_url):
+        """
+        Retrieve a specific page of {{instanceName}} records from the API.
+        Request is executed immediately
+
+        :param str target_url: API-generated URL for the requested results page
+
+        :returns: Page of {{instanceName}}
+        :rtype: twilio.rest.{{domainPackage}}.{{apiVersion}}.{{apiFilename}}.{{apiName}}Page
+        """
+        response = self._version.domain.twilio.request(
+            'GET',
+            target_url
+        )
+        return {{apiName}}Page(self._version, response, self._solution)
+{{/vendorExtensions.x-is-read-operation}}{{/operations}}
