@@ -13,51 +13,55 @@
 #
 
 module Twilio
-    module REST
-        class Api
-            class V2010 < Version
-                ##
-                # Initialize the V2010 version of Api
-                def initialize(domain)
-                    super
-                    @version = '2010-04-01'
-                    @accounts = nil
-                end
-
-                ##
-                # Account provided as the authenticating account
-                def account
-                    @account ||= AccountContext.new(self, @domain.client.account_sid)
-                end
-
-                ##
-                # Setter to override the primary account
-                def account=(value)
-                    @account = value
-                end
-                def calls(test_integer =:unset)
-                    self.account.calls(test_integer)
-                end
-                ##
-                # @param [String] sid 
-                # @return [Twilio::REST::Api::V2010::AccountContext] if sid was passed.
-                # @return [Twilio::REST::Api::V2010::AccountList]
-                def accounts(sid=:unset)
-                    if sid.nil?
-                        raise ArgumentError, 'sid cannot be nil'
-                    end
-                    if sid == :unset
-                        @accounts ||= AccountList.new self
-                    else
-                        AccountContext.new(self, sid)
-                    end
-                end
-                ##
-                # Provide a user friendly representation
-                def to_s
-                    '<Twilio::REST::Api::V2010>';
-                end
-            end
+  module REST
+    class Api
+      class V2010 < Version
+        ##
+        # Initialize the V2010 version of Api
+        def initialize(domain)
+          super
+          @version = '2010-04-01'
+          @accounts = nil
         end
+
+        ##
+        # Account provided as the authenticating account
+        def account
+          @account ||= AccountContext.new(self, @domain.client.account_sid)
+        end
+
+        ##
+        # Setter to override the primary account
+        def account=(value)
+          @account = value
+        end
+
+        def calls(test_integer = :unset)
+          self.account.calls(test_integer)
+        end
+
+        ##
+        # @param [String] sid
+        # @return [Twilio::REST::Api::V2010::AccountContext] if sid was passed.
+        # @return [Twilio::REST::Api::V2010::AccountList]
+        def accounts(sid = :unset)
+          if sid.nil?
+            raise ArgumentError, 'sid cannot be nil'
+          end
+
+          if sid == :unset
+            @accounts ||= AccountList.new self
+          else
+            AccountContext.new(self, sid)
+          end
+        end
+
+        ##
+        # Provide a user friendly representation
+        def to_s
+          '<Twilio::REST::Api::V2010>';
+        end
+      end
     end
+  end
 end
