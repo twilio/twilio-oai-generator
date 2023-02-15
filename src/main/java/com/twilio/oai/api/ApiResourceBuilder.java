@@ -29,6 +29,8 @@ public abstract class ApiResourceBuilder implements IApiResourceBuilder {
     protected List<CodegenParameter> requiredPathParams = new ArrayList<>();
     protected Set<CodegenProperty> apiResponseModels = new LinkedHashSet<>();
     protected Map<String, Object> metaAPIProperties = new HashMap<>();
+    protected final List<CodegenOperation> listOperations = new ArrayList<>();
+    protected final List<CodegenOperation> instanceOperations = new ArrayList<>();
     protected String version = "";
     protected final String recordKey;
     protected String apiPath = "";
@@ -228,5 +230,22 @@ public abstract class ApiResourceBuilder implements IApiResourceBuilder {
                         contextResource.setParent(contextResource.getParent().replaceAll("\\\\Function\\\\", "\\\\TwilioFunction\\\\"));
                     return (Object) contextResource;
                 }).collect(Collectors.toList());
+    }
+
+    protected void categorizeOperations() {
+        codegenOperationList.stream().filter(operation -> !operation.vendorExtensions.containsKey("x-ignore")).forEach(codegenOperation -> {
+            Optional<String> pathType = Optional.ofNullable(codegenOperation.vendorExtensions.get("x-path-type").toString());
+            if (pathType.isPresent()) {
+                if (pathType.get().equals("list")) {
+                    listOperations.add(codegenOperation);
+                    codegenOperation.vendorExtensions.put("listOperation", true);
+                    metaAPIProperties.put("hasListOperation", true);
+                } else {
+                    instanceOperations.add(codegenOperation);
+                    codegenOperation.vendorExtensions.put("instanceOperation", true);
+                    metaAPIProperties.put("hasInstanceOperation", true);
+                }
+            }
+        });
     }
 }

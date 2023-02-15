@@ -88,11 +88,6 @@ public class TwilioRubyGenerator extends RubyClientCodegen {
         final OperationsMap results = super.postProcessOperationsWithModels(objs, allModels);
         final List<CodegenOperation> opList = directoryStructureService.processOperations(results);
         results.put("resources", generateResources(opList));
-        String[] parentDir = directoryStructureService.fetchParentDirectory(opList);
-        if (parentDir.length > 1) {
-            results.put("hasParents", "true");
-            results.put("parentDir", parentDir);
-        }
         return results;
     }
 

@@ -3,45 +3,34 @@
                     # Initialize the {{apiName}}List
                     # @param [Version] version Version that contains the resource
                     # @return [{{apiName}}List] {{apiName}}List
-                    def initialize(version{{#listPathParams}}, {{paramName}}{{/listPathParams}})
+                    def initialize(version{{#listPathParams}}, {{paramName}}: nil{{/listPathParams}})
                         super(version)
                         # Path Solution
                         @solution = { {{#listPathParams}}{{paramName}}: {{paramName}},{{/listPathParams}} }
                         {{#listPath}}@uri = "{{listPath}}"{{/listPath}}
-                        {{#componentContextClasses}}#Components{{/componentContextClasses}}
-                        {{#componentContextClasses}}
+                        {{#metaProperties.listImportProperties.0}}# Components{{/metaProperties.listImportProperties.0}}{{^metaProperties.listImportProperties}}{{#metaProperties.listImportMethods.0}}# Components{{/metaProperties.listImportMethods.0}}{{/metaProperties.listImportProperties}}
+                        {{#metaProperties.listImportProperties}}
                         @{{mountName}} = nil
-                        {{/componentContextClasses}}
+                        {{/metaProperties.listImportProperties}}
+                        {{#metaProperties.listImportMethods}}
+                        @{{mountName}} = nil
+                        {{/metaProperties.listImportMethods}}
                     end
-                {{#operations}}{{#vendorExtensions.x-is-create-operation}}{{#hasParams}}
-                    ##
-                    # Create the {{apiName}}Instance
-                    {{#allParams}}
-                    # @param [{{dataType}}] {{paramName}} {{description}}
-                    {{/allParams}}
-                    # @return [{{apiName}}Instance] Created {{apiName}}Instance
-                    def create({{#allParams}}{{>params}}{{/allParams}})
-                        data = Twilio::Values.of(
-                            {{#allParams}}{{^vendorExtensions.x-serialize}}
-                            '{{{baseName}}}' => {{paramName}},
-                            {{/vendorExtensions.x-serialize}}{{#vendorExtensions.x-serialize}}
-                            '{{{baseName}}}' =>  {{vendorExtensions.x-serialize}}({{paramName}}) { |e| e },
-                            {{/vendorExtensions.x-serialize}}
-                        {{/allParams}}
-                        })
-
-                        payload = @version.create('POST', @uri, data: data)
-
-                        {{apiName}}Instance.new(@version, payload, {{#listPathParams}} {{paramName}}: @solution[:{{paramName}}],{{/listPathParams}})
-                    end
-                    {{/hasParams}}{{/vendorExtensions.x-is-create-operation}}{{/operations}}
-                    {{#operations}}{{#vendorExtensions.x-is-read-operation}}
+                {{#apiOperations}}
+                {{#vendorExtensions.listOperation}}
+                {{^vendorExtensions.x-is-read-operation}}
+{{>methods}}
+{{>contextMethodParams}}
+                {{/vendorExtensions.x-is-read-operation}}
+                {{/vendorExtensions.listOperation}}
+                {{/apiOperations}}
+                {{#operations}}{{#vendorExtensions.x-is-read-operation}}
                     ##
                     # Lists {{apiName}}Instance records from the API as a list.
                     # Unlike stream(), this operation is eager and will load `limit` records into
                     # memory before returning.
                     {{#readParams}}
-                    # @param [{{dataType}}] {{paramName}} {{description}}
+                    # @param [{{dataType}}] {{paramName}} {{{description}}}
                     {{/readParams}}
                     # @param [Integer] limit Upper limit for the number of records to return. stream()
                     #    guarantees to never return more than limit.  Default is no limit
@@ -50,7 +39,7 @@
                     #    but a limit is defined, stream() will attempt to read the limit with the most
                     #    efficient page size, i.e. min(limit, 1000)
                     # @return [Array] Array of up to limit results
-                    def list({{#readParams}}{{>params}}{{/readParams}} limit: nil, page_size: nil)
+                    def list({{#readParams.0}}{{#readParams}}{{>params}}{{/readParams}}, {{/readParams.0}}limit: nil, page_size: nil)
                         self.stream(
                     {{#readParams}}
                             {{paramName}}: {{paramName}},
@@ -65,7 +54,7 @@
                     # This operation lazily loads records as efficiently as possible until the limit
                     # is reached.
                     {{#readParams}}
-                    # @param [{{dataType}}] {{paramName}} {{description}}
+                    # @param [{{dataType}}] {{paramName}} {{{description}}}
                     {{/readParams}}
                     # @param [Integer] limit Upper limit for the number of records to return. stream()
                     #    guarantees to never return more than limit.  Default is no limit
@@ -74,7 +63,7 @@
                     #    but a limit is defined, stream() will attempt to read the limit with the most
                     #    efficient page size, i.e. min(limit, 1000)
                     # @return [Enumerable] Enumerable that will yield up to limit results
-                    def stream({{#readParams}}{{>params}}{{/readParams}} limit: nil, page_size: nil)
+                    def stream({{#readParams.0}}{{#readParams}}{{>params}}{{/readParams}}, {{/readParams.0}}limit: nil, page_size: nil)
                         limits = @version.read_limits(limit, page_size)
 
                         page = self.page(
@@ -104,13 +93,13 @@
                     # Retrieve a single page of {{apiName}}Instance records from the API.
                     # Request is executed immediately.
                     {{#readParams}}
-                    # @param [{{dataType}}] {{paramName}} {{description}}
+                    # @param [{{dataType}}] {{paramName}} {{{description}}}
                     {{/readParams}}
                     # @param [String] page_token PageToken provided by the API
                     # @param [Integer] page_number Page Number, this value is simply for client state
                     # @param [Integer] page_size Number of records to return, defaults to 50
                     # @return [Page] Page of {{apiName}}Instance
-                    def page({{#readParams}}{{>params}}{{/readParams}} page_token: :unset, page_number: :unset, page_size: :unset)
+                    def page({{#readParams.0}}{{#readParams}}{{>params}}{{/readParams}}, {{/readParams.0}}page_token: :unset, page_number: :unset, page_size: :unset)
                         params = Twilio::Values.of({
                             {{#readParams}}{{^vendorExtensions.x-serialize}}
                             '{{{baseName}}}' => {{paramName}},
@@ -140,24 +129,41 @@
                     {{apiName}}Page.new(@version, response, @solution)
                     end
                     {{/vendorExtensions.x-is-read-operation}}{{/operations}}
-                    ##
-                {{#componentContextClasses}}
+
+                {{#metaProperties.listImportProperties}}
                 ##
                 # Access the {{mountName}}
-                # @return [{{#lambda.titlecase}}{{mountName}}{{/lambda.titlecase}}List]
-                # @return [{{#lambda.titlecase}}{{mountName}}{{/lambda.titlecase}}Context] if sid was passed.
-                def {{mountName}}({{#params}}{{#lambda.snakecase}}{{.}}{{/lambda.snakecase}}=:unset{{/params}})
+                # @return [{{#lambda.titlecase}}{{#lambda.camelcase}}{{filename}}{{/lambda.camelcase}}{{/lambda.titlecase}}List]
+                # @return [{{#lambda.titlecase}}{{#lambda.camelcase}}{{filename}}{{/lambda.camelcase}}{{/lambda.titlecase}}Context]
+                def {{mountName}}
+                    @{{mountName}} ||= {{#lambda.titlecase}}{{#lambda.camelcase}}{{filename}}{{/lambda.camelcase}}{{/lambda.titlecase}}List.new(@version{{#listPathParams}}, {{paramName}}: @solution[:{{paramName}}]{{/listPathParams}} )
+                end
+                {{/metaProperties.listImportProperties}}
+                {{#metaProperties.listImportMethods}}
+                ##
+                # Access the {{mountName}}
+                {{#params}}
+                # @return [{{#lambda.titlecase}}{{#lambda.camelcase}}{{filename}}{{/lambda.camelcase}}{{/lambda.titlecase}}List]
+                # @return [{{#lambda.titlecase}}{{#lambda.camelcase}}{{filename}}{{/lambda.camelcase}}{{/lambda.titlecase}}Context] if sid was passed.
+                def {{mountName}}{{#params.0}}({{#params}}{{#lambda.snakecase}}{{.}}{{/lambda.snakecase}}=:unset{{/params}}){{/params.0}}
                 {{#params}}
                     raise ArgumentError, '{{#lambda.snakecase}}{{.}}{{/lambda.snakecase}} cannot be nil' if {{#lambda.snakecase}}{{.}}{{/lambda.snakecase}}.nil?
                 {{/params}}
 
                     if {{#params}}{{#lambda.snakecase}}{{.}}{{/lambda.snakecase}} != :unset{{/params}}
-                        return {{#lambda.titlecase}}{{mountName}}{{/lambda.titlecase}}Context.new(@version{{#listPathParams}}, @solution[:{{paramName}}]{{/listPathParams}}{{#params}},{{#lambda.snakecase}}{{.}}{{/lambda.snakecase}} {{/params}})
+                        return {{#lambda.titlecase}}{{#lambda.camelcase}}{{filename}}{{/lambda.camelcase}}{{/lambda.titlecase}}Context.new(@version{{#listPathParams}}, @solution[:{{paramName}}]{{/listPathParams}}{{#params}},{{#lambda.snakecase}}{{.}}{{/lambda.snakecase}} {{/params}})
                     end
 
-                    @{{mountName}} ||= {{#lambda.titlecase}}{{mountName}}{{/lambda.titlecase}}List.new(@version{{#listPathParams}}, {{paramName}}: @solution[:{{paramName}}]{{/listPathParams}} )
+                    @{{mountName}} ||= {{#lambda.titlecase}}{{#lambda.camelcase}}{{filename}}{{/lambda.camelcase}}{{/lambda.titlecase}}List.new(@version{{#listPathParams}}, {{paramName}}: @solution[:{{paramName}}]{{/listPathParams}} )
                 end
-                {{/componentContextClasses}}
+                {{/params}}
+                {{^params}}
+                # @return [{{#lambda.titlecase}}{{#lambda.camelcase}}{{filename}}{{/lambda.camelcase}}{{/lambda.titlecase}}Context]
+                def {{mountName}}
+                   return  {{#lambda.titlecase}}{{#lambda.camelcase}}{{filename}}{{/lambda.camelcase}}{{/lambda.titlecase}}Context.new(@version{{#listPathParams}}, @solution[:{{paramName}}]{{/listPathParams}})
+                end
+                {{/params}}
+                {{/metaProperties.listImportMethods}}
 
                     # Provide a user friendly representation
                     def to_s

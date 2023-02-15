@@ -1618,7 +1618,7 @@ namespace Twilio.Tests.Rest
              Assert.AreEqual(Serializers.DateTimeIso8601(testDateTime), param.Single((x) => x.Key == "TestDateTime").Value);
              Assert.AreEqual(testEnum.ToString(), param.Single((x) => x.Key == "TestEnum").Value);
 
-             var testObjectData = testObject.ToString();
+             var testObjectData = Serializers.JsonObject(testObject);
              var testObjectDataRetieved = param.Single((x) => x.Key == "TestObject").Value;
              Assert.AreEqual(testObjectData, testObjectDataRetieved);
 

@@ -10,15 +10,20 @@
                     # @return [{{apiName}}Instance] {{apiName}}Instance
                     def initialize(version{{#responseModel}}{{#hasVars}}, payload{{/hasVars}}{{/responseModel}} {{#requiredPathParams}}, {{paramName}}: nil{{/requiredPathParams}})
                         super(version)
-                        {{#responseModel}}{{#hasVars}}# Marshaled Properties
-                        @properties = { {{/hasVars}}{{/responseModel}}
-                            {{#responseModel}}{{#vars}}'{{name}}' => {{{vendorExtensions.instance-property}}},
-                            {{/vars}}{{/responseModel}}{{#responseModel}}{{#hasVars}} } {{/hasVars}}{{/responseModel}}
+                        {{#responseModel}}{{#hasVars}}
+                        # Marshaled Properties
+                        @properties = { {{/hasVars}}{{/responseModel}}{{#responseModel}}{{#vars}}
+                            '{{name}}' => {{{vendorExtensions.instance-property}}},{{/vars}}{{/responseModel}}{{#responseModel}}{{#hasVars}}
+                        }{{/hasVars}}{{/responseModel}}
+                        {{#metaProperties.x-is-context-operation}}
+
                         # Context
                         @instance_context = nil
                         @params = { {{#requiredPathParams}}'{{paramName}}' => {{paramName}} {{#vendorExtensions.isInstanceParam}} || @properties['{{paramName}}'] {{/vendorExtensions.isInstanceParam}} ,{{/requiredPathParams}} }
+                        {{/metaProperties.x-is-context-operation}}
                     end
 
+                    {{#metaProperties.x-is-context-operation}}
                     ##
                     # Generate an instance context for the instance, the context is capable of
                     # performing various actions.  All instance actions are proxied to the context
@@ -29,60 +34,58 @@
                         end
                         @instance_context
                     end
+                    {{/metaProperties.x-is-context-operation}}
                     {{#responseModel}}{{#vars}}
                     ##
-                    # @return [{{{dataType}}}] {{description}}
+                    # @return [{{{dataType}}}] {{{description}}}
                     def {{name}}
                         @properties['{{name}}']
                     end
                     {{/vars}}{{/responseModel}}
-                    {{#operations}}{{#vendorExtensions.x-is-delete-operation}}
-                    ##
-                    # Delete the {{apiName}}Instance
-                    # @return [Boolean] true if delete succeeds, false otherwise
-                    def delete
-                        context.delete
+                    {{#apiOperations}}
+{{#vendorExtensions.instanceOperation}}{{>methods}}
+                        context.{{#lambda.camelcase}}{{vendorExtensions.x-name}}{{/lambda.camelcase}}{{#hasParams}}({{#queryParams}}
+                            {{paramName}}: {{paramName}}, {{/queryParams}}{{#formParams}}
+                            {{paramName}}: {{paramName}}, {{/formParams}}{{#headerParams}}
+                            {{paramName}}: {{paramName}}, {{/headerParams}}
+                        ){{/hasParams}}
                     end
-                    {{/vendorExtensions.x-is-delete-operation}}{{/operations}}
-                    {{#operations}}{{#vendorExtensions.x-is-fetch-operation}}
-                    ##
-                    # Fetch the {{apiName}}Instance
-                    # @return [{{apiName}}Instance] Fetched {{apiName}}Instance
-                    def fetch
-                        context.fetch
-                    end
-                    {{/vendorExtensions.x-is-fetch-operation}}{{/operations}}
-                    {{#operations}}{{#vendorExtensions.x-is-update-operation}}
-                    ##
-                    # Update the {{apiName}}Instance
-                    {{#allParams}}
-                    # @param [{{dataType}}] {{paramName}} {{description}}
-                    {{/allParams}}
-                    # @return [{{apiName}}Instance] Updated {{apiName}}Instance
-                    def update({{#allParams}}{{paramName}}: :unset {{vendorExtensions.separator}} {{/allParams}})
-                        context.update({{#allParams}}
-                            {{paramName}}: {{paramName}}, {{/allParams}})
-                     end
-                    {{/vendorExtensions.x-is-update-operation}}{{/operations}}
-                    {{#dependents}}
+
+{{/vendorExtensions.instanceOperation}}
+                {{/apiOperations}}
+                    {{#metaProperties.contextImportProperties}}
                     ##
                     # Access the {{mountName}}
                     # @return [{{mountName}}] {{mountName}}
                     def {{mountName}}
                         context.{{mountName}}
                     end
-                    {{/dependents}}
+
+                    {{/metaProperties.contextImportProperties}}
+                    {{#metaProperties.contextImportMethods}}
+                    ##
+                    # Access the {{mountName}}
+                    # @return [{{mountName}}] {{mountName}}
+                    def {{mountName}}
+                        context.{{mountName}}
+                    end
+
+                    {{/metaProperties.contextImportMethods}}
                     ##
                     # Provide a user friendly representation
                     def to_s
+                        {{#metaProperties.x-is-context-operation}}
                         values = @params.map{|k, v| "#{k}: #{v}"}.join(" ")
-                        "<Twilio.{{domainName}}.{{apiVersionClass}}.{{apiName}}Instance #{values}>"
+                        {{/metaProperties.x-is-context-operation}}
+                        "<Twilio.{{domainName}}.{{apiVersionClass}}.{{apiName}}Instance{{#metaProperties.x-is-context-operation}} #{values}{{/metaProperties.x-is-context-operation}}>"
                     end
 
                     ##
                     # Provide a detailed, user friendly representation
                     def inspect
+                        {{#metaProperties.x-is-context-operation}}
                         values = @properties.map{|k, v| "#{k}: #{v}"}.join(" ")
-                        "<Twilio.{{domainName}}.{{apiVersionClass}}.{{apiName}}Instance #{values}>"
+                        {{/metaProperties.x-is-context-operation}}
+                        "<Twilio.{{domainName}}.{{apiVersionClass}}.{{apiName}}Instance{{#metaProperties.x-is-context-operation}} #{values}{{/metaProperties.x-is-context-operation}}>"
                     end
                 end

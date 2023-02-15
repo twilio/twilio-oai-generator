@@ -135,8 +135,8 @@ public abstract class FluentApiResourceBuilder extends ApiResourceBuilder {
                 .stream())
             .collect(Collectors.toList());
 
-        allResponseModels.stream().findFirst().ifPresent(fistModel -> {
-            responseModel = fistModel;
+        allResponseModels.stream().findFirst().ifPresent(firstModel -> {
+            responseModel = firstModel;
 
             allResponseModels.forEach(model -> {
                 codegenModelResolver.resolve(model);

@@ -9,7 +9,7 @@ __pycache__
 **/*.bak
 
 **/coverage*
-**/test-report.out
+**/*-report.out
 **/lcov.net451.opencover.xml
 
 **/execution-result.xml

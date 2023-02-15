@@ -8,7 +8,7 @@
                     # Initialize the {{apiName}}Context
                     # @param [Version] version Version that contains the resource
                     {{#instancePathParams}}
-                    # @param [{{dataType}}] {{paramName}} {{description}}
+                    # @param [{{dataType}}] {{paramName}} {{{description}}}
                     {{/instancePathParams}}
                     # @return [{{apiName}}Context] {{apiName}}Context
                     def initialize(version{{#instancePathParams}}, {{paramName}}{{/instancePathParams}})
@@ -20,10 +20,13 @@
                         @uri = "{{instancePath}}"
                         {{/instancePath}}
 
-                        # Dependents
+                        {{#metaProperties.contextImportProperties.0}}# Dependents{{/metaProperties.contextImportProperties.0}}{{^metaProperties.contextImportProperties}}{{#metaProperties.contextImportMethods.0}}# Dependents{{/metaProperties.contextImportMethods.0}}{{/metaProperties.contextImportProperties}}
                         {{#metaProperties.contextImportProperties}}
                         @{{mountName}} = nil
                         {{/metaProperties.contextImportProperties}}
+                        {{#metaProperties.contextImportMethods}}
+                        @{{mountName}} = nil
+                        {{/metaProperties.contextImportMethods}}
                     end
                     {{#apiOperations}}
                     {{#vendorExtensions.instanceOperation}}
@@ -31,27 +34,59 @@
 {{>contextMethodParams}}
                     {{/vendorExtensions.instanceOperation}}
                     {{/apiOperations}}
+                    {{#metaProperties.contextImportProperties}}
+                    ##
+                    # Access the {{mountName}}
+                    # @return [{{#lambda.titlecase}}{{#lambda.camelcase}}{{filename}}{{/lambda.camelcase}}{{/lambda.titlecase}}List]
+                    # @return [{{#lambda.titlecase}}{{#lambda.camelcase}}{{filename}}{{/lambda.camelcase}}{{/lambda.titlecase}}Context]
+                    def {{mountName}}
+                      unless @{{mountName}}
+                        @{{mountName}} = {{#lambda.titlecase}}{{#lambda.camelcase}}{{filename}}{{/lambda.camelcase}}{{/lambda.titlecase}}List.new(
+                                @version{{#requiredPathParams}},{{^-last}}
+                                {{paramName}}: @solution[:{{paramName}}]{{/-last}}{{#-last}}
+                                {{#lambda.snakecase}}{{apiName}}{{/lambda.snakecase}}_{{paramName}}: @solution[:{{paramName}}]
+                                {{/-last}}{{/requiredPathParams}}
+                                )
+                      end
+
+                      @{{mountName}}
+                    end
+                    {{/metaProperties.contextImportProperties}}
                     {{#metaProperties.contextImportMethods}}
                     ##
                     # Access the {{mountName}}
-                    # @return [{{#lambda.titlecase}}{{mountName}}{{/lambda.titlecase}}List]
-                    # @return [{{#lambda.titlecase}}{{filename}}{{/lambda.titlecase}}Context] if sid was passed.
-                    def {{mountName}}({{#params}}{{#lambda.snakecase}}{{.}}{{/lambda.snakecase}}=:unset{{/params}})
-                        {{#params}}
+                    # @return [{{#lambda.titlecase}}{{#lambda.camelcase}}{{filename}}{{/lambda.camelcase}}{{/lambda.titlecase}}List]
+                    {{#params}}
+                    # @return [{{#lambda.titlecase}}{{#lambda.camelcase}}{{filename}}{{/lambda.camelcase}}{{/lambda.titlecase}}Context] if sid was passed.
+                    def {{mountName}}({{#params}}{{#lambda.snakecase}}{{.}}{{/lambda.snakecase}}=:unset{{^-last}}, {{/-last}}{{/params}})
+
                         raise ArgumentError, '{{#lambda.snakecase}}{{.}}{{/lambda.snakecase}} cannot be nil' if {{#lambda.snakecase}}{{.}}{{/lambda.snakecase}}.nil?
-                        {{/params}}
-                        if {{#params}}{{#lambda.snakecase}}{{.}}{{/lambda.snakecase}} != :unset{{/params}}
-                            return {{#lambda.titlecase}}{{mountName}}{{/lambda.titlecase}}Context.new(@version{{#listPathParams}}, @solution[:{{paramName}}]{{/listPathParams}}{{#params}},{{#lambda.snakecase}}{{.}}{{/lambda.snakecase}} {{/params}})
+
+                        if {{#lambda.snakecase}}{{.}}{{/lambda.snakecase}} != :unset
+                            return {{#lambda.titlecase}}{{#lambda.camelcase}}{{filename}}{{/lambda.camelcase}}{{/lambda.titlecase}}Context.new(@version{{#requiredPathParams}}, @solution[:{{paramName}}]{{/requiredPathParams}}{{#params}},{{#lambda.snakecase}}{{.}}{{/lambda.snakecase}} {{/params}})
                         end
+
                         unless @{{mountName}}
-                            @{{mountName}} = {{#lambda.titlecase}}{{filename}}{{/lambda.titlecase}}List.new(
-                                @version{{#listPathParams}},
-                                {{paramName}}: @solution[:{{paramName}}],{{/listPathParams}}
+                            @{{mountName}} = {{#lambda.titlecase}}{{#lambda.camelcase}}{{filename}}{{/lambda.camelcase}}{{/lambda.titlecase}}List.new(
+                                @version{{#requiredPathParams}},{{^-last}}
+                                {{paramName}}: @solution[:{{paramName}}]{{/-last}}{{#-last}}
+                                {{#lambda.snakecase}}{{apiName}}{{/lambda.snakecase}}_{{paramName}}: @solution[:{{paramName}}]
+                                {{/-last}}{{/requiredPathParams}}
                                 )
                         end
 
                      @{{mountName}}
                     end
+                    {{/params}}
+                    {{^params}}
+                    # @return [{{#lambda.titlecase}}{{#lambda.camelcase}}{{filename}}{{/lambda.camelcase}}{{/lambda.titlecase}}Context]
+                    def {{mountName}}
+                        {{#lambda.titlecase}}{{#lambda.camelcase}}{{filename}}{{/lambda.camelcase}}{{/lambda.titlecase}}Context.new(
+                                @version{{#requiredPathParams}},
+                                @solution[:{{paramName}}]{{/requiredPathParams}}
+                                )
+                    end
+                    {{/params}}
                     {{/metaProperties.contextImportMethods}}
 
                     ##
