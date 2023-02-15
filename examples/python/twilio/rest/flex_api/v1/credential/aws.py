@@ -16,6 +16,7 @@
 from twilio.base import deserialize
 from twilio.base import serialize
 from twilio.base import values
+from twilio.base.instance_context import InstanceContext
 from twilio.base.instance_resource import InstanceResource
 from twilio.base.list_resource import ListResource
 from twilio.base.version import Version
@@ -24,6 +25,7 @@ from twilio.rest.flex_api.v1.aws.history import HistoryList
 
 
 class AwsList(ListResource):
+
     def __init__(self, version: Version):
         """
         Initialize the AwsList
@@ -39,6 +41,10 @@ class AwsList(ListResource):
         self._uri = '/Credentials/AWS'.format(**self._solution)
 
 
+    
+    
+    
+    
     def stream(self, limit=None, page_size=None):
         """
         Streams AwsInstance records from the API as a generator stream.
@@ -122,7 +128,6 @@ class AwsList(ListResource):
         return AwsPage(self._version, response, self._solution)
 
 
-
     def __repr__(self):
         """
         Provide a friendly representation
@@ -130,6 +135,53 @@ class AwsList(ListResource):
         :rtype: str
         """
         return '<Twilio.FlexApi.V1.AwsList>'
+
+
+
+
+
+
+
+
+class AwsPage(Page):
+
+    def __init__(self, version, response, solution):
+        """
+        Initialize the AwsPage
+
+        :param Version version: Version that contains the resource
+        :param Response response: Response from the API
+
+        :returns: twilio.rest.flex_api.v1.aws.AwsPage
+        :rtype: twilio.rest.flex_api.v1.aws.AwsPage
+        """
+        super().__init__(version, response)
+
+        # Path solution
+        self._solution = solution
+
+    def get_instance(self, payload):
+        """
+        Build an instance of AwsInstance
+
+        :param dict payload: Payload response from the API
+
+        :returns: twilio.rest.flex_api.v1.aws.AwsInstance
+        :rtype: twilio.rest.flex_api.v1.aws.AwsInstance
+        """
+        return AwsInstance(self._version, payload)
+
+    def __repr__(self):
+        """
+        Provide a friendly representation
+
+        :returns: Machine friendly representation
+        :rtype: str
+        """
+        return '<Twilio.FlexApi.V1.AwsPage>'
+
+
+
 
 
 class AwsContext(InstanceContext):
@@ -190,7 +242,7 @@ class AwsContext(InstanceContext):
         :returns: Machine friendly representation
         :rtype: str
         """
-        return '<Twilio.Api.V1.AwsContext>'
+        return '<Twilio.FlexApi.V1.AwsContext>'
 
 
 
@@ -230,55 +282,7 @@ class AwsInstance(InstanceResource):
         :rtype: str
         """
         context = ' '.join('{}={}'.format(k, v) for k, v in self._solution.items())
-        return '<Twilio.Api.V1.AwsInstance {}>'.format(context)
-
-
-
-
-
-
-
-
-
-
-class AwsPage(Page):
-
-    def __init__(self, version, response, solution):
-        """
-        Initialize the AwsPage
-
-        :param Version version: Version that contains the resource
-        :param Response response: Response from the API
-
-        :returns: twilio.rest.flex_api.v1.aws.AwsPage
-        :rtype: twilio.rest.flex_api.v1.aws.AwsPage
-        """
-        super().__init__(version, response)
-
-        # Path solution
-        self._solution = solution
-
-    def get_instance(self, payload):
-        """
-        Build an instance of AwsInstance
-
-        :param dict payload: Payload response from the API
-
-        :returns: twilio.rest.flex_api.v1.aws.AwsInstance
-        :rtype: twilio.rest.flex_api.v1.aws.AwsInstance
-        """
-        return AwsInstance(self._version, payload, sid=self._solution['sid'])
-
-    def __repr__(self):
-        """
-        Provide a friendly representation
-
-        :returns: Machine friendly representation
-        :rtype: str
-        """
-        return '<Twilio.FlexApi.V1.AwsPage>'
-
-
+        return '<Twilio.FlexApi.V1.AwsInstance {}>'.format(context)
 
 
 

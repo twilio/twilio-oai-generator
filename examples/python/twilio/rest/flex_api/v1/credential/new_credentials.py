@@ -16,6 +16,7 @@
 from twilio.base import deserialize
 from twilio.base import serialize
 from twilio.base import values
+from twilio.base.instance_context import InstanceContext
 from twilio.base.instance_resource import InstanceResource
 from twilio.base.list_resource import ListResource
 from twilio.base.version import Version
@@ -23,6 +24,7 @@ from twilio.base.version import Version
 
 
 class NewCredentialsList(ListResource):
+
     def __init__(self, version: Version):
         """
         Initialize the NewCredentialsList
@@ -38,6 +40,7 @@ class NewCredentialsList(ListResource):
         self._uri = '/Credentials/AWS'.format(**self._solution)
 
 
+    
 
     def __repr__(self):
         """
@@ -82,8 +85,7 @@ class NewCredentialsInstance(InstanceResource):
         :rtype: str
         """
         context = ' '.join('{}={}'.format(k, v) for k, v in self._solution.items())
-        return '<Twilio.Api.V1.NewCredentialsInstance {}>'.format(context)
-
+        return '<Twilio.FlexApi.V1.NewCredentialsInstance {}>'.format(context)
 
 
 

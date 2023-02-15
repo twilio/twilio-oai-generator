@@ -16,6 +16,7 @@
 from twilio.base import deserialize
 from twilio.base import serialize
 from twilio.base import values
+from twilio.base.instance_context import InstanceContext
 from twilio.base.instance_resource import InstanceResource
 from twilio.base.list_resource import ListResource
 from twilio.base.version import Version
@@ -24,6 +25,7 @@ from twilio.rest.api.v2010.account.calls import CallList
 
 
 class AccountList(ListResource):
+
     def __init__(self, version: Version):
         """
         Initialize the AccountList
@@ -39,6 +41,11 @@ class AccountList(ListResource):
         self._uri = '/Accounts.json'.format(**self._solution)
 
 
+    
+    
+    
+    
+    
     def stream(self, date_created=values.unset, date_test=values.unset, date_created_before=values.unset, date_created_after=values.unset, limit=None, page_size=None):
         """
         Streams AccountInstance records from the API as a generator stream.
@@ -146,7 +153,6 @@ class AccountList(ListResource):
         return AccountPage(self._version, response, self._solution)
 
 
-
     def __repr__(self):
         """
         Provide a friendly representation
@@ -154,6 +160,55 @@ class AccountList(ListResource):
         :rtype: str
         """
         return '<Twilio.Api.V2010.AccountList>'
+
+
+
+
+
+
+
+
+
+
+class AccountPage(Page):
+
+    def __init__(self, version, response, solution):
+        """
+        Initialize the AccountPage
+
+        :param Version version: Version that contains the resource
+        :param Response response: Response from the API
+
+        :returns: twilio.rest.api.v2010.account.AccountPage
+        :rtype: twilio.rest.api.v2010.account.AccountPage
+        """
+        super().__init__(version, response)
+
+        # Path solution
+        self._solution = solution
+
+    def get_instance(self, payload):
+        """
+        Build an instance of AccountInstance
+
+        :param dict payload: Payload response from the API
+
+        :returns: twilio.rest.api.v2010.account.AccountInstance
+        :rtype: twilio.rest.api.v2010.account.AccountInstance
+        """
+        return AccountInstance(self._version, payload)
+
+    def __repr__(self):
+        """
+        Provide a friendly representation
+
+        :returns: Machine friendly representation
+        :rtype: str
+        """
+        return '<Twilio.Api.V2010.AccountPage>'
+
+
+
 
 
 class AccountContext(InstanceContext):
@@ -267,56 +322,6 @@ class AccountInstance(InstanceResource):
         """
         context = ' '.join('{}={}'.format(k, v) for k, v in self._solution.items())
         return '<Twilio.Api.V2010.AccountInstance {}>'.format(context)
-
-
-
-
-
-
-
-
-
-
-
-
-class AccountPage(Page):
-
-    def __init__(self, version, response, solution):
-        """
-        Initialize the AccountPage
-
-        :param Version version: Version that contains the resource
-        :param Response response: Response from the API
-
-        :returns: twilio.rest.api.v2010.account.AccountPage
-        :rtype: twilio.rest.api.v2010.account.AccountPage
-        """
-        super().__init__(version, response)
-
-        # Path solution
-        self._solution = solution
-
-    def get_instance(self, payload):
-        """
-        Build an instance of AccountInstance
-
-        :param dict payload: Payload response from the API
-
-        :returns: twilio.rest.api.v2010.account.AccountInstance
-        :rtype: twilio.rest.api.v2010.account.AccountInstance
-        """
-        return AccountInstance(self._version, payload, sid=self._solution['sid'])
-
-    def __repr__(self):
-        """
-        Provide a friendly representation
-
-        :returns: Machine friendly representation
-        :rtype: str
-        """
-        return '<Twilio.Api.V2010.AccountPage>'
-
-
 
 
 

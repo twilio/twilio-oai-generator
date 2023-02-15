@@ -16,6 +16,7 @@
 from twilio.base import deserialize
 from twilio.base import serialize
 from twilio.base import values
+from twilio.base.instance_context import InstanceContext
 from twilio.base.instance_resource import InstanceResource
 from twilio.base.list_resource import ListResource
 from twilio.base.version import Version
@@ -23,6 +24,7 @@ from twilio.base.version import Version
 
 
 class HistoryList(ListResource):
+
     def __init__(self, version: Version, sid: str):
         """
         Initialize the HistoryList
@@ -39,6 +41,7 @@ class HistoryList(ListResource):
         self._uri = ''.format(**self._solution)
 
 
+    
 
     def __repr__(self):
         """
@@ -81,7 +84,7 @@ class HistoryContext(InstanceContext):
         :returns: Machine friendly representation
         :rtype: str
         """
-        return '<Twilio.Api.V1.HistoryContext>'
+        return '<Twilio.FlexApi.V1.HistoryContext>'
 
 
 
@@ -118,8 +121,7 @@ class HistoryInstance(InstanceResource):
         :rtype: str
         """
         context = ' '.join('{}={}'.format(k, v) for k, v in self._solution.items())
-        return '<Twilio.Api.V1.HistoryInstance {}>'.format(context)
-
+        return '<Twilio.FlexApi.V1.HistoryInstance {}>'.format(context)
 
 
 

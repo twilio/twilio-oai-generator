@@ -16,6 +16,7 @@
 from twilio.base import deserialize
 from twilio.base import serialize
 from twilio.base import values
+from twilio.base.instance_context import InstanceContext
 from twilio.base.instance_resource import InstanceResource
 from twilio.base.list_resource import ListResource
 from twilio.base.version import Version
@@ -25,6 +26,7 @@ from twilio.rest.flex_api.v1.credential.new_credentials import NewCredentialsLis
 
 
 class CredentialList(ListResource):
+
     def __init__(self, version: Version):
         """
         Initialize the CredentialList
@@ -52,7 +54,7 @@ class CredentialList(ListResource):
         :rtype: twilio.rest.flex_api.v1.credential.aws.AwsList
         """
         if self._aws is None:
-            self._aws = AwsList(self._version, account_sid=self._solution['account_sid'])
+            self._aws = AwsList(self._version)
         return self.aws
 
     @property
@@ -64,7 +66,7 @@ class CredentialList(ListResource):
         :rtype: twilio.rest.flex_api.v1.credential.new_credentials.NewCredentialsList
         """
         if self._new_credentials is None:
-            self._new_credentials = NewCredentialsList(self._version, account_sid=self._solution['account_sid'])
+            self._new_credentials = NewCredentialsList(self._version)
         return self.new_credentials
 
     def __repr__(self):
@@ -74,7 +76,6 @@ class CredentialList(ListResource):
         :rtype: str
         """
         return '<Twilio.FlexApi.V1.CredentialList>'
-
 
 
 

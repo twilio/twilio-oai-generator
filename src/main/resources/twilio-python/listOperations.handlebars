@@ -1,4 +1,5 @@
-{{#operations}}{{#vendorExtensions.x-is-read-operation}}
+{{#operations}}
+    {{#vendorExtensions.x-is-read-operation}}
     def stream(self, {{#allParams}}{{#startsWith paramName text='page_size'}}{{else}}{{paramName}}=values.unset, {{/startsWith}}{{/allParams}}limit=None, page_size=None):
         """
         Streams {{instanceName}} records from the API as a generator stream.

@@ -29,6 +29,11 @@ public class PythonApiResourceBuilder extends FluentApiResourceBuilder {
                 addOperationName(co, "Page");
             }
 
+            for (CodegenParameter cp : co.allParams) {
+                if (cp.paramName.equals("_from")) {
+                    cp.paramName = "from_";
+                }
+            }
         }
         return this;
     }

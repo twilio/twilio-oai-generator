@@ -16,6 +16,7 @@
 from twilio.base import deserialize
 from twilio.base import serialize
 from twilio.base import values
+from twilio.base.instance_context import InstanceContext
 from twilio.base.instance_resource import InstanceResource
 from twilio.base.list_resource import ListResource
 from twilio.base.version import Version
@@ -23,6 +24,7 @@ from twilio.base.version import Version
 
 
 class FleetList(ListResource):
+
     def __init__(self, version: Version):
         """
         Initialize the FleetList
@@ -38,6 +40,8 @@ class FleetList(ListResource):
         self._uri = '/Fleets'.format(**self._solution)
 
 
+    
+    
 
     def __repr__(self):
         """
@@ -80,7 +84,7 @@ class FleetContext(InstanceContext):
         :returns: Machine friendly representation
         :rtype: str
         """
-        return '<Twilio.Api.DeployedDevices.FleetContext>'
+        return '<Twilio.Versionless.DeployedDevices.FleetContext>'
 
 
 
@@ -116,8 +120,7 @@ class FleetInstance(InstanceResource):
         :rtype: str
         """
         context = ' '.join('{}={}'.format(k, v) for k, v in self._solution.items())
-        return '<Twilio.Api.DeployedDevices.FleetInstance {}>'.format(context)
-
+        return '<Twilio.Versionless.DeployedDevices.FleetInstance {}>'.format(context)
 
 
 

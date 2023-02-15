@@ -3,6 +3,7 @@
 from twilio.base import deserialize
 from twilio.base import serialize
 from twilio.base import values
+from twilio.base.instance_context import InstanceContext
 from twilio.base.instance_resource import InstanceResource
 from twilio.base.list_resource import ListResource
 from twilio.base.version import Version
@@ -11,6 +12,7 @@ from twilio.base.version import Version
 {{/dependents}}
 
 class {{apiName}}List(ListResource):
+
     def __init__(self, version: Version{{#listPathParams}}, {{paramName}}: {{{dataType}}}{{/listPathParams}}):
         """
         Initialize the {{apiName}}List
@@ -27,8 +29,7 @@ class {{apiName}}List(ListResource):
         self._uri = '{{listPath}}'.format(**self._solution)
 {{#dependents}}{{^instanceDependent}}
         self._{{mountName}} = None{{/instanceDependent}}{{/dependents}}
-{{#hasPaginationOperation}}{{>listOperations}}{{/hasPaginationOperation}}
-{{#dependents}}{{^instanceDependent}}
+{{>listOperations}}{{#dependents}}{{^instanceDependent}}
     @property
     def {{mountName}}(self):
         """
@@ -38,7 +39,7 @@ class {{apiName}}List(ListResource):
         :rtype: twilio.rest.{{domainPackage}}.{{apiVersion}}.{{apiFilename}}.{{mountName}}.{{resourceName}}List
         """
         if self._{{mountName}} is None:
-            self._{{mountName}} = {{resourceName}}List(self._version, account_sid=self._solution['account_sid'])
+            self._{{mountName}} = {{resourceName}}List(self._version{{#listPathParams}}, {{paramName}}=self._solution['{{paramName}}']{{/listPathParams}})
         return self.{{mountName}}
 {{/instanceDependent}}{{/dependents}}
     def __repr__(self):
@@ -48,7 +49,7 @@ class {{apiName}}List(ListResource):
         :rtype: str
         """
         return '<Twilio.{{domainName}}.{{apiVersionClass}}.{{apiName}}List>'
-
+{{#hasPaginationOperation}}{{>pagination}}{{/hasPaginationOperation}}
 {{#instancePath}}
 class {{apiName}}Context(InstanceContext):
     def __init__(self, version: Version{{#instancePathParams}}, {{paramName}}: {{{dataType}}}{{/instancePathParams}}):
@@ -96,7 +97,7 @@ class {{apiName}}Context(InstanceContext):
         :returns: Machine friendly representation
         :rtype: str
         """
-        return '<Twilio.Api.{{apiVersionClass}}.{{apiName}}Context>'
+        return '<Twilio.{{domainName}}.{{apiVersionClass}}.{{apiName}}Context>'
 
 {{/instancePath}}
 {{#responseModel}}
@@ -133,8 +134,7 @@ class {{apiName}}Instance(InstanceResource):
         :rtype: str
         """
         context = ' '.join('{}={}'.format(k, v) for k, v in self._solution.items())
-        return '<Twilio.Api.{{apiVersionClass}}.{{apiName}}Instance {}>'.format(context)
+        return '<Twilio.{{domainName}}.{{apiVersionClass}}.{{apiName}}Instance {}>'.format(context)
 
 {{/responseModel}}
-{{#hasPaginationOperation}}{{>pagination}}{{/hasPaginationOperation}}
 {{/resources}}

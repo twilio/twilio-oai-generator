@@ -16,6 +16,7 @@
 from twilio.base import deserialize
 from twilio.base import serialize
 from twilio.base import values
+from twilio.base.instance_context import InstanceContext
 from twilio.base.instance_resource import InstanceResource
 from twilio.base.list_resource import ListResource
 from twilio.base.version import Version
@@ -23,6 +24,7 @@ from twilio.base.page import Page
 
 
 class AssistantList(ListResource):
+
     def __init__(self, version: Version):
         """
         Initialize the AssistantList
@@ -38,6 +40,7 @@ class AssistantList(ListResource):
         self._uri = '/Assistants'.format(**self._solution)
 
 
+    
     def stream(self, limit=None, page_size=None):
         """
         Streams AssistantInstance records from the API as a generator stream.
@@ -121,7 +124,6 @@ class AssistantList(ListResource):
         return AssistantPage(self._version, response, self._solution)
 
 
-
     def __repr__(self):
         """
         Provide a friendly representation
@@ -129,9 +131,6 @@ class AssistantList(ListResource):
         :rtype: str
         """
         return '<Twilio.Versionless.Understand.AssistantList>'
-
-
-
 
 
 class AssistantPage(Page):
@@ -170,6 +169,8 @@ class AssistantPage(Page):
         :rtype: str
         """
         return '<Twilio.Versionless.Understand.AssistantPage>'
+
+
 
 
 

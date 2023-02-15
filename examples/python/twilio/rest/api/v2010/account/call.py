@@ -16,6 +16,7 @@
 from twilio.base import deserialize
 from twilio.base import serialize
 from twilio.base import values
+from twilio.base.instance_context import InstanceContext
 from twilio.base.instance_resource import InstanceResource
 from twilio.base.list_resource import ListResource
 from twilio.base.version import Version
@@ -24,6 +25,7 @@ from twilio.rest.api.v2010.call.feedback_call_summary import FeedbackCallSummary
 
 
 class CallList(ListResource):
+
     def __init__(self, version: Version, account_sid: str):
         """
         Initialize the CallList
@@ -41,6 +43,9 @@ class CallList(ListResource):
 
         self._feedback_call_summary = None
 
+    
+    
+    
 
     @property
     def feedback_call_summary(self):
@@ -157,7 +162,6 @@ class CallInstance(InstanceResource):
         """
         context = ' '.join('{}={}'.format(k, v) for k, v in self._solution.items())
         return '<Twilio.Api.V2010.CallInstance {}>'.format(context)
-
 
 
 
