@@ -209,7 +209,7 @@ paths:
                 account_response:
                   summary: Example of Call Recordings
                   value:
-                    end: 5,
+                    end: 5
                     first_page_uri: http://example.com/page1
                     next_page_uri: http://example.com/page2
                     page: 1
@@ -218,7 +218,7 @@ paths:
                     accounts:
                       - test_string: Ahoy
                       - test_string: Matey
-                    start: 0,
+                    start: 0
                     uri: http://example.com
           description: OK
       security:
@@ -520,12 +520,10 @@ paths:
               examples:
                 custom_type_response_example:
                   summary: Example of a Feedback Summary
-                  value: {
-                    "test_array_of_objects": [ {
-                      "count": 4,
-                      "description": "issue description",
-                    } ],
-                  }
+                  value:
+                    test_array_of_objects:
+                      - count: 4
+                        description: issue description
           description: Created
       security:
         - accountSid_authToken: [ ]
