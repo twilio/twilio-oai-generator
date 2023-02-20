@@ -42,6 +42,7 @@ module Twilio
                     end
                 end
 
+
                 class HistoryContext < InstanceContext
                     ##
                     # Initialize the HistoryContext
@@ -193,10 +194,11 @@ module Twilio
                     ##
                     # Provide a detailed, user friendly representation
                     def inspect
-                        values = @properties.map{|k, v| "#{k}: #{v}"}.join(" ")
+                        values = @properties.map{|k, v| "#{k}: #{v}"}.join(',')
                         "<Twilio.FlexApi.V1.HistoryInstance #{values}>"
                     end
                 end
+
              end
              end
             end

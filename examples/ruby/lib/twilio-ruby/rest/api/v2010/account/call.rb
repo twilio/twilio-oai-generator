@@ -44,7 +44,7 @@ module Twilio
 						test_array_of_strings: :unset,
 						test_array_of_uri: :unset
 					)
-                        data = Twilio::Values.of(
+                        data = Twilio::Values.of({
                             
                             'RequiredStringProperty' => required_string_property,
                             
@@ -68,6 +68,7 @@ module Twilio
                         '#<Twilio.Api.V2010.CallList>'
                     end
                 end
+
 
                 class CallContext < InstanceContext
                     ##
@@ -341,10 +342,11 @@ module Twilio
                     ##
                     # Provide a detailed, user friendly representation
                     def inspect
-                        values = @properties.map{|k, v| "#{k}: #{v}"}.join(" ")
+                        values = @properties.map{|k, v| "#{k}: #{v}"}.join(',')
                         "<Twilio.Api.V2010.CallInstance #{values}>"
                     end
                 end
+
              end
             end
         end

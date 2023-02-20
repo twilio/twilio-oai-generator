@@ -39,6 +39,7 @@ module Twilio
                     end
                 end
 
+
                 class CallContext < InstanceContext
                     ##
                     # Initialize the CallContext
@@ -151,7 +152,8 @@ module Twilio
                     
                     ##
                     # Update the CallInstance
-                    # @return [CallInstance] Updated CallInstance
+                    # @return [CallInstance]
+                    # Updated CallInstance
                     def update()
                         context.update()
                      end
@@ -166,10 +168,11 @@ module Twilio
                     ##
                     # Provide a detailed, user friendly representation
                     def inspect
-                        values = @properties.map{|k, v| "#{k}: #{v}"}.join(" ")
+                        values = @properties.map{|k, v| "#{k}: #{v}"}.join(',')
                         "<Twilio.FlexApi.V1.CallInstance #{values}>"
                     end
                 end
+
             end
         end
     end

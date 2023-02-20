@@ -42,6 +42,7 @@ module Twilio
                     end
                 end
 
+
                 class FeedbackCallSummaryContext < InstanceContext
                     ##
                     # Initialize the FeedbackCallSummaryContext
@@ -272,7 +273,8 @@ module Twilio
                     # @param [Date] end_date 
                     # @param [Date] start_date 
                     # @param [String] account_sid 
-                    # @return [FeedbackCallSummaryInstance] Updated FeedbackCallSummaryInstance
+                    # @return [FeedbackCallSummaryInstance]
+                    # Updated FeedbackCallSummaryInstance
                     def update(end_date: :unset , start_date: :unset , account_sid: :unset  )
                         context.update(
                             end_date: end_date, 
@@ -290,10 +292,11 @@ module Twilio
                     ##
                     # Provide a detailed, user friendly representation
                     def inspect
-                        values = @properties.map{|k, v| "#{k}: #{v}"}.join(" ")
+                        values = @properties.map{|k, v| "#{k}: #{v}"}.join(',')
                         "<Twilio.Api.V2010.FeedbackCallSummaryInstance #{values}>"
                     end
                 end
+
              end
              end
             end

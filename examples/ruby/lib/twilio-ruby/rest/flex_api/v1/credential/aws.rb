@@ -126,6 +126,7 @@ module Twilio
                     end
                 end
 
+
                 class AwsContext < InstanceContext
                     ##
                     # Initialize the AwsContext
@@ -317,7 +318,8 @@ module Twilio
                     # Update the AwsInstance
                     # @param [String] test_string 
                     # @param [Boolean] test_boolean 
-                    # @return [AwsInstance] Updated AwsInstance
+                    # @return [AwsInstance]
+                    # Updated AwsInstance
                     def update(test_string: :unset , test_boolean: :unset  )
                         context.update(
                             test_string: test_string, 
@@ -340,10 +342,11 @@ module Twilio
                     ##
                     # Provide a detailed, user friendly representation
                     def inspect
-                        values = @properties.map{|k, v| "#{k}: #{v}"}.join(" ")
+                        values = @properties.map{|k, v| "#{k}: #{v}"}.join(',')
                         "<Twilio.FlexApi.V1.AwsInstance #{values}>"
                     end
                 end
+
              end
             end
         end

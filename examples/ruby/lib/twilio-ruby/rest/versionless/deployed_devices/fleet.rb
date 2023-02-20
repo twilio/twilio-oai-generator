@@ -36,7 +36,7 @@ module Twilio
                     # @return [FleetInstance] Created FleetInstance
                     def create(name: :unset
 					)
-                        data = Twilio::Values.of(
+                        data = Twilio::Values.of({
                             
                             'Name' => name,
                                                     })
@@ -54,6 +54,7 @@ module Twilio
                         '#<Twilio.Versionless.DeployedDevices.FleetList>'
                     end
                 end
+
 
                 class FleetContext < InstanceContext
                     ##
@@ -196,10 +197,11 @@ module Twilio
                     ##
                     # Provide a detailed, user friendly representation
                     def inspect
-                        values = @properties.map{|k, v| "#{k}: #{v}"}.join(" ")
+                        values = @properties.map{|k, v| "#{k}: #{v}"}.join(',')
                         "<Twilio.Versionless.DeployedDevices.FleetInstance #{values}>"
                     end
                 end
+
             end
         end
     end

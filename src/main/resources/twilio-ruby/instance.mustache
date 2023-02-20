@@ -58,8 +58,9 @@
                     {{#allParams}}
                     # @param [{{dataType}}] {{paramName}} {{description}}
                     {{/allParams}}
-                    # @return [{{apiName}}Instance] Updated {{apiName}}Instance
-                    def update({{#allParams}}{{paramName}}: :unset {{vendorExtensions.separator}} {{/allParams}})
+                    # @return [{{apiName}}Instance]
+                    # Updated {{apiName}}Instance
+                    def update({{#allParams}}{{paramName}}: :unset {{^-last}},{{/-last}} {{/allParams}})
                         context.update({{#allParams}}
                             {{paramName}}: {{paramName}}, {{/allParams}})
                      end
@@ -82,7 +83,7 @@
                     ##
                     # Provide a detailed, user friendly representation
                     def inspect
-                        values = @properties.map{|k, v| "#{k}: #{v}"}.join(" ")
+                        values = @properties.map{|k, v| "#{k}: #{v}"}.join(',')
                         "<Twilio.{{domainName}}.{{apiVersionClass}}.{{apiName}}Instance #{values}>"
                     end
                 end

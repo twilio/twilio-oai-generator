@@ -42,7 +42,7 @@ module Twilio
 						recording_status_callback_event: :unset,
 						twiml: :unset
 					)
-                        data = Twilio::Values.of(
+                        data = Twilio::Values.of({
                             
                             'X-Twilio-Webhook-Enabled' => x_twilio_webhook_enabled,
                             
@@ -179,6 +179,7 @@ module Twilio
                         '#<Twilio.Api.V2010.AccountList>'
                     end
                 end
+
 
                 class AccountContext < InstanceContext
                     ##
@@ -456,7 +457,8 @@ module Twilio
                     # Update the AccountInstance
                     # @param [TestStatus] status 
                     # @param [String] pause_behavior 
-                    # @return [AccountInstance] Updated AccountInstance
+                    # @return [AccountInstance]
+                    # Updated AccountInstance
                     def update(status: :unset , pause_behavior: :unset  )
                         context.update(
                             status: status, 
@@ -479,10 +481,11 @@ module Twilio
                     ##
                     # Provide a detailed, user friendly representation
                     def inspect
-                        values = @properties.map{|k, v| "#{k}: #{v}"}.join(" ")
+                        values = @properties.map{|k, v| "#{k}: #{v}"}.join(',')
                         "<Twilio.Api.V2010.AccountInstance #{values}>"
                     end
                 end
+
             end
         end
     end

@@ -53,6 +53,7 @@ module Twilio
                     end
                 end
 
+
                 class CredentialContext < InstanceContext
                     ##
                     # Initialize the CredentialContext
@@ -165,10 +166,11 @@ module Twilio
                     ##
                     # Provide a detailed, user friendly representation
                     def inspect
-                        values = @properties.map{|k, v| "#{k}: #{v}"}.join(" ")
+                        values = @properties.map{|k, v| "#{k}: #{v}"}.join(',')
                         "<Twilio.FlexApi.V1.CredentialInstance #{values}>"
                     end
                 end
+
             end
         end
     end

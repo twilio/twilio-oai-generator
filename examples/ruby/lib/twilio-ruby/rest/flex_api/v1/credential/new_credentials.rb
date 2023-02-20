@@ -70,7 +70,7 @@ module Twilio
 						permissions: :unset,
 						some_a2p_thing: :unset
 					)
-                        data = Twilio::Values.of(
+                        data = Twilio::Values.of({
                             
                             'TestString' => test_string,
                             
@@ -120,6 +120,7 @@ module Twilio
                         '#<Twilio.FlexApi.V1.NewCredentialsList>'
                     end
                 end
+
 
                 class NewCredentialsContext < InstanceContext
                     ##
@@ -250,10 +251,11 @@ module Twilio
                     ##
                     # Provide a detailed, user friendly representation
                     def inspect
-                        values = @properties.map{|k, v| "#{k}: #{v}"}.join(" ")
+                        values = @properties.map{|k, v| "#{k}: #{v}"}.join(',')
                         "<Twilio.FlexApi.V1.NewCredentialsInstance #{values}>"
                     end
                 end
+
              end
             end
         end

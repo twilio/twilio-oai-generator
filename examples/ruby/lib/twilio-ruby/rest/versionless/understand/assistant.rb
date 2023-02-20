@@ -124,6 +124,7 @@ module Twilio
                     end
                 end
 
+
                 class AssistantContext < InstanceContext
                     ##
                     # Initialize the AssistantContext
@@ -239,10 +240,11 @@ module Twilio
                     ##
                     # Provide a detailed, user friendly representation
                     def inspect
-                        values = @properties.map{|k, v| "#{k}: #{v}"}.join(" ")
+                        values = @properties.map{|k, v| "#{k}: #{v}"}.join(',')
                         "<Twilio.Versionless.Understand.AssistantInstance #{values}>"
                     end
                 end
+
             end
         end
     end
