@@ -47,19 +47,19 @@ class NewCredentialsList(ListResource):
          :param str test_string: 
          :param bool test_boolean: 
          :param int test_integer: 
-         :param int, float test_number: 
-         :param int, float test_number_float: 
-         :param int, float test_number_double: 
-         :param int, float test_number_int32: 
+         :param float test_number: 
+         :param float test_number_float: 
+         :param float test_number_double: 
+         :param float test_number_int32: 
          :param int test_number_int64: 
-         :param {str: (bool, date, datetime, dict, float, int, list, str, none_type)} test_object: 
+         :param dict test_object: 
          :param datetime test_date_time: 
          :param date test_date: 
          :param TestStatus test_enum: 
-         :param [{str: (bool, date, datetime, dict, float, int, list, str, none_type)}] test_object_array: 
-         :param bool, date, datetime, dict, float, int, list, str, none_type test_any_type: 
-         :param [bool, date, datetime, dict, float, int, list, str, none_type] test_any_array: 
-         :param [str] permissions: A comma-separated list of the permissions you will request from the users of this ConnectApp.  Can include: `get-all` and `post-all`.
+         :param list[object] test_object_array: 
+         :param object test_any_type: 
+         :param list[object] test_any_array: 
+         :param list[str] permissions: A comma-separated list of the permissions you will request from the users of this ConnectApp.  Can include: `get-all` and `post-all`.
          :param str some_a2_p_thing: 
         
         :returns: The created NewCredentialsInstance
@@ -74,14 +74,14 @@ class NewCredentialsList(ListResource):
             'TestNumberDouble': test_number_double,
             'TestNumberInt32': test_number_int32,
             'TestNumberInt64': test_number_int64,
-            'TestObject': test_object,
-            'TestDateTime': test_date_time,
+            'TestObject': serialize.object(test_object),
+            'TestDateTime': serialize.iso8601_datetime(test_date_time),
             'TestDate': serialize.iso8601_date(test_date),
             'TestEnum': test_enum,
             'TestObjectArray': test_object_array,
-            'TestAnyType': test_any_type,
+            'TestAnyType': serialize.object(test_any_type),
             'TestAnyArray': test_any_array,
-            'Permissions': serialize.map(permissions, lambda e: e),
+            'Permissions': permissions,
             'SomeA2PThing': some_a2_p_thing,
         })
 

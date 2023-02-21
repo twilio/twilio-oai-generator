@@ -46,22 +46,22 @@ class CallList(ListResource):
     
     
     
-    def create(self, required_string_property, test_array_of_strings=values.unset, test_array_of_uri=values.unset, test_method):
+    def create(self, required_string_property, test_method, test_array_of_strings=values.unset, test_array_of_uri=values.unset):
         """
         Create the CallInstance
          :param str required_string_property: 
-         :param [str] test_array_of_strings: 
-         :param [str] test_array_of_uri: 
          :param str test_method: The HTTP method that we should use to request the `TestArrayOfUri`.
+         :param list[str] test_array_of_strings: 
+         :param list[str] test_array_of_uri: 
         
         :returns: The created CallInstance
         :rtype: twilio.rest.api.v2010.call.CallInstance
         """
         data = values.of({ 
             'RequiredStringProperty': required_string_property,
-            'TestArrayOfStrings': serialize.map(test_array_of_strings, lambda e: e),
-            'TestArrayOfUri': serialize.map(test_array_of_uri, lambda e: e),
             'TestMethod': test_method,
+            'TestArrayOfStrings': test_array_of_strings,
+            'TestArrayOfUri': test_array_of_uri,
         })
 
         payload = self._version.create(method='POST', uri=self._uri, data=data)

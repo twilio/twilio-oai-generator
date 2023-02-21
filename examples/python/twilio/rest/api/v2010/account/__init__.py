@@ -45,19 +45,21 @@ class AccountList(ListResource):
     
     
     
-    def create(self, recording_status_callback=values.unset, recording_status_callback_event=values.unset, twiml=values.unset):
+    def create(self, x_twilio_webhook_enabled=values.unset, recording_status_callback=values.unset, recording_status_callback_event=values.unset, twiml=values.unset):
         """
         Create the AccountInstance
+         :param str x_twilio_webhook_enabled: 
          :param str recording_status_callback: 
-         :param [str] recording_status_callback_event: 
+         :param list[str] recording_status_callback_event: 
          :param str twiml: 
         
         :returns: The created AccountInstance
         :rtype: twilio.rest.api.v2010.account.AccountInstance
         """
         data = values.of({ 
+            'X-Twilio-Webhook-Enabled': x_twilio_webhook_enabled,
             'RecordingStatusCallback': recording_status_callback,
-            'RecordingStatusCallbackEvent': serialize.map(recording_status_callback_event, lambda e: e),
+            'RecordingStatusCallbackEvent': recording_status_callback_event,
             'Twiml': twiml,
         })
 
@@ -290,9 +292,9 @@ class AccountContext(InstanceContext):
 
         
     
-    def update(self, pause_behavior, status):
+    def update(self, status, pause_behavior):
         data = values.of({
-            'pause_behavior': pause_behavior,'status': status,
+            'status': status,'pause_behavior': pause_behavior,
         })
 
         payload = self._version.update(method='post', uri=self._uri, data=data, )

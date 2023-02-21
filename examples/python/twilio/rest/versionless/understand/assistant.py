@@ -176,4 +176,38 @@ class AssistantPage(Page):
 
 
 
+class AssistantInstance(InstanceResource):
+    def __init__(self, version, payload):
+        super().__init__(version)
+        self._properties = { 
+            'sid' : payload.get('sid'),
+            'friendly_name' : payload.get('friendly_name'),
+        }
+
+        self._context = None
+        self._solution = {
+            
+        }
+
+    @property
+    def _proxy(self):
+        if self._context is None:
+            self._context = AssistantContext(
+                self._version,
+                
+            )
+        return self._context
+
+    
+
+    def __repr__(self):
+        """
+        Provide a friendly representation
+        :returns: Machine friendly representation
+        :rtype: str
+        """
+        context = ' '.join('{}={}'.format(k, v) for k, v in self._solution.items())
+        return '<Twilio.Versionless.Understand.AssistantInstance {}>'.format(context)
+
+
 
