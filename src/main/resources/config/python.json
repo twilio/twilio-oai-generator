@@ -38,7 +38,8 @@
     "date_time": "serialize.iso8601_datetime({value})",
     "date_or_time": "serialize.iso8601_datetime({value})",
     "date_time_inequality": "serialize.iso8601_datetime({value})",
-    "prefixed_collapsible_map": "serialize.prefixed_collapsible_map({value}, {trait})"
+    "prefixed_collapsible_map": "serialize.prefixed_collapsible_map({value}, {trait})",
+    "[str]": "serialize.map({value})"
   },
 
   "deserialize": {

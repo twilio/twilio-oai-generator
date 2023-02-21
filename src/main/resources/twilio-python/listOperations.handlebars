@@ -1,5 +1,20 @@
 {{#operations}}
-    {{#vendorExtensions.x-is-read-operation}}
+    {{#vendorExtensions.x-is-create-operation}}{{#hasParams}}
+    def create(self{{#allParams}}, {{paramName}}{{#if required}}{{else}}=values.unset{{/if}}{{/allParams}}):
+        """
+        Create the {{instanceName}}
+        {{#allParams}} :param {{dataType}} {{paramName}}: {{{description}}}
+        {{/allParams}}
+        :returns: The created {{instanceName}}
+        :rtype: twilio.rest.{{domainPackage}}.{{apiVersion}}.{{apiFilename}}.{{instanceName}}
+        """
+        data = values.of({ {{#allParams}}
+            '{{{baseName}}}': {{#if vendorExtensions.x-serialize}}{{vendorExtensions.x-serialize}}({{paramName}}{{#if isArray}}, lambda e: e){{else}}){{/if}}{{else}}{{paramName}}{{/if}},{{/allParams}}
+        })
+
+        payload = self._version.create(method='POST', uri=self._uri, data=data)
+        return {{instanceName}}(self._version, payload{{#listPathParams}}, {{paramName}}=self._solution['{{paramName}}']{{/listPathParams}})
+    {{/hasParams}}{{/vendorExtensions.x-is-create-operation}}{{#vendorExtensions.x-is-read-operation}}
     def stream(self, {{#allParams}}{{#startsWith paramName text='page_size'}}{{else}}{{paramName}}=values.unset, {{/startsWith}}{{/allParams}}limit=None, page_size=None):
         """
         Streams {{instanceName}} records from the API as a generator stream.
@@ -63,7 +78,7 @@
         :rtype: twilio.rest.{{domainPackage}}.{{apiVersion}}.{{apiFilename}}.{{apiName}}Page
         """
         data = values.of({ {{#allParams}}{{#startsWith paramName text='page_size'}}{{else}}
-            '{{baseName}}': {{paramName}},{{/startsWith}}{{/allParams}}
+            '{{{baseName}}}': {{#if vendorExtensions.x-serialize}}{{vendorExtensions.x-serialize}}({{paramName}}){{else}}{{paramName}}{{/if}},{{/startsWith}}{{/allParams}}
             'PageToken': page_token,
             'Page': page_number,
             'PageSize': page_size,

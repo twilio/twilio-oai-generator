@@ -26,10 +26,10 @@ class {{apiName}}List(ListResource):
 
         # Path Solution
         self._solution = { {{#listPathParams}}'{{paramName}}': {{paramName}}, {{/listPathParams}} }
-        self._uri = '{{listPath}}'.format(**self._solution)
-{{#dependents}}{{^instanceDependent}}
+        {{#listPath}}self._uri = '{{listPath}}'.format(**self._solution){{/listPath}}
+        {{#dependents}}{{^instanceDependent}}
         self._{{mountName}} = None{{/instanceDependent}}{{/dependents}}
-{{>listOperations}}{{#dependents}}{{^instanceDependent}}
+        {{>listOperations}}{{#dependents}}{{^instanceDependent}}
     @property
     def {{mountName}}(self):
         """
@@ -40,8 +40,8 @@ class {{apiName}}List(ListResource):
         """
         if self._{{mountName}} is None:
             self._{{mountName}} = {{resourceName}}List(self._version{{#listPathParams}}, {{paramName}}=self._solution['{{paramName}}']{{/listPathParams}})
-        return self.{{mountName}}
-{{/instanceDependent}}{{/dependents}}
+        return self.{{mountName}}{{/instanceDependent}}{{/dependents}}
+{{#instancePath}}{{>contextMethods}}{{/instancePath}}
     def __repr__(self):
         """
         Provide a friendly representation
