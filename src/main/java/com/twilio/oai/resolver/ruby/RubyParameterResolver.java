@@ -7,6 +7,8 @@ import org.openapitools.codegen.CodegenParameter;
 import static com.twilio.oai.common.ApplicationConstants.SERIALIZE_VEND_EXT;
 
 public class RubyParameterResolver extends LanguageParamResolver {
+    public static final String ARRAY_OF_OBJECT = "Array[Object]";
+
     public RubyParameterResolver(final IConventionMapper mapper) {
         super(mapper);
     }
@@ -16,10 +18,22 @@ public class RubyParameterResolver extends LanguageParamResolver {
         super.resolve(codegenParameter);
 
         if (codegenParameter.isArray) {
+            codegenParameter.dataType = codegenParameter.dataType.replaceAll("<", "[");
+            codegenParameter.dataType = codegenParameter.dataType.replaceAll(">", "]");
             codegenParameter.vendorExtensions.put(SERIALIZE_VEND_EXT, "Twilio.serialize_list");
         }
         if (codegenParameter.dataType.equals("Time")) {
-            codegenParameter.vendorExtensions.put(SERIALIZE_VEND_EXT, " Twilio.serialize_iso8601_datetime");
+            codegenParameter.vendorExtensions.put(SERIALIZE_VEND_EXT, "Twilio.serialize_iso8601_datetime");
+        }
+        if (codegenParameter.paramName.equals("end")) {
+            codegenParameter.paramName = "end_";
+        }
+        if (codegenParameter.dataType.equals("Integer")) {
+            codegenParameter.dataType = "String";
+        }
+        if (codegenParameter.dataType.equals(ARRAY_OF_OBJECT)) {
+            codegenParameter.dataType = "Array[Hash]";
+            codegenParameter.vendorExtensions.put("x-is-array-of-objects", "Twilio.serialize_object(e)");
         }
         return codegenParameter;
     }

@@ -30,6 +30,8 @@ public class ApplicationConstants {
 
     public static final String LIST_INSTANCE = "ListInstance";
 
+    public static final String LIST = "List";
+
     public static final String TWILIO_EXTENSION_NAME = "x-twilio";
     public static final String PATH_TYPE_EXTENSION_NAME = "x-path-type";
     public static final String IGNORE_EXTENSION_NAME = "x-ignore";
@@ -39,5 +41,10 @@ public class ApplicationConstants {
     public static final String VENDOR_PREFIX = "x-";
     public static final String SERIALIZE_VEND_EXT = "x-serialize";
     public static final String DESERIALIZE_VEND_EXT = "x-deserialize";
+    public static final String ENUM = "Enum";
+    public static final String RESOURCE = "Resource";
+    public static final String DOT = ".";
     public static final String ACCOUNT_SID_VEND_EXT = "x-is-account-sid";
+
+    public static final String PREFIXED_COLLAPSIBLE_MAP = "prefixed-collapsible-map";
 }

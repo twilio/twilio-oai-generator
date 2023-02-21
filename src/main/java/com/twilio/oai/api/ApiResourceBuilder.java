@@ -7,6 +7,7 @@ import com.twilio.oai.common.Utility;
 import com.twilio.oai.resolver.Resolver;
 import com.twilio.oai.resource.Resource;
 import com.twilio.oai.template.IApiActionTemplate;
+import org.apache.commons.lang3.StringUtils;
 import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenOperation;
 import org.openapitools.codegen.CodegenParameter;
@@ -28,6 +29,8 @@ public abstract class ApiResourceBuilder implements IApiResourceBuilder {
     protected List<CodegenParameter> requiredPathParams = new ArrayList<>();
     protected Set<CodegenProperty> apiResponseModels = new LinkedHashSet<>();
     protected Map<String, Object> metaAPIProperties = new HashMap<>();
+    protected final List<CodegenOperation> listOperations = new ArrayList<>();
+    protected final List<CodegenOperation> instanceOperations = new ArrayList<>();
     protected String version = "";
     protected final String recordKey;
     protected String apiPath = "";
@@ -123,15 +126,15 @@ public abstract class ApiResourceBuilder implements IApiResourceBuilder {
             operationMap.put("x-is-list-operation", "true");
         }
 
-        if (operation.operationId.startsWith("update")) {
+        if (StringUtils.startsWithIgnoreCase(operation.operationId, "update")) {
             addOperationName(operation, Operation.UPDATE.getValue());
-        } else if (operation.operationId.startsWith("delete")) {
+        } else if (StringUtils.startsWithIgnoreCase(operation.operationId, "delete")) {
             addOperationName(operation, Operation.DELETE.getValue());
-        } else if (operation.operationId.startsWith("create")) {
+        } else if (StringUtils.startsWithIgnoreCase(operation.operationId, "create")) {
             addOperationName(operation, Operation.CREATE.getValue());
-        } else if (operation.operationId.startsWith("fetch")) {
+        } else if (StringUtils.startsWithIgnoreCase(operation.operationId, "fetch")) {
             addOperationName(operation, Operation.FETCH.getValue());
-        } else if (operation.operationId.startsWith("list")) {
+        } else if (StringUtils.startsWithIgnoreCase(operation.operationId, "list")) {
             addOperationName(operation, Operation.READ.getValue());
         }
 
@@ -227,5 +230,22 @@ public abstract class ApiResourceBuilder implements IApiResourceBuilder {
                         contextResource.setParent(contextResource.getParent().replaceAll("\\\\Function\\\\", "\\\\TwilioFunction\\\\"));
                     return (Object) contextResource;
                 }).collect(Collectors.toList());
+    }
+
+    protected void categorizeOperations() {
+        codegenOperationList.stream().filter(operation -> !operation.vendorExtensions.containsKey("x-ignore")).forEach(codegenOperation -> {
+            Optional<String> pathType = Optional.ofNullable(codegenOperation.vendorExtensions.get("x-path-type").toString());
+            if (pathType.isPresent()) {
+                if (pathType.get().equals("list")) {
+                    listOperations.add(codegenOperation);
+                    codegenOperation.vendorExtensions.put("listOperation", true);
+                    metaAPIProperties.put("hasListOperation", true);
+                } else {
+                    instanceOperations.add(codegenOperation);
+                    codegenOperation.vendorExtensions.put("instanceOperation", true);
+                    metaAPIProperties.put("hasInstanceOperation", true);
+                }
+            }
+        });
     }
 }

@@ -1,0 +1,35 @@
+{{>licenseInfo}}
+from twilio.base.version import Version
+from twilio.base.domain import Domain
+{{#versionResources}}from twilio.rest.{{domainPackage}}.{{apiVersion}}.{{filename}} import {{listName}}
+{{/versionResources}}
+
+class {{apiVersionClass}}(Version):
+
+    def __init__(self, domain: Domain):
+        """
+        Initialize the {{apiVersionClass}} version of {{domainName}}
+
+        :param domain: The Twilio.{{domainPackage}} domain
+        """
+        super().__init__(domain)
+        self.version = '{{version}}'
+        {{#versionResources}}self._{{mountName}} = None
+        {{/versionResources}}
+    {{#versionResources}}@property
+    def {{mountName}}(self) -> {{listName}}:
+        if self._{{mountName}} is None:
+            self._{{mountName}} = {{listName}}(self{{#param}}, self.domain.twilio.{{param}}{{/param}})
+        return self._{{mountName}}
+{{#param}}
+    @{{mountName}}.setter
+    def {{mountName}}(self, value: {{listName}}):
+        self._{{mountName}} = value
+{{/param}}
+    {{/versionResources}}def __repr__(self) -> str:
+        """
+        Provide a friendly representation
+        :returns: Machine friendly representation
+        :rtype: str
+        """
+        return '<Twilio.{{domainName}}.{{apiVersionClass}}>'

@@ -26,8 +26,6 @@ import static com.twilio.oai.common.ApplicationConstants.TWILIO_EXTENSION_NAME;
 public class PhpApiResourceBuilder extends ApiResourceBuilder {
     public final static String TAB_WHITESPACES = "    ";
     private final HashSet<String> pathSet = new HashSet<>();
-    private final List<CodegenOperation> listOperations = new ArrayList<>();
-    private final List<CodegenOperation> instanceOperations = new ArrayList<>();
     protected String apiListPath = "";
     protected String apiContextPath = "";
 
@@ -188,22 +186,6 @@ public class PhpApiResourceBuilder extends ApiResourceBuilder {
         }
     }
 
-    private void categorizeOperations() {
-        codegenOperationList.stream().filter(operation -> !operation.vendorExtensions.containsKey("x-ignore")).forEach(codegenOperation -> {
-            Optional<String> pathType = Optional.ofNullable(codegenOperation.vendorExtensions.get("x-path-type").toString());
-            if (pathType.isPresent()) {
-                if (pathType.get().equals("list")) {
-                    listOperations.add(codegenOperation);
-                    codegenOperation.vendorExtensions.put("listOperation", true);
-                    metaAPIProperties.put("hasListOperation", true);
-                } else {
-                    instanceOperations.add(codegenOperation);
-                    codegenOperation.vendorExtensions.put("instanceOperation", true);
-                    metaAPIProperties.put("hasInstanceOperation", true);
-                }
-            }
-        });
-    }
 
     public IApiResourceBuilder addVersionLessTemplates(OpenAPI openAPI, DirectoryStructureService directoryStructureService) {
         if (directoryStructureService.isVersionLess()) {

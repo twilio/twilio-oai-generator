@@ -72,4 +72,5 @@ fi
 if should-generate ruby; then
   OUT_DIR=examples/ruby/lib/twilio-ruby/rest
   generate twilio-ruby
+  docker-run examples/ruby/Dockerfile-formatter
 fi

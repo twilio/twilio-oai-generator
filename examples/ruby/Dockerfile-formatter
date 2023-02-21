@@ -1,0 +1,6 @@
+FROM ruby:3.0
+
+WORKDIR /local
+RUN gem install 'rubocop'
+
+CMD rubocop --fix-layout 2>&1 | tee /local/formatter-report.out

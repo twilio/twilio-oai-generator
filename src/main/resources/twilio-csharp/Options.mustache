@@ -1,12 +1,12 @@
 {{>LicenseInfo}}
 
+{{#resources}}
 {{>OptionsUsings}}
 
-{{#resources}}
 
-namespace Twilio.Rest.{{domainPackage}}.{{apiVersionClass}}{{packageSubPart}}
+namespace Twilio.Rest.{{domainPackage}}.{{apiVersionClass}}{{namespaceSubPart}}
 {
-{{#operations}}
+{{#apiOperations}}
     {{#vendorExtensions.x-is-create-operation}}
 {{>options/CreateOptions}}
     {{/vendorExtensions.x-is-create-operation}}
@@ -22,7 +22,7 @@ namespace Twilio.Rest.{{domainPackage}}.{{apiVersionClass}}{{packageSubPart}}
     {{#vendorExtensions.x-is-update-operation}}
 {{>options/UpdateOptions}}
     {{/vendorExtensions.x-is-update-operation}}
-{{/operations}}
+{{/apiOperations}}
 }
 
 {{/resources}}

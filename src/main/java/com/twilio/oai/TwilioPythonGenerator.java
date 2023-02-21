@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.PathItem;
 import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenOperation;
 import org.openapitools.codegen.languages.PythonClientCodegen;
@@ -70,7 +71,24 @@ public class TwilioPythonGenerator extends PythonClientCodegen {
 
     @Override
     public String apiFilename(final String templateName, final String tag) {
-        return actionTemplate.apiFilename(templateName, super.apiFilename(templateName, tag));
+        boolean isInitFile = false;
+
+        for (final Map.Entry<String, PathItem> pathsEntry : this.openAPI.getPaths().entrySet()) {
+            final String resourcePath = pathsEntry.getKey();
+            final PathItem path = pathsEntry.getValue();
+
+            if (!resourceTree.dependents(resourcePath).isEmpty() &&
+                path.readOperations().stream().anyMatch(operation -> operation.getTags().contains(tag))) {
+                isInitFile = true;
+                break;
+            }
+        }
+
+        String filename = actionTemplate.apiFilename(templateName, super.apiFilename(templateName, tag));
+        if (isInitFile) {
+            filename = PathUtils.removeExtension(filename) + File.separator + "__init__.py";
+        }
+        return filename;
     }
 
     @Override
@@ -113,5 +131,10 @@ public class TwilioPythonGenerator extends PythonClientCodegen {
     @Override
     public String getName() {
         return EnumConstants.Generator.TWILIO_PYTHON.getValue();
+    }
+
+    @Override
+    public String toParamName(final String name){
+        return super.toParamName(twilioCodegen.toParamName(name));
     }
 }

@@ -9,15 +9,17 @@ import java.util.List;
 
 public class CodegenParameterResolver extends Resolver<CodegenParameter> {
 
-    private final IConventionMapper mapper;
-    private List<? extends LanguageDataType> languageDataTypes;
-    private final CodegenParameterDataTypeResolver codegenParameterDataTypeResolver = new CodegenParameterDataTypeResolver();
+    private final CodegenParameterDataTypeResolver codegenParameterDataTypeResolver;
     private final CodegenParameterContainerDataTypeResolver codegenParameterContainerDataTypeResolver;
 
     public CodegenParameterResolver(IConventionMapper mapper,
                                     List<? extends LanguageDataType> languageDataTypes) {
-        this.mapper = mapper;
-        this.languageDataTypes = languageDataTypes;
+        this(languageDataTypes, new CodegenParameterDataTypeResolver(mapper));
+    }
+
+    public CodegenParameterResolver(List<? extends LanguageDataType> languageDataTypes,
+                                    CodegenParameterDataTypeResolver codegenParameterDataTypeResolver) {
+        this.codegenParameterDataTypeResolver = codegenParameterDataTypeResolver;
         codegenParameterContainerDataTypeResolver = new CodegenParameterContainerDataTypeResolver(codegenParameterDataTypeResolver,
                 languageDataTypes);
     }
@@ -26,8 +28,6 @@ public class CodegenParameterResolver extends Resolver<CodegenParameter> {
         if (parameter == null) {
             return null;
         }
-
-        codegenParameterDataTypeResolver.setMapper(mapper);
 
         if (parameter.isContainer) {
             codegenParameterContainerDataTypeResolver.resolve(parameter);
