@@ -38,10 +38,32 @@ class FeedbackCallSummaryList(ListResource):
 
         # Path Solution
         self._solution = { 'account_sid': account_sid,  }
-        self._uri = ''.format(**self._solution)
-
-
+        
+        
+        
     
+
+    def get(self, sid):
+        """
+        Constructs a FeedbackCallSummaryContext
+        
+        :param sid: 
+        
+        :returns: twilio.rest.api.v2010.feedback_call_summary.FeedbackCallSummaryContext
+        :rtype: twilio.rest.api.v2010.feedback_call_summary.FeedbackCallSummaryContext
+        """
+        return FeedbackCallSummaryContext(self._version, account_sid=self._solution['account_sid'], sid=sid)
+
+    def __call__(self, sid):
+        """
+        Constructs a FeedbackCallSummaryContext
+        
+        :param sid: 
+        
+        :returns: twilio.rest.api.v2010.feedback_call_summary.FeedbackCallSummaryContext
+        :rtype: twilio.rest.api.v2010.feedback_call_summary.FeedbackCallSummaryContext
+        """
+        return FeedbackCallSummaryContext(self._version, account_sid=self._solution['account_sid'], sid=sid)
 
     def __repr__(self):
         """
@@ -62,9 +84,9 @@ class FeedbackCallSummaryContext(InstanceContext):
         self._uri = '/Accounts/${account_sid}/Calls/Feedback/Summary/${sid}.json'
         
     
-    def update(self, body):
+    def update(self, account_sid, end_date, start_date):
         data = values.of({
-            'body': body,
+            'account_sid': account_sid,'end_date': end_date,'start_date': start_date,
         })
 
         payload = self._version.update(method='post', uri=self._uri, data=data, )

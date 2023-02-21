@@ -39,11 +39,30 @@ class AccountList(ListResource):
         # Path Solution
         self._solution = {  }
         self._uri = '/Accounts.json'.format(**self._solution)
+        
+        
+    
+    
+    
+    
+    def create(self, recording_status_callback=values.unset, recording_status_callback_event=values.unset, twiml=values.unset):
+        """
+        Create the AccountInstance
+         :param str recording_status_callback: 
+         :param [str] recording_status_callback_event: 
+         :param str twiml: 
+        
+        :returns: The created AccountInstance
+        :rtype: twilio.rest.api.v2010.account.AccountInstance
+        """
+        data = values.of({ 
+            'RecordingStatusCallback': recording_status_callback,
+            'RecordingStatusCallbackEvent': serialize.map(recording_status_callback_event, lambda e: e),
+            'Twiml': twiml,
+        })
 
-
-    
-    
-    
+        payload = self._version.create(method='POST', uri=self._uri, data=data)
+        return AccountInstance(self._version, payload)
     
     
     def stream(self, date_created=values.unset, date_test=values.unset, date_created_before=values.unset, date_created_after=values.unset, limit=None, page_size=None):
@@ -124,10 +143,10 @@ class AccountList(ListResource):
         :rtype: twilio.rest.api.v2010.account.AccountPage
         """
         data = values.of({ 
-            'DateCreated': date_created,
-            'Date.Test': date_test,
-            'DateCreated&lt;': date_created_before,
-            'DateCreated&gt;': date_created_after,
+            'DateCreated': serialize.iso8601_datetime(date_created),
+            'Date.Test': serialize.iso8601_date(date_test),
+            'DateCreated<': serialize.iso8601_datetime(date_created_before),
+            'DateCreated>': serialize.iso8601_datetime(date_created_after),
             'PageToken': page_token,
             'Page': page_number,
             'PageSize': page_size,
@@ -152,6 +171,28 @@ class AccountList(ListResource):
         )
         return AccountPage(self._version, response, self._solution)
 
+
+    def get(self, sid):
+        """
+        Constructs a AccountContext
+        
+        :param sid: 
+        
+        :returns: twilio.rest.api.v2010.account.AccountContext
+        :rtype: twilio.rest.api.v2010.account.AccountContext
+        """
+        return AccountContext(self._version, sid=sid)
+
+    def __call__(self, sid):
+        """
+        Constructs a AccountContext
+        
+        :param sid: 
+        
+        :returns: twilio.rest.api.v2010.account.AccountContext
+        :rtype: twilio.rest.api.v2010.account.AccountContext
+        """
+        return AccountContext(self._version, sid=sid)
 
     def __repr__(self):
         """
@@ -249,9 +290,9 @@ class AccountContext(InstanceContext):
 
         
     
-    def update(self, body):
+    def update(self, pause_behavior, status):
         data = values.of({
-            'body': body,
+            'pause_behavior': pause_behavior,'status': status,
         })
 
         payload = self._version.update(method='post', uri=self._uri, data=data, )

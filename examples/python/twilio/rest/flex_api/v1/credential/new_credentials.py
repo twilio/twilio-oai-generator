@@ -38,9 +38,57 @@ class NewCredentialsList(ListResource):
         # Path Solution
         self._solution = {  }
         self._uri = '/Credentials/AWS'.format(**self._solution)
-
-
+        
+        
     
+    def create(self, test_string, test_boolean=values.unset, test_integer=values.unset, test_number=values.unset, test_number_float=values.unset, test_number_double=values.unset, test_number_int32=values.unset, test_number_int64=values.unset, test_object=values.unset, test_date_time=values.unset, test_date=values.unset, test_enum=values.unset, test_object_array=values.unset, test_any_type=values.unset, test_any_array=values.unset, permissions=values.unset, some_a2_p_thing=values.unset):
+        """
+        Create the NewCredentialsInstance
+         :param str test_string: 
+         :param bool test_boolean: 
+         :param int test_integer: 
+         :param int, float test_number: 
+         :param int, float test_number_float: 
+         :param int, float test_number_double: 
+         :param int, float test_number_int32: 
+         :param int test_number_int64: 
+         :param {str: (bool, date, datetime, dict, float, int, list, str, none_type)} test_object: 
+         :param datetime test_date_time: 
+         :param date test_date: 
+         :param TestStatus test_enum: 
+         :param [{str: (bool, date, datetime, dict, float, int, list, str, none_type)}] test_object_array: 
+         :param bool, date, datetime, dict, float, int, list, str, none_type test_any_type: 
+         :param [bool, date, datetime, dict, float, int, list, str, none_type] test_any_array: 
+         :param [str] permissions: A comma-separated list of the permissions you will request from the users of this ConnectApp.  Can include: `get-all` and `post-all`.
+         :param str some_a2_p_thing: 
+        
+        :returns: The created NewCredentialsInstance
+        :rtype: twilio.rest.flex_api.v1.aws.NewCredentialsInstance
+        """
+        data = values.of({ 
+            'TestString': test_string,
+            'TestBoolean': test_boolean,
+            'TestInteger': test_integer,
+            'TestNumber': test_number,
+            'TestNumberFloat': test_number_float,
+            'TestNumberDouble': test_number_double,
+            'TestNumberInt32': test_number_int32,
+            'TestNumberInt64': test_number_int64,
+            'TestObject': test_object,
+            'TestDateTime': test_date_time,
+            'TestDate': serialize.iso8601_date(test_date),
+            'TestEnum': test_enum,
+            'TestObjectArray': test_object_array,
+            'TestAnyType': test_any_type,
+            'TestAnyArray': test_any_array,
+            'Permissions': serialize.map(permissions, lambda e: e),
+            'SomeA2PThing': some_a2_p_thing,
+        })
+
+        payload = self._version.create(method='POST', uri=self._uri, data=data)
+        return NewCredentialsInstance(self._version, payload)
+    
+
 
     def __repr__(self):
         """

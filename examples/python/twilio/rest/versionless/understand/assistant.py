@@ -38,8 +38,8 @@ class AssistantList(ListResource):
         # Path Solution
         self._solution = {  }
         self._uri = '/Assistants'.format(**self._solution)
-
-
+        
+        
     
     def stream(self, limit=None, page_size=None):
         """
@@ -122,6 +122,7 @@ class AssistantList(ListResource):
             target_url
         )
         return AssistantPage(self._version, response, self._solution)
+
 
 
     def __repr__(self):

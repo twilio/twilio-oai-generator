@@ -38,10 +38,28 @@ class HistoryList(ListResource):
 
         # Path Solution
         self._solution = { 'sid': sid,  }
-        self._uri = ''.format(**self._solution)
-
-
+        
+        
+        
     
+
+    def get(self):
+        """
+        Constructs a HistoryContext
+        
+        :returns: twilio.rest.flex_api.v1.history.HistoryContext
+        :rtype: twilio.rest.flex_api.v1.history.HistoryContext
+        """
+        return HistoryContext(self._version, sid=self._solution['sid'])
+
+    def __call__(self):
+        """
+        Constructs a HistoryContext
+        
+        :returns: twilio.rest.flex_api.v1.history.HistoryContext
+        :rtype: twilio.rest.flex_api.v1.history.HistoryContext
+        """
+        return HistoryContext(self._version, sid=self._solution['sid'])
 
     def __repr__(self):
         """

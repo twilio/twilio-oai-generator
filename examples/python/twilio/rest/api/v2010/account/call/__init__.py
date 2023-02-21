@@ -40,11 +40,32 @@ class CallList(ListResource):
         # Path Solution
         self._solution = { 'account_sid': account_sid,  }
         self._uri = '/Accounts/${account_sid}/Calls.json'.format(**self._solution)
-
+        
         self._feedback_call_summary = None
+        
+    
+    
+    
+    def create(self, required_string_property, test_array_of_strings=values.unset, test_array_of_uri=values.unset, test_method):
+        """
+        Create the CallInstance
+         :param str required_string_property: 
+         :param [str] test_array_of_strings: 
+         :param [str] test_array_of_uri: 
+         :param str test_method: The HTTP method that we should use to request the `TestArrayOfUri`.
+        
+        :returns: The created CallInstance
+        :rtype: twilio.rest.api.v2010.call.CallInstance
+        """
+        data = values.of({ 
+            'RequiredStringProperty': required_string_property,
+            'TestArrayOfStrings': serialize.map(test_array_of_strings, lambda e: e),
+            'TestArrayOfUri': serialize.map(test_array_of_uri, lambda e: e),
+            'TestMethod': test_method,
+        })
 
-    
-    
+        payload = self._version.create(method='POST', uri=self._uri, data=data)
+        return CallInstance(self._version, payload, account_sid=self._solution['account_sid'])
     
 
     @property
@@ -58,6 +79,27 @@ class CallList(ListResource):
         if self._feedback_call_summary is None:
             self._feedback_call_summary = FeedbackCallSummaryList(self._version, account_sid=self._solution['account_sid'])
         return self.feedback_call_summary
+    def get(self, test_integer):
+        """
+        Constructs a CallContext
+        
+        :param test_integer: INTEGER ID param!!!
+        
+        :returns: twilio.rest.api.v2010.call.CallContext
+        :rtype: twilio.rest.api.v2010.call.CallContext
+        """
+        return CallContext(self._version, account_sid=self._solution['account_sid'], test_integer=test_integer)
+
+    def __call__(self, test_integer):
+        """
+        Constructs a CallContext
+        
+        :param test_integer: INTEGER ID param!!!
+        
+        :returns: twilio.rest.api.v2010.call.CallContext
+        :rtype: twilio.rest.api.v2010.call.CallContext
+        """
+        return CallContext(self._version, account_sid=self._solution['account_sid'], test_integer=test_integer)
 
     def __repr__(self):
         """

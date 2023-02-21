@@ -37,10 +37,32 @@ class CallList(ListResource):
 
         # Path Solution
         self._solution = {  }
-        self._uri = ''.format(**self._solution)
-
-
+        
+        
+        
     
+
+    def get(self, sid):
+        """
+        Constructs a CallContext
+        
+        :param sid: 
+        
+        :returns: twilio.rest.flex_api.v1.call.CallContext
+        :rtype: twilio.rest.flex_api.v1.call.CallContext
+        """
+        return CallContext(self._version, sid=sid)
+
+    def __call__(self, sid):
+        """
+        Constructs a CallContext
+        
+        :param sid: 
+        
+        :returns: twilio.rest.flex_api.v1.call.CallContext
+        :rtype: twilio.rest.flex_api.v1.call.CallContext
+        """
+        return CallContext(self._version, sid=sid)
 
     def __repr__(self):
         """

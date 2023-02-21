@@ -39,8 +39,8 @@ class AwsList(ListResource):
         # Path Solution
         self._solution = {  }
         self._uri = '/Credentials/AWS'.format(**self._solution)
-
-
+        
+        
     
     
     
@@ -127,6 +127,28 @@ class AwsList(ListResource):
         )
         return AwsPage(self._version, response, self._solution)
 
+
+    def get(self, sid):
+        """
+        Constructs a AwsContext
+        
+        :param sid: 
+        
+        :returns: twilio.rest.flex_api.v1.aws.AwsContext
+        :rtype: twilio.rest.flex_api.v1.aws.AwsContext
+        """
+        return AwsContext(self._version, sid=sid)
+
+    def __call__(self, sid):
+        """
+        Constructs a AwsContext
+        
+        :param sid: 
+        
+        :returns: twilio.rest.flex_api.v1.aws.AwsContext
+        :rtype: twilio.rest.flex_api.v1.aws.AwsContext
+        """
+        return AwsContext(self._version, sid=sid)
 
     def __repr__(self):
         """
@@ -222,9 +244,9 @@ class AwsContext(InstanceContext):
 
         
     
-    def update(self, body):
+    def update(self, test_string, test_boolean):
         data = values.of({
-            'body': body,
+            'test_string': test_string,'test_boolean': test_boolean,
         })
 
         payload = self._version.update(method='post', uri=self._uri, data=data, )
