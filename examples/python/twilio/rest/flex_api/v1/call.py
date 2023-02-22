@@ -28,19 +28,42 @@ class CallList(ListResource):
     def __init__(self, version: Version):
         """
         Initialize the CallList
+
         :param Version version: Version that contains the resource
         
-        :returns: twilio.flex_api.v1.call..CallList
-        :rtype: twilio.flex_api.v1.call..CallList
+        :returns: twilio.rest.flex_api.v1.call.CallList
+        :rtype: twilio.rest.flex_api.v1.call.CallList
         """
         super().__init__(version)
 
         # Path Solution
         self._solution = {  }
-        self._uri = ''.format(**self._solution)
-
-
+        
+        
+        
     
+
+    def get(self, sid):
+        """
+        Constructs a CallContext
+        
+        :param sid: 
+        
+        :returns: twilio.rest.flex_api.v1.call.CallContext
+        :rtype: twilio.rest.flex_api.v1.call.CallContext
+        """
+        return CallContext(self._version, sid=sid)
+
+    def __call__(self, sid):
+        """
+        Constructs a CallContext
+        
+        :param sid: 
+        
+        :returns: twilio.rest.flex_api.v1.call.CallContext
+        :rtype: twilio.rest.flex_api.v1.call.CallContext
+        """
+        return CallContext(self._version, sid=sid)
 
     def __repr__(self):
         """
@@ -83,6 +106,39 @@ class CallContext(InstanceContext):
         """
         return '<Twilio.FlexApi.V1.CallContext>'
 
+
+
+class CallInstance(InstanceResource):
+    def __init__(self, version, payload, sid: str):
+        super().__init__(version)
+        self._properties = { 
+            'sid' : payload.get('sid'),
+        }
+
+        self._context = None
+        self._solution = {
+            'sid': sid or self._properties['sid'],
+        }
+
+    @property
+    def _proxy(self):
+        if self._context is None:
+            self._context = CallContext(
+                self._version,
+                sid=self._solution['sid'],
+            )
+        return self._context
+
+    
+
+    def __repr__(self):
+        """
+        Provide a friendly representation
+        :returns: Machine friendly representation
+        :rtype: str
+        """
+        context = ' '.join('{}={}'.format(k, v) for k, v in self._solution.items())
+        return '<Twilio.FlexApi.V1.CallInstance {}>'.format(context)
 
 
 

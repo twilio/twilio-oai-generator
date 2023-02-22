@@ -28,20 +28,58 @@ class FleetList(ListResource):
     def __init__(self, version: Version):
         """
         Initialize the FleetList
+
         :param Version version: Version that contains the resource
         
-        :returns: twilio.versionless.deployed_devices.fleet..FleetList
-        :rtype: twilio.versionless.deployed_devices.fleet..FleetList
+        :returns: twilio.rest.versionless.deployed_devices.fleet.FleetList
+        :rtype: twilio.rest.versionless.deployed_devices.fleet.FleetList
         """
         super().__init__(version)
 
         # Path Solution
         self._solution = {  }
         self._uri = '/Fleets'.format(**self._solution)
-
-
+        
+        
     
     
+    def create(self, name=values.unset):
+        """
+        Create the FleetInstance
+        :param str name: 
+        
+        :returns: The created FleetInstance
+        :rtype: twilio.rest.versionless.deployed_devices.fleet.FleetInstance
+        """
+        data = values.of({ 
+            'Name': name,
+        })
+
+        payload = self._version.create(method='POST', uri=self._uri, data=data)
+        return FleetInstance(self._version, payload)
+    
+
+    def get(self, sid):
+        """
+        Constructs a FleetContext
+        
+        :param sid: 
+        
+        :returns: twilio.rest.versionless.deployed_devices.fleet.FleetContext
+        :rtype: twilio.rest.versionless.deployed_devices.fleet.FleetContext
+        """
+        return FleetContext(self._version, sid=sid)
+
+    def __call__(self, sid):
+        """
+        Constructs a FleetContext
+        
+        :param sid: 
+        
+        :returns: twilio.rest.versionless.deployed_devices.fleet.FleetContext
+        :rtype: twilio.rest.versionless.deployed_devices.fleet.FleetContext
+        """
+        return FleetContext(self._version, sid=sid)
 
     def __repr__(self):
         """
