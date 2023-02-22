@@ -5,7 +5,9 @@ import com.twilio.oai.StringHelper;
 import com.twilio.oai.resolver.Resolver;
 import com.twilio.oai.template.IApiActionTemplate;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenOperation;
@@ -42,12 +44,10 @@ public class PythonApiResourceBuilder extends FluentApiResourceBuilder {
     }
 
     private void updateNamespaceSubPart(CodegenOperation co) {
-        String[] resourcePath = co.baseName.split(PATH_SEPARATOR_PLACEHOLDER);
-        String resourceBasePath = "";
-        for (String resource: resourcePath) {
-            resourceBasePath += StringHelper.toSnakeCase(resource) + ".";
-        }
-        namespaceSubPart = resourceBasePath.substring(0,resourceBasePath.length()-1);
+        namespaceSubPart = Arrays
+            .stream(co.baseName.split(PATH_SEPARATOR_PLACEHOLDER))
+            .map(StringHelper::toSnakeCase)
+            .collect(Collectors.joining("."));
     }
 
 }
