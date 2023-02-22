@@ -21,7 +21,7 @@ from twilio.base.instance_resource import InstanceResource
 from twilio.base.list_resource import ListResource
 from twilio.base.version import Version
 from twilio.base.page import Page
-from twilio.rest.flex_api.v1.aws.history import HistoryList
+from twilio.rest.flex_api.v1.credential.aws.history import HistoryList
 
 
 class AwsList(ListResource):

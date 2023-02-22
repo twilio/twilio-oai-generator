@@ -8,7 +8,7 @@ from twilio.base.instance_resource import InstanceResource
 from twilio.base.list_resource import ListResource
 from twilio.base.version import Version
 {{#hasPaginationOperation}}from twilio.base.page import Page{{/hasPaginationOperation}}
-{{#dependents}}from twilio.rest.{{domainPackage}}.{{apiVersion}}.{{apiFilename}}.{{mountName}} import {{resourceName}}List
+{{#dependents}}from twilio.rest.{{domainPackage}}.{{apiVersion}}.{{namespaceSubPart}}.{{filename}} import {{resourceName}}List
 {{/dependents}}
 
 class {{apiName}}List(ListResource):
