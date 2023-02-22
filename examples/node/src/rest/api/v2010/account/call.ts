@@ -25,7 +25,7 @@ export class TestResponseObjectTestArrayOfObjects {
   "description"?: string;
 }
 
-type TestStatus =
+export type TestStatus =
   | "in-progress"
   | "paused"
   | "stopped"
