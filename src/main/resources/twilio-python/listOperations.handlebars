@@ -3,10 +3,10 @@
     def create(self{{#allParams}}, {{paramName}}{{#if required}}{{else}}=values.unset{{/if}}{{/allParams}}):
         """
         Create the {{instanceName}}
-        {{#allParams}} :param {{dataType}} {{paramName}}: {{{description}}}
+        {{#allParams}}:param {{dataType}} {{paramName}}: {{{description}}}
         {{/allParams}}
         :returns: The created {{instanceName}}
-        :rtype: twilio.rest.{{domainPackage}}.{{apiVersion}}.{{apiFilename}}.{{instanceName}}
+        :rtype: twilio.rest.{{domainPackage}}.{{apiVersion}}.{{namespaceSubPart}}.{{instanceName}}
         """
         data = values.of({ {{#allParams}}
             '{{{baseName}}}': {{#if vendorExtensions.x-serialize}}{{vendorExtensions.x-serialize}}({{paramName}}{{#if isArray}}, lambda e: e){{else}}){{/if}}{{else}}{{paramName}}{{/if}},{{/allParams}}
@@ -31,7 +31,7 @@
                               limit with the most efficient page size, i.e. min(limit, 1000)
 
         :returns: Generator that will yield up to limit results
-        :rtype: list[twilio.rest.{{domainPackage}}.{{apiVersion}}.{{apiFilename}}.{{instanceName}}]
+        :rtype: list[twilio.rest.{{domainPackage}}.{{apiVersion}}.{{namespaceSubPart}}.{{instanceName}}]
         """
         limits = self._version.read_limits(limit, page_size)
         page = self.page({{#allParams}}{{#startsWith paramName text='page_size'}}{{else}}
@@ -56,7 +56,7 @@
                               with the most efficient page size, i.e. min(limit, 1000)
 
         :returns: Generator that will yield up to limit results
-        :rtype: list[twilio.rest.{{domainPackage}}.{{apiVersion}}.{{apiFilename}}.{{instanceName}}]
+        :rtype: list[twilio.rest.{{domainPackage}}.{{apiVersion}}.{{namespaceSubPart}}.{{instanceName}}]
         """
         return list(self.stream(
             {{#allParams}}{{#startsWith paramName text='page_size'}}{{else}}{{paramName}}={{paramName}},
@@ -75,7 +75,7 @@
         :param int page_size: Number of records to return, defaults to 50
 
         :returns: Page of {{instanceName}}
-        :rtype: twilio.rest.{{domainPackage}}.{{apiVersion}}.{{apiFilename}}.{{apiName}}Page
+        :rtype: twilio.rest.{{domainPackage}}.{{apiVersion}}.{{namespaceSubPart}}.{{apiName}}Page
         """
         data = values.of({ {{#allParams}}{{#startsWith paramName text='page_size'}}{{else}}
             '{{{baseName}}}': {{#if vendorExtensions.x-serialize}}{{vendorExtensions.x-serialize}}({{paramName}}){{else}}{{paramName}}{{/if}},{{/startsWith}}{{/allParams}}
@@ -95,7 +95,7 @@
         :param str target_url: API-generated URL for the requested results page
 
         :returns: Page of {{instanceName}}
-        :rtype: twilio.rest.{{domainPackage}}.{{apiVersion}}.{{apiFilename}}.{{apiName}}Page
+        :rtype: twilio.rest.{{domainPackage}}.{{apiVersion}}.{{namespaceSubPart}}.{{apiName}}Page
         """
         response = self._version.domain.twilio.request(
             'GET',

@@ -29,10 +29,11 @@ class AccountList(ListResource):
     def __init__(self, version: Version):
         """
         Initialize the AccountList
+
         :param Version version: Version that contains the resource
         
-        :returns: twilio.api.v2010.account..AccountList
-        :rtype: twilio.api.v2010.account..AccountList
+        :returns: twilio.rest.api.v2010.account.AccountList
+        :rtype: twilio.rest.api.v2010.account.AccountList
         """
         super().__init__(version)
 
@@ -48,10 +49,10 @@ class AccountList(ListResource):
     def create(self, x_twilio_webhook_enabled=values.unset, recording_status_callback=values.unset, recording_status_callback_event=values.unset, twiml=values.unset):
         """
         Create the AccountInstance
-         :param str x_twilio_webhook_enabled: 
-         :param str recording_status_callback: 
-         :param list[str] recording_status_callback_event: 
-         :param str twiml: 
+        :param str x_twilio_webhook_enabled: 
+        :param str recording_status_callback: 
+        :param list[str] recording_status_callback_event: 
+        :param str twiml: 
         
         :returns: The created AccountInstance
         :rtype: twilio.rest.api.v2010.account.AccountInstance

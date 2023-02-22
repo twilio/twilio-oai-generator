@@ -30,10 +30,11 @@ class CredentialList(ListResource):
     def __init__(self, version: Version):
         """
         Initialize the CredentialList
+
         :param Version version: Version that contains the resource
         
-        :returns: twilio.flex_api.v1.credential..CredentialList
-        :rtype: twilio.flex_api.v1.credential..CredentialList
+        :returns: twilio.rest.flex_api.v1.credential.CredentialList
+        :rtype: twilio.rest.flex_api.v1.credential.CredentialList
         """
         super().__init__(version)
 
@@ -50,23 +51,25 @@ class CredentialList(ListResource):
         """
         Access the aws
 
-        :returns: twilio.rest.flex_api.v1.credential.aws.AwsList
-        :rtype: twilio.rest.flex_api.v1.credential.aws.AwsList
+        :returns: twilio.rest.flex_api.v1.credential.AwsList
+        :rtype: twilio.rest.flex_api.v1.credential.AwsList
         """
         if self._aws is None:
             self._aws = AwsList(self._version)
         return self.aws
+
     @property
     def new_credentials(self):
         """
         Access the new_credentials
 
-        :returns: twilio.rest.flex_api.v1.credential.new_credentials.NewCredentialsList
-        :rtype: twilio.rest.flex_api.v1.credential.new_credentials.NewCredentialsList
+        :returns: twilio.rest.flex_api.v1.credential.NewCredentialsList
+        :rtype: twilio.rest.flex_api.v1.credential.NewCredentialsList
         """
         if self._new_credentials is None:
             self._new_credentials = NewCredentialsList(self._version)
         return self.new_credentials
+
 
     def __repr__(self):
         """

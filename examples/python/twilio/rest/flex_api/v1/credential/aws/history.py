@@ -28,11 +28,12 @@ class HistoryList(ListResource):
     def __init__(self, version: Version, sid: str):
         """
         Initialize the HistoryList
+
         :param Version version: Version that contains the resource
         :param sid: 
         
-        :returns: twilio.flex_api.v1.history..HistoryList
-        :rtype: twilio.flex_api.v1.history..HistoryList
+        :returns: twilio.rest.flex_api.v1.credential.aws.history.HistoryList
+        :rtype: twilio.rest.flex_api.v1.credential.aws.history.HistoryList
         """
         super().__init__(version)
 
@@ -47,8 +48,8 @@ class HistoryList(ListResource):
         """
         Constructs a HistoryContext
         
-        :returns: twilio.rest.flex_api.v1.history.HistoryContext
-        :rtype: twilio.rest.flex_api.v1.history.HistoryContext
+        :returns: twilio.rest.flex_api.v1.credential.aws.history.HistoryContext
+        :rtype: twilio.rest.flex_api.v1.credential.aws.history.HistoryContext
         """
         return HistoryContext(self._version, sid=self._solution['sid'])
 
@@ -56,8 +57,8 @@ class HistoryList(ListResource):
         """
         Constructs a HistoryContext
         
-        :returns: twilio.rest.flex_api.v1.history.HistoryContext
-        :rtype: twilio.rest.flex_api.v1.history.HistoryContext
+        :returns: twilio.rest.flex_api.v1.credential.aws.history.HistoryContext
+        :rtype: twilio.rest.flex_api.v1.credential.aws.history.HistoryContext
         """
         return HistoryContext(self._version, sid=self._solution['sid'])
 

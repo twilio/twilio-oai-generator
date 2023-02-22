@@ -29,10 +29,11 @@ class AwsList(ListResource):
     def __init__(self, version: Version):
         """
         Initialize the AwsList
+
         :param Version version: Version that contains the resource
         
-        :returns: twilio.flex_api.v1.aws..AwsList
-        :rtype: twilio.flex_api.v1.aws..AwsList
+        :returns: twilio.rest.flex_api.v1.credential.aws.AwsList
+        :rtype: twilio.rest.flex_api.v1.credential.aws.AwsList
         """
         super().__init__(version)
 
@@ -60,7 +61,7 @@ class AwsList(ListResource):
                               limit with the most efficient page size, i.e. min(limit, 1000)
 
         :returns: Generator that will yield up to limit results
-        :rtype: list[twilio.rest.flex_api.v1.aws.AwsInstance]
+        :rtype: list[twilio.rest.flex_api.v1.credential.aws.AwsInstance]
         """
         limits = self._version.read_limits(limit, page_size)
         page = self.page(
@@ -83,7 +84,7 @@ class AwsList(ListResource):
                               with the most efficient page size, i.e. min(limit, 1000)
 
         :returns: Generator that will yield up to limit results
-        :rtype: list[twilio.rest.flex_api.v1.aws.AwsInstance]
+        :rtype: list[twilio.rest.flex_api.v1.credential.aws.AwsInstance]
         """
         return list(self.stream(
             limit=limit,
@@ -100,7 +101,7 @@ class AwsList(ListResource):
         :param int page_size: Number of records to return, defaults to 50
 
         :returns: Page of AwsInstance
-        :rtype: twilio.rest.flex_api.v1.aws.AwsPage
+        :rtype: twilio.rest.flex_api.v1.credential.aws.AwsPage
         """
         data = values.of({ 
             'PageToken': page_token,
@@ -119,7 +120,7 @@ class AwsList(ListResource):
         :param str target_url: API-generated URL for the requested results page
 
         :returns: Page of AwsInstance
-        :rtype: twilio.rest.flex_api.v1.aws.AwsPage
+        :rtype: twilio.rest.flex_api.v1.credential.aws.AwsPage
         """
         response = self._version.domain.twilio.request(
             'GET',
@@ -134,8 +135,8 @@ class AwsList(ListResource):
         
         :param sid: 
         
-        :returns: twilio.rest.flex_api.v1.aws.AwsContext
-        :rtype: twilio.rest.flex_api.v1.aws.AwsContext
+        :returns: twilio.rest.flex_api.v1.credential.aws.AwsContext
+        :rtype: twilio.rest.flex_api.v1.credential.aws.AwsContext
         """
         return AwsContext(self._version, sid=sid)
 
@@ -145,8 +146,8 @@ class AwsList(ListResource):
         
         :param sid: 
         
-        :returns: twilio.rest.flex_api.v1.aws.AwsContext
-        :rtype: twilio.rest.flex_api.v1.aws.AwsContext
+        :returns: twilio.rest.flex_api.v1.credential.aws.AwsContext
+        :rtype: twilio.rest.flex_api.v1.credential.aws.AwsContext
         """
         return AwsContext(self._version, sid=sid)
 
@@ -174,8 +175,8 @@ class AwsPage(Page):
         :param Version version: Version that contains the resource
         :param Response response: Response from the API
 
-        :returns: twilio.rest.flex_api.v1.aws.AwsPage
-        :rtype: twilio.rest.flex_api.v1.aws.AwsPage
+        :returns: twilio.rest.flex_api.v1.credential.aws.AwsPage
+        :rtype: twilio.rest.flex_api.v1.credential.aws.AwsPage
         """
         super().__init__(version, response)
 
@@ -188,8 +189,8 @@ class AwsPage(Page):
 
         :param dict payload: Payload response from the API
 
-        :returns: twilio.rest.flex_api.v1.aws.AwsInstance
-        :rtype: twilio.rest.flex_api.v1.aws.AwsInstance
+        :returns: twilio.rest.flex_api.v1.credential.aws.AwsInstance
+        :rtype: twilio.rest.flex_api.v1.credential.aws.AwsInstance
         """
         return AwsInstance(self._version, payload)
 

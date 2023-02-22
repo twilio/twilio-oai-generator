@@ -28,10 +28,11 @@ class FleetList(ListResource):
     def __init__(self, version: Version):
         """
         Initialize the FleetList
+
         :param Version version: Version that contains the resource
         
-        :returns: twilio.versionless.deployed_devices.fleet..FleetList
-        :rtype: twilio.versionless.deployed_devices.fleet..FleetList
+        :returns: twilio.rest.versionless.deployed_devices.fleet.FleetList
+        :rtype: twilio.rest.versionless.deployed_devices.fleet.FleetList
         """
         super().__init__(version)
 
@@ -45,7 +46,7 @@ class FleetList(ListResource):
     def create(self, name=values.unset):
         """
         Create the FleetInstance
-         :param str name: 
+        :param str name: 
         
         :returns: The created FleetInstance
         :rtype: twilio.rest.versionless.deployed_devices.fleet.FleetInstance

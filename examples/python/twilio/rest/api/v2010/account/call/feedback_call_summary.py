@@ -28,11 +28,12 @@ class FeedbackCallSummaryList(ListResource):
     def __init__(self, version: Version, account_sid: str):
         """
         Initialize the FeedbackCallSummaryList
+
         :param Version version: Version that contains the resource
         :param account_sid: 
         
-        :returns: twilio.api.v2010.feedback_call_summary..FeedbackCallSummaryList
-        :rtype: twilio.api.v2010.feedback_call_summary..FeedbackCallSummaryList
+        :returns: twilio.rest.api.v2010.account.call.feedback_call_summary.FeedbackCallSummaryList
+        :rtype: twilio.rest.api.v2010.account.call.feedback_call_summary.FeedbackCallSummaryList
         """
         super().__init__(version)
 
@@ -49,8 +50,8 @@ class FeedbackCallSummaryList(ListResource):
         
         :param sid: 
         
-        :returns: twilio.rest.api.v2010.feedback_call_summary.FeedbackCallSummaryContext
-        :rtype: twilio.rest.api.v2010.feedback_call_summary.FeedbackCallSummaryContext
+        :returns: twilio.rest.api.v2010.account.call.feedback_call_summary.FeedbackCallSummaryContext
+        :rtype: twilio.rest.api.v2010.account.call.feedback_call_summary.FeedbackCallSummaryContext
         """
         return FeedbackCallSummaryContext(self._version, account_sid=self._solution['account_sid'], sid=sid)
 
@@ -60,8 +61,8 @@ class FeedbackCallSummaryList(ListResource):
         
         :param sid: 
         
-        :returns: twilio.rest.api.v2010.feedback_call_summary.FeedbackCallSummaryContext
-        :rtype: twilio.rest.api.v2010.feedback_call_summary.FeedbackCallSummaryContext
+        :returns: twilio.rest.api.v2010.account.call.feedback_call_summary.FeedbackCallSummaryContext
+        :rtype: twilio.rest.api.v2010.account.call.feedback_call_summary.FeedbackCallSummaryContext
         """
         return FeedbackCallSummaryContext(self._version, account_sid=self._solution['account_sid'], sid=sid)
 

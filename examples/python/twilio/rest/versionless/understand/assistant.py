@@ -28,10 +28,11 @@ class AssistantList(ListResource):
     def __init__(self, version: Version):
         """
         Initialize the AssistantList
+
         :param Version version: Version that contains the resource
         
-        :returns: twilio.versionless.understand.assistant..AssistantList
-        :rtype: twilio.versionless.understand.assistant..AssistantList
+        :returns: twilio.rest.versionless.understand.assistant.AssistantList
+        :rtype: twilio.rest.versionless.understand.assistant.AssistantList
         """
         super().__init__(version)
 

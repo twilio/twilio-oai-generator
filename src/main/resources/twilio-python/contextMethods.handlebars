@@ -4,8 +4,8 @@
         {{#instancePathParams}}{{#if vendorExtensions.x-is-parent-param}}{{else}}
         :param {{paramName}}: {{{description}}}
         {{/if}}{{/instancePathParams}}
-        :returns: twilio.rest.{{domainPackage}}.{{apiVersion}}.{{apiFilename}}.{{apiName}}Context
-        :rtype: twilio.rest.{{domainPackage}}.{{apiVersion}}.{{apiFilename}}.{{apiName}}Context
+        :returns: twilio.rest.{{domainPackage}}.{{apiVersion}}.{{namespaceSubPart}}.{{apiName}}Context
+        :rtype: twilio.rest.{{domainPackage}}.{{apiVersion}}.{{namespaceSubPart}}.{{apiName}}Context
         """
         return {{apiName}}Context(self._version{{#instancePathParams}}{{#if vendorExtensions.x-is-parent-param}}, {{paramName}}=self._solution['{{paramName}}']{{else}}, {{paramName}}={{paramName}}{{/if}}{{/instancePathParams}})
 
@@ -15,7 +15,7 @@
         {{#instancePathParams}}{{#if vendorExtensions.x-is-parent-param}}{{else}}
         :param {{paramName}}: {{{description}}}
         {{/if}}{{/instancePathParams}}
-        :returns: twilio.rest.{{domainPackage}}.{{apiVersion}}.{{apiFilename}}.{{apiName}}Context
-        :rtype: twilio.rest.{{domainPackage}}.{{apiVersion}}.{{apiFilename}}.{{apiName}}Context
+        :returns: twilio.rest.{{domainPackage}}.{{apiVersion}}.{{namespaceSubPart}}.{{apiName}}Context
+        :rtype: twilio.rest.{{domainPackage}}.{{apiVersion}}.{{namespaceSubPart}}.{{apiName}}Context
         """
         return {{apiName}}Context(self._version{{#instancePathParams}}{{#if vendorExtensions.x-is-parent-param}}, {{paramName}}=self._solution['{{paramName}}']{{else}}, {{paramName}}={{paramName}}{{/if}}{{/instancePathParams}})

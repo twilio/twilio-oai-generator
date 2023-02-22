@@ -28,10 +28,11 @@ class NewCredentialsList(ListResource):
     def __init__(self, version: Version):
         """
         Initialize the NewCredentialsList
+
         :param Version version: Version that contains the resource
         
-        :returns: twilio.flex_api.v1.aws..NewCredentialsList
-        :rtype: twilio.flex_api.v1.aws..NewCredentialsList
+        :returns: twilio.rest.flex_api.v1.credential.new_credentials.NewCredentialsList
+        :rtype: twilio.rest.flex_api.v1.credential.new_credentials.NewCredentialsList
         """
         super().__init__(version)
 
@@ -44,26 +45,26 @@ class NewCredentialsList(ListResource):
     def create(self, test_string, test_boolean=values.unset, test_integer=values.unset, test_number=values.unset, test_number_float=values.unset, test_number_double=values.unset, test_number_int32=values.unset, test_number_int64=values.unset, test_object=values.unset, test_date_time=values.unset, test_date=values.unset, test_enum=values.unset, test_object_array=values.unset, test_any_type=values.unset, test_any_array=values.unset, permissions=values.unset, some_a2_p_thing=values.unset):
         """
         Create the NewCredentialsInstance
-         :param str test_string: 
-         :param bool test_boolean: 
-         :param int test_integer: 
-         :param float test_number: 
-         :param float test_number_float: 
-         :param float test_number_double: 
-         :param float test_number_int32: 
-         :param int test_number_int64: 
-         :param dict test_object: 
-         :param datetime test_date_time: 
-         :param date test_date: 
-         :param TestStatus test_enum: 
-         :param list[object] test_object_array: 
-         :param object test_any_type: 
-         :param list[object] test_any_array: 
-         :param list[str] permissions: A comma-separated list of the permissions you will request from the users of this ConnectApp.  Can include: `get-all` and `post-all`.
-         :param str some_a2_p_thing: 
+        :param str test_string: 
+        :param bool test_boolean: 
+        :param int test_integer: 
+        :param float test_number: 
+        :param float test_number_float: 
+        :param float test_number_double: 
+        :param float test_number_int32: 
+        :param int test_number_int64: 
+        :param dict test_object: 
+        :param datetime test_date_time: 
+        :param date test_date: 
+        :param TestStatus test_enum: 
+        :param list[object] test_object_array: 
+        :param object test_any_type: 
+        :param list[object] test_any_array: 
+        :param list[str] permissions: A comma-separated list of the permissions you will request from the users of this ConnectApp.  Can include: `get-all` and `post-all`.
+        :param str some_a2_p_thing: 
         
         :returns: The created NewCredentialsInstance
-        :rtype: twilio.rest.flex_api.v1.aws.NewCredentialsInstance
+        :rtype: twilio.rest.flex_api.v1.credential.new_credentials.NewCredentialsInstance
         """
         data = values.of({ 
             'TestString': test_string,

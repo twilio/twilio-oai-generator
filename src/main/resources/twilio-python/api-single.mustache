@@ -16,11 +16,12 @@ class {{apiName}}List(ListResource):
     def __init__(self, version: Version{{#listPathParams}}, {{paramName}}: {{{dataType}}}{{/listPathParams}}):
         """
         Initialize the {{apiName}}List
+
         :param Version version: Version that contains the resource
         {{#listPathParams}}:param {{paramName}}: {{{description}}}
         {{/listPathParams}}
-        :returns: twilio.{{domainPackage}}.{{apiVersion}}.{{apiFilename}}.{{mountName}}.{{apiName}}List
-        :rtype: twilio.{{domainPackage}}.{{apiVersion}}.{{apiFilename}}.{{mountName}}.{{apiName}}List
+        :returns: twilio.rest.{{domainPackage}}.{{apiVersion}}.{{namespaceSubPart}}.{{apiName}}List
+        :rtype: twilio.rest.{{domainPackage}}.{{apiVersion}}.{{namespaceSubPart}}.{{apiName}}List
         """
         super().__init__(version)
 
@@ -35,12 +36,13 @@ class {{apiName}}List(ListResource):
         """
         Access the {{mountName}}
 
-        :returns: twilio.rest.{{domainPackage}}.{{apiVersion}}.{{apiFilename}}.{{mountName}}.{{resourceName}}List
-        :rtype: twilio.rest.{{domainPackage}}.{{apiVersion}}.{{apiFilename}}.{{mountName}}.{{resourceName}}List
+        :returns: twilio.rest.{{domainPackage}}.{{apiVersion}}.{{namespaceSubPart}}.{{resourceName}}List
+        :rtype: twilio.rest.{{domainPackage}}.{{apiVersion}}.{{namespaceSubPart}}.{{resourceName}}List
         """
         if self._{{mountName}} is None:
             self._{{mountName}} = {{resourceName}}List(self._version{{#listPathParams}}, {{paramName}}=self._solution['{{paramName}}']{{/listPathParams}})
-        return self.{{mountName}}{{/instanceDependent}}{{/dependents}}
+        return self.{{mountName}}
+{{/instanceDependent}}{{/dependents}}
 {{#instancePath}}{{>contextMethods}}{{/instancePath}}
     def __repr__(self):
         """
