@@ -28,18 +28,19 @@ class AssistantList(ListResource):
     def __init__(self, version: Version):
         """
         Initialize the AssistantList
+
         :param Version version: Version that contains the resource
         
-        :returns: twilio.versionless.understand.assistant..AssistantList
-        :rtype: twilio.versionless.understand.assistant..AssistantList
+        :returns: twilio.rest.versionless.understand.assistant.AssistantList
+        :rtype: twilio.rest.versionless.understand.assistant.AssistantList
         """
         super().__init__(version)
 
         # Path Solution
         self._solution = {  }
         self._uri = '/Assistants'.format(**self._solution)
-
-
+        
+        
     
     def stream(self, limit=None, page_size=None):
         """
@@ -124,6 +125,7 @@ class AssistantList(ListResource):
         return AssistantPage(self._version, response, self._solution)
 
 
+
     def __repr__(self):
         """
         Provide a friendly representation
@@ -173,6 +175,40 @@ class AssistantPage(Page):
 
 
 
+
+
+class AssistantInstance(InstanceResource):
+    def __init__(self, version, payload):
+        super().__init__(version)
+        self._properties = { 
+            'sid' : payload.get('sid'),
+            'friendly_name' : payload.get('friendly_name'),
+        }
+
+        self._context = None
+        self._solution = {
+            
+        }
+
+    @property
+    def _proxy(self):
+        if self._context is None:
+            self._context = AssistantContext(
+                self._version,
+                
+            )
+        return self._context
+
+    
+
+    def __repr__(self):
+        """
+        Provide a friendly representation
+        :returns: Machine friendly representation
+        :rtype: str
+        """
+        context = ' '.join('{}={}'.format(k, v) for k, v in self._solution.items())
+        return '<Twilio.Versionless.Understand.AssistantInstance {}>'.format(context)
 
 
 
