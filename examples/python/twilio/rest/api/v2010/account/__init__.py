@@ -60,7 +60,7 @@ class AccountList(ListResource):
         data = values.of({ 
             'X-Twilio-Webhook-Enabled': x_twilio_webhook_enabled,
             'RecordingStatusCallback': recording_status_callback,
-            'RecordingStatusCallbackEvent': recording_status_callback_event,
+            'RecordingStatusCallbackEvent': serialize.map(recording_status_callback_event, lambda e: e),
             'Twiml': twiml,
         })
 

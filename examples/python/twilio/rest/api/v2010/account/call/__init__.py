@@ -61,7 +61,7 @@ class CallList(ListResource):
         data = values.of({ 
             'RequiredStringProperty': required_string_property,
             'TestMethod': test_method,
-            'TestArrayOfStrings': test_array_of_strings,
+            'TestArrayOfStrings': serialize.map(test_array_of_strings, lambda e: e),
             'TestArrayOfUri': test_array_of_uri,
         })
 

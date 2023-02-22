@@ -82,7 +82,7 @@ class NewCredentialsList(ListResource):
             'TestObjectArray': test_object_array,
             'TestAnyType': serialize.object(test_any_type),
             'TestAnyArray': test_any_array,
-            'Permissions': permissions,
+            'Permissions': serialize.map(permissions, lambda e: e),
             'SomeA2PThing': some_a2_p_thing,
         })
 
