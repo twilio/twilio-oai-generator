@@ -91,10 +91,10 @@ class CallContext(InstanceContext):
         self._solution = { 
             'sid': sid,
         }
-        self._uri = '/Voice/${sid}'.format(**self._solution)
+        self._uri = '/Voice/{sid}'.format(**self._solution)
         
-    
-    def update(self):
+        
+        def update(self):
         """
         Update the CallInstance
         
@@ -104,8 +104,9 @@ class CallContext(InstanceContext):
         """
         data = values.of({ 
         })
+        )
 
-        payload = self._version.update(method='POST', uri=self._uri, data=data)
+        payload = self._version.update(method='POST', uri=self._uri, data=data,)
 
         return CallInstance(
             self._version,

@@ -93,10 +93,10 @@ class FeedbackCallSummaryContext(InstanceContext):
             'account_sid': account_sid,
             'sid': sid,
         }
-        self._uri = '/Accounts/${account_sid}/Calls/Feedback/Summary/${sid}.json'.format(**self._solution)
+        self._uri = '/Accounts/{account_sid}/Calls/Feedback/Summary/{sid}.json'.format(**self._solution)
         
-    
-    def update(self, end_date=values.unset, start_date=values.unset, account_sid=values.unset):
+        
+        def update(self, end_date, start_date, account_sid=values.unset):
         """
         Update the FeedbackCallSummaryInstance
         
@@ -112,8 +112,9 @@ class FeedbackCallSummaryContext(InstanceContext):
             'StartDate': serialize.iso8601_date(start_date),
             'AccountSid': account_sid,
         })
+        )
 
-        payload = self._version.update(method='POST', uri=self._uri, data=data)
+        payload = self._version.update(method='POST', uri=self._uri, data=data,)
 
         return FeedbackCallSummaryInstance(
             self._version,
@@ -305,7 +306,7 @@ class FeedbackCallSummaryInstance(InstanceResource):
         """
         return self._properties['test_array_of_enum']
     
-    def update(self, end_date=values.unset, start_date=values.unset, account_sid=values.unset):
+    def update(self, end_date, start_date, account_sid=values.unset):
         """
         Update the FeedbackCallSummaryInstance
         

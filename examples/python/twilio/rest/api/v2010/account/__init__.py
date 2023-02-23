@@ -58,13 +58,13 @@ class AccountList(ListResource):
         :rtype: twilio.rest.api.v2010.account.AccountInstance
         """
         data = values.of({ 
-            'X-Twilio-Webhook-Enabled': x_twilio_webhook_enabled,
             'RecordingStatusCallback': recording_status_callback,
             'RecordingStatusCallbackEvent': serialize.map(recording_status_callback_event, lambda e: e),
             'Twiml': twiml,
         })
+        headers = values.of({'X-Twilio-Webhook-Enabled': x_twilio_webhook_enabled, })
+        payload = self._version.create(method='POST', uri=self._uri, data=data, headers=headers)
 
-        payload = self._version.create(method='POST', uri=self._uri, data=data)
         return AccountInstance(self._version, payload)
     
     
@@ -272,20 +272,21 @@ class AccountContext(InstanceContext):
         self._solution = { 
             'sid': sid,
         }
-        self._uri = '/Accounts/${sid}.json'.format(**self._solution)
+        self._uri = '/Accounts/{sid}.json'.format(**self._solution)
         
         self._calls = None
-    
-    def delete(self):
+        
+        def delete(self):
         """
         Deletes the AccountInstance
 
+        
         :returns: True if delete succeeds, False otherwise
         :rtype: bool
         """
-        return self._version.delete(method='DELETE', uri=self._uri)
+        return self._version.delete(method='DELETE', uri=self._uri,)
         
-    def fetch(self):
+        def fetch(self):
         """
         Fetch the AccountInstance
 
@@ -301,7 +302,7 @@ class AccountContext(InstanceContext):
             
         )
         
-    def update(self, status=values.unset, pause_behavior=values.unset):
+        def update(self, status, pause_behavior=values.unset):
         """
         Update the AccountInstance
         
@@ -315,8 +316,9 @@ class AccountContext(InstanceContext):
             'Status': status,
             'PauseBehavior': pause_behavior,
         })
+        )
 
-        payload = self._version.update(method='POST', uri=self._uri, data=data)
+        payload = self._version.update(method='POST', uri=self._uri, data=data,)
 
         return AccountInstance(
             self._version,
@@ -538,7 +540,7 @@ class AccountInstance(InstanceResource):
         """
         return self._proxy.fetch()
     
-    def update(self, status=values.unset, pause_behavior=values.unset):
+    def update(self, status, pause_behavior=values.unset):
         """
         Update the AccountInstance
         

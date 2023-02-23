@@ -224,20 +224,21 @@ class AwsContext(InstanceContext):
         self._solution = { 
             'sid': sid,
         }
-        self._uri = '/Credentials/AWS/${sid}'.format(**self._solution)
+        self._uri = '/Credentials/AWS/{sid}'.format(**self._solution)
         
         self._history = None
-    
-    def delete(self):
+        
+        def delete(self):
         """
         Deletes the AwsInstance
 
+        
         :returns: True if delete succeeds, False otherwise
         :rtype: bool
         """
-        return self._version.delete(method='DELETE', uri=self._uri)
+        return self._version.delete(method='DELETE', uri=self._uri,)
         
-    def fetch(self):
+        def fetch(self):
         """
         Fetch the AwsInstance
 
@@ -253,7 +254,7 @@ class AwsContext(InstanceContext):
             
         )
         
-    def update(self, test_string=values.unset, test_boolean=values.unset):
+        def update(self, test_string=values.unset, test_boolean=values.unset):
         """
         Update the AwsInstance
         
@@ -267,8 +268,9 @@ class AwsContext(InstanceContext):
             'TestString': test_string,
             'TestBoolean': test_boolean,
         })
+        )
 
-        payload = self._version.update(method='POST', uri=self._uri, data=data)
+        payload = self._version.update(method='POST', uri=self._uri, data=data,)
 
         return AwsInstance(
             self._version,

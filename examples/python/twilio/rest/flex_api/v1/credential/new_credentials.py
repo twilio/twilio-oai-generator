@@ -85,8 +85,9 @@ class NewCredentialsList(ListResource):
             'Permissions': serialize.map(permissions, lambda e: e),
             'SomeA2PThing': some_a2_p_thing,
         })
+        )
+        payload = self._version.create(method='POST', uri=self._uri, data=data,)
 
-        payload = self._version.create(method='POST', uri=self._uri, data=data)
         return NewCredentialsInstance(self._version, payload)
     
 

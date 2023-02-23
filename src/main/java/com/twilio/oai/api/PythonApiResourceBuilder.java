@@ -26,7 +26,7 @@ public class PythonApiResourceBuilder extends FluentApiResourceBuilder {
     @Override
     public ApiResourceBuilder updateOperations(final Resolver<CodegenParameter> codegenParameterIResolver) {
         super.updateOperations(codegenParameterIResolver);
-
+        updatePaths();
         for (final CodegenOperation co : codegenOperationList) {
             co.httpMethod = co.httpMethod.toLowerCase();
             updateNamespaceSubPart(co);
@@ -48,6 +48,11 @@ public class PythonApiResourceBuilder extends FluentApiResourceBuilder {
             .stream(co.baseName.split(PATH_SEPARATOR_PLACEHOLDER))
             .map(StringHelper::toSnakeCase)
             .collect(Collectors.joining("."));
+    }
+
+    private void updatePaths() {
+        if (listPath != null) listPath = listPath.replace("$", "");
+        if (instancePath != null) instancePath = instancePath.replace("$", "");
     }
 
 }
