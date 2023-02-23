@@ -13,8 +13,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class PhpDomainBuilder {
-    private static final List<Object> contextResourcesList = new ArrayList<>();
-    private static final List<Object> dependentList = new ArrayList<>();
+    private static final ThreadLocal<List<Object>> contextResourcesList = ThreadLocal.withInitial(ArrayList::new);
+    private static final ThreadLocal<List<Object>> dependentList = ThreadLocal.withInitial(ArrayList::new);
 
     public void setVersionTemplate(final OpenAPI openAPI, DirectoryStructureService directoryStructureService) {
         filter_contextResources(openAPI, directoryStructureService);
@@ -24,11 +24,11 @@ public class PhpDomainBuilder {
 
     public static void setContextResources(DirectoryStructureService directoryStructureService, String version) {
         if (version == null) {
-            directoryStructureService.getAdditionalProperties().put("versionDependents", contextResourcesList);
+            directoryStructureService.getAdditionalProperties().put("versionDependents", contextResourcesList.get());
             return;
         }
         directoryStructureService.getAdditionalProperties().put("versionDependents",
-                contextResourcesList.stream()
+                contextResourcesList.get().stream()
                         .map(DirectoryStructureService.ContextResource.class::cast)
                         .filter(contextResource -> contextResource.getVersion().equals(version))
                         .collect(Collectors.toList())
@@ -69,7 +69,7 @@ public class PhpDomainBuilder {
             }
         }
 
-        addResources(dependents, directoryStructureService, contextResourcesList);
+        addResources(dependents, directoryStructureService, contextResourcesList.get());
     }
 
     private void getApiDependents(DirectoryStructureService directoryStructureService) {
@@ -77,9 +77,9 @@ public class PhpDomainBuilder {
         List<Resource> dependents = directoryStructureService.getResourceTree().dependents(pathkey)
                 .stream().filter(dep -> !dep.getName().endsWith("}.json"))
                 .collect(Collectors.toList());
-        addResources(dependents, directoryStructureService, dependentList);
+        addResources(dependents, directoryStructureService, dependentList.get());
         directoryStructureService.getAdditionalProperties().put("isApiDomain", "true");
-        directoryStructureService.getAdditionalProperties().put("apiDependents", dependentList);
+        directoryStructureService.getAdditionalProperties().put("apiDependents", dependentList.get());
     }
 
     private void addResources(List<Resource> dependents, DirectoryStructureService directoryStructureService, List<Object> dependentList) {
