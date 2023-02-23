@@ -228,7 +228,7 @@ class AwsContext(InstanceContext):
         
         self._history = None
         
-        def delete(self):
+    def delete(self):
         """
         Deletes the AwsInstance
 
@@ -238,7 +238,7 @@ class AwsContext(InstanceContext):
         """
         return self._version.delete(method='DELETE', uri=self._uri,)
         
-        def fetch(self):
+    def fetch(self):
         """
         Fetch the AwsInstance
 
@@ -254,7 +254,7 @@ class AwsContext(InstanceContext):
             
         )
         
-        def update(self, test_string=values.unset, test_boolean=values.unset):
+    def update(self, test_string=values.unset, test_boolean=values.unset):
         """
         Update the AwsInstance
         

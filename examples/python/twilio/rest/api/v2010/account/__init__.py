@@ -276,7 +276,7 @@ class AccountContext(InstanceContext):
         
         self._calls = None
         
-        def delete(self):
+    def delete(self):
         """
         Deletes the AccountInstance
 
@@ -286,7 +286,7 @@ class AccountContext(InstanceContext):
         """
         return self._version.delete(method='DELETE', uri=self._uri,)
         
-        def fetch(self):
+    def fetch(self):
         """
         Fetch the AccountInstance
 
@@ -302,7 +302,7 @@ class AccountContext(InstanceContext):
             
         )
         
-        def update(self, status, pause_behavior=values.unset):
+    def update(self, status, pause_behavior=values.unset):
         """
         Update the AccountInstance
         

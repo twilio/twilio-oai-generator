@@ -94,7 +94,7 @@ class CallContext(InstanceContext):
         self._uri = '/Voice/{sid}'.format(**self._solution)
         
         
-        def update(self):
+    def update(self):
         """
         Update the CallInstance
         

@@ -134,7 +134,7 @@ class CallContext(InstanceContext):
         self._uri = '/Accounts/{account_sid}/Calls/{test_integer}.json'.format(**self._solution)
         
         
-        def delete(self):
+    def delete(self):
         """
         Deletes the CallInstance
 
@@ -144,7 +144,7 @@ class CallContext(InstanceContext):
         """
         return self._version.delete(method='DELETE', uri=self._uri,)
         
-        def fetch(self):
+    def fetch(self):
         """
         Fetch the CallInstance
 

@@ -91,7 +91,7 @@ class HistoryContext(InstanceContext):
         self._uri = '/Credentials/AWS/{sid}/History'.format(**self._solution)
         
         
-        def fetch(self, add_ons_data=values.unset):
+    def fetch(self, add_ons_data=values.unset):
         """
         Fetch the HistoryInstance
 

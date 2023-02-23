@@ -111,7 +111,7 @@ class FleetContext(InstanceContext):
         self._uri = '/Fleets/{sid}'.format(**self._solution)
         
         
-        def fetch(self):
+    def fetch(self):
         """
         Fetch the FleetInstance
 
