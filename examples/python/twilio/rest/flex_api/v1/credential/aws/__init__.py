@@ -210,7 +210,8 @@ class AwsContext(InstanceContext):
 
     def __init__(self, version: Version, sid: str):
         """
-        Initialize the ParticipantContext
+        Initialize the AwsContext
+
         :param Version version: Version that contains the resource
         :param sid: 
 
@@ -267,7 +268,7 @@ class AwsContext(InstanceContext):
             'TestBoolean': test_boolean,
         })
 
-        payload = self._version.update(method='post', uri=self._uri, data=data)
+        payload = self._version.update(method='POST', uri=self._uri, data=data)
 
         return AwsInstance(
             self._version,
@@ -285,9 +286,7 @@ class AwsContext(InstanceContext):
         :rtype: twilio.rest.flex_api.v1.credential.aws.HistoryList
         """
         if self._history is None:
-            self._history = HistoryList(
-                self._version,
-                self._solution['sid'],
+            self._history = HistoryList(self._version, self._solution['sid'],
             )
         return self._history
     
@@ -300,36 +299,111 @@ class AwsContext(InstanceContext):
         context = ' '.join('{}={}'.format(k, v) for k, v in self._solution.items())
         return '<Twilio.FlexApi.V1.AwsContext {}>'.format(context)
 
-
 class AwsInstance(InstanceResource):
-    def __init__(self, version, payload, sid: str):
+
+    def __init__(self, version, payload, sid: str=None):
+        """
+        Initialize the AwsInstance
+        :returns: twilio.rest.flex_api.v1.credential.aws.AwsInstance
+        :rtype: twilio.rest.flex_api.v1.credential.aws.AwsInstance
+        """
         super().__init__(version)
+
         self._properties = { 
-            'account_sid' : payload.get('account_sid'),
-            'sid' : payload.get('sid'),
-            'test_string' : payload.get('test_string'),
-            'test_integer' : payload.get('test_integer'),
+            'account_sid': payload.get('account_sid'),
+            'sid': payload.get('sid'),
+            'test_string': payload.get('test_string'),
+            'test_integer': deserialize.integer(payload.get('test_integer')),
         }
 
         self._context = None
-        self._solution = {
-            'sid': sid or self._properties['sid'],
-        }
-
+        self._solution = { 'sid': sid or self._properties['sid'],  }
+    
     @property
     def _proxy(self):
-        if self._context is None:
-            self._context = AwsContext(
-                self._version,
-                sid=self._solution['sid'],
-            )
-        return self._context
+        """
+        Generate an instance context for the instance, the context is capable of
+        performing various actions. All instance actions are proxied to the context
 
+        :returns: AwsContext for this AwsInstance
+        :rtype: twilio.rest.flex_api.v1.credential.aws.AwsContext
+        """
+        if self._context is None:
+            self._context = AwsContext(self._version, sid=self._solution['sid'],)
+        return self._context
+    
+    @property
+    def account_sid(self):
+        """
+        :returns: 
+        :rtype: str
+        """
+        return self._properties['account_sid']
+    
+    @property
+    def sid(self):
+        """
+        :returns: 
+        :rtype: str
+        """
+        return self._properties['sid']
+    
+    @property
+    def test_string(self):
+        """
+        :returns: 
+        :rtype: str
+        """
+        return self._properties['test_string']
+    
+    @property
+    def test_integer(self):
+        """
+        :returns: 
+        :rtype: int
+        """
+        return self._properties['test_integer']
+    
+    def delete(self):
+        """
+        Deletes the AwsInstance
+
+        :returns: True if delete succeeds, False otherwise
+        :rtype: bool
+        """
+        return self._proxy.delete()
+    
+    def fetch(self):
+        """
+        Fetch the AwsInstance
+
+        :returns: The fetched AwsInstance
+        :rtype: twilio.rest.flex_api.v1.credential.aws.AwsInstance
+        """
+        return self._proxy.fetch()
+    
+    def update(self, test_string=values.unset, test_boolean=values.unset):
+        """
+        Update the AwsInstance
+        
+        :params str test_string: 
+        :params bool test_boolean: 
+
+        :returns: The updated AwsInstance
+        :rtype: twilio.rest.flex_api.v1.credential.aws.AwsInstance
+        """
+        return self._proxy.update(test_string=test_string, test_boolean=test_boolean, )
+    
     @property
     def history(self):
+        """
+        Access the history
+
+        :returns: twilio.rest.flex_api.v1.credential.aws.HistoryList
+        :rtype: twilio.rest.flex_api.v1.credential.aws.HistoryList
+        """
         return self._proxy.history
     
-
     def __repr__(self):
         """
         Provide a friendly representation
@@ -338,6 +412,5 @@ class AwsInstance(InstanceResource):
         """
         context = ' '.join('{}={}'.format(k, v) for k, v in self._solution.items())
         return '<Twilio.FlexApi.V1.AwsInstance {}>'.format(context)
-
 
 

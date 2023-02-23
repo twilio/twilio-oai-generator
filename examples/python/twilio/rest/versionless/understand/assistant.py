@@ -16,7 +16,7 @@
 from twilio.base import deserialize
 from twilio.base import serialize
 from twilio.base import values
-from twilio.base.instance_context import InstanceContext
+
 from twilio.base.instance_resource import InstanceResource
 from twilio.base.list_resource import ListResource
 from twilio.base.version import Version
@@ -176,31 +176,41 @@ class AssistantPage(Page):
 
 
 
-
 class AssistantInstance(InstanceResource):
+
     def __init__(self, version, payload):
+        """
+        Initialize the AssistantInstance
+        :returns: twilio.rest.versionless.understand.assistant.AssistantInstance
+        :rtype: twilio.rest.versionless.understand.assistant.AssistantInstance
+        """
         super().__init__(version)
+
         self._properties = { 
-            'sid' : payload.get('sid'),
-            'friendly_name' : payload.get('friendly_name'),
+            'sid': payload.get('sid'),
+            'friendly_name': payload.get('friendly_name'),
         }
 
         self._context = None
-        self._solution = {
-            
-        }
-
-    @property
-    def _proxy(self):
-        if self._context is None:
-            self._context = AssistantContext(
-                self._version,
-                
-            )
-        return self._context
-
+        self._solution = {  }
     
-
+    
+    @property
+    def sid(self):
+        """
+        :returns: A string that uniquely identifies this Fleet.
+        :rtype: str
+        """
+        return self._properties['sid']
+    
+    @property
+    def friendly_name(self):
+        """
+        :returns: A human readable description for this Fleet.
+        :rtype: str
+        """
+        return self._properties['friendly_name']
+    
     def __repr__(self):
         """
         Provide a friendly representation
@@ -209,6 +219,5 @@ class AssistantInstance(InstanceResource):
         """
         context = ' '.join('{}={}'.format(k, v) for k, v in self._solution.items())
         return '<Twilio.Versionless.Understand.AssistantInstance {}>'.format(context)
-
 
 

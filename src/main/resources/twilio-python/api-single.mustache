@@ -3,8 +3,8 @@
 from twilio.base import deserialize
 from twilio.base import serialize
 from twilio.base import values
-from twilio.base.instance_context import InstanceContext
-from twilio.base.instance_resource import InstanceResource
+{{#instancePath}}from twilio.base.instance_context import InstanceContext{{/instancePath}}
+{{#responseModel}}from twilio.base.instance_resource import InstanceResource{{/responseModel}}
 from twilio.base.list_resource import ListResource
 from twilio.base.version import Version
 {{#hasPaginationOperation}}from twilio.base.page import Page{{/hasPaginationOperation}}
@@ -53,41 +53,5 @@ class {{apiName}}List(ListResource):
         return '<Twilio.{{domainName}}.{{apiVersionClass}}.{{apiName}}List>'
 {{#hasPaginationOperation}}{{>pagination}}{{/hasPaginationOperation}}
 {{#instancePath}}{{>context}}{{/instancePath}}
-{{#responseModel}}
-class {{apiName}}Instance(InstanceResource):
-    def __init__(self, version, payload{{#instancePathParams}}, {{paramName}}: {{{dataType}}}{{/instancePathParams}}):
-        super().__init__(version)
-        self._properties = { {{#vars}}
-            '{{name}}' : payload.get('{{{baseName}}}'),{{/vars}}
-        }
-
-        self._context = None
-        self._solution = {
-            {{#instancePathParams}}'{{paramName}}': {{paramName}} or self._properties['{{paramName}}'],{{/instancePathParams}}
-        }
-
-    @property
-    def _proxy(self):
-        if self._context is None:
-            self._context = {{apiName}}Context(
-                self._version,
-                {{#instancePathParams}}{{paramName}}=self._solution['{{paramName}}'],{{/instancePathParams}}
-            )
-        return self._context
-
-    {{#dependents}}{{#instanceDependent}}@property
-    def {{mountName}}(self):
-        return self._proxy.{{mountName}}
-    {{/instanceDependent}}{{/dependents}}
-
-    def __repr__(self):
-        """
-        Provide a friendly representation
-        :returns: Machine friendly representation
-        :rtype: str
-        """
-        context = ' '.join('{}={}'.format(k, v) for k, v in self._solution.items())
-        return '<Twilio.{{domainName}}.{{apiVersionClass}}.{{apiName}}Instance {}>'.format(context)
-
-{{/responseModel}}
+{{#responseModel}}{{>instance}}{{/responseModel}}
 {{/resources}}

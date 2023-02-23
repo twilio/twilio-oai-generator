@@ -1,0 +1,93 @@
+class {{instanceName}}(InstanceResource):
+
+    def __init__(self, version, payload{{#instancePathParams}}, {{paramName}}: {{{dataType}}}{{#if vendorExtensions.x-is-parent-param}}{{else}}=None{{/if}}{{/instancePathParams}}):
+        """
+        Initialize the {{instanceName}}
+        :returns: twilio.rest.{{domainPackage}}.{{apiVersion}}.{{namespaceSubPart}}.{{instanceName}}
+        :rtype: twilio.rest.{{domainPackage}}.{{apiVersion}}.{{namespaceSubPart}}.{{instanceName}}
+        """
+        super().__init__(version)
+
+        self._properties = { {{#vars}}
+            '{{name}}': {{#if vendorExtensions.x-deserialize}}{{vendorExtensions.x-deserialize}}(payload.get('{{{baseName}}}')){{else}}payload.get('{{{baseName}}}'){{/if}},{{/vars}}
+        }
+
+        self._context = None
+        self._solution = { {{#instancePathParams}}'{{paramName}}': {{paramName}}{{#if vendorExtensions.x-is-parent-param}}, {{else}} or self._properties['{{paramName}}'], {{/if}}{{/instancePathParams}} }
+    {{#instancePath}}
+    @property
+    def _proxy(self):
+        """
+        Generate an instance context for the instance, the context is capable of
+        performing various actions. All instance actions are proxied to the context
+
+        :returns: {{apiName}}Context for this {{instanceName}}
+        :rtype: twilio.rest.{{domainPackage}}.{{apiVersion}}.{{namespaceSubPart}}.{{apiName}}Context
+        """
+        if self._context is None:
+            self._context = {{apiName}}Context(self._version,{{#instancePathParams}} {{paramName}}=self._solution['{{paramName}}'],{{/instancePathParams}})
+        return self._context{{/instancePath}}
+    {{#vars}}
+    @property
+    def {{name}}(self):
+        """
+        :returns: {{{description}}}
+        :rtype: {{dataType}}
+        """
+        return self._properties['{{name}}']
+    {{/vars}}{{#operations}}{{#vendorExtensions.x-is-context-operation}}
+    def {{vendorExtensions.x-name-lower}}(self{{#allParams}}, {{paramName}}=values.unset{{/allParams}}):{{#vendorExtensions.x-is-update-operation}}
+        """
+        Update the {{instanceName}}
+        {{#allParams}}
+        :params {{{dataType}}} {{paramName}}: {{{description}}}{{/allParams}}
+
+        :returns: The updated {{instanceName}}
+        :rtype: twilio.rest.{{domainPackage}}.{{apiVersion}}.{{namespaceSubPart}}.{{instanceName}}
+        """
+        return self._proxy.update({{#allParams}}{{paramName}}={{paramName}}, {{/allParams}})
+    {{/vendorExtensions.x-is-update-operation}}{{#vendorExtensions.x-is-fetch-operation}}
+        """
+        Fetch the {{instanceName}}
+
+        :returns: The fetched {{instanceName}}
+        :rtype: twilio.rest.{{domainPackage}}.{{apiVersion}}.{{namespaceSubPart}}.{{instanceName}}
+        """
+        return self._proxy.fetch()
+    {{/vendorExtensions.x-is-fetch-operation}}{{#vendorExtensions.x-is-delete-operation}}
+        """
+        Deletes the {{instanceName}}
+
+        :returns: True if delete succeeds, False otherwise
+        :rtype: bool
+        """
+        return self._proxy.delete()
+    {{/vendorExtensions.x-is-delete-operation}}{{#vendorExtensions.x-is-create-operation}}
+        """
+        Create the {{instanceName}}
+        {{#allParams}}
+        :param {{dataType}} {{paramName}}: {{{description}}}{{/allParams}}
+
+        :returns: The created {{instanceName}}
+        :rtype: twilio.rest.{{domainPackage}}.{{apiVersion}}.{{namespaceSubPart}}.{{instanceName}}
+        """
+        return self._proxy.create({{#allParams}}{{paramName}},{{/allParams}})
+    {{/vendorExtensions.x-is-create-operation}}{{/vendorExtensions.x-is-context-operation}}{{/operations}}{{#dependents}}{{#instanceDependent}}
+    @property
+    def {{mountName}}(self):
+        """
+        Access the {{mountName}}
+
+        :returns: twilio.rest.{{domainPackage}}.{{apiVersion}}.{{namespaceSubPart}}.{{listName}}
+        :rtype: twilio.rest.{{domainPackage}}.{{apiVersion}}.{{namespaceSubPart}}.{{listName}}
+        """
+        return self._proxy.{{mountName}}
+    {{/instanceDependent}}{{/dependents}}
+    def __repr__(self):
+        """
+        Provide a friendly representation
+        :returns: Machine friendly representation
+        :rtype: str
+        """
+        context = ' '.join('{}={}'.format(k, v) for k, v in self._solution.items())
+        return '<Twilio.{{domainName}}.{{apiVersionClass}}.{{apiName}}Instance {}>'.format(context)
