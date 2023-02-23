@@ -224,7 +224,7 @@ class AwsContext(InstanceContext):
         self._solution = { 
             'sid': sid,
         }
-        self._uri = '/Credentials/AWS/${sid}'.format(**self._solution)
+        self._uri = '/Credentials/AWS/{sid}'.format(**self._solution)
         
         self._history = None
     
@@ -232,19 +232,22 @@ class AwsContext(InstanceContext):
         """
         Deletes the AwsInstance
 
+        
         :returns: True if delete succeeds, False otherwise
         :rtype: bool
         """
-        return self._version.delete(method='DELETE', uri=self._uri)
+        return self._version.delete(method='DELETE', uri=self._uri,)
         
     def fetch(self):
         """
         Fetch the AwsInstance
+        
 
         :returns: The fetched AwsInstance
         :rtype: twilio.rest.flex_api.v1.credential.aws.AwsInstance
         """
-        payload = self._version.fetch(method='GET', uri=self._uri)
+        
+        payload = self._version.fetch(method='GET', uri=self._uri, )
 
         return AwsInstance(
             self._version,
@@ -267,8 +270,9 @@ class AwsContext(InstanceContext):
             'TestString': test_string,
             'TestBoolean': test_boolean,
         })
+        
 
-        payload = self._version.update(method='POST', uri=self._uri, data=data)
+        payload = self._version.update(method='POST', uri=self._uri, data=data,)
 
         return AwsInstance(
             self._version,
@@ -367,6 +371,7 @@ class AwsInstance(InstanceResource):
     def delete(self):
         """
         Deletes the AwsInstance
+        
 
         :returns: True if delete succeeds, False otherwise
         :rtype: bool
@@ -376,6 +381,7 @@ class AwsInstance(InstanceResource):
     def fetch(self):
         """
         Fetch the AwsInstance
+        
 
         :returns: The fetched AwsInstance
         :rtype: twilio.rest.flex_api.v1.credential.aws.AwsInstance

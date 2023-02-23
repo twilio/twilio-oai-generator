@@ -45,6 +45,7 @@ class NewCredentialsList(ListResource):
     def create(self, test_string, test_boolean=values.unset, test_integer=values.unset, test_number=values.unset, test_number_float=values.unset, test_number_double=values.unset, test_number_int32=values.unset, test_number_int64=values.unset, test_object=values.unset, test_date_time=values.unset, test_date=values.unset, test_enum=values.unset, test_object_array=values.unset, test_any_type=values.unset, test_any_array=values.unset, permissions=values.unset, some_a2_p_thing=values.unset):
         """
         Create the NewCredentialsInstance
+
         :param str test_string: 
         :param bool test_boolean: 
         :param int test_integer: 
@@ -85,8 +86,9 @@ class NewCredentialsList(ListResource):
             'Permissions': serialize.map(permissions, lambda e: e),
             'SomeA2PThing': some_a2_p_thing,
         })
+        
+        payload = self._version.create(method='POST', uri=self._uri, data=data,)
 
-        payload = self._version.create(method='POST', uri=self._uri, data=data)
         return NewCredentialsInstance(self._version, payload)
     
 
