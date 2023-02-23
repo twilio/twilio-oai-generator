@@ -48,12 +48,6 @@ public abstract class AbstractTwilioGoGenerator extends GoClientCodegen {
 
         twilioCodegen.processOpts();
 
-        if (additionalProperties().get("apiVersion").equals("")) {
-            // Exit gracefully if given an OpenAPI document that doesn't contain a versioned API. The Go clients do
-            // not currently support this.
-            System.exit(0);
-        }
-
         additionalProperties.put(CodegenConstants.IS_GO_SUBMODULE, true);
         additionalProperties.put(CodegenConstants.ENUM_CLASS_PREFIX, true);
     }
@@ -86,8 +80,22 @@ public abstract class AbstractTwilioGoGenerator extends GoClientCodegen {
 
         directoryStructureService.configure(openAPI);
 
+        if (directoryStructureService.isVersionLess()) {
+            // Clear the template files if given an OpenAPI document that doesn't contain a versioned API. The Go
+            // clients do not currently support this.
+            clearTemplateFiles();
+        }
+
         // Clear out any tags present. We want all operations in a single API file.
         getOperationStream(openAPI).forEach(operation -> operation.setTags(null));
+    }
+
+    protected void clearTemplateFiles() {
+        apiTemplateFiles.clear();
+        apiDocTemplateFiles.clear();
+        modelTemplateFiles.clear();
+        modelDocTemplateFiles.clear();
+        supportingFiles.clear();
     }
 
     private Stream<Operation> getOperationStream(final OpenAPI openAPI) {
