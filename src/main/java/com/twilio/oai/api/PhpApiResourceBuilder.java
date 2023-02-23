@@ -190,7 +190,7 @@ public class PhpApiResourceBuilder extends ApiResourceBuilder {
     public IApiResourceBuilder addVersionLessTemplates(OpenAPI openAPI, DirectoryStructureService directoryStructureService) {
         if (directoryStructureService.isVersionLess()) {
             String version = PathUtils.getFirstPathPart(codegenOperationList.get(0).path);
-            PhpDomainBuilder.setContextResources(directoryStructureService, version);
+            new PhpDomainBuilder().setVersionTemplate(openAPI, directoryStructureService, version);
         }
         return this;
     }

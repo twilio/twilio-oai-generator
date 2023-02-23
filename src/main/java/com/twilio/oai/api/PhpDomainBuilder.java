@@ -13,22 +13,26 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class PhpDomainBuilder {
-    private static final ThreadLocal<List<Object>> contextResourcesList = ThreadLocal.withInitial(ArrayList::new);
-    private static final ThreadLocal<List<Object>> dependentList = ThreadLocal.withInitial(ArrayList::new);
+    private final List<Object> contextResourcesList = new ArrayList<>();
 
-    public void setVersionTemplate(final OpenAPI openAPI, DirectoryStructureService directoryStructureService) {
-        filter_contextResources(openAPI, directoryStructureService);
-        if (directoryStructureService.isVersionLess()) return;
-        setContextResources(directoryStructureService, null);
+    public void setVersionTemplate(final OpenAPI openAPI, final DirectoryStructureService directoryStructureService) {
+        setVersionTemplate(openAPI, directoryStructureService, null);
     }
 
-    public static void setContextResources(DirectoryStructureService directoryStructureService, String version) {
+    public void setVersionTemplate(final OpenAPI openAPI,
+                                   final DirectoryStructureService directoryStructureService,
+                                   final String version) {
+        filter_contextResources(openAPI, directoryStructureService);
+        setContextResources(directoryStructureService, version);
+    }
+
+    private void setContextResources(DirectoryStructureService directoryStructureService, String version) {
         if (version == null) {
-            directoryStructureService.getAdditionalProperties().put("versionDependents", contextResourcesList.get());
+            directoryStructureService.getAdditionalProperties().put("versionDependents", contextResourcesList);
             return;
         }
         directoryStructureService.getAdditionalProperties().put("versionDependents",
-                contextResourcesList.get().stream()
+                contextResourcesList.stream()
                         .map(DirectoryStructureService.ContextResource.class::cast)
                         .filter(contextResource -> contextResource.getVersion().equals(version))
                         .collect(Collectors.toList())
@@ -69,7 +73,7 @@ public class PhpDomainBuilder {
             }
         }
 
-        addResources(dependents, directoryStructureService, contextResourcesList.get());
+        addResources(dependents, directoryStructureService, contextResourcesList);
     }
 
     private void getApiDependents(DirectoryStructureService directoryStructureService) {
@@ -77,9 +81,11 @@ public class PhpDomainBuilder {
         List<Resource> dependents = directoryStructureService.getResourceTree().dependents(pathkey)
                 .stream().filter(dep -> !dep.getName().endsWith("}.json"))
                 .collect(Collectors.toList());
-        addResources(dependents, directoryStructureService, dependentList.get());
+
+        final List<Object> dependentList = new ArrayList<>();
+        addResources(dependents, directoryStructureService, dependentList);
         directoryStructureService.getAdditionalProperties().put("isApiDomain", "true");
-        directoryStructureService.getAdditionalProperties().put("apiDependents", dependentList.get());
+        directoryStructureService.getAdditionalProperties().put("apiDependents", dependentList);
     }
 
     private void addResources(List<Resource> dependents, DirectoryStructureService directoryStructureService, List<Object> dependentList) {
