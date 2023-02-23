@@ -270,7 +270,7 @@ class AwsContext(InstanceContext):
             'TestString': test_string,
             'TestBoolean': test_boolean,
         })
-        )
+        
 
         payload = self._version.update(method='POST', uri=self._uri, data=data,)
 

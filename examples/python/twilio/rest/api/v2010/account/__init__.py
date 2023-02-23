@@ -319,7 +319,7 @@ class AccountContext(InstanceContext):
             'Status': status,
             'PauseBehavior': pause_behavior,
         })
-        )
+        
 
         payload = self._version.update(method='POST', uri=self._uri, data=data,)
 

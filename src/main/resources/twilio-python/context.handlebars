@@ -32,7 +32,7 @@ class {{apiName}}Context(InstanceContext):
         data = values.of({ {{#allParams}}{{#isFormParam}}
             '{{{baseName}}}': {{#if vendorExtensions.x-serialize}}{{vendorExtensions.x-serialize}}({{paramName}}{{#if isArray}}, lambda e: e){{else}}){{/if}}{{else}}{{paramName}}{{/if}},{{/isFormParam}}{{/allParams}}
         })
-        {{#allParams}}{{^isFormParam}}headers = values.of({'{{{baseName}}}': {{paramName}}, }{{/isFormParam}}{{/allParams}})
+        {{#allParams}}{{^isFormParam}}headers = values.of({'{{{baseName}}}': {{paramName}}, }){{/isFormParam}}{{/allParams}}
 
         payload = self._version.update(method='POST', uri=self._uri, data=data,{{#allParams}}{{#if isFormParam}}{{else}} headers=headers{{/if}}{{/allParams}})
 

@@ -104,7 +104,7 @@ class CallContext(InstanceContext):
         """
         data = values.of({ 
         })
-        )
+        
 
         payload = self._version.update(method='POST', uri=self._uri, data=data,)
 
