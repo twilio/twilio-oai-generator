@@ -28,20 +28,43 @@ class FeedbackCallSummaryList(ListResource):
     def __init__(self, version: Version, account_sid: str):
         """
         Initialize the FeedbackCallSummaryList
+
         :param Version version: Version that contains the resource
         :param account_sid: 
         
-        :returns: twilio.api.v2010.feedback_call_summary..FeedbackCallSummaryList
-        :rtype: twilio.api.v2010.feedback_call_summary..FeedbackCallSummaryList
+        :returns: twilio.rest.api.v2010.account.call.feedback_call_summary.FeedbackCallSummaryList
+        :rtype: twilio.rest.api.v2010.account.call.feedback_call_summary.FeedbackCallSummaryList
         """
         super().__init__(version)
 
         # Path Solution
         self._solution = { 'account_sid': account_sid,  }
-        self._uri = ''.format(**self._solution)
-
-
+        
+        
+        
     
+
+    def get(self, sid):
+        """
+        Constructs a FeedbackCallSummaryContext
+        
+        :param sid: 
+        
+        :returns: twilio.rest.api.v2010.account.call.feedback_call_summary.FeedbackCallSummaryContext
+        :rtype: twilio.rest.api.v2010.account.call.feedback_call_summary.FeedbackCallSummaryContext
+        """
+        return FeedbackCallSummaryContext(self._version, account_sid=self._solution['account_sid'], sid=sid)
+
+    def __call__(self, sid):
+        """
+        Constructs a FeedbackCallSummaryContext
+        
+        :param sid: 
+        
+        :returns: twilio.rest.api.v2010.account.call.feedback_call_summary.FeedbackCallSummaryContext
+        :rtype: twilio.rest.api.v2010.account.call.feedback_call_summary.FeedbackCallSummaryContext
+        """
+        return FeedbackCallSummaryContext(self._version, account_sid=self._solution['account_sid'], sid=sid)
 
     def __repr__(self):
         """
@@ -62,9 +85,9 @@ class FeedbackCallSummaryContext(InstanceContext):
         self._uri = '/Accounts/${account_sid}/Calls/Feedback/Summary/${sid}.json'
         
     
-    def update(self, body):
+    def update(self, end_date, start_date, account_sid):
         data = values.of({
-            'body': body,
+            'end_date': end_date,'start_date': start_date,'account_sid': account_sid,
         })
 
         payload = self._version.update(method='post', uri=self._uri, data=data, )

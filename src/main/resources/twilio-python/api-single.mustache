@@ -8,7 +8,7 @@ from twilio.base.instance_resource import InstanceResource
 from twilio.base.list_resource import ListResource
 from twilio.base.version import Version
 {{#hasPaginationOperation}}from twilio.base.page import Page{{/hasPaginationOperation}}
-{{#dependents}}from twilio.rest.{{domainPackage}}.{{apiVersion}}.{{apiFilename}}.{{mountName}} import {{resourceName}}List
+{{#dependents}}from twilio.rest.{{domainPackage}}.{{apiVersion}}.{{namespaceSubPart}}.{{filename}} import {{resourceName}}List
 {{/dependents}}
 
 class {{apiName}}List(ListResource):
@@ -16,32 +16,34 @@ class {{apiName}}List(ListResource):
     def __init__(self, version: Version{{#listPathParams}}, {{paramName}}: {{{dataType}}}{{/listPathParams}}):
         """
         Initialize the {{apiName}}List
+
         :param Version version: Version that contains the resource
         {{#listPathParams}}:param {{paramName}}: {{{description}}}
         {{/listPathParams}}
-        :returns: twilio.{{domainPackage}}.{{apiVersion}}.{{apiFilename}}.{{mountName}}.{{apiName}}List
-        :rtype: twilio.{{domainPackage}}.{{apiVersion}}.{{apiFilename}}.{{mountName}}.{{apiName}}List
+        :returns: twilio.rest.{{domainPackage}}.{{apiVersion}}.{{namespaceSubPart}}.{{apiName}}List
+        :rtype: twilio.rest.{{domainPackage}}.{{apiVersion}}.{{namespaceSubPart}}.{{apiName}}List
         """
         super().__init__(version)
 
         # Path Solution
         self._solution = { {{#listPathParams}}'{{paramName}}': {{paramName}}, {{/listPathParams}} }
-        self._uri = '{{listPath}}'.format(**self._solution)
-{{#dependents}}{{^instanceDependent}}
+        {{#listPath}}self._uri = '{{listPath}}'.format(**self._solution){{/listPath}}
+        {{#dependents}}{{^instanceDependent}}
         self._{{mountName}} = None{{/instanceDependent}}{{/dependents}}
-{{>listOperations}}{{#dependents}}{{^instanceDependent}}
+        {{>listOperations}}{{#dependents}}{{^instanceDependent}}
     @property
     def {{mountName}}(self):
         """
         Access the {{mountName}}
 
-        :returns: twilio.rest.{{domainPackage}}.{{apiVersion}}.{{apiFilename}}.{{mountName}}.{{resourceName}}List
-        :rtype: twilio.rest.{{domainPackage}}.{{apiVersion}}.{{apiFilename}}.{{mountName}}.{{resourceName}}List
+        :returns: twilio.rest.{{domainPackage}}.{{apiVersion}}.{{namespaceSubPart}}.{{resourceName}}List
+        :rtype: twilio.rest.{{domainPackage}}.{{apiVersion}}.{{namespaceSubPart}}.{{resourceName}}List
         """
         if self._{{mountName}} is None:
             self._{{mountName}} = {{resourceName}}List(self._version{{#listPathParams}}, {{paramName}}=self._solution['{{paramName}}']{{/listPathParams}})
         return self.{{mountName}}
 {{/instanceDependent}}{{/dependents}}
+{{#instancePath}}{{>contextMethods}}{{/instancePath}}
     def __repr__(self):
         """
         Provide a friendly representation

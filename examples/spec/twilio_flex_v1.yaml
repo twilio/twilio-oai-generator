@@ -112,21 +112,17 @@ paths:
                 creds_response_example:
                   summary: Example of a Credential
                   value:
-                    credentials: [
-                      {
-                        "account_sid": "AC12345678123456781234567812345678",
-                        "sid": "CR12345678123456781234567812345678",
-                        "test_string": "Ahoy",
-                      }
-                    ]
-                    meta: {
-                      first_page_url: "http://example.com/page1",
-                      next_page_url: "http://example.com/page2",
-                      page: 1,
-                      page_size: 3,
-                      previous_page_url: "http://example.com/page0",
-                      url: "http://example.com"
-                    }
+                    credentials:
+                      - account_sid: AC12345678123456781234567812345678
+                        sid: CR12345678123456781234567812345678
+                        test_string: Ahoy
+                    meta:
+                      first_page_url: http://example.com/page1
+                      next_page_url: http://example.com/page2
+                      page: 1
+                      page_size: 3
+                      previous_page_url: http://example.com/page0
+                      url: http://example.com
           description: OK
       security:
         - accountSid_authToken: [ ]

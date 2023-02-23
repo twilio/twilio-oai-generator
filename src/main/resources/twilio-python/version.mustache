@@ -21,7 +21,11 @@ class {{apiVersionClass}}(Version):
         if self._{{mountName}} is None:
             self._{{mountName}} = {{listName}}(self{{#param}}, self.domain.twilio.{{param}}{{/param}})
         return self._{{mountName}}
-
+{{#param}}
+    @{{mountName}}.setter
+    def {{mountName}}(self, value: {{listName}}):
+        self._{{mountName}} = value
+{{/param}}
     {{/versionResources}}def __repr__(self) -> str:
         """
         Provide a friendly representation

@@ -207,26 +207,19 @@ paths:
                 type: object
               examples:
                 account_response:
-                  summary: Example of Call Recodings
-                  value: {
-                    "end": 5,
-                    "first_page_uri": "http://example.com/page1",
-                    "next_page_uri": "http://example.com/page2",
-                    "page": 1,
-                    "page_size": 4,
-                    "previous_page_uri": "http://example.com/page0",
-                    "accounts": [
-                      {
-                        "test_string": "Ahoy",
-                      },
-                      {
-                        "test_string": "Matey"
-                      }
-                    ],
-                    "start": 0,
-                    "uri": "http://example.com",
-                    "response_nested_array": [ 1,2,3 ]
-                  }
+                  summary: Example of Call Recordings
+                  value:
+                    end: 5
+                    first_page_uri: http://example.com/page1
+                    next_page_uri: http://example.com/page2
+                    page: 1
+                    page_size: 4
+                    previous_page_uri: http://example.com/page0
+                    accounts:
+                      - test_string: Ahoy
+                      - test_string: Matey
+                    start: 0
+                    uri: http://example.com
           description: OK
       security:
         - accountSid_authToken: [ ]
@@ -527,12 +520,10 @@ paths:
               examples:
                 custom_type_response_example:
                   summary: Example of a Feedback Summary
-                  value: {
-                    "test_array_of_objects": [ {
-                      "count": 4,
-                      "description": "issue description",
-                    } ],
-                  }
+                  value:
+                    test_array_of_objects:
+                      - count: 4
+                        description: issue description
           description: Created
       security:
         - accountSid_authToken: [ ]

@@ -24,14 +24,14 @@ import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.PathItem;
 import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenOperation;
-import org.openapitools.codegen.languages.PythonClientCodegen;
+import org.openapitools.codegen.languages.AbstractPythonCodegen;
 import org.openapitools.codegen.model.ModelMap;
 import org.openapitools.codegen.model.ModelsMap;
 import org.openapitools.codegen.model.OperationsMap;
 
 import static com.twilio.oai.common.ApplicationConstants.CONFIG_PYTHON_JSON_PATH;
 
-public class TwilioPythonGenerator extends PythonClientCodegen {
+public class TwilioPythonGenerator extends AbstractPythonCodegen {
     private final TwilioCodegenAdapter twilioCodegen;
     private final PythonApiActionTemplate actionTemplate = new PythonApiActionTemplate(this);
     private final IResourceTree resourceTree = new ResourceMap(new Inflector());
@@ -62,11 +62,6 @@ public class TwilioPythonGenerator extends PythonClientCodegen {
         resourceTree.getResources().forEach(resource -> resource.updateFamily(resourceTree));
 
         directoryStructureService.configure(openAPI);
-    }
-
-    @Override
-    public String apiFileFolder() {
-        return outputFolder + File.separatorChar + packagePath() + File.separatorChar + apiPackage();
     }
 
     @Override
@@ -136,5 +131,10 @@ public class TwilioPythonGenerator extends PythonClientCodegen {
     @Override
     public String toParamName(final String name){
         return super.toParamName(twilioCodegen.toParamName(name));
+    }
+
+    @Override
+    public String defaultTemplatingEngine() {
+        return "handlebars";
     }
 }

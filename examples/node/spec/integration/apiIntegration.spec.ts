@@ -8,12 +8,10 @@ describe("Integration tests", () => {
   const authToken: string = "CR12345678123456781234567812345678";
   const client = new Twilio(accountSid, authToken);
 
-  // Throws error: "Page Records can not be deserialized" - likely needs to be investigated
-  xit("should get an account", async () => {
-    const params = {};
+  it("should get an account", async () => {
     const result = await client.api.v2010.accounts.page();
-    // expect(result.end).toEqual(5);
-    // expect(result.first_page_uri).toEqual("http://example.com/page1");
+    expect(result.instances[0].testString).toEqual("Ahoy");
+    expect(result.instances[1].testString).toEqual("Matey");
   });
 
   it("should create an account", async () => {
