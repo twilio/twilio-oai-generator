@@ -49,6 +49,7 @@ class AccountList(ListResource):
     def create(self, x_twilio_webhook_enabled=values.unset, recording_status_callback=values.unset, recording_status_callback_event=values.unset, twiml=values.unset):
         """
         Create the AccountInstance
+
         :param str x_twilio_webhook_enabled: 
         :param str recording_status_callback: 
         :param list[str] recording_status_callback_event: 
@@ -275,7 +276,7 @@ class AccountContext(InstanceContext):
         self._uri = '/Accounts/{sid}.json'.format(**self._solution)
         
         self._calls = None
-        
+    
     def delete(self):
         """
         Deletes the AccountInstance
@@ -289,11 +290,13 @@ class AccountContext(InstanceContext):
     def fetch(self):
         """
         Fetch the AccountInstance
+        
 
         :returns: The fetched AccountInstance
         :rtype: twilio.rest.api.v2010.account.AccountInstance
         """
-        payload = self._version.fetch(method='GET', uri=self._uri)
+        
+        payload = self._version.fetch(method='GET', uri=self._uri, )
 
         return AccountInstance(
             self._version,
@@ -525,6 +528,7 @@ class AccountInstance(InstanceResource):
     def delete(self):
         """
         Deletes the AccountInstance
+        
 
         :returns: True if delete succeeds, False otherwise
         :rtype: bool
@@ -534,6 +538,7 @@ class AccountInstance(InstanceResource):
     def fetch(self):
         """
         Fetch the AccountInstance
+        
 
         :returns: The fetched AccountInstance
         :rtype: twilio.rest.api.v2010.account.AccountInstance

@@ -50,6 +50,7 @@ class CallList(ListResource):
     def create(self, required_string_property, test_method, test_array_of_strings=values.unset, test_array_of_uri=values.unset):
         """
         Create the CallInstance
+
         :param str required_string_property: 
         :param str test_method: The HTTP method that we should use to request the `TestArrayOfUri`.
         :param list[str] test_array_of_strings: 
@@ -133,7 +134,7 @@ class CallContext(InstanceContext):
         }
         self._uri = '/Accounts/{account_sid}/Calls/{test_integer}.json'.format(**self._solution)
         
-        
+    
     def delete(self):
         """
         Deletes the CallInstance
@@ -147,11 +148,13 @@ class CallContext(InstanceContext):
     def fetch(self):
         """
         Fetch the CallInstance
+        
 
         :returns: The fetched CallInstance
         :rtype: twilio.rest.api.v2010.account.call.CallInstance
         """
-        payload = self._version.fetch(method='GET', uri=self._uri)
+        
+        payload = self._version.fetch(method='GET', uri=self._uri, )
 
         return CallInstance(
             self._version,
@@ -347,6 +350,7 @@ class CallInstance(InstanceResource):
     def delete(self):
         """
         Deletes the CallInstance
+        
 
         :returns: True if delete succeeds, False otherwise
         :rtype: bool
@@ -356,6 +360,7 @@ class CallInstance(InstanceResource):
     def fetch(self):
         """
         Fetch the CallInstance
+        
 
         :returns: The fetched CallInstance
         :rtype: twilio.rest.api.v2010.account.call.CallInstance

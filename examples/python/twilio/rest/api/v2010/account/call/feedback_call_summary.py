@@ -95,7 +95,7 @@ class FeedbackCallSummaryContext(InstanceContext):
         }
         self._uri = '/Accounts/{account_sid}/Calls/Feedback/Summary/{sid}.json'.format(**self._solution)
         
-        
+    
     def update(self, end_date, start_date, account_sid=values.unset):
         """
         Update the FeedbackCallSummaryInstance
