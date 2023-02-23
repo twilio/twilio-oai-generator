@@ -65,7 +65,7 @@ class CallList(ListResource):
             'TestArrayOfStrings': serialize.map(test_array_of_strings, lambda e: e),
             'TestArrayOfUri': serialize.map(test_array_of_uri, lambda e: e),
         })
-        )
+        
         payload = self._version.create(method='POST', uri=self._uri, data=data,)
 
         return CallInstance(self._version, payload, account_sid=self._solution['account_sid'])
