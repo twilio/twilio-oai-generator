@@ -18,6 +18,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.media.ComposedSchema;
 import io.swagger.v3.oas.models.media.Schema;
 import lombok.AllArgsConstructor;
@@ -32,6 +33,7 @@ import org.openapitools.codegen.model.OperationMap;
 import org.openapitools.codegen.model.OperationsMap;
 import org.openapitools.codegen.utils.ModelUtils;
 
+import static com.twilio.oai.DirectoryStructureService.API_VERSION;
 import static com.twilio.oai.common.ApplicationConstants.STRING;
 import static com.twilio.oai.common.EnumConstants.Operation;
 
@@ -87,12 +89,17 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
     public void processOpts() {
         super.processOpts();
 
-        if (additionalProperties.get("apiVersion").equals("v2010")) {
-            additionalProperties.remove("apiVersion");
-            additionalProperties.remove("apiVersionClass");
-        }
-
         supportingFiles.add(new SupportingFile("README.mustache", "README.md"));
+    }
+
+    @Override
+    public void processOpenAPI(final OpenAPI openAPI) {
+        super.processOpenAPI(openAPI);
+
+        if (additionalProperties.get(API_VERSION).equals("v2010")) {
+            additionalProperties.remove(API_VERSION);
+            additionalProperties.remove(API_VERSION + "Class");
+        }
     }
 
     @Override
@@ -208,9 +215,9 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
             });
         }
 
-        // Exit if there are no resources to generate.
+        // Clear the template files if there are no resources to generate.
         if (resources.isEmpty()) {
-            System.exit(0);
+            clearTemplateFiles();
         }
 
         results.put("resources", resources.values());
