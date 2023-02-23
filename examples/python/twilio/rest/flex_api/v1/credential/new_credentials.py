@@ -16,7 +16,7 @@
 from twilio.base import deserialize
 from twilio.base import serialize
 from twilio.base import values
-from twilio.base.instance_context import InstanceContext
+
 from twilio.base.instance_resource import InstanceResource
 from twilio.base.list_resource import ListResource
 from twilio.base.version import Version
@@ -79,9 +79,9 @@ class NewCredentialsList(ListResource):
             'TestDateTime': serialize.iso8601_datetime(test_date_time),
             'TestDate': serialize.iso8601_date(test_date),
             'TestEnum': test_enum,
-            'TestObjectArray': test_object_array,
+            'TestObjectArray': serialize.map(test_object_array, lambda e: e),
             'TestAnyType': serialize.object(test_any_type),
-            'TestAnyArray': test_any_array,
+            'TestAnyArray': serialize.map(test_any_array, lambda e: e),
             'Permissions': serialize.map(permissions, lambda e: e),
             'SomeA2PThing': some_a2_p_thing,
         })
@@ -100,33 +100,59 @@ class NewCredentialsList(ListResource):
         return '<Twilio.FlexApi.V1.NewCredentialsList>'
 
 
-
 class NewCredentialsInstance(InstanceResource):
+
     def __init__(self, version, payload):
+        """
+        Initialize the NewCredentialsInstance
+        :returns: twilio.rest.flex_api.v1.credential.new_credentials.NewCredentialsInstance
+        :rtype: twilio.rest.flex_api.v1.credential.new_credentials.NewCredentialsInstance
+        """
         super().__init__(version)
+
         self._properties = { 
-            'account_sid' : payload.get('account_sid'),
-            'sid' : payload.get('sid'),
-            'test_string' : payload.get('test_string'),
-            'test_integer' : payload.get('test_integer'),
+            'account_sid': payload.get('account_sid'),
+            'sid': payload.get('sid'),
+            'test_string': payload.get('test_string'),
+            'test_integer': deserialize.integer(payload.get('test_integer')),
         }
 
         self._context = None
-        self._solution = {
-            
-        }
-
-    @property
-    def _proxy(self):
-        if self._context is None:
-            self._context = NewCredentialsContext(
-                self._version,
-                
-            )
-        return self._context
-
+        self._solution = {  }
     
-
+    
+    @property
+    def account_sid(self):
+        """
+        :returns: 
+        :rtype: str
+        """
+        return self._properties['account_sid']
+    
+    @property
+    def sid(self):
+        """
+        :returns: 
+        :rtype: str
+        """
+        return self._properties['sid']
+    
+    @property
+    def test_string(self):
+        """
+        :returns: 
+        :rtype: str
+        """
+        return self._properties['test_string']
+    
+    @property
+    def test_integer(self):
+        """
+        :returns: 
+        :rtype: int
+        """
+        return self._properties['test_integer']
+    
     def __repr__(self):
         """
         Provide a friendly representation
@@ -135,6 +161,5 @@ class NewCredentialsInstance(InstanceResource):
         """
         context = ' '.join('{}={}'.format(k, v) for k, v in self._solution.items())
         return '<Twilio.FlexApi.V1.NewCredentialsInstance {}>'.format(context)
-
 
 

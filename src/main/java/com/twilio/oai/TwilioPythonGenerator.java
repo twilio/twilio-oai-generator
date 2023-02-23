@@ -6,10 +6,10 @@ import com.twilio.oai.common.EnumConstants;
 import com.twilio.oai.common.Utility;
 import com.twilio.oai.resolver.IConventionMapper;
 import com.twilio.oai.resolver.LanguageConventionResolver;
-import com.twilio.oai.resolver.LanguageParamResolver;
 import com.twilio.oai.resolver.LanguagePropertyResolver;
 import com.twilio.oai.resolver.common.CodegenModelResolver;
 import com.twilio.oai.resolver.python.PythonCaseResolver;
+import com.twilio.oai.resolver.python.PythonParameterResolver;
 import com.twilio.oai.resource.IResourceTree;
 import com.twilio.oai.resource.ResourceMap;
 import com.twilio.oai.template.PythonApiActionTemplate;
@@ -118,7 +118,7 @@ public class TwilioPythonGenerator extends AbstractPythonCodegen {
         return new PythonApiResourceBuilder(actionTemplate, opList, allModels, directoryStructureService)
             .updateApiPath()
             .updateTemplate()
-            .updateOperations(new LanguageParamResolver(conventionMapper))
+            .updateOperations(new PythonParameterResolver(conventionMapper))
             .updateResponseModel(new LanguagePropertyResolver(conventionMapper), codegenModelResolver)
             .build();
     }
