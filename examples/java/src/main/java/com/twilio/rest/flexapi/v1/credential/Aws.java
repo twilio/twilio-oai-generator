@@ -48,10 +48,7 @@ import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
-
-
 import java.util.Map;
 import java.time.LocalDate;
 import java.math.BigDecimal;
@@ -73,7 +70,6 @@ import com.twilio.type.SubscribeRule;
 @ToString
 public class Aws extends Resource {
     private static final long serialVersionUID = 234000032744450L;
-
     public static AwsDeleter deleter(final String pathSid){
         return new AwsDeleter(pathSid);
     }
@@ -82,14 +78,16 @@ public class Aws extends Resource {
         return new AwsFetcher(pathSid);
     }
 
+
+
     public static AwsReader reader(){
         return new AwsReader();
     }
 
+
     public static AwsUpdater updater(final String pathSid){
         return new AwsUpdater(pathSid);
     }
-
     /**
     * Converts a JSON String into a Aws object using the provided ObjectMapper.
     *

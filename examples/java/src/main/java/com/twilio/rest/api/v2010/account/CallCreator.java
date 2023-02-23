@@ -26,19 +26,14 @@ import com.twilio.http.Request;
 import com.twilio.http.Response;
 import com.twilio.http.TwilioRestClient;
 import com.twilio.rest.Domains;
-import java.math.BigDecimal;
-import java.util.List;
-import java.util.Map;
 import java.time.LocalDate;
 import com.twilio.converter.Converter;
 import java.time.ZonedDateTime;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
-import java.net.URI;
 import java.time.format.DateTimeFormatter;
 import com.twilio.converter.DateConverter;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -46,7 +41,6 @@ import java.util.Map;
 import java.util.Objects;
 
 import lombok.ToString;
-
 import java.net.URI;
 
 public class CallCreator extends Creator<Call>{
@@ -95,12 +89,14 @@ public class CallCreator extends Creator<Call>{
 
     @Override
     public Call create(final TwilioRestClient client){
-        String path = "/2010-04-01/Accounts/{AccountSid}/Calls.json";
+        String path = String.format("%s", "/2010-04-01/Accounts/{AccountSid}/Calls.json");
 
         this.pathAccountSid = this.pathAccountSid == null ? client.getAccountSid() : this.pathAccountSid;
-        path = path.replace("{"+"AccountSid"+"}", this.pathAccountSid.toString());
-        path = path.replace("{"+"RequiredStringProperty"+"}", this.requiredStringProperty.toString());
+        path = path.replace("{"+"AccountSid"+"}", this.pathAccountSid);
+        path = path.replace("{"+"RequiredStringProperty"+"}", this.requiredStringProperty);
+
         path = path.replace("{"+"TestMethod"+"}", this.testMethod.toString());
+
 
         Request request = new Request(
             HttpMethod.POST,
@@ -122,25 +118,22 @@ public class CallCreator extends Creator<Call>{
         return Call.fromJson(response.getStream(), client.getObjectMapper());
     }
     private void addPostParams(final Request request) {
-        if (requiredStringProperty != null) {
-            request.addPostParam("RequiredStringProperty", requiredStringProperty);
+        request.addPostParam("RequiredStringProperty", String.valueOf(requiredStringProperty));
     
-        }
         if (testArrayOfStrings != null) {
             for (String prop : testArrayOfStrings) {
                 request.addPostParam("TestArrayOfStrings", prop);
             }
-    
         }
+    
         if (testArrayOfUri != null) {
             for (URI prop : testArrayOfUri) {
-                request.addPostParam("TestArrayOfUri", prop.toString());
+                request.addPostParam("TestArrayOfUri", String.valueOf(prop));
             }
-    
         }
-        if (testMethod != null) {
-            request.addPostParam("TestMethod", testMethod.toString());
     
-        }
+        request.addPostParam("TestMethod", String.valueOf(testMethod));
+    
     }
+
 }

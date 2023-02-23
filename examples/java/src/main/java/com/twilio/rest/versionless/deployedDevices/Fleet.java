@@ -48,10 +48,7 @@ import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
-
-
 import java.util.Map;
 import java.time.LocalDate;
 import java.math.BigDecimal;
@@ -73,7 +70,6 @@ import com.twilio.type.SubscribeRule;
 @ToString
 public class Fleet extends Resource {
     private static final long serialVersionUID = 163787776958144L;
-
     public static FleetCreator creator(){
         return new FleetCreator();
     }
@@ -81,6 +77,7 @@ public class Fleet extends Resource {
     public static FleetFetcher fetcher(final String pathSid){
         return new FleetFetcher(pathSid);
     }
+
 
     /**
     * Converts a JSON String into a Fleet object using the provided ObjectMapper.

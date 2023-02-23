@@ -48,10 +48,7 @@ import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
-
-
 import java.util.Map;
 import java.time.LocalDate;
 import java.math.BigDecimal;
@@ -73,10 +70,10 @@ import com.twilio.type.SubscribeRule;
 @ToString
 public class History extends Resource {
     private static final long serialVersionUID = 234000032744450L;
-
     public static HistoryFetcher fetcher(final String pathSid){
         return new HistoryFetcher(pathSid);
     }
+
 
     /**
     * Converts a JSON String into a History object using the provided ObjectMapper.

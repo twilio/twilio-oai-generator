@@ -7,24 +7,26 @@
         {{>prefixedCollapsibleMapQParams}}
         {{/vendorExtensions.x-prefixed-collapsible-map}}
         {{^vendorExtensions.x-prefixed-collapsible-map}}
-        if ({{paramName}} != null) {
             {{#isArray}}
             {{#isEnum}}
+            if ({{paramName}} != null) {
             for ({{baseType}} prop : {{paramName}}) {
-                request.addQueryParam("{{baseName}}", prop.toString());
+                request.addQueryParam("{{baseName}}", String.valueOf(prop));
             }
         }
             {{/isEnum}}
             {{^isEnum}}
             {{#vendorExtensions.x-is-string-array}}
+            if ({{paramName}} != null) {
             for ({{baseType}} prop : {{paramName}}) {
                 request.addQueryParam("{{baseName}}", prop);
             }
         }
             {{/vendorExtensions.x-is-string-array}}
             {{^vendorExtensions.x-is-string-array}}
+            if ({{paramName}} != null) {
             for ({{baseType}} prop : {{paramName}}) {
-                request.addQueryParam("{{baseName}}", prop.toString());
+                request.addQueryParam("{{baseName}}", String.valueOf(prop));
             }
         }
             {{/vendorExtensions.x-is-string-array}}
@@ -33,13 +35,11 @@
             {{^isArray}}
     {{>dateParams}}
             {{#vendorExtensions.x-is-other-data-type}}
-            request.addQueryParam("{{baseName}}", {{paramName}}.toString());
-        }
+            request.addQueryParam("{{baseName}}", String.valueOf({{paramName}}));
             {{/vendorExtensions.x-is-other-data-type}}
             {{^vendorExtensions.x-is-other-data-type}}
             {{#isString}}
-            request.addQueryParam("{{baseName}}", {{paramName}});
-        }
+            request.addQueryParam("{{baseName}}", String.valueOf({{paramName}}));
             {{/isString}}
             {{/vendorExtensions.x-is-other-data-type}}
         {{/isArray}}

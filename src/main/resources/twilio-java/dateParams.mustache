@@ -1,18 +1,24 @@
 {{#isDate}}
     {{#isFormParam}}
-        request.addPostParam("{{baseName}}", DateConverter.dateStringFromLocalDate({{paramName}}));
+    if ({{paramName}} != null) {
+            request.addPostParam("{{baseName}}", DateConverter.dateStringFromLocalDate({{paramName}}));
+        }
     {{/isFormParam}}
     {{^isFormParam}}
-        request.addQueryParam("{{baseName}}", DateConverter.dateStringFromLocalDate({{paramName}}));
+    if ({{paramName}} != null) {
+            request.addQueryParam("{{baseName}}", DateConverter.dateStringFromLocalDate({{paramName}}));
         }
     {{/isFormParam}}
 {{/isDate}}
 {{#isDateTime}}
     {{#isFormParam}}
-        request.addPostParam("{{baseName}}", {{paramName}}.toInstant().toString());
+    if ({{paramName}} != null) {
+            request.addPostParam("{{baseName}}", {{paramName}}.toInstant().toString());
+        }
     {{/isFormParam}}
     {{^isFormParam}}
-        request.addQueryParam("{{baseName}}", {{paramName}}.toInstant().toString());
+    if ({{paramName}} != null) {
+            request.addQueryParam("{{baseName}}", {{paramName}}.toInstant().toString());
         }
     {{/isFormParam}}
 {{/isDateTime}}

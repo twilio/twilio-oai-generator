@@ -1,23 +1,20 @@
     private void addHeaderParams(final Request request) {
 {{#headerParams}}
-        if ({{paramName}} != null) {
         {{#vendorExtensions.x-is-other-data-type}}
-            request.addHeaderParam("{{baseName}}", {{paramName}}.toString());
+            request.addHeaderParam("{{baseName}}", String.valueOf({{paramName}}));
         {{/vendorExtensions.x-is-other-data-type}}
         {{^vendorExtensions.x-is-other-data-type}}
         {{#isEnum}}
-            request.addHeaderParam("{{baseName}}", {{paramName}}.toString());
+            request.addHeaderParam("{{baseName}}", String.valueOf({{paramName}}));
         {{/isEnum}}
         {{^isEnum}}
         {{#isString}}
-            request.addHeaderParam("{{baseName}}", {{paramName}});
+            request.addHeaderParam("{{baseName}}", String.valueOf({{paramName}}));
         {{/isString}}
         {{^isString}}
-            request.addHeaderParam("{{baseName}}", {{paramName}}.toString());
+            request.addHeaderParam("{{baseName}}", String.valueOf({{paramName}}));
         {{/isString}}
         {{/isEnum}}
-
         {{/vendorExtensions.x-is-other-data-type}}
-        }
 {{/headerParams}}
     }

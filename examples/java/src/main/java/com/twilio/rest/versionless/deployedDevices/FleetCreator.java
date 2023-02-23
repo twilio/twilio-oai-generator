@@ -26,19 +26,14 @@ import com.twilio.http.Request;
 import com.twilio.http.Response;
 import com.twilio.http.TwilioRestClient;
 import com.twilio.rest.Domains;
-import java.math.BigDecimal;
-import java.util.List;
-import java.util.Map;
 import java.time.LocalDate;
 import com.twilio.converter.Converter;
 import java.time.ZonedDateTime;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
-import java.net.URI;
 import java.time.format.DateTimeFormatter;
 import com.twilio.converter.DateConverter;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -46,7 +41,6 @@ import java.util.Map;
 import java.util.Objects;
 
 import lombok.ToString;
-
 import java.net.URI;
 
 public class FleetCreator extends Creator<Fleet>{
@@ -62,7 +56,7 @@ public class FleetCreator extends Creator<Fleet>{
 
     @Override
     public Fleet create(final TwilioRestClient client){
-        String path = "/DeployedDevices/Fleets";
+        String path = String.format("%s", "/DeployedDevices/Fleets");
 
 
         Request request = new Request(
@@ -85,9 +79,8 @@ public class FleetCreator extends Creator<Fleet>{
         return Fleet.fromJson(response.getStream(), client.getObjectMapper());
     }
     private void addPostParams(final Request request) {
-        if (name != null) {
-            request.addPostParam("Name", name);
+        request.addPostParam("Name", String.valueOf(name));
     
-        }
     }
+
 }

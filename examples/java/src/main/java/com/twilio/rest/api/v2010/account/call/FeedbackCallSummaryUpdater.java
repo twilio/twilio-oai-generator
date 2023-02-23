@@ -78,13 +78,16 @@ public class FeedbackCallSummaryUpdater extends Updater<FeedbackCallSummary>{
 
     @Override
     public FeedbackCallSummary update(final TwilioRestClient client){
-        String path = "/2010-04-01/Accounts/{AccountSid}/Calls/Feedback/Summary/{Sid}.json";
+        String path = String.format("%s", "/2010-04-01/Accounts/{AccountSid}/Calls/Feedback/Summary/{Sid}.json");
 
         this.pathAccountSid = this.pathAccountSid == null ? client.getAccountSid() : this.pathAccountSid;
-        path = path.replace("{"+"AccountSid"+"}", this.pathAccountSid.toString());
-        path = path.replace("{"+"Sid"+"}", this.pathSid.toString());
+        path = path.replace("{"+"AccountSid"+"}", this.pathAccountSid);
+        path = path.replace("{"+"Sid"+"}", this.pathSid);
+
         path = path.replace("{"+"EndDate"+"}", this.endDate.toString());
+
         path = path.replace("{"+"StartDate"+"}", this.startDate.toString());
+
 
         Request request = new Request(
             HttpMethod.POST,
@@ -106,17 +109,16 @@ public class FeedbackCallSummaryUpdater extends Updater<FeedbackCallSummary>{
         return FeedbackCallSummary.fromJson(response.getStream(), client.getObjectMapper());
     }
     private void addPostParams(final Request request) {
-        if (accountSid != null) {
-            request.addPostParam("AccountSid", accountSid);
+        request.addPostParam("AccountSid", String.valueOf(accountSid));
     
-        }
         if (endDate != null) {
             request.addPostParam("EndDate", DateConverter.dateStringFromLocalDate(endDate));
-
         }
+
         if (startDate != null) {
             request.addPostParam("StartDate", DateConverter.dateStringFromLocalDate(startDate));
-
         }
+
     }
+
 }

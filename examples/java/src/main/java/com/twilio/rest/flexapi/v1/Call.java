@@ -48,10 +48,7 @@ import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
-
-
 import java.util.Map;
 import java.time.LocalDate;
 import java.math.BigDecimal;
@@ -77,7 +74,6 @@ public class Call extends Resource {
     public static CallUpdater updater(final String pathSid){
         return new CallUpdater(pathSid);
     }
-
     /**
     * Converts a JSON String into a Call object using the provided ObjectMapper.
     *

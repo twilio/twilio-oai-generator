@@ -24,11 +24,11 @@ public class JavaConventionResolver {
             } else {
                 parameter.dataType = resourceName + "." + parameter.enumName;
             }
-
             return parameter;
         }
         if (parameter.items != null && parameter.items.allowableValues != null && parameter.items.allowableValues.containsKey(VALUES) ) {
             parameter.isEnum = true;
+            parameter.isString = false;
             parameter.enumName = parameter.baseType;
             parameter._enum = (List<String>) parameter.items.allowableValues.get(VALUES);
             parameter.dataType = LIST_START + resourceName + "." + parameter.baseType + LIST_END;
@@ -37,6 +37,7 @@ public class JavaConventionResolver {
         }
         if (parameter.allowableValues != null && parameter.allowableValues.containsKey(ENUM_VARS)) {
             parameter.isEnum = true;
+            parameter.isString = false;
             parameter._enum = (List<String>) parameter.allowableValues.get(VALUES);
             parameter.enumName = parameter.dataType;
             parameter.dataType = resourceName + "." + parameter.dataType;

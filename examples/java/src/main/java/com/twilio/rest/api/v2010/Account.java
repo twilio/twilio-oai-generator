@@ -48,10 +48,7 @@ import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
-
-
 import java.util.Map;
 import java.time.LocalDate;
 import java.math.BigDecimal;
@@ -73,7 +70,6 @@ import com.twilio.type.SubscribeRule;
 @ToString
 public class Account extends Resource {
     private static final long serialVersionUID = 13844008145741L;
-
     public static AccountCreator creator(){
         return new AccountCreator();
     }
@@ -92,9 +88,12 @@ public class Account extends Resource {
         return new AccountFetcher(pathSid);
     }
 
+
+
     public static AccountReader reader(){
         return new AccountReader();
     }
+
 
     public static AccountUpdater updater(final Account.Status status){
         return new AccountUpdater(status);
@@ -102,7 +101,6 @@ public class Account extends Resource {
     public static AccountUpdater updater(final String pathSid, final Account.Status status){
         return new AccountUpdater(pathSid, status);
     }
-
     /**
     * Converts a JSON String into a Account object using the provided ObjectMapper.
     *
@@ -153,6 +151,7 @@ public class Account extends Resource {
             this.value = value;
         }
 
+        @Override
         public String toString() {
             return value;
         }
@@ -172,6 +171,7 @@ public class Account extends Resource {
             this.value = value;
         }
 
+        @Override
         public String toString() {
             return value;
         }

@@ -56,10 +56,10 @@ public class AccountFetcher extends Fetcher<Account> {
 
     @Override
     public Account fetch(final TwilioRestClient client) {
-        String path = "/2010-04-01/Accounts/{Sid}.json";
+        String path = String.format("%s", "/2010-04-01/Accounts/{Sid}.json");
 
         this.pathSid = this.pathSid == null ? client.getAccountSid() : this.pathSid;
-        path = path.replace("{"+"Sid"+"}", this.pathSid.toString());
+        path = path.replace("{"+"Sid"+"}", this.pathSid);
 
         Request request = new Request(
             HttpMethod.GET,

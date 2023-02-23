@@ -26,19 +26,14 @@ import com.twilio.http.Request;
 import com.twilio.http.Response;
 import com.twilio.http.TwilioRestClient;
 import com.twilio.rest.Domains;
-import java.math.BigDecimal;
-import java.util.List;
-import java.util.Map;
 import java.time.LocalDate;
 import com.twilio.converter.Converter;
 import java.time.ZonedDateTime;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
-import java.net.URI;
 import java.time.format.DateTimeFormatter;
 import com.twilio.converter.DateConverter;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -46,7 +41,6 @@ import java.util.Map;
 import java.util.Objects;
 
 import lombok.ToString;
-
 import java.net.URI;
 
 public class AccountCreator extends Creator<Account>{
@@ -88,7 +82,7 @@ public class AccountCreator extends Creator<Account>{
 
     @Override
     public Account create(final TwilioRestClient client){
-        String path = "/2010-04-01/Accounts.json";
+        String path = String.format("%s", "/2010-04-01/Accounts.json");
 
 
         Request request = new Request(
@@ -112,25 +106,20 @@ public class AccountCreator extends Creator<Account>{
         return Account.fromJson(response.getStream(), client.getObjectMapper());
     }
     private void addPostParams(final Request request) {
-        if (recordingStatusCallback != null) {
-            request.addPostParam("RecordingStatusCallback", recordingStatusCallback.toString());
+        request.addPostParam("RecordingStatusCallback", String.valueOf(recordingStatusCallback));
     
-        }
         if (recordingStatusCallbackEvent != null) {
             for (String prop : recordingStatusCallbackEvent) {
                 request.addPostParam("RecordingStatusCallbackEvent", prop);
             }
-    
         }
-        if (twiml != null) {
-            request.addPostParam("Twiml", twiml.toString());
     
-        }
+        request.addPostParam("Twiml", String.valueOf(twiml));
+    
     }
-    private void addHeaderParams(final Request request) {
-        if (xTwilioWebhookEnabled != null) {
-            request.addHeaderParam("X-Twilio-Webhook-Enabled", xTwilioWebhookEnabled.toString());
 
-        }
+    private void addHeaderParams(final Request request) {
+            request.addHeaderParam("X-Twilio-Webhook-Enabled", String.valueOf(xTwilioWebhookEnabled));
     }
+
 }

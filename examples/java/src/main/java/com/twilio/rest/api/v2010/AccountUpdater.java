@@ -68,11 +68,12 @@ public class AccountUpdater extends Updater<Account>{
 
     @Override
     public Account update(final TwilioRestClient client){
-        String path = "/2010-04-01/Accounts/{Sid}.json";
+        String path = String.format("%s", "/2010-04-01/Accounts/{Sid}.json");
 
         this.pathSid = this.pathSid == null ? client.getAccountSid() : this.pathSid;
-        path = path.replace("{"+"Sid"+"}", this.pathSid.toString());
+        path = path.replace("{"+"Sid"+"}", this.pathSid);
         path = path.replace("{"+"Status"+"}", this.status.toString());
+
 
         Request request = new Request(
             HttpMethod.POST,
@@ -94,13 +95,10 @@ public class AccountUpdater extends Updater<Account>{
         return Account.fromJson(response.getStream(), client.getObjectMapper());
     }
     private void addPostParams(final Request request) {
-        if (pauseBehavior != null) {
-            request.addPostParam("PauseBehavior", pauseBehavior);
+        request.addPostParam("PauseBehavior", String.valueOf(pauseBehavior));
     
-        }
-        if (status != null) {
-            request.addPostParam("Status", status.toString());
+        request.addPostParam("Status", String.valueOf(status));
     
-        }
     }
+
 }

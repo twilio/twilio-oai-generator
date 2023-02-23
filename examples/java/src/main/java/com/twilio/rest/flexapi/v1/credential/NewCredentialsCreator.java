@@ -26,19 +26,14 @@ import com.twilio.http.Request;
 import com.twilio.http.Response;
 import com.twilio.http.TwilioRestClient;
 import com.twilio.rest.Domains;
-import java.math.BigDecimal;
-import java.util.List;
-import java.util.Map;
 import java.time.LocalDate;
 import com.twilio.converter.Converter;
 import java.time.ZonedDateTime;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
-import java.net.URI;
 import java.time.format.DateTimeFormatter;
 import com.twilio.converter.DateConverter;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -46,7 +41,6 @@ import java.util.Map;
 import java.util.Objects;
 
 import lombok.ToString;
-
 import java.net.URI;
 
 public class NewCredentialsCreator extends Creator<NewCredentials>{
@@ -169,9 +163,10 @@ public class NewCredentialsCreator extends Creator<NewCredentials>{
 
     @Override
     public NewCredentials create(final TwilioRestClient client){
-        String path = "/v1/Credentials/AWS";
+        String path = String.format("%s", "/v1/Credentials/AWS");
 
-        path = path.replace("{"+"TestString"+"}", this.testString.toString());
+        path = path.replace("{"+"TestString"+"}", this.testString);
+
 
         Request request = new Request(
             HttpMethod.POST,
@@ -193,79 +188,60 @@ public class NewCredentialsCreator extends Creator<NewCredentials>{
         return NewCredentials.fromJson(response.getStream(), client.getObjectMapper());
     }
     private void addPostParams(final Request request) {
-        if (testString != null) {
-            request.addPostParam("TestString", testString);
+        request.addPostParam("TestString", String.valueOf(testString));
     
-        }
-        if (testBoolean != null) {
-            request.addPostParam("TestBoolean", testBoolean.toString());
+        request.addPostParam("TestBoolean", String.valueOf(testBoolean));
     
-        }
-        if (testInteger != null) {
-            request.addPostParam("TestInteger", testInteger.toString());
+        request.addPostParam("TestInteger", String.valueOf(testInteger));
     
-        }
-        if (testNumber != null) {
-            request.addPostParam("TestNumber", testNumber.toString());
+        request.addPostParam("TestNumber", String.valueOf(testNumber));
     
-        }
-        if (testNumberFloat != null) {
-            request.addPostParam("TestNumberFloat", testNumberFloat.toString());
+        request.addPostParam("TestNumberFloat", String.valueOf(testNumberFloat));
     
-        }
-        if (testNumberDouble != null) {
-            request.addPostParam("TestNumberDouble", testNumberDouble.toString());
+        request.addPostParam("TestNumberDouble", String.valueOf(testNumberDouble));
     
-        }
-        if (testNumberInt32 != null) {
-            request.addPostParam("TestNumberInt32", testNumberInt32.toString());
+        request.addPostParam("TestNumberInt32", String.valueOf(testNumberInt32));
     
-        }
-        if (testNumberInt64 != null) {
-            request.addPostParam("TestNumberInt64", testNumberInt64.toString());
+        request.addPostParam("TestNumberInt64", String.valueOf(testNumberInt64));
     
-        }
         if (testObject != null) {
             request.addPostParam("TestObject",  Converter.mapToJson(testObject));
-    
         }
+    
         if (testDateTime != null) {
             request.addPostParam("TestDateTime", testDateTime.toInstant().toString());
-
         }
+
         if (testDate != null) {
             request.addPostParam("TestDate", DateConverter.dateStringFromLocalDate(testDate));
+        }
 
-        }
-        if (testEnum != null) {
-            request.addPostParam("TestEnum", testEnum.toString());
+        request.addPostParam("TestEnum", String.valueOf(testEnum));
     
-        }
         if (testObjectArray != null) {
             for (Map<String, Object> prop : testObjectArray) {
                 request.addPostParam("TestObjectArray", Converter.mapToJson(prop));
             }
-    
         }
+    
         if (testAnyType != null) {
             request.addPostParam("TestAnyType",  Converter.mapToJson(testAnyType));
-    
         }
+    
         if (testAnyArray != null) {
             for (Map<String, Object> prop : testAnyArray) {
                 request.addPostParam("TestAnyArray", Converter.mapToJson(prop));
             }
-    
         }
+    
         if (permissions != null) {
             for (NewCredentials.Permissions prop : permissions) {
-                request.addPostParam("Permissions", prop.toString());
+                request.addPostParam("Permissions", String.valueOf(prop));
             }
-    
         }
-        if (someA2PThing != null) {
-            request.addPostParam("SomeA2PThing", someA2PThing);
     
-        }
+        request.addPostParam("SomeA2PThing", String.valueOf(someA2PThing));
+    
     }
+
 }

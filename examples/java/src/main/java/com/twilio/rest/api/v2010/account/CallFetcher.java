@@ -59,11 +59,12 @@ public class CallFetcher extends Fetcher<Call> {
 
     @Override
     public Call fetch(final TwilioRestClient client) {
-        String path = "/2010-04-01/Accounts/{AccountSid}/Calls/{TestInteger}.json";
+        String path = String.format("%s", "/2010-04-01/Accounts/{AccountSid}/Calls/{TestInteger}.json");
 
         this.pathAccountSid = this.pathAccountSid == null ? client.getAccountSid() : this.pathAccountSid;
-        path = path.replace("{"+"AccountSid"+"}", this.pathAccountSid.toString());
+        path = path.replace("{"+"AccountSid"+"}", this.pathAccountSid);
         path = path.replace("{"+"TestInteger"+"}", this.pathTestInteger.toString());
+
 
         Request request = new Request(
             HttpMethod.GET,
