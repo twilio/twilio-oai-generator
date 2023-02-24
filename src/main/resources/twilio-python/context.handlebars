@@ -20,7 +20,7 @@ class {{apiName}}Context(InstanceContext):
         {{#dependents}}{{#instanceDependent}}
         self._{{mountName}} = None{{/instanceDependent}}{{/dependents}}
     {{#operations}}{{#vendorExtensions.x-is-context-operation}}
-    def {{vendorExtensions.x-name-lower}}(self{{#allParams}}, {{paramName}}=values.unset{{/allParams}}):{{#vendorExtensions.x-is-update-operation}}
+    def {{vendorExtensions.x-name-lower}}(self{{#allParams}}, {{paramName}}{{#if required}}{{else}}=values.unset{{/if}}{{/allParams}}):{{#vendorExtensions.x-is-update-operation}}
         """
         Update the {{instanceName}}
         {{#allParams}}
@@ -29,11 +29,12 @@ class {{apiName}}Context(InstanceContext):
         :returns: The updated {{instanceName}}
         :rtype: twilio.rest.{{domainPackage}}.{{apiVersion}}.{{namespaceSubPart}}.{{instanceName}}
         """
-        data = values.of({ {{#allParams}}
-            '{{{baseName}}}': {{#if vendorExtensions.x-serialize}}{{vendorExtensions.x-serialize}}({{paramName}}{{#if isArray}}, lambda e: e){{else}}){{/if}}{{else}}{{paramName}}{{/if}},{{/allParams}}
+        data = values.of({ {{#allParams}}{{#isFormParam}}
+            '{{{baseName}}}': {{#if vendorExtensions.x-serialize}}{{vendorExtensions.x-serialize}}({{paramName}}{{#if isArray}}, lambda e: e){{else}}){{/if}}{{else}}{{paramName}}{{/if}},{{/isFormParam}}{{/allParams}}
         })
+        {{#allParams}}{{^isFormParam}}headers = values.of({'{{{baseName}}}': {{paramName}}, }){{/isFormParam}}{{/allParams}}
 
-        payload = self._version.update(method='POST', uri=self._uri, data=data)
+        payload = self._version.update(method='POST', uri=self._uri, data=data,{{#allParams}}{{#if isFormParam}}{{else}} headers=headers{{/if}}{{/allParams}})
 
         return {{instanceName}}(
             self._version,
@@ -43,11 +44,17 @@ class {{apiName}}Context(InstanceContext):
         {{/vendorExtensions.x-is-update-operation}}{{#vendorExtensions.x-is-fetch-operation}}
         """
         Fetch the {{instanceName}}
+        {{#allParams}}
+        :params {{{dataType}}} {{paramName}}: {{{description}}}{{/allParams}}
 
         :returns: The fetched {{instanceName}}
         :rtype: twilio.rest.{{domainPackage}}.{{apiVersion}}.{{namespaceSubPart}}.{{instanceName}}
         """
-        payload = self._version.fetch(method='GET', uri=self._uri)
+        {{#if allParams}}
+        data = values.of({ {{#allParams}}
+            '{{{baseName}}}': {{#if vendorExtensions.x-serialize}}{{vendorExtensions.x-serialize}}({{paramName}}{{#if isArray}}, lambda e: e){{else}}){{/if}}{{else}}{{paramName}}{{/if}},{{/allParams}}
+        }){{/if}}
+        payload = self._version.fetch(method='GET', uri=self._uri, {{#if allParams}}params=data{{/if}})
 
         return {{instanceName}}(
             self._version,
@@ -59,10 +66,14 @@ class {{apiName}}Context(InstanceContext):
         """
         Deletes the {{apiName}}Instance
 
+        {{#allParams}}:param {{dataType}} {{paramName}}: {{{description}}}
+        {{/allParams}}
         :returns: True if delete succeeds, False otherwise
         :rtype: bool
-        """
-        return self._version.delete(method='DELETE', uri=self._uri)
+        """{{#if allParams}}
+        headers = values.of({{#allParams}}{'{{{baseName}}}': {{paramName}}, }{{/allParams}})
+        {{/if}}
+        return self._version.delete(method='DELETE', uri=self._uri,{{#if allParams}} headers=headers{{/if}})
         {{/vendorExtensions.x-is-delete-operation}}{{#vendorExtensions.x-is-create-operation}}
         """
         Create the {{instanceName}}

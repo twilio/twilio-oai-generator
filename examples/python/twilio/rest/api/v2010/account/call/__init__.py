@@ -40,7 +40,7 @@ class CallList(ListResource):
 
         # Path Solution
         self._solution = { 'account_sid': account_sid,  }
-        self._uri = '/Accounts/${account_sid}/Calls.json'.format(**self._solution)
+        self._uri = '/Accounts/{account_sid}/Calls.json'.format(**self._solution)
         
         self._feedback_call_summary = None
         
@@ -50,6 +50,7 @@ class CallList(ListResource):
     def create(self, required_string_property, test_method, test_array_of_strings=values.unset, test_array_of_uri=values.unset):
         """
         Create the CallInstance
+
         :param str required_string_property: 
         :param str test_method: The HTTP method that we should use to request the `TestArrayOfUri`.
         :param list[str] test_array_of_strings: 
@@ -64,8 +65,9 @@ class CallList(ListResource):
             'TestArrayOfStrings': serialize.map(test_array_of_strings, lambda e: e),
             'TestArrayOfUri': serialize.map(test_array_of_uri, lambda e: e),
         })
+        
+        payload = self._version.create(method='POST', uri=self._uri, data=data,)
 
-        payload = self._version.create(method='POST', uri=self._uri, data=data)
         return CallInstance(self._version, payload, account_sid=self._solution['account_sid'])
     
 
@@ -130,26 +132,29 @@ class CallContext(InstanceContext):
             'account_sid': account_sid,
             'test_integer': test_integer,
         }
-        self._uri = '/Accounts/${account_sid}/Calls/${test_integer}.json'.format(**self._solution)
+        self._uri = '/Accounts/{account_sid}/Calls/{test_integer}.json'.format(**self._solution)
         
     
     def delete(self):
         """
         Deletes the CallInstance
 
+        
         :returns: True if delete succeeds, False otherwise
         :rtype: bool
         """
-        return self._version.delete(method='DELETE', uri=self._uri)
+        return self._version.delete(method='DELETE', uri=self._uri,)
         
     def fetch(self):
         """
         Fetch the CallInstance
+        
 
         :returns: The fetched CallInstance
         :rtype: twilio.rest.api.v2010.account.call.CallInstance
         """
-        payload = self._version.fetch(method='GET', uri=self._uri)
+        
+        payload = self._version.fetch(method='GET', uri=self._uri, )
 
         return CallInstance(
             self._version,
@@ -345,6 +350,7 @@ class CallInstance(InstanceResource):
     def delete(self):
         """
         Deletes the CallInstance
+        
 
         :returns: True if delete succeeds, False otherwise
         :rtype: bool
@@ -354,6 +360,7 @@ class CallInstance(InstanceResource):
     def fetch(self):
         """
         Fetch the CallInstance
+        
 
         :returns: The fetched CallInstance
         :rtype: twilio.rest.api.v2010.account.call.CallInstance

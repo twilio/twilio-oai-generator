@@ -3,16 +3,18 @@
     def create(self{{#allParams}}, {{paramName}}{{#if required}}{{else}}=values.unset{{/if}}{{/allParams}}):
         """
         Create the {{instanceName}}
+
         {{#allParams}}:param {{dataType}} {{paramName}}: {{{description}}}
         {{/allParams}}
         :returns: The created {{instanceName}}
         :rtype: twilio.rest.{{domainPackage}}.{{apiVersion}}.{{namespaceSubPart}}.{{instanceName}}
         """
-        data = values.of({ {{#allParams}}
-            '{{{baseName}}}': {{#if vendorExtensions.x-serialize}}{{vendorExtensions.x-serialize}}({{paramName}}{{#if isArray}}, lambda e: e){{else}}){{/if}}{{else}}{{paramName}}{{/if}},{{/allParams}}
+        data = values.of({ {{#allParams}}{{#isFormParam}}
+            '{{{baseName}}}': {{#if vendorExtensions.x-serialize}}{{vendorExtensions.x-serialize}}({{paramName}}{{#if isArray}}, lambda e: e){{else}}){{/if}}{{else}}{{paramName}}{{/if}},{{/isFormParam}}{{/allParams}}
         })
+        {{#allParams}}{{^isFormParam}}headers = values.of({'{{{baseName}}}': {{paramName}}, }){{/isFormParam}}{{/allParams}}
+        payload = self._version.create(method='POST', uri=self._uri, data=data,{{#allParams}}{{#if isFormParam}}{{else}} headers=headers{{/if}}{{/allParams}})
 
-        payload = self._version.create(method='POST', uri=self._uri, data=data)
         return {{instanceName}}(self._version, payload{{#listPathParams}}, {{paramName}}=self._solution['{{paramName}}']{{/listPathParams}})
     {{/hasParams}}{{/vendorExtensions.x-is-create-operation}}{{#vendorExtensions.x-is-read-operation}}
     def stream(self, {{#allParams}}{{#startsWith paramName text='page_size'}}{{else}}{{paramName}}=values.unset, {{/startsWith}}{{/allParams}}limit=None, page_size=None):

@@ -36,7 +36,7 @@ class {{instanceName}}(InstanceResource):
         """
         return self._properties['{{name}}']
     {{/vars}}{{#operations}}{{#vendorExtensions.x-is-context-operation}}
-    def {{vendorExtensions.x-name-lower}}(self{{#allParams}}, {{paramName}}=values.unset{{/allParams}}):{{#vendorExtensions.x-is-update-operation}}
+    def {{vendorExtensions.x-name-lower}}(self{{#allParams}}, {{paramName}}{{#if required}}{{else}}=values.unset{{/if}}{{/allParams}}):{{#vendorExtensions.x-is-update-operation}}
         """
         Update the {{instanceName}}
         {{#allParams}}
@@ -49,19 +49,23 @@ class {{instanceName}}(InstanceResource):
     {{/vendorExtensions.x-is-update-operation}}{{#vendorExtensions.x-is-fetch-operation}}
         """
         Fetch the {{instanceName}}
+        {{#allParams}}
+        :params {{{dataType}}} {{paramName}}: {{{description}}}{{/allParams}}
 
         :returns: The fetched {{instanceName}}
         :rtype: twilio.rest.{{domainPackage}}.{{apiVersion}}.{{namespaceSubPart}}.{{instanceName}}
         """
-        return self._proxy.fetch()
+        return self._proxy.fetch({{#allParams}}{{paramName}}={{paramName}}, {{/allParams}})
     {{/vendorExtensions.x-is-fetch-operation}}{{#vendorExtensions.x-is-delete-operation}}
         """
         Deletes the {{instanceName}}
+        {{#allParams}}
+        :params {{{dataType}}} {{paramName}}: {{{description}}}{{/allParams}}
 
         :returns: True if delete succeeds, False otherwise
         :rtype: bool
         """
-        return self._proxy.delete()
+        return self._proxy.delete({{#allParams}}{{paramName}}={{paramName}}, {{/allParams}})
     {{/vendorExtensions.x-is-delete-operation}}{{#vendorExtensions.x-is-create-operation}}
         """
         Create the {{instanceName}}
@@ -71,7 +75,7 @@ class {{instanceName}}(InstanceResource):
         :returns: The created {{instanceName}}
         :rtype: twilio.rest.{{domainPackage}}.{{apiVersion}}.{{namespaceSubPart}}.{{instanceName}}
         """
-        return self._proxy.create({{#allParams}}{{paramName}},{{/allParams}})
+        return self._proxy.create({{#allParams}}{{paramName}}{{#if required}}{{else}}={{paramName}}{{/if}}, {{/allParams}})
     {{/vendorExtensions.x-is-create-operation}}{{/vendorExtensions.x-is-context-operation}}{{/operations}}{{#dependents}}{{#instanceDependent}}
     @property
     def {{mountName}}(self):

@@ -46,6 +46,7 @@ class FleetList(ListResource):
     def create(self, name=values.unset):
         """
         Create the FleetInstance
+
         :param str name: 
         
         :returns: The created FleetInstance
@@ -54,8 +55,9 @@ class FleetList(ListResource):
         data = values.of({ 
             'Name': name,
         })
+        
+        payload = self._version.create(method='POST', uri=self._uri, data=data,)
 
-        payload = self._version.create(method='POST', uri=self._uri, data=data)
         return FleetInstance(self._version, payload)
     
 
@@ -107,17 +109,19 @@ class FleetContext(InstanceContext):
         self._solution = { 
             'sid': sid,
         }
-        self._uri = '/Fleets/${sid}'.format(**self._solution)
+        self._uri = '/Fleets/{sid}'.format(**self._solution)
         
     
     def fetch(self):
         """
         Fetch the FleetInstance
+        
 
         :returns: The fetched FleetInstance
         :rtype: twilio.rest.versionless.deployed_devices.fleet.FleetInstance
         """
-        payload = self._version.fetch(method='GET', uri=self._uri)
+        
+        payload = self._version.fetch(method='GET', uri=self._uri, )
 
         return FleetInstance(
             self._version,
@@ -195,6 +199,7 @@ class FleetInstance(InstanceResource):
     def fetch(self):
         """
         Fetch the FleetInstance
+        
 
         :returns: The fetched FleetInstance
         :rtype: twilio.rest.versionless.deployed_devices.fleet.FleetInstance

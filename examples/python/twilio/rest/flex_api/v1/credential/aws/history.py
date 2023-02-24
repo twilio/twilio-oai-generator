@@ -88,17 +88,23 @@ class HistoryContext(InstanceContext):
         self._solution = { 
             'sid': sid,
         }
-        self._uri = '/Credentials/AWS/${sid}/History'.format(**self._solution)
+        self._uri = '/Credentials/AWS/{sid}/History'.format(**self._solution)
         
     
     def fetch(self, add_ons_data=values.unset):
         """
         Fetch the HistoryInstance
+        
+        :params dict add_ons_data: 
 
         :returns: The fetched HistoryInstance
         :rtype: twilio.rest.flex_api.v1.credential.aws.history.HistoryInstance
         """
-        payload = self._version.fetch(method='GET', uri=self._uri)
+        
+        data = values.of({ 
+            'AddOnsData': serialize.prefixed_collapsible_map(add_ons_data),
+        })
+        payload = self._version.fetch(method='GET', uri=self._uri, params=data)
 
         return HistoryInstance(
             self._version,
@@ -185,11 +191,13 @@ class HistoryInstance(InstanceResource):
     def fetch(self, add_ons_data=values.unset):
         """
         Fetch the HistoryInstance
+        
+        :params dict add_ons_data: 
 
         :returns: The fetched HistoryInstance
         :rtype: twilio.rest.flex_api.v1.credential.aws.history.HistoryInstance
         """
-        return self._proxy.fetch()
+        return self._proxy.fetch(add_ons_data=add_ons_data, )
     
     def __repr__(self):
         """
