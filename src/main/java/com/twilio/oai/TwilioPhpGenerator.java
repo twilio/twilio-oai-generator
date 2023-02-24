@@ -67,7 +67,7 @@ public class TwilioPhpGenerator extends PhpClientCodegen {
         directoryStructureService.configureResourceFamily(openAPI);
         directoryStructureService.configure(openAPI);
 
-        new PhpDomainBuilder().setVersionTemplate(openAPI, directoryStructureService);
+        PhpDomainBuilder.setVersionTemplate(openAPI, directoryStructureService);
     }
 
     @Override
