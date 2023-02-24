@@ -3,6 +3,7 @@
 codegen/
 target/
 __pycache__
+tmp
 
 **/.openapi-generator*
 **/docs

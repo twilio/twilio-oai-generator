@@ -8,15 +8,19 @@ function should-generate() {
 function generate() {
   find -E "$OUT_DIR"/*/* ! -name "*_test.go" ! -regex "$OUT_DIR/[^/]+/__init__.py" -type f -delete || true
 
+  rm -rf tmp
+  mkdir -p tmp
   for api_spec in examples/spec/*; do
-    java -cp ./openapi-generator-cli.jar:target/twilio-openapi-generator.jar \
-      org.openapitools.codegen.OpenAPIGenerator \
-      generate -g "$@" \
-      -i "$api_spec" \
-      -o "$OUT_DIR" \
-      --inline-schema-name-defaults arrayItemSuffix="" \
-      --global-property apiTests=false,apiDocs=false
+    echo "generatorName: $1
+inputSpec: $api_spec
+outputDir: $OUT_DIR
+inlineSchemaNameDefaults:
+  arrayItemSuffix: ''" > tmp/"$(basename "$api_spec")"
   done
+
+  java -DapiTests=false -DapiDocs=false $2 \
+       -cp ./openapi-generator-cli.jar:target/twilio-openapi-generator.jar \
+       org.openapitools.codegen.OpenAPIGenerator batch tmp/*
 }
 
 function docker-run() {
@@ -55,7 +59,7 @@ fi
 
 if should-generate node; then
   OUT_DIR=examples/node/src/rest
-  generate twilio-node --global-property skipFormModel=false
+  generate twilio-node -DskipFormModel=false
   docker-run examples/node/Dockerfile-prettier
 fi
 
