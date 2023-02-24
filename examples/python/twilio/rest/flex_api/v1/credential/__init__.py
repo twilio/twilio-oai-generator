@@ -56,7 +56,7 @@ class CredentialList(ListResource):
         """
         if self._aws is None:
             self._aws = AwsList(self._version)
-        return self.aws
+        return self._aws
 
     @property
     def new_credentials(self):
@@ -68,7 +68,7 @@ class CredentialList(ListResource):
         """
         if self._new_credentials is None:
             self._new_credentials = NewCredentialsList(self._version)
-        return self.new_credentials
+        return self._new_credentials
 
 
     def __repr__(self):
