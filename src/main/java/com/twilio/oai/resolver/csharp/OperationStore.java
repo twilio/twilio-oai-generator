@@ -9,13 +9,10 @@ import java.util.HashMap;
 public final class OperationStore {
 
     private OperationStore() { }
-    private static OperationStore instance;
-    public static OperationStore getInstance()
-    {
-        if (instance == null)
-            instance = new OperationStore();
+    private static final ThreadLocal<OperationStore> instance = ThreadLocal.withInitial(OperationStore::new);
 
-        return instance;
+    public static OperationStore getInstance() {
+        return instance.get();
     }
 
     public void clear() {

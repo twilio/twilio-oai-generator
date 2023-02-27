@@ -1,0 +1,119 @@
+class {{apiName}}Context(InstanceContext):
+
+    def __init__(self, version: Version{{#instancePathParams}}, {{paramName}}: {{{dataType}}}{{/instancePathParams}}):
+        """
+        Initialize the {{apiName}}Context
+
+        :param Version version: Version that contains the resource
+        {{#instancePathParams}}:param {{paramName}}: {{{description}}}{{/instancePathParams}}
+
+        :returns: twilio.rest.{{domainPackage}}.{{apiVersion}}.{{namespaceSubPart}}.{{apiName}}Context
+        :rtype: twilio.rest.{{domainPackage}}.{{apiVersion}}.{{namespaceSubPart}}.{{apiName}}Context
+        """
+        super().__init__(version)
+
+        # Path Solution
+        self._solution = { {{#instancePathParams}}
+            '{{paramName}}': {{paramName}},{{/instancePathParams}}
+        }
+        self._uri = '{{instancePath}}'.format(**self._solution)
+        {{#dependents}}{{#instanceDependent}}
+        self._{{mountName}} = None{{/instanceDependent}}{{/dependents}}
+    {{#operations}}{{#vendorExtensions.x-is-context-operation}}
+    def {{vendorExtensions.x-name-lower}}(self{{#allParams}}, {{paramName}}{{#if required}}{{else}}=values.unset{{/if}}{{/allParams}}):{{#vendorExtensions.x-is-update-operation}}
+        """
+        Update the {{instanceName}}
+        {{#allParams}}
+        :params {{{dataType}}} {{paramName}}: {{{description}}}{{/allParams}}
+
+        :returns: The updated {{instanceName}}
+        :rtype: twilio.rest.{{domainPackage}}.{{apiVersion}}.{{namespaceSubPart}}.{{instanceName}}
+        """
+        data = values.of({ {{#allParams}}{{#isFormParam}}
+            '{{{baseName}}}': {{#if vendorExtensions.x-serialize}}{{vendorExtensions.x-serialize}}({{paramName}}{{#if isArray}}, lambda e: e){{else}}){{/if}}{{else}}{{paramName}}{{/if}},{{/isFormParam}}{{/allParams}}
+        })
+        {{#allParams}}{{^isFormParam}}headers = values.of({'{{{baseName}}}': {{paramName}}, }){{/isFormParam}}{{/allParams}}
+
+        payload = self._version.update(method='POST', uri=self._uri, data=data,{{#allParams}}{{#if isFormParam}}{{else}} headers=headers{{/if}}{{/allParams}})
+
+        return {{instanceName}}(
+            self._version,
+            payload{{#instancePathParams}},
+            {{paramName}}=self._solution['{{paramName}}']{{/instancePathParams}}
+        )
+        {{/vendorExtensions.x-is-update-operation}}{{#vendorExtensions.x-is-fetch-operation}}
+        """
+        Fetch the {{instanceName}}
+        {{#allParams}}
+        :params {{{dataType}}} {{paramName}}: {{{description}}}{{/allParams}}
+
+        :returns: The fetched {{instanceName}}
+        :rtype: twilio.rest.{{domainPackage}}.{{apiVersion}}.{{namespaceSubPart}}.{{instanceName}}
+        """
+        {{#if allParams}}
+        data = values.of({ {{#allParams}}
+            '{{{baseName}}}': {{#if vendorExtensions.x-serialize}}{{vendorExtensions.x-serialize}}({{paramName}}{{#if isArray}}, lambda e: e){{else}}){{/if}}{{else}}{{paramName}}{{/if}},{{/allParams}}
+        }){{/if}}
+        payload = self._version.fetch(method='GET', uri=self._uri, {{#if allParams}}params=data{{/if}})
+
+        return {{instanceName}}(
+            self._version,
+            payload,
+            {{#instancePathParams}}{{paramName}}=self._solution['{{paramName}}'],
+            {{/instancePathParams}}
+        )
+        {{/vendorExtensions.x-is-fetch-operation}}{{#vendorExtensions.x-is-delete-operation}}
+        """
+        Deletes the {{apiName}}Instance
+
+        {{#allParams}}:param {{dataType}} {{paramName}}: {{{description}}}
+        {{/allParams}}
+        :returns: True if delete succeeds, False otherwise
+        :rtype: bool
+        """{{#if allParams}}
+        headers = values.of({{#allParams}}{'{{{baseName}}}': {{paramName}}, }{{/allParams}})
+        {{/if}}
+        return self._version.delete(method='DELETE', uri=self._uri,{{#if allParams}} headers=headers{{/if}})
+        {{/vendorExtensions.x-is-delete-operation}}{{#vendorExtensions.x-is-create-operation}}
+        """
+        Create the {{instanceName}}
+        {{#allParams}}
+        :param {{dataType}} {{paramName}}: {{{description}}}{{/allParams}}
+
+        :returns: The created {{instanceName}}
+        :rtype: twilio.rest.{{domainPackage}}.{{apiVersion}}.{{namespaceSubPart}}.{{instanceName}}
+        """
+        data = values.of({ {{#allParams}}
+            '{{{baseName}}}': {{#if vendorExtensions.x-serialize}}{{vendorExtensions.x-serialize}}({{paramName}}{{#if isArray}}, lambda e: e){{else}}){{/if}}{{else}}{{paramName}}{{/if}},{{/allParams}}
+        })
+
+        payload = self._version.create(method='POST', uri=self._uri, data=data)
+
+        return {{instanceName}}(
+            self._version,
+            payload{{#instancePathParams}},
+            {{paramName}}=self._solution['{{paramName}}']{{/instancePathParams}}
+        )
+    {{/vendorExtensions.x-is-create-operation}}{{/vendorExtensions.x-is-context-operation}}{{/operations}}
+    {{#dependents}}{{#instanceDependent}}
+    @property
+    def {{mountName}}(self):
+        """
+        Access the {{mountName}}
+
+        :returns: twilio.rest.{{domainPackage}}.{{apiVersion}}.{{namespaceSubPart}}.{{listName}}
+        :rtype: twilio.rest.{{domainPackage}}.{{apiVersion}}.{{namespaceSubPart}}.{{listName}}
+        """
+        if self._{{mountName}} is None:
+            self._{{mountName}} = {{listName}}(self._version,{{#instancePathParams}} self._solution['{{paramName}}'],{{/instancePathParams}}
+            )
+        return self._{{mountName}}
+    {{/instanceDependent}}{{/dependents}}
+    def __repr__(self):
+        """
+        Provide a friendly representation
+        :returns: Machine friendly representation
+        :rtype: str
+        """
+        context = ' '.join('{}={}'.format(k, v) for k, v in self._solution.items())
+        return '<Twilio.{{domainName}}.{{apiVersionClass}}.{{apiName}}Context {}>'.format(context)

@@ -16,7 +16,7 @@
 from twilio.base import deserialize
 from twilio.base import serialize
 from twilio.base import values
-from twilio.base.instance_context import InstanceContext
+
 from twilio.base.instance_resource import InstanceResource
 from twilio.base.list_resource import ListResource
 from twilio.base.version import Version
@@ -28,18 +28,19 @@ class AssistantList(ListResource):
     def __init__(self, version: Version):
         """
         Initialize the AssistantList
+
         :param Version version: Version that contains the resource
         
-        :returns: twilio.versionless.understand.assistant..AssistantList
-        :rtype: twilio.versionless.understand.assistant..AssistantList
+        :returns: twilio.rest.versionless.understand.assistant.AssistantList
+        :rtype: twilio.rest.versionless.understand.assistant.AssistantList
         """
         super().__init__(version)
 
         # Path Solution
         self._solution = {  }
         self._uri = '/Assistants'.format(**self._solution)
-
-
+        
+        
     
     def stream(self, limit=None, page_size=None):
         """
@@ -124,6 +125,7 @@ class AssistantList(ListResource):
         return AssistantPage(self._version, response, self._solution)
 
 
+
     def __repr__(self):
         """
         Provide a friendly representation
@@ -174,5 +176,48 @@ class AssistantPage(Page):
 
 
 
+class AssistantInstance(InstanceResource):
+
+    def __init__(self, version, payload):
+        """
+        Initialize the AssistantInstance
+        :returns: twilio.rest.versionless.understand.assistant.AssistantInstance
+        :rtype: twilio.rest.versionless.understand.assistant.AssistantInstance
+        """
+        super().__init__(version)
+
+        self._properties = { 
+            'sid': payload.get('sid'),
+            'friendly_name': payload.get('friendly_name'),
+        }
+
+        self._context = None
+        self._solution = {  }
+    
+    
+    @property
+    def sid(self):
+        """
+        :returns: A string that uniquely identifies this Fleet.
+        :rtype: str
+        """
+        return self._properties['sid']
+    
+    @property
+    def friendly_name(self):
+        """
+        :returns: A human readable description for this Fleet.
+        :rtype: str
+        """
+        return self._properties['friendly_name']
+    
+    def __repr__(self):
+        """
+        Provide a friendly representation
+        :returns: Machine friendly representation
+        :rtype: str
+        """
+        context = ' '.join('{}={}'.format(k, v) for k, v in self._solution.items())
+        return '<Twilio.Versionless.Understand.AssistantInstance {}>'.format(context)
 
 

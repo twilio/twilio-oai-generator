@@ -3,8 +3,6 @@ package com.twilio.oai.api;
 import com.twilio.oai.DirectoryStructureService;
 import com.twilio.oai.PathUtils;
 import com.twilio.oai.resource.Resource;
-import io.swagger.v3.oas.models.OpenAPI;
-import io.swagger.v3.oas.models.PathItem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,33 +10,42 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.PathItem;
+
 public class PhpDomainBuilder {
-    private static final List<Object> contextResourcesList = new ArrayList<>();
-    private static final List<Object> dependentList = new ArrayList<>();
+    private final List<Object> contextResourcesList = new ArrayList<>();
 
-    public void setVersionTemplate(final OpenAPI openAPI, DirectoryStructureService directoryStructureService) {
-        filter_contextResources(openAPI, directoryStructureService);
-        if (directoryStructureService.isVersionLess()) return;
-        setContextResources(directoryStructureService, null);
+    public static void setVersionTemplate(final OpenAPI openAPI,
+                                          final DirectoryStructureService directoryStructureService) {
+        setVersionTemplate(openAPI, directoryStructureService, null);
     }
 
-    public static void setContextResources(DirectoryStructureService directoryStructureService, String version) {
-        if (version == null) {
-            directoryStructureService.getAdditionalProperties().put("versionDependents", contextResourcesList);
-            return;
-        }
-        directoryStructureService.getAdditionalProperties().put("versionDependents",
-                contextResourcesList.stream()
-                        .map(DirectoryStructureService.ContextResource.class::cast)
-                        .filter(contextResource -> contextResource.getVersion().equals(version))
-                        .collect(Collectors.toList())
-        );
+    public static void setVersionTemplate(final OpenAPI openAPI,
+                                          final DirectoryStructureService directoryStructureService,
+                                          final String version) {
+        final PhpDomainBuilder builder = new PhpDomainBuilder();
+        builder.filterContextResources(openAPI, directoryStructureService);
+        builder.setContextResources(directoryStructureService, version);
     }
 
-    private void filter_contextResources(final OpenAPI openAPI, DirectoryStructureService directoryStructureService) {
+    private void setContextResources(final DirectoryStructureService directoryStructureService, final String version) {
+        directoryStructureService
+            .getAdditionalProperties()
+            .put("versionDependents",
+                 contextResourcesList
+                     .stream()
+                     .map(DirectoryStructureService.ContextResource.class::cast)
+                     .filter(contextResource -> version == null || contextResource.getVersion().equals(version))
+                     .collect(Collectors.toList()));
+    }
+
+    private void filterContextResources(final OpenAPI openAPI,
+                                        final DirectoryStructureService directoryStructureService) {
         Object domain = directoryStructureService.getAdditionalProperties().get("domainName");
-        if (domain.equals("Api"))
+        if (domain.equals("Api")) {
             getApiDependents(directoryStructureService);
+        }
 
         List<Resource> dependents = new ArrayList<>();
         Map<String, PathItem> pathMap = openAPI.getPaths();
@@ -51,7 +58,7 @@ public class PhpDomainBuilder {
             if (pathkey.endsWith("}")) {
                 PathItem path = pathMap.get(pathKey);
                 Optional<String> parentKey = PathUtils.getTwilioExtension(path, "parent");
-                if (!parentKey.isPresent()) {
+                if (parentKey.isEmpty()) {
                     dependents.add(new Resource(null, pathkey, path, null));
                 } else {
                     String parentkey = parentKey.get();
@@ -61,7 +68,7 @@ public class PhpDomainBuilder {
                     if (pathMap.containsKey(parentkey)) {
                         PathItem pathParent = pathMap.get(parentkey);
                         Optional<String> parentKey2 = PathUtils.getTwilioExtension(pathParent, "parent");
-                        if (!parentKey2.isPresent()) {
+                        if (parentKey2.isEmpty()) {
                             dependents.add(new Resource(null, pathkey, path, null));
                         }
                     }
@@ -72,22 +79,29 @@ public class PhpDomainBuilder {
         addResources(dependents, directoryStructureService, contextResourcesList);
     }
 
-    private void getApiDependents(DirectoryStructureService directoryStructureService) {
+    private void getApiDependents(final DirectoryStructureService directoryStructureService) {
         String pathkey = "/2010-04-01/Accounts/{Sid}.json";
-        List<Resource> dependents = directoryStructureService.getResourceTree().dependents(pathkey)
-                .stream().filter(dep -> !dep.getName().endsWith("}.json"))
-                .collect(Collectors.toList());
+        List<Resource> dependents = directoryStructureService
+            .getResourceTree()
+            .dependents(pathkey)
+            .stream()
+            .filter(dep -> !dep.getName().endsWith("}.json"))
+            .collect(Collectors.toList());
+
+        final List<Object> dependentList = new ArrayList<>();
         addResources(dependents, directoryStructureService, dependentList);
         directoryStructureService.getAdditionalProperties().put("isApiDomain", "true");
         directoryStructureService.getAdditionalProperties().put("apiDependents", dependentList);
     }
 
-    private void addResources(List<Resource> dependents, DirectoryStructureService directoryStructureService, List<Object> dependentList) {
+    private void addResources(final List<Resource> dependents,
+                              final DirectoryStructureService directoryStructureService,
+                              final List<Object> dependentList) {
         dependents.forEach(dependent -> dependent
-                .getPathItem()
-                .readOperations()
-                .forEach(operation -> directoryStructureService.addContextdependents(dependentList,
-                        dependent.getName(),
-                        operation)));
+            .getPathItem()
+            .readOperations()
+            .forEach(operation -> directoryStructureService.addContextdependents(dependentList,
+                                                                                 dependent.getName(),
+                                                                                 operation)));
     }
 }
