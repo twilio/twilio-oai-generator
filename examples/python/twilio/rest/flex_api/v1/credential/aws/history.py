@@ -102,8 +102,9 @@ class HistoryContext(InstanceContext):
         """
         
         data = values.of({ 
-            'AddOnsData': serialize.prefixed_collapsible_map(add_ons_data),
         })
+        data.update(serialize.prefixed_collapsible_map(add_ons_data, 'AddOns'))
+        
         payload = self._version.fetch(method='GET', uri=self._uri, params=data)
 
         return HistoryInstance(
