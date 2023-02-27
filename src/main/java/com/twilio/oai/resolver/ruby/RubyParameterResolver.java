@@ -35,6 +35,9 @@ public class RubyParameterResolver extends LanguageParamResolver {
             codegenParameter.dataType = "Array[Hash]";
             codegenParameter.vendorExtensions.put("x-is-array-of-objects", "Twilio.serialize_object(e)");
         }
+        if(codegenParameter.dataType.equals("phone-number")){
+            codegenParameter.vendorExtensions.put("x-is-phone-number", true);
+        }
         return codegenParameter;
     }
 }

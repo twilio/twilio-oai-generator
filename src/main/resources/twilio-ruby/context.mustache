@@ -17,7 +17,7 @@
                         # Path Solution
                         @solution = { {{#instancePathParams}}{{paramName}}: {{paramName}}, {{/instancePathParams}} }
                         {{#instancePath}}
-                        @uri = "{{instancePath}}"
+                        @uri = "{{{instancePath}}}"
                         {{/instancePath}}
 
                         {{#metaProperties.contextImportProperties.0}}# Dependents{{/metaProperties.contextImportProperties.0}}{{^metaProperties.contextImportProperties}}{{#metaProperties.contextImportMethods.0}}# Dependents{{/metaProperties.contextImportMethods.0}}{{/metaProperties.contextImportProperties}}

@@ -62,9 +62,8 @@ public class RubyApiResourceBuilder extends FluentApiResourceBuilder {
     }
 
     private void resolveHeaderParams(Resolver<CodegenParameter> codegenParameterIResolver) {
-        codegenOperationList.forEach(codegenOperation -> {
-            codegenOperation.headerParams.forEach(codegenParameterIResolver::resolve);
-        });
+        codegenOperationList.forEach(codegenOperation ->
+                codegenOperation.headerParams.forEach(codegenParameterIResolver::resolve));
     }
 
     private void createReadParams(RubyApiResourceBuilder apiResourceBuilder) {
@@ -82,7 +81,18 @@ public class RubyApiResourceBuilder extends FluentApiResourceBuilder {
 
     private void updatePaths() {
         if (listPath != null) listPath = listPath.replace("${", "#{@solution[:").replace("}", "]}");
-        if (instancePath != null) instancePath = instancePath.replace("${", "#{@solution[:").replace("}", "]}");
+
+        if (instancePath != null && !instancePathParams.isEmpty()){
+                for(CodegenParameter instanceParam : instancePathParams){
+                    if(instanceParam.dataFormat!= null && instanceParam.dataFormat.equals("phone-number")){
+                        instancePath = instancePath.replace("${", "#{CGI.escape(@solution[:").replace("}", "]).gsub(\"+\", \"%20\")}");
+                    }
+                    else{
+                        instancePath = instancePath.replace("${", "#{@solution[:").replace("}", "]}");
+                    }
+                }
+        }
+
     }
 
     private void createContextParamsList(List<CodegenOperation> opList) {
@@ -228,7 +238,7 @@ public class RubyApiResourceBuilder extends FluentApiResourceBuilder {
                 }
             }
             var domain = (String) directoryStructureService.getAdditionalProperties().get("domainName");
-            versionResources = versionResources.stream().filter((resource) -> !(resource.getMountName().equals("account") && domain.equals("Api"))).collect(Collectors.toList());
+            versionResources = versionResources.stream().filter(resource -> !(resource.getMountName().equals("account") && domain.equals("Api"))).collect(Collectors.toList());
         }
         directoryStructureService.getAdditionalProperties().put(VERSION_RESOURCES, versionResources);
     }
@@ -244,7 +254,7 @@ public class RubyApiResourceBuilder extends FluentApiResourceBuilder {
         if (versionDependents == null) return;
 
         //remove accounts from versionDependents for Api domain
-        versionDependents = versionDependents.stream().filter((dependent) -> !dependent.getMountName().equals("accounts")).collect(Collectors.toList());
+        versionDependents = versionDependents.stream().filter(dependent -> !dependent.getMountName().equals("accounts")).collect(Collectors.toList());
         //add dependents from dependents list if not already present
         for (var dependent : dependentList) {
             if (!dependentExist(((DirectoryStructureService.ContextResource) dependent).getMountName(), versionDependents)) {
