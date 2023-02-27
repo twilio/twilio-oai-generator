@@ -54,7 +54,7 @@ class {{apiName}}Context(InstanceContext):
         data = values.of({ {{#allParams}}{{#if vendorExtensions.x-prefixed-collapsible-map}}{{else}}
             '{{{baseName}}}': {{#if vendorExtensions.x-serialize}}{{vendorExtensions.x-serialize}}({{paramName}}{{#if isArray}}, lambda e: e){{else}}){{/if}}{{else}}{{paramName}}{{/if}},{{/if}}{{/allParams}}
         })
-        {{#allParams}}{{#if vendorExtensions.x-prefixed-collapsible-map}}data.update({{vendorExtensions.x-serialize}}({{paramName}}, git b'{{vendorExtensions.x-prefixed-collapsible-map}}'))
+        {{#allParams}}{{#if vendorExtensions.x-prefixed-collapsible-map}}data.update({{vendorExtensions.x-serialize}}({{paramName}}, '{{vendorExtensions.x-prefixed-collapsible-map}}'))
         {{/if}}{{/allParams}}{{/if}}
         payload = self._version.fetch(method='GET', uri=self._uri, {{#if allParams}}params=data{{/if}})
 
