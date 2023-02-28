@@ -13,6 +13,5 @@ COPY lib/twilio-ruby/rest/ lib/twilio-ruby/rest/
 COPY spec spec
 RUN git add .
 
-
 # pipefail prevents errors in a pipeline from being masked.
 CMD ["/bin/bash", "-c", "set -o pipefail && sleep 10 && make install test 2>&1 | tee /local/test-report.out && cp -r coverage /local"]
