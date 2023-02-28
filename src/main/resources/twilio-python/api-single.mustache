@@ -41,7 +41,7 @@ class {{apiName}}List(ListResource):
         """
         if self._{{mountName}} is None:
             self._{{mountName}} = {{resourceName}}List(self._version{{#listPathParams}}, {{paramName}}=self._solution['{{paramName}}']{{/listPathParams}})
-        return self.{{mountName}}
+        return self._{{mountName}}
 {{/instanceDependent}}{{/dependents}}
 {{#instancePath}}{{>contextMethods}}{{/instancePath}}
     def __repr__(self):
