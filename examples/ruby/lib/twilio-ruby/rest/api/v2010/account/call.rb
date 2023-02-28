@@ -25,7 +25,7 @@ module Twilio
             def initialize(version, account_sid: nil)
               super(version)
               # Path Solution
-              @solution = { account_sid: account_sid, }
+              @solution = { account_sid: account_sid }
               @uri = "/Accounts/#{@solution[:account_sid]}/Calls.json"
               # Components
               @feedback_call_summary = nil

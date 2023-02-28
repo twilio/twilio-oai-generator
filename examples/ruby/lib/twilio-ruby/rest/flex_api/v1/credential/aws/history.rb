@@ -26,7 +26,7 @@ module Twilio
               def initialize(version, sid: nil)
                 super(version)
                 # Path Solution
-                @solution = { sid: sid, }
+                @solution = { sid: sid }
               end
 
               # Provide a user friendly representation
