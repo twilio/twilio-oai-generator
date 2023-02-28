@@ -1,5 +1,5 @@
 require 'spec_helper.rb'
-describe 'Integration Test' do
+describe 'Integration Test: flex api' do
   before(:each) do
     @account_sid = 'AC12345678123456781234567812345678'
     @auth_token = 'CR12345678123456781234567812345678'

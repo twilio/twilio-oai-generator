@@ -1,10 +1,10 @@
-describe 'Integration Test' do
+describe 'Integration Test: api_v2010' do
   before(:each) do
     @account_sid = 'AC12345678123456781234567812345678'
     @auth_token = 'CR12345678123456781234567812345678'
   end
 
-  it "can create" do
+  it "can create account" do
     @holodeck.mock(Twilio::Response.new(200, '
             {
                     "sid": "AC12345678123456781234567812345678"
@@ -45,7 +45,7 @@ describe 'Integration Test' do
     expect(createdCall).to_not eq(nil)
   end
 
-  it "can update" do
+  it "can update account" do
     @holodeck.mock(Twilio::Response.new(200, '{
               "account_sid": "AC12345678123456781234567812345678",
               "sid": "ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
@@ -57,7 +57,7 @@ describe 'Integration Test' do
     expect(result.test_string).to eq("Test String")
   end
 
-  it "can delete call " do
+  it "can delete call" do
     @holodeck.mock(Twilio::Response.new(204, nil))
     deleteCall = @client.api.v2010.account.calls(123).delete()
     expect(deleteCall).to eq(true)
