@@ -6,7 +6,7 @@
                     def initialize(version{{#listPathParams}}, {{paramName}}: nil{{/listPathParams}})
                         super(version)
                         # Path Solution
-                        @solution = { {{#listPathParams}}{{paramName}}: {{paramName}},{{/listPathParams}} }
+                        @solution = { {{#listPathParams}}{{paramName}}: {{paramName}}{{^-last}}, {{/-last}}{{/listPathParams}} }
                         {{#listPath}}@uri = "{{listPath}}"{{/listPath}}
                         {{#metaProperties.listImportProperties.0}}# Components{{/metaProperties.listImportProperties.0}}{{^metaProperties.listImportProperties}}{{#metaProperties.listImportMethods.0}}# Components{{/metaProperties.listImportMethods.0}}{{/metaProperties.listImportProperties}}
                         {{#metaProperties.listImportProperties}}
