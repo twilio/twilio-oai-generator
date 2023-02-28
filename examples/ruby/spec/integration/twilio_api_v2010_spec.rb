@@ -44,4 +44,16 @@ describe 'Integration Test' do
 
     expect(createdCall).to_not eq(nil)
   end
+
+  it "can update" do
+    @holodeck.mock(Twilio::Response.new(200, '{
+                 "account_sid": "AC12345678123456781234567812345678",
+                 "sid": "ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                 "test_string": "Test String"
+                 }'))
+
+    result = @client.api.v2010.accounts(@account_sid).update()
+    expect(result).to_not eq(nil)
+    expect(result.test_string).to eq("Test String")
+  end
 end
