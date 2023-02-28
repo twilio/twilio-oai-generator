@@ -1,10 +1,13 @@
 import argparse
+import json
 import os
 import re
+import shutil
 from pathlib import Path
-from typing import Tuple
+from typing import List, Tuple
 
 from clean_unused_imports import remove_unused_imports, remove_duplicate_imports
+
 '''
 Subdirectories map for maintaining directory
 structures specific to language style.
@@ -16,46 +19,65 @@ subdirectories = {
 }
 CLEANUP_IMPORT_LANGUAGES = ['java', 'php']
 REMOVE_DUPLICATE_IMPORT_LANGUAGES = ['node']
+CONFIG_FOLDER = 'tmp'
+
 
 def build(openapi_spec_path: str, output_path: str, language: str) -> None:
     if os.path.isfile(openapi_spec_path):
-        folder, domain = os.path.split(openapi_spec_path)
-        generate(openapi_spec_path, output_path, language, domain, True)
+        spec_folder, domain = os.path.split(openapi_spec_path)
+        spec_files = [domain]
     else:
-        for domain in sorted(os.listdir(openapi_spec_path)):
-            generate(openapi_spec_path, output_path, language, domain, False)
+        spec_folder = openapi_spec_path
+        spec_files = sorted(os.listdir(spec_folder))
+
+    generate(spec_folder, spec_files, output_path, language)
 
 
-def generate(openapi_spec_path: str, output_path: str, language: str, domain: str, is_file: bool = False) -> None:
-    full_path, domain_name, api_version = get_domain_info(openapi_spec_path, domain, is_file)
-    parent_dir = Path(__file__).parent.parent
-
+def generate(spec_folder: str, spec_files: List[str], output_path: str, language: str) -> None:
     sub_dir = subdirectories.get(language, 'rest')
+    parent_dir = Path(__file__).parent.parent
     output_path = os.path.join(output_path, sub_dir)
-    run_openapi_generator(parent_dir, language, output_path, full_path)
+    config_path = os.path.join(parent_dir, CONFIG_FOLDER)
+
+    shutil.rmtree(config_path, ignore_errors=True)
+    Path(config_path).mkdir()
+
+    for spec_file in spec_files:
+        full_path = os.path.join(spec_folder, spec_file)
+        full_config_path = os.path.join(config_path, spec_file)
+        config = {
+            'generatorName': 'terraform-provider-twilio' if language == 'terraform' else f'twilio-{language}',
+            'inputSpec': full_path,
+            'outputDir': output_path,
+            'inlineSchemaNameDefaults': {
+                'arrayItemSuffix': ''
+            },
+        }
+
+        with open(full_config_path, 'w') as f:
+            f.write(json.dumps(config))
+
+    print(f'Generating {output_path} from {spec_folder}')
+    run_openapi_generator(parent_dir, language)
+    print(f'Code generation completed at {output_path}')
+
     if language in CLEANUP_IMPORT_LANGUAGES:
         remove_unused_imports(output_path, language)
     if language in REMOVE_DUPLICATE_IMPORT_LANGUAGES:
         remove_duplicate_imports(output_path, language)
 
 
-def run_openapi_generator(parent_dir: str, language: str, output_path: str, full_path: str) -> None:
-    to_generate = 'terraform-provider-twilio' if language == 'terraform' else f'twilio-{language}'
-
-    command = f'cd {parent_dir} && java -cp ./openapi-generator-cli.jar:target/twilio-openapi-generator.jar ' \
-              f'org.openapitools.codegen.OpenAPIGenerator generate -g {to_generate} ' \
-              f'--inline-schema-name-defaults arrayItemSuffix="" ' \
-              f'--global-property apiTests=false ' \
-              f'-i {full_path} ' \
-              f'-o {output_path}'
-
+def run_openapi_generator(parent_dir: Path, language: str) -> None:
+    properties = '-DapiTests=false'
     if language in {'node'}:
-        command += ' --global-property skipFormModel=false'
+        properties += ' -DskipFormModel=false'
 
-    print(f'Generating {output_path} from {full_path}')
+    command = f'cd {parent_dir} && java {properties} ' \
+              f'-cp ./openapi-generator-cli.jar:target/twilio-openapi-generator.jar ' \
+              f'org.openapitools.codegen.OpenAPIGenerator batch {CONFIG_FOLDER}/*'
+
     if os.system(command + '> /dev/null') != 0:  # Suppress stdout
         raise RuntimeError()
-    print(f'Code generation completed at {output_path}')
 
 
 def get_domain_info(oai_spec_location: str, domain: str, is_file: bool = False) -> Tuple[str, str, str]:
@@ -79,6 +101,6 @@ if __name__ == '__main__':
     parser.add_argument('spec_path', type=str, help='path to open api specs')
     parser.add_argument('output_path', type=str, help='path to output the generated code')
     parser.add_argument('-l', '--lang', type=str, help='generate Twilio library from twilio-oai',
-                        choices=['go', 'terraform', 'java', 'node', 'csharp', 'php', 'python'], required=True)
+                        choices=['go', 'terraform', 'java', 'node', 'csharp', 'php', 'python', 'ruby'], required=True)
     args = parser.parse_args()
     build(args.spec_path, args.output_path, args.lang)

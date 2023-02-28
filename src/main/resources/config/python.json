@@ -48,7 +48,7 @@
     "date_time_inequality<iso8601>": "deserialize.iso8601_datetime({value})",
     "date_time<rfc2822>": "deserialize.rfc2822_datetime({value})",
     "date_time_inequality<rfc2822>": "deserialize.rfc2822_datetime({value})",
-    "decimal": "deserialize.decimal({value})",
+    "number": "deserialize.decimal({value})",
     "integer": "deserialize.integer({value})",
     "long": "deserialize.integer({value})"
   },

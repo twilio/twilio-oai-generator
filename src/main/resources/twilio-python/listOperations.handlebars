@@ -1,5 +1,22 @@
 {{#operations}}
-    {{#vendorExtensions.x-is-read-operation}}
+    {{#vendorExtensions.x-is-create-operation}}{{#hasParams}}
+    def create(self{{#allParams}}, {{paramName}}{{#if required}}{{else}}=values.unset{{/if}}{{/allParams}}):
+        """
+        Create the {{instanceName}}
+
+        {{#allParams}}:param {{dataType}} {{paramName}}: {{{description}}}
+        {{/allParams}}
+        :returns: The created {{instanceName}}
+        :rtype: twilio.rest.{{domainPackage}}.{{apiVersion}}.{{namespaceSubPart}}.{{instanceName}}
+        """
+        data = values.of({ {{#allParams}}{{#isFormParam}}
+            '{{{baseName}}}': {{#if vendorExtensions.x-serialize}}{{vendorExtensions.x-serialize}}({{paramName}}{{#if isArray}}, lambda e: e){{else}}){{/if}}{{else}}{{paramName}}{{/if}},{{/isFormParam}}{{/allParams}}
+        })
+        {{#allParams}}{{^isFormParam}}headers = values.of({'{{{baseName}}}': {{paramName}}, }){{/isFormParam}}{{/allParams}}
+        payload = self._version.create(method='POST', uri=self._uri, data=data,{{#allParams}}{{#if isFormParam}}{{else}} headers=headers{{/if}}{{/allParams}})
+
+        return {{instanceName}}(self._version, payload{{#listPathParams}}, {{paramName}}=self._solution['{{paramName}}']{{/listPathParams}})
+    {{/hasParams}}{{/vendorExtensions.x-is-create-operation}}{{#vendorExtensions.x-is-read-operation}}
     def stream(self, {{#allParams}}{{#startsWith paramName text='page_size'}}{{else}}{{paramName}}=values.unset, {{/startsWith}}{{/allParams}}limit=None, page_size=None):
         """
         Streams {{instanceName}} records from the API as a generator stream.
@@ -16,7 +33,7 @@
                               limit with the most efficient page size, i.e. min(limit, 1000)
 
         :returns: Generator that will yield up to limit results
-        :rtype: list[twilio.rest.{{domainPackage}}.{{apiVersion}}.{{apiFilename}}.{{instanceName}}]
+        :rtype: list[twilio.rest.{{domainPackage}}.{{apiVersion}}.{{namespaceSubPart}}.{{instanceName}}]
         """
         limits = self._version.read_limits(limit, page_size)
         page = self.page({{#allParams}}{{#startsWith paramName text='page_size'}}{{else}}
@@ -41,7 +58,7 @@
                               with the most efficient page size, i.e. min(limit, 1000)
 
         :returns: Generator that will yield up to limit results
-        :rtype: list[twilio.rest.{{domainPackage}}.{{apiVersion}}.{{apiFilename}}.{{instanceName}}]
+        :rtype: list[twilio.rest.{{domainPackage}}.{{apiVersion}}.{{namespaceSubPart}}.{{instanceName}}]
         """
         return list(self.stream(
             {{#allParams}}{{#startsWith paramName text='page_size'}}{{else}}{{paramName}}={{paramName}},
@@ -60,10 +77,10 @@
         :param int page_size: Number of records to return, defaults to 50
 
         :returns: Page of {{instanceName}}
-        :rtype: twilio.rest.{{domainPackage}}.{{apiVersion}}.{{apiFilename}}.{{apiName}}Page
+        :rtype: twilio.rest.{{domainPackage}}.{{apiVersion}}.{{namespaceSubPart}}.{{apiName}}Page
         """
         data = values.of({ {{#allParams}}{{#startsWith paramName text='page_size'}}{{else}}
-            '{{baseName}}': {{paramName}},{{/startsWith}}{{/allParams}}
+            '{{{baseName}}}': {{#if vendorExtensions.x-serialize}}{{vendorExtensions.x-serialize}}({{paramName}}){{else}}{{paramName}}{{/if}},{{/startsWith}}{{/allParams}}
             'PageToken': page_token,
             'Page': page_number,
             'PageSize': page_size,
@@ -80,7 +97,7 @@
         :param str target_url: API-generated URL for the requested results page
 
         :returns: Page of {{instanceName}}
-        :rtype: twilio.rest.{{domainPackage}}.{{apiVersion}}.{{apiFilename}}.{{apiName}}Page
+        :rtype: twilio.rest.{{domainPackage}}.{{apiVersion}}.{{namespaceSubPart}}.{{apiName}}Page
         """
         response = self._version.domain.twilio.request(
             'GET',
