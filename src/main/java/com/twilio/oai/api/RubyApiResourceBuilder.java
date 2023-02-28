@@ -80,19 +80,14 @@ public class RubyApiResourceBuilder extends FluentApiResourceBuilder {
     }
 
     private void updatePaths() {
+        boolean isPhoneNumberParams = instancePathParams.stream().anyMatch(param -> Objects.equals(param.dataFormat, "phone-number"));
         if (listPath != null) listPath = listPath.replace("${", "#{@solution[:").replace("}", "]}");
-
-        if (instancePath != null && !instancePathParams.isEmpty()){
-                for(CodegenParameter instanceParam : instancePathParams){
-                    if(instanceParam.dataFormat!= null && instanceParam.dataFormat.equals("phone-number")){
-                        instancePath = instancePath.replace("${", "#{CGI.escape(@solution[:").replace("}", "]).gsub(\"+\", \"%20\")}");
-                    }
-                    else{
-                        instancePath = instancePath.replace("${", "#{@solution[:").replace("}", "]}");
-                    }
-                }
+        if (instancePath != null) {
+            if (isPhoneNumberParams)
+                instancePath = instancePath.replace("${", "#{CGI.escape(@solution[:").replace("}", "]).gsub(\"+\", \"%20\")}");
+            else
+                instancePath = instancePath.replace("${", "#{@solution[:").replace("}", "]}");
         }
-
     }
 
     private void createContextParamsList(List<CodegenOperation> opList) {
