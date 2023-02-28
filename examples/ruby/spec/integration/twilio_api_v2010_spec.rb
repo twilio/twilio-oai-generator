@@ -47,13 +47,19 @@ describe 'Integration Test' do
 
   it "can update" do
     @holodeck.mock(Twilio::Response.new(200, '{
-                 "account_sid": "AC12345678123456781234567812345678",
-                 "sid": "ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-                 "test_string": "Test String"
-                 }'))
+              "account_sid": "AC12345678123456781234567812345678",
+              "sid": "ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "test_string": "Test String"
+             }'))
 
     result = @client.api.v2010.accounts(@account_sid).update()
     expect(result).to_not eq(nil)
     expect(result.test_string).to eq("Test String")
+  end
+
+  it "can delete call " do
+    @holodeck.mock(Twilio::Response.new(204, nil))
+    deleteCall = @client.api.v2010.account.calls(123).delete()
+    expect(deleteCall).to eq(true)
   end
 end
