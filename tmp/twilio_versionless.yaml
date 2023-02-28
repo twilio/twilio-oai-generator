@@ -1,5 +1,0 @@
-generatorName: twilio-ruby
-inputSpec: examples/spec/twilio_versionless.yaml
-outputDir: examples/ruby/lib/twilio-ruby/rest
-inlineSchemaNameDefaults:
-  arrayItemSuffix: ''
