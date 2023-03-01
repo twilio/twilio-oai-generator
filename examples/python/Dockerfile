@@ -19,5 +19,5 @@ RUN pip install pytest
 RUN pip install pytz
 
 # pipefail prevents errors in a pipeline from being masked
-CMD ["/bin/bash", "-c", "set -o pipefail && python -m pytest tests 2>&1 | tee /local/test-report.out"]
+CMD ["/bin/bash", "-c", "set -o pipefail && sleep 10 && python -m pytest tests 2>&1 | tee /local/test-report.out"]
 

@@ -18,9 +18,9 @@ class FlexCallTests(unittest.TestCase):
         self.client.flex_api.V1.calls("123").update()
         request_args = self.generic_request_args
 
-        mock_request.assert_called_once_with("POST", "https://flex-api.twilio.com/v1/Voice/123", **request_args)
+        mock_request.assert_called_once_with("POST", "http://flex-api.twilio.com/v1/Voice/123", **request_args)
 
     def test_invalid_path_param(self):
         self.assertRaises(BaseException, self.client.flex_api.V1.calls("?"))
 
-    
+

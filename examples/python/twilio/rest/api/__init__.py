@@ -5,7 +5,7 @@ from twilio.rest.api.v2010 import V2010
 class Api(Domain):
     def __init__(self, twilio):
         super().__init__(twilio)
-        self.base_url = 'https://api.twilio.com'
+        self.base_url = 'http://api.twilio.com'
         self._V2010 = None
 
     @property
