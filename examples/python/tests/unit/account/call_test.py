@@ -18,7 +18,7 @@ class AccountCallTests(unittest.TestCase):
         request_args = self.generic_request_args
         request_args["data"] = {"RequiredStringProperty": "phone home", "TestMethod": "post"}
 
-        mock_request.assert_called_once_with("POST", "https://api.twilio.com/2010-04-01/Accounts/123/Calls.json", **request_args)
+        mock_request.assert_called_once_with("POST", "http://api.twilio.com/2010-04-01/Accounts/123/Calls.json", **request_args)
 
     def test_fetch_call(self, mock_request):
         mock_request.return_value = Response(200, "{\"account_sid\": \"123\", \"sid\": \"1\"}")
@@ -26,7 +26,7 @@ class AccountCallTests(unittest.TestCase):
         self.client.api.V2010.accounts("123").calls("1").fetch()
         request_args = self.generic_request_args
 
-        mock_request.assert_called_once_with("GET", "https://api.twilio.com/2010-04-01/Accounts/123/Calls/1.json", **request_args)
+        mock_request.assert_called_once_with("GET", "http://api.twilio.com/2010-04-01/Accounts/123/Calls/1.json", **request_args)
 
     def test_remove_call(self, mock_request):
         mock_request.return_value = Response(204, "{}")
@@ -34,7 +34,7 @@ class AccountCallTests(unittest.TestCase):
         self.client.api.V2010.accounts("123").calls("1").delete()
         request_args = self.generic_request_args
 
-        mock_request.assert_called_once_with("DELETE", "https://api.twilio.com/2010-04-01/Accounts/123/Calls/1.json", **request_args)
+        mock_request.assert_called_once_with("DELETE", "http://api.twilio.com/2010-04-01/Accounts/123/Calls/1.json", **request_args)
 
     def test_create_feedback_summary(self, mock_request):
         mock_request.return_value = Response(201, "{\"account_sid\": \"123\", \"test_array\": [{\"count\": \"4\"}]}")
@@ -43,4 +43,4 @@ class AccountCallTests(unittest.TestCase):
         request_args = self.generic_request_args
         request_args["data"] = {"AccountSid": "other_account", "StartDate": "2023-02-10", "EndDate": "2023-02-10"}
 
-        mock_request.assert_called_once_with("POST", "https://api.twilio.com/2010-04-01/Accounts/123/Calls/Feedback/Summary/456.json", **request_args)
+        mock_request.assert_called_once_with("POST", "http://api.twilio.com/2010-04-01/Accounts/123/Calls/Feedback/Summary/456.json", **request_args)
