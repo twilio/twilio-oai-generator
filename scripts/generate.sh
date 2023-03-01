@@ -19,7 +19,7 @@ inlineSchemaNameDefaults:
   done
 
   java -DapiTests=false -DapiDocs=false $2 \
-       -cp ./openapi-generator-cli.jar:target/twilio-openapi-generator.jar \
+       -cp target/twilio-openapi-generator.jar \
        org.openapitools.codegen.OpenAPIGenerator batch tmp/*
 }
 

@@ -73,7 +73,7 @@ def run_openapi_generator(parent_dir: Path, language: str) -> None:
         properties += ' -DskipFormModel=false'
 
     command = f'cd {parent_dir} && java {properties} ' \
-              f'-cp ./openapi-generator-cli.jar:target/twilio-openapi-generator.jar ' \
+              f'-cp target/twilio-openapi-generator.jar ' \
               f'org.openapitools.codegen.OpenAPIGenerator batch {CONFIG_FOLDER}/*'
 
     if os.system(command + '> /dev/null') != 0:  # Suppress stdout
