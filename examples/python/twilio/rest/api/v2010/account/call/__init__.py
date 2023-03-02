@@ -176,6 +176,14 @@ class CallContext(InstanceContext):
 
 class CallInstance(InstanceResource):
 
+    class TestStatus(object):
+        IN_PROGRESS = "in-progress"
+        PAUSED = "paused"
+        STOPPED = "stopped"
+        PROCESSING = "processing"
+        COMPLETED = "completed"
+        ABSENT = "absent"
+
     def __init__(self, version, payload, account_sid: str, test_integer: int=None):
         """
         Initialize the CallInstance

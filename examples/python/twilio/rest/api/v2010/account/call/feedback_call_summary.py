@@ -135,6 +135,14 @@ class FeedbackCallSummaryContext(InstanceContext):
 
 class FeedbackCallSummaryInstance(InstanceResource):
 
+    class TestStatus(object):
+        IN_PROGRESS = "in-progress"
+        PAUSED = "paused"
+        STOPPED = "stopped"
+        PROCESSING = "processing"
+        COMPLETED = "completed"
+        ABSENT = "absent"
+
     def __init__(self, version, payload, account_sid: str, sid: str=None):
         """
         Initialize the FeedbackCallSummaryInstance

@@ -225,11 +225,8 @@ public abstract class ApiResourceBuilder implements IApiResourceBuilder {
                 forEach(dep -> directoryStructureService.addContextdependents(dependentList, dep.getName(), null));
 
         dependentList.stream().map(DirectoryStructureService.ContextResource.class::cast)
-                .map(contextResource -> {
-                    if (contextResource.getParent().matches("(.*)Function\\\\(.*)"))
-                        contextResource.setParent(contextResource.getParent().replaceAll("\\\\Function\\\\", "\\\\TwilioFunction\\\\"));
-                    return (Object) contextResource;
-                }).collect(Collectors.toList());
+            .filter(contextResource -> contextResource.getParent().matches("(.*)Function\\\\(.*)"))
+                .forEach(contextResource -> contextResource.setParent(contextResource.getParent().replace("\\\\Function\\\\", "\\\\TwilioFunction\\\\")));
     }
 
     protected void categorizeOperations() {
