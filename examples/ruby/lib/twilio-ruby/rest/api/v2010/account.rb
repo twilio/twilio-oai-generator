@@ -220,7 +220,7 @@ module Twilio
           ##
           # Update the AccountInstance
           # @param [String] pause_behavior
-          # @param [TestStatus] status
+          # @param [Status] status
           # @return [AccountInstance] Updated AccountInstance
           def update(
             pause_behavior: :unset,
@@ -415,7 +415,7 @@ module Twilio
           end
 
           ##
-          # @return [TestStatus]
+          # @return [Status]
           def test_enum
             @properties['test_enum']
           end
@@ -445,7 +445,7 @@ module Twilio
           end
 
           ##
-          # @return [Array<TestStatus>] Permissions authorized to the app
+          # @return [Array<Status>] Permissions authorized to the app
           def test_array_of_enum
             @properties['test_array_of_enum']
           end
@@ -467,7 +467,7 @@ module Twilio
           ##
           # Update the AccountInstance
           # @param [String] pause_behavior
-          # @param [TestStatus] status
+          # @param [Status] status
           # @return [AccountInstance] Updated AccountInstance
           def update(
             pause_behavior: :unset,

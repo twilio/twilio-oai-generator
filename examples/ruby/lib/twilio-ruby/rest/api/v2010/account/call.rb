@@ -294,7 +294,7 @@ module Twilio
             end
 
             ##
-            # @return [TestStatus]
+            # @return [Status]
             def test_enum
               @properties['test_enum']
             end
@@ -324,7 +324,7 @@ module Twilio
             end
 
             ##
-            # @return [Array<TestStatus>] Permissions authorized to the app
+            # @return [Array<Status>] Permissions authorized to the app
             def test_array_of_enum
               @properties['test_array_of_enum']
             end

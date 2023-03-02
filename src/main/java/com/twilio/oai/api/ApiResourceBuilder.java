@@ -23,12 +23,13 @@ public abstract class ApiResourceBuilder implements IApiResourceBuilder {
     public static final String META_LIST_PARAMETER_KEY = "x-list-parameters";
     public static final String META_CONTEXT_PARAMETER_KEY = "x-context-parameters";
 
-    protected IApiActionTemplate template;
-    protected List<CodegenModel> allModels;
-    protected List<CodegenOperation> codegenOperationList;
-    protected List<CodegenParameter> requiredPathParams = new ArrayList<>();
+    protected final IApiActionTemplate template;
+    protected final List<CodegenModel> allModels;
+    protected final List<CodegenOperation> codegenOperationList;
+    protected final Map<String, CodegenModel> modelTree = new TreeMap<>();
+    protected final List<CodegenParameter> requiredPathParams = new ArrayList<>();
     protected Set<CodegenProperty> apiResponseModels = new LinkedHashSet<>();
-    protected Map<String, Object> metaAPIProperties = new HashMap<>();
+    protected final Map<String, Object> metaAPIProperties = new HashMap<>();
     protected final List<CodegenOperation> listOperations = new ArrayList<>();
     protected final List<CodegenOperation> instanceOperations = new ArrayList<>();
     protected String version = "";
@@ -46,13 +47,15 @@ public abstract class ApiResourceBuilder implements IApiResourceBuilder {
     @Override
     public ApiResourceBuilder updateOperations(Resolver<CodegenParameter> codegenParameterIResolver) {
         this.codegenOperationList.forEach(codegenOperation -> {
-            codegenOperation.pathParams.forEach(codegenParameterIResolver::resolve);
-            codegenOperation.allParams.forEach(codegenParameterIResolver::resolve);
-            codegenOperation.queryParams.forEach(codegenParameterIResolver::resolve);
-            codegenOperation.formParams.forEach(codegenParameterIResolver::resolve);
-            codegenOperation.bodyParams.forEach(codegenParameterIResolver::resolve);
-            codegenOperation.requiredParams.forEach(codegenParameterIResolver::resolve);
-            codegenOperation.optionalParams.forEach(codegenParameterIResolver::resolve);
+            codegenOperation.allParams.forEach(param -> addModel(modelTree, param.baseType, param.dataType));
+
+            codegenOperation.allParams.forEach(param -> resolveParam(codegenParameterIResolver, param));
+            codegenOperation.pathParams.forEach(param -> resolveParam(codegenParameterIResolver, param));
+            codegenOperation.queryParams.forEach(param -> resolveParam(codegenParameterIResolver, param));
+            codegenOperation.formParams.forEach(param -> resolveParam(codegenParameterIResolver, param));
+            codegenOperation.bodyParams.forEach(param -> resolveParam(codegenParameterIResolver, param));
+            codegenOperation.requiredParams.forEach(param -> resolveParam(codegenParameterIResolver, param));
+            codegenOperation.optionalParams.forEach(param -> resolveParam(codegenParameterIResolver, param));
 
             if (codegenOperation.vendorExtensions.containsKey("x-ignore")) {
                 requiredPathParams.addAll(codegenOperation.pathParams
@@ -74,6 +77,11 @@ public abstract class ApiResourceBuilder implements IApiResourceBuilder {
             codegenOperation.vendorExtensions.putAll(mapOperation(codegenOperation));
         });
         return this;
+    }
+
+    protected void resolveParam(final Resolver<CodegenParameter> codegenParameterIResolver,
+                                final CodegenParameter param) {
+        codegenParameterIResolver.resolve(param);
     }
 
     @Override

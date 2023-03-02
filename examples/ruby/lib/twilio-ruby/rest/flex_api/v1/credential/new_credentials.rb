@@ -42,7 +42,7 @@ module Twilio
             # @param [Hash] test_object
             # @param [Time] test_date_time
             # @param [Date] test_date
-            # @param [TestStatus] test_enum
+            # @param [Status] test_enum
             # @param [Array[Hash]] test_object_array
             # @param [Object] test_any_type
             # @param [Array[Hash]] test_any_array

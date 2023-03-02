@@ -19,18 +19,18 @@ const serialize = require("../../../../../base/serialize");
 import { isValidPathParam } from "../../../../../base/utility";
 import { PhoneNumberCapabilities } from "../../../../../interfaces";
 
-export class TestResponseObjectTestArrayOfObjects {
-  "count"?: number;
-  "description"?: string;
-}
-
-export type TestStatus =
+export type FeedbackCallSummaryStatus =
   | "in-progress"
   | "paused"
   | "stopped"
   | "processing"
   | "completed"
   | "absent";
+
+export class TestResponseObjectTestArrayOfObjects {
+  "count"?: number;
+  "description"?: string;
+}
 
 /**
  * Options to pass to update a FeedbackCallSummaryInstance
@@ -170,12 +170,12 @@ interface FeedbackCallSummaryResource {
   price_unit: string;
   test_number_float: number;
   test_number_decimal: number;
-  test_enum: TestStatus;
+  test_enum: FeedbackCallSummaryStatus;
   a2p_profile_bundle_sid: string;
   test_array_of_integers: Array<number>;
   test_array_of_array_of_integers: Array<Array<number>>;
   test_array_of_objects: Array<TestResponseObjectTestArrayOfObjects>;
-  test_array_of_enum: Array<TestStatus>;
+  test_array_of_enum: Array<FeedbackCallSummaryStatus>;
 }
 
 export class FeedbackCallSummaryInstance {
@@ -218,7 +218,7 @@ export class FeedbackCallSummaryInstance {
   priceUnit: string;
   testNumberFloat: number;
   testNumberDecimal: number;
-  testEnum: TestStatus;
+  testEnum: FeedbackCallSummaryStatus;
   /**
    * A2P Messaging Profile Bundle BundleSid
    */
@@ -229,7 +229,7 @@ export class FeedbackCallSummaryInstance {
   /**
    * Permissions authorized to the app
    */
-  testArrayOfEnum: Array<TestStatus>;
+  testArrayOfEnum: Array<FeedbackCallSummaryStatus>;
 
   private get _proxy(): FeedbackCallSummaryContext {
     this._context =

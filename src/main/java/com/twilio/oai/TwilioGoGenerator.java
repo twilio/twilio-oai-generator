@@ -78,8 +78,7 @@ public class TwilioGoGenerator extends AbstractTwilioGoGenerator {
             property.isEnum = property.dataFormat == null;
             property.isNullable = true;
         } else if (property.dataType.contains("Enum")) {
-            String[] value = property.dataType.split("Enum");
-            property.datatypeWithEnum = value[value.length-1];
+            property.datatypeWithEnum = Utility.removeEnumName(property.dataType);
             property.dataType = STRING;
             property.isEnum = property.dataFormat == null;
             property.isNullable = true;
@@ -94,8 +93,7 @@ public class TwilioGoGenerator extends AbstractTwilioGoGenerator {
             parameter.isEnum = parameter.dataFormat == null;
             parameter.isNullable = true;
         } else if (parameter.dataType.contains("Enum")) {
-            String[] value = parameter.dataType.split("Enum");
-            parameter.datatypeWithEnum = value[value.length-1];
+            parameter.datatypeWithEnum = Utility.removeEnumName(parameter.dataType);
             parameter.dataType = STRING;
             parameter.isEnum = parameter.dataFormat == null;
             parameter.isNullable = true;
