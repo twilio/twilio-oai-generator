@@ -226,7 +226,7 @@ public abstract class ApiResourceBuilder implements IApiResourceBuilder {
 
         dependentList.stream().map(DirectoryStructureService.ContextResource.class::cast)
             .filter(contextResource -> contextResource.getParent().matches("(.*)Function\\\\(.*)"))
-                .forEach(contextResource -> contextResource.setParent(contextResource.getParent().replace("\\\\Function\\\\", "\\\\TwilioFunction\\\\")));
+                .forEach(contextResource -> contextResource.setParent(contextResource.getParent().replace("\\Function\\", "\\TwilioFunction\\")));
     }
 
     protected void categorizeOperations() {
