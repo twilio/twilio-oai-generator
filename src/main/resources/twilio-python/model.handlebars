@@ -1,0 +1,4 @@
+{{#models}}{{#isEnum}}
+    class {{classname}}(object):{{#allowableValues}}{{#values}}
+        {{{upper (snake_case (lower this))}}} = "{{{.}}}"{{/values}}{{/allowableValues}}
+{{/isEnum}}{{/models}}

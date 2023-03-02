@@ -354,6 +354,14 @@ class AccountContext(InstanceContext):
 
 class AccountInstance(InstanceResource):
 
+    class TestStatus(object):
+        IN_PROGRESS = "in-progress"
+        PAUSED = "paused"
+        STOPPED = "stopped"
+        PROCESSING = "processing"
+        COMPLETED = "completed"
+        ABSENT = "absent"
+
     def __init__(self, version, payload, sid: str=None):
         """
         Initialize the AccountInstance

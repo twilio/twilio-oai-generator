@@ -1,4 +1,4 @@
-package com.twilio.oai.mlambdas;
+package com.twilio.oai.templating.mustache;
 
 import com.twilio.oai.StringHelper;
 

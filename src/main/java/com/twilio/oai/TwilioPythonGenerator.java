@@ -135,6 +135,6 @@ public class TwilioPythonGenerator extends AbstractPythonCodegen {
 
     @Override
     public String defaultTemplatingEngine() {
-        return "handlebars";
+        return "twilio-handlebars";
     }
 }

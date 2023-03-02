@@ -4,7 +4,7 @@ import com.twilio.oai.api.JavaApiResourceBuilder;
 import com.twilio.oai.api.JavaApiResources;
 import com.twilio.oai.common.EnumConstants;
 import com.twilio.oai.common.Utility;
-import com.twilio.oai.mlambdas.ReplaceHyphenLambda;
+import com.twilio.oai.templating.mustache.ReplaceHyphenLambda;
 import com.twilio.oai.resolver.LanguageConventionResolver;
 import com.twilio.oai.resolver.common.CodegenModelResolver;
 import com.twilio.oai.resolver.java.JavaCaseResolver;

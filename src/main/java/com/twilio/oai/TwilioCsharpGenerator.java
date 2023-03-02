@@ -7,7 +7,7 @@ import com.twilio.oai.api.CsharpApiResources;
 import com.twilio.oai.common.EnumConstants;
 import com.twilio.oai.common.LanguageDataType;
 import com.twilio.oai.common.Utility;
-import com.twilio.oai.mlambdas.TitleCaseLambda;
+import com.twilio.oai.templating.mustache.TitleCaseLambda;
 import com.twilio.oai.resolver.IConventionMapper;
 import com.twilio.oai.resolver.LanguageConventionResolver;
 import com.twilio.oai.resolver.common.CodegenModelResolver;
