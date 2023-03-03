@@ -66,23 +66,25 @@ public class TwilioPythonGenerator extends AbstractPythonCodegen {
 
     @Override
     public String apiFilename(final String templateName, final String tag) {
-        boolean isInitFile = false;
+        final String initFilename = "__init__.py";
+        final String filename = actionTemplate.apiFilename(templateName, super.apiFilename(templateName, tag));
 
-        for (final Map.Entry<String, PathItem> pathsEntry : this.openAPI.getPaths().entrySet()) {
+        final boolean isInitFile = this.openAPI.getPaths().entrySet().stream().anyMatch(pathsEntry -> {
             final String resourcePath = pathsEntry.getKey();
             final PathItem path = pathsEntry.getValue();
+            final boolean isMatchingPath = path
+                .readOperations()
+                .stream()
+                .anyMatch(operation -> operation.getTags().contains(tag));
+            final boolean pathHasDependents = !resourceTree.dependents(resourcePath).isEmpty();
 
-            if (!resourceTree.dependents(resourcePath).isEmpty() &&
-                path.readOperations().stream().anyMatch(operation -> operation.getTags().contains(tag))) {
-                isInitFile = true;
-                break;
-            }
+            return isMatchingPath && pathHasDependents;
+        });
+
+        if (isInitFile && !filename.endsWith(initFilename)) {
+            return PathUtils.removeExtension(filename) + File.separator + initFilename;
         }
 
-        String filename = actionTemplate.apiFilename(templateName, super.apiFilename(templateName, tag));
-        if (isInitFile) {
-            filename = PathUtils.removeExtension(filename) + File.separator + "__init__.py";
-        }
         return filename;
     }
 
@@ -129,7 +131,7 @@ public class TwilioPythonGenerator extends AbstractPythonCodegen {
     }
 
     @Override
-    public String toParamName(final String name){
+    public String toParamName(final String name) {
         return super.toParamName(twilioCodegen.toParamName(name));
     }
 
