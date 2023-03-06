@@ -32,7 +32,7 @@ class {{instanceName}}(InstanceResource):
     def {{name}}(self):
         """
         :returns: {{{description}}}
-        :rtype: {{dataType}}
+        :rtype: {{baseType}}
         """
         return self._properties['{{name}}']
     {{/vars}}{{#operations}}{{#vendorExtensions.x-is-context-operation}}

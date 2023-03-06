@@ -214,7 +214,6 @@ public class DirectoryStructureService {
     public void postProcessAllModels(final Map<String, ModelsMap> models, final Map<String, String> modelFormatMap) {
         Utility.addModelsToLocalModelList(models, allModels);
         Utility.setComplexDataMapping(allModels, modelFormatMap);
-        allModels.forEach(model -> model.setClassname(model.getClassname().replace("Enum", "")));
     }
 
     public List<CodegenOperation> processOperations(final OperationsMap results) {

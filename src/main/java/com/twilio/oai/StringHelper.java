@@ -1,7 +1,6 @@
 package com.twilio.oai;
 
 import java.util.Arrays;
-import java.util.Set;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 
@@ -48,9 +47,5 @@ public class StringHelper {
         return StringUtils.isBlank(inputWord)
             ? inputWord
             : firstCharFunction.apply(inputWord.substring(0, 1)) + inputWord.substring(1);
-    }
-
-    public boolean existInSetIgnoreCase(final String item, final Set<String> set) {
-        return set.stream().anyMatch(target -> target.equalsIgnoreCase(item));
     }
 }

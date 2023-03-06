@@ -2,7 +2,6 @@ package com.twilio.oai.resolver;
 
 import com.twilio.oai.StringHelper;
 import com.twilio.oai.common.ApplicationConstants;
-import com.twilio.oai.common.Utility;
 
 import lombok.AllArgsConstructor;
 import org.openapitools.codegen.CodegenParameter;
@@ -18,10 +17,6 @@ public class LanguageParamResolver extends Resolver<CodegenParameter> {
         resolveProperties(codegenParameter);
         resolvePrefixedMap(codegenParameter);
         resolveSerialize(codegenParameter);
-
-        codegenParameter.dataType = Utility.removeEnumName(codegenParameter.dataType);
-        codegenParameter.baseType = Utility.removeEnumName(codegenParameter.baseType);
-
         return codegenParameter;
     }
 

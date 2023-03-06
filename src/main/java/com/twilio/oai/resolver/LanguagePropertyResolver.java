@@ -1,7 +1,6 @@
 package com.twilio.oai.resolver;
 
 import com.twilio.oai.common.ApplicationConstants;
-import com.twilio.oai.common.Utility;
 
 import lombok.AllArgsConstructor;
 import org.openapitools.codegen.CodegenProperty;
@@ -17,10 +16,6 @@ public class LanguagePropertyResolver extends Resolver<CodegenProperty> {
         resolveProperties(codegenProperty);
         resolveDeSerialize(codegenProperty);
         resolvePrefixedMap(codegenProperty);
-
-        codegenProperty.dataType = Utility.removeEnumName(codegenProperty.dataType);
-        codegenProperty.complexType = Utility.removeEnumName(codegenProperty.complexType);
-
         return codegenProperty;
     }
 
