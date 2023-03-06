@@ -311,7 +311,7 @@ class CallInstance(InstanceResource):
     def test_enum(self):
         """
         :returns: 
-        :rtype: Status
+        :rtype: CallInstance.Status
         """
         return self._properties['test_enum']
     
@@ -351,7 +351,7 @@ class CallInstance(InstanceResource):
     def test_array_of_enum(self):
         """
         :returns: Permissions authorized to the app
-        :rtype: list[Status]
+        :rtype: list[CallInstance.Status]
         """
         return self._properties['test_array_of_enum']
     

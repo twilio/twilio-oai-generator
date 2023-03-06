@@ -309,7 +309,7 @@ class AccountContext(InstanceContext):
         """
         Update the AccountInstance
         
-        :params Status status: 
+        :params AccountInstance.Status status: 
         :params str pause_behavior: 
 
         :returns: The updated AccountInstance
@@ -489,7 +489,7 @@ class AccountInstance(InstanceResource):
     def test_enum(self):
         """
         :returns: 
-        :rtype: Status
+        :rtype: AccountInstance.Status
         """
         return self._properties['test_enum']
     
@@ -529,7 +529,7 @@ class AccountInstance(InstanceResource):
     def test_array_of_enum(self):
         """
         :returns: Permissions authorized to the app
-        :rtype: list[Status]
+        :rtype: list[AccountInstance.Status]
         """
         return self._properties['test_array_of_enum']
     
@@ -557,7 +557,7 @@ class AccountInstance(InstanceResource):
         """
         Update the AccountInstance
         
-        :params Status status: 
+        :params AccountInstance.Status status: 
         :params str pause_behavior: 
 
         :returns: The updated AccountInstance
