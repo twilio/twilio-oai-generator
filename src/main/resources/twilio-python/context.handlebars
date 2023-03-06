@@ -1,6 +1,6 @@
 class {{apiName}}Context(InstanceContext):
 
-    def __init__(self, version: Version{{#instancePathParams}}, {{paramName}}: {{#if allowableValues.enumVars}}{{instanceName}}.{{/if}}{{{dataType}}}{{/instancePathParams}}):
+    def __init__(self, version: Version{{#instancePathParams}}, {{paramName}}: {{{dataType}}}{{/instancePathParams}}):
         """
         Initialize the {{apiName}}Context
 

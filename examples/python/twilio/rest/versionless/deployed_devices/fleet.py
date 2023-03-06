@@ -92,6 +92,55 @@ class FleetList(ListResource):
         """
         return '<Twilio.Versionless.DeployedDevices.FleetList>'
 
+class FleetContext(InstanceContext):
+
+    def __init__(self, version: Version, sid: str):
+        """
+        Initialize the FleetContext
+
+        :param Version version: Version that contains the resource
+        :param sid: 
+
+        :returns: twilio.rest.versionless.deployed_devices.fleet.FleetContext
+        :rtype: twilio.rest.versionless.deployed_devices.fleet.FleetContext
+        """
+        super().__init__(version)
+
+        # Path Solution
+        self._solution = { 
+            'sid': sid,
+        }
+        self._uri = '/Fleets/{sid}'.format(**self._solution)
+        
+    
+    def fetch(self):
+        """
+        Fetch the FleetInstance
+        
+
+        :returns: The fetched FleetInstance
+        :rtype: twilio.rest.versionless.deployed_devices.fleet.FleetInstance
+        """
+        
+        payload = self._version.fetch(method='GET', uri=self._uri, )
+
+        return FleetInstance(
+            self._version,
+            payload,
+            sid=self._solution['sid'],
+            
+        )
+        
+    
+    def __repr__(self):
+        """
+        Provide a friendly representation
+        :returns: Machine friendly representation
+        :rtype: str
+        """
+        context = ' '.join('{}={}'.format(k, v) for k, v in self._solution.items())
+        return '<Twilio.Versionless.DeployedDevices.FleetContext {}>'.format(context)
+
 class FleetInstance(InstanceResource):
 
     def __init__(self, version, payload, sid: str=None):
@@ -166,54 +215,5 @@ class FleetInstance(InstanceResource):
         """
         context = ' '.join('{}={}'.format(k, v) for k, v in self._solution.items())
         return '<Twilio.Versionless.DeployedDevices.FleetInstance {}>'.format(context)
-
-class FleetContext(InstanceContext):
-
-    def __init__(self, version: Version, sid: str):
-        """
-        Initialize the FleetContext
-
-        :param Version version: Version that contains the resource
-        :param sid: 
-
-        :returns: twilio.rest.versionless.deployed_devices.fleet.FleetContext
-        :rtype: twilio.rest.versionless.deployed_devices.fleet.FleetContext
-        """
-        super().__init__(version)
-
-        # Path Solution
-        self._solution = { 
-            'sid': sid,
-        }
-        self._uri = '/Fleets/{sid}'.format(**self._solution)
-        
-    
-    def fetch(self):
-        """
-        Fetch the FleetInstance
-        
-
-        :returns: The fetched FleetInstance
-        :rtype: twilio.rest.versionless.deployed_devices.fleet.FleetInstance
-        """
-        
-        payload = self._version.fetch(method='GET', uri=self._uri, )
-
-        return FleetInstance(
-            self._version,
-            payload,
-            sid=self._solution['sid'],
-            
-        )
-        
-    
-    def __repr__(self):
-        """
-        Provide a friendly representation
-        :returns: Machine friendly representation
-        :rtype: str
-        """
-        context = ' '.join('{}={}'.format(k, v) for k, v in self._solution.items())
-        return '<Twilio.Versionless.DeployedDevices.FleetContext {}>'.format(context)
 
 

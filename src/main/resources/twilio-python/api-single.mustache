@@ -53,6 +53,6 @@ class {{apiName}}List(ListResource):
         """
         return '<Twilio.{{domainName}}.{{apiVersionClass}}.{{apiName}}List>'
 {{#hasPaginationOperation}}{{>pagination}}{{/hasPaginationOperation}}
-{{#responseModel}}{{>instance}}{{/responseModel}}
 {{#instancePath}}{{>context}}{{/instancePath}}
+{{#responseModel}}{{>instance}}{{/responseModel}}
 {{/resources}}
