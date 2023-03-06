@@ -17,7 +17,7 @@
 
         return {{instanceName}}(self._version, payload{{#listPathParams}}, {{paramName}}=self._solution['{{paramName}}']{{/listPathParams}})
     {{/hasParams}}{{/vendorExtensions.x-is-create-operation}}{{^instancePath}}{{#vendorExtensions.x-is-fetch-operation}}
-        def fetch(self):
+    def fetch(self):
         """
         Fetch the {{instanceName}}
 
@@ -28,7 +28,7 @@
 
         return {{instanceName}}(self._version, payload{{#listPathParams}}, {{paramName}}=self._solution['{{paramName}}']{{/listPathParams}})
     {{/vendorExtensions.x-is-fetch-operation}}{{#vendorExtensions.x-is-update-operation}}
-        def update(self{{#allParams}}, {{paramName}}{{#if required}}{{else}}=values.unset{{/if}}{{/allParams}}):
+    def update(self{{#allParams}}, {{paramName}}{{#if required}}{{else}}=values.unset{{/if}}{{/allParams}}):
         """
         Update the {{instanceName}}
 
