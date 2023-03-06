@@ -3,18 +3,14 @@ package com.twilio.oai.common;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.experimental.UtilityClass;
 import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenOperation;
@@ -40,16 +36,6 @@ public class Utility {
         });
     }
 
-    public static Map<String, Map<String, Object>> getConventionalMap() {
-        try {
-            return new ObjectMapper().readValue(Thread.currentThread().getContextClassLoader().getResourceAsStream(ApplicationConstants.CONFIG_CSHARP_JSON_PATH), new TypeReference<>() {
-            });
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return Collections.emptyMap();
-    }
-
     public void addModelsToLocalModelList(final Map<String, ModelsMap> modelMap, List<CodegenModel> localModels){
         for (final ModelsMap mods : modelMap.values()) {
             final List<ModelMap> modList = mods.getModels();
@@ -62,14 +48,9 @@ public class Utility {
     }
 
     public String removeEnumName(final String dataType) {
-        return dataType == null ? null : dataType.replace("Enum", "");
-    }
-
-    @SuppressWarnings("unchecked")
-    public List<CodegenOperation> getOperations(final Map<String, Object> resource) {
-        return (ArrayList<CodegenOperation>) resource.computeIfAbsent(
-                "operations",
-                k -> new ArrayList<>());
+        return dataType == null
+            ? null
+            : Arrays.stream(dataType.split(ApplicationConstants.ENUM)).reduce((first, second) -> second).orElseThrow();
     }
 
     public String getMd5(String input){

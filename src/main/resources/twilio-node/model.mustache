@@ -6,19 +6,19 @@
  */
 {{/description}}
 {{^isEnum}}
-export class {{classname}} {{#parent}}extends {{{parent}}} {{/parent}}{
+export class {{name}} {{#parent}}extends {{{parent}}} {{/parent}}{
 {{#vars}}
 {{#description}}
   /**
    * {{{description}}}
    */
 {{/description}}
-  "{{name}}"{{^required}}?{{/required}}: {{#isEnum}}{{{datatypeWithEnum}}}{{/isEnum}}{{^isEnum}}{{{dataType}}}{{#isNullable}} | null{{/isNullable}}{{/isEnum}};
+  "{{name}}"{{^required}}?{{/required}}: {{{dataType}}}{{#isNullable}} | null{{/isNullable}};
 {{/vars}}
 }
 
 {{/isEnum}}
 {{#isEnum}}
-export type {{classname}} = {{#allowableValues}}{{#enumVars}}{{{value}}}{{^-last}}|{{/-last}}{{/enumVars}}{{/allowableValues}};
+export type {{name}} = {{#allowableValues}}{{#enumVars}}{{{value}}}{{^-last}}|{{/-last}}{{/enumVars}}{{/allowableValues}};
 {{/isEnum}}
 {{/models}}

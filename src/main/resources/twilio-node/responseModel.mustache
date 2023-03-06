@@ -1,9 +1,4 @@
 {{#responseModel}}
-{{#vars}}
-{{#isEnum}}
-export type {{vendorExtensions.x-name}} = {{#allowableValues}}{{#enumVars}}{{{value}}}{{^-last}}|{{/-last}}{{/enumVars}}{{/allowableValues}};
-{{/isEnum}}
-{{/vars}}
 
 interface {{apiName}}Payload extends {{^hasPaginationOperation}}{{apiName}}Resource {}{{/hasPaginationOperation}}{{#hasPaginationOperation}}TwilioResponsePayload {
     {{recordKey}}: {{apiName}}Resource[];
@@ -11,7 +6,7 @@ interface {{apiName}}Payload extends {{^hasPaginationOperation}}{{apiName}}Resou
 
 interface {{apiName}}Resource {
   {{#vars}}
-  {{baseName}}: {{#isEnum}}{{{vendorExtensions.x-name}}}{{/isEnum}}{{^isEnum}}{{{dataType}}}{{/isEnum}};
+  {{baseName}}: {{{baseType}}};
   {{/vars}}
 }
 
@@ -42,7 +37,7 @@ export class {{instanceName}} {
    * {{{description}}}
    */
   {{/description}}
-  {{name}}: {{#isEnum}}{{{vendorExtensions.x-name}}}{{/isEnum}}{{^isEnum}}{{{dataType}}}{{/isEnum}};
+  {{name}}: {{{baseType}}};
   {{/vars}}
   {{#instancePath}}
 

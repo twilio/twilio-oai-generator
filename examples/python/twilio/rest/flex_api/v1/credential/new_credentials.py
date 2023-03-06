@@ -57,7 +57,7 @@ class NewCredentialsList(ListResource):
         :param dict test_object: 
         :param datetime test_date_time: 
         :param date test_date: 
-        :param TestStatus test_enum: 
+        :param Status test_enum: 
         :param list[object] test_object_array: 
         :param object test_any_type: 
         :param list[object] test_any_array: 

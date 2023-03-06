@@ -18,7 +18,7 @@ const deserialize = require("../../../../base/deserialize");
 const serialize = require("../../../../base/serialize");
 import { isValidPathParam } from "../../../../base/utility";
 
-export type TestStatus =
+export type NewCredentialsStatus =
   | "in-progress"
   | "paused"
   | "stopped"
@@ -53,7 +53,7 @@ export interface NewCredentialsListInstanceCreateOptions {
   /**  */
   testDate?: Date;
   /**  */
-  testEnum?: TestStatus;
+  testEnum?: NewCredentialsStatus;
   /**  */
   testObjectArray?: Array<object>;
   /**  */

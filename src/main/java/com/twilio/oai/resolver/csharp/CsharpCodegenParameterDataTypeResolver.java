@@ -2,6 +2,7 @@ package com.twilio.oai.resolver.csharp;
 
 import com.twilio.oai.StringHelper;
 import com.twilio.oai.common.ApplicationConstants;
+import com.twilio.oai.common.Utility;
 import com.twilio.oai.resolver.IConventionMapper;
 import com.twilio.oai.resolver.common.CodegenParameterDataTypeResolver;
 import org.openapitools.codegen.CodegenParameter;
@@ -16,32 +17,30 @@ public class CsharpCodegenParameterDataTypeResolver extends CodegenParameterData
         this.csharpSerializer = csharpSerializer;
     }
 
+    @Override
     public CodegenParameter resolve(CodegenParameter parameter) {
         super.resolve(parameter);
-        // Resolve Enums
         resolveEnum(parameter);
         csharpSerializer.serialize(parameter);
         return parameter;
     }
 
-    private CodegenParameter resolveEnum(CodegenParameter parameter) {
-        if (!mapper.properties().getString(parameter.dataFormat).isEmpty()) {
+    private void resolveEnum(CodegenParameter parameter) {
+        if (mapper.properties().getString(parameter.dataFormat).isPresent()) {
             // If the dataformat found in libraries(csharp.json) is Twilio.Types, import enum into the options file.
-            Optional importStm = mapper.libraries().get(StringHelper.toSnakeCase(parameter.dataFormat).replaceAll("_", "-"));
-            if (!importStm.isEmpty() && importStm.get() instanceof String && importStm.get().equals("Twilio.Types")) {
+            Optional<Object> importStm = mapper.libraries().get(StringHelper.toSnakeCase(parameter.dataFormat).replace("_", "-"));
+            if (importStm.isPresent() && importStm.get() instanceof String && importStm.get().equals("Twilio.Types")) {
                 OperationStore.getInstance().setEnumPresentInOptions(true);
             }
-            return parameter;
+            return;
         }
         if (parameter.dataType.contains(ApplicationConstants.ENUM)) {
             parameter.isEnum = true;
-            String[] value = parameter.dataType.split(ApplicationConstants.ENUM);
-            parameter.enumName = value[value.length-1] + ApplicationConstants.ENUM;
-            setDataType(parameter);
-        } else if (parameter.isEnum) {
+            parameter.enumName = Utility.removeEnumName(parameter.dataType) + ApplicationConstants.ENUM;
+        }
+        if (parameter.isEnum) {
             setDataType(parameter);
         }
-        return parameter;
     }
 
     private void setDataType(CodegenParameter parameter) {
@@ -54,6 +53,4 @@ public class CsharpCodegenParameterDataTypeResolver extends CodegenParameterData
         OperationStore.getInstance().getEnums().putIfAbsent(parameter.enumName, parameter);
         OperationStore.getInstance().setEnumPresentInResource(true);
     }
-
-
 }
