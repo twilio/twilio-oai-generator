@@ -81,9 +81,9 @@ class NewCredentialsList(ListResource):
             'TestDateTime': serialize.iso8601_datetime(test_date_time),
             'TestDate': serialize.iso8601_date(test_date),
             'TestEnum': test_enum,
-            'TestObjectArray': serialize.map(test_object_array, lambda e: e),
+            'TestObjectArray': serialize.map(test_object_array, lambda e: serialize.object(e)),
             'TestAnyType': serialize.object(test_any_type),
-            'TestAnyArray': serialize.map(test_any_array, lambda e: e),
+            'TestAnyArray': serialize.map(test_any_array, lambda e: serialize.object(e)),
             'Permissions': serialize.map(permissions, lambda e: e),
             'SomeA2PThing': some_a2_p_thing,
         })
