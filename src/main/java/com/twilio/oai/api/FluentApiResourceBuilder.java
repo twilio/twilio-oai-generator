@@ -173,7 +173,7 @@ public abstract class FluentApiResourceBuilder extends ApiResourceBuilder {
             });
         });
 
-        modelTree.values().forEach(model -> model.setName(removeEnumName(model.getClassname())));
+        modelTree.values().forEach(model -> model.setName(getModelName(model.getClassname())));
 
         return this;
     }
@@ -192,15 +192,19 @@ public abstract class FluentApiResourceBuilder extends ApiResourceBuilder {
     private void updateDataType(final String baseType,
                                 final String dataType,
                                 final BiConsumer<String, String> consumer) {
-        consumer.accept(baseType, removeEnumName(dataType));
+        consumer.accept(baseType, getDataTypeName(dataType));
 
         if (baseType != null) {
-            final String datatypeWithEnum = removeEnumName(baseType);
+            final String datatypeWithEnum = getDataTypeName(baseType);
             consumer.accept(datatypeWithEnum, dataType.replace(baseType, datatypeWithEnum));
         }
     }
 
-    protected String removeEnumName(final String dataType) {
+    protected String getModelName(final String classname) {
+        return Utility.removeEnumName(classname);
+    }
+
+    protected String getDataTypeName(final String dataType) {
         return Utility.removeEnumName(dataType);
     }
 

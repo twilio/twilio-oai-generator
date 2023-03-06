@@ -270,7 +270,7 @@ class FeedbackCallSummaryInstance(InstanceResource):
     def test_enum(self):
         """
         :returns: 
-        :rtype: Status
+        :rtype: FeedbackCallSummaryInstance.Status
         """
         return self._properties['test_enum']
     
@@ -310,7 +310,7 @@ class FeedbackCallSummaryInstance(InstanceResource):
     def test_array_of_enum(self):
         """
         :returns: Permissions authorized to the app
-        :rtype: list[Status]
+        :rtype: list[FeedbackCallSummaryInstance.Status]
         """
         return self._properties['test_array_of_enum']
     
