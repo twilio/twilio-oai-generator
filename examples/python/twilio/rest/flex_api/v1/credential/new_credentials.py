@@ -102,7 +102,6 @@ class NewCredentialsList(ListResource):
         """
         return '<Twilio.FlexApi.V1.NewCredentialsList>'
 
-
 class NewCredentialsInstance(InstanceResource):
 
     def __init__(self, version, payload):
@@ -164,5 +163,6 @@ class NewCredentialsInstance(InstanceResource):
         """
         context = ' '.join('{}={}'.format(k, v) for k, v in self._solution.items())
         return '<Twilio.FlexApi.V1.NewCredentialsInstance {}>'.format(context)
+
 
 
