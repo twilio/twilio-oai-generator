@@ -53,7 +53,16 @@ public class NodeApiResourceBuilder extends FluentApiResourceBuilder {
     }
 
     @Override
-    protected String removeEnumName(final String dataType) {
+    protected String getModelName(final String classname) {
+        return removeEnumName(classname);
+    }
+
+    @Override
+    protected String getDataTypeName(final String dataType) {
+        return removeEnumName(dataType);
+    }
+
+    private String removeEnumName(final String dataType) {
         if (dataType != null && dataType.contains(ApplicationConstants.ENUM)) {
             return getApiName() + Utility.removeEnumName(dataType);
         }
