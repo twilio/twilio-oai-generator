@@ -176,7 +176,6 @@ class AssistantPage(Page):
 
 
 
-
 class AssistantInstance(InstanceResource):
 
     def __init__(self, version, payload):
@@ -220,5 +219,6 @@ class AssistantInstance(InstanceResource):
         """
         context = ' '.join('{}={}'.format(k, v) for k, v in self._solution.items())
         return '<Twilio.Versionless.Understand.AssistantInstance {}>'.format(context)
+
 
 

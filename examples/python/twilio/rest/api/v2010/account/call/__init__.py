@@ -114,84 +114,6 @@ class CallList(ListResource):
         """
         return '<Twilio.Api.V2010.CallList>'
 
-class CallContext(InstanceContext):
-
-    def __init__(self, version: Version, account_sid: str, test_integer: int):
-        """
-        Initialize the CallContext
-
-        :param Version version: Version that contains the resource
-        :param account_sid: 
-        :param test_integer: INTEGER ID param!!!
-
-        :returns: twilio.rest.api.v2010.account.call.CallContext
-        :rtype: twilio.rest.api.v2010.account.call.CallContext
-        """
-        super().__init__(version)
-
-        # Path Solution
-        self._solution = { 
-            'account_sid': account_sid,
-            'test_integer': test_integer,
-        }
-        self._uri = '/Accounts/{account_sid}/Calls/{test_integer}.json'.format(**self._solution)
-        
-        self._feedback_call_summary = None
-    
-    def delete(self):
-        """
-        Deletes the CallInstance
-
-        
-        :returns: True if delete succeeds, False otherwise
-        :rtype: bool
-        """
-        return self._version.delete(method='DELETE', uri=self._uri,)
-        
-    def fetch(self):
-        """
-        Fetch the CallInstance
-        
-
-        :returns: The fetched CallInstance
-        :rtype: twilio.rest.api.v2010.account.call.CallInstance
-        """
-        
-        payload = self._version.fetch(method='GET', uri=self._uri, )
-
-        return CallInstance(
-            self._version,
-            payload,
-            account_sid=self._solution['account_sid'],
-            test_integer=self._solution['test_integer'],
-            
-        )
-        
-    
-    @property
-    def feedback_call_summary(self):
-        """
-        Access the feedback_call_summary
-
-        :returns: twilio.rest.api.v2010.account.call.FeedbackCallSummaryList
-        :rtype: twilio.rest.api.v2010.account.call.FeedbackCallSummaryList
-        """
-        if self._feedback_call_summary is None:
-            self._feedback_call_summary = FeedbackCallSummaryList(
-                self._version, 
-                self._solution['account_sid'],
-            )
-        return self._feedback_call_summary
-    
-    def __repr__(self):
-        """
-        Provide a friendly representation
-        :returns: Machine friendly representation
-        :rtype: str
-        """
-        context = ' '.join('{}={}'.format(k, v) for k, v in self._solution.items())
-        return '<Twilio.Api.V2010.CallContext {}>'.format(context)
-
 class CallInstance(InstanceResource):
 
     class Status(object):
@@ -401,5 +323,83 @@ class CallInstance(InstanceResource):
         """
         context = ' '.join('{}={}'.format(k, v) for k, v in self._solution.items())
         return '<Twilio.Api.V2010.CallInstance {}>'.format(context)
+
+class CallContext(InstanceContext):
+
+    def __init__(self, version: Version, account_sid: str, test_integer: int):
+        """
+        Initialize the CallContext
+
+        :param Version version: Version that contains the resource
+        :param account_sid: 
+        :param test_integer: INTEGER ID param!!!
+
+        :returns: twilio.rest.api.v2010.account.call.CallContext
+        :rtype: twilio.rest.api.v2010.account.call.CallContext
+        """
+        super().__init__(version)
+
+        # Path Solution
+        self._solution = { 
+            'account_sid': account_sid,
+            'test_integer': test_integer,
+        }
+        self._uri = '/Accounts/{account_sid}/Calls/{test_integer}.json'.format(**self._solution)
+        
+        self._feedback_call_summary = None
+    
+    def delete(self):
+        """
+        Deletes the CallInstance
+
+        
+        :returns: True if delete succeeds, False otherwise
+        :rtype: bool
+        """
+        return self._version.delete(method='DELETE', uri=self._uri,)
+        
+    def fetch(self):
+        """
+        Fetch the CallInstance
+        
+
+        :returns: The fetched CallInstance
+        :rtype: twilio.rest.api.v2010.account.call.CallInstance
+        """
+        
+        payload = self._version.fetch(method='GET', uri=self._uri, )
+
+        return CallInstance(
+            self._version,
+            payload,
+            account_sid=self._solution['account_sid'],
+            test_integer=self._solution['test_integer'],
+            
+        )
+        
+    
+    @property
+    def feedback_call_summary(self):
+        """
+        Access the feedback_call_summary
+
+        :returns: twilio.rest.api.v2010.account.call.FeedbackCallSummaryList
+        :rtype: twilio.rest.api.v2010.account.call.FeedbackCallSummaryList
+        """
+        if self._feedback_call_summary is None:
+            self._feedback_call_summary = FeedbackCallSummaryList(
+                self._version, 
+                self._solution['account_sid'],
+            )
+        return self._feedback_call_summary
+    
+    def __repr__(self):
+        """
+        Provide a friendly representation
+        :returns: Machine friendly representation
+        :rtype: str
+        """
+        context = ' '.join('{}={}'.format(k, v) for k, v in self._solution.items())
+        return '<Twilio.Api.V2010.CallContext {}>'.format(context)
 
 

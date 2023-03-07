@@ -256,105 +256,6 @@ class AccountPage(Page):
 
 
 
-class AccountContext(InstanceContext):
-
-    def __init__(self, version: Version, sid: str):
-        """
-        Initialize the AccountContext
-
-        :param Version version: Version that contains the resource
-        :param sid: 
-
-        :returns: twilio.rest.api.v2010.account.AccountContext
-        :rtype: twilio.rest.api.v2010.account.AccountContext
-        """
-        super().__init__(version)
-
-        # Path Solution
-        self._solution = { 
-            'sid': sid,
-        }
-        self._uri = '/Accounts/{sid}.json'.format(**self._solution)
-        
-        self._calls = None
-    
-    def delete(self):
-        """
-        Deletes the AccountInstance
-
-        
-        :returns: True if delete succeeds, False otherwise
-        :rtype: bool
-        """
-        return self._version.delete(method='DELETE', uri=self._uri,)
-        
-    def fetch(self):
-        """
-        Fetch the AccountInstance
-        
-
-        :returns: The fetched AccountInstance
-        :rtype: twilio.rest.api.v2010.account.AccountInstance
-        """
-        
-        payload = self._version.fetch(method='GET', uri=self._uri, )
-
-        return AccountInstance(
-            self._version,
-            payload,
-            sid=self._solution['sid'],
-            
-        )
-        
-    def update(self, status, pause_behavior=values.unset):
-        """
-        Update the AccountInstance
-        
-        :params AccountInstance.Status status: 
-        :params str pause_behavior: 
-
-        :returns: The updated AccountInstance
-        :rtype: twilio.rest.api.v2010.account.AccountInstance
-        """
-        data = values.of({ 
-            'Status': status,
-            'PauseBehavior': pause_behavior,
-        })
-        
-
-        payload = self._version.update(method='POST', uri=self._uri, data=data,)
-
-        return AccountInstance(
-            self._version,
-            payload,
-            sid=self._solution['sid']
-        )
-        
-    
-    @property
-    def calls(self):
-        """
-        Access the calls
-
-        :returns: twilio.rest.api.v2010.account.CallList
-        :rtype: twilio.rest.api.v2010.account.CallList
-        """
-        if self._calls is None:
-            self._calls = CallList(
-                self._version, 
-                self._solution['sid'],
-            )
-        return self._calls
-    
-    def __repr__(self):
-        """
-        Provide a friendly representation
-        :returns: Machine friendly representation
-        :rtype: str
-        """
-        context = ' '.join('{}={}'.format(k, v) for k, v in self._solution.items())
-        return '<Twilio.Api.V2010.AccountContext {}>'.format(context)
-
 class AccountInstance(InstanceResource):
 
     class Status(object):
@@ -586,5 +487,104 @@ class AccountInstance(InstanceResource):
         """
         context = ' '.join('{}={}'.format(k, v) for k, v in self._solution.items())
         return '<Twilio.Api.V2010.AccountInstance {}>'.format(context)
+
+class AccountContext(InstanceContext):
+
+    def __init__(self, version: Version, sid: str):
+        """
+        Initialize the AccountContext
+
+        :param Version version: Version that contains the resource
+        :param sid: 
+
+        :returns: twilio.rest.api.v2010.account.AccountContext
+        :rtype: twilio.rest.api.v2010.account.AccountContext
+        """
+        super().__init__(version)
+
+        # Path Solution
+        self._solution = { 
+            'sid': sid,
+        }
+        self._uri = '/Accounts/{sid}.json'.format(**self._solution)
+        
+        self._calls = None
+    
+    def delete(self):
+        """
+        Deletes the AccountInstance
+
+        
+        :returns: True if delete succeeds, False otherwise
+        :rtype: bool
+        """
+        return self._version.delete(method='DELETE', uri=self._uri,)
+        
+    def fetch(self):
+        """
+        Fetch the AccountInstance
+        
+
+        :returns: The fetched AccountInstance
+        :rtype: twilio.rest.api.v2010.account.AccountInstance
+        """
+        
+        payload = self._version.fetch(method='GET', uri=self._uri, )
+
+        return AccountInstance(
+            self._version,
+            payload,
+            sid=self._solution['sid'],
+            
+        )
+        
+    def update(self, status, pause_behavior=values.unset):
+        """
+        Update the AccountInstance
+        
+        :params AccountInstance.Status status: 
+        :params str pause_behavior: 
+
+        :returns: The updated AccountInstance
+        :rtype: twilio.rest.api.v2010.account.AccountInstance
+        """
+        data = values.of({ 
+            'Status': status,
+            'PauseBehavior': pause_behavior,
+        })
+        
+
+        payload = self._version.update(method='POST', uri=self._uri, data=data,)
+
+        return AccountInstance(
+            self._version,
+            payload,
+            sid=self._solution['sid']
+        )
+        
+    
+    @property
+    def calls(self):
+        """
+        Access the calls
+
+        :returns: twilio.rest.api.v2010.account.CallList
+        :rtype: twilio.rest.api.v2010.account.CallList
+        """
+        if self._calls is None:
+            self._calls = CallList(
+                self._version, 
+                self._solution['sid'],
+            )
+        return self._calls
+    
+    def __repr__(self):
+        """
+        Provide a friendly representation
+        :returns: Machine friendly representation
+        :rtype: str
+        """
+        context = ' '.join('{}={}'.format(k, v) for k, v in self._solution.items())
+        return '<Twilio.Api.V2010.AccountContext {}>'.format(context)
 
 
