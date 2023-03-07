@@ -340,7 +340,9 @@ class AccountContext(InstanceContext):
         :rtype: twilio.rest.api.v2010.account.CallList
         """
         if self._calls is None:
-            self._calls = CallList(self._version, self._solution['sid'],
+            self._calls = CallList(
+                self._version, 
+                self._solution['sid'],
             )
         return self._calls
     

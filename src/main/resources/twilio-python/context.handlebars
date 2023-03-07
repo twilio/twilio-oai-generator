@@ -4,8 +4,8 @@ class {{apiName}}Context(InstanceContext):
         """
         Initialize the {{apiName}}Context
 
-        :param Version version: Version that contains the resource
-        {{#instancePathParams}}:param {{paramName}}: {{{description}}}{{/instancePathParams}}
+        :param Version version: Version that contains the resource{{#instancePathParams}}
+        :param {{paramName}}: {{{description}}}{{/instancePathParams}}
 
         :returns: twilio.rest.{{domainPackage}}.{{apiVersion}}.{{namespaceSubPart}}.{{apiName}}Context
         :rtype: twilio.rest.{{domainPackage}}.{{apiVersion}}.{{namespaceSubPart}}.{{apiName}}Context
@@ -17,8 +17,8 @@ class {{apiName}}Context(InstanceContext):
             '{{paramName}}': {{paramName}},{{/instancePathParams}}
         }
         self._uri = '{{instancePath}}'.format(**self._solution)
-        {{#dependents}}{{#instanceDependent}}
-        self._{{mountName}} = None{{/instanceDependent}}{{/dependents}}
+        {{#dependents}}
+        self._{{mountName}} = None{{/dependents}}
     {{#operations}}{{#vendorExtensions.x-is-context-operation}}
     def {{vendorExtensions.x-name-lower}}(self{{#allParams}}, {{paramName}}{{#if required}}{{else}}=values.unset{{/if}}{{/allParams}}):{{#vendorExtensions.x-is-update-operation}}
         """
@@ -97,7 +97,7 @@ class {{apiName}}Context(InstanceContext):
             {{paramName}}=self._solution['{{paramName}}']{{/instancePathParams}}
         )
     {{/vendorExtensions.x-is-create-operation}}{{/vendorExtensions.x-is-context-operation}}{{/operations}}
-    {{#dependents}}{{#instanceDependent}}
+    {{#dependents}}
     @property
     def {{mountName}}(self):
         """
@@ -107,10 +107,13 @@ class {{apiName}}Context(InstanceContext):
         :rtype: twilio.rest.{{domainPackage}}.{{apiVersion}}.{{namespaceSubPart}}.{{listName}}
         """
         if self._{{mountName}} is None:
-            self._{{mountName}} = {{listName}}(self._version,{{#instancePathParams}} self._solution['{{paramName}}'],{{/instancePathParams}}
+            self._{{mountName}} = {{listName}}(
+                self._version, {{#instancePathParams}}{{#if instanceDependent}}
+                self._solution['{{paramName}}'],{{else}}{{#vendorExtensions.x-is-parent-param}}
+                self._solution['{{paramName}}'],{{/vendorExtensions.x-is-parent-param}}{{/if}}{{/instancePathParams}}
             )
         return self._{{mountName}}
-    {{/instanceDependent}}{{/dependents}}
+    {{/dependents}}
     def __repr__(self):
         """
         Provide a friendly representation

@@ -291,7 +291,9 @@ class AwsContext(InstanceContext):
         :rtype: twilio.rest.flex_api.v1.credential.aws.HistoryList
         """
         if self._history is None:
-            self._history = HistoryList(self._version, self._solution['sid'],
+            self._history = HistoryList(
+                self._version, 
+                self._solution['sid'],
             )
         return self._history
     
