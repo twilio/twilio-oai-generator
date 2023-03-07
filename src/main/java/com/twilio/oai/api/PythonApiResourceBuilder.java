@@ -39,6 +39,8 @@ public class PythonApiResourceBuilder extends FluentApiResourceBuilder {
             for (CodegenParameter cp : co.allParams) {
                 if (cp.paramName.equals("_from")) {
                     cp.paramName = "from_";
+                } else if (cp.paramName.equals("a2_p_profile_bundle_sid")) {
+                    cp.paramName = "a2p_profile_bundle_sid";
                 }
             }
         }
