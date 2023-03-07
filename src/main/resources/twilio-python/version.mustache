@@ -18,12 +18,19 @@ class {{apiVersionClass}}(Version):
         {{/versionResources}}
     {{#versionResources}}@property
     def {{mountName}}(self) -> {{listName}}:
+        """
+        :rtype: twilio.rest.{{domainPackage}}.{{apiVersion}}.{{filename}}.{{listName}}
+        """
         if self._{{mountName}} is None:
             self._{{mountName}} = {{listName}}(self{{#param}}, self.domain.twilio.{{param}}{{/param}})
         return self._{{mountName}}
 {{#param}}
     @{{mountName}}.setter
     def {{mountName}}(self, value: {{listName}}):
+        """
+        Setter to override {{mountName}}
+        :param value: value to use as {{mountName}}
+        """
         self._{{mountName}} = value
 {{/param}}
     {{/versionResources}}def __repr__(self) -> str:

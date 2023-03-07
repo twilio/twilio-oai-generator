@@ -183,6 +183,8 @@ public abstract class FluentApiResourceBuilder extends ApiResourceBuilder {
                                 final CodegenParameter param) {
         super.resolveParam(codegenParameterIResolver, param);
 
+        param.contentType = getModelName(param.dataType);
+
         updateDataType(param.baseType, param.dataType, (dataTypeWithEnum, dataType) -> {
             param.datatypeWithEnum = dataTypeWithEnum;
             param.dataType = dataType;
