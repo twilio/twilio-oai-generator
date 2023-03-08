@@ -214,7 +214,6 @@ public class DirectoryStructureService {
     public void postProcessAllModels(final Map<String, ModelsMap> models, final Map<String, String> modelFormatMap) {
         Utility.addModelsToLocalModelList(models, allModels);
         Utility.setComplexDataMapping(allModels, modelFormatMap);
-        allModels.forEach(model -> model.setClassname(model.getClassname().replace("Enum", "")));
     }
 
     public List<CodegenOperation> processOperations(final OperationsMap results) {
@@ -286,18 +285,7 @@ public class DirectoryStructureService {
         return String.join(File.separator, pathParts);
     }
 
-    public String getRecordKey(final List<CodegenOperation> opList) {
-        return Utility.getRecordKey(allModels, opList);
-    }
-
-    public Optional<CodegenModel> getModelCoPath(final String className,
-                                                 final CodegenOperation codegenOperation,
-                                                 final String recordKey) {
-        return Utility.getModel(allModels, className, recordKey, codegenOperation);
-    }
-
     public void configureAdditionalProps(Map<String, PathItem> pathMap, String domain, DirectoryStructureService directoryStructureService) {
-
         List<Resource> dependents = new ArrayList<>();
         if (domain.equals("api")) {
             additionalProperties.put("isApiDomain", "true");
@@ -307,7 +295,7 @@ public class DirectoryStructureService {
             if (pathKeyCache.endsWith("}")) {
                 PathItem currPath = pathMap.get(pathKey);
                 Optional<String> parentKey = PathUtils.getTwilioExtension(currPath, "parent");
-                if (!parentKey.isPresent()) {
+                if (parentKey.isEmpty()) {
                     dependents.add(new Resource(null, pathKeyCache, currPath, null));
                 } else {
                     String currParentKey = domain.equals("api") ? "/2010-04-01" + parentKey.get() : parentKey.get();
@@ -315,7 +303,7 @@ public class DirectoryStructureService {
                     if (pathMap.containsKey(currParentKey)) {
                         PathItem pathParent = pathMap.get(currParentKey);
                         Optional<String> parentKey2 = PathUtils.getTwilioExtension(pathParent, "parent");
-                        if (!parentKey2.isPresent()) {
+                        if (parentKey2.isEmpty()) {
                             dependents.add(new Resource(null, pathKeyCache, currPath, null));
                         }
                     }
@@ -331,6 +319,5 @@ public class DirectoryStructureService {
         additionalProperties.put("versionDependents",
                 dependentList
         );
-
     }
 }

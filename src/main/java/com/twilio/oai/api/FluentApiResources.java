@@ -34,7 +34,7 @@ public class FluentApiResources extends ApiResources {
         instancePathParams = apiResourceBuilder.instancePathParams;
         listPathParams = apiResourceBuilder.listPathParams;
         responseModel = apiResourceBuilder.responseModel;
-        models = apiResourceBuilder.models.values();
+        models = apiResourceBuilder.modelTree.values();
         dependents = apiResourceBuilder.dependents.values();
     }
 

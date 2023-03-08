@@ -20,18 +20,18 @@ import { isValidPathParam } from "../../../../base/utility";
 import { FeedbackCallSummaryListInstance } from "./call/feedbackCallSummary";
 import { PhoneNumberCapabilities } from "../../../../interfaces";
 
-export class TestResponseObjectTestArrayOfObjects {
-  "count"?: number;
-  "description"?: string;
-}
-
-export type TestStatus =
+export type CallStatus =
   | "in-progress"
   | "paused"
   | "stopped"
   | "processing"
   | "completed"
   | "absent";
+
+export class TestResponseObjectTestArrayOfObjects {
+  "count"?: number;
+  "description"?: string;
+}
 
 /**
  * Options to pass to create a CallInstance
@@ -174,12 +174,12 @@ interface CallResource {
   price_unit: string;
   test_number_float: number;
   test_number_decimal: number;
-  test_enum: TestStatus;
+  test_enum: CallStatus;
   a2p_profile_bundle_sid: string;
   test_array_of_integers: Array<number>;
   test_array_of_array_of_integers: Array<Array<number>>;
   test_array_of_objects: Array<TestResponseObjectTestArrayOfObjects>;
-  test_array_of_enum: Array<TestStatus>;
+  test_array_of_enum: Array<CallStatus>;
 }
 
 export class CallInstance {
@@ -225,7 +225,7 @@ export class CallInstance {
   priceUnit: string;
   testNumberFloat: number;
   testNumberDecimal: number;
-  testEnum: TestStatus;
+  testEnum: CallStatus;
   /**
    * A2P Messaging Profile Bundle BundleSid
    */
@@ -236,7 +236,7 @@ export class CallInstance {
   /**
    * Permissions authorized to the app
    */
-  testArrayOfEnum: Array<TestStatus>;
+  testArrayOfEnum: Array<CallStatus>;
 
   private get _proxy(): CallContext {
     this._context =

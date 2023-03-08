@@ -14,26 +14,29 @@
 
 from twilio.base.version import Version
 from twilio.base.domain import Domain
-from twilio.rest.versionless.understand.assistant import AssistantList
+from twilio.rest.versionless.deployed_devices.fleet import FleetList
 
 
-class Understand(Version):
+class DeployedDevices(Version):
 
     def __init__(self, domain: Domain):
         """
-        Initialize the Understand version of Versionless
+        Initialize the DeployedDevices version of Versionless
 
         :param domain: The Twilio.versionless domain
         """
         super().__init__(domain)
-        self.version = 'understand'
-        self._assistants = None
+        self.version = 'DeployedDevices'
+        self._fleets = None
         
     @property
-    def assistants(self) -> AssistantList:
-        if self._assistants is None:
-            self._assistants = AssistantList(self)
-        return self._assistants
+    def fleets(self) -> FleetList:
+        """
+        :rtype: twilio.rest.versionless.deployed_devices.fleet.FleetList
+        """
+        if self._fleets is None:
+            self._fleets = FleetList(self)
+        return self._fleets
 
     def __repr__(self) -> str:
         """
@@ -41,4 +44,4 @@ class Understand(Version):
         :returns: Machine friendly representation
         :rtype: str
         """
-        return '<Twilio.Versionless.Understand>'
+        return '<Twilio.Versionless.DeployedDevices>'

@@ -2,6 +2,8 @@ package com.twilio.oai.api;
 
 import com.twilio.oai.DirectoryStructureService;
 import com.twilio.oai.StringHelper;
+import com.twilio.oai.common.ApplicationConstants;
+import com.twilio.oai.common.Utility;
 import com.twilio.oai.resolver.Resolver;
 import com.twilio.oai.template.IApiActionTemplate;
 
@@ -51,8 +53,20 @@ public class PythonApiResourceBuilder extends FluentApiResourceBuilder {
     }
 
     private void updatePaths() {
-        if (listPath != null) listPath = listPath.replace("$", "");
-        if (instancePath != null) instancePath = instancePath.replace("$", "");
+        if (listPath != null) {
+            listPath = listPath.replace("$", "");
+        }
+        if (instancePath != null) {
+            instancePath = instancePath.replace("$", "");
+        }
     }
 
+    @Override
+    protected String getDataTypeName(final String dataType) {
+        if (dataType != null && dataType.contains(ApplicationConstants.ENUM)) {
+            return getApiName() + "Instance." + Utility.removeEnumName(dataType);
+        }
+
+        return dataType;
+    }
 }

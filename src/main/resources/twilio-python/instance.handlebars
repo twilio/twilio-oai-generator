@@ -1,6 +1,6 @@
 class {{instanceName}}(InstanceResource):
 {{>model}}
-    def __init__(self, version, payload{{#instancePathParams}}, {{paramName}}: {{{dataType}}}{{#if vendorExtensions.x-is-parent-param}}{{else}}=None{{/if}}{{/instancePathParams}}):
+    def __init__(self, version, payload{{#instancePathParams}}, {{paramName}}: {{{contentType}}}{{#if vendorExtensions.x-is-parent-param}}{{else}}=None{{/if}}{{/instancePathParams}}):
         """
         Initialize the {{instanceName}}
         :returns: twilio.rest.{{domainPackage}}.{{apiVersion}}.{{namespaceSubPart}}.{{instanceName}}
@@ -32,7 +32,7 @@ class {{instanceName}}(InstanceResource):
     def {{name}}(self):
         """
         :returns: {{{description}}}
-        :rtype: {{dataType}}
+        :rtype: {{baseType}}
         """
         return self._properties['{{name}}']
     {{/vars}}{{#operations}}{{#vendorExtensions.x-is-context-operation}}

@@ -2,6 +2,7 @@ package com.twilio.oai.api;
 
 import com.twilio.oai.DirectoryStructureService;
 import com.twilio.oai.PathUtils;
+import com.twilio.oai.common.Utility;
 import com.twilio.oai.resolver.Resolver;
 import com.twilio.oai.template.IApiActionTemplate;
 
@@ -10,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.TreeMap;
+import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 
 import org.openapitools.codegen.CodegenModel;
@@ -30,7 +32,6 @@ public abstract class FluentApiResourceBuilder extends ApiResourceBuilder {
     CodegenModel responseModel;
 
     protected final Map<String, DirectoryStructureService.DependentResource> dependents = new TreeMap<>();
-    protected final Map<String, CodegenModel> models = new TreeMap<>();
 
     protected FluentApiResourceBuilder(final IApiActionTemplate template,
                                        final List<CodegenOperation> codegenOperations,
@@ -54,7 +55,6 @@ public abstract class FluentApiResourceBuilder extends ApiResourceBuilder {
         super.updateOperations(codegenParameterIResolver);
 
         for (final CodegenOperation co : codegenOperationList) {
-            co.allParams.forEach(param -> addModel(models, param.baseType, param.dataType));
             co.allParams.removeAll(co.pathParams);
             co.requiredParams.removeAll(co.pathParams);
             co.hasParams = !co.allParams.isEmpty();
@@ -144,7 +144,6 @@ public abstract class FluentApiResourceBuilder extends ApiResourceBuilder {
                 model.setName(resourceName);
                 model.getVars().forEach(variable -> {
                     codegenPropertyResolver.resolve(variable);
-                    variable.vendorExtensions.put("x-name", resourceName + variable.getNameInCamelCase());
 
                     instancePathParams
                         .stream()
@@ -164,10 +163,51 @@ public abstract class FluentApiResourceBuilder extends ApiResourceBuilder {
                 }
             });
 
-            responseModel.getVars().forEach(variable -> addModel(models, variable.complexType, variable.dataType));
+            responseModel.getVars().forEach(variable -> {
+                addModel(modelTree, variable.complexType, variable.dataType);
+
+                updateDataType(variable.complexType, variable.dataType, (dataTypeWithEnum, dataType) -> {
+                    variable.datatypeWithEnum = dataTypeWithEnum;
+                    variable.baseType = dataType;
+                });
+            });
         });
 
+        modelTree.values().forEach(model -> model.setName(getModelName(model.getClassname())));
+
         return this;
+    }
+
+    @Override
+    protected void resolveParam(final Resolver<CodegenParameter> codegenParameterIResolver,
+                                final CodegenParameter param) {
+        super.resolveParam(codegenParameterIResolver, param);
+
+        param.contentType = getModelName(param.dataType);
+
+        updateDataType(param.baseType, param.dataType, (dataTypeWithEnum, dataType) -> {
+            param.datatypeWithEnum = dataTypeWithEnum;
+            param.dataType = dataType;
+        });
+    }
+
+    private void updateDataType(final String baseType,
+                                final String dataType,
+                                final BiConsumer<String, String> consumer) {
+        consumer.accept(baseType, getDataTypeName(dataType));
+
+        if (baseType != null) {
+            final String datatypeWithEnum = getDataTypeName(baseType);
+            consumer.accept(datatypeWithEnum, dataType.replace(baseType, datatypeWithEnum));
+        }
+    }
+
+    protected String getModelName(final String classname) {
+        return Utility.removeEnumName(classname);
+    }
+
+    protected String getDataTypeName(final String dataType) {
+        return Utility.removeEnumName(dataType);
     }
 
     @Override

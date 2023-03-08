@@ -33,12 +33,18 @@ class V1(Version):
         
     @property
     def calls(self) -> CallList:
+        """
+        :rtype: twilio.rest.flex_api.v1.call.CallList
+        """
         if self._calls is None:
             self._calls = CallList(self)
         return self._calls
 
     @property
     def credentials(self) -> CredentialList:
+        """
+        :rtype: twilio.rest.flex_api.v1.credential.CredentialList
+        """
         if self._credentials is None:
             self._credentials = CredentialList(self)
         return self._credentials

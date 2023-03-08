@@ -23,12 +23,7 @@ import { CallListInstance } from "./account/call";
 import { PhoneNumberCapabilities } from "../../../interfaces";
 import TwiML from "../../../twiml/TwiML";
 
-export class TestResponseObjectTestArrayOfObjects {
-  "count"?: number;
-  "description"?: string;
-}
-
-export type TestStatus =
+export type AccountStatus =
   | "in-progress"
   | "paused"
   | "stopped"
@@ -36,12 +31,17 @@ export type TestStatus =
   | "completed"
   | "absent";
 
+export class TestResponseObjectTestArrayOfObjects {
+  "count"?: number;
+  "description"?: string;
+}
+
 /**
  * Options to pass to update a AccountInstance
  */
 export interface AccountContextUpdateOptions {
   /**  */
-  status: TestStatus;
+  status: AccountStatus;
   /**  */
   pauseBehavior?: string;
 }
@@ -300,12 +300,12 @@ interface AccountResource {
   price_unit: string;
   test_number_float: number;
   test_number_decimal: number;
-  test_enum: TestStatus;
+  test_enum: AccountStatus;
   a2p_profile_bundle_sid: string;
   test_array_of_integers: Array<number>;
   test_array_of_array_of_integers: Array<Array<number>>;
   test_array_of_objects: Array<TestResponseObjectTestArrayOfObjects>;
-  test_array_of_enum: Array<TestStatus>;
+  test_array_of_enum: Array<AccountStatus>;
 }
 
 export class AccountInstance {
@@ -347,7 +347,7 @@ export class AccountInstance {
   priceUnit: string;
   testNumberFloat: number;
   testNumberDecimal: number;
-  testEnum: TestStatus;
+  testEnum: AccountStatus;
   /**
    * A2P Messaging Profile Bundle BundleSid
    */
@@ -358,7 +358,7 @@ export class AccountInstance {
   /**
    * Permissions authorized to the app
    */
-  testArrayOfEnum: Array<TestStatus>;
+  testArrayOfEnum: Array<AccountStatus>;
 
   private get _proxy(): AccountContext {
     this._context =

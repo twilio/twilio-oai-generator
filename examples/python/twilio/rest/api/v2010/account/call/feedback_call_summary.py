@@ -135,7 +135,7 @@ class FeedbackCallSummaryContext(InstanceContext):
 
 class FeedbackCallSummaryInstance(InstanceResource):
 
-    class TestStatus(object):
+    class Status(object):
         IN_PROGRESS = "in-progress"
         PAUSED = "paused"
         STOPPED = "stopped"
@@ -270,7 +270,7 @@ class FeedbackCallSummaryInstance(InstanceResource):
     def test_enum(self):
         """
         :returns: 
-        :rtype: TestStatus
+        :rtype: FeedbackCallSummaryInstance.Status
         """
         return self._properties['test_enum']
     
@@ -310,7 +310,7 @@ class FeedbackCallSummaryInstance(InstanceResource):
     def test_array_of_enum(self):
         """
         :returns: Permissions authorized to the app
-        :rtype: list[TestStatus]
+        :rtype: list[FeedbackCallSummaryInstance.Status]
         """
         return self._properties['test_array_of_enum']
     
