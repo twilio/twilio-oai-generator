@@ -16,6 +16,23 @@
         payload = self._version.create(method='POST', uri=self._uri, data=data,{{#allParams}}{{#if isFormParam}}{{else}} headers=headers{{/if}}{{/allParams}})
 
         return {{instanceName}}(self._version, payload{{#listPathParams}}, {{paramName}}=self._solution['{{paramName}}']{{/listPathParams}})
+
+    async def create_async(self{{#allParams}}, {{paramName}}{{#if required}}{{else}}=values.unset{{/if}}{{/allParams}}):
+        """
+        Asynchronous coroutine to create the {{instanceName}}
+
+        {{#allParams}}:param {{dataType}} {{paramName}}: {{{description}}}
+        {{/allParams}}
+        :returns: The created {{instanceName}}
+        :rtype: twilio.rest.{{domainPackage}}.{{apiVersion}}.{{namespaceSubPart}}.{{instanceName}}
+        """
+        data = values.of({ {{#allParams}}{{#isFormParam}}
+            '{{{baseName}}}': {{#if vendorExtensions.x-serialize}}{{vendorExtensions.x-serialize}}({{paramName}}{{#if isArray}}, lambda e: e){{else}}){{/if}}{{else}}{{paramName}}{{/if}},{{/isFormParam}}{{/allParams}}
+        })
+        {{#allParams}}{{^isFormParam}}headers = values.of({'{{{baseName}}}': {{paramName}}, }){{/isFormParam}}{{/allParams}}
+        payload = await self._version.create_async(method='POST', uri=self._uri, data=data,{{#allParams}}{{#if isFormParam}}{{else}} headers=headers{{/if}}{{/allParams}})
+
+        return {{instanceName}}(self._version, payload{{#listPathParams}}, {{paramName}}=self._solution['{{paramName}}']{{/listPathParams}})
     {{/hasParams}}{{/vendorExtensions.x-is-create-operation}}{{#vendorExtensions.x-is-read-operation}}
     def stream(self, {{#allParams}}{{#startsWith paramName text='page_size'}}{{else}}{{paramName}}=values.unset, {{/startsWith}}{{/allParams}}limit=None, page_size=None):
         """
@@ -43,6 +60,32 @@
 
         return self._version.stream(page, limits['limit'])
 
+    async def stream_async(self, {{#allParams}}{{#startsWith paramName text='page_size'}}{{else}}{{paramName}}=values.unset, {{/startsWith}}{{/allParams}}limit=None, page_size=None):
+        """
+        Asynchronous coroutine that streams {{instanceName}} records from the API as a generator stream.
+        This operation lazily loads records as efficiently as possible until the limit
+        is reached.
+        The results are returned as a generator, so this operation is memory efficient.
+        {{#allParams}}{{#startsWith paramName text='page_size'}}{{else}}
+        :param {{dataType}} {{paramName}}: {{{description}}}{{/startsWith}}{{/allParams}}
+        :param int limit: Upper limit for the number of records to return. stream()
+                          guarantees to never return more than limit.  Default is no limit
+        :param int page_size: Number of records to fetch per request, when not set will use
+                              the default value of 50 records.  If no page_size is defined
+                              but a limit is defined, stream() will attempt to read the
+                              limit with the most efficient page size, i.e. min(limit, 1000)
+
+        :returns: Generator that will yield up to limit results
+        :rtype: list[twilio.rest.{{domainPackage}}.{{apiVersion}}.{{namespaceSubPart}}.{{instanceName}}]
+        """
+        limits = self._version.read_limits(limit, page_size)
+        page = await self.page_async({{#allParams}}{{#startsWith paramName text='page_size'}}{{else}}
+            {{paramName}}={{paramName}},{{/startsWith}}{{/allParams}}
+            page_size=limits['page_size']
+        )
+
+        return self._version.stream_async(page, limits['limit'])
+
     def list(self, {{#allParams}}{{#startsWith paramName text='page_size'}}{{else}}{{paramName}}=values.unset, {{/startsWith}}{{/allParams}}limit=None, page_size=None):
         """
         Lists {{instanceName}} records from the API as a list.
@@ -61,6 +104,29 @@
         :rtype: list[twilio.rest.{{domainPackage}}.{{apiVersion}}.{{namespaceSubPart}}.{{instanceName}}]
         """
         return list(self.stream(
+            {{#allParams}}{{#startsWith paramName text='page_size'}}{{else}}{{paramName}}={{paramName}},
+            {{/startsWith}}{{/allParams}}limit=limit,
+            page_size=page_size,
+        ))
+
+    async def list_async(self, {{#allParams}}{{#startsWith paramName text='page_size'}}{{else}}{{paramName}}=values.unset, {{/startsWith}}{{/allParams}}limit=None, page_size=None):
+        """
+        Asynchronous coroutine that lists {{instanceName}} records from the API as a list.
+        Unlike stream(), this operation is eager and will load `limit` records into
+        memory before returning.
+        {{#allParams}}{{#startsWith paramName text='page_size'}}{{else}}
+        :param {{dataType}} {{paramName}}: {{{description}}}{{/startsWith}}{{/allParams}}
+        :param int limit: Upper limit for the number of records to return. list() guarantees
+                          never to return more than limit.  Default is no limit
+        :param int page_size: Number of records to fetch per request, when not set will use
+                              the default value of 50 records.  If no page_size is defined
+                              but a limit is defined, list() will attempt to read the limit
+                              with the most efficient page size, i.e. min(limit, 1000)
+
+        :returns: Generator that will yield up to limit results
+        :rtype: list[twilio.rest.{{domainPackage}}.{{apiVersion}}.{{namespaceSubPart}}.{{instanceName}}]
+        """
+        return list(await self.stream_async(
             {{#allParams}}{{#startsWith paramName text='page_size'}}{{else}}{{paramName}}={{paramName}},
             {{/startsWith}}{{/allParams}}limit=limit,
             page_size=page_size,
@@ -89,6 +155,29 @@
         response = self._version.page(method='GET', uri=self._uri, params=data)
         return {{apiName}}Page(self._version, response, self._solution)
 
+    async def page_async(self, {{#allParams}}{{#startsWith paramName text='page_size'}}{{else}}{{paramName}}=values.unset, {{/startsWith}}{{/allParams}}page_token=values.unset, page_number=values.unset, page_size=values.unset):
+        """
+        Asynchronous coroutine that retrieve a single page of {{instanceName}} records from the API.
+        Request is executed immediately
+        {{#allParams}}{{#startsWith paramName text='page_size'}}{{else}}
+        :param {{dataType}} {{paramName}}: {{{description}}}{{/startsWith}}{{/allParams}}
+        :param str page_token: PageToken provided by the API
+        :param int page_number: Page Number, this value is simply for client state
+        :param int page_size: Number of records to return, defaults to 50
+
+        :returns: Page of {{instanceName}}
+        :rtype: twilio.rest.{{domainPackage}}.{{apiVersion}}.{{namespaceSubPart}}.{{apiName}}Page
+        """
+        data = values.of({ {{#allParams}}{{#startsWith paramName text='page_size'}}{{else}}
+            '{{{baseName}}}': {{#if vendorExtensions.x-serialize}}{{vendorExtensions.x-serialize}}({{paramName}}){{else}}{{paramName}}{{/if}},{{/startsWith}}{{/allParams}}
+            'PageToken': page_token,
+            'Page': page_number,
+            'PageSize': page_size,
+        })
+
+        response = await self._version.page_async(method='GET', uri=self._uri, params=data)
+        return {{apiName}}Page(self._version, response, self._solution)
+
     def get_page(self, target_url):
         """
         Retrieve a specific page of {{instanceName}} records from the API.
@@ -100,6 +189,22 @@
         :rtype: twilio.rest.{{domainPackage}}.{{apiVersion}}.{{namespaceSubPart}}.{{apiName}}Page
         """
         response = self._version.domain.twilio.request(
+            'GET',
+            target_url
+        )
+        return {{apiName}}Page(self._version, response, self._solution)
+
+    async def get_page_async(self, target_url):
+        """
+        Asynchronous coroutine that retrieve a specific page of {{instanceName}} records from the API.
+        Request is executed immediately
+
+        :param str target_url: API-generated URL for the requested results page
+
+        :returns: Page of {{instanceName}}
+        :rtype: twilio.rest.{{domainPackage}}.{{apiVersion}}.{{namespaceSubPart}}.{{apiName}}Page
+        """
+        response = await self._version.domain.twilio.request_async(
             'GET',
             target_url
         )
