@@ -6,13 +6,13 @@ class Api(Domain):
     def __init__(self, twilio):
         super().__init__(twilio)
         self.base_url = 'http://api.twilio.com'
-        self._V2010 = None
+        self._v2010 = None
 
     @property
-    def V2010(self):
-        if self._V2010 is None:
-            self._V2010 = V2010(self)
-        return self._V2010
+    def v2010(self):
+        if self._v2010 is None:
+            self._v2010 = V2010(self)
+        return self._v2010
 
     @property
     def accounts(self):

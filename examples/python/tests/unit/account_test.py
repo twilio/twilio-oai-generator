@@ -15,7 +15,7 @@ class AccountTests(unittest.TestCase):
     def test_create_account(self, mock_request):
         mock_request.return_value = Response(201, "{}")
 
-        self.client.api.V2010.accounts.create()
+        self.client.api.v2010.accounts.create()
         request_args = self.generic_request_args
 
         mock_request.assert_called_once_with("POST", "http://api.twilio.com/2010-04-01/Accounts.json", **request_args)
@@ -23,7 +23,7 @@ class AccountTests(unittest.TestCase):
     def test_account_shortcut(self, mock_request):
         mock_request.return_value = Response(201, "{\"sid\": \"123\"}")
 
-        self.client.api.V2010.account.calls.create(required_string_property="phone home", test_method="post")
+        self.client.api.v2010.account.calls.create(required_string_property="phone home", test_method="post")
         request_args = self.generic_request_args
         request_args["data"] = {"RequiredStringProperty": "phone home", "TestMethod": "post"}
 
@@ -32,7 +32,7 @@ class AccountTests(unittest.TestCase):
     def test_fetch_account(self, mock_request):
         mock_request.return_value = Response(200, "{\"account_sid\": \"123\"}")
 
-        self.client.api.V2010.accounts("123").fetch()
+        self.client.api.v2010.accounts("123").fetch()
         request_args = self.generic_request_args
 
         mock_request.assert_called_once_with("GET", "http://api.twilio.com/2010-04-01/Accounts/123.json", **request_args)
@@ -40,7 +40,7 @@ class AccountTests(unittest.TestCase):
     def test_update_account(self, mock_request):
         mock_request.return_value = Response(200, "{\"account_sid\": \"123\", \"status\": \"stopped\"}")
 
-        self.client.api.V2010.accounts("123").update(status="stopped")
+        self.client.api.v2010.accounts("123").update(status="stopped")
         request_args = self.generic_request_args
         request_args["data"] = {"Status": "stopped"}
 
@@ -49,7 +49,7 @@ class AccountTests(unittest.TestCase):
     def test_remove_account(self, mock_request):
         mock_request.return_value = Response(204, "{}")
 
-        self.client.api.V2010.accounts("123").delete()
+        self.client.api.v2010.accounts("123").delete()
         request_args = self.generic_request_args
 
         mock_request.assert_called_once_with("DELETE", "http://api.twilio.com/2010-04-01/Accounts/123.json", **request_args)
