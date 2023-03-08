@@ -1,4 +1,4 @@
-from twilio.base import ClientBase
+from twilio.base.client_base import ClientBase
 
 class Client(ClientBase):
     """ A client for accessing the Twilio API. """
