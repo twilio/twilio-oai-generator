@@ -4,8 +4,8 @@ class {{apiName}}Context(InstanceContext):
         """
         Initialize the {{apiName}}Context
 
-        :param Version version: Version that contains the resource
-        {{#instancePathParams}}:param {{paramName}}: {{{description}}}{{/instancePathParams}}
+        :param Version version: Version that contains the resource{{#instancePathParams}}
+        :param {{paramName}}: {{{description}}}{{/instancePathParams}}
 
         :returns: twilio.rest.{{domainPackage}}.{{apiVersion}}.{{namespaceSubPart}}.{{apiName}}Context
         :rtype: twilio.rest.{{domainPackage}}.{{apiVersion}}.{{namespaceSubPart}}.{{apiName}}Context
@@ -191,7 +191,9 @@ class {{apiName}}Context(InstanceContext):
         :rtype: twilio.rest.{{domainPackage}}.{{apiVersion}}.{{namespaceSubPart}}.{{listName}}
         """
         if self._{{mountName}} is None:
-            self._{{mountName}} = {{listName}}(self._version,{{#instancePathParams}} self._solution['{{paramName}}'],{{/instancePathParams}}
+            self._{{mountName}} = {{listName}}(
+                self._version, {{#instancePathParams}}
+                self._solution['{{paramName}}'],{{/instancePathParams}}
             )
         return self._{{mountName}}
     {{/instanceDependent}}{{/dependents}}
