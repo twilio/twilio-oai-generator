@@ -17,8 +17,8 @@ class {{apiName}}Context(InstanceContext):
             '{{paramName}}': {{paramName}},{{/instancePathParams}}
         }
         self._uri = '{{instancePath}}'.format(**self._solution)
-        {{#dependents}}
-        self._{{mountName}} = None{{/dependents}}
+        {{#dependents}}{{#instanceDependent}}
+        self._{{mountName}} = None{{/instanceDependent}}{{/dependents}}
     {{#operations}}{{#vendorExtensions.x-is-context-operation}}
     def {{vendorExtensions.x-name-lower}}(self{{#allParams}}, {{paramName}}{{#if required}}{{else}}=values.unset{{/if}}{{/allParams}}):{{#vendorExtensions.x-is-update-operation}}
         """
@@ -97,7 +97,7 @@ class {{apiName}}Context(InstanceContext):
             {{paramName}}=self._solution['{{paramName}}']{{/instancePathParams}}
         )
     {{/vendorExtensions.x-is-create-operation}}{{/vendorExtensions.x-is-context-operation}}{{/operations}}
-    {{#dependents}}
+    {{#dependents}}{{#instanceDependent}}
     @property
     def {{mountName}}(self):
         """
@@ -108,12 +108,11 @@ class {{apiName}}Context(InstanceContext):
         """
         if self._{{mountName}} is None:
             self._{{mountName}} = {{listName}}(
-                self._version, {{#instancePathParams}}{{#if instanceDependent}}
-                self._solution['{{paramName}}'],{{else}}{{#vendorExtensions.x-is-parent-param}}
-                self._solution['{{paramName}}'],{{/vendorExtensions.x-is-parent-param}}{{/if}}{{/instancePathParams}}
+                self._version, {{#instancePathParams}}
+                self._solution['{{paramName}}'],{{/instancePathParams}}
             )
         return self._{{mountName}}
-    {{/dependents}}
+    {{/instanceDependent}}{{/dependents}}
     def __repr__(self):
         """
         Provide a friendly representation

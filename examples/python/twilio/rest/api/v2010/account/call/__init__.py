@@ -346,7 +346,6 @@ class CallContext(InstanceContext):
         }
         self._uri = '/Accounts/{account_sid}/Calls/{test_integer}.json'.format(**self._solution)
         
-        self._feedback_call_summary = None
     
     def delete(self):
         """
@@ -377,21 +376,6 @@ class CallContext(InstanceContext):
             
         )
         
-    
-    @property
-    def feedback_call_summary(self):
-        """
-        Access the feedback_call_summary
-
-        :returns: twilio.rest.api.v2010.account.call.FeedbackCallSummaryList
-        :rtype: twilio.rest.api.v2010.account.call.FeedbackCallSummaryList
-        """
-        if self._feedback_call_summary is None:
-            self._feedback_call_summary = FeedbackCallSummaryList(
-                self._version, 
-                self._solution['account_sid'],
-            )
-        return self._feedback_call_summary
     
     def __repr__(self):
         """
