@@ -19,7 +19,7 @@
     
     async def create_async(self{{#allParams}}, {{paramName}}{{#if required}}{{else}}=values.unset{{/if}}{{/allParams}}):
         """
-        Create the {{instanceName}}
+        Asynchronously create the {{instanceName}}
 
         {{#allParams}}:param {{dataType}} {{paramName}}: {{{description}}}
         {{/allParams}}
@@ -30,18 +30,29 @@
             '{{{baseName}}}': {{#if vendorExtensions.x-serialize}}{{vendorExtensions.x-serialize}}({{paramName}}{{#if isArray}}, lambda e: {{#startsWith baseType text='object'}}serialize.object(e){{else}}e{{/startsWith}}){{else}}){{/if}}{{else}}{{paramName}}{{/if}},{{/isFormParam}}{{/allParams}}
         }){{/hasParams}}
         {{#allParams}}{{^isFormParam}}headers = values.of({'{{{baseName}}}': {{paramName}}, }){{/isFormParam}}{{/allParams}}
-        payload = self._version.create(method='POST', uri=self._uri, {{#hasParams}}data=data,{{/hasParams}}{{#allParams}}{{#if isFormParam}}{{else}} headers=headers{{/if}}{{/allParams}})
+        payload = await self._version.create_async(method='POST', uri=self._uri, {{#hasParams}}data=data,{{/hasParams}}{{#allParams}}{{#if isFormParam}}{{else}} headers=headers{{/if}}{{/allParams}})
 
         return {{instanceName}}(self._version, payload{{#listPathParams}}, {{paramName}}=self._solution['{{paramName}}']{{/listPathParams}})
     {{/vendorExtensions.x-is-create-operation}}{{^instancePath}}{{#vendorExtensions.x-is-fetch-operation}}
     def fetch(self):
         """
-        Fetch the {{instanceName}}
+        Asynchronously fetch the {{instanceName}}
 
         :returns: The fetched {{instanceName}}
         :rtype: twilio.rest.{{domainPackage}}.{{apiVersion}}.{{namespaceSubPart}}.{{instanceName}}
         """
         payload = self._version.create(method='GET', uri=self._uri)
+
+        return {{instanceName}}(self._version, payload{{#listPathParams}}, {{paramName}}=self._solution['{{paramName}}']{{/listPathParams}})
+
+    async def fetch_async(self):
+        """
+        Asynchronously fetch the {{instanceName}}
+
+        :returns: The fetched {{instanceName}}
+        :rtype: twilio.rest.{{domainPackage}}.{{apiVersion}}.{{namespaceSubPart}}.{{instanceName}}
+        """
+        payload = await self._version.fetch_async(method='GET', uri=self._uri)
 
         return {{instanceName}}(self._version, payload{{#listPathParams}}, {{paramName}}=self._solution['{{paramName}}']{{/listPathParams}})
     {{/vendorExtensions.x-is-fetch-operation}}{{#vendorExtensions.x-is-update-operation}}
@@ -59,6 +70,23 @@
         })
         {{#allParams}}{{^isFormParam}}headers = values.of({'{{{baseName}}}': {{paramName}}, }){{/isFormParam}}{{/allParams}}
         payload = self._version.update(method='POST', uri=self._uri, data=data,{{#allParams}}{{#if isFormParam}}{{else}} headers=headers{{/if}}{{/allParams}})
+
+        return {{instanceName}}(self._version, payload{{#listPathParams}}, {{paramName}}=self._solution['{{paramName}}']{{/listPathParams}})
+
+    async def update_async(self{{#allParams}}, {{paramName}}{{#if required}}{{else}}=values.unset{{/if}}{{/allParams}}):
+        """
+        Asynchronously update the {{instanceName}}
+
+        {{#allParams}}:param {{dataType}} {{paramName}}: {{{description}}}
+        {{/allParams}}
+        :returns: The created {{instanceName}}
+        :rtype: twilio.rest.{{domainPackage}}.{{apiVersion}}.{{namespaceSubPart}}.{{instanceName}}
+        """
+        data = values.of({ {{#allParams}}{{#isFormParam}}
+            '{{{baseName}}}': {{#if vendorExtensions.x-serialize}}{{vendorExtensions.x-serialize}}({{paramName}}{{#if isArray}}, lambda e: e){{else}}){{/if}}{{else}}{{paramName}}{{/if}},{{/isFormParam}}{{/allParams}}
+        })
+        {{#allParams}}{{^isFormParam}}headers = values.of({'{{{baseName}}}': {{paramName}}, }){{/isFormParam}}{{/allParams}}
+        payload = await self._version.update_async(method='POST', uri=self._uri, data=data,{{#allParams}}{{#if isFormParam}}{{else}} headers=headers{{/if}}{{/allParams}})
 
         return {{instanceName}}(self._version, payload{{#listPathParams}}, {{paramName}}=self._solution['{{paramName}}']{{/listPathParams}})
     {{/vendorExtensions.x-is-update-operation}}{{/instancePath}}{{#vendorExtensions.x-is-read-operation}}
@@ -90,7 +118,7 @@
 
     async def stream_async(self, {{#allParams}}{{#startsWith paramName text='page_size'}}{{else}}{{paramName}}=values.unset, {{/startsWith}}{{/allParams}}limit=None, page_size=None):
         """
-        Asynchronous coroutine that streams {{instanceName}} records from the API as a generator stream.
+        Asynchronously streams {{instanceName}} records from the API as a generator stream.
         This operation lazily loads records as efficiently as possible until the limit
         is reached.
         The results are returned as a generator, so this operation is memory efficient.
@@ -112,7 +140,7 @@
             page_size=limits['page_size']
         )
 
-        return self._version.stream_async(page, limits['limit'])
+        return await self._version.stream_async(page, limits['limit'])
 
     def list(self, {{#allParams}}{{#startsWith paramName text='page_size'}}{{else}}{{paramName}}=values.unset, {{/startsWith}}{{/allParams}}limit=None, page_size=None):
         """
@@ -139,7 +167,7 @@
 
     async def list_async(self, {{#allParams}}{{#startsWith paramName text='page_size'}}{{else}}{{paramName}}=values.unset, {{/startsWith}}{{/allParams}}limit=None, page_size=None):
         """
-        Asynchronous coroutine that lists {{instanceName}} records from the API as a list.
+        Asynchronously lists {{instanceName}} records from the API as a list.
         Unlike stream(), this operation is eager and will load `limit` records into
         memory before returning.
         {{#allParams}}{{#startsWith paramName text='page_size'}}{{else}}
@@ -185,7 +213,7 @@
 
     async def page_async(self, {{#allParams}}{{#startsWith paramName text='page_size'}}{{else}}{{paramName}}=values.unset, {{/startsWith}}{{/allParams}}page_token=values.unset, page_number=values.unset, page_size=values.unset):
         """
-        Asynchronous coroutine that retrieve a single page of {{instanceName}} records from the API.
+        Asynchronously retrieve a single page of {{instanceName}} records from the API.
         Request is executed immediately
         {{#allParams}}{{#startsWith paramName text='page_size'}}{{else}}
         :param {{dataType}} {{paramName}}: {{{description}}}{{/startsWith}}{{/allParams}}
@@ -197,7 +225,7 @@
         :rtype: twilio.rest.{{domainPackage}}.{{apiVersion}}.{{namespaceSubPart}}.{{apiName}}Page
         """
         data = values.of({ {{#allParams}}{{#startsWith paramName text='page_size'}}{{else}}
-            '{{{baseName}}}': {{#if vendorExtensions.x-serialize}}{{vendorExtensions.x-serialize}}({{paramName}}){{else}}{{paramName}}{{/if}},{{/startsWith}}{{/allParams}}
+            '{{{baseName}}}': {{#if vendorExtensions.x-serialize}}{{vendorExtensions.x-serialize}}({{paramName}}{{#if isArray}}, lambda e: e){{else}}){{/if}}{{else}}{{paramName}}{{/if}},{{/startsWith}}{{/allParams}}
             'PageToken': page_token,
             'Page': page_number,
             'PageSize': page_size,
@@ -224,7 +252,7 @@
 
     async def get_page_async(self, target_url):
         """
-        Asynchronous coroutine that retrieve a specific page of {{instanceName}} records from the API.
+        Asynchronously retrieve a specific page of {{instanceName}} records from the API.
         Request is executed immediately
 
         :param str target_url: API-generated URL for the requested results page
