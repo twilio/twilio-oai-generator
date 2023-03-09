@@ -315,6 +315,7 @@ class FeedbackCallSummaryContext(InstanceContext):
         self._uri = '/Accounts/{account_sid}/Calls/Feedback/Summary/{sid}.json'.format(**self._solution)
         
     
+    
     def update(self, end_date, start_date, account_sid=values.unset):
         """
         Update the FeedbackCallSummaryInstance
@@ -341,7 +342,34 @@ class FeedbackCallSummaryContext(InstanceContext):
             account_sid=self._solution['account_sid'],
             sid=self._solution['sid']
         )
+
+    async def update_async(self, end_date, start_date, account_sid=values.unset):
+        """
+        Asynchronous coroutine to update the FeedbackCallSummaryInstance
         
+        :params date end_date: 
+        :params date start_date: 
+        :params str account_sid: 
+
+        :returns: The updated FeedbackCallSummaryInstance
+        :rtype: twilio.rest.api.v2010.account.call.feedback_call_summary.FeedbackCallSummaryInstance
+        """
+        data = values.of({ 
+            'EndDate': serialize.iso8601_date(end_date),
+            'StartDate': serialize.iso8601_date(start_date),
+            'AccountSid': account_sid,
+        })
+        
+
+        payload = await self._version.update_async(method='POST', uri=self._uri, data=data,)
+
+        return FeedbackCallSummaryInstance(
+            self._version,
+            payload,
+            account_sid=self._solution['account_sid'],
+            sid=self._solution['sid']
+        )
+    
     
     def __repr__(self):
         """

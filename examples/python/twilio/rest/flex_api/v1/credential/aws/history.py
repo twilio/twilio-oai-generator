@@ -189,6 +189,7 @@ class HistoryContext(InstanceContext):
         self._uri = '/Credentials/AWS/{sid}/History'.format(**self._solution)
         
     
+    
     def fetch(self, add_ons_data=values.unset):
         """
         Fetch the HistoryInstance
@@ -211,7 +212,30 @@ class HistoryContext(InstanceContext):
             sid=self._solution['sid'],
             
         )
+
+    async def fetch_async(self, add_ons_data=values.unset):
+        """
+        Asynchronous coroutine to fetch the HistoryInstance
         
+        :params dict add_ons_data: 
+
+        :returns: The fetched HistoryInstance
+        :rtype: twilio.rest.flex_api.v1.credential.aws.history.HistoryInstance
+        """
+        
+        data = values.of({ 
+        })
+        data.update(serialize.prefixed_collapsible_map(add_ons_data, 'AddOns'))
+        
+        payload = await self._version.fetch_async(method='GET', uri=self._uri, params=data)
+
+        return HistoryInstance(
+            self._version,
+            payload,
+            sid=self._solution['sid'],
+            
+        )
+    
     
     def __repr__(self):
         """

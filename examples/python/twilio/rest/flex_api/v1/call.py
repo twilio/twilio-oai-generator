@@ -163,6 +163,7 @@ class CallContext(InstanceContext):
         self._uri = '/Voice/{sid}'.format(**self._solution)
         
     
+    
     def update(self):
         """
         Update the CallInstance
@@ -182,7 +183,27 @@ class CallContext(InstanceContext):
             payload,
             sid=self._solution['sid']
         )
+
+    async def update_async(self):
+        """
+        Asynchronous coroutine to update the CallInstance
         
+
+        :returns: The updated CallInstance
+        :rtype: twilio.rest.flex_api.v1.call.CallInstance
+        """
+        data = values.of({ 
+        })
+        
+
+        payload = await self._version.update_async(method='POST', uri=self._uri, data=data,)
+
+        return CallInstance(
+            self._version,
+            payload,
+            sid=self._solution['sid']
+        )
+    
     
     def __repr__(self):
         """

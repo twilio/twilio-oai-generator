@@ -63,7 +63,7 @@ class FleetList(ListResource):
 
     async def create_async(self, name=values.unset):
         """
-        Asynchronous coroutine to create the FleetInstance
+        Asynchronously create the FleetInstance
 
         :param str name: 
         
@@ -216,6 +216,7 @@ class FleetContext(InstanceContext):
         self._uri = '/Fleets/{sid}'.format(**self._solution)
         
     
+    
     def fetch(self):
         """
         Fetch the FleetInstance
@@ -233,7 +234,25 @@ class FleetContext(InstanceContext):
             sid=self._solution['sid'],
             
         )
+
+    async def fetch_async(self):
+        """
+        Asynchronous coroutine to fetch the FleetInstance
         
+
+        :returns: The fetched FleetInstance
+        :rtype: twilio.rest.versionless.deployed_devices.fleet.FleetInstance
+        """
+        
+        payload = await self._version.fetch_async(method='GET', uri=self._uri, )
+
+        return FleetInstance(
+            self._version,
+            payload,
+            sid=self._solution['sid'],
+            
+        )
+    
     
     def __repr__(self):
         """

@@ -73,7 +73,7 @@ class CallList(ListResource):
 
     async def create_async(self, required_string_property, test_method, test_array_of_strings=values.unset, test_array_of_uri=values.unset):
         """
-        Asynchronous coroutine to create the CallInstance
+        Asynchronously create the CallInstance
 
         :param str required_string_property: 
         :param str test_method: The HTTP method that we should use to request the `TestArrayOfUri`.
@@ -391,6 +391,7 @@ class CallContext(InstanceContext):
         self._uri = '/Accounts/{account_sid}/Calls/{test_integer}.json'.format(**self._solution)
         
     
+    
     def delete(self):
         """
         Deletes the CallInstance
@@ -400,7 +401,18 @@ class CallContext(InstanceContext):
         :rtype: bool
         """
         return self._version.delete(method='DELETE', uri=self._uri,)
+
+    async def delete_async(self):
+        """
+        Asynchronous coroutine that deletes the CallInstance
+
         
+        :returns: True if delete succeeds, False otherwise
+        :rtype: bool
+        """
+        return await self._version.delete_async(method='DELETE', uri=self._uri,)
+    
+    
     def fetch(self):
         """
         Fetch the CallInstance
@@ -419,7 +431,26 @@ class CallContext(InstanceContext):
             test_integer=self._solution['test_integer'],
             
         )
+
+    async def fetch_async(self):
+        """
+        Asynchronous coroutine to fetch the CallInstance
         
+
+        :returns: The fetched CallInstance
+        :rtype: twilio.rest.api.v2010.account.call.CallInstance
+        """
+        
+        payload = await self._version.fetch_async(method='GET', uri=self._uri, )
+
+        return CallInstance(
+            self._version,
+            payload,
+            account_sid=self._solution['account_sid'],
+            test_integer=self._solution['test_integer'],
+            
+        )
+    
     
     def __repr__(self):
         """
