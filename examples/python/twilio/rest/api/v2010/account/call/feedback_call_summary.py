@@ -13,6 +13,7 @@
 """
 
 
+from datetime import date
 from twilio.base import deserialize
 from twilio.base import serialize
 from twilio.base import values
@@ -73,65 +74,6 @@ class FeedbackCallSummaryList(ListResource):
         :rtype: str
         """
         return '<Twilio.Api.V2010.FeedbackCallSummaryList>'
-
-class FeedbackCallSummaryContext(InstanceContext):
-
-    def __init__(self, version: Version, account_sid: str, sid: str):
-        """
-        Initialize the FeedbackCallSummaryContext
-
-        :param Version version: Version that contains the resource
-        :param account_sid: :param sid: 
-
-        :returns: twilio.rest.api.v2010.account.call.feedback_call_summary.FeedbackCallSummaryContext
-        :rtype: twilio.rest.api.v2010.account.call.feedback_call_summary.FeedbackCallSummaryContext
-        """
-        super().__init__(version)
-
-        # Path Solution
-        self._solution = { 
-            'account_sid': account_sid,
-            'sid': sid,
-        }
-        self._uri = '/Accounts/{account_sid}/Calls/Feedback/Summary/{sid}.json'.format(**self._solution)
-        
-    
-    def update(self, end_date, start_date, account_sid=values.unset):
-        """
-        Update the FeedbackCallSummaryInstance
-        
-        :params date end_date: 
-        :params date start_date: 
-        :params str account_sid: 
-
-        :returns: The updated FeedbackCallSummaryInstance
-        :rtype: twilio.rest.api.v2010.account.call.feedback_call_summary.FeedbackCallSummaryInstance
-        """
-        data = values.of({ 
-            'EndDate': serialize.iso8601_date(end_date),
-            'StartDate': serialize.iso8601_date(start_date),
-            'AccountSid': account_sid,
-        })
-        
-
-        payload = self._version.update(method='POST', uri=self._uri, data=data,)
-
-        return FeedbackCallSummaryInstance(
-            self._version,
-            payload,
-            account_sid=self._solution['account_sid'],
-            sid=self._solution['sid']
-        )
-        
-    
-    def __repr__(self):
-        """
-        Provide a friendly representation
-        :returns: Machine friendly representation
-        :rtype: str
-        """
-        context = ' '.join('{}={}'.format(k, v) for k, v in self._solution.items())
-        return '<Twilio.Api.V2010.FeedbackCallSummaryContext {}>'.format(context)
 
 class FeedbackCallSummaryInstance(InstanceResource):
 
@@ -335,5 +277,65 @@ class FeedbackCallSummaryInstance(InstanceResource):
         """
         context = ' '.join('{}={}'.format(k, v) for k, v in self._solution.items())
         return '<Twilio.Api.V2010.FeedbackCallSummaryInstance {}>'.format(context)
+
+class FeedbackCallSummaryContext(InstanceContext):
+
+    def __init__(self, version: Version, account_sid: str, sid: str):
+        """
+        Initialize the FeedbackCallSummaryContext
+
+        :param Version version: Version that contains the resource
+        :param account_sid: 
+        :param sid: 
+
+        :returns: twilio.rest.api.v2010.account.call.feedback_call_summary.FeedbackCallSummaryContext
+        :rtype: twilio.rest.api.v2010.account.call.feedback_call_summary.FeedbackCallSummaryContext
+        """
+        super().__init__(version)
+
+        # Path Solution
+        self._solution = { 
+            'account_sid': account_sid,
+            'sid': sid,
+        }
+        self._uri = '/Accounts/{account_sid}/Calls/Feedback/Summary/{sid}.json'.format(**self._solution)
+        
+    
+    def update(self, end_date, start_date, account_sid=values.unset):
+        """
+        Update the FeedbackCallSummaryInstance
+        
+        :params date end_date: 
+        :params date start_date: 
+        :params str account_sid: 
+
+        :returns: The updated FeedbackCallSummaryInstance
+        :rtype: twilio.rest.api.v2010.account.call.feedback_call_summary.FeedbackCallSummaryInstance
+        """
+        data = values.of({ 
+            'EndDate': serialize.iso8601_date(end_date),
+            'StartDate': serialize.iso8601_date(start_date),
+            'AccountSid': account_sid,
+        })
+        
+
+        payload = self._version.update(method='POST', uri=self._uri, data=data,)
+
+        return FeedbackCallSummaryInstance(
+            self._version,
+            payload,
+            account_sid=self._solution['account_sid'],
+            sid=self._solution['sid']
+        )
+        
+    
+    def __repr__(self):
+        """
+        Provide a friendly representation
+        :returns: Machine friendly representation
+        :rtype: str
+        """
+        context = ' '.join('{}={}'.format(k, v) for k, v in self._solution.items())
+        return '<Twilio.Api.V2010.FeedbackCallSummaryContext {}>'.format(context)
 
 

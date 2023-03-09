@@ -13,6 +13,7 @@
 """
 
 
+from datetime import date
 from twilio.base import deserialize
 from twilio.base import serialize
 from twilio.base import values
@@ -206,103 +207,6 @@ class AwsPage(Page):
 
 
 
-class AwsContext(InstanceContext):
-
-    def __init__(self, version: Version, sid: str):
-        """
-        Initialize the AwsContext
-
-        :param Version version: Version that contains the resource
-        :param sid: 
-
-        :returns: twilio.rest.flex_api.v1.credential.aws.AwsContext
-        :rtype: twilio.rest.flex_api.v1.credential.aws.AwsContext
-        """
-        super().__init__(version)
-
-        # Path Solution
-        self._solution = { 
-            'sid': sid,
-        }
-        self._uri = '/Credentials/AWS/{sid}'.format(**self._solution)
-        
-        self._history = None
-    
-    def delete(self):
-        """
-        Deletes the AwsInstance
-
-        
-        :returns: True if delete succeeds, False otherwise
-        :rtype: bool
-        """
-        return self._version.delete(method='DELETE', uri=self._uri,)
-        
-    def fetch(self):
-        """
-        Fetch the AwsInstance
-        
-
-        :returns: The fetched AwsInstance
-        :rtype: twilio.rest.flex_api.v1.credential.aws.AwsInstance
-        """
-        
-        payload = self._version.fetch(method='GET', uri=self._uri, )
-
-        return AwsInstance(
-            self._version,
-            payload,
-            sid=self._solution['sid'],
-            
-        )
-        
-    def update(self, test_string=values.unset, test_boolean=values.unset):
-        """
-        Update the AwsInstance
-        
-        :params str test_string: 
-        :params bool test_boolean: 
-
-        :returns: The updated AwsInstance
-        :rtype: twilio.rest.flex_api.v1.credential.aws.AwsInstance
-        """
-        data = values.of({ 
-            'TestString': test_string,
-            'TestBoolean': test_boolean,
-        })
-        
-
-        payload = self._version.update(method='POST', uri=self._uri, data=data,)
-
-        return AwsInstance(
-            self._version,
-            payload,
-            sid=self._solution['sid']
-        )
-        
-    
-    @property
-    def history(self):
-        """
-        Access the history
-
-        :returns: twilio.rest.flex_api.v1.credential.aws.HistoryList
-        :rtype: twilio.rest.flex_api.v1.credential.aws.HistoryList
-        """
-        if self._history is None:
-            self._history = HistoryList(self._version, self._solution['sid'],
-            )
-        return self._history
-    
-    def __repr__(self):
-        """
-        Provide a friendly representation
-        :returns: Machine friendly representation
-        :rtype: str
-        """
-        context = ' '.join('{}={}'.format(k, v) for k, v in self._solution.items())
-        return '<Twilio.FlexApi.V1.AwsContext {}>'.format(context)
-
 class AwsInstance(InstanceResource):
 
     def __init__(self, version, payload, sid: str=None):
@@ -418,5 +322,104 @@ class AwsInstance(InstanceResource):
         """
         context = ' '.join('{}={}'.format(k, v) for k, v in self._solution.items())
         return '<Twilio.FlexApi.V1.AwsInstance {}>'.format(context)
+
+class AwsContext(InstanceContext):
+
+    def __init__(self, version: Version, sid: str):
+        """
+        Initialize the AwsContext
+
+        :param Version version: Version that contains the resource
+        :param sid: 
+
+        :returns: twilio.rest.flex_api.v1.credential.aws.AwsContext
+        :rtype: twilio.rest.flex_api.v1.credential.aws.AwsContext
+        """
+        super().__init__(version)
+
+        # Path Solution
+        self._solution = { 
+            'sid': sid,
+        }
+        self._uri = '/Credentials/AWS/{sid}'.format(**self._solution)
+        
+        self._history = None
+    
+    def delete(self):
+        """
+        Deletes the AwsInstance
+
+        
+        :returns: True if delete succeeds, False otherwise
+        :rtype: bool
+        """
+        return self._version.delete(method='DELETE', uri=self._uri,)
+        
+    def fetch(self):
+        """
+        Fetch the AwsInstance
+        
+
+        :returns: The fetched AwsInstance
+        :rtype: twilio.rest.flex_api.v1.credential.aws.AwsInstance
+        """
+        
+        payload = self._version.fetch(method='GET', uri=self._uri, )
+
+        return AwsInstance(
+            self._version,
+            payload,
+            sid=self._solution['sid'],
+            
+        )
+        
+    def update(self, test_string=values.unset, test_boolean=values.unset):
+        """
+        Update the AwsInstance
+        
+        :params str test_string: 
+        :params bool test_boolean: 
+
+        :returns: The updated AwsInstance
+        :rtype: twilio.rest.flex_api.v1.credential.aws.AwsInstance
+        """
+        data = values.of({ 
+            'TestString': test_string,
+            'TestBoolean': test_boolean,
+        })
+        
+
+        payload = self._version.update(method='POST', uri=self._uri, data=data,)
+
+        return AwsInstance(
+            self._version,
+            payload,
+            sid=self._solution['sid']
+        )
+        
+    
+    @property
+    def history(self):
+        """
+        Access the history
+
+        :returns: twilio.rest.flex_api.v1.credential.aws.HistoryList
+        :rtype: twilio.rest.flex_api.v1.credential.aws.HistoryList
+        """
+        if self._history is None:
+            self._history = HistoryList(
+                self._version, 
+                self._solution['sid'],
+            )
+        return self._history
+    
+    def __repr__(self):
+        """
+        Provide a friendly representation
+        :returns: Machine friendly representation
+        :rtype: str
+        """
+        context = ' '.join('{}={}'.format(k, v) for k, v in self._solution.items())
+        return '<Twilio.FlexApi.V1.AwsContext {}>'.format(context)
 
 

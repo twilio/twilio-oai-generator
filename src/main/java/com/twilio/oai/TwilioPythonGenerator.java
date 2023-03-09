@@ -132,7 +132,7 @@ public class TwilioPythonGenerator extends AbstractPythonCodegen {
 
     @Override
     public String toParamName(final String name) {
-        return super.toParamName(twilioCodegen.toParamName(name));
+        return StringHelper.toSnakeCase(twilioCodegen.toParamName(name));
     }
 
     @Override
