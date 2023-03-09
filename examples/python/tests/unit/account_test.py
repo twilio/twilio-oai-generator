@@ -1,7 +1,9 @@
 import unittest
+import datetime
 from unittest.mock import patch, ANY
 from twilio.rest import Client
 from twilio.http.response import Response
+
 
 @patch("twilio.http.http_client.TwilioHttpClient.request")
 class AccountTests(unittest.TestCase):
@@ -54,3 +56,31 @@ class AccountTests(unittest.TestCase):
 
         mock_request.assert_called_once_with("DELETE", "http://api.twilio.com/2010-04-01/Accounts/123.json", **request_args)
 
+    def test_get_account_page_in_between_dates(self, mock_request):
+        returnValue = '{ ' \
+                      '"first_page_uri": "/2010-04-01/Accounts.json?FriendlyName=friendly_name&Status=active&PageSize=50&Page=0", ' \
+                      '"end": 0,' \
+                      '"previous_page_uri": "/2010-04-01/Accounts.json?FriendlyName=friendly_name&Status=active&PageSize=50&Page=0", ' \
+                      '"uri": "/2010-04-01/Accounts.json?FriendlyName=friendly_name&Status' \
+                      '=active&PageSize=50&Page=0", ' \
+                      '"page_size": 50,' \
+                      '"start": 0,' \
+                      '"next_page_uri": "/2010-04-01/Accounts.json?FriendlyName=friendly_name&Status=active&PageSize=50&Page=50", ' \
+                      '"page": 0,' \
+                      '"payload": [{"test_object": {"mms":true, "sms":false, "voice":false, "fax":false}, "test_number": 1}]' \
+                      '}'
+        mock_request.return_value = Response(200, returnValue)
+
+        result = self.client.api.V2010.accounts.page(date_test=datetime.date(2022, 6, 1),
+                                                     date_created_before=datetime.datetime(2022, 12, 25),
+                                                     date_created_after=datetime.datetime(2022, 1, 1))
+
+        request_args = self.generic_request_args
+        request_args["params"] = {"Date.Test": "2022-06-01",
+                                  "DateCreated<": "2022-12-25T00:00:00Z",
+                                  "DateCreated>": "2022-01-01T00:00:00Z"}
+
+        result = list(result._records)
+        self.assertTrue(result[0]["test_object"]["mms"])
+        self.assertFalse(result[0]["test_object"]["sms"])
+        mock_request.assert_called_once_with("GET", "http://api.twilio.com/2010-04-01/Accounts.json", **request_args)
