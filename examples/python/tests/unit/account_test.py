@@ -72,7 +72,7 @@ class AccountTests(unittest.TestCase):
                       '}'
         mock_request.return_value = Response(200, returnValue)
 
-        result = self.client.api.V2010.accounts.page(date_test=datetime.date(2022, 6, 1),
+        result = self.client.api.v2010.accounts.page(date_test=datetime.date(2022, 6, 1),
                                                      date_created_before=datetime.datetime(2022, 12, 25),
                                                      date_created_after=datetime.datetime(2022, 1, 1))
 
