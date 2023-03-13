@@ -17,7 +17,7 @@ subdirectories = {
     'csharp': 'Rest',
     'php': 'Rest'
 }
-CLEANUP_IMPORT_LANGUAGES = ['java', 'php']
+CLEANUP_IMPORT_LANGUAGES = ['java', 'php', 'python']
 REMOVE_DUPLICATE_IMPORT_LANGUAGES = ['node']
 CONFIG_FOLDER = 'tmp'
 

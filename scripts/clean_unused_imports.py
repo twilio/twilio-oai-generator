@@ -14,6 +14,10 @@ LANGUAGE_REGEX_MAP = {
     "node": {
         "pattern": "*.ts",
         "regex": re.compile(r'^\s*import\s+')
+    },
+    "python": {
+        "pattern": "*.py",
+        "regex": re.compile(r'^\s*from\s[\w\.]+\simport\s(\w+)')
     }
 }
 
@@ -37,7 +41,10 @@ def remove_unused_imports(root_dir, language):
                 if " as " in line:
                     import_lines[n] = m.group(2)
                 else:
-                    import_lines[n] = m.group(1)
+                    key = m.group(1)
+                    if language == "python" and key == "date":
+                        import_lines[n] = ': date,'
+                    import_lines[n] = key
             else:
                 other_lines.append(line)
         other_code = ''.join(other_lines)
