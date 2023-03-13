@@ -42,10 +42,8 @@
                     def {{mountName}}
                       unless @{{mountName}}
                         @{{mountName}} = {{#lambda.titlecase}}{{#lambda.camelcase}}{{filename}}{{/lambda.camelcase}}{{/lambda.titlecase}}List.new(
-                                @version{{#requiredPathParams}},{{^-last}}
-                                {{paramName}}: @solution[:{{paramName}}]{{/-last}}{{#-last}}
-                                {{#lambda.snakecase}}{{apiName}}{{/lambda.snakecase}}_{{paramName}}: @solution[:{{paramName}}]
-                                {{/-last}}{{/requiredPathParams}}
+                                @version{{#instancePathParams}},{{^-last}}
+                                {{paramName}}: @solution[:{{paramName}}]{{/-last}}{{#-last}}{{#lambda.snakecase}}{{apiName}}{{/lambda.snakecase}}_{{paramName}}: @solution[:{{paramName}}]{{/-last}}{{/instancePathParams}}
                                 )
                       end
 
@@ -69,9 +67,7 @@
                         unless @{{mountName}}
                             @{{mountName}} = {{#lambda.titlecase}}{{#lambda.camelcase}}{{filename}}{{/lambda.camelcase}}{{/lambda.titlecase}}List.new(
                                 @version{{#requiredPathParams}},{{^-last}}
-                                {{paramName}}: @solution[:{{paramName}}]{{/-last}}{{#-last}}
-                                {{#lambda.snakecase}}{{apiName}}{{/lambda.snakecase}}_{{paramName}}: @solution[:{{paramName}}]
-                                {{/-last}}{{/requiredPathParams}}
+                                {{paramName}}: @solution[:{{paramName}}]{{/-last}}{{#-last}}{{#lambda.snakecase}}{{apiName}}{{/lambda.snakecase}}_{{paramName}}: @solution[:{{paramName}}]{{/-last}}{{/requiredPathParams}}
                                 )
                         end
 
