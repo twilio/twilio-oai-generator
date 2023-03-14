@@ -1,4 +1,4 @@
-from twilio.base import ClientBase
+from twilio.base.client_base import ClientBase
 
 class Client(ClientBase):
     """ A client for accessing the Twilio API. """
@@ -17,4 +17,8 @@ class Client(ClientBase):
     def flex_api(self):
         from twilio.rest.flex_api import FlexApi
         return FlexApi(self)
-  
+
+    @property
+    def preview(self):
+        from twilio.rest.versionless import Preview
+        return Preview(self)
