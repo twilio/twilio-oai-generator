@@ -19,7 +19,6 @@ from twilio.rest.flex_api.v1.credential import CredentialList
 
 
 class V1(Version):
-
     def __init__(self, domain: Domain):
         """
         Initialize the V1 version of FlexApi
@@ -27,10 +26,10 @@ class V1(Version):
         :param domain: The Twilio.flex_api domain
         """
         super().__init__(domain)
-        self.version = 'v1'
+        self.version = "v1"
         self._calls = None
         self._credentials = None
-        
+
     @property
     def calls(self) -> CallList:
         """
@@ -55,4 +54,4 @@ class V1(Version):
         :returns: Machine friendly representation
         :rtype: str
         """
-        return '<Twilio.FlexApi.V1>'
+        return "<Twilio.FlexApi.V1>"

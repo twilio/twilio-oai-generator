@@ -24,7 +24,7 @@ class {{apiName}}Context(InstanceContext):
         """
         Update the {{instanceName}}
         {{#allParams}}
-        :params {{{dataType}}} {{paramName}}: {{{description}}}{{/allParams}}
+        :param {{{dataType}}} {{paramName}}: {{{description}}}{{/allParams}}
 
         :returns: The updated {{instanceName}}
         :rtype: twilio.rest.{{domainPackage}}.{{apiVersion}}.{{namespaceSubPart}}.{{instanceName}}
@@ -45,7 +45,7 @@ class {{apiName}}Context(InstanceContext):
         """
         Fetch the {{instanceName}}
         {{#allParams}}
-        :params {{{dataType}}} {{paramName}}: {{{description}}}{{/allParams}}
+        :param {{{dataType}}} {{paramName}}: {{{description}}}{{/allParams}}
 
         :returns: The fetched {{instanceName}}
         :rtype: twilio.rest.{{domainPackage}}.{{apiVersion}}.{{namespaceSubPart}}.{{instanceName}}
@@ -116,6 +116,7 @@ class {{apiName}}Context(InstanceContext):
     def __repr__(self):
         """
         Provide a friendly representation
+
         :returns: Machine friendly representation
         :rtype: str
         """

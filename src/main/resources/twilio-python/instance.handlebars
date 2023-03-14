@@ -3,6 +3,7 @@ class {{instanceName}}(InstanceResource):
     def __init__(self, version, payload{{#instancePathParams}}, {{paramName}}: {{{contentType}}}{{#if vendorExtensions.x-is-parent-param}}{{else}}=None{{/if}}{{/instancePathParams}}):
         """
         Initialize the {{instanceName}}
+
         :returns: twilio.rest.{{domainPackage}}.{{apiVersion}}.{{namespaceSubPart}}.{{instanceName}}
         :rtype: twilio.rest.{{domainPackage}}.{{apiVersion}}.{{namespaceSubPart}}.{{instanceName}}
         """
@@ -40,7 +41,7 @@ class {{instanceName}}(InstanceResource):
         """
         Update the {{instanceName}}
         {{#allParams}}
-        :params {{{dataType}}} {{paramName}}: {{{description}}}{{/allParams}}
+        :param {{{dataType}}} {{paramName}}: {{{description}}}{{/allParams}}
 
         :returns: The updated {{instanceName}}
         :rtype: twilio.rest.{{domainPackage}}.{{apiVersion}}.{{namespaceSubPart}}.{{instanceName}}
@@ -50,7 +51,7 @@ class {{instanceName}}(InstanceResource):
         """
         Fetch the {{instanceName}}
         {{#allParams}}
-        :params {{{dataType}}} {{paramName}}: {{{description}}}{{/allParams}}
+        :param {{{dataType}}} {{paramName}}: {{{description}}}{{/allParams}}
 
         :returns: The fetched {{instanceName}}
         :rtype: twilio.rest.{{domainPackage}}.{{apiVersion}}.{{namespaceSubPart}}.{{instanceName}}
@@ -60,7 +61,7 @@ class {{instanceName}}(InstanceResource):
         """
         Deletes the {{instanceName}}
         {{#allParams}}
-        :params {{{dataType}}} {{paramName}}: {{{description}}}{{/allParams}}
+        :param {{{dataType}}} {{paramName}}: {{{description}}}{{/allParams}}
 
         :returns: True if delete succeeds, False otherwise
         :rtype: bool
@@ -70,7 +71,7 @@ class {{instanceName}}(InstanceResource):
         """
         Create the {{instanceName}}
         {{#allParams}}
-        :param {{dataType}} {{paramName}}: {{{description}}}{{/allParams}}
+        :param {{{dataType}}} {{paramName}}: {{{description}}}{{/allParams}}
 
         :returns: The created {{instanceName}}
         :rtype: twilio.rest.{{domainPackage}}.{{apiVersion}}.{{namespaceSubPart}}.{{instanceName}}
@@ -90,6 +91,7 @@ class {{instanceName}}(InstanceResource):
     def __repr__(self):
         """
         Provide a friendly representation
+
         :returns: Machine friendly representation
         :rtype: str
         """

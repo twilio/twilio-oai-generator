@@ -26,61 +26,78 @@ from twilio.rest.api.v2010.account.call import CallList
 
 
 class AccountList(ListResource):
-
     def __init__(self, version: Version):
         """
         Initialize the AccountList
 
         :param Version version: Version that contains the resource
-        
+
         :returns: twilio.rest.api.v2010.account.AccountList
         :rtype: twilio.rest.api.v2010.account.AccountList
         """
         super().__init__(version)
 
         # Path Solution
-        self._solution = {  }
-        self._uri = '/Accounts.json'.format(**self._solution)
-        
-        
-    
-    
-    
-    
-    def create(self, x_twilio_webhook_enabled=values.unset, recording_status_callback=values.unset, recording_status_callback_event=values.unset, twiml=values.unset):
+        self._solution = {}
+        self._uri = "/Accounts.json".format(**self._solution)
+
+    def create(
+        self,
+        x_twilio_webhook_enabled=values.unset,
+        recording_status_callback=values.unset,
+        recording_status_callback_event=values.unset,
+        twiml=values.unset,
+    ):
         """
         Create the AccountInstance
 
-        :param str x_twilio_webhook_enabled: 
-        :param str recording_status_callback: 
-        :param list[str] recording_status_callback_event: 
-        :param str twiml: 
-        
+        :param str x_twilio_webhook_enabled:
+        :param str recording_status_callback:
+        :param list[str] recording_status_callback_event:
+        :param str twiml:
+
         :returns: The created AccountInstance
         :rtype: twilio.rest.api.v2010.account.AccountInstance
         """
-        data = values.of({ 
-            'RecordingStatusCallback': recording_status_callback,
-            'RecordingStatusCallbackEvent': serialize.map(recording_status_callback_event, lambda e: e),
-            'Twiml': twiml,
-        })
-        headers = values.of({'X-Twilio-Webhook-Enabled': x_twilio_webhook_enabled, })
-        payload = self._version.create(method='POST', uri=self._uri, data=data, headers=headers)
+        data = values.of(
+            {
+                "RecordingStatusCallback": recording_status_callback,
+                "RecordingStatusCallbackEvent": serialize.map(
+                    recording_status_callback_event, lambda e: e
+                ),
+                "Twiml": twiml,
+            }
+        )
+        headers = values.of(
+            {
+                "X-Twilio-Webhook-Enabled": x_twilio_webhook_enabled,
+            }
+        )
+        payload = self._version.create(
+            method="POST", uri=self._uri, data=data, headers=headers
+        )
 
         return AccountInstance(self._version, payload)
-    
-    
-    def stream(self, date_created=values.unset, date_test=values.unset, date_created_before=values.unset, date_created_after=values.unset, limit=None, page_size=None):
+
+    def stream(
+        self,
+        date_created=values.unset,
+        date_test=values.unset,
+        date_created_before=values.unset,
+        date_created_after=values.unset,
+        limit=None,
+        page_size=None,
+    ):
         """
         Streams AccountInstance records from the API as a generator stream.
         This operation lazily loads records as efficiently as possible until the limit
         is reached.
         The results are returned as a generator, so this operation is memory efficient.
-        
-        :param datetime date_created: 
-        :param date date_test: 
-        :param datetime date_created_before: 
-        :param datetime date_created_after: 
+
+        :param datetime date_created:
+        :param date date_test:
+        :param datetime date_created_before:
+        :param datetime date_created_after:
         :param int limit: Upper limit for the number of records to return. stream()
                           guarantees to never return more than limit.  Default is no limit
         :param int page_size: Number of records to fetch per request, when not set will use
@@ -97,21 +114,29 @@ class AccountList(ListResource):
             date_test=date_test,
             date_created_before=date_created_before,
             date_created_after=date_created_after,
-            page_size=limits['page_size']
+            page_size=limits["page_size"],
         )
 
-        return self._version.stream(page, limits['limit'])
+        return self._version.stream(page, limits["limit"])
 
-    def list(self, date_created=values.unset, date_test=values.unset, date_created_before=values.unset, date_created_after=values.unset, limit=None, page_size=None):
+    def list(
+        self,
+        date_created=values.unset,
+        date_test=values.unset,
+        date_created_before=values.unset,
+        date_created_after=values.unset,
+        limit=None,
+        page_size=None,
+    ):
         """
         Lists AccountInstance records from the API as a list.
         Unlike stream(), this operation is eager and will load `limit` records into
         memory before returning.
-        
-        :param datetime date_created: 
-        :param date date_test: 
-        :param datetime date_created_before: 
-        :param datetime date_created_after: 
+
+        :param datetime date_created:
+        :param date date_test:
+        :param datetime date_created_before:
+        :param datetime date_created_after:
         :param int limit: Upper limit for the number of records to return. list() guarantees
                           never to return more than limit.  Default is no limit
         :param int page_size: Number of records to fetch per request, when not set will use
@@ -122,24 +147,35 @@ class AccountList(ListResource):
         :returns: Generator that will yield up to limit results
         :rtype: list[twilio.rest.api.v2010.account.AccountInstance]
         """
-        return list(self.stream(
-            date_created=date_created,
-            date_test=date_test,
-            date_created_before=date_created_before,
-            date_created_after=date_created_after,
-            limit=limit,
-            page_size=page_size,
-        ))
+        return list(
+            self.stream(
+                date_created=date_created,
+                date_test=date_test,
+                date_created_before=date_created_before,
+                date_created_after=date_created_after,
+                limit=limit,
+                page_size=page_size,
+            )
+        )
 
-    def page(self, date_created=values.unset, date_test=values.unset, date_created_before=values.unset, date_created_after=values.unset, page_token=values.unset, page_number=values.unset, page_size=values.unset):
+    def page(
+        self,
+        date_created=values.unset,
+        date_test=values.unset,
+        date_created_before=values.unset,
+        date_created_after=values.unset,
+        page_token=values.unset,
+        page_number=values.unset,
+        page_size=values.unset,
+    ):
         """
         Retrieve a single page of AccountInstance records from the API.
         Request is executed immediately
-        
-        :param datetime date_created: 
-        :param date date_test: 
-        :param datetime date_created_before: 
-        :param datetime date_created_after: 
+
+        :param datetime date_created:
+        :param date date_test:
+        :param datetime date_created_before:
+        :param datetime date_created_after:
         :param str page_token: PageToken provided by the API
         :param int page_number: Page Number, this value is simply for client state
         :param int page_size: Number of records to return, defaults to 50
@@ -147,17 +183,19 @@ class AccountList(ListResource):
         :returns: Page of AccountInstance
         :rtype: twilio.rest.api.v2010.account.AccountPage
         """
-        data = values.of({ 
-            'DateCreated': serialize.iso8601_datetime(date_created),
-            'Date.Test': serialize.iso8601_date(date_test),
-            'DateCreated<': serialize.iso8601_datetime(date_created_before),
-            'DateCreated>': serialize.iso8601_datetime(date_created_after),
-            'PageToken': page_token,
-            'Page': page_number,
-            'PageSize': page_size,
-        })
+        data = values.of(
+            {
+                "DateCreated": serialize.iso8601_datetime(date_created),
+                "Date.Test": serialize.iso8601_date(date_test),
+                "DateCreated<": serialize.iso8601_datetime(date_created_before),
+                "DateCreated>": serialize.iso8601_datetime(date_created_after),
+                "PageToken": page_token,
+                "Page": page_number,
+                "PageSize": page_size,
+            }
+        )
 
-        response = self._version.page(method='GET', uri=self._uri, params=data)
+        response = self._version.page(method="GET", uri=self._uri, params=data)
         return AccountPage(self._version, response, self._solution)
 
     def get_page(self, target_url):
@@ -170,19 +208,15 @@ class AccountList(ListResource):
         :returns: Page of AccountInstance
         :rtype: twilio.rest.api.v2010.account.AccountPage
         """
-        response = self._version.domain.twilio.request(
-            'GET',
-            target_url
-        )
+        response = self._version.domain.twilio.request("GET", target_url)
         return AccountPage(self._version, response, self._solution)
-
 
     def get(self, sid):
         """
         Constructs a AccountContext
-        
-        :param sid: 
-        
+
+        :param sid:
+
         :returns: twilio.rest.api.v2010.account.AccountContext
         :rtype: twilio.rest.api.v2010.account.AccountContext
         """
@@ -191,9 +225,9 @@ class AccountList(ListResource):
     def __call__(self, sid):
         """
         Constructs a AccountContext
-        
-        :param sid: 
-        
+
+        :param sid:
+
         :returns: twilio.rest.api.v2010.account.AccountContext
         :rtype: twilio.rest.api.v2010.account.AccountContext
         """
@@ -202,22 +236,14 @@ class AccountList(ListResource):
     def __repr__(self):
         """
         Provide a friendly representation
+
         :returns: Machine friendly representation
         :rtype: str
         """
-        return '<Twilio.Api.V2010.AccountList>'
-
-
-
-
-
-
-
-
+        return "<Twilio.Api.V2010.AccountList>"
 
 
 class AccountPage(Page):
-
     def __init__(self, version, response, solution):
         """
         Initialize the AccountPage
@@ -251,13 +277,10 @@ class AccountPage(Page):
         :returns: Machine friendly representation
         :rtype: str
         """
-        return '<Twilio.Api.V2010.AccountPage>'
-
-
+        return "<Twilio.Api.V2010.AccountPage>"
 
 
 class AccountInstance(InstanceResource):
-
     class Status(object):
         IN_PROGRESS = "in-progress"
         PAUSED = "paused"
@@ -266,36 +289,43 @@ class AccountInstance(InstanceResource):
         COMPLETED = "completed"
         ABSENT = "absent"
 
-    def __init__(self, version, payload, sid: str=None):
+    def __init__(self, version, payload, sid: str = None):
         """
         Initialize the AccountInstance
+
         :returns: twilio.rest.api.v2010.account.AccountInstance
         :rtype: twilio.rest.api.v2010.account.AccountInstance
         """
         super().__init__(version)
 
-        self._properties = { 
-            'account_sid': payload.get('account_sid'),
-            'sid': payload.get('sid'),
-            'test_string': payload.get('test_string'),
-            'test_integer': deserialize.integer(payload.get('test_integer')),
-            'test_object': payload.get('test_object'),
-            'test_date_time': deserialize.rfc2822_datetime(payload.get('test_date_time')),
-            'test_number': deserialize.decimal(payload.get('test_number')),
-            'price_unit': payload.get('price_unit'),
-            'test_number_float': payload.get('test_number_float'),
-            'test_number_decimal': payload.get('test_number_decimal'),
-            'test_enum': payload.get('test_enum'),
-            'a2p_profile_bundle_sid': payload.get('a2p_profile_bundle_sid'),
-            'test_array_of_integers': payload.get('test_array_of_integers'),
-            'test_array_of_array_of_integers': payload.get('test_array_of_array_of_integers'),
-            'test_array_of_objects': payload.get('test_array_of_objects'),
-            'test_array_of_enum': payload.get('test_array_of_enum'),
+        self._properties = {
+            "account_sid": payload.get("account_sid"),
+            "sid": payload.get("sid"),
+            "test_string": payload.get("test_string"),
+            "test_integer": deserialize.integer(payload.get("test_integer")),
+            "test_object": payload.get("test_object"),
+            "test_date_time": deserialize.rfc2822_datetime(
+                payload.get("test_date_time")
+            ),
+            "test_number": deserialize.decimal(payload.get("test_number")),
+            "price_unit": payload.get("price_unit"),
+            "test_number_float": payload.get("test_number_float"),
+            "test_number_decimal": payload.get("test_number_decimal"),
+            "test_enum": payload.get("test_enum"),
+            "a2p_profile_bundle_sid": payload.get("a2p_profile_bundle_sid"),
+            "test_array_of_integers": payload.get("test_array_of_integers"),
+            "test_array_of_array_of_integers": payload.get(
+                "test_array_of_array_of_integers"
+            ),
+            "test_array_of_objects": payload.get("test_array_of_objects"),
+            "test_array_of_enum": payload.get("test_array_of_enum"),
         }
 
         self._context = None
-        self._solution = { 'sid': sid or self._properties['sid'],  }
-    
+        self._solution = {
+            "sid": sid or self._properties["sid"],
+        }
+
     @property
     def _proxy(self):
         """
@@ -306,169 +336,175 @@ class AccountInstance(InstanceResource):
         :rtype: twilio.rest.api.v2010.account.AccountContext
         """
         if self._context is None:
-            self._context = AccountContext(self._version, sid=self._solution['sid'],)
+            self._context = AccountContext(
+                self._version,
+                sid=self._solution["sid"],
+            )
         return self._context
-    
+
     @property
     def account_sid(self):
         """
-        :returns: 
+        :returns:
         :rtype: str
         """
-        return self._properties['account_sid']
-    
+        return self._properties["account_sid"]
+
     @property
     def sid(self):
         """
-        :returns: 
+        :returns:
         :rtype: str
         """
-        return self._properties['sid']
-    
+        return self._properties["sid"]
+
     @property
     def test_string(self):
         """
-        :returns: 
+        :returns:
         :rtype: str
         """
-        return self._properties['test_string']
-    
+        return self._properties["test_string"]
+
     @property
     def test_integer(self):
         """
-        :returns: 
+        :returns:
         :rtype: int
         """
-        return self._properties['test_integer']
-    
+        return self._properties["test_integer"]
+
     @property
     def test_object(self):
         """
-        :returns: 
+        :returns:
         :rtype: TestResponseObjectTestObject
         """
-        return self._properties['test_object']
-    
+        return self._properties["test_object"]
+
     @property
     def test_date_time(self):
         """
-        :returns: 
+        :returns:
         :rtype: datetime
         """
-        return self._properties['test_date_time']
-    
+        return self._properties["test_date_time"]
+
     @property
     def test_number(self):
         """
-        :returns: 
+        :returns:
         :rtype: float
         """
-        return self._properties['test_number']
-    
+        return self._properties["test_number"]
+
     @property
     def price_unit(self):
         """
-        :returns: 
+        :returns:
         :rtype: str
         """
-        return self._properties['price_unit']
-    
+        return self._properties["price_unit"]
+
     @property
     def test_number_float(self):
         """
-        :returns: 
+        :returns:
         :rtype: float
         """
-        return self._properties['test_number_float']
-    
+        return self._properties["test_number_float"]
+
     @property
     def test_number_decimal(self):
         """
-        :returns: 
+        :returns:
         :rtype: Decimal
         """
-        return self._properties['test_number_decimal']
-    
+        return self._properties["test_number_decimal"]
+
     @property
     def test_enum(self):
         """
-        :returns: 
+        :returns:
         :rtype: AccountInstance.Status
         """
-        return self._properties['test_enum']
-    
+        return self._properties["test_enum"]
+
     @property
     def a2p_profile_bundle_sid(self):
         """
         :returns: A2P Messaging Profile Bundle BundleSid
         :rtype: str
         """
-        return self._properties['a2p_profile_bundle_sid']
-    
+        return self._properties["a2p_profile_bundle_sid"]
+
     @property
     def test_array_of_integers(self):
         """
-        :returns: 
+        :returns:
         :rtype: list[int]
         """
-        return self._properties['test_array_of_integers']
-    
+        return self._properties["test_array_of_integers"]
+
     @property
     def test_array_of_array_of_integers(self):
         """
-        :returns: 
+        :returns:
         :rtype: list[list[int]]
         """
-        return self._properties['test_array_of_array_of_integers']
-    
+        return self._properties["test_array_of_array_of_integers"]
+
     @property
     def test_array_of_objects(self):
         """
-        :returns: 
+        :returns:
         :rtype: list[TestResponseObjectTestArrayOfObjects]
         """
-        return self._properties['test_array_of_objects']
-    
+        return self._properties["test_array_of_objects"]
+
     @property
     def test_array_of_enum(self):
         """
         :returns: Permissions authorized to the app
         :rtype: list[AccountInstance.Status]
         """
-        return self._properties['test_array_of_enum']
-    
+        return self._properties["test_array_of_enum"]
+
     def delete(self):
         """
         Deletes the AccountInstance
-        
+
 
         :returns: True if delete succeeds, False otherwise
         :rtype: bool
         """
         return self._proxy.delete()
-    
+
     def fetch(self):
         """
         Fetch the AccountInstance
-        
+
 
         :returns: The fetched AccountInstance
         :rtype: twilio.rest.api.v2010.account.AccountInstance
         """
         return self._proxy.fetch()
-    
+
     def update(self, status, pause_behavior=values.unset):
         """
         Update the AccountInstance
-        
-        :params AccountInstance.Status status: 
-        :params str pause_behavior: 
+
+        :param AccountInstance.Status status:
+        :param str pause_behavior:
 
         :returns: The updated AccountInstance
         :rtype: twilio.rest.api.v2010.account.AccountInstance
         """
-        return self._proxy.update(status=status, pause_behavior=pause_behavior, )
-    
+        return self._proxy.update(
+            status=status,
+            pause_behavior=pause_behavior,
+        )
+
     @property
     def calls(self):
         """
@@ -478,24 +514,25 @@ class AccountInstance(InstanceResource):
         :rtype: twilio.rest.api.v2010.account.CallList
         """
         return self._proxy.calls
-    
+
     def __repr__(self):
         """
         Provide a friendly representation
+
         :returns: Machine friendly representation
         :rtype: str
         """
-        context = ' '.join('{}={}'.format(k, v) for k, v in self._solution.items())
-        return '<Twilio.Api.V2010.AccountInstance {}>'.format(context)
+        context = " ".join("{}={}".format(k, v) for k, v in self._solution.items())
+        return "<Twilio.Api.V2010.AccountInstance {}>".format(context)
+
 
 class AccountContext(InstanceContext):
-
     def __init__(self, version: Version, sid: str):
         """
         Initialize the AccountContext
 
         :param Version version: Version that contains the resource
-        :param sid: 
+        :param sid:
 
         :returns: twilio.rest.api.v2010.account.AccountContext
         :rtype: twilio.rest.api.v2010.account.AccountContext
@@ -503,66 +540,71 @@ class AccountContext(InstanceContext):
         super().__init__(version)
 
         # Path Solution
-        self._solution = { 
-            'sid': sid,
+        self._solution = {
+            "sid": sid,
         }
-        self._uri = '/Accounts/{sid}.json'.format(**self._solution)
-        
+        self._uri = "/Accounts/{sid}.json".format(**self._solution)
+
         self._calls = None
-    
+
     def delete(self):
         """
         Deletes the AccountInstance
 
-        
+
         :returns: True if delete succeeds, False otherwise
         :rtype: bool
         """
-        return self._version.delete(method='DELETE', uri=self._uri,)
-        
+        return self._version.delete(
+            method="DELETE",
+            uri=self._uri,
+        )
+
     def fetch(self):
         """
         Fetch the AccountInstance
-        
+
 
         :returns: The fetched AccountInstance
         :rtype: twilio.rest.api.v2010.account.AccountInstance
         """
-        
-        payload = self._version.fetch(method='GET', uri=self._uri, )
+
+        payload = self._version.fetch(
+            method="GET",
+            uri=self._uri,
+        )
 
         return AccountInstance(
             self._version,
             payload,
-            sid=self._solution['sid'],
-            
+            sid=self._solution["sid"],
         )
-        
+
     def update(self, status, pause_behavior=values.unset):
         """
         Update the AccountInstance
-        
-        :params AccountInstance.Status status: 
-        :params str pause_behavior: 
+
+        :param AccountInstance.Status status:
+        :param str pause_behavior:
 
         :returns: The updated AccountInstance
         :rtype: twilio.rest.api.v2010.account.AccountInstance
         """
-        data = values.of({ 
-            'Status': status,
-            'PauseBehavior': pause_behavior,
-        })
-        
-
-        payload = self._version.update(method='POST', uri=self._uri, data=data,)
-
-        return AccountInstance(
-            self._version,
-            payload,
-            sid=self._solution['sid']
+        data = values.of(
+            {
+                "Status": status,
+                "PauseBehavior": pause_behavior,
+            }
         )
-        
-    
+
+        payload = self._version.update(
+            method="POST",
+            uri=self._uri,
+            data=data,
+        )
+
+        return AccountInstance(self._version, payload, sid=self._solution["sid"])
+
     @property
     def calls(self):
         """
@@ -573,18 +615,17 @@ class AccountContext(InstanceContext):
         """
         if self._calls is None:
             self._calls = CallList(
-                self._version, 
-                self._solution['sid'],
+                self._version,
+                self._solution["sid"],
             )
         return self._calls
-    
+
     def __repr__(self):
         """
         Provide a friendly representation
+
         :returns: Machine friendly representation
         :rtype: str
         """
-        context = ' '.join('{}={}'.format(k, v) for k, v in self._solution.items())
-        return '<Twilio.Api.V2010.AccountContext {}>'.format(context)
-
-
+        context = " ".join("{}={}".format(k, v) for k, v in self._solution.items())
+        return "<Twilio.Api.V2010.AccountContext {}>".format(context)

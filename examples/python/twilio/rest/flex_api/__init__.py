@@ -5,7 +5,7 @@ from twilio.rest.flex_api.v1 import V1
 class FlexApi(Domain):
     def __init__(self, twilio):
         super().__init__(twilio)
-        self.base_url = 'http://flex-api.twilio.com'
+        self.base_url = "http://flex-api.twilio.com"
         self._V1 = None
 
     @property
@@ -23,4 +23,4 @@ class FlexApi(Domain):
         return self.v1.credentials
 
     def __repr__(self):
-        return '<Twilio.FlexApi>'
+        return "<Twilio.FlexApi>"
