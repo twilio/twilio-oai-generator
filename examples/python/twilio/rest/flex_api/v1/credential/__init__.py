@@ -27,25 +27,23 @@ from twilio.rest.flex_api.v1.credential.new_credentials import NewCredentialsLis
 
 
 class CredentialList(ListResource):
-
     def __init__(self, version: Version):
         """
         Initialize the CredentialList
 
         :param Version version: Version that contains the resource
-        
+
         :returns: twilio.rest.flex_api.v1.credential.CredentialList
         :rtype: twilio.rest.flex_api.v1.credential.CredentialList
         """
         super().__init__(version)
 
         # Path Solution
-        self._solution = {  }
-        self._uri = '/Credentials'.format(**self._solution)
-        
+        self._solution = {}
+        self._uri = "/Credentials".format(**self._solution)
+
         self._aws = None
         self._new_credentials = None
-        
 
     @property
     def aws(self):
@@ -71,15 +69,11 @@ class CredentialList(ListResource):
             self._new_credentials = NewCredentialsList(self._version)
         return self._new_credentials
 
-
     def __repr__(self):
         """
         Provide a friendly representation
+
         :returns: Machine friendly representation
         :rtype: str
         """
-        return '<Twilio.FlexApi.V1.CredentialList>'
-
-
-
-
+        return "<Twilio.FlexApi.V1.CredentialList>"

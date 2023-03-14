@@ -14,7 +14,7 @@ LANGUAGE_REGEX_MAP = {
     "node": {
         "pattern": "*.ts",
         "regex": re.compile(r'^\s*import\s+')
-    }
+    },
 }
 
 

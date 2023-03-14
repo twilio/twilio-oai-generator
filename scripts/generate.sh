@@ -71,6 +71,7 @@ fi
 if should-generate python; then
   OUT_DIR=examples/python/twilio/rest
   generate twilio-python
+  docker-run examples/python/Dockerfile-prettier
 fi
 
 if should-generate ruby; then
