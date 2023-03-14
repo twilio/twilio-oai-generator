@@ -3,8 +3,8 @@ import unittest
 from twilio.http.async_http_client import AsyncTwilioHttpClient
 from twilio.rest import Client
 
-class IntegrationTest(unittest.TestCase):
 
+class IntegrationTest(unittest.TestCase):
     def setUp(self) -> None:
         self.sid = "AC12345678123456781234567812345678"
         self.auth = "CR12345678123456781234567812345678"
@@ -32,14 +32,19 @@ class IntegrationTest(unittest.TestCase):
         self.assertEqual(result._properties["test_string"], "Ahoy")
 
     def test_update_call_feedback_summary(self):
-        result = self.client.api.v2010.accounts(self.sid).calls\
-            .feedback_call_summary(self.auth)\
+        result = (
+            self.client.api.v2010.accounts(self.sid)
+            .calls.feedback_call_summary(self.auth)
             .update(end_date="2020-12-31", start_date="2020-01-01")
-        self.assertEqual(result._properties['test_array_of_objects'][0]['description'], "issue description")
-        self.assertEqual(result._properties['test_array_of_objects'][0]['count'], 4)
+        )
+        self.assertEqual(
+            result._properties["test_array_of_objects"][0]["description"],
+            "issue description",
+        )
+        self.assertEqual(result._properties["test_array_of_objects"][0]["count"], 4)
+
 
 class AsyncIntegrationTests(unittest.IsolatedAsyncioTestCase):
-
     async def asyncSetUp(self) -> None:
         self.sid = "AC12345678123456781234567812345678"
         self.auth = "CR12345678123456781234567812345678"
@@ -61,7 +66,9 @@ class AsyncIntegrationTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(result._properties["test_string"], "Ahoy")
 
     async def test_create_call(self):
-        result = await self.client.api.v2010.accounts(self.sid).calls.create_async("str", "POST")
+        result = await self.client.api.v2010.accounts(self.sid).calls.create_async(
+            "str", "POST"
+        )
         self.assertEqual(result._properties["sid"], self.auth)
         self.assertEqual(result._properties["test_string"], "Ahoy")
 
@@ -71,8 +78,13 @@ class AsyncIntegrationTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(result._properties["test_string"], "Ahoy")
 
     async def test_update_call_feedback_summary(self):
-        result = await self.client.api.v2010.accounts(self.sid).calls\
-            .feedback_call_summary(self.auth)\
+        result = (
+            await self.client.api.v2010.accounts(self.sid)
+            .calls.feedback_call_summary(self.auth)
             .update_async(end_date="2020-12-31", start_date="2020-01-01")
-        self.assertEqual(result._properties['test_array_of_objects'][0]['description'], "issue description")
-        self.assertEqual(result._properties['test_array_of_objects'][0]['count'], 4)
+        )
+        self.assertEqual(
+            result._properties["test_array_of_objects"][0]["description"],
+            "issue description",
+        )
+        self.assertEqual(result._properties["test_array_of_objects"][0]["count"], 4)

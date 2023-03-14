@@ -3,5 +3,5 @@ FROM python:3.7
 RUN pip install autoflake
 RUN pip install black
 
-CMD autoflake --remove-all-unused-imports -i -r /local/twilio/rest
-CMD black /local/twilio/rest
+CMD autoflake --remove-all-unused-imports -i -r /local
+CMD black /local
