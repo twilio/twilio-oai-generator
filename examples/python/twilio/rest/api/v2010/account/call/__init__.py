@@ -185,7 +185,9 @@ class CallInstance(InstanceResource):
         COMPLETED = "completed"
         ABSENT = "absent"
 
-    def __init__(self, version, payload, account_sid: str, test_integer: int = None):
+    def __init__(
+        self, version, payload, account_sid: str, test_integer: int | None = None
+    ):
         """
         Initialize the CallInstance
 
