@@ -32,7 +32,7 @@ class {{apiName}}List(ListResource):
         {{#listPath}}self._uri = '{{listPath}}'.format(**self._solution){{/listPath}}
         {{#dependents}}{{^instanceDependent}}
         self._{{mountName}} = None{{/instanceDependent}}{{/dependents}}
-        {{>listOperations}}{{#dependents}}{{^instanceDependent}}
+        {{#listPath}}{{>listOperations}}{{/listPath}}{{#dependents}}{{^instanceDependent}}
     @property
     def {{mountName}}(self):
         """
