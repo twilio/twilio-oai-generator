@@ -13,9 +13,8 @@ r"""
 """
 
 
-from datetime import date
+from typing import Optional
 from twilio.base import deserialize
-from twilio.base import serialize
 from twilio.base import values
 from twilio.base.instance_context import InstanceContext
 from twilio.base.instance_resource import InstanceResource
@@ -71,7 +70,7 @@ class CallList(ListResource):
 
 
 class CallInstance(InstanceResource):
-    def __init__(self, version, payload, sid: str | None = None):
+    def __init__(self, version, payload, sid: Optional[str] = None):
         """
         Initialize the CallInstance
 

@@ -1,6 +1,6 @@
 class {{instanceName}}(InstanceResource):
 {{>model}}
-    def __init__(self, version, payload{{#instancePathParams}}, {{paramName}}: {{{contentType}}}{{#unless vendorExtensions.x-is-parent-param}} | None = None{{/unless}}{{/instancePathParams}}):
+    def __init__(self, version, payload{{#instancePathParams}}, {{paramName}}: {{#if vendorExtensions.x-is-parent-param}}{{{contentType}}}{{else}}Optional[{{{contentType}}}] = None{{/if}}{{/instancePathParams}}):
         """
         Initialize the {{instanceName}}
 

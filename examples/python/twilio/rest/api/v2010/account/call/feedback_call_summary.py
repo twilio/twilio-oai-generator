@@ -13,7 +13,7 @@ r"""
 """
 
 
-from datetime import date
+from typing import Optional
 from twilio.base import deserialize
 from twilio.base import serialize
 from twilio.base import values
@@ -86,7 +86,7 @@ class FeedbackCallSummaryInstance(InstanceResource):
         COMPLETED = "completed"
         ABSENT = "absent"
 
-    def __init__(self, version, payload, account_sid: str, sid: str | None = None):
+    def __init__(self, version, payload, account_sid: str, sid: Optional[str] = None):
         """
         Initialize the FeedbackCallSummaryInstance
 

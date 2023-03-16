@@ -13,7 +13,7 @@ r"""
 """
 
 
-from datetime import date
+from typing import Optional
 from twilio.base import deserialize
 from twilio.base import serialize
 from twilio.base import values
@@ -186,7 +186,7 @@ class CallInstance(InstanceResource):
         ABSENT = "absent"
 
     def __init__(
-        self, version, payload, account_sid: str, test_integer: int | None = None
+        self, version, payload, account_sid: str, test_integer: Optional[int] = None
     ):
         """
         Initialize the CallInstance
