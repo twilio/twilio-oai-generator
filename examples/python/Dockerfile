@@ -6,7 +6,7 @@ WORKDIR /app
 RUN git clone https://github.com/twilio/twilio-python.git
 WORKDIR /app/twilio-python/
 #TODO: Change to main when GA
-RUN git fetch && git checkout 8.0.0-rc && git pull
+RUN git fetch && git checkout base-refactor && git pull ### Temp change for PR checks
 
 RUN rm -rf tests/ twilio/rest/
 
