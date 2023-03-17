@@ -12,15 +12,11 @@ class {{apiVersionClass}}(Version):
 
         :param domain: The Twilio.{{domainPackage}} domain
         """
-        super().__init__(domain)
-        self.version = '{{version}}'
+        super().__init__(domain, "{{version}}")
         {{#versionResources}}self._{{mountName}} = None
         {{/versionResources}}
     {{#versionResources}}@property
     def {{mountName}}(self) -> {{listName}}:
-        """
-        :rtype: twilio.rest.{{domainPackage}}.{{apiVersion}}.{{filename}}.{{listName}}
-        """
         if self._{{mountName}} is None:
             self._{{mountName}} = {{listName}}(self{{#param}}, self.domain.twilio.{{param}}{{/param}})
         return self._{{mountName}}
@@ -37,6 +33,5 @@ class {{apiVersionClass}}(Version):
         """
         Provide a friendly representation
         :returns: Machine friendly representation
-        :rtype: str
         """
-        return '<Twilio.{{domainName}}.{{apiVersionClass}}>'
+        return "<Twilio.{{domainName}}.{{apiVersionClass}}>"
