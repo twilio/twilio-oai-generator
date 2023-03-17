@@ -4,8 +4,7 @@ from twilio.rest.flex_api.v1 import V1
 
 class FlexApi(Domain):
     def __init__(self, twilio):
-        super().__init__(twilio)
-        self.base_url = "http://flex-api.twilio.com"
+        super().__init__(twilio, "http://flex-api.twilio.com")
         self._V1 = None
 
     @property

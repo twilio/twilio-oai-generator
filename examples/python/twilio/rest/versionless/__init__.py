@@ -4,8 +4,7 @@ from twilio.rest.versionless.deployed_devices import DeployedDevices
 
 class Preview(Domain):
     def __init__(self, twilio):
-        super().__init__(twilio)
-        self.base_url = "http://preview.twilio.com"
+        super().__init__(twilio, "http://preview.twilio.com")
         self._deployed_devices = None
 
     @property
