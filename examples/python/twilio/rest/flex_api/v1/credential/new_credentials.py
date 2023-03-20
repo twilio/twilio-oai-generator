@@ -13,13 +13,73 @@ r"""
 """
 
 
-from twilio.base import deserialize
-from twilio.base import serialize
-from twilio.base import values
+from twilio.base import deserialize, serialize, values
 
 from twilio.base.instance_resource import InstanceResource
 from twilio.base.list_resource import ListResource
 from twilio.base.version import Version
+
+
+class NewCredentialsInstance(InstanceResource):
+    def __init__(self, version, payload):
+        """
+        Initialize the NewCredentialsInstance
+
+        :returns: twilio.rest.flex_api.v1.credential.new_credentials.NewCredentialsInstance
+        :rtype: twilio.rest.flex_api.v1.credential.new_credentials.NewCredentialsInstance
+        """
+        super().__init__(version)
+
+        self._properties = {
+            "account_sid": payload.get("account_sid"),
+            "sid": payload.get("sid"),
+            "test_string": payload.get("test_string"),
+            "test_integer": deserialize.integer(payload.get("test_integer")),
+        }
+
+        self._solution = {}
+
+    @property
+    def account_sid(self):
+        """
+        :returns:
+        :rtype: str
+        """
+        return self._properties["account_sid"]
+
+    @property
+    def sid(self):
+        """
+        :returns:
+        :rtype: str
+        """
+        return self._properties["sid"]
+
+    @property
+    def test_string(self):
+        """
+        :returns:
+        :rtype: str
+        """
+        return self._properties["test_string"]
+
+    @property
+    def test_integer(self):
+        """
+        :returns:
+        :rtype: int
+        """
+        return self._properties["test_integer"]
+
+    def __repr__(self):
+        """
+        Provide a friendly representation
+
+        :returns: Machine friendly representation
+        :rtype: str
+        """
+        context = " ".join("{}={}".format(k, v) for k, v in self._solution.items())
+        return "<Twilio.FlexApi.V1.NewCredentialsInstance {}>".format(context)
 
 
 class NewCredentialsList(ListResource):
@@ -200,65 +260,3 @@ class NewCredentialsList(ListResource):
         :rtype: str
         """
         return "<Twilio.FlexApi.V1.NewCredentialsList>"
-
-
-class NewCredentialsInstance(InstanceResource):
-    def __init__(self, version, payload):
-        """
-        Initialize the NewCredentialsInstance
-
-        :returns: twilio.rest.flex_api.v1.credential.new_credentials.NewCredentialsInstance
-        :rtype: twilio.rest.flex_api.v1.credential.new_credentials.NewCredentialsInstance
-        """
-        super().__init__(version)
-
-        self._properties = {
-            "account_sid": payload.get("account_sid"),
-            "sid": payload.get("sid"),
-            "test_string": payload.get("test_string"),
-            "test_integer": deserialize.integer(payload.get("test_integer")),
-        }
-
-        self._solution = {}
-
-    @property
-    def account_sid(self):
-        """
-        :returns:
-        :rtype: str
-        """
-        return self._properties["account_sid"]
-
-    @property
-    def sid(self):
-        """
-        :returns:
-        :rtype: str
-        """
-        return self._properties["sid"]
-
-    @property
-    def test_string(self):
-        """
-        :returns:
-        :rtype: str
-        """
-        return self._properties["test_string"]
-
-    @property
-    def test_integer(self):
-        """
-        :returns:
-        :rtype: int
-        """
-        return self._properties["test_integer"]
-
-    def __repr__(self):
-        """
-        Provide a friendly representation
-
-        :returns: Machine friendly representation
-        :rtype: str
-        """
-        context = " ".join("{}={}".format(k, v) for k, v in self._solution.items())
-        return "<Twilio.FlexApi.V1.NewCredentialsInstance {}>".format(context)

@@ -14,56 +14,11 @@ r"""
 
 
 from typing import Optional
-from twilio.base import deserialize
-from twilio.base import values
+from twilio.base import deserialize, values
 from twilio.base.instance_context import InstanceContext
 from twilio.base.instance_resource import InstanceResource
 from twilio.base.list_resource import ListResource
 from twilio.base.version import Version
-
-
-class CallList(ListResource):
-    def __init__(self, version: Version):
-        """
-        Initialize the CallList
-
-        :param Version version: Version that contains the resource
-
-        :returns: twilio.rest.flex_api.v1.call.CallList
-        :rtype: twilio.rest.flex_api.v1.call.CallList
-        """
-        super().__init__(version)
-
-    def get(self, sid):
-        """
-        Constructs a CallContext
-
-        :param sid:
-
-        :returns: twilio.rest.flex_api.v1.call.CallContext
-        :rtype: twilio.rest.flex_api.v1.call.CallContext
-        """
-        return CallContext(self._version, sid=sid)
-
-    def __call__(self, sid):
-        """
-        Constructs a CallContext
-
-        :param sid:
-
-        :returns: twilio.rest.flex_api.v1.call.CallContext
-        :rtype: twilio.rest.flex_api.v1.call.CallContext
-        """
-        return CallContext(self._version, sid=sid)
-
-    def __repr__(self):
-        """
-        Provide a friendly representation
-
-        :returns: Machine friendly representation
-        :rtype: str
-        """
-        return "<Twilio.FlexApi.V1.CallList>"
 
 
 class CallInstance(InstanceResource):
@@ -204,3 +159,47 @@ class CallContext(InstanceContext):
         """
         context = " ".join("{}={}".format(k, v) for k, v in self._solution.items())
         return "<Twilio.FlexApi.V1.CallContext {}>".format(context)
+
+
+class CallList(ListResource):
+    def __init__(self, version: Version):
+        """
+        Initialize the CallList
+
+        :param Version version: Version that contains the resource
+
+        :returns: twilio.rest.flex_api.v1.call.CallList
+        :rtype: twilio.rest.flex_api.v1.call.CallList
+        """
+        super().__init__(version)
+
+    def get(self, sid):
+        """
+        Constructs a CallContext
+
+        :param sid:
+
+        :returns: twilio.rest.flex_api.v1.call.CallContext
+        :rtype: twilio.rest.flex_api.v1.call.CallContext
+        """
+        return CallContext(self._version, sid=sid)
+
+    def __call__(self, sid):
+        """
+        Constructs a CallContext
+
+        :param sid:
+
+        :returns: twilio.rest.flex_api.v1.call.CallContext
+        :rtype: twilio.rest.flex_api.v1.call.CallContext
+        """
+        return CallContext(self._version, sid=sid)
+
+    def __repr__(self):
+        """
+        Provide a friendly representation
+
+        :returns: Machine friendly representation
+        :rtype: str
+        """
+        return "<Twilio.FlexApi.V1.CallList>"
