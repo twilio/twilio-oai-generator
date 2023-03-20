@@ -14,61 +14,11 @@ r"""
 
 
 from typing import Optional
-from twilio.base import deserialize
-from twilio.base import serialize
-from twilio.base import values
+from twilio.base import deserialize, serialize, values
 from twilio.base.instance_context import InstanceContext
 from twilio.base.instance_resource import InstanceResource
 from twilio.base.list_resource import ListResource
 from twilio.base.version import Version
-
-
-class HistoryList(ListResource):
-    def __init__(self, version: Version, sid: str):
-        """
-        Initialize the HistoryList
-
-        :param Version version: Version that contains the resource
-        :param sid:
-
-        :returns: twilio.rest.flex_api.v1.credential.aws.history.HistoryList
-        :rtype: twilio.rest.flex_api.v1.credential.aws.history.HistoryList
-        """
-        super().__init__(version)
-
-        # Path Solution
-        self._solution = {
-            "sid": sid,
-        }
-
-    def get(self):
-        """
-        Constructs a HistoryContext
-
-
-        :returns: twilio.rest.flex_api.v1.credential.aws.history.HistoryContext
-        :rtype: twilio.rest.flex_api.v1.credential.aws.history.HistoryContext
-        """
-        return HistoryContext(self._version, sid=self._solution["sid"])
-
-    def __call__(self):
-        """
-        Constructs a HistoryContext
-
-
-        :returns: twilio.rest.flex_api.v1.credential.aws.history.HistoryContext
-        :rtype: twilio.rest.flex_api.v1.credential.aws.history.HistoryContext
-        """
-        return HistoryContext(self._version, sid=self._solution["sid"])
-
-    def __repr__(self):
-        """
-        Provide a friendly representation
-
-        :returns: Machine friendly representation
-        :rtype: str
-        """
-        return "<Twilio.FlexApi.V1.HistoryList>"
 
 
 class HistoryInstance(InstanceResource):
@@ -250,3 +200,51 @@ class HistoryContext(InstanceContext):
         """
         context = " ".join("{}={}".format(k, v) for k, v in self._solution.items())
         return "<Twilio.FlexApi.V1.HistoryContext {}>".format(context)
+
+
+class HistoryList(ListResource):
+    def __init__(self, version: Version, sid: str):
+        """
+        Initialize the HistoryList
+
+        :param Version version: Version that contains the resource
+        :param sid:
+
+        :returns: twilio.rest.flex_api.v1.credential.aws.history.HistoryList
+        :rtype: twilio.rest.flex_api.v1.credential.aws.history.HistoryList
+        """
+        super().__init__(version)
+
+        # Path Solution
+        self._solution = {
+            "sid": sid,
+        }
+
+    def get(self):
+        """
+        Constructs a HistoryContext
+
+
+        :returns: twilio.rest.flex_api.v1.credential.aws.history.HistoryContext
+        :rtype: twilio.rest.flex_api.v1.credential.aws.history.HistoryContext
+        """
+        return HistoryContext(self._version, sid=self._solution["sid"])
+
+    def __call__(self):
+        """
+        Constructs a HistoryContext
+
+
+        :returns: twilio.rest.flex_api.v1.credential.aws.history.HistoryContext
+        :rtype: twilio.rest.flex_api.v1.credential.aws.history.HistoryContext
+        """
+        return HistoryContext(self._version, sid=self._solution["sid"])
+
+    def __repr__(self):
+        """
+        Provide a friendly representation
+
+        :returns: Machine friendly representation
+        :rtype: str
+        """
+        return "<Twilio.FlexApi.V1.HistoryList>"

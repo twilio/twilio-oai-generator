@@ -1,10 +1,8 @@
 {{>licenseInfo}}
 {{#resources}}
-from datetime import date
+from datetime import date, datetime
 from typing import Optional
-from twilio.base import deserialize
-from twilio.base import serialize
-from twilio.base import values
+from twilio.base import deserialize, serialize, values
 {{#instancePath}}from twilio.base.instance_context import InstanceContext{{/instancePath}}
 {{#responseModel}}from twilio.base.instance_resource import InstanceResource{{/responseModel}}
 from twilio.base.list_resource import ListResource
@@ -12,6 +10,9 @@ from twilio.base.version import Version
 {{#hasPaginationOperation}}from twilio.base.page import Page{{/hasPaginationOperation}}
 {{#dependents}}from twilio.rest.{{domainPackage}}.{{apiVersion}}.{{namespaceSubPart}}.{{filename}} import {{resourceName}}List
 {{/dependents}}
+
+{{#responseModel}}{{>instance}}{{/responseModel}}
+{{#instancePath}}{{>context}}{{/instancePath}}
 
 class {{apiName}}List(ListResource):
 
@@ -59,6 +60,4 @@ class {{apiName}}List(ListResource):
         """
         return '<Twilio.{{domainName}}.{{apiVersionClass}}.{{apiName}}List>'
 {{#hasPaginationOperation}}{{>pagination}}{{/hasPaginationOperation}}
-{{#responseModel}}{{>instance}}{{/responseModel}}
-{{#instancePath}}{{>context}}{{/instancePath}}
 {{/resources}}

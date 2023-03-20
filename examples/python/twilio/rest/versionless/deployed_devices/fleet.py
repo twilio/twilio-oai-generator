@@ -21,98 +21,6 @@ from twilio.base.list_resource import ListResource
 from twilio.base.version import Version
 
 
-class FleetList(ListResource):
-    def __init__(self, version: Version):
-        """
-        Initialize the FleetList
-
-        :param Version version: Version that contains the resource
-
-        :returns: twilio.rest.versionless.deployed_devices.fleet.FleetList
-        :rtype: twilio.rest.versionless.deployed_devices.fleet.FleetList
-        """
-        super().__init__(version)
-
-        self._uri = "/Fleets"
-
-    def create(self, name=values.unset):
-        """
-        Create the FleetInstance
-
-        :param str name:
-
-        :returns: The created FleetInstance
-        :rtype: twilio.rest.versionless.deployed_devices.fleet.FleetInstance
-        """
-        data = values.of(
-            {
-                "Name": name,
-            }
-        )
-
-        payload = self._version.create(
-            method="POST",
-            uri=self._uri,
-            data=data,
-        )
-
-        return FleetInstance(self._version, payload)
-
-    async def create_async(self, name=values.unset):
-        """
-        Asynchronously create the FleetInstance
-
-        :param str name:
-
-        :returns: The created FleetInstance
-        :rtype: twilio.rest.versionless.deployed_devices.fleet.FleetInstance
-        """
-        data = values.of(
-            {
-                "Name": name,
-            }
-        )
-
-        payload = await self._version.create_async(
-            method="POST",
-            uri=self._uri,
-            data=data,
-        )
-
-        return FleetInstance(self._version, payload)
-
-    def get(self, sid):
-        """
-        Constructs a FleetContext
-
-        :param sid:
-
-        :returns: twilio.rest.versionless.deployed_devices.fleet.FleetContext
-        :rtype: twilio.rest.versionless.deployed_devices.fleet.FleetContext
-        """
-        return FleetContext(self._version, sid=sid)
-
-    def __call__(self, sid):
-        """
-        Constructs a FleetContext
-
-        :param sid:
-
-        :returns: twilio.rest.versionless.deployed_devices.fleet.FleetContext
-        :rtype: twilio.rest.versionless.deployed_devices.fleet.FleetContext
-        """
-        return FleetContext(self._version, sid=sid)
-
-    def __repr__(self):
-        """
-        Provide a friendly representation
-
-        :returns: Machine friendly representation
-        :rtype: str
-        """
-        return "<Twilio.Versionless.DeployedDevices.FleetList>"
-
-
 class FleetInstance(InstanceResource):
     def __init__(self, version, payload, sid: Optional[str] = None):
         """
@@ -273,3 +181,95 @@ class FleetContext(InstanceContext):
         """
         context = " ".join("{}={}".format(k, v) for k, v in self._solution.items())
         return "<Twilio.Versionless.DeployedDevices.FleetContext {}>".format(context)
+
+
+class FleetList(ListResource):
+    def __init__(self, version: Version):
+        """
+        Initialize the FleetList
+
+        :param Version version: Version that contains the resource
+
+        :returns: twilio.rest.versionless.deployed_devices.fleet.FleetList
+        :rtype: twilio.rest.versionless.deployed_devices.fleet.FleetList
+        """
+        super().__init__(version)
+
+        self._uri = "/Fleets"
+
+    def create(self, name=values.unset):
+        """
+        Create the FleetInstance
+
+        :param str name:
+
+        :returns: The created FleetInstance
+        :rtype: twilio.rest.versionless.deployed_devices.fleet.FleetInstance
+        """
+        data = values.of(
+            {
+                "Name": name,
+            }
+        )
+
+        payload = self._version.create(
+            method="POST",
+            uri=self._uri,
+            data=data,
+        )
+
+        return FleetInstance(self._version, payload)
+
+    async def create_async(self, name=values.unset):
+        """
+        Asynchronously create the FleetInstance
+
+        :param str name:
+
+        :returns: The created FleetInstance
+        :rtype: twilio.rest.versionless.deployed_devices.fleet.FleetInstance
+        """
+        data = values.of(
+            {
+                "Name": name,
+            }
+        )
+
+        payload = await self._version.create_async(
+            method="POST",
+            uri=self._uri,
+            data=data,
+        )
+
+        return FleetInstance(self._version, payload)
+
+    def get(self, sid):
+        """
+        Constructs a FleetContext
+
+        :param sid:
+
+        :returns: twilio.rest.versionless.deployed_devices.fleet.FleetContext
+        :rtype: twilio.rest.versionless.deployed_devices.fleet.FleetContext
+        """
+        return FleetContext(self._version, sid=sid)
+
+    def __call__(self, sid):
+        """
+        Constructs a FleetContext
+
+        :param sid:
+
+        :returns: twilio.rest.versionless.deployed_devices.fleet.FleetContext
+        :rtype: twilio.rest.versionless.deployed_devices.fleet.FleetContext
+        """
+        return FleetContext(self._version, sid=sid)
+
+    def __repr__(self):
+        """
+        Provide a friendly representation
+
+        :returns: Machine friendly representation
+        :rtype: str
+        """
+        return "<Twilio.Versionless.DeployedDevices.FleetList>"

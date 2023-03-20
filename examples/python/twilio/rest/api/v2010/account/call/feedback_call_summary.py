@@ -14,67 +14,11 @@ r"""
 
 
 from typing import Optional
-from twilio.base import deserialize
-from twilio.base import serialize
-from twilio.base import values
+from twilio.base import deserialize, serialize, values
 from twilio.base.instance_context import InstanceContext
 from twilio.base.instance_resource import InstanceResource
 from twilio.base.list_resource import ListResource
 from twilio.base.version import Version
-
-
-class FeedbackCallSummaryList(ListResource):
-    def __init__(self, version: Version, account_sid: str):
-        """
-        Initialize the FeedbackCallSummaryList
-
-        :param Version version: Version that contains the resource
-        :param account_sid:
-
-        :returns: twilio.rest.api.v2010.account.call.feedback_call_summary.FeedbackCallSummaryList
-        :rtype: twilio.rest.api.v2010.account.call.feedback_call_summary.FeedbackCallSummaryList
-        """
-        super().__init__(version)
-
-        # Path Solution
-        self._solution = {
-            "account_sid": account_sid,
-        }
-
-    def get(self, sid):
-        """
-        Constructs a FeedbackCallSummaryContext
-
-        :param sid:
-
-        :returns: twilio.rest.api.v2010.account.call.feedback_call_summary.FeedbackCallSummaryContext
-        :rtype: twilio.rest.api.v2010.account.call.feedback_call_summary.FeedbackCallSummaryContext
-        """
-        return FeedbackCallSummaryContext(
-            self._version, account_sid=self._solution["account_sid"], sid=sid
-        )
-
-    def __call__(self, sid):
-        """
-        Constructs a FeedbackCallSummaryContext
-
-        :param sid:
-
-        :returns: twilio.rest.api.v2010.account.call.feedback_call_summary.FeedbackCallSummaryContext
-        :rtype: twilio.rest.api.v2010.account.call.feedback_call_summary.FeedbackCallSummaryContext
-        """
-        return FeedbackCallSummaryContext(
-            self._version, account_sid=self._solution["account_sid"], sid=sid
-        )
-
-    def __repr__(self):
-        """
-        Provide a friendly representation
-
-        :returns: Machine friendly representation
-        :rtype: str
-        """
-        return "<Twilio.Api.V2010.FeedbackCallSummaryList>"
 
 
 class FeedbackCallSummaryInstance(InstanceResource):
@@ -410,3 +354,57 @@ class FeedbackCallSummaryContext(InstanceContext):
         """
         context = " ".join("{}={}".format(k, v) for k, v in self._solution.items())
         return "<Twilio.Api.V2010.FeedbackCallSummaryContext {}>".format(context)
+
+
+class FeedbackCallSummaryList(ListResource):
+    def __init__(self, version: Version, account_sid: str):
+        """
+        Initialize the FeedbackCallSummaryList
+
+        :param Version version: Version that contains the resource
+        :param account_sid:
+
+        :returns: twilio.rest.api.v2010.account.call.feedback_call_summary.FeedbackCallSummaryList
+        :rtype: twilio.rest.api.v2010.account.call.feedback_call_summary.FeedbackCallSummaryList
+        """
+        super().__init__(version)
+
+        # Path Solution
+        self._solution = {
+            "account_sid": account_sid,
+        }
+
+    def get(self, sid):
+        """
+        Constructs a FeedbackCallSummaryContext
+
+        :param sid:
+
+        :returns: twilio.rest.api.v2010.account.call.feedback_call_summary.FeedbackCallSummaryContext
+        :rtype: twilio.rest.api.v2010.account.call.feedback_call_summary.FeedbackCallSummaryContext
+        """
+        return FeedbackCallSummaryContext(
+            self._version, account_sid=self._solution["account_sid"], sid=sid
+        )
+
+    def __call__(self, sid):
+        """
+        Constructs a FeedbackCallSummaryContext
+
+        :param sid:
+
+        :returns: twilio.rest.api.v2010.account.call.feedback_call_summary.FeedbackCallSummaryContext
+        :rtype: twilio.rest.api.v2010.account.call.feedback_call_summary.FeedbackCallSummaryContext
+        """
+        return FeedbackCallSummaryContext(
+            self._version, account_sid=self._solution["account_sid"], sid=sid
+        )
+
+    def __repr__(self):
+        """
+        Provide a friendly representation
+
+        :returns: Machine friendly representation
+        :rtype: str
+        """
+        return "<Twilio.Api.V2010.FeedbackCallSummaryList>"
