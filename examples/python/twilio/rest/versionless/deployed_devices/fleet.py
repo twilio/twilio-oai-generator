@@ -33,9 +33,7 @@ class FleetList(ListResource):
         """
         super().__init__(version)
 
-        # Path Solution
-        self._solution = {}
-        self._uri = "/Fleets".format(**self._solution)
+        self._uri = "/Fleets"
 
     def create(self, name=values.unset):
         """
@@ -131,10 +129,10 @@ class FleetInstance(InstanceResource):
             "friendly_name": payload.get("friendly_name"),
         }
 
-        self._context = None
         self._solution = {
             "sid": sid or self._properties["sid"],
         }
+        self._context: Optional[FleetContext] = None
 
     @property
     def _proxy(self):

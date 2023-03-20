@@ -27,12 +27,15 @@ class {{apiName}}List(ListResource):
         """
         super().__init__(version)
 
+        {{#if listPathParams}}
         # Path Solution
-        self._solution = { {{#listPathParams}}'{{paramName}}': {{paramName}}, {{/listPathParams}} }
-        {{#listPath}}self._uri = '{{listPath}}'.format(**self._solution){{/listPath}}
+        self._solution = { {{#listPathParams}}'{{paramName}}': {{paramName}}, {{/listPathParams}} }{{/if}}
+        {{#listPath}}self._uri = '{{listPath}}'{{#if listPathParams}}.format(**self._solution){{/if}}{{/listPath}}
         {{#dependents}}{{^instanceDependent}}
-        self._{{mountName}} = None{{/instanceDependent}}{{/dependents}}
-        {{#listPath}}{{>listOperations}}{{/listPath}}{{#dependents}}{{^instanceDependent}}
+        self._{{mountName}}: Optional[{{resourceName}}List] = None{{/instanceDependent}}{{/dependents}}
+        {{#listPath}}{{>listOperations}}{{/listPath}}
+{{#dependents}}
+{{^instanceDependent}}
     @property
     def {{mountName}}(self):
         """
@@ -44,7 +47,8 @@ class {{apiName}}List(ListResource):
         if self._{{mountName}} is None:
             self._{{mountName}} = {{resourceName}}List(self._version{{#listPathParams}}, {{paramName}}=self._solution['{{paramName}}']{{/listPathParams}})
         return self._{{mountName}}
-{{/instanceDependent}}{{/dependents}}
+{{/instanceDependent}}
+{{/dependents}}
 {{#instancePath}}{{>contextMethods}}{{/instancePath}}
     def __repr__(self):
         """

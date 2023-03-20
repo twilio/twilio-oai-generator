@@ -37,9 +37,7 @@ class AccountList(ListResource):
         """
         super().__init__(version)
 
-        # Path Solution
-        self._solution = {}
-        self._uri = "/Accounts.json".format(**self._solution)
+        self._uri = "/Accounts.json"
 
     def create(
         self,
@@ -313,7 +311,7 @@ class AccountList(ListResource):
         )
 
         response = self._version.page(method="GET", uri=self._uri, params=data)
-        return AccountPage(self._version, response, self._solution)
+        return AccountPage(self._version, response)
 
     async def page_async(
         self,
@@ -355,7 +353,7 @@ class AccountList(ListResource):
         response = await self._version.page_async(
             method="GET", uri=self._uri, params=data
         )
-        return AccountPage(self._version, response, self._solution)
+        return AccountPage(self._version, response)
 
     def get_page(self, target_url):
         """
@@ -368,7 +366,7 @@ class AccountList(ListResource):
         :rtype: twilio.rest.api.v2010.account.AccountPage
         """
         response = self._version.domain.twilio.request("GET", target_url)
-        return AccountPage(self._version, response, self._solution)
+        return AccountPage(self._version, response)
 
     async def get_page_async(self, target_url):
         """
@@ -381,7 +379,7 @@ class AccountList(ListResource):
         :rtype: twilio.rest.api.v2010.account.AccountPage
         """
         response = await self._version.domain.twilio.request_async("GET", target_url)
-        return AccountPage(self._version, response, self._solution)
+        return AccountPage(self._version, response)
 
     def get(self, sid):
         """
@@ -477,10 +475,10 @@ class AccountInstance(InstanceResource):
             "test_array_of_enum": payload.get("test_array_of_enum"),
         }
 
-        self._context = None
         self._solution = {
             "sid": sid or self._properties["sid"],
         }
+        self._context: Optional[AccountContext] = None
 
     @property
     def _proxy(self):
@@ -736,7 +734,7 @@ class AccountContext(InstanceContext):
         }
         self._uri = "/Accounts/{sid}.json".format(**self._solution)
 
-        self._calls = None
+        self._calls: Optional[CallList] = None
 
     def delete(self):
         """

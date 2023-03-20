@@ -34,9 +34,7 @@ class NewCredentialsList(ListResource):
         """
         super().__init__(version)
 
-        # Path Solution
-        self._solution = {}
-        self._uri = "/Credentials/AWS".format(**self._solution)
+        self._uri = "/Credentials/AWS"
 
     def create(
         self,
@@ -221,7 +219,6 @@ class NewCredentialsInstance(InstanceResource):
             "test_integer": deserialize.integer(payload.get("test_integer")),
         }
 
-        self._context = None
         self._solution = {}
 
     @property

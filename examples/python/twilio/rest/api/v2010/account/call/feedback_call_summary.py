@@ -118,11 +118,11 @@ class FeedbackCallSummaryInstance(InstanceResource):
             "test_array_of_enum": payload.get("test_array_of_enum"),
         }
 
-        self._context = None
         self._solution = {
             "account_sid": account_sid,
             "sid": sid or self._properties["sid"],
         }
+        self._context: Optional[FeedbackCallSummaryContext] = None
 
     @property
     def _proxy(self):

@@ -13,6 +13,7 @@ r"""
 """
 
 
+from typing import Optional
 from twilio.base import deserialize
 from twilio.base import serialize
 from twilio.base import values
@@ -87,10 +88,10 @@ class HistoryInstance(InstanceResource):
             "test_integer": deserialize.integer(payload.get("test_integer")),
         }
 
-        self._context = None
         self._solution = {
             "sid": sid,
         }
+        self._context: Optional[HistoryContext] = None
 
     @property
     def _proxy(self):
