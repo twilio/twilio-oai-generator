@@ -347,6 +347,27 @@ class AwsContext(InstanceContext):
         return "<Twilio.FlexApi.V1.AwsContext {}>".format(context)
 
 
+class AwsPage(Page):
+    def get_instance(self, payload):
+        """
+        Build an instance of AwsInstance
+
+        :param dict payload: Payload response from the API
+
+        :returns: twilio.rest.flex_api.v1.credential.aws.AwsInstance
+        :rtype: twilio.rest.flex_api.v1.credential.aws.AwsInstance
+        """
+        return AwsInstance(self._version, payload)
+
+    def __repr__(self) -> str:
+        """
+        Provide a friendly representation
+
+        :returns: Machine friendly representation
+        """
+        return "<Twilio.FlexApi.V1.AwsPage>"
+
+
 class AwsList(ListResource):
     def __init__(self, version: Version):
         """
@@ -559,24 +580,3 @@ class AwsList(ListResource):
         :rtype: str
         """
         return "<Twilio.FlexApi.V1.AwsList>"
-
-
-class AwsPage(Page):
-    def get_instance(self, payload):
-        """
-        Build an instance of AwsInstance
-
-        :param dict payload: Payload response from the API
-
-        :returns: twilio.rest.flex_api.v1.credential.aws.AwsInstance
-        :rtype: twilio.rest.flex_api.v1.credential.aws.AwsInstance
-        """
-        return AwsInstance(self._version, payload)
-
-    def __repr__(self) -> str:
-        """
-        Provide a friendly representation
-
-        :returns: Machine friendly representation
-        """
-        return "<Twilio.FlexApi.V1.AwsPage>"

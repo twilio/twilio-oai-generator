@@ -13,6 +13,7 @@ from twilio.base.version import Version
 
 {{#responseModel}}{{>instance}}{{/responseModel}}
 {{#instancePath}}{{>context}}{{/instancePath}}
+{{#hasPaginationOperation}}{{>pagination}}{{/hasPaginationOperation}}
 
 class {{apiName}}List(ListResource):
 
@@ -59,5 +60,4 @@ class {{apiName}}List(ListResource):
         :rtype: str
         """
         return '<Twilio.{{domainName}}.{{apiVersionClass}}.{{apiName}}List>'
-{{#hasPaginationOperation}}{{>pagination}}{{/hasPaginationOperation}}
 {{/resources}}

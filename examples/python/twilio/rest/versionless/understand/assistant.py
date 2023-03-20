@@ -65,6 +65,27 @@ class AssistantInstance(InstanceResource):
         return "<Twilio.Versionless.Understand.AssistantInstance {}>".format(context)
 
 
+class AssistantPage(Page):
+    def get_instance(self, payload):
+        """
+        Build an instance of AssistantInstance
+
+        :param dict payload: Payload response from the API
+
+        :returns: twilio.rest.versionless.understand.assistant.AssistantInstance
+        :rtype: twilio.rest.versionless.understand.assistant.AssistantInstance
+        """
+        return AssistantInstance(self._version, payload)
+
+    def __repr__(self) -> str:
+        """
+        Provide a friendly representation
+
+        :returns: Machine friendly representation
+        """
+        return "<Twilio.Versionless.Understand.AssistantPage>"
+
+
 class AssistantList(ListResource):
     def __init__(self, version: Version):
         """
@@ -255,24 +276,3 @@ class AssistantList(ListResource):
         :rtype: str
         """
         return "<Twilio.Versionless.Understand.AssistantList>"
-
-
-class AssistantPage(Page):
-    def get_instance(self, payload):
-        """
-        Build an instance of AssistantInstance
-
-        :param dict payload: Payload response from the API
-
-        :returns: twilio.rest.versionless.understand.assistant.AssistantInstance
-        :rtype: twilio.rest.versionless.understand.assistant.AssistantInstance
-        """
-        return AssistantInstance(self._version, payload)
-
-    def __repr__(self) -> str:
-        """
-        Provide a friendly representation
-
-        :returns: Machine friendly representation
-        """
-        return "<Twilio.Versionless.Understand.AssistantPage>"
