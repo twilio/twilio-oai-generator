@@ -42,8 +42,8 @@
                     def {{mountName}}
                       unless @{{mountName}}
                         @{{mountName}} = {{#lambda.titlecase}}{{#lambda.camelcase}}{{filename}}{{/lambda.camelcase}}{{/lambda.titlecase}}List.new(
-                                @version{{#instancePathParams}},{{^-last}}
-                                {{paramName}}: @solution[:{{paramName}}]{{/-last}}{{#-last}}{{#lambda.snakecase}}{{apiName}}{{/lambda.snakecase}}_{{paramName}}: @solution[:{{paramName}}]{{/-last}}{{/instancePathParams}}
+                                @version{{#requiredPathParams}},
+                                {{paramName}}: @solution[:{{#vendorExtensions.hasParamValue}}{{vendorExtensions.paramValue}}{{/vendorExtensions.hasParamValue}}{{^vendorExtensions.hasParamValue}}{{paramName}}{{/vendorExtensions.hasParamValue}}]{{/requiredPathParams}}
                                 )
                       end
 

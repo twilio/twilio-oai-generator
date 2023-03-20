@@ -8,11 +8,13 @@ import com.twilio.oai.template.IApiActionTemplate;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.Operation;
 import io.swagger.v3.oas.models.PathItem;
+import io.swagger.v3.oas.models.parameters.Parameter;
 import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenOperation;
 import org.openapitools.codegen.CodegenParameter;
 import org.openapitools.codegen.CodegenProperty;
 
+import java.sql.SQLOutput;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -144,11 +146,36 @@ public class RubyApiResourceBuilder extends FluentApiResourceBuilder {
     }
 
     private void updateRequiredPathParams(ApiResourceBuilder apiResourceBuilder) {
+        List<String> listOfInstanceParams = requiredPathParams.stream().map(codegenParameter -> codegenParameter.paramName).collect(Collectors.toList());
+
+        System.out.println(instancePathParams.stream().map(codegenParameter -> codegenParameter.paramName).collect(Collectors.toList()));
+        System.out.println("------------");
+        System.out.println(requiredPathParams.stream().map(codegenParameter -> codegenParameter.paramName).collect(Collectors.toList()));
+        System.out.println("------------");
         if (!apiResourceBuilder.requiredPathParams.isEmpty()) {
             for (CodegenParameter param : apiResourceBuilder.requiredPathParams) {
                 param.vendorExtensions.put("isInstanceParam", !param.paramName.equals("account_sid"));
+//                if(param.vendorExtensions.containsKey("x-is-parent-param")){
+//                    param.vendorExtensions.put("appendApiName", param.vendorExtensions.get("x-is-parent-param"));
+//                }
+//                else{
+//                    param.vendorExtensions.put("appendApiName", "false");
+//                }
+                String apiName = getApiName().toLowerCase();
+                System.out.println(apiName);
+                if(param.paramName.startsWith(apiName)){
+                   String[] paramValues = param.paramName.split(apiName);
+                   if(paramValues.length >1) {
+                       String paramValue = paramValues[1];
+                       param.vendorExtensions.put("hasParamValue", "true");
+                       param.vendorExtensions.put("paramValue", paramValue);
+                   }
+                }
+                System.out.println(param.paramName + " :::" + param.vendorExtensions);
             }
+
         }
+
     }
 
     private RubyApiResourceBuilder updateVars() {
