@@ -13,6 +13,9 @@ r"""
 """
 
 
+from typing import Optional
+
+
 from twilio.base.list_resource import ListResource
 from twilio.base.version import Version
 
@@ -32,12 +35,10 @@ class CredentialList(ListResource):
         """
         super().__init__(version)
 
-        # Path Solution
-        self._solution = {}
-        self._uri = "/Credentials".format(**self._solution)
+        self._uri = "/Credentials"
 
-        self._aws = None
-        self._new_credentials = None
+        self._aws: Optional[AwsList] = None
+        self._new_credentials: Optional[NewCredentialsList] = None
 
     @property
     def aws(self):

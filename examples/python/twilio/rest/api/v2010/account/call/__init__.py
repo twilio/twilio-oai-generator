@@ -46,7 +46,7 @@ class CallList(ListResource):
         }
         self._uri = "/Accounts/{account_sid}/Calls.json".format(**self._solution)
 
-        self._feedback_call_summary = None
+        self._feedback_call_summary: Optional[FeedbackCallSummaryList] = None
 
     def create(
         self,
@@ -219,11 +219,11 @@ class CallInstance(InstanceResource):
             "test_array_of_enum": payload.get("test_array_of_enum"),
         }
 
-        self._context = None
         self._solution = {
             "account_sid": account_sid,
             "test_integer": test_integer or self._properties["test_integer"],
         }
+        self._context: Optional[CallContext] = None
 
     @property
     def _proxy(self):

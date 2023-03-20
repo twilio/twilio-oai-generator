@@ -13,9 +13,9 @@ class {{instanceName}}(InstanceResource):
             '{{name}}': {{#if vendorExtensions.x-deserialize}}{{vendorExtensions.x-deserialize}}(payload.get('{{{baseName}}}')){{else}}payload.get('{{{baseName}}}'){{/if}},{{/vars}}
         }
 
-        self._context = None
         self._solution = { {{#instancePathParams}}'{{paramName}}': {{paramName}}{{#if vendorExtensions.x-is-parent-param}}, {{else}} or self._properties['{{paramName}}'], {{/if}}{{/instancePathParams}} }
-    {{#instancePath}}
+        {{#instancePath}}self._context: Optional[{{apiName}}Context] = None
+
     @property
     def _proxy(self):
         """

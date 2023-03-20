@@ -34,9 +34,6 @@ class CallList(ListResource):
         """
         super().__init__(version)
 
-        # Path Solution
-        self._solution = {}
-
     def get(self, sid):
         """
         Constructs a CallContext
@@ -83,10 +80,10 @@ class CallInstance(InstanceResource):
             "sid": deserialize.integer(payload.get("sid")),
         }
 
-        self._context = None
         self._solution = {
             "sid": sid or self._properties["sid"],
         }
+        self._context: Optional[CallContext] = None
 
     @property
     def _proxy(self):

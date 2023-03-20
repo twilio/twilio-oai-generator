@@ -209,7 +209,7 @@
         })
 
         response = self._version.page(method='GET', uri=self._uri, params=data)
-        return {{apiName}}Page(self._version, response, self._solution)
+        return {{apiName}}Page(self._version, response{{#if listPathParams}}, self._solution{{/if}})
 
     async def page_async(self, {{#allParams}}{{#startsWith paramName text='page_size'}}{{else}}{{paramName}}=values.unset, {{/startsWith}}{{/allParams}}page_token=values.unset, page_number=values.unset, page_size=values.unset):
         """
@@ -232,7 +232,7 @@
         })
 
         response = await self._version.page_async(method='GET', uri=self._uri, params=data)
-        return {{apiName}}Page(self._version, response, self._solution)
+        return {{apiName}}Page(self._version, response{{#if listPathParams}}, self._solution{{/if}})
 
     def get_page(self, target_url):
         """
@@ -248,7 +248,7 @@
             'GET',
             target_url
         )
-        return {{apiName}}Page(self._version, response, self._solution)
+        return {{apiName}}Page(self._version, response{{#if listPathParams}}, self._solution{{/if}})
 
     async def get_page_async(self, target_url):
         """
@@ -264,5 +264,5 @@
             'GET',
             target_url
         )
-        return {{apiName}}Page(self._version, response, self._solution)
+        return {{apiName}}Page(self._version, response{{#if listPathParams}}, self._solution{{/if}})
 {{/vendorExtensions.x-is-read-operation}}{{/operations}}
