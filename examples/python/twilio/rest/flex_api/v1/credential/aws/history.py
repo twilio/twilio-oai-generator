@@ -14,9 +14,7 @@ r"""
 
 
 from twilio.base import deserialize
-from twilio.base import serialize
-from twilio.base import values
-from twilio.base.instance_context import InstanceContext
+
 from twilio.base.instance_resource import InstanceResource
 from twilio.base.list_resource import ListResource
 from twilio.base.version import Version
@@ -39,26 +37,29 @@ class HistoryList(ListResource):
         self._solution = {
             "sid": sid,
         }
+        self._uri = "/Credentials/AWS/{sid}/History".format(**self._solution)
 
-    def get(self):
+    def fetch(self):
         """
-        Constructs a HistoryContext
+        Asynchronously fetch the HistoryInstance
 
-
-        :returns: twilio.rest.flex_api.v1.credential.aws.history.HistoryContext
-        :rtype: twilio.rest.flex_api.v1.credential.aws.history.HistoryContext
+        :returns: The fetched HistoryInstance
+        :rtype: twilio.rest.flex_api.v1.credential.aws.history.HistoryInstance
         """
-        return HistoryContext(self._version, sid=self._solution["sid"])
+        payload = self._version.fetch(method="GET", uri=self._uri)
 
-    def __call__(self):
+        return HistoryInstance(self._version, payload, sid=self._solution["sid"])
+
+    async def fetch_async(self):
         """
-        Constructs a HistoryContext
+        Asynchronously fetch the HistoryInstance
 
-
-        :returns: twilio.rest.flex_api.v1.credential.aws.history.HistoryContext
-        :rtype: twilio.rest.flex_api.v1.credential.aws.history.HistoryContext
+        :returns: The fetched HistoryInstance
+        :rtype: twilio.rest.flex_api.v1.credential.aws.history.HistoryInstance
         """
-        return HistoryContext(self._version, sid=self._solution["sid"])
+        payload = await self._version.fetch_async(method="GET", uri=self._uri)
+
+        return HistoryInstance(self._version, payload, sid=self._solution["sid"])
 
     def __repr__(self):
         """
@@ -93,22 +94,6 @@ class HistoryInstance(InstanceResource):
         }
 
     @property
-    def _proxy(self):
-        """
-        Generate an instance context for the instance, the context is capable of
-        performing various actions. All instance actions are proxied to the context
-
-        :returns: HistoryContext for this HistoryInstance
-        :rtype: twilio.rest.flex_api.v1.credential.aws.history.HistoryContext
-        """
-        if self._context is None:
-            self._context = HistoryContext(
-                self._version,
-                sid=self._solution["sid"],
-            )
-        return self._context
-
-    @property
     def account_sid(self):
         """
         :returns:
@@ -140,32 +125,6 @@ class HistoryInstance(InstanceResource):
         """
         return self._properties["test_integer"]
 
-    def fetch(self, add_ons_data=values.unset):
-        """
-        Fetch the HistoryInstance
-
-        :param dict add_ons_data:
-
-        :returns: The fetched HistoryInstance
-        :rtype: twilio.rest.flex_api.v1.credential.aws.history.HistoryInstance
-        """
-        return self._proxy.fetch(
-            add_ons_data=add_ons_data,
-        )
-
-    async def fetch_async(self, add_ons_data=values.unset):
-        """
-        Asynchronous coroutine to fetch the HistoryInstance
-
-        :param dict add_ons_data:
-
-        :returns: The fetched HistoryInstance
-        :rtype: twilio.rest.flex_api.v1.credential.aws.history.HistoryInstance
-        """
-        return await self._proxy.fetch_async(
-            add_ons_data=add_ons_data,
-        )
-
     def __repr__(self):
         """
         Provide a friendly representation
@@ -175,77 +134,3 @@ class HistoryInstance(InstanceResource):
         """
         context = " ".join("{}={}".format(k, v) for k, v in self._solution.items())
         return "<Twilio.FlexApi.V1.HistoryInstance {}>".format(context)
-
-
-class HistoryContext(InstanceContext):
-    def __init__(self, version: Version, sid: str):
-        """
-        Initialize the HistoryContext
-
-        :param Version version: Version that contains the resource
-        :param sid:
-
-        :returns: twilio.rest.flex_api.v1.credential.aws.history.HistoryContext
-        :rtype: twilio.rest.flex_api.v1.credential.aws.history.HistoryContext
-        """
-        super().__init__(version)
-
-        # Path Solution
-        self._solution = {
-            "sid": sid,
-        }
-        self._uri = "/Credentials/AWS/{sid}/History".format(**self._solution)
-
-    def fetch(self, add_ons_data=values.unset):
-        """
-        Fetch the HistoryInstance
-
-        :param dict add_ons_data:
-
-        :returns: The fetched HistoryInstance
-        :rtype: twilio.rest.flex_api.v1.credential.aws.history.HistoryInstance
-        """
-
-        data = values.of({})
-        data.update(serialize.prefixed_collapsible_map(add_ons_data, "AddOns"))
-
-        payload = self._version.fetch(method="GET", uri=self._uri, params=data)
-
-        return HistoryInstance(
-            self._version,
-            payload,
-            sid=self._solution["sid"],
-        )
-
-    async def fetch_async(self, add_ons_data=values.unset):
-        """
-        Asynchronous coroutine to fetch the HistoryInstance
-
-        :param dict add_ons_data:
-
-        :returns: The fetched HistoryInstance
-        :rtype: twilio.rest.flex_api.v1.credential.aws.history.HistoryInstance
-        """
-
-        data = values.of({})
-        data.update(serialize.prefixed_collapsible_map(add_ons_data, "AddOns"))
-
-        payload = await self._version.fetch_async(
-            method="GET", uri=self._uri, params=data
-        )
-
-        return HistoryInstance(
-            self._version,
-            payload,
-            sid=self._solution["sid"],
-        )
-
-    def __repr__(self):
-        """
-        Provide a friendly representation
-
-        :returns: Machine friendly representation
-        :rtype: str
-        """
-        context = " ".join("{}={}".format(k, v) for k, v in self._solution.items())
-        return "<Twilio.FlexApi.V1.HistoryContext {}>".format(context)

@@ -27,6 +27,7 @@ module Twilio
                 super(version)
                 # Path Solution
                 @solution = { sid: sid }
+                @uri = "/Credentials/AWS/#{@solution[:sid]}/History"
               end
 
               # Provide a user friendly representation
@@ -46,7 +47,6 @@ module Twilio
 
                 # Path Solution
                 @solution = { sid: sid, }
-                @uri = "/Credentials/AWS/#{@solution[:sid]}/History"
               end
 
               ##
@@ -131,21 +131,6 @@ module Twilio
                   'test_string' => payload['test_string'],
                   'test_integer' => payload['test_integer'] == nil ? payload['test_integer'] : payload['test_integer'].to_i,
                 }
-
-                # Context
-                @instance_context = nil
-                @params = { 'sid' => sid || @properties['sid'], }
-              end
-
-              ##
-              # Generate an instance context for the instance, the context is capable of
-              # performing various actions.  All instance actions are proxied to the context
-              # @return [HistoryContext] CallContext for this CallInstance
-              def context
-                unless @instance_context
-                  @instance_context = HistoryContext.new(@version, @params['sid'])
-                end
-                @instance_context
               end
 
               ##
@@ -188,15 +173,13 @@ module Twilio
               ##
               # Provide a user friendly representation
               def to_s
-                values = @params.map { |k, v| "#{k}: #{v}" }.join(" ")
-                "<Twilio.FlexApi.V1.HistoryInstance #{values}>"
+                "<Twilio.FlexApi.V1.HistoryInstance>"
               end
 
               ##
               # Provide a detailed, user friendly representation
               def inspect
-                values = @properties.map { |k, v| "#{k}: #{v}" }.join(" ")
-                "<Twilio.FlexApi.V1.HistoryInstance #{values}>"
+                "<Twilio.FlexApi.V1.HistoryInstance>"
               end
             end
           end

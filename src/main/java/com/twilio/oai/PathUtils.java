@@ -72,9 +72,9 @@ public class PathUtils {
     }
 
     public static boolean isInstanceOperation(final CodegenOperation operation) {
-        return operation.vendorExtensions
-            .getOrDefault(PATH_TYPE_EXTENSION_NAME, "")
-            .equals(PathType.INSTANCE.getValue());
+        String[] paths = operation.path.split(".json");
+        String lastElement = paths[paths.length - 1];
+        return lastElement.charAt(lastElement.length() - 1) == '}';
     }
 
     public static boolean isParentParam(final CodegenParameter param) {

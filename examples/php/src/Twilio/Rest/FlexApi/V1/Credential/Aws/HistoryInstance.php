@@ -61,24 +61,6 @@ class HistoryInstance extends InstanceResource
     }
 
     /**
-     * Generate an instance context for the instance, the context is capable of
-     * performing various actions.  All instance actions are proxied to the context
-     *
-     * @return HistoryContext Context for this HistoryInstance
-     */
-    protected function proxy(): HistoryContext
-    {
-        if (!$this->context) {
-            $this->context = new HistoryContext(
-                $this->version,
-                $this->solution['sid']
-            );
-        }
-
-        return $this->context;
-    }
-
-    /**
      * Fetch the HistoryInstance
      *
      * @param array|Options $options Optional Arguments
@@ -119,11 +101,7 @@ class HistoryInstance extends InstanceResource
      */
     public function __toString(): string
     {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.FlexApi.V1.HistoryInstance ' . \implode(' ', $context) . ']';
+        return '[Twilio.FlexApi.V1.HistoryInstance]';
     }
 }
 

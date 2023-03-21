@@ -21,12 +21,20 @@ import { isValidPathParam } from "../../../../../base/utility";
 /**
  * Options to pass to fetch a HistoryInstance
  */
-export interface HistoryContextFetchOptions {
+export interface HistoryListInstanceFetchOptions {
   /**  */
   addOnsData?: Record<string, object>;
 }
 
-export interface HistoryContext {
+export interface HistorySolution {
+  sid: string;
+}
+
+export interface HistoryListInstance {
+  _version: V1;
+  _solution: HistorySolution;
+  _uri: string;
+
   /**
    * Fetch a HistoryInstance
    *
@@ -46,7 +54,7 @@ export interface HistoryContext {
    * @returns Resolves to processed HistoryInstance
    */
   fetch(
-    params: HistoryContextFetchOptions,
+    params: HistoryListInstanceFetchOptions,
     callback?: (error: Error | null, item?: HistoryInstance) => any
   ): Promise<HistoryInstance>;
 
@@ -57,28 +65,25 @@ export interface HistoryContext {
   [inspect.custom](_depth: any, options: InspectOptions): any;
 }
 
-export interface HistoryContextSolution {
-  sid: string;
-}
-
-export class HistoryContextImpl implements HistoryContext {
-  protected _solution: HistoryContextSolution;
-  protected _uri: string;
-
-  constructor(protected _version: V1, sid: string) {
-    if (!isValidPathParam(sid)) {
-      throw new Error("Parameter 'sid' is not valid.");
-    }
-
-    this._solution = { sid };
-    this._uri = `/Credentials/AWS/${sid}/History`;
+export function HistoryListInstance(
+  version: V1,
+  sid: string
+): HistoryListInstance {
+  if (!isValidPathParam(sid)) {
+    throw new Error("Parameter 'sid' is not valid.");
   }
 
-  fetch(
+  const instance = {} as HistoryListInstance;
+
+  instance._version = version;
+  instance._solution = { sid };
+  instance._uri = `/Credentials/AWS/${sid}/History`;
+
+  instance.fetch = function fetch(
     params?:
-      | HistoryContextFetchOptions
-      | ((error: Error | null, item?: HistoryInstance) => any),
-    callback?: (error: Error | null, item?: HistoryInstance) => any
+      | HistoryListInstanceFetchOptions
+      | ((error: Error | null, items: HistoryInstance) => any),
+    callback?: (error: Error | null, items: HistoryInstance) => any
   ): Promise<HistoryInstance> {
     if (params instanceof Function) {
       callback = params;
@@ -97,8 +102,7 @@ export class HistoryContextImpl implements HistoryContext {
 
     const headers: any = {};
 
-    const instance = this;
-    let operationVersion = instance._version,
+    let operationVersion = version,
       operationPromise = operationVersion.fetch({
         uri: instance._uri,
         method: "get",
@@ -116,20 +120,20 @@ export class HistoryContextImpl implements HistoryContext {
       callback
     );
     return operationPromise;
-  }
+  };
 
-  /**
-   * Provide a user-friendly representation
-   *
-   * @returns Object
-   */
-  toJSON() {
-    return this._solution;
-  }
+  instance.toJSON = function toJSON() {
+    return instance._solution;
+  };
 
-  [inspect.custom](_depth: any, options: InspectOptions) {
-    return inspect(this.toJSON(), options);
-  }
+  instance[inspect.custom] = function inspectImpl(
+    _depth: any,
+    options: InspectOptions
+  ) {
+    return inspect(instance.toJSON(), options);
+  };
+
+  return instance;
 }
 
 interface HistoryPayload extends HistoryResource {}
@@ -142,59 +146,17 @@ interface HistoryResource {
 }
 
 export class HistoryInstance {
-  protected _solution: HistoryContextSolution;
-  protected _context?: HistoryContext;
-
   constructor(protected _version: V1, payload: HistoryResource, sid: string) {
     this.accountSid = payload.account_sid;
     this.sid = payload.sid;
     this.testString = payload.test_string;
     this.testInteger = deserialize.integer(payload.test_integer);
-
-    this._solution = { sid };
   }
 
   accountSid: string;
   sid: string;
   testString: string;
   testInteger: number;
-
-  private get _proxy(): HistoryContext {
-    this._context =
-      this._context ||
-      new HistoryContextImpl(this._version, this._solution.sid);
-    return this._context;
-  }
-
-  /**
-   * Fetch a HistoryInstance
-   *
-   * @param callback - Callback to handle processed record
-   *
-   * @returns Resolves to processed HistoryInstance
-   */
-  fetch(
-    callback?: (error: Error | null, item?: HistoryInstance) => any
-  ): Promise<HistoryInstance>;
-  /**
-   * Fetch a HistoryInstance
-   *
-   * @param params - Parameter for request
-   * @param callback - Callback to handle processed record
-   *
-   * @returns Resolves to processed HistoryInstance
-   */
-  fetch(
-    params: HistoryContextFetchOptions,
-    callback?: (error: Error | null, item?: HistoryInstance) => any
-  ): Promise<HistoryInstance>;
-
-  fetch(
-    params?: any,
-    callback?: (error: Error | null, item?: HistoryInstance) => any
-  ): Promise<HistoryInstance> {
-    return this._proxy.fetch(params, callback);
-  }
 
   /**
    * Provide a user-friendly representation
@@ -213,55 +175,4 @@ export class HistoryInstance {
   [inspect.custom](_depth: any, options: InspectOptions) {
     return inspect(this.toJSON(), options);
   }
-}
-
-export interface HistorySolution {
-  sid: string;
-}
-
-export interface HistoryListInstance {
-  _version: V1;
-  _solution: HistorySolution;
-  _uri: string;
-
-  (): HistoryContext;
-  get(): HistoryContext;
-
-  /**
-   * Provide a user-friendly representation
-   */
-  toJSON(): any;
-  [inspect.custom](_depth: any, options: InspectOptions): any;
-}
-
-export function HistoryListInstance(
-  version: V1,
-  sid: string
-): HistoryListInstance {
-  if (!isValidPathParam(sid)) {
-    throw new Error("Parameter 'sid' is not valid.");
-  }
-
-  const instance = (() => instance.get()) as HistoryListInstance;
-
-  instance.get = function get(): HistoryContext {
-    return new HistoryContextImpl(version, sid);
-  };
-
-  instance._version = version;
-  instance._solution = { sid };
-  instance._uri = ``;
-
-  instance.toJSON = function toJSON() {
-    return instance._solution;
-  };
-
-  instance[inspect.custom] = function inspectImpl(
-    _depth: any,
-    options: InspectOptions
-  ) {
-    return inspect(instance.toJSON(), options);
-  };
-
-  return instance;
 }
