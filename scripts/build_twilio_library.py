@@ -40,7 +40,7 @@ def generate(spec_folder: str, spec_files: List[str], output_path: str, language
     config_path = os.path.join(parent_dir, CONFIG_FOLDER, language)
 
     shutil.rmtree(config_path, ignore_errors=True)
-    Path(config_path).mkdir()
+    Path(config_path).mkdir(parents=True, exist_ok=True)
 
     for spec_file in spec_files:
         full_path = os.path.join(spec_folder, spec_file)
