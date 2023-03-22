@@ -37,7 +37,7 @@ def generate(spec_folder: str, spec_files: List[str], output_path: str, language
     sub_dir = subdirectories.get(language, 'rest')
     parent_dir = Path(__file__).parent.parent
     output_path = os.path.join(output_path, sub_dir)
-    config_path = os.path.join(parent_dir, CONFIG_FOLDER)
+    config_path = os.path.join(parent_dir, CONFIG_FOLDER, language)
 
     shutil.rmtree(config_path, ignore_errors=True)
     Path(config_path).mkdir()
@@ -74,7 +74,7 @@ def run_openapi_generator(parent_dir: Path, language: str) -> None:
 
     command = f'cd {parent_dir} && java {properties} ' \
               f'-cp target/twilio-openapi-generator.jar ' \
-              f'org.openapitools.codegen.OpenAPIGenerator batch {CONFIG_FOLDER}/*'
+              f'org.openapitools.codegen.OpenAPIGenerator batch {CONFIG_FOLDER}/{language}/*'
 
     if os.system(command + '> /dev/null') != 0:  # Suppress stdout
         raise RuntimeError()
