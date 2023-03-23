@@ -1,7 +1,7 @@
 {{>licenseInfo}}
 {{#resources}}
 from datetime import date, datetime
-from typing import Optional
+from typing import List, Optional
 from twilio.base import deserialize, serialize, values
 {{#instancePath}}from twilio.base.instance_context import InstanceContext{{/instancePath}}
 {{#responseModel}}from twilio.base.instance_resource import InstanceResource{{/responseModel}}
