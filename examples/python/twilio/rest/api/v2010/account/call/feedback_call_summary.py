@@ -121,7 +121,7 @@ class FeedbackCallSummaryInstance(InstanceResource):
     def test_object(self):
         """
         :returns:
-        :rtype: TestResponseObjectTestObject
+        :rtype: str
         """
         return self._properties["test_object"]
 
@@ -185,7 +185,7 @@ class FeedbackCallSummaryInstance(InstanceResource):
     def test_array_of_integers(self):
         """
         :returns:
-        :rtype: list[int]
+        :rtype: List[int]
         """
         return self._properties["test_array_of_integers"]
 
@@ -193,7 +193,7 @@ class FeedbackCallSummaryInstance(InstanceResource):
     def test_array_of_array_of_integers(self):
         """
         :returns:
-        :rtype: list[list[int]]
+        :rtype: List[List[int]]
         """
         return self._properties["test_array_of_array_of_integers"]
 
@@ -201,7 +201,7 @@ class FeedbackCallSummaryInstance(InstanceResource):
     def test_array_of_objects(self):
         """
         :returns:
-        :rtype: list[TestResponseObjectTestArrayOfObjects]
+        :rtype: List[str]
         """
         return self._properties["test_array_of_objects"]
 
@@ -209,7 +209,7 @@ class FeedbackCallSummaryInstance(InstanceResource):
     def test_array_of_enum(self):
         """
         :returns: Permissions authorized to the app
-        :rtype: list[FeedbackCallSummaryInstance.Status]
+        :rtype: List[FeedbackCallSummaryInstance.Status]
         """
         return self._properties["test_array_of_enum"]
 

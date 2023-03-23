@@ -131,10 +131,10 @@ class NewCredentialsList(ListResource):
         :param datetime test_date_time:
         :param date test_date:
         :param NewCredentialsInstance.Status test_enum:
-        :param list[object] test_object_array:
+        :param List[object] test_object_array:
         :param object test_any_type:
-        :param list[object] test_any_array:
-        :param list[str] permissions: A comma-separated list of the permissions you will request from the users of this ConnectApp.  Can include: `get-all` and `post-all`.
+        :param List[object] test_any_array:
+        :param List[str] permissions: A comma-separated list of the permissions you will request from the users of this ConnectApp.  Can include: `get-all` and `post-all`.
         :param str some_a2p_thing:
 
         :returns: The created NewCredentialsInstance
@@ -209,10 +209,10 @@ class NewCredentialsList(ListResource):
         :param datetime test_date_time:
         :param date test_date:
         :param NewCredentialsInstance.Status test_enum:
-        :param list[object] test_object_array:
+        :param List[object] test_object_array:
         :param object test_any_type:
-        :param list[object] test_any_array:
-        :param list[str] permissions: A comma-separated list of the permissions you will request from the users of this ConnectApp.  Can include: `get-all` and `post-all`.
+        :param List[object] test_any_array:
+        :param List[str] permissions: A comma-separated list of the permissions you will request from the users of this ConnectApp.  Can include: `get-all` and `post-all`.
         :param str some_a2p_thing:
 
         :returns: The created NewCredentialsInstance

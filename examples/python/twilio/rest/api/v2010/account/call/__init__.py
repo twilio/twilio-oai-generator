@@ -127,7 +127,7 @@ class CallInstance(InstanceResource):
     def test_object(self):
         """
         :returns:
-        :rtype: TestResponseObjectTestObject
+        :rtype: str
         """
         return self._properties["test_object"]
 
@@ -191,7 +191,7 @@ class CallInstance(InstanceResource):
     def test_array_of_integers(self):
         """
         :returns:
-        :rtype: list[int]
+        :rtype: List[int]
         """
         return self._properties["test_array_of_integers"]
 
@@ -199,7 +199,7 @@ class CallInstance(InstanceResource):
     def test_array_of_array_of_integers(self):
         """
         :returns:
-        :rtype: list[list[int]]
+        :rtype: List[List[int]]
         """
         return self._properties["test_array_of_array_of_integers"]
 
@@ -207,7 +207,7 @@ class CallInstance(InstanceResource):
     def test_array_of_objects(self):
         """
         :returns:
-        :rtype: list[TestResponseObjectTestArrayOfObjects]
+        :rtype: List[str]
         """
         return self._properties["test_array_of_objects"]
 
@@ -215,7 +215,7 @@ class CallInstance(InstanceResource):
     def test_array_of_enum(self):
         """
         :returns: Permissions authorized to the app
-        :rtype: list[CallInstance.Status]
+        :rtype: List[CallInstance.Status]
         """
         return self._properties["test_array_of_enum"]
 
@@ -405,8 +405,8 @@ class CallList(ListResource):
 
         :param str required_string_property:
         :param str test_method: The HTTP method that we should use to request the `TestArrayOfUri`.
-        :param list[str] test_array_of_strings:
-        :param list[str] test_array_of_uri:
+        :param List[str] test_array_of_strings:
+        :param List[str] test_array_of_uri:
 
         :returns: The created CallInstance
         :rtype: twilio.rest.api.v2010.account.call.CallInstance
@@ -442,8 +442,8 @@ class CallList(ListResource):
 
         :param str required_string_property:
         :param str test_method: The HTTP method that we should use to request the `TestArrayOfUri`.
-        :param list[str] test_array_of_strings:
-        :param list[str] test_array_of_uri:
+        :param List[str] test_array_of_strings:
+        :param List[str] test_array_of_uri:
 
         :returns: The created CallInstance
         :rtype: twilio.rest.api.v2010.account.call.CallInstance

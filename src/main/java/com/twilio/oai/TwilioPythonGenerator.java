@@ -46,6 +46,8 @@ public class TwilioPythonGenerator extends AbstractPythonCodegen {
         super();
         twilioCodegen = new TwilioCodegenAdapter(this, getName());
         packageName = "";
+
+        typeMapping.put("array", "List");
     }
 
     @Override

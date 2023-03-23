@@ -121,7 +121,7 @@ class AccountInstance(InstanceResource):
     def test_object(self):
         """
         :returns:
-        :rtype: TestResponseObjectTestObject
+        :rtype: str
         """
         return self._properties["test_object"]
 
@@ -185,7 +185,7 @@ class AccountInstance(InstanceResource):
     def test_array_of_integers(self):
         """
         :returns:
-        :rtype: list[int]
+        :rtype: List[int]
         """
         return self._properties["test_array_of_integers"]
 
@@ -193,7 +193,7 @@ class AccountInstance(InstanceResource):
     def test_array_of_array_of_integers(self):
         """
         :returns:
-        :rtype: list[list[int]]
+        :rtype: List[List[int]]
         """
         return self._properties["test_array_of_array_of_integers"]
 
@@ -201,7 +201,7 @@ class AccountInstance(InstanceResource):
     def test_array_of_objects(self):
         """
         :returns:
-        :rtype: list[TestResponseObjectTestArrayOfObjects]
+        :rtype: List[str]
         """
         return self._properties["test_array_of_objects"]
 
@@ -209,7 +209,7 @@ class AccountInstance(InstanceResource):
     def test_array_of_enum(self):
         """
         :returns: Permissions authorized to the app
-        :rtype: list[AccountInstance.Status]
+        :rtype: List[AccountInstance.Status]
         """
         return self._properties["test_array_of_enum"]
 
@@ -514,7 +514,7 @@ class AccountList(ListResource):
 
         :param str x_twilio_webhook_enabled:
         :param str recording_status_callback:
-        :param list[str] recording_status_callback_event:
+        :param List[str] recording_status_callback_event:
         :param str twiml:
 
         :returns: The created AccountInstance
@@ -552,7 +552,7 @@ class AccountList(ListResource):
 
         :param str x_twilio_webhook_enabled:
         :param str recording_status_callback:
-        :param list[str] recording_status_callback_event:
+        :param List[str] recording_status_callback_event:
         :param str twiml:
 
         :returns: The created AccountInstance
