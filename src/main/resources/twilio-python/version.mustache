@@ -23,7 +23,7 @@ class {{apiVersionClass}}(Version):
         return self._{{mountName}}
 {{#param}}
     @{{mountName}}.setter
-    def {{mountName}}(self, value: {{listName}}):
+    def {{mountName}}(self, value: {{listName}}) -> None:
         """
         Setter to override {{mountName}}
         :param value: value to use as {{mountName}}

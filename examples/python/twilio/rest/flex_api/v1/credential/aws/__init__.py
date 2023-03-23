@@ -13,7 +13,7 @@ r"""
 """
 
 
-from typing import Optional
+from typing import List, Optional
 from twilio.base import deserialize, values
 from twilio.base.instance_context import InstanceContext
 from twilio.base.instance_resource import InstanceResource
@@ -27,9 +27,6 @@ class AwsInstance(InstanceResource):
     def __init__(self, version, payload, sid: Optional[str] = None):
         """
         Initialize the AwsInstance
-
-        :returns: twilio.rest.flex_api.v1.credential.aws.AwsInstance
-        :rtype: twilio.rest.flex_api.v1.credential.aws.AwsInstance
         """
         super().__init__(version)
 
@@ -46,13 +43,12 @@ class AwsInstance(InstanceResource):
         self._context: Optional[AwsContext] = None
 
     @property
-    def _proxy(self):
+    def _proxy(self) -> "AwsContext":
         """
         Generate an instance context for the instance, the context is capable of
         performing various actions. All instance actions are proxied to the context
 
         :returns: AwsContext for this AwsInstance
-        :rtype: twilio.rest.flex_api.v1.credential.aws.AwsContext
         """
         if self._context is None:
             self._context = AwsContext(
@@ -62,78 +58,72 @@ class AwsInstance(InstanceResource):
         return self._context
 
     @property
-    def account_sid(self):
+    def account_sid(self) -> str:
         """
         :returns:
-        :rtype: str
         """
         return self._properties["account_sid"]
 
     @property
-    def sid(self):
+    def sid(self) -> str:
         """
         :returns:
-        :rtype: str
         """
         return self._properties["sid"]
 
     @property
-    def test_string(self):
+    def test_string(self) -> str:
         """
         :returns:
-        :rtype: str
         """
         return self._properties["test_string"]
 
     @property
-    def test_integer(self):
+    def test_integer(self) -> int:
         """
         :returns:
-        :rtype: int
         """
         return self._properties["test_integer"]
 
-    def delete(self):
+    def delete(self) -> bool:
         """
         Deletes the AwsInstance
 
 
         :returns: True if delete succeeds, False otherwise
-        :rtype: bool
         """
         return self._proxy.delete()
 
-    async def delete_async(self):
+    async def delete_async(self) -> bool:
         """
         Asynchronous coroutine that deletes the AwsInstance
 
 
         :returns: True if delete succeeds, False otherwise
-        :rtype: bool
         """
         return await self._proxy.delete_async()
 
-    def fetch(self):
+    def fetch(self) -> "AwsInstance":
         """
         Fetch the AwsInstance
 
 
         :returns: The fetched AwsInstance
-        :rtype: twilio.rest.flex_api.v1.credential.aws.AwsInstance
         """
         return self._proxy.fetch()
 
-    async def fetch_async(self):
+    async def fetch_async(self) -> "AwsInstance":
         """
         Asynchronous coroutine to fetch the AwsInstance
 
 
         :returns: The fetched AwsInstance
-        :rtype: twilio.rest.flex_api.v1.credential.aws.AwsInstance
         """
         return await self._proxy.fetch_async()
 
-    def update(self, test_string=values.unset, test_boolean=values.unset):
+    def update(
+        self, test_string=values.unset, test_boolean=values.unset
+    ) -> "AwsInstance":
         """
         Update the AwsInstance
 
@@ -141,14 +131,15 @@ class AwsInstance(InstanceResource):
         :param bool test_boolean:
 
         :returns: The updated AwsInstance
-        :rtype: twilio.rest.flex_api.v1.credential.aws.AwsInstance
         """
         return self._proxy.update(
             test_string=test_string,
             test_boolean=test_boolean,
         )
 
-    async def update_async(self, test_string=values.unset, test_boolean=values.unset):
+    async def update_async(
+        self, test_string=values.unset, test_boolean=values.unset
+    ) -> "AwsInstance":
         """
         Asynchronous coroutine to update the AwsInstance
 
@@ -156,7 +147,6 @@ class AwsInstance(InstanceResource):
         :param bool test_boolean:
 
         :returns: The updated AwsInstance
-        :rtype: twilio.rest.flex_api.v1.credential.aws.AwsInstance
         """
         return await self._proxy.update_async(
             test_string=test_string,
@@ -164,21 +154,17 @@ class AwsInstance(InstanceResource):
         )
 
     @property
-    def history(self):
+    def history(self) -> HistoryList:
         """
         Access the history
-
-        :returns: twilio.rest.flex_api.v1.credential.aws.HistoryList
-        :rtype: twilio.rest.flex_api.v1.credential.aws.HistoryList
         """
         return self._proxy.history
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         """
         Provide a friendly representation
 
         :returns: Machine friendly representation
-        :rtype: str
         """
         context = " ".join("{}={}".format(k, v) for k, v in self._solution.items())
         return "<Twilio.FlexApi.V1.AwsInstance {}>".format(context)
@@ -189,11 +175,8 @@ class AwsContext(InstanceContext):
         """
         Initialize the AwsContext
 
-        :param Version version: Version that contains the resource
+        :param version: Version that contains the resource
         :param sid:
-
-        :returns: twilio.rest.flex_api.v1.credential.aws.AwsContext
-        :rtype: twilio.rest.flex_api.v1.credential.aws.AwsContext
         """
         super().__init__(version)
 
@@ -205,39 +188,36 @@ class AwsContext(InstanceContext):
 
         self._history: Optional[HistoryList] = None
 
-    def delete(self):
+    def delete(self) -> bool:
         """
         Deletes the AwsInstance
 
 
         :returns: True if delete succeeds, False otherwise
-        :rtype: bool
         """
         return self._version.delete(
             method="DELETE",
             uri=self._uri,
         )
 
-    async def delete_async(self):
+    async def delete_async(self) -> bool:
         """
         Asynchronous coroutine that deletes the AwsInstance
 
 
         :returns: True if delete succeeds, False otherwise
-        :rtype: bool
         """
         return await self._version.delete_async(
             method="DELETE",
             uri=self._uri,
         )
 
-    def fetch(self):
+    def fetch(self) -> AwsInstance:
         """
         Fetch the AwsInstance
 
 
         :returns: The fetched AwsInstance
-        :rtype: twilio.rest.flex_api.v1.credential.aws.AwsInstance
         """
 
         payload = self._version.fetch(
@@ -251,13 +231,12 @@ class AwsContext(InstanceContext):
             sid=self._solution["sid"],
         )
 
-    async def fetch_async(self):
+    async def fetch_async(self) -> AwsInstance:
         """
         Asynchronous coroutine to fetch the AwsInstance
 
 
         :returns: The fetched AwsInstance
-        :rtype: twilio.rest.flex_api.v1.credential.aws.AwsInstance
         """
 
         payload = await self._version.fetch_async(
@@ -271,7 +250,9 @@ class AwsContext(InstanceContext):
             sid=self._solution["sid"],
         )
 
-    def update(self, test_string=values.unset, test_boolean=values.unset):
+    def update(
+        self, test_string=values.unset, test_boolean=values.unset
+    ) -> AwsInstance:
         """
         Update the AwsInstance
 
@@ -279,7 +260,6 @@ class AwsContext(InstanceContext):
         :param bool test_boolean:
 
         :returns: The updated AwsInstance
-        :rtype: twilio.rest.flex_api.v1.credential.aws.AwsInstance
         """
         data = values.of(
             {
@@ -296,7 +276,9 @@ class AwsContext(InstanceContext):
 
         return AwsInstance(self._version, payload, sid=self._solution["sid"])
 
-    async def update_async(self, test_string=values.unset, test_boolean=values.unset):
+    async def update_async(
+        self, test_string=values.unset, test_boolean=values.unset
+    ) -> AwsInstance:
         """
         Asynchronous coroutine to update the AwsInstance
 
@@ -304,7 +286,6 @@ class AwsContext(InstanceContext):
         :param bool test_boolean:
 
         :returns: The updated AwsInstance
-        :rtype: twilio.rest.flex_api.v1.credential.aws.AwsInstance
         """
         data = values.of(
             {
@@ -322,12 +303,9 @@ class AwsContext(InstanceContext):
         return AwsInstance(self._version, payload, sid=self._solution["sid"])
 
     @property
-    def history(self):
+    def history(self) -> HistoryList:
         """
         Access the history
-
-        :returns: twilio.rest.flex_api.v1.credential.aws.HistoryList
-        :rtype: twilio.rest.flex_api.v1.credential.aws.HistoryList
         """
         if self._history is None:
             self._history = HistoryList(
@@ -336,26 +314,22 @@ class AwsContext(InstanceContext):
             )
         return self._history
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         """
         Provide a friendly representation
 
         :returns: Machine friendly representation
-        :rtype: str
         """
         context = " ".join("{}={}".format(k, v) for k, v in self._solution.items())
         return "<Twilio.FlexApi.V1.AwsContext {}>".format(context)
 
 
 class AwsPage(Page):
-    def get_instance(self, payload):
+    def get_instance(self, payload) -> AwsInstance:
         """
         Build an instance of AwsInstance
 
         :param dict payload: Payload response from the API
-
-        :returns: twilio.rest.flex_api.v1.credential.aws.AwsInstance
-        :rtype: twilio.rest.flex_api.v1.credential.aws.AwsInstance
         """
         return AwsInstance(self._version, payload)
 
@@ -373,16 +347,14 @@ class AwsList(ListResource):
         """
         Initialize the AwsList
 
-        :param Version version: Version that contains the resource
+        :param version: Version that contains the resource
 
-        :returns: twilio.rest.flex_api.v1.credential.aws.AwsList
-        :rtype: twilio.rest.flex_api.v1.credential.aws.AwsList
         """
         super().__init__(version)
 
         self._uri = "/Credentials/AWS"
 
-    def stream(self, limit=None, page_size=None):
+    def stream(self, limit=None, page_size=None) -> List[AwsInstance]:
         """
         Streams AwsInstance records from the API as a generator stream.
         This operation lazily loads records as efficiently as possible until the limit
@@ -397,14 +369,13 @@ class AwsList(ListResource):
                               limit with the most efficient page size, i.e. min(limit, 1000)
 
         :returns: Generator that will yield up to limit results
-        :rtype: list[twilio.rest.flex_api.v1.credential.aws.AwsInstance]
         """
         limits = self._version.read_limits(limit, page_size)
         page = self.page(page_size=limits["page_size"])
 
         return self._version.stream(page, limits["limit"])
 
-    async def stream_async(self, limit=None, page_size=None):
+    async def stream_async(self, limit=None, page_size=None) -> List[AwsInstance]:
         """
         Asynchronously streams AwsInstance records from the API as a generator stream.
         This operation lazily loads records as efficiently as possible until the limit
@@ -419,14 +390,13 @@ class AwsList(ListResource):
                               limit with the most efficient page size, i.e. min(limit, 1000)
 
         :returns: Generator that will yield up to limit results
-        :rtype: list[twilio.rest.flex_api.v1.credential.aws.AwsInstance]
         """
         limits = self._version.read_limits(limit, page_size)
         page = await self.page_async(page_size=limits["page_size"])
 
         return await self._version.stream_async(page, limits["limit"])
 
-    def list(self, limit=None, page_size=None):
+    def list(self, limit=None, page_size=None) -> List[AwsInstance]:
         """
         Lists AwsInstance records from the API as a list.
         Unlike stream(), this operation is eager and will load `limit` records into
@@ -440,7 +410,6 @@ class AwsList(ListResource):
                               with the most efficient page size, i.e. min(limit, 1000)
 
         :returns: Generator that will yield up to limit results
-        :rtype: list[twilio.rest.flex_api.v1.credential.aws.AwsInstance]
         """
         return list(
             self.stream(
@@ -449,7 +418,7 @@ class AwsList(ListResource):
             )
         )
 
-    async def list_async(self, limit=None, page_size=None):
+    async def list_async(self, limit=None, page_size=None) -> List[AwsInstance]:
         """
         Asynchronously lists AwsInstance records from the API as a list.
         Unlike stream(), this operation is eager and will load `limit` records into
@@ -463,7 +432,6 @@ class AwsList(ListResource):
                               with the most efficient page size, i.e. min(limit, 1000)
 
         :returns: Generator that will yield up to limit results
-        :rtype: list[twilio.rest.flex_api.v1.credential.aws.AwsInstance]
         """
         return list(
             await self.stream_async(
@@ -474,7 +442,7 @@ class AwsList(ListResource):
 
     def page(
         self, page_token=values.unset, page_number=values.unset, page_size=values.unset
-    ):
+    ) -> AwsPage:
         """
         Retrieve a single page of AwsInstance records from the API.
         Request is executed immediately
@@ -484,7 +452,6 @@ class AwsList(ListResource):
         :param int page_size: Number of records to return, defaults to 50
 
         :returns: Page of AwsInstance
-        :rtype: twilio.rest.flex_api.v1.credential.aws.AwsPage
         """
         data = values.of(
             {
@@ -499,7 +466,7 @@ class AwsList(ListResource):
 
     async def page_async(
         self, page_token=values.unset, page_number=values.unset, page_size=values.unset
-    ):
+    ) -> AwsPage:
         """
         Asynchronously retrieve a single page of AwsInstance records from the API.
         Request is executed immediately
@@ -509,7 +476,6 @@ class AwsList(ListResource):
         :param int page_size: Number of records to return, defaults to 50
 
         :returns: Page of AwsInstance
-        :rtype: twilio.rest.flex_api.v1.credential.aws.AwsPage
         """
         data = values.of(
             {
@@ -524,7 +490,7 @@ class AwsList(ListResource):
         )
         return AwsPage(self._version, response)
 
-    def get_page(self, target_url):
+    def get_page(self, target_url) -> AwsPage:
         """
         Retrieve a specific page of AwsInstance records from the API.
         Request is executed immediately
@@ -532,12 +498,11 @@ class AwsList(ListResource):
         :param str target_url: API-generated URL for the requested results page
 
         :returns: Page of AwsInstance
-        :rtype: twilio.rest.flex_api.v1.credential.aws.AwsPage
         """
         response = self._version.domain.twilio.request("GET", target_url)
         return AwsPage(self._version, response)
 
-    async def get_page_async(self, target_url):
+    async def get_page_async(self, target_url) -> AwsPage:
         """
         Asynchronously retrieve a specific page of AwsInstance records from the API.
         Request is executed immediately
@@ -545,38 +510,30 @@ class AwsList(ListResource):
         :param str target_url: API-generated URL for the requested results page
 
         :returns: Page of AwsInstance
-        :rtype: twilio.rest.flex_api.v1.credential.aws.AwsPage
         """
         response = await self._version.domain.twilio.request_async("GET", target_url)
         return AwsPage(self._version, response)
 
-    def get(self, sid):
+    def get(self, sid) -> AwsContext:
         """
         Constructs a AwsContext
 
         :param sid:
-
-        :returns: twilio.rest.flex_api.v1.credential.aws.AwsContext
-        :rtype: twilio.rest.flex_api.v1.credential.aws.AwsContext
         """
         return AwsContext(self._version, sid=sid)
 
-    def __call__(self, sid):
+    def __call__(self, sid) -> AwsContext:
         """
         Constructs a AwsContext
 
         :param sid:
-
-        :returns: twilio.rest.flex_api.v1.credential.aws.AwsContext
-        :rtype: twilio.rest.flex_api.v1.credential.aws.AwsContext
         """
         return AwsContext(self._version, sid=sid)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         """
         Provide a friendly representation
 
         :returns: Machine friendly representation
-        :rtype: str
         """
         return "<Twilio.FlexApi.V1.AwsList>"

@@ -1,6 +1,7 @@
 {{>licenseInfo}}
 {{#resources}}
 from datetime import date, datetime
+from decimal import Decimal
 from typing import List, Optional
 from twilio.base import deserialize, serialize, values
 {{#instancePath}}from twilio.base.instance_context import InstanceContext{{/instancePath}}
@@ -21,11 +22,9 @@ class {{apiName}}List(ListResource):
         """
         Initialize the {{apiName}}List
 
-        :param Version version: Version that contains the resource
+        :param version: Version that contains the resource
         {{#listPathParams}}:param {{paramName}}: {{{description}}}
         {{/listPathParams}}
-        :returns: twilio.rest.{{domainPackage}}.{{apiVersion}}.{{namespaceSubPart}}.{{apiName}}List
-        :rtype: twilio.rest.{{domainPackage}}.{{apiVersion}}.{{namespaceSubPart}}.{{apiName}}List
         """
         super().__init__(version)
 
@@ -39,12 +38,9 @@ class {{apiName}}List(ListResource):
 {{#dependents}}
 {{^instanceDependent}}
     @property
-    def {{mountName}}(self):
+    def {{mountName}}(self) -> {{resourceName}}List:
         """
         Access the {{mountName}}
-
-        :returns: twilio.rest.{{domainPackage}}.{{apiVersion}}.{{namespaceSubPart}}.{{resourceName}}List
-        :rtype: twilio.rest.{{domainPackage}}.{{apiVersion}}.{{namespaceSubPart}}.{{resourceName}}List
         """
         if self._{{mountName}} is None:
             self._{{mountName}} = {{resourceName}}List(self._version{{#listPathParams}}, {{paramName}}=self._solution['{{paramName}}']{{/listPathParams}})
@@ -52,12 +48,11 @@ class {{apiName}}List(ListResource):
 {{/instanceDependent}}
 {{/dependents}}
 {{#instancePath}}{{>contextMethods}}{{/instancePath}}
-    def __repr__(self):
+    def __repr__(self) -> str:
         """
         Provide a friendly representation
 
         :returns: Machine friendly representation
-        :rtype: str
         """
         return '<Twilio.{{domainName}}.{{apiVersionClass}}.{{apiName}}List>'
 {{/resources}}
