@@ -84,7 +84,7 @@ public class PythonApiResourceBuilder extends FluentApiResourceBuilder {
     @Override
     protected String getDataTypeName(final String dataType) {
         if (dataType != null && dataType.contains(ApplicationConstants.ENUM)) {
-            return getApiName() + "Instance." + Utility.removeEnumName(dataType);
+            return '"' + getApiName() + "Instance." + Utility.removeEnumName(dataType) + '"';
         }
 
         return dataType;

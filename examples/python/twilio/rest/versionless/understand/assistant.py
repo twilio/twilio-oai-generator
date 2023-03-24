@@ -13,6 +13,7 @@ r"""
 """
 
 
+from typing import List
 from twilio.base import values
 
 from twilio.base.instance_resource import InstanceResource
@@ -25,9 +26,6 @@ class AssistantInstance(InstanceResource):
     def __init__(self, version, payload):
         """
         Initialize the AssistantInstance
-
-        :returns: twilio.rest.versionless.understand.assistant.AssistantInstance
-        :rtype: twilio.rest.versionless.understand.assistant.AssistantInstance
         """
         super().__init__(version)
 
@@ -39,41 +37,35 @@ class AssistantInstance(InstanceResource):
         self._solution = {}
 
     @property
-    def sid(self):
+    def sid(self) -> str:
         """
         :returns: A string that uniquely identifies this Fleet.
-        :rtype: str
         """
         return self._properties["sid"]
 
     @property
-    def friendly_name(self):
+    def friendly_name(self) -> str:
         """
         :returns: A human readable description for this Fleet.
-        :rtype: str
         """
         return self._properties["friendly_name"]
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         """
         Provide a friendly representation
 
         :returns: Machine friendly representation
-        :rtype: str
         """
         context = " ".join("{}={}".format(k, v) for k, v in self._solution.items())
         return "<Twilio.Versionless.Understand.AssistantInstance {}>".format(context)
 
 
 class AssistantPage(Page):
-    def get_instance(self, payload):
+    def get_instance(self, payload) -> AssistantInstance:
         """
         Build an instance of AssistantInstance
 
         :param dict payload: Payload response from the API
-
-        :returns: twilio.rest.versionless.understand.assistant.AssistantInstance
-        :rtype: twilio.rest.versionless.understand.assistant.AssistantInstance
         """
         return AssistantInstance(self._version, payload)
 
@@ -91,16 +83,14 @@ class AssistantList(ListResource):
         """
         Initialize the AssistantList
 
-        :param Version version: Version that contains the resource
+        :param version: Version that contains the resource
 
-        :returns: twilio.rest.versionless.understand.assistant.AssistantList
-        :rtype: twilio.rest.versionless.understand.assistant.AssistantList
         """
         super().__init__(version)
 
         self._uri = "/Assistants"
 
-    def stream(self, limit=None, page_size=None):
+    def stream(self, limit=None, page_size=None) -> List[AssistantInstance]:
         """
         Streams AssistantInstance records from the API as a generator stream.
         This operation lazily loads records as efficiently as possible until the limit
@@ -115,14 +105,13 @@ class AssistantList(ListResource):
                               limit with the most efficient page size, i.e. min(limit, 1000)
 
         :returns: Generator that will yield up to limit results
-        :rtype: list[twilio.rest.versionless.understand.assistant.AssistantInstance]
         """
         limits = self._version.read_limits(limit, page_size)
         page = self.page(page_size=limits["page_size"])
 
         return self._version.stream(page, limits["limit"])
 
-    async def stream_async(self, limit=None, page_size=None):
+    async def stream_async(self, limit=None, page_size=None) -> List[AssistantInstance]:
         """
         Asynchronously streams AssistantInstance records from the API as a generator stream.
         This operation lazily loads records as efficiently as possible until the limit
@@ -137,14 +126,13 @@ class AssistantList(ListResource):
                               limit with the most efficient page size, i.e. min(limit, 1000)
 
         :returns: Generator that will yield up to limit results
-        :rtype: list[twilio.rest.versionless.understand.assistant.AssistantInstance]
         """
         limits = self._version.read_limits(limit, page_size)
         page = await self.page_async(page_size=limits["page_size"])
 
         return await self._version.stream_async(page, limits["limit"])
 
-    def list(self, limit=None, page_size=None):
+    def list(self, limit=None, page_size=None) -> List[AssistantInstance]:
         """
         Lists AssistantInstance records from the API as a list.
         Unlike stream(), this operation is eager and will load `limit` records into
@@ -158,7 +146,6 @@ class AssistantList(ListResource):
                               with the most efficient page size, i.e. min(limit, 1000)
 
         :returns: Generator that will yield up to limit results
-        :rtype: list[twilio.rest.versionless.understand.assistant.AssistantInstance]
         """
         return list(
             self.stream(
@@ -167,7 +154,7 @@ class AssistantList(ListResource):
             )
         )
 
-    async def list_async(self, limit=None, page_size=None):
+    async def list_async(self, limit=None, page_size=None) -> List[AssistantInstance]:
         """
         Asynchronously lists AssistantInstance records from the API as a list.
         Unlike stream(), this operation is eager and will load `limit` records into
@@ -181,7 +168,6 @@ class AssistantList(ListResource):
                               with the most efficient page size, i.e. min(limit, 1000)
 
         :returns: Generator that will yield up to limit results
-        :rtype: list[twilio.rest.versionless.understand.assistant.AssistantInstance]
         """
         return list(
             await self.stream_async(
@@ -192,7 +178,7 @@ class AssistantList(ListResource):
 
     def page(
         self, page_token=values.unset, page_number=values.unset, page_size=values.unset
-    ):
+    ) -> AssistantPage:
         """
         Retrieve a single page of AssistantInstance records from the API.
         Request is executed immediately
@@ -202,7 +188,6 @@ class AssistantList(ListResource):
         :param int page_size: Number of records to return, defaults to 50
 
         :returns: Page of AssistantInstance
-        :rtype: twilio.rest.versionless.understand.assistant.AssistantPage
         """
         data = values.of(
             {
@@ -217,7 +202,7 @@ class AssistantList(ListResource):
 
     async def page_async(
         self, page_token=values.unset, page_number=values.unset, page_size=values.unset
-    ):
+    ) -> AssistantPage:
         """
         Asynchronously retrieve a single page of AssistantInstance records from the API.
         Request is executed immediately
@@ -227,7 +212,6 @@ class AssistantList(ListResource):
         :param int page_size: Number of records to return, defaults to 50
 
         :returns: Page of AssistantInstance
-        :rtype: twilio.rest.versionless.understand.assistant.AssistantPage
         """
         data = values.of(
             {
@@ -242,7 +226,7 @@ class AssistantList(ListResource):
         )
         return AssistantPage(self._version, response)
 
-    def get_page(self, target_url):
+    def get_page(self, target_url) -> AssistantPage:
         """
         Retrieve a specific page of AssistantInstance records from the API.
         Request is executed immediately
@@ -250,12 +234,11 @@ class AssistantList(ListResource):
         :param str target_url: API-generated URL for the requested results page
 
         :returns: Page of AssistantInstance
-        :rtype: twilio.rest.versionless.understand.assistant.AssistantPage
         """
         response = self._version.domain.twilio.request("GET", target_url)
         return AssistantPage(self._version, response)
 
-    async def get_page_async(self, target_url):
+    async def get_page_async(self, target_url) -> AssistantPage:
         """
         Asynchronously retrieve a specific page of AssistantInstance records from the API.
         Request is executed immediately
@@ -263,16 +246,14 @@ class AssistantList(ListResource):
         :param str target_url: API-generated URL for the requested results page
 
         :returns: Page of AssistantInstance
-        :rtype: twilio.rest.versionless.understand.assistant.AssistantPage
         """
         response = await self._version.domain.twilio.request_async("GET", target_url)
         return AssistantPage(self._version, response)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         """
         Provide a friendly representation
 
         :returns: Machine friendly representation
-        :rtype: str
         """
         return "<Twilio.Versionless.Understand.AssistantList>"

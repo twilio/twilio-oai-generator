@@ -13,7 +13,9 @@ r"""
 """
 
 
-from typing import Optional
+from datetime import datetime
+from decimal import Decimal
+from typing import List, Optional
 from twilio.base import deserialize, serialize, values
 from twilio.base.instance_context import InstanceContext
 from twilio.base.instance_resource import InstanceResource
@@ -33,9 +35,6 @@ class FeedbackCallSummaryInstance(InstanceResource):
     def __init__(self, version, payload, account_sid: str, sid: Optional[str] = None):
         """
         Initialize the FeedbackCallSummaryInstance
-
-        :returns: twilio.rest.api.v2010.account.call.feedback_call_summary.FeedbackCallSummaryInstance
-        :rtype: twilio.rest.api.v2010.account.call.feedback_call_summary.FeedbackCallSummaryInstance
         """
         super().__init__(version)
 
@@ -69,13 +68,12 @@ class FeedbackCallSummaryInstance(InstanceResource):
         self._context: Optional[FeedbackCallSummaryContext] = None
 
     @property
-    def _proxy(self):
+    def _proxy(self) -> "FeedbackCallSummaryContext":
         """
         Generate an instance context for the instance, the context is capable of
         performing various actions. All instance actions are proxied to the context
 
         :returns: FeedbackCallSummaryContext for this FeedbackCallSummaryInstance
-        :rtype: twilio.rest.api.v2010.account.call.feedback_call_summary.FeedbackCallSummaryContext
         """
         if self._context is None:
             self._context = FeedbackCallSummaryContext(
@@ -86,134 +84,120 @@ class FeedbackCallSummaryInstance(InstanceResource):
         return self._context
 
     @property
-    def account_sid(self):
+    def account_sid(self) -> str:
         """
         :returns:
-        :rtype: str
         """
         return self._properties["account_sid"]
 
     @property
-    def sid(self):
+    def sid(self) -> str:
         """
         :returns:
-        :rtype: str
         """
         return self._properties["sid"]
 
     @property
-    def test_string(self):
+    def test_string(self) -> str:
         """
         :returns:
-        :rtype: str
         """
         return self._properties["test_string"]
 
     @property
-    def test_integer(self):
+    def test_integer(self) -> int:
         """
         :returns:
-        :rtype: int
         """
         return self._properties["test_integer"]
 
     @property
-    def test_object(self):
+    def test_object(self) -> str:
         """
         :returns:
-        :rtype: str
         """
         return self._properties["test_object"]
 
     @property
-    def test_date_time(self):
+    def test_date_time(self) -> datetime:
         """
         :returns:
-        :rtype: datetime
         """
         return self._properties["test_date_time"]
 
     @property
-    def test_number(self):
+    def test_number(self) -> float:
         """
         :returns:
-        :rtype: float
         """
         return self._properties["test_number"]
 
     @property
-    def price_unit(self):
+    def price_unit(self) -> str:
         """
         :returns:
-        :rtype: str
         """
         return self._properties["price_unit"]
 
     @property
-    def test_number_float(self):
+    def test_number_float(self) -> float:
         """
         :returns:
-        :rtype: float
         """
         return self._properties["test_number_float"]
 
     @property
-    def test_number_decimal(self):
+    def test_number_decimal(self) -> Decimal:
         """
         :returns:
-        :rtype: Decimal
         """
         return self._properties["test_number_decimal"]
 
     @property
-    def test_enum(self):
+    def test_enum(self) -> "FeedbackCallSummaryInstance.Status":
         """
         :returns:
-        :rtype: FeedbackCallSummaryInstance.Status
         """
         return self._properties["test_enum"]
 
     @property
-    def a2p_profile_bundle_sid(self):
+    def a2p_profile_bundle_sid(self) -> str:
         """
         :returns: A2P Messaging Profile Bundle BundleSid
-        :rtype: str
         """
         return self._properties["a2p_profile_bundle_sid"]
 
     @property
-    def test_array_of_integers(self):
+    def test_array_of_integers(self) -> List[int]:
         """
         :returns:
-        :rtype: List[int]
         """
         return self._properties["test_array_of_integers"]
 
     @property
-    def test_array_of_array_of_integers(self):
+    def test_array_of_array_of_integers(self) -> List[List[int]]:
         """
         :returns:
-        :rtype: List[List[int]]
         """
         return self._properties["test_array_of_array_of_integers"]
 
     @property
-    def test_array_of_objects(self):
+    def test_array_of_objects(self) -> List[str]:
         """
         :returns:
-        :rtype: List[str]
         """
         return self._properties["test_array_of_objects"]
 
     @property
-    def test_array_of_enum(self):
+    def test_array_of_enum(self) -> List["FeedbackCallSummaryInstance.Status"]:
         """
         :returns: Permissions authorized to the app
-        :rtype: List[FeedbackCallSummaryInstance.Status]
         """
         return self._properties["test_array_of_enum"]
 
-    def update(self, end_date, start_date, account_sid=values.unset):
+    def update(
+        self, end_date, start_date, account_sid=values.unset
+    ) -> "FeedbackCallSummaryInstance":
         """
         Update the FeedbackCallSummaryInstance
 
@@ -222,7 +206,6 @@ class FeedbackCallSummaryInstance(InstanceResource):
         :param str account_sid:
 
         :returns: The updated FeedbackCallSummaryInstance
-        :rtype: twilio.rest.api.v2010.account.call.feedback_call_summary.FeedbackCallSummaryInstance
         """
         return self._proxy.update(
             end_date=end_date,
@@ -230,7 +213,9 @@ class FeedbackCallSummaryInstance(InstanceResource):
             account_sid=account_sid,
         )
 
-    async def update_async(self, end_date, start_date, account_sid=values.unset):
+    async def update_async(
+        self, end_date, start_date, account_sid=values.unset
+    ) -> "FeedbackCallSummaryInstance":
         """
         Asynchronous coroutine to update the FeedbackCallSummaryInstance
 
@@ -239,7 +224,6 @@ class FeedbackCallSummaryInstance(InstanceResource):
         :param str account_sid:
 
         :returns: The updated FeedbackCallSummaryInstance
-        :rtype: twilio.rest.api.v2010.account.call.feedback_call_summary.FeedbackCallSummaryInstance
         """
         return await self._proxy.update_async(
             end_date=end_date,
@@ -247,12 +231,11 @@ class FeedbackCallSummaryInstance(InstanceResource):
             account_sid=account_sid,
         )
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         """
         Provide a friendly representation
 
         :returns: Machine friendly representation
-        :rtype: str
         """
         context = " ".join("{}={}".format(k, v) for k, v in self._solution.items())
         return "<Twilio.Api.V2010.FeedbackCallSummaryInstance {}>".format(context)
@@ -263,12 +246,9 @@ class FeedbackCallSummaryContext(InstanceContext):
         """
         Initialize the FeedbackCallSummaryContext
 
-        :param Version version: Version that contains the resource
+        :param version: Version that contains the resource
         :param account_sid:
         :param sid:
-
-        :returns: twilio.rest.api.v2010.account.call.feedback_call_summary.FeedbackCallSummaryContext
-        :rtype: twilio.rest.api.v2010.account.call.feedback_call_summary.FeedbackCallSummaryContext
         """
         super().__init__(version)
 
@@ -281,7 +261,9 @@ class FeedbackCallSummaryContext(InstanceContext):
             **self._solution
         )
 
-    def update(self, end_date, start_date, account_sid=values.unset):
+    def update(
+        self, end_date, start_date, account_sid=values.unset
+    ) -> FeedbackCallSummaryInstance:
         """
         Update the FeedbackCallSummaryInstance
 
@@ -290,7 +272,6 @@ class FeedbackCallSummaryContext(InstanceContext):
         :param str account_sid:
 
         :returns: The updated FeedbackCallSummaryInstance
-        :rtype: twilio.rest.api.v2010.account.call.feedback_call_summary.FeedbackCallSummaryInstance
         """
         data = values.of(
             {
@@ -313,7 +294,9 @@ class FeedbackCallSummaryContext(InstanceContext):
             sid=self._solution["sid"],
         )
 
-    async def update_async(self, end_date, start_date, account_sid=values.unset):
+    async def update_async(
+        self, end_date, start_date, account_sid=values.unset
+    ) -> FeedbackCallSummaryInstance:
         """
         Asynchronous coroutine to update the FeedbackCallSummaryInstance
 
@@ -322,7 +305,6 @@ class FeedbackCallSummaryContext(InstanceContext):
         :param str account_sid:
 
         :returns: The updated FeedbackCallSummaryInstance
-        :rtype: twilio.rest.api.v2010.account.call.feedback_call_summary.FeedbackCallSummaryInstance
         """
         data = values.of(
             {
@@ -345,12 +327,11 @@ class FeedbackCallSummaryContext(InstanceContext):
             sid=self._solution["sid"],
         )
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         """
         Provide a friendly representation
 
         :returns: Machine friendly representation
-        :rtype: str
         """
         context = " ".join("{}={}".format(k, v) for k, v in self._solution.items())
         return "<Twilio.Api.V2010.FeedbackCallSummaryContext {}>".format(context)
@@ -361,11 +342,9 @@ class FeedbackCallSummaryList(ListResource):
         """
         Initialize the FeedbackCallSummaryList
 
-        :param Version version: Version that contains the resource
+        :param version: Version that contains the resource
         :param account_sid:
 
-        :returns: twilio.rest.api.v2010.account.call.feedback_call_summary.FeedbackCallSummaryList
-        :rtype: twilio.rest.api.v2010.account.call.feedback_call_summary.FeedbackCallSummaryList
         """
         super().__init__(version)
 
@@ -374,37 +353,30 @@ class FeedbackCallSummaryList(ListResource):
             "account_sid": account_sid,
         }
 
-    def get(self, sid):
+    def get(self, sid) -> FeedbackCallSummaryContext:
         """
         Constructs a FeedbackCallSummaryContext
 
         :param sid:
-
-        :returns: twilio.rest.api.v2010.account.call.feedback_call_summary.FeedbackCallSummaryContext
-        :rtype: twilio.rest.api.v2010.account.call.feedback_call_summary.FeedbackCallSummaryContext
         """
         return FeedbackCallSummaryContext(
             self._version, account_sid=self._solution["account_sid"], sid=sid
         )
 
-    def __call__(self, sid):
+    def __call__(self, sid) -> FeedbackCallSummaryContext:
         """
         Constructs a FeedbackCallSummaryContext
 
         :param sid:
-
-        :returns: twilio.rest.api.v2010.account.call.feedback_call_summary.FeedbackCallSummaryContext
-        :rtype: twilio.rest.api.v2010.account.call.feedback_call_summary.FeedbackCallSummaryContext
         """
         return FeedbackCallSummaryContext(
             self._version, account_sid=self._solution["account_sid"], sid=sid
         )
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         """
         Provide a friendly representation
 
         :returns: Machine friendly representation
-        :rtype: str
         """
         return "<Twilio.Api.V2010.FeedbackCallSummaryList>"

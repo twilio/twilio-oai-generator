@@ -24,9 +24,6 @@ class NewCredentialsInstance(InstanceResource):
     def __init__(self, version, payload):
         """
         Initialize the NewCredentialsInstance
-
-        :returns: twilio.rest.flex_api.v1.credential.new_credentials.NewCredentialsInstance
-        :rtype: twilio.rest.flex_api.v1.credential.new_credentials.NewCredentialsInstance
         """
         super().__init__(version)
 
@@ -40,43 +37,38 @@ class NewCredentialsInstance(InstanceResource):
         self._solution = {}
 
     @property
-    def account_sid(self):
+    def account_sid(self) -> str:
         """
         :returns:
-        :rtype: str
         """
         return self._properties["account_sid"]
 
     @property
-    def sid(self):
+    def sid(self) -> str:
         """
         :returns:
-        :rtype: str
         """
         return self._properties["sid"]
 
     @property
-    def test_string(self):
+    def test_string(self) -> str:
         """
         :returns:
-        :rtype: str
         """
         return self._properties["test_string"]
 
     @property
-    def test_integer(self):
+    def test_integer(self) -> int:
         """
         :returns:
-        :rtype: int
         """
         return self._properties["test_integer"]
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         """
         Provide a friendly representation
 
         :returns: Machine friendly representation
-        :rtype: str
         """
         context = " ".join("{}={}".format(k, v) for k, v in self._solution.items())
         return "<Twilio.FlexApi.V1.NewCredentialsInstance {}>".format(context)
@@ -87,10 +79,8 @@ class NewCredentialsList(ListResource):
         """
         Initialize the NewCredentialsList
 
-        :param Version version: Version that contains the resource
+        :param version: Version that contains the resource
 
-        :returns: twilio.rest.flex_api.v1.credential.new_credentials.NewCredentialsList
-        :rtype: twilio.rest.flex_api.v1.credential.new_credentials.NewCredentialsList
         """
         super().__init__(version)
 
@@ -115,7 +105,7 @@ class NewCredentialsList(ListResource):
         test_any_array=values.unset,
         permissions=values.unset,
         some_a2p_thing=values.unset,
-    ):
+    ) -> NewCredentialsInstance:
         """
         Create the NewCredentialsInstance
 
@@ -130,7 +120,7 @@ class NewCredentialsList(ListResource):
         :param dict test_object:
         :param datetime test_date_time:
         :param date test_date:
-        :param NewCredentialsInstance.Status test_enum:
+        :param &quot;NewCredentialsInstance.Status&quot; test_enum:
         :param List[object] test_object_array:
         :param object test_any_type:
         :param List[object] test_any_array:
@@ -138,7 +128,6 @@ class NewCredentialsList(ListResource):
         :param str some_a2p_thing:
 
         :returns: The created NewCredentialsInstance
-        :rtype: twilio.rest.flex_api.v1.credential.new_credentials.NewCredentialsInstance
         """
         data = values.of(
             {
@@ -193,7 +182,7 @@ class NewCredentialsList(ListResource):
         test_any_array=values.unset,
         permissions=values.unset,
         some_a2p_thing=values.unset,
-    ):
+    ) -> NewCredentialsInstance:
         """
         Asynchronously create the NewCredentialsInstance
 
@@ -208,7 +197,7 @@ class NewCredentialsList(ListResource):
         :param dict test_object:
         :param datetime test_date_time:
         :param date test_date:
-        :param NewCredentialsInstance.Status test_enum:
+        :param &quot;NewCredentialsInstance.Status&quot; test_enum:
         :param List[object] test_object_array:
         :param object test_any_type:
         :param List[object] test_any_array:
@@ -216,7 +205,6 @@ class NewCredentialsList(ListResource):
         :param str some_a2p_thing:
 
         :returns: The created NewCredentialsInstance
-        :rtype: twilio.rest.flex_api.v1.credential.new_credentials.NewCredentialsInstance
         """
         data = values.of(
             {
@@ -252,11 +240,10 @@ class NewCredentialsList(ListResource):
 
         return NewCredentialsInstance(self._version, payload)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         """
         Provide a friendly representation
 
         :returns: Machine friendly representation
-        :rtype: str
         """
         return "<Twilio.FlexApi.V1.NewCredentialsList>"
