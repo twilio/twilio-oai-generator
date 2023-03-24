@@ -15,8 +15,8 @@ COPY tests tests
 
 # Install requirements
 RUN pip install --no-cache-dir -r requirements.txt
-RUN pip install pytest
+RUN pip install pytest pytest-cov
 RUN pip install pytz
 
 # pipefail prevents errors in a pipeline from being masked
-CMD ["/bin/bash", "-c", "set -o pipefail && sleep 10 && python -m pytest tests 2>&1 | tee /local/test-report.out"]
+CMD ["/bin/bash", "-c", "set -o pipefail && sleep 10 && python -m pytest --cov-config= --cov-report xml --cov=twilio/rest/ tests 2>&1 | tee /local/test-report.out"]
