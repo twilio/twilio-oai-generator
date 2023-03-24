@@ -13,7 +13,7 @@ r"""
 """
 
 
-from typing import Optional
+from typing import Any, Dict, Optional
 from twilio.base import values
 from twilio.base.instance_context import InstanceContext
 from twilio.base.instance_resource import InstanceResource
@@ -22,18 +22,24 @@ from twilio.base.version import Version
 
 
 class FleetInstance(InstanceResource):
-    def __init__(self, version, payload, sid: Optional[str] = None):
-        """
-        Initialize the FleetInstance
-        """
+
+    """
+    :ivar name:
+    :ivar sid: A string that uniquely identifies this Fleet.
+    :ivar friendly_name: A human readable description for this Fleet.
+    """
+
+    def __init__(
+        self, version: Version, payload: Dict[str, Any], sid: Optional[str] = None
+    ):
         super().__init__(version)
 
-        self._name: Optional[str] = payload.get("name")
-        self._sid: Optional[str] = payload.get("sid")
-        self._friendly_name: Optional[str] = payload.get("friendly_name")
+        self.name: Optional[str] = payload.get("name")
+        self.sid: Optional[str] = payload.get("sid")
+        self.friendly_name: Optional[str] = payload.get("friendly_name")
 
         self._solution = {
-            "sid": sid or self._sid,
+            "sid": sid or self.sid,
         }
         self._context: Optional[FleetContext] = None
 
@@ -51,24 +57,6 @@ class FleetInstance(InstanceResource):
                 sid=self._solution["sid"],
             )
         return self._context
-
-    @property
-    def name(self) -> Optional[str]:
-        return self._name
-
-    @property
-    def sid(self) -> Optional[str]:
-        """
-        :returns: A string that uniquely identifies this Fleet.
-        """
-        return self._sid
-
-    @property
-    def friendly_name(self) -> Optional[str]:
-        """
-        :returns: A human readable description for this Fleet.
-        """
-        return self._friendly_name
 
     def fetch(self) -> "FleetInstance":
         """

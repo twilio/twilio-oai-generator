@@ -15,7 +15,7 @@ r"""
 
 from datetime import datetime
 from decimal import Decimal
-from typing import List, Optional
+from typing import Any, Dict, List, Optional
 from twilio.base import deserialize, serialize, values
 from twilio.base.instance_context import InstanceContext
 from twilio.base.instance_resource import InstanceResource
@@ -34,49 +34,65 @@ class AccountInstance(InstanceResource):
         COMPLETED = "completed"
         ABSENT = "absent"
 
-    def __init__(self, version, payload, sid: Optional[str] = None):
-        """
-        Initialize the AccountInstance
-        """
+    """
+    :ivar account_sid: 
+    :ivar sid: 
+    :ivar test_string: 
+    :ivar test_integer: 
+    :ivar test_object: 
+    :ivar test_date_time: 
+    :ivar test_number: 
+    :ivar price_unit: 
+    :ivar test_number_float: 
+    :ivar test_number_decimal: 
+    :ivar test_enum: 
+    :ivar a2p_profile_bundle_sid: A2P Messaging Profile Bundle BundleSid
+    :ivar test_array_of_integers: 
+    :ivar test_array_of_array_of_integers: 
+    :ivar test_array_of_objects: 
+    :ivar test_array_of_enum: Permissions authorized to the app
+    """
+
+    def __init__(
+        self, version: Version, payload: Dict[str, Any], sid: Optional[str] = None
+    ):
         super().__init__(version)
 
-        self._account_sid: Optional[str] = payload.get("account_sid")
-        self._sid: Optional[str] = payload.get("sid")
-        self._test_string: Optional[str] = payload.get("test_string")
-        self._test_integer: Optional[int] = deserialize.integer(
+        self.account_sid: Optional[str] = payload.get("account_sid")
+        self.sid: Optional[str] = payload.get("sid")
+        self.test_string: Optional[str] = payload.get("test_string")
+        self.test_integer: Optional[int] = deserialize.integer(
             payload.get("test_integer")
         )
-        self._test_object: Optional[str] = payload.get("test_object")
-        self._test_date_time: Optional[datetime] = deserialize.rfc2822_datetime(
+        self.test_object: Optional[str] = payload.get("test_object")
+        self.test_date_time: Optional[datetime] = deserialize.rfc2822_datetime(
             payload.get("test_date_time")
         )
-        self._test_number: Optional[float] = deserialize.decimal(
+        self.test_number: Optional[float] = deserialize.decimal(
             payload.get("test_number")
         )
-        self._price_unit: Optional[str] = payload.get("price_unit")
-        self._test_number_float: Optional[float] = payload.get("test_number_float")
-        self._test_number_decimal: Optional[Decimal] = payload.get(
-            "test_number_decimal"
-        )
-        self._test_enum: Optional["AccountInstance.Status"] = payload.get("test_enum")
-        self._a2p_profile_bundle_sid: Optional[str] = payload.get(
+        self.price_unit: Optional[str] = payload.get("price_unit")
+        self.test_number_float: Optional[float] = payload.get("test_number_float")
+        self.test_number_decimal: Optional[Decimal] = payload.get("test_number_decimal")
+        self.test_enum: Optional["AccountInstance.Status"] = payload.get("test_enum")
+        self.a2p_profile_bundle_sid: Optional[str] = payload.get(
             "a2p_profile_bundle_sid"
         )
-        self._test_array_of_integers: Optional[List[int]] = payload.get(
+        self.test_array_of_integers: Optional[List[int]] = payload.get(
             "test_array_of_integers"
         )
-        self._test_array_of_array_of_integers: Optional[List[List[int]]] = payload.get(
+        self.test_array_of_array_of_integers: Optional[List[List[int]]] = payload.get(
             "test_array_of_array_of_integers"
         )
-        self._test_array_of_objects: Optional[List[str]] = payload.get(
+        self.test_array_of_objects: Optional[List[str]] = payload.get(
             "test_array_of_objects"
         )
-        self._test_array_of_enum: Optional[
-            List["AccountInstance.Status"]
-        ] = payload.get("test_array_of_enum")
+        self.test_array_of_enum: Optional[List["AccountInstance.Status"]] = payload.get(
+            "test_array_of_enum"
+        )
 
         self._solution = {
-            "sid": sid or self._sid,
+            "sid": sid or self.sid,
         }
         self._context: Optional[AccountContext] = None
 
@@ -94,76 +110,6 @@ class AccountInstance(InstanceResource):
                 sid=self._solution["sid"],
             )
         return self._context
-
-    @property
-    def account_sid(self) -> Optional[str]:
-        return self._account_sid
-
-    @property
-    def sid(self) -> Optional[str]:
-        return self._sid
-
-    @property
-    def test_string(self) -> Optional[str]:
-        return self._test_string
-
-    @property
-    def test_integer(self) -> Optional[int]:
-        return self._test_integer
-
-    @property
-    def test_object(self) -> Optional[str]:
-        return self._test_object
-
-    @property
-    def test_date_time(self) -> Optional[datetime]:
-        return self._test_date_time
-
-    @property
-    def test_number(self) -> Optional[float]:
-        return self._test_number
-
-    @property
-    def price_unit(self) -> Optional[str]:
-        return self._price_unit
-
-    @property
-    def test_number_float(self) -> Optional[float]:
-        return self._test_number_float
-
-    @property
-    def test_number_decimal(self) -> Optional[Decimal]:
-        return self._test_number_decimal
-
-    @property
-    def test_enum(self) -> Optional["AccountInstance.Status"]:
-        return self._test_enum
-
-    @property
-    def a2p_profile_bundle_sid(self) -> Optional[str]:
-        """
-        :returns: A2P Messaging Profile Bundle BundleSid
-        """
-        return self._a2p_profile_bundle_sid
-
-    @property
-    def test_array_of_integers(self) -> Optional[List[int]]:
-        return self._test_array_of_integers
-
-    @property
-    def test_array_of_array_of_integers(self) -> Optional[List[List[int]]]:
-        return self._test_array_of_array_of_integers
-
-    @property
-    def test_array_of_objects(self) -> Optional[List[str]]:
-        return self._test_array_of_objects
-
-    @property
-    def test_array_of_enum(self) -> Optional[List["AccountInstance.Status"]]:
-        """
-        :returns: Permissions authorized to the app
-        """
-        return self._test_array_of_enum
 
     def delete(self) -> bool:
         """

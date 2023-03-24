@@ -13,7 +13,7 @@ r"""
 """
 
 
-from typing import List, Optional
+from typing import Any, Dict, List, Optional
 from twilio.base import deserialize, values
 from twilio.base.instance_context import InstanceContext
 from twilio.base.instance_resource import InstanceResource
@@ -24,21 +24,28 @@ from twilio.rest.flex_api.v1.credential.aws.history import HistoryList
 
 
 class AwsInstance(InstanceResource):
-    def __init__(self, version, payload, sid: Optional[str] = None):
-        """
-        Initialize the AwsInstance
-        """
+
+    """
+    :ivar account_sid:
+    :ivar sid:
+    :ivar test_string:
+    :ivar test_integer:
+    """
+
+    def __init__(
+        self, version: Version, payload: Dict[str, Any], sid: Optional[str] = None
+    ):
         super().__init__(version)
 
-        self._account_sid: Optional[str] = payload.get("account_sid")
-        self._sid: Optional[str] = payload.get("sid")
-        self._test_string: Optional[str] = payload.get("test_string")
-        self._test_integer: Optional[int] = deserialize.integer(
+        self.account_sid: Optional[str] = payload.get("account_sid")
+        self.sid: Optional[str] = payload.get("sid")
+        self.test_string: Optional[str] = payload.get("test_string")
+        self.test_integer: Optional[int] = deserialize.integer(
             payload.get("test_integer")
         )
 
         self._solution = {
-            "sid": sid or self._sid,
+            "sid": sid or self.sid,
         }
         self._context: Optional[AwsContext] = None
 
@@ -56,22 +63,6 @@ class AwsInstance(InstanceResource):
                 sid=self._solution["sid"],
             )
         return self._context
-
-    @property
-    def account_sid(self) -> Optional[str]:
-        return self._account_sid
-
-    @property
-    def sid(self) -> Optional[str]:
-        return self._sid
-
-    @property
-    def test_string(self) -> Optional[str]:
-        return self._test_string
-
-    @property
-    def test_integer(self) -> Optional[int]:
-        return self._test_integer
 
     def delete(self) -> bool:
         """

@@ -13,7 +13,7 @@ r"""
 """
 
 
-from typing import Optional
+from typing import Any, Dict, Optional
 from twilio.base import deserialize, serialize, values
 
 from twilio.base.instance_resource import InstanceResource
@@ -22,36 +22,25 @@ from twilio.base.version import Version
 
 
 class NewCredentialsInstance(InstanceResource):
-    def __init__(self, version, payload):
-        """
-        Initialize the NewCredentialsInstance
-        """
+
+    """
+    :ivar account_sid:
+    :ivar sid:
+    :ivar test_string:
+    :ivar test_integer:
+    """
+
+    def __init__(self, version: Version, payload: Dict[str, Any]):
         super().__init__(version)
 
-        self._account_sid: Optional[str] = payload.get("account_sid")
-        self._sid: Optional[str] = payload.get("sid")
-        self._test_string: Optional[str] = payload.get("test_string")
-        self._test_integer: Optional[int] = deserialize.integer(
+        self.account_sid: Optional[str] = payload.get("account_sid")
+        self.sid: Optional[str] = payload.get("sid")
+        self.test_string: Optional[str] = payload.get("test_string")
+        self.test_integer: Optional[int] = deserialize.integer(
             payload.get("test_integer")
         )
 
         self._solution = {}
-
-    @property
-    def account_sid(self) -> Optional[str]:
-        return self._account_sid
-
-    @property
-    def sid(self) -> Optional[str]:
-        return self._sid
-
-    @property
-    def test_string(self) -> Optional[str]:
-        return self._test_string
-
-    @property
-    def test_integer(self) -> Optional[int]:
-        return self._test_integer
 
     def __repr__(self) -> str:
         """
