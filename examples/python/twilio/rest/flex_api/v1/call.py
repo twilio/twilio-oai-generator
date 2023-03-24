@@ -28,12 +28,10 @@ class CallInstance(InstanceResource):
         """
         super().__init__(version)
 
-        self._properties = {
-            "sid": deserialize.integer(payload.get("sid")),
-        }
+        self._sid: Optional[int] = deserialize.integer(payload.get("sid"))
 
         self._solution = {
-            "sid": sid or self._properties["sid"],
+            "sid": sid or self._sid,
         }
         self._context: Optional[CallContext] = None
 
@@ -53,11 +51,11 @@ class CallInstance(InstanceResource):
         return self._context
 
     @property
-    def sid(self) -> int:
+    def sid(self) -> Optional[int]:
         """
         :returns: Non-string path parameter in the response.
         """
-        return self._properties["sid"]
+        return self._sid
 
     def update(self) -> "CallInstance":
         """

@@ -28,12 +28,12 @@ class HistoryInstance(InstanceResource):
         """
         super().__init__(version)
 
-        self._properties = {
-            "account_sid": payload.get("account_sid"),
-            "sid": payload.get("sid"),
-            "test_string": payload.get("test_string"),
-            "test_integer": deserialize.integer(payload.get("test_integer")),
-        }
+        self._account_sid: Optional[str] = payload.get("account_sid")
+        self._sid: Optional[str] = payload.get("sid")
+        self._test_string: Optional[str] = payload.get("test_string")
+        self._test_integer: Optional[int] = deserialize.integer(
+            payload.get("test_integer")
+        )
 
         self._solution = {
             "sid": sid,
@@ -56,32 +56,20 @@ class HistoryInstance(InstanceResource):
         return self._context
 
     @property
-    def account_sid(self) -> str:
-        """
-        :returns:
-        """
-        return self._properties["account_sid"]
+    def account_sid(self) -> Optional[str]:
+        return self._account_sid
 
     @property
-    def sid(self) -> str:
-        """
-        :returns:
-        """
-        return self._properties["sid"]
+    def sid(self) -> Optional[str]:
+        return self._sid
 
     @property
-    def test_string(self) -> str:
-        """
-        :returns:
-        """
-        return self._properties["test_string"]
+    def test_string(self) -> Optional[str]:
+        return self._test_string
 
     @property
-    def test_integer(self) -> int:
-        """
-        :returns:
-        """
-        return self._properties["test_integer"]
+    def test_integer(self) -> Optional[int]:
+        return self._test_integer
 
     def fetch(self, add_ons_data=values.unset) -> "HistoryInstance":
         """

@@ -6,11 +6,10 @@ class {{instanceName}}(InstanceResource):
         """
         super().__init__(version)
 
-        self._properties = { {{#vars}}
-            '{{name}}': {{#if vendorExtensions.x-deserialize}}{{vendorExtensions.x-deserialize}}(payload.get('{{{baseName}}}')){{else}}payload.get('{{{baseName}}}'){{/if}},{{/vars}}
-        }
+        {{#vars}}
+        self._{{name}}: Optional[{{{baseType}}}] = {{#if vendorExtensions.x-deserialize}}{{vendorExtensions.x-deserialize}}(payload.get("{{{baseName}}}")){{else}}payload.get("{{{baseName}}}"){{/if}}{{/vars}}
 
-        self._solution = { {{#instancePathParams}}'{{paramName}}': {{paramName}}{{#if vendorExtensions.x-is-parent-param}}, {{else}} or self._properties['{{paramName}}'], {{/if}}{{/instancePathParams}} }
+        self._solution = { {{#instancePathParams}}"{{paramName}}": {{paramName}}{{#if vendorExtensions.x-is-parent-param}}, {{else}} or self._{{paramName}}, {{/if}}{{/instancePathParams}} }
         {{#instancePath}}self._context: Optional[{{apiName}}Context] = None
 
     @property
@@ -26,11 +25,11 @@ class {{instanceName}}(InstanceResource):
         return self._context{{/instancePath}}
     {{#vars}}
     @property
-    def {{name}}(self) -> {{{baseType}}}:
-        """
-        :returns: {{{description}}}
-        """
-        return self._properties['{{name}}']
+    def {{name}}(self) -> Optional[{{{baseType}}}]:
+        {{#description}}"""
+        :returns: {{{.}}}
+        """{{/description}}
+        return self._{{name}}
     {{/vars}}{{#operations}}{{#vendorExtensions.x-is-context-operation}}
     {{#vendorExtensions.x-is-update-operation}}
     def {{vendorExtensions.x-name-lower}}(self{{#allParams}}, {{paramName}}{{#if required}}{{else}}=values.unset{{/if}}{{/allParams}}) -> "{{instanceName}}":

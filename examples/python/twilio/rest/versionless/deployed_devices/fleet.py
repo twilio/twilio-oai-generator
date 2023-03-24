@@ -28,14 +28,12 @@ class FleetInstance(InstanceResource):
         """
         super().__init__(version)
 
-        self._properties = {
-            "name": payload.get("name"),
-            "sid": payload.get("sid"),
-            "friendly_name": payload.get("friendly_name"),
-        }
+        self._name: Optional[str] = payload.get("name")
+        self._sid: Optional[str] = payload.get("sid")
+        self._friendly_name: Optional[str] = payload.get("friendly_name")
 
         self._solution = {
-            "sid": sid or self._properties["sid"],
+            "sid": sid or self._sid,
         }
         self._context: Optional[FleetContext] = None
 
@@ -55,25 +53,22 @@ class FleetInstance(InstanceResource):
         return self._context
 
     @property
-    def name(self) -> str:
-        """
-        :returns:
-        """
-        return self._properties["name"]
+    def name(self) -> Optional[str]:
+        return self._name
 
     @property
-    def sid(self) -> str:
+    def sid(self) -> Optional[str]:
         """
         :returns: A string that uniquely identifies this Fleet.
         """
-        return self._properties["sid"]
+        return self._sid
 
     @property
-    def friendly_name(self) -> str:
+    def friendly_name(self) -> Optional[str]:
         """
         :returns: A human readable description for this Fleet.
         """
-        return self._properties["friendly_name"]
+        return self._friendly_name
 
     def fetch(self) -> "FleetInstance":
         """

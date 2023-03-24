@@ -17,19 +17,18 @@ class IntegrationTest(unittest.TestCase):
 
     def test_create_account(self):
         result = self.client.api.v2010.accounts.create()
-        print(result._properties)
-        self.assertEqual(result._properties["sid"], self.auth)
-        self.assertEqual(result._properties["test_string"], "Ahoy")
+        self.assertEqual(result.sid, self.auth)
+        self.assertEqual(result.test_string, "Ahoy")
 
     def test_create_call(self):
         result = self.client.api.v2010.accounts(self.sid).calls.create("str", "POST")
-        self.assertEqual(result._properties["sid"], self.auth)
-        self.assertEqual(result._properties["test_string"], "Ahoy")
+        self.assertEqual(result.sid, self.auth)
+        self.assertEqual(result.test_string, "Ahoy")
 
     def test_fetch_call(self):
         result = self.client.api.v2010.accounts(self.sid).calls(123).fetch()
-        self.assertEqual(result._properties["sid"], self.auth)
-        self.assertEqual(result._properties["test_string"], "Ahoy")
+        self.assertEqual(result.sid, self.auth)
+        self.assertEqual(result.test_string, "Ahoy")
 
     def test_update_call_feedback_summary(self):
         result = (
@@ -38,10 +37,10 @@ class IntegrationTest(unittest.TestCase):
             .update(end_date="2020-12-31", start_date="2020-01-01")
         )
         self.assertEqual(
-            result._properties["test_array_of_objects"][0]["description"],
+            result.test_array_of_objects[0]["description"],
             "issue description",
         )
-        self.assertEqual(result._properties["test_array_of_objects"][0]["count"], 4)
+        self.assertEqual(result.test_array_of_objects[0]["count"], 4)
 
 
 class AsyncIntegrationTests(unittest.IsolatedAsyncioTestCase):
@@ -61,21 +60,20 @@ class AsyncIntegrationTests(unittest.IsolatedAsyncioTestCase):
 
     async def test_create_account(self):
         result = await self.client.api.v2010.accounts.create_async()
-        print(result._properties)
-        self.assertEqual(result._properties["sid"], self.auth)
-        self.assertEqual(result._properties["test_string"], "Ahoy")
+        self.assertEqual(result.sid, self.auth)
+        self.assertEqual(result.test_string, "Ahoy")
 
     async def test_create_call(self):
         result = await self.client.api.v2010.accounts(self.sid).calls.create_async(
             "str", "POST"
         )
-        self.assertEqual(result._properties["sid"], self.auth)
-        self.assertEqual(result._properties["test_string"], "Ahoy")
+        self.assertEqual(result.sid, self.auth)
+        self.assertEqual(result.test_string, "Ahoy")
 
     async def test_fetch_call(self):
         result = await self.client.api.v2010.accounts(self.sid).calls(123).fetch_async()
-        self.assertEqual(result._properties["sid"], self.auth)
-        self.assertEqual(result._properties["test_string"], "Ahoy")
+        self.assertEqual(result.sid, self.auth)
+        self.assertEqual(result.test_string, "Ahoy")
 
     async def test_update_call_feedback_summary(self):
         result = (
@@ -84,7 +82,7 @@ class AsyncIntegrationTests(unittest.IsolatedAsyncioTestCase):
             .update_async(end_date="2020-12-31", start_date="2020-01-01")
         )
         self.assertEqual(
-            result._properties["test_array_of_objects"][0]["description"],
+            result.test_array_of_objects[0]["description"],
             "issue description",
         )
-        self.assertEqual(result._properties["test_array_of_objects"][0]["count"], 4)
+        self.assertEqual(result.test_array_of_objects[0]["count"], 4)
