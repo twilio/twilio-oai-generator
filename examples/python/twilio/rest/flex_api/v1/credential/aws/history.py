@@ -87,7 +87,7 @@ class HistoryInstance(InstanceResource):
         """
         Fetch the HistoryInstance
 
-        :param dict add_ons_data:
+        :param Dict[str, object] add_ons_data:
 
         :returns: The fetched HistoryInstance
         """
@@ -99,7 +99,7 @@ class HistoryInstance(InstanceResource):
         """
         Asynchronous coroutine to fetch the HistoryInstance
 
-        :param dict add_ons_data:
+        :param Dict[str, object] add_ons_data:
 
         :returns: The fetched HistoryInstance
         """
@@ -137,7 +137,7 @@ class HistoryContext(InstanceContext):
         """
         Fetch the HistoryInstance
 
-        :param dict add_ons_data:
+        :param Dict[str, object] add_ons_data:
 
         :returns: The fetched HistoryInstance
         """
@@ -157,7 +157,7 @@ class HistoryContext(InstanceContext):
         """
         Asynchronous coroutine to fetch the HistoryInstance
 
-        :param dict add_ons_data:
+        :param Dict[str, object] add_ons_data:
 
         :returns: The fetched HistoryInstance
         """

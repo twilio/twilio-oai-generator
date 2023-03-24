@@ -117,7 +117,7 @@ class NewCredentialsList(ListResource):
         :param float test_number_double:
         :param float test_number_int32:
         :param int test_number_int64:
-        :param dict test_object:
+        :param Dict[str, object] test_object:
         :param datetime test_date_time:
         :param date test_date:
         :param &quot;NewCredentialsInstance.Status&quot; test_enum:
@@ -194,7 +194,7 @@ class NewCredentialsList(ListResource):
         :param float test_number_double:
         :param float test_number_int32:
         :param int test_number_int64:
-        :param dict test_object:
+        :param Dict[str, object] test_object:
         :param datetime test_date_time:
         :param date test_date:
         :param &quot;NewCredentialsInstance.Status&quot; test_enum:
