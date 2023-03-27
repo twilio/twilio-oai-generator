@@ -16,7 +16,7 @@ COPY setup.cfg setup.cfg
 
 # Install requirements
 RUN pip install --no-cache-dir -r requirements.txt
-RUN pip install pytest pytest-cov
+RUN pip install pytest-cov
 RUN pip install pytz
 
 # pipefail prevents errors in a pipeline from being masked
