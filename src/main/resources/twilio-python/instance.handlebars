@@ -1,16 +1,16 @@
 class {{instanceName}}(InstanceResource):
 {{>model}}
-    def __init__(self, version, payload{{#instancePathParams}}, {{paramName}}: {{#if vendorExtensions.x-is-parent-param}}{{{contentType}}}{{else}}Optional[{{{contentType}}}] = None{{/if}}{{/instancePathParams}}):
-        """
-        Initialize the {{instanceName}}
-        """
+    """{{#vars}}
+    :ivar {{name}}: {{{description}}}{{/vars}}
+    """
+
+    def __init__(self, version: Version, payload: Dict[str, Any]{{#instancePathParams}}, {{paramName}}: {{#if vendorExtensions.x-is-parent-param}}{{{contentType}}}{{else}}Optional[{{{contentType}}}] = None{{/if}}{{/instancePathParams}}):
         super().__init__(version)
 
-        self._properties = { {{#vars}}
-            '{{name}}': {{#if vendorExtensions.x-deserialize}}{{vendorExtensions.x-deserialize}}(payload.get('{{{baseName}}}')){{else}}payload.get('{{{baseName}}}'){{/if}},{{/vars}}
-        }
+        {{#vars}}
+        self.{{name}}: Optional[{{{baseType}}}] = {{#if vendorExtensions.x-deserialize}}{{vendorExtensions.x-deserialize}}(payload.get("{{{baseName}}}")){{else}}payload.get("{{{baseName}}}"){{/if}}{{/vars}}
 
-        self._solution = { {{#instancePathParams}}'{{paramName}}': {{paramName}}{{#if vendorExtensions.x-is-parent-param}}, {{else}} or self._properties['{{paramName}}'], {{/if}}{{/instancePathParams}} }
+        self._solution = { {{#instancePathParams}}"{{paramName}}": {{paramName}}{{#if vendorExtensions.x-is-parent-param}}, {{else}} or self.{{paramName}}, {{/if}}{{/instancePathParams}} }
         {{#instancePath}}self._context: Optional[{{apiName}}Context] = None
 
     @property
@@ -24,14 +24,7 @@ class {{instanceName}}(InstanceResource):
         if self._context is None:
             self._context = {{apiName}}Context(self._version,{{#instancePathParams}} {{paramName}}=self._solution['{{paramName}}'],{{/instancePathParams}})
         return self._context{{/instancePath}}
-    {{#vars}}
-    @property
-    def {{name}}(self) -> {{{baseType}}}:
-        """
-        :returns: {{{description}}}
-        """
-        return self._properties['{{name}}']
-    {{/vars}}{{#operations}}{{#vendorExtensions.x-is-context-operation}}
+    {{#operations}}{{#vendorExtensions.x-is-context-operation}}
     {{#vendorExtensions.x-is-update-operation}}
     def {{vendorExtensions.x-name-lower}}(self{{#allParams}}, {{paramName}}{{#if required}}{{else}}=values.unset{{/if}}{{/allParams}}) -> "{{instanceName}}":
         """

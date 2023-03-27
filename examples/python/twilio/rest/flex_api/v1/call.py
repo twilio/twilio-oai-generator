@@ -13,7 +13,7 @@ r"""
 """
 
 
-from typing import Optional
+from typing import Any, Dict, Optional
 from twilio.base import deserialize, values
 from twilio.base.instance_context import InstanceContext
 from twilio.base.instance_resource import InstanceResource
@@ -22,18 +22,20 @@ from twilio.base.version import Version
 
 
 class CallInstance(InstanceResource):
-    def __init__(self, version, payload, sid: Optional[str] = None):
-        """
-        Initialize the CallInstance
-        """
+
+    """
+    :ivar sid: Non-string path parameter in the response.
+    """
+
+    def __init__(
+        self, version: Version, payload: Dict[str, Any], sid: Optional[str] = None
+    ):
         super().__init__(version)
 
-        self._properties = {
-            "sid": deserialize.integer(payload.get("sid")),
-        }
+        self.sid: Optional[int] = deserialize.integer(payload.get("sid"))
 
         self._solution = {
-            "sid": sid or self._properties["sid"],
+            "sid": sid or self.sid,
         }
         self._context: Optional[CallContext] = None
 
@@ -51,13 +53,6 @@ class CallInstance(InstanceResource):
                 sid=self._solution["sid"],
             )
         return self._context
-
-    @property
-    def sid(self) -> int:
-        """
-        :returns: Non-string path parameter in the response.
-        """
-        return self._properties["sid"]
 
     def update(self) -> "CallInstance":
         """

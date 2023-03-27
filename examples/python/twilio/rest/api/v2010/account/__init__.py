@@ -15,7 +15,7 @@ r"""
 
 from datetime import datetime
 from decimal import Decimal
-from typing import List, Optional
+from typing import Any, Dict, List, Optional
 from twilio.base import deserialize, serialize, values
 from twilio.base.instance_context import InstanceContext
 from twilio.base.instance_resource import InstanceResource
@@ -34,37 +34,65 @@ class AccountInstance(InstanceResource):
         COMPLETED = "completed"
         ABSENT = "absent"
 
-    def __init__(self, version, payload, sid: Optional[str] = None):
-        """
-        Initialize the AccountInstance
-        """
+    """
+    :ivar account_sid: 
+    :ivar sid: 
+    :ivar test_string: 
+    :ivar test_integer: 
+    :ivar test_object: 
+    :ivar test_date_time: 
+    :ivar test_number: 
+    :ivar price_unit: 
+    :ivar test_number_float: 
+    :ivar test_number_decimal: 
+    :ivar test_enum: 
+    :ivar a2p_profile_bundle_sid: A2P Messaging Profile Bundle BundleSid
+    :ivar test_array_of_integers: 
+    :ivar test_array_of_array_of_integers: 
+    :ivar test_array_of_objects: 
+    :ivar test_array_of_enum: Permissions authorized to the app
+    """
+
+    def __init__(
+        self, version: Version, payload: Dict[str, Any], sid: Optional[str] = None
+    ):
         super().__init__(version)
 
-        self._properties = {
-            "account_sid": payload.get("account_sid"),
-            "sid": payload.get("sid"),
-            "test_string": payload.get("test_string"),
-            "test_integer": deserialize.integer(payload.get("test_integer")),
-            "test_object": payload.get("test_object"),
-            "test_date_time": deserialize.rfc2822_datetime(
-                payload.get("test_date_time")
-            ),
-            "test_number": deserialize.decimal(payload.get("test_number")),
-            "price_unit": payload.get("price_unit"),
-            "test_number_float": payload.get("test_number_float"),
-            "test_number_decimal": payload.get("test_number_decimal"),
-            "test_enum": payload.get("test_enum"),
-            "a2p_profile_bundle_sid": payload.get("a2p_profile_bundle_sid"),
-            "test_array_of_integers": payload.get("test_array_of_integers"),
-            "test_array_of_array_of_integers": payload.get(
-                "test_array_of_array_of_integers"
-            ),
-            "test_array_of_objects": payload.get("test_array_of_objects"),
-            "test_array_of_enum": payload.get("test_array_of_enum"),
-        }
+        self.account_sid: Optional[str] = payload.get("account_sid")
+        self.sid: Optional[str] = payload.get("sid")
+        self.test_string: Optional[str] = payload.get("test_string")
+        self.test_integer: Optional[int] = deserialize.integer(
+            payload.get("test_integer")
+        )
+        self.test_object: Optional[str] = payload.get("test_object")
+        self.test_date_time: Optional[datetime] = deserialize.rfc2822_datetime(
+            payload.get("test_date_time")
+        )
+        self.test_number: Optional[float] = deserialize.decimal(
+            payload.get("test_number")
+        )
+        self.price_unit: Optional[str] = payload.get("price_unit")
+        self.test_number_float: Optional[float] = payload.get("test_number_float")
+        self.test_number_decimal: Optional[Decimal] = payload.get("test_number_decimal")
+        self.test_enum: Optional["AccountInstance.Status"] = payload.get("test_enum")
+        self.a2p_profile_bundle_sid: Optional[str] = payload.get(
+            "a2p_profile_bundle_sid"
+        )
+        self.test_array_of_integers: Optional[List[int]] = payload.get(
+            "test_array_of_integers"
+        )
+        self.test_array_of_array_of_integers: Optional[List[List[int]]] = payload.get(
+            "test_array_of_array_of_integers"
+        )
+        self.test_array_of_objects: Optional[List[str]] = payload.get(
+            "test_array_of_objects"
+        )
+        self.test_array_of_enum: Optional[List["AccountInstance.Status"]] = payload.get(
+            "test_array_of_enum"
+        )
 
         self._solution = {
-            "sid": sid or self._properties["sid"],
+            "sid": sid or self.sid,
         }
         self._context: Optional[AccountContext] = None
 
@@ -82,118 +110,6 @@ class AccountInstance(InstanceResource):
                 sid=self._solution["sid"],
             )
         return self._context
-
-    @property
-    def account_sid(self) -> str:
-        """
-        :returns:
-        """
-        return self._properties["account_sid"]
-
-    @property
-    def sid(self) -> str:
-        """
-        :returns:
-        """
-        return self._properties["sid"]
-
-    @property
-    def test_string(self) -> str:
-        """
-        :returns:
-        """
-        return self._properties["test_string"]
-
-    @property
-    def test_integer(self) -> int:
-        """
-        :returns:
-        """
-        return self._properties["test_integer"]
-
-    @property
-    def test_object(self) -> str:
-        """
-        :returns:
-        """
-        return self._properties["test_object"]
-
-    @property
-    def test_date_time(self) -> datetime:
-        """
-        :returns:
-        """
-        return self._properties["test_date_time"]
-
-    @property
-    def test_number(self) -> float:
-        """
-        :returns:
-        """
-        return self._properties["test_number"]
-
-    @property
-    def price_unit(self) -> str:
-        """
-        :returns:
-        """
-        return self._properties["price_unit"]
-
-    @property
-    def test_number_float(self) -> float:
-        """
-        :returns:
-        """
-        return self._properties["test_number_float"]
-
-    @property
-    def test_number_decimal(self) -> Decimal:
-        """
-        :returns:
-        """
-        return self._properties["test_number_decimal"]
-
-    @property
-    def test_enum(self) -> "AccountInstance.Status":
-        """
-        :returns:
-        """
-        return self._properties["test_enum"]
-
-    @property
-    def a2p_profile_bundle_sid(self) -> str:
-        """
-        :returns: A2P Messaging Profile Bundle BundleSid
-        """
-        return self._properties["a2p_profile_bundle_sid"]
-
-    @property
-    def test_array_of_integers(self) -> List[int]:
-        """
-        :returns:
-        """
-        return self._properties["test_array_of_integers"]
-
-    @property
-    def test_array_of_array_of_integers(self) -> List[List[int]]:
-        """
-        :returns:
-        """
-        return self._properties["test_array_of_array_of_integers"]
-
-    @property
-    def test_array_of_objects(self) -> List[str]:
-        """
-        :returns:
-        """
-        return self._properties["test_array_of_objects"]
-
-    @property
-    def test_array_of_enum(self) -> List["AccountInstance.Status"]:
-        """
-        :returns: Permissions authorized to the app
-        """
-        return self._properties["test_array_of_enum"]
 
     def delete(self) -> bool:
         """

@@ -13,7 +13,7 @@ r"""
 """
 
 
-from typing import List
+from typing import Any, Dict, List, Optional
 from twilio.base import values
 
 from twilio.base.instance_resource import InstanceResource
@@ -23,32 +23,19 @@ from twilio.base.page import Page
 
 
 class AssistantInstance(InstanceResource):
-    def __init__(self, version, payload):
-        """
-        Initialize the AssistantInstance
-        """
+
+    """
+    :ivar sid: A string that uniquely identifies this Fleet.
+    :ivar friendly_name: A human readable description for this Fleet.
+    """
+
+    def __init__(self, version: Version, payload: Dict[str, Any]):
         super().__init__(version)
 
-        self._properties = {
-            "sid": payload.get("sid"),
-            "friendly_name": payload.get("friendly_name"),
-        }
+        self.sid: Optional[str] = payload.get("sid")
+        self.friendly_name: Optional[str] = payload.get("friendly_name")
 
         self._solution = {}
-
-    @property
-    def sid(self) -> str:
-        """
-        :returns: A string that uniquely identifies this Fleet.
-        """
-        return self._properties["sid"]
-
-    @property
-    def friendly_name(self) -> str:
-        """
-        :returns: A human readable description for this Fleet.
-        """
-        return self._properties["friendly_name"]
 
     def __repr__(self) -> str:
         """
