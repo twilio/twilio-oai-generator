@@ -13,7 +13,7 @@ r"""
 """
 
 
-from typing import Optional
+from typing import Any, Dict, Optional
 from twilio.base import deserialize, serialize, values
 from twilio.base.instance_context import InstanceContext
 from twilio.base.instance_resource import InstanceResource
@@ -22,18 +22,23 @@ from twilio.base.version import Version
 
 
 class HistoryInstance(InstanceResource):
-    def __init__(self, version, payload, sid: str):
-        """
-        Initialize the HistoryInstance
-        """
+
+    """
+    :ivar account_sid:
+    :ivar sid:
+    :ivar test_string:
+    :ivar test_integer:
+    """
+
+    def __init__(self, version: Version, payload: Dict[str, Any], sid: str):
         super().__init__(version)
 
-        self._properties = {
-            "account_sid": payload.get("account_sid"),
-            "sid": payload.get("sid"),
-            "test_string": payload.get("test_string"),
-            "test_integer": deserialize.integer(payload.get("test_integer")),
-        }
+        self.account_sid: Optional[str] = payload.get("account_sid")
+        self.sid: Optional[str] = payload.get("sid")
+        self.test_string: Optional[str] = payload.get("test_string")
+        self.test_integer: Optional[int] = deserialize.integer(
+            payload.get("test_integer")
+        )
 
         self._solution = {
             "sid": sid,
@@ -54,34 +59,6 @@ class HistoryInstance(InstanceResource):
                 sid=self._solution["sid"],
             )
         return self._context
-
-    @property
-    def account_sid(self) -> str:
-        """
-        :returns:
-        """
-        return self._properties["account_sid"]
-
-    @property
-    def sid(self) -> str:
-        """
-        :returns:
-        """
-        return self._properties["sid"]
-
-    @property
-    def test_string(self) -> str:
-        """
-        :returns:
-        """
-        return self._properties["test_string"]
-
-    @property
-    def test_integer(self) -> int:
-        """
-        :returns:
-        """
-        return self._properties["test_integer"]
 
     def fetch(self, add_ons_data=values.unset) -> "HistoryInstance":
         """
