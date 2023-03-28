@@ -1,10 +1,10 @@
 {{#operations}}
     {{#vendorExtensions.x-is-create-operation}}
-    def create(self{{#allParams}}, {{paramName}}{{#if required}}{{else}}=values.unset{{/if}}{{/allParams}}) -> {{instanceName}}:
+    def create(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> {{instanceName}}:
         """
         Create the {{instanceName}}
 
-        {{#allParams}}:param {{dataType}} {{paramName}}: {{{description}}}
+        {{#allParams}}:param {{paramName}}: {{{description}}}
         {{/allParams}}
         :returns: The created {{instanceName}}
         """
@@ -16,11 +16,11 @@
 
         return {{instanceName}}(self._version, payload{{#listPathParams}}, {{paramName}}=self._solution['{{paramName}}']{{/listPathParams}})
 
-    async def create_async(self{{#allParams}}, {{paramName}}{{#if required}}{{else}}=values.unset{{/if}}{{/allParams}}) -> {{instanceName}}:
+    async def create_async(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> {{instanceName}}:
         """
         Asynchronously create the {{instanceName}}
 
-        {{#allParams}}:param {{dataType}} {{paramName}}: {{{description}}}
+        {{#allParams}}:param {{paramName}}: {{{description}}}
         {{/allParams}}
         :returns: The created {{instanceName}}
         """
@@ -52,11 +52,11 @@
 
         return {{instanceName}}(self._version, payload{{#listPathParams}}, {{paramName}}=self._solution['{{paramName}}']{{/listPathParams}})
     {{/vendorExtensions.x-is-fetch-operation}}{{#vendorExtensions.x-is-update-operation}}
-    def update(self{{#allParams}}, {{paramName}}{{#if required}}{{else}}=values.unset{{/if}}{{/allParams}}) -> {{instanceName}}:
+    def update(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> {{instanceName}}:
         """
         Update the {{instanceName}}
 
-        {{#allParams}}:param {{dataType}} {{paramName}}: {{{description}}}
+        {{#allParams}}:param {{paramName}}: {{{description}}}
         {{/allParams}}
         :returns: The created {{instanceName}}
         """
@@ -68,11 +68,11 @@
 
         return {{instanceName}}(self._version, payload{{#listPathParams}}, {{paramName}}=self._solution['{{paramName}}']{{/listPathParams}})
 
-    async def update_async(self{{#allParams}}, {{paramName}}{{#if required}}{{else}}=values.unset{{/if}}{{/allParams}}) -> {{instanceName}}:
+    async def update_async(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> {{instanceName}}:
         """
         Asynchronously update the {{instanceName}}
 
-        {{#allParams}}:param {{dataType}} {{paramName}}: {{{description}}}
+        {{#allParams}}:param {{paramName}}: {{{description}}}
         {{/allParams}}
         :returns: The created {{instanceName}}
         """
@@ -84,7 +84,11 @@
 
         return {{instanceName}}(self._version, payload{{#listPathParams}}, {{paramName}}=self._solution['{{paramName}}']{{/listPathParams}})
     {{/vendorExtensions.x-is-update-operation}}{{/instancePath}}{{#vendorExtensions.x-is-read-operation}}
-    def stream(self, {{#allParams}}{{#startsWith paramName text='page_size'}}{{else}}{{paramName}}=values.unset, {{/startsWith}}{{/allParams}}limit=None, page_size=None) -> List[{{instanceName}}]:
+    def stream(self, {{#allParams}}
+        {{#startsWith paramName text='page_size'}}{{else}}{{paramName}}: Union[{{{dataType}}}, object] = values.unset,{{/startsWith}}{{/allParams}}
+        limit: Optional[int] = None,
+        page_size: Optional[int] = None,
+    ) -> List[{{instanceName}}]:
         """
         Streams {{instanceName}} records from the API as a generator stream.
         This operation lazily loads records as efficiently as possible until the limit
@@ -92,12 +96,12 @@
         The results are returned as a generator, so this operation is memory efficient.
         {{#allParams}}{{#startsWith paramName text='page_size'}}{{else}}
         :param {{dataType}} {{paramName}}: {{{description}}}{{/startsWith}}{{/allParams}}
-        :param int limit: Upper limit for the number of records to return. stream()
-                          guarantees to never return more than limit.  Default is no limit
-        :param int page_size: Number of records to fetch per request, when not set will use
-                              the default value of 50 records.  If no page_size is defined
-                              but a limit is defined, stream() will attempt to read the
-                              limit with the most efficient page size, i.e. min(limit, 1000)
+        :param limit: Upper limit for the number of records to return. stream()
+                      guarantees to never return more than limit.  Default is no limit
+        :param page_size: Number of records to fetch per request, when not set will use
+                          the default value of 50 records.  If no page_size is defined
+                          but a limit is defined, stream() will attempt to read the
+                          limit with the most efficient page size, i.e. min(limit, 1000)
 
         :returns: Generator that will yield up to limit results
         """
@@ -109,7 +113,11 @@
 
         return self._version.stream(page, limits['limit'])
 
-    async def stream_async(self, {{#allParams}}{{#startsWith paramName text='page_size'}}{{else}}{{paramName}}=values.unset, {{/startsWith}}{{/allParams}}limit=None, page_size=None) -> List[{{instanceName}}]:
+    async def stream_async(self, {{#allParams}}
+        {{#startsWith paramName text='page_size'}}{{else}}{{paramName}}: Union[{{{dataType}}}, object] = values.unset,{{/startsWith}}{{/allParams}}
+        limit: Optional[int] = None,
+        page_size: Optional[int] = None,
+    ) -> List[{{instanceName}}]:
         """
         Asynchronously streams {{instanceName}} records from the API as a generator stream.
         This operation lazily loads records as efficiently as possible until the limit
@@ -117,12 +125,12 @@
         The results are returned as a generator, so this operation is memory efficient.
         {{#allParams}}{{#startsWith paramName text='page_size'}}{{else}}
         :param {{dataType}} {{paramName}}: {{{description}}}{{/startsWith}}{{/allParams}}
-        :param int limit: Upper limit for the number of records to return. stream()
-                          guarantees to never return more than limit.  Default is no limit
-        :param int page_size: Number of records to fetch per request, when not set will use
-                              the default value of 50 records.  If no page_size is defined
-                              but a limit is defined, stream() will attempt to read the
-                              limit with the most efficient page size, i.e. min(limit, 1000)
+        :param limit: Upper limit for the number of records to return. stream()
+                      guarantees to never return more than limit.  Default is no limit
+        :param page_size: Number of records to fetch per request, when not set will use
+                          the default value of 50 records.  If no page_size is defined
+                          but a limit is defined, stream() will attempt to read the
+                          limit with the most efficient page size, i.e. min(limit, 1000)
 
         :returns: Generator that will yield up to limit results
         """
@@ -134,19 +142,23 @@
 
         return await self._version.stream_async(page, limits['limit'])
 
-    def list(self, {{#allParams}}{{#startsWith paramName text='page_size'}}{{else}}{{paramName}}=values.unset, {{/startsWith}}{{/allParams}}limit=None, page_size=None) -> List[{{instanceName}}]:
+    def list(self, {{#allParams}}
+        {{#startsWith paramName text='page_size'}}{{else}}{{paramName}}: Union[{{{dataType}}}, object] = values.unset,{{/startsWith}}{{/allParams}}
+        limit: Optional[int] = None,
+        page_size: Optional[int] = None,
+    ) -> List[{{instanceName}}]:
         """
         Lists {{instanceName}} records from the API as a list.
         Unlike stream(), this operation is eager and will load `limit` records into
         memory before returning.
         {{#allParams}}{{#startsWith paramName text='page_size'}}{{else}}
         :param {{dataType}} {{paramName}}: {{{description}}}{{/startsWith}}{{/allParams}}
-        :param int limit: Upper limit for the number of records to return. list() guarantees
-                          never to return more than limit.  Default is no limit
-        :param int page_size: Number of records to fetch per request, when not set will use
-                              the default value of 50 records.  If no page_size is defined
-                              but a limit is defined, list() will attempt to read the limit
-                              with the most efficient page size, i.e. min(limit, 1000)
+        :param limit: Upper limit for the number of records to return. list() guarantees
+                      never to return more than limit.  Default is no limit
+        :param page_size: Number of records to fetch per request, when not set will use
+                          the default value of 50 records.  If no page_size is defined
+                          but a limit is defined, list() will attempt to read the limit
+                          with the most efficient page size, i.e. min(limit, 1000)
 
         :returns: Generator that will yield up to limit results
         """
@@ -156,19 +168,23 @@
             page_size=page_size,
         ))
 
-    async def list_async(self, {{#allParams}}{{#startsWith paramName text='page_size'}}{{else}}{{paramName}}=values.unset, {{/startsWith}}{{/allParams}}limit=None, page_size=None) -> List[{{instanceName}}]:
+    async def list_async(self, {{#allParams}}
+        {{#startsWith paramName text='page_size'}}{{else}}{{paramName}}: Union[{{{dataType}}}, object] = values.unset,{{/startsWith}}{{/allParams}}
+        limit: Optional[int] = None,
+        page_size: Optional[int] = None,
+    ) -> List[{{instanceName}}]:
         """
         Asynchronously lists {{instanceName}} records from the API as a list.
         Unlike stream(), this operation is eager and will load `limit` records into
         memory before returning.
         {{#allParams}}{{#startsWith paramName text='page_size'}}{{else}}
         :param {{dataType}} {{paramName}}: {{{description}}}{{/startsWith}}{{/allParams}}
-        :param int limit: Upper limit for the number of records to return. list() guarantees
-                          never to return more than limit.  Default is no limit
-        :param int page_size: Number of records to fetch per request, when not set will use
-                              the default value of 50 records.  If no page_size is defined
-                              but a limit is defined, list() will attempt to read the limit
-                              with the most efficient page size, i.e. min(limit, 1000)
+        :param limit: Upper limit for the number of records to return. list() guarantees
+                      never to return more than limit.  Default is no limit
+        :param page_size: Number of records to fetch per request, when not set will use
+                          the default value of 50 records.  If no page_size is defined
+                          but a limit is defined, list() will attempt to read the limit
+                          with the most efficient page size, i.e. min(limit, 1000)
 
         :returns: Generator that will yield up to limit results
         """
@@ -178,15 +194,20 @@
             page_size=page_size,
         ))
 
-    def page(self, {{#allParams}}{{#startsWith paramName text='page_size'}}{{else}}{{paramName}}=values.unset, {{/startsWith}}{{/allParams}}page_token=values.unset, page_number=values.unset, page_size=values.unset) -> {{apiName}}Page:
+    def page(self, {{#allParams}}
+        {{#startsWith paramName text='page_size'}}{{else}}{{paramName}}: Union[{{{dataType}}}, object] = values.unset,{{/startsWith}}{{/allParams}}
+        page_token: Union[str, object] = None,
+        page_number: Union[int, object] = None,
+        page_size: Union[int, object] = None,
+    ) -> {{apiName}}Page:
         """
         Retrieve a single page of {{instanceName}} records from the API.
         Request is executed immediately
         {{#allParams}}{{#startsWith paramName text='page_size'}}{{else}}
-        :param {{dataType}} {{paramName}}: {{{description}}}{{/startsWith}}{{/allParams}}
-        :param str page_token: PageToken provided by the API
-        :param int page_number: Page Number, this value is simply for client state
-        :param int page_size: Number of records to return, defaults to 50
+        :param {{paramName}}: {{{description}}}{{/startsWith}}{{/allParams}}
+        :param page_token: PageToken provided by the API
+        :param page_number: Page Number, this value is simply for client state
+        :param page_size: Number of records to return, defaults to 50
 
         :returns: Page of {{instanceName}}
         """
@@ -200,15 +221,20 @@
         response = self._version.page(method='GET', uri=self._uri, params=data)
         return {{apiName}}Page(self._version, response{{#if listPathParams}}, self._solution{{/if}})
 
-    async def page_async(self, {{#allParams}}{{#startsWith paramName text='page_size'}}{{else}}{{paramName}}=values.unset, {{/startsWith}}{{/allParams}}page_token=values.unset, page_number=values.unset, page_size=values.unset) -> {{apiName}}Page:
+    async def page_async(self, {{#allParams}}
+        {{#startsWith paramName text='page_size'}}{{else}}{{paramName}}: Union[{{{dataType}}}, object] = values.unset,{{/startsWith}}{{/allParams}}
+        page_token: Union[str, object] = None,
+        page_number: Union[int, object] = None,
+        page_size: Union[int, object] = None,
+    ) -> {{apiName}}Page:
         """
         Asynchronously retrieve a single page of {{instanceName}} records from the API.
         Request is executed immediately
         {{#allParams}}{{#startsWith paramName text='page_size'}}{{else}}
-        :param {{dataType}} {{paramName}}: {{{description}}}{{/startsWith}}{{/allParams}}
-        :param str page_token: PageToken provided by the API
-        :param int page_number: Page Number, this value is simply for client state
-        :param int page_size: Number of records to return, defaults to 50
+        :param {{paramName}}: {{{description}}}{{/startsWith}}{{/allParams}}
+        :param page_token: PageToken provided by the API
+        :param page_number: Page Number, this value is simply for client state
+        :param page_size: Number of records to return, defaults to 50
 
         :returns: Page of {{instanceName}}
         """
@@ -222,12 +248,12 @@
         response = await self._version.page_async(method='GET', uri=self._uri, params=data)
         return {{apiName}}Page(self._version, response{{#if listPathParams}}, self._solution{{/if}})
 
-    def get_page(self, target_url) -> {{apiName}}Page:
+    def get_page(self, target_url: str) -> {{apiName}}Page:
         """
         Retrieve a specific page of {{instanceName}} records from the API.
         Request is executed immediately
 
-        :param str target_url: API-generated URL for the requested results page
+        :param target_url: API-generated URL for the requested results page
 
         :returns: Page of {{instanceName}}
         """
@@ -237,12 +263,12 @@
         )
         return {{apiName}}Page(self._version, response{{#if listPathParams}}, self._solution{{/if}})
 
-    async def get_page_async(self, target_url) -> {{apiName}}Page:
+    async def get_page_async(self, target_url: str) -> {{apiName}}Page:
         """
         Asynchronously retrieve a specific page of {{instanceName}} records from the API.
         Request is executed immediately
 
-        :param str target_url: API-generated URL for the requested results page
+        :param target_url: API-generated URL for the requested results page
 
         :returns: Page of {{instanceName}}
         """

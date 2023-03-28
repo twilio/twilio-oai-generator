@@ -13,9 +13,9 @@ r"""
 """
 
 
-from datetime import datetime
+from datetime import date, datetime
 from decimal import Decimal
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Union
 from twilio.base import deserialize, serialize, values
 from twilio.base.instance_context import InstanceContext
 from twilio.base.instance_resource import InstanceResource
@@ -118,14 +118,17 @@ class FeedbackCallSummaryInstance(InstanceResource):
         return self._context
 
     def update(
-        self, end_date, start_date, account_sid=values.unset
+        self,
+        end_date: date,
+        start_date: date,
+        account_sid: Union[str, object] = values.unset,
     ) -> "FeedbackCallSummaryInstance":
         """
         Update the FeedbackCallSummaryInstance
 
-        :param date end_date:
-        :param date start_date:
-        :param str account_sid:
+        :param end_date:
+        :param start_date:
+        :param account_sid:
 
         :returns: The updated FeedbackCallSummaryInstance
         """
@@ -136,14 +139,17 @@ class FeedbackCallSummaryInstance(InstanceResource):
         )
 
     async def update_async(
-        self, end_date, start_date, account_sid=values.unset
+        self,
+        end_date: date,
+        start_date: date,
+        account_sid: Union[str, object] = values.unset,
     ) -> "FeedbackCallSummaryInstance":
         """
         Asynchronous coroutine to update the FeedbackCallSummaryInstance
 
-        :param date end_date:
-        :param date start_date:
-        :param str account_sid:
+        :param end_date:
+        :param start_date:
+        :param account_sid:
 
         :returns: The updated FeedbackCallSummaryInstance
         """
@@ -184,14 +190,17 @@ class FeedbackCallSummaryContext(InstanceContext):
         )
 
     def update(
-        self, end_date, start_date, account_sid=values.unset
+        self,
+        end_date: date,
+        start_date: date,
+        account_sid: Union[str, object] = values.unset,
     ) -> FeedbackCallSummaryInstance:
         """
         Update the FeedbackCallSummaryInstance
 
-        :param date end_date:
-        :param date start_date:
-        :param str account_sid:
+        :param end_date:
+        :param start_date:
+        :param account_sid:
 
         :returns: The updated FeedbackCallSummaryInstance
         """
@@ -217,14 +226,17 @@ class FeedbackCallSummaryContext(InstanceContext):
         )
 
     async def update_async(
-        self, end_date, start_date, account_sid=values.unset
+        self,
+        end_date: date,
+        start_date: date,
+        account_sid: Union[str, object] = values.unset,
     ) -> FeedbackCallSummaryInstance:
         """
         Asynchronous coroutine to update the FeedbackCallSummaryInstance
 
-        :param date end_date:
-        :param date start_date:
-        :param str account_sid:
+        :param end_date:
+        :param start_date:
+        :param account_sid:
 
         :returns: The updated FeedbackCallSummaryInstance
         """
@@ -275,7 +287,7 @@ class FeedbackCallSummaryList(ListResource):
             "account_sid": account_sid,
         }
 
-    def get(self, sid) -> FeedbackCallSummaryContext:
+    def get(self, sid: str) -> FeedbackCallSummaryContext:
         """
         Constructs a FeedbackCallSummaryContext
 
@@ -285,7 +297,7 @@ class FeedbackCallSummaryList(ListResource):
             self._version, account_sid=self._solution["account_sid"], sid=sid
         )
 
-    def __call__(self, sid) -> FeedbackCallSummaryContext:
+    def __call__(self, sid: str) -> FeedbackCallSummaryContext:
         """
         Constructs a FeedbackCallSummaryContext
 

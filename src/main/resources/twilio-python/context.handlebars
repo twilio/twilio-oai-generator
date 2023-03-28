@@ -19,11 +19,11 @@ class {{apiName}}Context(InstanceContext):
         self._{{mountName}}: Optional[{{listName}}] = None{{/instanceDependent}}{{/dependents}}
     {{#operations}}{{#vendorExtensions.x-is-context-operation}}
     {{#vendorExtensions.x-is-update-operation}}
-    def {{vendorExtensions.x-name-lower}}(self{{#allParams}}, {{paramName}}{{#if required}}{{else}}=values.unset{{/if}}{{/allParams}}) -> {{instanceName}}:
+    def {{vendorExtensions.x-name-lower}}(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> {{instanceName}}:
         """
         Update the {{instanceName}}
         {{#allParams}}
-        :param {{{dataType}}} {{paramName}}: {{{description}}}{{/allParams}}
+        :param {{paramName}}: {{{description}}}{{/allParams}}
 
         :returns: The updated {{instanceName}}
         """
@@ -40,11 +40,11 @@ class {{apiName}}Context(InstanceContext):
             {{paramName}}=self._solution['{{paramName}}']{{/instancePathParams}}
         )
 
-    async def {{vendorExtensions.x-name-lower}}_async(self{{#allParams}}, {{paramName}}{{#if required}}{{else}}=values.unset{{/if}}{{/allParams}}) -> {{instanceName}}:
+    async def {{vendorExtensions.x-name-lower}}_async(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> {{instanceName}}:
         """
         Asynchronous coroutine to update the {{instanceName}}
         {{#allParams}}
-        :param {{{dataType}}} {{paramName}}: {{{description}}}{{/allParams}}
+        :param {{paramName}}: {{{description}}}{{/allParams}}
 
         :returns: The updated {{instanceName}}
         """
@@ -61,11 +61,11 @@ class {{apiName}}Context(InstanceContext):
             {{paramName}}=self._solution['{{paramName}}']{{/instancePathParams}}
         )
     {{/vendorExtensions.x-is-update-operation}}{{#vendorExtensions.x-is-fetch-operation}}
-    def {{vendorExtensions.x-name-lower}}(self{{#allParams}}, {{paramName}}{{#if required}}{{else}}=values.unset{{/if}}{{/allParams}}) -> {{instanceName}}:
+    def {{vendorExtensions.x-name-lower}}(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> {{instanceName}}:
         """
         Fetch the {{instanceName}}
         {{#allParams}}
-        :param {{{dataType}}} {{paramName}}: {{{description}}}{{/allParams}}
+        :param {{paramName}}: {{{description}}}{{/allParams}}
 
         :returns: The fetched {{instanceName}}
         """
@@ -84,11 +84,11 @@ class {{apiName}}Context(InstanceContext):
             {{/instancePathParams}}
         )
 
-    async def {{vendorExtensions.x-name-lower}}_async(self{{#allParams}}, {{paramName}}{{#if required}}{{else}}=values.unset{{/if}}{{/allParams}}) -> {{instanceName}}:
+    async def {{vendorExtensions.x-name-lower}}_async(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> {{instanceName}}:
         """
         Asynchronous coroutine to fetch the {{instanceName}}
         {{#allParams}}
-        :param {{{dataType}}} {{paramName}}: {{{description}}}{{/allParams}}
+        :param {{paramName}}: {{{description}}}{{/allParams}}
 
         :returns: The fetched {{instanceName}}
         """
@@ -107,11 +107,11 @@ class {{apiName}}Context(InstanceContext):
             {{/instancePathParams}}
         )
     {{/vendorExtensions.x-is-fetch-operation}}{{#vendorExtensions.x-is-delete-operation}}
-    def {{vendorExtensions.x-name-lower}}(self{{#allParams}}, {{paramName}}{{#if required}}{{else}}=values.unset{{/if}}{{/allParams}}) -> bool:
+    def {{vendorExtensions.x-name-lower}}(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> bool:
         """
         Deletes the {{apiName}}Instance
 
-        {{#allParams}}:param {{dataType}} {{paramName}}: {{{description}}}
+        {{#allParams}}:param {{paramName}}: {{{description}}}
         {{/allParams}}
         :returns: True if delete succeeds, False otherwise
         """{{#if allParams}}
@@ -119,11 +119,11 @@ class {{apiName}}Context(InstanceContext):
         {{/if}}
         return self._version.delete(method='DELETE', uri=self._uri,{{#if allParams}} headers=headers{{/if}})
 
-    async def {{vendorExtensions.x-name-lower}}_async(self{{#allParams}}, {{paramName}}{{#if required}}{{else}}=values.unset{{/if}}{{/allParams}}) -> bool:
+    async def {{vendorExtensions.x-name-lower}}_async(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> bool:
         """
         Asynchronous coroutine that deletes the {{apiName}}Instance
 
-        {{#allParams}}:param {{dataType}} {{paramName}}: {{{description}}}
+        {{#allParams}}:param {{paramName}}: {{{description}}}
         {{/allParams}}
         :returns: True if delete succeeds, False otherwise
         """{{#if allParams}}
@@ -131,11 +131,11 @@ class {{apiName}}Context(InstanceContext):
         {{/if}}
         return await self._version.delete_async(method='DELETE', uri=self._uri,{{#if allParams}} headers=headers{{/if}})
     {{/vendorExtensions.x-is-delete-operation}}{{#vendorExtensions.x-is-create-operation}}
-    def {{vendorExtensions.x-name-lower}}(self{{#allParams}}, {{paramName}}{{#if required}}{{else}}=values.unset{{/if}}{{/allParams}}) -> {{instanceName}}:
+    def {{vendorExtensions.x-name-lower}}(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> {{instanceName}}:
         """
         Create the {{instanceName}}
         {{#allParams}}
-        :param {{dataType}} {{paramName}}: {{{description}}}{{/allParams}}
+        :param {{paramName}}: {{{description}}}{{/allParams}}
 
         :returns: The created {{instanceName}}
         """
@@ -151,11 +151,11 @@ class {{apiName}}Context(InstanceContext):
             {{paramName}}=self._solution['{{paramName}}']{{/instancePathParams}}
         )
 
-    async def {{vendorExtensions.x-name-lower}}_async(self{{#allParams}}, {{paramName}}{{#if required}}{{else}}=values.unset{{/if}}{{/allParams}}) -> {{instanceName}}:
+    async def {{vendorExtensions.x-name-lower}}_async(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> {{instanceName}}:
         """
         Asynchronous coroutine to create the {{instanceName}}
         {{#allParams}}
-        :param {{dataType}} {{paramName}}: {{{description}}}{{/allParams}}
+        :param {{paramName}}: {{{description}}}{{/allParams}}
 
         :returns: The created {{instanceName}}
         """
