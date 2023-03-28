@@ -13,9 +13,9 @@ r"""
 """
 
 
-from datetime import datetime
+from datetime import date, datetime
 from decimal import Decimal
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Union
 from twilio.base import deserialize, serialize, values
 from twilio.base.instance_context import InstanceContext
 from twilio.base.instance_resource import InstanceResource
@@ -147,12 +147,16 @@ class AccountInstance(InstanceResource):
         """
         return await self._proxy.fetch_async()
 
-    def update(self, status, pause_behavior=values.unset) -> "AccountInstance":
+    def update(
+        self,
+        status: "AccountInstance.Status",
+        pause_behavior: Union[str, object] = values.unset,
+    ) -> "AccountInstance":
         """
         Update the AccountInstance
 
-        :param "AccountInstance.Status" status:
-        :param str pause_behavior:
+        :param status:
+        :param pause_behavior:
 
         :returns: The updated AccountInstance
         """
@@ -162,13 +166,15 @@ class AccountInstance(InstanceResource):
         )
 
     async def update_async(
-        self, status, pause_behavior=values.unset
+        self,
+        status: "AccountInstance.Status",
+        pause_behavior: Union[str, object] = values.unset,
     ) -> "AccountInstance":
         """
         Asynchronous coroutine to update the AccountInstance
 
-        :param "AccountInstance.Status" status:
-        :param str pause_behavior:
+        :param status:
+        :param pause_behavior:
 
         :returns: The updated AccountInstance
         """
@@ -274,12 +280,16 @@ class AccountContext(InstanceContext):
             sid=self._solution["sid"],
         )
 
-    def update(self, status, pause_behavior=values.unset) -> AccountInstance:
+    def update(
+        self,
+        status: "AccountInstance.Status",
+        pause_behavior: Union[str, object] = values.unset,
+    ) -> AccountInstance:
         """
         Update the AccountInstance
 
-        :param "AccountInstance.Status" status:
-        :param str pause_behavior:
+        :param status:
+        :param pause_behavior:
 
         :returns: The updated AccountInstance
         """
@@ -299,13 +309,15 @@ class AccountContext(InstanceContext):
         return AccountInstance(self._version, payload, sid=self._solution["sid"])
 
     async def update_async(
-        self, status, pause_behavior=values.unset
+        self,
+        status: "AccountInstance.Status",
+        pause_behavior: Union[str, object] = values.unset,
     ) -> AccountInstance:
         """
         Asynchronous coroutine to update the AccountInstance
 
-        :param "AccountInstance.Status" status:
-        :param str pause_behavior:
+        :param status:
+        :param pause_behavior:
 
         :returns: The updated AccountInstance
         """
@@ -347,11 +359,11 @@ class AccountContext(InstanceContext):
 
 
 class AccountPage(Page):
-    def get_instance(self, payload) -> AccountInstance:
+    def get_instance(self, payload: Dict[str, Any]) -> AccountInstance:
         """
         Build an instance of AccountInstance
 
-        :param dict payload: Payload response from the API
+        :param payload: Payload response from the API
         """
         return AccountInstance(self._version, payload)
 
@@ -378,18 +390,18 @@ class AccountList(ListResource):
 
     def create(
         self,
-        x_twilio_webhook_enabled=values.unset,
-        recording_status_callback=values.unset,
-        recording_status_callback_event=values.unset,
-        twiml=values.unset,
+        x_twilio_webhook_enabled: Union[str, object] = values.unset,
+        recording_status_callback: Union[str, object] = values.unset,
+        recording_status_callback_event: Union[List[str], object] = values.unset,
+        twiml: Union[str, object] = values.unset,
     ) -> AccountInstance:
         """
         Create the AccountInstance
 
-        :param str x_twilio_webhook_enabled:
-        :param str recording_status_callback:
-        :param List[str] recording_status_callback_event:
-        :param str twiml:
+        :param x_twilio_webhook_enabled:
+        :param recording_status_callback:
+        :param recording_status_callback_event:
+        :param twiml:
 
         :returns: The created AccountInstance
         """
@@ -415,18 +427,18 @@ class AccountList(ListResource):
 
     async def create_async(
         self,
-        x_twilio_webhook_enabled=values.unset,
-        recording_status_callback=values.unset,
-        recording_status_callback_event=values.unset,
-        twiml=values.unset,
+        x_twilio_webhook_enabled: Union[str, object] = values.unset,
+        recording_status_callback: Union[str, object] = values.unset,
+        recording_status_callback_event: Union[List[str], object] = values.unset,
+        twiml: Union[str, object] = values.unset,
     ) -> AccountInstance:
         """
         Asynchronously create the AccountInstance
 
-        :param str x_twilio_webhook_enabled:
-        :param str recording_status_callback:
-        :param List[str] recording_status_callback_event:
-        :param str twiml:
+        :param x_twilio_webhook_enabled:
+        :param recording_status_callback:
+        :param recording_status_callback_event:
+        :param twiml:
 
         :returns: The created AccountInstance
         """
@@ -452,12 +464,12 @@ class AccountList(ListResource):
 
     def stream(
         self,
-        date_created=values.unset,
-        date_test=values.unset,
-        date_created_before=values.unset,
-        date_created_after=values.unset,
-        limit=None,
-        page_size=None,
+        date_created: Union[datetime, object] = values.unset,
+        date_test: Union[date, object] = values.unset,
+        date_created_before: Union[datetime, object] = values.unset,
+        date_created_after: Union[datetime, object] = values.unset,
+        limit: Optional[int] = None,
+        page_size: Optional[int] = None,
     ) -> List[AccountInstance]:
         """
         Streams AccountInstance records from the API as a generator stream.
@@ -469,12 +481,12 @@ class AccountList(ListResource):
         :param date date_test:
         :param datetime date_created_before:
         :param datetime date_created_after:
-        :param int limit: Upper limit for the number of records to return. stream()
-                          guarantees to never return more than limit.  Default is no limit
-        :param int page_size: Number of records to fetch per request, when not set will use
-                              the default value of 50 records.  If no page_size is defined
-                              but a limit is defined, stream() will attempt to read the
-                              limit with the most efficient page size, i.e. min(limit, 1000)
+        :param limit: Upper limit for the number of records to return. stream()
+                      guarantees to never return more than limit.  Default is no limit
+        :param page_size: Number of records to fetch per request, when not set will use
+                          the default value of 50 records.  If no page_size is defined
+                          but a limit is defined, stream() will attempt to read the
+                          limit with the most efficient page size, i.e. min(limit, 1000)
 
         :returns: Generator that will yield up to limit results
         """
@@ -491,12 +503,12 @@ class AccountList(ListResource):
 
     async def stream_async(
         self,
-        date_created=values.unset,
-        date_test=values.unset,
-        date_created_before=values.unset,
-        date_created_after=values.unset,
-        limit=None,
-        page_size=None,
+        date_created: Union[datetime, object] = values.unset,
+        date_test: Union[date, object] = values.unset,
+        date_created_before: Union[datetime, object] = values.unset,
+        date_created_after: Union[datetime, object] = values.unset,
+        limit: Optional[int] = None,
+        page_size: Optional[int] = None,
     ) -> List[AccountInstance]:
         """
         Asynchronously streams AccountInstance records from the API as a generator stream.
@@ -508,12 +520,12 @@ class AccountList(ListResource):
         :param date date_test:
         :param datetime date_created_before:
         :param datetime date_created_after:
-        :param int limit: Upper limit for the number of records to return. stream()
-                          guarantees to never return more than limit.  Default is no limit
-        :param int page_size: Number of records to fetch per request, when not set will use
-                              the default value of 50 records.  If no page_size is defined
-                              but a limit is defined, stream() will attempt to read the
-                              limit with the most efficient page size, i.e. min(limit, 1000)
+        :param limit: Upper limit for the number of records to return. stream()
+                      guarantees to never return more than limit.  Default is no limit
+        :param page_size: Number of records to fetch per request, when not set will use
+                          the default value of 50 records.  If no page_size is defined
+                          but a limit is defined, stream() will attempt to read the
+                          limit with the most efficient page size, i.e. min(limit, 1000)
 
         :returns: Generator that will yield up to limit results
         """
@@ -530,12 +542,12 @@ class AccountList(ListResource):
 
     def list(
         self,
-        date_created=values.unset,
-        date_test=values.unset,
-        date_created_before=values.unset,
-        date_created_after=values.unset,
-        limit=None,
-        page_size=None,
+        date_created: Union[datetime, object] = values.unset,
+        date_test: Union[date, object] = values.unset,
+        date_created_before: Union[datetime, object] = values.unset,
+        date_created_after: Union[datetime, object] = values.unset,
+        limit: Optional[int] = None,
+        page_size: Optional[int] = None,
     ) -> List[AccountInstance]:
         """
         Lists AccountInstance records from the API as a list.
@@ -546,12 +558,12 @@ class AccountList(ListResource):
         :param date date_test:
         :param datetime date_created_before:
         :param datetime date_created_after:
-        :param int limit: Upper limit for the number of records to return. list() guarantees
-                          never to return more than limit.  Default is no limit
-        :param int page_size: Number of records to fetch per request, when not set will use
-                              the default value of 50 records.  If no page_size is defined
-                              but a limit is defined, list() will attempt to read the limit
-                              with the most efficient page size, i.e. min(limit, 1000)
+        :param limit: Upper limit for the number of records to return. list() guarantees
+                      never to return more than limit.  Default is no limit
+        :param page_size: Number of records to fetch per request, when not set will use
+                          the default value of 50 records.  If no page_size is defined
+                          but a limit is defined, list() will attempt to read the limit
+                          with the most efficient page size, i.e. min(limit, 1000)
 
         :returns: Generator that will yield up to limit results
         """
@@ -568,12 +580,12 @@ class AccountList(ListResource):
 
     async def list_async(
         self,
-        date_created=values.unset,
-        date_test=values.unset,
-        date_created_before=values.unset,
-        date_created_after=values.unset,
-        limit=None,
-        page_size=None,
+        date_created: Union[datetime, object] = values.unset,
+        date_test: Union[date, object] = values.unset,
+        date_created_before: Union[datetime, object] = values.unset,
+        date_created_after: Union[datetime, object] = values.unset,
+        limit: Optional[int] = None,
+        page_size: Optional[int] = None,
     ) -> List[AccountInstance]:
         """
         Asynchronously lists AccountInstance records from the API as a list.
@@ -584,12 +596,12 @@ class AccountList(ListResource):
         :param date date_test:
         :param datetime date_created_before:
         :param datetime date_created_after:
-        :param int limit: Upper limit for the number of records to return. list() guarantees
-                          never to return more than limit.  Default is no limit
-        :param int page_size: Number of records to fetch per request, when not set will use
-                              the default value of 50 records.  If no page_size is defined
-                              but a limit is defined, list() will attempt to read the limit
-                              with the most efficient page size, i.e. min(limit, 1000)
+        :param limit: Upper limit for the number of records to return. list() guarantees
+                      never to return more than limit.  Default is no limit
+        :param page_size: Number of records to fetch per request, when not set will use
+                          the default value of 50 records.  If no page_size is defined
+                          but a limit is defined, list() will attempt to read the limit
+                          with the most efficient page size, i.e. min(limit, 1000)
 
         :returns: Generator that will yield up to limit results
         """
@@ -606,25 +618,25 @@ class AccountList(ListResource):
 
     def page(
         self,
-        date_created=values.unset,
-        date_test=values.unset,
-        date_created_before=values.unset,
-        date_created_after=values.unset,
-        page_token=values.unset,
-        page_number=values.unset,
-        page_size=values.unset,
+        date_created: Union[datetime, object] = values.unset,
+        date_test: Union[date, object] = values.unset,
+        date_created_before: Union[datetime, object] = values.unset,
+        date_created_after: Union[datetime, object] = values.unset,
+        page_token: Union[str, object] = values.unset,
+        page_number: Union[int, object] = values.unset,
+        page_size: Union[int, object] = values.unset,
     ) -> AccountPage:
         """
         Retrieve a single page of AccountInstance records from the API.
         Request is executed immediately
 
-        :param datetime date_created:
-        :param date date_test:
-        :param datetime date_created_before:
-        :param datetime date_created_after:
-        :param str page_token: PageToken provided by the API
-        :param int page_number: Page Number, this value is simply for client state
-        :param int page_size: Number of records to return, defaults to 50
+        :param date_created:
+        :param date_test:
+        :param date_created_before:
+        :param date_created_after:
+        :param page_token: PageToken provided by the API
+        :param page_number: Page Number, this value is simply for client state
+        :param page_size: Number of records to return, defaults to 50
 
         :returns: Page of AccountInstance
         """
@@ -645,25 +657,25 @@ class AccountList(ListResource):
 
     async def page_async(
         self,
-        date_created=values.unset,
-        date_test=values.unset,
-        date_created_before=values.unset,
-        date_created_after=values.unset,
-        page_token=values.unset,
-        page_number=values.unset,
-        page_size=values.unset,
+        date_created: Union[datetime, object] = values.unset,
+        date_test: Union[date, object] = values.unset,
+        date_created_before: Union[datetime, object] = values.unset,
+        date_created_after: Union[datetime, object] = values.unset,
+        page_token: Union[str, object] = values.unset,
+        page_number: Union[int, object] = values.unset,
+        page_size: Union[int, object] = values.unset,
     ) -> AccountPage:
         """
         Asynchronously retrieve a single page of AccountInstance records from the API.
         Request is executed immediately
 
-        :param datetime date_created:
-        :param date date_test:
-        :param datetime date_created_before:
-        :param datetime date_created_after:
-        :param str page_token: PageToken provided by the API
-        :param int page_number: Page Number, this value is simply for client state
-        :param int page_size: Number of records to return, defaults to 50
+        :param date_created:
+        :param date_test:
+        :param date_created_before:
+        :param date_created_after:
+        :param page_token: PageToken provided by the API
+        :param page_number: Page Number, this value is simply for client state
+        :param page_size: Number of records to return, defaults to 50
 
         :returns: Page of AccountInstance
         """
@@ -684,31 +696,31 @@ class AccountList(ListResource):
         )
         return AccountPage(self._version, response)
 
-    def get_page(self, target_url) -> AccountPage:
+    def get_page(self, target_url: str) -> AccountPage:
         """
         Retrieve a specific page of AccountInstance records from the API.
         Request is executed immediately
 
-        :param str target_url: API-generated URL for the requested results page
+        :param target_url: API-generated URL for the requested results page
 
         :returns: Page of AccountInstance
         """
         response = self._version.domain.twilio.request("GET", target_url)
         return AccountPage(self._version, response)
 
-    async def get_page_async(self, target_url) -> AccountPage:
+    async def get_page_async(self, target_url: str) -> AccountPage:
         """
         Asynchronously retrieve a specific page of AccountInstance records from the API.
         Request is executed immediately
 
-        :param str target_url: API-generated URL for the requested results page
+        :param target_url: API-generated URL for the requested results page
 
         :returns: Page of AccountInstance
         """
         response = await self._version.domain.twilio.request_async("GET", target_url)
         return AccountPage(self._version, response)
 
-    def get(self, sid) -> AccountContext:
+    def get(self, sid: str) -> AccountContext:
         """
         Constructs a AccountContext
 
@@ -716,7 +728,7 @@ class AccountList(ListResource):
         """
         return AccountContext(self._version, sid=sid)
 
-    def __call__(self, sid) -> AccountContext:
+    def __call__(self, sid: str) -> AccountContext:
         """
         Constructs a AccountContext
 

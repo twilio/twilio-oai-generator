@@ -13,7 +13,7 @@ r"""
 """
 
 
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Optional, Union
 from twilio.base import deserialize, serialize, values
 from twilio.base.instance_context import InstanceContext
 from twilio.base.instance_resource import InstanceResource
@@ -60,11 +60,13 @@ class HistoryInstance(InstanceResource):
             )
         return self._context
 
-    def fetch(self, add_ons_data=values.unset) -> "HistoryInstance":
+    def fetch(
+        self, add_ons_data: Union[Dict[str, object], object] = values.unset
+    ) -> "HistoryInstance":
         """
         Fetch the HistoryInstance
 
-        :param Dict[str, object] add_ons_data:
+        :param add_ons_data:
 
         :returns: The fetched HistoryInstance
         """
@@ -72,11 +74,13 @@ class HistoryInstance(InstanceResource):
             add_ons_data=add_ons_data,
         )
 
-    async def fetch_async(self, add_ons_data=values.unset) -> "HistoryInstance":
+    async def fetch_async(
+        self, add_ons_data: Union[Dict[str, object], object] = values.unset
+    ) -> "HistoryInstance":
         """
         Asynchronous coroutine to fetch the HistoryInstance
 
-        :param Dict[str, object] add_ons_data:
+        :param add_ons_data:
 
         :returns: The fetched HistoryInstance
         """
@@ -110,11 +114,13 @@ class HistoryContext(InstanceContext):
         }
         self._uri = "/Credentials/AWS/{sid}/History".format(**self._solution)
 
-    def fetch(self, add_ons_data=values.unset) -> HistoryInstance:
+    def fetch(
+        self, add_ons_data: Union[Dict[str, object], object] = values.unset
+    ) -> HistoryInstance:
         """
         Fetch the HistoryInstance
 
-        :param Dict[str, object] add_ons_data:
+        :param add_ons_data:
 
         :returns: The fetched HistoryInstance
         """
@@ -130,11 +136,13 @@ class HistoryContext(InstanceContext):
             sid=self._solution["sid"],
         )
 
-    async def fetch_async(self, add_ons_data=values.unset) -> HistoryInstance:
+    async def fetch_async(
+        self, add_ons_data: Union[Dict[str, object], object] = values.unset
+    ) -> HistoryInstance:
         """
         Asynchronous coroutine to fetch the HistoryInstance
 
-        :param Dict[str, object] add_ons_data:
+        :param add_ons_data:
 
         :returns: The fetched HistoryInstance
         """
