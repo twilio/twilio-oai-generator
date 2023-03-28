@@ -622,9 +622,9 @@ class AccountList(ListResource):
         date_test: Union[date, object] = values.unset,
         date_created_before: Union[datetime, object] = values.unset,
         date_created_after: Union[datetime, object] = values.unset,
-        page_token: Optional[str] = None,
-        page_number: Optional[int] = None,
-        page_size: Optional[int] = None,
+        page_token: Union[str, object] = values.unset,
+        page_number: Union[int, object] = values.unset,
+        page_size: Union[int, object] = values.unset,
     ) -> AccountPage:
         """
         Retrieve a single page of AccountInstance records from the API.
@@ -661,9 +661,9 @@ class AccountList(ListResource):
         date_test: Union[date, object] = values.unset,
         date_created_before: Union[datetime, object] = values.unset,
         date_created_after: Union[datetime, object] = values.unset,
-        page_token: Optional[str] = None,
-        page_number: Optional[int] = None,
-        page_size: Optional[int] = None,
+        page_token: Union[str, object] = values.unset,
+        page_number: Union[int, object] = values.unset,
+        page_size: Union[int, object] = values.unset,
     ) -> AccountPage:
         """
         Asynchronously retrieve a single page of AccountInstance records from the API.
