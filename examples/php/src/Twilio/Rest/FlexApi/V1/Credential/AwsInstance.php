@@ -28,7 +28,6 @@ use Twilio\InstanceContext;
 use Twilio\Deserialize;
 use Twilio\Serialize;
 use Twilio\Base\PhoneNumberCapabilities;
-use Twilio\Rest\FlexApi\V1\Credential\Aws\HistoryList;
 
 
 /**
@@ -39,8 +38,6 @@ use Twilio\Rest\FlexApi\V1\Credential\Aws\HistoryList;
  */
 class AwsInstance extends InstanceResource
 {
-    protected $_history;
-
     /**
      * Initialize the AwsInstance
      *
@@ -116,14 +113,6 @@ class AwsInstance extends InstanceResource
     {
 
         return $this->proxy()->update($options);
-    }
-
-    /**
-     * Access the history
-     */
-    protected function getHistory(): HistoryList
-    {
-        return $this->proxy()->history;
     }
 
     /**

@@ -27,7 +27,6 @@ module Twilio
                 super(version)
                 # Path Solution
                 @solution = { sid: sid }
-                @uri = "/Credentials/AWS/#{@solution[:sid]}/History"
               end
 
               # Provide a user friendly representation
@@ -41,12 +40,14 @@ module Twilio
               # Initialize the HistoryContext
               # @param [Version] version Version that contains the resource
               # @param [String] sid
+              # @param [String] test_integer History INTEGER ID param!!!
               # @return [HistoryContext] HistoryContext
-              def initialize(version, sid)
+              def initialize(version, sid, test_integer)
                 super(version)
 
                 # Path Solution
-                @solution = { sid: sid, }
+                @solution = { sid: sid, test_integer: test_integer, }
+                @uri = "/Credentials/AWS/#{@solution[:sid]}/History/#{@solution[:test_integer]}"
               end
 
               ##
@@ -64,6 +65,7 @@ module Twilio
                   @version,
                   payload,
                   sid: @solution[:sid],
+                  test_integer: @solution[:test_integer],
                 )
               end
 
@@ -121,7 +123,7 @@ module Twilio
               #   resource.
               # @param [String] sid The SID of the Call resource to fetch.
               # @return [HistoryInstance] HistoryInstance
-              def initialize(version, payload, sid: nil)
+              def initialize(version, payload, sid: nil, test_integer: nil)
                 super(version)
 
                 # Marshaled Properties
@@ -131,6 +133,22 @@ module Twilio
                   'test_string' => payload['test_string'],
                   'test_integer' => payload['test_integer'] == nil ? payload['test_integer'] : payload['test_integer'].to_i,
                 }
+
+                # Context
+                @instance_context = nil
+                @params = { 'sid' => sid || @properties['sid'],
+                            'test_integer' => test_integer || @properties['test_integer'], }
+              end
+
+              ##
+              # Generate an instance context for the instance, the context is capable of
+              # performing various actions.  All instance actions are proxied to the context
+              # @return [HistoryContext] CallContext for this CallInstance
+              def context
+                unless @instance_context
+                  @instance_context = HistoryContext.new(@version, @params['sid'], @params['test_integer'])
+                end
+                @instance_context
               end
 
               ##
@@ -173,13 +191,15 @@ module Twilio
               ##
               # Provide a user friendly representation
               def to_s
-                "<Twilio.FlexApi.V1.HistoryInstance>"
+                values = @params.map { |k, v| "#{k}: #{v}" }.join(" ")
+                "<Twilio.FlexApi.V1.HistoryInstance #{values}>"
               end
 
               ##
               # Provide a detailed, user friendly representation
               def inspect
-                "<Twilio.FlexApi.V1.HistoryInstance>"
+                values = @properties.map { |k, v| "#{k}: #{v}" }.join(" ")
+                "<Twilio.FlexApi.V1.HistoryInstance #{values}>"
               end
             end
           end

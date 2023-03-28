@@ -44,8 +44,9 @@ class HistoryInstance extends InstanceResource
      * @param Version $version Version that contains the resource
      * @param mixed[] $payload The response payload
      * @param string $sid
+     * @param int $testInteger History INTEGER ID param!!!
      */
-    public function __construct(Version $version, array $payload, string $sid)
+    public function __construct(Version $version, array $payload, string $sid, int $testInteger = null)
     {
         parent::__construct($version);
 
@@ -57,7 +58,26 @@ class HistoryInstance extends InstanceResource
             'testInteger' => Values::array_get($payload, 'test_integer'),
         ];
 
-        $this->solution = ['sid' => $sid, ];
+        $this->solution = ['sid' => $sid, 'testInteger' => $testInteger ?: $this->properties['testInteger'], ];
+    }
+
+    /**
+     * Generate an instance context for the instance, the context is capable of
+     * performing various actions.  All instance actions are proxied to the context
+     *
+     * @return HistoryContext Context for this HistoryInstance
+     */
+    protected function proxy(): HistoryContext
+    {
+        if (!$this->context) {
+            $this->context = new HistoryContext(
+                $this->version,
+                $this->solution['sid'],
+                $this->solution['testInteger']
+            );
+        }
+
+        return $this->context;
     }
 
     /**
@@ -101,7 +121,11 @@ class HistoryInstance extends InstanceResource
      */
     public function __toString(): string
     {
-        return '[Twilio.FlexApi.V1.HistoryInstance]';
+        $context = [];
+        foreach ($this->solution as $key => $value) {
+            $context[] = "$key=$value";
+        }
+        return '[Twilio.FlexApi.V1.HistoryInstance ' . \implode(' ', $context) . ']';
     }
 }
 
