@@ -23,12 +23,19 @@ from twilio.base.version import Version
 
 
 class NewCredentialsInstance(InstanceResource):
+    class Status(object):
+        IN_PROGRESS = "in-progress"
+        PAUSED = "paused"
+        STOPPED = "stopped"
+        PROCESSING = "processing"
+        COMPLETED = "completed"
+        ABSENT = "absent"
 
     """
-    :ivar account_sid:
-    :ivar sid:
-    :ivar test_string:
-    :ivar test_integer:
+    :ivar account_sid: 
+    :ivar sid: 
+    :ivar test_string: 
+    :ivar test_integer: 
     """
 
     def __init__(self, version: Version, payload: Dict[str, Any]):

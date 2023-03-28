@@ -70,7 +70,7 @@ fi
 
 if should-generate python; then
   OUT_DIR=examples/python/twilio/rest
-  generate twilio-python
+  generate twilio-python -DskipFormModel=false
   docker-run examples/python/Dockerfile-prettier
 fi
 
