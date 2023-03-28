@@ -25,9 +25,9 @@
     "date_time": "datetime",
     "date_or_time": "datetime",
     "date_time_inequality": "datetime",
-    "object": "dict",
-    "prefixed_collapsible_map": "dict",
-    "string_map": "dict"
+    "object": "Dict[str, object]",
+    "prefixed_collapsible_map": "Dict[str, object]",
+    "string_map": "Dict[str, object]"
   },
 
   "serialize": {

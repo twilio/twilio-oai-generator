@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenOperation;
 import org.openapitools.codegen.CodegenParameter;
+import org.openapitools.codegen.CodegenProperty;
 
 import static com.twilio.oai.common.ApplicationConstants.PATH_SEPARATOR_PLACEHOLDER;
 
@@ -45,6 +46,25 @@ public class PythonApiResourceBuilder extends FluentApiResourceBuilder {
         return this;
     }
 
+    @Override
+    public PythonApiResourceBuilder updateResponseModel(final Resolver<CodegenProperty> codegenPropertyResolver,
+                                                        final Resolver<CodegenModel> codegenModelResolver) {
+        super.updateResponseModel(codegenPropertyResolver, codegenModelResolver);
+
+        if (responseModel != null) {
+            responseModel.getVars().forEach(variable -> {
+                if (variable.complexType != null && !variable.complexType.contains(ApplicationConstants.ENUM)) {
+                    getModelByClassname(variable.complexType).ifPresent(model -> {
+                        variable.baseType = variable.baseType.replace(variable.datatypeWithEnum, "str");
+                        variable.datatypeWithEnum = "str";
+                    });
+                }
+            });
+        }
+
+        return this;
+    }
+
     private void updateNamespaceSubPart(CodegenOperation co) {
         namespaceSubPart = Arrays
             .stream(co.baseName.split(PATH_SEPARATOR_PLACEHOLDER))
@@ -64,7 +84,7 @@ public class PythonApiResourceBuilder extends FluentApiResourceBuilder {
     @Override
     protected String getDataTypeName(final String dataType) {
         if (dataType != null && dataType.contains(ApplicationConstants.ENUM)) {
-            return getApiName() + "Instance." + Utility.removeEnumName(dataType);
+            return '"' + getApiName() + "Instance." + Utility.removeEnumName(dataType) + '"';
         }
 
         return dataType;

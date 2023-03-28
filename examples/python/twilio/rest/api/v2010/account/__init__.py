@@ -13,10 +13,10 @@ r"""
 """
 
 
-from typing import Optional
-from twilio.base import deserialize
-from twilio.base import serialize
-from twilio.base import values
+from datetime import datetime
+from decimal import Decimal
+from typing import Any, Dict, List, Optional
+from twilio.base import deserialize, serialize, values
 from twilio.base.instance_context import InstanceContext
 from twilio.base.instance_resource import InstanceResource
 from twilio.base.list_resource import ListResource
@@ -25,21 +25,356 @@ from twilio.base.page import Page
 from twilio.rest.api.v2010.account.call import CallList
 
 
+class AccountInstance(InstanceResource):
+    class Status(object):
+        IN_PROGRESS = "in-progress"
+        PAUSED = "paused"
+        STOPPED = "stopped"
+        PROCESSING = "processing"
+        COMPLETED = "completed"
+        ABSENT = "absent"
+
+    """
+    :ivar account_sid: 
+    :ivar sid: 
+    :ivar test_string: 
+    :ivar test_integer: 
+    :ivar test_object: 
+    :ivar test_date_time: 
+    :ivar test_number: 
+    :ivar price_unit: 
+    :ivar test_number_float: 
+    :ivar test_number_decimal: 
+    :ivar test_enum: 
+    :ivar a2p_profile_bundle_sid: A2P Messaging Profile Bundle BundleSid
+    :ivar test_array_of_integers: 
+    :ivar test_array_of_array_of_integers: 
+    :ivar test_array_of_objects: 
+    :ivar test_array_of_enum: Permissions authorized to the app
+    """
+
+    def __init__(
+        self, version: Version, payload: Dict[str, Any], sid: Optional[str] = None
+    ):
+        super().__init__(version)
+
+        self.account_sid: Optional[str] = payload.get("account_sid")
+        self.sid: Optional[str] = payload.get("sid")
+        self.test_string: Optional[str] = payload.get("test_string")
+        self.test_integer: Optional[int] = deserialize.integer(
+            payload.get("test_integer")
+        )
+        self.test_object: Optional[str] = payload.get("test_object")
+        self.test_date_time: Optional[datetime] = deserialize.rfc2822_datetime(
+            payload.get("test_date_time")
+        )
+        self.test_number: Optional[float] = deserialize.decimal(
+            payload.get("test_number")
+        )
+        self.price_unit: Optional[str] = payload.get("price_unit")
+        self.test_number_float: Optional[float] = payload.get("test_number_float")
+        self.test_number_decimal: Optional[Decimal] = payload.get("test_number_decimal")
+        self.test_enum: Optional["AccountInstance.Status"] = payload.get("test_enum")
+        self.a2p_profile_bundle_sid: Optional[str] = payload.get(
+            "a2p_profile_bundle_sid"
+        )
+        self.test_array_of_integers: Optional[List[int]] = payload.get(
+            "test_array_of_integers"
+        )
+        self.test_array_of_array_of_integers: Optional[List[List[int]]] = payload.get(
+            "test_array_of_array_of_integers"
+        )
+        self.test_array_of_objects: Optional[List[str]] = payload.get(
+            "test_array_of_objects"
+        )
+        self.test_array_of_enum: Optional[List["AccountInstance.Status"]] = payload.get(
+            "test_array_of_enum"
+        )
+
+        self._solution = {
+            "sid": sid or self.sid,
+        }
+        self._context: Optional[AccountContext] = None
+
+    @property
+    def _proxy(self) -> "AccountContext":
+        """
+        Generate an instance context for the instance, the context is capable of
+        performing various actions. All instance actions are proxied to the context
+
+        :returns: AccountContext for this AccountInstance
+        """
+        if self._context is None:
+            self._context = AccountContext(
+                self._version,
+                sid=self._solution["sid"],
+            )
+        return self._context
+
+    def delete(self) -> bool:
+        """
+        Deletes the AccountInstance
+
+
+        :returns: True if delete succeeds, False otherwise
+        """
+        return self._proxy.delete()
+
+    async def delete_async(self) -> bool:
+        """
+        Asynchronous coroutine that deletes the AccountInstance
+
+
+        :returns: True if delete succeeds, False otherwise
+        """
+        return await self._proxy.delete_async()
+
+    def fetch(self) -> "AccountInstance":
+        """
+        Fetch the AccountInstance
+
+
+        :returns: The fetched AccountInstance
+        """
+        return self._proxy.fetch()
+
+    async def fetch_async(self) -> "AccountInstance":
+        """
+        Asynchronous coroutine to fetch the AccountInstance
+
+
+        :returns: The fetched AccountInstance
+        """
+        return await self._proxy.fetch_async()
+
+    def update(self, status, pause_behavior=values.unset) -> "AccountInstance":
+        """
+        Update the AccountInstance
+
+        :param "AccountInstance.Status" status:
+        :param str pause_behavior:
+
+        :returns: The updated AccountInstance
+        """
+        return self._proxy.update(
+            status=status,
+            pause_behavior=pause_behavior,
+        )
+
+    async def update_async(
+        self, status, pause_behavior=values.unset
+    ) -> "AccountInstance":
+        """
+        Asynchronous coroutine to update the AccountInstance
+
+        :param "AccountInstance.Status" status:
+        :param str pause_behavior:
+
+        :returns: The updated AccountInstance
+        """
+        return await self._proxy.update_async(
+            status=status,
+            pause_behavior=pause_behavior,
+        )
+
+    @property
+    def calls(self) -> CallList:
+        """
+        Access the calls
+        """
+        return self._proxy.calls
+
+    def __repr__(self) -> str:
+        """
+        Provide a friendly representation
+
+        :returns: Machine friendly representation
+        """
+        context = " ".join("{}={}".format(k, v) for k, v in self._solution.items())
+        return "<Twilio.Api.V2010.AccountInstance {}>".format(context)
+
+
+class AccountContext(InstanceContext):
+    def __init__(self, version: Version, sid: str):
+        """
+        Initialize the AccountContext
+
+        :param version: Version that contains the resource
+        :param sid:
+        """
+        super().__init__(version)
+
+        # Path Solution
+        self._solution = {
+            "sid": sid,
+        }
+        self._uri = "/Accounts/{sid}.json".format(**self._solution)
+
+        self._calls: Optional[CallList] = None
+
+    def delete(self) -> bool:
+        """
+        Deletes the AccountInstance
+
+
+        :returns: True if delete succeeds, False otherwise
+        """
+        return self._version.delete(
+            method="DELETE",
+            uri=self._uri,
+        )
+
+    async def delete_async(self) -> bool:
+        """
+        Asynchronous coroutine that deletes the AccountInstance
+
+
+        :returns: True if delete succeeds, False otherwise
+        """
+        return await self._version.delete_async(
+            method="DELETE",
+            uri=self._uri,
+        )
+
+    def fetch(self) -> AccountInstance:
+        """
+        Fetch the AccountInstance
+
+
+        :returns: The fetched AccountInstance
+        """
+
+        payload = self._version.fetch(
+            method="GET",
+            uri=self._uri,
+        )
+
+        return AccountInstance(
+            self._version,
+            payload,
+            sid=self._solution["sid"],
+        )
+
+    async def fetch_async(self) -> AccountInstance:
+        """
+        Asynchronous coroutine to fetch the AccountInstance
+
+
+        :returns: The fetched AccountInstance
+        """
+
+        payload = await self._version.fetch_async(
+            method="GET",
+            uri=self._uri,
+        )
+
+        return AccountInstance(
+            self._version,
+            payload,
+            sid=self._solution["sid"],
+        )
+
+    def update(self, status, pause_behavior=values.unset) -> AccountInstance:
+        """
+        Update the AccountInstance
+
+        :param "AccountInstance.Status" status:
+        :param str pause_behavior:
+
+        :returns: The updated AccountInstance
+        """
+        data = values.of(
+            {
+                "Status": status,
+                "PauseBehavior": pause_behavior,
+            }
+        )
+
+        payload = self._version.update(
+            method="POST",
+            uri=self._uri,
+            data=data,
+        )
+
+        return AccountInstance(self._version, payload, sid=self._solution["sid"])
+
+    async def update_async(
+        self, status, pause_behavior=values.unset
+    ) -> AccountInstance:
+        """
+        Asynchronous coroutine to update the AccountInstance
+
+        :param "AccountInstance.Status" status:
+        :param str pause_behavior:
+
+        :returns: The updated AccountInstance
+        """
+        data = values.of(
+            {
+                "Status": status,
+                "PauseBehavior": pause_behavior,
+            }
+        )
+
+        payload = await self._version.update_async(
+            method="POST",
+            uri=self._uri,
+            data=data,
+        )
+
+        return AccountInstance(self._version, payload, sid=self._solution["sid"])
+
+    @property
+    def calls(self) -> CallList:
+        """
+        Access the calls
+        """
+        if self._calls is None:
+            self._calls = CallList(
+                self._version,
+                self._solution["sid"],
+            )
+        return self._calls
+
+    def __repr__(self) -> str:
+        """
+        Provide a friendly representation
+
+        :returns: Machine friendly representation
+        """
+        context = " ".join("{}={}".format(k, v) for k, v in self._solution.items())
+        return "<Twilio.Api.V2010.AccountContext {}>".format(context)
+
+
+class AccountPage(Page):
+    def get_instance(self, payload) -> AccountInstance:
+        """
+        Build an instance of AccountInstance
+
+        :param dict payload: Payload response from the API
+        """
+        return AccountInstance(self._version, payload)
+
+    def __repr__(self) -> str:
+        """
+        Provide a friendly representation
+
+        :returns: Machine friendly representation
+        """
+        return "<Twilio.Api.V2010.AccountPage>"
+
+
 class AccountList(ListResource):
     def __init__(self, version: Version):
         """
         Initialize the AccountList
 
-        :param Version version: Version that contains the resource
+        :param version: Version that contains the resource
 
-        :returns: twilio.rest.api.v2010.account.AccountList
-        :rtype: twilio.rest.api.v2010.account.AccountList
         """
         super().__init__(version)
 
-        # Path Solution
-        self._solution = {}
-        self._uri = "/Accounts.json".format(**self._solution)
+        self._uri = "/Accounts.json"
 
     def create(
         self,
@@ -47,17 +382,16 @@ class AccountList(ListResource):
         recording_status_callback=values.unset,
         recording_status_callback_event=values.unset,
         twiml=values.unset,
-    ):
+    ) -> AccountInstance:
         """
         Create the AccountInstance
 
         :param str x_twilio_webhook_enabled:
         :param str recording_status_callback:
-        :param list[str] recording_status_callback_event:
+        :param List[str] recording_status_callback_event:
         :param str twiml:
 
         :returns: The created AccountInstance
-        :rtype: twilio.rest.api.v2010.account.AccountInstance
         """
         data = values.of(
             {
@@ -85,17 +419,16 @@ class AccountList(ListResource):
         recording_status_callback=values.unset,
         recording_status_callback_event=values.unset,
         twiml=values.unset,
-    ):
+    ) -> AccountInstance:
         """
         Asynchronously create the AccountInstance
 
         :param str x_twilio_webhook_enabled:
         :param str recording_status_callback:
-        :param list[str] recording_status_callback_event:
+        :param List[str] recording_status_callback_event:
         :param str twiml:
 
         :returns: The created AccountInstance
-        :rtype: twilio.rest.api.v2010.account.AccountInstance
         """
         data = values.of(
             {
@@ -125,7 +458,7 @@ class AccountList(ListResource):
         date_created_after=values.unset,
         limit=None,
         page_size=None,
-    ):
+    ) -> List[AccountInstance]:
         """
         Streams AccountInstance records from the API as a generator stream.
         This operation lazily loads records as efficiently as possible until the limit
@@ -144,7 +477,6 @@ class AccountList(ListResource):
                               limit with the most efficient page size, i.e. min(limit, 1000)
 
         :returns: Generator that will yield up to limit results
-        :rtype: list[twilio.rest.api.v2010.account.AccountInstance]
         """
         limits = self._version.read_limits(limit, page_size)
         page = self.page(
@@ -165,7 +497,7 @@ class AccountList(ListResource):
         date_created_after=values.unset,
         limit=None,
         page_size=None,
-    ):
+    ) -> List[AccountInstance]:
         """
         Asynchronously streams AccountInstance records from the API as a generator stream.
         This operation lazily loads records as efficiently as possible until the limit
@@ -184,7 +516,6 @@ class AccountList(ListResource):
                               limit with the most efficient page size, i.e. min(limit, 1000)
 
         :returns: Generator that will yield up to limit results
-        :rtype: list[twilio.rest.api.v2010.account.AccountInstance]
         """
         limits = self._version.read_limits(limit, page_size)
         page = await self.page_async(
@@ -205,7 +536,7 @@ class AccountList(ListResource):
         date_created_after=values.unset,
         limit=None,
         page_size=None,
-    ):
+    ) -> List[AccountInstance]:
         """
         Lists AccountInstance records from the API as a list.
         Unlike stream(), this operation is eager and will load `limit` records into
@@ -223,7 +554,6 @@ class AccountList(ListResource):
                               with the most efficient page size, i.e. min(limit, 1000)
 
         :returns: Generator that will yield up to limit results
-        :rtype: list[twilio.rest.api.v2010.account.AccountInstance]
         """
         return list(
             self.stream(
@@ -244,7 +574,7 @@ class AccountList(ListResource):
         date_created_after=values.unset,
         limit=None,
         page_size=None,
-    ):
+    ) -> List[AccountInstance]:
         """
         Asynchronously lists AccountInstance records from the API as a list.
         Unlike stream(), this operation is eager and will load `limit` records into
@@ -262,7 +592,6 @@ class AccountList(ListResource):
                               with the most efficient page size, i.e. min(limit, 1000)
 
         :returns: Generator that will yield up to limit results
-        :rtype: list[twilio.rest.api.v2010.account.AccountInstance]
         """
         return list(
             await self.stream_async(
@@ -284,7 +613,7 @@ class AccountList(ListResource):
         page_token=values.unset,
         page_number=values.unset,
         page_size=values.unset,
-    ):
+    ) -> AccountPage:
         """
         Retrieve a single page of AccountInstance records from the API.
         Request is executed immediately
@@ -298,7 +627,6 @@ class AccountList(ListResource):
         :param int page_size: Number of records to return, defaults to 50
 
         :returns: Page of AccountInstance
-        :rtype: twilio.rest.api.v2010.account.AccountPage
         """
         data = values.of(
             {
@@ -313,7 +641,7 @@ class AccountList(ListResource):
         )
 
         response = self._version.page(method="GET", uri=self._uri, params=data)
-        return AccountPage(self._version, response, self._solution)
+        return AccountPage(self._version, response)
 
     async def page_async(
         self,
@@ -324,7 +652,7 @@ class AccountList(ListResource):
         page_token=values.unset,
         page_number=values.unset,
         page_size=values.unset,
-    ):
+    ) -> AccountPage:
         """
         Asynchronously retrieve a single page of AccountInstance records from the API.
         Request is executed immediately
@@ -338,7 +666,6 @@ class AccountList(ListResource):
         :param int page_size: Number of records to return, defaults to 50
 
         :returns: Page of AccountInstance
-        :rtype: twilio.rest.api.v2010.account.AccountPage
         """
         data = values.of(
             {
@@ -355,9 +682,9 @@ class AccountList(ListResource):
         response = await self._version.page_async(
             method="GET", uri=self._uri, params=data
         )
-        return AccountPage(self._version, response, self._solution)
+        return AccountPage(self._version, response)
 
-    def get_page(self, target_url):
+    def get_page(self, target_url) -> AccountPage:
         """
         Retrieve a specific page of AccountInstance records from the API.
         Request is executed immediately
@@ -365,12 +692,11 @@ class AccountList(ListResource):
         :param str target_url: API-generated URL for the requested results page
 
         :returns: Page of AccountInstance
-        :rtype: twilio.rest.api.v2010.account.AccountPage
         """
         response = self._version.domain.twilio.request("GET", target_url)
-        return AccountPage(self._version, response, self._solution)
+        return AccountPage(self._version, response)
 
-    async def get_page_async(self, target_url):
+    async def get_page_async(self, target_url) -> AccountPage:
         """
         Asynchronously retrieve a specific page of AccountInstance records from the API.
         Request is executed immediately
@@ -378,519 +704,30 @@ class AccountList(ListResource):
         :param str target_url: API-generated URL for the requested results page
 
         :returns: Page of AccountInstance
-        :rtype: twilio.rest.api.v2010.account.AccountPage
         """
         response = await self._version.domain.twilio.request_async("GET", target_url)
-        return AccountPage(self._version, response, self._solution)
+        return AccountPage(self._version, response)
 
-    def get(self, sid):
+    def get(self, sid) -> AccountContext:
         """
         Constructs a AccountContext
 
         :param sid:
-
-        :returns: twilio.rest.api.v2010.account.AccountContext
-        :rtype: twilio.rest.api.v2010.account.AccountContext
         """
         return AccountContext(self._version, sid=sid)
 
-    def __call__(self, sid):
+    def __call__(self, sid) -> AccountContext:
         """
         Constructs a AccountContext
 
         :param sid:
-
-        :returns: twilio.rest.api.v2010.account.AccountContext
-        :rtype: twilio.rest.api.v2010.account.AccountContext
         """
         return AccountContext(self._version, sid=sid)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         """
         Provide a friendly representation
 
         :returns: Machine friendly representation
-        :rtype: str
         """
         return "<Twilio.Api.V2010.AccountList>"
-
-
-class AccountPage(Page):
-    def __init__(self, version, response, solution):
-        """
-        Initialize the AccountPage
-
-        :param Version version: Version that contains the resource
-        :param Response response: Response from the API
-
-        :returns: twilio.rest.api.v2010.account.AccountPage
-        :rtype: twilio.rest.api.v2010.account.AccountPage
-        """
-        super().__init__(version, response)
-
-        # Path solution
-        self._solution = solution
-
-    def get_instance(self, payload):
-        """
-        Build an instance of AccountInstance
-
-        :param dict payload: Payload response from the API
-
-        :returns: twilio.rest.api.v2010.account.AccountInstance
-        :rtype: twilio.rest.api.v2010.account.AccountInstance
-        """
-        return AccountInstance(self._version, payload)
-
-    def __repr__(self):
-        """
-        Provide a friendly representation
-
-        :returns: Machine friendly representation
-        :rtype: str
-        """
-        return "<Twilio.Api.V2010.AccountPage>"
-
-
-class AccountInstance(InstanceResource):
-    class Status(object):
-        IN_PROGRESS = "in-progress"
-        PAUSED = "paused"
-        STOPPED = "stopped"
-        PROCESSING = "processing"
-        COMPLETED = "completed"
-        ABSENT = "absent"
-
-    def __init__(self, version, payload, sid: Optional[str] = None):
-        """
-        Initialize the AccountInstance
-
-        :returns: twilio.rest.api.v2010.account.AccountInstance
-        :rtype: twilio.rest.api.v2010.account.AccountInstance
-        """
-        super().__init__(version)
-
-        self._properties = {
-            "account_sid": payload.get("account_sid"),
-            "sid": payload.get("sid"),
-            "test_string": payload.get("test_string"),
-            "test_integer": deserialize.integer(payload.get("test_integer")),
-            "test_object": payload.get("test_object"),
-            "test_date_time": deserialize.rfc2822_datetime(
-                payload.get("test_date_time")
-            ),
-            "test_number": deserialize.decimal(payload.get("test_number")),
-            "price_unit": payload.get("price_unit"),
-            "test_number_float": payload.get("test_number_float"),
-            "test_number_decimal": payload.get("test_number_decimal"),
-            "test_enum": payload.get("test_enum"),
-            "a2p_profile_bundle_sid": payload.get("a2p_profile_bundle_sid"),
-            "test_array_of_integers": payload.get("test_array_of_integers"),
-            "test_array_of_array_of_integers": payload.get(
-                "test_array_of_array_of_integers"
-            ),
-            "test_array_of_objects": payload.get("test_array_of_objects"),
-            "test_array_of_enum": payload.get("test_array_of_enum"),
-        }
-
-        self._context = None
-        self._solution = {
-            "sid": sid or self._properties["sid"],
-        }
-
-    @property
-    def _proxy(self):
-        """
-        Generate an instance context for the instance, the context is capable of
-        performing various actions. All instance actions are proxied to the context
-
-        :returns: AccountContext for this AccountInstance
-        :rtype: twilio.rest.api.v2010.account.AccountContext
-        """
-        if self._context is None:
-            self._context = AccountContext(
-                self._version,
-                sid=self._solution["sid"],
-            )
-        return self._context
-
-    @property
-    def account_sid(self):
-        """
-        :returns:
-        :rtype: str
-        """
-        return self._properties["account_sid"]
-
-    @property
-    def sid(self):
-        """
-        :returns:
-        :rtype: str
-        """
-        return self._properties["sid"]
-
-    @property
-    def test_string(self):
-        """
-        :returns:
-        :rtype: str
-        """
-        return self._properties["test_string"]
-
-    @property
-    def test_integer(self):
-        """
-        :returns:
-        :rtype: int
-        """
-        return self._properties["test_integer"]
-
-    @property
-    def test_object(self):
-        """
-        :returns:
-        :rtype: TestResponseObjectTestObject
-        """
-        return self._properties["test_object"]
-
-    @property
-    def test_date_time(self):
-        """
-        :returns:
-        :rtype: datetime
-        """
-        return self._properties["test_date_time"]
-
-    @property
-    def test_number(self):
-        """
-        :returns:
-        :rtype: float
-        """
-        return self._properties["test_number"]
-
-    @property
-    def price_unit(self):
-        """
-        :returns:
-        :rtype: str
-        """
-        return self._properties["price_unit"]
-
-    @property
-    def test_number_float(self):
-        """
-        :returns:
-        :rtype: float
-        """
-        return self._properties["test_number_float"]
-
-    @property
-    def test_number_decimal(self):
-        """
-        :returns:
-        :rtype: Decimal
-        """
-        return self._properties["test_number_decimal"]
-
-    @property
-    def test_enum(self):
-        """
-        :returns:
-        :rtype: AccountInstance.Status
-        """
-        return self._properties["test_enum"]
-
-    @property
-    def a2p_profile_bundle_sid(self):
-        """
-        :returns: A2P Messaging Profile Bundle BundleSid
-        :rtype: str
-        """
-        return self._properties["a2p_profile_bundle_sid"]
-
-    @property
-    def test_array_of_integers(self):
-        """
-        :returns:
-        :rtype: list[int]
-        """
-        return self._properties["test_array_of_integers"]
-
-    @property
-    def test_array_of_array_of_integers(self):
-        """
-        :returns:
-        :rtype: list[list[int]]
-        """
-        return self._properties["test_array_of_array_of_integers"]
-
-    @property
-    def test_array_of_objects(self):
-        """
-        :returns:
-        :rtype: list[TestResponseObjectTestArrayOfObjects]
-        """
-        return self._properties["test_array_of_objects"]
-
-    @property
-    def test_array_of_enum(self):
-        """
-        :returns: Permissions authorized to the app
-        :rtype: list[AccountInstance.Status]
-        """
-        return self._properties["test_array_of_enum"]
-
-    def delete(self):
-        """
-        Deletes the AccountInstance
-
-
-        :returns: True if delete succeeds, False otherwise
-        :rtype: bool
-        """
-        return self._proxy.delete()
-
-    async def delete_async(self):
-        """
-        Asynchronous coroutine that deletes the AccountInstance
-
-
-        :returns: True if delete succeeds, False otherwise
-        :rtype: bool
-        """
-        return await self._proxy.delete_async()
-
-    def fetch(self):
-        """
-        Fetch the AccountInstance
-
-
-        :returns: The fetched AccountInstance
-        :rtype: twilio.rest.api.v2010.account.AccountInstance
-        """
-        return self._proxy.fetch()
-
-    async def fetch_async(self):
-        """
-        Asynchronous coroutine to fetch the AccountInstance
-
-
-        :returns: The fetched AccountInstance
-        :rtype: twilio.rest.api.v2010.account.AccountInstance
-        """
-        return await self._proxy.fetch_async()
-
-    def update(self, status, pause_behavior=values.unset):
-        """
-        Update the AccountInstance
-
-        :param AccountInstance.Status status:
-        :param str pause_behavior:
-
-        :returns: The updated AccountInstance
-        :rtype: twilio.rest.api.v2010.account.AccountInstance
-        """
-        return self._proxy.update(
-            status=status,
-            pause_behavior=pause_behavior,
-        )
-
-    async def update_async(self, status, pause_behavior=values.unset):
-        """
-        Asynchronous coroutine to update the AccountInstance
-
-        :param AccountInstance.Status status:
-        :param str pause_behavior:
-
-        :returns: The updated AccountInstance
-        :rtype: twilio.rest.api.v2010.account.AccountInstance
-        """
-        return await self._proxy.update_async(
-            status=status,
-            pause_behavior=pause_behavior,
-        )
-
-    @property
-    def calls(self):
-        """
-        Access the calls
-
-        :returns: twilio.rest.api.v2010.account.CallList
-        :rtype: twilio.rest.api.v2010.account.CallList
-        """
-        return self._proxy.calls
-
-    def __repr__(self):
-        """
-        Provide a friendly representation
-
-        :returns: Machine friendly representation
-        :rtype: str
-        """
-        context = " ".join("{}={}".format(k, v) for k, v in self._solution.items())
-        return "<Twilio.Api.V2010.AccountInstance {}>".format(context)
-
-
-class AccountContext(InstanceContext):
-    def __init__(self, version: Version, sid: str):
-        """
-        Initialize the AccountContext
-
-        :param Version version: Version that contains the resource
-        :param sid:
-
-        :returns: twilio.rest.api.v2010.account.AccountContext
-        :rtype: twilio.rest.api.v2010.account.AccountContext
-        """
-        super().__init__(version)
-
-        # Path Solution
-        self._solution = {
-            "sid": sid,
-        }
-        self._uri = "/Accounts/{sid}.json".format(**self._solution)
-
-        self._calls = None
-
-    def delete(self):
-        """
-        Deletes the AccountInstance
-
-
-        :returns: True if delete succeeds, False otherwise
-        :rtype: bool
-        """
-        return self._version.delete(
-            method="DELETE",
-            uri=self._uri,
-        )
-
-    async def delete_async(self):
-        """
-        Asynchronous coroutine that deletes the AccountInstance
-
-
-        :returns: True if delete succeeds, False otherwise
-        :rtype: bool
-        """
-        return await self._version.delete_async(
-            method="DELETE",
-            uri=self._uri,
-        )
-
-    def fetch(self):
-        """
-        Fetch the AccountInstance
-
-
-        :returns: The fetched AccountInstance
-        :rtype: twilio.rest.api.v2010.account.AccountInstance
-        """
-
-        payload = self._version.fetch(
-            method="GET",
-            uri=self._uri,
-        )
-
-        return AccountInstance(
-            self._version,
-            payload,
-            sid=self._solution["sid"],
-        )
-
-    async def fetch_async(self):
-        """
-        Asynchronous coroutine to fetch the AccountInstance
-
-
-        :returns: The fetched AccountInstance
-        :rtype: twilio.rest.api.v2010.account.AccountInstance
-        """
-
-        payload = await self._version.fetch_async(
-            method="GET",
-            uri=self._uri,
-        )
-
-        return AccountInstance(
-            self._version,
-            payload,
-            sid=self._solution["sid"],
-        )
-
-    def update(self, status, pause_behavior=values.unset):
-        """
-        Update the AccountInstance
-
-        :param AccountInstance.Status status:
-        :param str pause_behavior:
-
-        :returns: The updated AccountInstance
-        :rtype: twilio.rest.api.v2010.account.AccountInstance
-        """
-        data = values.of(
-            {
-                "Status": status,
-                "PauseBehavior": pause_behavior,
-            }
-        )
-
-        payload = self._version.update(
-            method="POST",
-            uri=self._uri,
-            data=data,
-        )
-
-        return AccountInstance(self._version, payload, sid=self._solution["sid"])
-
-    async def update_async(self, status, pause_behavior=values.unset):
-        """
-        Asynchronous coroutine to update the AccountInstance
-
-        :param AccountInstance.Status status:
-        :param str pause_behavior:
-
-        :returns: The updated AccountInstance
-        :rtype: twilio.rest.api.v2010.account.AccountInstance
-        """
-        data = values.of(
-            {
-                "Status": status,
-                "PauseBehavior": pause_behavior,
-            }
-        )
-
-        payload = await self._version.update_async(
-            method="POST",
-            uri=self._uri,
-            data=data,
-        )
-
-        return AccountInstance(self._version, payload, sid=self._solution["sid"])
-
-    @property
-    def calls(self):
-        """
-        Access the calls
-
-        :returns: twilio.rest.api.v2010.account.CallList
-        :rtype: twilio.rest.api.v2010.account.CallList
-        """
-        if self._calls is None:
-            self._calls = CallList(
-                self._version,
-                self._solution["sid"],
-            )
-        return self._calls
-
-    def __repr__(self):
-        """
-        Provide a friendly representation
-
-        :returns: Machine friendly representation
-        :rtype: str
-        """
-        context = " ".join("{}={}".format(k, v) for k, v in self._solution.items())
-        return "<Twilio.Api.V2010.AccountContext {}>".format(context)

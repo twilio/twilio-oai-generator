@@ -13,13 +13,43 @@ r"""
 """
 
 
-from twilio.base import deserialize
-from twilio.base import serialize
-from twilio.base import values
+from typing import Any, Dict, Optional
+from twilio.base import deserialize, serialize, values
 
 from twilio.base.instance_resource import InstanceResource
 from twilio.base.list_resource import ListResource
 from twilio.base.version import Version
+
+
+class NewCredentialsInstance(InstanceResource):
+
+    """
+    :ivar account_sid:
+    :ivar sid:
+    :ivar test_string:
+    :ivar test_integer:
+    """
+
+    def __init__(self, version: Version, payload: Dict[str, Any]):
+        super().__init__(version)
+
+        self.account_sid: Optional[str] = payload.get("account_sid")
+        self.sid: Optional[str] = payload.get("sid")
+        self.test_string: Optional[str] = payload.get("test_string")
+        self.test_integer: Optional[int] = deserialize.integer(
+            payload.get("test_integer")
+        )
+
+        self._solution = {}
+
+    def __repr__(self) -> str:
+        """
+        Provide a friendly representation
+
+        :returns: Machine friendly representation
+        """
+        context = " ".join("{}={}".format(k, v) for k, v in self._solution.items())
+        return "<Twilio.FlexApi.V1.NewCredentialsInstance {}>".format(context)
 
 
 class NewCredentialsList(ListResource):
@@ -27,16 +57,12 @@ class NewCredentialsList(ListResource):
         """
         Initialize the NewCredentialsList
 
-        :param Version version: Version that contains the resource
+        :param version: Version that contains the resource
 
-        :returns: twilio.rest.flex_api.v1.credential.new_credentials.NewCredentialsList
-        :rtype: twilio.rest.flex_api.v1.credential.new_credentials.NewCredentialsList
         """
         super().__init__(version)
 
-        # Path Solution
-        self._solution = {}
-        self._uri = "/Credentials/AWS".format(**self._solution)
+        self._uri = "/Credentials/AWS"
 
     def create(
         self,
@@ -57,7 +83,7 @@ class NewCredentialsList(ListResource):
         test_any_array=values.unset,
         permissions=values.unset,
         some_a2p_thing=values.unset,
-    ):
+    ) -> NewCredentialsInstance:
         """
         Create the NewCredentialsInstance
 
@@ -69,18 +95,17 @@ class NewCredentialsList(ListResource):
         :param float test_number_double:
         :param float test_number_int32:
         :param int test_number_int64:
-        :param dict test_object:
+        :param Dict[str, object] test_object:
         :param datetime test_date_time:
         :param date test_date:
-        :param NewCredentialsInstance.Status test_enum:
-        :param list[object] test_object_array:
+        :param &quot;NewCredentialsInstance.Status&quot; test_enum:
+        :param List[object] test_object_array:
         :param object test_any_type:
-        :param list[object] test_any_array:
-        :param list[str] permissions: A comma-separated list of the permissions you will request from the users of this ConnectApp.  Can include: `get-all` and `post-all`.
+        :param List[object] test_any_array:
+        :param List[str] permissions: A comma-separated list of the permissions you will request from the users of this ConnectApp.  Can include: `get-all` and `post-all`.
         :param str some_a2p_thing:
 
         :returns: The created NewCredentialsInstance
-        :rtype: twilio.rest.flex_api.v1.credential.new_credentials.NewCredentialsInstance
         """
         data = values.of(
             {
@@ -135,7 +160,7 @@ class NewCredentialsList(ListResource):
         test_any_array=values.unset,
         permissions=values.unset,
         some_a2p_thing=values.unset,
-    ):
+    ) -> NewCredentialsInstance:
         """
         Asynchronously create the NewCredentialsInstance
 
@@ -147,18 +172,17 @@ class NewCredentialsList(ListResource):
         :param float test_number_double:
         :param float test_number_int32:
         :param int test_number_int64:
-        :param dict test_object:
+        :param Dict[str, object] test_object:
         :param datetime test_date_time:
         :param date test_date:
-        :param NewCredentialsInstance.Status test_enum:
-        :param list[object] test_object_array:
+        :param &quot;NewCredentialsInstance.Status&quot; test_enum:
+        :param List[object] test_object_array:
         :param object test_any_type:
-        :param list[object] test_any_array:
-        :param list[str] permissions: A comma-separated list of the permissions you will request from the users of this ConnectApp.  Can include: `get-all` and `post-all`.
+        :param List[object] test_any_array:
+        :param List[str] permissions: A comma-separated list of the permissions you will request from the users of this ConnectApp.  Can include: `get-all` and `post-all`.
         :param str some_a2p_thing:
 
         :returns: The created NewCredentialsInstance
-        :rtype: twilio.rest.flex_api.v1.credential.new_credentials.NewCredentialsInstance
         """
         data = values.of(
             {
@@ -194,74 +218,10 @@ class NewCredentialsList(ListResource):
 
         return NewCredentialsInstance(self._version, payload)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         """
         Provide a friendly representation
 
         :returns: Machine friendly representation
-        :rtype: str
         """
         return "<Twilio.FlexApi.V1.NewCredentialsList>"
-
-
-class NewCredentialsInstance(InstanceResource):
-    def __init__(self, version, payload):
-        """
-        Initialize the NewCredentialsInstance
-
-        :returns: twilio.rest.flex_api.v1.credential.new_credentials.NewCredentialsInstance
-        :rtype: twilio.rest.flex_api.v1.credential.new_credentials.NewCredentialsInstance
-        """
-        super().__init__(version)
-
-        self._properties = {
-            "account_sid": payload.get("account_sid"),
-            "sid": payload.get("sid"),
-            "test_string": payload.get("test_string"),
-            "test_integer": deserialize.integer(payload.get("test_integer")),
-        }
-
-        self._context = None
-        self._solution = {}
-
-    @property
-    def account_sid(self):
-        """
-        :returns:
-        :rtype: str
-        """
-        return self._properties["account_sid"]
-
-    @property
-    def sid(self):
-        """
-        :returns:
-        :rtype: str
-        """
-        return self._properties["sid"]
-
-    @property
-    def test_string(self):
-        """
-        :returns:
-        :rtype: str
-        """
-        return self._properties["test_string"]
-
-    @property
-    def test_integer(self):
-        """
-        :returns:
-        :rtype: int
-        """
-        return self._properties["test_integer"]
-
-    def __repr__(self):
-        """
-        Provide a friendly representation
-
-        :returns: Machine friendly representation
-        :rtype: str
-        """
-        context = " ".join("{}={}".format(k, v) for k, v in self._solution.items())
-        return "<Twilio.FlexApi.V1.NewCredentialsInstance {}>".format(context)

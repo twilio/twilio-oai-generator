@@ -13,89 +13,39 @@ r"""
 """
 
 
-from typing import Optional
-from twilio.base import deserialize
-from twilio.base import values
+from typing import Any, Dict, Optional
+from twilio.base import deserialize, values
 from twilio.base.instance_context import InstanceContext
 from twilio.base.instance_resource import InstanceResource
 from twilio.base.list_resource import ListResource
 from twilio.base.version import Version
 
 
-class CallList(ListResource):
-    def __init__(self, version: Version):
-        """
-        Initialize the CallList
-
-        :param Version version: Version that contains the resource
-
-        :returns: twilio.rest.flex_api.v1.call.CallList
-        :rtype: twilio.rest.flex_api.v1.call.CallList
-        """
-        super().__init__(version)
-
-        # Path Solution
-        self._solution = {}
-
-    def get(self, sid):
-        """
-        Constructs a CallContext
-
-        :param sid:
-
-        :returns: twilio.rest.flex_api.v1.call.CallContext
-        :rtype: twilio.rest.flex_api.v1.call.CallContext
-        """
-        return CallContext(self._version, sid=sid)
-
-    def __call__(self, sid):
-        """
-        Constructs a CallContext
-
-        :param sid:
-
-        :returns: twilio.rest.flex_api.v1.call.CallContext
-        :rtype: twilio.rest.flex_api.v1.call.CallContext
-        """
-        return CallContext(self._version, sid=sid)
-
-    def __repr__(self):
-        """
-        Provide a friendly representation
-
-        :returns: Machine friendly representation
-        :rtype: str
-        """
-        return "<Twilio.FlexApi.V1.CallList>"
-
-
 class CallInstance(InstanceResource):
-    def __init__(self, version, payload, sid: Optional[str] = None):
-        """
-        Initialize the CallInstance
 
-        :returns: twilio.rest.flex_api.v1.call.CallInstance
-        :rtype: twilio.rest.flex_api.v1.call.CallInstance
-        """
+    """
+    :ivar sid: Non-string path parameter in the response.
+    """
+
+    def __init__(
+        self, version: Version, payload: Dict[str, Any], sid: Optional[str] = None
+    ):
         super().__init__(version)
 
-        self._properties = {
-            "sid": deserialize.integer(payload.get("sid")),
-        }
+        self.sid: Optional[int] = deserialize.integer(payload.get("sid"))
 
-        self._context = None
         self._solution = {
-            "sid": sid or self._properties["sid"],
+            "sid": sid or self.sid,
         }
+        self._context: Optional[CallContext] = None
 
     @property
-    def _proxy(self):
+    def _proxy(self) -> "CallContext":
         """
         Generate an instance context for the instance, the context is capable of
         performing various actions. All instance actions are proxied to the context
 
         :returns: CallContext for this CallInstance
-        :rtype: twilio.rest.flex_api.v1.call.CallContext
         """
         if self._context is None:
             self._context = CallContext(
@@ -104,40 +54,29 @@ class CallInstance(InstanceResource):
             )
         return self._context
 
-    @property
-    def sid(self):
-        """
-        :returns: Non-string path parameter in the response.
-        :rtype: int
-        """
-        return self._properties["sid"]
-
-    def update(self):
+    def update(self) -> "CallInstance":
         """
         Update the CallInstance
 
 
         :returns: The updated CallInstance
-        :rtype: twilio.rest.flex_api.v1.call.CallInstance
         """
         return self._proxy.update()
 
-    async def update_async(self):
+    async def update_async(self) -> "CallInstance":
         """
         Asynchronous coroutine to update the CallInstance
 
 
         :returns: The updated CallInstance
-        :rtype: twilio.rest.flex_api.v1.call.CallInstance
         """
         return await self._proxy.update_async()
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         """
         Provide a friendly representation
 
         :returns: Machine friendly representation
-        :rtype: str
         """
         context = " ".join("{}={}".format(k, v) for k, v in self._solution.items())
         return "<Twilio.FlexApi.V1.CallInstance {}>".format(context)
@@ -148,11 +87,8 @@ class CallContext(InstanceContext):
         """
         Initialize the CallContext
 
-        :param Version version: Version that contains the resource
+        :param version: Version that contains the resource
         :param sid:
-
-        :returns: twilio.rest.flex_api.v1.call.CallContext
-        :rtype: twilio.rest.flex_api.v1.call.CallContext
         """
         super().__init__(version)
 
@@ -162,13 +98,12 @@ class CallContext(InstanceContext):
         }
         self._uri = "/Voice/{sid}".format(**self._solution)
 
-    def update(self):
+    def update(self) -> CallInstance:
         """
         Update the CallInstance
 
 
         :returns: The updated CallInstance
-        :rtype: twilio.rest.flex_api.v1.call.CallInstance
         """
         data = values.of({})
 
@@ -180,13 +115,12 @@ class CallContext(InstanceContext):
 
         return CallInstance(self._version, payload, sid=self._solution["sid"])
 
-    async def update_async(self):
+    async def update_async(self) -> CallInstance:
         """
         Asynchronous coroutine to update the CallInstance
 
 
         :returns: The updated CallInstance
-        :rtype: twilio.rest.flex_api.v1.call.CallInstance
         """
         data = values.of({})
 
@@ -198,12 +132,46 @@ class CallContext(InstanceContext):
 
         return CallInstance(self._version, payload, sid=self._solution["sid"])
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         """
         Provide a friendly representation
 
         :returns: Machine friendly representation
-        :rtype: str
         """
         context = " ".join("{}={}".format(k, v) for k, v in self._solution.items())
         return "<Twilio.FlexApi.V1.CallContext {}>".format(context)
+
+
+class CallList(ListResource):
+    def __init__(self, version: Version):
+        """
+        Initialize the CallList
+
+        :param version: Version that contains the resource
+
+        """
+        super().__init__(version)
+
+    def get(self, sid) -> CallContext:
+        """
+        Constructs a CallContext
+
+        :param sid:
+        """
+        return CallContext(self._version, sid=sid)
+
+    def __call__(self, sid) -> CallContext:
+        """
+        Constructs a CallContext
+
+        :param sid:
+        """
+        return CallContext(self._version, sid=sid)
+
+    def __repr__(self) -> str:
+        """
+        Provide a friendly representation
+
+        :returns: Machine friendly representation
+        """
+        return "<Twilio.FlexApi.V1.CallList>"

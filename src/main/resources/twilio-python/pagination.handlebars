@@ -2,40 +2,21 @@
 {{#vendorExtensions.x-is-read-operation}}
 class {{apiName}}Page(Page):
 
-    def __init__(self, version, response, solution):
-        """
-        Initialize the {{apiName}}Page
-
-        :param Version version: Version that contains the resource
-        :param Response response: Response from the API
-
-        :returns: twilio.rest.{{domainPackage}}.{{apiVersion}}.{{namespaceSubPart}}.{{apiName}}Page
-        :rtype: twilio.rest.{{domainPackage}}.{{apiVersion}}.{{namespaceSubPart}}.{{apiName}}Page
-        """
-        super().__init__(version, response)
-
-        # Path solution
-        self._solution = solution
-
-    def get_instance(self, payload):
+    def get_instance(self, payload) -> {{instanceName}}:
         """
         Build an instance of {{instanceName}}
 
         :param dict payload: Payload response from the API
-
-        :returns: twilio.rest.{{domainPackage}}.{{apiVersion}}.{{namespaceSubPart}}.{{instanceName}}
-        :rtype: twilio.rest.{{domainPackage}}.{{apiVersion}}.{{namespaceSubPart}}.{{instanceName}}
         """
-        return {{instanceName}}(self._version, payload{{#listPathParams}}, {{paramName}}=self._solution['{{paramName}}']{{/listPathParams}})
+        return {{instanceName}}(self._version, payload{{#listPathParams}}, {{paramName}}=self._solution["{{paramName}}"]{{/listPathParams}})
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         """
         Provide a friendly representation
 
         :returns: Machine friendly representation
-        :rtype: str
         """
-        return '<Twilio.{{domainName}}.{{apiVersionClass}}.{{apiName}}Page>'
+        return "<Twilio.{{domainName}}.{{apiVersionClass}}.{{apiName}}Page>"
 
 {{/vendorExtensions.x-is-read-operation}}
 {{/operations}}

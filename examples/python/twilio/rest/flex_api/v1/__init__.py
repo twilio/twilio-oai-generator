@@ -12,6 +12,7 @@ r"""
     Do not edit the class manually.
 """
 
+from typing import Optional
 from twilio.base.version import Version
 from twilio.base.domain import Domain
 from twilio.rest.flex_api.v1.call import CallList
@@ -25,25 +26,18 @@ class V1(Version):
 
         :param domain: The Twilio.flex_api domain
         """
-        super().__init__(domain)
-        self.version = "v1"
-        self._calls = None
-        self._credentials = None
+        super().__init__(domain, "v1")
+        self._calls: Optional[CallList] = None
+        self._credentials: Optional[CredentialList] = None
 
     @property
     def calls(self) -> CallList:
-        """
-        :rtype: twilio.rest.flex_api.v1.call.CallList
-        """
         if self._calls is None:
             self._calls = CallList(self)
         return self._calls
 
     @property
     def credentials(self) -> CredentialList:
-        """
-        :rtype: twilio.rest.flex_api.v1.credential.CredentialList
-        """
         if self._credentials is None:
             self._credentials = CredentialList(self)
         return self._credentials
@@ -52,6 +46,5 @@ class V1(Version):
         """
         Provide a friendly representation
         :returns: Machine friendly representation
-        :rtype: str
         """
         return "<Twilio.FlexApi.V1>"

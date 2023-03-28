@@ -13,10 +13,10 @@ r"""
 """
 
 
-from typing import Optional
-from twilio.base import deserialize
-from twilio.base import serialize
-from twilio.base import values
+from datetime import datetime
+from decimal import Decimal
+from typing import Any, Dict, List, Optional
+from twilio.base import deserialize, serialize, values
 from twilio.base.instance_context import InstanceContext
 from twilio.base.instance_resource import InstanceResource
 from twilio.base.list_resource import ListResource
@@ -27,16 +27,246 @@ from twilio.rest.api.v2010.account.call.feedback_call_summary import (
 )
 
 
+class CallInstance(InstanceResource):
+    class Status(object):
+        IN_PROGRESS = "in-progress"
+        PAUSED = "paused"
+        STOPPED = "stopped"
+        PROCESSING = "processing"
+        COMPLETED = "completed"
+        ABSENT = "absent"
+
+    """
+    :ivar account_sid: 
+    :ivar sid: 
+    :ivar test_string: 
+    :ivar test_integer: 
+    :ivar test_object: 
+    :ivar test_date_time: 
+    :ivar test_number: 
+    :ivar price_unit: 
+    :ivar test_number_float: 
+    :ivar test_number_decimal: 
+    :ivar test_enum: 
+    :ivar a2p_profile_bundle_sid: A2P Messaging Profile Bundle BundleSid
+    :ivar test_array_of_integers: 
+    :ivar test_array_of_array_of_integers: 
+    :ivar test_array_of_objects: 
+    :ivar test_array_of_enum: Permissions authorized to the app
+    """
+
+    def __init__(
+        self,
+        version: Version,
+        payload: Dict[str, Any],
+        account_sid: str,
+        test_integer: Optional[int] = None,
+    ):
+        super().__init__(version)
+
+        self.account_sid: Optional[str] = payload.get("account_sid")
+        self.sid: Optional[str] = payload.get("sid")
+        self.test_string: Optional[str] = payload.get("test_string")
+        self.test_integer: Optional[int] = deserialize.integer(
+            payload.get("test_integer")
+        )
+        self.test_object: Optional[str] = payload.get("test_object")
+        self.test_date_time: Optional[datetime] = deserialize.rfc2822_datetime(
+            payload.get("test_date_time")
+        )
+        self.test_number: Optional[float] = deserialize.decimal(
+            payload.get("test_number")
+        )
+        self.price_unit: Optional[str] = payload.get("price_unit")
+        self.test_number_float: Optional[float] = payload.get("test_number_float")
+        self.test_number_decimal: Optional[Decimal] = payload.get("test_number_decimal")
+        self.test_enum: Optional["CallInstance.Status"] = payload.get("test_enum")
+        self.a2p_profile_bundle_sid: Optional[str] = payload.get(
+            "a2p_profile_bundle_sid"
+        )
+        self.test_array_of_integers: Optional[List[int]] = payload.get(
+            "test_array_of_integers"
+        )
+        self.test_array_of_array_of_integers: Optional[List[List[int]]] = payload.get(
+            "test_array_of_array_of_integers"
+        )
+        self.test_array_of_objects: Optional[List[str]] = payload.get(
+            "test_array_of_objects"
+        )
+        self.test_array_of_enum: Optional[List["CallInstance.Status"]] = payload.get(
+            "test_array_of_enum"
+        )
+
+        self._solution = {
+            "account_sid": account_sid,
+            "test_integer": test_integer or self.test_integer,
+        }
+        self._context: Optional[CallContext] = None
+
+    @property
+    def _proxy(self) -> "CallContext":
+        """
+        Generate an instance context for the instance, the context is capable of
+        performing various actions. All instance actions are proxied to the context
+
+        :returns: CallContext for this CallInstance
+        """
+        if self._context is None:
+            self._context = CallContext(
+                self._version,
+                account_sid=self._solution["account_sid"],
+                test_integer=self._solution["test_integer"],
+            )
+        return self._context
+
+    def delete(self) -> bool:
+        """
+        Deletes the CallInstance
+
+
+        :returns: True if delete succeeds, False otherwise
+        """
+        return self._proxy.delete()
+
+    async def delete_async(self) -> bool:
+        """
+        Asynchronous coroutine that deletes the CallInstance
+
+
+        :returns: True if delete succeeds, False otherwise
+        """
+        return await self._proxy.delete_async()
+
+    def fetch(self) -> "CallInstance":
+        """
+        Fetch the CallInstance
+
+
+        :returns: The fetched CallInstance
+        """
+        return self._proxy.fetch()
+
+    async def fetch_async(self) -> "CallInstance":
+        """
+        Asynchronous coroutine to fetch the CallInstance
+
+
+        :returns: The fetched CallInstance
+        """
+        return await self._proxy.fetch_async()
+
+    def __repr__(self) -> str:
+        """
+        Provide a friendly representation
+
+        :returns: Machine friendly representation
+        """
+        context = " ".join("{}={}".format(k, v) for k, v in self._solution.items())
+        return "<Twilio.Api.V2010.CallInstance {}>".format(context)
+
+
+class CallContext(InstanceContext):
+    def __init__(self, version: Version, account_sid: str, test_integer: int):
+        """
+        Initialize the CallContext
+
+        :param version: Version that contains the resource
+        :param account_sid:
+        :param test_integer: INTEGER ID param!!!
+        """
+        super().__init__(version)
+
+        # Path Solution
+        self._solution = {
+            "account_sid": account_sid,
+            "test_integer": test_integer,
+        }
+        self._uri = "/Accounts/{account_sid}/Calls/{test_integer}.json".format(
+            **self._solution
+        )
+
+    def delete(self) -> bool:
+        """
+        Deletes the CallInstance
+
+
+        :returns: True if delete succeeds, False otherwise
+        """
+        return self._version.delete(
+            method="DELETE",
+            uri=self._uri,
+        )
+
+    async def delete_async(self) -> bool:
+        """
+        Asynchronous coroutine that deletes the CallInstance
+
+
+        :returns: True if delete succeeds, False otherwise
+        """
+        return await self._version.delete_async(
+            method="DELETE",
+            uri=self._uri,
+        )
+
+    def fetch(self) -> CallInstance:
+        """
+        Fetch the CallInstance
+
+
+        :returns: The fetched CallInstance
+        """
+
+        payload = self._version.fetch(
+            method="GET",
+            uri=self._uri,
+        )
+
+        return CallInstance(
+            self._version,
+            payload,
+            account_sid=self._solution["account_sid"],
+            test_integer=self._solution["test_integer"],
+        )
+
+    async def fetch_async(self) -> CallInstance:
+        """
+        Asynchronous coroutine to fetch the CallInstance
+
+
+        :returns: The fetched CallInstance
+        """
+
+        payload = await self._version.fetch_async(
+            method="GET",
+            uri=self._uri,
+        )
+
+        return CallInstance(
+            self._version,
+            payload,
+            account_sid=self._solution["account_sid"],
+            test_integer=self._solution["test_integer"],
+        )
+
+    def __repr__(self) -> str:
+        """
+        Provide a friendly representation
+
+        :returns: Machine friendly representation
+        """
+        context = " ".join("{}={}".format(k, v) for k, v in self._solution.items())
+        return "<Twilio.Api.V2010.CallContext {}>".format(context)
+
+
 class CallList(ListResource):
     def __init__(self, version: Version, account_sid: str):
         """
         Initialize the CallList
 
-        :param Version version: Version that contains the resource
+        :param version: Version that contains the resource
         :param account_sid:
 
-        :returns: twilio.rest.api.v2010.account.call.CallList
-        :rtype: twilio.rest.api.v2010.account.call.CallList
         """
         super().__init__(version)
 
@@ -46,7 +276,7 @@ class CallList(ListResource):
         }
         self._uri = "/Accounts/{account_sid}/Calls.json".format(**self._solution)
 
-        self._feedback_call_summary = None
+        self._feedback_call_summary: Optional[FeedbackCallSummaryList] = None
 
     def create(
         self,
@@ -54,17 +284,16 @@ class CallList(ListResource):
         test_method,
         test_array_of_strings=values.unset,
         test_array_of_uri=values.unset,
-    ):
+    ) -> CallInstance:
         """
         Create the CallInstance
 
         :param str required_string_property:
         :param str test_method: The HTTP method that we should use to request the `TestArrayOfUri`.
-        :param list[str] test_array_of_strings:
-        :param list[str] test_array_of_uri:
+        :param List[str] test_array_of_strings:
+        :param List[str] test_array_of_uri:
 
         :returns: The created CallInstance
-        :rtype: twilio.rest.api.v2010.account.call.CallInstance
         """
         data = values.of(
             {
@@ -91,17 +320,16 @@ class CallList(ListResource):
         test_method,
         test_array_of_strings=values.unset,
         test_array_of_uri=values.unset,
-    ):
+    ) -> CallInstance:
         """
         Asynchronously create the CallInstance
 
         :param str required_string_property:
         :param str test_method: The HTTP method that we should use to request the `TestArrayOfUri`.
-        :param list[str] test_array_of_strings:
-        :param list[str] test_array_of_uri:
+        :param List[str] test_array_of_strings:
+        :param List[str] test_array_of_uri:
 
         :returns: The created CallInstance
-        :rtype: twilio.rest.api.v2010.account.call.CallInstance
         """
         data = values.of(
             {
@@ -123,12 +351,9 @@ class CallList(ListResource):
         )
 
     @property
-    def feedback_call_summary(self):
+    def feedback_call_summary(self) -> FeedbackCallSummaryList:
         """
         Access the feedback_call_summary
-
-        :returns: twilio.rest.api.v2010.account.call.FeedbackCallSummaryList
-        :rtype: twilio.rest.api.v2010.account.call.FeedbackCallSummaryList
         """
         if self._feedback_call_summary is None:
             self._feedback_call_summary = FeedbackCallSummaryList(
@@ -136,14 +361,11 @@ class CallList(ListResource):
             )
         return self._feedback_call_summary
 
-    def get(self, test_integer):
+    def get(self, test_integer) -> CallContext:
         """
         Constructs a CallContext
 
         :param test_integer: INTEGER ID param!!!
-
-        :returns: twilio.rest.api.v2010.account.call.CallContext
-        :rtype: twilio.rest.api.v2010.account.call.CallContext
         """
         return CallContext(
             self._version,
@@ -151,14 +373,11 @@ class CallList(ListResource):
             test_integer=test_integer,
         )
 
-    def __call__(self, test_integer):
+    def __call__(self, test_integer) -> CallContext:
         """
         Constructs a CallContext
 
         :param test_integer: INTEGER ID param!!!
-
-        :returns: twilio.rest.api.v2010.account.call.CallContext
-        :rtype: twilio.rest.api.v2010.account.call.CallContext
         """
         return CallContext(
             self._version,
@@ -166,358 +385,10 @@ class CallList(ListResource):
             test_integer=test_integer,
         )
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         """
         Provide a friendly representation
 
         :returns: Machine friendly representation
-        :rtype: str
         """
         return "<Twilio.Api.V2010.CallList>"
-
-
-class CallInstance(InstanceResource):
-    class Status(object):
-        IN_PROGRESS = "in-progress"
-        PAUSED = "paused"
-        STOPPED = "stopped"
-        PROCESSING = "processing"
-        COMPLETED = "completed"
-        ABSENT = "absent"
-
-    def __init__(
-        self, version, payload, account_sid: str, test_integer: Optional[int] = None
-    ):
-        """
-        Initialize the CallInstance
-
-        :returns: twilio.rest.api.v2010.account.call.CallInstance
-        :rtype: twilio.rest.api.v2010.account.call.CallInstance
-        """
-        super().__init__(version)
-
-        self._properties = {
-            "account_sid": payload.get("account_sid"),
-            "sid": payload.get("sid"),
-            "test_string": payload.get("test_string"),
-            "test_integer": deserialize.integer(payload.get("test_integer")),
-            "test_object": payload.get("test_object"),
-            "test_date_time": deserialize.rfc2822_datetime(
-                payload.get("test_date_time")
-            ),
-            "test_number": deserialize.decimal(payload.get("test_number")),
-            "price_unit": payload.get("price_unit"),
-            "test_number_float": payload.get("test_number_float"),
-            "test_number_decimal": payload.get("test_number_decimal"),
-            "test_enum": payload.get("test_enum"),
-            "a2p_profile_bundle_sid": payload.get("a2p_profile_bundle_sid"),
-            "test_array_of_integers": payload.get("test_array_of_integers"),
-            "test_array_of_array_of_integers": payload.get(
-                "test_array_of_array_of_integers"
-            ),
-            "test_array_of_objects": payload.get("test_array_of_objects"),
-            "test_array_of_enum": payload.get("test_array_of_enum"),
-        }
-
-        self._context = None
-        self._solution = {
-            "account_sid": account_sid,
-            "test_integer": test_integer or self._properties["test_integer"],
-        }
-
-    @property
-    def _proxy(self):
-        """
-        Generate an instance context for the instance, the context is capable of
-        performing various actions. All instance actions are proxied to the context
-
-        :returns: CallContext for this CallInstance
-        :rtype: twilio.rest.api.v2010.account.call.CallContext
-        """
-        if self._context is None:
-            self._context = CallContext(
-                self._version,
-                account_sid=self._solution["account_sid"],
-                test_integer=self._solution["test_integer"],
-            )
-        return self._context
-
-    @property
-    def account_sid(self):
-        """
-        :returns:
-        :rtype: str
-        """
-        return self._properties["account_sid"]
-
-    @property
-    def sid(self):
-        """
-        :returns:
-        :rtype: str
-        """
-        return self._properties["sid"]
-
-    @property
-    def test_string(self):
-        """
-        :returns:
-        :rtype: str
-        """
-        return self._properties["test_string"]
-
-    @property
-    def test_integer(self):
-        """
-        :returns:
-        :rtype: int
-        """
-        return self._properties["test_integer"]
-
-    @property
-    def test_object(self):
-        """
-        :returns:
-        :rtype: TestResponseObjectTestObject
-        """
-        return self._properties["test_object"]
-
-    @property
-    def test_date_time(self):
-        """
-        :returns:
-        :rtype: datetime
-        """
-        return self._properties["test_date_time"]
-
-    @property
-    def test_number(self):
-        """
-        :returns:
-        :rtype: float
-        """
-        return self._properties["test_number"]
-
-    @property
-    def price_unit(self):
-        """
-        :returns:
-        :rtype: str
-        """
-        return self._properties["price_unit"]
-
-    @property
-    def test_number_float(self):
-        """
-        :returns:
-        :rtype: float
-        """
-        return self._properties["test_number_float"]
-
-    @property
-    def test_number_decimal(self):
-        """
-        :returns:
-        :rtype: Decimal
-        """
-        return self._properties["test_number_decimal"]
-
-    @property
-    def test_enum(self):
-        """
-        :returns:
-        :rtype: CallInstance.Status
-        """
-        return self._properties["test_enum"]
-
-    @property
-    def a2p_profile_bundle_sid(self):
-        """
-        :returns: A2P Messaging Profile Bundle BundleSid
-        :rtype: str
-        """
-        return self._properties["a2p_profile_bundle_sid"]
-
-    @property
-    def test_array_of_integers(self):
-        """
-        :returns:
-        :rtype: list[int]
-        """
-        return self._properties["test_array_of_integers"]
-
-    @property
-    def test_array_of_array_of_integers(self):
-        """
-        :returns:
-        :rtype: list[list[int]]
-        """
-        return self._properties["test_array_of_array_of_integers"]
-
-    @property
-    def test_array_of_objects(self):
-        """
-        :returns:
-        :rtype: list[TestResponseObjectTestArrayOfObjects]
-        """
-        return self._properties["test_array_of_objects"]
-
-    @property
-    def test_array_of_enum(self):
-        """
-        :returns: Permissions authorized to the app
-        :rtype: list[CallInstance.Status]
-        """
-        return self._properties["test_array_of_enum"]
-
-    def delete(self):
-        """
-        Deletes the CallInstance
-
-
-        :returns: True if delete succeeds, False otherwise
-        :rtype: bool
-        """
-        return self._proxy.delete()
-
-    async def delete_async(self):
-        """
-        Asynchronous coroutine that deletes the CallInstance
-
-
-        :returns: True if delete succeeds, False otherwise
-        :rtype: bool
-        """
-        return await self._proxy.delete_async()
-
-    def fetch(self):
-        """
-        Fetch the CallInstance
-
-
-        :returns: The fetched CallInstance
-        :rtype: twilio.rest.api.v2010.account.call.CallInstance
-        """
-        return self._proxy.fetch()
-
-    async def fetch_async(self):
-        """
-        Asynchronous coroutine to fetch the CallInstance
-
-
-        :returns: The fetched CallInstance
-        :rtype: twilio.rest.api.v2010.account.call.CallInstance
-        """
-        return await self._proxy.fetch_async()
-
-    def __repr__(self):
-        """
-        Provide a friendly representation
-
-        :returns: Machine friendly representation
-        :rtype: str
-        """
-        context = " ".join("{}={}".format(k, v) for k, v in self._solution.items())
-        return "<Twilio.Api.V2010.CallInstance {}>".format(context)
-
-
-class CallContext(InstanceContext):
-    def __init__(self, version: Version, account_sid: str, test_integer: int):
-        """
-        Initialize the CallContext
-
-        :param Version version: Version that contains the resource
-        :param account_sid:
-        :param test_integer: INTEGER ID param!!!
-
-        :returns: twilio.rest.api.v2010.account.call.CallContext
-        :rtype: twilio.rest.api.v2010.account.call.CallContext
-        """
-        super().__init__(version)
-
-        # Path Solution
-        self._solution = {
-            "account_sid": account_sid,
-            "test_integer": test_integer,
-        }
-        self._uri = "/Accounts/{account_sid}/Calls/{test_integer}.json".format(
-            **self._solution
-        )
-
-    def delete(self):
-        """
-        Deletes the CallInstance
-
-
-        :returns: True if delete succeeds, False otherwise
-        :rtype: bool
-        """
-        return self._version.delete(
-            method="DELETE",
-            uri=self._uri,
-        )
-
-    async def delete_async(self):
-        """
-        Asynchronous coroutine that deletes the CallInstance
-
-
-        :returns: True if delete succeeds, False otherwise
-        :rtype: bool
-        """
-        return await self._version.delete_async(
-            method="DELETE",
-            uri=self._uri,
-        )
-
-    def fetch(self):
-        """
-        Fetch the CallInstance
-
-
-        :returns: The fetched CallInstance
-        :rtype: twilio.rest.api.v2010.account.call.CallInstance
-        """
-
-        payload = self._version.fetch(
-            method="GET",
-            uri=self._uri,
-        )
-
-        return CallInstance(
-            self._version,
-            payload,
-            account_sid=self._solution["account_sid"],
-            test_integer=self._solution["test_integer"],
-        )
-
-    async def fetch_async(self):
-        """
-        Asynchronous coroutine to fetch the CallInstance
-
-
-        :returns: The fetched CallInstance
-        :rtype: twilio.rest.api.v2010.account.call.CallInstance
-        """
-
-        payload = await self._version.fetch_async(
-            method="GET",
-            uri=self._uri,
-        )
-
-        return CallInstance(
-            self._version,
-            payload,
-            account_sid=self._solution["account_sid"],
-            test_integer=self._solution["test_integer"],
-        )
-
-    def __repr__(self):
-        """
-        Provide a friendly representation
-
-        :returns: Machine friendly representation
-        :rtype: str
-        """
-        context = " ".join("{}={}".format(k, v) for k, v in self._solution.items())
-        return "<Twilio.Api.V2010.CallContext {}>".format(context)

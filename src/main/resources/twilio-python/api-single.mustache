@@ -1,10 +1,9 @@
 {{>licenseInfo}}
 {{#resources}}
-from datetime import date
-from typing import Optional
-from twilio.base import deserialize
-from twilio.base import serialize
-from twilio.base import values
+from datetime import date, datetime
+from decimal import Decimal
+from typing import Any, Dict, List, Optional
+from twilio.base import deserialize, serialize, values
 {{#instancePath}}from twilio.base.instance_context import InstanceContext{{/instancePath}}
 {{#responseModel}}from twilio.base.instance_resource import InstanceResource{{/responseModel}}
 from twilio.base.list_resource import ListResource
@@ -13,48 +12,47 @@ from twilio.base.version import Version
 {{#dependents}}from twilio.rest.{{domainPackage}}.{{apiVersion}}.{{namespaceSubPart}}.{{filename}} import {{resourceName}}List
 {{/dependents}}
 
+{{#responseModel}}{{>instance}}{{/responseModel}}
+{{#instancePath}}{{>context}}{{/instancePath}}
+{{#hasPaginationOperation}}{{>pagination}}{{/hasPaginationOperation}}
+
 class {{apiName}}List(ListResource):
 
     def __init__(self, version: Version{{#listPathParams}}, {{paramName}}: {{{dataType}}}{{/listPathParams}}):
         """
         Initialize the {{apiName}}List
 
-        :param Version version: Version that contains the resource
+        :param version: Version that contains the resource
         {{#listPathParams}}:param {{paramName}}: {{{description}}}
         {{/listPathParams}}
-        :returns: twilio.rest.{{domainPackage}}.{{apiVersion}}.{{namespaceSubPart}}.{{apiName}}List
-        :rtype: twilio.rest.{{domainPackage}}.{{apiVersion}}.{{namespaceSubPart}}.{{apiName}}List
         """
         super().__init__(version)
 
+        {{#if listPathParams}}
         # Path Solution
-        self._solution = { {{#listPathParams}}'{{paramName}}': {{paramName}}, {{/listPathParams}} }
-        {{#listPath}}self._uri = '{{listPath}}'.format(**self._solution){{/listPath}}
+        self._solution = { {{#listPathParams}}'{{paramName}}': {{paramName}}, {{/listPathParams}} }{{/if}}
+        {{#listPath}}self._uri = '{{listPath}}'{{#if listPathParams}}.format(**self._solution){{/if}}{{/listPath}}
         {{#dependents}}{{^instanceDependent}}
-        self._{{mountName}} = None{{/instanceDependent}}{{/dependents}}
-        {{#listPath}}{{>listOperations}}{{/listPath}}{{#dependents}}{{^instanceDependent}}
+        self._{{mountName}}: Optional[{{resourceName}}List] = None{{/instanceDependent}}{{/dependents}}
+        {{#listPath}}{{>listOperations}}{{/listPath}}
+{{#dependents}}
+{{^instanceDependent}}
     @property
-    def {{mountName}}(self):
+    def {{mountName}}(self) -> {{resourceName}}List:
         """
         Access the {{mountName}}
-
-        :returns: twilio.rest.{{domainPackage}}.{{apiVersion}}.{{namespaceSubPart}}.{{resourceName}}List
-        :rtype: twilio.rest.{{domainPackage}}.{{apiVersion}}.{{namespaceSubPart}}.{{resourceName}}List
         """
         if self._{{mountName}} is None:
             self._{{mountName}} = {{resourceName}}List(self._version{{#listPathParams}}, {{paramName}}=self._solution['{{paramName}}']{{/listPathParams}})
         return self._{{mountName}}
-{{/instanceDependent}}{{/dependents}}
+{{/instanceDependent}}
+{{/dependents}}
 {{#instancePath}}{{>contextMethods}}{{/instancePath}}
-    def __repr__(self):
+    def __repr__(self) -> str:
         """
         Provide a friendly representation
 
         :returns: Machine friendly representation
-        :rtype: str
         """
         return '<Twilio.{{domainName}}.{{apiVersionClass}}.{{apiName}}List>'
-{{#hasPaginationOperation}}{{>pagination}}{{/hasPaginationOperation}}
-{{#responseModel}}{{>instance}}{{/responseModel}}
-{{#instancePath}}{{>context}}{{/instancePath}}
 {{/resources}}
