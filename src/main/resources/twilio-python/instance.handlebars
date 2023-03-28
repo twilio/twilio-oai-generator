@@ -10,7 +10,10 @@ class {{instanceName}}(InstanceResource):
         {{#vars}}
         self.{{name}}: Optional[{{{baseType}}}] = {{#if vendorExtensions.x-deserialize}}{{vendorExtensions.x-deserialize}}(payload.get("{{{baseName}}}")){{else}}payload.get("{{{baseName}}}"){{/if}}{{/vars}}
 
-        self._solution = { {{#instancePathParams}}"{{paramName}}": {{paramName}}{{#if vendorExtensions.x-is-parent-param}}, {{else}} or self.{{paramName}}, {{/if}}{{/instancePathParams}} }
+        {{#if instancePathParams}}
+        self._solution = { {{#instancePathParams}}
+            "{{paramName}}": {{paramName}}{{#unless vendorExtensions.x-is-parent-param}} or self.{{paramName}}{{/unless}},{{/instancePathParams}}
+        }{{/if}}
         {{#instancePath}}self._context: Optional[{{apiName}}Context] = None
 
     @property
@@ -117,5 +120,5 @@ class {{instanceName}}(InstanceResource):
 
         :returns: Machine friendly representation
         """
-        context = ' '.join('{}={}'.format(k, v) for k, v in self._solution.items())
-        return '<Twilio.{{domainName}}.{{apiVersionClass}}.{{apiName}}Instance {}>'.format(context)
+        {{#if instancePathParams}}context = ' '.join('{}={}'.format(k, v) for k, v in self._solution.items()){{/if}}
+        return '<Twilio.{{domainName}}.{{apiVersionClass}}.{{apiName}}Instance{{#if instancePathParams}} {}>'.format(context){{else}}>'{{/if}}

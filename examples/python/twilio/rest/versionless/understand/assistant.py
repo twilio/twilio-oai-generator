@@ -35,16 +35,14 @@ class AssistantInstance(InstanceResource):
         self.sid: Optional[str] = payload.get("sid")
         self.friendly_name: Optional[str] = payload.get("friendly_name")
 
-        self._solution = {}
-
     def __repr__(self) -> str:
         """
         Provide a friendly representation
 
         :returns: Machine friendly representation
         """
-        context = " ".join("{}={}".format(k, v) for k, v in self._solution.items())
-        return "<Twilio.Versionless.Understand.AssistantInstance {}>".format(context)
+
+        return "<Twilio.Versionless.Understand.AssistantInstance>"
 
 
 class AssistantPage(Page):
