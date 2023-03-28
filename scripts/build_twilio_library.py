@@ -69,7 +69,7 @@ def generate(spec_folder: str, spec_files: List[str], output_path: str, language
 
 def run_openapi_generator(parent_dir: Path, language: str) -> None:
     properties = '-DapiTests=false'
-    if language in {'node'}:
+    if language in {'node', 'python'}:
         properties += ' -DskipFormModel=false'
 
     command = f'cd {parent_dir} && java {properties} ' \
