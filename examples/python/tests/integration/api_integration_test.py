@@ -10,10 +10,15 @@ class IntegrationTest(unittest.TestCase):
         self.auth = "CR12345678123456781234567812345678"
         self.client = Client(self.sid, self.auth)
 
-    def test_get_account(self):
+    def test_page_accounts(self):
         result = list(self.client.api.v2010.accounts.page()._records)
         self.assertEqual(result[0]["test_string"], "Ahoy")
         self.assertEqual(result[1]["test_string"], "Matey")
+
+    def test_list_accounts(self):
+        result = self.client.api.v2010.accounts.list(limit=2)
+        self.assertEqual(result[0].test_string, "Ahoy")
+        self.assertEqual(result[1].test_string, "Matey")
 
     def test_create_account(self):
         result = self.client.api.v2010.accounts.create()
@@ -53,10 +58,15 @@ class AsyncIntegrationTests(unittest.IsolatedAsyncioTestCase):
     async def asyncTearDown(self) -> None:
         await self.http_client.session.close()
 
-    async def test_get_account(self):
+    async def test_page_accounts(self):
         result = list((await self.client.api.v2010.accounts.page_async())._records)
         self.assertEqual(result[0]["test_string"], "Ahoy")
         self.assertEqual(result[1]["test_string"], "Matey")
+
+    async def test_list_accounts(self):
+        result = await self.client.api.v2010.accounts.list_async(limit=2)
+        self.assertEqual(result[0].test_string, "Ahoy")
+        self.assertEqual(result[1].test_string, "Matey")
 
     async def test_create_account(self):
         result = await self.client.api.v2010.accounts.create_async()
