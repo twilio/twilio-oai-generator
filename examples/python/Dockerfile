@@ -5,8 +5,6 @@ ENV PYTHONBUFFERED 1
 WORKDIR /app
 RUN git clone https://github.com/twilio/twilio-python.git
 WORKDIR /app/twilio-python/
-#TODO: Change to main when GA
-RUN git fetch && git checkout 8.0.0-rc && git pull
 
 RUN rm -rf tests/ twilio/rest/ setup.cfg
 
