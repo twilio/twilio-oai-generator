@@ -13,7 +13,8 @@ r"""
 """
 
 
-from typing import Any, Dict, Optional
+from datetime import date, datetime
+from typing import Any, Dict, List, Optional, Union
 from twilio.base import deserialize, serialize, values
 
 from twilio.base.instance_resource import InstanceResource
@@ -22,12 +23,19 @@ from twilio.base.version import Version
 
 
 class NewCredentialsInstance(InstanceResource):
+    class Status(object):
+        IN_PROGRESS = "in-progress"
+        PAUSED = "paused"
+        STOPPED = "stopped"
+        PROCESSING = "processing"
+        COMPLETED = "completed"
+        ABSENT = "absent"
 
     """
-    :ivar account_sid:
-    :ivar sid:
-    :ivar test_string:
-    :ivar test_integer:
+    :ivar account_sid: 
+    :ivar sid: 
+    :ivar test_string: 
+    :ivar test_integer: 
     """
 
     def __init__(self, version: Version, payload: Dict[str, Any]):
@@ -40,16 +48,14 @@ class NewCredentialsInstance(InstanceResource):
             payload.get("test_integer")
         )
 
-        self._solution = {}
-
     def __repr__(self) -> str:
         """
         Provide a friendly representation
 
         :returns: Machine friendly representation
         """
-        context = " ".join("{}={}".format(k, v) for k, v in self._solution.items())
-        return "<Twilio.FlexApi.V1.NewCredentialsInstance {}>".format(context)
+
+        return "<Twilio.FlexApi.V1.NewCredentialsInstance>"
 
 
 class NewCredentialsList(ListResource):
@@ -66,44 +72,44 @@ class NewCredentialsList(ListResource):
 
     def create(
         self,
-        test_string,
-        test_boolean=values.unset,
-        test_integer=values.unset,
-        test_number=values.unset,
-        test_number_float=values.unset,
-        test_number_double=values.unset,
-        test_number_int32=values.unset,
-        test_number_int64=values.unset,
-        test_object=values.unset,
-        test_date_time=values.unset,
-        test_date=values.unset,
-        test_enum=values.unset,
-        test_object_array=values.unset,
-        test_any_type=values.unset,
-        test_any_array=values.unset,
-        permissions=values.unset,
-        some_a2p_thing=values.unset,
+        test_string: str,
+        test_boolean: Union[bool, object] = values.unset,
+        test_integer: Union[int, object] = values.unset,
+        test_number: Union[float, object] = values.unset,
+        test_number_float: Union[float, object] = values.unset,
+        test_number_double: Union[float, object] = values.unset,
+        test_number_int32: Union[float, object] = values.unset,
+        test_number_int64: Union[int, object] = values.unset,
+        test_object: Union[Dict[str, object], object] = values.unset,
+        test_date_time: Union[datetime, object] = values.unset,
+        test_date: Union[date, object] = values.unset,
+        test_enum: Union["NewCredentialsInstance.Status", object] = values.unset,
+        test_object_array: Union[List[object], object] = values.unset,
+        test_any_type: Union[object, object] = values.unset,
+        test_any_array: Union[List[object], object] = values.unset,
+        permissions: Union[List[str], object] = values.unset,
+        some_a2p_thing: Union[str, object] = values.unset,
     ) -> NewCredentialsInstance:
         """
         Create the NewCredentialsInstance
 
-        :param str test_string:
-        :param bool test_boolean:
-        :param int test_integer:
-        :param float test_number:
-        :param float test_number_float:
-        :param float test_number_double:
-        :param float test_number_int32:
-        :param int test_number_int64:
-        :param Dict[str, object] test_object:
-        :param datetime test_date_time:
-        :param date test_date:
-        :param &quot;NewCredentialsInstance.Status&quot; test_enum:
-        :param List[object] test_object_array:
-        :param object test_any_type:
-        :param List[object] test_any_array:
-        :param List[str] permissions: A comma-separated list of the permissions you will request from the users of this ConnectApp.  Can include: `get-all` and `post-all`.
-        :param str some_a2p_thing:
+        :param test_string:
+        :param test_boolean:
+        :param test_integer:
+        :param test_number:
+        :param test_number_float:
+        :param test_number_double:
+        :param test_number_int32:
+        :param test_number_int64:
+        :param test_object:
+        :param test_date_time:
+        :param test_date:
+        :param test_enum:
+        :param test_object_array:
+        :param test_any_type:
+        :param test_any_array:
+        :param permissions: A comma-separated list of the permissions you will request from the users of this ConnectApp.  Can include: `get-all` and `post-all`.
+        :param some_a2p_thing:
 
         :returns: The created NewCredentialsInstance
         """
@@ -143,44 +149,44 @@ class NewCredentialsList(ListResource):
 
     async def create_async(
         self,
-        test_string,
-        test_boolean=values.unset,
-        test_integer=values.unset,
-        test_number=values.unset,
-        test_number_float=values.unset,
-        test_number_double=values.unset,
-        test_number_int32=values.unset,
-        test_number_int64=values.unset,
-        test_object=values.unset,
-        test_date_time=values.unset,
-        test_date=values.unset,
-        test_enum=values.unset,
-        test_object_array=values.unset,
-        test_any_type=values.unset,
-        test_any_array=values.unset,
-        permissions=values.unset,
-        some_a2p_thing=values.unset,
+        test_string: str,
+        test_boolean: Union[bool, object] = values.unset,
+        test_integer: Union[int, object] = values.unset,
+        test_number: Union[float, object] = values.unset,
+        test_number_float: Union[float, object] = values.unset,
+        test_number_double: Union[float, object] = values.unset,
+        test_number_int32: Union[float, object] = values.unset,
+        test_number_int64: Union[int, object] = values.unset,
+        test_object: Union[Dict[str, object], object] = values.unset,
+        test_date_time: Union[datetime, object] = values.unset,
+        test_date: Union[date, object] = values.unset,
+        test_enum: Union["NewCredentialsInstance.Status", object] = values.unset,
+        test_object_array: Union[List[object], object] = values.unset,
+        test_any_type: Union[object, object] = values.unset,
+        test_any_array: Union[List[object], object] = values.unset,
+        permissions: Union[List[str], object] = values.unset,
+        some_a2p_thing: Union[str, object] = values.unset,
     ) -> NewCredentialsInstance:
         """
         Asynchronously create the NewCredentialsInstance
 
-        :param str test_string:
-        :param bool test_boolean:
-        :param int test_integer:
-        :param float test_number:
-        :param float test_number_float:
-        :param float test_number_double:
-        :param float test_number_int32:
-        :param int test_number_int64:
-        :param Dict[str, object] test_object:
-        :param datetime test_date_time:
-        :param date test_date:
-        :param &quot;NewCredentialsInstance.Status&quot; test_enum:
-        :param List[object] test_object_array:
-        :param object test_any_type:
-        :param List[object] test_any_array:
-        :param List[str] permissions: A comma-separated list of the permissions you will request from the users of this ConnectApp.  Can include: `get-all` and `post-all`.
-        :param str some_a2p_thing:
+        :param test_string:
+        :param test_boolean:
+        :param test_integer:
+        :param test_number:
+        :param test_number_float:
+        :param test_number_double:
+        :param test_number_int32:
+        :param test_number_int64:
+        :param test_object:
+        :param test_date_time:
+        :param test_date:
+        :param test_enum:
+        :param test_object_array:
+        :param test_any_type:
+        :param test_any_array:
+        :param permissions: A comma-separated list of the permissions you will request from the users of this ConnectApp.  Can include: `get-all` and `post-all`.
+        :param some_a2p_thing:
 
         :returns: The created NewCredentialsInstance
         """

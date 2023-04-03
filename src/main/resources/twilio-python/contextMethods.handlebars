@@ -1,4 +1,4 @@
-    def get(self{{#instancePathParams}}{{#if vendorExtensions.x-is-parent-param}}{{else}}, {{paramName}}{{/if}}{{/instancePathParams}}) -> {{apiName}}Context:
+    def get(self{{#instancePathParams}}{{#if vendorExtensions.x-is-parent-param}}{{else}}, {{paramName}}: {{{dataType}}}{{/if}}{{/instancePathParams}}) -> {{apiName}}Context:
         """
         Constructs a {{apiName}}Context
         {{#instancePathParams}}{{#if vendorExtensions.x-is-parent-param}}{{else}}
@@ -6,7 +6,7 @@
         """
         return {{apiName}}Context(self._version{{#instancePathParams}}{{#if vendorExtensions.x-is-parent-param}}, {{paramName}}=self._solution['{{paramName}}']{{else}}, {{paramName}}={{paramName}}{{/if}}{{/instancePathParams}})
 
-    def __call__(self{{#instancePathParams}}{{#if vendorExtensions.x-is-parent-param}}{{else}}, {{paramName}}{{/if}}{{/instancePathParams}}) -> {{apiName}}Context:
+    def __call__(self{{#instancePathParams}}{{#if vendorExtensions.x-is-parent-param}}{{else}}, {{paramName}}: {{{dataType}}}{{/if}}{{/instancePathParams}}) -> {{apiName}}Context:
         """
         Constructs a {{apiName}}Context
         {{#instancePathParams}}{{#if vendorExtensions.x-is-parent-param}}{{else}}

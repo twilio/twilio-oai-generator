@@ -10,7 +10,10 @@ class {{instanceName}}(InstanceResource):
         {{#vars}}
         self.{{name}}: Optional[{{{baseType}}}] = {{#if vendorExtensions.x-deserialize}}{{vendorExtensions.x-deserialize}}(payload.get("{{{baseName}}}")){{else}}payload.get("{{{baseName}}}"){{/if}}{{/vars}}
 
-        self._solution = { {{#instancePathParams}}"{{paramName}}": {{paramName}}{{#if vendorExtensions.x-is-parent-param}}, {{else}} or self.{{paramName}}, {{/if}}{{/instancePathParams}} }
+        {{#if instancePathParams}}
+        self._solution = { {{#instancePathParams}}
+            "{{paramName}}": {{paramName}}{{#unless vendorExtensions.x-is-parent-param}} or self.{{paramName}}{{/unless}},{{/instancePathParams}}
+        }{{/if}}
         {{#instancePath}}self._context: Optional[{{apiName}}Context] = None
 
     @property
@@ -26,79 +29,79 @@ class {{instanceName}}(InstanceResource):
         return self._context{{/instancePath}}
     {{#operations}}{{#vendorExtensions.x-is-context-operation}}
     {{#vendorExtensions.x-is-update-operation}}
-    def {{vendorExtensions.x-name-lower}}(self{{#allParams}}, {{paramName}}{{#if required}}{{else}}=values.unset{{/if}}{{/allParams}}) -> "{{instanceName}}":
+    def {{vendorExtensions.x-name-lower}}(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> "{{instanceName}}":
         """
         Update the {{instanceName}}
         {{#allParams}}
-        :param {{{dataType}}} {{paramName}}: {{{description}}}{{/allParams}}
+        :param {{paramName}}: {{{description}}}{{/allParams}}
 
         :returns: The updated {{instanceName}}
         """
         return self._proxy.update({{#allParams}}{{paramName}}={{paramName}}, {{/allParams}})
 
-    async def {{vendorExtensions.x-name-lower}}_async(self{{#allParams}}, {{paramName}}{{#if required}}{{else}}=values.unset{{/if}}{{/allParams}}) -> "{{instanceName}}":
+    async def {{vendorExtensions.x-name-lower}}_async(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> "{{instanceName}}":
         """
         Asynchronous coroutine to update the {{instanceName}}
         {{#allParams}}
-        :param {{{dataType}}} {{paramName}}: {{{description}}}{{/allParams}}
+        :param {{paramName}}: {{{description}}}{{/allParams}}
 
         :returns: The updated {{instanceName}}
         """
         return await self._proxy.update_async({{#allParams}}{{paramName}}={{paramName}}, {{/allParams}})
     {{/vendorExtensions.x-is-update-operation}}{{#vendorExtensions.x-is-fetch-operation}}
-    def {{vendorExtensions.x-name-lower}}(self{{#allParams}}, {{paramName}}{{#if required}}{{else}}=values.unset{{/if}}{{/allParams}}) -> "{{instanceName}}":
+    def {{vendorExtensions.x-name-lower}}(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> "{{instanceName}}":
         """
         Fetch the {{instanceName}}
         {{#allParams}}
-        :param {{{dataType}}} {{paramName}}: {{{description}}}{{/allParams}}
+        :param {{paramName}}: {{{description}}}{{/allParams}}
 
         :returns: The fetched {{instanceName}}
         """
         return self._proxy.fetch({{#allParams}}{{paramName}}={{paramName}}, {{/allParams}})
 
-    async def {{vendorExtensions.x-name-lower}}_async(self{{#allParams}}, {{paramName}}{{#if required}}{{else}}=values.unset{{/if}}{{/allParams}}) -> "{{instanceName}}":
+    async def {{vendorExtensions.x-name-lower}}_async(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> "{{instanceName}}":
         """
         Asynchronous coroutine to fetch the {{instanceName}}
         {{#allParams}}
-        :param {{{dataType}}} {{paramName}}: {{{description}}}{{/allParams}}
+        :param {{paramName}}: {{{description}}}{{/allParams}}
 
         :returns: The fetched {{instanceName}}
         """
         return await self._proxy.fetch_async({{#allParams}}{{paramName}}={{paramName}}, {{/allParams}})
     {{/vendorExtensions.x-is-fetch-operation}}{{#vendorExtensions.x-is-delete-operation}}
-    def {{vendorExtensions.x-name-lower}}(self{{#allParams}}, {{paramName}}{{#if required}}{{else}}=values.unset{{/if}}{{/allParams}}) -> bool:
+    def {{vendorExtensions.x-name-lower}}(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> bool:
         """
         Deletes the {{instanceName}}
         {{#allParams}}
-        :param {{{dataType}}} {{paramName}}: {{{description}}}{{/allParams}}
+        :param {{paramName}}: {{{description}}}{{/allParams}}
 
         :returns: True if delete succeeds, False otherwise
         """
         return self._proxy.delete({{#allParams}}{{paramName}}={{paramName}}, {{/allParams}})
-    async def {{vendorExtensions.x-name-lower}}_async(self{{#allParams}}, {{paramName}}{{#if required}}{{else}}=values.unset{{/if}}{{/allParams}}) -> bool:
+    async def {{vendorExtensions.x-name-lower}}_async(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> bool:
         """
         Asynchronous coroutine that deletes the {{instanceName}}
         {{#allParams}}
-        :param {{{dataType}}} {{paramName}}: {{{description}}}{{/allParams}}
+        :param {{paramName}}: {{{description}}}{{/allParams}}
 
         :returns: True if delete succeeds, False otherwise
         """
         return await self._proxy.delete_async({{#allParams}}{{paramName}}={{paramName}}, {{/allParams}})
     {{/vendorExtensions.x-is-delete-operation}}{{#vendorExtensions.x-is-create-operation}}
-    def {{vendorExtensions.x-name-lower}}(self{{#allParams}}, {{paramName}}{{#if required}}{{else}}=values.unset{{/if}}{{/allParams}}) -> "{{instanceName}}":
+    def {{vendorExtensions.x-name-lower}}(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> "{{instanceName}}":
         """
         Create the {{instanceName}}
         {{#allParams}}
-        :param {{{dataType}}} {{paramName}}: {{{description}}}{{/allParams}}
+        :param {{paramName}}: {{{description}}}{{/allParams}}
 
         :returns: The created {{instanceName}}
         """
         return self._proxy.create({{#allParams}}{{paramName}}{{#if required}}{{else}}={{paramName}}{{/if}}, {{/allParams}})
-    async def {{vendorExtensions.x-name-lower}}_async(self{{#allParams}}, {{paramName}}{{#if required}}{{else}}=values.unset{{/if}}{{/allParams}}) -> "{{instanceName}}":
+    async def {{vendorExtensions.x-name-lower}}_async(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> "{{instanceName}}":
         """
         Asynchronous coroutine to create the {{instanceName}}
         {{#allParams}}
-        :param {{dataType}} {{paramName}}: {{{description}}}{{/allParams}}
+        :param {{paramName}}: {{{description}}}{{/allParams}}
 
         :returns: The created {{instanceName}}
         """
@@ -117,5 +120,5 @@ class {{instanceName}}(InstanceResource):
 
         :returns: Machine friendly representation
         """
-        context = ' '.join('{}={}'.format(k, v) for k, v in self._solution.items())
-        return '<Twilio.{{domainName}}.{{apiVersionClass}}.{{apiName}}Instance {}>'.format(context)
+        {{#if instancePathParams}}context = ' '.join('{}={}'.format(k, v) for k, v in self._solution.items()){{/if}}
+        return '<Twilio.{{domainName}}.{{apiVersionClass}}.{{apiName}}Instance{{#if instancePathParams}} {}>'.format(context){{else}}>'{{/if}}

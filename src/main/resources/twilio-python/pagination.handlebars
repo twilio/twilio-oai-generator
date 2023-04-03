@@ -2,11 +2,11 @@
 {{#vendorExtensions.x-is-read-operation}}
 class {{apiName}}Page(Page):
 
-    def get_instance(self, payload) -> {{instanceName}}:
+    def get_instance(self, payload: Dict[str, Any]) -> {{instanceName}}:
         """
         Build an instance of {{instanceName}}
 
-        :param dict payload: Payload response from the API
+        :param payload: Payload response from the API
         """
         return {{instanceName}}(self._version, payload{{#listPathParams}}, {{paramName}}=self._solution["{{paramName}}"]{{/listPathParams}})
 

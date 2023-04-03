@@ -13,7 +13,7 @@ r"""
 """
 
 
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Optional, Union
 from twilio.base import values
 from twilio.base.instance_context import InstanceContext
 from twilio.base.instance_resource import InstanceResource
@@ -162,11 +162,11 @@ class FleetList(ListResource):
 
         self._uri = "/Fleets"
 
-    def create(self, name=values.unset) -> FleetInstance:
+    def create(self, name: Union[str, object] = values.unset) -> FleetInstance:
         """
         Create the FleetInstance
 
-        :param str name:
+        :param name:
 
         :returns: The created FleetInstance
         """
@@ -184,11 +184,13 @@ class FleetList(ListResource):
 
         return FleetInstance(self._version, payload)
 
-    async def create_async(self, name=values.unset) -> FleetInstance:
+    async def create_async(
+        self, name: Union[str, object] = values.unset
+    ) -> FleetInstance:
         """
         Asynchronously create the FleetInstance
 
-        :param str name:
+        :param name:
 
         :returns: The created FleetInstance
         """
@@ -206,7 +208,7 @@ class FleetList(ListResource):
 
         return FleetInstance(self._version, payload)
 
-    def get(self, sid) -> FleetContext:
+    def get(self, sid: str) -> FleetContext:
         """
         Constructs a FleetContext
 
@@ -214,7 +216,7 @@ class FleetList(ListResource):
         """
         return FleetContext(self._version, sid=sid)
 
-    def __call__(self, sid) -> FleetContext:
+    def __call__(self, sid: str) -> FleetContext:
         """
         Constructs a FleetContext
 

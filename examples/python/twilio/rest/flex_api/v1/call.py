@@ -152,7 +152,7 @@ class CallList(ListResource):
         """
         super().__init__(version)
 
-    def get(self, sid) -> CallContext:
+    def get(self, sid: str) -> CallContext:
         """
         Constructs a CallContext
 
@@ -160,7 +160,7 @@ class CallList(ListResource):
         """
         return CallContext(self._version, sid=sid)
 
-    def __call__(self, sid) -> CallContext:
+    def __call__(self, sid: str) -> CallContext:
         """
         Constructs a CallContext
 

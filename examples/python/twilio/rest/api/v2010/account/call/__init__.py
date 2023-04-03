@@ -15,7 +15,7 @@ r"""
 
 from datetime import datetime
 from decimal import Decimal
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Union
 from twilio.base import deserialize, serialize, values
 from twilio.base.instance_context import InstanceContext
 from twilio.base.instance_resource import InstanceResource
@@ -280,18 +280,18 @@ class CallList(ListResource):
 
     def create(
         self,
-        required_string_property,
-        test_method,
-        test_array_of_strings=values.unset,
-        test_array_of_uri=values.unset,
+        required_string_property: str,
+        test_method: str,
+        test_array_of_strings: Union[List[str], object] = values.unset,
+        test_array_of_uri: Union[List[str], object] = values.unset,
     ) -> CallInstance:
         """
         Create the CallInstance
 
-        :param str required_string_property:
-        :param str test_method: The HTTP method that we should use to request the `TestArrayOfUri`.
-        :param List[str] test_array_of_strings:
-        :param List[str] test_array_of_uri:
+        :param required_string_property:
+        :param test_method: The HTTP method that we should use to request the `TestArrayOfUri`.
+        :param test_array_of_strings:
+        :param test_array_of_uri:
 
         :returns: The created CallInstance
         """
@@ -316,18 +316,18 @@ class CallList(ListResource):
 
     async def create_async(
         self,
-        required_string_property,
-        test_method,
-        test_array_of_strings=values.unset,
-        test_array_of_uri=values.unset,
+        required_string_property: str,
+        test_method: str,
+        test_array_of_strings: Union[List[str], object] = values.unset,
+        test_array_of_uri: Union[List[str], object] = values.unset,
     ) -> CallInstance:
         """
         Asynchronously create the CallInstance
 
-        :param str required_string_property:
-        :param str test_method: The HTTP method that we should use to request the `TestArrayOfUri`.
-        :param List[str] test_array_of_strings:
-        :param List[str] test_array_of_uri:
+        :param required_string_property:
+        :param test_method: The HTTP method that we should use to request the `TestArrayOfUri`.
+        :param test_array_of_strings:
+        :param test_array_of_uri:
 
         :returns: The created CallInstance
         """
@@ -361,7 +361,7 @@ class CallList(ListResource):
             )
         return self._feedback_call_summary
 
-    def get(self, test_integer) -> CallContext:
+    def get(self, test_integer: int) -> CallContext:
         """
         Constructs a CallContext
 
@@ -373,7 +373,7 @@ class CallList(ListResource):
             test_integer=test_integer,
         )
 
-    def __call__(self, test_integer) -> CallContext:
+    def __call__(self, test_integer: int) -> CallContext:
         """
         Constructs a CallContext
 
