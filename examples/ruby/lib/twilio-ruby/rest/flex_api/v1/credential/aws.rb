@@ -183,12 +183,22 @@ module Twilio
             ##
             # Access the history
             # @return [HistoryList]
-            # @return [HistoryContext]
-            def history
-              HistoryContext.new(
-                @version,
-                @solution[:sid]
-              )
+            # @return [HistoryContext] if sid was passed.
+            def history(test_integer = :unset)
+              raise ArgumentError, 'test_integer cannot be nil' if test_integer.nil?
+
+              if test_integer != :unset
+                return HistoryContext.new(@version, @solution[:sid], test_integer)
+              end
+
+              unless @history
+                @history = HistoryList.new(
+                  @version,
+                  aws_sid: @solution[:sid]
+                )
+              end
+
+              @history
             end
 
             ##

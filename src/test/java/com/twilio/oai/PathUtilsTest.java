@@ -100,12 +100,20 @@ public class PathUtilsTest {
     }
 
     @Test
-    public void testIsInstanceOperation() {
+    public void testIsInstanceOperationWithJson() {
         CodegenOperation instanceCo = new CodegenOperation();
-        instanceCo.vendorExtensions.put("x-path-type", "instance");
+        instanceCo.path = "http://twilio.com/Account/{Sid}/History/{TestInteger}.json";
         assertTrue(PathUtils.isInstanceOperation(instanceCo));
 
         CodegenOperation nonInstanceCo = new CodegenOperation();
+        nonInstanceCo.path = "http://twilio.com/Account/{Sid}/History";
         assertFalse(PathUtils.isInstanceOperation(nonInstanceCo));
+    }
+
+    @Test
+    public void testIsInstanceOperation() {
+        CodegenOperation instanceCo = new CodegenOperation();
+        instanceCo.path = "http://twilio.com/Account/{Sid}/History/{TestInteger}";
+        assertTrue(PathUtils.isInstanceOperation(instanceCo));
     }
 }

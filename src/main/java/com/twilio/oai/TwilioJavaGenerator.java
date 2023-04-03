@@ -23,6 +23,7 @@ import org.openapitools.codegen.model.ModelsMap;
 import org.openapitools.codegen.model.OperationsMap;
 
 import java.util.*;
+
 import com.google.common.collect.ImmutableMap;
 import com.samskivert.mustache.Mustache.Lambda;
 
@@ -30,14 +31,14 @@ import static com.twilio.oai.common.ApplicationConstants.*;
 
 public class TwilioJavaGenerator extends JavaClientCodegen {
 
-    private static final String VALUES = "values";
+    public static final String VALUES = "values";
 
     private final TwilioCodegenAdapter twilioCodegen;
     private final IApiActionTemplate apiActionTemplate = new JavaApiActionTemplate(this);
     private final DirectoryStructureService directoryStructureService = new DirectoryStructureService(
-        additionalProperties,
-        new ResourceMap(new Inflector()),
-        new JavaCaseResolver());
+            additionalProperties,
+            new ResourceMap(new Inflector()),
+            new JavaCaseResolver());
     private final Map<String, String> modelFormatMap = new HashMap<>();
     private final IConventionMapper conventionMapper = new LanguageConventionResolver(CONFIG_JAVA_JSON_PATH);
     private final List<CodegenModel> allModels = new ArrayList<>();
@@ -69,17 +70,16 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
     @Override
     public void postProcessParameter(final CodegenParameter parameter) {
         super.postProcessParameter(parameter);
-        if (parameter.dataType.startsWith(LIST_START) && parameter.dataType.contains("Enum")) {
-            parameter.vendorExtensions.put(REF_ENUM_EXTENSION_NAME, true);
+        if (parameter.dataType.startsWith(LIST_START) && CodegenUtils.isParameterSchemaEnum(parameter)) {
             String lastValue = Utility.removeEnumName(parameter.dataType);
-            parameter.dataType = LIST_START+lastValue;
-            parameter.baseType = lastValue.substring(0, lastValue.length()-1);
-        } else if(parameter.dataType.contains("Enum")) {
-             parameter.vendorExtensions.put(REF_ENUM_EXTENSION_NAME, true);
+            parameter.dataType = LIST_START + lastValue;
+            parameter.vendorExtensions.put(REF_ENUM_EXTENSION_NAME, true);
+            parameter.baseType = lastValue.substring(0, lastValue.length() - 1);
+        } else if (CodegenUtils.isParameterSchemaEnum(parameter)) {
+            parameter.vendorExtensions.put(REF_ENUM_EXTENSION_NAME, true);
             parameter.dataType = Utility.removeEnumName(parameter.dataType);
             parameter.baseType = Utility.removeEnumName(parameter.dataType);
-        }
-        else if (parameter.isEnum) {
+        } else if (parameter.isEnum) {
             parameter.enumName = parameter.paramName;
         } else {
             if (parameter.isPathParam) {
@@ -92,16 +92,16 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
     @Override
     public void postProcessModelProperty(CodegenModel model, CodegenProperty property) {
         super.postProcessModelProperty(model, property);
-        if (property.dataType.startsWith(LIST_START) && property.dataType.contains("Enum")) {
-            property.vendorExtensions.put(REF_ENUM_EXTENSION_NAME, true);
+        if (property.dataType.startsWith(LIST_START) && CodegenUtils.isPropertySchemaEnum(property)) {
             String lastValue = Utility.removeEnumName(property.dataType);
             property.dataType = LIST_START + lastValue;
+            property.vendorExtensions.put(REF_ENUM_EXTENSION_NAME, true);
             property.complexType = lastValue.substring(0, lastValue.length() - 1);
             property.baseType = lastValue.substring(0, lastValue.length() - 1);
             property.isEnum = true;
             property.allowableValues = property.items.allowableValues;
             property._enum = (List<String>) property.items.allowableValues.get(VALUES);
-        } else if (property.dataType.contains("Enum")) {
+        } else if (CodegenUtils.isPropertySchemaEnum(property)) {
             property.vendorExtensions.put(REF_ENUM_EXTENSION_NAME, true);
             property.dataType = Utility.removeEnumName(property.dataType);
             property.complexType = property.dataType;
@@ -158,12 +158,12 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
 
     private JavaApiResources processCodegenOperations(List<CodegenOperation> opList) {
         CodegenModelResolver codegenModelResolver = new CodegenModelResolver(conventionMapper, modelFormatMap,
-            Arrays.asList(EnumConstants.JavaDataTypes.values()));
+                Arrays.asList(EnumConstants.JavaDataTypes.values()));
         return new JavaApiResourceBuilder(apiActionTemplate, opList, this.allModels)
-            .updateApiPath()
-            .updateTemplate()
-            .updateOperations(new JavaParameterResolver(conventionMapper))
-            .updateResponseModel(new JavaPropertyResolver(conventionMapper), codegenModelResolver)
-            .build();
+                .updateApiPath()
+                .updateTemplate()
+                .updateOperations(new JavaParameterResolver(conventionMapper))
+                .updateResponseModel(new JavaPropertyResolver(conventionMapper), codegenModelResolver)
+                .build();
     }
 }

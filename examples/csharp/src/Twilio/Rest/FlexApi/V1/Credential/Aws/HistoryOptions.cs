@@ -30,6 +30,9 @@ namespace Twilio.Rest.FlexApi.V1.Credential.Aws
         
         public string PathSid { get; }
 
+        ///<summary> History INTEGER ID param!!! </summary> 
+        public int? PathTestInteger { get; }
+
         
         public Dictionary<string, object> AddOnsData { get; set; }
 
@@ -37,9 +40,11 @@ namespace Twilio.Rest.FlexApi.V1.Credential.Aws
 
         /// <summary> Construct a new FetchCredentialHistoryOptions </summary>
         /// <param name="pathSid">  </param>
-        public FetchHistoryOptions(string pathSid)
+        /// <param name="pathTestInteger"> History INTEGER ID param!!! </param>
+        public FetchHistoryOptions(string pathSid, int? pathTestInteger)
         {
             PathSid = pathSid;
+            PathTestInteger = pathTestInteger;
         }
 
         

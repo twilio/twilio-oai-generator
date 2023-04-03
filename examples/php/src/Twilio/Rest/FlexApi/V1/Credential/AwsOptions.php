@@ -26,7 +26,6 @@ use Twilio\InstanceContext;
 use Twilio\Deserialize;
 use Twilio\Serialize;
 use Twilio\Base\PhoneNumberCapabilities;
-use Twilio\Rest\FlexApi\V1\Credential\Aws\HistoryList;
 
 abstract class AwsOptions
 {

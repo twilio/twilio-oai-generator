@@ -37,10 +37,12 @@ class HistoryContext extends InstanceContext
      *
      * @param Version $version Version that contains the resource
      * @param string $sid
+     * @param int $testInteger History INTEGER ID param!!!
      */
     public function __construct(
         Version $version,
-        $sid
+        $sid,
+        $testInteger
     ) {
         parent::__construct($version);
 
@@ -48,10 +50,13 @@ class HistoryContext extends InstanceContext
         $this->solution = [
         'sid' =>
             $sid,
+        'testInteger' =>
+            $testInteger,
         ];
 
         $this->uri = '/Credentials/AWS/' . \rawurlencode($sid)
-        .'/History';
+        .'/History/' . \rawurlencode($testInteger)
+        .'';
     }
 
     /**
@@ -75,7 +80,8 @@ class HistoryContext extends InstanceContext
         return new HistoryInstance(
             $this->version,
             $payload,
-            $this->solution['sid']
+            $this->solution['sid'],
+            $this->solution['testInteger']
         );
     }
 

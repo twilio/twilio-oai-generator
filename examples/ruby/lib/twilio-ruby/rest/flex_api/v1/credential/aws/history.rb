@@ -40,13 +40,14 @@ module Twilio
               # Initialize the HistoryContext
               # @param [Version] version Version that contains the resource
               # @param [String] sid
+              # @param [String] test_integer History INTEGER ID param!!!
               # @return [HistoryContext] HistoryContext
-              def initialize(version, sid)
+              def initialize(version, sid, test_integer)
                 super(version)
 
                 # Path Solution
-                @solution = { sid: sid, }
-                @uri = "/Credentials/AWS/#{@solution[:sid]}/History"
+                @solution = { sid: sid, test_integer: test_integer, }
+                @uri = "/Credentials/AWS/#{@solution[:sid]}/History/#{@solution[:test_integer]}"
               end
 
               ##
@@ -64,6 +65,7 @@ module Twilio
                   @version,
                   payload,
                   sid: @solution[:sid],
+                  test_integer: @solution[:test_integer],
                 )
               end
 
@@ -121,7 +123,7 @@ module Twilio
               #   resource.
               # @param [String] sid The SID of the Call resource to fetch.
               # @return [HistoryInstance] HistoryInstance
-              def initialize(version, payload, sid: nil)
+              def initialize(version, payload, sid: nil, test_integer: nil)
                 super(version)
 
                 # Marshaled Properties
@@ -134,7 +136,8 @@ module Twilio
 
                 # Context
                 @instance_context = nil
-                @params = { 'sid' => sid || @properties['sid'], }
+                @params = { 'sid' => sid || @properties['sid'],
+                            'test_integer' => test_integer || @properties['test_integer'], }
               end
 
               ##
@@ -143,7 +146,7 @@ module Twilio
               # @return [HistoryContext] CallContext for this CallInstance
               def context
                 unless @instance_context
-                  @instance_context = HistoryContext.new(@version, @params['sid'])
+                  @instance_context = HistoryContext.new(@version, @params['sid'], @params['test_integer'])
                 end
                 @instance_context
               end
