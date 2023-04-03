@@ -200,7 +200,7 @@ class HistoryList(ListResource):
             "sid": sid,
         }
 
-    def get(self, test_integer) -> HistoryContext:
+    def get(self, test_integer: int) -> HistoryContext:
         """
         Constructs a HistoryContext
 
@@ -210,7 +210,7 @@ class HistoryList(ListResource):
             self._version, sid=self._solution["sid"], test_integer=test_integer
         )
 
-    def __call__(self, test_integer) -> HistoryContext:
+    def __call__(self, test_integer: int) -> HistoryContext:
         """
         Constructs a HistoryContext
 
