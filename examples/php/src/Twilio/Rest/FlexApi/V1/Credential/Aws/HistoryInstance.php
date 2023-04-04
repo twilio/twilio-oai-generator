@@ -44,9 +44,8 @@ class HistoryInstance extends InstanceResource
      * @param Version $version Version that contains the resource
      * @param mixed[] $payload The response payload
      * @param string $sid
-     * @param int $testInteger History INTEGER ID param!!!
      */
-    public function __construct(Version $version, array $payload, string $sid, int $testInteger = null)
+    public function __construct(Version $version, array $payload, string $sid)
     {
         parent::__construct($version);
 
@@ -58,7 +57,7 @@ class HistoryInstance extends InstanceResource
             'testInteger' => Values::array_get($payload, 'test_integer'),
         ];
 
-        $this->solution = ['sid' => $sid, 'testInteger' => $testInteger ?: $this->properties['testInteger'], ];
+        $this->solution = ['sid' => $sid, ];
     }
 
     /**
@@ -72,8 +71,7 @@ class HistoryInstance extends InstanceResource
         if (!$this->context) {
             $this->context = new HistoryContext(
                 $this->version,
-                $this->solution['sid'],
-                $this->solution['testInteger']
+                $this->solution['sid']
             );
         }
 

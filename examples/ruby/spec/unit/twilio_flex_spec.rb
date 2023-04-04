@@ -160,13 +160,13 @@ describe 'History' do
   it 'can fetch' do
     @holodeck.mock(Twilio::Response.new(500, ''))
     expect do
-      @client.flex_api.v1.credentials.aws('ACXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX').history('SID').fetch
+      @client.flex_api.v1.credentials.aws('ACXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX').history.fetch
     end.to raise_exception(Twilio::REST::TwilioError)
 
     expect(
       @holodeck.has_request?(Holodeck::Request.new(
                                method: 'get',
-                               url: 'https://flex-api.twilio.com/v1/Credentials/AWS/ACXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX/History/SID'
+                               url: 'https://flex-api.twilio.com/v1/Credentials/AWS/ACXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX/History'
                              ))
     ).to eq(true)
   end
@@ -182,7 +182,7 @@ describe 'History' do
         '
                    ))
 
-    actual = @client.flex_api.v1.credentials.aws('ACXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX').history('SID').fetch
+    actual = @client.flex_api.v1.credentials.aws('ACXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX').history.fetch
     expect(actual).to_not eq(nil)
   end
 end

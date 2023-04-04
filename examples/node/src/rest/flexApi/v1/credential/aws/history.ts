@@ -59,24 +59,19 @@ export interface HistoryContext {
 
 export interface HistoryContextSolution {
   sid: string;
-  testInteger: number;
 }
 
 export class HistoryContextImpl implements HistoryContext {
   protected _solution: HistoryContextSolution;
   protected _uri: string;
 
-  constructor(protected _version: V1, sid: string, testInteger: number) {
+  constructor(protected _version: V1, sid: string) {
     if (!isValidPathParam(sid)) {
       throw new Error("Parameter 'sid' is not valid.");
     }
 
-    if (!isValidPathParam(testInteger)) {
-      throw new Error("Parameter 'testInteger' is not valid.");
-    }
-
-    this._solution = { sid, testInteger };
-    this._uri = `/Credentials/AWS/${sid}/History/${testInteger}`;
+    this._solution = { sid };
+    this._uri = `/Credentials/AWS/${sid}/History`;
   }
 
   fetch(
@@ -113,12 +108,7 @@ export class HistoryContextImpl implements HistoryContext {
 
     operationPromise = operationPromise.then(
       (payload) =>
-        new HistoryInstance(
-          operationVersion,
-          payload,
-          instance._solution.sid,
-          instance._solution.testInteger
-        )
+        new HistoryInstance(operationVersion, payload, instance._solution.sid)
     );
 
     operationPromise = instance._version.setPromiseCallback(
@@ -155,18 +145,13 @@ export class HistoryInstance {
   protected _solution: HistoryContextSolution;
   protected _context?: HistoryContext;
 
-  constructor(
-    protected _version: V1,
-    payload: HistoryResource,
-    sid: string,
-    testInteger?: number
-  ) {
+  constructor(protected _version: V1, payload: HistoryResource, sid: string) {
     this.accountSid = payload.account_sid;
     this.sid = payload.sid;
     this.testString = payload.test_string;
     this.testInteger = deserialize.integer(payload.test_integer);
 
-    this._solution = { sid, testInteger: testInteger || this.testInteger };
+    this._solution = { sid };
   }
 
   accountSid: string;
@@ -177,11 +162,7 @@ export class HistoryInstance {
   private get _proxy(): HistoryContext {
     this._context =
       this._context ||
-      new HistoryContextImpl(
-        this._version,
-        this._solution.sid,
-        this._solution.testInteger
-      );
+      new HistoryContextImpl(this._version, this._solution.sid);
     return this._context;
   }
 
@@ -243,8 +224,8 @@ export interface HistoryListInstance {
   _solution: HistorySolution;
   _uri: string;
 
-  (testInteger: number): HistoryContext;
-  get(testInteger: number): HistoryContext;
+  (): HistoryContext;
+  get(): HistoryContext;
 
   /**
    * Provide a user-friendly representation
@@ -261,11 +242,10 @@ export function HistoryListInstance(
     throw new Error("Parameter 'sid' is not valid.");
   }
 
-  const instance = ((testInteger) =>
-    instance.get(testInteger)) as HistoryListInstance;
+  const instance = (() => instance.get()) as HistoryListInstance;
 
-  instance.get = function get(testInteger): HistoryContext {
-    return new HistoryContextImpl(version, sid, testInteger);
+  instance.get = function get(): HistoryContext {
+    return new HistoryContextImpl(version, sid);
   };
 
   instance._version = version;

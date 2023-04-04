@@ -30,13 +30,7 @@ class HistoryInstance(InstanceResource):
     :ivar test_integer:
     """
 
-    def __init__(
-        self,
-        version: Version,
-        payload: Dict[str, Any],
-        sid: str,
-        test_integer: Optional[int] = None,
-    ):
+    def __init__(self, version: Version, payload: Dict[str, Any], sid: str):
         super().__init__(version)
 
         self.account_sid: Optional[str] = payload.get("account_sid")
@@ -48,7 +42,6 @@ class HistoryInstance(InstanceResource):
 
         self._solution = {
             "sid": sid,
-            "test_integer": test_integer or self.test_integer,
         }
         self._context: Optional[HistoryContext] = None
 
@@ -64,7 +57,6 @@ class HistoryInstance(InstanceResource):
             self._context = HistoryContext(
                 self._version,
                 sid=self._solution["sid"],
-                test_integer=self._solution["test_integer"],
             )
         return self._context
 
@@ -107,24 +99,20 @@ class HistoryInstance(InstanceResource):
 
 
 class HistoryContext(InstanceContext):
-    def __init__(self, version: Version, sid: str, test_integer: int):
+    def __init__(self, version: Version, sid: str):
         """
         Initialize the HistoryContext
 
         :param version: Version that contains the resource
         :param sid:
-        :param test_integer: History INTEGER ID param!!!
         """
         super().__init__(version)
 
         # Path Solution
         self._solution = {
             "sid": sid,
-            "test_integer": test_integer,
         }
-        self._uri = "/Credentials/AWS/{sid}/History/{test_integer}".format(
-            **self._solution
-        )
+        self._uri = "/Credentials/AWS/{sid}/History".format(**self._solution)
 
     def fetch(
         self, add_ons_data: Union[Dict[str, object], object] = values.unset
@@ -146,7 +134,6 @@ class HistoryContext(InstanceContext):
             self._version,
             payload,
             sid=self._solution["sid"],
-            test_integer=self._solution["test_integer"],
         )
 
     async def fetch_async(
@@ -171,7 +158,6 @@ class HistoryContext(InstanceContext):
             self._version,
             payload,
             sid=self._solution["sid"],
-            test_integer=self._solution["test_integer"],
         )
 
     def __repr__(self) -> str:
@@ -200,25 +186,19 @@ class HistoryList(ListResource):
             "sid": sid,
         }
 
-    def get(self, test_integer: int) -> HistoryContext:
+    def get(self) -> HistoryContext:
         """
         Constructs a HistoryContext
 
-        :param test_integer: History INTEGER ID param!!!
         """
-        return HistoryContext(
-            self._version, sid=self._solution["sid"], test_integer=test_integer
-        )
+        return HistoryContext(self._version, sid=self._solution["sid"])
 
-    def __call__(self, test_integer: int) -> HistoryContext:
+    def __call__(self) -> HistoryContext:
         """
         Constructs a HistoryContext
 
-        :param test_integer: History INTEGER ID param!!!
         """
-        return HistoryContext(
-            self._version, sid=self._solution["sid"], test_integer=test_integer
-        )
+        return HistoryContext(self._version, sid=self._solution["sid"])
 
     def __repr__(self) -> str:
         """
