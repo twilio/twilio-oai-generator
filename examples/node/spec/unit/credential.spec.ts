@@ -59,14 +59,14 @@ describe("credential", () => {
 
     it("should fetch a nested aws credential history instance", () => {
       const scope = nock("http://flex-api.twilio.com")
-        .get("/v1/Credentials/AWS/123/History/1")
+        .get("/v1/Credentials/AWS/123/History")
         .query({
           "AddOns.twilio.segment": "engage",
         })
-        .reply(200, { sid: "123", test_integer: 1 });
+        .reply(200, { sid: "123" });
 
       return aws
-        .history(1)
+        .history()
         .fetch({
           addOnsData: {
             "twilio.segment": "engage",
