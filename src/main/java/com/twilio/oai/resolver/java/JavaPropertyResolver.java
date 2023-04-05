@@ -6,16 +6,19 @@ import com.twilio.oai.resolver.LanguagePropertyResolver;
 import com.twilio.oai.resolver.IConventionMapper;
 import com.twilio.oai.resolver.ConfigurationSegment;
 
+import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenProperty;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static com.twilio.oai.common.ApplicationConstants.VENDOR_PREFIX;
 
 public class JavaPropertyResolver extends LanguagePropertyResolver {
-    public JavaPropertyResolver(IConventionMapper mapper) {
-        super(mapper);
+
+    public JavaPropertyResolver(IConventionMapper mapper, List<CodegenModel> allModels) {
+        super(mapper, allModels);
     }
 
     @Override

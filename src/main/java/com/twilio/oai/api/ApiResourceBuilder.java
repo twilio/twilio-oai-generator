@@ -32,6 +32,7 @@ public abstract class ApiResourceBuilder implements IApiResourceBuilder {
     protected final Map<String, Object> metaAPIProperties = new HashMap<>();
     protected final List<CodegenOperation> listOperations = new ArrayList<>();
     protected final List<CodegenOperation> instanceOperations = new ArrayList<>();
+    protected List<CodegenModel> nestedModels;
     protected String version = "";
     protected final String recordKey;
     protected String apiPath = "";
@@ -42,6 +43,12 @@ public abstract class ApiResourceBuilder implements IApiResourceBuilder {
         this.codegenOperationList = codegenOperations;
         this.allModels = allModels;
         this.recordKey = Utility.getRecordKey(allModels, codegenOperations);
+    }
+
+    protected ApiResourceBuilder(IApiActionTemplate template, List<CodegenOperation> codegenOperations,
+                                 List<CodegenModel> allModels, List<CodegenModel> nestedModels) {
+        this(template, codegenOperations, allModels);
+        this.nestedModels = nestedModels;
     }
 
     @Override
@@ -113,6 +120,17 @@ public abstract class ApiResourceBuilder implements IApiResourceBuilder {
     @Override
     public IApiResourceBuilder updateApiPath() {
         apiPath = codegenOperationList.get(0).path;
+        return this;
+    }
+
+    @Override
+    public ApiResourceBuilder updateModel(Resolver<CodegenModel> codegenModelResolver) {
+        for( CodegenModel model: nestedModels) {
+            if (!model.name.contains("Response")) {
+                model.vendorExtensions.put("x-response", true);
+            }
+            nestedModels.add(model);
+        }
         return this;
     }
 

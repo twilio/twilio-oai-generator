@@ -3,13 +3,17 @@ package com.twilio.oai.resolver;
 import com.twilio.oai.common.ApplicationConstants;
 
 import lombok.AllArgsConstructor;
+import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenProperty;
+
+import java.util.List;
 
 import static com.twilio.oai.common.ApplicationConstants.DESERIALIZE_VEND_EXT;
 
 @AllArgsConstructor
 public class LanguagePropertyResolver extends Resolver<CodegenProperty> {
     protected IConventionMapper mapper;
+    protected List<CodegenModel> allModels;
 
     @Override
     public CodegenProperty resolve(CodegenProperty codegenProperty) {

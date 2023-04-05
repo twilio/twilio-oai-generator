@@ -1,15 +1,22 @@
 package com.twilio.oai;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.stream.Stream;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.PathItem;
 import io.swagger.v3.oas.models.servers.Server;
 import lombok.RequiredArgsConstructor;
 import org.openapitools.codegen.DefaultCodegen;
+
+import static com.twilio.oai.common.ApplicationConstants.CONFIG_PATH;
 
 @RequiredArgsConstructor
 public class TwilioCodegenAdapter {
@@ -17,7 +24,8 @@ public class TwilioCodegenAdapter {
     private static final String INPUT_SPEC_PATTERN = "[^_]+_(?<domain>.+?)(_(?<version>[^_]+))?\\..+";
     // regex example : https://flex-api.twilio.com
     private static final String SERVER_PATTERN = "https://(?<domain>[^.]+)\\.twilio\\.com";
-
+    private Map<String, Map<String, Boolean>> toggles = new HashMap();
+    public static final String CONFIG_TOGGLE_JSON_PATH = CONFIG_PATH + File.separator + "toggles.json";
     private final DefaultCodegen codegen;
     private final String name;
 
@@ -45,6 +53,7 @@ public class TwilioCodegenAdapter {
             codegen.reservedWords().remove(word);
             codegen.reservedWords().remove(word.toLowerCase());
         });
+        toggles = getTogglesMap();
     }
 
     public void setDomain(final String domain) {
@@ -77,11 +86,25 @@ public class TwilioCodegenAdapter {
             .orElseThrow();
     }
 
+    public Map<String, Boolean> getToggles(String value) {
+        return this.toggles.get(value);
+    }
+
     private String getInputSpecDomain() {
         return codegen.getInputSpec().replaceAll(INPUT_SPEC_PATTERN, "${domain}");
     }
 
     private String getInputSpecVersion() {
         return codegen.getInputSpec().replaceAll(INPUT_SPEC_PATTERN, "${version}");
+    }
+
+    private Map<String,Map<String, Boolean>> getTogglesMap() {
+        try {
+            return new ObjectMapper().readValue(Thread.currentThread().getContextClassLoader()
+                    .getResourceAsStream(CONFIG_TOGGLE_JSON_PATH), new TypeReference<>(){});
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return new HashMap<>();
     }
 }

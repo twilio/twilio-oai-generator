@@ -5,7 +5,10 @@ import com.twilio.oai.resolver.IConventionMapper;
 import com.twilio.oai.resolver.LanguageConventionResolver;
 import com.twilio.oai.resolver.LanguagePropertyResolver;
 
+import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenProperty;
+
+import java.util.List;
 
 import static com.twilio.oai.common.ApplicationConstants.ARRAY;
 import static com.twilio.oai.common.ApplicationConstants.STRING;
@@ -15,8 +18,8 @@ public class PhpPropertyResolver extends LanguagePropertyResolver {
     public static final String MAP_STRING = "map";
     public static final String OPEN_API_STRING = "OpenAPI";
 
-    public PhpPropertyResolver(IConventionMapper mapper) {
-        super(mapper);
+    public PhpPropertyResolver(IConventionMapper mapper, List<CodegenModel> allModels) {
+        super(mapper, allModels);
     }
 
     @Override

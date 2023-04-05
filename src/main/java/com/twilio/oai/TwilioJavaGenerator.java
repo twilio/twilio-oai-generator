@@ -32,6 +32,7 @@ import static com.twilio.oai.common.ApplicationConstants.*;
 public class TwilioJavaGenerator extends JavaClientCodegen {
 
     public static final String VALUES = "values";
+    public static final String JSON_INGRESS = "json_ingress";
 
     private final TwilioCodegenAdapter twilioCodegen;
     private final IApiActionTemplate apiActionTemplate = new JavaApiActionTemplate(this);
@@ -159,11 +160,16 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
     private JavaApiResources processCodegenOperations(List<CodegenOperation> opList) {
         CodegenModelResolver codegenModelResolver = new CodegenModelResolver(conventionMapper, modelFormatMap,
                 Arrays.asList(EnumConstants.JavaDataTypes.values()));
-        return new JavaApiResourceBuilder(apiActionTemplate, opList, this.allModels)
+
+        List<CodegenModel> nestedModels =
+                twilioCodegen.getToggles(JSON_INGRESS).get(EnumConstants.Generator.TWILIO_JAVA.getValue()) ? allModels
+                        : new ArrayList<>();
+        return new JavaApiResourceBuilder(apiActionTemplate, opList, allModels, nestedModels)
                 .updateApiPath()
                 .updateTemplate()
-                .updateOperations(new JavaParameterResolver(conventionMapper))
-                .updateResponseModel(new JavaPropertyResolver(conventionMapper), codegenModelResolver)
+                .updateModel(codegenModelResolver)
+                .updateOperations(new JavaParameterResolver(conventionMapper, allModels))
+                .updateResponseModel(new JavaPropertyResolver(conventionMapper, allModels), codegenModelResolver)
                 .build();
     }
 }

@@ -4,7 +4,10 @@ import com.twilio.oai.resolver.IConventionMapper;
 import com.twilio.oai.resolver.LanguageConventionResolver;
 import com.twilio.oai.resolver.LanguageParamResolver;
 
+import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenParameter;
+
+import java.util.List;
 
 import static com.twilio.oai.common.ApplicationConstants.ARRAY;
 import static com.twilio.oai.common.ApplicationConstants.OBJECT;
@@ -18,8 +21,8 @@ public class PhpParameterResolver extends LanguageParamResolver {
     public static final String ARRAY_OF_ARRAY_STRING = "array-of-array";
     public static final String FLOAT = "float";
 
-    public PhpParameterResolver(IConventionMapper mapper) {
-        super(mapper);
+    public PhpParameterResolver(IConventionMapper mapper, List<CodegenModel> allModels) {
+        super(mapper, allModels);
     }
 
     @Override

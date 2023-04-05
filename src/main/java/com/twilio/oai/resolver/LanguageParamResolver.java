@@ -4,13 +4,17 @@ import com.twilio.oai.StringHelper;
 import com.twilio.oai.common.ApplicationConstants;
 
 import lombok.AllArgsConstructor;
+import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenParameter;
+
+import java.util.List;
 
 import static com.twilio.oai.common.ApplicationConstants.SERIALIZE_VEND_EXT;
 
 @AllArgsConstructor
 public class LanguageParamResolver extends Resolver<CodegenParameter> {
     protected IConventionMapper mapper;
+    protected List<CodegenModel> allModels;
 
     @Override
     public CodegenParameter resolve(CodegenParameter codegenParameter) {

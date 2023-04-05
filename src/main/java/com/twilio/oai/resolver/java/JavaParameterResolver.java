@@ -6,20 +6,22 @@ import com.twilio.oai.common.EnumConstants;
 import com.twilio.oai.resolver.LanguageParamResolver;
 import com.twilio.oai.resolver.common.CodegenParameterResolver;
 import com.twilio.oai.resolver.IConventionMapper;
+import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenParameter;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
 public class JavaParameterResolver extends LanguageParamResolver {
     public static final String OBJECT = "object";
     private static final String LIST_OBJECT = "List<Object>";
-     public static final String X_IS_PHONE_NUMBER_FORMAT = "x-is-phone-number-format";
-     public static final String PHONE_NUMBER_FORMAT = "phone-number";
+    public static final String X_IS_PHONE_NUMBER_FORMAT = "x-is-phone-number-format";
+    public static final String PHONE_NUMBER_FORMAT = "phone-number";
 
-     private final CodegenParameterResolver codegenParameterResolver;
-    public JavaParameterResolver(IConventionMapper mapper) {
-        super(mapper);
+    private final CodegenParameterResolver codegenParameterResolver;
+    public JavaParameterResolver(IConventionMapper mapper, List<CodegenModel> allModels) {
+        super(mapper, allModels);
         codegenParameterResolver = new CodegenParameterResolver(mapper, Arrays.asList(EnumConstants.JavaDataTypes.values()));
     }
 

@@ -18,6 +18,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import static com.twilio.oai.common.ApplicationConstants.*;
+import static com.twilio.oai.template.AbstractApiActionTemplate.NESTED_MODELS;
 import static com.twilio.oai.template.JavaApiActionTemplate.API_TEMPLATE;
 
 public class JavaApiResourceBuilder extends ApiResourceBuilder{
@@ -29,8 +30,8 @@ public class JavaApiResourceBuilder extends ApiResourceBuilder{
     private Set<CodegenModel> headerParamModelList;
 
     private final JavaConventionResolver conventionResolver;
-    public JavaApiResourceBuilder(IApiActionTemplate template, List<CodegenOperation> codegenOperations, List<CodegenModel> allModels) {
-        super(template, codegenOperations, allModels);
+    public JavaApiResourceBuilder(IApiActionTemplate template, List<CodegenOperation> codegenOperations, List<CodegenModel> allModels, List<CodegenModel> nestedModels) {
+        super(template, codegenOperations, allModels, nestedModels);
         this.conventionResolver = new JavaConventionResolver();
     }
     @Override
@@ -141,6 +142,15 @@ public class JavaApiResourceBuilder extends ApiResourceBuilder{
         });
         this.apiResponseModels = getDistinctResponseModel(responseModels);
         this.responseModel = getConcatenatedResponseModel(responseModels);
+        return this;
+    }
+
+    @Override
+    public ApiResourceBuilder updateModel(Resolver<CodegenModel> codegenModelResolver) {
+        super.updateModel(codegenModelResolver);
+        if (nestedModels.size() > 1) {
+            template.add(NESTED_MODELS);
+        }
         return this;
     }
 
