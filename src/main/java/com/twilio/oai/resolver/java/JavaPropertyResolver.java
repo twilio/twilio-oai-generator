@@ -3,6 +3,7 @@ package com.twilio.oai.resolver.java;
 import com.twilio.oai.Segments;
 import com.twilio.oai.StringHelper;
 import com.twilio.oai.api.ApiResourceBuilder;
+import com.twilio.oai.common.EnumConstants;
 import com.twilio.oai.resolver.LanguagePropertyResolver;
 import com.twilio.oai.resolver.IConventionMapper;
 import com.twilio.oai.resolver.ConfigurationSegment;
@@ -43,7 +44,7 @@ public class JavaPropertyResolver extends LanguagePropertyResolver {
                 (key, value) -> property.getVendorExtensions().merge(key, value, (oldValue, newValue) -> newValue)
         );
 
-        if (apiResourceBuilder.getToggleMap().getOrDefault(JSON_INGRESS, Boolean.FALSE) ) {
+        if (apiResourceBuilder.getToggleMap().getOrDefault(EnumConstants.Generator.TWILIO_JAVA.getValue(), Boolean.FALSE) ) {
             resolveIngressModel(property, apiResourceBuilder);
         }
     }
