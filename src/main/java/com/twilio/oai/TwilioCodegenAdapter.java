@@ -2,6 +2,7 @@ package com.twilio.oai;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
@@ -25,9 +26,10 @@ public class TwilioCodegenAdapter {
     // regex example : https://flex-api.twilio.com
     private static final String SERVER_PATTERN = "https://(?<domain>[^.]+)\\.twilio\\.com";
     private Map<String, Map<String, Boolean>> toggles = new HashMap();
-    public static final String CONFIG_TOGGLE_JSON_PATH = CONFIG_PATH + File.separator + "toggles.json";
+    public static final String DEFAULT_CONFIG_TOGGLE_JSON_PATH = CONFIG_PATH + File.separator + "toggles.json";
     private final DefaultCodegen codegen;
     private final String name;
+    private String togglePath;
 
     private String originalOutputDir;
 
@@ -47,6 +49,8 @@ public class TwilioCodegenAdapter {
         codegen.additionalProperties().put("apiVersion", version);
         codegen.additionalProperties().put("apiVersionClass", StringHelper.toFirstLetterCaps(version));
 
+        URL resourcePath = this.getClass().getClassLoader().getResource(DEFAULT_CONFIG_TOGGLE_JSON_PATH);
+        togglePath = (String)codegen.additionalProperties().getOrDefault("toggles", resourcePath.getPath());
         codegen.supportingFiles().clear();
 
         Arrays.asList("Configuration", "Parameter", "Version").forEach(word -> {
@@ -100,8 +104,7 @@ public class TwilioCodegenAdapter {
 
     private Map<String,Map<String, Boolean>> getTogglesMap() {
         try {
-            return new ObjectMapper().readValue(Thread.currentThread().getContextClassLoader()
-                    .getResourceAsStream(CONFIG_TOGGLE_JSON_PATH), new TypeReference<>(){});
+            return new ObjectMapper().readValue(new File(togglePath), new TypeReference<>(){});
         } catch (Exception e) {
             e.printStackTrace();
         }

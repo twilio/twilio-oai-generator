@@ -12,7 +12,8 @@ import org.openapitools.codegen.CodegenParameter;
 
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
+
+import static com.twilio.oai.TwilioJavaGenerator.JSON_INGRESS;
 
 public class JavaParameterResolver extends LanguageParamResolver {
     public static final String OBJECT = "object";
@@ -59,10 +60,12 @@ public class JavaParameterResolver extends LanguageParamResolver {
             parameter.allowableValues = null;
         });
         parameter.paramName = StringHelper.toFirstLetterLower(parameter.paramName);
-        resolveModel(parameter, apiResourceBuilder);
+        if (apiResourceBuilder.getToggleMap().getOrDefault(JSON_INGRESS, Boolean.FALSE) ) {
+            resolveIngressModel(parameter, apiResourceBuilder);
+        }
     }
 
-    private void resolveModel(CodegenParameter parameter, ApiResourceBuilder apiResourceBuilder) {
+    private void resolveIngressModel(CodegenParameter parameter, ApiResourceBuilder apiResourceBuilder) {
         for (CodegenModel model : apiResourceBuilder.getAllModels()) {
             if(model.getClassname().equals(parameter.baseType)) {
                 parameter.dataType = apiResourceBuilder.getApiName() + "Model." + parameter.dataType;

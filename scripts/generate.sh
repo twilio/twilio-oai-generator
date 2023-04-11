@@ -7,15 +7,23 @@ function should-generate() {
 
 function generate() {
   find -E "$OUT_DIR"/*/* ! -name "*_test.go" ! -regex "$OUT_DIR/[^/]+/__init__.py" -type f -delete || true
+  files_regex=("examples/spec/*.yaml")
+
+  # shellcheck disable=SC2161
+#  if [ "$1" = "twilio-java" ]; then
+#    files_regex=("examples/spec/*")
+#  fi
 
   rm -rf tmp
   mkdir -p tmp
-  for api_spec in examples/spec/*; do
+  for api_spec in $files_regex; do
     echo "generatorName: $1
 inputSpec: $api_spec
 outputDir: $OUT_DIR
 inlineSchemaNameDefaults:
-  arrayItemSuffix: ''" > tmp/"$(basename "$api_spec")"
+  arrayItemSuffix: ''
+additionalProperties:
+  toggles: ./src/test/resources/config/test_toggles.json" >> tmp/"$(basename "$api_spec")"
   done
 
   java -DapiTests=false -DapiDocs=false $2 \

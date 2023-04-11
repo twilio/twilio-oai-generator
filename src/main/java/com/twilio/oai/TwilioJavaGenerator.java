@@ -1,6 +1,5 @@
 package com.twilio.oai;
 
-import com.twilio.oai.api.ApiResourceBuilder;
 import com.twilio.oai.api.JavaApiResourceBuilder;
 import com.twilio.oai.api.JavaApiResources;
 import com.twilio.oai.common.EnumConstants;
@@ -161,11 +160,14 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
     private JavaApiResources processCodegenOperations(List<CodegenOperation> opList) {
         CodegenModelResolver codegenModelResolver = new CodegenModelResolver(conventionMapper, modelFormatMap,
                 Arrays.asList(EnumConstants.JavaDataTypes.values()));
-        JavaApiResourceBuilder javaApiResourceBuilder= new JavaApiResourceBuilder(apiActionTemplate, opList, allModels);
+        JavaApiResourceBuilder javaApiResourceBuilder= new JavaApiResourceBuilder(apiActionTemplate, opList,
+                allModels, twilioCodegen.getToggles(JSON_INGRESS));
         javaApiResourceBuilder
                 .updateApiPath()
                 .updateTemplate();
-        if (twilioCodegen.getToggles(JSON_INGRESS).get(EnumConstants.Generator.TWILIO_JAVA.getValue())) {
+        final Boolean isIngress = twilioCodegen.getToggles(JSON_INGRESS).
+                get(EnumConstants.Generator.TWILIO_JAVA.getValue());
+        if (isIngress) {
             javaApiResourceBuilder.updateModel(codegenModelResolver);
         }
         javaApiResourceBuilder.updateOperations(new JavaParameterResolver(conventionMapper))

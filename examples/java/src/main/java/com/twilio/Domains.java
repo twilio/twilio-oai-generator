@@ -4,6 +4,7 @@ public enum Domains {
     API("api"),
     FLEXAPI("flex-api"),
     VERSIONLESS("versionless");
+    MESSAGING("messaging");
 
     private final String value;
 

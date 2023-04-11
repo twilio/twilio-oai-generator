@@ -30,10 +30,18 @@ public class JavaApiResourceBuilder extends ApiResourceBuilder{
     private Set<CodegenModel> headerParamModelList;
 
     private final JavaConventionResolver conventionResolver;
-    public JavaApiResourceBuilder(IApiActionTemplate template, List<CodegenOperation> codegenOperations, List<CodegenModel> allModels) {
+    public JavaApiResourceBuilder(IApiActionTemplate template, List<CodegenOperation> codegenOperations,
+                                  List<CodegenModel> allModels) {
         super(template, codegenOperations, allModels);
         this.conventionResolver = new JavaConventionResolver();
     }
+
+    public JavaApiResourceBuilder(IApiActionTemplate apiActionTemplate, List<CodegenOperation> opList,
+                                  List<CodegenModel> allModels, Map<String, Boolean> toggleMap) {
+        this(apiActionTemplate, opList, allModels);
+        this.toggleMap = toggleMap;
+    }
+
     @Override
     public IApiResourceBuilder updateTemplate() {
         template.clean();

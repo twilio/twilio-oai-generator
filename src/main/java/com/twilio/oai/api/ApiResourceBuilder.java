@@ -39,6 +39,8 @@ public abstract class ApiResourceBuilder implements IApiResourceBuilder {
     protected final String recordKey;
     protected String apiPath = "";
     protected String namespaceSubPart = "";
+    @Getter
+    protected Map<String, Boolean> toggleMap = new HashMap<>();
 
     protected ApiResourceBuilder(IApiActionTemplate template, List<CodegenOperation> codegenOperations, List<CodegenModel> allModels) {
         this.template = template;

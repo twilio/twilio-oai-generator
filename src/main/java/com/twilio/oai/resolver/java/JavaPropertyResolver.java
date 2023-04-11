@@ -13,6 +13,7 @@ import org.openapitools.codegen.CodegenProperty;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.twilio.oai.TwilioJavaGenerator.JSON_INGRESS;
 import static com.twilio.oai.common.ApplicationConstants.VENDOR_PREFIX;
 
 public class JavaPropertyResolver extends LanguagePropertyResolver {
@@ -41,7 +42,10 @@ public class JavaPropertyResolver extends LanguagePropertyResolver {
         vendorExtensions.forEach(
                 (key, value) -> property.getVendorExtensions().merge(key, value, (oldValue, newValue) -> newValue)
         );
-        resolveModel(property, apiResourceBuilder);
+
+        if (apiResourceBuilder.getToggleMap().getOrDefault(JSON_INGRESS, Boolean.FALSE) ) {
+            resolveIngressModel(property, apiResourceBuilder);
+        }
     }
 
     ConfigurationSegment getMapperByType(Segments segments) {
@@ -68,7 +72,7 @@ public class JavaPropertyResolver extends LanguagePropertyResolver {
         super.resolveDeSerialize(codegenProperty);
     }
 
-    private void resolveModel(CodegenProperty property, ApiResourceBuilder apiResourceBuilder) {
+    private void resolveIngressModel(CodegenProperty property, ApiResourceBuilder apiResourceBuilder) {
         for (CodegenModel model : apiResourceBuilder.getAllModels()) {
             if(model.getClassname().equals(property.complexType)) {
                 if (property.isContainer) {
