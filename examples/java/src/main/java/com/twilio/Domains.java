@@ -3,7 +3,7 @@ package com.twilio.rest;
 public enum Domains {
     API("api"),
     FLEXAPI("flex-api"),
-    VERSIONLESS("versionless");
+    VERSIONLESS("versionless"),
     MESSAGING("messaging");
 
     private final String value;
