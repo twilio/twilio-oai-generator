@@ -122,8 +122,8 @@ public class TwilioPythonGenerator extends AbstractPythonCodegen {
         return new PythonApiResourceBuilder(actionTemplate, opList, allModels, directoryStructureService)
             .updateApiPath()
             .updateTemplate()
-            .updateOperations(new PythonParameterResolver(conventionMapper, allModels))
-            .updateResponseModel(new LanguagePropertyResolver(conventionMapper, allModels), codegenModelResolver)
+            .updateOperations(new PythonParameterResolver(conventionMapper))
+            .updateResponseModel(new LanguagePropertyResolver(conventionMapper), codegenModelResolver)
             .build();
     }
 

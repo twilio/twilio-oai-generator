@@ -1,5 +1,6 @@
 package com.twilio.oai.resolver.php;
 
+import com.twilio.oai.api.ApiResourceBuilder;
 import com.twilio.oai.resolver.IConventionMapper;
 import com.twilio.oai.resolver.LanguageConventionResolver;
 import com.twilio.oai.resolver.LanguageParamResolver;
@@ -21,13 +22,13 @@ public class PhpParameterResolver extends LanguageParamResolver {
     public static final String ARRAY_OF_ARRAY_STRING = "array-of-array";
     public static final String FLOAT = "float";
 
-    public PhpParameterResolver(IConventionMapper mapper, List<CodegenModel> allModels) {
-        super(mapper, allModels);
+    public PhpParameterResolver(IConventionMapper mapper) {
+        super(mapper);
     }
 
     @Override
-    public void resolveProperties(CodegenParameter codegenParameter) {
-        super.resolveProperties(codegenParameter);
+    public void resolveProperties(CodegenParameter codegenParameter, ApiResourceBuilder apiResourceBuilder) {
+        super.resolveProperties(codegenParameter, apiResourceBuilder);
         if (codegenParameter.dataType.equalsIgnoreCase(LanguageConventionResolver.MIXED)) {
             codegenParameter.dataType = ARRAY;
             codegenParameter.isArray = true;

@@ -1,6 +1,7 @@
 package com.twilio.oai.resolver.php;
 
 import com.twilio.oai.StringHelper;
+import com.twilio.oai.api.ApiResourceBuilder;
 import com.twilio.oai.resolver.IConventionMapper;
 import com.twilio.oai.resolver.LanguageConventionResolver;
 import com.twilio.oai.resolver.LanguagePropertyResolver;
@@ -18,13 +19,13 @@ public class PhpPropertyResolver extends LanguagePropertyResolver {
     public static final String MAP_STRING = "map";
     public static final String OPEN_API_STRING = "OpenAPI";
 
-    public PhpPropertyResolver(IConventionMapper mapper, List<CodegenModel> allModels) {
-        super(mapper, allModels);
+    public PhpPropertyResolver(IConventionMapper mapper) {
+        super(mapper);
     }
 
     @Override
-    public CodegenProperty resolve(final CodegenProperty codegenProperty) {
-        super.resolve(codegenProperty);
+    public CodegenProperty resolve(final CodegenProperty codegenProperty, ApiResourceBuilder apiResourceBuilder) {
+        super.resolve(codegenProperty, apiResourceBuilder);
 
         codegenProperty.baseName = StringHelper.camelize(codegenProperty.baseName, true);
 
@@ -32,8 +33,8 @@ public class PhpPropertyResolver extends LanguagePropertyResolver {
     }
 
     @Override
-    public void resolveProperties(CodegenProperty codegenProperty) {
-        super.resolveProperties(codegenProperty);
+    public void resolveProperties(CodegenProperty codegenProperty, ApiResourceBuilder apiResourceBuilder) {
+        super.resolveProperties(codegenProperty, apiResourceBuilder);
         if (codegenProperty.dataType.equals(LanguageConventionResolver.MIXED)) {
             codegenProperty.dataType = ARRAY;
             codegenProperty.isArray = true;

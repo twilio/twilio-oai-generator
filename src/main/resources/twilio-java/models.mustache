@@ -19,6 +19,7 @@ import com.twilio.http.Response;
 import com.twilio.http.TwilioRestClient;
 import com.twilio.rest.Domains;
 
+import lombok.Getter;
 import lombok.ToString;
 
 import java.io.IOException;
@@ -62,7 +63,8 @@ public class {{apiName}}Model  {
             {{/vendorExtensions.x-response}}
             {{^vendorExtensions.x-response}}
             public static {{classname}} fromJson(String jsonString) throws IOException {
-                return new Gson().fromJson(jsonString, {{classname}}.class);
+                ObjectMapper mapper = new ObjectMapper();
+                return mapper.readValue(jsonString, {{classsName}}.class);
             }
             {{/vendorExtensions.x-response}}
         }

@@ -7,6 +7,7 @@ import com.twilio.oai.common.Utility;
 import com.twilio.oai.resolver.Resolver;
 import com.twilio.oai.resource.Resource;
 import com.twilio.oai.template.IApiActionTemplate;
+import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
 import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenOperation;
@@ -24,6 +25,7 @@ public abstract class ApiResourceBuilder implements IApiResourceBuilder {
     public static final String META_CONTEXT_PARAMETER_KEY = "x-context-parameters";
 
     protected final IApiActionTemplate template;
+    @Getter
     protected final List<CodegenModel> allModels;
     protected final List<CodegenOperation> codegenOperationList;
     protected final Map<String, CodegenModel> modelTree = new TreeMap<>();
@@ -32,7 +34,7 @@ public abstract class ApiResourceBuilder implements IApiResourceBuilder {
     protected final Map<String, Object> metaAPIProperties = new HashMap<>();
     protected final List<CodegenOperation> listOperations = new ArrayList<>();
     protected final List<CodegenOperation> instanceOperations = new ArrayList<>();
-    protected List<CodegenModel> nestedModels;
+    protected List<CodegenModel> nestedModels = new ArrayList<>();
     protected String version = "";
     protected final String recordKey;
     protected String apiPath = "";
@@ -88,7 +90,7 @@ public abstract class ApiResourceBuilder implements IApiResourceBuilder {
 
     protected void resolveParam(final Resolver<CodegenParameter> codegenParameterIResolver,
                                 final CodegenParameter param) {
-        codegenParameterIResolver.resolve(param);
+        codegenParameterIResolver.resolve(param, this);
     }
 
     @Override
@@ -102,8 +104,8 @@ public abstract class ApiResourceBuilder implements IApiResourceBuilder {
                     .map(modelName -> this.getModel(modelName, codegenOperation))
                     .flatMap(Optional::stream)
                     .forEach(item -> {
-                        item.vars.forEach(codegenPropertyResolver::resolve);
-                        item.allVars.forEach(codegenPropertyResolver::resolve);
+                        item.vars.forEach(e -> codegenPropertyResolver.resolve(e, this));
+                        item.allVars.forEach(e -> codegenPropertyResolver.resolve(e, this));
                         responseModels.add(item);
                     });
             this.apiResponseModels.addAll(getDistinctResponseModel(responseModels));
@@ -125,12 +127,7 @@ public abstract class ApiResourceBuilder implements IApiResourceBuilder {
 
     @Override
     public ApiResourceBuilder updateModel(Resolver<CodegenModel> codegenModelResolver) {
-        for( CodegenModel model: nestedModels) {
-            if (!model.name.contains("Response")) {
-                model.vendorExtensions.put("x-response", true);
-            }
-            nestedModels.add(model);
-        }
+        nestedModels.addAll(allModels);
         return this;
     }
 

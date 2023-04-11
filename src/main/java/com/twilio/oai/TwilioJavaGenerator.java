@@ -1,5 +1,6 @@
 package com.twilio.oai;
 
+import com.twilio.oai.api.ApiResourceBuilder;
 import com.twilio.oai.api.JavaApiResourceBuilder;
 import com.twilio.oai.api.JavaApiResources;
 import com.twilio.oai.common.EnumConstants;
@@ -160,16 +161,15 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
     private JavaApiResources processCodegenOperations(List<CodegenOperation> opList) {
         CodegenModelResolver codegenModelResolver = new CodegenModelResolver(conventionMapper, modelFormatMap,
                 Arrays.asList(EnumConstants.JavaDataTypes.values()));
-
-        List<CodegenModel> nestedModels =
-                twilioCodegen.getToggles(JSON_INGRESS).get(EnumConstants.Generator.TWILIO_JAVA.getValue()) ? allModels
-                        : new ArrayList<>();
-        return new JavaApiResourceBuilder(apiActionTemplate, opList, allModels, nestedModels)
+        JavaApiResourceBuilder javaApiResourceBuilder= new JavaApiResourceBuilder(apiActionTemplate, opList, allModels);
+        javaApiResourceBuilder
                 .updateApiPath()
-                .updateTemplate()
-                .updateModel(codegenModelResolver)
-                .updateOperations(new JavaParameterResolver(conventionMapper, allModels))
-                .updateResponseModel(new JavaPropertyResolver(conventionMapper, allModels), codegenModelResolver)
-                .build();
+                .updateTemplate();
+        if (twilioCodegen.getToggles(JSON_INGRESS).get(EnumConstants.Generator.TWILIO_JAVA.getValue())) {
+            javaApiResourceBuilder.updateModel(codegenModelResolver);
+        }
+        javaApiResourceBuilder.updateOperations(new JavaParameterResolver(conventionMapper))
+                .updateResponseModel(new JavaPropertyResolver(conventionMapper), codegenModelResolver);
+        return javaApiResourceBuilder.build();
     }
 }

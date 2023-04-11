@@ -1,6 +1,7 @@
 package com.twilio.oai.resolver.java;
 
 import com.twilio.oai.StringHelper;
+import com.twilio.oai.api.ApiResourceBuilder;
 import com.twilio.oai.common.ApplicationConstants;
 import com.twilio.oai.common.EnumConstants;
 import com.twilio.oai.resolver.LanguageParamResolver;
@@ -20,13 +21,13 @@ public class JavaParameterResolver extends LanguageParamResolver {
     public static final String PHONE_NUMBER_FORMAT = "phone-number";
 
     private final CodegenParameterResolver codegenParameterResolver;
-    public JavaParameterResolver(IConventionMapper mapper, List<CodegenModel> allModels) {
-        super(mapper, allModels);
+    public JavaParameterResolver(IConventionMapper mapper) {
+        super(mapper);
         codegenParameterResolver = new CodegenParameterResolver(mapper, Arrays.asList(EnumConstants.JavaDataTypes.values()));
     }
 
     @Override
-    public void resolveProperties(CodegenParameter parameter) {
+    public void resolveProperties(CodegenParameter parameter, ApiResourceBuilder apiResourceBuilder) {
         if(parameter.dataType.equalsIgnoreCase(OBJECT) || parameter.dataType.equals(LIST_OBJECT)) {
             final String objectType = mapper.properties().getString(OBJECT).orElseThrow();
 
@@ -47,7 +48,7 @@ public class JavaParameterResolver extends LanguageParamResolver {
             parameter.vendorExtensions.put(ApplicationConstants.PROMOTION_EXTENSION_NAME, promotionsMap);
         });
 
-        codegenParameterResolver.resolve(parameter);
+        codegenParameterResolver.resolve(parameter, apiResourceBuilder);
 
         if( PHONE_NUMBER_FORMAT.equals(parameter.dataFormat)) {
             parameter.vendorExtensions.put(X_IS_PHONE_NUMBER_FORMAT, true);
@@ -58,5 +59,14 @@ public class JavaParameterResolver extends LanguageParamResolver {
             parameter.allowableValues = null;
         });
         parameter.paramName = StringHelper.toFirstLetterLower(parameter.paramName);
+        resolveModel(parameter, apiResourceBuilder);
+    }
+
+    private void resolveModel(CodegenParameter parameter, ApiResourceBuilder apiResourceBuilder) {
+        for (CodegenModel model : apiResourceBuilder.getAllModels()) {
+            if(model.getClassname().equals(parameter.baseType)) {
+                parameter.dataType = apiResourceBuilder.getApiName() + "Model." + parameter.dataType;
+            }
+        }
     }
 }

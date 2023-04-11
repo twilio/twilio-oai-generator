@@ -1,5 +1,6 @@
 package com.twilio.oai.resolver.common;
 
+import com.twilio.oai.api.ApiResourceBuilder;
 import com.twilio.oai.resolver.IConventionMapper;
 import com.twilio.oai.resolver.Resolver;
 
@@ -13,7 +14,7 @@ public class CodegenParameterDataTypeResolver extends Resolver<CodegenParameter>
     public CodegenParameterDataTypeResolver(IConventionMapper mapper) {
         this.mapper = mapper;
     }
-    public CodegenParameter resolve(CodegenParameter parameter) {
+    public CodegenParameter resolve(CodegenParameter parameter, ApiResourceBuilder apiResourceBuilder) {
         assignDataType(parameter);
         return parameter;
     }

@@ -1,6 +1,7 @@
 package com.twilio.oai.resolver;
 
 import com.twilio.oai.StringHelper;
+import com.twilio.oai.api.ApiResourceBuilder;
 import com.twilio.oai.common.ApplicationConstants;
 
 import lombok.AllArgsConstructor;
@@ -14,17 +15,16 @@ import static com.twilio.oai.common.ApplicationConstants.SERIALIZE_VEND_EXT;
 @AllArgsConstructor
 public class LanguageParamResolver extends Resolver<CodegenParameter> {
     protected IConventionMapper mapper;
-    protected List<CodegenModel> allModels;
 
     @Override
-    public CodegenParameter resolve(CodegenParameter codegenParameter) {
-        resolveProperties(codegenParameter);
+    public CodegenParameter resolve(CodegenParameter codegenParameter, ApiResourceBuilder apiResourceBuilder) {
+        resolveProperties(codegenParameter, apiResourceBuilder);
         resolvePrefixedMap(codegenParameter);
         resolveSerialize(codegenParameter);
         return codegenParameter;
     }
 
-    protected void resolveProperties(CodegenParameter codegenParameter) {
+    protected void resolveProperties(CodegenParameter codegenParameter, ApiResourceBuilder apiResourceBuilder) {
         mapper
             .properties()
             .getString(codegenParameter.dataFormat)

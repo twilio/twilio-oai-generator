@@ -1,6 +1,7 @@
 package com.twilio.oai.resolver.csharp;
 
 import com.twilio.oai.StringHelper;
+import com.twilio.oai.api.ApiResourceBuilder;
 import com.twilio.oai.common.ApplicationConstants;
 import com.twilio.oai.common.Utility;
 import com.twilio.oai.resolver.IConventionMapper;
@@ -19,8 +20,8 @@ public class CsharpCodegenModelDataTypeResolver extends CodegenModelDataTypeReso
     }
 
     @Override
-    public CodegenProperty resolve(CodegenProperty property) {
-        super.resolve(property);
+    public CodegenProperty resolve(CodegenProperty property, ApiResourceBuilder apiResourceBuilder) {
+        super.resolve(property, apiResourceBuilder);
         resolveEnum(property);
         mapper.deserialize()
                 .getString(property.dataFormat)

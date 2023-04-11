@@ -10,8 +10,8 @@ import java.util.List;
 import static com.twilio.oai.common.ApplicationConstants.DESERIALIZE_VEND_EXT;
 
 public class RubyPropertyResolver extends LanguagePropertyResolver  {
-    public RubyPropertyResolver(IConventionMapper mapper, List<CodegenModel> allModels) {
-        super(mapper, allModels);
+    public RubyPropertyResolver(IConventionMapper mapper) {
+        super(mapper);
     }
 
     @Override

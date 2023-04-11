@@ -30,8 +30,8 @@ public class JavaApiResourceBuilder extends ApiResourceBuilder{
     private Set<CodegenModel> headerParamModelList;
 
     private final JavaConventionResolver conventionResolver;
-    public JavaApiResourceBuilder(IApiActionTemplate template, List<CodegenOperation> codegenOperations, List<CodegenModel> allModels, List<CodegenModel> nestedModels) {
-        super(template, codegenOperations, allModels, nestedModels);
+    public JavaApiResourceBuilder(IApiActionTemplate template, List<CodegenOperation> codegenOperations, List<CodegenModel> allModels) {
+        super(template, codegenOperations, allModels);
         this.conventionResolver = new JavaConventionResolver();
     }
     @Override
@@ -59,40 +59,40 @@ public class JavaApiResourceBuilder extends ApiResourceBuilder{
             String resourceName = filePathArray.remove(filePathArray.size()-1);
 
             co.allParams = co.allParams.stream()
-                    .map(codegenParameterIResolver::resolve)
+                    .map(item -> codegenParameterIResolver.resolve(item, this))
                     .map(item -> conventionResolver.resolveEnumParameter(item, resourceName))
                     .collect(Collectors.toList());
             co.allParams.forEach(this::updateHeaderParamsList);
             co.pathParams = co.pathParams.stream()
-                    .map(codegenParameterIResolver::resolve)
+                    .map(item -> codegenParameterIResolver.resolve(item, this))
                     .map(item -> conventionResolver.resolveEnumParameter(item, resourceName))
                     .collect(Collectors.toList());
             co.pathParams.stream().
-                map(codegenParameterIResolver::resolve)
+                map(item -> codegenParameterIResolver.resolve(item, this))
                 .map(item -> conventionResolver.resolveEnumParameter(item, resourceName))
                 .forEach(param -> param.paramName = "path"+param.paramName);
             co.queryParams = co.queryParams.stream()
-                    .map(codegenParameterIResolver::resolve)
+                    .map(item -> codegenParameterIResolver.resolve(item, this))
                     .map(item -> conventionResolver.resolveEnumParameter(item, resourceName))
                     .collect(Collectors.toList());
             co.queryParams = preProcessQueryParameters(co);
             co.formParams = co.formParams.stream()
-                    .map(codegenParameterIResolver::resolve)
+                    .map(item -> codegenParameterIResolver.resolve(item, this))
                     .map(item -> conventionResolver.resolveEnumParameter(item, resourceName))
                     .collect(Collectors.toList());
             processDataTypesForParams(co.formParams);
             co.headerParams = co.headerParams.stream()
-                    .map(codegenParameterIResolver::resolve)
+                    .map(item -> codegenParameterIResolver.resolve(item, this))
                     .map(item -> conventionResolver.resolveEnumParameter(item, resourceName))
                     .collect(Collectors.toList());
             co.optionalParams = co.optionalParams
                     .stream()
-                    .map(codegenParameterIResolver::resolve)
+                    .map(item -> codegenParameterIResolver.resolve(item, this))
                     .map(item -> conventionResolver.resolveEnumParameter(item, resourceName))
                     .collect(Collectors.toList());
             co.requiredParams = co.requiredParams
                     .stream()
-                    .map(codegenParameterIResolver::resolve)
+                    .map(item -> codegenParameterIResolver.resolve(item, this))
                     .map(item -> conventionResolver.resolveEnumParameter(item, resourceName))
                     .collect(Collectors.toList());
             co.hasParams = !co.allParams.isEmpty();
@@ -133,8 +133,8 @@ public class JavaApiResourceBuilder extends ApiResourceBuilder{
                     .map(modelName -> getModel(modelName, co))
                     .flatMap(Optional::stream)
                     .forEach(item -> {
-                        codegenModelResolver.resolve(item);
-                        item.vars.forEach(codegenPropertyIResolver::resolve);
+                        codegenModelResolver.resolve(item, this);
+                        item.vars.forEach(e -> codegenPropertyIResolver.resolve(e, this));
                         responseModels.add(processEnumProperty(item, co, resourceName));
                         responseModels.addAll(headerParamModelList);
                         this.serialVersionUID = calculateSerialVersionUid(item.vars);
