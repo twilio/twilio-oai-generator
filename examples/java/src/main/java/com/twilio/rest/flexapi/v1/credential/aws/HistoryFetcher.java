@@ -46,12 +46,10 @@ import lombok.ToString;
 
 public class HistoryFetcher extends Fetcher<History> {
     private String pathSid;
-    private Integer pathTestInteger;
     private Map<String, Object> addOnsData;
 
-    public HistoryFetcher(final String pathSid, final Integer pathTestInteger){
+    public HistoryFetcher(final String pathSid){
         this.pathSid = pathSid;
-        this.pathTestInteger = pathTestInteger;
     }
 
     public HistoryFetcher setAddOnsData(final Map<String, Object> addOnsData){
@@ -61,10 +59,9 @@ public class HistoryFetcher extends Fetcher<History> {
 
     @Override
     public History fetch(final TwilioRestClient client) {
-        String path = "/v1/Credentials/AWS/{Sid}/History/{TestInteger}";
+        String path = "/v1/Credentials/AWS/{Sid}/History";
 
         path = path.replace("{"+"Sid"+"}", this.pathSid.toString());
-        path = path.replace("{"+"TestInteger"+"}", this.pathTestInteger.toString());
 
         Request request = new Request(
             HttpMethod.GET,

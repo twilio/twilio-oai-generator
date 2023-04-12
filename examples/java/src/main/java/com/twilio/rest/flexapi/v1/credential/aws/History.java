@@ -74,8 +74,8 @@ import com.twilio.type.SubscribeRule;
 public class History extends Resource {
     private static final long serialVersionUID = 234000032744450L;
 
-    public static HistoryFetcher fetcher(final String pathSid, final Integer pathTestInteger){
-        return new HistoryFetcher(pathSid, pathTestInteger);
+    public static HistoryFetcher fetcher(final String pathSid){
+        return new HistoryFetcher(pathSid);
     }
 
     /**

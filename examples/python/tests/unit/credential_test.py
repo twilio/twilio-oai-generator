@@ -55,9 +55,9 @@ class CredentialTests(unittest.TestCase):
         )
 
     def test_fetch_history_instance(self, mock_request):
-        mock_request.return_value = Response(200, '{"sid": "123", "test_integer": 1}')
+        mock_request.return_value = Response(200, '{"sid": "123"}')
 
-        self.client.flex_api.V1.credentials.aws("123").history(1).fetch(
+        self.client.flex_api.V1.credentials.aws("123").history().fetch(
             add_ons_data={"twilio.segment": "engage"}
         )
         request_args = self.generic_request_args
@@ -65,7 +65,7 @@ class CredentialTests(unittest.TestCase):
 
         mock_request.assert_called_once_with(
             "GET",
-            "http://flex-api.twilio.com/v1/Credentials/AWS/123/History/1",
+            "http://flex-api.twilio.com/v1/Credentials/AWS/123/History",
             **request_args
         )
 
@@ -136,9 +136,9 @@ class AsyncCredentialTests(unittest.IsolatedAsyncioTestCase):
         )
 
     async def test_async_fetch_history_instance(self, mock_request):
-        mock_request.return_value = Response(200, '{"sid": "123", "test_integer": 1}')
+        mock_request.return_value = Response(200, '{"sid": "123"}')
 
-        await self.client.flex_api.V1.credentials.aws("123").history(1).fetch_async(
+        await self.client.flex_api.V1.credentials.aws("123").history().fetch_async(
             add_ons_data={"twilio.segment": "engage"}
         )
         request_args = self.generic_request_args
@@ -146,7 +146,7 @@ class AsyncCredentialTests(unittest.IsolatedAsyncioTestCase):
 
         mock_request.assert_called_once_with(
             "GET",
-            "http://flex-api.twilio.com/v1/Credentials/AWS/123/History/1",
+            "http://flex-api.twilio.com/v1/Credentials/AWS/123/History",
             **request_args
         )
 

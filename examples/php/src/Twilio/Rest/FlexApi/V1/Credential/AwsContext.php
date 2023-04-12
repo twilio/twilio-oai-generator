@@ -28,13 +28,17 @@ use Twilio\InstanceContext;
 use Twilio\Deserialize;
 use Twilio\Serialize;
 use Twilio\Base\PhoneNumberCapabilities;
+use Twilio\Rest\FlexApi\V1\Credential\Aws\HistoryList;
 
 
 /**
- * @method \Twilio\Rest\FlexApi\V1\Credential\Aws\HistoryContext history(string $testInteger)
+ * @property HistoryList $history
+ * @method \Twilio\Rest\FlexApi\V1\Credential\Aws\HistoryContext history()
  */
 class AwsContext extends InstanceContext
     {
+    protected $_history;
+
     /**
      * Initialize the AwsContext
      *
@@ -117,6 +121,21 @@ class AwsContext extends InstanceContext
         );
     }
 
+
+    /**
+     * Access the history
+     */
+    protected function getHistory(): HistoryList
+    {
+        if (!$this->_history) {
+            $this->_history = new HistoryList(
+                $this->version,
+                $this->solution['sid']
+            );
+        }
+
+        return $this->_history;
+    }
 
     /**
      * Magic getter to lazy load subresources

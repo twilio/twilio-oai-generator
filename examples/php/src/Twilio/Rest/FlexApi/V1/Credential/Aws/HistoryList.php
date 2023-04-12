@@ -53,18 +53,14 @@ class HistoryList extends ListResource
 
     /**
      * Constructs a HistoryContext
-     *
-     * @param int $testInteger History INTEGER ID param!!!
      */
     public function getContext(
-        int $testInteger
         
     ): HistoryContext
     {
         return new HistoryContext(
             $this->version,
-            $this->solution['sid'],
-            $testInteger
+            $this->solution['sid']
         );
     }
 
