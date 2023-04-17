@@ -1,5 +1,5 @@
 {
   "json_ingress": {
-    "twilio-java": false
+    "twilio-java": true
   }
 }

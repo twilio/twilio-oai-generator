@@ -129,7 +129,14 @@ public abstract class ApiResourceBuilder implements IApiResourceBuilder {
 
     @Override
     public ApiResourceBuilder updateModel(Resolver<CodegenModel> codegenModelResolver) {
-        nestedModels.addAll(allModels);
+        List<String> modelNames = allModels.stream().map(item -> item.name).collect(Collectors.toList());
+        for(CodegenModel model: allModels) {
+            for(CodegenProperty prop: model.vars) {
+                if (modelNames.contains(prop.dataType)){
+                    nestedModels.addAll(allModels);
+                }
+            }
+        }
         return this;
     }
 
