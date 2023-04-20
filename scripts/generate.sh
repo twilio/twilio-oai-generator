@@ -10,9 +10,9 @@ function generate() {
   files_regex=("examples/spec/*.yaml")
 
   # shellcheck disable=SC2161
-#  if [ "$1" = "twilio-java" ]; then
-#    files_regex=("examples/spec/*")
-#  fi
+  if [ "$1" = "twilio-java" ]; then
+    files_regex=("examples/spec/*")
+  fi
 
   rm -rf tmp
   mkdir -p tmp

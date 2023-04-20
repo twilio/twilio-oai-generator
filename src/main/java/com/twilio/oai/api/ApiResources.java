@@ -3,6 +3,7 @@ package com.twilio.oai.api;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenOperation;
@@ -21,7 +22,7 @@ public class ApiResources {
     Map<String, Object> metaProperties;
     String namespaceSubPart;
     boolean hasPaginationOperation;
-    List<CodegenModel> nestedModels;
+    Set<CodegenModel> nestedModels;
 
     public ApiResources(ApiResourceBuilder apiResourceBuilder) {
         apiOperations = apiResourceBuilder.codegenOperationList;

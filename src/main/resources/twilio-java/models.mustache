@@ -64,7 +64,7 @@ public class {{apiName}}Model  {
             {{^vendorExtensions.x-response}}
             public static {{classname}} fromJson(String jsonString) throws IOException {
                 ObjectMapper mapper = new ObjectMapper();
-                return mapper.readValue(jsonString, {{classsName}}.class);
+                return mapper.readValue(jsonString, {{classname}}.class);
             }
             {{/vendorExtensions.x-response}}
         }

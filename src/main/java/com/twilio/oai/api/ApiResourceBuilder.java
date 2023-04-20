@@ -9,10 +9,8 @@ import com.twilio.oai.resource.Resource;
 import com.twilio.oai.template.IApiActionTemplate;
 import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
-import org.openapitools.codegen.CodegenModel;
-import org.openapitools.codegen.CodegenOperation;
-import org.openapitools.codegen.CodegenParameter;
-import org.openapitools.codegen.CodegenProperty;
+import org.mozilla.javascript.optimizer.Codegen;
+import org.openapitools.codegen.*;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -34,7 +32,7 @@ public abstract class ApiResourceBuilder implements IApiResourceBuilder {
     protected final Map<String, Object> metaAPIProperties = new HashMap<>();
     protected final List<CodegenOperation> listOperations = new ArrayList<>();
     protected final List<CodegenOperation> instanceOperations = new ArrayList<>();
-    protected List<CodegenModel> nestedModels = new ArrayList<>();
+    protected Set<CodegenModel> nestedModels = new LinkedHashSet<>();
     protected String version = "";
     protected final String recordKey;
     protected String apiPath = "";
@@ -50,7 +48,7 @@ public abstract class ApiResourceBuilder implements IApiResourceBuilder {
     }
 
     protected ApiResourceBuilder(IApiActionTemplate template, List<CodegenOperation> codegenOperations,
-                                 List<CodegenModel> allModels, List<CodegenModel> nestedModels) {
+                                 List<CodegenModel> allModels, Set<CodegenModel> nestedModels) {
         this(template, codegenOperations, allModels);
         this.nestedModels = nestedModels;
     }
@@ -129,15 +127,61 @@ public abstract class ApiResourceBuilder implements IApiResourceBuilder {
 
     @Override
     public ApiResourceBuilder updateModel(Resolver<CodegenModel> codegenModelResolver) {
-        List<String> modelNames = allModels.stream().map(item -> item.name).collect(Collectors.toList());
-        for(CodegenModel model: allModels) {
-            for(CodegenProperty prop: model.vars) {
-                if (modelNames.contains(prop.dataType)){
-                    nestedModels.addAll(allModels);
+        List<CodegenProperty> properties = new ArrayList<>();
+        List<CodegenParameter> parameters = new ArrayList<>();
+        List<CodegenResponse> responses = new ArrayList<>();
+        for (CodegenOperation co: this.codegenOperationList) {
+            for (CodegenResponse cr : co.responses) {
+                responses.add(cr);
+                properties.addAll(cr.vars);
+            }
+            parameters.addAll(co.allParams);
+            parameters.addAll(co.requiredParams);
+            parameters.addAll(co.queryParams);
+            parameters.addAll(co.bodyParams);
+            parameters.addAll(co.formParams);
+        }
+
+        for(CodegenParameter cp : parameters) {
+            final CodegenModel model = getModel(cp.dataType);
+            if(model != null) {
+                nestedModels.add(model);
+            }
+        }
+        for(CodegenProperty cp : properties) {
+            final CodegenModel model = getModel(cp.complexType);
+            if(model != null) {
+                nestedModels.add(model);
+            }
+        }
+        for(CodegenResponse cr : responses) {
+            final CodegenModel model = getModel(cr.dataType);
+            if(model != null) {
+              //  nestedModels.add(model);
+            }
+
+        }
+        List<CodegenModel> interfaces = new ArrayList<>();
+        for(CodegenModel cm : nestedModels) {
+            if (cm.interfaces == null) continue;
+            for (String interName: cm.interfaces) {
+                final CodegenModel model = getModel(interName);
+                if(model != null) {
+                     interfaces.add(model);
                 }
             }
         }
+        nestedModels.addAll(interfaces);
         return this;
+    }
+
+    private CodegenModel getModel(String modelName ) {
+        for (CodegenModel cm : this.allModels) {
+            if (cm.classname.equals(modelName)) {
+                return cm;
+            }
+        }
+        return null;
     }
 
     @Override
