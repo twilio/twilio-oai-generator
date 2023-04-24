@@ -42,14 +42,9 @@
                     def {{mountName}}
                       unless @{{mountName}}
                         @{{mountName}} = {{#lambda.titlecase}}{{#lambda.camelcase}}{{filename}}{{/lambda.camelcase}}{{/lambda.titlecase}}List.new(
-                                @version{{#requiredPathParams}},{{^-last}}
-                                {{paramName}}: @solution[:{{paramName}}]{{/-last}}{{#-last}}
-                                {{#lambda.snakecase}}{{apiName}}{{/lambda.snakecase}}_{{paramName}}: @solution[:{{paramName}}]
-                                {{/-last}}{{/requiredPathParams}}
-                                )
+                                @version, {{#metaProperties.mapOfdependents}}{{.}}{{/metaProperties.mapOfdependents}} )
                       end
-
-                      @{{mountName}}
+                    @{{mountName}}
                     end
                     {{/metaProperties.contextImportProperties}}
                     {{#metaProperties.contextImportMethods}}
@@ -68,11 +63,7 @@
 
                         unless @{{mountName}}
                             @{{mountName}} = {{#lambda.titlecase}}{{#lambda.camelcase}}{{filename}}{{/lambda.camelcase}}{{/lambda.titlecase}}List.new(
-                                @version{{#requiredPathParams}},{{^-last}}
-                                {{paramName}}: @solution[:{{paramName}}]{{/-last}}{{#-last}}
-                                {{#lambda.snakecase}}{{apiName}}{{/lambda.snakecase}}_{{paramName}}: @solution[:{{paramName}}]
-                                {{/-last}}{{/requiredPathParams}}
-                                )
+                                @version, {{#metaProperties.mapOfdependents}}{{.}}{{/metaProperties.mapOfdependents}} )
                         end
 
                      @{{mountName}}
