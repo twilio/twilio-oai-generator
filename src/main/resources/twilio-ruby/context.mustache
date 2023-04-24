@@ -44,7 +44,7 @@
                         @{{mountName}} = {{#lambda.titlecase}}{{#lambda.camelcase}}{{filename}}{{/lambda.camelcase}}{{/lambda.titlecase}}List.new(
                                 @version, {{#metaProperties.mapOfdependents}}{{.}}{{/metaProperties.mapOfdependents}} )
                       end
-                    @{{mountName}}
+                      @{{mountName}}
                     end
                     {{/metaProperties.contextImportProperties}}
                     {{#metaProperties.contextImportMethods}}

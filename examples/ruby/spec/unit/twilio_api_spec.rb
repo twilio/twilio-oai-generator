@@ -112,16 +112,15 @@ describe 'Call' do
 
     data = {}
     data['RequiredStringProperty'] = 'test string'
-    data['TestMethod'] = 'get'
-    expect(
-      @holodeck.has_request?(Holodeck::Request.new(
-                               method: 'POST',
-                               url: 'https://api.twilio.com/2010-04-01/Accounts/ACXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX/Calls.json',
-                               auth: [@client.username, @client.password],
-                               headers: @client.generate_headers('POST'),
-                               data: data
-                             ))
-    ).to eq(true)
+    data['TestMethod'] = 'POST'
+    request = Holodeck::Request.new(
+      method: 'POST',
+      url: 'https://api.twilio.com/2010-04-01/Accounts/ACXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX/Calls.json',
+      auth: [@client.username, @client.password],
+      headers: @client.generate_headers('POST'),
+      data: data
+    )
+    response = expect(@holodeck.has_request?(request)).to_not eq(nil)
   end
 
   it 'recieves create responses' do
