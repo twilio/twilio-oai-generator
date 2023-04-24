@@ -130,8 +130,6 @@ module Twilio
               unless @feedback_call_summary
                 @feedback_call_summary = FeedbackCallSummaryList.new(
                   @version,
-                  account_sid: @solution[:account_sid],
-                  call_test_integer: @solution[:test_integer]
                 )
               end
 
