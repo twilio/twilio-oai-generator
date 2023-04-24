@@ -74,24 +74,24 @@ import com.twilio.type.SubscribeRule;
 public class UseCase extends Resource {
     private static final long serialVersionUID = 181601950293005L;
 
+    public static UseCaseCreator creator(final UseCaseModel.UseCaseRequest useCaseRequest){
+        return new UseCaseCreator(useCaseRequest);
+    }
+
     public static UseCaseDeleter deleter(final String pathUseCaseSID){
         return new UseCaseDeleter(pathUseCaseSID);
     }
 
-    public static UseCaseReader reader(final String pathUseCaseSID){
-        return new UseCaseReader(pathUseCaseSID);
+    public static UseCaseFetcher fetcher(final String pathUseCaseSID){
+        return new UseCaseFetcher(pathUseCaseSID);
     }
 
     public static UseCaseReader reader(){
         return new UseCaseReader();
     }
 
-    public static UseCaseReader reader(final UseCaseModel.UseCaseRequest useCaseRequest){
-        return new UseCaseReader(useCaseRequest);
-    }
-
-    public static UseCaseReader reader(final String pathUseCaseSID, final UseCaseModel.UseCaseRequest useCaseRequest){
-        return new UseCaseReader(pathUseCaseSID, useCaseRequest);
+    public static UseCaseUpdater updater(final String pathUseCaseSID, final UseCaseModel.UseCaseRequest useCaseRequest){
+        return new UseCaseUpdater(pathUseCaseSID, useCaseRequest);
     }
 
     /**
@@ -135,8 +135,6 @@ public class UseCase extends Resource {
     private final String name;
     private final String intent;
     private final List<UseCaseModel.UseCaseRequestPipeline> pipeline;
-    private final List<UseCaseModel.UseCaseResponse> items;
-    private final UseCaseModel.Metadata metadata;
 
     @JsonCreator
     private UseCase(
@@ -150,20 +148,12 @@ public class UseCase extends Resource {
         final String intent,
 
         @JsonProperty("pipeline")
-        final List<UseCaseModel.UseCaseRequestPipeline> pipeline,
-
-        @JsonProperty("items")
-        final List<UseCaseModel.UseCaseResponse> items,
-
-        @JsonProperty("metadata")
-        final UseCaseModel.Metadata metadata
+        final List<UseCaseModel.UseCaseRequestPipeline> pipeline
     ) {
         this.id = id;
         this.name = name;
         this.intent = intent;
         this.pipeline = pipeline;
-        this.items = items;
-        this.metadata = metadata;
     }
 
         public final String getId() {
@@ -178,12 +168,6 @@ public class UseCase extends Resource {
         public final List<UseCaseModel.UseCaseRequestPipeline> getPipeline() {
             return this.pipeline;
         }
-        public final List<UseCaseModel.UseCaseResponse> getItems() {
-            return this.items;
-        }
-        public final UseCaseModel.Metadata getMetadata() {
-            return this.metadata;
-        }
 
     @Override
     public boolean equals(final Object o) {
@@ -197,12 +181,12 @@ public class UseCase extends Resource {
 
         UseCase other = (UseCase) o;
 
-        return Objects.equals(id, other.id) &&  Objects.equals(name, other.name) &&  Objects.equals(intent, other.intent) &&  Objects.equals(pipeline, other.pipeline) &&  Objects.equals(items, other.items) &&  Objects.equals(metadata, other.metadata)  ;
+        return Objects.equals(id, other.id) &&  Objects.equals(name, other.name) &&  Objects.equals(intent, other.intent) &&  Objects.equals(pipeline, other.pipeline)  ;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, intent, pipeline, items, metadata);
+        return Objects.hash(id, name, intent, pipeline);
     }
 
 }

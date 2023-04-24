@@ -157,9 +157,9 @@ public abstract class ApiResourceBuilder implements IApiResourceBuilder {
         for(CodegenResponse cr : responses) {
             final CodegenModel model = getModel(cr.dataType);
             if(model != null) {
-              //  nestedModels.add(model);
+                model.vendorExtensions.put("x-response-model", true);
+                nestedModels.add(model);
             }
-
         }
         List<CodegenModel> interfaces = new ArrayList<>();
         for(CodegenModel cm : nestedModels) {

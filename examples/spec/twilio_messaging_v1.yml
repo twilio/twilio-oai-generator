@@ -20,7 +20,7 @@ paths:
       summary: Gets a Number Pool by ID.
       description: >
         Return a specific number pool and it's details
-      operationId: getNumberPoolById
+      operationId: FetchNumberPoolById
       parameters:
         - $ref: '#/components/parameters/numberPoolSID'
       responses:
@@ -43,7 +43,7 @@ paths:
       summary: Updates a Number Pool by ID.
       description: >
         Updates a Number Pool and it's details
-      operationId: putNumberPoolById
+      operationId: UpdateNumberPoolById
       parameters:
         - $ref: '#/components/parameters/numberPoolSID'
       requestBody:
@@ -73,7 +73,7 @@ paths:
       summary: Deletes a Number Pool by ID.
       description: >
         Deletes a Number Pool and it's details
-      operationId: deleteNumberPoolById
+      operationId: DeleteNumberPoolById
       parameters:
         - $ref: '#/components/parameters/numberPoolSID'
       responses:
@@ -99,7 +99,7 @@ paths:
       summary: Gets a Page of Number Pool instances.
       description: >
         Returns a Page of Number Pool instances with HATEOS style navigation
-      operationId: getNumberPools
+      operationId: ListNumberPools
       parameters:
         - name: pageToken
           in: query
@@ -113,7 +113,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/NumberPoolPage'
+                $ref: '#/components/schemas/NumberPoolResponse'
         '5XX':
           description: Unexpected error.
       externalDocs:
@@ -125,7 +125,7 @@ paths:
       summary: Creates a new Number Pool instances
       description: >
         Creates a Number Pool and it's details
-      operationId: createNumberPool
+      operationId: CreateNumberPool
       requestBody:
         description: The Number Pool to update
         required: true
@@ -154,7 +154,7 @@ paths:
       summary: Gets a Use Case by ID.
       description: >
         Return a specific Use Case and it's details
-      operationId: getUseCaseById
+      operationId: FetchUseCaseById
       parameters:
         - $ref: '#/components/parameters/useCaseSID'
       responses:
@@ -177,7 +177,7 @@ paths:
       summary: Updates a Use Case by ID.
       description: >
         Updates a Use Case and it's details
-      operationId: putUseCaseById
+      operationId: UpdateUseCaseById
       parameters:
         - $ref: '#/components/parameters/useCaseSID'
       requestBody:
@@ -207,7 +207,7 @@ paths:
       summary: Deletes a Use Case by ID.
       description: >
         Deletes a Use Case and it's details
-      operationId: deleteUseCaseById
+      operationId: DeleteUseCaseById
       parameters:
         - $ref: '#/components/parameters/useCaseSID'
       responses:
@@ -231,7 +231,7 @@ paths:
       summary: Gets a Page of Use Case instances.
       description: >
         Returns a Page of Use Case instances with HATEOS style navigation
-      operationId: getUseCases
+      operationId: ListUseCases
       parameters:
         - name: pageToken
           in: query
@@ -257,7 +257,7 @@ paths:
       summary: Creates a new Use Case instance
       description: >
         Creates a Use Case and it's details
-      operationId: postUseCase
+      operationId: CreateUseCase
       requestBody:
         description: The Use Case to update
         required: true

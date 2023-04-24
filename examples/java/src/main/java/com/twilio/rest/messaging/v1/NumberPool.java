@@ -82,16 +82,16 @@ public class NumberPool extends Resource {
         return new NumberPoolDeleter(pathNumberPoolSID);
     }
 
-    public static NumberPoolReader reader(final String pathNumberPoolSID){
-        return new NumberPoolReader(pathNumberPoolSID);
+    public static NumberPoolFetcher fetcher(final String pathNumberPoolSID){
+        return new NumberPoolFetcher(pathNumberPoolSID);
     }
 
     public static NumberPoolReader reader(){
         return new NumberPoolReader();
     }
 
-    public static NumberPoolReader reader(final String pathNumberPoolSID, final NumberPoolModel.NumberPoolRequest numberPoolRequest){
-        return new NumberPoolReader(pathNumberPoolSID, numberPoolRequest);
+    public static NumberPoolUpdater updater(final String pathNumberPoolSID, final NumberPoolModel.NumberPoolRequest numberPoolRequest){
+        return new NumberPoolUpdater(pathNumberPoolSID, numberPoolRequest);
     }
 
     /**
@@ -135,8 +135,6 @@ public class NumberPool extends Resource {
     private final String name;
     private final List<String> senders;
     private final String callbackURL;
-    private final List<NumberPoolModel.NumberPoolResponse> items;
-    private final NumberPoolModel.Metadata metadata;
 
     @JsonCreator
     private NumberPool(
@@ -150,20 +148,12 @@ public class NumberPool extends Resource {
         final List<String> senders,
 
         @JsonProperty("callback_url")
-        final String callbackURL,
-
-        @JsonProperty("items")
-        final List<NumberPoolModel.NumberPoolResponse> items,
-
-        @JsonProperty("metadata")
-        final NumberPoolModel.Metadata metadata
+        final String callbackURL
     ) {
         this.id = id;
         this.name = name;
         this.senders = senders;
         this.callbackURL = callbackURL;
-        this.items = items;
-        this.metadata = metadata;
     }
 
         public final String getId() {
@@ -178,12 +168,6 @@ public class NumberPool extends Resource {
         public final String getCallbackURL() {
             return this.callbackURL;
         }
-        public final List<NumberPoolModel.NumberPoolResponse> getItems() {
-            return this.items;
-        }
-        public final NumberPoolModel.Metadata getMetadata() {
-            return this.metadata;
-        }
 
     @Override
     public boolean equals(final Object o) {
@@ -197,12 +181,12 @@ public class NumberPool extends Resource {
 
         NumberPool other = (NumberPool) o;
 
-        return Objects.equals(id, other.id) &&  Objects.equals(name, other.name) &&  Objects.equals(senders, other.senders) &&  Objects.equals(callbackURL, other.callbackURL) &&  Objects.equals(items, other.items) &&  Objects.equals(metadata, other.metadata)  ;
+        return Objects.equals(id, other.id) &&  Objects.equals(name, other.name) &&  Objects.equals(senders, other.senders) &&  Objects.equals(callbackURL, other.callbackURL)  ;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, senders, callbackURL, items, metadata);
+        return Objects.hash(id, name, senders, callbackURL);
     }
 
 }

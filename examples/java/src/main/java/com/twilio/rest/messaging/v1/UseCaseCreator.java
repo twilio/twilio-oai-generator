@@ -14,8 +14,7 @@
 
 package com.twilio.rest.messaging.v1;
 
-import com.twilio.base.Reader;
-import com.twilio.base.ResourceSet;
+import com.twilio.base.Creator;
 import com.twilio.converter.Promoter;
 import com.twilio.exception.ApiConnectionException;
 import com.twilio.converter.PrefixedCollapsibleMap;
@@ -27,8 +26,11 @@ import com.twilio.http.Request;
 import com.twilio.http.Response;
 import com.twilio.http.TwilioRestClient;
 import com.twilio.rest.Domains;
-import com.twilio.base.Page;
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.Map;
 import java.time.LocalDate;
+import com.twilio.converter.Converter;
 import java.time.ZonedDateTime;
 import java.io.IOException;
 import java.io.InputStream;
@@ -45,34 +47,34 @@ import java.util.Objects;
 
 import lombok.ToString;
 
-public class UseCaseReader extends Reader<UseCase> {
+import java.net.URI;
 
-    public UseCaseReader(){
+public class UseCaseCreator extends Creator<UseCase>{
+    private UseCaseModel.UseCaseRequest useCaseRequest;
+
+    public UseCaseCreator(final UseCaseModel.UseCaseRequest useCaseRequest) {
+        this.useCaseRequest = useCaseRequest;
     }
 
+    public UseCaseCreator setUseCaseRequest(final UseCaseModel.UseCaseRequest useCaseRequest){
+        this.useCaseRequest = useCaseRequest;
+        return this;
+    }
 
     @Override
-    public ResourceSet<UseCase> read(final TwilioRestClient client) {
-        return new ResourceSet<>(this, client, firstPage(client));
-    }
-
-    public Page<UseCase> firstPage(final TwilioRestClient client) {
+    public UseCase create(final TwilioRestClient client){
         String path = "/v2/UseCases";
 
+        path = path.replace("{"+"UseCaseRequest"+"}", this.useCaseRequest.toString());
+
         Request request = new Request(
-            HttpMethod.GET,
+            HttpMethod.POST,
             Domains.MESSAGING.toString(),
             path
         );
-
-        return pageForRequest(client, request);
-    }
-
-    private Page<UseCase> pageForRequest(final TwilioRestClient client, final Request request) {
         Response response = client.request(request);
-
         if (response == null) {
-            throw new ApiConnectionException("UseCase read failed: Unable to connect to server");
+            throw new ApiConnectionException("UseCase creation failed: Unable to connect to server");
         } else if (!TwilioRestClient.SUCCESS.test(response.getStatusCode())) {
             RestException restException = RestException.fromJson(response.getStream(), client.getObjectMapper());
             if (restException == null) {
@@ -81,40 +83,6 @@ public class UseCaseReader extends Reader<UseCase> {
             throw new ApiException(restException);
         }
 
-        return Page.fromJson(
-            "items",
-            response.getContent(),
-            UseCase.class,
-            client.getObjectMapper()
-        );
-    }
-
-    @Override
-    public Page<UseCase> previousPage(final Page<UseCase> page, final TwilioRestClient client) {
-        Request request = new Request(
-            HttpMethod.GET,
-            page.getPreviousPageUrl(Domains.MESSAGING.toString())
-        );
-        return pageForRequest(client, request);
-    }
-
-
-    @Override
-    public Page<UseCase> nextPage(final Page<UseCase> page, final TwilioRestClient client) {
-        Request request = new Request(
-            HttpMethod.GET,
-            page.getNextPageUrl(Domains.MESSAGING.toString())
-        );
-        return pageForRequest(client, request);
-    }
-
-    @Override
-    public Page<UseCase> getPage(final String targetUrl, final TwilioRestClient client) {
-        Request request = new Request(
-            HttpMethod.GET,
-            targetUrl
-        );
-
-        return pageForRequest(client, request);
+        return UseCase.fromJson(response.getStream(), client.getObjectMapper());
     }
 }
