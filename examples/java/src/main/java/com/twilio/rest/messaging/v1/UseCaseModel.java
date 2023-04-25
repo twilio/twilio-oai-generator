@@ -56,7 +56,6 @@ import com.twilio.type.OutboundSmsPrice;
 import com.twilio.type.OutboundCallPrice;
 import com.twilio.type.RecordingRule;
 import com.twilio.type.SubscribeRule;
-import com.google.gson.Gson;
 
 public class UseCaseModel  {
 
@@ -75,12 +74,52 @@ public class UseCaseModel  {
 
         @JsonIgnoreProperties(ignoreUnknown = true)
         @ToString
-        static public class NumberPoolResponseAllOf {
-            @Getter private String id;
+        static public class UseCaseRequestPipeline {
+            @Getter private String type;
+            @Getter private Boolean geoMatch;
+            @Getter private Boolean stickySender;
+            @Getter private String orgDomain;
+            @Getter private Boolean enabled;
 
-            public static NumberPoolResponseAllOf fromJson(String jsonString) throws IOException {
+            public static UseCaseRequestPipeline fromJson(String jsonString) throws IOException {
                 ObjectMapper mapper = new ObjectMapper();
-                return mapper.readValue(jsonString, NumberPoolResponseAllOf.class);
+                return mapper.readValue(jsonString, UseCaseRequestPipeline.class);
+            }
+        }
+
+        @JsonIgnoreProperties(ignoreUnknown = true)
+        @ToString
+        static public class NumberSelection {
+            @Getter private String type;
+            @Getter private Boolean geoMatch;
+            @Getter private Boolean stickySender;
+
+            public static NumberSelection fromJson(String jsonString) throws IOException {
+                ObjectMapper mapper = new ObjectMapper();
+                return mapper.readValue(jsonString, NumberSelection.class);
+            }
+        }
+
+        @JsonIgnoreProperties(ignoreUnknown = true)
+        @ToString
+        static public class LinkShortener {
+            @Getter private String type;
+            @Getter private String orgDomain;
+
+            public static LinkShortener fromJson(String jsonString) throws IOException {
+                ObjectMapper mapper = new ObjectMapper();
+                return mapper.readValue(jsonString, LinkShortener.class);
+            }
+        }
+
+        @JsonIgnoreProperties(ignoreUnknown = true)
+        @ToString
+        static public class Scheduler {
+            @Getter private Boolean enabled;
+
+            public static Scheduler fromJson(String jsonString) throws IOException {
+                ObjectMapper mapper = new ObjectMapper();
+                return mapper.readValue(jsonString, Scheduler.class);
             }
         }
 

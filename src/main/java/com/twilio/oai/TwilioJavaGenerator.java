@@ -167,11 +167,11 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
                 .updateTemplate();
         final Boolean isIngress = twilioCodegen.getToggles(JSON_INGRESS).
                 get(EnumConstants.Generator.TWILIO_JAVA.getValue());
+        javaApiResourceBuilder.updateOperations(new JavaParameterResolver(conventionMapper))
+                .updateResponseModel(new JavaPropertyResolver(conventionMapper), codegenModelResolver);
         if (isIngress) {
             javaApiResourceBuilder.updateModel(codegenModelResolver);
         }
-        javaApiResourceBuilder.updateOperations(new JavaParameterResolver(conventionMapper))
-                .updateResponseModel(new JavaPropertyResolver(conventionMapper), codegenModelResolver);
         return javaApiResourceBuilder.build();
     }
 }

@@ -127,13 +127,11 @@ public abstract class ApiResourceBuilder implements IApiResourceBuilder {
 
     @Override
     public ApiResourceBuilder updateModel(Resolver<CodegenModel> codegenModelResolver) {
-        List<CodegenProperty> properties = new ArrayList<>();
         List<CodegenParameter> parameters = new ArrayList<>();
         List<CodegenResponse> responses = new ArrayList<>();
         for (CodegenOperation co: this.codegenOperationList) {
-            for (CodegenResponse cr : co.responses) {
+            for (CodegenResponse cr : co.responses.stream().filter(response -> response.is2xx).collect(Collectors.toList())) {
                 responses.add(cr);
-                properties.addAll(cr.vars);
             }
             parameters.addAll(co.allParams);
             parameters.addAll(co.requiredParams);
@@ -141,26 +139,27 @@ public abstract class ApiResourceBuilder implements IApiResourceBuilder {
             parameters.addAll(co.bodyParams);
             parameters.addAll(co.formParams);
         }
-
+        // Nested parameters
         for(CodegenParameter cp : parameters) {
             final CodegenModel model = getModel(cp.dataType);
             if(model != null) {
                 nestedModels.add(model);
             }
         }
-        for(CodegenProperty cp : properties) {
-            final CodegenModel model = getModel(cp.complexType);
-            if(model != null) {
-                nestedModels.add(model);
+
+        // Nested properties
+        List<CodegenModel> extraProps = new ArrayList<>();
+        for(CodegenModel cm : nestedModels) {
+            for(CodegenProperty cp : cm.vars) {
+                final CodegenModel model = getModel(cp.complexType);
+                if(model != null) {
+                    extraProps.add(model);
+                }
             }
         }
-        for(CodegenResponse cr : responses) {
-            final CodegenModel model = getModel(cr.dataType);
-            if(model != null) {
-                model.vendorExtensions.put("x-response-model", true);
-                nestedModels.add(model);
-            }
-        }
+        nestedModels.addAll(extraProps);
+
+        // Polymorphism
         List<CodegenModel> interfaces = new ArrayList<>();
         for(CodegenModel cm : nestedModels) {
             if (cm.interfaces == null) continue;

@@ -56,20 +56,8 @@ import com.twilio.type.OutboundSmsPrice;
 import com.twilio.type.OutboundCallPrice;
 import com.twilio.type.RecordingRule;
 import com.twilio.type.SubscribeRule;
-import com.google.gson.Gson;
 
 public class NumberPoolModel  {
-
-        @JsonIgnoreProperties(ignoreUnknown = true)
-        @ToString
-        static public class NumberPoolResponseAllOf {
-            @Getter private String id;
-
-            public static NumberPoolResponseAllOf fromJson(String jsonString) throws IOException {
-                ObjectMapper mapper = new ObjectMapper();
-                return mapper.readValue(jsonString, NumberPoolResponseAllOf.class);
-            }
-        }
 
         @JsonIgnoreProperties(ignoreUnknown = true)
         @ToString

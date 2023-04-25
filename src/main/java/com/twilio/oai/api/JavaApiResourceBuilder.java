@@ -156,8 +156,7 @@ public class JavaApiResourceBuilder extends ApiResourceBuilder{
     @Override
     public ApiResourceBuilder updateModel(Resolver<CodegenModel> codegenModelResolver) {
         super.updateModel(codegenModelResolver);
-        nestedModels = nestedModels.stream().filter(model -> !model.vendorExtensions.containsKey("x-response-model")).collect(Collectors.toSet());
-        if (nestedModels.size() > 1) {
+        if (nestedModels.size() >= 1) {
             template.add(NESTED_MODELS);
         }
         return this;
