@@ -2,6 +2,7 @@ package com.twilio.oai.api;
 
 import com.twilio.oai.DirectoryStructureService;
 import com.twilio.oai.PathUtils;
+import com.twilio.oai.common.ApplicationConstants;
 import com.twilio.oai.resolver.Resolver;
 import com.twilio.oai.resource.Resource;
 import com.twilio.oai.template.IApiActionTemplate;
@@ -49,6 +50,7 @@ public class RubyApiResourceBuilder extends FluentApiResourceBuilder {
         createContextParamsList(apiResourceBuilder.codegenOperationList);
         categorizeOperations();
         createMaturityDescription(apiResourceBuilder.codegenOperationList);
+        updateDependentProperties(apiResourceBuilder.codegenOperationList);
         updateVersionData();
         return apiResourceBuilder;
     }
@@ -129,6 +131,37 @@ public class RubyApiResourceBuilder extends FluentApiResourceBuilder {
                 seenOps.add(operation.path);
             }
         });
+    }
+    private void updateDependentProperties(List<CodegenOperation> opList){
+        Set<String> dependents = new HashSet<>();
+        for (CodegenOperation operation : opList) {
+            String depParams = fetchDependentParams(operation);
+            dependents.add(depParams);
+        }
+        metaAPIProperties.put("mapOfdependents", dependents);
+
+    }
+
+    private String fetchDependentParams(CodegenOperation operation){
+        String dependentParams = "";
+        Set<String> seenParams = new HashSet<>();
+        if (operation.vendorExtensions.containsKey(ApplicationConstants.DEPENDENT_PROPERTIES)){
+            HashMap<String, String> dependentProperties = (HashMap<String, String>) operation.vendorExtensions.get(ApplicationConstants.DEPENDENT_PROPERTIES);
+            for(Map.Entry<String, String> propertiesDetails : dependentProperties.entrySet()){
+                String setOfDependentProperties = propertiesDetails.getValue().substring(1, propertiesDetails.getValue().length()-1);
+                String[] dependentParamPairs = setOfDependentProperties.split(",");
+                for(String paramPair : dependentParamPairs){
+                    String propName = paramPair.split(":")[0];
+                    String dependent = paramPair;
+                    if(!seenParams.contains(propName)) {
+                        dependent = dependent.replace(": ", ": @solution[:")+"], ";
+                        dependentParams += dependent;
+                    }
+                    seenParams.add(propName);
+                    }
+                }
+        }
+        return dependentParams;
     }
 
     private void createMaturityDescription(List<CodegenOperation> opList) {
