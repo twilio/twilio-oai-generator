@@ -86,13 +86,13 @@ public class TwilioGoGenerator extends AbstractTwilioGoGenerator {
     }
 
     private void processEnumParameters(final CodegenParameter parameter) {
-        if (parameter.dataType.startsWith("[]") && parameter.dataType.contains("Enum")) {
+        if (parameter.dataType.startsWith("[]") && CodegenUtils.isParameterSchemaEnum(parameter)) {
             parameter._enum = (List<String>) parameter.items.allowableValues.get("values");
             parameter.allowableValues = parameter.items.allowableValues;
             parameter.dataType = "[]" + STRING;
             parameter.isEnum = parameter.dataFormat == null;
             parameter.isNullable = true;
-        } else if (parameter.dataType.contains("Enum")) {
+        } else if (CodegenUtils.isParameterSchemaEnum(parameter)) {
             parameter.datatypeWithEnum = Utility.removeEnumName(parameter.dataType);
             parameter.dataType = STRING;
             parameter.isEnum = parameter.dataFormat == null;
