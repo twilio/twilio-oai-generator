@@ -1,5 +1,6 @@
 package com.twilio.oai.resolver.csharp;
 
+import com.twilio.oai.CodegenUtils;
 import com.twilio.oai.StringHelper;
 import com.twilio.oai.common.ApplicationConstants;
 import com.twilio.oai.common.Utility;
@@ -34,7 +35,7 @@ public class CsharpCodegenParameterDataTypeResolver extends CodegenParameterData
             }
             return;
         }
-        if (parameter.dataType.contains(ApplicationConstants.ENUM)) {
+        if (CodegenUtils.isParameterSchemaEnum(parameter)) {
             parameter.isEnum = true;
             parameter.enumName = Utility.removeEnumName(parameter.dataType) + ApplicationConstants.ENUM;
         }

@@ -6,7 +6,7 @@ import org.openapitools.codegen.CodegenProperty;
 public  class CodegenUtils {
 
     public static boolean isPropertySchemaEnum(CodegenProperty codegenProperty) {
-        if(codegenProperty.isEnum) {
+        if(codegenProperty.getFormat() != null) {
             return false;
         }
         boolean enumValues = codegenProperty.allowableValues != null &&
@@ -17,7 +17,7 @@ public  class CodegenUtils {
     }
 
     public static boolean isParameterSchemaEnum(CodegenParameter codegenParameter) {
-        if(codegenParameter.isEnum) {
+        if(codegenParameter.getFormat() != null) {
             return false;
         }
         boolean enumValues = codegenParameter.allowableValues != null &&

@@ -1,5 +1,6 @@
 package com.twilio.oai.api;
 
+import com.twilio.oai.CodegenUtils;
 import com.twilio.oai.DirectoryStructureService;
 import com.twilio.oai.StringHelper;
 import com.twilio.oai.common.ApplicationConstants;
@@ -53,7 +54,7 @@ public class PythonApiResourceBuilder extends FluentApiResourceBuilder {
 
         if (responseModel != null) {
             responseModel.getVars().forEach(variable -> {
-                if (variable.complexType != null && !variable.complexType.contains(ApplicationConstants.ENUM)) {
+                if (variable.complexType != null && !CodegenUtils.isPropertySchemaEnum(variable)) {
                     getModelByClassname(variable.complexType).ifPresent(model -> {
                         variable.baseType = variable.baseType.replace(variable.datatypeWithEnum, "str");
                         variable.datatypeWithEnum = "str";
