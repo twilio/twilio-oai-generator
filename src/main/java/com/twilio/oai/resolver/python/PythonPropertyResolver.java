@@ -10,6 +10,8 @@ public class PythonPropertyResolver extends LanguagePropertyResolver {
     public PythonPropertyResolver(IConventionMapper mapper) {
         super(mapper);
     }
+
+    @Override
     protected void resolveProperties(CodegenProperty codegenProperty) {
         // update _form paramName to from_ for backward compatibility
         if (codegenProperty.name.equals("_from") && codegenProperty.dataFormat.equals(ApplicationConstants.PHONE_NUMBER)) {
