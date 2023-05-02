@@ -171,6 +171,7 @@ interface CallResource {
   test_object: PhoneNumberCapabilities;
   test_date_time: Date;
   test_number: number;
+  from: string;
   price_unit: string;
   test_number_float: number;
   test_number_decimal: number;
@@ -199,6 +200,7 @@ export class CallInstance {
     this.testObject = payload.test_object;
     this.testDateTime = deserialize.rfc2822DateTime(payload.test_date_time);
     this.testNumber = payload.test_number;
+    this.from = payload.from;
     this.priceUnit = payload.price_unit;
     this.testNumberFloat = payload.test_number_float;
     this.testNumberDecimal = deserialize.decimal(payload.test_number_decimal);
@@ -222,6 +224,7 @@ export class CallInstance {
   testObject: PhoneNumberCapabilities;
   testDateTime: Date;
   testNumber: number;
+  from: string;
   priceUnit: string;
   testNumberFloat: number;
   testNumberDecimal: number;
@@ -289,6 +292,7 @@ export class CallInstance {
       testObject: this.testObject,
       testDateTime: this.testDateTime,
       testNumber: this.testNumber,
+      from: this.from,
       priceUnit: this.priceUnit,
       testNumberFloat: this.testNumberFloat,
       testNumberDecimal: this.testNumberDecimal,

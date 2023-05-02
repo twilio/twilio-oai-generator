@@ -39,6 +39,7 @@ use Twilio\Rest\Api\V2010\Account\Call\FeedbackCallSummaryList;
  * @property PhoneNumberCapabilities|null $testObject
  * @property \DateTime|null $testDateTime
  * @property string|null $testNumber
+ * @property string|null $from
  * @property string|null $priceUnit
  * @property string|null $testNumberFloat
  * @property string|null $testNumberDecimal
@@ -72,6 +73,7 @@ class CallInstance extends InstanceResource
             'testObject' => Deserialize::phoneNumberCapabilities(Values::array_get($payload, 'test_object')),
             'testDateTime' => Deserialize::dateTime(Values::array_get($payload, 'test_date_time')),
             'testNumber' => Values::array_get($payload, 'test_number'),
+            'from' => Values::array_get($payload, 'from'),
             'priceUnit' => Values::array_get($payload, 'price_unit'),
             'testNumberFloat' => Values::array_get($payload, 'test_number_float'),
             'testNumberDecimal' => Values::array_get($payload, 'test_number_decimal'),

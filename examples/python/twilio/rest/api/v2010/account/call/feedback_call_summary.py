@@ -40,6 +40,7 @@ class FeedbackCallSummaryInstance(InstanceResource):
     :ivar test_object: 
     :ivar test_date_time: 
     :ivar test_number: 
+    :ivar from_: 
     :ivar price_unit: 
     :ivar test_number_float: 
     :ivar test_number_decimal: 
@@ -73,6 +74,7 @@ class FeedbackCallSummaryInstance(InstanceResource):
         self.test_number: Optional[float] = deserialize.decimal(
             payload.get("test_number")
         )
+        self.from_: Optional[str] = payload.get("from")
         self.price_unit: Optional[str] = payload.get("price_unit")
         self.test_number_float: Optional[float] = payload.get("test_number_float")
         self.test_number_decimal: Optional[Decimal] = payload.get("test_number_decimal")

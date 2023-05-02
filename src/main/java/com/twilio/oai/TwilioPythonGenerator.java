@@ -10,6 +10,7 @@ import com.twilio.oai.resolver.LanguagePropertyResolver;
 import com.twilio.oai.resolver.common.CodegenModelResolver;
 import com.twilio.oai.resolver.python.PythonCaseResolver;
 import com.twilio.oai.resolver.python.PythonParameterResolver;
+import com.twilio.oai.resolver.python.PythonPropertyResolver;
 import com.twilio.oai.resource.IResourceTree;
 import com.twilio.oai.resource.ResourceMap;
 import com.twilio.oai.template.PythonApiActionTemplate;
@@ -123,7 +124,7 @@ public class TwilioPythonGenerator extends AbstractPythonCodegen {
             .updateApiPath()
             .updateTemplate()
             .updateOperations(new PythonParameterResolver(conventionMapper))
-            .updateResponseModel(new LanguagePropertyResolver(conventionMapper), codegenModelResolver)
+            .updateResponseModel(new PythonPropertyResolver(conventionMapper), codegenModelResolver)
             .build();
     }
 
