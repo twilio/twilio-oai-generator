@@ -77,6 +77,7 @@ public class DirectoryStructureService {
         openAPI.getPaths().forEach(resourceTree::addResource);
         openAPI.getPaths().forEach((name, path) -> {
             final Optional<String> pathType = PathUtils.getTwilioExtension(path, "pathType");
+            final Optional<Object> dependentProps = PathUtils.getDependentsTwilioExtension(path.getExtensions(), DEPENDENT_PROPERTIES);
             path.readOperations().forEach(operation -> {
                 // Group operations together by tag. This gives us one file/post-process per resource.
                 final String tag = String.join(PATH_SEPARATOR_PLACEHOLDER, resourceTree.ancestors(name, operation));
@@ -100,6 +101,12 @@ public class DirectoryStructureService {
                         .ofNullable(operation.getExtensions())
                         .ifPresentOrElse(ext -> ext.putIfAbsent(PATH_TYPE_EXTENSION_NAME, type),
                                 () -> operation.addExtension(PATH_TYPE_EXTENSION_NAME, type)));
+
+                dependentProps.ifPresent(deps -> Optional
+                        .ofNullable(operation.getExtensions())
+                        .ifPresentOrElse(ext -> ext.putIfAbsent(DEPENDENT_PROPERTIES, deps),
+                                () -> operation.addExtension(DEPENDENT_PROPERTIES, deps)));
+
             });
         });
     }

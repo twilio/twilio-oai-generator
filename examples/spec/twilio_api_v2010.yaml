@@ -270,6 +270,9 @@ paths:
       - url: https://api.twilio.com
     x-twilio:
       pathType: list
+      dependentProperties:
+        api/v2010/address: '{account_sid: sid}'
+        api/v2010/application: '{account_sid: sid}'
   /2010-04-01/Accounts/{Sid}.json:
     description: A top-level resource instance
     delete:
@@ -408,6 +411,8 @@ paths:
       - url: https://api.twilio.com
     x-twilio:
       parent: /Accounts/{Sid}.json
+      dependentProperties:
+        api/v2010/call_recording: '{account_sid: account_sid, test_call_sid: sid}'
       pathType: list
   /2010-04-01/Accounts/{AccountSid}/Calls/{TestInteger}.json:
     description: A nested resource instance that cannot be updated
@@ -466,6 +471,7 @@ paths:
       - url: https://api.twilio.com
     x-twilio:
       parent: /Accounts/{Sid}.json
+
       pathType: instance
   /2010-04-01/Accounts/{AccountSid}/Calls/Feedback/Summary.json:
     description: A nested resource with sub-dirs and without operations
