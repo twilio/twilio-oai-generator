@@ -45,6 +45,10 @@ components:
         test_number:
           nullable: true
           type: number
+        from:
+          nullable: true
+          type: string
+          format: phone-number
         price_unit:
           nullable: true
           format: currency

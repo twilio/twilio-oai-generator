@@ -72,7 +72,7 @@ import com.twilio.type.SubscribeRule;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @ToString
 public class FeedbackCallSummary extends Resource {
-    private static final long serialVersionUID = 105046036135596L;
+    private static final long serialVersionUID = 176825368696347L;
 
     public static FeedbackCallSummaryUpdater updater(final String pathSid, final LocalDate endDate, final LocalDate startDate){
         return new FeedbackCallSummaryUpdater(pathSid, endDate, startDate);
@@ -148,6 +148,7 @@ public class FeedbackCallSummary extends Resource {
     private final PhoneNumberCapabilities testObject;
     private final ZonedDateTime testDateTime;
     private final BigDecimal testNumber;
+    private final com.twilio.type.PhoneNumber from;
     private final Currency priceUnit;
     private final Float testNumberFloat;
     private final BigDecimal testNumberDecimal;
@@ -180,6 +181,9 @@ public class FeedbackCallSummary extends Resource {
 
         @JsonProperty("test_number")
         final BigDecimal testNumber,
+
+        @JsonProperty("from")
+        final com.twilio.type.PhoneNumber from,
 
         @JsonProperty("price_unit")
         @JsonDeserialize(using = com.twilio.converter.CurrencyDeserializer.class)
@@ -216,6 +220,7 @@ public class FeedbackCallSummary extends Resource {
         this.testObject = testObject;
         this.testDateTime = DateConverter.rfc2822DateTimeFromString(testDateTime);
         this.testNumber = testNumber;
+        this.from = from;
         this.priceUnit = priceUnit;
         this.testNumberFloat = testNumberFloat;
         this.testNumberDecimal = testNumberDecimal;
@@ -247,6 +252,9 @@ public class FeedbackCallSummary extends Resource {
         }
         public final BigDecimal getTestNumber() {
             return this.testNumber;
+        }
+        public final com.twilio.type.PhoneNumber getFrom() {
+            return this.from;
         }
         public final Currency getPriceUnit() {
             return this.priceUnit;
@@ -288,12 +296,12 @@ public class FeedbackCallSummary extends Resource {
 
         FeedbackCallSummary other = (FeedbackCallSummary) o;
 
-        return Objects.equals(accountSid, other.accountSid) &&  Objects.equals(sid, other.sid) &&  Objects.equals(testString, other.testString) &&  Objects.equals(testInteger, other.testInteger) &&  Objects.equals(testObject, other.testObject) &&  Objects.equals(testDateTime, other.testDateTime) &&  Objects.equals(testNumber, other.testNumber) &&  Objects.equals(priceUnit, other.priceUnit) &&  Objects.equals(testNumberFloat, other.testNumberFloat) &&  Objects.equals(testNumberDecimal, other.testNumberDecimal) &&  Objects.equals(testEnum, other.testEnum) &&  Objects.equals(a2pProfileBundleSid, other.a2pProfileBundleSid) &&  Objects.equals(testArrayOfIntegers, other.testArrayOfIntegers) &&  Objects.equals(testArrayOfArrayOfIntegers, other.testArrayOfArrayOfIntegers) &&  Objects.equals(testArrayOfObjects, other.testArrayOfObjects) &&  Objects.equals(testArrayOfEnum, other.testArrayOfEnum)  ;
+        return Objects.equals(accountSid, other.accountSid) &&  Objects.equals(sid, other.sid) &&  Objects.equals(testString, other.testString) &&  Objects.equals(testInteger, other.testInteger) &&  Objects.equals(testObject, other.testObject) &&  Objects.equals(testDateTime, other.testDateTime) &&  Objects.equals(testNumber, other.testNumber) &&  Objects.equals(from, other.from) &&  Objects.equals(priceUnit, other.priceUnit) &&  Objects.equals(testNumberFloat, other.testNumberFloat) &&  Objects.equals(testNumberDecimal, other.testNumberDecimal) &&  Objects.equals(testEnum, other.testEnum) &&  Objects.equals(a2pProfileBundleSid, other.a2pProfileBundleSid) &&  Objects.equals(testArrayOfIntegers, other.testArrayOfIntegers) &&  Objects.equals(testArrayOfArrayOfIntegers, other.testArrayOfArrayOfIntegers) &&  Objects.equals(testArrayOfObjects, other.testArrayOfObjects) &&  Objects.equals(testArrayOfEnum, other.testArrayOfEnum)  ;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(accountSid, sid, testString, testInteger, testObject, testDateTime, testNumber, priceUnit, testNumberFloat, testNumberDecimal, testEnum, a2pProfileBundleSid, testArrayOfIntegers, testArrayOfArrayOfIntegers, testArrayOfObjects, testArrayOfEnum);
+        return Objects.hash(accountSid, sid, testString, testInteger, testObject, testDateTime, testNumber, from, priceUnit, testNumberFloat, testNumberDecimal, testEnum, a2pProfileBundleSid, testArrayOfIntegers, testArrayOfArrayOfIntegers, testArrayOfObjects, testArrayOfEnum);
     }
 
 }

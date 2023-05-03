@@ -48,4 +48,5 @@ public class ApplicationConstants {
     public static final String DEPENDENT_PROPERTIES = "dependentProperties";
 
     public static final String PREFIXED_COLLAPSIBLE_MAP = "prefixed-collapsible-map";
+    public static final String PHONE_NUMBER = "phone-number";
 }

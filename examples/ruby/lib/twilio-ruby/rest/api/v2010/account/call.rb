@@ -202,6 +202,7 @@ module Twilio
                 'test_object' => payload['test_object'],
                 'test_date_time' => Twilio.deserialize_rfc2822(payload['test_date_time']),
                 'test_number' => payload['test_number'],
+                'from' => payload['from'],
                 'price_unit' => payload['price_unit'],
                 'test_number_float' => payload['test_number_float'],
                 'test_number_decimal' => payload['test_number_decimal'] == nil ? payload['test_number_decimal'] : payload['test_number_decimal'].to_f,
@@ -271,6 +272,12 @@ module Twilio
             # @return [Float]
             def test_number
               @properties['test_number']
+            end
+
+            ##
+            # @return [String]
+            def from
+              @properties['from']
             end
 
             ##
