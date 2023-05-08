@@ -113,7 +113,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/NumberPoolResponse'
+                properties:
+                  numberpools:
+                    items:
+                      $ref: '#/components/schemas/NumberPoolResponse'
+              examples:
+                example:
+                  $ref: '#/components/examples/NumberPoolResponse.example'
         '5XX':
           description: Unexpected error.
       externalDocs:
@@ -291,7 +297,7 @@ components:
           type: array
           items:
             type: string
-        callbackURL:
+        callback_url:
           type: string
 
       required:
@@ -407,6 +413,22 @@ components:
       required:
         - items
         - metadata
+
+  examples:
+    NumberPoolResponse.example:
+      value:
+        meta:
+          url: "http://localhost:8000/v2/NumberPools/"
+          next_page_url: "http://localhost:8000/v2/NumberPools/"
+          previous_page_url: "http://localhost:8000/v2/NumberPools/"
+          first_page_url: "http://localhost:8000/v2/NumberPools/"
+          page_size: 5
+        numberPools:
+          - id: "123"
+            name: "Number"
+            sender: ["math01"]
+            callback_url: "math.twilio.com/123"
+
   parameters:
     numberPoolSID:
       name: numberPoolSID

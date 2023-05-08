@@ -19,6 +19,7 @@ import com.twilio.http.Response;
 import com.twilio.http.TwilioRestClient;
 import com.twilio.rest.Domains;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.ToString;
 
@@ -45,24 +46,19 @@ import com.twilio.type.OutboundCallPrice;
 import com.twilio.type.RecordingRule;
 import com.twilio.type.SubscribeRule;
 
+@AllArgsConstructor
 public class {{apiName}}Model  {
 
     {{#resources.nestedModels}}
-        @JsonIgnoreProperties(ignoreUnknown = true)
         @ToString
         static public class {{classname}} {
             {{#allVars}}
+            @JsonProperty("{{#lambda.lowercase}}{{{nameInSnakeCase}}}{{/lambda.lowercase}}")
             @Getter private {{{dataType}}} {{name}};
             {{/allVars}}
 
-            {{#vendorExtensions.x-response}}
-            public String toJson() {
-                return new Gson().toJson(this);
-            }
-            {{/vendorExtensions.x-response}}
             {{^vendorExtensions.x-response}}
-            public static {{classname}} fromJson(String jsonString) throws IOException {
-                ObjectMapper mapper = new ObjectMapper();
+            public static {{classname}} fromJson(String jsonString, ObjectMapper mapper) throws IOException {
                 return mapper.readValue(jsonString, {{classname}}.class);
             }
             {{/vendorExtensions.x-response}}

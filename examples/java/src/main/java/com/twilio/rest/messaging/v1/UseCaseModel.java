@@ -31,6 +31,7 @@ import com.twilio.http.Response;
 import com.twilio.http.TwilioRestClient;
 import com.twilio.rest.Domains;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.ToString;
 
@@ -57,68 +58,73 @@ import com.twilio.type.OutboundCallPrice;
 import com.twilio.type.RecordingRule;
 import com.twilio.type.SubscribeRule;
 
+@AllArgsConstructor
 public class UseCaseModel  {
 
-        @JsonIgnoreProperties(ignoreUnknown = true)
         @ToString
         static public class UseCaseRequest {
+            @JsonProperty("name")
             @Getter private String name;
+            @JsonProperty("intent")
             @Getter private String intent;
+            @JsonProperty("pipeline")
             @Getter private List<UseCaseRequestPipeline> pipeline;
 
-            public static UseCaseRequest fromJson(String jsonString) throws IOException {
-                ObjectMapper mapper = new ObjectMapper();
+            public static UseCaseRequest fromJson(String jsonString, ObjectMapper mapper) throws IOException {
                 return mapper.readValue(jsonString, UseCaseRequest.class);
             }
         }
 
-        @JsonIgnoreProperties(ignoreUnknown = true)
         @ToString
         static public class UseCaseRequestPipeline {
+            @JsonProperty("type")
             @Getter private String type;
+            @JsonProperty("geo_match")
             @Getter private Boolean geoMatch;
+            @JsonProperty("sticky_sender")
             @Getter private Boolean stickySender;
+            @JsonProperty("org_domain")
             @Getter private String orgDomain;
+            @JsonProperty("enabled")
             @Getter private Boolean enabled;
 
-            public static UseCaseRequestPipeline fromJson(String jsonString) throws IOException {
-                ObjectMapper mapper = new ObjectMapper();
+            public static UseCaseRequestPipeline fromJson(String jsonString, ObjectMapper mapper) throws IOException {
                 return mapper.readValue(jsonString, UseCaseRequestPipeline.class);
             }
         }
 
-        @JsonIgnoreProperties(ignoreUnknown = true)
         @ToString
         static public class NumberSelection {
+            @JsonProperty("type")
             @Getter private String type;
+            @JsonProperty("geo_match")
             @Getter private Boolean geoMatch;
+            @JsonProperty("sticky_sender")
             @Getter private Boolean stickySender;
 
-            public static NumberSelection fromJson(String jsonString) throws IOException {
-                ObjectMapper mapper = new ObjectMapper();
+            public static NumberSelection fromJson(String jsonString, ObjectMapper mapper) throws IOException {
                 return mapper.readValue(jsonString, NumberSelection.class);
             }
         }
 
-        @JsonIgnoreProperties(ignoreUnknown = true)
         @ToString
         static public class LinkShortener {
+            @JsonProperty("type")
             @Getter private String type;
+            @JsonProperty("org_domain")
             @Getter private String orgDomain;
 
-            public static LinkShortener fromJson(String jsonString) throws IOException {
-                ObjectMapper mapper = new ObjectMapper();
+            public static LinkShortener fromJson(String jsonString, ObjectMapper mapper) throws IOException {
                 return mapper.readValue(jsonString, LinkShortener.class);
             }
         }
 
-        @JsonIgnoreProperties(ignoreUnknown = true)
         @ToString
         static public class Scheduler {
+            @JsonProperty("enabled")
             @Getter private Boolean enabled;
 
-            public static Scheduler fromJson(String jsonString) throws IOException {
-                ObjectMapper mapper = new ObjectMapper();
+            public static Scheduler fromJson(String jsonString, ObjectMapper mapper) throws IOException {
                 return mapper.readValue(jsonString, Scheduler.class);
             }
         }

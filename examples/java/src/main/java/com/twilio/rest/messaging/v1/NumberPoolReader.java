@@ -82,7 +82,7 @@ public class NumberPoolReader extends Reader<NumberPool> {
         }
 
         return Page.fromJson(
-            "senders",
+            "numberpools",
             response.getContent(),
             NumberPool.class,
             client.getObjectMapper()

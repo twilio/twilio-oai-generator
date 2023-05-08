@@ -134,7 +134,7 @@ public class NumberPool extends Resource {
     private final String id;
     private final String name;
     private final List<String> senders;
-    private final String callbackURL;
+    private final String callbackUrl;
 
     @JsonCreator
     private NumberPool(
@@ -148,12 +148,12 @@ public class NumberPool extends Resource {
         final List<String> senders,
 
         @JsonProperty("callback_url")
-        final String callbackURL
+        final String callbackUrl
     ) {
         this.id = id;
         this.name = name;
         this.senders = senders;
-        this.callbackURL = callbackURL;
+        this.callbackUrl = callbackUrl;
     }
 
         public final String getId() {
@@ -165,8 +165,8 @@ public class NumberPool extends Resource {
         public final List<String> getSenders() {
             return this.senders;
         }
-        public final String getCallbackURL() {
-            return this.callbackURL;
+        public final String getCallbackUrl() {
+            return this.callbackUrl;
         }
 
     @Override
@@ -181,12 +181,12 @@ public class NumberPool extends Resource {
 
         NumberPool other = (NumberPool) o;
 
-        return Objects.equals(id, other.id) &&  Objects.equals(name, other.name) &&  Objects.equals(senders, other.senders) &&  Objects.equals(callbackURL, other.callbackURL)  ;
+        return Objects.equals(id, other.id) &&  Objects.equals(name, other.name) &&  Objects.equals(senders, other.senders) &&  Objects.equals(callbackUrl, other.callbackUrl)  ;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, senders, callbackURL);
+        return Objects.hash(id, name, senders, callbackUrl);
     }
 
 }

@@ -31,6 +31,7 @@ import com.twilio.http.Response;
 import com.twilio.http.TwilioRestClient;
 import com.twilio.rest.Domains;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.ToString;
 
@@ -57,17 +58,19 @@ import com.twilio.type.OutboundCallPrice;
 import com.twilio.type.RecordingRule;
 import com.twilio.type.SubscribeRule;
 
+@AllArgsConstructor
 public class NumberPoolModel  {
 
-        @JsonIgnoreProperties(ignoreUnknown = true)
         @ToString
         static public class NumberPoolRequest {
+            @JsonProperty("name")
             @Getter private String name;
+            @JsonProperty("senders")
             @Getter private List<String> senders;
-            @Getter private String callbackURL;
+            @JsonProperty("callback_url")
+            @Getter private String callbackUrl;
 
-            public static NumberPoolRequest fromJson(String jsonString) throws IOException {
-                ObjectMapper mapper = new ObjectMapper();
+            public static NumberPoolRequest fromJson(String jsonString, ObjectMapper mapper) throws IOException {
                 return mapper.readValue(jsonString, NumberPoolRequest.class);
             }
         }
