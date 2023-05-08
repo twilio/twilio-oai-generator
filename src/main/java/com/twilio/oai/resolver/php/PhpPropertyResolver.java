@@ -1,5 +1,6 @@
 package com.twilio.oai.resolver.php;
 
+import com.twilio.oai.CodegenUtils;
 import com.twilio.oai.StringHelper;
 import com.twilio.oai.resolver.IConventionMapper;
 import com.twilio.oai.resolver.LanguageConventionResolver;
@@ -45,7 +46,7 @@ public class PhpPropertyResolver extends LanguagePropertyResolver {
         if (codegenProperty.dataType.equals(LanguageConventionResolver.LIST_OBJECT)) {
             codegenProperty.dataType = ARRAY;
         }
-        if (codegenProperty.dataType.contains("Enum") || codegenProperty.complexType != null) {
+        if (codegenProperty.complexType != null || CodegenUtils.isPropertySchemaEnum(codegenProperty)) {
             if (codegenProperty.openApiType.equals(ARRAY)) {
                 codegenProperty.dataType = STRING + "[]";
             } else if (codegenProperty.openApiType.equals(STRING) || codegenProperty.dataType.contains(OPEN_API_STRING)) {

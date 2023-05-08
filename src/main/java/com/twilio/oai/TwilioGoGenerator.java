@@ -71,13 +71,13 @@ public class TwilioGoGenerator extends AbstractTwilioGoGenerator {
     @Override
     public void postProcessModelProperty(CodegenModel model, CodegenProperty property) {
         super.postProcessModelProperty(model, property);
-        if (property.dataType.startsWith("[]") && property.dataType.contains("Enum")) {
+        if (property.dataType.startsWith("[]") && CodegenUtils.isPropertySchemaEnum(property)) {
             property._enum = (List<String>) property.items.allowableValues.get("values");
             property.allowableValues = property.items.allowableValues;
             property.dataType = "[]" + STRING;
             property.isEnum = property.dataFormat == null;
             property.isNullable = true;
-        } else if (property.dataType.contains("Enum")) {
+        } else if (CodegenUtils.isPropertySchemaEnum(property)) {
             property.datatypeWithEnum = Utility.removeEnumName(property.dataType);
             property.dataType = STRING;
             property.isEnum = property.dataFormat == null;
@@ -86,13 +86,13 @@ public class TwilioGoGenerator extends AbstractTwilioGoGenerator {
     }
 
     private void processEnumParameters(final CodegenParameter parameter) {
-        if (parameter.dataType.startsWith("[]") && parameter.dataType.contains("Enum")) {
+        if (parameter.dataType.startsWith("[]") && CodegenUtils.isParameterSchemaEnum(parameter)) {
             parameter._enum = (List<String>) parameter.items.allowableValues.get("values");
             parameter.allowableValues = parameter.items.allowableValues;
             parameter.dataType = "[]" + STRING;
             parameter.isEnum = parameter.dataFormat == null;
             parameter.isNullable = true;
-        } else if (parameter.dataType.contains("Enum")) {
+        } else if (CodegenUtils.isParameterSchemaEnum(parameter)) {
             parameter.datatypeWithEnum = Utility.removeEnumName(parameter.dataType);
             parameter.dataType = STRING;
             parameter.isEnum = parameter.dataFormat == null;

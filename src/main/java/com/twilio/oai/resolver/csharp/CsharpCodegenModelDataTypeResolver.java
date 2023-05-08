@@ -1,5 +1,6 @@
 package com.twilio.oai.resolver.csharp;
 
+import com.twilio.oai.CodegenUtils;
 import com.twilio.oai.StringHelper;
 import com.twilio.oai.common.ApplicationConstants;
 import com.twilio.oai.common.Utility;
@@ -35,7 +36,7 @@ public class CsharpCodegenModelDataTypeResolver extends CodegenModelDataTypeReso
         }
 
         OperationStore operationStore = OperationStore.getInstance();
-        if (property.complexType == null || !property.complexType.contains("Enum")) {
+        if (property.complexType == null || !CodegenUtils.isPropertySchemaEnum(property)) {
             if (property.dataType != null) {
                 Optional<Object> importStm = mapper.libraries().get(StringHelper.toSnakeCase(property.dataType).replace("_", "-"));
                 if (importStm.isPresent() && importStm.get() instanceof String && importStm.get().equals("Twilio.Types")) {

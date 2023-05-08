@@ -1,5 +1,6 @@
 package com.twilio.oai.resolver.php;
 
+import com.twilio.oai.CodegenUtils;
 import com.twilio.oai.resolver.IConventionMapper;
 import com.twilio.oai.resolver.LanguageConventionResolver;
 import com.twilio.oai.resolver.LanguageParamResolver;
@@ -37,7 +38,7 @@ public class PhpParameterResolver extends LanguageParamResolver {
             codegenParameter.dataType.equals(LanguageConventionResolver.LIST_OBJECT)) {
             codegenParameter.dataType = ARRAY;
         }
-        if (codegenParameter.dataType.contains("Enum") || codegenParameter.dataType.equals(FLOAT)) {
+        if (CodegenUtils.isParameterSchemaEnum(codegenParameter) || codegenParameter.dataType.equals(FLOAT)) {
             codegenParameter.dataType = STRING;
         }
         if (codegenParameter.dataType.equals(STRING)) {
