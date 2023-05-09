@@ -139,11 +139,11 @@ public abstract class FluentApiResourceBuilder extends ApiResourceBuilder {
             responseModel = firstModel;
 
             allResponseModels.forEach(model -> {
-                codegenModelResolver.resolve(model);
+                codegenModelResolver.resolve(model, this);
 
                 model.setName(resourceName);
                 model.getVars().forEach(variable -> {
-                    codegenPropertyResolver.resolve(variable);
+                    codegenPropertyResolver.resolve(variable, this);
 
                     instancePathParams
                         .stream()

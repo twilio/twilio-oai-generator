@@ -79,7 +79,7 @@ public class CsharpApiResourceBuilder extends ApiResourceBuilder {
     public ApiResourceBuilder updateOperations(Resolver<CodegenParameter> codegenParameterIResolver) { // CsharpParameterResolver
         super.updateOperations(codegenParameterIResolver);
         this.codegenOperationList.forEach(co -> {
-            co.headerParams.forEach(codegenParameterIResolver::resolve);
+            co.headerParams.forEach(e -> codegenParameterIResolver.resolve(e, this));
             populateRequestBodyArgument(co);
         });
 
@@ -145,7 +145,7 @@ public class CsharpApiResourceBuilder extends ApiResourceBuilder {
                 if (responseModel.isEmpty()) {
                     return;
                 }
-                codegenModelResolver.resolve(responseModel.get());
+                codegenModelResolver.resolve(responseModel.get(), this);
                 responseModels.add(responseModel.get());
             });
         });

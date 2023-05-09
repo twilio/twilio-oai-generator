@@ -4,6 +4,7 @@ import com.twilio.oai.resolver.IConventionMapper;
 import com.twilio.oai.resolver.LanguagePropertyResolver;
 import org.openapitools.codegen.CodegenProperty;
 
+
 import static com.twilio.oai.common.ApplicationConstants.DESERIALIZE_VEND_EXT;
 
 public class RubyPropertyResolver extends LanguagePropertyResolver  {

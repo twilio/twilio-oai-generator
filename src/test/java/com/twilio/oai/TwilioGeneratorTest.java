@@ -47,18 +47,30 @@ public class TwilioGeneratorTest {
 
     @Test
     public void launchGenerator() {
-        final CodegenConfigurator configurator = new CodegenConfigurator()
-            .setGeneratorName(generator.getValue())
-            .setInputSpec("examples/spec/twilio_api_v2010.yaml")
-            .setOutputDir("codegen/" + generator.getValue())
-            .setInlineSchemaNameDefaults(Map.of("arrayItemSuffix", ""))
-            .addGlobalProperty("apiTests", "false")
-            .addGlobalProperty("apiDocs", "false");
+        final String pathname = "examples/spec/twilio_api_v2010.yaml";
+        File filesList[] ;
+        File directoryPath = new File(pathname);
+        if (directoryPath.isDirectory()) {
+            filesList = directoryPath.listFiles();
+        } else {
+            filesList = new File[]{directoryPath};
+        }
+        for (File file: filesList) {
+            final CodegenConfigurator configurator = new CodegenConfigurator()
+                    .setGeneratorName(generator.getValue())
+                    .setInputSpec(file.getPath())
+                    .setOutputDir("codegen/" + generator.getValue())
+                    .setInlineSchemaNameDefaults(Map.of("arrayItemSuffix", ""))
+                    .addGlobalProperty("apiTests", "false")
+                    .addGlobalProperty("apiDocs", "false");
+            final ClientOptInput clientOptInput = configurator.toClientOptInput();
+            DefaultGenerator generator = new DefaultGenerator();
+            final List<File> output = generator.opts(clientOptInput).generate();
+            assertFalse(output.isEmpty());
+        }
 
-        final ClientOptInput clientOptInput = configurator.toClientOptInput();
-        DefaultGenerator generator = new DefaultGenerator();
-        final List<File> output = generator.opts(clientOptInput).generate();
 
-        assertFalse(output.isEmpty());
+
+
     }
 }

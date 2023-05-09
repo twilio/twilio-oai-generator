@@ -1,5 +1,6 @@
 package com.twilio.oai.resolver.common;
 
+import com.twilio.oai.api.ApiResourceBuilder;
 import com.twilio.oai.resolver.IConventionMapper;
 import com.twilio.oai.resolver.Resolver;
 
@@ -13,7 +14,7 @@ public class CodegenModelComplexResolver extends Resolver<CodegenProperty> {
     private final IConventionMapper mapper;
     private final Map<String, String> modelFormatMap;
 
-    public CodegenProperty resolve(CodegenProperty property) {
+    public CodegenProperty resolve(CodegenProperty property, ApiResourceBuilder apiResourceBuilder) {
         if (this.modelFormatMap.isEmpty()) {
             return property;
         }

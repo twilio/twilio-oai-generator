@@ -1,5 +1,6 @@
 package com.twilio.oai.resolver;
 
+import com.twilio.oai.api.ApiResourceBuilder;
 import com.twilio.oai.common.ApplicationConstants;
 import org.openapitools.codegen.CodegenParameter;
 import org.openapitools.codegen.CodegenProperty;
@@ -8,7 +9,7 @@ import org.openapitools.codegen.IJsonSchemaValidationProperties;
 import static com.twilio.oai.common.ApplicationConstants.OBJECT;
 
 public abstract class Resolver<T extends IJsonSchemaValidationProperties> {
-    public abstract T resolve(T arg);
+    public abstract T resolve(T arg, ApiResourceBuilder apiResourceBuilder);
 
     protected String getDataType(final CodegenParameter codegenParameter) {
         if (codegenParameter.dataFormat != null) {
