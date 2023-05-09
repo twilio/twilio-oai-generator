@@ -1,5 +1,6 @@
 package com.twilio.oai;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
@@ -69,6 +70,15 @@ public class PathUtils {
             .map(Map.class::cast)
             .map(xTwilio -> xTwilio.get(extensionKey))
             .map(String.class::cast);
+    }
+
+
+    public static Optional<Object> getDependentsTwilioExtension(final Map<String, Object> extensions, final String extensionKey) {
+        return (Optional<Object>) Optional
+                .ofNullable(extensions)
+                .map(ext -> ext.get(TWILIO_EXTENSION_NAME))
+                .map(Map.class::cast)
+                .map(xTwilio -> xTwilio.get(extensionKey));
     }
 
     public static boolean isInstanceOperation(final CodegenOperation operation) {

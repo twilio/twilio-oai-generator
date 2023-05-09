@@ -29,6 +29,7 @@ type TestResponseObject struct {
 	TestObject        *TestResponseObjectTestObject `json:"test_object,omitempty"`
 	TestDateTime      *string                       `json:"test_date_time,omitempty"`
 	TestNumber        *float32                      `json:"test_number,omitempty"`
+	From              *string                       `json:"from,omitempty"`
 	PriceUnit         *string                       `json:"price_unit,omitempty"`
 	TestNumberFloat   *float32                      `json:"test_number_float,omitempty"`
 	TestNumberDecimal *float64                      `json:"test_number_decimal,omitempty"`
@@ -51,6 +52,7 @@ func (response *TestResponseObject) UnmarshalJSON(bytes []byte) (err error) {
 		TestObject                 *TestResponseObjectTestObject           `json:"test_object"`
 		TestDateTime               *string                                 `json:"test_date_time"`
 		TestNumber                 *interface{}                            `json:"test_number"`
+		From                       *string                                 `json:"from"`
 		PriceUnit                  *string                                 `json:"price_unit"`
 		TestNumberFloat            *interface{}                            `json:"test_number_float"`
 		TestNumberDecimal          *float64                                `json:"test_number_decimal"`
@@ -73,6 +75,7 @@ func (response *TestResponseObject) UnmarshalJSON(bytes []byte) (err error) {
 		TestInteger:                raw.TestInteger,
 		TestObject:                 raw.TestObject,
 		TestDateTime:               raw.TestDateTime,
+		From:                       raw.From,
 		PriceUnit:                  raw.PriceUnit,
 		TestNumberDecimal:          raw.TestNumberDecimal,
 		TestEnum:                   raw.TestEnum,

@@ -180,6 +180,11 @@ namespace Twilio.Rest.Api.V2010.Account.Call
         [JsonProperty("test_number")]
         public decimal? TestNumber { get; private set; }
 
+        ///<summary> The from </summary> 
+        [JsonProperty("from")]
+        [JsonConverter(typeof(PhoneNumberConverter))]
+        public Types.PhoneNumber From { get; private set; }
+
         ///<summary> The price_unit </summary> 
         [JsonProperty("price_unit")]
         public string PriceUnit { get; private set; }
