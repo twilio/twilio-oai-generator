@@ -2,7 +2,10 @@ package com.twilio.oai;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
@@ -29,7 +32,7 @@ public class TwilioCodegenAdapter {
     public static final String DEFAULT_CONFIG_TOGGLE_JSON_PATH = CONFIG_PATH + File.separator + "toggles.json";
     private final DefaultCodegen codegen;
     private final String name;
-    private String togglePath;
+    private File toggleFile;
 
     private String originalOutputDir;
 
@@ -49,15 +52,21 @@ public class TwilioCodegenAdapter {
         codegen.additionalProperties().put("apiVersion", version);
         codegen.additionalProperties().put("apiVersionClass", StringHelper.toFirstLetterCaps(version));
 
-        URL resourcePath = Thread.currentThread().getContextClassLoader().getResource(DEFAULT_CONFIG_TOGGLE_JSON_PATH);
-        togglePath = (String)codegen.additionalProperties().getOrDefault("toggles", resourcePath.getPath());
         codegen.supportingFiles().clear();
-
         Arrays.asList("Configuration", "Parameter", "Version").forEach(word -> {
             codegen.reservedWords().remove(word);
             codegen.reservedWords().remove(word.toLowerCase());
         });
-        toggles = getTogglesMap();
+        try {
+            if (codegen.additionalProperties().containsKey("toggles")) {
+                String filePath = (String)codegen.additionalProperties().get("toggles");
+                toggles = new ObjectMapper().readValue(new File(filePath), new TypeReference<>(){});
+            } else {
+                toggles = new ObjectMapper().readValue(Thread.currentThread().getContextClassLoader().getResource(DEFAULT_CONFIG_TOGGLE_JSON_PATH), new TypeReference<>(){});
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void setDomain(final String domain) {
@@ -100,14 +109,5 @@ public class TwilioCodegenAdapter {
 
     private String getInputSpecVersion() {
         return codegen.getInputSpec().replaceAll(INPUT_SPEC_PATTERN, "${version}");
-    }
-
-    private Map<String,Map<String, Boolean>> getTogglesMap() {
-        try {
-            return new ObjectMapper().readValue(new File(togglePath), new TypeReference<>(){});
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return new HashMap<>();
     }
 }
