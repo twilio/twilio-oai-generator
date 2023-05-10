@@ -49,7 +49,7 @@ public class TwilioCodegenAdapter {
         codegen.additionalProperties().put("apiVersion", version);
         codegen.additionalProperties().put("apiVersionClass", StringHelper.toFirstLetterCaps(version));
 
-        URL resourcePath = this.getClass().getClassLoader().getResource(DEFAULT_CONFIG_TOGGLE_JSON_PATH);
+        URL resourcePath = Thread.currentThread().getContextClassLoader().getResource(DEFAULT_CONFIG_TOGGLE_JSON_PATH);
         togglePath = (String)codegen.additionalProperties().getOrDefault("toggles", resourcePath.getPath());
         codegen.supportingFiles().clear();
 
