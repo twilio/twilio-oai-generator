@@ -66,7 +66,7 @@ public class RubyApiResourceBuilder extends FluentApiResourceBuilder {
 
     private void resolveHeaderParams(Resolver<CodegenParameter> codegenParameterIResolver) {
         codegenOperationList.forEach(codegenOperation ->
-                codegenOperation.headerParams.forEach(codegenParameterIResolver::resolve));
+                codegenOperation.headerParams.forEach(e -> codegenParameterIResolver.resolve(e, this)));
     }
 
     private void createReadParams(RubyApiResourceBuilder apiResourceBuilder) {

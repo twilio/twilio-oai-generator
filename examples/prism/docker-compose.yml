@@ -98,3 +98,12 @@ services:
     command: >
       mock -p 80 --host 0.0.0.0
       /tmp/oai.yaml
+
+  prism_messaging:
+    image: stoplight/prism:4.10.3
+    volumes:
+      - ../spec/twilio_messaging_v1.yml:/tmp/oai.yaml
+    hostname: messaging.twilio.com
+    command: >
+      mock -p 80 --host 0.0.0.0
+      /tmp/oai.yaml

@@ -9,6 +9,7 @@ import org.openapitools.codegen.SupportingFile;
 
 public abstract class AbstractApiActionTemplate implements IApiActionTemplate {
     public static final String API_TEMPLATE = "api";
+    public static final String NESTED_MODELS = "nested_models";
     public static final String VERSION_TEMPLATE = "version";
 
     private final Map<String, List<String>> templates = mapping();

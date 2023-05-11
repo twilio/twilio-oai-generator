@@ -271,8 +271,8 @@ public class PhpApiResourceBuilder extends ApiResourceBuilder {
                     .forEach(item -> {
                         item.allVars.stream().filter(var -> var.isModel && var.dataFormat == null).forEach(this::setDataFormatForNestedProperties);
                         item.vars.stream().filter(var -> var.isModel && var.dataFormat == null).forEach(this::setDataFormatForNestedProperties);
-                        item.vars.forEach(codegenPropertyResolver::resolve);
-                        item.allVars.forEach(codegenPropertyResolver::resolve);
+                        item.vars.forEach(e -> codegenPropertyResolver.resolve(e, this));
+                        item.allVars.forEach(e -> codegenPropertyResolver.resolve(e, this));
                         responseModels.add(item);
                     });
             this.apiResponseModels.addAll(getDistinctResponseModel(responseModels));
