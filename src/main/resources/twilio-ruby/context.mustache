@@ -42,7 +42,7 @@
                     def {{mountName}}
                       unless @{{mountName}}
                         @{{mountName}} = {{#lambda.titlecase}}{{#lambda.camelcase}}{{filename}}{{/lambda.camelcase}}{{/lambda.titlecase}}List.new(
-                                @version, {{#metaProperties.mapOfdependents}}{{.}}{{/metaProperties.mapOfdependents}} )
+                                @version, {{dependentProperties}})
                       end
                       @{{mountName}}
                     end
@@ -63,7 +63,7 @@
 
                         unless @{{mountName}}
                             @{{mountName}} = {{#lambda.titlecase}}{{#lambda.camelcase}}{{filename}}{{/lambda.camelcase}}{{/lambda.titlecase}}List.new(
-                                @version, {{#metaProperties.mapOfdependents}}{{.}}{{/metaProperties.mapOfdependents}} )
+                                @version, {{dependentProperties}})
                         end
 
                      @{{mountName}}

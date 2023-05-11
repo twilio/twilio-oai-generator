@@ -9,6 +9,7 @@ import com.twilio.oai.template.IApiActionTemplate;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.Operation;
 import io.swagger.v3.oas.models.PathItem;
+import org.apache.commons.lang3.StringUtils;
 import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenOperation;
 import org.openapitools.codegen.CodegenParameter;
@@ -133,35 +134,46 @@ public class RubyApiResourceBuilder extends FluentApiResourceBuilder {
         });
     }
     private void updateDependentProperties(List<CodegenOperation> opList){
-        Set<String> dependents = new HashSet<>();
         for (CodegenOperation operation : opList) {
-            String depParams = fetchDependentParams(operation);
-            dependents.add(depParams);
+            Map<String, String> dependentsForOperation = mapOperationsDependents(operation);
+            updateContextResourceDependents(dependentsForOperation, metaAPIProperties.get("contextImportMethods"));
+            updateContextResourceDependents(dependentsForOperation, metaAPIProperties.get("contextImportProperties"));
         }
-        metaAPIProperties.put("mapOfdependents", dependents);
-
     }
 
-    private String fetchDependentParams(CodegenOperation operation){
+    private void updateContextResourceDependents(Map<String, String> dependentsForOperation, Object listofContextResourceObjs){
+        List<DirectoryStructureService.ContextResource> listObjs = (List<DirectoryStructureService.ContextResource>) listofContextResourceObjs;
+        if(listObjs != null) {
+            for (DirectoryStructureService.ContextResource cr : listObjs) {
+                System.out.println(cr.getFilename());
+                cr.setDependentProperties(dependentsForOperation.get(cr.getFilename()));
+            }
+        }
+    }
+
+    private Map<String, String> mapOperationsDependents(CodegenOperation operation){
         String dependentParams = "";
         Set<String> seenParams = new HashSet<>();
+        HashMap<String, String> depMap = new HashMap<>();
         if (operation.vendorExtensions.containsKey(ApplicationConstants.DEPENDENT_PROPERTIES)){
             HashMap<String, String> dependentProperties = (HashMap<String, String>) operation.vendorExtensions.get(ApplicationConstants.DEPENDENT_PROPERTIES);
             for(Map.Entry<String, String> propertiesDetails : dependentProperties.entrySet()){
+                String mountName = StringUtils.substringAfterLast(propertiesDetails.getKey(), "/");
+                dependentParams = "";
                 String setOfDependentProperties = propertiesDetails.getValue().substring(1, propertiesDetails.getValue().length()-1);
                 String[] dependentParamPairs = setOfDependentProperties.split(",");
                 for(String paramPair : dependentParamPairs){
-                    String propName = paramPair.split(":")[0];
                     String dependent = paramPair;
-                    if(!seenParams.contains(propName)) {
+                    if(!seenParams.contains(mountName)) {
                         dependent = dependent.replace(": ", ": @solution[:")+"], ";
                         dependentParams += dependent;
+                        depMap.put(mountName, dependentParams);
                     }
-                    seenParams.add(propName);
+                    seenParams.add(mountName);
                     }
                 }
         }
-        return dependentParams;
+        return depMap;
     }
 
     private void createMaturityDescription(List<CodegenOperation> opList) {
