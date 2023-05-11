@@ -1,5 +1,6 @@
 package com.twilio.oai.resolver.common;
 
+import com.twilio.oai.api.ApiResourceBuilder;
 import com.twilio.oai.resolver.IConventionMapper;
 import com.twilio.oai.resolver.Resolver;
 
@@ -22,13 +23,13 @@ public class CodegenModelDataTypeResolver extends Resolver<CodegenProperty> {
         codegenModelComplexResolver = new CodegenModelComplexResolver(mapper, modelFormatMap);
     }
 
-    public CodegenProperty resolve(CodegenProperty property) {
+    public CodegenProperty resolve(CodegenProperty property, ApiResourceBuilder apiResourceBuilder) {
         // Exceptional case, data format does not exist for Object type.
         assignDataTypeObjectForNullDataFormat(property);
         assignDataType(property);
 
         if (property.complexType != null && modelFormatMap.containsKey(property.complexType)) {
-            codegenModelComplexResolver.resolve(property);
+            codegenModelComplexResolver.resolve(property, apiResourceBuilder);
         }
 
         return property;

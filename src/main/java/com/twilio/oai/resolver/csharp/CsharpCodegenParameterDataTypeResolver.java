@@ -1,6 +1,7 @@
 package com.twilio.oai.resolver.csharp;
 
 import com.twilio.oai.StringHelper;
+import com.twilio.oai.api.ApiResourceBuilder;
 import com.twilio.oai.common.ApplicationConstants;
 import com.twilio.oai.common.Utility;
 import com.twilio.oai.resolver.IConventionMapper;
@@ -18,8 +19,8 @@ public class CsharpCodegenParameterDataTypeResolver extends CodegenParameterData
     }
 
     @Override
-    public CodegenParameter resolve(CodegenParameter parameter) {
-        super.resolve(parameter);
+    public CodegenParameter resolve(CodegenParameter parameter, ApiResourceBuilder apiResourceBuilder) {
+        super.resolve(parameter, apiResourceBuilder);
         resolveEnum(parameter);
         csharpSerializer.serialize(parameter);
         return parameter;

@@ -1,5 +1,6 @@
 package com.twilio.oai.resolver.common;
 
+import com.twilio.oai.api.ApiResourceBuilder;
 import com.twilio.oai.common.LanguageDataType;
 import com.twilio.oai.resolver.Resolver;
 import com.twilio.oai.resolver.IConventionMapper;
@@ -26,16 +27,16 @@ public class CodegenModelResolver extends Resolver<CodegenModel> {
     }
 
     @Override
-    public CodegenModel resolve(CodegenModel model) {
+    public CodegenModel resolve(CodegenModel model, ApiResourceBuilder apiResourceBuilder) {
         if (model == null) {
             return null;
         }
 
         for (CodegenProperty property : model.vars) {
             if (property.isContainer) {
-                codegenModelContainerDataTypeResolver.resolve(property);
+                codegenModelContainerDataTypeResolver.resolve(property, apiResourceBuilder);
             } else {
-                codegenModelDataTypeResolver.resolve(property);
+                codegenModelDataTypeResolver.resolve(property, apiResourceBuilder);
             }
         }
 

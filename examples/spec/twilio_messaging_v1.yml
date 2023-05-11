@@ -1,0 +1,446 @@
+openapi: 3.0.3
+info:
+  title: Number Pool Service
+  description: |-
+    This service is an entry point for all Number Pool CRUD requests.
+  version: 1.0.0
+  contact:
+    name: 'Number Pool Service'
+    url: 'https://wiki.hq.twilio.com/display/MSG/Messaging+Services'
+  license:
+    name: 'Proprietary and protected.'
+    url: 'https://www.twilio.com'
+paths:
+  '/v2/NumberPools/{numberPoolSID}':
+    servers:
+      - url: https://messaging.twilio.com
+    get:
+      tags:
+        - NumberPools
+      summary: Gets a Number Pool by ID.
+      description: >
+        Return a specific number pool and it's details
+      operationId: FetchNumberPoolById
+      parameters:
+        - $ref: '#/components/parameters/numberPoolSID'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NumberPoolResponse'
+        '404':
+          description: A Number Pool with the specified ID was not found.
+        '5XX':
+          description: Unexpected error.
+      externalDocs:
+        description: Learn more about user operations provided by this API.
+        url: https://www.twilio.com/docs/nextgen/api/number-pools
+    post:
+      tags:
+        - NumberPools
+      summary: Updates a Number Pool by ID.
+      description: >
+        Updates a Number Pool and it's details
+      operationId: UpdateNumberPoolById
+      parameters:
+        - $ref: '#/components/parameters/numberPoolSID'
+      requestBody:
+        description: The Number Pool to update
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NumberPoolRequest'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NumberPoolResponse'
+        '404':
+          description: A Number Pool with the specified ID was not found.
+        '5XX':
+          description: Unexpected error.
+      externalDocs:
+        description: Learn more about user operations provided by this API.
+        url: https://www.twilio.com/docs/nextgen/api/number-pools
+    delete:
+      tags:
+        - NumberPools
+      summary: Deletes a Number Pool by ID.
+      description: >
+        Deletes a Number Pool and it's details
+      operationId: DeleteNumberPoolById
+      parameters:
+        - $ref: '#/components/parameters/numberPoolSID'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NumberPoolResponse'
+        '404':
+          description: A Number Pool with the specified ID was not found.
+        '5XX':
+          description: Unexpected error.
+      externalDocs:
+        description: Learn more about user operations provided by this API.
+        url: https://www.twilio.com/docs/nextgen/api/number-pools
+  '/v2/NumberPools':
+    servers:
+      - url: https://messaging.twilio.com
+    get:
+      tags:
+        - NumberPools
+      summary: Gets a Page of Number Pool instances.
+      description: >
+        Returns a Page of Number Pool instances with HATEOS style navigation
+      operationId: ListNumberPools
+      parameters:
+        - name: pageToken
+          in: query
+          description: Pagination token
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                properties:
+                  numberpools:
+                    items:
+                      $ref: '#/components/schemas/NumberPoolResponse'
+              examples:
+                example:
+                  $ref: '#/components/examples/NumberPoolResponse.example'
+        '5XX':
+          description: Unexpected error.
+      externalDocs:
+        description: Learn more about user operations provided by this API.
+        url: https://www.twilio.com/docs/nextgen/api/number-pools
+    post:
+      tags:
+        - NumberPools
+      summary: Creates a new Number Pool instances
+      description: >
+        Creates a Number Pool and it's details
+      operationId: CreateNumberPool
+      requestBody:
+        description: The Number Pool to update
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NumberPoolRequest'
+      responses:
+        '201':
+          description: Successful creation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NumberPoolResponse'
+        '404':
+          description: A Number Pool with the specified ID was not found.
+        '5XX':
+          description: Unexpected error.
+      externalDocs:
+        description: Learn more about user operations provided by this API.
+        url: https://www.twilio.com/docs/nextgen/api/number-pools
+  '/v2/UseCases/{useCaseSID}':
+    get:
+      tags:
+        - UseCases
+      summary: Gets a Use Case by ID.
+      description: >
+        Return a specific Use Case and it's details
+      operationId: FetchUseCaseById
+      parameters:
+        - $ref: '#/components/parameters/useCaseSID'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UseCaseResponse'
+        '404':
+          description: A Use Case with the specified ID was not found.
+        '5XX':
+          description: Unexpected error.
+      externalDocs:
+        description: Learn more about user operations provided by this API.
+        url: https://www.twilio.com/docs/nextgen/api/use-cases
+    put:
+      tags:
+        - UseCases
+      summary: Updates a Use Case by ID.
+      description: >
+        Updates a Use Case and it's details
+      operationId: UpdateUseCaseById
+      parameters:
+        - $ref: '#/components/parameters/useCaseSID'
+      requestBody:
+        description: The Use Case to update
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UseCaseRequest'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UseCaseResponse'
+        '404':
+          description: A Use Case with the specified ID was not found.
+        '5XX':
+          description: Unexpected error.
+      externalDocs:
+        description: Learn more about user operations provided by this API.
+        url: https://www.twilio.com/docs/nextgen/api/use-cases
+    delete:
+      tags:
+        - UseCases
+      summary: Deletes a Use Case by ID.
+      description: >
+        Deletes a Use Case and it's details
+      operationId: DeleteUseCaseById
+      parameters:
+        - $ref: '#/components/parameters/useCaseSID'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UseCaseResponse'
+        '404':
+          description: A Use Case with the specified ID was not found.
+        '5XX':
+          description: Unexpected error.
+      externalDocs:
+        description: Learn more about user operations provided by this API.
+        url: https://www.twilio.com/docs/nextgen/api/use-cases
+  '/v2/UseCases':
+    get:
+      tags:
+        - UseCases
+      summary: Gets a Page of Use Case instances.
+      description: >
+        Returns a Page of Use Case instances with HATEOS style navigation
+      operationId: ListUseCases
+      parameters:
+        - name: pageToken
+          in: query
+          description: Pagination token
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UseCasePage'
+        '5XX':
+          description: Unexpected error.
+      externalDocs:
+        description: Learn more about user operations provided by this API.
+        url: https://www.twilio.com/docs/nextgen/api/use-cases
+    post:
+      tags:
+        - UseCases
+      summary: Creates a new Use Case instance
+      description: >
+        Creates a Use Case and it's details
+      operationId: CreateUseCase
+      requestBody:
+        description: The Use Case to update
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UseCaseRequest'
+      responses:
+        '201':
+          description: Successful creation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UseCaseResponse'
+        '404':
+          description: A Use Case with the specified ID was not found.
+        '5XX':
+          description: Unexpected error.
+      externalDocs:
+        description: Learn more about user operations provided by this API.
+        url: https://www.twilio.com/docs/nextgen/api/use-cases
+
+components:
+  schemas:
+    NumberPoolRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        senders:
+          type: array
+          items:
+            type: string
+        callback_url:
+          type: string
+
+      required:
+        - name
+    NumberPoolResponse:
+      allOf: # Combines the body properties, and adds the id property in the response
+        - type: object
+          properties:
+            id:
+              type: string
+        - $ref: '#/components/schemas/NumberPoolRequest'
+
+      required:
+        - id
+        - name
+    NumberPoolPage:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/NumberPoolResponse'
+        metadata:
+          $ref: '#/components/schemas/Metadata'
+      required:
+        - items
+        - metadata
+    Metadata:
+      type: object
+      properties:
+        key:
+          type: string
+        next:
+          type: string
+        previous:
+          type: string
+        self:
+          type: string
+    UseCaseRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        intent:
+          type: string
+        pipeline:
+          type: array
+          items:
+            oneOf:
+              - $ref: '#/components/schemas/NumberSelection'
+              - $ref: '#/components/schemas/LinkShortener'
+              - $ref: '#/components/schemas/Scheduler'
+            discriminator:
+              propertyName: type
+
+      required:
+        - name
+        - intent
+    UseCaseResponse:
+      allOf: # Combines the body properties, and adds the id property in the response
+        - type: object
+          properties:
+            id:
+              type: string
+        - $ref: '#/components/schemas/UseCaseRequest'
+      required:
+        - id
+        - name
+        - intent
+    NumberSelection:
+      type: object
+      properties:
+        type:
+          type: string
+        geoMatch:
+          type: boolean
+        stickySender:
+          type: boolean
+
+      required:
+        - type
+        - geoMatch
+        - stickySender
+    LinkShortener:
+      type: object
+      properties:
+        type:
+          type: string
+        orgDomain:
+          type: string
+
+      required:
+        - type
+        - orgDomain
+    Scheduler:
+      type: object
+      properties:
+        enabled:
+          type: boolean
+
+      required:
+        - type
+        - enabled
+    UseCasePage:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/UseCaseResponse'
+        metadata:
+          $ref: '#/components/schemas/Metadata'
+      required:
+        - items
+        - metadata
+
+  examples:
+    NumberPoolResponse.example:
+      value:
+        meta:
+          url: "http://localhost:8000/v2/NumberPools/"
+          next_page_url: "http://localhost:8000/v2/NumberPools/"
+          previous_page_url: "http://localhost:8000/v2/NumberPools/"
+          first_page_url: "http://localhost:8000/v2/NumberPools/"
+          page_size: 5
+        numberPools:
+          - id: "123"
+            name: "Number"
+            sender: ["math01"]
+            callback_url: "math.twilio.com/123"
+
+  parameters:
+    numberPoolSID:
+      name: numberPoolSID
+      in: path
+      description: Number Pool ID
+      required: true
+      schema:
+        type: string
+    useCaseSID:
+      name: useCaseSID
+      in: path
+      description: Use Case ID
+      required: true
+      schema:
+        type: string

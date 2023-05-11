@@ -1,5 +1,6 @@
 package com.twilio.oai.resolver.common;
 
+import com.twilio.oai.api.ApiResourceBuilder;
 import com.twilio.oai.common.ApplicationConstants;
 import com.twilio.oai.common.LanguageDataType;
 import com.twilio.oai.resolver.Resolver;
@@ -14,9 +15,9 @@ public class CodegenParameterContainerDataTypeResolver extends Resolver<CodegenP
     private final CodegenParameterDataTypeResolver codegenParameterDataTypeResolver;
     private final List<? extends LanguageDataType> languageDataTypes;
 
-    public CodegenParameter resolve(CodegenParameter parameter) {
+    public CodegenParameter resolve(CodegenParameter parameter, ApiResourceBuilder apiResourceBuilder) {
         String unwrappedContainer = unwrapContainerType(parameter);
-        codegenParameterDataTypeResolver.resolve(parameter);
+        codegenParameterDataTypeResolver.resolve(parameter, apiResourceBuilder);
         rewrapContainerType(parameter, unwrappedContainer);
         return parameter;
     }

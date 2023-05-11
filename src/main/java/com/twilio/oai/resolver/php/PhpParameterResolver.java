@@ -1,10 +1,14 @@
 package com.twilio.oai.resolver.php;
 
+import com.twilio.oai.api.ApiResourceBuilder;
 import com.twilio.oai.resolver.IConventionMapper;
 import com.twilio.oai.resolver.LanguageConventionResolver;
 import com.twilio.oai.resolver.LanguageParamResolver;
 
+import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenParameter;
+
+import java.util.List;
 
 import static com.twilio.oai.common.ApplicationConstants.ARRAY;
 import static com.twilio.oai.common.ApplicationConstants.OBJECT;
@@ -23,8 +27,8 @@ public class PhpParameterResolver extends LanguageParamResolver {
     }
 
     @Override
-    public void resolveProperties(CodegenParameter codegenParameter) {
-        super.resolveProperties(codegenParameter);
+    public void resolveProperties(CodegenParameter codegenParameter, ApiResourceBuilder apiResourceBuilder) {
+        super.resolveProperties(codegenParameter, apiResourceBuilder);
         if (codegenParameter.dataType.equalsIgnoreCase(LanguageConventionResolver.MIXED)) {
             codegenParameter.dataType = ARRAY;
             codegenParameter.isArray = true;
