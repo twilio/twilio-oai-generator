@@ -16,6 +16,8 @@ import org.openapitools.codegen.CodegenParameter;
 import org.openapitools.codegen.CodegenProperty;
 
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
@@ -145,8 +147,9 @@ public class RubyApiResourceBuilder extends FluentApiResourceBuilder {
         List<DirectoryStructureService.ContextResource> listObjs = (List<DirectoryStructureService.ContextResource>) listofContextResourceObjs;
         if(listObjs != null) {
             for (DirectoryStructureService.ContextResource cr : listObjs) {
-                System.out.println(cr.getFilename());
-                cr.setDependentProperties(dependentsForOperation.get(cr.getFilename()));
+                 String value = (dependentsForOperation.containsKey(cr.getFilename())) ? dependentsForOperation.get(cr.getFilename())
+                        : dependentsForOperation.get(cr.getMountName());
+                cr.setDependentProperties(value);
             }
         }
     }
@@ -160,17 +163,18 @@ public class RubyApiResourceBuilder extends FluentApiResourceBuilder {
             for(Map.Entry<String, String> propertiesDetails : dependentProperties.entrySet()){
                 String mountName = StringUtils.substringAfterLast(propertiesDetails.getKey(), "/");
                 dependentParams = "";
-                String setOfDependentProperties = propertiesDetails.getValue().substring(1, propertiesDetails.getValue().length()-1);
-                String[] dependentParamPairs = setOfDependentProperties.split(",");
-                for(String paramPair : dependentParamPairs){
-                    String dependent = paramPair;
-                    if(!seenParams.contains(mountName)) {
+                String valuePairs = propertiesDetails.getValue().substring(1, propertiesDetails.getValue().length()-1);
+                String[] dependentParamPairs = valuePairs.split(",");
+                if(!seenParams.contains(mountName)) {
+                    for(String paramPair : dependentParamPairs){
+                        String dependent = paramPair;
+
                         dependent = dependent.replace(": ", ": @solution[:")+"], ";
                         dependentParams += dependent;
                         depMap.put(mountName, dependentParams);
+                        }
                     }
-                    seenParams.add(mountName);
-                    }
+                seenParams.add(mountName);
                 }
         }
         return depMap;

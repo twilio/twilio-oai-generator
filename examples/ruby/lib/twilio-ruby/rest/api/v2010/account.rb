@@ -253,7 +253,7 @@ module Twilio
 
             unless @calls
               @calls = CallList.new(
-                @version, account_sid: @solution[:sid],
+                @version,
               )
             end
 
