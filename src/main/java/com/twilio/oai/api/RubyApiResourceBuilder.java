@@ -161,7 +161,7 @@ public class RubyApiResourceBuilder extends FluentApiResourceBuilder {
         if (operation.vendorExtensions.containsKey(ApplicationConstants.DEPENDENT_PROPERTIES)){
             HashMap<String, String> dependentProperties = (HashMap<String, String>) operation.vendorExtensions.get(ApplicationConstants.DEPENDENT_PROPERTIES);
             for(Map.Entry<String, String> propertiesDetails : dependentProperties.entrySet()){
-                String mountName = StringUtils.substringAfterLast(propertiesDetails.getKey(), "/");
+                String mountName = propertiesDetails.getKey();
                 dependentParams = "";
                 String valuePairs = propertiesDetails.getValue().substring(1, propertiesDetails.getValue().length()-1);
                 String[] dependentParamPairs = valuePairs.split(",");
