@@ -25,14 +25,14 @@ import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.PathItem;
 import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenOperation;
-import org.openapitools.codegen.languages.AbstractPythonCodegen;
+import org.openapitools.codegen.languages.PythonLegacyClientCodegen;
 import org.openapitools.codegen.model.ModelMap;
 import org.openapitools.codegen.model.ModelsMap;
 import org.openapitools.codegen.model.OperationsMap;
 
 import static com.twilio.oai.common.ApplicationConstants.CONFIG_PYTHON_JSON_PATH;
 
-public class TwilioPythonGenerator extends AbstractPythonCodegen {
+public class TwilioPythonGenerator extends PythonLegacyClientCodegen {
     private final TwilioCodegenAdapter twilioCodegen;
     private final PythonApiActionTemplate actionTemplate = new PythonApiActionTemplate(this);
     private final IResourceTree resourceTree = new ResourceMap(new Inflector());
