@@ -18,7 +18,6 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import static com.twilio.oai.common.ApplicationConstants.*;
-import static com.twilio.oai.template.AbstractApiActionTemplate.NESTED_MODELS;
 import static com.twilio.oai.template.JavaApiActionTemplate.API_TEMPLATE;
 
 public class JavaApiResourceBuilder extends ApiResourceBuilder{
@@ -30,18 +29,10 @@ public class JavaApiResourceBuilder extends ApiResourceBuilder{
     private Set<CodegenModel> headerParamModelList;
 
     private final JavaConventionResolver conventionResolver;
-    public JavaApiResourceBuilder(IApiActionTemplate template, List<CodegenOperation> codegenOperations,
-                                  List<CodegenModel> allModels) {
+    public JavaApiResourceBuilder(IApiActionTemplate template, List<CodegenOperation> codegenOperations, List<CodegenModel> allModels) {
         super(template, codegenOperations, allModels);
         this.conventionResolver = new JavaConventionResolver();
     }
-
-    public JavaApiResourceBuilder(IApiActionTemplate apiActionTemplate, List<CodegenOperation> opList,
-                                  List<CodegenModel> allModels, Map<String, Boolean> toggleMap) {
-        this(apiActionTemplate, opList, allModels);
-        this.toggleMap = toggleMap;
-    }
-
     @Override
     public IApiResourceBuilder updateTemplate() {
         template.clean();
@@ -67,40 +58,40 @@ public class JavaApiResourceBuilder extends ApiResourceBuilder{
             String resourceName = filePathArray.remove(filePathArray.size()-1);
 
             co.allParams = co.allParams.stream()
-                    .map(item -> codegenParameterIResolver.resolve(item, this))
+                    .map(codegenParameterIResolver::resolve)
                     .map(item -> conventionResolver.resolveEnumParameter(item, resourceName))
                     .collect(Collectors.toList());
             co.allParams.forEach(this::updateHeaderParamsList);
             co.pathParams = co.pathParams.stream()
-                    .map(item -> codegenParameterIResolver.resolve(item, this))
+                    .map(codegenParameterIResolver::resolve)
                     .map(item -> conventionResolver.resolveEnumParameter(item, resourceName))
                     .collect(Collectors.toList());
             co.pathParams.stream().
-                map(item -> codegenParameterIResolver.resolve(item, this))
+                map(codegenParameterIResolver::resolve)
                 .map(item -> conventionResolver.resolveEnumParameter(item, resourceName))
                 .forEach(param -> param.paramName = "path"+param.paramName);
             co.queryParams = co.queryParams.stream()
-                    .map(item -> codegenParameterIResolver.resolve(item, this))
+                    .map(codegenParameterIResolver::resolve)
                     .map(item -> conventionResolver.resolveEnumParameter(item, resourceName))
                     .collect(Collectors.toList());
             co.queryParams = preProcessQueryParameters(co);
             co.formParams = co.formParams.stream()
-                    .map(item -> codegenParameterIResolver.resolve(item, this))
+                    .map(codegenParameterIResolver::resolve)
                     .map(item -> conventionResolver.resolveEnumParameter(item, resourceName))
                     .collect(Collectors.toList());
             processDataTypesForParams(co.formParams);
             co.headerParams = co.headerParams.stream()
-                    .map(item -> codegenParameterIResolver.resolve(item, this))
+                    .map(codegenParameterIResolver::resolve)
                     .map(item -> conventionResolver.resolveEnumParameter(item, resourceName))
                     .collect(Collectors.toList());
             co.optionalParams = co.optionalParams
                     .stream()
-                    .map(item -> codegenParameterIResolver.resolve(item, this))
+                    .map(codegenParameterIResolver::resolve)
                     .map(item -> conventionResolver.resolveEnumParameter(item, resourceName))
                     .collect(Collectors.toList());
             co.requiredParams = co.requiredParams
                     .stream()
-                    .map(item -> codegenParameterIResolver.resolve(item, this))
+                    .map(codegenParameterIResolver::resolve)
                     .map(item -> conventionResolver.resolveEnumParameter(item, resourceName))
                     .collect(Collectors.toList());
             co.hasParams = !co.allParams.isEmpty();
@@ -141,8 +132,8 @@ public class JavaApiResourceBuilder extends ApiResourceBuilder{
                     .map(modelName -> getModel(modelName, co))
                     .flatMap(Optional::stream)
                     .forEach(item -> {
-                        codegenModelResolver.resolve(item, this);
-                        item.vars.forEach(e -> codegenPropertyIResolver.resolve(e, this));
+                        codegenModelResolver.resolve(item);
+                        item.vars.forEach(codegenPropertyIResolver::resolve);
                         responseModels.add(processEnumProperty(item, co, resourceName));
                         responseModels.addAll(headerParamModelList);
                         this.serialVersionUID = calculateSerialVersionUid(item.vars);
@@ -150,15 +141,6 @@ public class JavaApiResourceBuilder extends ApiResourceBuilder{
         });
         this.apiResponseModels = getDistinctResponseModel(responseModels);
         this.responseModel = getConcatenatedResponseModel(responseModels);
-        return this;
-    }
-
-    @Override
-    public ApiResourceBuilder updateModel(Resolver<CodegenModel> codegenModelResolver) {
-        super.updateModel(codegenModelResolver);
-        if (nestedModels.size() >= 1) {
-            template.add(NESTED_MODELS);
-        }
         return this;
     }
 
@@ -358,8 +340,21 @@ public class JavaApiResourceBuilder extends ApiResourceBuilder{
             }
         }
         conditionalCodegenParam = Lists.cartesianProduct(conditionalCodegenParam);
-        ArrayList<List<CodegenParameter>> signatureList = new ArrayList<>();
+        List<List<CodegenParameter>> filteredConditionalCodegenParam = new ArrayList<>();
+        //Remove duplicates from signatureList
+        ArrayList<List<String>> signatureHashSet = new ArrayList<>();
         for(List<CodegenParameter> paramList : conditionalCodegenParam){
+            List<String> hash = new ArrayList<>();
+            for(CodegenParameter param : paramList){
+                hash.add(param.dataType);
+            }
+            if(!signatureHashSet.contains(hash)){
+                filteredConditionalCodegenParam.add(paramList);
+                signatureHashSet.add(hash);
+            }
+        }
+        ArrayList<List<CodegenParameter>> signatureList = new ArrayList<>();
+        for(List<CodegenParameter> paramList : filteredConditionalCodegenParam){
             signatureList.add(addAllToList(co.requiredParams, paramList));
             if( accountSidParam != null) {
                 signatureList.add(addAllToList(List.of(accountSidParam), co.requiredParams, paramList));
