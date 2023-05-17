@@ -358,8 +358,21 @@ public class JavaApiResourceBuilder extends ApiResourceBuilder{
             }
         }
         conditionalCodegenParam = Lists.cartesianProduct(conditionalCodegenParam);
-        ArrayList<List<CodegenParameter>> signatureList = new ArrayList<>();
+        List<List<CodegenParameter>> filteredConditionalCodegenParam = new ArrayList<>();
+        //Remove duplicates from signatureList
+        ArrayList<List<String>> signatureHashSet = new ArrayList<>();
         for(List<CodegenParameter> paramList : conditionalCodegenParam){
+            List<String> hash = new ArrayList<>();
+            for(CodegenParameter param : paramList){
+                hash.add(param.dataType);
+            }
+            if(!signatureHashSet.contains(hash)){
+                filteredConditionalCodegenParam.add(paramList);
+                signatureHashSet.add(hash);
+            }
+        }
+        ArrayList<List<CodegenParameter>> signatureList = new ArrayList<>();
+        for(List<CodegenParameter> paramList : filteredConditionalCodegenParam){
             signatureList.add(addAllToList(co.requiredParams, paramList));
             if( accountSidParam != null) {
                 signatureList.add(addAllToList(List.of(accountSidParam), co.requiredParams, paramList));
