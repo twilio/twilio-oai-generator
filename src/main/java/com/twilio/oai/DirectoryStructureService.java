@@ -67,6 +67,7 @@ public class DirectoryStructureService {
         private String filename;
         private String mountName;
         private String parent;
+        private String dependentProperties;
     }
 
     public void configure(final OpenAPI openAPI) {
