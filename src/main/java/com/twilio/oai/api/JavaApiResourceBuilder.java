@@ -362,10 +362,7 @@ public class JavaApiResourceBuilder extends ApiResourceBuilder{
         //Remove duplicates from signatureList
         HashSet<List<String>> signatureHashSet = new HashSet<>();
         for(List<CodegenParameter> paramList : conditionalCodegenParam){
-            List<String> orderedParamList = new ArrayList<>();
-            for(CodegenParameter param : paramList){
-                orderedParamList.add(param.dataType);
-            }
+            List<String> orderedParamList = paramList.stream().map(p -> p.dataType).collect(Collectors.toList());
             if(!signatureHashSet.contains(orderedParamList)){
                 filteredConditionalCodegenParam.add(paramList);
                 signatureHashSet.add(orderedParamList);
