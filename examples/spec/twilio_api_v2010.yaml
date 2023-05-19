@@ -101,6 +101,183 @@ components:
           nullable: true
           type: array
       type: object
+    message_enum_content_retention:
+      type: string
+      enum:
+        - retain
+    message_enum_status:
+      type: string
+      enum:
+        - queued
+        - sending
+        - sent
+        - failed
+        - delivered
+        - undelivered
+        - receiving
+        - received
+        - accepted
+        - scheduled
+        - read
+        - partially_delivered
+        - canceled
+    api.v2010.account.message:
+      type: object
+      properties:
+        body:
+          type: string
+          nullable: true
+          description: The message text. Can be up to 1,600 characters long.
+        num_segments:
+          type: string
+          nullable: true
+          description: 'The number of segments that make up the complete message.
+            A message body that is too large to be sent in a single SMS message is
+            segmented and charged as multiple messages. Inbound messages over 160
+            characters are reassembled when the message is received. Note: When using
+            a Messaging Service to send messages, `num_segments` will always be 0
+            in Twilio''s response to your API request.'
+        direction:
+          type: string
+          $ref: '#/components/schemas/message_enum_direction'
+          nullable: true
+          description: 'The direction of the message. Can be: `inbound` for incoming
+            messages, `outbound-api` for messages initiated by a REST API, `outbound-call`
+            for messages initiated during a call, or `outbound-reply` for messages
+            initiated in response to an incoming message.'
+        from:
+          type: string
+          format: phone-number
+          nullable: true
+          description: The phone number (in [E.164](https://en.wikipedia.org/wiki/E.164)
+            format), [alphanumeric sender ID](https://www.twilio.com/docs/sms/send-messages#use-an-alphanumeric-sender-id),
+            or [Wireless SIM](https://www.twilio.com/docs/wireless/tutorials/communications-guides/how-to-send-and-receive-text-messages)
+            that initiated the message. For incoming messages, this will be the number
+            of the sending phone. For outgoing messages, this value will be one of
+            your Twilio phone numbers or the alphanumeric sender ID used.
+        to:
+          type: string
+          nullable: true
+          description: The phone number in [E.164](https://en.wikipedia.org/wiki/E.164)
+            format that received the message. For incoming messages, this will be
+            one of your Twilio phone numbers. For outgoing messages, this will be
+            the sending phone.
+        date_updated:
+          type: string
+          format: date-time-rfc-2822
+          nullable: true
+          description: The date and time in GMT that the resource was last updated
+            specified in [RFC 2822](https://www.ietf.org/rfc/rfc2822.txt) format.
+        price:
+          type: string
+          nullable: true
+          description: The amount billed for the message, in the currency specified
+            by `price_unit`.  Note that your account is charged for each segment we
+            send to the handset. Populated after the message has been sent. May not
+            be immediately available.
+        error_message:
+          type: string
+          nullable: true
+          description: The description of the `error_code` if your message `status`
+            is `failed` or `undelivered`. If the message was successful, this value
+            is null.
+        uri:
+          type: string
+          nullable: true
+          description: The URI of the resource, relative to `https://api.twilio.com`.
+        account_sid:
+          type: string
+          minLength: 34
+          maxLength: 34
+          pattern: ^AC[0-9a-fA-F]{32}$
+          nullable: true
+          description: The SID of the [Account](https://www.twilio.com/docs/iam/api/account)
+            that sent the message that created the resource.
+        num_media:
+          type: string
+          nullable: true
+          description: The number of media files associated with the message. A message
+            can send up to 10 media files.
+        status:
+          type: string
+          $ref: '#/components/schemas/message_enum_status'
+          nullable: true
+          description: 'The status of the message. Can be: `accepted`, `scheduled`,
+            `canceled`, `queued`, `sending`, `sent`, `failed`, `delivered`, `undelivered`,
+            `receiving`, `received`, or `read` (WhatsApp only). For more information,
+            See [detailed descriptions](https://www.twilio.com/docs/sms/api/message-resource#message-status-values).'
+        messaging_service_sid:
+          type: string
+          minLength: 34
+          maxLength: 34
+          pattern: ^MG[0-9a-fA-F]{32}$
+          nullable: true
+          description: The SID of the [Messaging Service](https://www.twilio.com/docs/sms/services/api)
+            used with the message. The value is null if a Messaging Service was not
+            used.
+        sid:
+          type: string
+          minLength: 34
+          maxLength: 34
+          pattern: ^(SM|MM)[0-9a-fA-F]{32}$
+          nullable: true
+          description: The unique string that that we created to identify the Message
+            resource.
+        date_sent:
+          type: string
+          format: date-time-rfc-2822
+          nullable: true
+          description: 'The date and time in GMT that the resource was sent specified
+            in [RFC 2822](https://www.ietf.org/rfc/rfc2822.txt) format. For outgoing
+            messages, this is when we sent the message. For incoming messages, this
+            is when we made the HTTP request to your application. '
+        date_created:
+          type: string
+          format: date-time-rfc-2822
+          nullable: true
+          description: The date and time in GMT that the resource was created specified
+            in [RFC 2822](https://www.ietf.org/rfc/rfc2822.txt) format.
+        error_code:
+          type: integer
+          nullable: true
+          description: The error code returned if your message `status` is `failed`
+            or `undelivered`. The error_code provides more information about the failure.
+            If the message was successful, this value is null.
+        price_unit:
+          type: string
+          format: currency
+          nullable: true
+          description: The currency in which `price` is measured, in [ISO 4127](https://www.iso.org/iso/home/standards/currency_codes.htm)
+            format (e.g. `usd`, `eur`, `jpy`).
+        api_version:
+          type: string
+          nullable: true
+          description: The API version used to process the message.
+        subresource_uris:
+          type: object
+          format: uri-map
+          nullable: true
+          description: A list of related resources identified by their URIs relative
+            to `https://api.twilio.com`
+        tags:
+          nullable: true
+          description: A string containing a JSON map of key value pairs of tags to
+            be recorded as metadata for the message.
+    message_enum_address_retention:
+      type: string
+      enum:
+        - retain
+    message_enum_direction:
+      type: string
+      enum:
+        - inbound
+        - outbound-api
+        - outbound-call
+        - outbound-reply
+    message_enum_schedule_type:
+      type: string
+      enum:
+        - fixed
   examples:
     test.response_object.example:
       value:
@@ -544,3 +721,380 @@ paths:
       mountName: feedback_call_summary
       parent: /Accounts/{AccountSid}/Calls/{TestInteger}.json
       pathType: instance
+  /2010-04-01/Accounts/{AccountSid}/Messages.json:
+    servers:
+      - url: https://api.twilio.com
+    description: A Message resource represents an inbound or outbound message.
+    x-twilio:
+      defaultOutputProperties:
+        - sid
+        - from
+        - to
+        - status
+        - direction
+        - date_sent
+      pathType: list
+      dependentProperties:
+        api/v2010/media: '{account_sid: account_sid, message_sid: sid}'
+        api/v2010/message_feedback: '{account_sid: account_sid, message_sid: sid}'
+      parent: /Accounts/{Sid}.json
+    post:
+      description: Send a message from the account used to make the request
+      parameters:
+        - name: AccountSid
+          in: path
+          description: The SID of the [Account](https://www.twilio.com/docs/iam/api/account)
+            that will create the resource.
+          schema:
+            type: string
+            minLength: 34
+            maxLength: 34
+            pattern: ^AC[0-9a-fA-F]{32}$
+          required: true
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/api.v2010.account.message'
+          description: Created
+      security:
+        - accountSid_authToken: [ ]
+      operationId: CreateMessage
+      x-maturity:
+        - GA
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              title: CreateMessageRequest
+              properties:
+                To:
+                  type: string
+                  format: phone-number
+                  description: The destination phone number in [E.164](https://www.twilio.com/docs/glossary/what-e164)
+                    format for SMS/MMS or [Channel user address](https://www.twilio.com/docs/sms/channels#channel-addresses)
+                    for other 3rd-party channels.
+                StatusCallback:
+                  type: string
+                  format: uri
+                  description: 'The URL we should call using the `status_callback_method`
+                    to send status information to your application. If specified,
+                    we POST these message status changes to the URL: `queued`, `failed`,
+                    `sent`, `delivered`, or `undelivered`. Twilio will POST its [standard
+                    request parameters](https://www.twilio.com/docs/sms/twiml#request-parameters)
+                    as well as some additional parameters including `MessageSid`,
+                    `MessageStatus`, and `ErrorCode`. If you include this parameter
+                    with the `messaging_service_sid`, we use this URL instead of the
+                    Status Callback URL of the [Messaging Service](https://www.twilio.com/docs/sms/services/api).
+                    URLs must contain a valid hostname and underscores are not allowed.'
+                ApplicationSid:
+                  type: string
+                  minLength: 34
+                  maxLength: 34
+                  pattern: ^AP[0-9a-fA-F]{32}$
+                  description: The SID of the application that should receive message
+                    status. We POST a `message_sid` parameter and a `message_status`
+                    parameter with a value of `sent` or `failed` to the [application](https://www.twilio.com/docs/usage/api/applications)'s
+                    `message_status_callback`. If a `status_callback` parameter is
+                    also passed, it will be ignored and the application's `message_status_callback`
+                    parameter will be used.
+                MaxPrice:
+                  type: number
+                  description: The maximum total price in US dollars that you will
+                    pay for the message to be delivered. Can be a decimal value that
+                    has up to 4 decimal places. All messages are queued for delivery
+                    and the message cost is checked before the message is sent. If
+                    the cost exceeds `max_price`, the message will fail and a status
+                    of `Failed` is sent to the status callback. If `MaxPrice` is not
+                    set, the message cost is not checked.
+                ProvideFeedback:
+                  type: boolean
+                  description: Whether to confirm delivery of the message. Set this
+                    value to `true` if you are sending messages that have a trackable
+                    user action and you intend to confirm delivery of the message
+                    using the [Message Feedback API](https://www.twilio.com/docs/sms/api/message-feedback-resource).
+                    This parameter is `false` by default.
+                Attempt:
+                  type: integer
+                  description: Total number of attempts made ( including this ) to
+                    send out the message regardless of the provider used
+                ValidityPeriod:
+                  type: integer
+                  description: How long in seconds the message can remain in our outgoing
+                    message queue. After this period elapses, the message fails and
+                    we call your status callback. Can be between 1 and the default
+                    value of 14,400 seconds. After a message has been accepted by
+                    a carrier, however, we cannot guarantee that the message will
+                    not be queued after this period. We recommend that this value
+                    be at least 5 seconds.
+                MaxRate:
+                  type: string
+                  description: ''
+                ForceDelivery:
+                  type: boolean
+                  description: Reserved
+                ProviderSid:
+                  type: string
+                  minLength: 34
+                  maxLength: 34
+                  pattern: ^OT[0-9a-fA-F]{32}$
+                  description: ''
+                ContentRetention:
+                  type: string
+                  $ref: '#/components/schemas/message_enum_content_retention'
+                  description: Determines if the message content can be stored or
+                    redacted based on privacy settings
+                AddressRetention:
+                  type: string
+                  $ref: '#/components/schemas/message_enum_address_retention'
+                  description: Determines if the address can be stored or obfuscated
+                    based on privacy settings
+                SmartEncoded:
+                  type: boolean
+                  description: 'Whether to detect Unicode characters that have a similar
+                    GSM-7 character and replace them. Can be: `true` or `false`.'
+                PersistentAction:
+                  type: array
+                  items:
+                    type: string
+                  description: Rich actions for Channels Messages.
+                InteractiveData:
+                  type: string
+                  description: ''
+                ForceOptIn:
+                  type: boolean
+                  description: ''
+                ShortenUrls:
+                  type: boolean
+                  description: Determines the usage of Click Tracking. Setting it
+                    to `true` will instruct Twilio to replace all links in the Message
+                    with a shortened version based on the associated Domain Sid and
+                    track clicks on them. If this parameter is not set on an API call,
+                    we will use the value set on the Messaging Service. If this parameter
+                    is not set and the value is not configured on the Messaging Service
+                    used this will default to `false`.
+                DomainSid:
+                  type: string
+                  minLength: 34
+                  maxLength: 34
+                  pattern: ^DN[0-9a-fA-F]{32}$
+                  description: Sets the Domain object used to shorten links with Click
+                    Tracking. Links in the message body will be replaced with shortened
+                    links on the specified domain. This parameter will override what
+                    is configured on the Messaging Service used. If this parameter
+                    is not set and the value is not set on the Messaging Service then
+                    shortening cannot be used.
+                ClickTrackingCallback:
+                  type: string
+                  format: uri
+                  description: Sets the URL where Twilio will send a POST request
+                    each time an HTTP request is received to the shortened links in
+                    this message. If you include this parameter we will override what
+                    is configured on the Messaging Service. URLs must contain a valid
+                    hostname and underscores are not allowed.
+                ScheduleType:
+                  type: string
+                  $ref: '#/components/schemas/message_enum_schedule_type'
+                  description: Indicates your intent to schedule a message. Pass the
+                    value `fixed` to schedule a message at a fixed time.
+                SendAt:
+                  type: string
+                  format: date-time
+                  description: The time that Twilio will send the message. Must be
+                    in ISO 8601 format.
+                InvoiceTag:
+                  type: string
+                  description: ''
+                SendAsMms:
+                  type: boolean
+                  description: If set to True, Twilio will deliver the message as
+                    a single MMS message, regardless of the presence of media.
+                ContentVariables:
+                  type: string
+                  description: Key-value pairs of variable names to substitution values,
+                    used alongside a content_sid. If not specified, Content API will
+                    default to the default variables defined at create time.
+                MessageIntent:
+                  type: string
+                  description: ''
+                Tags:
+                  description: A string containing a JSON map of key value pairs of
+                    tags to be recorded as metadata for the message. The object may
+                    contain up to 10 tags. Keys and values can each be up to 128 characters
+                    in length.
+                From:
+                  type: string
+                  format: phone-number
+                  description: A Twilio phone number in [E.164](https://www.twilio.com/docs/glossary/what-e164)
+                    format, an [alphanumeric sender ID](https://www.twilio.com/docs/sms/send-messages#use-an-alphanumeric-sender-id),
+                    or a [Channel Endpoint address](https://www.twilio.com/docs/sms/channels#channel-addresses)
+                    that is enabled for the type of message you want to send. Phone
+                    numbers or [short codes](https://www.twilio.com/docs/sms/api/short-code)
+                    purchased from Twilio also work here. You cannot, for example,
+                    spoof messages from a private cell phone number. If you are using
+                    `messaging_service_sid`, this parameter must be empty.
+                MessagingServiceSid:
+                  type: string
+                  minLength: 34
+                  maxLength: 34
+                  pattern: ^MG[0-9a-fA-F]{32}$
+                  description: The SID of the [Messaging Service](https://www.twilio.com/docs/sms/services#send-a-message-with-copilot)
+                    you want to associate with the Message. Set this parameter to
+                    use the [Messaging Service Settings and Copilot Features](https://www.twilio.com/console/sms/services)
+                    you have configured and leave the `from` parameter empty. When
+                    only this parameter is set, Twilio will use your enabled Copilot
+                    Features to select the `from` phone number for delivery.
+                Body:
+                  type: string
+                  description: The text of the message you want to send. Can be up
+                    to 1,600 characters in length.
+                MediaUrl:
+                  type: array
+                  items:
+                    type: string
+                    format: uri
+                  description: The URL of the media to send with the message. The
+                    media can be of type `gif`, `png`, and `jpeg` and will be formatted
+                    correctly on the recipient's device. The media size limit is 5MB
+                    for supported file types (JPEG, PNG, GIF) and 500KB for [other
+                    types](https://www.twilio.com/docs/sms/accepted-mime-types) of
+                    accepted media. To send more than one image in the message body,
+                    provide multiple `media_url` parameters in the POST request. You
+                    can include up to 10 `media_url` parameters per message. You can
+                    send images in an SMS message in only the US and Canada.
+                ContentSid:
+                  type: string
+                  minLength: 34
+                  maxLength: 34
+                  pattern: ^HX[0-9a-fA-F]{32}$
+                  description: The SID of the Content object returned at Content API
+                    content create time (https://www.twilio.com/docs/content-api/create-and-send-your-first-content-api-template#create-a-template).
+                    If this parameter is not specified, then the Content API will
+                    not be utilized.
+              required:
+                - To
+      x-twilio:
+        conditional:
+          - - from
+            - messaging_service_sid
+          - - body
+            - media_url
+            - content_sid
+    get:
+      description: Retrieve a list of messages belonging to the account used to make
+        the request
+      parameters:
+        - name: AccountSid
+          in: path
+          description: The SID of the [Account](https://www.twilio.com/docs/iam/api/account)
+            that created the Message resources to read.
+          schema:
+            type: string
+            minLength: 34
+            maxLength: 34
+            pattern: ^AC[0-9a-fA-F]{32}$
+          required: true
+        - name: To
+          in: query
+          description: Read messages sent to only this phone number.
+          schema:
+            type: string
+            format: phone-number
+        - name: From
+          in: query
+          description: Read messages sent from only this phone number or alphanumeric
+            sender ID.
+          schema:
+            type: string
+            format: phone-number
+        - name: DateSent
+          in: query
+          description: 'The date of the messages to show. Specify a date as `YYYY-MM-DD`
+          in GMT to read only messages sent on this date. For example: `2009-07-06`.
+          You can also specify an inequality, such as `DateSent<=YYYY-MM-DD`, to read
+          messages sent on or before midnight on a date, and `DateSent>=YYYY-MM-DD`
+          to read messages sent on or after midnight on a date.'
+          schema:
+            type: string
+            format: date-time
+        - name: DateSent<
+          in: query
+          description: 'The date of the messages to show. Specify a date as `YYYY-MM-DD`
+          in GMT to read only messages sent on this date. For example: `2009-07-06`.
+          You can also specify an inequality, such as `DateSent<=YYYY-MM-DD`, to read
+          messages sent on or before midnight on a date, and `DateSent>=YYYY-MM-DD`
+          to read messages sent on or after midnight on a date.'
+          schema:
+            type: string
+            format: date-time
+        - name: DateSent>
+          in: query
+          description: 'The date of the messages to show. Specify a date as `YYYY-MM-DD`
+          in GMT to read only messages sent on this date. For example: `2009-07-06`.
+          You can also specify an inequality, such as `DateSent<=YYYY-MM-DD`, to read
+          messages sent on or before midnight on a date, and `DateSent>=YYYY-MM-DD`
+          to read messages sent on or after midnight on a date.'
+          schema:
+            type: string
+            format: date-time
+        - name: PageSize
+          in: query
+          description: How many resources to return in each list page. The default is
+            50, and the maximum is 1000.
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 1000
+        - name: Page
+          in: query
+          description: The page index. This value is simply for client state.
+          schema:
+            type: integer
+            minimum: 0
+        - name: PageToken
+          in: query
+          description: The page token. This is provided by the API.
+          schema:
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                title: ListMessageResponse
+                properties:
+                  messages:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/api.v2010.account.message'
+                  end:
+                    type: integer
+                  first_page_uri:
+                    type: string
+                    format: uri
+                  next_page_uri:
+                    type: string
+                    format: uri
+                    nullable: true
+                  page:
+                    type: integer
+                  page_size:
+                    type: integer
+                  previous_page_uri:
+                    type: string
+                    format: uri
+                    nullable: true
+                  start:
+                    type: integer
+                  uri:
+                    type: string
+                    format: uri
+          description: OK
+      security:
+        - accountSid_authToken: [ ]
+      operationId: ListMessage
+      x-maturity:
+        - GA
