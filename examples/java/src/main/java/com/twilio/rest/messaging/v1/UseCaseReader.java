@@ -82,7 +82,7 @@ public class UseCaseReader extends Reader<UseCase> {
         }
 
         return Page.fromJson(
-            "items",
+            "useCases",
             response.getContent(),
             UseCase.class,
             client.getObjectMapper()

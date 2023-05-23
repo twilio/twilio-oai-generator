@@ -127,14 +127,82 @@ public class TwilioNestedTest {
                 "/v2/UseCases"
         );
         when(twilioRestClient.request(mockRequest)).thenReturn(new Response("{\"name\": \"example\", \"intent\": \"intent_example\", " +
+                "\"pipeline\": \"[" +
+                "{\"type\": \"examplePipeline\", \"geo_match\": false, \"sticky_sender\": false, \"org_domain\": \"twilio\", \"enabled\":false}" +
+                "]\" }", 200));
+        UseCaseModel.UseCaseRequestPipeline useCaseRequestPipeline = new UseCaseModel.UseCaseRequestPipeline("type_example",
+                true, true, "twilio", true);
+        UseCaseModel.UseCaseRequest usePoolRequest = new UseCaseModel.UseCaseRequest("example",
+                "intent_example", Arrays.asList(useCaseRequestPipeline));
+
+        UseCase useCase = new UseCaseCreator(usePoolRequest).create(twilioRestClient);
+
+        assertNotNull(useCase);
+        assertEquals(useCase.getName(), "example");
+    }
+
+    @Test
+    public void testUpdateUseCase() {
+        Request mockRequest = new Request(
+                HttpMethod.POST,
+                "messaging",
+                "/v2/UseCases/123"
+        );
+        when(twilioRestClient.request(mockRequest)).thenReturn(new Response("{\"name\": \"example2\", \"intent\": \"intent_example2\", " +
+                "\"pipeline\":\"[pipeline_example]\" }", 200));
+
+        UseCaseModel.UseCaseRequestPipeline useCaseRequestPipeline = new UseCaseModel.UseCaseRequestPipeline("type_example",
+                true, true, "twilio", true);
+
+        UseCaseModel.UseCaseRequest usePoolRequest = new UseCaseModel.UseCaseRequest("example2",
+                "intent_example2", Arrays.asList(useCaseRequestPipeline));
+        UseCase useCase = new UseCaseUpdater("123", usePoolRequest).update(twilioRestClient);
+        assertNotNull(usePoolRequest);
+        assertEquals(usePoolRequest.getName(), "example2");
+    }
+
+
+    @Test
+    public void testGetUseCase() {
+        Request mockRequest = new Request(
+                HttpMethod.GET,
+                "messaging",
+                "/v2/UseCases"
+        );
+        String url = "https://messaging.twilio.com/v2/UseCases";
+        when(twilioRestClient.request(mockRequest)).thenReturn(new Response("{\"useCases\": [{\"id\": \"123\",\"name\": \"example\", \"intent\": \"intent_example\", " +
+                "\"pipeline\":\"[pipeline_example]\"}]," +
+                "\"meta\": {\"url\":\"" + url + "\", \"next_page_url\":\"" + url + "?PageSize=5" + "\", " +
+                "\"previous_page_url\":\"" + url + "?PageSize=3" + "\", " +
+                "\"first_page_url\":\"" + url + "?PageSize=1" +  "\", \"page_size\":4}" +
+                "}", 200));
+        UseCaseModel.UseCaseRequestPipeline useCaseRequestPipeline = new UseCaseModel.UseCaseRequestPipeline("type_example",
+                true, true, "twilio", true);
+        UseCaseModel.UseCaseRequest usePoolRequest = new UseCaseModel.UseCaseRequest("example",
+                "intent_example", Arrays.asList(useCaseRequestPipeline));
+
+        Page<UseCase> useCasePage = new UseCaseReader().firstPage(twilioRestClient);
+        assertNotNull(useCasePage);
+        assertEquals(useCasePage.getRecords().get(0).getName(), "example");
+    }
+
+    @Test
+    public void testFetchUseCase() {
+        Request mockRequest = new Request(
+                HttpMethod.GET,
+                "messaging",
+                "/v2/UseCases/123"
+        );
+        when(twilioRestClient.request(mockRequest)).thenReturn(new Response("{\"name\": \"example\", \"intent\": \"intent_example\", " +
                 "\"pipeline\":\"[pipeline_example]\" }", 200));
 
         UseCaseModel.UseCaseRequestPipeline useCaseRequestPipeline = new UseCaseModel.UseCaseRequestPipeline("type_example",
                 true, true, "twilio", true);
         UseCaseModel.UseCaseRequest usePoolRequest = new UseCaseModel.UseCaseRequest("example",
                 "intent_example", Arrays.asList(useCaseRequestPipeline));
+
+        UseCase useCase = new UseCaseFetcher("123").fetch(twilioRestClient);
         assertNotNull(usePoolRequest);
         assertEquals(usePoolRequest.getName(), "example");
     }
-
 }
