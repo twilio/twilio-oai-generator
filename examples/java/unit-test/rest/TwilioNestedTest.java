@@ -7,9 +7,9 @@ import com.twilio.http.Response;
 import com.twilio.http.TwilioRestClient;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+
 import com.twilio.rest.messaging.v1.*;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -73,7 +73,6 @@ public class TwilioNestedTest {
     }
 
     @Test
-    @Ignore
     public void testShouldFetchNumberPool() {
         Request mockRequest = new Request(
                 HttpMethod.GET,
@@ -90,35 +89,52 @@ public class TwilioNestedTest {
     }
 
     @Test
-    @Ignore
     public void testShouldDeleteNumberPool() {
         Request mockRequest = new Request(
                 HttpMethod.DELETE,
                 "messaging",
                 "/v2/NumberPools/123"
         );
-        when(twilioRestClient.request(mockRequest)).thenReturn(new Response("Succefully deleted" ,200));
+        when(twilioRestClient.request(mockRequest)).thenReturn(new Response("Successfully deleted" ,204));
         boolean output = new NumberPoolDeleter("123").delete(twilioRestClient);
         assertTrue(output);
     }
 
     @Test
-    @Ignore
     public void testShouldUpdateNumberPool() {
         Request mockRequest = new Request(
-                HttpMethod.GET,
+                HttpMethod.POST,
                 "messaging",
                 "/v2/NumberPools/123"
         );
         when(twilioRestClient.request(mockRequest)).thenReturn(new Response("{\"id\": \"123\"," +
-                " \"name\": \"example\", \"senders\": [\"sender_example\"], " +
-                "\"callback_url\":\"http://callback.com\" }", 200));
+                " \"name\": \"example2\", \"senders\": [\"sender_example2\"], " +
+                "\"callback_url\":\"http://callback2.com\" }", 200));
         NumberPoolModel.NumberPoolRequest numberPoolRequest = new NumberPoolModel.NumberPoolRequest("example2",
                 Arrays.asList("sender_example2"), "http://callback2.com");
         NumberPool numberPoolUpdated = new NumberPoolUpdater("123", numberPoolRequest).update(twilioRestClient);
 
         assertEquals(numberPoolUpdated.getId(),  "123");
         assertEquals(numberPoolUpdated.getName(),  "example2");
+    }
+
+
+    @Test
+    public void testCreateUseCase() {
+        Request mockRequest = new Request(
+                HttpMethod.POST,
+                "messaging",
+                "/v2/UseCases"
+        );
+        when(twilioRestClient.request(mockRequest)).thenReturn(new Response("{\"name\": \"example\", \"intent\": \"intent_example\", " +
+                "\"pipeline\":\"[pipeline_example]\" }", 200));
+
+        UseCaseModel.UseCaseRequestPipeline useCaseRequestPipeline = new UseCaseModel.UseCaseRequestPipeline("type_example",
+                true, true, "twilio", true);
+        UseCaseModel.UseCaseRequest usePoolRequest = new UseCaseModel.UseCaseRequest("example",
+                "intent_example", Arrays.asList(useCaseRequestPipeline));
+        assertNotNull(usePoolRequest);
+        assertEquals(usePoolRequest.getName(), "example");
     }
 
 }
