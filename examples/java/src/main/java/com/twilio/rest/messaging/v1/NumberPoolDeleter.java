@@ -53,7 +53,7 @@ public class NumberPoolDeleter extends Deleter<NumberPool> {
 
     @Override
     public boolean delete(final TwilioRestClient client) {
-        String path = "/v2/NumberPools/{numberPoolSID}";
+        String path = "/v2/NumberPools/{NumberPoolSID}";
 
         path = path.replace("{"+"NumberPoolSID"+"}", this.pathNumberPoolSID.toString());
 

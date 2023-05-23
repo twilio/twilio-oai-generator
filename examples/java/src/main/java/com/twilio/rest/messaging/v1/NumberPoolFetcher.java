@@ -54,7 +54,7 @@ public class NumberPoolFetcher extends Fetcher<NumberPool> {
 
     @Override
     public NumberPool fetch(final TwilioRestClient client) {
-        String path = "/v2/NumberPools/{numberPoolSID}";
+        String path = "/v2/NumberPools/{NumberPoolSID}";
 
         path = path.replace("{"+"NumberPoolSID"+"}", this.pathNumberPoolSID.toString());
 

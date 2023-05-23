@@ -58,10 +58,11 @@ import com.twilio.type.OutboundCallPrice;
 import com.twilio.type.RecordingRule;
 import com.twilio.type.SubscribeRule;
 
-@AllArgsConstructor
+
 public class NumberPoolModel  {
 
         @ToString
+        @AllArgsConstructor
         static public class NumberPoolRequest {
             @JsonProperty("name")
             @Getter private String name;

@@ -53,7 +53,7 @@ public class UseCaseDeleter extends Deleter<UseCase> {
 
     @Override
     public boolean delete(final TwilioRestClient client) {
-        String path = "/v2/UseCases/{useCaseSID}";
+        String path = "/v2/UseCases/{UseCaseSID}";
 
         path = path.replace("{"+"UseCaseSID"+"}", this.pathUseCaseSID.toString());
 

@@ -58,10 +58,11 @@ import com.twilio.type.OutboundCallPrice;
 import com.twilio.type.RecordingRule;
 import com.twilio.type.SubscribeRule;
 
-@AllArgsConstructor
+
 public class UseCaseModel  {
 
         @ToString
+        @AllArgsConstructor
         static public class UseCaseRequest {
             @JsonProperty("name")
             @Getter private String name;
@@ -76,6 +77,7 @@ public class UseCaseModel  {
         }
 
         @ToString
+        @AllArgsConstructor
         static public class UseCaseRequestPipeline {
             @JsonProperty("type")
             @Getter private String type;
@@ -94,6 +96,7 @@ public class UseCaseModel  {
         }
 
         @ToString
+        @AllArgsConstructor
         static public class NumberSelection {
             @JsonProperty("type")
             @Getter private String type;
@@ -108,6 +111,7 @@ public class UseCaseModel  {
         }
 
         @ToString
+        @AllArgsConstructor
         static public class LinkShortener {
             @JsonProperty("type")
             @Getter private String type;
@@ -120,6 +124,7 @@ public class UseCaseModel  {
         }
 
         @ToString
+        @AllArgsConstructor
         static public class Scheduler {
             @JsonProperty("enabled")
             @Getter private Boolean enabled;

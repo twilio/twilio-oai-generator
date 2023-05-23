@@ -11,7 +11,7 @@ info:
     name: 'Proprietary and protected.'
     url: 'https://www.twilio.com'
 paths:
-  '/v2/NumberPools/{numberPoolSID}':
+  '/v2/NumberPools/{NumberPoolSID}':
     servers:
       - url: https://messaging.twilio.com
     get:
@@ -153,7 +153,7 @@ paths:
       externalDocs:
         description: Learn more about user operations provided by this API.
         url: https://www.twilio.com/docs/nextgen/api/number-pools
-  '/v2/UseCases/{useCaseSID}':
+  '/v2/UseCases/{UseCaseSID}':
     get:
       tags:
         - UseCases
@@ -177,7 +177,7 @@ paths:
       externalDocs:
         description: Learn more about user operations provided by this API.
         url: https://www.twilio.com/docs/nextgen/api/use-cases
-    put:
+    post:
       tags:
         - UseCases
       summary: Updates a Use Case by ID.

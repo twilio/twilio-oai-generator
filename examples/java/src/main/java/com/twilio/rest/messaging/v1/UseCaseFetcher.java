@@ -54,7 +54,7 @@ public class UseCaseFetcher extends Fetcher<UseCase> {
 
     @Override
     public UseCase fetch(final TwilioRestClient client) {
-        String path = "/v2/UseCases/{useCaseSID}";
+        String path = "/v2/UseCases/{UseCaseSID}";
 
         path = path.replace("{"+"UseCaseSID"+"}", this.pathUseCaseSID.toString());
 

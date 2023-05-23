@@ -60,7 +60,7 @@ public class UseCaseUpdater extends Updater<UseCase>{
 
     @Override
     public UseCase update(final TwilioRestClient client){
-        String path = "/v2/UseCases/{useCaseSID}";
+        String path = "/v2/UseCases/{UseCaseSID}";
 
         path = path.replace("{"+"UseCaseSID"+"}", this.pathUseCaseSID.toString());
         path = path.replace("{"+"UseCaseRequest"+"}", this.useCaseRequest.toString());

@@ -60,7 +60,7 @@ public class NumberPoolUpdater extends Updater<NumberPool>{
 
     @Override
     public NumberPool update(final TwilioRestClient client){
-        String path = "/v2/NumberPools/{numberPoolSID}";
+        String path = "/v2/NumberPools/{NumberPoolSID}";
 
         path = path.replace("{"+"NumberPoolSID"+"}", this.pathNumberPoolSID.toString());
         path = path.replace("{"+"NumberPoolRequest"+"}", this.numberPoolRequest.toString());

@@ -46,11 +46,12 @@ import com.twilio.type.OutboundCallPrice;
 import com.twilio.type.RecordingRule;
 import com.twilio.type.SubscribeRule;
 
-@AllArgsConstructor
+
 public class {{apiName}}Model  {
 
     {{#resources.nestedModels}}
         @ToString
+        @AllArgsConstructor
         static public class {{classname}} {
             {{#allVars}}
             @JsonProperty("{{#lambda.lowercase}}{{{nameInSnakeCase}}}{{/lambda.lowercase}}")
