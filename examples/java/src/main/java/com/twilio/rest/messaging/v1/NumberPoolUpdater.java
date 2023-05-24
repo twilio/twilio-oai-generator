@@ -45,10 +45,12 @@ import java.util.Objects;
 import lombok.ToString;
 
 public class NumberPoolUpdater extends Updater<NumberPool>{
+    private String pathAccountSid;
     private String pathNumberPoolSID;
     private NumberPoolModel.NumberPoolRequest numberPoolRequest;
 
-    public NumberPoolUpdater(final String pathNumberPoolSID, final NumberPoolModel.NumberPoolRequest numberPoolRequest){
+    public NumberPoolUpdater(final String pathAccountSid, final String pathNumberPoolSID, final NumberPoolModel.NumberPoolRequest numberPoolRequest){
+        this.pathAccountSid = pathAccountSid;
         this.pathNumberPoolSID = pathNumberPoolSID;
         this.numberPoolRequest = numberPoolRequest;
     }
@@ -60,8 +62,9 @@ public class NumberPoolUpdater extends Updater<NumberPool>{
 
     @Override
     public NumberPool update(final TwilioRestClient client){
-        String path = "/v2/NumberPools/{NumberPoolSID}";
+        String path = "/v2/Accounts/{AccountSid}/NumberPools/{NumberPoolSID}";
 
+        path = path.replace("{"+"AccountSid"+"}", this.pathAccountSid.toString());
         path = path.replace("{"+"NumberPoolSID"+"}", this.pathNumberPoolSID.toString());
         path = path.replace("{"+"NumberPoolRequest"+"}", this.numberPoolRequest.toString());
 

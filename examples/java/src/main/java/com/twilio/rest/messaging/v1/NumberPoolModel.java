@@ -70,9 +70,49 @@ public class NumberPoolModel  {
             @Getter private List<String> senders;
             @JsonProperty("callback_url")
             @Getter private String callbackUrl;
+            @JsonProperty("mode")
+            @Getter private String mode;
+            @JsonProperty("number_test_date_time")
+            @Getter private String numberTestDateTime;
+            @JsonProperty("number_test_object")
+            @Getter private NumberPoolRequestNumberTestObject numberTestObject;
+            @JsonProperty("nested_number_object")
+            @Getter private NumberNestedTest nestedNumberObject;
 
             public static NumberPoolRequest fromJson(String jsonString, ObjectMapper mapper) throws IOException {
                 return mapper.readValue(jsonString, NumberPoolRequest.class);
+            }
+        }
+
+        @ToString
+        @AllArgsConstructor
+        static public class NumberPoolRequestNumberTestObject {
+            @JsonProperty("fax")
+            @Getter private Boolean fax;
+            @JsonProperty("mms")
+            @Getter private Boolean mms;
+            @JsonProperty("sms")
+            @Getter private Boolean sms;
+            @JsonProperty("voice")
+            @Getter private Boolean voice;
+
+            public static NumberPoolRequestNumberTestObject fromJson(String jsonString, ObjectMapper mapper) throws IOException {
+                return mapper.readValue(jsonString, NumberPoolRequestNumberTestObject.class);
+            }
+        }
+
+        @ToString
+        @AllArgsConstructor
+        static public class NumberNestedTest {
+            @JsonProperty("nested_mode")
+            @Getter private String nestedMode;
+            @JsonProperty("nested_number_test_date_time")
+            @Getter private String nestedNumberTestDateTime;
+            @JsonProperty("nested_number_phone_number")
+            @Getter private NumberPoolRequestNumberTestObject nestedNumberPhoneNumber;
+
+            public static NumberNestedTest fromJson(String jsonString, ObjectMapper mapper) throws IOException {
+                return mapper.readValue(jsonString, NumberNestedTest.class);
             }
         }
 
