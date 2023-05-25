@@ -33,6 +33,7 @@ import com.twilio.rest.Domains;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
 
 import java.io.IOException;
@@ -62,22 +63,26 @@ import com.twilio.type.SubscribeRule;
 public class NumberPoolModel  {
 
         @ToString
-        @AllArgsConstructor
         static public class NumberPoolRequest {
-            @JsonProperty("name")
-            @Getter private String name;
-            @JsonProperty("senders")
-            @Getter private List<String> senders;
-            @JsonProperty("callback_url")
-            @Getter private String callbackUrl;
-            @JsonProperty("mode")
-            @Getter private String mode;
-            @JsonProperty("number_test_date_time")
-            @Getter private String numberTestDateTime;
-            @JsonProperty("number_test_object")
-            @Getter private NumberPoolRequestNumberTestObject numberTestObject;
-            @JsonProperty("nested_number_object")
-            @Getter private NumberNestedTest nestedNumberObject;
+                @JsonProperty("name")
+                @Getter @Setter private String name;
+                @JsonProperty("senders")
+                @Getter @Setter private List<String> senders;
+                @JsonProperty("callback_url")
+                @Getter @Setter private String callbackUrl;
+                @JsonProperty("mode")
+                @Getter @Setter private String mode;
+                @JsonProperty("number_test_date_time")
+                @Getter @Setter private String numberTestDateTime;
+                @JsonProperty("number_test_object")
+                @Getter @Setter private NumberPoolRequestNumberTestObject numberTestObject;
+                @JsonProperty("nested_number_object")
+                @Getter @Setter private NumberNestedTest nestedNumberObject;
+
+            public NumberPoolRequest(final String name, final List<String> senders ) {
+                    this.name = name;
+                    this.senders = senders;
+            }
 
             public static NumberPoolRequest fromJson(String jsonString, ObjectMapper mapper) throws IOException {
                 return mapper.readValue(jsonString, NumberPoolRequest.class);
@@ -85,16 +90,16 @@ public class NumberPoolModel  {
         }
 
         @ToString
-        @AllArgsConstructor
         static public class NumberPoolRequestNumberTestObject {
-            @JsonProperty("fax")
-            @Getter private Boolean fax;
-            @JsonProperty("mms")
-            @Getter private Boolean mms;
-            @JsonProperty("sms")
-            @Getter private Boolean sms;
-            @JsonProperty("voice")
-            @Getter private Boolean voice;
+                @JsonProperty("fax")
+                @Getter @Setter private Boolean fax;
+                @JsonProperty("mms")
+                @Getter @Setter private Boolean mms;
+                @JsonProperty("sms")
+                @Getter @Setter private Boolean sms;
+                @JsonProperty("voice")
+                @Getter @Setter private Boolean voice;
+
 
             public static NumberPoolRequestNumberTestObject fromJson(String jsonString, ObjectMapper mapper) throws IOException {
                 return mapper.readValue(jsonString, NumberPoolRequestNumberTestObject.class);
@@ -102,14 +107,17 @@ public class NumberPoolModel  {
         }
 
         @ToString
-        @AllArgsConstructor
         static public class NumberNestedTest {
-            @JsonProperty("nested_mode")
-            @Getter private String nestedMode;
-            @JsonProperty("nested_number_test_date_time")
-            @Getter private String nestedNumberTestDateTime;
-            @JsonProperty("nested_number_phone_number")
-            @Getter private NumberPoolRequestNumberTestObject nestedNumberPhoneNumber;
+                @JsonProperty("nested_mode")
+                @Getter @Setter private String nestedMode;
+                @JsonProperty("nested_number_test_date_time")
+                @Getter @Setter private String nestedNumberTestDateTime;
+                @JsonProperty("nested_number_phone_number")
+                @Getter @Setter private NumberPoolRequestNumberTestObject nestedNumberPhoneNumber;
+
+            public NumberNestedTest(final String nestedMode ) {
+                    this.nestedMode = nestedMode;
+            }
 
             public static NumberNestedTest fromJson(String jsonString, ObjectMapper mapper) throws IOException {
                 return mapper.readValue(jsonString, NumberNestedTest.class);
