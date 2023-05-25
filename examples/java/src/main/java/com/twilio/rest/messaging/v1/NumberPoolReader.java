@@ -46,10 +46,17 @@ import java.util.Objects;
 import lombok.ToString;
 
 public class NumberPoolReader extends Reader<NumberPool> {
+    private String pathAccountSid;
+    private ZonedDateTime dateCreated;
 
-    public NumberPoolReader(){
+    public NumberPoolReader(final String pathAccountSid){
+        this.pathAccountSid = pathAccountSid;
     }
 
+    public NumberPoolReader setDateCreated(final ZonedDateTime dateCreated){
+        this.dateCreated = dateCreated;
+        return this;
+    }
 
     @Override
     public ResourceSet<NumberPool> read(final TwilioRestClient client) {
@@ -57,7 +64,8 @@ public class NumberPoolReader extends Reader<NumberPool> {
     }
 
     public Page<NumberPool> firstPage(final TwilioRestClient client) {
-        String path = "/v2/NumberPools";
+        String path = "/v2/Accounts/{AccountSid}/NumberPools";
+        path = path.replace("{"+"AccountSid"+"}", this.pathAccountSid.toString());
 
         Request request = new Request(
             HttpMethod.GET,
@@ -65,6 +73,7 @@ public class NumberPoolReader extends Reader<NumberPool> {
             path
         );
 
+        addQueryParams(request);
         return pageForRequest(client, request);
     }
 
@@ -116,5 +125,15 @@ public class NumberPoolReader extends Reader<NumberPool> {
         );
 
         return pageForRequest(client, request);
+    }
+    private void addQueryParams(final Request request) {
+        if (dateCreated != null) {
+            request.addQueryParam("DateCreated", dateCreated.toInstant().toString());
+        }
+
+
+        if(getPageSize() != null) {
+            request.addQueryParam("PageSize", Integer.toString(getPageSize()));
+        }
     }
 }

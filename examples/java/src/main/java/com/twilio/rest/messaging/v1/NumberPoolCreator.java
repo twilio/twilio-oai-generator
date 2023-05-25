@@ -50,9 +50,11 @@ import lombok.ToString;
 import java.net.URI;
 
 public class NumberPoolCreator extends Creator<NumberPool>{
+    private String pathAccountSid;
     private NumberPoolModel.NumberPoolRequest numberPoolRequest;
 
-    public NumberPoolCreator(final NumberPoolModel.NumberPoolRequest numberPoolRequest) {
+    public NumberPoolCreator(final String pathAccountSid, final NumberPoolModel.NumberPoolRequest numberPoolRequest) {
+        this.pathAccountSid = pathAccountSid;
         this.numberPoolRequest = numberPoolRequest;
     }
 
@@ -63,8 +65,9 @@ public class NumberPoolCreator extends Creator<NumberPool>{
 
     @Override
     public NumberPool create(final TwilioRestClient client){
-        String path = "/v2/NumberPools";
+        String path = "/v2/Accounts/{AccountSid}/NumberPools";
 
+        path = path.replace("{"+"AccountSid"+"}", this.pathAccountSid.toString());
         path = path.replace("{"+"NumberPoolRequest"+"}", this.numberPoolRequest.toString());
 
         Request request = new Request(

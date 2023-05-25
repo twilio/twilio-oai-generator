@@ -72,26 +72,26 @@ import com.twilio.type.SubscribeRule;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @ToString
 public class NumberPool extends Resource {
-    private static final long serialVersionUID = 12870424678248L;
+    private static final long serialVersionUID = 64939538635448L;
 
-    public static NumberPoolCreator creator(final NumberPoolModel.NumberPoolRequest numberPoolRequest){
-        return new NumberPoolCreator(numberPoolRequest);
+    public static NumberPoolCreator creator(final String pathAccountSid, final NumberPoolModel.NumberPoolRequest numberPoolRequest){
+        return new NumberPoolCreator(pathAccountSid, numberPoolRequest);
     }
 
-    public static NumberPoolDeleter deleter(final String pathNumberPoolSID){
-        return new NumberPoolDeleter(pathNumberPoolSID);
+    public static NumberPoolDeleter deleter(final String pathAccountSid, final String pathNumberPoolSID){
+        return new NumberPoolDeleter(pathAccountSid, pathNumberPoolSID);
     }
 
-    public static NumberPoolFetcher fetcher(final String pathNumberPoolSID){
-        return new NumberPoolFetcher(pathNumberPoolSID);
+    public static NumberPoolFetcher fetcher(final String pathAccountSid, final String pathNumberPoolSID){
+        return new NumberPoolFetcher(pathAccountSid, pathNumberPoolSID);
     }
 
-    public static NumberPoolReader reader(){
-        return new NumberPoolReader();
+    public static NumberPoolReader reader(final String pathAccountSid){
+        return new NumberPoolReader(pathAccountSid);
     }
 
-    public static NumberPoolUpdater updater(final String pathNumberPoolSID, final NumberPoolModel.NumberPoolRequest numberPoolRequest){
-        return new NumberPoolUpdater(pathNumberPoolSID, numberPoolRequest);
+    public static NumberPoolUpdater updater(final String pathAccountSid, final String pathNumberPoolSID, final NumberPoolModel.NumberPoolRequest numberPoolRequest){
+        return new NumberPoolUpdater(pathAccountSid, pathNumberPoolSID, numberPoolRequest);
     }
 
     /**
@@ -131,42 +131,18 @@ public class NumberPool extends Resource {
         }
     }
 
-    private final String id;
     private final String name;
-    private final List<String> senders;
-    private final String callbackUrl;
 
     @JsonCreator
     private NumberPool(
-        @JsonProperty("id")
-        final String id,
-
         @JsonProperty("name")
-        final String name,
-
-        @JsonProperty("senders")
-        final List<String> senders,
-
-        @JsonProperty("callback_url")
-        final String callbackUrl
+        final String name
     ) {
-        this.id = id;
         this.name = name;
-        this.senders = senders;
-        this.callbackUrl = callbackUrl;
     }
 
-        public final String getId() {
-            return this.id;
-        }
         public final String getName() {
             return this.name;
-        }
-        public final List<String> getSenders() {
-            return this.senders;
-        }
-        public final String getCallbackUrl() {
-            return this.callbackUrl;
         }
 
     @Override
@@ -181,12 +157,12 @@ public class NumberPool extends Resource {
 
         NumberPool other = (NumberPool) o;
 
-        return Objects.equals(id, other.id) &&  Objects.equals(name, other.name) &&  Objects.equals(senders, other.senders) &&  Objects.equals(callbackUrl, other.callbackUrl)  ;
+        return Objects.equals(name, other.name)  ;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, senders, callbackUrl);
+        return Objects.hash(name);
     }
 
 }

@@ -44,17 +44,20 @@ import java.util.Objects;
 import lombok.ToString;
 
 public class NumberPoolDeleter extends Deleter<NumberPool> {
+    private String pathAccountSid;
     private String pathNumberPoolSID;
 
-    public NumberPoolDeleter(final String pathNumberPoolSID){
+    public NumberPoolDeleter(final String pathAccountSid, final String pathNumberPoolSID){
+        this.pathAccountSid = pathAccountSid;
         this.pathNumberPoolSID = pathNumberPoolSID;
     }
 
 
     @Override
     public boolean delete(final TwilioRestClient client) {
-        String path = "/v2/NumberPools/{numberPoolSID}";
+        String path = "/v2/Accounts/{AccountSid}/NumberPools/{NumberPoolSID}";
 
+        path = path.replace("{"+"AccountSid"+"}", this.pathAccountSid.toString());
         path = path.replace("{"+"NumberPoolSID"+"}", this.pathNumberPoolSID.toString());
 
         Request request = new Request(

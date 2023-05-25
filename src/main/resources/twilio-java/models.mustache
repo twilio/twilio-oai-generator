@@ -21,6 +21,7 @@ import com.twilio.rest.Domains;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
 
 import java.io.IOException;
@@ -46,16 +47,24 @@ import com.twilio.type.OutboundCallPrice;
 import com.twilio.type.RecordingRule;
 import com.twilio.type.SubscribeRule;
 
-@AllArgsConstructor
+
 public class {{apiName}}Model  {
 
     {{#resources.nestedModels}}
         @ToString
         static public class {{classname}} {
             {{#allVars}}
-            @JsonProperty("{{#lambda.lowercase}}{{{nameInSnakeCase}}}{{/lambda.lowercase}}")
-            @Getter private {{{dataType}}} {{name}};
+                @JsonProperty("{{#lambda.lowercase}}{{{nameInSnakeCase}}}{{/lambda.lowercase}}")
+                @Getter @Setter private {{{dataType}}} {{name}};
             {{/allVars}}
+
+            {{#hasRequired}}
+            public {{classname}}({{#requiredVars}}final {{{dataType}}} {{name}}{{^-last}}, {{/-last}}{{/requiredVars}} ) {
+                {{#requiredVars}}
+                    this.{{name}} = {{name}};
+                {{/requiredVars}}
+            }
+            {{/hasRequired}}
 
             {{^vendorExtensions.x-response}}
             public static {{classname}} fromJson(String jsonString, ObjectMapper mapper) throws IOException {

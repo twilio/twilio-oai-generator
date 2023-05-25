@@ -63,6 +63,7 @@ public class JavaApiResourceBuilder extends ApiResourceBuilder{
     public ApiResourceBuilder updateOperations(Resolver<CodegenParameter> codegenParameterIResolver) {
         headerParamModelList = new HashSet<>();
         this.codegenOperationList.forEach(co -> {
+            updateNestedContent(co);
             List<String> filePathArray = new ArrayList<>(Arrays.asList(co.baseName.split(PATH_SEPARATOR_PLACEHOLDER)));
             String resourceName = filePathArray.remove(filePathArray.size()-1);
 
