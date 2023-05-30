@@ -18,7 +18,6 @@ import static com.twilio.oai.TwilioJavaGenerator.JSON_INGRESS;
 import static com.twilio.oai.common.ApplicationConstants.VENDOR_PREFIX;
 
 public class JavaPropertyResolver extends LanguagePropertyResolver {
-
     public JavaPropertyResolver(IConventionMapper mapper) {
         super(mapper);
     }
@@ -76,11 +75,8 @@ public class JavaPropertyResolver extends LanguagePropertyResolver {
     private void resolveIngressModel(CodegenProperty property, ApiResourceBuilder apiResourceBuilder) {
         for (CodegenModel model : apiResourceBuilder.getAllModels()) {
             if(model.getClassname().equals(property.complexType)) {
-                if (property.isContainer) {
-                    property.dataType = "List<" + apiResourceBuilder.getApiName() + "Model." + property.complexType + ">";
-                } else {
-                    property.dataType = apiResourceBuilder.getApiName() + "Model." + property.dataType;
-                }
+                // Fetch model from allModels and resolve that recursively
+                property.dataType = apiResourceBuilder.getApiName() + "." + property.dataType;
             }
         }
     }

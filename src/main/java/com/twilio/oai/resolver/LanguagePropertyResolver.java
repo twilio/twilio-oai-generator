@@ -3,23 +3,34 @@ package com.twilio.oai.resolver;
 import com.twilio.oai.api.ApiResourceBuilder;
 import com.twilio.oai.common.ApplicationConstants;
 
+import com.twilio.oai.common.EnumConstants;
+import com.twilio.oai.resolver.java.ContainerResolver;
 import lombok.AllArgsConstructor;
-import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenProperty;
 
-import java.util.List;
+import java.util.Arrays;
 
 import static com.twilio.oai.common.ApplicationConstants.DESERIALIZE_VEND_EXT;
 
 @AllArgsConstructor
 public class LanguagePropertyResolver extends Resolver<CodegenProperty> {
     protected IConventionMapper mapper;
+    
+    
 
     @Override
     public CodegenProperty resolve(CodegenProperty codegenProperty, ApiResourceBuilder apiResourceBuilder) {
+        ContainerResolver containerResolver = new ContainerResolver(Arrays.asList(EnumConstants.JavaDataTypes.values()));
+        String unwrappedContainer =  "";
+        if (codegenProperty.isContainer) {
+            unwrappedContainer = containerResolver.unwrapContainerType(codegenProperty);
+        }
         resolveProperties(codegenProperty, apiResourceBuilder);
         resolveDeSerialize(codegenProperty);
         resolvePrefixedMap(codegenProperty);
+        if (codegenProperty.isContainer) {
+            containerResolver.rewrapContainerType(codegenProperty, unwrappedContainer);
+        }
         return codegenProperty;
     }
 

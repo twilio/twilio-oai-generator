@@ -2,6 +2,7 @@ package com.twilio.oai;
 
 import com.twilio.oai.api.JavaApiResourceBuilder;
 import com.twilio.oai.api.JavaApiResources;
+import com.twilio.oai.common.ApplicationConstants;
 import com.twilio.oai.common.EnumConstants;
 import com.twilio.oai.common.Utility;
 import com.twilio.oai.templating.mustache.ReplaceHyphenLambda;
@@ -72,14 +73,20 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
     public void postProcessParameter(final CodegenParameter parameter) {
         super.postProcessParameter(parameter);
         if (parameter.dataType.startsWith(LIST_START) && CodegenUtils.isParameterSchemaEnum(parameter)) {
-            String lastValue = Utility.removeEnumName(parameter.dataType);
-            parameter.dataType = LIST_START + lastValue;
+            if (parameter.dataType.contains(ENUM)) {
+                String lastValue = Utility.removeEnumName(parameter.dataType);
+                parameter.dataType = LIST_START + lastValue;
+                parameter.baseType = lastValue.substring(0, lastValue.length() - 1);
+            }
+
             parameter.vendorExtensions.put(REF_ENUM_EXTENSION_NAME, true);
-            parameter.baseType = lastValue.substring(0, lastValue.length() - 1);
+            
         } else if (CodegenUtils.isParameterSchemaEnum(parameter)) {
             parameter.vendorExtensions.put(REF_ENUM_EXTENSION_NAME, true);
-            parameter.dataType = Utility.removeEnumName(parameter.dataType);
-            parameter.baseType = Utility.removeEnumName(parameter.dataType);
+            if (parameter.dataType.contains(ENUM)) {
+                parameter.dataType = Utility.removeEnumName(parameter.dataType);
+                parameter.baseType = Utility.removeEnumName(parameter.dataType);
+            }
         } else if (parameter.isEnum) {
             parameter.enumName = parameter.paramName;
         } else {
@@ -94,11 +101,13 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
     public void postProcessModelProperty(CodegenModel model, CodegenProperty property) {
         super.postProcessModelProperty(model, property);
         if (property.dataType.startsWith(LIST_START) && CodegenUtils.isPropertySchemaEnum(property)) {
-            String lastValue = Utility.removeEnumName(property.dataType);
-            property.dataType = LIST_START + lastValue;
-            property.vendorExtensions.put(REF_ENUM_EXTENSION_NAME, true);
-            property.complexType = lastValue.substring(0, lastValue.length() - 1);
-            property.baseType = lastValue.substring(0, lastValue.length() - 1);
+            if (property.dataType.contains(ENUM)) {
+                String lastValue = Utility.removeEnumName(property.dataType);
+                property.dataType = LIST_START + lastValue;
+                property.vendorExtensions.put(REF_ENUM_EXTENSION_NAME, true);
+                property.complexType = lastValue.substring(0, lastValue.length() - 1);
+                property.baseType = lastValue.substring(0, lastValue.length() - 1);
+            }
             property.isEnum = true;
             property.allowableValues = property.items.allowableValues;
             property._enum = (List<String>) property.items.allowableValues.get(VALUES);
@@ -161,7 +170,7 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
         CodegenModelResolver codegenModelResolver = new CodegenModelResolver(conventionMapper, modelFormatMap,
                 Arrays.asList(EnumConstants.JavaDataTypes.values()));
         JavaApiResourceBuilder javaApiResourceBuilder= new JavaApiResourceBuilder(apiActionTemplate, opList,
-                allModels, twilioCodegen.getToggles(JSON_INGRESS));
+                allModels, twilioCodegen.getToggles(JSON_INGRESS), new JavaPropertyResolver(conventionMapper));
         javaApiResourceBuilder
                 .updateApiPath()
                 .updateTemplate();
@@ -170,7 +179,7 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
         javaApiResourceBuilder.updateOperations(new JavaParameterResolver(conventionMapper))
                 .updateResponseModel(new JavaPropertyResolver(conventionMapper), codegenModelResolver);
         if (isIngress) {
-            javaApiResourceBuilder.updateModel(codegenModelResolver);
+            //javaApiResourceBuilder.updateModel(codegenModelResolver);
         }
         return javaApiResourceBuilder.build();
     }

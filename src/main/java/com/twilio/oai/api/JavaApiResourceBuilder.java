@@ -2,6 +2,7 @@ package com.twilio.oai.api;
 
 import com.google.common.collect.Lists;
 import com.twilio.oai.DirectoryStructureService;
+import com.twilio.oai.RequestBodyIterator;
 import com.twilio.oai.StringHelper;
 import com.twilio.oai.common.EnumConstants;
 import com.twilio.oai.common.Utility;
@@ -30,6 +31,15 @@ public class JavaApiResourceBuilder extends ApiResourceBuilder{
     private Set<CodegenModel> headerParamModelList;
 
     private final JavaConventionResolver conventionResolver;
+
+    private Resolver<CodegenProperty> codegenPropertyIResolver;
+    
+    public List<CodegenProperty> enums = new ArrayList<>();
+    
+    public void addEnums(CodegenProperty property) {
+        enums.add(property);
+    }
+
     public JavaApiResourceBuilder(IApiActionTemplate template, List<CodegenOperation> codegenOperations,
                                   List<CodegenModel> allModels) {
         super(template, codegenOperations, allModels);
@@ -37,9 +47,11 @@ public class JavaApiResourceBuilder extends ApiResourceBuilder{
     }
 
     public JavaApiResourceBuilder(IApiActionTemplate apiActionTemplate, List<CodegenOperation> opList,
-                                  List<CodegenModel> allModels, Map<String, Boolean> toggleMap) {
+                                  List<CodegenModel> allModels, Map<String, Boolean> toggleMap, 
+                                  Resolver<CodegenProperty> codegenPropertyIResolver) {
         this(apiActionTemplate, opList, allModels);
         this.toggleMap = toggleMap;
+        this.codegenPropertyIResolver = codegenPropertyIResolver;
     }
 
     @Override
@@ -62,15 +74,15 @@ public class JavaApiResourceBuilder extends ApiResourceBuilder{
     @Override
     public ApiResourceBuilder updateOperations(Resolver<CodegenParameter> codegenParameterIResolver) {
         headerParamModelList = new HashSet<>();
+        RequestBodyIterator requestBodyIterator = new RequestBodyIterator(codegenPropertyIResolver, 
+                codegenParameterIResolver, this);
         this.codegenOperationList.forEach(co -> {
             updateNestedContent(co);
             List<String> filePathArray = new ArrayList<>(Arrays.asList(co.baseName.split(PATH_SEPARATOR_PLACEHOLDER)));
             String resourceName = filePathArray.remove(filePathArray.size()-1);
-
-            co.allParams = co.allParams.stream()
-                    .map(item -> codegenParameterIResolver.resolve(item, this))
-                    .map(item -> conventionResolver.resolveEnumParameter(item, resourceName))
-                    .collect(Collectors.toList());
+            requestBodyIterator.setResourceName(resourceName);
+            co.allParams.stream()
+                    .forEach(item -> requestBodyIterator.dfsParameter(item));
             co.allParams.forEach(this::updateHeaderParamsList);
             co.pathParams = co.pathParams.stream()
                     .map(item -> codegenParameterIResolver.resolve(item, this))
@@ -316,7 +328,7 @@ public class JavaApiResourceBuilder extends ApiResourceBuilder{
     @Override
     protected Map<String, Object> mapOperation(CodegenOperation co) {
         Map<String, Object> operationMap = super.mapOperation(co);
-        operationMap.put(SIGNATURE_LIST, generateSignatureList(co));
+        //operationMap.put(SIGNATURE_LIST, generateSignatureList(co));
         operationMap.put("x-non-path-params", getNonPathParams(co.allParams));
         return operationMap;
     }
