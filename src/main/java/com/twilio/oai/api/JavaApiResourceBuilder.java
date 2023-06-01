@@ -2,7 +2,7 @@ package com.twilio.oai.api;
 
 import com.google.common.collect.Lists;
 import com.twilio.oai.DirectoryStructureService;
-import com.twilio.oai.RequestBodyIterator;
+import com.twilio.oai.JsonRequestBodyResolver;
 import com.twilio.oai.StringHelper;
 import com.twilio.oai.common.EnumConstants;
 import com.twilio.oai.common.Utility;
@@ -35,10 +35,8 @@ public class JavaApiResourceBuilder extends ApiResourceBuilder{
     private Resolver<CodegenProperty> codegenPropertyIResolver;
     
     public List<CodegenProperty> enums = new ArrayList<>();
-    
-    public void addEnums(CodegenProperty property) {
-        enums.add(property);
-    }
+
+    public ArrayList<List<CodegenProperty>> modelParameters;
 
     public JavaApiResourceBuilder(IApiActionTemplate template, List<CodegenOperation> codegenOperations,
                                   List<CodegenModel> allModels) {
@@ -74,15 +72,15 @@ public class JavaApiResourceBuilder extends ApiResourceBuilder{
     @Override
     public ApiResourceBuilder updateOperations(Resolver<CodegenParameter> codegenParameterIResolver) {
         headerParamModelList = new HashSet<>();
-        RequestBodyIterator requestBodyIterator = new RequestBodyIterator(codegenPropertyIResolver, 
+        JsonRequestBodyResolver jsonRequestBodyResolver = new JsonRequestBodyResolver(codegenPropertyIResolver, 
                 codegenParameterIResolver, this);
         this.codegenOperationList.forEach(co -> {
             updateNestedContent(co);
             List<String> filePathArray = new ArrayList<>(Arrays.asList(co.baseName.split(PATH_SEPARATOR_PLACEHOLDER)));
             String resourceName = filePathArray.remove(filePathArray.size()-1);
-            requestBodyIterator.setResourceName(resourceName);
+            jsonRequestBodyResolver.setResourceName(resourceName);
             co.allParams.stream()
-                    .forEach(item -> requestBodyIterator.dfsParameter(item));
+                    .forEach(item -> jsonRequestBodyResolver.resolve(item));
             co.allParams.forEach(this::updateHeaderParamsList);
             co.pathParams = co.pathParams.stream()
                     .map(item -> codegenParameterIResolver.resolve(item, this))
@@ -328,7 +326,13 @@ public class JavaApiResourceBuilder extends ApiResourceBuilder{
     @Override
     protected Map<String, Object> mapOperation(CodegenOperation co) {
         Map<String, Object> operationMap = super.mapOperation(co);
-        //operationMap.put(SIGNATURE_LIST, generateSignatureList(co));
+        if (isNestedRequestBody) {
+            operationMap.put(SIGNATURE_LIST, generateSignatureListJson(co));
+            modelParameters = generateSignatureListBody(co);
+        } else {
+            operationMap.put(SIGNATURE_LIST, generateSignatureList(co));
+        }
+        
         operationMap.put("x-non-path-params", getNonPathParams(co.allParams));
         return operationMap;
     }
@@ -341,6 +345,7 @@ public class JavaApiResourceBuilder extends ApiResourceBuilder{
     private ArrayList<List<CodegenParameter>> generateSignatureList(final CodegenOperation co) {
         CodegenParameter accountSidParam = null;
         List<List<CodegenParameter>> conditionalCodegenParam = new ArrayList<>();
+        List<List<CodegenParameter>> result = new ArrayList<>();
         Optional<CodegenParameter> optionalParam = co.allParams.stream()
                 .filter(param -> param.vendorExtensions.containsKey(ACCOUNT_SID_VEND_EXT)).findAny();
         if(optionalParam.isPresent()){
@@ -367,10 +372,17 @@ public class JavaApiResourceBuilder extends ApiResourceBuilder{
                                 ).findAny().get()
                         ).collect(Collectors.toList())).collect(Collectors.toList());
                 // added filter to prevent same signature types
-                conditionalCodegenParam = conditionalCodegenParam.stream().filter(cpList -> (cpList.size() <=1 || !cpList.get(0).dataType.equals(cpList.get(1).dataType))).collect(Collectors.toList());
+                
+
+                for (List<CodegenParameter> cpList : conditionalCodegenParam) {
+                    if (cpList.size() <= 1 || !cpList.get(0).dataType.equals(cpList.get(1).dataType)) {
+                        result.add(cpList);
+                    }
+                }
+                //conditionalCodegenParam = conditionalCodegenParam.stream().filter(cpList -> (cpList.size() <=1 || !cpList.get(0).dataType.equals(cpList.get(1).dataType))).collect(Collectors.toList());
             }
         }
-        conditionalCodegenParam = Lists.cartesianProduct(conditionalCodegenParam);
+        conditionalCodegenParam = Lists.cartesianProduct(result);
         List<List<CodegenParameter>> filteredConditionalCodegenParam = new ArrayList<>();
         //Remove duplicates from signatureList
         HashSet<List<String>> signatureHashSet = new HashSet<>();
@@ -391,6 +403,60 @@ public class JavaApiResourceBuilder extends ApiResourceBuilder{
         return signatureList;
     }
 
+    private ArrayList<List<CodegenParameter>> generateSignatureListJson(final CodegenOperation co) {
+        CodegenParameter accountSidParam = null;
+        Optional<CodegenParameter> optionalParam = co.allParams.stream()
+                .filter(param -> param.vendorExtensions.containsKey(ACCOUNT_SID_VEND_EXT)).findAny();
+        if(optionalParam.isPresent()){
+            accountSidParam = optionalParam.get();
+        }
+
+        ArrayList<List<CodegenParameter>> signatureList = new ArrayList<>();
+        List<List<CodegenParameter>> conditionalCodegenParam = Lists.cartesianProduct(new ArrayList<>());
+        for(List<CodegenParameter> paramList : conditionalCodegenParam){
+            signatureList.add(addAllToList(co.requiredParams, paramList));
+            if( accountSidParam != null) {
+                signatureList.add(addAllToList(List.of(accountSidParam), co.requiredParams, paramList));
+            }
+        }
+        return signatureList;
+    }
+
+    private ArrayList<List<CodegenProperty>> generateSignatureListBody(final CodegenOperation co) {
+        List<List<CodegenProperty>> conditionalCodegenParam = new ArrayList<>();
+        
+        if (co.vendorExtensions.containsKey(TWILIO_EXTENSION_NAME)) {
+            HashMap<String, Object> twilioVendorExtension = (HashMap<String, Object>) co.vendorExtensions.get(TWILIO_EXTENSION_NAME);
+            if (twilioVendorExtension.containsKey("conditional")) {
+                List<List<String>> conditionalParams = (List<List<String>>) twilioVendorExtension.get("conditional");
+                // map the conditional param names with the codegenParameter added in optional params
+                conditionalCodegenParam = conditionalParams.stream().map(
+                        paramList -> paramList.stream().map(
+                                cp -> co.bodyParams.get(0).vars.stream().filter(
+                                        op -> op.name.equals(StringHelper.camelize(cp, true))
+                                ).findAny().get()
+                        ).collect(Collectors.toList())).collect(Collectors.toList());
+                // added filter to prevent same signature types
+                conditionalCodegenParam = conditionalCodegenParam.stream().filter(cpList -> (cpList.size() <=1 || !cpList.get(0).dataType.equals(cpList.get(1).dataType))).collect(Collectors.toList());
+            }
+        }
+        conditionalCodegenParam = Lists.cartesianProduct(conditionalCodegenParam);
+        List<List<CodegenProperty>> filteredConditionalCodegenParam = new ArrayList<>();
+        //Remove duplicates from signatureList
+        HashSet<List<String>> signatureHashSet = new HashSet<>();
+        for(List<CodegenProperty> paramList : conditionalCodegenParam){
+            List<String> orderedParamList = paramList.stream().map(p -> p.dataType).collect(Collectors.toList());
+            if(!signatureHashSet.contains(orderedParamList)){
+                filteredConditionalCodegenParam.add(paramList);
+                signatureHashSet.add(orderedParamList);
+            }
+        }
+        ArrayList<List<CodegenProperty>> signatureList = new ArrayList<>();
+        for(List<CodegenProperty> paramList : filteredConditionalCodegenParam){
+            signatureList.add(addAllToList(co.bodyParams.get(0).requiredVars, paramList));
+        }
+        return signatureList;
+    }
     private <T> List<T> addAllToList(List<T> ... list) {
         return Arrays.stream(list).flatMap(List<T>::stream).collect(Collectors.toList());
     }

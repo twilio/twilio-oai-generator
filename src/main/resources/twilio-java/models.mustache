@@ -8,13 +8,13 @@
                 @Getter @Setter private {{{dataType}}} {{name}};
             {{/allVars}}
 
-            {{#hasRequired}}
-            public {{classname}}({{#requiredVars}}final {{{dataType}}} {{name}}{{^-last}}, {{/-last}}{{/requiredVars}} ) {
-                {{#requiredVars}}
-                    this.{{name}} = {{name}};
-                {{/requiredVars}}
+            {{#modelParameters}}
+            public {{classname}}({{#.}}final {{{dataType}}} {{name}}{{^-last}}, {{/-last}}{{/.}} ) {
+                {{#.}}
+                this.{{name}} = {{name}};
+                {{/.}}
             }
-            {{/hasRequired}}
+            {{/modelParameters}}
 
             {{^vendorExtensions.x-response}}
             public static {{classname}} fromJson(String jsonString, ObjectMapper mapper) throws IOException {
