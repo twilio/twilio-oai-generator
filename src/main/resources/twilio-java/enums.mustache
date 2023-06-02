@@ -1,5 +1,5 @@
 {{#enums}}
-    public enum {{#lambda.titlecase}}{{{complexType}}}{{/lambda.titlecase}} {
+    public enum {{#lambda.titlecase}}{{{enumName}}}{{/lambda.titlecase}} {
     {{#allowableValues}}
         {{#values}}
         {{#lambda.uppercase}}{{#lambda.replacehyphen}}{{{.}}}{{/lambda.replacehyphen}}({{/lambda.uppercase}}"{{{.}}}"){{^-last}},{{/-last}}{{#-last}};{{/-last}}
@@ -8,7 +8,7 @@
 
         private final String value;
 
-        private {{#lambda.titlecase}}{{{complexType}}}{{/lambda.titlecase}}(final String value) {
+        private {{#lambda.titlecase}}{{{enumName}}}{{/lambda.titlecase}}(final String value) {
         this.value = value;
         }
 
@@ -17,8 +17,8 @@
         }
 
         @JsonCreator
-        public static {{#lambda.titlecase}}{{{complexType}}}{{/lambda.titlecase}} forValue(final String value) {
-            return Promoter.enumFromString(value, {{#lambda.titlecase}}{{{complexType}}}{{/lambda.titlecase}}.values());
+        public static {{#lambda.titlecase}}{{{enumName}}}{{/lambda.titlecase}} forValue(final String value) {
+            return Promoter.enumFromString(value, {{#lambda.titlecase}}{{{enumName}}}{{/lambda.titlecase}}.values());
         }
     }
 {{/enums}}

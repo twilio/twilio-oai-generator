@@ -11,6 +11,7 @@ import org.openapitools.codegen.CodegenParameter;
 import org.openapitools.codegen.CodegenProperty;
 
 import java.util.Arrays;
+import java.util.Stack;
 
 // TODO: Refactor such that it can be used with c# code as well, For that need to refactor java resolvers.
 public class JsonRequestBodyResolver {
@@ -41,17 +42,16 @@ public class JsonRequestBodyResolver {
     
     public void resolve(final CodegenParameter codegenParameter) {
         // Only add if model exists
-        String unwrappedContainer = containerResolver.unwrapContainerType(codegenParameter);
+        Stack<String> containerTypes = new Stack<>();
+        codegenParameter.dataType = containerResolver.unwrapContainerType(codegenParameter, containerTypes);
         final CodegenModel model = apiResourceBuilder.getModel(codegenParameter.dataType);
-        containerResolver.rewrapContainerType(codegenParameter, unwrappedContainer);
-        
-        if (model == null) {
+        containerResolver.rewrapContainerType(codegenParameter, containerTypes);
+        if (CodegenUtils.isParameterSchemaEnum(codegenParameter)) {
+            conventionResolver.resolveEnumParameter(codegenParameter, resourceName);
+            ((JavaApiResourceBuilder)apiResourceBuilder).enums.add(codegenParameter);
+        } else if(model == null) {
             // If parameter is not a model.
             codegenParameterResolver.resolve(codegenParameter, apiResourceBuilder);
-            
-        } else if(CodegenUtils.isParameterSchemaEnum(codegenParameter)) {
-            conventionResolver.resolveEnumParameter(codegenParameter, resourceName);
-            
         } else {
             apiResourceBuilder.addNestedModel(model);
             for (CodegenProperty property: codegenParameter.getVars()) {
@@ -61,23 +61,25 @@ public class JsonRequestBodyResolver {
     }
 
     public void resolve(CodegenProperty property) {
-            String unwrappedContainer = containerResolver.unwrapContainerType(property);
-            final CodegenModel model = apiResourceBuilder.getModel(property.dataType);
-            containerResolver.rewrapContainerType(property, unwrappedContainer);
-            
-            if (model == null) {
-                codegenPropertyResolver.resolve(property, apiResourceBuilder);
-            } else if (CodegenUtils.isPropertySchemaEnum(property)) {
-                conventionResolver.resolveEnumProperty(property, resourceName);
-                ((JavaApiResourceBuilder)apiResourceBuilder).enums.add(property);
-            } else {
-                apiResourceBuilder.addNestedModel(model);
-                // Get children
-                for (CodegenProperty codegenProperty: model.vars) {
-                    unwrappedContainer = containerResolver.unwrapContainerType(property);
-                    resolve(codegenProperty);
-                    containerResolver.rewrapContainerType(property, unwrappedContainer);
-                }
+        Stack<String> containerTypes = new Stack<>();
+        property.dataType = containerResolver.unwrapContainerType(property, containerTypes);
+        final CodegenModel model = apiResourceBuilder.getModel(property.dataType);
+        containerResolver.rewrapContainerType(property, containerTypes);
+        containerTypes.clear();
+
+        if (model == null) {
+            codegenPropertyResolver.resolve(property, apiResourceBuilder);
+        } else if (CodegenUtils.isPropertySchemaEnum(property)) {
+            conventionResolver.resolveEnumProperty(property, resourceName);
+            ((JavaApiResourceBuilder)apiResourceBuilder).enums.add(property);
+        } else {
+            apiResourceBuilder.addNestedModel(model);
+            // Get children
+            for (CodegenProperty codegenProperty: model.vars) {
+                codegenProperty.dataType = containerResolver.unwrapContainerType(property, containerTypes);
+                resolve(codegenProperty);
+                containerResolver.rewrapContainerType(property, containerTypes);
             }
+        }
     }
 }

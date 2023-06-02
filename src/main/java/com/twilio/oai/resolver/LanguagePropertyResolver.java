@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import org.openapitools.codegen.CodegenProperty;
 
 import java.util.Arrays;
+import java.util.Stack;
 
 import static com.twilio.oai.common.ApplicationConstants.DESERIALIZE_VEND_EXT;
 
@@ -21,16 +22,12 @@ public class LanguagePropertyResolver extends Resolver<CodegenProperty> {
     @Override
     public CodegenProperty resolve(CodegenProperty codegenProperty, ApiResourceBuilder apiResourceBuilder) {
         ContainerResolver containerResolver = new ContainerResolver(Arrays.asList(EnumConstants.JavaDataTypes.values()));
-        String unwrappedContainer =  "";
-        if (codegenProperty.isContainer) {
-            unwrappedContainer = containerResolver.unwrapContainerType(codegenProperty);
-        }
+        Stack<String> containerTypes = new Stack();
+        codegenProperty.dataType = containerResolver.unwrapContainerType(codegenProperty, containerTypes);
         resolveProperties(codegenProperty, apiResourceBuilder);
         resolveDeSerialize(codegenProperty);
         resolvePrefixedMap(codegenProperty);
-        if (codegenProperty.isContainer) {
-            containerResolver.rewrapContainerType(codegenProperty, unwrappedContainer);
-        }
+        containerResolver.rewrapContainerType(codegenProperty, containerTypes);
         return codegenProperty;
     }
 

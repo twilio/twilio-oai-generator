@@ -74,6 +74,10 @@ import com.twilio.type.SubscribeRule;
 public class NewCredentials extends Resource {
     private static final long serialVersionUID = 234000032744450L;
 
+    
+
+
+
     public static NewCredentialsCreator creator(final String testString, final Integer testInteger, final Float testNumberFloat){
         return new NewCredentialsCreator(testString, testInteger, testNumberFloat);
     }
@@ -223,6 +227,7 @@ public class NewCredentials extends Resource {
     public int hashCode() {
         return Objects.hash(accountSid, sid, testString, testInteger);
     }
+
 
 }
 

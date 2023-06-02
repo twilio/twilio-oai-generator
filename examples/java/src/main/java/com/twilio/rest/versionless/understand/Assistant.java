@@ -74,6 +74,10 @@ import com.twilio.type.SubscribeRule;
 public class Assistant extends Resource {
     private static final long serialVersionUID = 163787776958144L;
 
+    
+
+
+
     public static AssistantReader reader(){
         return new AssistantReader();
     }
@@ -156,6 +160,7 @@ public class Assistant extends Resource {
     public int hashCode() {
         return Objects.hash(sid, friendlyName);
     }
+
 
 }
 

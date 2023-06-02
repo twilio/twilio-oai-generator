@@ -5,6 +5,7 @@ import com.twilio.oai.StringHelper;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Stack;
 
 import com.twilio.oai.common.ApplicationConstants;
 import com.twilio.oai.common.EnumConstants;
@@ -57,14 +58,15 @@ public class JavaConventionResolver {
             // complexType contains the class name, dataType contains the data type for enum which prefixes class name.
             // name contains variable name
             // This is new gen enums
+            Stack<String> containerTypes = new Stack<>();
             if (property.isContainer) {
-                String unwrappedContainer = containerResolver.unwrapContainerType(property);
+                containerResolver.unwrapContainerType(property, containerTypes);
                 property.dataType = resourceName + ApplicationConstants.DOT + property.dataType;
                 if (property.complexType.contains(ApplicationConstants.ENUM)) {
                     property.complexType = Utility.removeEnumName(property.complexType);
                     property.dataType = Utility.removeEnumName(property.dataType);
                 }
-                containerResolver.rewrapContainerType(property, unwrappedContainer);
+                containerResolver.rewrapContainerType(property, containerTypes);
                 property.isEnum = true;
                 property.allowableValues = property.items.allowableValues;
                 property._enum = (List<String>) property.items.allowableValues.get(VALUES);

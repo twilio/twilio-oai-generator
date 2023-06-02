@@ -13,6 +13,7 @@ import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenOperation;
 import org.openapitools.codegen.CodegenParameter;
 import org.openapitools.codegen.CodegenProperty;
+import org.openapitools.codegen.IJsonSchemaValidationProperties;
 
 import java.util.*;
 import java.util.function.Predicate;
@@ -34,7 +35,7 @@ public class JavaApiResourceBuilder extends ApiResourceBuilder{
 
     private Resolver<CodegenProperty> codegenPropertyIResolver;
     
-    public List<CodegenProperty> enums = new ArrayList<>();
+    public Set<IJsonSchemaValidationProperties> enums = new HashSet<>();
 
     public ArrayList<List<CodegenProperty>> modelParameters;
 
@@ -78,8 +79,16 @@ public class JavaApiResourceBuilder extends ApiResourceBuilder{
             updateNestedContent(co);
             List<String> filePathArray = new ArrayList<>(Arrays.asList(co.baseName.split(PATH_SEPARATOR_PLACEHOLDER)));
             String resourceName = filePathArray.remove(filePathArray.size()-1);
+            
+            co.allParams.stream()
+                    .filter(item -> !(item.getContent() != null && item.getContent().get("application/json") != null))
+                    .map(item -> codegenParameterIResolver.resolve(item, this))
+                    .map(item -> conventionResolver.resolveEnumParameter(item, resourceName))
+                    .collect(Collectors.toList());
+            
             jsonRequestBodyResolver.setResourceName(resourceName);
             co.allParams.stream()
+                    .filter(item -> (item.getContent() != null && item.getContent().get("application/json") != null))
                     .forEach(item -> jsonRequestBodyResolver.resolve(item));
             co.allParams.forEach(this::updateHeaderParamsList);
             co.pathParams = co.pathParams.stream()
@@ -131,6 +140,7 @@ public class JavaApiResourceBuilder extends ApiResourceBuilder{
         if (!codegenProperties.isEmpty()) {
             CodegenModel codegenModel = new CodegenModel();
             codegenModel.vendorExtensions.put(ENUM_VARS, codegenProperties);
+            
             headerParamModelList.add(codegenModel);
         }
     }
@@ -229,7 +239,7 @@ public class JavaApiResourceBuilder extends ApiResourceBuilder{
         return new TreeSet<>((cp1, cp2) -> cp1.enumName.compareTo(cp2.getEnumName()));
     }
 
-       private CodegenProperty createCodeGenPropertyFromParameter(CodegenParameter co) {
+       public CodegenProperty createCodeGenPropertyFromParameter(CodegenParameter co) {
         CodegenProperty property = new CodegenProperty();
         property.isEnum = co.isEnum;
         property.baseName = co.baseName;
@@ -453,7 +463,8 @@ public class JavaApiResourceBuilder extends ApiResourceBuilder{
         }
         ArrayList<List<CodegenProperty>> signatureList = new ArrayList<>();
         for(List<CodegenProperty> paramList : filteredConditionalCodegenParam){
-            signatureList.add(addAllToList(co.bodyParams.get(0).requiredVars, paramList));
+            if (co.bodyParams != null && co.bodyParams.get(0) != null)
+                signatureList.add(addAllToList(co.bodyParams.get(0).requiredVars, paramList));
         }
         return signatureList;
     }

@@ -74,6 +74,10 @@ import com.twilio.type.SubscribeRule;
 public class Fleet extends Resource {
     private static final long serialVersionUID = 163787776958144L;
 
+    
+
+
+
     public static FleetCreator creator(){
         return new FleetCreator();
     }
@@ -168,6 +172,7 @@ public class Fleet extends Resource {
     public int hashCode() {
         return Objects.hash(name, sid, friendlyName);
     }
+
 
 }
 

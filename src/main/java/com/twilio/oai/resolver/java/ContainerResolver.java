@@ -1,54 +1,109 @@
 package com.twilio.oai.resolver.java;
 
+import com.twilio.oai.api.ApiResourceBuilder;
 import com.twilio.oai.common.ApplicationConstants;
 import com.twilio.oai.common.LanguageDataType;
+import com.twilio.oai.resolver.Resolver;
+import com.twilio.oai.resolver.common.CodegenModelDataTypeResolver;
 import lombok.RequiredArgsConstructor;
 import org.openapitools.codegen.CodegenParameter;
 import org.openapitools.codegen.CodegenProperty;
 
 import java.util.List;
+import java.util.Stack;
 
 @RequiredArgsConstructor
 public class ContainerResolver {
     private final List<? extends LanguageDataType> languageDataTypes;
 
-    public String unwrapContainerType(CodegenProperty property) {
-        if (!property.isContainer) return "";
-        String unwrappedContainer = null;
-        for (LanguageDataType dataType : languageDataTypes) {
-            if (property.dataType != null && property.dataType.startsWith(dataType.getValue())) {
-                unwrappedContainer = dataType.getValue();
-                break;
+    public CodegenProperty resolve(CodegenProperty codegenProperty, ApiResourceBuilder apiResourceBuilder, Resolver<CodegenProperty> resolver) {
+        Stack<String> containerTypes = new Stack<>();
+
+        codegenProperty.dataType = unwrapContainerType(codegenProperty,containerTypes);
+        resolver.resolve(codegenProperty, apiResourceBuilder);
+        rewrapContainerType(codegenProperty,containerTypes);
+
+        return codegenProperty;
+    }
+
+    /**
+     * Unwraps the container type(s) from the underlying property datatype and adds the container type(s) to the given
+     * containerTypes stack. Returns the underlying property datatype (i.e. "List<IceServer>" -> "IceServer").
+     * @param codegenProperty
+     * @param containerTypes
+     * @return
+     */
+    public String unwrapContainerType(CodegenProperty codegenProperty, Stack<String> containerTypes) {
+        String codegenPropertyDataType = "";
+        codegenPropertyDataType = codegenProperty.dataType;
+
+        String currentContainerType = "";
+        boolean isContainerType = false;
+
+        while(codegenPropertyDataType != null && !codegenPropertyDataType.isEmpty()) {
+            for (LanguageDataType dataType : languageDataTypes) {
+                if (codegenPropertyDataType.startsWith(dataType.getValue())) {
+                    isContainerType = true;
+                    currentContainerType = dataType.getValue();
+                }
             }
-        }
-        property.dataType = property.dataType.replace(unwrappedContainer, "");
-        property.dataType = property.dataType.substring(0, property.dataType.length() - 1);
-
-        return unwrappedContainer;
-    }
-
-    public void rewrapContainerType(CodegenProperty property, String unwrappedContainer) {
-        if (!property.isContainer) return;
-        property.dataType = unwrappedContainer + property.dataType + ApplicationConstants.LIST_END;
-    }
-
-    public String unwrapContainerType(CodegenParameter parameter) {
-        if (!parameter.isContainer) return "";
-        String unwrappedContainer = null;
-        for (LanguageDataType dataType : languageDataTypes) {
-            if (parameter.dataType != null && parameter.dataType.startsWith(dataType.getValue())) {
-                unwrappedContainer = dataType.getValue();
-                break;
+            if(isContainerType) {
+                containerTypes.push(currentContainerType);
+                codegenPropertyDataType = codegenPropertyDataType.replaceFirst(currentContainerType, "");
+                codegenPropertyDataType = codegenPropertyDataType.substring(0, codegenPropertyDataType.length()-1);
+                isContainerType = false;
             }
+            else
+                return codegenPropertyDataType;
         }
-        parameter.dataType = parameter.dataType.replace(unwrappedContainer, "");
-        parameter.dataType = parameter.dataType.substring(0, parameter.dataType.length() - 1);
-
-        return unwrappedContainer;
+        return codegenPropertyDataType;
     }
 
-    public void rewrapContainerType(CodegenParameter parameter, String unwrappedContainer) {
-        if (!parameter.isContainer) return;
-        parameter.dataType = unwrappedContainer + parameter.dataType + ApplicationConstants.LIST_END;
+    /**
+     * Rewraps the property dataType with the container types in the given stack. Sets the property dataType to the
+     * rewrapped value (i.e. "IceServer" -> "List<IceServer>").
+     * @param codegenProperty
+     * @param containerTypes
+     */
+    public static void rewrapContainerType(CodegenProperty codegenProperty, Stack<String> containerTypes) {
+        String currentContainerType = "";
+        while(!containerTypes.empty()) {
+            currentContainerType = containerTypes.pop();
+            codegenProperty.dataType = currentContainerType + codegenProperty.dataType + ApplicationConstants.LIST_END;
+        }
+    }
+
+    public String unwrapContainerType(CodegenParameter codegenParameter, Stack<String> containerTypes) {
+        String codegenPropertyDataType = "";
+        codegenPropertyDataType = codegenParameter.dataType;
+
+        String currentContainerType = "";
+        boolean isContainerType = false;
+
+        while(codegenPropertyDataType != null && !codegenPropertyDataType.isEmpty()) {
+            for (LanguageDataType dataType : languageDataTypes) {
+                if (codegenPropertyDataType.startsWith(dataType.getValue())) {
+                    isContainerType = true;
+                    currentContainerType = dataType.getValue();
+                }
+            }
+            if(isContainerType) {
+                containerTypes.push(currentContainerType);
+                codegenPropertyDataType = codegenPropertyDataType.replaceFirst(currentContainerType, "");
+                codegenPropertyDataType = codegenPropertyDataType.substring(0, codegenPropertyDataType.length()-1);
+                isContainerType = false;
+            }
+            else
+                return codegenPropertyDataType;
+        }
+        return codegenPropertyDataType;
+    }
+
+    public static void rewrapContainerType(CodegenParameter codegenParameter, Stack<String> containerTypes) {
+        String currentContainerType = "";
+        while(!containerTypes.empty()) {
+            currentContainerType = containerTypes.pop();
+            codegenParameter.dataType = currentContainerType + codegenParameter.dataType + ApplicationConstants.LIST_END;
+        }
     }
 }
