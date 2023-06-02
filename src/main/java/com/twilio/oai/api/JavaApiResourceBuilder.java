@@ -140,7 +140,6 @@ public class JavaApiResourceBuilder extends ApiResourceBuilder{
         if (!codegenProperties.isEmpty()) {
             CodegenModel codegenModel = new CodegenModel();
             codegenModel.vendorExtensions.put(ENUM_VARS, codegenProperties);
-            
             headerParamModelList.add(codegenModel);
         }
     }
@@ -355,7 +354,6 @@ public class JavaApiResourceBuilder extends ApiResourceBuilder{
     private ArrayList<List<CodegenParameter>> generateSignatureList(final CodegenOperation co) {
         CodegenParameter accountSidParam = null;
         List<List<CodegenParameter>> conditionalCodegenParam = new ArrayList<>();
-        List<List<CodegenParameter>> result = new ArrayList<>();
         Optional<CodegenParameter> optionalParam = co.allParams.stream()
                 .filter(param -> param.vendorExtensions.containsKey(ACCOUNT_SID_VEND_EXT)).findAny();
         if(optionalParam.isPresent()){
@@ -382,17 +380,10 @@ public class JavaApiResourceBuilder extends ApiResourceBuilder{
                                 ).findAny().get()
                         ).collect(Collectors.toList())).collect(Collectors.toList());
                 // added filter to prevent same signature types
-                
-
-                for (List<CodegenParameter> cpList : conditionalCodegenParam) {
-                    if (cpList.size() <= 1 || !cpList.get(0).dataType.equals(cpList.get(1).dataType)) {
-                        result.add(cpList);
-                    }
-                }
-                //conditionalCodegenParam = conditionalCodegenParam.stream().filter(cpList -> (cpList.size() <=1 || !cpList.get(0).dataType.equals(cpList.get(1).dataType))).collect(Collectors.toList());
+                conditionalCodegenParam = conditionalCodegenParam.stream().filter(cpList -> (cpList.size() <=1 || !cpList.get(0).dataType.equals(cpList.get(1).dataType))).collect(Collectors.toList());
             }
         }
-        conditionalCodegenParam = Lists.cartesianProduct(result);
+        conditionalCodegenParam = Lists.cartesianProduct(conditionalCodegenParam);
         List<List<CodegenParameter>> filteredConditionalCodegenParam = new ArrayList<>();
         //Remove duplicates from signatureList
         HashSet<List<String>> signatureHashSet = new HashSet<>();
