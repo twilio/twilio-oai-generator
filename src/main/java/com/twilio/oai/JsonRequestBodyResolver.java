@@ -76,9 +76,9 @@ public class JsonRequestBodyResolver {
             apiResourceBuilder.addNestedModel(model);
             // Get children
             for (CodegenProperty codegenProperty: model.vars) {
-                codegenProperty.dataType = containerResolver.unwrapContainerType(property, containerTypes);
+                codegenProperty.dataType = containerResolver.unwrapContainerType(codegenProperty, containerTypes);
                 resolve(codegenProperty);
-                containerResolver.rewrapContainerType(property, containerTypes);
+                containerResolver.rewrapContainerType(codegenProperty, containerTypes);
             }
         }
     }
