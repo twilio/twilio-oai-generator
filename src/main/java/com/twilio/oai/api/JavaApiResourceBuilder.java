@@ -89,7 +89,12 @@ public class JavaApiResourceBuilder extends ApiResourceBuilder{
             jsonRequestBodyResolver.setResourceName(resourceName);
             co.allParams.stream()
                     .filter(item -> (item.getContent() != null && item.getContent().get("application/json") != null))
-                    .forEach(item -> jsonRequestBodyResolver.resolve(item));
+                    .forEach(item -> {
+                        CodegenModel model = getModel(item.dataType);
+                        // currently supporting required and conditional parameters only for request body object
+                        model.vendorExtensions.put("x-constructor-required", true);
+                        jsonRequestBodyResolver.resolve(item);
+                    });
             co.allParams.forEach(this::updateHeaderParamsList);
             co.pathParams = co.pathParams.stream()
                     .map(item -> codegenParameterIResolver.resolve(item, this))

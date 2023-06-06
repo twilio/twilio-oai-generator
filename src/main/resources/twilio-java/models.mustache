@@ -7,7 +7,7 @@
                 @JsonProperty("{{#lambda.lowercase}}{{{nameInSnakeCase}}}{{/lambda.lowercase}}")
                 @Getter @Setter private {{{dataType}}} {{name}};
             {{/allVars}}
-
+            {{#vendorExtensions.x-constructor-required}}
             {{#modelParameters}}
             public {{classname}}({{#.}}final {{{dataType}}} {{name}}{{^-last}}, {{/-last}}{{/.}} ) {
                 {{#.}}
@@ -15,6 +15,7 @@
                 {{/.}}
             }
             {{/modelParameters}}
+            {{/vendorExtensions.x-constructor-required}}
 
             {{^vendorExtensions.x-response}}
             public static {{classname}} fromJson(String jsonString, ObjectMapper mapper) throws IOException {
