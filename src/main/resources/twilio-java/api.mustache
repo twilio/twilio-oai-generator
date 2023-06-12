@@ -64,6 +64,7 @@ import com.twilio.type.SubscribeRule;
 public class {{apiName}} extends Resource {
     private static final long serialVersionUID = {{serialVersionUID}}L;
 
+    {{>models}}
     {{#apiOperations}}
     {{#vendorExtensions.x-is-create-operation}}
     {{#vendorExtensions.x-signature-list}}
@@ -143,6 +144,7 @@ public class {{apiName}} extends Resource {
         }
     }
 {{>responseModel}}
+{{>enums}}
 }
 {{/resources}}
 

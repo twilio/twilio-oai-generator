@@ -198,7 +198,7 @@ public abstract class FluentApiResourceBuilder extends ApiResourceBuilder {
 
         if (baseType != null) {
             final String datatypeWithEnum = getDataTypeName(baseType);
-            consumer.accept(datatypeWithEnum, dataType.replace(baseType, datatypeWithEnum));
+            consumer.accept(datatypeWithEnum, dataType.replaceFirst(baseType, datatypeWithEnum));
         }
     }
 

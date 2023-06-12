@@ -3,8 +3,10 @@ package com.twilio.oai.api;
 import com.twilio.oai.DirectoryStructureService;
 import com.twilio.oai.PathUtils;
 import com.twilio.oai.StringHelper;
+import com.twilio.oai.common.EnumConstants;
 import com.twilio.oai.common.Utility;
 import com.twilio.oai.resolver.Resolver;
+import com.twilio.oai.resolver.java.ContainerResolver;
 import com.twilio.oai.resource.Resource;
 import com.twilio.oai.template.IApiActionTemplate;
 import lombok.Getter;
@@ -177,13 +179,17 @@ public abstract class ApiResourceBuilder implements IApiResourceBuilder {
         return this;
     }
 
-    private CodegenModel getModel(String modelName ) {
+    public CodegenModel getModel(String modelName ) {
         for (CodegenModel cm : this.allModels) {
             if (cm.classname.equals(modelName)) {
                 return cm;
             }
         }
         return null;
+    }
+    
+    public void addNestedModel(final CodegenModel codegenModel) {
+        nestedModels.add(codegenModel);
     }
 
     @Override

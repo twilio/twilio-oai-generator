@@ -74,6 +74,10 @@ import com.twilio.type.SubscribeRule;
 public class Call extends Resource {
     private static final long serialVersionUID = 101860285032933L;
 
+    
+
+
+
     public static CallCreator creator(final String requiredStringProperty, final HttpMethod testMethod){
         return new CallCreator(requiredStringProperty, testMethod);
     }
@@ -317,6 +321,7 @@ public class Call extends Resource {
     public int hashCode() {
         return Objects.hash(accountSid, sid, testString, testInteger, testObject, testDateTime, testNumber, from, priceUnit, testNumberFloat, testNumberDecimal, testEnum, a2pProfileBundleSid, testArrayOfIntegers, testArrayOfArrayOfIntegers, testArrayOfObjects, testArrayOfEnum);
     }
+
 
 }
 
