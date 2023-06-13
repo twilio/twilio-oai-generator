@@ -143,6 +143,16 @@ public class {{apiName}} extends Resource {
             throw new ApiConnectionException(e.getMessage(), e);
         }
     }
+    {{#hasNestedRequestBody}}
+    public String toJsonString(Object object, ObjectMapper objectMapper) {
+        try {
+            return mapper.writeValueAsString(object);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+    {{/hasNestedRequestBody}}
 {{>responseModel}}
 {{>enums}}
 }

@@ -4,6 +4,7 @@
         @ToString
         static public class {{classname}} {
             {{#allVars}}
+                @JsonInclude(JsonInclude.Include.NON_EMPTY)
                 @JsonProperty("{{#lambda.lowercase}}{{{nameInSnakeCase}}}{{/lambda.lowercase}}")
                 @Getter @Setter private {{{dataType}}} {{name}};
             {{/allVars}}

@@ -340,7 +340,7 @@ public class JavaApiResourceBuilder extends ApiResourceBuilder{
     @Override
     protected Map<String, Object> mapOperation(CodegenOperation co) {
         Map<String, Object> operationMap = super.mapOperation(co);
-        if (isNestedRequestBody) {
+        if (hasNestedRequestBody) {
             operationMap.put(SIGNATURE_LIST, generateSignatureListJson(co));
             modelParameters = generateSignatureListBody(co);
         } else {
