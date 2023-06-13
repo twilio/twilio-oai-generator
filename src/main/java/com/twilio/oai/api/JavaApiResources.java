@@ -12,9 +12,11 @@ public class JavaApiResources extends ApiResources{
     public long serialVersionUID;
     public CodegenModel responseModel;
 
-    List<IJsonSchemaValidationProperties> enums;
+    public List<IJsonSchemaValidationProperties> enums;
 
-    ArrayList<List<CodegenProperty>> modelParameters;
+    public ArrayList<List<CodegenProperty>> modelParameters;
+
+    public boolean hasNestedRequestBody;
 
     public JavaApiResources(JavaApiResourceBuilder apiResourceBuilder) {
         super(apiResourceBuilder);
@@ -23,6 +25,7 @@ public class JavaApiResources extends ApiResources{
         this.enums = new ArrayList<>(apiResourceBuilder.enums);
         // TODO: Need to improve, if there are requestBody in create and update operation.
         this.modelParameters = apiResourceBuilder.modelParameters;
+        this.hasNestedRequestBody = apiResourceBuilder.hasNestedRequestBody;
         
     }
 }

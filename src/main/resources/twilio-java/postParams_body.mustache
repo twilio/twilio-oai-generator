@@ -1,0 +1,8 @@
+    private void addPostParams(final Request request, TwilioRestClient client) {
+        ObjectMapper objectMapper = client.getObjectMapper();
+    {{#bodyParams}}
+        if ({{paramName}} != null) {
+            request.addPostParam("{{baseName}}", {{apiName}}.toJsonString({{paramName}}, objectMapper));
+        }
+    {{/bodyParams}}
+    }

@@ -77,6 +77,7 @@ public class JavaConventionResolver {
                 }
                 property.dataType = resourceName + ApplicationConstants.DOT + property.dataType;
             }
+            property.enumName = property.baseName;
             return property;
         }
         return property;
