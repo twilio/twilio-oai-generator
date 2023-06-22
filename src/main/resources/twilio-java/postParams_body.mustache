@@ -2,7 +2,7 @@
         ObjectMapper objectMapper = client.getObjectMapper();
     {{#bodyParams}}
         if ({{paramName}} != null) {
-            request.addPostParam("{{baseName}}", {{apiName}}.toJsonString({{paramName}}, objectMapper));
+            request.addPostParam("{{baseName}}", {{apiName}}.toJson({{paramName}}, objectMapper));
         }
     {{/bodyParams}}
     }

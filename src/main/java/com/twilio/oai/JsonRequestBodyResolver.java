@@ -17,8 +17,6 @@ import java.util.Stack;
 public class JsonRequestBodyResolver {
     final Resolver<CodegenProperty> codegenPropertyResolver;
     
-    final Resolver<CodegenParameter> codegenParameterResolver;
-    
     final ApiResourceBuilder apiResourceBuilder;
     
     final private ContainerResolver containerResolver = new ContainerResolver(Arrays.asList(EnumConstants.JavaDataTypes.values()));
@@ -31,16 +29,13 @@ public class JsonRequestBodyResolver {
 
     private String resourceName;
 
-    public JsonRequestBodyResolver(Resolver<CodegenProperty> codegenPropertyResolver,
-                                   Resolver<CodegenParameter> codegenParameterResolver,
-                                   ApiResourceBuilder apiResourceBuilder) {
+    public JsonRequestBodyResolver(ApiResourceBuilder apiResourceBuilder, final Resolver<CodegenProperty> codegenPropertyResolver) {
         this.codegenPropertyResolver = codegenPropertyResolver;
         this.apiResourceBuilder = apiResourceBuilder;
-        this.codegenParameterResolver = codegenParameterResolver;
         this.conventionResolver = new JavaConventionResolver();
     }
     
-    public void resolve(final CodegenParameter codegenParameter) {
+    public void resolve(final CodegenParameter codegenParameter, final Resolver<CodegenParameter> codegenParameterResolver) {
         // Only add if model exists
         Stack<String> containerTypes = new Stack<>();
         codegenParameter.dataType = containerResolver.unwrapContainerType(codegenParameter, containerTypes);
@@ -53,14 +48,19 @@ public class JsonRequestBodyResolver {
             // If parameter is not a model.
             codegenParameterResolver.resolve(codegenParameter, apiResourceBuilder);
         } else {
-            apiResourceBuilder.addNestedModel(model);
-            for (CodegenProperty property: codegenParameter.getVars()) {
+            // Example: datatype resolution: CreateMessagesRequest -> Message.CreateMessagesRequest
+            codegenParameterResolver.resolve(codegenParameter, apiResourceBuilder);
+            for (CodegenProperty property: model.getVars()) {
                 resolve(property);
             }
+            for (CodegenProperty property: codegenParameter.vars) {
+                resolve(property);
+            }
+            apiResourceBuilder.addNestedModel(model);
         }
     }
 
-    public void resolve(CodegenProperty property) {
+    public void resolve(final CodegenProperty property) {
         Stack<String> containerTypes = new Stack<>();
         property.dataType = containerResolver.unwrapContainerType(property, containerTypes);
         final CodegenModel model = apiResourceBuilder.getModel(property.dataType);
@@ -73,13 +73,19 @@ public class JsonRequestBodyResolver {
             conventionResolver.resolveEnumProperty(property, resourceName);
             ((JavaApiResourceBuilder)apiResourceBuilder).enums.add(property);
         } else {
-            apiResourceBuilder.addNestedModel(model);
             // Get children
             for (CodegenProperty codegenProperty: model.vars) {
                 codegenProperty.dataType = containerResolver.unwrapContainerType(codegenProperty, containerTypes);
                 resolve(codegenProperty);
                 containerResolver.rewrapContainerType(codegenProperty, containerTypes);
             }
+
+            for (CodegenProperty codegenProperty: property.vars) {
+                codegenProperty.dataType = containerResolver.unwrapContainerType(codegenProperty, containerTypes);
+                resolve(codegenProperty);
+                containerResolver.rewrapContainerType(codegenProperty, containerTypes);
+            }
+            apiResourceBuilder.addNestedModel(model);
         }
     }
 }

@@ -3,13 +3,17 @@
     {{#resources.nestedModels}}
         @ToString
         static public class {{classname}} {
-            {{#allVars}}
-                @JsonInclude(JsonInclude.Include.NON_EMPTY)
-                @JsonProperty("{{#lambda.lowercase}}{{{nameInSnakeCase}}}{{/lambda.lowercase}}")
-                @Getter @Setter private {{{dataType}}} {{name}};
-            {{/allVars}}
-            {{#vendorExtensions.x-constructor-required}}
-            {{#modelParameters}}
+        {{#vars}}
+            @JsonInclude(JsonInclude.Include.NON_EMPTY)
+            @JsonProperty("{{#lambda.lowercase}}{{{nameInSnakeCase}}}{{/lambda.lowercase}}")
+            @Getter @Setter private {{{dataType}}} {{name}};
+            {{#vendorExtensions.x-serialize}}
+            public String get{{#lambda.titlecase}}{{name}}{{/lambda.titlecase}}() {
+                return {{vendorExtensions.x-serialize}};
+            }{{/vendorExtensions.x-serialize}}
+        {{/vars}}
+        {{#vendorExtensions.x-constructor-required}}
+        {{#modelParameters}}
             public {{classname}}({{#.}}final {{{dataType}}} {{name}}{{^-last}}, {{/-last}}{{/.}} ) {
                 {{#.}}
                 this.{{name}} = {{name}};

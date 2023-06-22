@@ -12,6 +12,7 @@ import java.util.Arrays;
 import java.util.Stack;
 
 import static com.twilio.oai.common.ApplicationConstants.DESERIALIZE_VEND_EXT;
+import static com.twilio.oai.common.ApplicationConstants.SERIALIZE_VEND_EXT;
 
 @AllArgsConstructor
 public class LanguagePropertyResolver extends Resolver<CodegenProperty> {
@@ -25,6 +26,7 @@ public class LanguagePropertyResolver extends Resolver<CodegenProperty> {
         Stack<String> containerTypes = new Stack();
         codegenProperty.dataType = containerResolver.unwrapContainerType(codegenProperty, containerTypes);
         resolveProperties(codegenProperty, apiResourceBuilder);
+        resolveSerialize(codegenProperty);
         resolveDeSerialize(codegenProperty);
         resolvePrefixedMap(codegenProperty);
         containerResolver.rewrapContainerType(codegenProperty, containerTypes);
@@ -37,7 +39,19 @@ public class LanguagePropertyResolver extends Resolver<CodegenProperty> {
             .getString(codegenProperty.dataFormat)
             .ifPresent(dataType -> codegenProperty.dataType = dataType);
     }
-
+    
+    protected void resolveSerialize(CodegenProperty codegenProperty) {
+        mapper
+            .serialize()
+            .getString(getDataType(codegenProperty))
+            .ifPresent(serialize -> {
+                serialize = serialize.replace("{value}", codegenProperty.name);
+                if (!codegenProperty.name.equals(serialize)) {
+                    // Save only which require custom serialization
+                    codegenProperty.vendorExtensions.put(SERIALIZE_VEND_EXT, serialize);
+                }
+            });
+    }
     protected void resolveDeSerialize(CodegenProperty codegenProperty) {
         mapper
             .deserialize()

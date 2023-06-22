@@ -73,8 +73,7 @@ public class JavaApiResourceBuilder extends ApiResourceBuilder{
     @Override
     public ApiResourceBuilder updateOperations(Resolver<CodegenParameter> codegenParameterIResolver) {
         headerParamModelList = new HashSet<>();
-        JsonRequestBodyResolver jsonRequestBodyResolver = new JsonRequestBodyResolver(codegenPropertyIResolver, 
-                codegenParameterIResolver, this);
+        JsonRequestBodyResolver jsonRequestBodyResolver = new JsonRequestBodyResolver(this, codegenPropertyIResolver);
         this.codegenOperationList.forEach(co -> {
             updateNestedContent(co);
             List<String> filePathArray = new ArrayList<>(Arrays.asList(co.baseName.split(PATH_SEPARATOR_PLACEHOLDER)));
@@ -93,7 +92,7 @@ public class JavaApiResourceBuilder extends ApiResourceBuilder{
                         CodegenModel model = getModel(item.dataType);
                         // currently supporting required and conditional parameters only for request body object
                         model.vendorExtensions.put("x-constructor-required", true);
-                        jsonRequestBodyResolver.resolve(item);
+                        jsonRequestBodyResolver.resolve(item, codegenParameterIResolver);
                     });
             co.allParams.forEach(this::updateHeaderParamsList);
             co.pathParams = co.pathParams.stream()
@@ -156,6 +155,7 @@ public class JavaApiResourceBuilder extends ApiResourceBuilder{
     @Override
     public ApiResourceBuilder updateResponseModel(Resolver<CodegenProperty> codegenPropertyIResolver, Resolver<CodegenModel> codegenModelResolver) {
         List<CodegenModel> responseModels = new ArrayList<>();
+        JsonRequestBodyResolver jsonRequestBodyResolver = new JsonRequestBodyResolver(this, codegenPropertyIResolver);
         codegenOperationList.forEach(co -> {
             List<String> filePathArray = new ArrayList<>(Arrays.asList(co.baseName.split(PATH_SEPARATOR_PLACEHOLDER)));
             String resourceName = filePathArray.remove(filePathArray.size()-1);
@@ -166,8 +166,10 @@ public class JavaApiResourceBuilder extends ApiResourceBuilder{
                     .map(modelName -> getModel(modelName, co))
                     .flatMap(Optional::stream)
                     .forEach(item -> {
+                        // Here use json body resolver
                         codegenModelResolver.resolve(item, this);
-                        item.vars.forEach(e -> codegenPropertyIResolver.resolve(e, this));
+                        item.vars.forEach(property ->
+                                jsonRequestBodyResolver.resolve(property));
                         responseModels.add(processEnumProperty(item, co, resourceName));
                         responseModels.addAll(headerParamModelList);
                         this.serialVersionUID = calculateSerialVersionUid(item.vars);
