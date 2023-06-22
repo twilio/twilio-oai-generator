@@ -27,7 +27,7 @@ public class TwilioCodegenAdapter {
 
     private static final String INPUT_SPEC_PATTERN = "[^_]+_(?<domain>.+?)(_(?<version>[^_]+))?\\..+";
     // regex example : https://flex-api.twilio.com
-    private static final String SERVER_PATTERN = "https://(?<domain>[^.]+)\\.twilio\\.com";
+    private static final String SERVER_PATTERN = "https://(?<domain>[^:/?\\n]+)\\.twilio\\.com";
     private Map<String, Map<String, Boolean>> toggles = new HashMap();
     public static final String DEFAULT_CONFIG_TOGGLE_JSON_PATH = CONFIG_PATH + File.separator + "toggles.json";
     private final DefaultCodegen codegen;
@@ -70,7 +70,7 @@ public class TwilioCodegenAdapter {
     }
 
     public void setDomain(final String domain) {
-        final String domainPackage = domain.replace("-", "");
+        final String domainPackage = domain.replaceAll("[._]", "");
         setOutputDir(domainPackage, getInputSpecVersion());
 
         codegen.additionalProperties().put("domainName", StringHelper.camelize(domain));
@@ -86,6 +86,14 @@ public class TwilioCodegenAdapter {
     }
 
     public String getDomainFromOpenAPI(final OpenAPI openAPI) {
+        //fetch domain from server url present in openAPI
+        if (openAPI.getServers() != null) {
+            return openAPI.getServers().stream().findFirst()
+                .map(Server::getUrl)
+                .map(url -> url.replaceAll(SERVER_PATTERN, "${domain}"))
+                .orElseThrow();
+        }
+        //fetch domain from server url present in openAPI.paths
         return openAPI
             .getPaths()
             .values()
