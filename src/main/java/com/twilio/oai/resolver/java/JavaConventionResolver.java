@@ -23,6 +23,12 @@ public class JavaConventionResolver {
 
     private ContainerResolver containerResolver = new ContainerResolver(Arrays.asList(EnumConstants.JavaDataTypes.values()));
 
+    /*
+     * Mustache           Object (property or parameter)
+     * enum class name  = enumName
+     * data type        = datatype (apiName.enumName)
+     * variable name    = name
+     */
      @SuppressWarnings("unchecked")
     public CodegenParameter resolveEnumParameter(CodegenParameter parameter, String resourceName) {
         if( parameter.isEnum && !parameter.vendorExtensions.containsKey(REF_ENUM_EXTENSION_NAME)) {
@@ -61,6 +67,7 @@ public class JavaConventionResolver {
             Stack<String> containerTypes = new Stack<>();
             if (property.isContainer) {
                 containerResolver.unwrapContainerType(property, containerTypes);
+                property.enumName = property.dataType;
                 property.dataType = resourceName + ApplicationConstants.DOT + property.dataType;
                 if (property.complexType.contains(ApplicationConstants.ENUM)) {
                     property.complexType = Utility.removeEnumName(property.complexType);
@@ -75,9 +82,9 @@ public class JavaConventionResolver {
                     property.complexType = Utility.removeEnumName(property.complexType);
                     property.dataType = Utility.removeEnumName(property.dataType);
                 }
+                property.enumName = property.dataType;
                 property.dataType = resourceName + ApplicationConstants.DOT + property.dataType;
             }
-            property.enumName = property.baseName;
             return property;
         }
         return property;
