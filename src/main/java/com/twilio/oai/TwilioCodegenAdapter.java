@@ -25,6 +25,7 @@ public class TwilioCodegenAdapter {
     private static final String INPUT_SPEC_PATTERN = "[^_]+_(?<domain>.+?)(_(?<version>[^_]+))?\\..+";
     // regex example : https://flex-api.twilio.com
     private static final String SERVER_PATTERN = "https://(?<domain>[^:/?\\n]+)\\.twilio\\.com";
+    private static final String DEFAULT_URL = "/";
     private Map<String, Map<String, Boolean>> toggles = new HashMap();
     public static final String DEFAULT_CONFIG_TOGGLE_JSON_PATH = CONFIG_PATH + File.separator + "toggles.json";
     private final DefaultCodegen codegen;
