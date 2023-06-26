@@ -6,10 +6,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Stream;
 
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -27,7 +24,8 @@ public class TwilioCodegenAdapter {
 
     private static final String INPUT_SPEC_PATTERN = "[^_]+_(?<domain>.+?)(_(?<version>[^_]+))?\\..+";
     // regex example : https://flex-api.twilio.com
-    private static final String SERVER_PATTERN = "https://(?<domain>[^.]+)\\.twilio\\.com";
+    private static final String SERVER_PATTERN = "https://(?<domain>[^:/?\\n]+)\\.twilio\\.com";
+    private static final String DEFAULT_URL = "/";
     private Map<String, Map<String, Boolean>> toggles = new HashMap();
     public static final String DEFAULT_CONFIG_TOGGLE_JSON_PATH = CONFIG_PATH + File.separator + "toggles.json";
     private final DefaultCodegen codegen;
@@ -70,7 +68,7 @@ public class TwilioCodegenAdapter {
     }
 
     public void setDomain(final String domain) {
-        final String domainPackage = domain.replace("-", "");
+        final String domainPackage = domain.replaceAll("[-.]", "");
         setOutputDir(domainPackage, getInputSpecVersion());
 
         codegen.additionalProperties().put("domainName", StringHelper.camelize(domain));
@@ -86,6 +84,14 @@ public class TwilioCodegenAdapter {
     }
 
     public String getDomainFromOpenAPI(final OpenAPI openAPI) {
+        //fetch domain from server url present in openAPI
+        if (openAPI.getServers() != null ) {
+            Optional<String> url = openAPI.getServers().stream().findFirst().map(Server::getUrl);
+            if (url.isPresent() && !url.get().equals(DEFAULT_URL)){
+                return url.get().replaceAll(SERVER_PATTERN, "${domain}");
+            }
+        }
+        //fetch domain from server url present in openAPI.paths
         return openAPI
             .getPaths()
             .values()
