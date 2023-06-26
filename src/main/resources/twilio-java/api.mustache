@@ -150,9 +150,12 @@ public class {{apiName}} extends Resource {
     public static String toJson(Object object, ObjectMapper mapper) {
         try {
             return mapper.writeValueAsString(object);
+        } catch (final JsonMappingException e) {
+            throw new ApiException(e.getMessage(), e);
         } catch (JsonProcessingException e) {
-            e.printStackTrace();
-            return null;
+            throw new ApiException(e.getMessage(), e);
+        } catch (final IOException e) {
+            throw new ApiConnectionException(e.getMessage(), e);
         }
     }
     {{/hasNestedRequestBody}}
