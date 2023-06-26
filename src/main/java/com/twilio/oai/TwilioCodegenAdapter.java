@@ -6,10 +6,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Stream;
 
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -87,11 +84,11 @@ public class TwilioCodegenAdapter {
 
     public String getDomainFromOpenAPI(final OpenAPI openAPI) {
         //fetch domain from server url present in openAPI
-        if (openAPI.getServers() != null) {
-            return openAPI.getServers().stream().findFirst()
-                .map(Server::getUrl)
-                .map(url -> url.replaceAll(SERVER_PATTERN, "${domain}"))
-                .orElseThrow();
+        if (openAPI.getServers() != null ) {
+            Optional<String> url = openAPI.getServers().stream().findFirst().map(Server::getUrl);
+            if (url.isPresent() && !url.get().equals(DEFAULT_URL)){
+                return url.get().replaceAll(SERVER_PATTERN, "${domain}");
+            }
         }
         //fetch domain from server url present in openAPI.paths
         return openAPI
