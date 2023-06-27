@@ -1,6 +1,7 @@
 package com.twilio.oai.common;
 
 import java.io.File;
+import java.util.function.Predicate;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -49,4 +50,6 @@ public class ApplicationConstants {
 
     public static final String PREFIXED_COLLAPSIBLE_MAP = "prefixed-collapsible-map";
     public static final String PHONE_NUMBER = "phone-number";
+
+    public static final Predicate<Integer> SUCCESS = i -> i != null && i >= 200 && i < 400;
 }
