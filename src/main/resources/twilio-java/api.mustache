@@ -159,8 +159,7 @@ public class {{apiName}} extends Resource {
         } catch (final IOException e) {
             throw new ApiConnectionException(e.getMessage(), e);
         }
-    }
-    {{/hasNestedRequestBody}}
+    }{{/hasNestedRequestBody}}
 {{>responseModel}}
 {{>enums}}
 }
