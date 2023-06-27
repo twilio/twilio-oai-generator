@@ -16,8 +16,10 @@ package com.twilio.rest.api.v2010;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.twilio.base.Resource;
@@ -78,9 +80,7 @@ public class Account extends Resource {
     private static final long serialVersionUID = 47015198707523L;
 
     
-
-
-
+        
     public static AccountCreator creator(){
         return new AccountCreator();
     }
@@ -146,6 +146,7 @@ public class Account extends Resource {
             throw new ApiConnectionException(e.getMessage(), e);
         }
     }
+
     public enum Status {
         IN_PROGRESS("in-progress"),
         PAUSED("paused"),
