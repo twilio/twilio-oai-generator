@@ -4,8 +4,10 @@ package com.twilio.rest.{{domainPackage}}.{{apiVersion}}{{namespaceSubPart}};
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.twilio.base.Resource;
@@ -157,8 +159,7 @@ public class {{apiName}} extends Resource {
         } catch (final IOException e) {
             throw new ApiConnectionException(e.getMessage(), e);
         }
-    }
-    {{/hasNestedRequestBody}}
+    }{{/hasNestedRequestBody}}
 {{>responseModel}}
 {{>enums}}
 }

@@ -16,8 +16,10 @@ package com.twilio.rest.versionless.deployedDevices;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.twilio.base.Resource;
@@ -78,9 +80,7 @@ public class Fleet extends Resource {
     private static final long serialVersionUID = 163787776958144L;
 
     
-
-
-
+        
     public static FleetCreator creator(){
         return new FleetCreator();
     }
@@ -125,6 +125,7 @@ public class Fleet extends Resource {
             throw new ApiConnectionException(e.getMessage(), e);
         }
     }
+
 
     private final String name;
     private final String sid;

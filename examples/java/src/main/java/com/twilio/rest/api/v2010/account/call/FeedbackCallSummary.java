@@ -16,8 +16,10 @@ package com.twilio.rest.api.v2010.account.call;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.twilio.base.Resource;
@@ -78,9 +80,7 @@ public class FeedbackCallSummary extends Resource {
     private static final long serialVersionUID = 176825368696347L;
 
     
-
-
-
+        
     public static FeedbackCallSummaryUpdater updater(final String pathSid, final LocalDate endDate, final LocalDate startDate){
         return new FeedbackCallSummaryUpdater(pathSid, endDate, startDate);
     }
@@ -124,6 +124,7 @@ public class FeedbackCallSummary extends Resource {
             throw new ApiConnectionException(e.getMessage(), e);
         }
     }
+
     public enum Status {
         IN_PROGRESS("in-progress"),
         PAUSED("paused"),

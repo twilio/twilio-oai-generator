@@ -16,8 +16,10 @@ package com.twilio.rest.flexapi.v1.credential;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.twilio.base.Resource;
@@ -78,9 +80,7 @@ public class NewCredentials extends Resource {
     private static final long serialVersionUID = 234000032744450L;
 
     
-
-
-
+        
     public static NewCredentialsCreator creator(final String testString, final Integer testInteger, final Float testNumberFloat){
         return new NewCredentialsCreator(testString, testInteger, testNumberFloat);
     }
@@ -130,6 +130,7 @@ public class NewCredentials extends Resource {
             throw new ApiConnectionException(e.getMessage(), e);
         }
     }
+
     public enum Permissions {
         GET_ALL("get-all"),
         POST_ALL("post-all");
