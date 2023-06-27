@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import com.twilio.oai.DirectoryStructureService;
 import com.twilio.oai.JsonRequestBodyResolver;
 import com.twilio.oai.StringHelper;
+import com.twilio.oai.common.ApplicationConstants;
 import com.twilio.oai.common.EnumConstants;
 import com.twilio.oai.common.Utility;
 import com.twilio.oai.resolver.Resolver;
@@ -161,6 +162,7 @@ public class JavaApiResourceBuilder extends ApiResourceBuilder{
             String resourceName = filePathArray.remove(filePathArray.size()-1);
             co.responses
                     .stream()
+                    .filter(response -> SUCCESS.test(Integer.parseInt(response.code.trim())))
                     .map(response -> response.dataType)
                     .filter(Objects::nonNull)
                     .map(modelName -> getModel(modelName, co))
