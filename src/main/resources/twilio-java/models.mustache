@@ -1,5 +1,6 @@
 
-        {{#resources.nestedModels}}@ToString
+        {{#resources.nestedModels}}
+        @ToString
         static public class {{classname}} {
         {{#vars}}
             @JsonInclude(JsonInclude.Include.NON_EMPTY)
