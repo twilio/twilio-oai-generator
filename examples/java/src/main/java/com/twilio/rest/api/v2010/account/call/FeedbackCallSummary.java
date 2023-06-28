@@ -80,7 +80,7 @@ public class FeedbackCallSummary extends Resource {
     private static final long serialVersionUID = 176825368696347L;
 
     
-        
+
     public static FeedbackCallSummaryUpdater updater(final String pathSid, final LocalDate endDate, final LocalDate startDate){
         return new FeedbackCallSummaryUpdater(pathSid, endDate, startDate);
     }

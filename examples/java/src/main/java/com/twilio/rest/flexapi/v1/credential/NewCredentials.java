@@ -80,7 +80,7 @@ public class NewCredentials extends Resource {
     private static final long serialVersionUID = 234000032744450L;
 
     
-        
+
     public static NewCredentialsCreator creator(final String testString, final Integer testInteger, final Float testNumberFloat){
         return new NewCredentialsCreator(testString, testInteger, testNumberFloat);
     }

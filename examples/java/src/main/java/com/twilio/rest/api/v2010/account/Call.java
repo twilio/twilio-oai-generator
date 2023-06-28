@@ -80,7 +80,7 @@ public class Call extends Resource {
     private static final long serialVersionUID = 101860285032933L;
 
     
-        
+
     public static CallCreator creator(final String requiredStringProperty, final HttpMethod testMethod){
         return new CallCreator(requiredStringProperty, testMethod);
     }

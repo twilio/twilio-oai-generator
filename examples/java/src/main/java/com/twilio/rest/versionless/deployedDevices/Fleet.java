@@ -80,7 +80,7 @@ public class Fleet extends Resource {
     private static final long serialVersionUID = 163787776958144L;
 
     
-        
+
     public static FleetCreator creator(){
         return new FleetCreator();
     }

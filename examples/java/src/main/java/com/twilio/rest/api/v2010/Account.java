@@ -80,7 +80,7 @@ public class Account extends Resource {
     private static final long serialVersionUID = 47015198707523L;
 
     
-        
+
     public static AccountCreator creator(){
         return new AccountCreator();
     }

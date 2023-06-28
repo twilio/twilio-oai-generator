@@ -80,7 +80,7 @@ public class History extends Resource {
     private static final long serialVersionUID = 234000032744450L;
 
     
-        
+
     public static HistoryFetcher fetcher(final String pathSid){
         return new HistoryFetcher(pathSid);
     }

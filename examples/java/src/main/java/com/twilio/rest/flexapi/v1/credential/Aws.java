@@ -80,7 +80,7 @@ public class Aws extends Resource {
     private static final long serialVersionUID = 234000032744450L;
 
     
-        
+
     public static AwsDeleter deleter(final String pathSid){
         return new AwsDeleter(pathSid);
     }
