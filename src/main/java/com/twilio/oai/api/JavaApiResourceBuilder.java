@@ -164,7 +164,7 @@ public class JavaApiResourceBuilder extends ApiResourceBuilder{
                     .stream()
                     .filter(response -> SUCCESS.test(Integer.parseInt(response.code.trim())))
                     .map(response -> {
-                        if (response.dataType.startsWith(EnumConstants.JavaDataTypes.LIST.getValue())) {
+                        if (response.dataType != null && response.dataType.startsWith(EnumConstants.JavaDataTypes.LIST.getValue())) {
                             return response.baseType;
                         }
                         return response.dataType;
