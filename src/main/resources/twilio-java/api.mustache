@@ -4,8 +4,10 @@ package com.twilio.rest.{{domainPackage}}.{{apiVersion}}{{namespaceSubPart}};
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.twilio.base.Resource;
@@ -41,6 +43,9 @@ import java.util.Map;
 import java.util.Objects;
 {{/fullJavaUtil}}
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 import java.util.Map;
 import java.time.LocalDate;
@@ -64,6 +69,7 @@ import com.twilio.type.SubscribeRule;
 public class {{apiName}} extends Resource {
     private static final long serialVersionUID = {{serialVersionUID}}L;
 
+    {{>models}}
     {{#apiOperations}}
     {{#vendorExtensions.x-is-create-operation}}
     {{#vendorExtensions.x-signature-list}}
@@ -142,7 +148,20 @@ public class {{apiName}} extends Resource {
             throw new ApiConnectionException(e.getMessage(), e);
         }
     }
+    {{#hasNestedRequestBody}}
+    public static String toJson(Object object, ObjectMapper mapper) {
+        try {
+            return mapper.writeValueAsString(object);
+        } catch (final JsonMappingException e) {
+            throw new ApiException(e.getMessage(), e);
+        } catch (JsonProcessingException e) {
+            throw new ApiException(e.getMessage(), e);
+        } catch (final IOException e) {
+            throw new ApiConnectionException(e.getMessage(), e);
+        }
+    }{{/hasNestedRequestBody}}
 {{>responseModel}}
+{{>enums}}
 }
 {{/resources}}
 

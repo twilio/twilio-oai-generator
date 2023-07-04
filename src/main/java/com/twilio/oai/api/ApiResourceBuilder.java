@@ -37,7 +37,7 @@ public abstract class ApiResourceBuilder implements IApiResourceBuilder {
     protected final String recordKey;
     protected String apiPath = "";
     protected String namespaceSubPart = "";
-    boolean isNestedRequestBody;
+    protected boolean hasNestedRequestBody;
     @Getter
     protected Map<String, Boolean> toggleMap = new HashMap<>();
 
@@ -129,7 +129,7 @@ public abstract class ApiResourceBuilder implements IApiResourceBuilder {
 
     @Override
     public ApiResourceBuilder updateModel(Resolver<CodegenModel> codegenModelResolver) {
-        if (!isNestedRequestBody) return this;
+        if (!hasNestedRequestBody) return this;
         List<CodegenParameter> parameters = new ArrayList<>();
         List<CodegenResponse> responses = new ArrayList<>();
         for (CodegenOperation co: this.codegenOperationList) {
@@ -177,13 +177,17 @@ public abstract class ApiResourceBuilder implements IApiResourceBuilder {
         return this;
     }
 
-    private CodegenModel getModel(String modelName ) {
+    public CodegenModel getModel(String modelName ) {
         for (CodegenModel cm : this.allModels) {
             if (cm.classname.equals(modelName)) {
                 return cm;
             }
         }
         return null;
+    }
+    
+    public void addNestedModel(final CodegenModel codegenModel) {
+        nestedModels.add(codegenModel);
     }
 
     @Override
@@ -325,11 +329,11 @@ public abstract class ApiResourceBuilder implements IApiResourceBuilder {
     }
 
     protected boolean updateNestedContent(CodegenOperation co) {
-        if(!isNestedRequestBody) {
+        if(!hasNestedRequestBody) {
             if (co.bodyParam != null && co.bodyParam.getContent() != null) {
-                isNestedRequestBody = co.bodyParam.getContent().containsKey(NESTED_CONTENT_TYPE);
+                hasNestedRequestBody = co.bodyParam.getContent().containsKey(NESTED_CONTENT_TYPE);
             }
         }
-        return isNestedRequestBody;
+        return hasNestedRequestBody;
     }
 }

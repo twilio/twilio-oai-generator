@@ -3,23 +3,33 @@ package com.twilio.oai.resolver;
 import com.twilio.oai.api.ApiResourceBuilder;
 import com.twilio.oai.common.ApplicationConstants;
 
+import com.twilio.oai.common.EnumConstants;
+import com.twilio.oai.resolver.java.ContainerResolver;
 import lombok.AllArgsConstructor;
-import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenProperty;
 
-import java.util.List;
+import java.util.Arrays;
+import java.util.Stack;
 
 import static com.twilio.oai.common.ApplicationConstants.DESERIALIZE_VEND_EXT;
+import static com.twilio.oai.common.ApplicationConstants.SERIALIZE_VEND_EXT;
 
 @AllArgsConstructor
 public class LanguagePropertyResolver extends Resolver<CodegenProperty> {
     protected IConventionMapper mapper;
+    
+    
 
     @Override
     public CodegenProperty resolve(CodegenProperty codegenProperty, ApiResourceBuilder apiResourceBuilder) {
+        ContainerResolver containerResolver = new ContainerResolver(Arrays.asList(EnumConstants.JavaDataTypes.values()));
+        Stack<String> containerTypes = new Stack();
+        codegenProperty.dataType = containerResolver.unwrapContainerType(codegenProperty, containerTypes);
         resolveProperties(codegenProperty, apiResourceBuilder);
+        resolveSerialize(codegenProperty);
         resolveDeSerialize(codegenProperty);
         resolvePrefixedMap(codegenProperty);
+        containerResolver.rewrapContainerType(codegenProperty, containerTypes);
         return codegenProperty;
     }
 
@@ -29,7 +39,19 @@ public class LanguagePropertyResolver extends Resolver<CodegenProperty> {
             .getString(codegenProperty.dataFormat)
             .ifPresent(dataType -> codegenProperty.dataType = dataType);
     }
-
+    
+    protected void resolveSerialize(CodegenProperty codegenProperty) {
+        mapper
+            .serialize()
+            .getString(getDataType(codegenProperty))
+            .ifPresent(serialize -> {
+                serialize = serialize.replace("{value}", codegenProperty.name);
+                if (!codegenProperty.name.equals(serialize)) {
+                    // Save only which require custom serialization
+                    codegenProperty.vendorExtensions.put(SERIALIZE_VEND_EXT, serialize);
+                }
+            });
+    }
     protected void resolveDeSerialize(CodegenProperty codegenProperty) {
         mapper
             .deserialize()

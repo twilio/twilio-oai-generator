@@ -16,8 +16,10 @@ package com.twilio.rest.versionless.understand;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.twilio.base.Resource;
@@ -51,6 +53,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 import java.util.Map;
 import java.time.LocalDate;
@@ -73,6 +78,8 @@ import com.twilio.type.SubscribeRule;
 @ToString
 public class Assistant extends Resource {
     private static final long serialVersionUID = 163787776958144L;
+
+    
 
     public static AssistantReader reader(){
         return new AssistantReader();
@@ -115,6 +122,7 @@ public class Assistant extends Resource {
         }
     }
 
+
     private final String sid;
     private final String friendlyName;
 
@@ -156,6 +164,7 @@ public class Assistant extends Resource {
     public int hashCode() {
         return Objects.hash(sid, friendlyName);
     }
+
 
 }
 

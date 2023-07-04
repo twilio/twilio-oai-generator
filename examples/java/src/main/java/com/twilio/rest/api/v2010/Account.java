@@ -16,8 +16,10 @@ package com.twilio.rest.api.v2010;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.twilio.base.Resource;
@@ -51,6 +53,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 import java.util.Map;
 import java.time.LocalDate;
@@ -73,6 +78,8 @@ import com.twilio.type.SubscribeRule;
 @ToString
 public class Account extends Resource {
     private static final long serialVersionUID = 47015198707523L;
+
+    
 
     public static AccountCreator creator(){
         return new AccountCreator();
@@ -139,6 +146,7 @@ public class Account extends Resource {
             throw new ApiConnectionException(e.getMessage(), e);
         }
     }
+
     public enum Status {
         IN_PROGRESS("in-progress"),
         PAUSED("paused"),
@@ -344,6 +352,7 @@ public class Account extends Resource {
     public int hashCode() {
         return Objects.hash(accountSid, sid, testString, testInteger, testObject, testDateTime, testNumber, from, priceUnit, testNumberFloat, testNumberDecimal, testEnum, a2pProfileBundleSid, testArrayOfIntegers, testArrayOfArrayOfIntegers, testArrayOfObjects, testArrayOfEnum);
     }
+
 
 }
 

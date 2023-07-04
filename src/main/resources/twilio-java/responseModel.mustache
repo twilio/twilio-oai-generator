@@ -32,7 +32,7 @@
 
     @JsonCreator
     private {{apiName}}({{#vars}}
-        @JsonProperty("{{{nameInSnakeCase}}}")
+        @JsonProperty("{{#lambda.lowercase}}{{{nameInSnakeCase}}}{{/lambda.lowercase}}")
         {{#vendorExtensions.hydrate}}
         final String {{{name}}}{{^-last}},{{/-last}}
         {{/vendorExtensions.hydrate}}

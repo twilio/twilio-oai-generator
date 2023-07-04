@@ -3,6 +3,7 @@
 package com.twilio.rest.{{domainPackage}}.{{apiVersion}}{{namespaceSubPart}};
 
 import com.twilio.base.Updater;
+import com.twilio.constant.EnumConstants;
 import com.twilio.converter.Promoter;
 import com.twilio.exception.ApiConnectionException;
 import com.twilio.converter.PrefixedCollapsibleMap;
@@ -81,6 +82,7 @@ public class {{apiName}}Updater extends Updater<{{apiName}}>{
         addQueryParams(request);
         {{/queryParams.0}}
         {{#formParams.0}}
+        request.setContentType(EnumConstants.ContentType.FORM_URLENCODED);
         addPostParams(request);
         {{/formParams.0}}
         {{#headerParams.0}}

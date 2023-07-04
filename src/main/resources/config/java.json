@@ -104,6 +104,7 @@
   "serialize": {
     "_": "{value}.toString()",
     "endpoint": "{value}.getEndpoint()",
+    "phone-number": "{value}.getEndpoint()",
     "iso_country_code": "{value}",
     "object": "Converter.mapToJson({value})",
     "date": "DateConverter.dateStringFromLocalDate({value})",

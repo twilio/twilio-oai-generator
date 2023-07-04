@@ -16,8 +16,10 @@ package com.twilio.rest.flexapi.v1.credential;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.twilio.base.Resource;
@@ -51,6 +53,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 import java.util.Map;
 import java.time.LocalDate;
@@ -73,6 +78,8 @@ import com.twilio.type.SubscribeRule;
 @ToString
 public class Aws extends Resource {
     private static final long serialVersionUID = 234000032744450L;
+
+    
 
     public static AwsDeleter deleter(final String pathSid){
         return new AwsDeleter(pathSid);
@@ -126,6 +133,7 @@ public class Aws extends Resource {
             throw new ApiConnectionException(e.getMessage(), e);
         }
     }
+
 
     private final String accountSid;
     private final String sid;
@@ -184,6 +192,7 @@ public class Aws extends Resource {
     public int hashCode() {
         return Objects.hash(accountSid, sid, testString, testInteger);
     }
+
 
 }
 
