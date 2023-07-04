@@ -163,7 +163,12 @@ public class JavaApiResourceBuilder extends ApiResourceBuilder{
             co.responses
                     .stream()
                     .filter(response -> SUCCESS.test(Integer.parseInt(response.code.trim())))
-                    .map(response -> response.dataType)
+                    .map(response -> {
+                        if (response.dataType.startsWith(EnumConstants.JavaDataTypes.LIST.getValue())) {
+                            return response.baseType;
+                        }
+                        return response.dataType;
+                    })
                     .filter(Objects::nonNull)
                     .map(modelName -> getModel(modelName, co))
                     .flatMap(Optional::stream)
