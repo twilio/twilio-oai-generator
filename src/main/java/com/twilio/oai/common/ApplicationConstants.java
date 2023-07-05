@@ -41,6 +41,7 @@ public class ApplicationConstants {
     public static final String PROMOTION_EXTENSION_NAME = "x-promotions";
     public static final String VENDOR_PREFIX = "x-";
     public static final String SERIALIZE_VEND_EXT = "x-serialize";
+    public static final String IS_SERIALIZE_LIST_EXT = "isList";
     public static final String DESERIALIZE_VEND_EXT = "x-deserialize";
     public static final String ENUM = "Enum";
     public static final String RESOURCE = "Resource";
