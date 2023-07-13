@@ -59,7 +59,7 @@ export function CredentialListInstance(version: V1): CredentialListInstance {
     get: function newCredentials() {
       if (!instance._newCredentials) {
         instance._newCredentials = NewCredentialsListInstance(
-          instance._version
+          instance._version,
         );
       }
       return instance._newCredentials;
@@ -72,7 +72,7 @@ export function CredentialListInstance(version: V1): CredentialListInstance {
 
   instance[inspect.custom] = function inspectImpl(
     _depth: any,
-    options: InspectOptions
+    options: InspectOptions,
   ) {
     return inspect(instance.toJSON(), options);
   };

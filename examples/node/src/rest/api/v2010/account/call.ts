@@ -56,7 +56,7 @@ export interface CallContext {
    * @returns Resolves to processed boolean
    */
   remove(
-    callback?: (error: Error | null, item?: boolean) => any
+    callback?: (error: Error | null, item?: boolean) => any,
   ): Promise<boolean>;
 
   /**
@@ -67,7 +67,7 @@ export interface CallContext {
    * @returns Resolves to processed CallInstance
    */
   fetch(
-    callback?: (error: Error | null, item?: CallInstance) => any
+    callback?: (error: Error | null, item?: CallInstance) => any,
   ): Promise<CallInstance>;
 
   /**
@@ -89,7 +89,7 @@ export class CallContextImpl implements CallContext {
   constructor(
     protected _version: V2010,
     accountSid: string,
-    testInteger: number
+    testInteger: number,
   ) {
     if (!isValidPathParam(accountSid)) {
       throw new Error("Parameter 'accountSid' is not valid.");
@@ -104,7 +104,7 @@ export class CallContextImpl implements CallContext {
   }
 
   remove(
-    callback?: (error: Error | null, item?: boolean) => any
+    callback?: (error: Error | null, item?: boolean) => any,
   ): Promise<boolean> {
     const instance = this;
     let operationVersion = instance._version,
@@ -115,13 +115,13 @@ export class CallContextImpl implements CallContext {
 
     operationPromise = instance._version.setPromiseCallback(
       operationPromise,
-      callback
+      callback,
     );
     return operationPromise;
   }
 
   fetch(
-    callback?: (error: Error | null, item?: CallInstance) => any
+    callback?: (error: Error | null, item?: CallInstance) => any,
   ): Promise<CallInstance> {
     const instance = this;
     let operationVersion = instance._version,
@@ -136,13 +136,13 @@ export class CallContextImpl implements CallContext {
           operationVersion,
           payload,
           instance._solution.accountSid,
-          instance._solution.testInteger
-        )
+          instance._solution.testInteger,
+        ),
     );
 
     operationPromise = instance._version.setPromiseCallback(
       operationPromise,
-      callback
+      callback,
     );
     return operationPromise;
   }
@@ -191,7 +191,7 @@ export class CallInstance {
     protected _version: V2010,
     payload: CallResource,
     accountSid: string,
-    testInteger?: number
+    testInteger?: number,
   ) {
     this.accountSid = payload.account_sid;
     this.sid = payload.sid;
@@ -247,7 +247,7 @@ export class CallInstance {
       new CallContextImpl(
         this._version,
         this._solution.accountSid,
-        this._solution.testInteger
+        this._solution.testInteger,
       );
     return this._context;
   }
@@ -260,7 +260,7 @@ export class CallInstance {
    * @returns Resolves to processed boolean
    */
   remove(
-    callback?: (error: Error | null, item?: boolean) => any
+    callback?: (error: Error | null, item?: boolean) => any,
   ): Promise<boolean> {
     return this._proxy.remove(callback);
   }
@@ -273,7 +273,7 @@ export class CallInstance {
    * @returns Resolves to processed CallInstance
    */
   fetch(
-    callback?: (error: Error | null, item?: CallInstance) => any
+    callback?: (error: Error | null, item?: CallInstance) => any,
   ): Promise<CallInstance> {
     return this._proxy.fetch(callback);
   }
@@ -335,7 +335,7 @@ export interface CallListInstance {
    */
   create(
     params: CallListInstanceCreateOptions,
-    callback?: (error: Error | null, item?: CallInstance) => any
+    callback?: (error: Error | null, item?: CallInstance) => any,
   ): Promise<CallInstance>;
 
   /**
@@ -347,7 +347,7 @@ export interface CallListInstance {
 
 export function CallListInstance(
   version: V2010,
-  accountSid: string
+  accountSid: string,
 ): CallListInstance {
   if (!isValidPathParam(accountSid)) {
     throw new Error("Parameter 'accountSid' is not valid.");
@@ -369,7 +369,7 @@ export function CallListInstance(
       if (!instance._feedbackCallSummary) {
         instance._feedbackCallSummary = FeedbackCallSummaryListInstance(
           instance._version,
-          instance._solution.accountSid
+          instance._solution.accountSid,
         );
       }
       return instance._feedbackCallSummary;
@@ -378,7 +378,7 @@ export function CallListInstance(
 
   instance.create = function create(
     params: CallListInstanceCreateOptions,
-    callback?: (error: Error | null, items: CallInstance) => any
+    callback?: (error: Error | null, items: CallInstance) => any,
   ): Promise<CallInstance> {
     if (params === null || params === undefined) {
       throw new Error('Required parameter "params" missing.');
@@ -389,7 +389,7 @@ export function CallListInstance(
       params["requiredStringProperty"] === undefined
     ) {
       throw new Error(
-        "Required parameter \"params['requiredStringProperty']\" missing."
+        "Required parameter \"params['requiredStringProperty']\" missing.",
       );
     }
 
@@ -403,12 +403,12 @@ export function CallListInstance(
     if (params["testArrayOfStrings"] !== undefined)
       data["TestArrayOfStrings"] = serialize.map(
         params["testArrayOfStrings"],
-        (e: string) => e
+        (e: string) => e,
       );
     if (params["testArrayOfUri"] !== undefined)
       data["TestArrayOfUri"] = serialize.map(
         params["testArrayOfUri"],
-        (e: string) => e
+        (e: string) => e,
       );
 
     data["TestMethod"] = params["testMethod"];
@@ -429,13 +429,13 @@ export function CallListInstance(
         new CallInstance(
           operationVersion,
           payload,
-          instance._solution.accountSid
-        )
+          instance._solution.accountSid,
+        ),
     );
 
     operationPromise = instance._version.setPromiseCallback(
       operationPromise,
-      callback
+      callback,
     );
     return operationPromise;
   };
@@ -446,7 +446,7 @@ export function CallListInstance(
 
   instance[inspect.custom] = function inspectImpl(
     _depth: any,
-    options: InspectOptions
+    options: InspectOptions,
   ) {
     return inspect(instance.toJSON(), options);
   };

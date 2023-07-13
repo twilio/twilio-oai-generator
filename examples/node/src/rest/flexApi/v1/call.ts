@@ -27,7 +27,7 @@ export interface CallContext {
    * @returns Resolves to processed CallInstance
    */
   update(
-    callback?: (error: Error | null, item?: CallInstance) => any
+    callback?: (error: Error | null, item?: CallInstance) => any,
   ): Promise<CallInstance>;
 
   /**
@@ -45,7 +45,10 @@ export class CallContextImpl implements CallContext {
   protected _solution: CallContextSolution;
   protected _uri: string;
 
-  constructor(protected _version: V1, sid: string) {
+  constructor(
+    protected _version: V1,
+    sid: string,
+  ) {
     if (!isValidPathParam(sid)) {
       throw new Error("Parameter 'sid' is not valid.");
     }
@@ -55,7 +58,7 @@ export class CallContextImpl implements CallContext {
   }
 
   update(
-    callback?: (error: Error | null, item?: CallInstance) => any
+    callback?: (error: Error | null, item?: CallInstance) => any,
   ): Promise<CallInstance> {
     const instance = this;
     let operationVersion = instance._version,
@@ -66,12 +69,12 @@ export class CallContextImpl implements CallContext {
 
     operationPromise = operationPromise.then(
       (payload) =>
-        new CallInstance(operationVersion, payload, instance._solution.sid)
+        new CallInstance(operationVersion, payload, instance._solution.sid),
     );
 
     operationPromise = instance._version.setPromiseCallback(
       operationPromise,
-      callback
+      callback,
     );
     return operationPromise;
   }
@@ -100,7 +103,11 @@ export class CallInstance {
   protected _solution: CallContextSolution;
   protected _context?: CallContext;
 
-  constructor(protected _version: V1, payload: CallResource, sid?: string) {
+  constructor(
+    protected _version: V1,
+    payload: CallResource,
+    sid?: string,
+  ) {
     this.sid = deserialize.integer(payload.sid);
 
     this._solution = { sid: sid || this.sid.toString() };
@@ -125,7 +132,7 @@ export class CallInstance {
    * @returns Resolves to processed CallInstance
    */
   update(
-    callback?: (error: Error | null, item?: CallInstance) => any
+    callback?: (error: Error | null, item?: CallInstance) => any,
   ): Promise<CallInstance> {
     return this._proxy.update(callback);
   }
@@ -180,7 +187,7 @@ export function CallListInstance(version: V1): CallListInstance {
 
   instance[inspect.custom] = function inspectImpl(
     _depth: any,
-    options: InspectOptions
+    options: InspectOptions,
   ) {
     return inspect(instance.toJSON(), options);
   };

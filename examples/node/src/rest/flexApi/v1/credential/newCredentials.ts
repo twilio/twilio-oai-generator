@@ -83,7 +83,7 @@ export interface NewCredentialsListInstance {
    */
   create(
     params: NewCredentialsListInstanceCreateOptions,
-    callback?: (error: Error | null, item?: NewCredentialsInstance) => any
+    callback?: (error: Error | null, item?: NewCredentialsInstance) => any,
   ): Promise<NewCredentialsInstance>;
 
   /**
@@ -94,7 +94,7 @@ export interface NewCredentialsListInstance {
 }
 
 export function NewCredentialsListInstance(
-  version: V1
+  version: V1,
 ): NewCredentialsListInstance {
   const instance = {} as NewCredentialsListInstance;
 
@@ -104,7 +104,7 @@ export function NewCredentialsListInstance(
 
   instance.create = function create(
     params: NewCredentialsListInstanceCreateOptions,
-    callback?: (error: Error | null, items: NewCredentialsInstance) => any
+    callback?: (error: Error | null, items: NewCredentialsInstance) => any,
   ): Promise<NewCredentialsInstance> {
     if (params === null || params === undefined) {
       throw new Error('Required parameter "params" missing.');
@@ -141,18 +141,18 @@ export function NewCredentialsListInstance(
     if (params["testObjectArray"] !== undefined)
       data["TestObjectArray"] = serialize.map(
         params["testObjectArray"],
-        (e: object) => e
+        (e: object) => e,
       );
     if (params["testAnyType"] !== undefined)
       data["TestAnyType"] = serialize.object(params["testAnyType"]);
     if (params["testAnyArray"] !== undefined)
       data["TestAnyArray"] = serialize.map(params["testAnyArray"], (e: any) =>
-        serialize.object(e)
+        serialize.object(e),
       );
     if (params["permissions"] !== undefined)
       data["Permissions"] = serialize.map(
         params["permissions"],
-        (e: string) => e
+        (e: string) => e,
       );
     if (params["someA2PThing"] !== undefined)
       data["SomeA2PThing"] = params["someA2PThing"];
@@ -169,12 +169,12 @@ export function NewCredentialsListInstance(
       });
 
     operationPromise = operationPromise.then(
-      (payload) => new NewCredentialsInstance(operationVersion, payload)
+      (payload) => new NewCredentialsInstance(operationVersion, payload),
     );
 
     operationPromise = instance._version.setPromiseCallback(
       operationPromise,
-      callback
+      callback,
     );
     return operationPromise;
   };
@@ -185,7 +185,7 @@ export function NewCredentialsListInstance(
 
   instance[inspect.custom] = function inspectImpl(
     _depth: any,
-    options: InspectOptions
+    options: InspectOptions,
   ) {
     return inspect(instance.toJSON(), options);
   };
@@ -203,7 +203,10 @@ interface NewCredentialsResource {
 }
 
 export class NewCredentialsInstance {
-  constructor(protected _version: V1, payload: NewCredentialsResource) {
+  constructor(
+    protected _version: V1,
+    payload: NewCredentialsResource,
+  ) {
     this.accountSid = payload.account_sid;
     this.sid = payload.sid;
     this.testString = payload.test_string;

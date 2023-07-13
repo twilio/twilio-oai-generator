@@ -13,43 +13,46 @@
 #
 
 module Twilio
-    module REST
-        class FlexApi
-            class V1 < Version
-                ##
-                # Initialize the V1 version of FlexApi
-                def initialize(domain)
-                    super
-                    @version = 'v1'
-                    @calls = nil
-                    @credentials = nil
-                end
-
-                ##
-                # @param [String] sid 
-                # @return [Twilio::REST::FlexApi::V1::CallContext] if sid was passed.
-                # @return [Twilio::REST::FlexApi::V1::CallList]
-                def calls(sid=:unset)
-                    if sid.nil?
-                        raise ArgumentError, 'sid cannot be nil'
-                    end
-                    if sid == :unset
-                        @calls ||= CallList.new self
-                    else
-                        CallContext.new(self, sid)
-                    end
-                end
-                ##
-                # @return [Twilio::REST::FlexApi::V1::CredentialList]
-                def credentials
-                    @credentials ||= CredentialList.new self
-                end
-                ##
-                # Provide a user friendly representation
-                def to_s
-                    '<Twilio::REST::FlexApi::V1>';
-                end
-            end
+  module REST
+    class FlexApi
+      class V1 < Version
+        ##
+        # Initialize the V1 version of FlexApi
+        def initialize(domain)
+          super
+          @version = 'v1'
+          @calls = nil
+          @credentials = nil
         end
+
+        ##
+        # @param [String] sid
+        # @return [Twilio::REST::FlexApi::V1::CallContext] if sid was passed.
+        # @return [Twilio::REST::FlexApi::V1::CallList]
+        def calls(sid = :unset)
+          if sid.nil?
+            raise ArgumentError, 'sid cannot be nil'
+          end
+
+          if sid == :unset
+            @calls ||= CallList.new self
+          else
+            CallContext.new(self, sid)
+          end
+        end
+
+        ##
+        # @return [Twilio::REST::FlexApi::V1::CredentialList]
+        def credentials
+          @credentials ||= CredentialList.new self
+        end
+
+        ##
+        # Provide a user friendly representation
+        def to_s
+          '<Twilio::REST::FlexApi::V1>';
+        end
+      end
     end
+  end
 end

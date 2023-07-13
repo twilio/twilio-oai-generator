@@ -13,28 +13,29 @@
 #
 
 module Twilio
-    module REST
-        class Versionless
-            class Understand < Version
-                ##
-                # Initialize the Understand version of Versionless
-                def initialize(domain)
-                    super
-                    @version = 'understand'
-                    @assistants = nil
-                end
-
-                ##
-                # @return [Twilio::REST::Versionless::Understand::AssistantList]
-                def assistants
-                    @assistants ||= AssistantList.new self
-                end
-                ##
-                # Provide a user friendly representation
-                def to_s
-                    '<Twilio::REST::Versionless::Understand>';
-                end
-            end
+  module REST
+    class Versionless
+      class Understand < Version
+        ##
+        # Initialize the Understand version of Versionless
+        def initialize(domain)
+          super
+          @version = 'understand'
+          @assistants = nil
         end
+
+        ##
+        # @return [Twilio::REST::Versionless::Understand::AssistantList]
+        def assistants
+          @assistants ||= AssistantList.new self
+        end
+
+        ##
+        # Provide a user friendly representation
+        def to_s
+          '<Twilio::REST::Versionless::Understand>';
+        end
+      end
     end
+  end
 end
