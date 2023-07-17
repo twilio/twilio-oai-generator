@@ -79,11 +79,11 @@ export interface AssistantListInstance {
    * @param { function } [callback] - Function to process each record
    */
   each(
-    callback?: (item: AssistantInstance, done: (err?: Error) => void) => void
+    callback?: (item: AssistantInstance, done: (err?: Error) => void) => void,
   ): void;
   each(
     params: AssistantListInstanceEachOptions,
-    callback?: (item: AssistantInstance, done: (err?: Error) => void) => void
+    callback?: (item: AssistantInstance, done: (err?: Error) => void) => void,
   ): void;
   /**
    * Retrieve a single target page of AssistantInstance records from the API.
@@ -95,7 +95,7 @@ export interface AssistantListInstance {
    */
   getPage(
     targetUrl: string,
-    callback?: (error: Error | null, items: AssistantPage) => any
+    callback?: (error: Error | null, items: AssistantPage) => any,
   ): Promise<AssistantPage>;
   /**
    * Lists AssistantInstance records from the API as a list.
@@ -107,11 +107,11 @@ export interface AssistantListInstance {
    * @param { function } [callback] - Callback to handle list of records
    */
   list(
-    callback?: (error: Error | null, items: AssistantInstance[]) => any
+    callback?: (error: Error | null, items: AssistantInstance[]) => any,
   ): Promise<AssistantInstance[]>;
   list(
     params: AssistantListInstanceOptions,
-    callback?: (error: Error | null, items: AssistantInstance[]) => any
+    callback?: (error: Error | null, items: AssistantInstance[]) => any,
   ): Promise<AssistantInstance[]>;
   /**
    * Retrieve a single page of AssistantInstance records from the API.
@@ -125,11 +125,11 @@ export interface AssistantListInstance {
    * @param { function } [callback] - Callback to handle list of records
    */
   page(
-    callback?: (error: Error | null, items: AssistantPage) => any
+    callback?: (error: Error | null, items: AssistantPage) => any,
   ): Promise<AssistantPage>;
   page(
     params: AssistantListInstancePageOptions,
-    callback?: (error: Error | null, items: AssistantPage) => any
+    callback?: (error: Error | null, items: AssistantPage) => any,
   ): Promise<AssistantPage>;
 
   /**
@@ -140,7 +140,7 @@ export interface AssistantListInstance {
 }
 
 export function AssistantListInstance(
-  version: Understand
+  version: Understand,
 ): AssistantListInstance {
   const instance = {} as AssistantListInstance;
 
@@ -152,7 +152,7 @@ export function AssistantListInstance(
     params?:
       | AssistantListInstancePageOptions
       | ((error: Error | null, items: AssistantPage) => any),
-    callback?: (error: Error | null, items: AssistantPage) => any
+    callback?: (error: Error | null, items: AssistantPage) => any,
   ): Promise<AssistantPage> {
     if (params instanceof Function) {
       callback = params;
@@ -180,12 +180,12 @@ export function AssistantListInstance(
 
     operationPromise = operationPromise.then(
       (payload) =>
-        new AssistantPage(operationVersion, payload, instance._solution)
+        new AssistantPage(operationVersion, payload, instance._solution),
     );
 
     operationPromise = instance._version.setPromiseCallback(
       operationPromise,
-      callback
+      callback,
     );
     return operationPromise;
   };
@@ -194,7 +194,7 @@ export function AssistantListInstance(
 
   instance.getPage = function getPage(
     targetUrl: string,
-    callback?: (error: Error | null, items: AssistantPage) => any
+    callback?: (error: Error | null, items: AssistantPage) => any,
   ): Promise<AssistantPage> {
     const operationPromise = instance._version._domain.twilio.request({
       method: "get",
@@ -203,7 +203,7 @@ export function AssistantListInstance(
 
     let pagePromise = operationPromise.then(
       (payload) =>
-        new AssistantPage(instance._version, payload, instance._solution)
+        new AssistantPage(instance._version, payload, instance._solution),
     );
     pagePromise = instance._version.setPromiseCallback(pagePromise, callback);
     return pagePromise;
@@ -215,7 +215,7 @@ export function AssistantListInstance(
 
   instance[inspect.custom] = function inspectImpl(
     _depth: any,
-    options: InspectOptions
+    options: InspectOptions,
   ) {
     return inspect(instance.toJSON(), options);
   };
@@ -233,7 +233,10 @@ interface AssistantResource {
 }
 
 export class AssistantInstance {
-  constructor(protected _version: Understand, payload: AssistantResource) {
+  constructor(
+    protected _version: Understand,
+    payload: AssistantResource,
+  ) {
     this.sid = payload.sid;
     this.friendlyName = payload.friendly_name;
   }
@@ -280,7 +283,7 @@ export class AssistantPage extends Page<
   constructor(
     version: Understand,
     response: Response<string>,
-    solution: AssistantSolution
+    solution: AssistantSolution,
   ) {
     super(version, response, solution);
   }

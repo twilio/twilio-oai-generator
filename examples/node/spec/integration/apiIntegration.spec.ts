@@ -51,7 +51,7 @@ describe("Integration tests", () => {
       .calls.feedbackCallSummary("CR12345678123456781234567812345678")
       .update(params);
     expect(result.testArrayOfObjects[0].description).toEqual(
-      "issue description"
+      "issue description",
     );
     expect(result.testArrayOfObjects[0].count).toEqual(4);
   });

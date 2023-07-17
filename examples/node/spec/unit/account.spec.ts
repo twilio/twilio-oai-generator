@@ -118,7 +118,7 @@ describe("account", () => {
       .page(params)
       .then((accountPage) => {
         expect(accountPage.getNextPageUrl()).toEqual(
-          "http://api.twilio.com/2010-04-01/Accounts.json?FriendlyName=friendly_name&Status=active&PageSize=50&Page=50"
+          "http://api.twilio.com/2010-04-01/Accounts.json?FriendlyName=friendly_name&Status=active&PageSize=50&Page=50",
         );
         expect(accountPage.instances[0].testObject.mms).toEqual(true);
         expect(accountPage.instances[0].testObject.sms).toEqual(false);

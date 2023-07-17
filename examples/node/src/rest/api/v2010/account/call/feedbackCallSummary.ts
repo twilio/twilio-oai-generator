@@ -55,7 +55,7 @@ export interface FeedbackCallSummaryContext {
    */
   update(
     params: FeedbackCallSummaryContextUpdateOptions,
-    callback?: (error: Error | null, item?: FeedbackCallSummaryInstance) => any
+    callback?: (error: Error | null, item?: FeedbackCallSummaryInstance) => any,
   ): Promise<FeedbackCallSummaryInstance>;
 
   /**
@@ -76,7 +76,11 @@ export class FeedbackCallSummaryContextImpl
   protected _solution: FeedbackCallSummaryContextSolution;
   protected _uri: string;
 
-  constructor(protected _version: V2010, accountSid: string, sid: string) {
+  constructor(
+    protected _version: V2010,
+    accountSid: string,
+    sid: string,
+  ) {
     if (!isValidPathParam(accountSid)) {
       throw new Error("Parameter 'accountSid' is not valid.");
     }
@@ -91,7 +95,7 @@ export class FeedbackCallSummaryContextImpl
 
   update(
     params: FeedbackCallSummaryContextUpdateOptions,
-    callback?: (error: Error | null, item?: FeedbackCallSummaryInstance) => any
+    callback?: (error: Error | null, item?: FeedbackCallSummaryInstance) => any,
   ): Promise<FeedbackCallSummaryInstance> {
     if (params === null || params === undefined) {
       throw new Error('Required parameter "params" missing.');
@@ -132,13 +136,13 @@ export class FeedbackCallSummaryContextImpl
           operationVersion,
           payload,
           instance._solution.accountSid,
-          instance._solution.sid
-        )
+          instance._solution.sid,
+        ),
     );
 
     operationPromise = instance._version.setPromiseCallback(
       operationPromise,
-      callback
+      callback,
     );
     return operationPromise;
   }
@@ -187,7 +191,7 @@ export class FeedbackCallSummaryInstance {
     protected _version: V2010,
     payload: FeedbackCallSummaryResource,
     accountSid: string,
-    sid?: string
+    sid?: string,
   ) {
     this.accountSid = payload.account_sid;
     this.sid = payload.sid;
@@ -240,7 +244,7 @@ export class FeedbackCallSummaryInstance {
       new FeedbackCallSummaryContextImpl(
         this._version,
         this._solution.accountSid,
-        this._solution.sid
+        this._solution.sid,
       );
     return this._context;
   }
@@ -255,12 +259,12 @@ export class FeedbackCallSummaryInstance {
    */
   update(
     params: FeedbackCallSummaryContextUpdateOptions,
-    callback?: (error: Error | null, item?: FeedbackCallSummaryInstance) => any
+    callback?: (error: Error | null, item?: FeedbackCallSummaryInstance) => any,
   ): Promise<FeedbackCallSummaryInstance>;
 
   update(
     params?: any,
-    callback?: (error: Error | null, item?: FeedbackCallSummaryInstance) => any
+    callback?: (error: Error | null, item?: FeedbackCallSummaryInstance) => any,
   ): Promise<FeedbackCallSummaryInstance> {
     return this._proxy.update(params, callback);
   }
@@ -318,7 +322,7 @@ export interface FeedbackCallSummaryListInstance {
 
 export function FeedbackCallSummaryListInstance(
   version: V2010,
-  accountSid: string
+  accountSid: string,
 ): FeedbackCallSummaryListInstance {
   if (!isValidPathParam(accountSid)) {
     throw new Error("Parameter 'accountSid' is not valid.");
@@ -341,7 +345,7 @@ export function FeedbackCallSummaryListInstance(
 
   instance[inspect.custom] = function inspectImpl(
     _depth: any,
-    options: InspectOptions
+    options: InspectOptions,
   ) {
     return inspect(instance.toJSON(), options);
   };

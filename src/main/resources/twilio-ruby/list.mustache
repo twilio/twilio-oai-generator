@@ -101,12 +101,10 @@
                     # @return [Page] Page of {{apiName}}Instance
                     def page({{#readParams.0}}{{#readParams}}{{>params}}{{/readParams}}, {{/readParams.0}}page_token: :unset, page_number: :unset, page_size: :unset)
                         params = Twilio::Values.of({
-                            {{#readParams}}{{^vendorExtensions.x-serialize}}
-                            '{{{baseName}}}' => {{paramName}},
-                            {{/vendorExtensions.x-serialize}}{{#vendorExtensions.x-serialize}}
-                            '{{{baseName}}}' =>  {{vendorExtensions.x-serialize}}({{paramName}}),
-                            {{/vendorExtensions.x-serialize}}{{/readParams}}
-                            'PageToken' => page_token,
+                            {{#readParams}}{{^vendorExtensions.x-serialize}}'{{{baseName}}}' => {{paramName}},
+                            {{/vendorExtensions.x-serialize}}{{#vendorExtensions.x-serialize}}{{^vendorExtensions.isList}}'{{{baseName}}}' =>  {{vendorExtensions.x-serialize}}({{paramName}}),{{/vendorExtensions.isList}}
+                            {{#vendorExtensions.isList}}'{{{baseName}}}' =>  {{vendorExtensions.x-serialize}}({{paramName}}) { |e| e },
+                            {{/vendorExtensions.isList}}{{/vendorExtensions.x-serialize}}{{/readParams}}'PageToken' => page_token,
                             'Page' => page_number,
                             'PageSize' => page_size,
                         })
