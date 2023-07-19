@@ -1,5 +1,10 @@
         if ({{paramName}} != null) {
+        {{#isDate}}
+            request.addQueryParam("{{baseName}}", {{paramName}}.format(DateTimeFormatter.ofPattern(Request.QUERY_STRING_DATE_FORMAT)));
+        {{/isDate}}
+        {{#isDateTime}}
             request.addQueryParam("{{baseName}}", {{paramName}}.format(DateTimeFormatter.ofPattern(Request.QUERY_STRING_DATE_TIME_FORMAT)));
+        {{/isDateTime}}
         }
         else if ({{paramName}}After != null || {{paramName}}Before != null) {
         {{#isDateTime}}
