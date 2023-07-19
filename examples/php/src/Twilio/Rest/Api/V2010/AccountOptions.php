@@ -61,9 +61,6 @@ abstract class AccountOptions
      * @param \DateTime $dateTest
      * @param \DateTime $dateCreatedBefore
      * @param \DateTime $dateCreatedAfter
-     * @param string $dateUpdatedBefore The `date_updated` value, specified as `YYYY-MM-DD`, of the resources to read. To read conferences that were last updated on or before midnight on a date, use `<=YYYY-MM-DD`, and to specify conferences that were last updated on or after midnight on a given date, use  `>=YYYY-MM-DD`.
-     * @param string $dateUpdated The `date_updated` value, specified as `YYYY-MM-DD`, of the resources to read. To read conferences that were last updated on or before midnight on a date, use `<=YYYY-MM-DD`, and to specify conferences that were last updated on or after midnight on a given date, use  `>=YYYY-MM-DD`.
-     * @param string $dateUpdatedAfter The `date_updated` value, specified as `YYYY-MM-DD`, of the resources to read. To read conferences that were last updated on or before midnight on a date, use `<=YYYY-MM-DD`, and to specify conferences that were last updated on or after midnight on a given date, use  `>=YYYY-MM-DD`.
      * @return ReadAccountOptions Options builder
      */
     public static function read(
@@ -71,10 +68,7 @@ abstract class AccountOptions
         \DateTime $dateCreated = null,
         \DateTime $dateTest = null,
         \DateTime $dateCreatedBefore = null,
-        \DateTime $dateCreatedAfter = null,
-        string $dateUpdatedBefore = null,
-        string $dateUpdated = null,
-        string $dateUpdatedAfter = null
+        \DateTime $dateCreatedAfter = null
 
     ): ReadAccountOptions
     {
@@ -82,10 +76,7 @@ abstract class AccountOptions
             $dateCreated,
             $dateTest,
             $dateCreatedBefore,
-            $dateCreatedAfter,
-            $dateUpdatedBefore,
-            $dateUpdated,
-            $dateUpdatedAfter
+            $dateCreatedAfter
         );
     }
 
@@ -189,28 +180,19 @@ class ReadAccountOptions extends Options
      * @param \DateTime $dateTest
      * @param \DateTime $dateCreatedBefore
      * @param \DateTime $dateCreatedAfter
-     * @param string $dateUpdatedBefore The `date_updated` value, specified as `YYYY-MM-DD`, of the resources to read. To read conferences that were last updated on or before midnight on a date, use `<=YYYY-MM-DD`, and to specify conferences that were last updated on or after midnight on a given date, use  `>=YYYY-MM-DD`.
-     * @param string $dateUpdated The `date_updated` value, specified as `YYYY-MM-DD`, of the resources to read. To read conferences that were last updated on or before midnight on a date, use `<=YYYY-MM-DD`, and to specify conferences that were last updated on or after midnight on a given date, use  `>=YYYY-MM-DD`.
-     * @param string $dateUpdatedAfter The `date_updated` value, specified as `YYYY-MM-DD`, of the resources to read. To read conferences that were last updated on or before midnight on a date, use `<=YYYY-MM-DD`, and to specify conferences that were last updated on or after midnight on a given date, use  `>=YYYY-MM-DD`.
      */
     public function __construct(
         
         \DateTime $dateCreated = null,
         \DateTime $dateTest = null,
         \DateTime $dateCreatedBefore = null,
-        \DateTime $dateCreatedAfter = null,
-        string $dateUpdatedBefore = null,
-        string $dateUpdated = null,
-        string $dateUpdatedAfter = null
+        \DateTime $dateCreatedAfter = null
 
     ) {
         $this->options['dateCreated'] = $dateCreated;
         $this->options['dateTest'] = $dateTest;
         $this->options['dateCreatedBefore'] = $dateCreatedBefore;
         $this->options['dateCreatedAfter'] = $dateCreatedAfter;
-        $this->options['dateUpdatedBefore'] = $dateUpdatedBefore;
-        $this->options['dateUpdated'] = $dateUpdated;
-        $this->options['dateUpdatedAfter'] = $dateUpdatedAfter;
     }
 
     /**
@@ -250,42 +232,6 @@ class ReadAccountOptions extends Options
     public function setDateCreatedAfter(\DateTime $dateCreatedAfter): self
     {
         $this->options['dateCreatedAfter'] = $dateCreatedAfter;
-        return $this;
-    }
-
-    /**
-     * The `date_updated` value, specified as `YYYY-MM-DD`, of the resources to read. To read conferences that were last updated on or before midnight on a date, use `<=YYYY-MM-DD`, and to specify conferences that were last updated on or after midnight on a given date, use  `>=YYYY-MM-DD`.
-     *
-     * @param string $dateUpdatedBefore The `date_updated` value, specified as `YYYY-MM-DD`, of the resources to read. To read conferences that were last updated on or before midnight on a date, use `<=YYYY-MM-DD`, and to specify conferences that were last updated on or after midnight on a given date, use  `>=YYYY-MM-DD`.
-     * @return $this Fluent Builder
-     */
-    public function setDateUpdatedBefore(string $dateUpdatedBefore): self
-    {
-        $this->options['dateUpdatedBefore'] = $dateUpdatedBefore;
-        return $this;
-    }
-
-    /**
-     * The `date_updated` value, specified as `YYYY-MM-DD`, of the resources to read. To read conferences that were last updated on or before midnight on a date, use `<=YYYY-MM-DD`, and to specify conferences that were last updated on or after midnight on a given date, use  `>=YYYY-MM-DD`.
-     *
-     * @param string $dateUpdated The `date_updated` value, specified as `YYYY-MM-DD`, of the resources to read. To read conferences that were last updated on or before midnight on a date, use `<=YYYY-MM-DD`, and to specify conferences that were last updated on or after midnight on a given date, use  `>=YYYY-MM-DD`.
-     * @return $this Fluent Builder
-     */
-    public function setDateUpdated(string $dateUpdated): self
-    {
-        $this->options['dateUpdated'] = $dateUpdated;
-        return $this;
-    }
-
-    /**
-     * The `date_updated` value, specified as `YYYY-MM-DD`, of the resources to read. To read conferences that were last updated on or before midnight on a date, use `<=YYYY-MM-DD`, and to specify conferences that were last updated on or after midnight on a given date, use  `>=YYYY-MM-DD`.
-     *
-     * @param string $dateUpdatedAfter The `date_updated` value, specified as `YYYY-MM-DD`, of the resources to read. To read conferences that were last updated on or before midnight on a date, use `<=YYYY-MM-DD`, and to specify conferences that were last updated on or after midnight on a given date, use  `>=YYYY-MM-DD`.
-     * @return $this Fluent Builder
-     */
-    public function setDateUpdatedAfter(string $dateUpdatedAfter): self
-    {
-        $this->options['dateUpdatedAfter'] = $dateUpdatedAfter;
         return $this;
     }
 

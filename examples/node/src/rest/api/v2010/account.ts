@@ -71,12 +71,6 @@ export interface AccountListInstanceEachOptions {
   dateCreatedBefore?: Date;
   /**  */
   dateCreatedAfter?: Date;
-  /** The `date_updated` value, specified as `YYYY-MM-DD`, of the resources to read. To read conferences that were last updated on or before midnight on a date, use `<=YYYY-MM-DD`, and to specify conferences that were last updated on or after midnight on a given date, use  `>=YYYY-MM-DD`. */
-  dateUpdated?: Date;
-  /** The `date_updated` value, specified as `YYYY-MM-DD`, of the resources to read. To read conferences that were last updated on or before midnight on a date, use `<=YYYY-MM-DD`, and to specify conferences that were last updated on or after midnight on a given date, use  `>=YYYY-MM-DD`. */
-  dateUpdatedBefore?: Date;
-  /** The `date_updated` value, specified as `YYYY-MM-DD`, of the resources to read. To read conferences that were last updated on or before midnight on a date, use `<=YYYY-MM-DD`, and to specify conferences that were last updated on or after midnight on a given date, use  `>=YYYY-MM-DD`. */
-  dateUpdatedAfter?: Date;
   /**  */
   pageSize?: number;
   /** Function to process each record. If this and a positional callback are passed, this one will be used */
@@ -99,12 +93,6 @@ export interface AccountListInstanceOptions {
   dateCreatedBefore?: Date;
   /**  */
   dateCreatedAfter?: Date;
-  /** The `date_updated` value, specified as `YYYY-MM-DD`, of the resources to read. To read conferences that were last updated on or before midnight on a date, use `<=YYYY-MM-DD`, and to specify conferences that were last updated on or after midnight on a given date, use  `>=YYYY-MM-DD`. */
-  dateUpdated?: Date;
-  /** The `date_updated` value, specified as `YYYY-MM-DD`, of the resources to read. To read conferences that were last updated on or before midnight on a date, use `<=YYYY-MM-DD`, and to specify conferences that were last updated on or after midnight on a given date, use  `>=YYYY-MM-DD`. */
-  dateUpdatedBefore?: Date;
-  /** The `date_updated` value, specified as `YYYY-MM-DD`, of the resources to read. To read conferences that were last updated on or before midnight on a date, use `<=YYYY-MM-DD`, and to specify conferences that were last updated on or after midnight on a given date, use  `>=YYYY-MM-DD`. */
-  dateUpdatedAfter?: Date;
   /**  */
   pageSize?: number;
   /** Upper limit for the number of records to return. list() guarantees never to return more than limit. Default is no limit */
@@ -123,12 +111,6 @@ export interface AccountListInstancePageOptions {
   dateCreatedBefore?: Date;
   /**  */
   dateCreatedAfter?: Date;
-  /** The `date_updated` value, specified as `YYYY-MM-DD`, of the resources to read. To read conferences that were last updated on or before midnight on a date, use `<=YYYY-MM-DD`, and to specify conferences that were last updated on or after midnight on a given date, use  `>=YYYY-MM-DD`. */
-  dateUpdated?: Date;
-  /** The `date_updated` value, specified as `YYYY-MM-DD`, of the resources to read. To read conferences that were last updated on or before midnight on a date, use `<=YYYY-MM-DD`, and to specify conferences that were last updated on or after midnight on a given date, use  `>=YYYY-MM-DD`. */
-  dateUpdatedBefore?: Date;
-  /** The `date_updated` value, specified as `YYYY-MM-DD`, of the resources to read. To read conferences that were last updated on or before midnight on a date, use `<=YYYY-MM-DD`, and to specify conferences that were last updated on or after midnight on a given date, use  `>=YYYY-MM-DD`. */
-  dateUpdatedAfter?: Date;
   /**  */
   pageSize?: number;
   /** Page Number, this value is simply for client state */
@@ -672,12 +654,6 @@ export function AccountListInstance(version: V2010): AccountListInstance {
       data["DateCreated>"] = serialize.iso8601DateTime(
         params["dateCreatedAfter"],
       );
-    if (params["dateUpdated"] !== undefined)
-      data["DateUpdated"] = serialize.iso8601Date(params["dateUpdated"]);
-    if (params["dateUpdatedBefore"] !== undefined)
-      data["DateUpdated<"] = serialize.iso8601Date(params["dateUpdatedBefore"]);
-    if (params["dateUpdatedAfter"] !== undefined)
-      data["DateUpdated>"] = serialize.iso8601Date(params["dateUpdatedAfter"]);
     if (params["pageSize"] !== undefined) data["PageSize"] = params["pageSize"];
 
     if (params.pageNumber !== undefined) data["Page"] = params.pageNumber;

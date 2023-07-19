@@ -317,9 +317,6 @@ namespace Twilio.Rest.Api.V2010
         /// <param name="dateTest">  </param>
         /// <param name="dateCreatedBefore">  </param>
         /// <param name="dateCreatedAfter">  </param>
-        /// <param name="dateUpdatedBefore"> The `date_updated` value, specified as `YYYY-MM-DD`, of the resources to read. To read conferences that were last updated on or before midnight on a date, use `<=YYYY-MM-DD`, and to specify conferences that were last updated on or after midnight on a given date, use  `>=YYYY-MM-DD`. </param>
-        /// <param name="dateUpdated"> The `date_updated` value, specified as `YYYY-MM-DD`, of the resources to read. To read conferences that were last updated on or before midnight on a date, use `<=YYYY-MM-DD`, and to specify conferences that were last updated on or after midnight on a given date, use  `>=YYYY-MM-DD`. </param>
-        /// <param name="dateUpdatedAfter"> The `date_updated` value, specified as `YYYY-MM-DD`, of the resources to read. To read conferences that were last updated on or before midnight on a date, use `<=YYYY-MM-DD`, and to specify conferences that were last updated on or after midnight on a given date, use  `>=YYYY-MM-DD`. </param>
         /// <param name="pageSize">  </param>
         /// <param name="limit"> Record limit </param>
         /// <param name="client"> Client to make requests to Twilio </param>
@@ -329,14 +326,11 @@ namespace Twilio.Rest.Api.V2010
                                                      DateTime? dateTest = null,
                                                      DateTime? dateCreatedBefore = null,
                                                      DateTime? dateCreatedAfter = null,
-                                                     DateTime? dateUpdatedBefore = null,
-                                                     DateTime? dateUpdated = null,
-                                                     DateTime? dateUpdatedAfter = null,
                                                      int? pageSize = null,
                                                      long? limit = null,
                                                      ITwilioRestClient client = null)
         {
-            var options = new ReadAccountOptions(){ DateCreated = dateCreated, DateTest = dateTest, DateCreatedBefore = dateCreatedBefore, DateCreatedAfter = dateCreatedAfter, DateUpdatedBefore = dateUpdatedBefore, DateUpdated = dateUpdated, DateUpdatedAfter = dateUpdatedAfter, PageSize = pageSize, Limit = limit};
+            var options = new ReadAccountOptions(){ DateCreated = dateCreated, DateTest = dateTest, DateCreatedBefore = dateCreatedBefore, DateCreatedAfter = dateCreatedAfter, PageSize = pageSize, Limit = limit};
             return Read(options, client);
         }
 
@@ -346,9 +340,6 @@ namespace Twilio.Rest.Api.V2010
         /// <param name="dateTest">  </param>
         /// <param name="dateCreatedBefore">  </param>
         /// <param name="dateCreatedAfter">  </param>
-        /// <param name="dateUpdatedBefore"> The `date_updated` value, specified as `YYYY-MM-DD`, of the resources to read. To read conferences that were last updated on or before midnight on a date, use `<=YYYY-MM-DD`, and to specify conferences that were last updated on or after midnight on a given date, use  `>=YYYY-MM-DD`. </param>
-        /// <param name="dateUpdated"> The `date_updated` value, specified as `YYYY-MM-DD`, of the resources to read. To read conferences that were last updated on or before midnight on a date, use `<=YYYY-MM-DD`, and to specify conferences that were last updated on or after midnight on a given date, use  `>=YYYY-MM-DD`. </param>
-        /// <param name="dateUpdatedAfter"> The `date_updated` value, specified as `YYYY-MM-DD`, of the resources to read. To read conferences that were last updated on or before midnight on a date, use `<=YYYY-MM-DD`, and to specify conferences that were last updated on or after midnight on a given date, use  `>=YYYY-MM-DD`. </param>
         /// <param name="pageSize">  </param>
         /// <param name="limit"> Record limit </param>
         /// <param name="client"> Client to make requests to Twilio </param>
@@ -358,14 +349,11 @@ namespace Twilio.Rest.Api.V2010
                                                                                              DateTime? dateTest = null,
                                                                                              DateTime? dateCreatedBefore = null,
                                                                                              DateTime? dateCreatedAfter = null,
-                                                                                             DateTime? dateUpdatedBefore = null,
-                                                                                             DateTime? dateUpdated = null,
-                                                                                             DateTime? dateUpdatedAfter = null,
                                                                                              int? pageSize = null,
                                                                                              long? limit = null,
                                                                                              ITwilioRestClient client = null)
         {
-            var options = new ReadAccountOptions(){ DateCreated = dateCreated, DateTest = dateTest, DateCreatedBefore = dateCreatedBefore, DateCreatedAfter = dateCreatedAfter, DateUpdatedBefore = dateUpdatedBefore, DateUpdated = dateUpdated, DateUpdatedAfter = dateUpdatedAfter, PageSize = pageSize, Limit = limit};
+            var options = new ReadAccountOptions(){ DateCreated = dateCreated, DateTest = dateTest, DateCreatedBefore = dateCreatedBefore, DateCreatedAfter = dateCreatedAfter, PageSize = pageSize, Limit = limit};
             return await ReadAsync(options, client);
         }
         #endif

@@ -470,9 +470,6 @@ class AccountList(ListResource):
         date_test: Union[date, object] = values.unset,
         date_created_before: Union[datetime, object] = values.unset,
         date_created_after: Union[datetime, object] = values.unset,
-        date_updated: Union[date, object] = values.unset,
-        date_updated_before: Union[date, object] = values.unset,
-        date_updated_after: Union[date, object] = values.unset,
         limit: Optional[int] = None,
         page_size: Optional[int] = None,
     ) -> Iterator[AccountInstance]:
@@ -486,9 +483,6 @@ class AccountList(ListResource):
         :param date date_test:
         :param datetime date_created_before:
         :param datetime date_created_after:
-        :param date date_updated: The `date_updated` value, specified as `YYYY-MM-DD`, of the resources to read. To read conferences that were last updated on or before midnight on a date, use `<=YYYY-MM-DD`, and to specify conferences that were last updated on or after midnight on a given date, use  `>=YYYY-MM-DD`.
-        :param date date_updated_before: The `date_updated` value, specified as `YYYY-MM-DD`, of the resources to read. To read conferences that were last updated on or before midnight on a date, use `<=YYYY-MM-DD`, and to specify conferences that were last updated on or after midnight on a given date, use  `>=YYYY-MM-DD`.
-        :param date date_updated_after: The `date_updated` value, specified as `YYYY-MM-DD`, of the resources to read. To read conferences that were last updated on or before midnight on a date, use `<=YYYY-MM-DD`, and to specify conferences that were last updated on or after midnight on a given date, use  `>=YYYY-MM-DD`.
         :param limit: Upper limit for the number of records to return. stream()
                       guarantees to never return more than limit.  Default is no limit
         :param page_size: Number of records to fetch per request, when not set will use
@@ -504,9 +498,6 @@ class AccountList(ListResource):
             date_test=date_test,
             date_created_before=date_created_before,
             date_created_after=date_created_after,
-            date_updated=date_updated,
-            date_updated_before=date_updated_before,
-            date_updated_after=date_updated_after,
             page_size=limits["page_size"],
         )
 
@@ -518,9 +509,6 @@ class AccountList(ListResource):
         date_test: Union[date, object] = values.unset,
         date_created_before: Union[datetime, object] = values.unset,
         date_created_after: Union[datetime, object] = values.unset,
-        date_updated: Union[date, object] = values.unset,
-        date_updated_before: Union[date, object] = values.unset,
-        date_updated_after: Union[date, object] = values.unset,
         limit: Optional[int] = None,
         page_size: Optional[int] = None,
     ) -> AsyncIterator[AccountInstance]:
@@ -534,9 +522,6 @@ class AccountList(ListResource):
         :param date date_test:
         :param datetime date_created_before:
         :param datetime date_created_after:
-        :param date date_updated: The `date_updated` value, specified as `YYYY-MM-DD`, of the resources to read. To read conferences that were last updated on or before midnight on a date, use `<=YYYY-MM-DD`, and to specify conferences that were last updated on or after midnight on a given date, use  `>=YYYY-MM-DD`.
-        :param date date_updated_before: The `date_updated` value, specified as `YYYY-MM-DD`, of the resources to read. To read conferences that were last updated on or before midnight on a date, use `<=YYYY-MM-DD`, and to specify conferences that were last updated on or after midnight on a given date, use  `>=YYYY-MM-DD`.
-        :param date date_updated_after: The `date_updated` value, specified as `YYYY-MM-DD`, of the resources to read. To read conferences that were last updated on or before midnight on a date, use `<=YYYY-MM-DD`, and to specify conferences that were last updated on or after midnight on a given date, use  `>=YYYY-MM-DD`.
         :param limit: Upper limit for the number of records to return. stream()
                       guarantees to never return more than limit.  Default is no limit
         :param page_size: Number of records to fetch per request, when not set will use
@@ -552,9 +537,6 @@ class AccountList(ListResource):
             date_test=date_test,
             date_created_before=date_created_before,
             date_created_after=date_created_after,
-            date_updated=date_updated,
-            date_updated_before=date_updated_before,
-            date_updated_after=date_updated_after,
             page_size=limits["page_size"],
         )
 
@@ -566,9 +548,6 @@ class AccountList(ListResource):
         date_test: Union[date, object] = values.unset,
         date_created_before: Union[datetime, object] = values.unset,
         date_created_after: Union[datetime, object] = values.unset,
-        date_updated: Union[date, object] = values.unset,
-        date_updated_before: Union[date, object] = values.unset,
-        date_updated_after: Union[date, object] = values.unset,
         limit: Optional[int] = None,
         page_size: Optional[int] = None,
     ) -> List[AccountInstance]:
@@ -581,9 +560,6 @@ class AccountList(ListResource):
         :param date date_test:
         :param datetime date_created_before:
         :param datetime date_created_after:
-        :param date date_updated: The `date_updated` value, specified as `YYYY-MM-DD`, of the resources to read. To read conferences that were last updated on or before midnight on a date, use `<=YYYY-MM-DD`, and to specify conferences that were last updated on or after midnight on a given date, use  `>=YYYY-MM-DD`.
-        :param date date_updated_before: The `date_updated` value, specified as `YYYY-MM-DD`, of the resources to read. To read conferences that were last updated on or before midnight on a date, use `<=YYYY-MM-DD`, and to specify conferences that were last updated on or after midnight on a given date, use  `>=YYYY-MM-DD`.
-        :param date date_updated_after: The `date_updated` value, specified as `YYYY-MM-DD`, of the resources to read. To read conferences that were last updated on or before midnight on a date, use `<=YYYY-MM-DD`, and to specify conferences that were last updated on or after midnight on a given date, use  `>=YYYY-MM-DD`.
         :param limit: Upper limit for the number of records to return. list() guarantees
                       never to return more than limit.  Default is no limit
         :param page_size: Number of records to fetch per request, when not set will use
@@ -599,9 +575,6 @@ class AccountList(ListResource):
                 date_test=date_test,
                 date_created_before=date_created_before,
                 date_created_after=date_created_after,
-                date_updated=date_updated,
-                date_updated_before=date_updated_before,
-                date_updated_after=date_updated_after,
                 limit=limit,
                 page_size=page_size,
             )
@@ -613,9 +586,6 @@ class AccountList(ListResource):
         date_test: Union[date, object] = values.unset,
         date_created_before: Union[datetime, object] = values.unset,
         date_created_after: Union[datetime, object] = values.unset,
-        date_updated: Union[date, object] = values.unset,
-        date_updated_before: Union[date, object] = values.unset,
-        date_updated_after: Union[date, object] = values.unset,
         limit: Optional[int] = None,
         page_size: Optional[int] = None,
     ) -> List[AccountInstance]:
@@ -628,9 +598,6 @@ class AccountList(ListResource):
         :param date date_test:
         :param datetime date_created_before:
         :param datetime date_created_after:
-        :param date date_updated: The `date_updated` value, specified as `YYYY-MM-DD`, of the resources to read. To read conferences that were last updated on or before midnight on a date, use `<=YYYY-MM-DD`, and to specify conferences that were last updated on or after midnight on a given date, use  `>=YYYY-MM-DD`.
-        :param date date_updated_before: The `date_updated` value, specified as `YYYY-MM-DD`, of the resources to read. To read conferences that were last updated on or before midnight on a date, use `<=YYYY-MM-DD`, and to specify conferences that were last updated on or after midnight on a given date, use  `>=YYYY-MM-DD`.
-        :param date date_updated_after: The `date_updated` value, specified as `YYYY-MM-DD`, of the resources to read. To read conferences that were last updated on or before midnight on a date, use `<=YYYY-MM-DD`, and to specify conferences that were last updated on or after midnight on a given date, use  `>=YYYY-MM-DD`.
         :param limit: Upper limit for the number of records to return. list() guarantees
                       never to return more than limit.  Default is no limit
         :param page_size: Number of records to fetch per request, when not set will use
@@ -647,9 +614,6 @@ class AccountList(ListResource):
                 date_test=date_test,
                 date_created_before=date_created_before,
                 date_created_after=date_created_after,
-                date_updated=date_updated,
-                date_updated_before=date_updated_before,
-                date_updated_after=date_updated_after,
                 limit=limit,
                 page_size=page_size,
             )
@@ -661,9 +625,6 @@ class AccountList(ListResource):
         date_test: Union[date, object] = values.unset,
         date_created_before: Union[datetime, object] = values.unset,
         date_created_after: Union[datetime, object] = values.unset,
-        date_updated: Union[date, object] = values.unset,
-        date_updated_before: Union[date, object] = values.unset,
-        date_updated_after: Union[date, object] = values.unset,
         page_token: Union[str, object] = values.unset,
         page_number: Union[int, object] = values.unset,
         page_size: Union[int, object] = values.unset,
@@ -676,9 +637,6 @@ class AccountList(ListResource):
         :param date_test:
         :param date_created_before:
         :param date_created_after:
-        :param date_updated: The `date_updated` value, specified as `YYYY-MM-DD`, of the resources to read. To read conferences that were last updated on or before midnight on a date, use `<=YYYY-MM-DD`, and to specify conferences that were last updated on or after midnight on a given date, use  `>=YYYY-MM-DD`.
-        :param date_updated_before: The `date_updated` value, specified as `YYYY-MM-DD`, of the resources to read. To read conferences that were last updated on or before midnight on a date, use `<=YYYY-MM-DD`, and to specify conferences that were last updated on or after midnight on a given date, use  `>=YYYY-MM-DD`.
-        :param date_updated_after: The `date_updated` value, specified as `YYYY-MM-DD`, of the resources to read. To read conferences that were last updated on or before midnight on a date, use `<=YYYY-MM-DD`, and to specify conferences that were last updated on or after midnight on a given date, use  `>=YYYY-MM-DD`.
         :param page_token: PageToken provided by the API
         :param page_number: Page Number, this value is simply for client state
         :param page_size: Number of records to return, defaults to 50
@@ -691,9 +649,6 @@ class AccountList(ListResource):
                 "Date.Test": serialize.iso8601_date(date_test),
                 "DateCreated<": serialize.iso8601_datetime(date_created_before),
                 "DateCreated>": serialize.iso8601_datetime(date_created_after),
-                "DateUpdated": serialize.iso8601_date(date_updated),
-                "DateUpdated<": serialize.iso8601_date(date_updated_before),
-                "DateUpdated>": serialize.iso8601_date(date_updated_after),
                 "PageToken": page_token,
                 "Page": page_number,
                 "PageSize": page_size,
@@ -709,9 +664,6 @@ class AccountList(ListResource):
         date_test: Union[date, object] = values.unset,
         date_created_before: Union[datetime, object] = values.unset,
         date_created_after: Union[datetime, object] = values.unset,
-        date_updated: Union[date, object] = values.unset,
-        date_updated_before: Union[date, object] = values.unset,
-        date_updated_after: Union[date, object] = values.unset,
         page_token: Union[str, object] = values.unset,
         page_number: Union[int, object] = values.unset,
         page_size: Union[int, object] = values.unset,
@@ -724,9 +676,6 @@ class AccountList(ListResource):
         :param date_test:
         :param date_created_before:
         :param date_created_after:
-        :param date_updated: The `date_updated` value, specified as `YYYY-MM-DD`, of the resources to read. To read conferences that were last updated on or before midnight on a date, use `<=YYYY-MM-DD`, and to specify conferences that were last updated on or after midnight on a given date, use  `>=YYYY-MM-DD`.
-        :param date_updated_before: The `date_updated` value, specified as `YYYY-MM-DD`, of the resources to read. To read conferences that were last updated on or before midnight on a date, use `<=YYYY-MM-DD`, and to specify conferences that were last updated on or after midnight on a given date, use  `>=YYYY-MM-DD`.
-        :param date_updated_after: The `date_updated` value, specified as `YYYY-MM-DD`, of the resources to read. To read conferences that were last updated on or before midnight on a date, use `<=YYYY-MM-DD`, and to specify conferences that were last updated on or after midnight on a given date, use  `>=YYYY-MM-DD`.
         :param page_token: PageToken provided by the API
         :param page_number: Page Number, this value is simply for client state
         :param page_size: Number of records to return, defaults to 50
@@ -739,9 +688,6 @@ class AccountList(ListResource):
                 "Date.Test": serialize.iso8601_date(date_test),
                 "DateCreated<": serialize.iso8601_datetime(date_created_before),
                 "DateCreated>": serialize.iso8601_datetime(date_created_after),
-                "DateUpdated": serialize.iso8601_date(date_updated),
-                "DateUpdated<": serialize.iso8601_date(date_updated_before),
-                "DateUpdated>": serialize.iso8601_date(date_updated_after),
                 "PageToken": page_token,
                 "Page": page_number,
                 "PageSize": page_size,
