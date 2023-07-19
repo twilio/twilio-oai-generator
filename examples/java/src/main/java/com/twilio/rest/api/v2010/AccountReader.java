@@ -50,6 +50,9 @@ public class AccountReader extends Reader<Account> {
     private LocalDate dateTest;
     private ZonedDateTime dateCreatedBefore;
     private ZonedDateTime dateCreatedAfter;
+    private LocalDate dateUpdated;
+    private LocalDate dateUpdatedBefore;
+    private LocalDate dateUpdatedAfter;
     private Integer pageSize;
 
     public AccountReader(){
@@ -69,6 +72,18 @@ public class AccountReader extends Reader<Account> {
     }
     public AccountReader setDateCreatedAfter(final ZonedDateTime dateCreatedAfter){
         this.dateCreatedAfter = dateCreatedAfter;
+        return this;
+    }
+    public AccountReader setDateUpdated(final LocalDate dateUpdated){
+        this.dateUpdated = dateUpdated;
+        return this;
+    }
+    public AccountReader setDateUpdatedBefore(final LocalDate dateUpdatedBefore){
+        this.dateUpdatedBefore = dateUpdatedBefore;
+        return this;
+    }
+    public AccountReader setDateUpdatedAfter(final LocalDate dateUpdatedAfter){
+        this.dateUpdatedAfter = dateUpdatedAfter;
         return this;
     }
     public AccountReader setPageSize(final Integer pageSize){
@@ -154,6 +169,12 @@ public class AccountReader extends Reader<Account> {
             request.addQueryParam("Date.Test", DateConverter.dateStringFromLocalDate(dateTest));
         }
 
+        if (dateUpdated != null) {
+            request.addQueryParam("DateUpdated", dateUpdated.format(DateTimeFormatter.ofPattern(Request.QUERY_STRING_DATE_FORMAT)));
+        }
+        else if (dateUpdatedAfter != null || dateUpdatedBefore != null) {
+            request.addQueryDateRange("DateUpdated", dateUpdatedAfter, dateUpdatedBefore);
+        }
         if (pageSize != null) {
     
             request.addQueryParam("PageSize", pageSize.toString());

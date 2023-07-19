@@ -137,6 +137,15 @@ namespace Twilio.Rest.Api.V2010
         
         public DateTime? DateCreatedAfter { get; set; }
 
+        ///<summary> The `date_updated` value, specified as `YYYY-MM-DD`, of the resources to read. To read conferences that were last updated on or before midnight on a date, use `<=YYYY-MM-DD`, and to specify conferences that were last updated on or after midnight on a given date, use  `>=YYYY-MM-DD`. </summary> 
+        public DateTime? DateUpdated { get; set; }
+
+        ///<summary> The `date_updated` value, specified as `YYYY-MM-DD`, of the resources to read. To read conferences that were last updated on or before midnight on a date, use `<=YYYY-MM-DD`, and to specify conferences that were last updated on or after midnight on a given date, use  `>=YYYY-MM-DD`. </summary> 
+        public DateTime? DateUpdatedBefore { get; set; }
+
+        ///<summary> The `date_updated` value, specified as `YYYY-MM-DD`, of the resources to read. To read conferences that were last updated on or before midnight on a date, use `<=YYYY-MM-DD`, and to specify conferences that were last updated on or after midnight on a given date, use  `>=YYYY-MM-DD`. </summary> 
+        public DateTime? DateUpdatedAfter { get; set; }
+
 
 
 
@@ -164,6 +173,21 @@ namespace Twilio.Rest.Api.V2010
             if (DateTest != null)
             {
                 p.Add(new KeyValuePair<string, string>("Date.Test", DateTest.Value.ToString("yyyy-MM-dd")));
+            }
+            if (DateUpdated != null)
+            {
+                p.Add(new KeyValuePair<string, string>("DateUpdated", DateUpdated.Value.ToString("yyyy-MM-dd")));
+            }
+            else
+            {
+                if (DateUpdatedBefore != null)
+                {
+                    p.Add(new KeyValuePair<string, string>("DateUpdated<", DateUpdatedBefore.Value.ToString("yyyy-MM-dd")));
+                }
+                if (DateUpdatedAfter != null)
+                {
+                    p.Add(new KeyValuePair<string, string>("DateUpdated>", DateUpdatedAfter.Value.ToString("yyyy-MM-dd")));
+                }
             }
             if (PageSize != null)
             {

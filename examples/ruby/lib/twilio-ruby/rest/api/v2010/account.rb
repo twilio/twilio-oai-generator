@@ -66,6 +66,9 @@ module Twilio
           # @param [Date] date_test
           # @param [Time] date_created_before
           # @param [Time] date_created_after
+          # @param [Date] date_updated The `date_updated` value, specified as `YYYY-MM-DD`, of the resources to read. To read conferences that were last updated on or before midnight on a date, use `<=YYYY-MM-DD`, and to specify conferences that were last updated on or after midnight on a given date, use  `>=YYYY-MM-DD`.
+          # @param [Date] date_updated_before The `date_updated` value, specified as `YYYY-MM-DD`, of the resources to read. To read conferences that were last updated on or before midnight on a date, use `<=YYYY-MM-DD`, and to specify conferences that were last updated on or after midnight on a given date, use  `>=YYYY-MM-DD`.
+          # @param [Date] date_updated_after The `date_updated` value, specified as `YYYY-MM-DD`, of the resources to read. To read conferences that were last updated on or before midnight on a date, use `<=YYYY-MM-DD`, and to specify conferences that were last updated on or after midnight on a given date, use  `>=YYYY-MM-DD`.
           # @param [Integer] limit Upper limit for the number of records to return. stream()
           #    guarantees to never return more than limit.  Default is no limit
           # @param [Integer] page_size Number of records to fetch per request, when
@@ -74,12 +77,15 @@ module Twilio
           #    efficient page size, i.e. min(limit, 1000)
           # @return [Array] Array of up to limit results
           def list(date_created: :unset, date_test: :unset, date_created_before: :unset,
-                   date_created_after: :unset, limit: nil, page_size: nil)
+                   date_created_after: :unset, date_updated: :unset, date_updated_before: :unset, date_updated_after: :unset, limit: nil, page_size: nil)
             self.stream(
               date_created: date_created,
               date_test: date_test,
               date_created_before: date_created_before,
               date_created_after: date_created_after,
+              date_updated: date_updated,
+              date_updated_before: date_updated_before,
+              date_updated_after: date_updated_after,
               limit: limit,
               page_size: page_size
             ).entries
@@ -93,6 +99,9 @@ module Twilio
           # @param [Date] date_test
           # @param [Time] date_created_before
           # @param [Time] date_created_after
+          # @param [Date] date_updated The `date_updated` value, specified as `YYYY-MM-DD`, of the resources to read. To read conferences that were last updated on or before midnight on a date, use `<=YYYY-MM-DD`, and to specify conferences that were last updated on or after midnight on a given date, use  `>=YYYY-MM-DD`.
+          # @param [Date] date_updated_before The `date_updated` value, specified as `YYYY-MM-DD`, of the resources to read. To read conferences that were last updated on or before midnight on a date, use `<=YYYY-MM-DD`, and to specify conferences that were last updated on or after midnight on a given date, use  `>=YYYY-MM-DD`.
+          # @param [Date] date_updated_after The `date_updated` value, specified as `YYYY-MM-DD`, of the resources to read. To read conferences that were last updated on or before midnight on a date, use `<=YYYY-MM-DD`, and to specify conferences that were last updated on or after midnight on a given date, use  `>=YYYY-MM-DD`.
           # @param [Integer] limit Upper limit for the number of records to return. stream()
           #    guarantees to never return more than limit.  Default is no limit
           # @param [Integer] page_size Number of records to fetch per request, when
@@ -101,7 +110,7 @@ module Twilio
           #    efficient page size, i.e. min(limit, 1000)
           # @return [Enumerable] Enumerable that will yield up to limit results
           def stream(date_created: :unset, date_test: :unset, date_created_before: :unset,
-                     date_created_after: :unset, limit: nil, page_size: nil)
+                     date_created_after: :unset, date_updated: :unset, date_updated_before: :unset, date_updated_after: :unset, limit: nil, page_size: nil)
             limits = @version.read_limits(limit, page_size)
 
             page = self.page(
@@ -109,6 +118,9 @@ module Twilio
               date_test: date_test,
               date_created_before: date_created_before,
               date_created_after: date_created_after,
+              date_updated: date_updated,
+              date_updated_before: date_updated_before,
+              date_updated_after: date_updated_after,
               page_size: limits[:page_size],
             )
 
@@ -136,17 +148,23 @@ module Twilio
           # @param [Date] date_test
           # @param [Time] date_created_before
           # @param [Time] date_created_after
+          # @param [Date] date_updated The `date_updated` value, specified as `YYYY-MM-DD`, of the resources to read. To read conferences that were last updated on or before midnight on a date, use `<=YYYY-MM-DD`, and to specify conferences that were last updated on or after midnight on a given date, use  `>=YYYY-MM-DD`.
+          # @param [Date] date_updated_before The `date_updated` value, specified as `YYYY-MM-DD`, of the resources to read. To read conferences that were last updated on or before midnight on a date, use `<=YYYY-MM-DD`, and to specify conferences that were last updated on or after midnight on a given date, use  `>=YYYY-MM-DD`.
+          # @param [Date] date_updated_after The `date_updated` value, specified as `YYYY-MM-DD`, of the resources to read. To read conferences that were last updated on or before midnight on a date, use `<=YYYY-MM-DD`, and to specify conferences that were last updated on or after midnight on a given date, use  `>=YYYY-MM-DD`.
           # @param [String] page_token PageToken provided by the API
           # @param [Integer] page_number Page Number, this value is simply for client state
           # @param [Integer] page_size Number of records to return, defaults to 50
           # @return [Page] Page of AccountInstance
           def page(date_created: :unset, date_test: :unset, date_created_before: :unset,
-                   date_created_after: :unset, page_token: :unset, page_number: :unset, page_size: :unset)
+                   date_created_after: :unset, date_updated: :unset, date_updated_before: :unset, date_updated_after: :unset, page_token: :unset, page_number: :unset, page_size: :unset)
             params = Twilio::Values.of({
                                          'DateCreated' => Twilio.serialize_iso8601_datetime(date_created),
                                          'Date.Test' => Twilio.serialize_iso8601_date(date_test),
                                          'DateCreated<' => Twilio.serialize_iso8601_datetime(date_created_before),
                                          'DateCreated>' => Twilio.serialize_iso8601_datetime(date_created_after),
+                                         'DateUpdated' => Twilio.serialize_iso8601_date(date_updated),
+                                         'DateUpdated<' => Twilio.serialize_iso8601_date(date_updated_before),
+                                         'DateUpdated>' => Twilio.serialize_iso8601_date(date_updated_after),
                                          'PageToken' => page_token,
                                          'Page' => page_number,
                                          'PageSize' => page_size,

@@ -139,6 +139,12 @@ type ListAccountParams struct {
 	DateCreatedBefore *time.Time `json:"DateCreated&lt;,omitempty"`
 	//
 	DateCreatedAfter *time.Time `json:"DateCreated&gt;,omitempty"`
+	// The `date_updated` value, specified as `YYYY-MM-DD`, of the resources to read. To read conferences that were last updated on or before midnight on a date, use `<=YYYY-MM-DD`, and to specify conferences that were last updated on or after midnight on a given date, use  `>=YYYY-MM-DD`.
+	DateUpdated *string `json:"DateUpdated,omitempty"`
+	// The `date_updated` value, specified as `YYYY-MM-DD`, of the resources to read. To read conferences that were last updated on or before midnight on a date, use `<=YYYY-MM-DD`, and to specify conferences that were last updated on or after midnight on a given date, use  `>=YYYY-MM-DD`.
+	DateUpdatedBefore *string `json:"DateUpdated&lt;,omitempty"`
+	// The `date_updated` value, specified as `YYYY-MM-DD`, of the resources to read. To read conferences that were last updated on or before midnight on a date, use `<=YYYY-MM-DD`, and to specify conferences that were last updated on or after midnight on a given date, use  `>=YYYY-MM-DD`.
+	DateUpdatedAfter *string `json:"DateUpdated&gt;,omitempty"`
 	//
 	PageSize *int `json:"PageSize,omitempty"`
 	// Max number of records to return.
@@ -159,6 +165,18 @@ func (params *ListAccountParams) SetDateCreatedBefore(DateCreatedBefore time.Tim
 }
 func (params *ListAccountParams) SetDateCreatedAfter(DateCreatedAfter time.Time) *ListAccountParams {
 	params.DateCreatedAfter = &DateCreatedAfter
+	return params
+}
+func (params *ListAccountParams) SetDateUpdated(DateUpdated string) *ListAccountParams {
+	params.DateUpdated = &DateUpdated
+	return params
+}
+func (params *ListAccountParams) SetDateUpdatedBefore(DateUpdatedBefore string) *ListAccountParams {
+	params.DateUpdatedBefore = &DateUpdatedBefore
+	return params
+}
+func (params *ListAccountParams) SetDateUpdatedAfter(DateUpdatedAfter string) *ListAccountParams {
+	params.DateUpdatedAfter = &DateUpdatedAfter
 	return params
 }
 func (params *ListAccountParams) SetPageSize(PageSize int) *ListAccountParams {
@@ -188,6 +206,15 @@ func (c *ApiService) PageAccount(params *ListAccountParams, pageToken, pageNumbe
 	}
 	if params != nil && params.DateCreatedAfter != nil {
 		data.Set("DateCreated>", fmt.Sprint((*params.DateCreatedAfter).Format(time.RFC3339)))
+	}
+	if params != nil && params.DateUpdated != nil {
+		data.Set("DateUpdated", fmt.Sprint(*params.DateUpdated))
+	}
+	if params != nil && params.DateUpdatedBefore != nil {
+		data.Set("DateUpdated<", fmt.Sprint(*params.DateUpdatedBefore))
+	}
+	if params != nil && params.DateUpdatedAfter != nil {
+		data.Set("DateUpdated>", fmt.Sprint(*params.DateUpdatedAfter))
 	}
 	if params != nil && params.PageSize != nil {
 		data.Set("PageSize", fmt.Sprint(*params.PageSize))

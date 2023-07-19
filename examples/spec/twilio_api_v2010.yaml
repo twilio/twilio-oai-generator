@@ -160,6 +160,33 @@ paths:
           schema:
             format: date-time
             type: string
+        - name: DateUpdated
+          in: query
+          description: The `date_updated` value, specified as `YYYY-MM-DD`, of the resources
+            to read. To read conferences that were last updated on or before midnight
+            on a date, use `<=YYYY-MM-DD`, and to specify conferences that were last
+            updated on or after midnight on a given date, use  `>=YYYY-MM-DD`.
+          schema:
+            type: string
+            format: date
+        - name: DateUpdated<
+          in: query
+          description: The `date_updated` value, specified as `YYYY-MM-DD`, of the resources
+            to read. To read conferences that were last updated on or before midnight
+            on a date, use `<=YYYY-MM-DD`, and to specify conferences that were last
+            updated on or after midnight on a given date, use  `>=YYYY-MM-DD`.
+          schema:
+            type: string
+            format: date
+        - name: DateUpdated>
+          in: query
+          description: The `date_updated` value, specified as `YYYY-MM-DD`, of the resources
+            to read. To read conferences that were last updated on or before midnight
+            on a date, use `<=YYYY-MM-DD`, and to specify conferences that were last
+            updated on or after midnight on a given date, use  `>=YYYY-MM-DD`.
+          schema:
+            type: string
+            format: date
         - in: query
           name: PageSize
           schema:
