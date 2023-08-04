@@ -1,0 +1,65 @@
+openapi: 3.0.3
+info:
+  title: Shapes API
+  version: 1.0.0
+
+components:
+  schemas:
+    Shape:
+      type: object
+      properties:
+        shapeType:
+          type: string
+      discriminator:
+        propertyName: shapeType
+      oneOf:
+        - $ref: '#/components/schemas/Circle'
+        - $ref: '#/components/schemas/Square'
+        - $ref: '#/components/schemas/Triangle'
+
+    Circle:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/Shape'
+      properties:
+        radius:
+          type: number
+      required:
+        - radius
+
+    Square:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/Shape'
+      properties:
+        sideLength:
+          type: number
+      required:
+        - sideLength
+
+    Triangle:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/Shape'
+      properties:
+        base:
+          type: number
+        height:
+          type: number
+      required:
+        - base
+        - height
+
+paths:
+  /shape:
+    servers:
+      - url: https://messaging.twilio.com
+    get:
+      summary: Get a shape
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Shape'

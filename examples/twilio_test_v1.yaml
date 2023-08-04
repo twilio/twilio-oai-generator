@@ -1,0 +1,40 @@
+openapi: 3.0.3
+info:
+  title: Test Service
+  description: |-
+    This service is an entry point for all Number Pool CRUD requests.
+  version: 1.0.0
+  
+components:
+  schemas:
+    Dog:
+      type: object
+      properties:
+        bark:
+          type: boolean
+        breed:
+          type: string
+          enum: [Dingo, Husky, Retriever, Shepherd]
+    Cat:
+      type: object
+      properties:
+        hunts:
+          type: boolean
+        age:
+          type: integer
+paths:
+  /pets:
+    servers:
+      - url: https://messaging.twilio.com
+    post:
+      operationId: UpdateTest
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+                - $ref: '#/components/schemas/Cat'
+                - $ref: '#/components/schemas/Dog'
+      responses:
+        '200':
+          description: Updated
