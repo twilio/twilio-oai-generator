@@ -11,14 +11,21 @@
                 return {{vendorExtensions.x-serialize}};
             }{{/vendorExtensions.x-serialize}}
         {{/vars}}
-        {{#vendorExtensions.x-constructor-required}}
-        {{#modelParameters}}
+            {{#vendorExtensions.x-constructor-required}}
+            {{#modelParameters}}
             public {{classname}}({{#.}}final {{{dataType}}} {{name}}{{^-last}}, {{/-last}}{{/.}} ) {
                 {{#.}}
                 this.{{name}} = {{name}};
                 {{/.}}
             }
             {{/modelParameters}}
+            {{#vendorExtensions.constructors}}
+                public {{classname}}({{#.}}final {{{dataType}}} {{name}}{{^-last}}, {{/-last}}{{/.}} ) {
+                {{#.}}
+                    this.{{name}} = {{name}};
+                {{/.}}
+                }
+            {{/vendorExtensions.constructors}}  
             {{/vendorExtensions.x-constructor-required}}
 
             {{^vendorExtensions.x-response}}
