@@ -59,9 +59,11 @@ public class JsonRequestBodyResolver {
                 resolve(property);
             }
             // Constructors in mustache(example: oneOf)
-            for (CodegenModel codegenModel: model.interfaceModels) {
-                for (CodegenProperty property: codegenModel.getVars()) {
-                    resolve(property);
+            if (model.interfaceModels != null) {
+                for (CodegenModel codegenModel: model.interfaceModels) {
+                    for (CodegenProperty property: codegenModel.getVars()) {
+                        resolve(property);
+                    }
                 }
             }
             apiResourceBuilder.addNestedModel(model);
