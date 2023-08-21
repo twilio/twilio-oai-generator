@@ -188,22 +188,26 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
                 .map(Schema.class::cast)
                 .findFirst()
                 .ifPresent(schema -> {
-                    // We need to find the parameter to be used as the Terraform resource ID (as it's not always the
-                    // 'sid'). We assume it's the last path parameter for the fetch/update/delete operation.
-                    final CodegenParameter idParameter = fetchOperation.pathParams.get(
-                            fetchOperation.pathParams.size() - 1);
-                    final String idParameterSnakeCase = StringHelper.toSnakeCase(idParameter.paramName);
+                    // If the parameter is sent as a query parameter, the path params will be empty
+                    // Hence we need to ignore the following step in that case
+                    if(fetchOperation.pathParams != null && !fetchOperation.pathParams.isEmpty()) {
+                        // We need to find the parameter to be used as the Terraform resource ID (as it's not always the
+                        // 'sid'). We assume it's the last path parameter for the fetch/update/delete operation.
+                        final CodegenParameter idParameter = fetchOperation.pathParams.get(
+                                fetchOperation.pathParams.size() - 1);
+                        final String idParameterSnakeCase = StringHelper.toSnakeCase(idParameter.paramName);
 
-                    // If the resource ID parameter is not part of the operation response body, remove the resource.
-                    if (!getSchemaPropertyNames(schema).contains(idParameterSnakeCase)) {
-                        i.remove();
-                    }
+                        // If the resource ID parameter is not part of the operation response body, remove the resource.
+                        if (!getSchemaPropertyNames(schema).contains(idParameterSnakeCase)) {
+                            i.remove();
+                        }
 
-                    createOperation.vendorExtensions.put("x-resource-id", idParameter.paramName);
-                    createOperation.vendorExtensions.put("x-resource-id-in-snake-case", idParameterSnakeCase);
+                        createOperation.vendorExtensions.put("x-resource-id", idParameter.paramName);
+                        createOperation.vendorExtensions.put("x-resource-id-in-snake-case", idParameterSnakeCase);
 
-                    if ("int".equals(idParameter.dataType)) {
-                        createOperation.vendorExtensions.put("x-resource-id-conversion-func", "IntToString");
+                        if ("int".equals(idParameter.dataType)) {
+                            createOperation.vendorExtensions.put("x-resource-id-conversion-func", "IntToString");
+                        }
                     }
                 });
 
