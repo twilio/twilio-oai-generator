@@ -187,6 +187,13 @@ public abstract class ApiResourceBuilder implements IApiResourceBuilder {
     }
     
     public void addNestedModel(final CodegenModel codegenModel) {
+        // TODO: Temporary fix, planning to use hashmap, set is inserting duplicate values.
+        Iterator<CodegenModel> iterator = nestedModels.iterator();
+        while (iterator.hasNext()) {
+            if (iterator.next().name.equals(codegenModel.name)) {
+                return;
+            }
+        }
         nestedModels.add(codegenModel);
     }
 

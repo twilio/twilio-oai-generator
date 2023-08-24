@@ -6,7 +6,6 @@ import com.twilio.oai.common.ApplicationConstants;
 import com.twilio.oai.common.EnumConstants;
 import com.twilio.oai.common.Utility;
 import com.twilio.oai.resolver.Resolver;
-import com.twilio.oai.resolver.csharp.CsharpSerializer;
 import com.twilio.oai.resolver.csharp.OperationStore;
 import com.twilio.oai.template.CsharpApiActionTemplate;
 import com.twilio.oai.template.IApiActionTemplate;
@@ -15,7 +14,6 @@ import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenOperation;
 import org.openapitools.codegen.CodegenParameter;
 import org.openapitools.codegen.CodegenProperty;
-import org.openapitools.codegen.CodegenResponse;
 
 import java.util.ArrayList;
 import java.util.Arrays;

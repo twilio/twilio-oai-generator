@@ -10,23 +10,37 @@ import com.twilio.oai.resolver.common.CodegenModelDataTypeResolver;
 import java.util.Map;
 import java.util.Optional;
 
+import com.twilio.oai.resolver.common.CodegenModelResolver;
+import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenProperty;
 
 // Overriding default behavior and adding "x-jsonConverter" to enum
 public class CsharpCodegenModelDataTypeResolver extends CodegenModelDataTypeResolver {
+    
+    private CodegenModelResolver codegenModelResolver;
 
     public CsharpCodegenModelDataTypeResolver(IConventionMapper mapper, Map<String, String> modelFormatMap) {
         super(mapper, modelFormatMap);
     }
 
+    public void setCodegenModel(CodegenModelResolver codegenModelResolver) {
+        this.codegenModelResolver = codegenModelResolver;
+    }
+
     @Override
     public CodegenProperty resolve(CodegenProperty property, ApiResourceBuilder apiResourceBuilder) {
-        super.resolve(property, apiResourceBuilder);
-        resolveEnum(property);
-        mapper.deserialize()
-                .getString(property.dataFormat)
-                .ifPresent(dataType -> property.vendorExtensions.put("x-jsonConverter", dataType));
-
+        CodegenModel codegenModel = apiResourceBuilder.getModel(property.dataType);
+        if (codegenModel != null) {
+            // this is recursion as codegenModelResolver will again call CsharpCodegenModelDataTypeResolver
+            codegenModelResolver.resolve(codegenModel, apiResourceBuilder);
+            apiResourceBuilder.addNestedModel(codegenModel);
+        } else {
+            super.resolve(property, apiResourceBuilder);
+            resolveEnum(property);
+            mapper.deserialize()
+                    .getString(property.dataFormat)
+                    .ifPresent(dataType -> property.vendorExtensions.put("x-jsonConverter", dataType));
+        }
         return property;
     }
 

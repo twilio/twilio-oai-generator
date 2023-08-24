@@ -8,6 +8,7 @@ namespace Twilio.Rest.{{domainPackage}}.{{apiVersionClass}}{{namespaceSubPart}}
 {
     public class {{apiName}}{{resourceConstant}} : {{resourceConstant}}
     {
+    {{>models}}
     {{>resource/Enum}}
     {{#apiOperations}}
     {{#vendorExtensions.x-is-create-operation}}

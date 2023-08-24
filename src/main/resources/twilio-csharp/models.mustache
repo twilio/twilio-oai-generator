@@ -1,0 +1,30 @@
+
+    {{#resources.nestedModels}}
+
+        public static class {{classname}}
+        {
+        {{#vars}}
+            @JsonProperty("{{#lambda.lowercase}}{{{nameInSnakeCase}}}{{/lambda.lowercase}}")
+            private {{{dataType}}} {{name}} {get; set;}
+        {{/vars}}
+            public {{classname}}() { }
+        {{#vendorExtensions.constructors}}
+            private {{{dataType}}} {{name}} {get; set;}
+            private {{classname}}() {}
+        {{/vendorExtensions.constructors}}
+            public class Builder
+            {
+                private {{classname}} _{{#lambda.camelcase}}{{classname}}{{/lambda.camelcase}} = new {{classname}};
+                public Builder()
+                {
+                }
+                {{#vars}}
+                public Builder With{{name}}({{{dataType}}} {{#lambda.camelcase}}{{name}}{{/lambda.camelcase}})
+                {
+                    _{{#lambda.camelcase}}{{classname}}{{/lambda.camelcase}}.{{name}}= {{#lambda.camelcase}}{{name}}{{/lambda.camelcase}};
+                    return this;
+                }
+                {{/vars}}    
+            }
+        }
+    {{/resources.nestedModels}}
