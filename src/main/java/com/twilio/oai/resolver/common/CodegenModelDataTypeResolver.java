@@ -15,7 +15,7 @@ public class CodegenModelDataTypeResolver extends Resolver<CodegenProperty> {
 
     protected final IConventionMapper mapper;
     private final CodegenModelComplexResolver codegenModelComplexResolver;
-    private final Map<String, String> modelFormatMap;
+    protected final Map<String, String> modelFormatMap;
 
     public CodegenModelDataTypeResolver(final IConventionMapper mapper, final Map<String, String> modelFormatMap) {
         this.mapper = mapper;
