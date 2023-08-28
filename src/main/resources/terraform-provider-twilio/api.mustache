@@ -26,10 +26,12 @@ func Resource{{name}}() *schema.Resource {
         },
         Importer: &schema.ResourceImporter{
             StateContext: func(ctx context.Context, d *schema.ResourceData, m interface{}) ([]*schema.ResourceData, error) {
+                {{^has-fetch-with-query-params}}
                 err := parse{{name}}ImportId(d.Id(), d)
                 if err != nil {
                     return nil, err
                 }
+                {{/has-fetch-with-query-params}}
 
                 return []*schema.ResourceData{d}, nil
             },
@@ -118,6 +120,8 @@ func {{#vendorExtensions.x-is-create-operation}}create{{/vendorExtensions.x-is-c
 }
 
 {{#vendorExtensions.x-is-fetch-operation}}
+    {{#pathParams}}
+        {{#-last}}
 func parse{{name}}ImportId(importId string, d *schema.ResourceData) error {
     importParts := strings.Split(importId, "/")
     errStr := "invalid import ID (%q), expected {{#pathParams}}{{vendorExtensions.x-name-in-snake-case}}{{^-last}}/{{/-last}}{{/pathParams}}"
@@ -126,7 +130,6 @@ func parse{{name}}ImportId(importId string, d *schema.ResourceData) error {
         return fmt.Errorf(errStr, importId)
     }
 
-    {{#pathParams}}
     {{#vendorExtensions.x-conversion-func}}
         {{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}, err := {{vendorExtensions.x-conversion-func}}(importParts[{{vendorExtensions.x-index}}])
         if err != nil {
@@ -137,10 +140,11 @@ func parse{{name}}ImportId(importId string, d *schema.ResourceData) error {
     {{^vendorExtensions.x-conversion-func}}
         d.Set("{{vendorExtensions.x-name-in-snake-case}}", importParts[{{vendorExtensions.x-index}}])
     {{/vendorExtensions.x-conversion-func}}
-    {{/pathParams}}
 
     return nil
 }
+        {{/-last}}
+    {{/pathParams}}
 {{/vendorExtensions.x-is-fetch-operation}}
 {{/operation}}
 {{/operations}}
