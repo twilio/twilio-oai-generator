@@ -29,6 +29,8 @@ namespace Twilio.Rest.FlexApi.V1.Credential
     public class NewCredentialsResource : Resource
     {
     
+
+    
         public sealed class StatusEnum : StringEnum
         {
             private StatusEnum(string value) : base(value) {}
