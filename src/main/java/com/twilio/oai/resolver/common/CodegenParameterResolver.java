@@ -1,5 +1,6 @@
 package com.twilio.oai.resolver.common;
 
+import com.twilio.oai.CodegenUtils;
 import com.twilio.oai.api.ApiResourceBuilder;
 import com.twilio.oai.common.LanguageDataType;
 import com.twilio.oai.resolver.Resolver;
@@ -35,7 +36,7 @@ public class CodegenParameterResolver extends Resolver<CodegenParameter> {
         }
         
         CodegenModel codegenModel = apiResourceBuilder.getModel(parameter.dataType);
-        if (codegenModel != null && codegenModelResolver != null) { // Request Body is json
+        if (codegenModel != null && codegenModelResolver != null && !CodegenUtils.isParameterSchemaEnum(parameter)) { // Request Body is json
             codegenModelResolver.resolve(codegenModel, apiResourceBuilder);
             apiResourceBuilder.addNestedModel(codegenModel);
         } else {

@@ -72,14 +72,14 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
     @Override
     public void postProcessParameter(final CodegenParameter parameter) {
         super.postProcessParameter(parameter);
-        if (parameter.dataType.startsWith(LIST_START) && CodegenUtils.isParameterSchemaEnum(parameter)) {
+        if (parameter.dataType.startsWith(LIST_START) && CodegenUtils.isParameterSchemaEnumJava(parameter)) {
             if (parameter.dataType.contains(ENUM)) {
                 String lastValue = Utility.removeEnumName(parameter.dataType);
                 parameter.dataType = LIST_START + lastValue;
                 parameter.vendorExtensions.put(REF_ENUM_EXTENSION_NAME, true);
                 parameter.baseType = lastValue.substring(0, lastValue.length() - 1); 
             }
-        } else if (CodegenUtils.isParameterSchemaEnum(parameter)) {
+        } else if (CodegenUtils.isParameterSchemaEnumJava(parameter)) {
             parameter.vendorExtensions.put(REF_ENUM_EXTENSION_NAME, true);
             parameter.dataType = Utility.removeEnumName(parameter.dataType);
             parameter.baseType = Utility.removeEnumName(parameter.dataType);
@@ -96,7 +96,7 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
     @Override
     public void postProcessModelProperty(CodegenModel model, CodegenProperty property) {
         super.postProcessModelProperty(model, property);
-        if (property.dataType.startsWith(LIST_START) && CodegenUtils.isPropertySchemaEnum(property)) {
+        if (property.dataType.startsWith(LIST_START) && CodegenUtils.isPropertySchemaEnumJava(property)) {
             String lastValue = Utility.removeEnumName(property.dataType);
             property.dataType = LIST_START + lastValue;
             property.vendorExtensions.put(REF_ENUM_EXTENSION_NAME, true);
@@ -105,7 +105,7 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
             property.isEnum = true;
             property.allowableValues = property.items.allowableValues;
             property._enum = (List<String>) property.items.allowableValues.get(VALUES);
-        } else if (CodegenUtils.isPropertySchemaEnum(property)) {
+        } else if (CodegenUtils.isPropertySchemaEnumJava(property)) {
             property.vendorExtensions.put(REF_ENUM_EXTENSION_NAME, true);
             property.dataType = Utility.removeEnumName(property.dataType);
             property.complexType = property.dataType;

@@ -1,5 +1,6 @@
 package com.twilio.oai.resolver.csharp;
 
+import com.twilio.oai.CodegenUtils;
 import com.twilio.oai.StringHelper;
 import com.twilio.oai.api.ApiResourceBuilder;
 import com.twilio.oai.common.ApplicationConstants;
@@ -30,7 +31,7 @@ public class CsharpCodegenModelDataTypeResolver extends CodegenModelDataTypeReso
     @Override
     public CodegenProperty resolve(CodegenProperty property, ApiResourceBuilder apiResourceBuilder) {
         CodegenModel codegenModel = apiResourceBuilder.getModel(property.dataType);
-        if (codegenModel != null) {
+        if (codegenModel != null && !CodegenUtils.isPropertySchemaEnum(property)) {
             // this is recursion as codegenModelResolver will again call CsharpCodegenModelDataTypeResolver
             codegenModelResolver.resolve(codegenModel, apiResourceBuilder);
             apiResourceBuilder.addNestedModel(codegenModel);
