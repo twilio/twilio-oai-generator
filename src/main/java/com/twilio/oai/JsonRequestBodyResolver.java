@@ -62,7 +62,9 @@ public class JsonRequestBodyResolver {
 
     public void resolve(final CodegenProperty property) {
         Stack<String> containerTypes = new Stack<>();
+        
         property.dataType = containerResolver.unwrapContainerType(property, containerTypes);
+        
         final CodegenModel model = apiResourceBuilder.getModel(property.dataType);
         containerResolver.rewrapContainerType(property, containerTypes);
         containerTypes.clear();
