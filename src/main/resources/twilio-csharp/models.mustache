@@ -3,6 +3,9 @@
         public static class {{classname}}
         {
         {{#vars}}
+            {{#vendorExtensions.x-jsonConverter}}
+            [JsonConverter(typeof({{vendorExtensions.x-jsonConverter}}))]
+            {{/vendorExtensions.x-jsonConverter}}
             @JsonProperty("{{#lambda.lowercase}}{{{nameInSnakeCase}}}{{/lambda.lowercase}}")
             private {{{dataType}}} {{name}} {get; set;}
         {{/vars}}
