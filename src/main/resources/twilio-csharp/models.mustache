@@ -26,7 +26,11 @@
                     _{{#lambda.camelcase}}{{classname}}{{/lambda.camelcase}}.{{name}}= {{#lambda.camelcase}}{{name}}{{/lambda.camelcase}};
                     return this;
                 }
-                {{/vars}}    
+                {{/vars}}
+                public {{classname}} Build()
+                {
+                    return _{{#lambda.camelcase}}{{classname}}{{/lambda.camelcase}};
+                }
             }
         }
     {{/resources.nestedModels}}
