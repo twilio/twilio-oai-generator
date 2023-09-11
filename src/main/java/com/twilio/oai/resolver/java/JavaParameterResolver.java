@@ -68,7 +68,7 @@ public class JavaParameterResolver extends LanguageParamResolver {
     private void resolveIngressModel(CodegenParameter parameter, ApiResourceBuilder apiResourceBuilder) {
         for (CodegenModel model : apiResourceBuilder.getAllModels()) {
             if(model.getClassname().equals(parameter.baseType)) {
-                parameter.dataType = apiResourceBuilder.getApiName() + "." + parameter.dataType;
+                parameter.dataType = apiResourceBuilder.getApiName() + ApplicationConstants.DOT + parameter.dataType;
             }
         }
     }

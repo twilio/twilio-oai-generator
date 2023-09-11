@@ -1,12 +1,12 @@
 
     {{#resources.nestedModels}}
-        public static class {{classname}}
+        public class {{classname}}
         {
         {{#vars}}
             {{#vendorExtensions.x-jsonConverter}}
             [JsonConverter(typeof({{vendorExtensions.x-jsonConverter}}))]
             {{/vendorExtensions.x-jsonConverter}}
-            @JsonProperty("{{#lambda.lowercase}}{{{nameInSnakeCase}}}{{/lambda.lowercase}}")
+            [JsonProperty("{{#lambda.lowercase}}{{{nameInSnakeCase}}}{{/lambda.lowercase}}")]
             private {{{dataType}}} {{name}} {get; set;}
         {{/vars}}
             public {{classname}}() { }
@@ -16,7 +16,7 @@
         {{/vendorExtensions.constructors}}
             public class Builder
             {
-                private {{classname}} _{{#lambda.camelcase}}{{classname}}{{/lambda.camelcase}} = new {{classname}};
+                private {{classname}} _{{#lambda.camelcase}}{{classname}}{{/lambda.camelcase}} = new {{classname}}();
                 public Builder()
                 {
                 }
