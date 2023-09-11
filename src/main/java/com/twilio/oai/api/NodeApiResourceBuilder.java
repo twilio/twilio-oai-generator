@@ -2,15 +2,19 @@ package com.twilio.oai.api;
 
 import com.twilio.oai.DirectoryStructureService;
 import com.twilio.oai.common.ApplicationConstants;
+import com.twilio.oai.common.EnumConstants;
 import com.twilio.oai.common.Utility;
 import com.twilio.oai.resolver.Resolver;
 import com.twilio.oai.template.IApiActionTemplate;
 
 import java.util.List;
+import java.util.Map;
 
 import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenOperation;
 import org.openapitools.codegen.CodegenParameter;
+
+import static com.twilio.oai.template.AbstractApiActionTemplate.NESTED_MODELS;
 
 public class NodeApiResourceBuilder extends FluentApiResourceBuilder {
     public NodeApiResourceBuilder(final IApiActionTemplate template,
@@ -18,6 +22,15 @@ public class NodeApiResourceBuilder extends FluentApiResourceBuilder {
                                   final List<CodegenModel> allModels,
                                   final DirectoryStructureService directoryStructureService) {
         super(template, codegenOperations, allModels, directoryStructureService);
+    }
+
+    public NodeApiResourceBuilder(final IApiActionTemplate template,
+                                  final List<CodegenOperation> codegenOperations,
+                                  final List<CodegenModel> allModels,
+                                  final DirectoryStructureService directoryStructureService,
+                                  final Map<String, Boolean> toggleMap) {
+        super(template, codegenOperations, allModels, directoryStructureService);
+        this.toggleMap = toggleMap;
     }
 
     @Override
@@ -49,6 +62,15 @@ public class NodeApiResourceBuilder extends FluentApiResourceBuilder {
             });
         }
 
+        return this;
+    }
+
+    @Override
+    public ApiResourceBuilder updateModel(Resolver<CodegenModel> codegenModelResolver) {
+        super.updateModel(codegenModelResolver);
+        if (Boolean.TRUE.equals(getToggleMap().get(EnumConstants.Generator.TWILIO_NODE.getValue())) && !nestedModels.isEmpty()) {
+            template.add(NESTED_MODELS);
+        }
         return this;
     }
 
