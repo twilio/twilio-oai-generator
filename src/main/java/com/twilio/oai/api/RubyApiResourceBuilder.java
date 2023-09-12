@@ -164,7 +164,7 @@ public class RubyApiResourceBuilder extends FluentApiResourceBuilder {
             for(Map.Entry<String, LinkedHashMap<String, Object>> propertiesDetails : dependentProperties.entrySet()){
                 String mountName = propertiesDetails.getKey();
                 dependentParams = "";
-                LinkedHashMap<String, String> mapping = ((List<LinkedHashMap<String, String>>)propertiesDetails.getValue().get("mapping")).get(0);
+                LinkedHashMap<String, String> mapping = (LinkedHashMap<String, String>)propertiesDetails.getValue().get("mapping");
                 if(!seenParams.contains(mountName)) {
                     for (Map.Entry<String, String> mappingEntry : mapping.entrySet()) {
                         String dependent = mappingEntry.getKey() + ": @solution[:" + mappingEntry.getValue()+ "], ";
