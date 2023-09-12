@@ -6,7 +6,6 @@ import com.twilio.oai.common.ApplicationConstants;
 import com.twilio.oai.common.EnumConstants;
 import com.twilio.oai.common.Utility;
 import com.twilio.oai.resolver.Resolver;
-import com.twilio.oai.resolver.csharp.CsharpSerializer;
 import com.twilio.oai.resolver.csharp.OperationStore;
 import com.twilio.oai.template.CsharpApiActionTemplate;
 import com.twilio.oai.template.IApiActionTemplate;
@@ -15,7 +14,6 @@ import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenOperation;
 import org.openapitools.codegen.CodegenParameter;
 import org.openapitools.codegen.CodegenProperty;
-import org.openapitools.codegen.CodegenResponse;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -81,9 +79,22 @@ public class CsharpApiResourceBuilder extends ApiResourceBuilder {
         this.codegenOperationList.forEach(co -> {
             co.headerParams.forEach(e -> codegenParameterIResolver.resolve(e, this));
             populateRequestBodyArgument(co);
+            resolveIngressModel(co);
         });
 
         return this;
+    }
+
+    private void resolveIngressModel(CodegenOperation codegenOperation) {
+        // Required params are used in parameters in C#, Check Params.mustache.
+        for (CodegenParameter codegenParameter: codegenOperation.requiredParams) {
+            for (CodegenModel codegenModel : getAllModels()) {
+                if (codegenModel.classname.equals(codegenParameter.paramName)) {
+                    codegenParameter.dataType = getApiName() + "Resource" + ApplicationConstants.DOT + codegenParameter.dataType;
+                }
+            }
+            
+        }
     }
 
     // Here operation specific variables can be set.

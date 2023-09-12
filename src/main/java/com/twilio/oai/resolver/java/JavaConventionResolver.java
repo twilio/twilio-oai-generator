@@ -60,7 +60,7 @@ public class JavaConventionResolver {
     }
 
     public CodegenProperty resolveEnumProperty(CodegenProperty property, String resourceName) {
-        if(CodegenUtils.isPropertySchemaEnum(property)) {
+        if(CodegenUtils.isPropertySchemaEnumJava(property)) {
             // complexType contains the class name, dataType contains the data type for enum which prefixes class name.
             // name contains variable name
             // This is new gen enums

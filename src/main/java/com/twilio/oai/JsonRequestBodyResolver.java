@@ -41,7 +41,7 @@ public class JsonRequestBodyResolver {
         codegenParameter.dataType = containerResolver.unwrapContainerType(codegenParameter, containerTypes);
         final CodegenModel model = apiResourceBuilder.getModel(codegenParameter.dataType);
         containerResolver.rewrapContainerType(codegenParameter, containerTypes);
-        if (CodegenUtils.isParameterSchemaEnum(codegenParameter)) {
+        if (CodegenUtils.isParameterSchemaEnumJava(codegenParameter)) {
             conventionResolver.resolveEnumParameter(codegenParameter, resourceName);
             ((JavaApiResourceBuilder)apiResourceBuilder).enums.add(codegenParameter);
         } else if(model == null) {
@@ -69,7 +69,7 @@ public class JsonRequestBodyResolver {
 
         if (model == null) {
             codegenPropertyResolver.resolve(property, apiResourceBuilder);
-        } else if (CodegenUtils.isPropertySchemaEnum(property)) {
+        } else if (CodegenUtils.isPropertySchemaEnumJava(property)) {
             conventionResolver.resolveEnumProperty(property, resourceName);
             ((JavaApiResourceBuilder)apiResourceBuilder).enums.add(property);
         } else {
