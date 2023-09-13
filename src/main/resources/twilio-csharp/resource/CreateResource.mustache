@@ -6,7 +6,11 @@
                 HttpMethod.Post,
                 Rest.Domain.{{domainPackage}},
                 path,
-                postParams: options.GetParams(),
+                {{^bodyParam}}postParams: options.GetParams(),{{/bodyParam}}
+                {{#bodyParam}}
+                contentType: EnumConstants.ContentTypeEnum.JSON,
+                body: options.GetBody(),
+                {{/bodyParam}}
                 headerParams: {{^vendorExtensions.hasOptionalHeaderParams}}null{{/vendorExtensions.hasOptionalHeaderParams}}{{#vendorExtensions.hasOptionalHeaderParams}}options.GetHeaderParams(){{/vendorExtensions.hasOptionalHeaderParams}}
             );
         }

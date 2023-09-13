@@ -19,6 +19,11 @@
         }
     {{/vendorExtensions.x-required-param-exists}}
 
+    {{^vendorExtensions.x-is-json}}
         {{>options/GetParams}}
+    {{/vendorExtensions.x-is-json}}
+    {{#vendorExtensions.x-is-json}}
+        {{>options/GetBody}}
+    {{/vendorExtensions.x-is-json}}
         {{>options/HeaderParams}}
     }
