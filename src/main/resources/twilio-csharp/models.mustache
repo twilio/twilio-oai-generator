@@ -1,0 +1,36 @@
+
+    {{#resources.nestedModels}}
+        public class {{classname}}
+        {
+        {{#vars}}
+            {{#vendorExtensions.x-jsonConverter}}
+            [JsonConverter(typeof({{vendorExtensions.x-jsonConverter}}))]
+            {{/vendorExtensions.x-jsonConverter}}
+            [JsonProperty("{{#lambda.lowercase}}{{{nameInSnakeCase}}}{{/lambda.lowercase}}")]
+            private {{{dataType}}} {{name}} {get; set;}
+        {{/vars}}
+            public {{classname}}() { }
+        {{#vendorExtensions.constructors}}
+            private {{{dataType}}} {{name}} {get; set;}
+            private {{classname}}() {}
+        {{/vendorExtensions.constructors}}
+            public class Builder
+            {
+                private {{classname}} _{{#lambda.camelcase}}{{classname}}{{/lambda.camelcase}} = new {{classname}}();
+                public Builder()
+                {
+                }
+                {{#vars}}
+                public Builder With{{name}}({{{dataType}}} {{#lambda.camelcase}}{{name}}{{/lambda.camelcase}})
+                {
+                    _{{#lambda.camelcase}}{{classname}}{{/lambda.camelcase}}.{{name}}= {{#lambda.camelcase}}{{name}}{{/lambda.camelcase}};
+                    return this;
+                }
+                {{/vars}}
+                public {{classname}} Build()
+                {
+                    return _{{#lambda.camelcase}}{{classname}}{{/lambda.camelcase}};
+                }
+            }
+        }
+    {{/resources.nestedModels}}

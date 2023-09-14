@@ -74,11 +74,12 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
         // Model Resolver
         CsharpCodegenModelDataTypeResolver csharpCodegenModelDataTypeResolver = new CsharpCodegenModelDataTypeResolver(conventionMapper, modelFormatMap);
         CodegenModelResolver codegenModelResolver = new CodegenModelResolver(languageDataType, csharpCodegenModelDataTypeResolver);
+        csharpCodegenModelDataTypeResolver.setCodegenModel(codegenModelResolver);
 
         // Parameter Resolver
         CsharpSerializer csharpSerializer = new CsharpSerializer(conventionMapper);
         CsharpCodegenParameterDataTypeResolver csharpCodegenParameterDataTypeResolver = new CsharpCodegenParameterDataTypeResolver(conventionMapper, csharpSerializer);
-        CodegenParameterResolver codegenParameterResolver = new CodegenParameterResolver(languageDataType, csharpCodegenParameterDataTypeResolver);
+        CodegenParameterResolver codegenParameterResolver = new CodegenParameterResolver(languageDataType, csharpCodegenParameterDataTypeResolver, codegenModelResolver);
 
 
         return new CsharpApiResourceBuilder(apiActionTemplate, opList, this.allModels)
