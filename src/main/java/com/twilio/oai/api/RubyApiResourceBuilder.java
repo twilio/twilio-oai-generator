@@ -159,23 +159,21 @@ public class RubyApiResourceBuilder extends FluentApiResourceBuilder {
         Set<String> seenParams = new HashSet<>();
         HashMap<String, String> depMap = new HashMap<>();
         if (operation.vendorExtensions.containsKey(ApplicationConstants.DEPENDENT_PROPERTIES)){
-            HashMap<String, String> dependentProperties = (HashMap<String, String>) operation.vendorExtensions.get(ApplicationConstants.DEPENDENT_PROPERTIES);
-            for(Map.Entry<String, String> propertiesDetails : dependentProperties.entrySet()){
+            HashMap<String, LinkedHashMap<String, Object>> dependentProperties = (HashMap<String, LinkedHashMap<String, Object>>) operation.vendorExtensions.get(ApplicationConstants.DEPENDENT_PROPERTIES);
+
+            for(Map.Entry<String, LinkedHashMap<String, Object>> propertiesDetails : dependentProperties.entrySet()){
                 String mountName = propertiesDetails.getKey();
                 dependentParams = "";
-                String valuePairs = propertiesDetails.getValue().substring(1, propertiesDetails.getValue().length()-1);
-                String[] dependentParamPairs = valuePairs.split(",");
+                LinkedHashMap<String, String> mapping = (LinkedHashMap<String, String>)propertiesDetails.getValue().get("mapping");
                 if(!seenParams.contains(mountName)) {
-                    for(String paramPair : dependentParamPairs){
-                        String dependent = paramPair;
-
-                        dependent = dependent.replace(": ", ": @solution[:")+"], ";
+                    for (Map.Entry<String, String> mappingEntry : mapping.entrySet()) {
+                        String dependent = mappingEntry.getKey() + ": @solution[:" + mappingEntry.getValue()+ "], ";
                         dependentParams += dependent;
                         depMap.put(mountName, dependentParams);
-                        }
                     }
-                seenParams.add(mountName);
                 }
+                seenParams.add(mountName);
+            }
         }
         return depMap;
     }
