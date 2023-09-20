@@ -1,0 +1,18 @@
+
+        /// <summary> Generate the request body </summary>
+        public string GetBody()
+        {
+            string body = "";
+
+            {{#vendorExtensions.x-getparams}}
+            {{^isArray}}
+            {{^vendorExtensions.x-parameter-map}}
+            if ({{paramName}} != null)
+            {
+                body = {{apiName}}{{resourceConstant}}.ToJson({{paramName}});
+            }
+            {{/vendorExtensions.x-parameter-map}}
+            {{/isArray}}
+            {{/vendorExtensions.x-getparams}}
+            return body;
+        }
