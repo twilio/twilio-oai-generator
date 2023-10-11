@@ -3,6 +3,9 @@ package com.twilio.oai;
 import org.openapitools.codegen.CodegenParameter;
 import org.openapitools.codegen.CodegenProperty;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 public  class CodegenUtils {
 
     public static boolean isPropertySchemaEnum(CodegenProperty codegenProperty) {
@@ -17,7 +20,7 @@ public  class CodegenUtils {
     }
 
     public static boolean isParameterSchemaEnum(CodegenParameter codegenParameter) {
-        if(codegenParameter.isEnum) {
+        if (codegenParameter.isEnum) {
             return true;
         }
         boolean enumValues = codegenParameter.allowableValues != null &&
@@ -48,5 +51,14 @@ public  class CodegenUtils {
         boolean listEnumValues = codegenParameter.items != null && (codegenParameter.items.allowableValues != null
                 && codegenParameter.items.allowableValues.containsKey(TwilioJavaGenerator.VALUES));
         return enumValues || listEnumValues;
+    }
+
+    public static void mergeVendorExtensionProperty(Map<String, Object> vendorExtensions, LinkedHashMap value, String field ) {
+        if (value != null && !value.isEmpty()) {
+            if( vendorExtensions.containsKey(field))
+                ((LinkedHashMap)vendorExtensions.get(field)).putAll(value);
+            else
+                vendorExtensions.put(field, value);
+        }
     }
 }

@@ -14,8 +14,6 @@ import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenOperation;
 import org.openapitools.codegen.CodegenParameter;
 
-import static com.twilio.oai.template.AbstractApiActionTemplate.NESTED_MODELS;
-
 public class NodeApiResourceBuilder extends FluentApiResourceBuilder {
     public NodeApiResourceBuilder(final IApiActionTemplate template,
                                   final List<CodegenOperation> codegenOperations,
@@ -68,9 +66,6 @@ public class NodeApiResourceBuilder extends FluentApiResourceBuilder {
     @Override
     public ApiResourceBuilder updateModel(Resolver<CodegenModel> codegenModelResolver) {
         super.updateModel(codegenModelResolver);
-        if (Boolean.TRUE.equals(getToggleMap().get(EnumConstants.Generator.TWILIO_NODE.getValue())) && !nestedModels.isEmpty()) {
-            template.add(NESTED_MODELS);
-        }
         return this;
     }
 

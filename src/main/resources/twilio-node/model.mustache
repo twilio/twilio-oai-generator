@@ -19,6 +19,6 @@ export class {{name}} {{#parent}}extends {{{parent}}} {{/parent}}{
 
 {{/isEnum}}
 {{#isEnum}}
-export type {{name}} = {{#allowableValues}}{{#enumVars}}{{{value}}}{{^-last}}|{{/-last}}{{/enumVars}}{{/allowableValues}};
+export type {{classname}} = {{#allowableValues}}{{#enumVars}}{{{value}}}{{^-last}}|{{/-last}}{{/enumVars}}{{/allowableValues}};
 {{/isEnum}}
 {{/models}}

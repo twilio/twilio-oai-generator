@@ -1,9 +1,11 @@
 package com.twilio.oai.resolver.node;
 
+import com.twilio.oai.CodegenUtils;
 import com.twilio.oai.api.ApiResourceBuilder;
 import com.twilio.oai.resolver.IConventionMapper;
 import com.twilio.oai.resolver.LanguageParamResolver;
 
+import com.twilio.oai.resolver.common.CodegenModelResolver;
 import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenParameter;
 
@@ -13,8 +15,9 @@ import static com.twilio.oai.common.ApplicationConstants.OBJECT;
 import static com.twilio.oai.common.ApplicationConstants.SERIALIZE_VEND_EXT;
 
 public class NodeParameterResolver extends LanguageParamResolver {
-    public NodeParameterResolver(final IConventionMapper mapper) {
-        super(mapper);
+
+    public NodeParameterResolver(final IConventionMapper mapper, final CodegenModelResolver codegenModelResolver) {
+        super(mapper, codegenModelResolver);
     }
 
     @Override

@@ -6,6 +6,7 @@ import com.twilio.oai.common.LanguageDataType;
 import com.twilio.oai.resolver.Resolver;
 
 import lombok.RequiredArgsConstructor;
+import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenProperty;
 
 import java.util.List;
@@ -21,6 +22,18 @@ public class CodegenModelContainerDataTypeResolver extends Resolver<CodegenPrope
 
         codegenProperty.dataType = unwrapContainerType(codegenProperty,containerTypes);
         codegenModelDataTypeResolver.resolve(codegenProperty, apiResourceBuilder);
+        rewrapContainerType(codegenProperty,containerTypes);
+
+        return codegenProperty;
+    }
+
+    public CodegenProperty resolve(CodegenProperty codegenProperty, ApiResourceBuilder apiResourceBuilder, CodegenModelResolver codegenModelResolver) {
+        Stack<String> containerTypes = new Stack<>();
+        codegenProperty.dataType = unwrapContainerType(codegenProperty,containerTypes);
+        CodegenModel nestedModel = codegenModelResolver.resolveNestedModel(codegenProperty, apiResourceBuilder);
+        if (nestedModel == null) {
+            codegenModelDataTypeResolver.resolve(codegenProperty, apiResourceBuilder);
+        }
         rewrapContainerType(codegenProperty,containerTypes);
 
         return codegenProperty;

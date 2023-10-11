@@ -111,7 +111,7 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
 
         nodeApiResourceBuilder.updateApiPath()
             .updateTemplate()
-            .updateOperations(new NodeParameterResolver(conventionMapper))
+            .updateOperations(new NodeParameterResolver(conventionMapper, codegenModelResolver))
             .updateResponseModel(new LanguagePropertyResolver(conventionMapper), codegenModelResolver);
         return nodeApiResourceBuilder.build();
     }
