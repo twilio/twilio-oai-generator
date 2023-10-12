@@ -11,7 +11,8 @@ if params != nil && params.PathAccountSid != nil {
     path = strings.Replace(path, "{"+"{{paramName}}"+"}", {{^isString}}fmt.Sprint({{/isString}}{{paramName}}{{^isString}}){{/isString}}, -1)
 {{/pathParams}}
 
-data := url.Values{}{{^vendorExtensions.x-is-json}}
+data := url.Values{}
+{{^vendorExtensions.x-is-json}}
 headers := make(map[string]interface{})
 {{/vendorExtensions.x-is-json}}
 {{#vendorExtensions.x-is-json}}
