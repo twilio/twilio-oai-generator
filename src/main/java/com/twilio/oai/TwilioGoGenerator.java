@@ -2,6 +2,7 @@ package com.twilio.oai;
 
 import com.twilio.oai.common.Utility;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -121,6 +122,7 @@ public class TwilioGoGenerator extends AbstractTwilioGoGenerator {
 
         for (final CodegenOperation co : opList) {
             Utility.populateCrudOperations(co);
+            Utility.resolveContentType(co);
 
             if (co.nickname.startsWith("List")) {
                 // make sure the format matches the other methods
