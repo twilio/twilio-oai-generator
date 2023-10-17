@@ -57,12 +57,13 @@ func (c *ApiService) CreateAccount(params *CreateAccountParams) (*TestResponseOb
     
     data := url.Values{}
     headers := make(map[string]interface{})
+
     if params != nil && params.RecordingStatusCallback != nil {
         data.Set("RecordingStatusCallback", *params.RecordingStatusCallback)
     }
     if params != nil && params.RecordingStatusCallbackEvent != nil {
         for _, item  := range *params.RecordingStatusCallbackEvent {
-        data.Add("RecordingStatusCallbackEvent", item)
+            data.Add("RecordingStatusCallbackEvent", item)
     }
     }
     if params != nil && params.Twiml != nil {
@@ -98,6 +99,7 @@ func (c *ApiService) DeleteAccount(Sid string, ) (error) {
 
 
 
+
     resp, err := c.requestHandler.Delete(c.baseURL+path, data, headers)
     if err != nil {
         return err
@@ -114,6 +116,7 @@ func (c *ApiService) FetchAccount(Sid string, ) (*TestResponseObject, error) {
 
     data := url.Values{}
     headers := make(map[string]interface{})
+
 
 
 
@@ -180,6 +183,7 @@ func (c *ApiService) PageAccount(params *ListAccountParams, pageToken, pageNumbe
     
     data := url.Values{}
     headers := make(map[string]interface{})
+
     if params != nil && params.DateCreated != nil {
         data.Set("DateCreated", fmt.Sprint((*params.DateCreated).Format(time.RFC3339)))
     }
@@ -329,6 +333,7 @@ func (c *ApiService) UpdateAccount(Sid string, params *UpdateAccountParams) (*Te
 
     data := url.Values{}
     headers := make(map[string]interface{})
+
     if params != nil && params.PauseBehavior != nil {
         data.Set("PauseBehavior", *params.PauseBehavior)
     }

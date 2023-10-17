@@ -40,6 +40,7 @@ func (c *ApiService) FetchCredentialHistory(Sid string, params *FetchCredentialH
 
     data := url.Values{}
     headers := make(map[string]interface{})
+    
     if params != nil && params.AddOnsData != nil {
         v, err := json.Marshal(params.AddOnsData)
 

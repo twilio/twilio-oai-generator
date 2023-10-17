@@ -68,17 +68,18 @@ func (c *ApiService) CreateCall(params *CreateCallParams) (*TestResponseObject, 
 
     data := url.Values{}
     headers := make(map[string]interface{})
+
     if params != nil && params.RequiredStringProperty != nil {
         data.Set("RequiredStringProperty", *params.RequiredStringProperty)
     }
     if params != nil && params.TestArrayOfStrings != nil {
         for _, item  := range *params.TestArrayOfStrings {
-        data.Add("TestArrayOfStrings", item)
+            data.Add("TestArrayOfStrings", item)
     }
     }
     if params != nil && params.TestArrayOfUri != nil {
         for _, item  := range *params.TestArrayOfUri {
-        data.Add("TestArrayOfUri", item)
+            data.Add("TestArrayOfUri", item)
     }
     }
     if params != nil && params.TestMethod != nil {
@@ -127,6 +128,7 @@ func (c *ApiService) DeleteCall(TestInteger int, params *DeleteCallParams) (erro
 
 
 
+
     resp, err := c.requestHandler.Delete(c.baseURL+path, data, headers)
     if err != nil {
         return err
@@ -159,6 +161,7 @@ func (c *ApiService) FetchCall(TestInteger int, params *FetchCallParams) (*TestR
 
     data := url.Values{}
     headers := make(map[string]interface{})
+
 
 
 

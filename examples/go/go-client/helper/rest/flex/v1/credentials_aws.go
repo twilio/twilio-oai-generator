@@ -135,6 +135,7 @@ func (c *ApiService) CreateCredentialAws(params *CreateCredentialAwsParams) (*Te
     
     data := url.Values{}
     headers := make(map[string]interface{})
+    
     if params != nil && params.TestString != nil {
         data.Set("TestString", *params.TestString)
     }
@@ -210,7 +211,7 @@ func (c *ApiService) CreateCredentialAws(params *CreateCredentialAwsParams) (*Te
     }
     if params != nil && params.Permissions != nil {
         for _, item  := range *params.Permissions {
-        data.Add("Permissions", item)
+            data.Add("Permissions", item)
     }
     }
     if params != nil && params.SomeA2PThing != nil {
@@ -240,6 +241,7 @@ func (c *ApiService) DeleteCredentialAws(Sid string, ) (error) {
 
     data := url.Values{}
     headers := make(map[string]interface{})
+    
 
 
 
@@ -259,6 +261,7 @@ func (c *ApiService) FetchCredentialAws(Sid string, ) (*TestResponseObject, erro
 
     data := url.Values{}
     headers := make(map[string]interface{})
+    
 
 
 
@@ -301,6 +304,7 @@ func (c *ApiService) PageCredentialAws(params *ListCredentialAwsParams, pageToke
     
     data := url.Values{}
     headers := make(map[string]interface{})
+    
     if params != nil && params.PageSize != nil {
         data.Set("PageSize", fmt.Sprint(*params.PageSize))
     }
@@ -438,6 +442,7 @@ func (c *ApiService) UpdateCredentialAws(Sid string, params *UpdateCredentialAws
 
     data := url.Values{}
     headers := make(map[string]interface{})
+    
     if params != nil && params.TestString != nil {
         data.Set("TestString", *params.TestString)
     }

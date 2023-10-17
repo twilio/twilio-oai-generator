@@ -63,6 +63,7 @@ func (c *ApiService) UpdateCallFeedbackSummary(Sid string, params *UpdateCallFee
 
     data := url.Values{}
     headers := make(map[string]interface{})
+
     if params != nil && params.AccountSid != nil {
         data.Set("AccountSid", *params.AccountSid)
     }
