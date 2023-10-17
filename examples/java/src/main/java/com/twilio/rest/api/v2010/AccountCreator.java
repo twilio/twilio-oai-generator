@@ -46,6 +46,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.UUID;
 
 import lombok.ToString;
 
@@ -133,7 +134,6 @@ public class AccountCreator extends Creator<Account>{
     private void addHeaderParams(final Request request) {
         if (xTwilioWebhookEnabled != null) {
             request.addHeaderParam("X-Twilio-Webhook-Enabled", xTwilioWebhookEnabled.toString());
-
         }
     }
 }
