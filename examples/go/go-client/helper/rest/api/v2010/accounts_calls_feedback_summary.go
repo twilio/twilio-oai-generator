@@ -63,15 +63,15 @@ func (c *ApiService) UpdateCallFeedbackSummary(Sid string, params *UpdateCallFee
 
     data := url.Values{}
     headers := make(map[string]interface{})
-if params != nil && params.AccountSid != nil {
-    data.Set("AccountSid", *params.AccountSid)
-}
-if params != nil && params.EndDate != nil {
-    data.Set("EndDate", fmt.Sprint(*params.EndDate))
-}
-if params != nil && params.StartDate != nil {
-    data.Set("StartDate", fmt.Sprint(*params.StartDate))
-}
+    if params != nil && params.AccountSid != nil {
+        data.Set("AccountSid", *params.AccountSid)
+    }
+    if params != nil && params.EndDate != nil {
+        data.Set("EndDate", fmt.Sprint(*params.EndDate))
+    }
+    if params != nil && params.StartDate != nil {
+        data.Set("StartDate", fmt.Sprint(*params.StartDate))
+    }
 
 
 

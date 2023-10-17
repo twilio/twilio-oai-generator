@@ -135,87 +135,87 @@ func (c *ApiService) CreateCredentialAws(params *CreateCredentialAwsParams) (*Te
     
     data := url.Values{}
     headers := make(map[string]interface{})
-if params != nil && params.TestString != nil {
-    data.Set("TestString", *params.TestString)
-}
-if params != nil && params.TestBoolean != nil {
-    data.Set("TestBoolean", fmt.Sprint(*params.TestBoolean))
-}
-if params != nil && params.TestInteger != nil {
-    data.Set("TestInteger", fmt.Sprint(*params.TestInteger))
-}
-if params != nil && params.TestNumber != nil {
-    data.Set("TestNumber", fmt.Sprint(*params.TestNumber))
-}
-if params != nil && params.TestNumberFloat != nil {
-    data.Set("TestNumberFloat", fmt.Sprint(*params.TestNumberFloat))
-}
-if params != nil && params.TestNumberDouble != nil {
-    data.Set("TestNumberDouble", fmt.Sprint(*params.TestNumberDouble))
-}
-if params != nil && params.TestNumberInt32 != nil {
-    data.Set("TestNumberInt32", fmt.Sprint(*params.TestNumberInt32))
-}
-if params != nil && params.TestNumberInt64 != nil {
-    data.Set("TestNumberInt64", fmt.Sprint(*params.TestNumberInt64))
-}
-if params != nil && params.TestObject != nil {
-    v, err := json.Marshal(params.TestObject)
-
-    if err != nil {
-        return nil, err
+    if params != nil && params.TestString != nil {
+        data.Set("TestString", *params.TestString)
     }
-
-    data.Set("TestObject", string(v))
-}
-if params != nil && params.TestDateTime != nil {
-    data.Set("TestDateTime", fmt.Sprint((*params.TestDateTime).Format(time.RFC3339)))
-}
-if params != nil && params.TestDate != nil {
-    data.Set("TestDate", fmt.Sprint(*params.TestDate))
-}
-if params != nil && params.TestEnum != nil {
-    data.Set("TestEnum", *params.TestEnum)
-}
-if params != nil && params.TestObjectArray != nil {
-    for _, item  := range *params.TestObjectArray {
-        v, err := json.Marshal(item)
+    if params != nil && params.TestBoolean != nil {
+        data.Set("TestBoolean", fmt.Sprint(*params.TestBoolean))
+    }
+    if params != nil && params.TestInteger != nil {
+        data.Set("TestInteger", fmt.Sprint(*params.TestInteger))
+    }
+    if params != nil && params.TestNumber != nil {
+        data.Set("TestNumber", fmt.Sprint(*params.TestNumber))
+    }
+    if params != nil && params.TestNumberFloat != nil {
+        data.Set("TestNumberFloat", fmt.Sprint(*params.TestNumberFloat))
+    }
+    if params != nil && params.TestNumberDouble != nil {
+        data.Set("TestNumberDouble", fmt.Sprint(*params.TestNumberDouble))
+    }
+    if params != nil && params.TestNumberInt32 != nil {
+        data.Set("TestNumberInt32", fmt.Sprint(*params.TestNumberInt32))
+    }
+    if params != nil && params.TestNumberInt64 != nil {
+        data.Set("TestNumberInt64", fmt.Sprint(*params.TestNumberInt64))
+    }
+    if params != nil && params.TestObject != nil {
+        v, err := json.Marshal(params.TestObject)
 
         if err != nil {
             return nil, err
         }
 
-        data.Add("TestObjectArray", string(v))
+        data.Set("TestObject", string(v))
     }
-}
-if params != nil && params.TestAnyType != nil {
-    v, err := json.Marshal(params.TestAnyType)
-
-    if err != nil {
-        return nil, err
+    if params != nil && params.TestDateTime != nil {
+        data.Set("TestDateTime", fmt.Sprint((*params.TestDateTime).Format(time.RFC3339)))
     }
+    if params != nil && params.TestDate != nil {
+        data.Set("TestDate", fmt.Sprint(*params.TestDate))
+    }
+    if params != nil && params.TestEnum != nil {
+        data.Set("TestEnum", *params.TestEnum)
+    }
+    if params != nil && params.TestObjectArray != nil {
+        for _, item  := range *params.TestObjectArray {
+            v, err := json.Marshal(item)
 
-    data.Set("TestAnyType", string(v))
-}
-if params != nil && params.TestAnyArray != nil {
-    for _, item  := range *params.TestAnyArray {
-        v, err := json.Marshal(item)
+            if err != nil {
+                return nil, err
+            }
+
+            data.Add("TestObjectArray", string(v))
+    }
+    }
+    if params != nil && params.TestAnyType != nil {
+        v, err := json.Marshal(params.TestAnyType)
 
         if err != nil {
             return nil, err
         }
 
-        data.Add("TestAnyArray", string(v))
+        data.Set("TestAnyType", string(v))
     }
-}
-if params != nil && params.Permissions != nil {
-    for _, item  := range *params.Permissions {
+    if params != nil && params.TestAnyArray != nil {
+        for _, item  := range *params.TestAnyArray {
+            v, err := json.Marshal(item)
+
+            if err != nil {
+                return nil, err
+            }
+
+            data.Add("TestAnyArray", string(v))
+    }
+    }
+    if params != nil && params.Permissions != nil {
+        for _, item  := range *params.Permissions {
         data.Add("Permissions", item)
     }
-}
-if params != nil && params.SomeA2PThing != nil {
-    data.Set("SomeA2PThing", *params.SomeA2PThing)
-}
+    }
+    if params != nil && params.SomeA2PThing != nil {
+        data.Set("SomeA2PThing", *params.SomeA2PThing)
+    }
 
 
 
@@ -301,9 +301,9 @@ func (c *ApiService) PageCredentialAws(params *ListCredentialAwsParams, pageToke
     
     data := url.Values{}
     headers := make(map[string]interface{})
-if params != nil && params.PageSize != nil {
-    data.Set("PageSize", fmt.Sprint(*params.PageSize))
-}
+    if params != nil && params.PageSize != nil {
+        data.Set("PageSize", fmt.Sprint(*params.PageSize))
+    }
 
     if pageToken != "" {
         data.Set("PageToken", pageToken)
@@ -438,12 +438,12 @@ func (c *ApiService) UpdateCredentialAws(Sid string, params *UpdateCredentialAws
 
     data := url.Values{}
     headers := make(map[string]interface{})
-if params != nil && params.TestString != nil {
-    data.Set("TestString", *params.TestString)
-}
-if params != nil && params.TestBoolean != nil {
-    data.Set("TestBoolean", fmt.Sprint(*params.TestBoolean))
-}
+    if params != nil && params.TestString != nil {
+        data.Set("TestString", *params.TestString)
+    }
+    if params != nil && params.TestBoolean != nil {
+        data.Set("TestBoolean", fmt.Sprint(*params.TestBoolean))
+    }
 
 
 
