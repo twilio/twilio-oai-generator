@@ -11,14 +11,28 @@ if params != nil && params.PathAccountSid != nil {
     path = strings.Replace(path, "{"+"{{paramName}}"+"}", {{^isString}}fmt.Sprint({{/isString}}{{paramName}}{{^isString}}){{/isString}}, -1)
 {{/pathParams}}
 
-data := url.Values{}
+    data := url.Values{}
 {{^vendorExtensions.x-is-json}}
-headers := make(map[string]interface{})
+    headers := make(map[string]interface{})
 {{/vendorExtensions.x-is-json}}
 {{#vendorExtensions.x-is-json}}
-headers := map[string]interface{}{
+    headers := map[string]interface{}{
 	 	"Content-Type": "application/json",
-}{{/vendorExtensions.x-is-json}}
+    }
+{{#hasOptionalParams}}
+{{#optionalParams}}
+    if params != nil && params.{{paramName}} != nil {
+        v, err := json.Marshal(*params.{{paramName}})
+        if err != nil {
+            return nil, err
+        }
+        urlEncodedData := url.QueryEscape(string(v))
+        data.Set("{{baseName}}", urlEncodedData)
+    }
+{{/optionalParams}}
+{{/hasOptionalParams}}
+{{/vendorExtensions.x-is-json}}
+{{^vendorExtensions.x-is-json}}
 {{#hasOptionalParams}}
 {{#optionalParams}}
 {{^vendorExtensions.x-is-account-sid}}
@@ -61,3 +75,4 @@ if params != nil && params.{{paramName}} != nil {
 {{/vendorExtensions.x-is-account-sid}}
 {{/optionalParams}}
 {{/hasOptionalParams}}
+{{/vendorExtensions.x-is-json}}
