@@ -12,10 +12,10 @@ if params != nil && params.PathAccountSid != nil {
 {{/pathParams}}
 
     data := url.Values{}
-{{^vendorExtensions.x-is-json}}
+{{^vendorExtensions.x-is-json-type}}
     headers := make(map[string]interface{})
-{{/vendorExtensions.x-is-json}}
-{{#vendorExtensions.x-is-json}}
+{{/vendorExtensions.x-is-json-type}}
+{{#vendorExtensions.x-is-json-type}}
     headers := map[string]interface{}{
 	 	"Content-Type": "application/json",
     }
@@ -31,8 +31,8 @@ if params != nil && params.PathAccountSid != nil {
     }
 {{/optionalParams}}
 {{/hasOptionalParams}}
-{{/vendorExtensions.x-is-json}}
-{{^vendorExtensions.x-is-json}}
+{{/vendorExtensions.x-is-json-type}}
+{{^vendorExtensions.x-is-json-type}}
 {{#hasOptionalParams}}
 {{#optionalParams}}
 {{^vendorExtensions.x-is-account-sid}}
@@ -75,4 +75,4 @@ if params != nil && params.{{paramName}} != nil {
 {{/vendorExtensions.x-is-account-sid}}
 {{/optionalParams}}
 {{/hasOptionalParams}}
-{{/vendorExtensions.x-is-json}}
+{{/vendorExtensions.x-is-json-type}}

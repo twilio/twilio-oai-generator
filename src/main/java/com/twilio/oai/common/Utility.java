@@ -136,7 +136,7 @@ public class Utility {
         if(co.bodyParam != null) {
             LinkedHashMap conType = co.bodyParam.getContent();
             if (conType != null && conType.containsKey("application/json")) {
-                co.vendorExtensions.put("x-is-json", true);
+                co.vendorExtensions.put("x-is-json-type", true);
             }
         }
     }
