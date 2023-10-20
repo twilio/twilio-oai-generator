@@ -168,6 +168,9 @@ public class TwilioGoGenerator extends AbstractTwilioGoGenerator {
 
         // Parameters (and their items) need to be marshalled to a string for inclusion in the request payload when
         // they are either free-form objects (type: object) or any type objects (type is absent).
+        if(parameter.isBodyParam){
+            parameter.vendorExtensions.put("x-is-body-param",true);
+        }
         if (parameter.isFreeFormObject || parameter.isAnyType) {
             parameter.vendorExtensions.put("x-marshal", true);
         }
