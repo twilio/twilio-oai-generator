@@ -13,16 +13,11 @@
  */
 
 package openapi
-import (
-	"encoding/json"
-	"github.com/twilio/twilio-go/client"
-)
+
 // TestResponseObject struct for TestResponseObject
 type TestResponseObject struct {
-	AccountSid *string `json:"account_sid,omitempty"`
-	Sid *string `json:"sid,omitempty"`
-	TestString *string `json:"test_string,omitempty"`
-	TestInteger *int `json:"test_integer,omitempty"`
+	AccountSid  *string `json:"account_sid,omitempty"`
+	Sid         *string `json:"sid,omitempty"`
+	TestString  *string `json:"test_string,omitempty"`
+	TestInteger *int    `json:"test_integer,omitempty"`
 }
-
-

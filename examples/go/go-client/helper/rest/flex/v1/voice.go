@@ -16,34 +16,28 @@ package openapi
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/url"
-
-    "github.com/twilio/twilio-go/client"
+	"strings"
 )
 
+func (c *ApiService) UpdateCall(Sid string) (*UpdateCall200Response, error) {
+	path := "/v1/Voice/{Sid}"
+	path = strings.Replace(path, "{"+"Sid"+"}", Sid, -1)
 
-func (c *ApiService) UpdateCall(Sid string, ) (*UpdateCall200Response, error) {
-    path := "/v1/Voice/{Sid}"
-        path = strings.Replace(path, "{"+"Sid"+"}", Sid, -1)
+	data := url.Values{}
+	headers := make(map[string]interface{})
 
-data := url.Values{}
-headers := make(map[string]interface{})
+	resp, err := c.requestHandler.Post(c.baseURL+path, data, headers)
+	if err != nil {
+		return nil, err
+	}
 
+	defer resp.Body.Close()
 
+	ps := &UpdateCall200Response{}
+	if err := json.NewDecoder(resp.Body).Decode(ps); err != nil {
+		return nil, err
+	}
 
-
-    resp, err := c.requestHandler.Post(c.baseURL+path, data, headers)
-    if err != nil {
-        return nil, err
-    }
-
-    defer resp.Body.Close()
-
-    ps := &UpdateCall200Response{}
-    if err := json.NewDecoder(resp.Body).Decode(ps); err != nil {
-        return nil, err
-    }
-
-    return ps, err
+	return ps, err
 }
