@@ -5,6 +5,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -129,5 +130,14 @@ public class Utility {
 
     public Optional<CodegenModel> getModelByName(final List<CodegenModel> models, final String modelname) {
         return models.stream().filter(model -> model.name.equals(modelname)).findFirst();
+    }
+
+    public static void resolveContentType(CodegenOperation co) {
+        if(co.bodyParam != null) {
+            LinkedHashMap conType = co.bodyParam.getContent();
+            if (conType != null && conType.containsKey("application/json")) {
+                co.vendorExtensions.put("x-is-json-type", true);
+            }
+        }
     }
 }
