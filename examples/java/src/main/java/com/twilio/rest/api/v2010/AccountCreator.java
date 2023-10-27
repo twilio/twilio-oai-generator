@@ -46,6 +46,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.UUID;
 
 import lombok.ToString;
 
@@ -107,7 +108,7 @@ public class AccountCreator extends Creator<Account>{
         } else if (!TwilioRestClient.SUCCESS.test(response.getStatusCode())) {
             RestException restException = RestException.fromJson(response.getStream(), client.getObjectMapper());
             if (restException == null) {
-                throw new ApiException("Server Error, no content");
+                throw new ApiException("Server Error, no content", response.getStatusCode());
             }
             throw new ApiException(restException);
         }
@@ -133,7 +134,6 @@ public class AccountCreator extends Creator<Account>{
     private void addHeaderParams(final Request request) {
         if (xTwilioWebhookEnabled != null) {
             request.addHeaderParam("X-Twilio-Webhook-Enabled", xTwilioWebhookEnabled.toString());
-
         }
     }
 }
