@@ -8,9 +8,8 @@ import com.twilio.oai.resolver.IConventionMapper;
 import com.twilio.oai.resolver.LanguageConventionResolver;
 import com.twilio.oai.resolver.LanguagePropertyResolver;
 import com.twilio.oai.resolver.common.CodegenModelResolver;
-import com.twilio.oai.resolver.java.JavaParameterResolver;
-import com.twilio.oai.resolver.java.JavaPropertyResolver;
 import com.twilio.oai.resolver.node.NodeCaseResolver;
+import com.twilio.oai.resolver.node.NodeCodegenModelResolver;
 import com.twilio.oai.resolver.node.NodeParameterResolver;
 import com.twilio.oai.resource.IResourceTree;
 import com.twilio.oai.resource.ResourceMap;
@@ -102,16 +101,19 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
 
     private ApiResources generateResources(final List<CodegenOperation> opList) {
         final IConventionMapper conventionMapper = new LanguageConventionResolver(CONFIG_NODE_JSON_PATH);
-        final CodegenModelResolver codegenModelResolver = new CodegenModelResolver(conventionMapper,
+        final NodeCodegenModelResolver nodeCodegenModelResolver = new NodeCodegenModelResolver(conventionMapper,
                                                                                    modelFormatMap,
                                                                                    List.of(EnumConstants.NodeDataTypes.values()));
+        final CodegenModelResolver codegenModelResolver = new CodegenModelResolver(conventionMapper,
+                                                                                    modelFormatMap,
+                                                                                    List.of(EnumConstants.NodeDataTypes.values()));
 
         NodeApiResourceBuilder nodeApiResourceBuilder = new NodeApiResourceBuilder(actionTemplate, opList, allModels, directoryStructureService
                 , twilioCodegen.getToggles(JSON_INGRESS));
 
         nodeApiResourceBuilder.updateApiPath()
             .updateTemplate()
-            .updateOperations(new NodeParameterResolver(conventionMapper, codegenModelResolver))
+            .updateOperations(new NodeParameterResolver(conventionMapper, nodeCodegenModelResolver))
             .updateResponseModel(new LanguagePropertyResolver(conventionMapper), codegenModelResolver);
         return nodeApiResourceBuilder.build();
     }
