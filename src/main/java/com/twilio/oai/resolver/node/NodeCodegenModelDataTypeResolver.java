@@ -34,7 +34,7 @@ public class NodeCodegenModelDataTypeResolver extends CodegenModelDataTypeResolv
         property =  super.resolve(property, apiResourceBuilder);
         CodegenModel codegenModel = apiResourceBuilder.getModel(property.dataType);
         if (codegenModel != null && !CodegenUtils.isPropertySchemaEnum(property) && !modelFormatMap.containsKey(property.dataType)) {
-            // this is recursion as codegenModelResolver will again call CsharpCodegenModelDataTypeResolver
+            // this is recursion as codegenModelResolver will again call NodeCodegenModelDataTypeResolver
             codegenModelResolver.resolve(codegenModel, apiResourceBuilder);
             apiResourceBuilder.addNestedModel(codegenModel);
         } else {
