@@ -15,19 +15,24 @@
 package openapi
 
 import (
+	"context"
 	"encoding/json"
 	"net/url"
 	"strings"
 )
 
 func (c *ApiService) UpdateCall(Sid string) (*UpdateCall200Response, error) {
+	return c.UpdateCallWithCtx(context.TODO(), Sid)
+}
+
+func (c *ApiService) UpdateCallWithCtx(ctx context.Context, Sid string) (*UpdateCall200Response, error) {
 	path := "/v1/Voice/{Sid}"
 	path = strings.Replace(path, "{"+"Sid"+"}", Sid, -1)
 
 	data := url.Values{}
 	headers := make(map[string]interface{})
 
-	resp, err := c.requestHandler.Post(c.baseURL+path, data, headers)
+	resp, err := c.requestHandler.Post(ctx, c.baseURL+path, data, headers)
 	if err != nil {
 		return nil, err
 	}

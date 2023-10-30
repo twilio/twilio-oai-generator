@@ -15,6 +15,7 @@
 package openapi
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"net/url"
@@ -51,6 +52,10 @@ func (params *UpdateCallFeedbackSummaryParams) SetStartDate(StartDate string) *U
 }
 
 func (c *ApiService) UpdateCallFeedbackSummary(Sid string, params *UpdateCallFeedbackSummaryParams) (*TestResponseObject, error) {
+	return c.UpdateCallFeedbackSummaryWithCtx(context.TODO(), Sid, params)
+}
+
+func (c *ApiService) UpdateCallFeedbackSummaryWithCtx(ctx context.Context, Sid string, params *UpdateCallFeedbackSummaryParams) (*TestResponseObject, error) {
 	path := "/2010-04-01/Accounts/{AccountSid}/Calls/Feedback/Summary/{Sid}.json"
 	if params != nil && params.PathAccountSid != nil {
 		path = strings.Replace(path, "{"+"AccountSid"+"}", *params.PathAccountSid, -1)
@@ -72,7 +77,7 @@ func (c *ApiService) UpdateCallFeedbackSummary(Sid string, params *UpdateCallFee
 		data.Set("StartDate", fmt.Sprint(*params.StartDate))
 	}
 
-	resp, err := c.requestHandler.Post(c.baseURL+path, data, headers)
+	resp, err := c.requestHandler.Post(ctx, c.baseURL+path, data, headers)
 	if err != nil {
 		return nil, err
 	}

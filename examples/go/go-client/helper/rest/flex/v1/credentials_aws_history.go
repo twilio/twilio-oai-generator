@@ -15,6 +15,7 @@
 package openapi
 
 import (
+	"context"
 	"encoding/json"
 	"net/url"
 	"strings"
@@ -32,6 +33,10 @@ func (params *FetchCredentialHistoryParams) SetAddOnsData(AddOnsData map[string]
 }
 
 func (c *ApiService) FetchCredentialHistory(Sid string, params *FetchCredentialHistoryParams) (*TestResponseObject, error) {
+	return c.FetchCredentialHistoryWithCtx(context.TODO(), Sid, params)
+}
+
+func (c *ApiService) FetchCredentialHistoryWithCtx(ctx context.Context, Sid string, params *FetchCredentialHistoryParams) (*TestResponseObject, error) {
 	path := "/v1/Credentials/AWS/{Sid}/History"
 	path = strings.Replace(path, "{"+"Sid"+"}", Sid, -1)
 
@@ -48,7 +53,7 @@ func (c *ApiService) FetchCredentialHistory(Sid string, params *FetchCredentialH
 		data.Set("AddOnsData", string(v))
 	}
 
-	resp, err := c.requestHandler.Get(c.baseURL+path, data, headers)
+	resp, err := c.requestHandler.Get(ctx, c.baseURL+path, data, headers)
 	if err != nil {
 		return nil, err
 	}
