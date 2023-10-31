@@ -33,19 +33,13 @@ public class CodegenModelResolver extends Resolver<CodegenModel> {
         }
 
         for (CodegenProperty property : model.vars) {
-            CodegenModel nestedModel = resolveNestedModel(property, apiResourceBuilder);
-            if(nestedModel != null) {
-                return nestedModel;
-            }
             if (property.isContainer) {
-                codegenModelContainerDataTypeResolver.resolve(property, apiResourceBuilder, this);
+                codegenModelContainerDataTypeResolver.resolve(property, apiResourceBuilder);
             } else {
                 codegenModelDataTypeResolver.resolve(property, apiResourceBuilder);
             }
         }
+
         return model;
-    }
-    public CodegenModel resolveNestedModel(CodegenProperty property, ApiResourceBuilder apiResourceBuilder) {
-            return null;
     }
 }

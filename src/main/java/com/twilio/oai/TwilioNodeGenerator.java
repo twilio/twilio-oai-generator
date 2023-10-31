@@ -7,7 +7,6 @@ import com.twilio.oai.common.Utility;
 import com.twilio.oai.resolver.IConventionMapper;
 import com.twilio.oai.resolver.LanguageConventionResolver;
 import com.twilio.oai.resolver.LanguagePropertyResolver;
-import com.twilio.oai.resolver.common.CodegenModelResolver;
 import com.twilio.oai.resolver.node.NodeCaseResolver;
 import com.twilio.oai.resolver.node.NodeCodegenModelResolver;
 import com.twilio.oai.resolver.node.NodeParameterResolver;
@@ -104,9 +103,6 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
         final NodeCodegenModelResolver nodeCodegenModelResolver = new NodeCodegenModelResolver(conventionMapper,
                                                                                    modelFormatMap,
                                                                                    List.of(EnumConstants.NodeDataTypes.values()));
-        final CodegenModelResolver codegenModelResolver = new CodegenModelResolver(conventionMapper,
-                                                                                    modelFormatMap,
-                                                                                    List.of(EnumConstants.NodeDataTypes.values()));
 
         NodeApiResourceBuilder nodeApiResourceBuilder = new NodeApiResourceBuilder(actionTemplate, opList, allModels, directoryStructureService
                 , twilioCodegen.getToggles(JSON_INGRESS));
@@ -114,7 +110,7 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
         nodeApiResourceBuilder.updateApiPath()
             .updateTemplate()
             .updateOperations(new NodeParameterResolver(conventionMapper, nodeCodegenModelResolver))
-            .updateResponseModel(new LanguagePropertyResolver(conventionMapper), codegenModelResolver);
+            .updateResponseModel(new LanguagePropertyResolver(conventionMapper), nodeCodegenModelResolver);
         return nodeApiResourceBuilder.build();
     }
 

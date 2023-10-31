@@ -4,7 +4,6 @@ import com.twilio.oai.CodegenUtils;
 import com.twilio.oai.api.ApiResourceBuilder;
 import com.twilio.oai.common.LanguageDataType;
 import com.twilio.oai.resolver.IConventionMapper;
-import com.twilio.oai.resolver.common.CodegenModelContainerDataTypeResolver;
 import com.twilio.oai.resolver.common.CodegenModelResolver;
 import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenProperty;
@@ -16,7 +15,7 @@ import java.util.Map;
 
 public class NodeCodegenModelResolver extends CodegenModelResolver {
     private final NodeCodegenModelDataTypeResolver codegenModelDataTypeResolver;
-    private final CodegenModelContainerDataTypeResolver codegenModelContainerDataTypeResolver;
+    private final NodeCodegenModelContainerDataTypeResolver codegenModelContainerDataTypeResolver;
     private static final String X_IMPORT = "x-import";
 
     public NodeCodegenModelResolver(IConventionMapper mapper, Map<String, String> modelFormatMap,
@@ -28,7 +27,7 @@ public class NodeCodegenModelResolver extends CodegenModelResolver {
                                     NodeCodegenModelDataTypeResolver codegenModelDataTypeResolver) {
         super(languageDataTypes, codegenModelDataTypeResolver);
         this.codegenModelDataTypeResolver = codegenModelDataTypeResolver;
-        this.codegenModelContainerDataTypeResolver = new CodegenModelContainerDataTypeResolver(codegenModelDataTypeResolver,
+        this.codegenModelContainerDataTypeResolver = new NodeCodegenModelContainerDataTypeResolver(codegenModelDataTypeResolver,
                 languageDataTypes);
     }
 
@@ -49,7 +48,7 @@ public class NodeCodegenModelResolver extends CodegenModelResolver {
                 codegenModelDataTypeResolver.resolve(property, apiResourceBuilder);
             }
             property.getVendorExtensions().computeIfPresent(X_IMPORT, (key, value) -> {
-                if( model.vendorExtensions.containsKey(key)) {
+                if(model.vendorExtensions.containsKey(key)) {
                     ((HashMap) model.vendorExtensions.get(key)).putAll((Map) value);
                 }
                 else {
@@ -60,7 +59,7 @@ public class NodeCodegenModelResolver extends CodegenModelResolver {
         }
         return model;
     }
-    @Override
+
     public CodegenModel resolveNestedModel(CodegenProperty property, ApiResourceBuilder apiResourceBuilder) {
         CodegenModel derivedCodegenModel = apiResourceBuilder.getModel(property.dataType);
         if(derivedCodegenModel != null && !CodegenUtils.isPropertySchemaEnum(property) &&

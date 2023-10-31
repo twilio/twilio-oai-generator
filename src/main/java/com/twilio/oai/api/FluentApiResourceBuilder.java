@@ -191,7 +191,7 @@ public abstract class FluentApiResourceBuilder extends ApiResourceBuilder {
         });
     }
 
-    private void updateDataType(final String baseType,
+    protected void updateDataType(final String baseType,
                                 final String dataType,
                                 final BiConsumer<String, String> consumer) {
         consumer.accept(baseType, getDataTypeName(dataType));
