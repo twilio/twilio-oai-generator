@@ -29,6 +29,7 @@ public class NodeCodegenModelResolver extends CodegenModelResolver {
         this.codegenModelDataTypeResolver = codegenModelDataTypeResolver;
         this.codegenModelContainerDataTypeResolver = new NodeCodegenModelContainerDataTypeResolver(codegenModelDataTypeResolver,
                 languageDataTypes);
+        this.codegenModelDataTypeResolver.setCodegenModel(this);
     }
 
     @Override
@@ -58,6 +59,21 @@ public class NodeCodegenModelResolver extends CodegenModelResolver {
             });
         }
         return model;
+    }
+
+    public void resolveResponseModel(CodegenModel model, ApiResourceBuilder apiResourceBuilder) {
+        if (model == null) {
+            return;
+        }
+
+        for (CodegenProperty property : model.vars) {
+            if (property.isContainer) {
+                codegenModelContainerDataTypeResolver.resolve(property, apiResourceBuilder);
+            } else {
+                codegenModelDataTypeResolver.resolveResponseModel(property, apiResourceBuilder);
+            }
+        }
+
     }
 
     public CodegenModel resolveNestedModel(CodegenProperty property, ApiResourceBuilder apiResourceBuilder) {

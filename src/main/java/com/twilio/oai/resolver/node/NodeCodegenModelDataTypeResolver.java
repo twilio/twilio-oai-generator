@@ -44,6 +44,10 @@ public class NodeCodegenModelDataTypeResolver extends CodegenModelDataTypeResolv
         return property;
     }
 
+    public void resolveResponseModel(CodegenProperty property, ApiResourceBuilder apiResourceBuilder) {
+        super.resolve(property, apiResourceBuilder);
+    }
+
     protected void resolveProperty(CodegenProperty property, ApiResourceBuilder apiResourceBuilder) {
         updateDataType(property.baseType, property.dataType, apiResourceBuilder, (dataTypeWithEnum, dataType) -> {
             property.datatypeWithEnum = dataTypeWithEnum;

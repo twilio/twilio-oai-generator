@@ -4,12 +4,12 @@ import com.twilio.oai.DirectoryStructureService;
 import com.twilio.oai.common.ApplicationConstants;
 import com.twilio.oai.common.Utility;
 import com.twilio.oai.resolver.Resolver;
+import com.twilio.oai.resolver.node.NodeCodegenModelResolver;
 import com.twilio.oai.template.IApiActionTemplate;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 
 import org.openapitools.codegen.CodegenModel;
@@ -68,8 +68,7 @@ public class NodeApiResourceBuilder extends FluentApiResourceBuilder {
         return this;
     }
 
-    @Override
-    public ApiResourceBuilder updateResponseModel(Resolver<CodegenProperty> codegenPropertyResolver, Resolver<CodegenModel> codegenModelResolver) {
+    public ApiResourceBuilder updateResponseModel(Resolver<CodegenProperty> codegenPropertyResolver, NodeCodegenModelResolver codegenModelResolver) {
         final String resourceName = getApiName();
 
         final List<CodegenModel> allResponseModels = codegenOperationList
@@ -87,7 +86,7 @@ public class NodeApiResourceBuilder extends FluentApiResourceBuilder {
             responseModel = firstModel;
 
             allResponseModels.forEach(model -> {
-                codegenModelResolver.resolve(model, this);
+                codegenModelResolver.resolveResponseModel(model, this);
 
                 model.setName(resourceName);
                 model.getVars().forEach(variable -> {
@@ -114,7 +113,7 @@ public class NodeApiResourceBuilder extends FluentApiResourceBuilder {
             responseModel.getVars().forEach(variable -> {
                 addModel(modelTree, variable.complexType, variable.dataType);
 
-                updateDataType(variable.complexType, variable.dataType, (dataTypeWithEnum, dataType) -> {
+                super.updateDataType(variable.complexType, variable.dataType, (dataTypeWithEnum, dataType) -> {
                     variable.datatypeWithEnum = dataTypeWithEnum;
                     variable.baseType = dataType;
                 });
@@ -124,18 +123,6 @@ public class NodeApiResourceBuilder extends FluentApiResourceBuilder {
         modelTree.values().forEach(model -> model.setName(getModelName(model.getClassname())));
 
         return this;
-    }
-
-    @Override
-    protected void updateDataType(final String baseType,
-                                  final String dataType,
-                                  final BiConsumer<String, String> consumer) {
-        consumer.accept(baseType, getDataTypeName(dataType));
-
-        if (baseType != null) {
-            final String datatypeWithEnum = getDataTypeName(baseType);
-            consumer.accept(datatypeWithEnum, dataType.replaceFirst(baseType, datatypeWithEnum));
-        }
     }
 
     @Override
@@ -154,7 +141,7 @@ public class NodeApiResourceBuilder extends FluentApiResourceBuilder {
         return removeEnumName(dataType);
     }
 
-    private String removeEnumName(final String dataType) {
+    public String removeEnumName(final String dataType) {
         if (dataType != null && dataType.contains(ApplicationConstants.ENUM)) {
             return getApiName() + Utility.removeEnumName(dataType);
         }
