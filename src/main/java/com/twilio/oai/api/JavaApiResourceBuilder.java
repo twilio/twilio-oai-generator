@@ -118,6 +118,7 @@ public class JavaApiResourceBuilder extends ApiResourceBuilder{
                     .map(item -> codegenParameterIResolver.resolve(item, this))
                     .map(item -> conventionResolver.resolveEnumParameter(item, resourceName))
                     .collect(Collectors.toList());
+            processDataTypesForParams(co.headerParams); 
             co.optionalParams = co.optionalParams
                     .stream()
                     .map(item -> codegenParameterIResolver.resolve(item, this))
@@ -349,7 +350,7 @@ public class JavaApiResourceBuilder extends ApiResourceBuilder{
     @Override
     protected Map<String, Object> mapOperation(CodegenOperation co) {
         Map<String, Object> operationMap = super.mapOperation(co);
-        if (hasNestedRequestBody) {
+        if (co.bodyParam !=null && co.bodyParam.getContent() != null && co.bodyParam.getContent().containsKey(CONTENT_TYPE_JSON)) {
             operationMap.put(SIGNATURE_LIST, generateSignatureListJson(co));
             modelParameters = generateSignatureListBody(co);
         } else {

@@ -6,7 +6,6 @@ import com.twilio.oai.common.LanguageDataType;
 import com.twilio.oai.resolver.Resolver;
 
 import lombok.RequiredArgsConstructor;
-import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenProperty;
 
 import java.util.List;
@@ -27,18 +26,6 @@ public class CodegenModelContainerDataTypeResolver extends Resolver<CodegenPrope
         return codegenProperty;
     }
 
-    public CodegenProperty resolve(CodegenProperty codegenProperty, ApiResourceBuilder apiResourceBuilder, CodegenModelResolver codegenModelResolver) {
-        Stack<String> containerTypes = new Stack<>();
-        codegenProperty.dataType = unwrapContainerType(codegenProperty,containerTypes);
-        CodegenModel nestedModel = codegenModelResolver.resolveNestedModel(codegenProperty, apiResourceBuilder);
-        if (nestedModel == null) {
-            codegenModelDataTypeResolver.resolve(codegenProperty, apiResourceBuilder);
-        }
-        rewrapContainerType(codegenProperty,containerTypes);
-
-        return codegenProperty;
-    }
-
     /**
      * Unwraps the container type(s) from the underlying property datatype and adds the container type(s) to the given
      * containerTypes stack. Returns the underlying property datatype (i.e. "List<IceServer>" -> "IceServer").
@@ -46,7 +33,7 @@ public class CodegenModelContainerDataTypeResolver extends Resolver<CodegenPrope
      * @param containerTypes
      * @return
      */
-    private String unwrapContainerType(CodegenProperty codegenProperty,Stack<String> containerTypes) {
+    protected String unwrapContainerType(CodegenProperty codegenProperty,Stack<String> containerTypes) {
         String codegenPropertyDataType = "";
         codegenPropertyDataType = codegenProperty.dataType;
 
@@ -78,7 +65,7 @@ public class CodegenModelContainerDataTypeResolver extends Resolver<CodegenPrope
      * @param codegenProperty
      * @param containerTypes
      */
-    private static void rewrapContainerType(CodegenProperty codegenProperty,Stack<String> containerTypes) {
+    protected static void rewrapContainerType(CodegenProperty codegenProperty,Stack<String> containerTypes) {
         String currentContainerType = "";
         while(!containerTypes.empty()) {
             currentContainerType = containerTypes.pop();

@@ -3,6 +3,7 @@ package com.twilio.oai.api;
 import com.twilio.oai.DirectoryStructureService;
 import com.twilio.oai.PathUtils;
 import com.twilio.oai.StringHelper;
+import com.twilio.oai.common.ApplicationConstants;
 import com.twilio.oai.common.Utility;
 import com.twilio.oai.resolver.Resolver;
 import com.twilio.oai.resource.Resource;
@@ -20,7 +21,7 @@ import static com.twilio.oai.common.EnumConstants.Operation;
 public abstract class ApiResourceBuilder implements IApiResourceBuilder {
     public static final String META_LIST_PARAMETER_KEY = "x-list-parameters";
     public static final String META_CONTEXT_PARAMETER_KEY = "x-context-parameters";
-    public static final String NESTED_CONTENT_TYPE = "application/json";
+    public static final String CONTENT_TYPE_JSON = "application/json";
 
     protected final IApiActionTemplate template;
     @Getter
@@ -338,7 +339,7 @@ public abstract class ApiResourceBuilder implements IApiResourceBuilder {
     protected boolean updateNestedContent(CodegenOperation co) {
         if(!hasNestedRequestBody) {
             if (co.bodyParam != null && co.bodyParam.getContent() != null) {
-                hasNestedRequestBody = co.bodyParam.getContent().containsKey(NESTED_CONTENT_TYPE);
+                hasNestedRequestBody = co.bodyParam.getContent().containsKey(CONTENT_TYPE_JSON);
             }
         }
         return hasNestedRequestBody;

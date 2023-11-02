@@ -4,7 +4,7 @@
         static public class {{classname}} {
         {{#vars}}
             @JsonInclude(JsonInclude.Include.NON_EMPTY)
-            @JsonProperty("{{#lambda.lowercase}}{{{nameInSnakeCase}}}{{/lambda.lowercase}}")
+            @JsonProperty("{{{baseName}}}")
             @Getter @Setter private {{{dataType}}} {{name}};
             {{#vendorExtensions.x-serialize}}
             public String get{{#lambda.titlecase}}{{name}}{{/lambda.titlecase}}() {
