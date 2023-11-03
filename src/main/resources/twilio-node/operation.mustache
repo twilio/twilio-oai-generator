@@ -26,6 +26,7 @@
 
     {{#queryParams}}{{>requestParam}}{{/queryParams}}
     {{#formParams}}{{>requestParam}}{{/formParams}}
+    {{#bodyParam}}data = params{{/bodyParam}}
     {{#vendorExtensions.x-is-read-operation}}
     if (params.pageNumber !== undefined) data["Page"] = params.pageNumber;
     if (params.pageToken !== undefined) data["PageToken"] = params.pageToken;

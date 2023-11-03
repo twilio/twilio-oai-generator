@@ -46,7 +46,7 @@ paths:
               examples:
                 example:
                   $ref: '#/components/examples/NumberPoolResponse.example'
-        '5XX':
+        '500':
           description: Unexpected error.
       externalDocs:
         description: Learn more about user operations provided by this API.
@@ -81,7 +81,7 @@ paths:
                 $ref: '#/components/schemas/NumberPoolResponse'
         '404':
           description: A Number Pool with the specified ID was not found.
-        '5XX':
+        '500':
           description: Unexpected error.
       externalDocs:
         description: Learn more about user operations provided by this API.
@@ -113,7 +113,7 @@ paths:
                 $ref: '#/components/schemas/NumberPoolResponse'
         '404':
           description: A Number Pool with the specified ID was not found.
-        '5XX':
+        '500':
           description: Unexpected error.
       externalDocs:
         description: Learn more about user operations provided by this API.
@@ -149,7 +149,7 @@ paths:
                 $ref: '#/components/schemas/NumberPoolResponse'
         '404':
           description: A Number Pool with the specified ID was not found.
-        '5XX':
+        '500':
           description: Unexpected error.
       externalDocs:
         description: Learn more about user operations provided by this API.
@@ -178,7 +178,7 @@ paths:
                 $ref: '#/components/schemas/NumberPoolResponse'
         '404':
           description: A Number Pool with the specified ID was not found.
-        '5XX':
+        '500':
           description: Unexpected error.
       externalDocs:
         description: Learn more about user operations provided by this API.

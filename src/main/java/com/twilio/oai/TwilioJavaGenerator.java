@@ -173,7 +173,7 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
         javaApiResourceBuilder.updateOperations(new JavaParameterResolver(conventionMapper))
                 .updateResponseModel(new JavaPropertyResolver(conventionMapper), codegenModelResolver);
         if (isIngress) {
-            //javaApiResourceBuilder.updateModel(codegenModelResolver);
+           //javaApiResourceBuilder.updateModel(codegenModelResolver);
         }
         return javaApiResourceBuilder.build();
     }

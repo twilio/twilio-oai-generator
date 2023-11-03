@@ -1,26 +1,48 @@
 package com.twilio.oai.resolver;
 
+import com.twilio.oai.CodegenUtils;
 import com.twilio.oai.StringHelper;
 import com.twilio.oai.api.ApiResourceBuilder;
 import com.twilio.oai.common.ApplicationConstants;
 
+import com.twilio.oai.resolver.common.CodegenModelResolver;
 import lombok.AllArgsConstructor;
 import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenParameter;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 
 import static com.twilio.oai.common.ApplicationConstants.SERIALIZE_VEND_EXT;
 
-@AllArgsConstructor
 public class LanguageParamResolver extends Resolver<CodegenParameter> {
     protected IConventionMapper mapper;
+    protected CodegenModelResolver codegenModelResolver;
+
+    public LanguageParamResolver(IConventionMapper mapper) {
+        this.mapper = mapper;
+    }
+
+    public LanguageParamResolver(IConventionMapper mapper, CodegenModelResolver codegenModelResolver) {
+        this.mapper = mapper;
+        this.codegenModelResolver = codegenModelResolver;
+    }
 
     @Override
     public CodegenParameter resolve(CodegenParameter codegenParameter, ApiResourceBuilder apiResourceBuilder) {
-        resolveProperties(codegenParameter, apiResourceBuilder);
-        resolvePrefixedMap(codegenParameter);
-        resolveSerialize(codegenParameter);
+
+        CodegenModel codegenModel = apiResourceBuilder.getModel(codegenParameter.dataType);
+        if (codegenModel != null && codegenModelResolver !=null && !CodegenUtils.isParameterSchemaEnum(codegenParameter)) { //json body
+            codegenModelResolver.resolve(codegenModel, apiResourceBuilder);
+            CodegenUtils.mergeVendorExtensionProperty(codegenParameter.vendorExtensions,
+                    (LinkedHashMap) codegenModel.getVendorExtensions().get("x-import"), "x-import");
+            apiResourceBuilder.addNestedModel(codegenModel);
+        }
+        else {
+            resolveProperties(codegenParameter, apiResourceBuilder);
+            resolvePrefixedMap(codegenParameter);
+            resolveSerialize(codegenParameter);
+        }
         return codegenParameter;
     }
 

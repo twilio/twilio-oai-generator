@@ -469,7 +469,7 @@ public class JavaApiResourceBuilder extends ApiResourceBuilder{
         }
         ArrayList<List<CodegenProperty>> signatureList = new ArrayList<>();
         for(List<CodegenProperty> paramList : filteredConditionalCodegenParam){
-            if (co.bodyParams != null && co.bodyParams.get(0) != null)
+            if (co.bodyParams != null && co.bodyParams.size() != 0 && co.bodyParams.get(0) != null)
                 signatureList.add(addAllToList(co.bodyParams.get(0).requiredVars, paramList));
         }
         return signatureList;
