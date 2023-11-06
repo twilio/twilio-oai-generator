@@ -47,8 +47,20 @@ func (c *ApiService) {{{nickname}}}({{#allParams}}{{#required}}{{paramName}} {{{
 	}
 {{/headerParams}}
 {{/hasHeaderParams}}
+{{#vendorExtensions.x-is-create-operation}}
+{{#vendorExtensions.x-is-json-type}}
+    resp, err := c.requestHandler.{{httpMethod}}(c.baseURL+path, data, headers, queryParams, body...)
+{{/vendorExtensions.x-is-json-type}}
+{{^vendorExtensions.x-is-json-type}}
+    resp, err := c.requestHandler.{{httpMethod}}(c.baseURL+path, data, headers, queryParams)
+{{/vendorExtensions.x-is-json-type}}
+{{/vendorExtensions.x-is-create-operation}}
+{{^vendorExtensions.x-is-create-operation}}
+{{^vendorExtensions.x-is-json-type}}
+    resp, err := c.requestHandler.{{httpMethod}}(c.baseURL+path, data, headers, queryParams)
+{{/vendorExtensions.x-is-json-type}}
+{{/vendorExtensions.x-is-create-operation}}
 
-    resp, err := c.requestHandler.{{httpMethod}}(c.baseURL+path, data, headers)
 {{#returnType}}
     if err != nil {
         return nil, err
@@ -87,7 +99,7 @@ func (c *ApiService) Page{{{vendorExtensions.x-domain-name}}}({{#allParams}}{{#r
         data.Set("Page", pageNumber)
     }
 
-    resp, err := c.requestHandler.Get(c.baseURL+path, data, headers)
+    resp, err := c.requestHandler.Get(c.baseURL+path, data, headers, queryParams)
     if err != nil {
         return nil, err
     }
@@ -175,7 +187,7 @@ func (c *ApiService) getNext{{{returnContainer}}}(nextPageUrl string) (interface
     if nextPageUrl == "" {
         return nil, nil
     }
-    resp, err := c.requestHandler.Get(nextPageUrl, nil, nil)
+    resp, err := c.requestHandler.Get(nextPageUrl, nil, nil, queryParams)
     if err != nil {
         return nil, err
     }
