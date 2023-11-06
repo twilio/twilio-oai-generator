@@ -171,6 +171,9 @@ public class TwilioGoGenerator extends AbstractTwilioGoGenerator {
         if(parameter.isBodyParam){
             parameter.vendorExtensions.put("x-is-body-param",true);
         }
+        if(parameter.isQueryParam){
+            parameter.vendorExtensions.put("x-is-query-param",true);
+        }
         if (parameter.isFreeFormObject || parameter.isAnyType) {
             parameter.vendorExtensions.put("x-marshal", true);
         }

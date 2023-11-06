@@ -12,6 +12,7 @@ if params != nil && params.PathAccountSid != nil {
 {{/pathParams}}
 
     data := url.Values{}
+    queryParams := url.Values{}
 {{^vendorExtensions.x-is-json-type}}
     headers := make(map[string]interface{})
 
@@ -24,13 +25,13 @@ if params != nil && params.PathAccountSid != nil {
 {{#hasOptionalParams}}
 {{#optionalParams}}
 {{#vendorExtensions.x-is-body-param}}
+    body := []byte{}
     if params != nil && params.{{paramName}} != nil {
-        v, err := json.Marshal(*params.{{paramName}})
+        b, err := json.Marshal(*params.{{paramName}})
         if err != nil {
             return nil, err
         }
-        urlEncodedData := url.QueryEscape(string(v))
-        data.Set("{{baseName}}", urlEncodedData)
+        body = b
     }
 {{/vendorExtensions.x-is-body-param}}
 {{^vendorExtensions.x-is-body-param}}
@@ -46,11 +47,20 @@ if params != nil && params.PathAccountSid != nil {
             if err != nil {
             return nil, err
             }
-
+{{^vendorExtensions.x-is-query-param}}
             data.Add("{{{baseName}}}", string(v))
+{{/vendorExtensions.x-is-query-param}}
+{{#vendorExtensions.x-is-query-param}}
+            queryParams.Add("{{{baseName}}}", string(v))
+{{/vendorExtensions.x-is-query-param}}
 {{/items.vendorExtensions.x-marshal}}
 {{^items.vendorExtensions.x-marshal}}
+{{^vendorExtensions.x-is-query-param}}
     data.Add("{{{baseName}}}", item)
+{{/vendorExtensions.x-is-query-param}}
+{{#vendorExtensions.x-is-query-param}}
+    queryParams.Add("{{{baseName}}}", item)
+{{/vendorExtensions.x-is-query-param}}
 {{/items.vendorExtensions.x-marshal}}
         }
 {{/isArray}}
@@ -61,11 +71,20 @@ if params != nil && params.PathAccountSid != nil {
         if err != nil {
         return nil, err
         }
-
+{{^vendorExtensions.x-is-query-param}}
         data.Set("{{{baseName}}}", string(v))
+{{/vendorExtensions.x-is-query-param}}
+{{#vendorExtensions.x-is-query-param}}
+        queryParams.Set("{{{baseName}}}", string(v))
+{{/vendorExtensions.x-is-query-param}}
 {{/vendorExtensions.x-marshal}}
 {{^vendorExtensions.x-marshal}}
+{{^vendorExtensions.x-is-query-param}}
         data.Set("{{{baseName}}}", {{^isString}}fmt.Sprint({{/isString}}{{#isDateTime}}({{/isDateTime}}*params.{{paramName}}{{^isString}}{{#isDateTime}}).Format(time.RFC3339){{/isDateTime}}){{/isString}})
+{{/vendorExtensions.x-is-query-param}}
+{{#vendorExtensions.x-is-query-param}}
+        queryParams.Set("{{{baseName}}}", {{^isString}}fmt.Sprint({{/isString}}{{#isDateTime}}({{/isDateTime}}*params.{{paramName}}{{^isString}}{{#isDateTime}}).Format(time.RFC3339){{/isDateTime}}){{/isString}})
+{{/vendorExtensions.x-is-query-param}}
 {{/vendorExtensions.x-marshal}}
 {{/isArray}}
     }
@@ -91,11 +110,20 @@ if params != nil && params.PathAccountSid != nil {
             if err != nil {
                 return nil, err
             }
-
+{{^vendorExtensions.x-is-query-param}}
             data.Add("{{{baseName}}}", string(v))
+{{/vendorExtensions.x-is-query-param}}
+{{#vendorExtensions.x-is-query-param}}
+            queryParams.Add("{{{baseName}}}", string(v))
+{{/vendorExtensions.x-is-query-param}}
 {{/items.vendorExtensions.x-marshal}}
 {{^items.vendorExtensions.x-marshal}}
+{{^vendorExtensions.x-is-query-param}}
             data.Add("{{{baseName}}}", item)
+{{/vendorExtensions.x-is-query-param}}
+{{#vendorExtensions.x-is-query-param}}
+            queryParams.Add("{{{baseName}}}", item)
+{{/vendorExtensions.x-is-query-param}}
 {{/items.vendorExtensions.x-marshal}}
     }
 {{/isArray}}
@@ -106,11 +134,20 @@ if params != nil && params.PathAccountSid != nil {
         if err != nil {
             return nil, err
         }
-
+{{^vendorExtensions.x-is-query-param}}
         data.Set("{{{baseName}}}", string(v))
+{{/vendorExtensions.x-is-query-param}}
+{{#vendorExtensions.x-is-query-param}}
+        queryParams.Set("{{{baseName}}}", string(v))
+{{/vendorExtensions.x-is-query-param}}
 {{/vendorExtensions.x-marshal}}
 {{^vendorExtensions.x-marshal}}
+{{^vendorExtensions.x-is-query-param}}
         data.Set("{{{baseName}}}", {{^isString}}fmt.Sprint({{/isString}}{{#isDateTime}}({{/isDateTime}}*params.{{paramName}}{{^isString}}{{#isDateTime}}).Format(time.RFC3339){{/isDateTime}}){{/isString}})
+{{/vendorExtensions.x-is-query-param}}
+{{#vendorExtensions.x-is-query-param}}
+        queryParams.Set("{{{baseName}}}", {{^isString}}fmt.Sprint({{/isString}}{{#isDateTime}}({{/isDateTime}}*params.{{paramName}}{{^isString}}{{#isDateTime}}).Format(time.RFC3339){{/isDateTime}}){{/isString}})
+{{/vendorExtensions.x-is-query-param}}
 {{/vendorExtensions.x-marshal}}
 {{/isArray}}
     }
