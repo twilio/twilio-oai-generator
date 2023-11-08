@@ -32,68 +32,56 @@
 
         return {{instanceName}}(self._version, payload{{#listPathParams}}, {{paramName}}=self._solution['{{paramName}}']{{/listPathParams}})
     {{/vendorExtensions.x-is-create-operation}}{{^instancePath}}{{#vendorExtensions.x-is-fetch-operation}}
-    def fetch(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> {{instanceName}}:
+    def fetch(self{{#queryParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/queryParams}}) -> {{instanceName}}:
         """
         Asynchronously fetch the {{instanceName}}
 
-        {{#allParams}}:param {{paramName}}: {{{description}}}
-        {{/allParams}}
+        {{#queryParams}}:param {{paramName}}: {{{description}}}{{/queryParams}}
         :returns: The fetched {{instanceName}}
         """
-        {{#hasParams}}
-        params = values.of({ {{#allParams}}{{#isQueryParam}}
-            '{{{baseName}}}': {{#if vendorExtensions.x-serialize}}{{vendorExtensions.x-serialize}}({{paramName}}{{#if isArray}}, lambda e: {{#startsWith baseType text='object'}}serialize.object(e){{else}}e{{/startsWith}}){{else}}){{/if}}{{else}}{{paramName}}{{/if}},{{/isQueryParam}}{{/allParams}}
+        params = values.of({ {{#queryParams}}
+            '{{{baseName}}}': {{#if vendorExtensions.x-serialize}}{{vendorExtensions.x-serialize}}({{paramName}}{{#if isArray}}, lambda e: {{#startsWith baseType text='object'}}serialize.object(e){{else}}e{{/startsWith}}){{else}}){{/if}}{{else}}{{paramName}}{{/if}},{{/queryParams}}
         })
-        {{/hasParams}}
-        payload = self._version.fetch(method='GET', uri=self._uri{{#hasParams}}, {{#allParams}}{{#if isQueryParam}}params=params{{/if}}{{/allParams}}{{/hasParams}})
+        payload = self._version.fetch(method='GET', uri=self._uri{{#queryParams}}, params=params{{/queryParams}})
 
         return {{instanceName}}(self._version, payload{{#listPathParams}}, {{paramName}}=self._solution['{{paramName}}']{{/listPathParams}})
 
-    async def fetch_async(self{{#allParams}}{{#isQueryParam}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/isQueryParam}}{{/allParams}}) -> {{instanceName}}:
+    async def fetch_async(self{{#queryParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/queryParams}}) -> {{instanceName}}:
         """
         Asynchronously fetch the {{instanceName}}
 
-        {{#allParams}}:param {{paramName}}: {{{description}}}
-        {{/allParams}}
+        {{#queryParams}}:param {{paramName}}: {{{description}}}{{/queryParams}}
         :returns: The fetched {{instanceName}}
         """
-        {{#hasParams}}
-        params = values.of({ {{#allParams}}{{#isQueryParam}}
-            '{{{baseName}}}': {{#if vendorExtensions.x-serialize}}{{vendorExtensions.x-serialize}}({{paramName}}{{#if isArray}}, lambda e: {{#startsWith baseType text='object'}}serialize.object(e){{else}}e{{/startsWith}}){{else}}){{/if}}{{else}}{{paramName}}{{/if}},{{/isQueryParam}}{{/allParams}}
+        params = values.of({ {{#queryParams}}
+            '{{{baseName}}}': {{#if vendorExtensions.x-serialize}}{{vendorExtensions.x-serialize}}({{paramName}}{{#if isArray}}, lambda e: {{#startsWith baseType text='object'}}serialize.object(e){{else}}e{{/startsWith}}){{else}}){{/if}}{{else}}{{paramName}}{{/if}},{{/queryParams}}
         })
-        {{/hasParams}}
-        payload = await self._version.fetch_async(method='GET', uri=self._uri{{#hasParams}}, {{#allParams}}{{#if isQueryParam}}params=params{{/if}}{{/allParams}}{{/hasParams}})
+        payload = await self._version.fetch_async(method='GET', uri=self._uri{{#queryParams}}, params=params{{/queryParams}})
 
         return {{instanceName}}(self._version, payload{{#listPathParams}}, {{paramName}}=self._solution['{{paramName}}']{{/listPathParams}}){{/vendorExtensions.x-is-fetch-operation}}{{#vendorExtensions.x-is-delete-operation}}
-    def delete(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> bool:
+    def delete(self{{#queryParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/queryParams}}) -> bool:
         """
         Asynchronously delete the {{instanceName}}
 
-        {{#allParams}}:param {{paramName}}: {{{description}}}
-        {{/allParams}}
+        {{#queryParams}}:param {{paramName}}: {{{description}}}{{/queryParams}}
         :returns: True if delete succeeds, False otherwise
         """
-        {{#hasParams}}
-        params = values.of({ {{#allParams}}{{#isQueryParam}}
-            '{{{baseName}}}': {{#if vendorExtensions.x-serialize}}{{vendorExtensions.x-serialize}}({{paramName}}{{#if isArray}}, lambda e: {{#startsWith baseType text='object'}}serialize.object(e){{else}}e{{/startsWith}}){{else}}){{/if}}{{else}}{{paramName}}{{/if}},{{/isQueryParam}}{{/allParams}}
+        params = values.of({ {{#queryParams}}
+            '{{{baseName}}}': {{#if vendorExtensions.x-serialize}}{{vendorExtensions.x-serialize}}({{paramName}}{{#if isArray}}, lambda e: {{#startsWith baseType text='object'}}serialize.object(e){{else}}e{{/startsWith}}){{else}}){{/if}}{{else}}{{paramName}}{{/if}},{{/queryParams}}
         })
-        {{/hasParams}}
-        return self._version.delete(method='DELETE', uri=self._uri{{#hasParams}}, {{#allParams}}{{#if isQueryParam}}params=params{{/if}}{{/allParams}}{{/hasParams}})
+        return self._version.delete(method='DELETE', uri=self._uri{{#queryParams}}, params=params{{/queryParams}})
 
-    async def delete_async(self{{#allParams}}{{#isQueryParam}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/isQueryParam}}{{/allParams}}) -> bool:
+    async def delete_async(self{{#queryParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/queryParams}}) -> bool:
         """
         Asynchronously delete the {{instanceName}}
 
-        {{#allParams}}:param {{paramName}}: {{{description}}}
-        {{/allParams}}
+        {{#queryParams}}:param {{paramName}}: {{{description}}}{{/queryParams}}
         :returns: True if delete succeeds, False otherwise
         """
-        {{#hasParams}}
-        params = values.of({ {{#allParams}}{{#isQueryParam}}
-            '{{{baseName}}}': {{#if vendorExtensions.x-serialize}}{{vendorExtensions.x-serialize}}({{paramName}}{{#if isArray}}, lambda e: {{#startsWith baseType text='object'}}serialize.object(e){{else}}e{{/startsWith}}){{else}}){{/if}}{{else}}{{paramName}}{{/if}},{{/isQueryParam}}{{/allParams}}
+        params = values.of({ {{#queryParams}}
+            '{{{baseName}}}': {{#if vendorExtensions.x-serialize}}{{vendorExtensions.x-serialize}}({{paramName}}{{#if isArray}}, lambda e: {{#startsWith baseType text='object'}}serialize.object(e){{else}}e{{/startsWith}}){{else}}){{/if}}{{else}}{{paramName}}{{/if}},{{/queryParams}}
         })
-        {{/hasParams}}
-        return await self._version.delete_async(method='DELETE', uri=self._uri{{#hasParams}}, {{#allParams}}{{#if isQueryParam}}params=params{{/if}}{{/allParams}}{{/hasParams}}){{/vendorExtensions.x-is-delete-operation}}{{#vendorExtensions.x-is-update-operation}}
+        return await self._version.delete_async(method='DELETE', uri=self._uri{{#queryParams}}, params=params{{/queryParams}}){{/vendorExtensions.x-is-delete-operation}}{{#vendorExtensions.x-is-update-operation}}
     def update(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> {{instanceName}}:
         """
         Update the {{instanceName}}
