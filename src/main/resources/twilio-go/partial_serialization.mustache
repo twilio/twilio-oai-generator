@@ -24,13 +24,13 @@ if params != nil && params.PathAccountSid != nil {
 {{#hasOptionalParams}}
 {{#optionalParams}}
 {{#vendorExtensions.x-is-body-param}}
+    body := []byte{}
     if params != nil && params.{{paramName}} != nil {
-        v, err := json.Marshal(*params.{{paramName}})
+        b, err := json.Marshal(*params.{{paramName}})
         if err != nil {
             return nil, err
         }
-        urlEncodedData := url.QueryEscape(string(v))
-        data.Set("{{baseName}}", urlEncodedData)
+        body = b
     }
 {{/vendorExtensions.x-is-body-param}}
 {{^vendorExtensions.x-is-body-param}}
