@@ -40,7 +40,7 @@ public class TwilioGeneratorTest {
 
     @Test
     public void launchGenerator() {
-        final String pathname = "/Users/sbansla/Documents/code/twilio-oai/spec/yaml/twilio_lookups_bulk.yaml";
+        final String pathname = "/Users/sbansla/Documents/code/twilio-oai/spec/yaml/twilio_content_sdk.yaml";
         //final String pathname = "examples/spec/twilio_flex_v1.yaml";
         //final String pathname = "examples/spec/twilio_versionless.yaml";
         //final String pathname = "/Users/sbansla/Documents/code/twilio-oai/spec/yaml/twilio_content_app.yaml";

@@ -105,6 +105,7 @@ public class TwilioCodegenAdapter {
             if (url.isPresent() && !url.get().equals(DEFAULT_URL)){
                 domain =  url.get().replaceAll(SERVER_PATTERN, "${domain}");
                 setDomain(domain);
+                return domain;
             }
         }
         //fetch domain from server url present in openAPI.paths
