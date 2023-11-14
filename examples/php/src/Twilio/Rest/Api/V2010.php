@@ -20,12 +20,10 @@ use Twilio\Exceptions\TwilioException;
 use Twilio\InstanceContext;
 use Twilio\Rest\Api\V2010\AccountInstance;
 use Twilio\Rest\Api\V2010\AccountList;
-use Twilio\Rest\Api\V2010\AccountContext;
 use Twilio\Version;
 
 /**
  * @property AccountList $accounts
- * @property AccountContext $account
  * @property \Twilio\Rest\Api\V2010\Account\CallList $calls
  * @method \Twilio\Rest\Api\V2010\AccountContext accounts(string $sid)
  * @method \Twilio\Rest\Api\V2010\Account\CallContext calls(string $testInteger)
@@ -33,7 +31,6 @@ use Twilio\Version;
 class V2010 extends Version
 {
     protected $_accounts;
-    protected $_account = null;
     protected $_calls = null;
 
     /**
@@ -53,20 +50,6 @@ class V2010 extends Version
             $this->_accounts = new AccountList($this);
         }
         return $this->_accounts;
-    }
-
-    /**
-     * @return AccountContext Account provided as the authenticating account
-     */
-    protected function getAccount(): AccountContext
-    {
-        if (!$this->_account) {
-            $this->_account = new AccountContext(
-                $this,
-                $this->domain->getClient()->getAccountSid()
-            );
-        }
-        return $this->_account;
     }
 
     /**

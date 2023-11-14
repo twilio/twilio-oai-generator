@@ -2,7 +2,6 @@ package com.twilio.oai;
 
 import com.twilio.oai.api.JavaApiResourceBuilder;
 import com.twilio.oai.api.JavaApiResources;
-import com.twilio.oai.common.ApplicationConstants;
 import com.twilio.oai.common.EnumConstants;
 import com.twilio.oai.common.Utility;
 import com.twilio.oai.templating.mustache.ReplaceHyphenLambda;
@@ -54,13 +53,16 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
     @Override
     public void processOpts() {
         super.processOpts();
-        twilioCodegen.processOpts();
+       twilioCodegen.processOpts();
     }
 
     @Override
     public void processOpenAPI(final OpenAPI openAPI) {
-        final String domain = twilioCodegen.getDomainFromOpenAPI(openAPI);
+        String domain = twilioCodegen.getDomainFromOpenAPI(openAPI);
+        String version = twilioCodegen.getVersionFromOpenAPI(openAPI);
         twilioCodegen.setDomain(domain);
+        twilioCodegen.setVersion(version);
+        twilioCodegen.setOutputDir(domain, version);
         directoryStructureService.configure(openAPI);
     }
 

@@ -95,6 +95,11 @@ public class TwilioTerraformGenerator extends AbstractTwilioGoGenerator {
     @Override
     public void processOpenAPI(final OpenAPI openAPI) {
         super.processOpenAPI(openAPI);
+        String domain = twilioCodegen.getDomainFromOpenAPI(openAPI);
+        String version = twilioCodegen.getVersionFromOpenAPI(openAPI);
+        twilioCodegen.setVersion(version);
+        twilioCodegen.setDomain(domain);
+        twilioCodegen.setOutputDir(domain, version);
 
         if (additionalProperties.get(API_VERSION).equals("v2010")) {
             additionalProperties.remove(API_VERSION);

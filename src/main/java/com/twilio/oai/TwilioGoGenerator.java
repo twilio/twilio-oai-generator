@@ -183,6 +183,11 @@ public class TwilioGoGenerator extends AbstractTwilioGoGenerator {
     @Override
     public void processOpenAPI(final OpenAPI openAPI) {
         super.processOpenAPI(openAPI);
+        String domain = twilioCodegen.getDomainFromOpenAPI(openAPI);
+        String version = StringHelper.camelize(twilioCodegen.getVersionFromOpenAPI(openAPI));
+        twilioCodegen.setVersion(version);
+        twilioCodegen.setDomain(domain);
+        twilioCodegen.setOutputDir(domain, version);
 
         openAPI
                 .getPaths()
