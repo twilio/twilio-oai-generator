@@ -14,5 +14,6 @@ namespace Twilio.Rest
         public static readonly Domain Api = new Domain("api");
         public static readonly Domain FlexApi = new Domain("flex-api");
         public static readonly Domain Versionless = new Domain("versionless");
+        public static readonly Domain Accounts = new Domain("accounts");
     }
 }

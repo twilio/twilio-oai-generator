@@ -6,6 +6,8 @@ public enum Domains {
     VERSIONLESS("versionless"),
     MESSAGING("messaging");
 
+    ACCOUNTS("accounts");
+
     private final String value;
 
     private Domains(final String value) {

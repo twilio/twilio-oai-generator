@@ -2,6 +2,7 @@ import { Client, ClientOpts } from "../base/BaseTwilio";
 import ApiBase from "./ApiBase";
 import FlexApiBase from "./FlexApiBase";
 import VersionlessBase from "./VersionlessBase";
+import AccountsBase from "./AccountsBase";
 
 class Twilio extends Client {
   constructor(username?: string, password?: string, opts?: ClientOpts) {
@@ -18,6 +19,10 @@ class Twilio extends Client {
 
   get versionless(): VersionlessBase {
     return new VersionlessBase(this);
+  }
+
+  get accounts(): AccountsBase {
+    return new AccountsBase(this);
   }
 }
 
