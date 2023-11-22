@@ -1274,15 +1274,15 @@ public class TwilioRestTest {
 
     @Test
     public void testSafelistObjectCreation() {
-        String json = "{\"testInteger\": 123}";
+        String json = "{\"phoneNumber\": 123}";
         Safelist safelistString = Safelist.fromJson(json, objectMapper);
 
-        String initialString = "{\"testInteger\": 123}";
+        String initialString = "{\"phoneNumber\": 123}";
         InputStream targetStream = new ByteArrayInputStream(initialString.getBytes());
         Safelist safelistInputStream = Safelist.fromJson(targetStream, objectMapper);
 
-        assertEquals((Integer)123, safelistString.getTestInteger());
-        assertEquals((Integer)123, safelistInputStream.getTestInteger());
+        assertEquals((Integer)123, safelistString.getPhoneNumber());
+        assertEquals((Integer)123, safelistInputStream.getPhoneNumber());
     }
 
     @Test(expected = ApiException.class)
@@ -1304,8 +1304,8 @@ public class TwilioRestTest {
                 "/v1/SafeList/Numbers.json"
         );
         when(twilioRestClient.request(mockRequest)).thenReturn(new Response("{\"sid\":\"SID\", \"phoneNumber\":\"123\"}", 200));
-        Safelist safelist = new SafelistFetcher("123").fetch(twilioRestClient);
-        assertNotNull(call);
+        Safelist safelist = new SafelistFetcher().setPhoneNumber("123").fetch(twilioRestClient);
+        assertNotNull(safelist);
         assertEquals("123", safelist.getPhoneNumber());
         assertEquals("SID", safelist.getSid());
     }
