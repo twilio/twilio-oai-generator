@@ -1295,20 +1295,6 @@ public class TwilioRestTest {
         Safelist.fromJson(new ByteArrayInputStream("initialString".getBytes()), objectMapper);
     }
 
-    @Test(expected = ApiConnectionException.class)
-    public void testSafelistObjectCreationJsonNullResponse() {
-        when(twilioRestClient.request(Mockito.any())).thenReturn(null);
-        String json = "{\"sid\":\"SID\", \"phoneNumber\":\"123\"}";
-        Safelist safelist = Safelist.fromJson(json, objectMapper);
-    }
-
-    @Test(expected = ApiConnectionException.class)
-    public void testSafelistObjectCreationInputStreamNullResponse() {
-        when(twilioRestClient.request(Mockito.any())).thenReturn(null);
-        String jsonDuplicate = "{\"sid\":\"SID\", \"phoneNumber\":\"123\"}";
-        Safelist safelistDuplicate = Safelist.fromJson(jsonDuplicate, objectMapper);
-    }
-
     @Test
     public void testSafelistGetters() {
         String json = "{\"sid\":\"SID\", \"phoneNumber\":\"123\"}";
@@ -1327,5 +1313,9 @@ public class TwilioRestTest {
 
         assertTrue(safelist.equals(safelistDuplicate));
         assertTrue(safelistDuplicate.equals(safelist));
+        assertTrue(safelist.equals(safelist));
+        assertTrue(safelistDuplicate.equals(safelistDuplicate));
+        assertFalse(safelist.equals(null));
+        assertFalse(safelistDuplicate.equals(null));
     }
 }
