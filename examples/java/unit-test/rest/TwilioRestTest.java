@@ -1213,4 +1213,31 @@ public class TwilioRestTest {
 
         FeedbackCallSummary.fromJson(new ByteArrayInputStream(invalidJson.getBytes()), objectMapper);
     }
+
+    @Test(expected = ApiConnectionException.class)
+    public void testSafelistCreatorResponseNull() {
+        when(twilioRestClient.request(Mockito.any())).thenReturn(null);
+        new SafelistCreator("123").create(twilioRestClient);
+    }
+
+    @Test(expected = ApiException.class)
+    public void testSafelistCreatorResponseNotSuccess() {
+        Response response = new Response("{\"sid\":\"SID\", \"phoneNumber\":\"123\"}", 404);
+        when(twilioRestClient.request(Mockito.any())).thenReturn(response);
+        when(twilioRestClient.getSid()).thenReturn("SID");
+        when(twilioRestClient.getObjectMapper()).thenReturn(new ObjectMapper());
+        new SafelistCreator("456").setPhoneNumber("123").create(twilioRestClient);
+    }
+
+    @Test
+    public void testSafelistCrud() {
+        SafelistCreator safelistCreator = Safelist.creator("123");
+        assertNotNull(safelistCreator);
+
+        SafelistFetcher safelistFetcher = Safelist.fetcher().setPhoneNumber("123");
+        assertNotNull(safelistFetcher);
+
+        SafelistDeleter safelistDeleter = Safelist.deleter().setPhoneNumber("123");
+        assertNotNull(safelistDeleter);
+    }
 }
