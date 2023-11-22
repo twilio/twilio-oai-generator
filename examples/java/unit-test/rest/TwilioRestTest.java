@@ -1228,7 +1228,6 @@ public class TwilioRestTest {
     public void testSafelistCreatorResponseNotSuccess() {
         Response response = new Response("{\"sid\":\"SID\", \"phoneNumber\":\"123\"}", 404);
         when(twilioRestClient.request(Mockito.any())).thenReturn(response);
-        when(twilioRestClient.getSid()).thenReturn("SID");
         when(twilioRestClient.getObjectMapper()).thenReturn(new ObjectMapper());
         new SafelistCreator("456").setPhoneNumber("123").create(twilioRestClient);
     }
