@@ -30,6 +30,10 @@ import com.twilio.rest.flexapi.v1.credential.AwsReader;
 import com.twilio.rest.flexapi.v1.credential.AwsUpdater;
 import com.twilio.rest.flexapi.v1.credential.NewCredentials;
 import com.twilio.rest.flexapi.v1.credential.NewCredentialsCreator;
+import com.twilio.rest.accounts.v1.Safelist;
+import com.twilio.rest.accounts.v1.SafelistCreator;
+import com.twilio.rest.accounts.v1.SafelistFetcher;
+import com.twilio.rest.accounts.v1.SafelistDeleter;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
