@@ -1235,7 +1235,7 @@ public class TwilioRestTest {
     @Test(expected = ApiConnectionException.class)
     public void testSafelistFetcherResponseNull() {
         when(twilioRestClient.request(Mockito.any())).thenReturn(null);
-        new SafelistFetcher.setPhoneNumber("123").fetch(twilioRestClient);
+        new SafelistFetcher().setPhoneNumber("123").fetch(twilioRestClient);
     }
 
     @Test(expected = ApiException.class)
@@ -1243,13 +1243,13 @@ public class TwilioRestTest {
         Response response = new Response("{\"sid\":\"SID\", \"phoneNumber\":\"123\"}", 404);
         when(twilioRestClient.request(Mockito.any())).thenReturn(response);
         when(twilioRestClient.getObjectMapper()).thenReturn(new ObjectMapper());
-        new SafelistFetcher.setPhoneNumber("123").fetch(twilioRestClient);
+        new SafelistFetcher().setPhoneNumber("123").fetch(twilioRestClient);
     }
 
     @Test(expected = ApiConnectionException.class)
     public void testSafelistDeleterResponseNull() {
         when(twilioRestClient.request(Mockito.any())).thenReturn(null);
-        new SafelistDeleter.setPhoneNumber("123").delete(twilioRestClient);
+        new SafelistDeleter().setPhoneNumber("123").delete(twilioRestClient);
     }
 
     @Test(expected = ApiException.class)
@@ -1257,7 +1257,7 @@ public class TwilioRestTest {
         Response response = new Response("{\"sid\":\"SID\", \"phoneNumber\":\"123\"}", 404);
         when(twilioRestClient.request(Mockito.any())).thenReturn(response);
         when(twilioRestClient.getObjectMapper()).thenReturn(new ObjectMapper());
-        new SafelistDeleter.setPhoneNumber("123").delete(twilioRestClient);
+        new SafelistDeleter().setPhoneNumber("123").delete(twilioRestClient);
     }
 
     @Test
