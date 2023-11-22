@@ -1281,8 +1281,8 @@ public class TwilioRestTest {
         InputStream targetStream = new ByteArrayInputStream(initialString.getBytes());
         Safelist safelistInputStream = Safelist.fromJson(targetStream, objectMapper);
 
-        assertEquals((String)123, safelistString.getPhoneNumber());
-        assertEquals((String)123, safelistInputStream.getPhoneNumber());
+        assertEquals((String)"123", safelistString.getPhoneNumber());
+        assertEquals((String)"123", safelistInputStream.getPhoneNumber());
     }
 
     @Test(expected = ApiException.class)
