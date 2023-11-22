@@ -1274,15 +1274,15 @@ public class TwilioRestTest {
 
     @Test
     public void testSafelistObjectCreation() {
-        String json = "{\"phoneNumber\": 123}";
+        String json = "{\"phoneNumber\": \"123\"}";
         Safelist safelistString = Safelist.fromJson(json, objectMapper);
 
-        String initialString = "{\"phoneNumber\": 123}";
+        String initialString = "{\"phoneNumber\": \"123\"}";
         InputStream targetStream = new ByteArrayInputStream(initialString.getBytes());
         Safelist safelistInputStream = Safelist.fromJson(targetStream, objectMapper);
 
-        assertEquals((Integer)123, safelistString.getPhoneNumber());
-        assertEquals((Integer)123, safelistInputStream.getPhoneNumber());
+        assertEquals((String)123, safelistString.getPhoneNumber());
+        assertEquals((String)123, safelistInputStream.getPhoneNumber());
     }
 
     @Test(expected = ApiException.class)
