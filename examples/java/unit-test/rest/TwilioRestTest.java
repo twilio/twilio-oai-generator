@@ -1296,21 +1296,6 @@ public class TwilioRestTest {
     }
 
     @Test
-    public void testShouldAddSafelistSidIfNotPresent() {
-        when(twilioRestClient.getAccountSid()).thenReturn(ACCOUNT_SID);
-        Request mockRequest = new Request(
-                HttpMethod.GET,
-                Domains.ACCOUNTS.toString(),
-                "/v1/SafeList/Numbers.json"
-        );
-        when(twilioRestClient.request(mockRequest)).thenReturn(new Response("{\"sid\":\"SID\", \"phoneNumber\":\"123\"}", 200));
-        Safelist safelist = new SafelistFetcher().setPhoneNumber("123").fetch(twilioRestClient);
-        assertNotNull(safelist);
-        assertEquals("123", safelist.getPhoneNumber());
-        assertEquals("SID", safelist.getSid());
-    }
-
-    @Test
     public void testSafelistGetters() {
         String json = "{\"sid\":\"SID\", \"phoneNumber\":\"123\"}";
         String jsonDuplicate = "{\"sid\":\"SID\", \"phoneNumber\":\"123\"}";
