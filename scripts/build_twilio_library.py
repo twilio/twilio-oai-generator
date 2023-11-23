@@ -89,7 +89,8 @@ def get_domain_info(oai_spec_location: str, domain: str, is_file: bool = False) 
     # special handling for files like twilio_lookups_bulk.json.
     # This has to be removed when naming is made consistent across all languages
     if api_version == '':
-        if {'_' in domain_name} and domain_name != DOMAIN_PREVIEW:
+        index = domain_name.find('_')
+        if index != -1:
             domain_parts = re.split(r'(.+)_(.+)', domain_name, flags=re.IGNORECASE)
             domain_name = domain_parts[1]
             api_version = domain_parts[2]
