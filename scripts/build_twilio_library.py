@@ -85,6 +85,14 @@ def get_domain_info(oai_spec_location: str, domain: str, is_file: bool = False) 
     parts = re.split(r'twilio_(.+?)_?(v\d+)?\.', domain, flags=re.IGNORECASE)
     domain_name = parts[1]
     api_version = parts[2] or ''
+    # special handling for files like twilio_lookups_bulk.json.
+    # This has to be removed when naming is made consistent across all languages
+    if api_version == '':
+        index = domain_name.find('_')
+        if index != -1:
+            domain_parts = re.split(r'(.+)_(.+)', domain_name, flags=re.IGNORECASE)
+            domain_name = domain_parts[1]
+            api_version = domain_parts[2]
     return full_path, domain_name, api_version
 
 
