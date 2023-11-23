@@ -20,7 +20,6 @@ subdirectories = {
 CLEANUP_IMPORT_LANGUAGES = ['java', 'php']
 REMOVE_DUPLICATE_IMPORT_LANGUAGES = ['node']
 CONFIG_FOLDER = 'tmp'
-DOMAIN_PREVIEW = 'preview'
 
 
 def build(openapi_spec_path: str, output_path: str, language: str) -> None:
