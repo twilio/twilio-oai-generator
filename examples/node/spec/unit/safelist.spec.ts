@@ -28,9 +28,6 @@ describe("safelist", () => {
     it("should fetch a safelist", () => {
         const scope = nock("http://accounts.twilio.com")
             .get("/v1/SafeList/Numbers")
-            .query({
-                phoneNumber: "+12345678910"
-            })
             .reply(200, { phoneNumber: "+12345678910" });
 
         return twilio.accounts.v1.safelist
@@ -43,9 +40,6 @@ describe("safelist", () => {
     it("should delete a safelist", () => {
         const scope = nock("http://accounts.twilio.com")
             .remove("/v1/SafeList/Numbers")
-            .query({
-                phoneNumber: "+12345678910"
-            })
             .reply(204, { phoneNumber: "+12345678910" });
 
         return twilio.accounts.v1.safelist
