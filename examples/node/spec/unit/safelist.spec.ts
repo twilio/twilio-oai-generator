@@ -14,7 +14,7 @@ describe("safelist", () => {
     it("should create a new safelist", () => {
         const scope = nock("http://accounts.twilio.com")
             .post("/v1/SafeList/Numbers", {
-                PhoneNumber: "+12345678910"
+                phoneNumber: "+12345678910"
             })
             .reply(201, { phoneNumber: "+12345678910" });
 
