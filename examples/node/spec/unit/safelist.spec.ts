@@ -7,8 +7,14 @@ describe("safelist", () => {
     const authToken: string = "CR12345678123456781234567812345678";
     const twilio = new Twilio(accountSid, authToken);
 
-    afterAll(() => {
+    beforeEach(() => {
+        // Clean all nock interceptors before each test
         nock.cleanAll();
+    });
+
+    afterEach(() => {
+        // Ensure that all expected requests were made after each test
+        nock.isDone();
     });
 
     it("should create a new safelist", () => {
@@ -28,6 +34,9 @@ describe("safelist", () => {
     it("should fetch a safelist", () => {
         const scope = nock("http://accounts.twilio.com")
             .get("/v1/SafeList/Numbers")
+            .query({
+                phoneNumber: "+12345678910"
+            })
             .reply(200, { phoneNumber: "+12345678910" });
 
         return twilio.accounts.v1.safelist
@@ -39,7 +48,10 @@ describe("safelist", () => {
 
     it("should delete a safelist", () => {
         const scope = nock("http://accounts.twilio.com")
-            .remove("/v1/SafeList/Numbers")
+            .delete("/v1/SafeList/Numbers")
+            .query({
+                phoneNumber: "+12345678910"
+            })
             .reply(204, { phoneNumber: "+12345678910" });
 
         return twilio.accounts.v1.safelist
