@@ -26,19 +26,19 @@ func TestMain(m *testing.M) {
 func TestCreateSafelistParams_SetPhoneNumber(t *testing.T) {
 	params := &CreateSafelistParams{}
 	params.SetPhoneNumber("123")
-	assert.Equal(t, "123", params.PhoneNumber)
+	assert.Equal(t, "123", *params.PhoneNumber)
 }
 
 func TestFetchSafelistParams_SetPhoneNumber(t *testing.T) {
 	params := &FetchSafelistParams{}
 	params.SetPhoneNumber("123")
-	assert.Equal(t, "123", params.PhoneNumber)
+	assert.Equal(t, "123", *params.PhoneNumber)
 }
 
 func TestDeleteSafelistParams_SetPhoneNumber(t *testing.T) {
 	params := &DeleteSafelistParams{}
 	params.SetPhoneNumber("123")
-	assert.Equal(t, "123", params.PhoneNumber)
+	assert.Equal(t, "123", *params.PhoneNumber)
 }
 
 func TestApiService_CreateSafelist(t *testing.T) {
