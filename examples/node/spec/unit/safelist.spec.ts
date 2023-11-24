@@ -14,7 +14,7 @@ describe("safelist", () => {
     it("should create a new safelist", () => {
         const scope = nock("http://accounts.twilio.com")
             .post("/v1/SafeList/Numbers", {
-                phoneNumber: "+12345678910"
+                PhoneNumber: "+12345678910"
             })
             .reply(201, { phoneNumber: "+12345678910" });
 
@@ -27,7 +27,8 @@ describe("safelist", () => {
 
     it("should fetch a safelist", () => {
         const scope = nock("http://accounts.twilio.com")
-            .get("/v1/SafeList/Numbers", {
+            .get("/v1/SafeList/Numbers")
+            .query({
                 phoneNumber: "+12345678910"
             })
             .reply(200, { phoneNumber: "+12345678910" });
@@ -41,7 +42,8 @@ describe("safelist", () => {
 
     it("should delete a safelist", () => {
         const scope = nock("http://accounts.twilio.com")
-            .post("/v1/SafeList/Numbers", {
+            .remove("/v1/SafeList/Numbers")
+            .query({
                 phoneNumber: "+12345678910"
             })
             .reply(204, { phoneNumber: "+12345678910" });
