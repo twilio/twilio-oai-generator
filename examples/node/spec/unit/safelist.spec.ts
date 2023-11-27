@@ -7,14 +7,8 @@ describe("safelist", () => {
     const authToken: string = "CR12345678123456781234567812345678";
     const twilio = new Twilio(accountSid, authToken);
 
-    beforeEach(() => {
-        // Clean all nock interceptors before each test
+    afterAll(() => {
         nock.cleanAll();
-    });
-
-    afterEach(() => {
-        // Ensure that all expected requests were made after each test
-        nock.isDone();
     });
 
     it("should create a new safelist", () => {
