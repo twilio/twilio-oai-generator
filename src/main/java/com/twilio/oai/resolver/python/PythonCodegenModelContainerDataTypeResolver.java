@@ -1,6 +1,7 @@
 package com.twilio.oai.resolver.python;
 
 import com.twilio.oai.api.ApiResourceBuilder;
+import com.twilio.oai.common.ApplicationConstants;
 import com.twilio.oai.common.LanguageDataType;
 import com.twilio.oai.resolver.common.CodegenModelContainerDataTypeResolver;
 import org.openapitools.codegen.CodegenModel;
@@ -8,6 +9,7 @@ import org.openapitools.codegen.CodegenProperty;
 
 import java.util.List;
 import java.util.Stack;
+import java.util.regex.Pattern;
 
 public class PythonCodegenModelContainerDataTypeResolver extends CodegenModelContainerDataTypeResolver {
     private final PythonCodegenModelDataTypeResolver codegenModelDataTypeResolver;
@@ -31,4 +33,39 @@ public class PythonCodegenModelContainerDataTypeResolver extends CodegenModelCon
         return codegenProperty;
     }
 
+    @Override
+    protected String unwrapContainerType(CodegenProperty codegenProperty, Stack<String> containerTypes) {
+        String codegenPropertyDataType = "";
+        codegenPropertyDataType = codegenProperty.dataType;
+
+        String currentContainerType = "";
+        boolean isContainerType = false;
+
+        while(codegenPropertyDataType != null && !codegenPropertyDataType.isEmpty()) {
+            for (LanguageDataType dataType : languageDataTypes) {
+                if (codegenPropertyDataType.startsWith(dataType.getValue())) {
+                    isContainerType = true;
+                    currentContainerType = dataType.getValue();
+                }
+            }
+            if(isContainerType) {
+                containerTypes.push(currentContainerType);
+                codegenPropertyDataType = codegenPropertyDataType.replaceFirst(Pattern.quote(currentContainerType), "");
+                codegenPropertyDataType = codegenPropertyDataType.substring(0, codegenPropertyDataType.length()-1);
+                isContainerType = false;
+            }
+            else
+                return codegenPropertyDataType;
+        }
+        return codegenPropertyDataType;
+    }
+
+    @Override
+    public void rewrapContainerType(CodegenProperty codegenProperty,Stack<String> containerTypes) {
+        String currentContainerType = "";
+        while(!containerTypes.empty()) {
+            currentContainerType = containerTypes.pop();
+            codegenProperty.dataType = currentContainerType + codegenProperty.dataType + ApplicationConstants.PYTHON_LIST_END;
+        }
+    }
 }

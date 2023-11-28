@@ -118,7 +118,7 @@ public class TwilioPythonGenerator extends PythonLegacyClientCodegen {
         final IConventionMapper conventionMapper = new LanguageConventionResolver(CONFIG_PYTHON_JSON_PATH);
         final PythonCodegenModelResolver codegenModelResolver = new PythonCodegenModelResolver(conventionMapper,
                                                                                    modelFormatMap,
-                                                                                   List.of(EnumConstants.NodeDataTypes.values()));
+                                                                                   List.of(EnumConstants.PythonDataTypes.values()));
 
         PythonApiResourceBuilder pythonApiResourceBuilder = new PythonApiResourceBuilder(actionTemplate, opList, allModels, directoryStructureService, twilioCodegen.getToggles(JSON_INGRESS));
         pythonApiResourceBuilder.updateApiPath()

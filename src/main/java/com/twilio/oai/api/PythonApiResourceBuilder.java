@@ -114,16 +114,16 @@ public class PythonApiResourceBuilder extends FluentApiResourceBuilder {
 
         modelTree.values().forEach(model -> model.setName(getModelName(model.getClassname())));
 
-        if (responseModel != null) {
-            responseModel.getVars().forEach(variable -> {
-                if (variable.complexType != null && !variable.complexType.contains(ApplicationConstants.ENUM)) {
-                    getModelByClassname(variable.complexType).ifPresent(model -> {
-                        variable.baseType = variable.baseType.replace(variable.datatypeWithEnum, "str");
-                        variable.datatypeWithEnum = "str";
-                    });
-                }
-            });
-        }
+//        if (responseModel != null) {
+//            responseModel.getVars().forEach(variable -> {
+//                if (variable.complexType != null && !variable.complexType.contains(ApplicationConstants.ENUM)) {
+//                    getModelByClassname(variable.complexType).ifPresent(model -> {
+//                        variable.baseType = variable.baseType.replace(variable.datatypeWithEnum, "str");
+//                        variable.datatypeWithEnum = "str";
+//                    });
+//                }
+//            });
+//        }
 
         return this;
     }
@@ -168,5 +168,11 @@ public class PythonApiResourceBuilder extends FluentApiResourceBuilder {
         }
 
         return dataType;
+    }
+
+    @Override
+    public ApiResourceBuilder updateModel(Resolver<CodegenModel> codegenModelResolver) {
+        super.updateModel(codegenModelResolver);
+        return this;
     }
 }
