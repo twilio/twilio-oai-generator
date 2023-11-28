@@ -6,10 +6,12 @@
             @JsonInclude(JsonInclude.Include.NON_EMPTY)
             @JsonProperty("{{{baseName}}}")
             @Getter @Setter private {{{dataType}}} {{name}};
+            {{^isMap}}
             {{#vendorExtensions.x-serialize}}
             public String get{{#lambda.titlecase}}{{name}}{{/lambda.titlecase}}() {
                 return {{vendorExtensions.x-serialize}};
             }{{/vendorExtensions.x-serialize}}
+            {{/isMap}}
         {{/vars}}
         {{#vendorExtensions.x-constructor-required}}
             {{#vendorExtensions.x-constructor}}
