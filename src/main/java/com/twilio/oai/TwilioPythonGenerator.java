@@ -6,8 +6,7 @@ import com.twilio.oai.common.EnumConstants;
 import com.twilio.oai.common.Utility;
 import com.twilio.oai.resolver.IConventionMapper;
 import com.twilio.oai.resolver.LanguageConventionResolver;
-import com.twilio.oai.resolver.LanguagePropertyResolver;
-import com.twilio.oai.resolver.common.CodegenModelResolver;
+import com.twilio.oai.resolver.python.PythonCodegenModelResolver;
 import com.twilio.oai.resolver.python.PythonCaseResolver;
 import com.twilio.oai.resolver.python.PythonParameterResolver;
 import com.twilio.oai.resolver.python.PythonPropertyResolver;
@@ -42,6 +41,7 @@ public class TwilioPythonGenerator extends PythonLegacyClientCodegen {
         new PythonCaseResolver());
     private final List<CodegenModel> allModels = new ArrayList<>();
     private final Map<String, String> modelFormatMap = new HashMap<>();
+    public static final String JSON_INGRESS = "json_ingress";
 
     public TwilioPythonGenerator() {
         super();
@@ -116,16 +116,16 @@ public class TwilioPythonGenerator extends PythonLegacyClientCodegen {
 
     private ApiResources generateResources(final List<CodegenOperation> opList) {
         final IConventionMapper conventionMapper = new LanguageConventionResolver(CONFIG_PYTHON_JSON_PATH);
-        final CodegenModelResolver codegenModelResolver = new CodegenModelResolver(conventionMapper,
+        final PythonCodegenModelResolver codegenModelResolver = new PythonCodegenModelResolver(conventionMapper,
                                                                                    modelFormatMap,
                                                                                    List.of(EnumConstants.NodeDataTypes.values()));
 
-        return new PythonApiResourceBuilder(actionTemplate, opList, allModels, directoryStructureService)
-            .updateApiPath()
-            .updateTemplate()
-            .updateOperations(new PythonParameterResolver(conventionMapper))
-            .updateResponseModel(new PythonPropertyResolver(conventionMapper), codegenModelResolver)
-            .build();
+        PythonApiResourceBuilder pythonApiResourceBuilder = new PythonApiResourceBuilder(actionTemplate, opList, allModels, directoryStructureService, twilioCodegen.getToggles(JSON_INGRESS));
+        pythonApiResourceBuilder.updateApiPath()
+                                .updateTemplate()
+                                .updateOperations(new PythonParameterResolver(conventionMapper, codegenModelResolver));
+        pythonApiResourceBuilder.updateResponseModel(new PythonPropertyResolver(conventionMapper), codegenModelResolver);
+        return pythonApiResourceBuilder.build();
     }
 
     @Override
