@@ -2,6 +2,6 @@
   "json_ingress": {
     "twilio-java": true,
     "twilio-node": true,
-    "twilio-python": true,
+    "twilio-python": true
   }
 }
