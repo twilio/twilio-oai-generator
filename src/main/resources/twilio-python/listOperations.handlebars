@@ -11,8 +11,9 @@
         {{#hasParams}}data = values.of({ {{#allParams}}{{#isFormParam}}
             '{{{baseName}}}': {{#if vendorExtensions.x-serialize}}{{vendorExtensions.x-serialize}}({{paramName}}{{#if isArray}}, lambda e: {{#startsWith baseType text='object'}}serialize.object(e){{else}}e{{/startsWith}}){{else}}){{/if}}{{else}}{{paramName}}{{/if}},{{/isFormParam}}{{/allParams}}
         }){{/hasParams}}
-        {{#allParams}}{{^isFormParam}}headers = values.of({'{{{baseName}}}': {{paramName}}, }){{/isFormParam}}{{/allParams}}
-        payload = self._version.create(method='POST', uri=self._uri, {{#hasParams}}data=data,{{/hasParams}}{{#allParams}}{{#if isFormParam}}{{else}} headers=headers{{/if}}{{/allParams}})
+        {{#allParams}}{{#isHeaderParam}}headers = values.of({'{{{baseName}}}': {{paramName}}, }){{/isHeaderParam}}{{/allParams}}
+        {{#allParams}}{{#isQueryParam}}params = values.of({'{{{baseName}}}': {{paramName}}, }){{/isQueryParam}}{{/allParams}}
+        payload = self._version.create(method='POST', uri=self._uri, {{#hasParams}}data=data,{{/hasParams}}{{#allParams}}{{#if isHeaderParam}} headers=headers{{/if}}{{#if isQueryParam}}, params=params{{/if}}{{/allParams}})
 
         return {{instanceName}}(self._version, payload{{#listPathParams}}, {{paramName}}=self._solution['{{paramName}}']{{/listPathParams}})
 
@@ -27,31 +28,58 @@
         {{#hasParams}}data = values.of({ {{#allParams}}{{#isFormParam}}
             '{{{baseName}}}': {{#if vendorExtensions.x-serialize}}{{vendorExtensions.x-serialize}}({{paramName}}{{#if isArray}}, lambda e: {{#startsWith baseType text='object'}}serialize.object(e){{else}}e{{/startsWith}}){{else}}){{/if}}{{else}}{{paramName}}{{/if}},{{/isFormParam}}{{/allParams}}
         }){{/hasParams}}
-        {{#allParams}}{{^isFormParam}}headers = values.of({'{{{baseName}}}': {{paramName}}, }){{/isFormParam}}{{/allParams}}
-        payload = await self._version.create_async(method='POST', uri=self._uri, {{#hasParams}}data=data,{{/hasParams}}{{#allParams}}{{#if isFormParam}}{{else}} headers=headers{{/if}}{{/allParams}})
+        {{#allParams}}{{#isHeaderParam}}headers = values.of({'{{{baseName}}}': {{paramName}}, }){{/isHeaderParam}}{{/allParams}}
+        {{#allParams}}{{#isQueryParam}}params = values.of({'{{{baseName}}}': {{paramName}}, }){{/isQueryParam}}{{/allParams}}
+        payload = await self._version.create_async(method='POST', uri=self._uri, {{#hasParams}}data=data,{{/hasParams}}{{#allParams}}{{#if isHeaderParam}} headers=headers{{/if}}{{#if isQueryParam}}, params=params{{/if}}{{/allParams}})
 
         return {{instanceName}}(self._version, payload{{#listPathParams}}, {{paramName}}=self._solution['{{paramName}}']{{/listPathParams}})
     {{/vendorExtensions.x-is-create-operation}}{{^instancePath}}{{#vendorExtensions.x-is-fetch-operation}}
-    def fetch(self) -> {{instanceName}}:
+    def fetch(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> {{instanceName}}:
         """
         Asynchronously fetch the {{instanceName}}
 
+        {{#allParams}}:param {{paramName}}: {{{description}}}{{/allParams}}
         :returns: The fetched {{instanceName}}
         """
-        payload = self._version.fetch(method='GET', uri=self._uri)
+        {{#allParams}}{{#isHeaderParam}}headers = values.of({'{{{baseName}}}': {{paramName}}, }){{/isHeaderParam}}{{/allParams}}
+        {{#allParams}}{{#isQueryParam}}params = values.of({'{{{baseName}}}': {{paramName}}, }){{/isQueryParam}}{{/allParams}}
+        payload = self._version.fetch(method='GET', uri=self._uri{{#allParams}}{{#if isHeaderParam}}, headers=headers{{/if}}{{#if isQueryParam}}, params=params{{/if}}{{/allParams}})
 
         return {{instanceName}}(self._version, payload{{#listPathParams}}, {{paramName}}=self._solution['{{paramName}}']{{/listPathParams}})
 
-    async def fetch_async(self) -> {{instanceName}}:
+    async def fetch_async(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> {{instanceName}}:
         """
         Asynchronously fetch the {{instanceName}}
 
+        {{#allParams}}:param {{paramName}}: {{{description}}}{{/allParams}}
         :returns: The fetched {{instanceName}}
         """
-        payload = await self._version.fetch_async(method='GET', uri=self._uri)
+        {{#allParams}}{{#isHeaderParam}}headers = values.of({'{{{baseName}}}': {{paramName}}, }){{/isHeaderParam}}{{/allParams}}
+        {{#allParams}}{{#isQueryParam}}params = values.of({'{{{baseName}}}': {{paramName}}, }){{/isQueryParam}}{{/allParams}}
+        payload = await self._version.fetch_async(method='GET', uri=self._uri{{#allParams}}{{#if isHeaderParam}}, headers=headers{{/if}}{{#if isQueryParam}}, params=params{{/if}}{{/allParams}})
 
-        return {{instanceName}}(self._version, payload{{#listPathParams}}, {{paramName}}=self._solution['{{paramName}}']{{/listPathParams}})
-    {{/vendorExtensions.x-is-fetch-operation}}{{#vendorExtensions.x-is-update-operation}}
+        return {{instanceName}}(self._version, payload{{#listPathParams}}, {{paramName}}=self._solution['{{paramName}}']{{/listPathParams}}){{/vendorExtensions.x-is-fetch-operation}}{{#vendorExtensions.x-is-delete-operation}}
+    def delete(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> bool:
+        """
+        Asynchronously delete the {{instanceName}}
+
+        {{#allParams}}:param {{paramName}}: {{{description}}}{{/allParams}}
+        :returns: True if delete succeeds, False otherwise
+        """
+        {{#allParams}}{{#isHeaderParam}}headers = values.of({'{{{baseName}}}': {{paramName}}, }){{/isHeaderParam}}{{/allParams}}
+        {{#allParams}}{{#isQueryParam}}params = values.of({'{{{baseName}}}': {{paramName}}, }){{/isQueryParam}}{{/allParams}}
+        return self._version.delete(method='DELETE', uri=self._uri{{#allParams}}{{#if isHeaderParam}}, headers=headers{{/if}}{{#if isQueryParam}}, params=params{{/if}}{{/allParams}})
+
+    async def delete_async(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> bool:
+        """
+        Asynchronously delete the {{instanceName}}
+
+        {{#allParams}}:param {{paramName}}: {{{description}}}{{/allParams}}
+        :returns: True if delete succeeds, False otherwise
+        """
+        {{#allParams}}{{#isHeaderParam}}headers = values.of({'{{{baseName}}}': {{paramName}}, }){{/isHeaderParam}}{{/allParams}}
+        {{#allParams}}{{#isQueryParam}}params = values.of({'{{{baseName}}}': {{paramName}}, }){{/isQueryParam}}{{/allParams}}
+        return await self._version.delete_async(method='DELETE', uri=self._uri{{#allParams}}{{#if isHeaderParam}}, headers=headers{{/if}}{{#if isQueryParam}}, params=params{{/if}}{{/allParams}}){{/vendorExtensions.x-is-delete-operation}}{{#vendorExtensions.x-is-update-operation}}
     def update(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> {{instanceName}}:
         """
         Update the {{instanceName}}
@@ -82,8 +110,7 @@
         {{#allParams}}{{^isFormParam}}headers = values.of({'{{{baseName}}}': {{paramName}}, }){{/isFormParam}}{{/allParams}}
         payload = await self._version.update_async(method='POST', uri=self._uri, data=data,{{#allParams}}{{#if isFormParam}}{{else}} headers=headers{{/if}}{{/allParams}})
 
-        return {{instanceName}}(self._version, payload{{#listPathParams}}, {{paramName}}=self._solution['{{paramName}}']{{/listPathParams}})
-    {{/vendorExtensions.x-is-update-operation}}{{/instancePath}}{{#vendorExtensions.x-is-read-operation}}
+        return {{instanceName}}(self._version, payload{{#listPathParams}}, {{paramName}}=self._solution['{{paramName}}']{{/listPathParams}}){{/vendorExtensions.x-is-update-operation}}{{/instancePath}}{{#vendorExtensions.x-is-read-operation}}
     def stream(self, {{#allParams}}
         {{#startsWith paramName text='page_size'}}{{else}}{{paramName}}: Union[{{{dataType}}}, object] = values.unset,{{/startsWith}}{{/allParams}}
         limit: Optional[int] = None,
