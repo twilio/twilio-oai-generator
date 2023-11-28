@@ -41,27 +41,27 @@ func TestDeleteSafelistParams_SetPhoneNumber(t *testing.T) {
 	assert.Equal(t, "+12345678910", *params.PhoneNumber)
 }
 
-//func TestApiService_CreateSafelist(t *testing.T) {
-//	params := &CreateSafelistParams{}
-//	params.SetPhoneNumber("+12345678910")
-//	resp, err := testApiService.CreateSafelist(params)
-//	assert.Nil(t, err)
-//	assert.NotNil(t, resp)
-//	assert.Equal(t, "+12345678910", *resp.PhoneNumber)
-//}
-//
-//func TestApiService_FetchSafelist(t *testing.T) {
-//	params := &FetchSafelistParams{}
-//	params.SetPhoneNumber("+12345678910")
-//	resp, err := testApiService.FetchSafelist(params)
-//	assert.Nil(t, err)
-//	assert.NotNil(t, resp)
-//	assert.Equal(t, "+12345678910", *resp.PhoneNumber)
-//}
-//
-//func TestApiService_DeleteSafelist(t *testing.T) {
-//	params := &DeleteSafelistParams{}
-//	params.SetPhoneNumber("+12345678910")
-//	err := testApiService.DeleteSafelist(params)
-//	assert.Nil(t, err)
-//}
+func TestApiService_CreateSafelist(t *testing.T) {
+	params := &CreateSafelistParams{}
+	params.SetPhoneNumber("+12345678910")
+	resp, err := testApiService.CreateSafelist(params)
+	assert.Nil(t, err)
+	assert.NotNil(t, resp)
+	assert.Equal(t, "+12345678910", *resp.PhoneNumber)
+}
+
+func TestApiService_FetchSafelist(t *testing.T) {
+	params := &FetchSafelistParams{}
+	params.SetPhoneNumber("+12345678910")
+	resp, err := testApiService.FetchSafelist(params)
+	assert.Nil(t, err)
+	assert.NotNil(t, resp)
+	assert.Equal(t, "+12345678910", *resp.PhoneNumber)
+}
+
+func TestApiService_DeleteSafelist(t *testing.T) {
+	params := &DeleteSafelistParams{}
+	params.SetPhoneNumber("+12345678910")
+	err := testApiService.DeleteSafelist(params)
+	assert.Nil(t, err)
+}
