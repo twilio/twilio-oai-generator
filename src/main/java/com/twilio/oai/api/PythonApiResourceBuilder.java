@@ -78,7 +78,7 @@ public class PythonApiResourceBuilder extends FluentApiResourceBuilder {
             responseModel = firstModel;
 
             allResponseModels.forEach(model -> {
-                codegenModelResolver.resolveResponseModel(model, this);
+                codegenModelResolver.resolve(model, this);
 
                 model.setName(resourceName);
                 model.getVars().forEach(variable -> {

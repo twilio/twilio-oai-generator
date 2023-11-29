@@ -48,6 +48,13 @@ public class PythonCodegenModelDataTypeResolver extends CodegenModelDataTypeReso
     }
 
     protected void resolveProperty(CodegenProperty property, ApiResourceBuilder apiResourceBuilder) {
+        if (property.name.contains("from") && property.dataFormat != null &&
+                property.dataFormat.equals(ApplicationConstants.PHONE_NUMBER)) {
+            property.name = "from_";
+            property.vendorExtensions.put("json-name", "from");
+        } else {
+            property.vendorExtensions.put("json-name", property.name);
+        }
         updateDataType(property.baseType, property.dataType, apiResourceBuilder, (dataTypeWithEnum, dataType) -> {
             property.datatypeWithEnum = dataTypeWithEnum;
             property.dataType = dataType;

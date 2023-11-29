@@ -2,6 +2,7 @@ package com.twilio.oai.resolver.python;
 
 import com.twilio.oai.CodegenUtils;
 import com.twilio.oai.api.ApiResourceBuilder;
+import com.twilio.oai.common.ApplicationConstants;
 import com.twilio.oai.common.LanguageDataType;
 import com.twilio.oai.resolver.IConventionMapper;
 import com.twilio.oai.resolver.common.CodegenModelResolver;
@@ -82,6 +83,8 @@ public class PythonCodegenModelResolver extends CodegenModelResolver {
                 !codegenModelDataTypeResolver.modelFormatMap.containsKey(property.dataType)) {
             this.resolve(derivedCodegenModel, apiResourceBuilder);
             CodegenUtils.mergeVendorExtensionProperty(property.vendorExtensions,(LinkedHashMap) derivedCodegenModel.getVendorExtensions().get(X_IMPORT), X_IMPORT);
+            property.dataType = apiResourceBuilder.getApiName() + ApplicationConstants.LIST + ApplicationConstants.DOT + property.dataType;
+            property.baseType = property.dataType;
             return derivedCodegenModel;
         }
         return null;
