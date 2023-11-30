@@ -38,7 +38,7 @@ public class PythonCodegenModelDataTypeResolver extends CodegenModelDataTypeReso
             apiResourceBuilder.addNestedModel(codegenModel);
         } else {
             super.resolve(property, apiResourceBuilder);
-            resolveProperty(property, apiResourceBuilder);
+            resolveProperty(property);
         }
         return property;
     }
@@ -47,7 +47,7 @@ public class PythonCodegenModelDataTypeResolver extends CodegenModelDataTypeReso
         super.resolve(property, apiResourceBuilder);
     }
 
-    protected void resolveProperty(CodegenProperty property, ApiResourceBuilder apiResourceBuilder) {
+    protected void resolveProperty(CodegenProperty property) {
         if (property.name.contains("from") && property.dataFormat != null &&
                 property.dataFormat.equals(ApplicationConstants.PHONE_NUMBER)) {
             property.name = "from_";
@@ -55,7 +55,7 @@ public class PythonCodegenModelDataTypeResolver extends CodegenModelDataTypeReso
         } else {
             property.vendorExtensions.put("json-name", property.name);
         }
-        updateDataType(property.baseType, property.dataType, apiResourceBuilder, (dataTypeWithEnum, dataType) -> {
+        updateDataType(property.baseType, property.dataType, (dataTypeWithEnum, dataType) -> {
             property.datatypeWithEnum = dataTypeWithEnum;
             property.dataType = dataType;
         });
@@ -63,19 +63,18 @@ public class PythonCodegenModelDataTypeResolver extends CodegenModelDataTypeReso
 
     private void updateDataType(final String baseType,
                                 final String dataType,
-                                ApiResourceBuilder apiResourceBuilder,
                                 final BiConsumer<String, String> consumer) {
-        consumer.accept(baseType, removeEnumName(dataType, apiResourceBuilder));
+        consumer.accept(baseType, removeEnumName(dataType));
 
         if (baseType != null && dataType != null) {
-            final String datatypeWithEnum = removeEnumName(baseType, apiResourceBuilder);
+            final String datatypeWithEnum = removeEnumName(baseType);
             consumer.accept(datatypeWithEnum, dataType.replaceFirst(baseType, datatypeWithEnum));
         }
     }
 
-    private String removeEnumName(final String dataType, ApiResourceBuilder apiResourceBuilder) {
+    private String removeEnumName(final String dataType) {
         if (dataType != null && dataType.contains(ApplicationConstants.ENUM)) {
-            return apiResourceBuilder.getApiName() + Utility.removeEnumName(dataType);
+            return Utility.removeEnumName(dataType);
         }
 
         return dataType;
