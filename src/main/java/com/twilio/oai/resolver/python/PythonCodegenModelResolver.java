@@ -49,6 +49,7 @@ public class PythonCodegenModelResolver extends CodegenModelResolver {
             } else {
                 codegenModelDataTypeResolver.resolve(property, apiResourceBuilder);
             }
+            setJsonName(property);
             property.getVendorExtensions().computeIfPresent(X_IMPORT, (key, value) -> {
                 if(model.vendorExtensions.containsKey(key)) {
                     ((HashMap) model.vendorExtensions.get(key)).putAll((Map) value);
@@ -60,6 +61,16 @@ public class PythonCodegenModelResolver extends CodegenModelResolver {
             });
         }
         return model;
+    }
+
+    private void setJsonName(CodegenProperty property) {
+        if (property.name.contains("from") && property.dataFormat != null &&
+                property.dataFormat.equals(ApplicationConstants.PHONE_NUMBER)) {
+            property.name = "from_";
+            property.vendorExtensions.put("json-name", "from");
+        } else {
+            property.vendorExtensions.put("json-name", property.name);
+        }
     }
 
     public void resolveResponseModel(CodegenModel model, ApiResourceBuilder apiResourceBuilder) {
@@ -83,8 +94,6 @@ public class PythonCodegenModelResolver extends CodegenModelResolver {
                 !codegenModelDataTypeResolver.modelFormatMap.containsKey(property.dataType)) {
             this.resolve(derivedCodegenModel, apiResourceBuilder);
             CodegenUtils.mergeVendorExtensionProperty(property.vendorExtensions,(LinkedHashMap) derivedCodegenModel.getVendorExtensions().get(X_IMPORT), X_IMPORT);
-            property.dataType = apiResourceBuilder.getApiName() + ApplicationConstants.LIST + ApplicationConstants.DOT + property.dataType;
-            property.baseType = property.dataType;
             return derivedCodegenModel;
         }
         return null;
