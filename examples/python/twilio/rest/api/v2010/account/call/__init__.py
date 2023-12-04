@@ -297,6 +297,7 @@ class CallList(ListResource):
 
         :returns: The created CallInstance
         """
+
         data = values.of(
             {
                 "RequiredStringProperty": required_string_property,
@@ -333,6 +334,7 @@ class CallList(ListResource):
 
         :returns: The created CallInstance
         """
+
         data = values.of(
             {
                 "RequiredStringProperty": required_string_property,

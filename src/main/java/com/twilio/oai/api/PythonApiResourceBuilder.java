@@ -5,11 +5,13 @@ import com.twilio.oai.StringHelper;
 import com.twilio.oai.common.ApplicationConstants;
 import com.twilio.oai.common.Utility;
 import com.twilio.oai.resolver.Resolver;
+import com.twilio.oai.resolver.python.PythonCodegenModelResolver;
 import com.twilio.oai.template.IApiActionTemplate;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.openapitools.codegen.CodegenModel;
@@ -18,6 +20,7 @@ import org.openapitools.codegen.CodegenParameter;
 import org.openapitools.codegen.CodegenProperty;
 
 import static com.twilio.oai.common.ApplicationConstants.PATH_SEPARATOR_PLACEHOLDER;
+import static com.twilio.oai.common.ApplicationConstants.STRING;
 
 public class PythonApiResourceBuilder extends FluentApiResourceBuilder {
     public PythonApiResourceBuilder(final IApiActionTemplate template,
@@ -62,6 +65,73 @@ public class PythonApiResourceBuilder extends FluentApiResourceBuilder {
                 });
             }
         }));
+        return this;
+    }
+
+    public ApiResourceBuilder updateResponseModel(Resolver<CodegenProperty> codegenPropertyResolver, PythonCodegenModelResolver codegenModelResolver) {
+        final String resourceName = getApiName();
+
+        final List<CodegenModel> allResponseModels = codegenOperationList
+                .stream()
+                .flatMap(co -> co.responses
+                        .stream()
+                        .map(response -> response.dataType)
+                        .filter(Objects::nonNull)
+                        .flatMap(modelName -> getModel(modelName, co).stream())
+                        .findFirst()
+                        .stream())
+                .collect(Collectors.toList());
+
+        allResponseModels.stream().findFirst().ifPresent(firstModel -> {
+            responseModel = firstModel;
+
+            allResponseModels.forEach(model -> {
+                codegenModelResolver.resolveResponseModel(model, this);
+
+                model.setName(resourceName);
+                model.getVars().forEach(variable -> {
+                    codegenPropertyResolver.resolve(variable, this);
+
+                    instancePathParams
+                            .stream()
+                            .filter(param -> param.paramName.equals(variable.name))
+                            .filter(param -> param.dataType.equals(STRING))
+                            .filter(param -> !param.dataType.equals(variable.dataType))
+                            .forEach(param -> param.vendorExtensions.put("x-stringify", true));
+                });
+
+                if (model != responseModel) {
+                    // Merge any vars from the model that aren't part of the response model.
+                    model.getVars().forEach(variable -> {
+                        if (responseModel.getVars().stream().noneMatch(v -> v.getName().equals(variable.getName()))) {
+                            responseModel.getVars().add(variable);
+                        }
+                    });
+                }
+            });
+
+            responseModel.getVars().forEach(variable -> {
+                addModel(modelTree, variable.complexType, variable.dataType);
+
+                updateDataType(variable.complexType, variable.dataType, (dataTypeWithEnum, dataType) -> {
+                    variable.datatypeWithEnum = dataTypeWithEnum;
+                    variable.baseType = dataType;
+                });
+            });
+        });
+
+        modelTree.values().forEach(model -> model.setName(getModelName(model.getClassname())));
+        if (responseModel != null) {
+            responseModel.getVars().forEach(variable -> {
+                if (variable.complexType != null && !variable.complexType.contains(ApplicationConstants.ENUM) && !variable.getHasVars()) {
+                    getModelByClassname(variable.complexType).ifPresent(model -> {
+                        variable.baseType = variable.baseType.replace(variable.datatypeWithEnum, "str");
+                        variable.datatypeWithEnum = "str";
+                    });
+                }
+            });
+        }
+
         return this;
     }
 

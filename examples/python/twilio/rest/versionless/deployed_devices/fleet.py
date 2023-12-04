@@ -170,6 +170,7 @@ class FleetList(ListResource):
 
         :returns: The created FleetInstance
         """
+
         data = values.of(
             {
                 "Name": name,
@@ -194,6 +195,7 @@ class FleetList(ListResource):
 
         :returns: The created FleetInstance
         """
+
         data = values.of(
             {
                 "Name": name,
