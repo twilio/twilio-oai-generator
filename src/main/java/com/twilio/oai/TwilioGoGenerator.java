@@ -5,6 +5,7 @@ import com.twilio.oai.common.Utility;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.TreeSet;
 import java.util.function.Function;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
@@ -130,6 +131,22 @@ public class TwilioGoGenerator extends AbstractTwilioGoGenerator {
                 // filter the fields in the model and get only the array typed field. Also, make sure there is only one field of type list/array
                 if (returnModel.isPresent()) {
                     CodegenProperty field = returnModel.get().allVars
+                        .stream()
+                        .filter(v -> v.dataType.startsWith("[]"))
+                        .collect(toSingleton());
+
+                    co.returnContainer = co.returnType;
+                    co.returnType = field.dataType;
+                    co.returnBaseType = field.complexType;
+
+                    co.vendorExtensions.put("x-payload-field-name", field.name);
+                }
+                //For handling the cases where the schema contains allOf
+                else{
+                    ModelMap modelMap = allModels.stream().filter(map1 -> map1.getModel().getClassname().equals(co.returnType)).collect(toSingleton());
+                    CodegenModel model = (CodegenModel) modelMap.get("model");
+                    final Optional<CodegenModel> returnModelOther = Optional.ofNullable(model);
+                    CodegenProperty field = returnModelOther.get().allVars
                         .stream()
                         .filter(v -> v.dataType.startsWith("[]"))
                         .collect(toSingleton());
