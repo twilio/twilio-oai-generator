@@ -42,7 +42,7 @@ public class PythonCodegenModelResolver extends CodegenModelResolver {
         for (CodegenProperty property : model.vars) {
             CodegenModel nestedModel = resolveNestedModel(property, apiResourceBuilder);
             if(nestedModel != null) {
-                return nestedModel;
+                continue;
             }
             if (property.isContainer) {
                 codegenModelContainerDataTypeResolver.resolve(property, apiResourceBuilder, this);
@@ -94,6 +94,9 @@ public class PythonCodegenModelResolver extends CodegenModelResolver {
                 !codegenModelDataTypeResolver.modelFormatMap.containsKey(property.dataType)) {
             this.resolve(derivedCodegenModel, apiResourceBuilder);
             CodegenUtils.mergeVendorExtensionProperty(property.vendorExtensions,(LinkedHashMap) derivedCodegenModel.getVendorExtensions().get(X_IMPORT), X_IMPORT);
+            property.dataType = apiResourceBuilder.getApiName() + ApplicationConstants.LIST + ApplicationConstants.DOT + property.dataType;
+            property.baseType = property.dataType;
+            property.datatypeWithEnum = property.dataType;
             return derivedCodegenModel;
         }
         return null;

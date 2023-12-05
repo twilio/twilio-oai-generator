@@ -56,15 +56,6 @@ public class PythonApiResourceBuilder extends FluentApiResourceBuilder {
                 }
             }
         }
-        nestedModels.forEach(nestedModel -> nestedModel.getVars().forEach(variable -> {
-            if (variable.complexType != null) {
-                getModelByClassname(variable.complexType).ifPresent(model -> {
-                    variable.datatypeWithEnum = getApiName() + ApplicationConstants.LIST + ApplicationConstants.DOT + Utility.removeEnumName(variable.complexType);
-                    variable.dataType = variable.dataType.replaceFirst(variable.complexType, variable.datatypeWithEnum);
-                    variable.baseType = variable.dataType;
-                });
-            }
-        }));
         return this;
     }
 
