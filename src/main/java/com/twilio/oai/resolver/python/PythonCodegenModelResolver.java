@@ -33,6 +33,13 @@ public class PythonCodegenModelResolver extends CodegenModelResolver {
         this.codegenModelDataTypeResolver.setCodegenModel(this);
     }
 
+    /**
+     * Resolves the model using its nestedModel and resolving recursively. If the nestedModel is not found, then if
+     * it is a container, the container is resolved else the dataType is resolved straightaway.
+     * @param model the codegenModel to be resolved
+     * @param apiResourceBuilder the PythonApiResourceBuilder
+     * @return resolved model
+     */
     @Override
     public CodegenModel resolve(CodegenModel model, ApiResourceBuilder apiResourceBuilder) {
         if (model == null) {
@@ -63,6 +70,10 @@ public class PythonCodegenModelResolver extends CodegenModelResolver {
         return model;
     }
 
+    /**
+     * Sets Json name in the vendorExtensions of the property
+     * @param property the dataType of the variable
+     */
     private void setJsonName(CodegenProperty property) {
         if (property.name.contains("from") && property.dataFormat != null &&
                 property.dataFormat.equals(ApplicationConstants.PHONE_NUMBER)) {
@@ -73,6 +84,11 @@ public class PythonCodegenModelResolver extends CodegenModelResolver {
         }
     }
 
+    /**
+     * Resolves the response model using parent method
+     * @param model the CodegenModel to be resolved
+     * @param apiResourceBuilder the PythonApiResourceBuilder to access getApiName()
+     */
     public void resolveResponseModel(CodegenModel model, ApiResourceBuilder apiResourceBuilder) {
         if (model == null) {
             return;
@@ -88,6 +104,13 @@ public class PythonCodegenModelResolver extends CodegenModelResolver {
 
     }
 
+    /**
+     * Fetches the model for the property and resolves it. Further updates the dataType, baseType and datatypeWithEnum
+     * according to the nested structure.
+     * @param property the CodegenProperty to be resolved
+     * @param apiResourceBuilder the PythonApiResourceBuilder to access getApiName()
+     * @return resolved model
+     */
     public CodegenModel resolveNestedModel(CodegenProperty property, ApiResourceBuilder apiResourceBuilder) {
         CodegenModel derivedCodegenModel = apiResourceBuilder.getModel(property.dataType);
         if(derivedCodegenModel != null && !CodegenUtils.isPropertySchemaEnum(property) &&

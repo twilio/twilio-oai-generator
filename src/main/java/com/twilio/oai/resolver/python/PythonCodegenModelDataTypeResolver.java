@@ -24,10 +24,20 @@ public class PythonCodegenModelDataTypeResolver extends CodegenModelDataTypeReso
         this.modelFormatMap = modelFormatMap;
     }
 
+    /**
+     * Setter for codegenModelResolver
+     * @param codegenModelResolver the modelResolver to be set
+     */
     public void setCodegenModel(CodegenModelResolver codegenModelResolver) {
         this.codegenModelResolver = codegenModelResolver;
     }
 
+    /**
+     * Resolves the property using its codegenModel and resolving recursively
+     * @param property the CodegenProperty to be resolved
+     * @param apiResourceBuilder the PythonApiResourceBuilder to access getApiName()
+     * @return resolved property
+     */
     @Override
     public CodegenProperty resolve(CodegenProperty property, ApiResourceBuilder apiResourceBuilder) {
         property =  super.resolve(property, apiResourceBuilder);
@@ -43,10 +53,20 @@ public class PythonCodegenModelDataTypeResolver extends CodegenModelDataTypeReso
         return property;
     }
 
+    /**
+     * Resolves the response model property using parent method
+     * @param property the CodegenProperty to be resolved
+     * @param apiResourceBuilder the PythonApiResourceBuilder to access getApiName()
+     */
     public void resolveResponseModel(CodegenProperty property, ApiResourceBuilder apiResourceBuilder) {
         super.resolve(property, apiResourceBuilder);
     }
 
+    /**
+     * Resolves the property to set 'json-name' in vendor extension and update dataType
+     * @param property the CodegenProperty to be resolved
+     * @param apiResourceBuilder the PythonApiResourceBuilder to access getApiName()
+     */
     protected void resolveProperty(CodegenProperty property, ApiResourceBuilder apiResourceBuilder) {
         if (property.name.contains("from") && property.dataFormat != null &&
                 property.dataFormat.equals(ApplicationConstants.PHONE_NUMBER)) {
@@ -61,6 +81,13 @@ public class PythonCodegenModelDataTypeResolver extends CodegenModelDataTypeReso
         });
     }
 
+    /**
+     * Updates the dataType and datatypeWithEnum using baseType and dataType by removing enum from name
+     * @param baseType the baseType of the variable
+     * @param dataType the dataType of the variable
+     * @param apiResourceBuilder the PythonApiResourceBuilder to access getApiName()
+     * @param consumer the consumer function to set values
+     */
     private void updateDataType(final String baseType,
                                 final String dataType,
                                 final ApiResourceBuilder apiResourceBuilder,
@@ -73,6 +100,12 @@ public class PythonCodegenModelDataTypeResolver extends CodegenModelDataTypeReso
         }
     }
 
+    /**
+     * Removes 'Enum' from the dataType
+     * @param dataType the dataType of the variable
+     * @param apiResourceBuilder the PythonApiResourceBuilder to access getApiName()
+     * @return updated dataType
+     */
     private String removeEnumName(final String dataType, ApiResourceBuilder apiResourceBuilder) {
         if (dataType != null && dataType.contains(ApplicationConstants.ENUM)) {
             return '"' + apiResourceBuilder.getApiName() + "Instance." + Utility.removeEnumName(dataType) + '"';

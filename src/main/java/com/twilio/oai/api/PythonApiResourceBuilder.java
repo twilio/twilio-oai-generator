@@ -39,6 +39,12 @@ public class PythonApiResourceBuilder extends FluentApiResourceBuilder {
         this.toggleMap = toggleMap;
     }
 
+    /**
+     * Processes the operations list and resolves the parameters and properties of request body.
+     * Returns the resource builder with resolved request body.
+     * @param codegenParameterIResolver the Python Parameter Resolver
+     * @return updated PythonApiResourceBuilder
+     */
     @Override
     public ApiResourceBuilder updateOperations(final Resolver<CodegenParameter> codegenParameterIResolver) {
         super.updateOperations(codegenParameterIResolver);
@@ -59,6 +65,13 @@ public class PythonApiResourceBuilder extends FluentApiResourceBuilder {
         return this;
     }
 
+    /**
+     * Processes the response body and its models to resolve nested response models.
+     * Returns the resource builder with resolved response body.
+     * @param codegenPropertyResolver the Python Property Resolver
+     * @param codegenModelResolver the CodegenModelResolver for python
+     * @return updated PythonApiResourceBuilder
+     */
     public ApiResourceBuilder updateResponseModel(Resolver<CodegenProperty> codegenPropertyResolver, PythonCodegenModelResolver codegenModelResolver) {
         final String resourceName = getApiName();
 
@@ -126,13 +139,20 @@ public class PythonApiResourceBuilder extends FluentApiResourceBuilder {
         return this;
     }
 
+    /**
+     * Processes the response body and its datatypes using parent function
+     * Returns the resource builder with resolved response body.
+     * @param codegenPropertyResolver the Python Property Resolver
+     * @param codegenModelResolver the CodegenModelResolver for python
+     * @return updated PythonApiResourceBuilder
+     */
     @Override
-    public ApiResourceBuilder updateResponseModel(Resolver<CodegenProperty> codegenPropertyResolver, Resolver<CodegenModel> codegenModelResolver) {
-
+    public PythonApiResourceBuilder updateResponseModel(final Resolver<CodegenProperty> codegenPropertyResolver,
+                                                        final Resolver<CodegenModel> codegenModelResolver) {
         super.updateResponseModel(codegenPropertyResolver, codegenModelResolver);
         if (responseModel != null) {
             responseModel.getVars().forEach(variable -> {
-                if (variable.complexType != null && !variable.complexType.contains(ApplicationConstants.ENUM) && !variable.getHasVars()) {
+                if (variable.complexType != null && !variable.complexType.contains(ApplicationConstants.ENUM)) {
                     getModelByClassname(variable.complexType).ifPresent(model -> {
                         variable.baseType = variable.baseType.replace(variable.datatypeWithEnum, "str");
                         variable.datatypeWithEnum = "str";
