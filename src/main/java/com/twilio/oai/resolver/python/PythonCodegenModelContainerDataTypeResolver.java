@@ -9,6 +9,7 @@ import org.openapitools.codegen.CodegenProperty;
 
 import java.util.List;
 import java.util.Stack;
+import java.util.regex.Pattern;
 
 public class PythonCodegenModelContainerDataTypeResolver extends CodegenModelContainerDataTypeResolver {
     private final PythonCodegenModelDataTypeResolver codegenModelDataTypeResolver;
@@ -30,6 +31,40 @@ public class PythonCodegenModelContainerDataTypeResolver extends CodegenModelCon
         rewrapContainerType(codegenProperty,containerTypes);
 
         return codegenProperty;
+    }
+
+    /**
+     * Unwraps the container type(s) from the underlying property datatype and adds the container type(s) to the given
+     * containerTypes stack. Returns the underlying property datatype (i.e. "List<IceServer>" -> "IceServer").
+     * @param codegenProperty the property whose dataType is to be unwrapped
+     * @param containerTypes the stack which stores the containers used to unwrap
+     * @return unwrapped continer type
+     */
+    @Override
+    protected String unwrapContainerType(CodegenProperty codegenProperty, Stack<String> containerTypes) {
+        String codegenPropertyDataType = "";
+        codegenPropertyDataType = codegenProperty.dataType;
+
+        String currentContainerType = "";
+        boolean isContainerType = false;
+
+        while(codegenPropertyDataType != null && !codegenPropertyDataType.isEmpty()) {
+            for (LanguageDataType dataType : languageDataTypes) {
+                if (codegenPropertyDataType.startsWith(dataType.getValue())) {
+                    isContainerType = true;
+                    currentContainerType = dataType.getValue();
+                }
+            }
+            if(isContainerType) {
+                containerTypes.push(currentContainerType);
+                codegenPropertyDataType = codegenPropertyDataType.replaceFirst(Pattern.quote(currentContainerType), "");
+                codegenPropertyDataType = codegenPropertyDataType.substring(0, codegenPropertyDataType.length()-1);
+                isContainerType = false;
+            }
+            else
+                return codegenPropertyDataType;
+        }
+        return codegenPropertyDataType;
     }
 
     /**

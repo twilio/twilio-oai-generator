@@ -10,7 +10,6 @@ import org.openapitools.codegen.CodegenProperty;
 
 import java.util.List;
 import java.util.Stack;
-import java.util.regex.Pattern;
 
 @RequiredArgsConstructor
 public class CodegenModelContainerDataTypeResolver extends Resolver<CodegenProperty> {
@@ -50,7 +49,7 @@ public class CodegenModelContainerDataTypeResolver extends Resolver<CodegenPrope
             }
             if(isContainerType) {
                 containerTypes.push(currentContainerType);
-                codegenPropertyDataType = codegenPropertyDataType.replaceFirst(Pattern.quote(currentContainerType), "");
+                codegenPropertyDataType = codegenPropertyDataType.replaceFirst(currentContainerType, "");
                 codegenPropertyDataType = codegenPropertyDataType.substring(0, codegenPropertyDataType.length()-1);
                 isContainerType = false;
             }
