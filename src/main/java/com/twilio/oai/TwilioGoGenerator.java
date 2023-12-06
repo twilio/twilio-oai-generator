@@ -140,6 +140,22 @@ public class TwilioGoGenerator extends AbstractTwilioGoGenerator {
 
                     co.vendorExtensions.put("x-payload-field-name", field.name);
                 }
+                //For handling the cases where the schema contains allOf
+                else{
+                    ModelMap modelMap = allModels.stream().filter(map1 -> map1.getModel().getClassname().equals(co.returnType)).collect(toSingleton());
+                    CodegenModel model = (CodegenModel) modelMap.get("model");
+                    final Optional<CodegenModel> returnModelOther = Optional.ofNullable(model);
+                    CodegenProperty field = returnModelOther.get().allVars
+                        .stream()
+                        .filter(v -> v.dataType.startsWith("[]"))
+                        .collect(toSingleton());
+
+                    co.returnContainer = co.returnType;
+                    co.returnType = field.dataType;
+                    co.returnBaseType = field.complexType;
+
+                    co.vendorExtensions.put("x-payload-field-name", field.name);
+                }
             }
         }
 
