@@ -122,10 +122,10 @@ public class TwilioPythonGenerator extends PythonLegacyClientCodegen {
 
         PythonApiResourceBuilder pythonApiResourceBuilder = new PythonApiResourceBuilder(actionTemplate, opList, allModels, directoryStructureService, twilioCodegen.getToggles(JSON_INGRESS));
         pythonApiResourceBuilder.updateApiPath()
-                .updateTemplate()
-                .updateOperations(new PythonParameterResolver(conventionMapper, codegenModelResolver));
+                                .updateTemplate()
+                                .updateOperations(new PythonParameterResolver(conventionMapper, codegenModelResolver));
         return pythonApiResourceBuilder.updateResponseModel(new PythonPropertyResolver(conventionMapper), codegenModelResolver)
-                .build();
+                                       .build();
     }
 
     @Override
