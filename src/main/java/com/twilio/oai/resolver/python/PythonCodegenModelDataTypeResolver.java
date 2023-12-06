@@ -17,7 +17,7 @@ import java.util.function.BiConsumer;
 public class PythonCodegenModelDataTypeResolver extends CodegenModelDataTypeResolver {
 
     protected Map<String, String> modelFormatMap;
-    private CodegenModelResolver codegenModelResolver;
+    private PythonCodegenModelResolver codegenModelResolver;
 
     public PythonCodegenModelDataTypeResolver(IConventionMapper mapper, Map<String, String> modelFormatMap) {
         super(mapper, modelFormatMap);
@@ -29,7 +29,7 @@ public class PythonCodegenModelDataTypeResolver extends CodegenModelDataTypeReso
      * @param codegenModelResolver the modelResolver to be set
      */
     public void setCodegenModel(CodegenModelResolver codegenModelResolver) {
-        this.codegenModelResolver = codegenModelResolver;
+        this.codegenModelResolver = (PythonCodegenModelResolver) codegenModelResolver;
     }
 
     /**
@@ -42,7 +42,7 @@ public class PythonCodegenModelDataTypeResolver extends CodegenModelDataTypeReso
     public CodegenProperty resolve(CodegenProperty property, ApiResourceBuilder apiResourceBuilder) {
         property =  super.resolve(property, apiResourceBuilder);
         CodegenModel codegenModel = apiResourceBuilder.getModel(property.dataType);
-        if (codegenModel != null && !CodegenUtils.isPropertySchemaEnum(property) && !modelFormatMap.containsKey(property.dataType)) {
+        if (codegenModel != null && !CodegenUtils.isPropertySchemaEnum(property)) {
             // this is recursion as codegenModelResolver will again call PythonCodegenModelDataTypeResolver
             codegenModelResolver.resolve(codegenModel, apiResourceBuilder);
             apiResourceBuilder.addNestedModel(codegenModel);
@@ -79,6 +79,7 @@ public class PythonCodegenModelDataTypeResolver extends CodegenModelDataTypeReso
             property.datatypeWithEnum = dataTypeWithEnum;
             property.dataType = dataType;
         });
+        property.baseType = property.dataType;
     }
 
     /**

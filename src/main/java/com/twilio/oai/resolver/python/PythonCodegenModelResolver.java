@@ -56,7 +56,6 @@ public class PythonCodegenModelResolver extends CodegenModelResolver {
             } else {
                 codegenModelDataTypeResolver.resolve(property, apiResourceBuilder);
             }
-            setJsonName(property);
             property.getVendorExtensions().computeIfPresent(X_IMPORT, (key, value) -> {
                 if(model.vendorExtensions.containsKey(key)) {
                     ((HashMap) model.vendorExtensions.get(key)).putAll((Map) value);
@@ -113,15 +112,19 @@ public class PythonCodegenModelResolver extends CodegenModelResolver {
      */
     public CodegenModel resolveNestedModel(CodegenProperty property, ApiResourceBuilder apiResourceBuilder) {
         CodegenModel derivedCodegenModel = apiResourceBuilder.getModel(property.dataType);
-        if(derivedCodegenModel != null && !CodegenUtils.isPropertySchemaEnum(property) &&
-                !codegenModelDataTypeResolver.modelFormatMap.containsKey(property.dataType)) {
+        if(derivedCodegenModel != null && !CodegenUtils.isPropertySchemaEnum(property)) {
             this.resolve(derivedCodegenModel, apiResourceBuilder);
             CodegenUtils.mergeVendorExtensionProperty(property.vendorExtensions,(LinkedHashMap) derivedCodegenModel.getVendorExtensions().get(X_IMPORT), X_IMPORT);
-            property.dataType = apiResourceBuilder.getApiName() + ApplicationConstants.LIST + ApplicationConstants.DOT + property.dataType;
-            property.baseType = property.dataType;
-            property.datatypeWithEnum = property.dataType;
+            updateDataType(property, apiResourceBuilder);
+            setJsonName(property);
             return derivedCodegenModel;
         }
         return null;
+    }
+
+    private void updateDataType(CodegenProperty property, ApiResourceBuilder apiResourceBuilder) {
+        property.dataType = apiResourceBuilder.getApiName() + ApplicationConstants.LIST + ApplicationConstants.DOT + property.dataType;
+        property.baseType = property.dataType;
+        property.datatypeWithEnum = property.dataType;
     }
 }
