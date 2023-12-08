@@ -1,4 +1,4 @@
-FROM python:3.11
+FROM python:latest
 
 ENV PYTHONBUFFERED 1
 
