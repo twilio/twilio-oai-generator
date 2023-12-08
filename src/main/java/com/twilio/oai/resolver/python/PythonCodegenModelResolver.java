@@ -95,7 +95,7 @@ public class PythonCodegenModelResolver extends CodegenModelResolver {
 
         for (CodegenProperty property : model.vars) {
             if (property.isContainer) {
-                codegenModelContainerDataTypeResolver.resolve(property, apiResourceBuilder);
+                codegenModelContainerDataTypeResolver.resolveResponseModel(property, apiResourceBuilder);
             } else {
                 codegenModelDataTypeResolver.resolveResponseModel(property, apiResourceBuilder);
             }

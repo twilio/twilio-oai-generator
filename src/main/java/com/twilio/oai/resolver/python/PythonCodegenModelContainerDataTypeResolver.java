@@ -33,6 +33,15 @@ public class PythonCodegenModelContainerDataTypeResolver extends CodegenModelCon
         return codegenProperty;
     }
 
+    public CodegenProperty resolveResponseModel(CodegenProperty codegenProperty, ApiResourceBuilder apiResourceBuilder) {
+        Stack<String> containerTypes = new Stack<>();
+        codegenProperty.dataType = unwrapContainerType(codegenProperty,containerTypes);
+        codegenModelDataTypeResolver.resolveResponseModel(codegenProperty, apiResourceBuilder);
+        rewrapContainerType(codegenProperty,containerTypes);
+
+        return codegenProperty;
+    }
+
     /**
      * Unwraps the container type(s) from the underlying property datatype and adds the container type(s) to the given
      * containerTypes stack. Returns the underlying property datatype (i.e. "List<IceServer>" -> "IceServer").
