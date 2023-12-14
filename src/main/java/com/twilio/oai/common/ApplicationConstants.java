@@ -23,6 +23,7 @@ public class ApplicationConstants {
     public static final String LIST_START = "List<";
 
     public static final String LIST_END = ">";
+    public static final String PYTHON_LIST_END = "]";
 
     public static final String OBJECT = "Object";
     public static final String STRING = "string";

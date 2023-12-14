@@ -113,6 +113,7 @@ class NewCredentialsList(ListResource):
 
         :returns: The created NewCredentialsInstance
         """
+
         data = values.of(
             {
                 "TestString": test_string,
@@ -190,6 +191,7 @@ class NewCredentialsList(ListResource):
 
         :returns: The created NewCredentialsInstance
         """
+
         data = values.of(
             {
                 "TestString": test_string,

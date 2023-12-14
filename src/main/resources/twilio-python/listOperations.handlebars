@@ -8,12 +8,13 @@
         {{/allParams}}
         :returns: The created {{instanceName}}
         """
-        {{#hasParams}}data = values.of({ {{#allParams}}{{#isFormParam}}
+        {{#bodyParam}}data = {{paramName}}.to_dict(){{/bodyParam}}
+        {{^bodyParam}}{{#hasParams}}data = values.of({ {{#allParams}}{{#isFormParam}}
             '{{{baseName}}}': {{#if vendorExtensions.x-serialize}}{{vendorExtensions.x-serialize}}({{paramName}}{{#if isArray}}, lambda e: {{#startsWith baseType text='object'}}serialize.object(e){{else}}e{{/startsWith}}){{else}}){{/if}}{{else}}{{paramName}}{{/if}},{{/isFormParam}}{{/allParams}}
-        }){{/hasParams}}
+        }){{/hasParams}}{{/bodyParam}}
         {{#allParams}}{{#isHeaderParam}}headers = values.of({'{{{baseName}}}': {{paramName}}, }){{/isHeaderParam}}{{/allParams}}
-        {{#allParams}}{{#isQueryParam}}params = values.of({'{{{baseName}}}': {{paramName}}, }){{/isQueryParam}}{{/allParams}}
-        payload = self._version.create(method='POST', uri=self._uri, {{#hasParams}}data=data,{{/hasParams}}{{#allParams}}{{#if isHeaderParam}} headers=headers{{/if}}{{#if isQueryParam}}, params=params{{/if}}{{/allParams}})
+        {{#allParams}}{{#isBodyParam}}headers = {"Content-Type": "application/json"}{{/isBodyParam}}{{/allParams}}
+        payload = self._version.create(method='POST', uri=self._uri, {{#hasParams}}data=data,{{/hasParams}}{{#allParams}}{{#if isHeaderParam}} headers=headers{{/if}}{{#if isBodyParam}} headers=headers{{/if}}{{#if isQueryParam}}, params=params{{/if}}{{/allParams}})
 
         return {{instanceName}}(self._version, payload{{#listPathParams}}, {{paramName}}=self._solution['{{paramName}}']{{/listPathParams}})
 
@@ -25,12 +26,16 @@
         {{/allParams}}
         :returns: The created {{instanceName}}
         """
-        {{#hasParams}}data = values.of({ {{#allParams}}{{#isFormParam}}
+        {{#bodyParam}}
+        data = {{paramName}}.to_dict()
+        headers = {"Content-Type": "application/json"}
+        {{/bodyParam}}
+        {{^bodyParam}}{{#hasParams}}data = values.of({ {{#allParams}}{{#isFormParam}}
             '{{{baseName}}}': {{#if vendorExtensions.x-serialize}}{{vendorExtensions.x-serialize}}({{paramName}}{{#if isArray}}, lambda e: {{#startsWith baseType text='object'}}serialize.object(e){{else}}e{{/startsWith}}){{else}}){{/if}}{{else}}{{paramName}}{{/if}},{{/isFormParam}}{{/allParams}}
-        }){{/hasParams}}
+        }){{/hasParams}}{{/bodyParam}}
         {{#allParams}}{{#isHeaderParam}}headers = values.of({'{{{baseName}}}': {{paramName}}, }){{/isHeaderParam}}{{/allParams}}
         {{#allParams}}{{#isQueryParam}}params = values.of({'{{{baseName}}}': {{paramName}}, }){{/isQueryParam}}{{/allParams}}
-        payload = await self._version.create_async(method='POST', uri=self._uri, {{#hasParams}}data=data,{{/hasParams}}{{#allParams}}{{#if isHeaderParam}} headers=headers{{/if}}{{#if isQueryParam}}, params=params{{/if}}{{/allParams}})
+        payload = await self._version.create_async(method='POST', uri=self._uri, {{#hasParams}}data=data,{{/hasParams}}{{#allParams}}{{#if isHeaderParam}} headers=headers{{/if}}{{#if isBodyParam}} headers=headers{{/if}}{{#if isQueryParam}}, params=params{{/if}}{{/allParams}})
 
         return {{instanceName}}(self._version, payload{{#listPathParams}}, {{paramName}}=self._solution['{{paramName}}']{{/listPathParams}})
     {{/vendorExtensions.x-is-create-operation}}{{^instancePath}}{{#vendorExtensions.x-is-fetch-operation}}

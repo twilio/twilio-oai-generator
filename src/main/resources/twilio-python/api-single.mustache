@@ -17,7 +17,7 @@ from twilio.base.version import Version
 {{#hasPaginationOperation}}{{>pagination}}{{/hasPaginationOperation}}
 
 class {{apiName}}List(ListResource):
-
+    {{#if nestedModels}}{{>modelClasses}}{{/if}}
     def __init__(self, version: Version{{#listPathParams}}, {{paramName}}: {{{dataType}}}{{/listPathParams}}):
         """
         Initialize the {{apiName}}List

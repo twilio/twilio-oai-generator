@@ -65,7 +65,7 @@ public class CodegenModelContainerDataTypeResolver extends Resolver<CodegenPrope
      * @param codegenProperty
      * @param containerTypes
      */
-    protected static void rewrapContainerType(CodegenProperty codegenProperty,Stack<String> containerTypes) {
+    protected void rewrapContainerType(CodegenProperty codegenProperty,Stack<String> containerTypes) {
         String currentContainerType = "";
         while(!containerTypes.empty()) {
             currentContainerType = containerTypes.pop();

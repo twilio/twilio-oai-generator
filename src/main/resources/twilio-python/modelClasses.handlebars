@@ -1,0 +1,17 @@
+{{#models}}{{^vendorExtensions.part-of-response-model}}{{#hasVars}}
+    class {{classname}}(object):
+        """{{#vars}}
+            :ivar {{name}}: {{{description}}}{{/vars}}
+        """
+
+        def __init__(self, payload: Dict[str, Any]{{#instancePathParams}}, {{paramName}}: {{#if vendorExtensions.x-is-parent-param}}{{{contentType}}}{{else}}Optional[{{{contentType}}}] = None{{/if}}{{/instancePathParams}}):
+
+            {{#vars}}
+            self.{{name}}: Optional[{{{dataType}}}] = {{#if vendorExtensions.x-deserialize}}{{vendorExtensions.x-deserialize}}(payload.get("{{{name}}}")){{else}}payload.get("{{{name}}}"){{/if}}{{/vars}}
+
+        def to_dict(self):
+            return {
+                {{#vars}}
+                    "{{{vendorExtensions.json-name}}}": {{#if complexType}}{{#containerType}}[{{name}}.to_dict() for {{name}} in self.{{name}}]{{/containerType}}{{^containerType}}self.{{name}}.to_dict(){{/containerType}}{{else}}self.{{name}}{{/if}},{{/vars}}
+            }
+{{/hasVars}}{{/vendorExtensions.part-of-response-model}}{{/models}}

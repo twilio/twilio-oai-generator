@@ -69,6 +69,14 @@ public class EnumConstants {
 
     @Getter
     @RequiredArgsConstructor
+    public enum PythonDataTypes implements LanguageDataType {
+        LIST("List[");
+
+        private final String value;
+    }
+
+    @Getter
+    @RequiredArgsConstructor
     public enum RubyDataTypes implements LanguageDataType {
         LIST("Array<");
 
