@@ -187,7 +187,7 @@ func (c *ApiService) getNext{{{returnContainer}}}(nextPageUrl string) (interface
     if nextPageUrl == "" {
         return nil, nil
     }
-    resp, err := c.requestHandler.Get(nextPageUrl, nil, nil, queryParams)
+    resp, err := c.requestHandler.Get(nextPageUrl, nil, nil, nil)
     if err != nil {
         return nil, err
     }
