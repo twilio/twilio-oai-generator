@@ -4,6 +4,7 @@ import com.twilio.oai.DirectoryStructureService;
 import com.twilio.oai.PathUtils;
 import com.twilio.oai.common.ApplicationConstants;
 import com.twilio.oai.resolver.Resolver;
+import com.twilio.oai.resolver.ruby.RubyCodegenModelResolver;
 import com.twilio.oai.resource.Resource;
 import com.twilio.oai.template.IApiActionTemplate;
 import io.swagger.v3.oas.models.OpenAPI;
@@ -24,6 +25,7 @@ import java.util.stream.StreamSupport;
 
 import static com.twilio.oai.DirectoryStructureService.VERSION_RESOURCES;
 import static com.twilio.oai.common.ApplicationConstants.DESERIALIZE_VEND_EXT;
+import static com.twilio.oai.common.ApplicationConstants.STRING;
 
 public class RubyApiResourceBuilder extends FluentApiResourceBuilder {
 
@@ -35,6 +37,80 @@ public class RubyApiResourceBuilder extends FluentApiResourceBuilder {
     public RubyApiResourceBuilder(final IApiActionTemplate template, final List<CodegenOperation> codegenOperations, final List<CodegenModel> allModels, final DirectoryStructureService directoryStructureService, final OpenAPI openApi) {
         super(template, codegenOperations, allModels, directoryStructureService);
         this.openApi = openApi;
+    }
+
+    public RubyApiResourceBuilder(final IApiActionTemplate template, final List<CodegenOperation> codegenOperations, final List<CodegenModel> allModels, final DirectoryStructureService directoryStructureService, final OpenAPI openApi, final Map<String, Boolean> toggleMap) {
+        super(template, codegenOperations, allModels, directoryStructureService);
+        this.openApi = openApi;
+        this.toggleMap = toggleMap;
+    }
+
+    public RubyApiResourceBuilder updateResponseModel(Resolver<CodegenProperty> codegenPropertyResolver, RubyCodegenModelResolver codegenModelResolver) {
+        final String resourceName = getApiName();
+
+        final List<CodegenModel> allResponseModels = codegenOperationList
+                .stream()
+                .flatMap(co -> co.responses
+                        .stream()
+                        .map(response -> response.dataType)
+                        .filter(Objects::nonNull)
+                        .flatMap(modelName -> getModel(modelName, co).stream())
+                        .findFirst()
+                        .stream())
+                .collect(Collectors.toList());
+
+        allResponseModels.stream().findFirst().ifPresent(firstModel -> {
+            responseModel = firstModel;
+
+            allResponseModels.forEach(model -> {
+                codegenModelResolver.resolveResponseModel(model, this);
+
+                model.setName(resourceName);
+                model.getVars().forEach(variable -> {
+                    codegenPropertyResolver.resolve(variable, this);
+
+                    instancePathParams
+                            .stream()
+                            .filter(param -> param.paramName.equals(variable.name))
+                            .filter(param -> param.dataType.equals(STRING))
+                            .filter(param -> !param.dataType.equals(variable.dataType))
+                            .forEach(param -> param.vendorExtensions.put("x-stringify", true));
+                });
+
+                if (model != responseModel) {
+                    // Merge any vars from the model that aren't part of the response model.
+                    model.getVars().forEach(variable -> {
+                        if (responseModel.getVars().stream().noneMatch(v -> v.getName().equals(variable.getName()))) {
+                            responseModel.getVars().add(variable);
+                        }
+                    });
+                }
+            });
+
+            responseModel.getVars().forEach(variable -> {
+                addModel(modelTree, variable.complexType, variable.dataType);
+
+                updateDataType(variable.complexType, variable.dataType, (dataTypeWithEnum, dataType) -> {
+                    variable.datatypeWithEnum = dataTypeWithEnum;
+                    variable.baseType = dataType;
+                });
+            });
+        });
+
+        modelTree.values().forEach(model -> model.setName(getModelName(model.getClassname())));
+        if (responseModel != null) {
+            responseModel.getVars().forEach(variable -> {
+                if (variable.complexType != null && !variable.complexType.contains(ApplicationConstants.ENUM)) {
+                    getModelByClassname(variable.complexType).ifPresent(model -> {
+                        variable.baseType = variable.baseType.replace(variable.datatypeWithEnum, "str");
+                        variable.datatypeWithEnum = "str";
+                        model.vendorExtensions.put("part-of-response-model", true);
+                    });
+                }
+            });
+        }
+
+        return this;
     }
 
     @Override

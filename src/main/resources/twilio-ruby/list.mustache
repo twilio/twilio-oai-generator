@@ -2,7 +2,7 @@
                     ##
                     # Initialize the {{apiName}}List
                     # @param [Version] version Version that contains the resource
-                    # @return [{{apiName}}List] {{apiName}}List
+                    # @return [{{apiName}}List] {{apiName}}List{{#nestedModels}}{{>modelClasses}}{{/nestedModels}}
                     def initialize(version{{#listPathParams}}, {{paramName}}: nil{{/listPathParams}})
                         super(version)
                         # Path Solution

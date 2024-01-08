@@ -104,7 +104,7 @@
                         headers = Twilio::Values.of({ {{#headerParams}}{{#required}}'{{baseName}}' => {{paramName}}, {{/required}}{{/headerParams}}{{#headerParams}}{{^required}}'{{baseName}}' => {{paramName}}, {{/required}}{{/headerParams}}})
                         {{/headerParams.0}}
                         {{^vendorExtensions.x-is-delete-operation}}
-                        payload = @version.{{#lambda.camelcase}}{{vendorExtensions.x-name}}{{/lambda.camelcase}}('{{httpMethod}}', @uri{{#queryParams.0}}, params: params{{/queryParams.0}}{{#formParams.0}}, data: data{{/formParams.0}}{{#headerParams.0}}, headers: headers{{/headerParams.0}})
+                        payload = @version.{{#lambda.camelcase}}{{vendorExtensions.x-name}}{{/lambda.camelcase}}('{{httpMethod}}', @uri{{#queryParams.0}}, params: params{{/queryParams.0}}{{#formParams.0}}, data: data{{/formParams.0}}{{#headerParams.0}}, headers: headers{{/headerParams.0}}{{#bodyParams.0}}, body: {{paramName}}{{/bodyParams.0}})
                         {{apiName}}Instance.new(
                             @version,
                             payload,{{#vendorExtensions.listOperation}}{{#listPathParams}}

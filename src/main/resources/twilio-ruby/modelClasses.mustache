@@ -1,0 +1,20 @@
+{{#models}}{{^vendorExtensions.part-of-response-model}}{{#hasVars}}
+                    class {{classname}}
+                        """{{#vars}}
+                            # @param {{name}}: {{{dataType}}}{{/vars}}
+                        """
+                        attr_accessor {{#vars}}:{{name}}{{^-last}}, {{/-last}}{{/vars}}
+                        def initialize(payload)
+                            {{#vars}}
+                                @{{name}} = payload["{{name}}"]
+                            {{/vars}}
+                        end
+                        def to_json(options = {})
+                        {
+                            {{#vars}}
+                                {{name}}: @{{name}},
+                            {{/vars}}
+                        }.to_json(options)
+                        end
+                    end
+{{/hasVars}}{{/vendorExtensions.part-of-response-model}}{{/models}}
