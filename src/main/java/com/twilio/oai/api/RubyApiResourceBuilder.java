@@ -110,7 +110,7 @@ public class RubyApiResourceBuilder extends FluentApiResourceBuilder {
             });
         }
 
-        return this;
+        return this.updateVars();
     }
 
     @Override
