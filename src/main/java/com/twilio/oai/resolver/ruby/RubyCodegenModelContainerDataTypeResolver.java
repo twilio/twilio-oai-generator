@@ -87,7 +87,7 @@ public class RubyCodegenModelContainerDataTypeResolver extends CodegenModelConta
         String currentContainerType = "";
         while(!containerTypes.empty()) {
             currentContainerType = containerTypes.pop();
-            codegenProperty.dataType = currentContainerType + codegenProperty.dataType + ApplicationConstants.PYTHON_LIST_END;
+            codegenProperty.dataType = currentContainerType + codegenProperty.dataType + ApplicationConstants.LIST_END;
         }
     }
 }
