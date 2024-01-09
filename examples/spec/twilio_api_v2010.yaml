@@ -560,7 +560,7 @@ paths:
       libraryVisibility: private
       docs_visibility: private
       pathType: list
-      x-skip-operation: 'true'
+      x-skip-path: 'true'
     servers:
       - url: https://api.twilio.com
     description: lets do healthcheck
