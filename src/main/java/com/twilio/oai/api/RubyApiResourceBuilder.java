@@ -102,6 +102,8 @@ public class RubyApiResourceBuilder extends FluentApiResourceBuilder {
             responseModel.getVars().forEach(variable -> {
                 if (variable.complexType != null && !variable.complexType.contains(ApplicationConstants.ENUM)) {
                     getModelByClassname(variable.complexType).ifPresent(model -> {
+                        // variable.baseType = variable.baseType.replace(variable.datatypeWithEnum, "str");
+                        // variable.datatypeWithEnum = "str";
                         model.vendorExtensions.put("part-of-response-model", true);
                     });
                 }
