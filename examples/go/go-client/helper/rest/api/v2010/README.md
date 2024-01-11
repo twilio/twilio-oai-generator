@@ -44,6 +44,7 @@ Class | Method | HTTP request | Description
 
 ## Documentation For Models
 
+ - [ListHealthCheck](docs/ListHealthCheck.md)
  - [ListAccountResponse](docs/ListAccountResponse.md)
  - [TestResponseObjectTestObject](docs/TestResponseObjectTestObject.md)
  - [TestResponseObject](docs/TestResponseObject.md)
