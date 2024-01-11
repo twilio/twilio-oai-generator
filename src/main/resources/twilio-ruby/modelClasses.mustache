@@ -1,8 +1,8 @@
 {{#models}}{{^vendorExtensions.part-of-response-model}}{{#hasVars}}
                     class {{classname}}
-                        """{{#vars}}
-                            # @param {{name}}: {{{dataType}}}{{/vars}}
-                        """
+                        {{#vars}}
+                            # @param [{{dataType}}]: {{{name}}}
+                        {{/vars}}
                         attr_accessor {{#vars}}:{{name}}{{^-last}}, {{/-last}}{{/vars}}
                         def initialize(payload)
                             {{#vars}}
