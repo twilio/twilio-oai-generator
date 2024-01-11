@@ -554,3 +554,46 @@ paths:
       mountName: feedback_call_summary
       parent: /Accounts/{AccountSid}/Calls/{TestInteger}.json
       pathType: instance
+  /healthcheck:
+    x-twilio:
+      className: healthCheck
+      libraryVisibility: private
+      docs_visibility: private
+      pathType: list
+      x-skip-path: 'true'
+    servers:
+      - url: https://api.twilio.com
+    description: lets do healthcheck
+    get:
+      description: abcd
+      operationId: FetchHealth
+      tags:
+        - Api20100401HealthCheck
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                title: ListHealthCheck
+                x-class-extra-annotation: '@JacksonXmlRootElement(localName = \"Healthcheck\")'
+                properties:
+                  status:
+                    items:
+                      type: string
+                    type: array
+          description: OK
+      x-twilio:
+        pathType: list
+        x-ignore: true
+        transactions:
+          - name: validateHealthCheck
+            request:
+              formParams: { }
+              method: GET
+              queryParams: { }
+              url: https://api.twilio.com/healthcheck.json
+            response:
+              content:
+                status: OK
+              statusCode: 200
