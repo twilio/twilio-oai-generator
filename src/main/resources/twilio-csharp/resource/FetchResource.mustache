@@ -3,7 +3,7 @@
         {
             {{>resource/GeneratePath}}
             return new Request(
-                HttpMethod.Get,
+                HttpMethod.{{#lambda.titlecasewithnumbers}}{{httpMethod}}{{/lambda.titlecasewithnumbers}},
                 Rest.Domain.{{domainPackage}},
                 path,
                 queryParams: options.GetParams(),

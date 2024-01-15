@@ -81,7 +81,7 @@ public class {{apiName}}Creator extends Creator<{{apiName}}>{
     public {{apiName}} create(final TwilioRestClient client){
 {{>generate_uri}}
         Request request = new Request(
-            HttpMethod.POST,
+            HttpMethod.{{httpMethod}},
             Domains.{{#lambda.uppercase}}{{domainName}}{{/lambda.uppercase}}.toString(),
             path
         );

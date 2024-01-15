@@ -73,7 +73,7 @@ public class {{apiName}}Fetcher extends Fetcher<{{apiName}}> {
     public {{apiName}} fetch(final TwilioRestClient client) {
 {{>generate_uri}}
         Request request = new Request(
-            HttpMethod.GET,
+            HttpMethod.{{httpMethod}},
             Domains.{{#lambda.uppercase}}{{domainName}}{{/lambda.uppercase}}.toString(),
             path
         );

@@ -7,7 +7,7 @@
         {
             {{>resource/GeneratePath}}
             return new Request(
-                HttpMethod.Delete,
+                HttpMethod.{{#lambda.titlecasewithnumbers}}{{httpMethod}}{{/lambda.titlecasewithnumbers}},
                 Rest.Domain.{{domainPackage}},
                 path,
                 queryParams: options.GetParams(),

@@ -74,7 +74,7 @@ public class {{apiName}}Updater extends Updater<{{apiName}}>{
     public {{apiName}} update(final TwilioRestClient client){
 {{>generate_uri}}
         Request request = new Request(
-            HttpMethod.POST,
+            HttpMethod.{{httpMethod}},
             Domains.{{#lambda.uppercase}}{{domainName}}{{/lambda.uppercase}}.toString(),
             path
         );

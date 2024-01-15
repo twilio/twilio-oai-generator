@@ -3,7 +3,7 @@
         {
             {{>resource/GeneratePath}}
             return new Request(
-                HttpMethod.Post,
+                HttpMethod.{{#lambda.titlecasewithnumbers}}{{httpMethod}}{{/lambda.titlecasewithnumbers}},
                 Rest.Domain.{{domainPackage}},
                 path,
                 {{^vendorExtensions.x-is-json}}postParams: options.GetParams(),{{/vendorExtensions.x-is-json}}
