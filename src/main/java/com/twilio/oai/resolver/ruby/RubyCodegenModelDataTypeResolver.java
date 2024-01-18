@@ -33,7 +33,7 @@ public class RubyCodegenModelDataTypeResolver extends CodegenModelDataTypeResolv
     /**
      * Resolves the property using its codegenModel and resolving recursively
      * @param property the CodegenProperty to be resolved
-     * @param apiResourceBuilder the PythonApiResourceBuilder to access getApiName()
+     * @param apiResourceBuilder the RubyApiResourceBuilder to access getApiName()
      * @return resolved property
      */
     @Override
@@ -41,7 +41,7 @@ public class RubyCodegenModelDataTypeResolver extends CodegenModelDataTypeResolv
         property =  super.resolve(property, apiResourceBuilder);
         CodegenModel codegenModel = apiResourceBuilder.getModel(property.dataType);
         if (codegenModel != null && !CodegenUtils.isPropertySchemaEnum(property)) {
-            // this is recursion as codegenModelResolver will again call PythonCodegenModelDataTypeResolver
+            // this is recursion as codegenModelResolver will again call RubyCodegenModelDataTypeResolver
             codegenModelResolver.resolve(codegenModel, apiResourceBuilder);
             apiResourceBuilder.addNestedModel(codegenModel);
         } else {
@@ -54,7 +54,7 @@ public class RubyCodegenModelDataTypeResolver extends CodegenModelDataTypeResolv
     /**
      * Resolves the response model property using parent method
      * @param property the CodegenProperty to be resolved
-     * @param apiResourceBuilder the PythonApiResourceBuilder to access getApiName()
+     * @param apiResourceBuilder the RubyApiResourceBuilder to access getApiName()
      */
     public void resolveResponseModel(CodegenProperty property, ApiResourceBuilder apiResourceBuilder) {
         super.resolve(property, apiResourceBuilder);
@@ -63,7 +63,7 @@ public class RubyCodegenModelDataTypeResolver extends CodegenModelDataTypeResolv
     /**
      * Resolves the property to set 'json-name' in vendor extension and update dataType
      * @param property the CodegenProperty to be resolved
-     * @param apiResourceBuilder the PythonApiResourceBuilder to access getApiName()
+     * @param apiResourceBuilder the RubyApiResourceBuilder to access getApiName()
      */
     protected void resolveProperty(CodegenProperty property, ApiResourceBuilder apiResourceBuilder) {
         updateDataType(property.baseType, property.dataType, apiResourceBuilder, (dataTypeWithEnum, dataType) -> {
@@ -77,7 +77,7 @@ public class RubyCodegenModelDataTypeResolver extends CodegenModelDataTypeResolv
      * Updates the dataType and datatypeWithEnum using baseType and dataType by removing enum from name
      * @param baseType the baseType of the variable
      * @param dataType the dataType of the variable
-     * @param apiResourceBuilder the PythonApiResourceBuilder to access getApiName()
+     * @param apiResourceBuilder the RubyApiResourceBuilder to access getApiName()
      * @param consumer the consumer function to set values
      */
     private void updateDataType(final String baseType,
@@ -95,7 +95,7 @@ public class RubyCodegenModelDataTypeResolver extends CodegenModelDataTypeResolv
     /**
      * Removes 'Enum' from the dataType
      * @param dataType the dataType of the variable
-     * @param apiResourceBuilder the PythonApiResourceBuilder to access getApiName()
+     * @param apiResourceBuilder the RubyApiResourceBuilder to access getApiName()
      * @return updated dataType
      */
     private String removeEnumName(final String dataType, ApiResourceBuilder apiResourceBuilder) {

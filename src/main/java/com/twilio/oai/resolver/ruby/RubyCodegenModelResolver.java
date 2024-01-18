@@ -6,8 +6,6 @@ import com.twilio.oai.common.ApplicationConstants;
 import com.twilio.oai.common.LanguageDataType;
 import com.twilio.oai.resolver.IConventionMapper;
 import com.twilio.oai.resolver.common.CodegenModelResolver;
-import com.twilio.oai.resolver.python.PythonCodegenModelContainerDataTypeResolver;
-import com.twilio.oai.resolver.python.PythonCodegenModelDataTypeResolver;
 import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenProperty;
 
@@ -39,7 +37,7 @@ public class RubyCodegenModelResolver extends CodegenModelResolver {
      * Resolves the model using its nestedModel and resolving recursively. If the nestedModel is not found, then if
      * it is a container, the container is resolved else the dataType is resolved straightaway.
      * @param model the codegenModel to be resolved
-     * @param apiResourceBuilder the PythonApiResourceBuilder
+     * @param apiResourceBuilder the RubyApiResourceBuilder
      * @return resolved model
      */
     @Override
@@ -74,7 +72,7 @@ public class RubyCodegenModelResolver extends CodegenModelResolver {
     /**
      * Resolves the response model using parent method
      * @param model the CodegenModel to be resolved
-     * @param apiResourceBuilder the PythonApiResourceBuilder to access getApiName()
+     * @param apiResourceBuilder the RubyApiResourceBuilder to access getApiName()
      */
     public void resolveResponseModel(CodegenModel model, ApiResourceBuilder apiResourceBuilder) {
         if (model == null) {
@@ -95,7 +93,7 @@ public class RubyCodegenModelResolver extends CodegenModelResolver {
      * Fetches the model for the property and resolves it. Further updates the dataType, baseType and datatypeWithEnum
      * according to the nested structure.
      * @param property the CodegenProperty to be resolved
-     * @param apiResourceBuilder the PythonApiResourceBuilder to access getApiName()
+     * @param apiResourceBuilder the RubyApiResourceBuilder to access getApiName()
      * @return resolved model
      */
     public CodegenModel resolveNestedModel(CodegenProperty property, ApiResourceBuilder apiResourceBuilder) {
