@@ -3,6 +3,7 @@ package com.twilio.oai.resolver.ruby;
 import com.twilio.oai.api.ApiResourceBuilder;
 import com.twilio.oai.resolver.IConventionMapper;
 import com.twilio.oai.resolver.LanguageParamResolver;
+import com.twilio.oai.resolver.common.CodegenModelResolver;
 import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenParameter;
 
@@ -14,8 +15,8 @@ import static com.twilio.oai.common.ApplicationConstants.IS_SERIALIZE_LIST_EXT;
 public class RubyParameterResolver extends LanguageParamResolver {
     public static final String ARRAY_OF_OBJECT = "Array[Object]";
 
-    public RubyParameterResolver(final IConventionMapper mapper) {
-        super(mapper);
+    public RubyParameterResolver(final IConventionMapper mapper, final CodegenModelResolver codegenModelResolver) {
+        super(mapper, codegenModelResolver);
     }
 
     @Override

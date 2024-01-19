@@ -8,6 +8,7 @@ import com.twilio.oai.resolver.IConventionMapper;
 import com.twilio.oai.resolver.LanguageConventionResolver;
 import com.twilio.oai.resolver.common.CodegenModelResolver;
 import com.twilio.oai.resolver.ruby.RubyCaseResolver;
+import com.twilio.oai.resolver.ruby.RubyCodegenModelResolver;
 import com.twilio.oai.resolver.ruby.RubyParameterResolver;
 import com.twilio.oai.resolver.ruby.RubyPropertyResolver;
 import com.twilio.oai.resource.IResourceTree;
@@ -36,6 +37,7 @@ public class TwilioRubyGenerator extends RubyClientCodegen {
     private final List<CodegenModel> allModels = new ArrayList<>();
     private final Map<String, String> modelFormatMap = new HashMap<>();
     private final RubyApiActionTemplate rubyApiActionTemplate = new RubyApiActionTemplate(this);
+    public static final String JSON_INGRESS = "json_ingress";
 
     public TwilioRubyGenerator() {
         super();
@@ -93,8 +95,13 @@ public class TwilioRubyGenerator extends RubyClientCodegen {
 
     private RubyApiResources generateResources(final List<CodegenOperation> opList) {
         final IConventionMapper conventionMapper = new LanguageConventionResolver(CONFIG_RUBY_JSON_PATH);
-        final CodegenModelResolver codegenModelResolver = new CodegenModelResolver(conventionMapper, modelFormatMap, List.of(EnumConstants.RubyDataTypes.values()));
-        return new RubyApiResourceBuilder(rubyApiActionTemplate, opList, allModels, directoryStructureService, openAPI).updateApiPath().updateOperations(new RubyParameterResolver(conventionMapper)).updateTemplate().updateResponseModel(new RubyPropertyResolver(conventionMapper), codegenModelResolver).build();
+        final RubyCodegenModelResolver codegenModelResolver = new RubyCodegenModelResolver(conventionMapper, modelFormatMap, List.of(EnumConstants.RubyDataTypes.values()));
+        RubyApiResourceBuilder rubyApiResourceBuilder = new RubyApiResourceBuilder(rubyApiActionTemplate, opList, allModels, directoryStructureService, openAPI, twilioCodegen.getToggles(JSON_INGRESS));
+        rubyApiResourceBuilder.updateApiPath()
+                .updateTemplate()
+                .updateOperations(new RubyParameterResolver(conventionMapper,codegenModelResolver));
+        return rubyApiResourceBuilder.updateResponseModel(new RubyPropertyResolver(conventionMapper), codegenModelResolver)
+                .build();
     }
 
     @Override

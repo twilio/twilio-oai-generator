@@ -321,9 +321,8 @@ public abstract class ApiResourceBuilder implements IApiResourceBuilder {
 
     protected void categorizeOperations() {
         codegenOperationList.stream().filter(operation -> !operation.vendorExtensions.containsKey("x-ignore")).forEach(codegenOperation -> {
-            Optional<String> pathType = Optional.ofNullable(codegenOperation.vendorExtensions.get("x-path-type").toString());
-            if (pathType.isPresent()) {
-                if (pathType.get().equals("list")) {
+            boolean isInstanceOperation = PathUtils.isInstanceOperation(codegenOperation);
+                if (!isInstanceOperation) {
                     listOperations.add(codegenOperation);
                     codegenOperation.vendorExtensions.put("listOperation", true);
                     metaAPIProperties.put("hasListOperation", true);
@@ -332,7 +331,6 @@ public abstract class ApiResourceBuilder implements IApiResourceBuilder {
                     codegenOperation.vendorExtensions.put("instanceOperation", true);
                     metaAPIProperties.put("hasInstanceOperation", true);
                 }
-            }
         });
     }
 

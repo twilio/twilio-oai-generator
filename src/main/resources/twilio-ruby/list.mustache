@@ -1,4 +1,5 @@
                 class {{apiName}}List < ListResource
+                {{#nestedModels}}{{>modelClasses}}{{/nestedModels}}
                     ##
                     # Initialize the {{apiName}}List
                     # @param [Version] version Version that contains the resource
