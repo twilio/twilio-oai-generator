@@ -1,6 +1,8 @@
 package com.twilio.oai.resolver.php;
 
 import com.twilio.oai.api.ApiResourceBuilder;
+import com.twilio.oai.common.ApplicationConstants;
+import com.twilio.oai.common.EnumConstants;
 import com.twilio.oai.resolver.IConventionMapper;
 import com.twilio.oai.resolver.LanguageConventionResolver;
 import com.twilio.oai.resolver.LanguageParamResolver;
@@ -50,6 +52,10 @@ public class PhpParameterResolver extends LanguageParamResolver {
         if (codegenParameter.isArray) {
             codegenParameter.isString = false;
         }
+
+        if (apiResourceBuilder.getToggleMap().getOrDefault(EnumConstants.Generator.TWILIO_PHP.getValue(), Boolean.FALSE) ) {
+            resolveIngressModel(codegenParameter, apiResourceBuilder);
+        }
     }
 
     @Override
@@ -64,6 +70,14 @@ public class PhpParameterResolver extends LanguageParamResolver {
         }
         if (codegenParameter.dataType != null && codegenParameter.dataType.equals(ARRAY)) {
             codegenParameter.vendorExtensions.put(SERIALIZE_VEND_EXT, SERIALIZE_ARRAY_JSON_OBJECT);
+        }
+    }
+
+    private void resolveIngressModel(CodegenParameter parameter, ApiResourceBuilder apiResourceBuilder) {
+        for (CodegenModel model : apiResourceBuilder.getAllModels()) {
+            if(model.getClassname().equals(parameter.baseType)) {
+                parameter.dataType = apiResourceBuilder.getApiName() + "Models" + ApplicationConstants.DOT + parameter.dataType;
+            }
         }
     }
 }

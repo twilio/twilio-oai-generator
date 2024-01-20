@@ -82,4 +82,12 @@ public class EnumConstants {
 
         private final String value;
     }
+
+    @Getter
+    @RequiredArgsConstructor
+    public enum PhpDataTypes implements LanguageDataType {
+        LIST("List<");
+
+        private final String value;
+    }
 }

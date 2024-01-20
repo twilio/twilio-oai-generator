@@ -11,6 +11,7 @@ public class PhpApiActionTemplate extends AbstractApiActionTemplate {
     public static final String TEMPLATE_TYPE_CONTEXT = "context";
     public static final String TEMPLATE_TYPE_OPTIONS = "options";
     public static final String TEMPLATE_TYPE_INSTANCE = "instance";
+    public static final String TEMPLATE_TYPE_MODELS = "models";
     public static final String TEMPLATE_TYPE_PAGE = "page";
 
     public PhpApiActionTemplate(final CodegenConfig defaultCodegen) {
@@ -27,6 +28,8 @@ public class PhpApiActionTemplate extends AbstractApiActionTemplate {
                       Arrays.asList(TEMPLATE_TYPE_INSTANCE + ".mustache", "Instance.php"),
                       TEMPLATE_TYPE_OPTIONS,
                       Arrays.asList(TEMPLATE_TYPE_OPTIONS + ".mustache", "Options.php"),
+                      TEMPLATE_TYPE_MODELS,
+                      Arrays.asList(TEMPLATE_TYPE_MODELS + ".mustache", "Models.php"),
                       TEMPLATE_TYPE_PAGE,
                       Arrays.asList(TEMPLATE_TYPE_PAGE + ".mustache", "Page.php"),
                       VERSION_TEMPLATE,

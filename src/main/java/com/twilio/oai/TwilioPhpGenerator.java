@@ -33,6 +33,8 @@ public class TwilioPhpGenerator extends PhpClientCodegen {
     private final IConventionMapper conventionMapper = new LanguageConventionResolver(PHP_CONVENTIONAL_MAP_PATH);
     private final PhpApiActionTemplate phpApiActionTemplate = new PhpApiActionTemplate(this);
 
+    public static final String JSON_INGRESS = "json_ingress";
+
     public TwilioPhpGenerator() {
         super();
         twilioCodegen = new TwilioCodegenAdapter(this, getName());
@@ -101,11 +103,13 @@ public class TwilioPhpGenerator extends PhpClientCodegen {
     }
 
     private PhpApiResources processCodegenOperations(List<CodegenOperation> opList) {
-        return new PhpApiResourceBuilder(phpApiActionTemplate, opList, this.allModels)
+        PhpParameterResolver phpParameterResolver = new PhpParameterResolver(conventionMapper);
+        PhpPropertyResolver phpPropertyResolver = new PhpPropertyResolver(conventionMapper);
+        return new PhpApiResourceBuilder(phpApiActionTemplate, opList, this.allModels, twilioCodegen.getToggles(JSON_INGRESS), phpPropertyResolver)
                 .addVersionLessTemplates(openAPI, directoryStructureService)
                 .updateAdditionalProps(directoryStructureService)
-                .updateOperations(new PhpParameterResolver(conventionMapper))
-                .updateResponseModel(new PhpPropertyResolver(conventionMapper))
+                .updateOperations(phpParameterResolver)
+                .updateResponseModel(phpPropertyResolver)
                 .updateTemplate()
                 .updateApiPath()
                 .setImports(directoryStructureService)

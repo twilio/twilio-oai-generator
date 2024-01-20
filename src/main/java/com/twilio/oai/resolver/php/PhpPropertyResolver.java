@@ -2,6 +2,7 @@ package com.twilio.oai.resolver.php;
 
 import com.twilio.oai.StringHelper;
 import com.twilio.oai.api.ApiResourceBuilder;
+import com.twilio.oai.common.EnumConstants;
 import com.twilio.oai.resolver.IConventionMapper;
 import com.twilio.oai.resolver.LanguageConventionResolver;
 import com.twilio.oai.resolver.LanguagePropertyResolver;
@@ -58,6 +59,19 @@ public class PhpPropertyResolver extends LanguagePropertyResolver {
         }
         if(codegenProperty.isNullable && !codegenProperty.required && !codegenProperty.dataType.contains("|null")){
             codegenProperty.dataType = codegenProperty.dataType + "|null";
+        }
+
+        if (apiResourceBuilder.getToggleMap().getOrDefault(EnumConstants.Generator.TWILIO_PHP.getValue(), Boolean.FALSE) ) {
+            resolveIngressModel(codegenProperty, apiResourceBuilder);
+        }
+    }
+
+    private void resolveIngressModel(CodegenProperty property, ApiResourceBuilder apiResourceBuilder) {
+        for (CodegenModel model : apiResourceBuilder.getAllModels()) {
+            if(model.getClassname().equals(property.complexType)) {
+                // Fetch model from allModels and resolve that recursively
+                property.dataType = apiResourceBuilder.getApiName() + "." + property.dataType;
+            }
         }
     }
 }
