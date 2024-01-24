@@ -61,16 +61,7 @@ public class JsonRequestBodyResolver {
             apiResourceBuilder.addNestedModel(model);
         }
     }
-    private String extractDataType(String dataType) {
-        String regex = "\\\\([^\\\\\\[\\]]+)(?:\\[\\])?$";
-        Pattern pattern = Pattern.compile(regex);
-        Matcher matcher = pattern.matcher(dataType);
-
-        if (matcher.find()) {
-            return matcher.group(1);
-        }
-        return "";
-    }
+    
     public void resolve(final CodegenProperty property) {
         Stack<String> containerTypes = new Stack<>();
         property.dataType = containerResolver.unwrapContainerType(property, containerTypes);

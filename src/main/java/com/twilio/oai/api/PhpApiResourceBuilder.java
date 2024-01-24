@@ -60,6 +60,7 @@ public class PhpApiResourceBuilder extends ApiResourceBuilder {
             template.add(PhpApiActionTemplate.TEMPLATE_TYPE_PAGE);
             template.add(PhpApiActionTemplate.TEMPLATE_TYPE_LIST);
             template.add(PhpApiActionTemplate.TEMPLATE_TYPE_INSTANCE);
+            // if any operation in current op list(CRUDF) has application/json request body type
             template.add(PhpApiActionTemplate.TEMPLATE_TYPE_MODELS);
         });
         return this;

@@ -29,7 +29,7 @@ public class TwilioGeneratorTest {
     @Parameterized.Parameters
     public static Collection<Generator> generators() {
         return Arrays.asList(
-                Generator.TWILIO_JAVA);
+                Generator.TWILIO_PHP);
     }
 
     private final Generator generator;
