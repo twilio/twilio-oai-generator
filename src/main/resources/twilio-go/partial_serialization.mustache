@@ -12,6 +12,7 @@ if params != nil && params.PathAccountSid != nil {
 {{/pathParams}}
 
     data := url.Values{}
+    queryParams := url.Values{}
 {{^vendorExtensions.x-is-json-type}}
     headers := make(map[string]interface{})
 
@@ -47,10 +48,20 @@ if params != nil && params.PathAccountSid != nil {
             return nil, err
             }
 
-            data.Add("{{{baseName}}}", string(v))
+{{^vendorExtensions.x-is-query-param}}
+                data.Add("{{{baseName}}}", string(v))
+{{/vendorExtensions.x-is-query-param}}
+{{#vendorExtensions.x-is-query-param}}
+                queryParams.Add("{{{baseName}}}", string(v))
+{{/vendorExtensions.x-is-query-param}}
 {{/items.vendorExtensions.x-marshal}}
 {{^items.vendorExtensions.x-marshal}}
-    data.Add("{{{baseName}}}", item)
+{{^vendorExtensions.x-is-query-param}}
+                data.Add("{{{baseName}}}", item)
+{{/vendorExtensions.x-is-query-param}}
+{{#vendorExtensions.x-is-query-param}}
+                queryParams.Add("{{{baseName}}}", item)
+{{/vendorExtensions.x-is-query-param}}
 {{/items.vendorExtensions.x-marshal}}
         }
 {{/isArray}}
@@ -62,10 +73,20 @@ if params != nil && params.PathAccountSid != nil {
         return nil, err
         }
 
-        data.Set("{{{baseName}}}", string(v))
+{{^vendorExtensions.x-is-query-param}}
+            data.Set("{{{baseName}}}", string(v))
+{{/vendorExtensions.x-is-query-param}}
+{{#vendorExtensions.x-is-query-param}}
+            queryParams.Set("{{{baseName}}}", string(v))
+{{/vendorExtensions.x-is-query-param}}
 {{/vendorExtensions.x-marshal}}
 {{^vendorExtensions.x-marshal}}
+{{^vendorExtensions.x-is-query-param}}
         data.Set("{{{baseName}}}", {{^isString}}fmt.Sprint({{/isString}}{{#isDateTime}}({{/isDateTime}}*params.{{paramName}}{{^isString}}{{#isDateTime}}).Format(time.RFC3339){{/isDateTime}}){{/isString}})
+{{/vendorExtensions.x-is-query-param}}
+{{#vendorExtensions.x-is-query-param}}
+        queryParams.Set("{{{baseName}}}", {{^isString}}fmt.Sprint({{/isString}}{{#isDateTime}}({{/isDateTime}}*params.{{paramName}}{{^isString}}{{#isDateTime}}).Format(time.RFC3339){{/isDateTime}}){{/isString}})
+{{/vendorExtensions.x-is-query-param}}
 {{/vendorExtensions.x-marshal}}
 {{/isArray}}
     }
@@ -92,10 +113,20 @@ if params != nil && params.PathAccountSid != nil {
                 return nil, err
             }
 
+{{^vendorExtensions.x-is-query-param}}
             data.Add("{{{baseName}}}", string(v))
+{{/vendorExtensions.x-is-query-param}}
+{{#vendorExtensions.x-is-query-param}}
+            queryParams.Add("{{{baseName}}}", string(v))
+{{/vendorExtensions.x-is-query-param}}
 {{/items.vendorExtensions.x-marshal}}
 {{^items.vendorExtensions.x-marshal}}
+{{^vendorExtensions.x-is-query-param}}
             data.Add("{{{baseName}}}", item)
+{{/vendorExtensions.x-is-query-param}}
+{{#vendorExtensions.x-is-query-param}}
+            queryParams.Add("{{{baseName}}}", item)
+{{/vendorExtensions.x-is-query-param}}
 {{/items.vendorExtensions.x-marshal}}
     }
 {{/isArray}}
@@ -107,10 +138,20 @@ if params != nil && params.PathAccountSid != nil {
             return nil, err
         }
 
+{{^vendorExtensions.x-is-query-param}}
         data.Set("{{{baseName}}}", string(v))
+{{/vendorExtensions.x-is-query-param}}
+{{#vendorExtensions.x-is-query-param}}
+        queryParams.Set("{{{baseName}}}", string(v))
+{{/vendorExtensions.x-is-query-param}}
 {{/vendorExtensions.x-marshal}}
 {{^vendorExtensions.x-marshal}}
+{{^vendorExtensions.x-is-query-param}}
         data.Set("{{{baseName}}}", {{^isString}}fmt.Sprint({{/isString}}{{#isDateTime}}({{/isDateTime}}*params.{{paramName}}{{^isString}}{{#isDateTime}}).Format(time.RFC3339){{/isDateTime}}){{/isString}})
+{{/vendorExtensions.x-is-query-param}}
+{{#vendorExtensions.x-is-query-param}}
+        queryParams.Set("{{{baseName}}}", {{^isString}}fmt.Sprint({{/isString}}{{#isDateTime}}({{/isDateTime}}*params.{{paramName}}{{^isString}}{{#isDateTime}}).Format(time.RFC3339){{/isDateTime}}){{/isString}})
+{{/vendorExtensions.x-is-query-param}}
 {{/vendorExtensions.x-marshal}}
 {{/isArray}}
     }
