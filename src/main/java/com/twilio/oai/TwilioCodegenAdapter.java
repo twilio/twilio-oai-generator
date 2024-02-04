@@ -7,6 +7,8 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -66,6 +68,20 @@ public class TwilioCodegenAdapter {
             e.printStackTrace();
         }
     }
+    
+    public String getVersionFromOpenAPI(final OpenAPI openAPI) {
+        String version = "";
+        for (String path : openAPI.getPaths().keySet()) {
+            Pattern pattern = Pattern.compile("/(\\d{4}-\\d{2}-\\d{2}|v\\d+)");
+            Matcher matcher = pattern.matcher(path);
+            if (matcher.find()) {
+                version = matcher.group(1);
+                version = version.equals("2010-04-01") ? "v2010": version;
+                break;
+            }
+        }
+        return version;
+    }
 
     public void setDomain(final String domain) {
         final String domainPackage = domain.replaceAll("[-.]", "");
@@ -74,9 +90,17 @@ public class TwilioCodegenAdapter {
         codegen.additionalProperties().put("domainName", StringHelper.camelize(domain));
         codegen.additionalProperties().put("domainPackage", domainPackage);
     }
+    
+    public void setVersion(final String version) {
+        codegen.additionalProperties().put("clientVersion", version);
+        codegen.additionalProperties().put(DirectoryStructureService.API_VERSION, version);
+        codegen.additionalProperties().put("apiVersionClass", StringHelper.toFirstLetterCaps(version));
+    }
 
     public void setOutputDir(final String domain, final String version) {
-        codegen.setOutputDir(originalOutputDir + File.separator + domain + File.separator + version);
+        final String domainPackage = domain.replaceAll("[-.]", "");
+        final String versionPackage = version.replaceAll("[-.]", "");
+        codegen.setOutputDir(originalOutputDir + File.separator + domainPackage + File.separator + versionPackage);
     }
 
     public String toParamName(final String name) {
@@ -84,15 +108,18 @@ public class TwilioCodegenAdapter {
     }
 
     public String getDomainFromOpenAPI(final OpenAPI openAPI) {
+        String domain = "";
         //fetch domain from server url present in openAPI
         if (openAPI.getServers() != null ) {
             Optional<String> url = openAPI.getServers().stream().findFirst().map(Server::getUrl);
             if (url.isPresent() && !url.get().equals(DEFAULT_URL)){
-                return url.get().replaceAll(SERVER_PATTERN, "${domain}");
+                domain =  url.get().replaceAll(SERVER_PATTERN, "${domain}");
+                setDomain(domain);
+                return domain;
             }
         }
         //fetch domain from server url present in openAPI.paths
-        return openAPI
+        domain = openAPI
             .getPaths()
             .values()
             .stream()
@@ -103,6 +130,8 @@ public class TwilioCodegenAdapter {
             .map(Server::getUrl)
             .map(url -> url.replaceAll(SERVER_PATTERN, "${domain}"))
             .orElseThrow();
+        setDomain(domain);
+        return domain;
     }
 
     public Map<String, Boolean> getToggles(String value) {

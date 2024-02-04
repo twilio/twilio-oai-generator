@@ -59,8 +59,11 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
 
     @Override
     public void processOpenAPI(final OpenAPI openAPI) {
-        final String domain = twilioCodegen.getDomainFromOpenAPI(openAPI);
+        String domain = twilioCodegen.getDomainFromOpenAPI(openAPI);
+        String version = twilioCodegen.getVersionFromOpenAPI(openAPI);
         twilioCodegen.setDomain(domain);
+        twilioCodegen.setVersion(version);
+        twilioCodegen.setOutputDir(domain, version);
         directoryStructureService.configure(openAPI);
     }
 
