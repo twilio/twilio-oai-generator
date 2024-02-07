@@ -28,7 +28,7 @@ import org.openapitools.codegen.model.OperationsMap;
 import static com.twilio.oai.common.ApplicationConstants.ACCOUNT_SID_VEND_EXT;
 
 public abstract class AbstractTwilioGoGenerator extends GoClientCodegen {
-    protected final TwilioCodegenAdapter twilioCodegen;
+    protected final TwilioCodegenAdapterGo twilioCodegen;
     protected final DirectoryStructureService directoryStructureService = new DirectoryStructureService(
         additionalProperties,
         new ResourceMap(new Inflector()),
@@ -37,7 +37,7 @@ public abstract class AbstractTwilioGoGenerator extends GoClientCodegen {
     protected AbstractTwilioGoGenerator() {
         super();
 
-        twilioCodegen = new TwilioCodegenAdapter(this, getName());
+        twilioCodegen = new TwilioCodegenAdapterGo(this, getName());
 
         typeMapping.put("integer", "int");
     }

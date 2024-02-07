@@ -32,6 +32,9 @@ public class JavaConventionResolver {
      @SuppressWarnings("unchecked")
     public CodegenParameter resolveEnumParameter(CodegenParameter parameter, String resourceName) {
         if( parameter.isEnum && !parameter.vendorExtensions.containsKey(REF_ENUM_EXTENSION_NAME)) {
+            if (parameter.enumName.contains(ApplicationConstants.ENUM)) {
+                parameter.enumName = Utility.removeEnumName(parameter.enumName);
+            }
             parameter.enumName = StringHelper.camelize(parameter.enumName);
             if (parameter.items != null && parameter.items.allowableValues != null && parameter.items.allowableValues.containsKey(VALUES)) {
                 parameter.dataType = LIST_START + resourceName+"."+ parameter.enumName + LIST_END;
@@ -67,6 +70,10 @@ public class JavaConventionResolver {
             Stack<String> containerTypes = new Stack<>();
             if (property.isContainer) {
                 property.dataType = containerResolver.unwrapContainerType(property, containerTypes);
+                if (property.dataType != null && property.dataType.contains(ApplicationConstants.DOT)) {
+                    // If models is resolved more than twice then we need to remove previous resource name
+                    property.dataType = property.dataType.substring(property.dataType.indexOf(ApplicationConstants.DOT) + 1);
+                }
                 property.enumName = property.enumName == null ? property.dataType : property.enumName;
                 property.dataType = property.dataType != null && property.dataType.contains(resourceName + ApplicationConstants.DOT)
                         ? property.dataType: resourceName + ApplicationConstants.DOT + property.dataType;
@@ -82,6 +89,10 @@ public class JavaConventionResolver {
                 if (property.complexType.contains(ApplicationConstants.ENUM)) {
                     property.complexType = Utility.removeEnumName(property.complexType);
                     property.dataType = Utility.removeEnumName(property.dataType);
+                }
+                if (property.dataType != null && property.dataType.contains(ApplicationConstants.DOT)) {
+                    // If models is resolved more than twice then we need to remove previous resource name
+                    property.dataType = property.dataType.substring(property.dataType.indexOf(ApplicationConstants.DOT) + 1);
                 }
                 property.enumName = property.enumName == null ? property.dataType : property.enumName;
                 if (resourceName != null) {
