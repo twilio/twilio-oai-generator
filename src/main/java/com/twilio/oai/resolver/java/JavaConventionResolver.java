@@ -66,9 +66,10 @@ public class JavaConventionResolver {
             // This is new gen enums
             Stack<String> containerTypes = new Stack<>();
             if (property.isContainer) {
-                containerResolver.unwrapContainerType(property, containerTypes);
-                property.enumName = property.dataType;
-                property.dataType = resourceName + ApplicationConstants.DOT + property.dataType;
+                property.dataType = containerResolver.unwrapContainerType(property, containerTypes);
+                property.enumName = property.enumName == null ? property.dataType : property.enumName;
+                property.dataType = property.dataType != null && property.dataType.contains(resourceName + ApplicationConstants.DOT)
+                        ? property.dataType: resourceName + ApplicationConstants.DOT + property.dataType;
                 if (property.complexType.contains(ApplicationConstants.ENUM)) {
                     property.complexType = Utility.removeEnumName(property.complexType);
                     property.dataType = Utility.removeEnumName(property.dataType);
@@ -82,8 +83,13 @@ public class JavaConventionResolver {
                     property.complexType = Utility.removeEnumName(property.complexType);
                     property.dataType = Utility.removeEnumName(property.dataType);
                 }
-                property.enumName = property.dataType;
-                property.dataType = resourceName + ApplicationConstants.DOT + property.dataType;
+                property.enumName = property.enumName == null ? property.dataType : property.enumName;
+                if (resourceName != null) {
+                    // It will restrict the data type to be ResourceName.ResourceName.EnumName.
+                    property.dataType = property.dataType != null && property.dataType.contains(resourceName + ApplicationConstants.DOT)
+                            ? property.dataType: resourceName + ApplicationConstants.DOT + property.dataType;
+                }
+                
             }
             return property;
         }
