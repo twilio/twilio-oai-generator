@@ -59,8 +59,11 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
 
     @Override
     public void processOpenAPI(final OpenAPI openAPI) {
-        final String domain = twilioCodegen.getDomainFromOpenAPI(openAPI);
+        String domain = twilioCodegen.getDomainFromOpenAPI(openAPI);
+        String version = twilioCodegen.getVersionFromOpenAPI(openAPI);
         twilioCodegen.setDomain(domain);
+        twilioCodegen.setVersion(version);
+        twilioCodegen.setOutputDir(domain, version);
         directoryStructureService.configure(openAPI);
     }
 
@@ -83,6 +86,7 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
             parameter.vendorExtensions.put(REF_ENUM_EXTENSION_NAME, true);
             parameter.dataType = Utility.removeEnumName(parameter.dataType);
             parameter.baseType = Utility.removeEnumName(parameter.dataType);
+            parameter.isEnum = true;
         } else if (parameter.isEnum) {
             parameter.enumName = parameter.paramName;
         } else {

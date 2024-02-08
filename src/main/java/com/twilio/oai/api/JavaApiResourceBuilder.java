@@ -4,7 +4,6 @@ import com.google.common.collect.Lists;
 import com.twilio.oai.DirectoryStructureService;
 import com.twilio.oai.JsonRequestBodyResolver;
 import com.twilio.oai.StringHelper;
-import com.twilio.oai.common.ApplicationConstants;
 import com.twilio.oai.common.EnumConstants;
 import com.twilio.oai.common.Utility;
 import com.twilio.oai.resolver.Resolver;
@@ -145,7 +144,7 @@ public class JavaApiResourceBuilder extends ApiResourceBuilder{
         }
         if (!codegenProperties.isEmpty()) {
             CodegenModel codegenModel = new CodegenModel();
-            codegenModel.vendorExtensions.put(ENUM_VARS, codegenProperties);
+            addUniqueResponseModelEnums(codegenProperties, codegenModel);
             headerParamModelList.add(codegenModel);
         }
     }
@@ -161,6 +160,7 @@ public class JavaApiResourceBuilder extends ApiResourceBuilder{
         codegenOperationList.forEach(co -> {
             List<String> filePathArray = new ArrayList<>(Arrays.asList(co.baseName.split(PATH_SEPARATOR_PLACEHOLDER)));
             String resourceName = filePathArray.remove(filePathArray.size()-1);
+            jsonRequestBodyResolver.setResourceName(resourceName);
             co.responses
                     .stream()
                     .filter(response -> SUCCESS.test(Integer.parseInt(response.code.trim())))
@@ -245,7 +245,8 @@ public class JavaApiResourceBuilder extends ApiResourceBuilder{
             List<CodegenProperty> codegenProperties = (List<CodegenProperty>) model.getVendorExtensions().get(ENUM_VARS);
             ts.addAll(codegenProperties);
         }
-        model.vendorExtensions.put(ENUM_VARS,new ArrayList<>(ts));
+       List<CodegenProperty> codegenProperties = new ArrayList<>(ts);
+        addUniqueResponseModelEnums(codegenProperties, model);
         return model;
     }
 
@@ -520,7 +521,7 @@ public class JavaApiResourceBuilder extends ApiResourceBuilder{
                                 codeModelEnums.add(resCodegenProperty);
                             }
                         }
-                        resModel.vendorExtensions.put(ENUM_VARS, codeModelEnums);
+                        addUniqueResponseModelEnums(codeModelEnums, resModel);
                     }
                     resModel.vendorExtensions.forEach(
                             (key, value) -> codegenModel.vendorExtensions.merge(key, value, (oldValue, newValue) -> newValue));
@@ -535,6 +536,51 @@ public class JavaApiResourceBuilder extends ApiResourceBuilder{
         return codegenModel;
     }
 
+    // Enums can be present either at enums or in responseModel
+    public void addEnums(IJsonSchemaValidationProperties item) {
+        boolean isDuplicate = false;
+        String itemEnumName = null;
+
+        if (item instanceof CodegenParameter) {
+            itemEnumName = ((CodegenParameter) item).enumName;
+        } else if (item instanceof CodegenProperty) {
+            itemEnumName = ((CodegenProperty) item).enumName;
+        }
+
+        if (itemEnumName != null) {
+            for (IJsonSchemaValidationProperties enumItem : enums) {
+                if ((enumItem instanceof CodegenParameter && ((CodegenParameter) enumItem).enumName.equals(((CodegenParameter)item).enumName)) 
+                        || (enumItem instanceof CodegenProperty && ((CodegenProperty) enumItem).enumName.equals(((CodegenProperty)item).enumName))) {
+                    isDuplicate = true;
+                    break; // No need to continue checking duplicates
+                }
+            }
+        }
+
+        if (!isDuplicate) {
+            enums.add(item);
+        }
+    }
+
+    // Enums can be added either via Response(vendorExtensions) or via request body(Enums).
+    // It will only add those enums to Response vendorExtensions which are not present in Enums.
+    private void addUniqueResponseModelEnums(List<CodegenProperty> codegenProperties, CodegenModel model) {
+        boolean isDuplicate = false;
+        List<CodegenProperty> uniqueEnums = new ArrayList<>();
+        for (CodegenProperty codegenProperty: codegenProperties) {
+            for (IJsonSchemaValidationProperties enumItem : enums) {
+                if (enumItem instanceof CodegenProperty
+                        && ((CodegenProperty) enumItem).enumName.equals(codegenProperty.enumName)) {
+                    isDuplicate = true;
+                }
+            }
+            if (!isDuplicate) {
+                uniqueEnums.add(codegenProperty);
+            }
+            isDuplicate = false;
+        }
+        model.vendorExtensions.put(ENUM_VARS, uniqueEnums);
+    }
     @Override
     public JavaApiResources build() {
         return new JavaApiResources(this);

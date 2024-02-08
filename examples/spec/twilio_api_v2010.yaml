@@ -1,5 +1,10 @@
 components:
   schemas:
+    account_enum_X_Twilio_Webhook_Enabled:
+      type: string
+      enum:
+        - 'true'
+        - 'false'
     test_enum_status:
       enum:
         - in-progress
@@ -233,10 +238,8 @@ paths:
         - in: header
           name: X-Twilio-Webhook-Enabled
           schema:
-            enum:
-              - 'true'
-              - 'false'
             type: string
+            $ref: '#/components/schemas/account_enum_X_Twilio_Webhook_Enabled'
       requestBody:
         content:
           application/x-www-form-urlencoded:
