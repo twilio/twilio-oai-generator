@@ -33,7 +33,7 @@ module Twilio
           # @param [String] recording_status_callback
           # @param [Array[String]] recording_status_callback_event
           # @param [String] twiml
-          # @param [String] x_twilio_webhook_enabled
+          # @param [AccountEnumXTwilioWebhookEnabled] x_twilio_webhook_enabled
           # @return [AccountInstance] Created AccountInstance
           def create(
             recording_status_callback: :unset,
