@@ -255,7 +255,7 @@ public class DirectoryStructureService {
                 .collect(Collectors.toList());
         additionalProperties.put(VERSION_RESOURCES, versionResources);
 
-        if (additionalProperties.get(API_VERSION).equals("v2010")) {
+        if (((String)additionalProperties.get(API_VERSION)).equalsIgnoreCase("v2010")) {
             final String name = "Account";
             versionResources.add(new DependentResource.DependentResourceBuilder()
                     .type(name + "Context")

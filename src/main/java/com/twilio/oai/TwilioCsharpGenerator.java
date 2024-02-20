@@ -101,9 +101,10 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
 
     @Override
     public void processOpenAPI(final OpenAPI openAPI) {
-        final String domain = StringHelper.camelize(twilioCodegen.getDomainFromOpenAPI(openAPI));
-        final String version = (String) additionalProperties.get("apiVersionClass");
+        String domain = StringHelper.camelize(twilioCodegen.getDomainFromOpenAPI(openAPI));
+        String version = StringHelper.camelize(twilioCodegen.getVersionFromOpenAPI(openAPI));
         twilioCodegen.setDomain(domain);
+        twilioCodegen.setVersion(version);
         twilioCodegen.setOutputDir(domain, version);
 
         directoryStructureService.configure(openAPI);

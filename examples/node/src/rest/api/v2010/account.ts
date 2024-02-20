@@ -23,6 +23,8 @@ import { CallListInstance } from "./account/call";
 import { PhoneNumberCapabilities } from "../../../interfaces";
 import TwiML from "../../../twiml/TwiML";
 
+export type AccountXTwilioWebhookEnabled = "true" | "false";
+
 export type AccountStatus =
   | "in-progress"
   | "paused"
@@ -51,7 +53,7 @@ export interface AccountContextUpdateOptions {
  */
 export interface AccountListInstanceCreateOptions {
   /**  */
-  xTwilioWebhookEnabled?: "true" | "false";
+  xTwilioWebhookEnabled?: AccountXTwilioWebhookEnabled;
   /**  */
   recordingStatusCallback?: string;
   /**  */
