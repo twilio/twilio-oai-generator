@@ -117,7 +117,7 @@ class NewCredentialsList(ListResource):
         data = values.of(
             {
                 "TestString": test_string,
-                "TestBoolean": test_boolean,
+                "TestBoolean": serialize.boolean_to_string(test_boolean),
                 "TestInteger": test_integer,
                 "TestNumber": test_number,
                 "TestNumberFloat": test_number_float,
@@ -195,7 +195,7 @@ class NewCredentialsList(ListResource):
         data = values.of(
             {
                 "TestString": test_string,
-                "TestBoolean": test_boolean,
+                "TestBoolean": serialize.boolean_to_string(test_boolean),
                 "TestInteger": test_integer,
                 "TestNumber": test_number,
                 "TestNumberFloat": test_number_float,
