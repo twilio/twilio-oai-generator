@@ -14,6 +14,9 @@ public  class CodegenUtils {
     }
 
     public static boolean isPropertySchemaEnum(CodegenProperty codegenProperty) {
+        if (isPredefinedEnum(codegenProperty)) {
+            return false;
+        }
         if(codegenProperty.isEnum) {
             return true;
         }
@@ -25,6 +28,9 @@ public  class CodegenUtils {
     }
 
     public static boolean isParameterSchemaEnum(CodegenParameter codegenParameter) {
+        if (isPredefinedEnum(codegenParameter)) {
+            return false;
+        }
         if(codegenParameter.isEnum) {
             return true;
         }
@@ -74,7 +80,7 @@ public  class CodegenUtils {
         }
     }
 
-    private static boolean isPredefinedEnum(CodegenProperty codegenProperty) {
+    public static boolean isPredefinedEnum(CodegenProperty codegenProperty) {
         if (codegenProperty.dataFormat != null) {
             String format = codegenProperty.dataFormat;
             for (PredefinedJavaEnumsFormat value: PredefinedJavaEnumsFormat.values()) {
@@ -86,7 +92,7 @@ public  class CodegenUtils {
         return false;
     }
 
-    private static boolean isPredefinedEnum(CodegenParameter codegenParameter) {
+    public static boolean isPredefinedEnum(CodegenParameter codegenParameter) {
         if (codegenParameter.dataFormat != null) {
             String format = codegenParameter.dataFormat;
             for (PredefinedJavaEnumsFormat value: PredefinedJavaEnumsFormat.values()) {
