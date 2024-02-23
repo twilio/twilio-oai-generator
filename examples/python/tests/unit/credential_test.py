@@ -32,7 +32,7 @@ class CredentialTests(unittest.TestCase):
         request_args = self.generic_request_args
         request_args["data"] = {
             "TestString": "abc",
-            "TestBoolean": True,
+            "TestBoolean": "true",
             "TestAnyArray": ['{"any": "thing"}', '{"another": "thing"}'],
             "TestAnyType": '{"type": "any"}',
         }
@@ -48,7 +48,7 @@ class CredentialTests(unittest.TestCase):
             test_boolean=False, test_string="new string"
         )
         request_args = self.generic_request_args
-        request_args["data"] = {"TestString": "new string", "TestBoolean": False}
+        request_args["data"] = {"TestString": "new string", "TestBoolean": "false"}
 
         mock_request.assert_called_once_with(
             "POST", "http://flex-api.twilio.com/v1/Credentials/AWS/123", **request_args
@@ -113,7 +113,7 @@ class AsyncCredentialTests(unittest.IsolatedAsyncioTestCase):
         request_args = self.generic_request_args
         request_args["data"] = {
             "TestString": "abc",
-            "TestBoolean": True,
+            "TestBoolean": "true",
             "TestAnyArray": ['{"any": "thing"}', '{"another": "thing"}'],
             "TestAnyType": '{"type": "any"}',
         }
@@ -129,7 +129,7 @@ class AsyncCredentialTests(unittest.IsolatedAsyncioTestCase):
             test_boolean=False, test_string="new string"
         )
         request_args = self.generic_request_args
-        request_args["data"] = {"TestString": "new string", "TestBoolean": False}
+        request_args["data"] = {"TestString": "new string", "TestBoolean": "false"}
 
         mock_request.assert_called_once_with(
             "POST", "http://flex-api.twilio.com/v1/Credentials/AWS/123", **request_args
