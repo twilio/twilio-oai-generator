@@ -4,6 +4,7 @@ import com.twilio.oai.CodegenUtils;
 import com.twilio.oai.StringHelper;
 import com.twilio.oai.api.ApiResourceBuilder;
 import com.twilio.oai.common.ApplicationConstants;
+import com.twilio.oai.common.EnumConstants;
 import com.twilio.oai.common.Utility;
 import com.twilio.oai.resolver.IConventionMapper;
 import com.twilio.oai.resolver.common.CodegenModelDataTypeResolver;
@@ -49,21 +50,32 @@ public class CsharpCodegenModelDataTypeResolver extends CodegenModelDataTypeReso
         if (property == null) {
             return;
         }
-
+        
+        // Ignore followings: 
+        // 1. If defined in twilio types/Defined in properties
+        // 2. If format is http-method
+        if (property.getDataFormat() != null && property.dataFormat.equalsIgnoreCase("http-method")) {
+            //Edge case, This enum is already processed in CodegenModelDataTypeResolver(assignDataType method)
+            return;
+        }
         OperationStore operationStore = OperationStore.getInstance();
-        if (property.complexType == null || !property.complexType.contains("Enum")) {
-            if (property.dataType != null) {
-                Optional<Object> importStm = mapper.libraries().get(StringHelper.toSnakeCase(property.dataType).replace("_", "-"));
-                if (importStm.isPresent() && importStm.get() instanceof String && importStm.get().equals("Twilio.Types")) {
-                    // If the datatype found in libraries(csharp.json) is Twilio.Types, import enum into the resource file.
-                    operationStore.setEnumPresentInResource(true);
-                }
+        Optional<Object> importStm = mapper.libraries().get(StringHelper.toSnakeCase(property.dataType).replace("_", "-"));
+        if (importStm.isPresent()) {
+            if (importStm.isPresent() && importStm.get() instanceof String && importStm.get().equals("Twilio.Types")) {
+                // If the datatype found in libraries(csharp.json) is Twilio.Types, import Twilio.Types into the resource file.
+                operationStore.setEnumPresentInResource(true);
             }
+            return;
+        }
+        // Note: format: outbound-sms-price is not identified as enum, Because these are not enums
+        if (!CodegenUtils.isPropertySchemaEnum(property)) {
             return;
         }
         String className = OperationStore.getInstance().getClassName();
         property.isEnum = true;
-        property.enumName = Utility.removeEnumName(property.complexType) + ApplicationConstants.ENUM;
+        property.enumName = property.complexType.contains("Enum") || property.complexType.contains("enum")
+                ? Utility.removeEnumName(property.complexType) + ApplicationConstants.ENUM 
+                : Utility.removeEnumName(property.complexType);
         // In case enum is an array
         if (property.items != null) {
             property.items.enumName = property.enumName;

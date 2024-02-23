@@ -170,7 +170,8 @@ public class CsharpApiResourceBuilder extends ApiResourceBuilder {
             for (CodegenProperty property: codegenModel.vars) {
                 property.nameInCamelCase = StringHelper.camelize(property.nameInSnakeCase);
                 if (Arrays.stream(EnumConstants.Operation.values())
-                        .anyMatch(value -> value.getValue().equals(property.nameInCamelCase))) {
+                        .anyMatch(value -> value.getValue().equals(property.nameInCamelCase)) 
+                        || isNestedModelPresentWithPropertyName(property)) {
                     property.nameInCamelCase = "_" + property.nameInCamelCase;
                 }
                 distinctResponseModels.add(property);
@@ -272,5 +273,13 @@ public class CsharpApiResourceBuilder extends ApiResourceBuilder {
                 }
             }
         }
+    }
+
+    public boolean isNestedModelPresentWithPropertyName(final CodegenProperty property) {
+        if (nestedModels == null || nestedModels.size() < 1) return false; 
+        Optional<CodegenModel> foundModel = nestedModels.stream()
+                .filter(model -> model.classname.equals(property.name))
+                .findFirst();
+        return foundModel.isPresent();
     }
 }
