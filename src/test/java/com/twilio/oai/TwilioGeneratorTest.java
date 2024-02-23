@@ -26,7 +26,7 @@ import static org.junit.Assert.assertFalse;
 @RequiredArgsConstructor
 @RunWith(Parameterized.class)
 public class TwilioGeneratorTest {
-    @Parameterized.Parameters
+    @Parameterized.Parameters 
     public static Collection<Generator> generators() {
         return Arrays.asList(Generator.TWILIO_CSHARP,
                 Generator.TWILIO_GO,
