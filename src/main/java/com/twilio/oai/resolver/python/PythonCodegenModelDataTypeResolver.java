@@ -75,6 +75,12 @@ public class PythonCodegenModelDataTypeResolver extends CodegenModelDataTypeReso
         } else {
             property.vendorExtensions.put("json-name", property.name);
         }
+        if(CodegenUtils.isPropertySchemaEnum(property)
+            && !property.dataType.contains(ApplicationConstants.ENUM)
+            && !property.dataType.contains("Instance.")) {
+                property.baseType = ApplicationConstants.ENUM + property.baseType;
+                property.dataType = ApplicationConstants.ENUM + property.dataType;
+        }
         updateDataType(property.baseType, property.dataType, apiResourceBuilder, (dataTypeWithEnum, dataType) -> {
             property.datatypeWithEnum = dataTypeWithEnum;
             property.dataType = dataType;
