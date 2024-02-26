@@ -44,7 +44,7 @@ public class ReplaceHyphenLambda implements Mustache.Lambda  {
     }
 
     private String replaceCase(final String input) {
-        return input.replaceAll("-","_");
+        return input.replaceAll("[-:]", "_");
     }
 
     @Override

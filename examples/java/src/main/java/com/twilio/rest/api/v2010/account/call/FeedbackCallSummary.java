@@ -125,29 +125,6 @@ public class FeedbackCallSummary extends Resource {
         }
     }
 
-    public enum Status {
-        IN_PROGRESS("in-progress"),
-        PAUSED("paused"),
-        STOPPED("stopped"),
-        PROCESSING("processing"),
-        COMPLETED("completed"),
-        ABSENT("absent");
-
-        private final String value;
-
-        private Status(final String value) {
-            this.value = value;
-        }
-
-        public String toString() {
-            return value;
-        }
-
-        @JsonCreator
-        public static Status forValue(final String value) {
-            return Promoter.enumFromString(value, Status.values());
-        }
-    }
 
     private final String accountSid;
     private final String sid;
@@ -312,6 +289,29 @@ public class FeedbackCallSummary extends Resource {
         return Objects.hash(accountSid, sid, testString, testInteger, testObject, testDateTime, testNumber, from, priceUnit, testNumberFloat, testNumberDecimal, testEnum, a2pProfileBundleSid, testArrayOfIntegers, testArrayOfArrayOfIntegers, testArrayOfObjects, testArrayOfEnum);
     }
 
+    public enum Status {
+        IN_PROGRESS("in-progress"),
+        PAUSED("paused"),
+        STOPPED("stopped"),
+        PROCESSING("processing"),
+        COMPLETED("completed"),
+        ABSENT("absent");
+
+        private final String value;
+
+        private Status(final String value) {
+        this.value = value;
+        }
+
+        public String toString() {
+            return value;
+        }
+
+        @JsonCreator
+        public static Status forValue(final String value) {
+            return Promoter.enumFromString(value, Status.values());
+        }
+    }
 
 }
 

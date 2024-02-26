@@ -3,6 +3,7 @@
     "twilio-java": true,
     "twilio-node": true,
     "twilio-python": true,
+    "twilio-ruby": true,
     "twilio-php": true
   }
 }

@@ -16,3 +16,4 @@ tmp
 **/execution-result.xml
 **/php_coverage.xml
 *.iml
+generateFiles.py

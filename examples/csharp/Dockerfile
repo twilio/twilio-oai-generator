@@ -6,9 +6,9 @@ RUN apt-get update \
          git \
          build-essential \
          mono-complete \
-         openjdk-11-jre
+         openjdk-17-jre
 
-RUN dotnet tool install --global dotnet-sonarscanner \
+RUN dotnet tool install --global dotnet-sonarscanner --version 5.5.3 \
 && dotnet tool install --global dotnet-reportgenerator-globaltool --version 4.8.12 \
 && dotnet tool list -g
 

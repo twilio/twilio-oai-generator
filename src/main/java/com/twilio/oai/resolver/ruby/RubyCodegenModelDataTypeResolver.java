@@ -1,4 +1,4 @@
-package com.twilio.oai.resolver.python;
+package com.twilio.oai.resolver.ruby;
 
 import com.twilio.oai.CodegenUtils;
 import com.twilio.oai.api.ApiResourceBuilder;
@@ -13,13 +13,11 @@ import org.openapitools.codegen.CodegenProperty;
 import java.util.Map;
 import java.util.function.BiConsumer;
 
-// Overriding default behavior and handling the enum
-public class PythonCodegenModelDataTypeResolver extends CodegenModelDataTypeResolver {
-
+public class RubyCodegenModelDataTypeResolver extends CodegenModelDataTypeResolver {
     protected Map<String, String> modelFormatMap;
-    private PythonCodegenModelResolver codegenModelResolver;
+    private RubyCodegenModelResolver codegenModelResolver;
 
-    public PythonCodegenModelDataTypeResolver(IConventionMapper mapper, Map<String, String> modelFormatMap) {
+    public RubyCodegenModelDataTypeResolver(IConventionMapper mapper, Map<String, String> modelFormatMap) {
         super(mapper, modelFormatMap);
         this.modelFormatMap = modelFormatMap;
     }
@@ -29,13 +27,13 @@ public class PythonCodegenModelDataTypeResolver extends CodegenModelDataTypeReso
      * @param codegenModelResolver the modelResolver to be set
      */
     public void setCodegenModel(CodegenModelResolver codegenModelResolver) {
-        this.codegenModelResolver = (PythonCodegenModelResolver) codegenModelResolver;
+        this.codegenModelResolver = (RubyCodegenModelResolver) codegenModelResolver;
     }
 
     /**
      * Resolves the property using its codegenModel and resolving recursively
      * @param property the CodegenProperty to be resolved
-     * @param apiResourceBuilder the PythonApiResourceBuilder to access getApiName()
+     * @param apiResourceBuilder the RubyApiResourceBuilder to access getApiName()
      * @return resolved property
      */
     @Override
@@ -43,7 +41,7 @@ public class PythonCodegenModelDataTypeResolver extends CodegenModelDataTypeReso
         property =  super.resolve(property, apiResourceBuilder);
         CodegenModel codegenModel = apiResourceBuilder.getModel(property.dataType);
         if (codegenModel != null && !CodegenUtils.isPropertySchemaEnum(property)) {
-            // this is recursion as codegenModelResolver will again call PythonCodegenModelDataTypeResolver
+            // this is recursion as codegenModelResolver will again call RubyCodegenModelDataTypeResolver
             codegenModelResolver.resolve(codegenModel, apiResourceBuilder);
             apiResourceBuilder.addNestedModel(codegenModel);
         } else {
@@ -56,7 +54,7 @@ public class PythonCodegenModelDataTypeResolver extends CodegenModelDataTypeReso
     /**
      * Resolves the response model property using parent method
      * @param property the CodegenProperty to be resolved
-     * @param apiResourceBuilder the PythonApiResourceBuilder to access getApiName()
+     * @param apiResourceBuilder the RubyApiResourceBuilder to access getApiName()
      */
     public void resolveResponseModel(CodegenProperty property, ApiResourceBuilder apiResourceBuilder) {
         super.resolve(property, apiResourceBuilder);
@@ -65,22 +63,9 @@ public class PythonCodegenModelDataTypeResolver extends CodegenModelDataTypeReso
     /**
      * Resolves the property to set 'json-name' in vendor extension and update dataType
      * @param property the CodegenProperty to be resolved
-     * @param apiResourceBuilder the PythonApiResourceBuilder to access getApiName()
+     * @param apiResourceBuilder the RubyApiResourceBuilder to access getApiName()
      */
     protected void resolveProperty(CodegenProperty property, ApiResourceBuilder apiResourceBuilder) {
-        if (property.name.contains("from") && property.dataFormat != null &&
-                property.dataFormat.equals(ApplicationConstants.PHONE_NUMBER)) {
-            property.name = "from_";
-            property.vendorExtensions.put("json-name", "from");
-        } else {
-            property.vendorExtensions.put("json-name", property.name);
-        }
-        if(CodegenUtils.isPropertySchemaEnum(property)
-            && !property.dataType.contains(ApplicationConstants.ENUM)
-            && !property.dataType.contains("Instance.")) {
-                property.baseType = ApplicationConstants.ENUM + property.baseType;
-                property.dataType = ApplicationConstants.ENUM + property.dataType;
-        }
         updateDataType(property.baseType, property.dataType, apiResourceBuilder, (dataTypeWithEnum, dataType) -> {
             property.datatypeWithEnum = dataTypeWithEnum;
             property.dataType = dataType;
@@ -92,7 +77,7 @@ public class PythonCodegenModelDataTypeResolver extends CodegenModelDataTypeReso
      * Updates the dataType and datatypeWithEnum using baseType and dataType by removing enum from name
      * @param baseType the baseType of the variable
      * @param dataType the dataType of the variable
-     * @param apiResourceBuilder the PythonApiResourceBuilder to access getApiName()
+     * @param apiResourceBuilder the RubyApiResourceBuilder to access getApiName()
      * @param consumer the consumer function to set values
      */
     private void updateDataType(final String baseType,
@@ -110,7 +95,7 @@ public class PythonCodegenModelDataTypeResolver extends CodegenModelDataTypeReso
     /**
      * Removes 'Enum' from the dataType
      * @param dataType the dataType of the variable
-     * @param apiResourceBuilder the PythonApiResourceBuilder to access getApiName()
+     * @param apiResourceBuilder the RubyApiResourceBuilder to access getApiName()
      * @return updated dataType
      */
     private String removeEnumName(final String dataType, ApiResourceBuilder apiResourceBuilder) {

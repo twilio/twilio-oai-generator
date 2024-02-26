@@ -59,6 +59,7 @@ module Twilio
 
                 params = Twilio::Values.of({})
                 params.merge!(Twilio.prefixed_collapsible_map(add_ons_data, 'AddOns'))
+
                 payload = @version.fetch('GET', @uri, params: params)
                 HistoryInstance.new(
                   @version,

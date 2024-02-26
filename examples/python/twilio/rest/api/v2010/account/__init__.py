@@ -26,6 +26,10 @@ from twilio.rest.api.v2010.account.call import CallList
 
 
 class AccountInstance(InstanceResource):
+    class XTwilioWebhookEnabled(object):
+        TRUE = "true"
+        FALSE = "false"
+
     class Status(object):
         IN_PROGRESS = "in-progress"
         PAUSED = "paused"
@@ -392,7 +396,9 @@ class AccountList(ListResource):
 
     def create(
         self,
-        x_twilio_webhook_enabled: Union[str, object] = values.unset,
+        x_twilio_webhook_enabled: Union[
+            "AccountInstance.XTwilioWebhookEnabled", object
+        ] = values.unset,
         recording_status_callback: Union[str, object] = values.unset,
         recording_status_callback_event: Union[List[str], object] = values.unset,
         twiml: Union[str, object] = values.unset,
@@ -431,7 +437,9 @@ class AccountList(ListResource):
 
     async def create_async(
         self,
-        x_twilio_webhook_enabled: Union[str, object] = values.unset,
+        x_twilio_webhook_enabled: Union[
+            "AccountInstance.XTwilioWebhookEnabled", object
+        ] = values.unset,
         recording_status_callback: Union[str, object] = values.unset,
         recording_status_callback_event: Union[List[str], object] = values.unset,
         twiml: Union[str, object] = values.unset,

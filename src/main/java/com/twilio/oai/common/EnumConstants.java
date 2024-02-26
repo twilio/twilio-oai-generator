@@ -85,6 +85,14 @@ public class EnumConstants {
 
     @Getter
     @RequiredArgsConstructor
+    public enum PredefinedJavaEnumsFormat {
+        HTTP_METHOD("http-method");
+
+        private final String value;
+    }
+
+    @Getter
+    @RequiredArgsConstructor
     public enum PhpDataTypes implements LanguageDataType {
         LIST("List<");
 
