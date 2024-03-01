@@ -41,7 +41,7 @@ public class TwilioGeneratorTest {
 
     @Test
     public void launchGenerator() {
-        //final String pathname = "examples/spec/twilio_api_v2010.yaml";
+//        final String pathname = "examples/spec/twilio_api_v2010.yaml";
         final String pathname = "examples/twilio_messaging_bulk_v1.yaml";
         //final String pathname = "/Users/sbansla/Documents/code/twilio-oai/spec/yaml/twilio_api_v2010.yaml";
         File filesList[] ;

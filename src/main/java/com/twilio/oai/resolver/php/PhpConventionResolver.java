@@ -1,25 +1,22 @@
-package com.twilio.oai.resolver.java;
+package com.twilio.oai.resolver.php;
 
 import com.twilio.oai.CodegenUtils;
 import com.twilio.oai.StringHelper;
+import com.twilio.oai.common.ApplicationConstants;
+import com.twilio.oai.common.EnumConstants;
+import com.twilio.oai.common.Utility;
+import com.twilio.oai.resolver.common.CodegenConventionResolver;
+import com.twilio.oai.resolver.java.ContainerResolver;
+import org.openapitools.codegen.CodegenParameter;
+import org.openapitools.codegen.CodegenProperty;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Stack;
 
-import com.twilio.oai.common.ApplicationConstants;
-import com.twilio.oai.common.EnumConstants;
-import com.twilio.oai.common.Utility;
-import com.twilio.oai.resolver.common.CodegenConventionResolver;
-import org.openapitools.codegen.CodegenParameter;
-import org.openapitools.codegen.CodegenProperty;
+import static com.twilio.oai.common.ApplicationConstants.*;
 
-import static com.twilio.oai.common.ApplicationConstants.ENUM_VARS;
-import static com.twilio.oai.common.ApplicationConstants.LIST_END;
-import static com.twilio.oai.common.ApplicationConstants.LIST_START;
-import static com.twilio.oai.common.ApplicationConstants.REF_ENUM_EXTENSION_NAME;
-
-public class JavaConventionResolver extends CodegenConventionResolver {
+public class PhpConventionResolver extends CodegenConventionResolver {
     private static final String VALUES = "values";
 
     private ContainerResolver containerResolver = new ContainerResolver(Arrays.asList(EnumConstants.JavaDataTypes.values()));
@@ -38,7 +35,7 @@ public class JavaConventionResolver extends CodegenConventionResolver {
             }
             parameter.enumName = StringHelper.camelize(parameter.enumName);
             if (parameter.items != null && parameter.items.allowableValues != null && parameter.items.allowableValues.containsKey(VALUES)) {
-                parameter.dataType = LIST_START + resourceName+"."+ parameter.enumName + LIST_END;
+                parameter.dataType = resourceName+"."+ parameter.enumName;
                 parameter.baseType = resourceName + "." + parameter.enumName;
             } else {
                 parameter.dataType = resourceName + "." + parameter.enumName;
@@ -46,11 +43,12 @@ public class JavaConventionResolver extends CodegenConventionResolver {
 
             return parameter;
         }
+
         if (parameter.items != null && parameter.items.allowableValues != null && parameter.items.allowableValues.containsKey(VALUES) ) {
             parameter.isEnum = true;
             parameter.enumName = parameter.baseType;
             parameter._enum = (List<String>) parameter.items.allowableValues.get(VALUES);
-            parameter.dataType = LIST_START + resourceName + "." + parameter.baseType + LIST_END;
+            parameter.dataType = resourceName + "." + parameter.baseType;
             parameter.baseType = resourceName + "." + parameter.baseType;
             parameter.allowableValues = parameter.items.allowableValues;
         }

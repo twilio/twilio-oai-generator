@@ -4,39 +4,35 @@ import com.twilio.oai.api.ApiResourceBuilder;
 import com.twilio.oai.api.JavaApiResourceBuilder;
 import com.twilio.oai.common.EnumConstants;
 import com.twilio.oai.resolver.Resolver;
+import com.twilio.oai.resolver.common.CodegenConventionResolver;
 import com.twilio.oai.resolver.java.ContainerResolver;
-import com.twilio.oai.resolver.java.JavaConventionResolver;
+import lombok.Setter;
 import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenParameter;
 import org.openapitools.codegen.CodegenProperty;
 
 import java.util.Arrays;
 import java.util.Stack;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 // TODO: Refactor such that it can be used with c# code as well, For that need to refactor java resolvers.
 public class JsonRequestBodyResolver {
     final Resolver<CodegenProperty> codegenPropertyResolver;
-    
+
     final ApiResourceBuilder apiResourceBuilder;
-    
-    final private ContainerResolver containerResolver = new ContainerResolver(Arrays.asList(EnumConstants.JavaDataTypes.values()));
 
-    private final JavaConventionResolver conventionResolver;
+    private final ContainerResolver containerResolver = new ContainerResolver(Arrays.asList(EnumConstants.JavaDataTypes.values()));
 
-    public void setResourceName(String resourceName) {
-        this.resourceName = resourceName;
-    }
+    private final CodegenConventionResolver conventionResolver;
 
+    @Setter
     private String resourceName;
 
-    public JsonRequestBodyResolver(ApiResourceBuilder apiResourceBuilder, final Resolver<CodegenProperty> codegenPropertyResolver) {
+    public JsonRequestBodyResolver(ApiResourceBuilder apiResourceBuilder, final Resolver<CodegenProperty> codegenPropertyResolver, CodegenConventionResolver codegenConventionResolver) {
         this.codegenPropertyResolver = codegenPropertyResolver;
         this.apiResourceBuilder = apiResourceBuilder;
-        this.conventionResolver = new JavaConventionResolver();
+        this.conventionResolver = codegenConventionResolver;
     }
-    
+
     public void resolve(final CodegenParameter codegenParameter, final Resolver<CodegenParameter> codegenParameterResolver) {
         // Only add if model exists
         Stack<String> containerTypes = new Stack<>();
@@ -61,7 +57,7 @@ public class JsonRequestBodyResolver {
             apiResourceBuilder.addNestedModel(model);
         }
     }
-    
+
     public void resolve(final CodegenProperty property) {
         Stack<String> containerTypes = new Stack<>();
         property.dataType = containerResolver.unwrapContainerType(property, containerTypes);
