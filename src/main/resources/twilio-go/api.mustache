@@ -47,17 +47,12 @@ func (c *ApiService) {{{nickname}}}({{#allParams}}{{#required}}{{paramName}} {{{
 	}
 {{/headerParams}}
 {{/hasHeaderParams}}
-{{#vendorExtensions.x-is-create-operation}}
 {{#vendorExtensions.x-is-json-type}}
     resp, err := c.requestHandler.{{httpMethod}}(c.baseURL+path, data, headers, body...)
 {{/vendorExtensions.x-is-json-type}}
 {{^vendorExtensions.x-is-json-type}}
     resp, err := c.requestHandler.{{httpMethod}}(c.baseURL+path, data, headers)
 {{/vendorExtensions.x-is-json-type}}
-{{/vendorExtensions.x-is-create-operation}}
-{{^vendorExtensions.x-is-create-operation}}
-    resp, err := c.requestHandler.{{httpMethod}}(c.baseURL+path, data, headers)
-{{/vendorExtensions.x-is-create-operation}}
 {{#returnType}}
     if err != nil {
         return nil, err
