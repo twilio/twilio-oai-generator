@@ -79,6 +79,10 @@ public abstract class AbstractTwilioGoGenerator extends GoClientCodegen {
             });
 
         String domain = StringHelper.toSnakeCase(twilioCodegen.getDomainFromOpenAPI(openAPI));
+        int lastIndex = domain.lastIndexOf("_api");
+        if(lastIndex > 0)
+            domain = domain.substring(0, lastIndex);
+
         String version = StringHelper.toSnakeCase(twilioCodegen.getVersionFromOpenAPI(openAPI));
         twilioCodegen.setDomain(domain);
         twilioCodegen.setVersion(version);
