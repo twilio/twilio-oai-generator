@@ -52,10 +52,6 @@ public class PhpParameterResolver extends LanguageParamResolver {
         if (codegenParameter.isArray) {
             codegenParameter.isString = false;
         }
-
-        if (apiResourceBuilder.getToggleMap().getOrDefault(EnumConstants.Generator.TWILIO_PHP.getValue(), Boolean.FALSE) ) {
-            resolveIngressModel(codegenParameter, apiResourceBuilder);
-        }
     }
 
     @Override
@@ -73,11 +69,11 @@ public class PhpParameterResolver extends LanguageParamResolver {
         }
     }
 
-    private void resolveIngressModel(CodegenParameter parameter, ApiResourceBuilder apiResourceBuilder) {
-        for (CodegenModel model : apiResourceBuilder.getAllModels()) {
-            if(model.getClassname().equals(parameter.baseType)) {
-                parameter.dataType = apiResourceBuilder.getApiName() + "Models" + ApplicationConstants.DOT + parameter.dataType;
-            }
-        }
-    }
+//    private void resolveIngressModel(CodegenParameter parameter, ApiResourceBuilder apiResourceBuilder) {
+//        for (CodegenModel model : apiResourceBuilder.getAllModels()) {
+//            if(model.getClassname().equals(parameter.baseType)) {
+//                parameter.dataType = apiResourceBuilder.getApiName() + "Models" + ApplicationConstants.DOT + parameter.dataType;
+//            }
+//        }
+//    }
 }

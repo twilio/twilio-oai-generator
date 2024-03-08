@@ -1,13 +1,12 @@
 package com.twilio.oai.api;
 
-import com.twilio.oai.DirectoryStructureService;
-import com.twilio.oai.PathUtils;
-import com.twilio.oai.PhpJsonRequestBodyResolver;
-import com.twilio.oai.StringHelper;
+import com.twilio.oai.*;
 import com.twilio.oai.common.EnumConstants;
 import com.twilio.oai.resolver.IConventionMapper;
 import com.twilio.oai.resolver.LanguageConventionResolver;
 import com.twilio.oai.resolver.Resolver;
+import com.twilio.oai.resolver.java.JavaConventionResolver;
+import com.twilio.oai.resolver.php.PhpConventionResolver;
 import com.twilio.oai.resource.Resource;
 import com.twilio.oai.template.IApiActionTemplate;
 import com.twilio.oai.template.PhpApiActionTemplate;
@@ -31,15 +30,23 @@ public class PhpApiResourceBuilder extends ApiResourceBuilder {
     protected String apiListPath = "";
     protected String apiContextPath = "";
 
-    protected Resolver<CodegenProperty> codegenPropertyResolver;
+    protected Resolver<CodegenProperty> codegenPropertyIResolver;
+    private final PhpConventionResolver conventionResolver;
+    private Set<CodegenModel> headerParamModelList;
 
     private final IConventionMapper conventionMapper =
             new LanguageConventionResolver("config/" + EnumConstants.Generator.TWILIO_PHP.getValue() + ".json");
 
+    public PhpApiResourceBuilder(IApiActionTemplate template, List<CodegenOperation> codegenOperations,
+                                  List<CodegenModel> allModels) {
+        super(template, codegenOperations, allModels);
+        this.conventionResolver = new PhpConventionResolver();
+    }
+
     public PhpApiResourceBuilder(IApiActionTemplate template, List<CodegenOperation> codegenOperations, List<CodegenModel> allModels,
                                  Map<String, Boolean> toggleMap, Resolver<CodegenProperty> codegenPropertyResolver) {
-        super(template, codegenOperations, allModels);
-        this.codegenPropertyResolver = codegenPropertyResolver;
+        this(template, codegenOperations, allModels);
+        this.codegenPropertyIResolver = codegenPropertyResolver;
         this.toggleMap = toggleMap;
     }
 
@@ -161,19 +168,98 @@ public class PhpApiResourceBuilder extends ApiResourceBuilder {
 
     @Override
     public ApiResourceBuilder updateOperations(Resolver<CodegenParameter> codegenParameterIResolver) {
-        ApiResourceBuilder apiResourceBuilder = super.updateOperations(codegenParameterIResolver);
-        PhpJsonRequestBodyResolver jsonRequestBodyResolver = new PhpJsonRequestBodyResolver(this, this.codegenPropertyResolver);
-        this.codegenOperationList.forEach(co ->
+        headerParamModelList = new HashSet<>();
+        PhpJsonRequestBodyResolver jsonRequestBodyResolver = new PhpJsonRequestBodyResolver(this, codegenPropertyIResolver);
+        this.codegenOperationList.forEach(co -> {
+            updateNestedContent(co);
+            List<String> filePathArray = new ArrayList<>(Arrays.asList(co.baseName.split(PATH_SEPARATOR_PLACEHOLDER)));
+            String resourceName = filePathArray.remove(filePathArray.size()-1);
+
+            co.allParams.stream()
+                    .filter(item -> !(item.getContent() != null && item.getContent().get("application/json") != null))
+                    .map(item -> codegenParameterIResolver.resolve(item, this))
+                    .map(item -> conventionResolver.resolveEnumParameter(item, resourceName))
+                    .collect(Collectors.toList());
+
+            jsonRequestBodyResolver.setResourceName(resourceName);
             co.allParams.stream()
                     .filter(item -> (item.getContent() != null && item.getContent().get("application/json") != null))
                     .forEach(item -> {
-                        jsonRequestBodyResolver.resolve(item, codegenParameterIResolver);
-                    })
-        );
-        reorderParams(apiResourceBuilder);
-        this.addOptionFileParams(apiResourceBuilder);
+                        CodegenModel model = getModel(item.dataType);
+                        // currently supporting required and conditional parameters only for request body object
+                        if (model != null) {
+                            model.vendorExtensions.put("x-constructor-required", true);
+                            jsonRequestBodyResolver.resolve(item, codegenParameterIResolver);
+                        }
+                    });
+            co.pathParams = co.pathParams.stream()
+                    .map(item -> codegenParameterIResolver.resolve(item, this))
+                    .map(item -> conventionResolver.resolveEnumParameter(item, resourceName))
+                    .collect(Collectors.toList());
+            co.queryParams = co.queryParams.stream()
+                    .map(item -> codegenParameterIResolver.resolve(item, this))
+                    .map(item -> conventionResolver.resolveEnumParameter(item, resourceName))
+                    .collect(Collectors.toList());
+            co.formParams = co.formParams.stream()
+                    .map(item -> codegenParameterIResolver.resolve(item, this))
+                    .map(item -> conventionResolver.resolveEnumParameter(item, resourceName))
+                    .collect(Collectors.toList());
+            co.headerParams = co.headerParams.stream()
+                    .map(item -> codegenParameterIResolver.resolve(item, this))
+                    .map(item -> conventionResolver.resolveEnumParameter(item, resourceName))
+                    .collect(Collectors.toList());
+            co.optionalParams = co.optionalParams
+                    .stream()
+                    .map(item -> codegenParameterIResolver.resolve(item, this))
+                    .map(item -> conventionResolver.resolveEnumParameter(item, resourceName))
+                    .collect(Collectors.toList());
+            co.requiredParams = co.requiredParams
+                    .stream()
+                    .map(item -> codegenParameterIResolver.resolve(item, this))
+                    .map(item -> conventionResolver.resolveEnumParameter(item, resourceName))
+                    .collect(Collectors.toList());
+
+            if (co.vendorExtensions.containsKey("x-ignore")) {
+                requiredPathParams.addAll(co.pathParams
+                        .stream()
+                        .filter(PathUtils::isParentParam)
+                        .filter(codegenParameter -> requiredPathParams
+                                .stream()
+                                .noneMatch(param -> param.baseName.equals(codegenParameter.baseName)))
+                        .collect(Collectors.toList()));
+            } else {
+                requiredPathParams.addAll(co.pathParams
+                        .stream()
+                        .filter(codegenParameter -> requiredPathParams
+                                .stream()
+                                .noneMatch(param -> param.baseName.equals(codegenParameter.baseName)))
+                        .collect(Collectors.toList()));
+            }
+
+            co.hasParams = !co.allParams.isEmpty();
+            co.hasRequiredParams = !co.requiredParams.isEmpty();
+
+            co.vendorExtensions.putAll(mapOperation(co));
+
+        });
+        reorderParams(this);
+        this.addOptionFileParams(this);
         categorizeOperations();
-        return apiResourceBuilder;
+        return this;
+
+//        ApiResourceBuilder apiResourceBuilder = super.updateOperations(codegenParameterIResolver);
+//        PhpJsonRequestBodyResolver jsonRequestBodyResolver = new PhpJsonRequestBodyResolver(this, this.codegenPropertyIResolver);
+//        this.codegenOperationList.forEach(co ->
+//            co.allParams.stream()
+//                    .filter(item -> (item.getContent() != null && item.getContent().get("application/json") != null))
+//                    .forEach(item -> {
+//                        jsonRequestBodyResolver.resolve(item, codegenParameterIResolver);
+//                    })
+//        );
+//        reorderParams(apiResourceBuilder);
+//        this.addOptionFileParams(apiResourceBuilder);
+//        categorizeOperations();
+//        return apiResourceBuilder;
     }
 
     private void addOptionFileParams(ApiResourceBuilder apiResourceBuilder) {
@@ -313,7 +399,26 @@ public class PhpApiResourceBuilder extends ApiResourceBuilder {
 
     @Override
     public ApiResourceBuilder updateResponseModel(Resolver<CodegenProperty> codegenPropertyResolver, Resolver<CodegenModel> codegenModelResolver) {
-        List<CodegenModel> responseModels = new ArrayList<>();
+        codegenOperationList.forEach(codegenOperation -> {
+            List<CodegenModel> responseModels = new ArrayList<>();
+            codegenOperation.responses
+                    .stream()
+                    .map(response -> response.baseType)
+                    .filter(Objects::nonNull)
+                    .map(modelName -> this.getModel(modelName, codegenOperation))
+                    .flatMap(Optional::stream)
+                    .forEach(item -> {
+                        item.allVars.stream().filter(var -> var.isModel && var.dataFormat == null).forEach(this::setDataFormatForNestedProperties);
+                        item.vars.stream().filter(var -> var.isModel && var.dataFormat == null).forEach(this::setDataFormatForNestedProperties);
+                        item.vars.forEach(e -> codegenPropertyResolver.resolve(e, this));
+                        item.allVars.forEach(e -> codegenPropertyResolver.resolve(e, this));
+                        responseModels.add(item);
+                    });
+            this.apiResponseModels.addAll(getDistinctResponseModel(responseModels));
+        });
+        return this;
+
+//        List<CodegenModel> responseModels = new ArrayList<>();
 //        PhpJsonRequestBodyResolver jsonRequestBodyResolver = new PhpJsonRequestBodyResolver(this, codegenPropertyResolver);
 //        codegenOperationList.forEach(co -> {
 //            List<String> filePathArray = new ArrayList<>(Arrays.asList(co.baseName.split(PATH_SEPARATOR_PLACEHOLDER)));
@@ -344,7 +449,6 @@ public class PhpApiResourceBuilder extends ApiResourceBuilder {
 //        this.apiResponseModels = getDistinctResponseModel(responseModels);
 //        this.responseModel = getConcatenatedResponseModel(responseModels);
 //        return this;
-        return this;
     }
 
     private void setDataFormatForNestedProperties(CodegenProperty codegenProperty) {
