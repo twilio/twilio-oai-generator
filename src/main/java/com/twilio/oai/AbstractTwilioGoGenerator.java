@@ -28,7 +28,7 @@ import org.openapitools.codegen.model.OperationsMap;
 import static com.twilio.oai.common.ApplicationConstants.ACCOUNT_SID_VEND_EXT;
 
 public abstract class AbstractTwilioGoGenerator extends GoClientCodegen {
-    protected final TwilioCodegenAdapterGo twilioCodegen;
+    protected final TwilioCodegenAdapter twilioCodegen;
     protected final DirectoryStructureService directoryStructureService = new DirectoryStructureService(
         additionalProperties,
         new ResourceMap(new Inflector()),
@@ -37,7 +37,7 @@ public abstract class AbstractTwilioGoGenerator extends GoClientCodegen {
     protected AbstractTwilioGoGenerator() {
         super();
 
-        twilioCodegen = new TwilioCodegenAdapterGo(this, getName());
+        twilioCodegen = new TwilioCodegenAdapter(this, getName());
 
         typeMapping.put("integer", "int");
     }
@@ -78,6 +78,11 @@ public abstract class AbstractTwilioGoGenerator extends GoClientCodegen {
                 param.addExtension(ACCOUNT_SID_VEND_EXT, true);
             });
 
+        String domain = StringHelper.toSnakeCase(twilioCodegen.getDomainFromOpenAPI(openAPI));
+        String version = StringHelper.toSnakeCase(twilioCodegen.getVersionFromOpenAPI(openAPI));
+        twilioCodegen.setDomain(domain);
+        twilioCodegen.setVersion(version);
+        twilioCodegen.setOutputDir(domain, version);
         directoryStructureService.configure(openAPI);
 
         if (directoryStructureService.isVersionLess()) {
