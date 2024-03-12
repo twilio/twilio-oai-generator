@@ -28,7 +28,7 @@ import org.openapitools.codegen.model.OperationsMap;
 import static com.twilio.oai.common.ApplicationConstants.ACCOUNT_SID_VEND_EXT;
 
 public abstract class AbstractTwilioGoGenerator extends GoClientCodegen {
-    protected final TwilioCodegenAdapterGo twilioCodegen;
+    protected final TwilioCodegenAdapter twilioCodegen;
     protected final DirectoryStructureService directoryStructureService = new DirectoryStructureService(
         additionalProperties,
         new ResourceMap(new Inflector()),
@@ -37,7 +37,7 @@ public abstract class AbstractTwilioGoGenerator extends GoClientCodegen {
     protected AbstractTwilioGoGenerator() {
         super();
 
-        twilioCodegen = new TwilioCodegenAdapterGo(this, getName());
+        twilioCodegen = new TwilioCodegenAdapter(this, getName());
 
         typeMapping.put("integer", "int");
     }
@@ -78,6 +78,20 @@ public abstract class AbstractTwilioGoGenerator extends GoClientCodegen {
                 param.addExtension(ACCOUNT_SID_VEND_EXT, true);
             });
 
+        // In all other languages, flex and frontline apis are named as 'flex_api' and 'frontline_api'
+        // But in Go, initially we followed the convention to use 'flex' and 'frontline' as names
+        // This was earlier not an issue because we were reading the api names from spec file path
+        // Now, we read it from api server - hence the name is different from what is used in Go
+        // So in order to provide backward cmpatibility, we are triming '_api from thee apis
+        String domain = StringHelper.toSnakeCase(twilioCodegen.getDomainFromOpenAPI(openAPI));
+        int lastIndex = domain.lastIndexOf("_api");
+        if(lastIndex > 0)
+            domain = domain.substring(0, lastIndex);
+
+        String version = StringHelper.toSnakeCase(twilioCodegen.getVersionFromOpenAPI(openAPI));
+        twilioCodegen.setDomain(domain);
+        twilioCodegen.setVersion(version);
+        twilioCodegen.setOutputDir(domain, version);
         directoryStructureService.configure(openAPI);
 
         if (directoryStructureService.isVersionLess()) {
