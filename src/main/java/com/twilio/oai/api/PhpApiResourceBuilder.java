@@ -12,10 +12,7 @@ import com.twilio.oai.template.IApiActionTemplate;
 import com.twilio.oai.template.PhpApiActionTemplate;
 import io.swagger.v3.oas.models.OpenAPI;
 import org.apache.commons.lang3.StringUtils;
-import org.openapitools.codegen.CodegenModel;
-import org.openapitools.codegen.CodegenOperation;
-import org.openapitools.codegen.CodegenParameter;
-import org.openapitools.codegen.CodegenProperty;
+import org.openapitools.codegen.*;
 
 import java.util.*;
 import java.util.regex.Pattern;
@@ -33,6 +30,8 @@ public class PhpApiResourceBuilder extends ApiResourceBuilder {
     protected Resolver<CodegenProperty> codegenPropertyIResolver;
     private final PhpConventionResolver conventionResolver;
     private Set<CodegenModel> headerParamModelList;
+    public Set<IJsonSchemaValidationProperties> enums = new HashSet<>();
+
 
     private final IConventionMapper conventionMapper =
             new LanguageConventionResolver("config/" + EnumConstants.Generator.TWILIO_PHP.getValue() + ".json");
@@ -373,6 +372,31 @@ public class PhpApiResourceBuilder extends ApiResourceBuilder {
             }
         }
         return conditionalParamSet;
+    }
+
+    public void addEnums(IJsonSchemaValidationProperties item) {
+        boolean isDuplicate = false;
+        String itemEnumName = null;
+
+        if (item instanceof CodegenParameter) {
+            itemEnumName = ((CodegenParameter) item).enumName;
+        } else if (item instanceof CodegenProperty) {
+            itemEnumName = ((CodegenProperty) item).enumName;
+        }
+
+        if (itemEnumName != null) {
+            for (IJsonSchemaValidationProperties enumItem : enums) {
+                if ((enumItem instanceof CodegenParameter && ((CodegenParameter) enumItem).enumName.equals(((CodegenParameter)item).enumName))
+                        || (enumItem instanceof CodegenProperty && ((CodegenProperty) enumItem).enumName.equals(((CodegenProperty)item).enumName))) {
+                    isDuplicate = true;
+                    break; // No need to continue checking duplicates
+                }
+            }
+        }
+
+        if (!isDuplicate) {
+            enums.add(item);
+        }
     }
 
     @Override

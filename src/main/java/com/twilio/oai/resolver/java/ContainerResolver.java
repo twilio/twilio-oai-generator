@@ -65,7 +65,7 @@ public class ContainerResolver {
      * @param codegenProperty
      * @param containerTypes
      */
-    public static void rewrapContainerType(CodegenProperty codegenProperty, Stack<String> containerTypes) {
+    public void rewrapContainerType(CodegenProperty codegenProperty, Stack<String> containerTypes) {
         String currentContainerType = "";
         while(!containerTypes.empty()) {
             currentContainerType = containerTypes.pop();
@@ -99,7 +99,7 @@ public class ContainerResolver {
         return codegenPropertyDataType;
     }
 
-    public static void rewrapContainerType(CodegenParameter codegenParameter, Stack<String> containerTypes) {
+    public void rewrapContainerType(CodegenParameter codegenParameter, Stack<String> containerTypes) {
         String currentContainerType = "";
         while(!containerTypes.empty()) {
             currentContainerType = containerTypes.pop();

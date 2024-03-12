@@ -22,10 +22,10 @@ public class JsonRequestBodyResolver {
 
     private final ContainerResolver containerResolver = new ContainerResolver(Arrays.asList(EnumConstants.JavaDataTypes.values()));
 
-    private final CodegenConventionResolver conventionResolver;
+    protected final CodegenConventionResolver conventionResolver;
 
     @Setter
-    private String resourceName;
+    protected String resourceName;
 
     public JsonRequestBodyResolver(ApiResourceBuilder apiResourceBuilder, final Resolver<CodegenProperty> codegenPropertyResolver, CodegenConventionResolver codegenConventionResolver) {
         this.codegenPropertyResolver = codegenPropertyResolver;

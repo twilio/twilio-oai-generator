@@ -94,7 +94,7 @@ public class EnumConstants {
     @Getter
     @RequiredArgsConstructor
     public enum PhpDataTypes implements LanguageDataType {
-        LIST("List<");
+        LIST("[]");
 
         private final String value;
     }

@@ -6,7 +6,6 @@ import com.twilio.oai.common.ApplicationConstants;
 import com.twilio.oai.common.EnumConstants;
 import com.twilio.oai.common.Utility;
 import com.twilio.oai.resolver.common.CodegenConventionResolver;
-import com.twilio.oai.resolver.java.ContainerResolver;
 import org.openapitools.codegen.CodegenParameter;
 import org.openapitools.codegen.CodegenProperty;
 
@@ -19,7 +18,7 @@ import static com.twilio.oai.common.ApplicationConstants.*;
 public class PhpConventionResolver extends CodegenConventionResolver {
     private static final String VALUES = "values";
 
-    private ContainerResolver containerResolver = new ContainerResolver(Arrays.asList(EnumConstants.JavaDataTypes.values()));
+    private PhpContainerResolver containerResolver = new PhpContainerResolver(Arrays.asList(EnumConstants.PhpDataTypes.values()));
 
     /*
      * Mustache           Object (property or parameter)
