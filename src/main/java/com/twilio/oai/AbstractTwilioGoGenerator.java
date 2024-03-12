@@ -78,6 +78,11 @@ public abstract class AbstractTwilioGoGenerator extends GoClientCodegen {
                 param.addExtension(ACCOUNT_SID_VEND_EXT, true);
             });
 
+        // In all other languages, flex and frontline apis are named as 'flex_api' and 'frontline_api'
+        // But in Go, initially we followed the convention to use 'flex' and 'frontline' as names
+        // This was earlier not an issue because we were reading the api names from spec file path
+        // Now, we read it from api server - hence the name is different from what is used in Go
+        // So in order to provide backward cmpatibility, we are triming '_api from thee apis
         String domain = StringHelper.toSnakeCase(twilioCodegen.getDomainFromOpenAPI(openAPI));
         int lastIndex = domain.lastIndexOf("_api");
         if(lastIndex > 0)
