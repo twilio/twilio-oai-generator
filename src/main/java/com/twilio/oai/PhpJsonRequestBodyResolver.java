@@ -14,6 +14,8 @@ import org.openapitools.codegen.CodegenProperty;
 import java.util.Arrays;
 import java.util.Stack;
 
+import static java.lang.Character.toLowerCase;
+
 public class PhpJsonRequestBodyResolver extends JsonRequestBodyResolver {
 
     private final ContainerResolver containerResolver = new PhpContainerResolver(Arrays.asList(EnumConstants.PhpDataTypes.values()));
@@ -40,10 +42,11 @@ public class PhpJsonRequestBodyResolver extends JsonRequestBodyResolver {
         codegenParameter.dataType = containerResolver.unwrapContainerType(codegenParameter, containerTypes);
         final CodegenModel model = apiResourceBuilder.getModel(codegenParameter.dataType);
         containerResolver.rewrapContainerType(codegenParameter, containerTypes);
-        if (CodegenUtils.isParameterSchemaEnumJava(codegenParameter)) {
-            conventionResolver.resolveEnumParameter(codegenParameter, resourceName);
-            ((PhpApiResourceBuilder)apiResourceBuilder).addEnums(codegenParameter);
-        } else if(model == null) {
+//        if (CodegenUtils.isParameterSchemaEnumJava(codegenParameter)) {
+//            conventionResolver.resolveEnumParameter(codegenParameter, resourceName);
+//            ((PhpApiResourceBuilder)apiResourceBuilder).addEnums(codegenParameter);
+//        } else
+            if(model == null) {
             // If parameter is not a model.
             codegenParameterResolver.resolve(codegenParameter, apiResourceBuilder);
         } else {
@@ -57,6 +60,13 @@ public class PhpJsonRequestBodyResolver extends JsonRequestBodyResolver {
             }
             apiResourceBuilder.addNestedModel(model);
         }
+        if(!codegenParameter.vendorExtensions.containsKey("modelDataType")) {
+            int indexOfNull = codegenParameter.dataType.indexOf("|");
+            if (indexOfNull == -1)
+                indexOfNull = codegenParameter.dataType.length();
+            codegenParameter.vendorExtensions.put("modelDataType", codegenParameter.dataType.substring(0, indexOfNull));
+        }
+        codegenParameter.vendorExtensions.put("paramName", toLowerCase(codegenParameter.baseName.charAt(0)) + codegenParameter.baseName.substring(1));
     }
 
     @Override
@@ -67,10 +77,11 @@ public class PhpJsonRequestBodyResolver extends JsonRequestBodyResolver {
         containerResolver.rewrapContainerType(property, containerTypes);
         containerTypes.clear();
 
-        if (CodegenUtils.isPropertySchemaEnumJava(property)) {
-            conventionResolver.resolveEnumProperty(property, resourceName);
-            ((PhpApiResourceBuilder)apiResourceBuilder).addEnums(property);
-        } else if (model == null) {
+//        if (CodegenUtils.isPropertySchemaEnumJava(property)) {
+//            conventionResolver.resolveEnumProperty(property, resourceName);
+//            ((PhpApiResourceBuilder)apiResourceBuilder).addEnums(property);
+//        } else
+            if (model == null) {
             codegenPropertyResolver.resolve(property, apiResourceBuilder);
         } else {
             // Get children
@@ -87,5 +98,12 @@ public class PhpJsonRequestBodyResolver extends JsonRequestBodyResolver {
             }
             apiResourceBuilder.addNestedModel(model);
         }
+            if(!property.vendorExtensions.containsKey("modelDataType")) {
+                int indexOfNull = property.dataType.indexOf("|");
+                if (indexOfNull == -1)
+                    indexOfNull = property.dataType.length();
+                property.vendorExtensions.put("modelDataType", property.dataType.substring(0, indexOfNull));
+            }
+            property.vendorExtensions.put("paramName", toLowerCase(property.baseName.charAt(0)) + property.baseName.substring(1));
     }
 }

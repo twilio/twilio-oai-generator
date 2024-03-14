@@ -1,0 +1,30 @@
+class {{classname}} implements \JsonSerializable
+{
+    /**
+    {{#vars}}
+     * @property {{{dataType}}} ${{vendorExtensions.paramName}}{{#description}} {{{description}}}{{/description}}
+    {{/vars}}
+    */
+    {{#vars}}
+        protected ${{vendorExtensions.paramName}};
+    {{/vars}}
+    public function __construct(array $payload = []) {
+    {{#vars}}
+        $this->{{vendorExtensions.paramName}} = Values::array_get($payload, '{{vendorExtensions.paramName}}');
+    {{/vars}}
+    }
+
+    public function toArray(): array
+    {
+        return $this->jsonSerialize();
+    }
+
+    public function jsonSerialize(): array
+    {
+        return [
+            {{#vars}}
+            '{{vendorExtensions.paramName}}' => $this->{{vendorExtensions.paramName}}{{^-last}},{{/-last}}
+            {{/vars}}
+        ];
+    }
+}

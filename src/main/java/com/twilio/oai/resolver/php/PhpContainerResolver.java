@@ -52,6 +52,10 @@ public class PhpContainerResolver extends ContainerResolver {
     @Override
     public void rewrapContainerType(CodegenProperty codegenProperty, Stack<String> containerTypes) {
         String currentContainerType = "";
+        if(!containerTypes.empty() || codegenProperty.dataType.contains("array"))
+            codegenProperty.vendorExtensions.put("modelDataType", "array");
+//        else
+//            codegenProperty.vendorExtensions.put("modelDataType", codegenProperty.dataType);
         while(!containerTypes.empty()) {
             currentContainerType = containerTypes.pop();
             codegenProperty.dataType = codegenProperty.dataType + currentContainerType;
@@ -66,6 +70,8 @@ public class PhpContainerResolver extends ContainerResolver {
     @Override
     public void rewrapContainerType(CodegenParameter codegenParameter, Stack<String> containerTypes) {
         String currentContainerType = "";
+        if(!containerTypes.empty() || codegenParameter.dataType.contains("array"))
+            codegenParameter.vendorExtensions.put("modelDataType", "array");
         while(!containerTypes.empty()) {
             currentContainerType = containerTypes.pop();
             codegenParameter.dataType = currentContainerType + codegenParameter.dataType + ApplicationConstants.LIST_END;

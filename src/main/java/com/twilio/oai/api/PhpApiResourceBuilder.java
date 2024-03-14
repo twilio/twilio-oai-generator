@@ -423,27 +423,53 @@ public class PhpApiResourceBuilder extends ApiResourceBuilder {
 
     @Override
     public ApiResourceBuilder updateResponseModel(Resolver<CodegenProperty> codegenPropertyResolver, Resolver<CodegenModel> codegenModelResolver) {
+//        return updateResponseModel(codegenPropertyResolver);
+
+
+        List<CodegenModel> responseModels = new ArrayList<>();
+        PhpJsonRequestBodyResolver jsonRequestBodyResolver = new PhpJsonRequestBodyResolver(this, codegenPropertyResolver);
         codegenOperationList.forEach(codegenOperation -> {
-            List<CodegenModel> responseModels = new ArrayList<>();
+            List<String> filePathArray = new ArrayList<>(Arrays.asList(codegenOperation.baseName.split(PATH_SEPARATOR_PLACEHOLDER)));
+            String resourceName = filePathArray.remove(filePathArray.size()-1);
+            jsonRequestBodyResolver.setResourceName(resourceName);
             codegenOperation.responses
                     .stream()
+                    .filter(response -> SUCCESS.test(Integer.parseInt(response.code.trim())))
+//                    .map(response -> {
+//                        if (response.dataType != null && response.dataType.startsWith(EnumConstants.JavaDataTypes.LIST.getValue())) {
+//                            return response.baseType;
+//                        }
+//                        return response.dataType;
+//                    })
                     .map(response -> response.baseType)
                     .filter(Objects::nonNull)
                     .map(modelName -> this.getModel(modelName, codegenOperation))
                     .flatMap(Optional::stream)
                     .forEach(item -> {
-                        item.allVars.stream().filter(var -> var.isModel && var.dataFormat == null).forEach(this::setDataFormatForNestedProperties);
-                        item.vars.stream().filter(var -> var.isModel && var.dataFormat == null).forEach(this::setDataFormatForNestedProperties);
-                        item.vars.forEach(e -> codegenPropertyResolver.resolve(e, this));
-                        item.allVars.forEach(e -> codegenPropertyResolver.resolve(e, this));
+                        // Here use json body resolver
+//                        codegenModelResolver.resolve(item, this);
+                        item.allVars.forEach(property -> {
+                            if(property.isModel && property.dataFormat == null)
+                                setDataFormatForNestedProperties(property);
+                            jsonRequestBodyResolver.resolve(property);
+                        });
+                        item.vars.forEach(property -> {
+                            if(property.isModel && property.dataFormat == null)
+                                setDataFormatForNestedProperties(property);
+                            jsonRequestBodyResolver.resolve(property);
+                        });
                         responseModels.add(item);
+                        responseModels.addAll(headerParamModelList);
+//                        item.allVars.stream().filter(var -> var.isModel && var.dataFormat == null).forEach(this::setDataFormatForNestedProperties);
+//                        item.vars.stream().filter(var -> var.isModel && var.dataFormat == null).forEach(this::setDataFormatForNestedProperties);
+//                        item.vars.forEach(e -> codegenPropertyResolver.resolve(e, this));
+//                        item.allVars.forEach(e -> codegenPropertyResolver.resolve(e, this));
                     });
             this.apiResponseModels.addAll(getDistinctResponseModel(responseModels));
         });
         return this;
 
-//        List<CodegenModel> responseModels = new ArrayList<>();
-//        PhpJsonRequestBodyResolver jsonRequestBodyResolver = new PhpJsonRequestBodyResolver(this, codegenPropertyResolver);
+
 //        codegenOperationList.forEach(co -> {
 //            List<String> filePathArray = new ArrayList<>(Arrays.asList(co.baseName.split(PATH_SEPARATOR_PLACEHOLDER)));
 //            String resourceName = filePathArray.remove(filePathArray.size()-1);

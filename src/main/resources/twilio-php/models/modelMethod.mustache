@@ -1,0 +1,9 @@
+    /**
+    {{#vars}}
+     * @property {{{dataType}}} ${{vendorExtensions.paramName}}{{#description}} {{{description}}}{{/description}}
+    {{/vars}}
+    */
+    public static function create{{classname}}(array $payload = []): {{classname}}
+    {
+        return new {{classname}}($payload);
+    }
