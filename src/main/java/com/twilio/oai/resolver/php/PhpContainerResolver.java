@@ -1,9 +1,7 @@
 package com.twilio.oai.resolver.php;
 
-import com.twilio.oai.api.ApiResourceBuilder;
 import com.twilio.oai.common.ApplicationConstants;
 import com.twilio.oai.common.LanguageDataType;
-import com.twilio.oai.resolver.Resolver;
 import com.twilio.oai.resolver.java.ContainerResolver;
 import org.openapitools.codegen.CodegenParameter;
 import org.openapitools.codegen.CodegenProperty;
@@ -11,16 +9,15 @@ import org.openapitools.codegen.CodegenProperty;
 import java.util.List;
 import java.util.Stack;
 
+import static com.twilio.oai.PhpJsonRequestBodyResolver.MODEL_DATATYPE;
+
 public class PhpContainerResolver extends ContainerResolver {
     private final List<? extends LanguageDataType> languageDataTypes;
+    public static final String ARRAY_TYPE = "array";
+
     public PhpContainerResolver(List<? extends LanguageDataType> languageDataTypes) {
         super(languageDataTypes);
         this.languageDataTypes = languageDataTypes;
-    }
-
-    @Override
-    public CodegenProperty resolve(CodegenProperty codegenProperty, ApiResourceBuilder apiResourceBuilder, Resolver<CodegenProperty> resolver) {
-        return super.resolve(codegenProperty, apiResourceBuilder, resolver);
     }
 
     @Override
@@ -52,10 +49,8 @@ public class PhpContainerResolver extends ContainerResolver {
     @Override
     public void rewrapContainerType(CodegenProperty codegenProperty, Stack<String> containerTypes) {
         String currentContainerType = "";
-        if(!containerTypes.empty() || codegenProperty.dataType.contains("array"))
-            codegenProperty.vendorExtensions.put("modelDataType", "array");
-//        else
-//            codegenProperty.vendorExtensions.put("modelDataType", codegenProperty.dataType);
+        if(!containerTypes.empty() || codegenProperty.dataType.contains(ARRAY_TYPE))
+            codegenProperty.vendorExtensions.put(MODEL_DATATYPE, ARRAY_TYPE);
         while(!containerTypes.empty()) {
             currentContainerType = containerTypes.pop();
             codegenProperty.dataType = codegenProperty.dataType + currentContainerType;
@@ -64,14 +59,35 @@ public class PhpContainerResolver extends ContainerResolver {
 
     @Override
     public String unwrapContainerType(CodegenParameter codegenParameter, Stack<String> containerTypes) {
-        return super.unwrapContainerType(codegenParameter, containerTypes);
+        String codegenParameterDataType = "";
+        codegenParameterDataType = codegenParameter.dataType;
+
+        String currentContainerType = "";
+        boolean isContainerType = false;
+
+        while(codegenParameterDataType != null && !codegenParameterDataType.isEmpty()) {
+            for (LanguageDataType dataType : languageDataTypes) {
+                if (codegenParameterDataType.endsWith(dataType.getValue())) {
+                    isContainerType = true;
+                    currentContainerType = dataType.getValue();
+                }
+            }
+            if(isContainerType) {
+                containerTypes.push(currentContainerType);
+                codegenParameterDataType = codegenParameterDataType.substring(0, codegenParameterDataType.length()-2);
+                isContainerType = false;
+            }
+            else
+                return codegenParameterDataType;
+        }
+        return codegenParameterDataType;
     }
 
     @Override
     public void rewrapContainerType(CodegenParameter codegenParameter, Stack<String> containerTypes) {
         String currentContainerType = "";
-        if(!containerTypes.empty() || codegenParameter.dataType.contains("array"))
-            codegenParameter.vendorExtensions.put("modelDataType", "array");
+        if(!containerTypes.empty() || codegenParameter.dataType.contains(ARRAY_TYPE))
+            codegenParameter.vendorExtensions.put(MODEL_DATATYPE, ARRAY_TYPE);
         while(!containerTypes.empty()) {
             currentContainerType = containerTypes.pop();
             codegenParameter.dataType = currentContainerType + codegenParameter.dataType + ApplicationConstants.LIST_END;

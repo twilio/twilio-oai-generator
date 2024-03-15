@@ -1,7 +1,6 @@
 package com.twilio.oai;
 
 import com.twilio.oai.api.ApiResourceBuilder;
-import com.twilio.oai.api.PhpApiResourceBuilder;
 import com.twilio.oai.common.EnumConstants;
 import com.twilio.oai.resolver.Resolver;
 import com.twilio.oai.resolver.java.ContainerResolver;
@@ -18,22 +17,12 @@ import static java.lang.Character.toLowerCase;
 
 public class PhpJsonRequestBodyResolver extends JsonRequestBodyResolver {
 
+    public static final String MODEL_DATATYPE = "MODEL_DATATYPE";
     private final ContainerResolver containerResolver = new PhpContainerResolver(Arrays.asList(EnumConstants.PhpDataTypes.values()));
 
     public PhpJsonRequestBodyResolver(ApiResourceBuilder apiResourceBuilder, final Resolver<CodegenProperty> codegenPropertyResolver) {
         super(apiResourceBuilder, codegenPropertyResolver, new PhpConventionResolver());
     }
-
-//    @Override
-//    public void resolve(final CodegenParameter codegenParameter, final Resolver<CodegenParameter> codegenParameterResolver) {
-//        Stack<String> containerTypes = new Stack<>();
-//        codegenParameter.dataType = containerResolver.unwrapContainerType(codegenParameter, containerTypes);
-//        final CodegenModel model = apiResourceBuilder.getModel(codegenParameter.dataType);
-//        // currently supporting required and conditional parameters only for request body object
-//        if(model != null)
-//            model.vendorExtensions.put("x-constructor-required", true);
-//        containerResolver.rewrapContainerType(codegenParameter, containerTypes);
-//    }
 
     @Override
     public void resolve(final CodegenParameter codegenParameter, final Resolver<CodegenParameter> codegenParameterResolver) {
@@ -42,10 +31,6 @@ public class PhpJsonRequestBodyResolver extends JsonRequestBodyResolver {
         codegenParameter.dataType = containerResolver.unwrapContainerType(codegenParameter, containerTypes);
         final CodegenModel model = apiResourceBuilder.getModel(codegenParameter.dataType);
         containerResolver.rewrapContainerType(codegenParameter, containerTypes);
-//        if (CodegenUtils.isParameterSchemaEnumJava(codegenParameter)) {
-//            conventionResolver.resolveEnumParameter(codegenParameter, resourceName);
-//            ((PhpApiResourceBuilder)apiResourceBuilder).addEnums(codegenParameter);
-//        } else
             if(model == null) {
             // If parameter is not a model.
             codegenParameterResolver.resolve(codegenParameter, apiResourceBuilder);
@@ -60,13 +45,12 @@ public class PhpJsonRequestBodyResolver extends JsonRequestBodyResolver {
             }
             apiResourceBuilder.addNestedModel(model);
         }
-        if(!codegenParameter.vendorExtensions.containsKey("modelDataType")) {
+        if(!codegenParameter.vendorExtensions.containsKey(MODEL_DATATYPE)) {
             int indexOfNull = codegenParameter.dataType.indexOf("|");
             if (indexOfNull == -1)
                 indexOfNull = codegenParameter.dataType.length();
-            codegenParameter.vendorExtensions.put("modelDataType", codegenParameter.dataType.substring(0, indexOfNull));
+            codegenParameter.vendorExtensions.put(MODEL_DATATYPE, codegenParameter.dataType.substring(0, indexOfNull));
         }
-        codegenParameter.vendorExtensions.put("paramName", toLowerCase(codegenParameter.baseName.charAt(0)) + codegenParameter.baseName.substring(1));
     }
 
     @Override
@@ -77,10 +61,6 @@ public class PhpJsonRequestBodyResolver extends JsonRequestBodyResolver {
         containerResolver.rewrapContainerType(property, containerTypes);
         containerTypes.clear();
 
-//        if (CodegenUtils.isPropertySchemaEnumJava(property)) {
-//            conventionResolver.resolveEnumProperty(property, resourceName);
-//            ((PhpApiResourceBuilder)apiResourceBuilder).addEnums(property);
-//        } else
             if (model == null) {
             codegenPropertyResolver.resolve(property, apiResourceBuilder);
         } else {
@@ -98,12 +78,11 @@ public class PhpJsonRequestBodyResolver extends JsonRequestBodyResolver {
             }
             apiResourceBuilder.addNestedModel(model);
         }
-            if(!property.vendorExtensions.containsKey("modelDataType")) {
+            if(!property.vendorExtensions.containsKey(MODEL_DATATYPE)) {
                 int indexOfNull = property.dataType.indexOf("|");
                 if (indexOfNull == -1)
                     indexOfNull = property.dataType.length();
-                property.vendorExtensions.put("modelDataType", property.dataType.substring(0, indexOfNull));
+                property.vendorExtensions.put(MODEL_DATATYPE, property.dataType.substring(0, indexOfNull));
             }
-            property.vendorExtensions.put("paramName", toLowerCase(property.baseName.charAt(0)) + property.baseName.substring(1));
     }
 }

@@ -2,15 +2,15 @@ class {{classname}} implements \JsonSerializable
 {
     /**
     {{#vars}}
-     * @property {{{dataType}}} ${{vendorExtensions.paramName}}{{#description}} {{{description}}}{{/description}}
+     * @property {{{dataType}}} ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}{{#description}} {{{description}}}{{/description}}
     {{/vars}}
     */
     {{#vars}}
-        protected ${{vendorExtensions.paramName}};
+        protected ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}};
     {{/vars}}
     public function __construct(array $payload = []) {
     {{#vars}}
-        $this->{{vendorExtensions.paramName}} = Values::array_get($payload, '{{vendorExtensions.paramName}}');
+        $this->{{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}} = Values::array_get($payload, '{{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}');
     {{/vars}}
     }
 
@@ -23,7 +23,7 @@ class {{classname}} implements \JsonSerializable
     {
         return [
             {{#vars}}
-            '{{vendorExtensions.paramName}}' => $this->{{vendorExtensions.paramName}}{{^-last}},{{/-last}}
+            '{{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}' => $this->{{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}{{^-last}},{{/-last}}
             {{/vars}}
         ];
     }

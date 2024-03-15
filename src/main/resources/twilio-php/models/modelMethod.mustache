@@ -1,6 +1,6 @@
     /**
     {{#vars}}
-     * @property {{{dataType}}} ${{vendorExtensions.paramName}}{{#description}} {{{description}}}{{/description}}
+     * @property {{{dataType}}} ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}{{#description}} {{{description}}}{{/description}}
     {{/vars}}
     */
     public static function create{{classname}}(array $payload = []): {{classname}}
