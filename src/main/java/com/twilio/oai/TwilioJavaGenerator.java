@@ -84,6 +84,7 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
             }
         } else if (CodegenUtils.isParameterSchemaEnumJava(parameter)) {
             parameter.vendorExtensions.put(REF_ENUM_EXTENSION_NAME, true);
+            parameter.enumName = parameter.dataType;
             parameter.dataType = Utility.removeEnumName(parameter.dataType);
             parameter.baseType = Utility.removeEnumName(parameter.dataType);
             parameter.isEnum = true;
