@@ -26,7 +26,7 @@ public class TwilioCodegenAdapter {
 
     private static final String INPUT_SPEC_PATTERN = "[^_]+_(?<domain>.+?)(_(?<version>[^_]+))?\\..+";
     // regex example : https://flex-api.twilio.com
-    private static final String SERVER_PATTERN = "https://(?<domain>[^:/?\\n]+)\\.twilio\\.com";
+    private static final String SERVER_PATTERN = "https://(?<domain>[^:/?\\n]+)\\.twilio\\.com\\/?";
     private static final String DEFAULT_URL = "/";
     private Map<String, Map<String, Boolean>> toggles = new HashMap();
     public static final String DEFAULT_CONFIG_TOGGLE_JSON_PATH = CONFIG_PATH + File.separator + "toggles.json";
@@ -71,6 +71,9 @@ public class TwilioCodegenAdapter {
     
     public String getVersionFromOpenAPI(final OpenAPI openAPI) {
         String version = "";
+        version = StringHelper.camelize(getInputSpecVersion(), true);
+        if (!version.equals("sdk")) return version;
+        // Change is done for content api team.
         for (String path : openAPI.getPaths().keySet()) {
             Pattern pattern = Pattern.compile("/(\\d{4}-\\d{2}-\\d{2}|v\\d+)");
             Matcher matcher = pattern.matcher(path);

@@ -56,8 +56,15 @@ public class JavaConventionResolver {
         if (parameter.allowableValues != null && parameter.allowableValues.containsKey(ENUM_VARS)) {
             parameter.isEnum = true;
             parameter._enum = (List<String>) parameter.allowableValues.get(VALUES);
-            parameter.enumName = parameter.dataType;
-            parameter.dataType = resourceName + "." + parameter.dataType;
+            // Check if parameter enum is already resolved or not.
+            if (parameter.enumName == null || !parameter.dataType.startsWith(resourceName + ".")) {
+                // What if datatype is null ?
+                // remove resource name from datatype
+                parameter.enumName = parameter.dataType;
+            }
+            if (parameter.dataType == null || !parameter.dataType.startsWith(resourceName + "." )) {
+                parameter.dataType = resourceName + "." + parameter.dataType;
+            }
         }
         return parameter;
     }
