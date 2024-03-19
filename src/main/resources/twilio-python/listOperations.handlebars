@@ -46,9 +46,17 @@
         {{#allParams}}:param {{paramName}}: {{{description}}}{{/allParams}}
         :returns: The fetched {{instanceName}}
         """
-        {{#allParams}}{{#isHeaderParam}}headers = values.of({'{{{baseName}}}': {{paramName}}, }){{/isHeaderParam}}{{/allParams}}
-        {{#allParams}}{{#isQueryParam}}params = values.of({'{{{baseName}}}': {{paramName}}, }){{/isQueryParam}}{{/allParams}}
-        payload = self._version.fetch(method='GET', uri=self._uri{{#allParams}}{{#if isHeaderParam}}, headers=headers{{/if}}{{#if isQueryParam}}, params=params{{/if}}{{/allParams}})
+        {{#headerParams.0}}headers = values.of({
+                {{#headerParams}}'{{{baseName}}}': {{paramName}},
+                {{/headerParams}}
+            })
+        {{/headerParams.0}}
+        {{#queryParams.0}}params = values.of({
+                {{#queryParams}}'{{{baseName}}}': {{paramName}},
+                {{/queryParams}}
+            })
+        {{/queryParams.0}}
+        payload = self._version.fetch(method='GET', uri=self._uri{{#headerParams.0}}, headers=headers{{/headerParams.0}}{{#queryParams.0}}, params=params{{/queryParams.0}})
 
         return {{instanceName}}(self._version, payload{{#listPathParams}}, {{paramName}}=self._solution['{{paramName}}']{{/listPathParams}})
 
@@ -59,9 +67,17 @@
         {{#allParams}}:param {{paramName}}: {{{description}}}{{/allParams}}
         :returns: The fetched {{instanceName}}
         """
-        {{#allParams}}{{#isHeaderParam}}headers = values.of({'{{{baseName}}}': {{paramName}}, }){{/isHeaderParam}}{{/allParams}}
-        {{#allParams}}{{#isQueryParam}}params = values.of({'{{{baseName}}}': {{paramName}}, }){{/isQueryParam}}{{/allParams}}
-        payload = await self._version.fetch_async(method='GET', uri=self._uri{{#allParams}}{{#if isHeaderParam}}, headers=headers{{/if}}{{#if isQueryParam}}, params=params{{/if}}{{/allParams}})
+        {{#headerParams.0}}headers = values.of({
+            {{#headerParams}}'{{{baseName}}}': {{paramName}},
+            {{/headerParams}}
+            })
+        {{/headerParams.0}}
+        {{#queryParams.0}}params = values.of({
+            {{#queryParams}}'{{{baseName}}}': {{paramName}},
+            {{/queryParams}}
+            })
+        {{/queryParams.0}}
+        payload = await self._version.fetch_async(method='GET', uri=self._uri{{#headerParams.0}}, headers=headers{{/headerParams.0}}{{#queryParams.0}}, params=params{{/queryParams.0}})
 
         return {{instanceName}}(self._version, payload{{#listPathParams}}, {{paramName}}=self._solution['{{paramName}}']{{/listPathParams}}){{/vendorExtensions.x-is-fetch-operation}}{{#vendorExtensions.x-is-delete-operation}}
     def delete(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> bool:
