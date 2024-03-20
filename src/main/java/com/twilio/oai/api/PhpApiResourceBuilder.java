@@ -177,7 +177,7 @@ public class PhpApiResourceBuilder extends ApiResourceBuilder {
             co.allParams.stream()
                     .filter(item -> !(item.getContent() != null && item.getContent().get("application/json") != null))
                     .map(item -> codegenParameterIResolver.resolve(item, this))
-                    .map(item -> conventionResolver.resolveEnumParameter(item, resourceName))
+//                    .map(item -> conventionResolver.resolveEnumParameter(item, resourceName))
                     .collect(Collectors.toList());
 
             jsonRequestBodyResolver.setResourceName(resourceName);
@@ -193,29 +193,29 @@ public class PhpApiResourceBuilder extends ApiResourceBuilder {
                     });
             co.pathParams = co.pathParams.stream()
                     .map(item -> codegenParameterIResolver.resolve(item, this))
-                    .map(item -> conventionResolver.resolveEnumParameter(item, resourceName))
+//                    .map(item -> conventionResolver.resolveEnumParameter(item, resourceName))
                     .collect(Collectors.toList());
             co.queryParams = co.queryParams.stream()
                     .map(item -> codegenParameterIResolver.resolve(item, this))
-                    .map(item -> conventionResolver.resolveEnumParameter(item, resourceName))
+//                    .map(item -> conventionResolver.resolveEnumParameter(item, resourceName))
                     .collect(Collectors.toList());
             co.formParams = co.formParams.stream()
                     .map(item -> codegenParameterIResolver.resolve(item, this))
-                    .map(item -> conventionResolver.resolveEnumParameter(item, resourceName))
+//                    .map(item -> conventionResolver.resolveEnumParameter(item, resourceName))
                     .collect(Collectors.toList());
             co.headerParams = co.headerParams.stream()
                     .map(item -> codegenParameterIResolver.resolve(item, this))
-                    .map(item -> conventionResolver.resolveEnumParameter(item, resourceName))
+//                    .map(item -> conventionResolver.resolveEnumParameter(item, resourceName))
                     .collect(Collectors.toList());
             co.optionalParams = co.optionalParams
                     .stream()
                     .map(item -> codegenParameterIResolver.resolve(item, this))
-                    .map(item -> conventionResolver.resolveEnumParameter(item, resourceName))
+//                    .map(item -> conventionResolver.resolveEnumParameter(item, resourceName))
                     .collect(Collectors.toList());
             co.requiredParams = co.requiredParams
                     .stream()
                     .map(item -> codegenParameterIResolver.resolve(item, this))
-                    .map(item -> conventionResolver.resolveEnumParameter(item, resourceName))
+//                    .map(item -> conventionResolver.resolveEnumParameter(item, resourceName))
                     .collect(Collectors.toList());
 
             if (co.vendorExtensions.containsKey("x-ignore")) {
