@@ -29,7 +29,6 @@ public class PhpApiResourceBuilder extends ApiResourceBuilder {
 
     protected Resolver<CodegenProperty> codegenPropertyIResolver;
     private final PhpConventionResolver conventionResolver;
-    private Set<CodegenModel> headerParamModelList;
     public Set<IJsonSchemaValidationProperties> enums = new HashSet<>();
 
 
@@ -64,7 +63,8 @@ public class PhpApiResourceBuilder extends ApiResourceBuilder {
             template.add(PhpApiActionTemplate.TEMPLATE_TYPE_LIST);
             template.add(PhpApiActionTemplate.TEMPLATE_TYPE_INSTANCE);
             // if any operation in current op list(CRUDF) has application/json request body type
-            template.add(PhpApiActionTemplate.TEMPLATE_TYPE_MODELS);
+            if (!nestedModels.isEmpty())
+                template.add(PhpApiActionTemplate.TEMPLATE_TYPE_MODELS);
         });
         return this;
     }
@@ -167,7 +167,6 @@ public class PhpApiResourceBuilder extends ApiResourceBuilder {
 
     @Override
     public ApiResourceBuilder updateOperations(Resolver<CodegenParameter> codegenParameterIResolver) {
-        headerParamModelList = new HashSet<>();
         PhpJsonRequestBodyResolver jsonRequestBodyResolver = new PhpJsonRequestBodyResolver(this, codegenPropertyIResolver);
         this.codegenOperationList.forEach(co -> {
             updateNestedContent(co);
@@ -451,15 +450,14 @@ public class PhpApiResourceBuilder extends ApiResourceBuilder {
                         item.allVars.forEach(property -> {
                             if(property.isModel && property.dataFormat == null)
                                 setDataFormatForNestedProperties(property);
-                            jsonRequestBodyResolver.resolve(property);
+                            codegenPropertyResolver.resolve(property, this);
                         });
                         item.vars.forEach(property -> {
                             if(property.isModel && property.dataFormat == null)
                                 setDataFormatForNestedProperties(property);
-                            jsonRequestBodyResolver.resolve(property);
+                            codegenPropertyResolver.resolve(property, this);
                         });
                         responseModels.add(item);
-                        responseModels.addAll(headerParamModelList);
 //                        item.allVars.stream().filter(var -> var.isModel && var.dataFormat == null).forEach(this::setDataFormatForNestedProperties);
 //                        item.vars.stream().filter(var -> var.isModel && var.dataFormat == null).forEach(this::setDataFormatForNestedProperties);
 //                        item.vars.forEach(e -> codegenPropertyResolver.resolve(e, this));
