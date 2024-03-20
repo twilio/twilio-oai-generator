@@ -99,10 +99,6 @@ public class TwilioPhpGenerator extends PhpClientCodegen {
             parameter.isEnum = true;
         } else if (parameter.isEnum) {
             parameter.enumName = parameter.paramName;
-        } else {
-            if (parameter.isPathParam) {
-                parameter.paramName = "Path" + parameter.paramName.substring(0, 1).toUpperCase() + parameter.paramName.substring(1);
-            }
         }
     }
 
