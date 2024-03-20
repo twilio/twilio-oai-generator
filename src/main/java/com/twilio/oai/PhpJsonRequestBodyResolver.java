@@ -31,7 +31,7 @@ public class PhpJsonRequestBodyResolver extends JsonRequestBodyResolver {
         codegenParameter.dataType = containerResolver.unwrapContainerType(codegenParameter, containerTypes);
         final CodegenModel model = apiResourceBuilder.getModel(codegenParameter.dataType);
         containerResolver.rewrapContainerType(codegenParameter, containerTypes);
-            if(model == null) {
+        if(model == null) {
             // If parameter is not a model.
             codegenParameterResolver.resolve(codegenParameter, apiResourceBuilder);
         } else {
@@ -61,7 +61,7 @@ public class PhpJsonRequestBodyResolver extends JsonRequestBodyResolver {
         containerResolver.rewrapContainerType(property, containerTypes);
         containerTypes.clear();
 
-            if (model == null) {
+        if (model == null) {
             codegenPropertyResolver.resolve(property, apiResourceBuilder);
         } else {
             // Get children

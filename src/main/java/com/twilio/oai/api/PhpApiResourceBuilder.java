@@ -174,15 +174,15 @@ public class PhpApiResourceBuilder extends ApiResourceBuilder {
             List<String> filePathArray = new ArrayList<>(Arrays.asList(co.baseName.split(PATH_SEPARATOR_PLACEHOLDER)));
             String resourceName = filePathArray.remove(filePathArray.size()-1);
 
-            co.allParams.stream()
-                    .filter(item -> !(item.getContent() != null && item.getContent().get("application/json") != null))
-                    .map(item -> codegenParameterIResolver.resolve(item, this))
-//                    .map(item -> conventionResolver.resolveEnumParameter(item, resourceName))
-                    .collect(Collectors.toList());
+//            co.allParams.stream()
+//                    .filter(item -> !(item.getContent() != null && item.getContent().get("application/json") != null))
+//                    .map(item -> codegenParameterIResolver.resolve(item, this))
+////                    .map(item -> conventionResolver.resolveEnumParameter(item, resourceName))
+//                    .collect(Collectors.toList());
 
             jsonRequestBodyResolver.setResourceName(resourceName);
             co.allParams.stream()
-                    .filter(item -> (item.getContent() != null && item.getContent().get("application/json") != null))
+//                    .filter(item -> (item.getContent() != null && item.getContent().get("application/json") != null))
                     .forEach(item -> {
                         CodegenModel model = getModel(item.dataType);
                         // currently supporting required and conditional parameters only for request body object
