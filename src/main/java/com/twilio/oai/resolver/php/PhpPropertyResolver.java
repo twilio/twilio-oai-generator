@@ -2,16 +2,10 @@ package com.twilio.oai.resolver.php;
 
 import com.twilio.oai.StringHelper;
 import com.twilio.oai.api.ApiResourceBuilder;
-import com.twilio.oai.common.EnumConstants;
 import com.twilio.oai.resolver.IConventionMapper;
 import com.twilio.oai.resolver.LanguageConventionResolver;
 import com.twilio.oai.resolver.LanguagePropertyResolver;
-
-import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenProperty;
-
-import java.util.List;
-
 import static com.twilio.oai.common.ApplicationConstants.ARRAY;
 import static com.twilio.oai.common.ApplicationConstants.STRING;
 import static com.twilio.oai.resolver.php.PhpParameterResolver.FLOAT;
@@ -53,7 +47,7 @@ public class PhpPropertyResolver extends LanguagePropertyResolver {
         if (codegenProperty.dataType.contains("Enum") || codegenProperty.complexType != null) {
             if (codegenProperty.openApiType.equals(ARRAY)) {
                 codegenProperty.dataType = STRING + "[]";
-            } else if (codegenProperty.openApiType.equals(STRING) || codegenProperty.dataType.contains(OPEN_API_STRING)) {
+            } else {
                 codegenProperty.dataType = STRING;
             }
         }

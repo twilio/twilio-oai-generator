@@ -32,6 +32,8 @@ public class PhpJsonRequestBodyResolver extends JsonRequestBodyResolver {
         final CodegenModel model = apiResourceBuilder.getModel(codegenParameter.dataType);
         containerResolver.rewrapContainerType(codegenParameter, containerTypes);
         if (CodegenUtils.isParameterSchemaEnumJava(codegenParameter)) {
+            if(!codegenParameter.dataType.contains("Enum"))
+                codegenParameter.dataType = "Enum" + codegenParameter.dataType;
             codegenParameterResolver.resolve(codegenParameter, apiResourceBuilder);
         } else if(model == null) {
             // If parameter is not a model.
@@ -47,12 +49,6 @@ public class PhpJsonRequestBodyResolver extends JsonRequestBodyResolver {
             }
             apiResourceBuilder.addNestedModel(model);
         }
-//        if(!codegenParameter.vendorExtensions.containsKey(MODEL_DATATYPE)) {
-//            int indexOfNull = codegenParameter.dataType.indexOf("|");
-//            if (indexOfNull == -1)
-//                indexOfNull = codegenParameter.dataType.length();
-//            codegenParameter.vendorExtensions.put(MODEL_DATATYPE, codegenParameter.dataType.substring(0, indexOfNull));
-//        }
     }
 
     @Override
@@ -63,6 +59,8 @@ public class PhpJsonRequestBodyResolver extends JsonRequestBodyResolver {
         containerResolver.rewrapContainerType(property, containerTypes);
         containerTypes.clear();
         if (CodegenUtils.isPropertySchemaEnumJava(property)) {
+            if(!property.dataType.contains("Enum"))
+                property.dataType = "Enum" + property.dataType;
             codegenPropertyResolver.resolve(property, apiResourceBuilder);
         } else if(model == null) {
             codegenPropertyResolver.resolve(property, apiResourceBuilder);
@@ -81,11 +79,5 @@ public class PhpJsonRequestBodyResolver extends JsonRequestBodyResolver {
             }
             apiResourceBuilder.addNestedModel(model);
         }
-//            if(!property.vendorExtensions.containsKey(MODEL_DATATYPE)) {
-//                int indexOfNull = property.dataType.indexOf("|");
-//                if (indexOfNull == -1)
-//                    indexOfNull = property.dataType.length();
-//                property.vendorExtensions.put(MODEL_DATATYPE, property.dataType.substring(0, indexOfNull));
-//            }
     }
 }
