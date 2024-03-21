@@ -351,6 +351,7 @@ public class PhpApiResourceBuilder extends ApiResourceBuilder {
             List<CodegenModel> responseModels = new ArrayList<>();
             codegenOperation.responses
                     .stream()
+                    .filter(response -> SUCCESS.test(Integer.parseInt(response.code.trim())))
                     .map(response -> response.baseType)
                     .filter(Objects::nonNull)
                     .map(modelName -> this.getModel(modelName, codegenOperation))
@@ -360,39 +361,6 @@ public class PhpApiResourceBuilder extends ApiResourceBuilder {
                         item.vars.stream().filter(var -> var.isModel && var.dataFormat == null).forEach(this::setDataFormatForNestedProperties);
                         item.vars.forEach(e -> codegenPropertyResolver.resolve(e, this));
                         item.allVars.forEach(e -> codegenPropertyResolver.resolve(e, this));
-                        responseModels.add(item);
-                    });
-            this.apiResponseModels.addAll(getDistinctResponseModel(responseModels));
-        });
-        return this;
-    }
-
-    @Override
-    public ApiResourceBuilder updateResponseModel(Resolver<CodegenProperty> codegenPropertyResolver, Resolver<CodegenModel> codegenModelResolver) {
-        List<CodegenModel> responseModels = new ArrayList<>();
-        PhpJsonRequestBodyResolver jsonRequestBodyResolver = new PhpJsonRequestBodyResolver(this, codegenPropertyResolver);
-        codegenOperationList.forEach(codegenOperation -> {
-            List<String> filePathArray = new ArrayList<>(Arrays.asList(codegenOperation.baseName.split(PATH_SEPARATOR_PLACEHOLDER)));
-            String resourceName = filePathArray.remove(filePathArray.size()-1);
-            jsonRequestBodyResolver.setResourceName(resourceName);
-            codegenOperation.responses
-                    .stream()
-                    .filter(response -> SUCCESS.test(Integer.parseInt(response.code.trim())))
-                    .map(response -> response.baseType)
-                    .filter(Objects::nonNull)
-                    .map(modelName -> this.getModel(modelName, codegenOperation))
-                    .flatMap(Optional::stream)
-                    .forEach(item -> {
-                        item.allVars.forEach(property -> {
-                            if(property.isModel && property.dataFormat == null)
-                                setDataFormatForNestedProperties(property);
-                            codegenPropertyResolver.resolve(property, this);
-                        });
-                        item.vars.forEach(property -> {
-                            if(property.isModel && property.dataFormat == null)
-                                setDataFormatForNestedProperties(property);
-                            codegenPropertyResolver.resolve(property, this);
-                        });
                         responseModels.add(item);
                     });
             this.apiResponseModels.addAll(getDistinctResponseModel(responseModels));
