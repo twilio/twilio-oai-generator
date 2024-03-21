@@ -23,7 +23,6 @@ import org.openapitools.codegen.model.OperationsMap;
 
 import java.util.*;
 
-import static com.twilio.oai.common.ApplicationConstants.*;
 
 public class TwilioPhpGenerator extends PhpClientCodegen {
 
@@ -84,22 +83,6 @@ public class TwilioPhpGenerator extends PhpClientCodegen {
         parameter.dataType = extractDataType(parameter.dataType);
         if(parameter.datatypeWithEnum != null)
             parameter.datatypeWithEnum = extractDataType(parameter.datatypeWithEnum);
-//        if (parameter.dataType.endsWith(PYTHON_LIST_END) && CodegenUtils.isParameterSchemaEnumJava(parameter)) {
-//            if (parameter.dataType.contains(ENUM)) {
-//                String lastValue = Utility.removeEnumName(parameter.dataType);
-//                parameter.dataType = lastValue;
-//                parameter.vendorExtensions.put(REF_ENUM_EXTENSION_NAME, true);
-//                parameter.baseType = lastValue.substring(0, lastValue.indexOf("["));
-//            }
-//        } else if (CodegenUtils.isParameterSchemaEnumJava(parameter)) {
-//            parameter.vendorExtensions.put(REF_ENUM_EXTENSION_NAME, true);
-//            String lastValue = Utility.removeEnumName(parameter.dataType);
-//            parameter.dataType = lastValue;
-//            parameter.baseType = lastValue;
-//            parameter.isEnum = true;
-//        } else if (parameter.isEnum) {
-//            parameter.enumName = parameter.paramName;
-//        }
     }
 
     @Override
@@ -108,27 +91,6 @@ public class TwilioPhpGenerator extends PhpClientCodegen {
         property.dataType = extractDataType(property.dataType);
         if(property.datatypeWithEnum != null)
             property.datatypeWithEnum = extractDataType(property.datatypeWithEnum);
-//        if (property.baseType.startsWith(ARRAY) && CodegenUtils.isPropertySchemaEnumJava(property)) {
-//            property.vendorExtensions.put(REF_ENUM_EXTENSION_NAME, true);
-//            String lastValue = Utility.removeEnumName(property.dataType);
-//            property.dataType = lastValue;
-//            property.complexType = lastValue.substring(0, lastValue.indexOf("["));
-//            property.baseType = property.complexType;
-//            property.isEnum = true;
-//            property.allowableValues = property.items.allowableValues;
-//            property._enum = (List<String>) property.items.allowableValues.get(VALUES);
-//        }
-//        else if (CodegenUtils.isPropertySchemaEnumJava(property)) {
-//            property.vendorExtensions.put(REF_ENUM_EXTENSION_NAME, true);
-//            property.dataType = Utility.removeEnumName(property.dataType);
-//            property.complexType = property.dataType;
-//            property.baseType = property.dataType;
-//            property.isEnum = true;
-//            property._enum = (List<String>) property.allowableValues.get(VALUES);
-//        } else if (property.isEnum) {
-//            property.enumName = property.baseName;
-//        }
-//        property.isEnum = property.isEnum && property.dataFormat == null;
     }
 
     @Override

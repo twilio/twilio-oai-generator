@@ -144,7 +144,7 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
         }
     }
 
-    // Sanitizing URL path similar to java codegen3.
+    // Sanitizing URL path similar to java codegen.
     @Override
     public String sanitizeTag(String tag) {
         tag = StringHelper.camelize(org.openapitools.codegen.utils.StringUtils.underscore(this.sanitizeName(tag)));

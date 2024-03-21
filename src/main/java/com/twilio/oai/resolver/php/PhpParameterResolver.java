@@ -1,16 +1,11 @@
 package com.twilio.oai.resolver.php;
 
 import com.twilio.oai.api.ApiResourceBuilder;
-import com.twilio.oai.common.ApplicationConstants;
-import com.twilio.oai.common.EnumConstants;
 import com.twilio.oai.resolver.IConventionMapper;
 import com.twilio.oai.resolver.LanguageConventionResolver;
 import com.twilio.oai.resolver.LanguageParamResolver;
 
-import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenParameter;
-
-import java.util.List;
 
 import static com.twilio.oai.common.ApplicationConstants.ARRAY;
 import static com.twilio.oai.common.ApplicationConstants.OBJECT;
@@ -68,12 +63,4 @@ public class PhpParameterResolver extends LanguageParamResolver {
             codegenParameter.vendorExtensions.put(SERIALIZE_VEND_EXT, SERIALIZE_ARRAY_JSON_OBJECT);
         }
     }
-
-//    private void resolveIngressModel(CodegenParameter parameter, ApiResourceBuilder apiResourceBuilder) {
-//        for (CodegenModel model : apiResourceBuilder.getAllModels()) {
-//            if(model.getClassname().equals(parameter.baseType)) {
-//                parameter.dataType = apiResourceBuilder.getApiName() + "Models" + ApplicationConstants.DOT + parameter.dataType;
-//            }
-//        }
-//    }
 }

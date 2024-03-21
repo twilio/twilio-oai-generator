@@ -55,5 +55,4 @@ public class PhpPropertyResolver extends LanguagePropertyResolver {
             codegenProperty.dataType = codegenProperty.dataType + "|null";
         }
     }
-
 }

@@ -39,7 +39,6 @@ public class PhpJsonRequestBodyResolver extends JsonRequestBodyResolver {
             // If parameter is not a model.
             codegenParameterResolver.resolve(codegenParameter, apiResourceBuilder);
         } else {
-            // Example: datatype resolution: CreateMessagesRequest -> Message.CreateMessagesRequest
             codegenParameterResolver.resolve(codegenParameter, apiResourceBuilder);
             for (CodegenProperty property: model.getVars()) {
                 resolve(property);
