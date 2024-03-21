@@ -47,10 +47,7 @@ public class PhpPropertyResolver extends LanguagePropertyResolver {
         if (codegenProperty.dataType.contains("Enum") || codegenProperty.complexType != null) {
             if (codegenProperty.openApiType.equals(ARRAY)) {
                 codegenProperty.dataType = STRING + "[]";
-            } else if (codegenProperty.openApiType.equals(STRING) || codegenProperty.dataType.contains(OPEN_API_STRING)) {
-                codegenProperty.dataType = STRING;
-            }
-            else if (codegenProperty.dataFormat == null){
+            } else if (codegenProperty.openApiType.equals(STRING) || !codegenProperty.dataType.contains("PhoneNumberCapabilities")) {
                 codegenProperty.dataType = STRING;
             }
         }
