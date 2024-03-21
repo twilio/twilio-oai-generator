@@ -20,6 +20,13 @@ public class PhpContainerResolver extends ContainerResolver {
         this.languageDataTypes = languageDataTypes;
     }
 
+    /**
+     * Unwraps the container type(s) from the underlying property datatype and adds the container type(s) to the given
+     * containerTypes stack. Returns the underlying property datatype (i.e. "IceServer[]" -> "IceServer").
+     * @param codegenProperty the property with wrapped datatype
+     * @param containerTypes the stack to store the datatypes
+     * @return underlying datatype
+     */
     @Override
     public String unwrapContainerType(CodegenProperty codegenProperty, Stack<String> containerTypes) {
         String codegenPropertyDataType = "";
@@ -46,6 +53,12 @@ public class PhpContainerResolver extends ContainerResolver {
         return codegenPropertyDataType;
     }
 
+    /**
+     * Rewraps the property dataType with the container types in the given stack. Sets the property dataType to the
+     * rewrapped value (i.e. "IceServer" -> "IceServer[]").
+     * @param codegenProperty the property that has to be wrapped
+     * @param containerTypes the stack that stores the datatypes
+     */
     @Override
     public void rewrapContainerType(CodegenProperty codegenProperty, Stack<String> containerTypes) {
         String currentContainerType = "";

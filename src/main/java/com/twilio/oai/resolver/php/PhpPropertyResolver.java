@@ -48,6 +48,7 @@ public class PhpPropertyResolver extends LanguagePropertyResolver {
             if (codegenProperty.openApiType.equals(ARRAY)) {
                 codegenProperty.dataType = STRING + "[]";
             } else if (codegenProperty.openApiType.equals(STRING) || !codegenProperty.dataType.contains("PhoneNumberCapabilities")) {
+                // SDK supports only PhoneNumberCapabilities model on its own
                 codegenProperty.dataType = STRING;
             }
         }

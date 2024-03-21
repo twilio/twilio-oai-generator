@@ -77,6 +77,10 @@ public class TwilioPhpGenerator extends PhpClientCodegen {
         PhpDomainBuilder.setVersionTemplate(openAPI, directoryStructureService);
     }
 
+    /**
+     * Preprocesses codegen parameter to remove unnecessary data
+     * @param parameter the codegen parameter having unprocessed data
+     */
     @Override
     public void postProcessParameter(final CodegenParameter parameter) {
         super.postProcessParameter(parameter);
@@ -85,6 +89,11 @@ public class TwilioPhpGenerator extends PhpClientCodegen {
             parameter.datatypeWithEnum = extractDataType(parameter.datatypeWithEnum);
     }
 
+    /**
+     * Preprocesses codegen property to remove unnecessary data
+     * @param model the codegen model for the property
+     * @param property the codegen property having unprocessed data
+     */
     @Override
     public void postProcessModelProperty(CodegenModel model, CodegenProperty property) {
         super.postProcessModelProperty(model, property);
@@ -123,6 +132,11 @@ public class TwilioPhpGenerator extends PhpClientCodegen {
         return StringHelper.camelize(twilioCodegen.toParamName(name));
     }
 
+    /**
+     * Trims unnecessary OpenAPI part from dataType
+     * @param dataType the input datatype
+     * @return dataType with //OpenAPI//Client//... removed
+     */
     private String extractDataType(String dataType) {
         String[] parts = dataType.split("\\\\");
         return parts[parts.length - 1];

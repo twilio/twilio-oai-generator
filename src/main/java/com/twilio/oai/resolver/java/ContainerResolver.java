@@ -66,6 +66,7 @@ public class ContainerResolver {
      * @param containerTypes
      */
     public void rewrapContainerType(CodegenProperty codegenProperty, Stack<String> containerTypes) {
+        // making it non-static to override
         String currentContainerType = "";
         while(!containerTypes.empty()) {
             currentContainerType = containerTypes.pop();
@@ -100,6 +101,7 @@ public class ContainerResolver {
     }
 
     public void rewrapContainerType(CodegenParameter codegenParameter, Stack<String> containerTypes) {
+        // making it non-static to override
         String currentContainerType = "";
         while(!containerTypes.empty()) {
             currentContainerType = containerTypes.pop();

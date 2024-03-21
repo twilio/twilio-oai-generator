@@ -24,6 +24,11 @@ public class PhpJsonRequestBodyResolver extends JsonRequestBodyResolver {
         super(apiResourceBuilder, codegenPropertyResolver, new PhpConventionResolver());
     }
 
+    /**
+     * Resolves the codegen parameter using model and recursively resolving its properties
+     * @param codegenParameter the parameter to be resolved
+     * @param codegenParameterResolver the language based parameter resolver
+     */
     @Override
     public void resolve(final CodegenParameter codegenParameter, final Resolver<CodegenParameter> codegenParameterResolver) {
         // Only add if model exists
@@ -32,7 +37,7 @@ public class PhpJsonRequestBodyResolver extends JsonRequestBodyResolver {
         final CodegenModel model = apiResourceBuilder.getModel(codegenParameter.dataType);
         containerResolver.rewrapContainerType(codegenParameter, containerTypes);
         if (CodegenUtils.isParameterSchemaEnumJava(codegenParameter)) {
-            if(!codegenParameter.dataType.contains("Enum"))
+            if(!codegenParameter.dataType.contains("Enum")) // if Enum is not present in name, adding exclusively to resolve by parameter resolver
                 codegenParameter.dataType = "Enum" + codegenParameter.dataType;
             codegenParameterResolver.resolve(codegenParameter, apiResourceBuilder);
         } else if(model == null) {
@@ -50,6 +55,10 @@ public class PhpJsonRequestBodyResolver extends JsonRequestBodyResolver {
         }
     }
 
+    /**
+     * Recursively resolves the codegen property using model
+     * @param property the codegen property to be resolved
+     */
     @Override
     public void resolve(final CodegenProperty property) {
         Stack<String> containerTypes = new Stack<>();
@@ -58,7 +67,7 @@ public class PhpJsonRequestBodyResolver extends JsonRequestBodyResolver {
         containerResolver.rewrapContainerType(property, containerTypes);
         containerTypes.clear();
         if (CodegenUtils.isPropertySchemaEnumJava(property)) {
-            if(!property.dataType.contains("Enum"))
+            if(!property.dataType.contains("Enum")) // if Enum is not present in name, adding exclusively to resolve by property resolver
                 property.dataType = "Enum" + property.dataType;
             codegenPropertyResolver.resolve(property, apiResourceBuilder);
         } else if(model == null) {
