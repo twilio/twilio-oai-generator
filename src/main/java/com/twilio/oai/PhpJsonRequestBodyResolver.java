@@ -5,7 +5,6 @@ import com.twilio.oai.common.EnumConstants;
 import com.twilio.oai.resolver.Resolver;
 import com.twilio.oai.resolver.java.ContainerResolver;
 import com.twilio.oai.resolver.php.PhpContainerResolver;
-import com.twilio.oai.resolver.php.PhpConventionResolver;
 import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenParameter;
 import org.openapitools.codegen.CodegenProperty;
@@ -21,7 +20,7 @@ public class PhpJsonRequestBodyResolver extends JsonRequestBodyResolver {
     private final ContainerResolver containerResolver = new PhpContainerResolver(Arrays.asList(EnumConstants.PhpDataTypes.values()));
 
     public PhpJsonRequestBodyResolver(ApiResourceBuilder apiResourceBuilder, final Resolver<CodegenProperty> codegenPropertyResolver) {
-        super(apiResourceBuilder, codegenPropertyResolver, new PhpConventionResolver());
+        super(apiResourceBuilder, codegenPropertyResolver);
     }
 
     /**

@@ -4,9 +4,8 @@ import com.twilio.oai.api.ApiResourceBuilder;
 import com.twilio.oai.api.JavaApiResourceBuilder;
 import com.twilio.oai.common.EnumConstants;
 import com.twilio.oai.resolver.Resolver;
-import com.twilio.oai.resolver.common.CodegenConventionResolver;
 import com.twilio.oai.resolver.java.ContainerResolver;
-import lombok.Setter;
+import com.twilio.oai.resolver.java.JavaConventionResolver;
 import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenParameter;
 import org.openapitools.codegen.CodegenProperty;
@@ -20,17 +19,20 @@ public class JsonRequestBodyResolver {
 
     final ApiResourceBuilder apiResourceBuilder;
 
-    private final ContainerResolver containerResolver = new ContainerResolver(Arrays.asList(EnumConstants.JavaDataTypes.values()));
+    final private ContainerResolver containerResolver = new ContainerResolver(Arrays.asList(EnumConstants.JavaDataTypes.values()));
 
-    protected final CodegenConventionResolver conventionResolver;
+    private final JavaConventionResolver conventionResolver;
 
-    @Setter
-    protected String resourceName;
+    public void setResourceName(String resourceName) {
+        this.resourceName = resourceName;
+    }
 
-    public JsonRequestBodyResolver(ApiResourceBuilder apiResourceBuilder, final Resolver<CodegenProperty> codegenPropertyResolver, CodegenConventionResolver codegenConventionResolver) {
+    private String resourceName;
+
+    public JsonRequestBodyResolver(ApiResourceBuilder apiResourceBuilder, final Resolver<CodegenProperty> codegenPropertyResolver) {
         this.codegenPropertyResolver = codegenPropertyResolver;
         this.apiResourceBuilder = apiResourceBuilder;
-        this.conventionResolver = codegenConventionResolver;
+        this.conventionResolver = new JavaConventionResolver();
     }
 
     public void resolve(final CodegenParameter codegenParameter, final Resolver<CodegenParameter> codegenParameterResolver) {

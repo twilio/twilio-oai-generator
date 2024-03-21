@@ -73,7 +73,7 @@ public class JavaApiResourceBuilder extends ApiResourceBuilder{
     @Override
     public ApiResourceBuilder updateOperations(Resolver<CodegenParameter> codegenParameterIResolver) {
         headerParamModelList = new HashSet<>();
-        JsonRequestBodyResolver jsonRequestBodyResolver = new JsonRequestBodyResolver(this, codegenPropertyIResolver, new JavaConventionResolver());
+        JsonRequestBodyResolver jsonRequestBodyResolver = new JsonRequestBodyResolver(this, codegenPropertyIResolver);
         this.codegenOperationList.forEach(co -> {
             updateNestedContent(co);
             List<String> filePathArray = new ArrayList<>(Arrays.asList(co.baseName.split(PATH_SEPARATOR_PLACEHOLDER)));
@@ -158,7 +158,7 @@ public class JavaApiResourceBuilder extends ApiResourceBuilder{
     @Override
     public ApiResourceBuilder updateResponseModel(Resolver<CodegenProperty> codegenPropertyIResolver, Resolver<CodegenModel> codegenModelResolver) {
         List<CodegenModel> responseModels = new ArrayList<>();
-        JsonRequestBodyResolver jsonRequestBodyResolver = new JsonRequestBodyResolver(this, codegenPropertyIResolver, new JavaConventionResolver());
+        JsonRequestBodyResolver jsonRequestBodyResolver = new JsonRequestBodyResolver(this, codegenPropertyIResolver);
         codegenOperationList.forEach(co -> {
             List<String> filePathArray = new ArrayList<>(Arrays.asList(co.baseName.split(PATH_SEPARATOR_PLACEHOLDER)));
             String resourceName = filePathArray.remove(filePathArray.size()-1);

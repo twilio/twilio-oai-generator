@@ -10,7 +10,6 @@ import java.util.Stack;
 import com.twilio.oai.common.ApplicationConstants;
 import com.twilio.oai.common.EnumConstants;
 import com.twilio.oai.common.Utility;
-import com.twilio.oai.resolver.common.CodegenConventionResolver;
 import org.openapitools.codegen.CodegenParameter;
 import org.openapitools.codegen.CodegenProperty;
 
@@ -19,7 +18,7 @@ import static com.twilio.oai.common.ApplicationConstants.LIST_END;
 import static com.twilio.oai.common.ApplicationConstants.LIST_START;
 import static com.twilio.oai.common.ApplicationConstants.REF_ENUM_EXTENSION_NAME;
 
-public class JavaConventionResolver extends CodegenConventionResolver {
+public class JavaConventionResolver {
     private static final String VALUES = "values";
 
     private ContainerResolver containerResolver = new ContainerResolver(Arrays.asList(EnumConstants.JavaDataTypes.values()));

@@ -5,7 +5,6 @@ import com.twilio.oai.common.EnumConstants;
 import com.twilio.oai.resolver.IConventionMapper;
 import com.twilio.oai.resolver.LanguageConventionResolver;
 import com.twilio.oai.resolver.Resolver;
-import com.twilio.oai.resolver.php.PhpConventionResolver;
 import com.twilio.oai.resource.Resource;
 import com.twilio.oai.template.IApiActionTemplate;
 import com.twilio.oai.template.PhpApiActionTemplate;
@@ -27,7 +26,6 @@ public class PhpApiResourceBuilder extends ApiResourceBuilder {
     protected String apiContextPath = "";
 
     protected Resolver<CodegenProperty> codegenPropertyIResolver;
-    private final PhpConventionResolver conventionResolver;
     public Set<IJsonSchemaValidationProperties> enums = new HashSet<>();
 
 
@@ -37,7 +35,6 @@ public class PhpApiResourceBuilder extends ApiResourceBuilder {
     public PhpApiResourceBuilder(IApiActionTemplate template, List<CodegenOperation> codegenOperations,
                                   List<CodegenModel> allModels) {
         super(template, codegenOperations, allModels);
-        this.conventionResolver = new PhpConventionResolver();
     }
 
     public PhpApiResourceBuilder(IApiActionTemplate template, List<CodegenOperation> codegenOperations, List<CodegenModel> allModels,
