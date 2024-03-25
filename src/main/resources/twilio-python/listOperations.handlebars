@@ -12,9 +12,19 @@
         {{^bodyParam}}{{#hasParams}}data = values.of({ {{#allParams}}{{#isFormParam}}
             '{{{baseName}}}': {{#if vendorExtensions.x-serialize}}{{vendorExtensions.x-serialize}}({{paramName}}{{#if isArray}}, lambda e: {{#startsWith baseType text='object'}}serialize.object(e){{else}}e{{/startsWith}}){{else}}){{/if}}{{else}}{{paramName}}{{/if}},{{/isFormParam}}{{/allParams}}
         }){{/hasParams}}{{/bodyParam}}
-        {{#allParams}}{{#isHeaderParam}}headers = values.of({'{{{baseName}}}': {{paramName}}, }){{/isHeaderParam}}{{/allParams}}
-        {{#allParams}}{{#isBodyParam}}headers = {"Content-Type": "application/json"}{{/isBodyParam}}{{/allParams}}
-        payload = self._version.create(method='POST', uri=self._uri, {{#hasParams}}data=data,{{/hasParams}}{{#allParams}}{{#if isHeaderParam}} headers=headers{{/if}}{{#if isBodyParam}} headers=headers{{/if}}{{#if isQueryParam}}, params=params{{/if}}{{/allParams}})
+        {{#headerParams.0}}headers = values.of({
+                {{#headerParams}}'{{{baseName}}}': {{paramName}},
+                {{/headerParams}}
+                {{#bodyParams.0}}'Content-Type': 'application/json'{{/bodyParams.0}}
+            })
+        {{/headerParams.0}}
+        {{^headerParams}}{{#bodyParams.0}}headers = {'Content-Type': 'application/json'}{{/bodyParams.0}}{{/headerParams}}
+        {{#queryParams.0}}params = values.of({
+                {{#queryParams}}'{{{baseName}}}': {{paramName}},
+                {{/queryParams}}
+            })
+        {{/queryParams.0}}
+        payload = self._version.create(method='POST', uri=self._uri, {{#hasParams}}data=data,{{/hasParams}}{{#headerParams.0}} headers=headers{{/headerParams.0}}{{^headerParams}}{{#bodyParams.0}} headers=headers{{/bodyParams.0}}{{/headerParams}}{{#queryParams.0}}, params=params{{/queryParams.0}})
 
         return {{instanceName}}(self._version, payload{{#listPathParams}}, {{paramName}}=self._solution['{{paramName}}']{{/listPathParams}})
 
@@ -26,16 +36,22 @@
         {{/allParams}}
         :returns: The created {{instanceName}}
         """
-        {{#bodyParam}}
-        data = {{paramName}}.to_dict()
-        headers = {"Content-Type": "application/json"}
-        {{/bodyParam}}
+        {{#bodyParam}}data = {{paramName}}.to_dict(){{/bodyParam}}
         {{^bodyParam}}{{#hasParams}}data = values.of({ {{#allParams}}{{#isFormParam}}
             '{{{baseName}}}': {{#if vendorExtensions.x-serialize}}{{vendorExtensions.x-serialize}}({{paramName}}{{#if isArray}}, lambda e: {{#startsWith baseType text='object'}}serialize.object(e){{else}}e{{/startsWith}}){{else}}){{/if}}{{else}}{{paramName}}{{/if}},{{/isFormParam}}{{/allParams}}
         }){{/hasParams}}{{/bodyParam}}
-        {{#allParams}}{{#isHeaderParam}}headers = values.of({'{{{baseName}}}': {{paramName}}, }){{/isHeaderParam}}{{/allParams}}
-        {{#allParams}}{{#isQueryParam}}params = values.of({'{{{baseName}}}': {{paramName}}, }){{/isQueryParam}}{{/allParams}}
-        payload = await self._version.create_async(method='POST', uri=self._uri, {{#hasParams}}data=data,{{/hasParams}}{{#allParams}}{{#if isHeaderParam}} headers=headers{{/if}}{{#if isBodyParam}} headers=headers{{/if}}{{#if isQueryParam}}, params=params{{/if}}{{/allParams}})
+        {{#headerParams.0}}headers = values.of({
+                {{#headerParams}}'{{{baseName}}}': {{paramName}},
+                {{/headerParams}}
+            })
+        {{/headerParams.0}}
+        {{^headerParams}}{{#bodyParams.0}}headers = {'Content-Type': 'application/json'}{{/bodyParams.0}}{{/headerParams}}
+        {{#queryParams.0}}params = values.of({
+                {{#queryParams}}'{{{baseName}}}': {{paramName}},
+                {{/queryParams}}
+            })
+        {{/queryParams.0}}
+        payload = await self._version.create_async(method='POST', uri=self._uri, {{#hasParams}}data=data,{{/hasParams}}{{#headerParams.0}} headers=headers{{/headerParams.0}}{{^headerParams}}{{#bodyParams.0}} headers=headers{{/bodyParams.0}}{{/headerParams}}{{#queryParams.0}}, params=params{{/queryParams.0}})
 
         return {{instanceName}}(self._version, payload{{#listPathParams}}, {{paramName}}=self._solution['{{paramName}}']{{/listPathParams}})
     {{/vendorExtensions.x-is-create-operation}}{{^instancePath}}{{#vendorExtensions.x-is-fetch-operation}}
@@ -68,13 +84,13 @@
         :returns: The fetched {{instanceName}}
         """
         {{#headerParams.0}}headers = values.of({
-            {{#headerParams}}'{{{baseName}}}': {{paramName}},
-            {{/headerParams}}
+                {{#headerParams}}'{{{baseName}}}': {{paramName}},
+                {{/headerParams}}
             })
         {{/headerParams.0}}
         {{#queryParams.0}}params = values.of({
-            {{#queryParams}}'{{{baseName}}}': {{paramName}},
-            {{/queryParams}}
+                {{#queryParams}}'{{{baseName}}}': {{paramName}},
+                {{/queryParams}}
             })
         {{/queryParams.0}}
         payload = await self._version.fetch_async(method='GET', uri=self._uri{{#headerParams.0}}, headers=headers{{/headerParams.0}}{{#queryParams.0}}, params=params{{/queryParams.0}})
@@ -87,9 +103,16 @@
         {{#allParams}}:param {{paramName}}: {{{description}}}{{/allParams}}
         :returns: True if delete succeeds, False otherwise
         """
-        {{#allParams}}{{#isHeaderParam}}headers = values.of({'{{{baseName}}}': {{paramName}}, }){{/isHeaderParam}}{{/allParams}}
-        {{#allParams}}{{#isQueryParam}}params = values.of({'{{{baseName}}}': {{paramName}}, }){{/isQueryParam}}{{/allParams}}
-        return self._version.delete(method='DELETE', uri=self._uri{{#allParams}}{{#if isHeaderParam}}, headers=headers{{/if}}{{#if isQueryParam}}, params=params{{/if}}{{/allParams}})
+        {{#headerParams.0}}headers = values.of({
+                {{#headerParams}}'{{{baseName}}}': {{paramName}},
+                {{/headerParams}}
+            })
+        {{/headerParams.0}}
+        {{#queryParams.0}}params = values.of({
+                {{#queryParams}}'{{{baseName}}}': {{paramName}},
+                {{/queryParams}}
+            }){{/queryParams.0}}
+        return self._version.delete(method='DELETE', uri=self._uri{{#headerParams.0}}, headers=headers{{/headerParams.0}}{{#queryParams.0}}, params=params{{/queryParams.0}})
 
     async def delete_async(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> bool:
         """
@@ -98,9 +121,16 @@
         {{#allParams}}:param {{paramName}}: {{{description}}}{{/allParams}}
         :returns: True if delete succeeds, False otherwise
         """
-        {{#allParams}}{{#isHeaderParam}}headers = values.of({'{{{baseName}}}': {{paramName}}, }){{/isHeaderParam}}{{/allParams}}
-        {{#allParams}}{{#isQueryParam}}params = values.of({'{{{baseName}}}': {{paramName}}, }){{/isQueryParam}}{{/allParams}}
-        return await self._version.delete_async(method='DELETE', uri=self._uri{{#allParams}}{{#if isHeaderParam}}, headers=headers{{/if}}{{#if isQueryParam}}, params=params{{/if}}{{/allParams}}){{/vendorExtensions.x-is-delete-operation}}{{#vendorExtensions.x-is-update-operation}}
+        {{#headerParams.0}}headers = values.of({
+                {{#headerParams}}'{{{baseName}}}': {{paramName}},
+                {{/headerParams}}
+            })
+        {{/headerParams.0}}
+        {{#queryParams.0}}params = values.of({
+                {{#queryParams}}'{{{baseName}}}': {{paramName}},
+                {{/queryParams}}
+            }){{/queryParams.0}}
+        return await self._version.delete_async(method='DELETE', uri=self._uri{{#headerParams.0}}, headers=headers{{/headerParams.0}}{{#queryParams.0}}, params=params{{/queryParams.0}}){{/vendorExtensions.x-is-delete-operation}}{{#vendorExtensions.x-is-update-operation}}
     def update(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> {{instanceName}}:
         """
         Update the {{instanceName}}
@@ -109,11 +139,21 @@
         {{/allParams}}
         :returns: The created {{instanceName}}
         """
-        data = values.of({ {{#allParams}}{{#isFormParam}}
-            '{{{baseName}}}': {{#if vendorExtensions.x-serialize}}{{vendorExtensions.x-serialize}}({{paramName}}{{#if isArray}}, lambda e: e){{else}}){{/if}}{{else}}{{paramName}}{{/if}},{{/isFormParam}}{{/allParams}}
-        })
-        {{#allParams}}{{^isFormParam}}headers = values.of({'{{{baseName}}}': {{paramName}}, }){{/isFormParam}}{{/allParams}}
-        payload = self._version.update(method='POST', uri=self._uri, data=data,{{#allParams}}{{#if isFormParam}}{{else}} headers=headers{{/if}}{{/allParams}})
+        {{#bodyParam}}data = {{paramName}}.to_dict(){{/bodyParam}}
+        {{^bodyParam}}{{#hasParams}}data = values.of({ {{#allParams}}{{#isFormParam}}
+            '{{{baseName}}}': {{#if vendorExtensions.x-serialize}}{{vendorExtensions.x-serialize}}({{paramName}}{{#if isArray}}, lambda e: {{#startsWith baseType text='object'}}serialize.object(e){{else}}e{{/startsWith}}){{else}}){{/if}}{{else}}{{paramName}}{{/if}},{{/isFormParam}}{{/allParams}}
+        }){{/hasParams}}{{/bodyParam}}
+        {{#headerParams.0}}headers = values.of({
+                {{#headerParams}}'{{{baseName}}}': {{paramName}},
+                {{/headerParams}}
+            })
+        {{/headerParams.0}}
+        {{#queryParams.0}}params = values.of({
+                {{#queryParams}}'{{{baseName}}}': {{paramName}},
+                {{/queryParams}}
+            })
+        {{/queryParams.0}}
+        payload = self._version.update(method='POST', uri=self._uri, {{#hasParams}}data=data,{{/hasParams}}{{#headerParams.0}} headers=headers{{/headerParams.0}}{{^headerParams}}{{#bodyParams.0}} headers=headers{{/bodyParams.0}}{{/headerParams}}{{#queryParams.0}}, params=params{{/queryParams.0}})
 
         return {{instanceName}}(self._version, payload{{#listPathParams}}, {{paramName}}=self._solution['{{paramName}}']{{/listPathParams}})
 
@@ -125,11 +165,21 @@
         {{/allParams}}
         :returns: The created {{instanceName}}
         """
-        data = values.of({ {{#allParams}}{{#isFormParam}}
-            '{{{baseName}}}': {{#if vendorExtensions.x-serialize}}{{vendorExtensions.x-serialize}}({{paramName}}{{#if isArray}}, lambda e: e){{else}}){{/if}}{{else}}{{paramName}}{{/if}},{{/isFormParam}}{{/allParams}}
-        })
-        {{#allParams}}{{^isFormParam}}headers = values.of({'{{{baseName}}}': {{paramName}}, }){{/isFormParam}}{{/allParams}}
-        payload = await self._version.update_async(method='POST', uri=self._uri, data=data,{{#allParams}}{{#if isFormParam}}{{else}} headers=headers{{/if}}{{/allParams}})
+        {{#bodyParam}}data = {{paramName}}.to_dict(){{/bodyParam}}
+        {{^bodyParam}}{{#hasParams}}data = values.of({ {{#allParams}}{{#isFormParam}}
+            '{{{baseName}}}': {{#if vendorExtensions.x-serialize}}{{vendorExtensions.x-serialize}}({{paramName}}{{#if isArray}}, lambda e: {{#startsWith baseType text='object'}}serialize.object(e){{else}}e{{/startsWith}}){{else}}){{/if}}{{else}}{{paramName}}{{/if}},{{/isFormParam}}{{/allParams}}
+        }){{/hasParams}}{{/bodyParam}}
+        {{#headerParams.0}}headers = values.of({
+                {{#headerParams}}'{{{baseName}}}': {{paramName}},
+                {{/headerParams}}
+            })
+        {{/headerParams.0}}
+        {{#queryParams.0}}params = values.of({
+                {{#queryParams}}'{{{baseName}}}': {{paramName}},
+                {{/queryParams}}
+            })
+        {{/queryParams.0}}
+        payload = await self._version.update_async(method='POST', uri=self._uri, {{#hasParams}}data=data,{{/hasParams}}{{#headerParams.0}} headers=headers{{/headerParams.0}}{{^headerParams}}{{#bodyParams.0}} headers=headers{{/bodyParams.0}}{{/headerParams}}{{#queryParams.0}}, params=params{{/queryParams.0}})
 
         return {{instanceName}}(self._version, payload{{#listPathParams}}, {{paramName}}=self._solution['{{paramName}}']{{/listPathParams}}){{/vendorExtensions.x-is-update-operation}}{{/instancePath}}{{#vendorExtensions.x-is-read-operation}}
     def stream(self, {{#allParams}}
