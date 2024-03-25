@@ -13,7 +13,7 @@ type ApiService struct {
 func NewApiService(requestHandler *twilio.RequestHandler) *ApiService {
 	return &ApiService {
 		requestHandler: requestHandler,
-		baseURL:        "{{#apiInfo}}{{#apis}}{{#operations}}{{#-first}}{{#operation}}{{#-first}}{{#servers}}{{url}}{{/servers}}{{/-first}}{{/operation}}{{/-first}}{{/operations}}{{/apis}}{{/apiInfo}}",
+		baseURL:        "{{#hasServers}}{{#servers}}{{url}}{{/servers}}{{/hasServers}}",
 	}
 }
 

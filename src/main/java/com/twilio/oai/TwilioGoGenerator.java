@@ -4,6 +4,7 @@ import com.twilio.oai.common.Utility;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collector;
@@ -205,6 +206,8 @@ public class TwilioGoGenerator extends AbstractTwilioGoGenerator {
                 .forEach((name, path) -> path
                         .readOperations()
                         .forEach(operation -> {
+                            if(Objects.equals(openAPI.getServers().get(0).getUrl(), "/"))
+                                openAPI.servers(path.getServers());
                             // Group operations together by tag. This gives us one file/post-process per resource.
                             operation.addTagsItem(PathUtils.cleanPathAndRemoveFirstElement(name));
                             // Add a parameter called limit for list and stream operations
