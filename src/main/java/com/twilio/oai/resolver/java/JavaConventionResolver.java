@@ -107,7 +107,7 @@ public class JavaConventionResolver {
                     property.dataType = property.dataType != null && property.dataType.contains(resourceName + ApplicationConstants.DOT)
                             ? property.dataType: resourceName + ApplicationConstants.DOT + property.dataType;
                 }
-                
+
             }
             return property;
         }

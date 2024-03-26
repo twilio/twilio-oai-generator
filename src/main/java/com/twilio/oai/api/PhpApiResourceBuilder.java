@@ -1,27 +1,23 @@
 package com.twilio.oai.api;
 
-import com.twilio.oai.DirectoryStructureService;
-import com.twilio.oai.PathUtils;
-import com.twilio.oai.StringHelper;
+import com.twilio.oai.*;
+import com.twilio.oai.common.EnumConstants;
+import com.twilio.oai.resolver.IConventionMapper;
+import com.twilio.oai.resolver.LanguageConventionResolver;
 import com.twilio.oai.resolver.Resolver;
 import com.twilio.oai.resource.Resource;
 import com.twilio.oai.template.IApiActionTemplate;
 import com.twilio.oai.template.PhpApiActionTemplate;
 import io.swagger.v3.oas.models.OpenAPI;
 import org.apache.commons.lang3.StringUtils;
-import org.openapitools.codegen.CodegenModel;
-import org.openapitools.codegen.CodegenOperation;
-import org.openapitools.codegen.CodegenParameter;
-import org.openapitools.codegen.CodegenProperty;
+import org.openapitools.codegen.*;
 
 import java.util.*;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
 
-import static com.twilio.oai.common.ApplicationConstants.PATH_SEPARATOR_PLACEHOLDER;
-import static com.twilio.oai.common.ApplicationConstants.TWILIO_EXTENSION_NAME;
+import static com.twilio.oai.common.ApplicationConstants.*;
 
 public class PhpApiResourceBuilder extends ApiResourceBuilder {
     public final static String TAB_WHITESPACES = "    ";
@@ -29,8 +25,23 @@ public class PhpApiResourceBuilder extends ApiResourceBuilder {
     protected String apiListPath = "";
     protected String apiContextPath = "";
 
-    public PhpApiResourceBuilder(IApiActionTemplate template, List<CodegenOperation> codegenOperations, List<CodegenModel> allModels) {
+    protected Resolver<CodegenProperty> codegenPropertyIResolver;
+    public Set<IJsonSchemaValidationProperties> enums = new HashSet<>();
+
+
+    private final IConventionMapper conventionMapper =
+            new LanguageConventionResolver("config/" + EnumConstants.Generator.TWILIO_PHP.getValue() + ".json");
+
+    public PhpApiResourceBuilder(IApiActionTemplate template, List<CodegenOperation> codegenOperations,
+                                  List<CodegenModel> allModels) {
         super(template, codegenOperations, allModels);
+    }
+
+    public PhpApiResourceBuilder(IApiActionTemplate template, List<CodegenOperation> codegenOperations, List<CodegenModel> allModels,
+                                 Map<String, Boolean> toggleMap, Resolver<CodegenProperty> codegenPropertyResolver) {
+        this(template, codegenOperations, allModels);
+        this.codegenPropertyIResolver = codegenPropertyResolver;
+        this.toggleMap = toggleMap;
     }
 
     @Override
@@ -47,6 +58,9 @@ public class PhpApiResourceBuilder extends ApiResourceBuilder {
             template.add(PhpApiActionTemplate.TEMPLATE_TYPE_PAGE);
             template.add(PhpApiActionTemplate.TEMPLATE_TYPE_LIST);
             template.add(PhpApiActionTemplate.TEMPLATE_TYPE_INSTANCE);
+            // if any operation in current op list(CRUDF) has application/json request body type
+            if (!nestedModels.isEmpty())
+                template.add(PhpApiActionTemplate.TEMPLATE_TYPE_MODELS);
         });
         return this;
     }
@@ -74,15 +88,26 @@ public class PhpApiResourceBuilder extends ApiResourceBuilder {
     public ApiResourceBuilder setImports(DirectoryStructureService directoryStructureService) {
         codegenOperationList.forEach(operation -> {
             if (!pathSet.contains(operation.path)) {
-                List<Resource> dependents = StreamSupport.stream(directoryStructureService.getResourceTree().getResources().spliterator(), false)
-                        .filter(resource -> PathUtils.removeFirstPart(operation.path)
-                                .equals(PathUtils.getTwilioExtension(resource.getPathItem(), "parent")
-                                        .orElse(null)))
-                        .collect(Collectors.toList());
+                List<Resource> dependents = new ArrayList<>();
+                String operationPath = PathUtils.removeFirstPart(operation.path);
 
-                List<Resource> methodDependents = dependents.stream().filter(dep ->
-                                PathUtils.getTwilioExtension(dep.getPathItem(), "pathType").get().equals("instance"))
-                        .collect(Collectors.toList());
+                for (Resource resource : directoryStructureService.getResourceTree().getResources()) {
+                    Optional<String> twilioExtension = PathUtils.getTwilioExtension(resource.getPathItem(), "parent");
+
+                    if (operationPath.equals(twilioExtension.orElse(null))) {
+                        dependents.add(resource);
+                    }
+                }
+
+                List<Resource> methodDependents = new ArrayList<>();
+
+                for (Resource dep : dependents) {
+                    Optional<String> twilioExtension = PathUtils.getTwilioExtension(dep.getPathItem(), "pathType");
+
+                    if (twilioExtension.isPresent() && twilioExtension.get().equals("instance")) {
+                        methodDependents.add(dep);
+                    }
+                }
                 dependents.removeIf(methodDependents::contains);
                 dependents.addAll(Optional.ofNullable(methodDependents.stream()).orElse(Stream.empty()).filter(dep ->
                         !dep.getName().endsWith("}") && !dep.getName().endsWith("}.json")).collect(Collectors.toList()));
@@ -138,11 +163,70 @@ public class PhpApiResourceBuilder extends ApiResourceBuilder {
 
     @Override
     public ApiResourceBuilder updateOperations(Resolver<CodegenParameter> codegenParameterIResolver) {
-        ApiResourceBuilder apiResourceBuilder = super.updateOperations(codegenParameterIResolver);
-        reorderParams(apiResourceBuilder);
-        this.addOptionFileParams(apiResourceBuilder);
+        PhpJsonRequestBodyResolver jsonRequestBodyResolver = new PhpJsonRequestBodyResolver(this, codegenPropertyIResolver);
+        this.codegenOperationList.forEach(co -> {
+            updateNestedContent(co);
+            List<String> filePathArray = new ArrayList<>(Arrays.asList(co.baseName.split(PATH_SEPARATOR_PLACEHOLDER)));
+            String resourceName = filePathArray.remove(filePathArray.size()-1);
+
+            jsonRequestBodyResolver.setResourceName(resourceName);
+            co.allParams.stream()
+                    .forEach(item -> {
+                        CodegenModel model = getModel(item.dataType);
+                        // currently supporting required and conditional parameters only for request body object
+                        if (model != null) {
+                            model.vendorExtensions.put("x-constructor-required", true);
+                            jsonRequestBodyResolver.resolve(item, codegenParameterIResolver);
+                        }
+                    });
+            co.pathParams = co.pathParams.stream()
+                    .map(item -> codegenParameterIResolver.resolve(item, this))
+                    .collect(Collectors.toList());
+            co.queryParams = co.queryParams.stream()
+                    .map(item -> codegenParameterIResolver.resolve(item, this))
+                    .collect(Collectors.toList());
+            co.formParams = co.formParams.stream()
+                    .map(item -> codegenParameterIResolver.resolve(item, this))
+                    .collect(Collectors.toList());
+            co.headerParams = co.headerParams.stream()
+                    .map(item -> codegenParameterIResolver.resolve(item, this))
+                    .collect(Collectors.toList());
+            co.optionalParams = co.optionalParams
+                    .stream()
+                    .map(item -> codegenParameterIResolver.resolve(item, this))
+                    .collect(Collectors.toList());
+            co.requiredParams = co.requiredParams
+                    .stream()
+                    .map(item -> codegenParameterIResolver.resolve(item, this))
+                    .collect(Collectors.toList());
+
+            if (co.vendorExtensions.containsKey("x-ignore")) {
+                requiredPathParams.addAll(co.pathParams
+                        .stream()
+                        .filter(PathUtils::isParentParam)
+                        .filter(codegenParameter -> requiredPathParams
+                                .stream()
+                                .noneMatch(param -> param.baseName.equals(codegenParameter.baseName)))
+                        .collect(Collectors.toList()));
+            } else {
+                requiredPathParams.addAll(co.pathParams
+                        .stream()
+                        .filter(codegenParameter -> requiredPathParams
+                                .stream()
+                                .noneMatch(param -> param.baseName.equals(codegenParameter.baseName)))
+                        .collect(Collectors.toList()));
+            }
+
+            co.hasParams = !co.allParams.isEmpty();
+            co.hasRequiredParams = !co.requiredParams.isEmpty();
+
+            co.vendorExtensions.putAll(mapOperation(co));
+
+        });
+        reorderParams(this);
+        this.addOptionFileParams(this);
         categorizeOperations();
-        return apiResourceBuilder;
+        return this;
     }
 
     private void addOptionFileParams(ApiResourceBuilder apiResourceBuilder) {
@@ -264,6 +348,7 @@ public class PhpApiResourceBuilder extends ApiResourceBuilder {
             List<CodegenModel> responseModels = new ArrayList<>();
             codegenOperation.responses
                     .stream()
+                    .filter(response -> SUCCESS.test(Integer.parseInt(response.code.trim())))
                     .map(response -> response.baseType)
                     .filter(Objects::nonNull)
                     .map(modelName -> this.getModel(modelName, codegenOperation))

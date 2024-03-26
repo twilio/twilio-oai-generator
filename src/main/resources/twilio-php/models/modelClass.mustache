@@ -1,0 +1,30 @@
+class {{classname}} implements \JsonSerializable
+{
+    /**
+    {{#vars}}
+     * @property {{{dataType}}} ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}{{#description}} {{{description}}}{{/description}}
+    {{/vars}}
+    */
+    {{#vars}}
+        protected ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}};
+    {{/vars}}
+    public function __construct(array $payload = []) {
+    {{#vars}}
+        $this->{{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}} = Values::array_get($payload, '{{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}');
+    {{/vars}}
+    }
+
+    public function toArray(): array
+    {
+        return $this->jsonSerialize();
+    }
+
+    public function jsonSerialize(): array
+    {
+        return [
+            {{#vars}}
+            '{{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}' => $this->{{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}{{^-last}},{{/-last}}
+            {{/vars}}
+        ];
+    }
+}

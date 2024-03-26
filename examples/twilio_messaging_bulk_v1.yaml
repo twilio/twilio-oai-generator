@@ -102,6 +102,8 @@ paths:
                 $ref: '#/components/schemas/messaging.v1.Error'
       security:
       - accountSid_authToken: []
+    x-twilio:
+      pathType: list
 components:
   schemas:
     messaging.v1.Message:

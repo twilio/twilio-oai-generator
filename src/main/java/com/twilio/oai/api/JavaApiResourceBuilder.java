@@ -34,7 +34,7 @@ public class JavaApiResourceBuilder extends ApiResourceBuilder{
     private final JavaConventionResolver conventionResolver;
 
     private Resolver<CodegenProperty> codegenPropertyIResolver;
-    
+
     public Set<IJsonSchemaValidationProperties> enums = new HashSet<>();
 
     public ArrayList<List<CodegenProperty>> modelParameters;
@@ -46,7 +46,7 @@ public class JavaApiResourceBuilder extends ApiResourceBuilder{
     }
 
     public JavaApiResourceBuilder(IApiActionTemplate apiActionTemplate, List<CodegenOperation> opList,
-                                  List<CodegenModel> allModels, Map<String, Boolean> toggleMap, 
+                                  List<CodegenModel> allModels, Map<String, Boolean> toggleMap,
                                   Resolver<CodegenProperty> codegenPropertyIResolver) {
         this(apiActionTemplate, opList, allModels);
         this.toggleMap = toggleMap;
@@ -78,13 +78,13 @@ public class JavaApiResourceBuilder extends ApiResourceBuilder{
             updateNestedContent(co);
             List<String> filePathArray = new ArrayList<>(Arrays.asList(co.baseName.split(PATH_SEPARATOR_PLACEHOLDER)));
             String resourceName = filePathArray.remove(filePathArray.size()-1);
-            
+
             co.allParams.stream()
                     .filter(item -> !(item.getContent() != null && item.getContent().get("application/json") != null))
                     .map(item -> codegenParameterIResolver.resolve(item, this))
                     .map(item -> conventionResolver.resolveEnumParameter(item, resourceName))
                     .collect(Collectors.toList());
-            
+
             jsonRequestBodyResolver.setResourceName(resourceName);
             co.allParams.stream()
                     .filter(item -> (item.getContent() != null && item.getContent().get("application/json") != null))
@@ -119,7 +119,7 @@ public class JavaApiResourceBuilder extends ApiResourceBuilder{
                     .map(item -> codegenParameterIResolver.resolve(item, this))
                     .map(item -> conventionResolver.resolveEnumParameter(item, resourceName))
                     .collect(Collectors.toList());
-            processDataTypesForParams(co.headerParams); 
+            processDataTypesForParams(co.headerParams);
             co.optionalParams = co.optionalParams
                     .stream()
                     .map(item -> codegenParameterIResolver.resolve(item, this))
@@ -359,7 +359,7 @@ public class JavaApiResourceBuilder extends ApiResourceBuilder{
         } else {
             operationMap.put(SIGNATURE_LIST, generateSignatureList(co));
         }
-        
+
         operationMap.put("x-non-path-params", getNonPathParams(co.allParams));
         return operationMap;
     }
@@ -443,7 +443,7 @@ public class JavaApiResourceBuilder extends ApiResourceBuilder{
 
     private ArrayList<List<CodegenProperty>> generateSignatureListBody(final CodegenOperation co) {
         List<List<CodegenProperty>> conditionalCodegenParam = new ArrayList<>();
-        
+
         if (co.vendorExtensions.containsKey(TWILIO_EXTENSION_NAME)) {
             HashMap<String, Object> twilioVendorExtension = (HashMap<String, Object>) co.vendorExtensions.get(TWILIO_EXTENSION_NAME);
             if (twilioVendorExtension.containsKey("conditional")) {
@@ -551,7 +551,7 @@ public class JavaApiResourceBuilder extends ApiResourceBuilder{
 
         if (itemEnumName != null) {
             for (IJsonSchemaValidationProperties enumItem : enums) {
-                if ((enumItem instanceof CodegenParameter && ((CodegenParameter) enumItem).enumName.equals(((CodegenParameter)item).enumName)) 
+                if ((enumItem instanceof CodegenParameter && ((CodegenParameter) enumItem).enumName.equals(((CodegenParameter)item).enumName))
                         || (enumItem instanceof CodegenProperty && ((CodegenProperty) enumItem).enumName.equals(((CodegenProperty)item).enumName))) {
                     isDuplicate = true;
                     break; // No need to continue checking duplicates
