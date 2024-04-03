@@ -1,0 +1,17 @@
+{{#resources}}
+<?php
+{{>licenseInfo}}
+namespace Twilio\Rest\{{domainName}}\{{version}}{{namespaceSubPart}};
+
+use Twilio\Values;
+abstract class {{apiName}}Models
+{
+{{#nestedModels}}
+{{>models/modelMethod}}
+{{/nestedModels}}
+}
+
+{{#nestedModels}}
+{{>models/modelClass}}
+{{/nestedModels}}
+{{/resources}}

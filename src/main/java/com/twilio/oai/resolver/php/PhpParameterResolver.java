@@ -5,10 +5,7 @@ import com.twilio.oai.resolver.IConventionMapper;
 import com.twilio.oai.resolver.LanguageConventionResolver;
 import com.twilio.oai.resolver.LanguageParamResolver;
 
-import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenParameter;
-
-import java.util.List;
 
 import static com.twilio.oai.common.ApplicationConstants.ARRAY;
 import static com.twilio.oai.common.ApplicationConstants.OBJECT;

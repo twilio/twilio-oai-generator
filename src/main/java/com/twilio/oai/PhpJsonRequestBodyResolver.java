@@ -1,11 +1,10 @@
 package com.twilio.oai;
 
 import com.twilio.oai.api.ApiResourceBuilder;
-import com.twilio.oai.api.JavaApiResourceBuilder;
 import com.twilio.oai.common.EnumConstants;
 import com.twilio.oai.resolver.Resolver;
 import com.twilio.oai.resolver.java.ContainerResolver;
-import com.twilio.oai.resolver.java.JavaConventionResolver;
+import com.twilio.oai.resolver.php.PhpContainerResolver;
 import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenParameter;
 import org.openapitools.codegen.CodegenProperty;
@@ -13,28 +12,23 @@ import org.openapitools.codegen.CodegenProperty;
 import java.util.Arrays;
 import java.util.Stack;
 
-// TODO: Refactor such that it can be used with c# code as well, For that need to refactor java resolvers.
-public class JsonRequestBodyResolver {
-    final Resolver<CodegenProperty> codegenPropertyResolver;
+import static java.lang.Character.toLowerCase;
 
-    final ApiResourceBuilder apiResourceBuilder;
+public class PhpJsonRequestBodyResolver extends JsonRequestBodyResolver {
 
-    final private ContainerResolver containerResolver = new ContainerResolver(Arrays.asList(EnumConstants.JavaDataTypes.values()));
+    public static final String MODEL_DATATYPE = "MODEL_DATATYPE";
+    private final ContainerResolver containerResolver = new PhpContainerResolver(Arrays.asList(EnumConstants.PhpDataTypes.values()));
 
-    private final JavaConventionResolver conventionResolver;
-
-    public void setResourceName(String resourceName) {
-        this.resourceName = resourceName;
+    public PhpJsonRequestBodyResolver(ApiResourceBuilder apiResourceBuilder, final Resolver<CodegenProperty> codegenPropertyResolver) {
+        super(apiResourceBuilder, codegenPropertyResolver);
     }
 
-    private String resourceName;
-
-    public JsonRequestBodyResolver(ApiResourceBuilder apiResourceBuilder, final Resolver<CodegenProperty> codegenPropertyResolver) {
-        this.codegenPropertyResolver = codegenPropertyResolver;
-        this.apiResourceBuilder = apiResourceBuilder;
-        this.conventionResolver = new JavaConventionResolver();
-    }
-
+    /**
+     * Resolves the codegen parameter using model and recursively resolving its properties
+     * @param codegenParameter the parameter to be resolved
+     * @param codegenParameterResolver the language based parameter resolver
+     */
+    @Override
     public void resolve(final CodegenParameter codegenParameter, final Resolver<CodegenParameter> codegenParameterResolver) {
         // Only add if model exists
         Stack<String> containerTypes = new Stack<>();
@@ -42,13 +36,13 @@ public class JsonRequestBodyResolver {
         final CodegenModel model = apiResourceBuilder.getModel(codegenParameter.dataType);
         containerResolver.rewrapContainerType(codegenParameter, containerTypes);
         if (CodegenUtils.isParameterSchemaEnumJava(codegenParameter)) {
-            conventionResolver.resolveEnumParameter(codegenParameter, resourceName);
-            ((JavaApiResourceBuilder)apiResourceBuilder).addEnums(codegenParameter);
+            if(!codegenParameter.dataType.contains("Enum")) // if Enum is not present in name, adding exclusively to resolve by parameter resolver
+                codegenParameter.dataType = "Enum" + codegenParameter.dataType;
+            codegenParameterResolver.resolve(codegenParameter, apiResourceBuilder);
         } else if(model == null) {
             // If parameter is not a model.
             codegenParameterResolver.resolve(codegenParameter, apiResourceBuilder);
         } else {
-            // Example: datatype resolution: CreateMessagesRequest -> Message.CreateMessagesRequest
             codegenParameterResolver.resolve(codegenParameter, apiResourceBuilder);
             for (CodegenProperty property: model.getVars()) {
                 resolve(property);
@@ -60,17 +54,22 @@ public class JsonRequestBodyResolver {
         }
     }
 
+    /**
+     * Recursively resolves the codegen property using model
+     * @param property the codegen property to be resolved
+     */
+    @Override
     public void resolve(final CodegenProperty property) {
         Stack<String> containerTypes = new Stack<>();
         property.dataType = containerResolver.unwrapContainerType(property, containerTypes);
         final CodegenModel model = apiResourceBuilder.getModel(property.dataType);
         containerResolver.rewrapContainerType(property, containerTypes);
         containerTypes.clear();
-
         if (CodegenUtils.isPropertySchemaEnumJava(property)) {
-            conventionResolver.resolveEnumProperty(property, resourceName);
-            ((JavaApiResourceBuilder)apiResourceBuilder).addEnums(property);
-        } else if (model == null) {
+            if(!property.dataType.contains("Enum")) // if Enum is not present in name, adding exclusively to resolve by property resolver
+                property.dataType = "Enum" + property.dataType;
+            codegenPropertyResolver.resolve(property, apiResourceBuilder);
+        } else if(model == null) {
             codegenPropertyResolver.resolve(property, apiResourceBuilder);
         } else {
             // Get children

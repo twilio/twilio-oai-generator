@@ -70,7 +70,7 @@ class HistoryContext extends InstanceContext
         ]);
         $params = \array_merge($params, Serialize::prefixedCollapsibleMap($options['addOnsData'], 'AddOns'));
 
-        $payload = $this->version->fetch('GET', $this->uri, $params);
+        $payload = $this->version->fetch('GET', $this->uri, $params, []);
 
         return new HistoryInstance(
             $this->version,

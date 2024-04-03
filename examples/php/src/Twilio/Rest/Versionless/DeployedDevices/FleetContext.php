@@ -63,7 +63,7 @@ class FleetContext extends InstanceContext
     public function fetch(): FleetInstance
     {
 
-        $payload = $this->version->fetch('GET', $this->uri);
+        $payload = $this->version->fetch('GET', $this->uri, [], []);
 
         return new FleetInstance(
             $this->version,

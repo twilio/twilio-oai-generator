@@ -137,8 +137,12 @@
             ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}{{^-last}}, {{/-last}}{{/required}}{{/headerParams}}{{#headerParams}}{{^required}}'{{baseName}}' => $options['{{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}']{{^-last}}, {{/-last}}{{/required}}{{/headerParams}}]);
 
     {{/headerParams.0}}
+    {{#bodyParams.0}}
+        $data = ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}->toArray();
+        $headers['Content-Type'] = 'application/json';
+    {{/bodyParams.0}}
     {{^vendorExtensions.x-is-delete-operation}}
-        $payload = $this->version->{{#lambda.camelcase}}{{vendorExtensions.x-name}}{{/lambda.camelcase}}('{{httpMethod}}', $this->uri{{#queryParams.0}}{{^formParams}}{{^headerParams}}, $params{{/headerParams}}{{/formParams}}{{/queryParams.0}}{{^queryParams}}{{#formParams.0}}{{^headerParams}}, [], $data{{/headerParams}}{{/formParams.0}}{{/queryParams}}{{#queryParams.0}}{{#formParams.0}}{{^headerParams}}, $params, $data{{/headerParams}}{{/formParams.0}}{{/queryParams.0}}{{#queryParams.0}}{{#formParams.0}}{{#headerParams.0}}, $params, $data, $headers{{/headerParams.0}}{{/formParams.0}}{{/queryParams.0}}{{#queryParams.0}}{{^formParams}}{{#headerParams.0}}, $params, [], $headers{{/headerParams.0}}{{/formParams}}{{/queryParams.0}}{{^queryParams}}{{#formParams.0}}{{#headerParams.0}}, [], $data, $headers{{/headerParams.0}}{{/formParams.0}}{{/queryParams}}{{^queryParams}}{{^formParams}}{{#headerParams.0}}, [], [], $headers{{/headerParams.0}}{{/formParams}}{{/queryParams}});
+        $payload = $this->version->{{#lambda.camelcase}}{{vendorExtensions.x-name}}{{/lambda.camelcase}}('{{httpMethod}}', $this->uri{{#queryParams.0}}, $params{{/queryParams.0}}{{^queryParams}}, []{{/queryParams}}{{#formParams.0}}, $data{{/formParams.0}}{{^formParams}}{{#bodyParams.0}}, $data, $headers{{/bodyParams.0}}{{^bodyParams}}, []{{/bodyParams}}{{/formParams}}{{^bodyParam}}{{#headerParams.0}}, $headers{{/headerParams.0}}{{/bodyParam}});
 
         return new {{apiName}}Instance(
             $this->version,

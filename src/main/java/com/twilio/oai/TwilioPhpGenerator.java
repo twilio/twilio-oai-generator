@@ -7,12 +7,15 @@ import com.twilio.oai.common.EnumConstants;
 import com.twilio.oai.common.Utility;
 import com.twilio.oai.resolver.IConventionMapper;
 import com.twilio.oai.resolver.LanguageConventionResolver;
+import com.twilio.oai.resolver.common.CodegenModelResolver;
 import com.twilio.oai.resolver.php.*;
 import com.twilio.oai.resource.ResourceMap;
 import com.twilio.oai.template.PhpApiActionTemplate;
 import io.swagger.v3.oas.models.OpenAPI;
 import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenOperation;
+import org.openapitools.codegen.CodegenParameter;
+import org.openapitools.codegen.CodegenProperty;
 import org.openapitools.codegen.languages.PhpClientCodegen;
 import org.openapitools.codegen.model.ModelMap;
 import org.openapitools.codegen.model.ModelsMap;
@@ -20,8 +23,11 @@ import org.openapitools.codegen.model.OperationsMap;
 
 import java.util.*;
 
+
 public class TwilioPhpGenerator extends PhpClientCodegen {
 
+    public static final String VALUES = "values";
+    public static final String JSON_INGRESS = "json_ingress";
     private static final String PHP_CONVENTIONAL_MAP_PATH = "config/" + EnumConstants.Generator.TWILIO_PHP.getValue() + ".json";
     private final TwilioCodegenAdapter twilioCodegen;
     private final DirectoryStructureService directoryStructureService = new DirectoryStructureService(
@@ -71,6 +77,31 @@ public class TwilioPhpGenerator extends PhpClientCodegen {
         PhpDomainBuilder.setVersionTemplate(openAPI, directoryStructureService);
     }
 
+    /**
+     * Preprocesses codegen parameter to remove unnecessary data
+     * @param parameter the codegen parameter having unprocessed data
+     */
+    @Override
+    public void postProcessParameter(final CodegenParameter parameter) {
+        super.postProcessParameter(parameter);
+        parameter.dataType = extractDataType(parameter.dataType);
+        if(parameter.datatypeWithEnum != null)
+            parameter.datatypeWithEnum = extractDataType(parameter.datatypeWithEnum);
+    }
+
+    /**
+     * Preprocesses codegen property to remove unnecessary data
+     * @param model the codegen model for the property
+     * @param property the codegen property having unprocessed data
+     */
+    @Override
+    public void postProcessModelProperty(CodegenModel model, CodegenProperty property) {
+        super.postProcessModelProperty(model, property);
+        property.dataType = extractDataType(property.dataType);
+        if(property.datatypeWithEnum != null)
+            property.datatypeWithEnum = extractDataType(property.datatypeWithEnum);
+    }
+
     @Override
     public Map<String, ModelsMap> postProcessAllModels(Map<String, ModelsMap> allModels) {
         final Map<String, ModelsMap> results = super.postProcessAllModels(allModels);
@@ -101,12 +132,26 @@ public class TwilioPhpGenerator extends PhpClientCodegen {
         return StringHelper.camelize(twilioCodegen.toParamName(name));
     }
 
+    /**
+     * Trims unnecessary OpenAPI part from dataType
+     * @param dataType the input datatype
+     * @return dataType with //OpenAPI//Client//... removed
+     */
+    private String extractDataType(String dataType) {
+        String[] parts = dataType.split("\\\\");
+        return parts[parts.length - 1];
+    }
+
     private PhpApiResources processCodegenOperations(List<CodegenOperation> opList) {
-        return new PhpApiResourceBuilder(phpApiActionTemplate, opList, this.allModels)
+        PhpParameterResolver phpParameterResolver = new PhpParameterResolver(conventionMapper);
+        CodegenModelResolver codegenModelResolver = new CodegenModelResolver(conventionMapper, modelFormatMap,
+                Arrays.asList(EnumConstants.JavaDataTypes.values()));
+        PhpPropertyResolver phpPropertyResolver = new PhpPropertyResolver(conventionMapper);
+        return new PhpApiResourceBuilder(phpApiActionTemplate, opList, this.allModels, twilioCodegen.getToggles(JSON_INGRESS), phpPropertyResolver)
                 .addVersionLessTemplates(openAPI, directoryStructureService)
                 .updateAdditionalProps(directoryStructureService)
-                .updateOperations(new PhpParameterResolver(conventionMapper))
-                .updateResponseModel(new PhpPropertyResolver(conventionMapper))
+                .updateOperations(phpParameterResolver)
+                .updateResponseModel(phpPropertyResolver, codegenModelResolver)
                 .updateTemplate()
                 .updateApiPath()
                 .setImports(directoryStructureService)

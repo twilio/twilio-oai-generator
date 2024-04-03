@@ -82,12 +82,20 @@ public class EnumConstants {
 
         private final String value;
     }
-    
+
     @Getter
     @RequiredArgsConstructor
     public enum PredefinedJavaEnumsFormat {
         HTTP_METHOD("http-method");
-        
+
+        private final String value;
+    }
+
+    @Getter
+    @RequiredArgsConstructor
+    public enum PhpDataTypes implements LanguageDataType {
+        LIST("[]");
+
         private final String value;
     }
 }

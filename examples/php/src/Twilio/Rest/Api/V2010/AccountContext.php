@@ -83,7 +83,7 @@ class AccountContext extends InstanceContext
     public function fetch(): AccountInstance
     {
 
-        $payload = $this->version->fetch('GET', $this->uri);
+        $payload = $this->version->fetch('GET', $this->uri, [], []);
 
         return new AccountInstance(
             $this->version,
