@@ -83,7 +83,7 @@ public class TwilioGoGenerator extends AbstractTwilioGoGenerator {
     }
 
     String removeDigits(String modelName) {
-        if(modelName == null || modelName.isEmpty())
+        if(modelName == null || modelName.isEmpty() || modelName.contains("2010"))
             return modelName;
         return modelName.replaceFirst("\\d{3}", "");
     }
@@ -169,17 +169,17 @@ public class TwilioGoGenerator extends AbstractTwilioGoGenerator {
         final List<CodegenOperation> opList = ops.getOperation();
 
         final Map<String, CodegenModel> models = allModels
-            .stream()
-            .map(m -> m.get("model"))
-            .map(CodegenModel.class::cast)
-            .collect(Collectors.toMap(CodegenModel::getName, Function.identity()));
+                .stream()
+                .map(m -> m.get("model"))
+                .map(CodegenModel.class::cast)
+                .collect(Collectors.toMap(CodegenModel::getName, Function.identity()));
 
         // get the model for the return type
         final Optional<CodegenModel> returnModel = opList
-            .stream()
-            .filter(op -> models.containsKey(op.returnType))
-            .map(op -> models.get(op.returnType))
-            .findFirst();
+                .stream()
+                .filter(op -> models.containsKey(op.returnType))
+                .map(op -> models.get(op.returnType))
+                .findFirst();
 
         for (final CodegenOperation co : opList) {
             Utility.populateCrudOperations(co);
@@ -193,9 +193,9 @@ public class TwilioGoGenerator extends AbstractTwilioGoGenerator {
                 // filter the fields in the model and get only the array typed field. Also, make sure there is only one field of type list/array
                 if (returnModel.isPresent()) {
                     CodegenProperty field = returnModel.get().allVars
-                        .stream()
-                        .filter(v -> v.dataType.startsWith("[]"))
-                        .collect(toSingleton());
+                            .stream()
+                            .filter(v -> v.dataType.startsWith("[]"))
+                            .collect(toSingleton());
 
                     co.returnContainer = co.returnType;
                     co.returnType = field.dataType;
@@ -209,9 +209,9 @@ public class TwilioGoGenerator extends AbstractTwilioGoGenerator {
                     CodegenModel model = (CodegenModel) modelMap.get("model");
                     final Optional<CodegenModel> returnModelOther = Optional.ofNullable(model);
                     CodegenProperty field = returnModelOther.get().allVars
-                        .stream()
-                        .filter(v -> v.dataType.startsWith("[]"))
-                        .collect(toSingleton());
+                            .stream()
+                            .filter(v -> v.dataType.startsWith("[]"))
+                            .collect(toSingleton());
 
                     co.returnContainer = co.returnType;
                     co.returnType = field.dataType;
