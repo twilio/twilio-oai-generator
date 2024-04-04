@@ -77,14 +77,20 @@ public class TwilioGoGenerator extends AbstractTwilioGoGenerator {
     }
 
     String removeStatusCode(String modelName) {
+        if(modelName == null || modelName.isEmpty())
+            return modelName;
         return modelName.replaceFirst("_\\d{3}", "");
     }
 
     String removeDigits(String modelName) {
+        if(modelName == null || modelName.isEmpty())
+            return modelName;
         return modelName.replaceFirst("\\d{3}", "");
     }
 
     String modelNameWithoutStatusCode(String modelName) {
+        if(modelName == null || modelName.isEmpty())
+            return modelName;
         String newModelName = removeStatusCode(modelName);
         if(Objects.equals(newModelName, modelName))
             newModelName = removeDigits(newModelName);
