@@ -83,7 +83,7 @@ public class TwilioGoGenerator extends AbstractTwilioGoGenerator {
     }
 
     String removeDigits(String modelName) {
-        if(modelName == null || modelName.isEmpty())
+        if(modelName == null || modelName.isEmpty() || modelName.contains("2010"))
             return modelName;
         return modelName.replaceFirst("\\d{3}", "");
     }
