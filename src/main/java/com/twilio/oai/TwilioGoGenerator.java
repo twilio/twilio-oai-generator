@@ -178,6 +178,7 @@ public class TwilioGoGenerator extends AbstractTwilioGoGenerator {
         for (final CodegenOperation co : opList) {
             Utility.populateCrudOperations(co);
             Utility.resolveContentType(co);
+            co.returnType = modelNameWithoutStatusCode(co.returnType);
 
             if (co.nickname.startsWith("List")) {
                 // make sure the format matches the other methods
