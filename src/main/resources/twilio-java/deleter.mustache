@@ -72,7 +72,7 @@ public class {{apiName}}Deleter extends Deleter<{{apiName}}> {
     public boolean delete(final TwilioRestClient client) {
 {{>generate_uri}}
         Request request = new Request(
-            HttpMethod.DELETE,
+            {{vendorExtensions.x-http-method}},
             Domains.{{#lambda.uppercase}}{{domainName}}{{/lambda.uppercase}}.toString(),
             path
         );

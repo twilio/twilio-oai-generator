@@ -88,7 +88,7 @@ public class {{apiName}}Reader extends Reader<{{apiName}}> {
         {{/requiredParams}}
 
         Request request = new Request(
-            HttpMethod.GET,
+            {{vendorExtensions.x-http-method}},
             Domains.{{#lambda.uppercase}}{{domainName}}{{/lambda.uppercase}}.toString(),
             path
         );
@@ -129,7 +129,7 @@ public class {{apiName}}Reader extends Reader<{{apiName}}> {
     @Override
     public Page<{{apiName}}> previousPage(final Page<{{apiName}}> page, final TwilioRestClient client) {
         Request request = new Request(
-            HttpMethod.GET,
+            {{vendorExtensions.x-http-method}},
             page.getPreviousPageUrl(Domains.{{#lambda.uppercase}}{{domainName}}{{/lambda.uppercase}}.toString())
         );
         return pageForRequest(client, request);
@@ -139,7 +139,7 @@ public class {{apiName}}Reader extends Reader<{{apiName}}> {
     @Override
     public Page<{{apiName}}> nextPage(final Page<{{apiName}}> page, final TwilioRestClient client) {
         Request request = new Request(
-            HttpMethod.GET,
+            {{vendorExtensions.x-http-method}},
             page.getNextPageUrl(Domains.{{#lambda.uppercase}}{{domainName}}{{/lambda.uppercase}}.toString())
         );
         return pageForRequest(client, request);

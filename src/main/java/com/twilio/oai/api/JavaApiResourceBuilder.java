@@ -5,6 +5,7 @@ import com.twilio.oai.DirectoryStructureService;
 import com.twilio.oai.JsonRequestBodyResolver;
 import com.twilio.oai.StringHelper;
 import com.twilio.oai.common.EnumConstants;
+import com.twilio.oai.common.EnumConstants.JavaHttpMethod;
 import com.twilio.oai.common.Utility;
 import com.twilio.oai.resolver.Resolver;
 import com.twilio.oai.resolver.java.JavaConventionResolver;
@@ -15,11 +16,32 @@ import org.openapitools.codegen.CodegenParameter;
 import org.openapitools.codegen.CodegenProperty;
 import org.openapitools.codegen.IJsonSchemaValidationProperties;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import static com.twilio.oai.common.ApplicationConstants.*;
+import static com.twilio.oai.common.ApplicationConstants.ACCOUNT_SID_VEND_EXT;
+import static com.twilio.oai.common.ApplicationConstants.ARRAY;
+import static com.twilio.oai.common.ApplicationConstants.ENUM_VARS;
+import static com.twilio.oai.common.ApplicationConstants.HTTP_METHOD;
+import static com.twilio.oai.common.ApplicationConstants.LIST_END;
+import static com.twilio.oai.common.ApplicationConstants.LIST_START;
+import static com.twilio.oai.common.ApplicationConstants.PATH_SEPARATOR_PLACEHOLDER;
+import static com.twilio.oai.common.ApplicationConstants.REF_ENUM_EXTENSION_NAME;
+import static com.twilio.oai.common.ApplicationConstants.STRING;
+import static com.twilio.oai.common.ApplicationConstants.SUCCESS;
+import static com.twilio.oai.common.ApplicationConstants.TWILIO_EXTENSION_NAME;
 import static com.twilio.oai.template.AbstractApiActionTemplate.NESTED_MODELS;
 import static com.twilio.oai.template.JavaApiActionTemplate.API_TEMPLATE;
 
@@ -76,6 +98,7 @@ public class JavaApiResourceBuilder extends ApiResourceBuilder{
         JsonRequestBodyResolver jsonRequestBodyResolver = new JsonRequestBodyResolver(this, codegenPropertyIResolver);
         this.codegenOperationList.forEach(co -> {
             updateNestedContent(co);
+            updateHttpMethod(co);
             List<String> filePathArray = new ArrayList<>(Arrays.asList(co.baseName.split(PATH_SEPARATOR_PLACEHOLDER)));
             String resourceName = filePathArray.remove(filePathArray.size()-1);
 
@@ -137,6 +160,24 @@ public class JavaApiResourceBuilder extends ApiResourceBuilder{
             co.vendorExtensions = mapOperation(co);
         });
         return this;
+    }
+
+    @Override
+    public void updateHttpMethod(CodegenOperation co) {
+        switch (co.httpMethod) {
+            case "GET":
+                co.vendorExtensions.put(HTTP_METHOD, JavaHttpMethod.GET.getValue());
+                break;
+            case "POST":
+                co.vendorExtensions.put(HTTP_METHOD, JavaHttpMethod.POST.getValue());
+                break;
+            case "PUT":
+                co.vendorExtensions.put(HTTP_METHOD, JavaHttpMethod.PUT.getValue());
+                break;
+            case "DELETE":
+                co.vendorExtensions.put(HTTP_METHOD, JavaHttpMethod.DELETE.getValue());
+                break;
+        }
     }
 
     private void updateHeaderParamsList(CodegenParameter cp) {

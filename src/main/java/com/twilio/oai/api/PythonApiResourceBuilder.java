@@ -65,6 +65,11 @@ public class PythonApiResourceBuilder extends FluentApiResourceBuilder {
         return this;
     }
 
+    @Override
+    public void updateHttpMethod(CodegenOperation co) {
+        // TODO: Update http method
+    }
+
     /**
      * Processes the response body and its models to resolve nested response models.
      * Returns the resource builder with resolved response body.

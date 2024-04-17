@@ -229,6 +229,11 @@ public class PhpApiResourceBuilder extends ApiResourceBuilder {
         return this;
     }
 
+    @Override
+    public void updateHttpMethod(CodegenOperation co) {
+        // TODO: Update http method
+    }
+
     private void addOptionFileParams(ApiResourceBuilder apiResourceBuilder) {
         for (CodegenOperation operation : apiResourceBuilder.codegenOperationList) {
             if (operation.vendorExtensions.containsKey("x-ignore")) continue;

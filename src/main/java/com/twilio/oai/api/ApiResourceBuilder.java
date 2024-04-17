@@ -59,6 +59,7 @@ public abstract class ApiResourceBuilder implements IApiResourceBuilder {
     public ApiResourceBuilder updateOperations(Resolver<CodegenParameter> codegenParameterIResolver) {
         this.codegenOperationList.forEach(codegenOperation -> {
             updateNestedContent(codegenOperation);
+            updateHttpMethod(codegenOperation);
             codegenOperation.allParams.forEach(param -> addModel(modelTree, param.baseType, param.dataType));
 
             codegenOperation.allParams.forEach(param -> resolveParam(codegenParameterIResolver, param));
@@ -90,6 +91,8 @@ public abstract class ApiResourceBuilder implements IApiResourceBuilder {
         });
         return this;
     }
+
+    public abstract void updateHttpMethod(CodegenOperation co);
 
     protected void resolveParam(final Resolver<CodegenParameter> codegenParameterIResolver,
                                 final CodegenParameter param) {

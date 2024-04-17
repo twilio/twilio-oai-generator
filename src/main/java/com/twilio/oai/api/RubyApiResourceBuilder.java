@@ -133,6 +133,11 @@ public class RubyApiResourceBuilder extends FluentApiResourceBuilder {
     }
 
     @Override
+    public void updateHttpMethod(CodegenOperation co) {
+        // TODO: Update http method
+    }
+
+    @Override
     public RubyApiResourceBuilder updateResponseModel(final Resolver<CodegenProperty> codegenPropertyResolver,
                                                       final Resolver<CodegenModel> codegenModelResolver) {
         return ((RubyApiResourceBuilder) super
