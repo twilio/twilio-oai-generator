@@ -232,7 +232,7 @@ paths:
           description: OK
       security:
         - accountSid_authToken: [ ]
-    post:
+    put:
       operationId: CreateAccount
       parameters:
         - in: header

@@ -32,7 +32,7 @@ class {{apiName}}Context(InstanceContext):
         })
         {{#allParams}}{{^isFormParam}}headers = values.of({'{{{baseName}}}': {{paramName}}, }){{/isFormParam}}{{/allParams}}
 
-        payload = self._version.update(method='POST', uri=self._uri, data=data,{{#allParams}}{{#if isFormParam}}{{else}} headers=headers{{/if}}{{/allParams}})
+        payload = self._version.update(method='{{httpMethod}}', uri=self._uri, data=data,{{#allParams}}{{#if isFormParam}}{{else}} headers=headers{{/if}}{{/allParams}})
 
         return {{instanceName}}(
             self._version,

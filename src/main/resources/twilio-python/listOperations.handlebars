@@ -24,7 +24,7 @@
                 {{/queryParams}}
             })
         {{/queryParams.0}}
-        payload = self._version.create(method='POST', uri=self._uri, {{#hasParams}}data=data,{{/hasParams}}{{#headerParams.0}} headers=headers{{/headerParams.0}}{{^headerParams}}{{#bodyParams.0}} headers=headers{{/bodyParams.0}}{{/headerParams}}{{#queryParams.0}}, params=params{{/queryParams.0}})
+        payload = self._version.create(method='{{httpMethod}}', uri=self._uri, {{#hasParams}}data=data,{{/hasParams}}{{#headerParams.0}} headers=headers{{/headerParams.0}}{{^headerParams}}{{#bodyParams.0}} headers=headers{{/bodyParams.0}}{{/headerParams}}{{#queryParams.0}}, params=params{{/queryParams.0}})
 
         return {{instanceName}}(self._version, payload{{#listPathParams}}, {{paramName}}=self._solution['{{paramName}}']{{/listPathParams}})
 
@@ -51,7 +51,7 @@
                 {{/queryParams}}
             })
         {{/queryParams.0}}
-        payload = await self._version.create_async(method='POST', uri=self._uri, {{#hasParams}}data=data,{{/hasParams}}{{#headerParams.0}} headers=headers{{/headerParams.0}}{{^headerParams}}{{#bodyParams.0}} headers=headers{{/bodyParams.0}}{{/headerParams}}{{#queryParams.0}}, params=params{{/queryParams.0}})
+        payload = await self._version.create_async(method='{{httpMethod}}', uri=self._uri, {{#hasParams}}data=data,{{/hasParams}}{{#headerParams.0}} headers=headers{{/headerParams.0}}{{^headerParams}}{{#bodyParams.0}} headers=headers{{/bodyParams.0}}{{/headerParams}}{{#queryParams.0}}, params=params{{/queryParams.0}})
 
         return {{instanceName}}(self._version, payload{{#listPathParams}}, {{paramName}}=self._solution['{{paramName}}']{{/listPathParams}})
     {{/vendorExtensions.x-is-create-operation}}{{^instancePath}}{{#vendorExtensions.x-is-fetch-operation}}
@@ -72,7 +72,7 @@
                 {{/queryParams}}
             })
         {{/queryParams.0}}
-        payload = self._version.fetch(method='GET', uri=self._uri{{#headerParams.0}}, headers=headers{{/headerParams.0}}{{#queryParams.0}}, params=params{{/queryParams.0}})
+        payload = self._version.fetch(method='{{httpMethod}}', uri=self._uri{{#headerParams.0}}, headers=headers{{/headerParams.0}}{{#queryParams.0}}, params=params{{/queryParams.0}})
 
         return {{instanceName}}(self._version, payload{{#listPathParams}}, {{paramName}}=self._solution['{{paramName}}']{{/listPathParams}})
 
@@ -93,7 +93,7 @@
                 {{/queryParams}}
             })
         {{/queryParams.0}}
-        payload = await self._version.fetch_async(method='GET', uri=self._uri{{#headerParams.0}}, headers=headers{{/headerParams.0}}{{#queryParams.0}}, params=params{{/queryParams.0}})
+        payload = await self._version.fetch_async(method='{{httpMethod}}', uri=self._uri{{#headerParams.0}}, headers=headers{{/headerParams.0}}{{#queryParams.0}}, params=params{{/queryParams.0}})
 
         return {{instanceName}}(self._version, payload{{#listPathParams}}, {{paramName}}=self._solution['{{paramName}}']{{/listPathParams}}){{/vendorExtensions.x-is-fetch-operation}}{{#vendorExtensions.x-is-delete-operation}}
     def delete(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> bool:
@@ -112,7 +112,7 @@
                 {{#queryParams}}'{{{baseName}}}': {{paramName}},
                 {{/queryParams}}
             }){{/queryParams.0}}
-        return self._version.delete(method='DELETE', uri=self._uri{{#headerParams.0}}, headers=headers{{/headerParams.0}}{{#queryParams.0}}, params=params{{/queryParams.0}})
+        return self._version.delete(method='{{httpMethod}}', uri=self._uri{{#headerParams.0}}, headers=headers{{/headerParams.0}}{{#queryParams.0}}, params=params{{/queryParams.0}})
 
     async def delete_async(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> bool:
         """
@@ -130,7 +130,7 @@
                 {{#queryParams}}'{{{baseName}}}': {{paramName}},
                 {{/queryParams}}
             }){{/queryParams.0}}
-        return await self._version.delete_async(method='DELETE', uri=self._uri{{#headerParams.0}}, headers=headers{{/headerParams.0}}{{#queryParams.0}}, params=params{{/queryParams.0}}){{/vendorExtensions.x-is-delete-operation}}{{#vendorExtensions.x-is-update-operation}}
+        return await self._version.delete_async(method='{{httpMethod}}', uri=self._uri{{#headerParams.0}}, headers=headers{{/headerParams.0}}{{#queryParams.0}}, params=params{{/queryParams.0}}){{/vendorExtensions.x-is-delete-operation}}{{#vendorExtensions.x-is-update-operation}}
     def update(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> {{instanceName}}:
         """
         Update the {{instanceName}}
@@ -153,7 +153,7 @@
                 {{/queryParams}}
             })
         {{/queryParams.0}}
-        payload = self._version.update(method='POST', uri=self._uri, {{#hasParams}}data=data,{{/hasParams}}{{#headerParams.0}} headers=headers{{/headerParams.0}}{{^headerParams}}{{#bodyParams.0}} headers=headers{{/bodyParams.0}}{{/headerParams}}{{#queryParams.0}}, params=params{{/queryParams.0}})
+        payload = self._version.update(method='{{httpMethod}}', uri=self._uri, {{#hasParams}}data=data,{{/hasParams}}{{#headerParams.0}} headers=headers{{/headerParams.0}}{{^headerParams}}{{#bodyParams.0}} headers=headers{{/bodyParams.0}}{{/headerParams}}{{#queryParams.0}}, params=params{{/queryParams.0}})
 
         return {{instanceName}}(self._version, payload{{#listPathParams}}, {{paramName}}=self._solution['{{paramName}}']{{/listPathParams}})
 
@@ -179,7 +179,7 @@
                 {{/queryParams}}
             })
         {{/queryParams.0}}
-        payload = await self._version.update_async(method='POST', uri=self._uri, {{#hasParams}}data=data,{{/hasParams}}{{#headerParams.0}} headers=headers{{/headerParams.0}}{{^headerParams}}{{#bodyParams.0}} headers=headers{{/bodyParams.0}}{{/headerParams}}{{#queryParams.0}}, params=params{{/queryParams.0}})
+        payload = await self._version.update_async(method='{{httpMethod}}', uri=self._uri, {{#hasParams}}data=data,{{/hasParams}}{{#headerParams.0}} headers=headers{{/headerParams.0}}{{^headerParams}}{{#bodyParams.0}} headers=headers{{/bodyParams.0}}{{/headerParams}}{{#queryParams.0}}, params=params{{/queryParams.0}})
 
         return {{instanceName}}(self._version, payload{{#listPathParams}}, {{paramName}}=self._solution['{{paramName}}']{{/listPathParams}}){{/vendorExtensions.x-is-update-operation}}{{/instancePath}}{{#vendorExtensions.x-is-read-operation}}
     def stream(self, {{#allParams}}
@@ -316,7 +316,7 @@
             'PageSize': page_size,
         })
 
-        response = self._version.page(method='GET', uri=self._uri, params=data)
+        response = self._version.page(method='{{httpMethod}}', uri=self._uri, params=data)
         return {{apiName}}Page(self._version, response{{#if listPathParams}}, self._solution{{/if}})
 
     async def page_async(self, {{#allParams}}
@@ -343,7 +343,7 @@
             'PageSize': page_size,
         })
 
-        response = await self._version.page_async(method='GET', uri=self._uri, params=data)
+        response = await self._version.page_async(method='{{httpMethod}}', uri=self._uri, params=data)
         return {{apiName}}Page(self._version, response{{#if listPathParams}}, self._solution{{/if}})
 
     def get_page(self, target_url: str) -> {{apiName}}Page:
@@ -356,7 +356,7 @@
         :returns: Page of {{instanceName}}
         """
         response = self._version.domain.twilio.request(
-            'GET',
+            '{{httpMethod}}',
             target_url
         )
         return {{apiName}}Page(self._version, response{{#if listPathParams}}, self._solution{{/if}})
@@ -371,7 +371,7 @@
         :returns: Page of {{instanceName}}
         """
         response = await self._version.domain.twilio.request_async(
-            'GET',
+            '{{httpMethod}}',
             target_url
         )
         return {{apiName}}Page(self._version, response{{#if listPathParams}}, self._solution{{/if}})
