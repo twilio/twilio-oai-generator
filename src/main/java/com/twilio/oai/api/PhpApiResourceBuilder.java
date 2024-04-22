@@ -232,6 +232,7 @@ public class PhpApiResourceBuilder extends ApiResourceBuilder {
     @Override
     public void updateHttpMethod(CodegenOperation co) {
         // TODO: Update http method
+        System.out.println(co.httpMethod);
     }
 
     private void addOptionFileParams(ApiResourceBuilder apiResourceBuilder) {

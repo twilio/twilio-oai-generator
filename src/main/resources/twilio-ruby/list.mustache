@@ -110,7 +110,7 @@
                             'PageSize' => page_size,
                         })
 
-                        response = @version.page('GET', @uri, params: params)
+                        response = @version.page('{{httpMethod}}', @uri, params: params)
 
                         {{apiName}}Page.new(@version, response, @solution)
                     end
@@ -122,7 +122,7 @@
                     # @return [Page] Page of {{apiName}}Instance
                     def get_page(target_url)
                         response = @version.domain.request(
-                            'GET',
+                            '{{httpMethod}}',
                             target_url
                         )
                     {{apiName}}Page.new(@version, response, @solution)

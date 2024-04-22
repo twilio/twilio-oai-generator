@@ -3,6 +3,7 @@ package com.twilio.oai.api;
 import com.twilio.oai.DirectoryStructureService;
 import com.twilio.oai.StringHelper;
 import com.twilio.oai.common.ApplicationConstants;
+import com.twilio.oai.common.EnumConstants;
 import com.twilio.oai.common.Utility;
 import com.twilio.oai.resolver.Resolver;
 import com.twilio.oai.resolver.python.PythonCodegenModelResolver;
@@ -19,6 +20,7 @@ import org.openapitools.codegen.CodegenOperation;
 import org.openapitools.codegen.CodegenParameter;
 import org.openapitools.codegen.CodegenProperty;
 
+import static com.twilio.oai.common.ApplicationConstants.HTTP_METHOD;
 import static com.twilio.oai.common.ApplicationConstants.PATH_SEPARATOR_PLACEHOLDER;
 import static com.twilio.oai.common.ApplicationConstants.STRING;
 
@@ -67,7 +69,7 @@ public class PythonApiResourceBuilder extends FluentApiResourceBuilder {
 
     @Override
     public void updateHttpMethod(CodegenOperation co) {
-        // TODO: Update http method
+        co.vendorExtensions.put(HTTP_METHOD, co.httpMethod);
     }
 
     /**

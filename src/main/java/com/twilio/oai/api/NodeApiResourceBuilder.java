@@ -17,6 +17,7 @@ import org.openapitools.codegen.CodegenOperation;
 import org.openapitools.codegen.CodegenParameter;
 import org.openapitools.codegen.CodegenProperty;
 
+import static com.twilio.oai.common.ApplicationConstants.HTTP_METHOD;
 import static com.twilio.oai.common.ApplicationConstants.STRING;
 
 public class NodeApiResourceBuilder extends FluentApiResourceBuilder {
@@ -70,7 +71,7 @@ public class NodeApiResourceBuilder extends FluentApiResourceBuilder {
 
     @Override
     public void updateHttpMethod(CodegenOperation co) {
-        // TODO: Update http method
+        // NA
     }
 
     public ApiResourceBuilder updateResponseModel(Resolver<CodegenProperty> codegenPropertyResolver, NodeCodegenModelResolver codegenModelResolver) {
