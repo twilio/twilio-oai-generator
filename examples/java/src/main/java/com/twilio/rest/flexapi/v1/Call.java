@@ -122,7 +122,6 @@ public class Call extends Resource {
         }
     }
 
-
     private final Integer sid;
 
     @JsonCreator

@@ -131,49 +131,6 @@ public class NewCredentials extends Resource {
         }
     }
 
-    public enum Permissions {
-        GET_ALL("get-all"),
-        POST_ALL("post-all");
-
-        private final String value;
-
-        private Permissions(final String value) {
-            this.value = value;
-        }
-
-        public String toString() {
-            return value;
-        }
-
-        @JsonCreator
-        public static Permissions forValue(final String value) {
-            return Promoter.enumFromString(value, Permissions.values());
-        }
-    }
-    public enum Status {
-        IN_PROGRESS("in-progress"),
-        PAUSED("paused"),
-        STOPPED("stopped"),
-        PROCESSING("processing"),
-        COMPLETED("completed"),
-        ABSENT("absent");
-
-        private final String value;
-
-        private Status(final String value) {
-            this.value = value;
-        }
-
-        public String toString() {
-            return value;
-        }
-
-        @JsonCreator
-        public static Status forValue(final String value) {
-            return Promoter.enumFromString(value, Status.values());
-        }
-    }
-
     private final String accountSid;
     private final String sid;
     private final String testString;
@@ -232,6 +189,48 @@ public class NewCredentials extends Resource {
         return Objects.hash(accountSid, sid, testString, testInteger);
     }
 
+    public enum Permissions {
+        GET_ALL("get-all"),
+        POST_ALL("post-all");
+
+        private final String value;
+
+        private Permissions(final String value) {
+        this.value = value;
+        }
+
+        public String toString() {
+            return value;
+        }
+
+        @JsonCreator
+        public static Permissions forValue(final String value) {
+            return Promoter.enumFromString(value, Permissions.values());
+        }
+    }
+    public enum Status {
+        IN_PROGRESS("in-progress"),
+        PAUSED("paused"),
+        STOPPED("stopped"),
+        PROCESSING("processing"),
+        COMPLETED("completed"),
+        ABSENT("absent");
+
+        private final String value;
+
+        private Status(final String value) {
+        this.value = value;
+        }
+
+        public String toString() {
+            return value;
+        }
+
+        @JsonCreator
+        public static Status forValue(final String value) {
+            return Promoter.enumFromString(value, Status.values());
+        }
+    }
 
 }
 
