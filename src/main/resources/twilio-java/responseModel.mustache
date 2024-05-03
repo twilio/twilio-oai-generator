@@ -1,31 +1,4 @@
 {{#responseModel}}
-{{#vendorExtensions.enumVars}}
-{{#isEnum}}
-    public enum {{#lambda.titlecase}}{{{enumName}}}{{/lambda.titlecase}} {
-        {{#allowableValues}}
-        {{#values}}
-        {{#lambda.uppercase}}{{#lambda.replacehyphen}}{{{.}}}{{/lambda.replacehyphen}}({{/lambda.uppercase}}"{{{.}}}"){{^-last}},{{/-last}}{{#-last}};{{/-last}}
-        {{/values}}
-        {{/allowableValues}}
-
-        private final String value;
-
-        private {{#lambda.titlecase}}{{{enumName}}}{{/lambda.titlecase}}(final String value) {
-            this.value = value;
-        }
-
-        public String toString() {
-            return value;
-        }
-
-        @JsonCreator
-        public static {{#lambda.titlecase}}{{{enumName}}}{{/lambda.titlecase}} forValue(final String value) {
-            return Promoter.enumFromString(value, {{#lambda.titlecase}}{{{enumName}}}{{/lambda.titlecase}}.values());
-        }
-    }
-{{/isEnum}}
-{{/vendorExtensions.enumVars}}
-
 {{#vars}}
     private final {{{dataType}}} {{name}};
 {{/vars}}
