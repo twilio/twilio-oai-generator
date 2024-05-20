@@ -22,6 +22,7 @@ import org.openapitools.codegen.languages.JavaClientCodegen;
 import org.openapitools.codegen.model.ModelMap;
 import org.openapitools.codegen.model.ModelsMap;
 import org.openapitools.codegen.model.OperationsMap;
+import com.twilio.oai.resolver.java.JavaCodegenParameterDataTypeResolver;
 
 import java.util.*;
 
@@ -44,6 +45,8 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
     private final Map<String, String> modelFormatMap = new HashMap<>();
     private final IConventionMapper conventionMapper = new LanguageConventionResolver(CONFIG_JAVA_JSON_PATH);
     private final List<CodegenModel> allModels = new ArrayList<>();
+
+    private JavaCodegenParameterDataTypeResolver javaCodegenParameterDataTypeResolver = new JavaCodegenParameterDataTypeResolver(conventionMapper);
 
     public TwilioJavaGenerator() {
         super();
@@ -75,52 +78,14 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
     @Override
     public void postProcessParameter(final CodegenParameter parameter) {
         super.postProcessParameter(parameter);
-        if (parameter.dataType.startsWith(LIST_START) && CodegenUtils.isParameterSchemaEnumJava(parameter)) {
-            if (parameter.dataType.contains(ENUM)) {
-                String lastValue = Utility.removeEnumName(parameter.dataType);
-                parameter.dataType = LIST_START + lastValue;
-                parameter.vendorExtensions.put(REF_ENUM_EXTENSION_NAME, true);
-                parameter.baseType = lastValue.substring(0, lastValue.length() - 1); 
-            }
-        } else if (CodegenUtils.isParameterSchemaEnumJava(parameter)) {
-            parameter.vendorExtensions.put(REF_ENUM_EXTENSION_NAME, true);
-            parameter.enumName = parameter.dataType;
-            parameter.dataType = Utility.removeEnumName(parameter.dataType);
-            parameter.baseType = Utility.removeEnumName(parameter.dataType);
-            parameter.isEnum = true;
-        } else if (parameter.isEnum) {
-            parameter.enumName = parameter.paramName;
-        } else {
-            if (parameter.isPathParam) {
-                parameter.paramName = "Path" + parameter.paramName.substring(0, 1).toUpperCase() + parameter.paramName.substring(1);
-            }
-        }
+        javaCodegenParameterDataTypeResolver.processEnumParams(parameter);
     }
 
     @SuppressWarnings("unchecked")
     @Override
     public void postProcessModelProperty(CodegenModel model, CodegenProperty property) {
         super.postProcessModelProperty(model, property);
-        if (property.dataType.startsWith(LIST_START) && CodegenUtils.isPropertySchemaEnumJava(property)) {
-            String lastValue = Utility.removeEnumName(property.dataType);
-            property.dataType = LIST_START + lastValue;
-            property.vendorExtensions.put(REF_ENUM_EXTENSION_NAME, true);
-            property.complexType = lastValue.substring(0, lastValue.length() - 1);
-            property.baseType = lastValue.substring(0, lastValue.length() - 1);
-            property.isEnum = true;
-            property.allowableValues = property.items.allowableValues;
-            property._enum = (List<String>) property.items.allowableValues.get(VALUES);
-        } else if (CodegenUtils.isPropertySchemaEnumJava(property)) {
-            property.vendorExtensions.put(REF_ENUM_EXTENSION_NAME, true);
-            property.dataType = Utility.removeEnumName(property.dataType);
-            property.complexType = property.dataType;
-            property.baseType = property.dataType;
-            property.isEnum = true;
-            property._enum = (List<String>) property.allowableValues.get(VALUES);
-        } else if (property.isEnum) {
-            property.enumName = property.baseName;
-        }
-        property.isEnum = property.isEnum && property.dataFormat == null;
+        javaCodegenParameterDataTypeResolver.postProcessModelEnumProperty(property);
     }
 
     @Override
