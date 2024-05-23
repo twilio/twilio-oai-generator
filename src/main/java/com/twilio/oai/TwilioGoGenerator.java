@@ -4,7 +4,6 @@ import com.twilio.oai.common.Utility;
 
 import java.util.*;
 import java.util.function.Function;
-import java.util.regex.Pattern;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
@@ -20,7 +19,6 @@ import org.openapitools.codegen.model.ModelMap;
 import org.openapitools.codegen.model.ModelsMap;
 import org.openapitools.codegen.model.OperationMap;
 import org.openapitools.codegen.model.OperationsMap;
-import org.openapitools.codegen.utils.StringUtils;
 
 import static com.twilio.oai.common.ApplicationConstants.STRING;
 
@@ -66,68 +64,6 @@ public class TwilioGoGenerator extends AbstractTwilioGoGenerator {
             model.vendorExtensions.put("x-has-numbers-vars", model.allVars.stream().anyMatch(v -> v.isNumber));
         }
         return results;
-    }
-
-    boolean containsAllOf(String modelName) {
-        return modelName.contains("allOf");
-    }
-
-    boolean containsStatusCode(String modelName) {
-        return Pattern.compile("_\\d{3}_").matcher(modelName).find();
-    }
-
-    String removeStatusCode(String modelName) {
-        if(modelName == null || modelName.isEmpty())
-            return modelName;
-        return modelName.replaceFirst("_\\d{3}", "");
-    }
-
-    String removeDigits(String modelName) {
-        if(modelName == null || modelName.isEmpty() || modelName.contains("2010"))
-            return modelName;
-        return modelName.replaceFirst("\\d{3}", "");
-    }
-
-    String modelNameWithoutStatusCode(String modelName) {
-        if(modelName == null || modelName.isEmpty())
-            return modelName;
-        String newModelName = removeStatusCode(modelName);
-        if(Objects.equals(newModelName, modelName))
-            newModelName = removeDigits(newModelName);
-        return StringUtils.camelize(newModelName);
-    }
-
-    @Override
-    public Map<String, ModelsMap> updateAllModels(Map<String, ModelsMap> objs) {
-        objs = super.updateAllModels(objs);
-
-        Set<String> modelNames = objs.keySet()
-                .stream()
-                .filter(key -> (containsStatusCode(key) || containsAllOf(key)))
-                .map(this::modelNameWithoutStatusCode)
-                .collect(Collectors.toSet());
-
-        objs.entrySet().removeIf(entry -> containsAllOf(entry.getKey()) || modelNames.contains(entry.getKey()));
-        Map<String, ModelsMap> updatedObjs = new HashMap<>();
-
-        objs.forEach((key, value) -> {
-            if (containsStatusCode(key)) {
-                ModelMap modelMap = value.getModels().get(0);
-                String importPath = (String) modelMap.get("importPath");
-                CodegenModel model = modelMap.getModel();
-                key = modelNameWithoutStatusCode(key);
-                model.setName(modelNameWithoutStatusCode(model.name));
-                model.setClassname(modelNameWithoutStatusCode(model.classname));
-                model.setClassVarName(modelNameWithoutStatusCode(model.classVarName));
-                model.setClassFilename(removeStatusCode(model.classFilename));
-                modelMap.setModel(model);
-                modelMap.put("importPath", removeDigits(importPath));
-                value.put("classname", removeDigits((String) value.get("classname")));
-            }
-            updatedObjs.put(key, value);
-        });
-
-        return updatedObjs;
     }
 
     @Override
@@ -184,7 +120,6 @@ public class TwilioGoGenerator extends AbstractTwilioGoGenerator {
         for (final CodegenOperation co : opList) {
             Utility.populateCrudOperations(co);
             Utility.resolveContentType(co);
-            co.returnType = modelNameWithoutStatusCode(co.returnType);
 
             if (co.nickname.startsWith("List")) {
                 // make sure the format matches the other methods
