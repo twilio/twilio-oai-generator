@@ -1,2 +1,7 @@
+{{#isTokenAuth}}
+    private void addQueryParams(final BearerTokenRequest request) {
+{{/isTokenAuth}}
+{{^isTokenAuth}}
     private void addQueryParams(final Request request) {
+{{/isTokenAuth}}
 {{>queryParams}}    }

@@ -89,9 +89,13 @@ public class TwilioCodegenAdapter {
     public void setDomain(final String domain) {
         final String domainPackage = domain.replaceAll("[-.]", "");
         setOutputDir(domainPackage, getInputSpecVersion());
-
-        codegen.additionalProperties().put("domainName", StringHelper.camelize(domain));
+        String domainName = StringHelper.camelize(domain);
+        codegen.additionalProperties().put("domainName", domainName);
         codegen.additionalProperties().put("domainPackage", domainPackage);
+        if(domain.equals("preview-iam") || domain.equals("iam")) {
+            codegen.additionalProperties().put("isTokenAuth", true);
+        }
+
     }
     
     public void setVersion(final String version) {

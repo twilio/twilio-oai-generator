@@ -1,4 +1,9 @@
+{{#isTokenAuth}}
+    private void addPostParams(final BearerTokenRequest request) {
+{{/isTokenAuth}}
+{{^isTokenAuth}}
     private void addPostParams(final Request request) {
+{{/isTokenAuth}}
 {{#formParams}}
         if ({{paramName}} != null) {
     {{#isFreeFormObject}}

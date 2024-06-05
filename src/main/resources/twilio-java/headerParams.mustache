@@ -1,4 +1,9 @@
+{{#isTokenAuth}}
+    private void addHeaderParams(final BearerTokenRequest request) {
+{{/isTokenAuth}}
+{{^isTokenAuth}}
     private void addHeaderParams(final Request request) {
+{{/isTokenAuth}}
 {{#headerParams}}
         if ({{paramName}} != null) {
         {{#vendorExtensions.x-is-other-data-type}}

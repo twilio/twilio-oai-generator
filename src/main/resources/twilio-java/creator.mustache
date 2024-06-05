@@ -3,7 +3,16 @@
 package com.twilio.rest.{{domainPackage}}.{{apiVersion}}{{namespaceSubPart}};
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+{{#isTokenAuth}}
+import com.twilio.base.bearertoken.Creator;
+import com.twilio.http.bearertoken.BearerTokenRequest;
+import com.twilio.http.bearertoken.BearerTokenTwilioRestClient;
+{{/isTokenAuth}}
+{{^isTokenAuth}}
 import com.twilio.base.Creator;
+import com.twilio.http.Request;
+import com.twilio.http.TwilioRestClient;
+{{/isTokenAuth}}
 import com.twilio.constant.EnumConstants;
 import com.twilio.converter.Promoter;
 import com.twilio.exception.ApiConnectionException;
@@ -12,9 +21,7 @@ import com.twilio.converter.Converter;
 import com.twilio.exception.ApiException;
 import com.twilio.exception.RestException;
 import com.twilio.http.HttpMethod;
-import com.twilio.http.Request;
 import com.twilio.http.Response;
-import com.twilio.http.TwilioRestClient;
 import com.twilio.rest.Domains;
 import java.math.BigDecimal;
 import java.util.List;
@@ -78,9 +85,19 @@ public class {{apiName}}Creator extends Creator<{{apiName}}>{
 {{/vendorExtensions.x-non-path-params}}
 
     @Override
+{{#isTokenAuth}}
+    public {{apiName}} create(final BearerTokenTwilioRestClient client){
+{{/isTokenAuth}}
+{{^isTokenAuth}}
     public {{apiName}} create(final TwilioRestClient client){
+{{/isTokenAuth}}
 {{>generate_uri}}
+{{#isTokenAuth}}
+        BearerTokenRequest request = new BearerTokenRequest(
+{{/isTokenAuth}}
+{{^isTokenAuth}}
         Request request = new Request(
+{{/isTokenAuth}}
             HttpMethod.POST,
             Domains.{{#lambda.uppercase}}{{domainName}}{{/lambda.uppercase}}.toString(),
             path
@@ -102,7 +119,12 @@ public class {{apiName}}Creator extends Creator<{{apiName}}>{
         Response response = client.request(request);
         if (response == null) {
             throw new ApiConnectionException("{{apiName}} creation failed: Unable to connect to server");
+{{#isTokenAuth}}
+        } else if (!BearerTokenTwilioRestClient.SUCCESS.test(response.getStatusCode())) {
+{{/isTokenAuth}}
+{{^isTokenAuth}}
         } else if (!TwilioRestClient.SUCCESS.test(response.getStatusCode())) {
+{{/isTokenAuth}}
             RestException restException = RestException.fromJson(response.getStream(), client.getObjectMapper());
             if (restException == null) {
                 throw new ApiException("Server Error, no content", response.getStatusCode());
