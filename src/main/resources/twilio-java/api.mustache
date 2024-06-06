@@ -10,12 +10,9 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-{{#isTokenAuth}}
 import com.twilio.base.bearertoken.Resource;
-{{/isTokenAuth}}
-{{^isTokenAuth}}
+import com.twilio.base.noauth.Resource;
 import com.twilio.base.Resource;
-{{/isTokenAuth}}
 import com.twilio.converter.Converter;
 import java.util.Currency;
 import com.twilio.converter.DateConverter;

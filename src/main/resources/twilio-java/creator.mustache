@@ -3,16 +3,6 @@
 package com.twilio.rest.{{domainPackage}}.{{apiVersion}}{{namespaceSubPart}};
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-{{#isTokenAuth}}
-import com.twilio.base.bearertoken.Creator;
-import com.twilio.http.bearertoken.BearerTokenRequest;
-import com.twilio.http.bearertoken.BearerTokenTwilioRestClient;
-{{/isTokenAuth}}
-{{^isTokenAuth}}
-import com.twilio.base.Creator;
-import com.twilio.http.Request;
-import com.twilio.http.TwilioRestClient;
-{{/isTokenAuth}}
 import com.twilio.constant.EnumConstants;
 import com.twilio.converter.Promoter;
 import com.twilio.exception.ApiConnectionException;
@@ -51,6 +41,10 @@ import java.net.URI;
 
 {{#apiOperations}}
 {{#vendorExtensions.x-is-create-operation}}
+import com.twilio.base{{vendorExtensions.x-auth-import-class}}.Creator;
+import com.twilio.http{{vendorExtensions.x-auth-import-class}}.{{vendorExtensions.x-http-class-prefix}}Request;
+import com.twilio.http{{vendorExtensions.x-auth-import-class}}.{{vendorExtensions.x-http-class-prefix}}TwilioRestClient;
+
 public class {{apiName}}Creator extends Creator<{{apiName}}>{
 {{#allParams}}
     private {{{dataType}}} {{paramName}};
@@ -85,19 +79,9 @@ public class {{apiName}}Creator extends Creator<{{apiName}}>{
 {{/vendorExtensions.x-non-path-params}}
 
     @Override
-{{#isTokenAuth}}
-    public {{apiName}} create(final BearerTokenTwilioRestClient client){
-{{/isTokenAuth}}
-{{^isTokenAuth}}
-    public {{apiName}} create(final TwilioRestClient client){
-{{/isTokenAuth}}
+    public {{apiName}} create(final {{vendorExtensions.x-http-class-prefix}}TwilioRestClient client){
 {{>generate_uri}}
-{{#isTokenAuth}}
-        BearerTokenRequest request = new BearerTokenRequest(
-{{/isTokenAuth}}
-{{^isTokenAuth}}
-        Request request = new Request(
-{{/isTokenAuth}}
+        {{vendorExtensions.x-http-class-prefix}}Request request = new {{vendorExtensions.x-http-class-prefix}}Request(
             HttpMethod.POST,
             Domains.{{#lambda.uppercase}}{{domainName}}{{/lambda.uppercase}}.toString(),
             path
@@ -119,12 +103,7 @@ public class {{apiName}}Creator extends Creator<{{apiName}}>{
         Response response = client.request(request);
         if (response == null) {
             throw new ApiConnectionException("{{apiName}} creation failed: Unable to connect to server");
-{{#isTokenAuth}}
-        } else if (!BearerTokenTwilioRestClient.SUCCESS.test(response.getStatusCode())) {
-{{/isTokenAuth}}
-{{^isTokenAuth}}
-        } else if (!TwilioRestClient.SUCCESS.test(response.getStatusCode())) {
-{{/isTokenAuth}}
+        } else if (!{{vendorExtensions.x-http-class-prefix}}TwilioRestClient.SUCCESS.test(response.getStatusCode())) {
             RestException restException = RestException.fromJson(response.getStream(), client.getObjectMapper());
             if (restException == null) {
                 throw new ApiException("Server Error, no content", response.getStatusCode());
@@ -135,16 +114,20 @@ public class {{apiName}}Creator extends Creator<{{apiName}}>{
         return {{apiName}}.fromJson(response.getStream(), client.getObjectMapper());
     }
 {{#formParams.0}}
+    private void addPostParams(final {{vendorExtensions.x-http-class-prefix}}Request request) {
 {{>postParams}}
 {{/formParams.0}}
 {{#bodyParams.0}}
+    private void addPostParams(final {{vendorExtensions.x-http-class-prefix}}Request request, {{vendorExtensions.x-http-class-prefix}}TwilioRestClient client) {
 {{>postParams_body}}
 {{/bodyParams.0}}
 {{#headerParams.0}}
+    private void addHeaderParams(final {{vendorExtensions.x-http-class-prefix}}Request request) {
 {{>headerParams}}
 {{/headerParams.0}}
 {{#queryParams.0}}
-{{>queryParamsFunc}}
+    private void addQueryParams(final {{vendorExtensions.x-http-class-prefix}}Request request) {
+{{>queryParams}}    }
 {{/queryParams.0}}
 }
 {{/vendorExtensions.x-is-create-operation}}

@@ -1,9 +1,3 @@
-{{#isTokenAuth}}
-    private void addPostParams(final BearerTokenRequest request, BearerTokenTwilioRestClient client) {
-{{/isTokenAuth}}
-{{^isTokenAuth}}
-    private void addPostParams(final Request request, TwilioRestClient client) {
-{{/isTokenAuth}}
         ObjectMapper objectMapper = client.getObjectMapper();
     {{#bodyParams}}
         if ({{paramName}} != null) {

@@ -2,20 +2,6 @@
 {{#resources}}
 package com.twilio.rest.{{domainPackage}}.{{apiVersion}}{{namespaceSubPart}};
 
-{{#isTokenAuth}}
-import com.twilio.base.bearertoken.Page;
-import com.twilio.base.bearertoken.Reader;
-import com.twilio.base.bearertoken.ResourceSet;
-import com.twilio.http.bearertoken.BearerTokenRequest;
-import com.twilio.http.bearertoken.BearerTokenTwilioRestClient;
-{{/isTokenAuth}}
-{{^isTokenAuth}}
-import com.twilio.base.Page;
-import com.twilio.base.Reader;
-import com.twilio.http.Request;
-import com.twilio.base.ResourceSet;
-import com.twilio.http.TwilioRestClient;
-{{/isTokenAuth}}
 import com.twilio.converter.Promoter;
 import com.twilio.exception.ApiConnectionException;
 import com.twilio.converter.PrefixedCollapsibleMap;
@@ -46,6 +32,12 @@ import lombok.ToString;
 
 {{#apiOperations}}
 {{#vendorExtensions.x-is-read-operation}}
+import com.twilio.base{{vendorExtensions.x-auth-import-class}}.Page;
+import com.twilio.base{{vendorExtensions.x-auth-import-class}}.Reader;
+import com.twilio.base{{vendorExtensions.x-auth-import-class}}.ResourceSet;
+import com.twilio.http{{vendorExtensions.x-auth-import-class}}.{{vendorExtensions.x-http-class-prefix}}Request;
+import com.twilio.http{{vendorExtensions.x-auth-import-class}}.{{vendorExtensions.x-http-class-prefix}}TwilioRestClient;
+
 public class {{apiName}}Reader extends Reader<{{apiName}}> {
 {{#allParams}}
     private {{{dataType}}} {{paramName}};
@@ -80,38 +72,23 @@ public class {{apiName}}Reader extends Reader<{{apiName}}> {
 {{/vendorExtensions.x-non-path-params}}
 
     @Override
-{{#isTokenAuth}}
-    public ResourceSet<{{apiName}}> read(final BearerTokenTwilioRestClient client) {
-{{/isTokenAuth}}
-{{^isTokenAuth}}
-    public ResourceSet<{{apiName}}> read(final TwilioRestClient client) {
-{{/isTokenAuth}}
+    public ResourceSet<{{apiName}}> read(final {{vendorExtensions.x-http-class-prefix}}TwilioRestClient client) {
         return new ResourceSet<>(this, client, firstPage(client));
     }
 
-{{#isTokenAuth}}
-    public Page<{{apiName}}> firstPage(final BearerTokenTwilioRestClient client) {
-{{/isTokenAuth}}
-{{^isTokenAuth}}
-    public Page<{{apiName}}> firstPage(final TwilioRestClient client) {
-{{/isTokenAuth}}
+    public Page<{{apiName}}> firstPage(final {{vendorExtensions.x-http-class-prefix}}TwilioRestClient client) {
         String path = "{{{path}}}";
         {{#allParams}}
         {{#vendorExtensions.x-is-account-sid}}
         this.{{paramName}} = this.{{paramName}} == null ? client.getAccountSid() : this.{{paramName}};
-        path = path.replace("{"+"{{#lambda.titlecase}}{{baseName}}{{/lambda.titlecase}}"+"}", this.{{paramName}}.toString());
+        path = path.replace("{"+"{{baseName}}"+"}", this.{{paramName}}.toString());
         {{/vendorExtensions.x-is-account-sid}}
         {{/allParams}}
         {{#requiredParams}}
-        path = path.replace("{"+"{{#lambda.titlecase}}{{baseName}}{{/lambda.titlecase}}"+"}", this.{{paramName}}.toString());
+        path = path.replace("{"+"{{baseName}}"+"}", this.{{paramName}}.toString());
         {{/requiredParams}}
 
-{{#isTokenAuth}}
-        BearerTokenRequest request = new BearerTokenRequest(
-{{/isTokenAuth}}
-{{^isTokenAuth}}
-        Request request = new Request(
-{{/isTokenAuth}}
+        {{vendorExtensions.x-http-class-prefix}}Request request = new {{vendorExtensions.x-http-class-prefix}}Request(
             HttpMethod.GET,
             Domains.{{#lambda.uppercase}}{{domainName}}{{/lambda.uppercase}}.toString(),
             path
@@ -129,22 +106,12 @@ public class {{apiName}}Reader extends Reader<{{apiName}}> {
         return pageForRequest(client, request);
     }
 
-{{#isTokenAuth}}
-    private Page<{{apiName}}> pageForRequest(final BearerTokenTwilioRestClient client, final BearerTokenRequest request) {
-{{/isTokenAuth}}
-{{^isTokenAuth}}
-    private Page<{{apiName}}> pageForRequest(final TwilioRestClient client, final Request request) {
-{{/isTokenAuth}}
+    private Page<{{apiName}}> pageForRequest(final {{vendorExtensions.x-http-class-prefix}}TwilioRestClient client, final {{vendorExtensions.x-http-class-prefix}}Request request) {
         Response response = client.request(request);
 
         if (response == null) {
             throw new ApiConnectionException("{{apiName}} read failed: Unable to connect to server");
-{{#isTokenAuth}}
-        } else if (!BearerTokenTwilioRestClient.SUCCESS.test(response.getStatusCode())) {
-{{/isTokenAuth}}
-{{^isTokenAuth}}
-        } else if (!TwilioRestClient.SUCCESS.test(response.getStatusCode())) {
-{{/isTokenAuth}}
+        } else if (!{{vendorExtensions.x-http-class-prefix}}TwilioRestClient.SUCCESS.test(response.getStatusCode())) {
             RestException restException = RestException.fromJson(response.getStream(), client.getObjectMapper());
             if (restException == null) {
                 throw new ApiException("Server Error, no content", response.getStatusCode());
@@ -161,14 +128,8 @@ public class {{apiName}}Reader extends Reader<{{apiName}}> {
     }
 
     @Override
-{{#isTokenAuth}}
-    public Page<{{apiName}}> previousPage(final Page<{{apiName}}> page, final BearerTokenTwilioRestClient client) {
+    public Page<{{apiName}}> previousPage(final Page<{{apiName}}> page, final {{vendorExtensions.x-http-class-prefix}}TwilioRestClient client) {
         BearerTokenRequest request = new BearerTokenRequest(
-{{/isTokenAuth}}
-{{^isTokenAuth}}
-    public Page<{{apiName}}> previousPage(final Page<{{apiName}}> page, final TwilioRestClient client) {
-        Request request = new Request(
-{{/isTokenAuth}}
             HttpMethod.GET,
             page.getPreviousPageUrl(Domains.{{#lambda.uppercase}}{{domainName}}{{/lambda.uppercase}}.toString())
         );
@@ -177,14 +138,8 @@ public class {{apiName}}Reader extends Reader<{{apiName}}> {
 
 
     @Override
-{{#isTokenAuth}}
-    public Page<{{apiName}}> nextPage(final Page<{{apiName}}> page, final BearerTokenTwilioRestClient client) {
-        BearerTokenRequest request = new BearerTokenRequest(
-{{/isTokenAuth}}
-{{^isTokenAuth}}
-    public Page<{{apiName}}> nextPage(final Page<{{apiName}}> page, final TwilioRestClient client) {
-        Request request = new Request(
-{{/isTokenAuth}}
+    public Page<{{apiName}}> nextPage(final Page<{{apiName}}> page, final {{vendorExtensions.x-http-class-prefix}}TwilioRestClient client) {
+        {{vendorExtensions.x-http-class-prefix}}Request request = new {{vendorExtensions.x-http-class-prefix}}Request(
             HttpMethod.GET,
             page.getNextPageUrl(Domains.{{#lambda.uppercase}}{{domainName}}{{/lambda.uppercase}}.toString())
         );
@@ -192,14 +147,8 @@ public class {{apiName}}Reader extends Reader<{{apiName}}> {
     }
 
     @Override
-{{#isTokenAuth}}
-    public Page<{{apiName}}> getPage(final String targetUrl, final BearerTokenTwilioRestClient client) {
-        BearerTokenRequest request = new BearerTokenRequest(
-{{/isTokenAuth}}
-{{^isTokenAuth}}
-    public Page<{{apiName}}> getPage(final String targetUrl, final TwilioRestClient client) {
-        Request request = new Request(
-{{/isTokenAuth}}
+    public Page<{{apiName}}> getPage(final String targetUrl, final {{vendorExtensions.x-http-class-prefix}}TwilioRestClient client) {
+        {{vendorExtensions.x-http-class-prefix}}Request request = new {{vendorExtensions.x-http-class-prefix}}Request(
             HttpMethod.GET,
             targetUrl
         );
@@ -210,15 +159,11 @@ public class {{apiName}}Reader extends Reader<{{apiName}}> {
 {{>postParams}}
 {{/formParams.0}}
 {{#headerParams.0}}
+    private void addHeaderParams(final {{vendorExtensions.x-http-class-prefix}}Request request) {
 {{>headerParams}}
 {{/headerParams.0}}
 {{#queryParams.0}}
-{{#isTokenAuth}}
-    private void addQueryParams(final BearerTokenRequest request) {
-{{/isTokenAuth}}
-{{^isTokenAuth}}
-    private void addQueryParams(final Request request) {
-{{/isTokenAuth}}
+    private void addQueryParams(final {{vendorExtensions.x-http-class-prefix}}Request request) {
 {{>queryParams}}
         if(getPageSize() != null) {
             request.addQueryParam("PageSize", Integer.toString(getPageSize()));

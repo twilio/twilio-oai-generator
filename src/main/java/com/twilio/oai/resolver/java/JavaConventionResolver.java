@@ -3,15 +3,19 @@ package com.twilio.oai.resolver.java;
 import com.twilio.oai.CodegenUtils;
 import com.twilio.oai.StringHelper;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Stack;
 
 import com.twilio.oai.common.ApplicationConstants;
 import com.twilio.oai.common.EnumConstants;
 import com.twilio.oai.common.Utility;
+import org.openapitools.codegen.CodegenOperation;
 import org.openapitools.codegen.CodegenParameter;
 import org.openapitools.codegen.CodegenProperty;
+import org.openapitools.codegen.CodegenSecurity;
 
 import static com.twilio.oai.common.ApplicationConstants.ENUM_VARS;
 import static com.twilio.oai.common.ApplicationConstants.LIST_END;
@@ -20,6 +24,14 @@ import static com.twilio.oai.common.ApplicationConstants.REF_ENUM_EXTENSION_NAME
 
 public class JavaConventionResolver {
     private static final String VALUES = "values";
+    public static final String AUTH_IMPORT_CLASS = "x-auth-import-class";
+    public static final String HTTP_CLASS_PREFIX = "x-http-class-prefix";
+    public static final String NOAUTH_IMPORT_CLASS = ".noauth";
+    public static final String NOAUTH_HTTP_CLASS_PREFIX = "NoAuth";
+    public static final String BEARER_AUTH_IMPORT_CLASS = ".bearertoken";
+    public static final String BEARER_AUTH_HTTP_CLASS_PREFIX = "BearerToken";
+
+    public static final String EMPTY_STRING = "";
 
     private ContainerResolver containerResolver = new ContainerResolver(Arrays.asList(EnumConstants.JavaDataTypes.values()));
 
@@ -112,5 +124,25 @@ public class JavaConventionResolver {
             return property;
         }
         return property;
+    }
+
+    public Map<String, Object> populateSecurityAttributes(CodegenOperation co) {
+        ArrayList<CodegenSecurity> authMethods = (ArrayList) co.authMethods;
+        if(authMethods == null){
+            co.vendorExtensions.put(AUTH_IMPORT_CLASS, NOAUTH_IMPORT_CLASS);
+            co.vendorExtensions.put(HTTP_CLASS_PREFIX, NOAUTH_HTTP_CLASS_PREFIX);
+        }else{
+            for(CodegenSecurity c : authMethods){
+                if(c.isOAuth == true){
+                    co.vendorExtensions.put(AUTH_IMPORT_CLASS, BEARER_AUTH_IMPORT_CLASS);
+                    co.vendorExtensions.put(HTTP_CLASS_PREFIX, BEARER_AUTH_HTTP_CLASS_PREFIX );
+                }
+                else{
+                    co.vendorExtensions.put(AUTH_IMPORT_CLASS, EMPTY_STRING);
+                    co.vendorExtensions.put(HTTP_CLASS_PREFIX, EMPTY_STRING);
+                }
+            }
+        }
+        return co.vendorExtensions;
     }
 }

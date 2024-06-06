@@ -2,16 +2,6 @@
 {{#resources}}
 package com.twilio.rest.{{domainPackage}}.{{apiVersion}}{{namespaceSubPart}};
 
-{{#isTokenAuth}}
-import com.twilio.base.bearertoken.Updater;
-import com.twilio.http.bearertoken.BearerTokenRequest;
-import com.twilio.http.bearertoken.BearerTokenTwilioRestClient;
-{{/isTokenAuth}}
-{{^isTokenAuth}}
-import com.twilio.base.Updater;
-import com.twilio.http.Request;
-import com.twilio.http.TwilioRestClient;
-{{/isTokenAuth}}
 import com.twilio.constant.EnumConstants;
 import com.twilio.converter.Promoter;
 import com.twilio.exception.ApiConnectionException;
@@ -44,6 +34,11 @@ import lombok.ToString;
 
 {{#apiOperations}}
 {{#vendorExtensions.x-is-update-operation}}
+import com.twilio.base{{vendorExtensions.x-auth-import-class}}.Updater;
+import com.twilio.http{{vendorExtensions.x-auth-import-class}}.{{vendorExtensions.x-http-class-prefix}}Request;
+import com.twilio.http{{vendorExtensions.x-auth-import-class}}.{{vendorExtensions.x-http-class-prefix}}TwilioRestClient;
+
+
 public class {{apiName}}Updater extends Updater<{{apiName}}>{
 {{#allParams}}
     private {{{dataType}}} {{paramName}};
@@ -78,19 +73,9 @@ public class {{apiName}}Updater extends Updater<{{apiName}}>{
 {{/vendorExtensions.x-non-path-params}}
 
     @Override
-{{#isTokenAuth}}
-    public {{apiName}} update(final BearerTokenTwilioRestClient client){
-{{/isTokenAuth}}
-{{^isTokenAuth}}
-    public {{apiName}} update(final TwilioRestClient client){
-{{/isTokenAuth}}
+    public {{apiName}} update(final {{vendorExtensions.x-http-class-prefix}}TwilioRestClient client){
 {{>generate_uri}}
-{{#isTokenAuth}}
-        BearerTokenRequest request = new BearerTokenRequest(
-{{/isTokenAuth}}
-{{^isTokenAuth}}
-        Request request = new Request(
-{{/isTokenAuth}}
+        {{vendorExtensions.x-http-class-prefix}}Request request = new {{vendorExtensions.x-http-class-prefix}}Request(
             HttpMethod.POST,
             Domains.{{#lambda.uppercase}}{{domainName}}{{/lambda.uppercase}}.toString(),
             path
@@ -108,12 +93,7 @@ public class {{apiName}}Updater extends Updater<{{apiName}}>{
         Response response = client.request(request);
         if (response == null) {
             throw new ApiConnectionException("{{apiName}} update failed: Unable to connect to server");
-{{#isTokenAuth}}
-        } else if (!BearerTokenTwilioRestClient.SUCCESS.test(response.getStatusCode())) {
-{{/isTokenAuth}}
-{{^isTokenAuth}}
-        } else if (!TwilioRestClient.SUCCESS.test(response.getStatusCode())) {
-{{/isTokenAuth}}
+        } else if (!{{vendorExtensions.x-http-class-prefix}}TwilioRestClient.SUCCESS.test(response.getStatusCode())) {
             RestException restException = RestException.fromJson(response.getStream(), client.getObjectMapper());
             if (restException == null) {
                 throw new ApiException("Server Error, no content", response.getStatusCode());
@@ -127,10 +107,12 @@ public class {{apiName}}Updater extends Updater<{{apiName}}>{
 {{>postParams}}
 {{/formParams.0}}
 {{#headerParams.0}}
+    private void addHeaderParams(final {{vendorExtensions.x-http-class-prefix}}Request request) {
 {{>headerParams}}
 {{/headerParams.0}}
 {{#queryParams.0}}
-{{>queryParamsFunc}}
+    private void addQueryParams(final {{vendorExtensions.x-http-class-prefix}}Request request) {
+{{>queryParams}}    }
 {{/queryParams.0}}
 }
 {{/vendorExtensions.x-is-update-operation}}

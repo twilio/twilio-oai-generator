@@ -14,6 +14,7 @@ import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenOperation;
 import org.openapitools.codegen.CodegenParameter;
 import org.openapitools.codegen.CodegenProperty;
+import org.openapitools.codegen.CodegenSecurity;
 import org.openapitools.codegen.IJsonSchemaValidationProperties;
 
 import java.util.*;
@@ -27,6 +28,7 @@ import static com.twilio.oai.template.JavaApiActionTemplate.API_TEMPLATE;
 public class JavaApiResourceBuilder extends ApiResourceBuilder{
 
     public static final String SIGNATURE_LIST = "x-signature-list";
+
     private static final int SERIAL_UID_LENGTH = 12;
     protected CodegenModel responseModel;
     protected long serialVersionUID;
@@ -93,6 +95,8 @@ public class JavaApiResourceBuilder extends ApiResourceBuilder{
                 }
             });
 
+            co.vendorExtensions = conventionResolver.populateSecurityAttributes(co);
+
             jsonRequestBodyResolver.setResourceName(resourceName);
             co.allParams.stream()
                     .filter(item -> (item.getContent() != null && item.getContent().get("application/json") != null))
@@ -105,6 +109,9 @@ public class JavaApiResourceBuilder extends ApiResourceBuilder{
                         }
                     });
             co.allParams.forEach(this::updateHeaderParamsList);
+            co.bodyParams = co.bodyParams.stream()
+                .map(item -> copySecuritySchemaToSubLevels(item, co))
+                .collect(Collectors.toList());
             co.pathParams = co.pathParams.stream()
                     .map(item -> codegenParameterIResolver.resolve(item, this))
                     .map(item -> conventionResolver.resolveEnumParameter(item, resourceName))
@@ -112,20 +119,24 @@ public class JavaApiResourceBuilder extends ApiResourceBuilder{
             co.pathParams.stream().
                 map(item -> codegenParameterIResolver.resolve(item, this))
                 .map(item -> conventionResolver.resolveEnumParameter(item, resourceName))
+                .map(item -> copySecuritySchemaToSubLevels(item, co))
                 .forEach(param -> param.paramName = "path"+param.paramName);
             co.queryParams = co.queryParams.stream()
                     .map(item -> codegenParameterIResolver.resolve(item, this))
                     .map(item -> conventionResolver.resolveEnumParameter(item, resourceName))
+                    .map(item -> copySecuritySchemaToSubLevels(item, co))
                     .collect(Collectors.toList());
             co.queryParams = preProcessQueryParameters(co);
             co.formParams = co.formParams.stream()
                     .map(item -> codegenParameterIResolver.resolve(item, this))
                     .map(item -> conventionResolver.resolveEnumParameter(item, resourceName))
+                    .map(item -> copySecuritySchemaToSubLevels(item, co))
                     .collect(Collectors.toList());
             processDataTypesForParams(co.formParams);
             co.headerParams = co.headerParams.stream()
                     .map(item -> codegenParameterIResolver.resolve(item, this))
                     .map(item -> conventionResolver.resolveEnumParameter(item, resourceName))
+                    .map(item -> copySecuritySchemaToSubLevels(item, co))
                     .collect(Collectors.toList());
             processDataTypesForParams(co.headerParams);
             co.optionalParams = co.optionalParams
@@ -145,6 +156,14 @@ public class JavaApiResourceBuilder extends ApiResourceBuilder{
             co.vendorExtensions = mapOperation(co);
         });
         return this;
+    }
+
+    private CodegenParameter copySecuritySchemaToSubLevels(CodegenParameter item, CodegenOperation co) {
+        String schema = (String) co.vendorExtensions.get("x-http-class-prefix");
+        if(schema != null){
+            item.vendorExtensions.put("x-http-class-prefix", schema);
+        }
+        return item;
     }
 
     private void updateHeaderParamsList(CodegenParameter cp) {
