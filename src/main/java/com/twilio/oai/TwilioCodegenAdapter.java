@@ -91,7 +91,6 @@ public class TwilioCodegenAdapter {
         setOutputDir(domainPackage, getInputSpecVersion());
         codegen.additionalProperties().put("domainName", StringHelper.camelize(domain));
         codegen.additionalProperties().put("domainPackage", domainPackage);
-
     }
     
     public void setVersion(final String version) {
