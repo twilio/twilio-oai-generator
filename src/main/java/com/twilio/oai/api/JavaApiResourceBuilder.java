@@ -14,7 +14,6 @@ import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenOperation;
 import org.openapitools.codegen.CodegenParameter;
 import org.openapitools.codegen.CodegenProperty;
-import org.openapitools.codegen.CodegenSecurity;
 import org.openapitools.codegen.IJsonSchemaValidationProperties;
 
 import java.util.*;
