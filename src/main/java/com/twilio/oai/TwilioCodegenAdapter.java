@@ -89,8 +89,7 @@ public class TwilioCodegenAdapter {
     public void setDomain(final String domain) {
         final String domainPackage = domain.replaceAll("[-.]", "");
         setOutputDir(domainPackage, getInputSpecVersion());
-        String domainName = StringHelper.camelize(domain);
-        codegen.additionalProperties().put("domainName", domainName);
+        codegen.additionalProperties().put("domainName", StringHelper.camelize(domain));
         codegen.additionalProperties().put("domainPackage", domainPackage);
 
     }
