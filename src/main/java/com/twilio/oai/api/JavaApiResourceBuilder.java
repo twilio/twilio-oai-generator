@@ -14,6 +14,7 @@ import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenOperation;
 import org.openapitools.codegen.CodegenParameter;
 import org.openapitools.codegen.CodegenProperty;
+import org.openapitools.codegen.CodegenSecurity;
 import org.openapitools.codegen.IJsonSchemaValidationProperties;
 
 import java.util.*;
@@ -117,7 +118,6 @@ public class JavaApiResourceBuilder extends ApiResourceBuilder{
                     .collect(Collectors.toList());
             co.pathParams.stream().
                 map(item -> codegenParameterIResolver.resolve(item, this))
-                .map(item -> conventionResolver.resolveEnumParameter(item, resourceName))
                 .map(item -> copySecuritySchemaToSubLevels(item, co))
                 .forEach(param -> param.paramName = "path"+param.paramName);
             co.queryParams = co.queryParams.stream()

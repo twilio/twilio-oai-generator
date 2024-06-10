@@ -117,7 +117,7 @@ public class JavaConventionResolver {
                 if (resourceName != null) {
                     // It will restrict the data type to be ResourceName.ResourceName.EnumName.
                     property.dataType = property.dataType != null && property.dataType.contains(resourceName + ApplicationConstants.DOT)
-                            ? property.dataType: resourceName + ApplicationConstants.DOT + property.dataType;
+                            ? property.dataType : resourceName + ApplicationConstants.DOT + property.enumName;
                 }
 
             }

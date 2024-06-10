@@ -104,6 +104,7 @@ public class {{apiName}}Updater extends Updater<{{apiName}}>{
         return {{apiName}}.fromJson(response.getStream(), client.getObjectMapper());
     }
 {{#formParams.0}}
+    private void addPostParams(final {{vendorExtensions.x-http-class-prefix}}Request request) {
 {{>postParams}}
 {{/formParams.0}}
 {{#headerParams.0}}

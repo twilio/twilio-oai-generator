@@ -100,6 +100,7 @@ public class {{apiName}}Deleter extends Deleter<{{apiName}}> {
         return response.getStatusCode() == 204;
     }
 {{#formParams.0}}
+    private void addPostParams(final {{vendorExtensions.x-http-class-prefix}}Request request) {
 {{>postParams}}
 {{/formParams.0}}
 {{#headerParams.0}}

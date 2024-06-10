@@ -1,6 +1,11 @@
 {{#responseModel}}
 {{#vars}}
+{{#isEnum}}
     private final {{{dataType}}} {{name}};
+{{/isEnum}}
+{{^isEnum}}
+    private final {{{dataType}}} {{name}};
+{{/isEnum}}
 {{/vars}}
 
     @JsonCreator

@@ -129,7 +129,7 @@ public class {{apiName}}Reader extends Reader<{{apiName}}> {
 
     @Override
     public Page<{{apiName}}> previousPage(final Page<{{apiName}}> page, final {{vendorExtensions.x-http-class-prefix}}TwilioRestClient client) {
-        BearerTokenRequest request = new BearerTokenRequest(
+        {{vendorExtensions.x-http-class-prefix}}Request request = new {{vendorExtensions.x-http-class-prefix}}Request(
             HttpMethod.GET,
             page.getPreviousPageUrl(Domains.{{#lambda.uppercase}}{{domainName}}{{/lambda.uppercase}}.toString())
         );
@@ -156,6 +156,7 @@ public class {{apiName}}Reader extends Reader<{{apiName}}> {
         return pageForRequest(client, request);
     }
 {{#formParams.0}}
+    private void addPostParams(final {{vendorExtensions.x-http-class-prefix}}Request request) {
 {{>postParams}}
 {{/formParams.0}}
 {{#headerParams.0}}

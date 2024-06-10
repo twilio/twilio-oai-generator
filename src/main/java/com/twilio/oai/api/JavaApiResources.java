@@ -17,6 +17,7 @@ public class JavaApiResources extends ApiResources{
     public ArrayList<List<CodegenProperty>> modelParameters;
 
     public boolean hasNestedRequestBody;
+    public String authMethodPackage = "";
 
     public JavaApiResources(JavaApiResourceBuilder apiResourceBuilder) {
         super(apiResourceBuilder);

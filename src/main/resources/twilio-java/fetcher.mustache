@@ -102,6 +102,7 @@ public class {{apiName}}Fetcher extends Fetcher<{{apiName}}> {
         return {{apiName}}.fromJson(response.getStream(), client.getObjectMapper());
     }
 {{#formParams.0}}
+    private void addPostParams(final {{vendorExtensions.x-http-class-prefix}}Request request) {
 {{>postParams}}
 {{/formParams.0}}
 {{#headerParams.0}}
