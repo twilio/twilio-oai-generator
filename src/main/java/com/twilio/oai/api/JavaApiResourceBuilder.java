@@ -27,7 +27,6 @@ import static com.twilio.oai.template.JavaApiActionTemplate.API_TEMPLATE;
 public class JavaApiResourceBuilder extends ApiResourceBuilder{
 
     public static final String SIGNATURE_LIST = "x-signature-list";
-
     private static final int SERIAL_UID_LENGTH = 12;
     protected CodegenModel responseModel;
     protected long serialVersionUID;
