@@ -69,11 +69,6 @@ public class NodeApiResourceBuilder extends FluentApiResourceBuilder {
         return this;
     }
 
-    @Override
-    public void updateHttpMethod(CodegenOperation co) {
-        // NA
-    }
-
     public ApiResourceBuilder updateResponseModel(Resolver<CodegenProperty> codegenPropertyResolver, NodeCodegenModelResolver codegenModelResolver) {
         final String resourceName = getApiName();
 

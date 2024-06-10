@@ -92,7 +92,9 @@ public abstract class ApiResourceBuilder implements IApiResourceBuilder {
         return this;
     }
 
-    public abstract void updateHttpMethod(CodegenOperation co);
+    public void updateHttpMethod(CodegenOperation co) {
+        
+    }
 
     protected void resolveParam(final Resolver<CodegenParameter> codegenParameterIResolver,
                                 final CodegenParameter param) {
