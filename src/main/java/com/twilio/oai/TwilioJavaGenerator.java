@@ -144,7 +144,6 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
         final OperationsMap results = super.postProcessOperationsWithModels(objs, allModels);
         final List<CodegenOperation> opList = directoryStructureService.processOperations(results);
         JavaApiResources apiResources = processCodegenOperations(opList);
-        //apiResources.authMethodPackage = processAuthMethods(opList);
         results.put("resources", apiResources);
         return results;
     }
