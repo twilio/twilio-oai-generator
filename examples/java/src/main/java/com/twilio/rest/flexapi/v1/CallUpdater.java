@@ -14,7 +14,6 @@
 
 package com.twilio.rest.flexapi.v1;
 
-import com.twilio.base.Updater;
 import com.twilio.constant.EnumConstants;
 import com.twilio.converter.Promoter;
 import com.twilio.exception.ApiConnectionException;
@@ -23,9 +22,7 @@ import com.twilio.converter.Converter;
 import com.twilio.exception.ApiException;
 import com.twilio.exception.RestException;
 import com.twilio.http.HttpMethod;
-import com.twilio.http.Request;
 import com.twilio.http.Response;
-import com.twilio.http.TwilioRestClient;
 import com.twilio.rest.Domains;
 import java.time.format.DateTimeFormatter;
 import com.twilio.converter.DateConverter;
@@ -44,6 +41,11 @@ import java.util.Map;
 import java.util.Objects;
 
 import lombok.ToString;
+
+import com.twilio.base.Updater;
+import com.twilio.http.Request;
+import com.twilio.http.TwilioRestClient;
+
 
 public class CallUpdater extends Updater<Call>{
     private String pathSid;
@@ -77,4 +79,5 @@ public class CallUpdater extends Updater<Call>{
 
         return Call.fromJson(response.getStream(), client.getObjectMapper());
     }
+
 }

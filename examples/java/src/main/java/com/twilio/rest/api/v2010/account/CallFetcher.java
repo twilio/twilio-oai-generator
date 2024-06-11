@@ -14,7 +14,6 @@
 
 package com.twilio.rest.api.v2010.account;
 
-import com.twilio.base.Fetcher;
 import com.twilio.converter.Promoter;
 import com.twilio.exception.ApiConnectionException;
 import com.twilio.converter.PrefixedCollapsibleMap;
@@ -22,9 +21,7 @@ import com.twilio.converter.Converter;
 import com.twilio.exception.ApiException;
 import com.twilio.exception.RestException;
 import com.twilio.http.HttpMethod;
-import com.twilio.http.Request;
 import com.twilio.http.Response;
-import com.twilio.http.TwilioRestClient;
 import com.twilio.rest.Domains;
 
 import java.io.IOException;
@@ -43,6 +40,10 @@ import java.util.Map;
 import java.util.Objects;
 
 import lombok.ToString;
+
+import com.twilio.base.Fetcher;
+import com.twilio.http.Request;
+import com.twilio.http.TwilioRestClient;
 
 public class CallFetcher extends Fetcher<Call> {
     private Integer pathTestInteger;
@@ -73,7 +74,7 @@ public class CallFetcher extends Fetcher<Call> {
         Response response = client.request(request);
 
         if (response == null) {
-        throw new ApiConnectionException("Call fetch failed: Unable to connect to server");
+            throw new ApiConnectionException("Call fetch failed: Unable to connect to server");
         } else if (!TwilioRestClient.SUCCESS.test(response.getStatusCode())) {
             RestException restException = RestException.fromJson(response.getStream(), client.getObjectMapper());
             if (restException == null) {
