@@ -155,22 +155,20 @@ public class {{apiName}}Reader extends Reader<{{apiName}}> {
 
         return pageForRequest(client, request);
     }
-{{#formParams.0}}
-    private void addPostParams(final {{vendorExtensions.x-http-class-prefix}}Request request) {
+{{#vendorExtensions.x-has-form-params}}
 {{>postParams}}
-{{/formParams.0}}
-{{#headerParams.0}}
-    private void addHeaderParams(final {{vendorExtensions.x-http-class-prefix}}Request request) {
+{{/vendorExtensions.x-has-form-params}}
+{{#vendorExtensions.x-has-header-params}}
 {{>headerParams}}
-{{/headerParams.0}}
-{{#queryParams.0}}
+{{/vendorExtensions.x-has-header-params}}
+{{#vendorExtensions.x-has-query-params}}
     private void addQueryParams(final {{vendorExtensions.x-http-class-prefix}}Request request) {
 {{>queryParams}}
         if(getPageSize() != null) {
             request.addQueryParam("PageSize", Integer.toString(getPageSize()));
         }
     }
-{{/queryParams.0}}
+{{/vendorExtensions.x-has-query-params}}
 }
 {{/vendorExtensions.x-is-read-operation}}
 {{/apiOperations}}

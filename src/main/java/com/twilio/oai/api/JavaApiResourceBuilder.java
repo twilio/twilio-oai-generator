@@ -14,6 +14,7 @@ import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenOperation;
 import org.openapitools.codegen.CodegenParameter;
 import org.openapitools.codegen.CodegenProperty;
+import org.openapitools.codegen.CodegenSecurity;
 import org.openapitools.codegen.IJsonSchemaValidationProperties;
 
 import java.util.*;
@@ -37,6 +38,7 @@ public class JavaApiResourceBuilder extends ApiResourceBuilder{
     private Resolver<CodegenProperty> codegenPropertyIResolver;
 
     public Set<IJsonSchemaValidationProperties> enums = new HashSet<>();
+    public String authMethodPackage = "";
 
     public ArrayList<List<CodegenProperty>> modelParameters;
 
@@ -52,6 +54,7 @@ public class JavaApiResourceBuilder extends ApiResourceBuilder{
         this(apiActionTemplate, opList, allModels);
         this.toggleMap = toggleMap;
         this.codegenPropertyIResolver = codegenPropertyIResolver;
+        processAuthMethods(opList);
     }
 
     @Override
@@ -107,9 +110,6 @@ public class JavaApiResourceBuilder extends ApiResourceBuilder{
                         }
                     });
             co.allParams.forEach(this::updateHeaderParamsList);
-            co.bodyParams = co.bodyParams.stream()
-                .map(item -> copySecuritySchemaToSubLevels(item, co))
-                .collect(Collectors.toList());
             co.pathParams = co.pathParams.stream()
                     .map(item -> codegenParameterIResolver.resolve(item, this))
                     .map(item -> conventionResolver.resolveEnumParameter(item, resourceName))
@@ -117,24 +117,20 @@ public class JavaApiResourceBuilder extends ApiResourceBuilder{
             co.pathParams.stream().
                 map(item -> codegenParameterIResolver.resolve(item, this))
                 .map(item -> conventionResolver.resolveEnumParameter(item, resourceName))
-                .map(item -> copySecuritySchemaToSubLevels(item, co))
                 .forEach(param -> param.paramName = "path"+param.paramName);
             co.queryParams = co.queryParams.stream()
                     .map(item -> codegenParameterIResolver.resolve(item, this))
                     .map(item -> conventionResolver.resolveEnumParameter(item, resourceName))
-                    .map(item -> copySecuritySchemaToSubLevels(item, co))
                     .collect(Collectors.toList());
             co.queryParams = preProcessQueryParameters(co);
             co.formParams = co.formParams.stream()
                     .map(item -> codegenParameterIResolver.resolve(item, this))
                     .map(item -> conventionResolver.resolveEnumParameter(item, resourceName))
-                    .map(item -> copySecuritySchemaToSubLevels(item, co))
                     .collect(Collectors.toList());
             processDataTypesForParams(co.formParams);
             co.headerParams = co.headerParams.stream()
                     .map(item -> codegenParameterIResolver.resolve(item, this))
                     .map(item -> conventionResolver.resolveEnumParameter(item, resourceName))
-                    .map(item -> copySecuritySchemaToSubLevels(item, co))
                     .collect(Collectors.toList());
             processDataTypesForParams(co.headerParams);
             co.optionalParams = co.optionalParams
@@ -149,6 +145,10 @@ public class JavaApiResourceBuilder extends ApiResourceBuilder{
                     .collect(Collectors.toList());
             co.hasParams = !co.allParams.isEmpty();
             co.hasRequiredParams = !co.requiredParams.isEmpty();
+            if(!co.formParams.isEmpty())co.vendorExtensions.put("x-has-form-params", true);
+            if(!co.headerParams.isEmpty())co.vendorExtensions.put("x-has-header-params", true);
+            if(!co.bodyParams.isEmpty())co.vendorExtensions.put("x-has-body-params", true);
+            if(!co.queryParams.isEmpty())co.vendorExtensions.put("x-has-query-params", true);
 
             requiredPathParams.addAll(co.pathParams);
             co.vendorExtensions = mapOperation(co);
@@ -156,12 +156,17 @@ public class JavaApiResourceBuilder extends ApiResourceBuilder{
         return this;
     }
 
-    private CodegenParameter copySecuritySchemaToSubLevels(CodegenParameter item, CodegenOperation co) {
-        String schema = (String) co.vendorExtensions.get("x-http-class-prefix");
-        if(schema != null){
-            item.vendorExtensions.put("x-http-class-prefix", schema);
+    public void processAuthMethods(List<CodegenOperation> opList) {
+        if(opList != null){
+            List<CodegenSecurity> authMethods = opList.get(0).authMethods;
+            if(authMethods != null){
+                for(CodegenSecurity c : authMethods){
+                    if(c.isOAuth == true){
+                        this.authMethodPackage = ".bearertoken";
+                    }
+                }
+            }
         }
-        return item;
     }
 
     private void updateHeaderParamsList(CodegenParameter cp) {
