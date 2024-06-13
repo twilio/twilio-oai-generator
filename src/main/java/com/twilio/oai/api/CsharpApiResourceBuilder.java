@@ -152,6 +152,9 @@ public class CsharpApiResourceBuilder extends ApiResourceBuilder {
         codegenOperationList.forEach(codegenOperation -> {
             codegenOperation.responses.forEach(response -> {
                 String modelName = response.dataType;
+                if (response.dataType != null && response.dataType.startsWith(EnumConstants.CsharpDataTypes.LIST.getValue())){
+                    modelName = response.baseType;
+                }
                 Optional<CodegenModel> responseModel = Utility.getModel(allModels, modelName, recordKey, codegenOperation);
                 if (responseModel.isEmpty()) {
                     return;
