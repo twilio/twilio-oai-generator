@@ -32,11 +32,11 @@ import lombok.ToString;
 
 {{#apiOperations}}
 {{#vendorExtensions.x-is-read-operation}}
-import com.twilio.base{{vendorExtensions.x-auth-import-class}}.Page;
-import com.twilio.base{{vendorExtensions.x-auth-import-class}}.Reader;
-import com.twilio.base{{vendorExtensions.x-auth-import-class}}.ResourceSet;
-import com.twilio.http{{vendorExtensions.x-auth-import-class}}.{{vendorExtensions.x-http-class-prefix}}Request;
-import com.twilio.http{{vendorExtensions.x-auth-import-class}}.{{vendorExtensions.x-http-class-prefix}}TwilioRestClient;
+import com.twilio.base{{vendorExtensions.x-auth-attributes.x-auth-import-class}}.Page;
+import com.twilio.base{{vendorExtensions.x-auth-attributes.x-auth-import-class}}.Reader;
+import com.twilio.base{{vendorExtensions.x-auth-attributes.x-auth-import-class}}.ResourceSet;
+import com.twilio.http{{vendorExtensions.x-auth-attributes.x-auth-import-class}}.{{vendorExtensions.x-auth-attributes.x-http-class-prefix}}Request;
+import com.twilio.http{{vendorExtensions.x-auth-attributes.x-auth-import-class}}.{{vendorExtensions.x-auth-attributes.x-http-class-prefix}}TwilioRestClient;
 
 public class {{apiName}}Reader extends Reader<{{apiName}}> {
 {{#allParams}}
@@ -72,11 +72,11 @@ public class {{apiName}}Reader extends Reader<{{apiName}}> {
 {{/vendorExtensions.x-non-path-params}}
 
     @Override
-    public ResourceSet<{{apiName}}> read(final {{vendorExtensions.x-http-class-prefix}}TwilioRestClient client) {
+    public ResourceSet<{{apiName}}> read(final {{vendorExtensions.x-auth-attributes.x-http-class-prefix}}TwilioRestClient client) {
         return new ResourceSet<>(this, client, firstPage(client));
     }
 
-    public Page<{{apiName}}> firstPage(final {{vendorExtensions.x-http-class-prefix}}TwilioRestClient client) {
+    public Page<{{apiName}}> firstPage(final {{vendorExtensions.x-auth-attributes.x-http-class-prefix}}TwilioRestClient client) {
         String path = "{{{path}}}";
         {{#allParams}}
         {{#vendorExtensions.x-is-account-sid}}
@@ -88,7 +88,7 @@ public class {{apiName}}Reader extends Reader<{{apiName}}> {
         path = path.replace("{"+"{{baseName}}"+"}", this.{{paramName}}.toString());
         {{/requiredParams}}
 
-        {{vendorExtensions.x-http-class-prefix}}Request request = new {{vendorExtensions.x-http-class-prefix}}Request(
+        {{vendorExtensions.x-auth-attributes.x-http-class-prefix}}Request request = new {{vendorExtensions.x-auth-attributes.x-http-class-prefix}}Request(
             HttpMethod.GET,
             Domains.{{#lambda.uppercase}}{{domainName}}{{/lambda.uppercase}}.toString(),
             path
@@ -106,12 +106,12 @@ public class {{apiName}}Reader extends Reader<{{apiName}}> {
         return pageForRequest(client, request);
     }
 
-    private Page<{{apiName}}> pageForRequest(final {{vendorExtensions.x-http-class-prefix}}TwilioRestClient client, final {{vendorExtensions.x-http-class-prefix}}Request request) {
+    private Page<{{apiName}}> pageForRequest(final {{vendorExtensions.x-auth-attributes.x-http-class-prefix}}TwilioRestClient client, final {{vendorExtensions.x-auth-attributes.x-http-class-prefix}}Request request) {
         Response response = client.request(request);
 
         if (response == null) {
             throw new ApiConnectionException("{{apiName}} read failed: Unable to connect to server");
-        } else if (!{{vendorExtensions.x-http-class-prefix}}TwilioRestClient.SUCCESS.test(response.getStatusCode())) {
+        } else if (!{{vendorExtensions.x-auth-attributes.x-http-class-prefix}}TwilioRestClient.SUCCESS.test(response.getStatusCode())) {
             RestException restException = RestException.fromJson(response.getStream(), client.getObjectMapper());
             if (restException == null) {
                 throw new ApiException("Server Error, no content", response.getStatusCode());
@@ -128,8 +128,8 @@ public class {{apiName}}Reader extends Reader<{{apiName}}> {
     }
 
     @Override
-    public Page<{{apiName}}> previousPage(final Page<{{apiName}}> page, final {{vendorExtensions.x-http-class-prefix}}TwilioRestClient client) {
-        {{vendorExtensions.x-http-class-prefix}}Request request = new {{vendorExtensions.x-http-class-prefix}}Request(
+    public Page<{{apiName}}> previousPage(final Page<{{apiName}}> page, final {{vendorExtensions.x-auth-attributes.x-http-class-prefix}}TwilioRestClient client) {
+        {{vendorExtensions.x-auth-attributes.x-http-class-prefix}}Request request = new {{vendorExtensions.x-auth-attributes.x-http-class-prefix}}Request(
             HttpMethod.GET,
             page.getPreviousPageUrl(Domains.{{#lambda.uppercase}}{{domainName}}{{/lambda.uppercase}}.toString())
         );
@@ -138,8 +138,8 @@ public class {{apiName}}Reader extends Reader<{{apiName}}> {
 
 
     @Override
-    public Page<{{apiName}}> nextPage(final Page<{{apiName}}> page, final {{vendorExtensions.x-http-class-prefix}}TwilioRestClient client) {
-        {{vendorExtensions.x-http-class-prefix}}Request request = new {{vendorExtensions.x-http-class-prefix}}Request(
+    public Page<{{apiName}}> nextPage(final Page<{{apiName}}> page, final {{vendorExtensions.x-auth-attributes.x-http-class-prefix}}TwilioRestClient client) {
+        {{vendorExtensions.x-auth-attributes.x-http-class-prefix}}Request request = new {{vendorExtensions.x-auth-attributes.x-http-class-prefix}}Request(
             HttpMethod.GET,
             page.getNextPageUrl(Domains.{{#lambda.uppercase}}{{domainName}}{{/lambda.uppercase}}.toString())
         );
@@ -147,8 +147,8 @@ public class {{apiName}}Reader extends Reader<{{apiName}}> {
     }
 
     @Override
-    public Page<{{apiName}}> getPage(final String targetUrl, final {{vendorExtensions.x-http-class-prefix}}TwilioRestClient client) {
-        {{vendorExtensions.x-http-class-prefix}}Request request = new {{vendorExtensions.x-http-class-prefix}}Request(
+    public Page<{{apiName}}> getPage(final String targetUrl, final {{vendorExtensions.x-auth-attributes.x-http-class-prefix}}TwilioRestClient client) {
+        {{vendorExtensions.x-auth-attributes.x-http-class-prefix}}Request request = new {{vendorExtensions.x-auth-attributes.x-http-class-prefix}}Request(
             HttpMethod.GET,
             targetUrl
         );
@@ -162,7 +162,7 @@ public class {{apiName}}Reader extends Reader<{{apiName}}> {
 {{>headerParams}}
 {{/vendorExtensions.x-has-header-params}}
 {{#vendorExtensions.x-has-query-params}}
-    private void addQueryParams(final {{vendorExtensions.x-http-class-prefix}}Request request) {
+    private void addQueryParams(final {{vendorExtensions.x-auth-attributes.x-http-class-prefix}}Request request) {
 {{>queryParams}}
         if(getPageSize() != null) {
             request.addQueryParam("PageSize", Integer.toString(getPageSize()));

@@ -41,9 +41,9 @@ import java.net.URI;
 
 {{#apiOperations}}
 {{#vendorExtensions.x-is-create-operation}}
-import com.twilio.base{{vendorExtensions.x-auth-import-class}}.Creator;
-import com.twilio.http{{vendorExtensions.x-auth-import-class}}.{{vendorExtensions.x-http-class-prefix}}Request;
-import com.twilio.http{{vendorExtensions.x-auth-import-class}}.{{vendorExtensions.x-http-class-prefix}}TwilioRestClient;
+import com.twilio.base{{vendorExtensions.x-auth-attributes.x-auth-import-class}}.Creator;
+import com.twilio.http{{vendorExtensions.x-auth-attributes.x-auth-import-class}}.{{vendorExtensions.x-auth-attributes.x-http-class-prefix}}Request;
+import com.twilio.http{{vendorExtensions.x-auth-attributes.x-auth-import-class}}.{{vendorExtensions.x-auth-attributes.x-http-class-prefix}}TwilioRestClient;
 
 public class {{apiName}}Creator extends Creator<{{apiName}}>{
 {{#allParams}}
@@ -79,9 +79,9 @@ public class {{apiName}}Creator extends Creator<{{apiName}}>{
 {{/vendorExtensions.x-non-path-params}}
 
     @Override
-    public {{apiName}} create(final {{vendorExtensions.x-http-class-prefix}}TwilioRestClient client){
+    public {{apiName}} create(final {{vendorExtensions.x-auth-attributes.x-http-class-prefix}}TwilioRestClient client){
 {{>generate_uri}}
-        {{vendorExtensions.x-http-class-prefix}}Request request = new {{vendorExtensions.x-http-class-prefix}}Request(
+        {{vendorExtensions.x-auth-attributes.x-http-class-prefix}}Request request = new {{vendorExtensions.x-auth-attributes.x-http-class-prefix}}Request(
             HttpMethod.POST,
             Domains.{{#lambda.uppercase}}{{domainName}}{{/lambda.uppercase}}.toString(),
             path
@@ -103,7 +103,7 @@ public class {{apiName}}Creator extends Creator<{{apiName}}>{
         Response response = client.request(request);
         if (response == null) {
             throw new ApiConnectionException("{{apiName}} creation failed: Unable to connect to server");
-        } else if (!{{vendorExtensions.x-http-class-prefix}}TwilioRestClient.SUCCESS.test(response.getStatusCode())) {
+        } else if (!{{vendorExtensions.x-auth-attributes.x-http-class-prefix}}TwilioRestClient.SUCCESS.test(response.getStatusCode())) {
             RestException restException = RestException.fromJson(response.getStream(), client.getObjectMapper());
             if (restException == null) {
                 throw new ApiException("Server Error, no content", response.getStatusCode());
@@ -123,7 +123,7 @@ public class {{apiName}}Creator extends Creator<{{apiName}}>{
 {{>headerParams}}
 {{/vendorExtensions.x-has-header-params}}
 {{#vendorExtensions.x-has-query-params}}
-    private void addQueryParams(final {{vendorExtensions.x-http-class-prefix}}Request request) {
+    private void addQueryParams(final {{vendorExtensions.x-auth-attributes.x-http-class-prefix}}Request request) {
 {{>queryParams}}    }
 {{/vendorExtensions.x-has-query-params}}
 }

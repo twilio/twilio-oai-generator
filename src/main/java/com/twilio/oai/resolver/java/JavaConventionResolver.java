@@ -5,6 +5,7 @@ import com.twilio.oai.StringHelper;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
@@ -128,21 +129,23 @@ public class JavaConventionResolver {
 
     public Map<String, Object> populateSecurityAttributes(CodegenOperation co) {
         ArrayList<CodegenSecurity> authMethods = (ArrayList) co.authMethods;
+        HashMap<String,String> authAttributes = new HashMap<>();
         if(authMethods == null){
-            co.vendorExtensions.put(AUTH_IMPORT_CLASS, NOAUTH_IMPORT_CLASS);
-            co.vendorExtensions.put(HTTP_CLASS_PREFIX, NOAUTH_HTTP_CLASS_PREFIX);
+            authAttributes.put(AUTH_IMPORT_CLASS, NOAUTH_IMPORT_CLASS);
+            authAttributes.put(HTTP_CLASS_PREFIX, NOAUTH_HTTP_CLASS_PREFIX);
         }else{
             for(CodegenSecurity c : authMethods){
                 if(c.isOAuth == true){
-                    co.vendorExtensions.put(AUTH_IMPORT_CLASS, BEARER_AUTH_IMPORT_CLASS);
-                    co.vendorExtensions.put(HTTP_CLASS_PREFIX, BEARER_AUTH_HTTP_CLASS_PREFIX );
+                    authAttributes.put(AUTH_IMPORT_CLASS, BEARER_AUTH_IMPORT_CLASS);
+                    authAttributes.put(HTTP_CLASS_PREFIX, BEARER_AUTH_HTTP_CLASS_PREFIX);
                 }
                 else{
-                    co.vendorExtensions.put(AUTH_IMPORT_CLASS, EMPTY_STRING);
-                    co.vendorExtensions.put(HTTP_CLASS_PREFIX, EMPTY_STRING);
+                    authAttributes.put(AUTH_IMPORT_CLASS, EMPTY_STRING);
+                    authAttributes.put(HTTP_CLASS_PREFIX, EMPTY_STRING);
                 }
             }
         }
+        co.vendorExtensions.put("x-auth-attributes", authAttributes);
         return co.vendorExtensions;
     }
 }
