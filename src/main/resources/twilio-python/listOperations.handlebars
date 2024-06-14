@@ -12,19 +12,17 @@
         {{^bodyParam}}{{#hasParams}}data = values.of({ {{#allParams}}{{#isFormParam}}
             '{{{baseName}}}': {{#if vendorExtensions.x-serialize}}{{vendorExtensions.x-serialize}}({{paramName}}{{#if isArray}}, lambda e: {{#startsWith baseType text='object'}}serialize.object(e){{else}}e{{/startsWith}}){{else}}){{/if}}{{else}}{{paramName}}{{/if}},{{/isFormParam}}{{/allParams}}
         }){{/hasParams}}{{/bodyParam}}
-        {{#headerParams.0}}headers = values.of({
+        headers = values.of({
                 {{#headerParams}}'{{{baseName}}}': {{paramName}},
-                {{/headerParams}}
-                {{#bodyParams.0}}'Content-Type': 'application/json'{{/bodyParams.0}}
+                {{/headerParams}}'Content-Type': 'application/x-www-form-urlencoded'
             })
-        {{/headerParams.0}}
-        {{^headerParams}}{{#bodyParams.0}}headers = {'Content-Type': 'application/json'}{{/bodyParams.0}}{{/headerParams}}
+        {{#bodyParams.0}}headers['Content-Type'] = 'application/json'}{{/bodyParams.0}}
         {{#queryParams.0}}params = values.of({
                 {{#queryParams}}'{{{baseName}}}': {{paramName}},
                 {{/queryParams}}
             })
         {{/queryParams.0}}
-        payload = self._version.create(method='POST', uri=self._uri, {{#hasParams}}data=data,{{/hasParams}}{{#headerParams.0}} headers=headers{{/headerParams.0}}{{^headerParams}}{{#bodyParams.0}} headers=headers{{/bodyParams.0}}{{/headerParams}}{{#queryParams.0}}, params=params{{/queryParams.0}})
+        payload = self._version.create(method='POST', uri=self._uri, {{#hasParams}}data=data,{{/hasParams}} headers=headers{{#queryParams.0}}, params=params{{/queryParams.0}})
 
         return {{instanceName}}(self._version, payload{{#listPathParams}}, {{paramName}}=self._solution['{{paramName}}']{{/listPathParams}})
 
@@ -40,18 +38,17 @@
         {{^bodyParam}}{{#hasParams}}data = values.of({ {{#allParams}}{{#isFormParam}}
             '{{{baseName}}}': {{#if vendorExtensions.x-serialize}}{{vendorExtensions.x-serialize}}({{paramName}}{{#if isArray}}, lambda e: {{#startsWith baseType text='object'}}serialize.object(e){{else}}e{{/startsWith}}){{else}}){{/if}}{{else}}{{paramName}}{{/if}},{{/isFormParam}}{{/allParams}}
         }){{/hasParams}}{{/bodyParam}}
-        {{#headerParams.0}}headers = values.of({
+        headers = values.of({
                 {{#headerParams}}'{{{baseName}}}': {{paramName}},
-                {{/headerParams}}
+                {{/headerParams}}'Content-Type': 'application/x-www-form-urlencoded'
             })
-        {{/headerParams.0}}
-        {{^headerParams}}{{#bodyParams.0}}headers = {'Content-Type': 'application/json'}{{/bodyParams.0}}{{/headerParams}}
+        {{#bodyParams.0}}headers = {'Content-Type': 'application/json'}{{/bodyParams.0}}
         {{#queryParams.0}}params = values.of({
                 {{#queryParams}}'{{{baseName}}}': {{paramName}},
                 {{/queryParams}}
             })
         {{/queryParams.0}}
-        payload = await self._version.create_async(method='POST', uri=self._uri, {{#hasParams}}data=data,{{/hasParams}}{{#headerParams.0}} headers=headers{{/headerParams.0}}{{^headerParams}}{{#bodyParams.0}} headers=headers{{/bodyParams.0}}{{/headerParams}}{{#queryParams.0}}, params=params{{/queryParams.0}})
+        payload = await self._version.create_async(method='POST', uri=self._uri, {{#hasParams}}data=data,{{/hasParams}} headers=headers{{#queryParams.0}}, params=params{{/queryParams.0}})
 
         return {{instanceName}}(self._version, payload{{#listPathParams}}, {{paramName}}=self._solution['{{paramName}}']{{/listPathParams}})
     {{/vendorExtensions.x-is-create-operation}}{{^instancePath}}{{#vendorExtensions.x-is-fetch-operation}}
@@ -62,17 +59,17 @@
         {{#allParams}}:param {{paramName}}: {{{description}}}{{/allParams}}
         :returns: The fetched {{instanceName}}
         """
-        {{#headerParams.0}}headers = values.of({
+        headers = values.of({
                 {{#headerParams}}'{{{baseName}}}': {{paramName}},
-                {{/headerParams}}
+                {{/headerParams}}'Content-Type': 'application/x-www-form-urlencoded'
             })
-        {{/headerParams.0}}
+        {{#bodyParams.0}}headers = {'Content-Type': 'application/json'}{{/bodyParams.0}}
         {{#queryParams.0}}params = values.of({
                 {{#queryParams}}'{{{baseName}}}': {{paramName}},
                 {{/queryParams}}
             })
         {{/queryParams.0}}
-        payload = self._version.fetch(method='GET', uri=self._uri{{#headerParams.0}}, headers=headers{{/headerParams.0}}{{#queryParams.0}}, params=params{{/queryParams.0}})
+        payload = self._version.fetch(method='GET', uri=self._uri, headers=headers{{#queryParams.0}}, params=params{{/queryParams.0}})
 
         return {{instanceName}}(self._version, payload{{#listPathParams}}, {{paramName}}=self._solution['{{paramName}}']{{/listPathParams}})
 
@@ -83,17 +80,17 @@
         {{#allParams}}:param {{paramName}}: {{{description}}}{{/allParams}}
         :returns: The fetched {{instanceName}}
         """
-        {{#headerParams.0}}headers = values.of({
+        headers = values.of({
                 {{#headerParams}}'{{{baseName}}}': {{paramName}},
-                {{/headerParams}}
+                {{/headerParams}}'Content-Type': 'application/x-www-form-urlencoded'
             })
-        {{/headerParams.0}}
+        {{#bodyParams.0}}headers = {'Content-Type': 'application/json'}{{/bodyParams.0}}
         {{#queryParams.0}}params = values.of({
                 {{#queryParams}}'{{{baseName}}}': {{paramName}},
                 {{/queryParams}}
             })
         {{/queryParams.0}}
-        payload = await self._version.fetch_async(method='GET', uri=self._uri{{#headerParams.0}}, headers=headers{{/headerParams.0}}{{#queryParams.0}}, params=params{{/queryParams.0}})
+        payload = await self._version.fetch_async(method='GET', uri=self._uri, headers=headers{{#queryParams.0}}, params=params{{/queryParams.0}})
 
         return {{instanceName}}(self._version, payload{{#listPathParams}}, {{paramName}}=self._solution['{{paramName}}']{{/listPathParams}}){{/vendorExtensions.x-is-fetch-operation}}{{#vendorExtensions.x-is-delete-operation}}
     def delete(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> bool:
@@ -103,16 +100,16 @@
         {{#allParams}}:param {{paramName}}: {{{description}}}{{/allParams}}
         :returns: True if delete succeeds, False otherwise
         """
-        {{#headerParams.0}}headers = values.of({
+        headers = values.of({
                 {{#headerParams}}'{{{baseName}}}': {{paramName}},
-                {{/headerParams}}
+                {{/headerParams}}'Content-Type': 'application/x-www-form-urlencoded'
             })
-        {{/headerParams.0}}
+        {{#bodyParams.0}}headers = {'Content-Type': 'application/json'}{{/bodyParams.0}}
         {{#queryParams.0}}params = values.of({
                 {{#queryParams}}'{{{baseName}}}': {{paramName}},
                 {{/queryParams}}
             }){{/queryParams.0}}
-        return self._version.delete(method='DELETE', uri=self._uri{{#headerParams.0}}, headers=headers{{/headerParams.0}}{{#queryParams.0}}, params=params{{/queryParams.0}})
+        return self._version.delete(method='DELETE', uri=self._uri, headers=headers{{#queryParams.0}}, params=params{{/queryParams.0}})
 
     async def delete_async(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> bool:
         """
@@ -121,16 +118,16 @@
         {{#allParams}}:param {{paramName}}: {{{description}}}{{/allParams}}
         :returns: True if delete succeeds, False otherwise
         """
-        {{#headerParams.0}}headers = values.of({
+        headers = values.of({
                 {{#headerParams}}'{{{baseName}}}': {{paramName}},
-                {{/headerParams}}
+                {{/headerParams}}'Content-Type': 'application/x-www-form-urlencoded'
             })
-        {{/headerParams.0}}
+        {{#bodyParams.0}}headers = {'Content-Type': 'application/json'}{{/bodyParams.0}}
         {{#queryParams.0}}params = values.of({
                 {{#queryParams}}'{{{baseName}}}': {{paramName}},
                 {{/queryParams}}
             }){{/queryParams.0}}
-        return await self._version.delete_async(method='DELETE', uri=self._uri{{#headerParams.0}}, headers=headers{{/headerParams.0}}{{#queryParams.0}}, params=params{{/queryParams.0}}){{/vendorExtensions.x-is-delete-operation}}{{#vendorExtensions.x-is-update-operation}}
+        return await self._version.delete_async(method='DELETE', uri=self._uri, headers=headers{{#queryParams.0}}, params=params{{/queryParams.0}}){{/vendorExtensions.x-is-delete-operation}}{{#vendorExtensions.x-is-update-operation}}
     def update(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> {{instanceName}}:
         """
         Update the {{instanceName}}
@@ -143,17 +140,17 @@
         {{^bodyParam}}{{#hasParams}}data = values.of({ {{#allParams}}{{#isFormParam}}
             '{{{baseName}}}': {{#if vendorExtensions.x-serialize}}{{vendorExtensions.x-serialize}}({{paramName}}{{#if isArray}}, lambda e: {{#startsWith baseType text='object'}}serialize.object(e){{else}}e{{/startsWith}}){{else}}){{/if}}{{else}}{{paramName}}{{/if}},{{/isFormParam}}{{/allParams}}
         }){{/hasParams}}{{/bodyParam}}
-        {{#headerParams.0}}headers = values.of({
+        headers = values.of({
                 {{#headerParams}}'{{{baseName}}}': {{paramName}},
-                {{/headerParams}}
+                {{/headerParams}}'Content-Type': 'application/x-www-form-urlencoded'
             })
-        {{/headerParams.0}}
+        {{#bodyParams.0}}headers = {'Content-Type': 'application/json'}{{/bodyParams.0}}
         {{#queryParams.0}}params = values.of({
                 {{#queryParams}}'{{{baseName}}}': {{paramName}},
                 {{/queryParams}}
             })
         {{/queryParams.0}}
-        payload = self._version.update(method='POST', uri=self._uri, {{#hasParams}}data=data,{{/hasParams}}{{#headerParams.0}} headers=headers{{/headerParams.0}}{{^headerParams}}{{#bodyParams.0}} headers=headers{{/bodyParams.0}}{{/headerParams}}{{#queryParams.0}}, params=params{{/queryParams.0}})
+        payload = self._version.update(method='POST', uri=self._uri, {{#hasParams}}data=data,{{/hasParams}} headers=headers{{#queryParams.0}}, params=params{{/queryParams.0}})
 
         return {{instanceName}}(self._version, payload{{#listPathParams}}, {{paramName}}=self._solution['{{paramName}}']{{/listPathParams}})
 
@@ -169,17 +166,17 @@
         {{^bodyParam}}{{#hasParams}}data = values.of({ {{#allParams}}{{#isFormParam}}
             '{{{baseName}}}': {{#if vendorExtensions.x-serialize}}{{vendorExtensions.x-serialize}}({{paramName}}{{#if isArray}}, lambda e: {{#startsWith baseType text='object'}}serialize.object(e){{else}}e{{/startsWith}}){{else}}){{/if}}{{else}}{{paramName}}{{/if}},{{/isFormParam}}{{/allParams}}
         }){{/hasParams}}{{/bodyParam}}
-        {{#headerParams.0}}headers = values.of({
+        headers = values.of({
                 {{#headerParams}}'{{{baseName}}}': {{paramName}},
-                {{/headerParams}}
+                {{/headerParams}}'Content-Type': 'application/x-www-form-urlencoded'
             })
-        {{/headerParams.0}}
+        {{#bodyParams.0}}headers = {'Content-Type': 'application/json'}{{/bodyParams.0}}
         {{#queryParams.0}}params = values.of({
                 {{#queryParams}}'{{{baseName}}}': {{paramName}},
                 {{/queryParams}}
             })
         {{/queryParams.0}}
-        payload = await self._version.update_async(method='POST', uri=self._uri, {{#hasParams}}data=data,{{/hasParams}}{{#headerParams.0}} headers=headers{{/headerParams.0}}{{^headerParams}}{{#bodyParams.0}} headers=headers{{/bodyParams.0}}{{/headerParams}}{{#queryParams.0}}, params=params{{/queryParams.0}})
+        payload = await self._version.update_async(method='POST', uri=self._uri, {{#hasParams}}data=data,{{/hasParams}} headers=headers{{#queryParams.0}}, params=params{{/queryParams.0}})
 
         return {{instanceName}}(self._version, payload{{#listPathParams}}, {{paramName}}=self._solution['{{paramName}}']{{/listPathParams}}){{/vendorExtensions.x-is-update-operation}}{{/instancePath}}{{#vendorExtensions.x-is-read-operation}}
     def stream(self, {{#allParams}}
