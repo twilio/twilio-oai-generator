@@ -88,7 +88,7 @@ public class {{apiName}}Reader extends Reader<{{apiName}}> {
         {{/requiredParams}}
 
         Request request = new Request(
-            HttpMethod.GET,
+            HttpMethod.{{httpMethod}},
             Domains.{{#lambda.uppercase}}{{domainName}}{{/lambda.uppercase}}.toString(),
             path
         );
