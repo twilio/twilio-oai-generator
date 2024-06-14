@@ -166,6 +166,7 @@ public class JavaApiResourceBuilder extends ApiResourceBuilder{
                     }
                 }
             }
+            else this.authMethodPackage = ".noauth";
         }
     }
 
