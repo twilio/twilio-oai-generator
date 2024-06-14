@@ -97,6 +97,7 @@ public class {{apiName}}Reader extends Reader<{{apiName}}> {
         addQueryParams(request);
         {{/queryParams.0}}
         {{#formParams.0}}
+        request.setContentType(EnumConstants.ContentType.FORM_URLENCODED);
         addPostParams(request);
         {{/formParams.0}}
         {{#headerParams.0}}
