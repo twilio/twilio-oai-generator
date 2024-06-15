@@ -100,12 +100,10 @@
                         data.merge!(Twilio.prefixed_collapsible_map({{paramName}}, 'AddOns'))
                         {{/vendorExtensions.x-prefixed-collapsible-map}}{{/isFormParam}}{{/optionalParams}}
                         {{/formParams.0}}
-                        {{#allParams}}{{#isBodyParam}}headers = Twilio::Values.of({"Content-Type"=> "application/json"}){{/isBodyParam}}{{/allParams}}
-                        {{#headerParams.0}}
-                        headers = Twilio::Values.of({ {{#headerParams}}{{#required}}'{{baseName}}' => {{paramName}}, {{/required}}{{/headerParams}}{{#headerParams}}{{^required}}'{{baseName}}' => {{paramName}}, {{/required}}{{/headerParams}}})
-                        {{/headerParams.0}}
+                        headers = Twilio::Values.of({'Content-Type' => 'application/x-www-form-urlencoded', {{#headerParams}}{{#required}}'{{baseName}}' => {{paramName}}, {{/required}}{{/headerParams}}{{#headerParams}}{{^required}}'{{baseName}}' => {{paramName}}, {{/required}}{{/headerParams}}})
+                        {{#bodyParams.0}}headers['Content-Type'] = 'application/json'{{/bodyParams.0}}
                         {{^vendorExtensions.x-is-delete-operation}}
-                        payload = @version.{{#lambda.camelcase}}{{vendorExtensions.x-name}}{{/lambda.camelcase}}('{{httpMethod}}', @uri{{#queryParams.0}}, params: params{{/queryParams.0}}{{#formParams.0}}, data: data{{/formParams.0}}{{#headerParams.0}}, headers: headers{{/headerParams.0}}{{#bodyParams.0}}, data: {{paramName}}.to_json{{/bodyParams.0}}{{#allParams}}{{#isBodyParam}}, headers: headers{{/isBodyParam}}{{/allParams}})
+                        payload = @version.{{#lambda.camelcase}}{{vendorExtensions.x-name}}{{/lambda.camelcase}}('{{httpMethod}}', @uri{{#queryParams.0}}, params: params{{/queryParams.0}}{{#formParams.0}}, data: data{{/formParams.0}}, headers: headers{{#bodyParams.0}}, data: {{paramName}}.to_json{{/bodyParams.0}})
                         {{apiName}}Instance.new(
                             @version,
                             payload,{{#vendorExtensions.listOperation}}{{#listPathParams}}
@@ -114,6 +112,6 @@
                         )
                         {{/vendorExtensions.x-is-delete-operation}}
                         {{#vendorExtensions.x-is-delete-operation}}
-                        @version.{{#lambda.camelcase}}{{vendorExtensions.x-name}}{{/lambda.camelcase}}('{{httpMethod}}', @uri{{#queryParams.0}}, params: params{{/queryParams.0}}{{#formParams.0}}, data: data{{/formParams.0}}{{#headerParams.0}}, headers: headers{{/headerParams.0}})
+                        @version.{{#lambda.camelcase}}{{vendorExtensions.x-name}}{{/lambda.camelcase}}('{{httpMethod}}', @uri{{#queryParams.0}}, params: params{{/queryParams.0}}{{#formParams.0}}, data: data{{/formParams.0}}, headers: headers)
                         {{/vendorExtensions.x-is-delete-operation}}
                     end

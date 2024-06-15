@@ -54,7 +54,9 @@ module Twilio
                                          'TestArrayOfUri' => Twilio.serialize_list(test_array_of_uri) { |e| e },
                                        })
 
-              payload = @version.create('POST', @uri, data: data)
+              headers = Twilio::Values.of({ 'Content-Type' => 'application/x-www-form-urlencoded', })
+
+              payload = @version.create('POST', @uri, data: data, headers: headers)
               CallInstance.new(
                 @version,
                 payload,
@@ -99,14 +101,18 @@ module Twilio
             # Delete the CallInstance
             # @return [Boolean] True if delete succeeds, false otherwise
             def delete
-              @version.delete('DELETE', @uri)
+              headers = Twilio::Values.of({ 'Content-Type' => 'application/x-www-form-urlencoded', })
+
+              @version.delete('DELETE', @uri, headers: headers)
             end
 
             ##
             # Fetch the CallInstance
             # @return [CallInstance] Fetched CallInstance
             def fetch
-              payload = @version.fetch('GET', @uri)
+              headers = Twilio::Values.of({ 'Content-Type' => 'application/x-www-form-urlencoded', })
+
+              payload = @version.fetch('GET', @uri, headers: headers)
               CallInstance.new(
                 @version,
                 payload,

@@ -141,14 +141,18 @@ module Twilio
             # Delete the AwsInstance
             # @return [Boolean] True if delete succeeds, false otherwise
             def delete
-              @version.delete('DELETE', @uri)
+              headers = Twilio::Values.of({ 'Content-Type' => 'application/x-www-form-urlencoded', })
+
+              @version.delete('DELETE', @uri, headers: headers)
             end
 
             ##
             # Fetch the AwsInstance
             # @return [AwsInstance] Fetched AwsInstance
             def fetch
-              payload = @version.fetch('GET', @uri)
+              headers = Twilio::Values.of({ 'Content-Type' => 'application/x-www-form-urlencoded', })
+
+              payload = @version.fetch('GET', @uri, headers: headers)
               AwsInstance.new(
                 @version,
                 payload,
@@ -171,7 +175,9 @@ module Twilio
                                          'TestBoolean' => test_boolean,
                                        })
 
-              payload = @version.update('POST', @uri, data: data)
+              headers = Twilio::Values.of({ 'Content-Type' => 'application/x-www-form-urlencoded', })
+
+              payload = @version.update('POST', @uri, data: data, headers: headers)
               AwsInstance.new(
                 @version,
                 payload,

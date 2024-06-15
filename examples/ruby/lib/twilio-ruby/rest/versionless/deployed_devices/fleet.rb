@@ -40,7 +40,9 @@ module Twilio
                                        'Name' => name,
                                      })
 
-            payload = @version.create('POST', @uri, data: data)
+            headers = Twilio::Values.of({ 'Content-Type' => 'application/x-www-form-urlencoded', })
+
+            payload = @version.create('POST', @uri, data: data, headers: headers)
             FleetInstance.new(
               @version,
               payload,
@@ -71,7 +73,9 @@ module Twilio
           # Fetch the FleetInstance
           # @return [FleetInstance] Fetched FleetInstance
           def fetch
-            payload = @version.fetch('GET', @uri)
+            headers = Twilio::Values.of({ 'Content-Type' => 'application/x-www-form-urlencoded', })
+
+            payload = @version.fetch('GET', @uri, headers: headers)
             FleetInstance.new(
               @version,
               payload,
