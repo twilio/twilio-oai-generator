@@ -13,7 +13,9 @@ if params != nil && params.PathAccountSid != nil {
 
     data := url.Values{}
 {{^vendorExtensions.x-is-json-type}}
-    headers := make(map[string]interface{})
+    headers := map[string]interface{}{
+        "Content-Type": "application/x-www-form-urlencoded",
+    }
 
 {{/vendorExtensions.x-is-json-type}}
 {{#vendorExtensions.x-is-json-type}}

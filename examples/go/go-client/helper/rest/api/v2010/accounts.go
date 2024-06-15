@@ -57,7 +57,9 @@ func (c *ApiService) CreateAccount(params *CreateAccountParams) (*TestResponseOb
 	path := "/2010-04-01/Accounts.json"
 
 	data := url.Values{}
-	headers := make(map[string]interface{})
+	headers := map[string]interface{}{
+		"Content-Type": "application/x-www-form-urlencoded",
+	}
 
 	if params != nil && params.RecordingStatusCallback != nil {
 		data.Set("RecordingStatusCallback", *params.RecordingStatusCallback)
@@ -94,7 +96,9 @@ func (c *ApiService) DeleteAccount(Sid string) error {
 	path = strings.Replace(path, "{"+"Sid"+"}", Sid, -1)
 
 	data := url.Values{}
-	headers := make(map[string]interface{})
+	headers := map[string]interface{}{
+		"Content-Type": "application/x-www-form-urlencoded",
+	}
 
 	resp, err := c.requestHandler.Delete(c.baseURL+path, data, headers)
 	if err != nil {
@@ -111,7 +115,9 @@ func (c *ApiService) FetchAccount(Sid string) (*TestResponseObject, error) {
 	path = strings.Replace(path, "{"+"Sid"+"}", Sid, -1)
 
 	data := url.Values{}
-	headers := make(map[string]interface{})
+	headers := map[string]interface{}{
+		"Content-Type": "application/x-www-form-urlencoded",
+	}
 
 	resp, err := c.requestHandler.Get(c.baseURL+path, data, headers)
 	if err != nil {
@@ -174,7 +180,9 @@ func (c *ApiService) PageAccount(params *ListAccountParams, pageToken, pageNumbe
 	path := "/2010-04-01/Accounts.json"
 
 	data := url.Values{}
-	headers := make(map[string]interface{})
+	headers := map[string]interface{}{
+		"Content-Type": "application/x-www-form-urlencoded",
+	}
 
 	if params != nil && params.DateCreated != nil {
 		data.Set("DateCreated", fmt.Sprint((*params.DateCreated).Format(time.RFC3339)))
@@ -322,7 +330,9 @@ func (c *ApiService) UpdateAccount(Sid string, params *UpdateAccountParams) (*Te
 	path = strings.Replace(path, "{"+"Sid"+"}", Sid, -1)
 
 	data := url.Values{}
-	headers := make(map[string]interface{})
+	headers := map[string]interface{}{
+		"Content-Type": "application/x-www-form-urlencoded",
+	}
 
 	if params != nil && params.PauseBehavior != nil {
 		data.Set("PauseBehavior", *params.PauseBehavior)
