@@ -147,26 +147,6 @@ public class Account extends Resource {
         }
     }
 
-    public enum XTwilioWebhookEnabled {
-        TRUE("true"),
-        FALSE("false");
-
-        private final String value;
-
-        private XTwilioWebhookEnabled(final String value) {
-            this.value = value;
-        }
-
-        public String toString() {
-            return value;
-        }
-
-        @JsonCreator
-        public static XTwilioWebhookEnabled forValue(final String value) {
-            return Promoter.enumFromString(value, XTwilioWebhookEnabled.values());
-        }
-    }
-
     private final String accountSid;
     private final String sid;
     private final String testString;
@@ -330,6 +310,25 @@ public class Account extends Resource {
         return Objects.hash(accountSid, sid, testString, testInteger, testObject, testDateTime, testNumber, from, priceUnit, testNumberFloat, testNumberDecimal, testEnum, a2pProfileBundleSid, testArrayOfIntegers, testArrayOfArrayOfIntegers, testArrayOfObjects, testArrayOfEnum);
     }
 
+    public enum XTwilioWebhookEnabled {
+        TRUE("true"),
+        FALSE("false");
+
+        private final String value;
+
+        private XTwilioWebhookEnabled(final String value) {
+        this.value = value;
+        }
+
+        public String toString() {
+            return value;
+        }
+
+        @JsonCreator
+        public static XTwilioWebhookEnabled forValue(final String value) {
+            return Promoter.enumFromString(value, XTwilioWebhookEnabled.values());
+        }
+    }
     public enum Status {
         IN_PROGRESS("in-progress"),
         PAUSED("paused"),

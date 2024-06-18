@@ -122,7 +122,6 @@ public class Assistant extends Resource {
         }
     }
 
-
     private final String sid;
     private final String friendlyName;
 

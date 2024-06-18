@@ -126,7 +126,6 @@ public class Fleet extends Resource {
         }
     }
 
-
     private final String name;
     private final String sid;
     private final String friendlyName;

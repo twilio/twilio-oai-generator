@@ -1,6 +1,7 @@
 package com.twilio.oai.api;
 
 import com.google.common.collect.Lists;
+import com.twilio.oai.CodegenUtils;
 import com.twilio.oai.DirectoryStructureService;
 import com.twilio.oai.JsonRequestBodyResolver;
 import com.twilio.oai.StringHelper;
@@ -101,12 +102,19 @@ public class JavaApiResourceBuilder extends ApiResourceBuilder{
             updateHttpMethod(co);
             List<String> filePathArray = new ArrayList<>(Arrays.asList(co.baseName.split(PATH_SEPARATOR_PLACEHOLDER)));
             String resourceName = filePathArray.remove(filePathArray.size()-1);
+            
 
             co.allParams.stream()
                     .filter(item -> !(item.getContent() != null && item.getContent().get("application/json") != null))
                     .map(item -> codegenParameterIResolver.resolve(item, this))
                     .map(item -> conventionResolver.resolveEnumParameter(item, resourceName))
                     .collect(Collectors.toList());
+
+            co.allParams.forEach(parameter -> {
+                if (CodegenUtils.isParameterSchemaEnumJava(parameter)) {
+                    addEnums(parameter);
+                }
+            });
 
             jsonRequestBodyResolver.setResourceName(resourceName);
             co.allParams.stream()
@@ -582,18 +590,24 @@ public class JavaApiResourceBuilder extends ApiResourceBuilder{
     // Enums can be present either at enums or in responseModel
     public void addEnums(IJsonSchemaValidationProperties item) {
         boolean isDuplicate = false;
-        String itemEnumName = null;
+        String newItemEnumName = null;
 
         if (item instanceof CodegenParameter) {
-            itemEnumName = ((CodegenParameter) item).enumName;
+            newItemEnumName = ((CodegenParameter) item).enumName;
         } else if (item instanceof CodegenProperty) {
-            itemEnumName = ((CodegenProperty) item).enumName;
+            newItemEnumName = ((CodegenProperty) item).enumName;
         }
 
-        if (itemEnumName != null) {
+        if (newItemEnumName != null) {
             for (IJsonSchemaValidationProperties enumItem : enums) {
-                if ((enumItem instanceof CodegenParameter && ((CodegenParameter) enumItem).enumName.equals(((CodegenParameter)item).enumName))
-                        || (enumItem instanceof CodegenProperty && ((CodegenProperty) enumItem).enumName.equals(((CodegenProperty)item).enumName))) {
+                String enumName = "";
+                if (enumItem instanceof CodegenParameter) {
+                    enumName = ((CodegenParameter) enumItem).enumName;
+                } else {
+                    enumName = ((CodegenProperty) enumItem).enumName;
+                }
+                
+                if (enumName.equals(newItemEnumName)) {
                     isDuplicate = true;
                     break; // No need to continue checking duplicates
                 }

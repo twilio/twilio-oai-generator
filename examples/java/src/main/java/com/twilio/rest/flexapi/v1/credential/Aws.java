@@ -134,7 +134,6 @@ public class Aws extends Resource {
         }
     }
 
-
     private final String accountSid;
     private final String sid;
     private final String testString;
