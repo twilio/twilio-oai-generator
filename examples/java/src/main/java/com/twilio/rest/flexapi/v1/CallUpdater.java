@@ -14,6 +14,7 @@
 
 package com.twilio.rest.flexapi.v1;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.twilio.base.Updater;
 import com.twilio.constant.EnumConstants;
 import com.twilio.converter.Promoter;
