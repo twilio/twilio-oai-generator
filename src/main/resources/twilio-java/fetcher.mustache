@@ -2,7 +2,9 @@
 {{#resources}}
 package com.twilio.rest.{{domainPackage}}.{{apiVersion}}{{namespaceSubPart}};
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.twilio.base.Fetcher;
+import com.twilio.constant.EnumConstants;
 import com.twilio.converter.Promoter;
 import com.twilio.exception.ApiConnectionException;
 import com.twilio.converter.PrefixedCollapsibleMap;
@@ -81,8 +83,13 @@ public class {{apiName}}Fetcher extends Fetcher<{{apiName}}> {
         addQueryParams(request);
         {{/queryParams.0}}
         {{#formParams.0}}
+        request.setContentType(EnumConstants.ContentType.FORM_URLENCODED);
         addPostParams(request);
         {{/formParams.0}}
+        {{#bodyParams.0}}
+        request.setContentType(EnumConstants.ContentType.JSON);
+        addPostParams(request, client);
+        {{/bodyParams.0}}
         {{#headerParams.0}}
         addHeaderParams(request);
         {{/headerParams.0}}
@@ -103,6 +110,9 @@ public class {{apiName}}Fetcher extends Fetcher<{{apiName}}> {
 {{#formParams.0}}
 {{>postParams}}
 {{/formParams.0}}
+{{#bodyParams.0}}
+{{>postParams_body}}
+{{/bodyParams.0}}
 {{#headerParams.0}}
 {{>headerParams}}
 {{/headerParams.0}}

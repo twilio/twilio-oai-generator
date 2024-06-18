@@ -6,7 +6,9 @@
                 HttpMethod.Post,
                 Rest.Domain.{{domainPackage}},
                 path,
-                {{^vendorExtensions.x-is-json}}postParams: options.GetParams(),{{/vendorExtensions.x-is-json}}
+                {{^vendorExtensions.x-is-json}}
+                contentType: EnumConstants.ContentTypeEnum.FORM_URLENCODED,
+                postParams: options.GetParams(),{{/vendorExtensions.x-is-json}}
                 {{#vendorExtensions.x-is-json}}
                 contentType: EnumConstants.ContentTypeEnum.JSON,
                 body: options.GetBody(),
