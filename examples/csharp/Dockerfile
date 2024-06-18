@@ -8,7 +8,7 @@ RUN apt-get update \
          mono-complete \
          openjdk-17-jre
 
-RUN dotnet tool install --global dotnet-sonarscanner --version 5.5.3 \
+RUN dotnet tool install --global dotnet-sonarscanner \
 && dotnet tool install --global dotnet-reportgenerator-globaltool --version 4.8.12 \
 && dotnet tool list -g
 
