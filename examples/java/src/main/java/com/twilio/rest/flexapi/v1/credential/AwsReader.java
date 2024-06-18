@@ -14,7 +14,9 @@
 
 package com.twilio.rest.flexapi.v1.credential;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.twilio.base.Reader;
+import com.twilio.constant.EnumConstants;
 import com.twilio.base.ResourceSet;
 import com.twilio.converter.Promoter;
 import com.twilio.exception.ApiConnectionException;

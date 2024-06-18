@@ -2,6 +2,7 @@
 {{#resources}}
 package com.twilio.rest.{{domainPackage}}.{{apiVersion}}{{namespaceSubPart}};
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.twilio.base.Updater;
 import com.twilio.constant.EnumConstants;
 import com.twilio.converter.Promoter;
@@ -85,6 +86,10 @@ public class {{apiName}}Updater extends Updater<{{apiName}}>{
         request.setContentType(EnumConstants.ContentType.FORM_URLENCODED);
         addPostParams(request);
         {{/formParams.0}}
+        {{#bodyParams.0}}
+        request.setContentType(EnumConstants.ContentType.JSON);
+        addPostParams(request, client);
+        {{/bodyParams.0}}
         {{#headerParams.0}}
         addHeaderParams(request);
         {{/headerParams.0}}
@@ -104,6 +109,9 @@ public class {{apiName}}Updater extends Updater<{{apiName}}>{
 {{#formParams.0}}
 {{>postParams}}
 {{/formParams.0}}
+{{#bodyParams.0}}
+{{>postParams_body}}
+{{/bodyParams.0}}
 {{#headerParams.0}}
 {{>headerParams}}
 {{/headerParams.0}}
