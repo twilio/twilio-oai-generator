@@ -63,7 +63,8 @@ class CallContext extends InstanceContext
     public function update(): CallInstance
     {
 
-        $payload = $this->version->update('POST', $this->uri, [], []);
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $payload = $this->version->update('POST', $this->uri, [], [], $headers);
 
         return new CallInstance(
             $this->version,

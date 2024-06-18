@@ -93,7 +93,9 @@ module Twilio
                                          'SomeA2PThing' => some_a2p_thing,
                                        })
 
-              payload = @version.create('POST', @uri, data: data)
+              headers = Twilio::Values.of({ 'Content-Type' => 'application/x-www-form-urlencoded', })
+
+              payload = @version.create('POST', @uri, data: data, headers: headers)
               NewCredentialsInstance.new(
                 @version,
                 payload,

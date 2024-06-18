@@ -63,7 +63,8 @@ class FleetContext extends InstanceContext
     public function fetch(): FleetInstance
     {
 
-        $payload = $this->version->fetch('GET', $this->uri, [], []);
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
 
         return new FleetInstance(
             $this->version,

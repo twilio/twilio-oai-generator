@@ -68,7 +68,9 @@ module Twilio
                                            'AccountSid' => account_sid,
                                          })
 
-                payload = @version.update('POST', @uri, data: data)
+                headers = Twilio::Values.of({ 'Content-Type' => 'application/x-www-form-urlencoded', })
+
+                payload = @version.update('POST', @uri, data: data, headers: headers)
                 FeedbackCallSummaryInstance.new(
                   @version,
                   payload,
