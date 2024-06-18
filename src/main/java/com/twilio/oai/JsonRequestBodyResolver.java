@@ -5,7 +5,7 @@ import com.twilio.oai.api.JavaApiResourceBuilder;
 import com.twilio.oai.common.EnumConstants;
 import com.twilio.oai.resolver.Resolver;
 import com.twilio.oai.resolver.java.ContainerResolver;
-import com.twilio.oai.resolver.java.JavaConventionResolver;
+import com.twilio.oai.resolver.java.JavaCodegenParameterDataTypeResolver;
 import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenParameter;
 import org.openapitools.codegen.CodegenProperty;
@@ -21,7 +21,7 @@ public class JsonRequestBodyResolver {
 
     final private ContainerResolver containerResolver = new ContainerResolver(Arrays.asList(EnumConstants.JavaDataTypes.values()));
 
-    private final JavaConventionResolver conventionResolver;
+    private final JavaCodegenParameterDataTypeResolver javaCodegenParameterDataTypeResolver = new JavaCodegenParameterDataTypeResolver(null);
 
     public void setResourceName(String resourceName) {
         this.resourceName = resourceName;
@@ -32,7 +32,6 @@ public class JsonRequestBodyResolver {
     public JsonRequestBodyResolver(ApiResourceBuilder apiResourceBuilder, final Resolver<CodegenProperty> codegenPropertyResolver) {
         this.codegenPropertyResolver = codegenPropertyResolver;
         this.apiResourceBuilder = apiResourceBuilder;
-        this.conventionResolver = new JavaConventionResolver();
     }
 
     public void resolve(final CodegenParameter codegenParameter, final Resolver<CodegenParameter> codegenParameterResolver) {
@@ -42,7 +41,7 @@ public class JsonRequestBodyResolver {
         final CodegenModel model = apiResourceBuilder.getModel(codegenParameter.dataType);
         containerResolver.rewrapContainerType(codegenParameter, containerTypes);
         if (CodegenUtils.isParameterSchemaEnumJava(codegenParameter)) {
-            conventionResolver.resolveEnumParameter(codegenParameter, resourceName);
+            javaCodegenParameterDataTypeResolver.resolveEnumParameter(codegenParameter, resourceName);
             ((JavaApiResourceBuilder)apiResourceBuilder).addEnums(codegenParameter);
         } else if(model == null) {
             // If parameter is not a model.
@@ -68,7 +67,7 @@ public class JsonRequestBodyResolver {
         containerTypes.clear();
 
         if (CodegenUtils.isPropertySchemaEnumJava(property)) {
-            conventionResolver.resolveEnumProperty(property, resourceName);
+            javaCodegenParameterDataTypeResolver.resolveEnumProperty(property, resourceName);
             ((JavaApiResourceBuilder)apiResourceBuilder).addEnums(property);
         } else if (model == null) {
             codegenPropertyResolver.resolve(property, apiResourceBuilder);

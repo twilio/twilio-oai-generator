@@ -8,7 +8,6 @@ import com.twilio.oai.StringHelper;
 import com.twilio.oai.common.EnumConstants;
 import com.twilio.oai.common.Utility;
 import com.twilio.oai.resolver.Resolver;
-import com.twilio.oai.resolver.java.JavaConventionResolver;
 import com.twilio.oai.template.IApiActionTemplate;
 import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenOperation;
@@ -23,6 +22,7 @@ import java.util.stream.Collectors;
 import static com.twilio.oai.common.ApplicationConstants.*;
 import static com.twilio.oai.template.AbstractApiActionTemplate.NESTED_MODELS;
 import static com.twilio.oai.template.JavaApiActionTemplate.API_TEMPLATE;
+import com.twilio.oai.resolver.java.JavaCodegenParameterDataTypeResolver;
 
 public class JavaApiResourceBuilder extends ApiResourceBuilder{
 
@@ -32,7 +32,7 @@ public class JavaApiResourceBuilder extends ApiResourceBuilder{
     protected long serialVersionUID;
     private Set<CodegenModel> headerParamModelList;
 
-    private final JavaConventionResolver conventionResolver;
+    private final JavaCodegenParameterDataTypeResolver javaCodegenParameterDataTypeResolver = new JavaCodegenParameterDataTypeResolver(null);
 
     private Resolver<CodegenProperty> codegenPropertyIResolver;
 
@@ -43,7 +43,6 @@ public class JavaApiResourceBuilder extends ApiResourceBuilder{
     public JavaApiResourceBuilder(IApiActionTemplate template, List<CodegenOperation> codegenOperations,
                                   List<CodegenModel> allModels) {
         super(template, codegenOperations, allModels);
-        this.conventionResolver = new JavaConventionResolver();
     }
 
     public JavaApiResourceBuilder(IApiActionTemplate apiActionTemplate, List<CodegenOperation> opList,
@@ -84,7 +83,7 @@ public class JavaApiResourceBuilder extends ApiResourceBuilder{
             co.allParams.stream()
                     .filter(item -> !(item.getContent() != null && item.getContent().get("application/json") != null))
                     .map(item -> codegenParameterIResolver.resolve(item, this))
-                    .map(item -> conventionResolver.resolveEnumParameter(item, resourceName))
+                    .map(item -> javaCodegenParameterDataTypeResolver.resolveEnumParameter(item, resourceName))
                     .collect(Collectors.toList());
 
             co.allParams.forEach(parameter -> {
@@ -107,36 +106,36 @@ public class JavaApiResourceBuilder extends ApiResourceBuilder{
             co.allParams.forEach(this::updateHeaderParamsList);
             co.pathParams = co.pathParams.stream()
                     .map(item -> codegenParameterIResolver.resolve(item, this))
-                    .map(item -> conventionResolver.resolveEnumParameter(item, resourceName))
+                    .map(item -> javaCodegenParameterDataTypeResolver.resolveEnumParameter(item, resourceName))
                     .collect(Collectors.toList());
             co.pathParams.stream().
                 map(item -> codegenParameterIResolver.resolve(item, this))
-                .map(item -> conventionResolver.resolveEnumParameter(item, resourceName))
+                .map(item -> javaCodegenParameterDataTypeResolver.resolveEnumParameter(item, resourceName))
                 .forEach(param -> param.paramName = "path"+param.paramName);
             co.queryParams = co.queryParams.stream()
                     .map(item -> codegenParameterIResolver.resolve(item, this))
-                    .map(item -> conventionResolver.resolveEnumParameter(item, resourceName))
+                    .map(item -> javaCodegenParameterDataTypeResolver.resolveEnumParameter(item, resourceName))
                     .collect(Collectors.toList());
             co.queryParams = preProcessQueryParameters(co);
             co.formParams = co.formParams.stream()
                     .map(item -> codegenParameterIResolver.resolve(item, this))
-                    .map(item -> conventionResolver.resolveEnumParameter(item, resourceName))
+                    .map(item -> javaCodegenParameterDataTypeResolver.resolveEnumParameter(item, resourceName))
                     .collect(Collectors.toList());
             processDataTypesForParams(co.formParams);
             co.headerParams = co.headerParams.stream()
                     .map(item -> codegenParameterIResolver.resolve(item, this))
-                    .map(item -> conventionResolver.resolveEnumParameter(item, resourceName))
+                    .map(item -> javaCodegenParameterDataTypeResolver.resolveEnumParameter(item, resourceName))
                     .collect(Collectors.toList());
             processDataTypesForParams(co.headerParams);
             co.optionalParams = co.optionalParams
                     .stream()
                     .map(item -> codegenParameterIResolver.resolve(item, this))
-                    .map(item -> conventionResolver.resolveEnumParameter(item, resourceName))
+                    .map(item -> javaCodegenParameterDataTypeResolver.resolveEnumParameter(item, resourceName))
                     .collect(Collectors.toList());
             co.requiredParams = co.requiredParams
                     .stream()
                     .map(item -> codegenParameterIResolver.resolve(item, this))
-                    .map(item -> conventionResolver.resolveEnumParameter(item, resourceName))
+                    .map(item -> javaCodegenParameterDataTypeResolver.resolveEnumParameter(item, resourceName))
                     .collect(Collectors.toList());
             co.hasParams = !co.allParams.isEmpty();
             co.hasRequiredParams = !co.requiredParams.isEmpty();
