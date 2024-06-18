@@ -51,7 +51,9 @@ module Twilio
           # Update the CallInstance
           # @return [CallInstance] Updated CallInstance
           def update
-            payload = @version.update('POST', @uri)
+            headers = Twilio::Values.of({ 'Content-Type' => 'application/x-www-form-urlencoded', })
+
+            payload = @version.update('POST', @uri, headers: headers)
             CallInstance.new(
               @version,
               payload,
