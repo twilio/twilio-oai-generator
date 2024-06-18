@@ -2,6 +2,8 @@
 {{#resources}}
 package com.twilio.rest.{{domainPackage}}.{{apiVersion}}{{namespaceSubPart}};
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.twilio.constant.EnumConstants;
 import com.twilio.converter.Promoter;
 import com.twilio.exception.ApiConnectionException;
 import com.twilio.converter.PrefixedCollapsibleMap;
@@ -89,7 +91,7 @@ public class {{apiName}}Reader extends Reader<{{apiName}}> {
         {{/requiredParams}}
 
         {{vendorExtensions.x-auth-attributes.x-http-class-prefix}}Request request = new {{vendorExtensions.x-auth-attributes.x-http-class-prefix}}Request(
-            HttpMethod.GET,
+            {{vendorExtensions.x-http-method}},
             Domains.{{#lambda.uppercase}}{{domainName}}{{/lambda.uppercase}}.toString(),
             path
         );
@@ -98,6 +100,7 @@ public class {{apiName}}Reader extends Reader<{{apiName}}> {
         addQueryParams(request);
         {{/queryParams.0}}
         {{#formParams.0}}
+        request.setContentType(EnumConstants.ContentType.FORM_URLENCODED);
         addPostParams(request);
         {{/formParams.0}}
         {{#headerParams.0}}
@@ -130,7 +133,7 @@ public class {{apiName}}Reader extends Reader<{{apiName}}> {
     @Override
     public Page<{{apiName}}> previousPage(final Page<{{apiName}}> page, final {{vendorExtensions.x-auth-attributes.x-http-class-prefix}}TwilioRestClient client) {
         {{vendorExtensions.x-auth-attributes.x-http-class-prefix}}Request request = new {{vendorExtensions.x-auth-attributes.x-http-class-prefix}}Request(
-            HttpMethod.GET,
+            {{vendorExtensions.x-http-method}},
             page.getPreviousPageUrl(Domains.{{#lambda.uppercase}}{{domainName}}{{/lambda.uppercase}}.toString())
         );
         return pageForRequest(client, request);
@@ -140,7 +143,7 @@ public class {{apiName}}Reader extends Reader<{{apiName}}> {
     @Override
     public Page<{{apiName}}> nextPage(final Page<{{apiName}}> page, final {{vendorExtensions.x-auth-attributes.x-http-class-prefix}}TwilioRestClient client) {
         {{vendorExtensions.x-auth-attributes.x-http-class-prefix}}Request request = new {{vendorExtensions.x-auth-attributes.x-http-class-prefix}}Request(
-            HttpMethod.GET,
+            {{vendorExtensions.x-http-method}},
             page.getNextPageUrl(Domains.{{#lambda.uppercase}}{{domainName}}{{/lambda.uppercase}}.toString())
         );
         return pageForRequest(client, request);

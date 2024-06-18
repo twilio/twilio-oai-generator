@@ -2,6 +2,8 @@
 {{#resources}}
 package com.twilio.rest.{{domainPackage}}.{{apiVersion}}{{namespaceSubPart}};
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.twilio.constant.EnumConstants;
 import com.twilio.converter.Promoter;
 import com.twilio.exception.ApiConnectionException;
 import com.twilio.converter.PrefixedCollapsibleMap;
@@ -74,7 +76,7 @@ public class {{apiName}}Fetcher extends Fetcher<{{apiName}}> {
     public {{apiName}} fetch(final {{vendorExtensions.x-auth-attributes.x-http-class-prefix}}TwilioRestClient client) {
 {{>generate_uri}}
         {{vendorExtensions.x-auth-attributes.x-http-class-prefix}}Request request = new {{vendorExtensions.x-auth-attributes.x-http-class-prefix}}Request(
-            HttpMethod.GET,
+            {{vendorExtensions.x-http-method}},
             Domains.{{#lambda.uppercase}}{{domainName}}{{/lambda.uppercase}}.toString(),
             path
         );
@@ -82,8 +84,13 @@ public class {{apiName}}Fetcher extends Fetcher<{{apiName}}> {
         addQueryParams(request);
         {{/queryParams.0}}
         {{#formParams.0}}
+        request.setContentType(EnumConstants.ContentType.FORM_URLENCODED);
         addPostParams(request);
         {{/formParams.0}}
+        {{#bodyParams.0}}
+        request.setContentType(EnumConstants.ContentType.JSON);
+        addPostParams(request, client);
+        {{/bodyParams.0}}
         {{#headerParams.0}}
         addHeaderParams(request);
         {{/headerParams.0}}
@@ -104,6 +111,9 @@ public class {{apiName}}Fetcher extends Fetcher<{{apiName}}> {
 {{#vendorExtensions.x-has-form-params}}
 {{>postParams}}
 {{/vendorExtensions.x-has-form-params}}
+{{#vendorExtensions.x-has-body-params}}
+{{>postParams_body}}
+{{/vendorExtensions.x-has-body-params}}
 {{#vendorExtensions.x-has-header-params}}
 {{>headerParams}}
 {{/vendorExtensions.x-has-header-params}}

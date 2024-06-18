@@ -65,7 +65,9 @@ func (c *ApiService) CreateCall(params *CreateCallParams) (*TestResponseObject, 
 	}
 
 	data := url.Values{}
-	headers := make(map[string]interface{})
+	headers := map[string]interface{}{
+		"Content-Type": "application/x-www-form-urlencoded",
+	}
 
 	if params != nil && params.RequiredStringProperty != nil {
 		data.Set("RequiredStringProperty", *params.RequiredStringProperty)
@@ -120,7 +122,9 @@ func (c *ApiService) DeleteCall(TestInteger int, params *DeleteCallParams) error
 	path = strings.Replace(path, "{"+"TestInteger"+"}", fmt.Sprint(TestInteger), -1)
 
 	data := url.Values{}
-	headers := make(map[string]interface{})
+	headers := map[string]interface{}{
+		"Content-Type": "application/x-www-form-urlencoded",
+	}
 
 	resp, err := c.requestHandler.Delete(c.baseURL+path, data, headers)
 	if err != nil {
@@ -153,7 +157,9 @@ func (c *ApiService) FetchCall(TestInteger int, params *FetchCallParams) (*TestR
 	path = strings.Replace(path, "{"+"TestInteger"+"}", fmt.Sprint(TestInteger), -1)
 
 	data := url.Values{}
-	headers := make(map[string]interface{})
+	headers := map[string]interface{}{
+		"Content-Type": "application/x-www-form-urlencoded",
+	}
 
 	resp, err := c.requestHandler.Get(c.baseURL+path, data, headers)
 	if err != nil {

@@ -82,7 +82,7 @@ public class {{apiName}}Creator extends Creator<{{apiName}}>{
     public {{apiName}} create(final {{vendorExtensions.x-auth-attributes.x-http-class-prefix}}TwilioRestClient client){
 {{>generate_uri}}
         {{vendorExtensions.x-auth-attributes.x-http-class-prefix}}Request request = new {{vendorExtensions.x-auth-attributes.x-http-class-prefix}}Request(
-            HttpMethod.POST,
+            {{vendorExtensions.x-http-method}},
             Domains.{{#lambda.uppercase}}{{domainName}}{{/lambda.uppercase}}.toString(),
             path
         );

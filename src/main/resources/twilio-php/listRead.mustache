@@ -94,7 +94,7 @@
             'PageSize' => $pageSize,
         ]);
 
-        $response = $this->version->page('GET', $this->uri, $params);
+        $response = $this->version->page('{{httpMethod}}', $this->uri, $params);
 
         return new {{apiName}}Page($this->version, $response, $this->solution);
     }
@@ -109,7 +109,7 @@
     public function getPage(string $targetUrl): {{apiName}}Page
     {
         $response = $this->version->getDomain()->getClient()->request(
-            'GET',
+            '{{httpMethod}}',
             $targetUrl
         );
 

@@ -44,6 +44,7 @@ namespace Twilio.Rest.Versionless.DeployedDevices
                 HttpMethod.Post,
                 Rest.Domain.Versionless,
                 path,
+                contentType: EnumConstants.ContentTypeEnum.FORM_URLENCODED,
                 postParams: options.GetParams(),
                 headerParams: null
             );
