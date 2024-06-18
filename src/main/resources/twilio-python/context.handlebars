@@ -32,7 +32,7 @@ class {{apiName}}Context(InstanceContext):
         })
         {{#allParams}}{{^isFormParam}}headers = values.of({'{{{baseName}}}': {{paramName}}, }){{/isFormParam}}{{/allParams}}
 
-        payload = self._version.update(method='POST', uri=self._uri, data=data,{{#allParams}}{{#if isFormParam}}{{else}} headers=headers{{/if}}{{/allParams}})
+        payload = self._version.update(method='{{vendorExtensions.x-http-method}}', uri=self._uri, data=data,{{#allParams}}{{#if isFormParam}}{{else}} headers=headers{{/if}}{{/allParams}})
 
         return {{instanceName}}(
             self._version,
@@ -53,7 +53,7 @@ class {{apiName}}Context(InstanceContext):
         })
         {{#allParams}}{{^isFormParam}}headers = values.of({'{{{baseName}}}': {{paramName}}, }){{/isFormParam}}{{/allParams}}
 
-        payload = await self._version.update_async(method='POST', uri=self._uri, data=data,{{#allParams}}{{#if isFormParam}}{{else}} headers=headers{{/if}}{{/allParams}})
+        payload = await self._version.update_async(method='{{vendorExtensions.x-http-method}}', uri=self._uri, data=data,{{#allParams}}{{#if isFormParam}}{{else}} headers=headers{{/if}}{{/allParams}})
 
         return {{instanceName}}(
             self._version,
@@ -75,7 +75,7 @@ class {{apiName}}Context(InstanceContext):
         })
         {{#allParams}}{{#if vendorExtensions.x-prefixed-collapsible-map}}data.update({{vendorExtensions.x-serialize}}({{paramName}}, '{{vendorExtensions.x-prefixed-collapsible-map}}'))
         {{/if}}{{/allParams}}{{/if}}
-        payload = self._version.fetch(method='GET', uri=self._uri, {{#if allParams}}params=data{{/if}})
+        payload = self._version.fetch(method='{{vendorExtensions.x-http-method}}', uri=self._uri, {{#if allParams}}params=data{{/if}})
 
         return {{instanceName}}(
             self._version,
@@ -98,7 +98,7 @@ class {{apiName}}Context(InstanceContext):
         })
         {{#allParams}}{{#if vendorExtensions.x-prefixed-collapsible-map}}data.update({{vendorExtensions.x-serialize}}({{paramName}}, '{{vendorExtensions.x-prefixed-collapsible-map}}'))
         {{/if}}{{/allParams}}{{/if}}
-        payload = await self._version.fetch_async(method='GET', uri=self._uri, {{#if allParams}}params=data{{/if}})
+        payload = await self._version.fetch_async(method='{{vendorExtensions.x-http-method}}', uri=self._uri, {{#if allParams}}params=data{{/if}})
 
         return {{instanceName}}(
             self._version,
@@ -117,7 +117,7 @@ class {{apiName}}Context(InstanceContext):
         """{{#if allParams}}
         headers = values.of({{#allParams}}{'{{{baseName}}}': {{paramName}}, }{{/allParams}})
         {{/if}}
-        return self._version.delete(method='DELETE', uri=self._uri,{{#if allParams}} headers=headers{{/if}})
+        return self._version.delete(method='{{vendorExtensions.x-http-method}}', uri=self._uri,{{#if allParams}} headers=headers{{/if}})
 
     async def {{vendorExtensions.x-name-lower}}_async(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> bool:
         """
@@ -129,7 +129,7 @@ class {{apiName}}Context(InstanceContext):
         """{{#if allParams}}
         headers = values.of({{#allParams}}{'{{{baseName}}}': {{paramName}}, }{{/allParams}})
         {{/if}}
-        return await self._version.delete_async(method='DELETE', uri=self._uri,{{#if allParams}} headers=headers{{/if}})
+        return await self._version.delete_async(method='{{vendorExtensions.x-http-method}}', uri=self._uri,{{#if allParams}} headers=headers{{/if}})
     {{/vendorExtensions.x-is-delete-operation}}{{#vendorExtensions.x-is-create-operation}}
     def {{vendorExtensions.x-name-lower}}(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> {{instanceName}}:
         """
@@ -143,7 +143,7 @@ class {{apiName}}Context(InstanceContext):
             '{{{baseName}}}': {{#if vendorExtensions.x-serialize}}{{vendorExtensions.x-serialize}}({{paramName}}{{#if isArray}}, lambda e: e){{else}}){{/if}}{{else}}{{paramName}}{{/if}},{{/allParams}}
         })
 
-        payload = self._version.create(method='POST', uri=self._uri, data=data)
+        payload = self._version.create(method='{{vendorExtensions.x-http-method}}', uri=self._uri, data=data)
 
         return {{instanceName}}(
             self._version,
@@ -163,7 +163,7 @@ class {{apiName}}Context(InstanceContext):
             '{{{baseName}}}': {{#if vendorExtensions.x-serialize}}{{vendorExtensions.x-serialize}}({{paramName}}{{#if isArray}}, lambda e: e){{else}}){{/if}}{{else}}{{paramName}}{{/if}},{{/allParams}}
         })
 
-        payload = await self._version.create_async(method='POST', uri=self._uri, data=data)
+        payload = await self._version.create_async(method='{{vendorExtensions.x-http-method}}', uri=self._uri, data=data)
 
         return {{instanceName}}(
             self._version,

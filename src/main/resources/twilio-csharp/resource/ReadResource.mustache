@@ -3,7 +3,7 @@
         {
             {{>resource/GeneratePath}}
             return new Request(
-                HttpMethod.Get,
+                {{vendorExtensions.x-http-method}},
                 Rest.Domain.{{domainPackage}},
                 path,
                 queryParams: options.GetParams(),
