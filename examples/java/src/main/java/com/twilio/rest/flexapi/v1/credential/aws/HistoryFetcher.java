@@ -14,11 +14,8 @@
 
 package com.twilio.rest.flexapi.v1.credential.aws;
 
-
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.twilio.base.Fetcher;
 import com.twilio.constant.EnumConstants;
-
 import com.twilio.converter.Promoter;
 import com.twilio.exception.ApiConnectionException;
 import com.twilio.converter.PrefixedCollapsibleMap;

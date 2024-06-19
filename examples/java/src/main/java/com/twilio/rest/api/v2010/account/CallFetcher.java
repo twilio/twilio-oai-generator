@@ -14,11 +14,8 @@
 
 package com.twilio.rest.api.v2010.account;
 
-
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.twilio.base.Fetcher;
 import com.twilio.constant.EnumConstants;
-
 import com.twilio.converter.Promoter;
 import com.twilio.exception.ApiConnectionException;
 import com.twilio.converter.PrefixedCollapsibleMap;

@@ -15,7 +15,6 @@
 package com.twilio.rest.api.v2010;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.twilio.base.Deleter;
 import com.twilio.converter.Promoter;
 import com.twilio.constant.EnumConstants;
 import com.twilio.exception.ApiConnectionException;
