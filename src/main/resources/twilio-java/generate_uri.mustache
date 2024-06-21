@@ -8,14 +8,14 @@
 {{#allParams}}
     {{#vendorExtensions.x-is-account-sid}}
         this.{{paramName}} = this.{{paramName}} == null ? client.getAccountSid() : this.{{paramName}};
-        path = path.replace("{"+"{{#lambda.titlecase}}{{baseName}}{{/lambda.titlecase}}"+"}", this.{{paramName}}.toString());
+        path = path.replace("{"+"{{baseName}}"+"}", this.{{paramName}}.toString());
     {{/vendorExtensions.x-is-account-sid}}
 {{/allParams}}
 {{#requiredParams}}
     {{#vendorExtensions.x-is-phone-number-format}}
-        path = path.replace("{"+"{{#lambda.titlecase}}{{baseName}}{{/lambda.titlecase}}"+"}", this.{{paramName}}.encode("utf-8"));
+        path = path.replace("{"+"{{baseName}}"+"}", this.{{paramName}}.encode("utf-8"));
     {{/vendorExtensions.x-is-phone-number-format}}
     {{^vendorExtensions.x-is-phone-number-format}}
-        path = path.replace("{"+"{{#lambda.titlecase}}{{baseName}}{{/lambda.titlecase}}"+"}", this.{{paramName}}.toString());
+        path = path.replace("{"+"{{baseName}}"+"}", this.{{paramName}}.toString());
     {{/vendorExtensions.x-is-phone-number-format}}
 {{/requiredParams}}

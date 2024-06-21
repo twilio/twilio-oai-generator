@@ -1,4 +1,4 @@
-    private void addPostParams(final Request request, TwilioRestClient client) {
+    private void addPostParams(final {{vendorExtensions.x-auth-attributes.x-http-class-prefix}}Request request, {{vendorExtensions.x-auth-attributes.x-http-class-prefix}}TwilioRestClient client) {
         ObjectMapper objectMapper = client.getObjectMapper();
     {{#bodyParams}}
         if ({{paramName}} != null) {
