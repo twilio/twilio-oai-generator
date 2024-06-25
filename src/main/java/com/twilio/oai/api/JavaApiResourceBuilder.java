@@ -15,7 +15,6 @@ import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenOperation;
 import org.openapitools.codegen.CodegenParameter;
 import org.openapitools.codegen.CodegenProperty;
-import org.openapitools.codegen.CodegenSecurity;
 import org.openapitools.codegen.IJsonSchemaValidationProperties;
 
 import java.util.ArrayList;
@@ -60,7 +59,6 @@ public class JavaApiResourceBuilder extends ApiResourceBuilder{
     private Resolver<CodegenProperty> codegenPropertyIResolver;
 
     public Set<IJsonSchemaValidationProperties> enums = new HashSet<>();
-    public String authMethodPackage = "";
 
     public ArrayList<List<CodegenProperty>> modelParameters;
 
@@ -76,7 +74,6 @@ public class JavaApiResourceBuilder extends ApiResourceBuilder{
         this(apiActionTemplate, opList, allModels);
         this.toggleMap = toggleMap;
         this.codegenPropertyIResolver = codegenPropertyIResolver;
-        processAuthMethods(opList);
     }
 
     @Override
@@ -118,8 +115,6 @@ public class JavaApiResourceBuilder extends ApiResourceBuilder{
                     addEnums(parameter);
                 }
             });
-
-            co.vendorExtensions = conventionResolver.populateSecurityAttributes(co);
 
             jsonRequestBodyResolver.setResourceName(resourceName);
             co.allParams.stream()
@@ -168,30 +163,11 @@ public class JavaApiResourceBuilder extends ApiResourceBuilder{
                     .collect(Collectors.toList());
             co.hasParams = !co.allParams.isEmpty();
             co.hasRequiredParams = !co.requiredParams.isEmpty();
-            if(!co.formParams.isEmpty())co.vendorExtensions.put("x-has-form-params", true);
-            if(!co.headerParams.isEmpty())co.vendorExtensions.put("x-has-header-params", true);
-            if(!co.bodyParams.isEmpty())co.vendorExtensions.put("x-has-body-params", true);
-            if(!co.queryParams.isEmpty())co.vendorExtensions.put("x-has-query-params", true);
 
             requiredPathParams.addAll(co.pathParams);
             co.vendorExtensions = mapOperation(co);
         });
         return this;
-    }
-
-
-    public void processAuthMethods(List<CodegenOperation> opList) {
-        if(opList != null){
-            List<CodegenSecurity> authMethods = opList.get(0).authMethods;
-            if(authMethods != null){
-                for(CodegenSecurity c : authMethods){
-                    if(c.isOAuth == true){
-                        this.authMethodPackage = ".bearertoken";
-                    }
-                }
-            }
-            else this.authMethodPackage = ".noauth";
-        }
     }
 
     @Override
@@ -209,7 +185,6 @@ public class JavaApiResourceBuilder extends ApiResourceBuilder{
             case "DELETE":
                 co.vendorExtensions.put(HTTP_METHOD, JavaHttpMethod.DELETE.getValue());
                 break;
-
         }
     }
 

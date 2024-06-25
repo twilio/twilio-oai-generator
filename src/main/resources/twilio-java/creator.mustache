@@ -3,6 +3,7 @@
 package com.twilio.rest.{{domainPackage}}.{{apiVersion}}{{namespaceSubPart}};
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.twilio.base.Creator;
 import com.twilio.constant.EnumConstants;
 import com.twilio.converter.Promoter;
 import com.twilio.exception.ApiConnectionException;
@@ -11,7 +12,9 @@ import com.twilio.converter.Converter;
 import com.twilio.exception.ApiException;
 import com.twilio.exception.RestException;
 import com.twilio.http.HttpMethod;
+import com.twilio.http.Request;
 import com.twilio.http.Response;
+import com.twilio.http.TwilioRestClient;
 import com.twilio.rest.Domains;
 import java.math.BigDecimal;
 import java.util.List;
@@ -41,10 +44,6 @@ import java.net.URI;
 
 {{#apiOperations}}
 {{#vendorExtensions.x-is-create-operation}}
-import com.twilio.base{{vendorExtensions.x-auth-attributes.x-auth-import-class}}.Creator;
-import com.twilio.http{{vendorExtensions.x-auth-attributes.x-auth-import-class}}.{{vendorExtensions.x-auth-attributes.x-http-class-prefix}}Request;
-import com.twilio.http{{vendorExtensions.x-auth-attributes.x-auth-import-class}}.{{vendorExtensions.x-auth-attributes.x-http-class-prefix}}TwilioRestClient;
-
 public class {{apiName}}Creator extends Creator<{{apiName}}>{
 {{#allParams}}
     private {{{dataType}}} {{paramName}};
@@ -79,9 +78,9 @@ public class {{apiName}}Creator extends Creator<{{apiName}}>{
 {{/vendorExtensions.x-non-path-params}}
 
     @Override
-    public {{apiName}} create(final {{vendorExtensions.x-auth-attributes.x-http-class-prefix}}TwilioRestClient client){
+    public {{apiName}} create(final TwilioRestClient client){
 {{>generate_uri}}
-        {{vendorExtensions.x-auth-attributes.x-http-class-prefix}}Request request = new {{vendorExtensions.x-auth-attributes.x-http-class-prefix}}Request(
+        Request request = new Request(
             {{vendorExtensions.x-http-method}},
             Domains.{{#lambda.uppercase}}{{domainName}}{{/lambda.uppercase}}.toString(),
             path
@@ -103,7 +102,7 @@ public class {{apiName}}Creator extends Creator<{{apiName}}>{
         Response response = client.request(request);
         if (response == null) {
             throw new ApiConnectionException("{{apiName}} creation failed: Unable to connect to server");
-        } else if (!{{vendorExtensions.x-auth-attributes.x-http-class-prefix}}TwilioRestClient.SUCCESS.test(response.getStatusCode())) {
+        } else if (!TwilioRestClient.SUCCESS.test(response.getStatusCode())) {
             RestException restException = RestException.fromJson(response.getStream(), client.getObjectMapper());
             if (restException == null) {
                 throw new ApiException("Server Error, no content", response.getStatusCode());
@@ -113,19 +112,18 @@ public class {{apiName}}Creator extends Creator<{{apiName}}>{
 
         return {{apiName}}.fromJson(response.getStream(), client.getObjectMapper());
     }
-{{#vendorExtensions.x-has-form-params}}
+{{#formParams.0}}
 {{>postParams}}
-{{/vendorExtensions.x-has-form-params}}
-{{#vendorExtensions.x-has-body-params}}
+{{/formParams.0}}
+{{#bodyParams.0}}
 {{>postParams_body}}
-{{/vendorExtensions.x-has-body-params}}
-{{#vendorExtensions.x-has-header-params}}
+{{/bodyParams.0}}
+{{#headerParams.0}}
 {{>headerParams}}
-{{/vendorExtensions.x-has-header-params}}
-{{#vendorExtensions.x-has-query-params}}
-    private void addQueryParams(final {{vendorExtensions.x-auth-attributes.x-http-class-prefix}}Request request) {
-{{>queryParams}}    }
-{{/vendorExtensions.x-has-query-params}}
+{{/headerParams.0}}
+{{#queryParams.0}}
+{{>queryParamsFunc}}
+{{/queryParams.0}}
 }
 {{/vendorExtensions.x-is-create-operation}}
 {{/apiOperations}}
