@@ -3,7 +3,6 @@
 package com.twilio.rest.{{domainPackage}}.{{apiVersion}}{{namespaceSubPart}};
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.twilio.base.Fetcher;
 import com.twilio.constant.EnumConstants;
 import com.twilio.converter.Promoter;
 import com.twilio.exception.ApiConnectionException;
@@ -12,9 +11,7 @@ import com.twilio.converter.Converter;
 import com.twilio.exception.ApiException;
 import com.twilio.exception.RestException;
 import com.twilio.http.HttpMethod;
-import com.twilio.http.Request;
 import com.twilio.http.Response;
-import com.twilio.http.TwilioRestClient;
 import com.twilio.rest.Domains;
 
 import java.io.IOException;
@@ -38,6 +35,10 @@ import lombok.ToString;
 
 {{#apiOperations}}
 {{#vendorExtensions.x-is-fetch-operation}}
+import com.twilio.base{{vendorExtensions.x-auth-attributes.x-auth-import-class}}.Fetcher;
+import com.twilio.http{{vendorExtensions.x-auth-attributes.x-auth-import-class}}.{{vendorExtensions.x-auth-attributes.x-http-class-prefix}}Request;
+import com.twilio.http{{vendorExtensions.x-auth-attributes.x-auth-import-class}}.{{vendorExtensions.x-auth-attributes.x-http-class-prefix}}TwilioRestClient;
+
 public class {{apiName}}Fetcher extends Fetcher<{{apiName}}> {
 {{#allParams}}
     private {{{dataType}}} {{paramName}};
@@ -72,9 +73,9 @@ public class {{apiName}}Fetcher extends Fetcher<{{apiName}}> {
 {{/vendorExtensions.x-non-path-params}}
 
     @Override
-    public {{apiName}} fetch(final TwilioRestClient client) {
+    public {{apiName}} fetch(final {{vendorExtensions.x-auth-attributes.x-http-class-prefix}}TwilioRestClient client) {
 {{>generate_uri}}
-        Request request = new Request(
+        {{vendorExtensions.x-auth-attributes.x-http-class-prefix}}Request request = new {{vendorExtensions.x-auth-attributes.x-http-class-prefix}}Request(
             {{vendorExtensions.x-http-method}},
             Domains.{{#lambda.uppercase}}{{domainName}}{{/lambda.uppercase}}.toString(),
             path
@@ -96,8 +97,8 @@ public class {{apiName}}Fetcher extends Fetcher<{{apiName}}> {
         Response response = client.request(request);
 
         if (response == null) {
-        throw new ApiConnectionException("{{apiName}} fetch failed: Unable to connect to server");
-        } else if (!TwilioRestClient.SUCCESS.test(response.getStatusCode())) {
+            throw new ApiConnectionException("{{apiName}} fetch failed: Unable to connect to server");
+        } else if (!{{vendorExtensions.x-auth-attributes.x-http-class-prefix}}TwilioRestClient.SUCCESS.test(response.getStatusCode())) {
             RestException restException = RestException.fromJson(response.getStream(), client.getObjectMapper());
             if (restException == null) {
                 throw new ApiException("Server Error, no content", response.getStatusCode());
@@ -107,18 +108,19 @@ public class {{apiName}}Fetcher extends Fetcher<{{apiName}}> {
 
         return {{apiName}}.fromJson(response.getStream(), client.getObjectMapper());
     }
-{{#formParams.0}}
+{{#vendorExtensions.x-has-form-params}}
 {{>postParams}}
-{{/formParams.0}}
-{{#bodyParams.0}}
+{{/vendorExtensions.x-has-form-params}}
+{{#vendorExtensions.x-has-body-params}}
 {{>postParams_body}}
-{{/bodyParams.0}}
-{{#headerParams.0}}
+{{/vendorExtensions.x-has-body-params}}
+{{#vendorExtensions.x-has-header-params}}
 {{>headerParams}}
-{{/headerParams.0}}
-{{#queryParams.0}}
-{{>queryParamsFunc}}
-{{/queryParams.0}}
+{{/vendorExtensions.x-has-header-params}}
+{{#vendorExtensions.x-has-query-params}}
+    private void addQueryParams(final {{vendorExtensions.x-auth-attributes.x-http-class-prefix}}Request request) {
+{{>queryParams}}    }
+{{/vendorExtensions.x-has-query-params}}
 }
 {{/vendorExtensions.x-is-fetch-operation}}
 {{/apiOperations}}

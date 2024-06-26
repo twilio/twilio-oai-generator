@@ -15,9 +15,7 @@
 package com.twilio.rest.api.v2010;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.twilio.base.Reader;
 import com.twilio.constant.EnumConstants;
-import com.twilio.base.ResourceSet;
 import com.twilio.converter.Promoter;
 import com.twilio.exception.ApiConnectionException;
 import com.twilio.converter.PrefixedCollapsibleMap;
@@ -25,11 +23,8 @@ import com.twilio.converter.Converter;
 import com.twilio.exception.ApiException;
 import com.twilio.exception.RestException;
 import com.twilio.http.HttpMethod;
-import com.twilio.http.Request;
 import com.twilio.http.Response;
-import com.twilio.http.TwilioRestClient;
 import com.twilio.rest.Domains;
-import com.twilio.base.Page;
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.io.IOException;
@@ -46,6 +41,12 @@ import java.util.Map;
 import java.util.Objects;
 
 import lombok.ToString;
+
+import com.twilio.base.Page;
+import com.twilio.base.Reader;
+import com.twilio.base.ResourceSet;
+import com.twilio.http.Request;
+import com.twilio.http.TwilioRestClient;
 
 public class AccountReader extends Reader<Account> {
     private ZonedDateTime dateCreated;
