@@ -2,7 +2,7 @@
 set -e
 
 function should-generate() {
-  [ "$LANGUAGES" == "" ] || [[ "$LANGUAGES" == *$1* ]]
+  [ "$LANGUAGES" = "" ] || [[ "$LANGUAGES" == *$1* ]]
 }
 
 function generate() {
@@ -17,9 +17,6 @@ function generate() {
   rm -rf tmp
   mkdir -p tmp
   for api_spec in $files_regex; do
-    if [ "$1" !=  "twilio-java" ] && [[ $api_spec == "examples/spec/twilio_iam_organizations.yaml" ]]; then
-        continue
-    fi
     echo "generatorName: $1
 inputSpec: $api_spec
 outputDir: $OUT_DIR
