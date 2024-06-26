@@ -66,7 +66,6 @@ public class CallUpdater extends Updater<Call>{
             path
         );
         request.setContentType(EnumConstants.ContentType.FORM_URLENCODED);
-        addPostParams(request);
         Response response = client.request(request);
         if (response == null) {
             throw new ApiConnectionException("Call update failed: Unable to connect to server");

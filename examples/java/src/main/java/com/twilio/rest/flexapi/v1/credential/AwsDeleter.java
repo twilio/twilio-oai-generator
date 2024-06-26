@@ -65,7 +65,6 @@ public class AwsDeleter extends Deleter<Aws> {
             path
         );
         request.setContentType(EnumConstants.ContentType.FORM_URLENCODED);
-        addPostParams(request);
         Response response = client.request(request);
 
         if (response == null) {
