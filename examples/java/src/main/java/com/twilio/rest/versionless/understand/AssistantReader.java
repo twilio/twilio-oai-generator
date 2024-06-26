@@ -73,6 +73,8 @@ public class AssistantReader extends Reader<Assistant> {
         );
 
         addQueryParams(request);
+        request.setContentType(EnumConstants.ContentType.FORM_URLENCODED);
+        addPostParams(request);
         return pageForRequest(client, request);
     }
 

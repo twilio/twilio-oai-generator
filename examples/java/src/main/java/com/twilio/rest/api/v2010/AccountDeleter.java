@@ -67,6 +67,8 @@ public class AccountDeleter extends Deleter<Account> {
             Domains.API.toString(),
             path
         );
+        request.setContentType(EnumConstants.ContentType.FORM_URLENCODED);
+        addPostParams(request);
         Response response = client.request(request);
 
         if (response == null) {

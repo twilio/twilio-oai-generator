@@ -71,6 +71,8 @@ public class HistoryFetcher extends Fetcher<History> {
             path
         );
         addQueryParams(request);
+        request.setContentType(EnumConstants.ContentType.FORM_URLENCODED);
+        addPostParams(request);
         Response response = client.request(request);
 
         if (response == null) {
