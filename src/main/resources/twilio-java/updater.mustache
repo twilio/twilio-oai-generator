@@ -3,7 +3,6 @@
 package com.twilio.rest.{{domainPackage}}.{{apiVersion}}{{namespaceSubPart}};
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.twilio.base.Updater;
 import com.twilio.constant.EnumConstants;
 import com.twilio.converter.Promoter;
 import com.twilio.exception.ApiConnectionException;
@@ -12,9 +11,7 @@ import com.twilio.converter.Converter;
 import com.twilio.exception.ApiException;
 import com.twilio.exception.RestException;
 import com.twilio.http.HttpMethod;
-import com.twilio.http.Request;
 import com.twilio.http.Response;
-import com.twilio.http.TwilioRestClient;
 import com.twilio.rest.Domains;
 import java.time.format.DateTimeFormatter;
 import com.twilio.converter.DateConverter;
@@ -38,6 +35,11 @@ import lombok.ToString;
 
 {{#apiOperations}}
 {{#vendorExtensions.x-is-update-operation}}
+import com.twilio.base{{vendorExtensions.x-auth-attributes.x-auth-import-class}}.Updater;
+import com.twilio.http{{vendorExtensions.x-auth-attributes.x-auth-import-class}}.{{vendorExtensions.x-auth-attributes.x-http-class-prefix}}Request;
+import com.twilio.http{{vendorExtensions.x-auth-attributes.x-auth-import-class}}.{{vendorExtensions.x-auth-attributes.x-http-class-prefix}}TwilioRestClient;
+
+
 public class {{apiName}}Updater extends Updater<{{apiName}}>{
 {{#allParams}}
     private {{{dataType}}} {{paramName}};
@@ -72,9 +74,9 @@ public class {{apiName}}Updater extends Updater<{{apiName}}>{
 {{/vendorExtensions.x-non-path-params}}
 
     @Override
-    public {{apiName}} update(final TwilioRestClient client){
+    public {{apiName}} update(final {{vendorExtensions.x-auth-attributes.x-http-class-prefix}}TwilioRestClient client){
 {{>generate_uri}}
-        Request request = new Request(
+        {{vendorExtensions.x-auth-attributes.x-http-class-prefix}}Request request = new {{vendorExtensions.x-auth-attributes.x-http-class-prefix}}Request(
             {{vendorExtensions.x-http-method}},
             Domains.{{#lambda.uppercase}}{{domainName}}{{/lambda.uppercase}}.toString(),
             path
@@ -100,7 +102,7 @@ public class {{apiName}}Updater extends Updater<{{apiName}}>{
         Response response = client.request(request);
         if (response == null) {
             throw new ApiConnectionException("{{apiName}} update failed: Unable to connect to server");
-        } else if (!TwilioRestClient.SUCCESS.test(response.getStatusCode())) {
+        } else if (!{{vendorExtensions.x-auth-attributes.x-http-class-prefix}}TwilioRestClient.SUCCESS.test(response.getStatusCode())) {
             RestException restException = RestException.fromJson(response.getStream(), client.getObjectMapper());
             if (restException == null) {
                 throw new ApiException("Server Error, no content", response.getStatusCode());
@@ -110,18 +112,20 @@ public class {{apiName}}Updater extends Updater<{{apiName}}>{
 
         return {{apiName}}.fromJson(response.getStream(), client.getObjectMapper());
     }
-{{#formParams.0}}
+
+{{#vendorExtensions.x-has-form-params}}
 {{>postParams}}
-{{/formParams.0}}
-{{#bodyParams.0}}
+{{/vendorExtensions.x-has-form-params}}
+{{#vendorExtensions.x-has-body-params}}
 {{>postParams_body}}
-{{/bodyParams.0}}
-{{#headerParams.0}}
+{{/vendorExtensions.x-has-body-params}}
+{{#vendorExtensions.x-has-header-params}}
 {{>headerParams}}
-{{/headerParams.0}}
-{{#queryParams.0}}
-{{>queryParamsFunc}}
-{{/queryParams.0}}
+{{/vendorExtensions.x-has-header-params}}
+{{#vendorExtensions.x-has-query-params}}
+    private void addQueryParams(final {{vendorExtensions.x-auth-attributes.x-http-class-prefix}}Request request) {
+{{>queryParams}}    }
+{{/vendorExtensions.x-has-query-params}}
 }
 {{/vendorExtensions.x-is-update-operation}}
 {{/apiOperations}}

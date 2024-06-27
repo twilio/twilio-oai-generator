@@ -17,6 +17,7 @@ public class JavaApiResources extends ApiResources{
     public ArrayList<List<CodegenProperty>> modelParameters;
 
     public boolean hasNestedRequestBody;
+    public String authMethodPackage = "";
 
     public JavaApiResources(JavaApiResourceBuilder apiResourceBuilder) {
         super(apiResourceBuilder);
@@ -26,6 +27,7 @@ public class JavaApiResources extends ApiResources{
         // TODO: Need to improve, if there are requestBody in create and update operation.
         this.modelParameters = apiResourceBuilder.modelParameters;
         this.hasNestedRequestBody = apiResourceBuilder.hasNestedRequestBody;
+        this.authMethodPackage = apiResourceBuilder.authMethodPackage;
         
     }
 }
