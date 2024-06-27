@@ -49,6 +49,7 @@ def generate(spec_folder: str, spec_files: List[str], output_path: str, language
         if spec_file in generateForLanguages:
             if language in generateForLanguages.get(spec_file):
                 generate_domain_for_language(spec_file, config_path, spec_folder, output_path, language, parent_dir)
+            else: print(f'Skipping generation for  {spec_file}')
         else: generate_domain_for_language(spec_file, config_path, spec_folder, output_path, language, parent_dir)
 
 def generate_domain_for_language(spec_file: str, config_path: str, spec_folder: str, output_path: str, language: str, parent_dir: str) -> None:
@@ -66,7 +67,7 @@ def generate_domain_for_language(spec_file: str, config_path: str, spec_folder: 
     with open(full_config_path, 'w') as f:
         f.write(json.dumps(config))
 
-    print(f'Generating {output_path} from {spec_folder}')
+    print(f'Generating {output_path} from {spec_folder} for {spec_file}')
     run_openapi_generator(parent_dir, language)
     print(f'Code generation completed at {output_path}')
 
