@@ -69,6 +69,7 @@ public class AccountFetcher extends Fetcher<Account> {
             Domains.API.toString(),
             path
         );
+        request.setContentType(EnumConstants.ContentType.FORM_URLENCODED);
         Response response = client.request(request);
 
         if (response == null) {

@@ -94,6 +94,7 @@ public class AccountReader extends Reader<Account> {
         );
 
         addQueryParams(request);
+        request.setContentType(EnumConstants.ContentType.FORM_URLENCODED);
         return pageForRequest(client, request);
     }
 
