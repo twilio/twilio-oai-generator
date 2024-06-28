@@ -9,6 +9,7 @@ import com.twilio.oai.common.EnumConstants;
 import com.twilio.oai.common.EnumConstants.JavaHttpMethod;
 import com.twilio.oai.common.Utility;
 import com.twilio.oai.resolver.Resolver;
+import com.twilio.oai.resolver.java.CombineSchema;
 import com.twilio.oai.resolver.java.JavaConventionResolver;
 import com.twilio.oai.template.IApiActionTemplate;
 import org.openapitools.codegen.CodegenModel;
@@ -100,6 +101,8 @@ public class JavaApiResourceBuilder extends ApiResourceBuilder{
     public ApiResourceBuilder updateOperations(Resolver<CodegenParameter> codegenParameterIResolver) {
         headerParamModelList = new HashSet<>();
         JsonRequestBodyResolver jsonRequestBodyResolver = new JsonRequestBodyResolver(this, codegenPropertyIResolver);
+        CombineSchema combineSchema = new CombineSchema(this);
+        
         this.codegenOperationList.forEach(co -> {
             updateNestedContent(co);
             updateHttpMethod(co);
@@ -175,6 +178,7 @@ public class JavaApiResourceBuilder extends ApiResourceBuilder{
 
             requiredPathParams.addAll(co.pathParams);
             co.vendorExtensions = mapOperation(co);
+            combineSchema.combine(co);
         });
         return this;
     }
