@@ -135,7 +135,9 @@ func (c *ApiService) CreateCredentialAws(params *CreateCredentialAwsParams) (*Te
 	path := "/v1/Credentials/AWS"
 
 	data := url.Values{}
-	headers := make(map[string]interface{})
+	headers := map[string]interface{}{
+		"Content-Type": "application/x-www-form-urlencoded",
+	}
 
 	if params != nil && params.TestString != nil {
 		data.Set("TestString", *params.TestString)
@@ -239,7 +241,9 @@ func (c *ApiService) DeleteCredentialAws(Sid string) error {
 	path = strings.Replace(path, "{"+"Sid"+"}", Sid, -1)
 
 	data := url.Values{}
-	headers := make(map[string]interface{})
+	headers := map[string]interface{}{
+		"Content-Type": "application/x-www-form-urlencoded",
+	}
 
 	resp, err := c.requestHandler.Delete(c.baseURL+path, data, headers)
 	if err != nil {
@@ -256,7 +260,9 @@ func (c *ApiService) FetchCredentialAws(Sid string) (*TestResponseObject, error)
 	path = strings.Replace(path, "{"+"Sid"+"}", Sid, -1)
 
 	data := url.Values{}
-	headers := make(map[string]interface{})
+	headers := map[string]interface{}{
+		"Content-Type": "application/x-www-form-urlencoded",
+	}
 
 	resp, err := c.requestHandler.Get(c.baseURL+path, data, headers)
 	if err != nil {
@@ -295,7 +301,9 @@ func (c *ApiService) PageCredentialAws(params *ListCredentialAwsParams, pageToke
 	path := "/v1/Credentials/AWS"
 
 	data := url.Values{}
-	headers := make(map[string]interface{})
+	headers := map[string]interface{}{
+		"Content-Type": "application/x-www-form-urlencoded",
+	}
 
 	if params != nil && params.PageSize != nil {
 		data.Set("PageSize", fmt.Sprint(*params.PageSize))
@@ -431,7 +439,9 @@ func (c *ApiService) UpdateCredentialAws(Sid string, params *UpdateCredentialAws
 	path = strings.Replace(path, "{"+"Sid"+"}", Sid, -1)
 
 	data := url.Values{}
-	headers := make(map[string]interface{})
+	headers := map[string]interface{}{
+		"Content-Type": "application/x-www-form-urlencoded",
+	}
 
 	if params != nil && params.TestString != nil {
 		data.Set("TestString", *params.TestString)

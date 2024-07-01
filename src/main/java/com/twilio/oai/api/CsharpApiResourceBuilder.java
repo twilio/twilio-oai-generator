@@ -4,6 +4,7 @@ import com.twilio.oai.DirectoryStructureService;
 import com.twilio.oai.StringHelper;
 import com.twilio.oai.common.ApplicationConstants;
 import com.twilio.oai.common.EnumConstants;
+import com.twilio.oai.common.EnumConstants.CsharpHttpMethod;
 import com.twilio.oai.common.Utility;
 import com.twilio.oai.resolver.Resolver;
 import com.twilio.oai.resolver.csharp.OperationStore;
@@ -28,6 +29,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static com.twilio.oai.common.ApplicationConstants.HTTP_METHOD;
 import static com.twilio.oai.common.ApplicationConstants.PATH_SEPARATOR_PLACEHOLDER;
 
 public class CsharpApiResourceBuilder extends ApiResourceBuilder {
@@ -83,6 +85,23 @@ public class CsharpApiResourceBuilder extends ApiResourceBuilder {
         });
 
         return this;
+    }
+    @Override
+    public void updateHttpMethod(CodegenOperation co) {
+        switch (co.httpMethod) {
+            case "GET":
+                co.vendorExtensions.put(HTTP_METHOD, CsharpHttpMethod.GET.getValue());
+                break;
+            case "POST":
+                co.vendorExtensions.put(HTTP_METHOD, CsharpHttpMethod.POST.getValue());
+                break;
+            case "PUT":
+                co.vendorExtensions.put(HTTP_METHOD, CsharpHttpMethod.PUT.getValue());
+                break;
+            case "DELETE":
+                co.vendorExtensions.put(HTTP_METHOD, CsharpHttpMethod.DELETE.getValue());
+                break;
+        }
     }
 
     private void resolveIngressModel(CodegenOperation codegenOperation) {

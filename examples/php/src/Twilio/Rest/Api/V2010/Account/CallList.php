@@ -85,7 +85,8 @@ class CallList extends ListResource
                 Serialize::map($options['testArrayOfUri'], function ($e) { return $e; }),
         ]);
 
-        $payload = $this->version->create('POST', $this->uri, [], $data);
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $payload = $this->version->create('POST', $this->uri, [], $data, $headers);
 
         return new CallInstance(
             $this->version,

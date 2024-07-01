@@ -2,17 +2,16 @@
 {{#resources}}
 package com.twilio.rest.{{domainPackage}}.{{apiVersion}}{{namespaceSubPart}};
 
-import com.twilio.base.Deleter;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.twilio.converter.Promoter;
+import com.twilio.constant.EnumConstants;
 import com.twilio.exception.ApiConnectionException;
 import com.twilio.converter.PrefixedCollapsibleMap;
 import com.twilio.exception.ApiException;
 import com.twilio.converter.Converter;
 import com.twilio.exception.RestException;
 import com.twilio.http.HttpMethod;
-import com.twilio.http.Request;
 import com.twilio.http.Response;
-import com.twilio.http.TwilioRestClient;
 import com.twilio.rest.Domains;
 import java.time.LocalDate;
 import java.io.IOException;
@@ -35,6 +34,10 @@ import lombok.ToString;
 
 {{#apiOperations}}
 {{#vendorExtensions.x-is-delete-operation}}
+import com.twilio.base{{vendorExtensions.x-auth-attributes.x-auth-import-class}}.Deleter;
+import com.twilio.http{{vendorExtensions.x-auth-attributes.x-auth-import-class}}.{{vendorExtensions.x-auth-attributes.x-http-class-prefix}}Request;
+import com.twilio.http{{vendorExtensions.x-auth-attributes.x-auth-import-class}}.{{vendorExtensions.x-auth-attributes.x-http-class-prefix}}TwilioRestClient;
+
 public class {{apiName}}Deleter extends Deleter<{{apiName}}> {
 {{#allParams}}
     private {{{dataType}}} {{paramName}};
@@ -69,19 +72,28 @@ public class {{apiName}}Deleter extends Deleter<{{apiName}}> {
 {{/vendorExtensions.x-non-path-params}}
 
     @Override
-    public boolean delete(final TwilioRestClient client) {
+    public boolean delete(final {{vendorExtensions.x-auth-attributes.x-http-class-prefix}}TwilioRestClient client) {
 {{>generate_uri}}
-        Request request = new Request(
-            HttpMethod.DELETE,
+        {{vendorExtensions.x-auth-attributes.x-http-class-prefix}}Request request = new {{vendorExtensions.x-auth-attributes.x-http-class-prefix}}Request(
+            {{vendorExtensions.x-http-method}},
             Domains.{{#lambda.uppercase}}{{domainName}}{{/lambda.uppercase}}.toString(),
             path
         );
         {{#queryParams.0}}
         addQueryParams(request);
         {{/queryParams.0}}
+        {{^vendorExtensions.x-is-json}}
+        request.setContentType(EnumConstants.ContentType.FORM_URLENCODED);
+        {{/vendorExtensions.x-is-json}}
+        {{#vendorExtensions.x-is-json}}
+        request.setContentType(EnumConstants.ContentType.JSON);
+        {{/vendorExtensions.x-is-json}}
         {{#formParams.0}}
         addPostParams(request);
         {{/formParams.0}}
+        {{#bodyParams.0}}
+        addPostParams(request, client);
+        {{/bodyParams.0}}
         {{#headerParams.0}}
         addHeaderParams(request);
         {{/headerParams.0}}
@@ -89,7 +101,7 @@ public class {{apiName}}Deleter extends Deleter<{{apiName}}> {
 
         if (response == null) {
             throw new ApiConnectionException("{{apiName}} delete failed: Unable to connect to server");
-        } else if (!TwilioRestClient.SUCCESS.test(response.getStatusCode())) {
+        } else if (!{{vendorExtensions.x-auth-attributes.x-http-class-prefix}}TwilioRestClient.SUCCESS.test(response.getStatusCode())) {
             RestException restException = RestException.fromJson(response.getStream(), client.getObjectMapper());
             if (restException == null) {
                 throw new ApiException("Server Error, no content", response.getStatusCode());
@@ -98,15 +110,19 @@ public class {{apiName}}Deleter extends Deleter<{{apiName}}> {
         }
         return response.getStatusCode() == 204;
     }
-{{#formParams.0}}
+{{#vendorExtensions.x-has-form-params}}
 {{>postParams}}
-{{/formParams.0}}
-{{#headerParams.0}}
+{{/vendorExtensions.x-has-form-params}}
+{{#vendorExtensions.x-has-body-params}}
+{{>postParams_body}}
+{{/vendorExtensions.x-has-body-params}}
+{{#vendorExtensions.x-has-header-params}}
 {{>headerParams}}
-{{/headerParams.0}}
-{{#queryParams.0}}
-{{>queryParamsFunc}}
-{{/queryParams.0}}
+{{/vendorExtensions.x-has-header-params}}
+{{#vendorExtensions.x-has-query-params}}
+    private void addQueryParams(final {{vendorExtensions.x-auth-attributes.x-http-class-prefix}}Request request) {
+{{>queryParams}}    }
+{{/vendorExtensions.x-has-query-params}}
 }
 {{/vendorExtensions.x-is-delete-operation}}
 {{/apiOperations}}

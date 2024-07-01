@@ -98,4 +98,28 @@ public class EnumConstants {
 
         private final String value;
     }
+
+    @Getter
+    @RequiredArgsConstructor
+    public enum JavaHttpMethod {
+        GET("HttpMethod.GET"),
+        POST("HttpMethod.POST"),
+        PUT("HttpMethod.PUT"),
+        DELETE("HttpMethod.DELETE"),
+        HEAD("HttpMethod.HEAD"),
+        OPTIONS("HttpMethod.OPTIONS");
+
+        private final String value;
+    }
+
+    @Getter
+    @RequiredArgsConstructor
+    public enum CsharpHttpMethod {
+        GET("HttpMethod.Get"),
+        POST("HttpMethod.Post"),
+        PUT("HttpMethod.Put"),
+        DELETE("HttpMethod.Delete");
+
+        private final String value;
+    }
 }

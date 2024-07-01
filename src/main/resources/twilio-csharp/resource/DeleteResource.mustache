@@ -7,7 +7,7 @@
         {
             {{>resource/GeneratePath}}
             return new Request(
-                HttpMethod.Delete,
+                {{vendorExtensions.x-http-method}},
                 Rest.Domain.{{domainPackage}},
                 path,
                 queryParams: options.GetParams(),

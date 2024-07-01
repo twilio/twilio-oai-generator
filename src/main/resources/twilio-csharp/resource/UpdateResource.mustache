@@ -3,10 +3,16 @@
         {
             {{>resource/GeneratePath}}
             return new Request(
-                HttpMethod.Post,
+                {{vendorExtensions.x-http-method}},
                 Rest.Domain.{{domainPackage}},
                 path,
-                postParams: options.GetParams(),
+                {{^vendorExtensions.x-is-json}}
+                contentType: EnumConstants.ContentTypeEnum.FORM_URLENCODED,
+                postParams: options.GetParams(),{{/vendorExtensions.x-is-json}}
+                {{#vendorExtensions.x-is-json}}
+                contentType: EnumConstants.ContentTypeEnum.JSON,
+                body: options.GetBody(),
+                {{/vendorExtensions.x-is-json}}
                 headerParams: {{^vendorExtensions.x-header-param-exists}}null{{/vendorExtensions.x-header-param-exists}}{{#vendorExtensions.x-header-param-exists}}options.GetHeaderParams(){{/vendorExtensions.x-header-param-exists}}
             );
         }

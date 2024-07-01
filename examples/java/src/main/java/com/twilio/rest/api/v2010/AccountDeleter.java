@@ -14,17 +14,16 @@
 
 package com.twilio.rest.api.v2010;
 
-import com.twilio.base.Deleter;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.twilio.converter.Promoter;
+import com.twilio.constant.EnumConstants;
 import com.twilio.exception.ApiConnectionException;
 import com.twilio.converter.PrefixedCollapsibleMap;
 import com.twilio.exception.ApiException;
 import com.twilio.converter.Converter;
 import com.twilio.exception.RestException;
 import com.twilio.http.HttpMethod;
-import com.twilio.http.Request;
 import com.twilio.http.Response;
-import com.twilio.http.TwilioRestClient;
 import com.twilio.rest.Domains;
 import java.time.LocalDate;
 import java.io.IOException;
@@ -42,6 +41,10 @@ import java.util.Map;
 import java.util.Objects;
 
 import lombok.ToString;
+
+import com.twilio.base.Deleter;
+import com.twilio.http.Request;
+import com.twilio.http.TwilioRestClient;
 
 public class AccountDeleter extends Deleter<Account> {
     private String pathSid;
@@ -65,6 +68,7 @@ public class AccountDeleter extends Deleter<Account> {
             Domains.API.toString(),
             path
         );
+        request.setContentType(EnumConstants.ContentType.FORM_URLENCODED);
         Response response = client.request(request);
 
         if (response == null) {

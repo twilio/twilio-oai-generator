@@ -18,6 +18,7 @@ public class TestRestClient extends TwilioRestClient {
         // manipulate string for mock server url
         sb.replace(0, 5, scheme);
         Request testRequest = new Request(request.getMethod(), sb.toString());
+        testRequest.setContentType(request.getContentType());
         // updating the query and post params
         request.getPostParams().forEach((key, value) -> value.forEach(listValue -> testRequest.addPostParam(key, listValue)));
         request.getQueryParams().forEach((key, value) -> value.forEach(listValue -> testRequest.addPostParam(key, listValue)));
