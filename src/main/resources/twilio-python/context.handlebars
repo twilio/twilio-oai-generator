@@ -31,7 +31,10 @@ class {{apiName}}Context(InstanceContext):
             '{{{baseName}}}': {{#if vendorExtensions.x-serialize}}{{vendorExtensions.x-serialize}}({{paramName}}{{#if isArray}}, lambda e: e){{else}}){{/if}}{{else}}{{paramName}}{{/if}},{{/isFormParam}}{{/allParams}}
         })
         {{#allParams}}{{^isFormParam}}headers = values.of({'{{{baseName}}}': {{paramName}}, }){{/isFormParam}}{{/allParams}}
-
+        {{#vendorExtensions.x-auth-attributes.x-oauth}}
+        orgs_token_manager = OrgTokenManager("client_credentials", os.environ.get('CLIENT_ID'), os.environ.get('CLIENT_SECRET'),'','','','','')
+        headers = BearerTokenHTTPClient(orgs_token_manager).get_headers()
+        {{/vendorExtensions.x-auth-attributes.x-oauth}}
         payload = self._version.update(method='{{vendorExtensions.x-http-method}}', uri=self._uri, data=data,{{#allParams}}{{#if isFormParam}}{{else}} headers=headers{{/if}}{{/allParams}})
 
         return {{instanceName}}(
@@ -52,7 +55,10 @@ class {{apiName}}Context(InstanceContext):
             '{{{baseName}}}': {{#if vendorExtensions.x-serialize}}{{vendorExtensions.x-serialize}}({{paramName}}{{#if isArray}}, lambda e: e){{else}}){{/if}}{{else}}{{paramName}}{{/if}},{{/isFormParam}}{{/allParams}}
         })
         {{#allParams}}{{^isFormParam}}headers = values.of({'{{{baseName}}}': {{paramName}}, }){{/isFormParam}}{{/allParams}}
-
+        {{#vendorExtensions.x-auth-attributes.x-oauth}}
+        orgs_token_manager = OrgTokenManager("client_credentials", os.environ.get('CLIENT_ID'), os.environ.get('CLIENT_SECRET'),'','','','','')
+        headers = BearerTokenHTTPClient(orgs_token_manager).get_headers()
+        {{/vendorExtensions.x-auth-attributes.x-oauth}}
         payload = await self._version.update_async(method='{{vendorExtensions.x-http-method}}', uri=self._uri, data=data,{{#allParams}}{{#if isFormParam}}{{else}} headers=headers{{/if}}{{/allParams}})
 
         return {{instanceName}}(
@@ -75,6 +81,10 @@ class {{apiName}}Context(InstanceContext):
         })
         {{#allParams}}{{#if vendorExtensions.x-prefixed-collapsible-map}}data.update({{vendorExtensions.x-serialize}}({{paramName}}, '{{vendorExtensions.x-prefixed-collapsible-map}}'))
         {{/if}}{{/allParams}}{{/if}}
+        {{#vendorExtensions.x-auth-attributes.x-oauth}}
+        orgs_token_manager = OrgTokenManager("client_credentials", os.environ.get('CLIENT_ID'), os.environ.get('CLIENT_SECRET'),'','','','','')
+        headers = BearerTokenHTTPClient(orgs_token_manager).get_headers()
+        {{/vendorExtensions.x-auth-attributes.x-oauth}}
         payload = self._version.fetch(method='{{vendorExtensions.x-http-method}}', uri=self._uri, {{#if allParams}}params=data{{/if}})
 
         return {{instanceName}}(
@@ -98,6 +108,10 @@ class {{apiName}}Context(InstanceContext):
         })
         {{#allParams}}{{#if vendorExtensions.x-prefixed-collapsible-map}}data.update({{vendorExtensions.x-serialize}}({{paramName}}, '{{vendorExtensions.x-prefixed-collapsible-map}}'))
         {{/if}}{{/allParams}}{{/if}}
+        {{#vendorExtensions.x-auth-attributes.x-oauth}}
+        orgs_token_manager = OrgTokenManager("client_credentials", os.environ.get('CLIENT_ID'), os.environ.get('CLIENT_SECRET'),'','','','','')
+        headers = BearerTokenHTTPClient(orgs_token_manager).get_headers()
+        {{/vendorExtensions.x-auth-attributes.x-oauth}}
         payload = await self._version.fetch_async(method='{{vendorExtensions.x-http-method}}', uri=self._uri, {{#if allParams}}params=data{{/if}})
 
         return {{instanceName}}(
@@ -117,6 +131,10 @@ class {{apiName}}Context(InstanceContext):
         """{{#if allParams}}
         headers = values.of({{#allParams}}{'{{{baseName}}}': {{paramName}}, }{{/allParams}})
         {{/if}}
+        {{#vendorExtensions.x-auth-attributes.x-oauth}}
+        orgs_token_manager = OrgTokenManager("client_credentials", os.environ.get('CLIENT_ID'), os.environ.get('CLIENT_SECRET'),'','','','','')
+        headers = BearerTokenHTTPClient(orgs_token_manager).get_headers()
+        {{/vendorExtensions.x-auth-attributes.x-oauth}}
         return self._version.delete(method='{{vendorExtensions.x-http-method}}', uri=self._uri,{{#if allParams}} headers=headers{{/if}})
 
     async def {{vendorExtensions.x-name-lower}}_async(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> bool:
@@ -129,6 +147,10 @@ class {{apiName}}Context(InstanceContext):
         """{{#if allParams}}
         headers = values.of({{#allParams}}{'{{{baseName}}}': {{paramName}}, }{{/allParams}})
         {{/if}}
+        {{#vendorExtensions.x-auth-attributes.x-oauth}}
+        orgs_token_manager = OrgTokenManager("client_credentials", os.environ.get('CLIENT_ID'), os.environ.get('CLIENT_SECRET'),'','','','','')
+        headers = BearerTokenHTTPClient(orgs_token_manager).get_headers()
+        {{/vendorExtensions.x-auth-attributes.x-oauth}}
         return await self._version.delete_async(method='{{vendorExtensions.x-http-method}}', uri=self._uri,{{#if allParams}} headers=headers{{/if}})
     {{/vendorExtensions.x-is-delete-operation}}{{#vendorExtensions.x-is-create-operation}}
     def {{vendorExtensions.x-name-lower}}(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> {{instanceName}}:
@@ -142,6 +164,10 @@ class {{apiName}}Context(InstanceContext):
         data = values.of({ {{#allParams}}
             '{{{baseName}}}': {{#if vendorExtensions.x-serialize}}{{vendorExtensions.x-serialize}}({{paramName}}{{#if isArray}}, lambda e: e){{else}}){{/if}}{{else}}{{paramName}}{{/if}},{{/allParams}}
         })
+        {{#vendorExtensions.x-auth-attributes.x-oauth}}
+        orgs_token_manager = OrgTokenManager("client_credentials", os.environ.get('CLIENT_ID'), os.environ.get('CLIENT_SECRET'),'','','','','')
+        headers = BearerTokenHTTPClient(orgs_token_manager).get_headers()
+        {{/vendorExtensions.x-auth-attributes.x-oauth}}
 
         payload = self._version.create(method='{{vendorExtensions.x-http-method}}', uri=self._uri, data=data)
 
@@ -162,6 +188,10 @@ class {{apiName}}Context(InstanceContext):
         data = values.of({ {{#allParams}}
             '{{{baseName}}}': {{#if vendorExtensions.x-serialize}}{{vendorExtensions.x-serialize}}({{paramName}}{{#if isArray}}, lambda e: e){{else}}){{/if}}{{else}}{{paramName}}{{/if}},{{/allParams}}
         })
+        {{#vendorExtensions.x-auth-attributes.x-oauth}}
+        orgs_token_manager = OrgTokenManager("client_credentials", os.environ.get('CLIENT_ID'), os.environ.get('CLIENT_SECRET'),'','','','','')
+        headers = BearerTokenHTTPClient(orgs_token_manager).get_headers()
+        {{/vendorExtensions.x-auth-attributes.x-oauth}}
 
         payload = await self._version.create_async(method='{{vendorExtensions.x-http-method}}', uri=self._uri, data=data)
 
