@@ -32,8 +32,9 @@ class {{apiName}}Context(InstanceContext):
         })
         {{#allParams}}{{^isFormParam}}headers = values.of({'{{{baseName}}}': {{paramName}}, }){{/isFormParam}}{{/allParams}}
         {{#vendorExtensions.x-auth-attributes.x-oauth}}
-        orgs_token_manager = OrgTokenManager("client_credentials", os.environ.get('CLIENT_ID'), os.environ.get('CLIENT_SECRET'),'','','','','')
-        headers = BearerTokenHTTPClient(orgs_token_manager).get_headers()
+        orgs_token_manager = TokenManager().get_token_manager(self._version)
+        auth_token = BearerTokenHTTPClient(orgs_token_manager).get_headers(self._version)
+        headers['Authorization'] =  'Bearer ' + auth_token
         {{/vendorExtensions.x-auth-attributes.x-oauth}}
         payload = self._version.update(method='{{vendorExtensions.x-http-method}}', uri=self._uri, data=data,{{#allParams}}{{#if isFormParam}}{{else}} headers=headers{{/if}}{{/allParams}})
 
@@ -56,8 +57,9 @@ class {{apiName}}Context(InstanceContext):
         })
         {{#allParams}}{{^isFormParam}}headers = values.of({'{{{baseName}}}': {{paramName}}, }){{/isFormParam}}{{/allParams}}
         {{#vendorExtensions.x-auth-attributes.x-oauth}}
-        orgs_token_manager = OrgTokenManager("client_credentials", os.environ.get('CLIENT_ID'), os.environ.get('CLIENT_SECRET'),'','','','','')
-        headers = BearerTokenHTTPClient(orgs_token_manager).get_headers()
+        orgs_token_manager = TokenManager().get_token_manager(self._version)
+        auth_token = BearerTokenHTTPClient(orgs_token_manager).get_headers(self._version)
+        headers['Authorization'] =  'Bearer ' + auth_token
         {{/vendorExtensions.x-auth-attributes.x-oauth}}
         payload = await self._version.update_async(method='{{vendorExtensions.x-http-method}}', uri=self._uri, data=data,{{#allParams}}{{#if isFormParam}}{{else}} headers=headers{{/if}}{{/allParams}})
 
@@ -82,8 +84,9 @@ class {{apiName}}Context(InstanceContext):
         {{#allParams}}{{#if vendorExtensions.x-prefixed-collapsible-map}}data.update({{vendorExtensions.x-serialize}}({{paramName}}, '{{vendorExtensions.x-prefixed-collapsible-map}}'))
         {{/if}}{{/allParams}}{{/if}}
         {{#vendorExtensions.x-auth-attributes.x-oauth}}
-        orgs_token_manager = OrgTokenManager("client_credentials", os.environ.get('CLIENT_ID'), os.environ.get('CLIENT_SECRET'),'','','','','')
-        headers = BearerTokenHTTPClient(orgs_token_manager).get_headers()
+        orgs_token_manager = TokenManager().get_token_manager(self._version)
+        auth_token = BearerTokenHTTPClient(orgs_token_manager).get_headers(self._version)
+        headers['Authorization'] =  'Bearer ' + auth_token
         {{/vendorExtensions.x-auth-attributes.x-oauth}}
         payload = self._version.fetch(method='{{vendorExtensions.x-http-method}}', uri=self._uri, {{#if allParams}}params=data{{/if}})
 
@@ -109,8 +112,9 @@ class {{apiName}}Context(InstanceContext):
         {{#allParams}}{{#if vendorExtensions.x-prefixed-collapsible-map}}data.update({{vendorExtensions.x-serialize}}({{paramName}}, '{{vendorExtensions.x-prefixed-collapsible-map}}'))
         {{/if}}{{/allParams}}{{/if}}
         {{#vendorExtensions.x-auth-attributes.x-oauth}}
-        orgs_token_manager = OrgTokenManager("client_credentials", os.environ.get('CLIENT_ID'), os.environ.get('CLIENT_SECRET'),'','','','','')
-        headers = BearerTokenHTTPClient(orgs_token_manager).get_headers()
+        orgs_token_manager = TokenManager().get_token_manager(self._version)
+        auth_token = BearerTokenHTTPClient(orgs_token_manager).get_headers(self._version)
+        headers['Authorization'] =  'Bearer ' + auth_token
         {{/vendorExtensions.x-auth-attributes.x-oauth}}
         payload = await self._version.fetch_async(method='{{vendorExtensions.x-http-method}}', uri=self._uri, {{#if allParams}}params=data{{/if}})
 
@@ -132,8 +136,9 @@ class {{apiName}}Context(InstanceContext):
         headers = values.of({{#allParams}}{'{{{baseName}}}': {{paramName}}, }{{/allParams}})
         {{/if}}
         {{#vendorExtensions.x-auth-attributes.x-oauth}}
-        orgs_token_manager = OrgTokenManager("client_credentials", os.environ.get('CLIENT_ID'), os.environ.get('CLIENT_SECRET'),'','','','','')
-        headers = BearerTokenHTTPClient(orgs_token_manager).get_headers()
+        orgs_token_manager = TokenManager().get_token_manager(self._version)
+        auth_token = BearerTokenHTTPClient(orgs_token_manager).get_headers(self._version)
+        headers['Authorization'] =  'Bearer ' + auth_token
         {{/vendorExtensions.x-auth-attributes.x-oauth}}
         return self._version.delete(method='{{vendorExtensions.x-http-method}}', uri=self._uri,{{#if allParams}} headers=headers{{/if}})
 
@@ -148,8 +153,9 @@ class {{apiName}}Context(InstanceContext):
         headers = values.of({{#allParams}}{'{{{baseName}}}': {{paramName}}, }{{/allParams}})
         {{/if}}
         {{#vendorExtensions.x-auth-attributes.x-oauth}}
-        orgs_token_manager = OrgTokenManager("client_credentials", os.environ.get('CLIENT_ID'), os.environ.get('CLIENT_SECRET'),'','','','','')
-        headers = BearerTokenHTTPClient(orgs_token_manager).get_headers()
+        orgs_token_manager = TokenManager().get_token_manager(self._version)
+        auth_token = BearerTokenHTTPClient(orgs_token_manager).get_headers(self._version)
+        headers['Authorization'] =  'Bearer ' + auth_token
         {{/vendorExtensions.x-auth-attributes.x-oauth}}
         return await self._version.delete_async(method='{{vendorExtensions.x-http-method}}', uri=self._uri,{{#if allParams}} headers=headers{{/if}})
     {{/vendorExtensions.x-is-delete-operation}}{{#vendorExtensions.x-is-create-operation}}
@@ -165,8 +171,9 @@ class {{apiName}}Context(InstanceContext):
             '{{{baseName}}}': {{#if vendorExtensions.x-serialize}}{{vendorExtensions.x-serialize}}({{paramName}}{{#if isArray}}, lambda e: e){{else}}){{/if}}{{else}}{{paramName}}{{/if}},{{/allParams}}
         })
         {{#vendorExtensions.x-auth-attributes.x-oauth}}
-        orgs_token_manager = OrgTokenManager("client_credentials", os.environ.get('CLIENT_ID'), os.environ.get('CLIENT_SECRET'),'','','','','')
-        headers = BearerTokenHTTPClient(orgs_token_manager).get_headers()
+        orgs_token_manager = TokenManager().get_token_manager(self._version)
+        auth_token = BearerTokenHTTPClient(orgs_token_manager).get_headers(self._version)
+        headers = {'Authorization': 'Bearer ' + auth_token}
         {{/vendorExtensions.x-auth-attributes.x-oauth}}
 
         payload = self._version.create(method='{{vendorExtensions.x-http-method}}', uri=self._uri, data=data)
@@ -189,8 +196,9 @@ class {{apiName}}Context(InstanceContext):
             '{{{baseName}}}': {{#if vendorExtensions.x-serialize}}{{vendorExtensions.x-serialize}}({{paramName}}{{#if isArray}}, lambda e: e){{else}}){{/if}}{{else}}{{paramName}}{{/if}},{{/allParams}}
         })
         {{#vendorExtensions.x-auth-attributes.x-oauth}}
-        orgs_token_manager = OrgTokenManager("client_credentials", os.environ.get('CLIENT_ID'), os.environ.get('CLIENT_SECRET'),'','','','','')
-        headers = BearerTokenHTTPClient(orgs_token_manager).get_headers()
+        orgs_token_manager = TokenManager().get_token_manager(self._version)
+        auth_token = BearerTokenHTTPClient(orgs_token_manager).get_headers(self._version)
+        headers['Authorization'] =  'Bearer ' + auth_token
         {{/vendorExtensions.x-auth-attributes.x-oauth}}
 
         payload = await self._version.create_async(method='{{vendorExtensions.x-http-method}}', uri=self._uri, data=data)

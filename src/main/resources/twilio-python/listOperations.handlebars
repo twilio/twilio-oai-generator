@@ -17,8 +17,9 @@
                 {{/headerParams}}'Content-Type': 'application/x-www-form-urlencoded'
             })
         {{#vendorExtensions.x-auth-attributes.x-oauth}}
-        orgs_token_manager = OrgTokenManager("client_credentials", os.environ.get('CLIENT_ID'), os.environ.get('CLIENT_SECRET'),'','','','','')
-        headers = BearerTokenHTTPClient(orgs_token_manager).get_headers()
+        orgs_token_manager = TokenManager().get_token_manager(self._version)
+        auth_token = BearerTokenHTTPClient(orgs_token_manager).get_headers(self._version)
+        headers['Authorization'] = 'Bearer ' + auth_token
         {{/vendorExtensions.x-auth-attributes.x-oauth}}
         {{#bodyParams.0}}headers['Content-Type'] = 'application/json'{{/bodyParams.0}}
         {{#queryParams.0}}params = values.of({
@@ -47,8 +48,9 @@
                 {{/headerParams}}'Content-Type': 'application/x-www-form-urlencoded'
             })
         {{#vendorExtensions.x-auth-attributes.x-oauth}}
-        orgs_token_manager = OrgTokenManager("client_credentials", os.environ.get('CLIENT_ID'), os.environ.get('CLIENT_SECRET'),'','','','','')
-        headers = BearerTokenHTTPClient(orgs_token_manager).get_headers()
+        orgs_token_manager = TokenManager().get_token_manager(self._version)
+        auth_token = BearerTokenHTTPClient(orgs_token_manager).get_headers(self._version)
+        headers['Authorization'] = 'Bearer ' + auth_token
         {{/vendorExtensions.x-auth-attributes.x-oauth}}
         {{#bodyParams.0}}headers['Content-Type'] = 'application/json'{{/bodyParams.0}}
         {{#queryParams.0}}params = values.of({
@@ -72,8 +74,9 @@
                 {{/headerParams}}'Content-Type': 'application/x-www-form-urlencoded'
             })
         {{#vendorExtensions.x-auth-attributes.x-oauth}}
-        orgs_token_manager = OrgTokenManager("client_credentials", os.environ.get('CLIENT_ID'), os.environ.get('CLIENT_SECRET'),'','','','','')
-        headers = BearerTokenHTTPClient(orgs_token_manager).get_headers()
+        orgs_token_manager = TokenManager().get_token_manager(self._version)
+        auth_token = BearerTokenHTTPClient(orgs_token_manager).get_headers(self._version)
+        headers['Authorization'] = 'Bearer ' + auth_token
         {{/vendorExtensions.x-auth-attributes.x-oauth}}
         {{#bodyParams.0}}headers['Content-Type'] = 'application/json'{{/bodyParams.0}}
         {{#queryParams.0}}params = values.of({
@@ -97,8 +100,9 @@
                 {{/headerParams}}'Content-Type': 'application/x-www-form-urlencoded'
             })
         {{#vendorExtensions.x-auth-attributes.x-oauth}}
-        orgs_token_manager = OrgTokenManager("client_credentials", os.environ.get('CLIENT_ID'), os.environ.get('CLIENT_SECRET'),'','','','','')
-        headers = BearerTokenHTTPClient(orgs_token_manager).get_headers()
+        orgs_token_manager = TokenManager().get_token_manager(self._version)
+        auth_token = BearerTokenHTTPClient(orgs_token_manager).get_headers(self._version)
+        headers['Authorization'] = 'Bearer ' + auth_token
         {{/vendorExtensions.x-auth-attributes.x-oauth}}
         {{#bodyParams.0}}headers['Content-Type'] = 'application/json'{{/bodyParams.0}}
         {{#queryParams.0}}params = values.of({
@@ -121,8 +125,9 @@
                 {{/headerParams}}'Content-Type': 'application/x-www-form-urlencoded'
             })
         {{#vendorExtensions.x-auth-attributes.x-oauth}}
-        orgs_token_manager = OrgTokenManager("client_credentials", os.environ.get('CLIENT_ID'), os.environ.get('CLIENT_SECRET'),'','','','','')
-        headers = BearerTokenHTTPClient(orgs_token_manager).get_headers()
+        orgs_token_manager = TokenManager().get_token_manager(self._version)
+        auth_token = BearerTokenHTTPClient(orgs_token_manager).get_headers(self._version)
+        headers['Authorization'] = 'Bearer ' + auth_token
         {{/vendorExtensions.x-auth-attributes.x-oauth}}
         {{#bodyParams.0}}headers['Content-Type'] = 'application/json'{{/bodyParams.0}}
         {{#queryParams.0}}params = values.of({
@@ -143,8 +148,9 @@
                 {{/headerParams}}'Content-Type': 'application/x-www-form-urlencoded'
             })
         {{#vendorExtensions.x-auth-attributes.x-oauth}}
-        orgs_token_manager = OrgTokenManager("client_credentials", os.environ.get('CLIENT_ID'), os.environ.get('CLIENT_SECRET'),'','','','','')
-        headers = BearerTokenHTTPClient(orgs_token_manager).get_headers()
+        orgs_token_manager = TokenManager().get_token_manager(self._version)
+        auth_token = BearerTokenHTTPClient(orgs_token_manager).get_headers(self._version)
+        headers['Authorization'] = 'Bearer ' + auth_token
         {{/vendorExtensions.x-auth-attributes.x-oauth}}
         {{#bodyParams.0}}headers['Content-Type'] = 'application/json'{{/bodyParams.0}}
         {{#queryParams.0}}params = values.of({
@@ -170,8 +176,9 @@
                 {{/headerParams}}'Content-Type': 'application/x-www-form-urlencoded'
             })
         {{#vendorExtensions.x-auth-attributes.x-oauth}}
-        orgs_token_manager = OrgTokenManager("client_credentials", os.environ.get('CLIENT_ID'), os.environ.get('CLIENT_SECRET'),'','','','','')
-        headers = BearerTokenHTTPClient(orgs_token_manager).get_headers()
+        orgs_token_manager = TokenManager().get_token_manager(self._version)
+        auth_token = BearerTokenHTTPClient(orgs_token_manager).get_headers(self._version)
+        headers['Authorization'] = 'Bearer ' + auth_token
         {{/vendorExtensions.x-auth-attributes.x-oauth}}
         {{#bodyParams.0}}headers['Content-Type'] = 'application/json'{{/bodyParams.0}}
         {{#queryParams.0}}params = values.of({
@@ -200,8 +207,9 @@
                 {{/headerParams}}'Content-Type': 'application/x-www-form-urlencoded'
             })
         {{#vendorExtensions.x-auth-attributes.x-oauth}}
-        orgs_token_manager = OrgTokenManager("client_credentials", os.environ.get('CLIENT_ID'), os.environ.get('CLIENT_SECRET'),'','','','','')
-        headers = BearerTokenHTTPClient(orgs_token_manager).get_headers()
+        orgs_token_manager = TokenManager().get_token_manager(self._version)
+        auth_token = BearerTokenHTTPClient(orgs_token_manager).get_headers(self._version)
+        headers['Authorization'] = 'Bearer ' + auth_token
         {{/vendorExtensions.x-auth-attributes.x-oauth}}
         {{#bodyParams.0}}headers['Content-Type'] = 'application/json'{{/bodyParams.0}}
         {{#queryParams.0}}params = values.of({
