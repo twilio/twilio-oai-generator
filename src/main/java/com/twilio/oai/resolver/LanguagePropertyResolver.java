@@ -35,9 +35,10 @@ public class LanguagePropertyResolver extends Resolver<CodegenProperty> {
 
     protected void resolveProperties(CodegenProperty codegenProperty, ApiResourceBuilder apiResourceBuilder) {
         mapper
-            .properties()
-            .getString(codegenProperty.dataFormat)
-            .ifPresent(dataType -> codegenProperty.dataType = dataType);
+                .properties()
+                .getString(codegenProperty.dataFormat)
+                .or(() -> mapper.properties().getString(codegenProperty.dataType))
+                .ifPresent(dataType -> codegenProperty.dataType = dataType);
     }
     
     protected void resolveSerialize(CodegenProperty codegenProperty) {
