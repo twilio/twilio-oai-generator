@@ -30,13 +30,21 @@ class {{apiName}}Context(InstanceContext):
         data = values.of({ {{#allParams}}{{#isFormParam}}
             '{{{baseName}}}': {{#if vendorExtensions.x-serialize}}{{vendorExtensions.x-serialize}}({{paramName}}{{#if isArray}}, lambda e: e){{else}}){{/if}}{{else}}{{paramName}}{{/if}},{{/isFormParam}}{{/allParams}}
         })
-        {{#allParams}}{{^isFormParam}}headers = values.of({'{{{baseName}}}': {{paramName}}, }){{/isFormParam}}{{/allParams}}
+        {{#allParams}}{{^isFormParam}}headers = values.of({'{{{baseName}}}': {{paramName}}, })
         {{#vendorExtensions.x-auth-attributes.x-oauth}}
         orgs_token_manager = TokenManager().get_token_manager(self._version)
         auth_token = BearerTokenHTTPClient(orgs_token_manager).get_headers(self._version)
         headers['Authorization'] = 'Bearer ' + auth_token
         {{/vendorExtensions.x-auth-attributes.x-oauth}}
-        payload = self._version.update(method='{{vendorExtensions.x-http-method}}', uri=self._uri, data=data,{{#allParams}}{{#if isFormParam}}{{else}} headers=headers{{/if}}{{/allParams}})
+        {{/isFormParam}}{{/allParams}}
+        {{#allParams}}{{#isFormParam}}
+        {{#vendorExtensions.x-auth-attributes.x-oauth}}
+        orgs_token_manager = TokenManager().get_token_manager(self._version)
+        auth_token = BearerTokenHTTPClient(orgs_token_manager).get_headers(self._version)
+        headers = {'Authorization' : 'Bearer ' + auth_token }
+        {{/vendorExtensions.x-auth-attributes.x-oauth}}
+        {{/isFormParam}}{{/allParams}}
+        payload = self._version.update(method='{{vendorExtensions.x-http-method}}', uri=self._uri, data=data,{{#allParams}}{{#if isFormParam}}{{else}} headers=headers{{/if}}{{/allParams}} {{#allParams}}{{#isFormParam}}{{#vendorExtensions.x-auth-attributes.x-oauth}}headers=headers{{/vendorExtensions.x-auth-attributes.x-oauth}}{{/isFormParam}}{{/allParams}})
 
         return {{instanceName}}(
             self._version,
@@ -55,13 +63,21 @@ class {{apiName}}Context(InstanceContext):
         data = values.of({ {{#allParams}}{{#isFormParam}}
             '{{{baseName}}}': {{#if vendorExtensions.x-serialize}}{{vendorExtensions.x-serialize}}({{paramName}}{{#if isArray}}, lambda e: e){{else}}){{/if}}{{else}}{{paramName}}{{/if}},{{/isFormParam}}{{/allParams}}
         })
-        {{#allParams}}{{^isFormParam}}headers = values.of({'{{{baseName}}}': {{paramName}}, }){{/isFormParam}}{{/allParams}}
+        {{#allParams}}{{^isFormParam}}headers = values.of({'{{{baseName}}}': {{paramName}}, })
         {{#vendorExtensions.x-auth-attributes.x-oauth}}
         orgs_token_manager = TokenManager().get_token_manager(self._version)
         auth_token = BearerTokenHTTPClient(orgs_token_manager).get_headers(self._version)
         headers['Authorization'] = 'Bearer ' + auth_token
         {{/vendorExtensions.x-auth-attributes.x-oauth}}
-        payload = await self._version.update_async(method='{{vendorExtensions.x-http-method}}', uri=self._uri, data=data,{{#allParams}}{{#if isFormParam}}{{else}} headers=headers{{/if}}{{/allParams}})
+        {{/isFormParam}}{{/allParams}}
+        {{#allParams}}{{#isFormParam}}
+        {{#vendorExtensions.x-auth-attributes.x-oauth}}
+        orgs_token_manager = TokenManager().get_token_manager(self._version)
+        auth_token = BearerTokenHTTPClient(orgs_token_manager).get_headers(self._version)
+        headers = {'Authorization' : 'Bearer ' + auth_token }
+        {{/vendorExtensions.x-auth-attributes.x-oauth}}
+        {{/isFormParam}}{{/allParams}}
+        payload = await self._version.update_async(method='{{vendorExtensions.x-http-method}}', uri=self._uri, data=data,{{#allParams}}{{#if isFormParam}}{{else}} headers=headers{{/if}}{{/allParams}} {{#allParams}}{{#isFormParam}}{{#vendorExtensions.x-auth-attributes.x-oauth}}headers=headers{{/vendorExtensions.x-auth-attributes.x-oauth}}{{/isFormParam}}{{/allParams}})
 
         return {{instanceName}}(
             self._version,
@@ -86,9 +102,9 @@ class {{apiName}}Context(InstanceContext):
         {{#vendorExtensions.x-auth-attributes.x-oauth}}
         orgs_token_manager = TokenManager().get_token_manager(self._version)
         auth_token = BearerTokenHTTPClient(orgs_token_manager).get_headers(self._version)
-        headers['Authorization'] = 'Bearer ' + auth_token
+        headers = {'Authorization': 'Bearer ' + auth_token}
         {{/vendorExtensions.x-auth-attributes.x-oauth}}
-        payload = self._version.fetch(method='{{vendorExtensions.x-http-method}}', uri=self._uri, {{#if allParams}}params=data{{/if}})
+        payload = self._version.fetch(method='{{vendorExtensions.x-http-method}}', uri=self._uri{{#if allParams}}, params=data{{/if}}{{#vendorExtensions.x-auth-attributes.x-oauth}}, headers=headers{{/vendorExtensions.x-auth-attributes.x-oauth}})
 
         return {{instanceName}}(
             self._version,
@@ -114,9 +130,9 @@ class {{apiName}}Context(InstanceContext):
         {{#vendorExtensions.x-auth-attributes.x-oauth}}
         orgs_token_manager = TokenManager().get_token_manager(self._version)
         auth_token = BearerTokenHTTPClient(orgs_token_manager).get_headers(self._version)
-        headers['Authorization'] = 'Bearer ' + auth_token
+        headers = {'Authorization': 'Bearer ' + auth_token}
         {{/vendorExtensions.x-auth-attributes.x-oauth}}
-        payload = await self._version.fetch_async(method='{{vendorExtensions.x-http-method}}', uri=self._uri, {{#if allParams}}params=data{{/if}})
+        payload = await self._version.fetch_async(method='{{vendorExtensions.x-http-method}}', uri=self._uri{{#if allParams}}, params=data{{/if}}{{#vendorExtensions.x-auth-attributes.x-oauth}}, headers=headers{{/vendorExtensions.x-auth-attributes.x-oauth}})
 
         return {{instanceName}}(
             self._version,
@@ -134,13 +150,20 @@ class {{apiName}}Context(InstanceContext):
         :returns: True if delete succeeds, False otherwise
         """{{#if allParams}}
         headers = values.of({{#allParams}}{'{{{baseName}}}': {{paramName}}, }{{/allParams}})
-        {{/if}}
         {{#vendorExtensions.x-auth-attributes.x-oauth}}
         orgs_token_manager = TokenManager().get_token_manager(self._version)
         auth_token = BearerTokenHTTPClient(orgs_token_manager).get_headers(self._version)
         headers['Authorization'] = 'Bearer ' + auth_token
         {{/vendorExtensions.x-auth-attributes.x-oauth}}
-        return self._version.delete(method='{{vendorExtensions.x-http-method}}', uri=self._uri,{{#if allParams}} headers=headers{{/if}})
+        {{/if}}
+        {{^if allParams}}
+        {{#vendorExtensions.x-auth-attributes.x-oauth}}
+        orgs_token_manager = TokenManager().get_token_manager(self._version)
+        auth_token = BearerTokenHTTPClient(orgs_token_manager).get_headers(self._version)
+        headers = { 'Authorization': 'Bearer ' + auth_token}
+        {{/vendorExtensions.x-auth-attributes.x-oauth}}
+        {{/if}}
+        return self._version.delete(method='{{vendorExtensions.x-http-method}}', uri=self._uri,{{#if allParams}} headers=headers{{/if}}{{^allParams}}{{#vendorExtensions.x-auth-attributes.x-oauth}} headers=headers{{/vendorExtensions.x-auth-attributes.x-oauth}}{{/allParams}})
 
     async def {{vendorExtensions.x-name-lower}}_async(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> bool:
         """
@@ -151,13 +174,20 @@ class {{apiName}}Context(InstanceContext):
         :returns: True if delete succeeds, False otherwise
         """{{#if allParams}}
         headers = values.of({{#allParams}}{'{{{baseName}}}': {{paramName}}, }{{/allParams}})
-        {{/if}}
         {{#vendorExtensions.x-auth-attributes.x-oauth}}
         orgs_token_manager = TokenManager().get_token_manager(self._version)
         auth_token = BearerTokenHTTPClient(orgs_token_manager).get_headers(self._version)
         headers['Authorization'] = 'Bearer ' + auth_token
         {{/vendorExtensions.x-auth-attributes.x-oauth}}
-        return await self._version.delete_async(method='{{vendorExtensions.x-http-method}}', uri=self._uri,{{#if allParams}} headers=headers{{/if}})
+        {{/if}}
+        {{^if allParams}}
+        {{#vendorExtensions.x-auth-attributes.x-oauth}}
+        orgs_token_manager = TokenManager().get_token_manager(self._version)
+        auth_token = BearerTokenHTTPClient(orgs_token_manager).get_headers(self._version)
+        headers = { 'Authorization': 'Bearer ' + auth_token }
+        {{/vendorExtensions.x-auth-attributes.x-oauth}}
+        {{/if}}
+        return await self._version.delete_async(method='{{vendorExtensions.x-http-method}}', uri=self._uri,{{#if allParams}} headers=headers{{/if}}{{^allParams}}{{#vendorExtensions.x-auth-attributes.x-oauth}} headers=headers{{/vendorExtensions.x-auth-attributes.x-oauth}}{{/allParams}})
     {{/vendorExtensions.x-is-delete-operation}}{{#vendorExtensions.x-is-create-operation}}
     def {{vendorExtensions.x-name-lower}}(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> {{instanceName}}:
         """
@@ -176,7 +206,7 @@ class {{apiName}}Context(InstanceContext):
         headers = {'Authorization': 'Bearer ' + auth_token}
         {{/vendorExtensions.x-auth-attributes.x-oauth}}
 
-        payload = self._version.create(method='{{vendorExtensions.x-http-method}}', uri=self._uri, data=data)
+        payload = self._version.create(method='{{vendorExtensions.x-http-method}}', uri=self._uri, data=data{{#vendorExtensions.x-auth-attributes.x-oauth}}, headers=headers{{/vendorExtensions.x-auth-attributes.x-oauth}})
 
         return {{instanceName}}(
             self._version,
@@ -198,10 +228,10 @@ class {{apiName}}Context(InstanceContext):
         {{#vendorExtensions.x-auth-attributes.x-oauth}}
         orgs_token_manager = TokenManager().get_token_manager(self._version)
         auth_token = BearerTokenHTTPClient(orgs_token_manager).get_headers(self._version)
-        headers['Authorization'] = 'Bearer ' + auth_token
+        headers = {'Authorization': 'Bearer ' + auth_token}
         {{/vendorExtensions.x-auth-attributes.x-oauth}}
 
-        payload = await self._version.create_async(method='{{vendorExtensions.x-http-method}}', uri=self._uri, data=data)
+        payload = await self._version.create_async(method='{{vendorExtensions.x-http-method}}', uri=self._uri, data=data{{#vendorExtensions.x-auth-attributes.x-oauth}}, headers=headers{{/vendorExtensions.x-auth-attributes.x-oauth}})
 
         return {{instanceName}}(
             self._version,

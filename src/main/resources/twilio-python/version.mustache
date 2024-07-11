@@ -2,10 +2,6 @@
 from typing import Optional
 from twilio.base.version import Version
 from twilio.base.domain import Domain
-{{#operations}}{{#vendorExtensions.x-auth-attributes.x-oauth}}
-from twilio.http.bearer_token_http_client import BearerTokenHTTPClient
-from twilio.http.token_manager import TokenManager
-{{/vendorExtensions.x-auth-attributes.x-oauth}}{{/operations}}
 {{#versionResources}}from twilio.rest.{{domainPackage}}.{{apiVersion}}.{{filename}} import {{listName}}
 {{/versionResources}}
 
