@@ -32,14 +32,14 @@ class {{apiName}}Context(InstanceContext):
         })
         {{#allParams}}{{^isFormParam}}headers = values.of({'{{{baseName}}}': {{paramName}}, })
         {{#vendorExtensions.x-auth-attributes.x-oauth}}
-        orgs_token_manager = TokenManager().get_token_manager(self._version)
+        orgs_token_manager = TokenManagerInitializer.get_token_manager()
         auth_token = BearerTokenHTTPClient(orgs_token_manager).get_headers(self._version)
         headers['Authorization'] = 'Bearer ' + auth_token
         {{/vendorExtensions.x-auth-attributes.x-oauth}}
         {{/isFormParam}}{{/allParams}}
         {{#allParams}}{{#isFormParam}}
         {{#vendorExtensions.x-auth-attributes.x-oauth}}
-        orgs_token_manager = TokenManager().get_token_manager(self._version)
+        orgs_token_manager = TokenManagerInitializer.get_token_manager()
         auth_token = BearerTokenHTTPClient(orgs_token_manager).get_headers(self._version)
         headers = {'Authorization' : 'Bearer ' + auth_token }
         {{/vendorExtensions.x-auth-attributes.x-oauth}}
@@ -65,14 +65,14 @@ class {{apiName}}Context(InstanceContext):
         })
         {{#allParams}}{{^isFormParam}}headers = values.of({'{{{baseName}}}': {{paramName}}, })
         {{#vendorExtensions.x-auth-attributes.x-oauth}}
-        orgs_token_manager = TokenManager().get_token_manager(self._version)
+        orgs_token_manager = TokenManagerInitializer.get_token_manager()
         auth_token = BearerTokenHTTPClient(orgs_token_manager).get_headers(self._version)
         headers['Authorization'] = 'Bearer ' + auth_token
         {{/vendorExtensions.x-auth-attributes.x-oauth}}
         {{/isFormParam}}{{/allParams}}
         {{#allParams}}{{#isFormParam}}
         {{#vendorExtensions.x-auth-attributes.x-oauth}}
-        orgs_token_manager = TokenManager().get_token_manager(self._version)
+        orgs_token_manager = TokenManagerInitializer.get_token_manager()
         auth_token = BearerTokenHTTPClient(orgs_token_manager).get_headers(self._version)
         headers = {'Authorization' : 'Bearer ' + auth_token }
         {{/vendorExtensions.x-auth-attributes.x-oauth}}
@@ -100,7 +100,7 @@ class {{apiName}}Context(InstanceContext):
         {{#allParams}}{{#if vendorExtensions.x-prefixed-collapsible-map}}data.update({{vendorExtensions.x-serialize}}({{paramName}}, '{{vendorExtensions.x-prefixed-collapsible-map}}'))
         {{/if}}{{/allParams}}{{/if}}
         {{#vendorExtensions.x-auth-attributes.x-oauth}}
-        orgs_token_manager = TokenManager().get_token_manager(self._version)
+        orgs_token_manager = TokenManagerInitializer.get_token_manager()
         auth_token = BearerTokenHTTPClient(orgs_token_manager).get_headers(self._version)
         headers = {'Authorization': 'Bearer ' + auth_token}
         {{/vendorExtensions.x-auth-attributes.x-oauth}}
@@ -128,7 +128,7 @@ class {{apiName}}Context(InstanceContext):
         {{#allParams}}{{#if vendorExtensions.x-prefixed-collapsible-map}}data.update({{vendorExtensions.x-serialize}}({{paramName}}, '{{vendorExtensions.x-prefixed-collapsible-map}}'))
         {{/if}}{{/allParams}}{{/if}}
         {{#vendorExtensions.x-auth-attributes.x-oauth}}
-        orgs_token_manager = TokenManager().get_token_manager(self._version)
+        orgs_token_manager = TokenManagerInitializer.get_token_manager()
         auth_token = BearerTokenHTTPClient(orgs_token_manager).get_headers(self._version)
         headers = {'Authorization': 'Bearer ' + auth_token}
         {{/vendorExtensions.x-auth-attributes.x-oauth}}
@@ -151,14 +151,14 @@ class {{apiName}}Context(InstanceContext):
         """{{#if allParams}}
         headers = values.of({{#allParams}}{'{{{baseName}}}': {{paramName}}, }{{/allParams}})
         {{#vendorExtensions.x-auth-attributes.x-oauth}}
-        orgs_token_manager = TokenManager().get_token_manager(self._version)
+        orgs_token_manager = TokenManagerInitializer.get_token_manager()
         auth_token = BearerTokenHTTPClient(orgs_token_manager).get_headers(self._version)
         headers['Authorization'] = 'Bearer ' + auth_token
         {{/vendorExtensions.x-auth-attributes.x-oauth}}
         {{/if}}
         {{^if allParams}}
         {{#vendorExtensions.x-auth-attributes.x-oauth}}
-        orgs_token_manager = TokenManager().get_token_manager(self._version)
+        orgs_token_manager = TokenManagerInitializer.get_token_manager()
         auth_token = BearerTokenHTTPClient(orgs_token_manager).get_headers(self._version)
         headers = { 'Authorization': 'Bearer ' + auth_token}
         {{/vendorExtensions.x-auth-attributes.x-oauth}}
@@ -175,14 +175,14 @@ class {{apiName}}Context(InstanceContext):
         """{{#if allParams}}
         headers = values.of({{#allParams}}{'{{{baseName}}}': {{paramName}}, }{{/allParams}})
         {{#vendorExtensions.x-auth-attributes.x-oauth}}
-        orgs_token_manager = TokenManager().get_token_manager(self._version)
+        orgs_token_manager = TokenManagerInitializer.get_token_manager()
         auth_token = BearerTokenHTTPClient(orgs_token_manager).get_headers(self._version)
         headers['Authorization'] = 'Bearer ' + auth_token
         {{/vendorExtensions.x-auth-attributes.x-oauth}}
         {{/if}}
         {{^if allParams}}
         {{#vendorExtensions.x-auth-attributes.x-oauth}}
-        orgs_token_manager = TokenManager().get_token_manager(self._version)
+        orgs_token_manager = TokenManagerInitializer.get_token_manager()
         auth_token = BearerTokenHTTPClient(orgs_token_manager).get_headers(self._version)
         headers = { 'Authorization': 'Bearer ' + auth_token }
         {{/vendorExtensions.x-auth-attributes.x-oauth}}
@@ -201,7 +201,7 @@ class {{apiName}}Context(InstanceContext):
             '{{{baseName}}}': {{#if vendorExtensions.x-serialize}}{{vendorExtensions.x-serialize}}({{paramName}}{{#if isArray}}, lambda e: e){{else}}){{/if}}{{else}}{{paramName}}{{/if}},{{/allParams}}
         })
         {{#vendorExtensions.x-auth-attributes.x-oauth}}
-        orgs_token_manager = TokenManager().get_token_manager(self._version)
+        orgs_token_manager = TokenManagerInitializer.get_token_manager()
         auth_token = BearerTokenHTTPClient(orgs_token_manager).get_headers(self._version)
         headers = {'Authorization': 'Bearer ' + auth_token}
         {{/vendorExtensions.x-auth-attributes.x-oauth}}
@@ -226,7 +226,7 @@ class {{apiName}}Context(InstanceContext):
             '{{{baseName}}}': {{#if vendorExtensions.x-serialize}}{{vendorExtensions.x-serialize}}({{paramName}}{{#if isArray}}, lambda e: e){{else}}){{/if}}{{else}}{{paramName}}{{/if}},{{/allParams}}
         })
         {{#vendorExtensions.x-auth-attributes.x-oauth}}
-        orgs_token_manager = TokenManager().get_token_manager(self._version)
+        orgs_token_manager = TokenManagerInitializer.get_token_manager()
         auth_token = BearerTokenHTTPClient(orgs_token_manager).get_headers(self._version)
         headers = {'Authorization': 'Bearer ' + auth_token}
         {{/vendorExtensions.x-auth-attributes.x-oauth}}
