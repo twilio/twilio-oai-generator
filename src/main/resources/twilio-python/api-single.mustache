@@ -8,10 +8,10 @@ from twilio.base import deserialize, serialize, values
 {{#responseModel}}from twilio.base.instance_resource import InstanceResource{{/responseModel}}
 from twilio.base.list_resource import ListResource
 from twilio.base.version import Version
-{{#operations}}{{#vendorExtensions.x-auth-attributes.x-oauth}}
+{{#operations}}{{#if vendorExtensions.x-auth-attributes.x-oauth}}
 from twilio.http.bearer_token_http_client import BearerTokenHTTPClient
-from twilio.http.token_manager import TokenManager
-{{/vendorExtensions.x-auth-attributes.x-oauth}}{{/operations}}
+from twilio.http.token_manager_initializer import TokenManagerInitializer
+{{/if}}{{/operations}}
 {{#hasPaginationOperation}}from twilio.base.page import Page{{/hasPaginationOperation}}
 {{#dependents}}from twilio.rest.{{domainPackage}}.{{apiVersion}}.{{namespaceSubPart}}.{{filename}} import {{resourceName}}List
 {{/dependents}}
