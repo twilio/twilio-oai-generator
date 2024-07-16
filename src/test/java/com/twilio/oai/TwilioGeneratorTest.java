@@ -28,7 +28,14 @@ import static org.junit.Assert.assertFalse;
 public class TwilioGeneratorTest {
     @Parameterized.Parameters
     public static Collection<Generator> generators() {
-        return Arrays.asList(Generator.TWILIO_PYTHON);
+        return Arrays.asList(Generator.TWILIO_PYTHON,
+                Generator.TWILIO_NODE,
+                Generator.TWILIO_GO,
+                Generator.TWILIO_CSHARP,
+                Generator.TWILIO_RUBY,
+                Generator.TWILIO_JAVA,
+                Generator.TWILIO_PHP,
+                Generator.TWILIO_TERRAFORM);
     }
 
     private final Generator generator;
@@ -40,7 +47,7 @@ public class TwilioGeneratorTest {
 
     @Test
     public void launchGenerator() {
-        final String pathname = "/Users/manisingh/github/twilio-oai/spec/yaml/twilio_iam_organizations.yaml";
+        final String pathname = "examples/spec/twilio_api_v2010.yaml";
 //        final String pathname = "/Users/stiwari/di/github/twilio-oai/spec/json/twilio_accounts_v1.json";
 //        final String pathname = "/Users/stiwari/di/codehq/open-api-transpiler/twilio_api_v2010.json";
 //        final String pathname = "/Users/manisingh/github/twilio-oai/spec/yaml/twilio_sync_v1.yaml";
