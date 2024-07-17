@@ -194,10 +194,7 @@ class CallContext(InstanceContext):
 
         :returns: True if delete succeeds, False otherwise
         """
-        return self._version.delete(
-            method="DELETE",
-            uri=self._uri
-        )
+        return self._version.delete(method="DELETE", uri=self._uri)
 
     async def delete_async(self) -> bool:
         """
@@ -206,10 +203,7 @@ class CallContext(InstanceContext):
 
         :returns: True if delete succeeds, False otherwise
         """
-        return await self._version.delete_async(
-            method="DELETE",
-            uri=self._uri
-        )
+        return await self._version.delete_async(method="DELETE", uri=self._uri)
 
     def fetch(self) -> CallInstance:
         """
@@ -219,10 +213,7 @@ class CallContext(InstanceContext):
         :returns: The fetched CallInstance
         """
 
-        payload = self._version.fetch(
-            method="GET",
-            uri=self._uri
-        )
+        payload = self._version.fetch(method="GET", uri=self._uri)
 
         return CallInstance(
             self._version,
@@ -239,10 +230,7 @@ class CallContext(InstanceContext):
         :returns: The fetched CallInstance
         """
 
-        payload = await self._version.fetch_async(
-            method="GET",
-            uri=self._uri
-        )
+        payload = await self._version.fetch_async(method="GET", uri=self._uri)
 
         return CallInstance(
             self._version,
