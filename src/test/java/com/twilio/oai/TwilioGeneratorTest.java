@@ -35,7 +35,8 @@ public class TwilioGeneratorTest {
                 Generator.TWILIO_RUBY,
                 Generator.TWILIO_JAVA,
                 Generator.TWILIO_PHP,
-                Generator.TWILIO_TERRAFORM);
+                Generator.TWILIO_TERRAFORM
+        );
     }
 
     private final Generator generator;
@@ -50,7 +51,7 @@ public class TwilioGeneratorTest {
         final String pathname = "examples/spec/twilio_api_v2010.yaml";
 //        final String pathname = "/Users/stiwari/di/github/twilio-oai/spec/json/twilio_accounts_v1.json";
 //        final String pathname = "/Users/stiwari/di/codehq/open-api-transpiler/twilio_api_v2010.json";
-//        final String pathname = "/Users/manisingh/github/twilio-oai/spec/yaml/twilio_sync_v1.yaml";
+//        final String pathname = "/Users/manisingh/github/twilio-oai/spec/yaml/twilio_iam_organizations.yaml";
         File filesList[] ;
         File directoryPath = new File(pathname);
         if (directoryPath.isDirectory()) {
