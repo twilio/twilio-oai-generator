@@ -233,7 +233,7 @@ class AccountContext(InstanceContext):
         """
         return self._version.delete(
             method="DELETE",
-            uri=self._uri,
+            uri=self._uri
         )
 
     async def delete_async(self) -> bool:
@@ -245,7 +245,7 @@ class AccountContext(InstanceContext):
         """
         return await self._version.delete_async(
             method="DELETE",
-            uri=self._uri,
+            uri=self._uri
         )
 
     def fetch(self) -> AccountInstance:
@@ -258,7 +258,7 @@ class AccountContext(InstanceContext):
 
         payload = self._version.fetch(
             method="GET",
-            uri=self._uri,
+            uri=self._uri
         )
 
         return AccountInstance(
@@ -277,7 +277,7 @@ class AccountContext(InstanceContext):
 
         payload = await self._version.fetch_async(
             method="GET",
-            uri=self._uri,
+            uri=self._uri
         )
 
         return AccountInstance(

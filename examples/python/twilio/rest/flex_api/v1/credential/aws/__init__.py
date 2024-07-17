@@ -180,7 +180,7 @@ class AwsContext(InstanceContext):
         """
         return self._version.delete(
             method="DELETE",
-            uri=self._uri,
+            uri=self._uri
         )
 
     async def delete_async(self) -> bool:
@@ -192,7 +192,7 @@ class AwsContext(InstanceContext):
         """
         return await self._version.delete_async(
             method="DELETE",
-            uri=self._uri,
+            uri=self._uri
         )
 
     def fetch(self) -> AwsInstance:
@@ -205,7 +205,7 @@ class AwsContext(InstanceContext):
 
         payload = self._version.fetch(
             method="GET",
-            uri=self._uri,
+            uri=self._uri
         )
 
         return AwsInstance(
@@ -224,7 +224,7 @@ class AwsContext(InstanceContext):
 
         payload = await self._version.fetch_async(
             method="GET",
-            uri=self._uri,
+            uri=self._uri
         )
 
         return AwsInstance(

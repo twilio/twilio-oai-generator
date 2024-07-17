@@ -112,7 +112,7 @@ class FleetContext(InstanceContext):
 
         payload = self._version.fetch(
             method="GET",
-            uri=self._uri,
+            uri=self._uri
         )
 
         return FleetInstance(
@@ -131,7 +131,7 @@ class FleetContext(InstanceContext):
 
         payload = await self._version.fetch_async(
             method="GET",
-            uri=self._uri,
+            uri=self._uri
         )
 
         return FleetInstance(
