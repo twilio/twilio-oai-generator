@@ -97,7 +97,7 @@ class {{apiName}}Context(InstanceContext):
         })
         {{#allParams}}{{#if vendorExtensions.x-prefixed-collapsible-map}}data.update({{vendorExtensions.x-serialize}}({{paramName}}, '{{vendorExtensions.x-prefixed-collapsible-map}}'))
         {{/if}}{{/allParams}}{{/if}}
-        payload = await self._version.fetch_async(method='{{vendorExtensions.x-http-method}}', uri=self._uri{{#if allParams}} params=data{{/if}}{{#vendorExtensions.x-auth-attributes.x-oauth}}, is_oauth=True{{/vendorExtensions.x-auth-attributes.x-oauth}})
+        payload = await self._version.fetch_async(method='{{vendorExtensions.x-http-method}}', uri=self._uri{{#if allParams}}, params=data{{/if}}{{#vendorExtensions.x-auth-attributes.x-oauth}}, is_oauth=True{{/vendorExtensions.x-auth-attributes.x-oauth}})
 
         return {{instanceName}}(
             self._version,
