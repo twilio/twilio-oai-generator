@@ -48,9 +48,53 @@ def generate(spec_folder: str, spec_files: List[str], output_path: str, language
     Path(config_path).mkdir(parents=True, exist_ok=True)
 
     for spec_file in spec_files:
-        if spec_file == 'twilio_iam_organizations.json' and language == 'java':
-                generate_domain_for_language(spec_file, config_path, spec_folder, output_path, language, parent_dir)
-        else: generate_domain_for_language(spec_file, config_path, spec_folder, output_path, language, parent_dir)
+        if spec_file == 'twilio_iam_organizations.json':
+            if language == 'java':
+                full_path = os.path.join(spec_folder, spec_file)
+                full_config_path = os.path.join(config_path, spec_file)
+                config = {
+                    'generatorName': 'terraform-provider-twilio' if language == 'terraform' else f'twilio-{language}',
+                    'inputSpec': full_path,
+                    'outputDir': output_path,
+                    'inlineSchemaNameDefaults': {
+                        'arrayItemSuffix': ''
+                    },
+                }
+
+                with open(full_config_path, 'w') as f:
+                    f.write(json.dumps(config))
+
+                print(f'Generating {output_path} from {spec_folder}')
+                run_openapi_generator(parent_dir, language)
+                print(f'Code generation completed at {output_path}')
+
+                if language in CLEANUP_IMPORT_LANGUAGES:
+                    remove_unused_imports(output_path, language)
+                if language in REMOVE_DUPLICATE_IMPORT_LANGUAGES:
+                    remove_duplicate_imports(output_path, language)
+        else:
+            full_path = os.path.join(spec_folder, spec_file)
+            full_config_path = os.path.join(config_path, spec_file)
+            config = {
+                'generatorName': 'terraform-provider-twilio' if language == 'terraform' else f'twilio-{language}',
+                'inputSpec': full_path,
+                'outputDir': output_path,
+                'inlineSchemaNameDefaults': {
+                    'arrayItemSuffix': ''
+                },
+            }
+
+            with open(full_config_path, 'w') as f:
+                f.write(json.dumps(config))
+
+            print(f'Generating {output_path} from {spec_folder}')
+            run_openapi_generator(parent_dir, language)
+            print(f'Code generation completed at {output_path}')
+
+            if language in CLEANUP_IMPORT_LANGUAGES:
+                remove_unused_imports(output_path, language)
+            if language in REMOVE_DUPLICATE_IMPORT_LANGUAGES:
+                remove_duplicate_imports(output_path, language)
 
 def generate_domain_for_language(spec_file: str, config_path: str, spec_folder: str, output_path: str, language: str, parent_dir: str) -> None:
     full_path = os.path.join(spec_folder, spec_file)
