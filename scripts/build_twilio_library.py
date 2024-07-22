@@ -62,14 +62,13 @@ def generate(spec_folder: str, spec_files: List[str], output_path: str, language
         with open(full_config_path, 'w') as f:
             f.write(json.dumps(config))
 
-        print(f'Generating {output_path} from {spec_folder}')
-        run_openapi_generator(parent_dir, language)
-        print(f'Code generation completed at {output_path}')
-
-        if language in CLEANUP_IMPORT_LANGUAGES:
-            remove_unused_imports(output_path, language)
-        if language in REMOVE_DUPLICATE_IMPORT_LANGUAGES:
-            remove_duplicate_imports(output_path, language)
+    print(f'Generating {output_path} from {spec_folder}')
+    run_openapi_generator(parent_dir, language)
+    print(f'Code generation completed at {output_path}')
+    if language in CLEANUP_IMPORT_LANGUAGES:
+        remove_unused_imports(output_path, language)
+    if language in REMOVE_DUPLICATE_IMPORT_LANGUAGES:
+        remove_duplicate_imports(output_path, language)
 
 def generate_domain_for_language(spec_file: str, config_path: str, spec_folder: str, output_path: str, language: str, parent_dir: str) -> None:
     full_path = os.path.join(spec_folder, spec_file)
