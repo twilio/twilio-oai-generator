@@ -18,9 +18,7 @@ subdirectories = {
     'php': 'Rest'
 }
 generateForLanguages = {
-    'twilio_iam_organizations.json' : {
-        'java': 'java'
-    }
+    'twilio_iam_organizations.json' : ['java']
 }
 CLEANUP_IMPORT_LANGUAGES = ['java', 'php']
 REMOVE_DUPLICATE_IMPORT_LANGUAGES = ['node']
