@@ -48,8 +48,7 @@ def generate(spec_folder: str, spec_files: List[str], output_path: str, language
     Path(config_path).mkdir(parents=True, exist_ok=True)
 
     for spec_file in spec_files:
-        if spec_file == 'twilio_iam_organizations.json':
-            if language == 'java':
+        if spec_file == 'twilio_iam_organizations.json' and language == 'java':
                 generate_domain_for_language(spec_file, config_path, spec_folder, output_path, language, parent_dir)
         else: generate_domain_for_language(spec_file, config_path, spec_folder, output_path, language, parent_dir)
 
