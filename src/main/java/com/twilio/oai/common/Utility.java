@@ -118,7 +118,7 @@ public class Utility {
                 .map(CodegenProperty::getComplexType)
                 .map(classname -> getModelByClassname(models, classname))
                 .findFirst()
-                .orElse(null);
+                .orElseThrow();
         }
 
         return getModelByClassname(models, className);
