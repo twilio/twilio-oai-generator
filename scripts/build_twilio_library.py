@@ -50,10 +50,14 @@ def generate(spec_folder: str, spec_files: List[str], output_path: str, language
             if language in generateForLanguages.get(spec_file):
                 generate_domain_for_language(spec_file, config_path, spec_folder, output_path, language, parent_dir)
         else: generate_domain_for_language(spec_file, config_path, spec_folder, output_path, language, parent_dir)
-
-    print(f'Generating {output_path} from {spec_folder}')
-    run_openapi_generator(parent_dir, language)
-    print(f'Code generation completed at {output_path}')
+    if spec_files[0] in generateForLanguages and language in generateForLanguages.get(spec_files[0]):
+        print(f'Generating {output_path} from {spec_folder}')
+        run_openapi_generator(parent_dir, language)
+        print(f'Code generation completed at {output_path}')
+    elif spec_files[0] not in generateForLanguages:
+        print(f'Generating {output_path} from {spec_folder}')
+        run_openapi_generator(parent_dir, language)
+        print(f'Code generation completed at {output_path}')
     if language in CLEANUP_IMPORT_LANGUAGES:
         remove_unused_imports(output_path, language)
     if language in REMOVE_DUPLICATE_IMPORT_LANGUAGES:
@@ -70,9 +74,17 @@ def generate_domain_for_language(spec_file: str, config_path: str, spec_folder: 
             'arrayItemSuffix': ''
         },
     }
-
+    # print(config)
     with open(full_config_path, 'w') as f:
         f.write(json.dumps(config))
+
+    # print(f'Generating {output_path} from {spec_folder}')
+    # run_openapi_generator(parent_dir, language)
+    # print(f'Code generation completed at {output_path}')
+    # if language in CLEANUP_IMPORT_LANGUAGES:
+    #     remove_unused_imports(output_path, language)
+    # if language in REMOVE_DUPLICATE_IMPORT_LANGUAGES:
+    #     remove_duplicate_imports(output_path, language)
 
 def run_openapi_generator(parent_dir: Path, language: str) -> None:
     properties = '-DapiTests=false'
