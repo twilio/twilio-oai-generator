@@ -202,7 +202,7 @@ public class CsharpApiResourceBuilder extends ApiResourceBuilder {
                     modelName = response.baseType;
                 }
                 Optional<CodegenModel> responseModel = Utility.getModel(allModels, modelName, recordKey, codegenOperation);
-                if ((responseModel == null) || responseModel.isEmpty() || (Integer.parseInt(response.code) != 200)) {
+                if ((responseModel == null) || responseModel.isEmpty() || (Integer.parseInt(response.code) >= 400)) {
                     return;
                 }
                 codegenModelResolver.resolve(responseModel.get(), this);
