@@ -24,7 +24,9 @@ public  class CodegenUtils {
                 codegenProperty.allowableValues.containsKey(TwilioJavaGenerator.VALUES);
         boolean listEnumValues = codegenProperty.items != null && (codegenProperty.items.allowableValues != null
                 && codegenProperty.items.allowableValues.containsKey(TwilioJavaGenerator.VALUES));
-        return enumValues || listEnumValues;
+        boolean isEnum = enumValues || listEnumValues;
+        codegenProperty.vendorExtensions.put("x-enum-object", isEnum);
+        return isEnum;
     }
 
     public static boolean isParameterSchemaEnum(CodegenParameter codegenParameter) {
@@ -38,7 +40,9 @@ public  class CodegenUtils {
                 codegenParameter.allowableValues.containsKey(TwilioJavaGenerator.VALUES);
         boolean listEnumValues = codegenParameter.items != null && (codegenParameter.items.allowableValues != null
                 && codegenParameter.items.allowableValues.containsKey(TwilioJavaGenerator.VALUES));
-        return enumValues || listEnumValues;
+        boolean isEnum = enumValues || listEnumValues;
+        codegenParameter.vendorExtensions.put("x-enum-object", isEnum);
+        return isEnum;
     }
 
     // TODO: Refactor java code.

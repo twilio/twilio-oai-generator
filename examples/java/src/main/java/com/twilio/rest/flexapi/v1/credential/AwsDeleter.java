@@ -65,6 +65,7 @@ public class AwsDeleter extends Deleter<Aws> {
             Domains.FLEXAPI.toString(),
             path
         );
+        request.setContentType(EnumConstants.ContentType.FORM_URLENCODED);
         Response response = client.request(request);
 
         if (response == null) {
