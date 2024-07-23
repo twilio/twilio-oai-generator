@@ -15,10 +15,12 @@ import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenOperation;
 import org.openapitools.codegen.CodegenParameter;
 import org.openapitools.codegen.CodegenProperty;
+import org.openapitools.codegen.CodegenSecurity;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
@@ -34,9 +36,12 @@ import static com.twilio.oai.common.ApplicationConstants.PATH_SEPARATOR_PLACEHOL
 
 public class CsharpApiResourceBuilder extends ApiResourceBuilder {
 
+    public String authMethod = "";
+
     public CsharpApiResourceBuilder(IApiActionTemplate template, List<CodegenOperation> codegenOperations,
                                     List<CodegenModel> allModels) {
         super(template, codegenOperations, allModels);
+        processAuthMethods(codegenOperations);
     }
 
     public IApiResourceBuilder updateTemplate() {
@@ -62,6 +67,13 @@ public class CsharpApiResourceBuilder extends ApiResourceBuilder {
                 metaAPIProperties.put("array-exists-options", true);
             }
         });
+
+        if(this.authMethod == "BearerToken"){
+            metaAPIProperties.put("auth_method-bearer-token", true);
+        }
+        else if(this.authMethod == "NoAuth"){
+            metaAPIProperties.put("auth_method-no-auth", true);
+        }
         if (OperationStore.getInstance().isEnumPresentInOptions())
             metaAPIProperties.put("enum-exists-options", true);
 
@@ -78,14 +90,29 @@ public class CsharpApiResourceBuilder extends ApiResourceBuilder {
     @Override
     public ApiResourceBuilder updateOperations(Resolver<CodegenParameter> codegenParameterIResolver) { // CsharpParameterResolver
         super.updateOperations(codegenParameterIResolver);
+        processAuthMethods(this.codegenOperationList);
         this.codegenOperationList.forEach(co -> {
             co.headerParams.forEach(e -> codegenParameterIResolver.resolve(e, this));
             populateRequestBodyArgument(co);
             resolveIngressModel(co);
         });
-
         return this;
     }
+
+    public void processAuthMethods(List<CodegenOperation> opList) {
+        if(opList != null){
+            List<CodegenSecurity> authMethods = opList.get(0).authMethods;
+            if(authMethods != null){
+                for(CodegenSecurity c : authMethods){
+                    if(c.isOAuth == true){
+                        this.authMethod = "BearerToken";
+                    }
+                }
+            }
+            else this.authMethod = "NoAuth";
+        }
+    }
+
     @Override
     public void updateHttpMethod(CodegenOperation co) {
         switch (co.httpMethod) {
@@ -175,7 +202,7 @@ public class CsharpApiResourceBuilder extends ApiResourceBuilder {
                     modelName = response.baseType;
                 }
                 Optional<CodegenModel> responseModel = Utility.getModel(allModels, modelName, recordKey, codegenOperation);
-                if (responseModel.isEmpty()) {
+                if ((responseModel == null) || responseModel.isEmpty() || (Integer.parseInt(response.code) != 200)) {
                     return;
                 }
                 codegenModelResolver.resolve(responseModel.get(), this);
@@ -187,6 +214,7 @@ public class CsharpApiResourceBuilder extends ApiResourceBuilder {
     }
 
     public Set<CodegenProperty> getDistinctResponseModel(List<CodegenModel> responseModels) {
+        HashSet<String> modelVars = new HashSet<>();
         Set<CodegenProperty> distinctResponseModels = new LinkedHashSet<>();
         for (CodegenModel codegenModel: responseModels) {
             for (CodegenProperty property: codegenModel.vars) {
@@ -198,6 +226,11 @@ public class CsharpApiResourceBuilder extends ApiResourceBuilder {
                 }
                 distinctResponseModels.add(property);
             }
+        }
+        for(CodegenProperty s : distinctResponseModels){
+            if(modelVars.contains(s.name)){
+                s.nameInCamelCase = "_" + s.nameInCamelCase;
+            }else modelVars.add(s.nameInCamelCase);
         }
         return distinctResponseModels;
     }

@@ -17,7 +17,7 @@ function generate() {
   rm -rf tmp
   mkdir -p tmp
   for api_spec in $files_regex; do
-    if [ "$1" !=  "twilio-java" ] && [[ $api_spec == "examples/spec/twilio_iam_organizations.yaml" ]]; then
+    if [ "$1" !=  "twilio-java" && "$1" !=  "twilio-csharp"] && [[ $api_spec == "examples/spec/twilio_iam_organizations.yaml" ]]; then
         continue
     fi
     echo "generatorName: $1

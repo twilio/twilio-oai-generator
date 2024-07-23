@@ -73,9 +73,12 @@ public class CsharpCodegenModelDataTypeResolver extends CodegenModelDataTypeReso
         }
         String className = OperationStore.getInstance().getClassName();
         property.isEnum = true;
-        property.enumName = property.complexType.contains("Enum") || property.complexType.contains("enum")
-                ? Utility.removeEnumName(property.complexType) + ApplicationConstants.ENUM 
+        if(property.complexType != null){
+            property.enumName = property.complexType.contains("Enum") || property.complexType.contains("enum")
+                ? Utility.removeEnumName(property.complexType) + ApplicationConstants.ENUM
                 : Utility.removeEnumName(property.complexType);
+        }
+
         // In case enum is an array
         if (property.items != null) {
             property.items.enumName = property.enumName;

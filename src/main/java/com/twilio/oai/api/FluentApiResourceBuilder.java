@@ -54,6 +54,19 @@ public abstract class FluentApiResourceBuilder extends ApiResourceBuilder {
     public ApiResourceBuilder updateOperations(final Resolver<CodegenParameter> codegenParameterIResolver) {
         super.updateOperations(codegenParameterIResolver);
 
+        codegenOperationList.stream().filter(operation -> !operation.vendorExtensions.containsKey("x-ignore")).forEach(codegenOperation -> {
+            boolean isInstanceOperation = PathUtils.isInstanceOperation(codegenOperation);
+                if (!isInstanceOperation) {
+                    listOperations.add(codegenOperation);
+                    codegenOperation.vendorExtensions.put("listOperation", true);
+                    metaAPIProperties.put("hasListOperation", true);
+                } else {
+                    instanceOperations.add(codegenOperation);
+                    codegenOperation.vendorExtensions.put("instanceOperation", true);
+                    metaAPIProperties.put("hasInstanceOperation", true);
+                }
+        });
+
         for (final CodegenOperation co : codegenOperationList) {
             co.allParams.removeAll(co.pathParams);
             co.requiredParams.removeAll(co.pathParams);
