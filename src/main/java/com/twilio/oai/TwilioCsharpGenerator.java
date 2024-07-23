@@ -46,9 +46,12 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
     private final String BEARER_TOKEN_PREFIX = "BearerToken";
     private final String NO_AUTH_PREFIX = "NoAuth";
     private final String EMPTY_STRING = "";
+<<<<<<< HEAD
     private final String ORGS_TOKEN_CLIENT = "TwilioOrgsTokenAuthClient";
     private final String BASIC_CLIENT = "TwilioClient";
 
+=======
+>>>>>>> a93dd1b (orgs api uptake for twilio csharp)
     private final DirectoryStructureService directoryStructureService = new DirectoryStructureService(
         additionalProperties,
         new ResourceMap(new Inflector()),
@@ -133,15 +136,22 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
         final List<CodegenOperation> opList = directoryStructureService.processOperations(results);
         CsharpApiResources apiResources = processCodegenOperations(opList);
         apiResources.setAuthMethod(processAuthMethods(opList));
+<<<<<<< HEAD
         apiResources.setResourceSetPrefix(setResourceSetPrefix(apiResources.getAuthMethod()));
         apiResources.setDomainClass(fetchDomainClass(apiResources.getAuthMethod()));
         apiResources.setRestClientMethodName(fetchRestClientClassName(apiResources.getAuthMethod()));
         apiResources.setClientName(fetchClientName(apiResources.getAuthMethod()));
         apiResources.setRequestName(fetchRequestName(apiResources.getAuthMethod()));
+=======
+        apiResources.setRestClientPrefix(setRestClientPrefix(apiResources.getAuthMethod()));
+        apiResources.setResourceSetPrefix(setResourceSetPrefix(apiResources.getAuthMethod()));
+        apiResources.setDomainClassPrefix(fetchDomainClassPrefix(apiResources.getAuthMethod()));
+>>>>>>> a93dd1b (orgs api uptake for twilio csharp)
         results.put("resources", apiResources);
         return results;
     }
 
+<<<<<<< HEAD
     private String fetchDomainClass(String authMethod) {
         if(authMethod == BEARER_TOKEN_PREFIX || authMethod == NO_AUTH_PREFIX) return ORGS_TOKEN_CLIENT;
         return BASIC_CLIENT;
@@ -172,23 +182,48 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
         boolean isBasicAuthPresent = false;
         boolean isTokenAuthPresent = false;
 
+=======
+    private String fetchDomainClassPrefix(String authMethod) {
+        if(authMethod == BEARER_TOKEN_PREFIX) return "OrgsTokenAuth";
+        else if(authMethod == NO_AUTH_PREFIX) return NO_AUTH_PREFIX;
+        return EMPTY_STRING;
+    }
+
+    private String setResourceSetPrefix(String authMethod){
+        return authMethod == BEARER_TOKEN_PREFIX ? authMethod : EMPTY_STRING;
+    }
+
+    private String setRestClientPrefix(String authMethod){
+        return authMethod == EMPTY_STRING ? "I" : EMPTY_STRING;
+    }
+
+    private String processAuthMethods(List<CodegenOperation> opList) {
+>>>>>>> a93dd1b (orgs api uptake for twilio csharp)
         if(opList != null){
             List<CodegenSecurity> authMethods = opList.get(0).authMethods;
             if(authMethods != null){
                 for(CodegenSecurity c : authMethods){
                     if(c.isOAuth == true){
+<<<<<<< HEAD
                         isTokenAuthPresent = true;
                     }
                     if(c.isBasic == true){
                         isBasicAuthPresent = true;
+=======
+                        return "BearerToken";
+>>>>>>> a93dd1b (orgs api uptake for twilio csharp)
                     }
                 }
             }
             else return "NoAuth";
         }
+<<<<<<< HEAD
         if(isBasicAuthPresent)
             return "";
         return "BearerToken";
+=======
+        return "";
+>>>>>>> a93dd1b (orgs api uptake for twilio csharp)
     }
 
     @Override
