@@ -17,7 +17,6 @@ import org.openapitools.codegen.CodegenOperation;
 import org.openapitools.codegen.CodegenParameter;
 import org.openapitools.codegen.CodegenProperty;
 
-import static com.twilio.oai.DirectoryStructureService.VERSION_RESOURCES;
 import static com.twilio.oai.common.ApplicationConstants.HTTP_METHOD;
 import static com.twilio.oai.common.ApplicationConstants.STRING;
 
@@ -38,24 +37,9 @@ public class NodeApiResourceBuilder extends FluentApiResourceBuilder {
         this.toggleMap = toggleMap;
     }
 
-    private void updateVersionResources() {
-        var versionResources = (List<DirectoryStructureService.DependentResource>) directoryStructureService.getAdditionalProperties().getOrDefault("versionResources", null);
-        if (versionResources != null) {
-            for (var versionResource : versionResources) {
-                //here "hasInstanceOperation" may be either null or false, so only set if it is true
-                if (versionResource.getResourceName().equals(getApiName()) && (boolean) metaAPIProperties.getOrDefault("hasInstanceOperation", false)) {
-                    versionResource.setInstanceDependent(true);
-                }
-            }
-            var domain = (String) directoryStructureService.getAdditionalProperties().get("domainName");
-            versionResources = versionResources.stream().filter(resource -> !(resource.getMountName().equals("account") && domain.equals("Api"))).collect(Collectors.toList());
-        }
-        directoryStructureService.getAdditionalProperties().put(VERSION_RESOURCES, versionResources);
-    }
     @Override
     public ApiResourceBuilder updateOperations(final Resolver<CodegenParameter> codegenParameterIResolver) {
         super.updateOperations(codegenParameterIResolver);
-        updateVersionResources();
 
         final String apiName = getApiName();
         final String resourceName = apiName + "Instance";
