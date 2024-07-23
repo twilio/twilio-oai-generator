@@ -25,6 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenOperation;
 import org.openapitools.codegen.CodegenParameter;
+import org.openapitools.codegen.CodegenSecurity;
 import org.openapitools.codegen.languages.CSharpClientCodegen;
 import org.openapitools.codegen.model.ModelMap;
 import org.openapitools.codegen.model.ModelsMap;
@@ -42,6 +43,9 @@ import static com.twilio.oai.common.ApplicationConstants.CONFIG_CSHARP_JSON_PATH
 public class TwilioCsharpGenerator extends CSharpClientCodegen {
 
     private final TwilioCodegenAdapter twilioCodegen;
+    private final String BEARER_TOKEN_PREFIX = "BearerToken";
+    private final String NO_AUTH_PREFIX = "NoAuth";
+    private final String EMPTY_STRING = "";
     private final DirectoryStructureService directoryStructureService = new DirectoryStructureService(
         additionalProperties,
         new ResourceMap(new Inflector()),
@@ -125,8 +129,41 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
         final OperationsMap results = super.postProcessOperationsWithModels(objs, allModels);
         final List<CodegenOperation> opList = directoryStructureService.processOperations(results);
         CsharpApiResources apiResources = processCodegenOperations(opList);
+        apiResources.setAuthMethod(processAuthMethods(opList));
+        apiResources.setRestClientPrefix(setRestClientPrefix(apiResources.getAuthMethod()));
+        apiResources.setResourceSetPrefix(setResourceSetPrefix(apiResources.getAuthMethod()));
+        apiResources.setDomainClassPrefix(fetchDomainClassPrefix(apiResources.getAuthMethod()));
         results.put("resources", apiResources);
         return results;
+    }
+
+    private String fetchDomainClassPrefix(String authMethod) {
+        if(authMethod == BEARER_TOKEN_PREFIX) return "OrgsTokenAuth";
+        else if(authMethod == NO_AUTH_PREFIX) return NO_AUTH_PREFIX;
+        return EMPTY_STRING;
+    }
+
+    private String setResourceSetPrefix(String authMethod){
+        return authMethod == BEARER_TOKEN_PREFIX ? authMethod : EMPTY_STRING;
+    }
+
+    private String setRestClientPrefix(String authMethod){
+        return authMethod == EMPTY_STRING ? "I" : EMPTY_STRING;
+    }
+
+    private String processAuthMethods(List<CodegenOperation> opList) {
+        if(opList != null){
+            List<CodegenSecurity> authMethods = opList.get(0).authMethods;
+            if(authMethods != null){
+                for(CodegenSecurity c : authMethods){
+                    if(c.isOAuth == true){
+                        return "BearerToken";
+                    }
+                }
+            }
+            else return "NoAuth";
+        }
+        return "";
     }
 
     @Override
