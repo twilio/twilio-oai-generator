@@ -220,6 +220,7 @@ public class CsharpApiResourceBuilder extends ApiResourceBuilder {
     }
 
     public Set<CodegenProperty> getDistinctResponseModel(List<CodegenModel> responseModels) {
+        HashSet<String> modelVars = new HashSet<>();
         Set<CodegenProperty> distinctResponseModels = new LinkedHashSet<>();
         for (CodegenModel codegenModel: responseModels) {
             for (CodegenProperty property: codegenModel.vars) {
@@ -235,6 +236,11 @@ public class CsharpApiResourceBuilder extends ApiResourceBuilder {
                 distinctResponseModels.add(property);
                 property.isOverridden = isOverridden;
             }
+        }
+        for(CodegenProperty s : distinctResponseModels){
+            if(modelVars.contains(s.name)){
+                s.nameInCamelCase = "_" + s.nameInCamelCase;
+            }else modelVars.add(s.nameInCamelCase);
         }
         return distinctResponseModels;
     }

@@ -1,8 +1,15 @@
 
+<<<<<<< HEAD
         private static {{requestName}}Request BuildUpdateRequest(Update{{apiName}}Options options, {{clientName}} client)
         {
             {{>resource/GeneratePath}}
             return new {{requestName}}Request(
+=======
+        private static {{authMethod}}Request BuildUpdateRequest(Update{{apiName}}Options options, {{restClientPrefix}}Twilio{{authMethod}}RestClient client)
+        {
+            {{>resource/GeneratePath}}
+            return new {{authMethod}}Request(
+>>>>>>> a326080 (orgs api uptake for twilio csharp)
                 {{vendorExtensions.x-http-method}},
                 Rest.Domain.{{domainPackage}},
                 path,
@@ -21,9 +28,15 @@
         /// <param name="options"> Update {{apiName}} parameters </param>
         /// <param name="client"> Client to make requests to Twilio </param>
         {{>resource/ReturnComments}}
+<<<<<<< HEAD
         public static {{apiName}}{{resourceConstant}} Update(Update{{apiName}}Options options, {{clientName}} client = null)
         {
             client = client ?? {{domainClass}}.{{restClientMethodName}}();
+=======
+        public static {{apiName}}{{resourceConstant}} Update(Update{{apiName}}Options options, {{restClientPrefix}}Twilio{{authMethod}}RestClient client = null)
+        {
+            client = client ?? Twilio{{domainClassPrefix}}Client.GetRestClient();
+>>>>>>> a326080 (orgs api uptake for twilio csharp)
             var response = client.Request(BuildUpdateRequest(options, client));
             return FromJson(response.Content);
         }
@@ -34,9 +47,15 @@
         {{>resource/ReturnCommentsAsync}}
         #if !NET35
         public static async System.Threading.Tasks.Task<{{apiName}}{{resourceConstant}}> UpdateAsync(Update{{apiName}}Options options,
+<<<<<<< HEAD
                                                                                                     {{clientName}} client = null)
         {
             client = client ?? {{domainClass}}.{{restClientMethodName}}();
+=======
+                                                                                                    {{restClientPrefix}}Twilio{{authMethod}}RestClient client = null)
+        {
+            client = client ?? Twilio{{domainClassPrefix}}Client.GetRestClient();
+>>>>>>> a326080 (orgs api uptake for twilio csharp)
             var response = await client.RequestAsync(BuildUpdateRequest(options, client));
             return FromJson(response.Content);
         }
@@ -46,7 +65,11 @@
         {{>resource/ReturnComments}}
         public static {{apiName}}{{resourceConstant}} Update({{#vendorExtensions.x-request-body-param}}
                                           {{{dataType}}} {{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^required}} = null{{/required}},{{/vendorExtensions.x-request-body-param}}
+<<<<<<< HEAD
                                             {{clientName}} client = null)
+=======
+                                            {{restClientPrefix}}Twilio{{authMethod}}RestClient client = null)
+>>>>>>> a326080 (orgs api uptake for twilio csharp)
         {
             var options = new Update{{apiName}}Options({{#requiredParams}}{{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^-last}}, {{/-last}}{{/requiredParams}}){ {{#vendorExtensions.x-request-body-param}}{{^required}}{{paramName}} = {{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^-last}}, {{/-last}}{{/required}}{{/vendorExtensions.x-request-body-param}} };
             return Update(options, client);
@@ -57,7 +80,11 @@
         {{>resource/ReturnCommentsAsync}}
         public static async System.Threading.Tasks.Task<{{apiName}}{{resourceConstant}}> UpdateAsync({{#vendorExtensions.x-request-body-param}}
                                                                               {{{dataType}}} {{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^required}} = null{{/required}},{{/vendorExtensions.x-request-body-param}}
+<<<<<<< HEAD
                                                                                 {{clientName}} client = null)
+=======
+                                                                                {{restClientPrefix}}Twilio{{authMethod}}RestClient client = null)
+>>>>>>> a326080 (orgs api uptake for twilio csharp)
         {
             var options = new Update{{apiName}}Options({{#requiredParams}}{{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^-last}}, {{/-last}}{{/requiredParams}}){ {{#vendorExtensions.x-request-body-param}}{{^required}}{{paramName}} = {{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^-last}}, {{/-last}}{{/required}}{{/vendorExtensions.x-request-body-param}} };
             return await UpdateAsync(options, client);

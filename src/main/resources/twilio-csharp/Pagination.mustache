@@ -3,11 +3,19 @@
         /// <param name="targetUrl"> API-generated URL for the requested results page </param>
         /// <param name="client"> Client to make requests to Twilio </param>
         /// <returns> The target page of records </returns>
+<<<<<<< HEAD
         public static Page<{{apiName}}{{resourceConstant}}> GetPage(string targetUrl, {{clientName}} client)
         {
             client = client ?? {{domainClass}}.{{restClientMethodName}}();
 
             var request = new {{requestName}}Request(
+=======
+        public static Page<{{apiName}}{{resourceConstant}}> GetPage(string targetUrl, {{restClientPrefix}}Twilio{{authMethod}}RestClient client)
+        {
+            client = client ?? Twilio{{domainClassPrefix}}Client.GetRestClient();
+
+            var request = new {{authMethod}}Request(
+>>>>>>> a326080 (orgs api uptake for twilio csharp)
                 HttpMethod.Get,
                 targetUrl
             );
@@ -20,9 +28,15 @@
         /// <param name="page"> current page of records </param>
         /// <param name="client"> Client to make requests to Twilio </param>
         /// <returns> The next page of records </returns>
+<<<<<<< HEAD
         public static Page<{{apiName}}{{resourceConstant}}> NextPage(Page<{{apiName}}{{resourceConstant}}> page, {{clientName}} client)
         {
             var request = new {{requestName}}Request(
+=======
+        public static Page<{{apiName}}{{resourceConstant}}> NextPage(Page<{{apiName}}{{resourceConstant}}> page, {{restClientPrefix}}Twilio{{authMethod}}RestClient client)
+        {
+            var request = new {{authMethod}}Request(
+>>>>>>> a326080 (orgs api uptake for twilio csharp)
                 HttpMethod.Get,
                 page.GetNextPageUrl(Rest.Domain.Api)
             );
@@ -35,9 +49,15 @@
         /// <param name="page"> current page of records </param>
         /// <param name="client"> Client to make requests to Twilio </param>
         /// <returns> The previous page of records </returns>
+<<<<<<< HEAD
         public static Page<{{apiName}}{{resourceConstant}}> PreviousPage(Page<{{apiName}}{{resourceConstant}}> page, {{clientName}} client)
         {
             var request = new {{requestName}}Request(
+=======
+        public static Page<{{apiName}}{{resourceConstant}}> PreviousPage(Page<{{apiName}}{{resourceConstant}}> page, {{restClientPrefix}}Twilio{{authMethod}}RestClient client)
+        {
+            var request = new {{authMethod}}Request(
+>>>>>>> a326080 (orgs api uptake for twilio csharp)
                 HttpMethod.Get,
                 page.GetPreviousPageUrl(Rest.Domain.Api)
             );
