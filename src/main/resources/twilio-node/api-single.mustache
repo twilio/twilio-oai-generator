@@ -135,8 +135,7 @@ export interface {{apiName}}ListInstance {
   {{/dependents}}
 
 {{#operations}}
-{{^vendorExtensions.x-is-read-operation}}{{#vendorExtensions.x-is-list-operation}}{{>operationSignature}}{{/vendorExtensions.x-is-list-operation}}{{/vendorExtensions.x-is-read-operation}}
-{{#vendorExtensions.x-is-read-operation}}{{>listInterfaceFunctions}}{{/vendorExtensions.x-is-read-operation}}
+{{#vendorExtensions.x-is-list-operation}}{{>operationSignature}}{{/vendorExtensions.x-is-list-operation}}
 {{/operations}}
   /**
    * Provide a user-friendly representation
