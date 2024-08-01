@@ -13,7 +13,7 @@
    * @param { {{vendorExtensions.x-resource-name}}EachOptions } [params] - Options for request
    * @param { function } [callback] - Function to process each record
    */
-  each(callback?: (item: {{instanceName}}, done: (err?: Error) => void) => void): void;
+  {{^hasRequiredParams}}each(callback?: (item: {{instanceName}}, done: (err?: Error) => void) => void): void;{{/hasRequiredParams}}
   each(params: {{vendorExtensions.x-resource-name}}EachOptions, callback?: (item: {{instanceName}}, done: (err?: Error) => void) => void): void;
   /**
    * Retrieve a single target page of {{instanceName}} records from the API.
@@ -33,7 +33,7 @@
    * @param { {{vendorExtensions.x-resource-name}}Options } [params] - Options for request
    * @param { function } [callback] - Callback to handle list of records
    */
-  list(callback?: (error: Error | null, items: {{instanceName}}[]) => any): Promise<{{instanceName}}[]>;
+  {{^hasRequiredParams}}list(callback?: (error: Error | null, items: {{instanceName}}[]) => any): Promise<{{instanceName}}[]>;{{/hasRequiredParams}}
   list(params: {{vendorExtensions.x-resource-name}}Options, callback?: (error: Error | null, items: {{instanceName}}[]) => any): Promise<{{instanceName}}[]>;
   /**
    * Retrieve a single page of {{instanceName}} records from the API.
@@ -46,5 +46,5 @@
    * @param { {{vendorExtensions.x-resource-name}}PageOptions } [params] - Options for request
    * @param { function } [callback] - Callback to handle list of records
    */
-  page(callback?: (error: Error | null, items: {{returnType}}) => any): Promise<{{returnType}}>;
+  {{^hasRequiredParams}}page(callback?: (error: Error | null, items: {{returnType}}) => any): Promise<{{returnType}}>;{{/hasRequiredParams}}
   page(params: {{vendorExtensions.x-resource-name}}PageOptions, callback?: (error: Error | null, items: {{returnType}}) => any): Promise<{{returnType}}>;
