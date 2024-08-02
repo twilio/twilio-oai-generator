@@ -4,7 +4,7 @@
             :ivar {{name}}: {{{description}}}{{/vars}}
         """
 
-        def __init__(self, payload: Dict[str, Any]{{#instancePathParams}}, {{paramName}}: {{#if vendorExtensions.x-is-parent-param}}{{{contentType}}}{{else}}Optional[{{{contentType}}}] = None{{/if}}{{/instancePathParams}}):
+        def __init__(self, payload: Dict[str, Any]):
 
             {{#vars}}
             self.{{name}}: Optional[{{{dataType}}}] = {{#if vendorExtensions.x-deserialize}}{{vendorExtensions.x-deserialize}}(payload.get("{{{name}}}")){{else}}payload.get("{{{name}}}"){{/if}}{{/vars}}
