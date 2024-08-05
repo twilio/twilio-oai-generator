@@ -9,10 +9,7 @@ import com.twilio.oai.resolver.Resolver;
 import com.twilio.oai.resolver.python.PythonCodegenModelResolver;
 import com.twilio.oai.template.IApiActionTemplate;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import org.openapitools.codegen.CodegenModel;
@@ -63,6 +60,9 @@ public class PythonApiResourceBuilder extends FluentApiResourceBuilder {
                     cp.paramName = "from_";
                 }
             }
+            Map<String,Object> oauthAttributes = getSecurityMethods(co);
+            if (oauthAttributes != null)
+                co.vendorExtensions.put("x-auth-attributes", oauthAttributes);
         }
         return this;
     }
@@ -201,5 +201,14 @@ public class PythonApiResourceBuilder extends FluentApiResourceBuilder {
     public ApiResourceBuilder updateModel(Resolver<CodegenModel> codegenModelResolver) {
         super.updateModel(codegenModelResolver);
         return this;
+    }
+
+    public Map<String, Object > getSecurityMethods(CodegenOperation co){
+        if (co.authMethods != null && co.authMethods.size() > 0 && co.authMethods.get(0).isOAuth ) {
+            Map<String,Object> oauthAttributes = new HashMap<>();
+            oauthAttributes.put("x-oauth", true);
+            return oauthAttributes;
+        }
+        return null;
     }
 }

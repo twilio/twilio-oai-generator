@@ -110,10 +110,7 @@ class FleetContext(InstanceContext):
         :returns: The fetched FleetInstance
         """
 
-        payload = self._version.fetch(
-            method="GET",
-            uri=self._uri,
-        )
+        payload = self._version.fetch(method="GET", uri=self._uri)
 
         return FleetInstance(
             self._version,
@@ -129,10 +126,7 @@ class FleetContext(InstanceContext):
         :returns: The fetched FleetInstance
         """
 
-        payload = await self._version.fetch_async(
-            method="GET",
-            uri=self._uri,
-        )
+        payload = await self._version.fetch_async(method="GET", uri=self._uri)
 
         return FleetInstance(
             self._version,

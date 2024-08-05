@@ -22,7 +22,7 @@
                 {{/queryParams}}
             })
         {{/queryParams.0}}
-        payload = self._version.create(method='{{vendorExtensions.x-http-method}}', uri=self._uri, {{#hasParams}}data=data,{{/hasParams}} headers=headers{{#queryParams.0}}, params=params{{/queryParams.0}})
+        payload = self._version.create(method='{{vendorExtensions.x-http-method}}', uri=self._uri, {{#hasParams}}data=data,{{/hasParams}} headers=headers{{#queryParams.0}}, params=params{{/queryParams.0}}{{#vendorExtensions.x-auth-attributes.x-oauth}}, is_oauth=True{{/vendorExtensions.x-auth-attributes.x-oauth}})
 
         return {{instanceName}}(self._version, payload{{#listPathParams}}, {{paramName}}=self._solution['{{paramName}}']{{/listPathParams}})
 
@@ -48,7 +48,7 @@
                 {{/queryParams}}
             })
         {{/queryParams.0}}
-        payload = await self._version.create_async(method='{{vendorExtensions.x-http-method}}', uri=self._uri, {{#hasParams}}data=data,{{/hasParams}} headers=headers{{#queryParams.0}}, params=params{{/queryParams.0}})
+        payload = await self._version.create_async(method='{{vendorExtensions.x-http-method}}', uri=self._uri, {{#hasParams}}data=data,{{/hasParams}} headers=headers{{#queryParams.0}}, params=params{{/queryParams.0}}{{#vendorExtensions.x-auth-attributes.x-oauth}}, is_oauth=True{{/vendorExtensions.x-auth-attributes.x-oauth}})
 
         return {{instanceName}}(self._version, payload{{#listPathParams}}, {{paramName}}=self._solution['{{paramName}}']{{/listPathParams}})
     {{/vendorExtensions.x-is-create-operation}}{{^instancePath}}{{#vendorExtensions.x-is-fetch-operation}}
@@ -69,7 +69,7 @@
                 {{/queryParams}}
             })
         {{/queryParams.0}}
-        payload = self._version.fetch(method='{{vendorExtensions.x-http-method}}', uri=self._uri, headers=headers{{#queryParams.0}}, params=params{{/queryParams.0}})
+        payload = self._version.fetch(method='{{vendorExtensions.x-http-method}}', uri=self._uri, headers=headers{{#queryParams.0}}, params=params{{/queryParams.0}}{{#vendorExtensions.x-auth-attributes.x-oauth}}, is_oauth=True{{/vendorExtensions.x-auth-attributes.x-oauth}})
 
         return {{instanceName}}(self._version, payload{{#listPathParams}}, {{paramName}}=self._solution['{{paramName}}']{{/listPathParams}})
 
@@ -90,7 +90,7 @@
                 {{/queryParams}}
             })
         {{/queryParams.0}}
-        payload = await self._version.fetch_async(method='{{vendorExtensions.x-http-method}}', uri=self._uri, headers=headers{{#queryParams.0}}, params=params{{/queryParams.0}})
+        payload = await self._version.fetch_async(method='{{vendorExtensions.x-http-method}}', uri=self._uri, headers=headers{{#queryParams.0}}, params=params{{/queryParams.0}}{{#vendorExtensions.x-auth-attributes.x-oauth}}, is_oauth=True{{/vendorExtensions.x-auth-attributes.x-oauth}})
 
         return {{instanceName}}(self._version, payload{{#listPathParams}}, {{paramName}}=self._solution['{{paramName}}']{{/listPathParams}}){{/vendorExtensions.x-is-fetch-operation}}{{#vendorExtensions.x-is-delete-operation}}
     def delete(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> bool:
@@ -109,7 +109,7 @@
                 {{#queryParams}}'{{{baseName}}}': {{paramName}},
                 {{/queryParams}}
             }){{/queryParams.0}}
-        return self._version.delete(method='{{vendorExtensions.x-http-method}}', uri=self._uri, headers=headers{{#queryParams.0}}, params=params{{/queryParams.0}})
+        return self._version.delete(method='{{vendorExtensions.x-http-method}}', uri=self._uri, headers=headers{{#queryParams.0}}, params=params{{/queryParams.0}}{{#vendorExtensions.x-auth-attributes.x-oauth}}, is_oauth=True{{/vendorExtensions.x-auth-attributes.x-oauth}})
 
     async def delete_async(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> bool:
         """
@@ -127,7 +127,7 @@
                 {{#queryParams}}'{{{baseName}}}': {{paramName}},
                 {{/queryParams}}
             }){{/queryParams.0}}
-        return await self._version.delete_async(method='{{vendorExtensions.x-http-method}}', uri=self._uri, headers=headers{{#queryParams.0}}, params=params{{/queryParams.0}}){{/vendorExtensions.x-is-delete-operation}}{{#vendorExtensions.x-is-update-operation}}
+        return await self._version.delete_async(method='{{vendorExtensions.x-http-method}}', uri=self._uri, headers=headers{{#queryParams.0}}, params=params{{/queryParams.0}}{{#vendorExtensions.x-auth-attributes.x-oauth}}, is_oauth=True{{/vendorExtensions.x-auth-attributes.x-oauth}}){{/vendorExtensions.x-is-delete-operation}}{{#vendorExtensions.x-is-update-operation}}
 
     def update(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> {{instanceName}}:
         """
@@ -151,7 +151,7 @@
                 {{/queryParams}}
             })
         {{/queryParams.0}}
-        payload = self._version.update(method='{{vendorExtensions.x-http-method}}', uri=self._uri, {{#hasParams}}data=data,{{/hasParams}} headers=headers{{#queryParams.0}}, params=params{{/queryParams.0}})
+        payload = self._version.update(method='{{vendorExtensions.x-http-method}}', uri=self._uri, {{#hasParams}}data=data,{{/hasParams}} headers=headers{{#queryParams.0}}, params=params{{/queryParams.0}}{{#vendorExtensions.x-auth-attributes.x-oauth}}, is_oauth=True{{/vendorExtensions.x-auth-attributes.x-oauth}})
 
         return {{instanceName}}(self._version, payload{{#listPathParams}}, {{paramName}}=self._solution['{{paramName}}']{{/listPathParams}})
 
@@ -177,7 +177,7 @@
                 {{/queryParams}}
             })
         {{/queryParams.0}}
-        payload = await self._version.update_async(method='{{vendorExtensions.x-http-method}}', uri=self._uri, {{#hasParams}}data=data,{{/hasParams}} headers=headers{{#queryParams.0}}, params=params{{/queryParams.0}})
+        payload = await self._version.update_async(method='{{vendorExtensions.x-http-method}}', uri=self._uri, {{#hasParams}}data=data,{{/hasParams}} headers=headers{{#queryParams.0}}, params=params{{/queryParams.0}}{{#vendorExtensions.x-auth-attributes.x-oauth}}, is_oauth=True{{/vendorExtensions.x-auth-attributes.x-oauth}})
 
         return {{instanceName}}(self._version, payload{{#listPathParams}}, {{paramName}}=self._solution['{{paramName}}']{{/listPathParams}}){{/vendorExtensions.x-is-update-operation}}{{/instancePath}}{{#vendorExtensions.x-is-read-operation}}
     def stream(self, {{#allParams}}
