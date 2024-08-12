@@ -17,8 +17,7 @@ import org.openapitools.codegen.CodegenOperation;
 import org.openapitools.codegen.CodegenParameter;
 import org.openapitools.codegen.CodegenProperty;
 
-import static com.twilio.oai.common.ApplicationConstants.HTTP_METHOD;
-import static com.twilio.oai.common.ApplicationConstants.STRING;
+import static com.twilio.oai.common.ApplicationConstants.*;
 
 public class NodeApiResourceBuilder extends FluentApiResourceBuilder {
     public NodeApiResourceBuilder(final IApiActionTemplate template,
@@ -121,6 +120,14 @@ public class NodeApiResourceBuilder extends FluentApiResourceBuilder {
             });
         });
 
+        instancePathParams.forEach(param -> param.vendorExtensions.put("x-is-response-param", param.vendorExtensions.get(IS_PARENT_PARAM_EXTENSION_NAME)));
+        if(instancePath != null) {
+            for(CodegenParameter param: instancePathParams) {
+                if((!(boolean) param.vendorExtensions.getOrDefault(IS_PARENT_PARAM_EXTENSION_NAME, false)) &&
+                        (responseModel.getVars().stream().noneMatch(variable -> variable.name.equals(param.paramName))))
+                    param.vendorExtensions.put("x-is-response-param", true);
+            }
+        }
         modelTree.values().forEach(model -> model.setName(getModelName(model.getClassname())));
 
         return this;
