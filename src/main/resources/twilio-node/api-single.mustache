@@ -145,17 +145,27 @@ export interface {{apiName}}ListInstance {
   [inspect.custom](_depth: any, options: InspectOptions): any;
 }
 
-export function {{apiName}}ListInstance(version: {{apiVersionClass}}{{#listPathParams}}, {{paramName}}: {{{dataType}}}{{/listPathParams}}): {{apiName}}ListInstance {
+export function {{apiName}}ListInstance(version: {{apiVersionClass}}{{#listPathParams}}{{^vendorExtensions.x-is-non-parent-account-sid}}, {{paramName}}: {{{dataType}}}{{/vendorExtensions.x-is-non-parent-account-sid}}{{/listPathParams}}): {{apiName}}ListInstance {
   {{#listPathParams}}
+  {{#vendorExtensions.x-is-non-parent-account-sid}}
+  const {{paramName}} = version.domain.twilio.accountSid;
+  {{/vendorExtensions.x-is-non-parent-account-sid}}
   if (!isValidPathParam({{paramName}})) {
     throw new Error('Parameter \'{{paramName}}\' is not valid.');
   }
 
   {{/listPathParams}}
   {{#instancePath}}
-  const instance = (({{#instancePathParams}}{{^vendorExtensions.x-is-parent-param}}{{paramName}}, {{/vendorExtensions.x-is-parent-param}}{{/instancePathParams}}) => instance.get({{#instancePathParams}}{{^vendorExtensions.x-is-parent-param}}{{paramName}}, {{/vendorExtensions.x-is-parent-param}}{{/instancePathParams}})) as {{apiName}}ListInstance;
+  const instance = (({{#instancePathParams}}{{^vendorExtensions.x-is-parent-param}}{{^vendorExtensions.x-is-non-parent-account-sid}}{{paramName}}, {{/vendorExtensions.x-is-non-parent-account-sid}}{{/vendorExtensions.x-is-parent-param}}{{/instancePathParams}}{{#instancePathParams}}{{^vendorExtensions.x-is-parent-param}}{{#vendorExtensions.x-is-non-parent-account-sid}}{{paramName}}?, {{/vendorExtensions.x-is-non-parent-account-sid}}{{/vendorExtensions.x-is-parent-param}}{{/instancePathParams}}) => instance.get({{#instancePathParams}}{{^vendorExtensions.x-is-parent-param}}{{^vendorExtensions.x-is-non-parent-account-sid}}{{paramName}}, {{/vendorExtensions.x-is-non-parent-account-sid}}{{/vendorExtensions.x-is-parent-param}}{{/instancePathParams}}{{#instancePathParams}}{{^vendorExtensions.x-is-parent-param}}{{#vendorExtensions.x-is-non-parent-account-sid}}{{paramName}}, {{/vendorExtensions.x-is-non-parent-account-sid}}{{/vendorExtensions.x-is-parent-param}}{{/instancePathParams}})) as {{apiName}}ListInstance;
 
-  instance.get = function get({{#instancePathParams}}{{^vendorExtensions.x-is-parent-param}}{{paramName}}, {{/vendorExtensions.x-is-parent-param}}{{/instancePathParams}}): {{apiName}}Context {
+  instance.get = function get({{#instancePathParams}}{{^vendorExtensions.x-is-parent-param}}{{^vendorExtensions.x-is-non-parent-account-sid}}{{paramName}}, {{/vendorExtensions.x-is-non-parent-account-sid}}{{/vendorExtensions.x-is-parent-param}}{{/instancePathParams}}{{#instancePathParams}}{{^vendorExtensions.x-is-parent-param}}{{#vendorExtensions.x-is-non-parent-account-sid}}{{paramName}}?, {{/vendorExtensions.x-is-non-parent-account-sid}}{{/vendorExtensions.x-is-parent-param}}{{/instancePathParams}}): {{apiName}}Context {
+    {{#instancePathParams}}
+    {{^vendorExtensions.x-is-parent-param}}
+    {{#vendorExtensions.x-is-non-parent-account-sid}}
+    {{paramName}} = {{paramName}} || version.domain.twilio.accountSid;
+    {{/vendorExtensions.x-is-non-parent-account-sid}}
+    {{/vendorExtensions.x-is-parent-param}}
+    {{/instancePathParams}}
     return new {{apiName}}ContextImpl(version{{#instancePathParams}}, {{paramName}}{{/instancePathParams}});
   }
   {{/instancePath}}

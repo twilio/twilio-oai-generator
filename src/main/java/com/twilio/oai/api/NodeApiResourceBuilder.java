@@ -64,7 +64,17 @@ public class NodeApiResourceBuilder extends FluentApiResourceBuilder {
                 }
             });
         }
+        listPathParams.forEach(param -> {
+            if( param.paramName.equals("accountSid")
+                && !((boolean) param.vendorExtensions.getOrDefault(IS_PARENT_PARAM_EXTENSION_NAME, false)))
+                param.vendorExtensions.put("x-is-non-parent-account-sid", true);
+        });
+        instancePathParams.forEach(param -> {
+            if(!((boolean) param.vendorExtensions.getOrDefault(IS_PARENT_PARAM_EXTENSION_NAME, false))
+                    && param.paramName.equals("accountSid"))
+                    param.vendorExtensions.put("x-is-non-parent-account-sid", true);
 
+        });
         return this;
     }
 
