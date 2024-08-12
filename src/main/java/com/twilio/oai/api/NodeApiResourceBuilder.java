@@ -118,16 +118,16 @@ public class NodeApiResourceBuilder extends FluentApiResourceBuilder {
                     variable.baseType = dataType;
                 });
             });
-        });
 
-        instancePathParams.forEach(param -> param.vendorExtensions.put("x-is-response-param", param.vendorExtensions.get(IS_PARENT_PARAM_EXTENSION_NAME)));
-        if(instancePath != null) {
-            for(CodegenParameter param: instancePathParams) {
-                if((!(boolean) param.vendorExtensions.getOrDefault(IS_PARENT_PARAM_EXTENSION_NAME, false)) &&
-                        (responseModel.getVars().stream().noneMatch(variable -> variable.name.equals(param.paramName))))
-                    param.vendorExtensions.put("x-is-response-param", true);
+            instancePathParams.forEach(param -> param.vendorExtensions.put("x-is-response-param", param.vendorExtensions.get(IS_PARENT_PARAM_EXTENSION_NAME)));
+            if(instancePath != null) {
+                for(CodegenParameter param: instancePathParams) {
+                    if((!(boolean) param.vendorExtensions.getOrDefault(IS_PARENT_PARAM_EXTENSION_NAME, false)) &&
+                            (responseModel.getVars().stream().noneMatch(variable -> variable.name.equals(param.paramName))))
+                        param.vendorExtensions.put("x-is-response-param", true);
+                }
             }
-        }
+        });
         modelTree.values().forEach(model -> model.setName(getModelName(model.getClassname())));
 
         return this;
