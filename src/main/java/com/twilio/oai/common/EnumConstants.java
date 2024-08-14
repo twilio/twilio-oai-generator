@@ -122,4 +122,13 @@ public class EnumConstants {
 
         private final String value;
     }
+
+    @Getter
+    @RequiredArgsConstructor
+    public enum ContentType {
+        APPLICATION_JSON("application/json"),
+        APPLICATION_FORM_URLENCODED("application/x-www-form-urlencoded");
+
+        private final String value;
+    }
 }

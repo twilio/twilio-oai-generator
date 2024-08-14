@@ -4,6 +4,7 @@ import com.twilio.oai.DirectoryStructureService;
 import com.twilio.oai.PathUtils;
 import com.twilio.oai.StringHelper;
 import com.twilio.oai.common.ApplicationConstants;
+import com.twilio.oai.common.EnumConstants;
 import com.twilio.oai.common.Utility;
 import com.twilio.oai.resolver.Resolver;
 import com.twilio.oai.resource.Resource;
@@ -346,5 +347,23 @@ public abstract class ApiResourceBuilder implements IApiResourceBuilder {
             }
         }
         return hasNestedRequestBody;
+    }
+
+    // Supported content types for this method are application/json and application/x-www-form-urlencoded.
+    protected void updateContentType(CodegenOperation co) {
+        if (co.consumes == null || co.consumes.size() == 0) {
+            co.vendorExtensions.put("x-www-form-urlencoded", true);
+            return;
+        }
+        for (Map<String, String> map : co.consumes) {
+            if (EnumConstants.ContentType.APPLICATION_JSON.getValue().equals(map.get("mediaType"))) {
+                co.vendorExtensions.put(ApplicationConstants.X_JSON, true);
+            } else if (EnumConstants.ContentType.APPLICATION_FORM_URLENCODED.getValue().equals(map.get("mediaType"))) {
+                co.vendorExtensions.put(ApplicationConstants.X_WWW_FORM_URLENCODED, true);
+            } else {
+                // TODO: GET does not have body thus does not have content type
+                co.vendorExtensions.put(ApplicationConstants.X_WWW_FORM_URLENCODED, true);
+            }
+        }
     }
 }
