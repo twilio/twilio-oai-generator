@@ -102,6 +102,7 @@ public class JavaApiResourceBuilder extends ApiResourceBuilder{
         JsonRequestBodyResolver jsonRequestBodyResolver = new JsonRequestBodyResolver(this, codegenPropertyIResolver);
         this.codegenOperationList.forEach(co -> {
             updateNestedContent(co);
+            updateContentType(co);
             updateHttpMethod(co);
             List<String> filePathArray = new ArrayList<>(Arrays.asList(co.baseName.split(PATH_SEPARATOR_PLACEHOLDER)));
             String resourceName = filePathArray.remove(filePathArray.size()-1);
@@ -667,4 +668,5 @@ public class JavaApiResourceBuilder extends ApiResourceBuilder{
     public JavaApiResources build() {
         return new JavaApiResources(this);
     }
+    
 }
