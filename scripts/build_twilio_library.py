@@ -36,6 +36,7 @@ def build(openapi_spec_path: str, output_path: str, language: str) -> None:
     generate(spec_folder, spec_files, output_path, language)
 
 
+
 def generate(spec_folder: str, spec_files: List[str], output_path: str, language: str) -> None:
     sub_dir = subdirectories.get(language, 'rest')
     parent_dir = Path(__file__).parent.parent
