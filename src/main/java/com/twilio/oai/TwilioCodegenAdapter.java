@@ -2,10 +2,6 @@ package com.twilio.oai;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.nio.file.Paths;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -13,6 +9,7 @@ import java.util.stream.Stream;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.twilio.oai.common.ApplicationConstants;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.PathItem;
 import io.swagger.v3.oas.models.servers.Server;
@@ -146,6 +143,9 @@ public class TwilioCodegenAdapter {
     }
 
     private String getInputSpecVersion() {
-        return codegen.getInputSpec().replaceAll(INPUT_SPEC_PATTERN, "${version}");
+        String version = codegen.getInputSpec().replaceAll(INPUT_SPEC_PATTERN, "${version}");
+        boolean textExists = Arrays.stream(ApplicationConstants.VERSION_LESS_SPECS)
+                .anyMatch(ignoredVersion -> ignoredVersion.equals(version));
+        return textExists ? "" : version;
     }
 }

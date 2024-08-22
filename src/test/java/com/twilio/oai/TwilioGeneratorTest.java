@@ -28,7 +28,14 @@ import static org.junit.Assert.assertFalse;
 public class TwilioGeneratorTest {
     @Parameterized.Parameters
     public static Collection<Generator> generators() {
-        return Arrays.asList(Generator.TWILIO_PYTHON);
+        return Arrays.asList(Generator.TWILIO_CSHARP,
+                Generator.TWILIO_GO,
+                Generator.TWILIO_JAVA,
+                Generator.TWILIO_NODE,
+                Generator.TWILIO_PHP,
+                Generator.TWILIO_PYTHON,
+                Generator.TWILIO_RUBY,
+                Generator.TWILIO_TERRAFORM);
     }
 
     private final Generator generator;
