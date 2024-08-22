@@ -20,10 +20,6 @@ subdirectories = {
 generateForLanguages = {
     'twilio_iam_organizations.json' : ['java']
 }
-
-ignoreFiles = {
-    'twilio_content_v1.json'
-}
 CLEANUP_IMPORT_LANGUAGES = ['java', 'php']
 REMOVE_DUPLICATE_IMPORT_LANGUAGES = ['node']
 CONFIG_FOLDER = 'tmp'
