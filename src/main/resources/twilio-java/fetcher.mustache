@@ -83,12 +83,12 @@ public class {{apiName}}Fetcher extends Fetcher<{{apiName}}> {
         {{#queryParams.0}}
         addQueryParams(request);
         {{/queryParams.0}}
-        {{^vendorExtensions.x-is-json}}
+        {{^bodyParams.0}}
         request.setContentType(EnumConstants.ContentType.FORM_URLENCODED);
-        {{/vendorExtensions.x-is-json}}
-        {{#vendorExtensions.x-is-json}}
+        {{/bodyParams.0}}
+        {{#bodyParams.0}}
         request.setContentType(EnumConstants.ContentType.JSON);
-        {{/vendorExtensions.x-is-json}}
+        {{/bodyParams.0}}
         {{#formParams.0}}
         addPostParams(request);
         {{/formParams.0}}
