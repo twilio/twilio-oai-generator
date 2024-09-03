@@ -55,4 +55,7 @@ public class ApplicationConstants {
     public static final String PHONE_NUMBER = "phone-number";
 
     public static final Predicate<Integer> SUCCESS = i -> i != null && i >= 200 && i < 400;
+
+    public static final String[] VERSION_LESS_SPECS = {"organizations"};
+
 }

@@ -32,7 +32,7 @@ def build(openapi_spec_path: str, output_path: str, language: str) -> None:
     else:
         spec_folder = openapi_spec_path
         spec_files = sorted(os.listdir(spec_folder))
-
+    spec_files.remove('twilio_content_v1.json')
     generate(spec_folder, spec_files, output_path, language)
 
 

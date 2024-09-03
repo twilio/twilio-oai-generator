@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-package com.twilio.rest.previewiam.organizations;
+package com.twilio.rest.previewiam.v1;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.twilio.constant.EnumConstants;
