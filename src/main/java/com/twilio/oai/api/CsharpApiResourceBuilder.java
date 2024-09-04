@@ -108,7 +108,9 @@ public class CsharpApiResourceBuilder extends ApiResourceBuilder {
                     }
                 }
             }
-            else this.authMethod = "NoAuth";
+            else{
+                this.authMethod = "NoAuth";
+            } 
         }
     }
 

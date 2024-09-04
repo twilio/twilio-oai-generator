@@ -3,9 +3,9 @@
         /// <param name="targetUrl"> API-generated URL for the requested results page </param>
         /// <param name="client"> Client to make requests to Twilio </param>
         /// <returns> The target page of records </returns>
-        public static Page<{{apiName}}{{resourceConstant}}> GetPage(string targetUrl, {{restClientPrefix}}Twilio{{authMethod}}RestClient client)
+        public static Page<{{apiName}}{{resourceConstant}}> GetPage(string targetUrl, {{restClientPrefix}}Twilio{{clientName}}RestClient client)
         {
-            client = client ?? Twilio{{domainClassPrefix}}Client.GetRestClient();
+            client = client ?? Twilio{{domainClassPrefix}}Client.Get{{restClientClassName}}RestClient();
 
             var request = new {{authMethod}}Request(
                 HttpMethod.Get,
@@ -20,7 +20,7 @@
         /// <param name="page"> current page of records </param>
         /// <param name="client"> Client to make requests to Twilio </param>
         /// <returns> The next page of records </returns>
-        public static Page<{{apiName}}{{resourceConstant}}> NextPage(Page<{{apiName}}{{resourceConstant}}> page, {{restClientPrefix}}Twilio{{authMethod}}RestClient client)
+        public static Page<{{apiName}}{{resourceConstant}}> NextPage(Page<{{apiName}}{{resourceConstant}}> page, {{restClientPrefix}}Twilio{{clientName}}RestClient client)
         {
             var request = new {{authMethod}}Request(
                 HttpMethod.Get,
@@ -35,7 +35,7 @@
         /// <param name="page"> current page of records </param>
         /// <param name="client"> Client to make requests to Twilio </param>
         /// <returns> The previous page of records </returns>
-        public static Page<{{apiName}}{{resourceConstant}}> PreviousPage(Page<{{apiName}}{{resourceConstant}}> page, {{restClientPrefix}}Twilio{{authMethod}}RestClient client)
+        public static Page<{{apiName}}{{resourceConstant}}> PreviousPage(Page<{{apiName}}{{resourceConstant}}> page, {{restClientPrefix}}Twilio{{clientName}}RestClient client)
         {
             var request = new {{authMethod}}Request(
                 HttpMethod.Get,

@@ -133,18 +133,29 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
         apiResources.setRestClientPrefix(setRestClientPrefix(apiResources.getAuthMethod()));
         apiResources.setResourceSetPrefix(setResourceSetPrefix(apiResources.getAuthMethod()));
         apiResources.setDomainClassPrefix(fetchDomainClassPrefix(apiResources.getAuthMethod()));
+        apiResources.setRestClientClassName(fetchRestClientClassName(apiResources.getAuthMethod()));
+        apiResources.setClientName(fetchClientName(apiResources.getAuthMethod()));
         results.put("resources", apiResources);
         return results;
     }
 
     private String fetchDomainClassPrefix(String authMethod) {
-        if(authMethod == BEARER_TOKEN_PREFIX) return "OrgsTokenAuth";
-        else if(authMethod == NO_AUTH_PREFIX) return NO_AUTH_PREFIX;
+        if(authMethod == BEARER_TOKEN_PREFIX || authMethod == NO_AUTH_PREFIX) return "OrgsTokenAuth";
         return EMPTY_STRING;
     }
 
     private String setResourceSetPrefix(String authMethod){
         return authMethod == BEARER_TOKEN_PREFIX ? authMethod : EMPTY_STRING;
+    }
+
+    private String fetchClientName(String authMethod){
+        if(authMethod == BEARER_TOKEN_PREFIX) return "OrgsToken";
+        if(authMethod == NO_AUTH_PREFIX) return "NoAuth";
+        return EMPTY_STRING;
+    }
+
+    private String fetchRestClientClassName(String authMethod){
+        return authMethod == NO_AUTH_PREFIX ? "NoAuth" : EMPTY_STRING;
     }
 
     private String setRestClientPrefix(String authMethod){
