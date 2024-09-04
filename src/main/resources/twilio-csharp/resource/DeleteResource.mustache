@@ -3,10 +3,10 @@
         /// <param name="options"> Delete {{apiName}} parameters </param>
         /// <param name="client"> Client to make requests to Twilio </param>
         {{>resource/ReturnComments}}
-        private static {{authMethod}}Request BuildDeleteRequest(Delete{{apiName}}Options options, {{restClientPrefix}}Twilio{{clientName}}RestClient client)
+        private static {{requestName}}Request BuildDeleteRequest(Delete{{apiName}}Options options, {{restClientPrefix}}Twilio{{clientName}}RestClient client)
         {
             {{>resource/GeneratePath}}
-            return new {{authMethod}}Request(
+            return new {{requestName}}Request(
                 {{vendorExtensions.x-http-method}},
                 Rest.Domain.{{domainPackage}},
                 path,

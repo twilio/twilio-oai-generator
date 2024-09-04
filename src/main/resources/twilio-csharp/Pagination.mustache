@@ -7,7 +7,7 @@
         {
             client = client ?? Twilio{{domainClassPrefix}}Client.Get{{restClientClassName}}RestClient();
 
-            var request = new {{authMethod}}Request(
+            var request = new {{requestName}}Request(
                 HttpMethod.Get,
                 targetUrl
             );
@@ -22,7 +22,7 @@
         /// <returns> The next page of records </returns>
         public static Page<{{apiName}}{{resourceConstant}}> NextPage(Page<{{apiName}}{{resourceConstant}}> page, {{restClientPrefix}}Twilio{{clientName}}RestClient client)
         {
-            var request = new {{authMethod}}Request(
+            var request = new {{requestName}}Request(
                 HttpMethod.Get,
                 page.GetNextPageUrl(Rest.Domain.Api)
             );
@@ -37,7 +37,7 @@
         /// <returns> The previous page of records </returns>
         public static Page<{{apiName}}{{resourceConstant}}> PreviousPage(Page<{{apiName}}{{resourceConstant}}> page, {{restClientPrefix}}Twilio{{clientName}}RestClient client)
         {
-            var request = new {{authMethod}}Request(
+            var request = new {{requestName}}Request(
                 HttpMethod.Get,
                 page.GetPreviousPageUrl(Rest.Domain.Api)
             );

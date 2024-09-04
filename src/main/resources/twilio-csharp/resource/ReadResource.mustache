@@ -1,8 +1,8 @@
 
-        private static {{authMethod}}Request BuildReadRequest(Read{{apiName}}Options options, {{restClientPrefix}}Twilio{{clientName}}RestClient client)
+        private static {{requestName}}Request BuildReadRequest(Read{{apiName}}Options options, {{restClientPrefix}}Twilio{{clientName}}RestClient client)
         {
             {{>resource/GeneratePath}}
-            return new {{authMethod}}Request(
+            return new {{requestName}}Request(
                 {{vendorExtensions.x-http-method}},
                 Rest.Domain.{{domainPackage}},
                 path,

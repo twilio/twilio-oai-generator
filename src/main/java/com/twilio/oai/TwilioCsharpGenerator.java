@@ -135,6 +135,7 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
         apiResources.setDomainClassPrefix(fetchDomainClassPrefix(apiResources.getAuthMethod()));
         apiResources.setRestClientClassName(fetchRestClientClassName(apiResources.getAuthMethod()));
         apiResources.setClientName(fetchClientName(apiResources.getAuthMethod()));
+        apiResources.setRequestName(fetchRequestName(apiResources.getAuthMethod()));
         results.put("resources", apiResources);
         return results;
     }
@@ -150,6 +151,12 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
 
     private String fetchClientName(String authMethod){
         if(authMethod == BEARER_TOKEN_PREFIX) return "OrgsToken";
+        if(authMethod == NO_AUTH_PREFIX) return "NoAuth";
+        return EMPTY_STRING;
+    }
+
+    private String fetchRequestName(String authMethod){
+        if(authMethod == BEARER_TOKEN_PREFIX) return "Token";
         if(authMethod == NO_AUTH_PREFIX) return "NoAuth";
         return EMPTY_STRING;
     }

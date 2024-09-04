@@ -16,6 +16,7 @@ public class CsharpApiResources extends ApiResources {
     @Getter @Setter private String domainClassPrefix;
     @Getter @Setter private String restClientClassName;
     @Getter @Setter private String clientName;
+    @Getter @Setter private String requestName;
     List<IJsonSchemaValidationProperties> enums = new ArrayList<>(OperationStore.getInstance().getEnums().values());
 
     public String resourceConstant = ApplicationConstants.RESOURCE;
