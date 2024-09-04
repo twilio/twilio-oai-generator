@@ -146,7 +146,7 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
     }
 
     private String setResourceSetPrefix(String authMethod){
-        return authMethod == BEARER_TOKEN_PREFIX ? authMethod : EMPTY_STRING;
+        return authMethod == BEARER_TOKEN_PREFIX ? "Token" : EMPTY_STRING;
     }
 
     private String fetchClientName(String authMethod){
