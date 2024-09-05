@@ -96,16 +96,24 @@ public class JavaApiResourceBuilder extends ApiResourceBuilder{
         return this;
     }
 
+    private void populateContentType(CodegenOperation co) {
+        if(co.consumes != null && !co.consumes.isEmpty())
+            co.consumes.forEach(consume -> {
+                if(consume.getOrDefault("mediaType", "").equals(CONTENT_TYPE_JSON))
+                    co.vendorExtensions.put("x-is-json", true);
+            });
+    }
+
     @Override
     public ApiResourceBuilder updateOperations(Resolver<CodegenParameter> codegenParameterIResolver) {
         headerParamModelList = new HashSet<>();
         JsonRequestBodyResolver jsonRequestBodyResolver = new JsonRequestBodyResolver(this, codegenPropertyIResolver);
         this.codegenOperationList.forEach(co -> {
             updateNestedContent(co);
+            populateContentType(co);
             updateHttpMethod(co);
             List<String> filePathArray = new ArrayList<>(Arrays.asList(co.baseName.split(PATH_SEPARATOR_PLACEHOLDER)));
             String resourceName = filePathArray.remove(filePathArray.size()-1);
-            
 
             co.allParams.stream()
                     .filter(item -> !(item.getContent() != null && item.getContent().get("application/json") != null))
@@ -631,7 +639,7 @@ public class JavaApiResourceBuilder extends ApiResourceBuilder{
                 } else {
                     enumName = ((CodegenProperty) enumItem).enumName;
                 }
-                
+
                 if (enumName.equals(newItemEnumName)) {
                     isDuplicate = true;
                     break; // No need to continue checking duplicates
