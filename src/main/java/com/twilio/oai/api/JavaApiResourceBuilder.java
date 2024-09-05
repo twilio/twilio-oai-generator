@@ -98,15 +98,10 @@ public class JavaApiResourceBuilder extends ApiResourceBuilder{
 
     private void populateContentType(CodegenOperation co) {
         if(co.consumes != null && !co.consumes.isEmpty())
-        {
-            for(Map<String, String> consume : co.consumes)
-            {
+            co.consumes.forEach(consume -> {
                 if(consume.getOrDefault("mediaType", "").equals(CONTENT_TYPE_JSON))
-                {
                     co.vendorExtensions.put("x-is-json", true);
-                }
-            }
-        }
+            });
     }
 
     @Override
