@@ -84,12 +84,12 @@ public class {{apiName}}Updater extends Updater<{{apiName}}>{
         {{#queryParams.0}}
         addQueryParams(request);
         {{/queryParams.0}}
-        {{^bodyParams.0}}
+        {{^vendorExtensions.x-is-json}}
         request.setContentType(EnumConstants.ContentType.FORM_URLENCODED);
-        {{/bodyParams.0}}
-        {{#bodyParams.0}}
+        {{/vendorExtensions.x-is-json}}
+        {{#vendorExtensions.x-is-json}}
         request.setContentType(EnumConstants.ContentType.JSON);
-        {{/bodyParams.0}}
+        {{/vendorExtensions.x-is-json}}
         {{#formParams.0}}
         addPostParams(request);
         {{/formParams.0}}

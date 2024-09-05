@@ -47,7 +47,7 @@ jobs:
       - name: Show git status and fail on diff
         run: |
           git status
-          git diff --ignore-all-space
+          git diff
           test -z "$(git status --porcelain)"
 
       - name: Remove pom file  # Otherwise, the Sonar action fails and recommends using the Maven plugin
