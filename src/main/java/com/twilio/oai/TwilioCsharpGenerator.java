@@ -130,7 +130,6 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
         final List<CodegenOperation> opList = directoryStructureService.processOperations(results);
         CsharpApiResources apiResources = processCodegenOperations(opList);
         apiResources.setAuthMethod(processAuthMethods(opList));
-        apiResources.setRestClientPrefix(setRestClientPrefix(apiResources.getAuthMethod()));
         apiResources.setResourceSetPrefix(setResourceSetPrefix(apiResources.getAuthMethod()));
         apiResources.setDomainClassPrefix(fetchDomainClassPrefix(apiResources.getAuthMethod()));
         apiResources.setRestClientClassName(fetchRestClientClassName(apiResources.getAuthMethod()));
@@ -150,9 +149,9 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
     }
 
     private String fetchClientName(String authMethod){
-        if(authMethod == BEARER_TOKEN_PREFIX) return "OrgsToken";
-        if(authMethod == NO_AUTH_PREFIX) return "NoAuth";
-        return EMPTY_STRING;
+        if(authMethod == BEARER_TOKEN_PREFIX) return "TwilioOrgsTokenRestClient";
+        if(authMethod == NO_AUTH_PREFIX) return "TwilioNoAuthRestClient";
+        return "ITwilioRestClient";
     }
 
     private String fetchRequestName(String authMethod){
@@ -165,9 +164,6 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
         return authMethod == NO_AUTH_PREFIX ? "NoAuth" : EMPTY_STRING;
     }
 
-    private String setRestClientPrefix(String authMethod){
-        return authMethod == EMPTY_STRING ? "I" : EMPTY_STRING;
-    }
 
     private String processAuthMethods(List<CodegenOperation> opList) {
         if(opList != null){

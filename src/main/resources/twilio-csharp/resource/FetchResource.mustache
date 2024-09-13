@@ -1,5 +1,5 @@
 
-        private static {{requestName}}Request BuildFetchRequest(Fetch{{apiName}}Options options, {{restClientPrefix}}Twilio{{clientName}}RestClient client)
+        private static {{requestName}}Request BuildFetchRequest(Fetch{{apiName}}Options options, {{clientName}} client)
         {
             {{>resource/GeneratePath}}
             return new {{requestName}}Request(
@@ -15,7 +15,7 @@
         /// <param name="options"> Fetch {{apiName}} parameters </param>
         /// <param name="client"> Client to make requests to Twilio </param>
         {{>resource/ReturnComments}}
-        public static {{apiName}}Resource Fetch(Fetch{{apiName}}Options options, {{restClientPrefix}}Twilio{{clientName}}RestClient client = null)
+        public static {{apiName}}Resource Fetch(Fetch{{apiName}}Options options, {{clientName}} client = null)
         {
             client = client ?? Twilio{{domainClassPrefix}}Client.Get{{restClientClassName}}RestClient();
             var response = client.Request(BuildFetchRequest(options, client));
@@ -27,7 +27,7 @@
         /// <param name="options"> Fetch {{apiName}} parameters </param>
         /// <param name="client"> Client to make requests to Twilio </param>
         {{>resource/ReturnCommentsAsync}}
-        public static async System.Threading.Tasks.Task<{{apiName}}Resource> FetchAsync(Fetch{{apiName}}Options options, {{restClientPrefix}}Twilio{{clientName}}RestClient client = null)
+        public static async System.Threading.Tasks.Task<{{apiName}}Resource> FetchAsync(Fetch{{apiName}}Options options, {{clientName}} client = null)
         {
             client = client ?? Twilio{{domainClassPrefix}}Client.Get{{restClientClassName}}RestClient();
             var response = await client.RequestAsync(BuildFetchRequest(options, client));
@@ -38,7 +38,7 @@
         {{>resource/ReturnComments}}
         public static {{apiName}}{{resourceConstant}} Fetch({{#vendorExtensions.x-request-body-param}}
                                          {{{dataType}}} {{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^required}} = null{{/required}}, {{/vendorExtensions.x-request-body-param}}
-                                        {{restClientPrefix}}Twilio{{clientName}}RestClient client = null)
+                                        {{clientName}} client = null)
         {
             var options = new Fetch{{apiName}}Options({{#requiredParams}}{{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^-last}}, {{/-last}}{{/requiredParams}}){ {{#vendorExtensions.x-request-body-param}}{{^required}}{{paramName}} = {{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^-last}},{{/-last}}{{/required}}{{/vendorExtensions.x-request-body-param}} };
             return Fetch(options, client);
@@ -47,7 +47,7 @@
         #if !NET35
         {{>Summary}}{{>resource/MethodsComments}}
         {{>resource/ReturnCommentsAsync}}
-        public static async System.Threading.Tasks.Task<{{apiName}}{{resourceConstant}}> FetchAsync({{#vendorExtensions.x-request-body-param}}{{{dataType}}} {{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^required}} = null{{/required}}, {{/vendorExtensions.x-request-body-param}}{{restClientPrefix}}Twilio{{clientName}}RestClient client = null)
+        public static async System.Threading.Tasks.Task<{{apiName}}{{resourceConstant}}> FetchAsync({{#vendorExtensions.x-request-body-param}}{{{dataType}}} {{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^required}} = null{{/required}}, {{/vendorExtensions.x-request-body-param}}{{clientName}} client = null)
         {
             var options = new Fetch{{apiName}}Options({{#requiredParams}}{{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^-last}}, {{/-last}}{{/requiredParams}}){ {{#vendorExtensions.x-request-body-param}}{{^required}}{{paramName}} = {{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^-last}},{{/-last}}{{/required}}{{/vendorExtensions.x-request-body-param}} };
             return await FetchAsync(options, client);

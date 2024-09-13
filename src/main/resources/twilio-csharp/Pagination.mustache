@@ -3,7 +3,7 @@
         /// <param name="targetUrl"> API-generated URL for the requested results page </param>
         /// <param name="client"> Client to make requests to Twilio </param>
         /// <returns> The target page of records </returns>
-        public static Page<{{apiName}}{{resourceConstant}}> GetPage(string targetUrl, {{restClientPrefix}}Twilio{{clientName}}RestClient client)
+        public static Page<{{apiName}}{{resourceConstant}}> GetPage(string targetUrl, {{clientName}} client)
         {
             client = client ?? Twilio{{domainClassPrefix}}Client.Get{{restClientClassName}}RestClient();
 
@@ -20,7 +20,7 @@
         /// <param name="page"> current page of records </param>
         /// <param name="client"> Client to make requests to Twilio </param>
         /// <returns> The next page of records </returns>
-        public static Page<{{apiName}}{{resourceConstant}}> NextPage(Page<{{apiName}}{{resourceConstant}}> page, {{restClientPrefix}}Twilio{{clientName}}RestClient client)
+        public static Page<{{apiName}}{{resourceConstant}}> NextPage(Page<{{apiName}}{{resourceConstant}}> page, {{clientName}} client)
         {
             var request = new {{requestName}}Request(
                 HttpMethod.Get,
@@ -35,7 +35,7 @@
         /// <param name="page"> current page of records </param>
         /// <param name="client"> Client to make requests to Twilio </param>
         /// <returns> The previous page of records </returns>
-        public static Page<{{apiName}}{{resourceConstant}}> PreviousPage(Page<{{apiName}}{{resourceConstant}}> page, {{restClientPrefix}}Twilio{{clientName}}RestClient client)
+        public static Page<{{apiName}}{{resourceConstant}}> PreviousPage(Page<{{apiName}}{{resourceConstant}}> page, {{clientName}} client)
         {
             var request = new {{requestName}}Request(
                 HttpMethod.Get,
