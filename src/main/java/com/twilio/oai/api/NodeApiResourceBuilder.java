@@ -66,8 +66,8 @@ public class NodeApiResourceBuilder extends FluentApiResourceBuilder {
                 }
                 if(!dependent.isInstanceDependent()) {
                     for(Parameter pathParam : dependent.getPathParams()) {
-                       if(!pathParam.getName().startsWith(dependent.getResourceName()))
-                           pathParam.addExtension("x-is-non-parent-param", true);
+                       if(pathParam.getName().startsWith(co.baseName))
+                           pathParam.addExtension("x-is-non-instance-parent-param", true);
                     }
                 }
             });

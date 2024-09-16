@@ -175,19 +175,19 @@ export function {{apiName}}ListInstance(version: {{apiVersionClass}}{{#listPathP
   {{>getDependent}}
   {{/pathParams}}
   {{#pathParams.0}}
-  {{#extensions.x-is-non-parent-param}}
+  {{#extensions.x-is-non-instance-parent-param}}
      get: function() {
-        return ({{#pathParams}}{{#extensions.x-is-non-parent-param}}{{name}}: {{schema.type}}{{^-last}} ,{{/-last}}{{/extensions.x-is-non-parent-param}}{{/pathParams}}) => {
+        return ({{#pathParams}}{{#extensions.x-is-non-instance-parent-param}}{{name}}: {{schema.type}}{{^-last}} ,{{/-last}}{{/extensions.x-is-non-instance-parent-param}}{{/pathParams}}) => {
         if (!instance._{{mountName}}) {
-          instance._{{mountName}} = {{className}}(instance._version, {{#pathParams}}{{#extensions.x-is-non-parent-param}}{{name}}{{^-last}} ,{{/-last}}{{/extensions.x-is-non-parent-param}}{{/pathParams}});
+          instance._{{mountName}} = {{className}}(instance._version, {{#pathParams}}{{#extensions.x-is-non-instance-parent-param}}{{name}}{{^-last}} ,{{/-last}}{{/extensions.x-is-non-instance-parent-param}}{{/pathParams}});
         }
         return instance._{{mountName}};
       };
      }
-  {{/extensions.x-is-non-parent-param}}
-  {{^extensions.x-is-non-parent-param}}
+  {{/extensions.x-is-non-instance-parent-param}}
+  {{^extensions.x-is-non-instance-parent-param}}
   {{>getDependent}}
-  {{/extensions.x-is-non-parent-param}}
+  {{/extensions.x-is-non-instance-parent-param}}
   {{/pathParams.0}}
   });
   {{/instanceDependent}}
