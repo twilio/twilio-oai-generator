@@ -375,7 +375,6 @@ export function CallListInstance(
       return instance._feedbackCallSummary;
     },
   });
-
   instance.create = function create(
     params: CallListInstanceCreateOptions,
     callback?: (error: Error | null, items: CallInstance) => any,
