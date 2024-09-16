@@ -1,0 +1,6 @@
+get: function {{mountName}}() {
+  if (!instance._{{mountName}}) {
+    instance._{{mountName}} = {{className}}(instance._version{{#listPathParams}}, instance._solution.{{paramName}}{{/listPathParams}});
+  }
+  return instance._{{mountName}};
+}

@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import io.swagger.v3.oas.models.parameters.Parameter;
 import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenOperation;
 import org.openapitools.codegen.CodegenParameter;
@@ -62,6 +63,12 @@ public class NodeApiResourceBuilder extends FluentApiResourceBuilder {
                     dependent.setType(resourceName + "Import");
                     dependent.setClassName(resourceName + "Import");
                     dependent.setImportName(resourceName + " as " + dependent.getType());
+                }
+                if(!dependent.isInstanceDependent()) {
+                    for(Parameter pathParam : dependent.getPathParams()) {
+                       if(!pathParam.getName().startsWith(dependent.getResourceName()))
+                           pathParam.addExtension("x-is-non-parent-param", true);
+                    }
                 }
             });
         }
