@@ -17,7 +17,7 @@
         {{>resource/ReturnComments}}
         public static {{apiName}}Resource Fetch(Fetch{{apiName}}Options options, {{clientName}} client = null)
         {
-            client = client ?? {{domainClass}}.Get{{restClientClassName}}RestClient();
+            client = client ?? {{domainClass}}.{{restClientMethodName}}();
             var response = client.Request(BuildFetchRequest(options, client));
             return FromJson(response.Content);
         }
@@ -29,7 +29,7 @@
         {{>resource/ReturnCommentsAsync}}
         public static async System.Threading.Tasks.Task<{{apiName}}Resource> FetchAsync(Fetch{{apiName}}Options options, {{clientName}} client = null)
         {
-            client = client ?? {{domainClass}}.Get{{restClientClassName}}RestClient();
+            client = client ?? {{domainClass}}.{{restClientMethodName}}();
             var response = await client.RequestAsync(BuildFetchRequest(options, client));
             return FromJson(response.Content);
         }

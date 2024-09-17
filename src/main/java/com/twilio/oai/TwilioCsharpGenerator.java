@@ -134,7 +134,7 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
         apiResources.setAuthMethod(processAuthMethods(opList));
         apiResources.setResourceSetPrefix(setResourceSetPrefix(apiResources.getAuthMethod()));
         apiResources.setDomainClass(fetchDomainClass(apiResources.getAuthMethod()));
-        apiResources.setRestClientClassName(fetchRestClientClassName(apiResources.getAuthMethod()));
+        apiResources.setRestClientMethodName(fetchRestClientClassName(apiResources.getAuthMethod()));
         apiResources.setClientName(fetchClientName(apiResources.getAuthMethod()));
         apiResources.setRequestName(fetchRequestName(apiResources.getAuthMethod()));
         results.put("resources", apiResources);
@@ -163,7 +163,7 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
     }
 
     private String fetchRestClientClassName(String authMethod){
-        return authMethod == NO_AUTH_PREFIX ? "NoAuth" : EMPTY_STRING;
+        return authMethod == NO_AUTH_PREFIX ? "GetNoAuthRestClient" : "GetRestClient";
     }
 
 

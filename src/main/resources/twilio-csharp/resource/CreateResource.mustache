@@ -23,7 +23,7 @@
         {{>resource/ReturnComments}}
         public static {{apiName}}{{resourceConstant}} Create(Create{{apiName}}Options options, {{clientName}} client = null)
         {
-            client = client ?? {{domainClass}}.Get{{restClientClassName}}RestClient();
+            client = client ?? {{domainClass}}.{{restClientMethodName}}();
             var response = client.Request(BuildCreateRequest(options, client));
             return FromJson(response.Content);
         }
@@ -35,7 +35,7 @@
         {{>resource/ReturnCommentsAsync}}
         public static async System.Threading.Tasks.Task<{{apiName}}{{resourceConstant}}> CreateAsync(Create{{apiName}}Options options, {{clientName}} client = null)
         {
-            client = client ?? {{domainClass}}.Get{{restClientClassName}}RestClient();
+            client = client ?? {{domainClass}}.{{restClientMethodName}}();
             var response = await client.RequestAsync(BuildCreateRequest(options, client));
             return FromJson(response.Content);
         }

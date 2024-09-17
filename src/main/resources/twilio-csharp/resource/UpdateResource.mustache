@@ -23,7 +23,7 @@
         {{>resource/ReturnComments}}
         public static {{apiName}}{{resourceConstant}} Update(Update{{apiName}}Options options, {{clientName}} client = null)
         {
-            client = client ?? {{domainClass}}.Get{{restClientClassName}}RestClient();
+            client = client ?? {{domainClass}}.{{restClientMethodName}}();
             var response = client.Request(BuildUpdateRequest(options, client));
             return FromJson(response.Content);
         }
@@ -36,7 +36,7 @@
         public static async System.Threading.Tasks.Task<{{apiName}}{{resourceConstant}}> UpdateAsync(Update{{apiName}}Options options,
                                                                                                     {{clientName}} client = null)
         {
-            client = client ?? {{domainClass}}.Get{{restClientClassName}}RestClient();
+            client = client ?? {{domainClass}}.{{restClientMethodName}}();
             var response = await client.RequestAsync(BuildUpdateRequest(options, client));
             return FromJson(response.Content);
         }

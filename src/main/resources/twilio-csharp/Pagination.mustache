@@ -5,7 +5,7 @@
         /// <returns> The target page of records </returns>
         public static Page<{{apiName}}{{resourceConstant}}> GetPage(string targetUrl, {{clientName}} client)
         {
-            client = client ?? {{domainClass}}.Get{{restClientClassName}}RestClient();
+            client = client ?? {{domainClass}}.{{restClientMethodName}}();
 
             var request = new {{requestName}}Request(
                 HttpMethod.Get,

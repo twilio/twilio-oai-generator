@@ -16,7 +16,7 @@
         {{>resource/ReturnComments}}
         public static {{resourceSetPrefix}}ResourceSet<{{apiName}}{{resourceConstant}}> Read(Read{{apiName}}Options options, {{clientName}} client = null)
         {
-            client = client ?? {{domainClass}}.Get{{restClientClassName}}RestClient();
+            client = client ?? {{domainClass}}.{{restClientMethodName}}();
             var response = client.Request(BuildReadRequest(options, client));
             var page = Page<{{apiName}}{{resourceConstant}}>.FromJson("{{recordKey}}", response.Content);
             return new {{resourceSetPrefix}}ResourceSet<{{apiName}}{{resourceConstant}}>(page, options, client);
@@ -29,7 +29,7 @@
         {{>resource/ReturnCommentsAsync}}
         public static async System.Threading.Tasks.Task<{{resourceSetPrefix}}ResourceSet<{{apiName}}{{resourceConstant}}>> ReadAsync(Read{{apiName}}Options options, {{clientName}} client = null)
         {
-            client = client ?? {{domainClass}}.Get{{restClientClassName}}RestClient();
+            client = client ?? {{domainClass}}.{{restClientMethodName}}();
             var response = await client.RequestAsync(BuildReadRequest(options, client));
 
             var page = Page<{{apiName}}{{resourceConstant}}>.FromJson("{{recordKey}}", response.Content);
