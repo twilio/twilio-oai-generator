@@ -65,6 +65,7 @@ export function CredentialListInstance(version: V1): CredentialListInstance {
       return instance._newCredentials;
     },
   });
+
   instance.toJSON = function toJSON() {
     return instance._solution;
   };

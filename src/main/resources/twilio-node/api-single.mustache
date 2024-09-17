@@ -169,27 +169,15 @@ export function {{apiName}}ListInstance(version: {{apiVersionClass}}{{#listPathP
 
   {{#dependents}}
   {{^instanceDependent}}
-
   Object.defineProperty(instance, "{{mountName}}", {
-  {{^pathParams}}
-  {{>getDependent}}
-  {{/pathParams}}
-  {{#pathParams.0}}
-  {{#extensions.x-is-non-instance-parent-param}}
-     get: function() {
-        return ({{#pathParams}}{{#extensions.x-is-non-instance-parent-param}}{{name}}: {{schema.type}}{{^-last}} ,{{/-last}}{{/extensions.x-is-non-instance-parent-param}}{{/pathParams}}) => {
-        if (!instance._{{mountName}}) {
-          instance._{{mountName}} = {{className}}(instance._version, {{#pathParams}}{{#extensions.x-is-non-instance-parent-param}}{{name}}{{^-last}} ,{{/-last}}{{/extensions.x-is-non-instance-parent-param}}{{/pathParams}});
-        }
-        return instance._{{mountName}};
-      };
-     }
-  {{/extensions.x-is-non-instance-parent-param}}
-  {{^extensions.x-is-non-instance-parent-param}}
-  {{>getDependent}}
-  {{/extensions.x-is-non-instance-parent-param}}
-  {{/pathParams.0}}
+    get: function {{mountName}}() {
+      if (!instance._{{mountName}}) {
+        instance._{{mountName}} = {{className}}(instance._version{{#listPathParams}}, instance._solution.{{paramName}}{{/listPathParams}});
+      }
+      return instance._{{mountName}};
+    }
   });
+
   {{/instanceDependent}}
   {{/dependents}}
 {{#operations}}
