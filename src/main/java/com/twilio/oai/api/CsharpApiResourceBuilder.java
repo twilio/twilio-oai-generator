@@ -67,10 +67,10 @@ public class CsharpApiResourceBuilder extends ApiResourceBuilder {
             }
         });
 
-        if(this.authMethod == "BearerToken"){
+        if(this.authMethod == EnumConstants.AuthType.BEARER_TOKEN.getValue()){
             metaAPIProperties.put("auth_method-bearer-token", true);
         }
-        else if(this.authMethod == "NoAuth"){
+        else if(this.authMethod == EnumConstants.AuthType.NOAUTH.getValue()){
             metaAPIProperties.put("auth_method-no-auth", true);
         }
         if (OperationStore.getInstance().isEnumPresentInOptions())
@@ -104,12 +104,12 @@ public class CsharpApiResourceBuilder extends ApiResourceBuilder {
             if(authMethods != null){
                 for(CodegenSecurity c : authMethods){
                     if(c.isOAuth == true){
-                        this.authMethod = "BearerToken";
+                        this.authMethod = EnumConstants.AuthType.BEARER_TOKEN.getValue();
                     }
                 }
             }
             else{
-                this.authMethod = "NoAuth";
+                this.authMethod = EnumConstants.AuthType.NOAUTH.getValue();
             } 
         }
     }
