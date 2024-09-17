@@ -21,7 +21,7 @@
         {{>resource/ReturnComments}}
         public static bool Delete(Delete{{apiName}}Options options, {{clientName}} client = null)
         {
-            client = client ?? Twilio{{domainClassPrefix}}Client.Get{{restClientClassName}}RestClient();
+            client = client ?? {{domainClass}}.Get{{restClientClassName}}RestClient();
             var response = client.Request(BuildDeleteRequest(options, client));
             return response.StatusCode == System.Net.HttpStatusCode.NoContent;
         }
@@ -34,7 +34,7 @@
         public static async System.Threading.Tasks.Task<bool> DeleteAsync(Delete{{apiName}}Options options,
                                                                         {{clientName}} client = null)
         {
-            client = client ?? Twilio{{domainClassPrefix}}Client.Get{{restClientClassName}}RestClient();
+            client = client ?? {{domainClass}}.Get{{restClientClassName}}RestClient();
             var response = await client.RequestAsync(BuildDeleteRequest(options, client));
             return response.StatusCode == System.Net.HttpStatusCode.NoContent;
         }

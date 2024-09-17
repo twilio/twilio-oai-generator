@@ -12,7 +12,7 @@ import java.util.List;
 public class CsharpApiResources extends ApiResources {
     @Getter @Setter private String authMethod;
     @Getter @Setter private String resourceSetPrefix;
-    @Getter @Setter private String domainClassPrefix;
+    @Getter @Setter private String domainClass;
     @Getter @Setter private String restClientClassName;
     @Getter @Setter private String clientName;
     @Getter @Setter private String requestName;
