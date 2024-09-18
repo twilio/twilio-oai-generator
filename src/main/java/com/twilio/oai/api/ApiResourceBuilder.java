@@ -290,6 +290,7 @@ public abstract class ApiResourceBuilder implements IApiResourceBuilder {
         for (CodegenModel codegenModel : responseModels) {
             for (CodegenProperty property : codegenModel.vars) {
                 property.nameInCamelCase = StringHelper.camelize(property.nameInSnakeCase);
+                // When we have responseModel referencing a schema, isOverriden flag is set to false (which is null by default). This makes the property different. See assistants api ListAssistantResponse
                 Boolean isOverriden = property.isOverridden;
                 property.isOverridden = null;
                 if (Arrays
