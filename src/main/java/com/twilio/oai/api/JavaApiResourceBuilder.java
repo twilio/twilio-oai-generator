@@ -611,11 +611,12 @@ public class JavaApiResourceBuilder extends ApiResourceBuilder{
                             (key, value) -> codegenModel.vendorExtensions.merge(key, value, (oldValue, newValue) -> newValue));
                 }
                 resModel.vars.forEach(var -> {
-                    Boolean isOverriden = var.isOverridden;
-                    var.isOverridden = null;
+                    Boolean isOverridden = var.isOverridden;
+                    if(isOverridden != null && isOverridden == false)
+                        var.isOverridden = null;
                     if(!codegenProperties.contains(var))
                         codegenProperties.add(var);
-                    var.isOverridden = isOverriden;
+                    var.isOverridden = isOverridden;
                 });
 //            resModel.vars.stream().filter(Predicate.not(codegenProperties::contains)).forEach(codegenProperties::add);
         }

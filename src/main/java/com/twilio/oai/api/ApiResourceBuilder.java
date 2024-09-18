@@ -290,15 +290,16 @@ public abstract class ApiResourceBuilder implements IApiResourceBuilder {
         for (CodegenModel codegenModel : responseModels) {
             for (CodegenProperty property : codegenModel.vars) {
                 property.nameInCamelCase = StringHelper.camelize(property.nameInSnakeCase);
-                Boolean isOverriden = property.isOverridden;
-                property.isOverridden = null;
+                Boolean isOverridden = property.isOverridden;
+                if(isOverridden != null && isOverridden == false)
+                    property.isOverridden = null;
                 if (Arrays
                         .stream(Operation.values())
                         .anyMatch(value -> value.getValue().equals(property.nameInCamelCase))) {
                     property.nameInCamelCase = "_" + property.nameInCamelCase;
                 }
                 distinctResponseModels.add(property);
-                property.isOverridden = isOverriden;
+                property.isOverridden = isOverridden;
             }
         }
         return distinctResponseModels;
