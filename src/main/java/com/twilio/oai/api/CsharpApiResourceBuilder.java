@@ -132,15 +132,19 @@ public class CsharpApiResourceBuilder extends ApiResourceBuilder {
         }
     }
 
+    private void setDataType(CodegenParameter codegenParameter) {
+        for (CodegenModel codegenModel : getAllModels())
+            if (codegenModel.classname.equals(codegenParameter.dataType))
+                codegenParameter.dataType = getApiName() + "Resource" + ApplicationConstants.DOT + codegenParameter.dataType;
+    }
+
     private void resolveIngressModel(CodegenOperation codegenOperation) {
         // Required params are used in parameters in C#, Check Params.mustache.
-        for (CodegenParameter codegenParameter: codegenOperation.requiredParams) {
-            for (CodegenModel codegenModel : getAllModels()) {
-                if (codegenModel.classname.equals(codegenParameter.paramName)) {
-                    codegenParameter.dataType = getApiName() + "Resource" + ApplicationConstants.DOT + codegenParameter.dataType;
-                }
-            }
-            
+        for (CodegenParameter codegenParameter: codegenOperation.requiredParams)
+            setDataType(codegenParameter);
+
+        for (CodegenParameter codegenParameter: codegenOperation.optionalParams) {
+            setDataType(codegenParameter);
         }
     }
 
@@ -219,12 +223,16 @@ public class CsharpApiResourceBuilder extends ApiResourceBuilder {
         for (CodegenModel codegenModel: responseModels) {
             for (CodegenProperty property: codegenModel.vars) {
                 property.nameInCamelCase = StringHelper.camelize(property.nameInSnakeCase);
+                Boolean isOverridden = property.isOverridden;
+                if(isOverridden != null && isOverridden == false)
+                    property.isOverridden = null;
                 if (Arrays.stream(EnumConstants.Operation.values())
-                        .anyMatch(value -> value.getValue().equals(property.nameInCamelCase)) 
+                        .anyMatch(value -> value.getValue().equals(property.nameInCamelCase))
                         || isNestedModelPresentWithPropertyName(property)) {
                     property.nameInCamelCase = "_" + property.nameInCamelCase;
                 }
                 distinctResponseModels.add(property);
+                property.isOverridden = isOverridden;
             }
         }
         return distinctResponseModels;
@@ -326,7 +334,7 @@ public class CsharpApiResourceBuilder extends ApiResourceBuilder {
     }
 
     public boolean isNestedModelPresentWithPropertyName(final CodegenProperty property) {
-        if (nestedModels == null || nestedModels.size() < 1) return false; 
+        if (nestedModels == null || nestedModels.size() < 1) return false;
         Optional<CodegenModel> foundModel = nestedModels.stream()
                 .filter(model -> model.classname.equals(property.name))
                 .findFirst();
