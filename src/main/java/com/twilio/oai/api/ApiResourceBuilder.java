@@ -93,7 +93,7 @@ public abstract class ApiResourceBuilder implements IApiResourceBuilder {
     }
 
     public void updateHttpMethod(CodegenOperation co) {
-        
+
     }
 
     protected void resolveParam(final Resolver<CodegenParameter> codegenParameterIResolver,
@@ -191,7 +191,7 @@ public abstract class ApiResourceBuilder implements IApiResourceBuilder {
         }
         return null;
     }
-    
+
     public void addNestedModel(final CodegenModel codegenModel) {
         // TODO: Temporary fix, planning to use hashmap, set is inserting duplicate values.
         Iterator<CodegenModel> iterator = nestedModels.iterator();
@@ -290,12 +290,17 @@ public abstract class ApiResourceBuilder implements IApiResourceBuilder {
         for (CodegenModel codegenModel : responseModels) {
             for (CodegenProperty property : codegenModel.vars) {
                 property.nameInCamelCase = StringHelper.camelize(property.nameInSnakeCase);
+                // When we have responseModel referencing a schema, isOverriden flag is set to false (which is null by default). This makes the property different. See assistants api ListAssistantResponse
+                Boolean isOverridden = property.isOverridden;
+                if(isOverridden != null && isOverridden == false)
+                    property.isOverridden = null;
                 if (Arrays
                         .stream(Operation.values())
                         .anyMatch(value -> value.getValue().equals(property.nameInCamelCase))) {
                     property.nameInCamelCase = "_" + property.nameInCamelCase;
                 }
                 distinctResponseModels.add(property);
+                property.isOverridden = isOverridden;
             }
         }
         return distinctResponseModels;
