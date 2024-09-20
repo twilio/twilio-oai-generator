@@ -50,8 +50,11 @@ public abstract class AbstractApiActionTemplate implements IApiActionTemplate {
         final String templateName = templateStrings.get(0);
         final String fileExtension = templateStrings.get(1);
         final String apiVersionClass = codegen.additionalProperties().get("apiVersionClass").toString();
+        final boolean isVersionLess = (boolean)codegen.additionalProperties().get("isVersionLess");
 
-        if (apiVersionClass.startsWith("V")) {
+        //For versionless domains this has to be added to api template files, not supporting files
+        //In python init files should get added to api template files if domain is versionless
+        if (isVersionLess != true && apiVersionClass.startsWith("V")) {
             codegen
                 .supportingFiles()
                     .add(new SupportingFile(templateName,

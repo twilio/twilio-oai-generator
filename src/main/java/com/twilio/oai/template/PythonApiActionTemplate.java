@@ -10,9 +10,14 @@ import org.openapitools.codegen.utils.StringUtils;
 
 public class PythonApiActionTemplate extends AbstractApiActionTemplate {
     public static final String INIT_FILENAME = "__init__";
+    private boolean isVersionLess = false;
 
     public PythonApiActionTemplate(final CodegenConfig codegenConfig) {
         super(codegenConfig);
+    }
+
+    public void setIsVersionLess(boolean isVLess){
+        isVersionLess = isVLess;
     }
 
     @Override
@@ -25,7 +30,7 @@ public class PythonApiActionTemplate extends AbstractApiActionTemplate {
 
     @Override
     protected String getVersionFilename(final String apiVersionClass) {
-        if (apiVersionClass.startsWith("V")) {
+        if (isVersionLess != true && apiVersionClass.startsWith("V")) {
             return INIT_FILENAME;
         }
 

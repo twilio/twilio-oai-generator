@@ -60,6 +60,7 @@ public class TwilioPythonGenerator extends PythonLegacyClientCodegen {
     public void processOpenAPI(final OpenAPI openAPI) {
         String domain = StringHelper.toSnakeCase(twilioCodegen.getDomainFromOpenAPI(openAPI));
         String version = StringHelper.toSnakeCase(twilioCodegen.getVersionFromOpenAPI(openAPI));
+        populateVersionDetails(actionTemplate, version);
         twilioCodegen.setDomain(domain);
         twilioCodegen.setVersion(version);
         twilioCodegen.setOutputDir(domain, version);
@@ -68,6 +69,15 @@ public class TwilioPythonGenerator extends PythonLegacyClientCodegen {
         resourceTree.getResources().forEach(resource -> resource.updateFamily(resourceTree));
 
         directoryStructureService.configure(openAPI);
+    }
+
+    private void populateVersionDetails(PythonApiActionTemplate actionTemplate, String version) {
+        if(version.equals("")){
+            actionTemplate.setIsVersionLess(true);
+        }
+        else{
+            actionTemplate.setIsVersionLess(false);
+        }
     }
 
     @Override
@@ -87,10 +97,11 @@ public class TwilioPythonGenerator extends PythonLegacyClientCodegen {
             return isMatchingPath && pathHasDependents;
         });
 
+        //Create init files in sub folders, this return path of init file in this subfolder
         if (isInitFile && !filename.endsWith(initFilename)) {
             return PathUtils.removeExtension(filename) + File.separator + initFilename;
         }
-
+        //Processing files other than init files
         return filename;
     }
 
