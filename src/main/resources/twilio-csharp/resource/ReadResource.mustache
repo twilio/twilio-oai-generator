@@ -1,15 +1,8 @@
 
-<<<<<<< HEAD
         private static {{requestName}}Request BuildReadRequest(Read{{apiName}}Options options, {{clientName}} client)
         {
             {{>resource/GeneratePath}}
             return new {{requestName}}Request(
-=======
-        private static {{authMethod}}Request BuildReadRequest(Read{{apiName}}Options options, {{restClientPrefix}}Twilio{{authMethod}}RestClient client)
-        {
-            {{>resource/GeneratePath}}
-            return new {{authMethod}}Request(
->>>>>>> a326080 (orgs api uptake for twilio csharp)
                 {{vendorExtensions.x-http-method}},
                 Rest.Domain.{{domainPackage}},
                 path,
@@ -21,15 +14,9 @@
         /// <param name="options"> Read {{apiName}} parameters </param>
         /// <param name="client"> Client to make requests to Twilio </param>
         {{>resource/ReturnComments}}
-<<<<<<< HEAD
         public static {{resourceSetPrefix}}ResourceSet<{{apiName}}{{resourceConstant}}> Read(Read{{apiName}}Options options, {{clientName}} client = null)
         {
             client = client ?? {{domainClass}}.{{restClientMethodName}}();
-=======
-        public static {{resourceSetPrefix}}ResourceSet<{{apiName}}{{resourceConstant}}> Read(Read{{apiName}}Options options, {{restClientPrefix}}Twilio{{authMethod}}RestClient client = null)
-        {
-            client = client ?? Twilio{{domainClassPrefix}}Client.GetRestClient();
->>>>>>> a326080 (orgs api uptake for twilio csharp)
             var response = client.Request(BuildReadRequest(options, client));
             var page = Page<{{apiName}}{{resourceConstant}}>.FromJson("{{recordKey}}", response.Content);
             return new {{resourceSetPrefix}}ResourceSet<{{apiName}}{{resourceConstant}}>(page, options, client);
@@ -40,15 +27,9 @@
         /// <param name="options"> Read {{apiName}} parameters </param>
         /// <param name="client"> Client to make requests to Twilio </param>
         {{>resource/ReturnCommentsAsync}}
-<<<<<<< HEAD
         public static async System.Threading.Tasks.Task<{{resourceSetPrefix}}ResourceSet<{{apiName}}{{resourceConstant}}>> ReadAsync(Read{{apiName}}Options options, {{clientName}} client = null)
         {
             client = client ?? {{domainClass}}.{{restClientMethodName}}();
-=======
-        public static async System.Threading.Tasks.Task<{{resourceSetPrefix}}ResourceSet<{{apiName}}{{resourceConstant}}>> ReadAsync(Read{{apiName}}Options options, {{restClientPrefix}}Twilio{{authMethod}}RestClient client = null)
-        {
-            client = client ?? Twilio{{domainClassPrefix}}Client.GetRestClient();
->>>>>>> a326080 (orgs api uptake for twilio csharp)
             var response = await client.RequestAsync(BuildReadRequest(options, client));
 
             var page = Page<{{apiName}}{{resourceConstant}}>.FromJson("{{recordKey}}", response.Content);
@@ -60,11 +41,7 @@
         public static {{resourceSetPrefix}}ResourceSet<{{apiName}}{{resourceConstant}}> Read({{#vendorExtensions.x-request-body-param}}
                                                      {{{dataType}}} {{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^required}} = null{{/required}},{{/vendorExtensions.x-request-body-param}}
                                                      long? limit = null,
-<<<<<<< HEAD
                                                     {{clientName}} client = null)
-=======
-                                                    {{restClientPrefix}}Twilio{{authMethod}}RestClient client = null)
->>>>>>> a326080 (orgs api uptake for twilio csharp)
         {
             var options = new Read{{apiName}}Options({{#requiredParams}}{{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^-last}}, {{/-last}}{{/requiredParams}}){ {{#vendorExtensions.x-request-body-param}}{{^required}}{{paramName}} = {{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}, {{/required}}{{/vendorExtensions.x-request-body-param}}Limit = limit};
             return Read(options, client);
@@ -76,11 +53,7 @@
         public static async System.Threading.Tasks.Task<{{resourceSetPrefix}}ResourceSet<{{apiName}}{{resourceConstant}}>> ReadAsync({{#vendorExtensions.x-request-body-param}}
                                                                                              {{{dataType}}} {{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^required}} = null{{/required}},{{/vendorExtensions.x-request-body-param}}
                                                                                              long? limit = null,
-<<<<<<< HEAD
                                                                                             {{clientName}} client = null)
-=======
-                                                                                            {{restClientPrefix}}Twilio{{authMethod}}RestClient client = null)
->>>>>>> a326080 (orgs api uptake for twilio csharp)
         {
             var options = new Read{{apiName}}Options({{#requiredParams}}{{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^-last}}, {{/-last}}{{/requiredParams}}){ {{#vendorExtensions.x-request-body-param}}{{^required}}{{paramName}} = {{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}, {{/required}}{{/vendorExtensions.x-request-body-param}}Limit = limit};
             return await ReadAsync(options, client);

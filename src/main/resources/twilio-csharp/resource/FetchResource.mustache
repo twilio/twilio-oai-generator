@@ -1,15 +1,8 @@
 
-<<<<<<< HEAD
         private static {{requestName}}Request BuildFetchRequest(Fetch{{apiName}}Options options, {{clientName}} client)
         {
             {{>resource/GeneratePath}}
             return new {{requestName}}Request(
-=======
-        private static {{authMethod}}Request BuildFetchRequest(Fetch{{apiName}}Options options, {{restClientPrefix}}Twilio{{authMethod}}RestClient client)
-        {
-            {{>resource/GeneratePath}}
-            return new {{authMethod}}Request(
->>>>>>> a326080 (orgs api uptake for twilio csharp)
                 {{vendorExtensions.x-http-method}},
                 Rest.Domain.{{domainPackage}},
                 path,
@@ -22,15 +15,9 @@
         /// <param name="options"> Fetch {{apiName}} parameters </param>
         /// <param name="client"> Client to make requests to Twilio </param>
         {{>resource/ReturnComments}}
-<<<<<<< HEAD
         public static {{apiName}}Resource Fetch(Fetch{{apiName}}Options options, {{clientName}} client = null)
         {
             client = client ?? {{domainClass}}.{{restClientMethodName}}();
-=======
-        public static {{apiName}}Resource Fetch(Fetch{{apiName}}Options options, {{restClientPrefix}}Twilio{{authMethod}}RestClient client = null)
-        {
-            client = client ?? Twilio{{domainClassPrefix}}Client.GetRestClient();
->>>>>>> a326080 (orgs api uptake for twilio csharp)
             var response = client.Request(BuildFetchRequest(options, client));
             return FromJson(response.Content);
         }
@@ -40,15 +27,9 @@
         /// <param name="options"> Fetch {{apiName}} parameters </param>
         /// <param name="client"> Client to make requests to Twilio </param>
         {{>resource/ReturnCommentsAsync}}
-<<<<<<< HEAD
         public static async System.Threading.Tasks.Task<{{apiName}}Resource> FetchAsync(Fetch{{apiName}}Options options, {{clientName}} client = null)
         {
             client = client ?? {{domainClass}}.{{restClientMethodName}}();
-=======
-        public static async System.Threading.Tasks.Task<{{apiName}}Resource> FetchAsync(Fetch{{apiName}}Options options, {{restClientPrefix}}Twilio{{authMethod}}RestClient client = null)
-        {
-            client = client ?? Twilio{{domainClassPrefix}}Client.GetRestClient();
->>>>>>> a326080 (orgs api uptake for twilio csharp)
             var response = await client.RequestAsync(BuildFetchRequest(options, client));
             return FromJson(response.Content);
         }
@@ -57,11 +38,7 @@
         {{>resource/ReturnComments}}
         public static {{apiName}}{{resourceConstant}} Fetch({{#vendorExtensions.x-request-body-param}}
                                          {{{dataType}}} {{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^required}} = null{{/required}}, {{/vendorExtensions.x-request-body-param}}
-<<<<<<< HEAD
                                         {{clientName}} client = null)
-=======
-                                        {{restClientPrefix}}Twilio{{authMethod}}RestClient client = null)
->>>>>>> a326080 (orgs api uptake for twilio csharp)
         {
             var options = new Fetch{{apiName}}Options({{#requiredParams}}{{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^-last}}, {{/-last}}{{/requiredParams}}){ {{#vendorExtensions.x-request-body-param}}{{^required}}{{paramName}} = {{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^-last}},{{/-last}}{{/required}}{{/vendorExtensions.x-request-body-param}} };
             return Fetch(options, client);
@@ -70,11 +47,7 @@
         #if !NET35
         {{>Summary}}{{>resource/MethodsComments}}
         {{>resource/ReturnCommentsAsync}}
-<<<<<<< HEAD
         public static async System.Threading.Tasks.Task<{{apiName}}{{resourceConstant}}> FetchAsync({{#vendorExtensions.x-request-body-param}}{{{dataType}}} {{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^required}} = null{{/required}}, {{/vendorExtensions.x-request-body-param}}{{clientName}} client = null)
-=======
-        public static async System.Threading.Tasks.Task<{{apiName}}{{resourceConstant}}> FetchAsync({{#vendorExtensions.x-request-body-param}}{{{dataType}}} {{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^required}} = null{{/required}}, {{/vendorExtensions.x-request-body-param}}{{restClientPrefix}}Twilio{{authMethod}}RestClient client = null)
->>>>>>> a326080 (orgs api uptake for twilio csharp)
         {
             var options = new Fetch{{apiName}}Options({{#requiredParams}}{{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^-last}}, {{/-last}}{{/requiredParams}}){ {{#vendorExtensions.x-request-body-param}}{{^required}}{{paramName}} = {{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^-last}},{{/-last}}{{/required}}{{/vendorExtensions.x-request-body-param}} };
             return await FetchAsync(options, client);

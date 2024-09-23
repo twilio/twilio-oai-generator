@@ -11,17 +11,11 @@ import java.util.List;
 
 public class CsharpApiResources extends ApiResources {
     @Getter @Setter private String authMethod;
-<<<<<<< HEAD
     @Getter @Setter private String resourceSetPrefix;
     @Getter @Setter private String domainClass;
     @Getter @Setter private String restClientMethodName;
     @Getter @Setter private String clientName;
     @Getter @Setter private String requestName;
-=======
-    @Getter @Setter private String restClientPrefix;
-    @Getter @Setter private String resourceSetPrefix;
-    @Getter @Setter private String domainClassPrefix;
->>>>>>> a326080 (orgs api uptake for twilio csharp)
     List<IJsonSchemaValidationProperties> enums = new ArrayList<>(OperationStore.getInstance().getEnums().values());
 
     public String resourceConstant = ApplicationConstants.RESOURCE;
