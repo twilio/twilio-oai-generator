@@ -48,6 +48,7 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
     private final String EMPTY_STRING = "";
     private final String ORGS_TOKEN_CLIENT = "TwilioOrgsTokenAuthClient";
     private final String BASIC_CLIENT = "TwilioClient";
+
     private final DirectoryStructureService directoryStructureService = new DirectoryStructureService(
         additionalProperties,
         new ResourceMap(new Inflector()),
@@ -170,13 +171,13 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
     private String processAuthMethods(List<CodegenOperation> opList) {
         boolean isBasicAuthPresent = false;
         boolean isTokenAuthPresent = false;
+
         if(opList != null){
             List<CodegenSecurity> authMethods = opList.get(0).authMethods;
             if(authMethods != null){
                 for(CodegenSecurity c : authMethods){
                     if(c.isOAuth == true){
                         isTokenAuthPresent = true;
-
                     }
                     if(c.isBasic == true){
                         isBasicAuthPresent = true;
