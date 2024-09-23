@@ -100,13 +100,21 @@ public class CsharpApiResourceBuilder extends ApiResourceBuilder {
     }
 
     public void processAuthMethods(List<CodegenOperation> opList) {
+        boolean isBasicAuthPresent = false;
+        boolean isTokenAuthPresent = false;
         if(opList != null){
             List<CodegenSecurity> authMethods = opList.get(0).authMethods;
             if(authMethods != null){
                 for(CodegenSecurity c : authMethods){
                     if(c.isOAuth == true){
-                        this.authMethod = EnumConstants.AuthType.BEARER_TOKEN.getValue();
+                        isTokenAuthPresent = true;
                     }
+                    if(c.isBasic == true){
+                        isBasicAuthPresent = true;
+                    }
+                }
+                if(isBasicAuthPresent != true && isTokenAuthPresent){
+                    this.authMethod = EnumConstants.AuthType.BEARER_TOKEN.getValue();
                 }
             }
             else{
