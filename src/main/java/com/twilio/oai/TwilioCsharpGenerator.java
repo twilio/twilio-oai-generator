@@ -168,18 +168,26 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
 
 
     private String processAuthMethods(List<CodegenOperation> opList) {
+        boolean isBasicAuthPresent = false;
+        boolean isTokenAuthPresent = false;
         if(opList != null){
             List<CodegenSecurity> authMethods = opList.get(0).authMethods;
             if(authMethods != null){
                 for(CodegenSecurity c : authMethods){
                     if(c.isOAuth == true){
-                        return "BearerToken";
+                        isTokenAuthPresent = true;
+
+                    }
+                    if(c.isBasic == true){
+                        isBasicAuthPresent = true;
                     }
                 }
             }
             else return "NoAuth";
         }
-        return "";
+        if(isBasicAuthPresent)
+            return "";
+        return "BearerToken";
     }
 
     @Override
