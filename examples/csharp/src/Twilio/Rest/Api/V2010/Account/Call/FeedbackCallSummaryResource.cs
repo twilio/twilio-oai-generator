@@ -25,6 +25,8 @@ using Twilio.Http;
 using Twilio.Types;
 
 
+
+
 namespace Twilio.Rest.Api.V2010.Account.Call
 {
     public class FeedbackCallSummaryResource : Resource
@@ -88,7 +90,7 @@ namespace Twilio.Rest.Api.V2010.Account.Call
         /// <returns> Task that resolves to A single instance of FeedbackCallSummary </returns>
         #if !NET35
         public static async System.Threading.Tasks.Task<FeedbackCallSummaryResource> UpdateAsync(UpdateFeedbackCallSummaryOptions options,
-                                                                                                          ITwilioRestClient client = null)
+                                                                                                    ITwilioRestClient client = null)
         {
             client = client ?? TwilioClient.GetRestClient();
             var response = await client.RequestAsync(BuildUpdateRequest(options, client));
@@ -110,7 +112,7 @@ namespace Twilio.Rest.Api.V2010.Account.Call
                                           DateTime? startDate,
                                           string pathAccountSid = null,
                                           string accountSid = null,
-                                          ITwilioRestClient client = null)
+                                            ITwilioRestClient client = null)
         {
             var options = new UpdateFeedbackCallSummaryOptions(pathSid, endDate, startDate){ PathAccountSid = pathAccountSid, AccountSid = accountSid };
             return Update(options, client);
@@ -131,7 +133,7 @@ namespace Twilio.Rest.Api.V2010.Account.Call
                                                                               DateTime? startDate,
                                                                               string pathAccountSid = null,
                                                                               string accountSid = null,
-                                                                              ITwilioRestClient client = null)
+                                                                                ITwilioRestClient client = null)
         {
             var options = new UpdateFeedbackCallSummaryOptions(pathSid, endDate, startDate){ PathAccountSid = pathAccountSid, AccountSid = accountSid };
             return await UpdateAsync(options, client);

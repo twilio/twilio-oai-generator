@@ -25,6 +25,8 @@ using Twilio.Http;
 
 
 
+
+
 namespace Twilio.Rest.Versionless.Understand
 {
     public class AssistantResource : Resource
@@ -65,8 +67,7 @@ namespace Twilio.Rest.Versionless.Understand
         /// <param name="options"> Read Assistant parameters </param>
         /// <param name="client"> Client to make requests to Twilio </param>
         /// <returns> Task that resolves to A single instance of Assistant </returns>
-        public static async System.Threading.Tasks.Task<ResourceSet<AssistantResource>> ReadAsync(ReadAssistantOptions options,
-                                                                                             ITwilioRestClient client = null)
+        public static async System.Threading.Tasks.Task<ResourceSet<AssistantResource>> ReadAsync(ReadAssistantOptions options, ITwilioRestClient client = null)
         {
             client = client ?? TwilioClient.GetRestClient();
             var response = await client.RequestAsync(BuildReadRequest(options, client));
@@ -83,7 +84,7 @@ namespace Twilio.Rest.Versionless.Understand
         public static ResourceSet<AssistantResource> Read(
                                                      int? pageSize = null,
                                                      long? limit = null,
-                                                     ITwilioRestClient client = null)
+                                                    ITwilioRestClient client = null)
         {
             var options = new ReadAssistantOptions(){ PageSize = pageSize, Limit = limit};
             return Read(options, client);
@@ -98,7 +99,7 @@ namespace Twilio.Rest.Versionless.Understand
         public static async System.Threading.Tasks.Task<ResourceSet<AssistantResource>> ReadAsync(
                                                                                              int? pageSize = null,
                                                                                              long? limit = null,
-                                                                                             ITwilioRestClient client = null)
+                                                                                            ITwilioRestClient client = null)
         {
             var options = new ReadAssistantOptions(){ PageSize = pageSize, Limit = limit};
             return await ReadAsync(options, client);
