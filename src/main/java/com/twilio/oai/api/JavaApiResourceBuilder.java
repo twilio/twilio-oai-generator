@@ -614,6 +614,7 @@ public class JavaApiResourceBuilder extends ApiResourceBuilder{
                     Boolean isOverridden = var.isOverridden;
                     if(isOverridden != null && isOverridden == false)
                         var.isOverridden = null;
+                    var.baseName = StringHelper.camelize(var.baseName, true);
                     if(!codegenProperties.contains(var))
                         codegenProperties.add(var);
                     var.isOverridden = isOverridden;
