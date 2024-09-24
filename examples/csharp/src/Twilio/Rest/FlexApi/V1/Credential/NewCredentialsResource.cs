@@ -25,6 +25,8 @@ using Twilio.Http;
 using Twilio.Types;
 
 
+
+
 namespace Twilio.Rest.FlexApi.V1.Credential
 {
     public class NewCredentialsResource : Resource
@@ -94,8 +96,7 @@ namespace Twilio.Rest.FlexApi.V1.Credential
         /// <param name="options"> Create NewCredentials parameters </param>
         /// <param name="client"> Client to make requests to Twilio </param>
         /// <returns> Task that resolves to A single instance of NewCredentials </returns>
-        public static async System.Threading.Tasks.Task<NewCredentialsResource> CreateAsync(CreateNewCredentialsOptions options,
-        ITwilioRestClient client = null)
+        public static async System.Threading.Tasks.Task<NewCredentialsResource> CreateAsync(CreateNewCredentialsOptions options, ITwilioRestClient client = null)
         {
             client = client ?? TwilioClient.GetRestClient();
             var response = await client.RequestAsync(BuildCreateRequest(options, client));
@@ -141,7 +142,7 @@ namespace Twilio.Rest.FlexApi.V1.Credential
                                           List<object> testAnyArray = null,
                                           List<NewCredentialsResource.PermissionsEnum> permissions = null,
                                           string someA2PThing = null,
-                                          ITwilioRestClient client = null)
+                                            ITwilioRestClient client = null)
         {
             var options = new CreateNewCredentialsOptions(testString){  TestInteger = testInteger, TestDate = testDate, TestNumberFloat = testNumberFloat, TestObject = testObject, TestBoolean = testBoolean, TestNumber = testNumber, TestNumberDouble = testNumberDouble, TestNumberInt32 = testNumberInt32, TestNumberInt64 = testNumberInt64, TestDateTime = testDateTime, TestEnum = testEnum, TestObjectArray = testObjectArray, TestAnyType = testAnyType, TestAnyArray = testAnyArray, Permissions = permissions, SomeA2PThing = someA2PThing };
             return Create(options, client);
@@ -186,7 +187,7 @@ namespace Twilio.Rest.FlexApi.V1.Credential
                                                                                   List<object> testAnyArray = null,
                                                                                   List<NewCredentialsResource.PermissionsEnum> permissions = null,
                                                                                   string someA2PThing = null,
-                                                                                  ITwilioRestClient client = null)
+                                                                                    ITwilioRestClient client = null)
         {
         var options = new CreateNewCredentialsOptions(testString){  TestInteger = testInteger, TestDate = testDate, TestNumberFloat = testNumberFloat, TestObject = testObject, TestBoolean = testBoolean, TestNumber = testNumber, TestNumberDouble = testNumberDouble, TestNumberInt32 = testNumberInt32, TestNumberInt64 = testNumberInt64, TestDateTime = testDateTime, TestEnum = testEnum, TestObjectArray = testObjectArray, TestAnyType = testAnyType, TestAnyArray = testAnyArray, Permissions = permissions, SomeA2PThing = someA2PThing };
             return await CreateAsync(options, client);

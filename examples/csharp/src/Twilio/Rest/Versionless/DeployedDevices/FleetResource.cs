@@ -25,6 +25,8 @@ using Twilio.Http;
 
 
 
+
+
 namespace Twilio.Rest.Versionless.DeployedDevices
 {
     public class FleetResource : Resource
@@ -66,8 +68,7 @@ namespace Twilio.Rest.Versionless.DeployedDevices
         /// <param name="options"> Create Fleet parameters </param>
         /// <param name="client"> Client to make requests to Twilio </param>
         /// <returns> Task that resolves to A single instance of Fleet </returns>
-        public static async System.Threading.Tasks.Task<FleetResource> CreateAsync(CreateFleetOptions options,
-        ITwilioRestClient client = null)
+        public static async System.Threading.Tasks.Task<FleetResource> CreateAsync(CreateFleetOptions options, ITwilioRestClient client = null)
         {
             client = client ?? TwilioClient.GetRestClient();
             var response = await client.RequestAsync(BuildCreateRequest(options, client));
@@ -81,7 +82,7 @@ namespace Twilio.Rest.Versionless.DeployedDevices
         /// <returns> A single instance of Fleet </returns>
         public static FleetResource Create(
                                           string name = null,
-                                          ITwilioRestClient client = null)
+                                            ITwilioRestClient client = null)
         {
             var options = new CreateFleetOptions(){  Name = name };
             return Create(options, client);
@@ -94,7 +95,7 @@ namespace Twilio.Rest.Versionless.DeployedDevices
         /// <returns> Task that resolves to A single instance of Fleet </returns>
         public static async System.Threading.Tasks.Task<FleetResource> CreateAsync(
                                                                                   string name = null,
-                                                                                  ITwilioRestClient client = null)
+                                                                                    ITwilioRestClient client = null)
         {
         var options = new CreateFleetOptions(){  Name = name };
             return await CreateAsync(options, client);
@@ -134,8 +135,7 @@ namespace Twilio.Rest.Versionless.DeployedDevices
         /// <param name="options"> Fetch Fleet parameters </param>
         /// <param name="client"> Client to make requests to Twilio </param>
         /// <returns> Task that resolves to A single instance of Fleet </returns>
-        public static async System.Threading.Tasks.Task<FleetResource> FetchAsync(FetchFleetOptions options,
-                                                                                             ITwilioRestClient client = null)
+        public static async System.Threading.Tasks.Task<FleetResource> FetchAsync(FetchFleetOptions options, ITwilioRestClient client = null)
         {
             client = client ?? TwilioClient.GetRestClient();
             var response = await client.RequestAsync(BuildFetchRequest(options, client));
@@ -148,7 +148,7 @@ namespace Twilio.Rest.Versionless.DeployedDevices
         /// <returns> A single instance of Fleet </returns>
         public static FleetResource Fetch(
                                          string pathSid, 
-                                         ITwilioRestClient client = null)
+                                        ITwilioRestClient client = null)
         {
             var options = new FetchFleetOptions(pathSid){  };
             return Fetch(options, client);

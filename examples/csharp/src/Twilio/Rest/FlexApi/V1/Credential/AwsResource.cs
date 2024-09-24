@@ -25,6 +25,8 @@ using Twilio.Http;
 
 
 
+
+
 namespace Twilio.Rest.FlexApi.V1.Credential
 {
     public class AwsResource : Resource
@@ -72,7 +74,7 @@ namespace Twilio.Rest.FlexApi.V1.Credential
         /// <param name="client"> Client to make requests to Twilio </param>
         /// <returns> Task that resolves to A single instance of Aws </returns>
         public static async System.Threading.Tasks.Task<bool> DeleteAsync(DeleteAwsOptions options,
-                                                                          ITwilioRestClient client = null)
+                                                                        ITwilioRestClient client = null)
         {
             client = client ?? TwilioClient.GetRestClient();
             var response = await client.RequestAsync(BuildDeleteRequest(options, client));
@@ -135,8 +137,7 @@ namespace Twilio.Rest.FlexApi.V1.Credential
         /// <param name="options"> Fetch Aws parameters </param>
         /// <param name="client"> Client to make requests to Twilio </param>
         /// <returns> Task that resolves to A single instance of Aws </returns>
-        public static async System.Threading.Tasks.Task<AwsResource> FetchAsync(FetchAwsOptions options,
-                                                                                             ITwilioRestClient client = null)
+        public static async System.Threading.Tasks.Task<AwsResource> FetchAsync(FetchAwsOptions options, ITwilioRestClient client = null)
         {
             client = client ?? TwilioClient.GetRestClient();
             var response = await client.RequestAsync(BuildFetchRequest(options, client));
@@ -149,7 +150,7 @@ namespace Twilio.Rest.FlexApi.V1.Credential
         /// <returns> A single instance of Aws </returns>
         public static AwsResource Fetch(
                                          string pathSid, 
-                                         ITwilioRestClient client = null)
+                                        ITwilioRestClient client = null)
         {
             var options = new FetchAwsOptions(pathSid){  };
             return Fetch(options, client);
@@ -198,8 +199,7 @@ namespace Twilio.Rest.FlexApi.V1.Credential
         /// <param name="options"> Read Aws parameters </param>
         /// <param name="client"> Client to make requests to Twilio </param>
         /// <returns> Task that resolves to A single instance of Aws </returns>
-        public static async System.Threading.Tasks.Task<ResourceSet<AwsResource>> ReadAsync(ReadAwsOptions options,
-                                                                                             ITwilioRestClient client = null)
+        public static async System.Threading.Tasks.Task<ResourceSet<AwsResource>> ReadAsync(ReadAwsOptions options, ITwilioRestClient client = null)
         {
             client = client ?? TwilioClient.GetRestClient();
             var response = await client.RequestAsync(BuildReadRequest(options, client));
@@ -216,7 +216,7 @@ namespace Twilio.Rest.FlexApi.V1.Credential
         public static ResourceSet<AwsResource> Read(
                                                      int? pageSize = null,
                                                      long? limit = null,
-                                                     ITwilioRestClient client = null)
+                                                    ITwilioRestClient client = null)
         {
             var options = new ReadAwsOptions(){ PageSize = pageSize, Limit = limit};
             return Read(options, client);
@@ -231,7 +231,7 @@ namespace Twilio.Rest.FlexApi.V1.Credential
         public static async System.Threading.Tasks.Task<ResourceSet<AwsResource>> ReadAsync(
                                                                                              int? pageSize = null,
                                                                                              long? limit = null,
-                                                                                             ITwilioRestClient client = null)
+                                                                                            ITwilioRestClient client = null)
         {
             var options = new ReadAwsOptions(){ PageSize = pageSize, Limit = limit};
             return await ReadAsync(options, client);
@@ -322,7 +322,7 @@ namespace Twilio.Rest.FlexApi.V1.Credential
         /// <returns> Task that resolves to A single instance of Aws </returns>
         #if !NET35
         public static async System.Threading.Tasks.Task<AwsResource> UpdateAsync(UpdateAwsOptions options,
-                                                                                                          ITwilioRestClient client = null)
+                                                                                                    ITwilioRestClient client = null)
         {
             client = client ?? TwilioClient.GetRestClient();
             var response = await client.RequestAsync(BuildUpdateRequest(options, client));
@@ -340,7 +340,7 @@ namespace Twilio.Rest.FlexApi.V1.Credential
                                           string pathSid,
                                           string testString = null,
                                           bool? testBoolean = null,
-                                          ITwilioRestClient client = null)
+                                            ITwilioRestClient client = null)
         {
             var options = new UpdateAwsOptions(pathSid){ TestString = testString, TestBoolean = testBoolean };
             return Update(options, client);
@@ -357,7 +357,7 @@ namespace Twilio.Rest.FlexApi.V1.Credential
                                                                               string pathSid,
                                                                               string testString = null,
                                                                               bool? testBoolean = null,
-                                                                              ITwilioRestClient client = null)
+                                                                                ITwilioRestClient client = null)
         {
             var options = new UpdateAwsOptions(pathSid){ TestString = testString, TestBoolean = testBoolean };
             return await UpdateAsync(options, client);
