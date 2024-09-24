@@ -25,6 +25,8 @@ using Twilio.Http;
 
 
 
+
+
 namespace Twilio.Rest.FlexApi.V1.Credential.Aws
 {
     public class HistoryResource : Resource
@@ -67,8 +69,7 @@ namespace Twilio.Rest.FlexApi.V1.Credential.Aws
         /// <param name="options"> Fetch History parameters </param>
         /// <param name="client"> Client to make requests to Twilio </param>
         /// <returns> Task that resolves to A single instance of History </returns>
-        public static async System.Threading.Tasks.Task<HistoryResource> FetchAsync(FetchHistoryOptions options,
-                                                                                             ITwilioRestClient client = null)
+        public static async System.Threading.Tasks.Task<HistoryResource> FetchAsync(FetchHistoryOptions options, ITwilioRestClient client = null)
         {
             client = client ?? TwilioClient.GetRestClient();
             var response = await client.RequestAsync(BuildFetchRequest(options, client));
@@ -83,7 +84,7 @@ namespace Twilio.Rest.FlexApi.V1.Credential.Aws
         public static HistoryResource Fetch(
                                          string pathSid, 
                                          Dictionary<string, object> addOnsData = null, 
-                                         ITwilioRestClient client = null)
+                                        ITwilioRestClient client = null)
         {
             var options = new FetchHistoryOptions(pathSid){ AddOnsData = addOnsData };
             return Fetch(options, client);

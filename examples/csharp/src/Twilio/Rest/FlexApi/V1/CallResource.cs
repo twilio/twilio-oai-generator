@@ -25,6 +25,8 @@ using Twilio.Http;
 
 
 
+
+
 namespace Twilio.Rest.FlexApi.V1
 {
     public class CallResource : Resource
@@ -69,7 +71,7 @@ namespace Twilio.Rest.FlexApi.V1
         /// <returns> Task that resolves to A single instance of Call </returns>
         #if !NET35
         public static async System.Threading.Tasks.Task<CallResource> UpdateAsync(UpdateCallOptions options,
-                                                                                                          ITwilioRestClient client = null)
+                                                                                                    ITwilioRestClient client = null)
         {
             client = client ?? TwilioClient.GetRestClient();
             var response = await client.RequestAsync(BuildUpdateRequest(options, client));
@@ -83,7 +85,7 @@ namespace Twilio.Rest.FlexApi.V1
         /// <returns> A single instance of Call </returns>
         public static CallResource Update(
                                           string pathSid,
-                                          ITwilioRestClient client = null)
+                                            ITwilioRestClient client = null)
         {
             var options = new UpdateCallOptions(pathSid){  };
             return Update(options, client);
@@ -96,7 +98,7 @@ namespace Twilio.Rest.FlexApi.V1
         /// <returns> Task that resolves to A single instance of Call </returns>
         public static async System.Threading.Tasks.Task<CallResource> UpdateAsync(
                                                                               string pathSid,
-                                                                              ITwilioRestClient client = null)
+                                                                                ITwilioRestClient client = null)
         {
             var options = new UpdateCallOptions(pathSid){  };
             return await UpdateAsync(options, client);

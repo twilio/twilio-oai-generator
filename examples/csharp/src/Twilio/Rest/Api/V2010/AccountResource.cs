@@ -25,6 +25,8 @@ using Twilio.Http;
 using Twilio.Types;
 
 
+
+
 namespace Twilio.Rest.Api.V2010
 {
     public class AccountResource : Resource
@@ -95,8 +97,7 @@ namespace Twilio.Rest.Api.V2010
         /// <param name="options"> Create Account parameters </param>
         /// <param name="client"> Client to make requests to Twilio </param>
         /// <returns> Task that resolves to A single instance of Account </returns>
-        public static async System.Threading.Tasks.Task<AccountResource> CreateAsync(CreateAccountOptions options,
-        ITwilioRestClient client = null)
+        public static async System.Threading.Tasks.Task<AccountResource> CreateAsync(CreateAccountOptions options, ITwilioRestClient client = null)
         {
             client = client ?? TwilioClient.GetRestClient();
             var response = await client.RequestAsync(BuildCreateRequest(options, client));
@@ -116,7 +117,7 @@ namespace Twilio.Rest.Api.V2010
                                           List<string> recordingStatusCallbackEvent = null,
                                           Types.Twiml twiml = null,
                                           AccountResource.XTwilioWebhookEnabledEnum xTwilioWebhookEnabled = null,
-                                          ITwilioRestClient client = null)
+                                            ITwilioRestClient client = null)
         {
             var options = new CreateAccountOptions(){  RecordingStatusCallback = recordingStatusCallback, RecordingStatusCallbackEvent = recordingStatusCallbackEvent, Twiml = twiml, XTwilioWebhookEnabled = xTwilioWebhookEnabled };
             return Create(options, client);
@@ -135,7 +136,7 @@ namespace Twilio.Rest.Api.V2010
                                                                                   List<string> recordingStatusCallbackEvent = null,
                                                                                   Types.Twiml twiml = null,
                                                                                   AccountResource.XTwilioWebhookEnabledEnum xTwilioWebhookEnabled = null,
-                                                                                  ITwilioRestClient client = null)
+                                                                                    ITwilioRestClient client = null)
         {
         var options = new CreateAccountOptions(){  RecordingStatusCallback = recordingStatusCallback, RecordingStatusCallbackEvent = recordingStatusCallbackEvent, Twiml = twiml, XTwilioWebhookEnabled = xTwilioWebhookEnabled };
             return await CreateAsync(options, client);
@@ -180,7 +181,7 @@ namespace Twilio.Rest.Api.V2010
         /// <param name="client"> Client to make requests to Twilio </param>
         /// <returns> Task that resolves to A single instance of Account </returns>
         public static async System.Threading.Tasks.Task<bool> DeleteAsync(DeleteAccountOptions options,
-                                                                          ITwilioRestClient client = null)
+                                                                        ITwilioRestClient client = null)
         {
             client = client ?? TwilioClient.GetRestClient();
             var response = await client.RequestAsync(BuildDeleteRequest(options, client));
@@ -243,8 +244,7 @@ namespace Twilio.Rest.Api.V2010
         /// <param name="options"> Fetch Account parameters </param>
         /// <param name="client"> Client to make requests to Twilio </param>
         /// <returns> Task that resolves to A single instance of Account </returns>
-        public static async System.Threading.Tasks.Task<AccountResource> FetchAsync(FetchAccountOptions options,
-                                                                                             ITwilioRestClient client = null)
+        public static async System.Threading.Tasks.Task<AccountResource> FetchAsync(FetchAccountOptions options, ITwilioRestClient client = null)
         {
             client = client ?? TwilioClient.GetRestClient();
             var response = await client.RequestAsync(BuildFetchRequest(options, client));
@@ -257,7 +257,7 @@ namespace Twilio.Rest.Api.V2010
         /// <returns> A single instance of Account </returns>
         public static AccountResource Fetch(
                                          string pathSid = null, 
-                                         ITwilioRestClient client = null)
+                                        ITwilioRestClient client = null)
         {
             var options = new FetchAccountOptions(){ PathSid = pathSid };
             return Fetch(options, client);
@@ -306,8 +306,7 @@ namespace Twilio.Rest.Api.V2010
         /// <param name="options"> Read Account parameters </param>
         /// <param name="client"> Client to make requests to Twilio </param>
         /// <returns> Task that resolves to A single instance of Account </returns>
-        public static async System.Threading.Tasks.Task<ResourceSet<AccountResource>> ReadAsync(ReadAccountOptions options,
-                                                                                             ITwilioRestClient client = null)
+        public static async System.Threading.Tasks.Task<ResourceSet<AccountResource>> ReadAsync(ReadAccountOptions options, ITwilioRestClient client = null)
         {
             client = client ?? TwilioClient.GetRestClient();
             var response = await client.RequestAsync(BuildReadRequest(options, client));
@@ -332,7 +331,7 @@ namespace Twilio.Rest.Api.V2010
                                                      DateTime? dateCreatedAfter = null,
                                                      int? pageSize = null,
                                                      long? limit = null,
-                                                     ITwilioRestClient client = null)
+                                                    ITwilioRestClient client = null)
         {
             var options = new ReadAccountOptions(){ DateCreated = dateCreated, DateTest = dateTest, DateCreatedBefore = dateCreatedBefore, DateCreatedAfter = dateCreatedAfter, PageSize = pageSize, Limit = limit};
             return Read(options, client);
@@ -355,7 +354,7 @@ namespace Twilio.Rest.Api.V2010
                                                                                              DateTime? dateCreatedAfter = null,
                                                                                              int? pageSize = null,
                                                                                              long? limit = null,
-                                                                                             ITwilioRestClient client = null)
+                                                                                            ITwilioRestClient client = null)
         {
             var options = new ReadAccountOptions(){ DateCreated = dateCreated, DateTest = dateTest, DateCreatedBefore = dateCreatedBefore, DateCreatedAfter = dateCreatedAfter, PageSize = pageSize, Limit = limit};
             return await ReadAsync(options, client);
@@ -446,7 +445,7 @@ namespace Twilio.Rest.Api.V2010
         /// <returns> Task that resolves to A single instance of Account </returns>
         #if !NET35
         public static async System.Threading.Tasks.Task<AccountResource> UpdateAsync(UpdateAccountOptions options,
-                                                                                                          ITwilioRestClient client = null)
+                                                                                                    ITwilioRestClient client = null)
         {
             client = client ?? TwilioClient.GetRestClient();
             var response = await client.RequestAsync(BuildUpdateRequest(options, client));
@@ -464,7 +463,7 @@ namespace Twilio.Rest.Api.V2010
                                           AccountResource.StatusEnum status,
                                           string pathSid = null,
                                           string pauseBehavior = null,
-                                          ITwilioRestClient client = null)
+                                            ITwilioRestClient client = null)
         {
             var options = new UpdateAccountOptions(status){ PathSid = pathSid, PauseBehavior = pauseBehavior };
             return Update(options, client);
@@ -481,7 +480,7 @@ namespace Twilio.Rest.Api.V2010
                                                                               AccountResource.StatusEnum status,
                                                                               string pathSid = null,
                                                                               string pauseBehavior = null,
-                                                                              ITwilioRestClient client = null)
+                                                                                ITwilioRestClient client = null)
         {
             var options = new UpdateAccountOptions(status){ PathSid = pathSid, PauseBehavior = pauseBehavior };
             return await UpdateAsync(options, client);
