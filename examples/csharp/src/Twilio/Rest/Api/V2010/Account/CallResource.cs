@@ -25,6 +25,8 @@ using Twilio.Http;
 using Twilio.Types;
 
 
+
+
 namespace Twilio.Rest.Api.V2010.Account
 {
     public class CallResource : Resource
@@ -85,8 +87,7 @@ namespace Twilio.Rest.Api.V2010.Account
         /// <param name="options"> Create Call parameters </param>
         /// <param name="client"> Client to make requests to Twilio </param>
         /// <returns> Task that resolves to A single instance of Call </returns>
-        public static async System.Threading.Tasks.Task<CallResource> CreateAsync(CreateCallOptions options,
-        ITwilioRestClient client = null)
+        public static async System.Threading.Tasks.Task<CallResource> CreateAsync(CreateCallOptions options, ITwilioRestClient client = null)
         {
             client = client ?? TwilioClient.GetRestClient();
             var response = await client.RequestAsync(BuildCreateRequest(options, client));
@@ -108,7 +109,7 @@ namespace Twilio.Rest.Api.V2010.Account
                                           string pathAccountSid = null,
                                           List<string> testArrayOfStrings = null,
                                           List<Uri> testArrayOfUri = null,
-                                          ITwilioRestClient client = null)
+                                            ITwilioRestClient client = null)
         {
             var options = new CreateCallOptions(requiredStringProperty, testMethod){  PathAccountSid = pathAccountSid, TestArrayOfStrings = testArrayOfStrings, TestArrayOfUri = testArrayOfUri };
             return Create(options, client);
@@ -129,7 +130,7 @@ namespace Twilio.Rest.Api.V2010.Account
                                                                                   string pathAccountSid = null,
                                                                                   List<string> testArrayOfStrings = null,
                                                                                   List<Uri> testArrayOfUri = null,
-                                                                                  ITwilioRestClient client = null)
+                                                                                    ITwilioRestClient client = null)
         {
         var options = new CreateCallOptions(requiredStringProperty, testMethod){  PathAccountSid = pathAccountSid, TestArrayOfStrings = testArrayOfStrings, TestArrayOfUri = testArrayOfUri };
             return await CreateAsync(options, client);
@@ -176,7 +177,7 @@ namespace Twilio.Rest.Api.V2010.Account
         /// <param name="client"> Client to make requests to Twilio </param>
         /// <returns> Task that resolves to A single instance of Call </returns>
         public static async System.Threading.Tasks.Task<bool> DeleteAsync(DeleteCallOptions options,
-                                                                          ITwilioRestClient client = null)
+                                                                        ITwilioRestClient client = null)
         {
             client = client ?? TwilioClient.GetRestClient();
             var response = await client.RequestAsync(BuildDeleteRequest(options, client));
@@ -243,8 +244,7 @@ namespace Twilio.Rest.Api.V2010.Account
         /// <param name="options"> Fetch Call parameters </param>
         /// <param name="client"> Client to make requests to Twilio </param>
         /// <returns> Task that resolves to A single instance of Call </returns>
-        public static async System.Threading.Tasks.Task<CallResource> FetchAsync(FetchCallOptions options,
-                                                                                             ITwilioRestClient client = null)
+        public static async System.Threading.Tasks.Task<CallResource> FetchAsync(FetchCallOptions options, ITwilioRestClient client = null)
         {
             client = client ?? TwilioClient.GetRestClient();
             var response = await client.RequestAsync(BuildFetchRequest(options, client));
@@ -259,7 +259,7 @@ namespace Twilio.Rest.Api.V2010.Account
         public static CallResource Fetch(
                                          int? pathTestInteger, 
                                          string pathAccountSid = null, 
-                                         ITwilioRestClient client = null)
+                                        ITwilioRestClient client = null)
         {
             var options = new FetchCallOptions(pathTestInteger){ PathAccountSid = pathAccountSid };
             return Fetch(options, client);
