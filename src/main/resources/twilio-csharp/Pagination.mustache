@@ -3,11 +3,11 @@
         /// <param name="targetUrl"> API-generated URL for the requested results page </param>
         /// <param name="client"> Client to make requests to Twilio </param>
         /// <returns> The target page of records </returns>
-        public static Page<{{apiName}}{{resourceConstant}}> GetPage(string targetUrl, ITwilioRestClient client)
+        public static Page<{{apiName}}{{resourceConstant}}> GetPage(string targetUrl, {{clientName}} client)
         {
-            client = client ?? TwilioClient.GetRestClient();
+            client = client ?? {{domainClass}}.{{restClientMethodName}}();
 
-            var request = new Request(
+            var request = new {{requestName}}Request(
                 HttpMethod.Get,
                 targetUrl
             );
@@ -20,9 +20,9 @@
         /// <param name="page"> current page of records </param>
         /// <param name="client"> Client to make requests to Twilio </param>
         /// <returns> The next page of records </returns>
-        public static Page<{{apiName}}{{resourceConstant}}> NextPage(Page<{{apiName}}{{resourceConstant}}> page, ITwilioRestClient client)
+        public static Page<{{apiName}}{{resourceConstant}}> NextPage(Page<{{apiName}}{{resourceConstant}}> page, {{clientName}} client)
         {
-            var request = new Request(
+            var request = new {{requestName}}Request(
                 HttpMethod.Get,
                 page.GetNextPageUrl(Rest.Domain.Api)
             );
@@ -35,9 +35,9 @@
         /// <param name="page"> current page of records </param>
         /// <param name="client"> Client to make requests to Twilio </param>
         /// <returns> The previous page of records </returns>
-        public static Page<{{apiName}}{{resourceConstant}}> PreviousPage(Page<{{apiName}}{{resourceConstant}}> page, ITwilioRestClient client)
+        public static Page<{{apiName}}{{resourceConstant}}> PreviousPage(Page<{{apiName}}{{resourceConstant}}> page, {{clientName}} client)
         {
-            var request = new Request(
+            var request = new {{requestName}}Request(
                 HttpMethod.Get,
                 page.GetPreviousPageUrl(Rest.Domain.Api)
             );

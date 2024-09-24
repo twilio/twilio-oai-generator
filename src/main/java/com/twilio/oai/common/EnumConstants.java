@@ -45,6 +45,15 @@ public class EnumConstants {
 
     @Getter
     @RequiredArgsConstructor
+    public enum AuthType {
+        BEARER_TOKEN("BearerToken"),
+        NOAUTH("NoAuth");
+
+        private final String value;
+    }
+
+    @Getter
+    @RequiredArgsConstructor
     public enum CsharpDataTypes implements LanguageDataType {
         LIST("List<");
 
