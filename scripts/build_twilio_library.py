@@ -117,25 +117,23 @@ def get_domain_info(oai_spec_location: str, domain: str, is_file: bool = False) 
     return full_path, domain_name, api_version
 
 def merge_orgs_schema(from_spec, to_spec):
-    # Load file.json
+
     with open(to_spec, 'r') as f1:
         spec1 = json.load(f1)
 
-    # Load file2.json
+
     with open(from_spec, 'r') as f2:
         spec2 = json.load(f2)
 
-    # Assuming both files follow OpenAPI structure, we merge the 'paths' section
     if 'paths' in spec1 and 'paths' in spec2:
         spec1['paths'].update(spec2['paths'])
     else:
         print("One of the files doesn't contain 'paths'.")
 
-    # Save the merged result into a new file
     with open(to_spec, 'w') as outfile:
         json.dump(spec1, outfile, indent=2)
 
-    print("Files merged successfully into to_spec.")
+    print(f"Files merged successfully into {to_spec}.")
 
 
 if __name__ == '__main__':
