@@ -21,6 +21,7 @@ import com.twilio.exception.ApiConnectionException;
 import com.twilio.converter.PrefixedCollapsibleMap;
 import com.twilio.converter.Converter;
 import com.twilio.exception.ApiException;
+import com.twilio.exception.InvalidRequestException;
 import com.twilio.exception.RestException;
 import com.twilio.http.HttpMethod;
 import com.twilio.http.Response;
@@ -62,6 +63,9 @@ public class AccountFetcher extends Fetcher<Account> {
         String path = "/2010-04-01/Accounts/{Sid}.json";
 
         this.pathSid = this.pathSid == null ? client.getAccountSid() : this.pathSid;
+        if (this.pathSid == null) {
+            throw new InvalidRequestException("pathSid can not be null");
+        }
         path = path.replace("{"+"Sid"+"}", this.pathSid.toString());
 
         Request request = new Request(
