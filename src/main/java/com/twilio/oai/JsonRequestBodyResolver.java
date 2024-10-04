@@ -85,7 +85,14 @@ public class JsonRequestBodyResolver {
                 resolve(codegenProperty);
                 containerResolver.rewrapContainerType(codegenProperty, containerTypes);
             }
+
+            for (CodegenProperty codegenProperty: model.getRequiredVars()) {
+                resolve(codegenProperty);
+            }
+            
             apiResourceBuilder.addNestedModel(model);
+            model.getVendorExtensions().put("x-constructor", model.getRequiredVars());
+            model.getVendorExtensions().put("x-constructor-required", true);
         }
     }
 }
