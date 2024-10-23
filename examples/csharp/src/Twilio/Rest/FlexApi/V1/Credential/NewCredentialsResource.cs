@@ -25,8 +25,6 @@ using Twilio.Http;
 using Twilio.Types;
 
 
-
-
 namespace Twilio.Rest.FlexApi.V1.Credential
 {
     public class NewCredentialsResource : Resource
