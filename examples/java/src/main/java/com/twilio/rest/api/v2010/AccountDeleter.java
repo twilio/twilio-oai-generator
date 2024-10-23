@@ -20,6 +20,7 @@ import com.twilio.constant.EnumConstants;
 import com.twilio.exception.ApiConnectionException;
 import com.twilio.converter.PrefixedCollapsibleMap;
 import com.twilio.exception.ApiException;
+import com.twilio.exception.InvalidRequestException;
 import com.twilio.converter.Converter;
 import com.twilio.exception.RestException;
 import com.twilio.http.HttpMethod;
@@ -61,6 +62,9 @@ public class AccountDeleter extends Deleter<Account> {
         String path = "/2010-04-01/Accounts/{Sid}.json";
 
         this.pathSid = this.pathSid == null ? client.getAccountSid() : this.pathSid;
+        if (this.pathSid == null) {
+            throw new InvalidRequestException("pathSid can not be null");
+        }
         path = path.replace("{"+"Sid"+"}", this.pathSid.toString());
 
         Request request = new Request(

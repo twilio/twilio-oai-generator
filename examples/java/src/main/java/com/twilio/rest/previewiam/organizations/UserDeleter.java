@@ -20,6 +20,7 @@ import com.twilio.constant.EnumConstants;
 import com.twilio.exception.ApiConnectionException;
 import com.twilio.converter.PrefixedCollapsibleMap;
 import com.twilio.exception.ApiException;
+import com.twilio.exception.InvalidRequestException;
 import com.twilio.converter.Converter;
 import com.twilio.exception.RestException;
 import com.twilio.http.HttpMethod;
