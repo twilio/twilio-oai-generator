@@ -25,8 +25,6 @@ using Twilio.Http;
 
 
 
-
-
 namespace Twilio.Rest.FlexApi.V1.Credential.Aws
 {
     public class HistoryResource : Resource

@@ -25,8 +25,6 @@ using Twilio.Http;
 
 
 
-
-
 namespace Twilio.Rest.Versionless.DeployedDevices
 {
     public class FleetResource : Resource
