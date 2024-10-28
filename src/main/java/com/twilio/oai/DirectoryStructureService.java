@@ -1,5 +1,6 @@
 package com.twilio.oai;
 
+import com.twilio.oai.DirectoryStructureService.DependentResource.DependentResourceBuilder;
 import com.twilio.oai.common.Utility;
 import com.twilio.oai.resolver.CaseResolver;
 import com.twilio.oai.resource.IResourceTree;
@@ -14,6 +15,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenOperation;
+import org.openapitools.codegen.CodegenParameter;
 import org.openapitools.codegen.model.ModelsMap;
 import org.openapitools.codegen.model.OperationMap;
 import org.openapitools.codegen.model.OperationsMap;
@@ -55,8 +57,12 @@ public class DirectoryStructureService {
         private String param;
         private boolean instanceDependent;
         private List<Parameter> pathParams;
+        private List<Parameter> parentParams;
         private String resourceName;
         private String listName;
+        private String mapping;
+        private Boolean isInstanceAndList;
+        private List<String> params;
     }
 
     @Data
@@ -84,7 +90,7 @@ public class DirectoryStructureService {
             if(skipPath.get().equals("true"))
                 pathsToSkipMap.put(name, path);
             final Optional<String> pathType = PathUtils.getTwilioExtension(path, "pathType");
-            final Optional<Object> dependentProps = PathUtils.getDependentsTwilioExtension(path.getExtensions(), DEPENDENT_PROPERTIES);
+//            final Optional<Object> dependentProps = PathUtils.getDependentsTwilioExtension(path.getExtensions(), DEPENDENT_PROPERTIES);
             path.readOperations().forEach(operation -> {
                 // Group operations together by tag. This gives us one file/post-process per resource.
                 final String tag = String.join(PATH_SEPARATOR_PLACEHOLDER, resourceTree.ancestors(name, operation));
@@ -109,10 +115,10 @@ public class DirectoryStructureService {
                         .ifPresentOrElse(ext -> ext.putIfAbsent(PATH_TYPE_EXTENSION_NAME, type),
                                 () -> operation.addExtension(PATH_TYPE_EXTENSION_NAME, type)));
 
-                dependentProps.ifPresent(deps -> Optional
-                        .ofNullable(operation.getExtensions())
-                        .ifPresentOrElse(ext -> ext.putIfAbsent(DEPENDENT_PROPERTIES, deps),
-                                () -> operation.addExtension(DEPENDENT_PROPERTIES, deps)));
+//                dependentProps.ifPresent(deps -> Optional
+//                        .ofNullable(operation.getExtensions())
+//                        .ifPresentOrElse(ext -> ext.putIfAbsent(DEPENDENT_PROPERTIES, deps),
+//                                () -> operation.addExtension(DEPENDENT_PROPERTIES, deps)));
 
             });
         });
@@ -168,7 +174,8 @@ public class DirectoryStructureService {
     public DependentResource generateDependent(final String path, final Operation operation) {
         final Resource.Aliases resourceAliases = getResourceAliases(path, operation);
         List<Parameter> params = fetchNonParentPathParams(operation);
-        return new DependentResource.DependentResourceBuilder()
+        List<Parameter> parentParams = fetchParentPathParams(operation);
+        return new DependentResourceBuilder()
                 .version(PathUtils.getFirstPathPart(path))
                 .type(resourceAliases.getClassName() + LIST_INSTANCE)
                 .className(resourceAliases.getClassName() + LIST_INSTANCE)
@@ -177,6 +184,7 @@ public class DirectoryStructureService {
                 .mountName(caseResolver.pathOperation(resourceAliases.getMountName()))
                 .filename(caseResolver.filenameOperation(resourceAliases.getClassName()))
                 .pathParams(params)
+                .parentParams(parentParams)
                 .resourceName(resourceAliases.getClassName())
                 .build();
     }
@@ -209,6 +217,21 @@ public class DirectoryStructureService {
         params.addAll(pathParams.stream().filter(parameter -> Objects.nonNull(parameter.getExtensions()))
                 .filter(parameter -> !PathUtils.isParentParam(parameter))
                 .collect(Collectors.toList()));
+        return params;
+    }
+
+    private List<Parameter> fetchParentPathParams(Operation operation) {
+        List<Parameter> params = new ArrayList<>();
+        if (null == operation) return params;
+        List<Parameter> pathParams = Optional.ofNullable(operation.getParameters())
+            .stream().flatMap(Collection::stream)
+            .filter(param -> Objects.nonNull(param.getIn())).filter(PathUtils::isPathParam)
+            .collect(Collectors.toList());
+        params = pathParams.stream().filter(parameter -> Objects.isNull(parameter.getExtensions()))
+            .collect(Collectors.toList());
+        params.addAll(pathParams.stream().filter(parameter -> Objects.nonNull(parameter.getExtensions()))
+            .filter(parameter -> PathUtils.isParentParam(parameter))
+            .collect(Collectors.toList()));
         return params;
     }
 

@@ -4,7 +4,7 @@
                     # Initialize the {{apiName}}List
                     # @param [Version] version Version that contains the resource
                     # @return [{{apiName}}List] {{apiName}}List
-                    def initialize(version{{#listPathParams}}, {{paramName}}: nil{{/listPathParams}})
+                    def initialize(version{{#listPathParams}}, {{paramName}}{{/listPathParams}})
                         super(version)
                         # Path Solution
                         @solution = { {{#listPathParams}}{{paramName}}: {{paramName}}{{^-last}}, {{/-last}}{{/listPathParams}} }

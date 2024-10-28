@@ -34,51 +34,37 @@
 {{>contextMethodParams}}
                     {{/vendorExtensions.instanceOperation}}
                     {{/apiOperations}}
-                    {{#metaProperties.contextImportProperties}}
-                    ##
-                    # Access the {{mountName}}
-                    # @return [{{#lambda.titlecase}}{{#lambda.camelcase}}{{filename}}{{/lambda.camelcase}}{{/lambda.titlecase}}List]
-                    # @return [{{#lambda.titlecase}}{{#lambda.camelcase}}{{filename}}{{/lambda.camelcase}}{{/lambda.titlecase}}Context]
-                    def {{mountName}}
-                      unless @{{mountName}}
-                        @{{mountName}} = {{#lambda.titlecase}}{{#lambda.camelcase}}{{filename}}{{/lambda.camelcase}}{{/lambda.titlecase}}List.new(
-                                @version, {{dependentProperties}})
+
+                    {{#dependents}}
+                      ##
+                      # Access the {{mountName}}
+                      # @return [{{className}}List]
+                      {{#isInstanceAndList}}
+                      # @return [{{className}}Context] if {{#params}}{{#lambda.snakecase}}{{.}}{{/lambda.snakecase}}{{/params}} is present
+                      def {{mountName}}({{#params}}{{#lambda.snakecase}}{{.}}{{/lambda.snakecase}}=:unset{{/params}})
+
+                          raise ArgumentError, '{{#params}}{{#lambda.snakecase}}{{.}}{{/lambda.snakecase}}{{/params}} cannot be nil' if {{#params}}{{#lambda.snakecase}}{{.}}{{/lambda.snakecase}}{{/params}}.nil?
+
+                          if {{#params}}{{#lambda.snakecase}}{{.}}{{/lambda.snakecase}}{{/params}} != :unset
+                            return {{resourceName}}Context.new(@version, {{#requiredPathParams}}@solution[:{{paramName}}],{{/requiredPathParams}} {{#params}}{{#lambda.snakecase}}{{.}}{{/lambda.snakecase}}{{/params}})
+                          end
+
+                          unless @{{mountName}}
+                            @{{mountName}} ||= {{resourceName}}List.new(@version, {{{mapping}}})
+                          end
                       end
-                      @{{mountName}}
-                    end
-                    {{/metaProperties.contextImportProperties}}
-                    {{#metaProperties.contextImportMethods}}
-                    ##
-                    # Access the {{mountName}}
-                    # @return [{{#lambda.titlecase}}{{#lambda.camelcase}}{{filename}}{{/lambda.camelcase}}{{/lambda.titlecase}}List]
-                    {{#params}}
-                    # @return [{{#lambda.titlecase}}{{#lambda.camelcase}}{{filename}}{{/lambda.camelcase}}{{/lambda.titlecase}}Context] if sid was passed.
-                    def {{mountName}}({{#params}}{{#lambda.snakecase}}{{.}}{{/lambda.snakecase}}=:unset{{^-last}}, {{/-last}}{{/params}})
-
-                        raise ArgumentError, '{{#lambda.snakecase}}{{.}}{{/lambda.snakecase}} cannot be nil' if {{#lambda.snakecase}}{{.}}{{/lambda.snakecase}}.nil?
-
-                        if {{#lambda.snakecase}}{{.}}{{/lambda.snakecase}} != :unset
-                            return {{#lambda.titlecase}}{{#lambda.camelcase}}{{filename}}{{/lambda.camelcase}}{{/lambda.titlecase}}Context.new(@version{{#requiredPathParams}}, @solution[:{{paramName}}]{{/requiredPathParams}}{{#params}},{{#lambda.snakecase}}{{.}}{{/lambda.snakecase}} {{/params}})
+                      {{/isInstanceAndList}}
+                      {{^isInstanceAndList}}
+                        def {{mountName}}
+                          unless @{{mountName}}
+                            @{{mountName}} = {{resourceName}}List.new(
+                                                   @version, {{mapping}} )
+                          end
+                          @{{mountName}}
                         end
+                      {{/isInstanceAndList}}
+                    {{/dependents}}
 
-                        unless @{{mountName}}
-                            @{{mountName}} = {{#lambda.titlecase}}{{#lambda.camelcase}}{{filename}}{{/lambda.camelcase}}{{/lambda.titlecase}}List.new(
-                                @version, {{dependentProperties}})
-                        end
-
-                     @{{mountName}}
-                    end
-                    {{/params}}
-                    {{^params}}
-                    # @return [{{#lambda.titlecase}}{{#lambda.camelcase}}{{filename}}{{/lambda.camelcase}}{{/lambda.titlecase}}Context]
-                    def {{mountName}}
-                        {{#lambda.titlecase}}{{#lambda.camelcase}}{{filename}}{{/lambda.camelcase}}{{/lambda.titlecase}}Context.new(
-                                @version{{#requiredPathParams}},
-                                @solution[:{{paramName}}]{{/requiredPathParams}}
-                                )
-                    end
-                    {{/params}}
-                    {{/metaProperties.contextImportMethods}}
 
                     ##
                     # Provide a user friendly representation
