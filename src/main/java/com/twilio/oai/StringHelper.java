@@ -48,4 +48,20 @@ public class StringHelper {
             ? inputWord
             : firstCharFunction.apply(inputWord.substring(0, 1)) + inputWord.substring(1);
     }
+
+    public static boolean isSuccess(String responseCode) {
+        // Check if responseCode matches the success pattern for 2xx or 3xx
+        if (responseCode.matches("^[23](\\d{2}|x[0-9]|[0-9]x|xx)$")) {
+            return true;
+        }
+
+        // Check if the response code is an integer between 200 and 399
+        try {
+            int code = Integer.parseInt(responseCode);
+            return (code >= 200 && code <= 399);
+        } catch (NumberFormatException e) {
+            // Handle case where responseCode is not a valid integer
+            return false;
+        }
+    }
 }

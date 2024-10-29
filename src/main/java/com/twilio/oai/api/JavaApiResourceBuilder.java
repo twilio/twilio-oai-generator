@@ -247,7 +247,7 @@ public class JavaApiResourceBuilder extends ApiResourceBuilder{
             jsonRequestBodyResolver.setResourceName(resourceName);
             co.responses
                     .stream()
-                    .filter(response -> SUCCESS.test(Integer.parseInt(response.code.trim())))
+                    .filter(response -> StringHelper.isSuccess(response.code.trim()))
                     .map(response -> {
                         if (response.dataType != null && response.dataType.startsWith(EnumConstants.JavaDataTypes.LIST.getValue())) {
                             return response.baseType;
