@@ -210,18 +210,20 @@ public class CsharpApiResourceBuilder extends ApiResourceBuilder {
     public ApiResourceBuilder updateResponseModel(Resolver<CodegenProperty> codegenPropertyIResolver, Resolver<CodegenModel> codegenModelResolver) {
         List<CodegenModel> responseModels = new ArrayList<>();
         codegenOperationList.forEach(codegenOperation -> {
-            codegenOperation.responses.forEach(response -> {
-                String modelName = response.dataType;
-                if (response.dataType != null && response.dataType.startsWith(EnumConstants.CsharpDataTypes.LIST.getValue())){
-                    modelName = response.baseType;
-                }
-                Optional<CodegenModel> responseModel = Utility.getModel(allModels, modelName, recordKey, codegenOperation);
-                if ((responseModel == null) || responseModel.isEmpty() || (Integer.parseInt(response.code) >= 400)) {
-                    return;
-                }
-                codegenModelResolver.resolve(responseModel.get(), this);
-                responseModels.add(responseModel.get());
-            });
+            codegenOperation.responses.stream()
+                .filter(response -> StringHelper.isSuccess(response.code.trim()))
+                .forEach(response -> {
+                    String modelName = response.dataType;
+                    if (response.dataType != null && response.dataType.startsWith(EnumConstants.CsharpDataTypes.LIST.getValue())){
+                        modelName = response.baseType;
+                    }
+                    Optional<CodegenModel> responseModel = Utility.getModel(allModels, modelName, recordKey, codegenOperation);
+                    if ((responseModel == null) || responseModel.isEmpty() || (Integer.parseInt(response.code) >= 400)) {
+                        return;
+                    }
+                    codegenModelResolver.resolve(responseModel.get(), this);
+                    responseModels.add(responseModel.get());
+                });
         });
         this.apiResponseModels = getDistinctResponseModel(responseModels);
         return this;
