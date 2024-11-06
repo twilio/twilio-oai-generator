@@ -2,6 +2,7 @@ package com.twilio.oai.api;
 
 import com.twilio.oai.DirectoryStructureService;
 import com.twilio.oai.PathUtils;
+import com.twilio.oai.StringHelper;
 import com.twilio.oai.common.ApplicationConstants;
 import com.twilio.oai.resolver.Resolver;
 import com.twilio.oai.resolver.ruby.RubyCodegenModelResolver;
@@ -10,6 +11,7 @@ import com.twilio.oai.template.IApiActionTemplate;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.Operation;
 import io.swagger.v3.oas.models.PathItem;
+import io.swagger.v3.oas.models.parameters.Parameter;
 import org.apache.commons.lang3.StringUtils;
 import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenOperation;
@@ -114,7 +116,42 @@ public class RubyApiResourceBuilder extends FluentApiResourceBuilder {
     @Override
     public RubyApiResources build() {
         fetchParentDirectory();
+        mappingDependents();
         return new RubyApiResources(this);
+    }
+
+    private void mappingDependents(){
+        List<String> requiredPathParams = new ArrayList<>();
+        for( CodegenParameter param : this.requiredPathParams)
+            requiredPathParams.add(param.paramName);
+        Map<String, List<String>> mountNameToParamsMap = getMountNameToParamsMap();
+        for (String key: dependents.keySet()){
+            String mapping = "";
+            DirectoryStructureService.DependentResource directoryResource = dependents.get(key);
+            List<Parameter> parentParams = directoryResource.getParentParams();
+            for( int i = 0; i < parentParams.size(); i++)
+                mapping += StringHelper.toSnakeCase(parentParams.get(i).getName()) + ": @solution[:" + StringHelper.toSnakeCase(requiredPathParams.get(i)) + "], ";
+            dependents.get(key).setMapping(mapping);
+            dependents.get(key).setIsInstanceAndList(mountNameToParamsMap.keySet().contains(dependents.get(key).getMountName()));
+            dependents.get(key).setParams(mountNameToParamsMap.get(dependents.get(key).getMountName()));
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    public Map<String, List<String>> getMountNameToParamsMap() {
+        List<DirectoryStructureService.ContextResource> contextImportMethods =
+            (List<DirectoryStructureService.ContextResource>) this.metaAPIProperties.get("contextImportMethods");
+
+        Map<String, List<String>> mountNameToParamsMap = new HashMap<>();
+
+        if (contextImportMethods == null) {
+            return mountNameToParamsMap;
+        }
+        for (DirectoryStructureService.ContextResource contextResource : contextImportMethods) {
+            mountNameToParamsMap.put(contextResource.getMountName(), contextResource.getParams());
+        }
+
+        return mountNameToParamsMap;
     }
 
     @Override
@@ -127,7 +164,6 @@ public class RubyApiResourceBuilder extends FluentApiResourceBuilder {
         createContextParamsList(apiResourceBuilder.codegenOperationList);
         categorizeOperations();
         createMaturityDescription(apiResourceBuilder.codegenOperationList);
-        updateDependentProperties(apiResourceBuilder.codegenOperationList);
         updateVersionData();
         return apiResourceBuilder;
     }
