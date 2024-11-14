@@ -2,6 +2,8 @@ package com.twilio.oai;
 
 import java.util.Arrays;
 import java.util.function.UnaryOperator;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import lombok.experimental.UtilityClass;
@@ -47,5 +49,28 @@ public class StringHelper {
         return StringUtils.isBlank(inputWord)
             ? inputWord
             : firstCharFunction.apply(inputWord.substring(0, 1)) + inputWord.substring(1);
+    }
+
+    public static String convertUrlToCamelCase(String input) {
+        if (input == null || input.isEmpty()) {
+            return input;
+        }
+
+        Pattern pattern = Pattern.compile("\\{([a-z0-9_]+)\\}");
+        Matcher matcher = pattern.matcher(input);
+        StringBuffer result = new StringBuffer();
+
+        while (matcher.find()) {
+            String original = matcher.group(1);
+            String[] parts = original.split("_");
+            StringBuilder camelCase = new StringBuilder();
+            for (int i = 0; i < parts.length; i++) {
+                camelCase.append(parts[i].substring(0, 1).toUpperCase()).append(parts[i].substring(1));
+            }
+            matcher.appendReplacement(result, "{" + camelCase.toString() + "}");
+        }
+        matcher.appendTail(result);
+
+        return result.toString();
     }
 }
