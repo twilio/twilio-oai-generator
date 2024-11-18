@@ -49,8 +49,8 @@ module Twilio
                                          'RequiredStringProperty' => required_string_property,
                                          'TestMethod' => test_method,
                                          'TestArrayOfStrings' => Twilio.serialize_list(test_array_of_strings) { |e|
-                                                                   e
-                                                                 },
+                                           e
+                                         },
                                          'TestArrayOfUri' => Twilio.serialize_list(test_array_of_uri) { |e| e },
                                        })
 
