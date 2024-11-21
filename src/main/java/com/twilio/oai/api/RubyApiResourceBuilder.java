@@ -222,8 +222,7 @@ public class RubyApiResourceBuilder extends FluentApiResourceBuilder {
         List<DirectoryStructureService.ContextResource> listObjs = (List<DirectoryStructureService.ContextResource>) listofContextResourceObjs;
         if(listObjs != null) {
             for (DirectoryStructureService.ContextResource cr : listObjs) {
-                 String value = (dependentsForOperation.containsKey(cr.getFilename())) ? dependentsForOperation.get(cr.getFilename())
-                        : dependentsForOperation.get(cr.getUrl());
+                 String value = dependentsForOperation.get(cr.getUrl());
                 cr.setDependentProperties(value);
             }
         }
