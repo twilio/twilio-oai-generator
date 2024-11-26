@@ -35,6 +35,8 @@ def build(openapi_spec_path: str, output_path: str, language: str) -> None:
             iam_orgs_spec_path = spec_folder + 'twilio_iam_organizations.json'
             merge_orgs_schema('twilio_am_temporary.json', iam_orgs_spec_path)
         spec_files = sorted(os.listdir(spec_folder))
+    if 'twilio_monitor_v2.json' in spec_files:
+        spec_files.remove('twilio_monitor_v2.json')
     generate(spec_folder, spec_files, output_path, language)
 
 

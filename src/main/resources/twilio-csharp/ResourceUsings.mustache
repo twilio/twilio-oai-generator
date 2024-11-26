@@ -8,8 +8,3 @@ using Twilio.Converters;
 using Twilio.Exceptions;
 using Twilio.Http;
 {{#metaProperties}}{{#enum-exists-resource}}using Twilio.Types;{{/enum-exists-resource}}{{/metaProperties}}
-{{#metaProperties}}{{#auth_method-bearer-token}}using Twilio.Base.BearerToken;
-using Twilio.Clients.BearerToken;
-using Twilio.Http.BearerToken;{{/auth_method-bearer-token}}{{/metaProperties}}
-{{#metaProperties}}{{#auth_method-no-auth}}using Twilio.Clients.NoAuth;
-using Twilio.Http.NoAuth;{{/auth_method-no-auth}}{{/metaProperties}}

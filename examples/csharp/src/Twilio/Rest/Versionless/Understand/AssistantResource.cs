@@ -25,8 +25,6 @@ using Twilio.Http;
 
 
 
-
-
 namespace Twilio.Rest.Versionless.Understand
 {
     public class AssistantResource : Resource
