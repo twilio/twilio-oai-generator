@@ -2,6 +2,7 @@ package com.twilio.oai.api;
 
 import com.twilio.oai.DirectoryStructureService;
 import com.twilio.oai.PathUtils;
+import com.twilio.oai.StringHelper;
 import com.twilio.oai.common.ApplicationConstants;
 import com.twilio.oai.resolver.Resolver;
 import com.twilio.oai.resolver.ruby.RubyCodegenModelResolver;
@@ -10,7 +11,6 @@ import com.twilio.oai.template.IApiActionTemplate;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.Operation;
 import io.swagger.v3.oas.models.PathItem;
-import org.apache.commons.lang3.StringUtils;
 import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenOperation;
 import org.openapitools.codegen.CodegenParameter;
@@ -195,8 +195,8 @@ public class RubyApiResourceBuilder extends FluentApiResourceBuilder {
                         .filter(dependent -> dependentMethods.stream()
                                 .map(DirectoryStructureService.ContextResource.class::cast).anyMatch(
                                         methodDependent -> methodDependent.getMountName().equals(dependent.getMountName()))
-
-                        ).collect(Collectors.toList()));
+                        )
+                    .collect(Collectors.toList()));
                 if (PathUtils.isInstanceOperation(operation)) {
                     metaAPIProperties.put("contextImportProperties", dependentPropertiesList);
                     metaAPIProperties.put("contextImportMethods", dependentMethods);
@@ -209,6 +209,7 @@ public class RubyApiResourceBuilder extends FluentApiResourceBuilder {
             }
         });
     }
+
     private void updateDependentProperties(List<CodegenOperation> opList){
         for (CodegenOperation operation : opList) {
             Map<String, String> dependentsForOperation = mapOperationsDependents(operation);
@@ -221,8 +222,7 @@ public class RubyApiResourceBuilder extends FluentApiResourceBuilder {
         List<DirectoryStructureService.ContextResource> listObjs = (List<DirectoryStructureService.ContextResource>) listofContextResourceObjs;
         if(listObjs != null) {
             for (DirectoryStructureService.ContextResource cr : listObjs) {
-                 String value = (dependentsForOperation.containsKey(cr.getFilename())) ? dependentsForOperation.get(cr.getFilename())
-                        : dependentsForOperation.get(cr.getMountName());
+                 String value = dependentsForOperation.get(cr.getUrl());
                 cr.setDependentProperties(value);
             }
         }
@@ -243,7 +243,7 @@ public class RubyApiResourceBuilder extends FluentApiResourceBuilder {
                     for (Map.Entry<String, String> mappingEntry : mapping.entrySet()) {
                         String dependent = mappingEntry.getKey() + ": @solution[:" + mappingEntry.getValue()+ "], ";
                         dependentParams += dependent;
-                        depMap.put(mountName, dependentParams);
+                        depMap.put(StringHelper.convertUrlToCamelCase((String) propertiesDetails.getValue().get("resource_url")), dependentParams);
                     }
                 }
                 seenParams.add(mountName);
