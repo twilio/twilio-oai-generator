@@ -68,6 +68,7 @@ public class DirectoryStructureService {
         private String mountName;
         private String parent;
         private String dependentProperties;
+        private String url;
     }
 
     public void configure(final OpenAPI openAPI) {
@@ -186,12 +187,22 @@ public class DirectoryStructureService {
         String parent = String.join("\\", resourceTree.ancestors(path, operation));
         List<Parameter> pathParamsList = fetchNonParentPathParams(operation);
         List<String> pathParamNamesList = pathParamsList.stream().map(Parameter::getName).collect(Collectors.toList());
+        HashMap<String, String> mapTagToListPath = new HashMap<>();
+        this.getResourceTree().getResources().iterator().forEachRemaining(resource -> {
+            if (PathUtils.getTwilioExtension(resource.getPathItem(), "pathType").isPresent() && PathUtils.getTwilioExtension(resource.getPathItem(), "pathType").get().equals("list"))
+            mapTagToListPath.put(resource.getListTag(), resource.getName());
+        });
+        Optional<Resource> tagNameOptional = this.getResourceTree().findResource(path);
+        String listTag = "";
+        if( tagNameOptional.isPresent() )
+            listTag = mapTagToListPath.get(tagNameOptional.get().getListTag());
         final ContextResource dependent = new ContextResource.ContextResourceBuilder()
                 .version(PathUtils.getFirstPathPart(path))
                 .params(pathParamNamesList)
                 .mountName(caseResolver.pathOperation(resourceAliases.getMountName()))
                 .filename(caseResolver.filenameOperation(resourceAliases.getClassName()))
                 .parent(parent)
+                .url(pathParamNamesList.isEmpty()?StringHelper.convertUrlToCamelCase(path):StringHelper.convertUrlToCamelCase(listTag))
                 .build();
         if (!resourceList.contains(dependent))
             resourceList.add(dependent);
