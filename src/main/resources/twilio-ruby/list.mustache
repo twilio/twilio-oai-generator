@@ -40,7 +40,7 @@
                     #    but a limit is defined, stream() will attempt to read the limit with the most
                     #    efficient page size, i.e. min(limit, 1000)
                     # @return [Array] Array of up to limit results
-                    def list({{#readParams.0}}{{#readParams}}{{>params}}{{/readParams}}, {{/readParams.0}}limit: nil, page_size: nil)
+                    def list({{#readParams.0}}{{#readParams}}{{paramName}}: {{#required}}nil{{/required}}{{^required}}:unset{{/required}}{{^-last}}, {{/-last}}{{/readParams}}, {{/readParams.0}}limit: nil, page_size: nil)
                         self.stream(
                     {{#readParams}}
                             {{paramName}}: {{paramName}},
@@ -64,7 +64,7 @@
                     #    but a limit is defined, stream() will attempt to read the limit with the most
                     #    efficient page size, i.e. min(limit, 1000)
                     # @return [Enumerable] Enumerable that will yield up to limit results
-                    def stream({{#readParams.0}}{{#readParams}}{{>params}}{{/readParams}}, {{/readParams.0}}limit: nil, page_size: nil)
+                    def stream({{#readParams.0}}{{#readParams}}{{paramName}}: {{#required}}nil{{/required}}{{^required}}:unset{{/required}}{{^-last}}, {{/-last}}{{/readParams}}, {{/readParams.0}}limit: nil, page_size: nil)
                         limits = @version.read_limits(limit, page_size)
 
                         page = self.page(
@@ -100,7 +100,7 @@
                     # @param [Integer] page_number Page Number, this value is simply for client state
                     # @param [Integer] page_size Number of records to return, defaults to 50
                     # @return [Page] Page of {{apiName}}Instance
-                    def page({{#readParams.0}}{{#readParams}}{{>params}}{{/readParams}}, {{/readParams.0}}page_token: :unset, page_number: :unset, page_size: :unset)
+                    def page({{#readParams.0}}{{#readParams}}{{paramName}}: {{#required}}nil{{/required}}{{^required}}:unset{{/required}}{{^-last}}, {{/-last}}{{/readParams}}, {{/readParams.0}}page_token: :unset, page_number: :unset, page_size: :unset)
                         params = Twilio::Values.of({
                             {{#readParams}}{{^vendorExtensions.x-serialize}}'{{{baseName}}}' => {{paramName}},
                             {{/vendorExtensions.x-serialize}}{{#vendorExtensions.x-serialize}}{{^vendorExtensions.isList}}'{{{baseName}}}' =>  {{vendorExtensions.x-serialize}}({{paramName}}),{{/vendorExtensions.isList}}
