@@ -26,19 +26,19 @@
             "mapping": {
               "organization_sid": "organization_sid"
             },
-            "resource_url": "/v1/Organizations/{organization_sid}/scim/Users"
+            "resource_url": "/Organizations/{organization_sid}/scim/Users"
           },
           "accounts": {
             "mapping": {
               "organization_sid": "organization_sid"
             },
-            "resource_url": "/v1/Organizations/{organization_sid}/Accounts"
+            "resource_url": "/Organizations/{organization_sid}/Accounts"
           },
           "roleAssignments": {
             "mapping": {
               "organization_sid": "organization_sid"
             },
-            "resource_url": "/v1/Organizations/{organization_sid}/RoleAssignments"
+            "resource_url": "/Organizations/{organization_sid}/RoleAssignments"
           }
         },
         "pathType": "instance",
