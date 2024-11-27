@@ -1,0 +1,143 @@
+{
+  "openapi": "3.0.1",
+  "security": [
+    {
+      "oAuth2ClientCredentials": []
+    }
+  ],
+  "info": {
+    "title": "Organization Public API",
+    "contact": {
+      "name": "Twilio Support",
+      "url": "https://support.twilio.com",
+      "email": "support@twilio.com"
+    },
+    "license": {
+      "name": "Apache 2.0",
+      "url": "https://www.apache.org/licenses/LICENSE-2.0.html"
+    },
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/Organizations/{OrganizationSid}": {
+      "x-twilio": {
+        "dependentProperties": {
+          "users": {
+            "mapping": {
+              "organization_sid": "organization_sid"
+            },
+            "resource_url": "/v1/Organizations/{organization_sid}/scim/Users"
+          },
+          "accounts": {
+            "mapping": {
+              "organization_sid": "organization_sid"
+            },
+            "resource_url": "/v1/Organizations/{organization_sid}/Accounts"
+          },
+          "roleAssignments": {
+            "mapping": {
+              "organization_sid": "organization_sid"
+            },
+            "resource_url": "/v1/Organizations/{organization_sid}/RoleAssignments"
+          }
+        },
+        "pathType": "instance",
+        "mountName": "organization"
+      },
+      "servers": [
+        {
+          "url": "https://preview-iam.twilio.com"
+        }
+      ],
+      "get": {
+        "summary": "List SCIM Users",
+        "operationId": "FetchOrganization",
+        "parameters": [
+          {
+            "name": "OrganizationSid",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "pattern": "OR[0-9a-f]{32}",
+              "type": "string",
+              "format": "OrganizationSid",
+              "example": "OR33f4f3aa6fffe840d000f8ef22e883db"
+            }
+          }
+        ],
+        "x-twilio": {
+          "ignoreOperation": true
+        },
+        "responses": {
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/scim+json": {
+                "schema": {
+
+                }
+              }
+            },
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "description": "Specify the origin(s) allowed to access the resource",
+                "schema": {
+                  "type": "string"
+                },
+                "example": "*"
+              },
+              "Access-Control-Allow-Methods": {
+                "description": "Specify the HTTP methods allowed when accessing the resource",
+                "schema": {
+                  "type": "string"
+                },
+                "example": "POST, OPTIONS"
+              },
+              "Access-Control-Allow-Headers": {
+                "description": "Specify the headers allowed when accessing the resource",
+                "schema": {
+                  "type": "string"
+                },
+                "example": "Content-Type, Authorization"
+              },
+              "Access-Control-Allow-Credentials": {
+                "description": "Indicates whether the browser should include credentials",
+                "schema": {
+                  "type": "boolean"
+                }
+              },
+              "Access-Control-Expose-Headers": {
+                "description": "Headers exposed to the client",
+                "schema": {
+                  "type": "string",
+                  "example": "X-Custom-Header1, X-Custom-Header2"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "oAuth2ClientCredentials": {
+        "type": "oauth2",
+        "flows": {
+          "clientCredentials": {
+            "tokenUrl": "https://preview-iam.twilio.com/v1/token",
+            "scopes": {}
+          }
+        }
+      }
+    },
+    "schemas": {
+
+    }
+  },
+  "servers": [
+    {
+      "url": "https://preview-iam.twilio.com"
+    }
+  ]
+}
