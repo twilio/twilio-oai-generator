@@ -31,10 +31,20 @@ def preprocess_orgs_spec(spec_folder:str, spec_file:str, parent_dir: str):
     if not os.path.exists(temp_dir):
         os.makedirs(temp_dir)
     spec_file_name = spec_file.split(".")[0]
-    versioned_specs_path = os.path.join(temp_dir, spec_file_name + "_" + version + ".json")
-    non_versioned_specs_path = os.path.join(temp_dir, spec_file_name + "_versionless.json")
-    with open(versioned_specs_path, 'w') as f:
+    spec_file_name_versioned = spec_file_name + "_" + version + ".json"
+    spec_file_name_versionless = spec_file_name + "_versionless.json"
+    with open(os.path.join(temp_dir, spec_file_name_versioned), 'w') as f:
         f.write(json.dumps(versioned_specs, indent=2))
-    with open(non_versioned_specs_path, 'w') as f:
+    with open(os.path.join(temp_dir, spec_file_name_versionless), 'w') as f:
         f.write(json.dumps(non_versioned_specs, indent=2))
-    return versioned_specs_path, non_versioned_specs_path
+
+    with open(os.path.join(temp_dir, spec_file_name_versionless), 'r') as f:
+        content = f.read()
+
+    # fix param names
+    content = content.replace("UserSid", "Id")
+    content = content.replace("RoleAssignmentSid", "Sid")
+
+    with open(os.path.join(temp_dir, spec_file_name_versionless), 'w') as file:
+        file.write(content)
+    return spec_file_name_versioned, spec_file_name_versionless, temp_dir
