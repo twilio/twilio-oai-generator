@@ -7,9 +7,16 @@ with open("twilio_am_temp.json") as f:
     missing_paths = specs.get("paths")
 
 def preprocess_orgs_spec(spec_folder:str, spec_file:str, parent_dir: str):
-    with open(spec_folder + spec_file) as f:
+    with open(os.path.join(spec_folder, spec_file)) as f:
         specs = json.load(f)
     paths = specs.get("paths")
+    for path, path_value in paths.items():
+        x_twilio = path_value.get("x-twilio")
+        if not x_twilio:
+            x_twilio = {}
+        if not x_twilio.get("pathType"):
+            x_twilio["pathType"] = "instance" if path.endswith("}") else "list"
+        path_value["x-twilio"] = x_twilio
     versioned_paths = {path: paths[path] for path in paths.keys() if re.match(r"/v\d+", path)}
     version = list(versioned_paths.keys())[0].split("/")[1]
     non_versioned_paths = missing_paths
