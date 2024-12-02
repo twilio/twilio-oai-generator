@@ -32,24 +32,45 @@
     if (params.pageToken !== undefined) data["PageToken"] = params.pageToken;
     {{/vendorExtensions.x-is-read-operation}}
 
+    {{#bodyParams}}if(headers === null || headers === undefined) {
+        headers = {};
+    }{{/bodyParams}}
     {{^bodyParams}}const headers: any = {};{{/bodyParams}}
+    {{^bodyParams}}
     {{#consumes}}
     {{#-first}}
     headers["Content-Type"] = "{{{mediaType}}}"
     {{/-first}}
     {{/consumes}}
-    {{^bodyParams}}
+    {{#produces}}
+    {{#-first}}
+    headers["Accept"] = "{{{mediaType}}}"
+    {{/-first}}
+    {{/produces}}
     {{#headerParams}}
     if (params["{{paramName}}"] !== undefined) headers["{{{baseName}}}"] = params["{{paramName}}"];
     {{/headerParams}}
     {{/bodyParams}}
+{{/hasParams}}
+{{^hasParams}}
+    const headers: any = {};
+    {{#consumes}}
+    {{#-first}}
+    headers["Content-Type"] = "{{{mediaType}}}"
+    {{/-first}}
+    {{/consumes}}
+    {{#produces}}
+    {{#-first}}
+    headers["Accept"] = "{{{mediaType}}}"
+    {{/-first}}
+    {{/produces}}
 {{/hasParams}}
 
     {{#vendorExtensions.x-is-context-operation}}
     const instance = this;
     {{/vendorExtensions.x-is-context-operation}}
     let operationVersion = {{#vendorExtensions.x-is-context-operation}}instance._version{{/vendorExtensions.x-is-context-operation}}{{#vendorExtensions.x-is-list-operation}}version{{/vendorExtensions.x-is-list-operation}},
-        operationPromise = operationVersion.{{vendorExtensions.x-name-lower}}({ uri: instance._uri, method: "{{httpMethod}}"{{#hasParams}}, {{^isBodyAllowed}}params: {{/isBodyAllowed}}data, headers{{/hasParams}} });
+        operationPromise = operationVersion.{{vendorExtensions.x-name-lower}}({ uri: instance._uri, method: "{{httpMethod}}"{{#hasParams}}, {{^isBodyAllowed}}params: {{/isBodyAllowed}}data{{/hasParams}}, headers});
     {{^vendorExtensions.x-is-read-operation}}{{^vendorExtensions.x-is-delete-operation}}
     operationPromise = operationPromise.then(payload => new {{instanceName}}(operationVersion, payload{{#vendorExtensions.x-is-context-operation}}{{#instancePathParams}}, instance._solution.{{paramName}}{{/instancePathParams}}{{/vendorExtensions.x-is-context-operation}}{{#vendorExtensions.x-is-list-operation}}{{#listPathParams}}, instance._solution.{{paramName}}{{/listPathParams}}{{/vendorExtensions.x-is-list-operation}}));
     {{/vendorExtensions.x-is-delete-operation}}{{/vendorExtensions.x-is-read-operation}}
