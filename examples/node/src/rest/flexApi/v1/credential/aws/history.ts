@@ -99,6 +99,7 @@ export class HistoryContextImpl implements HistoryContext {
       };
 
     const headers: any = {};
+    headers["Accept"] = "application/json";
 
     const instance = this;
     let operationVersion = instance._version,
