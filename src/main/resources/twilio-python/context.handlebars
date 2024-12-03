@@ -18,7 +18,7 @@ class {{apiName}}Context(InstanceContext):
         {{#dependents}}{{#instanceDependent}}
         self._{{mountName}}: Optional[{{listName}}] = None{{/instanceDependent}}{{/dependents}}
     {{#operations}}{{#vendorExtensions.x-is-context-operation}}
-    {{#vendorExtensions.x-is-update-operation}}
+    {{#vendorExtensions.x-is-update-operation}}{{^vendorExtensions.x-twilio.ignoreOperation}}
     def {{vendorExtensions.x-name-lower}}(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> {{instanceName}}:
         """
         Update the {{instanceName}}
@@ -60,7 +60,7 @@ class {{apiName}}Context(InstanceContext):
             payload{{#instancePathParams}},
             {{paramName}}=self._solution['{{paramName}}']{{/instancePathParams}}
         )
-    {{/vendorExtensions.x-is-update-operation}}{{#vendorExtensions.x-is-fetch-operation}}
+    {{/vendorExtensions.x-twilio.ignoreOperation}}{{/vendorExtensions.x-is-update-operation}}{{#vendorExtensions.x-is-fetch-operation}}{{^vendorExtensions.x-twilio.ignoreOperation}}
     def {{vendorExtensions.x-name-lower}}(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> {{instanceName}}:
         """
         Fetch the {{instanceName}}
@@ -106,7 +106,7 @@ class {{apiName}}Context(InstanceContext):
             {{#instancePathParams}}{{paramName}}=self._solution['{{paramName}}'],
             {{/instancePathParams}}
         )
-    {{/vendorExtensions.x-is-fetch-operation}}{{#vendorExtensions.x-is-delete-operation}}
+    {{/vendorExtensions.x-twilio.ignoreOperation}}{{/vendorExtensions.x-is-fetch-operation}}{{#vendorExtensions.x-is-delete-operation}}{{^vendorExtensions.x-twilio.ignoreOperation}}
     def {{vendorExtensions.x-name-lower}}(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> bool:
         """
         Deletes the {{apiName}}Instance
@@ -130,7 +130,7 @@ class {{apiName}}Context(InstanceContext):
         headers = values.of({{#allParams}}{'{{{baseName}}}': {{paramName}}, }{{/allParams}})
         {{/if}}
         return await self._version.delete_async(method='{{vendorExtensions.x-http-method}}', uri=self._uri,{{#if allParams}} headers=headers{{/if}})
-    {{/vendorExtensions.x-is-delete-operation}}{{#vendorExtensions.x-is-create-operation}}
+    {{/vendorExtensions.x-twilio.ignoreOperation}}{{/vendorExtensions.x-is-delete-operation}}{{#vendorExtensions.x-is-create-operation}}{{^vendorExtensions.x-twilio.ignoreOperation}}
     def {{vendorExtensions.x-name-lower}}(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> {{instanceName}}:
         """
         Create the {{instanceName}}
@@ -170,7 +170,7 @@ class {{apiName}}Context(InstanceContext):
             payload{{#instancePathParams}},
             {{paramName}}=self._solution['{{paramName}}']{{/instancePathParams}}
         )
-    {{/vendorExtensions.x-is-create-operation}}{{/vendorExtensions.x-is-context-operation}}{{/operations}}
+    {{/vendorExtensions.x-twilio.ignoreOperation}}{{/vendorExtensions.x-is-create-operation}}{{/vendorExtensions.x-is-context-operation}}{{/operations}}
     {{#dependents}}{{#instanceDependent}}
     @property
     def {{mountName}}(self) -> {{listName}}:
