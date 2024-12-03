@@ -21,7 +21,7 @@ subdirectories = {
 generateForLanguages = {
     'twilio_iam_organizations.json' : ['java', 'csharp']
 }
-dynamic_languages = ['node']
+dynamic_languages = ['node', 'python']
 CLEANUP_IMPORT_LANGUAGES = ['java', 'php']
 REMOVE_DUPLICATE_IMPORT_LANGUAGES = ['node']
 CONFIG_FOLDER = 'tmp'
