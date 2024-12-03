@@ -61,10 +61,9 @@ class {{apiName}}Context(InstanceContext):
             {{paramName}}=self._solution['{{paramName}}']{{/instancePathParams}}
         )
     {{/vendorExtensions.x-is-update-operation}}{{#vendorExtensions.x-is-fetch-operation}}
-    {{#vendorExtensions.x-twilio.ignoreOperation}}
     def {{vendorExtensions.x-name-lower}}(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> {{instanceName}}:
         """
-        Fetch1 the {{instanceName}}
+        Fetch the {{instanceName}}
         {{#allParams}}
         :param {{paramName}}: {{{description}}}{{/allParams}}
 
@@ -107,7 +106,6 @@ class {{apiName}}Context(InstanceContext):
             {{#instancePathParams}}{{paramName}}=self._solution['{{paramName}}'],
             {{/instancePathParams}}
         )
-    {{/vendorExtensions.x-twilio.ignoreOperation}}
     {{/vendorExtensions.x-is-fetch-operation}}{{#vendorExtensions.x-is-delete-operation}}
     def {{vendorExtensions.x-name-lower}}(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> bool:
         """

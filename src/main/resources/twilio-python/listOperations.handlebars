@@ -1,6 +1,5 @@
 {{#operations}}
     {{#vendorExtensions.x-is-create-operation}}
-    {{^vendorExtensions.x-twilio.ignoreOperation}}
     def create(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> {{instanceName}}:
         """
         Create the {{instanceName}}
@@ -52,8 +51,7 @@
         payload = await self._version.create_async(method='{{vendorExtensions.x-http-method}}', uri=self._uri, {{#hasParams}}data=data,{{/hasParams}} headers=headers{{#queryParams.0}}, params=params{{/queryParams.0}})
 
         return {{instanceName}}(self._version, payload{{#listPathParams}}, {{paramName}}=self._solution['{{paramName}}']{{/listPathParams}})
-    {{/vendorExtensions.x-twilio.ignoreOperation}}{{/vendorExtensions.x-is-create-operation}}{{^instancePath}}{{#vendorExtensions.x-is-fetch-operation}}
-    {{^vendorExtensions.x-twilio.ignoreOperation}}
+    {{/vendorExtensions.x-is-create-operation}}{{^instancePath}}{{#vendorExtensions.x-is-fetch-operation}}
     def fetch(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> {{instanceName}}:
         """
         Asynchronously fetch the {{instanceName}}
@@ -94,7 +92,7 @@
         {{/queryParams.0}}
         payload = await self._version.fetch_async(method='{{vendorExtensions.x-http-method}}', uri=self._uri, headers=headers{{#queryParams.0}}, params=params{{/queryParams.0}})
 
-        return {{instanceName}}(self._version, payload{{#listPathParams}}, {{paramName}}=self._solution['{{paramName}}']{{/listPathParams}}){{/vendorExtensions.x-twilio.ignoreOperation}}{{/vendorExtensions.x-is-fetch-operation}}{{#vendorExtensions.x-is-delete-operation}}{{^vendorExtensions.x-twilio.ignoreOperation}}
+        return {{instanceName}}(self._version, payload{{#listPathParams}}, {{paramName}}=self._solution['{{paramName}}']{{/listPathParams}}){{/vendorExtensions.x-is-fetch-operation}}{{#vendorExtensions.x-is-delete-operation}}
     def delete(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> bool:
         """
         Asynchronously delete the {{instanceName}}
@@ -129,7 +127,7 @@
                 {{#queryParams}}'{{{baseName}}}': {{paramName}},
                 {{/queryParams}}
             }){{/queryParams.0}}
-        return await self._version.delete_async(method='{{vendorExtensions.x-http-method}}', uri=self._uri, headers=headers{{#queryParams.0}}, params=params{{/queryParams.0}}){{/vendorExtensions.x-twilio.ignoreOperation}}{{/vendorExtensions.x-is-delete-operation}}{{#vendorExtensions.x-is-update-operation}}{{^vendorExtensions.x-twilio.ignoreOperation}}
+        return await self._version.delete_async(method='{{vendorExtensions.x-http-method}}', uri=self._uri, headers=headers{{#queryParams.0}}, params=params{{/queryParams.0}}){{/vendorExtensions.x-is-delete-operation}}{{#vendorExtensions.x-is-update-operation}}
 
     def update(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> {{instanceName}}:
         """
@@ -181,7 +179,7 @@
         {{/queryParams.0}}
         payload = await self._version.update_async(method='{{vendorExtensions.x-http-method}}', uri=self._uri, {{#hasParams}}data=data,{{/hasParams}} headers=headers{{#queryParams.0}}, params=params{{/queryParams.0}})
 
-        return {{instanceName}}(self._version, payload{{#listPathParams}}, {{paramName}}=self._solution['{{paramName}}']{{/listPathParams}}){{/vendorExtensions.x-twilio.ignoreOperation}}{{/vendorExtensions.x-is-update-operation}}{{/instancePath}}{{#vendorExtensions.x-is-read-operation}}{{^vendorExtensions.x-twilio.ignoreOperation}}
+        return {{instanceName}}(self._version, payload{{#listPathParams}}, {{paramName}}=self._solution['{{paramName}}']{{/listPathParams}}){{/vendorExtensions.x-is-update-operation}}{{/instancePath}}{{#vendorExtensions.x-is-read-operation}}
     def stream(self, {{#allParams}}
         {{#startsWith paramName text='page_size'}}{{else}}{{paramName}}: Union[{{{dataType}}}, object] = values.unset,{{/startsWith}}{{/allParams}}
         limit: Optional[int] = None,
@@ -375,5 +373,4 @@
             target_url
         )
         return {{apiName}}Page(self._version, response{{#if listPathParams}}, self._solution{{/if}})
-    {{/vendorExtensions.x-twilio.ignoreOperation}}
 {{/vendorExtensions.x-is-read-operation}}{{/operations}}
