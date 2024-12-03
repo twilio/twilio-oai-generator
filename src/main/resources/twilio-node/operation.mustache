@@ -36,7 +36,6 @@
         headers = {};
     }{{/bodyParams}}
     {{^bodyParams}}const headers: any = {};{{/bodyParams}}
-    {{^bodyParams}}
     {{#consumes}}
     {{#-first}}
     headers["Content-Type"] = "{{{mediaType}}}"
@@ -47,6 +46,7 @@
     headers["Accept"] = "{{{mediaType}}}"
     {{/-first}}
     {{/produces}}
+    {{^bodyParams}}
     {{#headerParams}}
     if (params["{{paramName}}"] !== undefined) headers["{{{baseName}}}"] = params["{{paramName}}"];
     {{/headerParams}}
