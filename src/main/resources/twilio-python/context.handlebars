@@ -1,5 +1,5 @@
 class {{apiName}}Context(InstanceContext):
-
+{{#if nestedModels}}{{>modelClasses}}{{/if}}
     def __init__(self, version: Version{{#instancePathParams}}, {{paramName}}: {{{dataType}}}{{/instancePathParams}}):
         """
         Initialize the {{apiName}}Context
