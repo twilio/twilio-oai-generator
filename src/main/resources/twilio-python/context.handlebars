@@ -30,9 +30,9 @@ class {{apiName}}Context(InstanceContext):
         data = values.of({ {{#allParams}}{{#isFormParam}}
             '{{{baseName}}}': {{#if vendorExtensions.x-serialize}}{{vendorExtensions.x-serialize}}({{paramName}}{{#if isArray}}, lambda e: e){{else}}){{/if}}{{else}}{{paramName}}{{/if}},{{/isFormParam}}{{/allParams}}
         })
-        {{#allParams}}{{^isFormParam}}headers = values.of({'{{{baseName}}}': {{paramName}}, }){{/isFormParam}}{{/allParams}}
+        {{#allParams}}{{#isHeaderParam}}headers = values.of({'{{{baseName}}}': {{paramName}}, }){{/isHeaderParam}}{{/allParams}}
 
-        payload = self._version.update(method='{{vendorExtensions.x-http-method}}', uri=self._uri, data=data,{{#allParams}}{{#if isFormParam}}{{else}} headers=headers{{/if}}{{/allParams}})
+        payload = self._version.update(method='{{vendorExtensions.x-http-method}}', uri=self._uri, data=data,{{#allParams}}{{#if isFormParam}}{{else}}{{#if isHeaderParam}} headers=headers{{/if}}{{/if}}{{/allParams}})
 
         return {{instanceName}}(
             self._version,
@@ -51,9 +51,9 @@ class {{apiName}}Context(InstanceContext):
         data = values.of({ {{#allParams}}{{#isFormParam}}
             '{{{baseName}}}': {{#if vendorExtensions.x-serialize}}{{vendorExtensions.x-serialize}}({{paramName}}{{#if isArray}}, lambda e: e){{else}}){{/if}}{{else}}{{paramName}}{{/if}},{{/isFormParam}}{{/allParams}}
         })
-        {{#allParams}}{{^isFormParam}}headers = values.of({'{{{baseName}}}': {{paramName}}, }){{/isFormParam}}{{/allParams}}
+        {{#allParams}}{{#isHeaderParam}}headers = values.of({'{{{baseName}}}': {{paramName}}, }){{/isHeaderParam}}{{/allParams}}
 
-        payload = await self._version.update_async(method='{{vendorExtensions.x-http-method}}', uri=self._uri, data=data,{{#allParams}}{{#if isFormParam}}{{else}} headers=headers{{/if}}{{/allParams}})
+        payload = await self._version.update_async(method='{{vendorExtensions.x-http-method}}', uri=self._uri, data=data,{{#allParams}}{{#if isFormParam}}{{else}}{{#if isHeaderParam}} headers=headers{{/if}}{{/if}}{{/allParams}})
 
         return {{instanceName}}(
             self._version,
