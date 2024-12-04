@@ -17,3 +17,4 @@ tmp
 **/php_coverage.xml
 *.iml
 generateFiles.py
+temp_specs/
