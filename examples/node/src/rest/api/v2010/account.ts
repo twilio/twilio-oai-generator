@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+
 import { inspect, InspectOptions } from "util";
 import Page, { TwilioResponsePayload } from "../../../base/Page";
 import Response from "../../../http/response";
@@ -23,29 +24,28 @@ import { CallListInstance } from "./account/call";
 import { PhoneNumberCapabilities } from "../../../interfaces";
 import TwiML from "../../../twiml/TwiML";
 
-export type AccountXTwilioWebhookEnabled = "true" | "false";
 
-export type AccountStatus =
-  | "in-progress"
-  | "paused"
-  | "stopped"
-  | "processing"
-  | "completed"
-  | "absent";
+export type AccountXTwilioWebhookEnabled = 'true'|'false';
+
+export type AccountStatus = 'in-progress'|'paused'|'stopped'|'processing'|'completed'|'absent';
 
 export class TestResponseObjectTestArrayOfObjects {
   "count"?: number;
   "description"?: string;
 }
 
+
+
+
+
 /**
  * Options to pass to update a AccountInstance
  */
 export interface AccountContextUpdateOptions {
   /**  */
-  status: AccountStatus;
+  "status": AccountStatus;
   /**  */
-  pauseBehavior?: string;
+  "pauseBehavior"?: string;
 }
 
 /**
@@ -53,28 +53,28 @@ export interface AccountContextUpdateOptions {
  */
 export interface AccountListInstanceCreateOptions {
   /**  */
-  xTwilioWebhookEnabled?: AccountXTwilioWebhookEnabled;
+  "xTwilioWebhookEnabled"?: AccountXTwilioWebhookEnabled;
   /**  */
-  recordingStatusCallback?: string;
+  "recordingStatusCallback"?: string;
   /**  */
-  recordingStatusCallbackEvent?: Array<string>;
+  "recordingStatusCallbackEvent"?: Array<string>;
   /**  */
-  twiml?: TwiML | string;
+  "twiml"?: TwiML | string;
 }
 /**
  * Options to pass to each
  */
 export interface AccountListInstanceEachOptions {
   /**  */
-  dateCreated?: Date;
+  "dateCreated"?: Date;
   /**  */
   "date.test"?: Date;
   /**  */
-  dateCreatedBefore?: Date;
+  "dateCreatedBefore"?: Date;
   /**  */
-  dateCreatedAfter?: Date;
+  "dateCreatedAfter"?: Date;
   /**  */
-  pageSize?: number;
+  "pageSize"?: number;
   /** Function to process each record. If this and a positional callback are passed, this one will be used */
   callback?: (item: AccountInstance, done: (err?: Error) => void) => void;
   /** Function to be called upon completion of streaming */
@@ -88,15 +88,15 @@ export interface AccountListInstanceEachOptions {
  */
 export interface AccountListInstanceOptions {
   /**  */
-  dateCreated?: Date;
+  "dateCreated"?: Date;
   /**  */
   "date.test"?: Date;
   /**  */
-  dateCreatedBefore?: Date;
+  "dateCreatedBefore"?: Date;
   /**  */
-  dateCreatedAfter?: Date;
+  "dateCreatedAfter"?: Date;
   /**  */
-  pageSize?: number;
+  "pageSize"?: number;
   /** Upper limit for the number of records to return. list() guarantees never to return more than limit. Default is no limit */
   limit?: number;
 }
@@ -106,20 +106,21 @@ export interface AccountListInstanceOptions {
  */
 export interface AccountListInstancePageOptions {
   /**  */
-  dateCreated?: Date;
+  "dateCreated"?: Date;
   /**  */
   "date.test"?: Date;
   /**  */
-  dateCreatedBefore?: Date;
+  "dateCreatedBefore"?: Date;
   /**  */
-  dateCreatedAfter?: Date;
+  "dateCreatedAfter"?: Date;
   /**  */
-  pageSize?: number;
+  "pageSize"?: number;
   /** Page Number, this value is simply for client state */
   pageNumber?: number;
   /** PageToken provided by the API */
   pageToken?: string;
 }
+
 
 export interface AccountContext {
   calls: CallListInstance;
@@ -131,9 +132,7 @@ export interface AccountContext {
    *
    * @returns Resolves to processed boolean
    */
-  remove(
-    callback?: (error: Error | null, item?: boolean) => any,
-  ): Promise<boolean>;
+  remove(callback?: (error: Error | null, item?: boolean) => any): Promise<boolean>
 
   /**
    * Fetch a AccountInstance
@@ -142,9 +141,7 @@ export interface AccountContext {
    *
    * @returns Resolves to processed AccountInstance
    */
-  fetch(
-    callback?: (error: Error | null, item?: AccountInstance) => any,
-  ): Promise<AccountInstance>;
+  fetch(callback?: (error: Error | null, item?: AccountInstance) => any): Promise<AccountInstance>
 
   /**
    * Update a AccountInstance
@@ -154,10 +151,9 @@ export interface AccountContext {
    *
    * @returns Resolves to processed AccountInstance
    */
-  update(
-    params: AccountContextUpdateOptions,
-    callback?: (error: Error | null, item?: AccountInstance) => any,
-  ): Promise<AccountInstance>;
+  update(params: AccountContextUpdateOptions, callback?: (error: Error | null, item?: AccountInstance) => any): Promise<AccountInstance>;
+
+
 
   /**
    * Provide a user-friendly representation
@@ -167,7 +163,7 @@ export interface AccountContext {
 }
 
 export interface AccountContextSolution {
-  sid: string;
+  "sid": string;
 }
 
 export class AccountContextImpl implements AccountContext {
@@ -176,112 +172,86 @@ export class AccountContextImpl implements AccountContext {
 
   protected _calls?: CallListInstance;
 
-  constructor(
-    protected _version: V2010,
-    sid: string,
-  ) {
+  constructor(protected _version: V2010, sid: string) {
     if (!isValidPathParam(sid)) {
-      throw new Error("Parameter 'sid' is not valid.");
+      throw new Error('Parameter \'sid\' is not valid.');
     }
 
-    this._solution = { sid };
+    this._solution = { sid,  };
     this._uri = `/Accounts/${sid}.json`;
   }
 
   get calls(): CallListInstance {
-    this._calls =
-      this._calls || CallListInstance(this._version, this._solution.sid);
+    this._calls = this._calls || CallListInstance(this._version, this._solution.sid);
     return this._calls;
   }
 
-  remove(
-    callback?: (error: Error | null, item?: boolean) => any,
-  ): Promise<boolean> {
-    const headers: any = {};
+  remove(callback?: (error: Error | null, item?: boolean) => any): Promise<boolean> {
+      const headers: any = {};
 
     const instance = this;
     let operationVersion = instance._version,
-      operationPromise = operationVersion.remove({
-        uri: instance._uri,
-        method: "delete",
-        headers,
-      });
+        operationPromise = operationVersion.remove({ uri: instance._uri, method: "delete", headers});
+    
 
-    operationPromise = instance._version.setPromiseCallback(
-      operationPromise,
-      callback,
-    );
+    operationPromise = instance._version.setPromiseCallback(operationPromise,callback);
     return operationPromise;
+
+
   }
 
-  fetch(
-    callback?: (error: Error | null, item?: AccountInstance) => any,
-  ): Promise<AccountInstance> {
-    const headers: any = {};
-    headers["Accept"] = "application/json";
+  fetch(callback?: (error: Error | null, item?: AccountInstance) => any): Promise<AccountInstance> {
+      const headers: any = {};
+    headers["Accept"] = "application/json"
 
     const instance = this;
     let operationVersion = instance._version,
-      operationPromise = operationVersion.fetch({
-        uri: instance._uri,
-        method: "get",
-        headers,
-      });
+        operationPromise = operationVersion.fetch({ uri: instance._uri, method: "get", headers});
+    
+    operationPromise = operationPromise.then(payload => new AccountInstance(operationVersion, payload, instance._solution.sid));
+    
 
-    operationPromise = operationPromise.then(
-      (payload) =>
-        new AccountInstance(operationVersion, payload, instance._solution.sid),
-    );
-
-    operationPromise = instance._version.setPromiseCallback(
-      operationPromise,
-      callback,
-    );
+    operationPromise = instance._version.setPromiseCallback(operationPromise,callback);
     return operationPromise;
+
+
   }
 
-  update(
-    params: AccountContextUpdateOptions,
-    callback?: (error: Error | null, item?: AccountInstance) => any,
-  ): Promise<AccountInstance> {
-    if (params === null || params === undefined) {
+  update(params: AccountContextUpdateOptions, callback?: (error: Error | null, item?: AccountInstance) => any): Promise<AccountInstance> {
+      if (params === null || params === undefined) {
       throw new Error('Required parameter "params" missing.');
     }
 
     if (params["status"] === null || params["status"] === undefined) {
-      throw new Error("Required parameter \"params['status']\" missing.");
+      throw new Error('Required parameter "params[\'status\']" missing.');
     }
 
     let data: any = {};
 
-    if (params["pauseBehavior"] !== undefined)
-      data["PauseBehavior"] = params["pauseBehavior"];
-
+    
+        if (params["pauseBehavior"] !== undefined)
+    data["PauseBehavior"] = params["pauseBehavior"];
+    
     data["Status"] = params["status"];
 
+    
+
+    
     const headers: any = {};
-    headers["Content-Type"] = "application/x-www-form-urlencoded";
-    headers["Accept"] = "application/json";
+    headers["Content-Type"] = "application/x-www-form-urlencoded"
+    headers["Accept"] = "application/json"
 
     const instance = this;
     let operationVersion = instance._version,
-      operationPromise = operationVersion.update({
-        uri: instance._uri,
-        method: "post",
-        data,
-        headers,
-      });
+        operationPromise = operationVersion.update({ uri: instance._uri, method: "post", data, headers});
+    
+    operationPromise = operationPromise.then(payload => new AccountInstance(operationVersion, payload, instance._solution.sid));
+    
 
-    operationPromise = operationPromise.then(
-      (payload) =>
-        new AccountInstance(operationVersion, payload, instance._solution.sid),
-    );
-
-    operationPromise = instance._version.setPromiseCallback(
-      operationPromise,
-      callback,
-    );
+    operationPromise = instance._version.setPromiseCallback(operationPromise,callback);
     return operationPromise;
+
+
   }
 
   /**
@@ -298,8 +268,9 @@ export class AccountContextImpl implements AccountContext {
   }
 }
 
+
 interface AccountPayload extends TwilioResponsePayload {
-  accounts: AccountResource[];
+    accounts: AccountResource[];
 }
 
 interface AccountResource {
@@ -326,30 +297,26 @@ export class AccountInstance {
   protected _solution: AccountContextSolution;
   protected _context?: AccountContext;
 
-  constructor(
-    protected _version: V2010,
-    payload: AccountResource,
-    sid?: string,
-  ) {
-    this.accountSid = payload.account_sid;
-    this.sid = payload.sid;
-    this.testString = payload.test_string;
+  constructor(protected _version: V2010, payload: AccountResource, sid?: string) {
+    this.accountSid = (payload.account_sid);
+    this.sid = (payload.sid);
+    this.testString = (payload.test_string);
     this.testInteger = deserialize.integer(payload.test_integer);
-    this.testObject = payload.test_object;
+    this.testObject = (payload.test_object);
     this.testDateTime = deserialize.rfc2822DateTime(payload.test_date_time);
-    this.testNumber = payload.test_number;
-    this.from = payload.from;
-    this.priceUnit = payload.price_unit;
-    this.testNumberFloat = payload.test_number_float;
+    this.testNumber = (payload.test_number);
+    this.from = (payload.from);
+    this.priceUnit = (payload.price_unit);
+    this.testNumberFloat = (payload.test_number_float);
     this.testNumberDecimal = deserialize.decimal(payload.test_number_decimal);
-    this.testEnum = payload.test_enum;
-    this.a2pProfileBundleSid = payload.a2p_profile_bundle_sid;
-    this.testArrayOfIntegers = payload.test_array_of_integers;
-    this.testArrayOfArrayOfIntegers = payload.test_array_of_array_of_integers;
-    this.testArrayOfObjects = payload.test_array_of_objects;
-    this.testArrayOfEnum = payload.test_array_of_enum;
+    this.testEnum = (payload.test_enum);
+    this.a2pProfileBundleSid = (payload.a2p_profile_bundle_sid);
+    this.testArrayOfIntegers = (payload.test_array_of_integers);
+    this.testArrayOfArrayOfIntegers = (payload.test_array_of_array_of_integers);
+    this.testArrayOfObjects = (payload.test_array_of_objects);
+    this.testArrayOfEnum = (payload.test_array_of_enum);
 
-    this._solution = { sid: sid || this.sid };
+    this._solution = { sid: sid || this.sid,  };
   }
 
   accountSid: string;
@@ -377,9 +344,7 @@ export class AccountInstance {
   testArrayOfEnum: Array<AccountStatus>;
 
   private get _proxy(): AccountContext {
-    this._context =
-      this._context ||
-      new AccountContextImpl(this._version, this._solution.sid);
+    this._context = this._context || new AccountContextImpl(this._version, this._solution.sid);
     return this._context;
   }
 
@@ -390,9 +355,9 @@ export class AccountInstance {
    *
    * @returns Resolves to processed boolean
    */
-  remove(
-    callback?: (error: Error | null, item?: boolean) => any,
-  ): Promise<boolean> {
+  remove(callback?: (error: Error | null, item?: boolean) => any): Promise<boolean>
+
+    {
     return this._proxy.remove(callback);
   }
 
@@ -403,9 +368,9 @@ export class AccountInstance {
    *
    * @returns Resolves to processed AccountInstance
    */
-  fetch(
-    callback?: (error: Error | null, item?: AccountInstance) => any,
-  ): Promise<AccountInstance> {
+  fetch(callback?: (error: Error | null, item?: AccountInstance) => any): Promise<AccountInstance>
+
+    {
     return this._proxy.fetch(callback);
   }
 
@@ -417,15 +382,10 @@ export class AccountInstance {
    *
    * @returns Resolves to processed AccountInstance
    */
-  update(
-    params: AccountContextUpdateOptions,
-    callback?: (error: Error | null, item?: AccountInstance) => any,
-  ): Promise<AccountInstance>;
+  update(params: AccountContextUpdateOptions, callback?: (error: Error | null, item?: AccountInstance) => any): Promise<AccountInstance>;
 
-  update(
-    params?: any,
-    callback?: (error: Error | null, item?: AccountInstance) => any,
-  ): Promise<AccountInstance> {
+    update(params?: any, callback?: (error: Error | null, item?: AccountInstance) => any): Promise<AccountInstance>
+    {
     return this._proxy.update(params, callback);
   }
 
@@ -460,7 +420,7 @@ export class AccountInstance {
       testArrayOfArrayOfIntegers: this.testArrayOfArrayOfIntegers,
       testArrayOfObjects: this.testArrayOfObjects,
       testArrayOfEnum: this.testArrayOfEnum,
-    };
+    }
   }
 
   [inspect.custom](_depth: any, options: InspectOptions) {
@@ -468,15 +428,24 @@ export class AccountInstance {
   }
 }
 
-export interface AccountSolution {}
+
+export interface AccountSolution {
+}
 
 export interface AccountListInstance {
   _version: V2010;
   _solution: AccountSolution;
   _uri: string;
 
-  (sid: string): AccountContext;
-  get(sid: string): AccountContext;
+  (sid: string, ): AccountContext;
+  get(sid: string, ): AccountContext;
+
+
+
+
+
+
+
 
   /**
    * Create a AccountInstance
@@ -485,9 +454,7 @@ export interface AccountListInstance {
    *
    * @returns Resolves to processed AccountInstance
    */
-  create(
-    callback?: (error: Error | null, item?: AccountInstance) => any,
-  ): Promise<AccountInstance>;
+  create(callback?: (error: Error | null, item?: AccountInstance) => any): Promise<AccountInstance>;
   /**
    * Create a AccountInstance
    *
@@ -496,10 +463,9 @@ export interface AccountListInstance {
    *
    * @returns Resolves to processed AccountInstance
    */
-  create(
-    params: AccountListInstanceCreateOptions,
-    callback?: (error: Error | null, item?: AccountInstance) => any,
-  ): Promise<AccountInstance>;
+  create(params: AccountListInstanceCreateOptions, callback?: (error: Error | null, item?: AccountInstance) => any): Promise<AccountInstance>;
+
+
 
   /**
    * Streams AccountInstance records from the API.
@@ -516,13 +482,8 @@ export interface AccountListInstance {
    * @param { AccountListInstanceEachOptions } [params] - Options for request
    * @param { function } [callback] - Function to process each record
    */
-  each(
-    callback?: (item: AccountInstance, done: (err?: Error) => void) => void,
-  ): void;
-  each(
-    params: AccountListInstanceEachOptions,
-    callback?: (item: AccountInstance, done: (err?: Error) => void) => void,
-  ): void;
+  each(callback?: (item: AccountInstance, done: (err?: Error) => void) => void): void;
+  each(params: AccountListInstanceEachOptions, callback?: (item: AccountInstance, done: (err?: Error) => void) => void): void;
   /**
    * Retrieve a single target page of AccountInstance records from the API.
    *
@@ -531,10 +492,7 @@ export interface AccountListInstance {
    * @param { string } [targetUrl] - API-generated URL for the requested results page
    * @param { function } [callback] - Callback to handle list of records
    */
-  getPage(
-    targetUrl: string,
-    callback?: (error: Error | null, items: AccountPage) => any,
-  ): Promise<AccountPage>;
+  getPage(targetUrl: string, callback?: (error: Error | null, items: AccountPage) => any): Promise<AccountPage>;
   /**
    * Lists AccountInstance records from the API as a list.
    *
@@ -544,13 +502,8 @@ export interface AccountListInstance {
    * @param { AccountListInstanceOptions } [params] - Options for request
    * @param { function } [callback] - Callback to handle list of records
    */
-  list(
-    callback?: (error: Error | null, items: AccountInstance[]) => any,
-  ): Promise<AccountInstance[]>;
-  list(
-    params: AccountListInstanceOptions,
-    callback?: (error: Error | null, items: AccountInstance[]) => any,
-  ): Promise<AccountInstance[]>;
+  list(callback?: (error: Error | null, items: AccountInstance[]) => any): Promise<AccountInstance[]>;
+  list(params: AccountListInstanceOptions, callback?: (error: Error | null, items: AccountInstance[]) => any): Promise<AccountInstance[]>;
   /**
    * Retrieve a single page of AccountInstance records from the API.
    *
@@ -562,13 +515,8 @@ export interface AccountListInstance {
    * @param { AccountListInstancePageOptions } [params] - Options for request
    * @param { function } [callback] - Callback to handle list of records
    */
-  page(
-    callback?: (error: Error | null, items: AccountPage) => any,
-  ): Promise<AccountPage>;
-  page(
-    params: AccountListInstancePageOptions,
-    callback?: (error: Error | null, items: AccountPage) => any,
-  ): Promise<AccountPage>;
+  page(callback?: (error: Error | null, items: AccountPage) => any): Promise<AccountPage>;
+  page(params: AccountListInstancePageOptions, callback?: (error: Error | null, items: AccountPage) => any): Promise<AccountPage>;
 
   /**
    * Provide a user-friendly representation
@@ -578,22 +526,17 @@ export interface AccountListInstance {
 }
 
 export function AccountListInstance(version: V2010): AccountListInstance {
-  const instance = ((sid) => instance.get(sid)) as AccountListInstance;
+  const instance = ((sid, ) => instance.get(sid, )) as AccountListInstance;
 
-  instance.get = function get(sid): AccountContext {
+  instance.get = function get(sid, ): AccountContext {
     return new AccountContextImpl(version, sid);
-  };
+  }
 
   instance._version = version;
-  instance._solution = {};
+  instance._solution = {  };
   instance._uri = `/Accounts.json`;
 
-  instance.create = function create(
-    params?:
-      | AccountListInstanceCreateOptions
-      | ((error: Error | null, items: AccountInstance) => any),
-    callback?: (error: Error | null, items: AccountInstance) => any,
-  ): Promise<AccountInstance> {
+  instance.create = function create(params?: AccountListInstanceCreateOptions | ((error: Error | null, items: AccountInstance) => any), callback?: (error: Error | null, items: AccountInstance) => any): Promise<AccountInstance> {
     if (params instanceof Function) {
       callback = params;
       params = {};
@@ -603,47 +546,35 @@ export function AccountListInstance(version: V2010): AccountListInstance {
 
     let data: any = {};
 
-    if (params["recordingStatusCallback"] !== undefined)
-      data["RecordingStatusCallback"] = params["recordingStatusCallback"];
+    
+        if (params["recordingStatusCallback"] !== undefined)
+    data["RecordingStatusCallback"] = params["recordingStatusCallback"];
     if (params["recordingStatusCallbackEvent"] !== undefined)
-      data["RecordingStatusCallbackEvent"] = serialize.map(
-        params["recordingStatusCallbackEvent"],
-        (e: string) => e,
-      );
+    data["RecordingStatusCallbackEvent"] = serialize.map(params["recordingStatusCallbackEvent"], (e: string) => (e));
     if (params["twiml"] !== undefined)
-      data["Twiml"] = serialize.twiml(params["twiml"]);
+    data["Twiml"] = serialize.twiml(params["twiml"]);
 
+    
+
+    
     const headers: any = {};
-    headers["Content-Type"] = "application/x-www-form-urlencoded";
-    headers["Accept"] = "application/json";
-    if (params["xTwilioWebhookEnabled"] !== undefined)
-      headers["X-Twilio-Webhook-Enabled"] = params["xTwilioWebhookEnabled"];
+    headers["Content-Type"] = "application/x-www-form-urlencoded"
+    headers["Accept"] = "application/json"
+    if (params["xTwilioWebhookEnabled"] !== undefined) headers["X-Twilio-Webhook-Enabled"] = params["xTwilioWebhookEnabled"];
 
     let operationVersion = version,
-      operationPromise = operationVersion.create({
-        uri: instance._uri,
-        method: "post",
-        data,
-        headers,
-      });
+        operationPromise = operationVersion.create({ uri: instance._uri, method: "post", data, headers});
+    
+    operationPromise = operationPromise.then(payload => new AccountInstance(operationVersion, payload));
+    
 
-    operationPromise = operationPromise.then(
-      (payload) => new AccountInstance(operationVersion, payload),
-    );
-
-    operationPromise = instance._version.setPromiseCallback(
-      operationPromise,
-      callback,
-    );
+    operationPromise = instance._version.setPromiseCallback(operationPromise,callback);
     return operationPromise;
-  };
 
-  instance.page = function page(
-    params?:
-      | AccountListInstancePageOptions
-      | ((error: Error | null, items: AccountPage) => any),
-    callback?: (error: Error | null, items: AccountPage) => any,
-  ): Promise<AccountPage> {
+
+    }
+
+  instance.page = function page(params?: AccountListInstancePageOptions | ((error: Error | null, items: AccountPage) => any), callback?: (error: Error | null, items: AccountPage) => any): Promise<AccountPage> {
     if (params instanceof Function) {
       callback = params;
       params = {};
@@ -653,110 +584,84 @@ export function AccountListInstance(version: V2010): AccountListInstance {
 
     let data: any = {};
 
-    if (params["dateCreated"] !== undefined)
-      data["DateCreated"] = serialize.iso8601DateTime(params["dateCreated"]);
+        if (params["dateCreated"] !== undefined)
+    data["DateCreated"] = serialize.iso8601DateTime(params["dateCreated"]);
     if (params["date.test"] !== undefined)
-      data["Date.Test"] = serialize.iso8601Date(params["date.test"]);
+    data["Date.Test"] = serialize.iso8601Date(params["date.test"]);
     if (params["dateCreatedBefore"] !== undefined)
-      data["DateCreated<"] = serialize.iso8601DateTime(
-        params["dateCreatedBefore"],
-      );
+    data["DateCreated<"] = serialize.iso8601DateTime(params["dateCreatedBefore"]);
     if (params["dateCreatedAfter"] !== undefined)
-      data["DateCreated>"] = serialize.iso8601DateTime(
-        params["dateCreatedAfter"],
-      );
-    if (params["pageSize"] !== undefined) data["PageSize"] = params["pageSize"];
+    data["DateCreated>"] = serialize.iso8601DateTime(params["dateCreatedAfter"]);
+    if (params["pageSize"] !== undefined)
+    data["PageSize"] = params["pageSize"];
 
+    
+    
     if (params.pageNumber !== undefined) data["Page"] = params.pageNumber;
     if (params.pageToken !== undefined) data["PageToken"] = params.pageToken;
 
+    
     const headers: any = {};
-    headers["Accept"] = "application/json";
+    headers["Accept"] = "application/json"
 
     let operationVersion = version,
-      operationPromise = operationVersion.page({
-        uri: instance._uri,
-        method: "get",
-        params: data,
-        headers,
-      });
+        operationPromise = operationVersion.page({ uri: instance._uri, method: "get", params: data, headers});
+    
+    operationPromise = operationPromise.then(payload => new AccountPage(operationVersion, payload, instance._solution));
 
-    operationPromise = operationPromise.then(
-      (payload) =>
-        new AccountPage(operationVersion, payload, instance._solution),
-    );
-
-    operationPromise = instance._version.setPromiseCallback(
-      operationPromise,
-      callback,
-    );
+    operationPromise = instance._version.setPromiseCallback(operationPromise,callback);
     return operationPromise;
-  };
+
+  }
   instance.each = instance._version.each;
   instance.list = instance._version.list;
 
-  instance.getPage = function getPage(
-    targetUrl: string,
-    callback?: (error: Error | null, items: AccountPage) => any,
-  ): Promise<AccountPage> {
-    const operationPromise = instance._version._domain.twilio.request({
-      method: "get",
-      uri: targetUrl,
-    });
+  instance.getPage = function getPage(targetUrl: string, callback?: (error: Error | null, items: AccountPage) => any): Promise<AccountPage> {
+    const operationPromise = instance._version._domain.twilio.request({method: "get", uri: targetUrl});
 
-    let pagePromise = operationPromise.then(
-      (payload) =>
-        new AccountPage(instance._version, payload, instance._solution),
-    );
+    let pagePromise = operationPromise.then(payload => new AccountPage(instance._version, payload, instance._solution));
     pagePromise = instance._version.setPromiseCallback(pagePromise, callback);
     return pagePromise;
-  };
+  }
+
 
   instance.toJSON = function toJSON() {
     return instance._solution;
-  };
+  }
 
-  instance[inspect.custom] = function inspectImpl(
-    _depth: any,
-    options: InspectOptions,
-  ) {
+  instance[inspect.custom] = function inspectImpl(_depth: any, options: InspectOptions) {
     return inspect(instance.toJSON(), options);
-  };
+  }
 
   return instance;
 }
 
-export class AccountPage extends Page<
-  V2010,
-  AccountPayload,
-  AccountResource,
-  AccountInstance
-> {
-  /**
-   * Initialize the AccountPage
-   *
-   * @param version - Version of the resource
-   * @param response - Response from the API
-   * @param solution - Path solution
-   */
-  constructor(
-    version: V2010,
-    response: Response<string>,
-    solution: AccountSolution,
-  ) {
+export class AccountPage extends Page<V2010, AccountPayload, AccountResource, AccountInstance> {
+/**
+* Initialize the AccountPage
+*
+* @param version - Version of the resource
+* @param response - Response from the API
+* @param solution - Path solution
+*/
+constructor(version: V2010, response: Response<string>, solution: AccountSolution) {
     super(version, response, solution);
-  }
+    }
 
-  /**
-   * Build an instance of AccountInstance
-   *
-   * @param payload - Payload response from the API
-   */
-  getInstance(payload: AccountResource): AccountInstance {
-    return new AccountInstance(this._version, payload);
-  }
+    /**
+    * Build an instance of AccountInstance
+    *
+    * @param payload - Payload response from the API
+    */
+    getInstance(payload: AccountResource): AccountInstance {
+    return new AccountInstance(
+    this._version,
+    payload,
+    );
+    }
 
-  [inspect.custom](depth: any, options: InspectOptions) {
+    [inspect.custom](depth: any, options: InspectOptions) {
     return inspect(this.toJSON(), options);
-  }
-}
+    }
+    }
+

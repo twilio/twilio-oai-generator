@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+
 import { inspect, InspectOptions } from "util";
 import V2010 from "../../V2010";
 const deserialize = require("../../../../base/deserialize");
@@ -20,34 +21,34 @@ import { isValidPathParam } from "../../../../base/utility";
 import { FeedbackCallSummaryListInstance } from "./call/feedbackCallSummary";
 import { PhoneNumberCapabilities } from "../../../../interfaces";
 
-export type CallStatus =
-  | "in-progress"
-  | "paused"
-  | "stopped"
-  | "processing"
-  | "completed"
-  | "absent";
+
+export type CallStatus = 'in-progress'|'paused'|'stopped'|'processing'|'completed'|'absent';
 
 export class TestResponseObjectTestArrayOfObjects {
   "count"?: number;
   "description"?: string;
 }
 
+
+
+
+
 /**
  * Options to pass to create a CallInstance
  */
 export interface CallListInstanceCreateOptions {
   /**  */
-  requiredStringProperty: string;
+  "requiredStringProperty": string;
   /** The HTTP method that we should use to request the `TestArrayOfUri`. */
-  testMethod: string;
+  "testMethod": string;
   /**  */
-  testArrayOfStrings?: Array<string>;
+  "testArrayOfStrings"?: Array<string>;
   /**  */
-  testArrayOfUri?: Array<string>;
+  "testArrayOfUri"?: Array<string>;
 }
 
 export interface CallContext {
+
   /**
    * Remove a CallInstance
    *
@@ -55,9 +56,7 @@ export interface CallContext {
    *
    * @returns Resolves to processed boolean
    */
-  remove(
-    callback?: (error: Error | null, item?: boolean) => any,
-  ): Promise<boolean>;
+  remove(callback?: (error: Error | null, item?: boolean) => any): Promise<boolean>
 
   /**
    * Fetch a CallInstance
@@ -66,9 +65,8 @@ export interface CallContext {
    *
    * @returns Resolves to processed CallInstance
    */
-  fetch(
-    callback?: (error: Error | null, item?: CallInstance) => any,
-  ): Promise<CallInstance>;
+  fetch(callback?: (error: Error | null, item?: CallInstance) => any): Promise<CallInstance>
+
 
   /**
    * Provide a user-friendly representation
@@ -78,80 +76,57 @@ export interface CallContext {
 }
 
 export interface CallContextSolution {
-  accountSid: string;
-  testInteger: number;
+  "accountSid": string;
+  "testInteger": number;
 }
 
 export class CallContextImpl implements CallContext {
   protected _solution: CallContextSolution;
   protected _uri: string;
 
-  constructor(
-    protected _version: V2010,
-    accountSid: string,
-    testInteger: number,
-  ) {
+
+  constructor(protected _version: V2010, accountSid: string, testInteger: number) {
     if (!isValidPathParam(accountSid)) {
-      throw new Error("Parameter 'accountSid' is not valid.");
+      throw new Error('Parameter \'accountSid\' is not valid.');
     }
 
     if (!isValidPathParam(testInteger)) {
-      throw new Error("Parameter 'testInteger' is not valid.");
+      throw new Error('Parameter \'testInteger\' is not valid.');
     }
 
-    this._solution = { accountSid, testInteger };
+    this._solution = { accountSid, testInteger,  };
     this._uri = `/Accounts/${accountSid}/Calls/${testInteger}.json`;
   }
 
-  remove(
-    callback?: (error: Error | null, item?: boolean) => any,
-  ): Promise<boolean> {
-    const headers: any = {};
+  remove(callback?: (error: Error | null, item?: boolean) => any): Promise<boolean> {
+      const headers: any = {};
 
     const instance = this;
     let operationVersion = instance._version,
-      operationPromise = operationVersion.remove({
-        uri: instance._uri,
-        method: "delete",
-        headers,
-      });
+        operationPromise = operationVersion.remove({ uri: instance._uri, method: "delete", headers});
+    
 
-    operationPromise = instance._version.setPromiseCallback(
-      operationPromise,
-      callback,
-    );
+    operationPromise = instance._version.setPromiseCallback(operationPromise,callback);
     return operationPromise;
+
+
   }
 
-  fetch(
-    callback?: (error: Error | null, item?: CallInstance) => any,
-  ): Promise<CallInstance> {
-    const headers: any = {};
-    headers["Accept"] = "application/json";
+  fetch(callback?: (error: Error | null, item?: CallInstance) => any): Promise<CallInstance> {
+      const headers: any = {};
+    headers["Accept"] = "application/json"
 
     const instance = this;
     let operationVersion = instance._version,
-      operationPromise = operationVersion.fetch({
-        uri: instance._uri,
-        method: "get",
-        headers,
-      });
+        operationPromise = operationVersion.fetch({ uri: instance._uri, method: "get", headers});
+    
+    operationPromise = operationPromise.then(payload => new CallInstance(operationVersion, payload, instance._solution.accountSid, instance._solution.testInteger));
+    
 
-    operationPromise = operationPromise.then(
-      (payload) =>
-        new CallInstance(
-          operationVersion,
-          payload,
-          instance._solution.accountSid,
-          instance._solution.testInteger,
-        ),
-    );
-
-    operationPromise = instance._version.setPromiseCallback(
-      operationPromise,
-      callback,
-    );
+    operationPromise = instance._version.setPromiseCallback(operationPromise,callback);
     return operationPromise;
+
+
   }
 
   /**
@@ -167,6 +142,7 @@ export class CallContextImpl implements CallContext {
     return inspect(this.toJSON(), options);
   }
 }
+
 
 interface CallPayload extends CallResource {}
 
@@ -194,34 +170,26 @@ export class CallInstance {
   protected _solution: CallContextSolution;
   protected _context?: CallContext;
 
-  constructor(
-    protected _version: V2010,
-    payload: CallResource,
-    accountSid: string,
-    testInteger?: number,
-  ) {
-    this.accountSid = payload.account_sid;
-    this.sid = payload.sid;
-    this.testString = payload.test_string;
+  constructor(protected _version: V2010, payload: CallResource, accountSid: string, testInteger?: number) {
+    this.accountSid = (payload.account_sid);
+    this.sid = (payload.sid);
+    this.testString = (payload.test_string);
     this.testInteger = deserialize.integer(payload.test_integer);
-    this.testObject = payload.test_object;
+    this.testObject = (payload.test_object);
     this.testDateTime = deserialize.rfc2822DateTime(payload.test_date_time);
-    this.testNumber = payload.test_number;
-    this.from = payload.from;
-    this.priceUnit = payload.price_unit;
-    this.testNumberFloat = payload.test_number_float;
+    this.testNumber = (payload.test_number);
+    this.from = (payload.from);
+    this.priceUnit = (payload.price_unit);
+    this.testNumberFloat = (payload.test_number_float);
     this.testNumberDecimal = deserialize.decimal(payload.test_number_decimal);
-    this.testEnum = payload.test_enum;
-    this.a2pProfileBundleSid = payload.a2p_profile_bundle_sid;
-    this.testArrayOfIntegers = payload.test_array_of_integers;
-    this.testArrayOfArrayOfIntegers = payload.test_array_of_array_of_integers;
-    this.testArrayOfObjects = payload.test_array_of_objects;
-    this.testArrayOfEnum = payload.test_array_of_enum;
+    this.testEnum = (payload.test_enum);
+    this.a2pProfileBundleSid = (payload.a2p_profile_bundle_sid);
+    this.testArrayOfIntegers = (payload.test_array_of_integers);
+    this.testArrayOfArrayOfIntegers = (payload.test_array_of_array_of_integers);
+    this.testArrayOfObjects = (payload.test_array_of_objects);
+    this.testArrayOfEnum = (payload.test_array_of_enum);
 
-    this._solution = {
-      accountSid,
-      testInteger: testInteger || this.testInteger,
-    };
+    this._solution = { accountSid, testInteger: testInteger || this.testInteger,  };
   }
 
   accountSid: string;
@@ -249,13 +217,7 @@ export class CallInstance {
   testArrayOfEnum: Array<CallStatus>;
 
   private get _proxy(): CallContext {
-    this._context =
-      this._context ||
-      new CallContextImpl(
-        this._version,
-        this._solution.accountSid,
-        this._solution.testInteger,
-      );
+    this._context = this._context || new CallContextImpl(this._version, this._solution.accountSid, this._solution.testInteger);
     return this._context;
   }
 
@@ -266,9 +228,9 @@ export class CallInstance {
    *
    * @returns Resolves to processed boolean
    */
-  remove(
-    callback?: (error: Error | null, item?: boolean) => any,
-  ): Promise<boolean> {
+  remove(callback?: (error: Error | null, item?: boolean) => any): Promise<boolean>
+
+    {
     return this._proxy.remove(callback);
   }
 
@@ -279,9 +241,9 @@ export class CallInstance {
    *
    * @returns Resolves to processed CallInstance
    */
-  fetch(
-    callback?: (error: Error | null, item?: CallInstance) => any,
-  ): Promise<CallInstance> {
+  fetch(callback?: (error: Error | null, item?: CallInstance) => any): Promise<CallInstance>
+
+    {
     return this._proxy.fetch(callback);
   }
 
@@ -309,13 +271,14 @@ export class CallInstance {
       testArrayOfArrayOfIntegers: this.testArrayOfArrayOfIntegers,
       testArrayOfObjects: this.testArrayOfObjects,
       testArrayOfEnum: this.testArrayOfEnum,
-    };
+    }
   }
 
   [inspect.custom](_depth: any, options: InspectOptions) {
     return inspect(this.toJSON(), options);
   }
 }
+
 
 export interface CallSolution {
   accountSid: string;
@@ -326,11 +289,15 @@ export interface CallListInstance {
   _solution: CallSolution;
   _uri: string;
 
-  (testInteger: number): CallContext;
-  get(testInteger: number): CallContext;
+  (testInteger: number, ): CallContext;
+  get(testInteger: number, ): CallContext;
 
   _feedbackCallSummary?: FeedbackCallSummaryListInstance;
   feedbackCallSummary: FeedbackCallSummaryListInstance;
+
+
+
+
 
   /**
    * Create a CallInstance
@@ -340,10 +307,8 @@ export interface CallListInstance {
    *
    * @returns Resolves to processed CallInstance
    */
-  create(
-    params: CallListInstanceCreateOptions,
-    callback?: (error: Error | null, item?: CallInstance) => any,
-  ): Promise<CallInstance>;
+  create(params: CallListInstanceCreateOptions, callback?: (error: Error | null, item?: CallInstance) => any): Promise<CallInstance>;
+
 
   /**
    * Provide a user-friendly representation
@@ -352,112 +317,83 @@ export interface CallListInstance {
   [inspect.custom](_depth: any, options: InspectOptions): any;
 }
 
-export function CallListInstance(
-  version: V2010,
-  accountSid: string,
-): CallListInstance {
+export function CallListInstance(version: V2010, accountSid: string): CallListInstance {
   if (!isValidPathParam(accountSid)) {
-    throw new Error("Parameter 'accountSid' is not valid.");
+    throw new Error('Parameter \'accountSid\' is not valid.');
   }
 
-  const instance = ((testInteger) =>
-    instance.get(testInteger)) as CallListInstance;
+  const instance = ((testInteger, ) => instance.get(testInteger, )) as CallListInstance;
 
-  instance.get = function get(testInteger): CallContext {
+  instance.get = function get(testInteger, ): CallContext {
     return new CallContextImpl(version, accountSid, testInteger);
-  };
+  }
 
   instance._version = version;
-  instance._solution = { accountSid };
+  instance._solution = { accountSid,  };
   instance._uri = `/Accounts/${accountSid}/Calls.json`;
 
   Object.defineProperty(instance, "feedbackCallSummary", {
     get: function feedbackCallSummary() {
       if (!instance._feedbackCallSummary) {
-        instance._feedbackCallSummary = FeedbackCallSummaryListInstance(
-          instance._version,
-          instance._solution.accountSid,
-        );
+        instance._feedbackCallSummary = FeedbackCallSummaryListInstance(instance._version, instance._solution.accountSid);
       }
       return instance._feedbackCallSummary;
-    },
+    }
   });
 
-  instance.create = function create(
-    params: CallListInstanceCreateOptions,
-    callback?: (error: Error | null, items: CallInstance) => any,
-  ): Promise<CallInstance> {
+  instance.create = function create(params: CallListInstanceCreateOptions, callback?: (error: Error | null, items: CallInstance) => any): Promise<CallInstance> {
     if (params === null || params === undefined) {
       throw new Error('Required parameter "params" missing.');
     }
 
-    if (
-      params["requiredStringProperty"] === null ||
-      params["requiredStringProperty"] === undefined
-    ) {
-      throw new Error(
-        "Required parameter \"params['requiredStringProperty']\" missing.",
-      );
+    if (params["requiredStringProperty"] === null || params["requiredStringProperty"] === undefined) {
+      throw new Error('Required parameter "params[\'requiredStringProperty\']" missing.');
     }
 
     if (params["testMethod"] === null || params["testMethod"] === undefined) {
-      throw new Error("Required parameter \"params['testMethod']\" missing.");
+      throw new Error('Required parameter "params[\'testMethod\']" missing.');
     }
 
     let data: any = {};
 
+    
+        
     data["RequiredStringProperty"] = params["requiredStringProperty"];
     if (params["testArrayOfStrings"] !== undefined)
-      data["TestArrayOfStrings"] = serialize.map(
-        params["testArrayOfStrings"],
-        (e: string) => e,
-      );
+    data["TestArrayOfStrings"] = serialize.map(params["testArrayOfStrings"], (e: string) => (e));
     if (params["testArrayOfUri"] !== undefined)
-      data["TestArrayOfUri"] = serialize.map(
-        params["testArrayOfUri"],
-        (e: string) => e,
-      );
-
+    data["TestArrayOfUri"] = serialize.map(params["testArrayOfUri"], (e: string) => (e));
+    
     data["TestMethod"] = params["testMethod"];
 
+    
+
+    
     const headers: any = {};
-    headers["Content-Type"] = "application/x-www-form-urlencoded";
-    headers["Accept"] = "application/json";
+    headers["Content-Type"] = "application/x-www-form-urlencoded"
+    headers["Accept"] = "application/json"
 
     let operationVersion = version,
-      operationPromise = operationVersion.create({
-        uri: instance._uri,
-        method: "post",
-        data,
-        headers,
-      });
+        operationPromise = operationVersion.create({ uri: instance._uri, method: "post", data, headers});
+    
+    operationPromise = operationPromise.then(payload => new CallInstance(operationVersion, payload, instance._solution.accountSid));
+    
 
-    operationPromise = operationPromise.then(
-      (payload) =>
-        new CallInstance(
-          operationVersion,
-          payload,
-          instance._solution.accountSid,
-        ),
-    );
-
-    operationPromise = instance._version.setPromiseCallback(
-      operationPromise,
-      callback,
-    );
+    operationPromise = instance._version.setPromiseCallback(operationPromise,callback);
     return operationPromise;
-  };
+
+
+    }
 
   instance.toJSON = function toJSON() {
     return instance._solution;
-  };
+  }
 
-  instance[inspect.custom] = function inspectImpl(
-    _depth: any,
-    options: InspectOptions,
-  ) {
+  instance[inspect.custom] = function inspectImpl(_depth: any, options: InspectOptions) {
     return inspect(instance.toJSON(), options);
-  };
+  }
 
   return instance;
 }
+
+
