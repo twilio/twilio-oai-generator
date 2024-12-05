@@ -109,8 +109,11 @@
                             'Page' => page_number,
                             'PageSize' => page_size,
                         })
+                        headers = Twilio::Values.of({})
+                        {{#vendorExtensions.scimConsumes}}headers['Content-Type'] = 'application/scim+json'{{/vendorExtensions.scimConsumes}}
+                        {{#vendorExtensions.scimProduces}}headers['Accept'] = 'application/scim+json'{{/vendorExtensions.scimProduces}}
 
-                        response = @version.page('{{httpMethod}}', @uri, params: params)
+                        response = @version.page('{{httpMethod}}', @uri, params: params, headers: headers)
 
                         {{apiName}}Page.new(@version, response, @solution)
                     end
