@@ -12,7 +12,7 @@
                         def to_json(options = {})
                         {
                             {{#vars}}
-                                {{name}}: @{{name}},
+                                "{{baseName}}": @{{name}},
                             {{/vars}}
                         }.to_json(options)
                         end
