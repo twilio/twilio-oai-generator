@@ -43,5 +43,4 @@ export default class V1 extends Version {
     this._credentials = this._credentials || CredentialListInstance(this);
     return this._credentials;
   }
-
 }

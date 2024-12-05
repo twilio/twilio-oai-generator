@@ -12,25 +12,21 @@
  * Do not edit the class manually.
  */
 
-
 import { inspect, InspectOptions } from "util";
 import V1 from "../../../V1";
 const deserialize = require("../../../../../base/deserialize");
 const serialize = require("../../../../../base/serialize");
 import { isValidPathParam } from "../../../../../base/utility";
 
-
-
 /**
  * Options to pass to fetch a HistoryInstance
  */
 export interface HistoryContextFetchOptions {
   /**  */
-  "addOnsData"?: Record<string, object>;
+  addOnsData?: Record<string, object>;
 }
 
 export interface HistoryContext {
-
   /**
    * Fetch a HistoryInstance
    *
@@ -38,7 +34,9 @@ export interface HistoryContext {
    *
    * @returns Resolves to processed HistoryInstance
    */
-  fetch(callback?: (error: Error | null, item?: HistoryInstance) => any): Promise<HistoryInstance>;
+  fetch(
+    callback?: (error: Error | null, item?: HistoryInstance) => any,
+  ): Promise<HistoryInstance>;
   /**
    * Fetch a HistoryInstance
    *
@@ -47,7 +45,10 @@ export interface HistoryContext {
    *
    * @returns Resolves to processed HistoryInstance
    */
-  fetch(params: HistoryContextFetchOptions, callback?: (error: Error | null, item?: HistoryInstance) => any): Promise<HistoryInstance>;
+  fetch(
+    params: HistoryContextFetchOptions,
+    callback?: (error: Error | null, item?: HistoryInstance) => any,
+  ): Promise<HistoryInstance>;
 
   /**
    * Provide a user-friendly representation
@@ -57,25 +58,32 @@ export interface HistoryContext {
 }
 
 export interface HistoryContextSolution {
-  "sid": string;
+  sid: string;
 }
 
 export class HistoryContextImpl implements HistoryContext {
   protected _solution: HistoryContextSolution;
   protected _uri: string;
 
-
-  constructor(protected _version: V1, sid: string) {
+  constructor(
+    protected _version: V1,
+    sid: string,
+  ) {
     if (!isValidPathParam(sid)) {
-      throw new Error('Parameter \'sid\' is not valid.');
+      throw new Error("Parameter 'sid' is not valid.");
     }
 
-    this._solution = { sid,  };
+    this._solution = { sid };
     this._uri = `/Credentials/AWS/${sid}/History`;
   }
 
-  fetch(params?: HistoryContextFetchOptions | ((error: Error | null, item?: HistoryInstance) => any), callback?: (error: Error | null, item?: HistoryInstance) => any): Promise<HistoryInstance> {
-      if (params instanceof Function) {
+  fetch(
+    params?:
+      | HistoryContextFetchOptions
+      | ((error: Error | null, item?: HistoryInstance) => any),
+    callback?: (error: Error | null, item?: HistoryInstance) => any,
+  ): Promise<HistoryInstance> {
+    if (params instanceof Function) {
       callback = params;
       params = {};
     } else {
@@ -84,27 +92,34 @@ export class HistoryContextImpl implements HistoryContext {
 
     let data: any = {};
 
-        if (params["addOnsData"] !== undefined)
-    data = {...data, ...serialize.prefixedCollapsibleMap(params["addOnsData"], "AddOns")};
+    if (params["addOnsData"] !== undefined)
+      data = {
+        ...data,
+        ...serialize.prefixedCollapsibleMap(params["addOnsData"], "AddOns"),
+      };
 
-    
-    
-
-    
     const headers: any = {};
-    headers["Accept"] = "application/json"
+    headers["Accept"] = "application/json";
 
     const instance = this;
     let operationVersion = instance._version,
-        operationPromise = operationVersion.fetch({ uri: instance._uri, method: "get", params: data, headers});
-    
-    operationPromise = operationPromise.then(payload => new HistoryInstance(operationVersion, payload, instance._solution.sid));
-    
+      operationPromise = operationVersion.fetch({
+        uri: instance._uri,
+        method: "get",
+        params: data,
+        headers,
+      });
 
-    operationPromise = instance._version.setPromiseCallback(operationPromise,callback);
+    operationPromise = operationPromise.then(
+      (payload) =>
+        new HistoryInstance(operationVersion, payload, instance._solution.sid),
+    );
+
+    operationPromise = instance._version.setPromiseCallback(
+      operationPromise,
+      callback,
+    );
     return operationPromise;
-
-
   }
 
   /**
@@ -121,7 +136,6 @@ export class HistoryContextImpl implements HistoryContext {
   }
 }
 
-
 interface HistoryPayload extends HistoryResource {}
 
 interface HistoryResource {
@@ -135,13 +149,17 @@ export class HistoryInstance {
   protected _solution: HistoryContextSolution;
   protected _context?: HistoryContext;
 
-  constructor(protected _version: V1, payload: HistoryResource, sid: string) {
-    this.accountSid = (payload.account_sid);
-    this.sid = (payload.sid);
-    this.testString = (payload.test_string);
+  constructor(
+    protected _version: V1,
+    payload: HistoryResource,
+    sid: string,
+  ) {
+    this.accountSid = payload.account_sid;
+    this.sid = payload.sid;
+    this.testString = payload.test_string;
     this.testInteger = deserialize.integer(payload.test_integer);
 
-    this._solution = { sid,  };
+    this._solution = { sid };
   }
 
   accountSid: string;
@@ -150,7 +168,9 @@ export class HistoryInstance {
   testInteger: number;
 
   private get _proxy(): HistoryContext {
-    this._context = this._context || new HistoryContextImpl(this._version, this._solution.sid);
+    this._context =
+      this._context ||
+      new HistoryContextImpl(this._version, this._solution.sid);
     return this._context;
   }
 
@@ -161,7 +181,9 @@ export class HistoryInstance {
    *
    * @returns Resolves to processed HistoryInstance
    */
-  fetch(callback?: (error: Error | null, item?: HistoryInstance) => any): Promise<HistoryInstance>;
+  fetch(
+    callback?: (error: Error | null, item?: HistoryInstance) => any,
+  ): Promise<HistoryInstance>;
   /**
    * Fetch a HistoryInstance
    *
@@ -170,10 +192,15 @@ export class HistoryInstance {
    *
    * @returns Resolves to processed HistoryInstance
    */
-  fetch(params: HistoryContextFetchOptions, callback?: (error: Error | null, item?: HistoryInstance) => any): Promise<HistoryInstance>;
+  fetch(
+    params: HistoryContextFetchOptions,
+    callback?: (error: Error | null, item?: HistoryInstance) => any,
+  ): Promise<HistoryInstance>;
 
-    fetch(params?: any, callback?: (error: Error | null, item?: HistoryInstance) => any): Promise<HistoryInstance>
-    {
+  fetch(
+    params?: any,
+    callback?: (error: Error | null, item?: HistoryInstance) => any,
+  ): Promise<HistoryInstance> {
     return this._proxy.fetch(params, callback);
   }
 
@@ -188,14 +215,13 @@ export class HistoryInstance {
       sid: this.sid,
       testString: this.testString,
       testInteger: this.testInteger,
-    }
+    };
   }
 
   [inspect.custom](_depth: any, options: InspectOptions) {
     return inspect(this.toJSON(), options);
   }
 }
-
 
 export interface HistorySolution {
   sid: string;
@@ -209,9 +235,6 @@ export interface HistoryListInstance {
   (): HistoryContext;
   get(): HistoryContext;
 
-
-
-
   /**
    * Provide a user-friendly representation
    */
@@ -219,30 +242,34 @@ export interface HistoryListInstance {
   [inspect.custom](_depth: any, options: InspectOptions): any;
 }
 
-export function HistoryListInstance(version: V1, sid: string): HistoryListInstance {
+export function HistoryListInstance(
+  version: V1,
+  sid: string,
+): HistoryListInstance {
   if (!isValidPathParam(sid)) {
-    throw new Error('Parameter \'sid\' is not valid.');
+    throw new Error("Parameter 'sid' is not valid.");
   }
 
   const instance = (() => instance.get()) as HistoryListInstance;
 
   instance.get = function get(): HistoryContext {
     return new HistoryContextImpl(version, sid);
-  }
+  };
 
   instance._version = version;
-  instance._solution = { sid,  };
+  instance._solution = { sid };
   instance._uri = ``;
 
   instance.toJSON = function toJSON() {
     return instance._solution;
-  }
+  };
 
-  instance[inspect.custom] = function inspectImpl(_depth: any, options: InspectOptions) {
+  instance[inspect.custom] = function inspectImpl(
+    _depth: any,
+    options: InspectOptions,
+  ) {
     return inspect(instance.toJSON(), options);
-  }
+  };
 
   return instance;
 }
-
-

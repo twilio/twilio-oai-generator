@@ -12,67 +12,66 @@
  * Do not edit the class manually.
  */
 
-
 import { inspect, InspectOptions } from "util";
 import V1 from "../../V1";
 const deserialize = require("../../../../base/deserialize");
 const serialize = require("../../../../base/serialize");
 import { isValidPathParam } from "../../../../base/utility";
 
-
-export type NewCredentialsStatus = 'in-progress'|'paused'|'stopped'|'processing'|'completed'|'absent';
-
+export type NewCredentialsStatus =
+  | "in-progress"
+  | "paused"
+  | "stopped"
+  | "processing"
+  | "completed"
+  | "absent";
 
 /**
  * Options to pass to create a NewCredentialsInstance
  */
 export interface NewCredentialsListInstanceCreateOptions {
   /**  */
-  "testString": string;
+  testString: string;
   /**  */
-  "testBoolean"?: boolean;
+  testBoolean?: boolean;
   /**  */
-  "testInteger"?: number;
+  testInteger?: number;
   /**  */
-  "testNumber"?: number;
+  testNumber?: number;
   /**  */
-  "testNumberFloat"?: number;
+  testNumberFloat?: number;
   /**  */
-  "testNumberDouble"?: number;
+  testNumberDouble?: number;
   /**  */
-  "testNumberInt32"?: number;
+  testNumberInt32?: number;
   /**  */
-  "testNumberInt64"?: number;
+  testNumberInt64?: number;
   /**  */
-  "testObject"?: Record<string, object>;
+  testObject?: Record<string, object>;
   /**  */
-  "testDateTime"?: Date;
+  testDateTime?: Date;
   /**  */
-  "testDate"?: Date;
+  testDate?: Date;
   /**  */
-  "testEnum"?: NewCredentialsStatus;
+  testEnum?: NewCredentialsStatus;
   /**  */
-  "testObjectArray"?: Array<object>;
+  testObjectArray?: Array<object>;
   /**  */
-  "testAnyType"?: any;
+  testAnyType?: any;
   /**  */
-  "testAnyArray"?: Array<any>;
+  testAnyArray?: Array<any>;
   /** A comma-separated list of the permissions you will request from the users of this ConnectApp.  Can include: `get-all` and `post-all`. */
-  "permissions"?: Array<string>;
+  permissions?: Array<string>;
   /**  */
-  "someA2PThing"?: string;
+  someA2PThing?: string;
 }
 
-
-export interface NewCredentialsSolution {
-}
+export interface NewCredentialsSolution {}
 
 export interface NewCredentialsListInstance {
   _version: V1;
   _solution: NewCredentialsSolution;
   _uri: string;
-
-
 
   /**
    * Create a NewCredentialsInstance
@@ -82,8 +81,10 @@ export interface NewCredentialsListInstance {
    *
    * @returns Resolves to processed NewCredentialsInstance
    */
-  create(params: NewCredentialsListInstanceCreateOptions, callback?: (error: Error | null, item?: NewCredentialsInstance) => any): Promise<NewCredentialsInstance>;
-
+  create(
+    params: NewCredentialsListInstanceCreateOptions,
+    callback?: (error: Error | null, item?: NewCredentialsInstance) => any,
+  ): Promise<NewCredentialsInstance>;
 
   /**
    * Provide a user-friendly representation
@@ -92,86 +93,103 @@ export interface NewCredentialsListInstance {
   [inspect.custom](_depth: any, options: InspectOptions): any;
 }
 
-export function NewCredentialsListInstance(version: V1): NewCredentialsListInstance {
+export function NewCredentialsListInstance(
+  version: V1,
+): NewCredentialsListInstance {
   const instance = {} as NewCredentialsListInstance;
 
   instance._version = version;
-  instance._solution = {  };
+  instance._solution = {};
   instance._uri = `/Credentials/AWS`;
 
-  instance.create = function create(params: NewCredentialsListInstanceCreateOptions, callback?: (error: Error | null, items: NewCredentialsInstance) => any): Promise<NewCredentialsInstance> {
+  instance.create = function create(
+    params: NewCredentialsListInstanceCreateOptions,
+    callback?: (error: Error | null, items: NewCredentialsInstance) => any,
+  ): Promise<NewCredentialsInstance> {
     if (params === null || params === undefined) {
       throw new Error('Required parameter "params" missing.');
     }
 
     if (params["testString"] === null || params["testString"] === undefined) {
-      throw new Error('Required parameter "params[\'testString\']" missing.');
+      throw new Error("Required parameter \"params['testString']\" missing.");
     }
 
     let data: any = {};
 
-    
-        
     data["TestString"] = params["testString"];
     if (params["testBoolean"] !== undefined)
-    data["TestBoolean"] = serialize.bool(params["testBoolean"]);
+      data["TestBoolean"] = serialize.bool(params["testBoolean"]);
     if (params["testInteger"] !== undefined)
-    data["TestInteger"] = params["testInteger"];
+      data["TestInteger"] = params["testInteger"];
     if (params["testNumber"] !== undefined)
-    data["TestNumber"] = params["testNumber"];
+      data["TestNumber"] = params["testNumber"];
     if (params["testNumberFloat"] !== undefined)
-    data["TestNumberFloat"] = params["testNumberFloat"];
+      data["TestNumberFloat"] = params["testNumberFloat"];
     if (params["testNumberDouble"] !== undefined)
-    data["TestNumberDouble"] = params["testNumberDouble"];
+      data["TestNumberDouble"] = params["testNumberDouble"];
     if (params["testNumberInt32"] !== undefined)
-    data["TestNumberInt32"] = params["testNumberInt32"];
+      data["TestNumberInt32"] = params["testNumberInt32"];
     if (params["testNumberInt64"] !== undefined)
-    data["TestNumberInt64"] = params["testNumberInt64"];
+      data["TestNumberInt64"] = params["testNumberInt64"];
     if (params["testObject"] !== undefined)
-    data["TestObject"] = serialize.object(params["testObject"]);
+      data["TestObject"] = serialize.object(params["testObject"]);
     if (params["testDateTime"] !== undefined)
-    data["TestDateTime"] = serialize.iso8601DateTime(params["testDateTime"]);
+      data["TestDateTime"] = serialize.iso8601DateTime(params["testDateTime"]);
     if (params["testDate"] !== undefined)
-    data["TestDate"] = serialize.iso8601Date(params["testDate"]);
-    if (params["testEnum"] !== undefined)
-    data["TestEnum"] = params["testEnum"];
+      data["TestDate"] = serialize.iso8601Date(params["testDate"]);
+    if (params["testEnum"] !== undefined) data["TestEnum"] = params["testEnum"];
     if (params["testObjectArray"] !== undefined)
-    data["TestObjectArray"] = serialize.map(params["testObjectArray"], (e: object) => (e));
+      data["TestObjectArray"] = serialize.map(
+        params["testObjectArray"],
+        (e: object) => e,
+      );
     if (params["testAnyType"] !== undefined)
-    data["TestAnyType"] = serialize.object(params["testAnyType"]);
+      data["TestAnyType"] = serialize.object(params["testAnyType"]);
     if (params["testAnyArray"] !== undefined)
-    data["TestAnyArray"] = serialize.map(params["testAnyArray"], (e: any) => serialize.object(e));
+      data["TestAnyArray"] = serialize.map(params["testAnyArray"], (e: any) =>
+        serialize.object(e),
+      );
     if (params["permissions"] !== undefined)
-    data["Permissions"] = serialize.map(params["permissions"], (e: string) => (e));
+      data["Permissions"] = serialize.map(
+        params["permissions"],
+        (e: string) => e,
+      );
     if (params["someA2PThing"] !== undefined)
-    data["SomeA2PThing"] = params["someA2PThing"];
+      data["SomeA2PThing"] = params["someA2PThing"];
 
-    
-
-    
     const headers: any = {};
-    headers["Content-Type"] = "application/x-www-form-urlencoded"
-    headers["Accept"] = "application/json"
+    headers["Content-Type"] = "application/x-www-form-urlencoded";
+    headers["Accept"] = "application/json";
 
     let operationVersion = version,
-        operationPromise = operationVersion.create({ uri: instance._uri, method: "post", data, headers});
-    
-    operationPromise = operationPromise.then(payload => new NewCredentialsInstance(operationVersion, payload));
-    
+      operationPromise = operationVersion.create({
+        uri: instance._uri,
+        method: "post",
+        data,
+        headers,
+      });
 
-    operationPromise = instance._version.setPromiseCallback(operationPromise,callback);
+    operationPromise = operationPromise.then(
+      (payload) => new NewCredentialsInstance(operationVersion, payload),
+    );
+
+    operationPromise = instance._version.setPromiseCallback(
+      operationPromise,
+      callback,
+    );
     return operationPromise;
-
-
-    }
+  };
 
   instance.toJSON = function toJSON() {
     return instance._solution;
-  }
+  };
 
-  instance[inspect.custom] = function inspectImpl(_depth: any, options: InspectOptions) {
+  instance[inspect.custom] = function inspectImpl(
+    _depth: any,
+    options: InspectOptions,
+  ) {
     return inspect(instance.toJSON(), options);
-  }
+  };
 
   return instance;
 }
@@ -186,13 +204,14 @@ interface NewCredentialsResource {
 }
 
 export class NewCredentialsInstance {
-
-  constructor(protected _version: V1, payload: NewCredentialsResource) {
-    this.accountSid = (payload.account_sid);
-    this.sid = (payload.sid);
-    this.testString = (payload.test_string);
+  constructor(
+    protected _version: V1,
+    payload: NewCredentialsResource,
+  ) {
+    this.accountSid = payload.account_sid;
+    this.sid = payload.sid;
+    this.testString = payload.test_string;
     this.testInteger = deserialize.integer(payload.test_integer);
-
   }
 
   accountSid: string;
@@ -211,12 +230,10 @@ export class NewCredentialsInstance {
       sid: this.sid,
       testString: this.testString,
       testInteger: this.testInteger,
-    }
+    };
   }
 
   [inspect.custom](_depth: any, options: InspectOptions) {
     return inspect(this.toJSON(), options);
   }
 }
-
-
