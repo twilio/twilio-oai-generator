@@ -50,6 +50,7 @@ public class NodeApiResourceBuilder extends FluentApiResourceBuilder {
             if (co.nickname.startsWith("delete")) {
                 addOperationName(co, "Remove");
                 co.returnType = "boolean";
+                co.produces = null;
             } else if (co.nickname.startsWith("list")) {
                 addOperationName(co, "Page");
                 co.returnType = apiName + "Page";

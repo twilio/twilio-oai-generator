@@ -68,11 +68,15 @@ export class FleetContextImpl implements FleetContext {
   fetch(
     callback?: (error: Error | null, item?: FleetInstance) => any,
   ): Promise<FleetInstance> {
+    const headers: any = {};
+    headers["Accept"] = "application/json";
+
     const instance = this;
     let operationVersion = instance._version,
       operationPromise = operationVersion.fetch({
         uri: instance._uri,
         method: "get",
+        headers,
       });
 
     operationPromise = operationPromise.then(
@@ -242,6 +246,7 @@ export function FleetListInstance(version: DeployedDevices): FleetListInstance {
 
     const headers: any = {};
     headers["Content-Type"] = "application/x-www-form-urlencoded";
+    headers["Accept"] = "application/json";
 
     let operationVersion = version,
       operationPromise = operationVersion.create({
