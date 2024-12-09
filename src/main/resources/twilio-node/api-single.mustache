@@ -93,7 +93,7 @@ export class {{apiName}}ContextImpl implements {{apiName}}Context {
   {{#operations}}
   {{^vendorExtensions.x-twilio.ignoreOperation}}
   {{#vendorExtensions.x-is-context-operation}}
-  {{vendorExtensions.x-name-lower}}({{#hasParams}}params{{^hasRequiredParams}}?{{/hasRequiredParams}}: {{#bodyParam}}{{dataType}}, headers?: any{{/bodyParam}}{{^bodyParam}}{{vendorExtensions.x-resource-name}}{{vendorExtensions.x-name}}Options{{/bodyParam}}{{^hasRequiredParams}} | ((error: Error | null, item?: {{returnType}}) => any){{/hasRequiredParams}}, {{/hasParams}}callback?: (error: Error | null, item?: {{returnType}}) => any): Promise<{{returnType}}> {
+  {{vendorExtensions.x-name-lower}}({{#hasParams}}params{{^hasRequiredParams}}?{{/hasRequiredParams}}: {{#bodyParam}}{{dataType}}{{/bodyParam}}{{^bodyParam}}{{vendorExtensions.x-resource-name}}{{vendorExtensions.x-name}}Options{{/bodyParam}}{{^hasRequiredParams}} | ((error: Error | null, item?: {{returnType}}) => any){{/hasRequiredParams}}{{#bodyParams.0}}, headers?: any{{/bodyParams.0}},{{/hasParams}}callback?: (error: Error | null, item?: {{returnType}}) => any): Promise<{{returnType}}> {
   {{>operation}}
   }
 
@@ -191,7 +191,7 @@ export function {{apiName}}ListInstance(version: {{apiVersionClass}}{{#listPathP
 {{#operations}}
 {{^vendorExtensions.x-twilio.ignoreOperation}}
 {{#vendorExtensions.x-is-list-operation}}
-  instance.{{vendorExtensions.x-name-lower}} = function {{vendorExtensions.x-name-lower}}({{#hasParams}}params{{^hasRequiredParams}}?{{/hasRequiredParams}}: {{#bodyParam}}{{dataType}}, headers?: any{{/bodyParam}}{{^bodyParam}}{{vendorExtensions.x-resource-name}}{{vendorExtensions.x-name}}Options{{/bodyParam}}{{^hasRequiredParams}} | ((error: Error | null, items: {{returnType}}) => any){{/hasRequiredParams}},{{/hasParams}} callback?: (error: Error | null, items: {{returnType}}) => any): Promise<{{returnType}}> {
+  instance.{{vendorExtensions.x-name-lower}} = function {{vendorExtensions.x-name-lower}}({{#hasParams}}params{{^hasRequiredParams}}?{{/hasRequiredParams}}: {{#bodyParam}}{{dataType}}{{/bodyParam}}{{^bodyParam}}{{vendorExtensions.x-resource-name}}{{vendorExtensions.x-name}}Options{{/bodyParam}}{{^hasRequiredParams}} | ((error: Error | null, items: {{returnType}}) => any){{/hasRequiredParams}}{{#bodyParams.0}}, headers?: any{{/bodyParams.0}},{{/hasParams}} callback?: (error: Error | null, items: {{returnType}}) => any): Promise<{{returnType}}> {
 {{>operation}}
 {{^vendorExtensions.x-is-read-operation}}
     }
