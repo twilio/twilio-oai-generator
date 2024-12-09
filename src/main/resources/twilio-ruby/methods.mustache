@@ -21,5 +21,5 @@
                     def {{#lambda.camelcase}}{{vendorExtensions.x-name}}{{/lambda.camelcase}}{{#hasParams}}({{#queryParams}}
                         {{paramName}}: {{#required}}nil{{/required}}{{^required}}:unset{{/required}}{{^-last}}, {{/-last}}{{/queryParams}}{{#formParams.0}}{{#queryParams.0}}, {{/queryParams.0}}{{/formParams.0}}{{#formParams}}
                         {{paramName}}: {{#required}}nil{{/required}}{{^required}}:unset{{/required}}{{^-last}}, {{/-last}}{{/formParams}}{{#headerParams.0}}{{#queryParams.0}}, {{/queryParams.0}}{{^queryParams.0}}{{#formParams.0}}, {{/formParams.0}}{{/queryParams.0}}{{/headerParams.0}}{{#headerParams}}
-                        {{paramName}}: {{#required}}nil{{/required}}{{^required}}:unset{{/required}}{{^-last}}, {{/-last}}{{/headerParams}}{{#bodyParams}}{{paramName}}: {{#required}}nil{{/required}}{{^required}}:unset{{/required}}{{^-last}}, {{/-last}}{{/bodyParams}}
+                        {{paramName}}: {{#required}}nil{{/required}}{{^required}}:unset{{/required}}{{^-last}}, {{/-last}}{{/headerParams}}{{#bodyParams}}{{#headerParams.0}},{{/headerParams.0}}{{paramName}}: {{#required}}nil{{/required}}{{^required}}:unset{{/required}}{{^-last}}, {{/-last}}{{/bodyParams}}
                     ){{/hasParams}}
