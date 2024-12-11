@@ -102,6 +102,7 @@ public class PythonApiResourceBuilder extends FluentApiResourceBuilder {
                 model.setName(resourceName);
                 model.getVars().forEach(variable -> {
                     codegenPropertyResolver.resolve(variable, this);
+                    variable.vendorExtensions.put("json-name", variable.baseName);
 
                     instancePathParams
                             .stream()
