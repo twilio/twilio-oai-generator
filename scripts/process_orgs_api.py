@@ -1,8 +1,12 @@
 import json
 import re
 import os
+from pathlib import Path
 
-with open("twilio_am_temp.json") as f:
+parent_dir = Path(__file__).parent.parent
+temp_spec_path = os.path.join(parent_dir, "twilio_am_temp.json")
+
+with open(temp_spec_path) as f:
     specs = json.load(f)
     missing_paths = specs.get("paths")
 
