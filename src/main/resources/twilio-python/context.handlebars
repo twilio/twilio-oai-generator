@@ -27,12 +27,15 @@ class {{apiName}}Context(InstanceContext):
 
         :returns: The updated {{instanceName}}
         """
-        data = values.of({ {{#allParams}}{{#isFormParam}}
+        {{#bodyParam}}data = {{paramName}}.to_dict(){{/bodyParam}}
+        {{^bodyParam}}data = values.of({ {{#allParams}}{{#isFormParam}}
             '{{{baseName}}}': {{#if vendorExtensions.x-serialize}}{{vendorExtensions.x-serialize}}({{paramName}}{{#if isArray}}, lambda e: e){{else}}){{/if}}{{else}}{{paramName}}{{/if}},{{/isFormParam}}{{/allParams}}
-        })
-
+        }){{/bodyParam}}
         headers = values.of({})
-        {{#allParams}}{{#isHeaderParam}}headers['{{{baseName}}}'] = {{paramName}}{{/isHeaderParam}}{{/allParams}}
+        {{#allParams}}{{#isHeaderParam}}
+        {{^if required}}
+        if not ({{paramName}} is values.unset or (isinstance({{paramName}}, str) and not {{paramName}})):{{/if}}
+            headers['{{{baseName}}}'] = {{paramName}}{{/isHeaderParam}}{{/allParams}}
         {{#consumes}}
         headers["Content-Type"] = "{{{mediaType}}}"
         {{/consumes}}
@@ -56,11 +59,16 @@ class {{apiName}}Context(InstanceContext):
 
         :returns: The updated {{instanceName}}
         """
-        data = values.of({ {{#allParams}}{{#isFormParam}}
+        {{#bodyParam}}data = {{paramName}}.to_dict(){{/bodyParam}}
+        {{^bodyParam}}data = values.of({ {{#allParams}}{{#isFormParam}}
             '{{{baseName}}}': {{#if vendorExtensions.x-serialize}}{{vendorExtensions.x-serialize}}({{paramName}}{{#if isArray}}, lambda e: e){{else}}){{/if}}{{else}}{{paramName}}{{/if}},{{/isFormParam}}{{/allParams}}
-        })
+        }){{/bodyParam}}
         headers = values.of({})
-        {{#allParams}}{{#isHeaderParam}}headers['{{{baseName}}}'] = {{paramName}}{{/isHeaderParam}}{{/allParams}}
+        {{#allParams}}{{#isHeaderParam}}
+        {{^if required}}
+        if not ({{paramName}} is values.unset or (isinstance({{paramName}}, str) and not {{paramName}})):{{/if}}
+            headers['{{{baseName}}}'] = {{paramName}}
+        {{/isHeaderParam}}{{/allParams}}
         {{#consumes}}
         headers["Content-Type"] = "{{{mediaType}}}"
         {{/consumes}}
