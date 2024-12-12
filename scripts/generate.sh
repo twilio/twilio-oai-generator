@@ -20,7 +20,7 @@ function generate() {
     if [ "$1" !=  "twilio-java" ] && [ "$1" != "twilio-csharp" ] && [[ $api_spec == "examples/spec/twilio_iam_organizations.yaml" ]]; then
         continue
     fi
-    if [ "$1" !=  "twilio-node" ]  && [[ $api_spec == "examples/spec/twilio_iam_organizations_v1.yaml" ]]; then
+    if [ "$1" !=  "twilio-node" ]  && [ "$1" !=  "twilio-ruby" ]  && [[ $api_spec == "examples/spec/twilio_iam_organizations_v1.yaml" ]]; then
         continue
     fi
     echo "generatorName: $1

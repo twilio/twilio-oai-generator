@@ -33,6 +33,10 @@ module Twilio
         @versionless ||= Versionless.new self
       end
 
+      def preview_iam
+        @previewiam ||= PreviewIam.new self
+      end
+
       ##
       # @param [integer] testInteger INTEGER ID param!!!
 

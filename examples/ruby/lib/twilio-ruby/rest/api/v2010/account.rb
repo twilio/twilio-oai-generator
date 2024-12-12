@@ -45,8 +45,8 @@ module Twilio
             data = Twilio::Values.of({
                                        'RecordingStatusCallback' => recording_status_callback,
                                        'RecordingStatusCallbackEvent' => Twilio.serialize_list(recording_status_callback_event) { |e|
-                                         e
-                                       },
+                                                                           e
+                                                                         },
                                        'Twiml' => twiml,
                                      })
 
