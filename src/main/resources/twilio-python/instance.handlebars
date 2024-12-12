@@ -1,4 +1,5 @@
 class {{instanceName}}(InstanceResource):
+{{#if nestedModels}}{{>modelClasses}}{{/if}}
 {{>model}}
     """{{#vars}}
     :ivar {{name}}: {{{description}}}{{/vars}}

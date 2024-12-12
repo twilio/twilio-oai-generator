@@ -102,6 +102,7 @@ public class PythonApiResourceBuilder extends FluentApiResourceBuilder {
                 model.setName(resourceName);
                 model.getVars().forEach(variable -> {
                     codegenPropertyResolver.resolve(variable, this);
+                    variable.vendorExtensions.put("json-name", variable.baseName);
 
                     instancePathParams
                             .stream()
@@ -138,7 +139,8 @@ public class PythonApiResourceBuilder extends FluentApiResourceBuilder {
                     getModelByClassname(variable.complexType).ifPresent(model -> {
                         variable.baseType = variable.baseType.replace(variable.datatypeWithEnum, "str");
                         variable.datatypeWithEnum = "str";
-                        model.vendorExtensions.put("part-of-response-model", true);
+                        if(!model.vendorExtensions.containsKey("part-of-request-model"))
+                            model.vendorExtensions.put("part-of-response-model", true);
                     });
                 }
             });

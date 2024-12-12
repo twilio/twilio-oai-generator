@@ -16,7 +16,12 @@
                 {{#headerParams}}'{{{baseName}}}': {{paramName}},
                 {{/headerParams}}'Content-Type': 'application/x-www-form-urlencoded'
             })
-        {{#bodyParams.0}}headers['Content-Type'] = 'application/json'{{/bodyParams.0}}
+        {{#consumes}}
+        headers["Content-Type"] = "{{{mediaType}}}"
+        {{/consumes}}
+        {{#vendorExtensions.successProduce}}
+        headers["Accept"] = "{{{mediaType}}}"
+        {{/vendorExtensions.successProduce}}
         {{#queryParams.0}}params = values.of({
                 {{#queryParams}}'{{{baseName}}}': {{paramName}},
                 {{/queryParams}}
@@ -42,7 +47,12 @@
                 {{#headerParams}}'{{{baseName}}}': {{paramName}},
                 {{/headerParams}}'Content-Type': 'application/x-www-form-urlencoded'
             })
-        {{#bodyParams.0}}headers['Content-Type'] = 'application/json'{{/bodyParams.0}}
+        {{#consumes}}
+        headers["Content-Type"] = "{{{mediaType}}}"
+        {{/consumes}}
+        {{#vendorExtensions.successProduce}}
+        headers["Accept"] = "{{{mediaType}}}"
+        {{/vendorExtensions.successProduce}}
         {{#queryParams.0}}params = values.of({
                 {{#queryParams}}'{{{baseName}}}': {{paramName}},
                 {{/queryParams}}
@@ -63,7 +73,12 @@
                 {{#headerParams}}'{{{baseName}}}': {{paramName}},
                 {{/headerParams}}'Content-Type': 'application/x-www-form-urlencoded'
             })
-        {{#bodyParams.0}}headers['Content-Type'] = 'application/json'{{/bodyParams.0}}
+        {{#consumes}}
+        headers["Content-Type"] = "{{{mediaType}}}"
+        {{/consumes}}
+        {{#vendorExtensions.successProduce}}
+        headers["Accept"] = "{{{mediaType}}}"
+        {{/vendorExtensions.successProduce}}
         {{#queryParams.0}}params = values.of({
                 {{#queryParams}}'{{{baseName}}}': {{paramName}},
                 {{/queryParams}}
@@ -84,7 +99,12 @@
                 {{#headerParams}}'{{{baseName}}}': {{paramName}},
                 {{/headerParams}}'Content-Type': 'application/x-www-form-urlencoded'
             })
-        {{#bodyParams.0}}headers['Content-Type'] = 'application/json'{{/bodyParams.0}}
+        {{#consumes}}
+        headers["Content-Type"] = "{{{mediaType}}}"
+        {{/consumes}}
+        {{#vendorExtensions.successProduce}}
+        headers["Accept"] = "{{{mediaType}}}"
+        {{/vendorExtensions.successProduce}}
         {{#queryParams.0}}params = values.of({
                 {{#queryParams}}'{{{baseName}}}': {{paramName}},
                 {{/queryParams}}
@@ -104,7 +124,12 @@
                 {{#headerParams}}'{{{baseName}}}': {{paramName}},
                 {{/headerParams}}'Content-Type': 'application/x-www-form-urlencoded'
             })
-        {{#bodyParams.0}}headers['Content-Type'] = 'application/json'{{/bodyParams.0}}
+        {{#consumes}}
+        headers["Content-Type"] = "{{{mediaType}}}"
+        {{/consumes}}
+        {{#vendorExtensions.successProduce}}
+        headers["Accept"] = "{{{mediaType}}}"
+        {{/vendorExtensions.successProduce}}
         {{#queryParams.0}}params = values.of({
                 {{#queryParams}}'{{{baseName}}}': {{paramName}},
                 {{/queryParams}}
@@ -122,7 +147,12 @@
                 {{#headerParams}}'{{{baseName}}}': {{paramName}},
                 {{/headerParams}}'Content-Type': 'application/x-www-form-urlencoded'
             })
-        {{#bodyParams.0}}headers['Content-Type'] = 'application/json'{{/bodyParams.0}}
+        {{#consumes}}
+        headers["Content-Type"] = "{{{mediaType}}}"
+        {{/consumes}}
+        {{#vendorExtensions.successProduce}}
+        headers["Accept"] = "{{{mediaType}}}"
+        {{/vendorExtensions.successProduce}}
         {{#queryParams.0}}params = values.of({
                 {{#queryParams}}'{{{baseName}}}': {{paramName}},
                 {{/queryParams}}
@@ -145,7 +175,12 @@
                 {{#headerParams}}'{{{baseName}}}': {{paramName}},
                 {{/headerParams}}'Content-Type': 'application/x-www-form-urlencoded'
             })
-        {{#bodyParams.0}}headers['Content-Type'] = 'application/json'{{/bodyParams.0}}
+        {{#consumes}}
+        headers["Content-Type"] = "{{{mediaType}}}"
+        {{/consumes}}
+        {{#vendorExtensions.successProduce}}
+        headers["Accept"] = "{{{mediaType}}}"
+        {{/vendorExtensions.successProduce}}
         {{#queryParams.0}}params = values.of({
                 {{#queryParams}}'{{{baseName}}}': {{paramName}},
                 {{/queryParams}}
@@ -171,7 +206,12 @@
                 {{#headerParams}}'{{{baseName}}}': {{paramName}},
                 {{/headerParams}}'Content-Type': 'application/x-www-form-urlencoded'
             })
-        {{#bodyParams.0}}headers['Content-Type'] = 'application/json'{{/bodyParams.0}}
+        {{#consumes}}
+        headers["Content-Type"] = "{{{mediaType}}}"
+        {{/consumes}}
+        {{#vendorExtensions.successProduce}}
+        headers["Accept"] = "{{{mediaType}}}"
+        {{/vendorExtensions.successProduce}}
         {{#queryParams.0}}params = values.of({
                 {{#queryParams}}'{{{baseName}}}': {{paramName}},
                 {{/queryParams}}
@@ -314,7 +354,18 @@
             'PageSize': page_size,
         })
 
-        response = self._version.page(method='{{vendorExtensions.x-http-method}}', uri=self._uri, params=data)
+        headers = values.of({
+        {{#headerParams}}'{{{baseName}}}': {{paramName}},
+        {{/headerParams}}'Content-Type': 'application/x-www-form-urlencoded'
+        })
+        {{#consumes}}
+        headers["Content-Type"] = "{{{mediaType}}}"
+        {{/consumes}}
+        {{#vendorExtensions.successProduce}}
+        headers["Accept"] = "{{{mediaType}}}"
+        {{/vendorExtensions.successProduce}}
+
+        response = self._version.page(method='{{vendorExtensions.x-http-method}}', uri=self._uri, params=data, headers=headers)
         return {{apiName}}Page(self._version, response{{#if listPathParams}}, self._solution{{/if}})
 
     async def page_async(self, {{#allParams}}
@@ -341,7 +392,18 @@
             'PageSize': page_size,
         })
 
-        response = await self._version.page_async(method='{{vendorExtensions.x-http-method}}', uri=self._uri, params=data)
+        headers = values.of({
+        {{#headerParams}}'{{{baseName}}}': {{paramName}},
+        {{/headerParams}}'Content-Type': 'application/x-www-form-urlencoded'
+        })
+        {{#consumes}}
+        headers["Content-Type"] = "{{{mediaType}}}"
+        {{/consumes}}
+        {{#produces}}
+        headers["Accept"] = "{{{mediaType}}}"
+        {{/produces}}
+
+        response = await self._version.page_async(method='{{vendorExtensions.x-http-method}}', uri=self._uri, params=data, headers=headers)
         return {{apiName}}Page(self._version, response{{#if listPathParams}}, self._solution{{/if}})
 
     def get_page(self, target_url: str) -> {{apiName}}Page:

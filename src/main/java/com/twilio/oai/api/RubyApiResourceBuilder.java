@@ -387,4 +387,29 @@ public class RubyApiResourceBuilder extends FluentApiResourceBuilder {
         updateVersionResources();
         return this;
     }
+
+    protected void categorizeOperations() {
+        codegenOperationList.stream().filter(operation -> !operation.vendorExtensions.containsKey("x-ignore")).forEach(codegenOperation -> {
+            boolean isInstanceOperation = PathUtils.isInstanceOperation(codegenOperation);
+            if (!isInstanceOperation) {
+                listOperations.add(codegenOperation);
+                codegenOperation.vendorExtensions.put("listOperation", true);
+                metaAPIProperties.put("hasListOperation", true);
+            } else {
+                instanceOperations.add(codegenOperation);
+                codegenOperation.vendorExtensions.put("instanceOperation", true);
+                metaAPIProperties.put("hasInstanceOperation", true);
+            }
+        });
+        codegenOperationList.stream().forEach(operation -> {
+            if (operation.hasProduces && operation.produces.size() > 1)
+                operation.vendorExtensions.put("multipleProduces", true);
+            else if(operation.hasProduces && operation.produces.get(0).containsKey("mediaType") && operation.produces.get(0).get("mediaType").equals("application/scim+json"))
+                operation.vendorExtensions.put("scimProduces", true);
+        });
+        codegenOperationList.stream().forEach(operation -> {
+            if(operation.hasConsumes && operation.consumes.stream().anyMatch(consume -> consume.containsKey("mediaType") && consume.get("mediaType").equals("application/scim+json")))
+                operation.vendorExtensions.put("scimConsumes", true);
+        });
+    }
 }

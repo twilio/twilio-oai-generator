@@ -45,7 +45,7 @@ public class PythonCodegenModelResolver extends CodegenModelResolver {
         if (model == null) {
             return null;
         }
-
+        model.vendorExtensions.put("part-of-request-model", true);
         for (CodegenProperty property : model.vars) {
             CodegenModel nestedModel = resolveNestedModel(property, apiResourceBuilder);
             if(nestedModel != null) {
@@ -63,6 +63,7 @@ public class PythonCodegenModelResolver extends CodegenModelResolver {
                 else {
                     model.vendorExtensions.put(key, value);
                 }
+
                 return value;
             });
         }

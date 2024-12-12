@@ -101,8 +101,12 @@
                         {{/vendorExtensions.x-prefixed-collapsible-map}}{{/isFormParam}}{{/optionalParams}}
                         {{/formParams.0}}
                         headers = Twilio::Values.of({'Content-Type' => 'application/x-www-form-urlencoded', {{#headerParams}}{{#required}}'{{baseName}}' => {{paramName}}, {{/required}}{{/headerParams}}{{#headerParams}}{{^required}}'{{baseName}}' => {{paramName}}, {{/required}}{{/headerParams}}})
-                        {{#bodyParams.0}}headers['Content-Type'] = 'application/json'{{/bodyParams.0}}
+                        {{^vendorExtensions.scimConsumes}}{{#bodyParams.0}}headers['Content-Type'] = 'application/json'{{/bodyParams.0}}{{/vendorExtensions.scimConsumes}}
+                        {{#vendorExtensions.scimConsumes}}headers['Content-Type'] = 'application/scim+json'{{/vendorExtensions.scimConsumes}}
+                        {{#vendorExtensions.x-is-delete-operation}}{{#vendorExtensions.scimProduces}}headers['Accept'] = '*/*'{{/vendorExtensions.scimProduces}}{{/vendorExtensions.x-is-delete-operation}}
                         {{^vendorExtensions.x-is-delete-operation}}
+                        {{#vendorExtensions.scimProduces}}headers['Accept'] = 'application/scim+json'{{/vendorExtensions.scimProduces}}
+                        {{#vendorExtensions.multipleProduces}} headers['Accept'] = '*/*'{{/vendorExtensions.multipleProduces}}
                         payload = @version.{{#lambda.camelcase}}{{vendorExtensions.x-name}}{{/lambda.camelcase}}('{{httpMethod}}', @uri{{#queryParams.0}}, params: params{{/queryParams.0}}{{#formParams.0}}, data: data{{/formParams.0}}, headers: headers{{#bodyParams.0}}, data: {{paramName}}.to_json{{/bodyParams.0}})
                         {{apiName}}Instance.new(
                             @version,

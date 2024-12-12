@@ -105,12 +105,14 @@ class CallContext(InstanceContext):
 
         :returns: The updated CallInstance
         """
+
         data = values.of({})
+        headers = values.of({})
+
+        headers["Accept"] = "application/json"
 
         payload = self._version.update(
-            method="POST",
-            uri=self._uri,
-            data=data,
+            method="POST", uri=self._uri, data=data, headers=headers
         )
 
         return CallInstance(self._version, payload, sid=self._solution["sid"])
@@ -122,12 +124,14 @@ class CallContext(InstanceContext):
 
         :returns: The updated CallInstance
         """
+
         data = values.of({})
+        headers = values.of({})
+
+        headers["Accept"] = "application/json"
 
         payload = await self._version.update_async(
-            method="POST",
-            uri=self._uri,
-            data=data,
+            method="POST", uri=self._uri, data=data, headers=headers
         )
 
         return CallInstance(self._version, payload, sid=self._solution["sid"])

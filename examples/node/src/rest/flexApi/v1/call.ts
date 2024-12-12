@@ -60,11 +60,15 @@ export class CallContextImpl implements CallContext {
   update(
     callback?: (error: Error | null, item?: CallInstance) => any,
   ): Promise<CallInstance> {
+    const headers: any = {};
+    headers["Accept"] = "application/json";
+
     const instance = this;
     let operationVersion = instance._version,
       operationPromise = operationVersion.update({
         uri: instance._uri,
         method: "post",
+        headers,
       });
 
     operationPromise = operationPromise.then(

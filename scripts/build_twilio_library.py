@@ -7,6 +7,7 @@ from pathlib import Path
 from typing import List, Tuple
 
 from clean_unused_imports import remove_unused_imports, remove_duplicate_imports
+from process_orgs_api import preprocess_orgs_spec
 
 '''
 Subdirectories map for maintaining directory
@@ -18,8 +19,9 @@ subdirectories = {
     'php': 'Rest'
 }
 generateForLanguages = {
-    'twilio_iam_organizations.json' : ['java', 'csharp']
+    'twilio_iam_organizations.json' : ['java', 'csharp', 'python']
 }
+dynamic_languages = ['node', 'python', 'ruby']
 CLEANUP_IMPORT_LANGUAGES = ['java', 'php']
 REMOVE_DUPLICATE_IMPORT_LANGUAGES = ['node']
 CONFIG_FOLDER = 'tmp'
@@ -48,14 +50,20 @@ def generate(spec_folder: str, spec_files: List[str], output_path: str, language
 
     for spec_file in spec_files:
         if spec_file in generateForLanguages:
+            if language in dynamic_languages:
+                input_path_versioned, input_path_versionless, spec_dir = preprocess_orgs_spec(spec_folder, spec_file, parent_dir)
+                generate_domain_for_language(input_path_versioned, config_path, spec_dir, output_path, language, parent_dir)
+                generate_domain_for_language(input_path_versionless, config_path, spec_dir, output_path, language, parent_dir)
             if language in generateForLanguages.get(spec_file):
                 generate_domain_for_language(spec_file, config_path, spec_folder, output_path, language, parent_dir)
         else: generate_domain_for_language(spec_file, config_path, spec_folder, output_path, language, parent_dir)
-    if spec_files[0] in generateForLanguages and language in generateForLanguages.get(spec_files[0]):
-        print(f'Generating {output_path} from {spec_folder}')
-        run_openapi_generator(parent_dir, language)
-        print(f'Code generation completed at {output_path}')
-    elif spec_files[0] not in generateForLanguages:
+    if spec_files[0] in generateForLanguages:
+        if language in generateForLanguages.get(spec_files[0]) or language in dynamic_languages:
+            print(f'Generating {output_path} from {spec_folder}')
+            run_openapi_generator(parent_dir, language)
+            print(f'Code generation completed at {output_path}')
+
+    else:
         print(f'Generating {output_path} from {spec_folder}')
         run_openapi_generator(parent_dir, language)
         print(f'Code generation completed at {output_path}')
@@ -63,6 +71,7 @@ def generate(spec_folder: str, spec_files: List[str], output_path: str, language
         remove_unused_imports(output_path, language)
     if language in REMOVE_DUPLICATE_IMPORT_LANGUAGES:
         remove_duplicate_imports(output_path, language)
+
 
 def generate_domain_for_language(spec_file: str, config_path: str, spec_folder: str, output_path: str, language: str, parent_dir: str) -> None:
     full_path = os.path.join(spec_folder, spec_file)
@@ -79,13 +88,6 @@ def generate_domain_for_language(spec_file: str, config_path: str, spec_folder: 
     with open(full_config_path, 'w') as f:
         f.write(json.dumps(config))
 
-    # print(f'Generating {output_path} from {spec_folder}')
-    # run_openapi_generator(parent_dir, language)
-    # print(f'Code generation completed at {output_path}')
-    # if language in CLEANUP_IMPORT_LANGUAGES:
-    #     remove_unused_imports(output_path, language)
-    # if language in REMOVE_DUPLICATE_IMPORT_LANGUAGES:
-    #     remove_duplicate_imports(output_path, language)
 
 def run_openapi_generator(parent_dir: Path, language: str) -> None:
     properties = '-DapiTests=false'
@@ -105,14 +107,6 @@ def get_domain_info(oai_spec_location: str, domain: str, is_file: bool = False) 
     parts = re.split(r'twilio_(.+?)_?(v\d+)?\.', domain, flags=re.IGNORECASE)
     domain_name = parts[1]
     api_version = parts[2] or ''
-    # special handling for files like twilio_lookups_bulk.json.
-    # This has to be removed when naming is made consistent across all languages
-    if api_version == '':
-        index = domain_name.find('_')
-        if index != -1:
-            domain_parts = re.split(r'(.+)_(.+)', domain_name, flags=re.IGNORECASE)
-            domain_name = domain_parts[1]
-            api_version = domain_parts[2]
     return full_path, domain_name, api_version
 
 

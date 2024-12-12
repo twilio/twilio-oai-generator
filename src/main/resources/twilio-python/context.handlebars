@@ -1,5 +1,5 @@
 class {{apiName}}Context(InstanceContext):
-
+{{#if nestedModels}}{{>modelClasses}}{{/if}}
     def __init__(self, version: Version{{#instancePathParams}}, {{paramName}}: {{{dataType}}}{{/instancePathParams}}):
         """
         Initialize the {{apiName}}Context
@@ -18,7 +18,7 @@ class {{apiName}}Context(InstanceContext):
         {{#dependents}}{{#instanceDependent}}
         self._{{mountName}}: Optional[{{listName}}] = None{{/instanceDependent}}{{/dependents}}
     {{#operations}}{{#vendorExtensions.x-is-context-operation}}
-    {{#vendorExtensions.x-is-update-operation}}
+    {{#vendorExtensions.x-is-update-operation}}{{^vendorExtensions.x-twilio.ignoreOperation}}
     def {{vendorExtensions.x-name-lower}}(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> {{instanceName}}:
         """
         Update the {{instanceName}}
@@ -27,12 +27,23 @@ class {{apiName}}Context(InstanceContext):
 
         :returns: The updated {{instanceName}}
         """
-        data = values.of({ {{#allParams}}{{#isFormParam}}
+        {{#bodyParam}}data = {{paramName}}.to_dict(){{/bodyParam}}
+        {{^bodyParam}}data = values.of({ {{#allParams}}{{#isFormParam}}
             '{{{baseName}}}': {{#if vendorExtensions.x-serialize}}{{vendorExtensions.x-serialize}}({{paramName}}{{#if isArray}}, lambda e: e){{else}}){{/if}}{{else}}{{paramName}}{{/if}},{{/isFormParam}}{{/allParams}}
-        })
-        {{#allParams}}{{^isFormParam}}headers = values.of({'{{{baseName}}}': {{paramName}}, }){{/isFormParam}}{{/allParams}}
+        }){{/bodyParam}}
+        headers = values.of({})
+        {{#allParams}}{{#isHeaderParam}}
+        {{^if required}}
+        if not ({{paramName}} is values.unset or (isinstance({{paramName}}, str) and not {{paramName}})):{{/if}}
+            headers['{{{baseName}}}'] = {{paramName}}{{/isHeaderParam}}{{/allParams}}
+        {{#consumes}}
+        headers["Content-Type"] = "{{{mediaType}}}"
+        {{/consumes}}
+        {{#vendorExtensions.successProduce}}
+        headers["Accept"] = "{{{mediaType}}}"
+        {{/vendorExtensions.successProduce}}
 
-        payload = self._version.update(method='{{vendorExtensions.x-http-method}}', uri=self._uri, data=data,{{#allParams}}{{#if isFormParam}}{{else}} headers=headers{{/if}}{{/allParams}})
+        payload = self._version.update(method='{{vendorExtensions.x-http-method}}', uri=self._uri, data=data, headers=headers)
 
         return {{instanceName}}(
             self._version,
@@ -48,19 +59,31 @@ class {{apiName}}Context(InstanceContext):
 
         :returns: The updated {{instanceName}}
         """
-        data = values.of({ {{#allParams}}{{#isFormParam}}
+        {{#bodyParam}}data = {{paramName}}.to_dict(){{/bodyParam}}
+        {{^bodyParam}}data = values.of({ {{#allParams}}{{#isFormParam}}
             '{{{baseName}}}': {{#if vendorExtensions.x-serialize}}{{vendorExtensions.x-serialize}}({{paramName}}{{#if isArray}}, lambda e: e){{else}}){{/if}}{{else}}{{paramName}}{{/if}},{{/isFormParam}}{{/allParams}}
-        })
-        {{#allParams}}{{^isFormParam}}headers = values.of({'{{{baseName}}}': {{paramName}}, }){{/isFormParam}}{{/allParams}}
+        }){{/bodyParam}}
+        headers = values.of({})
+        {{#allParams}}{{#isHeaderParam}}
+        {{^if required}}
+        if not ({{paramName}} is values.unset or (isinstance({{paramName}}, str) and not {{paramName}})):{{/if}}
+            headers['{{{baseName}}}'] = {{paramName}}
+        {{/isHeaderParam}}{{/allParams}}
+        {{#consumes}}
+        headers["Content-Type"] = "{{{mediaType}}}"
+        {{/consumes}}
+        {{#vendorExtensions.successProduce}}
+        headers["Accept"] = "{{{mediaType}}}"
+        {{/vendorExtensions.successProduce}}
 
-        payload = await self._version.update_async(method='{{vendorExtensions.x-http-method}}', uri=self._uri, data=data,{{#allParams}}{{#if isFormParam}}{{else}} headers=headers{{/if}}{{/allParams}})
+        payload = await self._version.update_async(method='{{vendorExtensions.x-http-method}}', uri=self._uri, data=data, headers=headers)
 
         return {{instanceName}}(
             self._version,
             payload{{#instancePathParams}},
             {{paramName}}=self._solution['{{paramName}}']{{/instancePathParams}}
         )
-    {{/vendorExtensions.x-is-update-operation}}{{#vendorExtensions.x-is-fetch-operation}}
+    {{/vendorExtensions.x-twilio.ignoreOperation}}{{/vendorExtensions.x-is-update-operation}}{{#vendorExtensions.x-is-fetch-operation}}{{^vendorExtensions.x-twilio.ignoreOperation}}
     def {{vendorExtensions.x-name-lower}}(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> {{instanceName}}:
         """
         Fetch the {{instanceName}}
@@ -73,9 +96,18 @@ class {{apiName}}Context(InstanceContext):
         data = values.of({ {{#allParams}}{{#if vendorExtensions.x-prefixed-collapsible-map}}{{else}}
             '{{{baseName}}}': {{#if vendorExtensions.x-serialize}}{{vendorExtensions.x-serialize}}({{paramName}}{{#if isArray}}, lambda e: e){{else}}){{/if}}{{else}}{{paramName}}{{/if}},{{/if}}{{/allParams}}
         })
+
         {{#allParams}}{{#if vendorExtensions.x-prefixed-collapsible-map}}data.update({{vendorExtensions.x-serialize}}({{paramName}}, '{{vendorExtensions.x-prefixed-collapsible-map}}'))
         {{/if}}{{/allParams}}{{/if}}
-        payload = self._version.fetch(method='{{vendorExtensions.x-http-method}}', uri=self._uri, {{#if allParams}}params=data{{/if}})
+
+        headers = values.of({})
+        {{#consumes}}
+        headers["Content-Type"] = "{{{mediaType}}}"
+        {{/consumes}}
+        {{#vendorExtensions.successProduce}}
+        headers["Accept"] = "{{{mediaType}}}"
+        {{/vendorExtensions.successProduce}}
+        payload = self._version.fetch(method='{{vendorExtensions.x-http-method}}', uri=self._uri {{#if allParams}}, params=data{{/if}} , headers=headers)
 
         return {{instanceName}}(
             self._version,
@@ -96,9 +128,18 @@ class {{apiName}}Context(InstanceContext):
         data = values.of({ {{#allParams}}{{#if vendorExtensions.x-prefixed-collapsible-map}}{{else}}
             '{{{baseName}}}': {{#if vendorExtensions.x-serialize}}{{vendorExtensions.x-serialize}}({{paramName}}{{#if isArray}}, lambda e: e){{else}}){{/if}}{{else}}{{paramName}}{{/if}},{{/if}}{{/allParams}}
         })
+
         {{#allParams}}{{#if vendorExtensions.x-prefixed-collapsible-map}}data.update({{vendorExtensions.x-serialize}}({{paramName}}, '{{vendorExtensions.x-prefixed-collapsible-map}}'))
         {{/if}}{{/allParams}}{{/if}}
-        payload = await self._version.fetch_async(method='{{vendorExtensions.x-http-method}}', uri=self._uri, {{#if allParams}}params=data{{/if}})
+
+        headers = values.of({})
+        {{#consumes}}
+        headers["Content-Type"] = "{{{mediaType}}}"
+        {{/consumes}}
+        {{#vendorExtensions.successProduce}}
+        headers["Accept"] = "{{{mediaType}}}"
+        {{/vendorExtensions.successProduce}}
+        payload = await self._version.fetch_async(method='{{vendorExtensions.x-http-method}}', uri=self._uri {{#if allParams}}, params=data{{/if}}, headers=headers)
 
         return {{instanceName}}(
             self._version,
@@ -106,7 +147,7 @@ class {{apiName}}Context(InstanceContext):
             {{#instancePathParams}}{{paramName}}=self._solution['{{paramName}}'],
             {{/instancePathParams}}
         )
-    {{/vendorExtensions.x-is-fetch-operation}}{{#vendorExtensions.x-is-delete-operation}}
+    {{/vendorExtensions.x-twilio.ignoreOperation}}{{/vendorExtensions.x-is-fetch-operation}}{{#vendorExtensions.x-is-delete-operation}}{{^vendorExtensions.x-twilio.ignoreOperation}}
     def {{vendorExtensions.x-name-lower}}(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> bool:
         """
         Deletes the {{apiName}}Instance
@@ -117,7 +158,17 @@ class {{apiName}}Context(InstanceContext):
         """{{#if allParams}}
         headers = values.of({{#allParams}}{'{{{baseName}}}': {{paramName}}, }{{/allParams}})
         {{/if}}
-        return self._version.delete(method='{{vendorExtensions.x-http-method}}', uri=self._uri,{{#if allParams}} headers=headers{{/if}})
+
+        {{^if allParams}}
+        headers = values.of({})
+        {{/if}}
+        {{#consumes}}
+        headers["Content-Type"] = "{{{mediaType}}}"
+        {{/consumes}}
+        {{#vendorExtensions.successProduce}}
+        headers["Accept"] = "{{{mediaType}}}"
+        {{/vendorExtensions.successProduce}}
+        return self._version.delete(method='{{vendorExtensions.x-http-method}}', uri=self._uri, headers=headers)
 
     async def {{vendorExtensions.x-name-lower}}_async(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> bool:
         """
@@ -129,8 +180,17 @@ class {{apiName}}Context(InstanceContext):
         """{{#if allParams}}
         headers = values.of({{#allParams}}{'{{{baseName}}}': {{paramName}}, }{{/allParams}})
         {{/if}}
-        return await self._version.delete_async(method='{{vendorExtensions.x-http-method}}', uri=self._uri,{{#if allParams}} headers=headers{{/if}})
-    {{/vendorExtensions.x-is-delete-operation}}{{#vendorExtensions.x-is-create-operation}}
+        {{^if allParams}}
+        headers = values.of({})
+        {{/if}}
+        {{#consumes}}
+        headers["Content-Type"] = "{{{mediaType}}}"
+        {{/consumes}}
+        {{#vendorExtensions.successProduce}}
+        headers["Accept"] = "{{{mediaType}}}"
+        {{/vendorExtensions.successProduce}}
+        return await self._version.delete_async(method='{{vendorExtensions.x-http-method}}', uri=self._uri, headers=headers)
+    {{/vendorExtensions.x-twilio.ignoreOperation}}{{/vendorExtensions.x-is-delete-operation}}{{#vendorExtensions.x-is-create-operation}}{{^vendorExtensions.x-twilio.ignoreOperation}}
     def {{vendorExtensions.x-name-lower}}(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> {{instanceName}}:
         """
         Create the {{instanceName}}
@@ -170,7 +230,7 @@ class {{apiName}}Context(InstanceContext):
             payload{{#instancePathParams}},
             {{paramName}}=self._solution['{{paramName}}']{{/instancePathParams}}
         )
-    {{/vendorExtensions.x-is-create-operation}}{{/vendorExtensions.x-is-context-operation}}{{/operations}}
+    {{/vendorExtensions.x-twilio.ignoreOperation}}{{/vendorExtensions.x-is-create-operation}}{{/vendorExtensions.x-is-context-operation}}{{/operations}}
     {{#dependents}}{{#instanceDependent}}
     @property
     def {{mountName}}(self) -> {{listName}}:

@@ -206,6 +206,7 @@ class FeedbackCallSummaryContext(InstanceContext):
 
         :returns: The updated FeedbackCallSummaryInstance
         """
+
         data = values.of(
             {
                 "EndDate": serialize.iso8601_date(end_date),
@@ -213,11 +214,14 @@ class FeedbackCallSummaryContext(InstanceContext):
                 "AccountSid": account_sid,
             }
         )
+        headers = values.of({})
+
+        headers["Content-Type"] = "application/x-www-form-urlencoded"
+
+        headers["Accept"] = "application/json"
 
         payload = self._version.update(
-            method="POST",
-            uri=self._uri,
-            data=data,
+            method="POST", uri=self._uri, data=data, headers=headers
         )
 
         return FeedbackCallSummaryInstance(
@@ -242,6 +246,7 @@ class FeedbackCallSummaryContext(InstanceContext):
 
         :returns: The updated FeedbackCallSummaryInstance
         """
+
         data = values.of(
             {
                 "EndDate": serialize.iso8601_date(end_date),
@@ -249,11 +254,14 @@ class FeedbackCallSummaryContext(InstanceContext):
                 "AccountSid": account_sid,
             }
         )
+        headers = values.of({})
+
+        headers["Content-Type"] = "application/x-www-form-urlencoded"
+
+        headers["Accept"] = "application/json"
 
         payload = await self._version.update_async(
-            method="POST",
-            uri=self._uri,
-            data=data,
+            method="POST", uri=self._uri, data=data, headers=headers
         )
 
         return FeedbackCallSummaryInstance(
