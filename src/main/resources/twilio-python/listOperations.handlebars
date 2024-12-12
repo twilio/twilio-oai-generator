@@ -19,9 +19,9 @@
         {{#consumes}}
         headers["Content-Type"] = "{{{mediaType}}}"
         {{/consumes}}
-        {{#produces}}
+        {{#vendorExtensions.successProduce}}
         headers["Accept"] = "{{{mediaType}}}"
-        {{/produces}}
+        {{/vendorExtensions.successProduce}}
         {{#queryParams.0}}params = values.of({
                 {{#queryParams}}'{{{baseName}}}': {{paramName}},
                 {{/queryParams}}
@@ -50,9 +50,9 @@
         {{#consumes}}
         headers["Content-Type"] = "{{{mediaType}}}"
         {{/consumes}}
-        {{#produces}}
+        {{#vendorExtensions.successProduce}}
         headers["Accept"] = "{{{mediaType}}}"
-        {{/produces}}
+        {{/vendorExtensions.successProduce}}
         {{#queryParams.0}}params = values.of({
                 {{#queryParams}}'{{{baseName}}}': {{paramName}},
                 {{/queryParams}}
@@ -76,9 +76,9 @@
         {{#consumes}}
         headers["Content-Type"] = "{{{mediaType}}}"
         {{/consumes}}
-        {{#produces}}
+        {{#vendorExtensions.successProduce}}
         headers["Accept"] = "{{{mediaType}}}"
-        {{/produces}}
+        {{/vendorExtensions.successProduce}}
         {{#queryParams.0}}params = values.of({
                 {{#queryParams}}'{{{baseName}}}': {{paramName}},
                 {{/queryParams}}
@@ -102,9 +102,9 @@
         {{#consumes}}
         headers["Content-Type"] = "{{{mediaType}}}"
         {{/consumes}}
-        {{#produces}}
+        {{#vendorExtensions.successProduce}}
         headers["Accept"] = "{{{mediaType}}}"
-        {{/produces}}
+        {{/vendorExtensions.successProduce}}
         {{#queryParams.0}}params = values.of({
                 {{#queryParams}}'{{{baseName}}}': {{paramName}},
                 {{/queryParams}}
@@ -127,9 +127,9 @@
         {{#consumes}}
         headers["Content-Type"] = "{{{mediaType}}}"
         {{/consumes}}
-        {{#produces}}
+        {{#vendorExtensions.successProduce}}
         headers["Accept"] = "{{{mediaType}}}"
-        {{/produces}}
+        {{/vendorExtensions.successProduce}}
         {{#queryParams.0}}params = values.of({
                 {{#queryParams}}'{{{baseName}}}': {{paramName}},
                 {{/queryParams}}
@@ -150,9 +150,9 @@
         {{#consumes}}
         headers["Content-Type"] = "{{{mediaType}}}"
         {{/consumes}}
-        {{#produces}}
+        {{#vendorExtensions.successProduce}}
         headers["Accept"] = "{{{mediaType}}}"
-        {{/produces}}
+        {{/vendorExtensions.successProduce}}
         {{#queryParams.0}}params = values.of({
                 {{#queryParams}}'{{{baseName}}}': {{paramName}},
                 {{/queryParams}}
@@ -178,9 +178,9 @@
         {{#consumes}}
         headers["Content-Type"] = "{{{mediaType}}}"
         {{/consumes}}
-        {{#produces}}
+        {{#vendorExtensions.successProduce}}
         headers["Accept"] = "{{{mediaType}}}"
-        {{/produces}}
+        {{/vendorExtensions.successProduce}}
         {{#queryParams.0}}params = values.of({
                 {{#queryParams}}'{{{baseName}}}': {{paramName}},
                 {{/queryParams}}
@@ -209,9 +209,9 @@
         {{#consumes}}
         headers["Content-Type"] = "{{{mediaType}}}"
         {{/consumes}}
-        {{#produces}}
+        {{#vendorExtensions.successProduce}}
         headers["Accept"] = "{{{mediaType}}}"
-        {{/produces}}
+        {{/vendorExtensions.successProduce}}
         {{#queryParams.0}}params = values.of({
                 {{#queryParams}}'{{{baseName}}}': {{paramName}},
                 {{/queryParams}}
@@ -361,9 +361,9 @@
         {{#consumes}}
         headers["Content-Type"] = "{{{mediaType}}}"
         {{/consumes}}
-        {{#produces}}
+        {{#vendorExtensions.successProduce}}
         headers["Accept"] = "{{{mediaType}}}"
-        {{/produces}}
+        {{/vendorExtensions.successProduce}}
 
         response = self._version.page(method='{{vendorExtensions.x-http-method}}', uri=self._uri, params=data, headers=headers)
         return {{apiName}}Page(self._version, response{{#if listPathParams}}, self._solution{{/if}})

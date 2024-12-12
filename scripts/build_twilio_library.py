@@ -19,7 +19,7 @@ subdirectories = {
     'php': 'Rest'
 }
 generateForLanguages = {
-    'twilio_iam_organizations.json' : ['java', 'csharp']
+    'twilio_iam_organizations.json' : ['java', 'csharp', 'python']
 }
 dynamic_languages = ['node', 'python', 'ruby']
 CLEANUP_IMPORT_LANGUAGES = ['java', 'php']

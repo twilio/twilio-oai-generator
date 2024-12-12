@@ -39,9 +39,9 @@ class {{apiName}}Context(InstanceContext):
         {{#consumes}}
         headers["Content-Type"] = "{{{mediaType}}}"
         {{/consumes}}
-        {{#produces}}
+        {{#vendorExtensions.successProduce}}
         headers["Accept"] = "{{{mediaType}}}"
-        {{/produces}}
+        {{/vendorExtensions.successProduce}}
 
         payload = self._version.update(method='{{vendorExtensions.x-http-method}}', uri=self._uri, data=data, headers=headers)
 
@@ -72,9 +72,9 @@ class {{apiName}}Context(InstanceContext):
         {{#consumes}}
         headers["Content-Type"] = "{{{mediaType}}}"
         {{/consumes}}
-        {{#produces}}
+        {{#vendorExtensions.successProduce}}
         headers["Accept"] = "{{{mediaType}}}"
-        {{/produces}}
+        {{/vendorExtensions.successProduce}}
 
         payload = await self._version.update_async(method='{{vendorExtensions.x-http-method}}', uri=self._uri, data=data, headers=headers)
 
@@ -104,9 +104,9 @@ class {{apiName}}Context(InstanceContext):
         {{#consumes}}
         headers["Content-Type"] = "{{{mediaType}}}"
         {{/consumes}}
-        {{#produces}}
+        {{#vendorExtensions.successProduce}}
         headers["Accept"] = "{{{mediaType}}}"
-        {{/produces}}
+        {{/vendorExtensions.successProduce}}
         payload = self._version.fetch(method='{{vendorExtensions.x-http-method}}', uri=self._uri {{#if allParams}}, params=data{{/if}} , headers=headers)
 
         return {{instanceName}}(
@@ -136,9 +136,9 @@ class {{apiName}}Context(InstanceContext):
         {{#consumes}}
         headers["Content-Type"] = "{{{mediaType}}}"
         {{/consumes}}
-        {{#produces}}
+        {{#vendorExtensions.successProduce}}
         headers["Accept"] = "{{{mediaType}}}"
-        {{/produces}}
+        {{/vendorExtensions.successProduce}}
         payload = await self._version.fetch_async(method='{{vendorExtensions.x-http-method}}', uri=self._uri {{#if allParams}}, params=data{{/if}}, headers=headers)
 
         return {{instanceName}}(
@@ -165,9 +165,9 @@ class {{apiName}}Context(InstanceContext):
         {{#consumes}}
         headers["Content-Type"] = "{{{mediaType}}}"
         {{/consumes}}
-        {{#produces}}
+        {{#vendorExtensions.successProduce}}
         headers["Accept"] = "{{{mediaType}}}"
-        {{/produces}}
+        {{/vendorExtensions.successProduce}}
         return self._version.delete(method='{{vendorExtensions.x-http-method}}', uri=self._uri, headers=headers)
 
     async def {{vendorExtensions.x-name-lower}}_async(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> bool:
@@ -186,9 +186,9 @@ class {{apiName}}Context(InstanceContext):
         {{#consumes}}
         headers["Content-Type"] = "{{{mediaType}}}"
         {{/consumes}}
-        {{#produces}}
+        {{#vendorExtensions.successProduce}}
         headers["Accept"] = "{{{mediaType}}}"
-        {{/produces}}
+        {{/vendorExtensions.successProduce}}
         return await self._version.delete_async(method='{{vendorExtensions.x-http-method}}', uri=self._uri, headers=headers)
     {{/vendorExtensions.x-twilio.ignoreOperation}}{{/vendorExtensions.x-is-delete-operation}}{{#vendorExtensions.x-is-create-operation}}{{^vendorExtensions.x-twilio.ignoreOperation}}
     def {{vendorExtensions.x-name-lower}}(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> {{instanceName}}:
