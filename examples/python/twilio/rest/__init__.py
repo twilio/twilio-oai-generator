@@ -43,3 +43,8 @@ class Client(ClientBase):
         from twilio.rest.versionless import Preview
 
         return Preview(self)
+
+    def preview_iam(self):
+        from twilio.rest.preview.iam import PreviewIam
+
+        return PreviewIam(self)
