@@ -249,14 +249,15 @@ public class DirectoryStructureService {
         final String version = PathUtils.getFirstPathPart(firstOperation.path);
 
         for(CodegenOperation co : operations){
-            for(Map<String, String> map : co.produces){
-                Map.Entry<String, String> firstEntry = map.entrySet().iterator().next();
-                List<Map<String, String>> successProduce = new ArrayList<>();
-                Map<String, String> successMap = new HashMap<>();
-                successMap.put(firstEntry.getKey(), firstEntry.getValue());
-                successProduce.add(successMap);
-                co.vendorExtensions.put("successProduce", successProduce);
-                break;
+            if(co.produces != null)
+                for(Map<String, String> map : co.produces){
+                    Map.Entry<String, String> firstEntry = map.entrySet().iterator().next();
+                    List<Map<String, String>> successProduce = new ArrayList<>();
+                    Map<String, String> successMap = new HashMap<>();
+                    successMap.put(firstEntry.getKey(), firstEntry.getValue());
+                    successProduce.add(successMap);
+                    co.vendorExtensions.put("successProduce", successProduce);
+                    break;
 
             }
         }
