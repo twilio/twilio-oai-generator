@@ -1,7 +1,5 @@
 package com.twilio.oai;
 
-import com.twilio.oai.api.ApiResourceBuilder;
-import com.twilio.oai.common.ApplicationConstants;
 import com.twilio.oai.common.Utility;
 import com.twilio.oai.resolver.CaseResolver;
 import com.twilio.oai.resource.IResourceTree;
@@ -16,8 +14,6 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenOperation;
-import org.openapitools.codegen.CodegenParameter;
-import org.openapitools.codegen.CodegenProperty;
 import org.openapitools.codegen.model.ModelsMap;
 import org.openapitools.codegen.model.OperationMap;
 import org.openapitools.codegen.model.OperationsMap;
@@ -43,7 +39,6 @@ public class DirectoryStructureService {
 
     @Getter
     private boolean isVersionLess = false;
-
     private final Map<String, String> productMap = new HashMap<>();
     private final List<CodegenModel> allModels = new ArrayList<>();
     private final List<Object> dependentList = new ArrayList<>();
