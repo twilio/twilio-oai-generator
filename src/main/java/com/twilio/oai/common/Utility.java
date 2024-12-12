@@ -141,18 +141,4 @@ public class Utility {
         }
     }
 
-    public static String convertToPascalCase(String input) {
-
-        String[] words = input.split("_");
-
-        StringBuilder result = new StringBuilder();
-
-        for (String word : words) {
-            if (!word.isEmpty()) {
-                result.append(word.substring(0, 1).toUpperCase()).append(word.substring(1).toLowerCase());
-            }
-        }
-
-        return result.toString();
-    }
 }

@@ -44,7 +44,6 @@ public class DirectoryStructureService {
     @Getter
     private boolean isVersionLess = false;
 
-    private String apiFileName;
     private final Map<String, String> productMap = new HashMap<>();
     private final List<CodegenModel> allModels = new ArrayList<>();
     private final List<Object> dependentList = new ArrayList<>();
@@ -259,16 +258,6 @@ public class DirectoryStructureService {
         additionalProperties.put("apiFilename",
                 caseResolver.pathOperation(getResourceAliases(firstOperation.path,
                         null).getClassName()));
-        apiFileName = caseResolver.pathOperation(getResourceAliases(firstOperation.path,
-            null).getClassName());
-        apiFileName =  Utility.convertToPascalCase(apiFileName);
-
-//        for(CodegenOperation co : operations){
-//            for(CodegenParameter cp : co.allParams){
-//                if(cp.isModel)
-//                    updateDataType(cp);
-//            }
-//        }
 
         if (isVersionLess) {
             additionalProperties.put(API_VERSION, caseResolver.productOperation(version));
@@ -326,12 +315,6 @@ public class DirectoryStructureService {
 
         return String.join(File.separator, pathParts);
     }
-
-//    private void updateDataType(CodegenParameter property) {
-//        property.dataType = apiFileName + ApplicationConstants.LIST + ApplicationConstants.DOT + property.dataType;
-//        property.baseType = property.dataType;
-//        property.datatypeWithEnum = property.dataType;
-//    }
 
     public void configureAdditionalProps(Map<String, PathItem> pathMap, String domain, DirectoryStructureService directoryStructureService) {
         List<Resource> dependents = new ArrayList<>();
