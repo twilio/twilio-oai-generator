@@ -10,7 +10,7 @@ namespace Twilio\Rest\{{domainName}}\{{version}}{{namespaceSubPart}};
 {{#responseModels.0}}
 /**
 {{#responseModels}}
- * @property {{{dataType}}} ${{baseName}}
+ * @property {{{dataType}}} ${{#lambda.customcamelcase}}{{baseName}}{{/lambda.customcamelcase}}
 {{/responseModels}}
  */
 {{/responseModels.0}}
@@ -40,10 +40,10 @@ class {{apiName}}Instance extends InstanceResource
         $this->properties = [
             {{#responseModels}}
             {{^vendorExtensions.x-deserialize}}
-            '{{baseName}}' => Values::array_get($payload, '{{name}}'),
+            '{{#lambda.customcamelcase}}{{baseName}}{{/lambda.customcamelcase}}' => Values::array_get($payload, '{{name}}'),
             {{/vendorExtensions.x-deserialize}}
             {{#vendorExtensions.x-deserialize}}
-            '{{baseName}}' => {{.}}(Values::array_get($payload, '{{name}}')),
+            '{{#lambda.customcamelcase}}{{baseName}}{{/lambda.customcamelcase}}' => {{.}}(Values::array_get($payload, '{{name}}')),
             {{/vendorExtensions.x-deserialize}}
             {{/responseModels}}
         ];
