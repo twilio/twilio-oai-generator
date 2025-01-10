@@ -21,9 +21,6 @@ public class PhpPropertyResolver extends LanguagePropertyResolver {
     @Override
     public CodegenProperty resolve(final CodegenProperty codegenProperty, ApiResourceBuilder apiResourceBuilder) {
         super.resolve(codegenProperty, apiResourceBuilder);
-
-        codegenProperty.baseName = StringHelper.camelize(codegenProperty.baseName, true);
-
         return codegenProperty;
     }
 

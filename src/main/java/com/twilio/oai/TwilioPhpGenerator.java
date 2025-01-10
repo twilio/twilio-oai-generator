@@ -1,5 +1,7 @@
 package com.twilio.oai;
 
+import com.google.common.collect.ImmutableMap;
+import com.samskivert.mustache.Mustache;
 import com.twilio.oai.api.PhpApiResourceBuilder;
 import com.twilio.oai.api.PhpApiResources;
 import com.twilio.oai.api.PhpDomainBuilder;
@@ -11,6 +13,7 @@ import com.twilio.oai.resolver.common.CodegenModelResolver;
 import com.twilio.oai.resolver.php.*;
 import com.twilio.oai.resource.ResourceMap;
 import com.twilio.oai.template.PhpApiActionTemplate;
+import com.twilio.oai.templating.mustache.TitleCamelCaseLambda;
 import io.swagger.v3.oas.models.OpenAPI;
 import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenOperation;
@@ -38,6 +41,13 @@ public class TwilioPhpGenerator extends PhpClientCodegen {
     private final Map<String, String> modelFormatMap = new HashMap<>();
     private final IConventionMapper conventionMapper = new LanguageConventionResolver(PHP_CONVENTIONAL_MAP_PATH);
     private final PhpApiActionTemplate phpApiActionTemplate = new PhpApiActionTemplate(this);
+
+    @Override
+    protected ImmutableMap.Builder<String, Mustache.Lambda> addMustacheLambdas() {
+        ImmutableMap.Builder<String, Mustache.Lambda> lambdaBuilder = super.addMustacheLambdas();
+        lambdaBuilder.put("customcamelcase", new TitleCamelCaseLambda());
+        return lambdaBuilder;
+    }
 
     public TwilioPhpGenerator() {
         super();
