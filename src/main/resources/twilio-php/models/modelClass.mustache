@@ -23,7 +23,7 @@ class {{classname}} implements \JsonSerializable
     {
         return [
             {{#vars}}
-            '{{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}' => $this->{{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}{{^-last}},{{/-last}}
+            '{{baseName}}' => $this->{{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}{{^-last}},{{/-last}}
             {{/vars}}
         ];
     }
