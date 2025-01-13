@@ -89,7 +89,7 @@
             {{/vendorExtensions.x-serialize-map}}
             {{/vendorExtensions.x-serialize}}
             {{/vendorExtensions.optionFileParams}}
-            {{#queryParams.0}}
+            {{#queryParams}}
             {{#required}}
             {{^vendorExtensions.x-serialize}}
             '{{{baseName}}}' =>
@@ -106,7 +106,7 @@
             {{/vendorExtensions.x-serialize-map}}
             {{/vendorExtensions.x-serialize}}
             {{/required}}
-            {{/queryParams.0}}
+            {{/queryParams}}
             'PageToken' => $pageToken,
             'Page' => $pageNumber,
             'PageSize' => $pageSize,
