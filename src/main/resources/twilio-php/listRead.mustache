@@ -89,6 +89,24 @@
             {{/vendorExtensions.x-serialize-map}}
             {{/vendorExtensions.x-serialize}}
             {{/vendorExtensions.optionFileParams}}
+            {{#queryParams}}
+            {{#required}}
+            {{^vendorExtensions.x-serialize}}
+            '{{{baseName}}}' =>
+                $options['{{paramName}}'],
+            {{/vendorExtensions.x-serialize}}
+            {{#vendorExtensions.x-serialize}}
+            {{^vendorExtensions.x-serialize-map}}
+            '{{{baseName}}}' =>
+                {{vendorExtensions.x-serialize}}($options['{{paramName}}']),
+            {{/vendorExtensions.x-serialize-map}}
+            {{#vendorExtensions.x-serialize-map}}
+            '{{{baseName}}}' =>
+                {{vendorExtensions.x-serialize}}($options['{{paramName}}'], function ($e) { return $e; }),
+            {{/vendorExtensions.x-serialize-map}}
+            {{/vendorExtensions.x-serialize}}
+            {{/required}}
+            {{/queryParams}}
             'PageToken' => $pageToken,
             'Page' => $pageNumber,
             'PageSize' => $pageSize,
