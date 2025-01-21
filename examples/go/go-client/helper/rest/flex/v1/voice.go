@@ -20,7 +20,7 @@ import (
 	"strings"
 )
 
-func (c *ApiService) UpdateCall(Sid string) (*UpdateCallResponse, error) {
+func (c *ApiService) UpdateCall(Sid string) (*UpdateCall200Response, error) {
 	path := "/v1/Voice/{Sid}"
 	path = strings.Replace(path, "{"+"Sid"+"}", Sid, -1)
 
@@ -36,7 +36,7 @@ func (c *ApiService) UpdateCall(Sid string) (*UpdateCallResponse, error) {
 
 	defer resp.Body.Close()
 
-	ps := &UpdateCallResponse{}
+	ps := &UpdateCall200Response{}
 	if err := json.NewDecoder(resp.Body).Decode(ps); err != nil {
 		return nil, err
 	}

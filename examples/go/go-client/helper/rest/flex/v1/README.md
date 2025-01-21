@@ -43,7 +43,7 @@ Class | Method | HTTP request | Description
 ## Documentation For Models
 
  - [ListCredentialAwsResponse](docs/ListCredentialAwsResponse.md)
- - [UpdateCallResponse](docs/UpdateCallResponse.md)
+ - [UpdateCall200Response](docs/UpdateCall200Response.md)
  - [TestResponseObject](docs/TestResponseObject.md)
  - [ListCredentialAwsResponseMeta](docs/ListCredentialAwsResponseMeta.md)
 
