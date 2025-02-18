@@ -590,7 +590,7 @@ public class TwilioRestTest {
         assertNotNull(account);
         assertEquals("123",account.iterator().next().getSid());
         assertEquals("USD", account.iterator().next().getPriceUnit().toString() );
-        assertEquals("2021-03-23T21:43:32.010069453Z[UTC]",account.iterator().next().getTestDateTime().toString());
+        assertEquals("2021-03-23T21:43:32.010069453Z",account.iterator().next().getTestDateTime().toString());
     }
 
     @Test
