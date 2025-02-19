@@ -21,19 +21,19 @@ jobs:
       DOCKER_LOGIN: ${{ secrets.DOCKER_USERNAME && secrets.DOCKER_AUTH_TOKEN }}
     steps:
       - name: Checkout twilio-oai-generator
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
 
       - name: Set up Java 11
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           distribution: 'zulu'
           java-version: '11'
 
       - name: Login to Docker Hub
         if: env.DOCKER_LOGIN
-        uses: docker/login-action@v2
+        uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_AUTH_TOKEN }}
@@ -53,14 +53,14 @@ jobs:
       - name: Remove pom file  # Otherwise, the Sonar action fails and recommends using the Maven plugin
         run: rm pom.xml
 
-      - name: Install SonarCloud scanner and run analysis
-        uses: SonarSource/sonarcloud-github-action@master
-        if: (github.event_name == 'pull_request' || github.ref_type == 'branch') && !github.event.pull_request.head.repo.fork && startsWith(matrix.language, 'csharp') != true
-        with:
-          projectBaseDir: examples/${{ matrix.language }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+#      - name: Install SonarCloud scanner and run analysis
+#        uses: SonarSource/sonarcloud-github-action@master
+#        if: (github.event_name == 'pull_request' || github.ref_type == 'branch') && !github.event.pull_request.head.repo.fork && startsWith(matrix.language, 'csharp') != true
+#        with:
+#          projectBaseDir: examples/${{ matrix.language }}
+#        env:
+#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+#          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
   notify-on-failure:
     name: Slack notify on failure

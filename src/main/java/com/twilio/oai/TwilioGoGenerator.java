@@ -189,6 +189,17 @@ public class TwilioGoGenerator extends AbstractTwilioGoGenerator {
             if (co.nickname.startsWith("List")) {
                 // make sure the format matches the other methods
                 co.vendorExtensions.put("x-domain-name", co.nickname.replaceFirst("List", ""));
+                co.allParams.forEach( p -> {
+                    if( p.dataType.equals("int64") && ( p.baseName.equals("PageSize") || p.baseName.equals("limit") ) ){
+                        p.dataType = "int";
+                    }
+                });
+
+                co.optionalParams.forEach( p -> {
+                    if( p.dataType.equals("int64") && ( p.baseName.equals("PageSize") || p.baseName.equals("limit") ) ){
+                        p.dataType = "int";
+                    }
+                });
 
                 // filter the fields in the model and get only the array typed field. Also, make sure there is only one field of type list/array
                 if (returnModel.isPresent()) {
