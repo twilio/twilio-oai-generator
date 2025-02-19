@@ -14,6 +14,11 @@
 
 package openapi
 
+import (
+	"encoding/json"
+	"github.com/twilio/twilio-go/client"
+)
+
 // TestResponseObjectTestObject struct for TestResponseObjectTestObject
 type TestResponseObjectTestObject struct {
 	Fax   bool `json:"fax,omitempty"`

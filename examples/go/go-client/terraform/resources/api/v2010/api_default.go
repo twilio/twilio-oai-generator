@@ -16,14 +16,11 @@ package openapi
 
 import (
 	"context"
-	"fmt"
-	. "go-client/helper/rest/api/v2010"
-	"go-client/terraform/client"
-	"strings"
-
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	. "github.com/twilio/terraform-provider-twilio/core"
+	. "go-client/helper/rest/api/v2010"
+	"go-client/terraform/client"
 )
 
 func ResourceAccounts() *schema.Resource {

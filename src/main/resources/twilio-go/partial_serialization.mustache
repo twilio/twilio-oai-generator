@@ -8,7 +8,7 @@ if params != nil && params.PathAccountSid != nil {
 {{/vendorExtensions.x-is-account-sid}}
 {{/queryParams}}
 {{#pathParams}}
-    path = strings.Replace(path, "{"+"{{paramName}}"+"}", {{^isString}}fmt.Sprint({{/isString}}{{paramName}}{{^isString}}){{/isString}}, -1)
+    path = strings.Replace(path, "{"+"{{baseName}}"+"}", {{^isString}}fmt.Sprint({{/isString}}{{paramName}}{{^isString}}){{/isString}}, -1)
 {{/pathParams}}
 
     data := url.Values{}
