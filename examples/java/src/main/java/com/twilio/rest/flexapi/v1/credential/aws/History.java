@@ -56,6 +56,7 @@ import java.util.Objects;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import lombok.Builder;
 
 import java.util.Map;
 import java.time.LocalDate;
