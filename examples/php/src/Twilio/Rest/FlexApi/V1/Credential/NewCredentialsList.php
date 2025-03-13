@@ -87,7 +87,7 @@ class NewCredentialsList extends ListResource
             'TestEnum' =>
                 $options['testEnum'],
             'TestObjectArray' =>
-                Serialize::map($options['testObjectArray'], function ($e) { return $e; }),
+                Serialize::map($options['testObjectArray'], function ($e) { return Serialize::jsonObject($e); }),
             'TestAnyType' =>
                 Serialize::jsonObject($options['testAnyType']),
             'TestAnyArray' =>
