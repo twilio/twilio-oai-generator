@@ -72,7 +72,7 @@ class CallContext extends InstanceContext
     public function delete(): bool
     {
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded',  ]);
         return $this->version->delete('DELETE', $this->uri, [], [], $headers);
     }
 
@@ -86,7 +86,7 @@ class CallContext extends InstanceContext
     public function fetch(): CallInstance
     {
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded', 'Accept' => 'application/json' ]);
         $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
 
         return new CallInstance(
