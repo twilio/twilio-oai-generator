@@ -112,7 +112,8 @@
             'PageSize' => $pageSize,
         ]);
 
-        $response = $this->version->page('{{httpMethod}}', $this->uri, $params);
+        $headers = Values::of([{{^consumes}}'Content-Type' => 'application/x-www-form-urlencoded'{{/consumes}}{{#consumes}}{{#-first}}'Content-Type' => '{{{mediaType}}}'{{/-first}}{{/consumes}}, {{#produces}}{{#-first}}'Accept' => '{{{mediaType}}}'{{/-first}}{{/produces}}]);
+        $response = $this->version->page('{{httpMethod}}', $this->uri, $params, [], $headers);
 
         return new {{apiName}}Page($this->version, $response, $this->solution);
     }
