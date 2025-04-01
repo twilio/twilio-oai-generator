@@ -132,7 +132,7 @@
         {{/optionalParams}}
 
     {{/formParams.0}}
-        $headers = Values::of([{{^consumes}}'Content-Type' => 'application/x-www-form-urlencoded'{{/consumes}}{{#consumes}}{{#-first}}'Content-Type' => '{{{mediaType}}}'{{/-first}}{{/consumes}}, {{#produces}}{{#-first}}'Accept' => '{{{mediaType}}}'{{/-first}}{{/produces}} {{#headerParams}}{{#required}}, '{{baseName}}' =>
+        $headers = Values::of([{{^consumes}}'Content-Type' => 'application/x-www-form-urlencoded'{{/consumes}}{{#consumes}}{{#-first}}'Content-Type' => '{{{mediaType}}}'{{/-first}}{{/consumes}}, {{^vendorExtensions.x-is-delete-operation}}{{#produces}}{{#-first}}'Accept' => '{{{mediaType}}}'{{/-first}}{{/produces}}{{/vendorExtensions.x-is-delete-operation}} {{#headerParams}}{{#required}}, '{{baseName}}' =>
             ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}{{/required}}{{/headerParams}}{{#headerParams}}{{^required}}, '{{baseName}}' => $options['{{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}']{{/required}}{{/headerParams}}]);
     {{#bodyParams.0}}
         $data = ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}->toArray();
