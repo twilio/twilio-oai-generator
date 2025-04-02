@@ -1,4 +1,5 @@
 import argparse
+import glob
 import json
 import os
 import re
@@ -83,7 +84,7 @@ def generate(spec_folder: str, spec_files: List[str], output_path: str, language
 
 
 def generate_domain_for_language(spec_file: str, config_path: str, spec_folder: str, output_path: str, language: str, parent_dir: str) -> None:
-    print("generate domain for language: {}, config: {}, spec file: {}".format(language, config_path, spec_file))
+    print("generate domain for language: {}, config: {}, spec folder: {}, file: {}".format(language, config_path, spec_folder, spec_file))
     full_path = os.path.join(spec_folder, spec_file)
     full_config_path = os.path.join(config_path, spec_file)
     config = {
@@ -96,12 +97,14 @@ def generate_domain_for_language(spec_file: str, config_path: str, spec_folder: 
     }
     # print(config)
     with open(full_config_path, 'w') as f:
-        f.write(json.dumps(config))
+        f.write(json.dumps(config) + "\n")
 
 def run_openapi_generator(parent_dir: Path, language: str) -> None:
     properties = "-DapiTests=false"
     if language in {"node", "python"}:
         properties += " -DskipFormModel=false"
+
+    paths = glob.glob(os.path.join(CONFIG_FOLDER, language, "*"))
 
     command = [
         "java",
@@ -110,7 +113,7 @@ def run_openapi_generator(parent_dir: Path, language: str) -> None:
         "target/twilio-openapi-generator.jar",
         "org.openapitools.codegen.OpenAPIGenerator",
         "batch",
-        f"{CONFIG_FOLDER}/{language}/*"
+        *paths,
     ]
 
     printable_cmd = " ".join(shlex.quote(arg) for arg in command)

@@ -1,6 +1,11 @@
 #!/usr/bin/env python3
 
-# python -m scripts.generate_libraries.main --language go --input=./examples
+# an example way to run this script would be:
+#
+# cd /path/to/twilio-oai-generator
+# python -m scripts.generate_libraries.main --language go --input=../twilio-oai/spec/json --base=..
+#
+# and have twilio-oai and twilio-go as sibling directories to twilio-oai-generator
 
 import argparse
 import glob
