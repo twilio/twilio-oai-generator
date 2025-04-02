@@ -70,7 +70,7 @@ class AccountContext extends InstanceContext
     public function delete(): bool
     {
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded',  ]);
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
         return $this->version->delete('DELETE', $this->uri, [], [], $headers);
     }
 
