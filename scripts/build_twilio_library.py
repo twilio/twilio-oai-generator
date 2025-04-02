@@ -46,12 +46,13 @@ def generate(spec_folder: str, spec_files: List[str], output_path: str, language
     sub_dir = subdirectories.get(language, 'rest')
     parent_dir = Path(__file__).parent.parent
     output_path = os.path.join(output_path, sub_dir)
-    config_path = os.path.join(parent_dir, CONFIG_FOLDER, language)
+    config_path = os.path.join(parent_dir, CONFIG_FOLDER)
 
     shutil.rmtree(config_path, ignore_errors=True)
     Path(config_path).mkdir(parents=True, exist_ok=True)
 
     for spec_file in spec_files:
+        Path(os.path.join(config_path, spec_file)).mkdir(parents=True, exist_ok=True)
         if spec_file in generateForLanguages:
             if language in dynamic_languages:
                 input_path_versioned, input_path_versionless, spec_dir = preprocess_orgs_spec(spec_folder, spec_file, parent_dir)
@@ -59,7 +60,8 @@ def generate(spec_folder: str, spec_files: List[str], output_path: str, language
                 generate_domain_for_language(input_path_versionless, config_path, spec_dir, output_path, language, parent_dir)
             if language in generateForLanguages.get(spec_file):
                 generate_domain_for_language(spec_file, config_path, spec_folder, output_path, language, parent_dir)
-        else: generate_domain_for_language(spec_file, config_path, spec_folder, output_path, language, parent_dir)
+        else:
+            generate_domain_for_language(spec_file, config_path, spec_folder, output_path, language, parent_dir)
     if spec_files[0] in generateForLanguages:
         if language in generateForLanguages.get(spec_files[0]) or language in dynamic_languages:
             print(f'Generating {output_path} from {spec_folder}')

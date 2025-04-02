@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
 
+# python -m scripts.generate_libraries.main --language go --input=./examples
+
 import argparse
 import glob
 import os
-import scripts.build_twilio_library as build_library
+from .. import build_twilio_library as build_library
 
 
 def parse_args():
