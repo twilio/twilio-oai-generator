@@ -132,11 +132,10 @@
         {{/optionalParams}}
 
     {{/formParams.0}}
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' {{#headerParams}}{{#required}}, '{{baseName}}' =>
+        $headers = Values::of([{{^consumes}}'Content-Type' => 'application/x-www-form-urlencoded'{{/consumes}}{{#consumes}}{{#-first}}'Content-Type' => '{{{mediaType}}}'{{/-first}}{{/consumes}}{{^vendorExtensions.x-is-delete-operation}}{{#produces}}{{#-first}}, 'Accept' => '{{{mediaType}}}'{{/-first}}{{/produces}}{{/vendorExtensions.x-is-delete-operation}} {{#headerParams}}{{#required}}, '{{baseName}}' =>
             ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}{{/required}}{{/headerParams}}{{#headerParams}}{{^required}}, '{{baseName}}' => $options['{{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}']{{/required}}{{/headerParams}}]);
     {{#bodyParams.0}}
         $data = ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}->toArray();
-        $headers['Content-Type'] = 'application/json';
     {{/bodyParams.0}}
     {{^vendorExtensions.x-is-delete-operation}}
         $payload = $this->version->{{#lambda.camelcase}}{{vendorExtensions.x-name}}{{/lambda.camelcase}}('{{httpMethod}}', $this->uri{{#queryParams.0}}, $params{{/queryParams.0}}{{^queryParams}}, []{{/queryParams}}{{#formParams.0}}, $data{{/formParams.0}}{{^formParams}}{{#bodyParams.0}}, $data{{/bodyParams.0}}{{^bodyParams}}, []{{/bodyParams}}{{/formParams}}, $headers);
