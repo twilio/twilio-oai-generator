@@ -2,9 +2,12 @@ import argparse
 import json
 import os
 import re
+import shlex
 import shutil
+import subprocess
 from pathlib import Path
 from typing import List, Tuple
+
 
 from clean_unused_imports import remove_unused_imports, remove_duplicate_imports
 from process_orgs_api import preprocess_orgs_spec
@@ -88,18 +91,34 @@ def generate_domain_for_language(spec_file: str, config_path: str, spec_folder: 
     with open(full_config_path, 'w') as f:
         f.write(json.dumps(config))
 
-
 def run_openapi_generator(parent_dir: Path, language: str) -> None:
-    properties = '-DapiTests=false'
-    if language in {'node', 'python'}:
-        properties += ' -DskipFormModel=false'
+    properties = "-DapiTests=false"
+    if language in {"node", "python"}:
+        properties += " -DskipFormModel=false"
 
-    command = f'cd {parent_dir} && java {properties} ' \
-              f'-cp target/twilio-openapi-generator.jar ' \
-              f'org.openapitools.codegen.OpenAPIGenerator batch {CONFIG_FOLDER}/{language}/*'
+    command = [
+        "java",
+        *properties.split(),  # Splits e.g. "-DapiTests=false -DskipFormModel=false" into separate arguments
+        "-cp",
+        "target/twilio-openapi-generator.jar",
+        "org.openapitools.codegen.OpenAPIGenerator",
+        "batch",
+        f"{CONFIG_FOLDER}/{language}/*"
+    ]
 
-    if os.system(command + '> /dev/null') != 0:  # Suppress stdout
-        raise RuntimeError()
+    printable_cmd = " ".join(shlex.quote(arg) for arg in command)
+    print(f"Running command: {printable_cmd}")
+
+    try:
+        subprocess.run(
+            command,
+            cwd=parent_dir,              # Change working directory to parent_dir
+            check=True,                  # Raise CalledProcessError on non-zero exit
+            stdout=subprocess.DEVNULL,   # Suppress standard output
+        )
+    except subprocess.CalledProcessError as exc:
+        # Wrap the original exception for more informative error handling
+        raise RuntimeError("OpenAPI generation failed.") from exc
 
 
 def get_domain_info(oai_spec_location: str, domain: str, is_file: bool = False) -> Tuple[str, str, str]:
