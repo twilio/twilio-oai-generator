@@ -4,9 +4,9 @@
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
-     {{#queryParams.1}}
+     {{#vendorExtensions.x-has-non-pagination-params}}
      * @param array|Options $options Optional Arguments
-     {{/queryParams.1}}
+     {{/vendorExtensions.x-has-non-pagination-params}}
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no
      *                   limit
@@ -17,9 +17,9 @@
      *                        efficient page size, i.e. min(limit, 1000)
      * @return {{apiName}}Instance[] Array of results
      */
-    public function read({{#queryParams.1}}array $options = [], {{/queryParams.1}}int $limit = null, $pageSize = null): array
+    public function read({{#vendorExtensions.x-has-non-pagination-params}}array $options = [], {{/vendorExtensions.x-has-non-pagination-params}}int $limit = null, $pageSize = null): array
     {
-        return \iterator_to_array($this->stream({{#queryParams.1}}$options, {{/queryParams.1}}$limit, $pageSize), false);
+        return \iterator_to_array($this->stream({{#vendorExtensions.x-has-non-pagination-params}}$options, {{/vendorExtensions.x-has-non-pagination-params}}$limit, $pageSize), false);
     }
 
     /**
@@ -30,9 +30,9 @@
      * The results are returned as a generator, so this operation is memory
      * efficient.
      *
-     {{#queryParams.1}}
+     {{#vendorExtensions.x-has-non-pagination-params}}
      * @param array|Options $options Optional Arguments
-     {{/queryParams.1}}
+     {{/vendorExtensions.x-has-non-pagination-params}}
      * @param int $limit Upper limit for the number of records to return. stream()
      *                   guarantees to never return more than limit.  Default is no
      *                   limit
@@ -43,11 +43,11 @@
      *                        efficient page size, i.e. min(limit, 1000)
      * @return Stream stream of results
      */
-    public function stream({{#queryParams.1}}array $options = [], {{/queryParams.1}}int $limit = null, $pageSize = null): Stream
+    public function stream({{#vendorExtensions.x-has-non-pagination-params}}array $options = [], {{/vendorExtensions.x-has-non-pagination-params}}int $limit = null, $pageSize = null): Stream
     {
         $limits = $this->version->readLimits($limit, $pageSize);
 
-        $page = $this->page({{#queryParams.1}}$options, {{/queryParams.1}}$limits['pageSize']);
+        $page = $this->page({{#vendorExtensions.x-has-non-pagination-params}}$options, {{/vendorExtensions.x-has-non-pagination-params}}$limits['pageSize']);
 
         return $this->version->stream($page, $limits['limit'], $limits['pageLimit']);
     }
@@ -62,15 +62,15 @@
      * @return {{apiName}}Page Page of {{apiName}}Instance
      */
     public function page(
-        {{#queryParams.1}}array $options = [],
-        {{/queryParams.1}}$pageSize = Values::NONE,
+        {{#vendorExtensions.x-has-non-pagination-params}}array $options = [],
+        {{/vendorExtensions.x-has-non-pagination-params}}$pageSize = Values::NONE,
         string $pageToken = Values::NONE,
         $pageNumber = Values::NONE
     ): {{apiName}}Page
     {
-        {{#queryParams.1}}
+        {{#vendorExtensions.x-has-non-pagination-params}}
         $options = new Values($options);
-        {{/queryParams.1}}
+        {{/vendorExtensions.x-has-non-pagination-params}}
 
         $params = Values::of([
             {{#vendorExtensions.optionFileParams}}
