@@ -60,7 +60,7 @@ class CallInstance extends InstanceResource
      * @param string $accountSid
      * @param int $testInteger INTEGER ID param!!!
      */
-    public function __construct(Version $version, array $payload, string $accountSid, int $testInteger = null)
+    public function __construct(Version $version, array $payload, string $accountSid, ?int $testInteger = null)
     {
         parent::__construct($version);
 
