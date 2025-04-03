@@ -31,7 +31,7 @@ class {{apiName}}Instance extends InstanceResource
      * @param {{{dataType}}} ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}{{#description}} {{{description}}}{{/description}}
      {{/requiredPathParams}}
      */
-    public function __construct(Version $version, array $payload{{#requiredPathParams}}{{#vendorExtensions.x-is-parent-param}}, {{{dataType}}} ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}{{/vendorExtensions.x-is-parent-param}}{{^vendorExtensions.x-is-parent-param}}, {{{dataType}}} ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}} = null{{/vendorExtensions.x-is-parent-param}}{{/requiredPathParams}})
+    public function __construct(Version $version, array $payload{{#requiredPathParams}}{{#vendorExtensions.x-is-parent-param}}, {{{dataType}}} ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}{{/vendorExtensions.x-is-parent-param}}{{^vendorExtensions.x-is-parent-param}}, ?{{{dataType}}} ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}} = null{{/vendorExtensions.x-is-parent-param}}{{/requiredPathParams}})
     {
         parent::__construct($version);
 
