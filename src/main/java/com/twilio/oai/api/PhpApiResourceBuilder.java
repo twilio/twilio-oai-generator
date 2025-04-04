@@ -161,6 +161,16 @@ public class PhpApiResourceBuilder extends ApiResourceBuilder {
         namespaceSubPart = namespaceSubPart.replaceAll("\\\\Function[\\\\]", "\\\\TwilioFunction\\\\");
     }
 
+    private List<CodegenParameter> filterPagingParams(List<CodegenParameter> queryParams) {
+        List<CodegenParameter> nonPagingParams = new ArrayList<>();
+        for (CodegenParameter param : queryParams) {
+            if (!param.baseName.startsWith("Page")) {
+                nonPagingParams.add(param);
+            }
+        }
+        return nonPagingParams;
+    }
+
     @Override
     public ApiResourceBuilder updateOperations(Resolver<CodegenParameter> codegenParameterIResolver) {
         PhpJsonRequestBodyResolver jsonRequestBodyResolver = new PhpJsonRequestBodyResolver(this, codegenPropertyIResolver);
@@ -185,6 +195,10 @@ public class PhpApiResourceBuilder extends ApiResourceBuilder {
             co.queryParams = co.queryParams.stream()
                     .map(item -> codegenParameterIResolver.resolve(item, this))
                     .collect(Collectors.toList());
+            List<CodegenParameter> nonPagingParams = filterPagingParams(co.queryParams);
+            if (!nonPagingParams.isEmpty()) {
+                co.vendorExtensions.put("x-has-non-pagination-params", true);
+            }
             co.formParams = co.formParams.stream()
                     .map(item -> codegenParameterIResolver.resolve(item, this))
                     .collect(Collectors.toList());
