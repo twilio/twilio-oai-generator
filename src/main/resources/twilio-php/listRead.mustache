@@ -17,7 +17,7 @@
      *                        efficient page size, i.e. min(limit, 1000)
      * @return {{apiName}}Instance[] Array of results
      */
-    public function read({{#vendorExtensions.x-has-non-pagination-params}}array $options = [], {{/vendorExtensions.x-has-non-pagination-params}}int $limit = null, $pageSize = null): array
+    public function read({{#vendorExtensions.x-has-non-pagination-params}}array $options = [], {{/vendorExtensions.x-has-non-pagination-params}}?int $limit = null, $pageSize = null): array
     {
         return \iterator_to_array($this->stream({{#vendorExtensions.x-has-non-pagination-params}}$options, {{/vendorExtensions.x-has-non-pagination-params}}$limit, $pageSize), false);
     }
@@ -43,7 +43,7 @@
      *                        efficient page size, i.e. min(limit, 1000)
      * @return Stream stream of results
      */
-    public function stream({{#vendorExtensions.x-has-non-pagination-params}}array $options = [], {{/vendorExtensions.x-has-non-pagination-params}}int $limit = null, $pageSize = null): Stream
+    public function stream({{#vendorExtensions.x-has-non-pagination-params}}array $options = [], {{/vendorExtensions.x-has-non-pagination-params}}?int $limit = null, $pageSize = null): Stream
     {
         $limits = $this->version->readLimits($limit, $pageSize);
 
