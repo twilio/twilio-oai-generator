@@ -63,6 +63,8 @@ public class TwilioGoGenerator extends AbstractTwilioGoGenerator {
             final CodegenModel model = m.getModel();
 
             model.allVars.forEach(v -> v.setIsNumber(v.isNumber || v.isFloat));
+            if(model.allVars.stream().anyMatch(t -> t.baseName.equalsIgnoreCase("pagesize")))
+                model.vendorExtensions.put("has-pagesize-param", "true");
             model.vendorExtensions.put("x-has-numbers-vars", model.allVars.stream().anyMatch(v -> v.isNumber));
         }
         return results;
