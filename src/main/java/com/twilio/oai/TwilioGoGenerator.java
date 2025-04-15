@@ -175,11 +175,18 @@ public class TwilioGoGenerator extends AbstractTwilioGoGenerator {
                 .collect(Collectors.toMap(CodegenModel::getName, Function.identity()));
 
         // get the model for the return type
-        final Optional<CodegenModel> returnModel = opList
-                .stream()
-                .filter(op -> models.containsKey(op.returnType))
-                .map(op -> models.get(op.returnType))
+        Optional<CodegenModel> returnModel = opList.stream()
+            .filter(op -> ( op.returnType != null && ( op.returnType.contains("Page") || op.returnType.contains("page") ) ) && models.containsKey(op.returnType))
+            .map(op -> models.get(op.returnType))
+            .findFirst();
+
+        if (returnModel.isEmpty()) {
+            returnModel = opList
+                    .stream()
+                    .filter(op -> models.containsKey(op.returnType))
+                    .map(op -> models.get(op.returnType))
                 .findFirst();
+        }
 
         for (final CodegenOperation co : opList) {
             Utility.populateCrudOperations(co);
@@ -205,6 +212,7 @@ public class TwilioGoGenerator extends AbstractTwilioGoGenerator {
                 if (returnModel.isPresent()) {
                     CodegenProperty field = returnModel.get().allVars
                             .stream()
+                            .filter( v -> !v.baseName.contains("schemas"))
                             .filter(v -> v.dataType.startsWith("[]"))
                             .collect(toSingleton());
 
