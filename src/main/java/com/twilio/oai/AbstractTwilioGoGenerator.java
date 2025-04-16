@@ -1,8 +1,10 @@
 package com.twilio.oai;
 
+import com.twilio.oai.common.ApplicationConstants;
 import com.twilio.oai.resolver.go.GoCaseResolver;
 import com.twilio.oai.resource.ResourceMap;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -33,6 +35,8 @@ public abstract class AbstractTwilioGoGenerator extends GoClientCodegen {
         additionalProperties,
         new ResourceMap(new Inflector()),
         new GoCaseResolver());
+
+    private static final String INPUT_SPEC_PATTERN = "[^_]+_(?<domain>.+?)(_(?<version>[^_]+))?\\..+";
 
     protected AbstractTwilioGoGenerator() {
         super();
@@ -88,7 +92,7 @@ public abstract class AbstractTwilioGoGenerator extends GoClientCodegen {
         if(lastIndex > 0)
             domain = domain.substring(0, lastIndex);
 
-        String version = StringHelper.toSnakeCase(twilioCodegen.getVersionFromOpenAPI(openAPI));
+        String version = StringHelper.toSnakeCase(getInputSpecVersion(this.inputSpec));
         twilioCodegen.setDomain(domain);
         twilioCodegen.setVersion(version);
         twilioCodegen.setOutputDir(domain, version);
@@ -198,5 +202,10 @@ public abstract class AbstractTwilioGoGenerator extends GoClientCodegen {
     @Override
     public String toApiName(final String name) {
         return super.toApiName(name + "_api");
+    }
+
+    private String getInputSpecVersion(String input) {
+        String version = input.replaceAll(INPUT_SPEC_PATTERN, "${version}");
+        return version;
     }
 }

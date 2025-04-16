@@ -144,6 +144,8 @@ public class TwilioCodegenAdapter {
 
     private String getInputSpecVersion() {
         String version = codegen.getInputSpec().replaceAll(INPUT_SPEC_PATTERN, "${version}");
-        return version;
+        boolean textExists = Arrays.stream(ApplicationConstants.VERSION_LESS_SPECS)
+            .anyMatch(ignoredVersion -> ignoredVersion.equals(version));
+        return textExists ? "" : version;
     }
 }
