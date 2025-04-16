@@ -196,6 +196,8 @@ public class TwilioGoGenerator extends AbstractTwilioGoGenerator {
             co.returnType = modelNameWithoutStatusCode(co.returnType);
 
             if (co.nickname.startsWith("List")) {
+                if(co.allParams.stream().anyMatch(t -> t.baseName.equalsIgnoreCase("pagesize")))
+                    co.vendorExtensions.put("has-pagesize-param", "true");
                 // make sure the format matches the other methods
                 co.vendorExtensions.put("x-domain-name", co.nickname.replaceFirst("List", ""));
                 co.allParams.forEach( p -> {
