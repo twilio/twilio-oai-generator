@@ -65,7 +65,7 @@ public class TwilioCodegenAdapter {
             e.printStackTrace();
         }
     }
-    
+
     public String getVersionFromOpenAPI(final OpenAPI openAPI) {
         String version = "";
         version = StringHelper.camelize(getInputSpecVersion(), true);
@@ -90,7 +90,7 @@ public class TwilioCodegenAdapter {
         codegen.additionalProperties().put("domainName", StringHelper.camelize(domain));
         codegen.additionalProperties().put("domainPackage", domainPackage);
     }
-    
+
     public void setVersion(final String version) {
         codegen.additionalProperties().put("clientVersion", version);
         codegen.additionalProperties().put(DirectoryStructureService.API_VERSION, version);
@@ -144,8 +144,6 @@ public class TwilioCodegenAdapter {
 
     private String getInputSpecVersion() {
         String version = codegen.getInputSpec().replaceAll(INPUT_SPEC_PATTERN, "${version}");
-        boolean textExists = Arrays.stream(ApplicationConstants.VERSION_LESS_SPECS)
-                .anyMatch(ignoredVersion -> ignoredVersion.equals(version));
-        return textExists ? "" : version;
+        return version;
     }
 }
