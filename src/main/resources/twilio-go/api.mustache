@@ -127,7 +127,6 @@ func (c *ApiService) Stream{{{vendorExtensions.x-domain-name}}}({{#allParams}}{{
 	if params == nil {
 		params = &{{{nickname}}}Params{}
 	}
-
 	params.SetPageSize(client.ReadLimits(params.PageSize, params.Limit))
 
 	recordChannel := make(chan {{{returnBaseType}}}, 1)
