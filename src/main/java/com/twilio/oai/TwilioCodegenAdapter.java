@@ -65,7 +65,7 @@ public class TwilioCodegenAdapter {
             e.printStackTrace();
         }
     }
-
+    
     public String getVersionFromOpenAPI(final OpenAPI openAPI) {
         String version = "";
         version = StringHelper.camelize(getInputSpecVersion(), true);
