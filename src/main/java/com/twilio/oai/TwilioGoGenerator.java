@@ -63,8 +63,6 @@ public class TwilioGoGenerator extends AbstractTwilioGoGenerator {
             final CodegenModel model = m.getModel();
 
             model.allVars.forEach(v -> v.setIsNumber(v.isNumber || v.isFloat));
-            if(model.allVars.stream().anyMatch(t -> t.baseName.equalsIgnoreCase("pagesize")))
-                model.vendorExtensions.put("has-pagesize-param", "true");
             model.vendorExtensions.put("x-has-numbers-vars", model.allVars.stream().anyMatch(v -> v.isNumber));
         }
         return results;
@@ -194,10 +192,7 @@ public class TwilioGoGenerator extends AbstractTwilioGoGenerator {
             Utility.populateCrudOperations(co);
             Utility.resolveContentType(co);
             co.returnType = modelNameWithoutStatusCode(co.returnType);
-
             if (co.nickname.startsWith("List")) {
-                if(co.allParams.stream().anyMatch(t -> t.baseName.equalsIgnoreCase("pagesize")))
-                    co.vendorExtensions.put("has-pagesize-param", "true");
                 // make sure the format matches the other methods
                 co.vendorExtensions.put("x-domain-name", co.nickname.replaceFirst("List", ""));
                 co.allParams.forEach( p -> {
@@ -298,8 +293,11 @@ public class TwilioGoGenerator extends AbstractTwilioGoGenerator {
                             // Add a parameter called limit for list and stream operations
                             if (operation.getOperationId().startsWith("List")) {
                                 operation.addParametersItem(new Parameter().name("limit").description("Max number of records to return.").required(false).schema(new IntegerSchema()));
+                                if ( operation.getParameters().stream().noneMatch(op -> op.getName().equalsIgnoreCase("pagesize")))
+                                    operation.addParametersItem(new Parameter().name("PageSize").description("Max number of records to return in a page").required(false).schema(new IntegerSchema()));
                             }
                         }));
+        System.out.println(openAPI);
 
     }
 
