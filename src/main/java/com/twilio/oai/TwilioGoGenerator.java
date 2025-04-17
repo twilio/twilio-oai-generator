@@ -299,7 +299,6 @@ public class TwilioGoGenerator extends AbstractTwilioGoGenerator {
                                     operation.addParametersItem(new Parameter().name("PageSize").description("Max number of records to return in a page").required(false).schema(new IntegerSchema()));
                             }
                         }));
-        System.out.println(openAPI);
 
     }
 
