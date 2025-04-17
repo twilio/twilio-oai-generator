@@ -34,8 +34,6 @@ public abstract class AbstractTwilioGoGenerator extends GoClientCodegen {
         new ResourceMap(new Inflector()),
         new GoCaseResolver());
 
-    private static final String INPUT_SPEC_PATTERN = "[^_]+_(?<domain>.+?)(_(?<version>[^_]+))?\\..+";
-
     protected AbstractTwilioGoGenerator() {
         super();
 
