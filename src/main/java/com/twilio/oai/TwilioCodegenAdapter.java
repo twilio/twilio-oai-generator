@@ -90,7 +90,7 @@ public class TwilioCodegenAdapter {
         codegen.additionalProperties().put("domainName", StringHelper.camelize(domain));
         codegen.additionalProperties().put("domainPackage", domainPackage);
     }
-
+    
     public void setVersion(final String version) {
         codegen.additionalProperties().put("clientVersion", version);
         codegen.additionalProperties().put(DirectoryStructureService.API_VERSION, version);
