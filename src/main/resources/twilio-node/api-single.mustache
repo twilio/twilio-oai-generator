@@ -191,7 +191,7 @@ export function {{apiName}}ListInstance(version: {{apiVersionClass}}{{#listPathP
 {{#operations}}
 {{^vendorExtensions.x-twilio.ignoreOperation}}
 {{#vendorExtensions.x-is-list-operation}}
-  instance.{{vendorExtensions.x-name-lower}} = function {{vendorExtensions.x-name-lower}}({{#hasParams}}params{{^hasRequiredParams}}?{{/hasRequiredParams}}: {{#bodyParam}}{{dataType}}{{/bodyParam}}{{^bodyParam}}{{vendorExtensions.x-resource-name}}{{vendorExtensions.x-name}}Options{{/bodyParam}}{{^hasRequiredParams}} | ((error: Error | null, items: {{returnType}}) => any){{/hasRequiredParams}}{{#bodyParams.0}}, headers?: any{{/bodyParams.0}},{{/hasParams}} callback?: (error: Error | null, items: {{returnType}}) => any): Promise<{{returnType}}> {
+  instance.{{vendorExtensions.x-name-lower}} = function {{vendorExtensions.x-name-lower}}({{#hasParams}}params{{^hasRequiredParams}}?{{/hasRequiredParams}}: {{vendorExtensions.x-resource-name}}{{vendorExtensions.x-name}}Options{{^hasRequiredParams}} | ((error: Error | null, items: {{returnType}}) => any){{/hasRequiredParams}}{{#bodyParams.0}}, headers?: any{{/bodyParams.0}},{{/hasParams}} callback?: (error: Error | null, items: {{returnType}}) => any): Promise<{{returnType}}> {
 {{>operation}}
 {{^vendorExtensions.x-is-read-operation}}
     }

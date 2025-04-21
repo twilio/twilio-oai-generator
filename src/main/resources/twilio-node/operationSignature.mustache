@@ -23,5 +23,5 @@
    *
    * @returns Resolves to processed {{instanceName}}
    */
-  {{vendorExtensions.x-name-lower}}(params: {{#bodyParam}}{{dataType}}, headers?: any{{/bodyParam}}{{^bodyParam}}{{vendorExtensions.x-resource-name}}{{vendorExtensions.x-name}}Options{{/bodyParam}}, callback?: (error: Error | null, item?: {{returnType}}) => any): Promise<{{returnType}}>;
+  {{vendorExtensions.x-name-lower}}(params: {{vendorExtensions.x-resource-name}}{{vendorExtensions.x-name}}Options{{#bodyParam}}, headers?: any{{/bodyParam}}, callback?: (error: Error | null, item?: {{returnType}}) => any): Promise<{{returnType}}>;
 {{/hasParams}}
