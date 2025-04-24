@@ -358,8 +358,8 @@ public class PhpApiResourceBuilder extends ApiResourceBuilder {
 
     @Override
     public ApiResourceBuilder updateResponseModel(Resolver<CodegenProperty> codegenPropertyResolver) {
+        List<CodegenModel> responseModels = new ArrayList<>();
         codegenOperationList.forEach(codegenOperation -> {
-            List<CodegenModel> responseModels = new ArrayList<>();
             codegenOperation.responses
                     .stream()
                     .filter(response -> SUCCESS.test(Integer.parseInt(response.code.trim())))
@@ -374,8 +374,8 @@ public class PhpApiResourceBuilder extends ApiResourceBuilder {
                         item.allVars.forEach(e -> codegenPropertyResolver.resolve(e, this));
                         responseModels.add(item);
                     });
-            this.apiResponseModels.addAll(getDistinctResponseModel(responseModels));
         });
+        this.apiResponseModels = getDistinctResponseModel(responseModels);
         return this;
     }
 
