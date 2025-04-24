@@ -175,17 +175,23 @@ public class TwilioGoGenerator extends AbstractTwilioGoGenerator {
                 .collect(Collectors.toMap(CodegenModel::getName, Function.identity()));
 
         // get the model for the return type
-        final Optional<CodegenModel> returnModel = opList
-                .stream()
-                .filter(op -> models.containsKey(op.returnType))
-                .map(op -> models.get(op.returnType))
+        Optional<CodegenModel> returnModel = opList.stream()
+            .filter(op -> ( op.returnType != null && ( op.returnType.contains("Page") || op.returnType.contains("page") ) ) && models.containsKey(op.returnType))
+            .map(op -> models.get(op.returnType))
+            .findFirst();
+
+        if (returnModel.isEmpty()) {
+            returnModel = opList
+                    .stream()
+                    .filter(op -> models.containsKey(op.returnType))
+                    .map(op -> models.get(op.returnType))
                 .findFirst();
+        }
 
         for (final CodegenOperation co : opList) {
             Utility.populateCrudOperations(co);
             Utility.resolveContentType(co);
             co.returnType = modelNameWithoutStatusCode(co.returnType);
-
             if (co.nickname.startsWith("List")) {
                 // make sure the format matches the other methods
                 co.vendorExtensions.put("x-domain-name", co.nickname.replaceFirst("List", ""));
@@ -205,6 +211,7 @@ public class TwilioGoGenerator extends AbstractTwilioGoGenerator {
                 if (returnModel.isPresent()) {
                     CodegenProperty field = returnModel.get().allVars
                             .stream()
+                            .filter( v -> !v.baseName.contains("schemas"))
                             .filter(v -> v.dataType.startsWith("[]"))
                             .collect(toSingleton());
 
@@ -282,10 +289,14 @@ public class TwilioGoGenerator extends AbstractTwilioGoGenerator {
                             if(Objects.equals(openAPI.getServers().get(0).getUrl(), "/"))
                                 openAPI.servers(path.getServers());
                             // Group operations together by tag. This gives us one file/post-process per resource.
-                            operation.addTagsItem(PathUtils.cleanPathAndRemoveFirstElement(name));
+                            if (!PathUtils.cleanPathAndRemoveFirstElement(name).equals("")) operation.addTagsItem(PathUtils.cleanPathAndRemoveFirstElement(name));
+                            if(name.equals("/Organizations/{OrganizationSid}"))
+                                operation.addTagsItem("organization");
                             // Add a parameter called limit for list and stream operations
                             if (operation.getOperationId().startsWith("List")) {
                                 operation.addParametersItem(new Parameter().name("limit").description("Max number of records to return.").required(false).schema(new IntegerSchema()));
+                                if ( operation.getParameters().stream().noneMatch(op -> op.getName().equalsIgnoreCase("pagesize")))
+                                    operation.addParametersItem(new Parameter().name("PageSize").description("Max number of records to return in a page").required(false).schema(new IntegerSchema()));
                             }
                         }));
 

@@ -16,11 +16,14 @@ package openapi
 
 import (
 	"context"
+	"fmt"
+	. "go-client/helper/rest/flex/v1"
+	"go-client/terraform/client"
+	"strings"
+
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	. "github.com/twilio/terraform-provider-twilio/core"
-	. "go-client/helper/rest/flex/v1"
-	"go-client/terraform/client"
 )
 
 func ResourceCredentialsAWS() *schema.Resource {
