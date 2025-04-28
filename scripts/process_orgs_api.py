@@ -10,7 +10,7 @@ with open(temp_spec_path) as f:
     specs = json.load(f)
     missing_paths = specs.get("paths")
 
-def preprocess_orgs_spec(spec_folder:str, spec_file:str, parent_dir: str):
+def preprocess_orgs_spec(spec_folder:str, spec_file:str, parent_dir: str, language: str):
     with open(os.path.join(spec_folder, spec_file)) as f:
         specs = json.load(f)
     paths = specs.get("paths")
@@ -43,7 +43,10 @@ def preprocess_orgs_spec(spec_folder:str, spec_file:str, parent_dir: str):
         os.makedirs(temp_dir)
     spec_file_name = spec_file.split(".")[0]
     spec_file_name_versioned = spec_file_name + "_" + version + ".json"
-    spec_file_name_versionless = spec_file_name + "_versionless.json"
+    suffix =  "_versionless.json"
+    if language == 'go':
+        suffix = "_organization.json"
+    spec_file_name_versionless = spec_file_name + suffix
     with open(os.path.join(temp_dir, spec_file_name_versioned), 'w') as f:
         f.write(json.dumps(versioned_specs, indent=2))
     with open(os.path.join(temp_dir, spec_file_name_versionless), 'w') as f:

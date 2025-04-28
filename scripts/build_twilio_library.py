@@ -51,7 +51,7 @@ def generate(spec_folder: str, spec_files: List[str], output_path: str, language
     for spec_file in spec_files:
         if spec_file in generateForLanguages:
             if language in dynamic_languages:
-                input_path_versioned, input_path_versionless, spec_dir = preprocess_orgs_spec(spec_folder, spec_file, parent_dir)
+                input_path_versioned, input_path_versionless, spec_dir = preprocess_orgs_spec(spec_folder, spec_file, parent_dir, language)
                 generate_domain_for_language(input_path_versioned, config_path, spec_dir, output_path, language, parent_dir)
                 generate_domain_for_language(input_path_versionless, config_path, spec_dir, output_path, language, parent_dir)
             if language in generateForLanguages.get(spec_file):
