@@ -182,6 +182,8 @@ interface FeedbackCallSummaryResource {
   test_array_of_array_of_integers: Array<Array<number>>;
   test_array_of_objects: Array<TestResponseObjectTestArrayOfObjects>;
   test_array_of_enum: Array<FeedbackCallSummaryStatus>;
+  status: string;
+  message: string;
 }
 
 export class FeedbackCallSummaryInstance {
@@ -211,6 +213,8 @@ export class FeedbackCallSummaryInstance {
     this.testArrayOfArrayOfIntegers = payload.test_array_of_array_of_integers;
     this.testArrayOfObjects = payload.test_array_of_objects;
     this.testArrayOfEnum = payload.test_array_of_enum;
+    this.status = payload.status;
+    this.message = payload.message;
 
     this._solution = { accountSid, sid: sid || this.sid };
   }
@@ -238,6 +242,14 @@ export class FeedbackCallSummaryInstance {
    * Permissions authorized to the app
    */
   testArrayOfEnum: Array<FeedbackCallSummaryStatus>;
+  /**
+   * The status of the user
+   */
+  status: string;
+  /**
+   * A message describing the status of the user
+   */
+  message: string;
 
   private get _proxy(): FeedbackCallSummaryContext {
     this._context =
@@ -294,6 +306,8 @@ export class FeedbackCallSummaryInstance {
       testArrayOfArrayOfIntegers: this.testArrayOfArrayOfIntegers,
       testArrayOfObjects: this.testArrayOfObjects,
       testArrayOfEnum: this.testArrayOfEnum,
+      status: this.status,
+      message: this.message,
     };
   }
 

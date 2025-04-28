@@ -41,12 +41,11 @@ module Twilio
             twiml: :unset,
             x_twilio_webhook_enabled: :unset
           )
-
             data = Twilio::Values.of({
                                        'RecordingStatusCallback' => recording_status_callback,
                                        'RecordingStatusCallbackEvent' => Twilio.serialize_list(recording_status_callback_event) { |e|
-                                                                           e
-                                                                         },
+                                         e
+                                       },
                                        'Twiml' => twiml,
                                      })
 
@@ -228,7 +227,6 @@ module Twilio
             pause_behavior: :unset,
             status: nil
           )
-
             data = Twilio::Values.of({
                                        'Status' => status,
                                        'PauseBehavior' => pause_behavior,
@@ -340,6 +338,8 @@ module Twilio
               'test_array_of_array_of_integers' => payload['test_array_of_array_of_integers'],
               'test_array_of_objects' => payload['test_array_of_objects'],
               'test_array_of_enum' => payload['test_array_of_enum'],
+              'status' => payload['status'],
+              'message' => payload['message'],
             }
 
             # Context
@@ -461,6 +461,18 @@ module Twilio
           end
 
           ##
+          # @return [String] The status of the user
+          def status
+            @properties['status']
+          end
+
+          ##
+          # @return [String] A message describing the status of the user
+          def message
+            @properties['message']
+          end
+
+          ##
           # Delete the AccountInstance
           # @return [Boolean] True if delete succeeds, false otherwise
           def delete
@@ -483,7 +495,6 @@ module Twilio
             pause_behavior: :unset,
             status: nil
           )
-
             context.update(
               pause_behavior: pause_behavior,
               status: status,

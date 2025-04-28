@@ -35,7 +35,6 @@ module Twilio
           def create(
             name: :unset
           )
-
             data = Twilio::Values.of({
                                        'Name' => name,
                                      })

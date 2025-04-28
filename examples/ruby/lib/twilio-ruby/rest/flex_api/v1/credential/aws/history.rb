@@ -56,7 +56,6 @@ module Twilio
               def fetch(
                 add_ons_data: :unset
               )
-
                 params = Twilio::Values.of({})
                 params.merge!(Twilio.prefixed_collapsible_map(add_ons_data, 'AddOns'))
                 headers = Twilio::Values.of({ 'Content-Type' => 'application/x-www-form-urlencoded', })
@@ -181,7 +180,6 @@ module Twilio
               def fetch(
                 add_ons_data: :unset
               )
-
                 context.fetch(
                   add_ons_data: add_ons_data,
                 )
