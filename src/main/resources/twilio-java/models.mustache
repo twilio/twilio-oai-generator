@@ -14,13 +14,13 @@
             {{/isMap}}
         {{/vars}}
         {{#vendorExtensions.x-constructor-required}}
-        {{#modelParameters}}
+        {{#vendorExtensions.x-model-parameters}}
             public {{classname}}({{#.}}final {{{dataType}}} {{name}}{{^-last}}, {{/-last}}{{/.}} ) {
                 {{#.}}
                 this.{{name}} = {{name}};
                 {{/.}}
             }
-            {{/modelParameters}}
+            {{/vendorExtensions.x-model-parameters}}
             {{/vendorExtensions.x-constructor-required}}
 
             {{^vendorExtensions.x-response}}

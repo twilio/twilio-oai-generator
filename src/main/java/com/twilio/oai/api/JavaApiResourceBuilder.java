@@ -137,6 +137,7 @@ public class JavaApiResourceBuilder extends ApiResourceBuilder{
                         // currently supporting required and conditional parameters only for request body object
                         if (model != null) {
                             model.vendorExtensions.put("x-constructor-required", true);
+                            model.vendorExtensions.put("x-model-parameters", generateSignatureListBody(co));
                             jsonRequestBodyResolver.resolve(item, codegenParameterIResolver);
                         }
                     });
