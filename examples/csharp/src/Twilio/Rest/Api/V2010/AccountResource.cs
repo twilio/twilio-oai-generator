@@ -588,6 +588,14 @@ namespace Twilio.Rest.Api.V2010
         [JsonProperty("test_array_of_enum")]
         public List<AccountResource.StatusEnum> TestArrayOfEnum { get; private set; }
 
+        ///<summary> The status of the user </summary> 
+        [JsonProperty("status")]
+        public string Status { get; private set; }
+
+        ///<summary> A message describing the status of the user </summary> 
+        [JsonProperty("message")]
+        public string Message { get; private set; }
+
 
 
         private AccountResource() {

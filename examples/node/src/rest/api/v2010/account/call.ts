@@ -188,6 +188,8 @@ interface CallResource {
   test_array_of_array_of_integers: Array<Array<number>>;
   test_array_of_objects: Array<TestResponseObjectTestArrayOfObjects>;
   test_array_of_enum: Array<CallStatus>;
+  status: string;
+  message: string;
 }
 
 export class CallInstance {
@@ -217,6 +219,8 @@ export class CallInstance {
     this.testArrayOfArrayOfIntegers = payload.test_array_of_array_of_integers;
     this.testArrayOfObjects = payload.test_array_of_objects;
     this.testArrayOfEnum = payload.test_array_of_enum;
+    this.status = payload.status;
+    this.message = payload.message;
 
     this._solution = {
       accountSid,
@@ -247,6 +251,14 @@ export class CallInstance {
    * Permissions authorized to the app
    */
   testArrayOfEnum: Array<CallStatus>;
+  /**
+   * The status of the user
+   */
+  status: string;
+  /**
+   * A message describing the status of the user
+   */
+  message: string;
 
   private get _proxy(): CallContext {
     this._context =
@@ -309,6 +321,8 @@ export class CallInstance {
       testArrayOfArrayOfIntegers: this.testArrayOfArrayOfIntegers,
       testArrayOfObjects: this.testArrayOfObjects,
       testArrayOfEnum: this.testArrayOfEnum,
+      status: this.status,
+      message: this.message,
     };
   }
 

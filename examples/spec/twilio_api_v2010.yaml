@@ -106,6 +106,16 @@ components:
           nullable: true
           type: array
       type: object
+    test.fetch_response_object:
+      allOf:
+        - $ref: '#/components/schemas/test.response_object'
+        - properties:
+            status:
+              type: string
+              description: The status of the user
+            message:
+              type: string
+              description: A message describing the status of the user
   examples:
     test.response_object.example:
       value:
@@ -316,7 +326,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/test.response_object'
+                $ref: '#/components/schemas/test.fetch_response_object'
           description: OK
       security:
         - accountSid_authToken: [ ]

@@ -164,6 +164,8 @@ public class Account extends Resource {
     private final List<List<Integer>> testArrayOfArrayOfIntegers;
     private final List<FeedbackIssue> testArrayOfObjects;
     private final List<Account.Status> testArrayOfEnum;
+    private final String status;
+    private final String message;
 
     @JsonCreator
     private Account(
@@ -217,7 +219,13 @@ public class Account extends Resource {
         final List<FeedbackIssue> testArrayOfObjects,
 
         @JsonProperty("test_array_of_enum")
-        final List<Account.Status> testArrayOfEnum
+        final List<Account.Status> testArrayOfEnum,
+
+        @JsonProperty("status")
+        final String status,
+
+        @JsonProperty("message")
+        final String message
     ) {
         this.accountSid = accountSid;
         this.sid = sid;
@@ -236,6 +244,8 @@ public class Account extends Resource {
         this.testArrayOfArrayOfIntegers = testArrayOfArrayOfIntegers;
         this.testArrayOfObjects = testArrayOfObjects;
         this.testArrayOfEnum = testArrayOfEnum;
+        this.status = status;
+        this.message = message;
     }
 
         public final String getAccountSid() {
@@ -289,6 +299,12 @@ public class Account extends Resource {
         public final List<Account.Status> getTestArrayOfEnum() {
             return this.testArrayOfEnum;
         }
+        public final String getStatus() {
+            return this.status;
+        }
+        public final String getMessage() {
+            return this.message;
+        }
 
     @Override
     public boolean equals(final Object o) {
@@ -302,12 +318,12 @@ public class Account extends Resource {
 
         Account other = (Account) o;
 
-        return Objects.equals(accountSid, other.accountSid) &&  Objects.equals(sid, other.sid) &&  Objects.equals(testString, other.testString) &&  Objects.equals(testInteger, other.testInteger) &&  Objects.equals(testObject, other.testObject) &&  Objects.equals(testDateTime, other.testDateTime) &&  Objects.equals(testNumber, other.testNumber) &&  Objects.equals(from, other.from) &&  Objects.equals(priceUnit, other.priceUnit) &&  Objects.equals(testNumberFloat, other.testNumberFloat) &&  Objects.equals(testNumberDecimal, other.testNumberDecimal) &&  Objects.equals(testEnum, other.testEnum) &&  Objects.equals(a2pProfileBundleSid, other.a2pProfileBundleSid) &&  Objects.equals(testArrayOfIntegers, other.testArrayOfIntegers) &&  Objects.equals(testArrayOfArrayOfIntegers, other.testArrayOfArrayOfIntegers) &&  Objects.equals(testArrayOfObjects, other.testArrayOfObjects) &&  Objects.equals(testArrayOfEnum, other.testArrayOfEnum)  ;
+        return Objects.equals(accountSid, other.accountSid) &&  Objects.equals(sid, other.sid) &&  Objects.equals(testString, other.testString) &&  Objects.equals(testInteger, other.testInteger) &&  Objects.equals(testObject, other.testObject) &&  Objects.equals(testDateTime, other.testDateTime) &&  Objects.equals(testNumber, other.testNumber) &&  Objects.equals(from, other.from) &&  Objects.equals(priceUnit, other.priceUnit) &&  Objects.equals(testNumberFloat, other.testNumberFloat) &&  Objects.equals(testNumberDecimal, other.testNumberDecimal) &&  Objects.equals(testEnum, other.testEnum) &&  Objects.equals(a2pProfileBundleSid, other.a2pProfileBundleSid) &&  Objects.equals(testArrayOfIntegers, other.testArrayOfIntegers) &&  Objects.equals(testArrayOfArrayOfIntegers, other.testArrayOfArrayOfIntegers) &&  Objects.equals(testArrayOfObjects, other.testArrayOfObjects) &&  Objects.equals(testArrayOfEnum, other.testArrayOfEnum) &&  Objects.equals(status, other.status) &&  Objects.equals(message, other.message)  ;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(accountSid, sid, testString, testInteger, testObject, testDateTime, testNumber, from, priceUnit, testNumberFloat, testNumberDecimal, testEnum, a2pProfileBundleSid, testArrayOfIntegers, testArrayOfArrayOfIntegers, testArrayOfObjects, testArrayOfEnum);
+        return Objects.hash(accountSid, sid, testString, testInteger, testObject, testDateTime, testNumber, from, priceUnit, testNumberFloat, testNumberDecimal, testEnum, a2pProfileBundleSid, testArrayOfIntegers, testArrayOfArrayOfIntegers, testArrayOfObjects, testArrayOfEnum, status, message);
     }
 
     public enum XTwilioWebhookEnabled {

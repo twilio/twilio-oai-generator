@@ -110,7 +110,7 @@ func (c *ApiService) DeleteAccount(Sid string) error {
 	return nil
 }
 
-func (c *ApiService) FetchAccount(Sid string) (*TestResponseObject, error) {
+func (c *ApiService) FetchAccount(Sid string) (*TestFetchResponseObject, error) {
 	path := "/2010-04-01/Accounts/{Sid}.json"
 	path = strings.Replace(path, "{"+"Sid"+"}", Sid, -1)
 
@@ -126,7 +126,7 @@ func (c *ApiService) FetchAccount(Sid string) (*TestResponseObject, error) {
 
 	defer resp.Body.Close()
 
-	ps := &TestResponseObject{}
+	ps := &TestFetchResponseObject{}
 	if err := json.NewDecoder(resp.Body).Decode(ps); err != nil {
 		return nil, err
 	}

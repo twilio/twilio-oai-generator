@@ -43,7 +43,6 @@ module Twilio
             scope: :unset,
             state: :unset
           )
-
             params = Twilio::Values.of({
                                          'response_type' => response_type,
                                          'client_id' => client_id,

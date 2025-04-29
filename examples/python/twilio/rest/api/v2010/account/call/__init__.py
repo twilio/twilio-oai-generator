@@ -54,6 +54,8 @@ class CallInstance(InstanceResource):
     :ivar test_array_of_array_of_integers: 
     :ivar test_array_of_objects: 
     :ivar test_array_of_enum: Permissions authorized to the app
+    :ivar status: The status of the user
+    :ivar message: A message describing the status of the user
     """
 
     def __init__(
@@ -98,6 +100,8 @@ class CallInstance(InstanceResource):
         self.test_array_of_enum: Optional[List["CallInstance.Status"]] = payload.get(
             "test_array_of_enum"
         )
+        self.status: Optional[str] = payload.get("status")
+        self.message: Optional[str] = payload.get("message")
 
         self._solution = {
             "account_sid": account_sid,

@@ -47,6 +47,7 @@ Class | Method | HTTP request | Description
  - [ListHealthCheck](docs/ListHealthCheck.md)
  - [ListAccountResponse](docs/ListAccountResponse.md)
  - [TestResponseObjectTestObject](docs/TestResponseObjectTestObject.md)
+ - [TestFetchResponseObject](docs/TestFetchResponseObject.md)
  - [TestResponseObject](docs/TestResponseObject.md)
  - [TestResponseObjectTestArrayOfObjects](docs/TestResponseObjectTestArrayOfObjects.md)
 

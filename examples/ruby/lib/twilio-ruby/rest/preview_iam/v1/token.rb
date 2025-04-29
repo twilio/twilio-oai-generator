@@ -49,7 +49,6 @@ module Twilio
             refresh_token: :unset,
             scope: :unset
           )
-
             data = Twilio::Values.of({
                                        'grant_type' => grant_type,
                                        'client_id' => client_id,

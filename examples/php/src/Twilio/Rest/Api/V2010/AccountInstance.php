@@ -49,6 +49,8 @@ use Twilio\Rest\Api\V2010\Account\CallList;
  * @property int[][] $testArrayOfArrayOfIntegers
  * @property string[]|null $testArrayOfObjects
  * @property string[]|null $testArrayOfEnum
+ * @property string $status
+ * @property string $message
  */
 class AccountInstance extends InstanceResource
 {
@@ -84,6 +86,8 @@ class AccountInstance extends InstanceResource
             'testArrayOfArrayOfIntegers' => Values::array_get($payload, 'test_array_of_array_of_integers'),
             'testArrayOfObjects' => Values::array_get($payload, 'test_array_of_objects'),
             'testArrayOfEnum' => Values::array_get($payload, 'test_array_of_enum'),
+            'status' => Values::array_get($payload, 'status'),
+            'message' => Values::array_get($payload, 'message'),
         ];
 
         $this->solution = ['sid' => $sid ?: $this->properties['sid'], ];
