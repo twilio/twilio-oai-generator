@@ -215,10 +215,12 @@ public class JavaApiResourceBuilder extends ApiResourceBuilder{
             case "PUT":
                 co.vendorExtensions.put(HTTP_METHOD, JavaHttpMethod.PUT.getValue());
                 break;
+            case "PATCH":
+                co.vendorExtensions.put(HTTP_METHOD, JavaHttpMethod.PATCH.getValue());
+                break;
             case "DELETE":
                 co.vendorExtensions.put(HTTP_METHOD, JavaHttpMethod.DELETE.getValue());
                 break;
-
         }
     }
 
