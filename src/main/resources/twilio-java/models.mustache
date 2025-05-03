@@ -1,11 +1,12 @@
 
         {{#resources.nestedModels}}
         @ToString
+        @Builder
         static public class {{classname}} {
         {{#vars}}
             @JsonInclude(JsonInclude.Include.NON_EMPTY)
             @JsonProperty("{{{baseName}}}")
-            @Getter @Setter private {{{dataType}}} {{name}};
+            private {{{dataType}}} {{name}};
             {{^isMap}}
             {{#vendorExtensions.x-serialize}}
             public String get{{#lambda.titlecase}}{{name}}{{/lambda.titlecase}}() {
@@ -13,15 +14,6 @@
             }{{/vendorExtensions.x-serialize}}
             {{/isMap}}
         {{/vars}}
-        {{#vendorExtensions.x-constructor-required}}
-        {{#modelParameters}}
-            public {{classname}}({{#.}}final {{{dataType}}} {{name}}{{^-last}}, {{/-last}}{{/.}} ) {
-                {{#.}}
-                this.{{name}} = {{name}};
-                {{/.}}
-            }
-            {{/modelParameters}}
-            {{/vendorExtensions.x-constructor-required}}
 
             {{^vendorExtensions.x-response}}
             public static {{classname}} fromJson(String jsonString, ObjectMapper mapper) throws IOException {
