@@ -14,6 +14,14 @@
             {{/isMap}}
         {{/vars}}
         {{#vendorExtensions.x-constructor-required}}
+            {{#vendorExtensions.x-constructor}}
+            public {{classname}}({{#.}}final {{{dataType}}} {{name}}{{^-last}}, {{/-last}}{{/.}} ) {
+            {{#.}}
+                this.{{name}} = {{name}};
+            {{/.}}
+            }
+            {{/vendorExtensions.x-constructor}}
+            {{^vendorExtensions.x-constructor}}
         {{#modelParameters}}
             public {{classname}}({{#.}}final {{{dataType}}} {{name}}{{^-last}}, {{/-last}}{{/.}} ) {
                 {{#.}}
@@ -21,6 +29,7 @@
                 {{/.}}
             }
             {{/modelParameters}}
+            {{/vendorExtensions.x-constructor}}
             {{/vendorExtensions.x-constructor-required}}
 
             {{^vendorExtensions.x-response}}
