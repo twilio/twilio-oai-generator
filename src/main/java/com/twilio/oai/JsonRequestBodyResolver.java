@@ -50,11 +50,21 @@ public class JsonRequestBodyResolver {
         } else {
             // Example: datatype resolution: CreateMessagesRequest -> Message.CreateMessagesRequest
             codegenParameterResolver.resolve(codegenParameter, apiResourceBuilder);
+            // Instance variables for a model
             for (CodegenProperty property: model.getVars()) {
                 resolve(property);
             }
+            // Not used in mustache but used in our generator code
             for (CodegenProperty property: codegenParameter.vars) {
                 resolve(property);
+            }
+            // Constructors in mustache(example: oneOf)
+            if (model.interfaceModels != null) {
+                for (CodegenModel codegenModel: model.interfaceModels) {
+                    for (CodegenProperty property: codegenModel.getVars()) {
+                        resolve(property);
+                    }
+                }
             }
             apiResourceBuilder.addNestedModel(model);
         }
