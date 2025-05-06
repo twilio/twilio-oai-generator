@@ -61,7 +61,6 @@ module Twilio
                 end_date: nil,
                 start_date: nil
               )
-
                 data = Twilio::Values.of({
                                            'EndDate' => Twilio.serialize_iso8601_date(end_date),
                                            'StartDate' => Twilio.serialize_iso8601_date(start_date),
@@ -155,6 +154,8 @@ module Twilio
                   'test_array_of_array_of_integers' => payload['test_array_of_array_of_integers'],
                   'test_array_of_objects' => payload['test_array_of_objects'],
                   'test_array_of_enum' => payload['test_array_of_enum'],
+                  'status' => payload['status'],
+                  'message' => payload['message'],
                 }
 
                 # Context
@@ -277,6 +278,18 @@ module Twilio
               end
 
               ##
+              # @return [String] The status of the user
+              def status
+                @properties['status']
+              end
+
+              ##
+              # @return [String] A message describing the status of the user
+              def message
+                @properties['message']
+              end
+
+              ##
               # Update the FeedbackCallSummaryInstance
               # @param [String] account_sid
               # @param [Date] end_date
@@ -287,7 +300,6 @@ module Twilio
                 end_date: nil,
                 start_date: nil
               )
-
                 context.update(
                   account_sid: account_sid,
                   end_date: end_date,

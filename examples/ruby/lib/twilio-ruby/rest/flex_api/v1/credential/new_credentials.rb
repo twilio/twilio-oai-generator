@@ -68,7 +68,6 @@ module Twilio
               permissions: :unset,
               some_a2p_thing: :unset
             )
-
               data = Twilio::Values.of({
                                          'TestString' => test_string,
                                          'TestBoolean' => test_boolean,
@@ -83,12 +82,12 @@ module Twilio
                                          'TestDate' => Twilio.serialize_iso8601_date(test_date),
                                          'TestEnum' => test_enum,
                                          'TestObjectArray' => Twilio.serialize_list(test_object_array) { |e|
-                                                                Twilio.serialize_object(e)
-                                                              },
+                                           Twilio.serialize_object(e)
+                                         },
                                          'TestAnyType' => Twilio.serialize_object(test_any_type),
                                          'TestAnyArray' => Twilio.serialize_list(test_any_array) { |e|
-                                                             Twilio.serialize_object(e)
-                                                           },
+                                           Twilio.serialize_object(e)
+                                         },
                                          'Permissions' => Twilio.serialize_list(permissions) { |e| e },
                                          'SomeA2PThing' => some_a2p_thing,
                                        })

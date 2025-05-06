@@ -44,13 +44,12 @@ module Twilio
               test_array_of_uri: :unset,
               test_method: nil
             )
-
               data = Twilio::Values.of({
                                          'RequiredStringProperty' => required_string_property,
                                          'TestMethod' => test_method,
                                          'TestArrayOfStrings' => Twilio.serialize_list(test_array_of_strings) { |e|
-                                                                   e
-                                                                 },
+                                           e
+                                         },
                                          'TestArrayOfUri' => Twilio.serialize_list(test_array_of_uri) { |e| e },
                                        })
 
@@ -218,6 +217,8 @@ module Twilio
                 'test_array_of_array_of_integers' => payload['test_array_of_array_of_integers'],
                 'test_array_of_objects' => payload['test_array_of_objects'],
                 'test_array_of_enum' => payload['test_array_of_enum'],
+                'status' => payload['status'],
+                'message' => payload['message'],
               }
 
               # Context
@@ -338,6 +339,18 @@ module Twilio
             # @return [Array<Status>] Permissions authorized to the app
             def test_array_of_enum
               @properties['test_array_of_enum']
+            end
+
+            ##
+            # @return [String] The status of the user
+            def status
+              @properties['status']
+            end
+
+            ##
+            # @return [String] A message describing the status of the user
+            def message
+              @properties['message']
             end
 
             ##

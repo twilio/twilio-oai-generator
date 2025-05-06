@@ -170,7 +170,6 @@ module Twilio
               test_string: :unset,
               test_boolean: :unset
             )
-
               data = Twilio::Values.of({
                                          'TestString' => test_string,
                                          'TestBoolean' => test_boolean,
@@ -325,7 +324,6 @@ module Twilio
               test_string: :unset,
               test_boolean: :unset
             )
-
               context.update(
                 test_string: test_string,
                 test_boolean: test_boolean,

@@ -320,6 +320,8 @@ interface AccountResource {
   test_array_of_array_of_integers: Array<Array<number>>;
   test_array_of_objects: Array<TestResponseObjectTestArrayOfObjects>;
   test_array_of_enum: Array<AccountStatus>;
+  status: string;
+  message: string;
 }
 
 export class AccountInstance {
@@ -348,6 +350,8 @@ export class AccountInstance {
     this.testArrayOfArrayOfIntegers = payload.test_array_of_array_of_integers;
     this.testArrayOfObjects = payload.test_array_of_objects;
     this.testArrayOfEnum = payload.test_array_of_enum;
+    this.status = payload.status;
+    this.message = payload.message;
 
     this._solution = { sid: sid || this.sid };
   }
@@ -375,6 +379,14 @@ export class AccountInstance {
    * Permissions authorized to the app
    */
   testArrayOfEnum: Array<AccountStatus>;
+  /**
+   * The status of the user
+   */
+  status: string;
+  /**
+   * A message describing the status of the user
+   */
+  message: string;
 
   private get _proxy(): AccountContext {
     this._context =
@@ -460,6 +472,8 @@ export class AccountInstance {
       testArrayOfArrayOfIntegers: this.testArrayOfArrayOfIntegers,
       testArrayOfObjects: this.testArrayOfObjects,
       testArrayOfEnum: this.testArrayOfEnum,
+      status: this.status,
+      message: this.message,
     };
   }
 
