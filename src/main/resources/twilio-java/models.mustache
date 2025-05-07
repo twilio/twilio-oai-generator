@@ -7,10 +7,12 @@
             @JsonProperty("{{{baseName}}}")
             @Getter @Setter private {{{dataType}}} {{name}};
             {{^isMap}}
+            {{^isFreeFormObject}}
             {{#vendorExtensions.x-serialize}}
             public String get{{#lambda.titlecase}}{{name}}{{/lambda.titlecase}}() {
                 return {{vendorExtensions.x-serialize}};
             }{{/vendorExtensions.x-serialize}}
+            {{/isFreeFormObject}}
             {{/isMap}}
         {{/vars}}
         {{#vendorExtensions.x-constructor-required}}
