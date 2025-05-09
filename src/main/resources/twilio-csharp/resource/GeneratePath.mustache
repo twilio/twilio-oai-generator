@@ -9,10 +9,10 @@
     {{#pathParams}}
         {{#vendorExtensions.x-is-account-sid}}
             string {{paramName}} = options.{{{vendorExtensions.x-param-to-string}}} ?? client.AccountSid;
-            path = path.Replace("{"+"{{#lambda.titlecase}}{{baseName}}{{/lambda.titlecase}}"+"}", {{paramName}});
+            path = path.Replace("{"+"{{baseName}}"+"}", {{paramName}});
         {{/vendorExtensions.x-is-account-sid}}
         {{^vendorExtensions.x-is-account-sid}}
             string {{paramName}} = options.{{{vendorExtensions.x-param-to-string}}};
-            path = path.Replace("{"+"{{#lambda.titlecase}}{{baseName}}{{/lambda.titlecase}}"+"}", {{paramName}});
+            path = path.Replace("{"+"{{baseName}}"+"}", {{paramName}});
         {{/vendorExtensions.x-is-account-sid}}
     {{/pathParams}}
