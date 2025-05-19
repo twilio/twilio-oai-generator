@@ -240,7 +240,7 @@ namespace Twilio.Rest.PreviewIam.Organizations
             string path = "/Organizations/{organizationSid}/scim/Users";
 
             string PathOrganizationSid = options.PathOrganizationSid.ToString();
-            path = path.Replace("{"+"OrganizationSid"+"}", PathOrganizationSid);
+            path = path.Replace("{"+"organizationSid"+"}", PathOrganizationSid);
 
             return new Request(
                 HttpMethod.Post,
@@ -317,9 +317,9 @@ namespace Twilio.Rest.PreviewIam.Organizations
             string path = "/Organizations/{organizationSid}/scim/Users/{userSid}";
 
             string PathOrganizationSid = options.PathOrganizationSid.ToString();
-            path = path.Replace("{"+"OrganizationSid"+"}", PathOrganizationSid);
+            path = path.Replace("{"+"organizationSid"+"}", PathOrganizationSid);
             string PathUserSid = options.PathUserSid.ToString();
-            path = path.Replace("{"+"UserSid"+"}", PathUserSid);
+            path = path.Replace("{"+"userSid"+"}", PathUserSid);
 
             return new Request(
                 HttpMethod.Delete,
@@ -385,9 +385,9 @@ namespace Twilio.Rest.PreviewIam.Organizations
             string path = "/Organizations/{organizationSid}/scim/Users/{userSid}";
 
             string PathOrganizationSid = options.PathOrganizationSid.ToString();
-            path = path.Replace("{"+"OrganizationSid"+"}", PathOrganizationSid);
+            path = path.Replace("{"+"organizationSid"+"}", PathOrganizationSid);
             string PathUserSid = options.PathUserSid.ToString();
-            path = path.Replace("{"+"UserSid"+"}", PathUserSid);
+            path = path.Replace("{"+"userSid"+"}", PathUserSid);
 
             return new Request(
                 HttpMethod.Get,
@@ -454,7 +454,7 @@ namespace Twilio.Rest.PreviewIam.Organizations
             string path = "/Organizations/{organizationSid}/scim/Users";
 
             string PathOrganizationSid = options.PathOrganizationSid.ToString();
-            path = path.Replace("{"+"OrganizationSid"+"}", PathOrganizationSid);
+            path = path.Replace("{"+"organizationSid"+"}", PathOrganizationSid);
 
             return new Request(
                 HttpMethod.Get,
@@ -579,9 +579,9 @@ namespace Twilio.Rest.PreviewIam.Organizations
             string path = "/Organizations/{organizationSid}/scim/Users/{userSid}";
 
             string PathOrganizationSid = options.PathOrganizationSid.ToString();
-            path = path.Replace("{"+"OrganizationSid"+"}", PathOrganizationSid);
+            path = path.Replace("{"+"organizationSid"+"}", PathOrganizationSid);
             string PathUserSid = options.PathUserSid.ToString();
-            path = path.Replace("{"+"UserSid"+"}", PathUserSid);
+            path = path.Replace("{"+"userSid"+"}", PathUserSid);
 
             return new Request(
                 HttpMethod.Put,
