@@ -3,6 +3,7 @@ package {{packageName}}
 
 {{#operations}}
 import (
+  "context"
 	"encoding/json"
 	"fmt"
 	"net/url"
@@ -81,6 +82,11 @@ func (c *ApiService) {{{nickname}}}({{#allParams}}{{#required}}{{paramName}} {{{
 {{#vendorExtensions.x-is-read-operation}}
 // Retrieve a single page of {{{vendorExtensions.x-domain-name}}} records from the API. Request is executed immediately.
 func (c *ApiService) Page{{{vendorExtensions.x-domain-name}}}({{#allParams}}{{#required}}{{paramName}} {{{dataType}}}{{^last}}, {{/last}}{{/required}}{{/allParams}}params *{{{nickname}}}Params, pageToken, pageNumber string) (*{{{returnContainer}}}, error) {
+    return c.Page{{{vendorExtensions.x-domain-name}}}WithCtx(context.TODO(), {{#allParams}}{{#required}}{{paramName}} {{{dataType}}}{{^last}}, {{/last}}{{/required}}{{/allParams}}params *{{{nickname}}}Params, pageToken, pageNumber)
+}
+
+// Retrieve a single page of {{{vendorExtensions.x-domain-name}}} records from the API. Request is executed immediately.
+func (c *ApiService) Page{{{vendorExtensions.x-domain-name}}}WithCtx(ctx context.Context, {{#allParams}}{{#required}}{{paramName}} {{{dataType}}}{{^last}}, {{/last}}{{/required}}{{/allParams}}params *{{{nickname}}}Params, pageToken, pageNumber string) (*{{{returnContainer}}}, error) {
     path := "{{{path}}}"
 
     {{>partial_serialization}}
@@ -108,7 +114,12 @@ func (c *ApiService) Page{{{vendorExtensions.x-domain-name}}}({{#allParams}}{{#r
 
 // Lists {{{vendorExtensions.x-domain-name}}} records from the API as a list. Unlike stream, this operation is eager and loads 'limit' records into memory before returning.
 func (c *ApiService) List{{{vendorExtensions.x-domain-name}}}({{#allParams}}{{#required}}{{paramName}} {{{dataType}}}{{^last}}, {{/last}}{{/required}}{{/allParams}}params *{{{nickname}}}Params) ({{{returnType}}}, error) {
-	response, errors := c.Stream{{{vendorExtensions.x-domain-name}}}({{#allParams}}{{#required}}{{paramName}}{{^last}}, {{/last}}{{/required}}{{/allParams}}params)
+  return c.List{{{vendorExtensions.x-domain-name}}}WithCtx(context.TODO(), {{#allParams}}{{#required}}{{paramName}} {{{dataType}}}{{^last}}, {{/last}}{{/required}}{{/allParams}}params *{{{nickname}}}Params)
+}
+
+// Lists {{{vendorExtensions.x-domain-name}}} records from the API as a list. Unlike stream, this operation is eager and loads 'limit' records into memory before returning.
+func (c *ApiService) List{{{vendorExtensions.x-domain-name}}}WithCtx(ctx context.Context, {{#allParams}}{{#required}}{{paramName}} {{{dataType}}}{{^last}}, {{/last}}{{/required}}{{/allParams}}params *{{{nickname}}}Params) ({{{returnType}}}, error) {
+	response, errors := c.Stream{{{vendorExtensions.x-domain-name}}}WithCtx(ctx, {{#allParams}}{{#required}}{{paramName}}{{^last}}, {{/last}}{{/required}}{{/allParams}}params)
 
 	records := make({{{returnType}}}, 0)
 	for record := range response {
@@ -124,6 +135,11 @@ func (c *ApiService) List{{{vendorExtensions.x-domain-name}}}({{#allParams}}{{#r
 
 // Streams {{{vendorExtensions.x-domain-name}}} records from the API as a channel stream. This operation lazily loads records as efficiently as possible until the limit is reached.
 func (c *ApiService) Stream{{{vendorExtensions.x-domain-name}}}({{#allParams}}{{#required}}{{paramName}} {{{dataType}}}{{^last}}, {{/last}}{{/required}}{{/allParams}}params *{{{nickname}}}Params) (chan {{{returnBaseType}}}, chan error) {
+  return c.Stream{{{vendorExtensions.x-domain-name}}}WithCtx(context.TODO(), {{#allParams}}{{#required}}{{paramName}} {{{dataType}}}{{^last}}, {{/last}}{{/required}}{{/allParams}}params *{{{nickname}}}Params)
+}
+
+// Streams {{{vendorExtensions.x-domain-name}}} records from the API as a channel stream. This operation lazily loads records as efficiently as possible until the limit is reached.
+func (c *ApiService) Stream{{{vendorExtensions.x-domain-name}}}WithCtx(ctx context.Context, {{#allParams}}{{#required}}{{paramName}} {{{dataType}}}{{^last}}, {{/last}}{{/required}}{{/allParams}}params *{{{nickname}}}Params) (chan {{{returnBaseType}}}, chan error) {
 	if params == nil {
 		params = &{{{nickname}}}Params{}
 	}
@@ -132,7 +148,7 @@ func (c *ApiService) Stream{{{vendorExtensions.x-domain-name}}}({{#allParams}}{{
 	recordChannel := make(chan {{{returnBaseType}}}, 1)
 	errorChannel := make(chan error, 1)
 
-	response, err := c.Page{{{vendorExtensions.x-domain-name}}}({{#allParams}}{{#required}}{{paramName}}{{^last}}, {{/last}}{{/required}}{{/allParams}}params, "", "")
+	response, err := c.Page{{{vendorExtensions.x-domain-name}}}WithCtx(ctx, {{#allParams}}{{#required}}{{paramName}}{{^last}}, {{/last}}{{/required}}{{/allParams}}params, "", "")
 	if err != nil {
 		errorChannel <- err
 		close(recordChannel)
