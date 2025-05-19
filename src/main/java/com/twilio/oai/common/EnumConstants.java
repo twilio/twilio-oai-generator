@@ -114,6 +114,7 @@ public class EnumConstants {
         GET("HttpMethod.GET"),
         POST("HttpMethod.POST"),
         PUT("HttpMethod.PUT"),
+        PATCH("HttpMethod.PATCH"),
         DELETE("HttpMethod.DELETE"),
         HEAD("HttpMethod.HEAD"),
         OPTIONS("HttpMethod.OPTIONS");
