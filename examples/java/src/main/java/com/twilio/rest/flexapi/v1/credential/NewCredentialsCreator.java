@@ -62,13 +62,13 @@ public class NewCredentialsCreator extends Creator<NewCredentials>{
     private Double testNumberDouble;
     private BigDecimal testNumberInt32;
     private Long testNumberInt64;
-    private Map<String, Object> testObject;
+    private Object testObject;
     private ZonedDateTime testDateTime;
     private LocalDate testDate;
     private NewCredentials.Status testEnum;
-    private List<Map<String, Object>> testObjectArray;
-    private Map<String, Object> testAnyType;
-    private List<Map<String, Object>> testAnyArray;
+    private List<Object> testObjectArray;
+    private Object testAnyType;
+    private List<Object> testAnyArray;
     private List<NewCredentials.Permissions> permissions;
     private String someA2PThing;
 
@@ -77,7 +77,7 @@ public class NewCredentialsCreator extends Creator<NewCredentials>{
         this.testInteger = testInteger;
         this.testNumberFloat = testNumberFloat;
     }
-    public NewCredentialsCreator(final String testString, final Integer testInteger, final Map<String, Object> testObject) {
+    public NewCredentialsCreator(final String testString, final Integer testInteger, final Object testObject) {
         this.testString = testString;
         this.testInteger = testInteger;
         this.testObject = testObject;
@@ -87,7 +87,7 @@ public class NewCredentialsCreator extends Creator<NewCredentials>{
         this.testDate = testDate;
         this.testNumberFloat = testNumberFloat;
     }
-    public NewCredentialsCreator(final String testString, final LocalDate testDate, final Map<String, Object> testObject) {
+    public NewCredentialsCreator(final String testString, final LocalDate testDate, final Object testObject) {
         this.testString = testString;
         this.testDate = testDate;
         this.testObject = testObject;
@@ -125,7 +125,7 @@ public class NewCredentialsCreator extends Creator<NewCredentials>{
         this.testNumberInt64 = testNumberInt64;
         return this;
     }
-    public NewCredentialsCreator setTestObject(final Map<String, Object> testObject){
+    public NewCredentialsCreator setTestObject(final Object testObject){
         this.testObject = testObject;
         return this;
     }
@@ -141,22 +141,22 @@ public class NewCredentialsCreator extends Creator<NewCredentials>{
         this.testEnum = testEnum;
         return this;
     }
-    public NewCredentialsCreator setTestObjectArray(final List<Map<String, Object>> testObjectArray){
+    public NewCredentialsCreator setTestObjectArray(final List<Object> testObjectArray){
         this.testObjectArray = testObjectArray;
         return this;
     }
-    public NewCredentialsCreator setTestObjectArray(final Map<String, Object> testObjectArray){
+    public NewCredentialsCreator setTestObjectArray(final Object testObjectArray){
         return setTestObjectArray(Promoter.listOfOne(testObjectArray));
     }
-    public NewCredentialsCreator setTestAnyType(final Map<String, Object> testAnyType){
+    public NewCredentialsCreator setTestAnyType(final Object testAnyType){
         this.testAnyType = testAnyType;
         return this;
     }
-    public NewCredentialsCreator setTestAnyArray(final List<Map<String, Object>> testAnyArray){
+    public NewCredentialsCreator setTestAnyArray(final List<Object> testAnyArray){
         this.testAnyArray = testAnyArray;
         return this;
     }
-    public NewCredentialsCreator setTestAnyArray(final Map<String, Object> testAnyArray){
+    public NewCredentialsCreator setTestAnyArray(final Object testAnyArray){
         return setTestAnyArray(Promoter.listOfOne(testAnyArray));
     }
     public NewCredentialsCreator setPermissions(final List<NewCredentials.Permissions> permissions){

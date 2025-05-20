@@ -47,7 +47,7 @@ export interface NewCredentialsListInstanceCreateOptions {
   /**  */
   testNumberInt64?: number;
   /**  */
-  testObject?: Record<string, object>;
+  testObject?: Record<string, any>;
   /**  */
   testDateTime?: Date;
   /**  */
