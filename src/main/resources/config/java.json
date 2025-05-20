@@ -60,7 +60,7 @@
     "inbound_sms_price": "InboundSmsPrice",
     "integer": "Integer",
     "long": "Long",
-    "object": "Map<String, Object>",
+    "object": "Object",
     "outbound_call_price": "OutboundCallPrice",
     "outbound_call_price_with_origin": "OutboundCallPriceWithOrigin",
     "outbound_prefix_price": "OutboundPrefixPrice",

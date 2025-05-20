@@ -19,7 +19,7 @@
         "boolean": "boolean",
         "integer": "number",
         "long": "number",
-        "object": "Record<string, object>",
+        "object": "Record<string, any>",
         "phone_number_capabilities": "PhoneNumberCapabilities",
         "prefixed_collapsible_map": "Record<string, object>",
         "string_map": "Record<string, string>",
