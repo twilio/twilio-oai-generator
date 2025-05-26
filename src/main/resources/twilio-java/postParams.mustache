@@ -3,7 +3,7 @@
         if ({{paramName}} != null) {
     {{#isFreeFormObject}}
         {{#isArray}}
-            for (Map<String, Object> prop : {{paramName}}) {
+            for (Object prop : {{paramName}}) {
                 request.addPostParam("{{baseName}}", Converter.mapToJson(prop));
             }
         {{/isArray}}
