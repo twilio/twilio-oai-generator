@@ -5,7 +5,8 @@ public enum Domains {
     FLEXAPI("flex-api"),
     VERSIONLESS("versionless"),
     MESSAGING("messaging"),
-    PREVIEWIAM("preview-iam");
+    PREVIEWIAM("preview-iam"),
+    IAM("iam");
 
     private final String value;
 
