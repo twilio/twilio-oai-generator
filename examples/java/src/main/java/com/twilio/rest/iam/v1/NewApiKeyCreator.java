@@ -57,7 +57,7 @@ public class NewApiKeyCreator extends Creator<NewApiKey>{
     private String accountSid;
     private String friendlyName;
     private NewApiKey.Keytype keyType;
-    private Map<String, Object> policy;
+    private Object policy;
 
     public NewApiKeyCreator(final String accountSid) {
         this.accountSid = accountSid;
@@ -75,7 +75,7 @@ public class NewApiKeyCreator extends Creator<NewApiKey>{
         this.keyType = keyType;
         return this;
     }
-    public NewApiKeyCreator setPolicy(final Map<String, Object> policy){
+    public NewApiKeyCreator setPolicy(final Object policy){
         this.policy = policy;
         return this;
     }
@@ -124,4 +124,5 @@ public class NewApiKeyCreator extends Creator<NewApiKey>{
     
         }
     }
+
 }

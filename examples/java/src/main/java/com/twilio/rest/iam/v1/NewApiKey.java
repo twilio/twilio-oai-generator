@@ -77,7 +77,7 @@ import com.twilio.type.SubscribeRule;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @ToString
 public class NewApiKey extends Resource {
-    private static final long serialVersionUID = 217181042856619L;
+    private static final long serialVersionUID = 58775637028152L;
 
     
 
@@ -127,7 +127,7 @@ public class NewApiKey extends Resource {
     private final ZonedDateTime dateCreated;
     private final ZonedDateTime dateUpdated;
     private final String secret;
-    private final Map<String, Object> policy;
+    private final Object policy;
 
     @JsonCreator
     private NewApiKey(
@@ -147,7 +147,7 @@ public class NewApiKey extends Resource {
         final String secret,
 
         @JsonProperty("policy")
-        final Map<String, Object> policy
+        final Object policy
     ) {
         this.sid = sid;
         this.friendlyName = friendlyName;
@@ -172,7 +172,7 @@ public class NewApiKey extends Resource {
         public final String getSecret() {
             return this.secret;
         }
-        public final Map<String, Object> getPolicy() {
+        public final Object getPolicy() {
             return this.policy;
         }
 

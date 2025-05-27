@@ -247,7 +247,7 @@ public class NewCredentialsCreator extends Creator<NewCredentials>{
     
         }
         if (testObjectArray != null) {
-            for (Map<String, Object> prop : testObjectArray) {
+            for (Object prop : testObjectArray) {
                 request.addPostParam("TestObjectArray", Converter.mapToJson(prop));
             }
     
@@ -257,7 +257,7 @@ public class NewCredentialsCreator extends Creator<NewCredentials>{
     
         }
         if (testAnyArray != null) {
-            for (Map<String, Object> prop : testAnyArray) {
+            for (Object prop : testAnyArray) {
                 request.addPostParam("TestAnyArray", Converter.mapToJson(prop));
             }
     
@@ -273,4 +273,5 @@ public class NewCredentialsCreator extends Creator<NewCredentials>{
     
         }
     }
+
 }
