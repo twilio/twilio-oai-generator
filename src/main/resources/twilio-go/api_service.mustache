@@ -7,14 +7,14 @@ import (
 
 type ApiService struct {
 	baseURL        string
-	requestHandler *twilio.RequestHandlerWithCtx
+	requestHandler *twilio.RequestHandler
 }
 
-func (c *ApiService) RequestHandler() *twilio.RequestHandlerWithCtx {
+func (c *ApiService) RequestHandler() *twilio.RequestHandler {
   return c.requestHandler
 }
 
-func NewApiService(requestHandler *twilio.RequestHandlerWithCtx) *ApiService {
+func NewApiService(requestHandler *twilio.RequestHandler) *ApiService {
 	return &ApiService {
 		requestHandler: requestHandler,
 		baseURL:        "{{#hasServers}}{{#servers}}{{url}}{{/servers}}{{/hasServers}}",
@@ -22,15 +22,12 @@ func NewApiService(requestHandler *twilio.RequestHandlerWithCtx) *ApiService {
 }
 
 func NewApiServiceWithClient(client twilio.BaseClient) *ApiService {
-    return NewApiService(twilio.NewRequestHandlerWithCtx(client))
+    return NewApiService(twilio.NewRequestHandler(client))
 }
 
-func NewApiServiceWithCtx(requestHandler *twilio.RequestHandlerWithCtx) *ApiService {
+func NewApiServiceWithCtx(requestHandler *twilio.RequestHandler) *ApiService {
   return &ApiService {
     requestHandler: requestHandler,
     baseURL:        "{{#hasServers}}{{#servers}}{{url}}{{/servers}}{{/hasServers}}",
   }
-}
-func NewApiServiceWithClientWithCtx(client twilio.BaseClient) *ApiService {
-  return NewApiServiceWithCtx(twilio.NewRequestHandlerWithCtx(client))
 }
