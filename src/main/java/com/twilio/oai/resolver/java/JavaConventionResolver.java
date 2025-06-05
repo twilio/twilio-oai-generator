@@ -106,7 +106,7 @@ public class JavaConventionResolver {
                 property.allowableValues = property.items.allowableValues;
                 property._enum = (List<String>) property.items.allowableValues.get(VALUES);
             } else {
-                if (property.complexType.contains(ApplicationConstants.ENUM)) {
+                if (property.complexType != null && property.complexType.contains(ApplicationConstants.ENUM)) {
                     property.complexType = Utility.removeEnumName(property.complexType);
                     property.dataType = Utility.removeEnumName(property.dataType);
                 }
