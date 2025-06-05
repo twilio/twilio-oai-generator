@@ -134,7 +134,7 @@ interface NewApiKeyResource {
   date_created: Date;
   date_updated: Date;
   secret: string;
-  policy: Record<string, any>;
+  policy: Record<string, object>;
 }
 
 export class NewApiKeyInstance {
@@ -173,7 +173,7 @@ export class NewApiKeyInstance {
   /**
    * Collection of allow assertions.
    */
-  policy: Record<string, any>;
+  policy: Record<string, object>;
 
   /**
    * Provide a user-friendly representation
