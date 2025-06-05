@@ -17,6 +17,7 @@ import static com.twilio.oai.TwilioJavaGenerator.JSON_INGRESS;
 
 public class JavaParameterResolver extends LanguageParamResolver {
     public static final String OBJECT = "object";
+    public static final String ANY_TYPE = "any-type";
     private static final String LIST_OBJECT = "List<Object>";
     public static final String X_IS_PHONE_NUMBER_FORMAT = "x-is-phone-number-format";
     public static final String PHONE_NUMBER_FORMAT = "phone-number";
@@ -30,16 +31,20 @@ public class JavaParameterResolver extends LanguageParamResolver {
     @Override
     public void resolveProperties(CodegenParameter parameter, ApiResourceBuilder apiResourceBuilder) {
         if(parameter.dataType.equalsIgnoreCase(OBJECT) || parameter.dataType.equals(LIST_OBJECT)) {
-            final String objectType = mapper.properties().getString(OBJECT).orElseThrow();
+           String objectType = mapper.properties().getString(OBJECT).orElseThrow();
+
+            if (parameter.isAnyType || (parameter.isArray && parameter.items.isAnyType))
+                objectType = ANY_TYPE;
+
+            else
+                parameter.isFreeFormObject = true;
 
             if (parameter.dataType.equals(LIST_OBJECT)) {
                 parameter.dataType = ApplicationConstants.LIST_START + objectType + ApplicationConstants.LIST_END;
-                parameter.baseType = objectType;
+                parameter.baseType = (!objectType.equals(ANY_TYPE) ? objectType : "Object");
             } else {
                 parameter.dataType = objectType;
             }
-
-            parameter.isFreeFormObject = true;
         }
 
         mapper.promotions().getMap(parameter.dataFormat).ifPresent(promotions -> {

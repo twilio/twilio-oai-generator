@@ -84,13 +84,13 @@ public class NewCredentials extends Resource {
     public static NewCredentialsCreator creator(final String testString, final Integer testInteger, final Float testNumberFloat){
         return new NewCredentialsCreator(testString, testInteger, testNumberFloat);
     }
-    public static NewCredentialsCreator creator(final String testString, final Integer testInteger, final Object testObject){
+    public static NewCredentialsCreator creator(final String testString, final Integer testInteger, final Map<String, Object> testObject){
         return new NewCredentialsCreator(testString, testInteger, testObject);
     }
     public static NewCredentialsCreator creator(final String testString, final LocalDate testDate, final Float testNumberFloat){
         return new NewCredentialsCreator(testString, testDate, testNumberFloat);
     }
-    public static NewCredentialsCreator creator(final String testString, final LocalDate testDate, final Object testObject){
+    public static NewCredentialsCreator creator(final String testString, final LocalDate testDate, final Map<String, Object> testObject){
         return new NewCredentialsCreator(testString, testDate, testObject);
     }
 

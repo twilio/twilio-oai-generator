@@ -3,7 +3,7 @@
         if ({{paramName}} != null) {
     {{#isFreeFormObject}}
         {{#isArray}}
-            for (Object prop : {{paramName}}) {
+            for (Map<String, Object> prop : {{paramName}}) {
                 request.addPostParam("{{baseName}}", Converter.mapToJson(prop));
             }
         {{/isArray}}
@@ -12,6 +12,10 @@
         {{/isArray}}
     {{/isFreeFormObject}}
     {{^isFreeFormObject}}
+    {{#isAnyType}}
+        request.addPostParam("{{baseName}}",  Converter.mapToJson({{paramName}}));
+    {{/isAnyType}}
+    {{^isAnyType}}
     {{#isArray}}
         {{#isEnum}}
             for ({{baseType}} prop : {{paramName}}) {
@@ -41,6 +45,7 @@
     {{/isString}}
     {{/vendorExtensions.x-is-other-data-type}}
     {{/isArray}}
+    {{/isAnyType}}
     {{/isFreeFormObject}}
     {{>dateParams}}
         }

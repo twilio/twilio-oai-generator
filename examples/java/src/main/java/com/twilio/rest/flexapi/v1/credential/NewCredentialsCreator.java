@@ -62,11 +62,11 @@ public class NewCredentialsCreator extends Creator<NewCredentials>{
     private Double testNumberDouble;
     private BigDecimal testNumberInt32;
     private Long testNumberInt64;
-    private Object testObject;
+    private Map<String, Object> testObject;
     private ZonedDateTime testDateTime;
     private LocalDate testDate;
     private NewCredentials.Status testEnum;
-    private List<Object> testObjectArray;
+    private List<Map<String, Object>> testObjectArray;
     private Object testAnyType;
     private List<Object> testAnyArray;
     private List<NewCredentials.Permissions> permissions;
@@ -77,7 +77,7 @@ public class NewCredentialsCreator extends Creator<NewCredentials>{
         this.testInteger = testInteger;
         this.testNumberFloat = testNumberFloat;
     }
-    public NewCredentialsCreator(final String testString, final Integer testInteger, final Object testObject) {
+    public NewCredentialsCreator(final String testString, final Integer testInteger, final Map<String, Object> testObject) {
         this.testString = testString;
         this.testInteger = testInteger;
         this.testObject = testObject;
@@ -87,7 +87,7 @@ public class NewCredentialsCreator extends Creator<NewCredentials>{
         this.testDate = testDate;
         this.testNumberFloat = testNumberFloat;
     }
-    public NewCredentialsCreator(final String testString, final LocalDate testDate, final Object testObject) {
+    public NewCredentialsCreator(final String testString, final LocalDate testDate, final Map<String, Object> testObject) {
         this.testString = testString;
         this.testDate = testDate;
         this.testObject = testObject;
@@ -125,7 +125,7 @@ public class NewCredentialsCreator extends Creator<NewCredentials>{
         this.testNumberInt64 = testNumberInt64;
         return this;
     }
-    public NewCredentialsCreator setTestObject(final Object testObject){
+    public NewCredentialsCreator setTestObject(final Map<String, Object> testObject){
         this.testObject = testObject;
         return this;
     }
@@ -141,11 +141,11 @@ public class NewCredentialsCreator extends Creator<NewCredentials>{
         this.testEnum = testEnum;
         return this;
     }
-    public NewCredentialsCreator setTestObjectArray(final List<Object> testObjectArray){
+    public NewCredentialsCreator setTestObjectArray(final List<Map<String, Object>> testObjectArray){
         this.testObjectArray = testObjectArray;
         return this;
     }
-    public NewCredentialsCreator setTestObjectArray(final Object testObjectArray){
+    public NewCredentialsCreator setTestObjectArray(final Map<String, Object> testObjectArray){
         return setTestObjectArray(Promoter.listOfOne(testObjectArray));
     }
     public NewCredentialsCreator setTestAnyType(final Object testAnyType){
@@ -247,18 +247,18 @@ public class NewCredentialsCreator extends Creator<NewCredentials>{
     
         }
         if (testObjectArray != null) {
-            for (Object prop : testObjectArray) {
+            for (Map<String, Object> prop : testObjectArray) {
                 request.addPostParam("TestObjectArray", Converter.mapToJson(prop));
             }
     
         }
         if (testAnyType != null) {
-            request.addPostParam("TestAnyType",  Converter.mapToJson(testAnyType));
+        request.addPostParam("TestAnyType",  Converter.mapToJson(testAnyType));
     
         }
         if (testAnyArray != null) {
             for (Object prop : testAnyArray) {
-                request.addPostParam("TestAnyArray", Converter.mapToJson(prop));
+                request.addPostParam("TestAnyArray", prop.toString());
             }
     
         }
