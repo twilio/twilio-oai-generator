@@ -30,18 +30,20 @@ public class JavaParameterResolver extends LanguageParamResolver {
 
     @Override
     public void resolveProperties(CodegenParameter parameter, ApiResourceBuilder apiResourceBuilder) {
-        if(parameter.dataType.equalsIgnoreCase(OBJECT) || parameter.dataType.equals(LIST_OBJECT)) {
+        if((parameter.dataType.equalsIgnoreCase(OBJECT) || parameter.dataType.equals(LIST_OBJECT)) && parameter.vendorExtensions.get("x-is-anytype") == null) {
            String objectType = mapper.properties().getString(OBJECT).orElseThrow();
 
-            if (parameter.isAnyType || (parameter.isArray && parameter.items.isAnyType))
-                objectType = ANY_TYPE;
+            if (parameter.isAnyType || (parameter.isArray && parameter.items.isAnyType)) {
+                objectType = "Object";
+                parameter.vendorExtensions.put("x-is-anytype", true);
+            }
 
             else
                 parameter.isFreeFormObject = true;
 
             if (parameter.dataType.equals(LIST_OBJECT)) {
                 parameter.dataType = ApplicationConstants.LIST_START + objectType + ApplicationConstants.LIST_END;
-                parameter.baseType = (!objectType.equals(ANY_TYPE) ? objectType : "Object");
+                parameter.baseType = objectType;
             } else {
                 parameter.dataType = objectType;
             }
