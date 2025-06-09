@@ -81,7 +81,7 @@ module Twilio
           )
             data = Twilio::Values.of({
                                        'FriendlyName' => friendly_name,
-                                       'Policy' => Twilio.serialize_object(policy),
+                                       'Policy' => policy,
                                      })
 
             headers = Twilio::Values.of({ 'Content-Type' => 'application/x-www-form-urlencoded', })

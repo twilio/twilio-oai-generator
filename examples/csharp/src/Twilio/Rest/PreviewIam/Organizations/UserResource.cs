@@ -36,6 +36,8 @@ namespace Twilio.Rest.PreviewIam.Organizations
             private string GivenName {get; set;}
             [JsonProperty("familyName")]
             private string FamilyName {get; set;}
+            [JsonProperty("TestAnyType")]
+            private object TestAnyType {get; set;}
             public ScimName() { }
             public class Builder
             {
@@ -51,6 +53,11 @@ namespace Twilio.Rest.PreviewIam.Organizations
                 public Builder WithFamilyName(string familyName)
                 {
                     _scimName.FamilyName= familyName;
+                    return this;
+                }
+                public Builder WithTestAnyType(object testAnyType)
+                {
+                    _scimName.TestAnyType= testAnyType;
                     return this;
                 }
                 public ScimName Build()

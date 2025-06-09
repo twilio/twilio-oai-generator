@@ -45,7 +45,7 @@ module Twilio
                                        'AccountSid' => account_sid,
                                        'FriendlyName' => friendly_name,
                                        'KeyType' => key_type,
-                                       'Policy' => Twilio.serialize_object(policy),
+                                       'Policy' => policy,
                                      })
 
             headers = Twilio::Values.of({ 'Content-Type' => 'application/x-www-form-urlencoded', })

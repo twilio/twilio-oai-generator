@@ -86,8 +86,7 @@ export function NewApiKeyListInstance(version: V1): NewApiKeyListInstance {
     if (params["friendlyName"] !== undefined)
       data["FriendlyName"] = params["friendlyName"];
     if (params["keyType"] !== undefined) data["KeyType"] = params["keyType"];
-    if (params["policy"] !== undefined)
-      data["Policy"] = serialize.object(params["policy"]);
+    if (params["policy"] !== undefined) data["Policy"] = params["policy"];
 
     const headers: any = {};
     headers["Content-Type"] = "application/x-www-form-urlencoded";
