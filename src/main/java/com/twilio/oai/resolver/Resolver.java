@@ -20,8 +20,12 @@ public abstract class Resolver<T extends IJsonSchemaValidationProperties> {
             return codegenParameter.dataFormat;
         }
 
-        if (codegenParameter.isAnyType || codegenParameter.isFreeFormObject) {
+        if (codegenParameter.isFreeFormObject) {
             return OBJECT;
+        }
+
+        if(codegenParameter.isAnyType) {
+            return "any-type";
         }
 
         return codegenParameter.dataType;
@@ -36,8 +40,12 @@ public abstract class Resolver<T extends IJsonSchemaValidationProperties> {
             return codegenProperty.dataFormat;
         }
 
-        if (codegenProperty.isAnyType || codegenProperty.isFreeFormObject) {
+        if (codegenProperty.isFreeFormObject) {
             return OBJECT;
+        }
+
+        if(codegenProperty.isAnyType) {
+            return "any-type";
         }
 
         return codegenProperty.openApiType;

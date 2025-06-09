@@ -13,7 +13,7 @@
     {{/isFreeFormObject}}
     {{^isFreeFormObject}}
     {{#isAnyType}}
-        request.addPostParam("{{baseName}}",  Converter.mapToJson({{paramName}}));
+        request.addPostParam("{{baseName}}",  Converter.objectToJson({{paramName}}));
     {{/isAnyType}}
     {{^isAnyType}}
     {{#isArray}}

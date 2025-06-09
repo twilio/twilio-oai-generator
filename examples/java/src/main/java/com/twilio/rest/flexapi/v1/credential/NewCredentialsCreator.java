@@ -253,7 +253,7 @@ public class NewCredentialsCreator extends Creator<NewCredentials>{
     
         }
         if (testAnyType != null) {
-        request.addPostParam("TestAnyType",  Converter.mapToJson(testAnyType));
+        request.addPostParam("TestAnyType",  Converter.objectToJson(testAnyType));
     
         }
         if (testAnyArray != null) {
