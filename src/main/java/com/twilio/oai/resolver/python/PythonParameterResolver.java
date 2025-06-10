@@ -30,7 +30,7 @@ public class PythonParameterResolver extends LanguageParamResolver {
   }
 
   @Override
-  protected void resolveProperties(CodegenParameter codegenParameter, ApiResourceBuilder apiResourceBuilder) {
+  protected void handleAnyType(CodegenParameter codegenParameter, ApiResourceBuilder apiResourceBuilder) {
     if((codegenParameter.dataType.equalsIgnoreCase(OBJECT) || codegenParameter.dataType.equals(LIST_OBJECT)) && codegenParameter.vendorExtensions.get("x-is-anytype") == null) {
       String objectType = mapper.properties().getString(OBJECT).orElseThrow();
 
@@ -48,13 +48,6 @@ public class PythonParameterResolver extends LanguageParamResolver {
       } else {
         codegenParameter.dataType = objectType;
       }
-    }
-
-    if(codegenParameter.vendorExtensions.get("x-is-anytype") == null) {
-        mapper
-              .properties()
-              .getString(codegenParameter.dataFormat)
-              .ifPresent(dataType -> codegenParameter.dataType = dataType);
     }
   }
 }

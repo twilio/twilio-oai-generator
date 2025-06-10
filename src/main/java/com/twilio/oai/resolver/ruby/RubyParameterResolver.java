@@ -47,4 +47,9 @@ public class RubyParameterResolver extends LanguageParamResolver {
         }
         return codegenParameter;
     }
+
+    @Override
+    protected void handleAnyType(CodegenParameter codegenParameter, ApiResourceBuilder apiResourceBuilder) {
+        return;
+    }
 }

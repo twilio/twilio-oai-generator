@@ -48,7 +48,7 @@ public class LanguageParamResolver extends Resolver<CodegenParameter> {
         return codegenParameter;
     }
 
-    protected void resolveProperties(CodegenParameter codegenParameter, ApiResourceBuilder apiResourceBuilder) {
+    protected void handleAnyType(CodegenParameter codegenParameter, ApiResourceBuilder apiResourceBuilder) {
         if((codegenParameter.dataType.equalsIgnoreCase(OBJECT) || codegenParameter.dataType.equals(LIST_OBJECT)) && codegenParameter.vendorExtensions.get("x-is-anytype") == null) {
             String objectType = mapper.properties().getString(OBJECT).orElseThrow();
 
@@ -67,6 +67,10 @@ public class LanguageParamResolver extends Resolver<CodegenParameter> {
                 codegenParameter.dataType = objectType;
             }
         }
+    }
+
+    protected void resolveProperties(CodegenParameter codegenParameter, ApiResourceBuilder apiResourceBuilder) {
+        handleAnyType(codegenParameter, apiResourceBuilder);
 
         if(codegenParameter.vendorExtensions.get("x-is-anytype") == null) {
             mapper
