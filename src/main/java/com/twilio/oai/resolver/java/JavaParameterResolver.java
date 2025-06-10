@@ -17,7 +17,6 @@ import static com.twilio.oai.TwilioJavaGenerator.JSON_INGRESS;
 
 public class JavaParameterResolver extends LanguageParamResolver {
     public static final String OBJECT = "object";
-    public static final String ANY_TYPE = "any-type";
     private static final String LIST_OBJECT = "List<Object>";
     public static final String X_IS_PHONE_NUMBER_FORMAT = "x-is-phone-number-format";
     public static final String PHONE_NUMBER_FORMAT = "phone-number";

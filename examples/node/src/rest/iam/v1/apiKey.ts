@@ -164,7 +164,8 @@ export class ApiKeyContextImpl implements ApiKeyContext {
 
     if (params["friendlyName"] !== undefined)
       data["FriendlyName"] = params["friendlyName"];
-    if (params["policy"] !== undefined) data["Policy"] = params["policy"];
+    if (params["policy"] !== undefined)
+      data["Policy"] = serialize.object(params["policy"]);
 
     const headers: any = {};
     headers["Content-Type"] = "application/x-www-form-urlencoded";

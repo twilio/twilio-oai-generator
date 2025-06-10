@@ -26,6 +26,7 @@
     "date_or_time": "Time",
     "date_time_inequality": "Time",
     "object": "Hash",
+    "any_type": "Object",
     "prefixed_collapsible_map": "Hash",
     "string_map": "Hash",
     "integer": "String"
@@ -34,6 +35,7 @@
   "serialize": {
     "_": "{value}",
     "object": "Twilio.serialize_object({value})",
+    "any_type": "Twilio.serialize_object({value})",
     "date": "Twilio.serialize_iso8601_date({value})",
     "date_inequality": "Twilio.serialize_iso8601_date({value})",
     "date_time": "Twilio.serialize_iso8601_datetime({value})",

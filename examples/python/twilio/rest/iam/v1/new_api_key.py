@@ -15,7 +15,7 @@ r"""
 
 from datetime import datetime
 from typing import Any, Dict, Optional, Union
-from twilio.base import deserialize, values
+from twilio.base import deserialize, serialize, values
 
 from twilio.base.instance_resource import InstanceResource
 from twilio.base.list_resource import ListResource
@@ -94,7 +94,7 @@ class NewApiKeyList(ListResource):
                 "AccountSid": account_sid,
                 "FriendlyName": friendly_name,
                 "KeyType": key_type,
-                "Policy": policy,
+                "Policy": serialize.object(policy),
             }
         )
         headers = values.of({"Content-Type": "application/x-www-form-urlencoded"})
@@ -132,7 +132,7 @@ class NewApiKeyList(ListResource):
                 "AccountSid": account_sid,
                 "FriendlyName": friendly_name,
                 "KeyType": key_type,
-                "Policy": policy,
+                "Policy": serialize.object(policy),
             }
         )
         headers = values.of({"Content-Type": "application/x-www-form-urlencoded"})

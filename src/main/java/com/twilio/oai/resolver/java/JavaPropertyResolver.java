@@ -3,7 +3,6 @@ package com.twilio.oai.resolver.java;
 import com.twilio.oai.Segments;
 import com.twilio.oai.StringHelper;
 import com.twilio.oai.api.ApiResourceBuilder;
-import com.twilio.oai.common.ApplicationConstants;
 import com.twilio.oai.common.EnumConstants;
 import com.twilio.oai.resolver.LanguagePropertyResolver;
 import com.twilio.oai.resolver.IConventionMapper;
@@ -19,35 +18,12 @@ import static com.twilio.oai.TwilioJavaGenerator.JSON_INGRESS;
 import static com.twilio.oai.common.ApplicationConstants.VENDOR_PREFIX;
 
 public class JavaPropertyResolver extends LanguagePropertyResolver {
-    public static final String OBJECT = "object";
-    public static final String ANY_TYPE = "any-type";
-    private static final String LIST_OBJECT = "List<Object>";
-
     public JavaPropertyResolver(IConventionMapper mapper) {
         super(mapper);
     }
 
     @Override
     public  void resolveProperties(CodegenProperty property, ApiResourceBuilder apiResourceBuilder) {
-        if((property.dataType.equalsIgnoreCase(OBJECT) || property.dataType.equals(LIST_OBJECT)) && property.vendorExtensions.get("x-is-anytype") == null) {
-            String objectType = mapper.properties().getString(OBJECT).orElseThrow();
-
-            if (property.isAnyType || (property.isArray && property.items.isAnyType)) {
-                objectType = "Object";
-                property.vendorExtensions.put("x-is-anytype", true);
-            }
-
-            else
-                property.isFreeFormObject = true;
-
-            if (property.dataType.equals(LIST_OBJECT)) {
-                property.dataType = ApplicationConstants.LIST_START + objectType + ApplicationConstants.LIST_END;
-                property.baseType = objectType;
-            } else {
-                property.dataType = objectType;
-            }
-        }
-
         super.resolveProperties(property, apiResourceBuilder);
         Map<String, Map<String, Object>> vendorExtensions = new HashMap<>();
 

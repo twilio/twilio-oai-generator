@@ -84,7 +84,7 @@ module Twilio
                                          'TestObjectArray' => Twilio.serialize_list(test_object_array) { |e|
                                            Twilio.serialize_object(e)
                                          },
-                                         'TestAnyType' => test_any_type,
+                                         'TestAnyType' => Twilio.serialize_object(test_any_type),
                                          'TestAnyArray' => Twilio.serialize_list(test_any_array) { |e|
                                            Twilio.serialize_object(e)
                                          },

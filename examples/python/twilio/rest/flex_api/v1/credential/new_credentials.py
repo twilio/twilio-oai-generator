@@ -131,7 +131,7 @@ class NewCredentialsList(ListResource):
                 "TestObjectArray": serialize.map(
                     test_object_array, lambda e: serialize.object(e)
                 ),
-                "TestAnyType": test_any_type,
+                "TestAnyType": serialize.object(test_any_type),
                 "TestAnyArray": serialize.map(
                     test_any_array, lambda e: serialize.object(e)
                 ),
@@ -212,7 +212,7 @@ class NewCredentialsList(ListResource):
                 "TestObjectArray": serialize.map(
                     test_object_array, lambda e: serialize.object(e)
                 ),
-                "TestAnyType": test_any_type,
+                "TestAnyType": serialize.object(test_any_type),
                 "TestAnyArray": serialize.map(
                     test_any_array, lambda e: serialize.object(e)
                 ),

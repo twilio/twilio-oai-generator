@@ -18,6 +18,8 @@ import static com.twilio.oai.common.ApplicationConstants.SERIALIZE_VEND_EXT;
 public class LanguageParamResolver extends Resolver<CodegenParameter> {
     protected IConventionMapper mapper;
     protected CodegenModelResolver codegenModelResolver;
+    public static final String OBJECT = "object";
+    private static final String LIST_OBJECT = "List<Object>";
 
     public LanguageParamResolver(IConventionMapper mapper) {
         this.mapper = mapper;
@@ -47,10 +49,31 @@ public class LanguageParamResolver extends Resolver<CodegenParameter> {
     }
 
     protected void resolveProperties(CodegenParameter codegenParameter, ApiResourceBuilder apiResourceBuilder) {
-        mapper
-            .properties()
-            .getString(codegenParameter.dataFormat)
-            .ifPresent(dataType -> codegenParameter.dataType = dataType);
+        if((codegenParameter.dataType.equalsIgnoreCase(OBJECT) || codegenParameter.dataType.equals(LIST_OBJECT)) && codegenParameter.vendorExtensions.get("x-is-anytype") == null) {
+            String objectType = mapper.properties().getString(OBJECT).orElseThrow();
+
+            if (codegenParameter.isAnyType || (codegenParameter.isArray && codegenParameter.items.isAnyType)) {
+                objectType = "Object";
+                codegenParameter.vendorExtensions.put("x-is-anytype", true);
+            }
+
+            else
+                codegenParameter.isFreeFormObject = true;
+
+            if (codegenParameter.dataType.equals(LIST_OBJECT)) {
+                codegenParameter.dataType = ApplicationConstants.LIST_START + objectType + ApplicationConstants.LIST_END;
+                codegenParameter.baseType = objectType;
+            } else {
+                codegenParameter.dataType = objectType;
+            }
+        }
+
+        if(codegenParameter.vendorExtensions.get("x-is-anytype") == null) {
+            mapper
+                    .properties()
+                    .getString(codegenParameter.dataFormat)
+                    .ifPresent(dataType -> codegenParameter.dataType = dataType);
+        }
     }
 
     protected void resolveSerialize(CodegenParameter codegenParameter) {

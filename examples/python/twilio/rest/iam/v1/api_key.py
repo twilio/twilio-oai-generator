@@ -15,7 +15,7 @@ r"""
 
 from datetime import datetime
 from typing import Any, Dict, Optional, Union
-from twilio.base import deserialize, values
+from twilio.base import deserialize, serialize, values
 from twilio.base.instance_context import InstanceContext
 from twilio.base.instance_resource import InstanceResource
 from twilio.base.list_resource import ListResource
@@ -250,7 +250,7 @@ class ApiKeyContext(InstanceContext):
         data = values.of(
             {
                 "FriendlyName": friendly_name,
-                "Policy": policy,
+                "Policy": serialize.object(policy),
             }
         )
         headers = values.of({})
@@ -282,7 +282,7 @@ class ApiKeyContext(InstanceContext):
         data = values.of(
             {
                 "FriendlyName": friendly_name,
-                "Policy": policy,
+                "Policy": serialize.object(policy),
             }
         )
         headers = values.of({})
