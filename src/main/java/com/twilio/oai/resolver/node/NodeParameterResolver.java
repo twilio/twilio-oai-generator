@@ -37,9 +37,4 @@ public class NodeParameterResolver extends LanguageParamResolver {
         mapper.libraries().getMap(codegenParameter.dataFormat).ifPresent(imports -> codegenParameter.vendorExtensions.put("x-import", imports));
         return codegenParameter;
     }
-
-    @Override
-    protected void handleAnyType(CodegenParameter codegenParameter, ApiResourceBuilder apiResourceBuilder) {
-        return;
-    }
 }

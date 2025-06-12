@@ -18,10 +18,6 @@ import static com.twilio.oai.common.ApplicationConstants.SERIALIZE_VEND_EXT;
 public class LanguagePropertyResolver extends Resolver<CodegenProperty> {
     protected IConventionMapper mapper;
     public static final String OBJECT = "object";
-    public static final String ANY_TYPE = "any-type";
-    private static final String LIST_OBJECT = "List<Object>";
-
-
 
     @Override
     public CodegenProperty resolve(CodegenProperty codegenProperty, ApiResourceBuilder apiResourceBuilder) {
@@ -36,26 +32,12 @@ public class LanguagePropertyResolver extends Resolver<CodegenProperty> {
         return codegenProperty;
     }
 
+    protected void handleAnyType(CodegenProperty codegenProperty, ApiResourceBuilder apiResourceBuilder) {
+        return;
+    }
+
     protected void resolveProperties(CodegenProperty codegenProperty, ApiResourceBuilder apiResourceBuilder) {
-        if((codegenProperty.dataType.equalsIgnoreCase(OBJECT) || codegenProperty.dataType.equals(LIST_OBJECT)) && codegenProperty.vendorExtensions.get("x-is-anytype") == null) {
-            String objectType = mapper.properties().getString(OBJECT).orElseThrow();
-
-            if (codegenProperty.isAnyType || (codegenProperty.isArray && codegenProperty.items.isAnyType)) {
-                objectType = "Object";
-                codegenProperty.vendorExtensions.put("x-is-anytype", true);
-            }
-
-            else
-                codegenProperty.isFreeFormObject = true;
-
-            if (codegenProperty.dataType.equals(LIST_OBJECT)) {
-                codegenProperty.dataType = ApplicationConstants.LIST_START + objectType + ApplicationConstants.LIST_END;
-                codegenProperty.baseType = objectType;
-            } else {
-                codegenProperty.dataType = objectType;
-            }
-        }
-
+        handleAnyType(codegenProperty, apiResourceBuilder);
         if(codegenProperty.vendorExtensions.get("x-is-anytype") == null) {
             mapper
                     .properties()
