@@ -1280,6 +1280,8 @@ components:
           minLength: 0
           type: string
           description: The user's last or family name
+        TestAnyType:
+          description: This is any type object
       description: User's name
     ScimResourceTypes:
       type: object

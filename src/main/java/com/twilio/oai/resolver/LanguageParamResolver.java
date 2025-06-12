@@ -18,6 +18,8 @@ import static com.twilio.oai.common.ApplicationConstants.SERIALIZE_VEND_EXT;
 public class LanguageParamResolver extends Resolver<CodegenParameter> {
     protected IConventionMapper mapper;
     protected CodegenModelResolver codegenModelResolver;
+    public static final String OBJECT = "object";
+    private static final String LIST_OBJECT = "List<Object>";
 
     public LanguageParamResolver(IConventionMapper mapper) {
         this.mapper = mapper;
@@ -46,11 +48,19 @@ public class LanguageParamResolver extends Resolver<CodegenParameter> {
         return codegenParameter;
     }
 
+    protected void handleAnyType(CodegenParameter codegenParameter, ApiResourceBuilder apiResourceBuilder) {
+        return;
+    }
+
     protected void resolveProperties(CodegenParameter codegenParameter, ApiResourceBuilder apiResourceBuilder) {
-        mapper
-            .properties()
-            .getString(codegenParameter.dataFormat)
-            .ifPresent(dataType -> codegenParameter.dataType = dataType);
+        handleAnyType(codegenParameter, apiResourceBuilder);
+
+        if(codegenParameter.vendorExtensions.get("x-is-anytype") == null) {
+            mapper
+                    .properties()
+                    .getString(codegenParameter.dataFormat)
+                    .ifPresent(dataType -> codegenParameter.dataType = dataType);
+        }
     }
 
     protected void resolveSerialize(CodegenParameter codegenParameter) {

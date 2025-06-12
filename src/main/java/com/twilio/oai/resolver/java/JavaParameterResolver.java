@@ -29,8 +29,16 @@ public class JavaParameterResolver extends LanguageParamResolver {
 
     @Override
     public void resolveProperties(CodegenParameter parameter, ApiResourceBuilder apiResourceBuilder) {
-        if(parameter.dataType.equalsIgnoreCase(OBJECT) || parameter.dataType.equals(LIST_OBJECT)) {
-            final String objectType = mapper.properties().getString(OBJECT).orElseThrow();
+        if((parameter.dataType.equalsIgnoreCase(OBJECT) || parameter.dataType.equals(LIST_OBJECT)) && parameter.vendorExtensions.get("x-is-anytype") == null) {
+           String objectType = mapper.properties().getString(OBJECT).orElseThrow();
+
+            if (parameter.isAnyType || (parameter.isArray && parameter.items.isAnyType)) {
+                objectType = "Object";
+                parameter.vendorExtensions.put("x-is-anytype", true);
+            }
+
+            else
+                parameter.isFreeFormObject = true;
 
             if (parameter.dataType.equals(LIST_OBJECT)) {
                 parameter.dataType = ApplicationConstants.LIST_START + objectType + ApplicationConstants.LIST_END;
@@ -38,8 +46,6 @@ public class JavaParameterResolver extends LanguageParamResolver {
             } else {
                 parameter.dataType = objectType;
             }
-
-            parameter.isFreeFormObject = true;
         }
 
         mapper.promotions().getMap(parameter.dataFormat).ifPresent(promotions -> {
