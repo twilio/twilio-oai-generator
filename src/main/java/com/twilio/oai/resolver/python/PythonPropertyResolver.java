@@ -7,10 +7,33 @@ import com.twilio.oai.resolver.LanguagePropertyResolver;
 import org.openapitools.codegen.CodegenProperty;
 
 public class PythonPropertyResolver extends LanguagePropertyResolver {
+    private static final String LIST_OBJECT = "List<Object>";
 
     public PythonPropertyResolver(IConventionMapper mapper) {
         super(mapper);
     }
+
+//    @Override
+//    protected void handleAnyType(CodegenProperty codegenProperty, ApiResourceBuilder apiResourceBuilder) {
+//        if((codegenProperty.dataType.equalsIgnoreCase(OBJECT) || codegenProperty.dataType.equals(LIST_OBJECT)) && codegenProperty.vendorExtensions.get("x-is-anytype") == null) {
+//            String objectType = mapper.properties().getString(OBJECT).orElseThrow();
+//
+//            if (codegenProperty.isAnyType || (codegenProperty.isArray && codegenProperty.items.isAnyType)) {
+//                objectType = "object";
+//                codegenProperty.vendorExtensions.put("x-is-anytype", true);
+//            }
+//
+//            else
+//                codegenProperty.isFreeFormObject = true;
+//
+//            if (codegenProperty.dataType.equals(LIST_OBJECT)) {
+//                codegenProperty.dataType = ApplicationConstants.LIST_START + objectType + ApplicationConstants.LIST_END;
+//                codegenProperty.baseType = objectType;
+//            } else {
+//                codegenProperty.dataType = objectType;
+//            }
+//        }
+//    }
 
     @Override
     protected void resolveProperties(CodegenProperty codegenProperty, ApiResourceBuilder apiResourceBuilder) {

@@ -67,8 +67,8 @@ public class NewCredentialsCreator extends Creator<NewCredentials>{
     private LocalDate testDate;
     private NewCredentials.Status testEnum;
     private List<Map<String, Object>> testObjectArray;
-    private Map<String, Object> testAnyType;
-    private List<Map<String, Object>> testAnyArray;
+    private Object testAnyType;
+    private List<Object> testAnyArray;
     private List<NewCredentials.Permissions> permissions;
     private String someA2PThing;
 
@@ -148,15 +148,15 @@ public class NewCredentialsCreator extends Creator<NewCredentials>{
     public NewCredentialsCreator setTestObjectArray(final Map<String, Object> testObjectArray){
         return setTestObjectArray(Promoter.listOfOne(testObjectArray));
     }
-    public NewCredentialsCreator setTestAnyType(final Map<String, Object> testAnyType){
+    public NewCredentialsCreator setTestAnyType(final Object testAnyType){
         this.testAnyType = testAnyType;
         return this;
     }
-    public NewCredentialsCreator setTestAnyArray(final List<Map<String, Object>> testAnyArray){
+    public NewCredentialsCreator setTestAnyArray(final List<Object> testAnyArray){
         this.testAnyArray = testAnyArray;
         return this;
     }
-    public NewCredentialsCreator setTestAnyArray(final Map<String, Object> testAnyArray){
+    public NewCredentialsCreator setTestAnyArray(final Object testAnyArray){
         return setTestAnyArray(Promoter.listOfOne(testAnyArray));
     }
     public NewCredentialsCreator setPermissions(final List<NewCredentials.Permissions> permissions){
@@ -253,12 +253,12 @@ public class NewCredentialsCreator extends Creator<NewCredentials>{
     
         }
         if (testAnyType != null) {
-            request.addPostParam("TestAnyType",  Converter.mapToJson(testAnyType));
+        request.addPostParam("TestAnyType",  Converter.objectToJson(testAnyType));
     
         }
         if (testAnyArray != null) {
-            for (Map<String, Object> prop : testAnyArray) {
-                request.addPostParam("TestAnyArray", Converter.mapToJson(prop));
+            for (Object prop : testAnyArray) {
+                request.addPostParam("TestAnyArray", prop.toString());
             }
     
         }
@@ -273,4 +273,5 @@ public class NewCredentialsCreator extends Creator<NewCredentials>{
     
         }
     }
+
 }

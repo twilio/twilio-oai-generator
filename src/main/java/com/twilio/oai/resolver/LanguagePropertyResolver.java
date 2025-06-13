@@ -17,8 +17,7 @@ import static com.twilio.oai.common.ApplicationConstants.SERIALIZE_VEND_EXT;
 @AllArgsConstructor
 public class LanguagePropertyResolver extends Resolver<CodegenProperty> {
     protected IConventionMapper mapper;
-    
-    
+    public static final String OBJECT = "object";
 
     @Override
     public CodegenProperty resolve(CodegenProperty codegenProperty, ApiResourceBuilder apiResourceBuilder) {
@@ -33,14 +32,21 @@ public class LanguagePropertyResolver extends Resolver<CodegenProperty> {
         return codegenProperty;
     }
 
-    protected void resolveProperties(CodegenProperty codegenProperty, ApiResourceBuilder apiResourceBuilder) {
-        mapper
-                .properties()
-                .getString(codegenProperty.dataFormat)
-                .or(() -> mapper.properties().getString(codegenProperty.dataType))
-                .ifPresent(dataType -> codegenProperty.dataType = dataType);
+    protected void handleAnyType(CodegenProperty codegenProperty, ApiResourceBuilder apiResourceBuilder) {
+        return;
     }
-    
+
+    protected void resolveProperties(CodegenProperty codegenProperty, ApiResourceBuilder apiResourceBuilder) {
+        handleAnyType(codegenProperty, apiResourceBuilder);
+        if(codegenProperty.vendorExtensions.get("x-is-anytype") == null) {
+            mapper
+                    .properties()
+                    .getString(codegenProperty.dataFormat)
+                    .or(() -> mapper.properties().getString(codegenProperty.dataType))
+                    .ifPresent(dataType -> codegenProperty.dataType = dataType);
+        }
+    }
+
     protected void resolveSerialize(CodegenProperty codegenProperty) {
         mapper
             .serialize()

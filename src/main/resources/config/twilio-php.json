@@ -11,6 +11,7 @@
     "string_map": "array",
     "uri_map": "array",
     "object": "array",
+    "any_type": "mixed",
     "boolean": "bool",
     "integer": "int",
     "prefixed-collapsible-map": "string",
@@ -20,6 +21,7 @@
   "serialize": {
     "_": "{value}",
     "object": "Serialize::jsonObject({value})",
+    "any_type": "Serialize::jsonObject({value})",
     "prefixed_collapsible_map": "Serialize::prefixedCollapsibleMap({value}, {trait})",
     "date<iso8601>": "Serialize::iso8601Date({value})",
     "date_inequality<iso8601>": "Serialize::iso8601Date({value})",

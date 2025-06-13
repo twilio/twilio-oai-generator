@@ -20,10 +20,12 @@ public class CodegenParameterDataTypeResolver extends Resolver<CodegenParameter>
     }
 
     private void assignDataType(CodegenParameter parameter) {
-        mapper
-            .properties()
-            .getString(parameter.dataFormat)
-            .or(() -> mapper.properties().getString(parameter.dataType))
-            .ifPresent(dataType -> parameter.dataType = dataType);
+        if(parameter.vendorExtensions.get("x-is-anytype") == null) {
+            mapper
+                    .properties()
+                    .getString(parameter.dataFormat)
+                    .or(() -> mapper.properties().getString(parameter.dataType))
+                    .ifPresent(dataType -> parameter.dataType = dataType);
+        }
     }
 }

@@ -12,6 +12,10 @@
         {{/isArray}}
     {{/isFreeFormObject}}
     {{^isFreeFormObject}}
+    {{#isAnyType}}
+        request.addPostParam("{{baseName}}",  Converter.objectToJson({{paramName}}));
+    {{/isAnyType}}
+    {{^isAnyType}}
     {{#isArray}}
         {{#isEnum}}
             for ({{baseType}} prop : {{paramName}}) {
@@ -41,6 +45,7 @@
     {{/isString}}
     {{/vendorExtensions.x-is-other-data-type}}
     {{/isArray}}
+    {{/isAnyType}}
     {{/isFreeFormObject}}
     {{>dateParams}}
         }
