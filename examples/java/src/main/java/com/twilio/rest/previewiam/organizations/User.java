@@ -93,9 +93,6 @@ public class User extends Resource {
             @JsonInclude(JsonInclude.Include.NON_EMPTY)
             @JsonProperty("TestAnyType")
             @Getter @Setter private Object testAnyType;
-            public String getTestAnyType() {
-                return Converter.objectToJson(testAnyType);
-            }
 
             public static ScimName fromJson(String jsonString, ObjectMapper mapper) throws IOException {
                 return mapper.readValue(jsonString, ScimName.class);
