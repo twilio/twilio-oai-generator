@@ -1,0 +1,11 @@
+{
+  "typeMapping": {
+    "abc": "CustomType",
+    "string": "String",
+    "array": "List",
+    "map": "HashMap"
+  },
+  "importMapping": {
+    "CustomType": "com.example.custom.CustomType"
+  }
+}

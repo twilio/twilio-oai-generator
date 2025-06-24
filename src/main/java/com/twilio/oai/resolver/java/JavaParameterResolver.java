@@ -29,46 +29,46 @@ public class JavaParameterResolver extends LanguageParamResolver {
 
     @Override
     public void resolveProperties(CodegenParameter parameter, ApiResourceBuilder apiResourceBuilder) {
-        if((parameter.dataType.equalsIgnoreCase(OBJECT) || parameter.dataType.equals(LIST_OBJECT)) && parameter.vendorExtensions.get("x-is-anytype") == null) {
-           String objectType = mapper.properties().getString(OBJECT).orElseThrow();
-
-            if (parameter.isAnyType || (parameter.isArray && parameter.items.isAnyType)) {
-                objectType = "Object";
-                parameter.vendorExtensions.put("x-is-anytype", true);
-            }
-
-            else
-                parameter.isFreeFormObject = true;
-
-            if (parameter.dataType.equals(LIST_OBJECT)) {
-                parameter.dataType = ApplicationConstants.LIST_START + objectType + ApplicationConstants.LIST_END;
-                parameter.baseType = objectType;
-            } else {
-                parameter.dataType = objectType;
-            }
-        }
-
-        mapper.promotions().getMap(parameter.dataFormat).ifPresent(promotions -> {
-            // cloning to prevent update in source map
-            HashMap<String, String> promotionsMap = new HashMap<>(promotions);
-            promotionsMap.replaceAll((dataType, value) -> value.replaceAll("\\{.*}", parameter.paramName) );
-            parameter.vendorExtensions.put(ApplicationConstants.PROMOTION_EXTENSION_NAME, promotionsMap);
-        });
-
-        codegenParameterResolver.resolve(parameter, apiResourceBuilder);
-
-        if( PHONE_NUMBER_FORMAT.equals(parameter.dataFormat)) {
-            parameter.vendorExtensions.put(X_IS_PHONE_NUMBER_FORMAT, true);
-        }
-        // prevent special format properties to be considered as enum
-        mapper.properties().get(parameter.dataFormat).ifPresent(prop -> {
-            parameter.isEnum = false;
-            parameter.allowableValues = null;
-        });
-        parameter.paramName = StringHelper.toFirstLetterLower(parameter.paramName);
-        if (apiResourceBuilder.getToggleMap().getOrDefault(EnumConstants.Generator.TWILIO_JAVA.getValue(), Boolean.FALSE) ) {
-            resolveIngressModel(parameter, apiResourceBuilder);
-        }
+//        if((parameter.dataType.equalsIgnoreCase(OBJECT) || parameter.dataType.equals(LIST_OBJECT)) && parameter.vendorExtensions.get("x-is-anytype") == null) {
+//           String objectType = mapper.properties().getString(OBJECT).orElseThrow();
+//
+//            if (parameter.isAnyType || (parameter.isArray && parameter.items.isAnyType)) {
+//                objectType = "Object";
+//                parameter.vendorExtensions.put("x-is-anytype", true);
+//            }
+//
+//            else
+//                parameter.isFreeFormObject = true;
+//
+//            if (parameter.dataType.equals(LIST_OBJECT)) {
+//                parameter.dataType = ApplicationConstants.LIST_START + objectType + ApplicationConstants.LIST_END;
+//                parameter.baseType = objectType;
+//            } else {
+//                parameter.dataType = objectType;
+//            }
+//        }
+//
+//        mapper.promotions().getMap(parameter.dataFormat).ifPresent(promotions -> {
+//            // cloning to prevent update in source map
+//            HashMap<String, String> promotionsMap = new HashMap<>(promotions);
+//            promotionsMap.replaceAll((dataType, value) -> value.replaceAll("\\{.*}", parameter.paramName) );
+//            parameter.vendorExtensions.put(ApplicationConstants.PROMOTION_EXTENSION_NAME, promotionsMap);
+//        });
+//
+//        codegenParameterResolver.resolve(parameter, apiResourceBuilder);
+//
+//        if( PHONE_NUMBER_FORMAT.equals(parameter.dataFormat)) {
+//            parameter.vendorExtensions.put(X_IS_PHONE_NUMBER_FORMAT, true);
+//        }
+//        // prevent special format properties to be considered as enum
+//        mapper.properties().get(parameter.dataFormat).ifPresent(prop -> {
+//            parameter.isEnum = false;
+//            parameter.allowableValues = null;
+//        });
+//        parameter.paramName = StringHelper.toFirstLetterLower(parameter.paramName);
+//        if (apiResourceBuilder.getToggleMap().getOrDefault(EnumConstants.Generator.TWILIO_JAVA.getValue(), Boolean.FALSE) ) {
+//            resolveIngressModel(parameter, apiResourceBuilder);
+//        }
     }
 
     private void resolveIngressModel(CodegenParameter parameter, ApiResourceBuilder apiResourceBuilder) {

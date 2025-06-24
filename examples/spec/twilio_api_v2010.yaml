@@ -1,19 +1,25 @@
 components:
   schemas:
-    account_enum_X_Twilio_Webhook_Enabled:
+    quickReplyActions:
+      type: array
+      items:
+        $ref: "#/components/schemas/quickReplyAction"
+    quickReplyActionType:
       type: string
-      enum:
-        - 'true'
-        - 'false'
-    test_enum_status:
-      enum:
-        - in-progress
-        - paused
-        - stopped
-        - processing
-        - completed
-        - absent
-      type: string
+      enum: [ "QUICK_REPLY" ]
+    quickReplyAction:
+      type: object
+      additionalProperties: false
+      properties:
+        type:
+          $ref: "#/components/schemas/quickReplyActionType"
+        title:
+          type: string
+        id:
+          type: string
+      required:
+        - type
+        - title
     test.response_object:
       properties:
         account_sid:
@@ -23,112 +29,7 @@ components:
         sid:
           nullable: true
           type: string
-        test_string:
-          nullable: true
-          type: string
-        test_integer:
-          nullable: true
-          type: integer
-        test_object:
-          nullable: true
-          format: phone-number-capabilities
-          properties:
-            fax:
-              type: boolean
-            mms:
-              type: boolean
-            sms:
-              type: boolean
-            voice:
-              type: boolean
-          type: object
-        test_date_time:
-          format: date-time-rfc-2822
-          nullable: true
-          type: string
-          example: "Thu, 01 Sep 2016 10:11:12.123456 -0500"
-        test_number:
-          nullable: true
-          type: number
-        from:
-          nullable: true
-          type: string
-          format: phone-number
-        price_unit:
-          nullable: true
-          format: currency
-          type: string
-          example: "USD"
-        test_number_float:
-          nullable: true
-          type: number
-          format: float
-        test_number_decimal:
-          nullable: true
-          type: decimal
-        test_enum:
-          $ref: '#/components/schemas/test_enum_status'
-          nullable: true
-          type: string
-        a2p_profile_bundle_sid:
-          type: string
-          minLength: 34
-          maxLength: 34
-          pattern: ^BU[0-9a-fA-F]{32}$
-          nullable: true
-          description: A2P Messaging Profile Bundle BundleSid
-        test_array_of_integers:
-          items:
-            type: integer
-          type: array
-        test_array_of_array_of_integers:
-          type: array
-          items:
-            type: array
-            items:
-              type: integer
-        test_array_of_objects:
-          items:
-            format: feedback-issue
-            properties:
-              count:
-                type: number
-              description:
-                type: string
-            type: object
-          nullable: true
-          type: array
-        test_array_of_enum:
-          description: Permissions authorized to the app
-          items:
-            $ref: '#/components/schemas/test_enum_status'
-            type: string
-          nullable: true
-          type: array
       type: object
-    test.fetch_response_object:
-      allOf:
-        - $ref: '#/components/schemas/test.response_object'
-        - properties:
-            status:
-              type: string
-              description: The status of the user
-            message:
-              type: string
-              description: A message describing the status of the user
-  examples:
-    test.response_object.example:
-      value:
-        sid: "CR12345678123456781234567812345678"
-        test_string: "Ahoy"
-        test_object:
-          fax: false
-          mms: false
-          sms: true
-          voice: true
-        test_number_float: 100.22
-        test_enum: "completed"
-        a2p_profile_bundle_sid: "BU0987654321abcdefABCDEFABCDEFABCD"
   securitySchemes:
     accountSid_authToken:
       scheme: basic
@@ -149,122 +50,31 @@ openapi: 3.0.1
 paths:
   /2010-04-01/Accounts.json:
     description: A top-level resource
-    get:
-      description: This operation's summary has a special character
-      operationId: ListAccount
-      tags:
-        - TagThatShouldBeRemoved
-      parameters:
-        - in: query
-          name: DateCreated
-          schema:
-            format: date-time
-            type: string
-        - in: query
-          name: Date.Test
-          schema:
-            format: date
-            type: string
-        - in: query
-          name: DateCreated<
-          schema:
-            format: date-time
-            type: string
-        - in: query
-          name: DateCreated>
-          schema:
-            format: date-time
-            type: string
-        - in: query
-          name: PageSize
-          schema:
-            maximum: 1000
-            minimum: 1
-            type: integer
-        - name: Page
-          in: query
-          description: The page index. This value is simply for client state.
-          schema:
-            type: integer
-            minimum: 0
-        - name: PageToken
-          in: query
-          description: The page token. This is provided by the API.
-          schema:
-            type: string
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                properties:
-                  end:
-                    type: integer
-                  first_page_uri:
-                    format: uri
-                    type: string
-                  next_page_uri:
-                    format: uri
-                    type: string
-                  page:
-                    type: integer
-                  page_size:
-                    type: integer
-                  previous_page_uri:
-                    format: uri
-                    type: string
-                  accounts:
-                    items:
-                      $ref: '#/components/schemas/test.response_object'
-                    type: array
-                  start:
-                    type: integer
-                  uri:
-                    format: uri
-                    type: string
-                title: ListAccountResponse
-                type: object
-              examples:
-                account_response:
-                  summary: Example of Call Recordings
-                  value:
-                    end: 5
-                    first_page_uri: http://example.com/page1
-                    next_page_uri: http://example.com/page2
-                    page: 1
-                    page_size: 4
-                    previous_page_uri: http://example.com/page0
-                    accounts:
-                      - test_string: Ahoy
-                      - test_string: Matey
-                    start: 0
-                    uri: http://example.com
-          description: OK
-      security:
-        - accountSid_authToken: [ ]
     post:
       operationId: CreateAccount
-      parameters:
-        - in: header
-          name: X-Twilio-Webhook-Enabled
-          schema:
-            type: string
-            $ref: '#/components/schemas/account_enum_X_Twilio_Webhook_Enabled'
       requestBody:
         content:
-          application/x-www-form-urlencoded:
+          application/json:
             schema:
               properties:
                 RecordingStatusCallback:
-                  format: uri
                   type: string
+                  format: abc
                 RecordingStatusCallbackEvent:
                   items:
                     type: string
+                    format: abc
                   type: array
-                Twiml:
-                  type: string
-                  format: twiml
+                twilioQuickReply:
+                  type: object
+                  description: twilio/quick-reply templates let recipients tap, rather than type, to respond to the message.
+                  nullable: true
+                  additionalProperties: false
+                  properties:
+                    body:
+                      type: string
+                    actions:
+                      $ref: "#/components/schemas/quickReplyActions"
               title: CreateAccountRequest
               type: object
       responses:
@@ -292,321 +102,3 @@ paths:
           mapping:
             account_sid: sid
           resource_url: /Accounts/{account_sid}/Applications.json
-  /2010-04-01/Accounts/{Sid}.json:
-    description: A top-level resource instance
-    delete:
-      operationId: DeleteAccount
-      parameters:
-        - in: path
-          name: Sid
-          required: true
-          schema:
-            maxLength: 34
-            minLength: 34
-            pattern: ^AC[0-9a-fA-F]{32}$
-            type: string
-      responses:
-        '204':
-          description: The resource was deleted successfully.
-      security:
-        - accountSid_authToken: [ ]
-    get:
-      operationId: FetchAccount
-      parameters:
-        - in: path
-          name: Sid
-          required: true
-          schema:
-            maxLength: 34
-            minLength: 34
-            pattern: ^AC[0-9a-fA-F]{32}$
-            type: string
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/test.fetch_response_object'
-          description: OK
-      security:
-        - accountSid_authToken: [ ]
-    post:
-      operationId: UpdateAccount
-      parameters:
-        - in: path
-          name: Sid
-          required: true
-          schema:
-            maxLength: 34
-            minLength: 34
-            pattern: ^AC[0-9a-fA-F]{32}$
-            type: string
-      requestBody:
-        content:
-          application/x-www-form-urlencoded:
-            schema:
-              properties:
-                PauseBehavior:
-                  type: string
-                Status:
-                  $ref: '#/components/schemas/test_enum_status'
-                  type: string
-              required:
-                - Status
-              title: UpdateAccountRequest
-              type: object
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/test.response_object'
-          description: OK
-      security:
-        - accountSid_authToken: [ ]
-    servers:
-      - url: https://api.twilio.com
-    x-twilio:
-      pathType: instance
-  /2010-04-01/Accounts/{AccountSid}/Calls.json:
-    description: A nested resource, dose not support listing
-    post:
-      operationId: CreateCall
-      parameters:
-        - in: path
-          name: AccountSid
-          required: true
-          schema:
-            maxLength: 34
-            minLength: 34
-            pattern: ^AC[0-9a-fA-F]{32}$
-            type: string
-      requestBody:
-        content:
-          application/x-www-form-urlencoded:
-            schema:
-              properties:
-                RequiredStringProperty:
-                  type: string
-                TestArrayOfStrings:
-                  items:
-                    type: string
-                  type: array
-                TestArrayOfUri:
-                  items:
-                    format: uri
-                    type: string
-                  type: array
-                TestMethod:
-                  type: string
-                  format: http-method
-                  enum:
-                    - HEAD
-                    - GET
-                    - POST
-                    - PATCH
-                    - PUT
-                    - DELETE
-                  description: 'The HTTP method that we should use to request the
-                                                                            `TestArrayOfUri`.'
-              required:
-                - RequiredStringProperty
-                - TestMethod
-              title: CreateCallRequest
-              type: object
-      responses:
-        '201':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/test.response_object'
-              examples:
-                example:
-                  $ref: '#/components/examples/test.response_object.example'
-          description: Created
-      security:
-        - accountSid_authToken: [ ]
-    servers:
-      - url: https://api.twilio.com
-    x-twilio:
-      parent: /Accounts/{Sid}.json
-      dependentProperties:
-        address:
-          mapping:
-            account_sid: account_sid
-            test_call_sid: sid
-          resource_url: Accounts/{account_sid}/Addresses/{test_call_sid}/Test.json
-      pathType: list
-  /2010-04-01/Accounts/{AccountSid}/Calls/{TestInteger}.json:
-    description: A nested resource instance that cannot be updated
-    delete:
-      operationId: DeleteCall
-      parameters:
-        - in: path
-          name: AccountSid
-          required: true
-          schema:
-            maxLength: 34
-            minLength: 34
-            pattern: ^AC[0-9a-fA-F]{32}$
-            type: string
-        - description: INTEGER ID param!!!
-          in: path
-          name: TestInteger
-          required: true
-          schema:
-            type: integer
-      responses:
-        '204':
-          description: The resource was deleted successfully.
-      security:
-        - accountSid_authToken: [ ]
-    get:
-      operationId: FetchCall
-      parameters:
-        - in: path
-          name: AccountSid
-          required: true
-          schema:
-            maxLength: 34
-            minLength: 34
-            pattern: ^AC[0-9a-fA-F]{32}$
-            type: string
-        - description: INTEGER ID param!!!
-          in: path
-          name: TestInteger
-          required: true
-          schema:
-            type: integer
-      responses:
-        '307':
-          description: Test that an operation with no 2XX responses is handled properly
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/test.response_object'
-              examples:
-                example:
-                  $ref: '#/components/examples/test.response_object.example'
-      security:
-        - accountSid_authToken: [ ]
-    servers:
-      - url: https://api.twilio.com
-    x-twilio:
-      parent: /Accounts/{Sid}.json
-
-      pathType: instance
-  /2010-04-01/Accounts/{AccountSid}/Calls/Feedback/Summary.json:
-    description: A nested resource with sub-dirs and without operations
-    servers:
-      - url: https://api.twilio.com
-    x-twilio:
-      className: feedback_call_summary
-      mountName: feedback_call_summary
-      parent: /Accounts/{AccountSid}/Calls.json
-      pathType: list
-  /2010-04-01/Accounts/{AccountSid}/Calls/Feedback/Summary/{Sid}.json:
-    description: A resource that can only be updated and which has a parent path that needs resolution
-    post:
-      operationId: UpdateCallFeedbackSummary
-      parameters:
-        - in: path
-          name: AccountSid
-          required: true
-          schema:
-            maxLength: 34
-            minLength: 34
-            pattern: ^AC[0-9a-fA-F]{32}$
-            type: string
-        - in: path
-          name: Sid
-          required: true
-          schema:
-            type: string
-      requestBody:
-        content:
-          application/x-www-form-urlencoded:
-            schema:
-              properties:
-                AccountSid:
-                  type: string
-                  minLength: 34
-                  maxLength: 34
-                  pattern: ^AC[0-9a-fA-F]{32}$
-                EndDate:
-                  format: date
-                  type: string
-                StartDate:
-                  format: date
-                  type: string
-              required:
-                - StartDate
-                - EndDate
-              title: UpdateCallFeedbackSummaryRequest
-              type: object
-      responses:
-        '201':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/test.response_object'
-              examples:
-                custom_type_response_example:
-                  summary: Example of a Feedback Summary
-                  value:
-                    test_array_of_objects:
-                      - count: 4
-                        description: issue description
-          description: Created
-      security:
-        - accountSid_authToken: [ ]
-    servers:
-      - url: https://api.twilio.com
-    x-twilio:
-      className: feedback_call_summary
-      mountName: feedback_call_summary
-      parent: /Accounts/{AccountSid}/Calls/{TestInteger}.json
-      pathType: instance
-  /healthcheck:
-    x-twilio:
-      className: healthCheck
-      libraryVisibility: private
-      docs_visibility: private
-      pathType: list
-      x-skip-path: 'true'
-    servers:
-      - url: https://api.twilio.com
-    description: lets do healthcheck
-    get:
-      description: abcd
-      operationId: FetchHealth
-      tags:
-        - Api20100401HealthCheck
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: object
-                title: ListHealthCheck
-                x-class-extra-annotation: '@JacksonXmlRootElement(localName = \"Healthcheck\")'
-                properties:
-                  status:
-                    items:
-                      type: string
-                    type: array
-          description: OK
-      x-twilio:
-        pathType: list
-        x-ignore: true
-        transactions:
-          - name: validateHealthCheck
-            request:
-              formParams: { }
-              method: GET
-              queryParams: { }
-              url: https://api.twilio.com/healthcheck.json
-            response:
-              content:
-                status: OK
-              statusCode: 200
