@@ -11,6 +11,8 @@
         path = path.replace("{"+"{{baseName}}"+"}", this.{{paramName}}.toString());
     {{/vendorExtensions.x-is-account-sid}}
 {{/allParams}}
-{{#requiredParams}}
-        path = path.replace("{"+"{{baseName}}"+"}", this.{{paramName}}.toString());
-{{/requiredParams}}
+{{#pathParams}}
+  {{^vendorExtensions.x-is-account-sid}}
+        path = path.replace("{"+"{{baseName}}"+"}", this.path{{baseName}}.toString());
+  {{/vendorExtensions.x-is-account-sid}}
+{{/pathParams}}
