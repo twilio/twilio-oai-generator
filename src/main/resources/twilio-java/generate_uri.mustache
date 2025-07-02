@@ -12,10 +12,5 @@
     {{/vendorExtensions.x-is-account-sid}}
 {{/allParams}}
 {{#requiredParams}}
-    {{#vendorExtensions.x-is-phone-number-format}}
-        path = path.replace("{"+"{{baseName}}"+"}", this.{{paramName}}.encode("utf-8"));
-    {{/vendorExtensions.x-is-phone-number-format}}
-    {{^vendorExtensions.x-is-phone-number-format}}
         path = path.replace("{"+"{{baseName}}"+"}", this.{{paramName}}.toString());
-    {{/vendorExtensions.x-is-phone-number-format}}
 {{/requiredParams}}
