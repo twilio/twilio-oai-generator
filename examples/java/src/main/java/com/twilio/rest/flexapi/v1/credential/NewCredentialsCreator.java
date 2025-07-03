@@ -258,7 +258,7 @@ public class NewCredentialsCreator extends Creator<NewCredentials>{
         }
         if (testAnyArray != null) {
             for (Object prop : testAnyArray) {
-                request.addPostParam("TestAnyArray", prop.toString());
+                request.addPostParam("TestAnyArray", Converter.objectToJson(prop));
             }
     
         }

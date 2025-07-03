@@ -431,6 +431,8 @@ public class JavaApiResourceBuilder extends ApiResourceBuilder{
                 cp.vendorExtensions.put("x-is-other-data-type", true);
             } else if (cp.isArray && cp.baseType.equalsIgnoreCase(STRING)) {
                 cp.vendorExtensions.put("x-is-string-array", true);
+            } else if (cp.isArray && cp.items != null && cp.items.isAnyType) {
+                cp.vendorExtensions.put("x-is-anytype-array", true);
             }
 
         }

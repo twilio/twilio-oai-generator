@@ -29,9 +29,16 @@
             }
         {{/vendorExtensions.x-is-string-array}}
         {{^vendorExtensions.x-is-string-array}}
+        {{#vendorExtensions.x-is-anytype-array}}
+            for ({{baseType}} prop : {{paramName}}) {
+                request.addPostParam("{{baseName}}", Converter.objectToJson(prop));
+            }
+        {{/vendorExtensions.x-is-anytype-array}}
+        {{^vendorExtensions.x-is-anytype-array}}
             for ({{baseType}} prop : {{paramName}}) {
                 request.addPostParam("{{baseName}}", prop.toString());
             }
+        {{/vendorExtensions.x-is-anytype-array}}
         {{/vendorExtensions.x-is-string-array}}
         {{/isEnum}}
     {{/isArray}}
