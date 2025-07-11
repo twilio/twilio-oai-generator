@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import lombok.experimental.UtilityClass;
@@ -139,5 +141,42 @@ public class Utility {
                 co.vendorExtensions.put("x-is-json-type", true);
             }
         }
+    }
+
+    public static String extractDatatypeFromContainer(String input) {
+        // Define the regular expression pattern
+        Pattern pattern = Pattern.compile("<([^>]+)>");
+
+        // Create a matcher object
+        Matcher matcher = pattern.matcher(input);
+
+        // Check if the pattern matches
+        if (matcher.find()) {
+            // Return the captured group which is the custom type
+            return matcher.group(1);
+        }
+        return null; // Return null if no match is found
+    }
+
+    public static String replaceDatatypeInContainer(String input, String replacement) {
+        // Define the regular expression pattern to extract the custom type
+        Pattern pattern = Pattern.compile("<([^>]+)>");
+        Matcher matcher = pattern.matcher(input);
+
+        // If a match is found, perform the replacement
+        if (matcher.find()) {
+            // Extract the custom type
+            String customType = matcher.group(1);
+            // Replace the custom type with the provided replacement string
+            return input.replace(customType, replacement);
+        }
+        // Return the input unchanged if no match is found
+        return input;
+    }
+    
+    public static String getEnumNameFromRef(final String ref) {
+        String schemaName = ref.replaceFirst("#/components/schemas/", "");
+        String[] enumNameArray = ref.split("_enum_");
+        return "";
     }
 }

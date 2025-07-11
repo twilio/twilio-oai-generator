@@ -132,4 +132,15 @@ public class EnumConstants {
 
         private final String value;
     }
+
+    public enum OpenApiEnumType {
+        PARAMETER_SINGLE,       // A single enum value used as a parameter value
+        PARAMETER_ARRAY,        // An array of enum values used in parameters
+        PARAMETER_SINGLE_REF,        // An array of enum values used in parameters
+        PARAMETER_ARRAY_REF,        // An array of enum values used in parameters
+        PROPERTY_SINGLE,        // A single enum value used as a property in a schema
+        PROPERTY_ARRAY,         // An array of enum values used as a property in a schema
+        REUSABLE_SINGLE,        // A reusable enum defined in the components section as a single value
+        REUSABLE_ARRAY          // A reusable enum defined in the components section as an array
+    }
 }
