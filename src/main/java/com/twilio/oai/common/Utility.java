@@ -14,7 +14,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import com.twilio.oai.modern.ResourceCache;
 import lombok.experimental.UtilityClass;
+import org.apache.commons.lang3.StringUtils;
 import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenOperation;
 import org.openapitools.codegen.CodegenProperty;
@@ -176,7 +178,47 @@ public class Utility {
     
     public static String getEnumNameFromRef(final String ref) {
         String schemaName = ref.replaceFirst("#/components/schemas/", "");
-        String[] enumNameArray = ref.split("_enum_");
-        return "";
+        String[] enumNameArray = schemaName.split("_enum_");
+        return enumNameArray[enumNameArray.length - 1];
+    }
+
+    /* For request body(urlencoded) enums with ref, it will be processed by default
+       Example:
+       singleBodyRef:
+         $ref: '#/components/schemas/singleReusable'
+     */
+    public static String getEnumNameFromDefaultDatatype(final String ref) {
+        String schemaName = ref.replaceFirst("#/components/schemas/", "");
+        String[] enumNameArray = schemaName.split("Enum");
+        return enumNameArray[enumNameArray.length - 1];
+    }
+    
+    public static String getEnumNameFromDatatype(final String datatype) {
+        if (datatype == null || datatype.isEmpty()) {
+            return null;
+        }
+        String[] enumNameArray = datatype.split("Enum");
+        return enumNameArray[enumNameArray.length - 1];
+    }
+    
+    /*
+    Type1: 
+        types:
+          $ref: '#/components/schemas/types'
+          
+     */
+    public static CodegenModel getModelFromOpenApiType(String openApiType) {
+        // Ref occurs for 2 cases, 
+        // 1. one when there is no ref, in that case the name will contain parent names.
+        // 2. When model is defined using ref(reusable), name will not contain parent names.
+        if (StringUtils.isBlank(openApiType)) {
+            return null;
+        }
+        for (CodegenModel codegenModel: ResourceCache.getAllModels()) {
+            if (openApiType.equals(codegenModel.classname)) {
+                return codegenModel;
+            }
+        }
+        return null;
     }
 }

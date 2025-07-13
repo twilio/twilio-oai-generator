@@ -96,14 +96,28 @@ paths:
       requestBody:
         required: true
         content:
-          application/x-www-form-urlencoded:
+          application/json:
             schema:
               type: object
               properties:
                 # PROPERTY_SINGLE
+                parentObject:
+                  type: object
+                  properties:
+                    normalProp:
+                      type: string
+                    nestedSingleBody:
+                      type: string
+                      enum:
+                        - available
+                        - pending 
+                        - sold
+                    nestedSingleBodyRef:
+                      $ref: '#/components/schemas/singleReusable'
+                      description: A reusable single-value enum in the request body
                 singleBody:
                   type: string
-                  enum: #[ available, pending, sold ]
+                  enum:
                     - available
                     - pending
                     - sold
@@ -113,7 +127,10 @@ paths:
                   type: array
                   items:
                     type: string
-                    enum: [ new, sale, featured ]
+                    enum:
+                      - new
+                      - sale
+                      - featured
                   description: An array of enum values in the request body
                   example: [ new, featured ]
 
@@ -127,7 +144,7 @@ paths:
                   type: array
                   items:
                     $ref: '#/components/schemas/singleReusable'
-                  description: An array of reusable enum in the request body
+                  description: An array of reusable enums in the request body
                   example: [ electronics, clothing ]
       responses:
         '200':

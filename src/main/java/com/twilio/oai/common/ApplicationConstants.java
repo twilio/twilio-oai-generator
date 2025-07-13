@@ -59,8 +59,9 @@ public class ApplicationConstants {
 
     public static final String[] VERSION_LESS_SPECS = {"organizations"};
     
-    public static final String X_ENUM_DATATYPE = "x-enum-datatype";
-    public static final String X_ENUM_NAME = "x-enum-name";
+    public static final String X_DATATYPE = "x-enum-datatype";
+    public static final String X_VARIABLE_NAME = "x-enum-name";
     public static final String X_ENUM_TYPE = "x-enum-type"; // EnumConstants.OpenApiEnumType
+    public static final String X_IS_MODEL = "x-is-model";
 
 }
