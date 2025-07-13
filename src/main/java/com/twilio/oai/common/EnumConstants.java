@@ -149,4 +149,9 @@ public class EnumConstants {
         URL_ENCODED_BODY_REF,
         URL_ENCODED_BODY_REF_LIST,
     }
+    
+    public enum ModelType {
+        SINGLE,
+        LIST
+    }
 }

@@ -7,8 +7,13 @@ import static com.twilio.oai.common.ApplicationConstants.X_ENUM_TYPE;
 
 import com.twilio.oai.common.EnumConstants.OpenApiEnumType;
 import com.twilio.oai.common.StringUtils;
+import com.twilio.oai.java.nestedmodels.MustacheEnum;
 import com.twilio.oai.modern.ResourceCache;
+import org.openapitools.codegen.CodegenModel;
+import org.openapitools.codegen.CodegenParameter;
 import org.openapitools.codegen.CodegenProperty;
+
+import java.util.Map;
 
 /*
 codegenProperty._enum = true
@@ -23,6 +28,7 @@ public class JsonSingleEnumStrategy implements PropertyIdentificationStrategy {
             type(codegenProperty);
             variableName(codegenProperty);
             datatype(codegenProperty);
+            cacheEnumClass(codegenProperty);
             return true;
         }
         return false;
@@ -42,5 +48,12 @@ public class JsonSingleEnumStrategy implements PropertyIdentificationStrategy {
     private void datatype(CodegenProperty codegenProperty) {
         codegenProperty.vendorExtensions.put(X_DATATYPE,
                 ResourceCache.getResourceName() + DOT + StringUtils.toPascalCase(codegenProperty.baseName));
+    }
+
+    private void cacheEnumClass(CodegenProperty codegenProperty) {
+        Map<String, Object> values = null;
+        
+        //MustacheEnum mustacheEnum = new MustacheEnum(StringUtils.toPascalCase(codegenProperty.baseName), codegenProperty.items.allowableValues);
+        //ResourceCache.addToEnumClasses(mustacheEnum);
     }
 }

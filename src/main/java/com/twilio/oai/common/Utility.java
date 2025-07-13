@@ -207,15 +207,16 @@ public class Utility {
           $ref: '#/components/schemas/types'
           
      */
-    public static CodegenModel getModelFromOpenApiType(String openApiType) {
+    public static CodegenModel getModelFromOpenApiType(CodegenProperty codegenProperty) {
         // Ref occurs for 2 cases, 
         // 1. one when there is no ref, in that case the name will contain parent names.
         // 2. When model is defined using ref(reusable), name will not contain parent names.
-        if (StringUtils.isBlank(openApiType)) {
+        if (StringUtils.isBlank(codegenProperty.openApiType)) {
             return null;
         }
-        for (CodegenModel codegenModel: ResourceCache.getAllModels()) {
-            if (openApiType.equals(codegenModel.classname)) {
+        String modelClassName = codegenProperty.isContainer ? codegenProperty.items.openApiType: codegenProperty.openApiType;
+        for (CodegenModel codegenModel: ResourceCache.getAllModelsByDefaultGenerator()) {
+            if (modelClassName.equals(codegenModel.classname)) {
                 return codegenModel;
             }
         }

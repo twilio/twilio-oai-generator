@@ -1,46 +1,36 @@
 package com.twilio.oai.java.nestedmodels;
 
 import com.twilio.oai.common.StringUtils;
-import org.openapitools.codegen.CodegenModel;
-import org.openapitools.codegen.CodegenParameter;
-import org.openapitools.codegen.CodegenProperty;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+// Currently only String enums are Supported
 public class MustacheEnum {
-    String name;
+    String className;
     Map<String, Object> values;
-    String isString;
     
-    public MustacheEnum(CodegenProperty codegenProperty) {
-        if (codegenProperty == null) throw new RuntimeException("Enum creation failed for CodegenProperty");
-        this.name = StringUtils.toPascalCase(splitByEnum(codegenProperty.complexType));
-        values = new HashMap<>(codegenProperty.allowableValues);
-    }
-
-    public MustacheEnum(CodegenParameter codegenParameter) {
-        if (codegenParameter.isEnum) {
-            name = StringUtils.toPascalCase(codegenParameter.baseName);
-            values = new HashMap<>(codegenParameter.allowableValues);
-        } else if (codegenParameter.isEnumRef) {
-            name = StringUtils.toPascalCase(splitByEnum(codegenParameter.getSchema().complexType));
-            values = new HashMap<>(codegenParameter.allowableValues);
-        } else {
-            throw new RuntimeException("Enum Name is not fetched correctly for " + codegenParameter);
+    public MustacheEnum(String className, Map<String, Object> values) {
+        if (org.apache.commons.lang3.StringUtils.isBlank(className) || values == null || values.isEmpty()) {
+            throw new RuntimeException("MustacheEnum requires a non-empty className and values map.");
         }
-    }
-
-    public MustacheEnum(CodegenModel codegenModel) {
-
+        this.className = StringUtils.toPascalCase(className);
+        this.values = new HashMap<>(values);
     }
     
-    private String splitByEnum(final String input) {
-        String[] split = input.split("Enum");
-        if (split.length >= 2) return split[1];
-        return input;
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        MustacheEnum that = (MustacheEnum) obj;
+        return className != null && className.equals(that.className);
+    }
+
+    @Override
+    public int hashCode() {
+        return className != null ? className.hashCode() : 0;
     }
 }
 

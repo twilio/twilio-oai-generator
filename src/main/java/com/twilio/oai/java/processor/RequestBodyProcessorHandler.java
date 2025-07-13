@@ -1,7 +1,7 @@
 package com.twilio.oai.java.processor;
 
-import com.twilio.oai.java.processor.request.RequestBodyProcessor;
-import com.twilio.oai.java.processor.request.RequestBodyProcessorFactory;
+import com.twilio.oai.java.processor.body.RequestBodyProcessor;
+import com.twilio.oai.java.processor.body.RequestBodyProcessorFactory;
 import org.openapitools.codegen.CodegenOperation;
 
 import java.util.Map;

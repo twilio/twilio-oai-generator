@@ -4,6 +4,7 @@ import com.twilio.oai.common.EnumConstants;
 import com.twilio.oai.common.EnumConstants.OpenApiEnumType;
 import com.twilio.oai.common.StringUtils;
 import com.twilio.oai.common.Utility;
+import com.twilio.oai.java.nestedmodels.MustacheEnum;
 import com.twilio.oai.modern.ResourceCache;
 import org.openapitools.codegen.CodegenParameter;
 
@@ -30,10 +31,10 @@ public class UrlEncodedRefEnumStrategy implements EnumIdentificationStrategy {
     public boolean identify(final CodegenParameter codegenParameter) {
         if (codegenParameter.getSchema() != null) return false;
         if (!codegenParameter.isEnum && codegenParameter.isEnumRef) {
-            codegenParameter.vendorExtensions.put(X_ENUM_TYPE, EnumConstants.OpenApiEnumType.URL_ENCODED_BODY_REF);
-            codegenParameter.vendorExtensions.put(X_VARIABLE_NAME, StringUtils.toCamelCase(codegenParameter.baseName));
-            String enumDatatypeResolved = StringUtils.toPascalCase(Utility.getEnumNameFromDefaultDatatype(codegenParameter.dataType));
-            codegenParameter.vendorExtensions.put(X_DATATYPE, ResourceCache.getResourceName() + DOT + enumDatatypeResolved);
+            type(codegenParameter);
+            variableName(codegenParameter);
+            datatype(codegenParameter);
+            cacheEnumClass(codegenParameter);
             return true;
         }
         return false;
@@ -42,5 +43,23 @@ public class UrlEncodedRefEnumStrategy implements EnumIdentificationStrategy {
     @Override
     public OpenApiEnumType getType() {
         return type;
+    }
+
+    private void type(CodegenParameter codegenParameter) {
+        codegenParameter.vendorExtensions.put(X_ENUM_TYPE, EnumConstants.OpenApiEnumType.URL_ENCODED_BODY_REF);
+    }
+    private void variableName(CodegenParameter codegenParameter) {
+        codegenParameter.vendorExtensions.put(X_VARIABLE_NAME, StringUtils.toCamelCase(codegenParameter.baseName));
+    }
+    private void datatype(CodegenParameter codegenParameter) {
+        String enumDatatypeResolved = StringUtils.toPascalCase(Utility.getEnumNameFromDefaultDatatype(codegenParameter.dataType));
+        codegenParameter.vendorExtensions.put(X_DATATYPE, ResourceCache.getResourceName() + DOT + enumDatatypeResolved);
+    }
+
+    private void cacheEnumClass(CodegenParameter codegenParameter) {
+        // TODO: Best way to store = codegenParameter.allowableValues.get("enumVars")
+        String enumClassName = StringUtils.toPascalCase(Utility.getEnumNameFromDefaultDatatype(codegenParameter.dataType));
+        MustacheEnum mustacheEnum = new MustacheEnum(enumClassName, codegenParameter.allowableValues);
+        ResourceCache.addToEnumClasses(mustacheEnum);
     }
 }

@@ -3,6 +3,11 @@ package com.twilio.oai.java.processor.parameter.enumidentifcation;
 import com.twilio.oai.common.EnumConstants;
 import com.twilio.oai.common.StringUtils;
 import com.twilio.oai.common.Utility;
+import com.twilio.oai.java.processor.property.JsonListEnumStrategy;
+import com.twilio.oai.java.processor.property.JsonListRefEnumStrategy;
+import com.twilio.oai.java.processor.property.JsonRefEnumStrategy;
+import com.twilio.oai.java.processor.property.JsonSingleEnumStrategy;
+import com.twilio.oai.java.processor.property.PropertyIdentificationStrategy;
 import com.twilio.oai.modern.ResourceCache;
 import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenParameter;
@@ -15,10 +20,12 @@ import static com.twilio.oai.common.ApplicationConstants.X_ENUM_TYPE;
 import static com.twilio.oai.common.ApplicationConstants.X_DATATYPE;
 import static com.twilio.oai.common.ApplicationConstants.DOT;
 public class EnumIdentifierHandler {
-    private final List<EnumIdentificationStrategy> strategies;
+    private final List<EnumIdentificationStrategy> parameterStrategies;
+
+    private final List<PropertyIdentificationStrategy> propertyStrategies;
     
     public EnumIdentifierHandler() {
-        strategies = List.of(
+        parameterStrategies = List.of(
                 new ParameterSingleEnumStrategy(),
                 new ParameterRefEnumStrategy(),
                 new ParameterListEnumStrategy(),
@@ -28,21 +35,37 @@ public class EnumIdentifierHandler {
                 new UrlEncodedListEnumStrategy(),
                 new UrlEncodedListRefEnumStrategy()
         );
+
+        propertyStrategies = List.of(
+                new JsonSingleEnumStrategy(),
+                new JsonRefEnumStrategy(),
+                new JsonListEnumStrategy(),
+                new JsonListRefEnumStrategy()
+        );
     }
     
     public void identify(CodegenParameter codegenParameter) {
         if ("http-method".equals(codegenParameter.dataFormat)) {
             return;
         }
-        for (EnumIdentificationStrategy strategy : strategies) {
+        for (EnumIdentificationStrategy strategy : parameterStrategies) {
             if (strategy.identify(codegenParameter)) {
                 System.out.println("Strategy matched: " + strategy.getType() + " Enum Basename: " + codegenParameter.baseName);
                 break;
             }
         }
     }
-    public void identify(CodegenProperty codegenProperty) {
-        System.out.println(codegenProperty);
+    public boolean identify(CodegenProperty codegenProperty) {
+        if ("http-method".equals(codegenProperty.dataFormat)) {
+            return false;
+        }
+        for (PropertyIdentificationStrategy strategy : propertyStrategies) {
+            if (strategy.identify(codegenProperty)) {
+                System.out.println("Strategy matched: " + strategy.getType() + " Enum Basename: " + codegenProperty.baseName);
+                return true;
+            }
+        }
+        return false;
     }
 
     public void identify(CodegenModel codegenModel) {

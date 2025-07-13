@@ -1,6 +1,5 @@
 package com.twilio.oai;
 
-import com.twilio.oai.api.JavaApiResources;
 import com.twilio.oai.common.EnumConstants;
 import com.twilio.oai.common.Utility;
 import com.twilio.oai.modern.JavaApiResourceNew;
@@ -75,7 +74,7 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
     public Map<String, ModelsMap> postProcessAllModels(final Map<String, ModelsMap> allModels) {
         final Map<String, ModelsMap> results = super.postProcessAllModels(allModels);
 
-        Utility.addModelsToLocalModelList(results, ResourceCache.getAllModels());
+        Utility.addModelsToLocalModelList(results, ResourceCache.getAllModelsByDefaultGenerator());
         directoryStructureService.postProcessAllModels(results, modelFormatMap);
 
         // Return an empty collection so no model files get generated.

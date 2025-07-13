@@ -1,5 +1,6 @@
 package com.twilio.oai.java;
 
 public enum CacheKey {
-    ALL_MODELS
+    ALL_MODELS,
+    ALL_ENUMS
 }

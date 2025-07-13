@@ -3,7 +3,9 @@ package com.twilio.oai.java.processor.property;
 import com.twilio.oai.common.EnumConstants.OpenApiEnumType;
 import com.twilio.oai.common.StringUtils;
 import com.twilio.oai.common.Utility;
+import com.twilio.oai.java.nestedmodels.MustacheEnum;
 import com.twilio.oai.modern.ResourceCache;
+import org.openapitools.codegen.CodegenParameter;
 import org.openapitools.codegen.CodegenProperty;
 import static com.twilio.oai.common.ApplicationConstants.DOT;
 import static com.twilio.oai.common.ApplicationConstants.X_VARIABLE_NAME;
@@ -42,5 +44,9 @@ public class JsonListEnumStrategy implements PropertyIdentificationStrategy {
         String enumNonContainerDatatype = ResourceCache.getResourceName() + DOT + StringUtils.toPascalCase(enumClassName);
         String resolvedDataType = Utility.replaceDatatypeInContainer(codegenProperty.dataType, enumNonContainerDatatype);
         codegenProperty.vendorExtensions.put(X_DATATYPE, resolvedDataType);
+    }
+
+    private void cacheEnumClass(CodegenParameter codegenParameter) {
+        
     }
 }

@@ -4,6 +4,7 @@ import com.twilio.oai.common.EnumConstants;
 import com.twilio.oai.common.EnumConstants.OpenApiEnumType;
 import com.twilio.oai.common.StringUtils;
 import com.twilio.oai.common.Utility;
+import com.twilio.oai.java.nestedmodels.MustacheEnum;
 import com.twilio.oai.modern.ResourceCache;
 import org.openapitools.codegen.CodegenParameter;
 
@@ -36,19 +37,10 @@ public class ParameterListEnumStrategy implements EnumIdentificationStrategy {
         if (codegenParameter.getSchema() == null) return false;
         if (codegenParameter.getSchema()._enum == null &&
                 codegenParameter.getSchema().items != null && codegenParameter.getSchema().items._enum != null) {
-            // Identify
-            System.out.println("Identified as array parameter enum: " + codegenParameter.baseName);
-            codegenParameter.vendorExtensions.put(X_ENUM_TYPE, EnumConstants.OpenApiEnumType.PARAMETER_LIST);
-
-
-            // Resolve
-            codegenParameter.vendorExtensions.put(X_VARIABLE_NAME, StringUtils.toCamelCase(codegenParameter.baseName));
-
-            String enumClassName = StringUtils.toPascalCase(codegenParameter.baseName);
-            String enumNonContainerDatatype = ResourceCache.getResourceName() + DOT + StringUtils.toPascalCase(enumClassName);
-            String resolvedDataType = Utility.replaceDatatypeInContainer(codegenParameter.dataType, enumNonContainerDatatype);
-            codegenParameter.vendorExtensions.put(X_DATATYPE, resolvedDataType);
-
+            type(codegenParameter);
+            variableName(codegenParameter);
+            datatype(codegenParameter);
+            cacheEnumClass(codegenParameter);
             return true;
         }
         return false;
@@ -57,5 +49,24 @@ public class ParameterListEnumStrategy implements EnumIdentificationStrategy {
     @Override
     public OpenApiEnumType getType() {
         return type;
+    }
+
+    private void type(CodegenParameter codegenParameter) {
+        codegenParameter.vendorExtensions.put(X_ENUM_TYPE, EnumConstants.OpenApiEnumType.PARAMETER_LIST);
+    }
+    private void variableName(CodegenParameter codegenParameter) {
+        codegenParameter.vendorExtensions.put(X_VARIABLE_NAME, StringUtils.toCamelCase(codegenParameter.baseName));
+    }
+    private void datatype(CodegenParameter codegenParameter) {
+        String enumClassName = StringUtils.toPascalCase(codegenParameter.baseName);
+        String enumNonContainerDatatype = ResourceCache.getResourceName() + DOT + StringUtils.toPascalCase(enumClassName);
+        String resolvedDataType = Utility.replaceDatatypeInContainer(codegenParameter.dataType, enumNonContainerDatatype);
+        codegenParameter.vendorExtensions.put(X_DATATYPE, resolvedDataType);
+    }
+
+    private void cacheEnumClass(CodegenParameter codegenParameter) {
+        MustacheEnum mustacheEnum = new MustacheEnum( StringUtils.toPascalCase(codegenParameter.baseName),
+                codegenParameter.allowableValues);
+        ResourceCache.addToEnumClasses(mustacheEnum);
     }
 }

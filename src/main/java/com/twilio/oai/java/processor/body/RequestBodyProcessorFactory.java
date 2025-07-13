@@ -1,4 +1,4 @@
-package com.twilio.oai.java.processor.request;
+package com.twilio.oai.java.processor.body;
 
 import com.twilio.oai.LoggerUtil;
 

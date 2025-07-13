@@ -4,6 +4,7 @@ import com.twilio.oai.common.EnumConstants.OpenApiEnumType;
 import com.twilio.oai.common.StringUtils;
 import com.twilio.oai.common.Utility;
 import com.twilio.oai.modern.ResourceCache;
+import org.openapitools.codegen.CodegenParameter;
 import org.openapitools.codegen.CodegenProperty;
 import static com.twilio.oai.common.ApplicationConstants.DOT;
 import static com.twilio.oai.common.ApplicationConstants.X_DATATYPE;
@@ -36,5 +37,9 @@ public class JsonRefEnumStrategy implements PropertyIdentificationStrategy {
     private void datatype(CodegenProperty codegenProperty) {
         String enumDatatypeResolved = StringUtils.toPascalCase(Utility.getEnumNameFromDefaultDatatype(codegenProperty.getRef()));
         codegenProperty.vendorExtensions.put(X_DATATYPE, ResourceCache.getResourceName() + DOT + enumDatatypeResolved);
+    }
+
+    private void cacheEnumClass(CodegenParameter codegenParameter) {
+
     }
 }
