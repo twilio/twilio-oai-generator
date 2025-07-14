@@ -130,17 +130,17 @@ public class JavaApiResourceBuilder extends ApiResourceBuilder{
             co.vendorExtensions = conventionResolver.populateSecurityAttributes(co);
 
             jsonRequestBodyResolver.setResourceName(resourceName);
-            co.allParams.stream()
-                    .filter(item -> (item.getContent() != null && item.getContent().get("application/json") != null))
-                    .forEach(item -> {
-                        CodegenModel model = getModel(item.dataType);
-                        // currently supporting required and conditional parameters only for request body object
-                        if (model != null) {
-                            model.vendorExtensions.put("x-constructor-required", true);
-                            model.vendorExtensions.put("x-model-parameters", generateSignatureListBody(co));
-                            jsonRequestBodyResolver.resolve(item, codegenParameterIResolver);
-                        }
-                    });
+//            co.allParams.stream()
+//                    .filter(item -> (item.getContent() != null && item.getContent().get("application/json") != null))
+//                    .forEach(item -> {
+//                        CodegenModel model = getModel(item.dataType);
+//                        // currently supporting required and conditional parameters only for request body object
+//                        if (model != null) {
+//                            model.vendorExtensions.put("x-constructor-required", true);
+//                            model.vendorExtensions.put("x-model-parameters", generateSignatureListBody(co));
+//                            jsonRequestBodyResolver.resolve(item, codegenParameterIResolver);
+//                        }
+//                    });
             co.allParams.forEach(this::updateHeaderParamsList);
             co.pathParams = co.pathParams.stream()
                     .map(item -> codegenParameterIResolver.resolve(item, this))
