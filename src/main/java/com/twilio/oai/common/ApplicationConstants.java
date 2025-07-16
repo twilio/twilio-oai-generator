@@ -64,5 +64,7 @@ public class ApplicationConstants {
     public static final String X_ENUM_TYPE = "x-enum-type"; // EnumConstants.OpenApiEnumType
     public static final String X_MODEL_TYPE = "x-model-type"; // EnumConstants.OpenApiEnumType
     public static final String X_IS_MODEL = "x-is-model";
+    public static final String X_REQUEST_CONTENT_TYPE = "x-request-content-type";
+    
 
 }

@@ -9,6 +9,8 @@ import com.twilio.oai.modern.ResourceCache;
 import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenParameter;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import static com.twilio.oai.common.ApplicationConstants.DOT;
@@ -83,12 +85,16 @@ public class FormParamListRefStrategy implements ParameterEnumProcessingStrategy
         String enumExistingDatatype = Utility.extractDatatypeFromContainer(codegenParameter.dataType);
         String enumClassName = Utility.getEnumNameFromDatatype(enumExistingDatatype);
         Map<String, Object> values = null;
+        List<Map<String, Object>> enumValues = new ArrayList<>();
+        
         for (CodegenModel codegenModel: ResourceCache.getAllModelsByDefaultGenerator()) {
             if (enumClassName.equals(codegenModel.classname)) {
                 values = codegenModel.allowableValues;
+                enumValues = (List<Map<String, Object>>) codegenModel.allowableValues.get("enumVars");
+                break;
             }
         }
-        MustacheEnum mustacheEnum = new MustacheEnum(enumClassName, values);
+        MustacheEnum mustacheEnum = new MustacheEnum(enumClassName, enumValues);
         ResourceCache.addToEnumClasses(mustacheEnum);
     }
 }

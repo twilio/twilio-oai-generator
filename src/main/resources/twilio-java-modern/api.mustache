@@ -1,0 +1,11 @@
+{{>licenseInfo}}
+{{#resources}}
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+@ToString
+public class {{resourceName}} extends Resource {
+
+{{>enums}}
+}
+{{/resources}}
+

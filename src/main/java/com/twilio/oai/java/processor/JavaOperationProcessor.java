@@ -26,6 +26,7 @@ public class JavaOperationProcessor implements Processor {
         // Factories are dynamic and can be added as needed
         RequestBodyProcessorFactory requestBodyProcessorFactory = RequestBodyProcessorFactory.getInstance();
         RequestBodyProcessor requestBodyProcessor = requestBodyProcessorFactory.getProcessor(codegenOperation);
-        requestBodyProcessor.process(codegenOperation);
+        if (requestBodyProcessor != null)
+            requestBodyProcessor.process(codegenOperation);
     }
 }

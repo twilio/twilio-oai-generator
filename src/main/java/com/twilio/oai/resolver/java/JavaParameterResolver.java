@@ -13,8 +13,6 @@ import org.openapitools.codegen.CodegenParameter;
 import java.util.Arrays;
 import java.util.HashMap;
 
-import static com.twilio.oai.TwilioJavaGenerator.JSON_INGRESS;
-
 public class JavaParameterResolver extends LanguageParamResolver {
     public static final String OBJECT = "object";
     private static final String LIST_OBJECT = "List<Object>";

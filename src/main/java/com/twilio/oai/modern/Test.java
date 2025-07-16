@@ -1,5 +1,7 @@
 package com.twilio.oai.modern;
 
+import com.twilio.oai.StringHelper;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -36,10 +38,7 @@ public class Test {
     }
 
     public static void main(String[] args) {
-        String input = "Set<Dummy>";
-        String replacement = "Abc";
-
-        String result = replaceCustomType(input, replacement);
-        System.out.println(result); // Output: List<Abc>
+        String output = StringHelper.toSnakeCase("outbound-api");
+        System.out.println(output.toUpperCase());;
     }
 }

@@ -1,6 +1,7 @@
 package com.twilio.oai.java;
 
 import com.twilio.oai.TwilioJavaGenerator;
+import com.twilio.oai.TwilioJavaGeneratorModern;
 import org.openapitools.codegen.CodegenOperation;
 
 import java.util.AbstractMap;
@@ -41,7 +42,7 @@ public class JavaTemplateUpdater {
 //        );
     }
 
-    public void addApiTemplate(TwilioJavaGenerator twilioJavaGenerator, List<CodegenOperation> operations) {
+    public void addApiTemplate(TwilioJavaGeneratorModern twilioJavaGenerator, List<CodegenOperation> operations) {
         clearApiTemplate(twilioJavaGenerator);
         for (CodegenOperation operation : operations) {
             String operationId = operation.operationId;
@@ -59,7 +60,7 @@ public class JavaTemplateUpdater {
         }
     }
 
-    void clearApiTemplate(TwilioJavaGenerator twilioJavaGenerator) {
+    void clearApiTemplate(TwilioJavaGeneratorModern twilioJavaGenerator) {
         // Clear the existing templates
         twilioJavaGenerator.apiTemplateFiles().clear();
         // Add the default API template

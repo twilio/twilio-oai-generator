@@ -4,20 +4,51 @@ import com.twilio.oai.common.StringUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 // Currently only String enums are Supported
+/*
+    public enum Direction {
+        INBOUND("inbound"),
+        OUTBOUND_API("outbound-api"),
+        OUTBOUND_CALL("outbound-call"),
+        OUTBOUND_REPLY("outbound-reply");
+
+        private final String value;
+
+        private Direction(final String value) {
+            this.value = value;
+        }
+
+        public String toString() {
+            return value;
+        }
+
+        @JsonCreator
+        public static Direction forValue(final String value) {
+            return Promoter.enumFromString(value, Direction.values());
+        }
+    }
+ */
 public class MustacheEnum {
     String className;
     Map<String, Object> values;
     
-    public MustacheEnum(String className, Map<String, Object> values) {
-        if (org.apache.commons.lang3.StringUtils.isBlank(className) || values == null || values.isEmpty()) {
+    /*
+    Allowed Keys:
+    name: Enum value name, typically in capital letter (INBOUND, OUTBOUND_API, etc.)
+    value: Enum value as in open api spec. (inbound, outbound-api, etc.)
+     */
+    List<Map<String, Object>> enumValues;
+    
+    public MustacheEnum(String className, List<Map<String, Object>> enumValues) {
+        if (org.apache.commons.lang3.StringUtils.isBlank(className) || enumValues == null || enumValues.isEmpty()) {
             throw new RuntimeException("MustacheEnum requires a non-empty className and values map.");
         }
         this.className = StringUtils.toPascalCase(className);
-        this.values = new HashMap<>(values);
+        this.enumValues = new ArrayList<>(enumValues);
     }
     
     @Override

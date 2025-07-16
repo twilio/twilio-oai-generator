@@ -8,6 +8,10 @@ import com.twilio.oai.java.nestedmodels.MustacheEnum;
 import com.twilio.oai.modern.ResourceCache;
 import org.openapitools.codegen.CodegenParameter;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 import static com.twilio.oai.common.ApplicationConstants.DOT;
 import static com.twilio.oai.common.ApplicationConstants.X_DATATYPE;
 import static com.twilio.oai.common.ApplicationConstants.X_VARIABLE_NAME;
@@ -75,8 +79,10 @@ public class RefListParamStrategy implements ParameterEnumProcessingStrategy {
     }
 
     private void cacheEnumClass(CodegenParameter codegenParameter) {
+        List<Map<String, Object>> enumValues = (List<Map<String, Object>>)  codegenParameter.getSchema().items.allowableValues.get("enumVars");
+        
         MustacheEnum mustacheEnum = new MustacheEnum(StringUtils.toPascalCase(
-                Utility.getEnumNameFromRef(codegenParameter.getSchema().items.getRef())), codegenParameter.getSchema().items.allowableValues);
+                Utility.getEnumNameFromRef(codegenParameter.getSchema().items.getRef())), enumValues);
         ResourceCache.addToEnumClasses(mustacheEnum);
     }
 }

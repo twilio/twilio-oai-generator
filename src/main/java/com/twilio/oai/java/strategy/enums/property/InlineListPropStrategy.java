@@ -3,9 +3,14 @@ package com.twilio.oai.java.strategy.enums.property;
 import com.twilio.oai.common.EnumConstants.OpenApiEnumType;
 import com.twilio.oai.common.StringUtils;
 import com.twilio.oai.common.Utility;
+import com.twilio.oai.java.nestedmodels.MustacheEnum;
 import com.twilio.oai.modern.ResourceCache;
 import org.openapitools.codegen.CodegenParameter;
 import org.openapitools.codegen.CodegenProperty;
+
+import java.util.List;
+import java.util.Map;
+
 import static com.twilio.oai.common.ApplicationConstants.DOT;
 import static com.twilio.oai.common.ApplicationConstants.X_VARIABLE_NAME;
 import static com.twilio.oai.common.ApplicationConstants.X_DATATYPE;
@@ -20,6 +25,7 @@ public class InlineListPropStrategy implements PropertyEnumProcessingStrategy {
             type(codegenProperty);
             variableName(codegenProperty);
             datatype(codegenProperty);
+            cacheEnumClass(codegenProperty);
             return true;
         }
         // Check if the parameter is a single enum type
@@ -52,7 +58,9 @@ public class InlineListPropStrategy implements PropertyEnumProcessingStrategy {
         return false;
     }
 
-    private void cacheEnumClass(CodegenParameter codegenParameter) {
-        
+    private void cacheEnumClass(CodegenProperty codegenProperty) {
+        List<Map<String, Object>> enumValues = (List<Map<String, Object>>)  codegenProperty.allowableValues.get("enumVars");
+        MustacheEnum mustacheEnum = new MustacheEnum(StringUtils.toPascalCase(codegenProperty.baseName), enumValues);
+        ResourceCache.addToEnumClasses(mustacheEnum);
     }
 }

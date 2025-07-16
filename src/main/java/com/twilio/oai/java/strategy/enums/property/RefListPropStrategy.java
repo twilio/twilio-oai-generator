@@ -5,7 +5,13 @@ import com.twilio.oai.common.StringUtils;
 import com.twilio.oai.common.Utility;
 import com.twilio.oai.java.nestedmodels.MustacheEnum;
 import com.twilio.oai.modern.ResourceCache;
+import org.checkerframework.checker.units.qual.A;
 import org.openapitools.codegen.CodegenProperty;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static com.twilio.oai.common.ApplicationConstants.X_VARIABLE_NAME;
 import static com.twilio.oai.common.ApplicationConstants.X_ENUM_TYPE;
@@ -60,7 +66,9 @@ public class RefListPropStrategy implements PropertyEnumProcessingStrategy {
     private void cacheEnumClass(CodegenProperty codegenProperty) {
         String enumExistingDatatype = Utility.extractDatatypeFromContainer(codegenProperty.dataType);
         String enumClassName = Utility.getEnumNameFromDatatype(enumExistingDatatype);
-        MustacheEnum mustacheEnum = new MustacheEnum(enumClassName, codegenProperty.items.allowableValues);
+        List<Map<String, Object>> enumValues = (List<Map<String, Object>>) codegenProperty.items.allowableValues.get("enumVars");
+        
+        MustacheEnum mustacheEnum = new MustacheEnum(enumClassName, enumValues);
         ResourceCache.addToEnumClasses(mustacheEnum);
     }
 }

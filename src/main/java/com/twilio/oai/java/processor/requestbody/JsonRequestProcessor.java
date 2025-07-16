@@ -7,6 +7,8 @@ import com.twilio.oai.java.strategy.model.RecursiveModelIdentifier;
 import com.twilio.oai.java.strategy.enums.parameter.EnumIdentifierHandler;
 import org.openapitools.codegen.CodegenOperation;
 
+import static com.twilio.oai.common.ApplicationConstants.X_REQUEST_CONTENT_TYPE;
+
 public class JsonRequestProcessor implements RequestBodyProcessor, Processor {
     EnumProcessor enumProcessor = EnumProcessor.getInstance();
     
@@ -16,6 +18,7 @@ public class JsonRequestProcessor implements RequestBodyProcessor, Processor {
     }
     @Override
     public void process(CodegenOperation codegenOperation) {
+        codegenOperation.vendorExtensions.put(X_REQUEST_CONTENT_TYPE, getContentType());
         System.out.println(codegenOperation.operationId);
         if (!codegenOperation.getHasBodyParam()) return;
         if (codegenOperation.bodyParams.size() > 1) {

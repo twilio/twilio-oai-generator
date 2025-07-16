@@ -15,7 +15,6 @@ import org.openapitools.codegen.CodegenProperty;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.twilio.oai.TwilioJavaGenerator.JSON_INGRESS;
 import static com.twilio.oai.common.ApplicationConstants.VENDOR_PREFIX;
 
 public class JavaPropertyResolver extends LanguagePropertyResolver {

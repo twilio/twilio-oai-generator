@@ -1,6 +1,7 @@
 package com.twilio.oai.modern;
 
 import com.twilio.oai.TwilioJavaGenerator;
+import com.twilio.oai.TwilioJavaGeneratorModern;
 import com.twilio.oai.java.processor.JavaOperationProcessor;
 import org.apache.commons.lang3.StringUtils;
 import org.openapitools.codegen.CodegenOperation;
@@ -13,10 +14,10 @@ import static com.twilio.oai.common.ApplicationConstants.PATH_SEPARATOR_PLACEHOL
 
 public class JavaApiResourceBuilderNew {
     JavaOperationProcessor operationProcessor;
-    TwilioJavaGenerator twilioJavaGenerator;
+    TwilioJavaGeneratorModern twilioJavaGenerator;
     String resourceName;
 
-    public JavaApiResourceBuilderNew(TwilioJavaGenerator twilioJavaGenerator) {
+    public JavaApiResourceBuilderNew(TwilioJavaGeneratorModern twilioJavaGenerator) {
         this.twilioJavaGenerator = twilioJavaGenerator;
         this.operationProcessor = JavaOperationProcessor.getInstance();
     }

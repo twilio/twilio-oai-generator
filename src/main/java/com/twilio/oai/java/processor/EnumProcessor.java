@@ -22,12 +22,20 @@ public class EnumProcessor {
     }
 
     public void process(CodegenParameter codegenParameter) {
+        if (codegenParameter.dataFormat != null && codegenParameter.dataFormat.equals("http-method")) {
+            return;
+        }
         ParameterEnumProcessingStrategy strategy = strategyFactory.getStrategy(codegenParameter);
-        strategy.process(codegenParameter);
+        if (strategy != null)
+            strategy.process(codegenParameter);
     }
     
     public void process(CodegenProperty codegenProperty) {
+        if (codegenProperty.dataFormat != null && codegenProperty.dataFormat.equals("http-method")) {
+            return;
+        }
         PropertyEnumProcessingStrategy strategy = strategyFactory.getStrategy(codegenProperty);
-        strategy.process(codegenProperty);
+        if (strategy != null)
+            strategy.process(codegenProperty);
     }
 }

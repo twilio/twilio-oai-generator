@@ -5,11 +5,16 @@ import static com.twilio.oai.common.ApplicationConstants.X_VARIABLE_NAME;
 import static com.twilio.oai.common.ApplicationConstants.X_DATATYPE;
 import static com.twilio.oai.common.ApplicationConstants.X_ENUM_TYPE;
 
+import com.twilio.oai.StringHelper;
 import com.twilio.oai.common.EnumConstants.OpenApiEnumType;
 import com.twilio.oai.common.StringUtils;
+import com.twilio.oai.java.nestedmodels.MustacheEnum;
 import com.twilio.oai.modern.ResourceCache;
 import org.openapitools.codegen.CodegenProperty;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /*
@@ -56,9 +61,15 @@ public class InlinePropStrategy implements PropertyEnumProcessingStrategy {
     }
 
     private void cacheEnumClass(CodegenProperty codegenProperty) {
-        Map<String, Object> values = null;
+        List<Map<String, Object>> enumValues = new ArrayList<>();
         
-        //MustacheEnum mustacheEnum = new MustacheEnum(StringUtils.toPascalCase(codegenProperty.baseName), codegenProperty.items.allowableValues);
-        //ResourceCache.addToEnumClasses(mustacheEnum);
+        for (String s : (List<String>) codegenProperty.allowableValues.get("values")) {
+            HashMap<String, Object> valueMap = new HashMap<>();
+            valueMap.put("name", StringHelper.toSnakeCase(s).toUpperCase());
+            valueMap.put("value",  "\"" + s + "\""); // adding extra quote as this is how enumVars are stored
+            enumValues.add(valueMap);
+        }
+        MustacheEnum mustacheEnum = new MustacheEnum(StringUtils.toPascalCase(codegenProperty.baseName), enumValues);
+        ResourceCache.addToEnumClasses(mustacheEnum);
     }
 }
