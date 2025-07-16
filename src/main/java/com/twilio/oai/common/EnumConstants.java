@@ -134,20 +134,18 @@ public class EnumConstants {
     }
 
     public enum OpenApiEnumType {
-        PARAMETER_SINGLE,       // A single enum value used as a parameter value
-        PARAMETER_LIST,        // An array of enum values used in parameters
+        PARAMETER_INLINE,       // A single enum value used as a parameter value
+        PARAMETER_LIST_INLINE,        // An array of enum values used in parameters
         PARAMETER_REF,        // An array of enum values used in parameters
         PARAMETER_LIST_REF,        // An array of enum values used in parameters
-        PROPERTY_SINGLE,        // A single enum value used as a property in a schema
+        PROPERTY_INLINE,        // A single enum value used as a property in a schema
         PROPERTY_LIST,         // An array of enum values used as a property in a schema
         PROPERTY_REF,
         PROPERTY_LIST_REF,        // An array of enum values used as a property in a schema
-        REUSABLE_SINGLE,        // A reusable enum defined in the components section as a single value
-        REUSABLE_ARRAY,          // A reusable enum defined in the components section as an array
-        URL_ENCODED_BODY_SINGLE,
-        URL_ENCODED_BODY_LIST,
-        URL_ENCODED_BODY_REF,
-        URL_ENCODED_BODY_REF_LIST,
+        FORM_PARAM_INLINE,
+        FORM_PARAM_LIST_INLINE,
+        FORM_PARAM_REF,
+        FORM_PARAM_LIST_REF,
     }
     
     public enum ModelType {
