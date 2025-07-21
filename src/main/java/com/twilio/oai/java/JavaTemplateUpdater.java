@@ -2,6 +2,7 @@ package com.twilio.oai.java;
 
 import com.twilio.oai.TwilioJavaGenerator;
 import com.twilio.oai.TwilioJavaGeneratorModern;
+import com.twilio.oai.common.EnumConstants;
 import org.openapitools.codegen.CodegenOperation;
 
 import java.util.AbstractMap;
@@ -53,6 +54,7 @@ public class JavaTemplateUpdater {
 
             for (Map.Entry<String, AbstractMap.SimpleEntry> entry : apiOperationTemplate.entrySet()) {
                 if (lowerCaseOpId.startsWith(entry.getKey())) {
+                    operation.vendorExtensions.put(EnumConstants.SupportedOperation.X_CREATE.getValue(), true);
                     twilioJavaGenerator.apiTemplateFiles().put((String) entry.getValue().getKey(), (String) entry.getValue().getValue());
                     break; // break and continue to the next operation
                 }

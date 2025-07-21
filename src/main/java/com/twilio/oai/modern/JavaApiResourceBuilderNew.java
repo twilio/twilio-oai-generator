@@ -16,6 +16,8 @@ public class JavaApiResourceBuilderNew {
     JavaOperationProcessor operationProcessor;
     TwilioJavaGeneratorModern twilioJavaGenerator;
     String resourceName;
+    
+    List<CodegenOperation> operations;
 
     public JavaApiResourceBuilderNew(TwilioJavaGeneratorModern twilioJavaGenerator) {
         this.twilioJavaGenerator = twilioJavaGenerator;
@@ -23,6 +25,7 @@ public class JavaApiResourceBuilderNew {
     }
 
     public void process(List<CodegenOperation> operations) {
+        this.operations = operations;
         fetchResourceName(operations);
         operations.forEach(operation -> operationProcessor.process(operation));
     }

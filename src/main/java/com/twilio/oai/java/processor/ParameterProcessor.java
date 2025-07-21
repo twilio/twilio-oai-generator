@@ -23,5 +23,11 @@ public class ParameterProcessor implements Processor {
         codegenOperation.queryParams.forEach(param -> enumProcessor.process(param));
         codegenOperation.pathParams.forEach(param -> enumProcessor.process(param));
         codegenOperation.headerParams.forEach(param -> enumProcessor.process(param));
+        codegenOperation.requiredParams.forEach(param -> enumProcessor.process(param));
+    }
+
+    @Override
+    public int getPriority() {
+        return Processor.DEFAULT_PRIORITY;
     }
 }

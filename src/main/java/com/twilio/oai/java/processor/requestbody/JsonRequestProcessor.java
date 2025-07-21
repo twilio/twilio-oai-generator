@@ -8,6 +8,7 @@ import com.twilio.oai.java.strategy.enums.parameter.EnumIdentifierHandler;
 import org.openapitools.codegen.CodegenOperation;
 
 import static com.twilio.oai.common.ApplicationConstants.X_REQUEST_CONTENT_TYPE;
+import static com.twilio.oai.java.MustacheConstants.X_REQUEST_LANGUAGE_CONTENT_TYPE_CONSTANT;
 
 public class JsonRequestProcessor implements RequestBodyProcessor, Processor {
     EnumProcessor enumProcessor = EnumProcessor.getInstance();
@@ -19,6 +20,7 @@ public class JsonRequestProcessor implements RequestBodyProcessor, Processor {
     @Override
     public void process(CodegenOperation codegenOperation) {
         codegenOperation.vendorExtensions.put(X_REQUEST_CONTENT_TYPE, getContentType());
+        codegenOperation.vendorExtensions.put(X_REQUEST_LANGUAGE_CONTENT_TYPE_CONSTANT, "JSON");
         System.out.println(codegenOperation.operationId);
         if (!codegenOperation.getHasBodyParam()) return;
         if (codegenOperation.bodyParams.size() > 1) {
@@ -30,7 +32,12 @@ public class JsonRequestProcessor implements RequestBodyProcessor, Processor {
             recursiveModelIdentifier.identify(property);
         });
     }
-    
+
+    @Override
+    public int getPriority() {
+        return Processor.DEFAULT_PRIORITY;
+    }
+
     public void resolve() {
         
     }

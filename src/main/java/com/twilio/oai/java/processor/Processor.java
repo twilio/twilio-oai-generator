@@ -9,5 +9,9 @@ import org.openapitools.codegen.CodegenOperation;
     * Example implementations could include processing parameters, request bodies, or responses.
  */
 public interface Processor {
+    int DEFAULT_PRIORITY = 100;
+
     void process(CodegenOperation codegenOperation);
+
+    int getPriority();
 }

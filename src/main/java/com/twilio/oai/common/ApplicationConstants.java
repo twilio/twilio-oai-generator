@@ -66,5 +66,6 @@ public class ApplicationConstants {
     public static final String X_IS_MODEL = "x-is-model";
     public static final String X_REQUEST_CONTENT_TYPE = "x-request-content-type";
     
+    
 
 }

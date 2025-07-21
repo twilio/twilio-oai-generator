@@ -10,6 +10,11 @@ public class JsonResponseProcessor implements ResponseBodyProcessor, Processor {
     }
 
     @Override
+    public int getPriority() {
+        return Processor.DEFAULT_PRIORITY;
+    }
+
+    @Override
     public String getContentType() {
         return "application/json";
     }

@@ -1,3 +1,4 @@
+
 {{#vendorExtensions.parentUrl}}
     String path = "{{{vendorExtensions.parentUrl}}}";
 {{/vendorExtensions.parentUrl}}
@@ -5,12 +6,12 @@
     String path = "{{{path}}}";
 {{/vendorExtensions.parentUrl}}
 
-{{#allParams}}
+{{#pathParams}}
     {{#vendorExtensions.x-is-account-sid}}
-    this.{{paramName}} = this.{{paramName}} == null ? client.getAccountSid() : this.{{paramName}};
+        this.{{paramName}} = this.{{paramName}} == null ? client.getAccountSid() : this.{{paramName}};
+        path = path.replace("{"+"{{baseName}}"+"}", this.{{paramName}}.toString());
+    {{/vendorExtensions.x-is-account-sid}}
+    {{^vendorExtensions.x-is-account-sid}}
     path = path.replace("{"+"{{baseName}}"+"}", this.{{paramName}}.toString());
     {{/vendorExtensions.x-is-account-sid}}
-{{/allParams}}
-{{#requiredParams}}
-    path = path.replace("{"+"{{baseName}}"+"}", this.{{paramName}}.toString());
-{{/requiredParams}}
+{{/pathParams}}

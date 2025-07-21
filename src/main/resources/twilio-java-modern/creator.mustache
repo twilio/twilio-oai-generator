@@ -1,0 +1,17 @@
+{{>licenseInfo}}
+{{#imports}}
+import {{import}};
+{{/imports}}
+{{#resources}}
+{{#operations}}
+{{#vendorExtensions.x-create-operation}}
+public class {{resourceName}} extends Creator<{{resourceName}}> {
+
+{{>creator/instanceVariables}}
+{{>creator/constructors}}
+{{>creator/setters}}
+{{>creator/createMethod}}
+}
+{{/vendorExtensions.x-create-operation}}
+{{/operations}}
+{{/resources}}

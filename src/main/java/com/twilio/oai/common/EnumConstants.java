@@ -153,4 +153,28 @@ public class EnumConstants {
         SINGLE,
         LIST
     }
+
+    @Getter
+    @RequiredArgsConstructor
+    public enum SupportedOperation {
+        X_CREATE("x-create-operation"),
+        X_LIST("x-list-operation"),
+        X_UPDATE("x-update-operation"),
+        X_FETCH("x-fetch-operation"),
+        X_DELETE("x-delete-operation");
+
+        private final String value;
+    }
+
+    @Getter
+    @RequiredArgsConstructor
+    public enum SerializationTypes {
+        X_CREATE("x-create-operation"),
+        X_LIST("x-list-operation"),
+        X_UPDATE("x-update-operation"),
+        X_FETCH("x-fetch-operation"),
+        X_DELETE("x-delete-operation");
+
+        private final String value;
+    }
 }
