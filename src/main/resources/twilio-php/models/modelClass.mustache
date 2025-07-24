@@ -21,10 +21,16 @@ class {{classname}} implements \JsonSerializable
 
     public function jsonSerialize(): array
     {
-        return [
-            {{#vars}}
+        $jsonString = [
+            {{#requiredVars}}
             '{{baseName}}' => $this->{{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}{{^-last}},{{/-last}}
-            {{/vars}}
+            {{/requiredVars}}
         ];
+        {{#optionalVars}}
+        if (isset($this->{{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}})) {
+            $jsonString['{{baseName}}'] = $this->{{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}};
+        }
+        {{/optionalVars}}
+        return $jsonString;
     }
 }
