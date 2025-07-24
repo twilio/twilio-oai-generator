@@ -1,0 +1,123 @@
+openapi: 3.0.3
+info:
+  title: Comprehensive Data Types API
+  version: 1.0.0
+  description: Demonstration API for handling various data types in a single POST operation.
+
+servers:
+  - url: https://api.example.com
+
+paths:
+  /process/{typeId}:
+    post:
+      operationId: CreateProcess
+      summary: Process various data types
+      parameters:
+        - name: ids
+          in: query
+          required: true
+          description: A list of item IDs
+          schema:
+            type: array
+            items:
+              type: integer
+        - name: MessageDate
+          in: query
+          schema:
+            type: string
+            format: date
+        - name: Header1
+          in: header
+          schema:
+            type: string
+        - name: MessageDate<
+          in: query
+          schema:
+            type: string
+            format: date
+        - name: MessageDate>
+          in: query
+          schema:
+            type: string
+            format: date
+        - name: typeId
+          in: path
+          required: true
+          description: An identifier representing the data type to be processed
+          schema:
+            type: string
+            example: "123abc"
+
+        - name: debugMode
+          in: query
+          required: false
+          description: Whether to run in debug mode
+          schema:
+            type: boolean
+            example: true
+
+        - name: X-Request-ID
+          in: header
+          required: false
+          description: Unique request identifier
+          schema:
+            type: string
+            example: "req-789"
+
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  description: The name of the user
+                  example: "johndoe"
+                age:
+                  type: integer
+                  description: The age of the user
+                  example: 30
+                rating:
+                  type: number
+                  description: A decimal rating value
+                  example: 4.5
+                active:
+                  type: boolean
+                  description: Whether the user is active
+                  example: false
+                tags:
+                  type: array
+                  items:
+                    type: string
+                  description: Tags associated with the user
+                  example: ["user", "admin"]
+
+      responses:
+        '200':
+          description: Successfully processed data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Data processed successfully."
+        '400':
+          description: Invalid input parameters
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: string
+                    example: "Invalid data provided."

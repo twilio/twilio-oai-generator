@@ -2,6 +2,8 @@
 {{#imports}}
 import {{import}};
 {{/imports}}
+import com.twilio.constant.EnumConstants.ParameterType;
+
 {{#resources}}
 {{#operations}}
 {{#vendorExtensions.x-create-operation}}
@@ -11,6 +13,9 @@ public class {{resourceName}} extends Creator<{{resourceName}}> {
 {{>creator/constructors}}
 {{>creator/setters}}
 {{>creator/createMethod}}
+{{>creator/addQueryParams}}
+{{>creator/addHeaderParams}}
+{{>creator/addPostParams}}
 }
 {{/vendorExtensions.x-create-operation}}
 {{/operations}}

@@ -31,6 +31,7 @@ public class JavaUpdateDefaultMapping {
         predefinedTypeMappings.put("string+url", "URI");
         predefinedTypeMappings.put("string+currency", "Currency");
         predefinedTypeMappings.put("string+date-time", "LocalDate");
+        predefinedTypeMappings.put("string+date", "LocalDate");
         predefinedTypeMappings.put("string+endpoint", "Endpoint");
         predefinedTypeMappings.put("string+http-method", "HttpMethod");
         predefinedTypeMappings.put("string+twiml", "com.twilio.type.Twiml");

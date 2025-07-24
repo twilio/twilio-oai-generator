@@ -103,6 +103,11 @@ public class TwilioJavaGeneratorModern extends JavaClientCodegen {
     }
 
     @Override
+    public String toParamName(final String name) {
+        return super.toVarName(twilioCodegen.toParamName(name));
+    }
+
+    @Override
     public String getName() {
         return EnumConstants.Generator.TWILIO_JAVA_MODERN.getValue();
     }

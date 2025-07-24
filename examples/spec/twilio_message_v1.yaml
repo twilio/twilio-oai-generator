@@ -13,146 +13,228 @@ info:
 openapi: 3.0.1
 
 paths:
-  /v1/content:
+  /v1/message:
     servers:
-      - url: https://content.twilio.com
-    get:
-      summary: Retrieve items with various filter options
-      parameters:
-        - name: myMethodParam
-          in: query
-          schema:
-            type: string
-            format: http-method
-            enum:
-              - GET
-              - POST
-              - PUT
-              - DELETE
-        - name: myMethodParamArray
-          in: query
-          schema:
-            type: array
-            items:
-              type: string
-              format: http-method
-              enum:
-                - GET
-                - POST
-                - PUT
-                - DELETE
-        # PARAMETER_SINGLE
-        - name: singleParam
-          in: query
-          description: A single enum value as a query parameter
-          required: false
-          schema:
-            type: string
-            enum:
-              - asc
-              - desc
-            example: asc
-
-        # PARAMETER_ARRAY
-        - name: arrayParam
-          in: query
-          description: Order items using an array of enums
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-              enum:
-                - asc
-                - desc
-            example: [asc]
-
-        # PARAMETER_ARRAY
-        - name: arrayParamRef
-          in: query
-          required: false
-          description: An array parameter referencing a reusable schema
-          schema:
-            type: array
-            items:
-              $ref: '#/components/schemas/singleReusable'
-
-        - name: singleParamRef
-          in: header
-          schema:
-            $ref: '#/components/schemas/singleReusable'
-
-      responses:
-        '200':
-          description: A list of items
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Item'
+      - url: https://message.twilio.com
     post:
-      summary: Update an item with various properties
+      operationId: CreateMessage
+      summary: Example endpoint with conditional parameters and a common parameter
       requestBody:
         required: true
         content:
-          application/json:
+          application/x-www-form-urlencoded:
             schema:
               type: object
               properties:
-                # PROPERTY_SINGLE
-                parentObject:
-                  type: object
-                  properties:
-                    normalProp:
-                      type: string
-                    nestedSingleBody:
-                      type: string
-                      enum:
-                        - available
-                        - pending 
-                        - sold
-                    nestedSingleBodyRef:
-                      $ref: '#/components/schemas/singleReusable'
-                      description: A reusable single-value enum in the request body
-                singleBody:
+                normalParam1:
                   type: string
-                  enum:
-                    - available
-                    - pending
-                    - sold
+                normalParam2:
+                  type: integer
+                normalParam3:
+                  type: boolean
+                flexibleParam1:
+                  oneOf:
+                    - type: string
+                    - type: integer  # This parameter can be either a string or an integer
+                flexibleParam2:
+                  oneOf:
+                    - type: string
+                      format: email
+                    - type: string
+                      format: uri    # This parameter can be an email or a URI string
 
-                # PROPERTY_ARRAY
-                singleBodyArray:
-                  type: array
-                  items:
-                    type: string
-                    enum:
-                      - new
-                      - sale
-                      - featured
-                  description: An array of enum values in the request body
-                  example: [ new, featured ]
-
-                # REUSABLE_SINGLE
-                singleBodyRef:
-                  $ref: '#/components/schemas/singleReusable'
-                  description: A reusable single-value enum in the request body
-
-                # REUSABLE_ARRAY
-                singleBodyRefArray:
-                  type: array
-                  items:
-                    $ref: '#/components/schemas/singleReusable'
-                  description: An array of reusable enums in the request body
-                  example: [ electronics, clothing ]
+#            schema:
+#              type: object
+#              properties:
+#                commonParam:
+#                  type: string
+#                appId:
+#                  type: string
+#              required:
+#                - commonParam
+#                - appId
+#              discriminator:
+#                propertyName: appId
+#                mapping:
+#                  "app1": "#/components/schemas/Model1"
+#                  "app2": "#/components/schemas/Model2"
+#              oneOf:
+#                - $ref: '#/components/schemas/Model1'
+#                - $ref: '#/components/schemas/Model2'
       responses:
         '200':
-          description: "Item updated successfully"
+          description: Successful response
+  
+#  
+#  /v1/content:
+#    servers:
+#      - url: https://content.twilio.com
+#    get:
+#      summary: Retrieve items with various filter options
+#      parameters:
+#        - name: myMethodParam
+#          in: query
+#          schema:
+#            type: string
+#            format: http-method
+#            enum:
+#              - GET
+#              - POST
+#              - PUT
+#              - DELETE
+#        - name: myMethodParamArray
+#          in: query
+#          schema:
+#            type: array
+#            items:
+#              type: string
+#              format: http-method
+#              enum:
+#                - GET
+#                - POST
+#                - PUT
+#                - DELETE
+#        # PARAMETER_SINGLE
+#        - name: singleParam
+#          in: query
+#          description: A single enum value as a query parameter
+#          required: false
+#          schema:
+#            type: string
+#            enum:
+#              - asc
+#              - desc
+#            example: asc
+#
+#        # PARAMETER_ARRAY
+#        - name: arrayParam
+#          in: query
+#          description: Order items using an array of enums
+#          required: false
+#          schema:
+#            type: array
+#            items:
+#              type: string
+#              enum:
+#                - asc
+#                - desc
+#            example: [asc]
+#
+#        # PARAMETER_ARRAY
+#        - name: arrayParamRef
+#          in: query
+#          required: false
+#          description: An array parameter referencing a reusable schema
+#          schema:
+#            type: array
+#            items:
+#              $ref: '#/components/schemas/singleReusable'
+#
+#        - name: singleParamRef
+#          in: header
+#          schema:
+#            $ref: '#/components/schemas/singleReusable'
+#
+#      responses:
+#        '200':
+#          description: A list of items
+#          content:
+#            application/json:
+#              schema:
+#                type: array
+#                items:
+#                  $ref: '#/components/schemas/Item'
+#    post:
+#      summary: Update an item with various properties
+#      requestBody:
+#        required: true
+#        content:
+#          application/json:
+#            schema:
+#              type: object
+#              properties:
+#                # PROPERTY_SINGLE
+#                parentObject:
+#                  type: object
+#                  properties:
+#                    normalProp:
+#                      type: string
+#                    nestedSingleBody:
+#                      type: string
+#                      enum:
+#                        - available
+#                        - pending 
+#                        - sold
+#                    nestedSingleBodyRef:
+#                      $ref: '#/components/schemas/singleReusable'
+#                      description: A reusable single-value enum in the request body
+#                singleBody:
+#                  type: string
+#                  enum:
+#                    - available
+#                    - pending
+#                    - sold
+#
+#                # PROPERTY_ARRAY
+#                singleBodyArray:
+#                  type: array
+#                  items:
+#                    type: string
+#                    enum:
+#                      - new
+#                      - sale
+#                      - featured
+#                  description: An array of enum values in the request body
+#                  example: [ new, featured ]
+#
+#                # REUSABLE_SINGLE
+#                singleBodyRef:
+#                  $ref: '#/components/schemas/singleReusable'
+#                  description: A reusable single-value enum in the request body
+#
+#                # REUSABLE_ARRAY
+#                singleBodyRefArray:
+#                  type: array
+#                  items:
+#                    $ref: '#/components/schemas/singleReusable'
+#                  description: An array of reusable enums in the request body
+#                  example: [ electronics, clothing ]
+#      responses:
+#        '200':
+#          description: "Item updated successfully"
 
 
 components:
   schemas:
+    Model1:
+      type: object
+      properties:
+        appId:
+          type: string
+          enum: [ "app1" ]
+        paramSet1A:
+          type: string
+        paramSet1B:
+          type: integer
+      required:
+        - appId
+        - paramSet1A
+        - paramSet1B
+
+    Model2:
+      type: object
+      properties:
+        appId:
+          type: string
+          enum: [ "app2" ]
+        paramSet2A:
+          type: string
+        paramSet2B:
+          type: boolean
+      required:
+        - appId
+        - paramSet2A
+        - paramSet2B
     Item:
       type: object
       properties:

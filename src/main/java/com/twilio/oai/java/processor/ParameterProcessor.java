@@ -1,9 +1,12 @@
 package com.twilio.oai.java.processor;
 
+import com.twilio.oai.java.feature.Inequality;
 import com.twilio.oai.java.strategy.enums.parameter.EnumIdentifierHandler;
 import org.openapitools.codegen.CodegenOperation;
 
 public class ParameterProcessor implements Processor {
+
+    private Inequality inequality = new Inequality();
     
     public static ParameterProcessor instance;
     EnumProcessor enumProcessor;
@@ -24,6 +27,8 @@ public class ParameterProcessor implements Processor {
         codegenOperation.pathParams.forEach(param -> enumProcessor.process(param));
         codegenOperation.headerParams.forEach(param -> enumProcessor.process(param));
         codegenOperation.requiredParams.forEach(param -> enumProcessor.process(param));
+        inequality.process(codegenOperation);
+        
     }
 
     @Override
