@@ -5,6 +5,7 @@ ENV GOPATH /go
 WORKDIR /go/src/twilio-go
 COPY go-client .
 
+RUN go mod tidy
 RUN go get -u github.com/twilio/twilio-go@main
 RUN go get -u github.com/twilio/terraform-provider-twilio@main
 
