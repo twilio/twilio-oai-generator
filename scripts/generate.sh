@@ -49,13 +49,9 @@ if should-generate go; then
   OUT_DIR=examples/go/go-client/helper/rest
   generate twilio-go
 
-  OUT_DIR=examples/go/go-client/terraform/resources
-  generate terraform-provider-twilio
-
-  # Replace a couple imports in the generated Terraform resource to use local code.
+  # Replace a couple imports in the generated resource to use local code.
   for path in api/v2010 flex/v1; do
     sed -i.bak "s/github.com\/twilio\/twilio-go/go-client\/helper/g" "$OUT_DIR/$path/api_default.go"
-    sed -i.bak "s/github.com\/twilio\/terraform-provider-twilio\/client/go-client\/terraform\/client/g" "$OUT_DIR/$path/api_default.go"
   done
 
   docker-run examples/go/Dockerfile-goimports
