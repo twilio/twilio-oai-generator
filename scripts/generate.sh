@@ -49,11 +49,6 @@ if should-generate go; then
   OUT_DIR=examples/go/go-client/helper/rest
   generate twilio-go
 
-  # Replace a couple imports in the generated resource to use local code.
-  for path in api/v2010 flex/v1; do
-    sed -i.bak "s/github.com\/twilio\/twilio-go/go-client\/helper/g" "$OUT_DIR/$path/api_default.go"
-  done
-
   docker-run examples/go/Dockerfile-goimports
 fi
 
