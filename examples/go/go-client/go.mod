@@ -7,7 +7,7 @@ require (
 	github.com/hashicorp/terraform-plugin-sdk/v2 v2.10.1
 	github.com/stretchr/testify v1.7.0
 	github.com/twilio/terraform-provider-twilio v0.13.1
-	github.com/twilio/twilio-go v0.25.0
+	github.com/twilio/twilio-go v1.27.0
 )
 
 require (
