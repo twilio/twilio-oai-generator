@@ -1,4 +1,4 @@
-FROM golang:1.22
+FROM golang:latest
 
 ENV GOPATH /go
 
