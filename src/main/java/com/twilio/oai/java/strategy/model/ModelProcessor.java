@@ -1,12 +1,13 @@
 package com.twilio.oai.java.strategy.model;
 
+import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenProperty;
 
 import java.util.List;
 
-public class ModelIdentifierHandler {
+public class ModelProcessor {
     private final List<ModelIdentifierStrategy> modelIdentifierStrategies;
-    public ModelIdentifierHandler() {
+    public ModelProcessor() {
         modelIdentifierStrategies = List.of(
             new SingleModelStrategy(),
             new ListModelStrategy()
@@ -14,10 +15,10 @@ public class ModelIdentifierHandler {
     }
     
     // An enum code must not come to this point.
-    public boolean identify(CodegenProperty codegenProperty) {
+    public boolean process(CodegenProperty codegenProperty, CodegenModel codegenModel) {
         System.out.println(codegenProperty.baseName);
         for (ModelIdentifierStrategy strategy : modelIdentifierStrategies) {
-            if (strategy.identify(codegenProperty)) {
+            if (strategy.identify(codegenProperty, codegenModel)) {
                 System.out.println("Strategy matched: " + strategy.getType() + " Enum Basename: " + codegenProperty.baseName);
                 break;
             }

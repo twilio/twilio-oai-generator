@@ -8,7 +8,7 @@ servers:
   - url: https://api.example.com
 
 paths:
-  /process/{typeId}:
+  /v1/process/{typeId}:
     post:
       operationId: CreateProcess
       summary: Process various data types
@@ -63,7 +63,16 @@ paths:
           schema:
             type: string
             example: "req-789"
-
+        - name: uriMap
+          in: query
+          schema: 
+            type: object
+            format: uri-map
+        - name: stringMap
+          in: query
+          schema: 
+            type: object
+            format: string-map
       requestBody:
         required: true
         content:
@@ -71,6 +80,9 @@ paths:
             schema:
               type: object
               properties:
+                links:
+                  type: object
+                  format: uri-map
                 username:
                   type: string
                   description: The name of the user

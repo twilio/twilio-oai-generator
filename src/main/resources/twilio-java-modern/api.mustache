@@ -1,6 +1,6 @@
 {{>licenseInfo}}
 {{#imports}}
-    import {{import}};
+import {{import}};
 {{/imports}}
 import com.twilio.constant.EnumConstants.ParameterType;
 {{#resources}}
@@ -10,6 +10,9 @@ import com.twilio.constant.EnumConstants.ParameterType;
 public class {{resourceName}} extends Resource {
 
 {{>enums}}
+{{>models}}
+{{>staticMethods}}
+{{>response}}
 }
 {{/resources}}
 

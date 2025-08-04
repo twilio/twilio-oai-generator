@@ -5,7 +5,7 @@ import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenProperty;
 
 public interface ModelIdentifierStrategy {
-    boolean identify(CodegenProperty codegenProperty);
+    boolean identify(CodegenProperty codegenProperty, CodegenModel codegenModel);
 
     EnumConstants.ModelType getType();
 }

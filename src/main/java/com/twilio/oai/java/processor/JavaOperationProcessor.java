@@ -4,6 +4,7 @@ import com.twilio.oai.java.factory.RequestBodyProcessorFactory;
 import com.twilio.oai.java.feature.ConstructorGeneratorProcessor;
 import com.twilio.oai.java.feature.SetterMethodGenerator;
 import com.twilio.oai.java.processor.requestbody.RequestBodyProcessor;
+import com.twilio.oai.java.processor.responsebody.ResponseProcessorFactory;
 import org.openapitools.codegen.CodegenOperation;
 
 import java.util.ArrayList;
@@ -33,12 +34,14 @@ public class JavaOperationProcessor implements Processor {
         RequestBodyProcessor requestBodyProcessor = requestBodyProcessorFactory.getProcessor(codegenOperation);
         if (requestBodyProcessor != null)
             requestBodyProcessor.process(codegenOperation);
-        
+
         processors.sort(Comparator.comparingInt(Processor::getPriority));
         for (Processor processor : processors) {
             processor.process(codegenOperation);
         }
 
+        ResponseProcessorFactory responseProcessorFactory = ResponseProcessorFactory.getInstance();
+        responseProcessorFactory.applyProcessor(codegenOperation);
         
         // This has to be last as it update operation for mustache files.
         

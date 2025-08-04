@@ -92,6 +92,21 @@ public class Utility {
 
         return method.name();
     }
+    
+    /*
+       responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                title: ListMessageResponse
+                type: object
+                properties:
+                  messages: -----------------> recordKey
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/api.v2010.account.message'
+     */
 
     public String getRecordKey(final List<CodegenModel> models, final List<CodegenOperation> codegenOperationList) {
         return codegenOperationList
@@ -218,6 +233,22 @@ public class Utility {
         for (CodegenModel codegenModel: ResourceCache.getAllModelsByDefaultGenerator()) {
             if (modelClassName.equals(codegenModel.classname)) {
                 return codegenModel;
+            }
+        }
+        return null;
+    }
+
+    public static void main(String[] args) {
+        String ref = "#/components/schemas/api.v2010.account.message";
+        
+        System.out.println(getModelFromRef(ref));
+    }
+    public static CodegenModel getModelFromRef(String ref) {
+        String schemaName = ref.replaceFirst("#/components/schemas/", "");
+        List<CodegenModel> allModels = ResourceCache.getAllModelsByDefaultGenerator();
+        for (CodegenModel model: allModels) {
+            if (model.name.equals(schemaName)) {
+                return model;
             }
         }
         return null;

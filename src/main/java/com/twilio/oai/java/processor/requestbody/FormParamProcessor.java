@@ -1,5 +1,6 @@
 package com.twilio.oai.java.processor.requestbody;
 
+import com.twilio.oai.java.format.Promoter;
 import com.twilio.oai.java.processor.EnumProcessor;
 import com.twilio.oai.java.processor.Processor;
 import com.twilio.oai.java.strategy.enums.parameter.EnumIdentifierHandler;
@@ -14,7 +15,10 @@ public class FormParamProcessor implements RequestBodyProcessor, Processor {
     public void process(CodegenOperation codegenOperation) {
         codegenOperation.vendorExtensions.put(X_REQUEST_CONTENT_TYPE, getContentType());
         codegenOperation.vendorExtensions.put(X_REQUEST_LANGUAGE_CONTENT_TYPE_CONSTANT, "FORM_URLENCODED");
-        codegenOperation.formParams.forEach(parameter -> enumProcessor.process(parameter));
+        codegenOperation.formParams.forEach(parameter -> {
+            enumProcessor.process(parameter);
+            Promoter.addPromoter(parameter);
+        });
     }
 
     @Override

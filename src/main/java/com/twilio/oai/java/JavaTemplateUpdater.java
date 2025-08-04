@@ -1,14 +1,14 @@
 package com.twilio.oai.java;
 
-import com.twilio.oai.TwilioJavaGenerator;
 import com.twilio.oai.TwilioJavaGeneratorModern;
 import com.twilio.oai.common.EnumConstants;
 import org.openapitools.codegen.CodegenOperation;
 
 import java.util.AbstractMap;
-import java.util.List;
 import java.util.Map;
 
+import static com.twilio.oai.java.MustacheConstants.ActionMethod;
+import static com.twilio.oai.java.MustacheConstants.ActionType;
 
 /*
 The JavaTemplateFile class is responsible for managing template mappings for Java code generation. 
@@ -32,7 +32,7 @@ public class JavaTemplateUpdater {
                 "create", new AbstractMap.SimpleEntry<>("creator.mustache", "Creator.java"),
                 "fetch", new AbstractMap.SimpleEntry<>("fetcher.mustache", "Fetcher.java"),
                 "delete", new AbstractMap.SimpleEntry<>("deleter.mustache", "Deleter.java"),
-                "read", new AbstractMap.SimpleEntry<>("reader.mustache", "Reader.java"),
+                "list", new AbstractMap.SimpleEntry<>("reader.mustache", "Reader.java"),
                 "update", new AbstractMap.SimpleEntry<>("updater.mustache", "Updater.java")
         );
         apiTemplate = Map.of(
@@ -43,21 +43,25 @@ public class JavaTemplateUpdater {
 //        );
     }
 
-    public void addApiTemplate(TwilioJavaGeneratorModern twilioJavaGenerator, List<CodegenOperation> operations) {
+    public void addApiTemplate(TwilioJavaGeneratorModern twilioJavaGenerator, java.util.List<CodegenOperation> operations) {
         clearApiTemplate(twilioJavaGenerator);
         for (CodegenOperation operation : operations) {
             String operationId = operation.operationId;
             if (operationId == null || operationId.isEmpty()) {
                 throw new RuntimeException("Operation ID cannot be null or empty for path: " + operation.path);
             }
-            String lowerCaseOpId = operationId.toLowerCase();
-
-            for (Map.Entry<String, AbstractMap.SimpleEntry> entry : apiOperationTemplate.entrySet()) {
-                if (lowerCaseOpId.startsWith(entry.getKey())) {
-                    operation.vendorExtensions.put(EnumConstants.SupportedOperation.X_CREATE.getValue(), true);
-                    twilioJavaGenerator.apiTemplateFiles().put((String) entry.getValue().getKey(), (String) entry.getValue().getValue());
-                    break; // break and continue to the next operation
-                }
+            if (Create.isCreate(operation)) {
+                Create.add(twilioJavaGenerator, operation, apiOperationTemplate);
+            } else if (List.isList(operation)) {
+                List.add(twilioJavaGenerator, operation, apiOperationTemplate);
+            } else if (Update.isUpdate(operation)) {
+                Update.add(twilioJavaGenerator, operation, apiOperationTemplate);
+            } else if (Delete.isDelete(operation)) {
+                Delete.add(twilioJavaGenerator, operation, apiOperationTemplate);
+            } else if (Fetch.isFetch(operation)) {
+                Fetch.add(twilioJavaGenerator, operation, apiOperationTemplate);
+            } else {
+                throw new RuntimeException("Unsupported operation type for operationId: " + operationId);
             }
         }
     }
@@ -67,5 +71,81 @@ public class JavaTemplateUpdater {
         twilioJavaGenerator.apiTemplateFiles().clear();
         // Add the default API template
         twilioJavaGenerator.apiTemplateFiles().put(API_TEMPLATE, ".java");
+    }
+}
+
+class Create {
+    public static void add(TwilioJavaGeneratorModern twilioJavaGenerator, CodegenOperation codegenOperation, Map<String, AbstractMap.SimpleEntry> apiOperationTemplate) {
+        codegenOperation.vendorExtensions.put(EnumConstants.SupportedOperation.X_CREATE.getValue(), true);
+        String key = (String) apiOperationTemplate.get("create").getKey();
+        String value = (String) apiOperationTemplate.get("create").getValue();
+        twilioJavaGenerator.apiTemplateFiles().put(key, value);
+
+        codegenOperation.vendorExtensions.put(MustacheConstants.ACTION_TYPE, ActionType.CREATOR.getValue());
+        codegenOperation.vendorExtensions.put(MustacheConstants.ACTION_METHOD, ActionMethod.CREATE.getValue());
+    }
+    public static boolean isCreate(CodegenOperation codegenOperation) {
+        return codegenOperation.operationId.toLowerCase().startsWith("create");
+    }
+}
+
+class List {
+    public static void add(TwilioJavaGeneratorModern twilioJavaGenerator, CodegenOperation codegenOperation, Map<String, AbstractMap.SimpleEntry> apiOperationTemplate) {
+        codegenOperation.vendorExtensions.put(EnumConstants.SupportedOperation.X_LIST.getValue(), true);
+        String key = (String) apiOperationTemplate.get("list").getKey();
+        String value = (String) apiOperationTemplate.get("list").getValue();
+        twilioJavaGenerator.apiTemplateFiles().put(key, value);
+        codegenOperation.vendorExtensions.put(MustacheConstants.X_IS_LIST_OP, true);
+
+        codegenOperation.vendorExtensions.put(MustacheConstants.ACTION_TYPE, ActionType.READER.getValue());
+        codegenOperation.vendorExtensions.put(MustacheConstants.ACTION_METHOD, ActionMethod.READ.getValue());
+    }
+    public static boolean isList(CodegenOperation codegenOperation) {
+        return codegenOperation.operationId.toLowerCase().startsWith("list");
+    }
+}
+
+class Update {
+    public static void add(TwilioJavaGeneratorModern twilioJavaGenerator, CodegenOperation codegenOperation, Map<String, AbstractMap.SimpleEntry> apiOperationTemplate) {
+        codegenOperation.vendorExtensions.put(EnumConstants.SupportedOperation.X_UPDATE.getValue(), true);
+        String key = (String) apiOperationTemplate.get("update").getKey();
+        String value = (String) apiOperationTemplate.get("update").getValue();
+        twilioJavaGenerator.apiTemplateFiles().put(key, value);
+
+        codegenOperation.vendorExtensions.put(MustacheConstants.ACTION_TYPE, ActionType.UPDATER.getValue());
+        codegenOperation.vendorExtensions.put(MustacheConstants.ACTION_METHOD, ActionMethod.UPDATE.getValue());
+    }
+    public static boolean isUpdate(CodegenOperation codegenOperation) {
+        return codegenOperation.operationId.toLowerCase().startsWith("update");
+    }
+}
+
+class Delete {
+    public static void add(TwilioJavaGeneratorModern twilioJavaGenerator, CodegenOperation codegenOperation, Map<String, AbstractMap.SimpleEntry> apiOperationTemplate) {
+        codegenOperation.vendorExtensions.put(EnumConstants.SupportedOperation.X_DELETE.getValue(), true);
+        String key = (String) apiOperationTemplate.get("delete").getKey();
+        String value = (String) apiOperationTemplate.get("delete").getValue();
+        twilioJavaGenerator.apiTemplateFiles().put(key, value);
+
+        codegenOperation.vendorExtensions.put(MustacheConstants.ACTION_TYPE, ActionType.DELETER.getValue());
+        codegenOperation.vendorExtensions.put(MustacheConstants.ACTION_METHOD, ActionMethod.DELETE.getValue());
+    }
+    public static boolean isDelete(CodegenOperation codegenOperation) {
+        return codegenOperation.operationId.toLowerCase().startsWith("delete");
+    }
+}
+
+class Fetch {
+    public static void add(TwilioJavaGeneratorModern twilioJavaGenerator, CodegenOperation codegenOperation, Map<String, AbstractMap.SimpleEntry> apiOperationTemplate) {
+        codegenOperation.vendorExtensions.put(EnumConstants.SupportedOperation.X_FETCH.getValue(), true);
+        String key = (String) apiOperationTemplate.get("fetch").getKey();
+        String value = (String) apiOperationTemplate.get("fetch").getValue();
+        twilioJavaGenerator.apiTemplateFiles().put(key, value);
+
+        codegenOperation.vendorExtensions.put(MustacheConstants.ACTION_TYPE, ActionType.FETCHER.getValue());
+        codegenOperation.vendorExtensions.put(MustacheConstants.ACTION_METHOD, ActionMethod.FETCH.getValue());
+    }
+    public static boolean isFetch(CodegenOperation codegenOperation) {
+        return codegenOperation.operationId.toLowerCase().startsWith("fetch");
     }
 }

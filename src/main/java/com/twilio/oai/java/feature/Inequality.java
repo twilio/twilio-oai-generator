@@ -18,18 +18,19 @@ public class Inequality {
         codegenOperation.queryParams.forEach(param -> groupItems(param, groupedItems));
         addVendorExtension(groupedItems);
         groupedItems.clear();
+        // Currently supported only for query parameters.
 
-        codegenOperation.pathParams.forEach(param -> groupItems(param, groupedItems));
-        addVendorExtension(groupedItems);
-        groupedItems.clear();
-        
-        codegenOperation.headerParams.forEach(param -> groupItems(param, groupedItems));
-        addVendorExtension(groupedItems);
-        groupedItems.clear();
-
-        codegenOperation.formParams.forEach(param -> groupItems(param, groupedItems));
-        addVendorExtension(groupedItems);
-        groupedItems.clear();
+//        codegenOperation.pathParams.forEach(param -> groupItems(param, groupedItems));
+//        addVendorExtension(groupedItems);
+//        groupedItems.clear();
+//        
+//        codegenOperation.headerParams.forEach(param -> groupItems(param, groupedItems));
+//        addVendorExtension(groupedItems);
+//        groupedItems.clear();
+//
+//        codegenOperation.formParams.forEach(param -> groupItems(param, groupedItems));
+//        addVendorExtension(groupedItems);
+//        groupedItems.clear();
     }
 
     private void groupItems (CodegenParameter codegenParameter, Map<String, List<CodegenParameter>> groupedItems) {

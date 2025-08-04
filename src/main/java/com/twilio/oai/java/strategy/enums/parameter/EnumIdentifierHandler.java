@@ -19,6 +19,8 @@ import static com.twilio.oai.common.ApplicationConstants.X_VARIABLE_NAME;
 import static com.twilio.oai.common.ApplicationConstants.X_ENUM_TYPE;
 import static com.twilio.oai.common.ApplicationConstants.X_DATATYPE;
 import static com.twilio.oai.common.ApplicationConstants.DOT;
+
+// It does not do any processing, It will just return if a passed parameter or property is an Enum
 public class EnumIdentifierHandler {
     private final List<ParameterEnumProcessingStrategy> parameterStrategies;
 
@@ -49,7 +51,7 @@ public class EnumIdentifierHandler {
             return;
         }
         for (ParameterEnumProcessingStrategy strategy : parameterStrategies) {
-            if (strategy.process(codegenParameter)) {
+            if (strategy.isStrategyApplicable(codegenParameter)) {
                 System.out.println("Strategy matched: " + strategy.getType() + " Enum Basename: " + codegenParameter.baseName);
                 break;
             }
@@ -60,7 +62,7 @@ public class EnumIdentifierHandler {
             return false;
         }
         for (PropertyEnumProcessingStrategy strategy : propertyStrategies) {
-            if (strategy.process(codegenProperty)) {
+            if (strategy.isStrategyApplicable(codegenProperty)) {
                 System.out.println("Strategy matched: " + strategy.getType() + " Enum Basename: " + codegenProperty.baseName);
                 return true;
             }

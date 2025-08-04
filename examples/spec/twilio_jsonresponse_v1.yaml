@@ -1,0 +1,812 @@
+openapi: 3.0.3
+info:
+  title: Comprehensive Data Types API
+  version: 1.0.0
+  description: Demonstration API for handling various data types in a single POST operation.
+
+servers:
+  - url: https://jsonresponse.twilio.com
+
+paths:
+  /2010-04-01/Accounts/{AccountSid}/Messages.json:
+    servers:
+      - url: https://api.twilio.com
+    description: A Message resource represents an inbound or outbound message.
+    x-twilio:
+      defaultOutputProperties:
+        - sid
+        - from
+        - to
+        - status
+        - direction
+        - date_sent
+      dependentProperties:
+        media:
+          mapping:
+            account_sid: account_sid
+            message_sid: sid
+          resource_url: /2010-04-01/Accounts/{account_sid}/Messages/{message_sid}/Media.json
+        feedback:
+          mapping:
+            account_sid: account_sid
+            message_sid: sid
+          resource_url: /2010-04-01/Accounts/{account_sid}/Messages/{message_sid}/Feedback.json
+      parent: /Accounts/{Sid}.json
+      pathType: list
+    post:
+      description: Send a message
+      summary: Send a message
+      tags:
+        - Api20100401Message
+      parameters:
+        - name: AccountSid
+          in: path
+          description: The SID of the [Account](https://www.twilio.com/docs/iam/api/account)
+            creating the Message resource.
+          schema:
+            type: string
+            minLength: 34
+            maxLength: 34
+            pattern: ^AC[0-9a-fA-F]{32}$
+          required: true
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/api.v2010.account.message'
+              examples:
+                create:
+                  value:
+                    account_sid: ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+                    api_version: '2010-04-01'
+                    body: "Hello! \U0001F44D"
+                    date_created: Thu, 24 Aug 2023 05:01:45 +0000
+                    date_sent: Thu, 24 Aug 2023 05:01:45 +0000
+                    date_updated: Thu, 24 Aug 2023 05:01:45 +0000
+                    direction: outbound-api
+                    error_code: null
+                    error_message: null
+                    from: '+14155552345'
+                    num_media: '0'
+                    num_segments: '1'
+                    price: null
+                    price_unit: null
+                    messaging_service_sid: MGaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+                    sid: SMaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+                    status: queued
+                    subresource_uris:
+                      media: /2010-04-01/Accounts/ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/Messages/SMaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/Media.json
+                    tags:
+                      campaign_name: Spring Sale 2022
+                      message_type: cart_abandoned
+                    to: '+14155552345'
+                    uri: /2010-04-01/Accounts/ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/Messages/SMaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.json
+                createWoService:
+                  value:
+                    account_sid: ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+                    api_version: '2010-04-01'
+                    body: "Hello! \U0001F44D"
+                    date_created: Thu, 30 Jul 2015 20:12:31 +0000
+                    date_sent: Thu, 30 Jul 2015 20:12:33 +0000
+                    date_updated: Thu, 30 Jul 2015 20:12:33 +0000
+                    direction: outbound-api
+                    error_code: null
+                    error_message: null
+                    from: '+14155552345'
+                    messaging_service_sid: MGaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+                    num_media: '0'
+                    num_segments: '1'
+                    price: null
+                    price_unit: null
+                    sid: SMaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+                    status: queued
+                    subresource_uris:
+                      media: /2010-04-01/Accounts/ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/Messages/SMaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/Media.json
+                    tags: null
+                    to: '+14155552345'
+                    uri: /2010-04-01/Accounts/ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/Messages/SMaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.json
+                createWithMessagingService:
+                  value:
+                    account_sid: ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+                    api_version: '2010-04-01'
+                    body: "Hello! \U0001F44D"
+                    date_created: Thu, 30 Jul 2015 20:12:31 +0000
+                    date_sent: Thu, 30 Jul 2015 20:12:33 +0000
+                    date_updated: Thu, 30 Jul 2015 20:12:33 +0000
+                    direction: outbound-api
+                    error_code: null
+                    error_message: null
+                    from: null
+                    messaging_service_sid: MGaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+                    num_media: '0'
+                    num_segments: '1'
+                    price: null
+                    price_unit: null
+                    sid: SMaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+                    status: queued
+                    subresource_uris:
+                      media: /2010-04-01/Accounts/ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/Messages/SMaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/Media.json
+                    tags: null
+                    to: '+14155552345'
+                    uri: /2010-04-01/Accounts/ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/Messages/SMaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.json
+                createWithQueuedStatus:
+                  value:
+                    account_sid: ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+                    api_version: '2010-04-01'
+                    body: "Hello! \U0001F44D"
+                    date_created: Thu, 30 Jul 2015 20:12:31 +0000
+                    date_sent: Thu, 30 Jul 2015 20:12:33 +0000
+                    date_updated: Thu, 30 Jul 2015 20:12:33 +0000
+                    direction: outbound-api
+                    error_code: null
+                    error_message: null
+                    from: '+14155552345'
+                    messaging_service_sid: MGaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+                    num_media: '0'
+                    num_segments: '1'
+                    price: null
+                    price_unit: null
+                    sid: SMaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+                    status: queued
+                    subresource_uris:
+                      media: /2010-04-01/Accounts/ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/Messages/SMaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/Media.json
+                    tags: null
+                    to: '+14155552345'
+                    uri: /2010-04-01/Accounts/ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/Messages/SMaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.json
+                createScheduledMessageSms:
+                  value:
+                    account_sid: ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+                    api_version: '2010-04-01'
+                    body: "Hello! \U0001F44D"
+                    date_created: Mon, 29 Nov 2021 22:40:10 +0000
+                    date_sent: null
+                    date_updated: Mon, 29 Nov 2021 22:40:10 +0000
+                    direction: outbound-api
+                    error_code: null
+                    error_message: null
+                    from: null
+                    messaging_service_sid: MGaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+                    num_media: '0'
+                    num_segments: '0'
+                    price: null
+                    price_unit: null
+                    sid: SMaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+                    status: queued
+                    subresource_uris:
+                      media: /2010-04-01/Accounts/ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/Messages/SMaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/Media.json
+                    tags: null
+                    to: '+15558675310'
+                    uri: /2010-04-01/Accounts/ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/Messages/SMaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.json
+                createScheduledMessageMms:
+                  value:
+                    account_sid: ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+                    api_version: '2010-04-01'
+                    body: "Hello! \U0001F44D"
+                    date_created: Mon, 29 Nov 2021 22:40:10 +0000
+                    date_sent: null
+                    date_updated: Mon, 29 Nov 2021 22:40:10 +0000
+                    direction: outbound-api
+                    error_code: null
+                    error_message: null
+                    from: null
+                    messaging_service_sid: MGaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+                    num_media: '1'
+                    num_segments: '1'
+                    price: null
+                    price_unit: null
+                    sid: MMaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+                    status: accepted
+                    subresource_uris:
+                      media: /2010-04-01/Accounts/ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/Messages/MMaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/Media.json
+                    tags: null
+                    to: '+15558675310'
+                    uri: /2010-04-01/Accounts/ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/Messages/MMaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.json
+                createScheduledMessageWhatsapp:
+                  value:
+                    account_sid: ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+                    api_version: '2010-04-01'
+                    body: "Hello! \U0001F44D"
+                    date_created: Mon, 29 Nov 2021 22:40:10 +0000
+                    date_sent: null
+                    date_updated: Mon, 29 Nov 2021 22:40:10 +0000
+                    direction: outbound-api
+                    error_code: null
+                    error_message: null
+                    from: null
+                    messaging_service_sid: MGaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+                    num_media: '0'
+                    num_segments: '0'
+                    price: null
+                    price_unit: null
+                    sid: SMaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+                    status: scheduled
+                    subresource_uris:
+                      media: /2010-04-01/Accounts/ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/Messages/SMaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/Media.json
+                    tags: null
+                    to: whatsapp:+15558675310
+                    uri: /2010-04-01/Accounts/ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/Messages/SMaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.json
+          headers:
+            Access-Control-Allow-Origin:
+              description: Specify the origin(s) allowed to access the resource
+              schema:
+                type: string
+              example: '*'
+            Access-Control-Allow-Methods:
+              description: Specify the HTTP methods allowed when accessing the resource
+              schema:
+                type: string
+              example: POST, OPTIONS
+            Access-Control-Allow-Headers:
+              description: Specify the headers allowed when accessing the resource
+              schema:
+                type: string
+              example: Content-Type, Authorization
+            Access-Control-Allow-Credentials:
+              description: Indicates whether the browser should include credentials
+              schema:
+                type: boolean
+            Access-Control-Expose-Headers:
+              description: Headers exposed to the client
+              schema:
+                type: string
+                example: X-Custom-Header1, X-Custom-Header2
+          description: Created
+      security:
+        - accountSid_authToken: [ ]
+      operationId: CreateMessage
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              title: CreateMessageRequest
+              properties:
+                To:
+                  type: string
+                  format: phone-number
+                  description: The recipient's phone number in [E.164](https://www.twilio.com/docs/glossary/what-e164)
+                    format (for SMS/MMS) or [channel address](https://www.twilio.com/docs/messaging/channels),
+                    e.g. `whatsapp:+15552229999`.
+                StatusCallback:
+                  type: string
+                  format: uri
+                  description: 'The URL of the endpoint to which Twilio sends [Message
+                    status callback requests](https://www.twilio.com/docs/sms/api/message-resource#twilios-request-to-the-statuscallback-url).
+                    URL must contain a valid hostname and underscores are not allowed.
+                    If you include this parameter with the `messaging_service_sid`,
+                    Twilio uses this URL instead of the Status Callback URL of the
+                    [Messaging Service](https://www.twilio.com/docs/messaging/api/service-resource). '
+                ApplicationSid:
+                  type: string
+                  minLength: 34
+                  maxLength: 34
+                  pattern: ^AP[0-9a-fA-F]{32}$
+                  description: The SID of the associated [TwiML Application](https://www.twilio.com/docs/usage/api/applications).
+                    [Message status callback requests](https://www.twilio.com/docs/sms/api/message-resource#twilios-request-to-the-statuscallback-url)
+                    are sent to the TwiML App's `message_status_callback` URL. Note
+                    that the `status_callback` parameter of a request takes priority
+                    over the `application_sid` parameter; if both are included `application_sid`
+                    is ignored.
+              required:
+                - To
+            examples:
+              create:
+                value:
+                  ApplicationSid: APaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+                  Body: "Hello! \U0001F44D"
+                  From: '+14155552345'
+                  MediaUrl:
+                    - https://c1.staticflickr.com/3/2899/14341091933_1e92e62d12_b.jpg
+                  PersistentAction:
+                    - mailto:test@example.com
+                  StatusCallback: https://example.com
+                  To: '+14155552345'
+                  Tags: '{"campaign_name": "Spring Sale 2022","message_type": "cart_abandoned"}'
+              createWoService:
+                value:
+                  ApplicationSid: APaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+                  Body: "Hello! \U0001F44D"
+                  From: '+14155552345'
+                  MediaUrl:
+                    - https://example.com
+                  PersistentAction:
+                    - mailto:test@example.com
+                  StatusCallback: https://example.com
+                  To: '+14155552345'
+              createWithMessagingService:
+                value:
+                  ApplicationSid: APaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+                  Body: "Hello! \U0001F44D"
+                  MessagingServiceSid: MGaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+                  MediaUrl:
+                    - https://example.com
+                  PersistentAction:
+                    - mailto:test@example.com
+                  StatusCallback: https://example.com
+                  To: '+14155552345'
+                  ContentSid: HXaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+              createWithQueuedStatus:
+                value:
+                  ApplicationSid: APaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+                  Body: "Hello! \U0001F44D"
+                  From: '+14155552345'
+                  MediaUrl:
+                    - https://example.com
+                  PersistentAction:
+                    - mailto:test@example.com
+                  StatusCallback: https://example.com
+                  To: '+14155552345'
+              createScheduledMessageSms:
+                value:
+                  Body: "Hello! \U0001F44D"
+                  MessagingServiceSid: MGaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+                  ScheduleType: fixed
+                  StatusCallback: https://example.com
+                  To: '+15558675310'
+              createScheduledMessageMms:
+                value:
+                  Body: "Hello! \U0001F44D"
+                  MediaUrl:
+                    - https://example.com
+                  MessagingServiceSid: MGaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+                  ScheduleType: fixed
+                  StatusCallback: https://example.com
+                  To: '+15558675310'
+              createScheduledMessageWhatsapp:
+                value:
+                  Body: "Hello! \U0001F44D"
+                  MessagingServiceSid: MGaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+                  ScheduleType: fixed
+                  StatusCallback: https://example.com
+                  To: 94287277+15558675310
+  /2010-04-01/Accounts/{AccountSid}/Messages/{Sid}.json:
+    servers:
+      - url: https://api.twilio.com
+    description: A Message resource represents an inbound or outbound message.
+    x-twilio:
+      defaultOutputProperties:
+        - sid
+        - from
+        - to
+        - status
+        - direction
+        - date_sent
+      dependentProperties:
+        media:
+          mapping:
+            account_sid: account_sid
+            message_sid: sid
+          resource_url: /2010-04-01/Accounts/{account_sid}/Messages/{message_sid}/Media.json
+        feedback:
+          mapping:
+            account_sid: account_sid
+            message_sid: sid
+          resource_url: /2010-04-01/Accounts/{account_sid}/Messages/{message_sid}/Feedback.json
+      parent: /Accounts/{Sid}.json
+      pathType: instance
+    delete:
+      description: Deletes a Message resource from your account
+      summary: Deletes a Message resource from your account
+      tags:
+        - Api20100401Message
+      parameters:
+        - name: AccountSid
+          in: path
+          description: The SID of the [Account](https://www.twilio.com/docs/iam/api/account)
+            associated with the Message resource
+          schema:
+            type: string
+            minLength: 34
+            maxLength: 34
+            pattern: ^AC[0-9a-fA-F]{32}$
+          required: true
+        - name: Sid
+          in: path
+          description: The SID of the Message resource you wish to delete
+          schema:
+            type: string
+            minLength: 34
+            maxLength: 34
+            pattern: ^(SM|MM)[0-9a-fA-F]{32}$
+          required: true
+      responses:
+        '204':
+          description: The resource was deleted successfully.
+      security:
+        - accountSid_authToken: [ ]
+      operationId: DeleteMessage
+    get:
+      description: Fetch a specific Message
+      summary: Fetch a specific Message
+      tags:
+        - Api20100401Message
+      parameters:
+        - name: AccountSid
+          in: path
+          description: The SID of the [Account](https://www.twilio.com/docs/iam/api/account)
+            associated with the Message resource
+          schema:
+            type: string
+            minLength: 34
+            maxLength: 34
+            pattern: ^AC[0-9a-fA-F]{32}$
+          required: true
+        - name: Sid
+          in: path
+          description: The SID of the Message resource to be fetched
+          schema:
+            type: string
+            minLength: 34
+            maxLength: 34
+            pattern: ^(SM|MM)[0-9a-fA-F]{32}$
+          required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/api.v2010.account.message'
+              examples:
+                fetch:
+                  value:
+                    account_sid: ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+                    api_version: '2010-04-01'
+                    body: testing
+                    date_created: Fri, 24 May 2019 17:18:27 +0000
+                    date_sent: Fri, 24 May 2019 17:18:28 +0000
+                    date_updated: Fri, 24 May 2019 17:18:28 +0000
+                    direction: outbound-api
+                    error_code: 30007
+                    error_message: Carrier violation
+                    from: '+12019235161'
+                    messaging_service_sid: MGaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+                    num_media: '0'
+                    num_segments: '1'
+                    price: '-0.00750'
+                    price_unit: USD
+                    sid: SMb7c0a2ce80504485a6f653a7110836f5
+                    status: sent
+                    subresource_uris:
+                      media: /2010-04-01/Accounts/ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/Messages/SMb7c0a2ce80504485a6f653a7110836f5/Media.json
+                      feedback: /2010-04-01/Accounts/ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/Messages/SMb7c0a2ce80504485a6f653a7110836f5/Feedback.json
+                    tags:
+                      campaign_name: Spring Sale 2022
+                      message_type: cart_abandoned
+                    to: '+18182008801'
+                    uri: /2010-04-01/Accounts/ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/Messages/SMb7c0a2ce80504485a6f653a7110836f5.json
+          headers:
+            Access-Control-Allow-Origin:
+              description: Specify the origin(s) allowed to access the resource
+              schema:
+                type: string
+              example: '*'
+            Access-Control-Allow-Methods:
+              description: Specify the HTTP methods allowed when accessing the resource
+              schema:
+                type: string
+              example: POST, OPTIONS
+            Access-Control-Allow-Headers:
+              description: Specify the headers allowed when accessing the resource
+              schema:
+                type: string
+              example: Content-Type, Authorization
+            Access-Control-Allow-Credentials:
+              description: Indicates whether the browser should include credentials
+              schema:
+                type: boolean
+            Access-Control-Expose-Headers:
+              description: Headers exposed to the client
+              schema:
+                type: string
+                example: X-Custom-Header1, X-Custom-Header2
+          description: OK
+      security:
+        - accountSid_authToken: [ ]
+      operationId: FetchMessage
+    post:
+      description: Update a Message resource (used to redact Message `body` text and
+        to cancel not-yet-sent messages)
+      summary: Update a Message resource (used to redact Message `body` text and to
+        cancel not-yet-sent messages)
+      tags:
+        - Api20100401Message
+      parameters:
+        - name: AccountSid
+          in: path
+          description: The SID of the [Account](https://www.twilio.com/docs/iam/api/account)
+            that created the Message resources to update.
+          schema:
+            type: string
+            minLength: 34
+            maxLength: 34
+            pattern: ^AC[0-9a-fA-F]{32}$
+          required: true
+        - name: Sid
+          in: path
+          description: The SID of the Message resource to be updated
+          schema:
+            type: string
+            minLength: 34
+            maxLength: 34
+            pattern: ^(SM|MM)[0-9a-fA-F]{32}$
+          required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/api.v2010.account.message'
+              examples:
+                redactBody:
+                  value:
+                    account_sid: ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+                    api_version: '2010-04-01'
+                    body: ''
+                    date_created: Fri, 24 May 2019 17:18:27 +0000
+                    date_sent: Fri, 24 May 2019 17:18:28 +0000
+                    date_updated: Fri, 24 May 2019 17:18:28 +0000
+                    direction: outbound-api
+                    error_code: null
+                    error_message: null
+                    from: '+12019235161'
+                    messaging_service_sid: MGaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+                    num_media: '0'
+                    num_segments: '1'
+                    price: null
+                    price_unit: USD
+                    sid: SMb7c0a2ce80504485a6f653a7110836f5
+                    status: sent
+                    subresource_uris:
+                      media: /2010-04-01/Accounts/ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/Messages/SMb7c0a2ce80504485a6f653a7110836f5/Media.json
+                      feedback: /2010-04-01/Accounts/ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/Messages/SMb7c0a2ce80504485a6f653a7110836f5/Feedback.json
+                    tags: { }
+                    to: '+18182008801'
+                    uri: /2010-04-01/Accounts/ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/Messages/SMb7c0a2ce80504485a6f653a7110836f5.json
+                cancelMessage:
+                  value:
+                    account_sid: ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+                    api_version: '2010-04-01'
+                    body: Hello World!
+                    date_created: Fri, 24 May 2019 17:18:27 +0000
+                    date_sent: null
+                    date_updated: Fri, 24 May 2019 18:18:28 +0000
+                    direction: outbound-api
+                    error_code: null
+                    error_message: null
+                    from: null
+                    messaging_service_sid: MGaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+                    num_media: '0'
+                    num_segments: '1'
+                    price: null
+                    price_unit: USD
+                    sid: SMb7c0a2ce80504485a6f653a7110836f5
+                    status: canceled
+                    subresource_uris:
+                      media: /2010-04-01/Accounts/ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/Messages/SMb7c0a2ce80504485a6f653a7110836f5/Media.json
+                      feedback: /2010-04-01/Accounts/ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/Messages/SMb7c0a2ce80504485a6f653a7110836f5/Feedback.json
+                    tags: { }
+                    to: '+18182008801'
+                    uri: /2010-04-01/Accounts/ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/Messages/SMb7c0a2ce80504485a6f653a7110836f5.json
+          headers:
+            Access-Control-Allow-Origin:
+              description: Specify the origin(s) allowed to access the resource
+              schema:
+                type: string
+              example: '*'
+            Access-Control-Allow-Methods:
+              description: Specify the HTTP methods allowed when accessing the resource
+              schema:
+                type: string
+              example: POST, OPTIONS
+            Access-Control-Allow-Headers:
+              description: Specify the headers allowed when accessing the resource
+              schema:
+                type: string
+              example: Content-Type, Authorization
+            Access-Control-Allow-Credentials:
+              description: Indicates whether the browser should include credentials
+              schema:
+                type: boolean
+            Access-Control-Expose-Headers:
+              description: Headers exposed to the client
+              schema:
+                type: string
+                example: X-Custom-Header1, X-Custom-Header2
+          description: OK
+      security:
+        - accountSid_authToken: [ ]
+      operationId: UpdateMessage
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              title: UpdateMessageRequest
+              properties:
+                Body:
+                  type: string
+                  description: The new `body` of the Message resource. To redact the
+                    text content of a Message, this parameter's value must be an empty
+                    string
+                Status:
+                  $ref: '#/components/schemas/message_enum_update_status'
+            examples:
+              redactBody:
+                value:
+                  Body: ''
+              cancelMessage:
+                value:
+                  Status: canceled
+
+components: 
+  schemas:
+    message_enum_update_status:
+      type: string
+      enum:
+        - canceled
+    message_enum_status:
+      type: string
+      enum:
+        - queued
+        - sending
+        - sent
+        - failed
+        - delivered
+        - undelivered
+        - receiving
+        - received
+        - accepted
+        - scheduled
+        - read
+        - partially_delivered
+        - canceled
+    message_enum_direction:
+      type: string
+      enum:
+        - inbound
+        - outbound-api
+        - outbound-call
+        - outbound-reply
+    api.v2010.account.message:
+      type: object
+      properties:
+        body:
+          type: string
+          nullable: true
+          description: The text content of the message
+          x-twilio:
+            pii:
+              handling: standard
+              deleteSla: 30
+        num_segments:
+          type: string
+          nullable: true
+          description: 'The number of segments that make up the complete message.
+            SMS message bodies that exceed the [character limit](https://www.twilio.com/docs/glossary/what-sms-character-limit)
+            are segmented and charged as multiple messages. Note: For messages sent
+            via a Messaging Service, `num_segments` is initially `0`, since a sender
+            hasn''t yet been assigned.'
+        direction:
+          $ref: '#/components/schemas/message_enum_direction'
+        from:
+          type: string
+          format: phone-number
+          nullable: true
+          description: The sender's phone number (in [E.164](https://en.wikipedia.org/wiki/E.164)
+            format), [alphanumeric sender ID](https://www.twilio.com/docs/sms/quickstart),
+            [Wireless SIM](https://www.twilio.com/docs/iot/wireless/programmable-wireless-send-machine-machine-sms-commands),
+            [short code](https://www.twilio.com/en-us/messaging/channels/sms/short-codes),
+            or  [channel address](https://www.twilio.com/docs/messaging/channels)
+            (e.g., `whatsapp:+15554449999`). For incoming messages, this is the number
+            or channel address of the sender. For outgoing messages, this value is
+            a Twilio phone number, alphanumeric sender ID, short code, or channel
+            address from which the message is sent.
+          x-twilio:
+            pii:
+              handling: standard
+              deleteSla: 120
+        to:
+          type: string
+          nullable: true
+          description: The recipient's phone number (in [E.164](https://en.wikipedia.org/wiki/E.164)
+            format) or [channel address](https://www.twilio.com/docs/messaging/channels)
+            (e.g. `whatsapp:+15552229999`)
+          x-twilio:
+            pii:
+              handling: standard
+              deleteSla: 120
+        date_updated:
+          type: string
+          format: date-time-rfc-2822
+          nullable: true
+          description: The [RFC 2822](https://datatracker.ietf.org/doc/html/rfc2822#section-3.3)
+            timestamp (in GMT) of when the Message resource was last updated
+        price:
+          type: string
+          nullable: true
+          description: The amount billed for the message in the currency specified
+            by `price_unit`. The `price` is populated after the message has been sent/received,
+            and may not be immediately availalble. View the [Pricing page](https://www.twilio.com/en-us/pricing)
+            for more details.
+        error_message:
+          type: string
+          nullable: true
+          description: The description of the `error_code` if the Message `status`
+            is `failed` or `undelivered`. If no error was encountered, the value is
+            `null`. The value returned in this field for a specific error cause is
+            subject to change as Twilio improves errors. Users should not use the
+            `error_code` and `error_message` fields programmatically.
+        uri:
+          type: string
+          nullable: true
+          description: The URI of the Message resource, relative to `https://api.twilio.com`.
+        account_sid:
+          type: string
+          minLength: 34
+          maxLength: 34
+          pattern: ^AC[0-9a-fA-F]{32}$
+          nullable: true
+          description: The SID of the [Account](https://www.twilio.com/docs/iam/api/account)
+            associated with the Message resource
+        num_media:
+          type: string
+          nullable: true
+          description: The number of media files associated with the Message resource.
+        status:
+          $ref: '#/components/schemas/message_enum_status'
+        messaging_service_sid:
+          type: string
+          minLength: 34
+          maxLength: 34
+          pattern: ^MG[0-9a-fA-F]{32}$
+          nullable: true
+          description: The SID of the [Messaging Service](https://www.twilio.com/docs/messaging/api/service-resource)
+            associated with the Message resource. A unique default value is assigned
+            if a Messaging Service is not used.
+        sid:
+          type: string
+          minLength: 34
+          maxLength: 34
+          pattern: ^(SM|MM)[0-9a-fA-F]{32}$
+          nullable: true
+          description: The unique, Twilio-provided string that identifies the Message
+            resource.
+        date_sent:
+          type: string
+          format: date-time-rfc-2822
+          nullable: true
+          description: The [RFC 2822](https://datatracker.ietf.org/doc/html/rfc2822#section-3.3)
+            timestamp (in GMT) of when the Message was sent. For an outgoing message,
+            this is when Twilio sent the message. For an incoming message, this is
+            when Twilio sent the HTTP request to your incoming message webhook URL.
+        date_created:
+          type: string
+          format: date-time-rfc-2822
+          nullable: true
+          description: The [RFC 2822](https://datatracker.ietf.org/doc/html/rfc2822#section-3.3)
+            timestamp (in GMT) of when the Message resource was created
+        error_code:
+          type: integer
+          nullable: true
+          description: The [error code](https://www.twilio.com/docs/api/errors) returned
+            if the Message `status` is `failed` or `undelivered`. If no error was
+            encountered, the value is `null`. The value returned in this field for
+            a specific error cause is subject to change as Twilio improves errors.
+            Users should not use the `error_code` and `error_message` fields programmatically.
+        price_unit:
+          type: string
+          format: currency
+          nullable: true
+          description: The currency in which `price` is measured, in [ISO 4127](https://www.iso.org/iso/home/standards/currency_codes.htm)
+            format (e.g. `usd`, `eur`, `jpy`).
+        api_version:
+          type: string
+          nullable: true
+          description: The API version used to process the Message
+        subresource_uris:
+          type: object
+          format: uri-map
+          nullable: true
+          description: A list of related resources identified by their URIs relative
+            to `https://api.twilio.com`

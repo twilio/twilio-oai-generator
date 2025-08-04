@@ -2,6 +2,7 @@ package com.twilio.oai.modern;
 
 import com.twilio.oai.TwilioJavaGenerator;
 import com.twilio.oai.TwilioJavaGeneratorModern;
+import com.twilio.oai.common.Utility;
 import com.twilio.oai.java.processor.JavaOperationProcessor;
 import org.apache.commons.lang3.StringUtils;
 import org.openapitools.codegen.CodegenOperation;
@@ -16,6 +17,7 @@ public class JavaApiResourceBuilderNew {
     JavaOperationProcessor operationProcessor;
     TwilioJavaGeneratorModern twilioJavaGenerator;
     String resourceName;
+    String recordKey;
     
     List<CodegenOperation> operations;
 
@@ -27,6 +29,7 @@ public class JavaApiResourceBuilderNew {
     public void process(List<CodegenOperation> operations) {
         this.operations = operations;
         fetchResourceName(operations);
+        fetchRecordKey(operations);
         operations.forEach(operation -> operationProcessor.process(operation));
     }
 
@@ -41,8 +44,13 @@ public class JavaApiResourceBuilderNew {
             }
         });
         ResourceCache.setResourceName(resourceName);
+        
+        
     }
-
+    
+    private void fetchRecordKey(List<CodegenOperation> operations) {
+        this.recordKey = Utility.getRecordKey(ResourceCache.allModelsByDefaultGenerator, operations);
+    }
     public JavaApiResource build() {
         return new JavaApiResource(this);
     }

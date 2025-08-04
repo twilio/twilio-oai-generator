@@ -7,7 +7,7 @@ private void addQueryParams(final Request request) {
 {{^isArray}}
 {{^vendorExtensions.x-inequality-main}}
     if ({{paramName}} != null) {
-        Serializer.toString(request, "{{baseName}}", param, ParameterType.QUERY);
+        Serializer.toString(request, "{{baseName}}", {{paramName}}, ParameterType.QUERY);
     }
 {{/vendorExtensions.x-inequality-main}}
 {{/isArray}}

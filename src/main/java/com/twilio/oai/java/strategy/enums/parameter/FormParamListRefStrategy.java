@@ -82,17 +82,28 @@ public class FormParamListRefStrategy implements ParameterEnumProcessingStrategy
     }
 
     private void cacheEnumClass(CodegenParameter codegenParameter) {
-        String enumExistingDatatype = Utility.extractDatatypeFromContainer(codegenParameter.dataType);
-        String enumClassName = Utility.getEnumNameFromDatatype(enumExistingDatatype);
+        String baseDataType = Utility.extractDatatypeFromContainer(codegenParameter.dataType);
+        if (baseDataType == null) {
+            throw new RuntimeException("Not able to fetch enum baseType for List Enum with ref" + " DataType: " +codegenParameter.dataType);
+        }
+        String enumClassName = Utility.getEnumNameFromDatatype(baseDataType);
+        if (enumClassName == null) {
+            throw new RuntimeException("Not able to fetch enum class name from baseDataType for List Enum with ref" 
+                    + "baseType:"+ baseDataType + " DataType: " + codegenParameter.dataType);
+        }
+
         Map<String, Object> values = null;
         List<Map<String, Object>> enumValues = new ArrayList<>();
         
         for (CodegenModel codegenModel: ResourceCache.getAllModelsByDefaultGenerator()) {
-            if (enumClassName.equals(codegenModel.classname)) {
+            if (baseDataType.equals(codegenModel.classname)) {
                 values = codegenModel.allowableValues;
                 enumValues = (List<Map<String, Object>>) codegenModel.allowableValues.get("enumVars");
                 break;
             }
+        }
+        if (enumValues == null || enumValues.isEmpty()) {
+            throw new RuntimeException("No enum values found for Enum" + " DataType: " +codegenParameter.dataType);
         }
         MustacheEnum mustacheEnum = new MustacheEnum(enumClassName, enumValues);
         ResourceCache.addToEnumClasses(mustacheEnum);

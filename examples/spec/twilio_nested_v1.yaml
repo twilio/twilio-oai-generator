@@ -1,0 +1,157 @@
+openapi: 3.0.3
+info:
+  title: Test Nested Models and Enums at nested level
+  version: 1.0.0
+  description: Demonstration API for handling various data types in a single POST operation.
+
+servers:
+  - url: https://api.example.com
+# Nested models scenarios
+# 1. Inline Nested Model
+# 2. Nested Model using ref (Reusable Nested Model)
+# 3. List Inline Nested Model
+# 4. List Reusable Nested Model
+# 5. All above nested models should have Enums.components: 
+# Note: How to identify name of Inline Nested Model as it will also be present in allModels similar to Reusable nested model
+components: 
+  schemas:
+    twilioText:
+      type: object
+      description: Type containing only plain text-based content
+      nullable: true
+      additionalProperties: false
+      properties:
+        price_unit:
+          type: string
+          format: currency
+          nullable: true
+        phone_number:
+          type: string
+          format: phone-number
+          nullable: true
+        date_created:
+          type: string
+          format: date-time-rfc-2822
+          nullable: true
+        date_updated:
+          type: string
+          format: date-time
+          nullable: true
+        body:
+          type: string
+      required:
+        - body
+    types:
+      description: Content types
+      type: object
+      properties:
+        SecondEnum:
+          type: string
+          enum:
+            - available
+            - pending
+            - sold
+        twilio/text:
+          $ref: '#/components/schemas/twilioText'
+    twilioMedia:
+      type: object
+      nullable: true
+      additionalProperties: false
+      properties:
+        body:
+          type: string
+        media:
+          type: array
+          items:
+            type: string
+      required:
+        - media
+paths:
+  /v1/nested:
+    post:
+      operationId: CreateNested
+      summary: Test Nested Models and Enums at nested level
+      parameters:
+        - name: ids
+          in: query
+          required: true
+          description: A list of item IDs
+          schema:
+            type: array
+            items:
+              type: integer
+        - name: NearNumber
+          in: query
+          schema:
+            type: string
+            format: phone-number
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: string
+                  description: Unique identifier for the example.
+                name:
+                  type: string
+                  description: Name of the example.
+                inlineNestedModel:
+                  type: object
+                  properties:
+                    nestedId:
+                      type: string
+                      description: Identifier for the nested model.
+                    attributes:
+                      type: object
+                      properties:
+                        attribute1:
+                          type: string
+                          description: First attribute of the nested model.
+                        attribute2:
+                          type: integer
+                          description: Second attribute of the nested model.
+                    types:
+                      $ref: '#/components/schemas/types'
+                reusableNestedModel:
+                  $ref: '#/components/schemas/twilioMedia'
+                inlineListNestedModel:
+                  type: array
+                  description: List of item objects.
+                  items:
+                    type: object
+                    properties:
+                      itemId:
+                        type: string
+                        description: Identifier for the item.
+                      details:
+                        title: Detail
+                        type: object
+                        properties:
+                          name:
+                            type: string
+                            description: Name of the item.
+                          quantity:
+                            type: integer
+                            description: Quantity of the item.
+                      tags:
+                        type: array
+                        items:
+                          type: string
+                          description: Tags associated with the item.
+              required:
+                - id
+                - nestedModel
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Request successful"

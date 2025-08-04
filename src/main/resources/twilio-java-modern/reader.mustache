@@ -6,23 +6,20 @@ import com.twilio.constant.EnumConstants.ParameterType;
 
 {{#resources}}
 {{#operations}}
-{{#vendorExtensions.x-create-operation}}
-public class {{resourceName}} extends Creator<{{resourceName}}> {
+{{#vendorExtensions.x-fetch-operation}}
+public class {{resourceName}} extends Fetcher<{{resourceName}}> {
 
-{{>common/instanceVariables}}
-{{>common/constructors}}
-{{>common/setters}}
-{{>common/operationMethod}}
+    {{>common/instanceVariables}}
+    {{>common/constructors}}
+    {{>common/setters}}
+    {{>reader/operationMethod}}
 {{#queryParams.0}}
     {{>common/addQueryParams}}
 {{/queryParams.0}}
-{{#formParams.0}}
-    {{>common/addPostParams}}
-{{/formParams.0}}
 {{#headerParams.0}}
     {{>common/addHeaderParams}}
 {{/headerParams.0}}
 }
-{{/vendorExtensions.x-create-operation}}
+{{/vendorExtensions.x-fetch-operation}}
 {{/operations}}
 {{/resources}}

@@ -5,7 +5,7 @@ import com.samskivert.mustache.Mustache.Lambda;
 import com.twilio.oai.common.EnumConstants;
 import com.twilio.oai.common.Utility;
 import com.twilio.oai.java.JavaTemplateUpdater;
-import com.twilio.oai.java.JavaUpdateDefaultMapping;
+import com.twilio.oai.java.format.JavaUpdateDefaultMapping;
 import com.twilio.oai.modern.JavaApiResource;
 import com.twilio.oai.modern.JavaApiResourceBuilderNew;
 import com.twilio.oai.modern.ResourceCache;
@@ -15,7 +15,6 @@ import com.twilio.oai.templating.mustache.ReplaceHyphenLambda;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.media.Schema;
 import org.openapitools.codegen.CodegenOperation;
-import org.openapitools.codegen.CodegenParameter;
 import org.openapitools.codegen.languages.JavaClientCodegen;
 import org.openapitools.codegen.model.ModelMap;
 import org.openapitools.codegen.model.ModelsMap;
@@ -24,7 +23,6 @@ import org.openapitools.codegen.model.OperationsMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 
 public class TwilioJavaGeneratorModern extends JavaClientCodegen {
@@ -40,20 +38,27 @@ public class TwilioJavaGeneratorModern extends JavaClientCodegen {
 
     public TwilioJavaGeneratorModern() {
         super();
+        this.additionalProperties.put("serializationLibrary", "jackson");
         twilioCodegen = new TwilioCodegenAdapter(this, getName());
         sourceFolder = "";
     }
-
+    @Override
+    public String toExampleValue(Schema schema) {
+        return super.toExampleValue(schema);
+    }
     @Override
     public void processOpts() {
         super.processOpts();
         this.modelTemplateFiles.clear();
         this.typeMapping.put("date", "java.time.LocalDate");
+        this.additionalProperties.put("serializableModel", true);
+        this.additionalProperties.put("serializationLibrary", "jackson");
         javaUpdateDefaultMapping.typeMapping(this.typeMapping);
         javaUpdateDefaultMapping.importMapping(this.importMapping);
         twilioCodegen.processOpts();
     }
 
+    // Run once per spec
     @Override
     public void processOpenAPI(final OpenAPI openAPI) {
         String domain = twilioCodegen.getDomainFromOpenAPI(openAPI);
@@ -69,10 +74,19 @@ public class TwilioJavaGeneratorModern extends JavaClientCodegen {
     public String toApiFilename(final String name) {
         return directoryStructureService.toApiFilename(super.toApiFilename(name));
     }
+    
+    // DO NOT REMOVE this method even though it is not override.
+    @Override
+    public String getTypeDeclaration(Schema schema) {
+        return super.getTypeDeclaration(schema);
+    }
 
+    // Run once per spec.
     @Override
     public Map<String, ModelsMap> postProcessAllModels(final Map<String, ModelsMap> allModels) {
         final Map<String, ModelsMap> results = super.postProcessAllModels(allModels);
+        ResourceCache.clearAllModelsByDefaultGenerator();
+        // Update allModels from Default generator in ResourceCache.
         Utility.addModelsToLocalModelList(results, ResourceCache.getAllModelsByDefaultGenerator());
         directoryStructureService.postProcessAllModels(results, modelFormatMap);
 
@@ -86,9 +100,11 @@ public class TwilioJavaGeneratorModern extends JavaClientCodegen {
         return schemaType;
     }
     
+    // Run once per operation groups
     @Override
     public OperationsMap postProcessOperationsWithModels(final OperationsMap objs, List<ModelMap> allModels) {
         final OperationsMap results = super.postProcessOperationsWithModels(objs, allModels);
+        ResourceCache.clear();
         final List<CodegenOperation> opList = directoryStructureService.processOperations(results);
         JavaApiResource apiResourceNew = processCodegenOperations(opList);
         results.put("resources", apiResourceNew);

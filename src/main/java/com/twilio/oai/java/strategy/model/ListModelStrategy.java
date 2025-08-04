@@ -3,7 +3,9 @@ package com.twilio.oai.java.strategy.model;
 import com.twilio.oai.common.EnumConstants.ModelType;
 import com.twilio.oai.common.StringUtils;
 import com.twilio.oai.common.Utility;
+import com.twilio.oai.java.nestedmodels.MustacheModel;
 import com.twilio.oai.modern.ResourceCache;
+import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenProperty;
 
 import static com.twilio.oai.common.ApplicationConstants.DOT;
@@ -14,11 +16,12 @@ import static com.twilio.oai.common.ApplicationConstants.X_VARIABLE_NAME;
 public class ListModelStrategy implements ModelIdentifierStrategy {
     ModelType type = ModelType.LIST;
     @Override
-    public boolean identify(CodegenProperty codegenProperty) {
+    public boolean identify(CodegenProperty codegenProperty, CodegenModel codegenModel) {
         if (!codegenProperty.isContainer) return false;
         type(codegenProperty);
         variableName(codegenProperty);
         dataType(codegenProperty);
+        cacheModelClass(codegenProperty, codegenModel);
         return true;
     }
 
@@ -41,5 +44,10 @@ public class ListModelStrategy implements ModelIdentifierStrategy {
         String datatypeInsideContainer = Utility.extractDatatypeFromContainer(codegenProperty.dataType);
         String updatedDataType = Utility.replaceDatatypeInContainer(codegenProperty.dataType, ResourceCache.getResourceName() + DOT + datatypeInsideContainer);
         codegenProperty.vendorExtensions.put(X_DATATYPE, updatedDataType);
+    }
+
+    private void cacheModelClass(CodegenProperty codegenProperty, CodegenModel codegenModel) {
+        MustacheModel mustacheModel = new MustacheModel(codegenProperty, codegenModel);
+        ResourceCache.addToModelClasses(mustacheModel);
     }
 }
