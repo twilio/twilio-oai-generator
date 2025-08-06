@@ -7,7 +7,7 @@ import com.twilio.constant.EnumConstants.ParameterType;
 {{#resources}}
 {{#operations}}
 {{#vendorExtensions.x-update-operation}}
-    public class {{resourceName}} extends Updater<{{resourceName}}> {
+    public class {{resourceName}}Updater extends Updater<{{resourceName}}> {
         {{>common/instanceVariables}}
         {{>common/constructors}}
         {{>common/setters}}

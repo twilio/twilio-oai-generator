@@ -6,6 +6,7 @@ import org.openapitools.codegen.CodegenParameter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 // Add all setter variables for an operation which is non path parameters
 public class SetterMethodGenerator {
@@ -25,12 +26,7 @@ public class SetterMethodGenerator {
     }
 
     public void apply(final CodegenOperation codegenOperation) {
-        List<CodegenParameter> codegenParameters = new ArrayList<>();
-        codegenOperation.allParams.forEach(param -> {
-            if (!param.isPathParam) {
-                codegenParameters.add(param);
-            }
-        });
-        codegenOperation.vendorExtensions.put("x-non-path-params", codegenParameters);
+        List<CodegenParameter> setterParameters = codegenOperation.allParams.stream().filter(param -> !param.isPathParam).collect(Collectors.toList());
+        codegenOperation.vendorExtensions.put("x-setter-methods", setterParameters);
     }
 }

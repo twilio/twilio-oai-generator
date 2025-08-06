@@ -1,4 +1,4 @@
-package com.twilio.oai.java;
+package com.twilio.oai.java.constants;
 
 import lombok.AccessLevel;
 import lombok.Getter;

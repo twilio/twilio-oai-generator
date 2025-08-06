@@ -4,7 +4,7 @@ import com.twilio.oai.java.processor.enums.EnumProcessorFactory;
 import org.openapitools.codegen.CodegenOperation;
 
 import static com.twilio.oai.common.ApplicationConstants.X_REQUEST_CONTENT_TYPE;
-import static com.twilio.oai.java.MustacheConstants.X_REQUEST_LANGUAGE_CONTENT_TYPE_CONSTANT;
+import static com.twilio.oai.java.constants.MustacheConstants.X_REQUEST_LANGUAGE_CONTENT_TYPE_CONSTANT;
 
 public class UrlEncodedProcessor implements RequestBodyProcessor {
     final EnumProcessorFactory enumFactory = EnumProcessorFactory.getInstance();

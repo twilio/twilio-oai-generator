@@ -2,13 +2,14 @@ package com.twilio.oai.java;
 
 import com.twilio.oai.TwilioJavaGeneratorModern;
 import com.twilio.oai.common.EnumConstants;
+import com.twilio.oai.java.constants.MustacheConstants;
 import org.openapitools.codegen.CodegenOperation;
 
 import java.util.AbstractMap;
 import java.util.Map;
 
-import static com.twilio.oai.java.MustacheConstants.ActionMethod;
-import static com.twilio.oai.java.MustacheConstants.ActionType;
+import static com.twilio.oai.java.constants.MustacheConstants.ActionMethod;
+import static com.twilio.oai.java.constants.MustacheConstants.ActionType;
 
 /*
 The JavaTemplateFile class is responsible for managing template mappings for Java code generation. 
