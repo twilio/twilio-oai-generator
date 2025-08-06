@@ -118,8 +118,11 @@ public class TwilioJavaGeneratorModern extends JavaClientCodegen {
     }
 
     private JavaApiResource processCodegenOperations(List<CodegenOperation> operations) {
-        JavaApiResourceBuilder javaApiResourceBuilder = new JavaApiResourceBuilder(this);
-        javaApiResourceBuilder.process(operations);
-        return javaApiResourceBuilder.build();
+        JavaApiResource apiResource = new JavaApiResourceBuilder(this, operations)
+                .resourceName()
+                .recordKey()
+                .processOperations()
+                .build();
+        return apiResource;
     }
 }
