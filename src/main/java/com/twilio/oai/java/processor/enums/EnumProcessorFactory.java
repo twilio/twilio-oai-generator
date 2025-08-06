@@ -19,6 +19,8 @@ import org.openapitools.codegen.CodegenProperty;
 
 import java.util.List;
 
+import static com.twilio.oai.common.ApplicationConstants.X_DATATYPE;
+
 /*
  * Factory class to manage and apply enum processors for CodegenParameter and CodegenProperty.
  * 
@@ -77,10 +79,23 @@ public class EnumProcessorFactory {
         for (ParameterEnumProcessor parameterEnumProcessor: parameterEnumProcessors) {
             if (parameterEnumProcessor.shouldProcess(codegenParameter)) {
                 parameterEnumProcessor.process(codegenParameter);
+                // TODO: to be deleted later.
+                addDataType(codegenParameter);
                 return; // Exit after the first processor that applies
             }
         }
     }
+
+    // TODO: to be deleted later.
+    private void addDataType(CodegenParameter codegenParameter) {
+        codegenParameter.dataType = (String)codegenParameter.vendorExtensions.get(X_DATATYPE);
+    }
+
+    // TODO: to be deleted later.
+    private void addDataType(CodegenProperty codegenProperty) {
+        codegenProperty.dataType = (String)codegenProperty.vendorExtensions.get(X_DATATYPE);
+    }
+
     public void applyProcessor(CodegenProperty codegenProperty) {
         if (codegenProperty.dataFormat != null && codegenProperty.dataFormat.equals("http-method")) {
             return;
@@ -88,8 +103,27 @@ public class EnumProcessorFactory {
         for (PropertyEnumProcessor propertyEnumProcessor: propertyEnumProcessors) {
             if (propertyEnumProcessor.shouldProcess(codegenProperty)) {
                 propertyEnumProcessor.process(codegenProperty);
+                addDataType(codegenProperty);
                 return; // Exit after the first processor that applies
             }
         }
+    }
+    
+    public boolean isEnum(final CodegenParameter codegenParameter) {
+        for (ParameterEnumProcessor parameterEnumProcessor: parameterEnumProcessors) {
+            if (parameterEnumProcessor.shouldProcess(codegenParameter)) {
+                return true; // If any processor can process, it's considered an enum
+            }
+        }
+        return false;
+    }
+
+    public boolean isEnum(final CodegenProperty codegenProperty) {
+        for (PropertyEnumProcessor propertyEnumProcessor : propertyEnumProcessors) {
+            if (propertyEnumProcessor.shouldProcess(codegenProperty)) {
+                return true; // If any processor can process, it's considered an enum
+            }
+        }
+        return false;
     }
 }

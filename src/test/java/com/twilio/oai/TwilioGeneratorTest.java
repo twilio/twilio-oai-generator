@@ -28,7 +28,7 @@ import static org.junit.Assert.assertFalse;
 public class TwilioGeneratorTest {
     @Parameterized.Parameters
     public static Collection<Generator> generators() {
-        return Arrays.asList(Generator.TWILIO_JAVA);
+        return Arrays.asList(Generator.TWILIO_JAVA_MODERN);
     }
 
     private final Generator generator;
@@ -40,7 +40,8 @@ public class TwilioGeneratorTest {
 
     @Test
     public void launchGenerator() {
-        final String pathname = "examples/spec/twilio_api_v2010.yaml";
+        //final String pathname = "examples/spec/twilio_api_v2010.yaml";
+        final String pathname = "examples/test_spec/twilio_testenum_v1.yaml";
         File filesList[] ;
         File directoryPath = new File(pathname);
         if (directoryPath.isDirectory()) {

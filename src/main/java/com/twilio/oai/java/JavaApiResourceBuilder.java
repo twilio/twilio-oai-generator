@@ -3,7 +3,6 @@ package com.twilio.oai.java;
 import com.twilio.oai.TwilioJavaGeneratorModern;
 import com.twilio.oai.common.Utility;
 import com.twilio.oai.java.processor.JavaOperationProcessor;
-import com.twilio.oai.modern.ResourceCache;
 import org.apache.commons.lang3.StringUtils;
 import org.openapitools.codegen.CodegenOperation;
 

@@ -10,7 +10,8 @@ public class RequestBodyProcessorFactory {
 
     private RequestBodyProcessorFactory() {
         this.requestBodyProcessors = List.of(
-            new UrlEncodedProcessor()
+                new UrlEncodedProcessor(),
+                new JsonRequestProcessor()
         );
     }
 
@@ -26,7 +27,7 @@ public class RequestBodyProcessorFactory {
     }
 
     public void process(final CodegenOperation codegenOperation) {
-        for (RequestBodyProcessor requestBodyProcessor: requestBodyProcessors) {
+        for (RequestBodyProcessor requestBodyProcessor : requestBodyProcessors) {
             if (requestBodyProcessor.shouldProcess(codegenOperation)) {
                 requestBodyProcessor.process(codegenOperation);
                 return; // Exit after the first processor that applies

@@ -14,7 +14,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import com.twilio.oai.modern.ResourceCache;
+import com.twilio.oai.java.ResourceCache;
 import lombok.experimental.UtilityClass;
 import org.apache.commons.lang3.StringUtils;
 import org.openapitools.codegen.CodegenModel;
