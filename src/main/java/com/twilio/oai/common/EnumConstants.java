@@ -133,4 +133,48 @@ public class EnumConstants {
 
         private final String value;
     }
+
+    public enum OpenApiEnumType {
+        PARAMETER_INLINE,       // A single enum value used as a parameter value
+        PARAMETER_LIST_INLINE,        // An array of enum values used in parameters
+        PARAMETER_REF,        // An array of enum values used in parameters
+        PARAMETER_LIST_REF,        // An array of enum values used in parameters
+        PROPERTY_INLINE,        // A single enum value used as a property in a schema
+        PROPERTY_LIST,         // An array of enum values used as a property in a schema
+        PROPERTY_REF,
+        PROPERTY_LIST_REF,        // An array of enum values used as a property in a schema
+        FORM_PARAM_INLINE,
+        FORM_PARAM_LIST_INLINE,
+        FORM_PARAM_REF,
+        FORM_PARAM_LIST_REF,
+    }
+    
+    public enum ModelType {
+        SINGLE,
+        LIST
+    }
+
+    @Getter
+    @RequiredArgsConstructor
+    public enum SupportedOperation {
+        X_CREATE("x-create-operation"),
+        X_LIST("x-list-operation"),
+        X_UPDATE("x-update-operation"),
+        X_FETCH("x-fetch-operation"),
+        X_DELETE("x-delete-operation");
+
+        private final String value;
+    }
+
+    @Getter
+    @RequiredArgsConstructor
+    public enum SerializationTypes {
+        X_CREATE("x-create-operation"),
+        X_LIST("x-list-operation"),
+        X_UPDATE("x-update-operation"),
+        X_FETCH("x-fetch-operation"),
+        X_DELETE("x-delete-operation");
+
+        private final String value;
+    }
 }
