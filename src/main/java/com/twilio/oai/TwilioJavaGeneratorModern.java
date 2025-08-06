@@ -3,8 +3,12 @@ package com.twilio.oai;
 import com.google.common.collect.ImmutableMap;
 import com.samskivert.mustache.Mustache.Lambda;
 import com.twilio.oai.common.EnumConstants;
+import com.twilio.oai.common.Utility;
 import com.twilio.oai.java.JavaApiResource;
 import com.twilio.oai.java.JavaApiResourceBuilder;
+import com.twilio.oai.java.JavaTemplateUpdater;
+import com.twilio.oai.java.format.JavaUpdateDefaultMapping;
+import com.twilio.oai.modern.ResourceCache;
 import com.twilio.oai.resolver.java.JavaCaseResolver;
 import com.twilio.oai.resource.ResourceMap;
 import com.twilio.oai.templating.mustache.ReplaceHyphenLambda;
@@ -22,7 +26,10 @@ import java.util.Map;
 
 
 public class TwilioJavaGeneratorModern extends JavaClientCodegen {
+
+    JavaUpdateDefaultMapping javaUpdateDefaultMapping = new JavaUpdateDefaultMapping();
     private final TwilioCodegenAdapter twilioCodegen;
+    JavaTemplateUpdater templateUpdater = new JavaTemplateUpdater();
     private final DirectoryStructureService directoryStructureService = new DirectoryStructureService(
             additionalProperties,
             new ResourceMap(new Inflector()),
@@ -43,6 +50,8 @@ public class TwilioJavaGeneratorModern extends JavaClientCodegen {
     public void processOpts() {
         super.processOpts();
         this.modelTemplateFiles.clear();
+        javaUpdateDefaultMapping.typeMapping(this.typeMapping);
+        javaUpdateDefaultMapping.importMapping(this.importMapping);
         twilioCodegen.processOpts();
     }
 
@@ -54,6 +63,7 @@ public class TwilioJavaGeneratorModern extends JavaClientCodegen {
         twilioCodegen.setDomain(domain);
         twilioCodegen.setVersion(version);
         twilioCodegen.setOutputDir(domain, version);
+        javaUpdateDefaultMapping.removePropertiesFromCustomModels(openAPI);
         directoryStructureService.configure(openAPI);
     }
 
@@ -72,6 +82,9 @@ public class TwilioJavaGeneratorModern extends JavaClientCodegen {
     @Override
     public Map<String, ModelsMap> postProcessAllModels(final Map<String, ModelsMap> allModels) {
         final Map<String, ModelsMap> results = super.postProcessAllModels(allModels);
+        ResourceCache.clearAllModelsByDefaultGenerator();
+        // Update allModels from Default generator in ResourceCache.
+        Utility.addModelsToLocalModelList(results, ResourceCache.getAllModelsByDefaultGenerator());
         directoryStructureService.postProcessAllModels(results, modelFormatMap);
 
         // Return an empty collection so no model files get generated.
@@ -88,7 +101,7 @@ public class TwilioJavaGeneratorModern extends JavaClientCodegen {
     @Override
     public OperationsMap postProcessOperationsWithModels(final OperationsMap objs, List<ModelMap> allModels) {
         final OperationsMap results = super.postProcessOperationsWithModels(objs, allModels);
-        //ResourceCache.clear();
+        ResourceCache.clear();
         final List<CodegenOperation> opList = directoryStructureService.processOperations(results);
         JavaApiResource apiResource = processCodegenOperations(opList);
         results.put("resources", apiResource);
