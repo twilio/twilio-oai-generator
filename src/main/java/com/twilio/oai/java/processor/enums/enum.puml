@@ -5,7 +5,7 @@
         + OpenApiEnumType getType()
     }
 
-    package "enums" {
+
         interface ParameterEnumProcessor {
             + boolean shouldProcess(CodegenParameter schema)
             + void process(CodegenParameter schema)
@@ -17,18 +17,16 @@
             + void process(CodegenProperty schema)
             + OpenApiEnumType getType()
         }
-
-        class ParameterEnumProcessorFactory {
-            - List<ParameterEnumProcessor> processors
+        
+        class EnumProcessorFactory {
+            - List<ParameterEnumProcessor> parameterEnumProcessors
+            - List<PropertyEnumProcessor> propertyEnumProcessors
+            + EnumProcessorFactory()
             + void applyProcessor(CodegenParameter codegenParameter)
-        }
-
-        class PropertyEnumProcessorFactory {
-            - List<PropertyEnumProcessor> processors
             + void applyProcessor(CodegenProperty codegenProperty)
         }
 
-        package "parameter" {
+
             class InlineBodyEnumProcessor
             class InlineBodyListEnumProcessor
             class ReusableBodyEnumProcessor
@@ -37,20 +35,20 @@
             class InlineParamEnumProcessor
             class ReusableListParamEnumProcessor
             class ReusableParamEnumProcessor
-        }
 
-        package "property" {
+
+
             class InlineListPropEnumProcessor
             class InlinePropEnumProcessor
             class ReusableListPropEnumProcessor
             class ReusablePropEnumProcessor
-        }
-    }
+
 
 EnumProcessor <|.. ParameterEnumProcessor
 EnumProcessor <|.. PropertyEnumProcessor
-ParameterEnumProcessorFactory o-- ParameterEnumProcessor
-PropertyEnumProcessorFactory o-- PropertyEnumProcessor
+
+EnumProcessorFactory o-- ParameterEnumProcessor
+EnumProcessorFactory o-- PropertyEnumProcessor
 
 ParameterEnumProcessor <|-- InlineBodyEnumProcessor
 ParameterEnumProcessor <|-- InlineBodyListEnumProcessor
