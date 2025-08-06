@@ -1,0 +1,68 @@
+@startuml
+    interface EnumProcessor<T> {
+        + boolean shouldProcess(T schema)
+        + void process(T schema)
+        + OpenApiEnumType getType()
+    }
+
+    package "enums" {
+        interface ParameterEnumProcessor {
+            + boolean shouldProcess(CodegenParameter schema)
+            + void process(CodegenParameter schema)
+            + OpenApiEnumType getType()
+        }
+
+        interface PropertyEnumProcessor {
+            + boolean shouldProcess(CodegenProperty schema)
+            + void process(CodegenProperty schema)
+            + OpenApiEnumType getType()
+        }
+
+        class ParameterEnumProcessorFactory {
+            - List<ParameterEnumProcessor> processors
+            + void applyProcessor(CodegenParameter codegenParameter)
+        }
+
+        class PropertyEnumProcessorFactory {
+            - List<PropertyEnumProcessor> processors
+            + void applyProcessor(CodegenProperty codegenProperty)
+        }
+
+        package "parameter" {
+            class InlineBodyEnumProcessor
+            class InlineBodyListEnumProcessor
+            class ReusableBodyEnumProcessor
+            class ReusableBodyListEnumProcessor
+            class InlineListParamEnumProcessor
+            class InlineParamEnumProcessor
+            class ReusableListParamEnumProcessor
+            class ReusableParamEnumProcessor
+        }
+
+        package "property" {
+            class InlineListPropEnumProcessor
+            class InlinePropEnumProcessor
+            class ReusableListPropEnumProcessor
+            class ReusablePropEnumProcessor
+        }
+    }
+
+EnumProcessor <|.. ParameterEnumProcessor
+EnumProcessor <|.. PropertyEnumProcessor
+ParameterEnumProcessorFactory o-- ParameterEnumProcessor
+PropertyEnumProcessorFactory o-- PropertyEnumProcessor
+
+ParameterEnumProcessor <|-- InlineBodyEnumProcessor
+ParameterEnumProcessor <|-- InlineBodyListEnumProcessor
+ParameterEnumProcessor <|-- ReusableBodyEnumProcessor
+ParameterEnumProcessor <|-- ReusableBodyListEnumProcessor
+ParameterEnumProcessor <|-- InlineListParamEnumProcessor
+ParameterEnumProcessor <|-- InlineParamEnumProcessor
+ParameterEnumProcessor <|-- ReusableListParamEnumProcessor
+ParameterEnumProcessor <|-- ReusableParamEnumProcessor
+
+PropertyEnumProcessor <|-- InlineListPropEnumProcessor
+PropertyEnumProcessor <|-- InlinePropEnumProcessor
+PropertyEnumProcessor <|-- ReusableListPropEnumProcessor
+PropertyEnumProcessor <|-- ReusablePropEnumProcessor
+@enduml
