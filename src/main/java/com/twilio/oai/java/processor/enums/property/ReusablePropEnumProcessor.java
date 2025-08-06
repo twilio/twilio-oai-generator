@@ -5,7 +5,7 @@ import com.twilio.oai.common.EnumConstants.OpenApiEnumType;
 import com.twilio.oai.common.StringUtils;
 import com.twilio.oai.common.Utility;
 import com.twilio.oai.java.nestedmodels.MustacheEnum;
-import com.twilio.oai.modern.ResourceCache;
+import com.twilio.oai.java.ResourceCache;
 import org.openapitools.codegen.CodegenProperty;
 
 import java.util.ArrayList;

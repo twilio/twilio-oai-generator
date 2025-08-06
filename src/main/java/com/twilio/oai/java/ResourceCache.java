@@ -1,11 +1,10 @@
-package com.twilio.oai.modern;
+package com.twilio.oai.java;
 
 import com.twilio.oai.java.nestedmodels.MustacheEnum;
 import com.twilio.oai.java.nestedmodels.MustacheModel;
 import lombok.Getter;
 import lombok.Setter;
 import org.openapitools.codegen.CodegenModel;
-import org.openapitools.codegen.CodegenParameter;
 import org.openapitools.codegen.CodegenProperty;
 
 import java.util.ArrayList;

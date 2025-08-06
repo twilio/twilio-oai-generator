@@ -8,7 +8,7 @@ import com.twilio.oai.java.JavaApiResource;
 import com.twilio.oai.java.JavaApiResourceBuilder;
 import com.twilio.oai.java.JavaTemplateUpdater;
 import com.twilio.oai.java.format.JavaUpdateDefaultMapping;
-import com.twilio.oai.modern.ResourceCache;
+import com.twilio.oai.java.ResourceCache;
 import com.twilio.oai.resolver.java.JavaCaseResolver;
 import com.twilio.oai.resource.ResourceMap;
 import com.twilio.oai.templating.mustache.ReplaceHyphenLambda;
@@ -131,6 +131,7 @@ public class TwilioJavaGeneratorModern extends JavaClientCodegen {
     }
 
     private JavaApiResource processCodegenOperations(List<CodegenOperation> operations) {
+        templateUpdater.addApiTemplate(this, operations);
         JavaApiResource apiResource = new JavaApiResourceBuilder(this, operations)
                 .resourceName()
                 .recordKey()
