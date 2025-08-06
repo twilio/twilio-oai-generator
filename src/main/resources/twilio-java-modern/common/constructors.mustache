@@ -1,5 +1,5 @@
 {{#vendorExtensions.x-signature-list}}
-    public {{resourceName}}Creator({{#.}}final {{{dataType}}} {{paramName}}{{^-last}}, {{/-last}}{{/.}}) {
+    public {{resourceName}}{{vendorExtensions.x-common-action-type}}({{#.}}final {{{dataType}}} {{paramName}}{{^-last}}, {{/-last}}{{/.}}) {
     {{#.}}
         this.{{paramName}} = {{paramName}};
     {{/.}}

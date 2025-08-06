@@ -28,12 +28,14 @@ public class UrlencodedBodyConstructorGenerator implements ConstructorGenerator 
     }
     
     public boolean shouldApply(CodegenOperation codegenOperation) {
+        // TODO
+        return true;
         // Check if the operation consumes application/x-www-form-urlencoded
-        if (codegenOperation.consumes == null || codegenOperation.consumes.isEmpty()) {
-            return false;
-        }
-        return codegenOperation.consumes.stream()
-                .anyMatch(mediaType -> mediaType.get("mediaType").equals("application/x-www-form-urlencoded"));
+//        if (codegenOperation.consumes == null || codegenOperation.consumes.isEmpty()) {
+//            return false;
+//        }
+//        return codegenOperation.consumes.stream()
+//                .anyMatch(mediaType -> mediaType.get("mediaType").equals("application/x-www-form-urlencoded"));
     }
 
     public List<List<CodegenParameter>> generateSignatureListModern(final CodegenOperation codegenOperation) {

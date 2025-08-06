@@ -26,5 +26,8 @@ public class ParameterProcessor {
         codegenOperation.pathParams.forEach(param -> enumProcessorFactory.applyProcessor(param));
         codegenOperation.headerParams.forEach(param -> enumProcessorFactory.applyProcessor(param));
         codegenOperation.requiredParams.forEach(param -> enumProcessorFactory.applyProcessor(param));
+
+        // Required for setter methods and promotion method generation
+        codegenOperation.allParams.forEach(param -> enumProcessorFactory.applyProcessor(param));
     }
 }

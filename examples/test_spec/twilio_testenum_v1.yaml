@@ -1,5 +1,6 @@
 # This spec Tests following
 # 1. All types of enums, There are 8 types of Enum to be tested
+# 2. Enums as a query, header parameter
 info:
   contact:
     email: support@twilio.com

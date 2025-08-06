@@ -2,6 +2,7 @@ package com.twilio.oai.java.processor;
 
 import com.twilio.oai.java.feature.SetterMethodGenerator;
 import com.twilio.oai.java.feature.constructor.ConstructorFactory;
+import com.twilio.oai.java.format.Promoter;
 import com.twilio.oai.java.processor.parameter.ParameterProcessor;
 import com.twilio.oai.java.processor.requestbody.RequestBodyProcessorFactory;
 import com.twilio.oai.java.processor.responsebody.ResponseProcessorFactory;
@@ -32,5 +33,6 @@ public class JavaOperationProcessor {
         // All Features should be applied after processors are completed
         ConstructorFactory.getInstance().applyFeature(codegenOperation);
         SetterMethodGenerator.getInstance().apply(codegenOperation);
+        Promoter.addPromoter(codegenOperation);
     }
 }

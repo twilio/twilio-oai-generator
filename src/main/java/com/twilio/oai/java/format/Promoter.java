@@ -29,9 +29,8 @@ public class Promoter {
         }
     }
     
-    public static void addPromotor(final CodegenOperation codegenOperation) {
+    public static void addPromoter(final CodegenOperation codegenOperation) {
         List<CodegenParameter> setterParameters = codegenOperation.allParams.stream().filter(param -> !param.isPathParam).collect(Collectors.toList());
         setterParameters.forEach(param -> addPromoter(param));
-        codegenOperation.vendorExtensions.put("x-setter-methods", setterParameters);
     }
 }
