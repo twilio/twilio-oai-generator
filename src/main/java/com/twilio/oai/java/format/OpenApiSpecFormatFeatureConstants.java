@@ -17,11 +17,11 @@ public class OpenApiSpecFormatFeatureConstants {
      * two setters will be created: one for `PhoneNumber` and another for `String`.
      * The promoter logic will be applied to the `String` setter. 
      */
-//    public final static Map<String, Promotion> PROMOTIONS = Map.of(
-//        "url", new Promotion("String", "Promoter.uriFromString({})"),
-//        "phone-number", new Promotion("String", "Promoter.phoneNumberFromString({})"),
-//        "twiml", new Promotion("String", "Promoter.twimlFromString({})")
-//    );
+    public final static Map<String, Promotion> PROMOTIONS = Map.of(
+        "url", new Promotion("String", "Promoter.uriFromString({})"),
+        "phone-number", new Promotion("String", "Promoter.phoneNumberFromString({})"),
+        "twiml", new Promotion("String", "Promoter.twimlFromString({})")
+    );
 
     /*
      * key (format) -> The key is the format defined in the OpenAPI Spec.
