@@ -19,11 +19,37 @@ import org.openapitools.codegen.CodegenProperty;
 
 import java.util.List;
 
+/*
+ * Factory class to manage and apply enum processors for CodegenParameter and CodegenProperty.
+ * 
+ * This class is implemented as a singleton to ensure that only one instance of the factory exists
+ * throughout the application.
+ * 
+ * The processors (e.g., `InlineBodyEnumProcessor`, `ReusablePropEnumProcessor`) are instantiated
+ * during the initialization of the factory. Since the factory is a singleton, these processor
+ * instances effectively behave as singletons within the context of the factory. There is no need
+ * to make these processor classes singleton themselves, as their lifecycle is already managed
+ * by the factory.
+ * 
+ */
 public class EnumProcessorFactory {
+
+    public static EnumProcessorFactory instance;
     private final List<ParameterEnumProcessor> parameterEnumProcessors;
     private final List<PropertyEnumProcessor> propertyEnumProcessors;
 
-    public EnumProcessorFactory() {
+    public static synchronized EnumProcessorFactory getInstance() {
+        if (instance == null) {
+            synchronized (EnumProcessorFactory.class) {
+                if (instance == null) {
+                    instance = new EnumProcessorFactory();
+                }
+            }
+        }
+        return instance;
+    }
+    
+    private EnumProcessorFactory() {
         this.parameterEnumProcessors = List.of(
                 new InlineBodyEnumProcessor(),
                 new InlineBodyListEnumProcessor(),
