@@ -1,0 +1,8 @@
+{{#response}}
+    @Getter
+    @JsonProperty("{{baseName}}")
+{{#vendorExtensions.x-deserializer}}
+    @JsonDeserialize(using = {{vendorExtensions.x-deserializer}})    
+{{/vendorExtensions.x-deserializer}}
+    private final {{{dataType}}} {{name}};
+{{/response}}
