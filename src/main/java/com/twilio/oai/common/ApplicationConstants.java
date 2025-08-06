@@ -58,5 +58,14 @@ public class ApplicationConstants {
     public static final Predicate<Integer> SUCCESS = i -> i != null && i >= 200 && i < 400;
 
     public static final String[] VERSION_LESS_SPECS = {"organizations"};
+    
+    public static final String X_DATATYPE = "x-var-datatype";
+    public static final String X_VARIABLE_NAME = "x-var-name";
+    public static final String X_ENUM_TYPE = "x-enum-type"; // EnumConstants.OpenApiEnumType
+    public static final String X_MODEL_TYPE = "x-model-type"; // EnumConstants.OpenApiEnumType
+    public static final String X_IS_MODEL = "x-is-model";
+    public static final String X_REQUEST_CONTENT_TYPE = "x-request-content-type";
+    
+    
 
 }
