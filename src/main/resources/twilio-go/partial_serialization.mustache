@@ -30,7 +30,12 @@ if params != nil && params.PathAccountSid != nil {
     if params != nil && params.{{paramName}} != nil {
         b, err := json.Marshal(*params.{{paramName}})
         if err != nil {
-            return nil, err
+{{#returnType}}
+          return nil, err
+{{/returnType}}
+{{^returnType}}
+          return nil
+{{/returnType}}
         }
         body = b
     }
