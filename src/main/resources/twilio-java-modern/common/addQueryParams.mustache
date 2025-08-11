@@ -7,7 +7,7 @@ private void addQueryParams(final Request request) {
 {{^isArray}}
 {{^vendorExtensions.x-inequality-main}}
     if ({{paramName}} != null) {
-        Serializer.toString(request, "{{baseName}}", {{paramName}}, ParameterType.QUERY);
+        Serializer.toString(request, "{{{baseName}}}", {{paramName}}, ParameterType.QUERY);
     }
 {{/vendorExtensions.x-inequality-main}}
 {{/isArray}}
@@ -17,7 +17,7 @@ private void addQueryParams(final Request request) {
 {{^isArray}}
 {{#vendorExtensions.x-inequality-main}}
     if ({{paramName}} != null) {
-        Serializer.toString(request, "{{baseName}}", {{paramName}}, {{paramName}}Before, {{paramName}}After);
+        Serializer.toString(request, "{{{baseName}}}", {{paramName}}, {{paramName}}Before, {{paramName}}After);
     }
 {{/vendorExtensions.x-inequality-main}}
 {{/isArray}}
@@ -26,7 +26,7 @@ private void addQueryParams(final Request request) {
 {{#isArray}}
     if ({{paramName}} != null) {
         for ({{baseType}} param: {{paramName}}) {
-            Serializer.toString(request, "{{baseName}}", param, ParameterType.QUERY);
+            Serializer.toString(request, "{{{baseName}}}", param, ParameterType.QUERY);
         }
     }
 {{/isArray}}

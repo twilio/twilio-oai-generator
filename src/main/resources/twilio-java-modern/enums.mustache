@@ -1,7 +1,7 @@
 {{#mustacheEnums}}
 public enum {{className}} {
 {{#enumValues}}
-    {{name}}({{{value}}}){{^-last}},{{/-last}}
+    {{name}}({{{value}}}){{^-last}},{{/-last}}{{#-last}};{{/-last}}
 {{/enumValues}}
 
     private final String value;

@@ -1,18 +1,16 @@
 {{>licenseInfo}}
-{{#imports}}
-import {{import}};
-{{/imports}}
-import com.twilio.constant.EnumConstants.ParameterType;
-
 {{#resources}}
+package com.twilio.rest.{{domainPackage}}.{{apiVersion}}{{namespaceSubPart}};
+{{>common/imports}}
+
 {{#operations}}
 {{#vendorExtensions.x-fetch-operation}}
     public class {{resourceName}}Fetcher extends Fetcher<{{resourceName}}> {
 
         {{>common/instanceVariables}}
         {{>common/constructors}}
-        {{>common/setters}}
-        {{>common/operationMethod}}
+        {{>fetcher/setters}}
+        {{>fetcher/operationMethod}}
     {{#queryParams.0}}
         {{>common/addQueryParams}}
     {{/queryParams.0}}

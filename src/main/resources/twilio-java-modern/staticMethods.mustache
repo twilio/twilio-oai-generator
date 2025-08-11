@@ -5,7 +5,7 @@
     * @param objectMapper Jackson ObjectMapper
     * @return {{resourceName}} object represented by the provided JSON
     */
-    public static {{apiName}} fromJson(final String json, final ObjectMapper objectMapper) {
+    public static {{resourceName}} fromJson(final String json, final ObjectMapper objectMapper) {
         // Convert all checked exceptions to Runtime
         try {
             return objectMapper.readValue(json, {{resourceName}}.class);

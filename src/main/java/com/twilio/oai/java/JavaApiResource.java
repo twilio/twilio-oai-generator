@@ -16,7 +16,10 @@ public class JavaApiResource {
     Set<MustacheModel> mustacheModels;
     List<CodegenOperation> operations;
     Set<CodegenProperty> response;
+    String namespaceSubPart;
 
+    Boolean responseFlag = null; // true or NUll
+    
     public JavaApiResource(JavaApiResourceBuilder builder) {
         resourceName = ResourceCache.resourceName;
         recordKey = builder.recordKey;
@@ -24,6 +27,8 @@ public class JavaApiResource {
         this.mustacheEnums = new HashSet<>(ResourceCache.getEnumsClassesForMustache());
         this.mustacheModels = new HashSet<>(ResourceCache.getModelClassesForMustache());
         this.response = ResourceCache.response;
+        if (response != null && !response.isEmpty()) responseFlag = true;
+        this.namespaceSubPart = builder.namespaceSubPart;
     }
 }
 

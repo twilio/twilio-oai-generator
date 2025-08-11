@@ -198,13 +198,17 @@ public class Utility {
     }
 
     /* For request body(urlencoded) enums with ref, it will be processed by default
-       Example:
+       Example1:
        singleBodyRef:
          $ref: '#/components/schemas/singleReusable'
+       
+       Example2:
+       status:
+          $ref: '#/components/schemas/message_enum_status'
      */
     public static String getEnumNameFromDefaultDatatype(final String ref) {
         String schemaName = ref.replaceFirst("#/components/schemas/", "");
-        String[] enumNameArray = schemaName.split("Enum");
+        String[] enumNameArray = schemaName.split("_enum_");
         return enumNameArray[enumNameArray.length - 1];
     }
     

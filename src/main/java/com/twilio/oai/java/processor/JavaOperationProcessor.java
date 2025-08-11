@@ -3,6 +3,7 @@ package com.twilio.oai.java.processor;
 import com.twilio.oai.java.feature.SetterMethodGenerator;
 import com.twilio.oai.java.feature.constructor.ConstructorFactory;
 import com.twilio.oai.java.format.Promoter;
+import com.twilio.oai.java.processor.auth.SecuritySchemeManager;
 import com.twilio.oai.java.processor.parameter.ParameterProcessor;
 import com.twilio.oai.java.processor.requestbody.RequestBodyProcessorFactory;
 import com.twilio.oai.java.processor.responsebody.ResponseProcessorFactory;
@@ -25,6 +26,8 @@ public class JavaOperationProcessor {
     private JavaOperationProcessor() { }
     
     public void process(final CodegenOperation codegenOperation) {
+        SecuritySchemeManager.getInstance().applyProcessor(codegenOperation);
+        
         ParameterProcessor.getInstance().process(codegenOperation);
         RequestBodyProcessorFactory.getInstance().process(codegenOperation);
         ResponseProcessorFactory.getInstance().process(codegenOperation);

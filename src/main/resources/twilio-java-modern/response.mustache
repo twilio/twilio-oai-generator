@@ -1,8 +1,42 @@
+{{! -- Instance variables}}
+{{#responseFlag}}
+    
+
 {{#response}}
     @Getter
-    @JsonProperty("{{baseName}}")
-{{#vendorExtensions.x-deserializer}}
-    @JsonDeserialize(using = {{vendorExtensions.x-deserializer}})    
-{{/vendorExtensions.x-deserializer}}
     private final {{{dataType}}} {{name}};
 {{/response}}
+
+{{! -- Private Constructor}}
+@JsonCreator
+private {{resourceName}}(
+{{#response}}
+    @JsonProperty("{{baseName}}")
+{{#vendorExtensions.x-deserializer}}
+    @JsonDeserialize(using = {{vendorExtensions.x-deserializer}}.class)
+{{/vendorExtensions.x-deserializer}}
+    final {{{dataType}}} {{name}}{{^-last}}, {{/-last}}
+{{/response}}
+){
+{{#response}}
+    this.{{name}} = {{name}};
+{{/response}}
+}
+
+{{>equalsAndHashcode}}
+{{/responseFlag}}
+
+{{^responseFlag}}
+@JsonCreator
+private {{resourceName}}() {}
+
+@Override
+public boolean equals(Object obj) {
+    return obj != null && obj.getClass() == this.getClass();
+}
+
+@Override
+public int hashCode() {
+    return 1;
+}
+{{/responseFlag}}
