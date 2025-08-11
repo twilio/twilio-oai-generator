@@ -1,0 +1,64 @@
+
+{{#operations}}
+{{#vendorExtensions.x-create-operation}}
+{{#vendorExtensions.x-signature-list}}
+
+    public static {{resourceName}}Creator creator({{#.}}final {{{dataType}}} {{paramName}}{{^-last}}, {{/-last}}{{/.}}) {
+        return new {{resourceName}}Creator(
+            {{#.}} {{paramName}}{{^-last}}, {{/-last}}{{/.}}
+        );
+    }
+
+{{/vendorExtensions.x-signature-list}}
+{{/vendorExtensions.x-create-operation}}
+
+
+{{#vendorExtensions.x-delete-operation}}
+{{#vendorExtensions.x-signature-list}}
+
+    public static {{resourceName}}Deleter deleter({{#.}}final {{{dataType}}} {{paramName}}{{^-last}}, {{/-last}}{{/.}}) {
+        return new {{resourceName}}Deleter(
+            {{#.}} {{paramName}}{{^-last}}, {{/-last}}{{/.}}
+        );
+    }
+
+{{/vendorExtensions.x-signature-list}}
+{{/vendorExtensions.x-delete-operation}}
+
+{{#vendorExtensions.x-fetch-operation}}
+{{#vendorExtensions.x-signature-list}}
+
+    public static {{resourceName}}Fetcher fetcher({{#.}}final {{{dataType}}} {{paramName}}{{^-last}}, {{/-last}}{{/.}}) {
+        return new {{resourceName}}Fetcher(
+            {{#.}} {{paramName}}{{^-last}}, {{/-last}}{{/.}}
+        );
+    }
+
+{{/vendorExtensions.x-signature-list}}
+{{/vendorExtensions.x-fetch-operation}}
+
+{{#vendorExtensions.x-list-operation}}
+{{#vendorExtensions.x-signature-list}}
+
+    public static {{resourceName}}Reader reader({{#.}}final {{{dataType}}} {{paramName}}{{^-last}}, {{/-last}}{{/.}}) {
+        return new {{resourceName}}Reader(
+            {{#.}} {{paramName}}{{^-last}}, {{/-last}}{{/.}}
+        );
+    }
+
+{{/vendorExtensions.x-signature-list}}
+{{/vendorExtensions.x-list-operation}}
+
+{{#vendorExtensions.x-update-operation}}
+{{#vendorExtensions.x-signature-list}}
+
+    public {{resourceName}}Updater updater({{#.}}final {{{dataType}}} {{paramName}}{{^-last}}, {{/-last}}{{/.}}) {
+        return new {{resourceName}}Updater(
+            {{#.}} {{paramName}}{{^-last}}, {{/-last}}{{/.}}
+        );
+    }
+
+{{/vendorExtensions.x-signature-list}}
+{{/vendorExtensions.x-update-operation}}
+    
+{{/operations}}

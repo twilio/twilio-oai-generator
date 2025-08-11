@@ -107,9 +107,28 @@ components:
             $ref: '#/components/schemas/singleReusable'
           description: An array of reusable enum defined in components
           example: [electronics, clothing]
+        status:
+          $ref: '#/components/schemas/message_enum_status'
     
     # 8. REUSABLE_SINGLE
     singleReusable:
       type: string
       enum: [electronics, furniture, clothing]
       description: A reusable single-value enum defined in components
+    message_enum_status:
+      type: string
+      enum:
+        - queued
+        - sending
+        - sent
+        - failed
+        - delivered
+        - undelivered
+        - receiving
+        - received
+        - accepted
+        - scheduled
+        - read
+        - partially_delivered
+        - canceled
+      description: test

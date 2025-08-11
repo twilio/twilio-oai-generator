@@ -1,17 +1,15 @@
 {{>licenseInfo}}
-{{#imports}}
-import {{import}};
-{{/imports}}
-import com.twilio.constant.EnumConstants.ParameterType;
-
 {{#resources}}
+package com.twilio.rest.{{domainPackage}}.{{apiVersion}}{{namespaceSubPart}};
+{{>common/imports}}
+
 {{#operations}}
 {{#vendorExtensions.x-update-operation}}
     public class {{resourceName}}Updater extends Updater<{{resourceName}}> {
         {{>common/instanceVariables}}
         {{>common/constructors}}
-        {{>common/setters}}
-        {{>common/operationMethod}}
+        {{>updater/setters}}
+        {{>updater/operationMethod}}
     {{#queryParams.0}}
         {{>common/addQueryParams}}
     {{/queryParams.0}}
