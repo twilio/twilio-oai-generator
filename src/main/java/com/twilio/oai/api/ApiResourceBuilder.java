@@ -22,6 +22,7 @@ public abstract class ApiResourceBuilder implements IApiResourceBuilder {
     public static final String META_LIST_PARAMETER_KEY = "x-list-parameters";
     public static final String META_CONTEXT_PARAMETER_KEY = "x-context-parameters";
     public static final String CONTENT_TYPE_JSON = "application/json";
+    public static final String CONTENT_TYPE_MULTIPART_FORM_DATA = "multipart/form-data";
 
     protected final IApiActionTemplate template;
     @Getter

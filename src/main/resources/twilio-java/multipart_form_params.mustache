@@ -1,0 +1,13 @@
+
+  private void addMultipartFormDataParams(final {{vendorExtensions.x-auth-attributes.x-http-class-prefix}}Request request) {
+      {{#formParams}}
+        if ({{paramName}} != null) {
+        {{^isFile}}
+            request.addFormParam("{{baseName}}", Type.TEXT, {{baseName}}.toString());
+        {{/isFile}}
+        {{#isFile}}
+          request.addFormParam("{{baseName}}", Type.FILE, {{baseName}});
+        {{/isFile}}
+        }
+      {{/formParams}}
+  }
