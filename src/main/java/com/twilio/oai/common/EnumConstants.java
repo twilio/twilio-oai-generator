@@ -128,6 +128,7 @@ public class EnumConstants {
         GET("HttpMethod.Get"),
         POST("HttpMethod.Post"),
         PUT("HttpMethod.Put"),
+        PATCH("HttpMethod.Patch"),
         DELETE("HttpMethod.Delete");
 
         private final String value;
