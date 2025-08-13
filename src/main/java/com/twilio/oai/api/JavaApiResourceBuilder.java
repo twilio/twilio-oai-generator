@@ -101,6 +101,8 @@ public class JavaApiResourceBuilder extends ApiResourceBuilder{
             co.consumes.forEach(consume -> {
                 if(consume.getOrDefault("mediaType", "").equals(CONTENT_TYPE_JSON))
                     co.vendorExtensions.put("x-is-json", true);
+                else if( consume.getOrDefault("mediaType", "").equals(CONTENT_TYPE_MULTIPART_FORM_DATA))
+                    co.vendorExtensions.put("x-is-multipart-form-data", true);
             });
     }
 

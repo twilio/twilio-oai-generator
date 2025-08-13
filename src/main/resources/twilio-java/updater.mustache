@@ -84,18 +84,28 @@ public class {{apiName}}Updater extends Updater<{{apiName}}>{
         {{#queryParams.0}}
         addQueryParams(request);
         {{/queryParams.0}}
+        {{#vendorExtensions.x-is-multipart-form-data}}
+        request.setContentType(EnumConstants.ContentType.MULTIPART_FORM_DATA);
+        {{/vendorExtensions.x-is-multipart-form-data}}
+        {{^vendorExtensions.x-is-multipart-form-data}}
         {{^vendorExtensions.x-is-json}}
         request.setContentType(EnumConstants.ContentType.FORM_URLENCODED);
         {{/vendorExtensions.x-is-json}}
         {{#vendorExtensions.x-is-json}}
         request.setContentType(EnumConstants.ContentType.JSON);
         {{/vendorExtensions.x-is-json}}
+        {{/vendorExtensions.x-is-multipart-form-data}}
+        {{#vendorExtensions.x-is-multipart-form-data}}
+        addMultipartFormDataParams(request);
+        {{/vendorExtensions.x-is-multipart-form-data}}
+        {{^vendorExtensions.x-is-multipart-form-data}}
         {{#formParams.0}}
         addPostParams(request);
         {{/formParams.0}}
         {{#bodyParams.0}}
         addPostParams(request, client);
         {{/bodyParams.0}}
+        {{/vendorExtensions.x-is-multipart-form-data}}
         {{#headerParams.0}}
         addHeaderParams(request);
         {{/headerParams.0}}
@@ -112,13 +122,17 @@ public class {{apiName}}Updater extends Updater<{{apiName}}>{
 
         return {{apiName}}.fromJson(response.getStream(), client.getObjectMapper());
     }
-
+{{#vendorExtensions.x-is-multipart-form-data}}
+  {{>multipart_form_params}}
+{{/vendorExtensions.x-is-multipart-form-data}}
+{{^vendorExtensions.x-is-multipart-form-data}}
 {{#vendorExtensions.x-has-form-params}}
 {{>postParams}}
 {{/vendorExtensions.x-has-form-params}}
 {{#vendorExtensions.x-has-body-params}}
 {{>postParams_body}}
 {{/vendorExtensions.x-has-body-params}}
+{{/vendorExtensions.x-is-multipart-form-data}}
 {{#vendorExtensions.x-has-header-params}}
 {{>headerParams}}
 {{/vendorExtensions.x-has-header-params}}
