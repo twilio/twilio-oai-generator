@@ -1,0 +1,28 @@
+{{#mustacheModels}}
+
+    @JsonDeserialize(builder = {{className}}.Builder.class)
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    @ToString
+    @Builder
+    public static class {{className}} {
+    {{#mandatoryProperties}}
+        public {{classname}}({{#.}}final {{{dataType}}} {{name}}{{^-last}}, {{/-last}}{{/.}} ) {
+        {{#.}}
+            this.{{name}} = {{name}};
+        {{/.}}
+        }
+    {{/mandatoryProperties}}
+
+    {{#optionalProperties}}
+        {{#vendorExtensions.x-deserializer}}
+        @JsonDeserialize(using = {{vendorExtensions.x-deserializer}}.class)
+        {{/vendorExtensions.x-deserializer}}
+        @JsonInclude(JsonInclude.Include.NON_EMPTY)
+        @JsonProperty("{{{baseName}}}")
+        @Getter @Setter private {{{dataType}}} {{name}};
+
+    {{/optionalProperties}}
+        @JsonPOJOBuilder(withPrefix = "")
+        public static class Builder {}
+    }
+{{/mustacheModels}}

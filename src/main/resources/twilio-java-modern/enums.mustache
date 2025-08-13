@@ -1,0 +1,22 @@
+{{#mustacheEnums}}
+public enum {{className}} {
+{{#enumValues}}
+    {{name}}({{{value}}}){{^-last}},{{/-last}}
+{{/enumValues}}
+
+    private final String value;
+
+    private {{className}}(final String value) {
+        this.value = value;
+    }
+
+    public String toString() {
+        return value;
+    }
+
+    @JsonCreator
+    public static {{className}} forValue(final String value) {
+        return Promoter.enumFromString(value, {{className}}.values());
+    }
+}
+{{/mustacheEnums}}
