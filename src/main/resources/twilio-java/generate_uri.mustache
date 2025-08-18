@@ -8,6 +8,9 @@
 {{#allParams}}
     {{#vendorExtensions.x-is-account-sid}}
         this.{{paramName}} = this.{{paramName}} == null ? client.getAccountSid() : this.{{paramName}};
+        if (this.{{paramName}} == null) {
+            throw new InvalidRequestException("{{paramName}} can not be null");
+        }
         path = path.replace("{"+"{{baseName}}"+"}", this.{{paramName}}.toString());
     {{/vendorExtensions.x-is-account-sid}}
 {{/allParams}}
