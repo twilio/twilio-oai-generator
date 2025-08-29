@@ -52,6 +52,7 @@ public class TwilioJavaGeneratorModern extends JavaClientCodegen {
         this.modelTemplateFiles.clear();
         javaUpdateDefaultMapping.typeMapping(this.typeMapping);
         javaUpdateDefaultMapping.importMapping(this.importMapping);
+        javaUpdateDefaultMapping.modelTemplateFiles(this.modelTemplateFiles);
         twilioCodegen.processOpts();
     }
 
@@ -136,6 +137,7 @@ public class TwilioJavaGeneratorModern extends JavaClientCodegen {
                 .resourceName()
                 .recordKey()
                 .processOperations()
+                .namespaceSubPart(operations.get(0))
                 .build();
         return apiResource;
     }

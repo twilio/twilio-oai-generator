@@ -9,6 +9,7 @@ import org.openapitools.codegen.CodegenOperation;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.twilio.oai.common.ApplicationConstants.PATH_SEPARATOR_PLACEHOLDER;
 
@@ -20,6 +21,7 @@ public class JavaApiResourceBuilder {
     TwilioJavaGeneratorModern twilioJavaGenerator;
     final JavaOperationProcessor operationProcessor;
     List<CodegenOperation> operations;
+    String namespaceSubPart;
     public JavaApiResourceBuilder(TwilioJavaGeneratorModern twilioJavaGenerator, List<CodegenOperation> operations) {
         this.twilioJavaGenerator = twilioJavaGenerator;
         this.operations = operations;
@@ -50,6 +52,19 @@ public class JavaApiResourceBuilder {
             throw new RuntimeException("Resource name must be set before processing operations.");
         }
         operations.forEach(operation -> operationProcessor.process(operation));
+        return this;
+    }
+
+    public JavaApiResourceBuilder namespaceSubPart(CodegenOperation codegenOperation) {
+        List<String> filePathArray = new ArrayList<>(Arrays.asList(codegenOperation.baseName.split(PATH_SEPARATOR_PLACEHOLDER)));
+        filePathArray.remove(filePathArray.size()-1);
+        if (!filePathArray.isEmpty()) {
+            final String namespacePath = filePathArray
+                    .stream()
+                    .map(String::toLowerCase)
+                    .collect(Collectors.joining("."));
+            namespaceSubPart = "." + namespacePath;
+        }
         return this;
     }
 

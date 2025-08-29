@@ -40,8 +40,9 @@ public class TwilioGeneratorTest {
 
     @Test
     public void launchGenerator() {
-        //final String pathname = "examples/spec/twilio_api_v2010.yaml";
-        final String pathname = "examples/test_spec/twilio_testenum_v1.yaml";
+        final String pathname = "examples/spec/twilio_api_v2010.yaml";
+        //final String pathname = "examples/test_spec/twilio_testenum_v1.yaml";
+        //final String pathname = "/Users/sbansla/Documents/code/twilio-oai/spec/yaml/twilio_content_v1.yaml";
         File filesList[] ;
         File directoryPath = new File(pathname);
         if (directoryPath.isDirectory()) {
@@ -54,7 +55,7 @@ public class TwilioGeneratorTest {
                     .setGeneratorName(generator.getValue())
                     .setInputSpec(file.getPath())
                     .setOutputDir("codegen/" + generator.getValue())
-                    .setInlineSchemaNameDefaults(Map.of("arrayItemSuffix", ""))
+                    //.setInlineSchemaNameDefaults(Map.of("arrayItemSuffix", ""))
                     .addGlobalProperty("apiTests", "false")
                     .addGlobalProperty("apiDocs", "false");
             final ClientOptInput clientOptInput = configurator.toClientOptInput();

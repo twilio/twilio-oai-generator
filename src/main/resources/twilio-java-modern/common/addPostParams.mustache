@@ -5,7 +5,7 @@ private void addPostParams(final Request request) {
 {{^isArray}}
 {{^vendorExtensions.x-inequality-main}}
     if ({{paramName}} != null) {
-        Serializer.toString(request, "{{baseName}}", param, ParameterType.URLENCODED);
+        Serializer.toString(request, "{{{baseName}}}", {{paramName}}, ParameterType.URLENCODED);
     }
 {{/vendorExtensions.x-inequality-main}}
 {{/isArray}}
@@ -14,7 +14,7 @@ private void addPostParams(final Request request) {
 {{#isArray}}
     if ({{paramName}} != null) {
         for ({{baseType}} param: {{paramName}}) {
-            Serializer.toString(request, "{{baseName}}", param, ParameterType.URLENCODED);
+            Serializer.toString(request, "{{{baseName}}}", param, ParameterType.URLENCODED);
         }
     }
 {{/isArray}}

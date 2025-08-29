@@ -79,6 +79,7 @@ public class JsonResponseProcessor implements ResponseProcessor {
                         // TODO: Handle in future.
                     }
                     String ref = codegenMediaType.getSchema().getRef();
+                    if (ref == null) return null;
                     CodegenModel model = Utility.getModelFromRef(ref);
                     return model;
                     

@@ -15,6 +15,7 @@ public class JsonRequestProcessor implements RequestBodyProcessor {
     @Override
     public boolean shouldProcess(final CodegenOperation codegenOperation) {
         // TODO
+        if (codegenOperation.bodyParams != null && !codegenOperation.bodyParams.isEmpty()) return true;
         return false;
     }
     

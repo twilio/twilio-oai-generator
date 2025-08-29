@@ -1,12 +1,15 @@
 package com.twilio.oai.java.processor.requestbody;
 
 import com.twilio.oai.common.Utility;
+import com.twilio.oai.java.feature.datamodels.DataModelManager;
 import com.twilio.oai.java.format.Deserializer;
 import com.twilio.oai.java.processor.enums.EnumProcessorFactory;
 import com.twilio.oai.java.processor.model.ModelProcessorFactory;
 import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenOperation;
 import org.openapitools.codegen.CodegenProperty;
+
+import java.util.List;
 
 public class RecursiveModelProcessor {
     EnumProcessorFactory enumProcessorFactory = EnumProcessorFactory.getInstance();
@@ -15,6 +18,7 @@ public class RecursiveModelProcessor {
     public void processBody(CodegenOperation codegenOperation) {
         // codegenOperation.bodyParam.vars.get(3).ref: #/components/schemas/types
         codegenOperation.bodyParam.vars.forEach(property -> processModelRecursively(property));
+        
     }
 
     public void processResponse(final CodegenOperation codegenOperation) {
@@ -29,9 +33,8 @@ public class RecursiveModelProcessor {
         /*
         This code block has access to all the codegenProperty for a nested model.
         Add your logic to process the property.
-        Start
+        ------------------  Start ------------------ 
         */
-        
         
         if (isEnum(codegenProperty)) {
             // Logic 1: Enum Logic
@@ -49,7 +52,7 @@ public class RecursiveModelProcessor {
         modelProcessorFactory.applyProcessor(codegenProperty, codegenModel);
 
         /* 
-        End
+        ------------------ End ------------------ 
          */
         
         
@@ -61,8 +64,6 @@ public class RecursiveModelProcessor {
             }
         }
     }
-
-
 
     private boolean isEnum(CodegenProperty codegenProperty) {
         return enumProcessorFactory.isEnum(codegenProperty);
