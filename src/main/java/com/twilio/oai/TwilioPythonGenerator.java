@@ -24,21 +24,22 @@ import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.PathItem;
 import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenOperation;
-import org.openapitools.codegen.languages.PythonLegacyClientCodegen;
+import org.openapitools.codegen.languages.PythonClientCodegen;
+//import org.openapitools.codegen.languages.PythonLegacyClientCodegen;
 import org.openapitools.codegen.model.ModelMap;
 import org.openapitools.codegen.model.ModelsMap;
 import org.openapitools.codegen.model.OperationsMap;
 
 import static com.twilio.oai.common.ApplicationConstants.CONFIG_PYTHON_JSON_PATH;
 
-public class TwilioPythonGenerator extends PythonLegacyClientCodegen {
+public class TwilioPythonGenerator extends PythonClientCodegen {
     private final TwilioCodegenAdapter twilioCodegen;
     private final PythonApiActionTemplate actionTemplate = new PythonApiActionTemplate(this);
     private final IResourceTree resourceTree = new ResourceMap(new Inflector());
     private final DirectoryStructureService directoryStructureService = new DirectoryStructureService(
-        additionalProperties,
-        resourceTree,
-        new PythonCaseResolver());
+            additionalProperties,
+            resourceTree,
+            new PythonCaseResolver());
     private final List<CodegenModel> allModels = new ArrayList<>();
     private final Map<String, String> modelFormatMap = new HashMap<>();
     public static final String JSON_INGRESS = "json_ingress";
@@ -79,9 +80,9 @@ public class TwilioPythonGenerator extends PythonLegacyClientCodegen {
             final String resourcePath = pathsEntry.getKey();
             final PathItem path = pathsEntry.getValue();
             final boolean isMatchingPath = path
-                .readOperations()
-                .stream()
-                .anyMatch(operation -> operation.getTags().contains(tag));
+                    .readOperations()
+                    .stream()
+                    .anyMatch(operation -> operation.getTags().contains(tag));
             final boolean pathHasDependents = !resourceTree.dependents(resourcePath).isEmpty();
 
             return isMatchingPath && pathHasDependents;
@@ -120,15 +121,15 @@ public class TwilioPythonGenerator extends PythonLegacyClientCodegen {
     private ApiResources generateResources(final List<CodegenOperation> opList) {
         final IConventionMapper conventionMapper = new LanguageConventionResolver(CONFIG_PYTHON_JSON_PATH);
         final PythonCodegenModelResolver codegenModelResolver = new PythonCodegenModelResolver(conventionMapper,
-                                                                                   modelFormatMap,
-                                                                                   List.of(EnumConstants.PythonDataTypes.values()));
+                modelFormatMap,
+                List.of(EnumConstants.PythonDataTypes.values()));
 
         PythonApiResourceBuilder pythonApiResourceBuilder = new PythonApiResourceBuilder(actionTemplate, opList, allModels, directoryStructureService, twilioCodegen.getToggles(JSON_INGRESS));
         pythonApiResourceBuilder.updateApiPath()
-                                .updateTemplate()
-                                .updateOperations(new PythonParameterResolver(conventionMapper, codegenModelResolver));
+                .updateTemplate()
+                .updateOperations(new PythonParameterResolver(conventionMapper, codegenModelResolver));
         return pythonApiResourceBuilder.updateResponseModel(new PythonPropertyResolver(conventionMapper), codegenModelResolver)
-                                       .build();
+                .build();
     }
 
     @Override
