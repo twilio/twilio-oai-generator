@@ -3,10 +3,10 @@
       {{#formParams}}
         if ({{paramName}} != null) {
         {{^isFile}}
-            request.addFormParam("{{baseName}}", Type.TEXT, {{baseName}}.toString());
+            request.addFormParameter("{{baseName}}", Type.TEXT, {{paramName}}.toString());
         {{/isFile}}
         {{#isFile}}
-          request.addFormParam("{{baseName}}", Type.FILE, {{baseName}});
+          request.addFormParameter("{{baseName}}", Type.FILE, {{paramName}});
         {{/isFile}}
         }
       {{/formParams}}
