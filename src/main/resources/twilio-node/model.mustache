@@ -13,7 +13,7 @@ export class {{name}} {{#parent}}extends {{{parent}}} {{/parent}}{
    * {{{description}}}
    */
 {{/description}}
-  "{{baseName}}"{{^required}}?{{/required}}: {{{dataType}}}{{#isNullable}} | null{{/isNullable}};
+  "{{name}}"{{^required}}?{{/required}}: {{{dataType}}}{{#isNullable}} | null{{/isNullable}};
 {{/vars}}
 }
 
