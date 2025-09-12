@@ -135,6 +135,9 @@ public class CsharpApiResourceBuilder extends ApiResourceBuilder {
             case "PUT":
                 co.vendorExtensions.put(HTTP_METHOD, CsharpHttpMethod.PUT.getValue());
                 break;
+            case "PATCH":
+                co.vendorExtensions.put(HTTP_METHOD, CsharpHttpMethod.PATCH.getValue());
+                break;
             case "DELETE":
                 co.vendorExtensions.put(HTTP_METHOD, CsharpHttpMethod.DELETE.getValue());
                 break;
