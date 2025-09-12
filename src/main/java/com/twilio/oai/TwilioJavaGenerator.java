@@ -157,12 +157,12 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
 
     @Override
     public String getName() {
-        return EnumConstants.Generator.TWILIO_JAVA.getValue();
+        return EnumConstants.Generator.TWILIO_JAVA_LEGACY.getValue();
     }
 
     @Override
     public String getHelp() {
-        return "Generates the twilio-java helper library.";
+        return "Generates the twilio-java-legacy helper library.";
     }
 
     private JavaApiResources processCodegenOperations(List<CodegenOperation> opList) {
@@ -174,7 +174,7 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
                 .updateApiPath()
                 .updateTemplate();
         final Boolean isIngress = twilioCodegen.getToggles(JSON_INGRESS).
-                get(EnumConstants.Generator.TWILIO_JAVA.getValue());
+                get(EnumConstants.Generator.TWILIO_JAVA_LEGACY.getValue());
         javaApiResourceBuilder.updateOperations(new JavaParameterResolver(conventionMapper))
                 .updateResponseModel(new JavaPropertyResolver(conventionMapper), codegenModelResolver);
         if (isIngress) {

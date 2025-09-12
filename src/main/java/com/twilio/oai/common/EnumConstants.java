@@ -10,6 +10,7 @@ public class EnumConstants {
     public enum Generator {
         TWILIO_CSHARP("twilio-csharp"),
         TWILIO_JAVA("twilio-java"),
+        TWILIO_JAVA_LEGACY("twilio-java-legacy"),
         TWILIO_JAVA_MODERN("twilio-java-modern"),
         TWILIO_JAVA_TEST("twilio-java-test"),
         TWILIO_NODE("twilio-node"),
