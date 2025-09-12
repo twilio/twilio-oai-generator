@@ -5,6 +5,7 @@ import io.swagger.v3.oas.models.OpenAPI;
 
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 public class JavaUpdateDefaultMapping {
     HashSet<String> customFormatWithProperties = new HashSet<>();
@@ -36,6 +37,11 @@ public class JavaUpdateDefaultMapping {
     public void modelTemplateFiles(Map<String, String> modelTemplateFiles) {
         // Do not generate models
         modelTemplateFiles.clear();
+    }
+
+    public void removeReservedWords(Set<String> reservedWords) {
+        // Do not generate models
+        reservedWords.remove("localdate");
     }
     
     /*

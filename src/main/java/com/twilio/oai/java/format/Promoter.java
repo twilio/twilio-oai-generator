@@ -3,6 +3,7 @@ package com.twilio.oai.java.format;
 import org.openapitools.codegen.CodegenOperation;
 import org.openapitools.codegen.CodegenParameter;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -30,7 +31,11 @@ public class Promoter {
     }
     
     public static void addPromoter(final CodegenOperation codegenOperation) {
-        List<CodegenParameter> setterParameters = codegenOperation.allParams.stream().filter(param -> !param.isPathParam).collect(Collectors.toList());
+        //List<CodegenParameter> setterParameters = codegenOperation.allParams.stream().filter(param -> !param.isPathParam).collect(Collectors.toList());
+        List<CodegenParameter> setterParameters = new ArrayList<>(codegenOperation.bodyParams);
+        setterParameters.addAll(codegenOperation.formParams);
+        setterParameters.addAll(codegenOperation.queryParams);
+        setterParameters.addAll(codegenOperation.headerParams);
         setterParameters.forEach(param -> addPromoter(param));
     }
 }

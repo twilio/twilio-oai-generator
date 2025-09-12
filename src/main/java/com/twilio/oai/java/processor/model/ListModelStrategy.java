@@ -3,8 +3,8 @@ package com.twilio.oai.java.processor.model;
 import com.twilio.oai.common.EnumConstants.ModelType;
 import com.twilio.oai.common.StringUtils;
 import com.twilio.oai.common.Utility;
+import com.twilio.oai.java.cache.ResourceCacheContext;
 import com.twilio.oai.java.nestedmodels.MustacheModel;
-import com.twilio.oai.java.ResourceCache;
 import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenProperty;
 
@@ -47,12 +47,12 @@ public class ListModelStrategy implements ModelProcessor {
     private void dataType(CodegenProperty codegenProperty) {
         //TODO: Need to identify whether the property is defined using ref or directly defined property
         String datatypeInsideContainer = Utility.extractDatatypeFromContainer(codegenProperty.dataType);
-        String updatedDataType = Utility.replaceDatatypeInContainer(codegenProperty.dataType, ResourceCache.getResourceName() + DOT + datatypeInsideContainer);
+        String updatedDataType = Utility.replaceDatatypeInContainer(codegenProperty.dataType, ResourceCacheContext.get().getResourceName() + DOT + datatypeInsideContainer);
         codegenProperty.vendorExtensions.put(X_DATATYPE, updatedDataType);
     }
 
     private void cacheModelClass(CodegenProperty codegenProperty, CodegenModel codegenModel) {
         MustacheModel mustacheModel = new MustacheModel(codegenProperty, codegenModel);
-        ResourceCache.addToModelClasses(mustacheModel);
+        ResourceCacheContext.get().addToModelClasses(mustacheModel);
     }
 }

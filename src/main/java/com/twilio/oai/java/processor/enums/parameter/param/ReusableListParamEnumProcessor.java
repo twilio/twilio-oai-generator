@@ -3,9 +3,9 @@ package com.twilio.oai.java.processor.enums.parameter.param;
 import com.twilio.oai.common.EnumConstants.OpenApiEnumType;
 import com.twilio.oai.common.StringUtils;
 import com.twilio.oai.common.Utility;
+import com.twilio.oai.java.cache.ResourceCacheContext;
 import com.twilio.oai.java.nestedmodels.MustacheEnum;
 import com.twilio.oai.java.processor.enums.parameter.ParameterEnumProcessor;
-import com.twilio.oai.java.ResourceCache;
 import org.openapitools.codegen.CodegenParameter;
 
 import java.util.List;
@@ -65,10 +65,17 @@ public class ReusableListParamEnumProcessor implements ParameterEnumProcessor {
         // enumRefResolved = singleReusable
         String enumRefResolved = Utility.getEnumNameFromRef(codegenParameter.getSchema().items.getRef());
         // enumNonContainerDatatype = Content.SingleReusable
-        String enumNonContainerDatatype = ResourceCache.getResourceName() + DOT + StringUtils.toPascalCase(enumRefResolved);
+        String enumNonContainerDatatype = ResourceCacheContext.get().getResourceName() + DOT + StringUtils.toPascalCase(enumRefResolved);
         // resolvedDataType = List<Content.SingleReusable>
         String resolvedDataType = Utility.replaceDatatypeInContainer(codegenParameter.dataType, enumNonContainerDatatype);
         codegenParameter.vendorExtensions.put(X_DATATYPE, resolvedDataType);
+
+        // Resolve BaseType for List as it is used in promoter as setter method.
+        String baseType = Utility.getEnumNameFromDatatype(codegenParameter.baseType);
+        if (baseType != null) {
+            String resolvedBaseType = ResourceCacheContext.get().getResourceName() + DOT + StringUtils.toPascalCase(baseType);
+            codegenParameter.baseType = resolvedBaseType;
+        }
     }
 
     private void cacheEnumClass(CodegenParameter codegenParameter) {
@@ -76,6 +83,6 @@ public class ReusableListParamEnumProcessor implements ParameterEnumProcessor {
         
         MustacheEnum mustacheEnum = new MustacheEnum(StringUtils.toPascalCase(
                 Utility.getEnumNameFromRef(codegenParameter.getSchema().items.getRef())), enumValues);
-        ResourceCache.addToEnumClasses(mustacheEnum);
+        ResourceCacheContext.get().addToEnumClasses(mustacheEnum);
     }
 }

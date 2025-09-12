@@ -19,6 +19,9 @@ package com.twilio.rest.{{domainPackage}}.{{apiVersion}}{{namespaceSubPart}};
     {{#headerParams.0}}
         {{>common/addHeaderParams}}
     {{/headerParams.0}}
+    {{#bodyParams.0}}
+        {{>common/addPostParamsJson}}
+    {{/bodyParams.0}}
     }
 {{/vendorExtensions.x-update-operation}}
 {{/operations}}

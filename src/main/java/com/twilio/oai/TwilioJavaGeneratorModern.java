@@ -7,8 +7,9 @@ import com.twilio.oai.common.Utility;
 import com.twilio.oai.java.JavaApiResource;
 import com.twilio.oai.java.JavaApiResourceBuilder;
 import com.twilio.oai.java.JavaTemplateUpdater;
+import com.twilio.oai.java.cache.ResourceCache2;
+import com.twilio.oai.java.cache.ResourceCacheContext;
 import com.twilio.oai.java.format.JavaUpdateDefaultMapping;
-import com.twilio.oai.java.ResourceCache;
 import com.twilio.oai.resolver.java.JavaCaseResolver;
 import com.twilio.oai.resource.ResourceMap;
 import com.twilio.oai.templating.mustache.ReplaceHyphenLambda;
@@ -27,6 +28,7 @@ import java.util.Map;
 
 public class TwilioJavaGeneratorModern extends JavaClientCodegen {
 
+    ResourceCache2 resourceCache2 = new ResourceCache2();
     JavaUpdateDefaultMapping javaUpdateDefaultMapping = new JavaUpdateDefaultMapping();
     private final TwilioCodegenAdapter twilioCodegen;
     JavaTemplateUpdater templateUpdater = new JavaTemplateUpdater();
@@ -38,6 +40,8 @@ public class TwilioJavaGeneratorModern extends JavaClientCodegen {
 
     public TwilioJavaGeneratorModern() {
         super();
+        ResourceCacheContext.clear();
+        ResourceCacheContext.set(resourceCache2);
         this.additionalProperties.put("serializationLibrary", "jackson");
         twilioCodegen = new TwilioCodegenAdapter(this, getName());
         sourceFolder = "";
@@ -52,6 +56,7 @@ public class TwilioJavaGeneratorModern extends JavaClientCodegen {
         this.modelTemplateFiles.clear();
         javaUpdateDefaultMapping.typeMapping(this.typeMapping);
         javaUpdateDefaultMapping.importMapping(this.importMapping);
+        javaUpdateDefaultMapping.removeReservedWords(this.reservedWords);
         javaUpdateDefaultMapping.modelTemplateFiles(this.modelTemplateFiles);
         twilioCodegen.processOpts();
     }
@@ -72,7 +77,7 @@ public class TwilioJavaGeneratorModern extends JavaClientCodegen {
     public String toApiFilename(final String name) {
         return directoryStructureService.toApiFilename(super.toApiFilename(name));
     }
-    
+
     // DO NOT REMOVE this method even though it is not override.
     @Override
     public String getTypeDeclaration(Schema schema) {
@@ -83,9 +88,12 @@ public class TwilioJavaGeneratorModern extends JavaClientCodegen {
     @Override
     public Map<String, ModelsMap> postProcessAllModels(final Map<String, ModelsMap> allModels) {
         final Map<String, ModelsMap> results = super.postProcessAllModels(allModels);
-        ResourceCache.clearAllModelsByDefaultGenerator();
+        ResourceCache2 cache2 = ResourceCacheContext.get();
+        ResourceCacheContext.set(cache2);
+        ResourceCacheContext.clear();
+        //ResourceCache.clearAllModelsByDefaultGenerator();
         // Update allModels from Default generator in ResourceCache.
-        Utility.addModelsToLocalModelList(results, ResourceCache.getAllModelsByDefaultGenerator());
+        Utility.addModelsToLocalModelList(results, cache2.getAllModelsByDefaultGenerator());
         directoryStructureService.postProcessAllModels(results, modelFormatMap);
 
         // Return an empty collection so no model files get generated.
@@ -97,12 +105,13 @@ public class TwilioJavaGeneratorModern extends JavaClientCodegen {
         String schemaType = super.getSchemaType(p);
         return schemaType;
     }
-    
+
     // Run once per operation groups
     @Override
     public OperationsMap postProcessOperationsWithModels(final OperationsMap objs, List<ModelMap> allModels) {
         final OperationsMap results = super.postProcessOperationsWithModels(objs, allModels);
-        ResourceCache.clear();
+        //ResourceCache.clear();
+        ResourceCacheContext.clear();
         final List<CodegenOperation> opList = directoryStructureService.processOperations(results);
         JavaApiResource apiResource = processCodegenOperations(opList);
         results.put("resources", apiResource);
@@ -132,6 +141,7 @@ public class TwilioJavaGeneratorModern extends JavaClientCodegen {
     }
 
     private JavaApiResource processCodegenOperations(List<CodegenOperation> operations) {
+        //DataModelManager.getInstance().apply();
         templateUpdater.addApiTemplate(this, operations);
         JavaApiResource apiResource = new JavaApiResourceBuilder(this, operations)
                 .resourceName()

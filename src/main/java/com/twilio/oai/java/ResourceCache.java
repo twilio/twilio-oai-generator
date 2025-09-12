@@ -1,7 +1,7 @@
 package com.twilio.oai.java;
 
 import com.twilio.oai.java.nestedmodels.MustacheEnum;
-import com.twilio.oai.java.nestedmodels.MustacheModel;
+import com.twilio.oai.java.nestedmodels.MustacheModel;;
 import lombok.Getter;
 import lombok.Setter;
 import org.openapitools.codegen.CodegenModel;
@@ -26,6 +26,7 @@ public class ResourceCache {
     public static List<CodegenModel> allModelsByDefaultGenerator = new ArrayList<>();
     @Getter
     public static Set<MustacheModel> modelClassesForMustache = new HashSet<>();
+    
     @Getter
     public static Set<MustacheEnum> enumsClassesForMustache = new HashSet<>();
 

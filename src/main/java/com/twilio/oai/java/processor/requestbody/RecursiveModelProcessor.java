@@ -1,24 +1,59 @@
 package com.twilio.oai.java.processor.requestbody;
 
 import com.twilio.oai.common.Utility;
-import com.twilio.oai.java.feature.datamodels.DataModelManager;
+import com.twilio.oai.java.cache.ResourceCacheContext;
 import com.twilio.oai.java.format.Deserializer;
 import com.twilio.oai.java.processor.enums.EnumProcessorFactory;
 import com.twilio.oai.java.processor.model.ModelProcessorFactory;
+import com.twilio.oai.java.processor.model.parameter.ParamModelProcessorManager;
 import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenOperation;
+import org.openapitools.codegen.CodegenParameter;
 import org.openapitools.codegen.CodegenProperty;
-
-import java.util.List;
 
 public class RecursiveModelProcessor {
     EnumProcessorFactory enumProcessorFactory = EnumProcessorFactory.getInstance();
     ModelProcessorFactory modelProcessorFactory = ModelProcessorFactory.getInstance();
+    ParamModelProcessorManager paramModelProcessorManager = ParamModelProcessorManager.getInstance();
 
     public void processBody(CodegenOperation codegenOperation) {
         // codegenOperation.bodyParam.vars.get(3).ref: #/components/schemas/types
+        
         codegenOperation.bodyParam.vars.forEach(property -> processModelRecursively(property));
         
+    }
+
+    public void process(CodegenProperty codegenProperty) {
+        processModelRecursively(codegenProperty);
+    }
+    
+    public void process(CodegenParameter codegenParameter) {
+        CodegenModel codegenModel = ResourceCacheContext.get().getAllModelsByDefaultGenerator().stream()
+                .filter(model -> model.classname.equalsIgnoreCase(codegenParameter.dataType))
+                .findFirst()
+                .orElse(null);
+        if (codegenModel == null) return;
+
+        paramModelProcessorManager.applyProcessor(codegenParameter, codegenModel);
+
+        if (codegenModel.vars != null && !codegenModel.vars.isEmpty()) {
+            for (CodegenProperty modelProperty : codegenModel.vars) {
+                processModelRecursively(modelProperty);
+            }
+        }
+    }
+
+    // Only in case of oneOf or allOf
+    public void processModelRecursively(CodegenParameter codegenParameter, CodegenModel codegenModel) {
+        
+        
+        paramModelProcessorManager.applyProcessor(codegenParameter, codegenModel);
+
+        if (codegenModel.vars != null && !codegenModel.vars.isEmpty()) {
+            for (CodegenProperty modelProperty : codegenModel.vars) {
+                processModelRecursively(modelProperty);
+            }
+        }
     }
 
     public void processResponse(final CodegenOperation codegenOperation) {
@@ -28,7 +63,7 @@ public class RecursiveModelProcessor {
 
     
     // DFS based recursive logic
-    private void processModelRecursively(final CodegenProperty codegenProperty) {
+    public void processModelRecursively(final CodegenProperty codegenProperty) {
         CodegenModel codegenModel = Utility.getModelFromOpenApiType(codegenProperty);
         /*
         This code block has access to all the codegenProperty for a nested model.

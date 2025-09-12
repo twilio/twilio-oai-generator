@@ -47,15 +47,17 @@ public class OpenApiSpecFormatFeatureConstants {
         predefinedTypeMappings.put("Map<String, String>", "Map<String, String>");
         predefinedTypeMappings.put("Map<String, Object>", "Map<String, Object>");
 
-        predefinedTypeMappings.put("string+phone-number", "PhoneNumber");
+        predefinedTypeMappings.put("string+phone-number", "com.twilio.type.PhoneNumber");
+        predefinedTypeMappings.put("com.twilio.type.PhoneNumber", "com.twilio.type.PhoneNumber");
         predefinedTypeMappings.put("string+uri", "URI");
         predefinedTypeMappings.put("string+url", "URI");
         predefinedTypeMappings.put("string+currency", "Currency");
         predefinedTypeMappings.put("string+date-time", "ZonedDateTime");
         predefinedTypeMappings.put("string+date", "LocalDate");
+        //predefinedTypeMappings.put("LocalDate", "LocalDate");
         predefinedTypeMappings.put("string+endpoint", "Endpoint");
         predefinedTypeMappings.put("string+http-method", "HttpMethod");
-        predefinedTypeMappings.put("string+twiml", "com.twilio.type.Twiml");
+        predefinedTypeMappings.put("string+twiml", "Twiml");
         predefinedTypeMappings.put("string+date-time-rfc-2822", "ZonedDateTime");
 
         predefinedTypeMappings.put("object+ice-server", "IceServer");

@@ -3,9 +3,9 @@ package com.twilio.oai.java.processor.enums.parameter.param;
 import com.twilio.oai.common.EnumConstants.OpenApiEnumType;
 import com.twilio.oai.common.StringUtils;
 import com.twilio.oai.common.Utility;
+import com.twilio.oai.java.cache.ResourceCacheContext;
 import com.twilio.oai.java.nestedmodels.MustacheEnum;
 import com.twilio.oai.java.processor.enums.parameter.ParameterEnumProcessor;
-import com.twilio.oai.java.ResourceCache;
 import org.openapitools.codegen.CodegenParameter;
 
 import java.util.List;
@@ -56,13 +56,13 @@ public class ReusableParamEnumProcessor implements ParameterEnumProcessor {
     private void datatype(CodegenParameter codegenParameter) {
         String enumRefResolved = Utility.getEnumNameFromRef(codegenParameter.getSchema().getRef());
         codegenParameter.vendorExtensions.put(X_DATATYPE,
-                ResourceCache.getResourceName() + DOT + StringUtils.toPascalCase(enumRefResolved));
+                ResourceCacheContext.get().getResourceName() + DOT + StringUtils.toPascalCase(enumRefResolved));
     }
 
     private void cacheEnumClass(CodegenParameter codegenParameter) {
         List<Map<String, Object>> enumValues = (List<Map<String, Object>>)  codegenParameter.allowableValues.get("enumVars");
         MustacheEnum mustacheEnum = new MustacheEnum(StringUtils.toPascalCase(
                 Utility.getEnumNameFromRef(codegenParameter.getSchema().getRef())), enumValues);
-        ResourceCache.addToEnumClasses(mustacheEnum);
+        ResourceCacheContext.get().addToEnumClasses(mustacheEnum);
     }
 }

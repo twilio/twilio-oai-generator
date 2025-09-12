@@ -4,6 +4,6 @@ import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenOperation;
 
 public interface DataModel {
-    void apply(CodegenModel codegenModel);
+    void apply(CodegenOperation codegenOperation);
     boolean shouldApply(CodegenModel codegenModel);
 }
