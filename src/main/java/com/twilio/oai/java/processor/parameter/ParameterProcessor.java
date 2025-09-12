@@ -22,6 +22,18 @@ public class ParameterProcessor {
     }
 
     public void process(final CodegenOperation codegenOperation) {
+        codegenOperation.pathParams.forEach(param -> {
+            param.paramName = "path" + param.paramName;
+        });
+
+        codegenOperation.allParams.stream().filter(param -> param.isPathParam).forEach(param -> {
+            param.paramName = "path" + param.paramName;
+        });
+
+        codegenOperation.requiredParams.stream().filter(param -> param.isPathParam).forEach(param -> {
+            param.paramName = "path" + param.paramName;
+        });
+        
         codegenOperation.queryParams.forEach(param -> enumProcessorFactory.applyProcessor(param));
         codegenOperation.pathParams.forEach(param -> enumProcessorFactory.applyProcessor(param));
         codegenOperation.headerParams.forEach(param -> enumProcessorFactory.applyProcessor(param));
@@ -29,5 +41,7 @@ public class ParameterProcessor {
 
         // Required for setter methods and promotion method generation
         codegenOperation.allParams.forEach(param -> enumProcessorFactory.applyProcessor(param));
+
+        //codegenOperation.allParams.forEach(param -> enumProcessorFactory.applyProcessor(param));
     }
 }

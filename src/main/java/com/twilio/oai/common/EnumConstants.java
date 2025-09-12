@@ -11,6 +11,7 @@ public class EnumConstants {
         TWILIO_CSHARP("twilio-csharp"),
         TWILIO_JAVA("twilio-java"),
         TWILIO_JAVA_MODERN("twilio-java-modern"),
+        TWILIO_JAVA_TEST("twilio-java-test"),
         TWILIO_NODE("twilio-node"),
         TWILIO_PHP("twilio-php"),
         TWILIO_PYTHON("twilio-python"),

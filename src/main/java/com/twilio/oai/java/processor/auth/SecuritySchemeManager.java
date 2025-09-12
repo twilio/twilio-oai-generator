@@ -1,7 +1,6 @@
 package com.twilio.oai.java.processor.auth;
 
 import org.openapitools.codegen.CodegenOperation;
-import org.openapitools.codegen.CodegenSecurity;
 
 import java.util.List;
 

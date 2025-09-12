@@ -1,5 +1,6 @@
 package com.twilio.oai.java.feature.datamodels;
 
+import com.twilio.oai.java.cache.ResourceCacheContext;
 import org.openapitools.codegen.CodegenModel;
 
 import java.util.List;
@@ -26,11 +27,13 @@ public class DataModelManager {
         return instance;
     }
 
-    public void apply(final CodegenModel codegenModel) {
-        for (DataModel dataModel: dataModels) {
-            if (dataModel.shouldApply(codegenModel)) {
-                dataModel.apply(codegenModel);
-                return; // Can a CodegenModel have multiple datamodels at same level, if yes don't return ?
+    public void apply() {
+        for (CodegenModel codegenModel: ResourceCacheContext.get().getAllModelsByDefaultGenerator()) {
+            for (DataModel dataModel: dataModels) {
+                if (dataModel.shouldApply(codegenModel)) {
+                    //dataModel.apply();
+                    // Can a CodegenModel have multiple datamodels at same level, if yes don't return ?
+                }
             }
         }
     }

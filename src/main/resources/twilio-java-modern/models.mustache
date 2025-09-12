@@ -1,19 +1,19 @@
 {{#mustacheModels}}
 
-    @JsonDeserialize(builder = {{className}}.Builder.class)
+    //@JsonDeserialize(builder = {{className}}.Builder.class)
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     @ToString
-    @Builder
+{{!@Builder}}
     public static class {{className}} {
+    {{#mandatoryProperties.0}}
+    public {{className}}({{#mandatoryProperties}} final {{{dataType}}} {{name}}{{^-last}}, {{/-last}} {{/mandatoryProperties}}) {
     {{#mandatoryProperties}}
-        public {{classname}}({{#.}}final {{{dataType}}} {{name}}{{^-last}}, {{/-last}}{{/.}} ) {
-        {{#.}}
-            this.{{name}} = {{name}};
-        {{/.}}
-        }
+        this.{{name}} = {{name}};
     {{/mandatoryProperties}}
-
-    {{#optionalProperties}}
+    }
+    {{/mandatoryProperties.0}}
+    
+    {{#allProperties}}
         {{#vendorExtensions.x-deserializer}}
         @JsonDeserialize(using = {{vendorExtensions.x-deserializer}}.class)
         {{/vendorExtensions.x-deserializer}}
@@ -21,8 +21,8 @@
         @JsonProperty("{{{baseName}}}")
         @Getter @Setter private {{{dataType}}} {{name}};
 
-    {{/optionalProperties}}
-        @JsonPOJOBuilder(withPrefix = "")
-        public static class Builder {}
+    {{/allProperties}}
+{{!        @JsonPOJOBuilder(withPrefix = "")
+public static class Builder {}}
     }
 {{/mustacheModels}}

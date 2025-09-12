@@ -21,6 +21,9 @@ public class {{resourceName}}Creator extends Creator<{{resourceName}}> {
 {{#headerParams.0}}
     {{>common/addHeaderParams}}
 {{/headerParams.0}}
+{{#bodyParams.0}}
+    {{>common/addPostParamsJson}}
+{{/bodyParams.0}}
 }
 {{/vendorExtensions.x-create-operation}}
 {{/operations}}

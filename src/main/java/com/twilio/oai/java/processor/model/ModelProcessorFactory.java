@@ -1,6 +1,5 @@
 package com.twilio.oai.java.processor.model;
 
-import com.twilio.oai.java.feature.datamodels.DataModelManager;
 import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenProperty;
 
@@ -10,7 +9,6 @@ public class ModelProcessorFactory {
 
     private static ModelProcessorFactory instance;
     private final List<ModelProcessor> modelProcessors;
-    private DataModelManager dataModelManager = DataModelManager.getInstance();
     public static synchronized ModelProcessorFactory getInstance() {
         if (instance == null) {
             synchronized (ModelProcessorFactory.class) {

@@ -3,9 +3,9 @@ package com.twilio.oai.java.processor.enums.parameter.param;
 import com.twilio.oai.common.EnumConstants.OpenApiEnumType;
 import com.twilio.oai.common.StringUtils;
 import com.twilio.oai.common.Utility;
+import com.twilio.oai.java.cache.ResourceCacheContext;
 import com.twilio.oai.java.nestedmodels.MustacheEnum;
 import com.twilio.oai.java.processor.enums.parameter.ParameterEnumProcessor;
-import com.twilio.oai.java.ResourceCache;
 import org.openapitools.codegen.CodegenParameter;
 
 import java.util.List;
@@ -67,15 +67,24 @@ public class InlineListParamEnumProcessor implements ParameterEnumProcessor {
     }
     private void datatype(CodegenParameter codegenParameter) {
         String enumClassName = StringUtils.toPascalCase(codegenParameter.baseName);
-        String enumNonContainerDatatype = ResourceCache.getResourceName() + DOT + StringUtils.toPascalCase(enumClassName);
+        String enumNonContainerDatatype = ResourceCacheContext.get().getResourceName() + DOT + StringUtils.toPascalCase(enumClassName);
         String resolvedDataType = Utility.replaceDatatypeInContainer(codegenParameter.dataType, enumNonContainerDatatype);
         codegenParameter.vendorExtensions.put(X_DATATYPE, resolvedDataType);
+
+        // Resolve BaseType for List as it is used in promoter as setter method.
+        String baseType = Utility.getEnumNameFromDatatype(codegenParameter.baseType);
+        if (baseType != null) {
+            String resolvedBaseType = ResourceCacheContext.get().getResourceName() + DOT + StringUtils.toPascalCase(baseType);
+            codegenParameter.baseType = resolvedBaseType;
+        }
+        // enumNonContainerDatatype = Account.Status
+        
     }
 
     private void cacheEnumClass(CodegenParameter codegenParameter) {
         List<Map<String, Object>> enumValues = (List<Map<String, Object>>) codegenParameter.allowableValues.get("enumVars");
 
         MustacheEnum mustacheEnum = new MustacheEnum( StringUtils.toPascalCase(codegenParameter.baseName), enumValues);
-        ResourceCache.addToEnumClasses(mustacheEnum);
+        ResourceCacheContext.get().addToEnumClasses(mustacheEnum);
     }
 }

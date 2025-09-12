@@ -1,9 +1,10 @@
 package com.twilio.oai.java.processor.responsebody;
 
 import com.twilio.oai.common.Utility;
+import com.twilio.oai.java.cache.ResourceCacheContext;
 import com.twilio.oai.java.format.Deserializer;
-import com.twilio.oai.java.ResourceCache;
 import com.twilio.oai.java.processor.enums.EnumProcessorFactory;
+import com.twilio.oai.java.processor.requestbody.RecursiveModelProcessor;
 import org.openapitools.codegen.CodegenMediaType;
 import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenOperation;
@@ -14,9 +15,13 @@ import java.util.Map;
 
 public class JsonResponseProcessor implements ResponseProcessor {
     EnumProcessorFactory enumProcessorFactory = EnumProcessorFactory.getInstance();
+    RecursiveModelProcessor recursiveModelProcessor = new RecursiveModelProcessor();
     @Override
     public void process(final CodegenOperation codegenOperation) {
         System.out.println(codegenOperation.operationId);
+        
+        // delete operation does not have response body
+        if (codegenOperation.operationId.toLowerCase().startsWith("delete")) return;
         
         CodegenModel codegenModel = getModel(codegenOperation);
         if (codegenModel == null) return;
@@ -31,7 +36,8 @@ public class JsonResponseProcessor implements ResponseProcessor {
             enumProcessorFactory.applyProcessor(codegenProperty);
             Deserializer.addDeserializer(codegenProperty);
         });
-        responseModel.vars.forEach(ResourceCache.getResponse()::add);
+        responseModel.vars.stream().forEach(property -> recursiveModelProcessor.process(property));
+        responseModel.vars.forEach(ResourceCacheContext.get().getResponse()::add);
     }
 
     //model.vars.get(0).items.ref to get actual output
@@ -71,7 +77,7 @@ public class JsonResponseProcessor implements ResponseProcessor {
         if (codegenOperation.responses != null && !codegenOperation.responses.isEmpty()) {
             for (CodegenResponse codegenResponse: codegenOperation.responses) {
                 if (codegenResponse.is2xx || codegenResponse.is3xx) {
-                    if (codegenResponse == null) return null;
+                    if (codegenResponse == null || codegenResponse.getContent() == null) return null;
                     CodegenMediaType codegenMediaType = codegenResponse.getContent().get(getContentType());
                     if (codegenMediaType == null) return null;
                     if (codegenMediaType.getSchema().isContainer) {

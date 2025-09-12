@@ -28,7 +28,11 @@ public class SetterMethodGenerator {
     }
 
     public void apply(final CodegenOperation codegenOperation) {
-        List<CodegenParameter> setterParameters = codegenOperation.allParams.stream().filter(param -> !param.isPathParam).collect(Collectors.toList());
+        //List<CodegenParameter> setterParameters = codegenOperation.allParams.stream().filter(param -> !param.isPathParam).collect(Collectors.toList());
+        List<CodegenParameter> setterParameters = new ArrayList<>(codegenOperation.bodyParams);
+        setterParameters.addAll(codegenOperation.formParams);
+        setterParameters.addAll(codegenOperation.queryParams);
+        setterParameters.addAll(codegenOperation.headerParams);
         codegenOperation.vendorExtensions.put("x-setter-methods", setterParameters);
     }
 }

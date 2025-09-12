@@ -3,9 +3,9 @@ package com.twilio.oai.java.processor.enums.parameter.body;
 import com.twilio.oai.common.EnumConstants;
 import com.twilio.oai.common.StringUtils;
 import com.twilio.oai.common.Utility;
+import com.twilio.oai.java.cache.ResourceCacheContext;
 import com.twilio.oai.java.nestedmodels.MustacheEnum;
 import com.twilio.oai.java.processor.enums.parameter.ParameterEnumProcessor;
-import com.twilio.oai.java.ResourceCache;
 import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenParameter;
 
@@ -70,10 +70,17 @@ public class ReusableBodyListEnumProcessor implements ParameterEnumProcessor {
         // enumClassName = Status
         String enumClassName = Utility.getEnumNameFromDatatype(enumExistingDatatype);
         // enumNonContainerDatatype = Account.Status
-        String enumNonContainerDatatype = ResourceCache.getResourceName() + DOT + StringUtils.toPascalCase(enumClassName);
+        String enumNonContainerDatatype = ResourceCacheContext.get().getResourceName() + DOT + StringUtils.toPascalCase(enumClassName);
         // resolvedDataType = List<Account.Status>
         String resolvedDataType = Utility.replaceDatatypeInContainer(codegenParameter.dataType, enumNonContainerDatatype);
         codegenParameter.vendorExtensions.put(X_DATATYPE, resolvedDataType);
+
+        // Resolve BaseType for List as it is used in promoter as setter method.
+        String baseType = Utility.getEnumNameFromDatatype(codegenParameter.baseType);
+        if (baseType != null) {
+            String resolvedBaseType = ResourceCacheContext.get().getResourceName() + DOT + StringUtils.toPascalCase(baseType);
+            codegenParameter.baseType = resolvedBaseType;
+        }
     }
 
     private void cacheEnumClass(CodegenParameter codegenParameter) {
@@ -90,7 +97,7 @@ public class ReusableBodyListEnumProcessor implements ParameterEnumProcessor {
         Map<String, Object> values = null;
         List<Map<String, Object>> enumValues = new ArrayList<>();
 
-        for (CodegenModel codegenModel: ResourceCache.getAllModelsByDefaultGenerator()) {
+        for (CodegenModel codegenModel: ResourceCacheContext.get().getAllModelsByDefaultGenerator()) {
             if (baseDataType.equals(codegenModel.classname)) {
                 values = codegenModel.allowableValues;
                 enumValues = (List<Map<String, Object>>) codegenModel.allowableValues.get("enumVars");
@@ -98,9 +105,10 @@ public class ReusableBodyListEnumProcessor implements ParameterEnumProcessor {
             }
         }
         if (enumValues == null || enumValues.isEmpty()) {
+            System.out.println("Exception occurred:" + codegenParameter.baseName);
             throw new RuntimeException("No enum values found for Enum" + " DataType: " +codegenParameter.dataType);
         }
         MustacheEnum mustacheEnum = new MustacheEnum(enumClassName, enumValues);
-        ResourceCache.addToEnumClasses(mustacheEnum);
+        ResourceCacheContext.get().addToEnumClasses(mustacheEnum);
     }
 }

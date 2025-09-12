@@ -2,6 +2,7 @@ package com.twilio.oai.java;
 
 import com.twilio.oai.TwilioJavaGeneratorModern;
 import com.twilio.oai.common.Utility;
+import com.twilio.oai.java.cache.ResourceCacheContext;
 import com.twilio.oai.java.processor.JavaOperationProcessor;
 import org.apache.commons.lang3.StringUtils;
 import org.openapitools.codegen.CodegenOperation;
@@ -31,19 +32,19 @@ public class JavaApiResourceBuilder {
     // Bug: path should not end with '/'
     // example: /2010-04-01/Accounts.json, otherwise directory structure will not be created properly.
     public JavaApiResourceBuilder resourceName() {
-        ResourceCache.setResourceName(""); // Clear
+        //ResourceCacheContext.get().setResourceName(""); // Clear
         operations.forEach(co -> {
             List<String> filePathArray = new ArrayList<>(Arrays.asList(co.baseName.split(PATH_SEPARATOR_PLACEHOLDER)));
             if (!filePathArray.isEmpty() && StringUtils.isNotBlank(filePathArray.get(filePathArray.size() - 1))) {
                 resourceName = filePathArray.get(filePathArray.size() - 1);
             }
         });
-        ResourceCache.setResourceName(resourceName);
+        ResourceCacheContext.get().setResourceName(resourceName);
         return this;
     }
 
     public JavaApiResourceBuilder recordKey() {
-        this.recordKey = Utility.getRecordKey(ResourceCache.allModelsByDefaultGenerator, operations);
+        this.recordKey = Utility.getRecordKey(ResourceCacheContext.get().getAllModelsByDefaultGenerator(), operations);
         return this;
     }
 

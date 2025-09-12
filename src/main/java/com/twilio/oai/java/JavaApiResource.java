@@ -1,5 +1,6 @@
 package com.twilio.oai.java;
 
+import com.twilio.oai.java.cache.ResourceCacheContext;
 import com.twilio.oai.java.nestedmodels.MustacheEnum;
 import com.twilio.oai.java.nestedmodels.MustacheModel;
 import org.openapitools.codegen.CodegenOperation;
@@ -21,12 +22,12 @@ public class JavaApiResource {
     Boolean responseFlag = null; // true or NUll
     
     public JavaApiResource(JavaApiResourceBuilder builder) {
-        resourceName = ResourceCache.resourceName;
+        resourceName = ResourceCacheContext.get().getResourceName();
         recordKey = builder.recordKey;
         this.operations = builder.operations;
-        this.mustacheEnums = new HashSet<>(ResourceCache.getEnumsClassesForMustache());
-        this.mustacheModels = new HashSet<>(ResourceCache.getModelClassesForMustache());
-        this.response = ResourceCache.response;
+        this.mustacheEnums = new HashSet<>(ResourceCacheContext.get().getEnumsClassesForMustache());
+        this.mustacheModels = new HashSet<>(ResourceCacheContext.get().getModelClassesForMustache());
+        this.response = ResourceCacheContext.get().getResponse();
         if (response != null && !response.isEmpty()) responseFlag = true;
         this.namespaceSubPart = builder.namespaceSubPart;
     }

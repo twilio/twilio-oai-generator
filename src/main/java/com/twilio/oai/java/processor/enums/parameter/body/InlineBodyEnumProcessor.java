@@ -2,9 +2,9 @@ package com.twilio.oai.java.processor.enums.parameter.body;
 
 import com.twilio.oai.common.EnumConstants;
 import com.twilio.oai.common.StringUtils;
+import com.twilio.oai.java.cache.ResourceCacheContext;
 import com.twilio.oai.java.nestedmodels.MustacheEnum;
 import com.twilio.oai.java.processor.enums.parameter.ParameterEnumProcessor;
-import com.twilio.oai.java.ResourceCache;
 import org.openapitools.codegen.CodegenParameter;
 
 import java.util.List;
@@ -62,13 +62,13 @@ public class InlineBodyEnumProcessor implements ParameterEnumProcessor {
     }
     private void datatype(CodegenParameter codegenParameter) {
         codegenParameter.vendorExtensions.put(X_DATATYPE,
-                ResourceCache.getResourceName() + DOT + StringUtils.toPascalCase(codegenParameter.baseName));
+                ResourceCacheContext.get().getResourceName() + DOT + StringUtils.toPascalCase(codegenParameter.baseName));
     }
 
     private void cacheEnumClass(CodegenParameter codegenParameter) {
         List<Map<String, Object>> enumValues = (List<Map<String, Object>>) codegenParameter.allowableValues.get("enumVars");
 
         MustacheEnum mustacheEnum = new MustacheEnum(StringUtils.toPascalCase(codegenParameter.baseName), enumValues);
-        ResourceCache.addToEnumClasses(mustacheEnum);
+        ResourceCacheContext.get().addToEnumClasses(mustacheEnum);
     }
 }

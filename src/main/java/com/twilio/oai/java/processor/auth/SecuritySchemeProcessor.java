@@ -2,8 +2,6 @@ package com.twilio.oai.java.processor.auth;
 
 import org.openapitools.codegen.CodegenOperation;
 
-import java.util.Map;
-
 // Orgs OAuth and Basic Auth has different RestClients.
 // Set "x-auth-attributes" for different type of authentication
 public interface SecuritySchemeProcessor {

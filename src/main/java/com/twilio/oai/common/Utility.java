@@ -14,7 +14,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import com.twilio.oai.java.ResourceCache;
+import com.twilio.oai.java.cache.ResourceCacheContext;
 import lombok.experimental.UtilityClass;
 import org.apache.commons.lang3.StringUtils;
 import org.openapitools.codegen.CodegenModel;
@@ -207,7 +207,12 @@ public class Utility {
           $ref: '#/components/schemas/message_enum_status'
      */
     public static String getEnumNameFromDefaultDatatype(final String ref) {
+        if (ref == null) return null;
         String schemaName = ref.replaceFirst("#/components/schemas/", "");
+        if (ref.equals(schemaName)) {
+            // No change in schemaName
+            return getEnumNameFromDatatype(ref);
+        }
         String[] enumNameArray = schemaName.split("_enum_");
         return enumNameArray[enumNameArray.length - 1];
     }
@@ -234,7 +239,7 @@ public class Utility {
             return null;
         }
         String modelClassName = codegenProperty.isContainer ? codegenProperty.items.openApiType: codegenProperty.openApiType;
-        for (CodegenModel codegenModel: ResourceCache.getAllModelsByDefaultGenerator()) {
+        for (CodegenModel codegenModel: ResourceCacheContext.get().getAllModelsByDefaultGenerator()) {
             if (modelClassName.equals(codegenModel.classname)) {
                 return codegenModel;
             }
@@ -249,7 +254,7 @@ public class Utility {
     }
     public static CodegenModel getModelFromRef(String ref) {
         String schemaName = ref.replaceFirst("#/components/schemas/", "");
-        List<CodegenModel> allModels = ResourceCache.getAllModelsByDefaultGenerator();
+        List<CodegenModel> allModels = ResourceCacheContext.get().getAllModelsByDefaultGenerator();
         for (CodegenModel model: allModels) {
             if (model.name.equals(schemaName)) {
                 return model;

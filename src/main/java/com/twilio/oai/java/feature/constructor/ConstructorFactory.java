@@ -22,7 +22,7 @@ public class ConstructorFactory {
     
     private ConstructorFactory() {
         constructorGenerators = List.of(
-                //new JsonConstructorGenerator(),
+                new JsonConstructorGenerator(),
                 new UrlencodedBodyConstructorGenerator()
         );
     }

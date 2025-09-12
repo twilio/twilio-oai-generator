@@ -52,7 +52,7 @@
 {{#vendorExtensions.x-update-operation}}
 {{#vendorExtensions.x-signature-list}}
 
-    public {{resourceName}}Updater updater({{#.}}final {{{dataType}}} {{paramName}}{{^-last}}, {{/-last}}{{/.}}) {
+    public static {{resourceName}}Updater updater({{#.}}final {{{dataType}}} {{paramName}}{{^-last}}, {{/-last}}{{/.}}) {
         return new {{resourceName}}Updater(
             {{#.}} {{paramName}}{{^-last}}, {{/-last}}{{/.}}
         );

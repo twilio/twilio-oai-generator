@@ -3,8 +3,8 @@ package com.twilio.oai.java.processor.enums.property;
 import com.twilio.oai.StringHelper;
 import com.twilio.oai.common.EnumConstants.OpenApiEnumType;
 import com.twilio.oai.common.StringUtils;
+import com.twilio.oai.java.cache.ResourceCacheContext;
 import com.twilio.oai.java.nestedmodels.MustacheEnum;
-import com.twilio.oai.java.ResourceCache;
 import org.openapitools.codegen.CodegenProperty;
 
 import java.util.ArrayList;
@@ -54,7 +54,7 @@ public class InlinePropEnumProcessor implements PropertyEnumProcessor {
     }
     private void datatype(CodegenProperty codegenProperty) {
         codegenProperty.vendorExtensions.put(X_DATATYPE,
-                ResourceCache.getResourceName() + DOT + StringUtils.toPascalCase(codegenProperty.baseName));
+                ResourceCacheContext.get().getResourceName() + DOT + StringUtils.toPascalCase(codegenProperty.baseName));
     }
 
     private void cacheEnumClass(CodegenProperty codegenProperty) {
@@ -67,6 +67,6 @@ public class InlinePropEnumProcessor implements PropertyEnumProcessor {
             enumValues.add(valueMap);
         }
         MustacheEnum mustacheEnum = new MustacheEnum(StringUtils.toPascalCase(codegenProperty.baseName), enumValues);
-        ResourceCache.addToEnumClasses(mustacheEnum);
+        ResourceCacheContext.get().addToEnumClasses(mustacheEnum);
     }
 }

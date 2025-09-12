@@ -58,6 +58,8 @@ public class Inequality {
         }
     }
     
+    // Input: DateCreated, DateCreated>, DateCreated<
+    // Output: DateCreated, DateCreated, DateCreated
     private String getBaseName(CodegenParameter codegenParameter) {
         if (codegenParameter.baseName.endsWith(">") || codegenParameter.baseName.endsWith("<")) {
             return codegenParameter.baseName.substring(0, codegenParameter.baseName.length() - 1);

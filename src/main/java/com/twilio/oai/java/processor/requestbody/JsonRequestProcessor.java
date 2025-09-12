@@ -18,7 +18,11 @@ public class JsonRequestProcessor implements RequestBodyProcessor {
         if (codegenOperation.bodyParams != null && !codegenOperation.bodyParams.isEmpty()) return true;
         return false;
     }
-    
+
+    /*
+    Note:
+    In json request body parameter could appear as list of codegenProperty or codegenParameter
+ */
     @Override
     public void process(CodegenOperation codegenOperation) {
         codegenOperation.vendorExtensions.put(X_REQUEST_CONTENT_TYPE, getContentType());
@@ -29,14 +33,57 @@ public class JsonRequestProcessor implements RequestBodyProcessor {
         if (codegenOperation.bodyParams.size() > 1) {
             LoggerUtil.logSevere(this.getClass().getName(), "Multiple request bodies found " + codegenOperation.operationId);
         }
+
+        processParameter(codegenOperation);
         
-        
-        recursiveModelProcessor.processBody(codegenOperation);
-        
+//        if (codegenOperation.bodyParam.vars != null && codegenOperation.bodyParam.vars.size() > 0) {
+//            processProperty(codegenOperation);
+//        } else {
+//            processParameter(codegenOperation);
+//        }
     }
 
     @Override
     public String getContentType() {
         return "application/json";
+    }
+    
+    
+    /*
+    If you see in below example, there is no property defined.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Cat'
+    
+    Cat:
+      allOf:
+        - type: object
+          properties:
+            account_sid:
+              type: string
+        - oneOf:
+          - $ref: '#/components/schemas/One'
+          - $ref: '#/components/schemas/Two'
+     */
+    // Process list: codegenOperation.bodyParams
+    private void processParameter(CodegenOperation codegenOperation) {
+        if (codegenOperation.bodyParams.isEmpty()) return;
+        // Request Body has oneOf and its instance variables will be present as CodegenParameter
+        codegenOperation.bodyParams.stream().forEach(codegenParameter -> recursiveModelProcessor.process(codegenParameter));
+        // Used in constructor generation.
+        codegenOperation.requiredParams.stream().forEach(codegenParameter -> recursiveModelProcessor.process(codegenParameter));
+        
+        
+        
+    }
+
+    // List of instance variable can be processed by list: codegenOperation.bodyParam.vars
+    private void processProperty(CodegenOperation codegenOperation) {
+        if (codegenOperation.bodyParam != null && codegenOperation.bodyParam.vars.isEmpty()) return;
+        codegenOperation.bodyParams.stream().forEach(codegenParameter -> recursiveModelProcessor.process(codegenParameter));
+        //codegenOperation.bodyParam.vars.stream().forEach(property -> recursiveModelProcessor.processModelRecursively(property));
     }
 }
