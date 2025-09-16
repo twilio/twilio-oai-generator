@@ -56,11 +56,7 @@ public class ReusableListPropEnumProcessor implements PropertyEnumProcessor {
         codegenProperty.vendorExtensions.put(X_DATATYPE, resolvedDataType);
 
         // Resolve BaseType for List as it is used in promoter as setter method.
-        String baseType = Utility.getEnumNameFromDatatype(codegenProperty.baseType);
-        if (baseType != null) {
-            String resolvedBaseType = ResourceCacheContext.get().getResourceName() + DOT + StringUtils.toPascalCase(baseType);
-            codegenProperty.baseType = resolvedBaseType;
-        }
+        codegenProperty.baseType = enumNonContainerDatatype;
     }
 
     private void cacheEnumClass(CodegenProperty codegenProperty) {

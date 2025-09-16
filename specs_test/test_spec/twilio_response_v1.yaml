@@ -1,0 +1,3 @@
+# This spec tests followings
+# 1. All types of response body(json)
+# 2. Tests paginated response.

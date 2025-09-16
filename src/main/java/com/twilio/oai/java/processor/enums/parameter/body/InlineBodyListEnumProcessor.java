@@ -71,11 +71,7 @@ public class InlineBodyListEnumProcessor implements ParameterEnumProcessor {
         codegenParameter.vendorExtensions.put(X_DATATYPE, resolvedDataType);
 
         // Resolve BaseType for List as it is used in promoter as setter method.
-        String baseType = Utility.getEnumNameFromDatatype(codegenParameter.baseType);
-        if (baseType != null) {
-            String resolvedBaseType = ResourceCacheContext.get().getResourceName() + DOT + StringUtils.toPascalCase(baseType);
-            codegenParameter.baseType = resolvedBaseType;
-        }
+        codegenParameter.baseType = enumNonContainerDatatype;
     }
 
     private void cacheEnumClass(CodegenParameter codegenParameter) {

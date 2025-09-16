@@ -1,3 +1,6 @@
+import com.twilio.oai.common.EnumConstants;
+import org.openapitools.codegen.languages.PythonClientCodegen;
+
 //package com.twilio.oai;
 //
 //import com.twilio.oai.api.ApiResources;
@@ -32,7 +35,7 @@
 //
 //import static com.twilio.oai.common.ApplicationConstants.CONFIG_PYTHON_JSON_PATH;
 //
-//public class TwilioPythonGenerator extends PythonClientCodegen {
+public class TwilioPythonGenerator extends PythonClientCodegen {
 //    private final TwilioCodegenAdapter twilioCodegen;
 //    private final PythonApiActionTemplate actionTemplate = new PythonApiActionTemplate(this);
 //    private final IResourceTree resourceTree = new ResourceMap(new Inflector());
@@ -132,10 +135,10 @@
 //                .build();
 //    }
 //
-//    @Override
-//    public String getName() {
-//        return EnumConstants.Generator.TWILIO_PYTHON.getValue();
-//    }
+    @Override
+    public String getName() {
+        return EnumConstants.Generator.TWILIO_PYTHON.getValue();
+    }
 //
 //    @Override
 //    public String toParamName(final String name) {
@@ -146,4 +149,4 @@
 //    public String defaultTemplatingEngine() {
 //        return "twilio-handlebars";
 //    }
-//}
+}
