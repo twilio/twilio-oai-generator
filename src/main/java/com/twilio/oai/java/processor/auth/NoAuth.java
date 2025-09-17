@@ -1,8 +1,10 @@
 package com.twilio.oai.java.processor.auth;
 
 import org.openapitools.codegen.CodegenOperation;
+import org.openapitools.codegen.CodegenSecurity;
 
 import java.util.HashMap;
+import java.util.List;
 
 import static com.twilio.oai.resolver.java.JavaConventionResolver.AUTH_IMPORT_CLASS;
 import static com.twilio.oai.resolver.java.JavaConventionResolver.HTTP_CLASS_PREFIX;
@@ -22,6 +24,8 @@ public class NoAuth implements SecuritySchemeProcessor {
     @Override
     public boolean shouldProcess(CodegenOperation codegenOperation) {
         // This processor is for operations that do not require authentication
-        return true;
+        List<CodegenSecurity> securities = codegenOperation.authMethods;
+        if (securities == null || securities.isEmpty()) return true;
+        return false;
     }
 }

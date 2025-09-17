@@ -9,7 +9,7 @@ import java.util.List;
 import static com.twilio.oai.resolver.java.JavaConventionResolver.AUTH_IMPORT_CLASS;
 import static com.twilio.oai.resolver.java.JavaConventionResolver.HTTP_CLASS_PREFIX;
 
-public class BasicAuth implements SecuritySchemeProcessor {
+public class Auth implements SecuritySchemeProcessor {
     @Override
     public void process(CodegenOperation codegenOperation) {
         HashMap<String, String> authAttributes = new HashMap<>();
@@ -22,10 +22,9 @@ public class BasicAuth implements SecuritySchemeProcessor {
     public boolean shouldProcess(CodegenOperation codegenOperation) {
         List<CodegenSecurity> securities = codegenOperation.authMethods;
         if (securities == null || securities.isEmpty()) return false; // No Authentication
-        if (securities.size() > 1) {
-            throw new RuntimeException("Multiple auth methods are not supported. Please use only one auth method per operation.");
-        }
-        CodegenSecurity security = securities.get(0);
-        return security.isBasic;
+        return true;
+//        if (securities.size() > 1) {
+//            throw new RuntimeException("Multiple auth methods are not supported. Please use only one auth method per operation.");
+//        }
     }
 }

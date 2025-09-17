@@ -37,6 +37,8 @@ public class JsonResponseProcessor implements ResponseProcessor {
             Deserializer.addDeserializer(codegenProperty);
         });
         responseModel.vars.stream().forEach(property -> recursiveModelProcessor.process(property));
+        
+        // Adding responseModel vars to cache
         responseModel.vars.forEach(ResourceCacheContext.get().getResponse()::add);
     }
 
@@ -58,7 +60,7 @@ public class JsonResponseProcessor implements ResponseProcessor {
         System.out.println(codegenOperation.operationId);
         if (codegenOperation.produces != null && !codegenOperation.produces.isEmpty()) {
             for (Map<String, String> contentType : codegenOperation.produces) {
-                if (getContentType().equals(contentType.get("mediaType"))) {
+                if (getContentType().equals(contentType.get("mediaType")) || "application/scim+json".equals(contentType.get("mediaType"))) {
                     return true;
                 }
             }
@@ -79,7 +81,11 @@ public class JsonResponseProcessor implements ResponseProcessor {
                 if (codegenResponse.is2xx || codegenResponse.is3xx) {
                     if (codegenResponse == null || codegenResponse.getContent() == null) return null;
                     CodegenMediaType codegenMediaType = codegenResponse.getContent().get(getContentType());
-                    if (codegenMediaType == null) return null;
+                    if (codegenMediaType == null) {
+                        codegenMediaType = codegenResponse.getContent().get("application/scim+json");
+                        if (codegenMediaType == null) return null;
+                    }
+
                     if (codegenMediaType.getSchema().isContainer) {
                         // It covers special case in which response is list
                         // TODO: Handle in future.

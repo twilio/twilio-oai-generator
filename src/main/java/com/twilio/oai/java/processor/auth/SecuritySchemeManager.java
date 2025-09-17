@@ -22,8 +22,7 @@ public class SecuritySchemeManager {
     private SecuritySchemeManager() {
         this.securitySchemeProcessors = List.of(
                 new NoAuth(),
-                new BasicAuth(),
-                new OrgsOAuth()
+                new Auth()
         );
     }
     

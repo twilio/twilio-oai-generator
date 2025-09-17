@@ -40,7 +40,7 @@ public class InlinePropEnumProcessor implements PropertyEnumProcessor {
 
     @Override
     public boolean shouldProcess(CodegenProperty codegenProperty) {
-        if (codegenProperty.isEnum && codegenProperty.isEnumRef && codegenProperty.get_enum() != null) {
+        if (codegenProperty.isEnum && !codegenProperty.isEnumRef && codegenProperty.get_enum() != null) {
             return true;
         }
         return false;
