@@ -15,10 +15,6 @@ public class NoAuth implements SecuritySchemeProcessor {
 
     @Override
     public void process(CodegenOperation codegenOperation) {
-        HashMap<String,String> authAttributes = new HashMap<>();
-        authAttributes.put(AUTH_IMPORT_CLASS, NOAUTH_IMPORT_CLASS);
-        authAttributes.put(HTTP_CLASS_PREFIX, NOAUTH_HTTP_CLASS_PREFIX);
-        codegenOperation.vendorExtensions.put(authAttributesExtension, authAttributes);
         codegenOperation.vendorExtensions.put(noAuth, true);
     }
 

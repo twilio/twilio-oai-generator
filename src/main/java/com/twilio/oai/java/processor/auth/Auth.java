@@ -12,10 +12,6 @@ import static com.twilio.oai.resolver.java.JavaConventionResolver.HTTP_CLASS_PRE
 public class Auth implements SecuritySchemeProcessor {
     @Override
     public void process(CodegenOperation codegenOperation) {
-        HashMap<String, String> authAttributes = new HashMap<>();
-        authAttributes.put(AUTH_IMPORT_CLASS, "");
-        authAttributes.put(HTTP_CLASS_PREFIX, "");
-        codegenOperation.vendorExtensions.put(authAttributesExtension, authAttributes);
     }
 
     @Override
