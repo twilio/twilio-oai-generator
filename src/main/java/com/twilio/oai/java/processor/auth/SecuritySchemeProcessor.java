@@ -6,6 +6,7 @@ import org.openapitools.codegen.CodegenOperation;
 // Set "x-auth-attributes" for different type of authentication
 public interface SecuritySchemeProcessor {
     String authAttributesExtension = "x-auth-attributes";
+    String noAuth = "x-no-auth";
     void process(CodegenOperation codegenOperation);
     boolean shouldProcess(CodegenOperation codegenOperation);
 }

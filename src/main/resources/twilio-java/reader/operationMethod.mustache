@@ -16,6 +16,9 @@ domainName: example api, video, chat, etc. These can be found in Domains.java in
             Domains.{{#lambda.uppercase}}{{domainName}}{{/lambda.uppercase}}.toString(),
             path
         );
+    {{#vendorExtensions.x-no-auth}}
+        request.setAuth(NoAuthStrategy.getInstance());
+    {{/vendorExtensions.x-no-auth}}
     {{#queryParams.0}}
         addQueryParams(request);
     {{/queryParams.0}}

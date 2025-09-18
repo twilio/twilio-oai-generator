@@ -19,6 +19,9 @@ vendorExtensions.x-content-type: content type of the request, example: applicati
     {{#vendorExtensions.x-request-content-type}}
         request.setContentType(EnumConstants.ContentType.{{vendorExtensions.x-request-content-type}});
     {{/vendorExtensions.x-request-content-type}}
+    {{#vendorExtensions.x-no-auth}}
+        request.setAuth(NoAuthStrategy.getInstance());
+    {{/vendorExtensions.x-no-auth}}
     {{#queryParams.0}}
         addQueryParams(request);
     {{/queryParams.0}}
