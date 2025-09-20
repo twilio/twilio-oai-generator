@@ -2,6 +2,10 @@ package com.twilio.oai.java.processor.requestbody;
 
 import com.twilio.oai.LoggerUtil;
 import org.openapitools.codegen.CodegenOperation;
+import org.openapitools.codegen.CodegenParameter;
+import org.openapitools.codegen.CodegenProperty;
+
+import java.util.List;
 
 import static com.twilio.oai.common.ApplicationConstants.X_REQUEST_CONTENT_TYPE;
 import static com.twilio.oai.java.constants.MustacheConstants.X_REQUEST_LANGUAGE_CONTENT_TYPE_CONSTANT;
@@ -28,19 +32,33 @@ public class JsonRequestProcessor implements RequestBodyProcessor {
         codegenOperation.vendorExtensions.put(X_REQUEST_CONTENT_TYPE, getContentType());
         codegenOperation.vendorExtensions.put(X_REQUEST_CONTENT_TYPE, getContentType());
         codegenOperation.vendorExtensions.put(X_REQUEST_LANGUAGE_CONTENT_TYPE_CONSTANT, "JSON");
-        System.out.println(codegenOperation.operationId);
         if (!codegenOperation.getHasBodyParam()) return;
-        if (codegenOperation.bodyParams.size() > 1) {
+        List<CodegenParameter> bodyParams = codegenOperation.bodyParams;
+        if (bodyParams.size() > 1) {
             LoggerUtil.logSevere(this.getClass().getName(), "Multiple request bodies found " + codegenOperation.operationId);
         }
-
-        processParameter(codegenOperation);
         
-//        if (codegenOperation.bodyParam.vars != null && codegenOperation.bodyParam.vars.size() > 0) {
-//            processProperty(codegenOperation);
-//        } else {
-//            processParameter(codegenOperation);
+//        if (codegenOperation.bodyParams != null && !codegenOperation.bodyParams.isEmpty() && codegenOperation.bodyParams.get(0).isOneOf) {
+//            processOneOf(codegenOperation);
+//            return;
 //        }
+        
+        if (bodyParams.get(0).vars != null && !bodyParams.get(0).vars.isEmpty()) {
+            processProperty(codegenOperation);
+        } else {
+            processOneOf(codegenOperation);
+        }
+    }
+    
+    public void processOneOf(CodegenOperation codegenOperation) {
+        System.out.println(codegenOperation.bodyParams);
+        CodegenParameter codegenParameter = codegenOperation.bodyParams.get(0);
+        if (codegenParameter.getContent() != null && codegenParameter.getContent().get("application/json") != null) {
+            CodegenProperty codegenProperty = codegenParameter.getContent().get("application/json").getSchema();
+            if (codegenProperty != null) {
+                recursiveModelProcessor.process(codegenProperty);
+            }
+        }
     }
 
     @Override

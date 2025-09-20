@@ -13,6 +13,22 @@ info:
 servers:
   - url: https://oneOf.twilio.com
 paths:
+  /v1/owners:
+    post:
+      operationId: CreateOwner
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Owner'
+      responses:
+        '200':
+          description: Returns the created pet (cat or dog)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cat'
   /v1/pets:
     post:
       operationId: CreatePet
@@ -22,6 +38,38 @@ paths:
         content:
           application/json:
             schema:
+              oneOf:
+                - type: object
+                  required: [ name, livesLeft ]
+                  properties:
+                    name:
+                      type: string
+                      example: "Kitty"
+                    livesLeft:
+                      type: integer
+                      example: 9
+                  description: "Cat object (inline)"
+                - type: object
+                  required: [ name, breed ]
+                  properties:
+                    name:
+                      type: string
+                      example: "Bruno"
+                    breed:
+                      type: string
+                      example: "Labrador"
+                  description: "Dog object (inline)"
+                - type: object
+                  required: [ name, wingSpan ]
+                  properties:
+                    name:
+                      type: string
+                      example: "Tweety"
+                    wingSpan:
+                      type: number
+                      format: float
+                      example: 25.5
+                  description: "Bird object (inline)"
 #              properties:
 #                RecordingStatusCallback:
 #                  format: uri
@@ -56,6 +104,16 @@ paths:
 
 components:
   schemas:
+    Owner:
+      type: object
+      required: [ ownerName, pet ]
+      properties:
+        ownerName:
+          type: string
+        pet:
+          oneOf:
+            - $ref: '#/components/schemas/Cat'
+            - $ref: '#/components/schemas/Dog'
     MyPet_Response:
       type: object
       properties:

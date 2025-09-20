@@ -1,6 +1,7 @@
 package com.twilio.oai.java.processor.parameter;
 
 import com.twilio.oai.java.processor.enums.EnumProcessorFactory;
+import org.apache.commons.lang3.StringUtils;
 import org.openapitools.codegen.CodegenOperation;
 
 /*
@@ -23,15 +24,18 @@ public class ParameterProcessor {
 
     public void process(final CodegenOperation codegenOperation) {
         codegenOperation.pathParams.forEach(param -> {
-            param.paramName = "path" + param.paramName;
+            String capitalized = StringUtils.capitalize(param.paramName);
+            param.paramName = "path" + capitalized;
         });
 
         codegenOperation.allParams.stream().filter(param -> param.isPathParam).forEach(param -> {
-            param.paramName = "path" + param.paramName;
+            String capitalized = StringUtils.capitalize(param.paramName);
+            param.paramName = "path" + capitalized;
         });
 
         codegenOperation.requiredParams.stream().filter(param -> param.isPathParam).forEach(param -> {
-            param.paramName = "path" + param.paramName;
+            String capitalized = StringUtils.capitalize(param.paramName);
+            param.paramName = "path" + capitalized;
         });
         
         codegenOperation.queryParams.forEach(param -> enumProcessorFactory.applyProcessor(param));

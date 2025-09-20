@@ -2,6 +2,7 @@ package com.twilio.oai.java.feature.constructor;
 
 import com.google.common.collect.Lists;
 import com.twilio.oai.StringHelper;
+import org.checkerframework.checker.units.qual.A;
 import org.openapitools.codegen.CodegenOperation;
 import org.openapitools.codegen.CodegenParameter;
 
@@ -24,7 +25,6 @@ public class UrlencodedBodyConstructorGenerator extends ConstructorGenerator {
     public void apply(CodegenOperation codegenOperation) {
         codegenOperation.vendorExtensions.put("x-java-constructor", true);
         codegenOperation.vendorExtensions.put(SIGNATURE_LIST, generateSignatureListModern(codegenOperation));
-        System.out.println(codegenOperation.vendorExtensions.get(SIGNATURE_LIST));
     }
     
     public boolean shouldApply(CodegenOperation codegenOperation) {
@@ -38,11 +38,102 @@ public class UrlencodedBodyConstructorGenerator extends ConstructorGenerator {
                 .anyMatch(mediaType -> mediaType.get("mediaType").equals("application/x-www-form-urlencoded"));
         return shouldApply;
     }
+    
+    /*
+    Steps:
+    1. Get required parameters from path, query, header, body except accountSid
+    2. Get accountSid parameter from path if exists
+    3. Get conditional parameters from body
+    4. Get cartesian product of conditional parameters
+    5. Filter out similar datatype parameters because they will create same constructors
+    6. Combine required and conditional parameters to form the signature list
+    7. If accountSid exists, add it to the beginning of each signature
+    8. Return the signature list
+     */
+    public List<List<CodegenParameter>> generateSignatureListModern(final CodegenOperation codegenOperation) {
+        // Step 1
+        List<CodegenParameter> requiredParams = getRequiredParameters(codegenOperation);
+        // Step 2
+        CodegenParameter accountSidParam = getAccountSidParameter(codegenOperation);
+        // Step 3
+        List<List<CodegenParameter>> conditionalParameters = getConditionalParameters(codegenOperation);
+        // Step 4
+        List<List<CodegenParameter>> cartesianProducts = Lists.cartesianProduct(conditionalParameters);
+        // Step 5
+        List<List<CodegenParameter>> filteredConditionalCodegenParam = filterConditionalParameters(cartesianProducts);
+        // Step 6
+        List<List<CodegenParameter>> listOfConstructors =  combineParameters(requiredParams, filteredConditionalCodegenParam, accountSidParam);
+        return listOfConstructors;
+    }
 
+    private List<CodegenParameter> getRequiredParameters(CodegenOperation codegenOperation) {
+        List<CodegenParameter> requiredParams;
+        requiredParams = codegenOperation.pathParams.stream()
+                .filter(param -> !param.vendorExtensions.containsKey(ACCOUNT_SID_VEND_EXT))
+                .collect(Collectors.toList());
+        requiredParams.addAll(codegenOperation.queryParams.stream()
+                .filter(param -> param.required)
+                .collect(Collectors.toList()));
+        requiredParams.addAll(codegenOperation.formParams.stream()
+                .filter(param -> param.required)
+                .collect(Collectors.toList()));
+        requiredParams.addAll(codegenOperation.headerParams.stream()
+                .filter(param -> param.required)
+                .collect(Collectors.toList()));
+        return requiredParams;
+    }
+    private CodegenParameter getAccountSidParameter(CodegenOperation codegenOperation) {
+        return codegenOperation.pathParams.stream()
+                .filter(param -> param.vendorExtensions.containsKey(ACCOUNT_SID_VEND_EXT))
+                .findAny()
+                .orElse(null);
+    }
 
-    public void lookForConditionalParameterInBody(List<List<String>> conditionalParamDoubleList,
-                                                  List<List<CodegenParameter>> conditionalCodegenParam, CodegenOperation codegenOperation) {
+    public List<List<CodegenParameter>> getConditionalParameters(CodegenOperation codegenOperation) {
+        List<List<String>> conditionalParamDoubleList = new ArrayList<>();
+        try {
+            conditionalParamDoubleList = (List<List<String>>) ((HashMap<String, Object>) codegenOperation.vendorExtensions.get("x-twilio")).get("conditional");    
+        } catch (NullPointerException nullPointerException) {
+            // skip list do not exist.
+        }
+        if (conditionalParamDoubleList == null || conditionalParamDoubleList.isEmpty()) {
+            return List.of();
+        }
+        List<List<CodegenParameter>> conditionalCodegenParam = lookForConditionalParameterInBody(conditionalParamDoubleList, codegenOperation);
+        return conditionalCodegenParam;
+    }
 
+    /*
+     * The `conditionalParameterDoubleList` contains combinations of constructors derived solely from conditional parameters.
+     * It is necessary to filter out constructors with similar parameter combinations to ensure uniqueness.
+     */
+    public List<List<CodegenParameter>> filterConditionalParameters(List<List<CodegenParameter>> conditionalParams) {
+        List<List<CodegenParameter>> filteredConditionalCodegenParam = new ArrayList<>();
+        HashSet<List<String>> signatureHashSet = new HashSet<>();
+        for (List<CodegenParameter> paramList : conditionalParams) {
+            List<String> orderedParamList = paramList.stream().map(p -> p.dataType).collect(Collectors.toList());
+            if (signatureHashSet.add(orderedParamList)) {
+                filteredConditionalCodegenParam.add(paramList);
+            }
+        }
+        return filteredConditionalCodegenParam;
+    }
+
+    private List<List<CodegenParameter>> combineParameters(List<CodegenParameter> requiredParams,
+                                                           List<List<CodegenParameter>> filteredConditionalCodegenParam,
+                                                           CodegenParameter accountSidParam) {
+        List<List<CodegenParameter>> signatureList = new ArrayList<>();
+        for (List<CodegenParameter> paramList : filteredConditionalCodegenParam) {
+            signatureList.add(addAllToList(requiredParams, paramList));
+            if (accountSidParam != null) {
+                signatureList.add(addAllToList(List.of(accountSidParam), requiredParams, paramList));
+            }
+        }
+        return signatureList;
+    }
+
+    public List<List<CodegenParameter>> lookForConditionalParameterInBody(List<List<String>> conditionalParamDoubleList, CodegenOperation codegenOperation) {
+        List<List<CodegenParameter>> conditionalCodegenParam = new ArrayList<>();
         for (List<String> conditionalParamList : conditionalParamDoubleList) {
             List<CodegenParameter> foundParameters = new ArrayList<>();
             for (String cp : conditionalParamList) {
@@ -62,128 +153,12 @@ public class UrlencodedBodyConstructorGenerator extends ConstructorGenerator {
             }
             conditionalCodegenParam.add(foundParameters);
         }
-    }
-
-    public List<List<CodegenParameter>> generateSignatureListModern(final CodegenOperation codegenOperation) {
-        List<CodegenParameter> requiredParams = codegenOperation.requiredParams;
-        
-        CodegenParameter accountSidParam = null;
-        Optional<CodegenParameter> optionalParam = codegenOperation.pathParams.stream()
-                .filter(param -> param.vendorExtensions.containsKey(ACCOUNT_SID_VEND_EXT)).findAny();
-        if(optionalParam.isPresent()){
-            accountSidParam = optionalParam.get();
-        }
-        
-        List<List<CodegenParameter>> conditionalParameterDoubleList = getConditionalParameters(codegenOperation);
-        conditionalParameterDoubleList = Lists.cartesianProduct(conditionalParameterDoubleList);
-        // conditionalParameterDoubleList contains list of constructors only from conditional parameters
-        // We need to filter out similar constructors.
-        List<List<CodegenParameter>> filteredConditionalCodegenParam = filterConditionalParametersByDatatype(conditionalParameterDoubleList);
-
-        // Combine required and conditional parameters to form the signature list
-        List<List<CodegenParameter>> signatureList = new ArrayList<>();
-        for(List<CodegenParameter> paramList : filteredConditionalCodegenParam){
-            signatureList.add(addAllToList(codegenOperation.requiredParams, paramList));
-            if( accountSidParam != null) {
-                signatureList.add(addAllToList(List.of(accountSidParam), requiredParams, paramList));
-            }
-        }
-        return signatureList;
+        return conditionalCodegenParam;
     }
 
     @SafeVarargs
     private final <T> List<T> mergeLists(List<T>... lists) {
         return Arrays.stream(lists).flatMap(List::stream).collect(Collectors.toList());
-    }
-    
-
-    
-//    private List<List<CodegenParameter>> getConditionalParameters(CodegenOperation codegenOperation) {
-//        List<List<CodegenParameter>> conditionalCodegenParam = new ArrayList<>();
-//        
-//        if (codegenOperation.vendorExtensions.containsKey("x-twilio")) {
-//            HashMap<String, Object> twilioVendorExtension = (HashMap<String, Object>) codegenOperation.vendorExtensions.get("x-twilio");
-//            if (twilioVendorExtension.containsKey("conditional")) {
-//                List<List<String>> conditionalParamDoubleList = (List<List<String>>) twilioVendorExtension.get("conditional");
-//
-//                // Look for conditional parameters in body
-//                for (List<String> conditionalParamList : conditionalParamDoubleList) {
-//                    List<CodegenParameter> foundParameters = new ArrayList<>();
-//                    for (String cp : conditionalParamList) {
-//                        CodegenParameter matchedParam = null;
-//                        for (CodegenParameter formParam : codegenOperation.formParams) {
-//                            if (!formParam.required
-//                                    && StringHelper.camelize(formParam.baseName, true)
-//                                    .equals(StringHelper.camelize(cp, true))) {
-//                                matchedParam = formParam;
-//                                break;
-//                            }
-//                        }
-//                        if (matchedParam == null) {
-//                            throw new IllegalArgumentException("Parameter not found: " + cp);
-//                        }
-//                        foundParameters.add(matchedParam);
-//                    }
-//                    conditionalCodegenParam.add(foundParameters);
-//                }
-//                
-//                // Remove similar datatype parameters because they will create same constructors
-//                List<List<CodegenParameter>> filteredConditionalCodegenParam = new ArrayList<>();
-//                for (List<CodegenParameter> cpList : conditionalCodegenParam) {
-//                    if (cpList.size() <= 1 || !cpList.get(0).dataType.equals(cpList.get(1).dataType)) {
-//                        filteredConditionalCodegenParam.add(cpList);
-//                    }
-//                }
-//                conditionalCodegenParam = filteredConditionalCodegenParam;            }
-//        }
-//
-//        return conditionalCodegenParam;
-//    }
-
-    public ArrayList<List<CodegenParameter>> generateSignatureList(final CodegenOperation co) {
-        CodegenParameter accountSidParam = null;
-        List<List<CodegenParameter>> conditionalCodegenParam = new ArrayList<>();
-        Optional<CodegenParameter> optionalParam = co.allParams.stream()
-                .filter(param -> param.vendorExtensions.containsKey("x-account-sid")).findAny();
-        if (optionalParam.isPresent()) {
-            accountSidParam = optionalParam.get();
-        }
-
-        if (co.vendorExtensions.containsKey("x-twilio")) {
-            HashMap<String, Object> twilioVendorExtension = (HashMap<String, Object>) co.vendorExtensions.get("x-twilio");
-            if (twilioVendorExtension.containsKey("conditional")) {
-                List<List<String>> conditionalParams = (List<List<String>>) twilioVendorExtension.get("conditional");
-                conditionalCodegenParam = conditionalParams.stream().map(
-                        paramList -> paramList.stream().map(
-                                cp -> co.optionalParams.stream().filter(
-                                        op -> op.paramName.equals(cp)
-                                ).findAny().get()
-                        ).collect(Collectors.toList())).collect(Collectors.toList());
-                conditionalCodegenParam = conditionalCodegenParam.stream()
-                        .filter(cpList -> (cpList.size() <= 1 || !cpList.get(0).dataType.equals(cpList.get(1).dataType)))
-                        .collect(Collectors.toList());
-            }
-        }
-
-        conditionalCodegenParam = Lists.cartesianProduct(conditionalCodegenParam);
-        List<List<CodegenParameter>> filteredConditionalCodegenParam = new ArrayList<>();
-        HashSet<List<String>> signatureHashSet = new HashSet<>();
-        for (List<CodegenParameter> paramList : conditionalCodegenParam) {
-            List<String> orderedParamList = paramList.stream().map(p -> p.dataType).collect(Collectors.toList());
-            if (!signatureHashSet.contains(orderedParamList)) {
-                filteredConditionalCodegenParam.add(paramList);
-                signatureHashSet.add(orderedParamList);
-            }
-        }
-
-        ArrayList<List<CodegenParameter>> signatureList = new ArrayList<>();
-        for (List<CodegenParameter> paramList : filteredConditionalCodegenParam) {
-            signatureList.add(addAllToList(co.requiredParams, paramList));
-            if (accountSidParam != null) {
-                signatureList.add(addAllToList(List.of(accountSidParam), co.requiredParams, paramList));
-            }
-        }
-        return signatureList;
     }
 
     private <T> List<T> addAllToList(List<T>... lists) {
