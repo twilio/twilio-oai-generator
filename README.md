@@ -16,6 +16,16 @@ Check out [OpenAPI-Spec](https://github.com/OAI/OpenAPI-Specification) for addit
 ## How do I use this?
 `Note: The instructions below will generate the twilio-go library. These instructions can also be used interchangeably to generate other language libraries.`
 
+### Download openapi-generator-cli.jar
+
+First download openapi-generator-cli.jar following the directions from the [openapi-generator GitHub repo](https://github.com/OpenAPITools/openapi-generator?tab=readme-ov-file#13---download-jar). As the openapi-generator instructions imply, ensure you have Java SDK 11 installed. OpenJDK 11 is a good way to meet the Java SDK 11 requirement. Also ensure the `JAVA_HOME` environment variable is set to the location that the SDK is installed and then add `{$JAVA_HOME}/bin` to your `PATH` environment variable. This might look like:
+```sh
+export JAVA_HOME=`/usr/libexec/java_home -v 1.11`
+export PATH=${JAVA_HOME}/bin:$PATH
+```
+
+### Clone this repo
+
 Clone this repo into your local machine. It will include:
 
 ```
@@ -33,13 +43,10 @@ Clone this repo into your local machine. It will include:
 |------- org.openapitools.codegen.CodegenConfig
 ```
 
-You _will_ need to make changes in at least the following:
+Depending on what you are working on, files you may need to change include:
 
-`TwilioGoGenerator.java`
-
-Templates in this folder:
-
-`src/main/resources/twilio-go`
+- Templates in `src/main/resources/twilio-go`
+- The code responsible for passing data to the templates: `src/main/java/com/twilio/oai/TwilioGoGenerator.java`
 
 Once modified, you can run this:
 
@@ -51,12 +58,15 @@ In your generator project. A single jar file will be produced in `target`. You c
 
 ### For mac/linux:
 ```
-java -cp /path/to/openapi-generator-cli.jar:/path/to/your.jar org.openapitools.codegen.OpenAPIGenerator generate -g twilio-go -i /path/to/openapi.yaml -o ./test
+java -cp /path/to/openapi-generator-cli.jar:target/twilio-openapi-generator.jar org.openapitools.codegen.OpenAPIGenerator generate -g twilio-go -i /path/to/openapi.yaml -o ./test
 ```
 
-(Do not forget to replace the values `/path/to/openapi-generator-cli.jar`, `/path/to/your.jar` and `/path/to/openapi.yaml` in the previous command)
+(Do not forget to replace the values `/path/to/openapi-generator-cli.jar` and `/path/to/openapi.yaml`—to something like `twilio-oai/spec/yaml/twilio_taskrouter_v1.yaml`—in the previous command)
 
-Here is an example script to generate [twilio-go](https://github.com/twilio/twilio-go) from our [OpenAPI specification](https://github.com/twilio/twilio-oai): [build_twilio_go.py](./examples/build_twilio_go.py).
+Here is an example script to generate all of the REST API in [twilio-go](https://github.com/twilio/twilio-go) from our [OpenAPI specification](https://github.com/twilio/twilio-oai) using [build_twilio_library.py](./scripts/build_twilio_library.py):
+```shell
+(mvn package && python3 scripts/build_twilio_library.py -l go ../twilio-oai/spec/yaml ../twilio-go && python3 scripts/build_twilio_library.py -l go ../twilio-oai/spec/json ../twilio-go && cd ../twilio-go && goimports -w -v . && go test ./...)
+```
 
 ### For Windows
 You will need to use `;` instead of `:` in the classpath, e.g.
@@ -109,8 +119,8 @@ To generate [`twilio-go`](https://github.com/twilio/twilio-go) from [`twilio-oai
 
 Update `<path to>` and execute the following from the root of this repo:
 
-* To generate the entire suite, run `make install && python3 examples/build_twilio_go.py <path to>/twilio-oai/spec/yaml <path to>/twilio-go`
-* To generate the provider for a single domain such as studio, run `make install && python3 examples/build_twilio_go.py <path to>/twilio-oai/spec/yaml/twilio_studio_v2.yaml <path to>/twilio-go`
+* To generate the entire suite, run `make install && python3 scripts/build_twilio_library.py -l go <path to>/twilio-oai/spec/yaml <path to>/twilio-go`
+* To generate the provider for a single domain such as studio, run `make install && python3 scripts/build_twilio_library.py -l go <path to>/twilio-oai/spec/yaml/twilio_studio_v2.yaml <path to>/twilio-go`
 
 ## Generating terraform-provider-twilio
 
