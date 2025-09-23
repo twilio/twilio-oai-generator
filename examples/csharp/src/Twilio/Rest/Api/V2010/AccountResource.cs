@@ -140,6 +140,7 @@ namespace Twilio.Rest.Api.V2010
             return await CreateAsync(options, client);
         }
         #endif
+
         
         /// <summary> delete </summary>
         /// <param name="options"> Delete Account parameters </param>
@@ -484,6 +485,7 @@ namespace Twilio.Rest.Api.V2010
             return await UpdateAsync(options, client);
         }
         #endif
+
     
         /// <summary>
         /// Converts a JSON string into a AccountResource object
@@ -558,7 +560,7 @@ namespace Twilio.Rest.Api.V2010
 
         ///<summary> The test_number_float </summary> 
         [JsonProperty("test_number_float")]
-        public float? TestNumberFloat { get; private set; }
+        public float TestNumberFloat { get; private set; }
 
         ///<summary> The test_number_decimal </summary> 
         [JsonProperty("test_number_decimal")]
@@ -587,6 +589,14 @@ namespace Twilio.Rest.Api.V2010
         ///<summary> Permissions authorized to the app </summary> 
         [JsonProperty("test_array_of_enum")]
         public List<AccountResource.StatusEnum> TestArrayOfEnum { get; private set; }
+
+        ///<summary> The test_number_decimal </summary> 
+        [JsonProperty("test_number_decimal")]
+        public decimal? _TestNumberDecimal { get; private set; }
+
+        ///<summary> Permissions authorized to the app </summary> 
+        [JsonProperty("test_array_of_enum")]
+        public List<AccountResource.StatusEnum> _TestArrayOfEnum { get; private set; }
 
         ///<summary> The status of the user </summary> 
         [JsonProperty("status")]

@@ -6,13 +6,13 @@
                 {{vendorExtensions.x-http-method}},
                 Rest.Domain.{{domainPackage}},
                 path,
-                {{^vendorExtensions.x-is-json}}
+                {{^bodyParams.0}}
                 contentType: EnumConstants.ContentTypeEnum.FORM_URLENCODED,
-                postParams: options.GetParams(),{{/vendorExtensions.x-is-json}}
-                {{#vendorExtensions.x-is-json}}
+                postParams: options.GetParams(),{{/bodyParams.0}}
+                {{#bodyParams.0}}
                 contentType: EnumConstants.ContentTypeEnum.JSON,
                 body: options.GetBody(),
-                {{/vendorExtensions.x-is-json}}
+                {{/bodyParams.0}}
                 headerParams: {{^vendorExtensions.hasOptionalHeaderParams}}null{{/vendorExtensions.hasOptionalHeaderParams}}{{#vendorExtensions.hasOptionalHeaderParams}}options.GetHeaderParams(){{/vendorExtensions.hasOptionalHeaderParams}}
             );
         }

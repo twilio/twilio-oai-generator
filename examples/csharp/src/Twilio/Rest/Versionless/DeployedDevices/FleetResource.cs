@@ -99,6 +99,7 @@ namespace Twilio.Rest.Versionless.DeployedDevices
             return await CreateAsync(options, client);
         }
         #endif
+
         
         private static Request BuildFetchRequest(FetchFleetOptions options, ITwilioRestClient client)
         {
