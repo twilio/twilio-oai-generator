@@ -9,16 +9,16 @@ Must be kept in sync with src/main/resources/config/java.json
 public class OpenApiSpecFormatFeatureConstants {
 
     /*
-     * inputType -> Customer will provide inputType.
-     * promoter -> Promoter will use this to convert the inputType to the desired type.
      * key (format) -> The key is the format defined in the OpenAPI Spec.
+     * inputType -> Customer will provide inputType.
+     * promoter -> Promoter will use this to convert the inputType to the desired type. 
      * 
      * This can be applied to setters. For example, if a query parameter is of the format "phone-number",
      * two setters will be created: one for `PhoneNumber` and another for `String`.
      * The promoter logic will be applied to the `String` setter. 
      */
     public final static Map<String, Promotion> PROMOTIONS = Map.of(
-        "url", new Promotion("String", "Promoter.uriFromString({})"),
+        "uri", new Promotion("String", "Promoter.uriFromString({})"),
         "phone-number", new Promotion("String", "Promoter.phoneNumberFromString({})"),
         "twiml", new Promotion("String", "Promoter.twimlFromString({})")
     );

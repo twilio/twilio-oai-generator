@@ -32,6 +32,7 @@ public class Promoter {
     
     public static void addPromoter(final CodegenOperation codegenOperation) {
         //List<CodegenParameter> setterParameters = codegenOperation.allParams.stream().filter(param -> !param.isPathParam).collect(Collectors.toList());
+        // Add promoter to following input variables.
         List<CodegenParameter> setterParameters = new ArrayList<>(codegenOperation.bodyParams);
         setterParameters.addAll(codegenOperation.formParams);
         setterParameters.addAll(codegenOperation.queryParams);
@@ -39,3 +40,5 @@ public class Promoter {
         setterParameters.forEach(param -> addPromoter(param));
     }
 }
+
+
