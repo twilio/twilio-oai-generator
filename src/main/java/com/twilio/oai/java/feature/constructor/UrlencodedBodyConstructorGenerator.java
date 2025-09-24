@@ -100,6 +100,9 @@ public class UrlencodedBodyConstructorGenerator extends ConstructorGenerator {
             return List.of();
         }
         List<List<CodegenParameter>> conditionalCodegenParam = lookForConditionalParameterInBody(conditionalParamDoubleList, codegenOperation);
+
+        // added filter to prevent same signature types
+        conditionalCodegenParam = conditionalCodegenParam.stream().filter(cpList -> (cpList.size() <=1 || !cpList.get(0).dataType.equals(cpList.get(1).dataType))).collect(Collectors.toList());
         return conditionalCodegenParam;
     }
 
