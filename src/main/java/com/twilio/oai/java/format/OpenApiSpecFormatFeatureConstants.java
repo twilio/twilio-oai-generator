@@ -49,17 +49,20 @@ public class OpenApiSpecFormatFeatureConstants {
 
         predefinedTypeMappings.put("string+phone-number", "com.twilio.type.PhoneNumber");
         predefinedTypeMappings.put("com.twilio.type.PhoneNumber", "com.twilio.type.PhoneNumber");
+        predefinedTypeMappings.put("string+endpoint", "com.twilio.type.Endpoint");
+        predefinedTypeMappings.put("com.twilio.type.Endpoint", "com.twilio.type.Endpoint");
+        predefinedTypeMappings.put("string+twiml", "com.twilio.type.Twiml");
+        predefinedTypeMappings.put("com.twilio.type.Twiml", "com.twilio.type.Twiml");
+        
+        
         predefinedTypeMappings.put("string+uri", "URI");
         predefinedTypeMappings.put("string+url", "URI");
         predefinedTypeMappings.put("string+currency", "Currency");
         predefinedTypeMappings.put("string+date-time", "ZonedDateTime");
         predefinedTypeMappings.put("string+date", "LocalDate");
         //predefinedTypeMappings.put("LocalDate", "LocalDate");
-        predefinedTypeMappings.put("string+endpoint", "Endpoint");
         predefinedTypeMappings.put("string+http-method", "HttpMethod");
-        predefinedTypeMappings.put("string+twiml", "Twiml");
         predefinedTypeMappings.put("string+date-time-rfc-2822", "ZonedDateTime");
-
         predefinedTypeMappings.put("object+ice-server", "IceServer");
         predefinedTypeMappings.put("object+subscribe-rule", "SubscribeRule");
         predefinedTypeMappings.put("object+recording-rule", "RecordingRule");
