@@ -49,6 +49,9 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
         super();
         twilioCodegen = new TwilioCodegenAdapter(this, getName());
         sourceFolder = "";
+        this.typeMapping.put("string+abc", "CustomType");
+        this.importMapping.put("CustomType", "hello.import.CustomType");
+        System.out.println(this.typeMapping());
     }
 
     @Override
@@ -157,7 +160,7 @@ public class TwilioJavaGenerator extends JavaClientCodegen {
 
     @Override
     public String getName() {
-        return EnumConstants.Generator.TWILIO_JAVA.getValue();
+        return EnumConstants.Generator.TWILIO_CSHARP.getValue();
     }
 
     @Override

@@ -27,27 +27,27 @@ public class JavaPropertyResolver extends LanguagePropertyResolver {
     @Override
     public  void resolveProperties(CodegenProperty property, ApiResourceBuilder apiResourceBuilder) {
         super.resolveProperties(property, apiResourceBuilder);
-        Map<String, Map<String, Object>> vendorExtensions = new HashMap<>();
-
-        for (Segments segment : Segments.values()) {
-            getMapperByType(segment).get(property.dataFormat).ifPresent(value -> {
-                Map<String, Object> segmentElements = new HashMap<>();
-                segmentElements.put(VENDOR_PREFIX + property.dataFormat,
-                                    value.toString().replaceAll("\\{.*}", property.name));
-                vendorExtensions.put(segment.getSegment(), segmentElements);
-            });
-        }
-
-        property.nameInSnakeCase = StringHelper.toSnakeCase(property.name);
-
-        // Merges the vendorExtensions map with the existing property's vendor extensions
-        vendorExtensions.forEach(
-                (key, value) -> property.getVendorExtensions().merge(key, value, (oldValue, newValue) -> newValue)
-        );
-
-        if (apiResourceBuilder.getToggleMap().getOrDefault(EnumConstants.Generator.TWILIO_JAVA.getValue(), Boolean.FALSE) ) {
-            resolveIngressModel(property, apiResourceBuilder);
-        }
+//        Map<String, Map<String, Object>> vendorExtensions = new HashMap<>();
+//
+//        for (Segments segment : Segments.values()) {
+//            getMapperByType(segment).get(property.dataFormat).ifPresent(value -> {
+//                Map<String, Object> segmentElements = new HashMap<>();
+//                segmentElements.put(VENDOR_PREFIX + property.dataFormat,
+//                                    value.toString().replaceAll("\\{.*}", property.name));
+//                vendorExtensions.put(segment.getSegment(), segmentElements);
+//            });
+//        }
+//
+//        property.nameInSnakeCase = StringHelper.toSnakeCase(property.name);
+//
+//        // Merges the vendorExtensions map with the existing property's vendor extensions
+//        vendorExtensions.forEach(
+//                (key, value) -> property.getVendorExtensions().merge(key, value, (oldValue, newValue) -> newValue)
+//        );
+//
+//        if (apiResourceBuilder.getToggleMap().getOrDefault(EnumConstants.Generator.TWILIO_JAVA.getValue(), Boolean.FALSE) ) {
+//            resolveIngressModel(property, apiResourceBuilder);
+//        }
     }
 
     @Override

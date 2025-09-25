@@ -1,11 +1,13 @@
 package com.twilio.oai;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.io.FileUtils;
 import org.junit.BeforeClass;
@@ -28,7 +30,7 @@ import static org.junit.Assert.assertFalse;
 public class TwilioGeneratorTest {
     @Parameterized.Parameters
     public static Collection<Generator> generators() {
-        return Arrays.asList(Generator.TWILIO_JAVA);
+        return Arrays.asList(Generator.TWILIO_JAVA_CUSTOM);
     }
 
     private final Generator generator;
@@ -39,7 +41,7 @@ public class TwilioGeneratorTest {
     }
 
     @Test
-    public void launchGenerator() {
+    public void launchGenerator() throws IOException {
         final String pathname = "examples/spec/twilio_api_v2010.yaml";
         File filesList[] ;
         File directoryPath = new File(pathname);
@@ -48,11 +50,15 @@ public class TwilioGeneratorTest {
         } else {
             filesList = new File[]{directoryPath};
         }
+        final String configPath = "config.json";
+        Map<String, Object> configProperties = new ObjectMapper().readValue(new File(configPath), Map.class);
+
         for (File file: filesList) {
             final CodegenConfigurator configurator = new CodegenConfigurator()
                     .setGeneratorName(generator.getValue())
                     .setInputSpec(file.getPath())
                     .setOutputDir("codegen/" + generator.getValue())
+                    .setAdditionalProperties(configProperties)
                     .setInlineSchemaNameDefaults(Map.of("arrayItemSuffix", ""))
                     .addGlobalProperty("apiTests", "false")
                     .addGlobalProperty("apiDocs", "false");
