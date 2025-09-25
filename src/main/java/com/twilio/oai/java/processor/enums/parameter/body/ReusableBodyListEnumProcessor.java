@@ -70,7 +70,8 @@ public class ReusableBodyListEnumProcessor implements ParameterEnumProcessor {
         // enumClassName = Status
         String enumClassName = Utility.getEnumNameFromDatatype(enumExistingDatatype);
         // enumNonContainerDatatype = Account.Status
-        String enumNonContainerDatatype = ResourceCacheContext.get().getResourceName() + DOT + StringUtils.toPascalCase(enumClassName);
+        String enumNonContainerDatatype = Utility.appendResourceNameToEnum(enumClassName);
+                //ResourceCacheContext.get().getResourceName() + DOT + StringUtils.toPascalCase(enumClassName);
         // resolvedDataType = List<Account.Status>
         String resolvedDataType = Utility.replaceDatatypeInContainer(codegenParameter.dataType, enumNonContainerDatatype);
         codegenParameter.vendorExtensions.put(X_DATATYPE, resolvedDataType);

@@ -24,6 +24,7 @@ import org.openapitools.codegen.model.ModelMap;
 import org.openapitools.codegen.model.ModelsMap;
 
 import static com.twilio.oai.common.ApplicationConstants.ARRAY;
+import static com.twilio.oai.common.ApplicationConstants.DOT;
 import static com.twilio.oai.common.ApplicationConstants.OBJECT;
 
 @UtilityClass
@@ -189,6 +190,17 @@ public class Utility {
         }
         // Return the input unchanged if no match is found
         return input;
+    }
+    
+    public static String appendResourceNameToEnum(String name) {
+        if (name == null || name.isEmpty()) {
+            return null;
+        }
+        String prefix = ResourceCacheContext.get().getResourceName() + DOT;
+        if (name.startsWith(prefix)) {
+            return name;
+        }
+        return prefix + com.twilio.oai.common.StringUtils.toPascalCase(name);
     }
     
     public static String getEnumNameFromRef(final String ref) {

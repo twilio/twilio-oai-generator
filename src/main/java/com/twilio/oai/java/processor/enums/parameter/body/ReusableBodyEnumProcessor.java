@@ -58,8 +58,8 @@ public class ReusableBodyEnumProcessor implements ParameterEnumProcessor {
         codegenParameter.vendorExtensions.put(X_VARIABLE_NAME, StringUtils.toCamelCase(codegenParameter.baseName));
     }
     private void datatype(CodegenParameter codegenParameter) {
-        String enumDatatypeResolved = StringUtils.toPascalCase(Utility.getEnumNameFromDefaultDatatype(codegenParameter.dataType));
-        codegenParameter.vendorExtensions.put(X_DATATYPE, ResourceCacheContext.get().getResourceName() + DOT + enumDatatypeResolved);
+        String enumName = Utility.getEnumNameFromDefaultDatatype(codegenParameter.dataType);
+        codegenParameter.vendorExtensions.put(X_DATATYPE, Utility.appendResourceNameToEnum(enumName));
     }
 
     private void cacheEnumClass(CodegenParameter codegenParameter) {
