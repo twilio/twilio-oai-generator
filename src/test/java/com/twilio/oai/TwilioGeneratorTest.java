@@ -53,7 +53,8 @@ public class TwilioGeneratorTest {
                     .setGeneratorName(generator.getValue())
                     .setInputSpec(file.getPath())
                     .setOutputDir("codegen/" + generator.getValue())
-                    //.setInlineSchemaNameDefaults(Map.of("arrayItemSuffix", ""))
+                    //.setInlineSchemaNameDefaults(Map.of("arrayItemSuffix", "")) // OpenAPI Generator 6.x.x
+                    .setInlineSchemaOptions(Map.of("ARRAY_ITEM_SUFFIX", "")) // OpenAPI Generator 7.x.x
                     .addGlobalProperty("apiTests", "false")
                     .addGlobalProperty("apiDocs", "false");
             final ClientOptInput clientOptInput = configurator.toClientOptInput();
