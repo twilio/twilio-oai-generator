@@ -1,17 +1,10 @@
 {{#mustacheModels}}
 
-    //@JsonDeserialize(builder = {{className}}.Builder.class)
+    @JsonDeserialize(builder = {{className}}.Builder.class)
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     @ToString
 {{!@Builder}}
     public static class {{className}} {
-    {{#mandatoryProperties.0}}
-    public {{className}}({{#mandatoryProperties}} final {{{dataType}}} {{name}}{{^-last}}, {{/-last}} {{/mandatoryProperties}}) {
-    {{#mandatoryProperties}}
-        this.{{name}} = {{name}};
-    {{/mandatoryProperties}}
-    }
-    {{/mandatoryProperties.0}}
     
     {{#allProperties}}
         {{#vendorExtensions.x-deserializer}}
@@ -19,10 +12,62 @@
         {{/vendorExtensions.x-deserializer}}
         @JsonInclude(JsonInclude.Include.NON_EMPTY)
         @JsonProperty("{{{baseName}}}")
-        @Getter @Setter private {{{dataType}}} {{name}};
+        @Getter private final {{{dataType}}} {{name}};
 
     {{/allProperties}}
+
+    private {{className}}(Builder builder) {
+        {{#allProperties}}
+        this.{{name}} = builder.{{name}};
+        {{/allProperties}}
+    }
+    public static Builder builder({{#mandatoryProperties}} final {{{dataType}}} {{name}}{{^-last}}, {{/-last}} {{/mandatoryProperties}}) {
+        return new Builder({{#mandatoryProperties}} {{name}}{{^-last}}, {{/-last}} {{/mandatoryProperties}}); 
+    }
+
+    public static {{className}} fromJson(String jsonString, ObjectMapper mapper) throws IOException {
+        return mapper.readValue(jsonString, {{className}}.class);
+    }
+
+    @JsonPOJOBuilder(withPrefix = "")
+    public static class Builder {
+    {{#allProperties}}
+        {{#vendorExtensions.x-deserializer}}
+            @JsonDeserialize(using = {{vendorExtensions.x-deserializer}}.class)
+        {{/vendorExtensions.x-deserializer}}
+        @JsonProperty("{{{baseName}}}")
+        private {{{dataType}}} {{name}};
+
+    {{/allProperties}}
+
+        {{#mandatoryProperties.0}}
+        @JsonCreator
+        public Builder({{#mandatoryProperties}} @JsonProperty("{{{baseName}}}") final {{{dataType}}} {{name}}{{^-last}}, {{/-last}} {{/mandatoryProperties}}) {
+        {{#mandatoryProperties}}
+            this.{{name}} = {{name}};
+        {{/mandatoryProperties}}
+        }
+        {{/mandatoryProperties.0}}
+
+        {{#optionalProperties}}
+            {{#vendorExtensions.x-deserializer}}
+            @JsonDeserialize(using = {{vendorExtensions.x-deserializer}}.class)
+            {{/vendorExtensions.x-deserializer}}
+            @JsonInclude(JsonInclude.Include.NON_EMPTY)
+            @JsonProperty("{{{baseName}}}")
+            public Builder {{name}}({{{dataType}}} {{name}}) {
+                this.{{name}} = {{name}};
+                return this;
+            }
+        {{/optionalProperties}}
+
+        public {{className}} build() {
+            return new {{className}}(this);
+        }
+    }
+    {{>modelEqualsAndHashCode}}
 {{!        @JsonPOJOBuilder(withPrefix = "")
 public static class Builder {}}
     }
+    
 {{/mustacheModels}}
