@@ -65,7 +65,8 @@ public class ReusableListParamEnumProcessor implements ParameterEnumProcessor {
         // enumRefResolved = singleReusable
         String enumRefResolved = Utility.getEnumNameFromRef(codegenParameter.getSchema().items.getRef());
         // enumNonContainerDatatype = Content.SingleReusable
-        String enumNonContainerDatatype = ResourceCacheContext.get().getResourceName() + DOT + StringUtils.toPascalCase(enumRefResolved);
+        String enumNonContainerDatatype = Utility.appendResourceNameToEnum(enumRefResolved); 
+                //ResourceCacheContext.get().getResourceName() + DOT + StringUtils.toPascalCase(enumRefResolved);
         // resolvedDataType = List<Content.SingleReusable>
         String resolvedDataType = Utility.replaceDatatypeInContainer(codegenParameter.dataType, enumNonContainerDatatype);
         codegenParameter.vendorExtensions.put(X_DATATYPE, resolvedDataType);

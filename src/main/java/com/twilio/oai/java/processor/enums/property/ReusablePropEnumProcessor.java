@@ -48,8 +48,8 @@ public class ReusablePropEnumProcessor implements PropertyEnumProcessor {
         codegenProperty.vendorExtensions.put(X_VARIABLE_NAME, StringUtils.toCamelCase(codegenProperty.baseName));
     }
     private void datatype(CodegenProperty codegenProperty) {
-        String enumDatatypeResolved = StringUtils.toPascalCase(Utility.getEnumNameFromDefaultDatatype(codegenProperty.getRef()));
-        codegenProperty.vendorExtensions.put(X_DATATYPE, ResourceCacheContext.get().getResourceName() + DOT + enumDatatypeResolved);
+        String enumName = Utility.getEnumNameFromDefaultDatatype(codegenProperty.getRef());
+        codegenProperty.vendorExtensions.put(X_DATATYPE, Utility.appendResourceNameToEnum(enumName));
     }
 
     private void cacheEnumClass(CodegenProperty codegenProperty) {

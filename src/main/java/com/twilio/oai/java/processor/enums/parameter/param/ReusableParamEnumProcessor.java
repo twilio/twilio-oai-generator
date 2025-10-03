@@ -55,8 +55,7 @@ public class ReusableParamEnumProcessor implements ParameterEnumProcessor {
     }
     private void datatype(CodegenParameter codegenParameter) {
         String enumRefResolved = Utility.getEnumNameFromRef(codegenParameter.getSchema().getRef());
-        codegenParameter.vendorExtensions.put(X_DATATYPE,
-                ResourceCacheContext.get().getResourceName() + DOT + StringUtils.toPascalCase(enumRefResolved));
+        codegenParameter.vendorExtensions.put(X_DATATYPE, Utility.appendResourceNameToEnum(enumRefResolved));
     }
 
     private void cacheEnumClass(CodegenParameter codegenParameter) {

@@ -20,6 +20,8 @@ public class MustacheModel {
     // Used in constructor
     List<CodegenProperty> mandatoryProperties;
 
+    List<CodegenProperty> optionalProperties;
+
     public MustacheModel(CodegenProperty codegenProperty, CodegenModel codegenModel) {
         this.className = codegenModel.classname;
         
@@ -27,6 +29,10 @@ public class MustacheModel {
         
         this.mandatoryProperties = codegenModel.vars.stream()
                 .filter(codegenProperty1 -> codegenProperty1.required)
+                .collect(Collectors.toList());
+        
+        this.optionalProperties = codegenModel.vars.stream()
+                .filter(codegenProperty1 -> !codegenProperty1.required)
                 .collect(Collectors.toList());
     }
 
