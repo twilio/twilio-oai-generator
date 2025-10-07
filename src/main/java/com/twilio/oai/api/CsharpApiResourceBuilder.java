@@ -231,28 +231,56 @@ public class CsharpApiResourceBuilder extends ApiResourceBuilder {
     }
 
     public Set<CodegenProperty> getDistinctResponseModel(List<CodegenModel> responseModels) {
-        HashSet<String> modelVars = new HashSet<>();
+        HashMap<String, CodegenProperty> propertyMap = new HashMap<>();
         Set<CodegenProperty> distinctResponseModels = new LinkedHashSet<>();
+
         for (CodegenModel codegenModel: responseModels) {
             for (CodegenProperty property: codegenModel.vars) {
                 property.nameInCamelCase = StringHelper.camelize(property.nameInSnakeCase);
-                Boolean isOverridden = property.isOverridden;
-                if(isOverridden != null && isOverridden == false)
-                    property.isOverridden = null;
+                if(property.isNullable && !property.dataType.contains("?")){
+                    property.dataType = property.dataType + "?";
+                }
+                // Check for operation name conflicts or nested model name conflicts
                 if (Arrays.stream(EnumConstants.Operation.values())
                         .anyMatch(value -> value.getValue().equals(property.nameInCamelCase))
                         || isNestedModelPresentWithPropertyName(property)) {
                     property.nameInCamelCase = "_" + property.nameInCamelCase;
                 }
+
+                // Check if property with same name already exists, but has different metadata
+                // This handles cases where properties have the same name but different types or model flags
+                String propertyKey = property.name;
+                if (propertyMap.containsKey(propertyKey)) {
+                    CodegenProperty existingProperty = propertyMap.get(propertyKey);
+
+                    // Check if the properties are functionally different enough to warrant duplication
+                    // Only consider properties truly different if they have different data types
+                    // Differences in isModel or isOverridden flags alone should not cause duplication
+                    if (!Objects.equals(existingProperty.dataType, property.dataType)) {
+                        property.nameInCamelCase = "_" + property.nameInCamelCase;
+                    } else {
+                        // If they're functionally the same (same data type), merge any metadata if needed
+                        // and skip adding this property
+                        continue;
+                    }
+                }
+
+                // Store the property in the map for future duplicate checks
+                propertyMap.put(propertyKey, property);
                 distinctResponseModels.add(property);
-                property.isOverridden = isOverridden;
             }
         }
-        for(CodegenProperty s : distinctResponseModels){
-            if(modelVars.contains(s.name)){
-                s.nameInCamelCase = "_" + s.nameInCamelCase;
-            }else modelVars.add(s.nameInCamelCase);
+
+        // Final check for name collisions in camelCase names (which are used in C# code)
+        HashSet<String> modelVars = new HashSet<>();
+        for (CodegenProperty property : distinctResponseModels) {
+            if (modelVars.contains(property.nameInCamelCase)) {
+                property.nameInCamelCase = "_" + property.nameInCamelCase;
+            } else {
+                modelVars.add(property.nameInCamelCase);
+            }
         }
+
         return distinctResponseModels;
     }
 
