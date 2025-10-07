@@ -189,11 +189,11 @@ namespace Twilio.Rest.Versionless.Understand
     
         ///<summary> A string that uniquely identifies this Fleet. </summary> 
         [JsonProperty("sid")]
-        public string Sid { get; private set; }
+        public string? Sid { get; private set; }
 
         ///<summary> A human readable description for this Fleet. </summary> 
         [JsonProperty("friendly_name")]
-        public string FriendlyName { get; private set; }
+        public string? FriendlyName { get; private set; }
 
 
 
