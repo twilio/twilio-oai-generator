@@ -19,11 +19,6 @@
         }
     {{/vendorExtensions.x-required-param-exists}}
 
-    {{^bodyParams.0}}
         {{>options/GetParams}}
-    {{/bodyParams.0}}
-    {{#bodyParams.0}}
-        {{>options/GetBody}}
-    {{/bodyParams.0}}
     {{>options/HeaderParams}}
     }
