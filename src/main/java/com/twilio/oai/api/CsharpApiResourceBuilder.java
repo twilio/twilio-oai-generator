@@ -38,6 +38,14 @@ public class CsharpApiResourceBuilder extends ApiResourceBuilder {
 
     public String authMethod = "";
 
+    /**
+     * List of C# primitive types that require a nullable marker (?) when nullable
+     */
+    private static final Set<String> CSHARP_PRIMITIVE_TYPES = new HashSet<>(Arrays.asList(
+        "int", "long", "float", "double", "decimal", "bool", "char", "byte",
+        "sbyte", "short", "ushort", "uint", "ulong", "DateTime"
+    ));
+
     public CsharpApiResourceBuilder(IApiActionTemplate template, List<CodegenOperation> codegenOperations,
                                     List<CodegenModel> allModels) {
         super(template, codegenOperations, allModels);
@@ -92,6 +100,7 @@ public class CsharpApiResourceBuilder extends ApiResourceBuilder {
         super.updateOperations(codegenParameterIResolver);
         processAuthMethods(this.codegenOperationList);
         this.codegenOperationList.forEach(co -> {
+            co.allParams.forEach(this::handleNullableParameter);
             co.headerParams.forEach(e -> codegenParameterIResolver.resolve(e, this));
             populateRequestBodyArgument(co);
             resolveIngressModel(co);
@@ -237,9 +246,7 @@ public class CsharpApiResourceBuilder extends ApiResourceBuilder {
         for (CodegenModel codegenModel: responseModels) {
             for (CodegenProperty property: codegenModel.vars) {
                 property.nameInCamelCase = StringHelper.camelize(property.nameInSnakeCase);
-                if(property.isNullable && !property.dataType.contains("?")){
-                    property.dataType = property.dataType + "?";
-                }
+                handleNullableProperty(property);
                 // Check for operation name conflicts or nested model name conflicts
                 if (Arrays.stream(EnumConstants.Operation.values())
                         .anyMatch(value -> value.getValue().equals(property.nameInCamelCase))
@@ -385,5 +392,37 @@ public class CsharpApiResourceBuilder extends ApiResourceBuilder {
                 .filter(model -> model.classname.equals(property.name))
                 .findFirst();
         return foundModel.isPresent();
+    }
+
+    /**
+     * Handle nullable property in C# by appending "?" to primitive types when nullable.
+     * Reference types (arrays, objects, custom classes) are already nullable in C#.
+     *
+     * @param property The CodegenProperty to process
+     */
+    protected void handleNullableProperty(CodegenProperty property) {
+        if (property.isNullable && !property.dataType.endsWith("?")) {
+                // Only add nullable marker to primitive types
+                if (CSHARP_PRIMITIVE_TYPES.contains(property.dataType)) {
+                    property.dataType = property.dataType + "?";
+                }
+        }
+    }
+
+    protected void handleNullableParameter(CodegenParameter parameter) {
+        CodegenModel model = getModel(parameter.dataType);
+        if(model != null) {
+            for(CodegenProperty property: model.vars) {
+                handleNullableProperty(property);
+            }
+        }
+        else {
+            if (parameter.isNullable && !parameter.dataType.endsWith("?")) {
+                // Only add nullable marker to primitive types
+                if (CSHARP_PRIMITIVE_TYPES.contains(parameter.dataType)) {
+                    parameter.dataType = parameter.dataType + "?";
+                }
+            }
+        }
     }
 }

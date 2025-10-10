@@ -175,15 +175,15 @@ namespace Twilio.Rest.Api.V2010.Account.Call
     
         ///<summary> The account_sid </summary> 
         [JsonProperty("account_sid")]
-        public string? AccountSid { get; private set; }
+        public string AccountSid { get; private set; }
 
         ///<summary> The sid </summary> 
         [JsonProperty("sid")]
-        public string? Sid { get; private set; }
+        public string Sid { get; private set; }
 
         ///<summary> The test_string </summary> 
         [JsonProperty("test_string")]
-        public string? TestString { get; private set; }
+        public string TestString { get; private set; }
 
         ///<summary> The test_integer </summary> 
         [JsonProperty("test_integer")]
@@ -191,7 +191,7 @@ namespace Twilio.Rest.Api.V2010.Account.Call
 
         ///<summary> The test_object </summary> 
         [JsonProperty("test_object")]
-        public PhoneNumberCapabilities? TestObject { get; private set; }
+        public PhoneNumberCapabilities TestObject { get; private set; }
 
         ///<summary> The test_date_time </summary> 
         [JsonProperty("test_date_time")]
@@ -204,11 +204,11 @@ namespace Twilio.Rest.Api.V2010.Account.Call
         ///<summary> The from </summary> 
         [JsonProperty("from")]
         [JsonConverter(typeof(PhoneNumberConverter))]
-        public Types.PhoneNumber? From { get; private set; }
+        public Types.PhoneNumber From { get; private set; }
 
         ///<summary> The price_unit </summary> 
         [JsonProperty("price_unit")]
-        public string? PriceUnit { get; private set; }
+        public string PriceUnit { get; private set; }
 
         ///<summary> The test_number_float </summary> 
         [JsonProperty("test_number_float")]
@@ -224,7 +224,7 @@ namespace Twilio.Rest.Api.V2010.Account.Call
 
         ///<summary> A2P Messaging Profile Bundle BundleSid </summary> 
         [JsonProperty("a2p_profile_bundle_sid")]
-        public string? A2PProfileBundleSid { get; private set; }
+        public string A2PProfileBundleSid { get; private set; }
 
         ///<summary> The test_array_of_integers </summary> 
         [JsonProperty("test_array_of_integers")]
@@ -236,11 +236,11 @@ namespace Twilio.Rest.Api.V2010.Account.Call
 
         ///<summary> The test_array_of_objects </summary> 
         [JsonProperty("test_array_of_objects")]
-        public List<FeedbackIssue>>>? TestArrayOfObjects { get; private set; }
+        public List<FeedbackIssue> TestArrayOfObjects { get; private set; }
 
         ///<summary> Permissions authorized to the app </summary> 
         [JsonProperty("test_array_of_enum")]
-        public List<FeedbackCallSummaryResource.StatusEnum>? TestArrayOfEnum { get; private set; }
+        public List<FeedbackCallSummaryResource.StatusEnum> TestArrayOfEnum { get; private set; }
 
 
 

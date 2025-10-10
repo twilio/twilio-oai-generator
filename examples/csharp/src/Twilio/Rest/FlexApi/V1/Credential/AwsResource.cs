@@ -399,15 +399,15 @@ namespace Twilio.Rest.FlexApi.V1.Credential
     
         ///<summary> The account_sid </summary> 
         [JsonProperty("account_sid")]
-        public string? AccountSid { get; private set; }
+        public string AccountSid { get; private set; }
 
         ///<summary> The sid </summary> 
         [JsonProperty("sid")]
-        public string? Sid { get; private set; }
+        public string Sid { get; private set; }
 
         ///<summary> The test_string </summary> 
         [JsonProperty("test_string")]
-        public string? TestString { get; private set; }
+        public string TestString { get; private set; }
 
         ///<summary> The test_integer </summary> 
         [JsonProperty("test_integer")]
