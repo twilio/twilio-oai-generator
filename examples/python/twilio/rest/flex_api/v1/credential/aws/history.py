@@ -125,16 +125,16 @@ class HistoryContext(InstanceContext):
         :returns: The fetched HistoryInstance
         """
 
-        params = values.of({})
+        data = values.of({})
 
-        params.update(serialize.prefixed_collapsible_map(add_ons_data, "AddOns"))
+        data.update(serialize.prefixed_collapsible_map(add_ons_data, "AddOns"))
 
         headers = values.of({})
 
         headers["Accept"] = "application/json"
 
         payload = self._version.fetch(
-            method="GET", uri=self._uri, params=params, headers=headers
+            method="GET", uri=self._uri, params=data, headers=headers
         )
 
         return HistoryInstance(
@@ -154,16 +154,16 @@ class HistoryContext(InstanceContext):
         :returns: The fetched HistoryInstance
         """
 
-        params = values.of({})
+        data = values.of({})
 
-        params.update(serialize.prefixed_collapsible_map(add_ons_data, "AddOns"))
+        data.update(serialize.prefixed_collapsible_map(add_ons_data, "AddOns"))
 
         headers = values.of({})
 
         headers["Accept"] = "application/json"
 
         payload = await self._version.fetch_async(
-            method="GET", uri=self._uri, params=params, headers=headers
+            method="GET", uri=self._uri, params=data, headers=headers
         )
 
         return HistoryInstance(
