@@ -1,6 +1,6 @@
 module go-client
 
-go 1.20
+go 1.21
 
 require (
 	github.com/golang/mock v1.6.0
@@ -12,7 +12,6 @@ require (
 
 require (
 	github.com/agext/levenshtein v1.2.3 // indirect
-	github.com/golang-jwt/jwt/v5 v5.2.3 // indirect
 	github.com/apparentlymart/go-textseg/v13 v13.0.0 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
