@@ -13,21 +13,21 @@ import Domain from "../base/Domain";
 import V2 from "./oauth/V2";
 
 class OauthBase extends Domain {
-    _v2?: V2;
+  _v2?: V2;
 
-    /**
-     * Initialize oauth domain
-     *
-     * @param twilio - The twilio client
-     */
-    constructor(twilio: any) {
-        super(twilio, "https://oauth.twilio.com");
-    }
+  /**
+   * Initialize oauth domain
+   *
+   * @param twilio - The twilio client
+   */
+  constructor(twilio: any) {
+    super(twilio, "https://oauth.twilio.com");
+  }
 
-    get v2(): V2 {
-        this._v2 = this._v2 || new V2(this);
-        return this._v2;
-    }
+  get v2(): V2 {
+    this._v2 = this._v2 || new V2(this);
+    return this._v2;
+  }
 }
 
 export = OauthBase;
