@@ -41,15 +41,9 @@ class {{apiName}}Context(InstanceContext):
         {{/consumes}}
         {{#vendorExtensions.successProduce}}
         headers["Accept"] = "{{{mediaType}}}"
-        {{/vendorExtensions.successProduce}}{{#if queryParams}}
-        params = values.of({ {{#allParams}}{{#isQueryParam}}{{#if vendorExtensions.x-prefixed-collapsible-map}}{{else}}
-            '{{{baseName}}}': {{#if vendorExtensions.x-serialize}}{{vendorExtensions.x-serialize}}({{paramName}}{{#if isArray}}, lambda e: e){{else}}){{/if}}{{else}}{{paramName}}{{/if}},{{/if}}{{/isQueryParam}}{{/allParams}}
-        })
+        {{/vendorExtensions.successProduce}}
 
-        {{#allParams}}{{#isQueryParam}}{{#if vendorExtensions.x-prefixed-collapsible-map}}params.update({{vendorExtensions.x-serialize}}({{paramName}}, '{{vendorExtensions.x-prefixed-collapsible-map}}'))
-        {{/if}}{{/isQueryParam}}{{/allParams}}{{/if}}
-
-        payload = self._version.update(method='{{vendorExtensions.x-http-method}}', uri=self._uri, data=data, headers=headers{{#if queryParams}}, params=params{{/if}})
+        payload = self._version.update(method='{{vendorExtensions.x-http-method}}', uri=self._uri, data=data, headers=headers)
 
         return {{instanceName}}(
             self._version,
@@ -80,15 +74,9 @@ class {{apiName}}Context(InstanceContext):
         {{/consumes}}
         {{#vendorExtensions.successProduce}}
         headers["Accept"] = "{{{mediaType}}}"
-        {{/vendorExtensions.successProduce}}{{#if queryParams}}
-        params = values.of({ {{#allParams}}{{#isQueryParam}}{{#if vendorExtensions.x-prefixed-collapsible-map}}{{else}}
-            '{{{baseName}}}': {{#if vendorExtensions.x-serialize}}{{vendorExtensions.x-serialize}}({{paramName}}{{#if isArray}}, lambda e: e){{else}}){{/if}}{{else}}{{paramName}}{{/if}},{{/if}}{{/isQueryParam}}{{/allParams}}
-        })
+        {{/vendorExtensions.successProduce}}
 
-        {{#allParams}}{{#isQueryParam}}{{#if vendorExtensions.x-prefixed-collapsible-map}}params.update({{vendorExtensions.x-serialize}}({{paramName}}, '{{vendorExtensions.x-prefixed-collapsible-map}}'))
-        {{/if}}{{/isQueryParam}}{{/allParams}}{{/if}}
-
-        payload = await self._version.update_async(method='{{vendorExtensions.x-http-method}}', uri=self._uri, data=data, headers=headers{{#if queryParams}}, params=params{{/if}})
+        payload = await self._version.update_async(method='{{vendorExtensions.x-http-method}}', uri=self._uri, data=data, headers=headers)
 
         return {{instanceName}}(
             self._version,
@@ -104,27 +92,22 @@ class {{apiName}}Context(InstanceContext):
 
         :returns: The fetched {{instanceName}}
         """
-        {{#if queryParams}}
-        params = values.of({ {{#allParams}}{{#isQueryParam}}{{#if vendorExtensions.x-prefixed-collapsible-map}}{{else}}
-            '{{{baseName}}}': {{#if vendorExtensions.x-serialize}}{{vendorExtensions.x-serialize}}({{paramName}}{{#if isArray}}, lambda e: e){{else}}){{/if}}{{else}}{{paramName}}{{/if}},{{/if}}{{/isQueryParam}}{{/allParams}}
+        {{#if allParams}}
+        data = values.of({ {{#allParams}}{{#if vendorExtensions.x-prefixed-collapsible-map}}{{else}}
+            '{{{baseName}}}': {{#if vendorExtensions.x-serialize}}{{vendorExtensions.x-serialize}}({{paramName}}{{#if isArray}}, lambda e: e){{else}}){{/if}}{{else}}{{paramName}}{{/if}},{{/if}}{{/allParams}}
         })
 
-        {{#allParams}}{{#isQueryParam}}{{#if vendorExtensions.x-prefixed-collapsible-map}}params.update({{vendorExtensions.x-serialize}}({{paramName}}, '{{vendorExtensions.x-prefixed-collapsible-map}}'))
-        {{/if}}{{/isQueryParam}}{{/allParams}}{{/if}}
+        {{#allParams}}{{#if vendorExtensions.x-prefixed-collapsible-map}}data.update({{vendorExtensions.x-serialize}}({{paramName}}, '{{vendorExtensions.x-prefixed-collapsible-map}}'))
+        {{/if}}{{/allParams}}{{/if}}
 
         headers = values.of({})
-        {{#allParams}}{{#isHeaderParam}}
-        {{^if required}}
-        if not ({{paramName}} is values.unset or (isinstance({{paramName}}, str) and not {{paramName}})):{{/if}}
-            headers['{{{baseName}}}'] = {{paramName}}
-        {{/isHeaderParam}}{{/allParams}}
         {{#consumes}}
         headers["Content-Type"] = "{{{mediaType}}}"
         {{/consumes}}
         {{#vendorExtensions.successProduce}}
         headers["Accept"] = "{{{mediaType}}}"
         {{/vendorExtensions.successProduce}}
-        payload = self._version.fetch(method='{{vendorExtensions.x-http-method}}', uri=self._uri {{#if queryParams}}, params=params{{/if}} , headers=headers)
+        payload = self._version.fetch(method='{{vendorExtensions.x-http-method}}', uri=self._uri {{#if allParams}}, params=data{{/if}} , headers=headers)
 
         return {{instanceName}}(
             self._version,
@@ -141,27 +124,22 @@ class {{apiName}}Context(InstanceContext):
 
         :returns: The fetched {{instanceName}}
         """
-        {{#if queryParams}}
-        params = values.of({ {{#allParams}}{{#isQueryParam}}{{#if vendorExtensions.x-prefixed-collapsible-map}}{{else}}
-            '{{{baseName}}}': {{#if vendorExtensions.x-serialize}}{{vendorExtensions.x-serialize}}({{paramName}}{{#if isArray}}, lambda e: e){{else}}){{/if}}{{else}}{{paramName}}{{/if}},{{/if}}{{/isQueryParam}}{{/allParams}}
+        {{#if allParams}}
+        data = values.of({ {{#allParams}}{{#if vendorExtensions.x-prefixed-collapsible-map}}{{else}}
+            '{{{baseName}}}': {{#if vendorExtensions.x-serialize}}{{vendorExtensions.x-serialize}}({{paramName}}{{#if isArray}}, lambda e: e){{else}}){{/if}}{{else}}{{paramName}}{{/if}},{{/if}}{{/allParams}}
         })
 
-        {{#allParams}}{{#isQueryParam}}{{#if vendorExtensions.x-prefixed-collapsible-map}}params.update({{vendorExtensions.x-serialize}}({{paramName}}, '{{vendorExtensions.x-prefixed-collapsible-map}}'))
-        {{/if}}{{/isQueryParam}}{{/allParams}}{{/if}}
+        {{#allParams}}{{#if vendorExtensions.x-prefixed-collapsible-map}}data.update({{vendorExtensions.x-serialize}}({{paramName}}, '{{vendorExtensions.x-prefixed-collapsible-map}}'))
+        {{/if}}{{/allParams}}{{/if}}
 
         headers = values.of({})
-        {{#allParams}}{{#isHeaderParam}}
-        {{^if required}}
-        if not ({{paramName}} is values.unset or (isinstance({{paramName}}, str) and not {{paramName}})):{{/if}}
-            headers['{{{baseName}}}'] = {{paramName}}
-        {{/isHeaderParam}}{{/allParams}}
         {{#consumes}}
         headers["Content-Type"] = "{{{mediaType}}}"
         {{/consumes}}
         {{#vendorExtensions.successProduce}}
         headers["Accept"] = "{{{mediaType}}}"
         {{/vendorExtensions.successProduce}}
-        payload = await self._version.fetch_async(method='{{vendorExtensions.x-http-method}}', uri=self._uri {{#if queryParams}}, params=params{{/if}}, headers=headers)
+        payload = await self._version.fetch_async(method='{{vendorExtensions.x-http-method}}', uri=self._uri {{#if allParams}}, params=data{{/if}}, headers=headers)
 
         return {{instanceName}}(
             self._version,
@@ -177,11 +155,11 @@ class {{apiName}}Context(InstanceContext):
         {{#allParams}}:param {{paramName}}: {{{description}}}
         {{/allParams}}
         :returns: True if delete succeeds, False otherwise
-        """{{#if headerParams}}
-        headers = values.of({{#allParams}}{{#isHeaderParam}}{'{{{baseName}}}': {{paramName}}, }{{/isHeaderParam}}{{/allParams}})
+        """{{#if allParams}}
+        headers = values.of({{#allParams}}{'{{{baseName}}}': {{paramName}}, }{{/allParams}})
         {{/if}}
 
-        {{^if headerParams}}
+        {{^if allParams}}
         headers = values.of({})
         {{/if}}
         {{#consumes}}
@@ -189,14 +167,8 @@ class {{apiName}}Context(InstanceContext):
         {{/consumes}}
         {{#vendorExtensions.successProduce}}
         headers["Accept"] = "{{{mediaType}}}"
-        {{/vendorExtensions.successProduce}}{{#if queryParams}}
-        params = values.of({ {{#allParams}}{{#isQueryParam}}{{#if vendorExtensions.x-prefixed-collapsible-map}}{{else}}
-            '{{{baseName}}}': {{#if vendorExtensions.x-serialize}}{{vendorExtensions.x-serialize}}({{paramName}}{{#if isArray}}, lambda e: e){{else}}){{/if}}{{else}}{{paramName}}{{/if}},{{/if}}{{/isQueryParam}}{{/allParams}}
-        })
-
-        {{#allParams}}{{#isQueryParam}}{{#if vendorExtensions.x-prefixed-collapsible-map}}params.update({{vendorExtensions.x-serialize}}({{paramName}}, '{{vendorExtensions.x-prefixed-collapsible-map}}'))
-        {{/if}}{{/isQueryParam}}{{/allParams}}{{/if}}
-        return self._version.delete(method='{{vendorExtensions.x-http-method}}', uri=self._uri, headers=headers{{#if queryParams}}, params=params{{/if}})
+        {{/vendorExtensions.successProduce}}
+        return self._version.delete(method='{{vendorExtensions.x-http-method}}', uri=self._uri, headers=headers)
 
     async def {{vendorExtensions.x-name-lower}}_async(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> bool:
         """
@@ -205,10 +177,10 @@ class {{apiName}}Context(InstanceContext):
         {{#allParams}}:param {{paramName}}: {{{description}}}
         {{/allParams}}
         :returns: True if delete succeeds, False otherwise
-        """{{#if headerParams}}
-        headers = values.of({{#allParams}}{{#isHeaderParam}}{'{{{baseName}}}': {{paramName}}, }{{/isHeaderParam}}{{/allParams}})
+        """{{#if allParams}}
+        headers = values.of({{#allParams}}{'{{{baseName}}}': {{paramName}}, }{{/allParams}})
         {{/if}}
-        {{^if headerParams}}
+        {{^if allParams}}
         headers = values.of({})
         {{/if}}
         {{#consumes}}
@@ -216,14 +188,8 @@ class {{apiName}}Context(InstanceContext):
         {{/consumes}}
         {{#vendorExtensions.successProduce}}
         headers["Accept"] = "{{{mediaType}}}"
-        {{/vendorExtensions.successProduce}}{{#if queryParams}}
-        params = values.of({ {{#allParams}}{{#isQueryParam}}{{#if vendorExtensions.x-prefixed-collapsible-map}}{{else}}
-            '{{{baseName}}}': {{#if vendorExtensions.x-serialize}}{{vendorExtensions.x-serialize}}({{paramName}}{{#if isArray}}, lambda e: e){{else}}){{/if}}{{else}}{{paramName}}{{/if}},{{/if}}{{/isQueryParam}}{{/allParams}}
-        })
-
-        {{#allParams}}{{#isQueryParam}}{{#if vendorExtensions.x-prefixed-collapsible-map}}params.update({{vendorExtensions.x-serialize}}({{paramName}}, '{{vendorExtensions.x-prefixed-collapsible-map}}'))
-        {{/if}}{{/isQueryParam}}{{/allParams}}{{/if}}
-        return await self._version.delete_async(method='{{vendorExtensions.x-http-method}}', uri=self._uri, headers=headers{{#if queryParams}}, params=params{{/if}})
+        {{/vendorExtensions.successProduce}}
+        return await self._version.delete_async(method='{{vendorExtensions.x-http-method}}', uri=self._uri, headers=headers)
     {{/vendorExtensions.x-twilio.ignoreOperation}}{{/vendorExtensions.x-is-delete-operation}}{{#vendorExtensions.x-is-create-operation}}{{^vendorExtensions.x-twilio.ignoreOperation}}
     def {{vendorExtensions.x-name-lower}}(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> {{instanceName}}:
         """
@@ -233,29 +199,11 @@ class {{apiName}}Context(InstanceContext):
 
         :returns: The created {{instanceName}}
         """
-        {{#bodyParam}}data = {{paramName}}.to_dict(){{/bodyParam}}
-        {{^bodyParam}}data = values.of({ {{#allParams}}{{#isFormParam}}
-            '{{{baseName}}}': {{#if vendorExtensions.x-serialize}}{{vendorExtensions.x-serialize}}({{paramName}}{{#if isArray}}, lambda e: e){{else}}){{/if}}{{else}}{{paramName}}{{/if}},{{/isFormParam}}{{/allParams}}
-        }){{/bodyParam}}
-        headers = values.of({})
-        {{#allParams}}{{#isHeaderParam}}
-        {{^if required}}
-        if not ({{paramName}} is values.unset or (isinstance({{paramName}}, str) and not {{paramName}})):{{/if}}
-            headers['{{{baseName}}}'] = {{paramName}}{{/isHeaderParam}}{{/allParams}}
-        {{#consumes}}
-        headers["Content-Type"] = "{{{mediaType}}}"
-        {{/consumes}}
-        {{#vendorExtensions.successProduce}}
-        headers["Accept"] = "{{{mediaType}}}"
-        {{/vendorExtensions.successProduce}}{{#if queryParams}}
-        params = values.of({ {{#allParams}}{{#isQueryParam}}{{#if vendorExtensions.x-prefixed-collapsible-map}}{{else}}
-            '{{{baseName}}}': {{#if vendorExtensions.x-serialize}}{{vendorExtensions.x-serialize}}({{paramName}}{{#if isArray}}, lambda e: e){{else}}){{/if}}{{else}}{{paramName}}{{/if}},{{/if}}{{/isQueryParam}}{{/allParams}}
+        data = values.of({ {{#allParams}}
+            '{{{baseName}}}': {{#if vendorExtensions.x-serialize}}{{vendorExtensions.x-serialize}}({{paramName}}{{#if isArray}}, lambda e: e){{else}}){{/if}}{{else}}{{paramName}}{{/if}},{{/allParams}}
         })
 
-        {{#allParams}}{{#isQueryParam}}{{#if vendorExtensions.x-prefixed-collapsible-map}}params.update({{vendorExtensions.x-serialize}}({{paramName}}, '{{vendorExtensions.x-prefixed-collapsible-map}}'))
-        {{/if}}{{/isQueryParam}}{{/allParams}}{{/if}}
-
-        payload = self._version.create(method='{{vendorExtensions.x-http-method}}', uri=self._uri, data=data, headers=headers{{#if queryParams}}, params=params{{/if}})
+        payload = self._version.create(method='{{vendorExtensions.x-http-method}}', uri=self._uri, data=data)
 
         return {{instanceName}}(
             self._version,
@@ -271,29 +219,11 @@ class {{apiName}}Context(InstanceContext):
 
         :returns: The created {{instanceName}}
         """
-        {{#bodyParam}}data = {{paramName}}.to_dict(){{/bodyParam}}
-        {{^bodyParam}}data = values.of({ {{#allParams}}{{#isFormParam}}
-            '{{{baseName}}}': {{#if vendorExtensions.x-serialize}}{{vendorExtensions.x-serialize}}({{paramName}}{{#if isArray}}, lambda e: e){{else}}){{/if}}{{else}}{{paramName}}{{/if}},{{/isFormParam}}{{/allParams}}
-        }){{/bodyParam}}
-        headers = values.of({})
-        {{#allParams}}{{#isHeaderParam}}
-        {{^if required}}
-        if not ({{paramName}} is values.unset or (isinstance({{paramName}}, str) and not {{paramName}})):{{/if}}
-            headers['{{{baseName}}}'] = {{paramName}}{{/isHeaderParam}}{{/allParams}}
-        {{#consumes}}
-        headers["Content-Type"] = "{{{mediaType}}}"
-        {{/consumes}}
-        {{#vendorExtensions.successProduce}}
-        headers["Accept"] = "{{{mediaType}}}"
-        {{/vendorExtensions.successProduce}}{{#if queryParams}}
-        params = values.of({ {{#allParams}}{{#isQueryParam}}{{#if vendorExtensions.x-prefixed-collapsible-map}}{{else}}
-            '{{{baseName}}}': {{#if vendorExtensions.x-serialize}}{{vendorExtensions.x-serialize}}({{paramName}}{{#if isArray}}, lambda e: e){{else}}){{/if}}{{else}}{{paramName}}{{/if}},{{/if}}{{/isQueryParam}}{{/allParams}}
+        data = values.of({ {{#allParams}}
+            '{{{baseName}}}': {{#if vendorExtensions.x-serialize}}{{vendorExtensions.x-serialize}}({{paramName}}{{#if isArray}}, lambda e: e){{else}}){{/if}}{{else}}{{paramName}}{{/if}},{{/allParams}}
         })
 
-        {{#allParams}}{{#isQueryParam}}{{#if vendorExtensions.x-prefixed-collapsible-map}}params.update({{vendorExtensions.x-serialize}}({{paramName}}, '{{vendorExtensions.x-prefixed-collapsible-map}}'))
-        {{/if}}{{/isQueryParam}}{{/allParams}}{{/if}}
-
-        payload = await self._version.create_async(method='{{vendorExtensions.x-http-method}}', uri=self._uri, data=data, headers=headers{{#if queryParams}}, params=params{{/if}})
+        payload = await self._version.create_async(method='{{vendorExtensions.x-http-method}}', uri=self._uri, data=data)
 
         return {{instanceName}}(
             self._version,
