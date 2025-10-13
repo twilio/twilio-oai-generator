@@ -10,24 +10,24 @@
  */
 
 import Domain from "../base/Domain";
-import V1 from "./iam/V1";
+import V2 from "./oauth/V2";
 
-class IamBase extends Domain {
-  _v1?: V1;
+class OauthBase extends Domain {
+    _v2?: V2;
 
-  /**
-   * Initialize iam domain
-   *
-   * @param twilio - The twilio client
-   */
-  constructor(twilio: any) {
-    super(twilio, "https://iam.twilio.com");
-  }
+    /**
+     * Initialize oauth domain
+     *
+     * @param twilio - The twilio client
+     */
+    constructor(twilio: any) {
+        super(twilio, "https://oauth.twilio.com");
+    }
 
-  get v1(): V1 {
-    this._v1 = this._v1 || new V1(this);
-    return this._v1;
-  }
+    get v2(): V2 {
+        this._v2 = this._v2 || new V2(this);
+        return this._v2;
+    }
 }
 
-export = IamBase;
+export = OauthBase;
