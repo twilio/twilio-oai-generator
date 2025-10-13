@@ -1,6 +1,6 @@
 module Twilio
   module REST
-    class Iam < IamBase
+    class Oauth < OauthBase
     end
   end
 end
