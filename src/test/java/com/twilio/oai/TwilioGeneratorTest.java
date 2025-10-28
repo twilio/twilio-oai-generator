@@ -28,7 +28,7 @@ import static org.junit.Assert.assertFalse;
 public class TwilioGeneratorTest {
     @Parameterized.Parameters
     public static Collection<Generator> generators() {
-        return Arrays.asList(Generator.TWILIO_PYTHON);
+        return Arrays.asList(Generator.TWILIO_JAVA);
     }
 
     private final Generator generator;
@@ -40,7 +40,7 @@ public class TwilioGeneratorTest {
 
     @Test
     public void launchGenerator() {
-        final String pathname = "/Users/kgoswami/Projects/github/twilio-oai/spec/yaml";
+        final String pathname = "examples/spec/twilio_api_v2010.yaml";
         File filesList[] ;
         File directoryPath = new File(pathname);
         if (directoryPath.isDirectory()) {
@@ -52,11 +52,10 @@ public class TwilioGeneratorTest {
             final CodegenConfigurator configurator = new CodegenConfigurator()
                     .setGeneratorName(generator.getValue())
                     .setInputSpec(file.getPath())
-                    .setOutputDir(" /Users/kgoswami/Projects/github/twilio-python/twilio")
-                    .setInlineSchemaOptions(Map.of("ARRAY_ITEM_SUFFIX", "")) // OpenAPI Generator 7.x.x
-                    //.setInlineSchemaNameDefaults(Map.of("arrayItemSuffix", ""))
+                    .setOutputDir("codegen/" + generator.getValue())
+                    .setInlineSchemaNameDefaults(Map.of("arrayItemSuffix", ""))
                     .addGlobalProperty("apiTests", "false")
-                    .addGlobalProperty("apiDocs", "false").addGlobalProperty("skipFormModel", "false");
+                    .addGlobalProperty("apiDocs", "false");
             final ClientOptInput clientOptInput = configurator.toClientOptInput();
             DefaultGenerator generator = new DefaultGenerator();
             final List<File> output = generator.opts(clientOptInput).generate();
