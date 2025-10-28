@@ -37,6 +37,10 @@ module Twilio
         @previewiam ||= PreviewIam.new self
       end
 
+      def oauth
+        @oauth ||= Oauth.new self
+      end
+
       ##
       # @param [integer] testInteger INTEGER ID param!!!
 
