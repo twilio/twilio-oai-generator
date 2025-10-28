@@ -57,7 +57,8 @@ public class JsonResponseProcessor implements ResponseProcessor {
     }
 
     public boolean shouldProcess(final CodegenOperation codegenOperation) {
-        System.out.println(codegenOperation.operationId);
+        if (ResourceCacheContext.get().isV1()) return false;
+
         if (codegenOperation.produces != null && !codegenOperation.produces.isEmpty()) {
             for (Map<String, String> contentType : codegenOperation.produces) {
                 if (getContentType().equals(contentType.get("mediaType")) || "application/scim+json".equals(contentType.get("mediaType"))) {

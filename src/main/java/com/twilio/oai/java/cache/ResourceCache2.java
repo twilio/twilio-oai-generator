@@ -31,6 +31,10 @@ public class ResourceCache2 {
 
     @Getter
     private Set<MustacheEnum> enumsClassesForMustache = new HashSet<>();
+    
+    @Getter
+    @Setter
+    private boolean isV1;
 
     public void setAllModelsByDefaultGenerator(ArrayList<CodegenModel> allModelsByDefaultGenerator) {
         this.allModelsByDefaultGenerator = new ArrayList<>(allModelsByDefaultGenerator);
