@@ -18,8 +18,8 @@ public class JavaApiResource {
     List<CodegenOperation> operations;
     Set<CodegenProperty> response;
     String namespaceSubPart;
-
     Boolean responseFlag = null; // true or NUll
+    Boolean isApiV1 = null; // true or NUll
     
     public JavaApiResource(JavaApiResourceBuilder builder) {
         resourceName = ResourceCacheContext.get().getResourceName();
@@ -30,6 +30,7 @@ public class JavaApiResource {
         this.response = ResourceCacheContext.get().getResponse();
         if (response != null && !response.isEmpty()) responseFlag = true;
         this.namespaceSubPart = builder.namespaceSubPart;
+        if (ResourceCacheContext.get().isV1()) isApiV1 = true;
     }
 }
 
