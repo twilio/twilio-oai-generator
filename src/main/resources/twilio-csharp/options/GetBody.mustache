@@ -4,7 +4,6 @@
         {
             string body = "";
 
-            {{#vendorExtensions.x-getparams}}
             {{^isArray}}
             {{^vendorExtensions.x-parameter-map}}
             if ({{paramName}} != null)
@@ -13,6 +12,5 @@
             }
             {{/vendorExtensions.x-parameter-map}}
             {{/isArray}}
-            {{/vendorExtensions.x-getparams}}
             return body;
         }
