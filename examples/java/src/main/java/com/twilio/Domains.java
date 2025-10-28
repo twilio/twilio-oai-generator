@@ -6,7 +6,7 @@ public enum Domains {
     VERSIONLESS("versionless"),
     MESSAGING("messaging"),
     PREVIEWIAM("preview-iam"),
-    IAM("iam");
+    OAUTH("oauth");
 
     private final String value;
 
