@@ -76,6 +76,7 @@ namespace Twilio.Rest.Api.V2010
     }
 
     }
+
     /// <summary> delete </summary>
     public class DeleteAccountOptions : IOptions<AccountResource>
     {

@@ -3,7 +3,7 @@ import ApiBase from "./ApiBase";
 import FlexApiBase from "./FlexApiBase";
 import VersionlessBase from "./VersionlessBase";
 import PreviewIamBase = require("./PreviewIamBase");
-import IamBase = require("./IamBase");
+import OauthBase = require("./OauthBase");
 
 class Twilio extends Client {
   constructor(username?: string, password?: string, opts?: ClientOpts) {
@@ -26,8 +26,8 @@ class Twilio extends Client {
     return new PreviewIamBase(this);
   }
 
-  get iam(): IamBase {
-    return new IamBase(this);
+  get oauth(): OauthBase {
+    return new OauthBase(this);
   }
 }
 
