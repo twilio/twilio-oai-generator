@@ -25,6 +25,7 @@ class FleetInstance(InstanceResource):
 
     """
     :ivar name:
+    :ivar test_int_map:
     :ivar sid: A string that uniquely identifies this Fleet.
     :ivar friendly_name: A human readable description for this Fleet.
     """
@@ -35,6 +36,7 @@ class FleetInstance(InstanceResource):
         super().__init__(version)
 
         self.name: Optional[str] = payload.get("name")
+        self.test_int_map: Optional[dict[str, int]] = payload.get("test_int_map")
         self.sid: Optional[str] = payload.get("sid")
         self.friendly_name: Optional[str] = payload.get("friendly_name")
 
