@@ -202,6 +202,10 @@ namespace Twilio.Rest.Versionless.DeployedDevices
         [JsonProperty("name")]
         public string Name { get; private set; }
 
+        ///<summary> The test_int_map </summary> 
+        [JsonProperty("test_int_map")]
+        public Dictionary<string, int> TestIntMap { get; private set; }
+
         ///<summary> A string that uniquely identifies this Fleet. </summary> 
         [JsonProperty("sid")]
         public string Sid { get; private set; }

@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.TreeMap;
 import java.util.function.BiConsumer;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.openapitools.codegen.CodegenModel;
@@ -198,7 +199,7 @@ public abstract class FluentApiResourceBuilder extends ApiResourceBuilder {
 
         if (baseType != null) {
             final String datatypeWithEnum = getDataTypeName(baseType);
-            consumer.accept(datatypeWithEnum, dataType.replaceFirst(baseType, datatypeWithEnum));
+            consumer.accept(datatypeWithEnum, dataType.replaceFirst(Pattern.quote(baseType), datatypeWithEnum));
         }
     }
 
