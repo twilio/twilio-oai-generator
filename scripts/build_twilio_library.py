@@ -28,6 +28,9 @@ CONFIG_FOLDER = 'tmp'
 
 
 def build(openapi_spec_path: str, output_path: str, language: str) -> None:
+    if language == "java":
+        print("----------- Skipping Java release -----------")
+        return
     if os.path.isfile(openapi_spec_path):
         spec_folder, domain = os.path.split(openapi_spec_path)
         spec_files = [domain]
