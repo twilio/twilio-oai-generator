@@ -19,11 +19,11 @@
         }
     {{/vendorExtensions.x-required-param-exists}}
 
-    {{^vendorExtensions.x-is-json}}
+    {{^bodyParams.0}}
         {{>options/GetParams}}
-    {{/vendorExtensions.x-is-json}}
-    {{#vendorExtensions.x-is-json}}
+    {{/bodyParams.0}}
+    {{#bodyParams.0}}
         {{>options/GetBody}}
-    {{/vendorExtensions.x-is-json}}
+    {{/bodyParams.0}}
         {{>options/HeaderParams}}
     }

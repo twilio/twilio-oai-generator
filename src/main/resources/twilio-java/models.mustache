@@ -1,41 +1,73 @@
+{{#mustacheModels}}
 
-        {{#resources.nestedModels}}
-        @ToString
-        static public class {{classname}} {
-        {{#vars}}
+    @JsonDeserialize(builder = {{className}}.Builder.class)
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    @ToString
+{{!@Builder}}
+    public static class {{className}} {
+    
+    {{#allProperties}}
+        {{#vendorExtensions.x-deserializer}}
+        @JsonDeserialize(using = {{vendorExtensions.x-deserializer}}.class)
+        {{/vendorExtensions.x-deserializer}}
+        @JsonInclude(JsonInclude.Include.NON_EMPTY)
+        @JsonProperty("{{{baseName}}}")
+        @Getter private final {{{dataType}}} {{name}};
+
+    {{/allProperties}}
+
+    private {{className}}(Builder builder) {
+        {{#allProperties}}
+        this.{{name}} = builder.{{name}};
+        {{/allProperties}}
+    }
+    public static Builder builder({{#mandatoryProperties}} final {{{dataType}}} {{name}}{{^-last}}, {{/-last}} {{/mandatoryProperties}}) {
+        return new Builder({{#mandatoryProperties}} {{name}}{{^-last}}, {{/-last}} {{/mandatoryProperties}}); 
+    }
+
+    public static {{className}} fromJson(String jsonString, ObjectMapper mapper) throws IOException {
+        return mapper.readValue(jsonString, {{className}}.class);
+    }
+
+    @JsonPOJOBuilder(withPrefix = "")
+    public static class Builder {
+    {{#allProperties}}
+        {{#vendorExtensions.x-deserializer}}
+            @JsonDeserialize(using = {{vendorExtensions.x-deserializer}}.class)
+        {{/vendorExtensions.x-deserializer}}
+        @JsonProperty("{{{baseName}}}")
+        private {{{dataType}}} {{name}};
+
+    {{/allProperties}}
+
+        {{#mandatoryProperties.0}}
+        @JsonCreator
+        public Builder({{#mandatoryProperties}} @JsonProperty("{{{baseName}}}") final {{{dataType}}} {{name}}{{^-last}}, {{/-last}} {{/mandatoryProperties}}) {
+        {{#mandatoryProperties}}
+            this.{{name}} = {{name}};
+        {{/mandatoryProperties}}
+        }
+        {{/mandatoryProperties.0}}
+
+        {{#optionalProperties}}
+            {{#vendorExtensions.x-deserializer}}
+            @JsonDeserialize(using = {{vendorExtensions.x-deserializer}}.class)
+            {{/vendorExtensions.x-deserializer}}
             @JsonInclude(JsonInclude.Include.NON_EMPTY)
             @JsonProperty("{{{baseName}}}")
-            {{#vendorExtensions.x-ref-enum}}
-            @Getter @Setter private {{{datatypeWithEnum}}} {{name}};
-            {{/vendorExtensions.x-ref-enum}}
-            {{^vendorExtensions.x-ref-enum}}
-            @Getter @Setter private {{{dataType}}} {{name}};
-            {{/vendorExtensions.x-ref-enum}}
-            {{^isMap}}
-            {{^isFreeFormObject}}
-            {{^isAnyType}}
-            {{#vendorExtensions.x-serialize}}
-            public String get{{#lambda.titlecase}}{{name}}{{/lambda.titlecase}}() {
-                return {{vendorExtensions.x-serialize}};
-            }{{/vendorExtensions.x-serialize}}
-            {{/isAnyType}}
-            {{/isFreeFormObject}}
-            {{/isMap}}
-        {{/vars}}
-        {{#vendorExtensions.x-constructor-required}}
-        {{#vendorExtensions.x-model-parameters}}
-            public {{classname}}({{#.}}final {{{dataType}}} {{name}}{{^-last}}, {{/-last}}{{/.}} ) {
-                {{#.}}
+            public Builder {{name}}({{{dataType}}} {{name}}) {
                 this.{{name}} = {{name}};
-                {{/.}}
+                return this;
             }
-            {{/vendorExtensions.x-model-parameters}}
-            {{/vendorExtensions.x-constructor-required}}
+        {{/optionalProperties}}
 
-            {{^vendorExtensions.x-response}}
-            public static {{classname}} fromJson(String jsonString, ObjectMapper mapper) throws IOException {
-                return mapper.readValue(jsonString, {{classname}}.class);
-            }
-            {{/vendorExtensions.x-response}}
+        public {{className}} build() {
+            return new {{className}}(this);
         }
-    {{/resources.nestedModels}}
+    }
+    {{>modelEqualsAndHashCode}}
+{{!        @JsonPOJOBuilder(withPrefix = "")
+public static class Builder {}}
+    }
+    
+{{/mustacheModels}}

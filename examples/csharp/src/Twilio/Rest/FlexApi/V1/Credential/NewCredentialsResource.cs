@@ -126,11 +126,11 @@ namespace Twilio.Rest.FlexApi.V1.Credential
                                           string testString,
                                           int? testInteger = null,
                                           DateTime? testDate = null,
-                                          float? testNumberFloat = null,
+                                          float testNumberFloat = null,
                                           object testObject = null,
                                           bool? testBoolean = null,
                                           decimal? testNumber = null,
-                                          double? testNumberDouble = null,
+                                          double testNumberDouble = null,
                                           decimal? testNumberInt32 = null,
                                           long? testNumberInt64 = null,
                                           DateTime? testDateTime = null,
@@ -171,11 +171,11 @@ namespace Twilio.Rest.FlexApi.V1.Credential
                                                                                   string testString,
                                                                                   int? testInteger = null,
                                                                                   DateTime? testDate = null,
-                                                                                  float? testNumberFloat = null,
+                                                                                  float testNumberFloat = null,
                                                                                   object testObject = null,
                                                                                   bool? testBoolean = null,
                                                                                   decimal? testNumber = null,
-                                                                                  double? testNumberDouble = null,
+                                                                                  double testNumberDouble = null,
                                                                                   decimal? testNumberInt32 = null,
                                                                                   long? testNumberInt64 = null,
                                                                                   DateTime? testDateTime = null,
@@ -191,6 +191,7 @@ namespace Twilio.Rest.FlexApi.V1.Credential
             return await CreateAsync(options, client);
         }
         #endif
+
     
         /// <summary>
         /// Converts a JSON string into a NewCredentialsResource object

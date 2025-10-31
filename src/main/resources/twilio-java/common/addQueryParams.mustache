@@ -1,0 +1,36 @@
+private void addQueryParams(final Request request) {
+{{! -- 4 cases: Normal parameter, Eqality parameter(Message), Ineqality Parameter(MessageBefore, MessageAfter)}, List Parameter }}
+{{#queryParams}}
+{{^vendorExtensions.x-has-before-or-after}}{{! -- These serialize in equality field}}
+
+{{! -- case1 Normal Parameter (Non Array, Non equality parameter)}}
+{{^isArray}}
+{{^vendorExtensions.x-inequality-main}}
+    if ({{paramName}} != null) {
+        Serializer.toString(request, "{{{baseName}}}", {{paramName}}, ParameterType.QUERY);
+    }
+{{/vendorExtensions.x-inequality-main}}
+{{/isArray}}
+
+{{! -- Case2: Inequality Parameter, Non Array }}
+{{! -- Case3: Add before and after with inequality parameter }}
+{{^isArray}}
+{{#vendorExtensions.x-inequality-main}}
+    if ({{paramName}} != null) {
+        Serializer.toString(request, "{{{baseName}}}", {{paramName}}, {{paramName}}Before, {{paramName}}After);
+    }
+{{/vendorExtensions.x-inequality-main}}
+{{/isArray}}
+
+{{! -- Case4: Array Parameter }}
+{{#isArray}}
+    if ({{paramName}} != null) {
+        for ({{baseType}} param: {{paramName}}) {
+            Serializer.toString(request, "{{{baseName}}}", param, ParameterType.QUERY);
+        }
+    }
+{{/isArray}}
+
+{{/vendorExtensions.x-has-before-or-after}}
+{{/queryParams}}
+}
