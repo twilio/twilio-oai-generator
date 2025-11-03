@@ -33,6 +33,7 @@ import java.net.URI;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import com.twilio.converter.DateConverter;
+import java.util.function.Predicate;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -67,6 +68,7 @@ public class CallDeleter extends Deleter<Call> {
         path = path.replace("{"+"AccountSid"+"}", this.pathAccountSid.toString());
         path = path.replace("{"+"TestInteger"+"}", this.pathTestInteger.toString());
 
+        Predicate<Integer> IS_DELETE_STATUS = i -> i != null && i >= 200 && i < 400;
         Request request = new Request(
             HttpMethod.DELETE,
             Domains.API.toString(),
@@ -84,6 +86,6 @@ public class CallDeleter extends Deleter<Call> {
             }
             throw new ApiException(restException);
         }
-        return response.getStatusCode() == 204;
+        return IS_DELETE_STATUS.test(response.getStatusCode());
     }
 }

@@ -21,6 +21,7 @@ import java.net.URI;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import com.twilio.converter.DateConverter;
+import java.util.function.Predicate;
 
 {{^fullJavaUtil}}
 import java.util.ArrayList;
@@ -74,6 +75,7 @@ public class {{apiName}}Deleter extends Deleter<{{apiName}}> {
     @Override
     public boolean delete(final {{vendorExtensions.x-auth-attributes.x-http-class-prefix}}TwilioRestClient client) {
 {{>generate_uri}}
+        Predicate<Integer> isDeleteStatus = i -> i != null && i >= 200 && i < 400;
         {{vendorExtensions.x-auth-attributes.x-http-class-prefix}}Request request = new {{vendorExtensions.x-auth-attributes.x-http-class-prefix}}Request(
             {{vendorExtensions.x-http-method}},
             Domains.{{#lambda.uppercase}}{{domainName}}{{/lambda.uppercase}}.toString(),
@@ -108,7 +110,7 @@ public class {{apiName}}Deleter extends Deleter<{{apiName}}> {
             }
             throw new ApiException(restException);
         }
-        return response.getStatusCode() == 204;
+        return isDeleteStatus.test(response.getStatusCode());
     }
 {{#vendorExtensions.x-has-form-params}}
 {{>postParams}}

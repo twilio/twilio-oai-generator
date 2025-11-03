@@ -33,6 +33,7 @@ import java.net.URI;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import com.twilio.converter.DateConverter;
+import java.util.function.Predicate;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -63,6 +64,7 @@ public class UserDeleter extends Deleter<User> {
         path = path.replace("{"+"organizationSid"+"}", this.pathOrganizationSid.toString());
         path = path.replace("{"+"userSid"+"}", this.pathUserSid.toString());
 
+        Predicate<Integer> IS_DELETE_STATUS = i -> i != null && i >= 200 && i < 400;
         BearerTokenRequest request = new BearerTokenRequest(
             HttpMethod.DELETE,
             Domains.PREVIEWIAM.toString(),
@@ -80,6 +82,6 @@ public class UserDeleter extends Deleter<User> {
             }
             throw new ApiException(restException);
         }
-        return response.getStatusCode() == 204;
+        return IS_DELETE_STATUS.test(response.getStatusCode());
     }
 }
