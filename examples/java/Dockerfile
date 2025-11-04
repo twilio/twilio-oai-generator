@@ -1,6 +1,6 @@
 FROM amazoncorretto:11
 
-RUN yum update -y && yum install maven -y
+RUN yum update -y && yum install maven git -y
 
 WORKDIR /app
 RUN git clone https://github.com/twilio/twilio-java.git
