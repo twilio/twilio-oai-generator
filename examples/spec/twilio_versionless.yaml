@@ -5,6 +5,10 @@ components:
       properties:
         name:
           type: string
+        test_int_map:
+          type: object
+          additionalProperties:
+            type: integer
     versionless.fleet.instance:
       type: object
       properties:

@@ -142,6 +142,7 @@ module Twilio
             # Marshaled Properties
             @properties = {
               'name' => payload['name'],
+              'test_int_map' => payload['test_int_map'],
               'sid' => payload['sid'],
               'friendly_name' => payload['friendly_name'],
             }
@@ -166,6 +167,12 @@ module Twilio
           # @return [String]
           def name
             @properties['name']
+          end
+
+          ##
+          # @return [Hash<String, Integer>]
+          def test_int_map
+            @properties['test_int_map']
           end
 
           ##

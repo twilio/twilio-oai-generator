@@ -127,6 +127,7 @@ public class Fleet extends Resource {
     }
 
     private final String name;
+    private final Map<String, Integer> testIntMap;
     private final String sid;
     private final String friendlyName;
 
@@ -135,6 +136,9 @@ public class Fleet extends Resource {
         @JsonProperty("name")
         final String name,
 
+        @JsonProperty("test_int_map")
+        final Map<String, Integer> testIntMap,
+
         @JsonProperty("sid")
         final String sid,
 
@@ -142,12 +146,16 @@ public class Fleet extends Resource {
         final String friendlyName
     ) {
         this.name = name;
+        this.testIntMap = testIntMap;
         this.sid = sid;
         this.friendlyName = friendlyName;
     }
 
         public final String getName() {
             return this.name;
+        }
+        public final Map<String, Integer> getTestIntMap() {
+            return this.testIntMap;
         }
         public final String getSid() {
             return this.sid;
@@ -168,12 +176,12 @@ public class Fleet extends Resource {
 
         Fleet other = (Fleet) o;
 
-        return Objects.equals(name, other.name) &&  Objects.equals(sid, other.sid) &&  Objects.equals(friendlyName, other.friendlyName)  ;
+        return Objects.equals(name, other.name) &&  Objects.equals(testIntMap, other.testIntMap) &&  Objects.equals(sid, other.sid) &&  Objects.equals(friendlyName, other.friendlyName)  ;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, sid, friendlyName);
+        return Objects.hash(name, testIntMap, sid, friendlyName);
     }
 
 

@@ -9,6 +9,7 @@ import com.twilio.oai.resolver.common.CodegenModelDataTypeResolver;
 
 import java.util.Map;
 import java.util.function.BiConsumer;
+import java.util.regex.Pattern;
 
 import com.twilio.oai.resolver.common.CodegenModelResolver;
 import org.openapitools.codegen.CodegenModel;
@@ -63,7 +64,7 @@ public class NodeCodegenModelDataTypeResolver extends CodegenModelDataTypeResolv
 
         if (baseType != null && dataType != null) {
             final String datatypeWithEnum = removeEnumName(baseType, apiResourceBuilder);
-            consumer.accept(datatypeWithEnum, dataType.replaceFirst(baseType, datatypeWithEnum));
+            consumer.accept(datatypeWithEnum, dataType.replaceFirst(Pattern.quote(baseType), datatypeWithEnum));
         }
     }
 

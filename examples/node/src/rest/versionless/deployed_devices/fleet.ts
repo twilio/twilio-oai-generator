@@ -109,6 +109,7 @@ interface FleetPayload extends FleetResource {}
 
 interface FleetResource {
   name: string;
+  test_int_map: { [key: string]: number };
   sid: string;
   friendly_name: string;
 }
@@ -123,6 +124,7 @@ export class FleetInstance {
     sid?: string,
   ) {
     this.name = payload.name;
+    this.testIntMap = payload.test_int_map;
     this.sid = payload.sid;
     this.friendlyName = payload.friendly_name;
 
@@ -130,6 +132,7 @@ export class FleetInstance {
   }
 
   name: string;
+  testIntMap: { [key: string]: number };
   /**
    * A string that uniquely identifies this Fleet.
    */
@@ -166,6 +169,7 @@ export class FleetInstance {
   toJSON() {
     return {
       name: this.name,
+      testIntMap: this.testIntMap,
       sid: this.sid,
       friendlyName: this.friendlyName,
     };

@@ -12,6 +12,7 @@ import org.openapitools.codegen.CodegenProperty;
 
 import java.util.Map;
 import java.util.function.BiConsumer;
+import java.util.regex.Pattern;
 
 public class RubyCodegenModelDataTypeResolver extends CodegenModelDataTypeResolver {
     protected Map<String, String> modelFormatMap;
@@ -88,7 +89,7 @@ public class RubyCodegenModelDataTypeResolver extends CodegenModelDataTypeResolv
 
         if (baseType != null && dataType != null) {
             final String datatypeWithEnum = removeEnumName(baseType, apiResourceBuilder);
-            consumer.accept(datatypeWithEnum, dataType.replaceFirst(baseType, datatypeWithEnum));
+            consumer.accept(datatypeWithEnum, dataType.replaceFirst(Pattern.quote(baseType), datatypeWithEnum));
         }
     }
 
