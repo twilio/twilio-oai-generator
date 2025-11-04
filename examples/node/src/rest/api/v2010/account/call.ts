@@ -28,7 +28,7 @@ export type CallStatus =
   | "completed"
   | "absent";
 
-export class TestResponseObjectTestArrayOfObjects {
+export class TestResponseObjectTestArrayOfObjectsInner {
   "count"?: number;
   "description"?: string;
 }
@@ -181,12 +181,12 @@ interface CallResource {
   from: string;
   price_unit: string;
   test_number_float: number;
-  test_number_decimal: number;
+  test_number_decimal: string;
   test_enum: CallStatus;
   a2p_profile_bundle_sid: string;
   test_array_of_integers: Array<number>;
   test_array_of_array_of_integers: Array<Array<number>>;
-  test_array_of_objects: Array<TestResponseObjectTestArrayOfObjects>;
+  test_array_of_objects: Array<TestResponseObjectTestArrayOfObjectsInner>;
   test_array_of_enum: Array<CallStatus>;
   status: string;
   message: string;
@@ -238,7 +238,7 @@ export class CallInstance {
   from: string;
   priceUnit: string;
   testNumberFloat: number;
-  testNumberDecimal: number;
+  testNumberDecimal: string;
   testEnum: CallStatus;
   /**
    * A2P Messaging Profile Bundle BundleSid
@@ -246,7 +246,7 @@ export class CallInstance {
   a2pProfileBundleSid: string;
   testArrayOfIntegers: Array<number>;
   testArrayOfArrayOfIntegers: Array<Array<number>>;
-  testArrayOfObjects: Array<TestResponseObjectTestArrayOfObjects>;
+  testArrayOfObjects: Array<TestResponseObjectTestArrayOfObjectsInner>;
   /**
    * Permissions authorized to the app
    */
