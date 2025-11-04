@@ -1,4 +1,4 @@
-FROM openjdk:8
+FROM amazoncorretto:17
 
 RUN apt-get update && apt-get install maven -y
 
