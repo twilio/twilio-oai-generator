@@ -251,8 +251,8 @@ paths:
           description: OK
       security:
         - accountSid_authToken: [ ]
-    post:
-      operationId: UpdateCredentialAws
+    patch:
+      operationId: PatchCredentialAws
       parameters:
         - in: path
           name: Sid
