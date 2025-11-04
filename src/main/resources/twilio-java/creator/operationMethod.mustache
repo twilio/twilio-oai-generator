@@ -1,6 +1,6 @@
-{{! 
+{{!
 resourceName: Api Name as identified by Directory Structure service
-x-common-action-method: used to define operation method and can have values: create, read, update, delete, fetch 
+x-common-action-method: used to define operation method and can have values: create, read, update, delete, fetch
     Example: https://github.com/twilio/twilio-java/blob/9c2ba4dbc185c5576e67fbeb82ec6f4899093e79/src/main/java/com/twilio/rest/api/v2010/account/MessageCreator.java#L309
 
 httpMethod: http method associated in the current operation.
@@ -10,7 +10,7 @@ vendorExtensions.x-content-type: content type of the request, example: applicati
     @Override
     public {{resourceName}} {{vendorExtensions.x-common-action-method}}(final TwilioRestClient client) {
     {{>common/generateUri}}
-    
+
         Request request = new Request(
             HttpMethod.{{httpMethod}},
             Domains.{{#lambda.uppercase}}{{domainName}}{{/lambda.uppercase}}.toString(),
@@ -34,21 +34,32 @@ vendorExtensions.x-content-type: content type of the request, example: applicati
     {{#bodyParams.0}}
         addPostParams(request, client);
     {{/bodyParams.0}}
-    
+
         Response response = client.request(request);
-    
+
         if (response == null) {
             throw new ApiConnectionException("{{resourceName}} creation failed: Unable to connect to server");
-        } else if (!TwilioRestClient.SUCCESS.test(response.getStatusCode())) {
+        } {{^isV1}}else if (!TwilioRestClient.SUCCESS.test(response.getStatusCode())) {
             RestException restException = RestException.fromJson(
-                response.getStream(),
-                client.getObjectMapper()
-            );
+            response.getStream(),
+            client.getObjectMapper());
+
             if (restException == null) {
-                throw new ApiException("Server Error, no content", response.getStatusCode());
+            throw new ApiException("Server Error, no content", response.getStatusCode());
             }
             throw new ApiException(restException);
-        }
-    
+            } {{! end of else if }}{{/isV1}}
+            {{#isV1}}
+              else if (!TwilioRestClient.SUCCESS.test(response.getStatusCode())) {
+              RestExceptionV10 restException = RestExceptionV10.fromJson(
+              response.getStream(),
+              client.getObjectMapper());
+
+              if (restException == null) {
+              throw new ApiException("Server Error, no content", response.getStatusCode());
+              }
+              throw new ApiException(restException);
+            {{/isV1}}
+
         return {{resourceName}}.fromJson(response.getStream(), client.getObjectMapper());
     }
