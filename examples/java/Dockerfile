@@ -1,6 +1,10 @@
-FROM openjdk:8u102-jre
+FROM eclipse-temurin:11-jre
 
-RUN apt-get update && apt-get install maven -y
+# Install Maven with proper error handling
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends maven && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 RUN git clone https://github.com/twilio/twilio-java.git
