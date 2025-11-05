@@ -1,6 +1,4 @@
-# This spec tests followings
-# 1. All types of request body(urlencoded, json)
-# 2. Tests pagination for both type of request body.
+# This spec tests the token pagination strategy as per Twilio API Standards V1.0
 
 info:
   contact:
