@@ -40,7 +40,7 @@ public class TwilioGeneratorTest {
 
     @Test
     public void launchGenerator() {
-        final String pathname = "/Users/manisingh/github/twilio/twilio-oai-generator/examples/test_spec/twilio_pagination_v1.yaml";
+        final String pathname = "examples/test_spec/twilio_pagination_v1.yaml";
         File filesList[] ;
         File directoryPath = new File(pathname);
         if (directoryPath.isDirectory()) {
