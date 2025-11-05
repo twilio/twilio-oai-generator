@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 import com.twilio.oai.java.cache.ResourceCacheContext;
 import lombok.experimental.UtilityClass;
 import org.apache.commons.lang3.StringUtils;
+import org.openapitools.codegen.CodegenMediaType;
 import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenOperation;
 import org.openapitools.codegen.CodegenProperty;
@@ -273,5 +274,9 @@ public class Utility {
             }
         }
         return null;
+    }
+
+    public static CodegenProperty getPropertyFromMediaType(CodegenMediaType codegenMediaType) {
+        return codegenMediaType.getSchema();
     }
 }

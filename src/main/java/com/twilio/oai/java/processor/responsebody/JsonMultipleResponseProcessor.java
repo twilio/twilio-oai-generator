@@ -3,18 +3,23 @@ package com.twilio.oai.java.processor.responsebody;
 import com.twilio.oai.common.ApplicationConstants;
 import com.twilio.oai.common.Utility;
 import com.twilio.oai.java.cache.ResourceCacheContext;
+import com.twilio.oai.java.constants.MustacheConstants;
 import com.twilio.oai.java.format.Deserializer;
 import com.twilio.oai.java.processor.enums.EnumProcessorFactory;
 import com.twilio.oai.java.processor.requestbody.RecursiveModelProcessor;
+import com.twilio.oai.java.processor.responsebody.paginationremover.Meta;
 import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenOperation;
 import org.openapitools.codegen.CodegenProperty;
+import org.openapitools.codegen.Constants;
 
 import java.util.Map;
 
 public class JsonMultipleResponseProcessor extends JsonResponseAbstractProcessor implements ResponseProcessor {
     EnumProcessorFactory enumProcessorFactory = EnumProcessorFactory.getInstance();
     RecursiveModelProcessor recursiveModelProcessor = new RecursiveModelProcessor();
+    Meta meta = new Meta();
+
     @Override
     public void process(final CodegenOperation codegenOperation) {
         /* There are 5 types of operation we are supporting.
@@ -47,11 +52,17 @@ public class JsonMultipleResponseProcessor extends JsonResponseAbstractProcessor
     
     private void processResponseWithoutPagination(CodegenOperation codegenOperation) {
         System.out.println(codegenOperation.operationId);
-        CodegenModel codegenModel = getModel(codegenOperation);
-        System.out.println(codegenModel);
+        CodegenProperty codegenProperty = getCodegenProperty(codegenOperation);
+        recursiveModelProcessor.process(codegenProperty);
+        System.out.println(codegenProperty);
+        codegenOperation.vendorExtensions.put(MustacheConstants.X_RESPONSE_DATATYPE, codegenProperty.vendorExtensions.get(ApplicationConstants.X_DATATYPE));
     }
 
     private void processResponseWithPagination(CodegenOperation codegenOperation) {
+        // check if pagination exists, if no, go to processResponseWithoutPagination
+        
+        meta.shouldProcess(codegenOperation);
+        meta.removePagination(codegenOperation);
         System.out.println(codegenOperation.operationId);
         CodegenModel codegenModel = getModel(codegenOperation);
         System.out.println(codegenModel);
@@ -60,8 +71,6 @@ public class JsonMultipleResponseProcessor extends JsonResponseAbstractProcessor
             CodegenProperty codegenProperty = codegenModel.vars.get(i);
             if (codegenProperty.getRef() == null) continue;
             CodegenModel model = Utility.getModelFromRef(codegenProperty.getRef());
-            
-            
         }
     }
 

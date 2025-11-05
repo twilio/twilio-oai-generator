@@ -66,13 +66,14 @@ public class TwilioJavaGeneratorModern extends JavaClientCodegen {
     // Run once per spec
     @Override
     public void processOpenAPI(final OpenAPI openAPI) {
-        try {
-            String apiStdVersion = (String)((LinkedHashMap)openAPI.getInfo().getExtensions().get("x-twilio")).get("apiStandards");
-            boolean isV1 = ApplicationConstants.isV1.test(apiStdVersion);
-            ResourceCacheContext.get().setV1(isV1);
-        } catch (Exception exception) {
-            ResourceCacheContext.get().setV1(false);
+        String apiStdVersion = null;
+        if (openAPI.getInfo().getExtensions() != null && openAPI.getInfo().getExtensions().containsKey("x-twilio")) {
+            LinkedHashMap xTwilio = (LinkedHashMap)openAPI.getInfo().getExtensions().get("x-twilio");
+            apiStdVersion = (String) xTwilio.get("apiStandards");
         }
+        boolean isV1 = ApplicationConstants.isV1.test(apiStdVersion);
+        ResourceCacheContext.get().setV1(isV1);
+
         String domain = twilioCodegen.getDomainFromOpenAPI(openAPI);
         String version = twilioCodegen.getVersionFromOpenAPI(openAPI);
         twilioCodegen.setDomain(domain);

@@ -4,6 +4,7 @@ import com.twilio.oai.common.Utility;
 import org.openapitools.codegen.CodegenMediaType;
 import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenOperation;
+import org.openapitools.codegen.CodegenProperty;
 import org.openapitools.codegen.CodegenResponse;
 
 public abstract class JsonResponseAbstractProcessor {
@@ -27,6 +28,28 @@ public abstract class JsonResponseAbstractProcessor {
                     CodegenModel model = Utility.getModelFromRef(ref);
                     return model;
 
+                }
+            }
+        }
+        return null;
+    }
+
+    protected CodegenProperty getCodegenProperty(final CodegenOperation codegenOperation) {
+        if (codegenOperation.responses != null && !codegenOperation.responses.isEmpty()) {
+            for (CodegenResponse codegenResponse: codegenOperation.responses) {
+                if (codegenResponse.is2xx || codegenResponse.is3xx) {
+                    if (codegenResponse == null || codegenResponse.getContent() == null) return null;
+                    CodegenMediaType codegenMediaType = codegenResponse.getContent().get(getContentType());
+                    if (codegenMediaType == null) {
+                        codegenMediaType = codegenResponse.getContent().get("application/scim+json"); // special case for Orgs API
+                        if (codegenMediaType == null) return null;
+                    }
+
+                    if (codegenMediaType.getSchema().isContainer) {
+                        // It covers special case in which response is list
+                        // TODO: Handle in future.
+                    }
+                    return codegenMediaType.getSchema();
                 }
             }
         }
