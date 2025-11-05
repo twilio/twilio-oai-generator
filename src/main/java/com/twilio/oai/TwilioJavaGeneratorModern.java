@@ -16,6 +16,7 @@ import com.twilio.oai.resource.ResourceMap;
 import com.twilio.oai.templating.mustache.ReplaceHyphenLambda;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.media.Schema;
+import java.util.Optional;
 import org.openapitools.codegen.CodegenOperation;
 import org.openapitools.codegen.languages.JavaClientCodegen;
 import org.openapitools.codegen.model.ModelMap;
@@ -66,7 +67,10 @@ public class TwilioJavaGeneratorModern extends JavaClientCodegen {
     // Run once per spec
     @Override
     public void processOpenAPI(final OpenAPI openAPI) {
-        String apiStdVersion = (String)((LinkedHashMap)openAPI.getInfo().getExtensions().get("x-twilio")).get("apiStandards");
+        Optional<String> apiStdVersionOpt = openAPI.getInfo().getExtensions() != null ?
+                Optional.ofNullable((String)((LinkedHashMap)openAPI.getInfo().getExtensions().get("x-twilio")).get("apiStandards"))
+                : Optional.empty();
+        String apiStdVersion = apiStdVersionOpt.orElse("unknown");
         boolean isV1 = ApplicationConstants.isV1.test(apiStdVersion);
         ResourceCacheContext.get().setV1(isV1);
         String domain = twilioCodegen.getDomainFromOpenAPI(openAPI);

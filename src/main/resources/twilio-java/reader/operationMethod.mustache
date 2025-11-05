@@ -33,27 +33,25 @@ domainName: example api, video, chat, etc. These can be found in Domains.java in
         Response response = client.request(request);
         if (response == null) {
             throw new ApiConnectionException("{{resourceName}} read failed: Unable to connect to server");
-        } {{^isV1}}else if (!TwilioRestClient.SUCCESS.test(response.getStatusCode())) {
+        } {{^isApiV1}}else if (!TwilioRestClient.SUCCESS.test(response.getStatusCode())) {
             RestException restException = RestException.fromJson(
             response.getStream(),
             client.getObjectMapper());
-
             if (restException == null) {
                 throw new ApiException("Server Error, no content", response.getStatusCode());
             }
             throw new ApiException(restException);
-        } {{! end of else if }}{{/isV1}}
-        {{#isV1}}
+        } {{! end of else if }}{{/isApiV1}}
+        {{#isApiV1}}
           else if (!TwilioRestClient.SUCCESS.test(response.getStatusCode())) {
           RestExceptionV10 restException = RestExceptionV10.fromJson(
           response.getStream(),
           client.getObjectMapper());
-
           if (restException == null) {
           throw new ApiException("Server Error, no content", response.getStatusCode());
           }
           throw new ApiException(restException);
-        {{/isV1}}
+        {{/isApiV1}}
 
         return Page.fromJson(
             "{{recordKey}}",
