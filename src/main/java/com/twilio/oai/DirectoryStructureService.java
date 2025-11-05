@@ -251,10 +251,9 @@ public class DirectoryStructureService {
         for(CodegenOperation co : operations){
             if(co.produces != null)
                 for(Map<String, String> map : co.produces){
-                    Map.Entry<String, String> firstEntry = map.entrySet().iterator().next();
                     List<Map<String, String>> successProduce = new ArrayList<>();
                     Map<String, String> successMap = new HashMap<>();
-                    successMap.put(firstEntry.getKey(), firstEntry.getValue());
+                    successMap.putAll(map);
                     successProduce.add(successMap);
                     co.vendorExtensions.put("successProduce", successProduce);
                     break;
