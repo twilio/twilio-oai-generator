@@ -33,6 +33,9 @@ public class ResourceCache2 {
     private Set<MustacheEnum> enumsClassesForMustache = new HashSet<>();
     
     @Getter
+    private Set<MustacheModel> responses = new HashSet<>();
+    
+    @Getter
     @Setter
     private boolean isV1;
 
@@ -53,6 +56,10 @@ public class ResourceCache2 {
 
     public void addToOneOfInterfaces(MustacheOneOfIface oneOfIFace) {
         this.oneOfInterfaces.add(oneOfIFace);
+    }
+
+    public void addToResponse(MustacheModel mustacheModel) {
+        this.responses.add(mustacheModel);
     }
 
     // Clear at group of operation level, at method: postProcessOperationsWithModels
