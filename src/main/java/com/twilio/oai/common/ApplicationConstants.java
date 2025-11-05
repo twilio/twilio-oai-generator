@@ -65,7 +65,6 @@ public class ApplicationConstants {
     public static final String X_MODEL_TYPE = "x-model-type"; // EnumConstants.OpenApiEnumType
     public static final String X_IS_MODEL = "x-is-model";
     public static final String X_REQUEST_CONTENT_TYPE = "x-request-content-type";
-    
-    
+    public static final Predicate<String> isV1 = input -> input != null && input.startsWith("v1"); // Usage: isV1.test("v1.0");
 
 }
