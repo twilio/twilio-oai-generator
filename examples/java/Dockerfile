@@ -7,6 +7,13 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
+# Install git
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends git && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+# Use HTTPS instead of SSH for git clone
 RUN git clone https://github.com/twilio/twilio-java.git
 WORKDIR /app/twilio-java/
 
