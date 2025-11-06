@@ -54,7 +54,6 @@ public class JsonMultipleResponseProcessor extends JsonResponseAbstractProcessor
         System.out.println(codegenOperation.operationId);
         CodegenProperty codegenProperty = getCodegenProperty(codegenOperation);
         recursiveModelProcessor.process(codegenProperty);
-        System.out.println(codegenProperty);
         codegenOperation.vendorExtensions.put(MustacheConstants.X_RESPONSE_DATATYPE, codegenProperty.vendorExtensions.get(ApplicationConstants.X_DATATYPE));
     }
 
@@ -62,16 +61,11 @@ public class JsonMultipleResponseProcessor extends JsonResponseAbstractProcessor
         // check if pagination exists, if no, go to processResponseWithoutPagination
         
         meta.shouldProcess(codegenOperation);
-        meta.removePagination(codegenOperation);
-        System.out.println(codegenOperation.operationId);
-        CodegenModel codegenModel = getModel(codegenOperation);
-        System.out.println(codegenModel);
-        int size = codegenModel.vars.size();
-        for (int i=0; i<size; i++) {
-            CodegenProperty codegenProperty = codegenModel.vars.get(i);
-            if (codegenProperty.getRef() == null) continue;
-            CodegenModel model = Utility.getModelFromRef(codegenProperty.getRef());
-        }
+        CodegenProperty codegenProperty = meta.getResponse(codegenOperation);
+        recursiveModelProcessor.process(codegenProperty);
+        String listResponseDatatype = (String)codegenProperty.vendorExtensions.get(ApplicationConstants.X_DATATYPE);
+        listResponseDatatype = listResponseDatatype.replaceFirst("^List(?=<)", "ResourceSet");
+        codegenOperation.vendorExtensions.put(MustacheConstants.X_RESPONSE_DATATYPE, listResponseDatatype);
     }
 
     @Override

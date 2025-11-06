@@ -35,6 +35,10 @@ public class ResourceCache2 {
     @Getter
     private Set<MustacheModel> responses = new HashSet<>();
     
+    // Note: Key is stored in PascalCase using com.twilio.oai.common.StringUtils.toPascalCase(string_val)
+    @Getter
+    private Map<String, CodegenModel> allModelsMapByDefaultGenerator = new HashMap<>();
+    
     @Getter
     @Setter
     private boolean isV1;
@@ -45,6 +49,10 @@ public class ResourceCache2 {
 
     public ArrayList<CodegenModel> getAllModelsByDefaultGenerator() {
         return this.allModelsByDefaultGenerator;
+    }
+
+    public Map<String, CodegenModel> getAllModelsMapByDefaultGenerator() {
+        return this.allModelsMapByDefaultGenerator;
     }
     public void addToModelClasses(MustacheModel mustacheModel) {
         this.modelClassesForMustache.add(mustacheModel);
