@@ -41,8 +41,8 @@ public class TwilioHandlebarsEngineAdapter extends HandlebarsEngineAdapter {
             .newBuilder(bundle)
             .resolver(MapValueResolver.INSTANCE,
                       JavaBeanValueResolver.INSTANCE,
-                      FieldValueResolver.INSTANCE,
-                      MethodValueResolver.INSTANCE)
+                      MethodValueResolver.INSTANCE,
+                      FieldValueResolver.INSTANCE)
             .build();
 
         final Handlebars handlebars = new Handlebars(loader);

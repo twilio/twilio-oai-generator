@@ -361,6 +361,7 @@ namespace Twilio.Rest.FlexApi.V1.Credential
             return await UpdateAsync(options, client);
         }
         #endif
+
     
         /// <summary>
         /// Converts a JSON string into a AwsResource object

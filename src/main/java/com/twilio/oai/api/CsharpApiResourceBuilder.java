@@ -38,6 +38,14 @@ public class CsharpApiResourceBuilder extends ApiResourceBuilder {
 
     public String authMethod = "";
 
+    /**
+     * List of C# primitive types that require a nullable marker (?) when nullable
+     */
+    private static final Set<String> CSHARP_PRIMITIVE_TYPES = new HashSet<>(Arrays.asList(
+        "int", "long", "float", "double", "decimal", "bool", "char", "byte",
+        "sbyte", "short", "ushort", "uint", "ulong", "DateTime"
+    ));
+
     public CsharpApiResourceBuilder(IApiActionTemplate template, List<CodegenOperation> codegenOperations,
                                     List<CodegenModel> allModels) {
         super(template, codegenOperations, allModels);
@@ -92,6 +100,7 @@ public class CsharpApiResourceBuilder extends ApiResourceBuilder {
         super.updateOperations(codegenParameterIResolver);
         processAuthMethods(this.codegenOperationList);
         this.codegenOperationList.forEach(co -> {
+            co.allParams.forEach(this::handleNullableParameter);
             co.headerParams.forEach(e -> codegenParameterIResolver.resolve(e, this));
             populateRequestBodyArgument(co);
             resolveIngressModel(co);
@@ -231,28 +240,54 @@ public class CsharpApiResourceBuilder extends ApiResourceBuilder {
     }
 
     public Set<CodegenProperty> getDistinctResponseModel(List<CodegenModel> responseModels) {
-        HashSet<String> modelVars = new HashSet<>();
+        HashMap<String, CodegenProperty> propertyMap = new HashMap<>();
         Set<CodegenProperty> distinctResponseModels = new LinkedHashSet<>();
+
         for (CodegenModel codegenModel: responseModels) {
             for (CodegenProperty property: codegenModel.vars) {
                 property.nameInCamelCase = StringHelper.camelize(property.nameInSnakeCase);
-                Boolean isOverridden = property.isOverridden;
-                if(isOverridden != null && isOverridden == false)
-                    property.isOverridden = null;
+                handleNullableProperty(property);
+                // Check for operation name conflicts or nested model name conflicts
                 if (Arrays.stream(EnumConstants.Operation.values())
                         .anyMatch(value -> value.getValue().equals(property.nameInCamelCase))
                         || isNestedModelPresentWithPropertyName(property)) {
                     property.nameInCamelCase = "_" + property.nameInCamelCase;
                 }
+
+                // Check if property with same name already exists, but has different metadata
+                // This handles cases where properties have the same name but different types or model flags
+                String propertyKey = property.name;
+                if (propertyMap.containsKey(propertyKey)) {
+                    CodegenProperty existingProperty = propertyMap.get(propertyKey);
+
+                    // Check if the properties are functionally different enough to warrant duplication
+                    // Only consider properties truly different if they have different data types
+                    // Differences in isModel or isOverridden flags alone should not cause duplication
+                    if (!Objects.equals(existingProperty.dataType, property.dataType)) {
+                        property.nameInCamelCase = "_" + property.nameInCamelCase;
+                    } else {
+                        // If they're functionally the same (same data type), merge any metadata if needed
+                        // and skip adding this property
+                        continue;
+                    }
+                }
+
+                // Store the property in the map for future duplicate checks
+                propertyMap.put(propertyKey, property);
                 distinctResponseModels.add(property);
-                property.isOverridden = isOverridden;
             }
         }
-        for(CodegenProperty s : distinctResponseModels){
-            if(modelVars.contains(s.name)){
-                s.nameInCamelCase = "_" + s.nameInCamelCase;
-            }else modelVars.add(s.nameInCamelCase);
+
+        // Final check for name collisions in camelCase names (which are used in C# code)
+        HashSet<String> modelVars = new HashSet<>();
+        for (CodegenProperty property : distinctResponseModels) {
+            if (modelVars.contains(property.nameInCamelCase)) {
+                property.nameInCamelCase = "_" + property.nameInCamelCase;
+            } else {
+                modelVars.add(property.nameInCamelCase);
+            }
         }
+
         return distinctResponseModels;
     }
 
@@ -357,5 +392,37 @@ public class CsharpApiResourceBuilder extends ApiResourceBuilder {
                 .filter(model -> model.classname.equals(property.name))
                 .findFirst();
         return foundModel.isPresent();
+    }
+
+    /**
+     * Handle nullable property in C# by appending "?" to primitive types when nullable.
+     * Reference types (arrays, objects, custom classes) are already nullable in C#.
+     *
+     * @param property The CodegenProperty to process
+     */
+    protected void handleNullableProperty(CodegenProperty property) {
+        if (property.isNullable && !property.dataType.endsWith("?")) {
+                // Only add nullable marker to primitive types
+                if (CSHARP_PRIMITIVE_TYPES.contains(property.dataType)) {
+                    property.dataType = property.dataType + "?";
+                }
+        }
+    }
+
+    protected void handleNullableParameter(CodegenParameter parameter) {
+        CodegenModel model = getModel(parameter.dataType);
+        if(model != null) {
+            for(CodegenProperty property: model.vars) {
+                handleNullableProperty(property);
+            }
+        }
+        else {
+            if (parameter.isNullable && !parameter.dataType.endsWith("?")) {
+                // Only add nullable marker to primitive types
+                if (CSHARP_PRIMITIVE_TYPES.contains(parameter.dataType)) {
+                    parameter.dataType = parameter.dataType + "?";
+                }
+            }
+        }
     }
 }

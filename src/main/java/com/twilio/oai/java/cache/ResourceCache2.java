@@ -43,6 +43,10 @@ public class ResourceCache2 {
     @Setter
     private boolean isV1;
 
+    @Getter
+    @Setter
+    private boolean isV1;
+
     public void setAllModelsByDefaultGenerator(ArrayList<CodegenModel> allModelsByDefaultGenerator) {
         this.allModelsByDefaultGenerator = new ArrayList<>(allModelsByDefaultGenerator);
     }

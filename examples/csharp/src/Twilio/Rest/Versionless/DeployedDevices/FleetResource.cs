@@ -99,6 +99,7 @@ namespace Twilio.Rest.Versionless.DeployedDevices
             return await CreateAsync(options, client);
         }
         #endif
+
         
         private static Request BuildFetchRequest(FetchFleetOptions options, ITwilioRestClient client)
         {
@@ -201,6 +202,10 @@ namespace Twilio.Rest.Versionless.DeployedDevices
         ///<summary> The name </summary> 
         [JsonProperty("name")]
         public string Name { get; private set; }
+
+        ///<summary> The test_int_map </summary> 
+        [JsonProperty("test_int_map")]
+        public Dictionary<string, int> TestIntMap { get; private set; }
 
         ///<summary> A string that uniquely identifies this Fleet. </summary> 
         [JsonProperty("sid")]
