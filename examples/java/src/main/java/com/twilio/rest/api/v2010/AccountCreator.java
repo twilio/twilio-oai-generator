@@ -14,46 +14,69 @@
 
 package com.twilio.rest.api.v2010;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+
+import com.twilio.auth_strategy.NoAuthStrategy;
+import com.twilio.base.Creator;
+import com.twilio.base.Deleter;
+import com.twilio.base.Fetcher;
+import com.twilio.base.Reader;
+import com.twilio.base.Updater;
 import com.twilio.constant.EnumConstants;
+import com.twilio.constant.EnumConstants.ParameterType;
 import com.twilio.converter.Promoter;
+import com.twilio.converter.Serializer;
 import com.twilio.exception.ApiConnectionException;
-import com.twilio.converter.PrefixedCollapsibleMap;
-import com.twilio.converter.Converter;
 import com.twilio.exception.ApiException;
 import com.twilio.exception.RestException;
 import com.twilio.http.HttpMethod;
+import com.twilio.http.Request;
 import com.twilio.http.Response;
+import com.twilio.http.TwilioRestClient;
 import com.twilio.rest.Domains;
-import java.math.BigDecimal;
-import java.util.List;
-import java.util.Map;
-import java.time.LocalDate;
-import com.twilio.converter.Converter;
-import java.time.ZonedDateTime;
-import java.io.IOException;
+import com.twilio.type.FeedbackIssue;
+import com.twilio.type.IceServer;
+import com.twilio.type.InboundCallPrice;
+import com.twilio.type.InboundSmsPrice;
+import com.twilio.type.OutboundCallPrice;
+import com.twilio.type.OutboundCallPriceWithOrigin;
+import com.twilio.type.OutboundPrefixPrice;
+import com.twilio.type.OutboundPrefixPriceWithOrigin;
+import com.twilio.type.OutboundSmsPrice;
+import com.twilio.type.PhoneNumberCapabilities;
+import com.twilio.type.PhoneNumberPrice;
+import com.twilio.type.RecordingRule;
+import com.twilio.type.SubscribeRule;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
+
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.net.URI;
-import java.time.format.DateTimeFormatter;
-import com.twilio.converter.DateConverter;
-
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.time.LocalDate;
+import java.time.ZonedDateTime;
+import java.util.Currency;
 import java.util.List;
 import java.util.Map;
+import com.twilio.type.*;
 import java.util.Objects;
-import java.util.UUID;
+import com.twilio.base.Resource;
+import java.io.IOException;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.fasterxml.jackson.core.JsonProcessingException;
 
-import lombok.ToString;
+public class AccountCreator extends Creator<Account> {
 
-import java.net.URI;
-
-import com.twilio.base.Creator;
-import com.twilio.http.Request;
-import com.twilio.http.TwilioRestClient;
-
-public class AccountCreator extends Creator<Account>{
     private Account.XTwilioWebhookEnabled xTwilioWebhookEnabled;
     private URI recordingStatusCallback;
     private List<String> recordingStatusCallbackEvent;
@@ -62,80 +85,100 @@ public class AccountCreator extends Creator<Account>{
     public AccountCreator() {
     }
 
-    public AccountCreator setXTwilioWebhookEnabled(final Account.XTwilioWebhookEnabled xTwilioWebhookEnabled){
-        this.xTwilioWebhookEnabled = xTwilioWebhookEnabled;
-        return this;
-    }
-    public AccountCreator setRecordingStatusCallback(final URI recordingStatusCallback){
-        this.recordingStatusCallback = recordingStatusCallback;
-        return this;
-    }
 
-    public AccountCreator setRecordingStatusCallback(final String recordingStatusCallback){
-        return setRecordingStatusCallback(Promoter.uriFromString(recordingStatusCallback));
-    }
-    public AccountCreator setRecordingStatusCallbackEvent(final List<String> recordingStatusCallbackEvent){
-        this.recordingStatusCallbackEvent = recordingStatusCallbackEvent;
-        return this;
-    }
-    public AccountCreator setRecordingStatusCallbackEvent(final String recordingStatusCallbackEvent){
-        return setRecordingStatusCallbackEvent(Promoter.listOfOne(recordingStatusCallbackEvent));
-    }
-    public AccountCreator setTwiml(final com.twilio.type.Twiml twiml){
-        this.twiml = twiml;
-        return this;
-    }
+public AccountCreator setRecordingStatusCallback(final URI recordingStatusCallback){
+    this.recordingStatusCallback = recordingStatusCallback;
+    return this;
+}
 
-    public AccountCreator setTwiml(final String twiml){
-        return setTwiml(Promoter.twimlFromString(twiml));
-    }
+public AccountCreator setRecordingStatusCallback(final String recordingStatusCallback){
+    return setRecordingStatusCallback(Promoter.uriFromString(recordingStatusCallback));
+}
+
+public AccountCreator setRecordingStatusCallbackEvent(final List<String> recordingStatusCallbackEvent){
+    this.recordingStatusCallbackEvent = recordingStatusCallbackEvent;
+    return this;
+}
+
+public AccountCreator setRecordingStatusCallbackEvent(final String recordingStatusCallbackEvent){
+    return setRecordingStatusCallbackEvent(Promoter.listOfOne(recordingStatusCallbackEvent));
+}
+
+public AccountCreator setTwiml(final com.twilio.type.Twiml twiml){
+    this.twiml = twiml;
+    return this;
+}
+
+public AccountCreator setTwiml(final String twiml){
+    return setTwiml(Promoter.twimlFromString(twiml));
+}
+
+public AccountCreator setXTwilioWebhookEnabled(final Account.XTwilioWebhookEnabled xTwilioWebhookEnabled){
+    this.xTwilioWebhookEnabled = xTwilioWebhookEnabled;
+    return this;
+}
+
 
     @Override
-    public Account create(final TwilioRestClient client){
-        String path = "/2010-04-01/Accounts.json";
+    public Account create(final TwilioRestClient client) {
+    
+    String path = "/2010-04-01/Accounts.json";
 
 
+    
         Request request = new Request(
             HttpMethod.POST,
             Domains.API.toString(),
             path
         );
         request.setContentType(EnumConstants.ContentType.FORM_URLENCODED);
-        addPostParams(request);
         addHeaderParams(request);
+        addPostParams(request);
+    
         Response response = client.request(request);
+    
         if (response == null) {
             throw new ApiConnectionException("Account creation failed: Unable to connect to server");
         } else if (!TwilioRestClient.SUCCESS.test(response.getStatusCode())) {
-            RestException restException = RestException.fromJson(response.getStream(), client.getObjectMapper());
+            RestException restException = RestException.fromJson(
+                response.getStream(),
+                client.getObjectMapper()
+            );
             if (restException == null) {
                 throw new ApiException("Server Error, no content", response.getStatusCode());
             }
             throw new ApiException(restException);
         }
-
+    
         return Account.fromJson(response.getStream(), client.getObjectMapper());
     }
     private void addPostParams(final Request request) {
-        if (recordingStatusCallback != null) {
-            request.addPostParam("RecordingStatusCallback", recordingStatusCallback.toString());
-    
-        }
-        if (recordingStatusCallbackEvent != null) {
-            for (String prop : recordingStatusCallbackEvent) {
-                request.addPostParam("RecordingStatusCallbackEvent", prop);
-            }
-    
-        }
-        if (twiml != null) {
-            request.addPostParam("Twiml", twiml.toString());
-    
+
+    if (recordingStatusCallback != null) {
+        Serializer.toString(request, "RecordingStatusCallback", recordingStatusCallback, ParameterType.URLENCODED);
+    }
+
+
+
+
+    if (recordingStatusCallbackEvent != null) {
+        for (String param: recordingStatusCallbackEvent) {
+            Serializer.toString(request, "RecordingStatusCallbackEvent", param, ParameterType.URLENCODED);
         }
     }
 
-    private void addHeaderParams(final Request request) {
-        if (xTwilioWebhookEnabled != null) {
-            request.addHeaderParam("X-Twilio-Webhook-Enabled", xTwilioWebhookEnabled.toString());
-        }
+
+    if (twiml != null) {
+        Serializer.toString(request, "Twiml", twiml, ParameterType.URLENCODED);
     }
+
+
+}
+    private void addHeaderParams(final Request request) {
+
+    if (xTwilioWebhookEnabled != null) {
+        Serializer.toString(request, "X-Twilio-Webhook-Enabled", xTwilioWebhookEnabled, ParameterType.HEADER);
+    }
+
+}
 }
