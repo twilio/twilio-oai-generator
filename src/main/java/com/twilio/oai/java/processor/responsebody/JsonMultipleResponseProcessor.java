@@ -1,24 +1,21 @@
 package com.twilio.oai.java.processor.responsebody;
 
 import com.twilio.oai.common.ApplicationConstants;
-import com.twilio.oai.common.Utility;
+import com.twilio.oai.common.StringUtils;
 import com.twilio.oai.java.cache.ResourceCacheContext;
 import com.twilio.oai.java.constants.MustacheConstants;
-import com.twilio.oai.java.format.Deserializer;
 import com.twilio.oai.java.processor.enums.EnumProcessorFactory;
 import com.twilio.oai.java.processor.requestbody.RecursiveModelProcessor;
-import com.twilio.oai.java.processor.responsebody.paginationremover.Meta;
 import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenOperation;
 import org.openapitools.codegen.CodegenProperty;
-import org.openapitools.codegen.Constants;
+import org.openapitools.codegen.CodegenResponse;
 
 import java.util.Map;
 
 public class JsonMultipleResponseProcessor extends JsonResponseAbstractProcessor implements ResponseProcessor {
     EnumProcessorFactory enumProcessorFactory = EnumProcessorFactory.getInstance();
     RecursiveModelProcessor recursiveModelProcessor = new RecursiveModelProcessor();
-    Meta meta = new Meta();
 
     @Override
     public void process(final CodegenOperation codegenOperation) {
@@ -53,17 +50,33 @@ public class JsonMultipleResponseProcessor extends JsonResponseAbstractProcessor
     private void processResponseWithoutPagination(CodegenOperation codegenOperation) {
         System.out.println(codegenOperation.operationId);
         CodegenProperty codegenProperty = getCodegenProperty(codegenOperation);
+        if (codegenProperty == null) {
+            codegenOperation.vendorExtensions.put(MustacheConstants.X_RESPONSE_DATATYPE, "void");
+            return;
+        }
         recursiveModelProcessor.process(codegenProperty);
         codegenOperation.vendorExtensions.put(MustacheConstants.X_RESPONSE_DATATYPE, codegenProperty.vendorExtensions.get(ApplicationConstants.X_DATATYPE));
     }
 
     private void processResponseWithPagination(CodegenOperation codegenOperation) {
         // check if pagination exists, if no, go to processResponseWithoutPagination
+        Map<String, CodegenModel> codegenModelMap = ResourceCacheContext.get().getAllModelsMapByDefaultGenerator();
+        CodegenProperty responseProperty = null;
+        for (CodegenResponse response: codegenOperation.responses) {
+            CodegenModel codegenModel = codegenModelMap.get(StringUtils.toPascalCase(response.baseType));
+            for (CodegenProperty codegenProperty: codegenModel.vars) {
+                if (codegenProperty.name.equals(ResourceCacheContext.get().getRecordKey())) {
+                    responseProperty = codegenProperty;
+                }
+            }
+        }
         
-        meta.shouldProcess(codegenOperation);
-        CodegenProperty codegenProperty = meta.getResponse(codegenOperation);
-        recursiveModelProcessor.process(codegenProperty);
-        String listResponseDatatype = (String)codegenProperty.vendorExtensions.get(ApplicationConstants.X_DATATYPE);
+        if (responseProperty == null) {
+            codegenOperation.vendorExtensions.put(MustacheConstants.X_RESPONSE_DATATYPE, "void");
+            return;
+        }
+        recursiveModelProcessor.process(responseProperty);
+        String listResponseDatatype = (String)responseProperty.vendorExtensions.get(ApplicationConstants.X_DATATYPE);
         listResponseDatatype = listResponseDatatype.replaceFirst("^List(?=<)", "ResourceSet");
         codegenOperation.vendorExtensions.put(MustacheConstants.X_RESPONSE_DATATYPE, listResponseDatatype);
     }

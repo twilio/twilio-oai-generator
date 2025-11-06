@@ -19,6 +19,10 @@ public class ResourceCache2 {
 
     @Getter
     @Setter
+    private String recordKey;
+
+    @Getter
+    @Setter
     private Set<CodegenProperty> response = new TreeSet<>((p1, p2) -> p1.baseName.compareTo(p2.baseName));
 
     @Getter
@@ -39,10 +43,6 @@ public class ResourceCache2 {
     @Getter
     private Map<String, CodegenModel> allModelsMapByDefaultGenerator = new HashMap<>();
     
-    @Getter
-    @Setter
-    private boolean isV1;
-
     @Getter
     @Setter
     private boolean isV1;
