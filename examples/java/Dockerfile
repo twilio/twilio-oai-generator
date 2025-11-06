@@ -1,4 +1,4 @@
-FROM eclipse-temurin:11-jre
+FROM eclipse-temurin:8-jdk
 
 # Install Maven with proper error handling
 RUN apt-get update && \
