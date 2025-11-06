@@ -18,6 +18,7 @@ public class MustacheConstants {
     public static final String X_IS_LIST_OP = "x-is-list-op";
     public static final String ACTION_TYPE = "x-common-action-type";
     public static final String ACTION_METHOD = "x-common-action-method";
+    public static final String X_RESPONSE_DATATYPE = "x-response-datatype";
     
     public static final Map<String, String> serializaationMapping = Map.of(
             "application/x-www-form-urlencoded", "if ($paramName != null) { request.addPostParam($stringCapParamName, $paramName.toString())}", 
