@@ -275,7 +275,7 @@ public class CsharpApiResourceBuilder extends ApiResourceBuilder {
                 }
                 CodegenModel codegenModel = responseModel.get();
                 for(CodegenProperty property: codegenModel.vars) {
-                    // resolving response model recursivel for nested objects
+                    // resolving response model recursively for nested objects
                     recursivelyResolve(property, codegenOperation);
                 }
                 codegenModelResolver.resolve(codegenModel, this);
