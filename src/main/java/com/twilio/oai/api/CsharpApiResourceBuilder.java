@@ -230,7 +230,7 @@ public class CsharpApiResourceBuilder extends ApiResourceBuilder {
                     // For example, if dataType = "Dictionary<string, int>"
                     // subStringWithoutContainerDatatype will be "string, int"
                     // splitting the string to get key and value separately
-                    String[] keyValueList = subStringWithoutContainerDatatype.split(", ");
+                    String[] keyValueList = subStringWithoutContainerDatatype.split(",\\s*");
                     String key = keyValueList[0];
                     String value = keyValueList[1];
                     return handleContainerDatatype(value); // key is not being processed since open api standard does not provide that feature
