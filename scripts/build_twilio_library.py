@@ -19,7 +19,7 @@ subdirectories = {
     'php': 'Rest'
 }
 generateForLanguages = {
-    'twilio_iam_organizations.json' : ['java', 'csharp']
+    'twilio_iam_organizations.json': ['java', 'csharp']
 }
 dynamic_languages = ['node', 'python', 'ruby', 'php', 'go']
 CLEANUP_IMPORT_LANGUAGES = ['java', 'php']
@@ -91,7 +91,7 @@ def generate_domain_for_language(spec_file: str, config_path: str, spec_folder: 
 
 def run_openapi_generator(parent_dir: Path, language: str) -> None:
     properties = '-DapiTests=false'
-    if language in {'node', 'python'}:
+    if language in {'node'}:
         properties += ' -DskipFormModel=false'
 
     command = f'cd {parent_dir} && java {properties} ' \

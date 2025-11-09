@@ -16,9 +16,7 @@ private void addQueryParams(final Request request) {
 {{! -- Case3: Add before and after with inequality parameter }}
 {{^isArray}}
 {{#vendorExtensions.x-inequality-main}}
-    if ({{paramName}} != null) {
         Serializer.toString(request, "{{{baseName}}}", {{paramName}}, {{paramName}}Before, {{paramName}}After);
-    }
 {{/vendorExtensions.x-inequality-main}}
 {{/isArray}}
 

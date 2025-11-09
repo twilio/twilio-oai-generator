@@ -1,43 +1,28 @@
 #!/bin/bash
 set -e
 
-function should-generate() {
+function should_generate() {
   [ "$LANGUAGES" == "" ] || [[ "$LANGUAGES" == *$1* ]]
 }
 
 function generate() {
-  find -E "$OUT_DIR"/*/* ! -name "*_test.go" ! -regex "$OUT_DIR/[^/]+/__init__.py" -type f -delete || true
-  files_regex=("examples/spec/*.yaml")
+  #find -E "$OUT_DIR"/*/* ! -name "*_test.go" ! -regex "$OUT_DIR/[^/]+/__init__.py" -type f -delete || true
+  # Get language name without the twilio- prefix
+  lang="${1#twilio-}"
+  SPEC_DIR=${2:-examples/spec}
 
-  # shellcheck disable=SC2161
-  if [ "$1" = "twilio-java" ]; then
-    files_regex=("examples/spec/*")
+  # Use Python script to generate code
+  echo "Using build_twilio_library.py to generate $1 code"
+  python3 scripts/build_twilio_library.py "$SPEC_DIR" "$OUT_DIR" -l $lang
+
+  # If additional properties were passed, use them
+  if [ -n "$2" ]; then
+    echo "Additional properties were passed: $2"
+    echo "You may need to add these to build_twilio_library.py"
   fi
-
-  rm -rf tmp
-  mkdir -p tmp
-  for api_spec in $files_regex; do
-    if [ "$1" !=  "twilio-java" ] && [ "$1" != "twilio-csharp" ] && [[ $api_spec == "examples/spec/twilio_iam_organizations.yaml" ]]; then
-        continue
-    fi
-    if [ "$1" !=  "twilio-node" ]  && [ "$1" !=  "twilio-ruby" ]  && [ "$1" !=  "twilio-python" ] && [ "$1" !=  "twilio-php" ]  && { [[ $api_spec == "examples/spec/twilio_iam_organizations_v1.yaml" ]] || [[ $api_spec == "examples/spec/twilio_iam_organizations_versionless.yaml" ]];}; then
-        continue
-    fi
-    echo "generatorName: $1
-inputSpec: $api_spec
-outputDir: $OUT_DIR
-inlineSchemaNameDefaults:
-  arrayItemSuffix: ''
-additionalProperties:
-  toggles: ./src/test/resources/config/test_toggles.json" >> tmp/"$(basename "$api_spec")"
-  done
-
-  java -DapiTests=false -DapiDocs=false $2 \
-       -cp target/twilio-openapi-generator.jar \
-       org.openapitools.codegen.OpenAPIGenerator batch tmp/*
 }
 
-function docker-run() {
+function docker_run() {
   pushd "$(dirname "$1")"
   docker run \
     -v "${PWD}":/local \
@@ -45,51 +30,45 @@ function docker-run() {
   popd
 }
 
-if should-generate go; then
-  OUT_DIR=examples/go/go-client/helper/rest
+if should_generate go; then
+  OUT_DIR=examples/go/go-client/helper
   generate twilio-go
 
-  OUT_DIR=examples/go/go-client/terraform/resources
-  generate terraform-provider-twilio
-
-  # Replace a couple imports in the generated Terraform resource to use local code.
-  for path in api/v2010 flex/v1; do
-    sed -i.bak "s/github.com\/twilio\/twilio-go/go-client\/helper/g" "$OUT_DIR/$path/api_default.go"
-    sed -i.bak "s/github.com\/twilio\/terraform-provider-twilio\/client/go-client\/terraform\/client/g" "$OUT_DIR/$path/api_default.go"
-  done
-
-  docker-run examples/go/Dockerfile-goimports
+#  OUT_DIR=examples/go/go-client/terraform/resources
+#  generate terraform-provider-twilio
+  docker_run examples/go/Dockerfile-goimports
 fi
 
-if should-generate csharp; then
-  OUT_DIR=examples/csharp/src/Twilio/Rest
+if should_generate csharp; then
+  OUT_DIR=examples/csharp/src/Twilio
   generate twilio-csharp
 fi
 
-if should-generate java; then
-  OUT_DIR=examples/java/src/main/java/com/twilio/rest
+if should_generate java; then
+  OUT_DIR=examples/java/src/main/java/com/twilio
   generate twilio-java
 fi
 
-if should-generate node; then
-  OUT_DIR=examples/node/src/rest
-  generate twilio-node -DskipFormModel=false
-  docker-run examples/node/Dockerfile-prettier
+if should_generate node; then
+  OUT_DIR=examples/node/src
+  generate twilio-node
+  docker_run examples/node/Dockerfile-prettier
 fi
 
-if should-generate php; then
-  OUT_DIR=examples/php/src/Twilio/Rest
+if should_generate php; then
+  OUT_DIR=examples/php/src/Twilio
   generate twilio-php
 fi
 
-#if should-generate python; then
-#  OUT_DIR=examples/python/twilio/rest
-#  generate twilio-python -DskipFormModel=false
-#  docker-run examples/python/Dockerfile-prettier
-#fi
+if should_generate python; then
+  OUT_DIR=examples/python/twilio
+  generate twilio-python
+  generate twilio-python examples/test_spec/twilio_oneOf_v1.yaml
+  docker_run examples/python/Dockerfile-prettier
+fi
 
-if should-generate ruby; then
-  OUT_DIR=examples/ruby/lib/twilio-ruby/rest
+if should_generate ruby; then
+  OUT_DIR=examples/ruby/lib/twilio-ruby
   generate twilio-ruby
-  docker-run examples/ruby/Dockerfile-formatter
+  docker_run examples/ruby/Dockerfile-formatter
 fi
