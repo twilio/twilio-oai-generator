@@ -49,7 +49,7 @@ Class | Method | HTTP request | Description
  - [TestResponseObjectTestObject](docs/TestResponseObjectTestObject.md)
  - [TestFetchResponseObject](docs/TestFetchResponseObject.md)
  - [TestResponseObject](docs/TestResponseObject.md)
- - [TestResponseObjectTestArrayOfObjects](docs/TestResponseObjectTestArrayOfObjects.md)
+ - [TestResponseObjectTestArrayOfObjectsInner](docs/TestResponseObjectTestArrayOfObjectsInner.md)
 
 
 ## Documentation For Authorization
