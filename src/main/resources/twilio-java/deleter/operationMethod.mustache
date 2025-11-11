@@ -11,7 +11,7 @@ vendorExtensions.x-content-type: content type of the request, example: applicati
     public boolean delete(final TwilioRestClient client) {
     {{>common/generateUri}}
 
-        Predicate<Integer> deleteStatues = i -> i != null && i >= 200 && i < 300;
+        Predicate<Integer> deleteStatuses = i -> i != null && i >= 200 && i < 300;
         Request request = new Request(
             HttpMethod.{{httpMethod}},
             Domains.{{#lambda.uppercase}}{{domainName}}{{/lambda.uppercase}}.toString(),
@@ -44,5 +44,5 @@ vendorExtensions.x-content-type: content type of the request, example: applicati
             }
             throw new ApiException(restException);
         }
-        return deleteStatues.test(response.getStatusCode());
+        return deleteStatuses.test(response.getStatusCode());
     }
