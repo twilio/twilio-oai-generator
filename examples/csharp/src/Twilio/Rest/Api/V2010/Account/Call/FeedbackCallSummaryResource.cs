@@ -56,10 +56,10 @@ namespace Twilio.Rest.Api.V2010.Account.Call
             
             string path = "/2010-04-01/Accounts/{AccountSid}/Calls/Feedback/Summary/{Sid}.json";
 
-            string PathAccountSid = options.PathAccountSid ?? client.AccountSid;
-            path = path.Replace("{"+"AccountSid"+"}", PathAccountSid);
             string PathSid = options.PathSid;
             path = path.Replace("{"+"Sid"+"}", PathSid);
+            string PathAccountSid = options.PathAccountSid ?? client.AccountSid;
+            path = path.Replace("{"+"AccountSid"+"}", PathAccountSid);
 
             return new Request(
                 HttpMethod.Post,
@@ -137,6 +137,7 @@ namespace Twilio.Rest.Api.V2010.Account.Call
             return await UpdateAsync(options, client);
         }
         #endif
+
     
         /// <summary>
         /// Converts a JSON string into a FeedbackCallSummaryResource object

@@ -14,51 +14,75 @@
 
 package com.twilio.rest.api.v2010.account;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+
+import com.twilio.auth_strategy.NoAuthStrategy;
+import com.twilio.base.Creator;
+import com.twilio.base.Deleter;
+import com.twilio.base.Fetcher;
+import com.twilio.base.Reader;
+import com.twilio.base.Updater;
 import com.twilio.constant.EnumConstants;
+import com.twilio.constant.EnumConstants.ParameterType;
 import com.twilio.converter.Promoter;
+import com.twilio.converter.Serializer;
 import com.twilio.exception.ApiConnectionException;
-import com.twilio.converter.PrefixedCollapsibleMap;
-import com.twilio.converter.Converter;
 import com.twilio.exception.ApiException;
 import com.twilio.exception.RestException;
 import com.twilio.http.HttpMethod;
+import com.twilio.http.Request;
 import com.twilio.http.Response;
+import com.twilio.http.TwilioRestClient;
 import com.twilio.rest.Domains;
-import java.math.BigDecimal;
-import java.util.List;
-import java.util.Map;
-import java.time.LocalDate;
-import com.twilio.converter.Converter;
-import java.time.ZonedDateTime;
-import java.io.IOException;
+import com.twilio.type.FeedbackIssue;
+import com.twilio.type.IceServer;
+import com.twilio.type.InboundCallPrice;
+import com.twilio.type.InboundSmsPrice;
+import com.twilio.type.OutboundCallPrice;
+import com.twilio.type.OutboundCallPriceWithOrigin;
+import com.twilio.type.OutboundPrefixPrice;
+import com.twilio.type.OutboundPrefixPriceWithOrigin;
+import com.twilio.type.OutboundSmsPrice;
+import com.twilio.type.PhoneNumberCapabilities;
+import com.twilio.type.PhoneNumberPrice;
+import com.twilio.type.RecordingRule;
+import com.twilio.type.SubscribeRule;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+import java.util.function.Predicate;
+
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.net.URI;
-import java.time.format.DateTimeFormatter;
-import com.twilio.converter.DateConverter;
-
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.time.LocalDate;
+import java.time.ZonedDateTime;
+import java.util.Currency;
 import java.util.List;
 import java.util.Map;
+import com.twilio.type.*;
 import java.util.Objects;
-import java.util.UUID;
+import com.twilio.base.Resource;
+import java.io.IOException;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.fasterxml.jackson.core.JsonProcessingException;
 
-import lombok.ToString;
 
-import java.net.URI;
+public class CallCreator extends Creator<Call> {
 
-import com.twilio.base.Creator;
-import com.twilio.http.Request;
-import com.twilio.http.TwilioRestClient;
-
-public class CallCreator extends Creator<Call>{
-    private String requiredStringProperty;
-    private HttpMethod testMethod;
     private String pathAccountSid;
+    private String requiredStringProperty;
     private List<String> testArrayOfStrings;
     private List<URI> testArrayOfUri;
+    private HttpMethod testMethod;
 
     public CallCreator(final String requiredStringProperty, final HttpMethod testMethod) {
         this.requiredStringProperty = requiredStringProperty;
@@ -70,42 +94,49 @@ public class CallCreator extends Creator<Call>{
         this.testMethod = testMethod;
     }
 
-    public CallCreator setRequiredStringProperty(final String requiredStringProperty){
-        this.requiredStringProperty = requiredStringProperty;
-        return this;
-    }
-    public CallCreator setTestMethod(final HttpMethod testMethod){
-        this.testMethod = testMethod;
-        return this;
-    }
-    public CallCreator setTestArrayOfStrings(final List<String> testArrayOfStrings){
-        this.testArrayOfStrings = testArrayOfStrings;
-        return this;
-    }
-    public CallCreator setTestArrayOfStrings(final String testArrayOfStrings){
-        return setTestArrayOfStrings(Promoter.listOfOne(testArrayOfStrings));
-    }
-    public CallCreator setTestArrayOfUri(final List<URI> testArrayOfUri){
-        this.testArrayOfUri = testArrayOfUri;
-        return this;
-    }
-    public CallCreator setTestArrayOfUri(final URI testArrayOfUri){
-        return setTestArrayOfUri(Promoter.listOfOne(testArrayOfUri));
-    }
 
-    public CallCreator setTestArrayOfUri(final String testArrayOfUri){
-        return setTestArrayOfUri(Promoter.uriFromString(testArrayOfUri));
-    }
+public CallCreator setRequiredStringProperty(final String requiredStringProperty){
+    this.requiredStringProperty = requiredStringProperty;
+    return this;
+}
+
+
+public CallCreator setTestArrayOfStrings(final List<String> testArrayOfStrings){
+    this.testArrayOfStrings = testArrayOfStrings;
+    return this;
+}
+
+public CallCreator setTestArrayOfStrings(final String testArrayOfStrings){
+    return setTestArrayOfStrings(Promoter.listOfOne(testArrayOfStrings));
+}
+
+public CallCreator setTestArrayOfUri(final List<URI> testArrayOfUri){
+    this.testArrayOfUri = testArrayOfUri;
+    return this;
+}
+
+public CallCreator setTestArrayOfUri(final URI testArrayOfUri){
+    return setTestArrayOfUri(Promoter.listOfOne(testArrayOfUri));
+}
+public CallCreator setTestArrayOfUri(final String testArrayOfUri){
+    return setTestArrayOfUri(Promoter.uriFromString(testArrayOfUri));
+}
+
+public CallCreator setTestMethod(final HttpMethod testMethod){
+    this.testMethod = testMethod;
+    return this;
+}
+
 
     @Override
-    public Call create(final TwilioRestClient client){
-        String path = "/2010-04-01/Accounts/{AccountSid}/Calls.json";
+    public Call create(final TwilioRestClient client) {
+    
+    String path = "/2010-04-01/Accounts/{AccountSid}/Calls.json";
 
         this.pathAccountSid = this.pathAccountSid == null ? client.getAccountSid() : this.pathAccountSid;
         path = path.replace("{"+"AccountSid"+"}", this.pathAccountSid.toString());
-        path = path.replace("{"+"RequiredStringProperty"+"}", this.requiredStringProperty.toString());
-        path = path.replace("{"+"TestMethod"+"}", this.testMethod.toString());
 
+    
         Request request = new Request(
             HttpMethod.POST,
             Domains.API.toString(),
@@ -113,40 +144,52 @@ public class CallCreator extends Creator<Call>{
         );
         request.setContentType(EnumConstants.ContentType.FORM_URLENCODED);
         addPostParams(request);
+    
         Response response = client.request(request);
+    
         if (response == null) {
             throw new ApiConnectionException("Call creation failed: Unable to connect to server");
         } else if (!TwilioRestClient.SUCCESS.test(response.getStatusCode())) {
-            RestException restException = RestException.fromJson(response.getStream(), client.getObjectMapper());
+            RestException restException = RestException.fromJson(
+                response.getStream(),
+                client.getObjectMapper()
+            );
             if (restException == null) {
                 throw new ApiException("Server Error, no content", response.getStatusCode());
             }
             throw new ApiException(restException);
         }
-
+    
         return Call.fromJson(response.getStream(), client.getObjectMapper());
     }
     private void addPostParams(final Request request) {
-        if (requiredStringProperty != null) {
-            request.addPostParam("RequiredStringProperty", requiredStringProperty);
-    
-        }
-        if (testArrayOfStrings != null) {
-            for (String prop : testArrayOfStrings) {
-                request.addPostParam("TestArrayOfStrings", prop);
-            }
-    
-        }
-        if (testArrayOfUri != null) {
-            for (URI prop : testArrayOfUri) {
-                request.addPostParam("TestArrayOfUri", prop.toString());
-            }
-    
-        }
-        if (testMethod != null) {
-            request.addPostParam("TestMethod", testMethod.toString());
-    
+
+    if (requiredStringProperty != null) {
+        Serializer.toString(request, "RequiredStringProperty", requiredStringProperty, ParameterType.URLENCODED);
+    }
+
+
+
+
+    if (testArrayOfStrings != null) {
+        for (String param: testArrayOfStrings) {
+            Serializer.toString(request, "TestArrayOfStrings", param, ParameterType.URLENCODED);
         }
     }
 
+
+
+    if (testArrayOfUri != null) {
+        for (URI param: testArrayOfUri) {
+            Serializer.toString(request, "TestArrayOfUri", param, ParameterType.URLENCODED);
+        }
+    }
+
+
+    if (testMethod != null) {
+        Serializer.toString(request, "TestMethod", testMethod, ParameterType.URLENCODED);
+    }
+
+
+}
 }
