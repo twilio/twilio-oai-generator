@@ -16,22 +16,22 @@ package com.twilio.rest.oauth.v2;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.twilio.base.noauth.Resource;
-import com.twilio.converter.Converter;
-import java.util.Currency;
-import com.twilio.converter.DateConverter;
-import com.twilio.converter.Promoter;
-import com.twilio.converter.PrefixedCollapsibleMap;
-import com.twilio.converter.CurrencyDeserializer;
-import com.twilio.exception.ApiConnectionException;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
+import com.twilio.auth_strategy.NoAuthStrategy;
+import com.twilio.base.Creator;
+import com.twilio.base.Deleter;
+import com.twilio.base.Fetcher;
+import com.twilio.base.Reader;
+import com.twilio.base.Updater;
+import com.twilio.constant.EnumConstants;
+import com.twilio.constant.EnumConstants.ParameterType;
+import com.twilio.converter.Promoter;
+import com.twilio.converter.Serializer;
+import com.twilio.exception.ApiConnectionException;
 import com.twilio.exception.ApiException;
 import com.twilio.exception.RestException;
 import com.twilio.http.HttpMethod;
@@ -39,51 +39,65 @@ import com.twilio.http.Request;
 import com.twilio.http.Response;
 import com.twilio.http.TwilioRestClient;
 import com.twilio.rest.Domains;
-
-import lombok.ToString;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URI;
-import java.time.ZonedDateTime;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-
+import com.twilio.type.FeedbackIssue;
+import com.twilio.type.IceServer;
+import com.twilio.type.InboundCallPrice;
+import com.twilio.type.InboundSmsPrice;
+import com.twilio.type.OutboundCallPrice;
+import com.twilio.type.OutboundCallPriceWithOrigin;
+import com.twilio.type.OutboundPrefixPrice;
+import com.twilio.type.OutboundPrefixPriceWithOrigin;
+import com.twilio.type.OutboundSmsPrice;
+import com.twilio.type.PhoneNumberCapabilities;
+import com.twilio.type.PhoneNumberPrice;
+import com.twilio.type.RecordingRule;
+import com.twilio.type.SubscribeRule;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-import java.util.Map;
-import java.time.LocalDate;
+
+import java.io.InputStream;
 import java.math.BigDecimal;
-import com.twilio.type.PhoneNumberCapabilities;
-import com.twilio.type.FeedbackIssue;
-import com.twilio.type.IceServer;
-import com.twilio.type.InboundCallPrice;
-import com.twilio.type.OutboundPrefixPriceWithOrigin;
-import com.twilio.type.OutboundPrefixPrice;
-import com.twilio.type.OutboundCallPriceWithOrigin;
-import com.twilio.type.PhoneNumberPrice;
-import com.twilio.type.InboundSmsPrice;
-import com.twilio.type.OutboundSmsPrice;
-import com.twilio.type.OutboundCallPrice;
-import com.twilio.type.RecordingRule;
-import com.twilio.type.SubscribeRule;
+import java.net.URI;
+import java.time.LocalDate;
+import java.time.ZonedDateTime;
+import java.util.Currency;
+import java.util.List;
+import java.util.Map;
+import com.twilio.type.*;
+import java.util.Objects;
+import com.twilio.base.Resource;
+import java.io.IOException;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.twilio.base.Resource;
+import java.io.IOException;
+import com.fasterxml.jackson.core.JsonParseException;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @ToString
 public class Token extends Resource {
-    private static final long serialVersionUID = 258139119277894L;
+
+
+
+    public static TokenCreator creator() {
+        return new TokenCreator(
+            
+        );
+    }
+
+
+
+
+
 
     
 
-    public static TokenCreator creator(){
-        return new TokenCreator();
-    }
+
 
     /**
     * Converts a JSON String into a Token object using the provided ObjectMapper.
@@ -122,71 +136,81 @@ public class Token extends Resource {
         }
     }
 
+    public static String toJson(Object object, ObjectMapper mapper) {
+        try {
+            return mapper.writeValueAsString(object);
+        } catch (final JsonMappingException e) {
+            throw new ApiException(e.getMessage(), e);
+        } catch (JsonProcessingException e) {
+            throw new ApiException(e.getMessage(), e);
+        } catch (final IOException e) {
+            throw new ApiConnectionException(e.getMessage(), e);
+        }
+    }
+    
+
+    @Getter
     private final String accessToken;
-    private final String refreshToken;
-    private final String idToken;
-    private final String tokenType;
+    @Getter
     private final Long expiresIn;
+    @Getter
+    private final String idToken;
+    @Getter
+    private final String refreshToken;
+    @Getter
+    private final String tokenType;
 
-    @JsonCreator
-    private Token(
-        @JsonProperty("access_token")
-        final String accessToken,
+@JsonCreator
+private Token(
+    @JsonProperty("access_token")
+    final String accessToken, 
+    @JsonProperty("expires_in")
+    final Long expiresIn, 
+    @JsonProperty("id_token")
+    final String idToken, 
+    @JsonProperty("refresh_token")
+    final String refreshToken, 
+    @JsonProperty("token_type")
+    final String tokenType
+){
+    this.accessToken = accessToken;
+    this.expiresIn = expiresIn;
+    this.idToken = idToken;
+    this.refreshToken = refreshToken;
+    this.tokenType = tokenType;
+}
 
-        @JsonProperty("refresh_token")
-        final String refreshToken,
-
-        @JsonProperty("id_token")
-        final String idToken,
-
-        @JsonProperty("token_type")
-        final String tokenType,
-
-        @JsonProperty("expires_in")
-        final Long expiresIn
-    ) {
-        this.accessToken = accessToken;
-        this.refreshToken = refreshToken;
-        this.idToken = idToken;
-        this.tokenType = tokenType;
-        this.expiresIn = expiresIn;
+@Override
+public boolean equals(final Object o) {
+    if (this == o) {
+        return true;
     }
 
-        public final String getAccessToken() {
-            return this.accessToken;
-        }
-        public final String getRefreshToken() {
-            return this.refreshToken;
-        }
-        public final String getIdToken() {
-            return this.idToken;
-        }
-        public final String getTokenType() {
-            return this.tokenType;
-        }
-        public final Long getExpiresIn() {
-            return this.expiresIn;
-        }
-
-    @Override
-    public boolean equals(final Object o) {
-        if (this==o) {
-            return true;
-        }
-
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-
-        Token other = (Token) o;
-
-        return Objects.equals(accessToken, other.accessToken) &&  Objects.equals(refreshToken, other.refreshToken) &&  Objects.equals(idToken, other.idToken) &&  Objects.equals(tokenType, other.tokenType) &&  Objects.equals(expiresIn, other.expiresIn)  ;
+    if (o == null || getClass() != o.getClass()) {
+    return false;
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(accessToken, refreshToken, idToken, tokenType, expiresIn);
-    }
+    Token other = (Token) o;
+    return (
+            Objects.equals(accessToken, other.accessToken) && 
+            Objects.equals(expiresIn, other.expiresIn) && 
+            Objects.equals(idToken, other.idToken) && 
+            Objects.equals(refreshToken, other.refreshToken) && 
+            Objects.equals(tokenType, other.tokenType)
+    );
+}
+
+@Override
+public int hashCode() {
+    return Objects.hash(
+            accessToken, 
+            expiresIn, 
+            idToken, 
+            refreshToken, 
+            tokenType
+    );
+}
+
 
 
 }

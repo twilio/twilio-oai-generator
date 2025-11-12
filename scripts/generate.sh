@@ -82,11 +82,11 @@ if should-generate php; then
   generate twilio-php
 fi
 
-if should-generate python; then
-  OUT_DIR=examples/python/twilio/rest
-  generate twilio-python -DskipFormModel=false
-  docker-run examples/python/Dockerfile-prettier
-fi
+#if should-generate python; then
+#  OUT_DIR=examples/python/twilio/rest
+#  generate twilio-python -DskipFormModel=false
+#  docker-run examples/python/Dockerfile-prettier
+#fi
 
 if should-generate ruby; then
   OUT_DIR=examples/ruby/lib/twilio-ruby/rest

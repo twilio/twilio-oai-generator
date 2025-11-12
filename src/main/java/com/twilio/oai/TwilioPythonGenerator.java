@@ -24,14 +24,14 @@ import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.PathItem;
 import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenOperation;
-import org.openapitools.codegen.languages.PythonLegacyClientCodegen;
+import org.openapitools.codegen.languages.PythonClientCodegen;
 import org.openapitools.codegen.model.ModelMap;
 import org.openapitools.codegen.model.ModelsMap;
 import org.openapitools.codegen.model.OperationsMap;
 
 import static com.twilio.oai.common.ApplicationConstants.CONFIG_PYTHON_JSON_PATH;
 
-public class TwilioPythonGenerator extends PythonLegacyClientCodegen {
+public class TwilioPythonGenerator extends PythonClientCodegen {
     private final TwilioCodegenAdapter twilioCodegen;
     private final PythonApiActionTemplate actionTemplate = new PythonApiActionTemplate(this);
     private final IResourceTree resourceTree = new ResourceMap(new Inflector());
@@ -54,6 +54,14 @@ public class TwilioPythonGenerator extends PythonLegacyClientCodegen {
     @Override
     public void processOpts() {
         twilioCodegen.processOpts();
+        // setting this since oai generator is prefixing var_ for reserved words
+        Map<String, String> staticReservedWords = Map.of(
+            "date", "date",
+            "from", "_from",
+            "field", "field"
+        );
+
+        staticReservedWords.forEach((key, value) -> reservedWordsMappings().put(key, value));
     }
 
     @Override
