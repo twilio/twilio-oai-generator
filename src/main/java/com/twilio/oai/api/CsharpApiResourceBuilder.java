@@ -5,6 +5,7 @@ import com.twilio.oai.StringHelper;
 import com.twilio.oai.common.ApplicationConstants;
 import com.twilio.oai.common.EnumConstants;
 import com.twilio.oai.common.EnumConstants.CsharpHttpMethod;
+import com.twilio.oai.common.EnumConstants.CsharpDataTypes;
 import com.twilio.oai.common.Utility;
 import com.twilio.oai.resolver.Resolver;
 import com.twilio.oai.resolver.csharp.OperationStore;
@@ -209,6 +210,51 @@ public class CsharpApiResourceBuilder extends ApiResourceBuilder {
         return allParams.stream().filter(param -> !param.isPathParam).collect(Collectors.toList());
     }
 
+    private String handleContainerDatatype(String dataType) {
+        for(CsharpDataTypes csharpDataType: CsharpDataTypes.values()) {
+            String containerDatatype = csharpDataType.getValue();
+            if(dataType.startsWith(containerDatatype))
+            {
+                // removing the List<> or Dictionary<> wrapper
+                String subStringWithoutContainerDatatype = dataType.substring(containerDatatype.length(), dataType.length()-1);
+                if(csharpDataType == CsharpDataTypes.MAP) {
+                    // For example, if dataType = "Dictionary<string, int>"
+                    // subStringWithoutContainerDatatype will be "string, int"
+                    // splitting the string to get key and value separately
+                    String[] keyValueList = subStringWithoutContainerDatatype.split(",\\s*");
+                    if(keyValueList.length < 2) {
+                        return subStringWithoutContainerDatatype;
+                    }
+                    String key = keyValueList[0];
+                    String value = keyValueList[1];
+                    return handleContainerDatatype(value); // key is not being processed since open api standard does not provide that feature
+                }
+                return handleContainerDatatype(subStringWithoutContainerDatatype);
+            }
+        }
+        return dataType;
+    }
+
+    private void recursivelyResolve(CodegenProperty codegenProperty, CodegenOperation codegenOperation) {
+        String modelName = codegenProperty.dataType;
+        // extract the baseType for the modelName
+        modelName = handleContainerDatatype(modelName);
+        Optional<CodegenModel> model = Utility.getModelByClassname(allModels, modelName);
+        if ((model == null) || model.isEmpty()) {
+            return;
+        }
+
+        CodegenModel codegenModel = model.get();
+        for(CodegenProperty property: codegenModel.vars) {
+            // recursively resolve each var, since each var is itself a CodegenProperty
+            recursivelyResolve(property, codegenOperation);
+        }
+        // these nested response models must also be generated as classes, so adding them in nestedModels
+        // same nestedModels variable is used for request body nested class generation
+        nestedModels.add(codegenModel);
+    }
+
+
     @Override
     public ApiResourceBuilder updateResponseModel(Resolver<CodegenProperty> codegenPropertyIResolver, Resolver<CodegenModel> codegenModelResolver) {
         List<CodegenModel> responseModels = new ArrayList<>();
@@ -222,8 +268,13 @@ public class CsharpApiResourceBuilder extends ApiResourceBuilder {
                 if ((responseModel == null) || responseModel.isEmpty() || (Integer.parseInt(response.code) >= 400)) {
                     return;
                 }
-                codegenModelResolver.resolve(responseModel.get(), this);
-                responseModels.add(responseModel.get());
+                CodegenModel codegenModel = responseModel.get();
+                for(CodegenProperty property: codegenModel.vars) {
+                    // resolving response model recursively for nested objects
+                    recursivelyResolve(property, codegenOperation);
+                }
+                codegenModelResolver.resolve(codegenModel, this);
+                responseModels.add(codegenModel);
             });
         });
         this.apiResponseModels = getDistinctResponseModel(responseModels);
