@@ -1,0 +1,167 @@
+{{>licenseInfo}}
+{{#resources}}
+package com.twilio.rest.{{domainPackage}}.{{apiVersion}}{{namespaceSubPart}};
+
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.twilio.base{{authMethodPackage}}.Resource;
+import com.twilio.converter.Converter;
+import java.util.Currency;
+import com.twilio.converter.DateConverter;
+import com.twilio.converter.Promoter;
+import com.twilio.converter.PrefixedCollapsibleMap;
+import com.twilio.converter.CurrencyDeserializer;
+import com.twilio.exception.ApiConnectionException;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+
+import com.twilio.exception.ApiException;
+import com.twilio.exception.RestException;
+import com.twilio.http.HttpMethod;
+import com.twilio.http.Request;
+import com.twilio.http.Response;
+import com.twilio.http.TwilioRestClient;
+import com.twilio.rest.Domains;
+
+import lombok.ToString;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URI;
+import java.time.ZonedDateTime;
+
+{{^fullJavaUtil}}
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+{{/fullJavaUtil}}
+
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
+import java.util.Map;
+import java.time.LocalDate;
+import java.math.BigDecimal;
+import com.twilio.type.PhoneNumberCapabilities;
+import com.twilio.type.FeedbackIssue;
+import com.twilio.type.IceServer;
+import com.twilio.type.InboundCallPrice;
+import com.twilio.type.OutboundPrefixPriceWithOrigin;
+import com.twilio.type.OutboundPrefixPrice;
+import com.twilio.type.OutboundCallPriceWithOrigin;
+import com.twilio.type.PhoneNumberPrice;
+import com.twilio.type.InboundSmsPrice;
+import com.twilio.type.OutboundSmsPrice;
+import com.twilio.type.OutboundCallPrice;
+import com.twilio.type.RecordingRule;
+import com.twilio.type.SubscribeRule;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+@ToString
+public class {{apiName}} extends Resource {
+    private static final long serialVersionUID = {{serialVersionUID}}L;
+
+    {{>models}}
+    {{#apiOperations}}
+    {{#vendorExtensions.x-is-create-operation}}
+    {{#vendorExtensions.x-signature-list}}
+    public static {{apiName}}Creator creator({{#.}}final {{{dataType}}} {{{paramName}}}{{^-last}}, {{/-last}}{{/.}}){
+        return new {{apiName}}Creator({{#.}}{{{paramName}}}{{^-last}}, {{/-last}}{{/.}});
+    }
+    {{/vendorExtensions.x-signature-list}}
+
+    {{/vendorExtensions.x-is-create-operation}}
+    {{#vendorExtensions.x-is-fetch-operation}}
+    {{#vendorExtensions.x-signature-list}}
+    public static {{apiName}}Fetcher fetcher({{#.}}final {{{dataType}}} {{{paramName}}}{{^-last}}, {{/-last}}{{/.}}){
+        return new {{apiName}}Fetcher({{#.}}{{{paramName}}}{{^-last}}, {{/-last}}{{/.}});
+    }
+    {{/vendorExtensions.x-signature-list}}
+
+    {{/vendorExtensions.x-is-fetch-operation}}
+    {{#vendorExtensions.x-is-delete-operation}}
+    {{#vendorExtensions.x-signature-list}}
+    public static {{apiName}}Deleter deleter({{#.}}final {{{dataType}}} {{{paramName}}}{{^-last}}, {{/-last}}{{/.}}){
+        return new {{apiName}}Deleter({{#.}}{{{paramName}}}{{^-last}}, {{/-last}}{{/.}});
+    }
+    {{/vendorExtensions.x-signature-list}}
+
+    {{/vendorExtensions.x-is-delete-operation}}
+    {{#vendorExtensions.x-is-read-operation}}
+    {{#vendorExtensions.x-signature-list}}
+    public static {{apiName}}Reader reader({{#.}}final {{{dataType}}} {{{paramName}}}{{^-last}}, {{/-last}}{{/.}}){
+        return new {{apiName}}Reader({{#.}}{{{paramName}}}{{^-last}}, {{/-last}}{{/.}});
+    }
+    {{/vendorExtensions.x-signature-list}}
+
+    {{/vendorExtensions.x-is-read-operation}}
+    {{#vendorExtensions.x-is-update-operation}}
+    {{#vendorExtensions.x-signature-list}}
+    public static {{apiName}}Updater updater({{#.}}final {{{dataType}}} {{{paramName}}}{{^-last}}, {{/-last}}{{/.}}){
+        return new {{apiName}}Updater({{#.}}{{{paramName}}}{{^-last}}, {{/-last}}{{/.}});
+    }
+    {{/vendorExtensions.x-signature-list}}
+
+    {{/vendorExtensions.x-is-update-operation}}
+    {{/apiOperations}}
+    /**
+    * Converts a JSON String into a {{apiName}} object using the provided ObjectMapper.
+    *
+    * @param json Raw JSON String
+    * @param objectMapper Jackson ObjectMapper
+    * @return {{apiName}} object represented by the provided JSON
+    */
+    public static {{apiName}} fromJson(final String json, final ObjectMapper objectMapper) {
+        // Convert all checked exceptions to Runtime
+        try {
+            return objectMapper.readValue(json, {{apiName}}.class);
+        } catch (final JsonMappingException | JsonParseException e) {
+            throw new ApiException(e.getMessage(), e);
+        } catch (final IOException e) {
+            throw new ApiConnectionException(e.getMessage(), e);
+        }
+    }
+
+    /**
+    * Converts a JSON InputStream into a {{apiName}} object using the provided
+    * ObjectMapper.
+    *
+    * @param json Raw JSON InputStream
+    * @param objectMapper Jackson ObjectMapper
+    * @return {{apiName}} object represented by the provided JSON
+    */
+    public static {{apiName}} fromJson(final InputStream json, final ObjectMapper objectMapper) {
+        // Convert all checked exceptions to Runtime
+        try {
+            return objectMapper.readValue(json, {{apiName}}.class);
+        } catch (final JsonMappingException | JsonParseException e) {
+            throw new ApiException(e.getMessage(), e);
+        } catch (final IOException e) {
+            throw new ApiConnectionException(e.getMessage(), e);
+        }
+    }
+    {{#hasNestedRequestBody}}
+    public static String toJson(Object object, ObjectMapper mapper) {
+        try {
+            return mapper.writeValueAsString(object);
+        } catch (final JsonMappingException e) {
+            throw new ApiException(e.getMessage(), e);
+        } catch (JsonProcessingException e) {
+            throw new ApiException(e.getMessage(), e);
+        } catch (final IOException e) {
+            throw new ApiConnectionException(e.getMessage(), e);
+        }
+    }{{/hasNestedRequestBody}}
+{{>responseModel}}
+{{>enums}}
+}
+{{/resources}}
+

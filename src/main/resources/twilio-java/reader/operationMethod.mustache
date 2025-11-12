@@ -1,0 +1,79 @@
+{{!
+resourceName: Api Name as identified by Directory Structure service
+recordKey:
+httpMethod: http method associated in the current operation.
+domainName: example api, video, chat, etc. These can be found in Domains.java in twilio-java
+}}
+    @Override
+    public ResourceSet<{{resourceName}}> read(final TwilioRestClient client) {
+        return new ResourceSet<>(this, client, firstPage(client));
+    }
+
+    public Page<{{resourceName}}> firstPage(final TwilioRestClient client) {
+        {{>common/generateUri}}
+        Request request = new Request(
+            HttpMethod.{{httpMethod}},
+            Domains.{{#lambda.uppercase}}{{domainName}}{{/lambda.uppercase}}.toString(),
+            path
+        );
+    {{#vendorExtensions.x-no-auth}}
+        request.setAuth(NoAuthStrategy.getInstance());
+    {{/vendorExtensions.x-no-auth}}
+    {{#queryParams.0}}
+        addQueryParams(request);
+    {{/queryParams.0}}
+    {{#headerParams.0}}
+        addHeaderParams(request);
+    {{/headerParams.0}}
+
+        return pageForRequest(client, request);
+    }
+
+    private Page<{{resourceName}}> pageForRequest(final TwilioRestClient client, final Request request) {
+        Response response = client.request(request);
+        if (response == null) {
+            throw new ApiConnectionException("{{resourceName}} read failed: Unable to connect to server");
+        } {{^isApiV1}}else if (!TwilioRestClient.SUCCESS.test(response.getStatusCode())) {
+            RestException restException = RestException.fromJson(
+            response.getStream(),
+            client.getObjectMapper());
+            if (restException == null) {
+                throw new ApiException("Server Error, no content", response.getStatusCode());
+            }
+            throw new ApiException(restException);
+        } {{! end of else if }}{{/isApiV1}}
+        {{#isApiV1}}
+          else if (!TwilioRestClient.SUCCESS.test(response.getStatusCode())) {
+          RestExceptionV10 restException = RestExceptionV10.fromJson(
+          response.getStream(),
+          client.getObjectMapper());
+          if (restException == null) {
+          throw new ApiException("Server Error, no content", response.getStatusCode());
+          }
+          throw new ApiException(restException);
+        {{/isApiV1}}
+
+        return Page.fromJson(
+            "{{recordKey}}",
+            response.getContent(),
+            {{resourceName}}.class,
+            client.getObjectMapper());
+    }
+
+    @Override
+    public Page<{{resourceName}}> previousPage(final Page<{{resourceName}}> page, final TwilioRestClient client ) {
+        Request request = new Request(HttpMethod.GET, page.getPreviousPageUrl(Domains.API.toString()));
+        return pageForRequest(client, request);
+    }
+
+    @Override
+    public Page<{{resourceName}}> nextPage(final Page<{{resourceName}}> page, final TwilioRestClient client) {
+        Request request = new Request(HttpMethod.GET, page.getNextPageUrl(Domains.API.toString()));
+        return pageForRequest(client, request);
+    }
+
+    @Override
+    public Page<{{resourceName}}> getPage(final String targetUrl, final TwilioRestClient client) {
+        Request request = new Request(HttpMethod.GET, targetUrl);
+        return pageForRequest(client, request);
+    }
