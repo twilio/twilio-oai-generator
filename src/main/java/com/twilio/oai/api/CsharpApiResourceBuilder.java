@@ -246,6 +246,9 @@ public class CsharpApiResourceBuilder extends ApiResourceBuilder {
         }
 
         CodegenModel codegenModel = model.get();
+        if(codegenModel.getFormat() != null) { // skip generating classes for formats
+            return;
+        }
         for (CodegenProperty property : codegenModel.vars) {
             // recursively resolve each var, since each var is itself a CodegenProperty
             recursivelyResolve(property);
