@@ -381,6 +381,9 @@ public class PhpApiResourceBuilder extends ApiResourceBuilder {
 
     private void setDataFormatForNestedProperties(CodegenProperty codegenProperty) {
         String ref = codegenProperty.getRef();
+        if (ref == null) {
+            return;
+        }
         ref = ref.replaceFirst("#/components/schemas/", "");
         Optional<CodegenModel> model = this.getModelbyName(ref);
         if (model.isPresent()) {

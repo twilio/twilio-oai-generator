@@ -33,6 +33,9 @@ use Twilio\Base\PhoneNumberCapabilities;
 /**
  * @property string $name
  * @property array<string,int> $testIntMap
+ * @property string $testNestedObject
+ * @property array<string,int>[] $testNestedArray
+ * @property VersionlessFleetTestNestedObjectValue>[] $testNestedArrayOfObjects
  * @property string|null $sid
  * @property string|null $friendlyName
  */
@@ -53,6 +56,9 @@ class FleetInstance extends InstanceResource
         $this->properties = [
             'name' => Values::array_get($payload, 'name'),
             'testIntMap' => Values::array_get($payload, 'test_int_map'),
+            'testNestedObject' => Values::array_get($payload, 'test_nested_object'),
+            'testNestedArray' => Values::array_get($payload, 'test_nested_array'),
+            'testNestedArrayOfObjects' => Values::array_get($payload, 'test_nested_array_of_objects'),
             'sid' => Values::array_get($payload, 'sid'),
             'friendlyName' => Values::array_get($payload, 'friendly_name'),
         ];
