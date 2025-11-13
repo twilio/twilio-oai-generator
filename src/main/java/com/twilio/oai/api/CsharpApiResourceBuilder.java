@@ -246,13 +246,17 @@ public class CsharpApiResourceBuilder extends ApiResourceBuilder {
         }
 
         CodegenModel codegenModel = model.get();
-        for(CodegenProperty property: codegenModel.vars) {
+        for (CodegenProperty property : codegenModel.vars) {
             // recursively resolve each var, since each var is itself a CodegenProperty
             recursivelyResolve(property);
         }
         // these nested response models must also be generated as classes, so adding them in nestedModels
         // same nestedModels variable is used for request body nested class generation
-        nestedModels.add(codegenModel);
+
+        String finalModelName = modelName;
+        if (nestedModels.stream().noneMatch(m -> m.classname.equals(finalModelName))) {
+            nestedModels.add(codegenModel);
+        }
     }
 
 
