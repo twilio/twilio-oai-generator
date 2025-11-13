@@ -4,10 +4,11 @@
 namespace Twilio\Rest\{{domainName}}\{{version}}{{namespaceSubPart}};
 
 use Twilio\Http\Response;
-use Twilio\Page;
+use Twilio\Page;{{#isApiV1}}
+use Twilio\TokenPaginationPage;{{/isApiV1}}
 use Twilio\Version;
 
-class {{apiName}}Page extends Page
+class {{apiName}}Page extends {{#isApiV1}}TokenPaginationPage{{/isApiV1}}{{^isApiV1}}Page{{/isApiV1}}
     {
     /**
      * @param Version $version Version that contains the resource

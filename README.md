@@ -56,8 +56,6 @@ java -cp /path/to/openapi-generator-cli.jar:/path/to/your.jar org.openapitools.c
 
 (Do not forget to replace the values `/path/to/openapi-generator-cli.jar`, `/path/to/your.jar` and `/path/to/openapi.yaml` in the previous command)
 
-Here is an example script to generate [twilio-go](https://github.com/twilio/twilio-go) from our [OpenAPI specification](https://github.com/twilio/twilio-oai): [build_twilio_go.py](./examples/build_twilio_go.py).
-
 ### For Windows
 You will need to use `;` instead of `:` in the classpath, e.g.
 ```
@@ -109,8 +107,8 @@ To generate [`twilio-go`](https://github.com/twilio/twilio-go) from [`twilio-oai
 
 Update `<path to>` and execute the following from the root of this repo:
 
-* To generate the entire suite, run `make install && python3 examples/build_twilio_go.py <path to>/twilio-oai/spec/yaml <path to>/twilio-go`
-* To generate the provider for a single domain such as studio, run `make install && python3 examples/build_twilio_go.py <path to>/twilio-oai/spec/yaml/twilio_studio_v2.yaml <path to>/twilio-go`
+* To generate the entire suite, run `make install && python3 scripts/build_twilio_library.py <path to>/twilio-oai/spec/yaml <path to>/twilio-go`
+* To generate the provider for a single domain such as studio, run `make install && python3 scripts/build_twilio_library.py <path to>/twilio-oai/spec/yaml/twilio_studio_v2.yaml <path to>/twilio-go`
 
 ## Generating terraform-provider-twilio
 
@@ -125,6 +123,5 @@ Update `<path to>` and execute the following from the root of this repo:
 
 Update `<path to>` and execute the following from the root of this repo:
 
-* To generate the entire suite, run `make install && python3 examples/build_twilio_go.py <path to>/twilio-oai/spec/yaml <path to>/terraform-provider-twilio -l terraform`
-* To generate the provider for a single domain such as studio, run `make install && python3 examples/build_twilio_go.py <path to>/twilio-oai/spec/yaml/twilio_studio_v2.yaml <path to>/terraform-provider-twilio -l terraform`
-* Run `python3 examples/build_twilio_go.py -h` to see more details
+* To generate the entire suite, run `make install && python3 scripts/build_twilio_library.py <path to oai spec file>/twilio-oai/spec/yaml/abc.yaml <path to language repo>/github/twilio/twilio-java/<language> -l java`
+* Run ` python3 scripts/build_twilio_library.py -h` to see more details

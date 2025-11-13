@@ -30,6 +30,93 @@ namespace Twilio.Rest.Api.V2010
     public class AccountResource : Resource
     {
     
+        public class TestResponseObjectTestObject
+        {
+            [JsonProperty("fax")]
+            private bool Fax {get; set;}
+            [JsonProperty("mms")]
+            private bool Mms {get; set;}
+            [JsonProperty("sms")]
+            private bool Sms {get; set;}
+            [JsonProperty("voice")]
+            private bool Voice {get; set;}
+            public TestResponseObjectTestObject() { }
+            public class Builder
+            {
+                private TestResponseObjectTestObject _testResponseObjectTestObject = new TestResponseObjectTestObject();
+                public Builder()
+                {
+                }
+                public Builder WithFax(bool fax)
+                {
+                    _testResponseObjectTestObject.Fax= fax;
+                    return this;
+                }
+                public Builder WithMms(bool mms)
+                {
+                    _testResponseObjectTestObject.Mms= mms;
+                    return this;
+                }
+                public Builder WithSms(bool sms)
+                {
+                    _testResponseObjectTestObject.Sms= sms;
+                    return this;
+                }
+                public Builder WithVoice(bool voice)
+                {
+                    _testResponseObjectTestObject.Voice= voice;
+                    return this;
+                }
+                public TestResponseObjectTestObject Build()
+                {
+                    return _testResponseObjectTestObject;
+                }
+            }
+        }
+        public class TestEnumStatus
+        {
+            public TestEnumStatus() { }
+            public class Builder
+            {
+                private TestEnumStatus _testEnumStatus = new TestEnumStatus();
+                public Builder()
+                {
+                }
+                public TestEnumStatus Build()
+                {
+                    return _testEnumStatus;
+                }
+            }
+        }
+        public class TestResponseObjectTestArrayOfObjectsInner
+        {
+            [JsonProperty("count")]
+            private decimal Count {get; set;}
+            [JsonProperty("description")]
+            private string Description {get; set;}
+            public TestResponseObjectTestArrayOfObjectsInner() { }
+            public class Builder
+            {
+                private TestResponseObjectTestArrayOfObjectsInner _testResponseObjectTestArrayOfObjectsInner = new TestResponseObjectTestArrayOfObjectsInner();
+                public Builder()
+                {
+                }
+                public Builder WithCount(decimal count)
+                {
+                    _testResponseObjectTestArrayOfObjectsInner.Count= count;
+                    return this;
+                }
+                public Builder WithDescription(string description)
+                {
+                    _testResponseObjectTestArrayOfObjectsInner.Description= description;
+                    return this;
+                }
+                public TestResponseObjectTestArrayOfObjectsInner Build()
+                {
+                    return _testResponseObjectTestArrayOfObjectsInner;
+                }
+            }
+        }
 
     
         [JsonConverter(typeof(StringEnumConverter))]

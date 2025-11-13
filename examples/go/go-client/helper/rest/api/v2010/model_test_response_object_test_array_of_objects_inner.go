@@ -20,13 +20,13 @@ import (
 	"github.com/twilio/twilio-go/client"
 )
 
-// TestResponseObjectTestArrayOfObjects struct for TestResponseObjectTestArrayOfObjects
-type TestResponseObjectTestArrayOfObjects struct {
+// TestResponseObjectTestArrayOfObjectsInner struct for TestResponseObjectTestArrayOfObjectsInner
+type TestResponseObjectTestArrayOfObjectsInner struct {
 	Count       float32 `json:"count,omitempty"`
 	Description string  `json:"description,omitempty"`
 }
 
-func (response *TestResponseObjectTestArrayOfObjects) UnmarshalJSON(bytes []byte) (err error) {
+func (response *TestResponseObjectTestArrayOfObjectsInner) UnmarshalJSON(bytes []byte) (err error) {
 	raw := struct {
 		Count       interface{} `json:"count"`
 		Description string      `json:"description"`
@@ -36,7 +36,7 @@ func (response *TestResponseObjectTestArrayOfObjects) UnmarshalJSON(bytes []byte
 		return err
 	}
 
-	*response = TestResponseObjectTestArrayOfObjects{
+	*response = TestResponseObjectTestArrayOfObjectsInner{
 		Description: raw.Description,
 	}
 
