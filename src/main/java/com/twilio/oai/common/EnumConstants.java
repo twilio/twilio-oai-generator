@@ -55,7 +55,8 @@ public class EnumConstants {
     @Getter
     @RequiredArgsConstructor
     public enum CsharpDataTypes implements LanguageDataType {
-        LIST("List<");
+        LIST("List<"),
+        MAP("Dictionary<");
 
         private final String value;
     }
