@@ -73,21 +73,6 @@ namespace Twilio.Rest.Api.V2010
                 }
             }
         }
-        public class TestEnumStatus
-        {
-            public TestEnumStatus() { }
-            public class Builder
-            {
-                private TestEnumStatus _testEnumStatus = new TestEnumStatus();
-                public Builder()
-                {
-                }
-                public TestEnumStatus Build()
-                {
-                    return _testEnumStatus;
-                }
-            }
-        }
         public class TestResponseObjectTestArrayOfObjects
         {
             [JsonProperty("count")]
