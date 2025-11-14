@@ -1,131 +1,23 @@
 {{>licenseInfo}}
 {{#resources}}
 package com.twilio.rest.{{domainPackage}}.{{apiVersion}}{{namespaceSubPart}};
+{{>common/imports}}
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.twilio.constant.EnumConstants;
-import com.twilio.converter.Promoter;
-import com.twilio.exception.ApiConnectionException;
-import com.twilio.converter.PrefixedCollapsibleMap;
-import com.twilio.converter.Converter;
-import com.twilio.exception.ApiException;
-import com.twilio.exception.RestException;
-import com.twilio.http.HttpMethod;
-import com.twilio.http.Response;
-import com.twilio.rest.Domains;
+{{#operations}}
+{{#vendorExtensions.x-fetch-operation}}
+    public class {{resourceName}}Fetcher extends Fetcher<{{resourceName}}> {
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.math.BigDecimal;
-import java.net.URI;
-import java.time.ZonedDateTime;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import com.twilio.converter.DateConverter;
-
-{{^fullJavaUtil}}
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-{{/fullJavaUtil}}
-
-import lombok.ToString;
-
-{{#apiOperations}}
-{{#vendorExtensions.x-is-fetch-operation}}
-import com.twilio.base{{vendorExtensions.x-auth-attributes.x-auth-import-class}}.Fetcher;
-import com.twilio.http{{vendorExtensions.x-auth-attributes.x-auth-import-class}}.{{vendorExtensions.x-auth-attributes.x-http-class-prefix}}Request;
-import com.twilio.http{{vendorExtensions.x-auth-attributes.x-auth-import-class}}.{{vendorExtensions.x-auth-attributes.x-http-class-prefix}}TwilioRestClient;
-
-public class {{apiName}}Fetcher extends Fetcher<{{apiName}}> {
-{{#allParams}}
-    private {{{dataType}}} {{paramName}};
-{{/allParams}}
-
-{{#vendorExtensions.x-signature-list}}
-    public {{apiName}}Fetcher({{#.}}final {{{dataType}}} {{paramName}}{{^-last}}, {{/-last}}{{/.}}){
-    {{#.}}
-        this.{{paramName}} = {{paramName}};
-    {{/.}}
+        {{>common/instanceVariables}}
+        {{>common/constructors}}
+        {{>fetcher/setters}}
+        {{>fetcher/operationMethod}}
+    {{#queryParams.0}}
+        {{>common/addQueryParams}}
+    {{/queryParams.0}}
+    {{#headerParams.0}}
+        {{>common/addHeaderParams}}
+    {{/headerParams.0}}
     }
-{{/vendorExtensions.x-signature-list}}
-
-{{#vendorExtensions.x-non-path-params}}
-    public {{apiName}}Fetcher set{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}(final {{{dataType}}} {{paramName}}){
-        this.{{paramName}} = {{paramName}};
-        return this;
-    }
-{{#isArray}}
-    public {{apiName}}Fetcher set{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}(final {{{baseType}}} {{paramName}}){
-        return set{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}(Promoter.listOfOne({{paramName}}));
-    }
-{{/isArray}}
-{{#vendorExtensions.x-promotions}}
-{{#entrySet}}
-
-    public {{apiName}}Fetcher set{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}(final {{#lambda.titlecase}}{{key}}{{/lambda.titlecase}} {{paramName}}){
-        return set{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}({{value}});
-    }
-{{/entrySet}}
-{{/vendorExtensions.x-promotions}}
-{{/vendorExtensions.x-non-path-params}}
-
-    @Override
-    public {{apiName}} fetch(final {{vendorExtensions.x-auth-attributes.x-http-class-prefix}}TwilioRestClient client) {
-{{>generate_uri}}
-        {{vendorExtensions.x-auth-attributes.x-http-class-prefix}}Request request = new {{vendorExtensions.x-auth-attributes.x-http-class-prefix}}Request(
-            {{vendorExtensions.x-http-method}},
-            Domains.{{#lambda.uppercase}}{{domainName}}{{/lambda.uppercase}}.toString(),
-            path
-        );
-        {{#queryParams.0}}
-        addQueryParams(request);
-        {{/queryParams.0}}
-        {{^vendorExtensions.x-is-json}}
-        request.setContentType(EnumConstants.ContentType.FORM_URLENCODED);
-        {{/vendorExtensions.x-is-json}}
-        {{#vendorExtensions.x-is-json}}
-        request.setContentType(EnumConstants.ContentType.JSON);
-        {{/vendorExtensions.x-is-json}}
-        {{#formParams.0}}
-        addPostParams(request);
-        {{/formParams.0}}
-        {{#bodyParams.0}}
-        addPostParams(request, client);
-        {{/bodyParams.0}}
-        {{#headerParams.0}}
-        addHeaderParams(request);
-        {{/headerParams.0}}
-        Response response = client.request(request);
-
-        if (response == null) {
-            throw new ApiConnectionException("{{apiName}} fetch failed: Unable to connect to server");
-        } else if (!{{vendorExtensions.x-auth-attributes.x-http-class-prefix}}TwilioRestClient.SUCCESS.test(response.getStatusCode())) {
-            RestException restException = RestException.fromJson(response.getStream(), client.getObjectMapper());
-            if (restException == null) {
-                throw new ApiException("Server Error, no content", response.getStatusCode());
-            }
-            throw new ApiException(restException);
-        }
-
-        return {{apiName}}.fromJson(response.getStream(), client.getObjectMapper());
-    }
-{{#vendorExtensions.x-has-form-params}}
-{{>postParams}}
-{{/vendorExtensions.x-has-form-params}}
-{{#vendorExtensions.x-has-body-params}}
-{{>postParams_body}}
-{{/vendorExtensions.x-has-body-params}}
-{{#vendorExtensions.x-has-header-params}}
-{{>headerParams}}
-{{/vendorExtensions.x-has-header-params}}
-{{#vendorExtensions.x-has-query-params}}
-    private void addQueryParams(final {{vendorExtensions.x-auth-attributes.x-http-class-prefix}}Request request) {
-{{>queryParams}}    }
-{{/vendorExtensions.x-has-query-params}}
-}
-{{/vendorExtensions.x-is-fetch-operation}}
-{{/apiOperations}}
+{{/vendorExtensions.x-fetch-operation}}
+{{/operations}}
 {{/resources}}

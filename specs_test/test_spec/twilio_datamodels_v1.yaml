@@ -1,0 +1,212 @@
+openapi: 3.1.0
+info:
+  title: OneOf API Examples
+  version: 1.0.0
+servers:
+  - url: https://api.twilio.com
+
+paths:
+  /v1/directOneOf:
+    post:
+      operationId: CreateDirectOneOf
+      summary: Direct oneOf in request body
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              oneOf:
+                - $ref: '#/components/schemas/Cat'
+                - $ref: '#/components/schemas/Dog'
+      responses:
+        '200':
+          description: Success
+
+#  /v1/nestedOneOf:
+#    post:
+#      operationId: CreateNestedOneOf
+#      summary: Nested oneOf in request body
+#      requestBody:
+#        required: true
+#        content:
+#          application/json:
+#            schema:
+#              type: object
+#              properties:
+#                pet:
+#                  oneOf:
+#                    - $ref: '#/components/schemas/Cat'
+#                    - $ref: '#/components/schemas/Dog'
+#                owner:
+#                  type: string
+#      responses:
+#        '200':
+#          description: Success
+#
+#  /v1/multipleNestedOneOf:
+#    post:
+#      operationId: CreateMultipleDirectOneOf
+#      summary: Multiple nested oneOf in request body
+#      requestBody:
+#        required: true
+#        content:
+#          application/json:
+#            schema:
+#              type: object
+#              properties:
+#                petDetails:
+#                  type: object
+#                  properties:
+#                    pet:
+#                      oneOf:
+#                        - $ref: '#/components/schemas/Cat'
+#                        - $ref: '#/components/schemas/Dog'
+#                    additionalInfo:
+#                      oneOf:
+#                        - $ref: '#/components/schemas/One'
+#                        - $ref: '#/components/schemas/Two'
+#                owner:
+#                  type: string
+#      responses:
+#        '200':
+#          description: Success
+#
+#  /v1/arrayOfOneOf:
+#    post:
+#      operationId: CreateArrayOfOneOf
+#      summary: Array of oneOf in request body
+#      requestBody:
+#        required: true
+#        content:
+#          application/json:
+#            schema:
+#              type: object
+#              properties:
+#                pets:
+#                  type: array
+#                  items:
+#                    oneOf:
+#                      - $ref: '#/components/schemas/Cat'
+#                      - $ref: '#/components/schemas/Dog'
+#      responses:
+#        '200':
+#          description: Success
+#  /v1/parallelOneOfAndObject:
+#    post:
+#      operationId: CreateParallelOneOfAndObject
+#      summary: OneOf and normal object in parallel
+#      requestBody:
+#        required: true
+#        content:
+#          application/json:
+#            schema:
+#              type: object
+#              properties:
+#                pet:
+#                  oneOf:
+#                    - $ref: '#/components/schemas/Cat'
+#                    - $ref: '#/components/schemas/Dog'
+#                owner:
+#                  type: object
+#                  properties:
+#                    name:
+#                      type: string
+#                    age:
+#                      type: integer
+#      responses:
+#        '200':
+#          description: Success
+#
+#  /v1/oneOfWithAdditionalProperties:
+#    post:
+#      operationId: CreateOneOfWithAdditionalProperties
+#      summary: OneOf with additional properties
+#      requestBody:
+#        required: true
+#        content:
+#          application/json:
+#            schema:
+#              type: object
+#              properties:
+#                pet:
+#                  oneOf:
+#                    - $ref: '#/components/schemas/Cat'
+#                    - $ref: '#/components/schemas/Dog'
+#                metadata:
+#                  type: object
+#                  additionalProperties:
+#                    type: string
+#      responses:
+#        '200':
+#          description: Success
+#
+#  /v1/oneOfWithRequiredFields:
+#    post:
+#      operationId: CreateOneOfWithRequiredFields
+#      summary: OneOf with required fields in parallel
+#      requestBody:
+#        required: true
+#        content:
+#          application/json:
+#            schema:
+#              type: object
+#              required:
+#                - pet
+#                - owner
+#              properties:
+#                pet:
+#                  oneOf:
+#                    - $ref: '#/components/schemas/Cat'
+#                    - $ref: '#/components/schemas/Dog'
+#                owner:
+#                  type: object
+#                  properties:
+#                    name:
+#                      type: string
+#                    contact:
+#                      type: string
+#      responses:
+#        '200':
+#          description: Success
+
+components:
+  schemas:
+    Cat:
+      type: object
+      properties:
+        type:
+          type: string
+          enum: [cat]
+        name:
+          type: string
+        huntingSkill:
+          type: string
+          enum: [clueless, lazy, adventurous, aggressive]
+
+    Dog:
+      type: object
+      properties:
+        type:
+          type: string
+          enum: [dog]
+        name:
+          type: string
+        packSize:
+          type: integer
+          minimum: 0
+
+    One:
+      type: object
+      properties:
+        param1:
+          type: string
+        param2:
+          type: string
+
+    Two:
+      type: object
+      properties:
+        object1:
+          type: string
+        object2:
+          type: string
