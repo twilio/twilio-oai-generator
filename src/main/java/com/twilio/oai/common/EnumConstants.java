@@ -58,7 +58,8 @@ public class EnumConstants {
     @Getter
     @RequiredArgsConstructor
     public enum CsharpDataTypes implements LanguageDataType {
-        LIST("List<");
+        LIST("List<"),
+        MAP("Dictionary<");
 
         private final String value;
     }
@@ -151,7 +152,7 @@ public class EnumConstants {
         FORM_PARAM_REF,
         FORM_PARAM_LIST_REF,
     }
-    
+
     public enum ModelType {
         SINGLE,
         LIST
