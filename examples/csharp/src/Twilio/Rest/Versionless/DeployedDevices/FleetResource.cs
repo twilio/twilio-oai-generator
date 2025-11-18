@@ -30,6 +30,71 @@ namespace Twilio.Rest.Versionless.DeployedDevices
     public class FleetResource : Resource
     {
     
+        public class VersionlessFleetTestNestedObjectNestedObject
+        {
+            [JsonProperty("foo")]
+            private string Foo {get; set;}
+            [JsonProperty("bar")]
+            private int? Bar {get; set;}
+            public VersionlessFleetTestNestedObjectNestedObject() { }
+            public class Builder
+            {
+                private VersionlessFleetTestNestedObjectNestedObject _versionlessFleetTestNestedObjectNestedObject = new VersionlessFleetTestNestedObjectNestedObject();
+                public Builder()
+                {
+                }
+                public Builder WithFoo(string foo)
+                {
+                    _versionlessFleetTestNestedObjectNestedObject.Foo= foo;
+                    return this;
+                }
+                public Builder WithBar(int? bar)
+                {
+                    _versionlessFleetTestNestedObjectNestedObject.Bar= bar;
+                    return this;
+                }
+                public VersionlessFleetTestNestedObjectNestedObject Build()
+                {
+                    return _versionlessFleetTestNestedObjectNestedObject;
+                }
+            }
+        }
+        public class VersionlessFleetTestNestedObject
+        {
+            [JsonProperty("nested_object")]
+            private VersionlessFleetTestNestedObjectNestedObject NestedObject {get; set;}
+            [JsonProperty("name")]
+            private string Name {get; set;}
+            [JsonProperty("age")]
+            private int? Age {get; set;}
+            public VersionlessFleetTestNestedObject() { }
+            public class Builder
+            {
+                private VersionlessFleetTestNestedObject _versionlessFleetTestNestedObject = new VersionlessFleetTestNestedObject();
+                public Builder()
+                {
+                }
+                public Builder WithNestedObject(VersionlessFleetTestNestedObjectNestedObject nestedObject)
+                {
+                    _versionlessFleetTestNestedObject.NestedObject= nestedObject;
+                    return this;
+                }
+                public Builder WithName(string name)
+                {
+                    _versionlessFleetTestNestedObject.Name= name;
+                    return this;
+                }
+                public Builder WithAge(int? age)
+                {
+                    _versionlessFleetTestNestedObject.Age= age;
+                    return this;
+                }
+                public VersionlessFleetTestNestedObject Build()
+                {
+                    return _versionlessFleetTestNestedObject;
+                }
+            }
+        }
 
     
 
@@ -205,6 +270,10 @@ namespace Twilio.Rest.Versionless.DeployedDevices
         ///<summary> The test_int_map </summary> 
         [JsonProperty("test_int_map")]
         public Dictionary<string, int> TestIntMap { get; private set; }
+
+        ///<summary> The test_nested_object </summary> 
+        [JsonProperty("test_nested_object")]
+        public VersionlessFleetTestNestedObject TestNestedObject { get; private set; }
 
         ///<summary> A string that uniquely identifies this Fleet. </summary> 
         [JsonProperty("sid")]

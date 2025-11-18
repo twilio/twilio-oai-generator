@@ -143,6 +143,7 @@ module Twilio
             @properties = {
               'name' => payload['name'],
               'test_int_map' => payload['test_int_map'],
+              'test_nested_object' => payload['test_nested_object'],
               'sid' => payload['sid'],
               'friendly_name' => payload['friendly_name'],
             }
@@ -173,6 +174,12 @@ module Twilio
           # @return [Hash<String, Integer>]
           def test_int_map
             @properties['test_int_map']
+          end
+
+          ##
+          # @return [VersionlessFleetTestNestedObject]
+          def test_nested_object
+            @properties['test_nested_object']
           end
 
           ##

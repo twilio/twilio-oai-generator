@@ -80,6 +80,40 @@ public class Fleet extends Resource {
     private static final long serialVersionUID = 163787776958144L;
 
     
+        @ToString
+        static public class VersionlessFleetTestNestedObjectNestedObject {
+            @JsonInclude(JsonInclude.Include.NON_EMPTY)
+            @JsonProperty("foo")
+            @Getter @Setter private String foo;
+
+            @JsonInclude(JsonInclude.Include.NON_EMPTY)
+            @JsonProperty("bar")
+            @Getter @Setter private Integer bar;
+
+
+            public static VersionlessFleetTestNestedObjectNestedObject fromJson(String jsonString, ObjectMapper mapper) throws IOException {
+                return mapper.readValue(jsonString, VersionlessFleetTestNestedObjectNestedObject.class);
+            }
+        }
+        @ToString
+        static public class VersionlessFleetTestNestedObject {
+            @JsonInclude(JsonInclude.Include.NON_EMPTY)
+            @JsonProperty("nested_object")
+            @Getter @Setter private VersionlessFleetTestNestedObjectNestedObject nestedObject;
+
+            @JsonInclude(JsonInclude.Include.NON_EMPTY)
+            @JsonProperty("name")
+            @Getter @Setter private String name;
+
+            @JsonInclude(JsonInclude.Include.NON_EMPTY)
+            @JsonProperty("age")
+            @Getter @Setter private Integer age;
+
+
+            public static VersionlessFleetTestNestedObject fromJson(String jsonString, ObjectMapper mapper) throws IOException {
+                return mapper.readValue(jsonString, VersionlessFleetTestNestedObject.class);
+            }
+        }
 
     public static FleetCreator creator(){
         return new FleetCreator();
@@ -128,6 +162,7 @@ public class Fleet extends Resource {
 
     private final String name;
     private final Map<String, Integer> testIntMap;
+    private final VersionlessFleetTestNestedObject testNestedObject;
     private final String sid;
     private final String friendlyName;
 
@@ -139,6 +174,9 @@ public class Fleet extends Resource {
         @JsonProperty("test_int_map")
         final Map<String, Integer> testIntMap,
 
+        @JsonProperty("test_nested_object")
+        final VersionlessFleetTestNestedObject testNestedObject,
+
         @JsonProperty("sid")
         final String sid,
 
@@ -147,6 +185,7 @@ public class Fleet extends Resource {
     ) {
         this.name = name;
         this.testIntMap = testIntMap;
+        this.testNestedObject = testNestedObject;
         this.sid = sid;
         this.friendlyName = friendlyName;
     }
@@ -156,6 +195,9 @@ public class Fleet extends Resource {
         }
         public final Map<String, Integer> getTestIntMap() {
             return this.testIntMap;
+        }
+        public final VersionlessFleetTestNestedObject getTestNestedObject() {
+            return this.testNestedObject;
         }
         public final String getSid() {
             return this.sid;
@@ -176,12 +218,12 @@ public class Fleet extends Resource {
 
         Fleet other = (Fleet) o;
 
-        return Objects.equals(name, other.name) &&  Objects.equals(testIntMap, other.testIntMap) &&  Objects.equals(sid, other.sid) &&  Objects.equals(friendlyName, other.friendlyName)  ;
+        return Objects.equals(name, other.name) &&  Objects.equals(testIntMap, other.testIntMap) &&  Objects.equals(testNestedObject, other.testNestedObject) &&  Objects.equals(sid, other.sid) &&  Objects.equals(friendlyName, other.friendlyName)  ;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, testIntMap, sid, friendlyName);
+        return Objects.hash(name, testIntMap, testNestedObject, sid, friendlyName);
     }
 
 

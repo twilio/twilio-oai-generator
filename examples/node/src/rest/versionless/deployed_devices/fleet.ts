@@ -18,6 +18,17 @@ const deserialize = require("../../../base/deserialize");
 const serialize = require("../../../base/serialize");
 import { isValidPathParam } from "../../../base/utility";
 
+export class VersionlessFleetTestNestedObject {
+  "nestedObject"?: VersionlessFleetTestNestedObjectNestedObject;
+  "name"?: string;
+  "age"?: number;
+}
+
+export class VersionlessFleetTestNestedObjectNestedObject {
+  "foo"?: string;
+  "bar"?: number;
+}
+
 /**
  * Options to pass to create a FleetInstance
  */
@@ -110,6 +121,7 @@ interface FleetPayload extends FleetResource {}
 interface FleetResource {
   name: string;
   test_int_map: { [key: string]: number };
+  test_nested_object: VersionlessFleetTestNestedObject;
   sid: string;
   friendly_name: string;
 }
@@ -125,6 +137,7 @@ export class FleetInstance {
   ) {
     this.name = payload.name;
     this.testIntMap = payload.test_int_map;
+    this.testNestedObject = payload.test_nested_object;
     this.sid = payload.sid;
     this.friendlyName = payload.friendly_name;
 
@@ -133,6 +146,7 @@ export class FleetInstance {
 
   name: string;
   testIntMap: { [key: string]: number };
+  testNestedObject: VersionlessFleetTestNestedObject;
   /**
    * A string that uniquely identifies this Fleet.
    */
@@ -170,6 +184,7 @@ export class FleetInstance {
     return {
       name: this.name,
       testIntMap: this.testIntMap,
+      testNestedObject: this.testNestedObject,
       sid: this.sid,
       friendlyName: this.friendlyName,
     };
