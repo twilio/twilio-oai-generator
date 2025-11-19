@@ -35,8 +35,7 @@ private void addQueryParams(final Request request) {
     
 {{/queryParams}}
 {{#vendorExtensions.x-list-operation}}
-    {{! First priority is given to reader parameter over inherited parameter }}
-    if (pageSize == null && getPageSize() != null) {
+    if (getPageSize() != null) {
         request.addQueryParam("PageSize", Integer.toString(getPageSize()));
     }
 {{/vendorExtensions.x-list-operation}}
