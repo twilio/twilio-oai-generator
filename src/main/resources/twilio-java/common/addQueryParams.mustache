@@ -32,9 +32,12 @@ private void addQueryParams(final Request request) {
 {{/isArray}}
 
 {{/vendorExtensions.x-has-before-or-after}}
-
-{{#vendorExtensions.x-list-operation}}
     
-{{/vendorExtensions.x-list-operation}}
 {{/queryParams}}
+{{#vendorExtensions.x-list-operation}}
+    {{! First priority is given to reader parameter over inherited parameter }}
+    if (pageSize == null && getPageSize() != null) {
+        request.addQueryParam("PageSize", Integer.toString(getPageSize()));
+    }
+{{/vendorExtensions.x-list-operation}}
 }
