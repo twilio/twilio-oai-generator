@@ -6,7 +6,12 @@
                         attr_accessor {{#vars}}:{{name}}{{^-last}}, {{/-last}}{{/vars}}
                         def initialize(payload)
                             {{#vars}}
-                                @{{name}} = payload["{{name}}"]
+                                {{#complexType}}
+                                @{{name}} = {{{complexType}}}.new payload[:{{name}}]
+                                {{/complexType}}
+                                {{^complexType}}
+                                @{{name}} = payload[:{{name}}]
+                                {{/complexType}}
                             {{/vars}}
                         end
                         def to_json(options = {})
