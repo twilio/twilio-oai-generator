@@ -88,32 +88,32 @@ namespace Twilio.Rest.Api.V2010
                 }
             }
         }
-        public class TestResponseObjectTestArrayOfObjectsInner
+        public class TestResponseObjectTestArrayOfObjects
         {
             [JsonProperty("count")]
             private decimal Count {get; set;}
             [JsonProperty("description")]
             private string Description {get; set;}
-            public TestResponseObjectTestArrayOfObjectsInner() { }
+            public TestResponseObjectTestArrayOfObjects() { }
             public class Builder
             {
-                private TestResponseObjectTestArrayOfObjectsInner _testResponseObjectTestArrayOfObjectsInner = new TestResponseObjectTestArrayOfObjectsInner();
+                private TestResponseObjectTestArrayOfObjects _testResponseObjectTestArrayOfObjects = new TestResponseObjectTestArrayOfObjects();
                 public Builder()
                 {
                 }
                 public Builder WithCount(decimal count)
                 {
-                    _testResponseObjectTestArrayOfObjectsInner.Count= count;
+                    _testResponseObjectTestArrayOfObjects.Count= count;
                     return this;
                 }
                 public Builder WithDescription(string description)
                 {
-                    _testResponseObjectTestArrayOfObjectsInner.Description= description;
+                    _testResponseObjectTestArrayOfObjects.Description= description;
                     return this;
                 }
-                public TestResponseObjectTestArrayOfObjectsInner Build()
+                public TestResponseObjectTestArrayOfObjects Build()
                 {
-                    return _testResponseObjectTestArrayOfObjectsInner;
+                    return _testResponseObjectTestArrayOfObjects;
                 }
             }
         }

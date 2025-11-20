@@ -35,10 +35,10 @@ type TestFetchResponseObject struct {
 	TestNumberDecimal *float64                      `json:"test_number_decimal,omitempty"`
 	TestEnum          *string                       `json:"test_enum,omitempty"`
 	// A2P Messaging Profile Bundle BundleSid
-	A2pProfileBundleSid        *string                                      `json:"a2p_profile_bundle_sid,omitempty"`
-	TestArrayOfIntegers        []int                                        `json:"test_array_of_integers,omitempty"`
-	TestArrayOfArrayOfIntegers [][]int                                      `json:"test_array_of_array_of_integers,omitempty"`
-	TestArrayOfObjects         *[]TestResponseObjectTestArrayOfObjectsInner `json:"test_array_of_objects,omitempty"`
+	A2pProfileBundleSid        *string                                 `json:"a2p_profile_bundle_sid,omitempty"`
+	TestArrayOfIntegers        []int                                   `json:"test_array_of_integers,omitempty"`
+	TestArrayOfArrayOfIntegers [][]int                                 `json:"test_array_of_array_of_integers,omitempty"`
+	TestArrayOfObjects         *[]TestResponseObjectTestArrayOfObjects `json:"test_array_of_objects,omitempty"`
 	// Permissions authorized to the app
 	TestArrayOfEnum *[]string `json:"test_array_of_enum,omitempty"`
 	// The status of the user
@@ -49,25 +49,25 @@ type TestFetchResponseObject struct {
 
 func (response *TestFetchResponseObject) UnmarshalJSON(bytes []byte) (err error) {
 	raw := struct {
-		AccountSid                 *string                                      `json:"account_sid"`
-		Sid                        *string                                      `json:"sid"`
-		TestString                 *string                                      `json:"test_string"`
-		TestInteger                *int                                         `json:"test_integer"`
-		TestObject                 *TestResponseObjectTestObject                `json:"test_object"`
-		TestDateTime               *string                                      `json:"test_date_time"`
-		TestNumber                 *interface{}                                 `json:"test_number"`
-		From                       *string                                      `json:"from"`
-		PriceUnit                  *string                                      `json:"price_unit"`
-		TestNumberFloat            *interface{}                                 `json:"test_number_float"`
-		TestNumberDecimal          *float64                                     `json:"test_number_decimal"`
-		TestEnum                   *string                                      `json:"test_enum"`
-		A2pProfileBundleSid        *string                                      `json:"a2p_profile_bundle_sid"`
-		TestArrayOfIntegers        []int                                        `json:"test_array_of_integers"`
-		TestArrayOfArrayOfIntegers [][]int                                      `json:"test_array_of_array_of_integers"`
-		TestArrayOfObjects         *[]TestResponseObjectTestArrayOfObjectsInner `json:"test_array_of_objects"`
-		TestArrayOfEnum            *[]string                                    `json:"test_array_of_enum"`
-		Status                     string                                       `json:"status"`
-		Message                    string                                       `json:"message"`
+		AccountSid                 *string                                 `json:"account_sid"`
+		Sid                        *string                                 `json:"sid"`
+		TestString                 *string                                 `json:"test_string"`
+		TestInteger                *int                                    `json:"test_integer"`
+		TestObject                 *TestResponseObjectTestObject           `json:"test_object"`
+		TestDateTime               *string                                 `json:"test_date_time"`
+		TestNumber                 *interface{}                            `json:"test_number"`
+		From                       *string                                 `json:"from"`
+		PriceUnit                  *string                                 `json:"price_unit"`
+		TestNumberFloat            *interface{}                            `json:"test_number_float"`
+		TestNumberDecimal          *float64                                `json:"test_number_decimal"`
+		TestEnum                   *string                                 `json:"test_enum"`
+		A2pProfileBundleSid        *string                                 `json:"a2p_profile_bundle_sid"`
+		TestArrayOfIntegers        []int                                   `json:"test_array_of_integers"`
+		TestArrayOfArrayOfIntegers [][]int                                 `json:"test_array_of_array_of_integers"`
+		TestArrayOfObjects         *[]TestResponseObjectTestArrayOfObjects `json:"test_array_of_objects"`
+		TestArrayOfEnum            *[]string                               `json:"test_array_of_enum"`
+		Status                     string                                  `json:"status"`
+		Message                    string                                  `json:"message"`
 	}{}
 
 	if err = json.Unmarshal(bytes, &raw); err != nil {

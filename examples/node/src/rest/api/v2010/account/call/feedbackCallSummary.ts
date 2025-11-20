@@ -27,7 +27,7 @@ export type FeedbackCallSummaryStatus =
   | "completed"
   | "absent";
 
-export class TestResponseObjectTestArrayOfObjectsInner {
+export class TestResponseObjectTestArrayOfObjects {
   "count"?: number;
   "description"?: string;
 }
@@ -180,7 +180,7 @@ interface FeedbackCallSummaryResource {
   a2p_profile_bundle_sid: string;
   test_array_of_integers: Array<number>;
   test_array_of_array_of_integers: Array<Array<number>>;
-  test_array_of_objects: Array<TestResponseObjectTestArrayOfObjectsInner>;
+  test_array_of_objects: Array<TestResponseObjectTestArrayOfObjects>;
   test_array_of_enum: Array<FeedbackCallSummaryStatus>;
   status: string;
   message: string;
@@ -237,7 +237,7 @@ export class FeedbackCallSummaryInstance {
   a2pProfileBundleSid: string;
   testArrayOfIntegers: Array<number>;
   testArrayOfArrayOfIntegers: Array<Array<number>>;
-  testArrayOfObjects: Array<TestResponseObjectTestArrayOfObjectsInner>;
+  testArrayOfObjects: Array<TestResponseObjectTestArrayOfObjects>;
   /**
    * Permissions authorized to the app
    */
