@@ -36,7 +36,7 @@ public class TwilioGeneratorTest {
                 Generator.TWILIO_RUBY,
                 Generator.TWILIO_GO,
                 Generator.TWILIO_PHP
-                );
+        );
     }
 
     private final Generator generator;
