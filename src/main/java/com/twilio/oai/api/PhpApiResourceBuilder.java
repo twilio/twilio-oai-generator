@@ -243,6 +243,14 @@ public class PhpApiResourceBuilder extends ApiResourceBuilder {
         return this;
     }
 
+    @Override
+    protected Map<String, Object> mapOperation(CodegenOperation operation) {
+        if (StringUtils.startsWithIgnoreCase(operation.operationId, "patch")) {
+            addOperationName(operation, EnumConstants.Operation.PATCH.getValue());
+        }
+        return super.mapOperation(operation);
+    }
+
     private void addOptionFileParams(ApiResourceBuilder apiResourceBuilder) {
         for (CodegenOperation operation : apiResourceBuilder.codegenOperationList) {
             if (operation.vendorExtensions.containsKey("x-ignore")) continue;
