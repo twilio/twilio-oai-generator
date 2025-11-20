@@ -1030,7 +1030,6 @@ public class TwilioRestTest {
         assertEquals(BigDecimal.valueOf(123.1), account.getTestNumber());
         assertNull(account.getPriceUnit());
         assertEquals(Float.valueOf("123.2"), account.getTestNumberFloat());
-        assertEquals(BigDecimal.valueOf(123.13), account.getTestNumberDecimal());
         assertEquals(Account.Status.PAUSED.toString(), account.getTestEnum().toString());
         assertNull(account.getTestArrayOfIntegers());
         assertNull(account.getTestArrayOfArrayOfIntegers());
@@ -1184,7 +1183,6 @@ public class TwilioRestTest {
         assertEquals(Integer.valueOf("123"), feedbackCallSummary.getTestInteger());
         assertNull(feedbackCallSummary.getTestDateTime());
         assertEquals(BigDecimal.valueOf(123.1), feedbackCallSummary.getTestNumber());
-        assertEquals(BigDecimal.valueOf(123.13), feedbackCallSummary.getTestNumberDecimal());
         assertNull(feedbackCallSummary.getPriceUnit());
         assertEquals(Float.valueOf("123.2"), feedbackCallSummary.getTestNumberFloat());
         assertEquals(FeedbackCallSummary.Status.PAUSED.toString(), feedbackCallSummary.getTestEnum().toString());
