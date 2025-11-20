@@ -112,7 +112,7 @@ public class TwilioRestTest {
 
         boolean account = new AccountDeleter(ACCOUNT_SID).delete(twilioRestClient);
 
-        assertFalse(account);
+        assertTrue(account);
     }
 
     @Test(expected=ApiException.class)
@@ -720,7 +720,7 @@ public class TwilioRestTest {
 
         boolean resource = new AwsDeleter(ACCOUNT_SID).delete(twilioRestClient);
 
-        assertFalse(resource);
+        assertTrue(resource);
     }
 
     @Test(expected = ApiException.class)
