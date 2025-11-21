@@ -41,10 +41,10 @@ namespace Twilio.Rest.FlexApi.V1.Credential
         public decimal? TestNumber { get; set; }
 
         
-        public float TestNumberFloat { get; set; }
+        public float? TestNumberFloat { get; set; }
 
         
-        public double TestNumberDouble { get; set; }
+        public double? TestNumberDouble { get; set; }
 
         
         public decimal? TestNumberInt32 { get; set; }

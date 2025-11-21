@@ -40,14 +40,12 @@ class FleetInstance(InstanceResource):
 
         self.name: Optional[str] = payload.get("name")
         self.test_int_map: Optional[Dict[str, int]] = payload.get("test_int_map")
-        self.test_nested_object: Optional[Dict[str, str]] = payload.get(
-            "test_nested_object"
-        )
+        self.test_nested_object: Optional[str] = payload.get("test_nested_object")
         self.test_nested_array: Optional[List[Dict[str, int]]] = payload.get(
             "test_nested_array"
         )
         self.test_nested_array_of_objects: Optional[
-            List[Dict[str, VersionlessFleetTestNestedObjectValue]]
+            List[Dict[str, VersionlessFleetTestNestedArrayOfObjectsValue]]
         ] = payload.get("test_nested_array_of_objects")
         self.sid: Optional[str] = payload.get("sid")
         self.friendly_name: Optional[str] = payload.get("friendly_name")

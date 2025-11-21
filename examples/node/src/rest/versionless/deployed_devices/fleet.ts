@@ -18,9 +18,15 @@ const deserialize = require("../../../base/deserialize");
 const serialize = require("../../../base/serialize");
 import { isValidPathParam } from "../../../base/utility";
 
-export class VersionlessFleetTestNestedObjectValue {
-  "param1"?: string;
-  "param2"?: number;
+export class VersionlessFleetTestNestedObject {
+  "nestedObject"?: VersionlessFleetTestNestedObjectNestedObject;
+  "name"?: string;
+  "age"?: number;
+}
+
+export class VersionlessFleetTestNestedObjectNestedObject {
+  "foo"?: string;
+  "bar"?: number;
 }
 
 /**
@@ -115,10 +121,10 @@ interface FleetPayload extends FleetResource {}
 interface FleetResource {
   name: string;
   test_int_map: { [key: string]: number };
-  test_nested_object: { [key: string]: VersionlessFleetTestNestedObjectValue };
+  test_nested_object: VersionlessFleetTestNestedObject;
   test_nested_array: Array<{ [key: string]: number }>;
   test_nested_array_of_objects: Array<{
-    [key: string]: VersionlessFleetTestNestedObjectValue;
+    [key: string]: VersionlessFleetTestNestedArrayOfObjectsValue;
   }>;
   sid: string;
   friendly_name: string;
@@ -146,10 +152,10 @@ export class FleetInstance {
 
   name: string;
   testIntMap: { [key: string]: number };
-  testNestedObject: { [key: string]: VersionlessFleetTestNestedObjectValue };
+  testNestedObject: VersionlessFleetTestNestedObject;
   testNestedArray: Array<{ [key: string]: number }>;
   testNestedArrayOfObjects: Array<{
-    [key: string]: VersionlessFleetTestNestedObjectValue;
+    [key: string]: VersionlessFleetTestNestedArrayOfObjectsValue;
   }>;
   /**
    * A string that uniquely identifies this Fleet.
