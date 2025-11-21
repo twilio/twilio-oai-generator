@@ -13,9 +13,9 @@ public class {{resourceName}}Reader extends Reader<{{resourceName}}> {
     {{>common/constructors}}
     {{>reader/setters}}
     {{>reader/operationMethod}}
-{{#queryParams.0}}
+    {{! Query is mandatory for list operations }}
     {{>common/addQueryParams}}
-{{/queryParams.0}}
+
 {{#headerParams.0}}
     {{>common/addHeaderParams}}
 {{/headerParams.0}}

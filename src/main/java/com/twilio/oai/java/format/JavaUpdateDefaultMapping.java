@@ -9,7 +9,7 @@ import java.util.Set;
 
 public class JavaUpdateDefaultMapping {
     HashSet<String> customFormatWithProperties = new HashSet<>();
-    
+
     /*
         If a property in the OpenAPI specification is defined as
         date_generated:
@@ -17,23 +17,23 @@ public class JavaUpdateDefaultMapping {
           format: date-time
         The expected datatype for the above is: OffsetDateTime
         The expected import is: java.time.OffsetDateTime
-        
+
         Example:
         typeMapping.put("string+date-time", "OffsetDateTime");
         importMapping.put("OffsetDateTime", "java.time.OffsetDateTime");
-        
+
         class AbstractJavaCodegen, method: public String getSchemaType(Schema p) at this place dataType is set
      */
     // TODO: Anytype is pending
     public void typeMapping(Map<String, String> typeMapping) {
         typeMapping.putAll(OpenApiSpecFormatFeatureConstants.getPredefinedTypeMappings());
     }
-    
+
     public void importMapping(Map<String, String> importMapping) {
         // This is an example of how to add a custom import mapping.
         importMapping.putAll(OpenApiSpecFormatFeatureConstants.getPredefinedImportMappings());
     }
-    
+
     public void modelTemplateFiles(Map<String, String> modelTemplateFiles) {
         // Do not generate models
         modelTemplateFiles.clear();
@@ -43,13 +43,13 @@ public class JavaUpdateDefaultMapping {
         // Do not generate models
         reservedWords.remove("localdate");
     }
-    
+
     /*
     If a parameter or property in the OpenAPI specification has properties defined, then generator considers it as a complex type.
     So to avoid that, we remove the properties from the custom models, So that typeMapping can be used to map the type to a custom class.
-    
+
     Alternative is to remove properties from the OpenAPI specification itself, but that might be used by doc team.
-    
+
     Example:
     dummyName:
       type: object
@@ -81,6 +81,7 @@ public class JavaUpdateDefaultMapping {
         customFormatWithProperties.add("outbound-prefix-price-with-origin");
         customFormatWithProperties.add("string-map");
         customFormatWithProperties.add("uri-map");
+        customFormatWithProperties.add("feedback-issue");
 
         openAPI.getComponents().getSchemas()
                 .forEach((name, schema) -> {

@@ -1,5 +1,6 @@
 package com.twilio.oai.api;
 
+import com.twilio.oai.CodegenUtils;
 import com.twilio.oai.DirectoryStructureService;
 import com.twilio.oai.StringHelper;
 import com.twilio.oai.common.ApplicationConstants;
@@ -244,24 +245,32 @@ public class CsharpApiResourceBuilder extends ApiResourceBuilder {
         return dataType;
     }
 
-    private void recursivelyResolve(CodegenProperty codegenProperty, CodegenOperation codegenOperation) {
+    private void recursivelyResolve(CodegenProperty codegenProperty) {
         String modelName = codegenProperty.dataType;
         // extract the baseType for the modelName
         modelName = handleContainerDatatype(modelName);
         Optional<CodegenModel> model = Utility.getModelByClassname(allModels, modelName);
-        if ((model == null) || model.isEmpty()) {
+        if ((model == null) || model.isEmpty() || CodegenUtils.isPropertySchemaEnum(codegenProperty)) {
             return;
         }
 
         CodegenModel codegenModel = model.get();
-        for(CodegenProperty property: codegenModel.vars) {
+        if(codegenModel.getFormat() != null) { // skip generating classes for formats
+            return;
+        }
+        for (CodegenProperty property : codegenModel.vars) {
             // recursively resolve each var, since each var is itself a CodegenProperty
-            recursivelyResolve(property, codegenOperation);
+            recursivelyResolve(property);
         }
         // these nested response models must also be generated as classes, so adding them in nestedModels
         // same nestedModels variable is used for request body nested class generation
-        nestedModels.add(codegenModel);
+
+        String finalModelName = modelName;
+        if (nestedModels.stream().noneMatch(m -> m.classname.equals(finalModelName))) {
+            nestedModels.add(codegenModel);
+        }
     }
+
 
     @Override
     public ApiResourceBuilder updateResponseModel(Resolver<CodegenProperty> codegenPropertyIResolver, Resolver<CodegenModel> codegenModelResolver) {
@@ -279,7 +288,7 @@ public class CsharpApiResourceBuilder extends ApiResourceBuilder {
                 CodegenModel codegenModel = responseModel.get();
                 for(CodegenProperty property: codegenModel.vars) {
                     // resolving response model recursively for nested objects
-                    recursivelyResolve(property, codegenOperation);
+                    recursivelyResolve(property);
                 }
                 codegenModelResolver.resolve(codegenModel, this);
                 responseModels.add(codegenModel);

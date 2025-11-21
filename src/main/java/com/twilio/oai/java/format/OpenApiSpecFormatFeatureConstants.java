@@ -11,11 +11,11 @@ public class OpenApiSpecFormatFeatureConstants {
     /*
      * key (format) -> The key is the format defined in the OpenAPI Spec.
      * inputType -> Customer will provide inputType.
-     * promoter -> Promoter will use this to convert the inputType to the desired type. 
-     * 
+     * promoter -> Promoter will use this to convert the inputType to the desired type.
+     *
      * This can be applied to setters. For example, if a query parameter is of the format "phone-number",
      * two setters will be created: one for `PhoneNumber` and another for `String`.
-     * The promoter logic will be applied to the `String` setter. 
+     * The promoter logic will be applied to the `String` setter.
      */
     public final static Map<String, Promotion> PROMOTIONS = Map.of(
         "uri", new Promotion("String", "Promoter.uriFromString({})"),
@@ -53,8 +53,8 @@ public class OpenApiSpecFormatFeatureConstants {
         predefinedTypeMappings.put("com.twilio.type.Endpoint", "com.twilio.type.Endpoint");
         predefinedTypeMappings.put("string+twiml", "com.twilio.type.Twiml");
         predefinedTypeMappings.put("com.twilio.type.Twiml", "com.twilio.type.Twiml");
-        
-        
+
+
         predefinedTypeMappings.put("string+uri", "URI");
         predefinedTypeMappings.put("string+url", "URI");
         predefinedTypeMappings.put("string+currency", "Currency");
@@ -79,6 +79,7 @@ public class OpenApiSpecFormatFeatureConstants {
         predefinedTypeMappings.put("object+outbound-prefix-price-with-origin", "OutboundPrefixPriceWithOrigin");
         predefinedTypeMappings.put("object+string-map", "Map<String, String>");
         predefinedTypeMappings.put("object+uri-map", "Map<String, String>");
+        predefinedTypeMappings.put("object+feedback-issue", "FeedbackIssue");
         return predefinedTypeMappings;
     }
 

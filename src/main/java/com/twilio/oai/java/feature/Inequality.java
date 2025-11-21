@@ -9,9 +9,24 @@ import java.util.List;
 import java.util.Map;
 
 /*
- * Main aim is to identify inequality fields in the parameters, so that serialization can be handled correctly. 
+ * Main aim is to identify inequality fields in the parameters, so that serialization can be handled correctly.
  */
 public class Inequality {
+
+    public static Inequality instance;
+
+    private Inequality() {
+    }
+    public static synchronized Inequality getInstance() {
+        if (instance == null) {
+            synchronized (Inequality.class) {
+                if (instance == null) {
+                    instance = new Inequality();
+                }
+            }
+        }
+        return instance;
+    }
     public void process(CodegenOperation codegenOperation) {
         Map<String, List<CodegenParameter>> groupedItems = new HashMap<>();
 
@@ -23,7 +38,7 @@ public class Inequality {
 //        codegenOperation.pathParams.forEach(param -> groupItems(param, groupedItems));
 //        addVendorExtension(groupedItems);
 //        groupedItems.clear();
-//        
+//
 //        codegenOperation.headerParams.forEach(param -> groupItems(param, groupedItems));
 //        addVendorExtension(groupedItems);
 //        groupedItems.clear();
@@ -57,7 +72,7 @@ public class Inequality {
             }
         }
     }
-    
+
     // Input: DateCreated, DateCreated>, DateCreated<
     // Output: DateCreated, DateCreated, DateCreated
     private String getBaseName(CodegenParameter codegenParameter) {

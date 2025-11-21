@@ -21,49 +21,13 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
-import com.twilio.auth_strategy.NoAuthStrategy;
-import com.twilio.base.Creator;
-import com.twilio.base.Deleter;
-import com.twilio.base.Fetcher;
-import com.twilio.base.Reader;
-import com.twilio.base.Updater;
-import com.twilio.constant.EnumConstants;
-import com.twilio.constant.EnumConstants.ParameterType;
-import com.twilio.converter.Promoter;
-import com.twilio.converter.Serializer;
 import com.twilio.exception.ApiConnectionException;
 import com.twilio.exception.ApiException;
-import com.twilio.exception.RestException;
-import com.twilio.http.HttpMethod;
-import com.twilio.http.Request;
-import com.twilio.http.Response;
-import com.twilio.http.TwilioRestClient;
-import com.twilio.rest.Domains;
-import com.twilio.type.FeedbackIssue;
-import com.twilio.type.IceServer;
-import com.twilio.type.InboundCallPrice;
-import com.twilio.type.InboundSmsPrice;
-import com.twilio.type.OutboundCallPrice;
-import com.twilio.type.OutboundCallPriceWithOrigin;
-import com.twilio.type.OutboundPrefixPrice;
-import com.twilio.type.OutboundPrefixPriceWithOrigin;
-import com.twilio.type.OutboundSmsPrice;
-import com.twilio.type.PhoneNumberCapabilities;
-import com.twilio.type.PhoneNumberPrice;
-import com.twilio.type.RecordingRule;
-import com.twilio.type.SubscribeRule;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.Setter;
 import lombok.ToString;
-import java.util.function.Predicate;
 
 import java.io.InputStream;
-import java.math.BigDecimal;
-import java.net.URI;
-import java.time.LocalDate;
-import java.time.ZonedDateTime;
-import java.util.Currency;
 import java.util.List;
 import java.util.Map;
 import com.twilio.type.*;
@@ -112,6 +76,88 @@ public class Fleet extends Resource {
     
 
 
+
+    @JsonDeserialize(builder = VersionlessFleetTestNestedObjectValue.Builder.class)
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    @ToString
+    public static class VersionlessFleetTestNestedObjectValue {
+    
+        @JsonInclude(JsonInclude.Include.NON_EMPTY)
+        @JsonProperty("param1")
+        @Getter private final String param1;
+
+        @JsonInclude(JsonInclude.Include.NON_EMPTY)
+        @JsonProperty("param2")
+        @Getter private final Integer param2;
+
+
+    private VersionlessFleetTestNestedObjectValue(Builder builder) {
+        this.param1 = builder.param1;
+        this.param2 = builder.param2;
+    }
+    public static Builder builder() {
+        return new Builder(); 
+    }
+
+    public static VersionlessFleetTestNestedObjectValue fromJson(String jsonString, ObjectMapper mapper) throws IOException {
+        return mapper.readValue(jsonString, VersionlessFleetTestNestedObjectValue.class);
+    }
+
+    @JsonPOJOBuilder(withPrefix = "")
+    public static class Builder {
+        @JsonProperty("param1")
+        private String param1;
+
+        @JsonProperty("param2")
+        private Integer param2;
+
+
+
+            @JsonInclude(JsonInclude.Include.NON_EMPTY)
+            @JsonProperty("param1")
+            public Builder param1(String param1) {
+                this.param1 = param1;
+                return this;
+            }
+            @JsonInclude(JsonInclude.Include.NON_EMPTY)
+            @JsonProperty("param2")
+            public Builder param2(Integer param2) {
+                this.param2 = param2;
+                return this;
+            }
+
+        public VersionlessFleetTestNestedObjectValue build() {
+            return new VersionlessFleetTestNestedObjectValue(this);
+        }
+    }
+    
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+    
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+    
+        VersionlessFleetTestNestedObjectValue other = (VersionlessFleetTestNestedObjectValue) o;
+        return (
+            Objects.equals(param1, other.param1) && 
+            Objects.equals(param2, other.param2)
+        );
+    }
+    
+    @Override
+    public int hashCode() {
+        return Objects.hash(
+        param1, 
+        param2
+        );
+    }
+
+    }
+    
 
     /**
     * Converts a JSON String into a Fleet object using the provided ObjectMapper.
@@ -171,6 +217,12 @@ public class Fleet extends Resource {
     private final String sid;
     @Getter
     private final Map<String, Integer> testIntMap;
+    @Getter
+    private final List<Map<String, Integer>> testNestedArray;
+    @Getter
+    private final List<Map<String, VersionlessFleetTestNestedObjectValue>> testNestedArrayOfObjects;
+    @Getter
+    private final Map<String, VersionlessFleetTestNestedObjectValue> testNestedObject;
 
 @JsonCreator
 private Fleet(
@@ -181,12 +233,21 @@ private Fleet(
     @JsonProperty("sid")
     final String sid, 
     @JsonProperty("test_int_map")
-    final Map<String, Integer> testIntMap
+    final Map<String, Integer> testIntMap, 
+    @JsonProperty("test_nested_array")
+    final List<Map<String, Integer>> testNestedArray, 
+    @JsonProperty("test_nested_array_of_objects")
+    final List<Map<String, VersionlessFleetTestNestedObjectValue>> testNestedArrayOfObjects, 
+    @JsonProperty("test_nested_object")
+    final Map<String, VersionlessFleetTestNestedObjectValue> testNestedObject
 ){
     this.friendlyName = friendlyName;
     this.name = name;
     this.sid = sid;
     this.testIntMap = testIntMap;
+    this.testNestedArray = testNestedArray;
+    this.testNestedArrayOfObjects = testNestedArrayOfObjects;
+    this.testNestedObject = testNestedObject;
 }
 
 @Override
@@ -204,7 +265,10 @@ public boolean equals(final Object o) {
             Objects.equals(friendlyName, other.friendlyName) && 
             Objects.equals(name, other.name) && 
             Objects.equals(sid, other.sid) && 
-            Objects.equals(testIntMap, other.testIntMap)
+            Objects.equals(testIntMap, other.testIntMap) && 
+            Objects.equals(testNestedArray, other.testNestedArray) && 
+            Objects.equals(testNestedArrayOfObjects, other.testNestedArrayOfObjects) && 
+            Objects.equals(testNestedObject, other.testNestedObject)
     );
 }
 
@@ -214,7 +278,10 @@ public int hashCode() {
             friendlyName, 
             name, 
             sid, 
-            testIntMap
+            testIntMap, 
+            testNestedArray, 
+            testNestedArrayOfObjects, 
+            testNestedObject
     );
 }
 
