@@ -1,0 +1,20 @@
+{{#vendorExtensions.x-setter-methods}}
+
+public {{resourceName}}Fetcher set{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}(final {{{dataType}}} {{paramName}}){
+    this.{{paramName}} = {{paramName}};
+    return this;
+}
+
+{{! Optional setter-- Ideally this shouldn't exists, keeping it for backward compatibility }}
+{{#isArray}}
+public {{resourceName}}Fetcher set{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}(final {{{baseType}}} {{paramName}}){
+    return set{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}(Promoter.listOfOne({{paramName}}));
+}
+{{/isArray}}
+{{! Optional setter, vendorExtensions.x-promotion stores promotion method}}
+{{#vendorExtensions.x-promotion}}
+public {{resourceName}}Fetcher set{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}(final String {{paramName}}){
+    return set{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}({{vendorExtensions.x-promotion}});
+}
+{{/vendorExtensions.x-promotion}}
+{{/vendorExtensions.x-setter-methods}}

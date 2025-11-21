@@ -134,6 +134,7 @@ namespace Twilio.Rest.Api.V2010.Account
             return await CreateAsync(options, client);
         }
         #endif
+
         
         /// <summary> delete </summary>
         /// <param name="options"> Delete Call parameters </param>
@@ -144,10 +145,10 @@ namespace Twilio.Rest.Api.V2010.Account
             
             string path = "/2010-04-01/Accounts/{AccountSid}/Calls/{TestInteger}.json";
 
-            string PathAccountSid = options.PathAccountSid ?? client.AccountSid;
-            path = path.Replace("{"+"AccountSid"+"}", PathAccountSid);
             string PathTestInteger = options.PathTestInteger.ToString();
             path = path.Replace("{"+"TestInteger"+"}", PathTestInteger);
+            string PathAccountSid = options.PathAccountSid ?? client.AccountSid;
+            path = path.Replace("{"+"AccountSid"+"}", PathAccountSid);
 
             return new Request(
                 HttpMethod.Delete,
@@ -212,10 +213,10 @@ namespace Twilio.Rest.Api.V2010.Account
             
             string path = "/2010-04-01/Accounts/{AccountSid}/Calls/{TestInteger}.json";
 
-            string PathAccountSid = options.PathAccountSid ?? client.AccountSid;
-            path = path.Replace("{"+"AccountSid"+"}", PathAccountSid);
             string PathTestInteger = options.PathTestInteger.ToString();
             path = path.Replace("{"+"TestInteger"+"}", PathTestInteger);
+            string PathAccountSid = options.PathAccountSid ?? client.AccountSid;
+            path = path.Replace("{"+"AccountSid"+"}", PathAccountSid);
 
             return new Request(
                 HttpMethod.Get,

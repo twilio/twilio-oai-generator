@@ -13,7 +13,7 @@ r"""
 """
 
 
-from typing import Any, Dict, Optional, Union
+from typing import Any, Dict, List, Optional, Union
 from twilio.base import values
 from twilio.base.instance_context import InstanceContext
 from twilio.base.instance_resource import InstanceResource
@@ -27,6 +27,8 @@ class FleetInstance(InstanceResource):
     :ivar name:
     :ivar test_int_map:
     :ivar test_nested_object:
+    :ivar test_nested_array:
+    :ivar test_nested_array_of_objects:
     :ivar sid: A string that uniquely identifies this Fleet.
     :ivar friendly_name: A human readable description for this Fleet.
     """
@@ -37,8 +39,16 @@ class FleetInstance(InstanceResource):
         super().__init__(version)
 
         self.name: Optional[str] = payload.get("name")
-        self.test_int_map: Optional[dict[str, int]] = payload.get("test_int_map")
-        self.test_nested_object: Optional[str] = payload.get("test_nested_object")
+        self.test_int_map: Optional[Dict[str, int]] = payload.get("test_int_map")
+        self.test_nested_object: Optional[Dict[str, str]] = payload.get(
+            "test_nested_object"
+        )
+        self.test_nested_array: Optional[List[Dict[str, int]]] = payload.get(
+            "test_nested_array"
+        )
+        self.test_nested_array_of_objects: Optional[
+            List[Dict[str, VersionlessFleetTestNestedObjectValue]]
+        ] = payload.get("test_nested_array_of_objects")
         self.sid: Optional[str] = payload.get("sid")
         self.friendly_name: Optional[str] = payload.get("friendly_name")
 
