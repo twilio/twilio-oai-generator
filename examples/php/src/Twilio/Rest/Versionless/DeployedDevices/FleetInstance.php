@@ -28,7 +28,7 @@ use Twilio\Version;
  * @property array<string,int> $testIntMap
  * @property string $testNestedObject
  * @property array<string,int>[] $testNestedArray
- * @property VersionlessFleetTestNestedArrayOfObjectsValue>[] $testNestedArrayOfObjects
+ * @property VersionlessFleetTestNestedObjectValue>[] $testNestedArrayOfObjects
  * @property string|null $sid
  * @property string|null $friendlyName
  */

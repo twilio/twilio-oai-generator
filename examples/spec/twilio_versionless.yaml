@@ -11,18 +11,13 @@ components:
             type: integer
         test_nested_object:
           type: object
-          properties:
-            nested_object:
-              type: object
-              properties:
-                foo:
-                  type: string
-                bar:
-                  type: integer
-            name:
-              type: string
-            age:
-              type: integer
+          additionalProperties:
+            type: object
+            properties:
+              param1:
+                type: string
+              param2:
+                type: integer
         test_nested_array:
           items:
             type: object

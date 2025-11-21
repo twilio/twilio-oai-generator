@@ -77,57 +77,57 @@ public class Fleet extends Resource {
 
 
 
-    @JsonDeserialize(builder = VersionlessFleetTestNestedObjectNestedObject.Builder.class)
+    @JsonDeserialize(builder = VersionlessFleetTestNestedObjectValue.Builder.class)
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     @ToString
-    public static class VersionlessFleetTestNestedObjectNestedObject {
+    public static class VersionlessFleetTestNestedObjectValue {
     
         @JsonInclude(JsonInclude.Include.NON_EMPTY)
-        @JsonProperty("foo")
-        @Getter private final String foo;
+        @JsonProperty("param1")
+        @Getter private final String param1;
 
         @JsonInclude(JsonInclude.Include.NON_EMPTY)
-        @JsonProperty("bar")
-        @Getter private final Integer bar;
+        @JsonProperty("param2")
+        @Getter private final Integer param2;
 
 
-    private VersionlessFleetTestNestedObjectNestedObject(Builder builder) {
-        this.foo = builder.foo;
-        this.bar = builder.bar;
+    private VersionlessFleetTestNestedObjectValue(Builder builder) {
+        this.param1 = builder.param1;
+        this.param2 = builder.param2;
     }
     public static Builder builder() {
         return new Builder(); 
     }
 
-    public static VersionlessFleetTestNestedObjectNestedObject fromJson(String jsonString, ObjectMapper mapper) throws IOException {
-        return mapper.readValue(jsonString, VersionlessFleetTestNestedObjectNestedObject.class);
+    public static VersionlessFleetTestNestedObjectValue fromJson(String jsonString, ObjectMapper mapper) throws IOException {
+        return mapper.readValue(jsonString, VersionlessFleetTestNestedObjectValue.class);
     }
 
     @JsonPOJOBuilder(withPrefix = "")
     public static class Builder {
-        @JsonProperty("foo")
-        private String foo;
+        @JsonProperty("param1")
+        private String param1;
 
-        @JsonProperty("bar")
-        private Integer bar;
+        @JsonProperty("param2")
+        private Integer param2;
 
 
 
             @JsonInclude(JsonInclude.Include.NON_EMPTY)
-            @JsonProperty("foo")
-            public Builder foo(String foo) {
-                this.foo = foo;
+            @JsonProperty("param1")
+            public Builder param1(String param1) {
+                this.param1 = param1;
                 return this;
             }
             @JsonInclude(JsonInclude.Include.NON_EMPTY)
-            @JsonProperty("bar")
-            public Builder bar(Integer bar) {
-                this.bar = bar;
+            @JsonProperty("param2")
+            public Builder param2(Integer param2) {
+                this.param2 = param2;
                 return this;
             }
 
-        public VersionlessFleetTestNestedObjectNestedObject build() {
-            return new VersionlessFleetTestNestedObjectNestedObject(this);
+        public VersionlessFleetTestNestedObjectValue build() {
+            return new VersionlessFleetTestNestedObjectValue(this);
         }
     }
     
@@ -141,116 +141,18 @@ public class Fleet extends Resource {
             return false;
         }
     
-        VersionlessFleetTestNestedObjectNestedObject other = (VersionlessFleetTestNestedObjectNestedObject) o;
+        VersionlessFleetTestNestedObjectValue other = (VersionlessFleetTestNestedObjectValue) o;
         return (
-            Objects.equals(foo, other.foo) && 
-            Objects.equals(bar, other.bar)
+            Objects.equals(param1, other.param1) && 
+            Objects.equals(param2, other.param2)
         );
     }
     
     @Override
     public int hashCode() {
         return Objects.hash(
-        foo, 
-        bar
-        );
-    }
-
-    }
-    
-
-    @JsonDeserialize(builder = VersionlessFleetTestNestedObject.Builder.class)
-    @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    @ToString
-    public static class VersionlessFleetTestNestedObject {
-    
-        @JsonInclude(JsonInclude.Include.NON_EMPTY)
-        @JsonProperty("nested_object")
-        @Getter private final VersionlessFleetTestNestedObjectNestedObject nestedObject;
-
-        @JsonInclude(JsonInclude.Include.NON_EMPTY)
-        @JsonProperty("name")
-        @Getter private final String name;
-
-        @JsonInclude(JsonInclude.Include.NON_EMPTY)
-        @JsonProperty("age")
-        @Getter private final Integer age;
-
-
-    private VersionlessFleetTestNestedObject(Builder builder) {
-        this.nestedObject = builder.nestedObject;
-        this.name = builder.name;
-        this.age = builder.age;
-    }
-    public static Builder builder() {
-        return new Builder(); 
-    }
-
-    public static VersionlessFleetTestNestedObject fromJson(String jsonString, ObjectMapper mapper) throws IOException {
-        return mapper.readValue(jsonString, VersionlessFleetTestNestedObject.class);
-    }
-
-    @JsonPOJOBuilder(withPrefix = "")
-    public static class Builder {
-        @JsonProperty("nested_object")
-        private VersionlessFleetTestNestedObjectNestedObject nestedObject;
-
-        @JsonProperty("name")
-        private String name;
-
-        @JsonProperty("age")
-        private Integer age;
-
-
-
-            @JsonInclude(JsonInclude.Include.NON_EMPTY)
-            @JsonProperty("nested_object")
-            public Builder nestedObject(VersionlessFleetTestNestedObjectNestedObject nestedObject) {
-                this.nestedObject = nestedObject;
-                return this;
-            }
-            @JsonInclude(JsonInclude.Include.NON_EMPTY)
-            @JsonProperty("name")
-            public Builder name(String name) {
-                this.name = name;
-                return this;
-            }
-            @JsonInclude(JsonInclude.Include.NON_EMPTY)
-            @JsonProperty("age")
-            public Builder age(Integer age) {
-                this.age = age;
-                return this;
-            }
-
-        public VersionlessFleetTestNestedObject build() {
-            return new VersionlessFleetTestNestedObject(this);
-        }
-    }
-    
-    @Override
-    public boolean equals(final Object o) {
-        if (this == o) {
-            return true;
-        }
-    
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-    
-        VersionlessFleetTestNestedObject other = (VersionlessFleetTestNestedObject) o;
-        return (
-            Objects.equals(nestedObject, other.nestedObject) && 
-            Objects.equals(name, other.name) && 
-            Objects.equals(age, other.age)
-        );
-    }
-    
-    @Override
-    public int hashCode() {
-        return Objects.hash(
-        nestedObject, 
-        name, 
-        age
+        param1, 
+        param2
         );
     }
 
@@ -318,9 +220,9 @@ public class Fleet extends Resource {
     @Getter
     private final List<Map<String, Integer>> testNestedArray;
     @Getter
-    private final List<Map<String, VersionlessFleetTestNestedArrayOfObjectsValue>> testNestedArrayOfObjects;
+    private final List<Map<String, VersionlessFleetTestNestedObjectValue>> testNestedArrayOfObjects;
     @Getter
-    private final VersionlessFleetTestNestedObject testNestedObject;
+    private final Map<String, VersionlessFleetTestNestedObjectValue> testNestedObject;
 
 @JsonCreator
 private Fleet(
@@ -335,9 +237,9 @@ private Fleet(
     @JsonProperty("test_nested_array")
     final List<Map<String, Integer>> testNestedArray, 
     @JsonProperty("test_nested_array_of_objects")
-    final List<Map<String, VersionlessFleetTestNestedArrayOfObjectsValue>> testNestedArrayOfObjects, 
+    final List<Map<String, VersionlessFleetTestNestedObjectValue>> testNestedArrayOfObjects, 
     @JsonProperty("test_nested_object")
-    final VersionlessFleetTestNestedObject testNestedObject
+    final Map<String, VersionlessFleetTestNestedObjectValue> testNestedObject
 ){
     this.friendlyName = friendlyName;
     this.name = name;
