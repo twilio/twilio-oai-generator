@@ -29,6 +29,7 @@ import com.twilio.rest.Domains;
 import com.twilio.type.*;
 
 import com.twilio.base.Page;
+
 import com.twilio.base.ResourceSet;
 
 public class AwsReader extends Reader<Aws> {
@@ -49,7 +50,7 @@ public AwsReader setPageSize(final Integer pageSize){
     public ResourceSet<Aws> read(final TwilioRestClient client) {
         return new ResourceSet<>(this, client, firstPage(client));
     }
-    
+
     public Page<Aws> firstPage(final TwilioRestClient client) {
         
     String path = "/v1/Credentials/AWS";
@@ -65,7 +66,7 @@ public AwsReader setPageSize(final Integer pageSize){
         return pageForRequest(client, request);
     }
 
-    private Page<Aws> pageForRequest(final TwilioRestClient client, final Request request) {
+        private Page<Aws> pageForRequest(final TwilioRestClient client, final Request request) {
         Response response = client.request(request);
         if (response == null) {
             throw new ApiConnectionException("Aws read failed: Unable to connect to server");
@@ -73,7 +74,7 @@ public AwsReader setPageSize(final Integer pageSize){
             RestException restException = RestException.fromJson(
             response.getStream(),
             client.getObjectMapper());
-        
+
             if (restException == null) {
                 throw new ApiException("Server Error, no content", response.getStatusCode());
             }
@@ -96,14 +97,15 @@ public AwsReader setPageSize(final Integer pageSize){
     @Override
     public Page<Aws> nextPage(final Page<Aws> page, final TwilioRestClient client) {
         Request request = new Request(HttpMethod.GET, page.getNextPageUrl(Domains.API.toString()));
-        return pageForRequest(client, request); 
+        return pageForRequest(client, request);
     }
 
     @Override
     public Page<Aws> getPage(final String targetUrl, final TwilioRestClient client) {
         Request request = new Request(HttpMethod.GET, targetUrl);
-        return pageForRequest(client, request); 
+        return pageForRequest(client, request);
     }
+
     private void addQueryParams(final Request request) {
 
 
