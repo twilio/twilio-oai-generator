@@ -19,7 +19,7 @@ subdirectories = {
     'php': 'Rest'
 }
 generateForLanguages = {
-    'twilio_iam_organizations.json' : ['java', 'csharp']
+    'twilio_iam_organizations.json': ['java', 'csharp']
 }
 dynamic_languages = ['node', 'python', 'ruby', 'php', 'go']
 CLEANUP_IMPORT_LANGUAGES = ['java', 'php']
@@ -80,8 +80,8 @@ def generate_domain_for_language(spec_file: str, config_path: str, spec_folder: 
         'generatorName': 'terraform-provider-twilio' if language == 'terraform' else f'twilio-{language}',
         'inputSpec': full_path,
         'outputDir': output_path,
-        'inlineSchemaNameDefaults': {
-            'arrayItemSuffix': ''
+        'inlineSchemaOptions': {
+            'ARRAY_ITEM_SUFFIX': ''
         },
     }
     # print(config)

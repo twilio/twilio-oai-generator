@@ -14,7 +14,6 @@ r"""
 
 
 from datetime import datetime
-from decimal import Decimal
 from typing import Any, Dict, List, Optional, Union
 from twilio.base import deserialize, serialize, values
 from twilio.base.instance_context import InstanceContext
@@ -83,7 +82,7 @@ class CallInstance(InstanceResource):
         self.from_: Optional[str] = payload.get("from")
         self.price_unit: Optional[str] = payload.get("price_unit")
         self.test_number_float: Optional[float] = payload.get("test_number_float")
-        self.test_number_decimal: Optional[Decimal] = payload.get("test_number_decimal")
+        self.test_number_decimal: Optional[float] = payload.get("test_number_decimal")
         self.test_enum: Optional["CallInstance.Status"] = payload.get("test_enum")
         self.a2p_profile_bundle_sid: Optional[str] = payload.get(
             "a2p_profile_bundle_sid"

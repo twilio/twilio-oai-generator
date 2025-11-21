@@ -72,6 +72,7 @@ services:
       - prism_versionless
 
   prism_api_v2010:
+    platform: linux/amd64
     image: stoplight/prism:4.10.3
     volumes:
       - ../spec/twilio_api_v2010.yaml:/tmp/oai.yaml
@@ -81,6 +82,7 @@ services:
       /tmp/oai.yaml
 
   prism_flex_v1:
+    platform: linux/amd64
     image: stoplight/prism:4.10.3
     volumes:
       - ../spec/twilio_flex_v1.yaml:/tmp/oai.yaml
@@ -90,6 +92,7 @@ services:
       /tmp/oai.yaml
 
   prism_versionless:
+    platform: linux/amd64
     image: stoplight/prism:4.10.3
     volumes:
       - ../spec/twilio_versionless.yaml:/tmp/oai.yaml
@@ -99,6 +102,7 @@ services:
       /tmp/oai.yaml
 
   prism_messaging:
+    platform: linux/amd64
     image: stoplight/prism:4.10.3
     volumes:
       - ../spec/twilio_messaging_v1.yml:/tmp/oai.yaml

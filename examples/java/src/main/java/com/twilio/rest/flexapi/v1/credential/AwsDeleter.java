@@ -14,69 +14,59 @@
 
 package com.twilio.rest.flexapi.v1.credential;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.twilio.converter.Promoter;
-import com.twilio.constant.EnumConstants;
+import com.twilio.base.Deleter;
 import com.twilio.exception.ApiConnectionException;
-import com.twilio.converter.PrefixedCollapsibleMap;
 import com.twilio.exception.ApiException;
-import com.twilio.converter.Converter;
 import com.twilio.exception.RestException;
 import com.twilio.http.HttpMethod;
-import com.twilio.http.Response;
-import com.twilio.rest.Domains;
-import java.time.LocalDate;
-import java.io.IOException;
-import java.io.InputStream;
-import java.math.BigDecimal;
-import java.net.URI;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
-import com.twilio.converter.DateConverter;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-
-import lombok.ToString;
-
-import com.twilio.base.Deleter;
 import com.twilio.http.Request;
+import com.twilio.http.Response;
 import com.twilio.http.TwilioRestClient;
+import com.twilio.rest.Domains;
+import java.util.function.Predicate;
 
-public class AwsDeleter extends Deleter<Aws> {
-    private String pathSid;
+import com.twilio.type.*;
 
-    public AwsDeleter(final String pathSid){
+
+            public class AwsDeleter extends Deleter<Aws> {
+
+                private String pathSid;
+
+                public AwsDeleter(final String pathSid) {
         this.pathSid = pathSid;
     }
 
-
-    @Override
+            
+                @Override
     public boolean delete(final TwilioRestClient client) {
-        String path = "/v1/Credentials/AWS/{Sid}";
+    
+    String path = "/v1/Credentials/AWS/{Sid}";
 
-        path = path.replace("{"+"Sid"+"}", this.pathSid.toString());
+    path = path.replace("{"+"Sid"+"}", this.pathSid.toString());
 
+
+        Predicate<Integer> deleteStatuses = i -> i != null && i >= 200 && i < 300;
         Request request = new Request(
             HttpMethod.DELETE,
             Domains.FLEXAPI.toString(),
             path
         );
-        request.setContentType(EnumConstants.ContentType.FORM_URLENCODED);
+
         Response response = client.request(request);
 
         if (response == null) {
             throw new ApiConnectionException("Aws delete failed: Unable to connect to server");
         } else if (!TwilioRestClient.SUCCESS.test(response.getStatusCode())) {
-            RestException restException = RestException.fromJson(response.getStream(), client.getObjectMapper());
+            RestException restException = RestException.fromJson(
+                response.getStream(),
+                client.getObjectMapper()
+            );
             if (restException == null) {
                 throw new ApiException("Server Error, no content", response.getStatusCode());
             }
             throw new ApiException(restException);
         }
-        return response.getStatusCode() == 204;
+        return deleteStatuses.test(response.getStatusCode());
     }
-}
+
+            }

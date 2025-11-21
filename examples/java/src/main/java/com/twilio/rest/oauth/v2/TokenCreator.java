@@ -14,46 +14,26 @@
 
 package com.twilio.rest.oauth.v2;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+
+import com.twilio.auth_strategy.NoAuthStrategy;
+import com.twilio.base.Creator;
 import com.twilio.constant.EnumConstants;
-import com.twilio.converter.Promoter;
+import com.twilio.constant.EnumConstants.ParameterType;
+import com.twilio.converter.Serializer;
 import com.twilio.exception.ApiConnectionException;
-import com.twilio.converter.PrefixedCollapsibleMap;
-import com.twilio.converter.Converter;
 import com.twilio.exception.ApiException;
 import com.twilio.exception.RestException;
 import com.twilio.http.HttpMethod;
+import com.twilio.http.Request;
 import com.twilio.http.Response;
+import com.twilio.http.TwilioRestClient;
 import com.twilio.rest.Domains;
-import java.math.BigDecimal;
-import java.util.List;
-import java.util.Map;
-import java.time.LocalDate;
-import com.twilio.converter.Converter;
-import java.time.ZonedDateTime;
-import java.io.IOException;
-import java.io.InputStream;
-import java.math.BigDecimal;
-import java.net.URI;
-import java.time.format.DateTimeFormatter;
-import com.twilio.converter.DateConverter;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.UUID;
+import com.twilio.type.*;
 
-import lombok.ToString;
 
-import java.net.URI;
+public class TokenCreator extends Creator<Token> {
 
-import com.twilio.base.noauth.Creator;
-import com.twilio.http.noauth.NoAuthRequest;
-import com.twilio.http.noauth.NoAuthTwilioRestClient;
-
-public class TokenCreator extends Creator<Token>{
     private String grantType;
     private String clientId;
     private String clientSecret;
@@ -66,97 +46,136 @@ public class TokenCreator extends Creator<Token>{
     public TokenCreator() {
     }
 
-    public TokenCreator setGrantType(final String grantType){
-        this.grantType = grantType;
-        return this;
-    }
-    public TokenCreator setClientId(final String clientId){
-        this.clientId = clientId;
-        return this;
-    }
-    public TokenCreator setClientSecret(final String clientSecret){
-        this.clientSecret = clientSecret;
-        return this;
-    }
-    public TokenCreator setCode(final String code){
-        this.code = code;
-        return this;
-    }
-    public TokenCreator setRedirectUri(final String redirectUri){
-        this.redirectUri = redirectUri;
-        return this;
-    }
-    public TokenCreator setAudience(final String audience){
-        this.audience = audience;
-        return this;
-    }
-    public TokenCreator setRefreshToken(final String refreshToken){
-        this.refreshToken = refreshToken;
-        return this;
-    }
-    public TokenCreator setScope(final String scope){
-        this.scope = scope;
-        return this;
-    }
+
+public TokenCreator setGrantType(final String grantType){
+    this.grantType = grantType;
+    return this;
+}
+
+
+public TokenCreator setClientId(final String clientId){
+    this.clientId = clientId;
+    return this;
+}
+
+
+public TokenCreator setClientSecret(final String clientSecret){
+    this.clientSecret = clientSecret;
+    return this;
+}
+
+
+public TokenCreator setCode(final String code){
+    this.code = code;
+    return this;
+}
+
+
+public TokenCreator setRedirectUri(final String redirectUri){
+    this.redirectUri = redirectUri;
+    return this;
+}
+
+
+public TokenCreator setAudience(final String audience){
+    this.audience = audience;
+    return this;
+}
+
+
+public TokenCreator setRefreshToken(final String refreshToken){
+    this.refreshToken = refreshToken;
+    return this;
+}
+
+
+public TokenCreator setScope(final String scope){
+    this.scope = scope;
+    return this;
+}
+
 
     @Override
-    public Token create(final NoAuthTwilioRestClient client){
-        String path = "/v2/token";
+    public Token create(final TwilioRestClient client) {
+    
+    String path = "/v2/token";
 
 
-        NoAuthRequest request = new NoAuthRequest(
+    
+        Request request = new Request(
             HttpMethod.POST,
             Domains.OAUTH.toString(),
             path
         );
         request.setContentType(EnumConstants.ContentType.FORM_URLENCODED);
+        request.setAuth(NoAuthStrategy.getInstance());
         addPostParams(request);
+    
         Response response = client.request(request);
+    
         if (response == null) {
             throw new ApiConnectionException("Token creation failed: Unable to connect to server");
-        } else if (!NoAuthTwilioRestClient.SUCCESS.test(response.getStatusCode())) {
-            RestException restException = RestException.fromJson(response.getStream(), client.getObjectMapper());
+        } else if (!TwilioRestClient.SUCCESS.test(response.getStatusCode())) {
+            RestException restException = RestException.fromJson(
+                response.getStream(),
+                client.getObjectMapper()
+            );
             if (restException == null) {
                 throw new ApiException("Server Error, no content", response.getStatusCode());
             }
             throw new ApiException(restException);
         }
-
+    
         return Token.fromJson(response.getStream(), client.getObjectMapper());
     }
-    private void addPostParams(final NoAuthRequest request) {
-        if (grantType != null) {
-            request.addPostParam("grant_type", grantType);
-    
-        }
-        if (clientId != null) {
-            request.addPostParam("client_id", clientId);
-    
-        }
-        if (clientSecret != null) {
-            request.addPostParam("client_secret", clientSecret);
-    
-        }
-        if (code != null) {
-            request.addPostParam("code", code);
-    
-        }
-        if (redirectUri != null) {
-            request.addPostParam("redirect_uri", redirectUri);
-    
-        }
-        if (audience != null) {
-            request.addPostParam("audience", audience);
-    
-        }
-        if (refreshToken != null) {
-            request.addPostParam("refresh_token", refreshToken);
-    
-        }
-        if (scope != null) {
-            request.addPostParam("scope", scope);
-    
-        }
+    private void addPostParams(final Request request) {
+
+    if (grantType != null) {
+        Serializer.toString(request, "grant_type", grantType, ParameterType.URLENCODED);
     }
 
+
+
+    if (clientId != null) {
+        Serializer.toString(request, "client_id", clientId, ParameterType.URLENCODED);
+    }
+
+
+
+    if (clientSecret != null) {
+        Serializer.toString(request, "client_secret", clientSecret, ParameterType.URLENCODED);
+    }
+
+
+
+    if (code != null) {
+        Serializer.toString(request, "code", code, ParameterType.URLENCODED);
+    }
+
+
+
+    if (redirectUri != null) {
+        Serializer.toString(request, "redirect_uri", redirectUri, ParameterType.URLENCODED);
+    }
+
+
+
+    if (audience != null) {
+        Serializer.toString(request, "audience", audience, ParameterType.URLENCODED);
+    }
+
+
+
+    if (refreshToken != null) {
+        Serializer.toString(request, "refresh_token", refreshToken, ParameterType.URLENCODED);
+    }
+
+
+
+    if (scope != null) {
+        Serializer.toString(request, "scope", scope, ParameterType.URLENCODED);
+    }
+
+
+}
 }

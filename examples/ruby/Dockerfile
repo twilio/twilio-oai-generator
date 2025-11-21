@@ -5,7 +5,6 @@ RUN apt-get update -y && apt-get install -y git
 WORKDIR /app
 RUN git clone https://github.com/twilio/twilio-ruby.git
 WORKDIR /app/twilio-ruby/
-RUN git fetch && git checkout 6.0.0-rc && git pull
 
 RUN rm -rf lib/twilio-ruby/rest/ examples/ spec/rest spec/integration spec/framework
 

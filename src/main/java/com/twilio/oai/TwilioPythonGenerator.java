@@ -24,14 +24,14 @@ import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.PathItem;
 import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenOperation;
-import org.openapitools.codegen.languages.PythonLegacyClientCodegen;
+import org.openapitools.codegen.languages.PythonClientCodegen;
 import org.openapitools.codegen.model.ModelMap;
 import org.openapitools.codegen.model.ModelsMap;
 import org.openapitools.codegen.model.OperationsMap;
 
 import static com.twilio.oai.common.ApplicationConstants.CONFIG_PYTHON_JSON_PATH;
 
-public class TwilioPythonGenerator extends PythonLegacyClientCodegen {
+public class TwilioPythonGenerator extends PythonClientCodegen {
     private final TwilioCodegenAdapter twilioCodegen;
     private final PythonApiActionTemplate actionTemplate = new PythonApiActionTemplate(this);
     private final IResourceTree resourceTree = new ResourceMap(new Inflector());
@@ -49,11 +49,26 @@ public class TwilioPythonGenerator extends PythonLegacyClientCodegen {
         packageName = "";
 
         typeMapping.put("array", "List");
+        typeMapping.put("decimal", "decimal.Decimal");
+
+        // Add import mapping for decimal type
+        importMapping.put("decimal.Decimal", "decimal.Decimal");
+
+        // Add decimal.Decimal to language-specific primitives
+        languageSpecificPrimitives.add("decimal.Decimal");
     }
 
     @Override
     public void processOpts() {
         twilioCodegen.processOpts();
+        // setting this since oai generator is prefixing var_ for reserved words
+        Map<String, String> staticReservedWords = Map.of(
+            "date", "date",
+            "from", "_from",
+            "field", "field"
+        );
+
+        staticReservedWords.forEach((key, value) -> reservedWordsMappings().put(key, value));
     }
 
     @Override
@@ -144,5 +159,29 @@ public class TwilioPythonGenerator extends PythonLegacyClientCodegen {
     @Override
     public String defaultTemplatingEngine() {
         return "twilio-handlebars";
+    }
+
+    @Override
+    public String getTypeDeclaration(String name) {
+        if ("decimal.Decimal".equals(name)) {
+            return "Decimal";
+        }
+        return super.getTypeDeclaration(name);
+    }
+
+    @Override
+    public String toModelImport(String name) {
+        if ("decimal.Decimal".equals(name)) {
+            return "from decimal import Decimal";
+        }
+        return super.toModelImport(name);
+    }
+
+    @Override
+    public String getSchemaType(io.swagger.v3.oas.models.media.Schema schema) {
+        if (schema != null && "decimal".equals(schema.getType())) {
+            return "number";
+        }
+        return super.getSchemaType(schema);
     }
 }

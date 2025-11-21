@@ -9,6 +9,30 @@ components:
           type: object
           additionalProperties:
             type: integer
+        test_nested_object:
+          type: object
+          additionalProperties:
+            type: object
+            properties:
+              param1:
+                type: string
+              param2:
+                type: integer
+        test_nested_array:
+          items:
+            type: object
+            additionalProperties:
+              type: integer
+        test_nested_array_of_objects:
+          items:
+            type: object
+            additionalProperties:
+              type: object
+              properties:
+                param1:
+                  type: string
+                param2:
+                  type: integer
     versionless.fleet.instance:
       type: object
       properties:

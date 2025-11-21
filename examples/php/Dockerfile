@@ -9,7 +9,7 @@ ENV PATH="vendor/bin:$PATH"
 RUN pecl install xdebug-2.9.0
 RUN pecl install pcov && docker-php-ext-enable pcov
 
-RUN git clone -b 7.0.0-rc https://github.com/twilio/twilio-php.git twilio
+RUN git clone https://github.com/twilio/twilio-php.git twilio
 WORKDIR /twilio
 
 RUN rm -rf src/Twilio/Rest/*

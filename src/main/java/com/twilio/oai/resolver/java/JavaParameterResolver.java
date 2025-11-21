@@ -66,7 +66,7 @@ public class JavaParameterResolver extends LanguageParamResolver {
             parameter.allowableValues = null;
         });
         parameter.paramName = StringHelper.toFirstLetterLower(parameter.paramName);
-        if (apiResourceBuilder.getToggleMap().getOrDefault(EnumConstants.Generator.TWILIO_JAVA.getValue(), Boolean.FALSE) ) {
+        if (apiResourceBuilder.getToggleMap().getOrDefault(EnumConstants.Generator.TWILIO_JAVA_LEGACY.getValue(), Boolean.FALSE) ) {
             resolveIngressModel(parameter, apiResourceBuilder);
         }
     }

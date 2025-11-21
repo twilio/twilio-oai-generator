@@ -313,7 +313,7 @@ interface AccountResource {
   from: string;
   price_unit: string;
   test_number_float: number;
-  test_number_decimal: number;
+  test_number_decimal: string;
   test_enum: AccountStatus;
   a2p_profile_bundle_sid: string;
   test_array_of_integers: Array<number>;
@@ -366,7 +366,7 @@ export class AccountInstance {
   from: string;
   priceUnit: string;
   testNumberFloat: number;
-  testNumberDecimal: number;
+  testNumberDecimal: string;
   testEnum: AccountStatus;
   /**
    * A2P Messaging Profile Bundle BundleSid

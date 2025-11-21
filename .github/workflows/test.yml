@@ -28,7 +28,7 @@ jobs:
       - name: Set up Java 11
         uses: actions/setup-java@v4
         with:
-          distribution: 'zulu'
+          distribution: 'temurin'
           java-version: '11'
 
       - name: Login to Docker Hub

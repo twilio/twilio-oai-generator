@@ -49,6 +49,7 @@ namespace Twilio.Rest.Versionless.DeployedDevices
         
 
     }
+
     /// <summary> fetch </summary>
     public class FetchFleetOptions : IOptions<FleetResource>
     {
