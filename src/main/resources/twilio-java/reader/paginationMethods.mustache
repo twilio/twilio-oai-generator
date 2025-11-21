@@ -1,0 +1,57 @@
+private Page<{{resourceName}}> pageForRequest(final TwilioRestClient client, final Request request) {
+Response response = client.request(request);
+if (response == null) {
+throw new ApiConnectionException("{{resourceName}} read failed: Unable to connect to server");
+} else if (!TwilioRestClient.SUCCESS.test(response.getStatusCode())) {
+RestException restException = RestException.fromJson(
+response.getStream(),
+client.getObjectMapper());
+
+if (restException == null) {
+throw new ApiException("Server Error, no content", response.getStatusCode());
+}
+throw new ApiException(restException);
+} {{! end of else if }}
+
+return {{#isApiV1}}TokenPaginationPage{{/isApiV1}}{{^isApiV1}}Page{{/isApiV1}}.fromJson(
+"{{recordKey}}",
+response.getContent(),
+{{resourceName}}.class,
+client.getObjectMapper());
+}
+
+@Override
+public Page<{{resourceName}}> previousPage(final Page<{{resourceName}}> page, final TwilioRestClient client ) {
+{{#isApiV1}}
+    {{>common/generateUri}}
+    path = path + page.previousQueryString();
+    Request request = new Request(
+    HttpMethod.{{httpMethod}},
+    Domains.{{#lambda.uppercase}}{{domainName}}{{/lambda.uppercase}}.toString(),
+    path
+    );
+{{/isApiV1}}
+{{^isApiV1}}Request request = new Request(HttpMethod.GET, page.getPreviousPageUrl(Domains.API.toString()));{{/isApiV1}}
+return pageForRequest(client, request);
+}
+
+@Override
+public Page<{{resourceName}}> nextPage(final Page<{{resourceName}}> page, final TwilioRestClient client) {
+{{#isApiV1}}
+    {{>common/generateUri}}
+    path = path + page.nextQueryString();
+    Request request = new Request(
+    HttpMethod.{{httpMethod}},
+    Domains.{{#lambda.uppercase}}{{domainName}}{{/lambda.uppercase}}.toString(),
+    path
+    );
+{{/isApiV1}}
+{{^isApiV1}}Request request = new Request(HttpMethod.GET, page.getNextPageUrl(Domains.API.toString()));{{/isApiV1}}
+return pageForRequest(client, request);
+}
+
+@Override
+public Page<{{resourceName}}> getPage(final String targetUrl, final TwilioRestClient client) {
+Request request = new Request(HttpMethod.GET, targetUrl);
+return pageForRequest(client, request);
+}
