@@ -31,6 +31,7 @@ import java.time.ZonedDateTime;
 import com.twilio.type.*;
 
 import com.twilio.base.Page;
+
 import com.twilio.base.ResourceSet;
 
 public class AccountReader extends Reader<Account> {
@@ -79,7 +80,7 @@ public AccountReader setPageSize(final Integer pageSize){
     public ResourceSet<Account> read(final TwilioRestClient client) {
         return new ResourceSet<>(this, client, firstPage(client));
     }
-    
+
     public Page<Account> firstPage(final TwilioRestClient client) {
         
     String path = "/2010-04-01/Accounts.json";
@@ -95,7 +96,7 @@ public AccountReader setPageSize(final Integer pageSize){
         return pageForRequest(client, request);
     }
 
-    private Page<Account> pageForRequest(final TwilioRestClient client, final Request request) {
+        private Page<Account> pageForRequest(final TwilioRestClient client, final Request request) {
         Response response = client.request(request);
         if (response == null) {
             throw new ApiConnectionException("Account read failed: Unable to connect to server");
@@ -103,7 +104,7 @@ public AccountReader setPageSize(final Integer pageSize){
             RestException restException = RestException.fromJson(
             response.getStream(),
             client.getObjectMapper());
-        
+
             if (restException == null) {
                 throw new ApiException("Server Error, no content", response.getStatusCode());
             }
@@ -126,14 +127,15 @@ public AccountReader setPageSize(final Integer pageSize){
     @Override
     public Page<Account> nextPage(final Page<Account> page, final TwilioRestClient client) {
         Request request = new Request(HttpMethod.GET, page.getNextPageUrl(Domains.API.toString()));
-        return pageForRequest(client, request); 
+        return pageForRequest(client, request);
     }
 
     @Override
     public Page<Account> getPage(final String targetUrl, final TwilioRestClient client) {
         Request request = new Request(HttpMethod.GET, targetUrl);
-        return pageForRequest(client, request); 
+        return pageForRequest(client, request);
     }
+
     private void addQueryParams(final Request request) {
 
 
