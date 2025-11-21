@@ -41,10 +41,10 @@ namespace Twilio.Rest.FlexApi.V1.Credential
         public decimal? TestNumber { get; set; }
 
         
-        public float TestNumberFloat { get; set; }
+        public float? TestNumberFloat { get; set; }
 
         
-        public double TestNumberDouble { get; set; }
+        public double? TestNumberDouble { get; set; }
 
         
         public decimal? TestNumberInt32 { get; set; }
@@ -114,11 +114,11 @@ namespace Twilio.Rest.FlexApi.V1.Credential
             }
             if (TestNumberFloat != null)
             {
-                p.Add(new KeyValuePair<string, string>("TestNumberFloat", TestNumberFloat.ToString()));
+                p.Add(new KeyValuePair<string, string>("TestNumberFloat", TestNumberFloat.Value.ToString()));
             }
             if (TestNumberDouble != null)
             {
-                p.Add(new KeyValuePair<string, string>("TestNumberDouble", TestNumberDouble.ToString()));
+                p.Add(new KeyValuePair<string, string>("TestNumberDouble", TestNumberDouble.Value.ToString()));
             }
             if (TestNumberInt32 != null)
             {

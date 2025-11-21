@@ -16,9 +16,7 @@ private void addQueryParams(final Request request) {
 {{! -- Case3: Add before and after with inequality parameter }}
 {{^isArray}}
 {{#vendorExtensions.x-inequality-main}}
-    if ({{paramName}} != null) {
         Serializer.toString(request, "{{{baseName}}}", {{paramName}}, {{paramName}}Before, {{paramName}}After);
-    }
 {{/vendorExtensions.x-inequality-main}}
 {{/isArray}}
 
@@ -32,5 +30,11 @@ private void addQueryParams(final Request request) {
 {{/isArray}}
 
 {{/vendorExtensions.x-has-before-or-after}}
+    
 {{/queryParams}}
+{{#vendorExtensions.x-list-operation}}
+    if (getPageSize() != null) {
+        request.addQueryParam("PageSize", Integer.toString(getPageSize()));
+    }
+{{/vendorExtensions.x-list-operation}}
 }
