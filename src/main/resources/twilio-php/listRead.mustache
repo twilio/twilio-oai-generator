@@ -45,7 +45,8 @@
      */
     public function stream({{#vendorExtensions.x-has-non-pagination-params}}array $options = [], {{/vendorExtensions.x-has-non-pagination-params}}?int $limit = null, $pageSize = null): Stream
     {
-        $limits = $this->version->readLimits($limit, $pageSize);
+        {{#isApiV1}}$pageSize = $options['pageSize'] ?? $pageSize;
+        {{/isApiV1}}$limits = $this->version->readLimits($limit, $pageSize);
 
         $page = $this->page({{#vendorExtensions.x-has-non-pagination-params}}$options, {{/vendorExtensions.x-has-non-pagination-params}}$limits['pageSize']);
 
@@ -107,9 +108,9 @@
             {{/vendorExtensions.x-serialize}}
             {{/required}}
             {{/queryParams}}
-            'PageToken' => $pageToken,
+            {{^isApiV1}}'PageToken' => $pageToken,
             'Page' => $pageNumber,
-            'PageSize' => $pageSize,
+            'PageSize' => $pageSize,{{/isApiV1}}
         ]);
 
         $headers = Values::of([{{^consumes}}'Content-Type' => 'application/x-www-form-urlencoded'{{/consumes}}{{#consumes}}{{#-first}}'Content-Type' => '{{{mediaType}}}'{{/-first}}{{/consumes}}{{#produces}}{{#-first}}, 'Accept' => '{{{mediaType}}}'{{/-first}}{{/produces}}]);

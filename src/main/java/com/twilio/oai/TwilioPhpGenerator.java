@@ -5,8 +5,10 @@ import com.samskivert.mustache.Mustache;
 import com.twilio.oai.api.PhpApiResourceBuilder;
 import com.twilio.oai.api.PhpApiResources;
 import com.twilio.oai.api.PhpDomainBuilder;
+import com.twilio.oai.common.ApplicationConstants;
 import com.twilio.oai.common.EnumConstants;
 import com.twilio.oai.common.Utility;
+import com.twilio.oai.java.cache.ResourceCacheContext;
 import com.twilio.oai.resolver.IConventionMapper;
 import com.twilio.oai.resolver.LanguageConventionResolver;
 import com.twilio.oai.resolver.common.CodegenModelResolver;
@@ -74,6 +76,14 @@ public class TwilioPhpGenerator extends PhpClientCodegen {
 
     @Override
     public void processOpenAPI(final OpenAPI openAPI) {
+        String apiStdVersion = null;
+        if (openAPI.getInfo().getExtensions() != null && openAPI.getInfo().getExtensions().containsKey("x-twilio")) {
+            LinkedHashMap xTwilio = (LinkedHashMap)openAPI.getInfo().getExtensions().get("x-twilio");
+            apiStdVersion = (String) xTwilio.get("apiStandards");
+        }
+        boolean isV1 = ApplicationConstants.isV1.test(apiStdVersion);
+        ResourceCacheContext.get().setV1(isV1);
+
         String domain = StringHelper.camelize(twilioCodegen.getDomainFromOpenAPI(openAPI));
         String version = StringHelper.camelize(twilioCodegen.getVersionFromOpenAPI(openAPI));
         twilioCodegen.setDomain(domain);
