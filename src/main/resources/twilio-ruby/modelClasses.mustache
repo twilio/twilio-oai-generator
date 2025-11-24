@@ -6,7 +6,7 @@
                         attr_accessor {{#vars}}:{{name}}{{^-last}}, {{/-last}}{{/vars}}
                         def initialize(payload)
                             {{#vars}}
-                                @{{name}} = payload["{{name}}"]
+                                @{{name}} = payload[:{{name}}]
                             {{/vars}}
                         end
                         def to_json(options = {})
