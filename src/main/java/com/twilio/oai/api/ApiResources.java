@@ -38,6 +38,6 @@ public class ApiResources {
         namespaceSubPart = apiResourceBuilder.namespaceSubPart;
         hasPaginationOperation = apiResourceBuilder.hasPaginationOperation();
         nestedModels = apiResourceBuilder.nestedModels;
-        if (ResourceCacheContext.get().isV1()) isApiV1 = true;
+        if(ResourceCacheContext.get() != null && ResourceCacheContext.get().isV1()) isApiV1 = true;
     }
 }

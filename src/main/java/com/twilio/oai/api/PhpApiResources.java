@@ -1,5 +1,4 @@
 package com.twilio.oai.api;
-import com.twilio.oai.java.cache.ResourceCacheContext;
 import org.openapitools.codegen.CodegenParameter;
 
 import java.util.ArrayList;
