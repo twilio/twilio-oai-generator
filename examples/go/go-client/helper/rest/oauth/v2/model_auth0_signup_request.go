@@ -14,6 +14,11 @@
 
 package openapi
 
+import (
+	"encoding/json"
+	"github.com/twilio/twilio-go/client"
+)
+
 // Auth0SignupRequest struct for Auth0SignupRequest
 type Auth0SignupRequest struct {
 	Email           string `json:"email"`
