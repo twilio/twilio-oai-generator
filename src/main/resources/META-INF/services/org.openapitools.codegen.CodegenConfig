@@ -6,3 +6,4 @@ com.twilio.oai.TwilioNodeGenerator
 com.twilio.oai.TwilioPhpGenerator
 com.twilio.oai.TwilioRubyGenerator
 com.twilio.oai.TwilioTerraformGenerator
+com.twilio.oai.TwilioPythonGenerator

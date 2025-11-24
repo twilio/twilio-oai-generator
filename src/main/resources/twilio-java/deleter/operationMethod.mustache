@@ -1,6 +1,7 @@
-{{! 
+
+{{!
 resourceName: Api Name as identified by Directory Structure service
-x-common-action-method: used to define operation method and can have values: create, read, update, delete, fetch 
+x-common-action-method: used to define operation method and can have values: create, read, update, delete, fetch
     Example: https://github.com/twilio/twilio-java/blob/9c2ba4dbc185c5576e67fbeb82ec6f4899093e79/src/main/java/com/twilio/rest/api/v2010/account/MessageCreator.java#L309
 
 httpMethod: http method associated in the current operation.
@@ -10,7 +11,8 @@ vendorExtensions.x-content-type: content type of the request, example: applicati
     @Override
     public boolean delete(final TwilioRestClient client) {
     {{>common/generateUri}}
-    
+
+        Predicate<Integer> deleteStatuses = i -> i != null && i >= 200 && i < 300;
         Request request = new Request(
             HttpMethod.{{httpMethod}},
             Domains.{{#lambda.uppercase}}{{domainName}}{{/lambda.uppercase}}.toString(),
@@ -28,9 +30,9 @@ vendorExtensions.x-content-type: content type of the request, example: applicati
     {{#headerParams.0}}
         addHeaderParams(request);
     {{/headerParams.0}}
-    
+
         Response response = client.request(request);
-    
+
         if (response == null) {
             throw new ApiConnectionException("{{resourceName}} delete failed: Unable to connect to server");
         } else if (!TwilioRestClient.SUCCESS.test(response.getStatusCode())) {
@@ -43,5 +45,5 @@ vendorExtensions.x-content-type: content type of the request, example: applicati
             }
             throw new ApiException(restException);
         }
-        return response.getStatusCode() == 204;
+        return deleteStatuses.test(response.getStatusCode());
     }

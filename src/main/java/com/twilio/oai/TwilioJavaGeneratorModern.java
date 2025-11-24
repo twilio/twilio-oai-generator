@@ -2,6 +2,7 @@ package com.twilio.oai;
 
 import com.google.common.collect.ImmutableMap;
 import com.samskivert.mustache.Mustache.Lambda;
+import com.twilio.oai.common.ApplicationConstants;
 import com.twilio.oai.common.EnumConstants;
 import com.twilio.oai.common.Utility;
 import com.twilio.oai.java.JavaApiResource;
@@ -22,6 +23,7 @@ import org.openapitools.codegen.model.ModelsMap;
 import org.openapitools.codegen.model.OperationsMap;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -64,6 +66,13 @@ public class TwilioJavaGeneratorModern extends JavaClientCodegen {
     // Run once per spec
     @Override
     public void processOpenAPI(final OpenAPI openAPI) {
+        String apiStdVersion = null;
+        if (openAPI.getInfo().getExtensions() != null && openAPI.getInfo().getExtensions().containsKey("x-twilio")) {
+            LinkedHashMap xTwilio = (LinkedHashMap)openAPI.getInfo().getExtensions().get("x-twilio");
+            apiStdVersion = (String) xTwilio.get("apiStandards");
+        }
+        boolean isV1 = ApplicationConstants.isV1.test(apiStdVersion);
+        ResourceCacheContext.get().setV1(isV1);
         String domain = twilioCodegen.getDomainFromOpenAPI(openAPI);
         String version = twilioCodegen.getVersionFromOpenAPI(openAPI);
         twilioCodegen.setDomain(domain);

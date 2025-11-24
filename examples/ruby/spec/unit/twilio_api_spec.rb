@@ -221,7 +221,7 @@ describe 'Call' do
       method: 'POST',
       url: 'https://api.twilio.com/2010-04-01/Accounts/ACXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX/Calls.json',
       auth: [@client.username, @client.password],
-      headers: @client.generate_headers('POST'),
+      headers: @client.generate_headers('POST', {}),
       data: data
     )
     response = expect(@holodeck.has_request?(request)).to_not eq(nil)
