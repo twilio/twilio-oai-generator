@@ -1,0 +1,110 @@
+openapi: 3.1.0
+info:
+  title: Number Pool Service
+  description: |-
+    This service is an entry point for all Number Pool CRUD requests.
+  version: 1.0.0
+  contact:
+    name: 'Number Pool Service'
+    url: 'https://wiki.hq.twilio.com/display/MSG/Messaging+Services'
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+  - url: https://oneOf.twilio.com
+paths:
+  /v1/pets:
+    post:
+      operationId: CreatePet
+      summary: Add a pet (cat or dog)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+#              properties:
+#                RecordingStatusCallback:
+#                  format: uri
+#                  type: string
+#                RecordingStatusCallbackEvent:
+#                  items:
+#                    type: string
+#                  type: array
+              $ref: '#/components/schemas/Cat'
+#              title: MyPet
+#              oneOf:
+#                - $ref: '#/components/schemas/Cat'
+#                - $ref: '#/components/schemas/Dog'
+      responses:
+        '200':
+          description: Returns the created pet (cat or dog)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cat'
+#                allOf:
+#                  - type: object
+#                    properties:
+#                      account_sid:
+#                        type: string
+#                        nullable: true
+#                  - title: MyPet_Response
+#                    $ref: '#/components/schemas/MyPet_Response'
+#                  - oneOf:
+#                    - $ref: '#/components/schemas/Cat'
+#                    - $ref: '#/components/schemas/Dog'
+
+components:
+  schemas:
+    MyPet_Response:
+      type: object
+      properties:
+        cat:
+          $ref: '#/components/schemas/Cat'
+        dog:
+          $ref: '#/components/schemas/Dog'
+    Cat:
+      allOf:
+        - type: object
+          properties:
+            account_sid:
+              type: string
+        - oneOf:
+          - $ref: '#/components/schemas/One'
+          - $ref: '#/components/schemas/Two'
+#        type:
+#          type: string
+#          enum: [cat]
+#        name:
+#          type: string
+#        huntingSkill:
+#          type: string
+#          enum: [clueless, lazy, adventurous, aggressive]
+
+    Dog:
+      type: object
+      properties:
+        type:
+          type: string
+          enum: [dog]
+        name:
+          type: string
+        packSize:
+          type: integer
+          minimum: 0
+    One:
+      type: object
+      properties:
+        param1:
+          type: string
+        param2:
+          type: string
+        dog:
+          $ref: '#/components/schemas/Dog'
+    Two:
+      type: object
+      properties:
+        object1:
+          type: string
+        object2:
+          type: string

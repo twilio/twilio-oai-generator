@@ -1,0 +1,7 @@
+{{#vendorExtensions.x-signature-list}}
+    public {{resourceName}}{{vendorExtensions.x-common-action-type}}({{#.}}final {{{dataType}}} {{paramName}}{{^-last}}, {{/-last}}{{/.}}) {
+    {{#.}}
+        this.{{paramName}} = {{paramName}};
+    {{/.}}
+    }
+{{/vendorExtensions.x-signature-list}}

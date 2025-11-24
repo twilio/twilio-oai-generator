@@ -1,0 +1,43 @@
+package com.twilio.oai.java.processor;
+
+import com.twilio.oai.java.feature.Inequality;
+import com.twilio.oai.java.feature.SetterMethodGenerator;
+import com.twilio.oai.java.feature.constructor.ConstructorFactory;
+import com.twilio.oai.java.format.Promoter;
+import com.twilio.oai.java.processor.auth.SecuritySchemeManager;
+import com.twilio.oai.java.processor.parameter.ParameterProcessor;
+import com.twilio.oai.java.processor.requestbody.RequestBodyProcessorFactory;
+import com.twilio.oai.java.processor.responsebody.ResponseProcessorFactory;
+import org.openapitools.codegen.CodegenOperation;
+
+public class JavaOperationProcessor {
+
+    public static JavaOperationProcessor instance;
+    public static synchronized JavaOperationProcessor getInstance() {
+        if (instance == null) {
+            synchronized (JavaOperationProcessor.class) {
+                if (instance == null) {
+                    instance = new JavaOperationProcessor();
+                }
+            }
+        }
+        return instance;
+    }
+
+    private JavaOperationProcessor() { }
+
+    public void process(final CodegenOperation codegenOperation) {
+        SecuritySchemeManager.getInstance().applyProcessor(codegenOperation);
+
+        ParameterProcessor.getInstance().process(codegenOperation);
+        RequestBodyProcessorFactory.getInstance().process(codegenOperation);
+        ResponseProcessorFactory.getInstance().process(codegenOperation);
+
+
+        // All Features should be applied after processors are completed
+        ConstructorFactory.getInstance().applyFeature(codegenOperation);
+        SetterMethodGenerator.getInstance().apply(codegenOperation);
+        Inequality.getInstance().process(codegenOperation);
+        Promoter.addPromoter(codegenOperation);
+    }
+}

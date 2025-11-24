@@ -191,6 +191,7 @@ namespace Twilio.Rest.FlexApi.V1.Credential
             return await CreateAsync(options, client);
         }
         #endif
+
     
         /// <summary>
         /// Converts a JSON string into a NewCredentialsResource object

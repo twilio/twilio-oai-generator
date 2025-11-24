@@ -30,6 +30,35 @@ namespace Twilio.Rest.Versionless.DeployedDevices
     public class FleetResource : Resource
     {
     
+        public class VersionlessFleetTestNestedObjectValue
+        {
+            [JsonProperty("param1")]
+            private string Param1 {get; set;}
+            [JsonProperty("param2")]
+            private int Param2 {get; set;}
+            public VersionlessFleetTestNestedObjectValue() { }
+            public class Builder
+            {
+                private VersionlessFleetTestNestedObjectValue _versionlessFleetTestNestedObjectValue = new VersionlessFleetTestNestedObjectValue();
+                public Builder()
+                {
+                }
+                public Builder WithParam1(string param1)
+                {
+                    _versionlessFleetTestNestedObjectValue.Param1= param1;
+                    return this;
+                }
+                public Builder WithParam2(int param2)
+                {
+                    _versionlessFleetTestNestedObjectValue.Param2= param2;
+                    return this;
+                }
+                public VersionlessFleetTestNestedObjectValue Build()
+                {
+                    return _versionlessFleetTestNestedObjectValue;
+                }
+            }
+        }
 
     
 
@@ -99,6 +128,7 @@ namespace Twilio.Rest.Versionless.DeployedDevices
             return await CreateAsync(options, client);
         }
         #endif
+
         
         private static Request BuildFetchRequest(FetchFleetOptions options, ITwilioRestClient client)
         {
@@ -205,6 +235,18 @@ namespace Twilio.Rest.Versionless.DeployedDevices
         ///<summary> The test_int_map </summary> 
         [JsonProperty("test_int_map")]
         public Dictionary<string, int> TestIntMap { get; private set; }
+
+        ///<summary> The test_nested_object </summary> 
+        [JsonProperty("test_nested_object")]
+        public Dictionary<string, VersionlessFleetTestNestedObjectValue> TestNestedObject { get; private set; }
+
+        ///<summary> The test_nested_array </summary> 
+        [JsonProperty("test_nested_array")]
+        public List<Dictionary<string, int>> TestNestedArray { get; private set; }
+
+        ///<summary> The test_nested_array_of_objects </summary> 
+        [JsonProperty("test_nested_array_of_objects")]
+        public List<Dictionary<string, VersionlessFleetTestNestedObjectValue>> TestNestedArrayOfObjects { get; private set; }
 
         ///<summary> A string that uniquely identifies this Fleet. </summary> 
         [JsonProperty("sid")]

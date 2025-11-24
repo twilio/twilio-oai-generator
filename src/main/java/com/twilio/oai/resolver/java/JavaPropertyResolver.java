@@ -45,7 +45,7 @@ public class JavaPropertyResolver extends LanguagePropertyResolver {
                 (key, value) -> property.getVendorExtensions().merge(key, value, (oldValue, newValue) -> newValue)
         );
 
-        if (apiResourceBuilder.getToggleMap().getOrDefault(EnumConstants.Generator.TWILIO_JAVA.getValue(), Boolean.FALSE) ) {
+        if (apiResourceBuilder.getToggleMap().getOrDefault(EnumConstants.Generator.TWILIO_JAVA_LEGACY.getValue(), Boolean.FALSE) ) {
             resolveIngressModel(property, apiResourceBuilder);
         }
     }

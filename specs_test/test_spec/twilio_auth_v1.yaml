@@ -1,0 +1,10 @@
+components:
+    securitySchemes:
+    oAuth2ClientCredentials:
+      type: oauth2
+      flows:
+        clientCredentials:
+          tokenUrl: https://preview-iam.twilio.com/v1/token
+          scopes: {}
+paths:
+  

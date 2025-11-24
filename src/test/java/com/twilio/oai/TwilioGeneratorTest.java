@@ -28,7 +28,15 @@ import static org.junit.Assert.assertFalse;
 public class TwilioGeneratorTest {
     @Parameterized.Parameters
     public static Collection<Generator> generators() {
-        return Arrays.asList(Generator.TWILIO_JAVA);
+        return Arrays.asList(
+                Generator.TWILIO_JAVA,
+                Generator.TWILIO_CSHARP,
+                Generator.TWILIO_PYTHON,
+                Generator.TWILIO_NODE,
+                Generator.TWILIO_RUBY,
+                Generator.TWILIO_GO,
+                Generator.TWILIO_PHP
+        );
     }
 
     private final Generator generator;
@@ -53,7 +61,8 @@ public class TwilioGeneratorTest {
                     .setGeneratorName(generator.getValue())
                     .setInputSpec(file.getPath())
                     .setOutputDir("codegen/" + generator.getValue())
-                    .setInlineSchemaNameDefaults(Map.of("arrayItemSuffix", ""))
+                    //.setInlineSchemaNameDefaults(Map.of("arrayItemSuffix", "")) // OpenAPI Generator 6.x.x
+                    .setInlineSchemaOptions(Map.of("ARRAY_ITEM_SUFFIX", "")) // OpenAPI Generator 7.x.x
                     .addGlobalProperty("apiTests", "false")
                     .addGlobalProperty("apiDocs", "false");
             final ClientOptInput clientOptInput = configurator.toClientOptInput();
