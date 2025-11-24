@@ -42,6 +42,8 @@
         "date-time-rfc-2822": "DateTime?",
         "date-time-range": "Range<DateTime>",
         "decimal": "decimal?",
+        "float": "float?",
+        "double": "double?",
         "endpoint": "IEndpoint",
         "http-method": "Twilio.Http.HttpMethod",
         "int": "int?",
@@ -114,6 +116,8 @@
         "prefixed-collapsible-map": "PrefixedCollapsibleMap.Serialize(%s, %s)",
         "bool?": "%s.Value.ToString().ToLower()",
         "decimal?": "%s.Value.ToString()",
+        "float?": "%s.Value.ToString()",
+        "double?": "%s.Value.ToString()",
         "int?": "%s.ToString()",
         "long?": "%s.Value.ToString()"
     },

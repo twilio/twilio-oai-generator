@@ -1,0 +1,22 @@
+private void addHeaderParams(final Request request) {
+{{#headerParams}}
+
+{{! -- case1 Normal Parameter (Non Array, Non equality parameter)}}
+{{^isArray}}
+{{^vendorExtensions.x-inequality-main}}
+    if ({{paramName}} != null) {
+        Serializer.toString(request, "{{{baseName}}}", {{paramName}}, ParameterType.HEADER);
+    }
+{{/vendorExtensions.x-inequality-main}}
+{{/isArray}}
+{{! -- Case2: Array Parameter }}
+{{#isArray}}
+    if ({{paramName}} != null) {
+        for ({{baseType}} param: {{paramName}}) {
+            Serializer.toString(request, "{{{baseName}}}", param, ParameterType.HEADER);
+        }
+    }
+{{/isArray}}
+
+{{/headerParams}}
+}

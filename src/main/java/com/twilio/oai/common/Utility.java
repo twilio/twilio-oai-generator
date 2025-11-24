@@ -10,9 +10,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import com.twilio.oai.java.cache.ResourceCacheContext;
 import lombok.experimental.UtilityClass;
+import org.apache.commons.lang3.StringUtils;
 import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenOperation;
 import org.openapitools.codegen.CodegenProperty;
@@ -20,6 +24,7 @@ import org.openapitools.codegen.model.ModelMap;
 import org.openapitools.codegen.model.ModelsMap;
 
 import static com.twilio.oai.common.ApplicationConstants.ARRAY;
+import static com.twilio.oai.common.ApplicationConstants.DOT;
 import static com.twilio.oai.common.ApplicationConstants.OBJECT;
 
 @UtilityClass
@@ -88,6 +93,21 @@ public class Utility {
 
         return method.name();
     }
+    
+    /*
+       responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                title: ListMessageResponse
+                type: object
+                properties:
+                  messages: -----------------> recordKey
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/api.v2010.account.message'
+     */
 
     public String getRecordKey(final List<CodegenModel> models, final List<CodegenOperation> codegenOperationList) {
         return codegenOperationList
@@ -139,5 +159,119 @@ public class Utility {
                 co.vendorExtensions.put("x-is-json-type", true);
             }
         }
+    }
+
+    public static String extractDatatypeFromContainer(String input) {
+        // Define the regular expression pattern
+        Pattern pattern = Pattern.compile("<([^>]+)>");
+
+        // Create a matcher object
+        Matcher matcher = pattern.matcher(input);
+
+        // Check if the pattern matches
+        if (matcher.find()) {
+            // Return the captured group which is the custom type
+            return matcher.group(1);
+        }
+        return null; // Return null if no match is found
+    }
+
+    public static String replaceDatatypeInContainer(String input, String replacement) {
+        // Define the regular expression pattern to extract the custom type
+        Pattern pattern = Pattern.compile("<([^>]+)>");
+        Matcher matcher = pattern.matcher(input);
+
+        // If a match is found, perform the replacement
+        if (matcher.find()) {
+            // Extract the custom type
+            String customType = matcher.group(1);
+            // Replace the custom type with the provided replacement string
+            return input.replace(customType, replacement);
+        }
+        // Return the input unchanged if no match is found
+        return input;
+    }
+    
+    public static String appendResourceNameToEnum(String name) {
+        if (name == null || name.isEmpty()) {
+            return null;
+        }
+        String prefix = ResourceCacheContext.get().getResourceName() + DOT;
+        if (name.startsWith(prefix)) {
+            return name;
+        }
+        return prefix + com.twilio.oai.common.StringUtils.toPascalCase(name);
+    }
+    
+    public static String getEnumNameFromRef(final String ref) {
+        String schemaName = ref.replaceFirst("#/components/schemas/", "");
+        String[] enumNameArray = schemaName.split("_enum_");
+        return enumNameArray[enumNameArray.length - 1];
+    }
+
+    /* For request body(urlencoded) enums with ref, it will be processed by default
+       Example1:
+       singleBodyRef:
+         $ref: '#/components/schemas/singleReusable'
+       
+       Example2:
+       status:
+          $ref: '#/components/schemas/message_enum_status'
+     */
+    public static String getEnumNameFromDefaultDatatype(final String ref) {
+        if (ref == null) return null;
+        String schemaName = ref.replaceFirst("#/components/schemas/", "");
+        if (ref.equals(schemaName)) {
+            // No change in schemaName
+            return getEnumNameFromDatatype(ref);
+        }
+        String[] enumNameArray = schemaName.split("_enum_");
+        return enumNameArray[enumNameArray.length - 1];
+    }
+    
+    public static String getEnumNameFromDatatype(final String datatype) {
+        if (datatype == null || datatype.isEmpty()) {
+            return null;
+        }
+        String[] enumNameArray = datatype.split("Enum");
+        return enumNameArray[enumNameArray.length - 1];
+    }
+    
+    /*
+    Type1: 
+        types:
+          $ref: '#/components/schemas/types'
+          
+     */
+    public static CodegenModel getModelFromOpenApiType(CodegenProperty codegenProperty) {
+        // Ref occurs for 2 cases, 
+        // 1. one when there is no ref, in that case the name will contain parent names.
+        // 2. When model is defined using ref(reusable), name will not contain parent names.
+        if (StringUtils.isBlank(codegenProperty.openApiType)) {
+            return null;
+        }
+        String modelClassName = codegenProperty.isContainer ? codegenProperty.items.openApiType: codegenProperty.openApiType;
+        for (CodegenModel codegenModel: ResourceCacheContext.get().getAllModelsByDefaultGenerator()) {
+            if (modelClassName.equals(codegenModel.classname)) {
+                return codegenModel;
+            }
+        }
+        return null;
+    }
+
+    public static void main(String[] args) {
+        String ref = "#/components/schemas/api.v2010.account.message";
+        
+        System.out.println(getModelFromRef(ref));
+    }
+    public static CodegenModel getModelFromRef(String ref) {
+        String schemaName = ref.replaceFirst("#/components/schemas/", "");
+        List<CodegenModel> allModels = ResourceCacheContext.get().getAllModelsByDefaultGenerator();
+        for (CodegenModel model: allModels) {
+            if (model.name.equals(schemaName)) {
+                return model;
+            }
+        }
+        return null;
     }
 }

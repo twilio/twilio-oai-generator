@@ -1,0 +1,47 @@
+{{! 
+resourceName: Api Name as identified by Directory Structure service
+x-common-action-method: used to define operation method and can have values: create, read, update, delete, fetch 
+    Example: https://github.com/twilio/twilio-java/blob/9c2ba4dbc185c5576e67fbeb82ec6f4899093e79/src/main/java/com/twilio/rest/api/v2010/account/MessageCreator.java#L309
+
+httpMethod: http method associated in the current operation.
+domainName: example api, video, chat, etc. These can be found in Domains.java in twilio-java
+vendorExtensions.x-content-type: content type of the request, example: application/json, application/x-www-form-urlencoded
+}}
+    @Override
+    public {{resourceName}} fetch(final TwilioRestClient client) {
+    {{>common/generateUri}}
+    
+        Request request = new Request(
+            HttpMethod.{{httpMethod}},
+            Domains.{{#lambda.uppercase}}{{domainName}}{{/lambda.uppercase}}.toString(),
+            path
+        );
+    {{#vendorExtensions.x-request-content-type}}
+        request.setContentType(EnumConstants.ContentType.{{vendorExtensions.x-request-content-type}});
+    {{/vendorExtensions.x-request-content-type}}
+    {{#vendorExtensions.x-no-auth}}
+        request.setAuth(NoAuthStrategy.getInstance());
+    {{/vendorExtensions.x-no-auth}}
+    {{#queryParams.0}}
+        addQueryParams(request);
+    {{/queryParams.0}}
+    {{#headerParams.0}}
+        addHeaderParams(request);
+    {{/headerParams.0}}
+    
+        Response response = client.request(request);
+    
+        if (response == null) {
+            throw new ApiConnectionException("{{resourceName}} fetch failed: Unable to connect to server");
+        } else if (!TwilioRestClient.SUCCESS.test(response.getStatusCode())) {
+            RestException restException = RestException.fromJson(
+                response.getStream(),
+                client.getObjectMapper()
+            );
+            if (restException == null) {
+                throw new ApiException("Server Error, no content", response.getStatusCode());
+            }
+            throw new ApiException(restException);
+        }
+        return {{resourceName}}.fromJson(response.getStream(), client.getObjectMapper());
+    }
