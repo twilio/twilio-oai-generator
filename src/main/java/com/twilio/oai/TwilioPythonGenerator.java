@@ -1,3 +1,7 @@
+package com.twilio.oai;
+
+import com.twilio.oai.api.ApiResources;
+import com.twilio.oai.api.PythonApiResourceBuilder;
 import com.twilio.oai.common.EnumConstants;
 import com.twilio.oai.common.Utility;
 import com.twilio.oai.resolver.IConventionMapper;

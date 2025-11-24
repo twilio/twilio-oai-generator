@@ -72,6 +72,7 @@ public class Inequality {
             }
         }
     }
+
     // Input: DateCreated, DateCreated>, DateCreated<
     // Output: DateCreated, DateCreated, DateCreated
     private String getBaseName(CodegenParameter codegenParameter) {

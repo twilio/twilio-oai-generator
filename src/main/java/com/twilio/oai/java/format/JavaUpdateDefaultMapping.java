@@ -9,6 +9,7 @@ import java.util.Set;
 
 public class JavaUpdateDefaultMapping {
     HashSet<String> customFormatWithProperties = new HashSet<>();
+
     /*
         If a property in the OpenAPI specification is defined as
         date_generated:

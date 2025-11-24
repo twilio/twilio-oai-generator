@@ -73,6 +73,7 @@ public class TwilioJavaGeneratorModern extends JavaClientCodegen {
         }
         boolean isV1 = ApplicationConstants.isV1.test(apiStdVersion);
         ResourceCacheContext.get().setV1(isV1);
+
         String domain = twilioCodegen.getDomainFromOpenAPI(openAPI);
         String version = twilioCodegen.getVersionFromOpenAPI(openAPI);
         twilioCodegen.setDomain(domain);
