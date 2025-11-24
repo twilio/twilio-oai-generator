@@ -2,6 +2,7 @@ package com.twilio.oai.java;
 
 import com.twilio.oai.TwilioJavaGeneratorModern;
 import com.twilio.oai.common.EnumConstants;
+import com.twilio.oai.common.EnumConstants.SupportedOperation;
 import com.twilio.oai.java.constants.MustacheConstants;
 import org.openapitools.codegen.CodegenOperation;
 
@@ -12,9 +13,9 @@ import static com.twilio.oai.java.constants.MustacheConstants.ActionMethod;
 import static com.twilio.oai.java.constants.MustacheConstants.ActionType;
 
 /*
-The JavaTemplateFile class is responsible for managing template mappings for Java code generation. 
-It defines mappings between operation IDs (starting strings) 
-and corresponding template files (mustache files) along with their generated file extensions. 
+The JavaTemplateFile class is responsible for managing template mappings for Java code generation.
+It defines mappings between operation IDs (starting strings)
+and corresponding template files (mustache files) along with their generated file extensions.
 Example:
     Key: Represents the starting string of the operationId (e.g., "create", "fetch").
     Value: Represents a mapping between the mustache template file and the generated file extension using AbstractMap.SimpleEntry.
@@ -34,7 +35,8 @@ public class JavaTemplateUpdater {
                 "fetch", new AbstractMap.SimpleEntry<>("fetcher.mustache", "Fetcher.java"),
                 "delete", new AbstractMap.SimpleEntry<>("deleter.mustache", "Deleter.java"),
                 "list", new AbstractMap.SimpleEntry<>("reader.mustache", "Reader.java"),
-                "update", new AbstractMap.SimpleEntry<>("updater.mustache", "Updater.java")
+                "update", new AbstractMap.SimpleEntry<>("updater.mustache", "Updater.java"),
+                "patch", new AbstractMap.SimpleEntry<>("patcher.mustache", "Patcher.java")
         );
         apiTemplate = Map.of(
                 API_TEMPLATE, new AbstractMap.SimpleEntry<>("api.mustache", ".java")
@@ -61,6 +63,8 @@ public class JavaTemplateUpdater {
                 Delete.add(twilioJavaGenerator, operation, apiOperationTemplate);
             } else if (Fetch.isFetch(operation)) {
                 Fetch.add(twilioJavaGenerator, operation, apiOperationTemplate);
+            } else if (Patch.isPatch(operation)) {
+                Patch.add(twilioJavaGenerator, operation, apiOperationTemplate);
             } else {
                 throw new RuntimeException("Unsupported operation type for operationId: " + operationId);
             }
@@ -148,5 +152,20 @@ class Fetch {
     }
     public static boolean isFetch(CodegenOperation codegenOperation) {
         return codegenOperation.operationId.toLowerCase().startsWith("fetch");
+    }
+}
+
+class Patch {
+    public static void add(TwilioJavaGeneratorModern twilioJavaGenerator, CodegenOperation codegenOperation, Map<String, AbstractMap.SimpleEntry> apiOperationTemplate) {
+        codegenOperation.vendorExtensions.put(SupportedOperation.X_PATCH.getValue(), true);
+        String key = (String) apiOperationTemplate.get("patch").getKey();
+        String value = (String) apiOperationTemplate.get("patch").getValue();
+        twilioJavaGenerator.apiTemplateFiles().put(key, value);
+
+        codegenOperation.vendorExtensions.put(MustacheConstants.ACTION_TYPE, ActionType.PATCHER.getValue());
+        codegenOperation.vendorExtensions.put(MustacheConstants.ACTION_METHOD, ActionMethod.PATCH.getValue());
+    }
+    public static boolean isPatch(CodegenOperation codegenOperation) {
+        return codegenOperation.operationId.toLowerCase().startsWith("patch");
     }
 }

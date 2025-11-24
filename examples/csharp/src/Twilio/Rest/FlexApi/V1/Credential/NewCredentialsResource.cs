@@ -29,9 +29,9 @@ namespace Twilio.Rest.FlexApi.V1.Credential
 {
     public class NewCredentialsResource : Resource
     {
-    
 
-    
+
+
         public sealed class StatusEnum : StringEnum
         {
             private StatusEnum(string value) : base(value) {}
@@ -61,10 +61,10 @@ namespace Twilio.Rest.FlexApi.V1.Credential
             public static readonly PermissionsEnum PostAll = new PermissionsEnum("post-all");
         }
 
-        
+
         private static Request BuildCreateRequest(CreateNewCredentialsOptions options, ITwilioRestClient client)
         {
-            
+
             string path = "/v1/Credentials/AWS";
 
 
@@ -192,7 +192,7 @@ namespace Twilio.Rest.FlexApi.V1.Credential
         }
         #endif
 
-    
+
         /// <summary>
         /// Converts a JSON string into a NewCredentialsResource object
         /// </summary>
@@ -226,20 +226,20 @@ namespace Twilio.Rest.FlexApi.V1.Credential
         }
     }
 
-    
-        ///<summary> The account_sid </summary> 
+
+        ///<summary> The account_sid </summary>
         [JsonProperty("account_sid")]
         public string AccountSid { get; private set; }
 
-        ///<summary> The sid </summary> 
+        ///<summary> The sid </summary>
         [JsonProperty("sid")]
         public string Sid { get; private set; }
 
-        ///<summary> The test_string </summary> 
+        ///<summary> The test_string </summary>
         [JsonProperty("test_string")]
         public string TestString { get; private set; }
 
-        ///<summary> The test_integer </summary> 
+        ///<summary> The test_integer </summary>
         [JsonProperty("test_integer")]
         public int? TestInteger { get; private set; }
 
