@@ -104,6 +104,7 @@ public class TwilioJavaGeneratorModern extends JavaClientCodegen {
         //ResourceCache.clearAllModelsByDefaultGenerator();
         // Update allModels from Default generator in ResourceCache.
         Utility.addModelsToLocalModelList(results, cache2.getAllModelsByDefaultGenerator());
+        Utility.addModelsToLocalCodegenModelMap(results, cache2.getAllModelsMapByDefaultGenerator());
         directoryStructureService.postProcessAllModels(results, modelFormatMap);
 
         // Return an empty collection so no model files get generated.

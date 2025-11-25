@@ -18,7 +18,6 @@ public class JavaApiResource {
     List<CodegenOperation> operations;
     Set<CodegenProperty> response;
     String namespaceSubPart;
-
     Boolean responseFlag = null; // true or NUll
     Boolean isApiV1 = null; // true or NUll
     
