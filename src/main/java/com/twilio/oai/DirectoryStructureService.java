@@ -104,8 +104,9 @@ public class DirectoryStructureService {
                 }
 
                 updateAccountSidParam(operation);
-                if (ResourceCacheContext.get() == null || !ResourceCacheContext.get().isV1())
+                if (ResourceCacheContext.get() == null || !ResourceCacheContext.get().isV1()) {
                     updatePaginationParams(operation);
+                }
 
                 pathType.ifPresent(type -> Optional
                         .ofNullable(operation.getExtensions())
