@@ -79,11 +79,15 @@ public class TwilioPhpGenerator extends PhpClientCodegen {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public void processOpenAPI(final OpenAPI openAPI) {
         String apiStdVersion = null;
         if (openAPI.getInfo().getExtensions() != null && openAPI.getInfo().getExtensions().containsKey("x-twilio")) {
-            LinkedHashMap xTwilio = (LinkedHashMap)openAPI.getInfo().getExtensions().get("x-twilio");
-            apiStdVersion = (String) xTwilio.get("apiStandards");
+            Object xTwilioObj = openAPI.getInfo().getExtensions().get("x-twilio");
+            if (xTwilioObj instanceof Map) {
+                Map<String, Object> xTwilio = (Map<String, Object>) xTwilioObj;
+                apiStdVersion = (String) xTwilio.get("apiStandards");
+            }
         }
         boolean isV1 = ApplicationConstants.isV1.test(apiStdVersion);
         ResourceCacheContext.get().setV1(isV1);
