@@ -45,8 +45,8 @@
      */
     public function stream({{#vendorExtensions.x-has-non-pagination-params}}array $options = [], {{/vendorExtensions.x-has-non-pagination-params}}?int $limit = null, $pageSize = null): Stream
     {
-        {{#isApiV1}}$pageSize = $options['pageSize'] ?? $pageSize;
-        {{/isApiV1}}$limits = $this->version->readLimits($limit, $pageSize);
+        {{#isApiV1}}{{#vendorExtensions.x-has-non-pagination-params}}$pageSize = $options['pageSize'] ?? $pageSize;
+        {{/vendorExtensions.x-has-non-pagination-params}}{{/isApiV1}}$limits = $this->version->readLimits($limit, $pageSize);
 
         $page = $this->page({{#vendorExtensions.x-has-non-pagination-params}}$options, {{/vendorExtensions.x-has-non-pagination-params}}$limits['pageSize']);
 
