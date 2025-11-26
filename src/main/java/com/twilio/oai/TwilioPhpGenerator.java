@@ -8,6 +8,7 @@ import com.twilio.oai.api.PhpDomainBuilder;
 import com.twilio.oai.common.ApplicationConstants;
 import com.twilio.oai.common.EnumConstants;
 import com.twilio.oai.common.Utility;
+import com.twilio.oai.java.cache.ResourceCache2;
 import com.twilio.oai.java.cache.ResourceCacheContext;
 import com.twilio.oai.resolver.IConventionMapper;
 import com.twilio.oai.resolver.LanguageConventionResolver;
@@ -31,6 +32,7 @@ import java.util.*;
 
 public class TwilioPhpGenerator extends PhpClientCodegen {
 
+    ResourceCache2 resourceCache2 = new ResourceCache2();
     public static final String VALUES = "values";
     public static final String JSON_INGRESS = "json_ingress";
     private static final String PHP_CONVENTIONAL_MAP_PATH = "config/" + EnumConstants.Generator.TWILIO_PHP.getValue() + ".json";
@@ -53,6 +55,8 @@ public class TwilioPhpGenerator extends PhpClientCodegen {
 
     public TwilioPhpGenerator() {
         super();
+        ResourceCacheContext.clear();
+        ResourceCacheContext.set(resourceCache2); // initialize the resource cache context to avoid null pointer exceptions
         twilioCodegen = new TwilioCodegenAdapter(this, getName());
     }
 
