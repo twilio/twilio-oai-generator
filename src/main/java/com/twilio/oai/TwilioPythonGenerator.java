@@ -49,6 +49,13 @@ public class TwilioPythonGenerator extends PythonClientCodegen {
         packageName = "";
 
         typeMapping.put("array", "List");
+        typeMapping.put("decimal", "decimal.Decimal");
+
+        // Add import mapping for decimal type
+        importMapping.put("decimal.Decimal", "decimal.Decimal");
+
+        // Add decimal.Decimal to language-specific primitives
+        languageSpecificPrimitives.add("decimal.Decimal");
     }
 
     @Override
@@ -152,5 +159,29 @@ public class TwilioPythonGenerator extends PythonClientCodegen {
     @Override
     public String defaultTemplatingEngine() {
         return "twilio-handlebars";
+    }
+
+    @Override
+    public String getTypeDeclaration(String name) {
+        if ("decimal.Decimal".equals(name)) {
+            return "Decimal";
+        }
+        return super.getTypeDeclaration(name);
+    }
+
+    @Override
+    public String toModelImport(String name) {
+        if ("decimal.Decimal".equals(name)) {
+            return "from decimal import Decimal";
+        }
+        return super.toModelImport(name);
+    }
+
+    @Override
+    public String getSchemaType(io.swagger.v3.oas.models.media.Schema schema) {
+        if (schema != null && "decimal".equals(schema.getType())) {
+            return "number";
+        }
+        return super.getSchemaType(schema);
     }
 }

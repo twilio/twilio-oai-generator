@@ -33,9 +33,6 @@ function docker_run() {
 if should_generate go; then
   OUT_DIR=examples/go/go-client/helper
   generate twilio-go
-
-#  OUT_DIR=examples/go/go-client/terraform/resources
-#  generate terraform-provider-twilio
   docker_run examples/go/Dockerfile-goimports
 fi
 
@@ -63,7 +60,6 @@ fi
 if should_generate python; then
   OUT_DIR=examples/python/twilio
   generate twilio-python
-  generate twilio-python examples/test_spec/twilio_oneOf_v1.yaml
   docker_run examples/python/Dockerfile-prettier
 fi
 

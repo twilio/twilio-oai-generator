@@ -14,6 +14,13 @@
 
 package openapi
 
+import (
+	"bytes"
+	"encoding/json"
+	"fmt"
+	"github.com/twilio/twilio-go/client"
+)
+
 // Auth0TestLoginResponse struct for Auth0TestLoginResponse
 type Auth0TestLoginResponse struct {
 	AccessToken string `json:"accessToken"`

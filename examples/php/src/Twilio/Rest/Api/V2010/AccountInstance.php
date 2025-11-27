@@ -18,15 +18,11 @@
 namespace Twilio\Rest\Api\V2010;
 
 use Twilio\Exceptions\TwilioException;
-use Twilio\ListResource;
 use Twilio\InstanceResource;
 use Twilio\Options;
-use Twilio\Stream;
 use Twilio\Values;
 use Twilio\Version;
-use Twilio\InstanceContext;
 use Twilio\Deserialize;
-use Twilio\Serialize;
 use Twilio\Base\PhoneNumberCapabilities;
 use Twilio\Rest\Api\V2010\Account\CallList;
 
@@ -48,6 +44,8 @@ use Twilio\Rest\Api\V2010\Account\CallList;
  * @property int[] $testArrayOfIntegers
  * @property int[][] $testArrayOfArrayOfIntegers
  * @property string[]|null $testArrayOfObjects
+ * @property string[]|null $testArrayOfEnum
+ * @property string|null $testNumberDecimal
  * @property string[]|null $testArrayOfEnum
  * @property string $status
  * @property string $message
@@ -85,6 +83,8 @@ class AccountInstance extends InstanceResource
             'testArrayOfIntegers' => Values::array_get($payload, 'test_array_of_integers'),
             'testArrayOfArrayOfIntegers' => Values::array_get($payload, 'test_array_of_array_of_integers'),
             'testArrayOfObjects' => Values::array_get($payload, 'test_array_of_objects'),
+            'testArrayOfEnum' => Values::array_get($payload, 'test_array_of_enum'),
+            'testNumberDecimal' => Values::array_get($payload, 'test_number_decimal'),
             'testArrayOfEnum' => Values::array_get($payload, 'test_array_of_enum'),
             'status' => Values::array_get($payload, 'status'),
             'message' => Values::array_get($payload, 'message'),

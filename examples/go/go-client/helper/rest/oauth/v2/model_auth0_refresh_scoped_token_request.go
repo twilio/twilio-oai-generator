@@ -14,6 +14,11 @@
 
 package openapi
 
+import (
+	"encoding/json"
+	"github.com/twilio/twilio-go/client"
+)
+
 // Auth0RefreshScopedTokenRequest struct for Auth0RefreshScopedTokenRequest
 type Auth0RefreshScopedTokenRequest struct {
 	// The SID of the account to be authorized for the user.
