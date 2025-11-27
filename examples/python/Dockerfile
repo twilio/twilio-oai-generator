@@ -17,7 +17,5 @@ RUN pip install --no-cache-dir -r requirements.txt
 RUN pip install pytest-cov
 RUN pip install pytz
 
-CMD ["/bin/bash"]
-
 # pipefail prevents errors in a pipeline from being masked
-#CMD ["/bin/bash", "-c", "set -o pipefail && sleep 10 && python -m pytest tests 2>&1 | tee /local/test-report.out && cp coverage.xml /local"]
+CMD ["/bin/bash", "-c", "set -o pipefail && sleep 10 && python -m pytest tests 2>&1 | tee /local/test-report.out && cp coverage.xml /local"]
