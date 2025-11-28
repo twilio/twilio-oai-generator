@@ -16,10 +16,8 @@ package openapi
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/url"
-
-	"github.com/twilio/twilio-go/client"
+	"strings"
 )
 
 // Optional parameters for the method 'FetchCredentialHistory'

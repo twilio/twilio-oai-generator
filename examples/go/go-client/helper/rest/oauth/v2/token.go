@@ -16,10 +16,7 @@ package openapi
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/url"
-
-	"github.com/twilio/twilio-go/client"
 )
 
 // Optional parameters for the method 'CreateOauth2Token'
