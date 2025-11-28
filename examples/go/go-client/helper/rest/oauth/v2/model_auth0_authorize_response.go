@@ -14,13 +14,6 @@
 
 package openapi
 
-import (
-	"bytes"
-	"encoding/json"
-	"fmt"
-	"github.com/twilio/twilio-go/client"
-)
-
 // Auth0AuthorizeResponse struct for Auth0AuthorizeResponse
 type Auth0AuthorizeResponse struct {
 	Email    string `json:"email,omitempty"`

@@ -14,13 +14,6 @@
 
 package openapi
 
-import (
-	"bytes"
-	"encoding/json"
-	"fmt"
-	"github.com/twilio/twilio-go/client"
-)
-
 // Auth0AuthenticationCodeExchangeRequest struct for Auth0AuthenticationCodeExchangeRequest
 type Auth0AuthenticationCodeExchangeRequest struct {
 	AuthorizationCode string `json:"authorizationCode"`

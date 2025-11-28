@@ -33,9 +33,9 @@ namespace Twilio.Rest.Versionless.DeployedDevices
         public class VersionlessFleetTestNestedObjectValue
         {
             [JsonProperty("param1")]
-            private string Param1 {get; set;}
+            public string Param1 {get; private set;}
             [JsonProperty("param2")]
-            private int Param2 {get; set;}
+            public int Param2 {get; private set;}
             public VersionlessFleetTestNestedObjectValue() { }
             public class Builder
             {

@@ -16,10 +16,8 @@ package openapi
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/url"
-
-	"github.com/twilio/twilio-go/client"
+	"strings"
 )
 
 func (c *ApiService) UpdateCall(Sid string) (*UpdateCallResponse, error) {
