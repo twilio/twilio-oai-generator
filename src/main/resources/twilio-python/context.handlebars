@@ -95,7 +95,84 @@ class {{apiName}}Context(InstanceContext):
             payload{{#instancePathParams}},
             {{paramName}}=self._solution['{{paramName}}']{{/instancePathParams}}
         )
-    {{/vendorExtensions.x-twilio.ignoreOperation}}{{/vendorExtensions.x-is-update-operation}}{{#vendorExtensions.x-is-fetch-operation}}{{^vendorExtensions.x-twilio.ignoreOperation}}
+    {{/vendorExtensions.x-twilio.ignoreOperation}}{{/vendorExtensions.x-is-update-operation}}{{#vendorExtensions.x-is-patch-operation}}{{^vendorExtensions.x-twilio.ignoreOperation}}
+    def {{vendorExtensions.x-name-lower}}(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> {{instanceName}}:
+        """
+        Patch the {{instanceName}}
+        {{#allParams}}
+        :param {{paramName}}: {{{description}}}{{/allParams}}
+
+        :returns: The patched {{instanceName}}
+        """
+        {{#bodyParam}}data = {{paramName}}.to_dict(){{/bodyParam}}
+        {{^bodyParam}}data = values.of({ {{#allParams}}{{#isFormParam}}
+            '{{{baseName}}}': {{#if vendorExtensions.x-serialize}}{{vendorExtensions.x-serialize}}({{paramName}}{{#if isArray}}, lambda e: e){{else}}){{/if}}{{else}}{{paramName}}{{/if}},{{/isFormParam}}{{/allParams}}
+        }){{/bodyParam}}
+        headers = values.of({})
+        {{#allParams}}{{#isHeaderParam}}
+        {{^if required}}
+        if not ({{paramName}} is values.unset or (isinstance({{paramName}}, str) and not {{paramName}})):{{/if}}
+            headers['{{{baseName}}}'] = {{paramName}}{{/isHeaderParam}}{{/allParams}}
+        {{#consumes}}
+        headers["Content-Type"] = "{{{mediaType}}}"
+        {{/consumes}}
+        {{#vendorExtensions.successProduce}}
+        headers["Accept"] = "{{{mediaType}}}"
+        {{/vendorExtensions.successProduce}}{{#if queryParams}}
+        params = values.of({ {{#allParams}}{{#isQueryParam}}{{#if vendorExtensions.x-prefixed-collapsible-map}}{{else}}
+            '{{{baseName}}}': {{#if vendorExtensions.x-serialize}}{{vendorExtensions.x-serialize}}({{paramName}}{{#if isArray}}, lambda e: e){{else}}){{/if}}{{else}}{{paramName}}{{/if}},{{/if}}{{/isQueryParam}}{{/allParams}}
+        })
+
+        {{#allParams}}{{#isQueryParam}}{{#if vendorExtensions.x-prefixed-collapsible-map}}params.patch({{vendorExtensions.x-serialize}}({{paramName}}, '{{vendorExtensions.x-prefixed-collapsible-map}}'))
+        {{/if}}{{/isQueryParam}}{{/allParams}}{{/if}}
+
+        payload = self._version.patch(method='{{vendorExtensions.x-http-method}}', uri=self._uri, data=data, headers=headers{{#if queryParams}}, params=params{{/if}})
+
+        return {{instanceName}}(
+            self._version,
+            payload{{#instancePathParams}},
+            {{paramName}}=self._solution['{{paramName}}']{{/instancePathParams}}
+        )
+
+    async def {{vendorExtensions.x-name-lower}}_async(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> {{instanceName}}:
+        """
+        Asynchronous coroutine to patch the {{instanceName}}
+        {{#allParams}}
+        :param {{paramName}}: {{{description}}}{{/allParams}}
+
+        :returns: The patched {{instanceName}}
+        """
+        {{#bodyParam}}data = {{paramName}}.to_dict(){{/bodyParam}}
+        {{^bodyParam}}data = values.of({ {{#allParams}}{{#isFormParam}}
+            '{{{baseName}}}': {{#if vendorExtensions.x-serialize}}{{vendorExtensions.x-serialize}}({{paramName}}{{#if isArray}}, lambda e: e){{else}}){{/if}}{{else}}{{paramName}}{{/if}},{{/isFormParam}}{{/allParams}}
+        }){{/bodyParam}}
+        headers = values.of({})
+        {{#allParams}}{{#isHeaderParam}}
+        {{^if required}}
+        if not ({{paramName}} is values.unset or (isinstance({{paramName}}, str) and not {{paramName}})):{{/if}}
+            headers['{{{baseName}}}'] = {{paramName}}
+        {{/isHeaderParam}}{{/allParams}}
+        {{#consumes}}
+        headers["Content-Type"] = "{{{mediaType}}}"
+        {{/consumes}}
+        {{#vendorExtensions.successProduce}}
+        headers["Accept"] = "{{{mediaType}}}"
+        {{/vendorExtensions.successProduce}}{{#if queryParams}}
+        params = values.of({ {{#allParams}}{{#isQueryParam}}{{#if vendorExtensions.x-prefixed-collapsible-map}}{{else}}
+            '{{{baseName}}}': {{#if vendorExtensions.x-serialize}}{{vendorExtensions.x-serialize}}({{paramName}}{{#if isArray}}, lambda e: e){{else}}){{/if}}{{else}}{{paramName}}{{/if}},{{/if}}{{/isQueryParam}}{{/allParams}}
+        })
+
+        {{#allParams}}{{#isQueryParam}}{{#if vendorExtensions.x-prefixed-collapsible-map}}params.patch({{vendorExtensions.x-serialize}}({{paramName}}, '{{vendorExtensions.x-prefixed-collapsible-map}}'))
+        {{/if}}{{/isQueryParam}}{{/allParams}}{{/if}}
+
+        payload = await self._version.patch_async(method='{{vendorExtensions.x-http-method}}', uri=self._uri, data=data, headers=headers{{#if queryParams}}, params=params{{/if}})
+
+        return {{instanceName}}(
+            self._version,
+            payload{{#instancePathParams}},
+            {{paramName}}=self._solution['{{paramName}}']{{/instancePathParams}}
+        )
+    {{/vendorExtensions.x-twilio.ignoreOperation}}{{/vendorExtensions.x-is-patch-operation}}{{#vendorExtensions.x-is-fetch-operation}}{{^vendorExtensions.x-twilio.ignoreOperation}}
     def {{vendorExtensions.x-name-lower}}(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> {{instanceName}}:
         """
         Fetch the {{instanceName}}

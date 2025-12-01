@@ -14,7 +14,10 @@
 
 package com.twilio.rest.flexapi.v1.credential;
 
-import com.twilio.base.Deleter;
+import com.twilio.base.Patcher;
+import com.twilio.constant.EnumConstants;
+import com.twilio.constant.EnumConstants.ParameterType;
+import com.twilio.converter.Serializer;
 import com.twilio.exception.ApiConnectionException;
 import com.twilio.exception.ApiException;
 import com.twilio.exception.RestException;
@@ -23,40 +26,52 @@ import com.twilio.http.Request;
 import com.twilio.http.Response;
 import com.twilio.http.TwilioRestClient;
 import com.twilio.rest.Domains;
-import java.util.function.Predicate;
 
 import com.twilio.type.*;
 
 
-            public class AwsDeleter extends Deleter<Aws> {
+    public class AwsPatcher extends Patcher<Aws> {
+            private String pathSid;
+    private String testString;
+    private Boolean testBoolean;
 
-                private String pathSid;
-
-                public AwsDeleter(final String pathSid) {
+            public AwsPatcher(final String pathSid) {
         this.pathSid = pathSid;
     }
 
-            
-            
-    @Override
-    public boolean delete(final TwilioRestClient client) {
+        
+public AwsPatcher setTestString(final String testString){
+    this.testString = testString;
+    return this;
+}
+
+
+public AwsPatcher setTestBoolean(final Boolean testBoolean){
+    this.testBoolean = testBoolean;
+    return this;
+}
+
+
+            @Override
+    public Aws patch(final TwilioRestClient client) {
     
     String path = "/v1/Credentials/AWS/{Sid}";
 
     path = path.replace("{"+"Sid"+"}", this.pathSid.toString());
 
 
-        Predicate<Integer> deleteStatuses = i -> i != null && i >= 200 && i < 300;
         Request request = new Request(
-            HttpMethod.DELETE,
+            HttpMethod.PATCH,
             Domains.FLEXAPI.toString(),
             path
         );
+        request.setContentType(EnumConstants.ContentType.FORM_URLENCODED);
+        addPostParams(request);
 
         Response response = client.request(request);
 
         if (response == null) {
-            throw new ApiConnectionException("Aws delete failed: Unable to connect to server");
+            throw new ApiConnectionException("Aws patch failed: Unable to connect to server");
         } else if (!TwilioRestClient.SUCCESS.test(response.getStatusCode())) {
             RestException restException = RestException.fromJson(
                 response.getStream(),
@@ -67,7 +82,22 @@ import com.twilio.type.*;
             }
             throw new ApiException(restException);
         }
-        return deleteStatuses.test(response.getStatusCode());
+
+        return Aws.fromJson(response.getStream(), client.getObjectMapper());
     }
 
-            }
+        private void addPostParams(final Request request) {
+
+    if (testString != null) {
+        Serializer.toString(request, "TestString", testString, ParameterType.URLENCODED);
+    }
+
+
+
+    if (testBoolean != null) {
+        Serializer.toString(request, "TestBoolean", testBoolean, ParameterType.URLENCODED);
+    }
+
+
+}
+    }

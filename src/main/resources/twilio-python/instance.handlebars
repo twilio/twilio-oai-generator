@@ -49,7 +49,27 @@ class {{instanceName}}(InstanceResource):
         :returns: The updated {{instanceName}}
         """
         return await self._proxy.update_async({{#allParams}}{{paramName}}={{paramName}}, {{/allParams}})
-    {{/vendorExtensions.x-is-update-operation}}{{#vendorExtensions.x-is-fetch-operation}}
+    {{/vendorExtensions.x-is-update-operation}}{{#vendorExtensions.x-is-patch-operation}}
+    def {{vendorExtensions.x-name-lower}}(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> "{{instanceName}}":
+        """
+        Patch the {{instanceName}}
+        {{#allParams}}
+        :param {{paramName}}: {{{description}}}{{/allParams}}
+
+        :returns: The patched {{instanceName}}
+        """
+        return self._proxy.patch({{#allParams}}{{paramName}}={{paramName}}, {{/allParams}})
+
+    async def {{vendorExtensions.x-name-lower}}_async(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> "{{instanceName}}":
+        """
+        Asynchronous coroutine to patch the {{instanceName}}
+        {{#allParams}}
+        :param {{paramName}}: {{{description}}}{{/allParams}}
+
+        :returns: The patched {{instanceName}}
+        """
+        return await self._proxy.patch_async({{#allParams}}{{paramName}}={{paramName}}, {{/allParams}})
+    {{/vendorExtensions.x-is-patch-operation}}{{#vendorExtensions.x-is-fetch-operation}}
     def {{vendorExtensions.x-name-lower}}(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> "{{instanceName}}":
         """
         Fetch the {{instanceName}}
