@@ -122,6 +122,9 @@ class {{apiName}}Instance extends InstanceResource
         {{#metaProperties.x-is-context-operation}}
         $context = [];
         foreach ($this->solution as $key => $value) {
+            if ($key === 'authorization') {
+                continue;
+            }
             $context[] = "$key=$value";
         }
         {{/metaProperties.x-is-context-operation}}
