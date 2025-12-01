@@ -5,6 +5,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,6 +18,7 @@ import java.util.stream.Collectors;
 import com.twilio.oai.java.cache.ResourceCacheContext;
 import lombok.experimental.UtilityClass;
 import org.apache.commons.lang3.StringUtils;
+import org.openapitools.codegen.CodegenMediaType;
 import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenOperation;
 import org.openapitools.codegen.CodegenProperty;
@@ -50,6 +52,16 @@ public class Utility {
                     .map(ModelMap::getModel)
                     .map(CodegenModel.class::cast)
                     .collect(Collectors.toCollection(() -> localModels));
+        }
+    }
+
+    public void addModelsToLocalCodegenModelMap(final Map<String, ModelsMap> modelMap, Map<String, CodegenModel> localModelMap){
+        for (final ModelsMap mods : modelMap.values()) {
+            final List<ModelMap> modList = mods.getModels();
+            modList.stream()
+                    .map(ModelMap::getModel)
+                    .map(CodegenModel.class::cast)
+                    .forEach(model -> localModelMap.put(com.twilio.oai.common.StringUtils.toPascalCase(model.name), model));
         }
     }
 
@@ -265,6 +277,7 @@ public class Utility {
         System.out.println(getModelFromRef(ref));
     }
     public static CodegenModel getModelFromRef(String ref) {
+        if (ref == null) throw new RuntimeException("Ref can not be null for fetching Model");
         String schemaName = ref.replaceFirst("#/components/schemas/", "");
         List<CodegenModel> allModels = ResourceCacheContext.get().getAllModelsByDefaultGenerator();
         for (CodegenModel model: allModels) {
@@ -273,5 +286,16 @@ public class Utility {
             }
         }
         return null;
+    }
+
+    public static CodegenModel getPropertyFromMediaType(CodegenMediaType codegenMediaType) {
+        CodegenProperty codegenProperty = codegenMediaType.getSchema();
+        
+        String ref = codegenProperty.getRef();
+        if (ref == null) {
+            throw new RuntimeException("Ref is null in Response schema");
+        }
+        CodegenModel responseModel = Utility.getModelFromRef(ref);
+        return responseModel;
     }
 }
