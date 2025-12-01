@@ -119,6 +119,9 @@ class FleetInstance extends InstanceResource
     {
         $context = [];
         foreach ($this->solution as $key => $value) {
+            if ($key === 'authorization') {
+                continue;
+            }
             $context[] = "$key=$value";
         }
         return '[Twilio.Versionless.DeployedDevices.FleetInstance ' . \implode(' ', $context) . ']';
