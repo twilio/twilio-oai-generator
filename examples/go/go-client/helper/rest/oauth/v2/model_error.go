@@ -14,11 +14,6 @@
 
 package openapi
 
-import (
-	"encoding/json"
-	"github.com/twilio/twilio-go/client"
-)
-
 // Error Generic error
 type Error struct {
 	// Twilio-specific error code
