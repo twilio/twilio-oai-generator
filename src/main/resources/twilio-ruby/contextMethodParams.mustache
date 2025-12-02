@@ -132,7 +132,7 @@
                         {{#vendorExtensions.x-is-delete-operation}}
                           response = @version.{{#lambda.camelcase}}{{vendorExtensions.x-name}}{{/lambda.camelcase}}('{{httpMethod}}', @uri{{#queryParams.0}}, params: params{{/queryParams.0}}{{#formParams.0}}, data: data{{/formParams.0}}, headers: headers)
                           if response.status_code < 200 || response.status_code >= 300
-                          {{#isApiV1}}raise @version.exception_v10(response){{/isApiV1}}
+                          {{#isApiV1}}  raise @version.exception_v10(response){{/isApiV1}}
                           {{^isApiV1}}raise @version.exception(response, 'Unable to delete record'){{/isApiV1}}
                           end
                           delete_status_code(response)
