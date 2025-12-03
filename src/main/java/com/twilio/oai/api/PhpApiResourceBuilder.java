@@ -24,7 +24,7 @@ public class PhpApiResourceBuilder extends ApiResourceBuilder {
     private final HashSet<String> pathSet = new HashSet<>();
     protected String apiListPath = "";
     protected String apiContextPath = "";
-    protected List<String> sensitiveParamNames = Arrays.asList("authorization", "password", "authtoken", "apikey", "apisecret");
+    protected Set<String> sensitiveParamNames = new HashSet<>(Arrays.asList("authorization", "password", "authtoken", "apikey", "apisecret"));
 
     protected Resolver<CodegenProperty> codegenPropertyIResolver;
     public Set<IJsonSchemaValidationProperties> enums = new HashSet<>();
