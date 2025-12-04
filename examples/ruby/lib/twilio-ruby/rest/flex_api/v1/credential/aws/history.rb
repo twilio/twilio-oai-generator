@@ -60,10 +60,15 @@ module Twilio
                 params.merge!(Twilio.prefixed_collapsible_map(add_ons_data, 'AddOns'))
                 headers = Twilio::Values.of({ 'Content-Type' => 'application/x-www-form-urlencoded', })
 
-                payload = @version.fetch('GET', @uri, params: params, headers: headers)
+                response = @version.fetch('GET', @uri, params: params, headers: headers)
+                if response.status_code < 200 || response.status_code >= 300
+
+                  raise @version.exception(response, 'Unable to fetch record')
+                end
+
                 HistoryInstance.new(
                   @version,
-                  payload,
+                  response.body,
                   sid: @solution[:sid],
                 )
               end
