@@ -104,6 +104,7 @@ public AwsReader setPageSize(final Integer pageSize){
         Request request = new Request(HttpMethod.GET, targetUrl);
         return pageForRequest(client, request); 
     }
+
     private void addQueryParams(final Request request) {
 
 

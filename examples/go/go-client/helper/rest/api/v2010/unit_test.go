@@ -70,6 +70,7 @@ func TestAddingHeader(t *testing.T) {
 	params.RecordingStatusCallback = &testUri
 
 	expectedHeader := make(map[string]interface{})
+	expectedHeader["Content-Type"] = "application/x-www-form-urlencoded"
 	expectedHeader["X-Twilio-Webhook-Enabled"] = "true"
 
 	mockCtrl := gomock.NewController(t)
