@@ -7,7 +7,7 @@ from twilio.base import deserialize, serialize, values
 {{#responseModel}}from twilio.base.instance_resource import InstanceResource{{/responseModel}}
 from twilio.base.list_resource import ListResource
 from twilio.base.version import Version
-{{#hasPaginationOperation}}from twilio.base.page import Page{{/hasPaginationOperation}}
+{{#hasPaginationOperation}}{{#isApiV1}}from twilio.base.token_pagination import TokenPagination{{/isApiV1}}{{^isApiV1}}from twilio.base.page import Page{{/isApiV1}}{{/hasPaginationOperation}}
 {{#dependents}}from twilio.rest.{{domainPackage}}.{{apiVersion}}.{{namespaceSubPart}}.{{filename}} import {{resourceName}}List
 {{/dependents}}
 

@@ -331,7 +331,7 @@
         )]
 
     def page(self, {{#allParams}}
-        {{#startsWith paramName text='page_size'}}{{else}}{{paramName}}: Union[{{{dataType}}}, object] = values.unset,{{/startsWith}}{{/allParams}}
+        {{#startsWith paramName text='page_size'}}{{else}}{{#startsWith paramName text='page_token'}}{{else}}{{paramName}}: Union[{{{dataType}}}, object] = values.unset,{{/startsWith}}{{/startsWith}}{{/allParams}}
         page_token: Union[str, object] = values.unset,
         page_number: Union[int, object] = values.unset,
         page_size: Union[int, object] = values.unset,
@@ -366,7 +366,13 @@
         {{/vendorExtensions.successProduce}}
 
         response = self._version.page(method='{{vendorExtensions.x-http-method}}', uri=self._uri, params=data, headers=headers)
+    {{#isApiV1}}
+
+        return {{apiName}}Page(self._version, response, uri=self._uri{{#if listPathParams}}, self._solution{{/if}})
+    {{/isApiV1}}
+    {{^isApiV1}}
         return {{apiName}}Page(self._version, response{{#if listPathParams}}, self._solution{{/if}})
+    {{/isApiV1}}
 
     async def page_async(self, {{#allParams}}
         {{#startsWith paramName text='page_size'}}{{else}}{{paramName}}: Union[{{{dataType}}}, object] = values.unset,{{/startsWith}}{{/allParams}}
