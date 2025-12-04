@@ -367,10 +367,8 @@
 
         response = self._version.page(method='{{vendorExtensions.x-http-method}}', uri=self._uri, params=data, headers=headers)
     {{#isApiV1}}
-
         return {{apiName}}Page(self._version, response, uri=self._uri{{#if listPathParams}}, self._solution{{/if}})
-    {{/isApiV1}}
-    {{^isApiV1}}
+    {{/isApiV1}}{{^isApiV1}}
         return {{apiName}}Page(self._version, response{{#if listPathParams}}, self._solution{{/if}})
     {{/isApiV1}}
 
