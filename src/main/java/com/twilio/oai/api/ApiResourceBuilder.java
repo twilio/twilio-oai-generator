@@ -4,6 +4,7 @@ import com.twilio.oai.DirectoryStructureService;
 import com.twilio.oai.PathUtils;
 import com.twilio.oai.StringHelper;
 import com.twilio.oai.common.ApplicationConstants;
+import com.twilio.oai.common.EnumConstants;
 import com.twilio.oai.common.Utility;
 import com.twilio.oai.resolver.Resolver;
 import com.twilio.oai.resource.Resource;
@@ -223,6 +224,8 @@ public abstract class ApiResourceBuilder implements IApiResourceBuilder {
 
         if (StringUtils.startsWithIgnoreCase(operation.operationId, "update")) {
             addOperationName(operation, Operation.UPDATE.getValue());
+        } else if (StringUtils.startsWithIgnoreCase(operation.operationId, "patch")) {
+            addOperationName(operation, Operation.PATCH.getValue());
         } else if (StringUtils.startsWithIgnoreCase(operation.operationId, "delete")) {
             addOperationName(operation, Operation.DELETE.getValue());
         } else if (StringUtils.startsWithIgnoreCase(operation.operationId, "create")) {

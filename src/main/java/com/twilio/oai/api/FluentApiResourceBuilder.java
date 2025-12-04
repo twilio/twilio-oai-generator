@@ -54,14 +54,6 @@ public abstract class FluentApiResourceBuilder extends ApiResourceBuilder {
     }
 
     @Override
-    protected Map<String, Object> mapOperation(CodegenOperation operation) {
-        if (StringUtils.startsWithIgnoreCase(operation.operationId, "patch")) {
-            addOperationName(operation, EnumConstants.Operation.PATCH.getValue());
-        }
-        return super.mapOperation(operation);
-    }
-
-    @Override
     public ApiResourceBuilder updateOperations(final Resolver<CodegenParameter> codegenParameterIResolver) {
         super.updateOperations(codegenParameterIResolver);
 

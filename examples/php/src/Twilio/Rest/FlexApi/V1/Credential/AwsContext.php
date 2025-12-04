@@ -92,6 +92,36 @@ class AwsContext extends InstanceContext
 
 
     /**
+     * Patch the AwsInstance
+     *
+     * @param array|Options $options Optional Arguments
+     * @return AwsInstance Patchd AwsInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function patch(array $options = []): AwsInstance
+    {
+
+        $options = new Values($options);
+
+        $data = Values::of([
+            'TestString' =>
+                $options['testString'],
+            'TestBoolean' =>
+                Serialize::booleanToString($options['testBoolean']),
+        ]);
+
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded', 'Accept' => 'application/json' ]);
+        $payload = $this->version->patch('PATCH', $this->uri, [], $data, $headers);
+
+        return new AwsInstance(
+            $this->version,
+            $payload,
+            $this->solution['sid']
+        );
+    }
+
+
+    /**
      * Update the AwsInstance
      *
      * @param array|Options $options Optional Arguments

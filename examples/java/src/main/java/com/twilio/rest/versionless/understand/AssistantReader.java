@@ -49,7 +49,7 @@ public AssistantReader setPageSize(final Integer pageSize){
     public ResourceSet<Assistant> read(final TwilioRestClient client) {
         return new ResourceSet<>(this, client, firstPage(client));
     }
-    
+
     public Page<Assistant> firstPage(final TwilioRestClient client) {
         
     String path = "/understand/Assistants";

@@ -79,7 +79,7 @@ public AccountReader setPageSize(final Integer pageSize){
     public ResourceSet<Account> read(final TwilioRestClient client) {
         return new ResourceSet<>(this, client, firstPage(client));
     }
-    
+
     public Page<Account> firstPage(final TwilioRestClient client) {
         
     String path = "/2010-04-01/Accounts.json";

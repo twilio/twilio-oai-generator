@@ -49,7 +49,7 @@ public AwsReader setPageSize(final Integer pageSize){
     public ResourceSet<Aws> read(final TwilioRestClient client) {
         return new ResourceSet<>(this, client, firstPage(client));
     }
-    
+
     public Page<Aws> firstPage(final TwilioRestClient client) {
         
     String path = "/v1/Credentials/AWS";
