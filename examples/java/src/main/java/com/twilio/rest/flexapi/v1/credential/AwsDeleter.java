@@ -37,8 +37,7 @@ import com.twilio.type.*;
     }
 
             
-            
-    @Override
+                @Override
     public boolean delete(final TwilioRestClient client) {
     
     String path = "/v1/Credentials/AWS/{Sid}";
