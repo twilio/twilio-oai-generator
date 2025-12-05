@@ -70,9 +70,7 @@ export interface FeedbackCallSummaryContextSolution {
   sid: string;
 }
 
-export class FeedbackCallSummaryContextImpl
-  implements FeedbackCallSummaryContext
-{
+export class FeedbackCallSummaryContextImpl implements FeedbackCallSummaryContext {
   protected _solution: FeedbackCallSummaryContextSolution;
   protected _uri: string;
 
