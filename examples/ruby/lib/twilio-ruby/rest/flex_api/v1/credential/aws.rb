@@ -165,7 +165,7 @@ module Twilio
             # Patch the AwsInstance
             # @param [String] test_string
             # @param [Boolean] test_boolean
-            # @return [AwsInstance] Patchd AwsInstance
+            # @return [AwsInstance] Patched AwsInstance
             def patch(
               test_string: :unset,
               test_boolean: :unset
@@ -343,7 +343,7 @@ module Twilio
             # Patch the AwsInstance
             # @param [String] test_string
             # @param [Boolean] test_boolean
-            # @return [AwsInstance] Patchd AwsInstance
+            # @return [AwsInstance] Patched AwsInstance
             def patch(
               test_string: :unset,
               test_boolean: :unset
