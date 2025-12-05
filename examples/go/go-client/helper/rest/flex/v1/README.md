@@ -35,6 +35,7 @@ Class | Method | HTTP request | Description
 *CredentialsAWSApi* | [**DeleteCredentialAws**](docs/CredentialsAWSApi.md#deletecredentialaws) | **Delete** /v1/Credentials/AWS/{Sid} | 
 *CredentialsAWSApi* | [**FetchCredentialAws**](docs/CredentialsAWSApi.md#fetchcredentialaws) | **Get** /v1/Credentials/AWS/{Sid} | 
 *CredentialsAWSApi* | [**ListCredentialAws**](docs/CredentialsAWSApi.md#listcredentialaws) | **Get** /v1/Credentials/AWS | 
+*CredentialsAWSApi* | [**PatchCredentialAws**](docs/CredentialsAWSApi.md#patchcredentialaws) | **Patch** /v1/Credentials/AWS/{Sid} | 
 *CredentialsAWSApi* | [**UpdateCredentialAws**](docs/CredentialsAWSApi.md#updatecredentialaws) | **Post** /v1/Credentials/AWS/{Sid} | 
 *CredentialsAWSHistoryApi* | [**FetchCredentialHistory**](docs/CredentialsAWSHistoryApi.md#fetchcredentialhistory) | **Get** /v1/Credentials/AWS/{Sid}/History | 
 *VoiceApi* | [**UpdateCall**](docs/VoiceApi.md#updatecall) | **Post** /v1/Voice/{Sid} | 

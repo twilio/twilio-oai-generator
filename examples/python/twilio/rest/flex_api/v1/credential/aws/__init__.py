@@ -100,6 +100,42 @@ class AwsInstance(InstanceResource):
         """
         return await self._proxy.fetch_async()
 
+    def patch(
+        self,
+        test_string: Union[str, object] = values.unset,
+        test_boolean: Union[bool, object] = values.unset,
+    ) -> "AwsInstance":
+        """
+        Patch the AwsInstance
+
+        :param test_string:
+        :param test_boolean:
+
+        :returns: The patched AwsInstance
+        """
+        return self._proxy.patch(
+            test_string=test_string,
+            test_boolean=test_boolean,
+        )
+
+    async def patch_async(
+        self,
+        test_string: Union[str, object] = values.unset,
+        test_boolean: Union[bool, object] = values.unset,
+    ) -> "AwsInstance":
+        """
+        Asynchronous coroutine to patch the AwsInstance
+
+        :param test_string:
+        :param test_boolean:
+
+        :returns: The patched AwsInstance
+        """
+        return await self._proxy.patch_async(
+            test_string=test_string,
+            test_boolean=test_boolean,
+        )
+
     def update(
         self,
         test_string: Union[str, object] = values.unset,
@@ -238,6 +274,70 @@ class AwsContext(InstanceContext):
             payload,
             sid=self._solution["sid"],
         )
+
+    def patch(
+        self,
+        test_string: Union[str, object] = values.unset,
+        test_boolean: Union[bool, object] = values.unset,
+    ) -> AwsInstance:
+        """
+        Patch the AwsInstance
+
+        :param test_string:
+        :param test_boolean:
+
+        :returns: The patched AwsInstance
+        """
+
+        data = values.of(
+            {
+                "TestString": test_string,
+                "TestBoolean": serialize.boolean_to_string(test_boolean),
+            }
+        )
+        headers = values.of({})
+
+        headers["Content-Type"] = "application/x-www-form-urlencoded"
+
+        headers["Accept"] = "application/json"
+
+        payload = self._version.patch(
+            method="PATCH", uri=self._uri, data=data, headers=headers
+        )
+
+        return AwsInstance(self._version, payload, sid=self._solution["sid"])
+
+    async def patch_async(
+        self,
+        test_string: Union[str, object] = values.unset,
+        test_boolean: Union[bool, object] = values.unset,
+    ) -> AwsInstance:
+        """
+        Asynchronous coroutine to patch the AwsInstance
+
+        :param test_string:
+        :param test_boolean:
+
+        :returns: The patched AwsInstance
+        """
+
+        data = values.of(
+            {
+                "TestString": test_string,
+                "TestBoolean": serialize.boolean_to_string(test_boolean),
+            }
+        )
+        headers = values.of({})
+
+        headers["Content-Type"] = "application/x-www-form-urlencoded"
+
+        headers["Accept"] = "application/json"
+
+        payload = await self._version.patch_async(
+            method="PATCH", uri=self._uri, data=data, headers=headers
+        )
+
+        return AwsInstance(self._version, payload, sid=self._solution["sid"])
 
     def update(
         self,

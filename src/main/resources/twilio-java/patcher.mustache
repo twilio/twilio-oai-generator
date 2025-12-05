@@ -1,0 +1,28 @@
+{{>licenseInfo}}
+{{#resources}}
+package com.twilio.rest.{{domainPackage}}.{{apiVersion}}{{namespaceSubPart}};
+{{>common/imports}}
+
+{{#operations}}
+{{#vendorExtensions.x-patch-operation}}
+    public class {{resourceName}}Patcher extends Patcher<{{resourceName}}> {
+        {{>common/instanceVariables}}
+        {{>common/constructors}}
+        {{>patcher/setters}}
+        {{>patcher/operationMethod}}
+    {{#queryParams.0}}
+        {{>common/addQueryParams}}
+    {{/queryParams.0}}
+    {{#formParams.0}}
+        {{>common/addPostParams}}
+    {{/formParams.0}}
+    {{#headerParams.0}}
+        {{>common/addHeaderParams}}
+    {{/headerParams.0}}
+    {{#bodyParams.0}}
+        {{>common/addPostParamsJson}}
+    {{/bodyParams.0}}
+    }
+{{/vendorExtensions.x-patch-operation}}
+{{/operations}}
+{{/resources}}

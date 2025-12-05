@@ -22,6 +22,16 @@ import { isValidPathParam } from "../../../../base/utility";
 import { HistoryListInstance } from "./aws/history";
 
 /**
+ * Options to pass to patch a AwsInstance
+ */
+export interface AwsContextPatchOptions {
+  /**  */
+  testString?: string;
+  /**  */
+  testBoolean?: boolean;
+}
+
+/**
  * Options to pass to update a AwsInstance
  */
 export interface AwsContextUpdateOptions {
@@ -88,6 +98,29 @@ export interface AwsContext {
    * @returns Resolves to processed AwsInstance
    */
   fetch(
+    callback?: (error: Error | null, item?: AwsInstance) => any,
+  ): Promise<AwsInstance>;
+
+  /**
+   * Patch a AwsInstance
+   *
+   * @param callback - Callback to handle processed record
+   *
+   * @returns Resolves to processed AwsInstance
+   */
+  patch(
+    callback?: (error: Error | null, item?: AwsInstance) => any,
+  ): Promise<AwsInstance>;
+  /**
+   * Patch a AwsInstance
+   *
+   * @param params - Parameter for request
+   * @param callback - Callback to handle processed record
+   *
+   * @returns Resolves to processed AwsInstance
+   */
+  patch(
+    params: AwsContextPatchOptions,
     callback?: (error: Error | null, item?: AwsInstance) => any,
   ): Promise<AwsInstance>;
 
@@ -180,6 +213,51 @@ export class AwsContextImpl implements AwsContext {
       operationPromise = operationVersion.fetch({
         uri: instance._uri,
         method: "get",
+        headers,
+      });
+
+    operationPromise = operationPromise.then(
+      (payload) =>
+        new AwsInstance(operationVersion, payload, instance._solution.sid),
+    );
+
+    operationPromise = instance._version.setPromiseCallback(
+      operationPromise,
+      callback,
+    );
+    return operationPromise;
+  }
+
+  patch(
+    params?:
+      | AwsContextPatchOptions
+      | ((error: Error | null, item?: AwsInstance) => any),
+    callback?: (error: Error | null, item?: AwsInstance) => any,
+  ): Promise<AwsInstance> {
+    if (params instanceof Function) {
+      callback = params;
+      params = {};
+    } else {
+      params = params || {};
+    }
+
+    let data: any = {};
+
+    if (params["testString"] !== undefined)
+      data["TestString"] = params["testString"];
+    if (params["testBoolean"] !== undefined)
+      data["TestBoolean"] = serialize.bool(params["testBoolean"]);
+
+    const headers: any = {};
+    headers["Content-Type"] = "application/x-www-form-urlencoded";
+    headers["Accept"] = "application/json";
+
+    const instance = this;
+    let operationVersion = instance._version,
+      operationPromise = operationVersion.patch({
+        uri: instance._uri,
+        method: "patch",
+        data,
         headers,
       });
 
@@ -317,6 +395,36 @@ export class AwsInstance {
     callback?: (error: Error | null, item?: AwsInstance) => any,
   ): Promise<AwsInstance> {
     return this._proxy.fetch(callback);
+  }
+
+  /**
+   * Patch a AwsInstance
+   *
+   * @param callback - Callback to handle processed record
+   *
+   * @returns Resolves to processed AwsInstance
+   */
+  patch(
+    callback?: (error: Error | null, item?: AwsInstance) => any,
+  ): Promise<AwsInstance>;
+  /**
+   * Patch a AwsInstance
+   *
+   * @param params - Parameter for request
+   * @param callback - Callback to handle processed record
+   *
+   * @returns Resolves to processed AwsInstance
+   */
+  patch(
+    params: AwsContextPatchOptions,
+    callback?: (error: Error | null, item?: AwsInstance) => any,
+  ): Promise<AwsInstance>;
+
+  patch(
+    params?: any,
+    callback?: (error: Error | null, item?: AwsInstance) => any,
+  ): Promise<AwsInstance> {
+    return this._proxy.patch(params, callback);
   }
 
   /**

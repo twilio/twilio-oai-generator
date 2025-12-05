@@ -243,6 +243,7 @@ public class PhpApiResourceBuilder extends ApiResourceBuilder {
         return this;
     }
 
+
     private void addOptionFileParams(ApiResourceBuilder apiResourceBuilder) {
         for (CodegenOperation operation : apiResourceBuilder.codegenOperationList) {
             if (operation.vendorExtensions.containsKey("x-ignore")) continue;

@@ -2,6 +2,7 @@ package com.twilio.oai.api;
 
 import com.twilio.oai.DirectoryStructureService;
 import com.twilio.oai.PathUtils;
+import com.twilio.oai.common.EnumConstants;
 import com.twilio.oai.common.Utility;
 import com.twilio.oai.resolver.Resolver;
 import com.twilio.oai.template.IApiActionTemplate;
@@ -15,6 +16,7 @@ import java.util.function.BiConsumer;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
 import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenOperation;
 import org.openapitools.codegen.CodegenParameter;

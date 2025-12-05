@@ -417,6 +417,54 @@ func (c *ApiService) getNextListCredentialAwsResponse(nextPageUrl string) (inter
 	return ps, nil
 }
 
+// Optional parameters for the method 'PatchCredentialAws'
+type PatchCredentialAwsParams struct {
+	//
+	TestString *string `json:"TestString,omitempty"`
+	//
+	TestBoolean *bool `json:"TestBoolean,omitempty"`
+}
+
+func (params *PatchCredentialAwsParams) SetTestString(TestString string) *PatchCredentialAwsParams {
+	params.TestString = &TestString
+	return params
+}
+func (params *PatchCredentialAwsParams) SetTestBoolean(TestBoolean bool) *PatchCredentialAwsParams {
+	params.TestBoolean = &TestBoolean
+	return params
+}
+
+func (c *ApiService) PatchCredentialAws(Sid string, params *PatchCredentialAwsParams) (*TestResponseObject, error) {
+	path := "/v1/Credentials/AWS/{Sid}"
+	path = strings.Replace(path, "{"+"Sid"+"}", Sid, -1)
+
+	data := url.Values{}
+	headers := map[string]interface{}{
+		"Content-Type": "application/x-www-form-urlencoded",
+	}
+
+	if params != nil && params.TestString != nil {
+		data.Set("TestString", *params.TestString)
+	}
+	if params != nil && params.TestBoolean != nil {
+		data.Set("TestBoolean", fmt.Sprint(*params.TestBoolean))
+	}
+
+	resp, err := c.requestHandler.Patch(c.baseURL+path, data, headers)
+	if err != nil {
+		return nil, err
+	}
+
+	defer resp.Body.Close()
+
+	ps := &TestResponseObject{}
+	if err := json.NewDecoder(resp.Body).Decode(ps); err != nil {
+		return nil, err
+	}
+
+	return ps, err
+}
+
 // Optional parameters for the method 'UpdateCredentialAws'
 type UpdateCredentialAwsParams struct {
 	//
