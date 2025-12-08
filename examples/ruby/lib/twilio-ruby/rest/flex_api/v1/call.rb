@@ -53,10 +53,15 @@ module Twilio
           def update
             headers = Twilio::Values.of({ 'Content-Type' => 'application/x-www-form-urlencoded', })
 
-            payload = @version.update('POST', @uri, headers: headers)
+            response = @version.update('POST', @uri, headers: headers)
+            if response.status_code < 200 || response.status_code >= 300
+
+              raise @version.exception(response, 'Unable to update record')
+            end
+
             CallInstance.new(
               @version,
-              payload,
+              response.body,
               sid: @solution[:sid],
             )
           end

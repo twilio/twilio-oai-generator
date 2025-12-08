@@ -107,15 +107,34 @@
                         {{^vendorExtensions.x-is-delete-operation}}
                         {{#vendorExtensions.scimProduces}}headers['Accept'] = 'application/scim+json'{{/vendorExtensions.scimProduces}}
                         {{#vendorExtensions.multipleProduces}} headers['Accept'] = '*/*'{{/vendorExtensions.multipleProduces}}
-                        payload = @version.{{#lambda.camelcase}}{{vendorExtensions.x-name}}{{/lambda.camelcase}}('{{httpMethod}}', @uri{{#queryParams.0}}, params: params{{/queryParams.0}}{{#formParams.0}}, data: data{{/formParams.0}}, headers: headers{{#bodyParams.0}}, data: {{paramName}}.to_json{{/bodyParams.0}})
+                        response = @version.{{#lambda.camelcase}}{{vendorExtensions.x-name}}{{/lambda.camelcase}}('{{httpMethod}}', @uri{{#queryParams.0}}, params: params{{/queryParams.0}}{{#formParams.0}}, data: data{{/formParams.0}}, headers: headers{{#bodyParams.0}}, data: {{paramName}}.to_json{{/bodyParams.0}})
+                        if response.status_code < 200 || response.status_code >= 300
+                        {{#isApiV1}}raise @version.exception_v10(response){{/isApiV1}}
+                        {{^isApiV1}}
+                          {{#vendorExtensions.x-is-update-operation}}
+                            raise @version.exception(response, 'Unable to update record')
+                          {{/vendorExtensions.x-is-update-operation}}
+                          {{#vendorExtensions.x-is-create-operation}}
+                            raise @version.exception(response, 'Unable to create record')
+                          {{/vendorExtensions.x-is-create-operation}}
+                          {{#vendorExtensions.x-is-fetch-operation}}
+                            raise @version.exception(response, 'Unable to fetch record')
+                          {{/vendorExtensions.x-is-fetch-operation}}
+                        {{/isApiV1}}
+                        end
                         {{apiName}}Instance.new(
                             @version,
-                            payload,{{#vendorExtensions.listOperation}}{{#listPathParams}}
+                            response.body,{{#vendorExtensions.listOperation}}{{#listPathParams}}
                             {{paramName}}: @solution[:{{paramName}}],{{/listPathParams}}{{/vendorExtensions.listOperation}}{{#vendorExtensions.instanceOperation}}{{#instancePathParams}}
                             {{paramName}}: @solution[:{{paramName}}],{{/instancePathParams}}{{/vendorExtensions.instanceOperation}}
                         )
                         {{/vendorExtensions.x-is-delete-operation}}
                         {{#vendorExtensions.x-is-delete-operation}}
-                        @version.{{#lambda.camelcase}}{{vendorExtensions.x-name}}{{/lambda.camelcase}}('{{httpMethod}}', @uri{{#queryParams.0}}, params: params{{/queryParams.0}}{{#formParams.0}}, data: data{{/formParams.0}}, headers: headers)
+                          response = @version.{{#lambda.camelcase}}{{vendorExtensions.x-name}}{{/lambda.camelcase}}('{{httpMethod}}', @uri{{#queryParams.0}}, params: params{{/queryParams.0}}{{#formParams.0}}, data: data{{/formParams.0}}, headers: headers)
+                          if response.status_code < 200 || response.status_code >= 300
+                          {{#isApiV1}}  raise @version.exception_v10(response){{/isApiV1}}
+                          {{^isApiV1}}raise @version.exception(response, 'Unable to delete record'){{/isApiV1}}
+                          end
+                          delete_status_code(response)
                         {{/vendorExtensions.x-is-delete-operation}}
                     end
