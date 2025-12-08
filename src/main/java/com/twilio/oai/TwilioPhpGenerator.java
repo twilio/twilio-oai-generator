@@ -31,8 +31,6 @@ import java.util.*;
 
 
 public class TwilioPhpGenerator extends PhpClientCodegen {
-
-    ResourceCache2 resourceCache2 = new ResourceCache2();
     public static final String VALUES = "values";
     public static final String JSON_INGRESS = "json_ingress";
     private static final String PHP_CONVENTIONAL_MAP_PATH = "config/" + EnumConstants.Generator.TWILIO_PHP.getValue() + ".json";
@@ -55,8 +53,6 @@ public class TwilioPhpGenerator extends PhpClientCodegen {
 
     public TwilioPhpGenerator() {
         super();
-        ResourceCacheContext.clear();
-        ResourceCacheContext.set(resourceCache2); // initialize the resource cache context to avoid null pointer exceptions
         twilioCodegen = new TwilioCodegenAdapter(this, getName());
     }
 
@@ -81,22 +77,13 @@ public class TwilioPhpGenerator extends PhpClientCodegen {
     @Override
     @SuppressWarnings("unchecked")
     public void processOpenAPI(final OpenAPI openAPI) {
-        String apiStdVersion = null;
-        if (openAPI.getInfo().getExtensions() != null && openAPI.getInfo().getExtensions().containsKey("x-twilio")) {
-            Object xTwilioObj = openAPI.getInfo().getExtensions().get("x-twilio");
-            if (xTwilioObj instanceof Map) {
-                Map<String, Object> xTwilio = (Map<String, Object>) xTwilioObj;
-                apiStdVersion = (String) xTwilio.get("apiStandards");
-            }
-        }
-        boolean isV1 = ApplicationConstants.isV1.test(apiStdVersion);
-        ResourceCacheContext.get().setV1(isV1);
 
         String domain = StringHelper.camelize(twilioCodegen.getDomainFromOpenAPI(openAPI));
         String version = StringHelper.camelize(twilioCodegen.getVersionFromOpenAPI(openAPI));
         twilioCodegen.setDomain(domain);
         twilioCodegen.setVersion(version);
         twilioCodegen.setOutputDir(domain, version);
+        twilioCodegen.setIsV1ApiStandard(openAPI);
         setSrcBasePath("");
 
         directoryStructureService.configureResourceFamily(openAPI);
