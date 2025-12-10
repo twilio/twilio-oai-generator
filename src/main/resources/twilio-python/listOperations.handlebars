@@ -330,8 +330,20 @@
             page_size=page_size,
         )]
 
-    def page(self, {{#allParams}}
-        {{#startsWith paramName text='page_size'}}{{else}}{{#startsWith paramName text='page_token'}}{{else}}{{paramName}}: Union[{{{dataType}}}, object] = values.unset,{{/startsWith}}{{/startsWith}}{{/allParams}}
+    def page(self, {{#isApiV1}}{{#allParams}}
+      {{paramName}}: Union[{{{dataType}}}, object] = values.unset,{{/allParams}}
+    ) -> {{apiName}}Page:
+        """
+        Retrieve a single page of {{instanceName}} records from the API.
+        Request is executed immediately
+        {{#allParams}}
+        :param {{paramName}}: {{{description}}}{{/allParams}}
+        :returns: Page of {{instanceName}}
+        """
+        data = values.of({ {{#allParams}}
+            '{{{baseName}}}': {{#if vendorExtensions.x-serialize}}{{vendorExtensions.x-serialize}}({{paramName}}{{#if isArray}}, lambda e: e){{else}}){{/if}}{{else}}{{paramName}}{{/if}},{{/allParams}}
+        }){{/isApiV1}}{{^isApiV1}}{{#allParams}}
+      {{#startsWith paramName text='page_size'}}{{else}}{{paramName}}: Union[{{{dataType}}}, object] = values.unset,{{/startsWith}}{{/allParams}}
         page_token: Union[str, object] = values.unset,
         page_number: Union[int, object] = values.unset,
         page_size: Union[int, object] = values.unset,
@@ -352,7 +364,7 @@
             'PageToken': page_token,
             'Page': page_number,
             'PageSize': page_size,
-        })
+        }){{/isApiV1}}
 
         headers = values.of({
         {{#headerParams}}'{{{baseName}}}': {{paramName}},
@@ -366,11 +378,23 @@
         {{/vendorExtensions.successProduce}}
 
         response = self._version.page(method='{{vendorExtensions.x-http-method}}', uri=self._uri, params=data, headers=headers){{#isApiV1}}
-        return {{apiName}}Page(self._version, response, uri=self._uri{{#if listPathParams}}, self._solution{{/if}}){{/isApiV1}}{{^isApiV1}}
+        return {{apiName}}Page(self._version, response, uri=self._uri, params=data{{#if listPathParams}}, self._solution{{/if}}){{/isApiV1}}{{^isApiV1}}
         return {{apiName}}Page(self._version, response{{#if listPathParams}}, self._solution{{/if}}){{/isApiV1}}
 
-    async def page_async(self, {{#allParams}}
-        {{#startsWith paramName text='page_size'}}{{else}}{{paramName}}: Union[{{{dataType}}}, object] = values.unset,{{/startsWith}}{{/allParams}}
+    async def page_async(self, {{#isApiV1}}{{#allParams}}
+      {{paramName}}: Union[{{{dataType}}}, object] = values.unset,{{/allParams}}
+    ) -> {{apiName}}Page:
+        """
+        Asynchronously retrieve a single page of {{instanceName}} records from the API.
+        Request is executed immediately
+        {{#allParams}}
+        :param {{paramName}}: {{{description}}}{{/allParams}}
+        :returns: Page of {{instanceName}}
+        """
+        data = values.of({ {{#allParams}}
+            '{{{baseName}}}': {{#if vendorExtensions.x-serialize}}{{vendorExtensions.x-serialize}}({{paramName}}{{#if isArray}}, lambda e: e){{else}}){{/if}}{{else}}{{paramName}}{{/if}},{{/allParams}}
+        }){{/isApiV1}}{{^isApiV1}}{{#allParams}}
+      {{#startsWith paramName text='page_size'}}{{else}}{{paramName}}: Union[{{{dataType}}}, object] = values.unset,{{/startsWith}}{{/allParams}}
         page_token: Union[str, object] = values.unset,
         page_number: Union[int, object] = values.unset,
         page_size: Union[int, object] = values.unset,
@@ -391,7 +415,7 @@
             'PageToken': page_token,
             'Page': page_number,
             'PageSize': page_size,
-        })
+        }){{/isApiV1}}
 
         headers = values.of({
         {{#headerParams}}'{{{baseName}}}': {{paramName}},
@@ -404,8 +428,9 @@
         headers["Accept"] = "{{{mediaType}}}"
         {{/produces}}
 
-        response = await self._version.page_async(method='{{vendorExtensions.x-http-method}}', uri=self._uri, params=data, headers=headers)
-        return {{apiName}}Page(self._version, response{{#if listPathParams}}, self._solution{{/if}})
+        response = await self._version.page_async(method='{{vendorExtensions.x-http-method}}', uri=self._uri, params=data, headers=headers){{#isApiV1}}
+        return {{apiName}}Page(self._version, response, uri=self._uri, params=data{{#if listPathParams}}, self._solution{{/if}}){{/isApiV1}}{{^isApiV1}}
+        return {{apiName}}Page(self._version, response{{#if listPathParams}}, self._solution{{/if}}){{/isApiV1}}
 
     def get_page(self, target_url: str) -> {{apiName}}Page:
         """

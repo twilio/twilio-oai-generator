@@ -53,6 +53,13 @@ paths:
           schema:
             type: string
             example: "eyJwYWdlIjoyLCJxdWVyeSI6ImJvb2tzIn0="
+        - name: sortBy
+          in: query
+          description: Asc dec query param to sort results by a specific field
+          required: false
+          schema:
+            type: string
+            example: "desc"
       security:
         - accountSid_authToken: [ ]
       responses:
