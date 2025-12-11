@@ -5,7 +5,8 @@ namespace Twilio\Rest\{{domainName}}\{{version}}{{namespaceSubPart}};
 
 use Twilio\Http\Response;
 use Twilio\Page;{{#isApiV1}}
-use Twilio\TokenPaginationPage;{{/isApiV1}}
+use Twilio\TokenPaginationPage;
+use Twilio\ApiV1Version;{{/isApiV1}}
 use Twilio\Version;
 
 class {{apiName}}Page extends {{#isApiV1}}TokenPaginationPage{{/isApiV1}}{{^isApiV1}}Page{{/isApiV1}}
@@ -17,7 +18,8 @@ class {{apiName}}Page extends {{#isApiV1}}TokenPaginationPage{{/isApiV1}}{{^isAp
      */
     public function __construct(Version $version, Response $response, array $solution)
     {
-        parent::__construct($version, $response);
+        {{^isApiV1}}parent::__construct($version, $response);{{/isApiV1}}{{#isApiV1}}$apiV1Version = new ApiV1Version($version->getDomain(), $version->version);
+        parent::__construct($apiV1Version, $response);{{/isApiV1}}
 
         // Path Solution
         $this->solution = $solution;

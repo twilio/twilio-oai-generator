@@ -138,7 +138,7 @@
         $data = ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}->toArray();
     {{/bodyParams.0}}
     {{^vendorExtensions.x-is-delete-operation}}
-        $payload = $this->version->{{#lambda.camelcase}}{{vendorExtensions.x-name}}{{#isApiV1}}V1{{/isApiV1}}{{/lambda.camelcase}}('{{httpMethod}}', $this->uri{{#queryParams.0}}, $params{{/queryParams.0}}{{^queryParams}}, []{{/queryParams}}{{#formParams.0}}, $data{{/formParams.0}}{{^formParams}}{{#bodyParams.0}}, $data{{/bodyParams.0}}{{^bodyParams}}, []{{/bodyParams}}{{/formParams}}, $headers);
+        $payload = $this->version->{{#lambda.camelcase}}{{vendorExtensions.x-name}}{{/lambda.camelcase}}('{{httpMethod}}', $this->uri{{#queryParams.0}}, $params{{/queryParams.0}}{{^queryParams}}, []{{/queryParams}}{{#formParams.0}}, $data{{/formParams.0}}{{^formParams}}{{#bodyParams.0}}, $data{{/bodyParams.0}}{{^bodyParams}}, []{{/bodyParams}}{{/formParams}}, $headers);
 
         return new {{apiName}}Instance(
             $this->version,
@@ -148,6 +148,6 @@
         );
     {{/vendorExtensions.x-is-delete-operation}}
     {{#vendorExtensions.x-is-delete-operation}}
-        return $this->version->{{#lambda.camelcase}}{{vendorExtensions.x-name}}{{#isApiV1}}V1{{/isApiV1}}{{/lambda.camelcase}}('{{#httpMethod}}{{.}}{{/httpMethod}}', $this->uri{{#queryParams.0}}, $params{{/queryParams.0}}{{^queryParams}}, []{{/queryParams}}{{#formParams.0}}, $data{{/formParams.0}}{{^formParams}}{{#bodyParams.0}}, $data{{/bodyParams.0}}{{^bodyParams}}, []{{/bodyParams}}{{/formParams}}, $headers);
+        return $this->version->{{#lambda.camelcase}}{{vendorExtensions.x-name}}{{/lambda.camelcase}}('{{#httpMethod}}{{.}}{{/httpMethod}}', $this->uri{{#queryParams.0}}, $params{{/queryParams.0}}{{^queryParams}}, []{{/queryParams}}{{#formParams.0}}, $data{{/formParams.0}}{{^formParams}}{{#bodyParams.0}}, $data{{/bodyParams.0}}{{^bodyParams}}, []{{/bodyParams}}{{/formParams}}, $headers);
     {{/vendorExtensions.x-is-delete-operation}}
     }
