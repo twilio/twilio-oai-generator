@@ -50,7 +50,8 @@ class {{apiName}}List extends ListResource
         Version $version{{#requiredPathParams}}{{#vendorExtensions.x-is-parent-param}},
         {{{dataType}}} ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}{{/vendorExtensions.x-is-parent-param}}{{/requiredPathParams}}
     ) {
-        parent::__construct($version);
+        {{^isApiV1}}parent::__construct($version);{{/isApiV1}}{{#isApiV1}}$apiV1Version = new ApiV1Version($version->getDomain(), $version->version);
+        parent::__construct($apiV1Version);{{/isApiV1}}
 
         // Path Solution
         $this->solution = [{{#requiredPathParams}}{{#vendorExtensions.x-is-parent-param}}
