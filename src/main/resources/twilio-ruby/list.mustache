@@ -100,7 +100,7 @@
                     # @param [Integer] page_number Page Number, this value is simply for client state
                     # @param [Integer] page_size Number of records to return, defaults to 50{{/isApiV1}}
                     # @return [Page] Page of {{apiName}}Instance
-                    def page({{#readParams.0}}{{#readParams}}{{>params}}{{/readParams}}, {{/readParams.0}}{{^isApiV1}},page_token: :unset, page_number: :unset,{{/isApiV1}}page_size: :unset)
+                    def page({{#readParams.0}}{{#readParams}}{{>params}}{{/readParams}}, {{/readParams.0}}{{^isApiV1}}page_token: :unset, page_number: :unset,{{/isApiV1}}page_size: :unset)
                         params = Twilio::Values.of({
                             {{#readParams}}{{^vendorExtensions.x-serialize}}'{{{baseName}}}' => {{paramName}},
                             {{/vendorExtensions.x-serialize}}{{#vendorExtensions.x-serialize}}{{^vendorExtensions.isList}}'{{{baseName}}}' =>  {{vendorExtensions.x-serialize}}({{paramName}}),{{/vendorExtensions.isList}}
