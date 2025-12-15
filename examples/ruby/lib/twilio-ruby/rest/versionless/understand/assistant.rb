@@ -23,6 +23,7 @@ module Twilio
           # @return [AssistantList] AssistantList
           def initialize(version)
             super(version)
+
             # Path Solution
             @solution = {}
             @uri = "/Assistants"

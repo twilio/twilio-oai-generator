@@ -5,7 +5,9 @@
                     # @param [Version] version Version that contains the resource
                     # @return [{{apiName}}List] {{apiName}}List
                     def initialize(version{{#listPathParams}}, {{paramName}}: nil{{/listPathParams}})
-                        super(version)
+                        {{^isApiV1}}super(version){{/isApiV1}}
+                        {{#isApiV1}}apiV1Version = ApiV1Version.new version.domain, version
+                        super(apiV1Version){{/isApiV1}}
                         # Path Solution
                         @solution = { {{#listPathParams}}{{paramName}}: {{paramName}}{{^-last}}, {{/-last}}{{/listPathParams}} }
                         {{#listPath}}@uri = "{{listPath}}"{{/listPath}}

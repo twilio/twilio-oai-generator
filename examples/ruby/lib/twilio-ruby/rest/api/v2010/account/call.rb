@@ -24,6 +24,7 @@ module Twilio
             # @return [CallList] CallList
             def initialize(version, account_sid: nil)
               super(version)
+
               # Path Solution
               @solution = { account_sid: account_sid }
               @uri = "/Accounts/#{@solution[:account_sid]}/Calls.json"
@@ -55,15 +56,10 @@ module Twilio
 
               headers = Twilio::Values.of({ 'Content-Type' => 'application/x-www-form-urlencoded', })
 
-              response = @version.create('POST', @uri, data: data, headers: headers)
-              if response.status_code < 200 || response.status_code >= 300
-
-                raise @version.exception(response, 'Unable to create record')
-              end
-
+              payload = @version.create('POST', @uri, data: data, headers: headers)
               CallInstance.new(
                 @version,
-                response.body,
+                payload,
                 account_sid: @solution[:account_sid],
               )
             end
@@ -107,13 +103,7 @@ module Twilio
             def delete
               headers = Twilio::Values.of({ 'Content-Type' => 'application/x-www-form-urlencoded', })
 
-              response = @version.delete('DELETE', @uri, headers: headers)
-              if response.status_code < 200 || response.status_code >= 300
-
-                raise @version.exception(response, 'Unable to delete record')
-              end
-
-              delete_status_code(response)
+              @version.delete('DELETE', @uri, headers: headers)
             end
 
             ##
@@ -122,15 +112,10 @@ module Twilio
             def fetch
               headers = Twilio::Values.of({ 'Content-Type' => 'application/x-www-form-urlencoded', })
 
-              response = @version.fetch('GET', @uri, headers: headers)
-              if response.status_code < 200 || response.status_code >= 300
-
-                raise @version.exception(response, 'Unable to fetch record')
-              end
-
+              payload = @version.fetch('GET', @uri, headers: headers)
               CallInstance.new(
                 @version,
-                response.body,
+                payload,
                 account_sid: @solution[:account_sid],
                 test_integer: @solution[:test_integer],
               )
