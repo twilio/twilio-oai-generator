@@ -23,6 +23,7 @@ module Twilio
           # @return [FleetList] FleetList
           def initialize(version)
             super(version)
+
             # Path Solution
             @solution = {}
             @uri = "/Fleets"
@@ -41,15 +42,10 @@ module Twilio
 
             headers = Twilio::Values.of({ 'Content-Type' => 'application/x-www-form-urlencoded', })
 
-            response = @version.create('POST', @uri, data: data, headers: headers)
-            if response.status_code < 200 || response.status_code >= 300
-
-              raise @version.exception(response, 'Unable to create record')
-            end
-
+            payload = @version.create('POST', @uri, data: data, headers: headers)
             FleetInstance.new(
               @version,
-              response.body,
+              payload,
             )
           end
 
@@ -79,15 +75,10 @@ module Twilio
           def fetch
             headers = Twilio::Values.of({ 'Content-Type' => 'application/x-www-form-urlencoded', })
 
-            response = @version.fetch('GET', @uri, headers: headers)
-            if response.status_code < 200 || response.status_code >= 300
-
-              raise @version.exception(response, 'Unable to fetch record')
-            end
-
+            payload = @version.fetch('GET', @uri, headers: headers)
             FleetInstance.new(
               @version,
-              response.body,
+              payload,
               sid: @solution[:sid],
             )
           end

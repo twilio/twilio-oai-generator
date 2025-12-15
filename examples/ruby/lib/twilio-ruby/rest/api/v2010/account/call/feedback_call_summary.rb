@@ -25,6 +25,7 @@ module Twilio
               # @return [FeedbackCallSummaryList] FeedbackCallSummaryList
               def initialize(version, account_sid: nil)
                 super(version)
+
                 # Path Solution
                 @solution = { account_sid: account_sid }
               end
@@ -69,15 +70,10 @@ module Twilio
 
                 headers = Twilio::Values.of({ 'Content-Type' => 'application/x-www-form-urlencoded', })
 
-                response = @version.update('POST', @uri, data: data, headers: headers)
-                if response.status_code < 200 || response.status_code >= 300
-
-                  raise @version.exception(response, 'Unable to update record')
-                end
-
+                payload = @version.update('POST', @uri, data: data, headers: headers)
                 FeedbackCallSummaryInstance.new(
                   @version,
-                  response.body,
+                  payload,
                   account_sid: @solution[:account_sid],
                   sid: @solution[:sid],
                 )
