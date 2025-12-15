@@ -1,4 +1,4 @@
-                class {{apiName}}Page < Page
+                class {{apiName}}Page < {{#isApiV1}}Token{{/isApiV1}}Page
                     ##
                     # Initialize the {{apiName}}Page
                     # @param [Version] version Version that contains the resource
