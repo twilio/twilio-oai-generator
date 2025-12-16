@@ -138,7 +138,7 @@
         $options = new Values($options);
         {{/vendorExtensions.x-has-non-pagination-params}}
 
-        $params = Values::of([
+        $params = Values::of([{{#vendorExtensions.x-has-non-pagination-params}}
             {{#vendorExtensions.optionFileParams}}
             {{^vendorExtensions.x-serialize}}
             '{{{baseName}}}' =>
@@ -172,7 +172,7 @@
             {{/vendorExtensions.x-serialize-map}}
             {{/vendorExtensions.x-serialize}}
             {{/required}}
-            {{/queryParams}}
+            {{/queryParams}}{{/vendorExtensions.x-has-non-pagination-params}}
             {{^isApiV1}}'PageToken' => $pageToken,
             'Page' => $pageNumber,{{/isApiV1}}
             'PageSize' => $pageSize,
