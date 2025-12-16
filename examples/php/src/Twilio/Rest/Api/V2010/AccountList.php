@@ -248,6 +248,7 @@ class AccountList extends ListResource
                 Serialize::iso8601DateTime($options['dateCreatedBefore']),
             'DateCreated>' =>
                 Serialize::iso8601DateTime($options['dateCreatedAfter']),
+                                                            
             'PageToken' => $pageToken,
             'Page' => $pageNumber,
             'PageSize' => $pageSize,
