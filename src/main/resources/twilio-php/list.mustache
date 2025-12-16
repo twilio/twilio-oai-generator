@@ -67,8 +67,8 @@ class {{apiName}}List extends ListResource
 {{#apiOperations}}
 {{^vendorExtensions.x-ignore}}
 {{#vendorExtensions.listOperation}}
-{{^vendorExtensions.x-is-read-operation}}{{>method}}
-{{>contextMethod}}
+{{^vendorExtensions.x-is-read-operation}}
+{{>helperMethod}}
 
 {{/vendorExtensions.x-is-read-operation}}
 {{/vendorExtensions.listOperation}}

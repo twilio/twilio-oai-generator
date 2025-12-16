@@ -63,8 +63,8 @@ class {{apiName}}Context extends InstanceContext
     }
 
 {{#apiOperations}}
-{{#vendorExtensions.instanceOperation}}{{>method}}
-{{>contextMethod}}
+{{#vendorExtensions.instanceOperation}}
+{{>helperMethod}}
 
 {{/vendorExtensions.instanceOperation}}
 {{/apiOperations}}
