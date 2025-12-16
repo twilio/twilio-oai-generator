@@ -5,8 +5,11 @@ import com.samskivert.mustache.Mustache;
 import com.twilio.oai.api.PhpApiResourceBuilder;
 import com.twilio.oai.api.PhpApiResources;
 import com.twilio.oai.api.PhpDomainBuilder;
+import com.twilio.oai.common.ApplicationConstants;
 import com.twilio.oai.common.EnumConstants;
 import com.twilio.oai.common.Utility;
+import com.twilio.oai.java.cache.ResourceCache2;
+import com.twilio.oai.java.cache.ResourceCacheContext;
 import com.twilio.oai.resolver.IConventionMapper;
 import com.twilio.oai.resolver.LanguageConventionResolver;
 import com.twilio.oai.resolver.common.CodegenModelResolver;
@@ -28,7 +31,6 @@ import java.util.*;
 
 
 public class TwilioPhpGenerator extends PhpClientCodegen {
-
     public static final String VALUES = "values";
     public static final String JSON_INGRESS = "json_ingress";
     private static final String PHP_CONVENTIONAL_MAP_PATH = "config/" + EnumConstants.Generator.TWILIO_PHP.getValue() + ".json";
@@ -73,12 +75,15 @@ public class TwilioPhpGenerator extends PhpClientCodegen {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public void processOpenAPI(final OpenAPI openAPI) {
+
         String domain = StringHelper.camelize(twilioCodegen.getDomainFromOpenAPI(openAPI));
         String version = StringHelper.camelize(twilioCodegen.getVersionFromOpenAPI(openAPI));
         twilioCodegen.setDomain(domain);
         twilioCodegen.setVersion(version);
         twilioCodegen.setOutputDir(domain, version);
+        twilioCodegen.setIsV1ApiStandard(openAPI);
         setSrcBasePath("");
 
         directoryStructureService.configureResourceFamily(openAPI);

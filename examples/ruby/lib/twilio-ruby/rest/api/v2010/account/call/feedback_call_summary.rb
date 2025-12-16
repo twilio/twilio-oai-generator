@@ -25,6 +25,7 @@ module Twilio
               # @return [FeedbackCallSummaryList] FeedbackCallSummaryList
               def initialize(version, account_sid: nil)
                 super(version)
+
                 # Path Solution
                 @solution = { account_sid: account_sid }
               end

@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.twilio.oai.java.cache.ResourceCacheContext;
 import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenOperation;
 import org.openapitools.codegen.CodegenParameter;
@@ -23,6 +24,7 @@ public class ApiResources {
     String namespaceSubPart;
     boolean hasPaginationOperation;
     Set<CodegenModel> nestedModels;
+    private Boolean isApiV1 = null; // true or NULL
 
     public ApiResources(ApiResourceBuilder apiResourceBuilder) {
         apiOperations = apiResourceBuilder.codegenOperationList;
@@ -36,5 +38,8 @@ public class ApiResources {
         namespaceSubPart = apiResourceBuilder.namespaceSubPart;
         hasPaginationOperation = apiResourceBuilder.hasPaginationOperation();
         nestedModels = apiResourceBuilder.nestedModels;
+        if (ResourceCacheContext.get() != null && ResourceCacheContext.get().isV1()) {
+            isApiV1 = true;
+        }
     }
 }

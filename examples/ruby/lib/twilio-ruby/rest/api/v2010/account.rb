@@ -23,6 +23,7 @@ module Twilio
           # @return [AccountList] AccountList
           def initialize(version)
             super(version)
+
             # Path Solution
             @solution = {}
             @uri = "/Accounts.json"

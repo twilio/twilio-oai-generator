@@ -29,10 +29,17 @@ components:
           type: string
         name:
           type: string
+    CreateRequestBodyRequest:
+      type: object
+      properties:
+        username:
+          type: string
+        password:
+          type: string
 paths:
   /v2/Services:
     servers:
-      - url: https://testparameter.twilio.com
+      - url: https://accounts.twilio.com
     get:
       operationId: ListService
       description: Retrieve a list of all Services
@@ -53,6 +60,10 @@ paths:
           schema:
             type: string
             example: "eyJwYWdlIjoyLCJxdWVyeSI6ImJvb2tzIn0="
+        - name: Type
+          in: query
+          schema:
+            type: string
       security:
         - accountSid_authToken: [ ]
       responses:
@@ -93,3 +104,20 @@ paths:
                         type: string
                         description: Token to fetch the next page of results
                         example: "eyJwYWdlIjoyLCJxdWVyeSI6ImJvb2tzIn0="
+    post:
+      operationId: CreateService
+      description: Create a service
+      security:
+        - accountSid_authToken: [ ]
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SampleResponseObject'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateRequestBodyRequest'

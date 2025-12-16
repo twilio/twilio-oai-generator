@@ -23,6 +23,7 @@ module Twilio
           # @return [FleetList] FleetList
           def initialize(version)
             super(version)
+
             # Path Solution
             @solution = {}
             @uri = "/Fleets"

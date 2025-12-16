@@ -2,7 +2,8 @@
 {{#resources}}
 package com.twilio.rest.{{domainPackage}}.{{apiVersion}}{{namespaceSubPart}};
 {{>common/imports}}
-import com.twilio.base.Page;
+import com.twilio.base.Page;{{#isApiV1}}
+import com.twilio.base.TokenPaginationPage;{{/isApiV1}}
 import com.twilio.base.ResourceSet;
 
 {{#operations}}
@@ -13,6 +14,7 @@ public class {{resourceName}}Reader extends Reader<{{resourceName}}> {
     {{>common/constructors}}
     {{>reader/setters}}
     {{>reader/operationMethod}}
+    {{>reader/paginationMethods}}
     {{! Query is mandatory for list operations }}
     {{>common/addQueryParams}}
 

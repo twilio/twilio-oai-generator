@@ -23,6 +23,7 @@ module Twilio
           # @return [TokenList] TokenList
           def initialize(version)
             super(version)
+
             # Path Solution
             @solution = {}
             @uri = "/token"
