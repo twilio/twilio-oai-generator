@@ -19,6 +19,10 @@ public class ResourceCache2 {
 
     @Getter
     @Setter
+    private String recordKey;
+
+    @Getter
+    @Setter
     private Set<CodegenProperty> response = new TreeSet<>((p1, p2) -> p1.baseName.compareTo(p2.baseName));
 
     @Getter
@@ -31,7 +35,14 @@ public class ResourceCache2 {
 
     @Getter
     private Set<MustacheEnum> enumsClassesForMustache = new HashSet<>();
-
+    
+    @Getter
+    private Set<MustacheModel> responses = new HashSet<>();
+    
+    // Note: Key is stored in PascalCase using com.twilio.oai.common.StringUtils.toPascalCase(string_val)
+    @Getter
+    private Map<String, CodegenModel> allModelsMapByDefaultGenerator = new HashMap<>();
+    
     @Getter
     @Setter
     private boolean isV1;
@@ -43,6 +54,10 @@ public class ResourceCache2 {
     public ArrayList<CodegenModel> getAllModelsByDefaultGenerator() {
         return this.allModelsByDefaultGenerator;
     }
+
+    public Map<String, CodegenModel> getAllModelsMapByDefaultGenerator() {
+        return this.allModelsMapByDefaultGenerator;
+    }
     public void addToModelClasses(MustacheModel mustacheModel) {
         this.modelClassesForMustache.add(mustacheModel);
     }
@@ -53,6 +68,10 @@ public class ResourceCache2 {
 
     public void addToOneOfInterfaces(MustacheOneOfIface oneOfIFace) {
         this.oneOfInterfaces.add(oneOfIFace);
+    }
+
+    public void addToResponse(MustacheModel mustacheModel) {
+        this.responses.add(mustacheModel);
     }
 
     // Clear at group of operation level, at method: postProcessOperationsWithModels

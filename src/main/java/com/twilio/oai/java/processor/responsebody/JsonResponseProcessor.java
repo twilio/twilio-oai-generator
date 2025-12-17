@@ -13,7 +13,7 @@ import org.openapitools.codegen.CodegenResponse;
 
 import java.util.Map;
 
-public class JsonResponseProcessor implements ResponseProcessor {
+public class JsonResponseProcessor extends JsonResponseAbstractProcessor implements ResponseProcessor {
     EnumProcessorFactory enumProcessorFactory = EnumProcessorFactory.getInstance();
     RecursiveModelProcessor recursiveModelProcessor = new RecursiveModelProcessor();
     @Override
@@ -57,7 +57,8 @@ public class JsonResponseProcessor implements ResponseProcessor {
     }
 
     public boolean shouldProcess(final CodegenOperation codegenOperation) {
-        System.out.println(codegenOperation.operationId);
+        if (ResourceCacheContext.get().isV1()) return false;
+
         if (codegenOperation.produces != null && !codegenOperation.produces.isEmpty()) {
             for (Map<String, String> contentType : codegenOperation.produces) {
                 if (getContentType().equals(contentType.get("mediaType")) || "application/scim+json".equals(contentType.get("mediaType"))) {
@@ -75,29 +76,5 @@ public class JsonResponseProcessor implements ResponseProcessor {
     
     // if $ref, model name: codegenOperation.responses.get(0).content.get("application/json").schema.getRef()
     // output: #/components/schemas/api.v2010.account.message
-    private CodegenModel getModel(final CodegenOperation codegenOperation) {
-        if (codegenOperation.responses != null && !codegenOperation.responses.isEmpty()) {
-            for (CodegenResponse codegenResponse: codegenOperation.responses) {
-                if (codegenResponse.is2xx || codegenResponse.is3xx) {
-                    if (codegenResponse == null || codegenResponse.getContent() == null) return null;
-                    CodegenMediaType codegenMediaType = codegenResponse.getContent().get(getContentType());
-                    if (codegenMediaType == null) {
-                        codegenMediaType = codegenResponse.getContent().get("application/scim+json");
-                        if (codegenMediaType == null) return null;
-                    }
 
-                    if (codegenMediaType.getSchema().isContainer) {
-                        // It covers special case in which response is list
-                        // TODO: Handle in future.
-                    }
-                    String ref = codegenMediaType.getSchema().getRef();
-                    if (ref == null) return null;
-                    CodegenModel model = Utility.getModelFromRef(ref);
-                    return model;
-                    
-                }
-            }
-        }
-        return null;
-    }
 }
