@@ -30,13 +30,21 @@ components:
         name:
           type: string
 paths:
-  /v2/Services:
+  /v2/{accountSid}/Services:
     servers:
       - url: https://testparameter.twilio.com
     get:
       operationId: ListService
       description: Retrieve a list of all Services
       parameters:
+        - name: accountSid
+          in: path
+          description: Twilio Account SID that owns the Services
+          required: true
+          schema:
+            type: string
+            example: some_secret_account_sid
+
         - name: pageSize
           in: query
           description: Maximum number of items to return in a single response
@@ -46,6 +54,7 @@ paths:
             minimum: 1
             maximum: 1000
             example: 50
+
         - name: pageToken
           in: query
           description: A URL-safe, base64-encoded token representing the page of results to return
@@ -53,6 +62,15 @@ paths:
           schema:
             type: string
             example: "eyJwYWdlIjoyLCJxdWVyeSI6ImJvb2tzIn0="
+
+        - name: sortBy
+          in: query
+          description: Asc dec query param to sort results by a specific field
+          required: false
+          schema:
+            type: string
+            example: "desc"
+
       security:
         - accountSid_authToken: [ ]
       responses:

@@ -13,6 +13,7 @@
  */
 
 import { inspect, InspectOptions } from "util";
+
 import Page, { TwilioResponsePayload } from "../../../base/Page";
 import Response from "../../../http/response";
 import V2010 from "../V2010";
@@ -115,6 +116,7 @@ export interface AccountListInstancePageOptions {
   dateCreatedAfter?: Date;
   /**  */
   pageSize?: number;
+
   /** Page Number, this value is simply for client state */
   pageNumber?: number;
   /** PageToken provided by the API */
@@ -717,7 +719,6 @@ export function AccountListInstance(version: V2010): AccountListInstance {
       method: "get",
       uri: targetUrl,
     });
-
     let pagePromise = operationPromise.then(
       (payload) =>
         new AccountPage(instance._version, payload, instance._solution),
