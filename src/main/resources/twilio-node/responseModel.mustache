@@ -1,6 +1,6 @@
 {{#responseModel}}
 
-interface {{apiName}}Payload extends {{^hasPaginationOperation}}{{apiName}}Resource {}{{/hasPaginationOperation}}{{#hasPaginationOperation}}TwilioResponsePayload {
+  interface {{apiName}}Payload extends {{^hasPaginationOperation}}{{apiName}}Resource {}{{/hasPaginationOperation}}{{#hasPaginationOperation}}{{#isApiV1}}TokenPaginationPayload{{/isApiV1}}{{^isApiV1}}TwilioResponsePayload{{/isApiV1}} {
     {{recordKey}}: {{apiName}}Resource[];
 }{{/hasPaginationOperation}}
 

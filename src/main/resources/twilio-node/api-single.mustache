@@ -2,8 +2,8 @@
 {{#resources}}
 
 import { inspect, InspectOptions } from "util";
-{{#hasPaginationOperation}}
-import Page, { TwilioResponsePayload } from "{{apiVersionPath}}/../../base/Page";
+{{#hasPaginationOperation}}{{#isApiV1}}import TokenPage, { TokenPaginationPayload } from "{{apiVersionPath}}/../../base/TokenPage";{{/isApiV1}}{{^isApiV1}}
+import Page, { TwilioResponsePayload } from "{{apiVersionPath}}/../../base/Page";{{/isApiV1}}
 import Response from "{{apiVersionPath}}/../../http/response";
 {{/hasPaginationOperation}}
 import {{apiVersionClass}} from "{{apiVersionPath}}/{{apiVersionClass}}";
@@ -211,5 +211,5 @@ export function {{apiName}}ListInstance(version: {{apiVersionClass}}{{#listPathP
   return instance;
 }
 {{^instancePath}}{{>responseModel}}{{/instancePath}}
-{{#hasPaginationOperation}}{{>pagination}}{{/hasPaginationOperation}}
+{{#hasPaginationOperation}}{{#isApiV1}}{{>tokenPagination}}{{/isApiV1}}{{^isApiV1}}{{>pagination}}{{/isApiV1}}{{/hasPaginationOperation}}
 {{/resources}}
