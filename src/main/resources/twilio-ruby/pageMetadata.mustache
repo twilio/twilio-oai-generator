@@ -5,13 +5,13 @@
                         super(version, response)
                         @{{#lambda.snakecase}}{{apiName}}{{/lambda.snakecase}}_page = []
                         @limit = limit
-                        number_of_records = @payload.body["page_size"]
-                        key = get_key(solution.body)
+                        key = get_key(response.body)
+                        number_of_records = response.body[key].size
                         while( limit != :unset && number_of_records <= limit )
-                            next_page = self.next_page
-                            @{{#lambda.snakecase}}{{apiName}}{{/lambda.snakecase}}_page << {{apiName}}ListResponse.new(version, next_page, key)
-                            break unless next_page
-                            number_of_records += next_page.body["page_size"]
+                            @{{#lambda.snakecase}}{{apiName}}{{/lambda.snakecase}}_page << {{apiName}}ListResponse.new(version, @payload, key)
+                            @payload = self.next_page
+                            break unless @payload
+                            number_of_records += page_size
                         end
                         # Path Solution
                         @solution = solution

@@ -122,6 +122,13 @@
                         )
                         {{/vendorExtensions.x-is-delete-operation}}
                         {{#vendorExtensions.x-is-delete-operation}}
-                          @version.{{#lambda.camelcase}}{{vendorExtensions.x-name}}{{/lambda.camelcase}}_with_metadata('{{httpMethod}}', @uri{{#queryParams.0}}, params: params{{/queryParams.0}}{{#formParams.0}}, data: data{{/formParams.0}}, headers: headers)
+                          response = @version.{{#lambda.camelcase}}{{vendorExtensions.x-name}}{{/lambda.camelcase}}_with_metadata('{{httpMethod}}', @uri{{#queryParams.0}}, params: params{{/queryParams.0}}{{#formParams.0}}, data: data{{/formParams.0}}, headers: headers)
+                          {{#lambda.camelcase}}{{apiName}}{{/lambda.camelcase}}_instance = {{apiName}}Instance.new(
+                              @version,
+                              response.body,
+                              account_sid: @solution[:account_sid],
+                              sid: @solution[:sid],
+                          )
+                          {{apiName}}InstanceMetadata.new(@version, {{#lambda.camelcase}}{{apiName}}{{/lambda.camelcase}}_instance, response.headers, response.status_code)
                         {{/vendorExtensions.x-is-delete-operation}}
                     end

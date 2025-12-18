@@ -124,14 +124,14 @@
                     # @param [Hash{String => Object}] headers
                     # @param [Integer] status_code
                     def initialize(version, payload, key)
-                       @instance = payload.body[key].map do |data|
+                       @{{#lambda.snakecase}}{{apiName}}{{/lambda.snakecase}}_instance = payload.body[key].map do |data|
                         {{apiName}}Instance.new(version, data)
                        end
                        @headers = payload.headers
                        @status_code = payload.status_code
                     end
 
-                      def instance
+                      def {{#lambda.snakecase}}{{apiName}}{{/lambda.snakecase}}_instance
                           @instance
                       end
                   end
