@@ -144,7 +144,13 @@ module Twilio
             def delete
               headers = Twilio::Values.of({ 'Content-Type' => 'application/x-www-form-urlencoded', })
 
-              @version.delete('DELETE', @uri, headers: headers)
+              response = @version.delete('DELETE', @uri, headers: headers)
+              if response.status_code < 200 || response.status_code >= 300
+
+                raise @version.exception(response, 'Unable to delete record')
+              end
+
+              delete_status_code(response)
             end
 
             ##
@@ -153,10 +159,15 @@ module Twilio
             def fetch
               headers = Twilio::Values.of({ 'Content-Type' => 'application/x-www-form-urlencoded', })
 
-              payload = @version.fetch('GET', @uri, headers: headers)
+              response = @version.fetch('GET', @uri, headers: headers)
+              if response.status_code < 200 || response.status_code >= 300
+
+                raise @version.exception(response, 'Unable to fetch record')
+              end
+
               AwsInstance.new(
                 @version,
-                payload,
+                response.body,
                 sid: @solution[:sid],
               )
             end
@@ -177,10 +188,15 @@ module Twilio
 
               headers = Twilio::Values.of({ 'Content-Type' => 'application/x-www-form-urlencoded', })
 
-              payload = @version.update('POST', @uri, data: data, headers: headers)
+              response = @version.update('POST', @uri, data: data, headers: headers)
+              if response.status_code < 200 || response.status_code >= 300
+
+                raise @version.exception(response, 'Unable to update record')
+              end
+
               AwsInstance.new(
                 @version,
-                payload,
+                response.body,
                 sid: @solution[:sid],
               )
             end

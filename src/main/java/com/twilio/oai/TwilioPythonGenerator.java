@@ -77,6 +77,7 @@ public class TwilioPythonGenerator extends PythonClientCodegen {
         String version = StringHelper.toSnakeCase(twilioCodegen.getVersionFromOpenAPI(openAPI));
         twilioCodegen.setDomain(domain);
         twilioCodegen.setVersion(version);
+        twilioCodegen.setIsV1ApiStandard(openAPI);
         twilioCodegen.setOutputDir(domain, version);
 
         openAPI.getPaths().forEach(resourceTree::addResource);

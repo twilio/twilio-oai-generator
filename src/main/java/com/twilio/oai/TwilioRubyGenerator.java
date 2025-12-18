@@ -2,8 +2,10 @@ package com.twilio.oai;
 
 import com.twilio.oai.api.RubyApiResourceBuilder;
 import com.twilio.oai.api.RubyApiResources;
+import com.twilio.oai.common.ApplicationConstants;
 import com.twilio.oai.common.EnumConstants;
 import com.twilio.oai.common.Utility;
+import com.twilio.oai.java.cache.ResourceCacheContext;
 import com.twilio.oai.resolver.IConventionMapper;
 import com.twilio.oai.resolver.LanguageConventionResolver;
 import com.twilio.oai.resolver.common.CodegenModelResolver;
@@ -16,6 +18,7 @@ import com.twilio.oai.resource.ResourceMap;
 import com.twilio.oai.template.RubyApiActionTemplate;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.PathItem;
+import java.util.LinkedHashMap;
 import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenOperation;
 import org.openapitools.codegen.languages.RubyClientCodegen;
@@ -46,7 +49,13 @@ public class TwilioRubyGenerator extends RubyClientCodegen {
 
     @Override
     public void processOpenAPI(final OpenAPI openAPI) {
-
+        String apiStdVersion = null;
+        if (openAPI.getInfo().getExtensions() != null && openAPI.getInfo().getExtensions().containsKey("x-twilio")) {
+            LinkedHashMap xTwilio = (LinkedHashMap)openAPI.getInfo().getExtensions().get("x-twilio");
+            apiStdVersion = (String) xTwilio.get("apiStandards");
+        }
+        boolean isV1 = ApplicationConstants.isV1.test(apiStdVersion);
+        ResourceCacheContext.get().setV1(isV1);
         String domain = StringHelper.toSnakeCase(twilioCodegen.getDomainFromOpenAPI(openAPI));
         String version = StringHelper.toSnakeCase(twilioCodegen.getVersionFromOpenAPI(openAPI));
         twilioCodegen.setDomain(domain);

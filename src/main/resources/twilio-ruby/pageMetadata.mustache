@@ -1,0 +1,46 @@
+                class {{apiName}}PageMetadata < PageMetadata
+                    attr_reader :{{#lambda.snakecase}}{{apiName}}{{/lambda.snakecase}}_page
+
+                    def initialize(version, response, solution, limit)
+                        super(version, response)
+                        @{{#lambda.snakecase}}{{apiName}}{{/lambda.snakecase}}_page = []
+                        @limit = limit
+                        number_of_records = @payload.body["page_size"]
+                        key = get_key(solution.body)
+                        while( limit != :unset && number_of_records <= limit )
+                            next_page = self.next_page
+                            @{{#lambda.snakecase}}{{apiName}}{{/lambda.snakecase}}_page << {{apiName}}ListResponse.new(version, next_page, key)
+                            break unless next_page
+                            number_of_records += next_page.body["page_size"]
+                        end
+                        # Path Solution
+                        @solution = solution
+                    end
+
+                    def each
+                        @{{#lambda.snakecase}}{{apiName}}{{/lambda.snakecase}}_page.each do |record|
+                          yield record
+                        end
+                    end
+
+                    def to_s
+                      '<Twilio::REST::{{domainName}}::{{apiVersionClass}}PageMetadata>';
+                    end
+                end
+                class {{apiName}}ListResponse < InstanceListResource
+
+                    # @param [Array<{{apiName}}Instance>] instance
+                    # @param [Hash{String => Object}] headers
+                    # @param [Integer] status_code
+                    def initialize(version, payload, key)
+                      @{{#lambda.snakecase}}{{apiName}}{{/lambda.snakecase}} = payload.body[key].map do |data|
+                      {{apiName}}Instance.new(version, data)
+                      end
+                      @headers = payload.headers
+                      @status_code = payload.status_code
+                    end
+
+                    def {{#lambda.snakecase}}{{apiName}}{{/lambda.snakecase}}
+                        @{{#lambda.snakecase}}{{apiName}}{{/lambda.snakecase}}
+                    end
+                end
