@@ -107,15 +107,21 @@
                         {{^vendorExtensions.x-is-delete-operation}}
                         {{#vendorExtensions.scimProduces}}headers['Accept'] = 'application/scim+json'{{/vendorExtensions.scimProduces}}
                         {{#vendorExtensions.multipleProduces}} headers['Accept'] = '*/*'{{/vendorExtensions.multipleProduces}}
-                        payload = @version.{{#lambda.camelcase}}{{vendorExtensions.x-name}}{{/lambda.camelcase}}('{{httpMethod}}', @uri{{#queryParams.0}}, params: params{{/queryParams.0}}{{#formParams.0}}, data: data{{/formParams.0}}, headers: headers{{#bodyParams.0}}, data: {{paramName}}.to_json{{/bodyParams.0}})
-                        {{apiName}}Instance.new(
+                        response = @version.{{#lambda.camelcase}}{{vendorExtensions.x-name}}{{/lambda.camelcase}}_with_metadata('{{httpMethod}}', @uri{{#queryParams.0}}, params: params{{/queryParams.0}}{{#formParams.0}}, data: data{{/formParams.0}}, headers: headers{{#bodyParams.0}}, data: {{paramName}}.to_json{{/bodyParams.0}})
+                        {{#lambda.camelcase}}{{apiName}}{{/lambda.camelcase}}_instance = {{apiName}}Instance.new(
                             @version,
-                            payload,{{#vendorExtensions.listOperation}}{{#listPathParams}}
+                            response.body,{{#vendorExtensions.listOperation}}{{#listPathParams}}
                             {{paramName}}: @solution[:{{paramName}}],{{/listPathParams}}{{/vendorExtensions.listOperation}}{{#vendorExtensions.instanceOperation}}{{#instancePathParams}}
                             {{paramName}}: @solution[:{{paramName}}],{{/instancePathParams}}{{/vendorExtensions.instanceOperation}}
                         )
+                        {{apiName}}InstanceMetadata.new(
+                            @version,
+                            {{#lambda.camelcase}}{{apiName}}{{/lambda.camelcase}}_instance,
+                            response.headers,
+                            response.status_code
+                        )
                         {{/vendorExtensions.x-is-delete-operation}}
                         {{#vendorExtensions.x-is-delete-operation}}
-                          @version.{{#lambda.camelcase}}{{vendorExtensions.x-name}}{{/lambda.camelcase}}('{{httpMethod}}', @uri{{#queryParams.0}}, params: params{{/queryParams.0}}{{#formParams.0}}, data: data{{/formParams.0}}, headers: headers)
+                          @version.{{#lambda.camelcase}}{{vendorExtensions.x-name}}{{/lambda.camelcase}}_with_metadata('{{httpMethod}}', @uri{{#queryParams.0}}, params: params{{/queryParams.0}}{{#formParams.0}}, data: data{{/formParams.0}}, headers: headers)
                         {{/vendorExtensions.x-is-delete-operation}}
                     end

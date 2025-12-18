@@ -27,17 +27,20 @@
                       '<Twilio::REST::{{domainName}}::{{apiVersionClass}}PageMetadata>';
                     end
                 end
-                class {{apiName}}ListResponse
-                    attr_reader :messages , :headers, :status_code
+                class {{apiName}}ListResponse < InstanceListResource
 
-                    # @param [Array<{{apiName}}Instance>] instace
+                    # @param [Array<{{apiName}}Instance>] instance
                     # @param [Hash{String => Object}] headers
                     # @param [Integer] status_code
                     def initialize(version, payload, key)
-                      @messages = payload.body[key].map do |message_data|
-                      {{apiName}}Instance.new(version, message_data)
-                    end
+                      @{{#lambda.snakecase}}{{apiName}}{{/lambda.snakecase}} = payload.body[key].map do |data|
+                      {{apiName}}Instance.new(version, data)
+                      end
                       @headers = payload.headers
                       @status_code = payload.status_code
+                    end
+
+                    def {{#lambda.snakecase}}{{apiName}}{{/lambda.snakecase}}
+                        @{{#lambda.snakecase}}{{apiName}}{{/lambda.snakecase}}
                     end
                 end
