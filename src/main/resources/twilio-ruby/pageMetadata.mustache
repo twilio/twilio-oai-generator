@@ -43,4 +43,12 @@
                     def {{#lambda.snakecase}}{{apiName}}{{/lambda.snakecase}}
                         @{{#lambda.snakecase}}{{apiName}}{{/lambda.snakecase}}
                     end
+
+                    def headers
+                      @headers
+                    end
+
+                    def status_code
+                      @status_code
+                    end
                 end

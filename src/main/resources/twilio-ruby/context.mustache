@@ -114,6 +114,14 @@
                         @{{#lambda.snakecase}}{{apiName}}{{/lambda.snakecase}}_instance
                     end
 
+                    def headers
+                        @headers
+                    end
+
+                    def status_code
+                        @status_code
+                    end
+
                     def to_s
                       "<Twilio.Api.V2010.{{apiName}}InstanceMetadata status=#{@status_code}>"
                     end
