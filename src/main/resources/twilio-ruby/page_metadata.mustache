@@ -1,0 +1,43 @@
+                class {{apiName}}PageMetadata < PageMetadata
+                    attr_reader :{{#lambda.snakecase}}{{apiName}}{{/lambda.snakecase}}_page
+
+                    def initialize(version, response, solution, limit)
+                        super(version, response)
+                        @{{#lambda.snakecase}}{{apiName}}{{/lambda.snakecase}}_page = []
+                        @limit = limit
+                        number_of_records = @payload.body["page_size"]
+                        key = get_key(solution.body)
+                        while( limit != :unset && number_of_records <= limit )
+                            next_page = self.next_page
+                            @message_page << {{apiName}}ListResponse.new(version, next_page)
+                            break unless next_page
+                            number_of_records += next_page.body["page_size"]
+                        end
+                        # Path Solution
+                        @solution = solution
+                    end
+
+                    def each
+                        @{{#lambda.snakecase}}{{apiName}}{{/lambda.snakecase}}_page.each do |record|
+                          yield record
+                        end
+                    end
+
+                    def to_s
+                    '<Twilio.Api.V2010.{{apiName}}PageMetadata>'
+                    end
+                end
+                class {{apiName}}ListResponse
+                    attr_reader :messages , :headers, :status_code
+
+                    # @param [Array<{{apiName}}Instance>] instace
+                    # @param [Hash{String => Object}] headers
+                    # @param [Integer] status_code
+                    def initialize(version, payload, key)
+                      @messages = payload.body[key].map do |message_data|
+                      {{apiName}}Instance.new(version, message_data)
+                    end
+                      @headers = payload.headers
+                      @status_code = payload.status_code
+                    end
+                end
