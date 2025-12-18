@@ -11,7 +11,7 @@
                             @{{#lambda.snakecase}}{{apiName}}{{/lambda.snakecase}}_page << {{apiName}}ListResponse.new(version, @payload, key)
                             @payload = self.next_page
                             break unless @payload
-                            number_of_records += page_size
+                            number_of_records += @payload.body[key].size
                         end
                         # Path Solution
                         @solution = solution
