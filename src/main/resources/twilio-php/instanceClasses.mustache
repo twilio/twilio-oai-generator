@@ -2,7 +2,7 @@
 {{#vars}}/**
  * @property {{{dataType}}} ${{#lambda.customcamelcase}}{{baseName}}{{/lambda.customcamelcase}}
  */{{/vars}}
-class {{apiName}}Instance extends InstanceResource
+class {{classname}}Instance extends InstanceResource
 {
 {{#metaProperties.contextImportProperties}}
     protected $_{{#lambda.camelcase}}{{mountName}}{{/lambda.camelcase}};
