@@ -9,7 +9,7 @@
                         key = get_key(solution.body)
                         while( limit != :unset && number_of_records <= limit )
                             next_page = self.next_page
-                            @message_page << {{apiName}}ListResponse.new(version, next_page)
+                            @{{#lambda.snakecase}}{{apiName}}{{/lambda.snakecase}}_page << {{apiName}}ListResponse.new(version, next_page, key)
                             break unless next_page
                             number_of_records += next_page.body["page_size"]
                         end
@@ -24,7 +24,7 @@
                     end
 
                     def to_s
-                    '<Twilio.Api.V2010.{{apiName}}PageMetadata>'
+                      '<Twilio::REST::{{domainName}}::{{apiVersionClass}}PageMetadata>';
                     end
                 end
                 class {{apiName}}ListResponse
