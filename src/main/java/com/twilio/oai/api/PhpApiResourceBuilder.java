@@ -57,12 +57,27 @@ public class PhpApiResourceBuilder extends ApiResourceBuilder {
                 template.add(PhpApiActionTemplate.TEMPLATE_TYPE_OPTIONS);
             template.add(PhpApiActionTemplate.TEMPLATE_TYPE_PAGE);
             template.add(PhpApiActionTemplate.TEMPLATE_TYPE_LIST);
-            template.add(PhpApiActionTemplate.TEMPLATE_TYPE_INSTANCE);
+
+            // Only add regular instance template when there's 1 or fewer response models
+            // When there are multiple distinct response models, dynamic templates will be
+            // added after build() in the generator with the full apiResource
+            if (responseInstanceModels == null || responseInstanceModels.size() <= 1) {
+                template.add(PhpApiActionTemplate.TEMPLATE_TYPE_INSTANCE);
+            }
+
             // if any operation in current op list(CRUDF) has application/json request body type
             if (!nestedModels.isEmpty())
                 template.add(PhpApiActionTemplate.TEMPLATE_TYPE_MODELS);
         });
         return this;
+    }
+
+    /**
+     * Returns true if this builder has multiple distinct response models that require
+     * separate instance class files.
+     */
+    public boolean hasMultipleResponseModels() {
+        return responseInstanceModels != null && responseInstanceModels.size() > 1;
     }
 
     @Override
@@ -359,6 +374,7 @@ public class PhpApiResourceBuilder extends ApiResourceBuilder {
     @Override
     public ApiResourceBuilder updateResponseModel(Resolver<CodegenProperty> codegenPropertyResolver) {
         List<CodegenModel> responseModels = new ArrayList<>();
+        Set<CodegenModel> responseInstanceModels = new HashSet<>();
         codegenOperationList.forEach(codegenOperation -> {
             codegenOperation.responses
                     .stream()
@@ -373,8 +389,10 @@ public class PhpApiResourceBuilder extends ApiResourceBuilder {
                         item.vars.forEach(e -> codegenPropertyResolver.resolve(e, this));
                         item.allVars.forEach(e -> codegenPropertyResolver.resolve(e, this));
                         responseModels.add(item);
+                        responseInstanceModels.add(item);
                     });
         });
+        this.responseInstanceModels = responseInstanceModels;
         this.apiResponseModels = getDistinctResponseModel(responseModels);
         return this;
     }
