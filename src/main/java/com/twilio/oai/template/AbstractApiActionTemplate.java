@@ -7,6 +7,7 @@ import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.SupportingFile;
 
 import java.io.*;
+import java.lang.reflect.Field;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
@@ -25,12 +26,12 @@ public abstract class AbstractApiActionTemplate implements IApiActionTemplate {
     protected static class DynamicTemplateData {
         String templateFile;
         String fileSuffix;
-        Set<CodegenModel> models;
+        Object apiResource;  // The full apiResource object (e.g., PhpApiResources)
 
-        DynamicTemplateData(String templateFile, String fileSuffix, Set<CodegenModel> models) {
+        DynamicTemplateData(String templateFile, String fileSuffix, Object apiResource) {
             this.templateFile = templateFile;
             this.fileSuffix = fileSuffix;
-            this.models = models;
+            this.apiResource = apiResource;
         }
     }
 
@@ -62,14 +63,18 @@ public abstract class AbstractApiActionTemplate implements IApiActionTemplate {
     }
 
     @Override
-    public void addDynamicTemplates(String templateType, Set<CodegenModel> models) {
+    public void addDynamicTemplates(String templateType, Object apiResource) {
         List<String> templateStrings = templates.get(templateType);
-        if (templateStrings != null && models != null && !models.isEmpty()) {
-            dynamicTemplates.put(templateType, new DynamicTemplateData(
-                templateStrings.get(0),  // template file
-                templateStrings.get(1),  // file suffix
-                models
-            ));
+        if (templateStrings != null && apiResource != null) {
+            // Check if apiResource has responseInstanceModels with more than 1 model
+            Set<CodegenModel> models = getResponseInstanceModels(apiResource);
+            if (models != null && models.size() > 1) {
+                dynamicTemplates.put(templateType, new DynamicTemplateData(
+                    templateStrings.get(0),  // template file
+                    templateStrings.get(1),  // file suffix
+                    apiResource
+                ));
+            }
         }
     }
 
@@ -78,14 +83,26 @@ public abstract class AbstractApiActionTemplate implements IApiActionTemplate {
         for (Map.Entry<String, DynamicTemplateData> entry : dynamicTemplates.entrySet()) {
             DynamicTemplateData data = entry.getValue();
 
-            for (CodegenModel model : data.models) {
+            // Extract responseInstanceModels from apiResource
+            Set<CodegenModel> models = getResponseInstanceModels(data.apiResource);
+            if (models == null || models.isEmpty()) {
+                continue;
+            }
+
+            for (CodegenModel model : models) {
                 try {
-                    // Build context for this model
+                    // Build context with apiResource as "resources"
+                    // The template uses {{#resources}} wrapper, so we need to provide the apiResource
+                    // but with responseInstanceModels containing only the current model
                     Map<String, Object> context = new HashMap<>(baseContext);
-                    context.put("model", model);
-                    context.put("classname", model.classname);
-                    context.put("vars", model.vars);
-                    context.put("allVars", model.allVars);
+
+                    // Create a wrapper that provides all apiResource properties
+                    // but overrides responseInstanceModels with just the current model
+                    Map<String, Object> resourcesMap = new HashMap<>();
+                    copyObjectProperties(data.apiResource, resourcesMap);
+                    // Override responseInstanceModels with single model
+                    resourcesMap.put("responseInstanceModels", Collections.singleton(model));
+                    context.put("resources", resourcesMap);
 
                     // Read and compile template
                     String templateContent = readResourceTemplate(data.templateFile);
@@ -108,6 +125,66 @@ public abstract class AbstractApiActionTemplate implements IApiActionTemplate {
                     e.printStackTrace();
                 }
             }
+        }
+    }
+
+    /**
+     * Extracts responseInstanceModels from an apiResource object using reflection.
+     */
+    @SuppressWarnings("unchecked")
+    private Set<CodegenModel> getResponseInstanceModels(Object apiResource) {
+        if (apiResource == null) return null;
+
+        try {
+            Field field = findField(apiResource.getClass(), "responseInstanceModels");
+            if (field != null) {
+                field.setAccessible(true);
+                Object value = field.get(apiResource);
+                if (value instanceof Set) {
+                    return (Set<CodegenModel>) value;
+                }
+            }
+        } catch (Exception e) {
+            // Ignore and return null
+        }
+        return null;
+    }
+
+    /**
+     * Finds a field by name in the class hierarchy.
+     */
+    private Field findField(Class<?> clazz, String fieldName) {
+        while (clazz != null) {
+            try {
+                return clazz.getDeclaredField(fieldName);
+            } catch (NoSuchFieldException e) {
+                clazz = clazz.getSuperclass();
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Copies all properties from an object to a map for mustache rendering.
+     * Uses reflection to access fields from the object and its superclasses.
+     */
+    private void copyObjectProperties(Object source, Map<String, Object> targetMap) {
+        if (source == null) return;
+
+        Class<?> clazz = source.getClass();
+        while (clazz != null) {
+            for (Field field : clazz.getDeclaredFields()) {
+                try {
+                    field.setAccessible(true);
+                    Object value = field.get(source);
+                    if (value != null) {
+                        targetMap.put(field.getName(), value);
+                    }
+                } catch (IllegalAccessException e) {
+                    // Skip inaccessible fields
+                }
+            }
+            clazz = clazz.getSuperclass();
         }
     }
 

@@ -58,11 +58,10 @@ public class PhpApiResourceBuilder extends ApiResourceBuilder {
             template.add(PhpApiActionTemplate.TEMPLATE_TYPE_PAGE);
             template.add(PhpApiActionTemplate.TEMPLATE_TYPE_LIST);
 
-            // Use dynamic templates when there are multiple distinct response models
-            // Otherwise use the standard single instance template
-            if (responseInstanceModels != null && responseInstanceModels.size() > 1) {
-                template.addDynamicTemplates(PhpApiActionTemplate.TEMPLATE_TYPE_INSTANCE_CLASS, responseInstanceModels);
-            } else {
+            // Only add regular instance template when there's 1 or fewer response models
+            // When there are multiple distinct response models, dynamic templates will be
+            // added after build() in the generator with the full apiResource
+            if (responseInstanceModels == null || responseInstanceModels.size() <= 1) {
                 template.add(PhpApiActionTemplate.TEMPLATE_TYPE_INSTANCE);
             }
 
@@ -71,6 +70,14 @@ public class PhpApiResourceBuilder extends ApiResourceBuilder {
                 template.add(PhpApiActionTemplate.TEMPLATE_TYPE_MODELS);
         });
         return this;
+    }
+
+    /**
+     * Returns true if this builder has multiple distinct response models that require
+     * separate instance class files.
+     */
+    public boolean hasMultipleResponseModels() {
+        return responseInstanceModels != null && responseInstanceModels.size() > 1;
     }
 
     @Override
