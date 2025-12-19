@@ -53,7 +53,7 @@ components:
           description: URL to fetch this widget
 
     # Schema for Read response - includes full details with nested objects
-    WidgetReadResponse:
+    WidgetFetchResponse:
       type: object
       properties:
         sid:
@@ -160,7 +160,7 @@ components:
           description: URL to access archived version if available
 
     # Schema for List item - simplified version for listing
-    WidgetListItem:
+    WidgetListResponse:
       type: object
       properties:
         sid:
@@ -262,7 +262,7 @@ paths:
                   widgets:
                     type: array
                     items:
-                      $ref: '#/components/schemas/WidgetListItem'
+                      $ref: '#/components/schemas/WidgetListResponse'
                   meta:
                     type: object
                     required:
@@ -320,7 +320,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/WidgetReadResponse'
+                $ref: '#/components/schemas/WidgetFetchResponse'
 
     # UPDATE - POST /v1/Widgets/{Sid}
     post:
