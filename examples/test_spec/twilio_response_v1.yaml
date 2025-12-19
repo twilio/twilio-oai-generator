@@ -19,6 +19,8 @@ info:
   termsOfService: https://www.twilio.com/legal/tos
   title: Twilio - RESPONSE BODY TEST
   version: 1.11.0
+  x-twilio:
+    apiStandards: v1.0
 openapi: 3.0.1
 
 components:
