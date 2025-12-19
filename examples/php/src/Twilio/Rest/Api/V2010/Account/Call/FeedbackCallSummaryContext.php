@@ -22,6 +22,8 @@ use Twilio\Options;
 use Twilio\Values;
 use Twilio\Version;
 use Twilio\InstanceContext;
+use Twilio\Http\Response;
+use Twilio\Metadata\ResourceMetadata;
 use Twilio\Serialize;
 
 
@@ -55,17 +57,16 @@ class FeedbackCallSummaryContext extends InstanceContext
     }
 
     /**
-     * Update the FeedbackCallSummaryInstance
+     * Helper function for Update
      *
      * @param \DateTime $endDate
      * @param \DateTime $startDate
      * @param array|Options $options Optional Arguments
-     * @return FeedbackCallSummaryInstance Updated FeedbackCallSummaryInstance
+     * @return Response Updated Response
      * @throws TwilioException When an HTTP error occurs.
      */
-    public function update(\DateTime $endDate, \DateTime $startDate, array $options = []): FeedbackCallSummaryInstance
+    private function _update(\DateTime $endDate, \DateTime $startDate, array $options = []): Response
     {
-
         $options = new Values($options);
 
         $data = Values::of([
@@ -78,13 +79,52 @@ class FeedbackCallSummaryContext extends InstanceContext
         ]);
 
         $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded', 'Accept' => 'application/json' ]);
-        $payload = $this->version->update('POST', $this->uri, [], $data, $headers);
+        return $this->version->handleRequest('POST', $this->uri, [], $data, $headers, "update");
+    }
 
+    /**
+     * Update the FeedbackCallSummaryInstance
+     *
+     * @param \DateTime $endDate
+     * @param \DateTime $startDate
+     * @param array|Options $options Optional Arguments
+     * @return FeedbackCallSummaryInstance Updated FeedbackCallSummaryInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function update(\DateTime $endDate, \DateTime $startDate, array $options = []): FeedbackCallSummaryInstance
+    {
+        $response = $this->_update( $endDate,  $startDate, $options);
         return new FeedbackCallSummaryInstance(
             $this->version,
-            $payload,
+            $response->getContent(),
             $this->solution['accountSid'],
             $this->solution['sid']
+        );
+        
+    }
+
+    /**
+     * Update the FeedbackCallSummaryInstance with Metadata
+     *
+     * @param \DateTime $endDate
+     * @param \DateTime $startDate
+     * @param array|Options $options Optional Arguments
+     * @return ResourceMetadata The Updated Resource with Metadata
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function updateWithMetadata(\DateTime $endDate, \DateTime $startDate, array $options = []): ResourceMetadata
+    {
+        $response = $this->_update( $endDate,  $startDate, $options);
+        $resource = new FeedbackCallSummaryInstance(
+                        $this->version,
+                        $response->getContent(),
+                        $this->solution['accountSid'],
+                        $this->solution['sid']
+                    );
+        return new ResourceMetadata(
+            $resource,
+            $response->getStatusCode(),
+            $response->getHeaders()
         );
     }
 
