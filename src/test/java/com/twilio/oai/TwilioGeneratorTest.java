@@ -29,6 +29,12 @@ public class TwilioGeneratorTest {
     @Parameterized.Parameters
     public static Collection<Generator> generators() {
         return Arrays.asList(
+                Generator.TWILIO_JAVA,
+                Generator.TWILIO_CSHARP,
+                Generator.TWILIO_PYTHON,
+                Generator.TWILIO_NODE,
+                Generator.TWILIO_RUBY,
+                Generator.TWILIO_GO,
                 Generator.TWILIO_PHP
         );
     }
@@ -42,7 +48,7 @@ public class TwilioGeneratorTest {
 
     @Test
     public void launchGenerator() {
-        final String pathname = "/Users/stiwari/di/github/twilio/twilio-oai-generator/examples/test_spec/twilio_response_v1.yaml";
+        final String pathname = "examples/spec/twilio_api_v2010.yaml";
         File filesList[] ;
         File directoryPath = new File(pathname);
         if (directoryPath.isDirectory()) {
