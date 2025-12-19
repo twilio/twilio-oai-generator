@@ -1,6 +1,7 @@
 package com.twilio.oai.template;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -13,6 +14,8 @@ public class PhpApiActionTemplate extends AbstractApiActionTemplate {
     public static final String TEMPLATE_TYPE_INSTANCE = "instance";
     public static final String TEMPLATE_TYPE_MODELS = "models";
     public static final String TEMPLATE_TYPE_PAGE = "page";
+    // New template type for individual instance classes (one file per response model)
+    public static final String TEMPLATE_TYPE_INSTANCE_CLASS = "instanceClass";
 
     public PhpApiActionTemplate(final CodegenConfig defaultCodegen) {
         super(defaultCodegen);
@@ -20,19 +23,16 @@ public class PhpApiActionTemplate extends AbstractApiActionTemplate {
 
     @Override
     protected Map<String, List<String>> mapping() {
-        return Map.of(TEMPLATE_TYPE_LIST,
-                      Arrays.asList(TEMPLATE_TYPE_LIST + ".mustache", "List.php"),
-                      TEMPLATE_TYPE_CONTEXT,
-                      Arrays.asList(TEMPLATE_TYPE_CONTEXT + ".mustache", "Context.php"),
-                      TEMPLATE_TYPE_INSTANCE,
-                      Arrays.asList(TEMPLATE_TYPE_INSTANCE + ".mustache", "Instance.php"),
-                      TEMPLATE_TYPE_OPTIONS,
-                      Arrays.asList(TEMPLATE_TYPE_OPTIONS + ".mustache", "Options.php"),
-                      TEMPLATE_TYPE_MODELS,
-                      Arrays.asList(TEMPLATE_TYPE_MODELS + ".mustache", "Models.php"),
-                      TEMPLATE_TYPE_PAGE,
-                      Arrays.asList(TEMPLATE_TYPE_PAGE + ".mustache", "Page.php"),
-                      VERSION_TEMPLATE,
-                      Arrays.asList(VERSION_TEMPLATE + ".mustache", ".php"));
+        Map<String, List<String>> map = new HashMap<>();
+        map.put(TEMPLATE_TYPE_LIST, Arrays.asList(TEMPLATE_TYPE_LIST + ".mustache", "List.php"));
+        map.put(TEMPLATE_TYPE_CONTEXT, Arrays.asList(TEMPLATE_TYPE_CONTEXT + ".mustache", "Context.php"));
+        map.put(TEMPLATE_TYPE_INSTANCE, Arrays.asList(TEMPLATE_TYPE_INSTANCE + ".mustache", "Instance.php"));
+        map.put(TEMPLATE_TYPE_OPTIONS, Arrays.asList(TEMPLATE_TYPE_OPTIONS + ".mustache", "Options.php"));
+        map.put(TEMPLATE_TYPE_MODELS, Arrays.asList(TEMPLATE_TYPE_MODELS + ".mustache", "Models.php"));
+        map.put(TEMPLATE_TYPE_PAGE, Arrays.asList(TEMPLATE_TYPE_PAGE + ".mustache", "Page.php"));
+        map.put(VERSION_TEMPLATE, Arrays.asList(VERSION_TEMPLATE + ".mustache", ".php"));
+        // Dynamic template for generating individual instance class files
+        map.put(TEMPLATE_TYPE_INSTANCE_CLASS, Arrays.asList("instanceClass.mustache", "Instance.php"));
+        return map;
     }
 }

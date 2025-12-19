@@ -134,7 +134,25 @@ public class TwilioPhpGenerator extends PhpClientCodegen {
         final List<CodegenOperation> opList = directoryStructureService.processOperations(results);
         PhpApiResources apiResources = processCodegenOperations(opList);
         results.put("resources", apiResources);
+
+        // Generate dynamic instance class files (one per response model)
+        generateDynamicInstanceFiles(apiResources, results);
+
         return results;
+    }
+
+    private void generateDynamicInstanceFiles(PhpApiResources apiResources, OperationsMap objs) {
+        // Build base context with all properties needed by the template
+        Map<String, Object> baseContext = new HashMap<>();
+        baseContext.putAll(additionalProperties);
+        baseContext.put("resources", apiResources);
+        // domainName and version are already in additionalProperties (set by TwilioCodegenAdapter)
+
+        // Get output directory for API files
+        String outputDir = apiFileFolder();
+
+        // Generate the dynamic files
+        phpApiActionTemplate.generateDynamicFiles(baseContext, outputDir);
     }
 
     @Override

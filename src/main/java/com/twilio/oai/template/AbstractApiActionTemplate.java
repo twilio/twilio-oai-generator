@@ -1,11 +1,14 @@
 package com.twilio.oai.template;
 
-import java.io.File;
-import java.util.List;
-import java.util.Map;
-
+import com.samskivert.mustache.Mustache;
+import com.samskivert.mustache.Template;
 import org.openapitools.codegen.CodegenConfig;
+import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.SupportingFile;
+
+import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
 
 public abstract class AbstractApiActionTemplate implements IApiActionTemplate {
     public static final String API_TEMPLATE = "api";
@@ -14,6 +17,22 @@ public abstract class AbstractApiActionTemplate implements IApiActionTemplate {
 
     private final Map<String, List<String>> templates = mapping();
     protected final CodegenConfig codegen;
+
+    // Store dynamic template data
+    protected final Map<String, DynamicTemplateData> dynamicTemplates = new LinkedHashMap<>();
+
+    // Inner class to hold dynamic template configuration
+    protected static class DynamicTemplateData {
+        String templateFile;
+        String fileSuffix;
+        Set<CodegenModel> models;
+
+        DynamicTemplateData(String templateFile, String fileSuffix, Set<CodegenModel> models) {
+            this.templateFile = templateFile;
+            this.fileSuffix = fileSuffix;
+            this.models = models;
+        }
+    }
 
     protected AbstractApiActionTemplate(CodegenConfig defaultCodegen) {
         this.codegen = initialise(defaultCodegen);
@@ -33,12 +52,83 @@ public abstract class AbstractApiActionTemplate implements IApiActionTemplate {
         for (final List<String> entry : templates.values()) {
             codegen.apiTemplateFiles().remove(entry.get(0));
         }
+        dynamicTemplates.clear();
     }
 
     @Override
     public void add(String template) {
         List<String> templateStrings = templates.get(template);
         codegen.apiTemplateFiles().put(templateStrings.get(0), templateStrings.get(1));
+    }
+
+    @Override
+    public void addDynamicTemplates(String templateType, Set<CodegenModel> models) {
+        List<String> templateStrings = templates.get(templateType);
+        if (templateStrings != null && models != null && !models.isEmpty()) {
+            dynamicTemplates.put(templateType, new DynamicTemplateData(
+                templateStrings.get(0),  // template file
+                templateStrings.get(1),  // file suffix
+                models
+            ));
+        }
+    }
+
+    @Override
+    public void generateDynamicFiles(Map<String, Object> baseContext, String outputDir) {
+        for (Map.Entry<String, DynamicTemplateData> entry : dynamicTemplates.entrySet()) {
+            DynamicTemplateData data = entry.getValue();
+
+            for (CodegenModel model : data.models) {
+                try {
+                    // Build context for this model
+                    Map<String, Object> context = new HashMap<>(baseContext);
+                    context.put("model", model);
+                    context.put("classname", model.classname);
+                    context.put("vars", model.vars);
+                    context.put("allVars", model.allVars);
+
+                    // Read and compile template
+                    String templateContent = readResourceTemplate(data.templateFile);
+                    Template template = Mustache.compiler()
+                        .withLoader(name -> new StringReader(readResourceTemplate(name + ".mustache")))
+                        .defaultValue("")
+                        .compile(templateContent);
+
+                    // Render
+                    String rendered = template.execute(context);
+
+                    // Write file: {outputDir}/{ModelClassname}{suffix}
+                    String filename = outputDir + File.separator + model.classname + data.fileSuffix;
+                    writeFile(filename, rendered);
+
+                    System.out.println("Generated dynamic file: " + filename);
+
+                } catch (Exception e) {
+                    System.err.println("Error generating dynamic file for " + model.classname + ": " + e.getMessage());
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    protected String readResourceTemplate(String templatePath) {
+        String fullPath = codegen.templateDir() + "/" + templatePath;
+        try (InputStream is = getClass().getClassLoader().getResourceAsStream(fullPath)) {
+            if (is == null) {
+                throw new RuntimeException("Template not found: " + fullPath);
+            }
+            return new String(is.readAllBytes(), StandardCharsets.UTF_8);
+        } catch (IOException e) {
+            throw new RuntimeException("Cannot read template: " + fullPath, e);
+        }
+    }
+
+    protected void writeFile(String filename, String content) throws IOException {
+        File file = new File(filename);
+        file.getParentFile().mkdirs();
+        try (FileWriter writer = new FileWriter(file, StandardCharsets.UTF_8)) {
+            writer.write(content);
+        }
     }
 
     @Override
