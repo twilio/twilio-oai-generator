@@ -30,7 +30,7 @@ if params != nil && params.PathAccountSid != nil {
     if params != nil && params.{{paramName}} != nil {
         b, err := json.Marshal(*params.{{paramName}})
         if err != nil {
-            return nil, err
+            return {{#returnType}}nil, {{/returnType}} err
         }
         body = b
     }
@@ -46,7 +46,7 @@ if params != nil && params.PathAccountSid != nil {
             v, err := json.Marshal(item)
 
             if err != nil {
-            return nil, err
+            return {{#returnType}}nil, {{/returnType}} err
             }
 
             data.Add("{{{baseName}}}", string(v))
@@ -61,7 +61,7 @@ if params != nil && params.PathAccountSid != nil {
         v, err := json.Marshal(params.{{paramName}})
 
         if err != nil {
-        return nil, err
+        return {{#returnType}}nil, {{/returnType}} err
         }
 
         data.Set("{{{baseName}}}", string(v))
@@ -91,7 +91,7 @@ if params != nil && params.PathAccountSid != nil {
             v, err := json.Marshal(item)
 
             if err != nil {
-                return nil, err
+                return {{#returnType}}nil, {{/returnType}} err
             }
 
             data.Add("{{{baseName}}}", string(v))
@@ -106,7 +106,7 @@ if params != nil && params.PathAccountSid != nil {
         v, err := json.Marshal(params.{{paramName}})
 
         if err != nil {
-            return nil, err
+            return {{#returnType}}nil, {{/returnType}} err
         }
 
         data.Set("{{{baseName}}}", string(v))
