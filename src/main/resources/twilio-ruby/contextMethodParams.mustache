@@ -116,6 +116,6 @@
                         )
                         {{/vendorExtensions.x-is-delete-operation}}
                         {{#vendorExtensions.x-is-delete-operation}}
-                          @version.{{#lambda.camelcase}}{{vendorExtensions.x-name}}{{/lambda.camelcase}}('{{httpMethod}}', @uri{{#queryParams.0}}, params: params{{/queryParams.0}}{{#formParams.0}}, data: data{{/formParams.0}}, headers: headers)
+                        @version.{{#lambda.camelcase}}{{vendorExtensions.x-name}}{{/lambda.camelcase}}('{{httpMethod}}', @uri{{#queryParams.0}}, params: params{{/queryParams.0}}{{#formParams.0}}, data: data{{/formParams.0}}, headers: headers)
                         {{/vendorExtensions.x-is-delete-operation}}
                     end

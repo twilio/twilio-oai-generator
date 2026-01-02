@@ -23,6 +23,7 @@ module Twilio
           # @return [CallList] CallList
           def initialize(version)
             super(version)
+
             # Path Solution
             @solution = {}
           end
@@ -53,15 +54,10 @@ module Twilio
           def update
             headers = Twilio::Values.of({ 'Content-Type' => 'application/x-www-form-urlencoded', })
 
-            response = @version.update('POST', @uri, headers: headers)
-            if response.status_code < 200 || response.status_code >= 300
-
-              raise @version.exception(response, 'Unable to update record')
-            end
-
+            payload = @version.update('POST', @uri, headers: headers)
             CallInstance.new(
               @version,
-              response.body,
+              payload,
               sid: @solution[:sid],
             )
           end

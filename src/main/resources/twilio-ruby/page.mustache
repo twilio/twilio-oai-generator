@@ -6,7 +6,9 @@
                     # @param [Hash] solution Path solution for the resource
                     # @return [{{apiName}}Page] {{apiName}}Page
                     def initialize(version, response, solution)
-                        super(version, response)
+                        {{^isApiV1}}super(version, response){{/isApiV1}}
+                        {{#isApiV1}}apiV1Version = ApiV1Version.new version.domain, version
+                        super(apiV1Version, response){{/isApiV1}}
 
                         # Path Solution
                         @solution = solution

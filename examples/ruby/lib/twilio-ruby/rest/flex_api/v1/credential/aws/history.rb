@@ -25,6 +25,7 @@ module Twilio
               # @return [HistoryList] HistoryList
               def initialize(version, sid: nil)
                 super(version)
+
                 # Path Solution
                 @solution = { sid: sid }
               end
@@ -60,15 +61,10 @@ module Twilio
                 params.merge!(Twilio.prefixed_collapsible_map(add_ons_data, 'AddOns'))
                 headers = Twilio::Values.of({ 'Content-Type' => 'application/x-www-form-urlencoded', })
 
-                response = @version.fetch('GET', @uri, params: params, headers: headers)
-                if response.status_code < 200 || response.status_code >= 300
-
-                  raise @version.exception(response, 'Unable to fetch record')
-                end
-
+                payload = @version.fetch('GET', @uri, params: params, headers: headers)
                 HistoryInstance.new(
                   @version,
-                  response.body,
+                  payload,
                   sid: @solution[:sid],
                 )
               end
