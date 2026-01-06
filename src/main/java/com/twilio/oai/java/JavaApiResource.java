@@ -17,10 +17,12 @@ public class JavaApiResource {
     Set<MustacheModel> mustacheModels;
     List<CodegenOperation> operations;
     Set<CodegenProperty> response;
+    Set<MustacheModel> responses;  // Multiple response classes for V1 APIs
     String namespaceSubPart;
     Boolean responseFlag = null; // true or NUll
+    Boolean responsesFlag = null; // true or NUll - for multiple responses (V1 APIs)
     Boolean isApiV1 = null; // true or NUll
-    
+
     public JavaApiResource(JavaApiResourceBuilder builder) {
         resourceName = ResourceCacheContext.get().getResourceName();
         recordKey = builder.recordKey;
@@ -28,7 +30,9 @@ public class JavaApiResource {
         this.mustacheEnums = new HashSet<>(ResourceCacheContext.get().getEnumsClassesForMustache());
         this.mustacheModels = new HashSet<>(ResourceCacheContext.get().getModelClassesForMustache());
         this.response = ResourceCacheContext.get().getResponse();
+        this.responses = new HashSet<>(ResourceCacheContext.get().getResponses());
         if (response != null && !response.isEmpty()) responseFlag = true;
+        if (responses != null && !responses.isEmpty()) responsesFlag = true;
         this.namespaceSubPart = builder.namespaceSubPart;
         if (ResourceCacheContext.get().isV1()) isApiV1 = true;
     }

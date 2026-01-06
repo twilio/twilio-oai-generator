@@ -53,5 +53,5 @@ vendorExtensions.x-content-type: content type of the request, example: applicati
             throw new ApiException(restException);
         }
     
-        return {{resourceName}}.fromJson(response.getStream(), client.getObjectMapper());
+        return {{#vendorExtensions.x-response-datatype}}{{{vendorExtensions.x-response-datatype}}}{{/vendorExtensions.x-response-datatype}}{{^vendorExtensions.x-response-datatype}}{{resourceName}}{{/vendorExtensions.x-response-datatype}}.fromJson(response.getStream(), client.getObjectMapper());
     }

@@ -8,7 +8,7 @@ domainName: example api, video, chat, etc. These can be found in Domains.java in
 vendorExtensions.x-content-type: content type of the request, example: application/json, application/x-www-form-urlencoded
 }}
     @Override
-    public {{resourceName}} {{vendorExtensions.x-common-action-method}}(final TwilioRestClient client) {
+    public {{#vendorExtensions.x-response-datatype}}{{{vendorExtensions.x-response-datatype}}}{{/vendorExtensions.x-response-datatype}}{{^vendorExtensions.x-response-datatype}}{{resourceName}}{{/vendorExtensions.x-response-datatype}} {{vendorExtensions.x-common-action-method}}(final TwilioRestClient client) {
     {{>common/generateUri}}
     
         Request request = new Request(
@@ -47,5 +47,5 @@ vendorExtensions.x-content-type: content type of the request, example: applicati
             throw new ApiException(restException);
         }
     
-        return {{resourceName}}.fromJson(response.getStream(), client.getObjectMapper());
+        return {{#vendorExtensions.x-response-datatype}}{{{vendorExtensions.x-response-datatype}}}{{/vendorExtensions.x-response-datatype}}{{^vendorExtensions.x-response-datatype}}{{resourceName}}{{/vendorExtensions.x-response-datatype}}.fromJson(response.getStream(), client.getObjectMapper());
     }

@@ -15,7 +15,12 @@ public class {{resourceName}} extends Resource {
 {{>enums}}
 {{>models}}
 {{>staticMethods}}
+{{#responsesFlag}}
+{{>responses}}
+{{/responsesFlag}}
+{{^responsesFlag}}
 {{>response}}
+{{/responsesFlag}}
 }
 {{/resources}}
 

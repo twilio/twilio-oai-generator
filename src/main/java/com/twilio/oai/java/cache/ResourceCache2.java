@@ -80,6 +80,7 @@ public class ResourceCache2 {
         modelClassesForMustache.clear();
         enumsClassesForMustache.clear();
         response.clear();
+        responses.clear();
     }
 
     // No need to clear
