@@ -7,7 +7,7 @@
             [JsonConverter(typeof({{vendorExtensions.x-jsonConverter}}))]
             {{/vendorExtensions.x-jsonConverter}}
             [JsonProperty("{{{baseName}}}")]
-            private {{{dataType}}} {{name}} {get; set;}
+            public {{{dataType}}} {{name}} {get; private set;}
         {{/vars}}
             public {{classname}}() { }
         {{#vendorExtensions.constructors}}
