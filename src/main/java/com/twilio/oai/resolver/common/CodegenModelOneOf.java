@@ -13,7 +13,6 @@ public class CodegenModelOneOf {
         if (model.discriminator != null) {
             // For Future feature, currently models are generated same way with discriminator or without discriminator.
         }
-        System.out.println("Hello");
         TreeSet<CodegenProperty> flattenProps = new TreeSet<>(Comparator.comparing(CodegenProperty::getName));
         // Flatten oneOf, note: nested oneOfs are not handled here
         for (CodegenModel subModel: model.interfaceModels) {
