@@ -9,6 +9,7 @@ import com.twilio.oai.common.EnumConstants.CsharpHttpMethod;
 import com.twilio.oai.common.EnumConstants.CsharpDataTypes;
 import com.twilio.oai.common.Utility;
 import com.twilio.oai.resolver.Resolver;
+import com.twilio.oai.resolver.common.CodegenModelOneOf;
 import com.twilio.oai.resolver.csharp.OperationStore;
 import com.twilio.oai.template.CsharpApiActionTemplate;
 import com.twilio.oai.template.IApiActionTemplate;
@@ -39,7 +40,7 @@ import static com.twilio.oai.common.ApplicationConstants.PATH_SEPARATOR_PLACEHOL
 public class CsharpApiResourceBuilder extends ApiResourceBuilder {
 
     public String authMethod = "";
-
+    CodegenModelOneOf codegenModelOneOf = new CodegenModelOneOf();
     /**
      * List of C# primitive types that require a nullable marker (?) when nullable
      */
@@ -258,13 +259,16 @@ public class CsharpApiResourceBuilder extends ApiResourceBuilder {
         if(codegenModel.getFormat() != null) { // skip generating classes for formats
             return;
         }
+        
         for (CodegenProperty property : codegenModel.vars) {
             // recursively resolve each var, since each var is itself a CodegenProperty
             recursivelyResolve(property);
         }
         // these nested response models must also be generated as classes, so adding them in nestedModels
         // same nestedModels variable is used for request body nested class generation
-
+        if (null != codegenModel.oneOf && !codegenModel.oneOf.isEmpty()) {
+            codegenModelOneOf.resolve(codegenModel);
+        }
         String finalModelName = modelName;
         if (nestedModels.stream().noneMatch(m -> m.classname.equals(finalModelName))) {
             nestedModels.add(codegenModel);

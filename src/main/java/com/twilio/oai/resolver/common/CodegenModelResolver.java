@@ -13,10 +13,13 @@ import java.util.Map;
 public class CodegenModelResolver extends Resolver<CodegenModel> {
     private final CodegenModelDataTypeResolver codegenModelDataTypeResolver;
     private final CodegenModelContainerDataTypeResolver codegenModelContainerDataTypeResolver;
+    
+    private CodegenModelOneOf codegenModelOneOf = new CodegenModelOneOf();;
 
     public CodegenModelResolver(IConventionMapper mapper, Map<String, String> modelFormatMap,
                                 List<? extends LanguageDataType> languageDataTypes) {
         this(languageDataTypes, new CodegenModelDataTypeResolver(mapper, modelFormatMap));
+        codegenModelOneOf = new CodegenModelOneOf();
     }
 
     public CodegenModelResolver(List<? extends LanguageDataType> languageDataTypes,
@@ -30,6 +33,9 @@ public class CodegenModelResolver extends Resolver<CodegenModel> {
     public CodegenModel resolve(CodegenModel model, ApiResourceBuilder apiResourceBuilder) {
         if (model == null) {
             return null;
+        }
+        if (null != model.oneOf && !model.oneOf.isEmpty()) {
+            codegenModelOneOf.resolve(model);
         }
 
         for (CodegenProperty property : model.vars) {
