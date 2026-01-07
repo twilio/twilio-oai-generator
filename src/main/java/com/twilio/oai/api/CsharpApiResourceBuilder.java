@@ -40,7 +40,7 @@ import static com.twilio.oai.common.ApplicationConstants.PATH_SEPARATOR_PLACEHOL
 public class CsharpApiResourceBuilder extends ApiResourceBuilder {
 
     public String authMethod = "";
-    CodegenModelOneOf codegenModelOneOf = new CodegenModelOneOf();
+    CodegenModelOneOf codegenModelOneOf = CodegenModelOneOf.getInstance();
     /**
      * List of C# primitive types that require a nullable marker (?) when nullable
      */

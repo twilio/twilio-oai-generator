@@ -14,12 +14,11 @@ public class CodegenModelResolver extends Resolver<CodegenModel> {
     private final CodegenModelDataTypeResolver codegenModelDataTypeResolver;
     private final CodegenModelContainerDataTypeResolver codegenModelContainerDataTypeResolver;
     
-    private CodegenModelOneOf codegenModelOneOf = new CodegenModelOneOf();;
+    private CodegenModelOneOf codegenModelOneOf = CodegenModelOneOf.getInstance();
 
     public CodegenModelResolver(IConventionMapper mapper, Map<String, String> modelFormatMap,
                                 List<? extends LanguageDataType> languageDataTypes) {
         this(languageDataTypes, new CodegenModelDataTypeResolver(mapper, modelFormatMap));
-        codegenModelOneOf = new CodegenModelOneOf();
     }
 
     public CodegenModelResolver(List<? extends LanguageDataType> languageDataTypes,

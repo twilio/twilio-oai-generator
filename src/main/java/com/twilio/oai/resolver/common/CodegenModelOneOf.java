@@ -9,6 +9,22 @@ import java.util.List;
 import java.util.TreeSet;
 
 public class CodegenModelOneOf {
+    private static volatile CodegenModelOneOf INSTANCE;
+
+    private CodegenModelOneOf() {
+    }
+
+    public static CodegenModelOneOf getInstance() {
+        if (INSTANCE == null) {
+            synchronized (CodegenModelOneOf.class) {
+                if (INSTANCE == null) {
+                    INSTANCE = new CodegenModelOneOf();
+                }
+            }
+        }
+        return INSTANCE;
+    }
+
     public void resolve(CodegenModel model) {
         if (model.discriminator != null) {
             // For Future feature, currently models are generated same way with discriminator or without discriminator.
