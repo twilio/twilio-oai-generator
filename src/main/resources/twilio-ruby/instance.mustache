@@ -9,7 +9,9 @@
                     # @param [String] sid The SID of the Call resource to fetch.
                     # @return [{{apiName}}Instance] {{apiName}}Instance
                     def initialize(version{{#responseModel}}{{#hasVars}}, payload{{/hasVars}}{{/responseModel}} {{#requiredPathParams}}, {{paramName}}: nil{{/requiredPathParams}})
-                        super(version)
+                        {{^isApiV1}}super(version){{/isApiV1}}
+                        {{#isApiV1}}apiV1Version = ApiV1Version.new version.domain, version
+                        super(apiV1Version){{/isApiV1}}
                         {{#responseModel}}{{#hasVars}}
                         # Marshaled Properties
                         @properties = { {{/hasVars}}{{/responseModel}}{{#responseModel}}{{#vars}}

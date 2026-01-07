@@ -33,7 +33,8 @@ class {{apiName}}Instance extends InstanceResource
      */
     public function __construct(Version $version, array $payload{{#requiredPathParams}}{{#vendorExtensions.x-is-parent-param}}, {{{dataType}}} ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}{{/vendorExtensions.x-is-parent-param}}{{^vendorExtensions.x-is-parent-param}}, ?{{{dataType}}} ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}} = null{{/vendorExtensions.x-is-parent-param}}{{/requiredPathParams}})
     {
-        parent::__construct($version);
+        {{^isApiV1}}parent::__construct($version);{{/isApiV1}}{{#isApiV1}}$apiV1Version = new ApiV1Version($version->getDomain(), $version->version);
+        parent::__construct($apiV1Version);{{/isApiV1}}
 
     {{#responseModels.0}}
         // Marshaled Properties

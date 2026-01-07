@@ -24,6 +24,7 @@ module Twilio
             # @return [AwsList] AwsList
             def initialize(version)
               super(version)
+
               # Path Solution
               @solution = {}
               @uri = "/Credentials/AWS"

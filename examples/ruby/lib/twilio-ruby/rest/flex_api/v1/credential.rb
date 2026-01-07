@@ -23,6 +23,7 @@ module Twilio
           # @return [CredentialList] CredentialList
           def initialize(version)
             super(version)
+
             # Path Solution
             @solution = {}
             @uri = "/Credentials"

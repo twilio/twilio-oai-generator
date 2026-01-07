@@ -25,6 +25,7 @@ module Twilio
               # @return [HistoryList] HistoryList
               def initialize(version, sid: nil)
                 super(version)
+
                 # Path Solution
                 @solution = { sid: sid }
               end

@@ -1,0 +1,276 @@
+openapi: 3.1.0
+info:
+  title: AllOf Test Service
+  description: Test specification for various allOf scenarios
+  version: 1.0.0
+  contact:
+    name: 'AllOf Test Service'
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  x-twilio:
+    apiStandards: v1.0
+servers:
+  - url: https://allof.test.com
+paths:
+  /v1/basic-allof:
+    post:
+      operationId: CreateBasicAllOf
+      summary: Test basic allOf with multiple schemas
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              allOf:
+                - type: object
+                  required: [ id ]
+                  properties:
+                    id:
+                      type: string
+                      example: "123"
+                - type: object
+                  required: [ name ]
+                  properties:
+                    name:
+                      type: string
+                      example: "Test Entity"
+                - type: object
+                  properties:
+                    timestamp:
+                      type: string
+                      format: date-time
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicAllOf'
+
+  /v1/nested-allof:
+    post:
+      operationId: CreateNestedAllOf
+      summary: Test nested allOf
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NestedAllOf'
+      responses:
+        '200':
+          description: Success
+
+  /v1/allof-with-refs:
+    post:
+      operationId: CreateAllOfWithRefs
+      summary: Test allOf with schema references
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AllOfWithRefs'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllOfWithRefs'
+
+  /v1/allof-inline-and-ref:
+    post:
+      operationId: CreateMixedAllOf
+      summary: Test allOf mixing inline schemas and refs
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/BaseEntity'
+                - type: object
+                  required: [ specificField ]
+                  properties:
+                    specificField:
+                      type: string
+                    extraData:
+                      type: object
+      responses:
+        '200':
+          description: Success
+
+  /v1/allof-with-oneof:
+    post:
+      operationId: CreateAllOfWithOneOf
+      summary: Test allOf combined with oneOf
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AllOfWithOneOf'
+      responses:
+        '200':
+          description: Success
+
+components:
+  schemas:
+    # Basic allOf with refs
+    BasicAllOf:
+      allOf:
+        - $ref: '#/components/schemas/Identifiable'
+        - $ref: '#/components/schemas/Nameable'
+        - $ref: '#/components/schemas/Timestamped'
+
+    # Nested allOf
+    NestedAllOf:
+      allOf:
+        - type: object
+          properties:
+            outerField:
+              type: string
+        - allOf:
+            - $ref: '#/components/schemas/BaseEntity'
+            - type: object
+              properties:
+                nestedField:
+                  type: string
+
+    # AllOf with multiple schema refs
+    AllOfWithRefs:
+      allOf:
+        - $ref: '#/components/schemas/BaseEntity'
+        - $ref: '#/components/schemas/Auditable'
+        - $ref: '#/components/schemas/Versioned'
+
+    # AllOf combined with oneOf
+    AllOfWithOneOf:
+      allOf:
+        - type: object
+          required: [ entityType ]
+          properties:
+            entityType:
+              type: string
+            commonField:
+              type: string
+        - oneOf:
+            - $ref: '#/components/schemas/TypeA'
+            - $ref: '#/components/schemas/TypeB'
+
+    # AllOf with additionalProperties
+    AllOfWithAdditionalProps:
+      allOf:
+        - $ref: '#/components/schemas/BaseEntity'
+        - type: object
+          properties:
+            knownField:
+              type: string
+          additionalProperties:
+            type: string
+
+    # AllOf with discriminator
+    AllOfWithDiscriminator:
+      allOf:
+        - type: object
+          required: [ objectType ]
+          properties:
+            objectType:
+              type: string
+          discriminator:
+            propertyName: objectType
+            mapping:
+              cat: '#/components/schemas/Cat'
+              dog: '#/components/schemas/Dog'
+        - oneOf:
+            - $ref: '#/components/schemas/Cat'
+            - $ref: '#/components/schemas/Dog'
+
+    # Base schemas
+    Identifiable:
+      type: object
+      required: [ id ]
+      properties:
+        id:
+          type: string
+
+    Nameable:
+      type: object
+      required: [ name ]
+      properties:
+        name:
+          type: string
+
+    Timestamped:
+      type: object
+      properties:
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    BaseEntity:
+      type: object
+      required: [ id, createdAt ]
+      properties:
+        id:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+
+    Auditable:
+      type: object
+      properties:
+        createdBy:
+          type: string
+        modifiedBy:
+          type: string
+
+    Versioned:
+      type: object
+      properties:
+        version:
+          type: integer
+
+    TypeA:
+      type: object
+      required: [ fieldA ]
+      properties:
+        fieldA:
+          type: string
+        dataA:
+          type: integer
+
+    TypeB:
+      type: object
+      required: [ fieldB ]
+      properties:
+        fieldB:
+          type: boolean
+        dataB:
+          type: array
+          items:
+            type: string
+
+    Cat:
+      type: object
+      properties:
+        objectType:
+          type: string
+          enum: [cat]
+        meow:
+          type: boolean
+
+    Dog:
+      type: object
+      properties:
+        objectType:
+          type: string
+          enum: [dog]
+        bark:
+          type: boolean

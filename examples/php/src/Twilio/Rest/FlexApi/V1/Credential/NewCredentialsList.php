@@ -21,6 +21,8 @@ use Twilio\ListResource;
 use Twilio\Options;
 use Twilio\Values;
 use Twilio\Version;
+use Twilio\Http\Response;
+use Twilio\Metadata\ResourceMetadata;
 use Twilio\Serialize;
 
 
@@ -44,16 +46,15 @@ class NewCredentialsList extends ListResource
     }
 
     /**
-     * Create the NewCredentialsInstance
+     * Helper function for Create
      *
      * @param string $testString
      * @param array|Options $options Optional Arguments
-     * @return NewCredentialsInstance Created NewCredentialsInstance
+     * @return Response Created Response
      * @throws TwilioException When an HTTP error occurs.
      */
-    public function create(string $testString, array $options = []): NewCredentialsInstance
+    private function _create(string $testString, array $options = []): Response
     {
-
         $options = new Values($options);
 
         $data = Values::of([
@@ -94,11 +95,46 @@ class NewCredentialsList extends ListResource
         ]);
 
         $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded', 'Accept' => 'application/json' ]);
-        $payload = $this->version->create('POST', $this->uri, [], $data, $headers);
+        return $this->version->handleRequest('POST', $this->uri, [], $data, $headers, "create");
+    }
 
+    /**
+     * Create the NewCredentialsInstance
+     *
+     * @param string $testString
+     * @param array|Options $options Optional Arguments
+     * @return NewCredentialsInstance Created NewCredentialsInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function create(string $testString, array $options = []): NewCredentialsInstance
+    {
+        $response = $this->_create( $testString, $options);
         return new NewCredentialsInstance(
             $this->version,
-            $payload
+            $response->getContent()
+        );
+        
+    }
+
+    /**
+     * Create the NewCredentialsInstance with Metadata
+     *
+     * @param string $testString
+     * @param array|Options $options Optional Arguments
+     * @return ResourceMetadata The Created Resource with Metadata
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function createWithMetadata(string $testString, array $options = []): ResourceMetadata
+    {
+        $response = $this->_create( $testString, $options);
+        $resource = new NewCredentialsInstance(
+                        $this->version,
+                        $response->getContent()
+                    );
+        return new ResourceMetadata(
+            $resource,
+            $response->getStatusCode(),
+            $response->getHeaders()
         );
     }
 

@@ -12,7 +12,9 @@
                     {{/instancePathParams}}
                     # @return [{{apiName}}Context] {{apiName}}Context
                     def initialize(version{{#instancePathParams}}, {{paramName}}{{/instancePathParams}})
-                        super(version)
+                        {{^isApiV1}}super(version){{/isApiV1}}
+                        {{#isApiV1}}apiV1Version = ApiV1Version.new version.domain, version
+                        super(apiV1Version){{/isApiV1}}
 
                         # Path Solution
                         @solution = { {{#instancePathParams}}{{paramName}}: {{paramName}}, {{/instancePathParams}} }

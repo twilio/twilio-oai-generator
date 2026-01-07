@@ -23,6 +23,7 @@ module Twilio
           # @return [CallList] CallList
           def initialize(version)
             super(version)
+
             # Path Solution
             @solution = {}
           end
