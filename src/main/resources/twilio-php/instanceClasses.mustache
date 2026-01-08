@@ -1,3 +1,4 @@
+{{#isApiV1}}
 {{#responseInstanceModels}}
 {{#vars}}/**
  * @property {{{dataType}}} ${{#lambda.customcamelcase}}{{baseName}}{{/lambda.customcamelcase}}
@@ -116,3 +117,4 @@ class {{classname}}Instance extends InstanceResource
     }
 }
 {{/responseInstanceModels}}
+{{/isApiV1}}

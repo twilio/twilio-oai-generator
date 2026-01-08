@@ -2,6 +2,7 @@ package com.twilio.oai.api;
 
 import com.twilio.oai.*;
 import com.twilio.oai.common.EnumConstants;
+import com.twilio.oai.java.cache.ResourceCacheContext;
 import com.twilio.oai.resolver.IConventionMapper;
 import com.twilio.oai.resolver.LanguageConventionResolver;
 import com.twilio.oai.resolver.Resolver;
@@ -60,9 +61,11 @@ public class PhpApiResourceBuilder extends ApiResourceBuilder {
             template.add(PhpApiActionTemplate.TEMPLATE_TYPE_LIST);
 
             // Only add regular instance template when there's 1 or fewer response models
-            // When there are multiple distinct response models, dynamic templates will be
+            // OR when isApiV1 is false (dynamic templates only work with API V1 standard)
+            // When there are multiple distinct response models AND isApiV1 is true, dynamic templates will be
             // added after build() in the generator with the full apiResource
-            if (responseInstanceModels == null || responseInstanceModels.size() <= 1) {
+            boolean isApiV1 = ResourceCacheContext.get() != null && ResourceCacheContext.get().isV1();
+            if (!isApiV1 || responseInstanceModels == null || responseInstanceModels.size() <= 1) {
                 template.add(PhpApiActionTemplate.TEMPLATE_TYPE_INSTANCE);
             }
 
@@ -75,10 +78,12 @@ public class PhpApiResourceBuilder extends ApiResourceBuilder {
 
     /**
      * Returns true if this builder has multiple distinct response models that require
-     * separate instance class files.
+     * separate instance class files AND isApiV1 is true.
+     * Dynamic instance templates are only generated for API V1 standard specs.
      */
     public boolean hasMultipleResponseModels() {
-        return responseInstanceModels != null && responseInstanceModels.size() > 1;
+        boolean isApiV1 = ResourceCacheContext.get() != null && ResourceCacheContext.get().isV1();
+        return isApiV1 && responseInstanceModels != null && responseInstanceModels.size() > 1;
     }
 
     @Override
