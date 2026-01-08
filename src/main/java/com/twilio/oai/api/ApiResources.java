@@ -18,6 +18,7 @@ public class ApiResources {
     String recordKey;
     String version;
     List<CodegenProperty> responseModels;
+    Set<CodegenModel> responseInstanceModels;
     List<CodegenParameter> requiredPathParams;
     List<CodegenOperation> apiOperations;
     Map<String, Object> metaProperties;
@@ -41,5 +42,6 @@ public class ApiResources {
         if (ResourceCacheContext.get() != null && ResourceCacheContext.get().isV1()) {
             isApiV1 = true;
         }
+        responseInstanceModels = apiResourceBuilder.responseInstanceModels;
     }
 }
