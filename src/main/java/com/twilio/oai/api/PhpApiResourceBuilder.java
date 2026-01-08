@@ -24,6 +24,7 @@ public class PhpApiResourceBuilder extends ApiResourceBuilder {
     private final HashSet<String> pathSet = new HashSet<>();
     protected String apiListPath = "";
     protected String apiContextPath = "";
+    protected Set<String> sensitiveParamNames = new HashSet<>(Arrays.asList("authorization", "password", "authtoken", "apikey", "apisecret"));
 
     protected Resolver<CodegenProperty> codegenPropertyIResolver;
     public Set<IJsonSchemaValidationProperties> enums = new HashSet<>();
@@ -258,6 +259,20 @@ public class PhpApiResourceBuilder extends ApiResourceBuilder {
         return this;
     }
 
+    // Helper method to check name across casing patterns
+    // Converts camelCase, snake_case, kebab-case to a uniform format for comparison
+    private String getCaseInsensitiveName(String input) {
+        return input.replaceAll("[^a-zA-Z0-9]", "").toLowerCase();
+    }
+
+    private void addSensitiveParamExtension(CodegenParameter param, CodegenOperation operation) {
+        String paramNameNormalized = getCaseInsensitiveName(param.paramName);
+        if (sensitiveParamNames.contains(paramNameNormalized)) {
+            param.vendorExtensions.put("x-is-sensitive", true);
+            operation.vendorExtensions.put("hasSensitiveParams", true);
+        }
+    }
+
     private void addOptionFileParams(ApiResourceBuilder apiResourceBuilder) {
         for (CodegenOperation operation : apiResourceBuilder.codegenOperationList) {
             if (operation.vendorExtensions.containsKey("x-ignore")) continue;
@@ -270,21 +285,25 @@ public class PhpApiResourceBuilder extends ApiResourceBuilder {
                 if (!param.isPathParam) {
                     if (conditionalParamSet.contains(param.baseName)) {
                         param.vendorExtensions.put("optionFileSeparator", ",");
+                        addSensitiveParamExtension(param, operation);
                         if (!(boolean) operation.vendorExtensions.getOrDefault("x-is-read-operation", false) ||
                                 !param.baseName.equals("PageSize")) {
                             optionFileParams.add(param);
                         }
                     } else if (param.isQueryParam) {
                         param.vendorExtensions.put("optionFileSeparator", ",");
+                        addSensitiveParamExtension(param, operation);
                         if (!(boolean) operation.vendorExtensions.getOrDefault("x-is-read-operation", false) ||
                                 !param.baseName.equals("PageSize")) {
                             optionalQueryParams.add(param);
                         }
                     } else if (param.isFormParam) {
                         param.vendorExtensions.put("optionFileSeparator", ",");
+                        addSensitiveParamExtension(param, operation);
                         optionalFormParams.add(param);
                     } else if (param.isHeaderParam) {
                         param.vendorExtensions.put("optionFileSeparator", ",");
+                        addSensitiveParamExtension(param, operation);
                         optionalHeaderParams.add(param);
                     }
                 }

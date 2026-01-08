@@ -97,6 +97,10 @@ public class TwilioGoGenerator extends AbstractTwilioGoGenerator {
         return StringUtils.camelize(newModelName);
     }
 
+    private boolean contains2xxStatusCode(String modelName) {
+        return Pattern.compile("2\\d{2}_").matcher(modelName).find();
+    }
+
     @Override
     public Map<String, ModelsMap> updateAllModels(Map<String, ModelsMap> objs) {
         objs = super.updateAllModels(objs);
@@ -104,6 +108,7 @@ public class TwilioGoGenerator extends AbstractTwilioGoGenerator {
         Set<String> modelNames = objs.keySet()
                 .stream()
                 .filter(key -> (containsStatusCode(key) || containsAllOf(key)))
+            .filter(this::contains2xxStatusCode)
                 .map(this::modelNameWithoutStatusCode)
                 .collect(Collectors.toSet());
 

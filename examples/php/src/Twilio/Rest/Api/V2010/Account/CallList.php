@@ -22,6 +22,8 @@ use Twilio\Options;
 use Twilio\Values;
 use Twilio\Version;
 use Twilio\InstanceContext;
+use Twilio\Http\Response;
+use Twilio\Metadata\ResourceMetadata;
 use Twilio\Serialize;
 use Twilio\Rest\Api\V2010\Account\Call\FeedbackCallSummaryList;
 
@@ -57,17 +59,16 @@ class CallList extends ListResource
     }
 
     /**
-     * Create the CallInstance
+     * Helper function for Create
      *
      * @param string $requiredStringProperty
      * @param string $testMethod The HTTP method that we should use to request the `TestArrayOfUri`.
      * @param array|Options $options Optional Arguments
-     * @return CallInstance Created CallInstance
+     * @return Response Created Response
      * @throws TwilioException When an HTTP error occurs.
      */
-    public function create(string $requiredStringProperty, string $testMethod, array $options = []): CallInstance
+    private function _create(string $requiredStringProperty, string $testMethod, array $options = []): Response
     {
-
         $options = new Values($options);
 
         $data = Values::of([
@@ -82,12 +83,50 @@ class CallList extends ListResource
         ]);
 
         $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded', 'Accept' => 'application/json' ]);
-        $payload = $this->version->create('POST', $this->uri, [], $data, $headers);
+        return $this->version->handleRequest('POST', $this->uri, [], $data, $headers, "create");
+    }
 
+    /**
+     * Create the CallInstance
+     *
+     * @param string $requiredStringProperty
+     * @param string $testMethod The HTTP method that we should use to request the `TestArrayOfUri`.
+     * @param array|Options $options Optional Arguments
+     * @return CallInstance Created CallInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function create(string $requiredStringProperty, string $testMethod, array $options = []): CallInstance
+    {
+        $response = $this->_create( $requiredStringProperty,  $testMethod, $options);
         return new CallInstance(
             $this->version,
-            $payload,
+            $response->getContent(),
             $this->solution['accountSid']
+        );
+        
+    }
+
+    /**
+     * Create the CallInstance with Metadata
+     *
+     * @param string $requiredStringProperty
+     * @param string $testMethod The HTTP method that we should use to request the `TestArrayOfUri`.
+     * @param array|Options $options Optional Arguments
+     * @return ResourceMetadata The Created Resource with Metadata
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function createWithMetadata(string $requiredStringProperty, string $testMethod, array $options = []): ResourceMetadata
+    {
+        $response = $this->_create( $requiredStringProperty,  $testMethod, $options);
+        $resource = new CallInstance(
+                        $this->version,
+                        $response->getContent(),
+                        $this->solution['accountSid']
+                    );
+        return new ResourceMetadata(
+            $resource,
+            $response->getStatusCode(),
+            $response->getHeaders()
         );
     }
 
