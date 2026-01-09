@@ -91,6 +91,7 @@ public abstract class AbstractTwilioGoGenerator extends GoClientCodegen {
         String version = StringHelper.toSnakeCase(twilioCodegen.getVersionFromOpenAPI(openAPI));
         twilioCodegen.setDomain(domain);
         twilioCodegen.setVersion(version);
+        twilioCodegen.setIsV1ApiStandard(openAPI);
         twilioCodegen.setOutputDir(domain, version);
         directoryStructureService.configure(openAPI);
 
