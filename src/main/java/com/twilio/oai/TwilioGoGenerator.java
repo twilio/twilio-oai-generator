@@ -245,12 +245,6 @@ public class TwilioGoGenerator extends AbstractTwilioGoGenerator {
             }
         }
 
-        // Add isApiV1 flag to template context for API v1.0 error handling
-        if (com.twilio.oai.java.cache.ResourceCacheContext.get() != null &&
-            com.twilio.oai.java.cache.ResourceCacheContext.get().isV1()) {
-            results.put("isApiV1", true);
-        }
-
         return results;
     }
 
