@@ -117,10 +117,10 @@
                         {{/vendorExtensions.x-is-delete-operation}}
                         {{#vendorExtensions.x-is-delete-operation}}
                         {{#isApiV1}}
-                        payload = @version.delete_with_body('{{httpMethod}}', @uri{{#queryParams.0}}, params: params{{/queryParams.0}}{{#formParams.0}}, data: data{{/formParams.0}}, headers: headers{{#bodyParams.0}}, data: {{paramName}}.to_json{{/bodyParams.0}})
+                        response = @version.delete_with_metadata('{{httpMethod}}', @uri{{#queryParams.0}}, params: params{{/queryParams.0}}{{#formParams.0}}, data: data{{/formParams.0}}, headers: headers{{#bodyParams.0}}, data: {{paramName}}.to_json{{/bodyParams.0}})
                         {{apiName}}Instance.new(
                           @version,
-                          payload,{{#vendorExtensions.listOperation}}{{#listPathParams}}
+                          response.body,{{#vendorExtensions.listOperation}}{{#listPathParams}}
                             {{paramName}}: @solution[:{{paramName}}],{{/listPathParams}}{{/vendorExtensions.listOperation}}{{#vendorExtensions.instanceOperation}}{{#instancePathParams}}
                             {{paramName}}: @solution[:{{paramName}}],{{/instancePathParams}}{{/vendorExtensions.instanceOperation}}
                         )
