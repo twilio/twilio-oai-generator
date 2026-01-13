@@ -23,7 +23,8 @@ func (c *ApiService) ApiVersion() string {
 {{/isApiV1}}
 
 func NewApiService(requestHandler *twilio.RequestHandler) *ApiService {
-	return &ApiService {
+    {{#isApiV1}}requestHandler.SetApiVersion("v1.0"){{/isApiV1}}
+    return &ApiService {
 		requestHandler: requestHandler,
 		baseURL:        "{{#hasServers}}{{#servers}}{{url}}{{/servers}}{{/hasServers}}",{{#isApiV1}}
 		apiVersion:     "v1.0",{{/isApiV1}}
