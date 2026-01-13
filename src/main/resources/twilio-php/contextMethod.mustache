@@ -140,7 +140,7 @@
     {{^vendorExtensions.x-is-delete-operation}}
         $payload = $this->version->{{#lambda.camelcase}}{{vendorExtensions.x-name}}{{/lambda.camelcase}}('{{httpMethod}}', $this->uri{{#queryParams.0}}, $params{{/queryParams.0}}{{^queryParams}}, []{{/queryParams}}{{#formParams.0}}, $data{{/formParams.0}}{{^formParams}}{{#bodyParams.0}}, $data{{/bodyParams.0}}{{^bodyParams}}, []{{/bodyParams}}{{/formParams}}, $headers);
 
-        return new {{apiName}}Instance(
+        return new {{^isApiV1}}{{apiName}}{{/isApiV1}}{{#isApiV1}}{{returnBaseType}}{{/isApiV1}}Instance(
             $this->version,
             $payload{{#optionalParams}}{{#isPathParam}},
             $this->solution['{{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}']{{/isPathParam}}{{/optionalParams}}{{#requiredParams}}{{#isPathParam}},
