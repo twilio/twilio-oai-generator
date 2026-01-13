@@ -34,6 +34,8 @@
                     {{#vendorExtensions.instanceOperation}}
 {{>methods}}
 {{>contextMethodParams}}
+{{>methodsMetadata}}
+{{>contextMethodParamsMetadata}}
                     {{/vendorExtensions.instanceOperation}}
                     {{/apiOperations}}
                     {{#metaProperties.contextImportProperties}}
@@ -96,3 +98,50 @@
                         "#<Twilio.{{domainName}}.{{apiVersionClass}}.{{apiName}}Context #{context}>"
                     end
                 end
+
+                class {{apiName}}InstanceMetadata <  InstanceResourceMetadata
+                    ##
+                    # Initializes a new {{apiName}}InstanceMetadata.
+                    # @param [Version] version Version that contains the resource
+                    # @param [}{{apiName}}Instance] {{#lambda.snakecase}}{{apiName}}{{/lambda.snakecase}}_instance The instance associated with the metadata.
+                    # @param [Hash] headers Header object with response headers.
+                    # @param [Integer] status_code The HTTP status code of the response.
+                    # @return [{{apiName}}InstanceMetadata] The initialized instance with metadata.
+                    def initialize(version, {{#lambda.snakecase}}{{apiName}}{{/lambda.snakecase}}_instance, headers, status_code)
+                        super(version, headers, status_code)
+                        @{{#lambda.snakecase}}{{apiName}}{{/lambda.snakecase}}_instance = {{#lambda.snakecase}}{{apiName}}{{/lambda.snakecase}}_instance
+                    end
+
+                    def {{#lambda.snakecase}}{{apiName}}{{/lambda.snakecase}}
+                        @{{#lambda.snakecase}}{{apiName}}{{/lambda.snakecase}}_instance
+                    end
+
+                    def headers
+                        @headers
+                    end
+
+                    def status_code
+                        @status_code
+                    end
+
+                    def to_s
+                      "<Twilio.Api.V2010.{{apiName}}InstanceMetadata status=#{@status_code}>"
+                    end
+                end
+
+                class {{apiName}}ListResponse < InstanceListResource
+                    # @param [Array<{{apiName}}Instance>] instance
+                    # @param [Hash{String => Object}] headers
+                    # @param [Integer] status_code
+                    def initialize(version, payload, key)
+                       @{{#lambda.snakecase}}{{apiName}}{{/lambda.snakecase}}_instance = payload.body[key].map do |data|
+                        {{apiName}}Instance.new(version, data)
+                       end
+                       @headers = payload.headers
+                       @status_code = payload.status_code
+                    end
+
+                      def {{#lambda.snakecase}}{{apiName}}{{/lambda.snakecase}}_instance
+                          @instance
+                      end
+                  end

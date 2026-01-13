@@ -80,6 +80,40 @@ module Twilio
               end
 
               ##
+              # Update the FeedbackCallSummaryInstanceMetadata
+              # @param [String] account_sid
+              # @param [Date] end_date
+              # @param [Date] start_date
+              # @return [FeedbackCallSummaryInstance] Updated FeedbackCallSummaryInstance
+              def update_with_metadata(
+                account_sid: :unset,
+                end_date: nil,
+                start_date: nil
+              )
+                data = Twilio::Values.of({
+                                           'EndDate' => Twilio.serialize_iso8601_date(end_date),
+                                           'StartDate' => Twilio.serialize_iso8601_date(start_date),
+                                           'AccountSid' => account_sid,
+                                         })
+
+                headers = Twilio::Values.of({ 'Content-Type' => 'application/x-www-form-urlencoded', })
+
+                response = @version.update_with_metadata('POST', @uri, data: data, headers: headers)
+                feedbackCallSummary_instance = FeedbackCallSummaryInstance.new(
+                  @version,
+                  response.body,
+                  account_sid: @solution[:account_sid],
+                  sid: @solution[:sid],
+                )
+                FeedbackCallSummaryInstanceMetadata.new(
+                  @version,
+                  feedbackCallSummary_instance,
+                  response.headers,
+                  response.status_code
+                )
+              end
+
+              ##
               # Provide a user friendly representation
               def to_s
                 context = @solution.map { |k, v| "#{k}: #{v}" }.join(',')
@@ -91,6 +125,53 @@ module Twilio
               def inspect
                 context = @solution.map { |k, v| "#{k}: #{v}" }.join(',')
                 "#<Twilio.Api.V2010.FeedbackCallSummaryContext #{context}>"
+              end
+            end
+
+            class FeedbackCallSummaryInstanceMetadata < InstanceResourceMetadata
+              ##
+              # Initializes a new FeedbackCallSummaryInstanceMetadata.
+              # @param [Version] version Version that contains the resource
+              # @param [}FeedbackCallSummaryInstance] feedback_call_summary_instance The instance associated with the metadata.
+              # @param [Hash] headers Header object with response headers.
+              # @param [Integer] status_code The HTTP status code of the response.
+              # @return [FeedbackCallSummaryInstanceMetadata] The initialized instance with metadata.
+              def initialize(version, feedback_call_summary_instance, headers, status_code)
+                super(version, headers, status_code)
+                @feedback_call_summary_instance = feedback_call_summary_instance
+              end
+
+              def feedback_call_summary
+                @feedback_call_summary_instance
+              end
+
+              def headers
+                @headers
+              end
+
+              def status_code
+                @status_code
+              end
+
+              def to_s
+                "<Twilio.Api.V2010.FeedbackCallSummaryInstanceMetadata status=#{@status_code}>"
+              end
+            end
+
+            class FeedbackCallSummaryListResponse < InstanceListResource
+              # @param [Array<FeedbackCallSummaryInstance>] instance
+              # @param [Hash{String => Object}] headers
+              # @param [Integer] status_code
+              def initialize(version, payload, key)
+                @feedback_call_summary_instance = payload.body[key].map do |data|
+                  FeedbackCallSummaryInstance.new(version, data)
+                end
+                @headers = payload.headers
+                @status_code = payload.status_code
+              end
+
+              def feedback_call_summary_instance
+                @instance
               end
             end
 
@@ -120,6 +201,63 @@ module Twilio
               # Provide a user friendly representation
               def to_s
                 '<Twilio.Api.V2010.FeedbackCallSummaryPage>'
+              end
+            end
+
+            class FeedbackCallSummaryPageMetadata < PageMetadata
+              attr_reader :feedback_call_summary_page
+
+              def initialize(version, response, solution, limit)
+                super(version, response)
+                @feedback_call_summary_page = []
+                @limit = limit
+                key = get_key(response.body)
+                number_of_records = response.body[key].size
+                while (limit != :unset && number_of_records <= limit)
+                  @feedback_call_summary_page << FeedbackCallSummaryListResponse.new(version, @payload,
+                                                                                     key)
+                  @payload = self.next_page
+                  break unless @payload
+
+                  number_of_records += @payload.body[key].size
+                end
+                # Path Solution
+                @solution = solution
+              end
+
+              def each
+                @feedback_call_summary_page.each do |record|
+                  yield record
+                end
+              end
+
+              def to_s
+                '<Twilio::REST::Api::V2010PageMetadata>';
+              end
+            end
+
+            class FeedbackCallSummaryListResponse < InstanceListResource
+              # @param [Array<FeedbackCallSummaryInstance>] instance
+              # @param [Hash{String => Object}] headers
+              # @param [Integer] status_code
+              def initialize(version, payload, key)
+                @feedback_call_summary = payload.body[key].map do |data|
+                  FeedbackCallSummaryInstance.new(version, data)
+                end
+                @headers = payload.headers
+                @status_code = payload.status_code
+              end
+
+              def feedback_call_summary
+                @feedback_call_summary
+              end
+
+              def headers
+                @headers
+              end
+
+              def status_code
+                @status_code
               end
             end
 

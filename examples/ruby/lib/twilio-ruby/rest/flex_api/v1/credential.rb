@@ -89,6 +89,62 @@ module Twilio
           end
         end
 
+        class CredentialPageMetadata < PageMetadata
+          attr_reader :credential_page
+
+          def initialize(version, response, solution, limit)
+            super(version, response)
+            @credential_page = []
+            @limit = limit
+            key = get_key(response.body)
+            number_of_records = response.body[key].size
+            while (limit != :unset && number_of_records <= limit)
+              @credential_page << CredentialListResponse.new(version, @payload, key)
+              @payload = self.next_page
+              break unless @payload
+
+              number_of_records += @payload.body[key].size
+            end
+            # Path Solution
+            @solution = solution
+          end
+
+          def each
+            @credential_page.each do |record|
+              yield record
+            end
+          end
+
+          def to_s
+            '<Twilio::REST::FlexApi::V1PageMetadata>';
+          end
+        end
+
+        class CredentialListResponse < InstanceListResource
+          # @param [Array<CredentialInstance>] instance
+          # @param [Hash{String => Object}] headers
+          # @param [Integer] status_code
+          def initialize(version, payload, key)
+            @credential = payload.body[key].map do |data|
+              CredentialInstance.new(version, data)
+            end
+            @headers = payload.headers
+            @status_code = payload.status_code
+          end
+
+          def credential
+            @credential
+          end
+
+          def headers
+            @headers
+          end
+
+          def status_code
+            @status_code
+          end
+        end
+
         class CredentialInstance < InstanceResource
           ##
           # Initialize the CredentialInstance

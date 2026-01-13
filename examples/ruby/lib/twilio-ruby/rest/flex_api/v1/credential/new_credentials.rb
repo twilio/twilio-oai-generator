@@ -102,6 +102,84 @@ module Twilio
               )
             end
 
+            ##
+            # Create the NewCredentialsInstanceMetadata
+            # @param [String] test_string
+            # @param [Boolean] test_boolean
+            # @param [String] test_integer
+            # @param [Float] test_number
+            # @param [Float] test_number_float
+            # @param [Float] test_number_double
+            # @param [Float] test_number_int32
+            # @param [String] test_number_int64
+            # @param [Hash] test_object
+            # @param [Time] test_date_time
+            # @param [Date] test_date
+            # @param [Status] test_enum
+            # @param [Array[Hash]] test_object_array
+            # @param [Object] test_any_type
+            # @param [Array[Hash]] test_any_array
+            # @param [Array[String]] permissions A comma-separated list of the permissions you will request from the users of this ConnectApp.  Can include: `get-all` and `post-all`.
+            # @param [String] some_a2p_thing
+            # @return [NewCredentialsInstance] Created NewCredentialsInstance
+            def create_with_metadata(
+              test_string: nil,
+              test_boolean: :unset,
+              test_integer: :unset,
+              test_number: :unset,
+              test_number_float: :unset,
+              test_number_double: :unset,
+              test_number_int32: :unset,
+              test_number_int64: :unset,
+              test_object: :unset,
+              test_date_time: :unset,
+              test_date: :unset,
+              test_enum: :unset,
+              test_object_array: :unset,
+              test_any_type: :unset,
+              test_any_array: :unset,
+              permissions: :unset,
+              some_a2p_thing: :unset
+            )
+              data = Twilio::Values.of({
+                                         'TestString' => test_string,
+                                         'TestBoolean' => test_boolean,
+                                         'TestInteger' => test_integer,
+                                         'TestNumber' => test_number,
+                                         'TestNumberFloat' => test_number_float,
+                                         'TestNumberDouble' => test_number_double,
+                                         'TestNumberInt32' => test_number_int32,
+                                         'TestNumberInt64' => test_number_int64,
+                                         'TestObject' => Twilio.serialize_object(test_object),
+                                         'TestDateTime' => Twilio.serialize_iso8601_datetime(test_date_time),
+                                         'TestDate' => Twilio.serialize_iso8601_date(test_date),
+                                         'TestEnum' => test_enum,
+                                         'TestObjectArray' => Twilio.serialize_list(test_object_array) { |e|
+                                           Twilio.serialize_object(e)
+                                         },
+                                         'TestAnyType' => Twilio.serialize_object(test_any_type),
+                                         'TestAnyArray' => Twilio.serialize_list(test_any_array) { |e|
+                                           Twilio.serialize_object(e)
+                                         },
+                                         'Permissions' => Twilio.serialize_list(permissions) { |e| e },
+                                         'SomeA2PThing' => some_a2p_thing,
+                                       })
+
+              headers = Twilio::Values.of({ 'Content-Type' => 'application/x-www-form-urlencoded', })
+
+              response = @version.create_with_metadata('POST', @uri, data: data, headers: headers)
+              newCredentials_instance = NewCredentialsInstance.new(
+                @version,
+                response.body,
+              )
+              NewCredentialsInstanceMetadata.new(
+                @version,
+                newCredentials_instance,
+                response.headers,
+                response.status_code
+              )
+            end
+
             # Provide a user friendly representation
             def to_s
               '#<Twilio.FlexApi.V1.NewCredentialsList>'
@@ -134,6 +212,62 @@ module Twilio
             # Provide a user friendly representation
             def to_s
               '<Twilio.FlexApi.V1.NewCredentialsPage>'
+            end
+          end
+
+          class NewCredentialsPageMetadata < PageMetadata
+            attr_reader :new_credentials_page
+
+            def initialize(version, response, solution, limit)
+              super(version, response)
+              @new_credentials_page = []
+              @limit = limit
+              key = get_key(response.body)
+              number_of_records = response.body[key].size
+              while (limit != :unset && number_of_records <= limit)
+                @new_credentials_page << NewCredentialsListResponse.new(version, @payload, key)
+                @payload = self.next_page
+                break unless @payload
+
+                number_of_records += @payload.body[key].size
+              end
+              # Path Solution
+              @solution = solution
+            end
+
+            def each
+              @new_credentials_page.each do |record|
+                yield record
+              end
+            end
+
+            def to_s
+              '<Twilio::REST::FlexApi::V1PageMetadata>';
+            end
+          end
+
+          class NewCredentialsListResponse < InstanceListResource
+            # @param [Array<NewCredentialsInstance>] instance
+            # @param [Hash{String => Object}] headers
+            # @param [Integer] status_code
+            def initialize(version, payload, key)
+              @new_credentials = payload.body[key].map do |data|
+                NewCredentialsInstance.new(version, data)
+              end
+              @headers = payload.headers
+              @status_code = payload.status_code
+            end
+
+            def new_credentials
+              @new_credentials
+            end
+
+            def headers
+              @headers
+            end
+
+            def status_code
+              @status_code
             end
           end
 
