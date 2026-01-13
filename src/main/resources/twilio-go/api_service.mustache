@@ -7,17 +7,27 @@ import (
 
 type ApiService struct {
 	baseURL        string
-	requestHandler *twilio.RequestHandler
+	requestHandler *twilio.RequestHandler{{#isApiV1}}
+	apiVersion     string{{/isApiV1}}
 }
 
 func (c *ApiService) RequestHandler() *twilio.RequestHandler {
   return c.requestHandler
 }
+{{#isApiV1}}
+
+// ApiVersion returns the API Standards version for this service
+func (c *ApiService) ApiVersion() string {
+  return c.apiVersion
+}
+{{/isApiV1}}
 
 func NewApiService(requestHandler *twilio.RequestHandler) *ApiService {
-	return &ApiService {
+    {{#isApiV1}}requestHandler.SetApiVersion("v1.0"){{/isApiV1}}
+    return &ApiService {
 		requestHandler: requestHandler,
-		baseURL:        "{{#hasServers}}{{#servers}}{{url}}{{/servers}}{{/hasServers}}",
+		baseURL:        "{{#hasServers}}{{#servers}}{{url}}{{/servers}}{{/hasServers}}",{{#isApiV1}}
+		apiVersion:     "v1.0",{{/isApiV1}}
 	}
 }
 
