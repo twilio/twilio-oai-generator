@@ -1,3 +1,407 @@
 # This spec tests followings
 # 1. All types of response body(json)
-# 2. Tests paginated response.
+# 2. Tests different response structures for each CRUDF operation
+# 3. Create - returns created object with metadata
+# 4. Read - returns full object with nested details
+# 5. Update - returns updated fields with audit info
+# 6. Delete - returns deletion confirmation status
+# 7. Find/List - returns paginated array with meta
+
+info:
+  contact:
+    email: support@twilio.com
+    name: Twilio Support
+    url: https://support.twilio.com
+  description: This is the public Twilio REST API.
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: https://www.twilio.com/legal/tos
+  title: Twilio - RESPONSE BODY TEST
+  version: 1.11.0
+  x-twilio:
+    apiStandards: v1.0
+openapi: 3.0.1
+
+components:
+  securitySchemes:
+    accountSid_authToken:
+      scheme: basic
+      type: http
+  schemas:
+    # Schema for Create response - includes creation metadata
+    WidgetCreateResponse:
+      type: object
+      properties:
+        sid:
+          type: string
+          description: Unique identifier for the widget
+        name:
+          type: string
+          description: Name of the widget
+        description:
+          type: string
+          description: Description of the widget
+        date_created:
+          type: string
+          format: date-time
+          description: Timestamp when the widget was created
+        created_by:
+          type: string
+          description: Account SID of the creator
+        url:
+          type: string
+          format: uri
+          description: URL to fetch this widget
+
+    # Schema for Read response - includes full details with nested objects
+    WidgetFetchResponse:
+      type: object
+      properties:
+        sid:
+          type: string
+          description: Unique identifier for the widget
+        name:
+          type: string
+          description: Name of the widget
+        description:
+          type: string
+          description: Description of the widget
+        status:
+          type: string
+          enum:
+            - active
+            - inactive
+            - archived
+          description: Current status of the widget
+        configuration:
+          type: object
+          properties:
+            enabled:
+              type: boolean
+            max_capacity:
+              type: integer
+            timeout_seconds:
+              type: integer
+            retry_policy:
+              type: object
+              properties:
+                max_retries:
+                  type: integer
+                backoff_multiplier:
+                  type: number
+          description: Configuration settings for the widget
+        tags:
+          type: array
+          items:
+            type: string
+          description: Tags associated with the widget
+        date_created:
+          type: string
+          format: date-time
+        date_updated:
+          type: string
+          format: date-time
+        url:
+          type: string
+          format: uri
+
+    # Schema for Update response - returns updated fields with audit trail
+    WidgetUpdateResponse:
+      type: object
+      properties:
+        sid:
+          type: string
+          description: Unique identifier for the widget
+        updated_fields:
+          type: array
+          items:
+            type: string
+          description: List of fields that were updated
+        previous_values:
+          type: object
+          additionalProperties: true
+          description: Previous values of updated fields
+        current_values:
+          type: object
+          additionalProperties: true
+          description: Current values of updated fields
+        date_updated:
+          type: string
+          format: date-time
+        updated_by:
+          type: string
+          description: Account SID of the updater
+        revision:
+          type: integer
+          description: Revision number after update
+
+    # Schema for Delete response - returns deletion confirmation
+    WidgetDeleteResponse:
+      type: object
+      properties:
+        sid:
+          type: string
+          description: Unique identifier of the deleted widget
+        deleted:
+          type: boolean
+          description: Whether the deletion was successful
+        deleted_at:
+          type: string
+          format: date-time
+          description: Timestamp when the widget was deleted
+        deleted_by:
+          type: string
+          description: Account SID of the deleter
+        message:
+          type: string
+          description: Human-readable confirmation message
+        archive_url:
+          type: string
+          format: uri
+          description: URL to access archived version if available
+
+    # Schema for List item - simplified version for listing
+    WidgetListResponse:
+      type: object
+      properties:
+        sid:
+          type: string
+        name:
+          type: string
+        status:
+          type: string
+          enum:
+            - active
+            - inactive
+            - archived
+        date_created:
+          type: string
+          format: date-time
+        url:
+          type: string
+          format: uri
+
+paths:
+  # CREATE - POST /v1/Widgets
+  /v1/Widgets:
+    servers:
+      - url: https://response.twilio.com
+    post:
+      operationId: CreateWidget
+      description: Create a new Widget resource
+      security:
+        - accountSid_authToken: []
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              title: CreateWidgetRequest
+              required:
+                - Name
+              properties:
+                Name:
+                  type: string
+                  description: Name of the widget
+                Description:
+                  type: string
+                  description: Description of the widget
+                Status:
+                  type: string
+                  enum:
+                    - active
+                    - inactive
+                  description: Initial status of the widget
+      responses:
+        '201':
+          description: Widget created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WidgetCreateResponse'
+
+    # FIND/LIST - GET /v1/Widgets
+    get:
+      operationId: ListWidget
+      description: Retrieve a list of all Widgets with pagination
+      security:
+        - accountSid_authToken: []
+      parameters:
+        - name: Status
+          in: query
+          description: Filter by widget status
+          required: false
+          schema:
+            type: string
+            enum:
+              - active
+              - inactive
+              - archived
+        - name: PageSize
+          in: query
+          description: Maximum number of items to return in a single response
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 1000
+        - name: PageToken
+          in: query
+          description: Token for pagination
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: List of widgets retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  widgets:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/WidgetListResponse'
+                  meta:
+                    type: object
+                    required:
+                      - key
+                      - pageSize
+                    properties:
+                      key:
+                        type: string
+                        description: The key of the list property contains the actual data items
+                        example: "services"
+                      pageSize:
+                        type: integer
+                        description: The actual number of items returned in this response
+                        example: 20
+                      previousToken:
+                        type: string
+                        description: Token to fetch the previous page of results
+                        example: "eyJwYWdlIjowLCJxdWVyeSI6ImJvb2tzIn0="
+                      nextToken:
+                        type: string
+                        description: Token to fetch the next page of results
+                        example: "eyJwYWdlIjoyLCJxdWVyeSI6ImJvb2tzIn0="
+
+  # READ, UPDATE, DELETE - /v1/Widgets/{Sid}
+  /v1/Widgets/{Sid}:
+    servers:
+      - url: https://response.twilio.com
+
+    # READ - GET /v1/Widgets/{Sid}
+    get:
+      operationId: FetchWidget
+      description: Fetch a specific Widget by its SID
+      security:
+        - accountSid_authToken: []
+      parameters:
+        - name: Sid
+          in: path
+          description: The unique identifier of the Widget
+          required: true
+          schema:
+            type: string
+            minLength: 34
+            maxLength: 34
+            pattern: '^WG[0-9a-fA-F]{32}$'
+        - name: IncludeConfiguration
+          in: query
+          description: Whether to include configuration details
+          required: false
+          schema:
+            type: boolean
+            default: true
+      responses:
+        '200':
+          description: Widget retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WidgetFetchResponse'
+
+    # UPDATE - POST /v1/Widgets/{Sid}
+    post:
+      operationId: UpdateWidget
+      description: Update a specific Widget by its SID
+      security:
+        - accountSid_authToken: []
+      parameters:
+        - name: Sid
+          in: path
+          description: The unique identifier of the Widget
+          required: true
+          schema:
+            type: string
+            minLength: 34
+            maxLength: 34
+            pattern: '^WG[0-9a-fA-F]{32}$'
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              title: UpdateWidgetRequest
+              properties:
+                Name:
+                  type: string
+                  description: Updated name of the widget
+                Description:
+                  type: string
+                  description: Updated description of the widget
+                Status:
+                  type: string
+                  enum:
+                    - active
+                    - inactive
+                    - archived
+                  description: Updated status of the widget
+                ConfigurationEnabled:
+                  type: boolean
+                  description: Whether widget configuration is enabled
+                ConfigurationMaxCapacity:
+                  type: integer
+                  description: Maximum capacity setting
+      responses:
+        '200':
+          description: Widget updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WidgetUpdateResponse'
+
+    # DELETE - DELETE /v1/Widgets/{Sid}
+    delete:
+      operationId: DeleteWidget
+      description: Delete a specific Widget by its SID
+      security:
+        - accountSid_authToken: []
+      parameters:
+        - name: Sid
+          in: path
+          description: The unique identifier of the Widget
+          required: true
+          schema:
+            type: string
+            minLength: 34
+            maxLength: 34
+            pattern: '^WG[0-9a-fA-F]{32}$'
+        - name: Archive
+          in: query
+          description: Whether to archive instead of permanently delete
+          required: false
+          schema:
+            type: boolean
+            default: false
+      responses:
+        '200':
+          description: Widget deleted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WidgetDeleteResponse'

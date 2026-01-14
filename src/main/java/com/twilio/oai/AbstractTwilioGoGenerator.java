@@ -93,6 +93,20 @@ public abstract class AbstractTwilioGoGenerator extends GoClientCodegen {
         twilioCodegen.setVersion(version);
         twilioCodegen.setIsV1ApiStandard(openAPI);
         twilioCodegen.setOutputDir(domain, version);
+
+        // Make isApiV1 flag available to templates
+        // Check if this is a Twilio API Standards v1.0 spec
+        if (openAPI.getInfo().getExtensions() != null && openAPI.getInfo().getExtensions().containsKey("x-twilio")) {
+            Object xTwilioObj = openAPI.getInfo().getExtensions().get("x-twilio");
+            if (xTwilioObj instanceof java.util.Map) {
+                java.util.Map<String, Object> xTwilio = (java.util.Map<String, Object>) xTwilioObj;
+                String apiStdVersion = (String) xTwilio.get("apiStandards");
+                if (com.twilio.oai.common.ApplicationConstants.isV1.test(apiStdVersion)) {
+                    additionalProperties.put("isApiV1", true);
+                }
+            }
+        }
+
         directoryStructureService.configure(openAPI);
 
         if (directoryStructureService.isVersionLess()) {

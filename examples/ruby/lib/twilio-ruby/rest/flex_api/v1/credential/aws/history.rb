@@ -70,6 +70,31 @@ module Twilio
               end
 
               ##
+              # Fetch the HistoryInstanceMetadata
+              # @param [Hash] add_ons_data
+              # @return [HistoryInstance] Fetched HistoryInstance
+              def fetch_with_metadata(
+                add_ons_data: :unset
+              )
+                params = Twilio::Values.of({})
+                params.merge!(Twilio.prefixed_collapsible_map(add_ons_data, 'AddOns'))
+                headers = Twilio::Values.of({ 'Content-Type' => 'application/x-www-form-urlencoded', })
+
+                response = @version.fetch_with_metadata('GET', @uri, params: params, headers: headers)
+                history_instance = HistoryInstance.new(
+                  @version,
+                  response.body,
+                  sid: @solution[:sid],
+                )
+                HistoryInstanceMetadata.new(
+                  @version,
+                  history_instance,
+                  response.headers,
+                  response.status_code
+                )
+              end
+
+              ##
               # Provide a user friendly representation
               def to_s
                 context = @solution.map { |k, v| "#{k}: #{v}" }.join(',')
@@ -81,6 +106,53 @@ module Twilio
               def inspect
                 context = @solution.map { |k, v| "#{k}: #{v}" }.join(',')
                 "#<Twilio.FlexApi.V1.HistoryContext #{context}>"
+              end
+            end
+
+            class HistoryInstanceMetadata < InstanceResourceMetadata
+              ##
+              # Initializes a new HistoryInstanceMetadata.
+              # @param [Version] version Version that contains the resource
+              # @param [}HistoryInstance] history_instance The instance associated with the metadata.
+              # @param [Hash] headers Header object with response headers.
+              # @param [Integer] status_code The HTTP status code of the response.
+              # @return [HistoryInstanceMetadata] The initialized instance with metadata.
+              def initialize(version, history_instance, headers, status_code)
+                super(version, headers, status_code)
+                @history_instance = history_instance
+              end
+
+              def history
+                @history_instance
+              end
+
+              def headers
+                @headers
+              end
+
+              def status_code
+                @status_code
+              end
+
+              def to_s
+                "<Twilio.Api.V2010.HistoryInstanceMetadata status=#{@status_code}>"
+              end
+            end
+
+            class HistoryListResponse < InstanceListResource
+              # @param [Array<HistoryInstance>] instance
+              # @param [Hash{String => Object}] headers
+              # @param [Integer] status_code
+              def initialize(version, payload, key)
+                @history_instance = payload.body[key].map do |data|
+                  HistoryInstance.new(version, data)
+                end
+                @headers = payload.headers
+                @status_code = payload.status_code
+              end
+
+              def history_instance
+                @instance
               end
             end
 
@@ -110,6 +182,62 @@ module Twilio
               # Provide a user friendly representation
               def to_s
                 '<Twilio.FlexApi.V1.HistoryPage>'
+              end
+            end
+
+            class HistoryPageMetadata < PageMetadata
+              attr_reader :history_page
+
+              def initialize(version, response, solution, limit)
+                super(version, response)
+                @history_page = []
+                @limit = limit
+                key = get_key(response.body)
+                number_of_records = response.body[key].size
+                while (limit != :unset && number_of_records <= limit)
+                  @history_page << HistoryListResponse.new(version, @payload, key)
+                  @payload = self.next_page
+                  break unless @payload
+
+                  number_of_records += @payload.body[key].size
+                end
+                # Path Solution
+                @solution = solution
+              end
+
+              def each
+                @history_page.each do |record|
+                  yield record
+                end
+              end
+
+              def to_s
+                '<Twilio::REST::FlexApi::V1PageMetadata>';
+              end
+            end
+
+            class HistoryListResponse < InstanceListResource
+              # @param [Array<HistoryInstance>] instance
+              # @param [Hash{String => Object}] headers
+              # @param [Integer] status_code
+              def initialize(version, payload, key)
+                @history = payload.body[key].map do |data|
+                  HistoryInstance.new(version, data)
+                end
+                @headers = payload.headers
+                @status_code = payload.status_code
+              end
+
+              def history
+                @history
+              end
+
+              def headers
+                @headers
+              end
+
+              def status_code
+                @status_code
               end
             end
 
