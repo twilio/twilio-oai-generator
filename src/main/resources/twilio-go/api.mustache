@@ -162,7 +162,7 @@ func (c *ApiService) stream{{{vendorExtensions.x-domain-name}}}(response *{{{ret
 			}
 		}
 
-		{{#vendorExtensions.isApiV1}}record, err := client.GetNext(c.baseURL+"{{{path}}}", response, c.getNext{{{returnContainer}}}){{/vendorExtensions.isApiV1}}{{^vendorExtensions.isApiV1}}record, err := client.GetNext(c.baseURL, response, c.getNext{{{returnContainer}}}){{/vendorExtensions.isApiV1}}
+		record, err := client.GetNext(c.baseURL{{#vendorExtensions.isApiV1}}+"{{{path}}}"{{/vendorExtensions.isApiV1}}, response, c.getNext{{{returnContainer}}})
 		if err != nil {
 			errorChannel <- err
 			break
