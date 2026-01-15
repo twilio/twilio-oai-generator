@@ -13,7 +13,7 @@
                     # @param [{{dataType}}] {{paramName}} {{{description}}}
                     {{/bodyParams}}
                     {{^vendorExtensions.x-is-delete-operation}}
-                    # @return [{{apiName}}Instance] {{#vendorExtensions.x-is-fetch-operation}}{{vendorExtensions.x-name}}ed{{/vendorExtensions.x-is-fetch-operation}}{{^vendorExtensions.x-is-fetch-operation}}{{vendorExtensions.x-name}}d{{/vendorExtensions.x-is-fetch-operation}} {{apiName}}Instance
+                    # @return [{{apiName}}Instance] {{#vendorExtensions.x-is-fetch-operation}}{{vendorExtensions.x-name}}ed{{/vendorExtensions.x-is-fetch-operation}}{{^vendorExtensions.x-is-fetch-operation}}{{^vendorExtensions.x-is-patch-operation}}{{vendorExtensions.x-name}}d{{/vendorExtensions.x-is-patch-operation}}{{#vendorExtensions.x-is-patch-operation}}{{vendorExtensions.x-name}}ed{{/vendorExtensions.x-is-patch-operation}}{{/vendorExtensions.x-is-fetch-operation}} {{apiName}}Instance
 {{/vendorExtensions.x-is-delete-operation}}
                     {{#vendorExtensions.x-is-delete-operation}}
                     # @return [Boolean] True if delete succeeds, false otherwise
