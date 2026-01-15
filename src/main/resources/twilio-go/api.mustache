@@ -11,6 +11,7 @@ import (
     "{{import}}"
     {{/imports}}
     "github.com/twilio/twilio-go/client"
+    "github.com/twilio/twilio-go/client/metadata"
 )
 
 {{#operation}}
@@ -77,6 +78,54 @@ func (c *ApiService) {{{nickname}}}({{#allParams}}{{#required}}{{paramName}} {{{
     return nil
 {{/returnType}}
 }
+
+// Returns response with metadata
+func (c *ApiService) {{{nickname}}}WithMetadata({{#allParams}}{{#required}}{{paramName}} {{{dataType}}}{{^-last}}, {{/-last}}{{/required}}{{/allParams}}{{#hasOptionalParams}}params *{{{nickname}}}Params{{/hasOptionalParams}}) (*metadata.ResourceMetadata[{{#returnType}}{{{returnType}}}{{/returnType}}{{^returnType}}bool{{/returnType}}], error) {
+    path := "{{{path}}}"
+    {{>partial_serialization}}
+
+{{#hasHeaderParams}}
+    {{#headerParams}}
+    if params != nil && params.{{paramName}} != nil {
+        headers["{{{baseName}}}"] = *params.{{paramName}}
+    }
+    {{/headerParams}}
+{{/hasHeaderParams}}
+{{#vendorExtensions.x-is-json-type}}
+    resp, err := c.requestHandler.{{httpMethod}}(c.baseURL+path, data, headers, body...)
+{{/vendorExtensions.x-is-json-type}}
+{{^vendorExtensions.x-is-json-type}}
+    resp, err := c.requestHandler.{{httpMethod}}(c.baseURL+path, data, headers)
+{{/vendorExtensions.x-is-json-type}}
+{{#returnType}}
+    if err != nil {
+        return nil, err
+    }
+
+    defer resp.Body.Close()
+
+    ps := &{{{returnType}}}{}
+    if err := json.NewDecoder(resp.Body).Decode(ps); err != nil {
+        return nil, err
+    }
+
+{{/returnType}}
+{{^returnType}}
+    if err != nil {
+        return nil, err
+    }
+
+    defer resp.Body.Close()
+
+{{/returnType}}
+    metadataWrapper := metadata.NewResourceMetadata[{{#returnType}}{{{returnType}}}{{/returnType}}{{^returnType}}bool{{/returnType}}](
+        {{#returnType}}*ps{{/returnType}}{{^returnType}}true{{/returnType}},            // The resource object
+        resp.StatusCode, // HTTP status code
+        resp.Header,     // HTTP headers
+    )
+
+    return metadataWrapper, nil
+}
 {{/vendorExtensions.x-is-read-operation}}
 {{#vendorExtensions.x-is-read-operation}}
 // Retrieve a single page of {{{vendorExtensions.x-domain-name}}} records from the API. Request is executed immediately.
@@ -106,6 +155,39 @@ func (c *ApiService) Page{{{vendorExtensions.x-domain-name}}}({{#allParams}}{{#r
     return ps, err
 }
 
+// Returns response metadata
+func (c *ApiService) Page{{{vendorExtensions.x-domain-name}}}WithMetadata({{#allParams}}{{#required}}{{paramName}} {{{dataType}}}{{^last}}, {{/last}}{{/required}}{{/allParams}}params *{{{nickname}}}Params, pageToken, pageNumber string) (*metadata.ResourceMetadata[{{{returnContainer}}}], error) {
+    path := "{{{path}}}"
+
+    {{>partial_serialization}}
+    if pageToken != "" {
+        data.Set("PageToken", pageToken)
+    }
+    if pageNumber != "" {
+        data.Set("Page", pageNumber)
+    }
+
+    resp, err := c.requestHandler.Get(c.baseURL+path, data, headers)
+    if err != nil {
+        return nil, err
+    }
+
+    defer resp.Body.Close()
+
+    ps := &{{{returnContainer}}}{}
+    if err := json.NewDecoder(resp.Body).Decode(ps); err != nil {
+        return nil, err
+    }
+
+    metadataWrapper := metadata.NewResourceMetadata[{{{returnContainer}}}](
+        *ps,             // The response object
+        resp.StatusCode, // HTTP status code
+        resp.Header,     // HTTP headers
+    )
+
+    return metadataWrapper, nil
+}
+
 // Lists {{{vendorExtensions.x-domain-name}}} records from the API as a list. Unlike stream, this operation is eager and loads 'limit' records into memory before returning.
 func (c *ApiService) List{{{vendorExtensions.x-domain-name}}}({{#allParams}}{{#required}}{{paramName}} {{{dataType}}}{{^last}}, {{/last}}{{/required}}{{/allParams}}params *{{{nickname}}}Params) ({{{returnType}}}, error) {
 	response, errors := c.Stream{{{vendorExtensions.x-domain-name}}}({{#allParams}}{{#required}}{{paramName}}{{^last}}, {{/last}}{{/required}}{{/allParams}}params)
@@ -120,6 +202,29 @@ func (c *ApiService) List{{{vendorExtensions.x-domain-name}}}({{#allParams}}{{#r
 	}
 
 	return records, nil
+}
+
+// return response metadata
+func (c *ApiService) List{{{vendorExtensions.x-domain-name}}}WithMetadata({{#allParams}}{{#required}}{{paramName}} {{{dataType}}}{{^last}}, {{/last}}{{/required}}{{/allParams}}params *{{{nickname}}}Params) (*metadata.ResourceMetadata[{{{returnType}}}], error) {
+    response, errors := c.Stream{{{vendorExtensions.x-domain-name}}}WithMetadata({{#allParams}}{{#required}}{{paramName}}{{^last}}, {{/last}}{{/required}}{{/allParams}}params)
+    resource := response.GetResource()
+
+    records := make({{{returnType}}}, 0)
+    for record := range resource {
+        records = append(records, record)
+    }
+
+    if err := <-errors; err != nil {
+        return nil, err
+    }
+
+    metadataWrapper := metadata.NewResourceMetadata[{{{returnType}}}](
+        records,                  // Fetched records
+        response.GetStatusCode(), // HTTP status code from page response
+        response.GetHeaders(),    // HTTP headers from page response
+    )
+
+    return metadataWrapper, nil
 }
 
 // Streams {{{vendorExtensions.x-domain-name}}} records from the API as a channel stream. This operation lazily loads records as efficiently as possible until the limit is reached.
@@ -142,6 +247,35 @@ func (c *ApiService) Stream{{{vendorExtensions.x-domain-name}}}({{#allParams}}{{
 	}
 
 	return recordChannel, errorChannel
+}
+
+// return response metadata
+func (c *ApiService) Stream{{{vendorExtensions.x-domain-name}}}WithMetadata({{#allParams}}{{#required}}{{paramName}} {{{dataType}}}{{^last}}, {{/last}}{{/required}}{{/allParams}}params *{{{nickname}}}Params) (*metadata.ResourceMetadata[chan {{{returnBaseType}}}], chan error) {
+    if params == nil {
+        params = &{{{nickname}}}Params{}
+    }
+    params.SetPageSize(client.ReadLimits(params.PageSize, params.Limit))
+
+    recordChannel := make(chan {{{returnBaseType}}}, 1)
+    errorChannel := make(chan error, 1)
+
+    response, err := c.Page{{{vendorExtensions.x-domain-name}}}WithMetadata({{#allParams}}{{#required}}{{paramName}}{{^last}}, {{/last}}{{/required}}{{/allParams}}params, "", "")
+    if err != nil {
+        errorChannel <- err
+        close(recordChannel)
+        close(errorChannel)
+    } else {
+        resource := response.GetResource()
+        go c.stream{{{vendorExtensions.x-domain-name}}}(&resource, params, recordChannel, errorChannel)
+    }
+
+    metadataWrapper := metadata.NewResourceMetadata[chan {{{returnBaseType}}}](
+        recordChannel,            // The record channel
+        response.GetStatusCode(), // HTTP status code from page response
+        response.GetHeaders(),    // HTTP headers from page response
+    )
+
+    return metadataWrapper, errorChannel
 }
 
 
