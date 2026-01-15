@@ -179,13 +179,22 @@ public class TwilioGoGenerator extends AbstractTwilioGoGenerator {
                 .map(CodegenModel.class::cast)
                 .collect(Collectors.toMap(CodegenModel::getName, Function.identity()));
 
+        final List<CodegenModel> modelByOperation = opList
+            .stream()
+            .filter(op -> models.containsKey(op.returnType))
+            .map(op -> models.get(op.returnType)).collect(Collectors.toList());
+
+        final Map<String, CodegenModel> modelNameToCodegenModel = modelByOperation
+            .stream()
+            .collect(Collectors.toMap(CodegenModel::getName, Function.identity(), (existing, replacement) -> existing));
+
         // get the model for the return type
         Optional<CodegenModel> returnModel = opList.stream()
             .filter(op -> ( op.returnType != null && ( op.returnType.contains("Page") || op.returnType.contains("page") ) ) && models.containsKey(op.returnType))
             .map(op -> models.get(op.returnType))
             .findFirst();
 
-        if (returnModel.isEmpty()) {
+        if (modelNameToCodegenModel.size() > 1 && returnModel.isEmpty()) {
             returnModel = opList
                     .stream()
                     .filter(op -> models.containsKey(op.returnType))
@@ -213,7 +222,7 @@ public class TwilioGoGenerator extends AbstractTwilioGoGenerator {
                 });
 
                 // filter the fields in the model and get only the array typed field. Also, make sure there is only one field of type list/array
-                if (returnModel.isPresent()) {
+                if (modelNameToCodegenModel.size() == 1 && returnModel.isPresent()) {
                     CodegenProperty field = returnModel.get().allVars
                             .stream()
                             .filter( v -> !v.baseName.contains("schemas"))
