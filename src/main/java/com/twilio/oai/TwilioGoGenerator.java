@@ -182,6 +182,7 @@ public class TwilioGoGenerator extends AbstractTwilioGoGenerator {
         final List<CodegenModel> modelByOperation = opList
             .stream()
             .filter(op -> models.containsKey(op.returnType))
+            .filter(op -> ( op.returnType != null && ( op.returnType.contains("Page") || op.returnType.contains("page") ) ))
             .map(op -> models.get(op.returnType)).collect(Collectors.toList());
 
         final Map<String, CodegenModel> modelNameToCodegenModel = modelByOperation
