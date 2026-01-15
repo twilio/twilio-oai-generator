@@ -31,6 +31,7 @@ public abstract class ApiResourceBuilder implements IApiResourceBuilder {
     protected final Map<String, CodegenModel> modelTree = new TreeMap<>();
     protected final List<CodegenParameter> requiredPathParams = new ArrayList<>();
     protected Set<CodegenProperty> apiResponseModels = new LinkedHashSet<>();
+    protected Set<CodegenModel> responseInstanceModels = new LinkedHashSet<>();
     protected final Map<String, Object> metaAPIProperties = new HashMap<>();
     protected final List<CodegenOperation> listOperations = new ArrayList<>();
     protected final List<CodegenOperation> instanceOperations = new ArrayList<>();

@@ -1,5 +1,7 @@
 package com.twilio.oai;
 
+import com.twilio.oai.java.cache.ResourceCache2;
+import com.twilio.oai.java.cache.ResourceCacheContext;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
@@ -18,7 +20,6 @@ import org.openapitools.codegen.DefaultCodegen;
 
 import static com.twilio.oai.common.ApplicationConstants.CONFIG_PATH;
 
-@RequiredArgsConstructor
 public class TwilioCodegenAdapter {
 
     private static final String INPUT_SPEC_PATTERN = "[^_]+_(?<domain>.+?)(_(?<version>[^_]+))?\\..+";
@@ -32,6 +33,14 @@ public class TwilioCodegenAdapter {
     private File toggleFile;
 
     private String originalOutputDir;
+    private final ResourceCache2 resourceCache2 = new ResourceCache2();
+
+    public TwilioCodegenAdapter(DefaultCodegen codegen, String name) {
+        this.codegen = codegen;
+        this.name = name;
+        ResourceCacheContext.clear();
+        ResourceCacheContext.set(resourceCache2);
+    }
 
     public void processOpts() {
         // Find the templates in the local resources dir.
@@ -65,7 +74,7 @@ public class TwilioCodegenAdapter {
             e.printStackTrace();
         }
     }
-    
+
     public String getVersionFromOpenAPI(final OpenAPI openAPI) {
         String version = "";
         version = StringHelper.camelize(getInputSpecVersion(), true);
@@ -83,6 +92,19 @@ public class TwilioCodegenAdapter {
         return version;
     }
 
+    public void setIsV1ApiStandard (final OpenAPI openAPI) {
+        String apiStdVersion = null;
+        if (openAPI.getInfo().getExtensions() != null && openAPI.getInfo().getExtensions().containsKey("x-twilio")) {
+            Object xTwilioObj = openAPI.getInfo().getExtensions().get("x-twilio");
+            if (xTwilioObj instanceof Map) {
+                Map<String, Object> xTwilio = (Map<String, Object>) xTwilioObj;
+                apiStdVersion = (String) xTwilio.get("apiStandards");
+            }
+        }
+        boolean isV1 = ApplicationConstants.isV1.test(apiStdVersion);
+        ResourceCacheContext.get().setV1(isV1);
+    }
+
     public void setDomain(final String domain) {
         final String domainPackage = domain.replaceAll("[-.]", "");
         setOutputDir(domainPackage, getInputSpecVersion());
@@ -90,7 +112,7 @@ public class TwilioCodegenAdapter {
         codegen.additionalProperties().put("domainName", StringHelper.camelize(domain));
         codegen.additionalProperties().put("domainPackage", domainPackage);
     }
-    
+
     public void setVersion(final String version) {
         codegen.additionalProperties().put("clientVersion", version);
         codegen.additionalProperties().put(DirectoryStructureService.API_VERSION, version);
