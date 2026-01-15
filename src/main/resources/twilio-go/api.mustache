@@ -134,7 +134,7 @@ func (c *ApiService) Stream{{{vendorExtensions.x-domain-name}}}({{#allParams}}{{
 	recordChannel := make(chan {{{returnBaseType}}}, 1)
 	errorChannel := make(chan error, 1)
 
-	response, err := c.Page{{{vendorExtensions.x-domain-name}}}({{#allParams}}{{#required}}{{paramName}}{{^last}}, {{/last}}{{/required}}{{/allParams}}params{{#vendorExtensions.isApiV1}}, ""{{/vendorExtensions.isApiV1}}{{^vendorExtensions.isApiV1}}, "", ""{{/vendorExtensions.isApiV1}})
+	response, err := c.Page{{{vendorExtensions.x-domain-name}}}({{#allParams}}{{#required}}{{paramName}}{{^last}}, {{/last}}{{/required}}{{/allParams}}params, ""{{^vendorExtensions.isApiV1}}, ""{{/vendorExtensions.isApiV1}})
 	if err != nil {
 		errorChannel <- err
 		close(recordChannel)
