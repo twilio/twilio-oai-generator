@@ -179,6 +179,14 @@ public class TwilioGoGenerator extends AbstractTwilioGoGenerator {
                 .map(CodegenModel.class::cast)
                 .collect(Collectors.toMap(CodegenModel::getName, Function.identity()));
 
+        for ( CodegenModel codegenModel : models.values() ) {
+            for ( var vars: codegenModel.allVars){
+                if( vars.dataType.contains("200") ){
+                    vars.vendorExtensions.put("x-go-base-type", modelNameWithoutStatusCode(vars.vendorExtensions.get("x-go-base-type").toString()) );
+                }
+            }
+        }
+
         final List<CodegenModel> modelByOperation = opList
             .stream()
             .filter(op -> models.containsKey(op.returnType))
@@ -195,7 +203,7 @@ public class TwilioGoGenerator extends AbstractTwilioGoGenerator {
             .map(op -> models.get(op.returnType))
             .findFirst();
 
-        if (modelNameToCodegenModel.size() > 1 && returnModel.isEmpty()) {
+        if (modelNameToCodegenModel.size() == 1 && returnModel.isEmpty()) {
             returnModel = opList
                     .stream()
                     .filter(op -> models.containsKey(op.returnType))
