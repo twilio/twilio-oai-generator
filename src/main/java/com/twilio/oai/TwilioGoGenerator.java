@@ -64,6 +64,11 @@ public class TwilioGoGenerator extends AbstractTwilioGoGenerator {
 
             model.allVars.forEach(v -> v.setIsNumber(v.isNumber || v.isFloat));
             model.vendorExtensions.put("x-has-numbers-vars", model.allVars.stream().anyMatch(v -> v.isNumber));
+            for ( var vars: model.allVars){
+                if( vars.dataType.contains("200") ){
+                    vars.vendorExtensions.put("x-go-base-type", modelNameWithoutStatusCode(vars.vendorExtensions.get("x-go-base-type").toString()) );
+                }
+            }
         }
         return results;
     }
@@ -178,14 +183,6 @@ public class TwilioGoGenerator extends AbstractTwilioGoGenerator {
                 .map(m -> m.get("model"))
                 .map(CodegenModel.class::cast)
                 .collect(Collectors.toMap(CodegenModel::getName, Function.identity()));
-
-        for ( CodegenModel codegenModel : models.values() ) {
-            for ( var vars: codegenModel.allVars){
-                if( vars.dataType.contains("200") ){
-                    vars.vendorExtensions.put("x-go-base-type", modelNameWithoutStatusCode(vars.vendorExtensions.get("x-go-base-type").toString()) );
-                }
-            }
-        }
 
         final List<CodegenModel> modelByOperation = opList
             .stream()
