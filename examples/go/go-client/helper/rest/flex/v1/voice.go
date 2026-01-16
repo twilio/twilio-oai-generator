@@ -18,6 +18,8 @@ import (
 	"encoding/json"
 	"net/url"
 	"strings"
+
+	"github.com/twilio/twilio-go/client/metadata"
 )
 
 func (c *ApiService) UpdateCall(Sid string) (*UpdateCallResponse, error) {
@@ -42,4 +44,35 @@ func (c *ApiService) UpdateCall(Sid string) (*UpdateCallResponse, error) {
 	}
 
 	return ps, err
+}
+
+// Returns response with metadata
+func (c *ApiService) UpdateCallWithMetadata(Sid string) (*metadata.ResourceMetadata[UpdateCallResponse], error) {
+	path := "/v1/Voice/{Sid}"
+	path = strings.Replace(path, "{"+"Sid"+"}", Sid, -1)
+
+	data := url.Values{}
+	headers := map[string]interface{}{
+		"Content-Type": "application/x-www-form-urlencoded",
+	}
+
+	resp, err := c.requestHandler.Post(c.baseURL+path, data, headers)
+	if err != nil {
+		return nil, err
+	}
+
+	defer resp.Body.Close()
+
+	ps := &UpdateCallResponse{}
+	if err := json.NewDecoder(resp.Body).Decode(ps); err != nil {
+		return nil, err
+	}
+
+	metadataWrapper := metadata.NewResourceMetadata[UpdateCallResponse](
+		*ps,             // The resource object
+		resp.StatusCode, // HTTP status code
+		resp.Header,     // HTTP headers
+	)
+
+	return metadataWrapper, nil
 }
