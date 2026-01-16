@@ -1,6 +1,6 @@
 {{#operations}}
 {{#vendorExtensions.x-is-read-operation}}
-class {{apiName}}Page(Page):
+class {{apiName}}Page({{#isApiV1}}TokenPagination{{/isApiV1}}{{^isApiV1}}Page{{/isApiV1}}):
 
     def get_instance(self, payload: Dict[str, Any]) -> {{instanceName}}:
         """

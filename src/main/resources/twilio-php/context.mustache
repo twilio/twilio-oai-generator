@@ -49,7 +49,8 @@ class {{apiName}}Context extends InstanceContext
         Version $version{{#requiredPathParams}},
         ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}{{/requiredPathParams}}
     ) {
-        parent::__construct($version);
+        {{^isApiV1}}parent::__construct($version);{{/isApiV1}}{{#isApiV1}}$apiV1Version = new ApiV1Version($version->getDomain(), $version->version);
+        parent::__construct($apiV1Version);{{/isApiV1}}
 
         // Path Solution
         $this->solution = [{{#requiredPathParams}}
@@ -63,8 +64,8 @@ class {{apiName}}Context extends InstanceContext
     }
 
 {{#apiOperations}}
-{{#vendorExtensions.instanceOperation}}{{>method}}
-{{>contextMethod}}
+{{#vendorExtensions.instanceOperation}}
+{{>helperMethod}}
 
 {{/vendorExtensions.instanceOperation}}
 {{/apiOperations}}

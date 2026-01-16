@@ -80,16 +80,18 @@ func (c *ApiService) {{{nickname}}}({{#allParams}}{{#required}}{{paramName}} {{{
 {{/vendorExtensions.x-is-read-operation}}
 {{#vendorExtensions.x-is-read-operation}}
 // Retrieve a single page of {{{vendorExtensions.x-domain-name}}} records from the API. Request is executed immediately.
-func (c *ApiService) Page{{{vendorExtensions.x-domain-name}}}({{#allParams}}{{#required}}{{paramName}} {{{dataType}}}{{^last}}, {{/last}}{{/required}}{{/allParams}}params *{{{nickname}}}Params, pageToken, pageNumber string) (*{{{returnContainer}}}, error) {
+func (c *ApiService) Page{{{vendorExtensions.x-domain-name}}}({{#allParams}}{{#required}}{{paramName}} {{{dataType}}}{{^last}}, {{/last}}{{/required}}{{/allParams}}params *{{{nickname}}}Params{{#vendorExtensions.isApiV1}}, pageToken string{{/vendorExtensions.isApiV1}}{{^vendorExtensions.isApiV1}}, pageToken, pageNumber string{{/vendorExtensions.isApiV1}}) (*{{{returnContainer}}}, error) {
     path := "{{{path}}}"
 
     {{>partial_serialization}}
     if pageToken != "" {
         data.Set("PageToken", pageToken)
     }
+    {{^vendorExtensions.isApiV1}}
     if pageNumber != "" {
         data.Set("Page", pageNumber)
     }
+    {{/vendorExtensions.isApiV1}}
 
     resp, err := c.requestHandler.Get(c.baseURL+path, data, headers)
     if err != nil {
@@ -132,7 +134,7 @@ func (c *ApiService) Stream{{{vendorExtensions.x-domain-name}}}({{#allParams}}{{
 	recordChannel := make(chan {{{returnBaseType}}}, 1)
 	errorChannel := make(chan error, 1)
 
-	response, err := c.Page{{{vendorExtensions.x-domain-name}}}({{#allParams}}{{#required}}{{paramName}}{{^last}}, {{/last}}{{/required}}{{/allParams}}params, "", "")
+	response, err := c.Page{{{vendorExtensions.x-domain-name}}}({{#allParams}}{{#required}}{{paramName}}{{^last}}, {{/last}}{{/required}}{{/allParams}}params, ""{{^vendorExtensions.isApiV1}}, ""{{/vendorExtensions.isApiV1}})
 	if err != nil {
 		errorChannel <- err
 		close(recordChannel)
@@ -160,7 +162,7 @@ func (c *ApiService) stream{{{vendorExtensions.x-domain-name}}}(response *{{{ret
 			}
 		}
 
-		record, err := client.GetNext(c.baseURL, response, c.getNext{{{returnContainer}}})
+		record, err := client.GetNext(c.baseURL{{#vendorExtensions.isApiV1}}+"{{{path}}}"{{/vendorExtensions.isApiV1}}, response, c.getNext{{{returnContainer}}})
 		if err != nil {
 			errorChannel <- err
 			break

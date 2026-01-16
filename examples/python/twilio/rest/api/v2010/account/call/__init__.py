@@ -16,6 +16,7 @@ r"""
 from datetime import datetime
 from typing import Any, Dict, List, Optional, Union
 from twilio.base import deserialize, serialize, values
+from twilio.base.api_response import ApiResponse
 from twilio.base.instance_context import InstanceContext
 from twilio.base.instance_resource import InstanceResource
 from twilio.base.list_resource import ListResource
@@ -142,6 +143,24 @@ class CallInstance(InstanceResource):
         """
         return await self._proxy.delete_async()
 
+    def delete_with_http_info(self) -> ApiResponse:
+        """
+        Deletes the CallInstance with HTTP info
+
+
+        :returns: ApiResponse with success boolean, status code, and headers
+        """
+        return self._proxy.delete_with_http_info()
+
+    async def delete_with_http_info_async(self) -> ApiResponse:
+        """
+        Asynchronous coroutine that deletes the CallInstance with HTTP info
+
+
+        :returns: ApiResponse with success boolean, status code, and headers
+        """
+        return await self._proxy.delete_with_http_info_async()
+
     def fetch(self) -> "CallInstance":
         """
         Fetch the CallInstance
@@ -159,6 +178,24 @@ class CallInstance(InstanceResource):
         :returns: The fetched CallInstance
         """
         return await self._proxy.fetch_async()
+
+    def fetch_with_http_info(self) -> ApiResponse:
+        """
+        Fetch the CallInstance with HTTP info
+
+
+        :returns: ApiResponse with instance, status code, and headers
+        """
+        return self._proxy.fetch_with_http_info()
+
+    async def fetch_with_http_info_async(self) -> ApiResponse:
+        """
+        Asynchronous coroutine to fetch the CallInstance with HTTP info
+
+
+        :returns: ApiResponse with instance, status code, and headers
+        """
+        return await self._proxy.fetch_with_http_info_async()
 
     def __repr__(self) -> str:
         """
@@ -289,6 +326,38 @@ class CallList(ListResource):
 
         self._feedback_call_summary: Optional[FeedbackCallSummaryList] = None
 
+    def _create(
+        self,
+        required_string_property: str,
+        test_method: str,
+        test_array_of_strings: Union[List[str], object] = values.unset,
+        test_array_of_uri: Union[List[str], object] = values.unset,
+    ) -> tuple:
+        """
+        Internal helper for create operation
+
+        Returns:
+            tuple: (payload, status_code, headers)
+        """
+
+        data = values.of(
+            {
+                "RequiredStringProperty": required_string_property,
+                "TestMethod": test_method,
+                "TestArrayOfStrings": serialize.map(test_array_of_strings, lambda e: e),
+                "TestArrayOfUri": serialize.map(test_array_of_uri, lambda e: e),
+            }
+        )
+        headers = values.of({"Content-Type": "application/x-www-form-urlencoded"})
+
+        headers["Content-Type"] = "application/x-www-form-urlencoded"
+
+        headers["Accept"] = "application/json"
+
+        return self._version.create_with_response_info(
+            method="POST", uri=self._uri, data=data, headers=headers
+        )
+
     def create(
         self,
         required_string_property: str,
@@ -306,6 +375,57 @@ class CallList(ListResource):
 
         :returns: The created CallInstance
         """
+        payload, _, _ = self._create(
+            required_string_property=required_string_property,
+            test_method=test_method,
+            test_array_of_strings=test_array_of_strings,
+            test_array_of_uri=test_array_of_uri,
+        )
+        return CallInstance(
+            self._version, payload, account_sid=self._solution["account_sid"]
+        )
+
+    def create_with_http_info(
+        self,
+        required_string_property: str,
+        test_method: str,
+        test_array_of_strings: Union[List[str], object] = values.unset,
+        test_array_of_uri: Union[List[str], object] = values.unset,
+    ) -> ApiResponse:
+        """
+        Create the CallInstance and return response metadata
+
+        :param required_string_property:
+        :param test_method: The HTTP method that we should use to request the `TestArrayOfUri`.
+        :param test_array_of_strings:
+        :param test_array_of_uri:
+
+        :returns: ApiResponse with instance, status code, and headers
+        """
+        payload, status_code, headers = self._create(
+            required_string_property=required_string_property,
+            test_method=test_method,
+            test_array_of_strings=test_array_of_strings,
+            test_array_of_uri=test_array_of_uri,
+        )
+        instance = CallInstance(
+            self._version, payload, account_sid=self._solution["account_sid"]
+        )
+        return ApiResponse(data=instance, status_code=status_code, headers=headers)
+
+    async def _create_async(
+        self,
+        required_string_property: str,
+        test_method: str,
+        test_array_of_strings: Union[List[str], object] = values.unset,
+        test_array_of_uri: Union[List[str], object] = values.unset,
+    ) -> tuple:
+        """
+        Internal async helper for create operation
+
+        Returns:
+            tuple: (payload, status_code, headers)
+        """
 
         data = values.of(
             {
@@ -321,12 +441,8 @@ class CallList(ListResource):
 
         headers["Accept"] = "application/json"
 
-        payload = self._version.create(
+        return await self._version.create_with_response_info_async(
             method="POST", uri=self._uri, data=data, headers=headers
-        )
-
-        return CallInstance(
-            self._version, payload, account_sid=self._solution["account_sid"]
         )
 
     async def create_async(
@@ -346,28 +462,43 @@ class CallList(ListResource):
 
         :returns: The created CallInstance
         """
-
-        data = values.of(
-            {
-                "RequiredStringProperty": required_string_property,
-                "TestMethod": test_method,
-                "TestArrayOfStrings": serialize.map(test_array_of_strings, lambda e: e),
-                "TestArrayOfUri": serialize.map(test_array_of_uri, lambda e: e),
-            }
+        payload, _, _ = await self._create_async(
+            required_string_property=required_string_property,
+            test_method=test_method,
+            test_array_of_strings=test_array_of_strings,
+            test_array_of_uri=test_array_of_uri,
         )
-        headers = values.of({"Content-Type": "application/x-www-form-urlencoded"})
-
-        headers["Content-Type"] = "application/x-www-form-urlencoded"
-
-        headers["Accept"] = "application/json"
-
-        payload = await self._version.create_async(
-            method="POST", uri=self._uri, data=data, headers=headers
-        )
-
         return CallInstance(
             self._version, payload, account_sid=self._solution["account_sid"]
         )
+
+    async def create_with_http_info_async(
+        self,
+        required_string_property: str,
+        test_method: str,
+        test_array_of_strings: Union[List[str], object] = values.unset,
+        test_array_of_uri: Union[List[str], object] = values.unset,
+    ) -> ApiResponse:
+        """
+        Asynchronously create the CallInstance and return response metadata
+
+        :param required_string_property:
+        :param test_method: The HTTP method that we should use to request the `TestArrayOfUri`.
+        :param test_array_of_strings:
+        :param test_array_of_uri:
+
+        :returns: ApiResponse with instance, status code, and headers
+        """
+        payload, status_code, headers = await self._create_async(
+            required_string_property=required_string_property,
+            test_method=test_method,
+            test_array_of_strings=test_array_of_strings,
+            test_array_of_uri=test_array_of_uri,
+        )
+        instance = CallInstance(
+            self._version, payload, account_sid=self._solution["account_sid"]
+        )
+        return ApiResponse(data=instance, status_code=status_code, headers=headers)
 
     @property
     def feedback_call_summary(self) -> FeedbackCallSummaryList:
