@@ -1,0 +1,30 @@
+    {{>Summary}}
+    public class Patch{{apiName}}Options : IOptions<{{apiName}}{{resourceConstant}}>
+    {
+    {{>options/Params}}
+
+    {{#vendorExtensions.x-required-param-exists}}
+        {{>options/MethodsComments}}        public Patch{{apiName}}Options({{#requiredParams}}{{{dataType}}} {{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^-last}}, {{/-last}}{{/requiredParams}})
+        {
+        {{#requiredParams}}
+            {{paramName}} = {{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}};
+        {{/requiredParams}}
+        {{#allParams}}
+            {{^required}}
+            {{#isArray}}
+            {{paramName}} = new {{{dataType}}}();
+            {{/isArray}}
+            {{/required}}
+        {{/allParams}}
+        }
+    {{/vendorExtensions.x-required-param-exists}}
+
+    {{^bodyParams.0}}
+        {{>options/GetParams}}
+    {{/bodyParams.0}}
+    {{#bodyParams.0}}
+        {{>options/GetBody}}
+    {{/bodyParams.0}}
+        {{>options/HeaderParams}}
+    }
+

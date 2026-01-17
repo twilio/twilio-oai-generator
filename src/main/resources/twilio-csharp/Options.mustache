@@ -22,6 +22,9 @@ namespace Twilio.Rest.{{domainPackage}}.{{apiVersionClass}}{{namespaceSubPart}}
     {{#vendorExtensions.x-is-update-operation}}
 {{>options/UpdateOptions}}
     {{/vendorExtensions.x-is-update-operation}}
+    {{#vendorExtensions.x-is-patch-operation}}
+{{>options/PatchOptions}}
+    {{/vendorExtensions.x-is-patch-operation}}
 {{/apiOperations}}
 }
 
