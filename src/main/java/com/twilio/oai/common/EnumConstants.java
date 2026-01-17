@@ -29,6 +29,7 @@ public class EnumConstants {
         CREATE("Create"),
         FETCH("Fetch"),
         UPDATE("Update"),
+        PATCH("Patch"),
 
         DELETE("Delete"),
 

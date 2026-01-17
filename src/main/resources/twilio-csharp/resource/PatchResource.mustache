@@ -1,0 +1,65 @@
+
+        private static Request BuildPatchRequest(Patch{{apiName}}Options options, ITwilioRestClient client)
+        {
+            {{>resource/GeneratePath}}
+            return new Request(
+            {{vendorExtensions.x-http-method}},
+            Rest.Domain.{{domainPackage}},
+            path,
+            {{^bodyParams.0}}
+            contentType: EnumConstants.ContentTypeEnum.FORM_URLENCODED,
+            postParams: options.GetParams(),{{/bodyParams.0}}
+            {{#bodyParams.0}}
+            contentType: EnumConstants.ContentTypeEnum.JSON,
+            body: options.GetBody(),
+            {{/bodyParams.0}}
+            headerParams: {{^vendorExtensions.x-header-param-exists}}null{{/vendorExtensions.x-header-param-exists}}{{#vendorExtensions.x-header-param-exists}}options.GetHeaderParams(){{/vendorExtensions.x-header-param-exists}}
+            );
+        }
+
+        {{>Summary}}
+        /// <param name="options"> Patch {{apiName}} parameters </param>
+        /// <param name="client"> Client to make requests to Twilio </param>
+        {{>resource/ReturnComments}}
+        public static {{apiName}}{{resourceConstant}} Patch(Patch{{apiName}}Options options, ITwilioRestClient client = null)
+        {
+            client = client ?? TwilioClient.{{restClientMethodName}}();
+            var response = client.Request(BuildPatchRequest(options, client));
+            return FromJson(response.Content);
+        }
+
+        {{>Summary}}
+        /// <param name="options"> Patch {{apiName}} parameters </param>
+        /// <param name="client"> Client to make requests to Twilio </param>
+        {{>resource/ReturnCommentsAsync}}
+        #if !NET35
+        public static async System.Threading.Tasks.Task<{{apiName}}{{resourceConstant}}> PatchAsync(Patch{{apiName}}Options options,
+            ITwilioRestClient client = null)
+        {
+            client = client ?? TwilioClient.{{restClientMethodName}}();
+            var response = await client.RequestAsync(BuildPatchRequest(options, client));
+            return FromJson(response.Content);
+        }
+        #endif
+
+        {{>Summary}}{{>resource/MethodsComments}}
+        {{>resource/ReturnComments}}
+        public static {{apiName}}{{resourceConstant}} Patch({{#vendorExtensions.x-request-body-param}}
+            {{{dataType}}} {{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^required}} = null{{/required}},{{/vendorExtensions.x-request-body-param}}
+            ITwilioRestClient client = null)
+        {
+            var options = new Patch{{apiName}}Options({{#requiredParams}}{{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^-last}}, {{/-last}}{{/requiredParams}}){ {{#vendorExtensions.x-request-body-param}}{{^required}}{{paramName}} = {{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^-last}}, {{/-last}}{{/required}}{{/vendorExtensions.x-request-body-param}} };
+            return Patch(options, client);
+        }
+
+        #if !NET35
+        {{>Summary}}{{>resource/MethodsComments}}
+        {{>resource/ReturnCommentsAsync}}
+        public static async System.Threading.Tasks.Task<{{apiName}}{{resourceConstant}}> PatchAsync({{#vendorExtensions.x-request-body-param}}
+            {{{dataType}}} {{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^required}} = null{{/required}},{{/vendorExtensions.x-request-body-param}}
+            ITwilioRestClient client = null)
+        {
+            var options = new Patch{{apiName}}Options({{#requiredParams}}{{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^-last}}, {{/-last}}{{/requiredParams}}){ {{#vendorExtensions.x-request-body-param}}{{^required}}{{paramName}} = {{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^-last}}, {{/-last}}{{/required}}{{/vendorExtensions.x-request-body-param}} };
+            return await PatchAsync(options, client);
+        }
+        #endif
