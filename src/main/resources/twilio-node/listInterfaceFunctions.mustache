@@ -16,6 +16,23 @@
   {{^hasRequiredParams}}each(callback?: (item: {{instanceName}}, done: (err?: Error) => void) => void): void;{{/hasRequiredParams}}
   each(params: {{vendorExtensions.x-resource-name}}EachOptions, callback?: (item: {{instanceName}}, done: (err?: Error) => void) => void): void;
   /**
+   * Streams {{instanceName}} records from the API with HTTP metadata captured per page.
+   *
+   * This operation lazily loads records as efficiently as possible until the limit
+   * is reached. HTTP metadata (status code, headers) is captured for each page request.
+   *
+   * The results are passed into the callback function, so this operation is memory
+   * efficient.
+   *
+   * If a function is passed as the first argument, it will be used as the callback
+   * function.
+   *
+   * @param { {{vendorExtensions.x-resource-name}}EachOptions } [params] - Options for request
+   * @param { function } [callback] - Function to process each record
+   */
+  {{^hasRequiredParams}}eachWithHttpInfo(callback?: (item: {{instanceName}}, done: (err?: Error) => void) => void): void;{{/hasRequiredParams}}
+  eachWithHttpInfo(params: {{vendorExtensions.x-resource-name}}EachOptions, callback?: (item: {{instanceName}}, done: (err?: Error) => void) => void): void;
+  /**
    * Retrieve a single target page of {{instanceName}} records from the API.
    *
    * The request is executed immediately.
@@ -24,6 +41,15 @@
    * @param { function } [callback] - Callback to handle list of records
    */
   getPage(targetUrl: string, callback?: (error: Error | null, items: {{returnType}}) => any): Promise<{{returnType}}>;
+  /**
+   * Retrieve a single target page of {{instanceName}} records from the API with HTTP metadata.
+   *
+   * The request is executed immediately.
+   *
+   * @param { string } [targetUrl] - API-generated URL for the requested results page
+   * @param { function } [callback] - Callback to handle list of records with metadata
+   */
+  getPageWithHttpInfo(targetUrl: string, callback?: (error: Error | null, items: ApiResponse<{{returnType}}>) => any): Promise<ApiResponse<{{returnType}}>>;
   /**
    * Lists {{instanceName}} records from the API as a list.
    *
@@ -35,6 +61,19 @@
    */
   {{^hasRequiredParams}}list(callback?: (error: Error | null, items: {{instanceName}}[]) => any): Promise<{{instanceName}}[]>;{{/hasRequiredParams}}
   list(params: {{vendorExtensions.x-resource-name}}Options, callback?: (error: Error | null, items: {{instanceName}}[]) => any): Promise<{{instanceName}}[]>;
+  /**
+   * Lists {{instanceName}} records from the API as a list with HTTP metadata.
+   *
+   * Returns all records along with HTTP metadata from the first page fetched.
+   *
+   * If a function is passed as the first argument, it will be used as the callback
+   * function.
+   *
+   * @param { {{vendorExtensions.x-resource-name}}Options } [params] - Options for request
+   * @param { function } [callback] - Callback to handle list of records with metadata
+   */
+  {{^hasRequiredParams}}listWithHttpInfo(callback?: (error: Error | null, items: ApiResponse<{{instanceName}}[]>) => any): Promise<ApiResponse<{{instanceName}}[]>>;{{/hasRequiredParams}}
+  listWithHttpInfo(params: {{vendorExtensions.x-resource-name}}Options, callback?: (error: Error | null, items: ApiResponse<{{instanceName}}[]>) => any): Promise<ApiResponse<{{instanceName}}[]>>;
   /**
    * Retrieve a single page of {{instanceName}} records from the API.
    *
@@ -48,3 +87,17 @@
    */
   {{^hasRequiredParams}}page(callback?: (error: Error | null, items: {{returnType}}) => any): Promise<{{returnType}}>;{{/hasRequiredParams}}
   page(params: {{vendorExtensions.x-resource-name}}PageOptions, callback?: (error: Error | null, items: {{returnType}}) => any): Promise<{{returnType}}>;
+  /**
+   * Retrieve a single page of {{instanceName}} records from the API with HTTP metadata.
+   *
+   * The request is executed immediately.
+   *
+   * If a function is passed as the first argument, it will be used as the callback
+   * function.
+   *
+   * @param { {{vendorExtensions.x-resource-name}}PageOptions } [params] - Options for request
+   * @param { function } [callback] - Callback to handle list of records with metadata
+   */
+  {{^hasRequiredParams}}pageWithHttpInfo(callback?: (error: Error | null, items: ApiResponse<{{returnType}}>) => any): Promise<ApiResponse<{{returnType}}>>;{{/hasRequiredParams}}
+  pageWithHttpInfo(params: {{vendorExtensions.x-resource-name}}PageOptions, callback?: (error: Error | null, items: ApiResponse<{{returnType}}>) => any): Promise<ApiResponse<{{returnType}}>>;
+

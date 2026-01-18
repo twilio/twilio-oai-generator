@@ -17,6 +17,7 @@ import V1 from "../../../V1";
 const deserialize = require("../../../../../base/deserialize");
 const serialize = require("../../../../../base/serialize");
 import { isValidPathParam } from "../../../../../base/utility";
+import { ApiResponse } from "../../../../../base/ApiResponse";
 
 /**
  * Options to pass to fetch a HistoryInstance
@@ -49,6 +50,35 @@ export interface HistoryContext {
     params: HistoryContextFetchOptions,
     callback?: (error: Error | null, item?: HistoryInstance) => any,
   ): Promise<HistoryInstance>;
+
+  /**
+   * Fetch a HistoryInstance and return HTTP info
+   *
+   * @param callback - Callback to handle processed record
+   *
+   * @returns Resolves to processed HistoryInstance with HTTP metadata
+   */
+  fetchWithHttpInfo(
+    callback?: (
+      error: Error | null,
+      item?: ApiResponse<HistoryInstance>,
+    ) => any,
+  ): Promise<ApiResponse<HistoryInstance>>;
+  /**
+   * Fetch a HistoryInstance and return HTTP info
+   *
+   * @param params - Parameter for request
+   * @param callback - Callback to handle processed record
+   *
+   * @returns Resolves to processed HistoryInstance with HTTP metadata
+   */
+  fetchWithHttpInfo(
+    params: HistoryContextFetchOptions,
+    callback?: (
+      error: Error | null,
+      item?: ApiResponse<HistoryInstance>,
+    ) => any,
+  ): Promise<ApiResponse<HistoryInstance>>;
 
   /**
    * Provide a user-friendly representation
@@ -114,6 +144,61 @@ export class HistoryContextImpl implements HistoryContext {
       (payload) =>
         new HistoryInstance(operationVersion, payload, instance._solution.sid),
     );
+
+    operationPromise = instance._version.setPromiseCallback(
+      operationPromise,
+      callback,
+    );
+    return operationPromise;
+  }
+
+  fetchWithHttpInfo(
+    params?:
+      | HistoryContextFetchOptions
+      | ((error: Error | null, item?: ApiResponse<HistoryInstance>) => any),
+    callback?: (
+      error: Error | null,
+      item?: ApiResponse<HistoryInstance>,
+    ) => any,
+  ): Promise<ApiResponse<HistoryInstance>> {
+    if (params instanceof Function) {
+      callback = params;
+      params = {};
+    } else {
+      params = params || {};
+    }
+
+    let data: any = {};
+
+    if (params["addOnsData"] !== undefined)
+      data = {
+        ...data,
+        ...serialize.prefixedCollapsibleMap(params["addOnsData"], "AddOns"),
+      };
+
+    const headers: any = {};
+    headers["Accept"] = "application/json";
+
+    const instance = this;
+    let operationVersion = instance._version;
+    // CREATE, FETCH, UPDATE operations
+    let operationPromise = operationVersion
+      .fetchWithResponseInfo<HistoryResource>({
+        uri: instance._uri,
+        method: "get",
+        params: data,
+        headers,
+      })
+      .then(
+        (response): ApiResponse<HistoryInstance> => ({
+          ...response,
+          body: new HistoryInstance(
+            operationVersion,
+            response.body,
+            instance._solution.sid,
+          ),
+        }),
+      );
 
     operationPromise = instance._version.setPromiseCallback(
       operationPromise,
@@ -202,6 +287,45 @@ export class HistoryInstance {
     callback?: (error: Error | null, item?: HistoryInstance) => any,
   ): Promise<HistoryInstance> {
     return this._proxy.fetch(params, callback);
+  }
+
+  /**
+   * Fetch a HistoryInstance and return HTTP info
+   *
+   * @param callback - Callback to handle processed record
+   *
+   * @returns Resolves to processed HistoryInstance with HTTP metadata
+   */
+  fetchWithHttpInfo(
+    callback?: (
+      error: Error | null,
+      item?: ApiResponse<HistoryInstance>,
+    ) => any,
+  ): Promise<ApiResponse<HistoryInstance>>;
+  /**
+   * Fetch a HistoryInstance and return HTTP info
+   *
+   * @param params - Parameter for request
+   * @param callback - Callback to handle processed record
+   *
+   * @returns Resolves to processed HistoryInstance with HTTP metadata
+   */
+  fetchWithHttpInfo(
+    params: HistoryContextFetchOptions,
+    callback?: (
+      error: Error | null,
+      item?: ApiResponse<HistoryInstance>,
+    ) => any,
+  ): Promise<ApiResponse<HistoryInstance>>;
+
+  fetchWithHttpInfo(
+    params?: any,
+    callback?: (
+      error: Error | null,
+      item?: ApiResponse<HistoryInstance>,
+    ) => any,
+  ): Promise<ApiResponse<HistoryInstance>> {
+    return this._proxy.fetchWithHttpInfo(params, callback);
   }
 
   /**

@@ -1,0 +1,27 @@
+{{^hasRequiredParams}}
+  /**
+   * {{vendorExtensions.x-name}} a {{instanceName}} and return HTTP info
+   *
+   * @param callback - Callback to handle processed record
+   *
+   * @returns Resolves to processed {{returnType}} with HTTP metadata
+   */
+  {{vendorExtensions.x-name-lower}}WithHttpInfo(callback?: (error: Error | null, item?: ApiResponse<{{returnType}}>) => any): Promise<ApiResponse<{{returnType}}>>{{#hasParams}};{{/hasParams}}
+{{/hasRequiredParams}}
+{{#hasParams}}
+  /**
+   * {{vendorExtensions.x-name}} a {{instanceName}} and return HTTP info
+   *
+  {{#bodyParam}}
+   * @param params - Body for request
+   * @param headers - header params for request
+  {{/bodyParam}}
+  {{^bodyParam}}
+   * @param params - Parameter for request
+  {{/bodyParam}}
+   * @param callback - Callback to handle processed record
+   *
+   * @returns Resolves to processed {{instanceName}} with HTTP metadata
+   */
+  {{vendorExtensions.x-name-lower}}WithHttpInfo(params: {{#bodyParam}}{{dataType}}, headers?: any{{/bodyParam}}{{^bodyParam}}{{vendorExtensions.x-resource-name}}{{vendorExtensions.x-name}}Options{{/bodyParam}}, callback?: (error: Error | null, item?: ApiResponse<{{returnType}}>) => any): Promise<ApiResponse<{{returnType}}>>;
+{{/hasParams}}
