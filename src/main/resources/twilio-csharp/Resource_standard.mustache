@@ -1,0 +1,32 @@
+{{>LicenseInfo}}
+
+{{#resources}}
+{{>ResourceUsings}}
+
+namespace Twilio.Rest.{{domainPackage}}.{{apiVersionClass}}{{namespaceSubPart}}
+{
+    {{>standard/Response}}
+    public class {{apiName}}{{resourceConstant}} : {{resourceConstant}}
+    {
+    {{>models}}
+    {{>resource/Enum}}
+    {{#apiOperations}}
+        {{#vendorExtensions.x-is-create-operation}}
+            {{>resource/CreateResource}}
+        {{/vendorExtensions.x-is-create-operation}}
+        {{#vendorExtensions.x-is-delete-operation}}
+            {{>resource/DeleteResource}}
+        {{/vendorExtensions.x-is-delete-operation}}
+        {{#vendorExtensions.x-is-fetch-operation}}
+            {{>resource/FetchResource}}
+        {{/vendorExtensions.x-is-fetch-operation}}
+        {{#vendorExtensions.x-is-read-operation}}
+            {{>resource/ReadResource}}
+        {{/vendorExtensions.x-is-read-operation}}
+        {{#vendorExtensions.x-is-update-operation}}
+            {{>resource/UpdateResource}}
+        {{/vendorExtensions.x-is-update-operation}}
+    {{/apiOperations}}
+    }
+}
+{{/resources}}

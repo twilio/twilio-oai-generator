@@ -1,5 +1,6 @@
 package com.twilio.oai.template;
 
+import com.twilio.oai.java.cache.ResourceCacheContext;
 import org.openapitools.codegen.CodegenConfig;
 
 import java.util.Arrays;
@@ -17,9 +18,16 @@ public class CsharpApiActionTemplate extends AbstractApiActionTemplate {
 
     @Override
     public Map<String, List<String>> mapping() {
-        return Map.of(TEMPLATE_TYPE_RESOURCE,
-                Arrays.asList(TEMPLATE_TYPE_RESOURCE + ".mustache", "Resource.cs"),
-                TEMPLATE_TYPE_OPTIONS,
-                Arrays.asList(TEMPLATE_TYPE_OPTIONS + ".mustache", "Options.cs"));
+        if (ResourceCacheContext.get().isV1()) {
+            return Map.of(TEMPLATE_TYPE_RESOURCE,
+                    Arrays.asList(TEMPLATE_TYPE_RESOURCE + "_standard.mustache", "Resource.cs"),
+                    TEMPLATE_TYPE_OPTIONS,
+                    Arrays.asList(TEMPLATE_TYPE_OPTIONS + ".mustache", "Options.cs"));
+        } else {
+            return Map.of(TEMPLATE_TYPE_RESOURCE,
+                    Arrays.asList(TEMPLATE_TYPE_RESOURCE + ".mustache", "Resource.cs"),
+                    TEMPLATE_TYPE_OPTIONS,
+                    Arrays.asList(TEMPLATE_TYPE_OPTIONS + ".mustache", "Options.cs"));
+        }
     }
 }

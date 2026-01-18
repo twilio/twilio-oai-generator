@@ -1,5 +1,5 @@
     {{>Summary}}
-    public class Read{{apiName}}Options : ReadOptions<{{apiName}}{{resourceConstant}}>
+    public class Read{{apiName}}Options : ReadOptions<{{apiName}}{{#isApiV1}}Read{{/isApiV1}}{{resourceConstant}}>
     {
     {{>options/Params}}
 

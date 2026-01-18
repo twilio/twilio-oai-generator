@@ -14,12 +14,12 @@
         /// <param name="options"> Read {{apiName}} parameters </param>
         /// <param name="client"> Client to make requests to Twilio </param>
         {{>resource/ReturnComments}}
-        public static ResourceSet<{{apiName}}{{resourceConstant}}> Read(Read{{apiName}}Options options, ITwilioRestClient client = null)
+        public static ResourceSet<{{apiName}}{{#isApiV1}}Read{{/isApiV1}}{{resourceConstant}}> Read(Read{{apiName}}Options options, ITwilioRestClient client = null)
         {
             client = client ?? TwilioClient.{{restClientMethodName}}();
             var response = client.Request(BuildReadRequest(options, client));
-            var page = Page<{{apiName}}{{resourceConstant}}>.FromJson("{{recordKey}}", response.Content);
-            return new ResourceSet<{{apiName}}{{resourceConstant}}>(page, options, client);
+            var page = Page<{{apiName}}{{#isApiV1}}Read{{/isApiV1}}{{resourceConstant}}>.FromJson("{{recordKey}}", response.Content);
+            return new ResourceSet<{{apiName}}{{#isApiV1}}Read{{/isApiV1}}{{resourceConstant}}>(page, options, client);
         }
 
         #if !NET35
@@ -27,18 +27,18 @@
         /// <param name="options"> Read {{apiName}} parameters </param>
         /// <param name="client"> Client to make requests to Twilio </param>
         {{>resource/ReturnCommentsAsync}}
-        public static async System.Threading.Tasks.Task<ResourceSet<{{apiName}}{{resourceConstant}}>> ReadAsync(Read{{apiName}}Options options, ITwilioRestClient client = null)
+        public static async System.Threading.Tasks.Task<ResourceSet<{{apiName}}{{#isApiV1}}Read{{/isApiV1}}{{resourceConstant}}>> ReadAsync(Read{{apiName}}Options options, ITwilioRestClient client = null)
         {
             client = client ?? TwilioClient.{{restClientMethodName}}();
             var response = await client.RequestAsync(BuildReadRequest(options, client));
 
-            var page = Page<{{apiName}}{{resourceConstant}}>.FromJson("{{recordKey}}", response.Content);
-            return new ResourceSet<{{apiName}}{{resourceConstant}}>(page, options, client);
+            var page = Page<{{apiName}}{{#isApiV1}}Read{{/isApiV1}}{{resourceConstant}}>.FromJson("{{recordKey}}", response.Content);
+            return new ResourceSet<{{apiName}}{{#isApiV1}}Read{{/isApiV1}}{{resourceConstant}}>(page, options, client);
         }
         #endif
         {{>Summary}}{{>resource/MethodsComments}}
         {{>resource/ReturnComments}}
-        public static ResourceSet<{{apiName}}{{resourceConstant}}> Read({{#vendorExtensions.x-request-body-param}}
+        public static ResourceSet<{{apiName}}{{#isApiV1}}Read{{/isApiV1}}{{resourceConstant}}> Read({{#vendorExtensions.x-request-body-param}}
                                                      {{{dataType}}} {{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^required}} = null{{/required}},{{/vendorExtensions.x-request-body-param}}
                                                      long? limit = null,
                                                     ITwilioRestClient client = null)
@@ -50,7 +50,7 @@
         #if !NET35
         {{>Summary}}{{>resource/MethodsComments}}
         {{>resource/ReturnCommentsAsync}}
-        public static async System.Threading.Tasks.Task<ResourceSet<{{apiName}}{{resourceConstant}}>> ReadAsync({{#vendorExtensions.x-request-body-param}}
+        public static async System.Threading.Tasks.Task<ResourceSet<{{apiName}}{{#isApiV1}}Read{{/isApiV1}}{{resourceConstant}}>> ReadAsync({{#vendorExtensions.x-request-body-param}}
                                                                                              {{{dataType}}} {{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^required}} = null{{/required}},{{/vendorExtensions.x-request-body-param}}
                                                                                              long? limit = null,
                                                                                             ITwilioRestClient client = null)
