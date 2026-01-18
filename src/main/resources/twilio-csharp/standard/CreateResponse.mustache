@@ -32,7 +32,7 @@ public class {{apiName}}Create{{resourceConstant}} : {{resourceConstant}}
             return JsonConvert.DeserializeObject<{{apiName}}Create{{resourceConstant}}>(json);
         }
         catch (JsonException e) {
-            throw new ApiException(e.Message, e);
+            throw new ApiStandardException(e.Message, e);
         }
     }
     public static string ToJson(object model) {
@@ -40,7 +40,7 @@ public class {{apiName}}Create{{resourceConstant}} : {{resourceConstant}}
             return JsonConvert.SerializeObject(model);
         }
         catch (JsonException e) {
-            throw new ApiException(e.Message, e);
+            throw new ApiStandardException(e.Message, e);
         }
     }
 }

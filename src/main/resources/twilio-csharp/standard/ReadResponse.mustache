@@ -31,7 +31,7 @@ public class {{apiName}}Read{{resourceConstant}} : {{resourceConstant}}
             return JsonConvert.DeserializeObject<{{apiName}}Read{{resourceConstant}}>(json);
         }
         catch (JsonException e) {
-            throw new ApiException(e.Message, e);
+            throw new ApiStandardException(e.Message, e);
         }
     }
     public static string ToJson(object model) {
@@ -39,7 +39,7 @@ public class {{apiName}}Read{{resourceConstant}} : {{resourceConstant}}
             return JsonConvert.SerializeObject(model);
         }
         catch (JsonException e) {
-            throw new ApiException(e.Message, e);
+            throw new ApiStandardException(e.Message, e);
         }
     }
 }
