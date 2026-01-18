@@ -1,5 +1,5 @@
     {{>Summary}}
-    public class Fetch{{apiName}}Options : IOptions<{{apiName}}{{resourceConstant}}>
+    public class Fetch{{apiName}}Options : IOptions<{{apiName}}{{#isApiV1}}Fetch{{/isApiV1}}{{resourceConstant}}>
     {
     {{>options/Params}}
 

@@ -1,0 +1,14 @@
+{{#apiOperations}}
+    {{#vendorExtensions.x-is-create-operation}}
+        {{>standard/CreateResponse}}
+    {{/vendorExtensions.x-is-create-operation}}
+    {{#vendorExtensions.x-is-fetch-operation}}
+        {{>standard/FetchResponse}}
+    {{/vendorExtensions.x-is-fetch-operation}}
+    {{#vendorExtensions.x-is-read-operation}}
+        {{>standard/ReadResponse}}
+    {{/vendorExtensions.x-is-read-operation}}
+    {{#vendorExtensions.x-is-update-operation}}
+        {{>standard/UpdateResponse}}
+    {{/vendorExtensions.x-is-update-operation}}
+{{/apiOperations}}

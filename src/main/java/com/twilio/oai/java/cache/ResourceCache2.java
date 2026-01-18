@@ -35,6 +35,10 @@ public class ResourceCache2 {
     @Getter
     @Setter
     private boolean isV1;
+    
+    @Getter
+    @Setter
+    private HashMap<String, Object> additionalProperties = new HashMap<>();
 
     public void setAllModelsByDefaultGenerator(ArrayList<CodegenModel> allModelsByDefaultGenerator) {
         this.allModelsByDefaultGenerator = new ArrayList<>(allModelsByDefaultGenerator);

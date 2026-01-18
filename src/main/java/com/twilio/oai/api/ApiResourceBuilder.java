@@ -232,6 +232,8 @@ public abstract class ApiResourceBuilder implements IApiResourceBuilder {
             addOperationName(operation, Operation.FETCH.getValue());
         } else if (StringUtils.startsWithIgnoreCase(operation.operationId, "list")) {
             addOperationName(operation, Operation.READ.getValue());
+        } else if (StringUtils.startsWithIgnoreCase(operation.operationId, "patch")) {
+            addOperationName(operation, Operation.PATCH.getValue());
         }
 
         operationMap.put("hasRequiredNonPathParams",
