@@ -54,6 +54,13 @@ export class {{instanceName}} {
 {{/hasParams}}    {
     return this._proxy.{{vendorExtensions.x-name-lower}}({{#hasParams}}params, {{/hasParams}}callback);
   }
+
+{{>operationSignatureWithHttpInfo}}
+{{#hasParams}}
+    {{vendorExtensions.x-name-lower}}WithHttpInfo(params?: any, callback?: (error: Error | null, item?: ApiResponse<{{returnType}}>) => any): Promise<ApiResponse<{{returnType}}>>
+{{/hasParams}}    {
+    return this._proxy.{{vendorExtensions.x-name-lower}}WithHttpInfo({{#hasParams}}params, {{/hasParams}}callback);
+  }
   {{/vendorExtensions.x-is-context-operation}}
   {{/operations}}
   {{#dependents}}
