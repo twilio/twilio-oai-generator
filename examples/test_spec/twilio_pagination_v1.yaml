@@ -30,21 +30,13 @@ components:
         name:
           type: string
 paths:
-  /v2/{accountSid}/Services:
+  /v2/Services:
     servers:
       - url: https://testparameter.twilio.com
     get:
       operationId: ListService
       description: Retrieve a list of all Services
       parameters:
-        - name: accountSid
-          in: path
-          description: Twilio Account SID that owns the Services
-          required: true
-          schema:
-            type: string
-            example: some_secret_account_sid
-
         - name: pageSize
           in: query
           description: Maximum number of items to return in a single response
@@ -73,6 +65,8 @@ paths:
 
       security:
         - accountSid_authToken: [ ]
+      x-twilio:
+        pathType: list
       responses:
         '200':
           description: OK
