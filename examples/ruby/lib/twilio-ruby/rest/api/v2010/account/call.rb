@@ -24,6 +24,7 @@ module Twilio
             # @return [CallList] CallList
             def initialize(version, account_sid: nil)
               super(version)
+
               # Path Solution
               @solution = { account_sid: account_sid }
               @uri = "/Accounts/#{@solution[:account_sid]}/Calls.json"
@@ -55,16 +56,49 @@ module Twilio
 
               headers = Twilio::Values.of({ 'Content-Type' => 'application/x-www-form-urlencoded', })
 
-              response = @version.create('POST', @uri, data: data, headers: headers)
-              if response.status_code < 200 || response.status_code >= 300
-
-                raise @version.exception(response, 'Unable to create record')
-              end
-
+              payload = @version.create('POST', @uri, data: data, headers: headers)
               CallInstance.new(
+                @version,
+                payload,
+                account_sid: @solution[:account_sid],
+              )
+            end
+
+            ##
+            # Create the CallInstanceMetadata
+            # @param [String] required_string_property
+            # @param [Array[String]] test_array_of_strings
+            # @param [Array[String]] test_array_of_uri
+            # @param [String] test_method The HTTP method that we should use to request the `TestArrayOfUri`.
+            # @return [CallInstance] Created CallInstance
+            def create_with_metadata(
+              required_string_property: nil,
+              test_array_of_strings: :unset,
+              test_array_of_uri: :unset,
+              test_method: nil
+            )
+              data = Twilio::Values.of({
+                                         'RequiredStringProperty' => required_string_property,
+                                         'TestMethod' => test_method,
+                                         'TestArrayOfStrings' => Twilio.serialize_list(test_array_of_strings) { |e|
+                                           e
+                                         },
+                                         'TestArrayOfUri' => Twilio.serialize_list(test_array_of_uri) { |e| e },
+                                       })
+
+              headers = Twilio::Values.of({ 'Content-Type' => 'application/x-www-form-urlencoded', })
+
+              response = @version.create_with_metadata('POST', @uri, data: data, headers: headers)
+              call_instance = CallInstance.new(
                 @version,
                 response.body,
                 account_sid: @solution[:account_sid],
+              )
+              CallInstanceMetadata.new(
+                @version,
+                call_instance,
+                response.headers,
+                response.status_code
               )
             end
 
@@ -107,13 +141,23 @@ module Twilio
             def delete
               headers = Twilio::Values.of({ 'Content-Type' => 'application/x-www-form-urlencoded', })
 
-              response = @version.delete('DELETE', @uri, headers: headers)
-              if response.status_code < 200 || response.status_code >= 300
+              @version.delete('DELETE', @uri, headers: headers)
+            end
 
-                raise @version.exception(response, 'Unable to delete record')
-              end
+            ##
+            # Delete the CallInstanceMetadata
+            # @return [Boolean] True if delete succeeds, false otherwise
+            def delete_with_metadata
+              headers = Twilio::Values.of({ 'Content-Type' => 'application/x-www-form-urlencoded', })
 
-              delete_status_code(response)
+              response = @version.delete_with_metadata('DELETE', @uri, headers: headers)
+              call_instance = CallInstance.new(
+                @version,
+                response.body,
+                account_sid: @solution[:account_sid],
+                sid: @solution[:sid],
+              )
+              CallInstanceMetadata.new(@version, call_instance, response.headers, response.status_code)
             end
 
             ##
@@ -122,17 +166,33 @@ module Twilio
             def fetch
               headers = Twilio::Values.of({ 'Content-Type' => 'application/x-www-form-urlencoded', })
 
-              response = @version.fetch('GET', @uri, headers: headers)
-              if response.status_code < 200 || response.status_code >= 300
-
-                raise @version.exception(response, 'Unable to fetch record')
-              end
-
+              payload = @version.fetch('GET', @uri, headers: headers)
               CallInstance.new(
+                @version,
+                payload,
+                account_sid: @solution[:account_sid],
+                test_integer: @solution[:test_integer],
+              )
+            end
+
+            ##
+            # Fetch the CallInstanceMetadata
+            # @return [CallInstance] Fetched CallInstance
+            def fetch_with_metadata
+              headers = Twilio::Values.of({ 'Content-Type' => 'application/x-www-form-urlencoded', })
+
+              response = @version.fetch_with_metadata('GET', @uri, headers: headers)
+              call_instance = CallInstance.new(
                 @version,
                 response.body,
                 account_sid: @solution[:account_sid],
                 test_integer: @solution[:test_integer],
+              )
+              CallInstanceMetadata.new(
+                @version,
+                call_instance,
+                response.headers,
+                response.status_code
               )
             end
 
@@ -172,6 +232,53 @@ module Twilio
             end
           end
 
+          class CallInstanceMetadata < InstanceResourceMetadata
+            ##
+            # Initializes a new CallInstanceMetadata.
+            # @param [Version] version Version that contains the resource
+            # @param [}CallInstance] call_instance The instance associated with the metadata.
+            # @param [Hash] headers Header object with response headers.
+            # @param [Integer] status_code The HTTP status code of the response.
+            # @return [CallInstanceMetadata] The initialized instance with metadata.
+            def initialize(version, call_instance, headers, status_code)
+              super(version, headers, status_code)
+              @call_instance = call_instance
+            end
+
+            def call
+              @call_instance
+            end
+
+            def headers
+              @headers
+            end
+
+            def status_code
+              @status_code
+            end
+
+            def to_s
+              "<Twilio.Api.V2010.CallInstanceMetadata status=#{@status_code}>"
+            end
+          end
+
+          class CallListResponse < InstanceListResource
+            # @param [Array<CallInstance>] instance
+            # @param [Hash{String => Object}] headers
+            # @param [Integer] status_code
+            def initialize(version, payload, key)
+              @call_instance = payload.body[key].map do |data|
+                CallInstance.new(version, data)
+              end
+              @headers = payload.headers
+              @status_code = payload.status_code
+            end
+
+            def call_instance
+              @instance
+            end
+          end
+
           class CallPage < Page
             ##
             # Initialize the CallPage
@@ -198,6 +305,62 @@ module Twilio
             # Provide a user friendly representation
             def to_s
               '<Twilio.Api.V2010.CallPage>'
+            end
+          end
+
+          class CallPageMetadata < PageMetadata
+            attr_reader :call_page
+
+            def initialize(version, response, solution, limit)
+              super(version, response)
+              @call_page = []
+              @limit = limit
+              key = get_key(response.body)
+              number_of_records = response.body[key].size
+              while (limit != :unset && number_of_records <= limit)
+                @call_page << CallListResponse.new(version, @payload, key)
+                @payload = self.next_page
+                break unless @payload
+
+                number_of_records += @payload.body[key].size
+              end
+              # Path Solution
+              @solution = solution
+            end
+
+            def each
+              @call_page.each do |record|
+                yield record
+              end
+            end
+
+            def to_s
+              '<Twilio::REST::Api::V2010PageMetadata>';
+            end
+          end
+
+          class CallListResponse < InstanceListResource
+            # @param [Array<CallInstance>] instance
+            # @param [Hash{String => Object}] headers
+            # @param [Integer] status_code
+            def initialize(version, payload, key)
+              @call = payload.body[key].map do |data|
+                CallInstance.new(version, data)
+              end
+              @headers = payload.headers
+              @status_code = payload.status_code
+            end
+
+            def call
+              @call
+            end
+
+            def headers
+              @headers
+            end
+
+            def status_code
+              @status_code
             end
           end
 

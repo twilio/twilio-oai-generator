@@ -35,7 +35,11 @@ class {{vendorExtensions.x-name}}{{apiName}}Options extends Options
      */
     public function __toString(): string
     {
-        $options = \http_build_query(Values::of($this->options), '', ' ');
+        {{^vendorExtensions.hasSensitiveParams}}$options = \http_build_query(Values::of($this->options), '', ' ');{{/vendorExtensions.hasSensitiveParams}}{{#vendorExtensions.hasSensitiveParams}}$options = $this->options;{{#vendorExtensions.optionFileParams}}{{#vendorExtensions.x-is-sensitive}}
+        if (isset($options['{{paramName}}'])) {
+            $options['{{paramName}}'] = '[REDACTED]';
+        }{{/vendorExtensions.x-is-sensitive}}{{/vendorExtensions.optionFileParams}}
+        $options = \http_build_query(Values::of($options), '', ' ');{{/vendorExtensions.hasSensitiveParams}}
         return '[Twilio.{{domainName}}.{{version}}.{{vendorExtensions.x-name}}{{apiName}}Options ' . $options . ']';
     }
 }

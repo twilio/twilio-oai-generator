@@ -23,6 +23,7 @@ module Twilio
           # @return [AssistantList] AssistantList
           def initialize(version)
             super(version)
+
             # Path Solution
             @solution = {}
             @uri = "/Assistants"
@@ -65,6 +66,28 @@ module Twilio
             )
 
             @version.stream(page, limit: limits[:limit], page_limit: limits[:page_limit])
+          end
+
+          ##
+          # Lists AssistantPageMetadata records from the API as a list.
+          # @param [Integer] limit Upper limit for the number of records to return. stream()
+          #    guarantees to never return more than limit.  Default is no limit
+          # @param [Integer] page_size Number of records to fetch per request, when
+          #    not set will use the default value of 50 records.  If no page_size is defined
+          #    but a limit is defined, stream() will attempt to read the limit with the most
+          #    efficient page size, i.e. min(limit, 1000)
+          # @return [Array] Array of up to limit results
+          def list_with_metadata(limit: nil, page_size: nil)
+            limits = @version.read_limits(limit, page_size)
+            params = Twilio::Values.of({
+
+                                         'PageSize' => page_size,
+                                       });
+            headers = Twilio::Values.of({})
+
+            response = @version.page('GET', @uri, params: params, headers: headers)
+
+            AssistantPageMetadata.new(@version, response, @solution, limits[:limit])
           end
 
           ##
@@ -146,6 +169,62 @@ module Twilio
           # Provide a user friendly representation
           def to_s
             '<Twilio.Versionless.Understand.AssistantPage>'
+          end
+        end
+
+        class AssistantPageMetadata < PageMetadata
+          attr_reader :assistant_page
+
+          def initialize(version, response, solution, limit)
+            super(version, response)
+            @assistant_page = []
+            @limit = limit
+            key = get_key(response.body)
+            number_of_records = response.body[key].size
+            while (limit != :unset && number_of_records <= limit)
+              @assistant_page << AssistantListResponse.new(version, @payload, key)
+              @payload = self.next_page
+              break unless @payload
+
+              number_of_records += @payload.body[key].size
+            end
+            # Path Solution
+            @solution = solution
+          end
+
+          def each
+            @assistant_page.each do |record|
+              yield record
+            end
+          end
+
+          def to_s
+            '<Twilio::REST::Versionless::UnderstandPageMetadata>';
+          end
+        end
+
+        class AssistantListResponse < InstanceListResource
+          # @param [Array<AssistantInstance>] instance
+          # @param [Hash{String => Object}] headers
+          # @param [Integer] status_code
+          def initialize(version, payload, key)
+            @assistant = payload.body[key].map do |data|
+              AssistantInstance.new(version, data)
+            end
+            @headers = payload.headers
+            @status_code = payload.status_code
+          end
+
+          def assistant
+            @assistant
+          end
+
+          def headers
+            @headers
+          end
+
+          def status_code
+            @status_code
           end
         end
 

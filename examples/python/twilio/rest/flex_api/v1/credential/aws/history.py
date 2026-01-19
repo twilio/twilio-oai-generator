@@ -15,6 +15,7 @@ r"""
 
 from typing import Any, Dict, Optional, Union
 from twilio.base import deserialize, serialize, values
+from twilio.base.api_response import ApiResponse
 from twilio.base.instance_context import InstanceContext
 from twilio.base.instance_resource import InstanceResource
 from twilio.base.list_resource import ListResource
@@ -85,6 +86,34 @@ class HistoryInstance(InstanceResource):
         :returns: The fetched HistoryInstance
         """
         return await self._proxy.fetch_async(
+            add_ons_data=add_ons_data,
+        )
+
+    def fetch_with_http_info(
+        self, add_ons_data: Union[Dict[str, object], object] = values.unset
+    ) -> ApiResponse:
+        """
+        Fetch the HistoryInstance with HTTP info
+
+        :param add_ons_data:
+
+        :returns: ApiResponse with instance, status code, and headers
+        """
+        return self._proxy.fetch_with_http_info(
+            add_ons_data=add_ons_data,
+        )
+
+    async def fetch_with_http_info_async(
+        self, add_ons_data: Union[Dict[str, object], object] = values.unset
+    ) -> ApiResponse:
+        """
+        Asynchronous coroutine to fetch the HistoryInstance with HTTP info
+
+        :param add_ons_data:
+
+        :returns: ApiResponse with instance, status code, and headers
+        """
+        return await self._proxy.fetch_with_http_info_async(
             add_ons_data=add_ons_data,
         )
 

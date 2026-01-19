@@ -23,6 +23,7 @@ module Twilio
           # @return [CallList] CallList
           def initialize(version)
             super(version)
+
             # Path Solution
             @solution = {}
           end
@@ -53,16 +54,31 @@ module Twilio
           def update
             headers = Twilio::Values.of({ 'Content-Type' => 'application/x-www-form-urlencoded', })
 
-            response = @version.update('POST', @uri, headers: headers)
-            if response.status_code < 200 || response.status_code >= 300
-
-              raise @version.exception(response, 'Unable to update record')
-            end
-
+            payload = @version.update('POST', @uri, headers: headers)
             CallInstance.new(
+              @version,
+              payload,
+              sid: @solution[:sid],
+            )
+          end
+
+          ##
+          # Update the CallInstanceMetadata
+          # @return [CallInstance] Updated CallInstance
+          def update_with_metadata
+            headers = Twilio::Values.of({ 'Content-Type' => 'application/x-www-form-urlencoded', })
+
+            response = @version.update_with_metadata('POST', @uri, headers: headers)
+            call_instance = CallInstance.new(
               @version,
               response.body,
               sid: @solution[:sid],
+            )
+            CallInstanceMetadata.new(
+              @version,
+              call_instance,
+              response.headers,
+              response.status_code
             )
           end
 
@@ -78,6 +94,53 @@ module Twilio
           def inspect
             context = @solution.map { |k, v| "#{k}: #{v}" }.join(',')
             "#<Twilio.FlexApi.V1.CallContext #{context}>"
+          end
+        end
+
+        class CallInstanceMetadata < InstanceResourceMetadata
+          ##
+          # Initializes a new CallInstanceMetadata.
+          # @param [Version] version Version that contains the resource
+          # @param [}CallInstance] call_instance The instance associated with the metadata.
+          # @param [Hash] headers Header object with response headers.
+          # @param [Integer] status_code The HTTP status code of the response.
+          # @return [CallInstanceMetadata] The initialized instance with metadata.
+          def initialize(version, call_instance, headers, status_code)
+            super(version, headers, status_code)
+            @call_instance = call_instance
+          end
+
+          def call
+            @call_instance
+          end
+
+          def headers
+            @headers
+          end
+
+          def status_code
+            @status_code
+          end
+
+          def to_s
+            "<Twilio.Api.V2010.CallInstanceMetadata status=#{@status_code}>"
+          end
+        end
+
+        class CallListResponse < InstanceListResource
+          # @param [Array<CallInstance>] instance
+          # @param [Hash{String => Object}] headers
+          # @param [Integer] status_code
+          def initialize(version, payload, key)
+            @call_instance = payload.body[key].map do |data|
+              CallInstance.new(version, data)
+            end
+            @headers = payload.headers
+            @status_code = payload.status_code
+          end
+
+          def call_instance
+            @instance
           end
         end
 
@@ -107,6 +170,62 @@ module Twilio
           # Provide a user friendly representation
           def to_s
             '<Twilio.FlexApi.V1.CallPage>'
+          end
+        end
+
+        class CallPageMetadata < PageMetadata
+          attr_reader :call_page
+
+          def initialize(version, response, solution, limit)
+            super(version, response)
+            @call_page = []
+            @limit = limit
+            key = get_key(response.body)
+            number_of_records = response.body[key].size
+            while (limit != :unset && number_of_records <= limit)
+              @call_page << CallListResponse.new(version, @payload, key)
+              @payload = self.next_page
+              break unless @payload
+
+              number_of_records += @payload.body[key].size
+            end
+            # Path Solution
+            @solution = solution
+          end
+
+          def each
+            @call_page.each do |record|
+              yield record
+            end
+          end
+
+          def to_s
+            '<Twilio::REST::FlexApi::V1PageMetadata>';
+          end
+        end
+
+        class CallListResponse < InstanceListResource
+          # @param [Array<CallInstance>] instance
+          # @param [Hash{String => Object}] headers
+          # @param [Integer] status_code
+          def initialize(version, payload, key)
+            @call = payload.body[key].map do |data|
+              CallInstance.new(version, data)
+            end
+            @headers = payload.headers
+            @status_code = payload.status_code
+          end
+
+          def call
+            @call
+          end
+
+          def headers
+            @headers
+          end
+
+          def status_code
+            @status_code
           end
         end
 

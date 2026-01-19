@@ -46,6 +46,7 @@ paths:
             minimum: 1
             maximum: 1000
             example: 50
+
         - name: pageToken
           in: query
           description: A URL-safe, base64-encoded token representing the page of results to return
@@ -53,6 +54,7 @@ paths:
           schema:
             type: string
             example: "eyJwYWdlIjoyLCJxdWVyeSI6ImJvb2tzIn0="
+
         - name: sortBy
           in: query
           description: Asc dec query param to sort results by a specific field
@@ -60,8 +62,11 @@ paths:
           schema:
             type: string
             example: "desc"
+
       security:
         - accountSid_authToken: [ ]
+      x-twilio:
+        pathType: list
       responses:
         '200':
           description: OK

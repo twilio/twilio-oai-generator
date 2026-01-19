@@ -5,7 +5,9 @@
                     # @param [Version] version Version that contains the resource
                     # @return [{{apiName}}List] {{apiName}}List
                     def initialize(version{{#listPathParams}}, {{paramName}}: nil{{/listPathParams}})
-                        super(version)
+                        {{^isApiV1}}super(version){{/isApiV1}}
+                        {{#isApiV1}}apiV1Version = ApiV1Version.new version.domain, version
+                        super(apiV1Version){{/isApiV1}}
                         # Path Solution
                         @solution = { {{#listPathParams}}{{paramName}}: {{paramName}}{{^-last}}, {{/-last}}{{/listPathParams}} }
                         {{#listPath}}@uri = "{{listPath}}"{{/listPath}}
@@ -22,6 +24,8 @@
                 {{^vendorExtensions.x-is-read-operation}}
 {{>methods}}
 {{>contextMethodParams}}
+{{>methodsMetadata}}
+{{>contextMethodParamsMetadata}}
                 {{/vendorExtensions.x-is-read-operation}}
                 {{/vendorExtensions.listOperation}}
                 {{/apiOperations}}
@@ -77,6 +81,34 @@
                     end
 
                     ##
+                    # Lists {{apiName}}PageMetadata records from the API as a list.
+                    {{#readParams}}
+                      # @param [{{dataType}}] {{paramName}} {{{description}}}
+                    {{/readParams}}
+                    # @param [Integer] limit Upper limit for the number of records to return. stream()
+                    #    guarantees to never return more than limit.  Default is no limit
+                    # @param [Integer] page_size Number of records to fetch per request, when
+                    #    not set will use the default value of 50 records.  If no page_size is defined
+                    #    but a limit is defined, stream() will attempt to read the limit with the most
+                    #    efficient page size, i.e. min(limit, 1000)
+                    # @return [Array] Array of up to limit results
+                    def list_with_metadata({{#readParams.0}}{{#readParams}}{{>params}}{{/readParams}}, {{/readParams.0}}limit: nil, page_size: nil)
+                        limits = @version.read_limits(limit, page_size)
+                        params = Twilio::Values.of({
+                            {{#readParams}}{{^vendorExtensions.x-serialize}}'{{{baseName}}}' => {{paramName}},
+                            {{/vendorExtensions.x-serialize}}{{#vendorExtensions.x-serialize}}{{^vendorExtensions.isList}}'{{{baseName}}}' =>  {{vendorExtensions.x-serialize}}({{paramName}}),{{/vendorExtensions.isList}}
+                            {{#vendorExtensions.isList}}'{{{baseName}}}' =>  {{vendorExtensions.x-serialize}}({{paramName}}) { |e| e },
+                            {{/vendorExtensions.isList}}{{/vendorExtensions.x-serialize}}{{/readParams}}
+                            'PageSize' => page_size,
+                        });
+                        headers = Twilio::Values.of({})
+
+                        response = @version.page('GET', @uri, params: params, headers: headers)
+
+                        {{apiName}}PageMetadata.new(@version, response, @solution, limits[:limit])
+                    end
+
+                    ##
                     # When passed a block, yields {{apiName}}Instance records from the API.
                     # This operation lazily loads records as efficiently as possible until the limit
                     # is reached.
@@ -96,17 +128,18 @@
                     {{#readParams}}
                     # @param [{{dataType}}] {{paramName}} {{{description}}}
                     {{/readParams}}
-                    # @param [String] page_token PageToken provided by the API
+                    {{^isApiV1}}# @param [String] page_token PageToken provided by the API
                     # @param [Integer] page_number Page Number, this value is simply for client state
-                    # @param [Integer] page_size Number of records to return, defaults to 50
+                    # @param [Integer] page_size Number of records to return, defaults to 50{{/isApiV1}}
                     # @return [Page] Page of {{apiName}}Instance
-                    def page({{#readParams.0}}{{#readParams}}{{>params}}{{/readParams}}, {{/readParams.0}}page_token: :unset, page_number: :unset, page_size: :unset)
+                    def page({{#readParams.0}}{{#readParams}}{{>params}}{{/readParams}}, {{/readParams.0}}{{^isApiV1}}page_token: :unset, page_number: :unset,{{/isApiV1}}page_size: :unset)
                         params = Twilio::Values.of({
                             {{#readParams}}{{^vendorExtensions.x-serialize}}'{{{baseName}}}' => {{paramName}},
                             {{/vendorExtensions.x-serialize}}{{#vendorExtensions.x-serialize}}{{^vendorExtensions.isList}}'{{{baseName}}}' =>  {{vendorExtensions.x-serialize}}({{paramName}}),{{/vendorExtensions.isList}}
                             {{#vendorExtensions.isList}}'{{{baseName}}}' =>  {{vendorExtensions.x-serialize}}({{paramName}}) { |e| e },
-                            {{/vendorExtensions.isList}}{{/vendorExtensions.x-serialize}}{{/readParams}}'PageToken' => page_token,
+                            {{/vendorExtensions.isList}}{{/vendorExtensions.x-serialize}}{{/readParams}}{{^isApiV1}}'PageToken' => page_token,
                             'Page' => page_number,
+                            {{/isApiV1}}
                             'PageSize' => page_size,
                         })
                         headers = Twilio::Values.of({})
