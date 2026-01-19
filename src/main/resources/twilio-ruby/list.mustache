@@ -99,7 +99,7 @@
                             {{/vendorExtensions.x-serialize}}{{#vendorExtensions.x-serialize}}{{^vendorExtensions.isList}}'{{{baseName}}}' =>  {{vendorExtensions.x-serialize}}({{paramName}}),{{/vendorExtensions.isList}}
                             {{#vendorExtensions.isList}}'{{{baseName}}}' =>  {{vendorExtensions.x-serialize}}({{paramName}}) { |e| e },
                             {{/vendorExtensions.isList}}{{/vendorExtensions.x-serialize}}{{/readParams}}
-                            'PageSize' => page_size,
+                            'PageSize' => limits[:page_size],
                         });
                         headers = Twilio::Values.of({})
 
