@@ -350,7 +350,6 @@ public class CsharpApiResourceBuilder extends ApiResourceBuilder {
                 } else if (operationId.toLowerCase().startsWith("fetch")) {
                     this.fetchResponseModels.addAll(new ArrayList<>(distinctResponseModel));
                 }
-                System.out.println("Hello");
             });
         });
     }
