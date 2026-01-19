@@ -82,7 +82,7 @@ module Twilio
               limits = @version.read_limits(limit, page_size)
               params = Twilio::Values.of({
 
-                                           'PageSize' => page_size,
+                                           'PageSize' => limits[:page_size],
                                          });
               headers = Twilio::Values.of({})
 
@@ -384,13 +384,13 @@ module Twilio
               @aws_page = []
               @limit = limit
               key = get_key(response.body)
-              number_of_records = response.body[key].size
-              while (limit != :unset && number_of_records <= limit)
-                @aws_page << AwsListResponse.new(version, @payload, key)
+              records = 0
+              while (limit != :unset && records < limit)
+                @aws_page << AwsListResponse.new(version, @payload, key, limit - records)
                 @payload = self.next_page
                 break unless @payload
 
-                number_of_records += @payload.body[key].size
+                records += @payload.body[key].size
               end
               # Path Solution
               @solution = solution
@@ -411,8 +411,12 @@ module Twilio
             # @param [Array<AwsInstance>] instance
             # @param [Hash{String => Object}] headers
             # @param [Integer] status_code
-            def initialize(version, payload, key)
-              @aws = payload.body[key].map do |data|
+            def initialize(version, payload, key, limit = :unset)
+              data_list = payload.body[key]
+              if limit != :unset
+                data_list = data_list[0, limit]
+              end
+              @aws = data_list.map do |data|
                 AwsInstance.new(version, data)
               end
               @headers = payload.headers
