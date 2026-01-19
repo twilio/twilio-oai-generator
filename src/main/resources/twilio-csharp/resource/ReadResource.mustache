@@ -60,4 +60,26 @@
         }
         #endif
 
+        {{! ResourceSet with headers }}
+        public static ResourceSetWithHeaders<{{apiName}}{{resourceConstant}}> ReadWithHeaders(Read{{apiName}}Options options, ITwilioRestClient client = null)
+        {
+            client = client ?? TwilioClient.{{restClientMethodName}}();
+            var response = client.Request(BuildReadRequest(options, client));
+            var page = Page<{{apiName}}{{resourceConstant}}>.FromJson("{{recordKey}}", response.Content);
+            var records = new ResourceSet<{{apiName}}{{resourceConstant}}>(page, options, client);
+            return new ResourceSetWithHeaders<{{apiName}}{{resourceConstant}}>(records, response.Headers, response.StatusCode);
+        }
+
+        #if !NET35
+        public static async System.Threading.Tasks.Task<ResourceSetWithHeaders<{{apiName}}{{resourceConstant}}>> ReadWithHeadersAsync(Read{{apiName}}Options options, ITwilioRestClient client = null)
+        {
+            client = client ?? TwilioClient.{{restClientMethodName}}();
+            var response = await client.RequestAsync(BuildReadRequest(options, client));
+
+            var page = Page<{{apiName}}{{resourceConstant}}>.FromJson("{{recordKey}}", response.Content);
+            var records = new ResourceSet<{{apiName}}{{resourceConstant}}>(page, options, client);
+            return new ResourceSetWithHeaders<{{apiName}}{{resourceConstant}}>(records, response.Headers, response.StatusCode);
+        }
+        #endif
+        
         {{>Pagination}}
