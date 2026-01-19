@@ -13,6 +13,7 @@
  */
 
 import { inspect, InspectOptions } from "util";
+
 import Page, { TwilioResponsePayload } from "../../../../base/Page";
 import Response from "../../../../http/response";
 import V1 from "../../V1";
@@ -60,6 +61,7 @@ export interface AwsListInstanceOptions {
 export interface AwsListInstancePageOptions {
   /**  */
   pageSize?: number;
+
   /** Page Number, this value is simply for client state */
   pageNumber?: number;
   /** PageToken provided by the API */
@@ -524,7 +526,6 @@ export function AwsListInstance(version: V1): AwsListInstance {
       method: "get",
       uri: targetUrl,
     });
-
     let pagePromise = operationPromise.then(
       (payload) => new AwsPage(instance._version, payload, instance._solution),
     );
