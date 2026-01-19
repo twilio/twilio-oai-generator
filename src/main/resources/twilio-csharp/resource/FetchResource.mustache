@@ -53,3 +53,37 @@
             return await FetchAsync(options, client);
         }
         #endif
+            
+        {{! ResourceWithHeaders Methods }}
+        public static ResourceWithHeaders<{{apiName}}Resource> FetchWithHeaders(Fetch{{apiName}}Options options, ITwilioRestClient client = null)
+        {
+            client = client ?? TwilioClient.{{restClientMethodName}}();
+            var response = client.Request(BuildFetchRequest(options, client));
+            var resource = FromJson(response.Content);
+            return new ResourceWithHeaders<{{apiName}}{{resourceConstant}}>(resource, response.Headers, response.StatusCode);
+        }
+        #if !NET35
+        public static async System.Threading.Tasks.Task<ResourceWithHeaders<{{apiName}}Resource>> FetchWithHeadersAsync(Fetch{{apiName}}Options options, ITwilioRestClient client = null)
+        {
+            client = client ?? TwilioClient.{{restClientMethodName}}();
+            var response = await client.RequestAsync(BuildFetchRequest(options, client));
+            var resource = FromJson(response.Content);
+            return new ResourceWithHeaders<{{apiName}}{{resourceConstant}}>(resource, response.Headers, response.StatusCode);
+        }
+        #endif
+        
+        public static ResourceWithHeaders<{{apiName}}{{resourceConstant}}> FetchWithHeaders({{#vendorExtensions.x-request-body-param}}
+                    {{{dataType}}} {{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^required}} = null{{/required}}, {{/vendorExtensions.x-request-body-param}}
+                ITwilioRestClient client = null)
+        {
+            var options = new Fetch{{apiName}}Options({{#requiredParams}}{{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^-last}}, {{/-last}}{{/requiredParams}}){ {{#vendorExtensions.x-request-body-param}}{{^required}}{{paramName}} = {{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^-last}},{{/-last}}{{/required}}{{/vendorExtensions.x-request-body-param}} };
+            return FetchWithHeaders(options, client);
+        }
+        
+        #if !NET35
+        public static async System.Threading.Tasks.Task<ResourceWithHeaders<{{apiName}}{{resourceConstant}}>> FetchWithHeadersAsync({{#vendorExtensions.x-request-body-param}}{{{dataType}}} {{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^required}} = null{{/required}}, {{/vendorExtensions.x-request-body-param}}ITwilioRestClient client = null)
+        {
+            var options = new Fetch{{apiName}}Options({{#requiredParams}}{{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^-last}}, {{/-last}}{{/requiredParams}}){ {{#vendorExtensions.x-request-body-param}}{{^required}}{{paramName}} = {{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^-last}},{{/-last}}{{/required}}{{/vendorExtensions.x-request-body-param}} };
+            return await FetchWithHeadersAsync(options, client);
+        }
+        #endif
