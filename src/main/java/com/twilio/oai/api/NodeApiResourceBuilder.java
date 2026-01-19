@@ -3,13 +3,16 @@ package com.twilio.oai.api;
 import com.twilio.oai.DirectoryStructureService;
 import com.twilio.oai.common.ApplicationConstants;
 import com.twilio.oai.common.Utility;
+import com.twilio.oai.java.cache.ResourceCacheContext;
 import com.twilio.oai.resolver.Resolver;
 import com.twilio.oai.resolver.node.NodeCodegenModelResolver;
 import com.twilio.oai.template.IApiActionTemplate;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.openapitools.codegen.CodegenModel;
@@ -43,14 +46,28 @@ public class NodeApiResourceBuilder extends FluentApiResourceBuilder {
 
         final String apiName = getApiName();
         final String resourceName = apiName + "Instance";
+        final boolean isApiV1 = ResourceCacheContext.get() != null && ResourceCacheContext.get().isV1();
 
         for (final CodegenOperation co : codegenOperationList) {
             co.httpMethod = co.httpMethod.toLowerCase();
 
             if (co.nickname.startsWith("delete")) {
                 addOperationName(co, "Remove");
-                co.returnType = "boolean";
-                co.produces = null;
+
+                // For V1 APIs, check if delete operation has a response model
+                boolean hasDeleteResponseModel = isApiV1 && co.responses != null && co.responses.stream()
+                    .anyMatch(response -> response.dataType != null && !response.dataType.isEmpty()
+                        && response.code.startsWith("2"));
+
+                if (hasDeleteResponseModel) {
+                    // Delete returns a response model for V1 APIs
+                    co.returnType = resourceName;
+                    co.vendorExtensions.put("x-delete-returns-model", true);
+                } else {
+                    // Delete returns boolean for non-V1 APIs or when no response model exists
+                    co.returnType = "boolean";
+                    co.produces = null;
+                }
             } else if (co.nickname.startsWith("list")) {
                 addOperationName(co, "Page");
                 co.returnType = apiName + "Page";
@@ -72,6 +89,7 @@ public class NodeApiResourceBuilder extends FluentApiResourceBuilder {
 
     public ApiResourceBuilder updateResponseModel(Resolver<CodegenProperty> codegenPropertyResolver, NodeCodegenModelResolver codegenModelResolver) {
         final String resourceName = getApiName();
+        final boolean isApiV1 = ResourceCacheContext.get() != null && ResourceCacheContext.get().isV1();
 
         final List<CodegenModel> allResponseModels = codegenOperationList
                 .stream()
@@ -84,13 +102,33 @@ public class NodeApiResourceBuilder extends FluentApiResourceBuilder {
                         .stream())
                 .collect(Collectors.toList());
 
+        // Track all distinct response models for V1 APIs
+        Set<CodegenModel> distinctResponseModels = new HashSet<>(allResponseModels);
+        this.responseInstanceModels = distinctResponseModels;
+
+        // For V1 APIs with multiple response models, store operation-specific response models
+        if (isApiV1 && allResponseModels.size() > 0) {
+            for (int i = 0; i < codegenOperationList.size() && i < allResponseModels.size(); i++) {
+                CodegenOperation operation = codegenOperationList.get(i);
+                CodegenModel operationResponseModel = allResponseModels.get(i);
+
+                // Store the response model for this specific operation
+                operation.vendorExtensions.put("x-response-model", operationResponseModel);
+            }
+        }
+
         allResponseModels.stream().findFirst().ifPresent(firstModel -> {
             responseModel = firstModel;
 
             allResponseModels.forEach(model -> {
                 codegenModelResolver.resolveResponseModel(model, this);
 
-                model.setName(resourceName);
+                // For V1 APIs with multiple response models, keep original model names distinct
+                // For other cases, rename to resourceName for consistency
+                if (!isApiV1 || distinctResponseModels.size() <= 1) {
+                    model.setName(resourceName);
+                }
+
                 model.getVars().forEach(variable -> {
                     codegenPropertyResolver.resolve(variable, this);
 
@@ -102,7 +140,8 @@ public class NodeApiResourceBuilder extends FluentApiResourceBuilder {
                             .forEach(param -> param.vendorExtensions.put("x-stringify", true));
                 });
 
-                if (model != responseModel) {
+                // Only merge models if not V1 API or if there's only one response model
+                if (!isApiV1 && model != responseModel) {
                     // Merge any vars from the model that aren't part of the response model.
                     model.getVars().forEach(variable -> {
                         if (responseModel.getVars().stream().noneMatch(v -> v.getName().equals(variable.getName()))) {
@@ -112,6 +151,12 @@ public class NodeApiResourceBuilder extends FluentApiResourceBuilder {
                 }
             });
 
+            // Set name for first model if not V1 or single model
+            if (!isApiV1 || distinctResponseModels.size() <= 1) {
+                responseModel.setName(resourceName);
+            }
+
+            // Add nested models from responseModel
             responseModel.getVars().forEach(variable -> {
                 addModel(modelTree, variable.complexType, variable.dataType);
 
@@ -120,6 +165,22 @@ public class NodeApiResourceBuilder extends FluentApiResourceBuilder {
                     variable.baseType = dataType;
                 });
             });
+
+            // For V1 APIs with multiple response models, also add nested models from all other response models
+            if (isApiV1 && distinctResponseModels.size() > 1) {
+                allResponseModels.forEach(model -> {
+                    if (model != responseModel) {
+                        model.getVars().forEach(variable -> {
+                            addModel(modelTree, variable.complexType, variable.dataType);
+
+                            super.updateDataType(variable.complexType, variable.dataType, (dataTypeWithEnum, dataType) -> {
+                                variable.datatypeWithEnum = dataTypeWithEnum;
+                                variable.baseType = dataType;
+                            });
+                        });
+                    }
+                });
+            }
         });
 
         modelTree.values().forEach(model -> model.setName(getModelName(model.getClassname())));

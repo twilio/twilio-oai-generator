@@ -113,6 +113,19 @@ export class {{apiName}}ContextImpl implements {{apiName}}Context {
     return inspect(this.toJSON(), options);
   }
 }
+{{#hasMultipleResponseModels}}
+{{#models}}
+/**
+ * Nested model for {{name}}
+ */
+export interface {{name}} {
+  {{#vars}}
+  {{baseName}}{{^required}}?{{/required}}: {{{dataType}}};
+  {{/vars}}
+}
+
+{{/models}}
+{{/hasMultipleResponseModels}}
 
 {{>responseModel}}
 {{/instancePath}}

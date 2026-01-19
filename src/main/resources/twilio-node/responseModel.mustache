@@ -4,11 +4,30 @@ interface {{apiName}}Payload extends {{^hasPaginationOperation}}{{apiName}}Resou
     {{recordKey}}: {{apiName}}Resource[];
 }{{/hasPaginationOperation}}
 
+{{#hasMultipleResponseModels}}
+{{#responseInstanceModels}}
+/**
+ * Response model for {{name}} operations
+ */
+interface {{name}}Resource {
+  {{#vars}}
+  {{baseName}}{{^required}}?{{/required}}: {{{baseType}}};
+  {{/vars}}
+}
+
+{{/responseInstanceModels}}
+/**
+ * Union type for all possible response models
+ */
+type {{apiName}}Resource = {{#responseInstanceModels}}{{name}}Resource{{^-last}} | {{/-last}}{{/responseInstanceModels}};
+{{/hasMultipleResponseModels}}
+{{^hasMultipleResponseModels}}
 interface {{apiName}}Resource {
   {{#vars}}
   {{baseName}}: {{{baseType}}};
   {{/vars}}
 }
+{{/hasMultipleResponseModels}}
 
 {{#description}}
 /**
@@ -37,7 +56,7 @@ export class {{instanceName}} {
    * {{{description}}}
    */
   {{/description}}
-  {{name}}: {{{baseType}}};
+  {{name}}{{#hasMultipleResponseModels}}?{{/hasMultipleResponseModels}}: {{{baseType}}};
   {{/vars}}
   {{#instancePath}}
 
