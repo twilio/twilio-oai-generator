@@ -544,20 +544,6 @@
             page_size=page_size,
         )]
 
-    def page(self, {{#isApiV1}}{{#allParams}}
-      {{paramName}}: Union[{{{dataType}}}, object] = values.unset,{{/allParams}}
-    ) -> {{apiName}}Page:
-        """
-        Retrieve a single page of {{instanceName}} records from the API.
-        Request is executed immediately
-        {{#allParams}}
-        :param {{paramName}}: {{{description}}}{{/allParams}}
-        :returns: Page of {{instanceName}}
-        """
-        data = values.of({ {{#allParams}}
-            '{{{baseName}}}': {{#if vendorExtensions.x-serialize}}{{vendorExtensions.x-serialize}}({{paramName}}{{#if isArray}}, lambda e: e){{else}}){{/if}}{{else}}{{paramName}}{{/if}},{{/allParams}}
-        }){{/isApiV1}}{{^isApiV1}}{{#allParams}}
-      {{#startsWith paramName text='page_size'}}{{else}}{{paramName}}: Union[{{{dataType}}}, object] = values.unset,{{/startsWith}}{{/allParams}}
     def list_with_http_info(self, {{#allParams}}
         {{#startsWith paramName text='page_size'}}{{else}}{{paramName}}: Union[{{{dataType}}}, object] = values.unset,{{/startsWith}}{{/allParams}}
         limit: Optional[int] = None,
@@ -612,8 +598,20 @@
         items = [record async for record in generator]
         return ApiResponse(data=items, status_code=status_code, headers=headers)
 
-    def page(self, {{#allParams}}
-        {{#startsWith paramName text='page_size'}}{{else}}{{#startsWith paramName text='page_token'}}{{else}}{{paramName}}: Union[{{{dataType}}}, object] = values.unset,{{/startsWith}}{{/startsWith}}{{/allParams}}
+    def page(self, {{#isApiV1}}{{#allParams}}
+      {{paramName}}: Union[{{{dataType}}}, object] = values.unset,{{/allParams}}
+    ) -> {{apiName}}Page:
+        """
+        Retrieve a single page of {{instanceName}} records from the API.
+        Request is executed immediately
+        {{#allParams}}
+        :param {{paramName}}: {{{description}}}{{/allParams}}
+        :returns: Page of {{instanceName}}
+        """
+        data = values.of({ {{#allParams}}
+            '{{{baseName}}}': {{#if vendorExtensions.x-serialize}}{{vendorExtensions.x-serialize}}({{paramName}}{{#if isArray}}, lambda e: e){{else}}){{/if}}{{else}}{{paramName}}{{/if}},{{/allParams}}
+        }){{/isApiV1}}{{^isApiV1}}{{#allParams}}
+      {{#startsWith paramName text='page_size'}}{{else}}{{paramName}}: Union[{{{dataType}}}, object] = values.unset,{{/startsWith}}{{/allParams}}
         page_token: Union[str, object] = values.unset,
         page_number: Union[int, object] = values.unset,
         page_size: Union[int, object] = values.unset,
