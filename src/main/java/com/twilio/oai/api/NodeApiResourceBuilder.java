@@ -106,17 +106,6 @@ public class NodeApiResourceBuilder extends FluentApiResourceBuilder {
         Set<CodegenModel> distinctResponseModels = new HashSet<>(allResponseModels);
         this.responseInstanceModels = distinctResponseModels;
 
-        // For V1 APIs with multiple response models, store operation-specific response models
-        if (isApiV1 && allResponseModels.size() > 0) {
-            for (int i = 0; i < codegenOperationList.size() && i < allResponseModels.size(); i++) {
-                CodegenOperation operation = codegenOperationList.get(i);
-                CodegenModel operationResponseModel = allResponseModels.get(i);
-
-                // Store the response model for this specific operation
-                operation.vendorExtensions.put("x-response-model", operationResponseModel);
-            }
-        }
-
         allResponseModels.stream().findFirst().ifPresent(firstModel -> {
             responseModel = firstModel;
 
