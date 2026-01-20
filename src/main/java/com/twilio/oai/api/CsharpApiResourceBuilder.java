@@ -8,6 +8,7 @@ import com.twilio.oai.common.EnumConstants;
 import com.twilio.oai.common.EnumConstants.CsharpHttpMethod;
 import com.twilio.oai.common.EnumConstants.CsharpDataTypes;
 import com.twilio.oai.common.Utility;
+import com.twilio.oai.java.cache.ResourceCacheContext;
 import com.twilio.oai.resolver.Resolver;
 import com.twilio.oai.resolver.common.CodegenModelOneOf;
 import com.twilio.oai.resolver.csharp.OperationStore;
@@ -41,6 +42,14 @@ public class CsharpApiResourceBuilder extends ApiResourceBuilder {
 
     public String authMethod = "";
     CodegenModelOneOf codegenModelOneOf = CodegenModelOneOf.getInstance();
+
+    // Operation-specific response models for V1
+    protected List<CodegenProperty> createResponseModels = new ArrayList<>();
+    protected List<CodegenProperty> updateResponseModels = new ArrayList<>();
+    protected List<CodegenProperty> patchResponseModels = new ArrayList<>();
+    protected List<CodegenProperty> listResponseModels = new ArrayList<>();
+    protected List<CodegenProperty> fetchResponseModels = new ArrayList<>();
+
     /**
      * List of C# primitive types that require a nullable marker (?) when nullable
      */
@@ -278,6 +287,10 @@ public class CsharpApiResourceBuilder extends ApiResourceBuilder {
 
     @Override
     public ApiResourceBuilder updateResponseModel(Resolver<CodegenProperty> codegenPropertyIResolver, Resolver<CodegenModel> codegenModelResolver) {
+        if (ResourceCacheContext.get().isV1()) {
+            updateResponseModelV1(codegenModelResolver);
+            return this;
+        }
         List<CodegenModel> responseModels = new ArrayList<>();
         codegenOperationList.forEach(codegenOperation -> {
             codegenOperation.responses.forEach(response -> {
@@ -300,6 +313,45 @@ public class CsharpApiResourceBuilder extends ApiResourceBuilder {
         });
         this.apiResponseModels = getDistinctResponseModel(responseModels);
         return this;
+    }
+
+    private void updateResponseModelV1(Resolver<CodegenModel> codegenModelResolver) {
+        codegenOperationList.forEach(codegenOperation -> {
+            List<CodegenModel> responseModels = new ArrayList<>();
+            codegenOperation.responses.forEach(response -> {
+                String modelName = response.dataType;
+                if (response.dataType != null && response.dataType.startsWith(EnumConstants.CsharpDataTypes.LIST.getValue())) {
+                    modelName = response.baseType;
+                }
+                Optional<CodegenModel> responseModel = Utility.getModel(allModels, modelName, recordKey, codegenOperation);
+                if ((responseModel == null) || responseModel.isEmpty() || (Integer.parseInt(response.code) >= 400)) {
+                    return;
+                }
+                CodegenModel codegenModel = responseModel.get();
+                for (CodegenProperty property : codegenModel.vars) {
+                    recursivelyResolve(property);
+                }
+                codegenModelResolver.resolve(codegenModel, this);
+                responseModels.add(codegenModel);
+                Set<CodegenProperty> distinctResponseModel = getDistinctResponseModel(responseModels);
+                
+                String operationId = codegenOperation.operationId.toLowerCase();
+                if (operationId.isEmpty()) {
+                    throw new RuntimeException("Csharp: Operation ID is missing for an operation.");
+                }
+                if (operationId.toLowerCase().startsWith("create")) {
+                    this.createResponseModels.addAll(new ArrayList<>(distinctResponseModel));
+                } else if (operationId.toLowerCase().startsWith("update")) {
+                    this.updateResponseModels.addAll(new ArrayList<>(distinctResponseModel));
+                } else if (operationId.toLowerCase().startsWith("patch")) {
+                    this.patchResponseModels.addAll(new ArrayList<>(distinctResponseModel));
+                } else if (operationId.toLowerCase().startsWith("list")) {
+                    this.listResponseModels.addAll(new ArrayList<>(distinctResponseModel));
+                } else if (operationId.toLowerCase().startsWith("fetch")) {
+                    this.fetchResponseModels.addAll(new ArrayList<>(distinctResponseModel));
+                }
+            });
+        });
     }
 
     public Set<CodegenProperty> getDistinctResponseModel(List<CodegenModel> responseModels) {

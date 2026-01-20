@@ -4,9 +4,11 @@ import com.google.common.collect.ImmutableMap;
 import com.samskivert.mustache.Mustache;
 import com.twilio.oai.api.CsharpApiResourceBuilder;
 import com.twilio.oai.api.CsharpApiResources;
+import com.twilio.oai.common.ApplicationConstants;
 import com.twilio.oai.common.EnumConstants;
 import com.twilio.oai.common.LanguageDataType;
 import com.twilio.oai.common.Utility;
+import com.twilio.oai.java.cache.ResourceCacheContext;
 import com.twilio.oai.templating.mustache.TitleCaseLambda;
 import com.twilio.oai.resolver.IConventionMapper;
 import com.twilio.oai.resolver.LanguageConventionResolver;
@@ -56,7 +58,6 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
     private final Map<String, String> modelFormatMap = new HashMap<>();
     private final List<CodegenModel> allModels = new ArrayList<>();
     private final IConventionMapper conventionMapper = new LanguageConventionResolver(CONFIG_CSHARP_JSON_PATH);
-    private final IApiActionTemplate apiActionTemplate = new CsharpApiActionTemplate(this);
 
     public TwilioCsharpGenerator() {
         super();
@@ -87,7 +88,7 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
         CsharpSerializer csharpSerializer = new CsharpSerializer(conventionMapper);
         CsharpCodegenParameterDataTypeResolver csharpCodegenParameterDataTypeResolver = new CsharpCodegenParameterDataTypeResolver(conventionMapper, csharpSerializer);
         CodegenParameterResolver codegenParameterResolver = new CodegenParameterResolver(languageDataType, csharpCodegenParameterDataTypeResolver, codegenModelResolver);
-
+        IApiActionTemplate apiActionTemplate = new CsharpApiActionTemplate(this);
 
         return new CsharpApiResourceBuilder(apiActionTemplate, opList, this.allModels)
                 .updateApiPath()
@@ -108,11 +109,14 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
 
     @Override
     public void processOpenAPI(final OpenAPI openAPI) {
+        ResourceCacheContext.get().clear();
+        ResourceCacheContext.get().getAdditionalProperties().put(ApplicationConstants.GENERATOR_NAME, getName());
         String domain = StringHelper.camelize(twilioCodegen.getDomainFromOpenAPI(openAPI));
         String version = StringHelper.camelize(twilioCodegen.getVersionFromOpenAPI(openAPI));
         twilioCodegen.setDomain(domain);
         twilioCodegen.setVersion(version);
         twilioCodegen.setOutputDir(domain, version);
+        twilioCodegen.setIsV1ApiStandard(openAPI);
 
         directoryStructureService.configure(openAPI);
     }

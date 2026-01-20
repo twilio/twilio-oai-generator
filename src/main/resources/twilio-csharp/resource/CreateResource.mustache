@@ -21,11 +21,11 @@
         /// <param name="options"> Create {{apiName}} parameters </param>
         /// <param name="client"> Client to make requests to Twilio </param>
         {{>resource/ReturnComments}}
-        public static {{apiName}}{{resourceConstant}} Create(Create{{apiName}}Options options, ITwilioRestClient client = null)
+        public static {{apiName}}{{#isApiV1}}Create{{/isApiV1}}{{resourceConstant}} Create(Create{{apiName}}Options options, ITwilioRestClient client = null)
         {
             client = client ?? TwilioClient.{{restClientMethodName}}();
             var response = client.Request(BuildCreateRequest(options, client));
-            return FromJson(response.Content);
+            return {{#isApiV1}}{{apiName}}Create{{resourceConstant}}.{{/isApiV1}}FromJson(response.Content);
         }
 
         #if !NET35
@@ -33,17 +33,17 @@
         /// <param name="options"> Create {{apiName}} parameters </param>
         /// <param name="client"> Client to make requests to Twilio </param>
         {{>resource/ReturnCommentsAsync}}
-        public static async System.Threading.Tasks.Task<{{apiName}}{{resourceConstant}}> CreateAsync(Create{{apiName}}Options options, ITwilioRestClient client = null)
+        public static async System.Threading.Tasks.Task<{{apiName}}{{#isApiV1}}Create{{/isApiV1}}{{resourceConstant}}> CreateAsync(Create{{apiName}}Options options, ITwilioRestClient client = null)
         {
             client = client ?? TwilioClient.{{restClientMethodName}}();
             var response = await client.RequestAsync(BuildCreateRequest(options, client));
-            return FromJson(response.Content);
+            return {{#isApiV1}}{{apiName}}Create{{resourceConstant}}.{{/isApiV1}}FromJson(response.Content);
         }
         #endif
 
         {{>Summary}}{{>resource/MethodsComments}}
         {{>resource/ReturnComments}}
-        public static {{apiName}}{{resourceConstant}} Create({{#vendorExtensions.x-request-body-param}}
+        public static {{apiName}}{{#isApiV1}}Create{{/isApiV1}}{{resourceConstant}} Create({{#vendorExtensions.x-request-body-param}}
                                           {{{dataType}}} {{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^required}} = null{{/required}},{{/vendorExtensions.x-request-body-param}}
                                             ITwilioRestClient client = null)
         {
@@ -54,7 +54,7 @@
         #if !NET35
         {{>Summary}}{{>resource/MethodsComments}}
         {{>resource/ReturnCommentsAsync}}
-        public static async System.Threading.Tasks.Task<{{apiName}}{{resourceConstant}}> CreateAsync({{#vendorExtensions.x-request-body-param}}
+        public static async System.Threading.Tasks.Task<{{apiName}}{{#isApiV1}}Create{{/isApiV1}}{{resourceConstant}}> CreateAsync({{#vendorExtensions.x-request-body-param}}
                                                                                   {{{dataType}}} {{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^required}} = null{{/required}},{{/vendorExtensions.x-request-body-param}}
                                                                                     ITwilioRestClient client = null)
         {

@@ -32,7 +32,8 @@ public class EnumConstants {
 
         DELETE("Delete"),
 
-        READ("Read");
+        READ("Read"),
+        PATCH("Patch");
 
         private final String value;
     }
