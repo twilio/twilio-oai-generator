@@ -1,0 +1,15 @@
+{{#responseInstanceModels}}
+  """
+  Response model for {{name}} operations
+  """
+  class {{name}}Resource:
+  def __init__(self,{{#vars}}{{baseName}}: {{{baseType}}}{{#unless @last}}, {{/unless}}{{/vars}}):
+  """
+  Initialize the {{name}}Resource
+
+  {{#vars}}:param {{baseName}}: {{{description}}}
+  {{/vars}}
+  """
+  {{#vars}}self.{{baseName}} = {{baseName}}
+  {{/vars}}
+{{/responseInstanceModels}}

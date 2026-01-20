@@ -1,7 +1,7 @@
 {{>licenseInfo}}
 {{#resources}}
 from datetime import date, datetime
-from typing import Any, Dict, List, Optional, Union, Iterator, AsyncIterator
+from typing import Any, Dict, List, Optional, Union, Iterator, AsyncIterator, Protocol
 from twilio.base import deserialize, serialize, values
 from twilio.base.api_response import ApiResponse
 {{#instancePath}}from twilio.base.instance_context import InstanceContext{{/instancePath}}
@@ -12,6 +12,12 @@ from twilio.base.version import Version
 {{#dependents}}from twilio.rest.{{domainPackage}}.{{apiVersion}}.{{namespaceSubPart}}.{{filename}} import {{resourceName}}List
 {{/dependents}}
 
+{{#hasMultipleResponseModels}}
+  class ResponseResource(Protocol):
+    pass
+  {{>nestedResponseModel}}
+  {{>responseInstance}}
+{{/hasMultipleResponseModels}}
 {{#responseModel}}{{>instance}}{{/responseModel}}
 {{#instancePath}}{{>context}}{{/instancePath}}
 {{#hasPaginationOperation}}{{>pagination}}{{/hasPaginationOperation}}
