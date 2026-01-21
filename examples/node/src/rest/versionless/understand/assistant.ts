@@ -20,6 +20,7 @@ import Understand from "../Understand";
 const deserialize = require("../../../base/deserialize");
 const serialize = require("../../../base/serialize");
 import { isValidPathParam } from "../../../base/utility";
+import { ApiResponse } from "../../../base/ApiResponse";
 
 /**
  * Options to pass to each
@@ -88,6 +89,28 @@ export interface AssistantListInstance {
     callback?: (item: AssistantInstance, done: (err?: Error) => void) => void,
   ): void;
   /**
+   * Streams AssistantInstance records from the API with HTTP metadata captured per page.
+   *
+   * This operation lazily loads records as efficiently as possible until the limit
+   * is reached. HTTP metadata (status code, headers) is captured for each page request.
+   *
+   * The results are passed into the callback function, so this operation is memory
+   * efficient.
+   *
+   * If a function is passed as the first argument, it will be used as the callback
+   * function.
+   *
+   * @param { AssistantListInstanceEachOptions } [params] - Options for request
+   * @param { function } [callback] - Function to process each record
+   */
+  eachWithHttpInfo(
+    callback?: (item: AssistantInstance, done: (err?: Error) => void) => void,
+  ): void;
+  eachWithHttpInfo(
+    params: AssistantListInstanceEachOptions,
+    callback?: (item: AssistantInstance, done: (err?: Error) => void) => void,
+  ): void;
+  /**
    * Retrieve a single target page of AssistantInstance records from the API.
    *
    * The request is executed immediately.
@@ -99,6 +122,18 @@ export interface AssistantListInstance {
     targetUrl: string,
     callback?: (error: Error | null, items: AssistantPage) => any,
   ): Promise<AssistantPage>;
+  /**
+   * Retrieve a single target page of AssistantInstance records from the API with HTTP metadata.
+   *
+   * The request is executed immediately.
+   *
+   * @param { string } [targetUrl] - API-generated URL for the requested results page
+   * @param { function } [callback] - Callback to handle list of records with metadata
+   */
+  getPageWithHttpInfo(
+    targetUrl: string,
+    callback?: (error: Error | null, items: ApiResponse<AssistantPage>) => any,
+  ): Promise<ApiResponse<AssistantPage>>;
   /**
    * Lists AssistantInstance records from the API as a list.
    *
@@ -115,6 +150,30 @@ export interface AssistantListInstance {
     params: AssistantListInstanceOptions,
     callback?: (error: Error | null, items: AssistantInstance[]) => any,
   ): Promise<AssistantInstance[]>;
+  /**
+   * Lists AssistantInstance records from the API as a list with HTTP metadata.
+   *
+   * Returns all records along with HTTP metadata from the first page fetched.
+   *
+   * If a function is passed as the first argument, it will be used as the callback
+   * function.
+   *
+   * @param { AssistantListInstanceOptions } [params] - Options for request
+   * @param { function } [callback] - Callback to handle list of records with metadata
+   */
+  listWithHttpInfo(
+    callback?: (
+      error: Error | null,
+      items: ApiResponse<AssistantInstance[]>,
+    ) => any,
+  ): Promise<ApiResponse<AssistantInstance[]>>;
+  listWithHttpInfo(
+    params: AssistantListInstanceOptions,
+    callback?: (
+      error: Error | null,
+      items: ApiResponse<AssistantInstance[]>,
+    ) => any,
+  ): Promise<ApiResponse<AssistantInstance[]>>;
   /**
    * Retrieve a single page of AssistantInstance records from the API.
    *
@@ -133,6 +192,24 @@ export interface AssistantListInstance {
     params: AssistantListInstancePageOptions,
     callback?: (error: Error | null, items: AssistantPage) => any,
   ): Promise<AssistantPage>;
+  /**
+   * Retrieve a single page of AssistantInstance records from the API with HTTP metadata.
+   *
+   * The request is executed immediately.
+   *
+   * If a function is passed as the first argument, it will be used as the callback
+   * function.
+   *
+   * @param { AssistantListInstancePageOptions } [params] - Options for request
+   * @param { function } [callback] - Callback to handle list of records with metadata
+   */
+  pageWithHttpInfo(
+    callback?: (error: Error | null, items: ApiResponse<AssistantPage>) => any,
+  ): Promise<ApiResponse<AssistantPage>>;
+  pageWithHttpInfo(
+    params: AssistantListInstancePageOptions,
+    callback?: (error: Error | null, items: ApiResponse<AssistantPage>) => any,
+  ): Promise<ApiResponse<AssistantPage>>;
 
   /**
    * Provide a user-friendly representation
@@ -206,6 +283,82 @@ export function AssistantListInstance(
     let pagePromise = operationPromise.then(
       (payload) =>
         new AssistantPage(instance._version, payload, instance._solution),
+    );
+    pagePromise = instance._version.setPromiseCallback(pagePromise, callback);
+    return pagePromise;
+  };
+
+  instance.pageWithHttpInfo = function pageWithHttpInfo(
+    params?:
+      | AssistantListInstancePageOptions
+      | ((error: Error | null, items: ApiResponse<AssistantPage>) => any),
+    callback?: (error: Error | null, items: ApiResponse<AssistantPage>) => any,
+  ): Promise<ApiResponse<AssistantPage>> {
+    if (params instanceof Function) {
+      callback = params;
+      params = {};
+    } else {
+      params = params || {};
+    }
+
+    let data: any = {};
+
+    if (params["pageSize"] !== undefined) data["PageSize"] = params["pageSize"];
+
+    if (params.pageNumber !== undefined) data["Page"] = params.pageNumber;
+    if (params.pageToken !== undefined) data["PageToken"] = params.pageToken;
+
+    const headers: any = {};
+    headers["Accept"] = "application/json";
+
+    let operationVersion = version;
+    // For page operations, use page() directly as it already returns { statusCode, body, headers }
+    // IMPORTANT: Pass full response to Page constructor, not response.body
+    let operationPromise = operationVersion
+      .page({ uri: instance._uri, method: "get", params: data, headers })
+      .then(
+        (response): ApiResponse<AssistantPage> => ({
+          statusCode: response.statusCode,
+          headers: response.headers,
+          body: new AssistantPage(
+            operationVersion,
+            response,
+            instance._solution,
+          ),
+        }),
+      );
+
+    operationPromise = instance._version.setPromiseCallback(
+      operationPromise,
+      callback,
+    );
+    return operationPromise;
+  };
+  instance.each = instance._version.each;
+  instance.eachWithHttpInfo = instance._version.eachWithHttpInfo;
+  instance.list = instance._version.list;
+  instance.listWithHttpInfo = instance._version.listWithHttpInfo;
+
+  instance.getPageWithHttpInfo = function getPageWithHttpInfo(
+    targetUrl: string,
+    callback?: (error: Error | null, items?: ApiResponse<AssistantPage>) => any,
+  ): Promise<ApiResponse<AssistantPage>> {
+    // Use request() directly as it already returns { statusCode, body, headers }
+    const operationPromise = instance._version._domain.twilio.request({
+      method: "get",
+      uri: targetUrl,
+    });
+
+    let pagePromise = operationPromise.then(
+      (response): ApiResponse<AssistantPage> => ({
+        statusCode: response.statusCode,
+        headers: response.headers,
+        body: new AssistantPage(
+          instance._version,
+          response,
+          instance._solution,
+        ),
+      }),
     );
     pagePromise = instance._version.setPromiseCallback(pagePromise, callback);
     return pagePromise;

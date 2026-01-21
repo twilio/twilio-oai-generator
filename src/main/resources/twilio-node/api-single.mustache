@@ -10,6 +10,7 @@ import {{apiVersionClass}} from "{{apiVersionPath}}/{{apiVersionClass}}";
 const deserialize = require("{{apiVersionPath}}/../../base/deserialize");
 const serialize = require("{{apiVersionPath}}/../../base/serialize");
 import { isValidPathParam } from "{{apiVersionPath}}/../../base/utility";
+import { ApiResponse } from "{{apiVersionPath}}/../../base/ApiResponse";
 {{#dependents}}
 import { {{importName}} } from "./{{apiFilename}}/{{filename}}";
 {{/dependents}}
@@ -44,7 +45,9 @@ export interface {{apiName}}Context {
 
 {{#operations}}
 {{^vendorExtensions.x-twilio.ignoreOperation}}
-{{#vendorExtensions.x-is-context-operation}}{{>operationSignature}}{{/vendorExtensions.x-is-context-operation}}
+{{#vendorExtensions.x-is-context-operation}}{{>operationSignature}}
+{{>operationSignatureWithHttpInfo}}
+{{/vendorExtensions.x-is-context-operation}}
 {{/vendorExtensions.x-twilio.ignoreOperation}}
 {{/operations}}
   /**
@@ -95,6 +98,10 @@ export class {{apiName}}ContextImpl implements {{apiName}}Context {
   {{#vendorExtensions.x-is-context-operation}}
   {{vendorExtensions.x-name-lower}}({{#hasParams}}params{{^hasRequiredParams}}?{{/hasRequiredParams}}: {{#bodyParam}}{{dataType}}{{/bodyParam}}{{^bodyParam}}{{vendorExtensions.x-resource-name}}{{vendorExtensions.x-name}}Options{{/bodyParam}}{{^hasRequiredParams}} | ((error: Error | null, item?: {{returnType}}) => any){{/hasRequiredParams}}{{#bodyParams.0}}, headers?: any{{/bodyParams.0}},{{/hasParams}}callback?: (error: Error | null, item?: {{returnType}}) => any): Promise<{{returnType}}> {
   {{>operation}}
+  }
+
+  {{vendorExtensions.x-name-lower}}WithHttpInfo({{#hasParams}}params{{^hasRequiredParams}}?{{/hasRequiredParams}}: {{#bodyParam}}{{dataType}}{{/bodyParam}}{{^bodyParam}}{{vendorExtensions.x-resource-name}}{{vendorExtensions.x-name}}Options{{/bodyParam}}{{^hasRequiredParams}} | ((error: Error | null, item?: ApiResponse<{{returnType}}>) => any){{/hasRequiredParams}}{{#bodyParams.0}}, headers?: any{{/bodyParams.0}},{{/hasParams}}callback?: (error: Error | null, item?: ApiResponse<{{returnType}}>) => any): Promise<ApiResponse<{{returnType}}>> {
+  {{>operationWithHttpInfo}}
   }
 
   {{/vendorExtensions.x-is-context-operation}}
@@ -155,7 +162,9 @@ export interface {{apiName}}ListInstance {
 
 {{#operations}}
 {{^vendorExtensions.x-twilio.ignoreOperation}}
-{{^vendorExtensions.x-is-read-operation}}{{#vendorExtensions.x-is-list-operation}}{{>operationSignature}}{{/vendorExtensions.x-is-list-operation}}{{/vendorExtensions.x-is-read-operation}}
+{{^vendorExtensions.x-is-read-operation}}{{#vendorExtensions.x-is-list-operation}}{{>operationSignature}}
+{{>operationSignatureWithHttpInfo}}
+{{/vendorExtensions.x-is-list-operation}}{{/vendorExtensions.x-is-read-operation}}
 {{#vendorExtensions.x-is-read-operation}}{{>listInterfaceFunctions}}{{/vendorExtensions.x-is-read-operation}}
 {{/vendorExtensions.x-twilio.ignoreOperation}}
 {{/operations}}
@@ -206,6 +215,12 @@ export function {{apiName}}ListInstance(version: {{apiVersionClass}}{{#listPathP
 {{#vendorExtensions.x-is-list-operation}}
   instance.{{vendorExtensions.x-name-lower}} = function {{vendorExtensions.x-name-lower}}({{#hasParams}}params{{^hasRequiredParams}}?{{/hasRequiredParams}}: {{#bodyParam}}{{dataType}}{{/bodyParam}}{{^bodyParam}}{{vendorExtensions.x-resource-name}}{{vendorExtensions.x-name}}Options{{/bodyParam}}{{^hasRequiredParams}} | ((error: Error | null, items: {{returnType}}) => any){{/hasRequiredParams}}{{#bodyParams.0}}, headers?: any{{/bodyParams.0}},{{/hasParams}} callback?: (error: Error | null, items: {{returnType}}) => any): Promise<{{returnType}}> {
 {{>operation}}
+{{^vendorExtensions.x-is-read-operation}}
+    }
+{{/vendorExtensions.x-is-read-operation}}
+
+  instance.{{vendorExtensions.x-name-lower}}WithHttpInfo = function {{vendorExtensions.x-name-lower}}WithHttpInfo({{#hasParams}}params{{^hasRequiredParams}}?{{/hasRequiredParams}}: {{#bodyParam}}{{dataType}}{{/bodyParam}}{{^bodyParam}}{{vendorExtensions.x-resource-name}}{{vendorExtensions.x-name}}Options{{/bodyParam}}{{^hasRequiredParams}} | ((error: Error | null, items: ApiResponse<{{returnType}}>) => any){{/hasRequiredParams}}{{#bodyParams.0}}, headers?: any{{/bodyParams.0}},{{/hasParams}} callback?: (error: Error | null, items: ApiResponse<{{returnType}}>) => any): Promise<ApiResponse<{{returnType}}>> {
+{{>operationWithHttpInfo}}
 {{^vendorExtensions.x-is-read-operation}}
     }
 {{/vendorExtensions.x-is-read-operation}}

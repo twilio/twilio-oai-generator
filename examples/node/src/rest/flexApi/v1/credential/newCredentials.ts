@@ -17,6 +17,7 @@ import V1 from "../../V1";
 const deserialize = require("../../../../base/deserialize");
 const serialize = require("../../../../base/serialize");
 import { isValidPathParam } from "../../../../base/utility";
+import { ApiResponse } from "../../../../base/ApiResponse";
 
 export type NewCredentialsStatus =
   | "in-progress"
@@ -85,6 +86,22 @@ export interface NewCredentialsListInstance {
     params: NewCredentialsListInstanceCreateOptions,
     callback?: (error: Error | null, item?: NewCredentialsInstance) => any,
   ): Promise<NewCredentialsInstance>;
+
+  /**
+   * Create a NewCredentialsInstance and return HTTP info
+   *
+   * @param params - Parameter for request
+   * @param callback - Callback to handle processed record
+   *
+   * @returns Resolves to processed NewCredentialsInstance with HTTP metadata
+   */
+  createWithHttpInfo(
+    params: NewCredentialsListInstanceCreateOptions,
+    callback?: (
+      error: Error | null,
+      item?: ApiResponse<NewCredentialsInstance>,
+    ) => any,
+  ): Promise<ApiResponse<NewCredentialsInstance>>;
 
   /**
    * Provide a user-friendly representation
@@ -172,6 +189,91 @@ export function NewCredentialsListInstance(
     operationPromise = operationPromise.then(
       (payload) => new NewCredentialsInstance(operationVersion, payload),
     );
+
+    operationPromise = instance._version.setPromiseCallback(
+      operationPromise,
+      callback,
+    );
+    return operationPromise;
+  };
+
+  instance.createWithHttpInfo = function createWithHttpInfo(
+    params: NewCredentialsListInstanceCreateOptions,
+    callback?: (
+      error: Error | null,
+      items: ApiResponse<NewCredentialsInstance>,
+    ) => any,
+  ): Promise<ApiResponse<NewCredentialsInstance>> {
+    if (params === null || params === undefined) {
+      throw new Error('Required parameter "params" missing.');
+    }
+
+    if (params["testString"] === null || params["testString"] === undefined) {
+      throw new Error("Required parameter \"params['testString']\" missing.");
+    }
+
+    let data: any = {};
+
+    data["TestString"] = params["testString"];
+    if (params["testBoolean"] !== undefined)
+      data["TestBoolean"] = serialize.bool(params["testBoolean"]);
+    if (params["testInteger"] !== undefined)
+      data["TestInteger"] = params["testInteger"];
+    if (params["testNumber"] !== undefined)
+      data["TestNumber"] = params["testNumber"];
+    if (params["testNumberFloat"] !== undefined)
+      data["TestNumberFloat"] = params["testNumberFloat"];
+    if (params["testNumberDouble"] !== undefined)
+      data["TestNumberDouble"] = params["testNumberDouble"];
+    if (params["testNumberInt32"] !== undefined)
+      data["TestNumberInt32"] = params["testNumberInt32"];
+    if (params["testNumberInt64"] !== undefined)
+      data["TestNumberInt64"] = params["testNumberInt64"];
+    if (params["testObject"] !== undefined)
+      data["TestObject"] = serialize.object(params["testObject"]);
+    if (params["testDateTime"] !== undefined)
+      data["TestDateTime"] = serialize.iso8601DateTime(params["testDateTime"]);
+    if (params["testDate"] !== undefined)
+      data["TestDate"] = serialize.iso8601Date(params["testDate"]);
+    if (params["testEnum"] !== undefined) data["TestEnum"] = params["testEnum"];
+    if (params["testObjectArray"] !== undefined)
+      data["TestObjectArray"] = serialize.map(
+        params["testObjectArray"],
+        (e: object) => e,
+      );
+    if (params["testAnyType"] !== undefined)
+      data["TestAnyType"] = serialize.object(params["testAnyType"]);
+    if (params["testAnyArray"] !== undefined)
+      data["TestAnyArray"] = serialize.map(params["testAnyArray"], (e: any) =>
+        serialize.object(e),
+      );
+    if (params["permissions"] !== undefined)
+      data["Permissions"] = serialize.map(
+        params["permissions"],
+        (e: string) => e,
+      );
+    if (params["someA2PThing"] !== undefined)
+      data["SomeA2PThing"] = params["someA2PThing"];
+
+    const headers: any = {};
+    headers["Content-Type"] = "application/x-www-form-urlencoded";
+    headers["Accept"] = "application/json";
+
+    let operationVersion = version;
+    // CREATE, FETCH, UPDATE operations
+    let operationPromise = operationVersion
+      .createWithResponseInfo<NewCredentialsResource>({
+        uri: instance._uri,
+        method: "post",
+        data,
+        headers,
+      })
+      .then(
+        (response): ApiResponse<NewCredentialsInstance> => ({
+          ...response,
+          body: new NewCredentialsInstance(operationVersion, response.body),
+        }),
+      );
 
     operationPromise = instance._version.setPromiseCallback(
       operationPromise,

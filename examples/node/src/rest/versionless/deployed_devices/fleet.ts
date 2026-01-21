@@ -17,6 +17,7 @@ import DeployedDevices from "../DeployedDevices";
 const deserialize = require("../../../base/deserialize");
 const serialize = require("../../../base/serialize");
 import { isValidPathParam } from "../../../base/utility";
+import { ApiResponse } from "../../../base/ApiResponse";
 
 export class VersionlessFleetTestNestedObjectValue {
   "param1"?: string;
@@ -42,6 +43,17 @@ export interface FleetContext {
   fetch(
     callback?: (error: Error | null, item?: FleetInstance) => any,
   ): Promise<FleetInstance>;
+
+  /**
+   * Fetch a FleetInstance and return HTTP info
+   *
+   * @param callback - Callback to handle processed record
+   *
+   * @returns Resolves to processed FleetInstance with HTTP metadata
+   */
+  fetchWithHttpInfo(
+    callback?: (error: Error | null, item?: ApiResponse<FleetInstance>) => any,
+  ): Promise<ApiResponse<FleetInstance>>;
 
   /**
    * Provide a user-friendly representation
@@ -88,6 +100,39 @@ export class FleetContextImpl implements FleetContext {
       (payload) =>
         new FleetInstance(operationVersion, payload, instance._solution.sid),
     );
+
+    operationPromise = instance._version.setPromiseCallback(
+      operationPromise,
+      callback,
+    );
+    return operationPromise;
+  }
+
+  fetchWithHttpInfo(
+    callback?: (error: Error | null, item?: ApiResponse<FleetInstance>) => any,
+  ): Promise<ApiResponse<FleetInstance>> {
+    const headers: any = {};
+    headers["Accept"] = "application/json";
+
+    const instance = this;
+    let operationVersion = instance._version;
+    // CREATE, FETCH, UPDATE operations
+    let operationPromise = operationVersion
+      .fetchWithResponseInfo<FleetResource>({
+        uri: instance._uri,
+        method: "get",
+        headers,
+      })
+      .then(
+        (response): ApiResponse<FleetInstance> => ({
+          ...response,
+          body: new FleetInstance(
+            operationVersion,
+            response.body,
+            instance._solution.sid,
+          ),
+        }),
+      );
 
     operationPromise = instance._version.setPromiseCallback(
       operationPromise,
@@ -180,6 +225,19 @@ export class FleetInstance {
   }
 
   /**
+   * Fetch a FleetInstance and return HTTP info
+   *
+   * @param callback - Callback to handle processed record
+   *
+   * @returns Resolves to processed FleetInstance with HTTP metadata
+   */
+  fetchWithHttpInfo(
+    callback?: (error: Error | null, item?: ApiResponse<FleetInstance>) => any,
+  ): Promise<ApiResponse<FleetInstance>> {
+    return this._proxy.fetchWithHttpInfo(callback);
+  }
+
+  /**
    * Provide a user-friendly representation
    *
    * @returns Object
@@ -235,6 +293,29 @@ export interface FleetListInstance {
   ): Promise<FleetInstance>;
 
   /**
+   * Create a FleetInstance and return HTTP info
+   *
+   * @param callback - Callback to handle processed record
+   *
+   * @returns Resolves to processed FleetInstance with HTTP metadata
+   */
+  createWithHttpInfo(
+    callback?: (error: Error | null, item?: ApiResponse<FleetInstance>) => any,
+  ): Promise<ApiResponse<FleetInstance>>;
+  /**
+   * Create a FleetInstance and return HTTP info
+   *
+   * @param params - Parameter for request
+   * @param callback - Callback to handle processed record
+   *
+   * @returns Resolves to processed FleetInstance with HTTP metadata
+   */
+  createWithHttpInfo(
+    params: FleetListInstanceCreateOptions,
+    callback?: (error: Error | null, item?: ApiResponse<FleetInstance>) => any,
+  ): Promise<ApiResponse<FleetInstance>>;
+
+  /**
    * Provide a user-friendly representation
    */
   toJSON(): any;
@@ -284,6 +365,50 @@ export function FleetListInstance(version: DeployedDevices): FleetListInstance {
     operationPromise = operationPromise.then(
       (payload) => new FleetInstance(operationVersion, payload),
     );
+
+    operationPromise = instance._version.setPromiseCallback(
+      operationPromise,
+      callback,
+    );
+    return operationPromise;
+  };
+
+  instance.createWithHttpInfo = function createWithHttpInfo(
+    params?:
+      | FleetListInstanceCreateOptions
+      | ((error: Error | null, items: ApiResponse<FleetInstance>) => any),
+    callback?: (error: Error | null, items: ApiResponse<FleetInstance>) => any,
+  ): Promise<ApiResponse<FleetInstance>> {
+    if (params instanceof Function) {
+      callback = params;
+      params = {};
+    } else {
+      params = params || {};
+    }
+
+    let data: any = {};
+
+    if (params["name"] !== undefined) data["Name"] = params["name"];
+
+    const headers: any = {};
+    headers["Content-Type"] = "application/x-www-form-urlencoded";
+    headers["Accept"] = "application/json";
+
+    let operationVersion = version;
+    // CREATE, FETCH, UPDATE operations
+    let operationPromise = operationVersion
+      .createWithResponseInfo<FleetResource>({
+        uri: instance._uri,
+        method: "post",
+        data,
+        headers,
+      })
+      .then(
+        (response): ApiResponse<FleetInstance> => ({
+          ...response,
+          body: new FleetInstance(operationVersion, response.body),
+        }),
+      );
 
     operationPromise = instance._version.setPromiseCallback(
       operationPromise,
