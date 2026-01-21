@@ -15,6 +15,7 @@
 package com.twilio.rest.versionless.deployedDevices;
 
 import com.twilio.base.Fetcher;
+import com.twilio.base.TwilioResponse;
 import com.twilio.exception.ApiConnectionException;
 import com.twilio.exception.ApiException;
 import com.twilio.exception.RestException;
@@ -36,22 +37,22 @@ import com.twilio.type.*;
     }
 
         
-            @Override
-    public Fleet fetch(final TwilioRestClient client) {
+        
+    private Response makeRequest(final TwilioRestClient client) {
     
     String path = "/DeployedDevices/Fleets/{Sid}";
 
     path = path.replace("{"+"Sid"+"}", this.pathSid.toString());
 
-    
+
         Request request = new Request(
             HttpMethod.GET,
             Domains.VERSIONLESS.toString(),
             path
         );
-    
+
         Response response = client.request(request);
-    
+
         if (response == null) {
             throw new ApiConnectionException("Fleet fetch failed: Unable to connect to server");
         } else if (!TwilioRestClient.SUCCESS.test(response.getStatusCode())) {
@@ -64,6 +65,19 @@ import com.twilio.type.*;
             }
             throw new ApiException(restException);
         }
+        return response;
+    }
+    
+    @Override
+    public Fleet fetch(final TwilioRestClient client) {
+        Response response = makeRequest(client);
         return Fleet.fromJson(response.getStream(), client.getObjectMapper());
+    }
+
+    @Override
+    public TwilioResponse<Fleet> fetchWithResponse(final TwilioRestClient client) {
+        Response response = makeRequest(client);
+        Fleet content =  Fleet.fromJson(response.getStream(), client.getObjectMapper());
+        return new TwilioResponse<>(content, response.getStatusCode(), response.getHeaders());
     }
     }

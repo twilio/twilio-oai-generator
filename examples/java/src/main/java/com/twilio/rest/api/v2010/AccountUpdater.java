@@ -15,6 +15,7 @@
 package com.twilio.rest.api.v2010;
 
 import com.twilio.base.Updater;
+import com.twilio.base.TwilioResponse;
 import com.twilio.constant.EnumConstants;
 import com.twilio.constant.EnumConstants.ParameterType;
 import com.twilio.converter.Serializer;
@@ -56,15 +57,15 @@ public AccountUpdater setStatus(final Account.Status status){
 }
 
 
-            @Override
-    public Account update(final TwilioRestClient client) {
+        
+    private Response makeRequest(final TwilioRestClient client) {
     
     String path = "/2010-04-01/Accounts/{Sid}.json";
 
         this.pathSid = this.pathSid == null ? client.getAccountSid() : this.pathSid;
         path = path.replace("{"+"Sid"+"}", this.pathSid.toString());
 
-    
+
         Request request = new Request(
             HttpMethod.POST,
             Domains.API.toString(),
@@ -72,9 +73,9 @@ public AccountUpdater setStatus(final Account.Status status){
         );
         request.setContentType(EnumConstants.ContentType.FORM_URLENCODED);
         addPostParams(request);
-    
+
         Response response = client.request(request);
-    
+
         if (response == null) {
             throw new ApiConnectionException("Account update failed: Unable to connect to server");
         } else if (!TwilioRestClient.SUCCESS.test(response.getStatusCode())) {
@@ -87,9 +88,22 @@ public AccountUpdater setStatus(final Account.Status status){
             }
             throw new ApiException(restException);
         }
-    
+        return response;
+    }
+
+    @Override
+    public Account update(final TwilioRestClient client) {
+        Response response = makeRequest(client);
         return Account.fromJson(response.getStream(), client.getObjectMapper());
     }
+
+    @Override
+    public TwilioResponse<Account> updateWithResponse(final TwilioRestClient client) {
+        Response response = makeRequest(client);
+        Account content = Account.fromJson(response.getStream(), client.getObjectMapper());
+        return new TwilioResponse<>(content, response.getStatusCode(), response.getHeaders());
+    }
+    
         private void addPostParams(final Request request) {
 
     if (pauseBehavior != null) {

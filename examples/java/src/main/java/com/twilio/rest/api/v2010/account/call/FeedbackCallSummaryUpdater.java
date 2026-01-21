@@ -15,6 +15,7 @@
 package com.twilio.rest.api.v2010.account.call;
 
 import com.twilio.base.Updater;
+import com.twilio.base.TwilioResponse;
 import com.twilio.constant.EnumConstants;
 import com.twilio.constant.EnumConstants.ParameterType;
 import com.twilio.converter.Serializer;
@@ -69,8 +70,8 @@ public FeedbackCallSummaryUpdater setStartDate(final LocalDate startDate){
 }
 
 
-            @Override
-    public FeedbackCallSummary update(final TwilioRestClient client) {
+        
+    private Response makeRequest(final TwilioRestClient client) {
     
     String path = "/2010-04-01/Accounts/{AccountSid}/Calls/Feedback/Summary/{Sid}.json";
 
@@ -78,7 +79,7 @@ public FeedbackCallSummaryUpdater setStartDate(final LocalDate startDate){
         path = path.replace("{"+"AccountSid"+"}", this.pathAccountSid.toString());
     path = path.replace("{"+"Sid"+"}", this.pathSid.toString());
 
-    
+
         Request request = new Request(
             HttpMethod.POST,
             Domains.API.toString(),
@@ -86,9 +87,9 @@ public FeedbackCallSummaryUpdater setStartDate(final LocalDate startDate){
         );
         request.setContentType(EnumConstants.ContentType.FORM_URLENCODED);
         addPostParams(request);
-    
+
         Response response = client.request(request);
-    
+
         if (response == null) {
             throw new ApiConnectionException("FeedbackCallSummary update failed: Unable to connect to server");
         } else if (!TwilioRestClient.SUCCESS.test(response.getStatusCode())) {
@@ -101,9 +102,22 @@ public FeedbackCallSummaryUpdater setStartDate(final LocalDate startDate){
             }
             throw new ApiException(restException);
         }
-    
+        return response;
+    }
+
+    @Override
+    public FeedbackCallSummary update(final TwilioRestClient client) {
+        Response response = makeRequest(client);
         return FeedbackCallSummary.fromJson(response.getStream(), client.getObjectMapper());
     }
+
+    @Override
+    public TwilioResponse<FeedbackCallSummary> updateWithResponse(final TwilioRestClient client) {
+        Response response = makeRequest(client);
+        FeedbackCallSummary content = FeedbackCallSummary.fromJson(response.getStream(), client.getObjectMapper());
+        return new TwilioResponse<>(content, response.getStatusCode(), response.getHeaders());
+    }
+    
         private void addPostParams(final Request request) {
 
     if (accountSid != null) {
