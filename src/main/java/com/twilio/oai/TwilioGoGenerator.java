@@ -97,10 +97,14 @@ public class TwilioGoGenerator extends AbstractTwilioGoGenerator {
             return modelName;
         }
 
+        Set<String> FIXED_DATATYPE = new HashSet<>();
+        FIXED_DATATYPE.add("interface{}");
+        FIXED_DATATYPE.add("time.Time");
+
         String newModelName = removeStatusCode(modelName);
         if(Objects.equals(newModelName, modelName))
             newModelName = removeDigits(newModelName);
-        return newModelName.equals("interface{}") ? newModelName : StringUtils.camelize(newModelName);
+        return FIXED_DATATYPE.contains(newModelName) ? newModelName : StringUtils.camelize(newModelName);
     }
 
     private boolean isPrimitiveOrArrayType(String typeName) {
