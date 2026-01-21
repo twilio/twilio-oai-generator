@@ -64,27 +64,27 @@
         }
         #endif
 
-        {{! ResourceWithHeaders Methods }}
-        public static ResourceWithHeaders<{{apiName}}{{resourceConstant}}> UpdateWithHeaders(Update{{apiName}}Options options, ITwilioRestClient client = null)
+        {{! TwilioResponse Methods }}
+        public static TwilioResponse<{{apiName}}{{resourceConstant}}> UpdateWithHeaders(Update{{apiName}}Options options, ITwilioRestClient client = null)
         {
             client = client ?? TwilioClient.{{restClientMethodName}}();
             var response = client.Request(BuildUpdateRequest(options, client));
             var resource = FromJson(response.Content);
-            return new ResourceWithHeaders<{{apiName}}{{resourceConstant}}>(resource, response.Headers, response.StatusCode);
+            return new TwilioResponse<{{apiName}}{{resourceConstant}}>(resource, response.Headers, response.StatusCode);
         }
 
         #if !NET35
-        public static async System.Threading.Tasks.Task<ResourceWithHeaders<{{apiName}}{{resourceConstant}}>> UpdateWithHeadersAsync(Update{{apiName}}Options options,
+        public static async System.Threading.Tasks.Task<TwilioResponse<{{apiName}}{{resourceConstant}}>> UpdateWithHeadersAsync(Update{{apiName}}Options options,
         ITwilioRestClient client = null)
         {
             client = client ?? TwilioClient.{{restClientMethodName}}();
             var response = await client.RequestAsync(BuildUpdateRequest(options, client));
             var resource = FromJson(response.Content);
-            return new ResourceWithHeaders<{{apiName}}{{resourceConstant}}>(resource, response.Headers, response.StatusCode);
+            return new TwilioResponse<{{apiName}}{{resourceConstant}}>(resource, response.Headers, response.StatusCode);
         }
         #endif
 
-        public static ResourceWithHeaders<{{apiName}}{{resourceConstant}}> UpdateWithHeaders({{#vendorExtensions.x-request-body-param}}
+        public static TwilioResponse<{{apiName}}{{resourceConstant}}> UpdateWithHeaders({{#vendorExtensions.x-request-body-param}}
             {{{dataType}}} {{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^required}} = null{{/required}},{{/vendorExtensions.x-request-body-param}}
         ITwilioRestClient client = null)
         {
@@ -93,7 +93,7 @@
         }
 
         #if !NET35
-        public static async System.Threading.Tasks.Task<ResourceWithHeaders<{{apiName}}{{resourceConstant}}>> UpdateWithHeadersAsync({{#vendorExtensions.x-request-body-param}}
+        public static async System.Threading.Tasks.Task<TwilioResponse<{{apiName}}{{resourceConstant}}>> UpdateWithHeadersAsync({{#vendorExtensions.x-request-body-param}}
             {{{dataType}}} {{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^required}} = null{{/required}},{{/vendorExtensions.x-request-body-param}}
         ITwilioRestClient client = null)
         {
