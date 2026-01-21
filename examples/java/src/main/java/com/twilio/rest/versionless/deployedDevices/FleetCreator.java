@@ -16,6 +16,7 @@ package com.twilio.rest.versionless.deployedDevices;
 
 
 import com.twilio.base.Creator;
+import com.twilio.base.TwilioResponse;
 import com.twilio.constant.EnumConstants;
 import com.twilio.constant.EnumConstants.ParameterType;
 import com.twilio.converter.Serializer;
@@ -45,13 +46,13 @@ public FleetCreator setName(final String name){
 }
 
 
-    @Override
-    public Fleet create(final TwilioRestClient client) {
+
+    private Response makeRequest(final TwilioRestClient client) {
     
     String path = "/DeployedDevices/Fleets";
 
 
-    
+
         Request request = new Request(
             HttpMethod.POST,
             Domains.VERSIONLESS.toString(),
@@ -59,9 +60,9 @@ public FleetCreator setName(final String name){
         );
         request.setContentType(EnumConstants.ContentType.FORM_URLENCODED);
         addPostParams(request);
-    
+
         Response response = client.request(request);
-    
+
         if (response == null) {
             throw new ApiConnectionException("Fleet creation failed: Unable to connect to server");
         } else if (!TwilioRestClient.SUCCESS.test(response.getStatusCode())) {
@@ -74,8 +75,20 @@ public FleetCreator setName(final String name){
             }
             throw new ApiException(restException);
         }
-    
+        return response;
+    }
+
+    @Override
+    public Fleet create(final TwilioRestClient client) {
+        Response response = makeRequest(client);
         return Fleet.fromJson(response.getStream(), client.getObjectMapper());
+    }
+
+    @Override
+    public TwilioResponse<Fleet> createWithResponse(final TwilioRestClient client) {
+        Response response = makeRequest(client);
+        Fleet content = Fleet.fromJson(response.getStream(), client.getObjectMapper());
+        return new TwilioResponse<>(content, response.getStatusCode(), response.getHeaders());
     }
     private void addPostParams(final Request request) {
 

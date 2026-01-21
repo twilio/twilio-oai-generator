@@ -15,6 +15,7 @@
 package com.twilio.rest.flexapi.v1.credential;
 
 import com.twilio.base.Updater;
+import com.twilio.base.TwilioResponse;
 import com.twilio.constant.EnumConstants;
 import com.twilio.constant.EnumConstants.ParameterType;
 import com.twilio.converter.Serializer;
@@ -52,14 +53,14 @@ public AwsUpdater setTestBoolean(final Boolean testBoolean){
 }
 
 
-            @Override
-    public Aws update(final TwilioRestClient client) {
+        
+    private Response makeRequest(final TwilioRestClient client) {
     
     String path = "/v1/Credentials/AWS/{Sid}";
 
     path = path.replace("{"+"Sid"+"}", this.pathSid.toString());
 
-    
+
         Request request = new Request(
             HttpMethod.POST,
             Domains.FLEXAPI.toString(),
@@ -67,9 +68,9 @@ public AwsUpdater setTestBoolean(final Boolean testBoolean){
         );
         request.setContentType(EnumConstants.ContentType.FORM_URLENCODED);
         addPostParams(request);
-    
+
         Response response = client.request(request);
-    
+
         if (response == null) {
             throw new ApiConnectionException("Aws update failed: Unable to connect to server");
         } else if (!TwilioRestClient.SUCCESS.test(response.getStatusCode())) {
@@ -82,9 +83,22 @@ public AwsUpdater setTestBoolean(final Boolean testBoolean){
             }
             throw new ApiException(restException);
         }
-    
+        return response;
+    }
+
+    @Override
+    public Aws update(final TwilioRestClient client) {
+        Response response = makeRequest(client);
         return Aws.fromJson(response.getStream(), client.getObjectMapper());
     }
+
+    @Override
+    public TwilioResponse<Aws> updateWithResponse(final TwilioRestClient client) {
+        Response response = makeRequest(client);
+        Aws content = Aws.fromJson(response.getStream(), client.getObjectMapper());
+        return new TwilioResponse<>(content, response.getStatusCode(), response.getHeaders());
+    }
+    
         private void addPostParams(final Request request) {
 
     if (testString != null) {
