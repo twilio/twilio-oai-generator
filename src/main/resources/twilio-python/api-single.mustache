@@ -13,10 +13,10 @@ from twilio.base.version import Version
 {{/dependents}}
 
 {{#hasMultipleResponseModels}}
-  class ResponseResource(Protocol):
-    pass
-  {{>nestedResponseModel}}
-  {{>responseInstance}}
+class ResponseResource(Protocol):
+  pass
+{{>nestedResponseModel}}
+{{>responseInstance}}
 {{/hasMultipleResponseModels}}
 {{#responseModel}}{{>instance}}{{/responseModel}}
 {{#instancePath}}{{>context}}{{/instancePath}}
