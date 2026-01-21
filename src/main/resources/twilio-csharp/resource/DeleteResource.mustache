@@ -23,7 +23,7 @@
         {
             client = client ?? TwilioClient.{{restClientMethodName}}();
             var response = client.Request(BuildDeleteRequest(options, client));
-            return statusCode >= 200 && statusCode < 400;
+            return response.StatusCode >= 200 && response.StatusCode < 400;
         }
 
         #if !NET35
@@ -36,7 +36,7 @@
         {
             client = client ?? TwilioClient.{{restClientMethodName}}();
             var response = await client.RequestAsync(BuildDeleteRequest(options, client));
-            return statusCode >= 200 && statusCode < 400;
+            return response.StatusCode >= 200 && response.StatusCode < 400;
         }
         #endif
 
