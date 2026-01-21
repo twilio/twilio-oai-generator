@@ -102,7 +102,7 @@ namespace Twilio.Rest.FlexApi.V1.Credential
         }
         #endif
 
-        public static TwilioResponse<bool> DeleteWithHeaders(DeleteMessageOptions options, ITwilioRestClient client = null)
+        public static TwilioResponse<bool> DeleteWithHeaders(DeleteAwsOptions options, ITwilioRestClient client = null)
         {
             client = client ?? TwilioClient.GetRestClient();
             var response = client.Request(BuildDeleteRequest(options, client));
@@ -111,7 +111,7 @@ namespace Twilio.Rest.FlexApi.V1.Credential
         }
 
         #if !NET35
-        public static async System.Threading.Tasks.Task<TwilioResponse<bool>> DeleteWithHeadersAsync(DeleteMessageOptions options, ITwilioRestClient client = null)
+        public static async System.Threading.Tasks.Task<TwilioResponse<bool>> DeleteWithHeadersAsync(DeleteAwsOptions options, ITwilioRestClient client = null)
         {
             client = client ?? TwilioClient.GetRestClient();
             var response = await client.RequestAsync(BuildDeleteRequest(options, client));

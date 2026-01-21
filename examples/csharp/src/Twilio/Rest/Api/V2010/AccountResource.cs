@@ -252,7 +252,7 @@ namespace Twilio.Rest.Api.V2010
         }
         #endif
 
-        public static TwilioResponse<bool> DeleteWithHeaders(DeleteMessageOptions options, ITwilioRestClient client = null)
+        public static TwilioResponse<bool> DeleteWithHeaders(DeleteAccountOptions options, ITwilioRestClient client = null)
         {
             client = client ?? TwilioClient.GetRestClient();
             var response = client.Request(BuildDeleteRequest(options, client));
@@ -261,7 +261,7 @@ namespace Twilio.Rest.Api.V2010
         }
 
         #if !NET35
-        public static async System.Threading.Tasks.Task<TwilioResponse<bool>> DeleteWithHeadersAsync(DeleteMessageOptions options, ITwilioRestClient client = null)
+        public static async System.Threading.Tasks.Task<TwilioResponse<bool>> DeleteWithHeadersAsync(DeleteAccountOptions options, ITwilioRestClient client = null)
         {
             client = client ?? TwilioClient.GetRestClient();
             var response = await client.RequestAsync(BuildDeleteRequest(options, client));
