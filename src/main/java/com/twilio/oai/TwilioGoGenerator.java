@@ -100,7 +100,7 @@ public class TwilioGoGenerator extends AbstractTwilioGoGenerator {
         String newModelName = removeStatusCode(modelName);
         if(Objects.equals(newModelName, modelName))
             newModelName = removeDigits(newModelName);
-        return StringUtils.camelize(newModelName);
+        return newModelName.equals("interface{}") ? newModelName : StringUtils.camelize(newModelName);
     }
 
     private boolean isPrimitiveOrArrayType(String typeName) {
