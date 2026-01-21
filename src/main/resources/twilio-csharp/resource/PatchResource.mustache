@@ -67,37 +67,37 @@
         {{! TwilioResponse Methods }}
         public static TwilioResponse<{{apiName}}{{resourceConstant}}> PatchWithHeaders(Patch{{apiName}}Options options, ITwilioRestClient client = null)
         {
-        client = client ?? TwilioClient.{{restClientMethodName}}();
-        var response = client.Request(BuildPatchRequest(options, client));
-        var resource = FromJson(response.Content);
-        return new TwilioResponse<{{apiName}}{{resourceConstant}}>(resource, response.Headers, response.StatusCode);
+            client = client ?? TwilioClient.{{restClientMethodName}}();
+            var response = client.Request(BuildPatchRequest(options, client));
+            var resource = FromJson(response.Content);
+            return new TwilioResponse<{{apiName}}{{resourceConstant}}>(resource, response.Headers, response.StatusCode);
         }
 
         #if !NET35
         public static async System.Threading.Tasks.Task<TwilioResponse<{{apiName}}{{resourceConstant}}>> PatchWithHeadersAsync(Patch{{apiName}}Options options,
-        ITwilioRestClient client = null)
+                ITwilioRestClient client = null)
         {
-        client = client ?? TwilioClient.{{restClientMethodName}}();
-        var response = await client.RequestAsync(BuildPatchRequest(options, client));
-        var resource = FromJson(response.Content);
-        return new TwilioResponse<{{apiName}}{{resourceConstant}}>(resource, response.Headers, response.StatusCode);
+            client = client ?? TwilioClient.{{restClientMethodName}}();
+            var response = await client.RequestAsync(BuildPatchRequest(options, client));
+            var resource = FromJson(response.Content);
+            return new TwilioResponse<{{apiName}}{{resourceConstant}}>(resource, response.Headers, response.StatusCode);
         }
         #endif
 
         public static TwilioResponse<{{apiName}}{{resourceConstant}}> PatchWithHeaders({{#vendorExtensions.x-request-body-param}}
             {{{dataType}}} {{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^required}} = null{{/required}},{{/vendorExtensions.x-request-body-param}}
-        ITwilioRestClient client = null)
+                ITwilioRestClient client = null)
         {
-        var options = new Patch{{apiName}}Options({{#requiredParams}}{{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^-last}}, {{/-last}}{{/requiredParams}}){ {{#vendorExtensions.x-request-body-param}}{{^required}}{{paramName}} = {{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^-last}}, {{/-last}}{{/required}}{{/vendorExtensions.x-request-body-param}} };
-        return PatchWithHeaders(options, client);
+            var options = new Patch{{apiName}}Options({{#requiredParams}}{{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^-last}}, {{/-last}}{{/requiredParams}}){ {{#vendorExtensions.x-request-body-param}}{{^required}}{{paramName}} = {{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^-last}}, {{/-last}}{{/required}}{{/vendorExtensions.x-request-body-param}} };
+            return PatchWithHeaders(options, client);
         }
 
         #if !NET35
         public static async System.Threading.Tasks.Task<TwilioResponse<{{apiName}}{{resourceConstant}}>> PatchWithHeadersAsync({{#vendorExtensions.x-request-body-param}}
             {{{dataType}}} {{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^required}} = null{{/required}},{{/vendorExtensions.x-request-body-param}}
-        ITwilioRestClient client = null)
+                ITwilioRestClient client = null)
         {
-        var options = new Patch{{apiName}}Options({{#requiredParams}}{{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^-last}}, {{/-last}}{{/requiredParams}}){ {{#vendorExtensions.x-request-body-param}}{{^required}}{{paramName}} = {{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^-last}}, {{/-last}}{{/required}}{{/vendorExtensions.x-request-body-param}} };
-        return await PatchWithHeadersAsync(options, client);
+            var options = new Patch{{apiName}}Options({{#requiredParams}}{{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^-last}}, {{/-last}}{{/requiredParams}}){ {{#vendorExtensions.x-request-body-param}}{{^required}}{{paramName}} = {{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^-last}}, {{/-last}}{{/required}}{{/vendorExtensions.x-request-body-param}} };
+            return await PatchWithHeadersAsync(options, client);
         }
         #endif
