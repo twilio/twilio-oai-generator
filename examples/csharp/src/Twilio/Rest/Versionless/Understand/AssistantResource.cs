@@ -104,6 +104,36 @@ namespace Twilio.Rest.Versionless.Understand
         }
         #endif
 
+        public static ResourceSetResponse<AssistantResource> ReadWithHeaders(ReadAssistantOptions options, ITwilioRestClient client = null)
+        {
+            client = client ?? TwilioClient.GetRestClient();
+            var response = client.Request(BuildReadRequest(options, client));
+            var page = Page<AssistantResource>.FromJson("assistants", response.Content);
+            var records = new ResourceSet<AssistantResource>(page, options, client);
+            return new ResourceSetResponse<AssistantResource>(records, response.Headers, response.StatusCode);
+        }
+
+        public static ResourceSetResponse<AssistantResource> ReadWithHeaders(
+            int? pageSize = null,
+            long? limit = null,
+            ITwilioRestClient client = null)
+        {
+            var options = new ReadAssistantOptions(){ PageSize = pageSize, Limit = limit};
+            return ReadWithHeaders(options, client);
+        }
+
+        #if !NET35
+        public static async System.Threading.Tasks.Task<ResourceSetResponse<AssistantResource>> ReadWithHeadersAsync(ReadAssistantOptions options, ITwilioRestClient client = null)
+        {
+            client = client ?? TwilioClient.GetRestClient();
+            var response = await client.RequestAsync(BuildReadRequest(options, client));
+
+            var page = Page<AssistantResource>.FromJson("assistants", response.Content);
+            var records = new ResourceSet<AssistantResource>(page, options, client);
+            return new ResourceSetResponse<AssistantResource>(records, response.Headers, response.StatusCode);
+        }
+        #endif
+        
         
         /// <summary> Fetch the target page of records </summary>
         /// <param name="targetUrl"> API-generated URL for the requested results page </param>

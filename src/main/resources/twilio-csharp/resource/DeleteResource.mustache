@@ -59,7 +59,7 @@
         #endif
 
         {{! TwilioResponse }}
-        public static TwilioResponse<bool> DeleteWithHeaders(DeleteMessageOptions options, ITwilioRestClient client = null)
+        public static TwilioResponse<bool> DeleteWithHeaders(Delete{{apiName}}Options options, ITwilioRestClient client = null)
         {
             client = client ?? TwilioClient.{{restClientMethodName}}();
             var response = client.Request(BuildDeleteRequest(options, client));
@@ -68,7 +68,7 @@
         }
 
         #if !NET35
-        public static async System.Threading.Tasks.Task<TwilioResponse<bool>> DeleteWithHeadersAsync(DeleteMessageOptions options, ITwilioRestClient client = null)
+        public static async System.Threading.Tasks.Task<TwilioResponse<bool>> DeleteWithHeadersAsync(Delete{{apiName}}Options options, ITwilioRestClient client = null)
         {
             client = client ?? TwilioClient.{{restClientMethodName}}();
             var response = await client.RequestAsync(BuildDeleteRequest(options, client));
