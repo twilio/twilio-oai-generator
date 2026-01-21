@@ -16,6 +16,7 @@ r"""
 from datetime import date, datetime
 from typing import Any, Dict, List, Optional, Union
 from twilio.base import deserialize, serialize, values
+from twilio.base.api_response import ApiResponse
 from twilio.base.instance_context import InstanceContext
 from twilio.base.instance_resource import InstanceResource
 from twilio.base.list_resource import ListResource
@@ -164,6 +165,48 @@ class FeedbackCallSummaryInstance(InstanceResource):
             account_sid=account_sid,
         )
 
+    def update_with_http_info(
+        self,
+        end_date: date,
+        start_date: date,
+        account_sid: Union[str, object] = values.unset,
+    ) -> ApiResponse:
+        """
+        Update the FeedbackCallSummaryInstance with HTTP info
+
+        :param end_date:
+        :param start_date:
+        :param account_sid:
+
+        :returns: ApiResponse with instance, status code, and headers
+        """
+        return self._proxy.update_with_http_info(
+            end_date=end_date,
+            start_date=start_date,
+            account_sid=account_sid,
+        )
+
+    async def update_with_http_info_async(
+        self,
+        end_date: date,
+        start_date: date,
+        account_sid: Union[str, object] = values.unset,
+    ) -> ApiResponse:
+        """
+        Asynchronous coroutine to update the FeedbackCallSummaryInstance with HTTP info
+
+        :param end_date:
+        :param start_date:
+        :param account_sid:
+
+        :returns: ApiResponse with instance, status code, and headers
+        """
+        return await self._proxy.update_with_http_info_async(
+            end_date=end_date,
+            start_date=start_date,
+            account_sid=account_sid,
+        )
+
     def __repr__(self) -> str:
         """
         Provide a friendly representation
@@ -194,20 +237,17 @@ class FeedbackCallSummaryContext(InstanceContext):
             **self._solution
         )
 
-    def update(
+    def _update(
         self,
         end_date: date,
         start_date: date,
         account_sid: Union[str, object] = values.unset,
-    ) -> FeedbackCallSummaryInstance:
+    ) -> tuple:
         """
-        Update the FeedbackCallSummaryInstance
+        Internal helper for update operation
 
-        :param end_date:
-        :param start_date:
-        :param account_sid:
-
-        :returns: The updated FeedbackCallSummaryInstance
+        Returns:
+            tuple: (payload, status_code, headers)
         """
 
         data = values.of(
@@ -223,15 +263,89 @@ class FeedbackCallSummaryContext(InstanceContext):
 
         headers["Accept"] = "application/json"
 
-        payload = self._version.update(
+        return self._version.update_with_response_info(
             method="POST", uri=self._uri, data=data, headers=headers
         )
 
+    def update(
+        self,
+        end_date: date,
+        start_date: date,
+        account_sid: Union[str, object] = values.unset,
+    ) -> FeedbackCallSummaryInstance:
+        """
+        Update the FeedbackCallSummaryInstance
+
+        :param end_date:
+        :param start_date:
+        :param account_sid:
+
+        :returns: The updated FeedbackCallSummaryInstance
+        """
+        payload, _, _ = self._update(
+            end_date=end_date, start_date=start_date, account_sid=account_sid
+        )
         return FeedbackCallSummaryInstance(
             self._version,
             payload,
             account_sid=self._solution["account_sid"],
             sid=self._solution["sid"],
+        )
+
+    def update_with_http_info(
+        self,
+        end_date: date,
+        start_date: date,
+        account_sid: Union[str, object] = values.unset,
+    ) -> ApiResponse:
+        """
+        Update the FeedbackCallSummaryInstance and return response metadata
+
+        :param end_date:
+        :param start_date:
+        :param account_sid:
+
+        :returns: ApiResponse with instance, status code, and headers
+        """
+        payload, status_code, headers = self._update(
+            end_date=end_date, start_date=start_date, account_sid=account_sid
+        )
+        instance = FeedbackCallSummaryInstance(
+            self._version,
+            payload,
+            account_sid=self._solution["account_sid"],
+            sid=self._solution["sid"],
+        )
+        return ApiResponse(data=instance, status_code=status_code, headers=headers)
+
+    async def _update_async(
+        self,
+        end_date: date,
+        start_date: date,
+        account_sid: Union[str, object] = values.unset,
+    ) -> tuple:
+        """
+        Internal async helper for update operation
+
+        Returns:
+            tuple: (payload, status_code, headers)
+        """
+
+        data = values.of(
+            {
+                "EndDate": serialize.iso8601_date(end_date),
+                "StartDate": serialize.iso8601_date(start_date),
+                "AccountSid": account_sid,
+            }
+        )
+        headers = values.of({})
+
+        headers["Content-Type"] = "application/x-www-form-urlencoded"
+
+        headers["Accept"] = "application/json"
+
+        return await self._version.update_with_response_info_async(
+            method="POST", uri=self._uri, data=data, headers=headers
         )
 
     async def update_async(
@@ -249,30 +363,41 @@ class FeedbackCallSummaryContext(InstanceContext):
 
         :returns: The updated FeedbackCallSummaryInstance
         """
-
-        data = values.of(
-            {
-                "EndDate": serialize.iso8601_date(end_date),
-                "StartDate": serialize.iso8601_date(start_date),
-                "AccountSid": account_sid,
-            }
+        payload, _, _ = await self._update_async(
+            end_date=end_date, start_date=start_date, account_sid=account_sid
         )
-        headers = values.of({})
-
-        headers["Content-Type"] = "application/x-www-form-urlencoded"
-
-        headers["Accept"] = "application/json"
-
-        payload = await self._version.update_async(
-            method="POST", uri=self._uri, data=data, headers=headers
-        )
-
         return FeedbackCallSummaryInstance(
             self._version,
             payload,
             account_sid=self._solution["account_sid"],
             sid=self._solution["sid"],
         )
+
+    async def update_with_http_info_async(
+        self,
+        end_date: date,
+        start_date: date,
+        account_sid: Union[str, object] = values.unset,
+    ) -> ApiResponse:
+        """
+        Asynchronous coroutine to update the FeedbackCallSummaryInstance and return response metadata
+
+        :param end_date:
+        :param start_date:
+        :param account_sid:
+
+        :returns: ApiResponse with instance, status code, and headers
+        """
+        payload, status_code, headers = await self._update_async(
+            end_date=end_date, start_date=start_date, account_sid=account_sid
+        )
+        instance = FeedbackCallSummaryInstance(
+            self._version,
+            payload,
+            account_sid=self._solution["account_sid"],
+            sid=self._solution["sid"],
+        )
+        return ApiResponse(data=instance, status_code=status_code, headers=headers)
 
     def __repr__(self) -> str:
         """

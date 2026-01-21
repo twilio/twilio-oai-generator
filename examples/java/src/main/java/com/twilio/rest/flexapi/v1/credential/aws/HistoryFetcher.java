@@ -15,6 +15,7 @@
 package com.twilio.rest.flexapi.v1.credential.aws;
 
 import com.twilio.base.Fetcher;
+import com.twilio.base.TwilioResponse;
 import com.twilio.constant.EnumConstants.ParameterType;
 import com.twilio.converter.Serializer;
 import com.twilio.exception.ApiConnectionException;
@@ -46,23 +47,23 @@ public HistoryFetcher setAddOnsData(final Map<String, Object> addOnsData){
 }
 
 
-            @Override
-    public History fetch(final TwilioRestClient client) {
+        
+    private Response makeRequest(final TwilioRestClient client) {
     
     String path = "/v1/Credentials/AWS/{Sid}/History";
 
     path = path.replace("{"+"Sid"+"}", this.pathSid.toString());
 
-    
+
         Request request = new Request(
             HttpMethod.GET,
             Domains.FLEXAPI.toString(),
             path
         );
         addQueryParams(request);
-    
+
         Response response = client.request(request);
-    
+
         if (response == null) {
             throw new ApiConnectionException("History fetch failed: Unable to connect to server");
         } else if (!TwilioRestClient.SUCCESS.test(response.getStatusCode())) {
@@ -75,7 +76,20 @@ public HistoryFetcher setAddOnsData(final Map<String, Object> addOnsData){
             }
             throw new ApiException(restException);
         }
+        return response;
+    }
+    
+    @Override
+    public History fetch(final TwilioRestClient client) {
+        Response response = makeRequest(client);
         return History.fromJson(response.getStream(), client.getObjectMapper());
+    }
+
+    @Override
+    public TwilioResponse<History> fetchWithResponse(final TwilioRestClient client) {
+        Response response = makeRequest(client);
+        History content =  History.fromJson(response.getStream(), client.getObjectMapper());
+        return new TwilioResponse<>(content, response.getStatusCode(), response.getHeaders());
     }
         private void addQueryParams(final Request request) {
 

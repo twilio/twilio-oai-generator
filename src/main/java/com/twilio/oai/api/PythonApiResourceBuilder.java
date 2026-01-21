@@ -5,14 +5,18 @@ import com.twilio.oai.StringHelper;
 import com.twilio.oai.common.ApplicationConstants;
 import com.twilio.oai.common.EnumConstants;
 import com.twilio.oai.common.Utility;
+import com.twilio.oai.java.cache.ResourceCacheContext;
 import com.twilio.oai.resolver.Resolver;
 import com.twilio.oai.resolver.python.PythonCodegenModelResolver;
 import com.twilio.oai.template.IApiActionTemplate;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.openapitools.codegen.CodegenModel;
@@ -81,7 +85,7 @@ public class PythonApiResourceBuilder extends FluentApiResourceBuilder {
      */
     public ApiResourceBuilder updateResponseModel(Resolver<CodegenProperty> codegenPropertyResolver, PythonCodegenModelResolver codegenModelResolver) {
         final String resourceName = getApiName();
-
+        boolean isApiV1 = ResourceCacheContext.get() != null && ResourceCacheContext.get().isV1();
         final List<CodegenModel> allResponseModels = codegenOperationList
                 .stream()
                 .flatMap(co -> co.responses
@@ -93,13 +97,17 @@ public class PythonApiResourceBuilder extends FluentApiResourceBuilder {
                         .stream())
                 .collect(Collectors.toList());
 
+        // set all unique models in responseInstanceModels
+        this.responseInstanceModels = new HashSet<>(allResponseModels);
+
         allResponseModels.stream().findFirst().ifPresent(firstModel -> {
             responseModel = firstModel;
 
             allResponseModels.forEach(model -> {
                 codegenModelResolver.resolveResponseModel(model, this);
 
-                model.setName(resourceName);
+                if (!isApiV1 || this.responseInstanceModels.size() <= 1)
+                    model.setName(resourceName);
                 model.getVars().forEach(variable -> {
                     codegenPropertyResolver.resolve(variable, this);
                     variable.vendorExtensions.put("json-name", variable.baseName);
@@ -112,7 +120,7 @@ public class PythonApiResourceBuilder extends FluentApiResourceBuilder {
                             .forEach(param -> param.vendorExtensions.put("x-stringify", true));
                 });
 
-                if (model != responseModel) {
+                if (!isApiV1 && model != responseModel) {
                     // Merge any vars from the model that aren't part of the response model.
                     model.getVars().forEach(variable -> {
                         if (responseModel.getVars().stream().noneMatch(v -> v.getName().equals(variable.getName()))) {
@@ -121,6 +129,10 @@ public class PythonApiResourceBuilder extends FluentApiResourceBuilder {
                     });
                 }
             });
+
+            if (!isApiV1 || this.responseInstanceModels.size() <= 1) {
+                responseModel.setName(resourceName);
+            }
 
             responseModel.getVars().forEach(variable -> {
                 addModel(modelTree, variable.complexType, variable.dataType);
@@ -131,6 +143,13 @@ public class PythonApiResourceBuilder extends FluentApiResourceBuilder {
                 });
             });
         });
+
+        // Add properties nested models
+        if (isApiV1 && this.responseInstanceModels.size() > 1) {
+            allResponseModels.stream()
+                .filter(model -> model != responseModel)
+                .forEach(this::processModelVariables);
+        }
 
         modelTree.values().forEach(model -> model.setName(getModelName(model.getClassname())));
         if (responseModel != null) {
@@ -203,5 +222,14 @@ public class PythonApiResourceBuilder extends FluentApiResourceBuilder {
     public ApiResourceBuilder updateModel(Resolver<CodegenModel> codegenModelResolver) {
         super.updateModel(codegenModelResolver);
         return this;
+    }
+    private void processModelVariables(CodegenModel model) {
+        model.getVars().forEach(variable -> {
+            addModel(modelTree, variable.complexType, variable.dataType);
+            super.updateDataType(variable.complexType, variable.dataType, (dataTypeWithEnum, dataType) -> {
+                variable.datatypeWithEnum = dataTypeWithEnum;
+                variable.baseType = dataType;
+            });
+        });
     }
 }

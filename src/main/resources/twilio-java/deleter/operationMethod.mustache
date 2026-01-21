@@ -7,28 +7,28 @@ httpMethod: http method associated in the current operation.
 domainName: example api, video, chat, etc. These can be found in Domains.java in twilio-java
 vendorExtensions.x-content-type: content type of the request, example: application/json, application/x-www-form-urlencoded
 }}
-    @Override
-    public boolean delete(final TwilioRestClient client) {
+
+    private Response makeRequest(final TwilioRestClient client) {
     {{>common/generateUri}}
 
         Predicate<Integer> deleteStatuses = i -> i != null && i >= 200 && i < 300;
-        Request request = new Request(
+            Request request = new Request(
             HttpMethod.{{httpMethod}},
             Domains.{{#lambda.uppercase}}{{domainName}}{{/lambda.uppercase}}.toString(),
             path
         );
-    {{#vendorExtensions.x-request-content-type}}
-        request.setContentType(EnumConstants.ContentType.{{vendorExtensions.x-request-content-type}});
-    {{/vendorExtensions.x-request-content-type}}
-    {{#vendorExtensions.x-no-auth}}
-        request.setAuth(NoAuthStrategy.getInstance());
-    {{/vendorExtensions.x-no-auth}}
-    {{#queryParams.0}}
-        addQueryParams(request);
-    {{/queryParams.0}}
-    {{#headerParams.0}}
-        addHeaderParams(request);
-    {{/headerParams.0}}
+        {{#vendorExtensions.x-request-content-type}}
+            request.setContentType(EnumConstants.ContentType.{{vendorExtensions.x-request-content-type}});
+        {{/vendorExtensions.x-request-content-type}}
+        {{#vendorExtensions.x-no-auth}}
+            request.setAuth(NoAuthStrategy.getInstance());
+        {{/vendorExtensions.x-no-auth}}
+        {{#queryParams.0}}
+            addQueryParams(request);
+        {{/queryParams.0}}
+        {{#headerParams.0}}
+            addHeaderParams(request);
+        {{/headerParams.0}}
 
         Response response = client.request(request);
 
@@ -44,5 +44,20 @@ vendorExtensions.x-content-type: content type of the request, example: applicati
             }
             throw new ApiException(restException);
         }
+        return response;
+    }
+
+    @Override
+    public boolean delete(final TwilioRestClient client) {
+        Response response = makeRequest(client);
+        Predicate<Integer> deleteStatuses = i -> i != null && i >= 200 && i < 300;
         return deleteStatuses.test(response.getStatusCode());
+    }
+
+    @Override
+    public TwilioResponse<Boolean> deleteWithResponse(final TwilioRestClient client) {
+        Response response = makeRequest(client);
+        Predicate<Integer> deleteStatuses = i -> i != null && i >= 200 && i < 300;
+        Boolean deleted = deleteStatuses.test(response.getStatusCode());
+        return new TwilioResponse<>(deleted, response.getStatusCode(), response.getHeaders());
     }

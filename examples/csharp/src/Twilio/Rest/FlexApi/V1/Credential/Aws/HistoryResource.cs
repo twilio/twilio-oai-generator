@@ -100,6 +100,40 @@ namespace Twilio.Rest.FlexApi.V1.Credential.Aws
             return await FetchAsync(options, client);
         }
         #endif
+            
+        public static TwilioResponse<HistoryResource> FetchWithHeaders(FetchHistoryOptions options, ITwilioRestClient client = null)
+        {
+            client = client ?? TwilioClient.GetRestClient();
+            var response = client.Request(BuildFetchRequest(options, client));
+            var resource = FromJson(response.Content);
+            return new TwilioResponse<HistoryResource>(resource, response.Headers, response.StatusCode);
+        }
+        #if !NET35
+        public static async System.Threading.Tasks.Task<TwilioResponse<HistoryResource>> FetchWithHeadersAsync(FetchHistoryOptions options, ITwilioRestClient client = null)
+        {
+            client = client ?? TwilioClient.GetRestClient();
+            var response = await client.RequestAsync(BuildFetchRequest(options, client));
+            var resource = FromJson(response.Content);
+            return new TwilioResponse<HistoryResource>(resource, response.Headers, response.StatusCode);
+        }
+        #endif
+        
+        public static TwilioResponse<HistoryResource> FetchWithHeaders(
+                    string pathSid, 
+                    Dictionary<string, object> addOnsData = null, 
+                ITwilioRestClient client = null)
+        {
+            var options = new FetchHistoryOptions(pathSid){ AddOnsData = addOnsData };
+            return FetchWithHeaders(options, client);
+        }
+        
+        #if !NET35
+        public static async System.Threading.Tasks.Task<TwilioResponse<HistoryResource>> FetchWithHeadersAsync(string pathSid, Dictionary<string, object> addOnsData = null, ITwilioRestClient client = null)
+        {
+            var options = new FetchHistoryOptions(pathSid){ AddOnsData = addOnsData };
+            return await FetchWithHeadersAsync(options, client);
+        }
+        #endif
     
         /// <summary>
         /// Converts a JSON string into a HistoryResource object

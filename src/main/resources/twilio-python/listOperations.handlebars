@@ -1,12 +1,11 @@
 {{#operations}}
     {{#vendorExtensions.x-is-create-operation}}
-    def create(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> {{instanceName}}:
+    def _create(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> tuple:
         """
-        Create the {{instanceName}}
+        Internal helper for create operation
 
-        {{#allParams}}:param {{paramName}}: {{{description}}}
-        {{/allParams}}
-        :returns: The created {{instanceName}}
+        Returns:
+            tuple: (payload, status_code, headers)
         """
         {{#bodyParam}}data = {{paramName}}.to_dict(){{/bodyParam}}
         {{^bodyParam}}{{#hasParams}}data = values.of({ {{#allParams}}{{#isFormParam}}
@@ -27,9 +26,58 @@
                 {{/queryParams}}
             })
         {{/queryParams.0}}
-        payload = self._version.create(method='{{vendorExtensions.x-http-method}}', uri=self._uri, {{#hasParams}}data=data,{{/hasParams}} headers=headers{{#queryParams.0}}, params=params{{/queryParams.0}})
+        return self._version.create_with_response_info(method='{{vendorExtensions.x-http-method}}', uri=self._uri, {{#hasParams}}data=data,{{/hasParams}} headers=headers{{#queryParams.0}}, params=params{{/queryParams.0}})
 
+    def create(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> {{instanceName}}:
+        """
+        Create the {{instanceName}}
+
+        {{#allParams}}:param {{paramName}}: {{{description}}}
+        {{/allParams}}
+        :returns: The created {{instanceName}}
+        """
+        payload, _, _ = self._create({{#allParams}}{{paramName}}={{paramName}}{{#unless @last}}, {{/unless}}{{/allParams}})
         return {{instanceName}}(self._version, payload{{#listPathParams}}, {{paramName}}=self._solution['{{paramName}}']{{/listPathParams}})
+
+    def create_with_http_info(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> ApiResponse:
+        """
+        Create the {{instanceName}} and return response metadata
+
+        {{#allParams}}:param {{paramName}}: {{{description}}}
+        {{/allParams}}
+        :returns: ApiResponse with instance, status code, and headers
+        """
+        payload, status_code, headers = self._create({{#allParams}}{{paramName}}={{paramName}}{{#unless @last}}, {{/unless}}{{/allParams}})
+        instance = {{instanceName}}(self._version, payload{{#listPathParams}}, {{paramName}}=self._solution['{{paramName}}']{{/listPathParams}})
+        return ApiResponse(data=instance, status_code=status_code, headers=headers)
+
+    async def _create_async(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> tuple:
+        """
+        Internal async helper for create operation
+
+        Returns:
+            tuple: (payload, status_code, headers)
+        """
+        {{#bodyParam}}data = {{paramName}}.to_dict(){{/bodyParam}}
+        {{^bodyParam}}{{#hasParams}}data = values.of({ {{#allParams}}{{#isFormParam}}
+            '{{{baseName}}}': {{#if vendorExtensions.x-serialize}}{{vendorExtensions.x-serialize}}({{paramName}}{{#if isArray}}, lambda e: {{#startsWith baseType text='object'}}serialize.object(e){{else}}e{{/startsWith}}){{else}}){{/if}}{{else}}{{paramName}}{{/if}},{{/isFormParam}}{{/allParams}}
+        }){{/hasParams}}{{/bodyParam}}
+        headers = values.of({
+                {{#headerParams}}'{{{baseName}}}': {{paramName}},
+                {{/headerParams}}'Content-Type': 'application/x-www-form-urlencoded'
+            })
+        {{#consumes}}
+        headers["Content-Type"] = "{{{mediaType}}}"
+        {{/consumes}}
+        {{#vendorExtensions.successProduce}}
+        headers["Accept"] = "{{{mediaType}}}"
+        {{/vendorExtensions.successProduce}}
+        {{#queryParams.0}}params = values.of({
+                {{#queryParams}}'{{{baseName}}}': {{paramName}},
+                {{/queryParams}}
+            })
+        {{/queryParams.0}}
+        return await self._version.create_with_response_info_async(method='{{vendorExtensions.x-http-method}}', uri=self._uri, {{#hasParams}}data=data,{{/hasParams}} headers=headers{{#queryParams.0}}, params=params{{/queryParams.0}})
 
     async def create_async(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> {{instanceName}}:
         """
@@ -39,10 +87,28 @@
         {{/allParams}}
         :returns: The created {{instanceName}}
         """
-        {{#bodyParam}}data = {{paramName}}.to_dict(){{/bodyParam}}
-        {{^bodyParam}}{{#hasParams}}data = values.of({ {{#allParams}}{{#isFormParam}}
-            '{{{baseName}}}': {{#if vendorExtensions.x-serialize}}{{vendorExtensions.x-serialize}}({{paramName}}{{#if isArray}}, lambda e: {{#startsWith baseType text='object'}}serialize.object(e){{else}}e{{/startsWith}}){{else}}){{/if}}{{else}}{{paramName}}{{/if}},{{/isFormParam}}{{/allParams}}
-        }){{/hasParams}}{{/bodyParam}}
+        payload, _, _ = await self._create_async({{#allParams}}{{paramName}}={{paramName}}{{#unless @last}}, {{/unless}}{{/allParams}})
+        return {{instanceName}}(self._version, payload{{#listPathParams}}, {{paramName}}=self._solution['{{paramName}}']{{/listPathParams}})
+
+    async def create_with_http_info_async(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> ApiResponse:
+        """
+        Asynchronously create the {{instanceName}} and return response metadata
+
+        {{#allParams}}:param {{paramName}}: {{{description}}}
+        {{/allParams}}
+        :returns: ApiResponse with instance, status code, and headers
+        """
+        payload, status_code, headers = await self._create_async({{#allParams}}{{paramName}}={{paramName}}{{#unless @last}}, {{/unless}}{{/allParams}})
+        instance = {{instanceName}}(self._version, payload{{#listPathParams}}, {{paramName}}=self._solution['{{paramName}}']{{/listPathParams}})
+        return ApiResponse(data=instance, status_code=status_code, headers=headers)
+    {{/vendorExtensions.x-is-create-operation}}{{^instancePath}}{{#vendorExtensions.x-is-fetch-operation}}
+    def _fetch(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> tuple:
+        """
+        Internal helper for fetch operation
+
+        Returns:
+            tuple: (payload, status_code, headers)
+        """
         headers = values.of({
                 {{#headerParams}}'{{{baseName}}}': {{paramName}},
                 {{/headerParams}}'Content-Type': 'application/x-www-form-urlencoded'
@@ -58,17 +124,36 @@
                 {{/queryParams}}
             })
         {{/queryParams.0}}
-        payload = await self._version.create_async(method='{{vendorExtensions.x-http-method}}', uri=self._uri, {{#hasParams}}data=data,{{/hasParams}} headers=headers{{#queryParams.0}}, params=params{{/queryParams.0}})
+        return self._version.fetch_with_response_info(method='{{vendorExtensions.x-http-method}}', uri=self._uri, headers=headers{{#queryParams.0}}, params=params{{/queryParams.0}})
 
-        return {{instanceName}}(self._version, payload{{#listPathParams}}, {{paramName}}=self._solution['{{paramName}}']{{/listPathParams}})
-    {{/vendorExtensions.x-is-create-operation}}{{^instancePath}}{{#vendorExtensions.x-is-fetch-operation}}
     def fetch(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> {{instanceName}}:
         """
-        Asynchronously fetch the {{instanceName}}
+        Fetch the {{instanceName}}
 
         {{#allParams}}:param {{paramName}}: {{{description}}}{{/allParams}}
         :returns: The fetched {{instanceName}}
         """
+        payload, _, _ = self._fetch({{#allParams}}{{paramName}}={{paramName}}{{#unless @last}}, {{/unless}}{{/allParams}})
+        return {{instanceName}}(self._version, payload{{#listPathParams}}, {{paramName}}=self._solution['{{paramName}}']{{/listPathParams}})
+
+    def fetch_with_http_info(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> ApiResponse:
+        """
+        Fetch the {{instanceName}} and return response metadata
+
+        {{#allParams}}:param {{paramName}}: {{{description}}}{{/allParams}}
+        :returns: ApiResponse with instance, status code, and headers
+        """
+        payload, status_code, headers = self._fetch({{#allParams}}{{paramName}}={{paramName}}{{#unless @last}}, {{/unless}}{{/allParams}})
+        instance = {{instanceName}}(self._version, payload{{#listPathParams}}, {{paramName}}=self._solution['{{paramName}}']{{/listPathParams}})
+        return ApiResponse(data=instance, status_code=status_code, headers=headers)
+
+    async def _fetch_async(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> tuple:
+        """
+        Internal async helper for fetch operation
+
+        Returns:
+            tuple: (payload, status_code, headers)
+        """
         headers = values.of({
                 {{#headerParams}}'{{{baseName}}}': {{paramName}},
                 {{/headerParams}}'Content-Type': 'application/x-www-form-urlencoded'
@@ -84,9 +169,7 @@
                 {{/queryParams}}
             })
         {{/queryParams.0}}
-        payload = self._version.fetch(method='{{vendorExtensions.x-http-method}}', uri=self._uri, headers=headers{{#queryParams.0}}, params=params{{/queryParams.0}})
-
-        return {{instanceName}}(self._version, payload{{#listPathParams}}, {{paramName}}=self._solution['{{paramName}}']{{/listPathParams}})
+        return await self._version.fetch_with_response_info_async(method='{{vendorExtensions.x-http-method}}', uri=self._uri, headers=headers{{#queryParams.0}}, params=params{{/queryParams.0}})
 
     async def fetch_async(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> {{instanceName}}:
         """
@@ -95,30 +178,25 @@
         {{#allParams}}:param {{paramName}}: {{{description}}}{{/allParams}}
         :returns: The fetched {{instanceName}}
         """
-        headers = values.of({
-                {{#headerParams}}'{{{baseName}}}': {{paramName}},
-                {{/headerParams}}'Content-Type': 'application/x-www-form-urlencoded'
-            })
-        {{#consumes}}
-        headers["Content-Type"] = "{{{mediaType}}}"
-        {{/consumes}}
-        {{#vendorExtensions.successProduce}}
-        headers["Accept"] = "{{{mediaType}}}"
-        {{/vendorExtensions.successProduce}}
-        {{#queryParams.0}}params = values.of({
-                {{#queryParams}}'{{{baseName}}}': {{paramName}},
-                {{/queryParams}}
-            })
-        {{/queryParams.0}}
-        payload = await self._version.fetch_async(method='{{vendorExtensions.x-http-method}}', uri=self._uri, headers=headers{{#queryParams.0}}, params=params{{/queryParams.0}})
+        payload, _, _ = await self._fetch_async({{#allParams}}{{paramName}}={{paramName}}{{#unless @last}}, {{/unless}}{{/allParams}})
+        return {{instanceName}}(self._version, payload{{#listPathParams}}, {{paramName}}=self._solution['{{paramName}}']{{/listPathParams}})
 
-        return {{instanceName}}(self._version, payload{{#listPathParams}}, {{paramName}}=self._solution['{{paramName}}']{{/listPathParams}}){{/vendorExtensions.x-is-fetch-operation}}{{#vendorExtensions.x-is-delete-operation}}
-    def delete(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> bool:
+    async def fetch_with_http_info_async(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> ApiResponse:
         """
-        Asynchronously delete the {{instanceName}}
+        Asynchronously fetch the {{instanceName}} and return response metadata
 
         {{#allParams}}:param {{paramName}}: {{{description}}}{{/allParams}}
-        :returns: True if delete succeeds, False otherwise
+        :returns: ApiResponse with instance, status code, and headers
+        """
+        payload, status_code, headers = await self._fetch_async({{#allParams}}{{paramName}}={{paramName}}{{#unless @last}}, {{/unless}}{{/allParams}})
+        instance = {{instanceName}}(self._version, payload{{#listPathParams}}, {{paramName}}=self._solution['{{paramName}}']{{/listPathParams}})
+        return ApiResponse(data=instance, status_code=status_code, headers=headers){{/vendorExtensions.x-is-fetch-operation}}{{#vendorExtensions.x-is-delete-operation}}
+    def _delete(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> tuple:
+        """
+        Internal helper for delete operation
+
+        Returns:
+            tuple: (success_boolean, status_code, headers)
         """
         headers = values.of({
                 {{#headerParams}}'{{{baseName}}}': {{paramName}},
@@ -134,7 +212,50 @@
                 {{#queryParams}}'{{{baseName}}}': {{paramName}},
                 {{/queryParams}}
             }){{/queryParams.0}}
-        return self._version.delete(method='{{vendorExtensions.x-http-method}}', uri=self._uri, headers=headers{{#queryParams.0}}, params=params{{/queryParams.0}})
+        return self._version.delete_with_response_info(method='{{vendorExtensions.x-http-method}}', uri=self._uri, headers=headers{{#queryParams.0}}, params=params{{/queryParams.0}})
+
+    def delete(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> bool:
+        """
+        Delete the {{instanceName}}
+
+        {{#allParams}}:param {{paramName}}: {{{description}}}{{/allParams}}
+        :returns: True if delete succeeds, False otherwise
+        """
+        success, _, _ = self._delete({{#allParams}}{{paramName}}={{paramName}}{{#unless @last}}, {{/unless}}{{/allParams}})
+        return success
+
+    def delete_with_http_info(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> ApiResponse:
+        """
+        Delete the {{instanceName}} and return response metadata
+
+        {{#allParams}}:param {{paramName}}: {{{description}}}{{/allParams}}
+        :returns: ApiResponse with success boolean, status code, and headers
+        """
+        success, status_code, headers = self._delete({{#allParams}}{{paramName}}={{paramName}}{{#unless @last}}, {{/unless}}{{/allParams}})
+        return ApiResponse(data=success, status_code=status_code, headers=headers)
+
+    async def _delete_async(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> tuple:
+        """
+        Internal async helper for delete operation
+
+        Returns:
+            tuple: (success_boolean, status_code, headers)
+        """
+        headers = values.of({
+                {{#headerParams}}'{{{baseName}}}': {{paramName}},
+                {{/headerParams}}'Content-Type': 'application/x-www-form-urlencoded'
+            })
+        {{#consumes}}
+        headers["Content-Type"] = "{{{mediaType}}}"
+        {{/consumes}}
+        {{#vendorExtensions.successProduce}}
+        headers["Accept"] = "{{{mediaType}}}"
+        {{/vendorExtensions.successProduce}}
+        {{#queryParams.0}}params = values.of({
+                {{#queryParams}}'{{{baseName}}}': {{paramName}},
+                {{/queryParams}}
+            }){{/queryParams.0}}
+        return await self._version.delete_with_response_info_async(method='{{vendorExtensions.x-http-method}}', uri=self._uri, headers=headers{{#queryParams.0}}, params=params{{/queryParams.0}})
 
     async def delete_async(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> bool:
         """
@@ -143,6 +264,30 @@
         {{#allParams}}:param {{paramName}}: {{{description}}}{{/allParams}}
         :returns: True if delete succeeds, False otherwise
         """
+        success, _, _ = await self._delete_async({{#allParams}}{{paramName}}={{paramName}}{{#unless @last}}, {{/unless}}{{/allParams}})
+        return success
+
+    async def delete_with_http_info_async(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> ApiResponse:
+        """
+        Asynchronously delete the {{instanceName}} and return response metadata
+
+        {{#allParams}}:param {{paramName}}: {{{description}}}{{/allParams}}
+        :returns: ApiResponse with success boolean, status code, and headers
+        """
+        success, status_code, headers = await self._delete_async({{#allParams}}{{paramName}}={{paramName}}{{#unless @last}}, {{/unless}}{{/allParams}})
+        return ApiResponse(data=success, status_code=status_code, headers=headers){{/vendorExtensions.x-is-delete-operation}}{{#vendorExtensions.x-is-update-operation}}
+
+    def _update(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> tuple:
+        """
+        Internal helper for update operation
+
+        Returns:
+            tuple: (payload, status_code, headers)
+        """
+        {{#bodyParam}}data = {{paramName}}.to_dict(){{/bodyParam}}
+        {{^bodyParam}}{{#hasParams}}data = values.of({ {{#allParams}}{{#isFormParam}}
+            '{{{baseName}}}': {{#if vendorExtensions.x-serialize}}{{vendorExtensions.x-serialize}}({{paramName}}{{#if isArray}}, lambda e: {{#startsWith baseType text='object'}}serialize.object(e){{else}}e{{/startsWith}}){{else}}){{/if}}{{else}}{{paramName}}{{/if}},{{/isFormParam}}{{/allParams}}
+        }){{/hasParams}}{{/bodyParam}}
         headers = values.of({
                 {{#headerParams}}'{{{baseName}}}': {{paramName}},
                 {{/headerParams}}'Content-Type': 'application/x-www-form-urlencoded'
@@ -156,8 +301,9 @@
         {{#queryParams.0}}params = values.of({
                 {{#queryParams}}'{{{baseName}}}': {{paramName}},
                 {{/queryParams}}
-            }){{/queryParams.0}}
-        return await self._version.delete_async(method='{{vendorExtensions.x-http-method}}', uri=self._uri, headers=headers{{#queryParams.0}}, params=params{{/queryParams.0}}){{/vendorExtensions.x-is-delete-operation}}{{#vendorExtensions.x-is-update-operation}}
+            })
+        {{/queryParams.0}}
+        return self._version.update_with_response_info(method='{{vendorExtensions.x-http-method}}', uri=self._uri, {{#hasParams}}data=data,{{/hasParams}} headers=headers{{#queryParams.0}}, params=params{{/queryParams.0}})
 
     def update(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> {{instanceName}}:
         """
@@ -165,7 +311,29 @@
 
         {{#allParams}}:param {{paramName}}: {{{description}}}
         {{/allParams}}
-        :returns: The created {{instanceName}}
+        :returns: The updated {{instanceName}}
+        """
+        payload, _, _ = self._update({{#allParams}}{{paramName}}={{paramName}}{{#unless @last}}, {{/unless}}{{/allParams}})
+        return {{instanceName}}(self._version, payload{{#listPathParams}}, {{paramName}}=self._solution['{{paramName}}']{{/listPathParams}})
+
+    def update_with_http_info(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> ApiResponse:
+        """
+        Update the {{instanceName}} and return response metadata
+
+        {{#allParams}}:param {{paramName}}: {{{description}}}
+        {{/allParams}}
+        :returns: ApiResponse with instance, status code, and headers
+        """
+        payload, status_code, headers = self._update({{#allParams}}{{paramName}}={{paramName}}{{#unless @last}}, {{/unless}}{{/allParams}})
+        instance = {{instanceName}}(self._version, payload{{#listPathParams}}, {{paramName}}=self._solution['{{paramName}}']{{/listPathParams}})
+        return ApiResponse(data=instance, status_code=status_code, headers=headers)
+
+    async def _update_async(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> tuple:
+        """
+        Internal async helper for update operation
+
+        Returns:
+            tuple: (payload, status_code, headers)
         """
         {{#bodyParam}}data = {{paramName}}.to_dict(){{/bodyParam}}
         {{^bodyParam}}{{#hasParams}}data = values.of({ {{#allParams}}{{#isFormParam}}
@@ -186,9 +354,7 @@
                 {{/queryParams}}
             })
         {{/queryParams.0}}
-        payload = self._version.update(method='{{vendorExtensions.x-http-method}}', uri=self._uri, {{#hasParams}}data=data,{{/hasParams}} headers=headers{{#queryParams.0}}, params=params{{/queryParams.0}})
-
-        return {{instanceName}}(self._version, payload{{#listPathParams}}, {{paramName}}=self._solution['{{paramName}}']{{/listPathParams}})
+        return await self._version.update_with_response_info_async(method='{{vendorExtensions.x-http-method}}', uri=self._uri, {{#hasParams}}data=data,{{/hasParams}} headers=headers{{#queryParams.0}}, params=params{{/queryParams.0}})
 
     async def update_async(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> {{instanceName}}:
         """
@@ -196,30 +362,22 @@
 
         {{#allParams}}:param {{paramName}}: {{{description}}}
         {{/allParams}}
-        :returns: The created {{instanceName}}
+        :returns: The updated {{instanceName}}
         """
-        {{#bodyParam}}data = {{paramName}}.to_dict(){{/bodyParam}}
-        {{^bodyParam}}{{#hasParams}}data = values.of({ {{#allParams}}{{#isFormParam}}
-            '{{{baseName}}}': {{#if vendorExtensions.x-serialize}}{{vendorExtensions.x-serialize}}({{paramName}}{{#if isArray}}, lambda e: {{#startsWith baseType text='object'}}serialize.object(e){{else}}e{{/startsWith}}){{else}}){{/if}}{{else}}{{paramName}}{{/if}},{{/isFormParam}}{{/allParams}}
-        }){{/hasParams}}{{/bodyParam}}
-        headers = values.of({
-                {{#headerParams}}'{{{baseName}}}': {{paramName}},
-                {{/headerParams}}'Content-Type': 'application/x-www-form-urlencoded'
-            })
-        {{#consumes}}
-        headers["Content-Type"] = "{{{mediaType}}}"
-        {{/consumes}}
-        {{#vendorExtensions.successProduce}}
-        headers["Accept"] = "{{{mediaType}}}"
-        {{/vendorExtensions.successProduce}}
-        {{#queryParams.0}}params = values.of({
-                {{#queryParams}}'{{{baseName}}}': {{paramName}},
-                {{/queryParams}}
-            })
-        {{/queryParams.0}}
-        payload = await self._version.update_async(method='{{vendorExtensions.x-http-method}}', uri=self._uri, {{#hasParams}}data=data,{{/hasParams}} headers=headers{{#queryParams.0}}, params=params{{/queryParams.0}})
+        payload, _, _ = await self._update_async({{#allParams}}{{paramName}}={{paramName}}{{#unless @last}}, {{/unless}}{{/allParams}})
+        return {{instanceName}}(self._version, payload{{#listPathParams}}, {{paramName}}=self._solution['{{paramName}}']{{/listPathParams}})
 
-        return {{instanceName}}(self._version, payload{{#listPathParams}}, {{paramName}}=self._solution['{{paramName}}']{{/listPathParams}}){{/vendorExtensions.x-is-update-operation}}{{/instancePath}}{{#vendorExtensions.x-is-read-operation}}
+    async def update_with_http_info_async(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> ApiResponse:
+        """
+        Asynchronously update the {{instanceName}} and return response metadata
+
+        {{#allParams}}:param {{paramName}}: {{{description}}}
+        {{/allParams}}
+        :returns: ApiResponse with instance, status code, and headers
+        """
+        payload, status_code, headers = await self._update_async({{#allParams}}{{paramName}}={{paramName}}{{#unless @last}}, {{/unless}}{{/allParams}})
+        instance = {{instanceName}}(self._version, payload{{#listPathParams}}, {{paramName}}=self._solution['{{paramName}}']{{/listPathParams}})
+        return ApiResponse(data=instance, status_code=status_code, headers=headers){{/vendorExtensions.x-is-update-operation}}{{/instancePath}}{{#vendorExtensions.x-is-read-operation}}
     def stream(self, {{#allParams}}
         {{#startsWith paramName text='page_size'}}{{else}}{{paramName}}: Union[{{{dataType}}}, object] = values.unset,{{/startsWith}}{{/allParams}}
         limit: Optional[int] = None,
@@ -278,6 +436,62 @@
 
         return self._version.stream_async(page, limits['limit'])
 
+    def stream_with_http_info(self, {{#allParams}}
+        {{#startsWith paramName text='page_size'}}{{else}}{{paramName}}: Union[{{{dataType}}}, object] = values.unset,{{/startsWith}}{{/allParams}}
+        limit: Optional[int] = None,
+        page_size: Optional[int] = None,
+    ) -> tuple:
+        """
+        Streams {{instanceName}} and returns headers from first page
+
+        {{#allParams}}{{#startsWith paramName text='page_size'}}{{else}}
+        :param {{dataType}} {{paramName}}: {{{description}}}{{/startsWith}}{{/allParams}}
+        :param limit: Upper limit for the number of records to return. stream()
+                      guarantees to never return more than limit.  Default is no limit
+        :param page_size: Number of records to fetch per request, when not set will use
+                          the default value of 50 records.  If no page_size is defined
+                          but a limit is defined, stream() will attempt to read the
+                          limit with the most efficient page size, i.e. min(limit, 1000)
+
+        :returns: tuple of (generator, status_code, headers) where generator yields instances
+        """
+        limits = self._version.read_limits(limit, page_size)
+        page_response = self.page_with_http_info({{#allParams}}{{#startsWith paramName text='page_size'}}{{else}}
+            {{paramName}}={{paramName}},{{/startsWith}}{{/allParams}}
+            page_size=limits['page_size']
+        )
+
+        generator = self._version.stream(page_response.data, limits['limit'])
+        return (generator, page_response.status_code, page_response.headers)
+
+    async def stream_with_http_info_async(self, {{#allParams}}
+        {{#startsWith paramName text='page_size'}}{{else}}{{paramName}}: Union[{{{dataType}}}, object] = values.unset,{{/startsWith}}{{/allParams}}
+        limit: Optional[int] = None,
+        page_size: Optional[int] = None,
+    ) -> tuple:
+        """
+        Asynchronously streams {{instanceName}} and returns headers from first page
+
+        {{#allParams}}{{#startsWith paramName text='page_size'}}{{else}}
+        :param {{dataType}} {{paramName}}: {{{description}}}{{/startsWith}}{{/allParams}}
+        :param limit: Upper limit for the number of records to return. stream()
+                      guarantees to never return more than limit.  Default is no limit
+        :param page_size: Number of records to fetch per request, when not set will use
+                          the default value of 50 records.  If no page_size is defined
+                          but a limit is defined, stream() will attempt to read the
+                          limit with the most efficient page size, i.e. min(limit, 1000)
+
+        :returns: tuple of (generator, status_code, headers) where generator yields instances
+        """
+        limits = self._version.read_limits(limit, page_size)
+        page_response = await self.page_with_http_info_async({{#allParams}}{{#startsWith paramName text='page_size'}}{{else}}
+            {{paramName}}={{paramName}},{{/startsWith}}{{/allParams}}
+            page_size=limits['page_size']
+        )
+
+        generator = self._version.stream_async(page_response.data, limits['limit'])
+        return (generator, page_response.status_code, page_response.headers)
+
     def list(self, {{#allParams}}
         {{#startsWith paramName text='page_size'}}{{else}}{{paramName}}: Union[{{{dataType}}}, object] = values.unset,{{/startsWith}}{{/allParams}}
         limit: Optional[int] = None,
@@ -330,8 +544,74 @@
             page_size=page_size,
         )]
 
-    def page(self, {{#allParams}}
-        {{#startsWith paramName text='page_size'}}{{else}}{{#startsWith paramName text='page_token'}}{{else}}{{paramName}}: Union[{{{dataType}}}, object] = values.unset,{{/startsWith}}{{/startsWith}}{{/allParams}}
+    def list_with_http_info(self, {{#allParams}}
+        {{#startsWith paramName text='page_size'}}{{else}}{{paramName}}: Union[{{{dataType}}}, object] = values.unset,{{/startsWith}}{{/allParams}}
+        limit: Optional[int] = None,
+        page_size: Optional[int] = None,
+    ) -> ApiResponse:
+        """
+        Lists {{instanceName}} and returns headers from first page
+
+        {{#allParams}}{{#startsWith paramName text='page_size'}}{{else}}
+        :param {{dataType}} {{paramName}}: {{{description}}}{{/startsWith}}{{/allParams}}
+        :param limit: Upper limit for the number of records to return. list() guarantees
+                      never to return more than limit.  Default is no limit
+        :param page_size: Number of records to fetch per request, when not set will use
+                          the default value of 50 records.  If no page_size is defined
+                          but a limit is defined, list() will attempt to read the limit
+                          with the most efficient page size, i.e. min(limit, 1000)
+
+        :returns: ApiResponse with list of instances, status code, and headers
+        """
+        generator, status_code, headers = self.stream_with_http_info(
+            {{#allParams}}{{#startsWith paramName text='page_size'}}{{else}}{{paramName}}={{paramName}},
+            {{/startsWith}}{{/allParams}}limit=limit,
+            page_size=page_size,
+        )
+        items = list(generator)
+        return ApiResponse(data=items, status_code=status_code, headers=headers)
+
+    async def list_with_http_info_async(self, {{#allParams}}
+        {{#startsWith paramName text='page_size'}}{{else}}{{paramName}}: Union[{{{dataType}}}, object] = values.unset,{{/startsWith}}{{/allParams}}
+        limit: Optional[int] = None,
+        page_size: Optional[int] = None,
+    ) -> ApiResponse:
+        """
+        Asynchronously lists {{instanceName}} and returns headers from first page
+
+        {{#allParams}}{{#startsWith paramName text='page_size'}}{{else}}
+        :param {{dataType}} {{paramName}}: {{{description}}}{{/startsWith}}{{/allParams}}
+        :param limit: Upper limit for the number of records to return. list() guarantees
+                      never to return more than limit.  Default is no limit
+        :param page_size: Number of records to fetch per request, when not set will use
+                          the default value of 50 records.  If no page_size is defined
+                          but a limit is defined, list() will attempt to read the limit
+                          with the most efficient page size, i.e. min(limit, 1000)
+
+        :returns: ApiResponse with list of instances, status code, and headers
+        """
+        generator, status_code, headers = await self.stream_with_http_info_async(
+            {{#allParams}}{{#startsWith paramName text='page_size'}}{{else}}{{paramName}}={{paramName}},
+            {{/startsWith}}{{/allParams}}limit=limit,
+            page_size=page_size,
+        )
+        items = [record async for record in generator]
+        return ApiResponse(data=items, status_code=status_code, headers=headers)
+
+    def page(self, {{#isApiV1}}{{#allParams}}
+      {{paramName}}: Union[{{{dataType}}}, object] = values.unset,{{/allParams}}
+    ) -> {{apiName}}Page:
+        """
+        Retrieve a single page of {{instanceName}} records from the API.
+        Request is executed immediately
+        {{#allParams}}
+        :param {{paramName}}: {{{description}}}{{/allParams}}
+        :returns: Page of {{instanceName}}
+        """
+        data = values.of({ {{#allParams}}
+            '{{{baseName}}}': {{#if vendorExtensions.x-serialize}}{{vendorExtensions.x-serialize}}({{paramName}}{{#if isArray}}, lambda e: e){{else}}){{/if}}{{else}}{{paramName}}{{/if}},{{/allParams}}
+        }){{/isApiV1}}{{^isApiV1}}{{#allParams}}
+      {{#startsWith paramName text='page_size'}}{{else}}{{paramName}}: Union[{{{dataType}}}, object] = values.unset,{{/startsWith}}{{/allParams}}
         page_token: Union[str, object] = values.unset,
         page_number: Union[int, object] = values.unset,
         page_size: Union[int, object] = values.unset,
@@ -352,7 +632,7 @@
             'PageToken': page_token,
             'Page': page_number,
             'PageSize': page_size,
-        })
+        }){{/isApiV1}}
 
         headers = values.of({
         {{#headerParams}}'{{{baseName}}}': {{paramName}},
@@ -366,11 +646,23 @@
         {{/vendorExtensions.successProduce}}
 
         response = self._version.page(method='{{vendorExtensions.x-http-method}}', uri=self._uri, params=data, headers=headers){{#isApiV1}}
-        return {{apiName}}Page(self._version, response, uri=self._uri{{#if listPathParams}}, self._solution{{/if}}){{/isApiV1}}{{^isApiV1}}
+        return {{apiName}}Page(self._version, response, uri=self._uri, params=data{{#if listPathParams}}, self._solution{{/if}}){{/isApiV1}}{{^isApiV1}}
         return {{apiName}}Page(self._version, response{{#if listPathParams}}, self._solution{{/if}}){{/isApiV1}}
 
-    async def page_async(self, {{#allParams}}
-        {{#startsWith paramName text='page_size'}}{{else}}{{paramName}}: Union[{{{dataType}}}, object] = values.unset,{{/startsWith}}{{/allParams}}
+    async def page_async(self, {{#isApiV1}}{{#allParams}}
+      {{paramName}}: Union[{{{dataType}}}, object] = values.unset,{{/allParams}}
+    ) -> {{apiName}}Page:
+        """
+        Asynchronously retrieve a single page of {{instanceName}} records from the API.
+        Request is executed immediately
+        {{#allParams}}
+        :param {{paramName}}: {{{description}}}{{/allParams}}
+        :returns: Page of {{instanceName}}
+        """
+        data = values.of({ {{#allParams}}
+            '{{{baseName}}}': {{#if vendorExtensions.x-serialize}}{{vendorExtensions.x-serialize}}({{paramName}}{{#if isArray}}, lambda e: e){{else}}){{/if}}{{else}}{{paramName}}{{/if}},{{/allParams}}
+        }){{/isApiV1}}{{^isApiV1}}{{#allParams}}
+      {{#startsWith paramName text='page_size'}}{{else}}{{paramName}}: Union[{{{dataType}}}, object] = values.unset,{{/startsWith}}{{/allParams}}
         page_token: Union[str, object] = values.unset,
         page_number: Union[int, object] = values.unset,
         page_size: Union[int, object] = values.unset,
@@ -391,6 +683,85 @@
             'PageToken': page_token,
             'Page': page_number,
             'PageSize': page_size,
+        }){{/isApiV1}}
+
+        headers = values.of({
+        {{#headerParams}}'{{{baseName}}}': {{paramName}},
+        {{/headerParams}}'Content-Type': 'application/x-www-form-urlencoded'
+        })
+        {{#consumes}}
+        headers["Content-Type"] = "{{{mediaType}}}"
+        {{/consumes}}
+        {{#produces}}
+        headers["Accept"] = "{{{mediaType}}}"
+        {{/produces}}
+
+        response = await self._version.page_async(method='{{vendorExtensions.x-http-method}}', uri=self._uri, params=data, headers=headers){{#isApiV1}}
+        return {{apiName}}Page(self._version, response, uri=self._uri, params=data{{#if listPathParams}}, self._solution{{/if}}){{/isApiV1}}{{^isApiV1}}
+        return {{apiName}}Page(self._version, response{{#if listPathParams}}, self._solution{{/if}}){{/isApiV1}}
+
+    def page_with_http_info(self, {{#allParams}}
+        {{#startsWith paramName text='page_size'}}{{else}}{{#startsWith paramName text='page_token'}}{{else}}{{paramName}}: Union[{{{dataType}}}, object] = values.unset,{{/startsWith}}{{/startsWith}}{{/allParams}}
+        page_token: Union[str, object] = values.unset,
+        page_number: Union[int, object] = values.unset,
+        page_size: Union[int, object] = values.unset,
+    ) -> ApiResponse:
+        """
+        Retrieve a single page with response metadata
+
+        {{#allParams}}{{#startsWith paramName text='page_size'}}{{else}}
+        :param {{paramName}}: {{{description}}}{{/startsWith}}{{/allParams}}
+        :param page_token: PageToken provided by the API
+        :param page_number: Page Number, this value is simply for client state
+        :param page_size: Number of records to return, defaults to 50
+
+        :returns: ApiResponse with {{apiName}}Page, status code, and headers
+        """
+        data = values.of({ {{#allParams}}{{#startsWith paramName text='page_size'}}{{else}}
+            '{{{baseName}}}': {{#if vendorExtensions.x-serialize}}{{vendorExtensions.x-serialize}}({{paramName}}{{#if isArray}}, lambda e: e){{else}}){{/if}}{{else}}{{paramName}}{{/if}},{{/startsWith}}{{/allParams}}
+            'PageToken': page_token,
+            'Page': page_number,
+            'PageSize': page_size,
+        })
+
+        headers = values.of({
+        {{#headerParams}}'{{{baseName}}}': {{paramName}},
+        {{/headerParams}}'Content-Type': 'application/x-www-form-urlencoded'
+        })
+        {{#consumes}}
+        headers["Content-Type"] = "{{{mediaType}}}"
+        {{/consumes}}
+        {{#vendorExtensions.successProduce}}
+        headers["Accept"] = "{{{mediaType}}}"
+        {{/vendorExtensions.successProduce}}
+
+        response, status_code, response_headers = self._version.page_with_response_info(method='{{vendorExtensions.x-http-method}}', uri=self._uri, params=data, headers=headers){{#isApiV1}}
+        page = {{apiName}}Page(self._version, response, uri=self._uri{{#if listPathParams}}, self._solution{{/if}}){{/isApiV1}}{{^isApiV1}}
+        page = {{apiName}}Page(self._version, response{{#if listPathParams}}, self._solution{{/if}}){{/isApiV1}}
+        return ApiResponse(data=page, status_code=status_code, headers=response_headers)
+
+    async def page_with_http_info_async(self, {{#allParams}}
+        {{#startsWith paramName text='page_size'}}{{else}}{{paramName}}: Union[{{{dataType}}}, object] = values.unset,{{/startsWith}}{{/allParams}}
+        page_token: Union[str, object] = values.unset,
+        page_number: Union[int, object] = values.unset,
+        page_size: Union[int, object] = values.unset,
+    ) -> ApiResponse:
+        """
+        Asynchronously retrieve a single page with response metadata
+
+        {{#allParams}}{{#startsWith paramName text='page_size'}}{{else}}
+        :param {{paramName}}: {{{description}}}{{/startsWith}}{{/allParams}}
+        :param page_token: PageToken provided by the API
+        :param page_number: Page Number, this value is simply for client state
+        :param page_size: Number of records to return, defaults to 50
+
+        :returns: ApiResponse with {{apiName}}Page, status code, and headers
+        """
+        data = values.of({ {{#allParams}}{{#startsWith paramName text='page_size'}}{{else}}
+            '{{{baseName}}}': {{#if vendorExtensions.x-serialize}}{{vendorExtensions.x-serialize}}({{paramName}}{{#if isArray}}, lambda e: e){{else}}){{/if}}{{else}}{{paramName}}{{/if}},{{/startsWith}}{{/allParams}}
+            'PageToken': page_token,
+            'Page': page_number,
+            'PageSize': page_size,
         })
 
         headers = values.of({
@@ -404,8 +775,9 @@
         headers["Accept"] = "{{{mediaType}}}"
         {{/produces}}
 
-        response = await self._version.page_async(method='{{vendorExtensions.x-http-method}}', uri=self._uri, params=data, headers=headers)
-        return {{apiName}}Page(self._version, response{{#if listPathParams}}, self._solution{{/if}})
+        response, status_code, response_headers = await self._version.page_with_response_info_async(method='{{vendorExtensions.x-http-method}}', uri=self._uri, params=data, headers=headers)
+        page = {{apiName}}Page(self._version, response{{#if listPathParams}}, self._solution{{/if}})
+        return ApiResponse(data=page, status_code=status_code, headers=response_headers)
 
     def get_page(self, target_url: str) -> {{apiName}}Page:
         """

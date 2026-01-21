@@ -1,0 +1,10 @@
+{{#models}}
+'''
+Nested response model for {{name}}
+'''
+class {{name}}:
+  def __init__(self,{{#vars}}{{baseName}}: {{{dataType}}}{{#unless @last}}, {{/unless}}{{/vars}}):
+    {{#vars}}self.{{baseName}} = {{baseName}}
+    {{/vars}}
+
+{{/models}}

@@ -1,18 +1,23 @@
-private Page<{{resourceName}}> pageForRequest(final TwilioRestClient client, final Request request) {
+    private Response makeRequest(final TwilioRestClient client, final Request request) {
         Response response = client.request(request);
         if (response == null) {
             throw new ApiConnectionException("{{resourceName}} read failed: Unable to connect to server");
         } else if (!TwilioRestClient.SUCCESS.test(response.getStatusCode())) {
             RestException restException = RestException.fromJson(
-            response.getStream(),
-            client.getObjectMapper());
+                response.getStream(),
+                client.getObjectMapper()
+            );
 
             if (restException == null) {
                 throw new ApiException("Server Error, no content", response.getStatusCode());
             }
             throw new ApiException(restException);
-        } {{! end of else if }}
-
+        }
+        return response;
+    }
+    
+private Page<{{resourceName}}> pageForRequest(final TwilioRestClient client, final Request request) {
+        Response response = makeRequest(client, request);
         return {{#isApiV1}}TokenPaginationPage{{/isApiV1}}{{^isApiV1}}Page{{/isApiV1}}.fromJson(
             "{{recordKey}}",
             response.getContent(),

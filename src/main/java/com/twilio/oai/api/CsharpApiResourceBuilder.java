@@ -259,15 +259,30 @@ public class CsharpApiResourceBuilder extends ApiResourceBuilder {
         if(codegenModel.getFormat() != null) { // skip generating classes for formats
             return;
         }
-        
+
         for (CodegenProperty property : codegenModel.vars) {
             // recursively resolve each var, since each var is itself a CodegenProperty
             recursivelyResolve(property);
         }
-        // these nested response models must also be generated as classes, so adding them in nestedModels
-        // same nestedModels variable is used for request body nested class generation
+
+        // Process oneOf variants - recursively resolve properties in oneOf variant models
+        // This ensures that nested models within oneOf variants (like ConfigurationEventLanguagesValue)
+        // are properly added to nestedModels for code generation
         if (null != codegenModel.oneOf && !codegenModel.oneOf.isEmpty()) {
             codegenModelOneOf.resolve(codegenModel);
+            for (String oneOfModelName : codegenModel.oneOf) {
+                Optional<CodegenModel> oneOfModel = Utility.getModelByClassname(allModels, oneOfModelName);
+                if (oneOfModel.isPresent()) {
+                    CodegenModel oneOfVariant = oneOfModel.get();
+                    for (CodegenProperty property : oneOfVariant.vars) {
+                        recursivelyResolve(property);
+                    }
+                    // Add the oneOf variant to nestedModels if not already there
+                    if (nestedModels.stream().noneMatch(m -> m.classname.equals(oneOfModelName))) {
+                        nestedModels.add(oneOfVariant);
+                    }
+                }
+            }
         }
         String finalModelName = modelName;
         if (nestedModels.stream().noneMatch(m -> m.classname.equals(finalModelName))) {
