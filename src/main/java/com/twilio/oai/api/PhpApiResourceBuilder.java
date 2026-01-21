@@ -2,6 +2,7 @@ package com.twilio.oai.api;
 
 import com.twilio.oai.*;
 import com.twilio.oai.common.EnumConstants;
+import com.twilio.oai.java.cache.ResourceCacheContext;
 import com.twilio.oai.resolver.IConventionMapper;
 import com.twilio.oai.resolver.LanguageConventionResolver;
 import com.twilio.oai.resolver.Resolver;
@@ -58,12 +59,31 @@ public class PhpApiResourceBuilder extends ApiResourceBuilder {
                 template.add(PhpApiActionTemplate.TEMPLATE_TYPE_OPTIONS);
             template.add(PhpApiActionTemplate.TEMPLATE_TYPE_PAGE);
             template.add(PhpApiActionTemplate.TEMPLATE_TYPE_LIST);
-            template.add(PhpApiActionTemplate.TEMPLATE_TYPE_INSTANCE);
+
+            // Only add regular instance template when there's 1 or fewer response models
+            // OR when isApiV1 is false (dynamic templates only work with API V1 standard)
+            // When there are multiple distinct response models AND isApiV1 is true, dynamic templates will be
+            // added after build() in the generator with the full apiResource
+            boolean isApiV1 = ResourceCacheContext.get() != null && ResourceCacheContext.get().isV1();
+            if (!isApiV1 || responseInstanceModels == null || responseInstanceModels.size() <= 1) {
+                template.add(PhpApiActionTemplate.TEMPLATE_TYPE_INSTANCE);
+            }
+
             // if any operation in current op list(CRUDF) has application/json request body type
             if (!nestedModels.isEmpty())
                 template.add(PhpApiActionTemplate.TEMPLATE_TYPE_MODELS);
         });
         return this;
+    }
+
+    /**
+     * Returns true if this builder has multiple distinct response models that require
+     * separate instance class files AND isApiV1 is true.
+     * Dynamic instance templates are only generated for API V1 standard specs.
+     */
+    public boolean hasMultipleResponseModels() {
+        boolean isApiV1 = ResourceCacheContext.get() != null && ResourceCacheContext.get().isV1();
+        return isApiV1 && responseInstanceModels != null && responseInstanceModels.size() > 1;
     }
 
     @Override
@@ -378,6 +398,7 @@ public class PhpApiResourceBuilder extends ApiResourceBuilder {
     @Override
     public ApiResourceBuilder updateResponseModel(Resolver<CodegenProperty> codegenPropertyResolver) {
         List<CodegenModel> responseModels = new ArrayList<>();
+        Set<CodegenModel> responseInstanceModels = new HashSet<>();
         codegenOperationList.forEach(codegenOperation -> {
             codegenOperation.responses
                     .stream()
@@ -392,8 +413,10 @@ public class PhpApiResourceBuilder extends ApiResourceBuilder {
                         item.vars.forEach(e -> codegenPropertyResolver.resolve(e, this));
                         item.allVars.forEach(e -> codegenPropertyResolver.resolve(e, this));
                         responseModels.add(item);
+                        responseInstanceModels.add(item);
                     });
         });
+        this.responseInstanceModels = responseInstanceModels;
         this.apiResponseModels = getDistinctResponseModel(responseModels);
         return this;
     }
