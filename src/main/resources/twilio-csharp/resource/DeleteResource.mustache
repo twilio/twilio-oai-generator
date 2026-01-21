@@ -57,3 +57,36 @@
             return await DeleteAsync(options, client);
         }
         #endif
+
+        {{! TwilioResponse }}
+        public static TwilioResponse<bool> DeleteWithHeaders(Delete{{apiName}}Options options, ITwilioRestClient client = null)
+        {
+            client = client ?? TwilioClient.{{restClientMethodName}}();
+            var response = client.Request(BuildDeleteRequest(options, client));
+            var success = response.StatusCode == System.Net.HttpStatusCode.NoContent;
+            return new TwilioResponse<bool>(success, response.Headers, response.StatusCode);
+        }
+
+        #if !NET35
+        public static async System.Threading.Tasks.Task<TwilioResponse<bool>> DeleteWithHeadersAsync(Delete{{apiName}}Options options, ITwilioRestClient client = null)
+        {
+            client = client ?? TwilioClient.{{restClientMethodName}}();
+            var response = await client.RequestAsync(BuildDeleteRequest(options, client));
+            var success = response.StatusCode == System.Net.HttpStatusCode.NoContent;
+            return new TwilioResponse<bool>(success, response.Headers, response.StatusCode);
+        }
+        #endif
+
+        public static TwilioResponse<bool> DeleteWithHeaders({{#vendorExtensions.x-request-body-param}}{{{dataType}}} {{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^required}} = null{{/required}}, {{/vendorExtensions.x-request-body-param}}ITwilioRestClient client = null)
+        {
+            var options = new Delete{{apiName}}Options({{#requiredParams}}{{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^-last}}, {{/-last}}{{/requiredParams}}) {{#vendorExtensions.x-request-body-param}} {{^required}} { {{paramName}} = {{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^-last}},{{/-last}} }{{/required}}  {{/vendorExtensions.x-request-body-param}} ;
+            return DeleteWithHeaders(options, client);
+        }
+
+        #if !NET35
+        public static async System.Threading.Tasks.Task<TwilioResponse<bool>> DeleteWithHeadersAsync({{#vendorExtensions.x-request-body-param}}{{{dataType}}} {{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^required}} = null{{/required}}, {{/vendorExtensions.x-request-body-param}}ITwilioRestClient client = null)
+        {
+            var options = new Delete{{apiName}}Options({{#requiredParams}}{{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^-last}}, {{/-last}}{{/requiredParams}}) {{#vendorExtensions.x-request-body-param}}{{^required}} { {{paramName}} = {{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^-last}},{{/-last}} }{{/required}}{{/vendorExtensions.x-request-body-param}};
+            return await DeleteWithHeadersAsync(options, client);
+        }
+        #endif

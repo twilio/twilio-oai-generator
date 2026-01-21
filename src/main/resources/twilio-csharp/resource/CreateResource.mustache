@@ -62,3 +62,41 @@
             return await CreateAsync(options, client);
         }
         #endif
+
+        {{! TwilioResponse Methods }}
+
+        public static TwilioResponse<{{apiName}}{{resourceConstant}}> CreateWithHeaders(Create{{apiName}}Options options, ITwilioRestClient client = null) 
+        {
+            client = client ?? TwilioClient.{{restClientMethodName}}();
+            var response = client.Request(BuildCreateRequest(options, client));
+            var resource = FromJson(response.Content);
+            return new TwilioResponse<{{apiName}}{{resourceConstant}}>(resource, response.Headers, response.StatusCode);
+        }
+
+        #if !NET35
+        public static async System.Threading.Tasks.Task<TwilioResponse<{{apiName}}{{resourceConstant}}>> CreateWithHeadersAsync(Create{{apiName}}Options options, ITwilioRestClient client = null)
+        {
+            client = client ?? TwilioClient.{{restClientMethodName}}();
+            var response = await client.RequestAsync(BuildCreateRequest(options, client));
+            var resource = FromJson(response.Content);
+            return new TwilioResponse<{{apiName}}{{resourceConstant}}>(resource, response.Headers, response.StatusCode);
+        }
+        #endif
+
+        public static TwilioResponse<{{apiName}}{{resourceConstant}}> CreateWithHeaders({{#vendorExtensions.x-request-body-param}}
+            {{{dataType}}} {{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^required}} = null{{/required}},{{/vendorExtensions.x-request-body-param}}
+        ITwilioRestClient client = null)
+        {
+        var options = new Create{{apiName}}Options({{#requiredParams}}{{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^-last}}, {{/-last}}{{/requiredParams}}){ {{#vendorExtensions.x-request-body-param}}{{^required}} {{paramName}} = {{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^-last}},{{/-last}}{{/required}}{{/vendorExtensions.x-request-body-param}} };
+        return CreateWithHeaders(options, client);
+        }
+
+        #if !NET35
+        public static async System.Threading.Tasks.Task<TwilioResponse<{{apiName}}{{resourceConstant}}>> CreateWithHeadersAsync({{#vendorExtensions.x-request-body-param}}
+            {{{dataType}}} {{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^required}} = null{{/required}},{{/vendorExtensions.x-request-body-param}}
+        ITwilioRestClient client = null)
+        {
+        var options = new Create{{apiName}}Options({{#requiredParams}}{{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^-last}}, {{/-last}}{{/requiredParams}}){ {{#vendorExtensions.x-request-body-param}}{{^required}} {{paramName}} = {{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^-last}},{{/-last}}{{/required}}{{/vendorExtensions.x-request-body-param}} };
+        return await CreateWithHeadersAsync(options, client);
+        }
+        #endif
