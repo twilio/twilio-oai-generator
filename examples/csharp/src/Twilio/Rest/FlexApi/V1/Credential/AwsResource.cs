@@ -380,6 +380,124 @@ namespace Twilio.Rest.FlexApi.V1.Credential
         }
 
         
+        private static Request BuildPatchRequest(PatchAwsOptions options, ITwilioRestClient client)
+        {
+            
+            string path = "/v1/Credentials/AWS/{Sid}";
+
+            string PathSid = options.PathSid;
+            path = path.Replace("{"+"Sid"+"}", PathSid);
+
+            return new Request(
+            HttpMethod.Patch,
+            Rest.Domain.FlexApi,
+            path,
+            contentType: EnumConstants.ContentTypeEnum.FORM_URLENCODED,
+            postParams: options.GetParams(),
+            headerParams: null
+            );
+        }
+
+        /// <summary> patch </summary>
+        /// <param name="options"> Patch Aws parameters </param>
+        /// <param name="client"> Client to make requests to Twilio </param>
+        /// <returns> A single instance of Aws </returns>
+        public static AwsResource Patch(PatchAwsOptions options, ITwilioRestClient client = null)
+        {
+            client = client ?? TwilioClient.GetRestClient();
+            var response = client.Request(BuildPatchRequest(options, client));
+            return FromJson(response.Content);
+        }
+
+        /// <summary> patch </summary>
+        /// <param name="options"> Patch Aws parameters </param>
+        /// <param name="client"> Client to make requests to Twilio </param>
+        /// <returns> Task that resolves to A single instance of Aws </returns>
+        #if !NET35
+        public static async System.Threading.Tasks.Task<AwsResource> PatchAsync(PatchAwsOptions options,
+            ITwilioRestClient client = null)
+        {
+            client = client ?? TwilioClient.GetRestClient();
+            var response = await client.RequestAsync(BuildPatchRequest(options, client));
+            return FromJson(response.Content);
+        }
+        #endif
+
+        /// <summary> patch </summary>
+        /// <param name="pathSid">  </param>
+        /// <param name="testString">  </param>
+        /// <param name="testBoolean">  </param>
+        /// <param name="client"> Client to make requests to Twilio </param>
+        /// <returns> A single instance of Aws </returns>
+        public static AwsResource Patch(
+            string pathSid,
+            string testString = null,
+            bool? testBoolean = null,
+            ITwilioRestClient client = null)
+        {
+            var options = new PatchAwsOptions(pathSid){ TestString = testString, TestBoolean = testBoolean };
+            return Patch(options, client);
+        }
+
+        #if !NET35
+        /// <summary> patch </summary>
+        /// <param name="pathSid">  </param>
+        /// <param name="testString">  </param>
+        /// <param name="testBoolean">  </param>
+        /// <param name="client"> Client to make requests to Twilio </param>
+        /// <returns> Task that resolves to A single instance of Aws </returns>
+        public static async System.Threading.Tasks.Task<AwsResource> PatchAsync(
+            string pathSid,
+            string testString = null,
+            bool? testBoolean = null,
+            ITwilioRestClient client = null)
+        {
+            var options = new PatchAwsOptions(pathSid){ TestString = testString, TestBoolean = testBoolean };
+            return await PatchAsync(options, client);
+        }
+        #endif
+
+        public static TwilioResponse<AwsResource> PatchWithHeaders(PatchAwsOptions options, ITwilioRestClient client = null)
+        {
+            client = client ?? TwilioClient.GetRestClient();
+            var response = client.Request(BuildPatchRequest(options, client));
+            var resource = FromJson(response.Content);
+            return new TwilioResponse<AwsResource>(resource, response.Headers, response.StatusCode);
+        }
+
+        #if !NET35
+        public static async System.Threading.Tasks.Task<TwilioResponse<AwsResource>> PatchWithHeadersAsync(PatchAwsOptions options,
+                ITwilioRestClient client = null)
+        {
+            client = client ?? TwilioClient.GetRestClient();
+            var response = await client.RequestAsync(BuildPatchRequest(options, client));
+            var resource = FromJson(response.Content);
+            return new TwilioResponse<AwsResource>(resource, response.Headers, response.StatusCode);
+        }
+        #endif
+
+        public static TwilioResponse<AwsResource> PatchWithHeaders(
+            string pathSid,
+            string testString = null,
+            bool? testBoolean = null,
+                ITwilioRestClient client = null)
+        {
+            var options = new PatchAwsOptions(pathSid){ TestString = testString, TestBoolean = testBoolean };
+            return PatchWithHeaders(options, client);
+        }
+
+        #if !NET35
+        public static async System.Threading.Tasks.Task<TwilioResponse<AwsResource>> PatchWithHeadersAsync(
+            string pathSid,
+            string testString = null,
+            bool? testBoolean = null,
+                ITwilioRestClient client = null)
+        {
+            var options = new PatchAwsOptions(pathSid){ TestString = testString, TestBoolean = testBoolean };
+            return await PatchWithHeadersAsync(options, client);
+        }
+        #endif
+        
         private static Request BuildUpdateRequest(UpdateAwsOptions options, ITwilioRestClient client)
         {
             
