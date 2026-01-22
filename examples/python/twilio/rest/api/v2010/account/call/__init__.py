@@ -16,6 +16,7 @@ r"""
 from datetime import datetime
 from typing import Any, Dict, List, Optional, Union
 from twilio.base import deserialize, serialize, values
+from twilio.base.api_response import ApiResponse
 from twilio.base.instance_context import InstanceContext
 from twilio.base.instance_resource import InstanceResource
 from twilio.base.list_resource import ListResource
@@ -142,6 +143,24 @@ class CallInstance(InstanceResource):
         """
         return await self._proxy.delete_async()
 
+    def delete_with_http_info(self) -> ApiResponse:
+        """
+        Deletes the CallInstance with HTTP info
+
+
+        :returns: ApiResponse with success boolean, status code, and headers
+        """
+        return self._proxy.delete_with_http_info()
+
+    async def delete_with_http_info_async(self) -> ApiResponse:
+        """
+        Asynchronous coroutine that deletes the CallInstance with HTTP info
+
+
+        :returns: ApiResponse with success boolean, status code, and headers
+        """
+        return await self._proxy.delete_with_http_info_async()
+
     def fetch(self) -> "CallInstance":
         """
         Fetch the CallInstance
@@ -159,6 +178,24 @@ class CallInstance(InstanceResource):
         :returns: The fetched CallInstance
         """
         return await self._proxy.fetch_async()
+
+    def fetch_with_http_info(self) -> ApiResponse:
+        """
+        Fetch the CallInstance with HTTP info
+
+
+        :returns: ApiResponse with instance, status code, and headers
+        """
+        return self._proxy.fetch_with_http_info()
+
+    async def fetch_with_http_info_async(self) -> ApiResponse:
+        """
+        Asynchronous coroutine to fetch the CallInstance with HTTP info
+
+
+        :returns: ApiResponse with instance, status code, and headers
+        """
+        return await self._proxy.fetch_with_http_info_async()
 
     def __repr__(self) -> str:
         """
@@ -190,6 +227,20 @@ class CallContext(InstanceContext):
             **self._solution
         )
 
+    def _delete(self) -> tuple:
+        """
+        Internal helper for delete operation
+
+        Returns:
+            tuple: (success_boolean, status_code, headers)
+        """
+
+        headers = values.of({})
+
+        return self._version.delete_with_response_info(
+            method="DELETE", uri=self._uri, headers=headers
+        )
+
     def delete(self) -> bool:
         """
         Deletes the CallInstance
@@ -197,10 +248,32 @@ class CallContext(InstanceContext):
 
         :returns: True if delete succeeds, False otherwise
         """
+        success, _, _ = self._delete()
+        return success
+
+    def delete_with_http_info(self) -> ApiResponse:
+        """
+        Deletes the CallInstance and return response metadata
+
+
+        :returns: ApiResponse with success boolean, status code, and headers
+        """
+        success, status_code, headers = self._delete()
+        return ApiResponse(data=success, status_code=status_code, headers=headers)
+
+    async def _delete_async(self) -> tuple:
+        """
+        Internal async helper for delete operation
+
+        Returns:
+            tuple: (success_boolean, status_code, headers)
+        """
 
         headers = values.of({})
 
-        return self._version.delete(method="DELETE", uri=self._uri, headers=headers)
+        return await self._version.delete_with_response_info_async(
+            method="DELETE", uri=self._uri, headers=headers
+        )
 
     async def delete_async(self) -> bool:
         """
@@ -209,11 +282,33 @@ class CallContext(InstanceContext):
 
         :returns: True if delete succeeds, False otherwise
         """
+        success, _, _ = await self._delete_async()
+        return success
+
+    async def delete_with_http_info_async(self) -> ApiResponse:
+        """
+        Asynchronous coroutine that deletes the CallInstance and return response metadata
+
+
+        :returns: ApiResponse with success boolean, status code, and headers
+        """
+        success, status_code, headers = await self._delete_async()
+        return ApiResponse(data=success, status_code=status_code, headers=headers)
+
+    def _fetch(self) -> tuple:
+        """
+        Internal helper for fetch operation
+
+        Returns:
+            tuple: (payload, status_code, headers)
+        """
 
         headers = values.of({})
 
-        return await self._version.delete_async(
-            method="DELETE", uri=self._uri, headers=headers
+        headers["Accept"] = "application/json"
+
+        return self._version.fetch_with_response_info(
+            method="GET", uri=self._uri, headers=headers
         )
 
     def fetch(self) -> CallInstance:
@@ -223,18 +318,44 @@ class CallContext(InstanceContext):
 
         :returns: The fetched CallInstance
         """
-
-        headers = values.of({})
-
-        headers["Accept"] = "application/json"
-
-        payload = self._version.fetch(method="GET", uri=self._uri, headers=headers)
-
+        payload, _, _ = self._fetch()
         return CallInstance(
             self._version,
             payload,
             account_sid=self._solution["account_sid"],
             test_integer=self._solution["test_integer"],
+        )
+
+    def fetch_with_http_info(self) -> ApiResponse:
+        """
+        Fetch the CallInstance and return response metadata
+
+
+        :returns: ApiResponse with instance, status code, and headers
+        """
+        payload, status_code, headers = self._fetch()
+        instance = CallInstance(
+            self._version,
+            payload,
+            account_sid=self._solution["account_sid"],
+            test_integer=self._solution["test_integer"],
+        )
+        return ApiResponse(data=instance, status_code=status_code, headers=headers)
+
+    async def _fetch_async(self) -> tuple:
+        """
+        Internal async helper for fetch operation
+
+        Returns:
+            tuple: (payload, status_code, headers)
+        """
+
+        headers = values.of({})
+
+        headers["Accept"] = "application/json"
+
+        return await self._version.fetch_with_response_info_async(
+            method="GET", uri=self._uri, headers=headers
         )
 
     async def fetch_async(self) -> CallInstance:
@@ -244,21 +365,29 @@ class CallContext(InstanceContext):
 
         :returns: The fetched CallInstance
         """
-
-        headers = values.of({})
-
-        headers["Accept"] = "application/json"
-
-        payload = await self._version.fetch_async(
-            method="GET", uri=self._uri, headers=headers
-        )
-
+        payload, _, _ = await self._fetch_async()
         return CallInstance(
             self._version,
             payload,
             account_sid=self._solution["account_sid"],
             test_integer=self._solution["test_integer"],
         )
+
+    async def fetch_with_http_info_async(self) -> ApiResponse:
+        """
+        Asynchronous coroutine to fetch the CallInstance and return response metadata
+
+
+        :returns: ApiResponse with instance, status code, and headers
+        """
+        payload, status_code, headers = await self._fetch_async()
+        instance = CallInstance(
+            self._version,
+            payload,
+            account_sid=self._solution["account_sid"],
+            test_integer=self._solution["test_integer"],
+        )
+        return ApiResponse(data=instance, status_code=status_code, headers=headers)
 
     def __repr__(self) -> str:
         """
@@ -289,6 +418,38 @@ class CallList(ListResource):
 
         self._feedback_call_summary: Optional[FeedbackCallSummaryList] = None
 
+    def _create(
+        self,
+        required_string_property: str,
+        test_method: str,
+        test_array_of_strings: Union[List[str], object] = values.unset,
+        test_array_of_uri: Union[List[str], object] = values.unset,
+    ) -> tuple:
+        """
+        Internal helper for create operation
+
+        Returns:
+            tuple: (payload, status_code, headers)
+        """
+
+        data = values.of(
+            {
+                "RequiredStringProperty": required_string_property,
+                "TestMethod": test_method,
+                "TestArrayOfStrings": serialize.map(test_array_of_strings, lambda e: e),
+                "TestArrayOfUri": serialize.map(test_array_of_uri, lambda e: e),
+            }
+        )
+        headers = values.of({"Content-Type": "application/x-www-form-urlencoded"})
+
+        headers["Content-Type"] = "application/x-www-form-urlencoded"
+
+        headers["Accept"] = "application/json"
+
+        return self._version.create_with_response_info(
+            method="POST", uri=self._uri, data=data, headers=headers
+        )
+
     def create(
         self,
         required_string_property: str,
@@ -306,6 +467,57 @@ class CallList(ListResource):
 
         :returns: The created CallInstance
         """
+        payload, _, _ = self._create(
+            required_string_property=required_string_property,
+            test_method=test_method,
+            test_array_of_strings=test_array_of_strings,
+            test_array_of_uri=test_array_of_uri,
+        )
+        return CallInstance(
+            self._version, payload, account_sid=self._solution["account_sid"]
+        )
+
+    def create_with_http_info(
+        self,
+        required_string_property: str,
+        test_method: str,
+        test_array_of_strings: Union[List[str], object] = values.unset,
+        test_array_of_uri: Union[List[str], object] = values.unset,
+    ) -> ApiResponse:
+        """
+        Create the CallInstance and return response metadata
+
+        :param required_string_property:
+        :param test_method: The HTTP method that we should use to request the `TestArrayOfUri`.
+        :param test_array_of_strings:
+        :param test_array_of_uri:
+
+        :returns: ApiResponse with instance, status code, and headers
+        """
+        payload, status_code, headers = self._create(
+            required_string_property=required_string_property,
+            test_method=test_method,
+            test_array_of_strings=test_array_of_strings,
+            test_array_of_uri=test_array_of_uri,
+        )
+        instance = CallInstance(
+            self._version, payload, account_sid=self._solution["account_sid"]
+        )
+        return ApiResponse(data=instance, status_code=status_code, headers=headers)
+
+    async def _create_async(
+        self,
+        required_string_property: str,
+        test_method: str,
+        test_array_of_strings: Union[List[str], object] = values.unset,
+        test_array_of_uri: Union[List[str], object] = values.unset,
+    ) -> tuple:
+        """
+        Internal async helper for create operation
+
+        Returns:
+            tuple: (payload, status_code, headers)
+        """
 
         data = values.of(
             {
@@ -321,12 +533,8 @@ class CallList(ListResource):
 
         headers["Accept"] = "application/json"
 
-        payload = self._version.create(
+        return await self._version.create_with_response_info_async(
             method="POST", uri=self._uri, data=data, headers=headers
-        )
-
-        return CallInstance(
-            self._version, payload, account_sid=self._solution["account_sid"]
         )
 
     async def create_async(
@@ -346,28 +554,43 @@ class CallList(ListResource):
 
         :returns: The created CallInstance
         """
-
-        data = values.of(
-            {
-                "RequiredStringProperty": required_string_property,
-                "TestMethod": test_method,
-                "TestArrayOfStrings": serialize.map(test_array_of_strings, lambda e: e),
-                "TestArrayOfUri": serialize.map(test_array_of_uri, lambda e: e),
-            }
+        payload, _, _ = await self._create_async(
+            required_string_property=required_string_property,
+            test_method=test_method,
+            test_array_of_strings=test_array_of_strings,
+            test_array_of_uri=test_array_of_uri,
         )
-        headers = values.of({"Content-Type": "application/x-www-form-urlencoded"})
-
-        headers["Content-Type"] = "application/x-www-form-urlencoded"
-
-        headers["Accept"] = "application/json"
-
-        payload = await self._version.create_async(
-            method="POST", uri=self._uri, data=data, headers=headers
-        )
-
         return CallInstance(
             self._version, payload, account_sid=self._solution["account_sid"]
         )
+
+    async def create_with_http_info_async(
+        self,
+        required_string_property: str,
+        test_method: str,
+        test_array_of_strings: Union[List[str], object] = values.unset,
+        test_array_of_uri: Union[List[str], object] = values.unset,
+    ) -> ApiResponse:
+        """
+        Asynchronously create the CallInstance and return response metadata
+
+        :param required_string_property:
+        :param test_method: The HTTP method that we should use to request the `TestArrayOfUri`.
+        :param test_array_of_strings:
+        :param test_array_of_uri:
+
+        :returns: ApiResponse with instance, status code, and headers
+        """
+        payload, status_code, headers = await self._create_async(
+            required_string_property=required_string_property,
+            test_method=test_method,
+            test_array_of_strings=test_array_of_strings,
+            test_array_of_uri=test_array_of_uri,
+        )
+        instance = CallInstance(
+            self._version, payload, account_sid=self._solution["account_sid"]
+        )
+        return ApiResponse(data=instance, status_code=status_code, headers=headers)
 
     @property
     def feedback_call_summary(self) -> FeedbackCallSummaryList:

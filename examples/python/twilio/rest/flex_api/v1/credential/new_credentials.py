@@ -16,6 +16,7 @@ r"""
 from datetime import date, datetime
 from typing import Any, Dict, List, Optional, Union
 from twilio.base import deserialize, serialize, values
+from twilio.base.api_response import ApiResponse
 
 from twilio.base.instance_resource import InstanceResource
 from twilio.base.list_resource import ListResource
@@ -70,6 +71,68 @@ class NewCredentialsList(ListResource):
 
         self._uri = "/Credentials/AWS"
 
+    def _create(
+        self,
+        test_string: str,
+        test_boolean: Union[bool, object] = values.unset,
+        test_integer: Union[int, object] = values.unset,
+        test_number: Union[float, object] = values.unset,
+        test_number_float: Union[float, object] = values.unset,
+        test_number_double: Union[float, object] = values.unset,
+        test_number_int32: Union[float, object] = values.unset,
+        test_number_int64: Union[int, object] = values.unset,
+        test_object: Union[Dict[str, object], object] = values.unset,
+        test_date_time: Union[datetime, object] = values.unset,
+        test_date: Union[date, object] = values.unset,
+        test_enum: Union["NewCredentialsInstance.Status", object] = values.unset,
+        test_object_array: Union[List[object], object] = values.unset,
+        test_any_type: Union[object, object] = values.unset,
+        test_any_array: Union[List[object], object] = values.unset,
+        permissions: Union[List[str], object] = values.unset,
+        some_a2p_thing: Union[str, object] = values.unset,
+    ) -> tuple:
+        """
+        Internal helper for create operation
+
+        Returns:
+            tuple: (payload, status_code, headers)
+        """
+
+        data = values.of(
+            {
+                "TestString": test_string,
+                "TestBoolean": serialize.boolean_to_string(test_boolean),
+                "TestInteger": test_integer,
+                "TestNumber": test_number,
+                "TestNumberFloat": test_number_float,
+                "TestNumberDouble": test_number_double,
+                "TestNumberInt32": test_number_int32,
+                "TestNumberInt64": test_number_int64,
+                "TestObject": serialize.object(test_object),
+                "TestDateTime": serialize.iso8601_datetime(test_date_time),
+                "TestDate": serialize.iso8601_date(test_date),
+                "TestEnum": test_enum,
+                "TestObjectArray": serialize.map(
+                    test_object_array, lambda e: serialize.object(e)
+                ),
+                "TestAnyType": serialize.object(test_any_type),
+                "TestAnyArray": serialize.map(
+                    test_any_array, lambda e: serialize.object(e)
+                ),
+                "Permissions": serialize.map(permissions, lambda e: e),
+                "SomeA2PThing": some_a2p_thing,
+            }
+        )
+        headers = values.of({"Content-Type": "application/x-www-form-urlencoded"})
+
+        headers["Content-Type"] = "application/x-www-form-urlencoded"
+
+        headers["Accept"] = "application/json"
+
+        return self._version.create_with_response_info(
+            method="POST", uri=self._uri, data=data, headers=headers
+        )
+
     def create(
         self,
         test_string: str,
@@ -113,6 +176,118 @@ class NewCredentialsList(ListResource):
 
         :returns: The created NewCredentialsInstance
         """
+        payload, _, _ = self._create(
+            test_string=test_string,
+            test_boolean=test_boolean,
+            test_integer=test_integer,
+            test_number=test_number,
+            test_number_float=test_number_float,
+            test_number_double=test_number_double,
+            test_number_int32=test_number_int32,
+            test_number_int64=test_number_int64,
+            test_object=test_object,
+            test_date_time=test_date_time,
+            test_date=test_date,
+            test_enum=test_enum,
+            test_object_array=test_object_array,
+            test_any_type=test_any_type,
+            test_any_array=test_any_array,
+            permissions=permissions,
+            some_a2p_thing=some_a2p_thing,
+        )
+        return NewCredentialsInstance(self._version, payload)
+
+    def create_with_http_info(
+        self,
+        test_string: str,
+        test_boolean: Union[bool, object] = values.unset,
+        test_integer: Union[int, object] = values.unset,
+        test_number: Union[float, object] = values.unset,
+        test_number_float: Union[float, object] = values.unset,
+        test_number_double: Union[float, object] = values.unset,
+        test_number_int32: Union[float, object] = values.unset,
+        test_number_int64: Union[int, object] = values.unset,
+        test_object: Union[Dict[str, object], object] = values.unset,
+        test_date_time: Union[datetime, object] = values.unset,
+        test_date: Union[date, object] = values.unset,
+        test_enum: Union["NewCredentialsInstance.Status", object] = values.unset,
+        test_object_array: Union[List[object], object] = values.unset,
+        test_any_type: Union[object, object] = values.unset,
+        test_any_array: Union[List[object], object] = values.unset,
+        permissions: Union[List[str], object] = values.unset,
+        some_a2p_thing: Union[str, object] = values.unset,
+    ) -> ApiResponse:
+        """
+        Create the NewCredentialsInstance and return response metadata
+
+        :param test_string:
+        :param test_boolean:
+        :param test_integer:
+        :param test_number:
+        :param test_number_float:
+        :param test_number_double:
+        :param test_number_int32:
+        :param test_number_int64:
+        :param test_object:
+        :param test_date_time:
+        :param test_date:
+        :param test_enum:
+        :param test_object_array:
+        :param test_any_type:
+        :param test_any_array:
+        :param permissions: A comma-separated list of the permissions you will request from the users of this ConnectApp.  Can include: `get-all` and `post-all`.
+        :param some_a2p_thing:
+
+        :returns: ApiResponse with instance, status code, and headers
+        """
+        payload, status_code, headers = self._create(
+            test_string=test_string,
+            test_boolean=test_boolean,
+            test_integer=test_integer,
+            test_number=test_number,
+            test_number_float=test_number_float,
+            test_number_double=test_number_double,
+            test_number_int32=test_number_int32,
+            test_number_int64=test_number_int64,
+            test_object=test_object,
+            test_date_time=test_date_time,
+            test_date=test_date,
+            test_enum=test_enum,
+            test_object_array=test_object_array,
+            test_any_type=test_any_type,
+            test_any_array=test_any_array,
+            permissions=permissions,
+            some_a2p_thing=some_a2p_thing,
+        )
+        instance = NewCredentialsInstance(self._version, payload)
+        return ApiResponse(data=instance, status_code=status_code, headers=headers)
+
+    async def _create_async(
+        self,
+        test_string: str,
+        test_boolean: Union[bool, object] = values.unset,
+        test_integer: Union[int, object] = values.unset,
+        test_number: Union[float, object] = values.unset,
+        test_number_float: Union[float, object] = values.unset,
+        test_number_double: Union[float, object] = values.unset,
+        test_number_int32: Union[float, object] = values.unset,
+        test_number_int64: Union[int, object] = values.unset,
+        test_object: Union[Dict[str, object], object] = values.unset,
+        test_date_time: Union[datetime, object] = values.unset,
+        test_date: Union[date, object] = values.unset,
+        test_enum: Union["NewCredentialsInstance.Status", object] = values.unset,
+        test_object_array: Union[List[object], object] = values.unset,
+        test_any_type: Union[object, object] = values.unset,
+        test_any_array: Union[List[object], object] = values.unset,
+        permissions: Union[List[str], object] = values.unset,
+        some_a2p_thing: Union[str, object] = values.unset,
+    ) -> tuple:
+        """
+        Internal async helper for create operation
+
+        Returns:
+            tuple: (payload, status_code, headers)
+        """
 
         data = values.of(
             {
@@ -145,11 +320,9 @@ class NewCredentialsList(ListResource):
 
         headers["Accept"] = "application/json"
 
-        payload = self._version.create(
+        return await self._version.create_with_response_info_async(
             method="POST", uri=self._uri, data=data, headers=headers
         )
-
-        return NewCredentialsInstance(self._version, payload)
 
     async def create_async(
         self,
@@ -194,43 +367,91 @@ class NewCredentialsList(ListResource):
 
         :returns: The created NewCredentialsInstance
         """
-
-        data = values.of(
-            {
-                "TestString": test_string,
-                "TestBoolean": serialize.boolean_to_string(test_boolean),
-                "TestInteger": test_integer,
-                "TestNumber": test_number,
-                "TestNumberFloat": test_number_float,
-                "TestNumberDouble": test_number_double,
-                "TestNumberInt32": test_number_int32,
-                "TestNumberInt64": test_number_int64,
-                "TestObject": serialize.object(test_object),
-                "TestDateTime": serialize.iso8601_datetime(test_date_time),
-                "TestDate": serialize.iso8601_date(test_date),
-                "TestEnum": test_enum,
-                "TestObjectArray": serialize.map(
-                    test_object_array, lambda e: serialize.object(e)
-                ),
-                "TestAnyType": serialize.object(test_any_type),
-                "TestAnyArray": serialize.map(
-                    test_any_array, lambda e: serialize.object(e)
-                ),
-                "Permissions": serialize.map(permissions, lambda e: e),
-                "SomeA2PThing": some_a2p_thing,
-            }
+        payload, _, _ = await self._create_async(
+            test_string=test_string,
+            test_boolean=test_boolean,
+            test_integer=test_integer,
+            test_number=test_number,
+            test_number_float=test_number_float,
+            test_number_double=test_number_double,
+            test_number_int32=test_number_int32,
+            test_number_int64=test_number_int64,
+            test_object=test_object,
+            test_date_time=test_date_time,
+            test_date=test_date,
+            test_enum=test_enum,
+            test_object_array=test_object_array,
+            test_any_type=test_any_type,
+            test_any_array=test_any_array,
+            permissions=permissions,
+            some_a2p_thing=some_a2p_thing,
         )
-        headers = values.of({"Content-Type": "application/x-www-form-urlencoded"})
-
-        headers["Content-Type"] = "application/x-www-form-urlencoded"
-
-        headers["Accept"] = "application/json"
-
-        payload = await self._version.create_async(
-            method="POST", uri=self._uri, data=data, headers=headers
-        )
-
         return NewCredentialsInstance(self._version, payload)
+
+    async def create_with_http_info_async(
+        self,
+        test_string: str,
+        test_boolean: Union[bool, object] = values.unset,
+        test_integer: Union[int, object] = values.unset,
+        test_number: Union[float, object] = values.unset,
+        test_number_float: Union[float, object] = values.unset,
+        test_number_double: Union[float, object] = values.unset,
+        test_number_int32: Union[float, object] = values.unset,
+        test_number_int64: Union[int, object] = values.unset,
+        test_object: Union[Dict[str, object], object] = values.unset,
+        test_date_time: Union[datetime, object] = values.unset,
+        test_date: Union[date, object] = values.unset,
+        test_enum: Union["NewCredentialsInstance.Status", object] = values.unset,
+        test_object_array: Union[List[object], object] = values.unset,
+        test_any_type: Union[object, object] = values.unset,
+        test_any_array: Union[List[object], object] = values.unset,
+        permissions: Union[List[str], object] = values.unset,
+        some_a2p_thing: Union[str, object] = values.unset,
+    ) -> ApiResponse:
+        """
+        Asynchronously create the NewCredentialsInstance and return response metadata
+
+        :param test_string:
+        :param test_boolean:
+        :param test_integer:
+        :param test_number:
+        :param test_number_float:
+        :param test_number_double:
+        :param test_number_int32:
+        :param test_number_int64:
+        :param test_object:
+        :param test_date_time:
+        :param test_date:
+        :param test_enum:
+        :param test_object_array:
+        :param test_any_type:
+        :param test_any_array:
+        :param permissions: A comma-separated list of the permissions you will request from the users of this ConnectApp.  Can include: `get-all` and `post-all`.
+        :param some_a2p_thing:
+
+        :returns: ApiResponse with instance, status code, and headers
+        """
+        payload, status_code, headers = await self._create_async(
+            test_string=test_string,
+            test_boolean=test_boolean,
+            test_integer=test_integer,
+            test_number=test_number,
+            test_number_float=test_number_float,
+            test_number_double=test_number_double,
+            test_number_int32=test_number_int32,
+            test_number_int64=test_number_int64,
+            test_object=test_object,
+            test_date_time=test_date_time,
+            test_date=test_date,
+            test_enum=test_enum,
+            test_object_array=test_object_array,
+            test_any_type=test_any_type,
+            test_any_array=test_any_array,
+            permissions=permissions,
+            some_a2p_thing=some_a2p_thing,
+        )
+        instance = NewCredentialsInstance(self._version, payload)
+        return ApiResponse(data=instance, status_code=status_code, headers=headers)
 
     def __repr__(self) -> str:
         """

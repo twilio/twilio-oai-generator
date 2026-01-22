@@ -107,6 +107,50 @@ namespace Twilio.Rest.FlexApi.V1.Credential
 
     }
 
+    /// <summary> patch </summary>
+    public class PatchAwsOptions : IOptions<AwsResource>
+    {
+    
+        
+        public string PathSid { get; }
+
+        
+        public string TestString { get; set; }
+
+        
+        public bool? TestBoolean { get; set; }
+
+
+
+        /// <summary> Construct a new PatchCredentialAwsOptions </summary>
+        /// <param name="pathSid">  </param>
+        public PatchAwsOptions(string pathSid)
+        {
+            PathSid = pathSid;
+        }
+
+        
+        /// <summary> Generate the necessary parameters </summary>
+        public List<KeyValuePair<string, string>> GetParams()
+        {
+            var p = new List<KeyValuePair<string, string>>();
+
+            if (TestString != null)
+            {
+                p.Add(new KeyValuePair<string, string>("TestString", TestString));
+            }
+            if (TestBoolean != null)
+            {
+                p.Add(new KeyValuePair<string, string>("TestBoolean", TestBoolean.Value.ToString().ToLower()));
+            }
+            return p;
+        }
+
+        
+
+    }
+
+
     /// <summary> update </summary>
     public class UpdateAwsOptions : IOptions<AwsResource>
     {

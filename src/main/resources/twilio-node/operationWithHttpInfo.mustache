@@ -1,0 +1,121 @@
+{{#hasParams}}
+  {{#hasRequiredParams}}
+    if (params === null || params === undefined) {
+      throw new Error('Required parameter "params" missing.');
+    }
+
+    {{#requiredParams}}
+    {{^isBodyParam}}
+    if (params["{{paramName}}"] === null || params["{{paramName}}"] === undefined) {
+      throw new Error('Required parameter "params[\'{{paramName}}\']" missing.');
+    }
+
+    {{/isBodyParam}}
+    {{/requiredParams}}
+  {{/hasRequiredParams}}
+  {{^hasRequiredParams}}
+    if (params instanceof Function) {
+      callback = params;
+      params = {};
+    } else {
+      params = params || {};
+    }
+
+  {{/hasRequiredParams}}
+    let data: any = {};
+
+    {{#queryParams}}{{>requestParam}}{{/queryParams}}
+    {{#formParams}}{{>requestParam}}{{/formParams}}
+    {{#bodyParam}}data = params{{/bodyParam}}
+    {{#vendorExtensions.x-is-read-operation}}
+    if (params.pageNumber !== undefined) data["Page"] = params.pageNumber;
+    if (params.pageToken !== undefined) data["PageToken"] = params.pageToken;
+    {{/vendorExtensions.x-is-read-operation}}
+
+    {{#bodyParams}}if(headers === null || headers === undefined) {
+        headers = {};
+    }{{/bodyParams}}
+    {{^bodyParams}}const headers: any = {};{{/bodyParams}}
+    {{#consumes}}
+    {{#-first}}
+    headers["Content-Type"] = "{{{mediaType}}}"
+    {{/-first}}
+    {{/consumes}}
+    {{#produces}}
+    {{#-first}}
+    headers["Accept"] = "{{{mediaType}}}"
+    {{/-first}}
+    {{/produces}}
+    {{^bodyParams}}
+    {{#headerParams}}
+    if (params["{{paramName}}"] !== undefined) headers["{{{baseName}}}"] = params["{{paramName}}"];
+    {{/headerParams}}
+    {{/bodyParams}}
+{{/hasParams}}
+{{^hasParams}}
+    const headers: any = {};
+    {{#consumes}}
+    {{#-first}}
+    headers["Content-Type"] = "{{{mediaType}}}"
+    {{/-first}}
+    {{/consumes}}
+    {{#produces}}
+    {{#-first}}
+    headers["Accept"] = "{{{mediaType}}}"
+    {{/-first}}
+    {{/produces}}
+{{/hasParams}}
+
+    {{#vendorExtensions.x-is-context-operation}}
+    const instance = this;
+    {{/vendorExtensions.x-is-context-operation}}
+    let operationVersion = {{#vendorExtensions.x-is-context-operation}}instance._version{{/vendorExtensions.x-is-context-operation}}{{#vendorExtensions.x-is-list-operation}}version{{/vendorExtensions.x-is-list-operation}};
+    {{^vendorExtensions.x-is-read-operation}}
+    {{^vendorExtensions.x-is-delete-operation}}
+    // CREATE, FETCH, UPDATE operations
+    let operationPromise = operationVersion.{{vendorExtensions.x-name-lower}}WithResponseInfo<{{apiName}}Resource>({ uri: instance._uri, method: "{{httpMethod}}"{{#hasParams}}, {{^isBodyAllowed}}params: {{/isBodyAllowed}}data{{/hasParams}}, headers}).then((response) : ApiResponse<{{returnType}}> => ({
+      ...response,
+      body: new {{instanceName}}(operationVersion, response.body{{#vendorExtensions.x-is-context-operation}}{{#instancePathParams}}, instance._solution.{{paramName}}{{/instancePathParams}}{{/vendorExtensions.x-is-context-operation}}{{#vendorExtensions.x-is-list-operation}}{{#listPathParams}}, instance._solution.{{paramName}}{{/listPathParams}}{{/vendorExtensions.x-is-list-operation}})
+    }));
+    {{/vendorExtensions.x-is-delete-operation}}
+    {{#vendorExtensions.x-is-delete-operation}}
+    // DELETE operation - returns boolean based on status code
+    let operationPromise = operationVersion.{{vendorExtensions.x-name-lower}}WithResponseInfo({ uri: instance._uri, method: "{{httpMethod}}"{{#hasParams}}, {{^isBodyAllowed}}params: {{/isBodyAllowed}}data{{/hasParams}}, headers}).then((response) : ApiResponse<{{returnType}}> => ({
+      ...response,
+      body: response.statusCode === 204
+    }));
+    {{/vendorExtensions.x-is-delete-operation}}
+    {{/vendorExtensions.x-is-read-operation}}
+    {{#vendorExtensions.x-is-read-operation}}
+    // For page operations, use page() directly as it already returns { statusCode, body, headers }
+    // IMPORTANT: Pass full response to Page constructor, not response.body
+    let operationPromise = operationVersion.page({ uri: instance._uri, method: "{{httpMethod}}"{{#hasParams}}, {{^isBodyAllowed}}params: {{/isBodyAllowed}}data{{/hasParams}}, headers}).then((response) : ApiResponse<{{returnType}}> => ({
+      statusCode: response.statusCode,
+      headers: response.headers,
+      body: new {{returnType}}(operationVersion, response, instance._solution)
+    }));
+    {{/vendorExtensions.x-is-read-operation}}
+
+    operationPromise = instance._version.setPromiseCallback(operationPromise,callback);
+    return operationPromise;
+
+  {{#vendorExtensions.x-is-read-operation}}
+  }
+  instance.each = instance._version.each;
+  instance.eachWithHttpInfo = instance._version.eachWithHttpInfo;
+  instance.list = instance._version.list;
+  instance.listWithHttpInfo = instance._version.listWithHttpInfo;
+
+  instance.getPageWithHttpInfo = function getPageWithHttpInfo(targetUrl: string, callback?: (error: Error | null, items?: ApiResponse<{{returnType}}>) => any): Promise<ApiResponse<{{returnType}}>> {
+    // Use request() directly as it already returns { statusCode, body, headers }
+    const operationPromise = instance._version._domain.twilio.request({method: "{{httpMethod}}", uri: targetUrl});
+
+    let pagePromise = operationPromise.then((response): ApiResponse<{{returnType}}> => ({
+      statusCode: response.statusCode,
+      headers: response.headers,
+      body: new {{returnType}}(instance._version, response, instance._solution)
+    }));
+    pagePromise = instance._version.setPromiseCallback(pagePromise, callback);
+    return pagePromise;
+  }
+  {{/vendorExtensions.x-is-read-operation}}

@@ -15,6 +15,7 @@ r"""
 
 from typing import Any, Dict, List, Optional, Union
 from twilio.base import values
+from twilio.base.api_response import ApiResponse
 from twilio.base.instance_context import InstanceContext
 from twilio.base.instance_resource import InstanceResource
 from twilio.base.list_resource import ListResource
@@ -90,6 +91,24 @@ class FleetInstance(InstanceResource):
         """
         return await self._proxy.fetch_async()
 
+    def fetch_with_http_info(self) -> ApiResponse:
+        """
+        Fetch the FleetInstance with HTTP info
+
+
+        :returns: ApiResponse with instance, status code, and headers
+        """
+        return self._proxy.fetch_with_http_info()
+
+    async def fetch_with_http_info_async(self) -> ApiResponse:
+        """
+        Asynchronous coroutine to fetch the FleetInstance with HTTP info
+
+
+        :returns: ApiResponse with instance, status code, and headers
+        """
+        return await self._proxy.fetch_with_http_info_async()
+
     def __repr__(self) -> str:
         """
         Provide a friendly representation
@@ -116,6 +135,22 @@ class FleetContext(InstanceContext):
         }
         self._uri = "/Fleets/{sid}".format(**self._solution)
 
+    def _fetch(self) -> tuple:
+        """
+        Internal helper for fetch operation
+
+        Returns:
+            tuple: (payload, status_code, headers)
+        """
+
+        headers = values.of({})
+
+        headers["Accept"] = "application/json"
+
+        return self._version.fetch_with_response_info(
+            method="GET", uri=self._uri, headers=headers
+        )
+
     def fetch(self) -> FleetInstance:
         """
         Fetch the FleetInstance
@@ -123,17 +158,42 @@ class FleetContext(InstanceContext):
 
         :returns: The fetched FleetInstance
         """
+        payload, _, _ = self._fetch()
+        return FleetInstance(
+            self._version,
+            payload,
+            sid=self._solution["sid"],
+        )
+
+    def fetch_with_http_info(self) -> ApiResponse:
+        """
+        Fetch the FleetInstance and return response metadata
+
+
+        :returns: ApiResponse with instance, status code, and headers
+        """
+        payload, status_code, headers = self._fetch()
+        instance = FleetInstance(
+            self._version,
+            payload,
+            sid=self._solution["sid"],
+        )
+        return ApiResponse(data=instance, status_code=status_code, headers=headers)
+
+    async def _fetch_async(self) -> tuple:
+        """
+        Internal async helper for fetch operation
+
+        Returns:
+            tuple: (payload, status_code, headers)
+        """
 
         headers = values.of({})
 
         headers["Accept"] = "application/json"
 
-        payload = self._version.fetch(method="GET", uri=self._uri, headers=headers)
-
-        return FleetInstance(
-            self._version,
-            payload,
-            sid=self._solution["sid"],
+        return await self._version.fetch_with_response_info_async(
+            method="GET", uri=self._uri, headers=headers
         )
 
     async def fetch_async(self) -> FleetInstance:
@@ -143,20 +203,27 @@ class FleetContext(InstanceContext):
 
         :returns: The fetched FleetInstance
         """
-
-        headers = values.of({})
-
-        headers["Accept"] = "application/json"
-
-        payload = await self._version.fetch_async(
-            method="GET", uri=self._uri, headers=headers
-        )
-
+        payload, _, _ = await self._fetch_async()
         return FleetInstance(
             self._version,
             payload,
             sid=self._solution["sid"],
         )
+
+    async def fetch_with_http_info_async(self) -> ApiResponse:
+        """
+        Asynchronous coroutine to fetch the FleetInstance and return response metadata
+
+
+        :returns: ApiResponse with instance, status code, and headers
+        """
+        payload, status_code, headers = await self._fetch_async()
+        instance = FleetInstance(
+            self._version,
+            payload,
+            sid=self._solution["sid"],
+        )
+        return ApiResponse(data=instance, status_code=status_code, headers=headers)
 
     def __repr__(self) -> str:
         """
@@ -180,13 +247,12 @@ class FleetList(ListResource):
 
         self._uri = "/Fleets"
 
-    def create(self, name: Union[str, object] = values.unset) -> FleetInstance:
+    def _create(self, name: Union[str, object] = values.unset) -> tuple:
         """
-        Create the FleetInstance
+        Internal helper for create operation
 
-        :param name:
-
-        :returns: The created FleetInstance
+        Returns:
+            tuple: (payload, status_code, headers)
         """
 
         data = values.of(
@@ -200,11 +266,57 @@ class FleetList(ListResource):
 
         headers["Accept"] = "application/json"
 
-        payload = self._version.create(
+        return self._version.create_with_response_info(
             method="POST", uri=self._uri, data=data, headers=headers
         )
 
+    def create(self, name: Union[str, object] = values.unset) -> FleetInstance:
+        """
+        Create the FleetInstance
+
+        :param name:
+
+        :returns: The created FleetInstance
+        """
+        payload, _, _ = self._create(name=name)
         return FleetInstance(self._version, payload)
+
+    def create_with_http_info(
+        self, name: Union[str, object] = values.unset
+    ) -> ApiResponse:
+        """
+        Create the FleetInstance and return response metadata
+
+        :param name:
+
+        :returns: ApiResponse with instance, status code, and headers
+        """
+        payload, status_code, headers = self._create(name=name)
+        instance = FleetInstance(self._version, payload)
+        return ApiResponse(data=instance, status_code=status_code, headers=headers)
+
+    async def _create_async(self, name: Union[str, object] = values.unset) -> tuple:
+        """
+        Internal async helper for create operation
+
+        Returns:
+            tuple: (payload, status_code, headers)
+        """
+
+        data = values.of(
+            {
+                "Name": name,
+            }
+        )
+        headers = values.of({"Content-Type": "application/x-www-form-urlencoded"})
+
+        headers["Content-Type"] = "application/x-www-form-urlencoded"
+
+        headers["Accept"] = "application/json"
+
+        return await self._version.create_with_response_info_async(
+            method="POST", uri=self._uri, data=data, headers=headers
+        )
 
     async def create_async(
         self, name: Union[str, object] = values.unset
@@ -216,23 +328,22 @@ class FleetList(ListResource):
 
         :returns: The created FleetInstance
         """
-
-        data = values.of(
-            {
-                "Name": name,
-            }
-        )
-        headers = values.of({"Content-Type": "application/x-www-form-urlencoded"})
-
-        headers["Content-Type"] = "application/x-www-form-urlencoded"
-
-        headers["Accept"] = "application/json"
-
-        payload = await self._version.create_async(
-            method="POST", uri=self._uri, data=data, headers=headers
-        )
-
+        payload, _, _ = await self._create_async(name=name)
         return FleetInstance(self._version, payload)
+
+    async def create_with_http_info_async(
+        self, name: Union[str, object] = values.unset
+    ) -> ApiResponse:
+        """
+        Asynchronously create the FleetInstance and return response metadata
+
+        :param name:
+
+        :returns: ApiResponse with instance, status code, and headers
+        """
+        payload, status_code, headers = await self._create_async(name=name)
+        instance = FleetInstance(self._version, payload)
+        return ApiResponse(data=instance, status_code=status_code, headers=headers)
 
     def get(self, sid: str) -> FleetContext:
         """

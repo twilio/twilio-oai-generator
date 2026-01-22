@@ -11,6 +11,7 @@ import (
 	time "time"
 
 	gomock "github.com/golang/mock/gomock"
+	client "github.com/twilio/twilio-go/client"
 )
 
 // MockBaseClient is a mock of BaseClient interface.
@@ -51,18 +52,23 @@ func (mr *MockBaseClientMockRecorder) AccountSid() *gomock.Call {
 }
 
 // SendRequest mocks base method.
-func (m *MockBaseClient) SendRequest(method, rawURL string, data url.Values, headers map[string]interface{}) (*http.Response, error) {
+func (m *MockBaseClient) SendRequest(method, rawURL string, data url.Values, headers map[string]interface{}, body ...byte) (*http.Response, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "SendRequest", method, rawURL, data, headers)
+	varargs := []interface{}{method, rawURL, data, headers}
+	for _, a := range body {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "SendRequest", varargs...)
 	ret0, _ := ret[0].(*http.Response)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // SendRequest indicates an expected call of SendRequest.
-func (mr *MockBaseClientMockRecorder) SendRequest(method, rawURL, data, headers interface{}) *gomock.Call {
+func (mr *MockBaseClientMockRecorder) SendRequest(method, rawURL, data, headers interface{}, body ...interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SendRequest", reflect.TypeOf((*MockBaseClient)(nil).SendRequest), method, rawURL, data, headers)
+	varargs := append([]interface{}{method, rawURL, data, headers}, body...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SendRequest", reflect.TypeOf((*MockBaseClient)(nil).SendRequest), varargs...)
 }
 
 // SetTimeout mocks base method.
@@ -75,4 +81,30 @@ func (m *MockBaseClient) SetTimeout(timeout time.Duration) {
 func (mr *MockBaseClientMockRecorder) SetTimeout(timeout interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetTimeout", reflect.TypeOf((*MockBaseClient)(nil).SetTimeout), timeout)
+}
+
+// SetOauth mocks base method.
+func (m *MockBaseClient) SetOauth(auth client.OAuth) {
+	m.ctrl.T.Helper()
+	m.ctrl.Call(m, "SetOauth", auth)
+}
+
+// SetOauth indicates an expected call of SetOauth.
+func (mr *MockBaseClientMockRecorder) SetOauth(auth interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetOauth", reflect.TypeOf((*MockBaseClient)(nil).SetOauth), auth)
+}
+
+// OAuth mocks base method.
+func (m *MockBaseClient) OAuth() client.OAuth {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "OAuth")
+	ret0, _ := ret[0].(client.OAuth)
+	return ret0
+}
+
+// OAuth indicates an expected call of OAuth.
+func (mr *MockBaseClientMockRecorder) OAuth() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "OAuth", reflect.TypeOf((*MockBaseClient)(nil).OAuth))
 }

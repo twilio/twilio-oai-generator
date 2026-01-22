@@ -5,7 +5,7 @@ class {{instanceName}}(InstanceResource):
     :ivar {{name}}: {{{description}}}{{/vars}}
     """
 
-    def __init__(self, version: Version, payload: Dict[str, Any]{{#instancePathParams}}, {{paramName}}: {{#if vendorExtensions.x-is-parent-param}}{{{contentType}}}{{else}}Optional[{{{contentType}}}] = None{{/if}}{{/instancePathParams}}):
+    def __init__(self, version: Version, payload:{{#hasMultipleResponseModels}}ResponseResource{{/hasMultipleResponseModels}}{{^hasMultipleResponseModels}}Dict[str, Any]{{/hasMultipleResponseModels}}{{#instancePathParams}}, {{paramName}}: {{#if vendorExtensions.x-is-parent-param}}{{{contentType}}}{{else}}Optional[{{{contentType}}}] = None{{/if}}{{/instancePathParams}}):
         super().__init__(version)
 
         {{#vars}}
@@ -49,7 +49,47 @@ class {{instanceName}}(InstanceResource):
         :returns: The updated {{instanceName}}
         """
         return await self._proxy.update_async({{#allParams}}{{paramName}}={{paramName}}, {{/allParams}})
-    {{/vendorExtensions.x-is-update-operation}}{{#vendorExtensions.x-is-fetch-operation}}
+
+    def {{vendorExtensions.x-name-lower}}_with_http_info(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> ApiResponse:
+        """
+        Update the {{instanceName}} with HTTP info
+        {{#allParams}}
+        :param {{paramName}}: {{{description}}}{{/allParams}}
+
+        :returns: ApiResponse with instance, status code, and headers
+        """
+        return self._proxy.update_with_http_info({{#allParams}}{{paramName}}={{paramName}}, {{/allParams}})
+
+    async def {{vendorExtensions.x-name-lower}}_with_http_info_async(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> ApiResponse:
+        """
+        Asynchronous coroutine to update the {{instanceName}} with HTTP info
+        {{#allParams}}
+        :param {{paramName}}: {{{description}}}{{/allParams}}
+
+        :returns: ApiResponse with instance, status code, and headers
+        """
+        return await self._proxy.update_with_http_info_async({{#allParams}}{{paramName}}={{paramName}}, {{/allParams}})
+    {{/vendorExtensions.x-is-update-operation}}{{#vendorExtensions.x-is-patch-operation}}
+    def {{vendorExtensions.x-name-lower}}(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> "{{instanceName}}":
+        """
+        Patch the {{instanceName}}
+        {{#allParams}}
+        :param {{paramName}}: {{{description}}}{{/allParams}}
+
+        :returns: The patched {{instanceName}}
+        """
+        return self._proxy.patch({{#allParams}}{{paramName}}={{paramName}}, {{/allParams}})
+
+    async def {{vendorExtensions.x-name-lower}}_async(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> "{{instanceName}}":
+        """
+        Asynchronous coroutine to patch the {{instanceName}}
+        {{#allParams}}
+        :param {{paramName}}: {{{description}}}{{/allParams}}
+
+        :returns: The patched {{instanceName}}
+        """
+        return await self._proxy.patch_async({{#allParams}}{{paramName}}={{paramName}}, {{/allParams}})
+    {{/vendorExtensions.x-is-patch-operation}}{{#vendorExtensions.x-is-fetch-operation}}
     def {{vendorExtensions.x-name-lower}}(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> "{{instanceName}}":
         """
         Fetch the {{instanceName}}
@@ -69,6 +109,26 @@ class {{instanceName}}(InstanceResource):
         :returns: The fetched {{instanceName}}
         """
         return await self._proxy.fetch_async({{#allParams}}{{paramName}}={{paramName}}, {{/allParams}})
+
+    def {{vendorExtensions.x-name-lower}}_with_http_info(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> ApiResponse:
+        """
+        Fetch the {{instanceName}} with HTTP info
+        {{#allParams}}
+        :param {{paramName}}: {{{description}}}{{/allParams}}
+
+        :returns: ApiResponse with instance, status code, and headers
+        """
+        return self._proxy.fetch_with_http_info({{#allParams}}{{paramName}}={{paramName}}, {{/allParams}})
+
+    async def {{vendorExtensions.x-name-lower}}_with_http_info_async(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> ApiResponse:
+        """
+        Asynchronous coroutine to fetch the {{instanceName}} with HTTP info
+        {{#allParams}}
+        :param {{paramName}}: {{{description}}}{{/allParams}}
+
+        :returns: ApiResponse with instance, status code, and headers
+        """
+        return await self._proxy.fetch_with_http_info_async({{#allParams}}{{paramName}}={{paramName}}, {{/allParams}})
     {{/vendorExtensions.x-is-fetch-operation}}{{#vendorExtensions.x-is-delete-operation}}
     def {{vendorExtensions.x-name-lower}}(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> bool:
         """
@@ -88,6 +148,26 @@ class {{instanceName}}(InstanceResource):
         :returns: True if delete succeeds, False otherwise
         """
         return await self._proxy.delete_async({{#allParams}}{{paramName}}={{paramName}}, {{/allParams}})
+
+    def {{vendorExtensions.x-name-lower}}_with_http_info(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> ApiResponse:
+        """
+        Deletes the {{instanceName}} with HTTP info
+        {{#allParams}}
+        :param {{paramName}}: {{{description}}}{{/allParams}}
+
+        :returns: ApiResponse with success boolean, status code, and headers
+        """
+        return self._proxy.delete_with_http_info({{#allParams}}{{paramName}}={{paramName}}, {{/allParams}})
+
+    async def {{vendorExtensions.x-name-lower}}_with_http_info_async(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> ApiResponse:
+        """
+        Asynchronous coroutine that deletes the {{instanceName}} with HTTP info
+        {{#allParams}}
+        :param {{paramName}}: {{{description}}}{{/allParams}}
+
+        :returns: ApiResponse with success boolean, status code, and headers
+        """
+        return await self._proxy.delete_with_http_info_async({{#allParams}}{{paramName}}={{paramName}}, {{/allParams}})
     {{/vendorExtensions.x-is-delete-operation}}{{#vendorExtensions.x-is-create-operation}}
     def {{vendorExtensions.x-name-lower}}(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> "{{instanceName}}":
         """
@@ -107,6 +187,26 @@ class {{instanceName}}(InstanceResource):
         :returns: The created {{instanceName}}
         """
         return await self._proxy.create_async({{#allParams}}{{paramName}}{{#if required}}{{else}}={{paramName}}{{/if}}, {{/allParams}})
+
+    def {{vendorExtensions.x-name-lower}}_with_http_info(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> ApiResponse:
+        """
+        Create the {{instanceName}} with HTTP info
+        {{#allParams}}
+        :param {{paramName}}: {{{description}}}{{/allParams}}
+
+        :returns: ApiResponse with instance, status code, and headers
+        """
+        return self._proxy.create_with_http_info({{#allParams}}{{paramName}}{{#if required}}{{else}}={{paramName}}{{/if}}, {{/allParams}})
+
+    async def {{vendorExtensions.x-name-lower}}_with_http_info_async(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> ApiResponse:
+        """
+        Asynchronous coroutine to create the {{instanceName}} with HTTP info
+        {{#allParams}}
+        :param {{paramName}}: {{{description}}}{{/allParams}}
+
+        :returns: ApiResponse with instance, status code, and headers
+        """
+        return await self._proxy.create_with_http_info_async({{#allParams}}{{paramName}}{{#if required}}{{else}}={{paramName}}{{/if}}, {{/allParams}})
     {{/vendorExtensions.x-is-create-operation}}{{/vendorExtensions.x-is-context-operation}}{{/operations}}{{#dependents}}{{#instanceDependent}}
     @property
     def {{mountName}}(self) -> {{listName}}:

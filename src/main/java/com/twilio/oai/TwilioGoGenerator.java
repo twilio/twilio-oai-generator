@@ -64,6 +64,7 @@ public class TwilioGoGenerator extends AbstractTwilioGoGenerator {
 
             model.allVars.forEach(v -> v.setIsNumber(v.isNumber || v.isFloat));
             model.vendorExtensions.put("x-has-numbers-vars", model.allVars.stream().anyMatch(v -> v.isNumber));
+
         }
         return results;
     }
@@ -91,10 +92,34 @@ public class TwilioGoGenerator extends AbstractTwilioGoGenerator {
     String modelNameWithoutStatusCode(String modelName) {
         if(modelName == null || modelName.isEmpty())
             return modelName;
+
+        // Don't process primitive types or array types
+        if (isPrimitiveOrArrayType(modelName)) {
+            return modelName;
+        }
+
+        Set<String> FIXED_DATATYPE = new HashSet<>();
+        FIXED_DATATYPE.add("interface{}");
+        FIXED_DATATYPE.add("time.Time");
+
         String newModelName = removeStatusCode(modelName);
         if(Objects.equals(newModelName, modelName))
             newModelName = removeDigits(newModelName);
-        return StringUtils.camelize(newModelName);
+        return FIXED_DATATYPE.contains(newModelName) ? newModelName : StringUtils.camelize(newModelName);
+    }
+
+    private boolean isPrimitiveOrArrayType(String typeName) {
+        if (typeName == null) return false;
+        // Check for array types
+        if (typeName.startsWith("[]")) return true;
+        // Check for Go primitive types
+        String[] primitiveTypes = {"string", "int", "int32", "int64", "float32", "float64", "bool", "byte", "rune", "array", "map"};
+        for (String primitive : primitiveTypes) {
+            if (typeName.equals(primitive) || typeName.startsWith(primitive + " ") || typeName.startsWith("map[")) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private boolean contains2xxStatusCode(String modelName) {
@@ -130,6 +155,87 @@ public class TwilioGoGenerator extends AbstractTwilioGoGenerator {
                 value.put("classname", removeDigits((String) value.get("classname")));
             }
             updatedObjs.put(key, value);
+        });
+
+        // Fix all property references to models with status codes
+        updatedObjs.forEach((key, value) -> {
+            ModelMap modelMap = value.getModels().get(0);
+            CodegenModel model = modelMap.getModel();
+            // Update all property dataTypes that reference models with status codes
+            boolean modified = false;
+
+            for (CodegenProperty property : model.allVars) {
+                // Check if property type needs status code removal (with or without underscores)
+                String cleanedDataType = modelNameWithoutStatusCode(property.dataType);
+                if (!cleanedDataType.equals(property.dataType)) {
+                    property.dataType = cleanedDataType;
+                    modified = true;
+                }
+
+                // Update vendor extension used in Go templates
+                if (property.vendorExtensions.containsKey("x-go-base-type")) {
+                    String baseType = (String) property.vendorExtensions.get("x-go-base-type");
+                    String cleanedBaseType = modelNameWithoutStatusCode(baseType);
+                    if (!cleanedBaseType.equals(baseType)) {
+                        property.vendorExtensions.put("x-go-base-type", cleanedBaseType);
+                        modified = true;
+                    }
+                }
+
+                // Also check baseType
+                if (property.baseType != null) {
+                    String cleanedBaseType = modelNameWithoutStatusCode(property.baseType);
+                    if (!cleanedBaseType.equals(property.baseType)) {
+                        property.baseType = cleanedBaseType;
+                        modified = true;
+                    }
+                }
+
+                // Check complexType
+                if (property.complexType != null) {
+                    String cleanedComplexType = modelNameWithoutStatusCode(property.complexType);
+                    if (!cleanedComplexType.equals(property.complexType)) {
+                        property.complexType = cleanedComplexType;
+                        modified = true;
+                    }
+                }
+            }
+            // Update vars list as well (in addition to allVars)
+            for (CodegenProperty property : model.vars) {
+                String cleanedDataType = modelNameWithoutStatusCode(property.dataType);
+                if (!cleanedDataType.equals(property.dataType)) {
+                    property.dataType = cleanedDataType;
+                    modified = true;
+                }
+
+                if (property.vendorExtensions.containsKey("x-go-base-type")) {
+                    String baseType = (String) property.vendorExtensions.get("x-go-base-type");
+                    String cleanedBaseType = modelNameWithoutStatusCode(baseType);
+                    if (!cleanedBaseType.equals(baseType)) {
+                        property.vendorExtensions.put("x-go-base-type", cleanedBaseType);
+                        modified = true;
+                    }
+                }
+
+                if (property.baseType != null) {
+                    String cleanedBaseType = modelNameWithoutStatusCode(property.baseType);
+                    if (!cleanedBaseType.equals(property.baseType)) {
+                        property.baseType = cleanedBaseType;
+                        modified = true;
+                    }
+                }
+
+                if (property.complexType != null) {
+                    String cleanedComplexType = modelNameWithoutStatusCode(property.complexType);
+                    if (!cleanedComplexType.equals(property.complexType)) {
+                        property.complexType = cleanedComplexType;
+                        modified = true;
+                    }
+                }
+            }
+            if (modified) {
+                modelMap.setModel(model);
+            }
         });
 
         return updatedObjs;
@@ -185,7 +291,7 @@ public class TwilioGoGenerator extends AbstractTwilioGoGenerator {
             .map(op -> models.get(op.returnType))
             .findFirst();
 
-        if (returnModel.isEmpty()) {
+        if (returnModel.isEmpty() ) {
             returnModel = opList
                     .stream()
                     .filter(op -> models.containsKey(op.returnType))
@@ -197,6 +303,12 @@ public class TwilioGoGenerator extends AbstractTwilioGoGenerator {
             Utility.populateCrudOperations(co);
             Utility.resolveContentType(co);
             co.returnType = modelNameWithoutStatusCode(co.returnType);
+
+            // Add isApiV1 flag for template usage
+            if (com.twilio.oai.java.cache.ResourceCacheContext.get() != null && com.twilio.oai.java.cache.ResourceCacheContext.get().isV1()) {
+                co.vendorExtensions.put("isApiV1", true);
+            }
+
             if (co.nickname.startsWith("List")) {
                 // make sure the format matches the other methods
                 co.vendorExtensions.put("x-domain-name", co.nickname.replaceFirst("List", ""));
@@ -213,7 +325,7 @@ public class TwilioGoGenerator extends AbstractTwilioGoGenerator {
                 });
 
                 // filter the fields in the model and get only the array typed field. Also, make sure there is only one field of type list/array
-                if (returnModel.isPresent()) {
+                if (returnModel.isPresent() && returnModel.get().allVars.stream().filter( v -> !v.baseName.contains("schemas")).filter(v -> v.dataType.startsWith("[]")).collect(Collectors.toList()).size() == 1) {
                     CodegenProperty field = returnModel.get().allVars
                             .stream()
                             .filter( v -> !v.baseName.contains("schemas"))

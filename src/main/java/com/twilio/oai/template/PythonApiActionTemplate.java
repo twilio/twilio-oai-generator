@@ -20,7 +20,9 @@ public class PythonApiActionTemplate extends AbstractApiActionTemplate {
         return Map.of(API_TEMPLATE,
                       Arrays.asList("api-single.mustache", ".py"),
                       VERSION_TEMPLATE,
-                      Arrays.asList("version.mustache", ".py"));
+                      Arrays.asList("version.mustache", ".py"),
+            INSTANCE_RESPONSE_TEMPLATE,
+            Arrays.asList("responseInstance.handlebars", ".py"));
     }
 
     @Override
