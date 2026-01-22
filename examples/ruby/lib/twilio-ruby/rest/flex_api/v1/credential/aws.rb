@@ -201,6 +201,26 @@ module Twilio
             end
 
             ##
+            # Fetch the AwsInstanceMetadata
+            # @return [AwsInstance] Fetched AwsInstance
+            def fetch_with_metadata
+              headers = Twilio::Values.of({ 'Content-Type' => 'application/x-www-form-urlencoded', })
+
+              response = @version.fetch_with_metadata('GET', @uri, headers: headers)
+              aws_instance = AwsInstance.new(
+                @version,
+                response.body,
+                sid: @solution[:sid],
+              )
+              AwsInstanceMetadata.new(
+                @version,
+                aws_instance,
+                response.headers,
+                response.status_code
+              )
+            end
+
+            ##
             # Patch the AwsInstance
             # @param [String] test_string
             # @param [Boolean] test_boolean
@@ -222,12 +242,25 @@ module Twilio
                 payload,
                 sid: @solution[:sid],
               )
-            # Fetch the AwsInstanceMetadata
-            # @return [AwsInstance] Fetched AwsInstance
-            def fetch_with_metadata
+            end
+
+            ##
+            # Patch the AwsInstanceMetadata
+            # @param [String] test_string
+            # @param [Boolean] test_boolean
+            # @return [AwsInstance] Patchd AwsInstance
+            def patch_with_metadata(
+              test_string: :unset,
+              test_boolean: :unset
+            )
+              data = Twilio::Values.of({
+                                         'TestString' => test_string,
+                                         'TestBoolean' => test_boolean,
+                                       })
+
               headers = Twilio::Values.of({ 'Content-Type' => 'application/x-www-form-urlencoded', })
 
-              response = @version.fetch_with_metadata('GET', @uri, headers: headers)
+              response = @version.patch_with_metadata('PATCH', @uri, data: data, headers: headers)
               aws_instance = AwsInstance.new(
                 @version,
                 response.body,

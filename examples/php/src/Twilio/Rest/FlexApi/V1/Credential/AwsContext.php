@@ -154,15 +154,14 @@ class AwsContext extends InstanceContext
 
 
     /**
-     * Patch the AwsInstance
+     * Helper function for Patch
      *
      * @param array|Options $options Optional Arguments
-     * @return AwsInstance Patchd AwsInstance
+     * @return Response Patchd Response
      * @throws TwilioException When an HTTP error occurs.
      */
-    public function patch(array $options = []): AwsInstance
+    private function _patch(array $options = []): Response
     {
-
         $options = new Values($options);
 
         $data = Values::of([
@@ -173,18 +172,52 @@ class AwsContext extends InstanceContext
         ]);
 
         $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded', 'Accept' => 'application/json' ]);
-        $payload = $this->version->patch('PATCH', $this->uri, [], $data, $headers);
+        return $this->version->handleRequest('PATCH', $this->uri, [], $data, $headers, "patch");
+    }
 
+    /**
+     * Patch the AwsInstance
+     *
+     * @param array|Options $options Optional Arguments
+     * @return AwsInstance Patchd AwsInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function patch(array $options = []): AwsInstance
+    {
+        $response = $this->_patch($options);
         return new AwsInstance(
             $this->version,
-            $payload,
+            $response->getContent(),
             $this->solution['sid']
+        );
+        
+    }
+
+    /**
+     * Patch the AwsInstance with Metadata
+     *
+     * @param array|Options $options Optional Arguments
+     * @return ResourceMetadata The Patchd Resource with Metadata
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function patchWithMetadata(array $options = []): ResourceMetadata
+    {
+        $response = $this->_patch($options);
+        $resource = new AwsInstance(
+                        $this->version,
+                        $response->getContent(),
+                        $this->solution['sid']
+                    );
+        return new ResourceMetadata(
+            $resource,
+            $response->getStatusCode(),
+            $response->getHeaders()
         );
     }
 
 
     /**
-     * Update the AwsInstance
+     * Helper function for Update
      *
      * @param array|Options $options Optional Arguments
      * @return Response Updated Response

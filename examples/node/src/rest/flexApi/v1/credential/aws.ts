@@ -150,6 +150,29 @@ export interface AwsContext {
   ): Promise<AwsInstance>;
 
   /**
+   * Patch a AwsInstance and return HTTP info
+   *
+   * @param callback - Callback to handle processed record
+   *
+   * @returns Resolves to processed AwsInstance with HTTP metadata
+   */
+  patchWithHttpInfo(
+    callback?: (error: Error | null, item?: ApiResponse<AwsInstance>) => any,
+  ): Promise<ApiResponse<AwsInstance>>;
+  /**
+   * Patch a AwsInstance and return HTTP info
+   *
+   * @param params - Parameter for request
+   * @param callback - Callback to handle processed record
+   *
+   * @returns Resolves to processed AwsInstance with HTTP metadata
+   */
+  patchWithHttpInfo(
+    params: AwsContextPatchOptions,
+    callback?: (error: Error | null, item?: ApiResponse<AwsInstance>) => any,
+  ): Promise<ApiResponse<AwsInstance>>;
+
+  /**
    * Update a AwsInstance
    *
    * @param callback - Callback to handle processed record
@@ -370,6 +393,58 @@ export class AwsContextImpl implements AwsContext {
       (payload) =>
         new AwsInstance(operationVersion, payload, instance._solution.sid),
     );
+
+    operationPromise = instance._version.setPromiseCallback(
+      operationPromise,
+      callback,
+    );
+    return operationPromise;
+  }
+
+  patchWithHttpInfo(
+    params?:
+      | AwsContextPatchOptions
+      | ((error: Error | null, item?: ApiResponse<AwsInstance>) => any),
+    callback?: (error: Error | null, item?: ApiResponse<AwsInstance>) => any,
+  ): Promise<ApiResponse<AwsInstance>> {
+    if (params instanceof Function) {
+      callback = params;
+      params = {};
+    } else {
+      params = params || {};
+    }
+
+    let data: any = {};
+
+    if (params["testString"] !== undefined)
+      data["TestString"] = params["testString"];
+    if (params["testBoolean"] !== undefined)
+      data["TestBoolean"] = serialize.bool(params["testBoolean"]);
+
+    const headers: any = {};
+    headers["Content-Type"] = "application/x-www-form-urlencoded";
+    headers["Accept"] = "application/json";
+
+    const instance = this;
+    let operationVersion = instance._version;
+    // CREATE, FETCH, UPDATE operations
+    let operationPromise = operationVersion
+      .patchWithResponseInfo<AwsResource>({
+        uri: instance._uri,
+        method: "patch",
+        data,
+        headers,
+      })
+      .then(
+        (response): ApiResponse<AwsInstance> => ({
+          ...response,
+          body: new AwsInstance(
+            operationVersion,
+            response.body,
+            instance._solution.sid,
+          ),
+        }),
+      );
 
     operationPromise = instance._version.setPromiseCallback(
       operationPromise,
@@ -608,6 +683,36 @@ export class AwsInstance {
     callback?: (error: Error | null, item?: AwsInstance) => any,
   ): Promise<AwsInstance> {
     return this._proxy.patch(params, callback);
+  }
+
+  /**
+   * Patch a AwsInstance and return HTTP info
+   *
+   * @param callback - Callback to handle processed record
+   *
+   * @returns Resolves to processed AwsInstance with HTTP metadata
+   */
+  patchWithHttpInfo(
+    callback?: (error: Error | null, item?: ApiResponse<AwsInstance>) => any,
+  ): Promise<ApiResponse<AwsInstance>>;
+  /**
+   * Patch a AwsInstance and return HTTP info
+   *
+   * @param params - Parameter for request
+   * @param callback - Callback to handle processed record
+   *
+   * @returns Resolves to processed AwsInstance with HTTP metadata
+   */
+  patchWithHttpInfo(
+    params: AwsContextPatchOptions,
+    callback?: (error: Error | null, item?: ApiResponse<AwsInstance>) => any,
+  ): Promise<ApiResponse<AwsInstance>>;
+
+  patchWithHttpInfo(
+    params?: any,
+    callback?: (error: Error | null, item?: ApiResponse<AwsInstance>) => any,
+  ): Promise<ApiResponse<AwsInstance>> {
+    return this._proxy.patchWithHttpInfo(params, callback);
   }
 
   /**
