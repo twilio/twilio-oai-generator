@@ -12,7 +12,9 @@ type BaseClient interface {
 	AccountSid() string
 	SetTimeout(timeout time.Duration)
 	SendRequest(method string, rawURL string, data url.Values,
-		headers map[string]interface{}) (*http.Response, error)
+		headers map[string]interface{}, body ...byte) (*http.Response, error)
+	SetOauth(auth client.OAuth)
+	OAuth() client.OAuth
 }
 
 type TestClient struct {
@@ -37,6 +39,6 @@ func (tc *TestClient) getParsedUrl(path string) *url.URL {
 	return parsedUrl
 }
 
-func (tc *TestClient) SendRequest(method string, rawURL string, data url.Values, headers map[string]interface{}) (*http.Response, error) {
-	return tc.Client.SendRequest(method, tc.getParsedUrl(rawURL).String(), data, headers)
+func (tc *TestClient) SendRequest(method string, rawURL string, data url.Values, headers map[string]interface{}, body ...byte) (*http.Response, error) {
+	return tc.Client.SendRequest(method, tc.getParsedUrl(rawURL).String(), data, headers, body...)
 }
