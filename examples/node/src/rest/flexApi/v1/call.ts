@@ -17,6 +17,7 @@ import V1 from "../V1";
 const deserialize = require("../../../base/deserialize");
 const serialize = require("../../../base/serialize");
 import { isValidPathParam } from "../../../base/utility";
+import { ApiResponse } from "../../../base/ApiResponse";
 
 export interface CallContext {
   /**
@@ -29,6 +30,17 @@ export interface CallContext {
   update(
     callback?: (error: Error | null, item?: CallInstance) => any,
   ): Promise<CallInstance>;
+
+  /**
+   * Update a CallInstance and return HTTP info
+   *
+   * @param callback - Callback to handle processed record
+   *
+   * @returns Resolves to processed CallInstance with HTTP metadata
+   */
+  updateWithHttpInfo(
+    callback?: (error: Error | null, item?: ApiResponse<CallInstance>) => any,
+  ): Promise<ApiResponse<CallInstance>>;
 
   /**
    * Provide a user-friendly representation
@@ -75,6 +87,39 @@ export class CallContextImpl implements CallContext {
       (payload) =>
         new CallInstance(operationVersion, payload, instance._solution.sid),
     );
+
+    operationPromise = instance._version.setPromiseCallback(
+      operationPromise,
+      callback,
+    );
+    return operationPromise;
+  }
+
+  updateWithHttpInfo(
+    callback?: (error: Error | null, item?: ApiResponse<CallInstance>) => any,
+  ): Promise<ApiResponse<CallInstance>> {
+    const headers: any = {};
+    headers["Accept"] = "application/json";
+
+    const instance = this;
+    let operationVersion = instance._version;
+    // CREATE, FETCH, UPDATE operations
+    let operationPromise = operationVersion
+      .updateWithResponseInfo<CallResource>({
+        uri: instance._uri,
+        method: "post",
+        headers,
+      })
+      .then(
+        (response): ApiResponse<CallInstance> => ({
+          ...response,
+          body: new CallInstance(
+            operationVersion,
+            response.body,
+            instance._solution.sid,
+          ),
+        }),
+      );
 
     operationPromise = instance._version.setPromiseCallback(
       operationPromise,
@@ -139,6 +184,19 @@ export class CallInstance {
     callback?: (error: Error | null, item?: CallInstance) => any,
   ): Promise<CallInstance> {
     return this._proxy.update(callback);
+  }
+
+  /**
+   * Update a CallInstance and return HTTP info
+   *
+   * @param callback - Callback to handle processed record
+   *
+   * @returns Resolves to processed CallInstance with HTTP metadata
+   */
+  updateWithHttpInfo(
+    callback?: (error: Error | null, item?: ApiResponse<CallInstance>) => any,
+  ): Promise<ApiResponse<CallInstance>> {
+    return this._proxy.updateWithHttpInfo(callback);
   }
 
   /**

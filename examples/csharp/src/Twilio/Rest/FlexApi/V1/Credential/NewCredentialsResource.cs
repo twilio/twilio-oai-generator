@@ -192,6 +192,74 @@ namespace Twilio.Rest.FlexApi.V1.Credential
         }
         #endif
 
+
+        public static TwilioResponse<NewCredentialsResource> CreateWithHeaders(CreateNewCredentialsOptions options, ITwilioRestClient client = null) 
+        {
+            client = client ?? TwilioClient.GetRestClient();
+            var response = client.Request(BuildCreateRequest(options, client));
+            var resource = FromJson(response.Content);
+            return new TwilioResponse<NewCredentialsResource>(resource, response.Headers, response.StatusCode);
+        }
+
+        #if !NET35
+        public static async System.Threading.Tasks.Task<TwilioResponse<NewCredentialsResource>> CreateWithHeadersAsync(CreateNewCredentialsOptions options, ITwilioRestClient client = null)
+        {
+            client = client ?? TwilioClient.GetRestClient();
+            var response = await client.RequestAsync(BuildCreateRequest(options, client));
+            var resource = FromJson(response.Content);
+            return new TwilioResponse<NewCredentialsResource>(resource, response.Headers, response.StatusCode);
+        }
+        #endif
+
+        public static TwilioResponse<NewCredentialsResource> CreateWithHeaders(
+            string testString,
+            int? testInteger = null,
+            DateTime? testDate = null,
+            float? testNumberFloat = null,
+            object testObject = null,
+            bool? testBoolean = null,
+            decimal? testNumber = null,
+            double? testNumberDouble = null,
+            decimal? testNumberInt32 = null,
+            long? testNumberInt64 = null,
+            DateTime? testDateTime = null,
+            NewCredentialsResource.StatusEnum testEnum = null,
+            List<object> testObjectArray = null,
+            object testAnyType = null,
+            List<object> testAnyArray = null,
+            List<NewCredentialsResource.PermissionsEnum> permissions = null,
+            string someA2PThing = null,
+        ITwilioRestClient client = null)
+        {
+        var options = new CreateNewCredentialsOptions(testString){  TestInteger = testInteger, TestDate = testDate, TestNumberFloat = testNumberFloat, TestObject = testObject, TestBoolean = testBoolean, TestNumber = testNumber, TestNumberDouble = testNumberDouble, TestNumberInt32 = testNumberInt32, TestNumberInt64 = testNumberInt64, TestDateTime = testDateTime, TestEnum = testEnum, TestObjectArray = testObjectArray, TestAnyType = testAnyType, TestAnyArray = testAnyArray, Permissions = permissions, SomeA2PThing = someA2PThing };
+        return CreateWithHeaders(options, client);
+        }
+
+        #if !NET35
+        public static async System.Threading.Tasks.Task<TwilioResponse<NewCredentialsResource>> CreateWithHeadersAsync(
+            string testString,
+            int? testInteger = null,
+            DateTime? testDate = null,
+            float? testNumberFloat = null,
+            object testObject = null,
+            bool? testBoolean = null,
+            decimal? testNumber = null,
+            double? testNumberDouble = null,
+            decimal? testNumberInt32 = null,
+            long? testNumberInt64 = null,
+            DateTime? testDateTime = null,
+            NewCredentialsResource.StatusEnum testEnum = null,
+            List<object> testObjectArray = null,
+            object testAnyType = null,
+            List<object> testAnyArray = null,
+            List<NewCredentialsResource.PermissionsEnum> permissions = null,
+            string someA2PThing = null,
+        ITwilioRestClient client = null)
+        {
+        var options = new CreateNewCredentialsOptions(testString){  TestInteger = testInteger, TestDate = testDate, TestNumberFloat = testNumberFloat, TestObject = testObject, TestBoolean = testBoolean, TestNumber = testNumber, TestNumberDouble = testNumberDouble, TestNumberInt32 = testNumberInt32, TestNumberInt64 = testNumberInt64, TestDateTime = testDateTime, TestEnum = testEnum, TestObjectArray = testObjectArray, TestAnyType = testAnyType, TestAnyArray = testAnyArray, Permissions = permissions, SomeA2PThing = someA2PThing };
+        return await CreateWithHeadersAsync(options, client);
+        }
+        #endif
     
         /// <summary>
         /// Converts a JSON string into a NewCredentialsResource object

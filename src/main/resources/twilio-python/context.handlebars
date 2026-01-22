@@ -19,13 +19,12 @@ class {{apiName}}Context(InstanceContext):
         self._{{mountName}}: Optional[{{listName}}] = None{{/instanceDependent}}{{/dependents}}
     {{#operations}}{{#vendorExtensions.x-is-context-operation}}
     {{#vendorExtensions.x-is-update-operation}}{{^vendorExtensions.x-twilio.ignoreOperation}}
-    def {{vendorExtensions.x-name-lower}}(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> {{instanceName}}:
+    def _{{vendorExtensions.x-name-lower}}(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> tuple:
         """
-        Update the {{instanceName}}
-        {{#allParams}}
-        :param {{paramName}}: {{{description}}}{{/allParams}}
+        Internal helper for {{vendorExtensions.x-name-lower}} operation
 
-        :returns: The updated {{instanceName}}
+        Returns:
+            tuple: (payload, status_code, headers)
         """
         {{#bodyParam}}data = {{paramName}}.to_dict(){{/bodyParam}}
         {{^bodyParam}}data = values.of({ {{#allParams}}{{#isFormParam}}
@@ -49,21 +48,45 @@ class {{apiName}}Context(InstanceContext):
         {{#allParams}}{{#isQueryParam}}{{#if vendorExtensions.x-prefixed-collapsible-map}}params.update({{vendorExtensions.x-serialize}}({{paramName}}, '{{vendorExtensions.x-prefixed-collapsible-map}}'))
         {{/if}}{{/isQueryParam}}{{/allParams}}{{/if}}
 
-        payload = self._version.update(method='{{vendorExtensions.x-http-method}}', uri=self._uri, data=data, headers=headers{{#if queryParams}}, params=params{{/if}})
+        return self._version.update_with_response_info(method='{{vendorExtensions.x-http-method}}', uri=self._uri, data=data, headers=headers{{#if queryParams}}, params=params{{/if}})
 
+    def {{vendorExtensions.x-name-lower}}(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> {{instanceName}}:
+        """
+        Update the {{instanceName}}
+        {{#allParams}}
+        :param {{paramName}}: {{{description}}}{{/allParams}}
+
+        :returns: The updated {{instanceName}}
+        """
+        payload, _, _ = self._{{vendorExtensions.x-name-lower}}({{#allParams}}{{paramName}}={{paramName}}{{#unless @last}}, {{/unless}}{{/allParams}})
         return {{instanceName}}(
             self._version,
             payload{{#instancePathParams}},
             {{paramName}}=self._solution['{{paramName}}']{{/instancePathParams}}
         )
 
-    async def {{vendorExtensions.x-name-lower}}_async(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> {{instanceName}}:
+    def {{vendorExtensions.x-name-lower}}_with_http_info(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> ApiResponse:
         """
-        Asynchronous coroutine to update the {{instanceName}}
+        Update the {{instanceName}} and return response metadata
         {{#allParams}}
         :param {{paramName}}: {{{description}}}{{/allParams}}
 
-        :returns: The updated {{instanceName}}
+        :returns: ApiResponse with instance, status code, and headers
+        """
+        payload, status_code, headers = self._{{vendorExtensions.x-name-lower}}({{#allParams}}{{paramName}}={{paramName}}{{#unless @last}}, {{/unless}}{{/allParams}})
+        instance = {{instanceName}}(
+            self._version,
+            payload{{#instancePathParams}},
+            {{paramName}}=self._solution['{{paramName}}']{{/instancePathParams}}
+        )
+        return ApiResponse(data=instance, status_code=status_code, headers=headers)
+
+    async def _{{vendorExtensions.x-name-lower}}_async(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> tuple:
+        """
+        Internal async helper for {{vendorExtensions.x-name-lower}} operation
+
+        Returns:
+            tuple: (payload, status_code, headers)
         """
         {{#bodyParam}}data = {{paramName}}.to_dict(){{/bodyParam}}
         {{^bodyParam}}data = values.of({ {{#allParams}}{{#isFormParam}}
@@ -88,13 +111,38 @@ class {{apiName}}Context(InstanceContext):
         {{#allParams}}{{#isQueryParam}}{{#if vendorExtensions.x-prefixed-collapsible-map}}params.update({{vendorExtensions.x-serialize}}({{paramName}}, '{{vendorExtensions.x-prefixed-collapsible-map}}'))
         {{/if}}{{/isQueryParam}}{{/allParams}}{{/if}}
 
-        payload = await self._version.update_async(method='{{vendorExtensions.x-http-method}}', uri=self._uri, data=data, headers=headers{{#if queryParams}}, params=params{{/if}})
+        return await self._version.update_with_response_info_async(method='{{vendorExtensions.x-http-method}}', uri=self._uri, data=data, headers=headers{{#if queryParams}}, params=params{{/if}})
 
+    async def {{vendorExtensions.x-name-lower}}_async(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> {{instanceName}}:
+        """
+        Asynchronous coroutine to update the {{instanceName}}
+        {{#allParams}}
+        :param {{paramName}}: {{{description}}}{{/allParams}}
+
+        :returns: The updated {{instanceName}}
+        """
+        payload, _, _ = await self._{{vendorExtensions.x-name-lower}}_async({{#allParams}}{{paramName}}={{paramName}}{{#unless @last}}, {{/unless}}{{/allParams}})
         return {{instanceName}}(
             self._version,
             payload{{#instancePathParams}},
             {{paramName}}=self._solution['{{paramName}}']{{/instancePathParams}}
         )
+
+    async def {{vendorExtensions.x-name-lower}}_with_http_info_async(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> ApiResponse:
+        """
+        Asynchronous coroutine to update the {{instanceName}} and return response metadata
+        {{#allParams}}
+        :param {{paramName}}: {{{description}}}{{/allParams}}
+
+        :returns: ApiResponse with instance, status code, and headers
+        """
+        payload, status_code, headers = await self._{{vendorExtensions.x-name-lower}}_async({{#allParams}}{{paramName}}={{paramName}}{{#unless @last}}, {{/unless}}{{/allParams}})
+        instance = {{instanceName}}(
+            self._version,
+            payload{{#instancePathParams}},
+            {{paramName}}=self._solution['{{paramName}}']{{/instancePathParams}}
+        )
+        return ApiResponse(data=instance, status_code=status_code, headers=headers)
     {{/vendorExtensions.x-twilio.ignoreOperation}}{{/vendorExtensions.x-is-update-operation}}{{#vendorExtensions.x-is-patch-operation}}{{^vendorExtensions.x-twilio.ignoreOperation}}
     def {{vendorExtensions.x-name-lower}}(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> {{instanceName}}:
         """
