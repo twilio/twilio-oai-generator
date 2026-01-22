@@ -29,6 +29,7 @@ public class EnumConstants {
         CREATE("Create"),
         FETCH("Fetch"),
         UPDATE("Update"),
+        PATCH("Patch"),
 
         DELETE("Delete"),
 
@@ -165,7 +166,8 @@ public class EnumConstants {
         X_LIST("x-list-operation"),
         X_UPDATE("x-update-operation"),
         X_FETCH("x-fetch-operation"),
-        X_DELETE("x-delete-operation");
+        X_DELETE("x-delete-operation"),
+        X_PATCH("x-patch-operation");
 
         private final String value;
     }

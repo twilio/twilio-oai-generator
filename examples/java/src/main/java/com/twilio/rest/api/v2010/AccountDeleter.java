@@ -15,6 +15,7 @@
 package com.twilio.rest.api.v2010;
 
 import com.twilio.base.Deleter;
+import com.twilio.base.TwilioResponse;
 import com.twilio.exception.ApiConnectionException;
 import com.twilio.exception.ApiException;
 import com.twilio.exception.RestException;
@@ -39,8 +40,8 @@ import com.twilio.type.*;
     }
 
             
-                @Override
-    public boolean delete(final TwilioRestClient client) {
+            
+    private Response makeRequest(final TwilioRestClient client) {
     
     String path = "/2010-04-01/Accounts/{Sid}.json";
 
@@ -49,7 +50,7 @@ import com.twilio.type.*;
 
 
         Predicate<Integer> deleteStatuses = i -> i != null && i >= 200 && i < 300;
-        Request request = new Request(
+            Request request = new Request(
             HttpMethod.DELETE,
             Domains.API.toString(),
             path
@@ -69,7 +70,22 @@ import com.twilio.type.*;
             }
             throw new ApiException(restException);
         }
+        return response;
+    }
+
+    @Override
+    public boolean delete(final TwilioRestClient client) {
+        Response response = makeRequest(client);
+        Predicate<Integer> deleteStatuses = i -> i != null && i >= 200 && i < 300;
         return deleteStatuses.test(response.getStatusCode());
+    }
+
+    @Override
+    public TwilioResponse<Boolean> deleteWithResponse(final TwilioRestClient client) {
+        Response response = makeRequest(client);
+        Predicate<Integer> deleteStatuses = i -> i != null && i >= 200 && i < 300;
+        Boolean deleted = deleteStatuses.test(response.getStatusCode());
+        return new TwilioResponse<>(deleted, response.getStatusCode(), response.getHeaders());
     }
 
             }

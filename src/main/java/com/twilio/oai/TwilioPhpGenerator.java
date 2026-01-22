@@ -5,8 +5,11 @@ import com.samskivert.mustache.Mustache;
 import com.twilio.oai.api.PhpApiResourceBuilder;
 import com.twilio.oai.api.PhpApiResources;
 import com.twilio.oai.api.PhpDomainBuilder;
+import com.twilio.oai.common.ApplicationConstants;
 import com.twilio.oai.common.EnumConstants;
 import com.twilio.oai.common.Utility;
+import com.twilio.oai.java.cache.ResourceCache2;
+import com.twilio.oai.java.cache.ResourceCacheContext;
 import com.twilio.oai.resolver.IConventionMapper;
 import com.twilio.oai.resolver.LanguageConventionResolver;
 import com.twilio.oai.resolver.common.CodegenModelResolver;
@@ -28,7 +31,6 @@ import java.util.*;
 
 
 public class TwilioPhpGenerator extends PhpClientCodegen {
-
     public static final String VALUES = "values";
     public static final String JSON_INGRESS = "json_ingress";
     private static final String PHP_CONVENTIONAL_MAP_PATH = "config/" + EnumConstants.Generator.TWILIO_PHP.getValue() + ".json";
@@ -73,12 +75,15 @@ public class TwilioPhpGenerator extends PhpClientCodegen {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public void processOpenAPI(final OpenAPI openAPI) {
+
         String domain = StringHelper.camelize(twilioCodegen.getDomainFromOpenAPI(openAPI));
         String version = StringHelper.camelize(twilioCodegen.getVersionFromOpenAPI(openAPI));
         twilioCodegen.setDomain(domain);
         twilioCodegen.setVersion(version);
         twilioCodegen.setOutputDir(domain, version);
+        twilioCodegen.setIsV1ApiStandard(openAPI);
         setSrcBasePath("");
 
         directoryStructureService.configureResourceFamily(openAPI);
@@ -129,7 +134,25 @@ public class TwilioPhpGenerator extends PhpClientCodegen {
         final List<CodegenOperation> opList = directoryStructureService.processOperations(results);
         PhpApiResources apiResources = processCodegenOperations(opList);
         results.put("resources", apiResources);
+
+        // Generate dynamic instance class files (one per response model)
+        generateDynamicInstanceFiles(apiResources, results);
+
         return results;
+    }
+
+    private void generateDynamicInstanceFiles(PhpApiResources apiResources, OperationsMap objs) {
+        // Build base context with all properties needed by the template
+        Map<String, Object> baseContext = new HashMap<>();
+        baseContext.putAll(additionalProperties);
+        baseContext.put("resources", apiResources);
+        // domainName and version are already in additionalProperties (set by TwilioCodegenAdapter)
+
+        // Get output directory for API files
+        String outputDir = apiFileFolder();
+
+        // Generate the dynamic files
+        phpApiActionTemplate.generateDynamicFiles(baseContext, outputDir);
     }
 
     @Override
@@ -157,14 +180,26 @@ public class TwilioPhpGenerator extends PhpClientCodegen {
         CodegenModelResolver codegenModelResolver = new CodegenModelResolver(conventionMapper, modelFormatMap,
                 Arrays.asList(EnumConstants.JavaDataTypes.values()));
         PhpPropertyResolver phpPropertyResolver = new PhpPropertyResolver(conventionMapper);
-        return new PhpApiResourceBuilder(phpApiActionTemplate, opList, this.allModels, twilioCodegen.getToggles(JSON_INGRESS), phpPropertyResolver)
-                .addVersionLessTemplates(openAPI, directoryStructureService)
+
+        // Create the builder and configure it
+        PhpApiResourceBuilder builder = new PhpApiResourceBuilder(phpApiActionTemplate, opList, this.allModels, twilioCodegen.getToggles(JSON_INGRESS), phpPropertyResolver);
+        builder.addVersionLessTemplates(openAPI, directoryStructureService)
                 .updateAdditionalProps(directoryStructureService)
                 .updateOperations(phpParameterResolver)
                 .updateResponseModel(phpPropertyResolver, codegenModelResolver)
                 .updateTemplate()
                 .updateApiPath()
-                .setImports(directoryStructureService)
-                .build();
+                .setImports(directoryStructureService);
+
+        // Build the apiResource
+        PhpApiResources apiResources = builder.build();
+
+        // Register dynamic templates with the full apiResource if there are multiple response models
+        // This must be done after build() so the apiResource has all properties set
+        if (builder.hasMultipleResponseModels()) {
+            phpApiActionTemplate.addDynamicTemplates(PhpApiActionTemplate.TEMPLATE_TYPE_INSTANCE_CLASS, apiResources);
+        }
+
+        return apiResources;
     }
 }

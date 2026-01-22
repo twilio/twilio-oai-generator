@@ -1,6 +1,7 @@
 package com.twilio.oai;
 
 import com.twilio.oai.common.Utility;
+import com.twilio.oai.java.cache.ResourceCacheContext;
 import com.twilio.oai.resolver.CaseResolver;
 import com.twilio.oai.resource.IResourceTree;
 import com.twilio.oai.resource.Resource;
@@ -103,7 +104,9 @@ public class DirectoryStructureService {
                 }
 
                 updateAccountSidParam(operation);
-                updatePaginationParams(operation);
+                if (ResourceCacheContext.get() == null || !ResourceCacheContext.get().isV1()) {
+                    updatePaginationParams(operation);
+                }
 
                 pathType.ifPresent(type -> Optional
                         .ofNullable(operation.getExtensions())

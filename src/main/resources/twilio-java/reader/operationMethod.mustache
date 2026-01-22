@@ -1,15 +1,24 @@
-{{! 
+{{!
 resourceName: Api Name as identified by Directory Structure service
-recordKey: 
+recordKey:
 httpMethod: http method associated in the current operation.
 domainName: example api, video, chat, etc. These can be found in Domains.java in twilio-java
 }}
-    @Override
-    public ResourceSet<{{resourceName}}> read(final TwilioRestClient client) {
-        return new ResourceSet<>(this, client, firstPage(client));
+
+    public ResourceSetResponse<{{resourceName}}> readWithResponse(final TwilioRestClient client) {
+        Request request = buildFirstPageRequest(client);
+        Response response = makeRequest(client, request);
+        Page<{{resourceName}}> page = Page.fromJson(
+            "{{recordKey}}",
+            response.getContent(),
+            {{resourceName}}.class,
+            client.getObjectMapper()
+        );
+        ResourceSet<{{resourceName}}> resourceSet = new ResourceSet<>(this, client, page); 
+        return new ResourceSetResponse<>(resourceSet, response.getStatusCode(), response.getHeaders());
     }
-    
-    public Page<{{resourceName}}> firstPage(final TwilioRestClient client) {
+
+    private Request buildFirstPageRequest(final TwilioRestClient client) {
         {{>common/generateUri}}
         Request request = new Request(
             HttpMethod.{{httpMethod}},
@@ -25,46 +34,28 @@ domainName: example api, video, chat, etc. These can be found in Domains.java in
     {{#headerParams.0}}
         addHeaderParams(request);
     {{/headerParams.0}}
+        return request;
+    }
+    
 
+    @Override
+    public ResourceSet<{{resourceName}}> read(final TwilioRestClient client) {
+        return new ResourceSet<>(this, client, firstPage(client));
+    }
+
+    public Page<{{resourceName}}> firstPage(final TwilioRestClient client) {
+        Request request = buildFirstPageRequest(client);
         return pageForRequest(client, request);
     }
 
-    private Page<{{resourceName}}> pageForRequest(final TwilioRestClient client, final Request request) {
-        Response response = client.request(request);
-        if (response == null) {
-            throw new ApiConnectionException("{{resourceName}} read failed: Unable to connect to server");
-        } else if (!TwilioRestClient.SUCCESS.test(response.getStatusCode())) {
-            RestException restException = RestException.fromJson(
-            response.getStream(),
-            client.getObjectMapper());
-        
-            if (restException == null) {
-                throw new ApiException("Server Error, no content", response.getStatusCode());
-            }
-            throw new ApiException(restException);
-        } {{! end of else if }}
-
-        return Page.fromJson(
+    public TwilioResponse<Page<{{resourceName}}>> firstPageWithResponse(final TwilioRestClient client) {
+        Request request = buildFirstPageRequest(client);
+        Response response = makeRequest(client, request);
+        Page<{{resourceName}}> page = Page.fromJson(
             "{{recordKey}}",
             response.getContent(),
             {{resourceName}}.class,
-            client.getObjectMapper());
-    }
-
-    @Override
-    public Page<{{resourceName}}> previousPage(final Page<{{resourceName}}> page, final TwilioRestClient client ) {
-        Request request = new Request(HttpMethod.GET, page.getPreviousPageUrl(Domains.API.toString()));
-        return pageForRequest(client, request);
-    }
-
-    @Override
-    public Page<{{resourceName}}> nextPage(final Page<{{resourceName}}> page, final TwilioRestClient client) {
-        Request request = new Request(HttpMethod.GET, page.getNextPageUrl(Domains.API.toString()));
-        return pageForRequest(client, request); 
-    }
-
-    @Override
-    public Page<{{resourceName}}> getPage(final String targetUrl, final TwilioRestClient client) {
-        Request request = new Request(HttpMethod.GET, targetUrl);
-        return pageForRequest(client, request); 
+            client.getObjectMapper()
+        );
+        return new TwilioResponse<>(page, response.getStatusCode(), response.getHeaders()); 
     }

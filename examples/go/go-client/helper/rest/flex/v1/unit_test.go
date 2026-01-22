@@ -42,7 +42,7 @@ func TestObjectArrayTypeParam(t *testing.T) {
 		gomock.Any(),
 		gomock.Any()).
 		DoAndReturn(func(method string, rawURL string, data url.Values,
-			headers map[string]interface{}) (*http.Response, error) {
+			headers map[string]interface{}, body ...byte) (*http.Response, error) {
 			assert.Equal(t, expectedData, data)
 			return &http.Response{Body: getEmptyBody()}, nil
 		},
@@ -59,7 +59,7 @@ func TestUpdateOperation(t *testing.T) {
 		gomock.Any(),
 		gomock.Any(),
 		gomock.Any()).
-		DoAndReturn(func(method string, rawURL string, data url.Values, headers map[string]interface{}) (*http.Response, error) {
+		DoAndReturn(func(method string, rawURL string, data url.Values, headers map[string]interface{}, body ...byte) (*http.Response, error) {
 			assert.Equal(t, "POST", method)
 			assert.Equal(t, "https://flex-api.twilio.com/v1/Voice/VO123", rawURL)
 			return &http.Response{Body: getEmptyBody()}, nil
@@ -83,7 +83,7 @@ func TestListError(t *testing.T) {
 		gomock.Any(),
 		gomock.Any()).
 		DoAndReturn(func(method string, rawURL string, data url.Values,
-			headers map[string]interface{}) (*http.Response, error) {
+			headers map[string]interface{}, body ...byte) (*http.Response, error) {
 			response := map[string]interface{}{
 				"credentials": []map[string]interface{}{
 					{
@@ -129,7 +129,7 @@ func TestListNoNextPage(t *testing.T) {
 		gomock.Any(),
 		gomock.Any()).
 		DoAndReturn(func(method string, rawURL string, data url.Values,
-			headers map[string]interface{}) (*http.Response, error) {
+			headers map[string]interface{}, body ...byte) (*http.Response, error) {
 			response := map[string]interface{}{
 				"credentials": []map[string]interface{}{
 					{
@@ -176,7 +176,7 @@ func TestPageToken(t *testing.T) {
 		gomock.Any(),
 		gomock.Any(),
 		gomock.Any()).
-		DoAndReturn(func(method string, rawURL string, data url.Values, headers map[string]interface{}) (*http.Response, error) {
+		DoAndReturn(func(method string, rawURL string, data url.Values, headers map[string]interface{}, body ...byte) (*http.Response, error) {
 			assert.Equal(t, expectedData, data)
 			return &http.Response{Body: getEmptyBody()}, nil
 		}).AnyTimes()

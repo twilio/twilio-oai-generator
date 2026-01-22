@@ -16,6 +16,7 @@ package com.twilio.rest.flexapi.v1.credential;
 
 
 import com.twilio.base.Creator;
+import com.twilio.base.TwilioResponse;
 import com.twilio.constant.EnumConstants;
 import com.twilio.constant.EnumConstants.ParameterType;
 import com.twilio.converter.Promoter;
@@ -189,13 +190,13 @@ public NewCredentialsCreator setSomeA2PThing(final String someA2PThing){
 }
 
 
-    @Override
-    public NewCredentials create(final TwilioRestClient client) {
+
+    private Response makeRequest(final TwilioRestClient client) {
     
     String path = "/v1/Credentials/AWS";
 
 
-    
+
         Request request = new Request(
             HttpMethod.POST,
             Domains.FLEXAPI.toString(),
@@ -203,9 +204,9 @@ public NewCredentialsCreator setSomeA2PThing(final String someA2PThing){
         );
         request.setContentType(EnumConstants.ContentType.FORM_URLENCODED);
         addPostParams(request);
-    
+
         Response response = client.request(request);
-    
+
         if (response == null) {
             throw new ApiConnectionException("NewCredentials creation failed: Unable to connect to server");
         } else if (!TwilioRestClient.SUCCESS.test(response.getStatusCode())) {
@@ -218,8 +219,20 @@ public NewCredentialsCreator setSomeA2PThing(final String someA2PThing){
             }
             throw new ApiException(restException);
         }
-    
+        return response;
+    }
+
+    @Override
+    public NewCredentials create(final TwilioRestClient client) {
+        Response response = makeRequest(client);
         return NewCredentials.fromJson(response.getStream(), client.getObjectMapper());
+    }
+
+    @Override
+    public TwilioResponse<NewCredentials> createWithResponse(final TwilioRestClient client) {
+        Response response = makeRequest(client);
+        NewCredentials content = NewCredentials.fromJson(response.getStream(), client.getObjectMapper());
+        return new TwilioResponse<>(content, response.getStatusCode(), response.getHeaders());
     }
     private void addPostParams(final Request request) {
 

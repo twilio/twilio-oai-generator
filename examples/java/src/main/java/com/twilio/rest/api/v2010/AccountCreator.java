@@ -16,6 +16,7 @@ package com.twilio.rest.api.v2010;
 
 
 import com.twilio.base.Creator;
+import com.twilio.base.TwilioResponse;
 import com.twilio.constant.EnumConstants;
 import com.twilio.constant.EnumConstants.ParameterType;
 import com.twilio.converter.Promoter;
@@ -78,13 +79,13 @@ public AccountCreator setXTwilioWebhookEnabled(final Account.XTwilioWebhookEnabl
 }
 
 
-    @Override
-    public Account create(final TwilioRestClient client) {
+
+    private Response makeRequest(final TwilioRestClient client) {
     
     String path = "/2010-04-01/Accounts.json";
 
 
-    
+
         Request request = new Request(
             HttpMethod.POST,
             Domains.API.toString(),
@@ -93,9 +94,9 @@ public AccountCreator setXTwilioWebhookEnabled(final Account.XTwilioWebhookEnabl
         request.setContentType(EnumConstants.ContentType.FORM_URLENCODED);
         addHeaderParams(request);
         addPostParams(request);
-    
+
         Response response = client.request(request);
-    
+
         if (response == null) {
             throw new ApiConnectionException("Account creation failed: Unable to connect to server");
         } else if (!TwilioRestClient.SUCCESS.test(response.getStatusCode())) {
@@ -108,8 +109,20 @@ public AccountCreator setXTwilioWebhookEnabled(final Account.XTwilioWebhookEnabl
             }
             throw new ApiException(restException);
         }
-    
+        return response;
+    }
+
+    @Override
+    public Account create(final TwilioRestClient client) {
+        Response response = makeRequest(client);
         return Account.fromJson(response.getStream(), client.getObjectMapper());
+    }
+
+    @Override
+    public TwilioResponse<Account> createWithResponse(final TwilioRestClient client) {
+        Response response = makeRequest(client);
+        Account content = Account.fromJson(response.getStream(), client.getObjectMapper());
+        return new TwilioResponse<>(content, response.getStatusCode(), response.getHeaders());
     }
     private void addPostParams(final Request request) {
 

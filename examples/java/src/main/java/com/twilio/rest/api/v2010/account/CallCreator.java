@@ -16,6 +16,7 @@ package com.twilio.rest.api.v2010.account;
 
 
 import com.twilio.base.Creator;
+import com.twilio.base.TwilioResponse;
 import com.twilio.constant.EnumConstants;
 import com.twilio.constant.EnumConstants.ParameterType;
 import com.twilio.converter.Promoter;
@@ -86,15 +87,15 @@ public CallCreator setTestMethod(final HttpMethod testMethod){
 }
 
 
-    @Override
-    public Call create(final TwilioRestClient client) {
+
+    private Response makeRequest(final TwilioRestClient client) {
     
     String path = "/2010-04-01/Accounts/{AccountSid}/Calls.json";
 
         this.pathAccountSid = this.pathAccountSid == null ? client.getAccountSid() : this.pathAccountSid;
         path = path.replace("{"+"AccountSid"+"}", this.pathAccountSid.toString());
 
-    
+
         Request request = new Request(
             HttpMethod.POST,
             Domains.API.toString(),
@@ -102,9 +103,9 @@ public CallCreator setTestMethod(final HttpMethod testMethod){
         );
         request.setContentType(EnumConstants.ContentType.FORM_URLENCODED);
         addPostParams(request);
-    
+
         Response response = client.request(request);
-    
+
         if (response == null) {
             throw new ApiConnectionException("Call creation failed: Unable to connect to server");
         } else if (!TwilioRestClient.SUCCESS.test(response.getStatusCode())) {
@@ -117,8 +118,20 @@ public CallCreator setTestMethod(final HttpMethod testMethod){
             }
             throw new ApiException(restException);
         }
-    
+        return response;
+    }
+
+    @Override
+    public Call create(final TwilioRestClient client) {
+        Response response = makeRequest(client);
         return Call.fromJson(response.getStream(), client.getObjectMapper());
+    }
+
+    @Override
+    public TwilioResponse<Call> createWithResponse(final TwilioRestClient client) {
+        Response response = makeRequest(client);
+        Call content = Call.fromJson(response.getStream(), client.getObjectMapper());
+        return new TwilioResponse<>(content, response.getStatusCode(), response.getHeaders());
     }
     private void addPostParams(final Request request) {
 

@@ -1,0 +1,120 @@
+{{#isApiV1}}
+{{#responseInstanceModels}}
+{{#vars}}/**
+ * @property {{{dataType}}} ${{#lambda.customcamelcase}}{{baseName}}{{/lambda.customcamelcase}}
+ */{{/vars}}
+class {{classname}}Instance extends InstanceResource
+{
+{{#metaProperties.contextImportProperties}}
+    protected $_{{#lambda.camelcase}}{{mountName}}{{/lambda.camelcase}};
+    {{#-last}}
+
+    {{/-last}}
+{{/metaProperties.contextImportProperties}}
+    /**
+     * Initialize the {{classname}}Instance
+     *
+     * @param Version $version Version that contains the resource
+     * @param mixed[] $payload The response payload
+     {{#requiredPathParams}}
+     * @param {{{dataType}}} ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}{{#description}} {{{description}}}{{/description}}
+     {{/requiredPathParams}}
+     */
+    public function __construct(Version $version, array $payload{{#requiredPathParams}}{{#vendorExtensions.x-is-parent-param}}, {{{dataType}}} ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}{{/vendorExtensions.x-is-parent-param}}{{^vendorExtensions.x-is-parent-param}}, ?{{{dataType}}} ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}} = null{{/vendorExtensions.x-is-parent-param}}{{/requiredPathParams}})
+    {
+        {{^isApiV1}}parent::__construct($version);{{/isApiV1}}{{#isApiV1}}$apiV1Version = new ApiV1Version($version->getDomain(), $version->version);
+        parent::__construct($apiV1Version);{{/isApiV1}}
+
+        // Marshaled Properties
+        $this->properties = [
+            {{#vars}}
+            {{^vendorExtensions.x-deserialize}}
+            '{{#lambda.customcamelcase}}{{baseName}}{{/lambda.customcamelcase}}' => Values::array_get($payload, '{{name}}'),
+            {{/vendorExtensions.x-deserialize}}
+            {{#vendorExtensions.x-deserialize}}
+            '{{#lambda.customcamelcase}}{{baseName}}{{/lambda.customcamelcase}}' => {{.}}(Values::array_get($payload, '{{name}}')),
+            {{/vendorExtensions.x-deserialize}}
+            {{/vars}}
+        ];
+
+        $this->solution = [{{#requiredPathParams}}{{#vendorExtensions.x-is-parent-param}}'{{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}' => ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}, {{/vendorExtensions.x-is-parent-param}}{{^vendorExtensions.x-is-parent-param}}'{{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}' => ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}} ?: $this->properties['{{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}'], {{/vendorExtensions.x-is-parent-param}}{{/requiredPathParams}}];
+    }
+
+{{#metaProperties.x-is-context-operation}}
+    /**
+     * Generate an instance context for the instance, the context is capable of
+     * performing various actions.  All instance actions are proxied to the context
+     *
+     * @return {{classname}}Context Context for this {{classname}}Instance
+     */
+    protected function proxy(): {{classname}}Context
+    {
+        if (!$this->context) {
+            $this->context = new {{classname}}Context(
+                $this->version{{#requiredPathParams.0}},{{/requiredPathParams.0}}
+                {{#requiredPathParams}}
+                $this->solution['{{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}']{{^-last}},{{/-last}}
+                {{/requiredPathParams}}
+            );
+        }
+
+        return $this->context;
+    }
+
+{{/metaProperties.x-is-context-operation}}
+{{#apiOperations}}
+{{#vendorExtensions.instanceOperation}}{{>method}}
+        return $this->proxy()->{{#lambda.camelcase}}{{vendorExtensions.x-name}}{{/lambda.camelcase}}({{#requiredParams}}{{^isPathParam}}${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}{{^-last}}, {{/-last}}{{/isPathParam}}{{/requiredParams}}{{#vendorExtensions.hasRequiredNonPathParams}}{{#vendorExtensions.hasOptionalQueryParams}}, {{/vendorExtensions.hasOptionalQueryParams}}{{^vendorExtensions.hasOptionalQueryParams}}{{#vendorExtensions.hasOptionalFormParams}}, {{/vendorExtensions.hasOptionalFormParams}}{{/vendorExtensions.hasOptionalQueryParams}}{{^vendorExtensions.hasOptionalQueryParams}}{{^vendorExtensions.hasOptionalFormParams}}{{#vendorExtensions.hasOptionalHeaderParams}}, {{/vendorExtensions.hasOptionalHeaderParams}}{{/vendorExtensions.hasOptionalFormParams}}{{/vendorExtensions.hasOptionalQueryParams}}{{/vendorExtensions.hasRequiredNonPathParams}}{{#vendorExtensions.hasOptionalQueryParams}}$options{{/vendorExtensions.hasOptionalQueryParams}}{{^vendorExtensions.hasOptionalQueryParams}}{{#vendorExtensions.hasOptionalFormParams}}$options{{/vendorExtensions.hasOptionalFormParams}}{{/vendorExtensions.hasOptionalQueryParams}}{{^vendorExtensions.hasOptionalQueryParams}}{{^vendorExtensions.hasOptionalFormParams}}{{#vendorExtensions.hasOptionalHeaderParams}}$options{{/vendorExtensions.hasOptionalHeaderParams}}{{/vendorExtensions.hasOptionalFormParams}}{{/vendorExtensions.hasOptionalQueryParams}});
+    }
+
+{{/vendorExtensions.instanceOperation}}
+{{/apiOperations}}
+{{#metaProperties.contextImportProperties}}
+    /**
+     * Access the {{#lambda.camelcase}}{{mountName}}{{/lambda.camelcase}}
+     */
+    protected function get{{#lambda.titlecase}}{{mountName}}{{/lambda.titlecase}}(): {{filename}}List
+    {
+        return $this->proxy()->{{#lambda.camelcase}}{{mountName}}{{/lambda.camelcase}};
+    }
+
+{{/metaProperties.contextImportProperties}}
+    /**
+     * Magic getter to access properties
+     *
+     * @param string $name Property to access
+     * @return mixed The requested property
+     * @throws TwilioException For unknown properties
+     */
+    public function __get(string $name)
+    {
+        if (\array_key_exists($name, $this->properties)) {
+            return $this->properties[$name];
+        }
+
+        if (\property_exists($this, '_' . $name)) {
+            $method = 'get' . \ucfirst($name);
+            return $this->$method();
+        }
+
+        throw new TwilioException('Unknown property: ' . $name);
+    }
+
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        {{#metaProperties.x-is-context-operation}}
+        $context = [];
+        foreach ($this->solution as $key => $value) {
+            $context[] = "$key=$value";
+        }
+        {{/metaProperties.x-is-context-operation}}
+        return '[Twilio.{{domainName}}.{{version}}.{{classname}}Instance{{#metaProperties.x-is-context-operation}} ' . \implode(' ', $context) . '{{/metaProperties.x-is-context-operation}}]';
+    }
+}
+{{/responseInstanceModels}}
+{{/isApiV1}}

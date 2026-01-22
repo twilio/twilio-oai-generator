@@ -23,6 +23,7 @@ module Twilio
           # @return [FleetList] FleetList
           def initialize(version)
             super(version)
+
             # Path Solution
             @solution = {}
             @uri = "/Fleets"
@@ -45,6 +46,32 @@ module Twilio
             FleetInstance.new(
               @version,
               payload,
+            )
+          end
+
+          ##
+          # Create the FleetInstanceMetadata
+          # @param [String] name
+          # @return [FleetInstance] Created FleetInstance
+          def create_with_metadata(
+            name: :unset
+          )
+            data = Twilio::Values.of({
+                                       'Name' => name,
+                                     })
+
+            headers = Twilio::Values.of({ 'Content-Type' => 'application/x-www-form-urlencoded', })
+
+            response = @version.create_with_metadata('POST', @uri, data: data, headers: headers)
+            fleet_instance = FleetInstance.new(
+              @version,
+              response.body,
+            )
+            FleetInstanceMetadata.new(
+              @version,
+              fleet_instance,
+              response.headers,
+              response.status_code
             )
           end
 
@@ -83,6 +110,26 @@ module Twilio
           end
 
           ##
+          # Fetch the FleetInstanceMetadata
+          # @return [FleetInstance] Fetched FleetInstance
+          def fetch_with_metadata
+            headers = Twilio::Values.of({ 'Content-Type' => 'application/x-www-form-urlencoded', })
+
+            response = @version.fetch_with_metadata('GET', @uri, headers: headers)
+            fleet_instance = FleetInstance.new(
+              @version,
+              response.body,
+              sid: @solution[:sid],
+            )
+            FleetInstanceMetadata.new(
+              @version,
+              fleet_instance,
+              response.headers,
+              response.status_code
+            )
+          end
+
+          ##
           # Provide a user friendly representation
           def to_s
             context = @solution.map { |k, v| "#{k}: #{v}" }.join(',')
@@ -94,6 +141,53 @@ module Twilio
           def inspect
             context = @solution.map { |k, v| "#{k}: #{v}" }.join(',')
             "#<Twilio.Versionless.DeployedDevices.FleetContext #{context}>"
+          end
+        end
+
+        class FleetInstanceMetadata < InstanceResourceMetadata
+          ##
+          # Initializes a new FleetInstanceMetadata.
+          # @param [Version] version Version that contains the resource
+          # @param [}FleetInstance] fleet_instance The instance associated with the metadata.
+          # @param [Hash] headers Header object with response headers.
+          # @param [Integer] status_code The HTTP status code of the response.
+          # @return [FleetInstanceMetadata] The initialized instance with metadata.
+          def initialize(version, fleet_instance, headers, status_code)
+            super(version, headers, status_code)
+            @fleet_instance = fleet_instance
+          end
+
+          def fleet
+            @fleet_instance
+          end
+
+          def headers
+            @headers
+          end
+
+          def status_code
+            @status_code
+          end
+
+          def to_s
+            "<Twilio.Api.V2010.FleetInstanceMetadata status=#{@status_code}>"
+          end
+        end
+
+        class FleetListResponse < InstanceListResource
+          # @param [Array<FleetInstance>] instance
+          # @param [Hash{String => Object}] headers
+          # @param [Integer] status_code
+          def initialize(version, payload, key)
+            @fleet_instance = payload.body[key].map do |data|
+              FleetInstance.new(version, data)
+            end
+            @headers = payload.headers
+            @status_code = payload.status_code
+          end
+
+          def fleet_instance
+            @instance
           end
         end
 
@@ -123,6 +217,66 @@ module Twilio
           # Provide a user friendly representation
           def to_s
             '<Twilio.Versionless.DeployedDevices.FleetPage>'
+          end
+        end
+
+        class FleetPageMetadata < PageMetadata
+          attr_reader :fleet_page
+
+          def initialize(version, response, solution, limit)
+            super(version, response)
+            @fleet_page = []
+            @limit = limit
+            key = get_key(response.body)
+            records = 0
+            while (limit != :unset && records < limit)
+              @fleet_page << FleetListResponse.new(version, @payload, key, limit - records)
+              @payload = self.next_page
+              break unless @payload
+
+              records += @payload.body[key].size
+            end
+            # Path Solution
+            @solution = solution
+          end
+
+          def each
+            @fleet_page.each do |record|
+              yield record
+            end
+          end
+
+          def to_s
+            '<Twilio::REST::Versionless::DeployedDevicesPageMetadata>';
+          end
+        end
+
+        class FleetListResponse < InstanceListResource
+          # @param [Array<FleetInstance>] instance
+          # @param [Hash{String => Object}] headers
+          # @param [Integer] status_code
+          def initialize(version, payload, key, limit = :unset)
+            data_list = payload.body[key]
+            if limit != :unset
+              data_list = data_list[0, limit]
+            end
+            @fleet = data_list.map do |data|
+              FleetInstance.new(version, data)
+            end
+            @headers = payload.headers
+            @status_code = payload.status_code
+          end
+
+          def fleet
+            @fleet
+          end
+
+          def headers
+            @headers
+          end
+
+          def status_code
+            @status_code
           end
         end
 

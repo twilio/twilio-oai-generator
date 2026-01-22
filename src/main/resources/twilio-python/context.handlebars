@@ -19,13 +19,12 @@ class {{apiName}}Context(InstanceContext):
         self._{{mountName}}: Optional[{{listName}}] = None{{/instanceDependent}}{{/dependents}}
     {{#operations}}{{#vendorExtensions.x-is-context-operation}}
     {{#vendorExtensions.x-is-update-operation}}{{^vendorExtensions.x-twilio.ignoreOperation}}
-    def {{vendorExtensions.x-name-lower}}(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> {{instanceName}}:
+    def _{{vendorExtensions.x-name-lower}}(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> tuple:
         """
-        Update the {{instanceName}}
-        {{#allParams}}
-        :param {{paramName}}: {{{description}}}{{/allParams}}
+        Internal helper for {{vendorExtensions.x-name-lower}} operation
 
-        :returns: The updated {{instanceName}}
+        Returns:
+            tuple: (payload, status_code, headers)
         """
         {{#bodyParam}}data = {{paramName}}.to_dict(){{/bodyParam}}
         {{^bodyParam}}data = values.of({ {{#allParams}}{{#isFormParam}}
@@ -49,13 +48,70 @@ class {{apiName}}Context(InstanceContext):
         {{#allParams}}{{#isQueryParam}}{{#if vendorExtensions.x-prefixed-collapsible-map}}params.update({{vendorExtensions.x-serialize}}({{paramName}}, '{{vendorExtensions.x-prefixed-collapsible-map}}'))
         {{/if}}{{/isQueryParam}}{{/allParams}}{{/if}}
 
-        payload = self._version.update(method='{{vendorExtensions.x-http-method}}', uri=self._uri, data=data, headers=headers{{#if queryParams}}, params=params{{/if}})
+        return self._version.update_with_response_info(method='{{vendorExtensions.x-http-method}}', uri=self._uri, data=data, headers=headers{{#if queryParams}}, params=params{{/if}})
 
+    def {{vendorExtensions.x-name-lower}}(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> {{instanceName}}:
+        """
+        Update the {{instanceName}}
+        {{#allParams}}
+        :param {{paramName}}: {{{description}}}{{/allParams}}
+
+        :returns: The updated {{instanceName}}
+        """
+        payload, _, _ = self._{{vendorExtensions.x-name-lower}}({{#allParams}}{{paramName}}={{paramName}}{{#unless @last}}, {{/unless}}{{/allParams}})
         return {{instanceName}}(
             self._version,
             payload{{#instancePathParams}},
             {{paramName}}=self._solution['{{paramName}}']{{/instancePathParams}}
         )
+
+    def {{vendorExtensions.x-name-lower}}_with_http_info(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> ApiResponse:
+        """
+        Update the {{instanceName}} and return response metadata
+        {{#allParams}}
+        :param {{paramName}}: {{{description}}}{{/allParams}}
+
+        :returns: ApiResponse with instance, status code, and headers
+        """
+        payload, status_code, headers = self._{{vendorExtensions.x-name-lower}}({{#allParams}}{{paramName}}={{paramName}}{{#unless @last}}, {{/unless}}{{/allParams}})
+        instance = {{instanceName}}(
+            self._version,
+            payload{{#instancePathParams}},
+            {{paramName}}=self._solution['{{paramName}}']{{/instancePathParams}}
+        )
+        return ApiResponse(data=instance, status_code=status_code, headers=headers)
+
+    async def _{{vendorExtensions.x-name-lower}}_async(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> tuple:
+        """
+        Internal async helper for {{vendorExtensions.x-name-lower}} operation
+
+        Returns:
+            tuple: (payload, status_code, headers)
+        """
+        {{#bodyParam}}data = {{paramName}}.to_dict(){{/bodyParam}}
+        {{^bodyParam}}data = values.of({ {{#allParams}}{{#isFormParam}}
+            '{{{baseName}}}': {{#if vendorExtensions.x-serialize}}{{vendorExtensions.x-serialize}}({{paramName}}{{#if isArray}}, lambda e: e){{else}}){{/if}}{{else}}{{paramName}}{{/if}},{{/isFormParam}}{{/allParams}}
+        }){{/bodyParam}}
+        headers = values.of({})
+        {{#allParams}}{{#isHeaderParam}}
+        {{^if required}}
+        if not ({{paramName}} is values.unset or (isinstance({{paramName}}, str) and not {{paramName}})):{{/if}}
+            headers['{{{baseName}}}'] = {{paramName}}
+        {{/isHeaderParam}}{{/allParams}}
+        {{#consumes}}
+        headers["Content-Type"] = "{{{mediaType}}}"
+        {{/consumes}}
+        {{#vendorExtensions.successProduce}}
+        headers["Accept"] = "{{{mediaType}}}"
+        {{/vendorExtensions.successProduce}}{{#if queryParams}}
+        params = values.of({ {{#allParams}}{{#isQueryParam}}{{#if vendorExtensions.x-prefixed-collapsible-map}}{{else}}
+            '{{{baseName}}}': {{#if vendorExtensions.x-serialize}}{{vendorExtensions.x-serialize}}({{paramName}}{{#if isArray}}, lambda e: e){{else}}){{/if}}{{else}}{{paramName}}{{/if}},{{/if}}{{/isQueryParam}}{{/allParams}}
+        })
+
+        {{#allParams}}{{#isQueryParam}}{{#if vendorExtensions.x-prefixed-collapsible-map}}params.update({{vendorExtensions.x-serialize}}({{paramName}}, '{{vendorExtensions.x-prefixed-collapsible-map}}'))
+        {{/if}}{{/isQueryParam}}{{/allParams}}{{/if}}
+
+        return await self._version.update_with_response_info_async(method='{{vendorExtensions.x-http-method}}', uri=self._uri, data=data, headers=headers{{#if queryParams}}, params=params{{/if}})
 
     async def {{vendorExtensions.x-name-lower}}_async(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> {{instanceName}}:
         """
@@ -65,6 +121,98 @@ class {{apiName}}Context(InstanceContext):
 
         :returns: The updated {{instanceName}}
         """
+        payload, _, _ = await self._{{vendorExtensions.x-name-lower}}_async({{#allParams}}{{paramName}}={{paramName}}{{#unless @last}}, {{/unless}}{{/allParams}})
+        return {{instanceName}}(
+            self._version,
+            payload{{#instancePathParams}},
+            {{paramName}}=self._solution['{{paramName}}']{{/instancePathParams}}
+        )
+
+    async def {{vendorExtensions.x-name-lower}}_with_http_info_async(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> ApiResponse:
+        """
+        Asynchronous coroutine to update the {{instanceName}} and return response metadata
+        {{#allParams}}
+        :param {{paramName}}: {{{description}}}{{/allParams}}
+
+        :returns: ApiResponse with instance, status code, and headers
+        """
+        payload, status_code, headers = await self._{{vendorExtensions.x-name-lower}}_async({{#allParams}}{{paramName}}={{paramName}}{{#unless @last}}, {{/unless}}{{/allParams}})
+        instance = {{instanceName}}(
+            self._version,
+            payload{{#instancePathParams}},
+            {{paramName}}=self._solution['{{paramName}}']{{/instancePathParams}}
+        )
+        return ApiResponse(data=instance, status_code=status_code, headers=headers)
+    {{/vendorExtensions.x-twilio.ignoreOperation}}{{/vendorExtensions.x-is-update-operation}}{{#vendorExtensions.x-is-patch-operation}}{{^vendorExtensions.x-twilio.ignoreOperation}}
+    def _{{vendorExtensions.x-name-lower}}(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> tuple:
+        """
+        Internal helper for {{vendorExtensions.x-name-lower}} operation
+
+        Returns:
+            tuple: (payload, status_code, headers)
+        """
+        {{#bodyParam}}data = {{paramName}}.to_dict(){{/bodyParam}}
+        {{^bodyParam}}data = values.of({ {{#allParams}}{{#isFormParam}}
+            '{{{baseName}}}': {{#if vendorExtensions.x-serialize}}{{vendorExtensions.x-serialize}}({{paramName}}{{#if isArray}}, lambda e: e){{else}}){{/if}}{{else}}{{paramName}}{{/if}},{{/isFormParam}}{{/allParams}}
+        }){{/bodyParam}}
+        headers = values.of({})
+        {{#allParams}}{{#isHeaderParam}}
+        {{^if required}}
+        if not ({{paramName}} is values.unset or (isinstance({{paramName}}, str) and not {{paramName}})):{{/if}}
+            headers['{{{baseName}}}'] = {{paramName}}{{/isHeaderParam}}{{/allParams}}
+        {{#consumes}}
+        headers["Content-Type"] = "{{{mediaType}}}"
+        {{/consumes}}
+        {{#vendorExtensions.successProduce}}
+        headers["Accept"] = "{{{mediaType}}}"
+        {{/vendorExtensions.successProduce}}{{#if queryParams}}
+        params = values.of({ {{#allParams}}{{#isQueryParam}}{{#if vendorExtensions.x-prefixed-collapsible-map}}{{else}}
+            '{{{baseName}}}': {{#if vendorExtensions.x-serialize}}{{vendorExtensions.x-serialize}}({{paramName}}{{#if isArray}}, lambda e: e){{else}}){{/if}}{{else}}{{paramName}}{{/if}},{{/if}}{{/isQueryParam}}{{/allParams}}
+        })
+
+        {{#allParams}}{{#isQueryParam}}{{#if vendorExtensions.x-prefixed-collapsible-map}}params.patch({{vendorExtensions.x-serialize}}({{paramName}}, '{{vendorExtensions.x-prefixed-collapsible-map}}'))
+        {{/if}}{{/isQueryParam}}{{/allParams}}{{/if}}
+
+        return self._version.patch_with_response_info(method='{{vendorExtensions.x-http-method}}', uri=self._uri, data=data, headers=headers{{#if queryParams}}, params=params{{/if}})
+
+    def {{vendorExtensions.x-name-lower}}(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> {{instanceName}}:
+        """
+        Patch the {{instanceName}}
+        {{#allParams}}
+        :param {{paramName}}: {{{description}}}{{/allParams}}
+
+        :returns: The patched {{instanceName}}
+        """
+        payload, _, _ = self._{{vendorExtensions.x-name-lower}}({{#allParams}}{{paramName}}={{paramName}}{{#unless @last}}, {{/unless}}{{/allParams}})
+        return {{instanceName}}(
+            self._version,
+            payload{{#instancePathParams}},
+            {{paramName}}=self._solution['{{paramName}}']{{/instancePathParams}}
+        )
+
+    def {{vendorExtensions.x-name-lower}}_with_http_info(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> ApiResponse:
+        """
+        Patch the {{instanceName}} and return response metadata
+        {{#allParams}}
+        :param {{paramName}}: {{{description}}}{{/allParams}}
+
+        :returns: ApiResponse with instance, status code, and headers
+        """
+        payload, status_code, headers = self._{{vendorExtensions.x-name-lower}}({{#allParams}}{{paramName}}={{paramName}}{{#unless @last}}, {{/unless}}{{/allParams}})
+        instance = {{instanceName}}(
+            self._version,
+            payload{{#instancePathParams}},
+            {{paramName}}=self._solution['{{paramName}}']{{/instancePathParams}}
+        )
+        return ApiResponse(data=instance, status_code=status_code, headers=headers)
+
+    async def _{{vendorExtensions.x-name-lower}}_async(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> tuple:
+        """
+        Internal async helper for {{vendorExtensions.x-name-lower}} operation
+
+        Returns:
+            tuple: (payload, status_code, headers)
+        """
         {{#bodyParam}}data = {{paramName}}.to_dict(){{/bodyParam}}
         {{^bodyParam}}data = values.of({ {{#allParams}}{{#isFormParam}}
             '{{{baseName}}}': {{#if vendorExtensions.x-serialize}}{{vendorExtensions.x-serialize}}({{paramName}}{{#if isArray}}, lambda e: e){{else}}){{/if}}{{else}}{{paramName}}{{/if}},{{/isFormParam}}{{/allParams}}
@@ -85,24 +233,48 @@ class {{apiName}}Context(InstanceContext):
             '{{{baseName}}}': {{#if vendorExtensions.x-serialize}}{{vendorExtensions.x-serialize}}({{paramName}}{{#if isArray}}, lambda e: e){{else}}){{/if}}{{else}}{{paramName}}{{/if}},{{/if}}{{/isQueryParam}}{{/allParams}}
         })
 
-        {{#allParams}}{{#isQueryParam}}{{#if vendorExtensions.x-prefixed-collapsible-map}}params.update({{vendorExtensions.x-serialize}}({{paramName}}, '{{vendorExtensions.x-prefixed-collapsible-map}}'))
+        {{#allParams}}{{#isQueryParam}}{{#if vendorExtensions.x-prefixed-collapsible-map}}params.patch({{vendorExtensions.x-serialize}}({{paramName}}, '{{vendorExtensions.x-prefixed-collapsible-map}}'))
         {{/if}}{{/isQueryParam}}{{/allParams}}{{/if}}
 
-        payload = await self._version.update_async(method='{{vendorExtensions.x-http-method}}', uri=self._uri, data=data, headers=headers{{#if queryParams}}, params=params{{/if}})
+        return await self._version.patch_with_response_info_async(method='{{vendorExtensions.x-http-method}}', uri=self._uri, data=data, headers=headers{{#if queryParams}}, params=params{{/if}})
 
+    async def {{vendorExtensions.x-name-lower}}_async(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> {{instanceName}}:
+        """
+        Asynchronous coroutine to patch the {{instanceName}}
+        {{#allParams}}
+        :param {{paramName}}: {{{description}}}{{/allParams}}
+
+        :returns: The patched {{instanceName}}
+        """
+        payload, _, _ = await self._{{vendorExtensions.x-name-lower}}_async({{#allParams}}{{paramName}}={{paramName}}{{#unless @last}}, {{/unless}}{{/allParams}})
         return {{instanceName}}(
             self._version,
             payload{{#instancePathParams}},
             {{paramName}}=self._solution['{{paramName}}']{{/instancePathParams}}
         )
-    {{/vendorExtensions.x-twilio.ignoreOperation}}{{/vendorExtensions.x-is-update-operation}}{{#vendorExtensions.x-is-fetch-operation}}{{^vendorExtensions.x-twilio.ignoreOperation}}
-    def {{vendorExtensions.x-name-lower}}(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> {{instanceName}}:
+
+    async def {{vendorExtensions.x-name-lower}}_with_http_info_async(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> ApiResponse:
         """
-        Fetch the {{instanceName}}
+        Asynchronous coroutine to patch the {{instanceName}} and return response metadata
         {{#allParams}}
         :param {{paramName}}: {{{description}}}{{/allParams}}
 
-        :returns: The fetched {{instanceName}}
+        :returns: ApiResponse with instance, status code, and headers
+        """
+        payload, status_code, headers = await self._{{vendorExtensions.x-name-lower}}_async({{#allParams}}{{paramName}}={{paramName}}{{#unless @last}}, {{/unless}}{{/allParams}})
+        instance = {{instanceName}}(
+            self._version,
+            payload{{#instancePathParams}},
+            {{paramName}}=self._solution['{{paramName}}']{{/instancePathParams}}
+        )
+        return ApiResponse(data=instance, status_code=status_code, headers=headers)
+    {{/vendorExtensions.x-twilio.ignoreOperation}}{{/vendorExtensions.x-is-patch-operation}}{{#vendorExtensions.x-is-fetch-operation}}{{^vendorExtensions.x-twilio.ignoreOperation}}
+    def _{{vendorExtensions.x-name-lower}}(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> tuple:
+        """
+        Internal helper for {{vendorExtensions.x-name-lower}} operation
+
+        Returns:
+            tuple: (payload, status_code, headers)
         """
         {{#if queryParams}}
         params = values.of({ {{#allParams}}{{#isQueryParam}}{{#if vendorExtensions.x-prefixed-collapsible-map}}{{else}}
@@ -124,14 +296,69 @@ class {{apiName}}Context(InstanceContext):
         {{#vendorExtensions.successProduce}}
         headers["Accept"] = "{{{mediaType}}}"
         {{/vendorExtensions.successProduce}}
-        payload = self._version.fetch(method='{{vendorExtensions.x-http-method}}', uri=self._uri {{#if queryParams}}, params=params{{/if}} , headers=headers)
+        return self._version.fetch_with_response_info(method='{{vendorExtensions.x-http-method}}', uri=self._uri{{#if queryParams}}, params=params{{/if}}, headers=headers)
 
+    def {{vendorExtensions.x-name-lower}}(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> {{instanceName}}:
+        """
+        Fetch the {{instanceName}}
+        {{#allParams}}
+        :param {{paramName}}: {{{description}}}{{/allParams}}
+
+        :returns: The fetched {{instanceName}}
+        """
+        payload, _, _ = self._{{vendorExtensions.x-name-lower}}({{#allParams}}{{paramName}}={{paramName}}{{#unless @last}}, {{/unless}}{{/allParams}})
         return {{instanceName}}(
             self._version,
             payload,
             {{#instancePathParams}}{{paramName}}=self._solution['{{paramName}}'],
             {{/instancePathParams}}
         )
+
+    def {{vendorExtensions.x-name-lower}}_with_http_info(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> ApiResponse:
+        """
+        Fetch the {{instanceName}} and return response metadata
+        {{#allParams}}
+        :param {{paramName}}: {{{description}}}{{/allParams}}
+
+        :returns: ApiResponse with instance, status code, and headers
+        """
+        payload, status_code, headers = self._{{vendorExtensions.x-name-lower}}({{#allParams}}{{paramName}}={{paramName}}{{#unless @last}}, {{/unless}}{{/allParams}})
+        instance = {{instanceName}}(
+            self._version,
+            payload,
+            {{#instancePathParams}}{{paramName}}=self._solution['{{paramName}}'],
+            {{/instancePathParams}}
+        )
+        return ApiResponse(data=instance, status_code=status_code, headers=headers)
+
+    async def _{{vendorExtensions.x-name-lower}}_async(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> tuple:
+        """
+        Internal async helper for {{vendorExtensions.x-name-lower}} operation
+
+        Returns:
+            tuple: (payload, status_code, headers)
+        """
+        {{#if queryParams}}
+        params = values.of({ {{#allParams}}{{#isQueryParam}}{{#if vendorExtensions.x-prefixed-collapsible-map}}{{else}}
+            '{{{baseName}}}': {{#if vendorExtensions.x-serialize}}{{vendorExtensions.x-serialize}}({{paramName}}{{#if isArray}}, lambda e: e){{else}}){{/if}}{{else}}{{paramName}}{{/if}},{{/if}}{{/isQueryParam}}{{/allParams}}
+        })
+
+        {{#allParams}}{{#isQueryParam}}{{#if vendorExtensions.x-prefixed-collapsible-map}}params.update({{vendorExtensions.x-serialize}}({{paramName}}, '{{vendorExtensions.x-prefixed-collapsible-map}}'))
+        {{/if}}{{/isQueryParam}}{{/allParams}}{{/if}}
+
+        headers = values.of({})
+        {{#allParams}}{{#isHeaderParam}}
+        {{^if required}}
+        if not ({{paramName}} is values.unset or (isinstance({{paramName}}, str) and not {{paramName}})):{{/if}}
+            headers['{{{baseName}}}'] = {{paramName}}
+        {{/isHeaderParam}}{{/allParams}}
+        {{#consumes}}
+        headers["Content-Type"] = "{{{mediaType}}}"
+        {{/consumes}}
+        {{#vendorExtensions.successProduce}}
+        headers["Accept"] = "{{{mediaType}}}"
+        {{/vendorExtensions.successProduce}}
+        return await self._version.fetch_with_response_info_async(method='{{vendorExtensions.x-http-method}}', uri=self._uri{{#if queryParams}}, params=params{{/if}}, headers=headers)
 
     async def {{vendorExtensions.x-name-lower}}_async(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> {{instanceName}}:
         """
@@ -141,42 +368,37 @@ class {{apiName}}Context(InstanceContext):
 
         :returns: The fetched {{instanceName}}
         """
-        {{#if queryParams}}
-        params = values.of({ {{#allParams}}{{#isQueryParam}}{{#if vendorExtensions.x-prefixed-collapsible-map}}{{else}}
-            '{{{baseName}}}': {{#if vendorExtensions.x-serialize}}{{vendorExtensions.x-serialize}}({{paramName}}{{#if isArray}}, lambda e: e){{else}}){{/if}}{{else}}{{paramName}}{{/if}},{{/if}}{{/isQueryParam}}{{/allParams}}
-        })
-
-        {{#allParams}}{{#isQueryParam}}{{#if vendorExtensions.x-prefixed-collapsible-map}}params.update({{vendorExtensions.x-serialize}}({{paramName}}, '{{vendorExtensions.x-prefixed-collapsible-map}}'))
-        {{/if}}{{/isQueryParam}}{{/allParams}}{{/if}}
-
-        headers = values.of({})
-        {{#allParams}}{{#isHeaderParam}}
-        {{^if required}}
-        if not ({{paramName}} is values.unset or (isinstance({{paramName}}, str) and not {{paramName}})):{{/if}}
-            headers['{{{baseName}}}'] = {{paramName}}
-        {{/isHeaderParam}}{{/allParams}}
-        {{#consumes}}
-        headers["Content-Type"] = "{{{mediaType}}}"
-        {{/consumes}}
-        {{#vendorExtensions.successProduce}}
-        headers["Accept"] = "{{{mediaType}}}"
-        {{/vendorExtensions.successProduce}}
-        payload = await self._version.fetch_async(method='{{vendorExtensions.x-http-method}}', uri=self._uri {{#if queryParams}}, params=params{{/if}}, headers=headers)
-
+        payload, _, _ = await self._{{vendorExtensions.x-name-lower}}_async({{#allParams}}{{paramName}}={{paramName}}{{#unless @last}}, {{/unless}}{{/allParams}})
         return {{instanceName}}(
             self._version,
             payload,
             {{#instancePathParams}}{{paramName}}=self._solution['{{paramName}}'],
             {{/instancePathParams}}
         )
-    {{/vendorExtensions.x-twilio.ignoreOperation}}{{/vendorExtensions.x-is-fetch-operation}}{{#vendorExtensions.x-is-delete-operation}}{{^vendorExtensions.x-twilio.ignoreOperation}}
-    def {{vendorExtensions.x-name-lower}}(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> bool:
-        """
-        Deletes the {{apiName}}Instance
 
-        {{#allParams}}:param {{paramName}}: {{{description}}}
-        {{/allParams}}
-        :returns: True if delete succeeds, False otherwise
+    async def {{vendorExtensions.x-name-lower}}_with_http_info_async(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> ApiResponse:
+        """
+        Asynchronous coroutine to fetch the {{instanceName}} and return response metadata
+        {{#allParams}}
+        :param {{paramName}}: {{{description}}}{{/allParams}}
+
+        :returns: ApiResponse with instance, status code, and headers
+        """
+        payload, status_code, headers = await self._{{vendorExtensions.x-name-lower}}_async({{#allParams}}{{paramName}}={{paramName}}{{#unless @last}}, {{/unless}}{{/allParams}})
+        instance = {{instanceName}}(
+            self._version,
+            payload,
+            {{#instancePathParams}}{{paramName}}=self._solution['{{paramName}}'],
+            {{/instancePathParams}}
+        )
+        return ApiResponse(data=instance, status_code=status_code, headers=headers)
+    {{/vendorExtensions.x-twilio.ignoreOperation}}{{/vendorExtensions.x-is-fetch-operation}}{{#vendorExtensions.x-is-delete-operation}}{{^vendorExtensions.x-twilio.ignoreOperation}}
+    def _{{vendorExtensions.x-name-lower}}(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> tuple:
+        """
+        Internal helper for {{vendorExtensions.x-name-lower}} operation
+
+        Returns:
+            tuple: (success_boolean, status_code, headers)
         """{{#if headerParams}}
         headers = values.of({{#allParams}}{{#isHeaderParam}}{'{{{baseName}}}': {{paramName}}, }{{/isHeaderParam}}{{/allParams}})
         {{/if}}
@@ -196,7 +418,55 @@ class {{apiName}}Context(InstanceContext):
 
         {{#allParams}}{{#isQueryParam}}{{#if vendorExtensions.x-prefixed-collapsible-map}}params.update({{vendorExtensions.x-serialize}}({{paramName}}, '{{vendorExtensions.x-prefixed-collapsible-map}}'))
         {{/if}}{{/isQueryParam}}{{/allParams}}{{/if}}
-        return self._version.delete(method='{{vendorExtensions.x-http-method}}', uri=self._uri, headers=headers{{#if queryParams}}, params=params{{/if}})
+        return self._version.delete_with_response_info(method='{{vendorExtensions.x-http-method}}', uri=self._uri, headers=headers{{#if queryParams}}, params=params{{/if}})
+
+    def {{vendorExtensions.x-name-lower}}(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> bool:
+        """
+        Deletes the {{apiName}}Instance
+
+        {{#allParams}}:param {{paramName}}: {{{description}}}
+        {{/allParams}}
+        :returns: True if delete succeeds, False otherwise
+        """
+        success, _, _ = self._{{vendorExtensions.x-name-lower}}({{#allParams}}{{paramName}}={{paramName}}{{#unless @last}}, {{/unless}}{{/allParams}})
+        return success
+
+    def {{vendorExtensions.x-name-lower}}_with_http_info(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> ApiResponse:
+        """
+        Deletes the {{apiName}}Instance and return response metadata
+
+        {{#allParams}}:param {{paramName}}: {{{description}}}
+        {{/allParams}}
+        :returns: ApiResponse with success boolean, status code, and headers
+        """
+        success, status_code, headers = self._{{vendorExtensions.x-name-lower}}({{#allParams}}{{paramName}}={{paramName}}{{#unless @last}}, {{/unless}}{{/allParams}})
+        return ApiResponse(data=success, status_code=status_code, headers=headers)
+
+    async def _{{vendorExtensions.x-name-lower}}_async(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> tuple:
+        """
+        Internal async helper for {{vendorExtensions.x-name-lower}} operation
+
+        Returns:
+            tuple: (success_boolean, status_code, headers)
+        """{{#if headerParams}}
+        headers = values.of({{#allParams}}{{#isHeaderParam}}{'{{{baseName}}}': {{paramName}}, }{{/isHeaderParam}}{{/allParams}})
+        {{/if}}
+        {{^if headerParams}}
+        headers = values.of({})
+        {{/if}}
+        {{#consumes}}
+        headers["Content-Type"] = "{{{mediaType}}}"
+        {{/consumes}}
+        {{#vendorExtensions.successProduce}}
+        headers["Accept"] = "{{{mediaType}}}"
+        {{/vendorExtensions.successProduce}}{{#if queryParams}}
+        params = values.of({ {{#allParams}}{{#isQueryParam}}{{#if vendorExtensions.x-prefixed-collapsible-map}}{{else}}
+            '{{{baseName}}}': {{#if vendorExtensions.x-serialize}}{{vendorExtensions.x-serialize}}({{paramName}}{{#if isArray}}, lambda e: e){{else}}){{/if}}{{else}}{{paramName}}{{/if}},{{/if}}{{/isQueryParam}}{{/allParams}}
+        })
+
+        {{#allParams}}{{#isQueryParam}}{{#if vendorExtensions.x-prefixed-collapsible-map}}params.update({{vendorExtensions.x-serialize}}({{paramName}}, '{{vendorExtensions.x-prefixed-collapsible-map}}'))
+        {{/if}}{{/isQueryParam}}{{/allParams}}{{/if}}
+        return await self._version.delete_with_response_info_async(method='{{vendorExtensions.x-http-method}}', uri=self._uri, headers=headers{{#if queryParams}}, params=params{{/if}})
 
     async def {{vendorExtensions.x-name-lower}}_async(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> bool:
         """
@@ -205,33 +475,27 @@ class {{apiName}}Context(InstanceContext):
         {{#allParams}}:param {{paramName}}: {{{description}}}
         {{/allParams}}
         :returns: True if delete succeeds, False otherwise
-        """{{#if headerParams}}
-        headers = values.of({{#allParams}}{{#isHeaderParam}}{'{{{baseName}}}': {{paramName}}, }{{/isHeaderParam}}{{/allParams}})
-        {{/if}}
-        {{^if headerParams}}
-        headers = values.of({})
-        {{/if}}
-        {{#consumes}}
-        headers["Content-Type"] = "{{{mediaType}}}"
-        {{/consumes}}
-        {{#vendorExtensions.successProduce}}
-        headers["Accept"] = "{{{mediaType}}}"
-        {{/vendorExtensions.successProduce}}{{#if queryParams}}
-        params = values.of({ {{#allParams}}{{#isQueryParam}}{{#if vendorExtensions.x-prefixed-collapsible-map}}{{else}}
-            '{{{baseName}}}': {{#if vendorExtensions.x-serialize}}{{vendorExtensions.x-serialize}}({{paramName}}{{#if isArray}}, lambda e: e){{else}}){{/if}}{{else}}{{paramName}}{{/if}},{{/if}}{{/isQueryParam}}{{/allParams}}
-        })
-
-        {{#allParams}}{{#isQueryParam}}{{#if vendorExtensions.x-prefixed-collapsible-map}}params.update({{vendorExtensions.x-serialize}}({{paramName}}, '{{vendorExtensions.x-prefixed-collapsible-map}}'))
-        {{/if}}{{/isQueryParam}}{{/allParams}}{{/if}}
-        return await self._version.delete_async(method='{{vendorExtensions.x-http-method}}', uri=self._uri, headers=headers{{#if queryParams}}, params=params{{/if}})
-    {{/vendorExtensions.x-twilio.ignoreOperation}}{{/vendorExtensions.x-is-delete-operation}}{{#vendorExtensions.x-is-create-operation}}{{^vendorExtensions.x-twilio.ignoreOperation}}
-    def {{vendorExtensions.x-name-lower}}(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> {{instanceName}}:
         """
-        Create the {{instanceName}}
-        {{#allParams}}
-        :param {{paramName}}: {{{description}}}{{/allParams}}
+        success, _, _ = await self._{{vendorExtensions.x-name-lower}}_async({{#allParams}}{{paramName}}={{paramName}}{{#unless @last}}, {{/unless}}{{/allParams}})
+        return success
 
-        :returns: The created {{instanceName}}
+    async def {{vendorExtensions.x-name-lower}}_with_http_info_async(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> ApiResponse:
+        """
+        Asynchronous coroutine that deletes the {{apiName}}Instance and return response metadata
+
+        {{#allParams}}:param {{paramName}}: {{{description}}}
+        {{/allParams}}
+        :returns: ApiResponse with success boolean, status code, and headers
+        """
+        success, status_code, headers = await self._{{vendorExtensions.x-name-lower}}_async({{#allParams}}{{paramName}}={{paramName}}{{#unless @last}}, {{/unless}}{{/allParams}})
+        return ApiResponse(data=success, status_code=status_code, headers=headers)
+    {{/vendorExtensions.x-twilio.ignoreOperation}}{{/vendorExtensions.x-is-delete-operation}}{{#vendorExtensions.x-is-create-operation}}{{^vendorExtensions.x-twilio.ignoreOperation}}
+    def _{{vendorExtensions.x-name-lower}}(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> tuple:
+        """
+        Internal helper for {{vendorExtensions.x-name-lower}} operation
+
+        Returns:
+            tuple: (payload, status_code, headers)
         """
         {{#bodyParam}}data = {{paramName}}.to_dict(){{/bodyParam}}
         {{^bodyParam}}data = values.of({ {{#allParams}}{{#isFormParam}}
@@ -255,13 +519,69 @@ class {{apiName}}Context(InstanceContext):
         {{#allParams}}{{#isQueryParam}}{{#if vendorExtensions.x-prefixed-collapsible-map}}params.update({{vendorExtensions.x-serialize}}({{paramName}}, '{{vendorExtensions.x-prefixed-collapsible-map}}'))
         {{/if}}{{/isQueryParam}}{{/allParams}}{{/if}}
 
-        payload = self._version.create(method='{{vendorExtensions.x-http-method}}', uri=self._uri, data=data, headers=headers{{#if queryParams}}, params=params{{/if}})
+        return self._version.create_with_response_info(method='{{vendorExtensions.x-http-method}}', uri=self._uri, data=data, headers=headers{{#if queryParams}}, params=params{{/if}})
 
+    def {{vendorExtensions.x-name-lower}}(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> {{instanceName}}:
+        """
+        Create the {{instanceName}}
+        {{#allParams}}
+        :param {{paramName}}: {{{description}}}{{/allParams}}
+
+        :returns: The created {{instanceName}}
+        """
+        payload, _, _ = self._{{vendorExtensions.x-name-lower}}({{#allParams}}{{paramName}}={{paramName}}{{#unless @last}}, {{/unless}}{{/allParams}})
         return {{instanceName}}(
             self._version,
             payload{{#instancePathParams}},
             {{paramName}}=self._solution['{{paramName}}']{{/instancePathParams}}
         )
+
+    def {{vendorExtensions.x-name-lower}}_with_http_info(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> ApiResponse:
+        """
+        Create the {{instanceName}} and return response metadata
+        {{#allParams}}
+        :param {{paramName}}: {{{description}}}{{/allParams}}
+
+        :returns: ApiResponse with instance, status code, and headers
+        """
+        payload, status_code, headers = self._{{vendorExtensions.x-name-lower}}({{#allParams}}{{paramName}}={{paramName}}{{#unless @last}}, {{/unless}}{{/allParams}})
+        instance = {{instanceName}}(
+            self._version,
+            payload{{#instancePathParams}},
+            {{paramName}}=self._solution['{{paramName}}']{{/instancePathParams}}
+        )
+        return ApiResponse(data=instance, status_code=status_code, headers=headers)
+
+    async def _{{vendorExtensions.x-name-lower}}_async(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> tuple:
+        """
+        Internal async helper for {{vendorExtensions.x-name-lower}} operation
+
+        Returns:
+            tuple: (payload, status_code, headers)
+        """
+        {{#bodyParam}}data = {{paramName}}.to_dict(){{/bodyParam}}
+        {{^bodyParam}}data = values.of({ {{#allParams}}{{#isFormParam}}
+            '{{{baseName}}}': {{#if vendorExtensions.x-serialize}}{{vendorExtensions.x-serialize}}({{paramName}}{{#if isArray}}, lambda e: e){{else}}){{/if}}{{else}}{{paramName}}{{/if}},{{/isFormParam}}{{/allParams}}
+        }){{/bodyParam}}
+        headers = values.of({})
+        {{#allParams}}{{#isHeaderParam}}
+        {{^if required}}
+        if not ({{paramName}} is values.unset or (isinstance({{paramName}}, str) and not {{paramName}})):{{/if}}
+            headers['{{{baseName}}}'] = {{paramName}}{{/isHeaderParam}}{{/allParams}}
+        {{#consumes}}
+        headers["Content-Type"] = "{{{mediaType}}}"
+        {{/consumes}}
+        {{#vendorExtensions.successProduce}}
+        headers["Accept"] = "{{{mediaType}}}"
+        {{/vendorExtensions.successProduce}}{{#if queryParams}}
+        params = values.of({ {{#allParams}}{{#isQueryParam}}{{#if vendorExtensions.x-prefixed-collapsible-map}}{{else}}
+            '{{{baseName}}}': {{#if vendorExtensions.x-serialize}}{{vendorExtensions.x-serialize}}({{paramName}}{{#if isArray}}, lambda e: e){{else}}){{/if}}{{else}}{{paramName}}{{/if}},{{/if}}{{/isQueryParam}}{{/allParams}}
+        })
+
+        {{#allParams}}{{#isQueryParam}}{{#if vendorExtensions.x-prefixed-collapsible-map}}params.update({{vendorExtensions.x-serialize}}({{paramName}}, '{{vendorExtensions.x-prefixed-collapsible-map}}'))
+        {{/if}}{{/isQueryParam}}{{/allParams}}{{/if}}
+
+        return await self._version.create_with_response_info_async(method='{{vendorExtensions.x-http-method}}', uri=self._uri, data=data, headers=headers{{#if queryParams}}, params=params{{/if}})
 
     async def {{vendorExtensions.x-name-lower}}_async(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> {{instanceName}}:
         """
@@ -271,35 +591,28 @@ class {{apiName}}Context(InstanceContext):
 
         :returns: The created {{instanceName}}
         """
-        {{#bodyParam}}data = {{paramName}}.to_dict(){{/bodyParam}}
-        {{^bodyParam}}data = values.of({ {{#allParams}}{{#isFormParam}}
-            '{{{baseName}}}': {{#if vendorExtensions.x-serialize}}{{vendorExtensions.x-serialize}}({{paramName}}{{#if isArray}}, lambda e: e){{else}}){{/if}}{{else}}{{paramName}}{{/if}},{{/isFormParam}}{{/allParams}}
-        }){{/bodyParam}}
-        headers = values.of({})
-        {{#allParams}}{{#isHeaderParam}}
-        {{^if required}}
-        if not ({{paramName}} is values.unset or (isinstance({{paramName}}, str) and not {{paramName}})):{{/if}}
-            headers['{{{baseName}}}'] = {{paramName}}{{/isHeaderParam}}{{/allParams}}
-        {{#consumes}}
-        headers["Content-Type"] = "{{{mediaType}}}"
-        {{/consumes}}
-        {{#vendorExtensions.successProduce}}
-        headers["Accept"] = "{{{mediaType}}}"
-        {{/vendorExtensions.successProduce}}{{#if queryParams}}
-        params = values.of({ {{#allParams}}{{#isQueryParam}}{{#if vendorExtensions.x-prefixed-collapsible-map}}{{else}}
-            '{{{baseName}}}': {{#if vendorExtensions.x-serialize}}{{vendorExtensions.x-serialize}}({{paramName}}{{#if isArray}}, lambda e: e){{else}}){{/if}}{{else}}{{paramName}}{{/if}},{{/if}}{{/isQueryParam}}{{/allParams}}
-        })
-
-        {{#allParams}}{{#isQueryParam}}{{#if vendorExtensions.x-prefixed-collapsible-map}}params.update({{vendorExtensions.x-serialize}}({{paramName}}, '{{vendorExtensions.x-prefixed-collapsible-map}}'))
-        {{/if}}{{/isQueryParam}}{{/allParams}}{{/if}}
-
-        payload = await self._version.create_async(method='{{vendorExtensions.x-http-method}}', uri=self._uri, data=data, headers=headers{{#if queryParams}}, params=params{{/if}})
-
+        payload, _, _ = await self._{{vendorExtensions.x-name-lower}}_async({{#allParams}}{{paramName}}={{paramName}}{{#unless @last}}, {{/unless}}{{/allParams}})
         return {{instanceName}}(
             self._version,
             payload{{#instancePathParams}},
             {{paramName}}=self._solution['{{paramName}}']{{/instancePathParams}}
         )
+
+    async def {{vendorExtensions.x-name-lower}}_with_http_info_async(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> ApiResponse:
+        """
+        Asynchronous coroutine to create the {{instanceName}} and return response metadata
+        {{#allParams}}
+        :param {{paramName}}: {{{description}}}{{/allParams}}
+
+        :returns: ApiResponse with instance, status code, and headers
+        """
+        payload, status_code, headers = await self._{{vendorExtensions.x-name-lower}}_async({{#allParams}}{{paramName}}={{paramName}}{{#unless @last}}, {{/unless}}{{/allParams}})
+        instance = {{instanceName}}(
+            self._version,
+            payload{{#instancePathParams}},
+            {{paramName}}=self._solution['{{paramName}}']{{/instancePathParams}}
+        )
+        return ApiResponse(data=instance, status_code=status_code, headers=headers)
     {{/vendorExtensions.x-twilio.ignoreOperation}}{{/vendorExtensions.x-is-create-operation}}{{/vendorExtensions.x-is-context-operation}}{{/operations}}
     {{#dependents}}{{#instanceDependent}}
     @property

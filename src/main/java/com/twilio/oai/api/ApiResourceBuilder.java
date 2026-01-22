@@ -4,6 +4,7 @@ import com.twilio.oai.DirectoryStructureService;
 import com.twilio.oai.PathUtils;
 import com.twilio.oai.StringHelper;
 import com.twilio.oai.common.ApplicationConstants;
+import com.twilio.oai.common.EnumConstants;
 import com.twilio.oai.common.Utility;
 import com.twilio.oai.resolver.Resolver;
 import com.twilio.oai.resource.Resource;
@@ -30,6 +31,7 @@ public abstract class ApiResourceBuilder implements IApiResourceBuilder {
     protected final Map<String, CodegenModel> modelTree = new TreeMap<>();
     protected final List<CodegenParameter> requiredPathParams = new ArrayList<>();
     protected Set<CodegenProperty> apiResponseModels = new LinkedHashSet<>();
+    protected Set<CodegenModel> responseInstanceModels = new LinkedHashSet<>();
     protected final Map<String, Object> metaAPIProperties = new HashMap<>();
     protected final List<CodegenOperation> listOperations = new ArrayList<>();
     protected final List<CodegenOperation> instanceOperations = new ArrayList<>();
@@ -223,6 +225,8 @@ public abstract class ApiResourceBuilder implements IApiResourceBuilder {
 
         if (StringUtils.startsWithIgnoreCase(operation.operationId, "update")) {
             addOperationName(operation, Operation.UPDATE.getValue());
+        } else if (StringUtils.startsWithIgnoreCase(operation.operationId, "patch")) {
+            addOperationName(operation, Operation.PATCH.getValue());
         } else if (StringUtils.startsWithIgnoreCase(operation.operationId, "delete")) {
             addOperationName(operation, Operation.DELETE.getValue());
         } else if (StringUtils.startsWithIgnoreCase(operation.operationId, "create")) {
@@ -231,6 +235,8 @@ public abstract class ApiResourceBuilder implements IApiResourceBuilder {
             addOperationName(operation, Operation.FETCH.getValue());
         } else if (StringUtils.startsWithIgnoreCase(operation.operationId, "list")) {
             addOperationName(operation, Operation.READ.getValue());
+        } else if (StringUtils.startsWithIgnoreCase(operation.operationId, "patch")) {
+            addOperationName(operation, Operation.PATCH.getValue());
         }
 
         operationMap.put("hasRequiredNonPathParams",

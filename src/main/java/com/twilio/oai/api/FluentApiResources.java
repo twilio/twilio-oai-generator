@@ -2,6 +2,7 @@ package com.twilio.oai.api;
 
 import com.twilio.oai.DirectoryStructureService;
 import com.twilio.oai.PathUtils;
+import com.twilio.oai.java.cache.ResourceCacheContext;
 
 import java.util.Collection;
 import java.util.List;
@@ -47,5 +48,30 @@ public class FluentApiResources extends ApiResources {
                 .map(Boolean.class::cast)
                 .orElse(false))
             .collect(Collectors.toList());
+    }
+
+    /**
+     * Returns true if this resource has multiple distinct response models for V1 APIs.
+     * Used by templates to determine whether to generate operation-specific response interfaces.
+     */
+    public boolean getHasMultipleResponseModels() {
+        boolean isApiV1 = ResourceCacheContext.get() != null && ResourceCacheContext.get().isV1();
+        return isApiV1 && responseInstanceModels != null && responseInstanceModels.size() > 1;
+    }
+
+    /**
+     * Returns the collection of response instance models.
+     * For V1 APIs with multiple response models, this contains all distinct response types.
+     */
+    public Collection<CodegenModel> getResponseInstanceModels() {
+        return responseInstanceModels;
+    }
+
+    /**
+     * Returns the collection of nested/complex models used in the resource.
+     * These are models referenced within response models or parameters.
+     */
+    public Collection<CodegenModel> getModels() {
+        return models;
     }
 }
