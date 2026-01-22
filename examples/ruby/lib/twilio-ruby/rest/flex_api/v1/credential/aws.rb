@@ -221,6 +221,60 @@ module Twilio
             end
 
             ##
+            # Patch the AwsInstance
+            # @param [String] test_string
+            # @param [Boolean] test_boolean
+            # @return [AwsInstance] Patched AwsInstance
+            def patch(
+              test_string: :unset,
+              test_boolean: :unset
+            )
+              data = Twilio::Values.of({
+                                         'TestString' => test_string,
+                                         'TestBoolean' => test_boolean,
+                                       })
+
+              headers = Twilio::Values.of({ 'Content-Type' => 'application/x-www-form-urlencoded', })
+
+              payload = @version.patch('PATCH', @uri, data: data, headers: headers)
+              AwsInstance.new(
+                @version,
+                payload,
+                sid: @solution[:sid],
+              )
+            end
+
+            ##
+            # Patch the AwsInstanceMetadata
+            # @param [String] test_string
+            # @param [Boolean] test_boolean
+            # @return [AwsInstance] Patchd AwsInstance
+            def patch_with_metadata(
+              test_string: :unset,
+              test_boolean: :unset
+            )
+              data = Twilio::Values.of({
+                                         'TestString' => test_string,
+                                         'TestBoolean' => test_boolean,
+                                       })
+
+              headers = Twilio::Values.of({ 'Content-Type' => 'application/x-www-form-urlencoded', })
+
+              response = @version.patch_with_metadata('PATCH', @uri, data: data, headers: headers)
+              aws_instance = AwsInstance.new(
+                @version,
+                response.body,
+                sid: @solution[:sid],
+              )
+              AwsInstanceMetadata.new(
+                @version,
+                aws_instance,
+                response.headers,
+                response.status_code
+              )
+            end
+
+            ##
             # Update the AwsInstance
             # @param [String] test_string
             # @param [Boolean] test_boolean
@@ -509,6 +563,21 @@ module Twilio
             # @return [AwsInstance] Fetched AwsInstance
             def fetch
               context.fetch
+            end
+
+            ##
+            # Patch the AwsInstance
+            # @param [String] test_string
+            # @param [Boolean] test_boolean
+            # @return [AwsInstance] Patched AwsInstance
+            def patch(
+              test_string: :unset,
+              test_boolean: :unset
+            )
+              context.patch(
+                test_string: test_string,
+                test_boolean: test_boolean,
+              )
             end
 
             ##

@@ -28,7 +28,7 @@ func TestPathIsCorrect(t *testing.T) {
 		gomock.Any(),
 		gomock.Any()).
 		DoAndReturn(func(method string, rawURL string, data url.Values,
-			headers map[string]interface{}) (*http.Response, error) {
+			headers map[string]interface{}, body ...byte) (*http.Response, error) {
 			assert.Equal(t, "https://api.twilio.com/2010-04-01/Accounts/AC222222222222222222222222222222/Calls/123.json", rawURL)
 			return &http.Response{Body: getEmptyBody()}, nil
 		},
@@ -50,7 +50,7 @@ func TestAccountSidAsOptionalParam(t *testing.T) {
 		gomock.Any(),
 		gomock.Any()).
 		DoAndReturn(func(method string, rawURL string, data url.Values,
-			headers map[string]interface{}) (*http.Response, error) {
+			headers map[string]interface{}, body ...byte) (*http.Response, error) {
 			assert.Equal(t, "https://api.twilio.com/2010-04-01/Accounts/AC444444444444444444444444444444/Calls/123.json", rawURL)
 			return &http.Response{Body: getEmptyBody()}, nil
 		},
@@ -81,7 +81,7 @@ func TestAddingHeader(t *testing.T) {
 		gomock.Any(),
 		gomock.Any()).
 		DoAndReturn(func(method string, rawURL string, data url.Values,
-			headers map[string]interface{}) (*http.Response, error) {
+			headers map[string]interface{}, body ...byte) (*http.Response, error) {
 			assert.Equal(t, expectedHeader, headers)
 			return &http.Response{Body: getEmptyBody()}, nil
 		},
@@ -118,7 +118,7 @@ func TestQueryParams(t *testing.T) {
 		gomock.Any(),
 		gomock.Any()).
 		DoAndReturn(func(method string, rawURL string, data url.Values,
-			headers map[string]interface{}) (*http.Response, error) {
+			headers map[string]interface{}, body ...byte) (*http.Response, error) {
 			assert.Equal(t, expectedData, data)
 			return &http.Response{Body: getEmptyBody()}, nil
 		},
@@ -150,7 +150,7 @@ func TestArrayTypeParam(t *testing.T) {
 		gomock.Any(),
 		gomock.Any()).
 		DoAndReturn(func(method string, rawURL string, data url.Values,
-			headers map[string]interface{}) (*http.Response, error) {
+			headers map[string]interface{}, body ...byte) (*http.Response, error) {
 			assert.Equal(t, expectedData, data)
 			return &http.Response{Body: getEmptyBody()}, nil
 		},
@@ -169,7 +169,7 @@ func TestResponseDecodeTypes(t *testing.T) {
 		gomock.Any(),
 		gomock.Any(),
 		gomock.Any()).
-		DoAndReturn(func(method string, rawURL string, data url.Values, headers map[string]interface{}) (*http.Response, error) {
+		DoAndReturn(func(method string, rawURL string, data url.Values, headers map[string]interface{}, body ...byte) (*http.Response, error) {
 			response := map[string]interface{}{
 				"test_number":       123.45,
 				"test_number_float": "67.89",
@@ -205,7 +205,7 @@ func TestList(t *testing.T) {
 		gomock.Any(),
 		gomock.Any()).
 		DoAndReturn(func(method string, rawURL string, data url.Values,
-			headers map[string]interface{}) (*http.Response, error) {
+			headers map[string]interface{}, body ...byte) (*http.Response, error) {
 			response := map[string]interface{}{
 				"accounts": []map[string]interface{}{
 					{
@@ -271,7 +271,7 @@ func TestListPaging(t *testing.T) {
 		gomock.Any(),
 		gomock.Any()).
 		DoAndReturn(func(method string, rawURL string, data url.Values,
-			headers map[string]interface{}) (*http.Response, error) {
+			headers map[string]interface{}, body ...byte) (*http.Response, error) {
 			response := map[string]interface{}{
 				"accounts": []map[string]interface{}{
 					{
@@ -296,7 +296,7 @@ func TestListPaging(t *testing.T) {
 		gomock.Any(),
 		gomock.Any()).
 		DoAndReturn(func(method string, rawURL string, data url.Values,
-			headers map[string]interface{}) (*http.Response, error) {
+			headers map[string]interface{}, body ...byte) (*http.Response, error) {
 			response := map[string]interface{}{
 				"accounts": []map[string]interface{}{
 					{
@@ -318,7 +318,7 @@ func TestListPaging(t *testing.T) {
 		gomock.Any(),
 		gomock.Any()).
 		DoAndReturn(func(method string, rawURL string, data url.Values,
-			headers map[string]interface{}) (*http.Response, error) {
+			headers map[string]interface{}, body ...byte) (*http.Response, error) {
 			return &http.Response{Body: getEmptyBody()}, nil
 		},
 		)
@@ -353,7 +353,7 @@ func TestListPagingError(t *testing.T) {
 	gomock.InOrder(
 		testClient.EXPECT().SendRequest(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).
 			DoAndReturn(func(method string, rawURL string, data url.Values,
-				headers map[string]interface{}) (*http.Response, error) {
+				headers map[string]interface{}, body ...byte) (*http.Response, error) {
 				response := map[string]interface{}{
 					"recordings": []map[string]interface{}{
 						{
@@ -372,7 +372,7 @@ func TestListPagingError(t *testing.T) {
 			}),
 		testClient.EXPECT().SendRequest(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).
 			DoAndReturn(func(method string, rawURL string, data url.Values,
-				headers map[string]interface{}) (*http.Response, error) {
+				headers map[string]interface{}, body ...byte) (*http.Response, error) {
 				return &http.Response{Body: io.NopCloser(bytes.NewReader(nil))}, nil
 			}),
 	)
